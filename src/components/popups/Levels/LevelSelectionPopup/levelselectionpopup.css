@@ -12,7 +12,7 @@
 }
 
 .level-selection-modal__content {
-  background-color: #2a2a2a;
+  background-color: var(--btn-neutral-dark);
   border-radius: 12px;
   padding: 2rem;
   width: 90%;
@@ -21,7 +21,7 @@
   flex-direction: column;
   height: 80vh;
   overflow-y: auto;
-  border: 1px solid #404040;
+  border: 1px solid var(--btn-neutral-disabled-fill);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
   position: relative;
 }
@@ -75,7 +75,7 @@
 .level-selection-modal__select,
 .level-selection-modal__input {
   padding: 0.75rem;
-  border: 2px solid #404040;
+  border: 2px solid var(--btn-neutral-disabled-fill);
   border-radius: 8px;
   background: #1a1a1a;
   color: #ffffff;
@@ -85,17 +85,17 @@
 .level-selection-modal__select:focus,
 .level-selection-modal__input:focus {
   outline: none;
-  border-color: #4a9eff;
+  border-color: var(--btn-primary);
 }
 
 .level-selection-modal__error {
-  color: #f44336;
+  color: var(--danger-color);
   margin-bottom: 1rem;
   font-size: 0.875rem;
   padding: 0.75rem;
   background: rgba(255, 107, 107, 0.1);
   border-radius: 8px;
-  border: 1px solid #f44336;
+  border: 1px solid var(--danger-color);
 }
 
 .level-selection-modal__levels {
@@ -111,7 +111,7 @@
   display: flex;
   flex-direction: row;
   transition: all 0.2s ease-in-out;
-  border-bottom: 1px solid #404040;
+  border-bottom: 1px solid var(--btn-neutral-disabled-fill);
 }
 
 .level-selection-modal__level-item:hover {
@@ -191,7 +191,7 @@
   padding: 0.75rem 1.5rem;
   border: none;
   border-radius: 8px;
-  background: #4a9eff;
+  background: var(--btn-primary);
   color: white;
   cursor: pointer;
   font-size: 0.9rem;
@@ -202,7 +202,7 @@
 }
 
 .level-selection-modal__select-btn:hover:not(:disabled) {
-  background: #3a8eef;
+  background: var(--btn-primary-hover);
 }
 
 .level-selection-modal__select-btn:disabled {
@@ -231,7 +231,7 @@
   background: rgba(255, 255, 255, 0.05);
   border-radius: 8px;
   padding: 1rem;
-  border: 1px solid #404040;
+  border: 1px solid var(--btn-neutral-disabled-fill);
 }
 
 .level-selection-modal__current-type {
@@ -263,7 +263,7 @@
   padding: 0.75rem 1.5rem;
   border: none;
   border-radius: 8px;
-  background: #4a9eff;
+  background: var(--btn-primary);
   color: white;
   cursor: pointer;
   font-size: 0.9rem;
@@ -273,7 +273,7 @@
 }
 
 .level-selection-modal__update-btn:hover:not(:disabled) {
-  background: #3a8eef;
+  background: var(--btn-primary-hover);
 }
 
 .level-selection-modal__update-btn:disabled {
@@ -291,7 +291,7 @@
   gap: 15px;
   margin-top: 2rem;
   padding-top: 1rem;
-  border-top: 1px solid #404040;
+  border-top: 1px solid var(--btn-neutral-disabled-fill);
 }
 
 .level-selection-modal__pagination-btn {
@@ -341,7 +341,7 @@
 
 .level-selection-modal__page-input:focus {
   outline: none;
-  border-color: #4a9eff;
+  border-color: var(--btn-primary);
 }
 
 .level-selection-modal__page-input::placeholder {
@@ -486,7 +486,7 @@
   gap: 12px;
   margin-top: 1.25rem;
   padding-top: 1rem;
-  border-top: 1px solid #404040;
+  border-top: 1px solid var(--btn-neutral-disabled-fill);
 }
 
 .submission-zip-level-modal__confirm {

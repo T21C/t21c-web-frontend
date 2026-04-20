@@ -59,7 +59,7 @@
 }
 
 .tos-link {
-    color: #4a9eff;
+    color: var(--btn-primary);
     text-decoration: none;
     font-weight: 500;
 }
@@ -90,7 +90,7 @@
     margin: 0;
     width: 0.9rem; 
     height: 0.9rem;
-    accent-color: #4a9eff;
+    accent-color: var(--btn-primary);
 }
 
 .cdn-tos-buttons {
@@ -118,7 +118,7 @@
 }
 
 .agree-btn {
-    background-color: #4a9eff;
+    background-color: var(--btn-primary);
     color: white;
 }
 

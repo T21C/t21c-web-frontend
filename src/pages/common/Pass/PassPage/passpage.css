@@ -103,7 +103,7 @@
 }
 
 .pass-page .pass-body .filter-container .rating-dropdown {
-  background: #2a2a2a;
+  background: var(--btn-neutral-dark);
   border: 1px solid rgba(255, 255, 255, 0.2);
   max-height: 200px;
   overflow-y: auto;

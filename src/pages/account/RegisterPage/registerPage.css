@@ -17,7 +17,7 @@
 }
 
 .register-page-wrapper .register-container h1 {
-  color: #4a9eff;
+  color: var(--btn-primary);
   text-align: center;
   margin-bottom: 1.5rem;
   font-size: 2rem;
@@ -60,7 +60,7 @@
 .register-page-wrapper .form-group input {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #404040;
+  border: 1px solid var(--btn-neutral-disabled-fill);
   border-radius: 4px;
   background-color: #363636;
   color: #ffffff;
@@ -69,7 +69,7 @@
 
 .register-page-wrapper .form-group input:focus {
   outline: none;
-  border-color: #4a9eff;
+  border-color: var(--btn-primary);
 }
 
 .register-page-wrapper .username-input {
@@ -103,7 +103,7 @@
 }
 
 .register-page-wrapper .register-button {
-  background-color: #4a9eff;
+  background-color: var(--btn-primary);
   color: white;
 }
 
@@ -133,7 +133,7 @@
   top: 50%;
   width: calc(50% - 1.5rem);
   height: 1px;
-  background-color: #404040;
+  background-color: var(--btn-neutral-disabled-fill);
 }
 
 .register-page-wrapper .divider::before {
@@ -190,25 +190,25 @@
 }
 
 .validation-error {
-  color: #dc3545;
+  color: var(--danger-color);
   font-size: 0.8rem;
   margin-top: 0.25rem;
 }
 
 .input-error {
-  border-color: #dc3545 !important;
+  border-color: var(--danger-color) !important;
 }
 
 .input-error:focus {
-  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+  box-shadow: 0 0 0 0.2rem var(--danger-color-tint-25) !important;
 }
 
 .username-tooltip-error {
-  color: #dc3545;
+  color: var(--danger-color);
 }
 
 .username-tooltip-error svg {
-  color: #dc3545;
+  color: var(--danger-color);
 }
 
 /* Success page styling */
@@ -310,7 +310,7 @@
 
 .register-page .error-message {
   background-color: rgba(255, 68, 68, 0.1);
-  color: #ff4444;
+  color: var(--danger-color);
   padding: 1rem;
   border-radius: 4px;
   margin-bottom: 1rem;
@@ -320,7 +320,7 @@
 .register-page .retry-countdown {
   margin-top: 0.5rem;
   font-size: 0.9rem;
-  color: #ff4444;
+  color: var(--danger-color);
   font-weight: 500;
 }
 

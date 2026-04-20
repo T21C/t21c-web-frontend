@@ -40,9 +40,9 @@
 }
 
 .creator-status-badge--allowed {
-  background-color: rgba(76, 175, 80, 0.15);
+  background-color: var(--btn-success-tint-15);
   color: #4ade80;
-  border-color: rgba(76, 175, 80, 0.35);
+  border-color: var(--btn-success-alpha-35);
 }
 
 .creator-status-badge--conditional {
@@ -58,7 +58,7 @@
 }
 
 .creator-status-badge--declined {
-  background-color: rgba(244, 67, 54, 0.15);
-  color: #f44336;
-  border-color: rgba(244, 67, 54, 0.35);
+  background-color: var(--danger-color-tint-15);
+  color: var(--danger-color);
+  border-color: var(--danger-color-alpha-35);
 }

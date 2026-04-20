@@ -106,8 +106,8 @@
 .level-submission-page form .info .information .selector-badge {
   font-size: 0.75em;
   padding: 2px 8px;
-  background-color: rgba(76, 175, 80, 0.2);
-  color: #4caf50;
+  background-color: var(--btn-success-tint);
+  color: var(--btn-success);
   border-radius: 4px;
   white-space: nowrap;
 }
@@ -143,9 +143,9 @@
 
 .level-submission-page form .info .evidence-upload-button {
   padding: 0.5rem 1rem;
-  background-color: rgba(76, 175, 80, 0.2);
-  color: #4caf50;
-  border: 1px solid #4caf50;
+  background-color: var(--btn-success-tint);
+  color: var(--btn-success);
+  border: 1px solid var(--btn-success);
   border-radius: 4px;
   cursor: pointer;
   text-align: center;
@@ -153,7 +153,7 @@
 }
 
 .level-submission-page form .info .evidence-upload-button:hover {
-  background-color: rgba(76, 175, 80, 0.3);
+  background-color: var(--btn-success-tint-strong);
 }
 
 .level-submission-page form .info .evidence-files-list {
@@ -175,7 +175,7 @@
 .level-submission-page form .info .remove-evidence-btn {
   background: none;
   border: none;
-  color: #f44336;
+  color: var(--danger-color);
   font-size: 1.2em;
   cursor: pointer;
   padding: 0 0.5rem;
@@ -299,7 +299,7 @@
   position: fixed;
   margin-top: 0px;
   margin-bottom: 0px;
-  background-color: #4caf50;
+  background-color: var(--btn-success);
   color: white;
   padding: 10px;
   border-radius: 5px;
@@ -391,8 +391,8 @@
 }
 
 .level-submission-page .pending-profiles-warning {
-  background-color: #2a2a2a;
-  border: 1px solid #3a3a3a;
+  background-color: var(--btn-neutral-dark);
+  border: 1px solid var(--btn-neutral-elevated);
   border-radius: 8px;
   padding: 20px;
   margin: 20px 0;
@@ -438,7 +438,7 @@
 }
 
 .level-submission-page .new-profile-badge {
-  background-color: #2196f3;
+  background-color: var(--btn-info);
   color: white;
   padding: 2px 8px;
   border-radius: 12px;
@@ -474,19 +474,19 @@
 }
 
 .level-submission-page .zip-upload-container.drag-over {
-  border-color: #4CAF50;
-  background-color: rgba(76, 175, 80, 0.2);
+  border-color: var(--btn-success);
+  background-color: var(--btn-success-tint);
   transform: scale(1.02);
 }
 
 .level-submission-page .zip-upload-button.drag-over {
-  border-color: #4caf50;
+  border-color: var(--btn-success);
   transform: scale(1.02);
 }
 
 .level-submission-page .zip-upload-button.drag-over::before {
   filter: none;
-  background-color: rgba(79, 207, 83, 0.6);
+  background-color: var(--btn-success-drag);
 }
 
 .level-submission-page .zip-drop-icon {
@@ -508,7 +508,7 @@
 
 .level-submission-page .zip-upload-container.drag-over .zip-drop-hint {
   opacity: 1;
-  color: #4CAF50;
+  color: var(--btn-success);
   font-weight: 500;
 }
 

@@ -69,7 +69,7 @@
 }
 
 .edit-level-popup .to-rate-checkbox-container:not(.field-enabled) .to-rate-checkbox:hover {
-  background: #2a2a2a;
+  background: var(--btn-neutral-dark);
 }
 
 .edit-level-popup .to-rate-checkbox-container:not(.field-enabled) .to-rate-checkbox input[type="checkbox"]:disabled {
@@ -124,7 +124,7 @@
   padding: 8px 12px;
   border-radius: 4px;
   border: 1px solid #333;
-  background: #2a2a2a;
+  background: var(--btn-neutral-dark);
   color: #fff;
 }
 
@@ -144,7 +144,7 @@
 }
 
 .edit-level-popup-overlay .error-message {
-  color: #ff4444;
+  color: var(--danger-color);
   margin-bottom: 16px;
 }
 
@@ -257,7 +257,7 @@
 .edit-level-popup-overlay .to-rate-checkbox {
   display: flex;
   align-items: center;
-  background: #2a2a2a;
+  background: var(--btn-neutral-dark);
   padding: 6px 12px;
   border-radius: 4px;
   border: 1px solid #333;
@@ -312,7 +312,7 @@
   padding: 8px 12px;
   border-radius: 4px;
   border: 1px solid #333;
-  background: #2a2a2a;
+  background: var(--btn-neutral-dark);
   color: #fff;
 }
 
@@ -335,7 +335,7 @@
   padding: 8px 12px;
   border-radius: 4px;
   border: 1px solid #333;
-  background: #2a2a2a;
+  background: var(--btn-neutral-dark);
   color: #fff;
 }
 
@@ -367,7 +367,7 @@
   padding: 8px 12px;
   border-radius: 4px;
   border: 1px solid #333;
-  background: #2a2a2a;
+  background: var(--btn-neutral-dark);
   color: #fff;
 }
 
@@ -404,8 +404,8 @@
 .edit-level-popup-overlay .song-selector-field .selector-badge {
   font-size: 0.75rem;
   padding: 2px 8px;
-  background-color: rgba(76, 175, 80, 0.3);
-  color: #4caf50;
+  background-color: var(--btn-success-tint-strong);
+  color: var(--btn-success);
   border-radius: 4px;
   white-space: nowrap;
 }
@@ -432,7 +432,7 @@
   flex-direction: column;
   gap: 10px;
   padding: 10px;
-  background-color: #2a2a2a;
+  background-color: var(--btn-neutral-dark);
   border-radius: 4px;
 }
 
@@ -509,7 +509,7 @@
   padding: 8px 12px;
   border-radius: 4px;
   border: 1px solid #333;
-  background: #2a2a2a;
+  background: var(--btn-neutral-dark);
   color: #fff;
   width: 100%;
   bottom: 0;

@@ -31,6 +31,51 @@
   --btn-discord: #7289da;
   --btn-success: #41c641;
   --btn-disabled-fill: #555555;
+  /* Explicit hover fills where components do not use .btn-fill-* + filter */
+  --btn-primary-hover: color-mix(in srgb, var(--btn-primary) 78%, #000);
+  --btn-primary-light-hover: color-mix(in srgb, var(--btn-primary) 72%, #fff);
+  --btn-secondary-hover: color-mix(in srgb, var(--btn-secondary) 82%, #000);
+  --btn-warning: #d97706;
+  --btn-danger-intense: #bd1727;
+  --btn-success-hover: color-mix(in srgb, var(--btn-success) 82%, #000);
+  --btn-admin-purple: #9370db;
+  --btn-admin-purple-hover: color-mix(in srgb, var(--btn-admin-purple) 58%, #fff);
+  --btn-info: #2196f3;
+  --btn-info-hover: color-mix(in srgb, var(--btn-info) 78%, #000);
+  --danger-color-hover: color-mix(in srgb, var(--danger-color) 82%, #000);
+  --btn-warning-hover: color-mix(in srgb, var(--btn-warning) 78%, #000);
+  --btn-danger-intense-hover: color-mix(in srgb, var(--btn-danger-intense) 68%, #fff);
+  --btn-neutral-elevated: color-mix(in srgb, var(--btn-neutral-dark) 82%, #fff);
+  --btn-neutral-disabled-fill: color-mix(in srgb, var(--btn-neutral-dark) 68%, #fff);
+  /* Translucent fills (ghost buttons, notices) — derived from semantic bases */
+  --btn-success-tint: color-mix(in srgb, var(--btn-success) 22%, transparent);
+  --btn-success-tint-strong: color-mix(in srgb, var(--btn-success) 34%, transparent);
+  --btn-success-drag: color-mix(in srgb, var(--btn-success) 58%, transparent);
+  --btn-success-tint-15: color-mix(in srgb, var(--btn-success) 15%, transparent);
+  --btn-success-alpha-35: color-mix(in srgb, var(--btn-success) 35%, transparent);
+  --btn-success-glow-50: color-mix(in srgb, var(--btn-success) 50%, transparent);
+  --btn-success-glow-80: color-mix(in srgb, var(--btn-success) 80%, transparent);
+  --btn-success-tint-05: color-mix(in srgb, var(--btn-success) 5%, transparent);
+  --btn-success-tint-10: color-mix(in srgb, var(--btn-success) 10%, transparent);
+  --btn-success-alpha-40: color-mix(in srgb, var(--btn-success) 40%, transparent);
+  --btn-success-alpha-90: color-mix(in srgb, var(--btn-success) 90%, transparent);
+  --danger-color-tint: color-mix(in srgb, var(--danger-color) 12%, transparent);
+  --danger-color-tint-08: color-mix(in srgb, var(--danger-color) 8%, transparent);
+  --danger-color-tint-25: color-mix(in srgb, var(--danger-color) 25%, transparent);
+  --danger-color-tint-36: color-mix(in srgb, var(--danger-color) 36%, transparent);
+  --danger-color-tint-45: color-mix(in srgb, var(--danger-color) 45%, transparent);
+  --danger-color-alpha-80: color-mix(in srgb, var(--danger-color) 80%, transparent);
+  --danger-color-alpha-90: color-mix(in srgb, var(--danger-color) 90%, transparent);
+  --danger-color-tint-30: color-mix(in srgb, var(--danger-color) 30%, transparent);
+  --danger-color-tint-50: color-mix(in srgb, var(--danger-color) 50%, transparent);
+  --danger-color-tint-70: color-mix(in srgb, var(--danger-color) 70%, transparent);
+  --danger-color-tint-15: color-mix(in srgb, var(--danger-color) 15%, transparent);
+  --danger-color-tint-20: color-mix(in srgb, var(--danger-color) 20%, transparent);
+  --danger-color-tint-40: color-mix(in srgb, var(--danger-color) 40%, transparent);
+  --danger-color-alpha-35: color-mix(in srgb, var(--danger-color) 35%, transparent);
+  --btn-success-alpha-70: color-mix(in srgb, var(--btn-success) 70%, transparent);
+  --btn-primary-tint: color-mix(in srgb, var(--btn-primary) 10%, transparent);
+  --btn-success-soft: color-mix(in srgb, var(--btn-success) 62%, #fff);
   --warning-color: #ffc107;
   --color-black-t5: rgba(9, 9, 9, 0.05);
   --color-black-t10: rgba(9, 9, 9, 0.1);
@@ -749,7 +794,7 @@ button {
 }
 
 .verification-chip.allowed {
-  background-color: rgba(76, 175, 80, 0.2);
+  background-color: var(--btn-success-tint);
   color: #00ff08;
 }
 
@@ -779,7 +824,7 @@ button {
 }
 
 .verification-chip.declined {
-  background-color: rgba(244, 67, 54, 0.2);
+  background-color: var(--danger-color-tint-20);
   color: #f44336;
 }
 
@@ -841,13 +886,13 @@ button {
   margin-bottom: 1.5rem;
   border: 1px solid #333333;
   border-radius: 4px;
-  background-color: #2a2a2a;
+  background-color: var(--btn-neutral-dark);
   color: #ffffff;
 }
 
 .password-modal-content input:focus {
   outline: none;
-  border-color: #007bff;
+  border-color: var(--btn-primary);
 }
 
 .password-modal-actions {
@@ -872,7 +917,7 @@ button {
 }
 
 .password-modal-content .error-message {
-  color: #ff4444;
+  color: var(--danger-color);
   margin: -0.5rem 0 1rem;
   font-size: 0.9rem;
 }

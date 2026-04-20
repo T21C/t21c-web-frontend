@@ -12,14 +12,14 @@
 }
 
 .discord-roles-popup__content {
-  background-color: #2a2a2a;
+  background-color: var(--btn-neutral-dark);
   border-radius: 12px;
   padding: 2rem;
   max-width: 900px;
   width: 90%;
   max-height: 90vh;
   overflow-y: auto;
-  border: 2px solid #404040;
+  border: 2px solid var(--btn-neutral-disabled-fill);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
   position: relative;
 }
@@ -97,12 +97,12 @@
 }
 
 .discord-roles-popup__confirm-dialog {
-  background-color: #2a2a2a;
+  background-color: var(--btn-neutral-dark);
   border-radius: 12px;
   padding: 2rem;
   max-width: 400px;
   width: 90%;
-  border: 2px solid #404040;
+  border: 2px solid var(--btn-neutral-disabled-fill);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
 }
 
@@ -136,12 +136,12 @@
 }
 
 .discord-roles-popup__confirm-button--primary {
-  background-color: #f44336;
+  background-color: var(--danger-color);
   color: #ffffff;
 }
 
 .discord-roles-popup__confirm-button--primary:hover {
-  background-color: #d32f2f;
+  background-color: var(--danger-color-hover);
 }
 
 .discord-roles-popup__confirm-button--secondary {

@@ -125,12 +125,12 @@
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.2s;
-  background-color: #4CAF50;
+  background-color: var(--btn-success);
   color: #ffffff;
 }
 
 .song-selector-popup .action-button:hover:not(:disabled) {
-  background-color: #45a049;
+  background-color: var(--btn-success-hover);
 }
 
 .song-selector-popup .action-button:disabled {
@@ -140,14 +140,14 @@
 }
 
 .song-selector-popup .error-message {
-  color: #f44336;
+  color: var(--danger-color);
   margin-top: 12px;
   font-size: 0.9em;
   text-align: center;
 }
 
 .song-selector-popup .success-message {
-  color: #4CAF50;
+  color: var(--btn-success);
   margin-top: 12px;
   font-size: 0.9em;
   text-align: center;
@@ -182,7 +182,7 @@
 
 .song-selector-popup .create-song-button {
   padding: 8px 16px;
-  background-color: #4CAF50;
+  background-color: var(--btn-success);
   color: white;
   border: none;
   border-radius: 4px;
@@ -191,7 +191,7 @@
 }
 
 .song-selector-popup .create-song-button:hover {
-  background-color: #45a049;
+  background-color: var(--btn-success-hover);
 }
 
 .song-selector-popup .search-status {
@@ -290,7 +290,7 @@
 
 .song-selector-popup .cancel-button {
   padding: 8px 16px;
-  background-color: #f44336;
+  background-color: var(--danger-color);
   color: white;
   border: none;
   border-radius: 4px;
@@ -298,12 +298,12 @@
 }
 
 .song-selector-popup .cancel-button:hover {
-  background-color: #da190b;
+  background-color: var(--danger-color-hover);
 }
 
 .song-selector-popup .submit-button {
   padding: 8px 16px;
-  background-color: #2196F3;
+  background-color: var(--btn-info);
   color: white;
   border: none;
   border-radius: 4px;

@@ -47,7 +47,7 @@
 .edit-profile-page .form-group .input-field {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #404040;
+  border: 1px solid var(--btn-neutral-disabled-fill);
   border-radius: 4px;
   background: #333333;
   font-size: 1rem;
@@ -63,7 +63,7 @@
   opacity: 0.5;
   cursor: not-allowed;
   pointer-events: none;
-  background: #2a2a2a;
+  background: var(--btn-neutral-dark);
 }
 
 .edit-profile-page .form-group label {
@@ -101,7 +101,7 @@
 
 .edit-profile-page .section-divider {
   height: 1px;
-  background-color: #404040;
+  background-color: var(--btn-neutral-disabled-fill);
   margin: 2rem 0;
 }
 
@@ -155,7 +155,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 1rem;
-  background-color: #2a2a2a;
+  background-color: var(--btn-neutral-dark);
   border-radius: 8px;
   margin-bottom: 1rem;
 }
@@ -232,7 +232,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #ff4444;
+  color: var(--danger-color);
   font-size: 14px;
   margin-top: 8px;
   cursor: pointer;
@@ -269,7 +269,7 @@
   width: 150px;
   height: 150px;
   margin: 0 auto;
-  border: 2px dashed #404040;
+  border: 2px dashed var(--btn-neutral-disabled-fill);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -450,7 +450,7 @@
 }
 
 .edit-profile-page .form-group .input-field.readonly {
-  background-color: #2a2a2a;
+  background-color: var(--btn-neutral-dark);
   cursor: not-allowed;
   opacity: 0.7;
   color: #888;
@@ -508,9 +508,9 @@
   gap: 1rem;
   margin-top: 0.5rem;
   padding: 1.25rem;
-  border: 1px solid rgba(220, 53, 69, 0.45);
+  border: 1px solid var(--danger-color-tint-45);
   border-radius: 8px;
-  background: rgba(220, 53, 69, 0.08);
+  background: var(--danger-color-tint-08);
 }
 
 .edit-profile-page .danger-zone h2 {

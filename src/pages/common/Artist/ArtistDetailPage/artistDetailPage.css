@@ -85,7 +85,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #4CAF50;
+  color: var(--btn-success);
   text-decoration: none;
   padding: 0.5rem;
   border-radius: 4px;
@@ -93,7 +93,7 @@
 }
 
 .artist-detail-page .link-item:hover {
-  background-color: rgba(76, 175, 80, 0.1);
+  background-color: var(--btn-success-tint-10);
 }
 
 .artist-detail-page .songs-list {

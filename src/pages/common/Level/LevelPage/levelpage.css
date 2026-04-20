@@ -96,7 +96,7 @@
 }
 
 .level-page .level-body .filter-container .rating-dropdown {
-  background: #2a2a2a;
+  background: var(--btn-neutral-dark);
   border: 1px solid rgba(255, 255, 255, 0.2);
   max-height: 200px;
   overflow-y: auto;
@@ -288,11 +288,11 @@
 }
 
 .level-page .level-body .three-state-slider::-webkit-slider-thumb:hover {
-  background: #2196F3;
+  background: var(--btn-info);
 }
 
 .level-page .level-body .three-state-slider::-moz-range-thumb:hover {
-  background: #2196F3;
+  background: var(--btn-info);
 }
 
 

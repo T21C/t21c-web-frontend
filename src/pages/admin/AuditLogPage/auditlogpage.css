@@ -244,15 +244,19 @@
 .auditlog-pagination button {
   padding: 0.4rem 1rem;
   border: none;
-  background: #0056b3;
+  background-color: var(--btn-primary);
   color: #fff;
   border-radius: 4px;
   cursor: pointer;
   font-size: 1rem;
-  transition: background 0.2s;
+  transition: background-color 0.2s;
 }
+.auditlog-pagination button:hover:not(:disabled) {
+  background-color: var(--btn-primary-hover);
+}
+
 .auditlog-pagination button:disabled {
-  background: #444;
+  background-color: var(--btn-disabled-fill);
   cursor: not-allowed;
 }
 .auditlog-pagination select {
@@ -323,12 +327,12 @@
 }
 .dark .auditlog-pagination button,
 [data-theme="dark"] .auditlog-pagination button {
-  background: #0056b3;
+  background-color: var(--btn-primary);
   color: #fff;
 }
 .dark .auditlog-pagination button:disabled,
 [data-theme="dark"] .auditlog-pagination button:disabled {
-  background: #444;
+  background-color: var(--btn-disabled-fill);
 }
 
 .auditlog-card-list {

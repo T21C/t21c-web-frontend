@@ -2,7 +2,7 @@
     position: absolute;
     top: -5px;
     right: -10px;
-    background-color: #ff4444;
+    background-color: var(--danger-color);
     color: white;
     border-radius: 50%;
     padding: 1px 7px;
@@ -244,7 +244,7 @@
     margin: 0;
     padding: 0;
     border: none;
-    background-color: rgba(0, 255, 8, 0.3); /* Green tint */
+    background-color: var(--btn-success-tint-strong); /* Green tint */
     pointer-events: none;
     overflow: hidden;
   }
@@ -255,7 +255,7 @@
     padding: 0;
     margin:0;
     border: none;
-    background-color: rgba(244, 67, 54, 0.3); /* Red tint */
+    background-color: var(--danger-color-tint-30); /* Red tint */
     pointer-events: none;
     overflow: hidden;
   }
@@ -307,7 +307,7 @@
 
 .submission-admin-page .manage-entity-button {
   padding: 6px 12px;
-  background-color: #9370DB;
+  background-color: var(--btn-admin-purple);
   color: #FFFFFF;
   border: none;
   border-radius: 4px;
@@ -317,12 +317,12 @@
 }
 
 .submission-admin-page .manage-entity-button:hover {
-  background-color: #b468ee;
+  background-color: var(--btn-admin-purple-hover);
 }
 
 .submission-admin-page .add-entity-request-button {
   padding: 4px 10px;
-  background-color: #4CAF50;
+  background-color: var(--btn-success);
   color: white;
   border: none;
   border-radius: 4px;
@@ -332,12 +332,12 @@
 }
 
 .submission-admin-page .add-entity-request-button:hover {
-  background-color: #45a049;
+  background-color: var(--btn-success-hover);
 }
 
 .submission-admin-page .change-entity-button {
   padding: 6px 12px;
-  background-color: #2196F3;
+  background-color: var(--btn-info);
   color: #FFFFFF;
   border: none;
   border-radius: 4px;
@@ -347,7 +347,7 @@
 }
 
 .submission-admin-page .change-entity-button:hover {
-  background-color: #1976D2;
+  background-color: var(--btn-info-hover);
 }
 
 .submission-admin-page .change-entity-button:disabled,
@@ -355,14 +355,14 @@
 .submission-admin-page .add-entity-request-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-  background-color: #666;
+  background-color: var(--btn-neutral-muted);
 }
 
 .submission-admin-page .change-entity-button:disabled:hover,
 .submission-admin-page .manage-entity-button:disabled:hover,
 .submission-admin-page .add-entity-request-button:disabled:hover {
   transform: none;
-  background-color: #666;
+  background-color: var(--btn-neutral-muted);
 }
 
 .submission-admin-page .detail-value .request-badge {
@@ -610,23 +610,23 @@
   }
 
   .submission-admin-page .suffix-save-btn {
-    background: rgba(76, 175, 80, 0.3);
-    border-color: rgba(76, 175, 80, 0.5);
+    background: var(--btn-success-tint-strong);
+    border-color: var(--btn-success-glow-50);
   }
 
   .submission-admin-page .suffix-save-btn:hover {
-    background: rgba(76, 175, 80, 0.5);
-    border-color: rgba(76, 175, 80, 0.7);
+    background: var(--btn-success-glow-50);
+    border-color: var(--btn-success-alpha-70);
   }
 
   .submission-admin-page .suffix-cancel-btn {
-    background: rgba(244, 67, 54, 0.3);
-    border-color: rgba(244, 67, 54, 0.5);
+    background: var(--danger-color-tint-30);
+    border-color: var(--danger-color-tint-50);
   }
 
   .submission-admin-page .suffix-cancel-btn:hover {
-    background: rgba(244, 67, 54, 0.5);
-    border-color: rgba(244, 67, 54, 0.7);
+    background: var(--danger-color-tint-50);
+    border-color: var(--danger-color-tint-70);
   }
 
   .submission-admin-page .detail-link {
@@ -668,12 +668,12 @@
   }
 
   .submission-admin-page .approve-btn {
-    background-color: #4CAF50;
+    background-color: var(--btn-success);
     color: white;
   }
 
   .submission-admin-page .decline-btn {
-    background-color: #f44336;
+    background-color: var(--danger-color);
     color: white;
   }
 
@@ -1225,7 +1225,7 @@
   }
 
   .confirm-discord-btn {
-    background-color: #4CAF50;
+    background-color: var(--btn-success);
     color: white;
   }
 
@@ -1234,7 +1234,7 @@
   }
 
   .cancel-discord-btn {
-    background-color: #f44336;
+    background-color: var(--danger-color);
     color: white;
   }
 
@@ -1275,12 +1275,12 @@
   }
 
   .submission-admin-page .confirm-discord-btn {
-    background-color: #4CAF50;
+    background-color: var(--btn-success);
     color: white;
   }
 
   .submission-admin-page .cancel-discord-btn {
-    background-color: #f44336;
+    background-color: var(--danger-color);
     color: white;
   }
 
@@ -1479,7 +1479,7 @@
   }
 
   .submission-admin-page .assigned-player-link:hover {
-    color: #9370DB;
+    color: var(--btn-admin-purple);
     text-decoration: underline;
   }
 
@@ -1529,7 +1529,7 @@
   }
 
   .submission-admin-page .creator-assignment-button.no-creator {
-    background-color: #ff4444;
+    background-color: var(--danger-color);
     color: white;
   }
 
@@ -1538,12 +1538,12 @@
   }
 
   .submission-admin-page .creator-assignment-button.has-creator {
-    background-color: #4CAF50;
+    background-color: var(--btn-success);
     color: white;
   }
 
   .submission-admin-page .creator-assignment-button.has-creator:hover {
-    background-color: #66BB6A;  
+    background-color: var(--btn-success-soft);  
   }
 
   .submission-admin-page .pending-profile {
@@ -1556,7 +1556,7 @@
     display: inline-block;
     padding: 2px 8px;
     margin-left: 8px;
-    background-color: #9370DB; /* Purple background */
+    background-color: var(--btn-admin-purple); /* Purple background */
     color: #FFFFFF; /* White text */
     border-radius: 4px;
     font-size: 0.75em;
@@ -1627,7 +1627,7 @@
 
   .submission-admin-page .manage-artist-button {
     padding: 6px 12px;
-    background-color: #9370DB; /* Medium purple */
+    background-color: var(--btn-admin-purple); /* Medium purple */
     color: #FFFFFF; /* White text */
     border: none;
     border-radius: 4px;
@@ -1637,7 +1637,7 @@
   }
 
   .submission-admin-page .manage-artist-button:hover {
-    background-color: #b468ee; /* Medium slate blue */
+    background-color: var(--btn-admin-purple-hover); /* Medium slate blue */
   }
 
   .submission-admin-page .artist-item-old {
@@ -1650,7 +1650,7 @@
   }
 
   .submission-admin-page .remove-artist-button {
-    background-color: #f44336;
+    background-color: var(--danger-color);
     color: white;
     border: none;
     border-radius: 50%;
@@ -1667,7 +1667,7 @@
   }
 
   .submission-admin-page .remove-artist-button:hover {
-    background-color: #d32f2f;
+    background-color: var(--danger-color-hover);
   }
 
   .submission-admin-page .artist-item {
@@ -1703,7 +1703,7 @@
 
   .submission-admin-page .manage-artist-button {
     padding: 6px 12px;
-    background-color: #9370DB; /* Medium purple */
+    background-color: var(--btn-admin-purple); /* Medium purple */
     color: #FFFFFF; /* White text */
     border: none;
     border-radius: 4px;
@@ -1713,7 +1713,7 @@
   }
 
   .submission-admin-page .manage-artist-button:hover {
-    background-color: #b468ee; /* Medium slate blue */
+    background-color: var(--btn-admin-purple-hover); /* Medium slate blue */
   }
 
   .submission-admin-page .creator-group {
@@ -1743,7 +1743,7 @@
 
   .submission-admin-page .add-creator-button {
     padding: 4px 10px;
-    background-color: #4CAF50;
+    background-color: var(--btn-success);
     color: white;
     border: none;
     border-radius: 4px;
@@ -1753,12 +1753,12 @@
   }
 
   .submission-admin-page .add-creator-button:hover {
-    background-color: #45a049;
+    background-color: var(--btn-success-hover);
   }
 
   .submission-admin-page .remove-creator-button {
     padding: 4px 10px;
-    background-color: #f44336;
+    background-color: var(--danger-color);
     color: white;
     border: none;
     border-radius: 4px;
@@ -1768,11 +1768,11 @@
   }
 
   .submission-admin-page .remove-creator-button:hover {
-    background-color: #da190b;
+    background-color: var(--danger-color-hover);
   }
 
   .submission-admin-page .remove-creator-button:disabled {
-    background-color: #cccccc;
+    background-color: var(--color-gray-2);
     cursor: not-allowed;
     transform: none;
   }
@@ -1806,7 +1806,7 @@
 
   .submission-admin-page .manage-creator-button {
     padding: 6px 12px;
-    background-color: #9370DB; /* Medium purple */
+    background-color: var(--btn-admin-purple); /* Medium purple */
     color: #FFFFFF; /* White text */
     border: none;
     border-radius: 4px;
@@ -1816,7 +1816,7 @@
   }
 
   .submission-admin-page .manage-creator-button:hover {
-    background-color: #b468ee; /* Medium slate blue */
+    background-color: var(--btn-admin-purple-hover); /* Medium slate blue */
   }
 
   .submission-admin-page .body-scroll-lock {
@@ -1859,7 +1859,7 @@
 
   .submission-admin-page .manage-profile-button {
     padding: 0.5rem 1rem;
-    background-color: #9370DB;
+    background-color: var(--btn-admin-purple);
     color: white;
     border: none;
     border-radius: 4px;
@@ -1881,7 +1881,7 @@
   .submission-admin-page .profile-request-badge {
     display: inline-block;
     padding: 0.25rem 0.75rem;
-    background-color: #9370DB;
+    background-color: var(--btn-admin-purple);
     color: white;
     border-radius: 4px;
     font-size: 0.9rem;
@@ -1936,7 +1936,7 @@
   }
 
   .submission-admin-page .manage-creator-button {
-    background-color: #9370DB;
+    background-color: var(--btn-admin-purple);
     color: white;
   }
 
@@ -1945,22 +1945,22 @@
   }
 
   .submission-admin-page .remove-creator-button {
-    background-color: #f44336;
+    background-color: var(--danger-color);
     color: white;
   }
 
   .submission-admin-page .remove-creator-button:hover {
-    background-color: #d32f2f;
+    background-color: var(--danger-color-hover);
   }
 
   .submission-admin-page .add-creator-button {
-    background-color: #4CAF50;
+    background-color: var(--btn-success);
     color: white;
     min-width: 120px;
   }
 
   .submission-admin-page .add-creator-button:hover {
-    background-color: #45a049;
+    background-color: var(--btn-success-hover);
   }
 
   .submission-admin-page .creator-item {

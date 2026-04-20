@@ -182,7 +182,7 @@
 }
 
 .admin-backup-page .delete-btn {
-  background-color: rgba(244, 67, 54, 0.3);
+  background-color: var(--danger-color-tint-30);
   color: var(--color-white);
 }
 
@@ -195,7 +195,7 @@
 }
 
 .admin-backup-page .delete-btn:hover {
-  background-color: rgba(244, 67, 54, 0.4);
+  background-color: var(--danger-color-tint-40);
 }
 
 .admin-backup-page .restore-btn:disabled,
@@ -281,21 +281,21 @@
 }
 
 .admin-backup-page .save-rename-btn {
-  background-color: #4CAF50;
+  background-color: var(--btn-success);
   color: white;
 }
 
 .admin-backup-page .save-rename-btn:hover:not(:disabled) {
-  background-color: #45a049;
+  background-color: var(--btn-success-hover);
 }
 
 .admin-backup-page .cancel-rename-btn {
-  background-color: #f44336;
+  background-color: var(--danger-color);
   color: white;
 }
 
 .admin-backup-page .cancel-rename-btn:hover:not(:disabled) {
-  background-color: #da190b;
+  background-color: var(--danger-color-hover);
 }
 
 .admin-backup-page .save-rename-btn:disabled,
@@ -562,7 +562,7 @@
 
 .admin-backup-page .progress-bar {
   fill: none;
-  stroke: #2196f3;
+  stroke: var(--btn-info);
   stroke-width: 2.5;
   stroke-linecap: round;
   transition: stroke-dashoffset 0.3s ease;
@@ -604,20 +604,20 @@
 }
 
 .upload-zone.drag-over {
-  border-color: #2196f3;
+  border-color: var(--btn-info);
   background-color: rgba(33, 150, 243, 0.15);
   transform: scale(1.01);
 }
 
 .upload-zone.uploading {
-  border-color: #2196f3;
+  border-color: var(--btn-info);
   background-color: rgba(33, 150, 243, 0.1);
   cursor: wait;
 }
 
 .upload-zone.has-file:not(.uploading) {
-  border-color: #4CAF50;
-  background-color: rgba(76, 175, 80, 0.1);
+  border-color: var(--btn-success);
+  background-color: var(--btn-success-tint-10);
 }
 
 .upload-zone .upload-filename {
@@ -654,12 +654,12 @@
   left: 0;
   width: 0%;
   height: 4px;
-  background-color: #2196f3;
+  background-color: var(--btn-info);
   transition: width 0.3s ease;
 }
 
 .upload-error {
-  color: #ff4444;
+  color: var(--danger-color);
   margin-top: 0.5rem;
   font-size: 0.9rem;
 }

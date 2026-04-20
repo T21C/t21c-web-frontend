@@ -184,7 +184,7 @@
 }
 
 .pack-detail-page .view-icon.public {
-  color: #4CAF50;
+  color: var(--btn-success);
 }
 
 .pack-detail-page .view-icon.linkonly {
@@ -196,7 +196,7 @@
 }
 
 .pack-detail-page .view-icon.forced-private {
-  color: #F44336;
+  color: var(--danger-color);
 }
 
 .pack-detail-page .view-mode-text {

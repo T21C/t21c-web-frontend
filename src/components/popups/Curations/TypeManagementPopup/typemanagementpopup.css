@@ -12,14 +12,14 @@
 }
 
 .type-management-modal__content {
-  background-color: #2a2a2a;
+  background-color: var(--btn-neutral-dark);
   border-radius: 12px;
   padding: 2rem;
   width: 90%;
   max-width: 800px;
   max-height: 80vh;
   overflow-y: auto;
-  border: 2px solid #404040;
+  border: 2px solid var(--btn-neutral-disabled-fill);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
   position: relative;
 }
@@ -81,7 +81,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
-  background: #4a9eff;
+  background: var(--btn-primary);
   color: white;
   border: none;
   border-radius: 8px;
@@ -92,7 +92,7 @@
 }
 
 .type-management-modal__create-btn:hover {
-  background: #3a8eef;
+  background: var(--btn-primary-hover);
 }
 
 .type-management-modal__types {
@@ -107,13 +107,13 @@
   align-items: center;
   padding: 1.5rem;
   background: #1a1a1a;
-  border: 2px solid #404040;
+  border: 2px solid var(--btn-neutral-disabled-fill);
   border-radius: 12px;
   transition: all 0.2s ease;
 }
 
 .type-management-modal__type-item:hover {
-  border-color: #4a9eff;
+  border-color: var(--btn-primary);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
@@ -184,7 +184,7 @@
 }
 
 .type-management-modal__action-btn:hover {
-  background: #4a9eff;
+  background: var(--btn-primary);
   color: white;
 }
 
@@ -226,7 +226,7 @@
 
 .type-management-modal__input {
   padding: 0.75rem;
-  border: 2px solid #404040;
+  border: 2px solid var(--btn-neutral-disabled-fill);
   border-radius: 8px;
   background: #1a1a1a;
   color: #ffffff;
@@ -235,7 +235,7 @@
 
 .type-management-modal__input:focus {
   outline: none;
-  border-color: #4a9eff;
+  border-color: var(--btn-primary);
 }
 
 .type-management-modal__color-input {
@@ -256,7 +256,7 @@
 .type-management-modal__color-text {
   flex: 1;
   padding: 0.75rem;
-  border: 2px solid #404040;
+  border: 2px solid var(--btn-neutral-disabled-fill);
   border-radius: 8px;
   background: #1a1a1a;
   color: #ffffff;
@@ -266,7 +266,7 @@
 
 .type-management-modal__color-text:focus {
   outline: none;
-  border-color: #4a9eff;
+  border-color: var(--btn-primary);
 }
 
 .type-management-modal__icon-upload {
@@ -286,7 +286,7 @@
   height: 64px;
   border-radius: 8px;
   object-fit: cover;
-  border: 2px solid #404040;
+  border: 2px solid var(--btn-neutral-disabled-fill);
 }
 
 .type-management-modal__icon-remove {
@@ -323,7 +323,7 @@
   padding: 0.75rem 1rem;
   background: #333333;
   color: #ffffff;
-  border: 2px solid #404040;
+  border: 2px solid var(--btn-neutral-disabled-fill);
   border-radius: 8px;
   cursor: pointer;
   font-size: 0.9rem;
@@ -333,7 +333,7 @@
 
 .type-management-modal__file-label:hover {
   background: #1a1a1a;
-  border-color: #4a9eff;
+  border-color: var(--btn-primary);
 }
 
 .type-management-modal__help-text {
@@ -388,7 +388,7 @@
 .type-management-modal__btn--cancel {
   background: #333333;
   color: #ffffff;
-  border: 1px solid #404040;
+  border: 1px solid var(--btn-neutral-disabled-fill);
 }
 
 .type-management-modal__btn--cancel:hover {
@@ -396,12 +396,12 @@
 }
 
 .type-management-modal__btn--submit {
-  background: #4a9eff;
+  background: var(--btn-primary);
   color: white;
 }
 
 .type-management-modal__btn--submit:hover:not(:disabled) {
-  background: #3a8eef;
+  background: var(--btn-primary-hover);
 }
 
 .type-management-modal__btn--submit:disabled {
@@ -502,7 +502,7 @@
 .type-management-modal__sub-tab {
   flex: 1;
   padding: 0.5rem 1rem;
-  border: 1px solid #404040;
+  border: 1px solid var(--btn-neutral-disabled-fill);
   border-radius: 8px;
   background: #1e1e1e;
   color: #a0a0a0;
@@ -556,7 +556,7 @@
   padding: 1rem;
   background: #333;
   border-radius: 8px;
-  border: 1px solid #404040;
+  border: 1px solid var(--btn-neutral-disabled-fill);
   cursor: grab;
 }
 

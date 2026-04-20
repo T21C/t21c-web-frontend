@@ -353,7 +353,7 @@ nav {
   position: absolute;
   top: -0.5rem;
   right: -0.5rem;
-  background-color: #ff4444;
+  background-color: var(--danger-color);
   color: white;
   border-radius: 50%;
   padding: 0.1rem 0.3rem;
@@ -377,7 +377,7 @@ nav {
   position: absolute;
   top: -5px;
   right: -10px;
-  background-color: #ff4444;
+  background-color: var(--danger-color);
   color: white;
   border-radius: 50%;
   padding: 0px 5px;
@@ -704,7 +704,7 @@ nav {
 }
 
 .nav-mobile__list .nav-list-item .nav-notification-badge {
-  background: linear-gradient(135deg, #ff4444 0%, #ff6b6b 100%);
+  background: linear-gradient(135deg, var(--danger-color) 0%, #ff6b6b 100%);
   box-shadow: 0 2px 4px rgba(255, 68, 68, 0.3);
   animation: navigation_pulse 2s infinite;
 }

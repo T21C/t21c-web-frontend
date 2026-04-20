@@ -104,8 +104,8 @@
 }
 
 .artist-selector-popup .verification-status.allowed {
-  background-color: rgba(76, 175, 80, 0.2);
-  color: #4caf50;
+  background-color: var(--btn-success-tint);
+  color: var(--btn-success);
 }
 
 .artist-selector-popup .verification-status.mostly_allowed {
@@ -124,8 +124,8 @@
 }
 
 .artist-selector-popup .verification-status.declined {
-  background-color: rgba(244, 67, 54, 0.2);
-  color: #f44336;
+  background-color: var(--danger-color-tint-20);
+  color: var(--danger-color);
 }
 
 .artist-selector-popup .verification-status.unverified {
@@ -168,12 +168,12 @@
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.2s;
-  background-color: #4CAF50;
+  background-color: var(--btn-success);
   color: #ffffff;
 }
 
 .artist-selector-popup .action-button:hover:not(:disabled) {
-  background-color: #45a049;
+  background-color: var(--btn-success-hover);
 }
 
 .artist-selector-popup .action-button:disabled {
@@ -183,14 +183,14 @@
 }
 
 .artist-selector-popup .error-message {
-  color: #f44336;
+  color: var(--danger-color);
   margin-top: 12px;
   font-size: 0.9em;
   text-align: center;
 }
 
 .artist-selector-popup .success-message {
-  color: #4CAF50;
+  color: var(--btn-success);
   margin-top: 12px;
   font-size: 0.9em;
   text-align: center;
@@ -225,7 +225,7 @@
 
 .artist-selector-popup .create-artist-button {
   padding: 8px 16px;
-  background-color: #4CAF50;
+  background-color: var(--btn-success);
   color: white;
   border: none;
   border-radius: 4px;
@@ -234,7 +234,7 @@
 }
 
 .artist-selector-popup .create-artist-button:hover {
-  background-color: #45a049;
+  background-color: var(--btn-success-hover);
 }
 
 .artist-selector-popup .search-status {
@@ -284,8 +284,8 @@
 }
 
 .artist-selector-popup .artist-result .verification-badge.allowed {
-  background-color: rgba(76, 175, 80, 0.2);
-  color: #4caf50;
+  background-color: var(--btn-success-tint);
+  color: var(--btn-success);
 }
 
 .artist-selector-popup .artist-result .verification-badge.mostly_allowed {
@@ -304,8 +304,8 @@
 }
 
 .artist-selector-popup .artist-result .verification-badge.declined {
-  background-color: rgba(244, 67, 54, 0.2);
-  color: #f44336;
+  background-color: var(--danger-color-tint-20);
+  color: var(--danger-color);
 }
 
 .artist-selector-popup .artist-result .verification-badge.unverified {
@@ -364,7 +364,7 @@
 
 .artist-selector-popup .cancel-button {
   padding: 8px 16px;
-  background-color: #f44336;
+  background-color: var(--danger-color);
   color: white;
   border: none;
   border-radius: 4px;
@@ -372,12 +372,12 @@
 }
 
 .artist-selector-popup .cancel-button:hover {
-  background-color: #da190b;
+  background-color: var(--danger-color-hover);
 }
 
 .artist-selector-popup .submit-button {
   padding: 8px 16px;
-  background-color: #2196F3;
+  background-color: var(--btn-info);
   color: white;
   border: none;
   border-radius: 4px;

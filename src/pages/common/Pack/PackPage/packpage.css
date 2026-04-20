@@ -101,7 +101,7 @@
 }
 
 .pack-page__create-btn {
-  background: var(--primary-color);
+  background: var(--btn-primary);
   border: none;
   border-radius: 8px;
   padding: 12px 20px;
@@ -115,7 +115,7 @@
 }
 
 .pack-page__create-btn:hover {
-  background: var(--primary-hover);
+  background: var(--btn-primary-hover);
   box-shadow: 0 4px 12px rgba(var(--primary-color-rgb), 0.3);
 }
 

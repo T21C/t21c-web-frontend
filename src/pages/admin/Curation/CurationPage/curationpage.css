@@ -31,7 +31,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1rem;
-  background: #4CAF50;
+  background: var(--btn-success);
   color: white;
   border: none;
   border-radius: 8px;
@@ -43,7 +43,7 @@
 }
 
 .curation-page .curation-add-level-btn:hover {
-  background: #45a049;
+  background: var(--btn-success-hover);
 }
 
 .curation-page .curation-manage-types-btn {
@@ -53,7 +53,7 @@
   padding: 0.75rem 1rem;
   background: #333333;
   color: #ffffff;
-  border: 2px solid #404040;
+  border: 2px solid var(--btn-neutral-disabled-fill);
   border-radius: 8px;
   cursor: pointer;
   font-size: 0.9rem;
@@ -64,7 +64,7 @@
 
 .curation-page .curation-manage-types-btn:hover {
   background: #1a1a1a;
-  border-color: #4a9eff;
+  border-color: var(--btn-primary);
 }
 
 .curation-page .curation-manage-curators-btn {
@@ -153,7 +153,7 @@
   gap: 1rem;
   padding: 1rem;
   background: #1e1e1e;
-  border: 2px solid #404040;
+  border: 2px solid var(--btn-neutral-disabled-fill);
   border-radius: 8px;
 }
 
@@ -172,16 +172,16 @@
 
 .curation-page .curation-type-filter-search {
   padding: 0.65rem 0.75rem;
-  border: 2px solid #404040;
+  border: 2px solid var(--btn-neutral-disabled-fill);
   border-radius: 8px;
-  background: #2a2a2a;
+  background: var(--btn-neutral-dark);
   color: #ffffff;
   font-size: 0.95rem;
 }
 
 .curation-page .curation-type-filter-search:focus {
   outline: none;
-  border-color: #4a9eff;
+  border-color: var(--btn-primary);
 }
 
 .curation-page .curation-type-filter-list {
@@ -311,16 +311,16 @@
 
 .curation-page .curation-filter-group .input-search {
   padding: 0.75rem;
-  border: 2px solid #404040;
+  border: 2px solid var(--btn-neutral-disabled-fill);
   border-radius: 8px;
-  background: #2a2a2a;
+  background: var(--btn-neutral-dark);
   color: #ffffff;
   font-size: 1rem;
 }
 
 .curation-page .curation-filter-group .input-search:focus {
   outline: none;
-  border-color: #4a9eff;
+  border-color: var(--btn-primary);
 }
 
 .curation-page .curation-list {
@@ -336,7 +336,7 @@
   display: flex;
   flex-direction: row;
   transition: all 0.2s ease-in-out;
-  border-bottom: 1px solid #404040;
+  border-bottom: 1px solid var(--btn-neutral-disabled-fill);
 }
 
 .curation-page .curation-item.protected {
@@ -452,7 +452,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #404040;
+  background-color: var(--btn-neutral-disabled-fill);
   border-radius: 8px;
   padding: 0.5rem 2rem;
 }
@@ -487,16 +487,16 @@
 }
 
 .curation-page .curation-action-btn:hover {
-  background: #4a9eff;
+  background: var(--btn-primary);
   color: white;
 }
 
 .curation-page .curation-action-btn--edit:hover {
-  background: #4a9eff;
+  background: var(--btn-primary);
 }
 
 .curation-page .curation-action-btn--delete:hover {
-  background: #f44336;
+  background: var(--danger-color);
 }
 
 /* Enhanced Pagination Styles */
@@ -507,7 +507,7 @@
   gap: 15px;
   margin-top: 2rem;
   padding-top: 1rem;
-  border-top: 1px solid #404040;
+  border-top: 1px solid var(--btn-neutral-disabled-fill);
 }
 
 .curation-page .curation-pagination-btn {
@@ -557,7 +557,7 @@
 
 .curation-page .curation-page-input:focus {
   outline: none;
-  border-color: #4a9eff;
+  border-color: var(--btn-primary);
 }
 
 .curation-page .curation-page-input::placeholder {
@@ -619,12 +619,12 @@
 }
 
 .curation-page .curation-modal {
-  background: #2a2a2a;
+  background: var(--btn-neutral-dark);
   border-radius: 12px;
   padding: 2rem;
   max-width: 400px;
   width: 90%;
-  border: 2px solid #404040;
+  border: 2px solid var(--btn-neutral-disabled-fill);
 }
 
 .curation-page .curation-modal h3 {
@@ -640,7 +640,7 @@
 .curation-page .curation-modal input {
   width: 100%;
   padding: 0.75rem;
-  border: 2px solid #404040;
+  border: 2px solid var(--btn-neutral-disabled-fill);
   border-radius: 8px;
   background: #1a1a1a;
   color: #ffffff;
@@ -650,7 +650,7 @@
 
 .curation-page .curation-modal input:focus {
   outline: none;
-  border-color: #4a9eff;
+  border-color: var(--btn-primary);
 }
 
 .curation-page .curation-modal-actions {
@@ -669,12 +669,12 @@
 }
 
 .curation-page .curation-modal-actions button:first-child {
-  background: #4a9eff;
+  background: var(--btn-primary);
   color: white;
 }
 
 .curation-page .curation-modal-actions button:first-child:hover {
-  background: #3a8eef;
+  background: var(--btn-primary-hover);
 }
 
 .curation-page .curation-modal-actions button:last-child {
@@ -683,11 +683,11 @@
 }
 
 .curation-page .curation-modal-actions button:last-child:hover {
-  background: #404040;
+  background: var(--btn-neutral-disabled-fill);
 }
 
 .curation-page .curation-error {
-  color: #f44336;
+  color: var(--danger-color);
   margin-bottom: 1rem;
   font-size: 0.875rem;
 }

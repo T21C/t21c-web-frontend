@@ -27,7 +27,7 @@
 }
 
 .edit-pass-popup-overlay .form-container::-webkit-scrollbar-track {
-  background: #2a2a2a;
+  background: var(--btn-neutral-dark);
 }
 
 .edit-pass-popup-overlay .form-container::-webkit-scrollbar-thumb {

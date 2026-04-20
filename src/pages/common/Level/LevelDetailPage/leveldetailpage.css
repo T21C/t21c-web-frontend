@@ -14,7 +14,7 @@
   --secondary-text: rgba(225, 225, 225, 1);
   --tertiary-text: rgba(225, 225, 225, 0.7);
   --accent-color: var(--color-purple-3);
-  --border-color: #404040;
+  --border-color: var(--btn-neutral-disabled-fill);
   --glass-bg: rgba(0, 0, 0, 0.75);
   --glass-border: rgba(255, 255, 255, 0.1);
   
@@ -378,9 +378,9 @@
   opacity: 0.7;
   transition: all var(--transition-normal);
   padding: 2px 4px;
-  background: #2a2a2a;
+  background: var(--btn-neutral-dark);
   border-radius: 3px;
-  border: 1px solid #3a3a3a;
+  border: 1px solid var(--btn-neutral-elevated);
   transform: rotate(0deg);
 }
 
@@ -390,14 +390,14 @@
 
 .level-detail .title-container .tag-list-arrow:hover {
   opacity: 1;
-  background: #3a3a3a;
+  background: var(--btn-neutral-elevated);
 }
 
 .level-detail .title-container .aliases-dropdown {
   position: absolute;
   opacity: 1;
   background: #1a1a1a;
-  border: 1px solid #3a3a3a;
+  border: 1px solid var(--btn-neutral-elevated);
   border-radius: 4px;
   padding: var(--spacing-xs);
   min-width: 200px;
@@ -412,7 +412,7 @@
   font-weight: 600;
   margin-bottom: 6px;
   padding-bottom: 4px;
-  border-bottom: 1px solid #3a3a3a;
+  border-bottom: 1px solid var(--btn-neutral-elevated);
 }
 
 .level-detail .title-container .aliases-list {
@@ -431,7 +431,7 @@
 }
 
 .level-detail .title-container .alias-item:not(:last-child) {
-  border-bottom: 1px solid #2a2a2a;
+  border-bottom: 1px solid var(--btn-neutral-dark);
 }
 
 .level-detail .title-container .alias-label {
@@ -3048,9 +3048,9 @@
   opacity: 0.7;
   transition: all var(--transition-normal, 0.2s ease);
   padding: 2px 4px;
-  background: #2a2a2a;
+  background: var(--btn-neutral-dark);
   border-radius: 3px;
-  border: 1px solid #3a3a3a;
+  border: 1px solid var(--btn-neutral-elevated);
   transform: rotate(0deg);
   -webkit-user-select: none;
   user-select: none;
@@ -3063,7 +3063,7 @@
 
 .level-detail .tags-dropdown .tags-arrow:hover {
   opacity: 1;
-  background: #3a3a3a;
+  background: var(--btn-neutral-elevated);
 }
 
 .level-detail .tags-dropdown .tags-icons-row {
@@ -3134,7 +3134,7 @@
   font-weight: 600;
   margin-bottom: 6px;
   padding: 4px;
-  border-bottom: 1px solid #3a3a3a;
+  border-bottom: 1px solid var(--btn-neutral-elevated);
 }
 
 .level-detail .tags-dropdown .tags-list {
@@ -3153,7 +3153,7 @@
 }
 
 .level-detail .tags-dropdown .tag-item:not(:last-child) {
-  border-bottom: 1px solid #2a2a2a;
+  border-bottom: 1px solid var(--btn-neutral-dark);
 }
 
 .level-detail .tags-dropdown .tag-item-icon {
@@ -3208,7 +3208,7 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   padding-bottom: 0.25rem;
-  border-bottom: 1px solid #2a2a2a;
+  border-bottom: 1px solid var(--btn-neutral-dark);
 }
 
 .level-detail .tags-dropdown .tags-group-items {

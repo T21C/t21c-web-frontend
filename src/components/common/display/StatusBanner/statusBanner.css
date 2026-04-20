@@ -22,7 +22,7 @@
 }
 
 .status-banner-slot--centered .status-banner--tone-danger {
-  background-color: rgba(220, 53, 69, 0.9);
+  background-color: var(--danger-color-alpha-90);
   border-radius: 4px;
   max-width: min(70rem, 100%);
   width: 100%;
@@ -122,7 +122,7 @@
 }
 
 .status-banner--tone-warning {
-  background-color: #b45309;
+  background-color: var(--btn-warning-hover);
 }
 
 .status-banner--tone-caution {

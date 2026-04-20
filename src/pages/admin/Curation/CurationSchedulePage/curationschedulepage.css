@@ -136,7 +136,7 @@
 }
 
 .curation-schedule-page__count {
-  background: #4a9eff;
+  background: var(--btn-primary);
   color: #ffffff;
   padding: 0.5rem 1rem;
   border-radius: 20px;
@@ -215,7 +215,7 @@
 }
 
 .curation-schedule-page__hall-item:hover {
-  border-color: #4a9eff;
+  border-color: var(--btn-primary);
   background: rgba(0, 0, 0, 0.5);
 }
 
@@ -225,7 +225,7 @@
   left: -10px;
   width: 30px;
   height: 30px;
-  background: #4a9eff;
+  background: var(--btn-primary);
   color: #ffffff;
   border-radius: 50%;
   display: flex;
@@ -305,7 +305,7 @@
   width: 35px;
   height: 35px;
   border-radius: 8px;
-  background: #f44336;
+  background: var(--danger-color);
   color: #ffffff;
   border: none;
   cursor: pointer;
@@ -346,7 +346,7 @@
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background: #4a9eff;
+  background: var(--btn-primary);
   color: #ffffff;
   display: flex;
   align-items: center;

@@ -227,8 +227,6 @@ const LevelCard = ({
     showDownload = true, 
     showSteam = true, 
     showAddToPack = false,
-    showEdit = false,
-    showDelete = false,
     editMarginZero = false
   } = {}) => (
     <div className="downloads-wrapper">
@@ -257,16 +255,9 @@ const LevelCard = ({
           <PackIcon color="#ffffff" size={"24px"} />
         </button>
       )}
-      {showEdit && user && hasFlag(user, permissionFlags.SUPER_ADMIN) && (
+      {user && hasFlag(user, permissionFlags.SUPER_ADMIN) && (
         <button className="edit-button" data-margin-zero={editMarginZero} onClick={handleEditClick}>
           <EditIcon color="#ffffff" size={"32px"} />
-        </button>
-      )}
-      {showDelete && (
-        <button className="level-card__delete-btn mobile" onClick={handleDeleteClick} title="Remove from pack">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-          </svg>
         </button>
       )}
     </div>
@@ -468,8 +459,6 @@ const LevelCard = ({
           {renderDownloadLinks({ 
             showSteam: false, 
             showAddToPack: false, 
-            showEdit: true, 
-            showDelete: true, 
             editMarginZero: true 
           })}
         </div>
@@ -485,7 +474,6 @@ const LevelCard = ({
         {renderDownloadLinks({ 
           showSteam: false, 
           showAddToPack: false, 
-          showEdit: true, 
           editMarginZero: true 
         })}
         {renderDeleteButton({ mobile: true })}
@@ -530,7 +518,6 @@ const LevelCard = ({
       <div className="stats-line">
         {renderStatsIcons()}
         {renderDownloadLinks({ showAddToPack: true })}
-        {renderEditButton()}
       </div>
     </>
   );
@@ -574,7 +561,6 @@ const LevelCard = ({
       {renderCreatorInfo()}
       {renderStatsIcons()}
       {renderDownloadLinks({ showAddToPack: true })}
-      {renderEditButton()}
     </>
   );
 

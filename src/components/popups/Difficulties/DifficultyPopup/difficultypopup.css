@@ -165,7 +165,7 @@
 }
 
 .difficulty-modal__form-input-checkbox:checked {
-  accent-color: #4CAF50;
+  accent-color: var(--btn-success);
 }
 
 .difficulty-modal__form-select {
@@ -219,7 +219,7 @@
 }
 
 .difficulty-modal__form-input:invalid {
-  border-color: #FF4444;
+  border-color: var(--danger-color);
 }
 
 .difficulty-modal__actions {
@@ -242,12 +242,12 @@
 }
 
 .difficulty-modal__button--save {
-  background-color: #4A9EFF;
+  background-color: var(--btn-primary);
   color: #FFFFFF;
 }
 
 .difficulty-modal__button--save:hover {
-  background-color: #6CB0FF;
+  background-color: var(--btn-primary-light-hover);
 }
 
 .difficulty-modal__button--cancel {
@@ -261,7 +261,7 @@
 }
 
 .difficulty-modal__button--delete {
-  background-color: #FF4444;
+  background-color: var(--danger-color);
   color: #FFFFFF;
   margin-right: auto;
 }
@@ -275,7 +275,7 @@
 }
 
 .difficulty-modal__error-message {
-  color: #FF4444;
+  color: var(--danger-color);
   margin-bottom: 1rem;
   font-size: 0.9rem;
   text-align: center;
@@ -300,14 +300,14 @@
 }
 
 .difficulty-modal__directive-item {
-  background: #2a2a2a;
+  background: var(--btn-neutral-dark);
   border-radius: 8px;
   transition: all 0.2s ease;
   padding: 1rem;
 }
 
 .difficulty-modal__directive-item--dragging {
-  background: #3a3a3a;
+  background: var(--btn-neutral-elevated);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
@@ -353,7 +353,7 @@
 .difficulty-modal__directive-copy-button {
   background: none;
   border: none;
-  color: #4A9EFF;
+  color: var(--btn-primary);
   cursor: pointer;
   padding: 0.5rem;
   display: flex;
@@ -363,7 +363,7 @@
 }
 
 .difficulty-modal__directive-copy-button:hover {
-  color: #6CB0FF;
+  color: var(--btn-primary-light-hover);
 }
 
 .difficulty-modal__directive-paste-container {
@@ -393,20 +393,20 @@
 }
 
 .difficulty-modal__paste-error {
-  color: #FF4444;
+  color: var(--danger-color);
   font-size: 0.8rem;
   margin-top: 0.5rem;
   text-align: center;
 }
 
 .difficulty-modal__directive-edit-icon {
-  color: #4A9EFF;
+  color: var(--btn-primary);
   width: 24px;
   height: 24px;
 }
 
 .difficulty-modal__directive-check-icon {
-  color: #4CAF50;
+  color: var(--btn-success);
   width: 24px;
   height: 24px;
 }
@@ -414,7 +414,7 @@
 .difficulty-modal__directive-remove-button {
   background: none;
   border: none;
-  color: #FF4444;
+  color: var(--danger-color);
   font-size: 1.5rem;
   cursor: pointer;
   padding: 0.5rem;
@@ -456,7 +456,7 @@
   right: 0.5rem;
   background: none;
   border: none;
-  color: #FF4444;
+  color: var(--danger-color);
   cursor: pointer;
   padding: 0.25rem;
   display: flex;
@@ -675,7 +675,7 @@
 }
 
 .difficulty-modal__channel-error-message {
-  color: #FF4444;
+  color: var(--danger-color);
   margin-bottom: 1rem;
   font-size: 0.9rem;
   text-align: center;
@@ -692,12 +692,12 @@
 }
 
 .difficulty-modal__channel-button--submit {
-  background-color: #4A9EFF;
+  background-color: var(--btn-primary);
   color: #FFFFFF;
 }
 
 .difficulty-modal__channel-button--submit:hover {
-  background-color: #6CB0FF;
+  background-color: var(--btn-primary-light-hover);
 }
 
 .difficulty-modal__channel-button--cancel {
@@ -767,7 +767,7 @@
 }
 
 .difficulty-modal__role-error-message {
-  color: #FF4444;
+  color: var(--danger-color);
   margin-bottom: 1rem;
   font-size: 0.9rem;
   text-align: center;
@@ -784,12 +784,12 @@
 }
 
 .difficulty-modal__role-button--submit {
-  background-color: #4A9EFF;
+  background-color: var(--btn-primary);
   color: #FFFFFF;
 }
 
 .difficulty-modal__role-button--submit:hover {
-  background-color: #6CB0FF;
+  background-color: var(--btn-primary-light-hover);
 }
 
 .difficulty-modal__role-button--cancel {
@@ -873,7 +873,7 @@
 }
 
 .difficulty-modal .edit-channel-button:hover {
-  color: #4A9EFF;
+  color: var(--btn-primary);
 }
 
 .difficulty-modal .edit-channel-button svg {
@@ -907,7 +907,7 @@
 }
 
 .difficulty-modal .edit-role-button:hover {
-  color: #4A9EFF;
+  color: var(--btn-primary);
 }
 
 .difficulty-modal .edit-role-button svg {
@@ -967,7 +967,7 @@
 }
 
 .difficulty-modal .role-modal-content .form-group input:focus {
-  border-color: #4A9EFF;
+  border-color: var(--btn-primary);
   outline: none;
 }
 
@@ -981,7 +981,7 @@
 }
 
 .difficulty-modal .role-modal-content .delete-button {
-  background-color: #FF4444;
+  background-color: var(--danger-color);
   color: #FFFFFF;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -1051,11 +1051,11 @@
 }
 
 .difficulty-modal__channel-form-input:invalid {
-  border-color: #FF4444;
+  border-color: var(--danger-color);
 }
 
 .difficulty-modal__channel-error-message {
-  color: #FF4444;
+  color: var(--danger-color);
   margin-bottom: 1rem;
   font-size: 0.9rem;
   text-align: center;
@@ -1072,12 +1072,12 @@
 }
 
 .difficulty-modal__channel-button--submit {
-  background-color: #4A9EFF;
+  background-color: var(--btn-primary);
   color: #FFFFFF;
 }
 
 .difficulty-modal__channel-button--submit:hover {
-  background-color: #6CB0FF;
+  background-color: var(--btn-primary-light-hover);
 }
 
 .difficulty-modal__channel-button--cancel {
@@ -1124,11 +1124,11 @@
 }
 
 .difficulty-modal__role-form-input:invalid {
-  border-color: #FF4444;
+  border-color: var(--danger-color);
 }
 
 .difficulty-modal__role-error-message {
-  color: #FF4444;
+  color: var(--danger-color);
   margin-bottom: 1rem;
   font-size: 0.9rem;
   text-align: center;
@@ -1145,12 +1145,12 @@
 }
 
 .difficulty-modal__role-button--submit {
-  background-color: #4A9EFF;
+  background-color: var(--btn-primary);
   color: #FFFFFF;
 }
 
 .difficulty-modal__role-button--submit:hover {
-  background-color: #6CB0FF;
+  background-color: var(--btn-primary-light-hover);
 }
 
 .difficulty-modal__role-button--cancel {
@@ -1204,7 +1204,7 @@
 .difficulty-modal__help-button {
   background: none;
   border: none;
-  color: #4A9EFF;
+  color: var(--btn-primary);
   cursor: pointer;
   padding: 0.25rem;
   display: flex;
@@ -1214,7 +1214,7 @@
 }
 
 .difficulty-modal__help-button:hover {
-  color: #6CB0FF;
+  color: var(--btn-primary-light-hover);
 }
 
 .difficulty-modal__help-modal {
@@ -1262,7 +1262,7 @@
 }
 
 .difficulty-modal__help-content h3 {
-  color: #4A9EFF;
+  color: var(--btn-primary);
   margin: 1.5rem 0 0.75rem;
   font-size: 1.1rem;
 }
@@ -1290,7 +1290,7 @@
   border-radius: 4px;
   font-family: monospace;
   font-size: 0.9em;
-  color: #4A9EFF;
+  color: var(--btn-primary);
 }
 
 .difficulty-modal__help-modal-buttons {
@@ -1302,7 +1302,7 @@
 }
 
 .difficulty-modal__help-button--close {
-  background-color: #4A9EFF;
+  background-color: var(--btn-primary);
   color: #FFFFFF;
   padding: 0.75rem 2rem;
   border-radius: 4px;
@@ -1312,7 +1312,7 @@
 }
 
 .difficulty-modal__help-button--close:hover {
-  background-color: #6CB0FF;
+  background-color: var(--btn-primary-light-hover);
 }
 
 @media (max-width: 768px) {
@@ -1417,7 +1417,7 @@
 }
 
 .difficulty-modal__directive-copy-button:hover {
-  color: #4CAF50;
+  color: var(--btn-success);
 }
 
 .difficulty-modal__directive-paste-container {
@@ -1439,7 +1439,7 @@
 }
 
 .difficulty-modal__paste-error {
-  color: #f44336;
+  color: var(--danger-color);
   font-size: 0.8rem;
   margin-top: 0.25rem;
 }
@@ -1471,7 +1471,7 @@
   background-color: rgba(74, 158, 255, 0.2);
   border: 1px solid rgba(74, 158, 255, 0.4);
   border-radius: 4px;
-  color: #4A9EFF;
+  color: var(--btn-primary);
   font-size: 0.75rem;
   font-weight: 500;
   white-space: nowrap;
@@ -1495,7 +1495,7 @@
   height: 64px;
   border-radius: 8px;
   object-fit: cover;
-  border: 2px solid #404040;
+  border: 2px solid var(--btn-neutral-disabled-fill);
 }
 
 .difficulty-modal__icon-remove {
@@ -1532,7 +1532,7 @@
   padding: 0.75rem 1rem;
   background: #333333;
   color: #ffffff;
-  border: 2px solid #404040;
+  border: 2px solid var(--btn-neutral-disabled-fill);
   border-radius: 8px;
   cursor: pointer;
   font-size: 0.9rem;
@@ -1542,7 +1542,7 @@
 
 .difficulty-modal__file-label:hover {
   background: #1a1a1a;
-  border-color: #4a9eff;
+  border-color: var(--btn-primary);
 }
 
 .difficulty-modal__help-text {

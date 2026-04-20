@@ -133,7 +133,7 @@
     position: absolute;
     width: 42px;
     height: 42px;
-    border: 2px solid #4CAF50;
+    border: 2px solid var(--btn-success);
     border-radius: 50%;
     z-index: 1;
     animation: pulse 6s infinite;

@@ -193,12 +193,12 @@
 }
 
 .view-details-btn {
-  background: #2196F3;
+  background: var(--btn-info);
   color: white;
 }
 
 .edit-level-btn {
-  background: #4CAF50;
+  background: var(--btn-success);
   color: white;
   min-width: 100px;
   position: relative;
@@ -215,11 +215,11 @@
 
 
 .view-details-btn:hover {
-  background: #1976D2;
+  background: var(--btn-info-hover);
 }
 
 .edit-level-btn:hover {
-  background: #45a049;
+  background: var(--btn-success-hover);
 }
 
 .rating-card .rerate-reason {
@@ -332,7 +332,7 @@
 }
 
 .rating-card .copy-link-btn.success {
-  background-color: #4CAF5055;
+  background-color: var(--btn-success)55;
   opacity: 1;
   color: #88FF88;
 }

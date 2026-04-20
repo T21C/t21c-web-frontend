@@ -313,7 +313,7 @@
 
 .roulette-wheel-popup .spin-button,
 .roulette-wheel-popup .confirm-button {
-  background: #4caf50;
+  background: var(--btn-success);
   border: none;
   border-radius: 4px;
   color: white;
@@ -332,7 +332,7 @@
 
 .roulette-wheel-popup .spin-button:hover:not(:disabled),
 .roulette-wheel-popup .confirm-button:hover {
-  background: #45a049;
+  background: var(--btn-success-hover);
   transform: translateY(-2px);
 }
 

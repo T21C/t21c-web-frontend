@@ -13,13 +13,13 @@
 
 .creator-management-page .creator-management-container h1 {
   margin-bottom: 2rem;
-  color: #4a9eff;
+  color: var(--btn-primary);
   font-size: 2rem;
   text-align: center;
 }
 
 .creator-management-page .creator-management-container h2 {
-  color: #4a9eff;
+  color: var(--btn-primary);
   font-size: 1.5rem;
   margin-bottom: 1rem;
 }
@@ -48,7 +48,7 @@
 }
 
 .creator-management-page .create-creator-section h2 {
-  color: #4a9eff;
+  color: var(--btn-primary);
   font-size: 1.5rem;
   margin-bottom: 1.5rem;
 }
@@ -67,8 +67,8 @@
 .creator-management-page .create-creator-section .form-group input {
   width: 100%;
   padding: 0.75rem;
-  background-color: #2a2a2a;
-  border: 1px solid #404040;
+  background-color: var(--btn-neutral-dark);
+  border: 1px solid var(--btn-neutral-disabled-fill);
   border-radius: 4px;
   color: #ffffff;
   font-size: 1rem;
@@ -77,7 +77,7 @@
 
 .creator-management-page .create-creator-section .form-group input:focus {
   outline: none;
-  border-color: #4a9eff;
+  border-color: var(--btn-primary);
 }
 
 .creator-management-page .create-creator-section .alias-input-group {
@@ -92,7 +92,7 @@
 
 .creator-management-page .create-creator-section .alias-input-group button {
   padding: 0.75rem 1.5rem;
-  background-color: #4a9eff;
+  background-color: var(--btn-primary);
   color: white;
   border: none;
   border-radius: 4px;
@@ -102,7 +102,7 @@
 }
 
 .creator-management-page .create-creator-section .alias-input-group button:hover:not(:disabled) {
-  background-color: #3a8eef;
+  background-color: var(--btn-primary-hover);
 }
 
 .creator-management-page .create-creator-section .alias-input-group button:disabled {
@@ -123,7 +123,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.25rem 0.5rem;
-  background-color: #404040;
+  background-color: var(--btn-neutral-disabled-fill);
   border-radius: 4px;
   font-size: 0.9rem;
 }
@@ -148,7 +148,7 @@
 .creator-management-page .create-creator-section .submit-button {
   width: 100%;
   padding: 0.75rem;
-  background-color: #4a9eff;
+  background-color: var(--btn-primary);
   color: white;
   border: none;
   border-radius: 4px;
@@ -159,7 +159,7 @@
 }
 
 .creator-management-page .create-creator-section .submit-button:hover:not(:disabled) {
-  background-color: #3a8eef;
+  background-color: var(--btn-primary-hover);
 }
 
 .creator-management-page .create-creator-section .submit-button:disabled {
@@ -206,9 +206,9 @@
 .creator-management-page .form-group input {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #404040;
+  border: 1px solid var(--btn-neutral-disabled-fill);
   border-radius: 4px;
-  background-color: #2a2a2a;
+  background-color: var(--btn-neutral-dark);
   color: #ffffff;
 }
 
@@ -224,7 +224,7 @@
 
 .creator-management-page .alias-input-group button {
   padding: 0.75rem 1rem;
-  background-color: #4a9eff;
+  background-color: var(--btn-primary);
   color: white;
   border: none;
   border-radius: 4px;
@@ -243,7 +243,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.25rem 0.5rem;
-  background-color: #404040;
+  background-color: var(--btn-neutral-disabled-fill);
   border-radius: 4px;
   font-size: 0.9rem;
 }
@@ -260,7 +260,7 @@
 .creator-management-page .submit-button {
   width: 100%;
   padding: 0.75rem;
-  background-color: #4a9eff;
+  background-color: var(--btn-primary);
   color: white;
   border: none;
   border-radius: 4px;
@@ -286,7 +286,7 @@
 
 .creator-management-page .level-item {
   padding: 1rem;
-  background-color: #2a2a2a;
+  background-color: var(--btn-neutral-dark);
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.2s, border-left-color 0.2s;
@@ -294,11 +294,11 @@
 }
 
 .creator-management-page .level-item:hover {
-  background-color: #404040;
+  background-color: var(--btn-neutral-disabled-fill);
 }
 
 .creator-management-page .level-item.selected {
-  border: 2px solid #4a9eff;
+  border: 2px solid var(--btn-primary);
 }
 
 .creator-management-page .level-item h3 {
@@ -312,7 +312,7 @@
 }
 
 .creator-management-page .level-item .team-info {
-  color: #4a9eff;
+  color: var(--btn-primary);
   font-weight: 500;
   margin: 0.5rem 0;
   padding: 0.25rem 0.5rem;
@@ -330,23 +330,23 @@
 
 .creator-management-page .creator-tag {
   padding: 0.25rem 0.5rem;
-  background-color: #404040;
+  background-color: var(--btn-neutral-disabled-fill);
   border-radius: 4px;
   font-size: 0.9rem;
 }
 
 .creator-management-page .edit-credits-panel {
   padding: 1.5rem;
-  background-color: #2a2a2a;
+  background-color: var(--btn-neutral-dark);
   border-radius: 8px;
   margin-bottom: 1.5rem;
-  border: 1px solid #404040;
+  border: 1px solid var(--btn-neutral-disabled-fill);
   width: 100%;
 }
 
 .creator-management-page .edit-credits-panel h3 {
   margin: 0 0 1rem 0;
-  color: #4a9eff;
+  color: var(--btn-primary);
   font-size: 1.2rem;
 }
 
@@ -386,7 +386,7 @@
 }
 
 .creator-management-page .creator-assignment-content .role-select > div > div:first-child:hover {
-  border-color: #4a9eff;
+  border-color: var(--btn-primary);
 }
 
 .creator-management-page .creator-assignment-content .creator-submit-button {
@@ -400,7 +400,7 @@
   padding: 10px 16px;
   background-color: rgba(0, 0, 0, 0.25);
   border-radius: 6px;
-  border: 1px solid #404040;
+  border: 1px solid var(--btn-neutral-disabled-fill);
   transition: background-color 0.2s;
 }
 
@@ -413,7 +413,7 @@
   gap: 1rem;
   margin-top: 1.5rem;
   padding-top: 1rem;
-  border-top: 1px solid #404040;
+  border-top: 1px solid var(--btn-neutral-disabled-fill);
 }
 
 @media (max-width: 768px) {
@@ -454,7 +454,7 @@
   padding: 8px 12px;
   background-color: rgba(0, 0, 0, 0.2);
   border-radius: 4px;
-  border: 1px solid #404040;
+  border: 1px solid var(--btn-neutral-disabled-fill);
 }
 
 .creator-management-page .selected-creator-item span {
@@ -490,7 +490,7 @@
   padding: 0.75rem;
   background-color: #333333;
   color: #ffffff;
-  border: 1px solid #404040;
+  border: 1px solid var(--btn-neutral-disabled-fill);
   border-radius: 4px;
 }
 
@@ -545,12 +545,12 @@
 }
 
 .creator-management-page .save-button {
-  background-color: #4a9eff;
+  background-color: var(--btn-primary);
   color: white;
 }
 
 .creator-management-page .save-button:hover:not(:disabled) {
-  background-color: #3a8eef;
+  background-color: var(--btn-primary-hover);
 }
 
 .creator-management-page .save-button:disabled {
@@ -684,13 +684,13 @@
 
 .creator-management-page .filter-options label.active {
   background: rgba(74, 158, 255, 0.15);
-  color: #4a9eff;
+  color: var(--btn-primary);
 }
 
 .creator-management-page .filter-options input[type="checkbox"] {
   width: 16px;
   height: 16px;
-  accent-color: #4a9eff;
+  accent-color: var(--btn-primary);
 }
 
 .creator-management-page .pagination {
@@ -766,10 +766,10 @@
 
 .creator-management-page .edit-credits-panel {
   padding: 1.5rem;
-  background-color: #2a2a2a;
+  background-color: var(--btn-neutral-dark);
   border-radius: 8px;
   margin-bottom: 1.5rem;
-  border: 1px solid #404040;
+  border: 1px solid var(--btn-neutral-disabled-fill);
 }
 
 .creator-management-page .levels-list {
@@ -819,7 +819,7 @@
   display: flex;
   gap: 1rem;
   margin-bottom: 2rem;
-  border-bottom: 1px solid #404040;
+  border-bottom: 1px solid var(--btn-neutral-disabled-fill);
   padding-bottom: 1rem;
 }
 
@@ -839,7 +839,7 @@
 }
 
 .creator-management-page .tab.active {
-  color: #4a9eff;
+  color: var(--btn-primary);
 }
 
 .creator-management-page .tab.active::after {
@@ -849,7 +849,7 @@
   left: 0;
   width: 100%;
   height: 2px;
-  background-color: #4a9eff;
+  background-color: var(--btn-primary);
 }
 
 .creator-management-page .manage-creators-section {
@@ -871,7 +871,7 @@
 
 .creator-management-page .creator-item {
   padding: 1rem;
-  background-color: #2a2a2a;
+  background-color: var(--btn-neutral-dark);
   border-radius: 4px;
   display: flex;
   justify-content: space-between;
@@ -885,12 +885,12 @@
 }
 
 .creator-management-page .creator-item.verified {
-  background-color: rgba(76, 175, 80, 0.1);
-  border-left-color: #4CAF50;
+  background-color: var(--btn-success-tint-10);
+  border-left-color: var(--btn-success);
 }
 
 .creator-management-page .creator-item.verified:hover {
-  background-color: rgba(76, 175, 80, 0.15);
+  background-color: var(--btn-success-tint-15);
 }
 
 .creator-management-page .creator-info {
@@ -922,12 +922,12 @@
   cursor: pointer;
   font-size: 0.9rem;
   transition: background-color 0.2s;
-  background-color: #4a9eff;
+  background-color: var(--btn-primary);
   color: white;
 }
 
 .creator-management-page .creator-actions .action-button:hover {
-  background-color: #3a8eef;
+  background-color: var(--btn-primary-hover);
 }
 
 @media (max-width: 768px) {
@@ -969,8 +969,8 @@
 .creator-management-page .teams-controls .search-box input {
   width: 100%;
   padding: 0.75rem;
-  background-color: #2a2a2a;
-  border: 1px solid #404040;
+  background-color: var(--btn-neutral-dark);
+  border: 1px solid var(--btn-neutral-disabled-fill);
   border-radius: 4px;
   color: #ffffff;
   font-size: 1rem;
@@ -979,12 +979,12 @@
 
 .creator-management-page .teams-controls .search-box input:focus {
   outline: none;
-  border-color: #4a9eff;
+  border-color: var(--btn-primary);
 }
 
 .creator-management-page .add-team-button {
   padding: 0.75rem 1.5rem;
-  background-color: #4a9eff;
+  background-color: var(--btn-primary);
   color: white;
   border: none;
   border-radius: 4px;
@@ -995,7 +995,7 @@
 }
 
 .creator-management-page .add-team-button:hover {
-  background-color: #3a8eef;
+  background-color: var(--btn-primary-hover);
 }
 
 .creator-management-page .teams-list {
@@ -1007,13 +1007,13 @@
 
 .creator-management-page .team-item {
   padding: 1.25rem;
-  background-color: #2a2a2a;
+  background-color: var(--btn-neutral-dark);
   border-radius: 4px;
   display: flex;
   flex-direction: column;
   gap: 1rem;
   transition: background-color 0.2s;
-  border-left: 4px solid #4a9eff;
+  border-left: 4px solid var(--btn-primary);
 }
 
 .creator-management-page .team-item:hover {
@@ -1062,13 +1062,13 @@
   cursor: pointer;
   font-size: 0.9rem;
   transition: background-color 0.2s;
-  background-color: #4a9eff;
+  background-color: var(--btn-primary);
   color: white;
   flex: 1;
 }
 
 .creator-management-page .team-actions .edit-button:hover {
-  background-color: #3a8eef;
+  background-color: var(--btn-primary-hover);
 }
 
 .creator-management-page .team-actions .delete-button {
@@ -1078,13 +1078,13 @@
   cursor: pointer;
   font-size: 0.9rem;
   transition: background-color 0.2s;
-  background-color: #dc3545;
+  background-color: var(--danger-color);
   color: white;
   flex: 1;
 }
 
 .creator-management-page .team-actions .delete-button:hover {
-  background-color: #c82333;
+  background-color: var(--danger-color-hover);
 }
 
 @media (max-width: 768px) {
@@ -1144,8 +1144,8 @@
 .creator-management-page .teams-controls .search-box input {
   width: 100%;
   padding: 0.75rem;
-  background-color: #2a2a2a;
-  border: 1px solid #404040;
+  background-color: var(--btn-neutral-dark);
+  border: 1px solid var(--btn-neutral-disabled-fill);
   border-radius: 4px;
   color: #ffffff;
   font-size: 1rem;
@@ -1154,12 +1154,12 @@
 
 .creator-management-page .teams-controls .search-box input:focus {
   outline: none;
-  border-color: #4a9eff;
+  border-color: var(--btn-primary);
 }
 
 .creator-management-page .add-team-button {
   padding: 0.75rem 1.5rem;
-  background-color: #4a9eff;
+  background-color: var(--btn-primary);
   color: white;
   border: none;
   border-radius: 4px;
@@ -1170,7 +1170,7 @@
 }
 
 .creator-management-page .add-team-button:hover {
-  background-color: #3a8eef;
+  background-color: var(--btn-primary-hover);
 }
 
 .creator-management-page .teams-list {
@@ -1182,13 +1182,13 @@
 
 .creator-management-page .team-item {
   padding: 1.25rem;
-  background-color: #2a2a2a;
+  background-color: var(--btn-neutral-dark);
   border-radius: 4px;
   display: flex;
   flex-direction: column;
   gap: 1rem;
   transition: background-color 0.2s;
-  border-left: 4px solid #4a9eff;
+  border-left: 4px solid var(--btn-primary);
 }
 
 .creator-management-page .team-item:hover {
@@ -1237,13 +1237,13 @@
   cursor: pointer;
   font-size: 0.9rem;
   transition: background-color 0.2s;
-  background-color: #4a9eff;
+  background-color: var(--btn-primary);
   color: white;
   flex: 1;
 }
 
 .creator-management-page .team-actions .edit-button:hover {
-  background-color: #3a8eef;
+  background-color: var(--btn-primary-hover);
 }
 
 .creator-management-page .team-actions .delete-button {
@@ -1253,13 +1253,13 @@
   cursor: pointer;
   font-size: 0.9rem;
   transition: background-color 0.2s;
-  background-color: #dc3545;
+  background-color: var(--danger-color);
   color: white;
   flex: 1;
 }
 
 .creator-management-page .team-actions .delete-button:hover {
-  background-color: #c82333;
+  background-color: var(--danger-color-hover);
 }
 
 @media (max-width: 768px) {
@@ -1327,13 +1327,13 @@
 
 .creators-controls .filter-options label.active {
   background: rgba(74, 158, 255, 0.15);
-  color: #4a9eff;
+  color: var(--btn-primary);
 }
 
 .creators-controls .filter-options input[type="checkbox"] {
   width: 16px;
   height: 16px;
-  accent-color: #4a9eff;
+  accent-color: var(--btn-primary);
 }
 
 /* Scrollbar styles for creator list */
@@ -1370,7 +1370,7 @@
 
 .creator-management-page .add-creator-button {
   padding: 10px 20px;
-  background-color: #4CAF50;
+  background-color: var(--btn-success);
   color: white;
   border: none;
   border-radius: 4px;
@@ -1384,7 +1384,7 @@
 }
 
 .creator-management-page .add-creator-button:hover {
-  background-color: #45a049;
+  background-color: var(--btn-success-hover);
 }
 
 .creator-management-page .sort-group {
@@ -1413,7 +1413,7 @@
   align-items: center;
   justify-content: center;
   background: rgba(0, 0, 0, 0.2);
-  border: 1px solid #404040;
+  border: 1px solid var(--btn-neutral-disabled-fill);
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s;
@@ -1422,20 +1422,20 @@
 
 .creator-management-page .sort-button:hover {
   background: rgba(74, 158, 255, 0.1);
-  border-color: #4a9eff;
+  border-color: var(--btn-primary);
 }
 
 .creator-management-page .sort-button:hover svg {
-  fill: #4a9eff;
+  fill: var(--btn-primary);
 }
 
 .creator-management-page .sort-button.active {
   background: rgba(74, 158, 255, 0.2);
-  border-color: #4a9eff;
+  border-color: var(--btn-primary);
 }
 
 .creator-management-page .sort-button.active svg {
-  fill: #4a9eff;
+  fill: var(--btn-primary);
 }
 
 @media (max-width: 768px) {
@@ -1489,13 +1489,13 @@
   padding: 12px 16px;
   background-color: rgba(0, 0, 0, 0.2);
   border-radius: 6px;
-  border: 1px solid #404040;
+  border: 1px solid var(--btn-neutral-disabled-fill);
   transition: all 0.2s;
 }
 
 .creator-management-page .creator-item:hover {
   background-color: rgba(0, 0, 0, 0.3);
-  border-color: #4a9eff;
+  border-color: var(--btn-primary);
 }
 
 .creator-management-page .creator-name {
@@ -1593,7 +1593,7 @@
 .creator-management-page .team-header {
   margin-bottom: 1.5rem;
   padding-bottom: 1.5rem;
-  border-bottom: 1px solid #404040;
+  border-bottom: 1px solid var(--btn-neutral-disabled-fill);
 }
 
 .creator-management-page .team-input-group {
@@ -1618,12 +1618,12 @@
 
 .creator-management-page .existing-team {
   background-color: rgba(74, 158, 255, 0.1);
-  color: #4a9eff;
+  color: var(--btn-primary);
 }
 
 .creator-management-page .new-team {
-  background-color: rgba(76, 175, 80, 0.1);
-  color: #4CAF50;
+  background-color: var(--btn-success-tint-10);
+  color: var(--btn-success);
 }
 
 .creator-management-page .management-actions {
@@ -1631,7 +1631,7 @@
   gap: 12px;
   margin-top: 1.5rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #404040;
+  border-top: 1px solid var(--btn-neutral-disabled-fill);
 }
 
 .creator-management-page .management-actions button {
@@ -1645,12 +1645,12 @@
 }
 
 .creator-management-page .management-actions .save-button {
-  background-color: #4a9eff;
+  background-color: var(--btn-primary);
   color: white;
 }
 
 .creator-management-page .management-actions .save-button:hover:not(:disabled) {
-  background-color: #3a8eef;
+  background-color: var(--btn-primary-hover);
 }
 
 .creator-management-page .management-actions .save-button:disabled {
@@ -1708,7 +1708,7 @@
 
 .creator-management-page .add-creator-button {
   padding: 8px 16px;
-  background-color: #4CAF50;
+  background-color: var(--btn-success);
   color: white;
   border: none;
   border-radius: 4px;
@@ -1720,7 +1720,7 @@
 }
 
 .creator-management-page .add-creator-button:hover {
-  background-color: #45a049;
+  background-color: var(--btn-success-hover);
 }
 
 .add-creator-form-overlay {
@@ -1737,7 +1737,7 @@
 }
 
 .add-creator-form-overlay .add-creator-form {
-  background-color: #2a2a2a;
+  background-color: var(--btn-neutral-dark);
   padding: 2rem;
   border-radius: 8px;
   width: 90%;
@@ -1748,7 +1748,7 @@
 
 .add-creator-form-overlay .add-creator-form h3 {
   margin: 0 0 1.5rem 0;
-  color: #4a9eff;
+  color: var(--btn-primary);
   font-size: 1.5rem;
 }
 
@@ -1766,7 +1766,7 @@
   width: 100%;
   padding: 0.75rem;
   background-color: #333333;
-  border: 1px solid #404040;
+  border: 1px solid var(--btn-neutral-disabled-fill);
   border-radius: 4px;
   color: #ffffff;
   font-size: 1rem;
@@ -1778,7 +1778,7 @@
   min-height: 100px;
   padding: 0.75rem;
   background-color: #333333;
-  border: 1px solid #404040;
+  border: 1px solid var(--btn-neutral-disabled-fill);
   border-radius: 4px;
   color: #ffffff;
   font-size: 1rem;
@@ -1799,7 +1799,7 @@
 
 .add-creator-form-overlay .add-creator-form .alias-input-group button {
   padding: 0.75rem 1.5rem;
-  background-color: #4a9eff;
+  background-color: var(--btn-primary);
   color: white;
   border: none;
   border-radius: 4px;
@@ -1820,7 +1820,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.25rem 0.5rem;
-  background-color: #404040;
+  background-color: var(--btn-neutral-disabled-fill);
   border-radius: 4px;
   font-size: 0.9rem;
 }
@@ -1854,12 +1854,12 @@
 }
 
 .add-creator-form-overlay .add-creator-form .form-actions .submit-button {
-  background-color: #4CAF50;
+  background-color: var(--btn-success);
   color: white;
 }
 
 .add-creator-form-overlay .add-creator-form .form-actions .submit-button:hover:not(:disabled) {
-  background-color: #45a049;
+  background-color: var(--btn-success-hover);
 }
 
 .add-creator-form-overlay .add-creator-form .form-actions .submit-button:disabled {

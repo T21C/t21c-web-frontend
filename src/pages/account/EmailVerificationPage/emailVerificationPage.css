@@ -37,7 +37,7 @@
 }
 
 .email-verification-page .error-message {
-  color: #ff4444;
+  color: var(--danger-color);
   font-size: 1rem;
   line-height: 1.5;
   padding: 0.75rem;
@@ -46,7 +46,7 @@
 }
 
 .email-verification-page .action-button {
-  background-color: #4a9eff;
+  background-color: var(--btn-primary);
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -98,7 +98,7 @@
 
 .email-verification-page .email-display {
   font-weight: 500;
-  color: #4a9eff;
+  color: var(--btn-primary);
   margin-bottom: 1rem;
   padding: 0.5rem 1rem;
   background-color: rgba(74, 158, 255, 0.1);
@@ -113,11 +113,11 @@
 }
 
 .email-verification-page .success-icon {
-  color: #4caf50;
+  color: var(--btn-success);
 }
 
 .email-verification-page .error-icon {
-  color: #ff4444;
+  color: var(--danger-color);
 }
 
 .login-required-message {

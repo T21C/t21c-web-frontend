@@ -199,7 +199,7 @@
 }
 
 .pack-item__action-btn--delete:hover:not(:disabled) {
-  background: rgba(220, 53, 69, 0.1);
+  background: var(--danger-color-tint);
 }
 
 .pack-item__action-btn:disabled {

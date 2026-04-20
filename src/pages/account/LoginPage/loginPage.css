@@ -18,7 +18,7 @@
 }
 
 .login-page-wrapper .login-container h1 {
-  color: #4a9eff;
+  color: var(--btn-primary);
   text-align: center;
   margin-bottom: 1.5rem;
   font-size: 2rem;
@@ -58,7 +58,7 @@
 .login-page-wrapper .form-group input {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #404040;
+  border: 1px solid var(--btn-neutral-disabled-fill);
   border-radius: 4px;
   background-color: #363636;
   color: #ffffff;
@@ -67,7 +67,7 @@
 
 .login-page-wrapper .form-group input:focus {
   outline: none;
-  border-color: #4a9eff;
+  border-color: var(--btn-primary);
 }
 
 .login-page-wrapper .login-input.rate-limit {
@@ -88,7 +88,7 @@
 }
 
 .login-page-wrapper .login-button {
-  background-color: #4a9eff;
+  background-color: var(--btn-primary);
   color: white;
 }
 
@@ -118,7 +118,7 @@
   top: 50%;
   width: calc(50% - 1.5rem);
   height: 1px;
-  background-color: #404040;
+  background-color: var(--btn-neutral-disabled-fill);
 }
 
 .login-page-wrapper .divider::before {
@@ -159,7 +159,7 @@
 }
 
 .forgot-password-text {
-  color: #4a9eff;
+  color: var(--btn-primary);
   text-decoration: none;
   font-size: 0.85rem;
   transition: color 0.2s;
