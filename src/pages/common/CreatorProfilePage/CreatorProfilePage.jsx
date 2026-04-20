@@ -8,6 +8,7 @@ import { LevelContextProvider } from "@/contexts/LevelContext";
 import { UserAvatar } from "@/components/layout";
 import { MetaTags, CreatorStatusBadge } from "@/components/common/display";
 import { ScrollButton } from "@/components/common/buttons";
+import { ChevronIcon } from "@/components/common/icons";
 import { CreatorManagementPopup } from "@/components/popups/Creators";
 import LevelPage from "@/pages/common/Level/LevelPage/LevelPage";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
@@ -33,6 +34,7 @@ const CreatorProfilePage = () => {
   const [profileError, setProfileError] = useState(null);
   const [profileReloadKey, setProfileReloadKey] = useState(0);
   const [showManagementPopup, setShowManagementPopup] = useState(false);
+  const [levelsCollapsed, setLevelsCollapsed] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -88,6 +90,7 @@ const CreatorProfilePage = () => {
   }
 
   const stats = profile?.stats || creatorDoc;
+  const isExpanded = !levelsCollapsed;
 
   return (
     <div className="creator-profile-page">
@@ -166,9 +169,24 @@ const CreatorProfilePage = () => {
         </section>
 
         <section className="creator-profile-page__section creator-profile-page__section--levels">
-          <h2 className="creator-profile-page__section-title">
-            {t('creators.profile.levels.header')}
-          </h2>
+          <div className="creator-profile-page__section-title-row">
+            <h2 className="creator-profile-page__section-title">
+              {t('creators.profile.levels.header')}
+            </h2>
+            <button
+              type="button"
+              className="creator-profile-page__chevron-btn"
+              aria-expanded={isExpanded}
+              aria-label={
+                levelsCollapsed
+                  ? t('creators.profile.levels.expand', { defaultValue: 'Expand levels' })
+                  : t('creators.profile.levels.collapse', { defaultValue: 'Collapse levels' })
+              }
+              onClick={() => setLevelsCollapsed((v) => !v)}
+            >
+              <ChevronIcon direction={isExpanded ? 'down' : 'right'} />
+            </button>
+          </div>
 
           {/*
             Embed the full LevelPage rather than re-implementing search/sort/filter.
@@ -178,6 +196,7 @@ const CreatorProfilePage = () => {
             hidden filter scopes results to this creator without exposing it in
             the UI.
           */}
+          <div className={["creator-profile-page__levels-container", levelsCollapsed ? "hidden" : ""].join(" ").trim()}>
           <LevelContextProvider storagePrefix={`creator_${creatorId}_`}>
             <LevelPage
               embedded
@@ -185,6 +204,7 @@ const CreatorProfilePage = () => {
               disabledFeatures={['myLikes']}
             />
           </LevelContextProvider>
+          </div>
         </section>
       </div>
 

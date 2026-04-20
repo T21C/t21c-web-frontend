@@ -177,8 +177,10 @@ const LevelPage = ({
           setLevelsData(newLevels);
           setPageNumber(0);
         } else {
-          // Append new results for pagination
-          setLevelsData(prev => [...prev, ...newLevels]);
+          // Append new results for pagination. `prev` may transiently be null
+          // (we use null as a loading sentinel during reset/refetch) so guard
+          // with `?? []` before spreading.
+          setLevelsData(prev => [...(prev ?? []), ...newLevels]);
         }
 
         setHasMore(response.data.hasMore);
