@@ -340,7 +340,6 @@
 
 .curation-edit-modal__preview-button:hover:not(:disabled) {
   background: #1e4a7a;
-  transform: translateY(-1px);
 }
 
 .curation-edit-modal__preview-button:disabled {
@@ -415,7 +414,6 @@
 
 .curation-edit-modal__save-btn:hover:not(:disabled) {
   background: #3a8eef;
-  transform: translateY(-1px);
 }
 
 .curation-edit-modal__cancel-btn:disabled,

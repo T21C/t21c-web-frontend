@@ -116,7 +116,6 @@
 
 .pack-page__create-btn:hover {
   background: var(--primary-hover);
-  transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(var(--primary-color-rgb), 0.3);
 }
 

@@ -9,7 +9,6 @@ import { ScoreCard } from "@/components/cards";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
 import { AdminPlayerPopup } from "@/components/popups/Users";
-import { CreatorAssignmentPopup } from "@/components/popups/Creators";
 import { ShieldIcon, EditIcon, SortAscIcon, SortDescIcon, PackIcon, EyeIcon, EyeOffIcon } from "@/components/common/icons";
 import { CaseOpenSelector, CustomSelect } from "@/components/common/selectors";
 import caseOpen from "@/assets/icons/case.png";
@@ -43,7 +42,6 @@ const ProfilePage = () => {
     const { t } = useTranslation('pages');
     const { user } = useAuth();
     const [showEditPopup, setShowEditPopup] = useState(false);
-    const [showCreatorAssignment, setShowCreatorAssignment] = useState(false);
     const location = useLocation();
     const currentUrl = window.location.origin + location.pathname;
     const navigate = useNavigate();
@@ -120,27 +118,7 @@ const ProfilePage = () => {
         setShowEditPopup(true);
       };
 
-      const handleCreatorAssignmentClick = () => {
-        setShowCreatorAssignment(true);
-      };
-
-      const handleCreatorAssignmentClose = () => {
-        setShowCreatorAssignment(false);
-      };
-
-      const handleCreatorAssignmentUpdate = () => {
-        if (playerId) {
-          const fetchPlayer = async () => {
-            try {
-              const response = await api.get(`${import.meta.env.VITE_PLAYERS_V3}/${playerId}/profile`);
-              setPlayerData(response.data);
-            } catch (error) {
-              console.error('Error fetching updated player data:', error);
-            }
-          };
-          fetchPlayer();
-        }
-        
+      const handleCreatorUserLinkedUpdate = () => {
         if (isOwnProfile && user) {
           window.dispatchEvent(new CustomEvent('auth:permission-changed'));
         }
@@ -513,7 +491,7 @@ const ProfilePage = () => {
                       //style={{cursor: "not-allowed", pointerEvents: "none"}}
                       onClick={() => navigate('/profile/edit')}
                     >
-                      <EditIcon color="#fff" size={"24px"} />
+                      <EditIcon color="var(--color-white)" size={"24px"} />
                     </button>
                   )}
                   {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
@@ -521,18 +499,21 @@ const ProfilePage = () => {
                       className="edit-button"
                       onClick={handleAdminEditClick}
                     >
-                      <ShieldIcon color="#fff" size={"24px"} />
+                      <ShieldIcon color="var(--color-white)" size={"24px"} />
                     </button>
                   )}
-                  {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
-                    <button 
+                  {playerData?.user?.creator?.id && (
+                    <button
+                      type="button"
                       className="edit-button"
-                      onClick={handleCreatorAssignmentClick}
-                      title="Assign Creator"
+                      onClick={() => navigate(`/creator/${playerData.user.creator.id}`)}
+                      title={t('profile.linkToCreator', { defaultValue: 'View creator profile' })}
+                      aria-label={t('profile.linkToCreator', { defaultValue: 'View creator profile' })}
                     >
-                      <CreatorIcon className="creator-assignment-icon"
-                          color={playerData?.user?.creator ? '#5f5' : '#fff'}
-                          size={24}
+                      <CreatorIcon
+                        className="creator-assignment-icon"
+                        color="var(--color-white)"
+                        size={24}
                       />
                     </button>
                   )}
@@ -542,7 +523,7 @@ const ProfilePage = () => {
                       onClick={handleViewUserPacks}
                       title="View User's Packs"
                     >
-                      <PackIcon color="#fff" size={"24px"} />
+                      <PackIcon color="var(--color-white)" size={"24px"} />
                     </button>
                   )}
                   
@@ -728,6 +709,7 @@ const ProfilePage = () => {
               player={playerData}
               onClose={() => setShowEditPopup(false)}
               onUpdate={handlePlayerUpdate}
+              onCreatorUserLinkedUpdate={handleCreatorUserLinkedUpdate}
             />
           )}
 
@@ -744,13 +726,6 @@ const ProfilePage = () => {
             </div>
           )}
 
-          {showCreatorAssignment && playerData?.user && (
-            <CreatorAssignmentPopup
-              user={playerData.user}
-              onClose={handleCreatorAssignmentClose}
-              onUpdate={handleCreatorAssignmentUpdate}
-            />
-          )}
         </div>
         </>
       );

@@ -269,10 +269,6 @@
   background-color: #3a5ce5;
 }
 
-.register-page .profile-button:active {
-  transform: translateY(1px);
-}
-
 .register-page .success-container {
   text-align: center;
   padding: 2rem;
@@ -310,11 +306,6 @@
 
 .register-page .profile-button:hover {
   background-color: #3a5ce5;
-  transform: translateY(-1px);
-}
-
-.register-page .profile-button:active {
-  transform: translateY(1px);
 }
 
 .register-page .error-message {

@@ -620,10 +620,6 @@
   color: var(--color-white);
 }
 
-.pass-detail .hide-confirm-actions .confirm-button:hover:not(:disabled) {
-  transform: translateY(-1px);
-}
-
 .pass-detail .hide-confirm-actions .cancel-button {
   color: var(--color-white);
 }

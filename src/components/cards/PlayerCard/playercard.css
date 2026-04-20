@@ -20,7 +20,6 @@
 
 .player-card:hover {
   background: rgba(40, 40, 40, 0.6);
-  transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 

@@ -180,7 +180,6 @@
 
 .edit-pack-popup__icon-upload-btn:hover:not(:disabled) {
   background: #0056b3;
-  transform: translateY(-1px);
 }
 
 .edit-pack-popup__icon-upload-btn:disabled {
@@ -203,7 +202,6 @@
 
 .edit-pack-popup__icon-remove-btn:hover:not(:disabled) {
   background: #c82333;
-  transform: translateY(-1px);
 }
 
 .edit-pack-popup__icon-remove-btn:disabled {
@@ -296,7 +294,6 @@
 
 .edit-pack-popup__delete-btn:hover:not(:disabled) {
   background: #c82333;
-  transform: translateY(-1px);
 }
 
 .edit-pack-popup__delete-btn:disabled {
@@ -341,7 +338,6 @@
 
 .edit-pack-popup__save-btn:hover:not(:disabled) {
   background: #0056b3;
-  transform: translateY(-1px);
 }
 
 .edit-pack-popup__save-btn:disabled {
@@ -431,7 +427,6 @@
 
 .edit-pack-popup__delete-confirm-btn:hover:not(:disabled) {
   background: #c82333;
-  transform: translateY(-1px);
 }
 
 .edit-pack-popup__delete-confirm-btn:disabled {
@@ -669,7 +664,6 @@
 
 .edit-pack-popup__transfer-btn:hover:not(:disabled) {
   background: #c82333;
-  transform: translateY(-1px);
 }
 
 .edit-pack-popup__transfer-btn:disabled {

@@ -322,7 +322,6 @@
 /* Add hover effects for the stat containers */
 .top-raters-overlay .total-ratings:hover,
 .top-raters-overlay .average-per-day:hover {
-  transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   transition: all 0.2s ease;
 }

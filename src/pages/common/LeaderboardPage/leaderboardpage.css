@@ -236,11 +236,6 @@
 
 .leaderboard-page .add-filter-button:hover:not(:disabled) {
   background-color: var(--color-purple-2);
-  transform: translateY(-1px);
-}
-
-.leaderboard-page .add-filter-button:active:not(:disabled) {
-  transform: translateY(0);
 }
 
 /* Filter Chips */

@@ -1103,7 +1103,6 @@
 
 .rating-popup .roulette-button:hover {
   background: var(--color-primary-dark, #45a049);
-  transform: translateY(-1px);
 }
 
 .rating-popup .roulette-button svg {

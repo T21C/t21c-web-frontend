@@ -149,7 +149,6 @@
 .pack-item__download-btn:hover:not(:disabled):not(.dragging *) {
   background: rgba(59, 130, 246, 0.25);
   border-color: rgba(96, 165, 250, 0.8);
-  transform: translateY(-1px);
 }
 
 .pack-item__download-btn:disabled {

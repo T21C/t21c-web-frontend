@@ -647,12 +647,7 @@
 .level-detail .wrapper-level button:hover {
   background: var(--accent-color);
   border-color: var(--accent-color);
-  transform: translateY(-1px);
   box-shadow: var(--shadow-md);
-}
-
-.level-detail .wrapper-level button:active {
-  transform: translateY(0);
 }
 
 .level-detail .wrapper-level button.svg-stroke {
@@ -760,7 +755,6 @@
 
 .level-detail .level-detail-body .info .info-button:hover {
   background-color: var(--accent-color);
-  transform: translateY(-1px);
   box-shadow: var(--shadow-md);
 }
 

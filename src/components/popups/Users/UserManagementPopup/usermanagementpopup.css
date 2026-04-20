@@ -282,12 +282,10 @@
 
 .user-management-overlay .promote-button:hover:not(:disabled) {
   background-color: #45a049;
-  transform: translateY(-1px);
 }
 
 .user-management-overlay .demote-button:hover:not(:disabled) {
   background-color: #e68900;
-  transform: translateY(-1px);
 }
 
 .user-management-overlay .error-message-container {

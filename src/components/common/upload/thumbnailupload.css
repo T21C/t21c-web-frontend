@@ -101,7 +101,6 @@
 
 .thumbnail-upload__upload-btn:hover:not(:disabled) {
   background: #3a8eef;
-  transform: translateY(-1px);
 }
 
 .thumbnail-upload__upload-btn:disabled {

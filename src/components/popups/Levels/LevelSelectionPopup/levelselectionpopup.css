@@ -203,7 +203,6 @@
 
 .level-selection-modal__select-btn:hover:not(:disabled) {
   background: #3a8eef;
-  transform: translateY(-1px);
 }
 
 .level-selection-modal__select-btn:disabled {
@@ -275,7 +274,6 @@
 
 .level-selection-modal__update-btn:hover:not(:disabled) {
   background: #3a8eef;
-  transform: translateY(-1px);
 }
 
 .level-selection-modal__update-btn:disabled {

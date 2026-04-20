@@ -54,12 +54,6 @@
   background: var(--color-white-t30);
 }
 
-/* Only apply transform when not inside a dragging element */
-.pack-detail-page .retry-btn:hover:not(.dragging *),
-.pack-detail-page .back-btn:hover:not(.dragging *) {
-  transform: translateY(-1px);
-}
-
 /* Header */
 .pack-detail-page .header {
   display: flex;
@@ -254,11 +248,6 @@
   border-color: rgba(96, 165, 250, 0.7);
 }
 
-/* Only apply transform when not inside a dragging element */
-.pack-detail-page .download-btn:hover:not(:disabled):not(.dragging *) {
-  transform: translateY(-1px);
-}
-
 .pack-detail-page .download-btn:disabled {
   cursor: not-allowed;
   opacity: 0.55;
@@ -429,11 +418,6 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
-/* Only apply transform when not inside a dragging element */
-.pack-detail-page .collapse-expand-btn:hover:not(.dragging *) {
-  transform: translateY(-1px);
-}
-
 /* Items list structure */
 .pack-detail-page .items-list {
   display: flex;
@@ -485,11 +469,6 @@
 .pack-detail-page .add-btn:hover {
   background: var(--color-white-t20);
   border-color: var(--color-primary);
-}
-
-/* Only apply transform when not inside a dragging element */
-.pack-detail-page .add-btn:hover:not(.dragging *) {
-  transform: translateY(-1px);
 }
 
 .pack-detail-page .empty-actions {

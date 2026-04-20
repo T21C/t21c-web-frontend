@@ -374,11 +374,6 @@
 
 .player-page .sort-buttons svg:hover {
   background-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-1px);
-}
-
-.player-page .sort-buttons svg:active {
-  transform: translateY(0);
 }
 
 .player-page .toggle-hidden-passes-button {
@@ -400,11 +395,6 @@
 .player-page .toggle-hidden-passes-button:hover {
   background: rgba(255, 255, 255, 0.15);
   border-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-1px);
-}
-
-.player-page .toggle-hidden-passes-button:active {
-  transform: translateY(0);
 }
 
 .player-page .toggle-hidden-passes-button svg {

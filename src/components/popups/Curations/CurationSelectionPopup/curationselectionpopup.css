@@ -132,7 +132,6 @@
 
 .curation-selection-modal__type-chip--add:hover {
   filter: brightness(1.12);
-  transform: translateY(-1px);
 }
 
 .curation-selection-modal__type-chip-icon {
@@ -288,7 +287,6 @@
 .curation-selection-modal__item:hover {
   border-color: #4a9eff;
   background-color: #242424;
-  transform: translateY(-1px);
 }
 
 .curation-selection-modal__item-preview {

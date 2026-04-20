@@ -44,7 +44,6 @@
 
 .curation-page .curation-add-level-btn:hover {
   background: #45a049;
-  transform: translateY(-1px);
 }
 
 .curation-page .curation-manage-types-btn {
@@ -66,7 +65,6 @@
 .curation-page .curation-manage-types-btn:hover {
   background: #1a1a1a;
   border-color: #4a9eff;
-  transform: translateY(-1px);
 }
 
 .curation-page .curation-manage-curators-btn {
@@ -88,7 +86,6 @@
 .curation-page .curation-manage-curators-btn:hover {
   background: #7b1fa2;
   border-color: #e1bee7;
-  transform: translateY(-1px);
 }
 
 .curation-page .curation-schedule-btn {
@@ -109,7 +106,6 @@
 
 .curation-page .curation-schedule-btn:hover {
   background: #f57c00;
-  transform: translateY(-1px);
 }
 
 .curation-page .curation-discord-roles-btn {
@@ -130,7 +126,6 @@
 
 .curation-page .curation-discord-roles-btn:hover {
   background: #4752C4;
-  transform: translateY(-1px);
 }
 
 .curation-page .curation-filter-group {
@@ -223,7 +218,6 @@
 
 .curation-page .curation-type-filter-chip--addable:hover {
   filter: brightness(1.12);
-  transform: translateY(-1px);
 }
 
 .curation-page .curation-type-filter-chip-icon {

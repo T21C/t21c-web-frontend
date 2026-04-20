@@ -12,7 +12,7 @@
   overflow-y: auto;
 }
 
-.creator-assignment-popup-overlay .creator-assignment-popup {
+.creator-assignment-popup-host .creator-assignment-popup {
   background-color: #1a1a1a;
   border-radius: 8px;
   padding: 24px;
@@ -25,59 +25,59 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.creator-assignment-popup-overlay .creator-assignment-popup::-webkit-scrollbar {
+.creator-assignment-popup-host .creator-assignment-popup::-webkit-scrollbar {
   width: 8px;
 }
 
-.creator-assignment-popup-overlay .creator-assignment-popup::-webkit-scrollbar-track {
+.creator-assignment-popup-host .creator-assignment-popup::-webkit-scrollbar-track {
   background: #1a1a1a;
   border-radius: 4px;
 }
 
-.creator-assignment-popup-overlay .creator-assignment-popup::-webkit-scrollbar-thumb {
+.creator-assignment-popup-host .creator-assignment-popup::-webkit-scrollbar-thumb {
   background-color: #404040;
   border-radius: 4px;
   border: 2px solid #1a1a1a;
 }
 
-.creator-assignment-popup-overlay .popup-header {
+.creator-assignment-popup-host .popup-header {
   margin-bottom: 24px;
 }
 
-.creator-assignment-popup-overlay .popup-header h2 {
+.creator-assignment-popup-host .popup-header h2 {
   margin: 0 0 16px 0;
   font-size: 1.5rem;
   color: #ffffff;
 }
 
-.creator-assignment-popup-overlay .user-info {
+.creator-assignment-popup-host .user-info {
   background-color: #2a2a2a;
   padding: 16px;
   border-radius: 6px;
   margin-bottom: 16px;
 }
 
-.creator-assignment-popup-overlay .user-info p {
+.creator-assignment-popup-host .user-info p {
   margin: 8px 0;
   color: #ffffff;
 }
 
-.creator-assignment-popup-overlay .user-info strong {
+.creator-assignment-popup-host .user-info strong {
   color: #007bff;
 }
 
-.creator-assignment-popup-overlay .form-group {
+.creator-assignment-popup-host .form-group {
   margin-bottom: 24px;
 }
 
-.creator-assignment-popup-overlay .form-group label {
+.creator-assignment-popup-host .form-group label {
   display: block;
   margin-bottom: 8px;
   color: #a0a0a0;
   font-weight: 500;
 }
 
-.creator-assignment-popup-overlay .action-button {
+.creator-assignment-popup-host .action-button {
   width: 100%;
   padding: 12px 24px;
   background-color: #007bff;
@@ -93,37 +93,40 @@
   gap: 8px;
 }
 
-.creator-assignment-popup-overlay .action-button:not(:disabled):hover {
+.creator-assignment-popup-host .action-button:not(:disabled):hover {
   background-color: #0056b3;
-  transform: translateY(-1px);
 }
 
-.creator-assignment-popup-overlay .action-button:disabled {
+.creator-assignment-popup-host .action-button:disabled {
   background-color: #404040;
   cursor: not-allowed;
   transform: none;
 }
 
-.creator-assignment-popup-overlay .action-button.loading {
+.creator-assignment-popup-host .action-button.loading {
   cursor: not-allowed;
 }
 
 
-.creator-assignment-popup-overlay .popup-content {
+.creator-assignment-popup-host .popup-content {
   margin-top: 16px;
 }
 
-.creator-assignment-popup-overlay .current-creator-section {
+.creator-assignment-popup-host .popup-content.popup-content--no-intro {
+  margin-top: 0;
+}
+
+.creator-assignment-popup-host .current-creator-section {
   text-align: center;
 }
 
-.creator-assignment-popup-overlay .current-creator-info h3 {
+.creator-assignment-popup-host .current-creator-info h3 {
   color: #ffffff;
   margin-bottom: 16px;
   font-size: 1.2rem;
 }
 
-.creator-assignment-popup-overlay .creator-card {
+.creator-assignment-popup-host .creator-card {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -135,7 +138,7 @@
   border: 1px solid #404040;
 }
 
-.creator-assignment-popup-overlay .creator-card-info {
+.creator-assignment-popup-host .creator-card-info {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -144,26 +147,26 @@
   margin-right: 16px;
 }
 
-.creator-assignment-popup-overlay .creator-name {
+.creator-assignment-popup-host .creator-name {
   font-size: 1.1rem;
   font-weight: 600;
   color: #ffffff;
 }
 
-.creator-assignment-popup-overlay .creator-id {
+.creator-assignment-popup-host .creator-id {
   color: #a0a0a0;
   font-size: 0.9rem;
   font-weight: 600;
 }
 
-.creator-assignment-popup-overlay .creator-verified {
+.creator-assignment-popup-host .creator-verified {
   color: #28a745;
   font-weight: 500;
   font-size: 0.9rem;
 }
 
-.creator-assignment-popup-overlay .unassign-button {
-  background-color: #dc3545;
+.creator-assignment-popup-host .unassign-button {
+  background-color: #bd1727;
   color: #ffffff;
   border: none;
   padding: 10px 20px;
@@ -173,22 +176,21 @@
   transition: all 0.2s ease;
 }
 
-.creator-assignment-popup-overlay .unassign-button:hover:not(:disabled) {
-  background-color: #c82333;
-  transform: translateY(-1px);
+.creator-assignment-popup-host .unassign-button:hover:not(:disabled) {
+  background-color: #e23b4b;
 }
 
-.creator-assignment-popup-overlay .unassign-button:disabled {
+.creator-assignment-popup-host .unassign-button:disabled {
   background-color: #6c757d;
   cursor: not-allowed;
   transform: none;
 }
 
-.creator-assignment-popup-overlay .assign-creator-section {
+.creator-assignment-popup-host .assign-creator-section {
   text-align: center;
 }
 
-.creator-assignment-popup-overlay .confirm-dialog {
+.creator-assignment-popup-host .confirm-dialog {
   position: fixed;
   top: 0;
   left: 0;
@@ -201,7 +203,7 @@
   z-index: 1100;
 }
 
-.creator-assignment-popup-overlay .confirm-content {
+.creator-assignment-popup-host .confirm-content {
   background-color: #1a1a1a;
   padding: 24px;
   border-radius: 8px;
@@ -211,20 +213,20 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
-.creator-assignment-popup-overlay .confirm-content p {
+.creator-assignment-popup-host .confirm-content p {
   color: #ffffff;
   margin-bottom: 20px;
   font-size: 1rem;
 }
 
-.creator-assignment-popup-overlay .confirm-buttons {
+.creator-assignment-popup-host .confirm-buttons {
   display: flex;
   gap: 12px;
   justify-content: center;
 }
 
-.creator-assignment-popup-overlay .confirm-yes,
-.creator-assignment-popup-overlay .confirm-no {
+.creator-assignment-popup-host .confirm-yes,
+.creator-assignment-popup-host .confirm-no {
   padding: 10px 20px;
   border: none;
   border-radius: 6px;
@@ -234,55 +236,65 @@
   min-width: 100px;
 }
 
-.creator-assignment-popup-overlay .confirm-yes {
+.creator-assignment-popup-host .confirm-yes {
   background-color: #dc3545;
   color: #ffffff;
 }
 
-.creator-assignment-popup-overlay .confirm-yes:hover:not(:disabled) {
+.creator-assignment-popup-host .confirm-yes:hover:not(:disabled) {
   background-color: #c82333;
-  transform: translateY(-1px);
 }
 
-.creator-assignment-popup-overlay .confirm-no {
+.creator-assignment-popup-host .confirm-no {
   background-color: #6c757d;
   color: #ffffff;
 }
 
-.creator-assignment-popup-overlay .confirm-no:hover:not(:disabled) {
+.creator-assignment-popup-host .confirm-no:hover:not(:disabled) {
   background-color: #5a6268;
-  transform: translateY(-1px);
 }
 
-.creator-assignment-popup-overlay .confirm-yes:disabled,
-.creator-assignment-popup-overlay .confirm-no:disabled {
+.creator-assignment-popup-host .confirm-yes:disabled,
+.creator-assignment-popup-host .confirm-no:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
 }
 
 @media (max-width: 768px) {
-  .creator-assignment-popup-overlay .creator-assignment-popup {
+  .creator-assignment-popup-host .creator-assignment-popup {
     width: 95%;
     padding: 16px;
     margin: 10px auto;
   }
 
-  .creator-assignment-popup-overlay .popup-content {
+  .creator-assignment-popup-host .popup-content {
     margin-top: 12px;
   }
 
-  .creator-assignment-popup-overlay .confirm-content {
+  .creator-assignment-popup-host .confirm-content {
     padding: 20px;
     margin: 20px;
   }
 
-  .creator-assignment-popup-overlay .confirm-buttons {
+  .creator-assignment-popup-host .confirm-buttons {
     flex-direction: column;
   }
 
-  .creator-assignment-popup-overlay .confirm-yes,
-  .creator-assignment-popup-overlay .confirm-no {
+  .creator-assignment-popup-host .confirm-yes,
+  .creator-assignment-popup-host .confirm-no {
     width: 100%;
   }
-} 
+}
+
+.admin-player-popup .creator-assignment-popup-host--embedded .creator-assignment-popup {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 16px;
+  max-height: none;
+}
+
+.admin-player-popup .creator-assignment-popup-host--embedded {
+  margin-bottom: 0;
+}

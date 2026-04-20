@@ -87,7 +87,6 @@
 
 .creator-management-popup-container .mode-btn:hover:not(.active) {
   background-color: #3a3a3a;
-  transform: translateY(-1px);
 }
 
 .creator-management-popup-container .form-group {
@@ -213,7 +212,6 @@
 
 .creator-management-popup-container .action-button:not(:disabled):hover {
   background-color: #0056b3;
-  transform: translateY(-1px);
 }
 
 .creator-management-popup-container .action-button.warning:not(:disabled):hover {

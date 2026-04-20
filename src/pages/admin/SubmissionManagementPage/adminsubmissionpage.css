@@ -318,11 +318,6 @@
 
 .submission-admin-page .manage-entity-button:hover {
   background-color: #b468ee;
-  transform: translateY(-1px);
-}
-
-.submission-admin-page .manage-entity-button:active {
-  transform: translateY(0);
 }
 
 .submission-admin-page .add-entity-request-button {
@@ -338,7 +333,6 @@
 
 .submission-admin-page .add-entity-request-button:hover {
   background-color: #45a049;
-  transform: translateY(-1px);
 }
 
 .submission-admin-page .change-entity-button {
@@ -354,11 +348,6 @@
 
 .submission-admin-page .change-entity-button:hover {
   background-color: #1976D2;
-  transform: translateY(-1px);
-}
-
-.submission-admin-page .change-entity-button:active {
-  transform: translateY(0);
 }
 
 .submission-admin-page .change-entity-button:disabled,
@@ -1546,7 +1535,6 @@
 
   .submission-admin-page .creator-assignment-button.no-creator:hover {
     background-color: #ff6666;
-    transform: translateY(-1px);
   }
 
   .submission-admin-page .creator-assignment-button.has-creator {
@@ -1555,12 +1543,7 @@
   }
 
   .submission-admin-page .creator-assignment-button.has-creator:hover {
-    background-color: #66BB6A;
-    transform: translateY(-1px);
-  }
-
-  .submission-admin-page .creator-assignment-button:active {
-    transform: translateY(0);
+    background-color: #66BB6A;  
   }
 
   .submission-admin-page .pending-profile {
@@ -1655,11 +1638,6 @@
 
   .submission-admin-page .manage-artist-button:hover {
     background-color: #b468ee; /* Medium slate blue */
-    transform: translateY(-1px);
-  }
-
-  .submission-admin-page .manage-artist-button:active {
-    transform: translateY(0);
   }
 
   .submission-admin-page .artist-item-old {
@@ -1736,11 +1714,6 @@
 
   .submission-admin-page .manage-artist-button:hover {
     background-color: #b468ee; /* Medium slate blue */
-    transform: translateY(-1px);
-  }
-
-  .submission-admin-page .manage-artist-button:active {
-    transform: translateY(0);
   }
 
   .submission-admin-page .creator-group {
@@ -1781,7 +1754,6 @@
 
   .submission-admin-page .add-creator-button:hover {
     background-color: #45a049;
-    transform: translateY(-1px);
   }
 
   .submission-admin-page .remove-creator-button {
@@ -1797,7 +1769,6 @@
 
   .submission-admin-page .remove-creator-button:hover {
     background-color: #da190b;
-    transform: translateY(-1px);
   }
 
   .submission-admin-page .remove-creator-button:disabled {
@@ -1846,11 +1817,6 @@
 
   .submission-admin-page .manage-creator-button:hover {
     background-color: #b468ee; /* Medium slate blue */
-    transform: translateY(-1px);
-  }
-
-  .submission-admin-page .manage-creator-button:active {
-    transform: translateY(0);
   }
 
   .submission-admin-page .body-scroll-lock {
@@ -1904,7 +1870,6 @@
 
   .submission-admin-page .manage-profile-button:hover {
     background-color: #8A2BE2;
-    transform: translateY(-1px);
   }
 
   .submission-admin-page .manage-profile-button:disabled {
@@ -1977,7 +1942,6 @@
 
   .submission-admin-page .manage-creator-button:hover {
     background-color: #8A2BE2;
-    transform: translateY(-1px);
   }
 
   .submission-admin-page .remove-creator-button {
@@ -1987,7 +1951,6 @@
 
   .submission-admin-page .remove-creator-button:hover {
     background-color: #d32f2f;
-    transform: translateY(-1px);
   }
 
   .submission-admin-page .add-creator-button {
@@ -1998,7 +1961,6 @@
 
   .submission-admin-page .add-creator-button:hover {
     background-color: #45a049;
-    transform: translateY(-1px);
   }
 
   .submission-admin-page .creator-item {

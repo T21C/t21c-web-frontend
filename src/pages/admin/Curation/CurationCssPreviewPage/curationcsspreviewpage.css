@@ -243,7 +243,6 @@
 
 .save-button:hover:not(:disabled) {
   background: var(--color-purple-2);
-  transform: translateY(-1px);
 }
 
 .reset-button:disabled,

@@ -1,6 +1,6 @@
 import "./creatorprofilepage.css";
 import { useEffect, useMemo, useState } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import api from "@/utils/api";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
@@ -8,7 +8,7 @@ import { LevelContextProvider } from "@/contexts/LevelContext";
 import { UserAvatar } from "@/components/layout";
 import { MetaTags, CreatorStatusBadge } from "@/components/common/display";
 import { ScrollButton } from "@/components/common/buttons";
-import { ChevronIcon } from "@/components/common/icons";
+import { ChevronIcon, AdofaiIcon } from "@/components/common/icons";
 import { CreatorManagementPopup } from "@/components/popups/Creators";
 import LevelPage from "@/pages/common/Level/LevelPage/LevelPage";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
@@ -26,6 +26,7 @@ const STAT_KEYS = [
 const CreatorProfilePage = () => {
   const { creatorId } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const { t } = useTranslation('pages');
   const { user } = useAuth();
 
@@ -73,7 +74,6 @@ const CreatorProfilePage = () => {
       <div className="creator-profile-page">
         <div className="creator-profile-page__loading">
           <div className="loader loader-level-detail"></div>
-          <p>{t('creators.profile.loading')}</p>
         </div>
       </div>
     );
@@ -126,15 +126,30 @@ const CreatorProfilePage = () => {
             )}
             <span className="creator-profile-page__id">ID: {creatorDoc.id}</span>
           </div>
-          {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
-            <div className="creator-profile-page__admin-actions">
-              <button
-                type="button"
-                className="creator-profile-page__manage-btn"
-                onClick={() => setShowManagementPopup(true)}
-              >
-                {t('creators.profile.manageButton', { defaultValue: 'Manage' })}
-              </button>
+          {(creatorDoc.user?.playerId || hasFlag(user, permissionFlags.SUPER_ADMIN)) && (
+            <div className="creator-profile-page__header-actions">
+              {creatorDoc.user?.playerId && (
+                <button
+                  type="button"
+                  className="creator-profile-page__profile-link-btn"
+                  onClick={() => navigate(`/profile/${creatorDoc.user.playerId}`)}
+                  title={t('creators.profile.linkToPlayer', { defaultValue: 'View player profile' })}
+                  aria-label={t('creators.profile.linkToPlayer', { defaultValue: 'View player profile' })}
+                >
+                  <AdofaiIcon color="#fff" size={28} rotation={-25} />
+                </button>
+              )}
+              {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
+                <div className="creator-profile-page__admin-actions">
+                  <button
+                    type="button"
+                    className="creator-profile-page__manage-btn"
+                    onClick={() => setShowManagementPopup(true)}
+                  >
+                    {t('creators.profile.manageButton', { defaultValue: 'Manage' })}
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </header>

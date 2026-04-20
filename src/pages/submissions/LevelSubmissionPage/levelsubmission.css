@@ -520,10 +520,6 @@
   font-weight: 500;
 }
 
-.level-submission-page .zip-upload-button:hover:not(.drag-over) {
-  transform: translateY(-1px);
-}
-
 .level-submission-page .zip-info {
   display: flex;
   justify-content: space-between;

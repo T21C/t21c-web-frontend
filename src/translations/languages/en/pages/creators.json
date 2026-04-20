@@ -50,7 +50,6 @@
       "title": "{{name}} - Creator Profile",
       "description": "Charts and stats for {{name}}"
     },
-    "loading": "Loading creator...",
     "notFound": "Creator not found",
     "verified": "Verified",
     "manageButton": "Manage creator",

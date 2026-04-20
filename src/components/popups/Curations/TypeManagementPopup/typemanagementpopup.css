@@ -93,7 +93,6 @@
 
 .type-management-modal__create-btn:hover {
   background: #3a8eef;
-  transform: translateY(-1px);
 }
 
 .type-management-modal__types {
@@ -403,7 +402,6 @@
 
 .type-management-modal__btn--submit:hover:not(:disabled) {
   background: #3a8eef;
-  transform: translateY(-1px);
 }
 
 .type-management-modal__btn--submit:disabled {

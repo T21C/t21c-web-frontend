@@ -112,7 +112,6 @@
 .add-to-pack-popup__lookup-btn:hover {
   background: #007bff;
   border-color: #007bff;
-  transform: translateY(-1px);
 }
 
 .add-to-pack-popup__search {
@@ -188,7 +187,6 @@
 
 .add-to-pack-popup__create-btn:hover {
   background: #0056b3;
-  transform: translateY(-1px);
 }
 
 .add-to-pack-popup__packs-list {
@@ -332,7 +330,6 @@
 
 .add-to-pack-popup__create-first-btn:hover {
   background: #0056b3;
-  transform: translateY(-1px);
 }
 
 .add-to-pack-popup__login-message {
@@ -389,7 +386,6 @@
 
 .add-to-pack-popup__add-btn:hover:not(:disabled) {
   background: #0056b3;
-  transform: translateY(-1px);
 }
 
 .add-to-pack-popup__add-btn:disabled {

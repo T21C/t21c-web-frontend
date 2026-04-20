@@ -170,7 +170,6 @@
 
 .create-pack-popup__icon-upload-btn:hover:not(:disabled) {
   background: #0056b3;
-  transform: translateY(-1px);
 }
 
 .create-pack-popup__icon-upload-btn:disabled {
@@ -193,7 +192,6 @@
 
 .create-pack-popup__icon-remove-btn:hover:not(:disabled) {
   background: #c82333;
-  transform: translateY(-1px);
 }
 
 .create-pack-popup__icon-remove-btn:disabled {
@@ -275,7 +273,6 @@
 
 .create-pack-popup__create-btn:hover:not(:disabled) {
   background: #0056b3;
-  transform: translateY(-1px);
 }
 
 .create-pack-popup__create-btn:disabled {
