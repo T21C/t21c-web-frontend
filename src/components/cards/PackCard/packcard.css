@@ -42,6 +42,11 @@
   margin-bottom: 12px;
 }
 
+.pack-card .pack-card__owner-avatar {
+  width: 2rem;
+  height: 2rem;
+}
+
 .pack-card__icon {
   width: 48px;
   height: 48px;
