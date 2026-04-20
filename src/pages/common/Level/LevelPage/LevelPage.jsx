@@ -26,9 +26,35 @@ const currentUrl = window.location.origin + location.pathname;
 
 const limit = 50;
 
-const LevelPage = () => {
+/**
+ * @param {object} props
+ * @param {boolean} [props.embedded] - When true, suppresses page-level chrome
+ *        (MetaTags, ScrollButton, ReferencesButton, outer page width wrapper)
+ *        so the component can be dropped inside another page without conflicting
+ *        with its layout.
+ * @param {string[]} [props.disabledFeatures] - Feature flags to hide. Supported:
+ *        - 'myLikes': hides the "only my likes" toggle.
+ *        - 'help': hides the search-help button.
+ *        - 'deletedFilter': hides the deleted/hidden levels switch.
+ * @param {object} [props.hiddenFilters] - Extra filters that are silently merged
+ *        into every API request without being reflected in the UI. Use this to
+ *        pin the search to a specific scope (e.g. `{ byCreatorId: 123 }` to
+ *        restrict results to a single creator's charts). Conceptually equivalent
+ *        to appending `creatorId:123` to the user's query, but routed through
+ *        the existing typed filter params.
+ */
+const LevelPage = ({
+  embedded = false,
+  disabledFeatures = [],
+  hiddenFilters = null,
+} = {}) => {
   const { t } = useTranslation('pages');
   const { t: tc } = useTranslation('components');
+
+  const disabled = (feature) => disabledFeatures.includes(feature);
+  // Stable reference for fetch deps — re-fetch only when the actual content
+  // of hiddenFilters changes, not when a new object literal is passed in.
+  const hiddenFiltersKey = hiddenFilters ? JSON.stringify(hiddenFilters) : '';
 
   const { user } = useAuth();
   const { difficulties, curationTypes, tags } = useContext(DifficultyContext);
@@ -136,6 +162,7 @@ const LevelPage = () => {
           onlyMyLikes: user ? onlyMyLikes : undefined,
           availableDlFilter: availableDlFilter || 'show',
           ...(facetQuery ? { facetQuery } : {}),
+          ...(hiddenFilters || {}),
         };
 
         const response = await api.get(
@@ -192,7 +219,10 @@ const LevelPage = () => {
       }
     };
 
-    if (query[0] == "#" && !isNaN(parseInt(query.slice(1)))) {
+    // The /byId shortcut bypasses query-string filters, so it must be skipped
+    // whenever a hidden scope is enforced (e.g. creator profile embed).
+    const canUseByIdShortcut = !hiddenFilters;
+    if (canUseByIdShortcut && query[0] == "#" && !isNaN(parseInt(query.slice(1)))) {
       await fetchLevelById();
     } else {
       await fetchLevels();
@@ -213,6 +243,7 @@ const LevelPage = () => {
     selectedSpecialDiffs, 
     onlyMyLikes, 
     user,
+    hiddenFiltersKey,
   ]);
 
 
@@ -370,7 +401,8 @@ const LevelPage = () => {
     levelFacetFilters,
     selectedSpecialDiffs, 
     onlyMyLikes, 
-    user
+    user,
+    hiddenFiltersKey,
   ]);
 
   // Direct fetch for page number changes (pagination)
@@ -459,19 +491,24 @@ const LevelPage = () => {
   }
 
 
+  const pageClassName = embedded ? 'level-page level-page--embedded' : 'level-page';
+  const bodyClassName = embedded
+    ? 'level-body level-body--embedded'
+    : 'level-body page-content-70rem';
+
   if (difficulties.length === 0) {
     return (
-      <div className="level-page">
-        <MetaTags
-          title={t('level.meta.title')}
-          description={t('level.meta.description')}
-          url={currentUrl}
-          image={''}
-          type="article"
-        />
-        
-  
-        <div className="level-body page-content-70rem">
+      <div className={pageClassName}>
+        {!embedded && (
+          <MetaTags
+            title={t('level.meta.title')}
+            description={t('level.meta.description')}
+            url={currentUrl}
+            image={''}
+            type="article"
+          />
+        )}
+        <div className={bodyClassName}>
           <div className="level-body-content" style={{marginTop: "45vh"}} >
             <div className="loader loader-level-page" style={{top: "-6rem"}}></div>
             <p style={{ fontSize: "1.5rem", fontWeight: "bold", justifyContent: "center", textAlign: "center"}}>
@@ -484,36 +521,39 @@ const LevelPage = () => {
   }
 
   return (
-    <div className="level-page">
-      <MetaTags
-        title={t('level.meta.title')}
-        description={t('level.meta.description')}
-        url={currentUrl}
-        image={''}
-        type="article"
-      />
-      
+    <div className={pageClassName}>
+      {!embedded && (
+        <MetaTags
+          title={t('level.meta.title')}
+          description={t('level.meta.description')}
+          url={currentUrl}
+          image={''}
+          type="article"
+        />
+      )}
 
-      <div className="level-body page-content-70rem">
-        <ScrollButton />
-        <ReferencesButton />
+      <div className={bodyClassName}>
+        {!embedded && <ScrollButton />}
+        {!embedded && <ReferencesButton />}
         <div className="search-section">
            {/* Search Row */}
            <div className="search-row">
-             <button 
-               className="help-button"
-               onClick={() => setShowHelpPopup(true)}
-               data-tooltip-id="search"
-             >
-               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                 <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-                 <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
-                 <g id="SVGRepo_iconCarrier">
-                   <path d="M12 3C7.04 3 3 7.04 3 12C3 16.96 7.04 21 12 21C16.96 21 21 16.96 21 12C21 7.04 16.96 3 12 3ZM12 19.5C7.86 19.5 4.5 16.14 4.5 12C4.5 7.86 7.86 4.5 12 4.5C16.14 4.5 19.5 7.86 19.5 12C19.5 16.14 16.14 19.5 12 19.5ZM14.3 7.7C14.91 8.31 15.25 9.13 15.25 10C15.25 10.87 14.91 11.68 14.3 12.3C13.87 12.73 13.33 13.03 12.75 13.16V13.5C12.75 13.91 12.41 14.25 12 14.25C11.59 14.25 11.25 13.91 11.25 13.5V12.5C11.25 12.09 11.59 11.75 12 11.75C12.47 11.75 12.91 11.57 13.24 11.24C13.57 10.91 13.75 10.47 13.75 10C13.75 9.53 13.57 9.09 13.24 8.76C12.58 8.1 11.43 8.1 10.77 8.76C10.44 9.09 10.26 9.53 10.26 10C10.26 10.41 9.92 10.75 9.51 10.75C9.1 10.75 8.76 10.41 8.76 10C8.76 9.13 9.1 8.32 9.71 7.7C10.94 6.47 13.08 6.47 14.31 7.7H14.3ZM13 16.25C13 16.8 12.55 17.25 12 17.25C11.45 17.25 11 16.8 11 16.25C11 15.7 11.45 15.25 12 15.25C12.55 15.25 13 15.7 13 16.25Z" fill="#ffffff"></path>
-                 </g>
-               </svg>
-               <span>{t('level.buttons.searchHelp')}</span>
-             </button>
+             {!disabled('help') && (
+               <button 
+                 className="help-button"
+                 onClick={() => setShowHelpPopup(true)}
+                 data-tooltip-id="search"
+               >
+                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                   <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                   <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+                   <g id="SVGRepo_iconCarrier">
+                     <path d="M12 3C7.04 3 3 7.04 3 12C3 16.96 7.04 21 12 21C16.96 21 21 16.96 21 12C21 7.04 16.96 3 12 3ZM12 19.5C7.86 19.5 4.5 16.14 4.5 12C4.5 7.86 7.86 4.5 12 4.5C16.14 4.5 19.5 7.86 19.5 12C19.5 16.14 16.14 19.5 12 19.5ZM14.3 7.7C14.91 8.31 15.25 9.13 15.25 10C15.25 10.87 14.91 11.68 14.3 12.3C13.87 12.73 13.33 13.03 12.75 13.16V13.5C12.75 13.91 12.41 14.25 12 14.25C11.59 14.25 11.25 13.91 11.25 13.5V12.5C11.25 12.09 11.59 11.75 12 11.75C12.47 11.75 12.91 11.57 13.24 11.24C13.57 10.91 13.75 10.47 13.75 10C13.75 9.53 13.57 9.09 13.24 8.76C12.58 8.1 11.43 8.1 10.77 8.76C10.44 9.09 10.26 9.53 10.26 10C10.26 10.41 9.92 10.75 9.51 10.75C9.1 10.75 8.76 10.41 8.76 10C8.76 9.13 9.1 8.32 9.71 7.7C10.94 6.47 13.08 6.47 14.31 7.7H14.3ZM13 16.25C13 16.8 12.55 17.25 12 17.25C11.45 17.25 11 16.8 11 16.25C11 15.7 11.45 15.25 12 15.25C12.55 15.25 13 15.7 13 16.25Z" fill="#ffffff"></path>
+                   </g>
+                 </svg>
+                 <span>{t('level.buttons.searchHelp')}</span>
+               </button>
+             )}
 
              <input
                value={searchInput}
@@ -705,7 +745,7 @@ const LevelPage = () => {
                 </div>
               </div>
               
-              {user && (
+              {user && !disabled('myLikes') && (
               <div className="order" >
                 <div className={`wrapper-like ${onlyMyLikes ? 'active' : ''}`} onClick={() => handleLikeToggle()}>
                   <LikeIcon color={onlyMyLikes ? "var(--color-white)" : "none"} size={"22px"} />
@@ -740,7 +780,7 @@ const LevelPage = () => {
                   states={['show', 'hide', 'only']}
                 />
               </div>
-              {user && (
+              {user && !disabled('deletedFilter') && (
                 <div className="state-switches-item">
                   <span className="state-switches-label">{
                   hasFlag(user, permissionFlags.SUPER_ADMIN) 

@@ -6,6 +6,18 @@
   flex-direction: column;
 }
 
+/* Embedded mode: drop the page-content-70rem width cap and the page-level
+   padding so the host page controls the surrounding layout. */
+.level-page--embedded {
+  width: 100%;
+}
+.level-page--embedded .level-body--embedded {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
 .level-page .level-body .filter {
   position: relative;
   z-index: 100;

@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useContext } from "react";
 import "./creatorcard.css";
-import { formatNumber } from "@/utils";
 import { UserAvatar } from "@/components/layout";
 import { CreatorStatusBadge } from "@/components/common/display";
 import { CreatorListContext } from "@/contexts/CreatorListContext";
@@ -28,7 +27,7 @@ const CreatorCard = ({ creator }) => {
 
   const value = (key) => {
     if (key === 'name') return creator.name ?? '-';
-    return formatNumber(creator[key] ?? 0);
+    return Math.trunc(Number(creator[key] ?? 0)).toLocaleString('en-US');
   };
 
   const primaryKey = sortBy in sortLabels ? sortBy : 'chartsTotal';

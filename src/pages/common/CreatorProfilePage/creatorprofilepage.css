@@ -157,51 +157,8 @@
   color: rgba(255, 255, 255, 0.4);
 }
 
-.creator-profile-page .creator-profile-page__levels-header {
+.creator-profile-page .creator-profile-page__section--levels {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-}
-
-.creator-profile-page .creator-profile-page__levels-count {
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.55);
-  font-size: 0.95rem;
-}
-
-.creator-profile-page .creator-profile-page__levels-controls {
-  display: flex;
-  gap: 0.6rem;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.creator-profile-page .creator-profile-page__search-input {
-  flex: 1 1 14rem;
-  min-width: 10rem;
-  padding: 0.55rem 0.85rem;
-  border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: rgba(20, 20, 20, 0.6);
-  color: #fff;
-  font-size: 0.9rem;
-  outline: none;
-}
-
-.creator-profile-page .creator-profile-page__sort-buttons {
-  display: flex;
-  gap: 0.4rem;
-}
-
-.creator-profile-page .creator-profile-page__levels-empty {
-  margin: 0;
-  padding: 2rem;
-  text-align: center;
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.creator-profile-page .creator-profile-page__levels-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
 }
