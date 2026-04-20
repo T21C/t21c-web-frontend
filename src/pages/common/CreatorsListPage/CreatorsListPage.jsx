@@ -1,10 +1,12 @@
 import "./creatorslistpage.css";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import axios from "axios";
 import { CreatorCard } from "@/components/cards";
 import { CustomSelect } from "@/components/common/selectors";
 import { Tooltip } from "react-tooltip";
 import InfiniteScroll from "react-infinite-scroll-component";
 import api from '@/utils/api';
+import { useDebouncedRequest } from '@/hooks/useDebouncedRequest';
 import { CreatorListContext } from "@/contexts/CreatorListContext";
 import { useTranslation } from "react-i18next";
 import { ScrollButton } from "@/components/common/buttons";
@@ -17,7 +19,7 @@ const limit = 30;
 const CreatorsListPage = () => {
   const { t } = useTranslation('pages');
   const [hasMore, setHasMore] = useState(true);
-  const debounceTimerRef = useRef(null);
+  const runRequest = useDebouncedRequest(500);
 
   const {
     creatorData,
@@ -48,19 +50,18 @@ const CreatorsListPage = () => {
     { value: 'name', label: t('creators.sortOptions.name') },
   ];
 
-  const fetchCreators = async (offset = 0) => {
+  const fetchCreators = async (offset = 0, { immediate = false } = {}) => {
+    const params = new URLSearchParams({
+      query,
+      sortBy,
+      order: sort.toLowerCase(),
+      offset,
+      limit,
+    });
+    const endpoint = `${import.meta.env.VITE_CREATORS_LEADERBOARD_V3}?${params.toString()}`;
+    const runner = immediate ? runRequest.flush : runRequest;
     try {
-      const params = new URLSearchParams({
-        query,
-        sortBy,
-        order: sort.toLowerCase(),
-        offset,
-        limit,
-      });
-
-      const endpoint = `${import.meta.env.VITE_CREATORS_LEADERBOARD_V3}?${params.toString()}`;
-      const response = await api.get(endpoint);
-
+      const response = await runner(({ signal }) => api.get(endpoint, { signal }));
       const results = Array.isArray(response.data.results) ? response.data.results : [];
 
       if (offset === 0) {
@@ -78,30 +79,16 @@ const CreatorsListPage = () => {
       const total = response.data.count ?? response.data.total ?? nextLength;
       setHasMore(nextLength < total);
     } catch (error) {
-      if (!api.isCancel(error)) {
-        console.error('Error fetching creators data:', error);
-      }
+      if (axios.isCancel(error)) return;
+      console.error('Error fetching creators data:', error);
     }
   };
 
+  // Initial / filter-driven loads are debounced; pagination uses flush so
+  // infinite scroll fires immediately when the user reaches the bottom.
   useEffect(() => {
-    return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
-    debounceTimerRef.current = setTimeout(() => {
-      const cancelToken = api.CancelToken.source();
-      setCreatorData(null);
-      fetchCreators(0);
-      return () => cancelToken.cancel('Request cancelled due to component update');
-    }, 500);
+    setCreatorData(null);
+    fetchCreators(0);
   }, [forceUpdate, query, sort, sortBy]);
 
   const handleQueryChange = (e) => {
@@ -110,9 +97,7 @@ const CreatorsListPage = () => {
   };
 
   const resetAll = () => {
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
+    runRequest.cancel();
     setSortBy(sortOptions[0].value);
     setSort('DESC');
     setQuery('');
@@ -211,7 +196,7 @@ const CreatorsListPage = () => {
             <InfiniteScroll
               style={{ paddingBottom: "4rem", overflow: "visible" }}
               dataLength={displayedCreators.length}
-              next={() => fetchCreators(displayedCreators.length)}
+              next={() => fetchCreators(displayedCreators.length, { immediate: true })}
               hasMore={hasMore}
               loader={<div className="loader"></div>}
               endMessage={

@@ -9,6 +9,7 @@ import { Tooltip } from "react-tooltip";
 import InfiniteScroll from "react-infinite-scroll-component";
 import axios from "axios";
 import api from '@/utils/api';
+import { useDebouncedRequest } from '@/hooks/useDebouncedRequest';
 import { LevelContext } from "@/contexts/LevelContext";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
@@ -110,9 +111,10 @@ const LevelPage = ({
   const [searchInput, setSearchInput] = useState(query);
   const [showTagsInCards, setShowTagsInCards] = useState(true);
 
-  // Timeout ref for debounced fetch
-  const fetchTimeoutRef = useRef(null);
-  const cancelTokenRef = useRef(null);
+  // Debounced request runner: filter/query changes wait 500ms before firing
+  // and reset the timer + abort any in-flight request when called again.
+  // Pagination calls bypass the debounce via `runRequest.flush`.
+  const runRequest = useDebouncedRequest(500);
   const isFirstFilterEffectRef = useRef(true);
 
   // Filter difficulties by type
@@ -133,49 +135,43 @@ const LevelPage = ({
     { value: 'RANDOM', label: t('level.settings.sort.random') }
   ];
 
-  // Fetch function
-  const fetchLevelsData = useCallback(async (resetPage = false) => {
-    // Cancel any pending request
-    if (cancelTokenRef.current) {
-      cancelTokenRef.current();
-    }
-    
+  // Fetch function. `immediate=true` skips the 500ms debounce (used by
+  // pagination and explicit user-driven refresh), the default reschedules
+  // any pending request and aborts the previous in-flight one.
+  const fetchLevelsData = useCallback(async (resetPage = false, { immediate = false } = {}) => {
+    const runner = immediate ? runRequest.flush : runRequest;
+
     const fetchLevels = async () => {
+      // Combine slider special diffs with manually selected ones
+      const allSpecialDiffs = [
+        ...(qSliderVisible ? sliderQRange : []),
+        ...selectedSpecialDiffs
+      ].filter(Boolean);
+      const uniqueSpecialDiffs = [...new Set(allSpecialDiffs)];
+
+      const facetQuery = buildFacetQueryParam(levelFacetFilters);
+      const params = {
+        limit,
+        offset: resetPage ? 0 : pageNumber * limit,
+        query: query || '',
+        sort: sort + "_" + order,
+        deletedFilter: deletedFilter || 'hide',
+        clearedFilter: clearedFilter || 'show',
+        pguRange: `${selectedLowFilterDiff},${selectedHighFilterDiff}`,
+        specialDifficulties: uniqueSpecialDiffs.length > 0 ? uniqueSpecialDiffs.join(',') : undefined,
+        onlyMyLikes: user ? onlyMyLikes : undefined,
+        availableDlFilter: availableDlFilter || 'show',
+        ...(facetQuery ? { facetQuery } : {}),
+        ...(hiddenFilters || {}),
+      };
+
       try {
-        // Combine slider special diffs with manually selected ones
-        const allSpecialDiffs = [
-          ...(qSliderVisible ? sliderQRange : []),
-          ...selectedSpecialDiffs
-        ].filter(Boolean);
-        const uniqueSpecialDiffs = [...new Set(allSpecialDiffs)];
-
-        const facetQuery = buildFacetQueryParam(levelFacetFilters);
-        const params = {
-          limit,
-          offset: resetPage ? 0 : pageNumber * limit,
-          query: query || '',
-          sort: sort + "_" + order,
-          deletedFilter: deletedFilter || 'hide',
-          clearedFilter: clearedFilter || 'show',
-          pguRange: `${selectedLowFilterDiff},${selectedHighFilterDiff}`,
-          specialDifficulties: uniqueSpecialDiffs.length > 0 ? uniqueSpecialDiffs.join(',') : undefined,
-          onlyMyLikes: user ? onlyMyLikes : undefined,
-          availableDlFilter: availableDlFilter || 'show',
-          ...(facetQuery ? { facetQuery } : {}),
-          ...(hiddenFilters || {}),
-        };
-
-        const response = await api.get(
-          `${import.meta.env.VITE_LEVELS}`,
-          {
-            params,
-            cancelToken: new axios.CancelToken((c) => (cancelTokenRef.current = c)),
-          }
+        const response = await runner(({ signal }) =>
+          api.get(`${import.meta.env.VITE_LEVELS}`, { params, signal })
         );
-
         const newLevels = response.data.results;
         setTotalLevels(response.data.total);
-        
+
         if (resetPage) {
           // Replace entire list for new search/filter
           setLevelsData(newLevels);
@@ -184,22 +180,18 @@ const LevelPage = ({
           // Append new results for pagination
           setLevelsData(prev => [...prev, ...newLevels]);
         }
-        
+
         setHasMore(response.data.hasMore);
       } catch (error) {
-        if (!axios.isCancel(error)) {
-          console.error('Error fetching levels:', error);
-        }
+        if (axios.isCancel(error)) return;
+        console.error('Error fetching levels:', error);
       }
     };
 
     const fetchLevelById = async () => {
       try {
-        const response = await api.get(
-          `${import.meta.env.VITE_LEVELS}/byId/${query.slice(1)}`,
-          {
-            cancelToken: new axios.CancelToken((c) => (cancelTokenRef.current = c)),
-          }
+        const response = await runner(({ signal }) =>
+          api.get(`${import.meta.env.VITE_LEVELS}/byId/${query.slice(1)}`, { signal })
         );
         if (response.data) {
           setLevelsData([response.data]);
@@ -211,9 +203,10 @@ const LevelPage = ({
           setHasMore(false);
         }
       } catch (error) {
+        if (axios.isCancel(error)) return;
         setTotalLevels(0);
         setLevelsData([]);
-        if (!axios.isCancel(error) && error.response?.status !== 404) {
+        if (error.response?.status !== 404) {
           console.error('Error fetching level by ID:', error);
         }
       }
@@ -228,22 +221,23 @@ const LevelPage = ({
       await fetchLevels();
     }
   }, [
-    query, 
-    sort, 
-    order, 
-    pageNumber, 
-    deletedFilter, 
-    clearedFilter, 
+    query,
+    sort,
+    order,
+    pageNumber,
+    deletedFilter,
+    clearedFilter,
     availableDlFilter,
-    selectedLowFilterDiff, 
-    selectedHighFilterDiff, 
-    sliderQRange, 
-    qSliderVisible, 
+    selectedLowFilterDiff,
+    selectedHighFilterDiff,
+    sliderQRange,
+    qSliderVisible,
     levelFacetFilters,
-    selectedSpecialDiffs, 
-    onlyMyLikes, 
+    selectedSpecialDiffs,
+    onlyMyLikes,
     user,
     hiddenFiltersKey,
+    runRequest,
   ]);
 
 
@@ -328,93 +322,48 @@ const LevelPage = ({
   // Note: Removed auto-clearing of curation types when filter changes to 'hide'
   // to preserve user's selection for when they switch back to 'only' mode
 
-  // Clean up timeout when component unmounts
-  useEffect(() => {
-    return () => {
-      if (fetchTimeoutRef.current) {
-        clearTimeout(fetchTimeoutRef.current);
-      }
-      if (cancelTokenRef.current) {
-        cancelTokenRef.current();
-      }
-    };
-  }, []);
-
-  // Debounced fetch on filter/query changes
+  // Debounced fetch on filter/query changes. The 500ms debounce + cancellation
+  // is owned by `useDebouncedRequest`, so we just call it; rapid edits coalesce
+  // into a single request automatically.
   useEffect(() => {
     // On initial mount, keep existing context-backed results (e.g. browser back/forward navigation).
     // Only fetch if there is no cached data yet.
     if (isFirstFilterEffectRef.current) {
       isFirstFilterEffectRef.current = false;
-
       if (!levelsData || levelsData.length === 0) {
-        fetchTimeoutRef.current = setTimeout(() => {
-          fetchLevelsData(true);
-        }, 500);
+        fetchLevelsData(true);
       }
-
-      return () => {
-        if (fetchTimeoutRef.current) {
-          clearTimeout(fetchTimeoutRef.current);
-        }
-        if (cancelTokenRef.current) {
-          cancelTokenRef.current();
-        }
-      };
+      return;
     }
 
-    // Clear any existing timeout
-    if (fetchTimeoutRef.current) {
-      clearTimeout(fetchTimeoutRef.current);
-    }
-    
     if (pageNumber !== 0) {
       setPageNumber(0);
     }
     setHasMore(true);
-
-    // Set a new timeout to trigger fetch after 500ms
-    fetchTimeoutRef.current = setTimeout(() => {
-      setLevelsData(null);
-      fetchLevelsData(true);
-    }, 500);
-    
-    return () => {
-      if (fetchTimeoutRef.current) {
-        clearTimeout(fetchTimeoutRef.current);
-      }
-      if (cancelTokenRef.current) {
-        cancelTokenRef.current();
-      }
-    };
+    setLevelsData(null);
+    fetchLevelsData(true);
   }, [
-    query, 
+    query,
     sort,
-    order, 
-    deletedFilter, 
-    clearedFilter, 
-    availableDlFilter, 
-    selectedLowFilterDiff, 
+    order,
+    deletedFilter,
+    clearedFilter,
+    availableDlFilter,
+    selectedLowFilterDiff,
     selectedHighFilterDiff,
-    sliderQRange, 
-    qSliderVisible, 
+    sliderQRange,
+    qSliderVisible,
     levelFacetFilters,
-    selectedSpecialDiffs, 
-    onlyMyLikes, 
+    selectedSpecialDiffs,
+    onlyMyLikes,
     user,
     hiddenFiltersKey,
   ]);
 
-  // Direct fetch for page number changes (pagination)
+  // Direct fetch for page number changes (pagination) — bypass debounce.
   useEffect(() => {
     if (pageNumber === 0) return; // Skip initial page load, handled by debounced effect
-    
-    fetchLevelsData(false);
-    return () => {
-      if (cancelTokenRef.current) {
-        cancelTokenRef.current();
-      }
-    };
+    fetchLevelsData(false, { immediate: true });
   }, [pageNumber, fetchLevelsData]);
 
   function handleFilterOpen() {
@@ -434,11 +383,9 @@ const LevelPage = ({
     setHasMore(true);
     setLevelsData(null);
     if (value === sort) {
-      if (fetchTimeoutRef.current) {
-        clearTimeout(fetchTimeoutRef.current);
-        fetchTimeoutRef.current = null;
-      }
-      fetchLevelsData(true);
+      // Same value re-clicked — state won't change so the filter effect won't
+      // re-fire; refetch immediately ourselves.
+      fetchLevelsData(true, { immediate: true });
       return;
     }
     setSort(value);
@@ -449,11 +396,7 @@ const LevelPage = ({
     setHasMore(true);
     setLevelsData(null);
     if (value === order) {
-      if (fetchTimeoutRef.current) {
-        clearTimeout(fetchTimeoutRef.current);
-        fetchTimeoutRef.current = null;
-      }
-      fetchLevelsData(true);
+      fetchLevelsData(true, { immediate: true });
       return;
     }
     setOrder(value);

@@ -1,6 +1,8 @@
 /* eslint-disable react/prop-types */
 import { createContext, useContext, useState, useEffect, useCallback, useRef } from "react"
+import axios from "axios";
 import api from '@/utils/api';
+import { useDebouncedRequest } from '@/hooks/useDebouncedRequest';
 import { useAuth } from './AuthContext';
 import { useLocation } from 'react-router-dom';
 import { LevelPackViewModes } from "@/utils/constants";
@@ -60,26 +62,34 @@ const PackContextProvider = (props) => {
     // Force update state for triggering re-fetches
     const [forceUpdate, setForceUpdate] = useState(false);
 
+    // Debounced + cancellation-aware request runner. Filter / query changes
+    // wait 500ms (collapsing rapid keystrokes into one request); pagination
+    // bypasses the debounce via `runRequest.flush`.
+    const runRequest = useDebouncedRequest(500);
+
     // Pack browsing function (page-exclusive)
     const fetchPacks = useCallback(async () => {
         setLoading(true);
         setError(false);
 
+        const currentFilters = filtersRef.current;
+        const params = {
+            offset: pageNumber * 30,
+            limit: 30,
+            sort: currentFilters.sort,
+            order: currentFilters.order
+        };
+
+        // Add search parameters
+        if (currentFilters.query.trim()) params.query = currentFilters.query.trim();
+        if (currentFilters.viewMode !== 'all') params.viewMode = currentFilters.viewMode;
+        if (currentFilters.myLikesOnly) params.myLikesOnly = currentFilters.myLikesOnly;
+
+        const runner = pageNumber > 0 ? runRequest.flush : runRequest;
         try {
-            const currentFilters = filtersRef.current;
-            const params = {
-                offset: pageNumber * 30,
-                limit: 30,
-                sort: currentFilters.sort,
-                order: currentFilters.order
-            };
-
-            // Add search parameters
-            if (currentFilters.query.trim()) params.query = currentFilters.query.trim();
-            if (currentFilters.viewMode !== 'all') params.viewMode = currentFilters.viewMode;
-            if (currentFilters.myLikesOnly) params.myLikesOnly = currentFilters.myLikesOnly;
-
-            const response = await api.get('/v2/database/levels/packs', { params });
+            const response = await runner(({ signal }) =>
+                api.get('/v2/database/levels/packs', { params, signal })
+            );
             const newPacks = response.data.packs || [];
 
             // Use functional updates to avoid race conditions
@@ -91,14 +101,14 @@ const PackContextProvider = (props) => {
                 }
             });
             setHasMore(newPacks.length === 30);
-
+            setLoading(false);
         } catch (error) {
+            if (axios.isCancel(error)) return; // superseded by a newer request
             console.error('Error fetching packs:', error);
             setError(true);
-        } finally {
             setLoading(false);
         }
-    }, [pageNumber]);
+    }, [pageNumber, runRequest]);
 
     // Centralized refresh function
     const triggerRefresh = useCallback(() => {

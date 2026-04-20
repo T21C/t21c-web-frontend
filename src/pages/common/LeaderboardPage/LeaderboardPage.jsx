@@ -1,10 +1,12 @@
 import "./leaderboardpage.css";
-import { useContext, useEffect, useState, useRef } from "react";
+import { useContext, useEffect, useState } from "react";
+import axios from "axios";
 import { PlayerCard } from "@/components/cards";
 import { StateDisplay, CustomSelect, CountrySelect, RangeSelector } from "@/components/common/selectors";
 import { Tooltip } from "react-tooltip";
 import InfiniteScroll from "react-infinite-scroll-component";
 import api from '@/utils/api';
+import { useDebouncedRequest } from '@/hooks/useDebouncedRequest';
 import { PlayerContext } from "@/contexts/PlayerContext";
 import { useTranslation } from "react-i18next";
 import { ScrollButton } from "@/components/common/buttons";
@@ -26,7 +28,7 @@ const LeaderboardPage = () => {
   const [selectedFilterField, setSelectedFilterField] = useState(null);
   const [activeFilters, setActiveFilters] = useState({});
   const [selectedFilterKey, setSelectedFilterKey] = useState(null);
-  const debounceTimerRef = useRef(null);
+  const runRequest = useDebouncedRequest(500);
 
   const {
     playerData,
@@ -81,32 +83,33 @@ const LeaderboardPage = () => {
     { key: 'worldsFirstCount', label: t('leaderboard.sortOptions.worldsFirstCount'), maxKey: 'maxWorldsFirstCount', step: 1 },
   ];
 
-  const fetchPlayers = async (offset = 0) => {
-    try {
-      const params = new URLSearchParams({
-        query: query,
-        sortBy: sortBy,
-        order: sort.toLowerCase(),
-        offset: offset,
-        limit: limit,
-        showBanned: showBanned
-      });
+  const fetchPlayers = async (offset = 0, { immediate = false } = {}) => {
+    const params = new URLSearchParams({
+      query: query,
+      sortBy: sortBy,
+      order: sort.toLowerCase(),
+      offset: offset,
+      limit: limit,
+      showBanned: showBanned
+    });
 
-      // Add filters if they exist
-      if (filters && Object.keys(filters).length > 0 || country) {
-        // Convert percentage filters back to decimal values for API
-        const apiFilters = { ...filters };
-        if (apiFilters.averageXacc) {
-          apiFilters.averageXacc = [
-            apiFilters.averageXacc[0] / 100,
-            apiFilters.averageXacc[1] / 100
-          ];
-        }
-        params.append('filters', JSON.stringify({...apiFilters, country: country}));
+    // Add filters if they exist
+    if (filters && Object.keys(filters).length > 0 || country) {
+      // Convert percentage filters back to decimal values for API
+      const apiFilters = { ...filters };
+      if (apiFilters.averageXacc) {
+        apiFilters.averageXacc = [
+          apiFilters.averageXacc[0] / 100,
+          apiFilters.averageXacc[1] / 100
+        ];
       }
-      
-      const endpoint = `${import.meta.env.VITE_LEADERBOARD_V3}?${params.toString()}`;
-      const response = await api.get(endpoint);
+      params.append('filters', JSON.stringify({...apiFilters, country: country}));
+    }
+
+    const endpoint = `${import.meta.env.VITE_LEADERBOARD_V3}?${params.toString()}`;
+    const runner = immediate ? runRequest.flush : runRequest;
+    try {
+      const response = await runner(({ signal }) => api.get(endpoint, { signal }));
 
       // v3 returns flat ES documents with `rankedScoreRank` / `rank` already attached
       // by the server, regardless of the active sort (rankedScore is the canonical
@@ -127,9 +130,8 @@ const LeaderboardPage = () => {
 
       setHasMore(displayedPlayers.length < response.data.count);
     } catch (error) {
-      if (!api.isCancel(error)) {
-        console.error('Error fetching leaderboard data:', error);
-      }
+      if (axios.isCancel(error)) return;
+      console.error('Error fetching leaderboard data:', error);
     }
   };
 
@@ -140,30 +142,9 @@ const LeaderboardPage = () => {
     }
   }, []);
 
-  // Cleanup debounce timer on unmount
   useEffect(() => {
-    return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
-    
-    debounceTimerRef.current = setTimeout(() => {
-      let cancelToken = api.CancelToken.source();
-      setPlayerData(null);
-      
-      fetchPlayers(0);
-
-      return () => {
-        cancelToken.cancel('Request cancelled due to component update');
-      };
-    }, 500);
+    setPlayerData(null);
+    fetchPlayers(0);
   }, [forceUpdate, query, sort, sortBy, showBanned, country, filters]);
 
   function handleQueryChange(e) {
@@ -233,9 +214,7 @@ const LeaderboardPage = () => {
   };
 
   function resetAll() {
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
+    runRequest.cancel();
     setSortBy(sortOptions[0].value);
     setSort("DESC");
     setQuery("");
@@ -538,7 +517,7 @@ const LeaderboardPage = () => {
             <InfiniteScroll
               style={{ paddingBottom: "4rem", overflow: "visible" }}
               dataLength={displayedPlayers.length}
-              next={() => fetchPlayers(displayedPlayers.length)}
+              next={() => fetchPlayers(displayedPlayers.length, { immediate: true })}
               hasMore={hasMore}
               loader={<div className="loader"></div>}
               endMessage={

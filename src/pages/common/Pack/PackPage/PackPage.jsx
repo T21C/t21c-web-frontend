@@ -49,7 +49,6 @@ const PackPageContent = () => {
   const [showHelpPopup, setShowHelpPopup] = useState(false);
   const [displayMode, setDisplayMode] = useState('grid');
   const scrollRef = useRef(null);
-  const [pendingQuery, setPendingQuery] = useState(filters.query);
 
   // Sort options
   const sortOptions = [
@@ -80,42 +79,23 @@ const PackPageContent = () => {
 
   // No longer overriding viewMode for non-admins - default is PUBLIC
 
-  // Debounced search effect (same pattern as PassPage)
+  // Consume preset search queries from window context (e.g. cross-page nav)
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (pendingQuery !== filters.query) {
-        updateFilter('query', pendingQuery);
-        triggerRefresh();
-      }
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [pendingQuery]);
-
-  // Initialize pendingQuery with query value and check for preset queries
-  useEffect(() => {
-    setPendingQuery(filters.query);
-    
-    // Check for preset search queries from window context
     if (window.packSearchContext && window.packSearchContext.query) {
       const presetQuery = window.packSearchContext.query;
-      
-      // Set the query in the search input
-      setPendingQuery(presetQuery);
-      
-      // Clean up the window context after consuming it
+      updateFilter('query', presetQuery);
       delete window.packSearchContext;
     }
   }, []);
 
   function handleQueryChange(e) {
-    setPendingQuery(e.target.value);
+    updateFilter('query', e.target.value);
+    triggerRefresh();
   }
 
   // Handle reset
   const handleReset = useCallback(() => {
     updateFilter('query', '');
-    setPendingQuery('');
     updateFilter('viewMode', LevelPackViewModes.PUBLIC);
     updateFilter('sort', 'RECENT');
     updateFilter('order', 'DESC');
@@ -209,12 +189,11 @@ const PackPageContent = () => {
             </button>
 
             <input
-              value={pendingQuery}
+              value={filters.query}
               autoComplete='off'
               type="text"
               placeholder={t('pack.search.placeholder')}
               onChange={handleQueryChange}
-              className={pendingQuery !== filters.query ? 'search-pending' : ''}
             />
           </div>
 
