@@ -18,7 +18,7 @@ const ArtistDetailPage = lazy(() => import('./common/Artist/ArtistDetailPage/Art
 const SongListPage = lazy(() => import('./common/Song/SongListPage/SongListPage'));
 const SongDetailPage = lazy(() => import('./common/Song/SongDetailPage/SongDetailPage'));
 const CreatorsListPage = lazy(() => import('./common/CreatorsListPage/CreatorsListPage'));
-const CreatorProfilePage = lazy(() => import('./common/CreatorProfilePage/CreatorProfilePage'));
+const CreatorProfilePage = lazy(() => import('./account/CreatorProfilePage/CreatorProfilePage'));
 // Account pages
 const ProfilePage = lazy(() => import('./account/ProfilePage/ProfilePage'));
 const LoginPage = lazy(() => import('./account/LoginPage/LoginPage'));

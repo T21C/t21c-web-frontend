@@ -18,8 +18,14 @@
     "universalPassCount": "Przejścia Universal",
     "worldsFirstCount": "Pierwsze przejścia (WF)",
     "topDiff": "Najwyższy poziom trudności",
-    "top12kDiff": "Najwyższy poziom trudności 12K"
+    "top12kDiff": "Najwyższy poziom trudności 12K",
+    "totalUniquePasses": "Łączna liczba unikalnych przejść",
+    "topAccClearNum": "Liczba najlepszych przejść (dokładność)",
+    "tilesPressed": "Naciśnięć kafelków"
   },
+  "editProfile": "Edytuj profil",
+  "adminEdit": "Edycja administratora",
+  "viewUserPacks": "Pakiety użytkownika",
   "sections": {
     "scores": {
       "title": "Wyniki"

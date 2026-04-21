@@ -2,8 +2,7 @@ import "./profilePage.css"
 import api from "@/utils/api";
 import { useEffect, useState, useMemo } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom"
-import { isoToEmoji, formatNumber } from "@/utils";
-import { UserAvatar } from "@/components/layout";
+import { formatNumber } from "@/utils";
 import { MetaTags } from "@/components/common/display";
 import { ScoreCard } from "@/components/cards";
 import { useTranslation } from "react-i18next";
@@ -18,21 +17,11 @@ import { useProfileContext } from "@/contexts/ProfileContext";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { CreatorIcon } from "@/components/common/icons/CreatorIcon";
 import { AccountStatusBanners } from "@/components/account/AccountStatusBanners/AccountStatusBanners";
+import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 const ENABLE_ROULETTE = import.meta.env.VITE_APRIL_FOOLS === "true";
 
 const PASSES_PER_PAGE = 50;
-
-const parseRankColor = (rank) => {
-  var clr;
-  switch(rank) {
-    case 1: clr = "#efff63"; break;
-    case 2: clr = "#eeeeee"; break;
-    case 3: clr = "#ff834a"; break;
-    default: clr = "#777777"; break;
-  }
-  return clr
-}
 
 const ProfilePage = () => {
     const params = useParams()
@@ -81,15 +70,8 @@ const ProfilePage = () => {
     var valueLabels = {
       rankedScore: t('profile.valueLabels.rankedScore'),
       generalScore: t('profile.valueLabels.generalScore'),
-      ppScore: t('profile.valueLabels.ppScore'),
-      wfScore: t('profile.valueLabels.wfScore'),
-      score12K: t('profile.valueLabels.score12K'),
       averageXacc: t('profile.valueLabels.averageXacc'),
-      totalPasses: t('profile.valueLabels.totalPasses'),
-      universalPassCount: t('profile.valueLabels.universalPassCount'),
       worldsFirstCount: t('profile.valueLabels.worldsFirstCount'),
-      topDiff: t('profile.valueLabels.topDiff'),
-      top12kDiff: t('profile.valueLabels.top12kDiff')
     };
 
     useEffect(() => {
@@ -395,200 +377,113 @@ const ProfilePage = () => {
           {playerData != null ? (Object.keys(playerData).length > 0 ? (
             <div className="player-body">
               <div className="player-content">
-                <div className="player-header">
-                  {ENABLE_ROULETTE && (
-                    <button 
-                      className="case-open-button" 
-                      onClick={handleCaseOpenClick}
-                      disabled={!user && !playerId}
-                  >
-                    <img src={caseOpen} alt="Case Open" />
-                  </button>
-                  )}
-                  <div className="player-header-content">
-
-                    <div className="player-info-container">
-                      <div className="player-picture-container">
-                      <div className="player-picture-and-info">
-                      <UserAvatar 
-                        primaryUrl={playerData?.user?.avatarUrl || playerData?.pfp}
-                        fallbackUrl={playerData?.pfp || '/default-avatar.jpg'}
-                        className="player-picture"
-                      />
-                      <div className="player-id">ID: {playerData?.id || 'N/A'}</div>
-                      </div>
-                      {/* Mobile difficulty display */}
-                      <div className="mobile-diff-info">
-                      <div className="diff-info">
-                      <p>{valueLabels?.topDiff}</p>
-                      <img
-                        src={difficultyDict[playerData?.topDiffId]?.icon || "/placeholder-difficulty.png"}
-                        alt={difficultyDict[playerData?.topDiffId]?.name || 'No difficulty set'}
-                        className="diff-image"
-                      />
-                    </div>
-
-                    <div className="diff-info">
-                      <p>{valueLabels?.top12kDiff}</p>
-                      <img
-                        src={difficultyDict[playerData?.top12kDiffId]?.icon || "/placeholder-difficulty.png"}
-                        alt={difficultyDict[playerData?.top12kDiffId]?.name || 'No 12K difficulty set'}
-                        className="diff-image"
-                      />
-                    </div>
-                      </div>
-                    </div>
-                      <div className="player-info">
-                       <div className="player-name-rank">
-                         <div className="player-name-container">
-                           <h1>{playerData?.name || 'Unknown Player'}</h1>
-                           {playerData?.user?.username && (
-                             <span className="player-discord-handle">@{playerData.user.username}</span>
-                           )}
-                         </div>
-                         <div className="player-rank-flag">
-                           <h2
-                             style={{
-                               color: parseRankColor(playerData?.rankedScoreRank || 0), 
-                               backgroundColor: `${parseRankColor(playerData?.rankedScoreRank || 0)}27`,
-                           }}
-                           className={playerData?.user?.username ? "shift-rank-display" : ""}
-                           
-                           >#{playerData?.rankedScoreRank || 'Unranked'}</h2>
-                           <img
-                             src={isoToEmoji(playerData?.country || 'XX')}
-                             alt={playerData?.country || 'Unknown Country'}
-                             className="country-flag"
-                           />
-                         </div>
-                       </div>
-                     </div>
-                  </div>
-                  <div className="diff-container">
-                    <div className="diff-info">
-                      <p>{valueLabels?.topDiff}</p>
-                      <img
-                        src={difficultyDict[playerData?.topDiffId]?.icon || "/placeholder-difficulty.png"}
-                        alt={difficultyDict[playerData?.topDiffId]?.name || 'No difficulty set'}
-                        className="diff-image"
-                      />
-                    </div>
-
-                    <div className="diff-info">
-                      <p>{valueLabels?.top12kDiff}</p>
-                      <img
-                        src={difficultyDict[playerData?.top12kDiffId]?.icon || "/placeholder-difficulty.png"}
-                        alt={difficultyDict[playerData?.top12kDiffId]?.name || 'No 12K difficulty set'}
-                        className="diff-image"
-                      />
-                    </div>
-                  </div>
-                  </div>
-                  <div className="profile-button-container">
-                  {user && isOwnProfile && (
-                    <button 
-                      className="edit-button"
-                      //style={{cursor: "not-allowed", pointerEvents: "none"}}
-                      onClick={() => navigate('/profile/edit')}
-                    >
-                      <EditIcon color="var(--color-white)" size={"24px"} />
-                    </button>
-                  )}
-                  {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
-                    <button 
-                      className="edit-button"
-                      onClick={handleAdminEditClick}
-                    >
-                      <ShieldIcon color="var(--color-white)" size={"24px"} />
-                    </button>
-                  )}
-                  {playerData?.user?.creator?.id && (
+                <div className="player-page__hero">
+                  {ENABLE_ROULETTE ? (
                     <button
                       type="button"
-                      className="edit-button"
-                      onClick={() => navigate(`/creator/${playerData.user.creator.id}`)}
-                      title={t('profile.linkToCreator', { defaultValue: 'View creator profile' })}
-                      aria-label={t('profile.linkToCreator', { defaultValue: 'View creator profile' })}
+                      className="case-open-button"
+                      onClick={handleCaseOpenClick}
+                      disabled={!user && !playerId}
                     >
-                      <CreatorIcon
-                        className="creator-assignment-icon"
-                        color="var(--color-white)"
-                        size={24}
-                      />
+                      <img src={caseOpen} alt="Case Open" />
                     </button>
-                  )}
-                  {playerData?.user?.username && (
-                    <button 
-                      className="edit-button"
-                      onClick={handleViewUserPacks}
-                      title="View User's Packs"
-                    >
-                      <PackIcon color="var(--color-white)" size={"24px"} />
-                    </button>
-                  )}
-                  
-                    {/*(user && ((isOwnProfile && hasDiscordProvider) 
-                    || hasFlag(user, permissionFlags.SUPER_ADMIN))) && (
-                    <button 
-                      className="edit-button discord-role-refresh-button" 
-                      onClick={handleDiscordRoleRefresh}
-                      title={
-                        hasFlag(user, permissionFlags.SUPER_ADMIN)
-                          ? t('profile.discordRoleSync.buttonTitle.other')
-                          : t('profile.discordRoleSync.buttonTitle.own')
-                      }
-                    >
-                      <DiscordIcon color="#fff" size={"24px"} />
-                    </button>
-                  )*/}
-                  </div>
-                </div>
-            
-              
-                <div className="score-container">
-                  <div className="score-item">
-                    <p className="score-name">{valueLabels.rankedScore}</p>
-                    <p className="score-value">{formatNumber(playerData?.rankedScore || 0)}</p>
-                  </div>
-                  <br />
-                  <div className="score-item">
-                    <p className="score-name">{valueLabels.generalScore}</p>
-                    <p className="score-value">{formatNumber(playerData?.generalScore || 0)}</p>
-                  </div>
-                  <br />
-                  <div className="score-item">
-                    <p className="score-name">{valueLabels.ppScore}</p>
-                    <p className="score-value">{formatNumber(playerData?.ppScore || 0)}</p>
-                  </div>
-                  <br />
-                  <div className="score-item">
-                    <p className="score-name">{valueLabels.wfScore}</p>
-                    <p className="score-value">{formatNumber(playerData?.wfScore || 0)}</p>
-                  </div>
-                  <br />
-                  <div className="score-item">
-                    <p className="score-name">{valueLabels.score12K}</p>
-                    <p className="score-value">{formatNumber(playerData?.score12K || 0)}</p>
-                  </div>
-                </div>
-            
-                <div className="passes-container">
-                  <div className="score-item">
-                    <p className="score-name">{valueLabels.worldsFirstCount}</p>
-                    <p className="score-value">{playerData?.worldsFirstCount || 0}</p>
-                  </div>
-                  <div className="score-item">
-                    <p className="score-name">{valueLabels.averageXacc}</p>
-                    <p className="score-value">{((playerData?.averageXacc || 0) * 100).toFixed(2)}%</p>
-                  </div>
-                  <div className="score-item">
-                    <p className="score-name">{valueLabels.totalPasses}</p>
-                    <p className="score-value">{playerData?.totalPasses || 0}</p>
-                  </div>
-                  <div className="score-item">
-                    <p className="score-name">{valueLabels.universalPassCount}</p>
-                    <p className="score-value">{playerData?.universalPassCount || 0}</p>
-                  </div>
+                  ) : null}
+                  <ProfileHeader
+                    mode="player"
+                    className="player-page__profile-header"
+                    avatarUrl={playerData?.user?.avatarUrl || playerData?.pfp}
+                    fallbackAvatarUrl={playerData?.pfp || "/default-avatar.jpg"}
+                    name={playerData?.name || t("profile.meta.defaultTitle")}
+                    handle={playerData?.user?.username}
+                    country={playerData?.country}
+                    badgeId={playerData?.rankedScoreRank}
+                    badgeLabel="#"
+                    statRows={[
+                      {
+                        key: "rankedScore",
+                        label: valueLabels.rankedScore,
+                        value: formatNumber(playerData?.rankedScore || 0),
+                      },
+                      {
+                        key: "averageXacc",
+                        label: valueLabels.averageXacc,
+                        value: `${((playerData?.averageXacc || 0) * 100).toFixed(2)}%`,
+                      },
+                      {
+                        key: "generalScore",
+                        label: valueLabels.generalScore,
+                        value: formatNumber(playerData?.generalScore || 0),
+                      },
+                      {
+                        key: "totalUniquePasses",
+                        label: t("profile.valueLabels.totalUniquePasses"),
+                        value: playerData?.totalPasses || 0,
+                      },
+                      {
+                        key: "worldsFirstCount",
+                        label: valueLabels.worldsFirstCount,
+                        value: playerData?.worldsFirstCount || 0,
+                      },
+                      {
+                        key: "topAccClearNum",
+                        label: t("profile.valueLabels.topAccClearNum"),
+                        value: playerData?.topAccClearNum ?? 0,
+                      },
+                      {
+                        key: "tilesPressed",
+                        label: t("profile.valueLabels.tilesPressed"),
+                        value: playerData?.tilesPressed ?? 0,
+                      },
+                    ]}
+                    actions={
+                      <>
+                        {user && isOwnProfile ? (
+                          <button
+                            type="button"
+                            className="profile-header__action-btn"
+                            onClick={() => navigate("/profile/edit")}
+                            title={t("profile.editProfile")}
+                            aria-label={t("profile.editProfile")}
+                          >
+                            <EditIcon color="var(--color-white)" size={"24px"} />
+                          </button>
+                        ) : null}
+                        {hasFlag(user, permissionFlags.SUPER_ADMIN) ? (
+                          <button
+                            type="button"
+                            className="profile-header__action-btn"
+                            onClick={handleAdminEditClick}
+                            title={t("profile.adminEdit")}
+                            aria-label={t("profile.adminEdit")}
+                          >
+                            <ShieldIcon color="var(--color-white)" size={"24px"} />
+                          </button>
+                        ) : null}
+                        {playerData?.user?.creator?.id ? (
+                          <button
+                            type="button"
+                            className="profile-header__action-btn"
+                            onClick={() => navigate(`/creator/${playerData.user.creator.id}`)}
+                            title={t("profile.linkToCreator", { defaultValue: "View creator profile" })}
+                            aria-label={t("profile.linkToCreator", { defaultValue: "View creator profile" })}
+                          >
+                            <CreatorIcon color="var(--color-white)" size={24} />
+                          </button>
+                        ) : null}
+                        {playerData?.user?.username ? (
+                          <button
+                            type="button"
+                            className="profile-header__action-btn"
+                            onClick={handleViewUserPacks}
+                            title={t("profile.viewUserPacks")}
+                            aria-label={t("profile.viewUserPacks")}
+                          >
+                            <PackIcon color="var(--color-white)" size={"24px"} />
+                          </button>
+                        ) : null}
+                      </>
+                    }
+                  />
                 </div>
               </div>
               {playerData?.passes && playerData.passes.length > 0 && (

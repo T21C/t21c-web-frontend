@@ -5,8 +5,8 @@ import api from "@/utils/api";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
 import { LevelContextProvider } from "@/contexts/LevelContext";
-import { UserAvatar } from "@/components/layout";
 import { MetaTags, CreatorStatusBadge } from "@/components/common/display";
+import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
 import { ScrollButton } from "@/components/common/buttons";
 import { ChevronIcon, AdofaiIcon } from "@/components/common/icons";
 import { CreatorManagementPopup } from "@/components/popups/Creators";
@@ -103,74 +103,54 @@ const CreatorProfilePage = () => {
       <ScrollButton />
 
       <div className="creator-profile-page__body page-content-70rem">
-        <header className="creator-profile-page__header">
-          <div className="creator-profile-page__avatar">
-            <UserAvatar
-              primaryUrl={creatorDoc.user?.avatarUrl}
-              fallbackUrl={null}
-            />
-          </div>
-          <div className="creator-profile-page__title">
-            <div className="creator-profile-page__name-row">
-              <h1 className="creator-profile-page__name">{creatorDoc.name}</h1>
-              {creatorDoc.verificationStatus && (
-                <CreatorStatusBadge
-                  status={creatorDoc.verificationStatus}
-                  size="medium"
-                  className="creator-profile-page__status"
-                />
-              )}
-            </div>
-            {creatorDoc.user?.username && (
-              <span className="creator-profile-page__handle">@{creatorDoc.user.username}</span>
-            )}
-            <span className="creator-profile-page__id">ID: {creatorDoc.id}</span>
-          </div>
-          {(creatorDoc.user?.playerId || hasFlag(user, permissionFlags.SUPER_ADMIN)) && (
-            <div className="creator-profile-page__header-actions">
-              {creatorDoc.user?.playerId && (
+        <ProfileHeader
+          mode="creator"
+          className="profile-header--wide creator-profile-page__profile-header"
+          avatarUrl={creatorDoc.user?.avatarUrl}
+          fallbackAvatarUrl=""
+          name={creatorDoc.name}
+          handle={creatorDoc.user?.username}
+          country={creatorDoc.user?.country || creatorDoc.country}
+          badgeId={creatorDoc.id}
+          badgeLabel="ID:"
+          verificationBadge={
+            creatorDoc.verificationStatus ? (
+              <CreatorStatusBadge
+                status={creatorDoc.verificationStatus}
+                size="medium"
+              />
+            ) : null
+          }
+          statRows={STAT_KEYS.map((key) => ({
+            key,
+            label: t(`creators.profile.stats.${key}`),
+            value: Math.trunc(Number(stats?.[key] ?? 0)).toLocaleString('en-US'),
+          }))}
+          actions={
+            <>
+              {creatorDoc.user?.playerId ? (
                 <button
                   type="button"
-                  className="creator-profile-page__profile-link-btn"
+                  className="profile-header__action-btn"
                   onClick={() => navigate(`/profile/${creatorDoc.user.playerId}`)}
                   title={t('creators.profile.linkToPlayer', { defaultValue: 'View player profile' })}
                   aria-label={t('creators.profile.linkToPlayer', { defaultValue: 'View player profile' })}
                 >
-                  <AdofaiIcon color="#fff" size={28} rotation={-25} />
+                  <AdofaiIcon color="var(--color-white)" size={28} rotation={-25} />
                 </button>
-              )}
-              {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
-                <div className="creator-profile-page__admin-actions">
-                  <button
-                    type="button"
-                    className="creator-profile-page__manage-btn"
-                    onClick={() => setShowManagementPopup(true)}
-                  >
-                    {t('creators.profile.manageButton', { defaultValue: 'Manage' })}
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
-        </header>
-
-        <section className="creator-profile-page__section">
-          <h2 className="creator-profile-page__section-title">
-            {t('creators.profile.stats.header')}
-          </h2>
-          <div className="creator-profile-page__stats">
-            {STAT_KEYS.map((key) => (
-              <div key={key} className="creator-profile-page__stat">
-                <span className="creator-profile-page__stat-label">
-                  {t(`creators.profile.stats.${key}`)}
-                </span>
-                <span className="creator-profile-page__stat-value">
-                  {Math.trunc(Number(stats?.[key] ?? 0)).toLocaleString('en-US')}
-                </span>
-              </div>
-            ))}
-          </div>
-        </section>
+              ) : null}
+              {hasFlag(user, permissionFlags.SUPER_ADMIN) ? (
+                <button
+                  type="button"
+                  className="profile-header__action-btn profile-header__action-btn--accent"
+                  onClick={() => setShowManagementPopup(true)}
+                >
+                  {t('creators.profile.manageButton', { defaultValue: 'Manage' })}
+                </button>
+              ) : null}
+            </>
+          }
+        />
 
         <section className="creator-profile-page__section">
           <h2 className="creator-profile-page__section-title">

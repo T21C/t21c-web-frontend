@@ -50,218 +50,18 @@
   justify-content: center;  /* Centers horizontally */
   align-items: center;        /* Full viewport height */
 }
-.player-page .player-header {
-  position: relative;
-  display: flex;
-  align-items: flex-start;
-  min-width: 600px;
-  justify-content: space-evenly;
-  padding: 20px;
-}
 
-.player-page .player-header-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.player-page .player-info-container {
-  display: flex;
-  align-items: center;
-}
-.player-page .player-picture-container {
-  flex-shrink: 0;
+.player-page .player-page__hero {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 50rem;
 }
 
-.player-page .player-picture {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-}
-
-.player-page .player-info {
-  margin-left: 20px;
-}
-
-.player-page .player-info .player-name-rank {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-.player-page .player-info .player-name-rank h1 {
-  margin: 0;
-  font-size: 24px;
-}
-
-.player-page .player-info .player-name-rank h2 {
-  padding: 7px 10px;
-  border-radius: 10px;
-  margin-left: 10px;
-  font-size: 20px;
-}
-
-.player-page .country-flag {
-  width: 40px;
-  height: 40px;
-  margin-top: 0px;
-}
-
-.player-page .score-container {
-  display: flex;
-  justify-content: space-between; /* Spread out the scores */
-  gap: 0.75rem; /* Add space between items */
-}
-
-.player-page .passes-container {
-  display: flex;  
-  justify-content: space-between; /* Spread out the scores */
-  gap: 1rem; /* Add space between items */
-  margin-top: 0.5rem;
-}
-
-.player-page .score-item {
-  display: flex;
-  flex-direction: column; /* Stack the score name on top of the score */
-  align-items: center;
-}
-
-.player-page .score-name {
-  font-size: 0.9rem; /* Optional: Change color for the score name */
-  text-align: center;
-}
-
-.player-page .score-value {
-  font-size: 1.2rem;
-  font-weight: bold;
-  text-align: center;
-}
-
-.player-page .diff-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: flex-end;
-}
-
-.player-page .diff-info {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  margin-bottom: 10px;
-}
-
-.player-page .diff-info p {
-  margin-right: 10px; /* Space between description and image */
-}
-
-.player-page .diff-image {
-  width: 50px; /* Adjust as necessary */
-  height: auto;
-}
-
-.player-page .all-scores {
-  margin-top: 20px; /* Add space between the previous content and this list */
-  padding: 20px;
-  max-width: 65%;
-  background-color: #00000057; /* Optional: Set a background to distinguish the section */
-  width: 100%; /* Ensure it spans the entire width */
-}
-
-.player-page .all-scores h2 {
-  margin-bottom: 15px;
-}
-
-.player-page .all-scores ul {
-  list-style-type: none; /* Remove bullets */
-  padding: 0;
-}
-
-.player-page .all-scores li {
-  margin: 10px inherit ;
-  padding: 10px;
-  border-bottom: 1px solid #ccc;
-}
-
-.player-page .profile-button-container {
-  position: absolute;
-  right: 0;
-  transform: translateX(100%); /* Position it outside the header */
-  top: 20px;
-  border: none;
-  padding: 2px;
-  border-radius: 4px;
-  flex-direction: column;
-  gap: 10px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none; /* Prevent container from receiving pointer events */
-}
-
-.player-page .profile-button-container > * {
-  pointer-events: auto; /* Re-enable pointer events for buttons inside */
-}
-
-/* For a single or two elements, use a single column layout */
-.player-page .profile-button-container:not(:has(button:nth-child(3))) {
-  grid-template-columns: 1fr !important;
-  transform: translateX(100%)
-}
-
-.player-page .edit-button {
-  background-color: var(--color-white-t10); 
-  border: none;
-  width: 50px;
-  height: 50px;
-  padding: 2px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.15s ease, transform 0.1s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  -webkit-tap-highlight-color: transparent; /* Remove mobile tap highlight */
-  touch-action: manipulation; /* Optimize touch handling */
-  -webkit-user-select: none; /* Prevent text selection on touch */
-  user-select: none; /* Prevent text selection on touch */
-}
-
-.player-page .edit-button:hover {
-  background-color: var(--color-white-t20);
-}
-
-.player-page .edit-button:active {
-  background-color: var(--color-white-t30);
-  transform: scale(0.95); /* Slight scale down on press for tactile feedback */
-}
-
-.player-page .edit-button:focus {
-  outline: 2px solid rgba(255, 255, 255, 0.3);
-  outline-offset: 2px;
-}
-
-.player-page .edit-button:focus:not(:focus-visible) {
-  outline: none; /* Remove outline for mouse clicks, keep for keyboard */
-}
-
-.player-page .edit-button svg {
-  width: 36px;
-  height: 36px;
-}
-
-.player-page .creator-assignment-icon {
-  text-align: center;
-  display: flex;
-  align-items: center;
-  font-size: 32px;
-  padding: 3px;
-  color: #fff;
+.player-page .player-page__profile-header {
+  width: 100%;
 }
 
 .player-page .scores-section {
@@ -434,30 +234,6 @@
   border-bottom: 1px solid var(--color-white-t10);
 }
 
-.player-page .player-name-container {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.player-page .player-rank-flag {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.player-page .player-discord-handle {
-  font-size: 0.9em;
-  color: var(--color-white-t60);
-  margin-top: -5px;
-}
-
-.player-page .player-id {
-  font-size: 0.8rem;
-  color: var(--color-white-t60);
-  text-align: center;
-}
-
 .case-open-button {
   background: none;
   border: none;
@@ -554,10 +330,6 @@
   }
 }
 
-.player-page .shift-rank-display {
-  transform: translateY(-0.45rem);
-}
-
 /* Mobile-friendly responsive design */
 @media (max-width: 768px) {
   .player-page .player-body,
@@ -567,190 +339,8 @@
     max-width: 100%;
   }
 
-  .player-page .player-header {
-    min-width: unset;
-    width: 100%;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-  }
-
-  .player-page .player-header-content {
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    width: 100%;
-  }
-
-  .player-page .player-info-container {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 1rem;
-  }
-
-  /* Special mobile layout: combine profile picture with top difficulty */
-  .player-page .player-picture-container {
-    width: 100%;
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
-    padding: 0.5rem;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    min-width: 120px;
-  }
-
-  .player-page .player-picture-container .mobile-diff-info {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 0.5rem;
-    text-align: center;
-    padding-top: 0.25rem;
-    width: 100%;
-  }
-
-  .player-page .player-picture-container .mobile-diff-info p {
-    font-size: 0.8rem;
-    color: var(--color-white-t80);
-    margin: 0;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .player-page .player-picture-container .mobile-diff-info .diff-image {
-    width: 32px;
-    height: auto;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-  }
-
-  .player-page .player-info {
-    margin-left: 0;
-    text-align: center;
-  }
-
-  .player-page .player-info .player-name-rank {
-    flex-direction: row;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .player-page .player-rank-flag {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .player-page .player-info .player-name-rank h1 {
-    font-size: 20px;
-    text-align: center;
-  }
-
-  .player-page .player-info .player-name-rank h2 {
-    margin-left: 0;
-    font-size: 18px;
-    padding: 5px 8px;
-  }
-
-  .player-page .shift-rank-display {
-    transform: translateY(0);
-  }
-
-  .player-page .player-picture {
-    width: 80px;
-    height: 80px;
-  }
-
-  .player-page .country-flag {
-    width: 32px;
-    height: 32px;
-  }
-
-  .player-page .diff-container {
-    align-items: center;
-    margin-top: 1rem;
-    display: none; /* Hide original diff container on mobile */
-  }
-
-  /* Hide mobile diff info on larger screens */
-  .player-page .mobile-diff-info {
-    display: flex; /* Show mobile diff info on mobile */
-  }
-
-  .player-page .diff-info {
-    justify-content: center;
-    margin-bottom: 0.5rem;
-  }
-
-  .player-page .diff-info p {
-    margin-right: 8px;
-    font-size: 0.9rem;
-  }
-
-  .player-page .diff-image {
-    width: 40px;
-  }
-
-  .player-page .score-container,
-  .player-page .passes-container {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1rem;
-    margin-top: 1rem;
-  }
-
-  .player-page .score-item {
-    min-width: 120px;
-    flex: 1;
-  }
-
-  .player-page .score-name {
-    font-size: 0.8rem;
-  }
-
-  .player-page .score-value {
-    font-size: 1.1rem;
-  }
-
-  .player-page .profile-button-container {
-    position: relative;
-    right: unset;
-    top: unset;
-    flex-direction: row;
-    gap: 0.5rem;
-    margin-top: 1rem;
-    justify-content: center;
-    transform: none;
-    display: flex;
-    pointer-events: none; /* Prevent container from receiving pointer events */
-  }
-
-  .player-page .profile-button-container > * {
-    pointer-events: auto; /* Re-enable pointer events for buttons inside */
-  }
-
-  .player-page .edit-button {
-    width: 44px;
-    height: 44px;
-    min-width: 44px; /* Ensure minimum touch target size */
-    min-height: 44px;
-  }
-
-  .player-page .edit-button:active {
-    background-color: var(--color-white-t40); /* More prominent on mobile */
-    transform: scale(0.92); /* More noticeable scale on mobile */
-  }
-
-  .player-page .edit-button svg {
-    width: 24px;
-    height: 24px;
+  .player-page .player-page__hero {
+    max-width: 100%;
   }
 
   .player-page .scores-section {
@@ -811,72 +401,6 @@
     padding: 0 0.5rem;
   }
 
-  .player-page .player-header {
-    padding: 0.5rem;
-  }
-
-  .player-page .player-picture-container {
-    min-width: 100px;
-    padding: 0.4rem;
-  }
-
-  .player-page .player-picture-container .mobile-diff-info .diff-image {
-    width: 28px;
-  }
-
-  .player-page .player-info .player-name-rank h1 {
-    font-size: 18px;
-  }
-
-  .player-page .player-info .player-name-rank h2 {
-    margin: 0 auto;
-    font-size: 16px;
-    padding: 4px 6px;
-  }
-
-  .player-page .player-rank-flag {
-    gap: 0.4rem;
-  }
-
-  .player-page .player-picture {
-    width: 70px;
-    height: 70px;
-  }
-
-  .player-page .score-container,
-  .player-page .passes-container {
-    gap: 0.75rem;
-  }
-
-  .player-page .score-item {
-    min-width: 100px;
-  }
-
-  .player-page .score-name {
-    font-size: 0.75rem;
-  }
-
-  .player-page .score-value {
-    font-size: 1rem;
-  }
-
-  .player-page .edit-button {
-    width: 40px;
-    height: 40px;
-    min-width: 40px; /* Ensure minimum touch target size */
-    min-height: 40px;
-  }
-
-  .player-page .edit-button:active {
-    background-color: var(--color-white-t40); /* More prominent on mobile */
-    transform: scale(0.92); /* More noticeable scale on mobile */
-  }
-
-  .player-page .edit-button svg {
-    width: 20px;
-    height: 20px;
-  }
-
   .case-open-button img {
     height: 70px;
   }
@@ -884,97 +408,13 @@
 }
 
 @media (max-width: 360px) {
-  .player-page .player-info .player-name-rank h1 {
-    font-size: 16px;
-  }
-
-  .player-page .player-info .player-name-rank h2 {
-    font-size: 14px;
-  }
-
-  .player-page .player-rank-flag {
-    gap: 0.3rem;
-  }
-
-  .player-page .player-picture {
-    width: 60px;
-    height: 60px;
-  }
-
-  .player-page .player-picture-container {
-    min-width: 90px;
-    padding: 0.3rem;
-  }
-
-  .player-page .player-picture-container .mobile-diff-info .diff-image {
-    width: 24px;
-  }
-
-  .player-page .score-container,
-  .player-page .passes-container {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .player-page .score-item {
-    min-width: unset;
-    width: 100%;
-    max-width: 200px;
-  }
-
   .case-open-button img {
     height: 60px;
   }
 }
 
-/* Landscape mobile optimization */
-@media (max-width: 768px) and (orientation: landscape) {
-  .player-page .player-header {
-    flex-direction: row;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  .player-page .player-header-content {
-    flex-direction: row;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  .player-page .player-info-container {
-    flex-direction: row;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  .player-page .player-info {
-    margin-left: 1rem;
-    text-align: left;
-  }
-
-  .player-page .player-info .player-name-rank {
-    flex-direction: row;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .player-page .diff-container {
-    margin-top: 0;
-  }
-}
-
 /* Touch-friendly improvements for mobile */
 @media (hover: none) and (pointer: coarse) {
-  .player-page .edit-button:hover {
-    background-color: var(--color-white-t10);
-  }
-
-  .player-page .edit-button:active {
-    background-color: var(--color-white-t40) !important; /* Force prominent active state on touch */
-    transform: scale(0.92) !important; /* More noticeable feedback */
-    transition: background-color 0.1s ease, transform 0.1s ease; /* Faster transition for touch */
-  }
-
   .case-open-button:hover:not(:disabled) {
     transform: none;
     opacity: 1;
@@ -988,33 +428,3 @@
     transform: none;
   }
 }
-
-/* Desktop styles - show original diff container and hide mobile version */
-@media (min-width: 769px) {
-  .player-page .diff-container {
-    display: flex; /* Show original diff container on desktop */
-  }
-
-  .player-page .mobile-diff-info {
-    display: none; /* Hide mobile diff info on desktop */
-  }
-}
-
-/* High DPI display optimization */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  .player-page .player-picture {
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: pixelated;
-  }
-
-  .player-page .country-flag {
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: pixelated;
-  }
-
-  .player-page .diff-image {
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: pixelated;
-  }
-}
-

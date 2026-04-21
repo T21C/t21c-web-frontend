@@ -22,8 +22,14 @@
     "universalPassCount": "Universal Passes",
     "worldsFirstCount": "World's First Passes",
     "topDiff": "Top Difficulty",
-    "top12kDiff": "Top 12K Difficulty"
+    "top12kDiff": "Top 12K Difficulty",
+    "totalUniquePasses": "Total Unique Passes",
+    "topAccClearNum": "Top Acc Clear Num",
+    "tilesPressed": "Tiles Pressed"
   },
+  "editProfile": "Edit profile",
+  "adminEdit": "Admin edit",
+  "viewUserPacks": "View user's packs",
   "sections": {
     "scores": {
       "title": "Scores",
