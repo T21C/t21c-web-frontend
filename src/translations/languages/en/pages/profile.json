@@ -93,7 +93,7 @@
       "totalTilecountCleared": "Total tilecount cleared",
       "totalLevelLengthMs": "Sum of level lengths (ms)",
       "totalPlaytimeMs": "Estimated playtime (ms)",
-      "totalBpmSum": "Sum of BPM (cleared levels)",
+      "averageBpm": "Avg BPM (cleared levels)",
       "totalScoreV2": "Sum of score v2"
     },
     "extremes": {

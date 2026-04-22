@@ -98,9 +98,9 @@ export function buildPlayerStatGroups(ff, t, difficultyDict) {
           value: formatDurationMs(l.totalPlaytimeMs),
         },
         {
-          key: "totalBpmSum",
-          label: t("profile.funFacts.levelsCleared.totalBpmSum"),
-          value: formatFloat(l.totalBpmSum, 2),
+          key: "averageBpm",
+          label: t("profile.funFacts.levelsCleared.averageBpm"),
+          value: formatFloat(l.averageBpm, 2),
         },
         {
           key: "totalScoreV2",
@@ -273,7 +273,6 @@ export function buildCreatorStatGroups(ff, t, difficultyDict) {
           label: t("creators.profile.funFacts.content.totalLevelDurationMs"),
           value: formatDurationMs(co.totalLevelDurationMs),
         },
-        { key: "totalBpmSum", label: t("creators.profile.funFacts.content.totalBpmSum"), value: formatFloat(co.totalBpmSum, 2) },
         {
           key: "averageTilecount",
           label: t("creators.profile.funFacts.content.averageTilecount"),

@@ -20,6 +20,7 @@ import { AccountStatusBanners } from "@/components/account/AccountStatusBanners/
 import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { buildPlayerStatGroups } from "@/utils/profileStatGroups";
+import { buildPlayerIconSlots } from "@/utils/profileIconSlots";
 const ENABLE_ROULETTE = import.meta.env.VITE_APRIL_FOOLS === "true";
 
 const PASSES_PER_PAGE = 50;
@@ -259,6 +260,11 @@ const ProfilePage = () => {
         [playerData?.funFacts, t, difficultyDict],
       );
 
+      const iconSlots = useMemo(
+        () => buildPlayerIconSlots(playerData?.passes, difficultyDict || {}),
+        [playerData?.passes, difficultyDict],
+      );
+
       // Define searchable fields (extendable)
       const searchableFields = useMemo(() => ({
         song: (pass) => pass.level?.song?.toLowerCase() || '',
@@ -397,6 +403,7 @@ const ProfilePage = () => {
                   <ProfileHeader
                     mode="player"
                     className="player-page__profile-header"
+                    iconSlots={iconSlots}
                     avatarUrl={playerData?.user?.avatarUrl || playerData?.pfp}
                     fallbackAvatarUrl={playerData?.pfp || "/default-avatar.jpg"}
                     name={playerData?.name || t("profile.meta.defaultTitle")}

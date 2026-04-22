@@ -21,19 +21,19 @@ const parseRankColor = (rank) => {
 };
 
 const DEFAULT_PLAYER_ICON_SLOTS = [
-  { key: "p", letter: "P", count: 0, color: "#3b82f6" },
-  { key: "g", letter: "G", count: 0, color: "#eab308" },
-  { key: "u", letter: "U", count: 0, color: "#c4b5fd" },
-  { key: "x", letter: "+", count: 0, color: "#f97316" },
-  { key: "y", letter: "+", count: 0, color: "#4a2f63" },
+  { key: "p", letter: "P", count: "—", badge: 0 },
+  { key: "g", letter: "G", count: "—", badge: 0 },
+  { key: "u", letter: "U", count: "—", badge: 0 },
+  { key: "gq", letter: "GQ", count: "—", badge: 0 },
+  { key: "uq", letter: "UQ", count: "—", badge: 0 },
 ];
 
 const DEFAULT_CREATOR_ICON_SLOTS = [
-  { key: "c1", letter: "?", count: 0, color: "var(--color-purple-1)" },
-  { key: "c2", letter: "?", count: 0, color: "var(--color-purple-2)" },
-  { key: "c3", letter: "?", count: 0, color: "var(--color-purple-3)" },
-  { key: "c4", letter: "?", count: 0, color: "var(--color-gray-2)" },
-  { key: "c5", letter: "?", count: 0, color: "var(--color-black-t50)" },
+  { key: "c1", letter: "?", count: "", badge: 0 },
+  { key: "c2", letter: "?", count: "", badge: 0 },
+  { key: "c3", letter: "?", count: "", badge: 0 },
+  { key: "c4", letter: "?", count: "", badge: 0 },
+  { key: "c5", letter: "?", count: "", badge: 0 },
 ];
 
 const padIconSlots = (slots, defaults) => {
@@ -178,11 +178,18 @@ const ProfileHeader = ({
                     <div
                       key={slot.key}
                       className="profile-header__icon-slot"
-                      style={{ background: slot.color }}
-                      title={slot.title}
+                      title={slot.tooltip ?? slot.title}
                     >
-                      <span className="profile-header__icon-slot-letter">{slot.letter}</span>
-                      <span className="profile-header__icon-slot-count">{slot.count ?? 0}</span>
+                      {slot.iconUrl ? (
+                        <img
+                          className="profile-header__icon-slot-img"
+                          src={slot.iconUrl}
+                          alt=""
+                          decoding="async"
+                        />
+                      ) : (
+                        <span className="profile-header__icon-slot-letter">{slot.letter}</span>
+                      )}
                       <span className="profile-header__icon-slot-badge">{slot.badge ?? slot.count ?? 0}</span>
                     </div>
                   ))}

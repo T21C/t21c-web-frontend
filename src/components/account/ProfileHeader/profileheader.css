@@ -246,12 +246,22 @@
   color: var(--color-white);
   text-shadow: 0 1px 2px var(--color-black-t80);
   flex-shrink: 0;
+  background: var(--color-black-t40);
+  border: 1px solid var(--color-white-t12);
 }
 
 .profile-header .profile-header__icon-slot-letter,
 .profile-header .profile-header__icon-slot-count {
   font-size: 0.95rem;
   line-height: 1;
+}
+
+.profile-header .profile-header__icon-slot-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
 .profile-header .profile-header__icon-slot-badge {

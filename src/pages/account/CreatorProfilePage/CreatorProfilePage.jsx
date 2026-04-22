@@ -1,5 +1,5 @@
 import "./creatorprofilepage.css";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { buildCreatorStatGroups } from "@/utils/profileStatGroups";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
@@ -14,6 +14,8 @@ import { ChevronIcon, AdofaiIcon } from "@/components/common/icons";
 import { CreatorManagementPopup } from "@/components/popups/Creators";
 import LevelPage from "@/pages/common/Level/LevelPage/LevelPage";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
+import { buildCreatorIconSlots } from "@/utils/profileIconSlots";
+import CurationTypeSelector from "@/components/account/CurationTypeSelector/CurationTypeSelector";
 
 const COLLAPSED_STAT_KEYS = ["chartsTotal", "chartsCreated", "totalChartClears"];
 
@@ -23,7 +25,7 @@ const CreatorProfilePage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation('pages');
   const { user } = useAuth();
-  const { difficultyDict } = useDifficultyContext();
+  const { difficultyDict, curationTypesDict } = useDifficultyContext();
 
   const [profile, setProfile] = useState(null);
   const [profileLoading, setProfileLoading] = useState(true);
@@ -66,8 +68,36 @@ const CreatorProfilePage = () => {
     [profile?.funFacts, t, difficultyDict],
   );
 
-  const currentUrl = window.location.origin + location.pathname;
   const creatorDoc = profile?.creator || profile?.doc || profile;
+
+  const iconSlots = useMemo(
+    () =>
+      buildCreatorIconSlots(
+        profile?.curationTypeCounts,
+        profile?.displayCurationTypeIds,
+        curationTypesDict || {},
+      ),
+    [profile?.curationTypeCounts, profile?.displayCurationTypeIds, curationTypesDict],
+  );
+
+  const canEditHeaderCurationSlots = useMemo(() => {
+    if (!user || !creatorDoc) return false;
+    const cid = Number(creatorId);
+    const linkedCreator = user.creatorId != null && Number(user.creatorId) === cid;
+    const linkedUser = creatorDoc.user?.id && user.id === creatorDoc.user.id;
+    return (
+      linkedCreator ||
+      Boolean(linkedUser) ||
+      hasFlag(user, permissionFlags.SUPER_ADMIN) ||
+      hasFlag(user, permissionFlags.HEAD_CURATOR)
+    );
+  }, [user, creatorDoc, creatorId]);
+
+  const handleDisplayCurationsSaved = useCallback((ids) => {
+    setProfile((p) => (p && typeof p === "object" ? { ...p, displayCurationTypeIds: ids } : p));
+  }, []);
+
+  const currentUrl = window.location.origin + location.pathname;
 
   if (profileLoading) {
     return (
@@ -106,6 +136,7 @@ const CreatorProfilePage = () => {
         <ProfileHeader
           mode="creator"
           className="creator-profile-page__profile-header"
+          iconSlots={iconSlots}
           avatarUrl={creatorDoc.user?.avatarUrl}
           fallbackAvatarUrl=""
           name={creatorDoc.name}
@@ -153,6 +184,14 @@ const CreatorProfilePage = () => {
               ) : null}
             </>
           }
+        />
+        <CurationTypeSelector
+          creatorId={Number(creatorId)}
+          curationTypeCounts={profile?.curationTypeCounts}
+          displayCurationTypeIds={profile?.displayCurationTypeIds}
+          curationTypesDict={curationTypesDict || {}}
+          canEdit={canEditHeaderCurationSlots}
+          onSaved={handleDisplayCurationsSaved}
         />
 
         <section className="creator-profile-page__section">

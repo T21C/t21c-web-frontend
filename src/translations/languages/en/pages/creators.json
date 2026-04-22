@@ -100,7 +100,6 @@
       "content": {
         "totalTilesMade": "Total tiles (charts)",
         "totalLevelDurationMs": "Total chart duration (ms)",
-        "totalBpmSum": "Sum of BPM",
         "averageTilecount": "Avg tilecount",
         "averageLevelLengthMs": "Avg level length (ms)",
         "averageBpm": "Avg BPM",
