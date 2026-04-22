@@ -113,17 +113,61 @@ const ProfileHeader = ({
       ? String(bannerUrl).trim()
       : DEFAULT_BANNER_IMAGE;
 
+  const displayName = name || "—";
+
   return (
     <div className={shellClass}>
       <div className="profile-header">
-        <div className="profile-header__banner-wrap" aria-hidden>
-          <img
-            className="profile-header__banner-img"
-            src={bannerImageSrc}
-            alt=""
-            decoding="async"
-          />
+        <div className="profile-header__banner-wrap" aria-hidden="true">
+        <img
+          className="profile-header__banner-img"
+          src={bannerImageSrc}
+          alt=""
+          decoding="async"
+        />
         </div>
+        <svg
+          className="profile-header__name-overlay"
+          viewBox="0 0 800 176"
+          preserveAspectRatio="xMinYMax meet"
+          aria-hidden="true"
+        >
+            <mask id="profile-name-cutout">
+              {/* everything visible */}
+              <rect width="100%" height="100%" fill="white" />
+        
+              {/* stroke becomes the hole */}
+              <text
+                x="180"
+                y="150"
+                textAnchor="start"
+                fill="#000"
+                stroke="black"
+                strokeWidth="13px"
+                strokeLinejoin="round"
+                className="profile-header__name-svg-text"
+              >
+                {displayName}
+              </text>
+            </mask>
+        </svg>
+        <svg
+          className="profile-header__name-overlay"
+          viewBox="0 0 800 176"
+          preserveAspectRatio="xMinYMax meet"
+          aria-hidden="true"
+        >
+          <text
+            x="180"
+            y="150"
+            textAnchor="start"
+            fill="#fff"
+            className="profile-header__name-svg-text"
+          >
+            {displayName}
+          </text>
+        </svg>
+        <h1 className="profile-header__name-sr">{displayName}</h1>
         <div className="profile-header__inner">
           <div className="profile-header__body">
             <div className="profile-header__left">
@@ -152,11 +196,6 @@ const ProfileHeader = ({
             </div>
 
             <div className="profile-header__center">
-              <div className="profile-header__name-row">
-                <div className="profile-header__name-block">
-                  <h1 className="profile-header__name" data-name={name || "—"}>{name || "—"}</h1>
-                </div>
-              </div>
               <div className="profile-header__handle-row">
                 {country ? (
                   <img

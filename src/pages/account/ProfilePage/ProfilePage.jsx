@@ -3,12 +3,12 @@ import api from "@/utils/api";
 import { useEffect, useState, useMemo } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom"
 import { formatNumber } from "@/utils";
-import { MetaTags } from "@/components/common/display";
+import { DifficultyGraph, MetaTags } from "@/components/common/display";
 import { ScoreCard } from "@/components/cards";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
 import { AdminPlayerPopup } from "@/components/popups/Users";
-import { ShieldIcon, EditIcon, SortAscIcon, SortDescIcon, PackIcon, EyeIcon, EyeOffIcon } from "@/components/common/icons";
+import { ShieldIcon, EditIcon, SortAscIcon, SortDescIcon, PackIcon, EyeIcon, EyeOffIcon, ChevronIcon } from "@/components/common/icons";
 import { CaseOpenSelector, CustomSelect } from "@/components/common/selectors";
 import caseOpen from "@/assets/icons/case.png";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -21,6 +21,7 @@ import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { buildPlayerStatGroups } from "@/utils/profileStatGroups";
 import { buildPlayerIconSlots } from "@/utils/profileIconSlots";
+import { toDifficultyGraphData } from "@/utils/statFormatters";
 const ENABLE_ROULETTE = import.meta.env.VITE_APRIL_FOOLS === "true";
 
 const PASSES_PER_PAGE = 50;
@@ -42,6 +43,7 @@ const ProfilePage = () => {
     const [displayedPasses, setDisplayedPasses] = useState([]);
     const [hasMore, setHasMore] = useState(true);
     const [showHiddenPasses, setShowHiddenPasses] = useState(false);
+    const [scoresCollapsed, setScoresCollapsed] = useState(false);
 
     const isOwnProfile = !playerId || Number(playerId) === user?.playerId;
 
@@ -192,6 +194,8 @@ const ProfilePage = () => {
         minItem == null || score.impact < minItem.impact ? score : minItem
       , null);
 
+      const scoresExpanded = !scoresCollapsed;
+
       const sortByScore = (a, b) => {
         return sortOrder === 'DESC' ? (b.scoreV2 || 0) - (a.scoreV2 || 0) : (a.scoreV2 || 0) - (b.scoreV2 || 0);
       }
@@ -256,13 +260,18 @@ const ProfilePage = () => {
       );
 
       const statGroups = useMemo(
-        () => buildPlayerStatGroups(playerData?.funFacts, t, difficultyDict || {}),
-        [playerData?.funFacts, t, difficultyDict],
+        () => buildPlayerStatGroups(playerData?.funFacts, t),
+        [playerData?.funFacts, t],
       );
 
       const iconSlots = useMemo(
         () => buildPlayerIconSlots(playerData?.passes, difficultyDict || {}),
         [playerData?.passes, difficultyDict],
+      );
+
+      const difficultyGraphData = useMemo(
+        () => toDifficultyGraphData(playerData?.funFacts?.clearsByDifficulty, difficultyDict || {}, "passes"),
+        [playerData?.funFacts?.clearsByDifficulty, difficultyDict],
       );
 
       // Define searchable fields (extendable)
@@ -484,9 +493,28 @@ const ProfilePage = () => {
               </div>
               {playerData?.passes && playerData.passes.length > 0 && (
                 <div className="scores-section">
-                  <h2>{t('profile.sections.scores.title')}</h2>
+                  <div className="player-page__section-title-row">
+                    <h2>{t('profile.sections.scores.title')}</h2>
+                    <button
+                      type="button"
+                      className="player-page__chevron-btn"
+                      aria-expanded={scoresExpanded}
+                      aria-label={
+                        scoresCollapsed
+                          ? t('profile.sections.scores.expand', { defaultValue: 'Expand scores' })
+                          : t('profile.sections.scores.collapse', { defaultValue: 'Collapse scores' })
+                      }
+                      onClick={() => setScoresCollapsed((v) => !v)}
+                    >
+                      <ChevronIcon direction={scoresExpanded ? 'down' : 'right'} />
+                    </button>
+                  </div>
                   
                   {/* Search and Sort Controls */}
+                  <div
+                    id="player-scores-scroll-container"
+                    className={["player-page__scores-container", scoresCollapsed ? "hidden" : ""].join(" ").trim()}
+                  >
                   <div className="scores-controls">
                     <div className="search-container">
                       <svg className="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -559,7 +587,8 @@ const ProfilePage = () => {
                         </p>
                       )
                     }
-                    scrollableTarget="scrollableDiv"
+                    loader={<div className="loader loader-relative-position"/>}
+                    scrollableTarget="player-scores-scroll-container"
                     style={{ overflow: 'visible' }}
                   >
                     <div className="scores-list">
@@ -589,8 +618,16 @@ const ProfilePage = () => {
                       ))}
                     </div>
                   </InfiniteScroll>
+                  </div>
                 </div>
               )}
+
+              {difficultyGraphData.length > 0 ? (
+                <section className="player-page__difficulty-section">
+                  <h2>{t("profile.sections.difficultyBreakdown.title")}</h2>
+                  <DifficultyGraph data={difficultyGraphData} mode="passes" />
+                </section>
+              ) : null}
             </div>
           ) : <h1 className="player-notfound">{t('profile.notFound')}</h1>)
           : <div className="loader"></div>}

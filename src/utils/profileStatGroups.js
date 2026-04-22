@@ -4,15 +4,13 @@ import {
   formatFloat,
   formatPercentRatio,
   formatDateIso,
-  difficultyBreakdownEntries,
 } from "@/utils/statFormatters";
 
 /**
  * @param {object | null | undefined} ff server `funFacts` payload
  * @param {(key: string) => string} t i18n `t` bound to `pages` namespace
- * @param {Record<string, { name?: string; sortOrder?: number }>} difficultyDict
  */
-export function buildPlayerStatGroups(ff, t, difficultyDict) {
+export function buildPlayerStatGroups(ff, t) {
   if (!ff || typeof ff !== "object") return [];
 
   const c = ff.counts || {};
@@ -20,7 +18,6 @@ export function buildPlayerStatGroups(ff, t, difficultyDict) {
   const l = ff.levelsCleared || {};
   const x = ff.extremes || {};
   const a = ff.activity || {};
-  const byDiff = ff.clearsByDifficulty || {};
   const byType = ff.clearsByDifficultyType || {};
 
   const groups = [
@@ -172,19 +169,6 @@ export function buildPlayerStatGroups(ff, t, difficultyDict) {
       ],
     },
   ];
-
-  const diffEntries = difficultyBreakdownEntries(byDiff, difficultyDict).filter((e) => e.count > 0);
-  if (diffEntries.length) {
-    groups.push({
-      key: "breakdownByDifficulty",
-      label: t("profile.funFacts.groups.breakdownByDifficulty"),
-      rows: diffEntries.map((e) => ({
-        key: `diff_${e.key}`,
-        label: e.label,
-        value: formatCount(e.count),
-      })),
-    });
-  }
 
   const typeRows = ["PGU", "SPECIAL", "LEGACY", "UNKNOWN"].map((k) => ({
     key: `type_${k}`,
@@ -351,19 +335,6 @@ export function buildCreatorStatGroups(ff, t, difficultyDict) {
       ],
     },
   ];
-
-  const diffEntries = difficultyBreakdownEntries(byDiff, difficultyDict).filter((e) => e.count > 0);
-  if (diffEntries.length) {
-    groups.push({
-      key: "breakdownByDifficulty",
-      label: t("creators.profile.funFacts.groups.breakdownByDifficulty"),
-      rows: diffEntries.map((e) => ({
-        key: `diff_${e.key}`,
-        label: e.label,
-        value: formatCount(e.count),
-      })),
-    });
-  }
 
   groups.push({
     key: "breakdownByType",

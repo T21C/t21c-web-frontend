@@ -57,3 +57,30 @@ export function difficultyBreakdownEntries(map, difficultyDict) {
   entries.sort((a, b) => b.sortOrder - a.sortOrder || a.label.localeCompare(b.label));
   return entries;
 }
+
+/**
+ * Convert a fun-facts difficulty breakdown map into `DifficultyGraph` input data.
+ * Filters to PGU to mirror the HomePage chart.
+ *
+ * @param {Record<string, number>} breakdownMap diffId string -> count
+ * @param {Record<string, { name?: string; sortOrder?: number; type?: string }>} difficultyDict
+ * @param {'passes' | 'levels'} mode
+ */
+export function toDifficultyGraphData(breakdownMap, difficultyDict, mode) {
+  const isPasses = mode === "passes";
+  return Object.entries(breakdownMap || {})
+    .map(([id, count]) => {
+      const info = difficultyDict?.[id] || {};
+      if (info.type && info.type !== "PGU") return null;
+      const value = Number(count) || 0;
+      return {
+        id: Number(id),
+        name: info.name ?? `#${id}`,
+        passCount: isPasses ? value : 0,
+        levelCount: isPasses ? 0 : value,
+        sortOrder: info.sortOrder ?? 0,
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.sortOrder - b.sortOrder);
+}

@@ -7,7 +7,7 @@ import api from "@/utils/api";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
 import { LevelContextProvider } from "@/contexts/LevelContext";
-import { MetaTags, CreatorStatusBadge } from "@/components/common/display";
+import { DifficultyGraph, MetaTags, CreatorStatusBadge } from "@/components/common/display";
 import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
 import { ScrollButton } from "@/components/common/buttons";
 import { ChevronIcon, AdofaiIcon } from "@/components/common/icons";
@@ -16,6 +16,7 @@ import LevelPage from "@/pages/common/Level/LevelPage/LevelPage";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { buildCreatorIconSlots } from "@/utils/profileIconSlots";
 import CurationTypeSelector from "@/components/account/CurationTypeSelector/CurationTypeSelector";
+import { toDifficultyGraphData } from "@/utils/statFormatters";
 
 const COLLAPSED_STAT_KEYS = ["chartsTotal", "chartsCreated", "totalChartClears"];
 
@@ -78,6 +79,11 @@ const CreatorProfilePage = () => {
         curationTypesDict || {},
       ),
     [profile?.curationTypeCounts, profile?.displayCurationTypeIds, curationTypesDict],
+  );
+
+  const difficultyGraphData = useMemo(
+    () => toDifficultyGraphData(profile?.funFacts?.levelsByDifficulty, difficultyDict || {}, "levels"),
+    [profile?.funFacts?.levelsByDifficulty, difficultyDict],
   );
 
   const canEditHeaderCurationSlots = useMemo(() => {
@@ -243,6 +249,15 @@ const CreatorProfilePage = () => {
           </LevelContextProvider>
           </div>
         </section>
+
+        {difficultyGraphData.length > 0 ? (
+          <section className="creator-profile-page__section creator-profile-page__section--difficulty">
+            <h2 className="creator-profile-page__section-title">
+              {t("creators.profile.sections.difficultyBreakdown.title")}
+            </h2>
+            <DifficultyGraph data={difficultyGraphData} mode="levels" />
+          </section>
+        ) : null}
       </div>
 
       {showManagementPopup && (

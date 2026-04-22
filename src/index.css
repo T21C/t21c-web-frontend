@@ -229,6 +229,14 @@ body {
   top: 50%;
 }
 
+.loader-relative-position {
+  position: relative;
+  left: 50%;
+  height: 100px;
+  width: 0;
+  top: 100px;
+}
+
 .loader-offset {
   top: 62%;
 }

@@ -77,6 +77,46 @@
   text-align: center;
 }
 
+.player-page .player-page__section-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.player-page .player-page__chevron-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.player-page .player-page__chevron-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.player-page .player-page__chevron-btn:active {
+  transform: scale(0.98);
+}
+
+.player-page .player-page__scores-container {
+  max-height: 70rem;
+  overflow-y: scroll;
+  transition: max-height 0.3s ease-in-out;
+}
+
+.player-page .player-page__scores-container.hidden {
+  max-height: 0;
+}
+
 .player-page .scores-controls {
   display: flex;
   flex-direction: column;
