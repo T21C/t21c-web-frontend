@@ -19,6 +19,7 @@ import { CreatorIcon } from "@/components/common/icons/CreatorIcon";
 import { AccountStatusBanners } from "@/components/account/AccountStatusBanners/AccountStatusBanners";
 import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
+import { buildPlayerStatGroups } from "@/utils/profileStatGroups";
 const ENABLE_ROULETTE = import.meta.env.VITE_APRIL_FOOLS === "true";
 
 const PASSES_PER_PAGE = 50;
@@ -253,6 +254,11 @@ const ProfilePage = () => {
         [sortOptions, sortType]
       );
 
+      const statGroups = useMemo(
+        () => buildPlayerStatGroups(playerData?.funFacts, t, difficultyDict || {}),
+        [playerData?.funFacts, t, difficultyDict],
+      );
+
       // Define searchable fields (extendable)
       const searchableFields = useMemo(() => ({
         song: (pass) => pass.level?.song?.toLowerCase() || '',
@@ -398,6 +404,9 @@ const ProfilePage = () => {
                     country={playerData?.country}
                     badgeId={playerData?.rankedScoreRank}
                     badgeLabel="#"
+                    expandStatsAriaLabel={t("profile.funFacts.expandAria")}
+                    collapseStatsAriaLabel={t("profile.funFacts.collapseAria")}
+                    statGroups={statGroups}
                     statRows={[
                       {
                         key: "rankedScore",
@@ -413,26 +422,6 @@ const ProfilePage = () => {
                         key: "generalScore",
                         label: valueLabels.generalScore,
                         value: formatNumber(playerData?.generalScore || 0),
-                      },
-                      {
-                        key: "totalUniquePasses",
-                        label: t("profile.valueLabels.totalUniquePasses"),
-                        value: playerData?.totalPasses || 0,
-                      },
-                      {
-                        key: "worldsFirstCount",
-                        label: valueLabels.worldsFirstCount,
-                        value: playerData?.worldsFirstCount || 0,
-                      },
-                      {
-                        key: "topAccClearNum",
-                        label: t("profile.valueLabels.topAccClearNum"),
-                        value: playerData?.topAccClearNum ?? 0,
-                      },
-                      {
-                        key: "tilesPressed",
-                        label: t("profile.valueLabels.tilesPressed"),
-                        value: playerData?.tilesPressed ?? 0,
                       },
                     ]}
                     actions={

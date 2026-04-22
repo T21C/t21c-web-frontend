@@ -1,5 +1,7 @@
 import "./creatorprofilepage.css";
 import { useEffect, useMemo, useState } from "react";
+import { useDifficultyContext } from "@/contexts/DifficultyContext";
+import { buildCreatorStatGroups } from "@/utils/profileStatGroups";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import api from "@/utils/api";
 import { useTranslation } from "react-i18next";
@@ -13,15 +15,7 @@ import { CreatorManagementPopup } from "@/components/popups/Creators";
 import LevelPage from "@/pages/common/Level/LevelPage/LevelPage";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 
-const STAT_KEYS = [
-  'chartsTotal',
-  'chartsCreated',
-  'chartsCharted',
-  'chartsVfxed',
-  'chartsTeamed',
-  'totalChartClears',
-  'totalChartLikes',
-];
+const COLLAPSED_STAT_KEYS = ["chartsTotal", "chartsCreated", "totalChartClears"];
 
 const CreatorProfilePage = () => {
   const { creatorId } = useParams();
@@ -29,6 +23,7 @@ const CreatorProfilePage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation('pages');
   const { user } = useAuth();
+  const { difficultyDict } = useDifficultyContext();
 
   const [profile, setProfile] = useState(null);
   const [profileLoading, setProfileLoading] = useState(true);
@@ -64,6 +59,11 @@ const CreatorProfilePage = () => {
   const embeddedHiddenFilters = useMemo(
     () => ({ byCreatorId: creatorId }),
     [creatorId],
+  );
+
+  const statGroups = useMemo(
+    () => buildCreatorStatGroups(profile?.funFacts, t, difficultyDict || {}),
+    [profile?.funFacts, t, difficultyDict],
   );
 
   const currentUrl = window.location.origin + location.pathname;
@@ -105,7 +105,7 @@ const CreatorProfilePage = () => {
       <div className="creator-profile-page__body page-content-70rem">
         <ProfileHeader
           mode="creator"
-          className="profile-header--wide creator-profile-page__profile-header"
+          className="creator-profile-page__profile-header"
           avatarUrl={creatorDoc.user?.avatarUrl}
           fallbackAvatarUrl=""
           name={creatorDoc.name}
@@ -113,6 +113,9 @@ const CreatorProfilePage = () => {
           country={creatorDoc.user?.country || creatorDoc.country}
           badgeId={creatorDoc.id}
           badgeLabel="ID:"
+          expandStatsAriaLabel={t("creators.profile.funFacts.expandAria")}
+          collapseStatsAriaLabel={t("creators.profile.funFacts.collapseAria")}
+          statGroups={statGroups}
           verificationBadge={
             creatorDoc.verificationStatus ? (
               <CreatorStatusBadge
@@ -121,10 +124,10 @@ const CreatorProfilePage = () => {
               />
             ) : null
           }
-          statRows={STAT_KEYS.map((key) => ({
+          statRows={COLLAPSED_STAT_KEYS.map((key) => ({
             key,
             label: t(`creators.profile.stats.${key}`),
-            value: Math.trunc(Number(stats?.[key] ?? 0)).toLocaleString('en-US'),
+            value: Math.trunc(Number(stats?.[key] ?? 0)).toLocaleString("en-US"),
           }))}
           actions={
             <>

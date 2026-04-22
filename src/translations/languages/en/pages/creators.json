@@ -71,6 +71,62 @@
       "header": "Charts",
       "empty": "No charts found for this creator yet.",
       "searchPlaceholder": "Search this creator's charts..."
+    },
+    "funFacts": {
+      "expandAria": "Show all statistics",
+      "collapseAria": "Hide detailed statistics",
+      "groups": {
+        "identity": "Identity",
+        "credits": "Credits",
+        "content": "Chart content",
+        "audience": "Audience",
+        "curation": "Curation & rerates",
+        "timeline": "Timeline",
+        "breakdownByDifficulty": "Levels by difficulty",
+        "breakdownByType": "Levels by difficulty type"
+      },
+      "identity": {
+        "aliasCount": "Aliases",
+        "teamsJoined": "Teams joined"
+      },
+      "credits": {
+        "levelsCreditedDistinct": "Distinct levels credited",
+        "levelsAsCharter": "Levels as charter",
+        "levelsAsVfxer": "Levels as VFX",
+        "levelsAsCreator": "Levels as creator",
+        "levelsAsTeamMember": "Levels as team member",
+        "levelsOwned": "Levels owned (credit)"
+      },
+      "content": {
+        "totalTilesMade": "Total tiles (charts)",
+        "totalLevelDurationMs": "Total chart duration (ms)",
+        "totalBpmSum": "Sum of BPM",
+        "averageTilecount": "Avg tilecount",
+        "averageLevelLengthMs": "Avg level length (ms)",
+        "averageBpm": "Avg BPM",
+        "totalClearsOnLevels": "Total clears on charts",
+        "totalLikesOnLevels": "Total likes on charts",
+        "totalDownloadsOnLevels": "Total downloads on charts"
+      },
+      "audience": {
+        "uniquePlayersCleared": "Unique players who cleared",
+        "worldsFirstsOnLevels": "World's first clears on charts",
+        "totalTilesPlayedOnLevels": "Total tiles played (all passes)"
+      },
+      "curation": {
+        "curatedLevels": "Curated levels (assigned)",
+        "rerateCount": "Rerate history entries"
+      },
+      "timeline": {
+        "firstLevelAt": "First chart",
+        "latestLevelAt": "Latest chart"
+      },
+      "difficultyType": {
+        "PGU": "PGU",
+        "SPECIAL": "Special",
+        "LEGACY": "Legacy",
+        "UNKNOWN": "Other"
+      }
     }
   }
 }

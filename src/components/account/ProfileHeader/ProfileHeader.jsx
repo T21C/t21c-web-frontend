@@ -1,7 +1,11 @@
 import "./profileheader.css";
+import { useState, useMemo } from "react";
 import UserAvatar from "@/components/layout/UserAvatar/UserAvatar";
 import ChevronIcon from "@/components/common/icons/ChevronIcon";
 import { isoToEmoji } from "@/utils";
+
+/** Default banner when parent does not pass `bannerUrl` (replace when asset pipeline exists). */
+const DEFAULT_BANNER_IMAGE = "https://placehold.co/600x400@2x.png";
 
 const parseRankColor = (rank) => {
   switch (rank) {
@@ -55,7 +59,7 @@ const formatPlayerBadgeText = (rank) => {
 
 /**
  * Shared profile / creator banner header (dual mode).
- * Presentational: parents supply statRows, actions, and optional iconSlots.
+ * Presentational: parents supply statRows (collapsed), statGroups (expanded), actions, iconSlots.
  */
 const ProfileHeader = ({
   mode = "player",
@@ -70,13 +74,22 @@ const ProfileHeader = ({
   bannerUrl = null,
   iconSlots,
   statRows = [],
+  statGroups = null,
   actions = null,
   verificationBadge = null,
-  showChevron = true,
+  expandStatsAriaLabel = "Expand statistics",
+  collapseStatsAriaLabel = "Collapse statistics",
 }) => {
+  const [isStatsExpanded, setIsStatsExpanded] = useState(false);
+
   const defaults =
     mode === "creator" ? DEFAULT_CREATOR_ICON_SLOTS : DEFAULT_PLAYER_ICON_SLOTS;
   const resolvedSlots = padIconSlots(iconSlots, defaults);
+
+  const hasExpandableStats = useMemo(
+    () => Array.isArray(statGroups) && statGroups.some((g) => g?.rows?.length),
+    [statGroups],
+  );
 
   const badgeText =
     mode === "creator"
@@ -94,131 +107,161 @@ const ProfileHeader = ({
   const handleDisplay =
     handle != null && String(handle).length ? String(handle).replace(/^@/, "") : "";
 
-  const rootClass = ["profile-header", className].filter(Boolean).join(" ");
+  const shellClass = ["profile-header-shell", className].filter(Boolean).join(" ");
+  const bannerImageSrc =
+    bannerUrl != null && String(bannerUrl).trim().length > 0
+      ? String(bannerUrl).trim()
+      : DEFAULT_BANNER_IMAGE;
 
   return (
-    <div className={rootClass}>
-      <div
-        className="profile-header__banner"
-        style={
-          bannerUrl
-            ? { backgroundImage: `url(${bannerUrl})`, backgroundSize: "cover", backgroundPosition: "center" }
-            : undefined
-        }
-        aria-hidden
-      />
-      <div className="profile-header__inner">
-        <div className="profile-header__actions" role="toolbar" aria-label="Profile actions">
-          {actions}
+    <div className={shellClass}>
+      <div className="profile-header">
+        <div className="profile-header__banner-wrap" aria-hidden>
+          <img
+            className="profile-header__banner-img"
+            src={bannerImageSrc}
+            alt=""
+            decoding="async"
+          />
         </div>
-        <div className="profile-header__body">
-        <div className="profile-header__left">
-          <div className="profile-header__avatar-wrap">
-            <UserAvatar
-              primaryUrl={avatarUrl}
-              fallbackUrl={fallbackAvatarUrl}
-              className="profile-header__avatar"
-            />
-          </div>
-          <div
-            className="profile-header__badge"
-            style={
-              mode === "player" && badgeText !== "Unranked"
-                ? {
-                    color: rankColor,
-                    backgroundColor: `${rankColor}27`,
-                  }
-                : undefined
-            }
-          >
-            {badgeText}
-          </div>
-        </div>
-
-        <div className="profile-header__center">
-          <div className="profile-header__name-row">
-            {showChevron ? (
-              <button
-                type="button"
-                className="profile-header__chevron-btn"
-                aria-hidden
-                tabIndex={-1}
-                disabled
-              >
-                <ChevronIcon direction="down" color="var(--color-white)" size={14} />
-              </button>
-            ) : null}
-            <h1 className="profile-header__name">{name || "—"}</h1>
-            {verificationBadge ? (
-              <span className="profile-header__verification">{verificationBadge}</span>
-            ) : null}
-          </div>
-          <div className="profile-header__handle-row">
-            {country ? (
-              <img
-                src={isoToEmoji(country)}
-                alt=""
-                className="profile-header__flag"
-              />
-            ) : null}
-            {handleDisplay ? (
-              <span className="profile-header__handle">@{handleDisplay}</span>
-            ) : null}
-          </div>
-          <div className="profile-header__icon-row">
-            <div className="profile-header__icon-slots">
-              {resolvedSlots.map((slot) => (
-                <div
-                  key={slot.key}
-                  className="profile-header__icon-slot"
-                  style={{ background: slot.color }}
-                  title={slot.title}
-                >
-                  <span className="profile-header__icon-slot-letter">{slot.letter}</span>
-                  <span className="profile-header__icon-slot-count">{slot.count ?? 0}</span>
-                  <span className="profile-header__icon-slot-badge">{slot.badge ?? slot.count ?? 0}</span>
+        <div className="profile-header__inner">
+          <div className="profile-header__body">
+            <div className="profile-header__left">
+              <div className="profile-header__avatar-ring">
+                <div className="profile-header__avatar-wrap">
+                  <UserAvatar
+                    primaryUrl={avatarUrl}
+                    fallbackUrl={fallbackAvatarUrl}
+                    className="profile-header__avatar"
+                  />
                 </div>
-              ))}
-            </div>
-            {showChevron ? (
-              <button
-                type="button"
-                className="profile-header__chevron-btn profile-header__chevron-btn--row"
-                aria-hidden
-                tabIndex={-1}
-                disabled
-              >
-                <ChevronIcon direction="down" color="var(--color-white)" size={14} />
-              </button>
-            ) : null}
-          </div>
-        </div>
-
-        <div className="profile-header__stats">
-          <div className="profile-header__stat-rows">
-            {statRows.map((row) => (
-              <div key={row.key} className="profile-header__stat-row">
-                <span className="profile-header__stat-label">{row.label}</span>
-                <span className={["profile-header__stat-value", row.valueClassName || ""].filter(Boolean).join(" ")}>
-                  {row.value}
-                </span>
               </div>
-            ))}
+              <div
+                className="profile-header__badge"
+                style={
+                  mode === "player" && badgeText !== "Unranked"
+                    ? {
+                        color: rankColor,
+                        backgroundColor: `${rankColor}27`,
+                      }
+                    : undefined
+                }
+              >
+                {badgeText}
+              </div>
+            </div>
+
+            <div className="profile-header__center">
+              <div className="profile-header__name-row">
+                <div className="profile-header__name-block">
+                  <h1 className="profile-header__name" data-name={name || "—"}>{name || "—"}</h1>
+                  {verificationBadge ? (
+                    <span className="profile-header__verification">{verificationBadge}</span>
+                  ) : null}
+                </div>
+              </div>
+              <div className="profile-header__handle-row">
+                {country ? (
+                  <img
+                    src={isoToEmoji(country)}
+                    alt=""
+                    className="profile-header__flag"
+                  />
+                ) : null}
+                {handleDisplay ? (
+                  <span className="profile-header__handle">@{handleDisplay}</span>
+                ) : null}
+              </div>
+              <div className="profile-header__icon-row">
+                <div className="profile-header__icon-slots">
+                  {resolvedSlots.map((slot) => (
+                    <div
+                      key={slot.key}
+                      className="profile-header__icon-slot"
+                      style={{ background: slot.color }}
+                      title={slot.title}
+                    >
+                      <span className="profile-header__icon-slot-letter">{slot.letter}</span>
+                      <span className="profile-header__icon-slot-count">{slot.count ?? 0}</span>
+                      <span className="profile-header__icon-slot-badge">{slot.badge ?? slot.count ?? 0}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="profile-header__stats">
+              <div className="profile-header__stat-rows">
+                {statRows.map((row) => (
+                  <div key={row.key} className="profile-header__stat-row">
+                    <span className="profile-header__stat-label">{row.label}</span>
+                    <span
+                      className={["profile-header__stat-value", row.valueClassName || ""].filter(Boolean).join(" ")}
+                    >
+                      {row.value}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              {hasExpandableStats ? (
+                <button
+                  type="button"
+                  className="profile-header__chevron-btn profile-header__chevron-btn--stats"
+                  aria-expanded={isStatsExpanded}
+                  aria-label={isStatsExpanded ? collapseStatsAriaLabel : expandStatsAriaLabel}
+                  onClick={() => setIsStatsExpanded((v) => !v)}
+                >
+                  <ChevronIcon
+                    direction={isStatsExpanded ? "up" : "down"}
+                    color="var(--color-white)"
+                    size={14}
+                  />
+                </button>
+              ) : null}
+            </div>
           </div>
-          {showChevron ? (
-            <button
-              type="button"
-              className="profile-header__chevron-btn profile-header__chevron-btn--stats"
-              aria-hidden
-              tabIndex={-1}
-              disabled
+
+          {hasExpandableStats ? (
+            <div
+              className="profile-header__expanded-wrap"
+              data-expanded={isStatsExpanded ? "true" : "false"}
             >
-              <ChevronIcon direction="down" color="var(--color-white)" size={14} />
-            </button>
+              <div className="profile-header__expanded">
+                <div className="profile-header__expanded-grid">
+                  {statGroups.map((group) => (
+                    <section key={group.key} className="profile-header__stat-group">
+                      <h2 className="profile-header__stat-group-title">{group.label}</h2>
+                      <div className="profile-header__stat-group-rows">
+                        {group.rows.map((row) => (
+                          <div key={row.key} className="profile-header__stat-row">
+                            <span className="profile-header__stat-label">{row.label}</span>
+                            <span
+                              className={["profile-header__stat-value", row.valueClassName || ""]
+                                .filter(Boolean)
+                                .join(" ")}
+                            >
+                              {row.value}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </section>
+                  ))}
+                </div>
+              </div>
+            </div>
           ) : null}
         </div>
-        </div>
       </div>
+      {actions ? (
+        <aside
+          className="profile-header__actions"
+          role="toolbar"
+          aria-label="Profile actions"
+        >
+          {actions}
+        </aside>
+      ) : null}
     </div>
   );
 };

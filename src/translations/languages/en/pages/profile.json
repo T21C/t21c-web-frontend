@@ -30,6 +30,7 @@
   "editProfile": "Edit profile",
   "adminEdit": "Admin edit",
   "viewUserPacks": "View user's packs",
+  "linkToCreator": "View creator profile",
   "sections": {
     "scores": {
       "title": "Scores",
@@ -53,6 +54,72 @@
   "hideHiddenPasses": "Hide hidden passes",
   "infiniteScroll": {
     "end": "You've reached the end!"
+  },
+  "funFacts": {
+    "expandAria": "Show all statistics",
+    "collapseAria": "Hide detailed statistics",
+    "groups": {
+      "counts": "Pass counts",
+      "judgements": "Judgements",
+      "levelsCleared": "Levels cleared",
+      "extremes": "Records",
+      "activity": "Activity",
+      "breakdownByDifficulty": "Clears by difficulty",
+      "breakdownByType": "Clears by difficulty type"
+    },
+    "counts": {
+      "totalPasses": "Total passes",
+      "uniqueLevelsCleared": "Unique levels cleared",
+      "worldsFirstCount": "World's first clears",
+      "clears12K": "12K clears",
+      "clears16K": "16K clears",
+      "clearsNoHoldTap": "No-hold tap clears",
+      "duplicatePasses": "Duplicate clears",
+      "hiddenPasses": "Hidden passes (visible to you)"
+    },
+    "judgements": {
+      "totalTilesHit": "Total tiles hit",
+      "earlyDouble": "Early double",
+      "earlySingle": "Early single",
+      "ePerfect": "Early perfect",
+      "perfect": "Perfect",
+      "lPerfect": "Late perfect",
+      "lateSingle": "Late single",
+      "lateDouble": "Late double",
+      "perfectRatio": "Perfect ratio",
+      "earlyVsLateBias": "Early vs late bias"
+    },
+    "levelsCleared": {
+      "totalTilecountCleared": "Total tilecount cleared",
+      "totalLevelLengthMs": "Sum of level lengths (ms)",
+      "totalPlaytimeMs": "Estimated playtime (ms)",
+      "totalBpmSum": "Sum of BPM (cleared levels)",
+      "totalScoreV2": "Sum of score v2"
+    },
+    "extremes": {
+      "firstPassAt": "First pass",
+      "latestPassAt": "Latest pass",
+      "bestAccuracy": "Best accuracy",
+      "worstAccuracy": "Worst accuracy",
+      "topSpeed": "Top speed",
+      "highestTilecountCleared": "Highest tilecount (single level)",
+      "longestLevelMs": "Longest level (ms)",
+      "highestBpmCleared": "Highest BPM cleared"
+    },
+    "activity": {
+      "accountAgeDays": "Account age (days)",
+      "daysActive": "Days with a pass",
+      "passesLast30Days": "Passes (last 30 days)",
+      "uniqueLevelsLiked": "Levels liked",
+      "packsOwned": "Packs owned",
+      "packsFavorited": "Packs favorited"
+    },
+    "difficultyType": {
+      "PGU": "PGU",
+      "SPECIAL": "Special",
+      "LEGACY": "Legacy",
+      "UNKNOWN": "Other"
+    }
   },
   "discordRoleSync": {
     "buttonTitle": {
