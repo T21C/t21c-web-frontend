@@ -30,7 +30,7 @@
 .profile-header .profile-header__banner-img {
   display: block;
   width: 100%;
-  height: 7rem;
+  height: 10rem;
   object-fit: cover;
   object-position: center;
 }
@@ -54,7 +54,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 1rem 1.5rem;
-  padding: 1.25rem;
+  padding: 1.25rem 1.5rem;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
 }
@@ -141,6 +141,7 @@
 .profile-header .profile-header__name-row {
   display: flex;
   flex-direction: row;
+  max-width: 100%;
   align-items: flex-start;
   flex-wrap: wrap;
   gap: 0.5rem;
@@ -172,18 +173,18 @@
 
 .profile-header .profile-header__name {
   margin: 0;
-  font-size: 2rem;
+  margin-left: -0.5rem;
+  font-size: 2.15rem;
   position: absolute;
-  padding: 0.25rem;
+  padding: 0.5rem;
   overflow: hidden;
-  max-width: 70%;
+  max-width: 75%;
   white-space: nowrap;
   text-overflow: ellipsis;
   font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  top: -1.5rem;
+  top: -2rem;
   font-weight: 800;
   color: var(--color-white);
-  line-height: 1.15;
 }
 
 .profile-header .profile-header__name::before {
@@ -191,11 +192,12 @@
   position: absolute;
   overflow: hidden;
   white-space: nowrap;
-  padding: 0.25rem;
+  padding: 0.5rem;
   text-overflow: ellipsis;
   top: 0;
   left: 0;
   z-index: -1;
+  max-width: 98.4%;
   width: 100%;
   height: 100%;
   -webkit-text-stroke: 0.6rem var(--profile-header-surface);
@@ -297,6 +299,7 @@
 .profile-header .profile-header__stat-label {
   font-size: 0.78rem;
   text-transform: uppercase;
+  white-space: nowrap;
   letter-spacing: 0.04em;
   color: var(--color-white-t60);
   padding-right: 0.65rem;
@@ -457,9 +460,27 @@
   .profile-header .profile-header__body {
     justify-content: center;
   }
+  .profile-header .profile-header__center {
+    align-items: center;
+  }
+  .profile-header .profile-header__name-block {
+    width: 100%;
+  }
+  .profile-header .profile-header__name {
+    max-width: 100%;
+    margin: 0;
+    position: relative;
+  }
+  .profile-header .profile-header__left {
+    height: 6rem;
+  }
+}
+
+@media (max-width: 600px) {
   .profile-header .profile-header__name-row {
     width: 100%;
     height: unset;
+    justify-content: center;
   }
   .profile-header .profile-header__name-block {
     max-width: 100%;
@@ -471,12 +492,7 @@
     max-width: 100%;
     position: relative;
     height: unset;
+    margin: 0;
     top: unset;
-  }
-  .profile-header .profile-header__center {
-    align-items: center;
-  }
-  .profile-header .profile-header__left {
-    height: 6rem;
   }
 }
