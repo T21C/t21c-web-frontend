@@ -155,9 +155,6 @@ const ProfileHeader = ({
               <div className="profile-header__name-row">
                 <div className="profile-header__name-block">
                   <h1 className="profile-header__name" data-name={name || "—"}>{name || "—"}</h1>
-                  {verificationBadge ? (
-                    <span className="profile-header__verification">{verificationBadge}</span>
-                  ) : null}
                 </div>
               </div>
               <div className="profile-header__handle-row">
@@ -171,6 +168,9 @@ const ProfileHeader = ({
                 {handleDisplay ? (
                   <span className="profile-header__handle">@{handleDisplay}</span>
                 ) : null}
+                {verificationBadge ? (
+                    <span className="profile-header__verification">{verificationBadge}</span>
+                  ) : null}
               </div>
               <div className="profile-header__icon-row">
                 <div className="profile-header__icon-slots">

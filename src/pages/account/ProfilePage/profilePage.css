@@ -67,6 +67,7 @@
 .player-page .scores-section {
   margin-top: 20px;
   padding: 20px;
+  width: 1000px;
   max-width: 90%; /* Fallback for smaller screens */
   background-color: #00000057;
 }

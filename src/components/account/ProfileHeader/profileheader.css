@@ -2,7 +2,10 @@
 
 .profile-header-shell {
   position: relative;
-  width: 100%;
+  display: flex;
+  justify-content: center;
+  width: fit-content;
+  align-self: center;
 }
 
 .profile-header {
@@ -11,6 +14,7 @@
 
   position: relative;
   width: 100%;
+  max-width: 50rem;
   border-radius: 10px;
   overflow: visible;
   border: 1px solid var(--color-white-t10);
@@ -30,7 +34,7 @@
 .profile-header .profile-header__banner-img {
   display: block;
   width: 100%;
-  height: 10rem;
+  height: 9rem;
   object-fit: cover;
   object-position: center;
 }
@@ -146,6 +150,7 @@
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-top: -1.25rem;
+  margin-bottom: 0.5rem;
   z-index: 2;
 }
 

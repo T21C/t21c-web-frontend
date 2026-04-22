@@ -23,10 +23,6 @@
   color: rgba(255, 255, 255, 0.85);
 }
 
-.creator-profile-page .creator-profile-page__profile-header {
-  width: 100%;
-}
-
 .creator-profile-page .creator-profile-page__section {
   display: flex;
   flex-direction: column;
