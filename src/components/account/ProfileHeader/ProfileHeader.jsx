@@ -1,11 +1,24 @@
 import "./profileheader.css";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import UserAvatar from "@/components/layout/UserAvatar/UserAvatar";
 import ChevronIcon from "@/components/common/icons/ChevronIcon";
 import { isoToEmoji } from "@/utils";
 
 /** Default banner when parent does not pass `bannerUrl` (replace when asset pipeline exists). */
 const DEFAULT_BANNER_IMAGE = "https://placehold.co/600x400@2x.png";
+
+function useViewportWidth() {
+  const [width, setWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return width;
+}
 
 const parseRankColor = (rank) => {
   switch (rank) {
@@ -81,6 +94,25 @@ const ProfileHeader = ({
   collapseStatsAriaLabel = "Collapse statistics",
 }) => {
   const [isStatsExpanded, setIsStatsExpanded] = useState(false);
+  const nameYPosition = "7.5rem";
+
+  const viewportWidth = useViewportWidth();
+
+  const nameXPosition = useMemo(() => {
+    if (viewportWidth < 768) {
+      return "50%";
+    } else {
+      return "10.85rem";
+    }
+  }, [viewportWidth]);
+
+  const dxPos = useMemo(() => {
+    if (viewportWidth < 768) {
+      return "16";
+    } else {
+      return "0";
+    }
+  }, [viewportWidth]);
 
   const defaults =
     mode === "creator" ? DEFAULT_CREATOR_ICON_SLOTS : DEFAULT_PLAYER_ICON_SLOTS;
@@ -118,56 +150,71 @@ const ProfileHeader = ({
   return (
     <div className={shellClass}>
       <div className="profile-header">
-        <div className="profile-header__banner-wrap" aria-hidden="true">
-        <img
-          className="profile-header__banner-img"
-          src={bannerImageSrc}
-          alt=""
-          decoding="async"
-        />
-        </div>
-        <svg
-          className="profile-header__name-overlay"
-          viewBox="0 0 800 176"
-          preserveAspectRatio="xMinYMax meet"
-          aria-hidden="true"
-        >
-            <mask id="profile-name-cutout">
-              {/* everything visible */}
-              <rect width="100%" height="100%" fill="white" />
-        
-              {/* stroke becomes the hole */}
-              <text
-                x="180"
-                y="150"
-                textAnchor="start"
-                fill="#000"
-                stroke="black"
-                strokeWidth="13px"
-                strokeLinejoin="round"
-                className="profile-header__name-svg-text"
+        <div className="profile-header__name-position">
+              <div className="profile-header__name-wrap name-mask">
+              <svg
+                className="profile-header__name-svg"
+                dominantBaseline="hanging"
               >
-                {displayName}
-              </text>
-            </mask>
-        </svg>
-        <svg
-          className="profile-header__name-overlay"
-          viewBox="0 0 800 176"
-          preserveAspectRatio="xMinYMax meet"
-          aria-hidden="true"
-        >
-          <text
-            x="180"
-            y="150"
-            textAnchor="start"
-            fill="#fff"
-            className="profile-header__name-svg-text"
-          >
-            {displayName}
-          </text>
-        </svg>
-        <h1 className="profile-header__name-sr">{displayName}</h1>
+                <defs>
+                  <mask 
+                  id="name-cutout-mask"
+                  maskUnits="userSpaceOnUse"
+                  maskContentUnits="userSpaceOnUse"
+                  >
+                    <rect x="0" y="0" width="100%" height="100%" fill="white" />
+                <text
+                  x={`${nameXPosition}`}
+                  y={`${nameYPosition}`}
+                  fill="black"
+                  stroke="black"
+                  strokeWidth="8px"
+                  dx={dxPos}
+                  strokeLinejoin="round"
+                  className="profile-header__name-svg-text"
+                >
+                  {displayName}
+                </text>
+                <text
+                  x={`${nameXPosition}`}
+                  y={`${nameYPosition}`}
+                  fill="black"
+                  stroke="black"
+                  strokeWidth="16px"
+                  dx={dxPos}
+                  strokeLinejoin="round"
+                  className="profile-header__name-svg-text"
+                >
+                  {displayName}
+                </text>
+                  </mask>
+                </defs>
+              </svg>
+              </div>
+              <div className="profile-header__name-wrap">
+              <svg
+                className="profile-header__name-svg"
+                dominantBaseline="hanging"
+              >
+                <text
+                  x={`${nameXPosition}`}
+                  y={`${nameYPosition}`}
+                  dx={dxPos}
+                  className="profile-header__name-svg-text"
+                >
+                  {displayName}
+                </text>
+              </svg>
+              </div>
+        </div>
+        <div className="profile-header__banner-wrap" aria-hidden="true">
+          <img
+            className="profile-header__banner-img"
+            src={bannerImageSrc}
+            alt=""
+            decoding="async"
+          />
+        </div>
         <div className="profile-header__inner">
           <div className="profile-header__body">
             <div className="profile-header__left">
