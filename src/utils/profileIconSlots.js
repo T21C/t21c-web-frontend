@@ -4,14 +4,6 @@
 
 import { selectIconSize } from "@/utils/Utility";
 
-const DEFAULT_CREATOR_ICON_SLOTS = [
-  { key: "c1", letter: "?", count: "", badge: 0 },
-  { key: "c2", letter: "?", count: "", badge: 0 },
-  { key: "c3", letter: "?", count: "", badge: 0 },
-  { key: "c4", letter: "?", count: "", badge: 0 },
-  { key: "c5", letter: "?", count: "", badge: 0 },
-];
-
 const PGU_REGEX = /^([PGUpgu])(\d{1,2})$/;
 
 /** 1-based n in 1..20 → Q tier 0..4 (four difficulties per bucket). */
@@ -215,50 +207,152 @@ export function buildPlayerIconSlots(aggregates, difficultyDict) {
   return [pSlot, gSlot, uSlot, gqSlot, uqSlot];
 }
 
-const padCreatorSlots = (slots) => {
-  const list = Array.isArray(slots) && slots.length ? [...slots] : [];
-  const defaults = [...DEFAULT_CREATOR_ICON_SLOTS];
-  while (list.length < 5) {
-    list.push(defaults[list.length] || defaults[defaults.length - 1]);
+const CREATOR_SLOT_FAMILIES = ["C", "V", "O", "H"];
+
+/** C / V / O / H followed only by digits (e.g. `C0`, `V3`). Anything else is "misc". */
+function parseCurationFamilyTier(name) {
+  const s = String(name ?? "").trim();
+  if (!s.length) return null;
+  const letter = s[0].toUpperCase();
+  if (!"CVOH".includes(letter)) return null;
+  const rest = s.slice(1);
+  if (rest !== "" && !/^\d+$/.test(rest)) return null;
+  const tier = rest === "" ? 0 : parseInt(rest, 10);
+  if (!Number.isFinite(tier) || tier < 0) return null;
+  return { letter, tier };
+}
+
+function tierDisplayCap(letter) {
+  return letter === "H" ? 2 : 3;
+}
+
+function iconUrlForCurationType(type) {
+  const rawIcon = type?.icon ?? null;
+  if (!rawIcon) return undefined;
+  try {
+    return selectIconSize(rawIcon, "small") || rawIcon;
+  } catch {
+    return rawIcon;
   }
-  return list.slice(0, 5);
-};
+}
 
 /**
- * @param {Record<string, number> | null | undefined} curationTypeCounts diffId-like string keys from API
- * @param {number[] | null | undefined} displayIds
- * @param {Record<number, { id?: number; name?: string; icon?: string | null; color?: string }>} curationTypesDict
+ * Normalize saved display ids: unique positive numeric ids, max 5, order preserved.
+ * @param {unknown} displayIds
+ * @returns {number[]}
  */
-export function buildCreatorIconSlots(curationTypeCounts, displayIds, curationTypesDict) {
+function normalizeDisplayCurationTypeIds(displayIds) {
+  if (!Array.isArray(displayIds)) return [];
+  const out = [];
+  const seen = new Set();
+  for (const x of displayIds) {
+    const id = Number(x);
+    if (!Number.isFinite(id) || id <= 0 || seen.has(id)) continue;
+    seen.add(id);
+    out.push(id);
+    if (out.length >= 5) break;
+  }
+  return out;
+}
+
+/**
+ * Up to five header slots for creators.
+ * When `displayCurationTypeIds` is non-empty, slots match that list in order; each badge is that type's count.
+ * Otherwise: C, V, O, H (only when that family has counts), then optional misc — empty families omitted.
+ * @param {Record<string, number> | null | undefined} curationTypeCounts
+ * @param {Record<number, { id?: number; name?: string; icon?: string | null; color?: string }>} curationTypesDict
+ * @param {unknown[] | null | undefined} displayCurationTypeIds — manual header badge order; if empty, use automatic layout
+ */
+export function buildCreatorIconSlots(curationTypeCounts, curationTypesDict, displayCurationTypeIds) {
   const counts = curationTypeCounts && typeof curationTypeCounts === "object" ? curationTypeCounts : {};
-  const ids = Array.isArray(displayIds) ? displayIds.filter((x) => Number.isFinite(Number(x))).map(Number) : [];
-  const uniqueIds = [...new Set(ids)].slice(0, 5);
+  const dict = curationTypesDict && typeof curationTypesDict === "object" ? curationTypesDict : {};
 
-  const slots = uniqueIds.map((typeId, idx) => {
-    const type = curationTypesDict?.[typeId];
-    const name = type?.name ?? `#${typeId}`;
-    const rawIcon = type?.icon ?? null;
-    let iconUrl;
-    if (rawIcon) {
-      try {
-        iconUrl = selectIconSize(rawIcon, "small") || rawIcon;
-      } catch {
-        iconUrl = rawIcon;
-      }
+  const manualIds = normalizeDisplayCurationTypeIds(displayCurationTypeIds);
+  if (manualIds.length > 0) {
+    return manualIds.map((typeId, idx) => {
+      const type = dict[typeId];
+      const name = type?.name ?? `#${typeId}`;
+      const cnt = Number(counts[String(typeId)] ?? counts[typeId] ?? 0) || 0;
+      const shortLetter = name.length <= 3 ? name : name.slice(0, 2);
+      const title = `${name} · ${cnt} level(s)`;
+      return {
+        key: `ct_${typeId}_${idx}`,
+        curationTypeId: typeId,
+        letter: shortLetter,
+        iconUrl: iconUrlForCurationType(type),
+        count: "",
+        badge: cnt,
+        title,
+        tooltip: title,
+      };
+    });
+  }
+
+  const entries = Object.entries(counts)
+    .map(([idStr, cnt]) => {
+      const id = Number(idStr);
+      const c = Number(cnt) || 0;
+      const type = dict[id];
+      return { id, cnt: c, type, name: type?.name ?? "" };
+    })
+    .filter((e) => e.cnt > 0 && e.type && e.name);
+
+  /** @type {Record<string, typeof entries>} */
+  const byFamily = { C: [], V: [], O: [], H: [] };
+  const misc = [];
+  for (const e of entries) {
+    const parsed = parseCurationFamilyTier(e.name);
+    if (!parsed) {
+      misc.push(e);
+      continue;
     }
-    const cnt = Number(counts[String(typeId)] ?? counts[typeId] ?? 0) || 0;
-    const shortLetter = name.length <= 3 ? name : name.slice(0, 2);
-    return {
-      key: `ct_${typeId}_${idx}`,
-      curationTypeId: typeId,
-      letter: shortLetter,
-      iconUrl: iconUrl || undefined,
-      count: "",
-      badge: cnt,
-      title: name,
-      tooltip: name,
-    };
-  });
+    byFamily[parsed.letter].push({ ...e, tier: parsed.tier });
+  }
 
-  return padCreatorSlots(slots);
+  const slots = [];
+
+  for (const fam of CREATOR_SLOT_FAMILIES) {
+    const list = byFamily[fam];
+    if (!list.length) continue;
+
+    const cap = tierDisplayCap(fam);
+    /** One catalog row per family: highest tier wins; tie → higher level count. */
+    const entry = list.reduce((best, x) => {
+      if (x.tier > best.tier) return x;
+      if (x.tier === best.tier && x.cnt > best.cnt) return x;
+      return best;
+    }, list[0]);
+    const shownTier = Math.min(entry.tier, cap);
+    const badge = entry.cnt;
+    const letter = `${fam}${shownTier}`;
+    const title = `${entry.name} · ${badge} level(s)`;
+    slots.push({
+      key: `creator_slot_${fam}_${entry.id}`,
+      curationTypeId: entry.id,
+      letter,
+      iconUrl: iconUrlForCurationType(entry.type),
+      count: "",
+      badge,
+      title,
+      tooltip: title,
+    });
+  }
+
+  misc.sort((a, b) => b.cnt - a.cnt || a.id - b.id);
+  const m = misc[0];
+  if (m) {
+    const shortLetter = m.name.length <= 3 ? m.name : m.name.slice(0, 2);
+    slots.push({
+      key: `creator_misc_${m.id}`,
+      curationTypeId: m.id,
+      letter: shortLetter,
+      iconUrl: iconUrlForCurationType(m.type),
+      count: "",
+      badge: m.cnt,
+      title: m.name,
+      tooltip: m.name,
+    });
+  }
+
+  return slots.slice(0, 5);
 }

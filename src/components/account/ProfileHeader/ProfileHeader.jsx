@@ -41,14 +41,6 @@ const DEFAULT_PLAYER_ICON_SLOTS = [
   { key: "uq", letter: "UQ", count: "—", badge: 0 },
 ];
 
-const DEFAULT_CREATOR_ICON_SLOTS = [
-  { key: "c1", letter: "?", count: "", badge: 0 },
-  { key: "c2", letter: "?", count: "", badge: 0 },
-  { key: "c3", letter: "?", count: "", badge: 0 },
-  { key: "c4", letter: "?", count: "", badge: 0 },
-  { key: "c5", letter: "?", count: "", badge: 0 },
-];
-
 const padIconSlots = (slots, defaults) => {
   const list = Array.isArray(slots) && slots.length ? [...slots] : [...defaults];
   while (list.length < 5) {
@@ -133,9 +125,13 @@ const ProfileHeader = ({
     }
   }, [viewportWidth]);
 
-  const defaults =
-    mode === "creator" ? DEFAULT_CREATOR_ICON_SLOTS : DEFAULT_PLAYER_ICON_SLOTS;
-  const resolvedSlots = padIconSlots(iconSlots, defaults);
+  const defaults = DEFAULT_PLAYER_ICON_SLOTS;
+  const resolvedSlots = useMemo(() => {
+    if (mode === "creator") {
+      return Array.isArray(iconSlots) ? iconSlots.filter(Boolean) : [];
+    }
+    return padIconSlots(iconSlots, defaults);
+  }, [mode, iconSlots]);
 
   const hasExpandableStats = useMemo(
     () => Array.isArray(statGroups) && statGroups.some((g) => g?.rows?.length),

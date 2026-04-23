@@ -78,10 +78,10 @@ const CreatorProfilePage = () => {
     () =>
       buildCreatorIconSlots(
         profile?.curationTypeCounts,
-        profile?.displayCurationTypeIds,
         curationTypesDict || {},
+        profile?.displayCurationTypeIds,
       ),
-    [profile?.curationTypeCounts, profile?.displayCurationTypeIds, curationTypesDict],
+    [profile?.curationTypeCounts, curationTypesDict, profile?.displayCurationTypeIds],
   );
 
   const difficultyGraphData = useMemo(
