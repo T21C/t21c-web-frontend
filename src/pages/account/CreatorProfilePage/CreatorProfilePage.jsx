@@ -10,7 +10,7 @@ import { LevelContextProvider } from "@/contexts/LevelContext";
 import { DifficultyGraph, MetaTags, CreatorStatusBadge } from "@/components/common/display";
 import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
 import { ScrollButton } from "@/components/common/buttons";
-import { ChevronIcon, AdofaiIcon } from "@/components/common/icons";
+import { ChevronIcon, AdofaiIcon, SettingsIcon } from "@/components/common/icons";
 import { CreatorManagementPopup } from "@/components/popups/Creators";
 import LevelPage from "@/pages/common/Level/LevelPage/LevelPage";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
@@ -182,10 +182,11 @@ const CreatorProfilePage = () => {
               {hasFlag(user, permissionFlags.SUPER_ADMIN) ? (
                 <button
                   type="button"
-                  className="profile-header__action-btn profile-header__action-btn--accent"
+                  className="profile-header__action-btn"
                   onClick={() => setShowManagementPopup(true)}
+                  aria-label={t('creators.profile.manageButton', { defaultValue: 'Manage' })}
                 >
-                  {t('creators.profile.manageButton', { defaultValue: 'Manage' })}
+                  <SettingsIcon color="var(--color-white)" size={28} />
                 </button>
               ) : null}
             </>

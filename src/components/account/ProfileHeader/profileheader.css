@@ -216,6 +216,7 @@
 .profile-header .profile-header__icon-slots {
   display: flex;
   flex-direction: row;
+  width: 17rem;
   align-items: center;
   gap: 0.5rem;
 }
@@ -468,6 +469,10 @@
   }
   .profile-header .profile-header__left {
     height: 7.5rem;
+  }
+  .profile-header .profile-header__icon-slots
+  {
+    justify-content: center;
   }
 }
 

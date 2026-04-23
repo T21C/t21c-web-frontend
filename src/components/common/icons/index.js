@@ -55,6 +55,7 @@ import ScoreIcon from './ScoreIcon';
 import ChartIcon from './ChartIcon';
 import TimeIcon from './TimeIcon';
 import AdofaiIcon from './AdofaiIcon';
+import { SettingsIcon } from './SettingsIcon';
 
 export {
     DefaultAvatar,
@@ -113,5 +114,6 @@ export {
     ScoreIcon,
     ChartIcon,
     TimeIcon,
-    AdofaiIcon
+    AdofaiIcon,
+    SettingsIcon
 }
