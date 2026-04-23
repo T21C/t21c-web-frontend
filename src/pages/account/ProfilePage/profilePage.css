@@ -70,12 +70,14 @@
 
 .player-page .player-page__scores-container {
   max-height: 70rem;
+  margin-top: 1rem;
   overflow-y: scroll;
-  transition: max-height 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
 }
 
 .player-page .player-page__scores-container.hidden {
   max-height: 0;
+  margin-top: 0;
 }
 
 .player-page .scores-controls {

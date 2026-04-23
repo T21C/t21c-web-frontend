@@ -25,7 +25,6 @@
   justify-content: center;
   gap: 0.5rem;
   min-height: 2.25rem;
-  margin-bottom: 1rem;
   padding: 0 3rem;
 }
 
@@ -50,12 +49,14 @@
 */
 .account-profile-page .account-profile-page__collapsible {
   overflow: hidden;
-  transition: max-height 0.3s ease-in-out, opacity 0.2s ease-in-out;
-  max-height: 200rem;
+  transition: all 0.3s ease-in-out;
+  max-height: 40rem;
+  margin-top: 1rem;
 }
 
 .account-profile-page .account-profile-page__collapsible.hidden {
   max-height: 0;
+  margin-top: 0;
   opacity: 0;
 }
 
