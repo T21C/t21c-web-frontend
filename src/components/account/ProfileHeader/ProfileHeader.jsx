@@ -94,23 +94,42 @@ const ProfileHeader = ({
   collapseStatsAriaLabel = "Collapse statistics",
 }) => {
   const [isStatsExpanded, setIsStatsExpanded] = useState(false);
-  const nameYPosition = "7.5rem";
 
   const viewportWidth = useViewportWidth();
 
-  const nameXPosition = useMemo(() => {
-    if (viewportWidth < 768) {
-      return "50%";
-    } else {
-      return "10.85rem";
+  const config = useMemo(() => {
+    const defaultConfig = {
+      nameXPosition: "10.85rem", 
+      nameYPosition: "7.65rem", 
+      dxPos: "0", 
+      textAlign: "left",
+      circleCx: "5rem",
+      circleOffset: "0",
+      circleCy: "9rem",
+      circleR: "4rem",
     }
-  }, [viewportWidth]);
-
-  const dxPos = useMemo(() => {
-    if (viewportWidth < 768) {
-      return "16";
-    } else {
-      return "0";
+    if (viewportWidth < 600) {
+      return {
+        ...defaultConfig,
+        nameXPosition: "50%",
+        nameYPosition: "0",
+        textAlign: "middle",
+        circleCx: "50%",
+        circleOffset: "0"
+      };
+    }
+    else if (viewportWidth < 768) {
+      return {
+        ...defaultConfig,
+        nameXPosition: "60%", 
+        dxPos: "16", 
+        textAlign: "middle",
+        circleCx: "50%",
+        circleOffset: "-148"
+      };
+    } 
+      else {
+      return defaultConfig;
     }
   }, [viewportWidth]);
 
@@ -151,7 +170,7 @@ const ProfileHeader = ({
     <div className={shellClass}>
       <div className="profile-header">
         <div className="profile-header__name-position">
-              <div className="profile-header__name-wrap name-mask">
+            <div className="profile-header__name-wrap name-mask">
               <svg
                 className="profile-header__name-svg"
                 dominantBaseline="hanging"
@@ -163,48 +182,54 @@ const ProfileHeader = ({
                   maskContentUnits="userSpaceOnUse"
                   >
                     <rect x="0" y="0" width="100%" height="100%" fill="white" />
-                <text
-                  x={`${nameXPosition}`}
-                  y={`${nameYPosition}`}
-                  fill="black"
-                  stroke="black"
-                  strokeWidth="8px"
-                  dx={dxPos}
-                  strokeLinejoin="round"
-                  className="profile-header__name-svg-text"
-                >
-                  {displayName}
-                </text>
-                <text
-                  x={`${nameXPosition}`}
-                  y={`${nameYPosition}`}
-                  fill="black"
-                  stroke="black"
-                  strokeWidth="16px"
-                  dx={dxPos}
-                  strokeLinejoin="round"
-                  className="profile-header__name-svg-text"
-                >
-                  {displayName}
-                </text>
+                    <text
+                      x={`${config.nameXPosition}`}
+                      y={`${config.nameYPosition}`}
+                      fill="black"
+                      stroke="black"
+                      strokeWidth="8px"
+                      dx={config.dxPos}
+                      strokeLinejoin="round"
+                      className="profile-header__name-svg-text"
+                      textAnchor={config.textAlign}
+                    >
+                      {displayName}
+                    </text>
+                    <text
+                      x={`${config.nameXPosition}`}
+                      y={`${config.nameYPosition}`}
+                      fill="black"
+                      stroke="black"
+                      strokeWidth="16px"
+                      dx={config.dxPos}
+                      strokeLinejoin="round"
+                      className="profile-header__name-svg-text"
+                      textAnchor={config.textAlign}
+                    >
+                      {displayName}
+                    </text>
+                    <g transform={`translate(${config.circleOffset}, 0)`}>
+                    <circle cy={config.circleCy} cx={config.circleCx} r={config.circleR} fill="black" />
+                    </g>
                   </mask>
                 </defs>
               </svg>
               </div>
               <div className="profile-header__name-wrap">
-              <svg
-                className="profile-header__name-svg"
-                dominantBaseline="hanging"
-              >
-                <text
-                  x={`${nameXPosition}`}
-                  y={`${nameYPosition}`}
-                  dx={dxPos}
-                  className="profile-header__name-svg-text"
+                <svg
+                  className="profile-header__name-svg"
+                  dominantBaseline="hanging"
                 >
-                  {displayName}
-                </text>
-              </svg>
+                  <text
+                    x={`${config.nameXPosition}`}
+                    y={`${config.nameYPosition}`}
+                    dx={config.dxPos}
+                    className="profile-header__name-svg-text"
+                    textAnchor={config.textAlign}
+                  >
+                    {displayName}
+                  </text>
+                </svg>
               </div>
         </div>
         <div className="profile-header__banner-wrap" aria-hidden="true">
@@ -239,6 +264,22 @@ const ProfileHeader = ({
                 }
               >
                 {badgeText}
+              </div>
+              <div className="profile-header__name-vertical">
+              <svg
+                  className="profile-header__name-svg"
+                  dominantBaseline="hanging"
+                >
+                  <text
+                    x={`${config.nameXPosition}`}
+                    y={`${config.nameYPosition}`}
+                    dx={config.dxPos}
+                    className="profile-header__name-svg-text vertical"
+                    textAnchor={config.textAlign}
+                  >
+                    {displayName}
+                  </text>
+                </svg>
               </div>
             </div>
 

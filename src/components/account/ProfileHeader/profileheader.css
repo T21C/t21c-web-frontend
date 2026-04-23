@@ -140,16 +140,18 @@
   gap: 0.5rem;
   height: 0;
   position: relative;
-  top: -5rem;
+  top: -4.75rem;
   z-index: 2;
+}
+
+.profile-header .profile-header__name-vertical {
+  display: none;
 }
 
 /* Ring uses the same surface color as the card so the banner reads as “cropped” behind it. */
 .profile-header .profile-header__avatar-ring {
   flex-shrink: 0;
-  padding: 0.35rem;
   border-radius: 50%;
-  background: var(--profile-header-surface);
 }
 
 .profile-header .profile-header__avatar-wrap {
@@ -465,6 +467,20 @@
     align-items: center;
   }
   .profile-header .profile-header__left {
-    height: 6rem;
+    height: 7.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .profile-header__body { flex-direction: column; }
+  .profile-header .profile-header__center {
+    width: 100%;
+  }
+  .profile-header .profile-header__name-svg-text:not(.vertical) {
+    display: none;
+  }
+  .profile-header .profile-header__name-vertical {
+    display: block;
+    width: 100%;
   }
 }
