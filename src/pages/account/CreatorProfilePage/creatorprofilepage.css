@@ -26,7 +26,6 @@
 .creator-profile-page .creator-profile-page__section {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
   padding: 1.25rem 1.5rem;
   border-radius: 10px;
   background: rgba(20, 20, 20, 0.45);
@@ -41,13 +40,12 @@
 }
 
 .creator-profile-page .creator-profile-page__section--levels .account-profile-page__section-title-row {
-  margin: 0 1rem; 
+  margin-right: 1rem; 
 }
 
 .creator-profile-page .creator-profile-page__section--levels {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
   transition: max-height 0.3s ease-in-out;
   padding-right: 0.5rem;
 }
@@ -56,11 +54,13 @@
   overflow-y: auto;
   overflow-x: visible;
   padding: 0 0.25rem;
+  margin-top: 1rem;
   height: 60rem;
-  transition: height 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
   scrollbar-gutter: stable;
 }
 
 .creator-profile-page .creator-profile-page__levels-container.hidden {
   height: 0;
+  margin-top: 0;
 }
