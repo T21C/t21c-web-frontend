@@ -32,11 +32,6 @@ function parsePguDifficultyName(name) {
   return { letter, n };
 }
 
-function isWorldsFirst(pass) {
-  const v = pass?.isWorldsFirst;
-  return v === true || v === 1 || v === "1";
-}
-
 function getDifficultyEntry(difficultyDict, diffId) {
   if (diffId == null) return null;
   const d = difficultyDict?.[diffId] ?? difficultyDict?.[String(diffId)];
@@ -75,27 +70,39 @@ function emptyQSlot(key, label) {
 }
 
 /**
- * @param {unknown[]} passes
+ * Build player PGU + GQ/UQ icon slots from pre-aggregated maps rather than
+ * the raw passes array. Moving this off the client-side passes list means
+ * the profile page can paginate passes server-side without losing the
+ * summary icons.
+ *
+ * @param {{
+ *   clearsByDifficulty?: Record<string, number> | null;
+ *   worldsFirstByDifficulty?: Record<string, number> | null;
+ * } | null | undefined} aggregates
  * @param {Record<string, { name?: string; icon?: string | null; id?: number | string }>} difficultyDict
  */
-export function buildPlayerIconSlots(passes, difficultyDict) {
-  const list = Array.isArray(passes) ? passes : [];
+export function buildPlayerIconSlots(aggregates, difficultyDict) {
   const dict = difficultyDict && typeof difficultyDict === "object" ? difficultyDict : {};
+  const clears = aggregates?.clearsByDifficulty && typeof aggregates.clearsByDifficulty === "object"
+    ? aggregates.clearsByDifficulty
+    : {};
+  const wfs = aggregates?.worldsFirstByDifficulty && typeof aggregates.worldsFirstByDifficulty === "object"
+    ? aggregates.worldsFirstByDifficulty
+    : {};
 
-  /** @type {Record<string, { maxN: number; clearsAtMax: number; diffId: number | string | null }>} */
+  /** @type {Record<"P"|"G"|"U", { maxN: number; clearsAtMax: number; diffId: number | string | null }>} */
   const pguStats = {
     P: { maxN: 0, clearsAtMax: 0, diffId: null },
     G: { maxN: 0, clearsAtMax: 0, diffId: null },
     U: { maxN: 0, clearsAtMax: 0, diffId: null },
   };
-  /** WF G clears at the winning tier: tier, count, best N in tier, icon from that difficulty */
   let gqState = { tier: -1, wfCount: 0, maxNInTier: 0, diffId: null };
   let uqState = { tier: -1, wfCount: 0, maxNInTier: 0, diffId: null };
 
-  for (const pass of list) {
-    if (pass?.isDeleted) continue;
-    const diffId = pass?.level?.diffId;
-    const name = getDifficultyEntry(dict, diffId)?.name;
+  for (const [diffIdKey, rawCount] of Object.entries(clears)) {
+    const count = Number(rawCount) || 0;
+    if (count <= 0) continue;
+    const name = getDifficultyEntry(dict, diffIdKey)?.name;
     const parsed = parsePguDifficultyName(name);
     if (!parsed) continue;
 
@@ -103,37 +110,41 @@ export function buildPlayerIconSlots(passes, difficultyDict) {
     const st = pguStats[letter];
     if (n > st.maxN) {
       st.maxN = n;
-      st.clearsAtMax = 1;
-      st.diffId = diffId ?? null;
+      st.clearsAtMax = count;
+      st.diffId = diffIdKey;
     } else if (n === st.maxN) {
-      st.clearsAtMax += 1;
+      st.clearsAtMax += count;
     }
+  }
 
-    if (isWorldsFirst(pass)) {
-      const tier = pguNumberToQTier(n);
-      if (tier == null) continue;
-      if (letter === "G") {
-        if (tier > gqState.tier) {
-          gqState = { tier, wfCount: 1, maxNInTier: n, diffId: diffId ?? null };
-        } else if (tier === gqState.tier) {
-          gqState.wfCount += 1;
-          if (n > gqState.maxNInTier) {
-            gqState.maxNInTier = n;
-            gqState.diffId = diffId ?? null;
-          }
-        }
-      } else if (letter === "U") {
-        if (tier > uqState.tier) {
-          uqState = { tier, wfCount: 1, maxNInTier: n, diffId: diffId ?? null };
-        } else if (tier === uqState.tier) {
-          uqState.wfCount += 1;
-          if (n > uqState.maxNInTier) {
-            uqState.maxNInTier = n;
-            uqState.diffId = diffId ?? null;
-          }
-        }
+  for (const [diffIdKey, rawCount] of Object.entries(wfs)) {
+    const wfCount = Number(rawCount) || 0;
+    if (wfCount <= 0) continue;
+    const name = getDifficultyEntry(dict, diffIdKey)?.name;
+    const parsed = parsePguDifficultyName(name);
+    if (!parsed) continue;
+
+    const { letter, n } = parsed;
+    const tier = pguNumberToQTier(n);
+    if (tier == null) continue;
+
+    const applyTo = (state) => {
+      if (tier > state.tier) {
+        return { tier, wfCount, maxNInTier: n, diffId: diffIdKey };
       }
-    }
+      if (tier === state.tier) {
+        const next = { ...state, wfCount: state.wfCount + wfCount };
+        if (n > state.maxNInTier) {
+          next.maxNInTier = n;
+          next.diffId = diffIdKey;
+        }
+        return next;
+      }
+      return state;
+    };
+
+    if (letter === "G") gqState = applyTo(gqState);
+    else if (letter === "U") uqState = applyTo(uqState);
   }
 
   const pSlot =

@@ -38,6 +38,7 @@
   },
   "sort": {
     "byScore": "按分数",
+    "byImpact": "按排位影响分",
     "byDate": "按日期",
     "byXacc": "按X精准度",
     "byDifficulty": "按难度",

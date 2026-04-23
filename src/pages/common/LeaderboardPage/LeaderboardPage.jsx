@@ -124,8 +124,8 @@ const LeaderboardPage = () => {
           setMaxFields(response.data.maxFields);
         }
       } else {
-        setPlayerData(prev => [...prev, ...results]);
-        setDisplayedPlayers(prev => [...prev, ...results]);
+        setPlayerData(prev => [ prev ?? [], ...results]);
+        setDisplayedPlayers(prev => [ prev ?? [], ...results]);
       }
 
       setHasMore(displayedPlayers.length < response.data.count);

@@ -38,6 +38,7 @@
   },
   "sort": {
     "byScore": "By Score",
+    "byImpact": "By Impact",
     "byDate": "By Date",
     "byXacc": "By X-Accuracy",
     "byDifficulty": "By Difficulty",

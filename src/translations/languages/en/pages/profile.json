@@ -39,11 +39,13 @@
       "lowestImpactScore": "Get at least {{score}} to gain Ranked Score"
     },
     "difficultyBreakdown": {
-      "title": "Clears by difficulty"
+      "title": "Clears by difficulty",
+      "includeDupes": "Include duplicates"
     }
   },
   "sort": {
     "byScore": "By Score",
+    "byImpact": "By Impact",
     "byDate": "By Date",
     "byXacc": "By X-Accuracy",
     "byDifficulty": "By Difficulty",

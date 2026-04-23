@@ -1,7 +1,8 @@
 import "../accountProfilePage.css"
 import "./profilePage.css"
 import api from "@/utils/api";
-import { useEffect, useState, useMemo } from "react";
+import axios from "axios";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom"
 import { formatNumber } from "@/utils";
 import { DifficultyGraph, MetaTags } from "@/components/common/display";
@@ -15,6 +16,7 @@ import caseOpen from "@/assets/icons/case.png";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { ScrollButton } from "@/components/common/buttons";
 import { useProfileContext } from "@/contexts/ProfileContext";
+import { useDebouncedRequest } from "@/hooks/useDebouncedRequest";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { CreatorIcon } from "@/components/common/icons/CreatorIcon";
 import { AccountStatusBanners } from "@/components/account/AccountStatusBanners/AccountStatusBanners";
@@ -39,13 +41,19 @@ const ProfilePage = () => {
     const currentUrl = window.location.origin + location.pathname;
     const navigate = useNavigate();
     const [isSpinning, setIsSpinning] = useState(false);
-    
-    // Infinite scroll state
+
+    // Server-paginated passes (infinite scroll).
     const [displayedPasses, setDisplayedPasses] = useState([]);
+    const [passesTotal, setPassesTotal] = useState(0);
+    const [passesInitialLoading, setPassesInitialLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
     const [showHiddenPasses, setShowHiddenPasses] = useState(false);
     const [scoresCollapsed, setScoresCollapsed] = useState(false);
     const [difficultyCollapsed, setDifficultyCollapsed] = useState(false);
+    const [includeDupes, setIncludeDupes] = useState(false);
+    const runPassesRequest = useDebouncedRequest(350);
+    // Guard against stale responses when filters change mid-flight.
+    const passesRequestIdRef = useRef(0);
 
     const isOwnProfile = !playerId || Number(playerId) === user?.playerId;
 
@@ -93,6 +101,65 @@ const ProfilePage = () => {
       
         fetchPlayer();
       }, [playerId]);
+
+      // Passes are served from a paginated endpoint so we only fetch what is
+      // visible. Sorting and searching happen server-side; the infinite
+      // scroll handler below pulls the next page as the user scrolls.
+      const fetchPassesPage = async (offset, { immediate = false } = {}) => {
+        if (!playerId) return;
+        const params = new URLSearchParams({
+          limit: String(PASSES_PER_PAGE),
+          offset: String(offset),
+          sortBy: sortType,
+          order: sortOrder,
+        });
+        if (searchQuery) params.append('query', searchQuery);
+        if (isOwnProfile && showHiddenPasses) params.append('showHidden', 'true');
+
+        const url = `${import.meta.env.VITE_PLAYERS_V3}/${playerId}/passes?${params.toString()}`;
+        const requestId = ++passesRequestIdRef.current;
+        const runner = immediate ? runPassesRequest.flush : runPassesRequest;
+        if (offset === 0) setPassesInitialLoading(true);
+        try {
+          const response = await runner(({ signal }) => api.get(url, { signal }));
+          if (requestId !== passesRequestIdRef.current) return;
+          const results = Array.isArray(response.data?.passes) ? response.data.passes : [];
+          const total = Number(response.data?.total) || 0;
+          setPassesTotal(total);
+          if (offset === 0) {
+            setDisplayedPasses(results);
+          } else {
+            setDisplayedPasses(prev => [...prev, ...results]);
+          }
+          setHasMore((offset + results.length) < total);
+        } catch (error) {
+          if (axios.isCancel(error)) return;
+          console.error('Error fetching player passes:', error);
+          if (requestId === passesRequestIdRef.current && offset === 0) {
+            setDisplayedPasses([]);
+            setPassesTotal(0);
+            setHasMore(false);
+          }
+        } finally {
+          if (requestId === passesRequestIdRef.current && offset === 0) {
+            setPassesInitialLoading(false);
+          }
+        }
+      };
+
+      useEffect(() => {
+        if (!playerId) {
+          setDisplayedPasses([]);
+          setPassesTotal(0);
+          setHasMore(false);
+          return;
+        }
+        // Reset the list when filter inputs change; fetch the first page.
+        setDisplayedPasses([]);
+        setHasMore(true);
+        fetchPassesPage(0);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [playerId, searchQuery, sortType, sortOrder, showHiddenPasses]);
 
       const handlePlayerUpdate = (updatedPlayer) => {
         setPlayerData(updatedPlayer);
@@ -199,66 +266,18 @@ const ProfilePage = () => {
       const scoresExpanded = !scoresCollapsed;
       const difficultyExpanded = !difficultyCollapsed;
 
-      const sortByScore = (a, b) => {
-        return sortOrder === 'DESC' ? (b.scoreV2 || 0) - (a.scoreV2 || 0) : (a.scoreV2 || 0) - (b.scoreV2 || 0);
-      }
-      // Define sort options (extendable)
+      // Sort options are pure labels now — ordering is resolved server-side.
       const sortOptions = useMemo(() => [
-        { value: 'score', label: t('profile.sort.byScore'), sortFn: sortByScore },
-        { value: 'speed', label: t('profile.sort.bySpeed'), sortFn: (a, b) => {
-          const speedA = a.speed || 0;
-          const speedB = b.speed || 0;
-          if (speedA !== speedB) {
-            return sortOrder === 'DESC' ? speedB - speedA : speedA - speedB;
-          }
-          return sortByScore(a, b);
-        }},
-        { value: 'date', label: t('profile.sort.byDate'), sortFn: (a, b) => {
-          const dateA = new Date(a.vidUploadTime).getTime() || 0;
-          const dateB = new Date(b.vidUploadTime).getTime() || 0;
-          if (dateA !== dateB) {
-            return sortOrder === 'DESC' ? dateB - dateA : dateA - dateB;
-          }
-          return sortByScore(a, b);
-        }},
-        { value: 'xacc', label: t('profile.sort.byXacc'), sortFn: (a, b) => {
-          const xaccA = a.judgements?.accuracy || 0;
-          const xaccB = b.judgements?.accuracy || 0;
-          if (xaccA !== xaccB) {
-            return sortOrder === 'DESC' ? xaccB - xaccA : xaccA - xaccB;
-          }
-          return sortByScore(a, b);
-        }},
-        { 
-          value: 'difficulty', 
-          label: t('profile.sort.byDifficulty'), 
-          sortFn: (a, b) => {
-            // First: PGU difficulties sorted before others
-            const diffA = difficultyDict[a.level?.diffId];
-            const diffB = difficultyDict[b.level?.diffId];
-            const typeA = diffA?.type === "PGU" ? 0 : 1;
-            const typeB = diffB?.type === "PGU" ? 0 : 1;
-            if (typeA !== typeB) {
-              return sortOrder !== 'DESC' ? typeB - typeA : typeA - typeB;
-            }
+        { value: 'score', label: t('profile.sort.byScore') },
+        { value: 'impact', label: t('profile.sort.byImpact') },
+        { value: 'speed', label: t('profile.sort.bySpeed') },
+        { value: 'date', label: t('profile.sort.byDate') },
+        { value: 'xacc', label: t('profile.sort.byXacc') },
+        { value: 'difficulty', label: t('profile.sort.byDifficulty') },
+      ], [t]);
 
-            const sortOrderA = diffA?.sortOrder || 0;
-            const sortOrderB = diffB?.sortOrder || 0;
-            if (sortOrderA !== sortOrderB) {
-              return sortOrder === 'DESC' ? sortOrderB - sortOrderA : sortOrderA - sortOrderB;
-            }
-
-            const baseScoreA = a.level?.baseScore || diffA?.baseScore || 0;
-            const baseScoreB = b.level?.baseScore || diffB?.baseScore || 0;
-            if (baseScoreA !== baseScoreB) {
-              return sortOrder !== 'DESC' ? baseScoreB - baseScoreA : baseScoreA - baseScoreB;
-            }
-          }
-        }
-      ], [t, sortOrder, playerData?.topScores, difficultyDict]);
-
-      const selectedSortOption = useMemo(() => 
-        sortOptions.find(option => option.value === sortType),
+      const selectedSortOption = useMemo(
+        () => sortOptions.find(option => option.value === sortType),
         [sortOptions, sortType]
       );
 
@@ -268,89 +287,44 @@ const ProfilePage = () => {
       );
 
       const iconSlots = useMemo(
-        () => buildPlayerIconSlots(playerData?.passes, difficultyDict || {}),
-        [playerData?.passes, difficultyDict],
+        () => buildPlayerIconSlots(
+          {
+            clearsByDifficulty: playerData?.funFacts?.clearsByDifficulty,
+            worldsFirstByDifficulty: playerData?.funFacts?.worldsFirstByDifficulty,
+          },
+          difficultyDict || {},
+        ),
+        [
+          playerData?.funFacts?.clearsByDifficulty,
+          playerData?.funFacts?.worldsFirstByDifficulty,
+          difficultyDict,
+        ],
       );
 
-      const difficultyGraphData = useMemo(
+      const difficultyGraphDataWithDupes = useMemo(
         () => toDifficultyGraphData(playerData?.funFacts?.clearsByDifficulty, difficultyDict || {}, "passes"),
         [playerData?.funFacts?.clearsByDifficulty, difficultyDict],
       );
 
-      // Define searchable fields (extendable)
-      const searchableFields = useMemo(() => ({
-        song: (pass) => pass.level?.song?.toLowerCase() || '',
-        artist: (pass) => pass.level?.artist?.toLowerCase() || '',
-        difficulty: (pass) => difficultyDict[pass.level?.diffId]?.name?.toLowerCase() || '',
-        creators: (pass) => pass.level?.levelCredits?.map(credit => 
-          credit.creator?.name?.toLowerCase() || ''
-        ).join(' ') || '',
-        team: (pass) => pass.level?.teamObject?.name?.toLowerCase() || '',
-      }), [difficultyDict]);
+      const difficultyGraphDataNoDupes = useMemo(
+        () => toDifficultyGraphData(playerData?.funFacts?.clearsByDifficultyNoDupes, difficultyDict || {}, "passes"),
+        [playerData?.funFacts?.clearsByDifficultyNoDupes, difficultyDict],
+      );
 
-      // Filtered and sorted passes
-      const filteredAndSortedPasses = useMemo(() => {
-        if (!playerData?.passes) return [];
+      // Swap the reference directly so recharts animates between the two
+      // datasets (same length/order, only `passCount` values change).
+      const difficultyGraphData = includeDupes
+        ? difficultyGraphDataWithDupes
+        : difficultyGraphDataNoDupes;
 
-
-        let filtered = playerData.passes;
-        // Apply search filter
-        if (searchQuery) {
-          const query = searchQuery.toLowerCase();
-          filtered = filtered
-          .filter(pass => {
-            return Object.values(searchableFields).some(fieldFn => 
-              fieldFn(pass).includes(query)
-            );
-          })
-          .filter(pass => {
-            // Always filter out deleted passes
-            if (pass.isDeleted) return false;
-            
-            // Filter hidden passes based on toggle state (only for own profile)
-              // If toggle is off, hide hidden passes
-              if (showHiddenPasses && pass.isHidden) return false;
-              // For other profiles, always hide hidden passes
-              if (pass.isHidden) return false;
-            
-            return true;
-          });
-        }
-
-        // Apply sorting
-        const sortFn = sortOptions.find(opt => opt.value === sortType)?.sortFn;
-        if (sortFn) {
-          filtered = [...filtered].sort((a, b) => (b.id - a.id)).sort(sortFn);
-        }
-
-        return filtered;
-      }, [playerData?.passes, searchQuery, sortType, sortOrder, sortOptions, searchableFields, showHiddenPasses, isOwnProfile]);
-
-      // Update displayed passes when filter/sort changes (not when filteredAndSortedPasses object changes)
-      useEffect(() => {
-        if (filteredAndSortedPasses.length > 0) {
-          setDisplayedPasses(filteredAndSortedPasses.slice(0, PASSES_PER_PAGE));
-          setHasMore(filteredAndSortedPasses.length > PASSES_PER_PAGE);
-        } else {
-          setDisplayedPasses([]);
-          setHasMore(false);
-        }
-      }, [searchQuery, sortType, sortOrder, showHiddenPasses, playerData?.passes]);
-
-      // Load more passes for infinite scroll
       const loadMorePasses = () => {
-        if (displayedPasses.length >= filteredAndSortedPasses.length) {
+        if (displayedPasses.length >= passesTotal) {
           setHasMore(false);
           return;
         }
-        const currentLength = displayedPasses.length;
-        const nextPasses = filteredAndSortedPasses.slice(currentLength, currentLength + PASSES_PER_PAGE);
-        if (nextPasses.length > 0) {
-          setDisplayedPasses(prev => [...prev, ...nextPasses]);
-          setHasMore(currentLength + nextPasses.length < filteredAndSortedPasses.length);
-        } else {
-          setHasMore(false);
-        }
+        // Subsequent pages skip the debounce — they are a direct response to
+        // the user scrolling and would feel laggy otherwise.
+        fetchPassesPage(displayedPasses.length, { immediate: true });
       };
 
       // Conditional renders after all hooks
@@ -494,7 +468,7 @@ const ProfilePage = () => {
                   />
                 </div>
               </div>
-              {playerData?.passes && playerData.passes.length > 0 && (
+              {(passesInitialLoading || displayedPasses.length > 0 || passesTotal > 0 || (playerData?.funFacts?.counts?.totalPasses ?? 0) > 0) && (
                 <div className="scores-section">
                   <div className="account-profile-page__section-title-row">
                     <h2 className="account-profile-page__section-title">{t('profile.sections.scores.title')}</h2>
@@ -513,6 +487,12 @@ const ProfilePage = () => {
                     </button>
                   </div>
                   
+                  {passesInitialLoading && displayedPasses.length === 0 ? (
+                    <div style={{ height: "200px", display: "flex"}}>
+                      <div className="loader loader-relative" />
+                    </div>
+                  ) : (
+                  <>
                   {/* Search and Sort Controls */}
                   <div
                     id="player-scores-scroll-container"
@@ -575,7 +555,7 @@ const ProfilePage = () => {
                     </div>
                     
                     <div className="results-count">
-                      {t('profile.labels.totalPasses', { count: filteredAndSortedPasses.length })}
+                      {t('profile.labels.totalPasses', { count: passesTotal })}
                     </div>
                   </div>
 
@@ -590,7 +570,7 @@ const ProfilePage = () => {
                         </p>
                       )
                     }
-                    loader={<div className="loader loader-relative-position"/>}
+                    loader={<div className="loader loader-relative"/>}
                     scrollableTarget="player-scores-scroll-container"
                     style={{ overflow: 'visible' }}
                   >
@@ -600,7 +580,7 @@ const ProfilePage = () => {
                         <li key={index}>
                           <ScoreCard scoreData={score} topScores={playerData?.topScores || []} potentialTopScores={playerData?.potentialTopScores || []} />
                         </li>
-                        {lowestImpactScore && lowestImpactScore.id === score.id && playerData?.passes?.length > 20 && sortType === 'score' && sortOrder === 'DESC' && (
+                        {lowestImpactScore && lowestImpactScore.id === score.id && passesTotal > 20 && sortType === 'score' && sortOrder === 'DESC' && (
                           <div className="lowest-impact-score-indicator">
                             <p>
                               {(() => {
@@ -622,6 +602,8 @@ const ProfilePage = () => {
                     </div>
                   </InfiniteScroll>
                   </div>
+                  </>
+                  )}
                 </div>
               )}
 
@@ -643,7 +625,15 @@ const ProfilePage = () => {
                       <ChevronIcon direction={difficultyExpanded ? 'down' : 'right'} />
                     </button>
                   </div>
-                  <div className={["account-profile-page__collapsible", difficultyCollapsed ? "hidden" : ""].join(" ").trim()}>
+                  <div className={["account-profile-page__collapsible", "player-page__difficulty-collapsible", difficultyCollapsed ? "hidden" : ""].join(" ").trim()}>
+                    <label className="player-page__difficulty-dupes-toggle">
+                      <input
+                        type="checkbox"
+                        checked={includeDupes}
+                        onChange={(e) => setIncludeDupes(e.target.checked)}
+                      />
+                      <span>{t('profile.sections.difficultyBreakdown.includeDupes')}</span>
+                    </label>
                     <DifficultyGraph data={difficultyGraphData} mode="passes" />
                   </div>
                 </section>

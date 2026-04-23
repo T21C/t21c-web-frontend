@@ -229,7 +229,7 @@ body {
   top: 50%;
 }
 
-.loader-relative-position {
+.loader-relative {
   position: relative;
   left: 50%;
   height: 100px;
