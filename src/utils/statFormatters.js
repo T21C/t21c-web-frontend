@@ -60,27 +60,29 @@ export function difficultyBreakdownEntries(map, difficultyDict) {
 
 /**
  * Convert a fun-facts difficulty breakdown map into `DifficultyGraph` input data.
- * Filters to PGU to mirror the HomePage chart.
+ *
+ * Iterates over every PGU difficulty in `difficultyDict` (not just keys present
+ * in `breakdownMap`) so the resulting series includes 0-count buckets and the
+ * chart shows the complete PGU ladder without gaps.
  *
  * @param {Record<string, number>} breakdownMap diffId string -> count
- * @param {Record<string, { name?: string; sortOrder?: number; type?: string }>} difficultyDict
+ * @param {Record<string, { id?: number | string; name?: string; sortOrder?: number; type?: string }>} difficultyDict
  * @param {'passes' | 'levels'} mode
  */
 export function toDifficultyGraphData(breakdownMap, difficultyDict, mode) {
   const isPasses = mode === "passes";
-  return Object.entries(breakdownMap || {})
-    .map(([id, count]) => {
-      const info = difficultyDict?.[id] || {};
-      if (info.type && info.type !== "PGU") return null;
-      const value = Number(count) || 0;
+  const map = breakdownMap || {};
+  return Object.entries(difficultyDict || {})
+    .filter(([, info]) => info?.type === "PGU")
+    .map(([id, info]) => {
+      const value = Number(map[id]) || 0;
       return {
-        id: Number(id),
-        name: info.name ?? `#${id}`,
+        id: Number(info?.id ?? id),
+        name: info?.name ?? `#${id}`,
         passCount: isPasses ? value : 0,
         levelCount: isPasses ? 0 : value,
-        sortOrder: info.sortOrder ?? 0,
+        sortOrder: info?.sortOrder ?? 0,
       };
     })
-    .filter(Boolean)
     .sort((a, b) => a.sortOrder - b.sortOrder);
 }

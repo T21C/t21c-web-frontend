@@ -1,3 +1,4 @@
+import "../accountProfilePage.css"
 import "./profilePage.css"
 import api from "@/utils/api";
 import { useEffect, useState, useMemo } from "react";
@@ -44,6 +45,7 @@ const ProfilePage = () => {
     const [hasMore, setHasMore] = useState(true);
     const [showHiddenPasses, setShowHiddenPasses] = useState(false);
     const [scoresCollapsed, setScoresCollapsed] = useState(false);
+    const [difficultyCollapsed, setDifficultyCollapsed] = useState(false);
 
     const isOwnProfile = !playerId || Number(playerId) === user?.playerId;
 
@@ -195,6 +197,7 @@ const ProfilePage = () => {
       , null);
 
       const scoresExpanded = !scoresCollapsed;
+      const difficultyExpanded = !difficultyCollapsed;
 
       const sortByScore = (a, b) => {
         return sortOrder === 'DESC' ? (b.scoreV2 || 0) - (a.scoreV2 || 0) : (a.scoreV2 || 0) - (b.scoreV2 || 0);
@@ -353,7 +356,7 @@ const ProfilePage = () => {
       // Conditional renders after all hooks
       if (playerId && !playerData) {
         return (
-          <div className="player-page">
+          <div className="account-profile-page player-page">
             <div className="player-body" style={{height: "85vh"}}>
               <div className="loader"/>  
             </div>
@@ -363,7 +366,7 @@ const ProfilePage = () => {
 
       if (!playerId && !user) {
         return (
-          <div className="player-page">
+          <div className="account-profile-page player-page">
             <MetaTags
               title={t('profile.meta.defaultTitle')}
               description={t('profile.meta.description')}
@@ -384,7 +387,7 @@ const ProfilePage = () => {
         {user && isOwnProfile ? (
           <AccountStatusBanners variant="profile" user={user} navigate={navigate} />
         ) : null}
-        <div className="player-page">
+        <div className="account-profile-page player-page">
           <MetaTags
             title={playerData?.name ? t('profile.meta.title', { name: playerData.name }) : t('profile.meta.defaultTitle')}
             description={t('profile.meta.description', { name: playerData?.name || 'Unknown Player' })}
@@ -493,11 +496,11 @@ const ProfilePage = () => {
               </div>
               {playerData?.passes && playerData.passes.length > 0 && (
                 <div className="scores-section">
-                  <div className="player-page__section-title-row">
-                    <h2>{t('profile.sections.scores.title')}</h2>
+                  <div className="account-profile-page__section-title-row">
+                    <h2 className="account-profile-page__section-title">{t('profile.sections.scores.title')}</h2>
                     <button
                       type="button"
-                      className="player-page__chevron-btn"
+                      className="account-profile-page__chevron-btn"
                       aria-expanded={scoresExpanded}
                       aria-label={
                         scoresCollapsed
@@ -624,8 +627,25 @@ const ProfilePage = () => {
 
               {difficultyGraphData.length > 0 ? (
                 <section className="player-page__difficulty-section">
-                  <h2>{t("profile.sections.difficultyBreakdown.title")}</h2>
-                  <DifficultyGraph data={difficultyGraphData} mode="passes" />
+                  <div className="account-profile-page__section-title-row">
+                    <h2 className="account-profile-page__section-title">{t("profile.sections.difficultyBreakdown.title")}</h2>
+                    <button
+                      type="button"
+                      className="account-profile-page__chevron-btn"
+                      aria-expanded={difficultyExpanded}
+                      aria-label={
+                        difficultyCollapsed
+                          ? t('profile.sections.difficultyBreakdown.expand', { defaultValue: 'Expand difficulty breakdown' })
+                          : t('profile.sections.difficultyBreakdown.collapse', { defaultValue: 'Collapse difficulty breakdown' })
+                      }
+                      onClick={() => setDifficultyCollapsed((v) => !v)}
+                    >
+                      <ChevronIcon direction={difficultyExpanded ? 'down' : 'right'} />
+                    </button>
+                  </div>
+                  <div className={["account-profile-page__collapsible", difficultyCollapsed ? "hidden" : ""].join(" ").trim()}>
+                    <DifficultyGraph data={difficultyGraphData} mode="passes" />
+                  </div>
                 </section>
               ) : null}
             </div>

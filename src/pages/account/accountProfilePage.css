@@ -1,0 +1,84 @@
+/*
+  Shared styles for account profile pages (player + creator).
+  Both ProfilePage and CreatorProfilePage add the
+  `account-profile-page` class to their root element so these rules
+  stay scoped and don't leak into the rest of the app.
+
+  When profile-specific and creator-specific styles conflict,
+  the values from ProfilePage take precedence here.
+*/
+
+.account-profile-page {
+  position: relative;
+}
+
+/*
+  Unified section title row used by every collapsible section on both
+  profile pages. The title sits centered in the row, the collapse
+  chevron is anchored to the top-right corner so all sections share
+  the same visual rhythm regardless of page.
+*/
+.account-profile-page .account-profile-page__section-title-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.25rem;
+  margin-bottom: 1rem;
+  padding: 0 3rem;
+}
+
+.account-profile-page .account-profile-page__section-title {
+  margin: 0;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.account-profile-page .account-profile-page__section-title-row .account-profile-page__chevron-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+/*
+  Generic collapsible section content. Sections that need their own
+  sizing (profile scores list, creator levels viewport) layer their
+  own rules on top of or instead of this one.
+*/
+.account-profile-page .account-profile-page__collapsible {
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out, opacity 0.2s ease-in-out;
+  max-height: 200rem;
+}
+
+.account-profile-page .account-profile-page__collapsible.hidden {
+  max-height: 0;
+  opacity: 0;
+}
+
+/* Toggle button used to collapse/expand sections. */
+.account-profile-page .account-profile-page__chevron-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.account-profile-page .account-profile-page__chevron-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.account-profile-page .account-profile-page__chevron-btn:active {
+  transform: scale(0.98);
+}

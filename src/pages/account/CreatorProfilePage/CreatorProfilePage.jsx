@@ -1,3 +1,4 @@
+import "../accountProfilePage.css";
 import "./creatorprofilepage.css";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
@@ -33,7 +34,9 @@ const CreatorProfilePage = () => {
   const [profileError, setProfileError] = useState(null);
   const [profileReloadKey, setProfileReloadKey] = useState(0);
   const [showManagementPopup, setShowManagementPopup] = useState(false);
+  const [bioCollapsed, setBioCollapsed] = useState(false);
   const [levelsCollapsed, setLevelsCollapsed] = useState(false);
+  const [difficultyCollapsed, setDifficultyCollapsed] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -107,7 +110,7 @@ const CreatorProfilePage = () => {
 
   if (profileLoading) {
     return (
-      <div className="creator-profile-page">
+      <div className="account-profile-page creator-profile-page">
         <div className="creator-profile-page__loading">
           <div className="loader loader-level-detail"></div>
         </div>
@@ -117,7 +120,7 @@ const CreatorProfilePage = () => {
 
   if (profileError || !creatorDoc) {
     return (
-      <div className="creator-profile-page">
+      <div className="account-profile-page creator-profile-page">
         <div className="creator-profile-page__notfound">
           <p>{t('creators.profile.notFound')}</p>
         </div>
@@ -126,10 +129,12 @@ const CreatorProfilePage = () => {
   }
 
   const stats = profile?.stats || creatorDoc;
-  const isExpanded = !levelsCollapsed;
+  const bioExpanded = !bioCollapsed;
+  const levelsExpanded = !levelsCollapsed;
+  const difficultyExpanded = !difficultyCollapsed;
 
   return (
-    <div className="creator-profile-page">
+    <div className="account-profile-page creator-profile-page">
       <MetaTags
         title={t('creators.profile.meta.title', { name: creatorDoc.name })}
         description={t('creators.profile.meta.description', { name: creatorDoc.name })}
@@ -202,25 +207,42 @@ const CreatorProfilePage = () => {
         />
 
         <section className="creator-profile-page__section">
-          <h2 className="creator-profile-page__section-title">
-            {t('creators.profile.bio.header')}
-          </h2>
-          <div className="creator-profile-page__bio">
-            <p className="creator-profile-page__bio-placeholder">
-              {t('creators.profile.bio.placeholder')}
-            </p>
+          <div className="account-profile-page__section-title-row">
+            <h2 className="account-profile-page__section-title">
+              {t('creators.profile.bio.header')}
+            </h2>
+            <button
+              type="button"
+              className="account-profile-page__chevron-btn"
+              aria-expanded={bioExpanded}
+              aria-label={
+                bioCollapsed
+                  ? t('creators.profile.bio.expand', { defaultValue: 'Expand bio' })
+                  : t('creators.profile.bio.collapse', { defaultValue: 'Collapse bio' })
+              }
+              onClick={() => setBioCollapsed((v) => !v)}
+            >
+              <ChevronIcon direction={bioExpanded ? 'down' : 'right'} />
+            </button>
+          </div>
+          <div className={["account-profile-page__collapsible", bioCollapsed ? "hidden" : ""].join(" ").trim()}>
+            <div className="creator-profile-page__bio">
+              <p className="creator-profile-page__bio-placeholder">
+                {t('creators.profile.bio.placeholder')}
+              </p>
+            </div>
           </div>
         </section>
 
         <section className="creator-profile-page__section creator-profile-page__section--levels">
-          <div className="creator-profile-page__section-title-row">
-            <h2 className="creator-profile-page__section-title">
+          <div className="account-profile-page__section-title-row">
+            <h2 className="account-profile-page__section-title">
               {t('creators.profile.levels.header')}
             </h2>
             <button
               type="button"
-              className="creator-profile-page__chevron-btn"
-              aria-expanded={isExpanded}
+              className="account-profile-page__chevron-btn"
+              aria-expanded={levelsExpanded}
               aria-label={
                 levelsCollapsed
                   ? t('creators.profile.levels.expand', { defaultValue: 'Expand levels' })
@@ -228,7 +250,7 @@ const CreatorProfilePage = () => {
               }
               onClick={() => setLevelsCollapsed((v) => !v)}
             >
-              <ChevronIcon direction={isExpanded ? 'down' : 'right'} />
+              <ChevronIcon direction={levelsExpanded ? 'down' : 'right'} />
             </button>
           </div>
 
@@ -253,10 +275,27 @@ const CreatorProfilePage = () => {
 
         {difficultyGraphData.length > 0 ? (
           <section className="creator-profile-page__section creator-profile-page__section--difficulty">
-            <h2 className="creator-profile-page__section-title">
-              {t("creators.profile.sections.difficultyBreakdown.title")}
-            </h2>
-            <DifficultyGraph data={difficultyGraphData} mode="levels" />
+            <div className="account-profile-page__section-title-row">
+              <h2 className="account-profile-page__section-title">
+                {t("creators.profile.sections.difficultyBreakdown.title")}
+              </h2>
+              <button
+                type="button"
+                className="account-profile-page__chevron-btn"
+                aria-expanded={difficultyExpanded}
+                aria-label={
+                  difficultyCollapsed
+                    ? t('creators.profile.sections.difficultyBreakdown.expand', { defaultValue: 'Expand difficulty breakdown' })
+                    : t('creators.profile.sections.difficultyBreakdown.collapse', { defaultValue: 'Collapse difficulty breakdown' })
+                }
+                onClick={() => setDifficultyCollapsed((v) => !v)}
+              >
+                <ChevronIcon direction={difficultyExpanded ? 'down' : 'right'} />
+              </button>
+            </div>
+            <div className={["account-profile-page__collapsible", difficultyCollapsed ? "hidden" : ""].join(" ").trim()}>
+              <DifficultyGraph data={difficultyGraphData} mode="levels" />
+            </div>
           </section>
         ) : null}
       </div>
