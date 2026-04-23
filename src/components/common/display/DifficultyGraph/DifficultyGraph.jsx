@@ -12,9 +12,12 @@ import {
 } from "recharts";
 import "./DifficultyGraph.css";
 
-const CustomTooltip = ({ active, payload, label }) => {
+const CustomTooltip = ({ active, payload, label, labelMode }) => {
   if (active && payload && payload.length) {
     const difficulty = payload[0].payload;
+    const lm = labelMode;
+    const showPasses = lm === "all" || lm === "passes";
+    const showLevels = lm === "all" || lm === "levels";
     return (
       <div className="difficulty-graph__custom-tooltip">
         <div className="difficulty-graph__tooltip-content">
@@ -33,12 +36,16 @@ const CustomTooltip = ({ active, payload, label }) => {
           </div>
           <div className="difficulty-graph__tooltip-right">
             <div className="difficulty-graph__tooltip-stats">
-              <span className="difficulty-graph__tooltip-value">
-                {difficulty.passCount.toLocaleString()} Passes
-              </span>
-              <span className="difficulty-graph__tooltip-value">
-                {difficulty.levelCount.toLocaleString()} Levels
-              </span>
+              {showPasses ? (
+                <span className="difficulty-graph__tooltip-value">
+                  {difficulty.passCount.toLocaleString()} Passes
+                </span>
+              ) : null}
+              {showLevels ? (
+                <span className="difficulty-graph__tooltip-value">
+                  {difficulty.levelCount.toLocaleString()} Levels
+                </span>
+              ) : null}
             </div>
           </div>
         </div>
@@ -52,11 +59,14 @@ CustomTooltip.propTypes = {
   active: PropTypes.bool,
   payload: PropTypes.array,
   label: PropTypes.string,
+  labelMode: PropTypes.oneOf(["passes", "levels", "all"]),
 };
 
-export const DifficultyGraph = ({ data, mode }) => {
+export const DifficultyGraph = ({ data, mode, labelMode }) => {
   const { difficultyDict } = useDifficultyContext();
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  /** Which counts appear in the tooltip; defaults to `mode` (one line). Use `"all"` for both. */
+  const effectiveLabelMode = labelMode ?? mode;
 
   useEffect(() => {
     const handleResize = () => {
@@ -150,7 +160,7 @@ export const DifficultyGraph = ({ data, mode }) => {
             width={isMobile ? 35 : 45}
           />
           <Tooltip
-            content={<CustomTooltip />}
+            content={<CustomTooltip labelMode={effectiveLabelMode} />}
             cursor={{ fill: "rgba(255, 255, 255, 0.05)" }}
             offset={10}
             wrapperStyle={{
@@ -185,5 +195,6 @@ DifficultyGraph.propTypes = {
     }),
   ).isRequired,
   mode: PropTypes.oneOf(["passes", "levels"]).isRequired,
+  labelMode: PropTypes.oneOf(["passes", "levels", "all"]),
 };
 

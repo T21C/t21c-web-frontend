@@ -147,9 +147,12 @@ const gimmickReasons = [
   'YS Mod Required'
 ];
 
-const CustomTooltip = ({ active, payload, label }) => {
+const CustomTooltip = ({ active, payload, label, labelMode }) => {
   if (active && payload && payload.length) {
     const difficulty = payload[0].payload;
+    const lm = labelMode;
+    const showPasses = lm === "all" || lm === "passes";
+    const showLevels = lm === "all" || lm === "levels";
     return (
       <div className="custom-tooltip">
         <div className="tooltip-content">
@@ -165,12 +168,16 @@ const CustomTooltip = ({ active, payload, label }) => {
           </div>
           <div className="tooltip-right">
             <div className="tooltip-stats">
-              <span className="tooltip-value">
-                {difficulty.passCount.toLocaleString()} Passes
-              </span>
-              <span className="tooltip-value">
-                {difficulty.levelCount.toLocaleString()} Levels
-              </span>
+              {showPasses ? (
+                <span className="tooltip-value">
+                  {difficulty.passCount.toLocaleString()} Passes
+                </span>
+              ) : null}
+              {showLevels ? (
+                <span className="tooltip-value">
+                  {difficulty.levelCount.toLocaleString()} Levels
+                </span>
+              ) : null}
             </div>
           </div>
         </div>
@@ -188,9 +195,10 @@ const StatCard = ({ value, label }) => (
 );
 
 
-const DifficultyGraph = ({ data, mode }) => {
+const DifficultyGraph = ({ data, mode, labelMode }) => {
   const { difficultyDict } = useDifficultyContext();
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const effectiveLabelMode = labelMode ?? mode;
   
   useEffect(() => {
     const handleResize = () => {
@@ -254,7 +262,7 @@ const DifficultyGraph = ({ data, mode }) => {
           width={isMobile ? 35 : 45}
         />
         <Tooltip 
-          content={<CustomTooltip />}
+          content={<CustomTooltip labelMode={effectiveLabelMode} />}
           cursor={{ fill: 'rgba(255, 255, 255, 0.05)' }}
           offset={10}
           wrapperStyle={{ 
@@ -818,7 +826,7 @@ const HomePage = () => {
               {Object.entries(stats.difficulties.byType).filter(([type]) => type !== 'SPECIAL').map(([type, difficulties]) => (
                 <div key={type} className="difficulty-type-section">
                   <h3>{type}</h3>
-                  <DifficultyGraph data={difficulties} mode={graphMode} />
+                  <DifficultyGraph data={difficulties} mode={graphMode} labelMode="all" />
                 </div>
               ))}
             </section>

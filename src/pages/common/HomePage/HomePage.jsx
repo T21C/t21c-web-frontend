@@ -307,7 +307,7 @@ const HomePage = () => {
                 {Object.entries(stats.difficulties.byType).filter(([type]) => type == 'PGU').map(([type, difficulties]) => (
                   <div key={type} className="difficulty-type-section">
                     <h3>{type}</h3>
-                    <DifficultyGraph data={difficulties} mode={graphMode} />
+                    <DifficultyGraph data={difficulties} mode={graphMode} labelMode="all" />
                   </div>
                 ))}
               </div>
