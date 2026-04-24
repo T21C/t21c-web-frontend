@@ -39,7 +39,7 @@
   },
   "verificationStatus": {
     "help": {
-      "declined": "The creator has declined to have their charts featured. Levels remain hidden from public listings.",
+      "declined": "The creator has declined to have their charts featured on the forum.",
       "pending": "Waiting on confirmation from the creator. Default state for newly added creators.",
       "conditional": "The creator has accepted under specific conditions. Coordinate before any submissions are added.",
       "allowed": "The creator has agreed to have their charts featured on the forum."
@@ -96,16 +96,13 @@
       "credits": {
         "levelsCreditedDistinct": "Distinct levels credited",
         "levelsAsCharter": "Levels as charter",
-        "levelsAsVfxer": "Levels as VFX",
-        "levelsAsCreator": "Levels as creator",
-        "levelsAsTeamMember": "Levels as team member",
-        "levelsOwned": "Levels owned (credit)"
+        "levelsAsVfxer": "Levels as VFX"
       },
       "content": {
-        "totalTilesMade": "Total tiles (charts)",
-        "totalLevelDurationMs": "Total chart duration (ms)",
+        "totalTilesMade": "Tiles placed",
+        "totalLevelDurationMs": "Total chart duration",
         "averageTilecount": "Avg tilecount",
-        "averageLevelLengthMs": "Avg level length (ms)",
+        "averageLevelLengthMs": "Avg level length",
         "averageBpm": "Avg BPM",
         "totalClearsOnLevels": "Total clears on charts",
         "totalLikesOnLevels": "Total likes on charts",
@@ -113,12 +110,8 @@
       },
       "audience": {
         "uniquePlayersCleared": "Unique players who cleared",
-        "worldsFirstsOnLevels": "World's first clears on charts",
-        "totalTilesPlayedOnLevels": "Total tiles played (all passes)"
-      },
-      "curation": {
-        "curatedLevels": "Curated levels (assigned)",
-        "rerateCount": "Rerate history entries"
+        "worldsFirstsOnLevels": "WF's on charts",
+        "totalTilesPlayedOnLevels": "Total tiles hit"
       },
       "timeline": {
         "firstLevelAt": "First chart",

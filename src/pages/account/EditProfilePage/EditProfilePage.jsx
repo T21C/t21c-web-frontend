@@ -26,7 +26,7 @@ const ProviderIcon = ({ provider, size, color="#fff" }) => {
   }
 };
 
-const EditProfilePage = () => {
+const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
   const { t } = useTranslation(['pages', 'common']);
   const {
     user,
@@ -447,10 +447,14 @@ const EditProfilePage = () => {
   return (
     <>
     <AccountStatusBanners variant="edit" user={user} navigate={navigate} />
-    <div className="edit-profile-page">
+    <div className={`edit-profile-page${embeddedInSettings ? " edit-profile-page--embedded" : ""}`}>
 
       <div className="edit-profile-container page-content-600">
-        <h1>{t('editProfile.title')}</h1>
+        {embeddedInSettings ? (
+          <h2 className="edit-profile-page__page-title">{t("editProfile.title")}</h2>
+        ) : (
+          <h1 className="edit-profile-page__page-title">{t("editProfile.title")}</h1>
+        )}
 
         {error && <div className="error-message">{error}</div>}
         {success && <div className="success-message">{success}</div>}

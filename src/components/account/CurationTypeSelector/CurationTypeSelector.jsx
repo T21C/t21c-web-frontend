@@ -18,6 +18,8 @@ const CurationTypeSelector = ({
   curationTypesDict = {},
   canEdit = false,
   onSaved,
+  /** Called whenever draft selection changes (for live header preview). */
+  onDraftChange,
 }) => {
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -31,6 +33,10 @@ const CurationTypeSelector = ({
       [...(displayCurationTypeIds || [])].filter((x) => Number.isFinite(Number(x))).map(Number).slice(0, MAX_SELECTED),
     );
   }, [displayCurationTypeIds]);
+
+  useEffect(() => {
+    onDraftChange?.(draftIds);
+  }, [draftIds, onDraftChange]);
 
   const availableTypes = useMemo(() => {
     const entries = Object.entries(curationTypeCounts || {}).filter(

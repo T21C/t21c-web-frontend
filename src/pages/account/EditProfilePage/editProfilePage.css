@@ -6,10 +6,17 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.edit-profile-page .edit-profile-container h1 {
+.edit-profile-page .edit-profile-container .edit-profile-page__page-title {
   margin-bottom: 2rem;
   font-size: 2rem;
   text-align: center;
+}
+
+.edit-profile-page--embedded .edit-profile-container {
+  margin: 0 auto;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .edit-profile-page .edit-profile-container h2 {
@@ -135,7 +142,7 @@
     margin: 1rem;
   }
 
-  .edit-profile-page .edit-profile-container h1 {
+  .edit-profile-page .edit-profile-container .edit-profile-page__page-title {
     font-size: 1.75rem;
   }
 

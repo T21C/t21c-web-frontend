@@ -231,11 +231,6 @@ export function buildCreatorStatGroups(ff, t, difficultyDict) {
           value: formatCount(cr.levelsAsVfxer),
         },
         {
-          key: "levelsAsCreator",
-          label: t("creators.profile.funFacts.credits.levelsAsCreator"),
-          value: formatCount(cr.levelsAsCreator),
-        },
-        {
           key: "levelsAsTeamMember",
           label: t("creators.profile.funFacts.credits.levelsAsTeamMember"),
           value: formatCount(cr.levelsAsTeamMember),
@@ -304,18 +299,6 @@ export function buildCreatorStatGroups(ff, t, difficultyDict) {
           label: t("creators.profile.funFacts.audience.totalTilesPlayedOnLevels"),
           value: formatCount(au.totalTilesPlayedOnLevels),
         },
-      ],
-    },
-    {
-      key: "curation",
-      label: t("creators.profile.funFacts.groups.curation"),
-      rows: [
-        {
-          key: "curatedLevels",
-          label: t("creators.profile.funFacts.curation.curatedLevels"),
-          value: formatCount(cu.curatedLevels),
-        },
-        { key: "rerateCount", label: t("creators.profile.funFacts.curation.rerateCount"), value: formatCount(cu.rerateCount) },
       ],
     },
     {

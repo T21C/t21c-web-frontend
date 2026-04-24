@@ -147,7 +147,7 @@ const Navigation = ({ children, config: externalConfig = null }) => {
 
   return (
     <>
-      <nav ref={navSpacerRef}>
+      <nav className="base-nav" ref={navSpacerRef}>
         <div className="nav-wrapper">
           {/* Left side: Logo and main navigation links */}
           <div className="nav-left">

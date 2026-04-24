@@ -423,7 +423,7 @@ const ProfilePage = () => {
                           <button
                             type="button"
                             className="profile-header__action-btn"
-                            onClick={() => navigate("/profile/edit")}
+                            onClick={() => navigate("/settings/account")}
                             title={t("profile.editProfile")}
                             aria-label={t("profile.editProfile")}
                           >

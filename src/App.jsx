@@ -54,7 +54,20 @@ function App() {
           <Route path="register" element={<Pages.RegisterPage />} />
           <Route path="forgot-password" element={<Pages.ForgotPasswordPage />} />
           
-          <Route path="profile/edit" element={<PrivateRoute><Pages.EditProfilePage /></PrivateRoute>} />
+          <Route path="profile/edit" element={<PrivateRoute><Pages.ProfileEditRedirect /></PrivateRoute>} />
+          <Route
+            path="settings"
+            element={(
+              <PrivateRoute>
+                <Pages.SettingsLayout />
+              </PrivateRoute>
+            )}
+          >
+            <Route index element={<Pages.SettingsIndexRedirect />} />
+            <Route path="account" element={<Pages.SettingsAccountPage />} />
+            <Route path="player" element={<Pages.SettingsPlayerPage />} />
+            <Route path="creator" element={<Pages.SettingsCreatorPage />} />
+          </Route>
           <Route path="profile/verify-email" element={<Pages.EmailVerificationPage />} />
           
           <Route index path="/" element={

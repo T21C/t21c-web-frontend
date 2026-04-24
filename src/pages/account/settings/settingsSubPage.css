@@ -1,0 +1,59 @@
+.settings-sub-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  color: var(--color-white);
+}
+
+.settings-sub-page--centered {
+  align-items: center;
+  justify-content: center;
+  min-height: 12rem;
+}
+
+.settings-sub-page__title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-white);
+}
+
+.settings-sub-page__text {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: var(--color-gray-2);
+  max-width: 42rem;
+}
+
+.settings-sub-page__btn {
+  align-self: flex-start;
+}
+
+.settings-sub-page__btn--ghost {
+  margin-bottom: 0.25rem;
+}
+
+.settings-sub-page__block {
+  margin-top: 0.5rem;
+}
+
+.settings-sub-page__preview-hint {
+  margin: 0 0 0.5rem;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--color-gray-2);
+  max-width: 48rem;
+}
+
+.settings-sub-page__header-preview {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 1.25rem;
+  overflow: hidden;
+}
+
+.settings-sub-page .settings-sub-page__profile-header {
+  width: 100%;
+}

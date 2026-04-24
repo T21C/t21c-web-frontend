@@ -11,7 +11,7 @@ import { LevelContextProvider } from "@/contexts/LevelContext";
 import { DifficultyGraph, MetaTags, CreatorStatusBadge } from "@/components/common/display";
 import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
 import { ScrollButton } from "@/components/common/buttons";
-import { ChevronIcon, AdofaiIcon, SettingsIcon } from "@/components/common/icons";
+import { ChevronIcon, AdofaiIcon, EditIcon, ShieldIcon } from "@/components/common/icons";
 import { CreatorManagementPopup } from "@/components/popups/Creators";
 import LevelPage from "@/pages/common/Level/LevelPage/LevelPage";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
@@ -184,14 +184,26 @@ const CreatorProfilePage = () => {
                   <AdofaiIcon color="var(--color-white)" size={28} rotation={-25} />
                 </button>
               ) : null}
+              {canEditHeaderCurationSlots ? (
+                <button
+                  type="button"
+                  className="profile-header__action-btn"
+                  onClick={() => navigate("/settings/creator")}
+                  title={t("profile.editProfile")}
+                  aria-label={t("profile.editProfile")}
+                >
+                  <EditIcon color="var(--color-white)" size="24px" />
+                </button>
+              ) : null}
               {hasFlag(user, permissionFlags.SUPER_ADMIN) ? (
                 <button
                   type="button"
                   className="profile-header__action-btn"
                   onClick={() => setShowManagementPopup(true)}
-                  aria-label={t('creators.profile.manageButton', { defaultValue: 'Manage' })}
+                  title={t("profile.adminEdit")}
+                  aria-label={t("profile.adminEdit")}
                 >
-                  <SettingsIcon color="var(--color-white)" size={28} />
+                  <ShieldIcon color="var(--color-white)" size="24px" />
                 </button>
               ) : null}
             </>

@@ -1,0 +1,43 @@
+{
+  "layout": {
+    "pageTitle": "설정",
+    "sidebarTitle": "설정",
+    "subtitle": "계정, 플레이어 프로필, 크리에이터 프로필을 한곳에서 관리합니다.",
+    "navAria": "설정 메뉴",
+    "sidebarNavAria": "설정 내비게이션"
+  },
+  "nav": {
+    "groups": {
+      "personal": "개인"
+    },
+    "account": "계정",
+    "player": "플레이어 프로필",
+    "creator": "크리에이터 프로필",
+    "short": {
+      "account": "계정",
+      "player": "플레이어",
+      "creator": "크리에이터"
+    }
+  },
+  "player": {
+    "title": "플레이어 프로필",
+    "intro": "클리어와 프로필 표시 옵션은 추후 여기에 추가됩니다.",
+    "openProfile": "내 플레이어 프로필 보기",
+    "noPlayerTitle": "플레이어 프로필 없음",
+    "noPlayerBody": "이 계정에 연결된 플레이어 프로필이 아직 없습니다.",
+    "previewHint": "미리보기는 실제 플레이어 프로필과 같습니다. 다른 곳에서 수정한 뒤에는 이 탭으로 돌아오면 새로고침됩니다.",
+    "loadErrorTitle": "플레이어 프로필을 불러올 수 없음",
+    "loadErrorBody": "잠시 후 다시 시도해 주세요.",
+    "retry": "다시 시도"
+  },
+  "creator": {
+    "previewHint": "헤더 배지를 바꾸면 미리보기가 즉시 반영됩니다(저장은 저장 버튼 클릭 시).",
+    "title": "크리에이터 프로필",
+    "intro": "헤더 큐레이션 배지 등 크리에이터 프로필 표시를 설정합니다.",
+    "openPublicProfile": "공개 크리에이터 프로필 보기",
+    "noCreatorTitle": "크리에이터 프로필 없음",
+    "noCreatorBody": "이 계정에 연결된 크리에이터 프로필이 아직 없습니다.",
+    "loadErrorTitle": "크리에이터 설정을 불러올 수 없음",
+    "loadErrorBody": "잠시 후 다시 시도하거나 공개 프로필로 이동하세요."
+  }
+}
