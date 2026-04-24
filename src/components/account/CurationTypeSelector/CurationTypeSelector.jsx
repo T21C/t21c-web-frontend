@@ -5,11 +5,14 @@ import {
   sortCurationTypesForDisplay,
   resolveCurationTypeFromDict,
 } from "@/utils/curationTypeUtils";
+import { buildCreatorIconSlots } from "@/utils/profileIconSlots";
 
 const MAX_SELECTED = 5;
 
 /**
- * Basic scaffold: pick up to 5 curation types (from levels credited to this creator) for the profile header.
+ * Pick up to 5 curation types for the creator profile header.
+ * @param {boolean} [embedded=false] — no toggle; always expanded (e.g. admin popup).
+ * @param {string} [embeddedSectionLabel] — optional heading when embedded.
  */
 const CurationTypeSelector = ({
   creatorId,
@@ -18,15 +21,20 @@ const CurationTypeSelector = ({
   curationTypesDict = {},
   canEdit = false,
   onSaved,
-  /** Called whenever draft selection changes (for live header preview). */
   onDraftChange,
+  embedded = false,
+  embeddedSectionLabel = "",
 }) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(embedded);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const [draftIds, setDraftIds] = useState(() =>
     [...(displayCurationTypeIds || [])].filter((x) => Number.isFinite(Number(x))).map(Number).slice(0, MAX_SELECTED),
   );
+
+  useEffect(() => {
+    if (embedded) setOpen(true);
+  }, [embedded]);
 
   useEffect(() => {
     setDraftIds(
@@ -48,6 +56,12 @@ const CurationTypeSelector = ({
     });
     return sortCurationTypesForDisplay(refs, curationTypesDict);
   }, [curationTypeCounts, curationTypesDict]);
+
+  const previewSlots = useMemo(
+    () =>
+      buildCreatorIconSlots(curationTypeCounts, curationTypesDict, draftIds),
+    [curationTypeCounts, curationTypesDict, draftIds],
+  );
 
   const toggleId = useCallback((typeId) => {
     setError(null);
@@ -74,8 +88,8 @@ const CurationTypeSelector = ({
     setDraftIds(
       [...(displayCurationTypeIds || [])].filter((x) => Number.isFinite(Number(x))).map(Number).slice(0, MAX_SELECTED),
     );
-    setOpen(false);
-  }, [displayCurationTypeIds]);
+    if (!embedded) setOpen(false);
+  }, [displayCurationTypeIds, embedded]);
 
   const handleSave = useCallback(async () => {
     if (!creatorId) return;
@@ -88,37 +102,73 @@ const CurationTypeSelector = ({
         ? res.data.displayCurationTypeIds
         : draftIds;
       onSaved?.(next);
-      setOpen(false);
+      if (!embedded) setOpen(false);
     } catch (e) {
       const msg = e?.response?.data?.error || e?.message || "Save failed";
       setError(String(msg));
     } finally {
       setSaving(false);
     }
-  }, [creatorId, draftIds, onSaved]);
+  }, [creatorId, draftIds, onSaved, embedded]);
 
   if (!canEdit) return null;
 
-  return (
-    <div className="curation-type-selector">
-      <div className="curation-type-selector__toolbar">
-        <button type="button" className="curation-type-selector__toggle" onClick={open ? handleCancel : handleOpen}>
-          {open ? "Close" : "Customize header badges"}
-        </button>
-        {open ? (
-          <span className="curation-type-selector__hint">
-            Select up to {MAX_SELECTED} ({draftIds.length}/{MAX_SELECTED})
-          </span>
-        ) : null}
-      </div>
+  const showPanel = embedded || open;
 
-      {open ? (
+  return (
+    <div
+      className={[
+        "curation-type-selector",
+        embedded ? "curation-type-selector--embedded" : "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
+    >
+      {!embedded ? (
+        <div className="curation-type-selector__toolbar">
+          <button type="button" className="curation-type-selector__toggle" onClick={open ? handleCancel : handleOpen}>
+            {open ? "Close" : "Customize header badges"}
+          </button>
+          {open ? (
+            <span className="curation-type-selector__hint">
+              Up to {MAX_SELECTED} ({draftIds.length}/{MAX_SELECTED})
+            </span>
+          ) : null}
+        </div>
+      ) : embeddedSectionLabel ? (
+        <p className="curation-type-selector__embedded-label">{embeddedSectionLabel}</p>
+      ) : null}
+
+      {embedded ? (
+        <div className="curation-type-selector__preview" role="img" aria-label="Header badge preview">
+          {previewSlots.length === 0 ? (
+            <span className="curation-type-selector__preview-empty">—</span>
+          ) : (
+            previewSlots.map((slot) => (
+              <div
+                key={slot.key}
+                className="curation-type-selector__preview-slot"
+                title={slot.tooltip ?? slot.title}
+              >
+                {slot.iconUrl ? (
+                  <img className="curation-type-selector__preview-img" src={slot.iconUrl} alt="" decoding="async" />
+                ) : (
+                  <span className="curation-type-selector__preview-letter">{slot.letter}</span>
+                )}
+                <span className="curation-type-selector__preview-badge">{slot.badge ?? slot.count ?? 0}</span>
+              </div>
+            ))
+          )}
+        </div>
+      ) : null}
+
+      {showPanel ? (
         <div className="curation-type-selector__panel">
           {error ? <p className="curation-type-selector__error">{error}</p> : null}
           {availableTypes.length === 0 ? (
-            <p className="curation-type-selector__empty">No curation types on your credited levels yet.</p>
+            <p className="curation-type-selector__empty">No curation types on credited levels yet.</p>
           ) : (
-            <div className="curation-type-selector__grid">
+            <div className="curation-type-selector__chips">
               {availableTypes.map((t) => {
                 const id = t.id;
                 const selected = draftIds.includes(id);
@@ -130,22 +180,22 @@ const CurationTypeSelector = ({
                     key={id}
                     type="button"
                     className={[
-                      "curation-type-selector__tile",
-                      selected ? "curation-type-selector__tile--selected" : "",
+                      "curation-type-selector__chip",
+                      selected ? "curation-type-selector__chip--selected" : "",
                     ]
                       .filter(Boolean)
                       .join(" ")}
                     onClick={() => toggleId(id)}
                     title={name}
+                    aria-pressed={selected}
                   >
                     {t.icon ? (
-                      <img className="curation-type-selector__tile-icon" src={t.icon} alt="" decoding="async" />
+                      <img className="curation-type-selector__chip-icon" src={t.icon} alt="" decoding="async" />
                     ) : (
-                      <span className="curation-type-selector__tile-fallback">{name.slice(0, 2)}</span>
+                      <span className="curation-type-selector__chip-fallback">{name.slice(0, 2)}</span>
                     )}
-                    <span className="curation-type-selector__tile-name">{name}</span>
-                    <span className="curation-type-selector__tile-count">{cnt}</span>
-                    {selected ? <span className="curation-type-selector__tile-check" aria-hidden>✓</span> : null}
+                    <span className="curation-type-selector__chip-count">{cnt}</span>
+                    {selected ? <span className="curation-type-selector__chip-check" aria-hidden>✓</span> : null}
                   </button>
                 );
               })}
@@ -153,7 +203,7 @@ const CurationTypeSelector = ({
           )}
           <div className="curation-type-selector__actions">
             <button type="button" className="curation-type-selector__btn" onClick={handleCancel} disabled={saving}>
-              Cancel
+              {embedded ? "Reset" : "Cancel"}
             </button>
             <button
               type="button"

@@ -229,14 +229,7 @@ export function buildCreatorStatGroups(ff, t, difficultyDict) {
           key: "levelsAsVfxer",
           label: t("creators.profile.funFacts.credits.levelsAsVfxer"),
           value: formatCount(cr.levelsAsVfxer),
-        },
-        {
-          key: "levelsAsTeamMember",
-          label: t("creators.profile.funFacts.credits.levelsAsTeamMember"),
-          value: formatCount(cr.levelsAsTeamMember),
-        },
-        { key: "levelsOwned", label: t("creators.profile.funFacts.credits.levelsOwned"), value: formatCount(cr.levelsOwned) },
-      ],
+        }],
     },
     {
       key: "content",
@@ -322,7 +315,7 @@ export function buildCreatorStatGroups(ff, t, difficultyDict) {
   groups.push({
     key: "breakdownByType",
     label: t("creators.profile.funFacts.groups.breakdownByType"),
-    rows: ["PGU", "SPECIAL", "LEGACY", "UNKNOWN"].map((k) => ({
+    rows: ["PGU", "SPECIAL"].map((k) => ({
       key: `type_${k}`,
       label: t(`creators.profile.funFacts.difficultyType.${k}`),
       value: formatCount(byType[k] ?? 0),

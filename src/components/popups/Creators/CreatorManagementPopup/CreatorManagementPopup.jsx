@@ -1,10 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { CloseButton } from '@/components/common/buttons';
 import { CustomSelect } from '@/components/common/selectors';
 import { CreatorStatusBadge } from '@/components/common/display/CreatorStatusBadge/CreatorStatusBadge';
+import CurationTypeSelector from '@/components/account/CurationTypeSelector/CurationTypeSelector';
+import { useAuth } from '@/contexts/AuthContext';
+import { useDifficultyContext } from '@/contexts/DifficultyContext';
+import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import api from '@/utils/api';
 import './creatormanagementpopup.css';
 
@@ -28,12 +32,16 @@ const TABS = [
   { id: 'split', i18nKey: 'modes.split' },
 ];
 
-export const CreatorManagementPopup = ({ creator, onClose, onUpdate }) => {
+export const CreatorManagementPopup = ({ creator, onClose, onUpdate, curationProfileInitial = null }) => {
   const { t } = useTranslation(['components', 'common']);
   const tt = (key, opts) => t(`creatorManagementPopup.${key}`, opts);
   const popupRef = useRef(null);
+  const { user } = useAuth();
+  const { curationTypesDict } = useDifficultyContext();
 
   const [mode, setMode] = useState('update');
+  const [curationProfile, setCurationProfile] = useState(curationProfileInitial);
+  const [curationProfileLoading, setCurationProfileLoading] = useState(false);
 
   const [name, setName] = useState(creator?.name || '');
   const [aliases, setAliases] = useState(creator?.creatorAliases?.map(a => a.name) || []);
@@ -66,6 +74,57 @@ export const CreatorManagementPopup = ({ creator, onClose, onUpdate }) => {
   const [hasPendingChanges, setHasPendingChanges] = useState(false);
 
   useBodyScrollLock(true);
+
+  useEffect(() => {
+    if (curationProfileInitial) {
+      setCurationProfile(curationProfileInitial);
+    }
+  }, [curationProfileInitial]);
+
+  useEffect(() => {
+    if (!creator?.id) return undefined;
+    let cancelled = false;
+    setCurationProfileLoading(true);
+    const url = `${import.meta.env.VITE_CREATORS_V3}/${creator.id}/profile`;
+    api
+      .get(url)
+      .then((res) => {
+        if (!cancelled) setCurationProfile(res.data);
+      })
+      .catch((err) => {
+        if (!cancelled) console.error('Creator profile fetch for badges failed:', err);
+      })
+      .finally(() => {
+        if (!cancelled) setCurationProfileLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [creator?.id]);
+
+  const canEditHeaderBadges = useMemo(() => {
+    if (!user || !creator) return false;
+    const cid = Number(creator.id);
+    if (!Number.isFinite(cid)) return false;
+    const linkedCreator = user.creatorId != null && Number(user.creatorId) === cid;
+    const linkedUser = creator.user?.id && user.id === creator.user.id;
+    return (
+      linkedCreator ||
+      Boolean(linkedUser) ||
+      hasFlag(user, permissionFlags.SUPER_ADMIN) ||
+      hasFlag(user, permissionFlags.HEAD_CURATOR)
+    );
+  }, [user, creator]);
+
+  const handleCurationBadgesSaved = useCallback(
+    (ids) => {
+      setCurationProfile((p) =>
+        p && typeof p === 'object' ? { ...p, displayCurationTypeIds: ids } : p,
+      );
+      onUpdate?.();
+    },
+    [onUpdate],
+  );
 
   useEffect(() => {
     if (creator?.credits?.length === 1) {
@@ -479,6 +538,25 @@ export const CreatorManagementPopup = ({ creator, onClose, onUpdate }) => {
                     ))}
                   </div>
                 </div>
+
+                {canEditHeaderBadges ? (
+                  <div className="form-group form-group--header-badges">
+                    {curationProfileLoading && !curationProfile ? (
+                      <p className="header-badges-loading">{tt('update.headerBadges.loading')}</p>
+                    ) : (
+                      <CurationTypeSelector
+                        embedded
+                        embeddedSectionLabel={tt('update.headerBadges.label')}
+                        creatorId={Number(creator.id)}
+                        curationTypeCounts={curationProfile?.curationTypeCounts ?? {}}
+                        displayCurationTypeIds={curationProfile?.displayCurationTypeIds}
+                        curationTypesDict={curationTypesDict || {}}
+                        canEdit={canEditHeaderBadges}
+                        onSaved={handleCurationBadgesSaved}
+                      />
+                    )}
+                  </div>
+                ) : null}
 
                 <button
                   className={`action-button ${isLoading ? 'loading' : ''}`}

@@ -1,6 +1,6 @@
 import "../accountProfilePage.css";
 import "./creatorprofilepage.css";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { buildCreatorStatGroups } from "@/utils/profileStatGroups";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
@@ -16,7 +16,6 @@ import { CreatorManagementPopup } from "@/components/popups/Creators";
 import LevelPage from "@/pages/common/Level/LevelPage/LevelPage";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { buildCreatorIconSlots } from "@/utils/profileIconSlots";
-import CurationTypeSelector from "@/components/account/CurationTypeSelector/CurationTypeSelector";
 import { toDifficultyGraphData } from "@/utils/statFormatters";
 
 const COLLAPSED_STAT_KEYS = ["chartsTotal", "chartsCreated", "totalChartClears"];
@@ -101,10 +100,6 @@ const CreatorProfilePage = () => {
       hasFlag(user, permissionFlags.HEAD_CURATOR)
     );
   }, [user, creatorDoc, creatorId]);
-
-  const handleDisplayCurationsSaved = useCallback((ids) => {
-    setProfile((p) => (p && typeof p === "object" ? { ...p, displayCurationTypeIds: ids } : p));
-  }, []);
 
   const currentUrl = window.location.origin + location.pathname;
 
@@ -209,14 +204,6 @@ const CreatorProfilePage = () => {
             </>
           }
         />
-        <CurationTypeSelector
-          creatorId={Number(creatorId)}
-          curationTypeCounts={profile?.curationTypeCounts}
-          displayCurationTypeIds={profile?.displayCurationTypeIds}
-          curationTypesDict={curationTypesDict || {}}
-          canEdit={canEditHeaderCurationSlots}
-          onSaved={handleDisplayCurationsSaved}
-        />
 
         <section className="creator-profile-page__section">
           <div className="account-profile-page__section-title-row">
@@ -315,6 +302,7 @@ const CreatorProfilePage = () => {
       {showManagementPopup && (
         <CreatorManagementPopup
           creator={creatorDoc}
+          curationProfileInitial={profile}
           onClose={() => setShowManagementPopup(false)}
           onUpdate={() => setProfileReloadKey((k) => k + 1)}
         />

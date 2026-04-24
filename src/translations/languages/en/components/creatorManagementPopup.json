@@ -21,6 +21,10 @@
       "placeholder": "Add alias",
       "add": "Add"
     },
+    "headerBadges": {
+      "label": "Profile header badges",
+      "loading": "Loading badge data…"
+    },
     "updateButton": "Update creator"
   },
   "user": {

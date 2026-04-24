@@ -117,6 +117,16 @@
   box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
 }
 
+.creator-management-popup-container .form-group--header-badges {
+  padding-top: 4px;
+}
+
+.creator-management-popup-container .header-badges-loading {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #a0a0a0;
+}
+
 .creator-management-popup-container .status-help {
   color: #888;
   font-size: 0.85em;

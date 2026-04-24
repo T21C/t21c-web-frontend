@@ -130,7 +130,6 @@
 @media (max-width: 640px) {
   .settings-layout {
     flex-direction: column;
-    min-height: auto;
   }
 
   .settings-layout__sidebar {

@@ -33,12 +33,9 @@ const PlayerCard = ({player, onCreatorAssignmentClick}) => {
     top12kDiff: t('cards.player.stats.top12kDiff')
   };
 
+  console.log( player )
   const redirect = () => {
     navigate(`/profile/${player.id}`);
-  };
-
-  const onAnchorClick = (e) => {
-    e.stopPropagation();
   };
 
   const handleCreatorAssignmentClick = (e) => {
@@ -46,17 +43,6 @@ const PlayerCard = ({player, onCreatorAssignmentClick}) => {
     if (onCreatorAssignmentClick && player.user) {
       onCreatorAssignmentClick(player.user);
     }
-  };
-
-  const handleCreatorAssignmentClose = () => {
-    setShowCreatorAssignment(false);
-  };
-
-  const handleCreatorAssignmentUpdate = () => {
-    // Refresh the page data by triggering a context update
-    // This will cause the leaderboard to refetch data
-    window.dispatchEvent(new CustomEvent('auth:permission-changed'));
-    setShowCreatorAssignment(false);
   };
     
   const prioritizedField = sortBy || 'rankedScore';

@@ -36,9 +36,8 @@ export const createUserMenuItems = (user) => {
       badge: "navigation.main.badges.underConstruction",
     },
     {
-      disabled: true,
       translationKey: "navigation.main.dropdowns.user.settings",
-      badge: "navigation.main.badges.underConstruction",
+      to: "/settings",
     },
     { divider: true },
     ...(isAdmin
