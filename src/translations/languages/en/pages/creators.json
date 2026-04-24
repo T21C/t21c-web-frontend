@@ -22,10 +22,9 @@
   "sortOptions": {
     "name": "Name",
     "chartsTotal": "Total Charts",
-    "chartsCreated": "Charts Created",
     "chartsCharted": "Charts Charted",
     "chartsVfxed": "Charts VFX'd",
-    "chartsTeamed": "Charts (Team Member)",
+    "chartsTeamed": "Team-assigned charts",
     "totalChartClears": "Total Chart Clears",
     "totalChartLikes": "Total Chart Likes"
   },
@@ -55,10 +54,10 @@
     "manageButton": "Manage creator",
     "stats": {
       "header": "Creator Stats",
-      "chartsCreated": "Charts Created",
       "chartsCharted": "Charts Charted",
       "chartsVfxed": "Charts VFX'd",
-      "chartsTeamed": "Charts (Team Member)",
+      "chartsTeamed": "Team-assigned charts",
+      "curatedLevels": "Total curated charts",
       "chartsTotal": "Total Charts",
       "totalChartClears": "Total Chart Clears",
       "totalChartLikes": "Total Chart Likes"
@@ -94,7 +93,6 @@
         "teamsJoined": "Teams joined"
       },
       "credits": {
-        "levelsCreditedDistinct": "Distinct levels credited",
         "levelsAsCharter": "Levels as charter",
         "levelsAsVfxer": "Levels as VFX"
       },

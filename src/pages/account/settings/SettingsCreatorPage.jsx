@@ -10,11 +10,9 @@ import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
 import { CreatorStatusBadge } from "@/components/common/display";
 import { ExternalLinkIcon } from "@/components/common/icons";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
-import { buildCreatorStatGroups } from "@/utils/profileStatGroups";
+import { buildCreatorStatGroups, buildCreatorCollapsedStatRows } from "@/utils/profileStatGroups";
 import { buildCreatorIconSlots } from "@/utils/profileIconSlots";
 import "./settingsSubPage.css";
-
-const COLLAPSED_STAT_KEYS = ["chartsTotal", "chartsCreated", "totalChartClears"];
 
 const MAX_CREATOR_ALIASES = 20;
 
@@ -229,6 +227,10 @@ const SettingsCreatorPage = () => {
   }, [aliasList, t]);
 
   const stats = profile?.stats || creatorDoc;
+  const collapsedCreatorStatRows = useMemo(
+    () => buildCreatorCollapsedStatRows(stats, profile?.funFacts, t),
+    [stats, profile?.funFacts, t],
+  );
 
   if (!user?.creatorId) {
     return (
@@ -285,11 +287,7 @@ const SettingsCreatorPage = () => {
               <CreatorStatusBadge status={creatorDoc.verificationStatus} size="medium" />
             ) : null
           }
-          statRows={COLLAPSED_STAT_KEYS.map((key) => ({
-            key,
-            label: t(`creators.profile.stats.${key}`),
-            value: Math.trunc(Number(stats?.[key] ?? 0)).toLocaleString("en-US"),
-          }))}
+          statRows={collapsedCreatorStatRows}
           actions={
             <button
               type="button"
@@ -303,8 +301,6 @@ const SettingsCreatorPage = () => {
           }
         />
       </div>
-
-      <h2 className="settings-sub-page__title">{t("settings.creator.title")}</h2>
 
       {canEditHeaderCurationSlots ? (
         <div className="settings-sub-page__block settings-sub-page__field">

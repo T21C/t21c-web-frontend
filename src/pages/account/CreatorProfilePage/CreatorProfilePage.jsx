@@ -2,7 +2,7 @@ import "../accountProfilePage.css";
 import "./creatorprofilepage.css";
 import { useEffect, useMemo, useState } from "react";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
-import { buildCreatorStatGroups } from "@/utils/profileStatGroups";
+import { buildCreatorStatGroups, buildCreatorCollapsedStatRows } from "@/utils/profileStatGroups";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import api from "@/utils/api";
 import { useTranslation } from "react-i18next";
@@ -17,8 +17,6 @@ import LevelPage from "@/pages/common/Level/LevelPage/LevelPage";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { buildCreatorIconSlots } from "@/utils/profileIconSlots";
 import { toDifficultyGraphData } from "@/utils/statFormatters";
-
-const COLLAPSED_STAT_KEYS = ["chartsTotal", "chartsCreated", "totalChartClears"];
 
 const CreatorProfilePage = () => {
   const { creatorId } = useParams();
@@ -101,6 +99,12 @@ const CreatorProfilePage = () => {
     );
   }, [user, creatorDoc, creatorId]);
 
+  const stats = profile?.stats || creatorDoc;
+  const collapsedCreatorStatRows = useMemo(
+    () => buildCreatorCollapsedStatRows(stats, profile?.funFacts, t),
+    [stats, profile?.funFacts, t],
+  );
+
   const currentUrl = window.location.origin + location.pathname;
 
   if (profileLoading) {
@@ -123,7 +127,6 @@ const CreatorProfilePage = () => {
     );
   }
 
-  const stats = profile?.stats || creatorDoc;
   const bioExpanded = !bioCollapsed;
   const levelsExpanded = !levelsCollapsed;
   const difficultyExpanded = !difficultyCollapsed;
@@ -161,11 +164,7 @@ const CreatorProfilePage = () => {
               />
             ) : null
           }
-          statRows={COLLAPSED_STAT_KEYS.map((key) => ({
-            key,
-            label: t(`creators.profile.stats.${key}`),
-            value: Math.trunc(Number(stats?.[key] ?? 0)).toLocaleString("en-US"),
-          }))}
+          statRows={collapsedCreatorStatRows}
           actions={
             <>
               {creatorDoc.user?.playerId ? (

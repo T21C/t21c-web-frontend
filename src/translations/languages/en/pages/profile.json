@@ -91,14 +91,13 @@
       "perfect": "Perfect",
       "lPerfect": "Late perfect",
       "lateSingle": "Late single",
-      "lateDouble": "Late double",
       "perfectRatio": "Perfect ratio",
       "earlyVsLateBias": "Early vs late bias"
     },
     "levelsCleared": {
       "totalTilecountCleared": "Total tilecount cleared",
-      "totalLevelLengthMs": "Sum of level lengths (ms)",
-      "totalPlaytimeMs": "Estimated playtime (ms)",
+      "totalLevelLengthMs": "Sum of level lengths",
+      "totalPlaytimeMs": "Estimated playtime",
       "averageBpm": "Avg BPM (cleared levels)",
       "totalScoreV2": "Sum of score v2"
     },
@@ -109,7 +108,7 @@
       "worstAccuracy": "Worst accuracy",
       "topSpeed": "Top speed",
       "highestTilecountCleared": "Highest tilecount (single level)",
-      "longestLevelMs": "Longest level (ms)",
+      "longestLevelMs": "Longest level",
       "highestBpmCleared": "Highest BPM cleared"
     },
     "activity": {

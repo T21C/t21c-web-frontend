@@ -41,7 +41,6 @@ const CreatorsListPage = () => {
 
   const sortOptions = [
     { value: 'chartsTotal', label: t('creators.sortOptions.chartsTotal') },
-    { value: 'chartsCreated', label: t('creators.sortOptions.chartsCreated') },
     { value: 'chartsCharted', label: t('creators.sortOptions.chartsCharted') },
     { value: 'chartsVfxed', label: t('creators.sortOptions.chartsVfxed') },
     { value: 'chartsTeamed', label: t('creators.sortOptions.chartsTeamed') },

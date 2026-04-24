@@ -5,6 +5,23 @@ import {
   formatPercentRatio,
   formatDateIso,
 } from "@/utils/statFormatters";
+import calcAcc from "@/utils/CalcAcc";
+import { clampFloat } from "@/utils/Utility";
+
+/** X-accuracy style ratio from aggregated judgement counts (same weighting as {@link calcAcc}). */
+function xaccFromJudgementTotals(j) {
+  const inp = [
+    Number(j.earlyDouble) || 0,
+    Number(j.earlySingle) || 0,
+    Number(j.ePerfect) || 0,
+    Number(j.perfect) || 0,
+    Number(j.lPerfect) || 0,
+    Number(j.lateSingle) || 0,
+  ];
+  const total = inp.reduce((a, b) => a + b, 0);
+  if (total <= 0) return null;
+  return calcAcc(inp, true);
+}
 
 /**
  * @param {object | null | undefined} ff server `funFacts` payload
@@ -62,11 +79,13 @@ export function buildPlayerStatGroups(ff, t) {
         { key: "perfect", label: t("profile.funFacts.judgements.perfect"), value: formatCount(j.perfect) },
         { key: "lPerfect", label: t("profile.funFacts.judgements.lPerfect"), value: formatCount(j.lPerfect) },
         { key: "lateSingle", label: t("profile.funFacts.judgements.lateSingle"), value: formatCount(j.lateSingle) },
-        { key: "lateDouble", label: t("profile.funFacts.judgements.lateDouble"), value: formatCount(j.lateDouble) },
         {
           key: "perfectRatio",
           label: t("profile.funFacts.judgements.perfectRatio"),
-          value: formatPercentRatio(j.perfectRatio),
+          value: (() => {
+            const r = xaccFromJudgementTotals(j);
+            return r != null ? formatPercentRatio(r) : "—";
+          })(),
         },
         {
           key: "earlyVsLateBias",
@@ -125,7 +144,7 @@ export function buildPlayerStatGroups(ff, t) {
         {
           key: "topSpeed",
           label: t("profile.funFacts.extremes.topSpeed"),
-          value: x.topSpeed != null ? formatFloat(x.topSpeed, 3) : "—",
+          value: x.topSpeed != null ? clampFloat(x.topSpeed, 3) : "—",
         },
         {
           key: "highestTilecountCleared",
@@ -197,7 +216,6 @@ export function buildCreatorStatGroups(ff, t, difficultyDict) {
   const cr = ff.credits || {};
   const co = ff.content || {};
   const au = ff.audience || {};
-  const cu = ff.curation || {};
   const tl = ff.timeline || {};
   const byDiff = ff.levelsByDifficulty || {};
   const byType = ff.levelsByDifficultyType || {};
@@ -215,11 +233,6 @@ export function buildCreatorStatGroups(ff, t, difficultyDict) {
       key: "credits",
       label: t("creators.profile.funFacts.groups.credits"),
       rows: [
-        {
-          key: "levelsCreditedDistinct",
-          label: t("creators.profile.funFacts.credits.levelsCreditedDistinct"),
-          value: formatCount(cr.levelsCreditedDistinct),
-        },
         {
           key: "levelsAsCharter",
           label: t("creators.profile.funFacts.credits.levelsAsCharter"),
@@ -323,4 +336,21 @@ export function buildCreatorStatGroups(ff, t, difficultyDict) {
   });
 
   return groups;
+}
+
+/**
+ * Collapsed creator header: total charts, curated levels count, total clears.
+ * @param {object | null | undefined} stats ES / profile stats (chartsTotal, totalChartClears, …)
+ * @param {object | null | undefined} funFacts v3 profile `funFacts` (`curation.curatedLevels` = credited charts with ≥1 eligible curation type)
+ * @param {(key: string) => string} t `pages` namespace
+ */
+export function buildCreatorCollapsedStatRows(stats, funFacts, t) {
+  const s = stats && typeof stats === "object" ? stats : {};
+  const curated = Math.trunc(Number(funFacts?.curation?.curatedLevels ?? 0));
+  const fmt = (v) => Math.trunc(Number(v ?? 0)).toLocaleString("en-US");
+  return [
+    { key: "chartsTotal", label: t("creators.profile.stats.chartsTotal"), value: fmt(s.chartsTotal) },
+    { key: "curatedLevels", label: t("creators.profile.stats.curatedLevels"), value: fmt(curated) },
+    { key: "totalChartClears", label: t("creators.profile.stats.totalChartClears"), value: fmt(s.totalChartClears) },
+  ];
 }

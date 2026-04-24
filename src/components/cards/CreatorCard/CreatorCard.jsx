@@ -17,7 +17,6 @@ const CreatorCard = ({ creator }) => {
   const sortLabels = {
     name: t('creators.sortOptions.name'),
     chartsTotal: t('creators.sortOptions.chartsTotal'),
-    chartsCreated: t('creators.sortOptions.chartsCreated'),
     chartsCharted: t('creators.sortOptions.chartsCharted'),
     chartsVfxed: t('creators.sortOptions.chartsVfxed'),
     chartsTeamed: t('creators.sortOptions.chartsTeamed'),

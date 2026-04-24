@@ -226,8 +226,6 @@ const SettingsPlayerPage = () => {
         />
       </div>
 
-      <h2 className="settings-sub-page__title">{t("settings.player.title")}</h2>
-
       <div className="settings-sub-page__block settings-sub-page__field">
         <label htmlFor="settings-player-nickname">{t("settings.player.nicknameLabel")}</label>
         <div className="settings-sub-page__control-row">
