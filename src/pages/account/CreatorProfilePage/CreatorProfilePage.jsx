@@ -167,17 +167,6 @@ const CreatorProfilePage = () => {
           statRows={collapsedCreatorStatRows}
           actions={
             <>
-              {creatorDoc.user?.playerId ? (
-                <button
-                  type="button"
-                  className="profile-header__action-btn"
-                  onClick={() => navigate(`/profile/${creatorDoc.user.playerId}`)}
-                  title={t('creators.profile.linkToPlayer', { defaultValue: 'View player profile' })}
-                  aria-label={t('creators.profile.linkToPlayer', { defaultValue: 'View player profile' })}
-                >
-                  <AdofaiIcon color="var(--color-white)" size={28} rotation={-25} />
-                </button>
-              ) : null}
               {canEditHeaderCurationSlots ? (
                 <button
                   type="button"
@@ -200,6 +189,18 @@ const CreatorProfilePage = () => {
                   <ShieldIcon color="var(--color-white)" size={32} />
                 </button>
               ) : null}
+              {creatorDoc.user?.playerId ? (
+                <button
+                  type="button"
+                  className="profile-header__action-btn"
+                  onClick={() => navigate(`/profile/${creatorDoc.user.playerId}`)}
+                  title={t('creators.profile.linkToPlayer', { defaultValue: 'View player profile' })}
+                  aria-label={t('creators.profile.linkToPlayer', { defaultValue: 'View player profile' })}
+                >
+                  <AdofaiIcon color="var(--color-white)" size={28} rotation={-25} />
+                </button>
+              ) : null}
+
             </>
           }
         />
