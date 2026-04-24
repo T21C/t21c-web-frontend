@@ -8,7 +8,7 @@ import { formatNumber } from "@/utils";
 import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
 import { EditIcon, PackIcon } from "@/components/common/icons";
 import { CreatorIcon } from "@/components/common/icons/CreatorIcon";
-import { LinkIcon } from "@/components/common/icons/LinkIcon";
+import { ExternalLinkIcon } from "@/components/common/icons";
 import { buildPlayerStatGroups } from "@/utils/profileStatGroups";
 import { buildPlayerIconSlots } from "@/utils/profileIconSlots";
 import "./settingsSubPage.css";
@@ -103,6 +103,12 @@ const SettingsPlayerPage = () => {
     }
   }, [navigate, playerData?.user?.username]);
 
+  const openPublicPlayerInNewTab = useCallback(() => {
+    const path = playerId != null && Number.isFinite(playerId) ? `/profile/${playerId}` : "/profile";
+    const url = `${window.location.origin}${path}`;
+    window.open(url, "_blank", "noopener,noreferrer");
+  }, [playerId]);
+
   if (!user?.playerId) {
     return (
       <div className="settings-sub-page">
@@ -177,42 +183,11 @@ const SettingsPlayerPage = () => {
               <button
                 type="button"
                 className="profile-header__action-btn"
-                onClick={() => navigate("/settings/account")}
-                title={t("profile.editProfile")}
-                aria-label={t("profile.editProfile")}
-              >
-                <EditIcon color="var(--color-white)" size="24px" />
-              </button>
-              {playerData?.user?.creator?.id ? (
-                <button
-                  type="button"
-                  className="profile-header__action-btn"
-                  onClick={() => navigate(`/creator/${playerData.user.creator.id}`)}
-                  title={t("profile.linkToCreator", { defaultValue: "View creator profile" })}
-                  aria-label={t("profile.linkToCreator", { defaultValue: "View creator profile" })}
-                >
-                  <CreatorIcon color="var(--color-white)" size={24} />
-                </button>
-              ) : null}
-              {playerData?.user?.username ? (
-                <button
-                  type="button"
-                  className="profile-header__action-btn"
-                  onClick={handleViewUserPacks}
-                  title={t("profile.viewUserPacks")}
-                  aria-label={t("profile.viewUserPacks")}
-                >
-                  <PackIcon color="var(--color-white)" size="24px" />
-                </button>
-              ) : null}
-              <button
-                type="button"
-                className="profile-header__action-btn"
-                onClick={() => navigate(playerPath)}
+                onClick={openPublicPlayerInNewTab}
                 title={t("settings.player.openProfile")}
-                aria-label={t("settings.player.openProfile")}
+                aria-label={t("settings.player.openProfileNewTab")}
               >
-                <LinkIcon color="var(--color-white)" size={24} />
+                <ExternalLinkIcon color="var(--color-white)" size={32} />
               </button>
             </>
           }

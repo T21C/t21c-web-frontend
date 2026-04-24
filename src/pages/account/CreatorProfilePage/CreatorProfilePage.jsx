@@ -187,7 +187,7 @@ const CreatorProfilePage = () => {
                   title={t("profile.editProfile")}
                   aria-label={t("profile.editProfile")}
                 >
-                  <EditIcon color="var(--color-white)" size="24px" />
+                  <EditIcon color="var(--color-white)" size={32} />
                 </button>
               ) : null}
               {hasFlag(user, permissionFlags.SUPER_ADMIN) ? (
@@ -198,7 +198,7 @@ const CreatorProfilePage = () => {
                   title={t("profile.adminEdit")}
                   aria-label={t("profile.adminEdit")}
                 >
-                  <ShieldIcon color="var(--color-white)" size="24px" />
+                  <ShieldIcon color="var(--color-white)" size={32} />
                 </button>
               ) : null}
             </>

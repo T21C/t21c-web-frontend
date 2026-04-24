@@ -423,11 +423,11 @@ const ProfilePage = () => {
                           <button
                             type="button"
                             className="profile-header__action-btn"
-                            onClick={() => navigate("/settings/account")}
+                            onClick={() => navigate("/settings/player")}
                             title={t("profile.editProfile")}
                             aria-label={t("profile.editProfile")}
                           >
-                            <EditIcon color="var(--color-white)" size={"24px"} />
+                            <EditIcon color="var(--color-white)" size={32} />
                           </button>
                         ) : null}
                         {hasFlag(user, permissionFlags.SUPER_ADMIN) ? (
@@ -438,7 +438,7 @@ const ProfilePage = () => {
                             title={t("profile.adminEdit")}
                             aria-label={t("profile.adminEdit")}
                           >
-                            <ShieldIcon color="var(--color-white)" size={"24px"} />
+                            <ShieldIcon color="var(--color-white)" size={32} />
                           </button>
                         ) : null}
                         {playerData?.user?.creator?.id ? (
@@ -449,7 +449,7 @@ const ProfilePage = () => {
                             title={t("profile.linkToCreator", { defaultValue: "View creator profile" })}
                             aria-label={t("profile.linkToCreator", { defaultValue: "View creator profile" })}
                           >
-                            <CreatorIcon color="var(--color-white)" size={24} />
+                            <CreatorIcon color="var(--color-white)" size={28} />
                           </button>
                         ) : null}
                         {playerData?.user?.username ? (
@@ -460,7 +460,7 @@ const ProfilePage = () => {
                             title={t("profile.viewUserPacks")}
                             aria-label={t("profile.viewUserPacks")}
                           >
-                            <PackIcon color="var(--color-white)" size={"24px"} />
+                            <PackIcon color="var(--color-white)" size={32} />
                           </button>
                         ) : null}
                       </>

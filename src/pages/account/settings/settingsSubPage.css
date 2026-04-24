@@ -49,11 +49,5 @@
 .settings-sub-page__header-preview {
   display: flex;
   flex-direction: column;
-  width: 100%;
   margin-bottom: 1.25rem;
-  overflow: hidden;
-}
-
-.settings-sub-page .settings-sub-page__profile-header {
-  width: 100%;
 }

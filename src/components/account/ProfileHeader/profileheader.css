@@ -433,11 +433,6 @@
   outline-offset: 2px;
 }
 
-.profile-header-shell .profile-header__action-btn svg {
-  width: 1.5rem;
-  height: 1.5rem;
-}
-
 .profile-header-shell .profile-header__action-btn--accent {
   width: auto;
   min-height: 2.75rem;

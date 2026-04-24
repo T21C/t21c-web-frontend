@@ -7,7 +7,7 @@ import api from "@/utils/api";
 import CurationTypeSelector from "@/components/account/CurationTypeSelector/CurationTypeSelector";
 import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
 import { CreatorStatusBadge } from "@/components/common/display";
-import { LinkIcon } from "@/components/common/icons/LinkIcon";
+import { ExternalLinkIcon } from "@/components/common/icons";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { buildCreatorStatGroups } from "@/utils/profileStatGroups";
 import { buildCreatorIconSlots } from "@/utils/profileIconSlots";
@@ -101,6 +101,12 @@ const SettingsCreatorPage = () => {
     setLiveDisplayIds(null);
   }, []);
 
+  const openPublicCreatorInNewTab = useCallback(() => {
+    if (creatorId == null || !Number.isFinite(creatorId)) return;
+    const url = `${window.location.origin}/creator/${creatorId}`;
+    window.open(url, "_blank", "noopener,noreferrer");
+  }, [creatorId]);
+
   const stats = profile?.stats || creatorDoc;
 
   if (!user?.creatorId) {
@@ -171,11 +177,11 @@ const SettingsCreatorPage = () => {
             <button
               type="button"
               className="profile-header__action-btn"
-              onClick={() => navigate(`/creator/${creatorId}`)}
+              onClick={openPublicCreatorInNewTab}
               title={t("settings.creator.openPublicProfile")}
-              aria-label={t("settings.creator.openPublicProfile")}
+              aria-label={t("settings.creator.openPublicProfileNewTab")}
             >
-              <LinkIcon color="var(--color-white)" size={24} />
+              <ExternalLinkIcon color="var(--color-white)" size={24} />
             </button>
           }
         />
