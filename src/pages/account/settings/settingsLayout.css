@@ -1,3 +1,11 @@
+/*
+ * Class map (SettingsLayout.jsx):
+ * - settings-layout
+ * - settings-layout__sidebar, __sidebar-head, __sidebar-title, __sidebar-nav
+ * - settings-layout__nav-group, __nav-group-label, __nav-list
+ * - settings-layout__nav-link (+ --active), __nav-link-text
+ * - settings-layout__main, __main-inner (+ global page-content-70rem)
+ */
 /* Cloudflare-style settings shell: fixed left rail + content; does not replace site nav. */
 .settings-layout {
   display: flex;
@@ -65,6 +73,11 @@
   display: flex;
   flex-direction: column;
   gap: 0.125rem;
+}
+
+.settings-layout__nav-list > li {
+  margin: 0;
+  padding: 0;
 }
 
 .settings-layout__nav-link {

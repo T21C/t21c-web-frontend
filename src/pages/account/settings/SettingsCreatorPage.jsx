@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { toast } from "react-hot-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import api from "@/utils/api";
@@ -15,8 +16,21 @@ import "./settingsSubPage.css";
 
 const COLLAPSED_STAT_KEYS = ["chartsTotal", "chartsCreated", "totalChartClears"];
 
+const MAX_CREATOR_ALIASES = 20;
+
+function readAliasNamesFromProfile(profile) {
+  const raw = profile?.aliases;
+  if (!Array.isArray(raw)) return [];
+  const out = [];
+  for (const a of raw) {
+    const s = typeof a === "string" ? a : a?.name;
+    if (typeof s === "string" && s.trim()) out.push(s.trim());
+  }
+  return out;
+}
+
 const SettingsCreatorPage = () => {
-  const { t } = useTranslation("pages");
+  const { t } = useTranslation(["pages", "common"]);
   const { user } = useAuth();
   const navigate = useNavigate();
   const { difficultyDict, curationTypesDict } = useDifficultyContext();
@@ -27,6 +41,13 @@ const SettingsCreatorPage = () => {
   const [error, setError] = useState(null);
   /** Live header badge ids while customizing; null = use saved profile ids only. */
   const [liveDisplayIds, setLiveDisplayIds] = useState(null);
+  const [displayNameDraft, setDisplayNameDraft] = useState("");
+  const [displayNameSaving, setDisplayNameSaving] = useState(false);
+  const [displayNameFieldError, setDisplayNameFieldError] = useState("");
+  const [aliasList, setAliasList] = useState([]);
+  const [newAliasInput, setNewAliasInput] = useState("");
+  const [aliasSaving, setAliasSaving] = useState(false);
+  const [aliasFieldError, setAliasFieldError] = useState("");
 
   useEffect(() => {
     if (creatorId == null || !Number.isFinite(creatorId)) {
@@ -62,6 +83,18 @@ const SettingsCreatorPage = () => {
   }, [creatorId, profile?.displayCurationTypeIds]);
 
   const creatorDoc = profile?.creator || profile?.doc || profile;
+
+  useEffect(() => {
+    if (!creatorDoc) return;
+    setDisplayNameDraft(String(creatorDoc.name ?? ""));
+    setDisplayNameFieldError("");
+  }, [creatorDoc?.id, creatorDoc?.name]);
+
+  useEffect(() => {
+    if (!profile || loading) return;
+    setAliasList(readAliasNamesFromProfile(profile));
+    setAliasFieldError("");
+  }, [creatorId, loading, profile]);
 
   const canEditHeaderCurationSlots = useMemo(() => {
     if (!user || !creatorDoc || creatorId == null) return false;
@@ -107,6 +140,94 @@ const SettingsCreatorPage = () => {
     window.open(url, "_blank", "noopener,noreferrer");
   }, [creatorId]);
 
+  const handleSaveCreatorDisplayName = useCallback(async () => {
+    const trimmed = displayNameDraft.trim();
+    if (trimmed.length < 2 || trimmed.length > 100) {
+      setDisplayNameFieldError(
+        trimmed.length < 2
+          ? t("settings.creator.displayNameTooShort")
+          : t("settings.creator.displayNameTooLong"),
+      );
+      return;
+    }
+    if (creatorId == null || !Number.isFinite(creatorId)) return;
+    setDisplayNameFieldError("");
+    setDisplayNameSaving(true);
+    try {
+      const { data } = await api.patch(`${import.meta.env.VITE_CREATORS_V3}/me/name`, {
+        name: trimmed,
+      });
+      const nextName = typeof data?.name === "string" ? data.name : trimmed;
+      setProfile((p) => {
+        if (!p || typeof p !== "object") return p;
+        return { ...p, name: nextName };
+      });
+      setDisplayNameDraft(nextName);
+      toast.success(t("settings.creator.displayNameSuccess"));
+    } catch (err) {
+      const msg = err?.response?.data?.error || t("settings.creator.displayNameError");
+      setDisplayNameFieldError(msg);
+      toast.error(msg);
+    } finally {
+      setDisplayNameSaving(false);
+    }
+  }, [displayNameDraft, creatorId, t]);
+
+  const handleAddAlias = useCallback(() => {
+    const trimmed = newAliasInput.trim();
+    if (trimmed.length < 2) {
+      toast.error(t("settings.creator.aliasesTooShort"));
+      return;
+    }
+    if (trimmed.length > 100) {
+      toast.error(t("settings.creator.displayNameTooLong"));
+      return;
+    }
+    if (aliasList.length >= MAX_CREATOR_ALIASES) {
+      toast.error(t("settings.creator.aliasesMax", { max: MAX_CREATOR_ALIASES }));
+      return;
+    }
+    const key = trimmed.toLowerCase();
+    if (aliasList.some((a) => a.toLowerCase() === key)) {
+      toast.error(t("settings.creator.aliasesDuplicate"));
+      return;
+    }
+    if (displayNameDraft.trim().toLowerCase() === key) {
+      toast.error(t("settings.creator.aliasesMatchesDisplay"));
+      return;
+    }
+    setAliasList((prev) => [...prev, trimmed]);
+    setNewAliasInput("");
+    setAliasFieldError("");
+  }, [newAliasInput, aliasList, displayNameDraft, t]);
+
+  const handleRemoveAlias = useCallback((name) => {
+    setAliasList((prev) => prev.filter((a) => a !== name));
+    setAliasFieldError("");
+  }, []);
+
+  const handleSaveAliases = useCallback(async () => {
+    setAliasFieldError("");
+    setAliasSaving(true);
+    try {
+      const { data } = await api.patch(`${import.meta.env.VITE_CREATORS_V3}/me/aliases`, {
+        aliases: aliasList,
+      });
+      const next = Array.isArray(data?.aliases) ? data.aliases : [];
+      setProfile((p) => {
+        if (!p || typeof p !== "object") return p;
+        return { ...p, aliases: next };
+      });
+      toast.success(t("settings.creator.aliasesSuccess"));
+    } catch (err) {
+      const msg = err?.response?.data?.error || t("settings.creator.aliasesError");
+      setAliasFieldError(msg);
+      toast.error(msg);
+    } finally {
+      setAliasSaving(false);
+    }
+  }, [aliasList, t]);
+
   const stats = profile?.stats || creatorDoc;
 
   if (!user?.creatorId) {
@@ -144,10 +265,6 @@ const SettingsCreatorPage = () => {
 
   return (
     <div className="settings-sub-page">
-      {canEditHeaderCurationSlots ? (
-        <p className="settings-sub-page__preview-hint">{t("settings.creator.previewHint")}</p>
-      ) : null}
-
       <div className="settings-sub-page__header-preview">
         <ProfileHeader
           mode="creator"
@@ -188,7 +305,112 @@ const SettingsCreatorPage = () => {
       </div>
 
       <h2 className="settings-sub-page__title">{t("settings.creator.title")}</h2>
-      <p className="settings-sub-page__text">{t("settings.creator.intro")}</p>
+
+      {canEditHeaderCurationSlots ? (
+        <div className="settings-sub-page__block settings-sub-page__field">
+          <label htmlFor="settings-creator-display-name">{t("settings.creator.displayNameLabel")}</label>
+          <div className="settings-sub-page__control-row">
+            <input
+              id="settings-creator-display-name"
+              type="text"
+              autoComplete="off"
+              className="settings-sub-page__input"
+              maxLength={100}
+              placeholder={t("settings.creator.displayNamePlaceholder")}
+              value={displayNameDraft}
+              onChange={(ev) => {
+                setDisplayNameDraft(ev.target.value);
+                if (displayNameFieldError) setDisplayNameFieldError("");
+              }}
+              disabled={displayNameSaving}
+            />
+            <button
+              type="button"
+              className="settings-sub-page__save-btn"
+              onClick={handleSaveCreatorDisplayName}
+              disabled={displayNameSaving}
+            >
+              {displayNameSaving ? t("buttons.saving", { ns: "common" }) : t("buttons.save", { ns: "common" })}
+            </button>
+          </div>
+          {displayNameFieldError ? (
+            <p className="settings-sub-page__field-error" role="alert">
+              {displayNameFieldError}
+            </p>
+          ) : null}
+        </div>
+      ) : null}
+
+      {canEditHeaderCurationSlots ? (
+        <div className="settings-sub-page__block settings-sub-page__aliases">
+          <p className="settings-sub-page__aliases-section-label">{t("settings.creator.aliasesLabel")}</p>
+          <p className="settings-sub-page__aliases-hint">
+            {t("settings.creator.aliasesHint", { max: MAX_CREATOR_ALIASES })}
+          </p>
+          <div className="settings-sub-page__alias-toolbar">
+            <div className="settings-sub-page__alias-input-wrap">
+              <input
+                type="text"
+                autoComplete="off"
+                className="settings-sub-page__input"
+                maxLength={100}
+                placeholder={t("settings.creator.aliasesPlaceholder")}
+                value={newAliasInput}
+                onChange={(ev) => {
+                  setNewAliasInput(ev.target.value);
+                  if (aliasFieldError) setAliasFieldError("");
+                }}
+                disabled={aliasSaving}
+                onKeyDown={(ev) => {
+                  if (ev.key === "Enter") {
+                    ev.preventDefault();
+                    handleAddAlias();
+                  }
+                }}
+              />
+            </div>
+            <button
+              type="button"
+              className="settings-sub-page__alias-add-btn"
+              onClick={handleAddAlias}
+              disabled={aliasSaving || aliasList.length >= MAX_CREATOR_ALIASES}
+            >
+              {t("settings.creator.aliasesAdd")}
+            </button>
+            <button
+              type="button"
+              className="settings-sub-page__save-btn"
+              onClick={handleSaveAliases}
+              disabled={aliasSaving}
+            >
+              {aliasSaving ? t("buttons.saving", { ns: "common" }) : t("buttons.save", { ns: "common" })}
+            </button>
+          </div>
+          {aliasList.length > 0 ? (
+            <div className="settings-sub-page__aliases-chips">
+              {aliasList.map((name) => (
+                <span key={name} className="settings-sub-page__alias-chip">
+                  {name}
+                  <button
+                    type="button"
+                    className="settings-sub-page__alias-chip-remove"
+                    onClick={() => handleRemoveAlias(name)}
+                    disabled={aliasSaving}
+                    aria-label={t("settings.creator.aliasesRemoveAria", { name })}
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+            </div>
+          ) : null}
+          {aliasFieldError ? (
+            <p className="settings-sub-page__field-error" role="alert">
+              {aliasFieldError}
+            </p>
+          ) : null}
+        </div>
+      ) : null}
 
       <div className="settings-sub-page__block">
         <CurationTypeSelector

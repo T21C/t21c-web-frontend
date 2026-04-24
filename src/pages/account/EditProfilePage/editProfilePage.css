@@ -41,6 +41,41 @@
   margin-bottom: 1rem;
 }
 
+.edit-profile-page .edit-profile-page__nickname-moved {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border-radius: 4px;
+  border: 1px solid var(--btn-neutral-disabled-fill);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.edit-profile-page .edit-profile-page__nickname-moved p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: var(--color-gray-2);
+}
+
+.edit-profile-page .edit-profile-page__nickname-moved .edit-profile-page__nickname-moved-btn {
+  align-self: flex-start;
+  padding: 0.55rem 1.1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--color-white);
+  background: var(--btn-primary);
+  transition: background-color 0.2s ease;
+}
+
+.edit-profile-page .edit-profile-page__nickname-moved .edit-profile-page__nickname-moved-btn:hover {
+  background: var(--btn-primary-hover);
+}
+
 .edit-profile-page .form-group {
   margin-bottom: 1.5rem;
 }

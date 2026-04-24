@@ -361,11 +361,14 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
     }
 
     try {
-      await api.put(`${import.meta.env.VITE_PROFILE}/me`, {
+      const profilePayload = {
         username: formData.username,
-        nickname: formData.nickname,
         country: formData.country,
-      });
+      };
+      if (!user?.playerId) {
+        profilePayload.nickname = formData.nickname;
+      }
+      await api.put(`${import.meta.env.VITE_PROFILE}/me`, profilePayload);
 
       // Clear rate limit state on successful update
       setUsernameRateLimit(null);
@@ -583,19 +586,32 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
             </div>
           </div>
 
-          <div className="form-group">
-            <label htmlFor="nickname">{t('editProfile.form.labels.nickname')}</label>
-            <input
-              type="text"
-              autoComplete='off'
-              id="nickname"
-              name="nickname"
-              value={formData.nickname}
-              onChange={handleInputChange}
-              required
-              className="input-field"
-            />
-          </div>
+          {user?.playerId ? (
+            <div className="edit-profile-page__nickname-moved">
+              <p>{t('editProfile.nicknameMoved.hint')}</p>
+              <button
+                type="button"
+                className="button edit-profile-page__nickname-moved-btn"
+                onClick={() => navigate('/settings/player')}
+              >
+                {t('editProfile.nicknameMoved.button')}
+              </button>
+            </div>
+          ) : (
+            <div className="form-group">
+              <label htmlFor="nickname">{t('editProfile.form.labels.nickname')}</label>
+              <input
+                type="text"
+                autoComplete='off'
+                id="nickname"
+                name="nickname"
+                value={formData.nickname}
+                onChange={handleInputChange}
+                required
+                className="input-field"
+              />
+            </div>
+          )}
 
           <div className="form-group">
             <label htmlFor="country">{t('editProfile.form.labels.country')}</label>

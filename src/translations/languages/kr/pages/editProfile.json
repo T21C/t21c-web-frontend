@@ -26,6 +26,10 @@
     "removing": "Removing...",
     "confirmRemove": "Are you sure you want to remove your avatar? This action cannot be undone."
   },
+  "nicknameMoved": {
+    "hint": "닉네임은 설정 → 플레이어 프로필에서 변경합니다.",
+    "button": "플레이어 설정"
+  },
   "form": {
     "labels": {
       "username": "Username",

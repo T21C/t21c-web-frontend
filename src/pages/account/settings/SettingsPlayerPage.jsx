@@ -1,21 +1,20 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { toast } from "react-hot-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import api from "@/utils/api";
 import { formatNumber } from "@/utils";
 import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
-import { EditIcon, PackIcon } from "@/components/common/icons";
-import { CreatorIcon } from "@/components/common/icons/CreatorIcon";
 import { ExternalLinkIcon } from "@/components/common/icons";
 import { buildPlayerStatGroups } from "@/utils/profileStatGroups";
 import { buildPlayerIconSlots } from "@/utils/profileIconSlots";
 import "./settingsSubPage.css";
 
 const SettingsPlayerPage = () => {
-  const { t } = useTranslation("pages");
-  const { user } = useAuth();
+  const { t } = useTranslation(["pages", "common"]);
+  const { user, fetchUser } = useAuth();
   const navigate = useNavigate();
   const { difficultyDict } = useDifficultyContext();
   const playerId = user?.playerId != null ? Number(user.playerId) : null;
@@ -23,6 +22,9 @@ const SettingsPlayerPage = () => {
   const [playerData, setPlayerData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [nicknameDraft, setNicknameDraft] = useState("");
+  const [nicknameSaving, setNicknameSaving] = useState(false);
+  const [nicknameFieldError, setNicknameFieldError] = useState("");
 
   const playerPath = useMemo(() => {
     if (playerId == null) return "/profile";
@@ -52,6 +54,13 @@ const SettingsPlayerPage = () => {
   useEffect(() => {
     fetchProfile();
   }, [fetchProfile]);
+
+  useEffect(() => {
+    if (!playerData) return;
+    const next = playerData.user?.nickname ?? playerData.name ?? "";
+    setNicknameDraft(next);
+    setNicknameFieldError("");
+  }, [playerData]);
 
   useEffect(() => {
     const onVis = () => {
@@ -109,6 +118,31 @@ const SettingsPlayerPage = () => {
     window.open(url, "_blank", "noopener,noreferrer");
   }, [playerId]);
 
+  const handleSaveNickname = useCallback(async () => {
+    const trimmed = nicknameDraft.trim();
+    if (trimmed.length < 3 || trimmed.length > 60) {
+      setNicknameFieldError(t("settings.player.nicknameLength"));
+      return;
+    }
+    setNicknameFieldError("");
+    setNicknameSaving(true);
+    try {
+      await api.put(`${import.meta.env.VITE_PROFILE}/me`, {
+        nickname: trimmed,
+        country: playerData?.country ?? "",
+      });
+      await fetchUser();
+      await fetchProfile();
+      toast.success(t("settings.player.nicknameSuccess"));
+    } catch (e) {
+      const msg = e?.response?.data?.error || t("settings.player.nicknameError");
+      setNicknameFieldError(msg);
+      toast.error(msg);
+    } finally {
+      setNicknameSaving(false);
+    }
+  }, [nicknameDraft, playerData?.country, fetchUser, fetchProfile, t]);
+
   if (!user?.playerId) {
     return (
       <div className="settings-sub-page">
@@ -144,8 +178,6 @@ const SettingsPlayerPage = () => {
 
   return (
     <div className="settings-sub-page">
-      <p className="settings-sub-page__preview-hint">{t("settings.player.previewHint")}</p>
-
       <div className="settings-sub-page__header-preview">
         <ProfileHeader
           mode="player"
@@ -195,14 +227,39 @@ const SettingsPlayerPage = () => {
       </div>
 
       <h2 className="settings-sub-page__title">{t("settings.player.title")}</h2>
-      <p className="settings-sub-page__text">{t("settings.player.intro")}</p>
-      <button
-        type="button"
-        className="settings-sub-page__btn btn-fill-primary"
-        onClick={() => navigate(playerPath)}
-      >
-        {t("settings.player.openProfile")}
-      </button>
+
+      <div className="settings-sub-page__block settings-sub-page__field">
+        <label htmlFor="settings-player-nickname">{t("settings.player.nicknameLabel")}</label>
+        <div className="settings-sub-page__control-row">
+          <input
+            id="settings-player-nickname"
+            type="text"
+            autoComplete="off"
+            className="settings-sub-page__input"
+            maxLength={60}
+            placeholder={t("settings.player.nicknamePlaceholder")}
+            value={nicknameDraft}
+            onChange={(ev) => {
+              setNicknameDraft(ev.target.value);
+              if (nicknameFieldError) setNicknameFieldError("");
+            }}
+            disabled={nicknameSaving}
+          />
+          <button
+            type="button"
+            className="settings-sub-page__save-btn"
+            onClick={handleSaveNickname}
+            disabled={nicknameSaving}
+          >
+            {nicknameSaving ? t("buttons.saving", { ns: "common" }) : t("buttons.save", { ns: "common" })}
+          </button>
+        </div>
+        {nicknameFieldError ? (
+          <p className="settings-sub-page__field-error" role="alert">
+            {nicknameFieldError}
+          </p>
+        ) : null}
+      </div>
     </div>
   );
 };

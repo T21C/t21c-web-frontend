@@ -38,6 +38,9 @@
   display: block;
   width: 100%;
   height: 100%;
+
+  -webkit-user-select: none;
+  user-select: none;
   object-fit: cover;
   object-position: center;
 
@@ -164,7 +167,9 @@
 .profile-header .profile-header__avatar.user-avatar-container,
 .profile-header .profile-header__avatar .avatar-image {
   width: 100%;
-  height: 100%;
+  height: 100%;  
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .profile-header .profile-header__badge {
