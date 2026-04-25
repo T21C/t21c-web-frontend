@@ -30,5 +30,8 @@
     "scores": {
       "title": "Wyniki"
     }
+  },
+  "funFacts": {
+    "difficultyHeaderGridCellTooltip": "{{name}} · {{count}} ukończeń"
   }
 } 

@@ -63,6 +63,7 @@ function emptyQSlot(key, label) {
  *   clearsByDifficulty?: Record<string, number> | null;
  *   worldsFirstByDifficulty?: Record<string, number> | null;
  * } | null | undefined} aggregates
+ *        Pass `funFacts.clearsByDifficultyNoDupes` as `clearsByDifficulty` for unique-level clear counts.
  * @param {Record<string, { name?: string; icon?: string | null; id?: number | string }>} difficultyDict
  */
 export function buildPlayerIconSlots(aggregates, difficultyDict) {

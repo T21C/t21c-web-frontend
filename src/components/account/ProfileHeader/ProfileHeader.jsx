@@ -99,10 +99,38 @@ const ProfileHeader = ({
   const iconRowRef = useRef(null);
   const iconPanelPortalRef = useRef(null);
 
+  const defaults = DEFAULT_PLAYER_ICON_SLOTS;
+  const resolvedSlots = useMemo(() => {
+    if (mode === "creator") {
+      return Array.isArray(iconSlots) ? iconSlots.filter(Boolean) : [];
+    }
+    return padIconSlots(iconSlots, defaults);
+  }, [mode, iconSlots]);
+
+  /** Creator panel lists every curation type with level count > 0; hide it when the icon row already shows all of those types. */
+  const creatorHasCurationTypesNotOnIconRow = useMemo(() => {
+    if (mode !== "creator" || !Array.isArray(creatorCurationPanelItems) || creatorCurationPanelItems.length === 0) {
+      return false;
+    }
+    const displayed = new Set();
+    for (const s of resolvedSlots) {
+      const id = s?.curationTypeId;
+      if (id == null) continue;
+      const n = Number(id);
+      if (Number.isFinite(n) && n > 0) displayed.add(n);
+    }
+    return creatorCurationPanelItems.some((item) => {
+      const n = Number(item?.id);
+      if (!Number.isFinite(n) || n <= 0) return false;
+      return !displayed.has(n);
+    });
+  }, [mode, creatorCurationPanelItems, resolvedSlots]);
+
   const showCreatorCurationPanel =
     mode === "creator" &&
     Array.isArray(creatorCurationPanelItems) &&
-    creatorCurationPanelItems.length > 0;
+    creatorCurationPanelItems.length > 0 &&
+    creatorHasCurationTypesNotOnIconRow;
 
   const showPlayerDifficultyPanel =
     mode === "player" &&
@@ -148,14 +176,6 @@ const ProfileHeader = ({
       return defaultConfig;
     }
   }, [viewportWidth]);
-
-  const defaults = DEFAULT_PLAYER_ICON_SLOTS;
-  const resolvedSlots = useMemo(() => {
-    if (mode === "creator") {
-      return Array.isArray(iconSlots) ? iconSlots.filter(Boolean) : [];
-    }
-    return padIconSlots(iconSlots, defaults);
-  }, [mode, iconSlots]);
 
   const hasExpandableStats = useMemo(
     () => Array.isArray(statGroups) && statGroups.some((g) => g?.rows?.length),

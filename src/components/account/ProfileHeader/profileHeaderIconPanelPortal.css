@@ -109,6 +109,20 @@
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
+  cursor: help;
+}
+
+.profile-header__difficulty-grid-tooltip {
+  z-index: 10060;
+  max-width: min(18rem, 90vw);
+  background: var(--color-black-t85) !important;
+  color: var(--color-white) !important;
+  border: 1px solid var(--color-white-t15) !important;
+  border-radius: 6px !important;
+  box-shadow: 0 0.35rem 1rem var(--color-black-t50) !important;
+  font-size: 0.8rem !important;
+  line-height: 1.35 !important;
+  padding: 0.4rem 0.55rem !important;
 }
 
 .profile-header__difficulty-cell[data-lit="false"] {

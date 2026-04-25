@@ -1,6 +1,10 @@
 import { createPortal } from "react-dom";
+import { useTranslation } from "react-i18next";
+import { Tooltip } from "react-tooltip";
 import { getPortalRoot } from "@/utils/portalRoot";
 import "./profileHeaderIconPanelPortal.css";
+
+const PROFILE_HEADER_DIFFICULTY_GRID_TOOLTIP_ID = "profile-header-difficulty-grid-tooltip";
 
 const filterDiffs = (d) => {
   const nameCheck = d.name !== "Unranked";
@@ -23,6 +27,8 @@ export default function ProfileHeaderIconPanelPortal({
   playerDifficultyPanelDifficulties,
   playerDifficultyPanelClearsByDifficulty,
 }) {
+  const { t } = useTranslation("pages");
+
   if (!open || !pos) return null;
 
   return createPortal(
@@ -65,38 +71,51 @@ export default function ProfileHeaderIconPanelPortal({
           </div>
         </div>
       ) : (
-        <div className="profile-header__icon-panel" role="dialog" aria-label={playerDialogLabel}>
-          <div className="profile-header__icon-panel-inner">
-            <div className="profile-header__difficulty-grid">
-              {(playerDifficultyPanelDifficulties || []).filter(filterDiffs).map((d) => {
-                const id = d?.id;
-                const icon = d?.icon;
-                const name = d?.name ?? `#${id}`;
-                const clears =
-                  Number(
-                    playerDifficultyPanelClearsByDifficulty?.[String(id)] ??
-                      playerDifficultyPanelClearsByDifficulty?.[id] ??
-                      0,
-                  ) || 0;
-                const lit = clears > 0;
-                return (
-                  <div
-                    key={id ?? name}
-                    className="profile-header__difficulty-cell"
-                    data-lit={lit ? "true" : "false"}
-                    title={`${name} · ${clears}`}
-                  >
-                    {icon ? (
-                      <img className="profile-header__difficulty-cell-img" src={icon} alt="" decoding="async" />
-                    ) : (
-                      <span className="profile-header__difficulty-cell-fallback">{String(name).slice(0, 2)}</span>
-                    )}
-                  </div>
-                );
-              })}
+        <>
+          <div className="profile-header__icon-panel" role="dialog" aria-label={playerDialogLabel}>
+            <div className="profile-header__icon-panel-inner">
+              <div className="profile-header__difficulty-grid">
+                {(playerDifficultyPanelDifficulties || []).filter(filterDiffs).map((d) => {
+                  const id = d?.id;
+                  const icon = d?.icon;
+                  const name = d?.name ?? `#${id}`;
+                  const clears =
+                    Number(
+                      playerDifficultyPanelClearsByDifficulty?.[String(id)] ??
+                        playerDifficultyPanelClearsByDifficulty?.[id] ??
+                        0,
+                    ) || 0;
+                  const lit = clears > 0;
+                  const tooltipContent = t("profile.funFacts.difficultyHeaderGridCellTooltip", {
+                    name,
+                    count: clears,
+                  });
+                  return (
+                    <div
+                      key={id ?? name}
+                      className="profile-header__difficulty-cell"
+                      data-lit={lit ? "true" : "false"}
+                      data-tooltip-id={PROFILE_HEADER_DIFFICULTY_GRID_TOOLTIP_ID}
+                      data-tooltip-content={tooltipContent}
+                      aria-label={tooltipContent}
+                    >
+                      {icon ? (
+                        <img className="profile-header__difficulty-cell-img" src={icon} alt="" decoding="async" />
+                      ) : (
+                        <span className="profile-header__difficulty-cell-fallback">{String(name).slice(0, 2)}</span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
-        </div>
+          <Tooltip
+            id={PROFILE_HEADER_DIFFICULTY_GRID_TOOLTIP_ID}
+            className="profile-header__difficulty-grid-tooltip"
+            place="top"
+          />
+        </>
       )}
     </div>,
     getPortalRoot(),

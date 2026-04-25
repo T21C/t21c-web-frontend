@@ -73,6 +73,7 @@
   "funFacts": {
     "expandAria": "Show all statistics",
     "collapseAria": "Hide detailed statistics",
+    "difficultyHeaderGridCellTooltip": "{{name}} · {{count}} clears",
     "groups": {
       "counts": "Pass counts",
       "judgements": "Judgements",

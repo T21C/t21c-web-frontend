@@ -289,16 +289,19 @@ const ProfilePage = () => {
         [playerData?.funFacts, t],
       );
 
+      const clearsByDifficultyForHeader =
+        playerData?.funFacts?.clearsByDifficultyNoDupes ?? playerData?.funFacts?.clearsByDifficulty;
+
       const iconSlots = useMemo(
         () => buildPlayerIconSlots(
           {
-            clearsByDifficulty: playerData?.funFacts?.clearsByDifficulty,
+            clearsByDifficulty: clearsByDifficultyForHeader,
             worldsFirstByDifficulty: playerData?.funFacts?.worldsFirstByDifficulty,
           },
           difficultyDict || {},
         ),
         [
-          playerData?.funFacts?.clearsByDifficulty,
+          clearsByDifficultyForHeader,
           playerData?.funFacts?.worldsFirstByDifficulty,
           difficultyDict,
         ],
@@ -404,7 +407,7 @@ const ProfilePage = () => {
                     bannerUrl={profileBannerUrl}
                     iconSlots={iconSlots}
                     playerDifficultyPanelDifficulties={difficulties}
-                    playerDifficultyPanelClearsByDifficulty={playerData?.funFacts?.clearsByDifficulty}
+                    playerDifficultyPanelClearsByDifficulty={clearsByDifficultyForHeader}
                     avatarUrl={playerData?.user?.avatarUrl || playerData?.pfp}
                     fallbackAvatarUrl={playerData?.pfp || "/default-avatar.jpg"}
                     name={playerData?.name || t("profile.meta.defaultTitle")}

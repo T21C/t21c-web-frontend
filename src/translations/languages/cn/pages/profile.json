@@ -55,6 +55,9 @@
   "infiniteScroll": {
     "end": "已经到底啦！"
   },
+  "funFacts": {
+    "difficultyHeaderGridCellTooltip": "{{name}} · {{count}} 次通关"
+  },
   "discordRoleSync": {
     "buttonTitle": {
       "own": "刷新你的 Discord 身份组",

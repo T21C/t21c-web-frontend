@@ -55,6 +55,9 @@
   "infiniteScroll": {
     "end": "You've reached the end!"
   },
+  "funFacts": {
+    "difficultyHeaderGridCellTooltip": "{{name}} · {{count}}회 클리어"
+  },
   "discordRoleSync": {
     "buttonTitle": {
       "own": "Refresh your Discord roles",

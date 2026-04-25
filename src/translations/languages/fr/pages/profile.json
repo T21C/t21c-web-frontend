@@ -28,5 +28,8 @@
     "scores": {
       "title": "Scores"
     }
+  },
+  "funFacts": {
+    "difficultyHeaderGridCellTooltip": "{{name}} · {{count}} complétions"
   }
 } 

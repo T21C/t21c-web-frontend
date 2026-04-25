@@ -366,7 +366,7 @@
   position: absolute;
   right: 0;
   bottom: 0;
-  transform: translate(50%, 50%);
+  transform: translate(60%, 60%);
   z-index: 1;
   transition: all 0.5s ease;
   opacity: 0.4;
