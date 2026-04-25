@@ -297,41 +297,76 @@ function buildCreatorCountEntries(counts, dict) {
 }
 
 /**
- * Pad up to `max` slots using `restFamilyQueue` then `miscSorted`, skipping ids in `used`.
+ * Single C→V→O→H lap: at most one remainder dequeue per family (next eligible in that family’s queue).
  * @param {object[]} slots
  * @param {Set<number>} used
- * @param {{ id: number; cnt: number; type: object; name: string; tier: number }[]} restFamilyQueue
+ * @param {Record<string, { id: number; cnt: number; type: object; name: string; tier: number }[]>} remainderQueues
+ * @param {number} max
+ */
+function padCreatorFamilyRoundRobinOneLap(slots, used, remainderQueues, max) {
+  for (const fam of CREATOR_SLOT_FAMILIES) {
+    if (slots.length >= max) return;
+    const q = remainderQueues[fam];
+    if (!q?.length) continue;
+    while (q.length > 0 && slots.length < max) {
+      const entry = q[0];
+      if (used.has(entry.id)) {
+        q.shift();
+        continue;
+      }
+      q.shift();
+      used.add(entry.id);
+      slots.push(slotFromFamilyEntry(entry, fam, 900 + slots.length));
+      break;
+    }
+  }
+}
+
+/**
+ * Round-robin C/V/O/H remainders: repeat laps until a full lap adds nothing or `slots.length >= max`.
+ * @param {object[]} slots
+ * @param {Set<number>} used
+ * @param {Record<string, { id: number; cnt: number; type: object; name: string; tier: number }[]>} remainderQueues
+ * @param {number} max
+ */
+function padCreatorFamilyRoundRobin(slots, used, remainderQueues, max) {
+  while (slots.length < max) {
+    const n = slots.length;
+    padCreatorFamilyRoundRobinOneLap(slots, used, remainderQueues, max);
+    if (slots.length === n) break;
+  }
+}
+
+/**
+ * After primaries (one best per C/V/O/H): all non-family (misc) types that fit, then only if
+ * slots remain, round-robin family remainders. Does not take a family remainder lap before misc
+ * (avoids e.g. C1 in slot 5 when a misc type should appear next).
+ * @param {object[]} slots
+ * @param {Set<number>} used
+ * @param {Record<string, { id: number; cnt: number; type: object; name: string; tier: number }[]>} remainderQueues
  * @param {{ id: number; cnt: number; type: object; name: string }[]} miscSorted
  * @param {number} max
  */
-function padCreatorSlotsFromQueues(slots, used, restFamilyQueue, miscSorted, max) {
-  const pushIfRoom = (entry, famOrMisc, idxBase) => {
+function padCreatorSlotsAutomatic(slots, used, remainderQueues, miscSorted, max) {
+  const pushMiscIfRoom = (entry, idxBase) => {
     if (slots.length >= max || used.has(entry.id)) return;
     used.add(entry.id);
-    if (famOrMisc === "misc") {
-      slots.push(slotFromMiscEntry(entry, idxBase + slots.length));
-    } else {
-      slots.push(slotFromFamilyEntry(entry, famOrMisc, idxBase + slots.length));
-    }
+    slots.push(slotFromMiscEntry(entry, idxBase + slots.length));
   };
 
-  for (const entry of restFamilyQueue) {
-    if (slots.length >= max) break;
-    const parsed = parseCurationFamilyTier(entry.name);
-    if (!parsed) continue;
-    pushIfRoom(entry, parsed.letter, 900);
-  }
   for (const entry of miscSorted) {
     if (slots.length >= max) break;
-    pushIfRoom(entry, "misc", 800);
+    pushMiscIfRoom(entry, 800);
   }
+
+  padCreatorFamilyRoundRobin(slots, used, remainderQueues, max);
 }
 
 /**
  * Up to five header slots for creators.
  * When `displayCurationTypeIds` is non-empty: slots match that list in order only (badge 0 if no counts); no extra fill.
- * When empty (no badges selected): best per family C, V, O, H, then rest of each family (tier desc) in C→V→O→H order,
- * then misc — padded cyclically up to five.
+ * When empty (no badges selected): best per family C, V, O, H (one CVOH cycle), then all misc that fit,
+ * then round-robin family remainders only for remaining slots — up to five slots.
  * @param {Record<string, number> | null | undefined} curationTypeCounts
  * @param {Record<number, { id?: number; name?: string; icon?: string | null; color?: string }>} curationTypesDict
  * @param {unknown[] | null | undefined} displayCurationTypeIds — manual header badge order; if empty, use automatic layout
@@ -395,15 +430,16 @@ export function buildCreatorIconSlots(curationTypeCounts, curationTypesDict, dis
 
   const used = new Set(slots.map((s) => s.curationTypeId));
 
-  const remainderFamilyQueue = [];
+  /** @type {Record<string, { id: number; cnt: number; type: object; name: string; tier: number }[]>} */
+  const remainderQueues = { C: [], V: [], O: [], H: [] };
   for (const fam of CREATOR_SLOT_FAMILIES) {
     const pid = primaryIdByFamily[fam];
     for (const e of sortFamilyEntriesByTierDesc(byFamily[fam])) {
       if (pid != null && e.id === pid) continue;
-      remainderFamilyQueue.push(e);
+      remainderQueues[fam].push(e);
     }
   }
 
-  padCreatorSlotsFromQueues(slots, used, remainderFamilyQueue, misc, 5);
+  padCreatorSlotsAutomatic(slots, used, remainderQueues, misc, 5);
   return slots.slice(0, 5);
 }
