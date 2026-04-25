@@ -39,6 +39,13 @@
   color: rgba(255, 255, 255, 0.4);
 }
 
+.creator-profile-page .creator-profile-page__bio-text {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: rgba(255, 255, 255, 0.85);
+}
+
 .creator-profile-page .creator-profile-page__section--levels .account-profile-page__section-title-row {
   margin-right: 1rem; 
 }

@@ -110,6 +110,12 @@ const CreatorProfilePage = () => {
     );
   }, [user, creatorDoc, creatorId]);
 
+  const isOwnCreatorProfile = useMemo(() => {
+    if (!user?.creatorId) return false;
+    const cid = Number(creatorId);
+    return Number.isFinite(cid) && Number(user.creatorId) === cid;
+  }, [user?.creatorId, creatorId]);
+
   const stats = profile?.stats || creatorDoc;
   const collapsedCreatorStatRows = useMemo(
     () => buildCreatorCollapsedStatRows(stats, profile?.funFacts, t),
@@ -179,7 +185,7 @@ const CreatorProfilePage = () => {
           statRows={collapsedCreatorStatRows}
           actions={
             <>
-              {canEditHeaderCurationSlots ? (
+              {isOwnCreatorProfile ? (
                 <Link
                   className="profile-header__action-btn"
                   to="/settings/creator"
@@ -236,12 +242,43 @@ const CreatorProfilePage = () => {
           </div>
           <div className={["account-profile-page__collapsible", bioCollapsed ? "hidden" : ""].join(" ").trim()}>
             <div className="creator-profile-page__bio">
-              <p className="creator-profile-page__bio-placeholder">
-                {t('creators.profile.bio.placeholder')}
-              </p>
+              {typeof profile?.bio === 'string' && profile.bio.trim().length > 0 ? (
+                <p className="creator-profile-page__bio-text">{profile.bio}</p>
+              ) : (
+                <p className="creator-profile-page__bio-placeholder">
+                  {t('creators.profile.bio.placeholder')}
+                </p>
+              )}
             </div>
           </div>
         </section>
+
+        {difficultyGraphData.length > 0 ? (
+          <section className="creator-profile-page__section creator-profile-page__section--difficulty">
+            <div className="account-profile-page__section-title-row">
+              <h2 className="account-profile-page__section-title">
+                {t("creators.profile.sections.difficultyBreakdown.title")}
+              </h2>
+              <button
+                type="button"
+                className="account-profile-page__chevron-btn"
+                aria-expanded={difficultyExpanded}
+                aria-label={
+                  difficultyCollapsed
+                    ? t('creators.profile.sections.difficultyBreakdown.expand')
+                    : t('creators.profile.sections.difficultyBreakdown.collapse')
+
+                }
+                onClick={() => setDifficultyCollapsed((v) => !v)}
+              >
+                <ChevronIcon direction={difficultyExpanded ? 'down' : 'right'} />
+              </button>
+            </div>
+            <div className={["account-profile-page__collapsible", difficultyCollapsed ? "hidden" : ""].join(" ").trim()}>
+              <DifficultyGraph data={difficultyGraphData} mode="levels" />
+            </div>
+          </section>
+        ) : null}
 
         <section className="creator-profile-page__section creator-profile-page__section--levels">
           <div className="account-profile-page__section-title-row">
@@ -281,33 +318,6 @@ const CreatorProfilePage = () => {
           </LevelContextProvider>
           </div>
         </section>
-
-        {difficultyGraphData.length > 0 ? (
-          <section className="creator-profile-page__section creator-profile-page__section--difficulty">
-            <div className="account-profile-page__section-title-row">
-              <h2 className="account-profile-page__section-title">
-                {t("creators.profile.sections.difficultyBreakdown.title")}
-              </h2>
-              <button
-                type="button"
-                className="account-profile-page__chevron-btn"
-                aria-expanded={difficultyExpanded}
-                aria-label={
-                  difficultyCollapsed
-                    ? t('creators.profile.sections.difficultyBreakdown.expand')
-                    : t('creators.profile.sections.difficultyBreakdown.collapse')
-
-                }
-                onClick={() => setDifficultyCollapsed((v) => !v)}
-              >
-                <ChevronIcon direction={difficultyExpanded ? 'down' : 'right'} />
-              </button>
-            </div>
-            <div className={["account-profile-page__collapsible", difficultyCollapsed ? "hidden" : ""].join(" ").trim()}>
-              <DifficultyGraph data={difficultyGraphData} mode="levels" />
-            </div>
-          </section>
-        ) : null}
       </div>
 
       {showManagementPopup && (

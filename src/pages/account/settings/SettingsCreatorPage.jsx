@@ -50,6 +50,9 @@ const SettingsCreatorPage = () => {
   const [newAliasInput, setNewAliasInput] = useState("");
   const [aliasSaving, setAliasSaving] = useState(false);
   const [aliasFieldError, setAliasFieldError] = useState("");
+  const [bioDraft, setBioDraft] = useState("");
+  const [bioSaving, setBioSaving] = useState(false);
+  const [bioFieldError, setBioFieldError] = useState("");
   const [bannerPresetDraft, setBannerPresetDraft] = useState(undefined);
 
   useEffect(() => {
@@ -102,6 +105,12 @@ const SettingsCreatorPage = () => {
     setAliasList(readAliasNamesFromProfile(profile));
     setAliasFieldError("");
   }, [creatorId, loading, profile]);
+
+  useEffect(() => {
+    if (!profile) return;
+    setBioDraft(typeof profile.bio === "string" ? profile.bio : "");
+    setBioFieldError("");
+  }, [profile?.bio, creatorId]);
 
   const canEditHeaderCurationSlots = useMemo(() => {
     if (!user || !creatorDoc || creatorId == null) return false;
@@ -248,6 +257,33 @@ const SettingsCreatorPage = () => {
     }
   }, [aliasList, t]);
 
+  const handleSaveBio = useCallback(async () => {
+    if (creatorId == null || !Number.isFinite(creatorId)) return;
+    const trimmed = bioDraft.trim();
+    if (trimmed.length > 2000) {
+      setBioFieldError(t("settings.creator.bioTooLong"));
+      return;
+    }
+    setBioFieldError("");
+    setBioSaving(true);
+    const toastId = toast.loading(t("loading.saving", { ns: "common" }));
+    try {
+      const { data } = await api.patch(`${import.meta.env.VITE_CREATORS_V3}/me/bio`, {
+        bio: trimmed.length ? trimmed : null,
+      });
+      const nextBio = typeof data?.bio === "string" ? data.bio : "";
+      setBioDraft(nextBio);
+      setProfile((p) => (p && typeof p === "object" ? { ...p, bio: trimmed.length ? trimmed : null } : p));
+      toast.success(t("settings.creator.bioSuccess"), { id: toastId });
+    } catch (err) {
+      const msg = err?.response?.data?.error || t("settings.creator.bioError");
+      setBioFieldError(msg);
+      toast.error(msg, { id: toastId });
+    } finally {
+      setBioSaving(false);
+    }
+  }, [creatorId, bioDraft, t]);
+
   const stats = profile?.stats || creatorDoc;
   const collapsedCreatorStatRows = useMemo(
     () => buildCreatorCollapsedStatRows(stats, profile?.funFacts, t),
@@ -392,6 +428,40 @@ const SettingsCreatorPage = () => {
           {displayNameFieldError ? (
             <p className="settings-sub-page__field-error" role="alert">
               {displayNameFieldError}
+            </p>
+          ) : null}
+        </div>
+      ) : null}
+
+      {canEditHeaderCurationSlots ? (
+        <div className="settings-sub-page__block settings-sub-page__field">
+          <label htmlFor="settings-creator-bio">{t("settings.creator.bioLabel")}</label>
+          <div className="settings-sub-page__control-row">
+            <textarea
+              id="settings-creator-bio"
+              className="settings-sub-page__textarea"
+              maxLength={2000}
+              placeholder={t("settings.creator.bioPlaceholder")}
+              value={bioDraft}
+              onChange={(ev) => {
+                setBioDraft(ev.target.value);
+                if (bioFieldError) setBioFieldError("");
+              }}
+              disabled={bioSaving}
+              rows={5}
+            />
+            <button
+              type="button"
+              className="settings-sub-page__save-btn"
+              onClick={handleSaveBio}
+              disabled={bioSaving}
+            >
+              {bioSaving ? t("buttons.saving", { ns: "common" }) : t("buttons.save", { ns: "common" })}
+            </button>
+          </div>
+          {bioFieldError ? (
+            <p className="settings-sub-page__field-error" role="alert">
+              {bioFieldError}
             </p>
           ) : null}
         </div>

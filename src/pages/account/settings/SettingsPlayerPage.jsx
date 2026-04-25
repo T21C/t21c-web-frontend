@@ -28,6 +28,9 @@ const SettingsPlayerPage = () => {
   const [nicknameDraft, setNicknameDraft] = useState("");
   const [nicknameSaving, setNicknameSaving] = useState(false);
   const [nicknameFieldError, setNicknameFieldError] = useState("");
+  const [bioDraft, setBioDraft] = useState("");
+  const [bioSaving, setBioSaving] = useState(false);
+  const [bioFieldError, setBioFieldError] = useState("");
   /** `undefined` = follow server; `null` = draft “use default”; string = draft preset path. */
   const [bannerPresetDraft, setBannerPresetDraft] = useState(undefined);
 
@@ -70,6 +73,12 @@ const SettingsPlayerPage = () => {
     setNicknameDraft(next);
     setNicknameFieldError("");
   }, [playerData]);
+
+  useEffect(() => {
+    if (!playerData) return;
+    setBioDraft(typeof playerData.bio === "string" ? playerData.bio : "");
+    setBioFieldError("");
+  }, [playerData?.bio, playerId]);
 
   useEffect(() => {
     const onVis = () => {
@@ -150,6 +159,33 @@ const SettingsPlayerPage = () => {
       setNicknameSaving(false);
     }
   }, [nicknameDraft, playerData?.country, fetchUser, fetchProfile, t]);
+
+  const handleSaveBio = useCallback(async () => {
+    if (playerId == null || !Number.isFinite(playerId)) return;
+    const trimmed = bioDraft.trim();
+    if (trimmed.length > 2000) {
+      setBioFieldError(t("settings.player.bioTooLong"));
+      return;
+    }
+    setBioFieldError("");
+    setBioSaving(true);
+    const toastId = toast.loading(t("loading.saving", { ns: "common" }));
+    try {
+      const { data } = await api.patch(`${import.meta.env.VITE_PLAYERS_V3}/me/bio`, {
+        bio: trimmed.length ? trimmed : null,
+      });
+      const nextBio = typeof data?.bio === "string" ? data.bio : "";
+      setBioDraft(nextBio);
+      setPlayerData((p) => (p && typeof p === "object" ? { ...p, bio: trimmed.length ? trimmed : null } : p));
+      toast.success(t("settings.player.bioSuccess"), { id: toastId });
+    } catch (e) {
+      const msg = e?.response?.data?.error || t("settings.player.bioError");
+      setBioFieldError(msg);
+      toast.error(msg, { id: toastId });
+    } finally {
+      setBioSaving(false);
+    }
+  }, [playerId, bioDraft, t]);
 
   if (!user?.playerId) {
     return (
@@ -306,6 +342,38 @@ const SettingsPlayerPage = () => {
         {nicknameFieldError ? (
           <p className="settings-sub-page__field-error" role="alert">
             {nicknameFieldError}
+          </p>
+        ) : null}
+      </div>
+
+      <div className="settings-sub-page__block settings-sub-page__field">
+        <label htmlFor="settings-player-bio">{t("settings.player.bioLabel")}</label>
+        <div className="settings-sub-page__control-row">
+          <textarea
+            id="settings-player-bio"
+            className="settings-sub-page__textarea"
+            maxLength={2000}
+            placeholder={t("settings.player.bioPlaceholder")}
+            value={bioDraft}
+            onChange={(ev) => {
+              setBioDraft(ev.target.value);
+              if (bioFieldError) setBioFieldError("");
+            }}
+            disabled={bioSaving}
+            rows={5}
+          />
+          <button
+            type="button"
+            className="settings-sub-page__save-btn"
+            onClick={handleSaveBio}
+            disabled={bioSaving}
+          >
+            {bioSaving ? t("buttons.saving", { ns: "common" }) : t("buttons.save", { ns: "common" })}
+          </button>
+        </div>
+        {bioFieldError ? (
+          <p className="settings-sub-page__field-error" role="alert">
+            {bioFieldError}
           </p>
         ) : null}
       </div>

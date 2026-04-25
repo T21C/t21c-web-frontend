@@ -120,10 +120,44 @@
   min-width: 0;
 }
 
+.settings-sub-page .settings-sub-page__textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--btn-neutral-disabled-fill);
+  border-radius: 4px;
+  background: #333333;
+  font-size: 1rem;
+  line-height: 1.45;
+  color: var(--color-white);
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+  resize: vertical;
+}
+
+.settings-sub-page .settings-sub-page__textarea::placeholder {
+  color: var(--color-white-t50);
+  opacity: 1;
+}
+
+.settings-sub-page .settings-sub-page__textarea:focus {
+  outline: none;
+  border-color: #9d4edd;
+}
+
+.settings-sub-page .settings-sub-page__textarea:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.settings-sub-page .settings-sub-page__control-row .settings-sub-page__textarea {
+  flex: 1 1 18rem;
+  min-width: 0;
+}
+
 .settings-sub-page .settings-sub-page__save-btn {
   flex: 0 0 auto;
-  align-self: stretch;
-  min-height: 2.75rem;
+  align-self: flex-end;
+  height: 2.75rem;
   padding: 0 1.25rem;
   font-size: 0.95rem;
   font-weight: 600;

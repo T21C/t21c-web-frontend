@@ -49,6 +49,7 @@ const ProfilePage = () => {
     const [passesInitialLoading, setPassesInitialLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
     const [showHiddenPasses, setShowHiddenPasses] = useState(false);
+    const [bioCollapsed, setBioCollapsed] = useState(false);
     const [scoresCollapsed, setScoresCollapsed] = useState(false);
     const [difficultyCollapsed, setDifficultyCollapsed] = useState(false);
     const [includeDupes, setIncludeDupes] = useState(false);
@@ -266,6 +267,7 @@ const ProfilePage = () => {
 
       const scoresExpanded = !scoresCollapsed;
       const difficultyExpanded = !difficultyCollapsed;
+      const bioExpanded = !bioCollapsed;
 
       // Sort options are pure labels now — ordering is resolved server-side.
       const sortOptions = useMemo(() => [
@@ -477,6 +479,67 @@ const ProfilePage = () => {
                   />
                 </div>
               </div>
+
+              <section className="player-page__section">
+                <div className="account-profile-page__section-title-row">
+                  <h2 className="account-profile-page__section-title">{t('profile.bio.header')}</h2>
+                  <button
+                    type="button"
+                    className="account-profile-page__chevron-btn"
+                    aria-expanded={bioExpanded}
+                    aria-label={
+                      bioCollapsed
+                        ? t('profile.bio.expand', { defaultValue: 'Expand bio' })
+                        : t('profile.bio.collapse', { defaultValue: 'Collapse bio' })
+                    }
+                    onClick={() => setBioCollapsed((v) => !v)}
+                  >
+                    <ChevronIcon direction={bioExpanded ? 'down' : 'right'} />
+                  </button>
+                </div>
+                <div className={["account-profile-page__collapsible", bioCollapsed ? "hidden" : ""].join(" ").trim()}>
+                  <div className="player-page__bio">
+                    {typeof playerData?.bio === 'string' && playerData.bio.trim().length > 0 ? (
+                      <p className="player-page__bio-text">{playerData.bio}</p>
+                    ) : (
+                      <p className="player-page__bio-placeholder">{t('profile.bio.placeholder')}</p>
+                    )}
+                  </div>
+                </div>
+              </section>
+
+              {difficultyGraphData.length > 0 ? (
+                <section className="player-page__difficulty-section">
+                  <div className="account-profile-page__section-title-row">
+                    <h2 className="account-profile-page__section-title">{t("profile.sections.difficultyBreakdown.title")}</h2>
+                    <button
+                      type="button"
+                      className="account-profile-page__chevron-btn"
+                      aria-expanded={difficultyExpanded}
+                      aria-label={
+                        difficultyCollapsed
+                          ? t('profile.sections.difficultyBreakdown.expand')
+                          : t('profile.sections.difficultyBreakdown.collapse')
+                      }
+                      onClick={() => setDifficultyCollapsed((v) => !v)}
+                    >
+                      <ChevronIcon direction={difficultyExpanded ? 'down' : 'right'} />
+                    </button>
+                  </div>
+                  <div className={["account-profile-page__collapsible", "player-page__difficulty-collapsible", difficultyCollapsed ? "hidden" : ""].join(" ").trim()}>
+                    <label className="player-page__difficulty-dupes-toggle">
+                      <input
+                        type="checkbox"
+                        checked={includeDupes}
+                        onChange={(e) => setIncludeDupes(e.target.checked)}
+                      />
+                      <span>{t('profile.sections.difficultyBreakdown.includeDupes')}</span>
+                    </label>
+                    <DifficultyGraph data={difficultyGraphData} mode="passes" />
+                  </div>
+                </section>
+              ) : null}
+
               {(passesInitialLoading || displayedPasses.length > 0 || passesTotal > 0 || (playerData?.funFacts?.counts?.totalPasses ?? 0) > 0) && (
                 <div className="scores-section">
                   <div className="account-profile-page__section-title-row">
@@ -615,38 +678,6 @@ const ProfilePage = () => {
                   )}
                 </div>
               )}
-
-              {difficultyGraphData.length > 0 ? (
-                <section className="player-page__difficulty-section">
-                  <div className="account-profile-page__section-title-row">
-                    <h2 className="account-profile-page__section-title">{t("profile.sections.difficultyBreakdown.title")}</h2>
-                    <button
-                      type="button"
-                      className="account-profile-page__chevron-btn"
-                      aria-expanded={difficultyExpanded}
-                      aria-label={
-                        difficultyCollapsed
-                          ? t('profile.sections.difficultyBreakdown.expand')
-                          : t('profile.sections.difficultyBreakdown.collapse')
-                      }
-                      onClick={() => setDifficultyCollapsed((v) => !v)}
-                    >
-                      <ChevronIcon direction={difficultyExpanded ? 'down' : 'right'} />
-                    </button>
-                  </div>
-                  <div className={["account-profile-page__collapsible", "player-page__difficulty-collapsible", difficultyCollapsed ? "hidden" : ""].join(" ").trim()}>
-                    <label className="player-page__difficulty-dupes-toggle">
-                      <input
-                        type="checkbox"
-                        checked={includeDupes}
-                        onChange={(e) => setIncludeDupes(e.target.checked)}
-                      />
-                      <span>{t('profile.sections.difficultyBreakdown.includeDupes')}</span>
-                    </label>
-                    <DifficultyGraph data={difficultyGraphData} mode="passes" />
-                  </div>
-                </section>
-              ) : null}
             </div>
           ) : <h1 className="player-notfound">{t('profile.notFound')}</h1>)
           : <div className="loader"></div>}

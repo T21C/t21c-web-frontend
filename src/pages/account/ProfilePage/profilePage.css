@@ -245,6 +245,27 @@
   background-color: #00000057;
 }
 
+.player-page .player-page__section {
+  margin-top: 20px;
+  padding: 20px;
+  width: 1000px;
+  max-width: 90%;
+  background-color: #00000057;
+}
+
+.player-page .player-page__bio-placeholder {
+  margin: 0;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.player-page .player-page__bio-text {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: rgba(255, 255, 255, 0.85);
+}
+
 .player-page .player-page__difficulty-collapsible {
   display: flex;
   flex-direction: column;

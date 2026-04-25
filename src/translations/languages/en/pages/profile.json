@@ -31,6 +31,12 @@
   "adminEdit": "Admin edit",
   "viewUserPacks": "View user's packs",
   "linkToCreator": "View creator profile",
+  "bio": {
+    "header": "Bio",
+    "placeholder": "This player hasn't written a bio yet.",
+    "expand": "Expand bio",
+    "collapse": "Collapse bio"
+  },
   "sections": {
     "scores": {
       "title": "Scores",
