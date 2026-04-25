@@ -288,6 +288,61 @@
   text-decoration-color: rgba(255, 255, 255, 0.7);
 }
 
+.level-detail .title-container .level-artist-list-wrapper .level-artist-more {
+  cursor: pointer;
+  font-family: inherit;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0);
+  transition: text-decoration-color 0.2s;
+}
+
+.level-detail .title-container .level-artist-list-wrapper .level-artist-more:hover {
+  text-decoration-color: rgba(255, 255, 255, 0.7);
+}
+
+.level-detail .title-container .level-creator-link {
+  cursor: pointer;
+  font-family: inherit;
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0);
+  transition: text-decoration-color 0.2s;
+}
+
+.level-detail .title-container .level-creator-link:hover {
+  text-decoration-color: rgba(255, 255, 255, 0.7);
+}
+
+.level-detail .title-container .level-creator-more {
+  cursor: pointer;
+  font-family: inherit;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0);
+  transition: text-decoration-color 0.2s;
+}
+
+.level-detail .title-container .level-creator-more:hover {
+  text-decoration-color: rgba(255, 255, 255, 0.7);
+}
+
+.level-detail .level-detail-popup .each-info__artist-name {
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0);
+  transition: text-decoration-color 0.2s;
+}
+
+.level-detail .level-detail-popup .each-info__artist-name:hover {
+  text-decoration-color: rgba(255, 255, 255, 0.7);
+}
+
+.level-detail .title-container .level-artist-name-wrapper {
+  display: flex;
+  flex-wrap:nowrap;
+  gap: var(--spacing-xs);
+  align-items: center;
+}
+
 .level-detail .title-container .level-info {
   display: flex;
   align-items: center;
@@ -1656,6 +1711,16 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xs);
+}
+
+.level-detail-popup .popup-content .popup-body a.creator-name {
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 0.15s ease-out;
+}
+
+.level-detail-popup .popup-content .popup-body a.creator-name:hover {
+  text-decoration-color: var(--primary-text);
 }
 
 .level-detail-popup .popup-content .popup-body .creator-name {

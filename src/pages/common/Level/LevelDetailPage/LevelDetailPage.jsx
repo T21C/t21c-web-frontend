@@ -4,7 +4,7 @@ import "./leveldetailpage.css"
 import placeholder from "@/assets/placeholder/3.png";
 import React, { useEffect, useLayoutEffect, useState, useRef, useCallback, useMemo } from "react";
 import { createPortal } from "react-dom";
-import { useLocation, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import { getPortalRoot } from "@/utils/portalRoot";
 
 import {
@@ -202,7 +202,7 @@ const TagsDropdown = ({ tags, show, onClose }) => {
   );
 };
 
-const FullInfoPopup = ({ level, onClose, videoDetail, difficulty }) => {
+const FullInfoPopup = ({ level, onClose, videoDetail, difficulty, onArtistClick }) => {
   const { t } = useTranslation('pages');
 
   useEffect(() => {
@@ -236,7 +236,7 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty }) => {
       const creatorName = credit.creator.creatorAliases?.length > 0 
         ? `${credit.creator.name} (${aliasNames}${moreCount})`
         : credit.creator.name;
-      acc[role].push({name: creatorName, isOwner: credit.isOwner});
+      acc[role].push({name: creatorName, isOwner: credit.isOwner, id: credit.creator.id});
       return acc;
     }, {});
 
@@ -250,16 +250,47 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty }) => {
           {charters.map((charter, index) => (
             <div key={`charter-${index}`} className="creator-item">
               {charter.isOwner && <div className="owner-badge" title="Owner">Owner</div>}
-              <div className="creator-name">{charter.name}</div>
+              <Link className="creator-name" to={`/creator/${charter.id}`}>{charter.name}</Link>
             </div>
           ))}
         </div>
         <div className="credits-column">
           <div className="role-header">{t('levelDetail.info.roles.vfxer')}</div>
           {vfxers.map((vfxer, index) => (
-            <div key={`vfxer-${index}`} className="creator-name">{vfxer.name}</div>
+            <Link key={`vfxer-${index}`} className="creator-name" to={`/creator/${vfxer.id}`}>{vfxer.name}</Link>
           ))}
         </div>
+      </div>
+    );
+  };
+
+  const renderArtists = () => {
+    const artists = level?.songObject?.artists;
+    if (!Array.isArray(artists) || artists.length === 0) return null;
+    return (
+      <div className="each-info each-info--artists">
+        <span className="each-info__artist-list">
+          {artists.map((artist, idx) => (
+            <span key={artist?.id ?? `${artist?.name ?? 'artist'}-${idx}`} className="each-info__artist-item">
+              <span
+                className="each-info__artist-name"
+                onClick={onArtistClick ? () => onArtistClick(artist) : undefined}
+                role={onArtistClick ? 'button' : undefined}
+                tabIndex={onArtistClick ? 0 : undefined}
+                onKeyDown={(e) => {
+                  if (!onArtistClick) return;
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onArtistClick(artist);
+                  }
+                }}
+              >
+                {artist?.name ?? '—'}
+              </span>
+              {idx < artists.length - 1 ? <span className="each-info__artist-sep"> & </span> : null}
+            </span>
+          ))}
+        </span>
       </div>
     );
   };
@@ -270,7 +301,11 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty }) => {
         <div className="popup-content">
           <div className="popup-header" style={{ '--popup-header-bg': difficulty?.color ? `#${difficulty.color}ff` : undefined }}>
             <h2>{getSongDisplayName(level)}</h2>
-            <p>{getArtistDisplayName(level)}</p>
+            {level?.songObject?.artists && Array.isArray(level.songObject.artists) && level.songObject.artists.length > 0 ? (
+              <p className="popup-header__artists">{renderArtists()}</p>
+            ) : (
+              <p>{getArtistDisplayName(level)}</p>
+            )}
             <span className="createdAt">{t('levelDetail.info.createdAt')}: {formatDate(videoDetail?.timestamp || level.createdAt, i18next?.language)}</span>
             <CloseButton
               variant="floating"
@@ -613,6 +648,118 @@ const LevelDetailPage = ({ mockData = null }) => {
   const handleArtistClick = (artist) => {
     setClickedArtist(artist);
     setShowArtistPopup(true);
+  };
+
+  const renderCreatorHeaderDisplay = (level) => {
+    if (!level) return null;
+    if (level.team) return <span className="level-creator-text">{level.team}</span>;
+
+    const credits = Array.isArray(level.levelCredits) ? level.levelCredits : [];
+    if (credits.length === 0) {
+      return (
+        <span className="level-creator-text">
+          {t('levelDetail.info.noCredits', { defaultValue: 'No credits' })}
+        </span>
+      );
+    }
+
+    const byRole = credits.reduce((acc, credit) => {
+      const role = String(credit?.role ?? '').toLowerCase();
+      const creator = credit?.creator;
+      if (!creator?.id || !creator?.name) return acc;
+      if (!acc[role]) acc[role] = [];
+      acc[role].push({ id: creator.id, name: creator.name });
+      return acc;
+    }, {});
+
+    const charters = byRole.charter || [];
+    const vfxers = byRole.vfxer || [];
+
+    const renderRole = (list) => {
+      if (!Array.isArray(list) || list.length === 0) return null;
+      const first = list[0];
+      const moreCount = list.length - 1;
+      return (
+        <span className="level-creator-role">
+          <Link className="level-creator-link" to={`/creator/${first.id}`}>
+            {first.name}
+          </Link>
+          {moreCount > 0 ? (
+            <span
+              className="level-creator-more"
+              role="button"
+              tabIndex={0}
+              onClick={() => setOpenDialog(true)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setOpenDialog(true);
+                }
+              }}
+            >
+              {` & ${moreCount} more`}
+            </span>
+          ) : null}
+        </span>
+      );
+    };
+
+    if (credits.length >= 3) {
+      const parts = [renderRole(charters), renderRole(vfxers)].filter(Boolean);
+      return (
+        <span className="level-creator-multi">
+          {parts.map((p, i) => (
+            <span key={i} className="level-creator-part">
+              {p}
+              {i < parts.length - 1 ? <span className="level-creator-sep"> | </span> : null}
+            </span>
+          ))}
+        </span>
+      );
+    }
+
+    if (credits.length === 2) {
+      if (charters.length === 2) {
+        return (
+          <span className="level-creator-multi">
+            <Link className="level-creator-link" to={`/creator/${charters[0].id}`}>
+              {charters[0].name}
+            </Link>
+            <span className="level-creator-sep"> & </span>
+            <Link className="level-creator-link" to={`/creator/${charters[1].id}`}>
+              {charters[1].name}
+            </Link>
+          </span>
+        );
+      }
+      if (charters.length === 1 && vfxers.length === 1) {
+        return (
+          <span className="level-creator-multi">
+            <Link className="level-creator-link" to={`/creator/${charters[0].id}`}>
+              {charters[0].name}
+            </Link>
+            <span className="level-creator-sep"> | </span>
+            <Link className="level-creator-link" to={`/creator/${vfxers[0].id}`}>
+              {vfxers[0].name}
+            </Link>
+          </span>
+        );
+      }
+    }
+
+    const firstCredit = credits[0]?.creator;
+    if (firstCredit?.id && firstCredit?.name) {
+      return (
+        <Link className="level-creator-link" to={`/creator/${firstCredit.id}`}>
+          {firstCredit.name}
+        </Link>
+      );
+    }
+    return (
+      <span className="level-creator-text">
+        {t('levelDetail.info.noCredits', { defaultValue: 'No credits' })}
+      </span>
+    );
   };
 
   useEffect(() => {
@@ -1387,7 +1534,7 @@ const LevelDetailPage = ({ mockData = null }) => {
     const displayName = hasPopup ? (
       <div className="level-artist-list-wrapper">
         {level.songObject?.artists.slice(0, 4).map((artist, index) => (
-          <div key={artist.id}>
+          <div className="level-artist-name-wrapper" key={artist.id}>
             <span 
               className="level-artist-name"
               onClick={() => handleArtistClick(artist)}
@@ -1399,7 +1546,20 @@ const LevelDetailPage = ({ mockData = null }) => {
           </div>
         ))}
         {level.songObject?.artists.length > 4 && (
-          <span className="level-artist-more">{t('levelDetail.artists.more', { count: level.songObject?.artists.length - 4 })}</span>
+          <span
+            className="level-artist-more"
+            role="button"
+            tabIndex={0}
+            onClick={() => setOpenDialog(true)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setOpenDialog(true);
+              }
+            }}
+          >
+            {t('levelDetail.artists.more', { count: level.songObject?.artists.length - 4 })}
+          </span>
         )}
       </div>
     ) : (
@@ -1787,7 +1947,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                 </div>
                 <div className="level-info">
                   <div className="level-creator">
-                    {formatCreatorDisplay(res.level)}
+                    {renderCreatorHeaderDisplay(res.level)}
                   </div>
                   <div className="level-separator">-</div>
                   <div className="level-artist">
@@ -2322,6 +2482,7 @@ const LevelDetailPage = ({ mockData = null }) => {
           onClose={changeDialogState}
           videoDetail={videoDetail}
           difficulty={difficulty}
+          onArtistClick={handleArtistClick}
         />
       )}
 
