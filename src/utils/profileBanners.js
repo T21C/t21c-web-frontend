@@ -7,6 +7,18 @@ function isHttpLikeUrl(value) {
   return /^https?:\/\//i.test(t);
 }
 
+function envBool(value, fallback) {
+  if (typeof value !== "string") return fallback;
+  const s = value.trim().toLowerCase();
+  if (s === "1" || s === "true" || s === "yes" || s === "on") return true;
+  if (s === "0" || s === "false" || s === "no" || s === "off") return false;
+  return fallback;
+}
+
+export function customProfileBannersEnabled() {
+  return envBool(import.meta.env.VITE_CUSTOM_PROFILE_BANNERS_ENABLED, true);
+}
+
 /**
  * Absolute URL for a file under `public/` (respects Vite `import.meta.env.BASE_URL`).
  * @param {string} pathFromPublicRoot e.g. `banners/abstract/1.jpg`
@@ -52,7 +64,12 @@ export function subjectHasCustomBannerEntitlement(subjectUser) {
  */
 export function getEffectiveProfileBannerUrl({ bannerPreset, customBannerUrl, subjectUser }) {
   const custom = typeof customBannerUrl === "string" && customBannerUrl.trim() ? customBannerUrl.trim() : null;
-  if (custom && isHttpLikeUrl(custom) && subjectHasCustomBannerEntitlement(subjectUser)) {
+  if (
+    customProfileBannersEnabled() &&
+    custom &&
+    isHttpLikeUrl(custom) &&
+    subjectHasCustomBannerEntitlement(subjectUser)
+  ) {
     return custom;
   }
   return presetPathToUrl(bannerPreset);

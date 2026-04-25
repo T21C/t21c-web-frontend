@@ -4,7 +4,7 @@ import { toast } from "react-hot-toast";
 import api from "@/utils/api";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { DEFAULT_PROFILE_BANNER_PRESET_PATH } from "@/constants/bannerPresets";
-import { publicAssetUrl } from "@/utils/profileBanners";
+import { customProfileBannersEnabled, publicAssetUrl } from "@/utils/profileBanners";
 import { isCdnSupportedImageMimeType } from "@/constants/cdnImageAccept";
 import ImageSelectorPopup from "@/components/common/selectors/ImageSelectorPopup/ImageSelectorPopup";
 import "./profileBannerEditor.css";
@@ -107,6 +107,7 @@ const ProfileBannerEditor = ({
   }, [onPresetDraftChange]);
 
   const canEditCustom = (() => {
+    if (!customProfileBannersEnabled()) return false;
     if (!authUser) return false;
     if (variant === "player") {
       return (

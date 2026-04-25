@@ -626,8 +626,8 @@ const ProfilePage = () => {
                       aria-expanded={difficultyExpanded}
                       aria-label={
                         difficultyCollapsed
-                          ? t('profile.sections.difficultyBreakdown.expand', { defaultValue: 'Expand difficulty breakdown' })
-                          : t('profile.sections.difficultyBreakdown.collapse', { defaultValue: 'Collapse difficulty breakdown' })
+                          ? t('profile.sections.difficultyBreakdown.expand')
+                          : t('profile.sections.difficultyBreakdown.collapse')
                       }
                       onClick={() => setDifficultyCollapsed((v) => !v)}
                     >

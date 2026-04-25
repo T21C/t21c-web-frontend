@@ -40,7 +40,9 @@
     },
     "difficultyBreakdown": {
       "title": "Clears by difficulty",
-      "includeDupes": "Include duplicates"
+      "includeDupes": "Include duplicates",
+      "expand": "Expand difficulty breakdown",
+      "collapse": "Collapse difficulty breakdown"
     }
   },
   "sort": {
@@ -91,7 +93,7 @@
       "perfect": "Perfect",
       "lPerfect": "Late perfect",
       "lateSingle": "Late single",
-      "perfectRatio": "Perfect ratio",
+      "totalXacc": "General accuracy",
       "earlyVsLateBias": "Early vs late bias"
     },
     "levelsCleared": {
@@ -107,9 +109,10 @@
       "bestAccuracy": "Best accuracy",
       "worstAccuracy": "Worst accuracy",
       "topSpeed": "Top speed",
-      "highestTilecountCleared": "Highest tilecount (single level)",
+      "highestTilecountCleared": "Highest tilecount",
       "longestLevelMs": "Longest level",
-      "highestBpmCleared": "Highest BPM cleared"
+      "highestBpmCleared": "Highest BPM cleared",
+      "viewPass": "View pass"
     },
     "activity": {
       "accountAgeDays": "Account age (days)",
@@ -121,9 +124,7 @@
     },
     "difficultyType": {
       "PGU": "PGU",
-      "SPECIAL": "Special",
-      "LEGACY": "Legacy",
-      "UNKNOWN": "Other"
+      "SPECIAL": "Special"
     }
   },
   "discordRoleSync": {

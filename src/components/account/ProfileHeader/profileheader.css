@@ -453,6 +453,24 @@
   border-color: color-mix(in srgb, var(--color-purple-2) 75%, var(--color-white) 25%);
 }
 
+.profile-fun-facts__linked-extreme {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.1rem;
+}
+
+.profile-fun-facts__linked-extreme-link {
+  transition: opacity 0.15s ease;
+  display: inline-flex;
+  opacity: 0.7;
+}
+
+.profile-fun-facts__linked-extreme-link:hover {
+  opacity: 1;
+}
+
+
 @media (max-width: 1024px) {
   .profile-header-shell .profile-header__actions {
     transform: translateX(50%);

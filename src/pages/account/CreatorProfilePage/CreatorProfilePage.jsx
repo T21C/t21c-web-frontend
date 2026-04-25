@@ -294,8 +294,9 @@ const CreatorProfilePage = () => {
                 aria-expanded={difficultyExpanded}
                 aria-label={
                   difficultyCollapsed
-                    ? t('creators.profile.sections.difficultyBreakdown.expand', { defaultValue: 'Expand difficulty breakdown' })
-                    : t('creators.profile.sections.difficultyBreakdown.collapse', { defaultValue: 'Collapse difficulty breakdown' })
+                    ? t('creators.profile.sections.difficultyBreakdown.expand')
+                    : t('creators.profile.sections.difficultyBreakdown.collapse')
+
                 }
                 onClick={() => setDifficultyCollapsed((v) => !v)}
               >

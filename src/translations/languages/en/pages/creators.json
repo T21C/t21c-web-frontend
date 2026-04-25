@@ -73,7 +73,9 @@
     },
     "sections": {
       "difficultyBreakdown": {
-        "title": "Levels by difficulty"
+        "title": "Levels by difficulty",
+        "expand": "Expand difficulty breakdown",
+        "collapse": "Collapse difficulty breakdown"
       }
     },
     "funFacts": {

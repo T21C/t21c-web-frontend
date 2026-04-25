@@ -1,7 +1,9 @@
 import "./profileheader.css";
 import { useState, useMemo, useEffect } from "react";
+import { Link } from "react-router-dom";
 import UserAvatar from "@/components/layout/UserAvatar/UserAvatar";
 import ChevronIcon from "@/components/common/icons/ChevronIcon";
+import { ExternalLinkIcon } from "@/components/common/icons";
 import { isoToEmoji } from "@/utils";
 import { getDefaultProfileBannerUrl } from "@/utils/profileBanners";
 
@@ -368,7 +370,21 @@ const ProfileHeader = ({
                                 .filter(Boolean)
                                 .join(" ")}
                             >
-                              {row.value}
+                              {row.linkTo ? (
+                                <span className="profile-fun-facts__linked-extreme">
+                                  <span>{row.value}</span>
+                                  <Link
+                                    className="profile-fun-facts__linked-extreme-link"
+                                    to={row.linkTo}
+                                    aria-label={row.linkLabel || "View"}
+                                    title={row.linkLabel || "View"}
+                                  >
+                                    <ExternalLinkIcon color="var(--color-white-t80)" size={14} />
+                                  </Link>
+                                </span>
+                              ) : (
+                                row.value
+                              )}
                             </span>
                           </div>
                         ))}

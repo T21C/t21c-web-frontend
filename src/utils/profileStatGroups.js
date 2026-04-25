@@ -37,6 +37,16 @@ export function buildPlayerStatGroups(ff, t) {
   const a = ff.activity || {};
   const byType = ff.clearsByDifficultyType || {};
 
+  const passLinkMeta = (passId) => {
+    if (passId == null) return null;
+    const idNum = Number(passId);
+    if (!Number.isFinite(idNum) || idNum <= 0) return null;
+    return {
+      linkTo: `/passes/${idNum}`,
+      linkLabel: t("profile.funFacts.extremes.viewPass"),
+    };
+  };
+
   const groups = [
     {
       key: "counts",
@@ -80,8 +90,8 @@ export function buildPlayerStatGroups(ff, t) {
         { key: "lPerfect", label: t("profile.funFacts.judgements.lPerfect"), value: formatCount(j.lPerfect) },
         { key: "lateSingle", label: t("profile.funFacts.judgements.lateSingle"), value: formatCount(j.lateSingle) },
         {
-          key: "perfectRatio",
-          label: t("profile.funFacts.judgements.perfectRatio"),
+          key: "totalXacc",
+          label: t("profile.funFacts.judgements.totalXacc"),
           value: (() => {
             const r = xaccFromJudgementTotals(j);
             return r != null ? formatPercentRatio(r) : "—";
@@ -129,37 +139,53 @@ export function buildPlayerStatGroups(ff, t) {
       key: "extremes",
       label: t("profile.funFacts.groups.extremes"),
       rows: [
-        { key: "firstPassAt", label: t("profile.funFacts.extremes.firstPassAt"), value: formatDateIso(x.firstPassAt) },
-        { key: "latestPassAt", label: t("profile.funFacts.extremes.latestPassAt"), value: formatDateIso(x.latestPassAt) },
+        {
+          key: "firstPassAt",
+          label: t("profile.funFacts.extremes.firstPassAt"),
+          value: formatDateIso(x.firstPassAt),
+          ...passLinkMeta(x.firstPassAtPassId),
+        },
+        {
+          key: "latestPassAt",
+          label: t("profile.funFacts.extremes.latestPassAt"),
+          value: formatDateIso(x.latestPassAt),
+          ...passLinkMeta(x.latestPassAtPassId),
+        },
         {
           key: "bestAccuracy",
           label: t("profile.funFacts.extremes.bestAccuracy"),
           value: x.bestAccuracy != null ? formatPercentRatio(x.bestAccuracy) : "—",
+          ...passLinkMeta(x.bestAccuracyPassId),
         },
         {
           key: "worstAccuracy",
           label: t("profile.funFacts.extremes.worstAccuracy"),
           value: x.worstAccuracy != null ? formatPercentRatio(x.worstAccuracy) : "—",
+          ...passLinkMeta(x.worstAccuracyPassId),
         },
         {
           key: "topSpeed",
           label: t("profile.funFacts.extremes.topSpeed"),
           value: x.topSpeed != null ? clampFloat(x.topSpeed, 3) : "—",
+          ...passLinkMeta(x.topSpeedPassId),
         },
         {
           key: "highestTilecountCleared",
           label: t("profile.funFacts.extremes.highestTilecountCleared"),
           value: x.highestTilecountCleared != null ? formatCount(x.highestTilecountCleared) : "—",
+          ...passLinkMeta(x.highestTilecountClearedPassId),
         },
         {
           key: "longestLevelMs",
           label: t("profile.funFacts.extremes.longestLevelMs"),
           value: x.longestLevelMs != null ? formatDurationMs(x.longestLevelMs) : "—",
+          ...passLinkMeta(x.longestLevelMsPassId),
         },
         {
           key: "highestBpmCleared",
           label: t("profile.funFacts.extremes.highestBpmCleared"),
           value: x.highestBpmCleared != null ? formatFloat(x.highestBpmCleared, 2) : "—",
+          ...passLinkMeta(x.highestBpmClearedPassId),
         },
       ],
     },
@@ -189,7 +215,7 @@ export function buildPlayerStatGroups(ff, t) {
     },
   ];
 
-  const typeRows = ["PGU", "SPECIAL", "LEGACY", "UNKNOWN"].map((k) => ({
+  const typeRows = ["PGU", "SPECIAL"].map((k) => ({
     key: `type_${k}`,
     label: t(`profile.funFacts.difficultyType.${k}`),
     value: formatCount(byType[k] ?? 0),
