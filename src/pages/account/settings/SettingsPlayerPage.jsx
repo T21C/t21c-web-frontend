@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";
 import { useAuth } from "@/contexts/AuthContext";
@@ -9,7 +9,8 @@ import { formatNumber } from "@/utils";
 import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
 import ProfileBannerEditor from "@/components/account/ProfileBannerEditor/ProfileBannerEditor";
 import { getEffectiveProfileBannerUrl } from "@/utils/profileBanners";
-import { ExternalLinkIcon } from "@/components/common/icons";
+import { ExternalLinkIcon, ChevronIcon } from "@/components/common/icons";
+import { useSettings } from "@/contexts/SettingsContext";
 import { buildPlayerStatGroups } from "@/utils/profileStatGroups";
 import { buildPlayerIconSlots } from "@/utils/profileIconSlots";
 import "./settingsSubPage.css";
@@ -17,7 +18,7 @@ import "./settingsSubPage.css";
 const SettingsPlayerPage = () => {
   const { t } = useTranslation(["pages", "common"]);
   const { user, fetchUser } = useAuth();
-  const navigate = useNavigate();
+  const { profileBannerExpanded, setProfileBannerExpanded } = useSettings();
   const { difficultyDict } = useDifficultyContext();
   const playerId = user?.playerId != null ? Number(user.playerId) : null;
 
@@ -125,23 +126,6 @@ const SettingsPlayerPage = () => {
     });
   }, [playerData, user?.permissionFlags, bannerPresetDraft]);
 
-  const handleViewUserPacks = useCallback(() => {
-    const handle = playerData?.user?.username;
-    if (handle) {
-      window.packSearchContext = {
-        query: `owner:${handle}`,
-        timestamp: Date.now(),
-      };
-      navigate("/packs");
-    }
-  }, [navigate, playerData?.user?.username]);
-
-  const openPublicPlayerInNewTab = useCallback(() => {
-    const path = playerId != null && Number.isFinite(playerId) ? `/profile/${playerId}` : "/profile";
-    const url = `${window.location.origin}${path}`;
-    window.open(url, "_blank", "noopener,noreferrer");
-  }, [playerId]);
-
   const handleSaveNickname = useCallback(async () => {
     const trimmed = nicknameDraft.trim();
     if (trimmed.length < 3 || trimmed.length > 60) {
@@ -237,31 +221,61 @@ const SettingsPlayerPage = () => {
           ]}
           actions={
             <>
-              <button
-                type="button"
+              <Link
                 className="profile-header__action-btn"
-                onClick={openPublicPlayerInNewTab}
+                to={playerId != null && Number.isFinite(playerId) ? `/profile/${playerId}` : "/profile"}
                 title={t("settings.player.openProfile")}
                 aria-label={t("settings.player.openProfileNewTab")}
               >
                 <ExternalLinkIcon color="var(--color-white)" size={32} />
-              </button>
+              </Link>
             </>
           }
         />
       </div>
 
-      <ProfileBannerEditor
-        variant="player"
-        authUser={user}
-        bannerPreset={playerData?.bannerPreset}
-        presetDraft={bannerPresetDraft}
-        onPresetDraftChange={setBannerPresetDraft}
-        customBannerUrl={playerData?.customBannerUrl}
-        onApplied={(patch) => {
-          setPlayerData((p) => (p && typeof p === "object" ? { ...p, ...patch } : p));
-        }}
-      />
+      <section className="settings-sub-page__banner-section" aria-labelledby="settings-player-banner-heading">
+        <div className="settings-sub-page__banner-section-head">
+          <h2 id="settings-player-banner-heading" className="settings-sub-page__banner-section-title">
+            {t("settings.banner.sectionTitle")}
+          </h2>
+          <button
+            type="button"
+            className="settings-sub-page__banner-chevron"
+            aria-expanded={profileBannerExpanded}
+            aria-controls="settings-player-banner-panel"
+            aria-label={
+              profileBannerExpanded
+                ? t("settings.banner.sectionCollapseAria")
+                : t("settings.banner.sectionExpandAria")
+            }
+            onClick={() => setProfileBannerExpanded((v) => !v)}
+          >
+            <ChevronIcon direction={profileBannerExpanded ? "down" : "right"} />
+          </button>
+        </div>
+        <div
+          id="settings-player-banner-panel"
+          className={
+            profileBannerExpanded
+              ? "settings-sub-page__banner-collapsible"
+              : "settings-sub-page__banner-collapsible settings-sub-page__banner-collapsible--collapsed"
+          }
+        >
+          <ProfileBannerEditor
+            variant="player"
+            showHeading={false}
+            authUser={user}
+            bannerPreset={playerData?.bannerPreset}
+            presetDraft={bannerPresetDraft}
+            onPresetDraftChange={setBannerPresetDraft}
+            customBannerUrl={playerData?.customBannerUrl}
+            onApplied={(patch) => {
+              setPlayerData((p) => (p && typeof p === "object" ? { ...p, ...patch } : p));
+            }}
+          />
+        </div>
+      </section>
 
       <div className="settings-sub-page__block settings-sub-page__field">
         <label htmlFor="settings-player-nickname">{t("settings.player.nicknameLabel")}</label>

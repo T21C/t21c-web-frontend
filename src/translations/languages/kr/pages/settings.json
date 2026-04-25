@@ -36,6 +36,8 @@
   },
   "banner": {
     "sectionTitle": "프로필 배너",
+    "sectionExpandAria": "프로필 배너 옵션 펼치기",
+    "sectionCollapseAria": "프로필 배너 옵션 접기",
     "presetHint": "썸네일을 눌러 무료 배너를 고르면 헤더가 바로 바뀝니다. 저장하려면 저장 버튼을 누르세요. public/banners에 파일을 추가한 뒤에는 generate:banners로 목록과 서버 허용 목록을 맞춰 주세요.",
     "presetGroupAria": "배너 프리셋",
     "preset_default": "기본",

@@ -269,10 +269,16 @@ export function buildCreatorIconSlots(curationTypeCounts, curationTypesDict, dis
 
   const manualIds = normalizeDisplayCurationTypeIds(displayCurationTypeIds);
   if (manualIds.length > 0) {
-    return manualIds.map((typeId, idx) => {
+    const withCounts = manualIds
+      .map((typeId) => {
+        const cnt = Number(counts[String(typeId)] ?? counts[typeId] ?? 0) || 0;
+        return { typeId, cnt };
+      })
+      .filter((x) => x.cnt > 0);
+
+    return withCounts.map(({ typeId, cnt }, idx) => {
       const type = dict[typeId];
       const name = type?.name ?? `#${typeId}`;
-      const cnt = Number(counts[String(typeId)] ?? counts[typeId] ?? 0) || 0;
       const shortLetter = name.length <= 3 ? name : name.slice(0, 2);
       const title = `${name} · ${cnt} level(s)`;
       return {

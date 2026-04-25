@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";
 import { useAuth } from "@/contexts/AuthContext";
@@ -10,7 +10,8 @@ import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
 import ProfileBannerEditor from "@/components/account/ProfileBannerEditor/ProfileBannerEditor";
 import { getEffectiveProfileBannerUrl } from "@/utils/profileBanners";
 import { CreatorStatusBadge } from "@/components/common/display";
-import { ExternalLinkIcon } from "@/components/common/icons";
+import { ExternalLinkIcon, ChevronIcon } from "@/components/common/icons";
+import { useSettings } from "@/contexts/SettingsContext";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { buildCreatorStatGroups, buildCreatorCollapsedStatRows } from "@/utils/profileStatGroups";
 import { buildCreatorIconSlots } from "@/utils/profileIconSlots";
@@ -33,6 +34,7 @@ const SettingsCreatorPage = () => {
   const { t } = useTranslation(["pages", "common"]);
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { profileBannerExpanded, setProfileBannerExpanded } = useSettings();
   const { difficultyDict, curationTypesDict } = useDifficultyContext();
   const creatorId = user?.creatorId != null ? Number(user.creatorId) : null;
 
@@ -156,12 +158,6 @@ const SettingsCreatorPage = () => {
     setLiveDisplayIds(null);
   }, []);
 
-  const openPublicCreatorInNewTab = useCallback(() => {
-    if (creatorId == null || !Number.isFinite(creatorId)) return;
-    const url = `${window.location.origin}/creator/${creatorId}`;
-    window.open(url, "_blank", "noopener,noreferrer");
-  }, [creatorId]);
-
   const handleSaveCreatorDisplayName = useCallback(async () => {
     const trimmed = displayNameDraft.trim();
     if (trimmed.length < 2 || trimmed.length > 100) {
@@ -175,6 +171,7 @@ const SettingsCreatorPage = () => {
     if (creatorId == null || !Number.isFinite(creatorId)) return;
     setDisplayNameFieldError("");
     setDisplayNameSaving(true);
+    const toastId = toast.loading(t("loading.saving", { ns: "common" }));
     try {
       const { data } = await api.patch(`${import.meta.env.VITE_CREATORS_V3}/me/name`, {
         name: trimmed,
@@ -185,11 +182,11 @@ const SettingsCreatorPage = () => {
         return { ...p, name: nextName };
       });
       setDisplayNameDraft(nextName);
-      toast.success(t("settings.creator.displayNameSuccess"));
+      toast.success(t("settings.creator.displayNameSuccess"), { id: toastId });
     } catch (err) {
       const msg = err?.response?.data?.error || t("settings.creator.displayNameError");
       setDisplayNameFieldError(msg);
-      toast.error(msg);
+      toast.error(msg, { id: toastId });
     } finally {
       setDisplayNameSaving(false);
     }
@@ -231,6 +228,7 @@ const SettingsCreatorPage = () => {
   const handleSaveAliases = useCallback(async () => {
     setAliasFieldError("");
     setAliasSaving(true);
+    const toastId = toast.loading(t("loading.saving", { ns: "common" }));
     try {
       const { data } = await api.patch(`${import.meta.env.VITE_CREATORS_V3}/me/aliases`, {
         aliases: aliasList,
@@ -240,11 +238,11 @@ const SettingsCreatorPage = () => {
         if (!p || typeof p !== "object") return p;
         return { ...p, aliases: next };
       });
-      toast.success(t("settings.creator.aliasesSuccess"));
+      toast.success(t("settings.creator.aliasesSuccess"), { id: toastId });
     } catch (err) {
       const msg = err?.response?.data?.error || t("settings.creator.aliasesError");
       setAliasFieldError(msg);
-      toast.error(msg);
+      toast.error(msg, { id: toastId });
     } finally {
       setAliasSaving(false);
     }
@@ -278,13 +276,9 @@ const SettingsCreatorPage = () => {
       <div className="settings-sub-page">
         <h2 className="settings-sub-page__title">{t("settings.creator.loadErrorTitle")}</h2>
         <p className="settings-sub-page__text">{t("settings.creator.loadErrorBody")}</p>
-        <button
-          type="button"
-          className="settings-sub-page__btn btn-fill-secondary"
-          onClick={() => navigate(`/creator/${creatorId}`)}
-        >
+        <Link className="settings-sub-page__btn btn-fill-secondary" to={`/creator/${creatorId}`}>
           {t("settings.creator.openPublicProfile")}
-        </button>
+        </Link>
       </div>
     );
   }
@@ -314,29 +308,59 @@ const SettingsCreatorPage = () => {
           }
           statRows={collapsedCreatorStatRows}
           actions={
-            <button
-              type="button"
+            <Link
               className="profile-header__action-btn"
-              onClick={openPublicCreatorInNewTab}
+              to={`/creator/${creatorId}`}
               title={t("settings.creator.openPublicProfile")}
-              aria-label={t("settings.creator.openPublicProfileNewTab")}
+              aria-label={t("settings.creator.openPublicProfile")}
             >
               <ExternalLinkIcon color="var(--color-white)" size={24} />
-            </button>
+            </Link>
           }
         />
       </div>
 
-      <ProfileBannerEditor
-        variant="creator"
-        creatorId={creatorId}
-        authUser={user}
-        bannerPreset={profile?.bannerPreset}
-        presetDraft={bannerPresetDraft}
-        onPresetDraftChange={setBannerPresetDraft}
-        customBannerUrl={profile?.customBannerUrl}
-        onApplied={(patch) => setProfile((p) => (p && typeof p === "object" ? { ...p, ...patch } : p))}
-      />
+      <section className="settings-sub-page__banner-section" aria-labelledby="settings-creator-banner-heading">
+        <div className="settings-sub-page__banner-section-head">
+          <h2 id="settings-creator-banner-heading" className="settings-sub-page__banner-section-title">
+            {t("settings.banner.sectionTitle")}
+          </h2>
+          <button
+            type="button"
+            className="settings-sub-page__banner-chevron"
+            aria-expanded={profileBannerExpanded}
+            aria-controls="settings-creator-banner-panel"
+            aria-label={
+              profileBannerExpanded
+                ? t("settings.banner.sectionCollapseAria")
+                : t("settings.banner.sectionExpandAria")
+            }
+            onClick={() => setProfileBannerExpanded((v) => !v)}
+          >
+            <ChevronIcon direction={profileBannerExpanded ? "down" : "right"} />
+          </button>
+        </div>
+        <div
+          id="settings-creator-banner-panel"
+          className={
+            profileBannerExpanded
+              ? "settings-sub-page__banner-collapsible"
+              : "settings-sub-page__banner-collapsible settings-sub-page__banner-collapsible--collapsed"
+          }
+        >
+          <ProfileBannerEditor
+            variant="creator"
+            showHeading={false}
+            creatorId={creatorId}
+            authUser={user}
+            bannerPreset={profile?.bannerPreset}
+            presetDraft={bannerPresetDraft}
+            onPresetDraftChange={setBannerPresetDraft}
+            customBannerUrl={profile?.customBannerUrl}
+            onApplied={(patch) => setProfile((p) => (p && typeof p === "object" ? { ...p, ...patch } : p))}
+          />
+        </div>
+      </section>
 
       {canEditHeaderCurationSlots ? (
         <div className="settings-sub-page__block settings-sub-page__field">

@@ -52,10 +52,20 @@ function main() {
 
   fs.mkdirSync(bannersDir, { recursive: true });
   const publicOut = path.join(bannersDir, "manifest.json");
-  fs.writeFileSync(publicOut, JSON.stringify(payload, null, 2), "utf8");
+  const json = JSON.stringify(payload, null, 2);
+  fs.writeFileSync(publicOut, json, "utf8");
 
   fs.mkdirSync(path.dirname(serverManifestPath), { recursive: true });
-  fs.writeFileSync(serverManifestPath, JSON.stringify(payload, null, 2), "utf8");
+  fs.writeFileSync(serverManifestPath, json, "utf8");
+
+  const buildOutDir = process.env.BUILD_OUT_DIR;
+  if (buildOutDir && fs.existsSync(buildOutDir)) {
+    const distBannersDir = path.join(buildOutDir, "banners");
+    fs.mkdirSync(distBannersDir, { recursive: true });
+    const distManifest = path.join(distBannersDir, "manifest.json");
+    fs.writeFileSync(distManifest, json, "utf8");
+    console.log(`[generateBannerManifest] build out → ${path.relative(clientRoot, distManifest)}`);
+  }
 
   console.log(`[generateBannerManifest] ${presets.length} preset(s) → ${path.relative(clientRoot, publicOut)}`);
   console.log(`[generateBannerManifest] copied allowlist → ${serverManifestPath}`);

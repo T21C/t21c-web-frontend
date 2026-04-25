@@ -1,6 +1,7 @@
 import { NavLink, Outlet } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
+import { SettingsProvider } from "@/contexts/SettingsContext";
 import { SETTINGS_NAV_GROUPS } from "./settingsNavConfig";
 import "./settingsLayout.css";
 
@@ -59,7 +60,9 @@ const SettingsLayout = () => {
 
       <main className="settings-layout__main">
         <div className="settings-layout__main-inner page-content-70rem">
-          <Outlet />
+          <SettingsProvider>
+            <Outlet />
+          </SettingsProvider>
         </div>
       </main>
     </div>

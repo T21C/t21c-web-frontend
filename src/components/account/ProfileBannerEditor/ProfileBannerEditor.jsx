@@ -44,6 +44,7 @@ const ProfileBannerEditor = ({
   onPresetDraftChange,
   customBannerUrl,
   onApplied,
+  showHeading = true,
 }) => {
   const { t } = useTranslation(["pages", "common"]);
   const [presetSaveBusy, setPresetSaveBusy] = useState(false);
@@ -297,7 +298,9 @@ const ProfileBannerEditor = ({
 
   return (
     <div className="profile-banner-editor">
-      <h3 className="profile-banner-editor__title">{t("settings.banner.sectionTitle")}</h3>
+      {showHeading ? (
+        <h3 className="profile-banner-editor__title">{t("settings.banner.sectionTitle")}</h3>
+      ) : null}
       <p className="profile-banner-editor__hint">{t("settings.banner.presetHint")}</p>
 
       {manifestStatus === "loading" ? (
