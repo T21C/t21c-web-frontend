@@ -1,6 +1,5 @@
 import "./profileheader.css";
 import { useState, useMemo, useEffect, useRef, useLayoutEffect, useCallback } from "react";
-import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import UserAvatar from "@/components/layout/UserAvatar/UserAvatar";
@@ -8,8 +7,8 @@ import ChevronIcon from "@/components/common/icons/ChevronIcon";
 import { ExternalLinkIcon } from "@/components/common/icons";
 import { isoToEmoji } from "@/utils";
 import { getDefaultProfileBannerUrl } from "@/utils/profileBanners";
-import { getPortalRoot } from "@/utils/portalRoot";
 import { groupCurationTypesForPanel } from "@/utils/curationTypeUtils";
+import ProfileHeaderIconPanelPortal from "./ProfileHeaderIconPanelPortal";
 
 function useViewportWidth() {
   const [width, setWidth] = useState(window.innerWidth);
@@ -90,18 +89,27 @@ const ProfileHeader = ({
   expandStatsAriaLabel = "Expand statistics",
   collapseStatsAriaLabel = "Collapse statistics",
   creatorCurationPanelItems = null,
+  playerDifficultyPanelDifficulties = null,
+  playerDifficultyPanelClearsByDifficulty = null,
 }) => {
   const { t } = useTranslation("pages");
   const [isStatsExpanded, setIsStatsExpanded] = useState(false);
-  const [creatorCurationOpen, setCreatorCurationOpen] = useState(false);
-  const [curationPanelPos, setCurationPanelPos] = useState(null);
-  const iconSlotsBlockRef = useRef(null);
-  const curationPortalRef = useRef(null);
+  const [iconPanelOpen, setIconPanelOpen] = useState(false);
+  const [iconPanelPos, setIconPanelPos] = useState(null);
+  const iconRowRef = useRef(null);
+  const iconPanelPortalRef = useRef(null);
 
   const showCreatorCurationPanel =
     mode === "creator" &&
     Array.isArray(creatorCurationPanelItems) &&
     creatorCurationPanelItems.length > 0;
+
+  const showPlayerDifficultyPanel =
+    mode === "player" &&
+    Array.isArray(playerDifficultyPanelDifficulties) &&
+    playerDifficultyPanelDifficulties.length > 0;
+
+  const showIconPanel = showCreatorCurationPanel || showPlayerDifficultyPanel;
 
   const viewportWidth = useViewportWidth();
 
@@ -162,61 +170,66 @@ const ProfileHeader = ({
     );
   }, [showCreatorCurationPanel, creatorCurationPanelItems, t]);
 
-  const measureCurationPanel = useCallback(() => {
-    const el = iconSlotsBlockRef.current;
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    setCurationPanelPos({
+  const measureIconPanel = useCallback(() => {
+    const row = iconRowRef.current;
+    if (!row) return;
+    const r = row.getBoundingClientRect();
+    const vw = window.innerWidth;
+    const margin = 12;
+    const maxW = Math.max(200, vw - margin * 2);
+    const preferred = 360;
+    const panelWidth = Math.min(preferred, maxW, Math.max(200, r.width));
+    setIconPanelPos({
       top: Math.round(r.bottom + 6),
-      left: Math.round(r.left),
-      minWidth: Math.max(220, Math.round(r.width)),
+      rowCenter: Math.round(r.left + r.width / 2),
+      minWidth: Math.round(panelWidth),
     });
   }, []);
 
   useEffect(() => {
-    if (!showCreatorCurationPanel) {
-      setCreatorCurationOpen(false);
-      setCurationPanelPos(null);
+    if (!showIconPanel) {
+      setIconPanelOpen(false);
+      setIconPanelPos(null);
     }
-  }, [showCreatorCurationPanel]);
+  }, [showIconPanel]);
 
   useLayoutEffect(() => {
-    if (!creatorCurationOpen || !showCreatorCurationPanel) return undefined;
-    measureCurationPanel();
-    const el = iconSlotsBlockRef.current;
+    if (!iconPanelOpen || !showIconPanel) return undefined;
+    measureIconPanel();
+    const el = iconRowRef.current;
     const ro =
-      typeof ResizeObserver !== "undefined" && el ? new ResizeObserver(() => measureCurationPanel()) : null;
+      typeof ResizeObserver !== "undefined" && el ? new ResizeObserver(() => measureIconPanel()) : null;
     if (ro && el) ro.observe(el);
-    window.addEventListener("scroll", measureCurationPanel, true);
-    window.addEventListener("resize", measureCurationPanel);
+    window.addEventListener("scroll", measureIconPanel, true);
+    window.addEventListener("resize", measureIconPanel);
     return () => {
       ro?.disconnect();
-      window.removeEventListener("scroll", measureCurationPanel, true);
-      window.removeEventListener("resize", measureCurationPanel);
+      window.removeEventListener("scroll", measureIconPanel, true);
+      window.removeEventListener("resize", measureIconPanel);
     };
-  }, [creatorCurationOpen, showCreatorCurationPanel, measureCurationPanel]);
+  }, [iconPanelOpen, showIconPanel, measureIconPanel]);
 
   useEffect(() => {
-    if (!creatorCurationOpen) return undefined;
+    if (!iconPanelOpen) return undefined;
     const onKey = (e) => {
-      if (e.key === "Escape") setCreatorCurationOpen(false);
+      if (e.key === "Escape") setIconPanelOpen(false);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [creatorCurationOpen]);
+  }, [iconPanelOpen]);
 
   useEffect(() => {
-    if (!creatorCurationOpen) return undefined;
+    if (!iconPanelOpen) return undefined;
     const onPointerDown = (event) => {
       const node = event.target;
       if (!(node instanceof Node)) return;
-      if (iconSlotsBlockRef.current?.contains(node)) return;
-      if (curationPortalRef.current?.contains(node)) return;
-      setCreatorCurationOpen(false);
+      if (iconRowRef.current?.contains(node)) return;
+      if (iconPanelPortalRef.current?.contains(node)) return;
+      setIconPanelOpen(false);
     };
     document.addEventListener("mousedown", onPointerDown);
     return () => document.removeEventListener("mousedown", onPointerDown);
-  }, [creatorCurationOpen]);
+  }, [iconPanelOpen]);
 
   const badgeText =
     mode === "creator"
@@ -383,15 +396,14 @@ const ProfileHeader = ({
                     <span className="profile-header__verification">{verificationBadge}</span>
                   ) : null}
               </div>
-              <div className="profile-header__icon-row">
+              <div className="profile-header__icon-row" ref={iconRowRef}>
                 <div
                   className={[
                     "profile-header__icon-slots-block",
-                    showCreatorCurationPanel ? "profile-header__icon-slots-block--curation" : "",
+                    showIconPanel ? "profile-header__icon-slots-block--curation" : "",
                   ]
                     .filter(Boolean)
                     .join(" ")}
-                  ref={iconSlotsBlockRef}
                 >
                   <div className="profile-header__icon-slots">
                     {resolvedSlots.map((slot) => (
@@ -414,85 +426,41 @@ const ProfileHeader = ({
                       </div>
                     ))}
                   </div>
-                  {showCreatorCurationPanel ? (
+                  {showIconPanel ? (
                     <button
                       type="button"
-                      className="profile-header__chevron-btn profile-header__chevron-btn--curation"
-                      aria-expanded={creatorCurationOpen}
+                      className="profile-header__chevron-btn profile-header__chevron-btn--icon-panel"
+                      aria-expanded={iconPanelOpen}
                       aria-haspopup="dialog"
                       aria-label={
-                        creatorCurationOpen
-                          ? t("creators.profile.curationPanel.collapseAria")
-                          : t("creators.profile.curationPanel.expandAria")
+                        iconPanelOpen
+                          ? (mode === "creator"
+                              ? t("creators.profile.curationPanel.collapseAria")
+                              : t("profile.funFacts.collapseAria"))
+                          : (mode === "creator"
+                              ? t("creators.profile.curationPanel.expandAria")
+                              : t("profile.funFacts.expandAria"))
                       }
-                      onClick={() => setCreatorCurationOpen((v) => !v)}
+                      onClick={() => setIconPanelOpen((v) => !v)}
                     >
                       <ChevronIcon
-                        direction={creatorCurationOpen ? "up" : "down"}
+                        direction={iconPanelOpen ? "up" : "down"}
                         color="var(--color-white)"
                         size={14}
                       />
                     </button>
                   ) : null}
                 </div>
-                {showCreatorCurationPanel && creatorCurationOpen && curationPanelPos
-                  ? createPortal(
-                      <div
-                        ref={curationPortalRef}
-                        className="profile-header__curation-portal-anchor"
-                        style={{
-                          position: "fixed",
-                          top: `${curationPanelPos.top}px`,
-                          left: `${curationPanelPos.left}px`,
-                          minWidth: `${Math.min(curationPanelPos.minWidth, 416)}px`,
-                          zIndex: 10050,
-                        }}
-                      >
-                        <div
-                          className="profile-header__curation-panel"
-                          role="dialog"
-                          aria-label={t("creators.profile.curationPanel.dialogLabel")}
-                        >
-                          <div className="profile-header__curation-panel-inner">
-                            {curationPanelGroups.map(([group, data]) => (
-                              <div key={group} className="profile-header__curation-group">
-                                <h4 className="profile-header__curation-group-title">{group}</h4>
-                                <div className="profile-header__curation-chips">
-                                  {data.items.map((ct) => {
-                                    const id = ct.id;
-                                    const cnt = Number(ct.count) || 0;
-                                    const nm = ct.name ?? `#${id}`;
-                                    return (
-                                      <div
-                                        key={id}
-                                        className="profile-header__curation-chip"
-                                        title={nm}
-                                      >
-                                        {ct.icon ? (
-                                          <img
-                                            className="profile-header__curation-chip-icon"
-                                            src={ct.icon}
-                                            alt=""
-                                            decoding="async"
-                                          />
-                                        ) : (
-                                          <span className="profile-header__curation-chip-fallback">
-                                            {nm.slice(0, 2)}
-                                          </span>
-                                        )}
-                                        <span className="profile-header__curation-chip-count">{cnt}</span>
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>,
-                      getPortalRoot(),
-                    )
-                  : null}
+                <ProfileHeaderIconPanelPortal
+                  open={showIconPanel && iconPanelOpen}
+                  pos={iconPanelPos}
+                  mode={mode}
+                  portalRef={iconPanelPortalRef}
+                  creatorDialogLabel={t("creators.profile.curationPanel.dialogLabel")}
+                  curationPanelGroups={curationPanelGroups}
+                  playerDifficultyPanelDifficulties={playerDifficultyPanelDifficulties}
+                  playerDifficultyPanelClearsByDifficulty={playerDifficultyPanelClearsByDifficulty}
+                />
               </div>
             </div>
 

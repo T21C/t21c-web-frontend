@@ -72,7 +72,7 @@ const ProfilePage = () => {
     
     // Get context for search and sort state (per player)
     const profileContext = useProfileContext();
-    const { difficultyDict } = useDifficultyContext();
+    const { difficultyDict, difficulties } = useDifficultyContext();
     const currentSettings = profileContext.getPlayerSettings(playerId);
     
     const searchQuery = currentSettings.searchQuery;
@@ -403,6 +403,8 @@ const ProfilePage = () => {
                     className="player-page__profile-header"
                     bannerUrl={profileBannerUrl}
                     iconSlots={iconSlots}
+                    playerDifficultyPanelDifficulties={difficulties}
+                    playerDifficultyPanelClearsByDifficulty={playerData?.funFacts?.clearsByDifficulty}
                     avatarUrl={playerData?.user?.avatarUrl || playerData?.pfp}
                     fallbackAvatarUrl={playerData?.pfp || "/default-avatar.jpg"}
                     name={playerData?.name || t("profile.meta.defaultTitle")}

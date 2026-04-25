@@ -19,7 +19,7 @@ const SettingsPlayerPage = () => {
   const { t } = useTranslation(["pages", "common"]);
   const { user, fetchUser } = useAuth();
   const { profileBannerExpanded, setProfileBannerExpanded } = useSettings();
-  const { difficultyDict } = useDifficultyContext();
+  const { difficultyDict, difficulties } = useDifficultyContext();
   const playerId = user?.playerId != null ? Number(user.playerId) : null;
 
   const [playerData, setPlayerData] = useState(null);
@@ -228,6 +228,8 @@ const SettingsPlayerPage = () => {
           className="settings-sub-page__profile-header"
           bannerUrl={settingsBannerUrl}
           iconSlots={iconSlots}
+          playerDifficultyPanelDifficulties={difficulties}
+          playerDifficultyPanelClearsByDifficulty={playerData?.funFacts?.clearsByDifficulty}
           avatarUrl={playerData?.user?.avatarUrl || playerData?.pfp}
           fallbackAvatarUrl={playerData?.pfp || "/default-avatar.jpg"}
           name={playerData?.name || t("profile.meta.defaultTitle")}
