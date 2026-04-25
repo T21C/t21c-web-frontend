@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
@@ -61,9 +61,9 @@ const SongDetailPage = () => {
       <div className="song-detail-page">
         <div className="error-container">
           <h2>{t(`songDetail.errors.${error || 'notFound'}`)}</h2>
-          <button onClick={() => navigate('/songs')} className="back-button">
+          <Link to="/songs" className="back-button">
             {t('songDetail.backToList')}
-          </button>
+          </Link>
         </div>
       </div>
     );
@@ -136,10 +136,13 @@ const SongDetailPage = () => {
               <h2>{t('songDetail.sections.artists')}</h2>
               <div className="artists-list">
                 {song.credits.map((credit) => (
-                  <div
+                  <Link
                     key={credit.id}
                     className="artist-item"
-                    onClick={() => credit.artist && navigate(`/artists/${credit.artist.id}`)}
+                    to={credit.artist ? `/artists/${credit.artist.id}` : "#"}
+                    onClick={(e) => {
+                      if (!credit.artist) e.preventDefault();
+                    }}
                   >
                     {credit.artist?.avatarUrl && (
                       <img
@@ -154,7 +157,7 @@ const SongDetailPage = () => {
                         <span className="artist-role">{credit.role}</span>
                       )}
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </div>

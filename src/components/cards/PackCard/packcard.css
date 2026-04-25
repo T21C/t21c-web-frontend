@@ -42,6 +42,10 @@
   margin-bottom: 12px;
 }
 
+.pack-card .pack-card__link-wrap {
+  display: contents;
+}
+
 .pack-card .pack-card__owner-avatar {
   width: 2rem;
   height: 2rem;

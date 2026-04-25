@@ -3,7 +3,7 @@ import "./profilePage.css"
 import api from "@/utils/api";
 import axios from "axios";
 import { useEffect, useState, useMemo, useRef } from "react";
-import { useParams, useLocation, useNavigate } from "react-router-dom"
+import { Link, useParams, useLocation, useNavigate } from "react-router-dom"
 import { formatNumber } from "@/utils";
 import { DifficultyGraph, MetaTags } from "@/components/common/display";
 import { ScoreCard } from "@/components/cards";
@@ -431,15 +431,14 @@ const ProfilePage = () => {
                     actions={
                       <>
                         {user && isOwnProfile ? (
-                          <button
-                            type="button"
+                          <Link
                             className="profile-header__action-btn"
-                            onClick={() => navigate("/settings/player")}
+                            to="/settings/player"
                             title={t("profile.editProfile")}
                             aria-label={t("profile.editProfile")}
                           >
                             <EditIcon color="var(--color-white)" size={32} />
-                          </button>
+                          </Link>
                         ) : null}
                         {hasFlag(user, permissionFlags.SUPER_ADMIN) ? (
                           <button
@@ -453,15 +452,14 @@ const ProfilePage = () => {
                           </button>
                         ) : null}
                         {playerData?.user?.creator?.id ? (
-                          <button
-                            type="button"
+                          <Link
                             className="profile-header__action-btn"
-                            onClick={() => navigate(`/creator/${playerData.user.creator.id}`)}
+                            to={`/creator/${playerData.user.creator.id}`}
                             title={t("profile.linkToCreator", { defaultValue: "View creator profile" })}
                             aria-label={t("profile.linkToCreator", { defaultValue: "View creator profile" })}
                           >
                             <CreatorIcon color="var(--color-white)" size={28} />
-                          </button>
+                          </Link>
                         ) : null}
                         {playerData?.user?.username ? (
                           <button

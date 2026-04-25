@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./packcard.css"
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
@@ -27,7 +27,6 @@ const PackCard = ({
   const [showEditPopup, setShowEditPopup] = useState(false);
   const { difficultyDict } = useDifficultyContext();
   const { toggleFavorite } = usePackContext();
-  const navigate = useNavigate();
   const { getPackById } = usePackContext();
   const [pack, setPack] = useState(getPackById(packId));
 
@@ -36,18 +35,16 @@ const PackCard = ({
   const isFavorited = pack.isFavorited;
 
   useBodyScrollLock(showEditPopup);
-
-  const handlePackClick = () => {
-    // Use linkCode if available, otherwise fall back to numerical ID
-    navigate(`/packs/${pack.id}`);
-  };
+  const packTo = `/packs/${pack.id}`;
 
   const handleEditClick = (e) => {
+    e.preventDefault();
     e.stopPropagation();
     setShowEditPopup(true);
   };
 
   const handleFavoriteClick = async (e) => {
+    e.preventDefault();
     e.stopPropagation();
 
     if (!user) {
@@ -114,42 +111,43 @@ const PackCard = ({
     <>
       <div 
         className={cardClasses}
-        onClick={handlePackClick}
         data-tooltip-id={`pack-tooltip-${pack.id}`}
         data-tooltip-content={`${t('cards.pack.clickToView')} ${pack.name}`}
       >
         <div className="pack-card__header">
-          <div className="pack-card__icon">
-            {pack.iconUrl ? (
-              <img 
-                src={pack.iconUrl} 
-                alt={pack.name}
-                className="pack-card__icon-image"
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                  e.target.nextSibling.style.display = 'flex';
-                }}
-              />
-            ) : null}
-            <div 
-              className="pack-card__icon-placeholder"
-              style={{ display: pack.iconUrl ? 'none' : 'flex' }}
-            >
-              📦
+          <Link className="pack-card__link-wrap" to={packTo} aria-label={pack.name}>
+            <div className="pack-card__icon">
+              {pack.iconUrl ? (
+                <img 
+                  src={pack.iconUrl} 
+                  alt={pack.name}
+                  className="pack-card__icon-image"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'flex';
+                  }}
+                />
+              ) : null}
+              <div 
+                className="pack-card__icon-placeholder"
+                style={{ display: pack.iconUrl ? 'none' : 'flex' }}
+              >
+                📦
+              </div>
             </div>
-          </div>
-          
-          <div className="pack-card__info">
-            <h3 className="pack-card__name">{pack.name}</h3>
-            <div className="pack-card__meta">
-              <span className="pack-card__level-count">
-                {pack.totalLevelCount} {t('cards.pack.stats.levels')}
-              </span>
-              {pack.isPinned && (
-                <PinIcon className="pack-card__pin-icon" />
-              )}
+            
+            <div className="pack-card__info">
+              <h3 className="pack-card__name">{pack.name}</h3>
+              <div className="pack-card__meta">
+                <span className="pack-card__level-count">
+                  {pack.totalLevelCount} {t('cards.pack.stats.levels')}
+                </span>
+                {pack.isPinned && (
+                  <PinIcon className="pack-card__pin-icon" />
+                )}
+              </div>
             </div>
-          </div>
+          </Link>
 
           <div className="pack-card__actions">
             {canEdit && (
@@ -163,57 +161,61 @@ const PackCard = ({
               </button>
             )}
 
-              <button
-                className='pack-card__favorite-btn'
-                onClick={handleFavoriteClick}
-                data-tooltip-id={`pack-favorite-tooltip-${pack.id}`}
-                disabled={!user}
-                data-tooltip-content={isFavorited ? t('cards.pack.removeFromFavorites') : t('cards.pack.addToFavorites')}
-              >
-                <LikeIcon color={isFavorited ? "#ffffff" : "none"} />
-                <span className="pack-card__favorite-count">{pack.favoritesCount}</span>
-              </button>
+            <button
+              className='pack-card__favorite-btn'
+              onClick={handleFavoriteClick}
+              data-tooltip-id={`pack-favorite-tooltip-${pack.id}`}
+              disabled={!user}
+              data-tooltip-content={isFavorited ? t('cards.pack.removeFromFavorites') : t('cards.pack.addToFavorites')}
+            >
+              <LikeIcon color={isFavorited ? "#ffffff" : "none"} />
+              <span className="pack-card__favorite-count">{pack.favoritesCount}</span>
+            </button>
           </div>
         </div>
 
-        <div className="pack-card__footer">
-          <div className="pack-card__owner">
-            <UserAvatar 
-              primaryUrl={pack.packOwner?.avatarUrl || 'Unknown'} 
-              className="pack-card__owner-avatar"
-            />
-            <span className="pack-card__owner-name">
-              {pack.packOwner?.username || 'Unknown'}
-            </span>
-          </div>
-          
-          <div className="pack-card__view-mode">
-            {getViewModeIcon()}
-            <span className="pack-card__view-mode-text">
-              {getViewModeText()}
-            </span>
-          </div>
-        </div>
-
-        {pack.totalLevelCount > 0 && (
-          <div className="pack-card__preview">
-            <div className="pack-card__preview-levels">
-              {pack.packItems
-                .map((item, idx) => (
-                  <div key={idx} className="pack-card__preview-level">
-                    <span className="pack-card__preview-level-name">
-                      <img className="pack-card__preview-level-icon" src={difficultyDict[item.referencedLevel?.diffId]?.icon} alt={item.referencedLevel?.song} />
-                      <span className="pack-card__preview-level-name-text">{item.referencedLevel?.song || `Level ${item.levelId}`}</span>
-                    </span>
-                  </div>
-                ))}
-              {pack.totalLevelCount > 3 && (
-                <div className="pack-card__preview-more">
-                  +{pack.totalLevelCount - 3} {t('cards.pack.more')}
-                </div>
-              )}
+        <Link className="pack-card__link-wrap" to={packTo} aria-label={pack.name}>
+          <div className="pack-card__footer">
+            <div className="pack-card__owner">
+              <UserAvatar 
+                primaryUrl={pack.packOwner?.avatarUrl || 'Unknown'} 
+                className="pack-card__owner-avatar"
+              />
+              <span className="pack-card__owner-name">
+                {pack.packOwner?.username || 'Unknown'}
+              </span>
+            </div>
+            
+            <div className="pack-card__view-mode">
+              {getViewModeIcon()}
+              <span className="pack-card__view-mode-text">
+                {getViewModeText()}
+              </span>
             </div>
           </div>
+        </Link>
+
+        {pack.totalLevelCount > 0 && (
+          <Link className="pack-card__link-wrap" to={packTo} aria-label={pack.name}>
+            <div className="pack-card__preview">
+              <div className="pack-card__preview-levels">
+                {pack.packItems
+                  .map((item, idx) => (
+                    <div key={idx} className="pack-card__preview-level">
+                      <span className="pack-card__preview-level-name">
+                        <img className="pack-card__preview-level-icon" src={difficultyDict[item.referencedLevel?.diffId]?.icon} alt={item.referencedLevel?.song} />
+                        <span className="pack-card__preview-level-name-text">{item.referencedLevel?.song || `Level ${item.levelId}`}</span>
+                      </span>
+                    </div>
+                  ))}
+                {pack.totalLevelCount > 3 && (
+                  <div className="pack-card__preview-more">
+                    +{pack.totalLevelCount - 3} {t('cards.pack.more')}
+                  </div>
+                )}
+              </div>
+            </div>
+          </Link>
         )}
       </div>
 

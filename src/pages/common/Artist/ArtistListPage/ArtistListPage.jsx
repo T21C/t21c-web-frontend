@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import api from '@/utils/api';
 import { useDebouncedRequest } from '@/hooks/useDebouncedRequest';
@@ -13,7 +13,6 @@ import { getVerificationClass } from '@/utils/Utility';
 
 const ArtistListPage = () => {
   const { t } = useTranslation(['pages', 'common']);
-  const navigate = useNavigate();
   const currentUrl = window.location.origin + location.pathname;
   const {
     searchQuery,
@@ -183,10 +182,10 @@ const ArtistListPage = () => {
           >
             <div className="artist-cards-grid">
               {artists.map((artist) => (
-                <div
+                <Link
                   key={artist.id}
                   className="artist-card"
-                  onClick={() => navigate(`/artists/${artist.id}`)}
+                  to={`/artists/${artist.id}`}
                 >
                   {artist.avatarUrl && (
                     <div className="artist-card-avatar">
@@ -211,7 +210,7 @@ const ArtistListPage = () => {
                       </span>
                     </div>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </InfiniteScroll>

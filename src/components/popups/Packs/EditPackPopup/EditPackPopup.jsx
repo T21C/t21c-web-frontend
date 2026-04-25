@@ -513,7 +513,7 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
                   onClick={() => setShowDeleteConfirm(true)}
                   disabled={loading}
                 >
-                  <TrashIcon />
+                  <TrashIcon size="24px"/>
                   <span>{t('packPopups.editPack.delete')}</span>
                 </button>
               )}

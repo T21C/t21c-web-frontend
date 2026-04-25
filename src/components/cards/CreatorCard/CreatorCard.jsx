@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useContext } from "react";
 import "./creatorcard.css";
@@ -9,7 +9,6 @@ import { CreatorListContext } from "@/contexts/CreatorListContext";
 const SECONDARY_KEYS = ["totalChartClears", "totalChartLikes"];
 
 const CreatorCard = ({ creator }) => {
-  const navigate = useNavigate();
   const { t } = useTranslation('pages');
   const ctx = useContext(CreatorListContext);
   const sortBy = ctx?.sortBy || 'chartsTotal';
@@ -32,12 +31,8 @@ const CreatorCard = ({ creator }) => {
   const primaryKey = sortBy in sortLabels ? sortBy : 'chartsTotal';
   const secondaryKeys = SECONDARY_KEYS.filter((k) => k !== primaryKey);
 
-  const redirect = () => {
-    navigate(`/creator/${creator.id}`);
-  };
-
   return (
-    <div className="creator-card" onClick={redirect}>
+    <Link className="creator-card" to={`/creator/${creator.id}`}>
       <div className="creator-card__avatar">
         <UserAvatar
           primaryUrl={creator.user?.avatarUrl}
@@ -81,7 +76,7 @@ const CreatorCard = ({ creator }) => {
           </div>
         ))}
       </div>
-    </div>
+    </Link>
   );
 };
 

@@ -27,6 +27,10 @@
   overflow: hidden;
 }
 
+.level-card .level-card__link-wrap {
+  display: contents;
+}
+
 /* Two-line layout container */
 .level-card-wrapper.two-line {
   flex-direction: column;

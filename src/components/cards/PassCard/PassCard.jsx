@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./passcard.css"
 import { useTranslation } from "react-i18next";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
@@ -7,23 +7,22 @@ import { UserAvatar } from "@/components/layout";
 const PassCard = ({ pass }) => {
   const { t } = useTranslation('components');
   
-  const navigate = useNavigate();
   const { difficultyDict } = useDifficultyContext();
   const difficultyInfo = difficultyDict[pass.level.diffId];
-  
-  const redirect = () => {
-    navigate(`/passes/${pass.id}`);
-  };
+  const passTo = `/passes/${pass.id}`;
 
   const onAnchorClick = (e) => {
+    e.preventDefault();
     e.stopPropagation();
+    window.open(pass.videoLink.trim(), "_blank", "noopener,noreferrer");
   };
 
   // Format accuracy to percentage with 2 decimal places
   const formattedAccuracy = (pass.accuracy * 100).toFixed(2) + '%';
 
   return (
-    <div className='pass-card' onClick={() => redirect()} style={{ backgroundColor: pass.isDeleted ? "#f0000099" : "none" }}>
+    <div className='pass-card' style={{ backgroundColor: pass.isDeleted ? "#f0000099" : "none" }}>
+      <Link className="pass-card__link-wrap" to={passTo} aria-label={pass.level?.song || `Pass ${pass.id}`}>
               <img 
           src={difficultyInfo?.icon} 
           alt={difficultyInfo?.name || 'Difficulty icon'} 
@@ -61,6 +60,7 @@ const PassCard = ({ pass }) => {
         {pass.is16K && <div className="flag">{t('cards.pass.flags.sixteenKey')}</div>}
         {pass.isNoHoldTap && <div className="flag">{t('cards.pass.flags.noHoldTap')}</div>}
       </div>
+      </Link>
 
       <div className="video-wrapper">
         {pass.videoLink && (

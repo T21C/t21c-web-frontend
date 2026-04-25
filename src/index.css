@@ -135,6 +135,10 @@ html {
     color: inherit;
     font-family: "Roboto", sans-serif;
   }
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
 }
 
 .svg-fill path {

@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./levelcard.css"
 import { useTranslation } from "react-i18next";
 import { useState, useEffect, useMemo } from "react";
@@ -89,7 +89,6 @@ const LevelCard = ({
       })
       .filter((x) => x.icon);
   }, [curationsList, curationTypesDict]);
-  const navigate = useNavigate();
 
   // Computed values
   const wsLink = level.ws || level.wsLink || level.workshopLink;
@@ -100,6 +99,7 @@ const LevelCard = ({
   const tags = tagIds.map((id) => tagsDict[id]).filter(Boolean); // Filter out undefined/null tags
   const hasSongPopup = (level.songs && level.songs.length > 0) ? true : false;
   const hasArtistPopup = (level.artists && level.artists.length > 0) ? true : false;
+  const levelDetailTo = `/levels/${level.id}`;
 
   useBodyScrollLock(showEditPopup || showAddToPackPopup || showSongPopup || showArtistPopup);
 
@@ -122,7 +122,6 @@ const LevelCard = ({
     }));
   };
 
-  const redirect = () => navigate(`/levels/${level.id}`);
   const onAnchorClick = (e) => e.stopPropagation();
   const handleEditClick = (e) => { e.stopPropagation(); setShowEditPopup(true); };
   const handleAddToPackClick = (e) => { e.stopPropagation(); setShowAddToPackPopup(true); };
@@ -263,14 +262,6 @@ const LevelCard = ({
     </div>
   );
 
-  const renderEditButton = () => (
-    user && hasFlag(user, permissionFlags.SUPER_ADMIN) && (
-      <button className="edit-button" onClick={handleEditClick}>
-        <EditIcon size={"32px"} />
-      </button>
-    )
-  );
-
   const renderTagsWrapper = () => {
     if (!tags || tags.length === 0) return null;
 
@@ -384,12 +375,12 @@ const LevelCard = ({
         data-deleted={level.isDeleted}
         data-hidden={level.isHidden && !level.isDeleted}
         style={{ '--difficulty-color': difficultyInfo?.color || '#fff' }}
-        onClick={redirect}
       >
         <div 
           className="level-card-wrapper"
           style={{ '--card-bg-image': thumbnailUrl ? `url(${thumbnailUrl})` : 'none' }}
         >
+          <Link className="level-card__link-wrap" to={levelDetailTo} aria-label={getSongDisplayName(level)}>
           <div className="difficulty-icon-wrapper">
             <img src={difficultyDict[difficultyInfo?.id]?.icon} alt={difficultyInfo?.name || 'Difficulty icon'} />
           </div>
@@ -427,6 +418,7 @@ const LevelCard = ({
               {getArtistDisplayName(level)} - {formatCreatorDisplay(level)}
             </div>
           </div>
+          </Link>
         </div>
 
         <div className="dropdown-tongue">
@@ -449,13 +441,17 @@ const LevelCard = ({
   if (displayMode === 'pack') {
     const renderPackTwoLineLayout = () => (
       <>
-        <div className="info-line">
-          {renderDifficultyIcon()}
-          {renderSongInfo()}
-          {renderCreatorInfo()}
-        </div>
+        <Link className="level-card__link-wrap" to={levelDetailTo} aria-label={getSongDisplayName(level)}>
+          <div className="info-line">
+            {renderDifficultyIcon()}
+            {renderSongInfo()}
+            {renderCreatorInfo()}
+          </div>
+        </Link>
         <div className="stats-line">
-          {renderStatsIcons({ showLikes: false })}
+          <Link className="level-card__link-wrap" to={levelDetailTo} aria-label={getSongDisplayName(level)}>
+            {renderStatsIcons({ showLikes: false })}
+          </Link>
           {renderDownloadLinks({ 
             showSteam: false, 
             showAddToPack: false, 
@@ -467,10 +463,12 @@ const LevelCard = ({
 
     const renderPackSingleLineLayout = () => (
       <>
-        {renderDifficultyIcon()}
-        {renderSongInfo()}
-        {renderCreatorInfo()}
-        {renderStatsIcons({ showLikes: false })}
+        <Link className="level-card__link-wrap" to={levelDetailTo} aria-label={getSongDisplayName(level)}>
+          {renderDifficultyIcon()}
+          {renderSongInfo()}
+          {renderCreatorInfo()}
+          {renderStatsIcons({ showLikes: false })}
+        </Link>
         {renderDownloadLinks({ 
           showSteam: false, 
           showAddToPack: false, 
@@ -494,7 +492,7 @@ const LevelCard = ({
         
         {renderClearedCheckmark({ noHover: !canEdit })}
 
-        <div className={`level-card-wrapper ${isTwoLineLayout ? 'two-line' : ''}`} onClick={redirect}>
+        <div className={`level-card-wrapper ${isTwoLineLayout ? 'two-line' : ''}`}>
           {isTwoLineLayout ? renderPackTwoLineLayout() : renderPackSingleLineLayout()}
           
           {canEdit && renderDeleteButton()}
@@ -510,13 +508,17 @@ const LevelCard = ({
   // ============================================
   const renderNormalTwoLineLayout = () => (
     <>
-      <div className="info-line">
-        {renderDifficultyIcon()}
-        {renderSongInfo()}
-        {renderCreatorInfo()}
-      </div>
+      <Link className="level-card__link-wrap" to={levelDetailTo} aria-label={getSongDisplayName(level)}>
+        <div className="info-line">
+          {renderDifficultyIcon()}
+          {renderSongInfo()}
+          {renderCreatorInfo()}
+        </div>
+      </Link>
       <div className="stats-line">
-        {renderStatsIcons()}
+        <Link className="level-card__link-wrap" to={levelDetailTo} aria-label={getSongDisplayName(level)}>
+          {renderStatsIcons()}
+        </Link>
         {renderDownloadLinks({ showAddToPack: true })}
       </div>
     </>
@@ -524,42 +526,44 @@ const LevelCard = ({
 
   const renderNormalSingleLineLayout = () => (
     <>
-      <div className="level-details-wrapper">
-        <div className="img-wrapper">
-          <img src={difficultyDict[difficultyInfo?.id]?.icon} alt={difficultyInfo?.name || 'Difficulty icon'} className="difficulty-icon" />
-          
-          {level.rating?.averageDifficultyId && 
-           difficultyDict[level.rating.averageDifficultyId]?.icon &&
-           difficultyDict[level.rating.averageDifficultyId]?.type === "PGU" &&
-           difficultyDict[level.diffId]?.name.includes("Q") && (
-            <img 
-              className="rating-icon"
-              src={difficultyDict[level.rating.averageDifficultyId]?.icon}
-              alt="Rating icon" 
-            />
-          )}
-          
-          {curationTypeIconSlots.map((slot, idx) => (
-              <img
-                key={slot.key ?? `${slot.typeId}-${idx}`}
-                className={`curation-icon`}
-                style={{ '--idx': idx, '--curation-count': curationTypeIconSlots.length }}
-                src={slot.icon}
-                alt="Curation icon"
+      <Link className="level-card__link-wrap" to={levelDetailTo} aria-label={getSongDisplayName(level)}>
+        <div className="level-details-wrapper">
+          <div className="img-wrapper">
+            <img src={difficultyDict[difficultyInfo?.id]?.icon} alt={difficultyInfo?.name || 'Difficulty icon'} className="difficulty-icon" />
+            
+            {level.rating?.averageDifficultyId && 
+             difficultyDict[level.rating.averageDifficultyId]?.icon &&
+             difficultyDict[level.rating.averageDifficultyId]?.type === "PGU" &&
+             difficultyDict[level.diffId]?.name.includes("Q") && (
+              <img 
+                className="rating-icon"
+                src={difficultyDict[level.rating.averageDifficultyId]?.icon}
+                alt="Rating icon" 
               />
-          ))}
-          
-          {customBaseScore && (
-            <div className="base-score-wrapper">
-              <p className="base-score-value">{customBaseScore} PP</p>
-            </div>
-          )}
+            )}
+            
+            {curationTypeIconSlots.map((slot, idx) => (
+                <img
+                  key={slot.key ?? `${slot.typeId}-${idx}`}
+                  className={`curation-icon`}
+                  style={{ '--idx': idx, '--curation-count': curationTypeIconSlots.length }}
+                  src={slot.icon}
+                  alt="Curation icon"
+                />
+            ))}
+            
+            {customBaseScore && (
+              <div className="base-score-wrapper">
+                <p className="base-score-value">{customBaseScore} PP</p>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-      
-      {renderSongInfo()}
-      {renderCreatorInfo()}
-      {renderStatsIcons()}
+        
+        {renderSongInfo()}
+        {renderCreatorInfo()}
+        {renderStatsIcons()}
+      </Link>
       {renderDownloadLinks({ showAddToPack: true })}
     </>
   );
@@ -570,7 +574,7 @@ const LevelCard = ({
       data-deleted={level.isDeleted}
       data-hidden={level.isHidden && !level.isDeleted}
     >
-      <div className={`level-card-wrapper ${isTwoLineLayout ? 'two-line' : ''}`} onClick={redirect}>
+      <div className={`level-card-wrapper ${isTwoLineLayout ? 'two-line' : ''}`}>
         {isTwoLineLayout ? renderNormalTwoLineLayout() : renderNormalSingleLineLayout()}
       </div>
 

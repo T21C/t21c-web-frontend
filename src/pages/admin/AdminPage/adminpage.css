@@ -37,6 +37,7 @@
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     min-height: 200px;
     justify-content: center;
+    text-decoration: none;
 }
 
 .admin-page .admin-card:hover {

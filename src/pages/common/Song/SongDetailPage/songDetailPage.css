@@ -103,6 +103,7 @@
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.2s;
+  text-decoration: none;
 }
 
 .song-detail-page .artist-item:hover {

@@ -3,7 +3,7 @@ import "./creatorprofilepage.css";
 import { useEffect, useMemo, useState } from "react";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { buildCreatorStatGroups, buildCreatorCollapsedStatRows } from "@/utils/profileStatGroups";
-import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
 import api from "@/utils/api";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
@@ -180,15 +180,14 @@ const CreatorProfilePage = () => {
           actions={
             <>
               {canEditHeaderCurationSlots ? (
-                <button
-                  type="button"
+                <Link
                   className="profile-header__action-btn"
-                  onClick={() => navigate("/settings/creator")}
+                  to="/settings/creator"
                   title={t("profile.editProfile")}
                   aria-label={t("profile.editProfile")}
                 >
                   <EditIcon color="var(--color-white)" size={32} />
-                </button>
+                </Link>
               ) : null}
               {hasFlag(user, permissionFlags.SUPER_ADMIN) ? (
                 <button
@@ -202,15 +201,14 @@ const CreatorProfilePage = () => {
                 </button>
               ) : null}
               {creatorDoc.user?.playerId ? (
-                <button
-                  type="button"
+                <Link
                   className="profile-header__action-btn"
-                  onClick={() => navigate(`/profile/${creatorDoc.user.playerId}`)}
+                  to={`/profile/${creatorDoc.user.playerId}`}
                   title={t('creators.profile.linkToPlayer', { defaultValue: 'View player profile' })}
                   aria-label={t('creators.profile.linkToPlayer', { defaultValue: 'View player profile' })}
                 >
                   <AdofaiIcon color="var(--color-white)" size={28} rotation={-25} />
-                </button>
+                </Link>
               ) : null}
 
             </>

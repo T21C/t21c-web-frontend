@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./playercard.css"
 import { useTranslation } from "react-i18next";
 import { useContext } from "react";
@@ -16,7 +16,6 @@ const passes = ["totalPasses", "universalPassCount", "worldsFirstCount"];
 const PlayerCard = ({player, onCreatorAssignmentClick}) => {
   const { sortBy } = useContext(PlayerContext);
   const { t } = useTranslation('components');
-  const navigate = useNavigate();
   const { user } = useAuth();
 
   const sortLabels = {
@@ -34,11 +33,9 @@ const PlayerCard = ({player, onCreatorAssignmentClick}) => {
   };
 
   console.log( player )
-  const redirect = () => {
-    navigate(`/profile/${player.id}`);
-  };
 
   const handleCreatorAssignmentClick = (e) => {
+    e.preventDefault();
     e.stopPropagation();
     if (onCreatorAssignmentClick && player.user) {
       onCreatorAssignmentClick(player.user);
@@ -95,71 +92,73 @@ const PlayerCard = ({player, onCreatorAssignmentClick}) => {
 
   // Add difficulty icons if the sort field is a difficulty type
   const difficultyIcon = diffFields.includes(sortBy) ? player[sortBy]?.icon ?? null : null;
+  const profileTo = `/profile/${player.id}`;
 
   return (
-    <div className='player-card' onClick={() => redirect()} style={{backgroundColor: player.rankedScoreRank === -1 ? "#ff000099" : ""}}>
-      <div className="img-wrapper">
-        <div className="image-container">
-          <UserAvatar  
-            primaryUrl={player.user?.avatarUrl}
-            fallbackUrl={player.pfp}
-          />
+    <div className='player-card' style={{backgroundColor: player.rankedScoreRank === -1 ? "#ff000099" : ""}}>
+      <Link className="player-card__link-wrap" to={profileTo} aria-label={player.name}>
+        <div className="img-wrapper">
+          <div className="image-container">
+            <UserAvatar  
+              primaryUrl={player.user?.avatarUrl}
+              fallbackUrl={player.pfp}
+            />
+          </div>
+          
+          <div style={{fontSize: `${Math.max(0.8, 1.3 - (player.rank.toString().length * 0.15))}rem`}} className={`rank-display ${player.rank <= 3 ? `rank-${player.rank}` : ''}`}>
+            <span style={{fontSize: `${Math.max(0.8, 1.3 - (player.rank.toString().length * 0.15))*0.7}rem`}}>
+              #
+            </span>
+            {player.rank}
+          </div>
         </div>
-        
-        <div style={{fontSize: `${Math.max(0.8, 1.3 - (player.rank.toString().length * 0.15))}rem`}} className={`rank-display ${player.rank <= 3 ? `rank-${player.rank}` : ''}`}>
-          <span style={{fontSize: `${Math.max(0.8, 1.3 - (player.rank.toString().length * 0.15))*0.7}rem`}}>
-            #
-          </span>
-          {player.rank}
-        </div>
-      </div>
 
-      <div className="name-wrapper">
-        <div className="group">
-          <p className="player-exp">{t('cards.player.title')} | ID: {player.id}</p>
-        </div>
-        <div className="name-container">
-          <p className='player-name'>
-            {player.name}
-            
-        {user && player.user && hasFlag(user, permissionFlags.SUPER_ADMIN) && (
-          <button
-            className="creator-assignment-btn"
-            onClick={handleCreatorAssignmentClick}
-            title="Assign Creator"
-          >
-              <CreatorIcon className="creator-assignment-icon" color={player.user.creator ? '#5f5' : '#fff'} />
-          </button>
-        )}
+        <div className="name-wrapper">
+          <div className="group">
+            <p className="player-exp">{t('cards.player.title')} | ID: {player.id}</p>
+          </div>
+          <div className="name-container">
+            <p className='player-name'>
+              {player.name}
+              {user && player.user && hasFlag(user, permissionFlags.SUPER_ADMIN) && (
+        <button
+          className="creator-assignment-btn"
+          onClick={handleCreatorAssignmentClick}
+          title="Assign Creator"
+        >
+          <CreatorIcon className="creator-assignment-icon" color={player.user.creator ? '#5f5' : '#fff'} />
+        </button>
+      )}
             </p>
-          {player.user?.username && (
-            <span className="player-discord-handle">@{player.user?.username}</span>
-          )}
-        </div>
-      </div>
-
-      <div className="info-wrapper">
-        <div className="score-wrapper">
-          <p className="player-exp">{primaryField.label}</p>
-          <div className="player-desc">
-            {difficultyIcon ? (
-              <div className="difficulty-display">
-                <img src={difficultyIcon} alt={primaryField.value} className="difficulty-icon" />
-                <span>{primaryField.value}</span>
-              </div>
-            ) : (
-              primaryField.value
+            {player.user?.username && (
+              <span className="player-discord-handle">@{player.user?.username}</span>
             )}
           </div>
         </div>
-        
-        {secondaryFields.map((field, index) => (
-          <div className="score-wrapper secondary" key={field.label}>
-            <p className="player-exp">{field.label}</p>
-            <div className="player-desc">{field.value}</div>
+
+        <div className="info-wrapper">
+          <div className="score-wrapper">
+            <p className="player-exp">{primaryField.label}</p>
+            <div className="player-desc">
+              {difficultyIcon ? (
+                <div className="difficulty-display">
+                  <img src={difficultyIcon} alt={primaryField.value} className="difficulty-icon" />
+                  <span>{primaryField.value}</span>
+                </div>
+              ) : (
+                primaryField.value
+              )}
+            </div>
           </div>
-        ))}
-      </div>
+          
+          {secondaryFields.map((field) => (
+            <div className="score-wrapper secondary" key={field.label}>
+              <p className="player-exp">{field.label}</p>
+              <div className="player-desc">{field.value}</div>
+            </div>
+          ))}
+        </div>
+      </Link>
     </div>
   );
 };
