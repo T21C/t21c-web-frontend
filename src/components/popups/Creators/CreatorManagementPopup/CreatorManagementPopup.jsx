@@ -576,7 +576,6 @@ export const CreatorManagementPopup = ({ creator, onClose, onUpdate, curationPro
                       <p className="header-badges-loading">{tt('update.headerBadges.loading')}</p>
                     ) : (
                       <CurationTypeSelector
-                        embedded
                         embeddedSectionLabel={tt('update.headerBadges.label')}
                         creatorId={Number(creator.id)}
                         curationTypeCounts={curationProfile?.curationTypeCounts ?? {}}

@@ -574,6 +574,7 @@ const SettingsCreatorPage = () => {
           canEdit={canEditHeaderCurationSlots}
           onSaved={handleDisplayCurationsSaved}
           onDraftChange={handleDraftChange}
+          embeddedSectionLabel={t("settings.creator.curationBadges.sectionLabel")}
         />
       </div>
 

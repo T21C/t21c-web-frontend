@@ -26,8 +26,8 @@ function normalizeDraftIds(rawIds, selectableSet) {
 
 /**
  * Pick up to 5 curation types for the creator profile header.
- * @param {boolean} [embedded=false] — no toggle; always expanded (e.g. admin popup).
- * @param {string} [embeddedSectionLabel] — optional heading when embedded.
+ * Always shows slot preview + full chip list (no collapse).
+ * @param {string} [embeddedSectionLabel=""] — optional short heading above the preview.
  */
 const CurationTypeSelector = ({
   creatorId,
@@ -37,20 +37,14 @@ const CurationTypeSelector = ({
   canEdit = false,
   onSaved,
   onDraftChange,
-  embedded = false,
   embeddedSectionLabel = "",
 }) => {
   const { t } = useTranslation(["pages", "common"]);
-  const [open, setOpen] = useState(embedded);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const [draftIds, setDraftIds] = useState(() =>
     normalizeDraftIds(displayCurationTypeIds, null),
   );
-
-  useEffect(() => {
-    if (embedded) setOpen(true);
-  }, [embedded]);
 
   useEffect(() => {
     setDraftIds(
@@ -106,21 +100,12 @@ const CurationTypeSelector = ({
     });
   }, []);
 
-  const handleOpen = useCallback(() => {
+  const handleReset = useCallback(() => {
     setError(null);
     setDraftIds(
       normalizeDraftIds(displayCurationTypeIds, selectableIdSet),
     );
-    setOpen(true);
   }, [displayCurationTypeIds, selectableIdSet]);
-
-  const handleCancel = useCallback(() => {
-    setError(null);
-    setDraftIds(
-      normalizeDraftIds(displayCurationTypeIds, selectableIdSet),
-    );
-    if (!embedded) setOpen(false);
-  }, [displayCurationTypeIds, embedded, selectableIdSet]);
 
   const handleSave = useCallback(async () => {
     if (!creatorId) return;
@@ -134,7 +119,6 @@ const CurationTypeSelector = ({
         ? res.data.displayCurationTypeIds
         : draftIds;
       onSaved?.(next);
-      if (!embedded) setOpen(false);
       toast.success(t("settings.creator.curationBadges.saveSuccess"), { id: toastId });
     } catch (e) {
       const msg = e?.response?.data?.error || e?.message || t("settings.creator.curationBadges.saveError");
@@ -143,141 +127,117 @@ const CurationTypeSelector = ({
     } finally {
       setSaving(false);
     }
-  }, [creatorId, draftIds, onSaved, embedded, t]);
+  }, [creatorId, draftIds, onSaved, t]);
 
   if (!canEdit) return null;
 
-  const showPanel = embedded || open;
-
   return (
-    <div
-      className={[
-        "curation-type-selector",
-        embedded ? "curation-type-selector--embedded" : "",
-      ]
-        .filter(Boolean)
-        .join(" ")}
-    >
-      {!embedded ? (
-        <div className="curation-type-selector__toolbar">
-          {!open && (
-            <button
-              type="button"
-              className="curation-type-selector__toggle"
-              onClick={open ? handleCancel : handleOpen}
-            >
-              {t("settings.creator.curationBadges.toggle")}
-            </button>
-          )}
-          {open ? (
-            <span className="curation-type-selector__hint">
-              {t("settings.creator.curationBadges.hint", {
-                max: MAX_SELECTED,
-                selected: draftIds.length,
-              })}
-            </span>
-          ) : null}
-        </div>
-      ) : embeddedSectionLabel ? (
+    <div className="curation-type-selector curation-type-selector--embedded">
+      {embeddedSectionLabel ? (
         <p className="curation-type-selector__embedded-label">{embeddedSectionLabel}</p>
       ) : null}
 
-      {embedded ? (
-        <div
-          className="curation-type-selector__preview"
-          role="img"
-          aria-label={t("settings.creator.curationBadges.previewAria")}
-        >
-          {previewSlots.length === 0 ? (
-            <span className="curation-type-selector__preview-empty">—</span>
-          ) : (
-            previewSlots.map((slot) => (
-              <div
-                key={slot.key}
-                className="curation-type-selector__preview-slot"
-                title={slot.tooltip ?? slot.title}
-              >
-                {slot.iconUrl ? (
-                  <img className="curation-type-selector__preview-img" src={slot.iconUrl} alt="" decoding="async" />
-                ) : (
-                  <span className="curation-type-selector__preview-letter">{slot.letter}</span>
-                )}
-                <span className="curation-type-selector__preview-badge">{slot.badge ?? slot.count ?? 0}</span>
-              </div>
-            ))
-          )}
-        </div>
-      ) : null}
+      <div className="curation-type-selector__toolbar curation-type-selector__toolbar--static">
+        <span className="curation-type-selector__hint">
+          {t("settings.creator.curationBadges.hint", {
+            max: MAX_SELECTED,
+            selected: draftIds.length,
+          })}
+        </span>
+      </div>
 
-      {showPanel ? (
-        <div className="curation-type-selector__panel">
-          {error ? <p className="curation-type-selector__error">{error}</p> : null}
-          {availableTypes.length === 0 ? (
-            <p className="curation-type-selector__empty">{t("settings.creator.curationBadges.empty")}</p>
-          ) : (
-            <div className="curation-type-selector__groups">
-              {orderedGroups.map(([group, data]) => (
-                <div key={group} className="curation-type-selector__group">
-                  <h4 className="curation-type-selector__group-title">{group}</h4>
-                  <div className="curation-type-selector__chips">
-                    {data.items.map((ct) => {
-                      const id = ct.id;
-                      const selected = draftIds.includes(id);
-                      const cnt = Number(ct.count) || 0;
-                      const name = ct.name ?? `#${id}`;
-                      return (
-                        <button
-                          key={id}
-                          type="button"
-                          className={[
-                            "curation-type-selector__chip",
-                            selected ? "curation-type-selector__chip--selected" : "",
-                          ]
-                            .filter(Boolean)
-                            .join(" ")}
-                          onClick={() => toggleId(id)}
-                          title={name}
-                          aria-pressed={selected}
-                        >
-                          {ct.icon ? (
-                            <img
-                              className="curation-type-selector__chip-icon"
-                              src={ct.icon}
-                              alt=""
-                              decoding="async"
-                            />
-                          ) : (
-                            <span className="curation-type-selector__chip-fallback">{name.slice(0, 2)}</span>
-                          )}
-                          <span className="curation-type-selector__chip-count">{cnt}</span>
-                          {selected ? (
-                            <span className="curation-type-selector__chip-check" aria-hidden>
-                              ✓
-                            </span>
-                          ) : null}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-          <div className="curation-type-selector__actions">
-            <button type="button" className="curation-type-selector__btn" onClick={handleCancel} disabled={saving}>
-              {embedded ? t("buttons.reset", { ns: "common" }) : t("buttons.cancel", { ns: "common" })}
-            </button>
-            <button
-              type="button"
-              className="curation-type-selector__btn curation-type-selector__btn--primary"
-              onClick={handleSave}
-              disabled={saving || !creatorId}
+      <div
+        className="curation-type-selector__preview"
+        role="img"
+        aria-label={t("settings.creator.curationBadges.previewAria")}
+      >
+        {previewSlots.length === 0 ? (
+          <span className="curation-type-selector__preview-empty">—</span>
+        ) : (
+          previewSlots.map((slot) => (
+            <div
+              key={slot.key}
+              className="curation-type-selector__preview-slot"
+              title={slot.tooltip ?? slot.title}
             >
-              {saving ? t("buttons.saving", { ns: "common" }) : t("buttons.save", { ns: "common" })}
-            </button>
+              {slot.iconUrl ? (
+                <img className="curation-type-selector__preview-img" src={slot.iconUrl} alt="" decoding="async" />
+              ) : (
+                <span className="curation-type-selector__preview-letter">{slot.letter}</span>
+              )}
+              <span className="curation-type-selector__preview-badge">{slot.badge ?? slot.count ?? 0}</span>
+            </div>
+          ))
+        )}
+      </div>
+
+      <div className="curation-type-selector__panel">
+        {error ? <p className="curation-type-selector__error">{error}</p> : null}
+        {availableTypes.length === 0 ? (
+          <p className="curation-type-selector__empty">{t("settings.creator.curationBadges.empty")}</p>
+        ) : (
+          <div className="curation-type-selector__groups">
+            {orderedGroups.map(([group, data]) => (
+              <div key={group} className="curation-type-selector__group">
+                <h4 className="curation-type-selector__group-title">{group}</h4>
+                <div className="curation-type-selector__chips">
+                  {data.items.map((ct) => {
+                    const id = ct.id;
+                    const selected = draftIds.includes(id);
+                    const cnt = Number(ct.count) || 0;
+                    const name = ct.name ?? `#${id}`;
+                    return (
+                      <button
+                        key={id}
+                        type="button"
+                        className={[
+                          "curation-type-selector__chip",
+                          selected ? "curation-type-selector__chip--selected" : "",
+                        ]
+                          .filter(Boolean)
+                          .join(" ")}
+                        onClick={() => toggleId(id)}
+                        title={name}
+                        aria-pressed={selected}
+                      >
+                        {ct.icon ? (
+                          <img
+                            className="curation-type-selector__chip-icon"
+                            src={ct.icon}
+                            alt=""
+                            decoding="async"
+                          />
+                        ) : (
+                          <span className="curation-type-selector__chip-fallback">{name.slice(0, 2)}</span>
+                        )}
+                        <span className="curation-type-selector__chip-count">{cnt}</span>
+                        {selected ? (
+                          <span className="curation-type-selector__chip-check" aria-hidden>
+                            ✓
+                          </span>
+                        ) : null}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
           </div>
+        )}
+        <div className="curation-type-selector__actions">
+          <button type="button" className="curation-type-selector__btn" onClick={handleReset} disabled={saving}>
+            {t("buttons.reset", { ns: "common" })}
+          </button>
+          <button
+            type="button"
+            className="curation-type-selector__btn curation-type-selector__btn--primary"
+            onClick={handleSave}
+            disabled={saving || !creatorId}
+          >
+            {saving ? t("buttons.saving", { ns: "common" }) : t("buttons.save", { ns: "common" })}
+          </button>
         </div>
-      ) : null}
+      </div>
     </div>
   );
 };

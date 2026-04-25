@@ -91,7 +91,7 @@
     "verificationSuccess": "Verification status updated",
     "verificationError": "Could not update verification status",
     "curationBadges": {
-      "toggle": "Customize header badges",
+      "sectionLabel": "Profile header badges",
       "hint": "Up to {{max}} ({{selected}}/{{max}})",
       "previewAria": "Header badge preview",
       "empty": "No curation types on credited levels yet.",

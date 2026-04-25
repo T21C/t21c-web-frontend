@@ -89,19 +89,8 @@
   gap: 0.75rem;
 }
 
-.curation-type-selector .curation-type-selector__toggle {
-  border: 1px solid var(--color-white-t20);
-  background: var(--color-white-t10);
-  color: var(--color-white);
-  border-radius: 6px;
-  padding: 0.6rem 1rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.curation-type-selector .curation-type-selector__toggle:hover {
-  background: var(--color-white-t15);
+.curation-type-selector .curation-type-selector__toolbar--static {
+  margin: 0;
 }
 
 .curation-type-selector .curation-type-selector__hint {
