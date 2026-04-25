@@ -3,7 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import './editProfilePage.css';
 import { CrossIcon, DiscordIcon, EditIcon, UnlinkIcon } from '@/components/common/icons';
 import { Tooltip } from 'react-tooltip';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import api from '@/utils/api';
 import ImageSelectorPopup from '@/components/common/selectors/ImageSelectorPopup/ImageSelectorPopup';
@@ -588,14 +588,9 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
 
           {user?.playerId ? (
             <div className="edit-profile-page__nickname-moved">
-              <p>{t('editProfile.nicknameMoved.hint')}</p>
-              <button
-                type="button"
-                className="button edit-profile-page__nickname-moved-btn"
-                onClick={() => navigate('/settings/player')}
-              >
-                {t('editProfile.nicknameMoved.button')}
-              </button>
+              <Link to="/settings/player" className="edit-profile-page__nickname-moved-link">
+                {t('editProfile.nicknameMoved.hint')}
+              </Link>
             </div>
           ) : (
             <div className="form-group">

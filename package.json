@@ -4,6 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "generate:banners": "node scripts/generateBannerManifest.mjs",
+    "predev": "node scripts/generateBannerManifest.mjs",
+    "prebuild:dev": "node scripts/generateBannerManifest.mjs",
+    "prebuild:staging": "node scripts/generateBannerManifest.mjs",
+    "prebuild:prod": "node scripts/generateBannerManifest.mjs",
     "dev": "vite --host",
     "staging": "vite --mode staging --host",
     "prod": "vite --mode production --host",

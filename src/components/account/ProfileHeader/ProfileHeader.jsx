@@ -3,9 +3,7 @@ import { useState, useMemo, useEffect } from "react";
 import UserAvatar from "@/components/layout/UserAvatar/UserAvatar";
 import ChevronIcon from "@/components/common/icons/ChevronIcon";
 import { isoToEmoji } from "@/utils";
-
-/** Default banner when parent does not pass `bannerUrl` (replace when asset pipeline exists). */
-const DEFAULT_BANNER_IMAGE = "https://placehold.co/600x400@2x.png";
+import { getDefaultProfileBannerUrl } from "@/utils/profileBanners";
 
 function useViewportWidth() {
   const [width, setWidth] = useState(window.innerWidth);
@@ -158,7 +156,7 @@ const ProfileHeader = ({
   const bannerImageSrc =
     bannerUrl != null && String(bannerUrl).trim().length > 0
       ? String(bannerUrl).trim()
-      : DEFAULT_BANNER_IMAGE;
+      : getDefaultProfileBannerUrl();
 
   const displayName = name || "—";
 

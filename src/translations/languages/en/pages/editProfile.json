@@ -27,8 +27,7 @@
     "confirmRemove": "Are you sure you want to remove your avatar? This action cannot be undone."
   },
   "nicknameMoved": {
-    "hint": "Nickname is edited under Settings → Player profile.",
-    "button": "Player settings"
+    "hint": "Nickname is edited under Settings → Player profile."
   },
   "form": {
     "labels": {

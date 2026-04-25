@@ -17,6 +17,7 @@ import LevelPage from "@/pages/common/Level/LevelPage/LevelPage";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { buildCreatorIconSlots } from "@/utils/profileIconSlots";
 import { toDifficultyGraphData } from "@/utils/statFormatters";
+import { getEffectiveProfileBannerUrl } from "@/utils/profileBanners";
 
 const CreatorProfilePage = () => {
   const { creatorId } = useParams();
@@ -70,6 +71,16 @@ const CreatorProfilePage = () => {
   );
 
   const creatorDoc = profile?.creator || profile?.doc || profile;
+
+  const creatorBannerUrl = useMemo(() => {
+    if (!profile) return null;
+    const u = profile.user || creatorDoc?.user;
+    return getEffectiveProfileBannerUrl({
+      bannerPreset: profile.bannerPreset,
+      customBannerUrl: profile.customBannerUrl,
+      subjectUser: { permissionFlags: u?.permissionFlags ?? 0 },
+    });
+  }, [profile, creatorDoc]);
 
   const iconSlots = useMemo(
     () =>
@@ -145,6 +156,7 @@ const CreatorProfilePage = () => {
         <ProfileHeader
           mode="creator"
           className="creator-profile-page__profile-header"
+          bannerUrl={creatorBannerUrl}
           iconSlots={iconSlots}
           avatarUrl={creatorDoc.user?.avatarUrl}
           fallbackAvatarUrl=""

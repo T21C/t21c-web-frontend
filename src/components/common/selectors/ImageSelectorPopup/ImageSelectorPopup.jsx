@@ -1,13 +1,45 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { toast } from 'react-hot-toast';
-import { FixedCropper, CircleStencil, ImageRestriction } from 'react-advanced-cropper';
+import { Cropper, FixedCropper, CircleStencil, RectangleStencil, ImageRestriction } from 'react-advanced-cropper';
 import 'react-advanced-cropper/dist/style.css';
 import './ImageSelectorPopup.css';
 import { CDN_IMAGE_ACCEPT, isCdnSupportedImageMimeType } from '@/constants/cdnImageAccept';
 import { useTranslation } from 'react-i18next';
 import { CloseButton } from '@/components/common/buttons';
 
-const ImageSelectorPopup = ({ isOpen, onClose, onSave, currentAvatar, initialImage }) => {
+const DEFAULT_AVATAR_STENCIL_SIZE = { width: 300, height: 300 };
+/** Matches server `BANNER` image validator loose bounds. */
+const BANNER_FREE_MIN_ASPECT = 0.01;
+const BANNER_FREE_MAX_ASPECT = 100;
+
+function computeStencilSize(mode, aspect) {
+    if (mode !== 'banner') return DEFAULT_AVATAR_STENCIL_SIZE;
+    const a = Number.isFinite(aspect) && aspect > 0 ? aspect : 1;
+    const BANNER_STENCIL_BASE_WIDTH = 500;
+    const BANNER_STENCIL_BASE_HEIGHT = 240;
+    const widthFromHeight = BANNER_STENCIL_BASE_HEIGHT * a;
+    if (widthFromHeight <= BANNER_STENCIL_BASE_WIDTH) {
+        return { width: Math.round(widthFromHeight), height: BANNER_STENCIL_BASE_HEIGHT };
+    }
+    return { width: BANNER_STENCIL_BASE_WIDTH, height: Math.round(BANNER_STENCIL_BASE_WIDTH / a) };
+}
+
+const ImageSelectorPopup = ({
+    isOpen,
+    onClose,
+    onSave,
+    currentAvatar,
+    initialImage,
+    mode = 'avatar',
+    title,
+    outputMimeType = 'image/jpeg',
+    outputQuality = 0.95,
+    outputMaxWidth,
+    outputMaxHeight,
+    outputFileName,
+    /** `'fixed'` = FixedCropper (avatar). `'basic'` = Cropper with free-aspect movable/resizable stencil (banner). */
+    cropperVariant = 'fixed',
+}) => {
     const { t } = useTranslation('common');
     const [image, setImage] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -17,6 +49,23 @@ const ImageSelectorPopup = ({ isOpen, onClose, onSave, currentAvatar, initialIma
     const rotationTimerRef = useRef(null);
     const pendingRotationRef = useRef(0);
     const lastAppliedRotationRef = useRef(0);
+
+    const isBanner = mode === 'banner';
+    const useBasicCropper = cropperVariant === 'basic' && isBanner;
+    const stencilComponent = isBanner ? RectangleStencil : CircleStencil;
+
+    /** FixedCropper only: 1 for avatar circle; wide default if a fixed banner path is ever used. */
+    const fixedAspect = isBanner && !useBasicCropper ? 50 / 9 : 1;
+
+    const stencilSize = useMemo(
+        () => computeStencilSize(mode, fixedAspect),
+        [mode, fixedAspect],
+    );
+
+    const sharedTransitions = { duration: 200, timingFunction: 'ease-out' };
+
+    const popupTitle = title ?? (isBanner ? 'Edit Banner' : 'Edit Profile Picture');
+    const resolvedFileName = outputFileName ?? (isBanner ? 'banner.jpg' : 'profile.jpg');
 
     const resetRotation = useCallback(() => {
         setRotation(0);
@@ -37,7 +86,6 @@ const ImageSelectorPopup = ({ isOpen, onClose, onSave, currentAvatar, initialIma
         }
     }, [currentAvatar, initialImage, resetRotation]);
 
-    // Reset rotation when popup opens
     useEffect(() => {
         if (isOpen) {
             resetRotation();
@@ -52,7 +100,6 @@ const ImageSelectorPopup = ({ isOpen, onClose, onSave, currentAvatar, initialIma
         lastAppliedRotationRef.current = newRotation;
     }, []);
 
-    // Polling timer for rotation changes
     useEffect(() => {
         if (!image) return;
 
@@ -71,7 +118,6 @@ const ImageSelectorPopup = ({ isOpen, onClose, onSave, currentAvatar, initialIma
         };
     }, [image, applyRotation]);
 
-    // Keyboard controls for rotation
     useEffect(() => {
         const handleKeyDown = (e) => {
             if (!image || !cropperRef.current) return;
@@ -123,17 +169,26 @@ const ImageSelectorPopup = ({ isOpen, onClose, onSave, currentAvatar, initialIma
 
         setIsLoading(true);
         try {
-            const canvas = cropperRef.current.getCanvas();
+            const canvasOptions = {};
+            if (typeof outputMaxWidth === 'number' && outputMaxWidth > 0) {
+                canvasOptions.maxWidth = outputMaxWidth;
+            }
+            if (typeof outputMaxHeight === 'number' && outputMaxHeight > 0) {
+                canvasOptions.maxHeight = outputMaxHeight;
+            }
+            const canvas = Object.keys(canvasOptions).length
+                ? cropperRef.current.getCanvas(canvasOptions)
+                : cropperRef.current.getCanvas();
             if (!canvas) {
                 throw new Error('Failed to get canvas');
             }
 
-            // Convert canvas to blob
-            const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.95));
-            
-            // Create file from blob
-            const file = new File([blob], 'profile.jpg', { type: 'image/jpeg' });
-            
+            const blob = await new Promise(resolve =>
+                canvas.toBlob(resolve, outputMimeType, outputQuality),
+            );
+
+            const file = new File([blob], resolvedFileName, { type: outputMimeType });
+
             await onSave(file);
             onClose();
         } catch (error) {
@@ -147,50 +202,65 @@ const ImageSelectorPopup = ({ isOpen, onClose, onSave, currentAvatar, initialIma
 
     return (
         <div className="image-selector-popup-overlay">
-            <div className="image-selector-popup">
+            <div
+                className={`image-selector-popup image-selector-popup--${mode}${useBasicCropper ? ' image-selector-popup--banner-basic' : ''}`}
+            >
                 <div className="image-selector-popup-header">
-                    <h2>Edit Profile Picture</h2>
+                    <h2>{popupTitle}</h2>
                     <CloseButton variant="inline" onClick={onClose} aria-label={t('buttons.close')} />
                 </div>
 
                 <div className="image-selector-popup-content">
-                    <div className="cropper-container">
+                    <div
+                        className={`cropper-container cropper-container--${mode}${useBasicCropper ? ' cropper-container--basic' : ''}`}
+                    >
                         {image ? (
-                            <FixedCropper
-                                ref={cropperRef}
-                                src={image}
-                                className="cropper"
-                                stencilComponent={CircleStencil}
-                                stencilProps={{
-                                    // Stencil appearance settings
-                                    className: 'stencil',
-                                    lines: true,
-                                    handlers: false,
-                                    // Stencil behavior settings
-                                    movable: false,
-                                    resizable: false,
-                                    aspectRatio: 1,
-                                }}
-                                // Fixed size for the stencil in pixels
-                                stencilSize={{
-                                    width: 300,
-                                    height: 300
-                                }}
-                                // Image behavior settings
-                                imageRestriction={ImageRestriction.stencil}
-                                moveImage={{
-                                    disabled: false,
-                                }}
-                                rotateImage={{
-                                    disabled: false,
-                                }}
-                                zoomImage={{
-                                    disabled: false,
-                                }}
-                                // Auto features
-                                autoZoom={true}
-                                transitions={{duration: 200, timingFunction: 'ease-out'}}
-                            />
+                            useBasicCropper ? (
+                                <Cropper
+                                    ref={cropperRef}
+                                    src={image}
+                                    className="cropper"
+                                    stencilComponent={RectangleStencil}
+                                    stencilProps={{
+                                        className: 'stencil',
+                                        lines: true,
+                                        handlers: true,
+                                        movable: true,
+                                        resizable: true,
+                                        minAspectRatio: BANNER_FREE_MIN_ASPECT,
+                                        maxAspectRatio: BANNER_FREE_MAX_ASPECT,
+                                    }}
+                                    imageRestriction={ImageRestriction.fitArea}
+                                    minWidth={48}
+                                    minHeight={48}
+                                    moveImage={{ disabled: false }}
+                                    rotateImage={{ disabled: false }}
+                                    zoomImage={{ disabled: false }}
+                                    transitions={sharedTransitions}
+                                />
+                            ) : (
+                                <FixedCropper
+                                    ref={cropperRef}
+                                    src={image}
+                                    className="cropper"
+                                    stencilComponent={stencilComponent}
+                                    stencilProps={{
+                                        className: 'stencil',
+                                        lines: true,
+                                        handlers: false,
+                                        movable: false,
+                                        resizable: false,
+                                        aspectRatio: fixedAspect,
+                                    }}
+                                    stencilSize={stencilSize}
+                                    imageRestriction={ImageRestriction.stencil}
+                                    moveImage={{ disabled: false }}
+                                    rotateImage={{ disabled: false }}
+                                    zoomImage={{ disabled: false }}
+                                    autoZoom={true}
+                                    transitions={sharedTransitions}
+                                />
+                            )
                         ) : (
                             <div className="upload-placeholder" onClick={() => fileInputRef.current?.click()}>
                                 <i className="fas fa-cloud-upload-alt"></i>
@@ -226,8 +296,8 @@ const ImageSelectorPopup = ({ isOpen, onClose, onSave, currentAvatar, initialIma
                         <button className="cancel-button" onClick={onClose}>
                             Cancel
                         </button>
-                        <button 
-                            className="save-button btn-fill-primary" 
+                        <button
+                            className="save-button btn-fill-primary"
                             onClick={handleSave}
                             disabled={!image || isLoading}
                         >
@@ -240,4 +310,4 @@ const ImageSelectorPopup = ({ isOpen, onClose, onSave, currentAvatar, initialIma
     );
 };
 
-export default ImageSelectorPopup; 
+export default ImageSelectorPopup;

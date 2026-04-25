@@ -7,6 +7,8 @@ import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import api from "@/utils/api";
 import CurationTypeSelector from "@/components/account/CurationTypeSelector/CurationTypeSelector";
 import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
+import ProfileBannerEditor from "@/components/account/ProfileBannerEditor/ProfileBannerEditor";
+import { getEffectiveProfileBannerUrl } from "@/utils/profileBanners";
 import { CreatorStatusBadge } from "@/components/common/display";
 import { ExternalLinkIcon } from "@/components/common/icons";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
@@ -46,6 +48,7 @@ const SettingsCreatorPage = () => {
   const [newAliasInput, setNewAliasInput] = useState("");
   const [aliasSaving, setAliasSaving] = useState(false);
   const [aliasFieldError, setAliasFieldError] = useState("");
+  const [bannerPresetDraft, setBannerPresetDraft] = useState(undefined);
 
   useEffect(() => {
     if (creatorId == null || !Number.isFinite(creatorId)) {
@@ -79,6 +82,10 @@ const SettingsCreatorPage = () => {
   useEffect(() => {
     setLiveDisplayIds(null);
   }, [creatorId, profile?.displayCurationTypeIds]);
+
+  useEffect(() => {
+    setBannerPresetDraft(undefined);
+  }, [creatorId]);
 
   const creatorDoc = profile?.creator || profile?.doc || profile;
 
@@ -122,6 +129,23 @@ const SettingsCreatorPage = () => {
       ),
     [profile?.curationTypeCounts, curationTypesDict, effectiveDisplayIds],
   );
+
+  const settingsCreatorBannerUrl = useMemo(() => {
+    if (!profile) return null;
+    const u = profile.user || creatorDoc?.user;
+    const flags = u?.permissionFlags ?? user?.permissionFlags ?? 0;
+    const effectiveBannerPreset =
+      bannerPresetDraft === undefined
+        ? profile.bannerPreset ?? null
+        : bannerPresetDraft === null
+          ? null
+          : bannerPresetDraft;
+    return getEffectiveProfileBannerUrl({
+      bannerPreset: effectiveBannerPreset,
+      customBannerUrl: profile.customBannerUrl,
+      subjectUser: { permissionFlags: flags },
+    });
+  }, [profile, creatorDoc?.user, user?.permissionFlags, bannerPresetDraft]);
 
   const handleDraftChange = useCallback((ids) => {
     setLiveDisplayIds(Array.isArray(ids) ? [...ids] : null);
@@ -271,6 +295,7 @@ const SettingsCreatorPage = () => {
         <ProfileHeader
           mode="creator"
           className="settings-sub-page__profile-header"
+          bannerUrl={settingsCreatorBannerUrl}
           iconSlots={iconSlots}
           avatarUrl={creatorDoc.user?.avatarUrl}
           fallbackAvatarUrl=""
@@ -301,6 +326,17 @@ const SettingsCreatorPage = () => {
           }
         />
       </div>
+
+      <ProfileBannerEditor
+        variant="creator"
+        creatorId={creatorId}
+        authUser={user}
+        bannerPreset={profile?.bannerPreset}
+        presetDraft={bannerPresetDraft}
+        onPresetDraftChange={setBannerPresetDraft}
+        customBannerUrl={profile?.customBannerUrl}
+        onApplied={(patch) => setProfile((p) => (p && typeof p === "object" ? { ...p, ...patch } : p))}
+      />
 
       {canEditHeaderCurationSlots ? (
         <div className="settings-sub-page__block settings-sub-page__field">

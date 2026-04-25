@@ -25,6 +25,7 @@ import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { buildPlayerStatGroups } from "@/utils/profileStatGroups";
 import { buildPlayerIconSlots } from "@/utils/profileIconSlots";
 import { toDifficultyGraphData } from "@/utils/statFormatters";
+import { getEffectiveProfileBannerUrl } from "@/utils/profileBanners";
 const ENABLE_ROULETTE = import.meta.env.VITE_APRIL_FOOLS === "true";
 
 const PASSES_PER_PAGE = 50;
@@ -301,6 +302,15 @@ const ProfilePage = () => {
         ],
       );
 
+      const profileBannerUrl = useMemo(() => {
+        if (!playerData) return null;
+        return getEffectiveProfileBannerUrl({
+          bannerPreset: playerData.bannerPreset,
+          customBannerUrl: playerData.customBannerUrl,
+          subjectUser: { permissionFlags: playerData.user?.permissionFlags ?? 0 },
+        });
+      }, [playerData]);
+
       const difficultyGraphDataWithDupes = useMemo(
         () => toDifficultyGraphData(playerData?.funFacts?.clearsByDifficulty, difficultyDict || {}, "passes"),
         [playerData?.funFacts?.clearsByDifficulty, difficultyDict],
@@ -389,6 +399,7 @@ const ProfilePage = () => {
                   <ProfileHeader
                     mode="player"
                     className="player-page__profile-header"
+                    bannerUrl={profileBannerUrl}
                     iconSlots={iconSlots}
                     avatarUrl={playerData?.user?.avatarUrl || playerData?.pfp}
                     fallbackAvatarUrl={playerData?.pfp || "/default-avatar.jpg"}

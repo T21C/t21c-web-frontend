@@ -7,6 +7,8 @@ import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import api from "@/utils/api";
 import { formatNumber } from "@/utils";
 import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
+import ProfileBannerEditor from "@/components/account/ProfileBannerEditor/ProfileBannerEditor";
+import { getEffectiveProfileBannerUrl } from "@/utils/profileBanners";
 import { ExternalLinkIcon } from "@/components/common/icons";
 import { buildPlayerStatGroups } from "@/utils/profileStatGroups";
 import { buildPlayerIconSlots } from "@/utils/profileIconSlots";
@@ -25,6 +27,8 @@ const SettingsPlayerPage = () => {
   const [nicknameDraft, setNicknameDraft] = useState("");
   const [nicknameSaving, setNicknameSaving] = useState(false);
   const [nicknameFieldError, setNicknameFieldError] = useState("");
+  /** `undefined` = follow server; `null` = draft “use default”; string = draft preset path. */
+  const [bannerPresetDraft, setBannerPresetDraft] = useState(undefined);
 
   const playerPath = useMemo(() => {
     if (playerId == null) return "/profile";
@@ -54,6 +58,10 @@ const SettingsPlayerPage = () => {
   useEffect(() => {
     fetchProfile();
   }, [fetchProfile]);
+
+  useEffect(() => {
+    setBannerPresetDraft(undefined);
+  }, [playerId]);
 
   useEffect(() => {
     if (!playerData) return;
@@ -100,6 +108,22 @@ const SettingsPlayerPage = () => {
       difficultyDict,
     ],
   );
+
+  const settingsBannerUrl = useMemo(() => {
+    if (!playerData) return null;
+    const flags = playerData.user?.permissionFlags ?? user?.permissionFlags ?? 0;
+    const effectiveBannerPreset =
+      bannerPresetDraft === undefined
+        ? playerData.bannerPreset ?? null
+        : bannerPresetDraft === null
+          ? null
+          : bannerPresetDraft;
+    return getEffectiveProfileBannerUrl({
+      bannerPreset: effectiveBannerPreset,
+      customBannerUrl: playerData.customBannerUrl,
+      subjectUser: { permissionFlags: flags },
+    });
+  }, [playerData, user?.permissionFlags, bannerPresetDraft]);
 
   const handleViewUserPacks = useCallback(() => {
     const handle = playerData?.user?.username;
@@ -182,6 +206,7 @@ const SettingsPlayerPage = () => {
         <ProfileHeader
           mode="player"
           className="settings-sub-page__profile-header"
+          bannerUrl={settingsBannerUrl}
           iconSlots={iconSlots}
           avatarUrl={playerData?.user?.avatarUrl || playerData?.pfp}
           fallbackAvatarUrl={playerData?.pfp || "/default-avatar.jpg"}
@@ -225,6 +250,18 @@ const SettingsPlayerPage = () => {
           }
         />
       </div>
+
+      <ProfileBannerEditor
+        variant="player"
+        authUser={user}
+        bannerPreset={playerData?.bannerPreset}
+        presetDraft={bannerPresetDraft}
+        onPresetDraftChange={setBannerPresetDraft}
+        customBannerUrl={playerData?.customBannerUrl}
+        onApplied={(patch) => {
+          setPlayerData((p) => (p && typeof p === "object" ? { ...p, ...patch } : p));
+        }}
+      />
 
       <div className="settings-sub-page__block settings-sub-page__field">
         <label htmlFor="settings-player-nickname">{t("settings.player.nicknameLabel")}</label>
