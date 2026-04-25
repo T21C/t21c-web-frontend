@@ -23,7 +23,7 @@ const CreatorProfilePage = lazy(() => import('./account/CreatorProfilePage/Creat
 const ProfilePage = lazy(() => import('./account/ProfilePage/ProfilePage'));
 const LoginPage = lazy(() => import('./account/LoginPage/LoginPage'));
 const RegisterPage = lazy(() => import('./account/RegisterPage/RegisterPage'));
-const EditProfilePage = lazy(() => import('./account/EditProfilePage/EditProfilePage'));
+const EditProfilePage = lazy(() => import('./account/settings/EditProfilePage'));
 const SettingsLayout = lazy(() => import('./account/settings/SettingsLayout'));
 const SettingsIndexRedirect = lazy(() => import('./account/settings/SettingsIndexRedirect'));
 const SettingsAccountPage = lazy(() => import('./account/settings/SettingsAccountPage'));

@@ -393,6 +393,40 @@ const SettingsCreatorPage = () => {
     }
   }, [creatorId, verificationDraft, t]);
 
+  const displayNameMatchesSaved = useMemo(() => {
+    const saved = String(creatorDoc?.name ?? "").trim();
+    return displayNameDraft.trim() === saved;
+  }, [creatorDoc?.name, displayNameDraft]);
+
+  const bioMatchesSaved = useMemo(() => {
+    const saved = profile?.bio == null ? "" : String(profile.bio);
+    return bioDraft.trim() === saved.trim();
+  }, [profile?.bio, bioDraft]);
+
+  const uploadConditionsMatchSaved = useMemo(() => {
+    const saved = profile?.uploadConditions == null ? "" : String(profile.uploadConditions);
+    return uploadConditionsDraft.trim() === saved.trim();
+  }, [profile?.uploadConditions, uploadConditionsDraft]);
+
+  const verificationMatchesSaved = useMemo(() => {
+    const vs = profile?.verificationStatus;
+    const saved =
+      typeof vs === "string" && CREATOR_SELF_VERIFICATION.includes(vs) ? vs : "allowed";
+    return verificationDraft === saved;
+  }, [profile?.verificationStatus, verificationDraft]);
+
+  const aliasesMatchSaved = useMemo(() => {
+    const saved = readAliasNamesFromProfile(profile);
+    if (saved.length !== aliasList.length) return false;
+    const norm = (arr) =>
+      [...arr]
+        .map((s) => s.trim().toLowerCase())
+        .sort((x, y) => x.localeCompare(y, undefined, { sensitivity: "base" }));
+    const a = norm(saved);
+    const b = norm(aliasList);
+    return a.every((v, i) => v === b[i]);
+  }, [profile, aliasList]);
+
   const stats = profile?.stats || creatorDoc;
   const collapsedCreatorStatRows = useMemo(
     () => buildCreatorCollapsedStatRows(stats, profile?.funFacts, t),
@@ -552,7 +586,7 @@ const SettingsCreatorPage = () => {
               type="button"
               className="settings-sub-page__save-btn"
               onClick={handleSaveCreatorDisplayName}
-              disabled={displayNameSaving}
+              disabled={displayNameSaving || displayNameMatchesSaved}
             >
               {displayNameSaving ? t("buttons.saving", { ns: "common" }) : t("buttons.save", { ns: "common" })}
             </button>
@@ -599,7 +633,7 @@ const SettingsCreatorPage = () => {
               type="button"
               className="settings-sub-page__save-btn"
               onClick={handleSaveBio}
-              disabled={bioSaving}
+              disabled={bioSaving || bioMatchesSaved}
             >
               {bioSaving ? t("buttons.saving", { ns: "common" }) : t("buttons.save", { ns: "common" })}
             </button>
@@ -635,7 +669,7 @@ const SettingsCreatorPage = () => {
               type="button"
               className="settings-sub-page__save-btn"
               onClick={handleSaveUploadConditions}
-              disabled={uploadConditionsSaving}
+              disabled={uploadConditionsSaving || uploadConditionsMatchSaved}
             >
               {uploadConditionsSaving
                 ? t("buttons.saving", { ns: "common" })
@@ -670,7 +704,7 @@ const SettingsCreatorPage = () => {
               type="button"
               className="settings-sub-page__save-btn"
               onClick={handleSaveVerification}
-              disabled={verificationSaving}
+              disabled={verificationSaving || verificationMatchesSaved}
             >
               {verificationSaving
                 ? t("buttons.saving", { ns: "common" })
@@ -725,7 +759,7 @@ const SettingsCreatorPage = () => {
               type="button"
               className="settings-sub-page__save-btn"
               onClick={handleSaveAliases}
-              disabled={aliasSaving}
+              disabled={aliasSaving || aliasesMatchSaved}
             >
               {aliasSaving ? t("buttons.saving", { ns: "common" }) : t("buttons.save", { ns: "common" })}
             </button>

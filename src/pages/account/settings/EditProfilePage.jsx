@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import './editProfilePage.css';
 import { CrossIcon, DiscordIcon, EditIcon, UnlinkIcon } from '@/components/common/icons';
@@ -447,6 +447,32 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
     }
   };
 
+  const isProfileFormUnchanged = useMemo(() => {
+    if (!user) return true;
+    const uName = user.username || '';
+    const uCountry = user.player?.country || '';
+    const uNick = user.nickname || '';
+    const nameMatch = (formData.username || '') === uName;
+    const countryMatch = (formData.country || '') === uCountry;
+    const nickMatch = user.playerId ? true : (formData.nickname || '') === (uNick || '');
+    return nameMatch && countryMatch && nickMatch;
+  }, [user, formData.username, formData.country, formData.nickname]);
+
+  const addPasswordUnchanged = useMemo(
+    () =>
+      !formData.newPassword.trim() &&
+      !formData.confirmPassword.trim(),
+    [formData.newPassword, formData.confirmPassword],
+  );
+
+  const changePasswordUnchanged = useMemo(
+    () =>
+      !formData.currentPassword.trim() &&
+      !formData.newPassword.trim() &&
+      !formData.confirmPassword.trim(),
+    [formData.currentPassword, formData.newPassword, formData.confirmPassword],
+  );
+
   return (
     <>
     <AccountStatusBanners variant="edit" user={user} navigate={navigate} />
@@ -629,7 +655,7 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
             <button 
               className="button submit-button btn-fill-primary"
               type="submit"
-              disabled={isSavingProfile}
+              disabled={isSavingProfile || isProfileFormUnchanged}
             >
               {isSavingProfile ? t('loading.saving', { ns: 'common' }) : t('editProfile.form.buttons.saveChanges')}
             </button>
@@ -667,7 +693,11 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
               />
             </div>
 
-            <button type="submit" className="save-button btn-fill-primary">
+            <button
+              type="submit"
+              className="save-button btn-fill-primary"
+              disabled={addPasswordUnchanged}
+            >
               {t('editProfile.password.createPassword')}
             </button>
           </form>
@@ -719,7 +749,11 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
               />
             </div>
 
-            <button type="submit" className="save-button btn-fill-primary">
+            <button
+              type="submit"
+              className="save-button btn-fill-primary"
+              disabled={changePasswordUnchanged}
+            >
               {t('editProfile.password.updatePassword')}
             </button>
             <button

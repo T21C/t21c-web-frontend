@@ -1,4 +1,4 @@
-import EditProfilePage from "../EditProfilePage/EditProfilePage";
+import EditProfilePage from "./EditProfilePage";
 
 const SettingsAccountPage = () => {
   return <EditProfilePage embeddedInSettings />;
