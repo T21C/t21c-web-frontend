@@ -49,6 +49,7 @@ export const CreatorManagementPopup = ({ creator, onClose, onUpdate, curationPro
   const [verificationStatus, setVerificationStatus] = useState(
     creator?.verificationStatus || 'allowed'
   );
+  const [uploadConditions, setUploadConditions] = useState('');
 
   const [playerSearch, setPlayerSearch] = useState('');
   const [playerResults, setPlayerResults] = useState([]);
@@ -140,6 +141,15 @@ export const CreatorManagementPopup = ({ creator, onClose, onUpdate, curationPro
   }, [creator?.id, creator?.name, creator?.verificationStatus]);
 
   useEffect(() => {
+    if (!creator?.id || curationProfile == null) return;
+    const v =
+      typeof curationProfile.uploadConditions === 'string'
+        ? curationProfile.uploadConditions
+        : '';
+    setUploadConditions(v);
+  }, [creator?.id, curationProfile]);
+
+  useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === 'Escape') onClose();
     };
@@ -166,8 +176,13 @@ export const CreatorManagementPopup = ({ creator, onClose, onUpdate, curationPro
     const originalAliases = creator?.creatorAliases?.map(a => a.name) || [];
     const aliasesChanged = JSON.stringify([...aliases].sort()) !== JSON.stringify([...originalAliases].sort());
     const statusChanged = verificationStatus !== (creator?.verificationStatus || 'allowed');
-    setHasPendingChanges(nameChanged || aliasesChanged || statusChanged);
-  }, [name, aliases, verificationStatus, creator]);
+    const savedUpload =
+      curationProfile != null && typeof curationProfile.uploadConditions === 'string'
+        ? curationProfile.uploadConditions
+        : '';
+    const uploadChanged = uploadConditions !== savedUpload;
+    setHasPendingChanges(nameChanged || aliasesChanged || statusChanged || uploadChanged);
+  }, [name, aliases, verificationStatus, uploadConditions, creator, curationProfile]);
 
   // Merge target search (mirrors old popup)
   useEffect(() => {
@@ -257,11 +272,15 @@ export const CreatorManagementPopup = ({ creator, onClose, onUpdate, curationPro
     setIsLoading(true);
     clearMessages();
     try {
-      const res = await api.put(`/v2/database/creators/${creator.id}`, {
-        name: name.trim(),
-        aliases,
-        verificationStatus,
-      });
+      const res = await api.patch(
+        `${import.meta.env.VITE_CREATORS_V3}/${creator.id}/managed-update`,
+        {
+          name: name.trim(),
+          aliases,
+          verificationStatus,
+          uploadConditions: uploadConditions.trim().length ? uploadConditions.trim() : null,
+        },
+      );
       if (res.status === 200) {
         setSuccess(tt('success.updated'));
         toast.success(tt('success.updated'));
@@ -509,6 +528,18 @@ export const CreatorManagementPopup = ({ creator, onClose, onUpdate, curationPro
                       defaultValue: '',
                     })}
                   </p>
+                </div>
+
+                <div className="form-group">
+                  <label>{tt('update.uploadConditions.label')}</label>
+                  <textarea
+                    className="creator-management-popup__upload-conditions"
+                    rows={4}
+                    value={uploadConditions}
+                    onChange={(e) => setUploadConditions(e.target.value)}
+                    placeholder={tt('update.uploadConditions.placeholder')}
+                    maxLength={2000}
+                  />
                 </div>
 
                 <div className="form-group">

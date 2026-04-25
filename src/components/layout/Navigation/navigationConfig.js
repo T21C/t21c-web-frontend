@@ -80,18 +80,9 @@ export const createNavigationConfig = (context = {}) => {
         translationKey: "navigation.main.links.leaderboard",
       },
       {
-        type: "dropdown",
-        label: "navigation.main.links.creators",
-        items: [
-          { to: "/creators", translationKey: "navigation.main.dropdowns.creators.creators" },
-          { to: "/songs", translationKey: "navigation.main.dropdowns.creators.songs" },
-          { to: "/artists", translationKey: "navigation.main.dropdowns.creators.artists" },
-        ],
-        isActive: (pathname) =>
-          pathname.startsWith("/creators") ||
-          pathname.startsWith("/creator/") ||
-          pathname.startsWith("/artists") ||
-          pathname.startsWith("/songs"),
+        type: "link",
+        to: "/creators",
+        translationKey: "navigation.main.links.creators",
       },
       {
         type: "link",
@@ -111,6 +102,9 @@ export const createNavigationConfig = (context = {}) => {
             translationKey: "navigation.main.dropdowns.more.tufHelper",
             badge: "navigation.main.badges.underConstruction",
           },
+          { divider: true },
+          { to: "/songs", translationKey: "navigation.main.dropdowns.creators.songs" },
+          { to: "/artists", translationKey: "navigation.main.dropdowns.creators.artists" },
           { divider: true },
           { to: "/terms-of-service", translationKey: "navigation.main.dropdowns.more.tos" },
           { to: "/privacy-policy", translationKey: "navigation.main.dropdowns.more.privacyPolicy" },

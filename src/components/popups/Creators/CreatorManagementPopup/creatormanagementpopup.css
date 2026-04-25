@@ -134,6 +134,26 @@
   margin: 0;
 }
 
+.creator-management-popup-container .creator-management-popup__upload-conditions {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 5rem;
+  padding: 10px 12px;
+  border: 1px solid var(--btn-neutral-disabled-fill);
+  border-radius: 4px;
+  background: #2a2a2a;
+  color: #ffffff;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.creator-management-popup-container .creator-management-popup__upload-conditions:focus {
+  outline: 2px solid var(--btn-primary-light-hover);
+  outline-offset: 1px;
+}
+
 .creator-management-popup-container .alias-input-group {
   display: flex;
   gap: 8px;

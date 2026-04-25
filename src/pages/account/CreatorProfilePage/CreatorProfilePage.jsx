@@ -11,7 +11,8 @@ import { LevelContextProvider } from "@/contexts/LevelContext";
 import { DifficultyGraph, MetaTags, CreatorStatusBadge } from "@/components/common/display";
 import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
 import { ScrollButton } from "@/components/common/buttons";
-import { ChevronIcon, AdofaiIcon, EditIcon, ShieldIcon } from "@/components/common/icons";
+import { Tooltip } from "react-tooltip";
+import { ChevronIcon, AdofaiIcon, EditIcon, ShieldIcon, InfoIcon } from "@/components/common/icons";
 import { CreatorManagementPopup } from "@/components/popups/Creators";
 import LevelPage from "@/pages/common/Level/LevelPage/LevelPage";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
@@ -71,6 +72,11 @@ const CreatorProfilePage = () => {
   );
 
   const creatorDoc = profile?.creator || profile?.doc || profile;
+
+  const uploadConditionsText =
+    typeof profile?.uploadConditions === "string" && profile.uploadConditions.trim().length > 0
+      ? profile.uploadConditions.trim()
+      : "";
 
   const creatorBannerUrl = useMemo(() => {
     if (!profile) return null;
@@ -176,10 +182,32 @@ const CreatorProfilePage = () => {
           statGroups={statGroups}
           verificationBadge={
             creatorDoc.verificationStatus ? (
-              <CreatorStatusBadge
-                status={creatorDoc.verificationStatus}
-                size="medium"
-              />
+              <span className="creator-profile-page__verification-wrap">
+                <CreatorStatusBadge
+                  status={creatorDoc.verificationStatus}
+                  size="medium"
+                />
+                {uploadConditionsText ? (
+                  <>
+                    <button
+                      type="button"
+                      className="creator-profile-page__upload-conditions-trigger"
+                      data-tooltip-id={`creator-upload-conditions-${creatorId}`}
+                      aria-label={t("creators.profile.uploadConditions.tooltipAria")}
+                    >
+                      <InfoIcon color="var(--color-white-t80)" size={20} />
+                    </button>
+                    <Tooltip
+                      id={`creator-upload-conditions-${creatorId}`}
+                      place="bottom"
+                      className="creator-profile-page__upload-conditions-tooltip"
+                      style={{ maxWidth: "min(28rem, 92vw)", zIndex: 20 }}
+                    >
+                      {uploadConditionsText}
+                    </Tooltip>
+                  </>
+                ) : null}
+              </span>
             ) : null
           }
           statRows={collapsedCreatorStatRows}

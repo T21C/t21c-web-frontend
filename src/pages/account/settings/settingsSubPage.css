@@ -68,11 +68,44 @@
   margin-bottom: 1.25rem;
 }
 
+.settings-sub-page .settings-sub-page__verification-wrap {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.settings-sub-page .settings-sub-page__upload-conditions-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0.15rem;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-white-t80);
+  cursor: help;
+  line-height: 0;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.settings-sub-page .settings-sub-page__upload-conditions-trigger:hover {
+  background: var(--color-white-t15);
+  color: var(--color-white);
+}
+
+.settings-sub-page .settings-sub-page__upload-conditions-trigger:focus-visible {
+  outline: 2px solid var(--btn-primary-light-hover);
+  outline-offset: 2px;
+}
+
 .settings-sub-page .settings-sub-page__field {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  max-width: 28rem;
+  gap: 0.65rem;
+  width: min(100%, 46rem);
+  margin-inline: auto;
 }
 
 .settings-sub-page .settings-sub-page__field label {
@@ -84,11 +117,11 @@
   width: 100%;
   padding: 0.75rem;
   border: 1px solid var(--btn-neutral-disabled-fill);
-  border-radius: 4px;
-  background: #333333;
+  border-radius: 8px;
+  background: var(--color-white-t10);
   font-size: 1rem;
   color: var(--color-white);
-  transition: border-color 0.3s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
   box-sizing: border-box;
 }
 
@@ -99,7 +132,8 @@
 
 .settings-sub-page .settings-sub-page__input:focus {
   outline: none;
-  border-color: #9d4edd;
+  background: var(--color-white-t15);
+  border-color: var(--btn-primary-light-hover);
 }
 
 .settings-sub-page .settings-sub-page__input:disabled {
@@ -112,7 +146,7 @@
   flex-wrap: wrap;
   gap: 0.75rem;
   align-items: stretch;
-  max-width: 36rem;
+  width: 100%;
 }
 
 .settings-sub-page .settings-sub-page__control-row .settings-sub-page__input {
@@ -122,14 +156,15 @@
 
 .settings-sub-page .settings-sub-page__textarea {
   width: 100%;
-  padding: 0.75rem;
+  min-height: 5rem;
+  padding: 0.875rem 1rem;
   border: 1px solid var(--btn-neutral-disabled-fill);
-  border-radius: 4px;
-  background: #333333;
+  border-radius: 10px;
+  background: var(--color-white-t10);
   font-size: 1rem;
   line-height: 1.45;
   color: var(--color-white);
-  transition: border-color 0.3s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
   box-sizing: border-box;
   resize: vertical;
 }
@@ -141,7 +176,8 @@
 
 .settings-sub-page .settings-sub-page__textarea:focus {
   outline: none;
-  border-color: #9d4edd;
+  background: var(--color-white-t15);
+  border-color: var(--btn-primary-light-hover);
 }
 
 .settings-sub-page .settings-sub-page__textarea:disabled {
@@ -150,7 +186,25 @@
 }
 
 .settings-sub-page .settings-sub-page__control-row .settings-sub-page__textarea {
-  flex: 1 1 18rem;
+  min-width: 0;
+}
+
+.settings-sub-page .settings-sub-page__control-row--stack {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.settings-sub-page .settings-sub-page__control-row--stack .settings-sub-page__save-btn {
+  align-self: flex-end;
+}
+
+.settings-sub-page .settings-sub-page__control-row--verification {
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.settings-sub-page .settings-sub-page__control-row--verification .custom-select-container {
+  flex: 1 1 14rem;
   min-width: 0;
 }
 
@@ -158,12 +212,13 @@
   flex: 0 0 auto;
   align-self: flex-end;
   height: 2.75rem;
-  padding: 0 1.25rem;
+  min-width: 8.5rem;
+  padding: 0 1.35rem;
   font-size: 0.95rem;
   font-weight: 600;
   font-family: inherit;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   color: var(--color-white);
   background: var(--btn-primary);
@@ -194,7 +249,8 @@
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
-  max-width: 36rem;
+  width: min(100%, 46rem);
+  margin-inline: auto;
 }
 
 .settings-sub-page .settings-sub-page__aliases-section-label {
@@ -318,9 +374,7 @@
 }
 
 .settings-sub-page .settings-sub-page__banner-section-head .settings-sub-page__banner-chevron {
-  position: absolute;
-  top: 0;
-  right: 0;
+  position: relative;
 }
 
 .settings-sub-page .settings-sub-page__banner-chevron {
@@ -360,4 +414,15 @@
   margin-bottom: 0;
   opacity: 0;
   pointer-events: none;
+}
+
+@media (max-width: 36rem) {
+  .settings-sub-page .settings-sub-page__save-btn,
+  .settings-sub-page .settings-sub-page__alias-add-btn {
+    width: 100%;
+  }
+
+  .settings-sub-page .settings-sub-page__control-row--stack .settings-sub-page__save-btn {
+    align-self: stretch;
+  }
 }

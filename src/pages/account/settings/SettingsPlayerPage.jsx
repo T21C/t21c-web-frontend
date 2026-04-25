@@ -348,7 +348,7 @@ const SettingsPlayerPage = () => {
 
       <div className="settings-sub-page__block settings-sub-page__field">
         <label htmlFor="settings-player-bio">{t("settings.player.bioLabel")}</label>
-        <div className="settings-sub-page__control-row">
+        <div className="settings-sub-page__control-row settings-sub-page__control-row--stack">
           <textarea
             id="settings-player-bio"
             className="settings-sub-page__textarea"

@@ -71,3 +71,35 @@
   height: 0;
   margin-top: 0;
 }
+
+.creator-profile-page .creator-profile-page__verification-wrap {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.creator-profile-page .creator-profile-page__upload-conditions-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0.15rem;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-white-t80);
+  cursor: help;
+  line-height: 0;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.creator-profile-page .creator-profile-page__upload-conditions-trigger:hover {
+  background: var(--color-white-t15);
+  color: var(--color-white);
+}
+
+.creator-profile-page .creator-profile-page__upload-conditions-trigger:focus-visible {
+  outline: 2px solid var(--btn-primary-light-hover);
+  outline-offset: 2px;
+}

@@ -66,6 +66,9 @@
       "header": "Bio",
       "placeholder": "This creator hasn't written a bio yet."
     },
+    "uploadConditions": {
+      "tooltipAria": "View chart upload conditions"
+    },
     "levels": {
       "header": "Charts",
       "empty": "No charts found for this creator yet.",

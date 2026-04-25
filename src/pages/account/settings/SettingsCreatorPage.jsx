@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";
+import { Tooltip } from "react-tooltip";
 import { useAuth } from "@/contexts/AuthContext";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import api from "@/utils/api";
@@ -10,7 +11,8 @@ import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
 import ProfileBannerEditor from "@/components/account/ProfileBannerEditor/ProfileBannerEditor";
 import { getEffectiveProfileBannerUrl } from "@/utils/profileBanners";
 import { CreatorStatusBadge } from "@/components/common/display";
-import { ExternalLinkIcon, ChevronIcon } from "@/components/common/icons";
+import { ExternalLinkIcon, ChevronIcon, InfoIcon } from "@/components/common/icons";
+import { CustomSelect } from "@/components/common/selectors";
 import { useSettings } from "@/contexts/SettingsContext";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { buildCreatorStatGroups, buildCreatorCollapsedStatRows } from "@/utils/profileStatGroups";
@@ -18,6 +20,7 @@ import { buildCreatorIconSlots } from "@/utils/profileIconSlots";
 import "./settingsSubPage.css";
 
 const MAX_CREATOR_ALIASES = 20;
+const CREATOR_SELF_VERIFICATION = ["declined", "conditional", "allowed"];
 
 function readAliasNamesFromProfile(profile) {
   const raw = profile?.aliases;
@@ -53,6 +56,12 @@ const SettingsCreatorPage = () => {
   const [bioDraft, setBioDraft] = useState("");
   const [bioSaving, setBioSaving] = useState(false);
   const [bioFieldError, setBioFieldError] = useState("");
+  const [uploadConditionsDraft, setUploadConditionsDraft] = useState("");
+  const [uploadConditionsSaving, setUploadConditionsSaving] = useState(false);
+  const [uploadConditionsFieldError, setUploadConditionsFieldError] = useState("");
+  const [verificationDraft, setVerificationDraft] = useState("allowed");
+  const [verificationSaving, setVerificationSaving] = useState(false);
+  const [verificationFieldError, setVerificationFieldError] = useState("");
   const [bannerPresetDraft, setBannerPresetDraft] = useState(undefined);
 
   useEffect(() => {
@@ -93,6 +102,10 @@ const SettingsCreatorPage = () => {
   }, [creatorId]);
 
   const creatorDoc = profile?.creator || profile?.doc || profile;
+  const uploadConditionsPreview =
+    typeof uploadConditionsDraft === "string" && uploadConditionsDraft.trim().length > 0
+      ? uploadConditionsDraft.trim()
+      : "";
 
   useEffect(() => {
     if (!creatorDoc) return;
@@ -111,6 +124,32 @@ const SettingsCreatorPage = () => {
     setBioDraft(typeof profile.bio === "string" ? profile.bio : "");
     setBioFieldError("");
   }, [profile?.bio, creatorId]);
+
+  useEffect(() => {
+    if (!profile) return;
+    setUploadConditionsDraft(
+      typeof profile.uploadConditions === "string" ? profile.uploadConditions : "",
+    );
+    setUploadConditionsFieldError("");
+  }, [profile?.uploadConditions, creatorId]);
+
+  useEffect(() => {
+    if (!profile) return;
+    const vs = profile.verificationStatus;
+    setVerificationDraft(
+      typeof vs === "string" && CREATOR_SELF_VERIFICATION.includes(vs) ? vs : "allowed",
+    );
+    setVerificationFieldError("");
+  }, [profile?.verificationStatus, creatorId]);
+
+  const verificationSelfOptions = useMemo(
+    () =>
+      CREATOR_SELF_VERIFICATION.map((s) => ({
+        value: s,
+        label: t(`verification.${s}`, { ns: "common" }),
+      })),
+    [t],
+  );
 
   const canEditHeaderCurationSlots = useMemo(() => {
     if (!user || !creatorDoc || creatorId == null) return false;
@@ -284,6 +323,70 @@ const SettingsCreatorPage = () => {
     }
   }, [creatorId, bioDraft, t]);
 
+  const handleSaveUploadConditions = useCallback(async () => {
+    if (creatorId == null || !Number.isFinite(creatorId)) return;
+    const trimmed = uploadConditionsDraft.trim();
+    if (trimmed.length > 2000) {
+      setUploadConditionsFieldError(t("settings.creator.uploadConditionsTooLong"));
+      return;
+    }
+    setUploadConditionsFieldError("");
+    setUploadConditionsSaving(true);
+    const toastId = toast.loading(t("loading.saving", { ns: "common" }));
+    try {
+      const { data } = await api.patch(`${import.meta.env.VITE_CREATORS_V3}/me/upload-conditions`, {
+        uploadConditions: trimmed.length ? trimmed : null,
+      });
+      const next =
+        typeof data?.uploadConditions === "string"
+          ? data.uploadConditions
+          : trimmed.length
+            ? trimmed
+            : "";
+      setUploadConditionsDraft(next);
+      setProfile((p) =>
+        p && typeof p === "object"
+          ? { ...p, uploadConditions: trimmed.length ? trimmed : null }
+          : p,
+      );
+      toast.success(t("settings.creator.uploadConditionsSuccess"), { id: toastId });
+    } catch (err) {
+      const msg = err?.response?.data?.error || t("settings.creator.uploadConditionsError");
+      setUploadConditionsFieldError(msg);
+      toast.error(msg, { id: toastId });
+    } finally {
+      setUploadConditionsSaving(false);
+    }
+  }, [creatorId, uploadConditionsDraft, t]);
+
+  const handleSaveVerification = useCallback(async () => {
+    if (creatorId == null || !Number.isFinite(creatorId)) return;
+    if (!CREATOR_SELF_VERIFICATION.includes(verificationDraft)) {
+      setVerificationFieldError(t("settings.creator.verificationError"));
+      return;
+    }
+    setVerificationFieldError("");
+    setVerificationSaving(true);
+    const toastId = toast.loading(t("loading.saving", { ns: "common" }));
+    try {
+      const { data } = await api.patch(`${import.meta.env.VITE_CREATORS_V3}/me/verification-status`, {
+        verificationStatus: verificationDraft,
+      });
+      const next = typeof data?.verificationStatus === "string" ? data.verificationStatus : verificationDraft;
+      setVerificationDraft(
+        CREATOR_SELF_VERIFICATION.includes(next) ? next : "allowed",
+      );
+      setProfile((p) => (p && typeof p === "object" ? { ...p, verificationStatus: next } : p));
+      toast.success(t("settings.creator.verificationSuccess"), { id: toastId });
+    } catch (err) {
+      const msg = err?.response?.data?.error || t("settings.creator.verificationError");
+      setVerificationFieldError(msg);
+      toast.error(msg, { id: toastId });
+    } finally {
+      setVerificationSaving(false);
+    }
+  }, [creatorId, verificationDraft, t]);
+
   const stats = profile?.stats || creatorDoc;
   const collapsedCreatorStatRows = useMemo(
     () => buildCreatorCollapsedStatRows(stats, profile?.funFacts, t),
@@ -339,7 +442,29 @@ const SettingsCreatorPage = () => {
           statGroups={statGroups}
           verificationBadge={
             creatorDoc.verificationStatus ? (
-              <CreatorStatusBadge status={creatorDoc.verificationStatus} size="medium" />
+              <span className="settings-sub-page__verification-wrap">
+                <CreatorStatusBadge status={creatorDoc.verificationStatus} size="medium" />
+                {uploadConditionsPreview ? (
+                  <>
+                    <button
+                      type="button"
+                      className="settings-sub-page__upload-conditions-trigger"
+                      data-tooltip-id={`settings-creator-upload-conditions-${creatorId}`}
+                      aria-label={t("creators.profile.uploadConditions.tooltipAria")}
+                    >
+                      <InfoIcon color="var(--color-white-t80)" size={20} />
+                    </button>
+                    <Tooltip
+                      id={`settings-creator-upload-conditions-${creatorId}`}
+                      place="bottom"
+                      className="settings-sub-page__upload-conditions-tooltip"
+                      style={{ maxWidth: "min(28rem, 92vw)", zIndex: 20 }}
+                    >
+                      {uploadConditionsPreview}
+                    </Tooltip>
+                  </>
+                ) : null}
+              </span>
             ) : null
           }
           statRows={collapsedCreatorStatRows}
@@ -433,10 +558,22 @@ const SettingsCreatorPage = () => {
         </div>
       ) : null}
 
+      <div className="settings-sub-page__block">
+        <CurationTypeSelector
+          creatorId={creatorId}
+          curationTypeCounts={profile?.curationTypeCounts}
+          displayCurationTypeIds={profile?.displayCurationTypeIds}
+          curationTypesDict={curationTypesDict || {}}
+          canEdit={canEditHeaderCurationSlots}
+          onSaved={handleDisplayCurationsSaved}
+          onDraftChange={handleDraftChange}
+        />
+      </div>
+
       {canEditHeaderCurationSlots ? (
         <div className="settings-sub-page__block settings-sub-page__field">
           <label htmlFor="settings-creator-bio">{t("settings.creator.bioLabel")}</label>
-          <div className="settings-sub-page__control-row">
+          <div className="settings-sub-page__control-row settings-sub-page__control-row--stack">
             <textarea
               id="settings-creator-bio"
               className="settings-sub-page__textarea"
@@ -462,6 +599,79 @@ const SettingsCreatorPage = () => {
           {bioFieldError ? (
             <p className="settings-sub-page__field-error" role="alert">
               {bioFieldError}
+            </p>
+          ) : null}
+        </div>
+      ) : null}
+
+      {canEditHeaderCurationSlots ? (
+        <div className="settings-sub-page__block settings-sub-page__field settings-sub-page__creator-upload-conditions">
+          <label htmlFor="settings-creator-upload-conditions">
+            {t("settings.creator.uploadConditionsLabel")}
+          </label>
+          <div className="settings-sub-page__control-row settings-sub-page__control-row--stack">
+            <textarea
+              id="settings-creator-upload-conditions"
+              className="settings-sub-page__textarea"
+              maxLength={2000}
+              placeholder={t("settings.creator.uploadConditionsPlaceholder")}
+              value={uploadConditionsDraft}
+              onChange={(ev) => {
+                setUploadConditionsDraft(ev.target.value);
+                if (uploadConditionsFieldError) setUploadConditionsFieldError("");
+              }}
+              disabled={uploadConditionsSaving}
+              rows={5}
+            />
+            <button
+              type="button"
+              className="settings-sub-page__save-btn"
+              onClick={handleSaveUploadConditions}
+              disabled={uploadConditionsSaving}
+            >
+              {uploadConditionsSaving
+                ? t("buttons.saving", { ns: "common" })
+                : t("buttons.save", { ns: "common" })}
+            </button>
+          </div>
+          {uploadConditionsFieldError ? (
+            <p className="settings-sub-page__field-error" role="alert">
+              {uploadConditionsFieldError}
+            </p>
+          ) : null}
+        </div>
+      ) : null}
+
+      {canEditHeaderCurationSlots ? (
+        <div className="settings-sub-page__block settings-sub-page__field settings-sub-page__creator-verification">
+          <label htmlFor="settings-creator-verification">{t("settings.creator.verificationLabel")}</label>
+          <div className="settings-sub-page__control-row settings-sub-page__control-row--verification">
+            <CustomSelect
+              inputId="settings-creator-verification"
+              options={verificationSelfOptions}
+              value={verificationSelfOptions.find((o) => o.value === verificationDraft) ?? null}
+              onChange={(opt) => {
+                setVerificationDraft(opt?.value || "allowed");
+                if (verificationFieldError) setVerificationFieldError("");
+              }}
+              placeholder={t("settings.creator.verificationPlaceholder")}
+              width="min(100%, 22rem)"
+              isDisabled={verificationSaving}
+            />
+            <button
+              type="button"
+              className="settings-sub-page__save-btn"
+              onClick={handleSaveVerification}
+              disabled={verificationSaving}
+            >
+              {verificationSaving
+                ? t("buttons.saving", { ns: "common" })
+                : t("buttons.save", { ns: "common" })}
+            </button>
+          </div>
+          {verificationFieldError ? (
+            <p className="settings-sub-page__field-error" role="alert">
+              {verificationFieldError}
             </p>
           ) : null}
         </div>
@@ -538,17 +748,6 @@ const SettingsCreatorPage = () => {
         </div>
       ) : null}
 
-      <div className="settings-sub-page__block">
-        <CurationTypeSelector
-          creatorId={creatorId}
-          curationTypeCounts={profile?.curationTypeCounts}
-          displayCurationTypeIds={profile?.displayCurationTypeIds}
-          curationTypesDict={curationTypesDict || {}}
-          canEdit={canEditHeaderCurationSlots}
-          onSaved={handleDisplayCurationsSaved}
-          onDraftChange={handleDraftChange}
-        />
-      </div>
     </div>
   );
 };

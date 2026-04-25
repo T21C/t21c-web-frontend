@@ -5,6 +5,7 @@
   width: fit-content;
   max-width: 50rem;
   margin-top: 0.5rem;
+  justify-self: center;
 }
 
 .curation-type-selector.curation-type-selector--embedded {
@@ -143,8 +144,8 @@
 
 .curation-type-selector .curation-type-selector__groups {
   display: flex;
-  flex-direction: column;
-  gap: 0.65rem;
+  flex-direction: row;
+  gap: 1.75rem;
 }
 
 .curation-type-selector .curation-type-selector__group {

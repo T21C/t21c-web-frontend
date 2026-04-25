@@ -16,6 +16,10 @@
       "label": "Verification status",
       "placeholder": "Select status"
     },
+    "uploadConditions": {
+      "label": "Chart upload conditions",
+      "placeholder": "Optional notes for charters (e.g. when you accept uploads). Max 2000 characters."
+    },
     "aliases": {
       "label": "Aliases",
       "placeholder": "Add alias",

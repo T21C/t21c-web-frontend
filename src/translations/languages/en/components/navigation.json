@@ -27,7 +27,6 @@
     },
     "dropdowns": {
       "creators": {
-        "adofaiCreators": "ADOFAI Creators",
         "creators": "Creators",
         "artists": "Artists",
         "songs": "Songs"
