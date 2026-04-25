@@ -25,7 +25,7 @@ const CurationPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
-  const { curationTypes, reloadCurationTypes, difficultyDict } = useDifficultyContext();
+  const { curationTypes, reloadCurationTypes, difficultyDict, curationTypesDict } = useDifficultyContext();
   const { t } = useTranslation(['pages', 'common']);
   const currentUrl = window.location.origin + location.pathname;
 
@@ -604,7 +604,11 @@ const CurationPage = () => {
                                 types.map((typ) => (
                                   <span key={typ.id} className="curation-type-badge">
                                     <img
-                                      src={typ.icon || '/default-curation-icon.png'}
+                                      src={
+                                        (typ.id != null && curationTypesDict?.[typ.id]?.icon) ||
+                                        typ.icon ||
+                                        "/default-curation-icon.png"
+                                      }
                                       alt=""
                                       className="curation-type-slot-icon"
                                     />

@@ -69,6 +69,11 @@
     "uploadConditions": {
       "tooltipAria": "View chart upload conditions"
     },
+    "curationPanel": {
+      "expandAria": "Show all curation types and level counts",
+      "collapseAria": "Hide curation types list",
+      "dialogLabel": "Curation types on credited levels"
+    },
     "levels": {
       "header": "Charts",
       "empty": "No charts found for this creator yet.",

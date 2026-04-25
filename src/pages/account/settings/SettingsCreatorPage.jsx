@@ -17,6 +17,7 @@ import { useSettings } from "@/contexts/SettingsContext";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { buildCreatorStatGroups, buildCreatorCollapsedStatRows } from "@/utils/profileStatGroups";
 import { buildCreatorIconSlots } from "@/utils/profileIconSlots";
+import { getCreatorCurationTypesForHeaderPanel } from "@/utils/curationTypeUtils";
 import "./settingsSubPage.css";
 
 const MAX_CREATOR_ALIASES = 20;
@@ -178,6 +179,11 @@ const SettingsCreatorPage = () => {
         effectiveDisplayIds,
       ),
     [profile?.curationTypeCounts, curationTypesDict, effectiveDisplayIds],
+  );
+
+  const creatorCurationPanelItems = useMemo(
+    () => getCreatorCurationTypesForHeaderPanel(profile?.curationTypeCounts, curationTypesDict || {}),
+    [profile?.curationTypeCounts, curationTypesDict],
   );
 
   const settingsCreatorBannerUrl = useMemo(() => {
@@ -430,6 +436,7 @@ const SettingsCreatorPage = () => {
           className="settings-sub-page__profile-header"
           bannerUrl={settingsCreatorBannerUrl}
           iconSlots={iconSlots}
+          creatorCurationPanelItems={creatorCurationPanelItems}
           avatarUrl={creatorDoc.user?.avatarUrl}
           fallbackAvatarUrl=""
           name={creatorDoc.name}

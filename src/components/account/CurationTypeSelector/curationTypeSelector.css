@@ -117,6 +117,10 @@
   border-radius: 8px;
   border: 1px solid var(--color-white-t15);
   background: var(--color-black-t50);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: min(36rem, 94vw);
+  overflow-x: auto;
 }
 
 .curation-type-selector.curation-type-selector--embedded .curation-type-selector__panel {
@@ -140,18 +144,26 @@
   flex-wrap: wrap;
   gap: 0.35rem;
   align-items: center;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .curation-type-selector .curation-type-selector__groups {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   gap: 1.75rem;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .curation-type-selector .curation-type-selector__group {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
+  min-width: 0;
+  flex: 1 1 12rem;
+  max-width: 100%;
 }
 
 .curation-type-selector .curation-type-selector__group-title {
@@ -174,6 +186,7 @@
   color: var(--color-white);
   cursor: pointer;
   min-height: 2rem;
+  max-width: 100%;
 }
 
 .curation-type-selector .curation-type-selector__chip:hover {
@@ -188,8 +201,10 @@
 }
 
 .curation-type-selector .curation-type-selector__chip-icon {
-  width: 1.35rem;
-  height: 1.35rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  max-width: 1.35rem;
+  max-height: 1.35rem;
   object-fit: contain;
   flex-shrink: 0;
 }

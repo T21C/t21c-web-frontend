@@ -405,7 +405,6 @@ export function isImageUrl(url) {
 
 export function selectIconSize(url, size = "small") {
   if (!url) return null;
-  if (!isCdnUrl(url)) return url;
   return url.replace('/original', `/${size}`);
 }
 

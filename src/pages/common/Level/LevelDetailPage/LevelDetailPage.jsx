@@ -53,7 +53,6 @@ import {
   hasAbility,
   hydrateCurationWithCatalog,
   sortCurationsForDisplay,
-  sortCurationTypesForDisplay,
 } from "@/utils/curationTypeUtils";
 import i18next from "i18next";
 
@@ -187,7 +186,7 @@ const TagsDropdown = ({ tags, show, onClose }) => {
                   title={tag.name}
                 >
                   {tag.icon ? (
-                    <img src={selectIconSize(tag.icon, "small")} alt={tag.name} className="tag-chip-icon" />
+                    <img src={tag.icon} alt={tag.name} className="tag-chip-icon" />
                   ) : (
                     <span className="tag-chip-letter">{tag.name.charAt(0).toUpperCase()}</span>
                   )}
@@ -2031,10 +2030,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                 <div className="level-detail__curation-panel">
                   <div className="level-detail__curation-icons-row">
                     {curationsSorted.map((curation) => {
-                      const typesSorted = sortCurationTypesForDisplay(
-                        curation.types || [],
-                        curationTypesDict
-                      );
+                      const typesSorted = getCurationTypesResolved(curation, curationTypesDict);
                       const typeLabel =
                         typesSorted.map((t) => t.name).join(', ') || 'Curation';
                       const assigner = curation.assignedByUser;
@@ -2563,9 +2559,9 @@ const LevelDetailPage = ({ mockData = null }) => {
       {hoveredCurationForTooltip &&
         createPortal(
           (() => {
-            const typesSortedPortal = sortCurationTypesForDisplay(
-              hoveredCurationForTooltip.types || [],
-              curationTypesDict
+            const typesSortedPortal = getCurationTypesResolved(
+              hoveredCurationForTooltip,
+              curationTypesDict,
             );
             const typeLabelPortal = typesSortedPortal.map((t) => t.name).join(", ") || "Curation";
             const assignerPortal = hoveredCurationForTooltip.assignedByUser;

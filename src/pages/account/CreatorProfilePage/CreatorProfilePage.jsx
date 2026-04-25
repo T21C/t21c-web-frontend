@@ -17,6 +17,7 @@ import { CreatorManagementPopup } from "@/components/popups/Creators";
 import LevelPage from "@/pages/common/Level/LevelPage/LevelPage";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { buildCreatorIconSlots } from "@/utils/profileIconSlots";
+import { getCreatorCurationTypesForHeaderPanel } from "@/utils/curationTypeUtils";
 import { toDifficultyGraphData } from "@/utils/statFormatters";
 import { getEffectiveProfileBannerUrl } from "@/utils/profileBanners";
 
@@ -139,6 +140,11 @@ const CreatorProfilePage = () => {
     [profile?.curationTypeCounts, curationTypesDict, profile?.displayCurationTypeIds],
   );
 
+  const creatorCurationPanelItems = useMemo(
+    () => getCreatorCurationTypesForHeaderPanel(profile?.curationTypeCounts, curationTypesDict || {}),
+    [profile?.curationTypeCounts, curationTypesDict],
+  );
+
   const difficultyGraphData = useMemo(
     () => toDifficultyGraphData(profile?.funFacts?.levelsByDifficulty, difficultyDict || {}, "levels"),
     [profile?.funFacts?.levelsByDifficulty, difficultyDict],
@@ -211,6 +217,7 @@ const CreatorProfilePage = () => {
           className="creator-profile-page__profile-header"
           bannerUrl={creatorBannerUrl}
           iconSlots={iconSlots}
+          creatorCurationPanelItems={creatorCurationPanelItems}
           avatarUrl={creatorDoc.user?.avatarUrl}
           fallbackAvatarUrl=""
           name={creatorDoc.name}

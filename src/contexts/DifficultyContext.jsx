@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import { createContext, useState, useEffect, useContext, useRef } from "react";
 import api from "@/utils/api";
+import { selectIconSize } from "@/utils/Utility";
 
 const DifficultyContext = createContext();
 
@@ -45,22 +46,27 @@ const DifficultyContextProvider = (props) => {
                 if (!diffsArray || !Array.isArray(diffsArray)) {
                     throw new Error('Invalid server response format');
                 }
-                // Use localStorage instead of cookies - cookies have 4KB limit, this data is ~32KB
-                try {
-                    localStorage.setItem('difficultyCache', JSON.stringify(diffsArray));
-                } catch (storageError) {
-                    console.error('Error setting difficulty cache in localStorage:', storageError);
-                }
             }
             else {
                 const cached = localStorage.getItem('difficultyCache');
                 diffsArray = cached ? JSON.parse(cached) : [];
             }
+            const normalizedDiffs = diffsArray.map((diff) => ({
+                ...diff,
+                icon: selectIconSize(diff.icon, "medium"),
+            }));
+            if (update && normalizedDiffs.length) {
+                try {
+                    localStorage.setItem('difficultyCache', JSON.stringify(normalizedDiffs));
+                } catch (storageError) {
+                    console.error('Error setting difficulty cache in localStorage:', storageError);
+                }
+            }
             const diffsDict = {};
-            diffsArray.forEach(diff => {   
+            normalizedDiffs.forEach((diff) => {
                 diffsDict[diff.id] = diff;
             });
-            setDifficulties(diffsArray);
+            setDifficulties(normalizedDiffs);
             setDifficultyDict(diffsDict);
         } catch (err) {
             console.error('Error fetching difficulties:', err);
@@ -88,22 +94,27 @@ const DifficultyContextProvider = (props) => {
                 if (!typesArray || !Array.isArray(typesArray)) {
                     throw new Error('Invalid server response format for curation types');
                 }
-                // Use localStorage instead of cookies for larger data
-                try {
-                    localStorage.setItem('curationTypeCache', JSON.stringify(typesArray));
-                } catch (storageError) {
-                    console.error('Error setting curation type cache in localStorage:', storageError);
-                }
             }
             else {
                 const cached = localStorage.getItem('curationTypeCache');
                 typesArray = cached ? JSON.parse(cached) : [];
             }
+            const normalizedTypes = typesArray.map((type) => ({
+                ...type,
+                icon: selectIconSize(type.icon, "small"),
+            }));
+            if (update && normalizedTypes.length) {
+                try {
+                    localStorage.setItem('curationTypeCache', JSON.stringify(normalizedTypes));
+                } catch (storageError) {
+                    console.error('Error setting curation type cache in localStorage:', storageError);
+                }
+            }
             const typesDict = {};
-            typesArray.forEach(type => {
+            normalizedTypes.forEach((type) => {
                 typesDict[type.id] = type;
             });
-            setCurationTypes(typesArray);
+            setCurationTypes(normalizedTypes);
             setCurationTypesDict(typesDict);
         } catch (err) {
             console.error('Error fetching curation types:', err);
@@ -131,22 +142,27 @@ const DifficultyContextProvider = (props) => {
                 if (!tagsArray || !Array.isArray(tagsArray)) {
                     throw new Error('Invalid server response format for tags');
                 }
-                // Use localStorage instead of cookies for larger data
-                try {
-                    localStorage.setItem('tagsCache', JSON.stringify(tagsArray));
-                } catch (storageError) {
-                    console.error('Error setting tags cache in localStorage:', storageError);
-                }
             }
             else {
                 const cached = localStorage.getItem('tagsCache');
                 tagsArray = cached ? JSON.parse(cached) : [];
             }
+            const normalizedTags = tagsArray.map((tag) => ({
+                ...tag,
+                icon: selectIconSize(tag.icon, "small"),
+            }));
+            if (update && normalizedTags.length) {
+                try {
+                    localStorage.setItem('tagsCache', JSON.stringify(normalizedTags));
+                } catch (storageError) {
+                    console.error('Error setting tags cache in localStorage:', storageError);
+                }
+            }
             const tagsDict = {};
-            tagsArray.forEach(tag => {
+            normalizedTags.forEach((tag) => {
                 tagsDict[tag.id] = tag;
             });
-            setTags(tagsArray);
+            setTags(normalizedTags);
             setTagsDict(tagsDict);
         } catch (err) {
             console.error('Error fetching tags:', err);

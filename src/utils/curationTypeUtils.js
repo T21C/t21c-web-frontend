@@ -159,27 +159,90 @@ export const getAbilityNames = (curationType) => {
   return names;
 };
 
-/** Sort linked types (tags) for badges/icons */
+/**
+ * Prefer DifficultyContext curationTypesDict[type.id] so abilities/icons/names stay current vs embedded API rows.
+ * Catalog icons are already `/small` from context; embedded rows without a dict entry get a one-time URL normalize.
+ */
+export const resolveCurationTypeFromDict = (typeRef, curationTypesDict) => {
+  if (!typeRef || typeRef.id == null) return typeRef;
+  const dict = curationTypesDict || {};
+  const fromDict = dict[typeRef.id];
+  if (fromDict) return fromDict;
+  const rawIcon = typeRef.icon ?? null;
+  if (!rawIcon) return typeRef;
+  const icon = selectIconSize(rawIcon, "small") || rawIcon;
+  if (icon === typeRef.icon) return typeRef;
+  return { ...typeRef, icon };
+};
+
+/** Sort linked types (tags) for badges/icons; returns catalog-resolved types. */
 export const sortCurationTypesForDisplay = (types, curationTypesDict) => {
   if (!types?.length) return [];
-  return [...types].sort((typeA, typeB) => {
-    const resolvedTypeA = curationTypesDict[typeA.id] || typeA;
-    const resolvedTypeB = curationTypesDict[typeB.id] || typeB;
+  const dict = curationTypesDict || {};
+  const sorted = [...types].sort((typeA, typeB) => {
+    const resolvedTypeA = resolveCurationTypeFromDict(typeA, dict);
+    const resolvedTypeB = resolveCurationTypeFromDict(typeB, dict);
     const groupOrderDiff = (resolvedTypeA?.groupSortOrder ?? 0) - (resolvedTypeB?.groupSortOrder ?? 0);
     if (groupOrderDiff !== 0) return groupOrderDiff;
     const sortOrderDiff = (resolvedTypeA?.sortOrder ?? 0) - (resolvedTypeB?.sortOrder ?? 0);
     if (sortOrderDiff !== 0) return sortOrderDiff;
     return (resolvedTypeA?.id ?? 0) - (resolvedTypeB?.id ?? 0);
   });
+  return sorted.map((t) => resolveCurationTypeFromDict(t, dict));
 };
 
 /**
- * Prefer DifficultyContext curationTypesDict[type.id] so abilities/icons/names stay current vs embedded API rows.
+ * Curation types with positive level counts, catalog-resolved and sorted for header panel / selector lists.
+ * @param {Record<string, number> | null | undefined} curationTypeCounts
+ * @param {Record<number, object> | null | undefined} curationTypesDict
+ * @returns {{ id: number; name: string; icon?: string | null; count: number; group?: string; groupSortOrder?: number; sortOrder?: number }[]}
  */
-export const resolveCurationTypeFromDict = (typeRef, curationTypesDict) => {
-  if (!typeRef || typeRef.id == null) return typeRef;
-  return curationTypesDict[typeRef.id] || typeRef;
-};
+export function getCreatorCurationTypesForHeaderPanel(curationTypeCounts, curationTypesDict) {
+  const dict = curationTypesDict && typeof curationTypesDict === "object" ? curationTypesDict : {};
+  const counts = curationTypeCounts && typeof curationTypeCounts === "object" ? curationTypeCounts : {};
+  const entries = Object.entries(counts).filter(([, cnt]) => Number(cnt) > 0);
+  const refs = entries.map(([typeId]) => {
+    const id = Number(typeId);
+    return resolveCurationTypeFromDict({ id }, dict) || { id, name: `#${id}` };
+  });
+  const sorted = sortCurationTypesForDisplay(refs, dict);
+  return sorted.map((ct) => {
+    const id = Number(ct.id);
+    const count = Number(counts[String(id)] ?? counts[id] ?? 0) || 0;
+    return {
+      id,
+      name: ct.name ?? `#${id}`,
+      icon: ct.icon ?? null,
+      count,
+      group: ct.group,
+      groupSortOrder: ct.groupSortOrder,
+      sortOrder: ct.sortOrder,
+    };
+  });
+}
+
+/**
+ * Group catalog items (e.g. curation types) by `group` for compact panel layout.
+ * @param {Array<{ group?: string; groupSortOrder?: number }>} items
+ * @param {string} fallbackGroupLabel
+ * @returns {[string, { items: typeof items; groupSortOrder: number }][]}
+ */
+export function groupCurationTypesForPanel(items, fallbackGroupLabel) {
+  const list = Array.isArray(items) ? items : [];
+  const groups = list.reduce((acc, item) => {
+    const group =
+      item?.group && String(item.group).trim() !== ""
+        ? String(item.group)
+        : fallbackGroupLabel;
+    if (!acc[group]) acc[group] = { items: [], groupSortOrder: item?.groupSortOrder ?? 999999 };
+    acc[group].items.push(item);
+    if (item?.groupSortOrder != null && item.groupSortOrder < acc[group].groupSortOrder) {
+      acc[group].groupSortOrder = item.groupSortOrder;
+    }
+    return acc;
+  }, {});
+  return Object.entries(groups).sort((a, b) => a[1].groupSortOrder - b[1].groupSortOrder);
+}
 
 const THEME_ABILITY_BITS = [ABILITIES.CUSTOM_CSS, ABILITIES.CUSTOM_COLOR_THEME];
 
@@ -203,8 +266,8 @@ export const getCurationTypesResolved = (curation, curationTypesDict) => {
   }
   if (Array.isArray(curation.typeIds) && curation.typeIds.length > 0) {
     return sortCurationTypesForDisplay(
-      curation.typeIds.map((id) => dict[id]).filter(Boolean),
-      dict
+      curation.typeIds.map((id) => resolveCurationTypeFromDict({ id }, dict)).filter((t) => t && t.id != null),
+      dict,
     );
   }
   if (curation.type?.id != null) {
@@ -222,7 +285,7 @@ export const resolveCurationThemeType = (curation, curationTypesDict) => {
     if (fromAlias) return fromAlias;
   }
   if (curation.themeTypeId != null && dict[curation.themeTypeId]) {
-    return dict[curation.themeTypeId];
+    return resolveCurationTypeFromDict({ id: curation.themeTypeId }, dict);
   }
   return pickThemeTypeFromResolvedList(getCurationTypesResolved(curation, dict));
 };

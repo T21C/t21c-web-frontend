@@ -14,7 +14,7 @@ const WeeklyGallery = ({
   className = ''
 }) => {
   const { t } = useTranslation('components');
-  const { difficultyDict } = useDifficultyContext();
+  const { difficultyDict, curationTypesDict } = useDifficultyContext();
   
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoScrolling, setIsAutoScrolling] = useState(autoScroll);
@@ -317,13 +317,15 @@ const WeeklyGallery = ({
                         <div className="weekly-gallery__artist-name">{levelRow?.artist || 'Unknown Artist'}</div>
                       </div>
                       <div className="weekly-gallery__curation-icons-row">
-                        {typeIcons.map((t, ti) =>
-                          t?.icon ? (
+                        {typeIcons.map((t, ti) => {
+                          const iconSrc =
+                            (t?.id != null && curationTypesDict?.[t.id]?.icon) || t?.icon || null;
+                          return iconSrc ? (
                             <div key={t.id ?? ti} className="weekly-gallery__standalone-curation-icon">
-                              <img src={t.icon} alt={t.name || ''} className="weekly-gallery__standalone-curation-img" />
+                              <img src={iconSrc} alt={t.name || ''} className="weekly-gallery__standalone-curation-img" />
                             </div>
-                          ) : null
-                        )}
+                          ) : null;
+                        })}
                       </div>
                     </div>
                   </div>

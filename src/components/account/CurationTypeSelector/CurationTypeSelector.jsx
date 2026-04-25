@@ -4,8 +4,8 @@ import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";
 import api from "@/utils/api";
 import {
-  sortCurationTypesForDisplay,
-  resolveCurationTypeFromDict,
+  getCreatorCurationTypesForHeaderPanel,
+  groupCurationTypesForPanel,
 } from "@/utils/curationTypeUtils";
 import { buildCreatorIconSlots } from "@/utils/profileIconSlots";
 
@@ -62,16 +62,10 @@ const CurationTypeSelector = ({
     onDraftChange?.(draftIds);
   }, [draftIds, onDraftChange]);
 
-  const availableTypes = useMemo(() => {
-    const entries = Object.entries(curationTypeCounts || {}).filter(
-      ([, cnt]) => Number(cnt) > 0,
-    );
-    const refs = entries.map(([typeId]) => {
-      const id = Number(typeId);
-      return resolveCurationTypeFromDict({ id }, curationTypesDict) || { id, name: `#${id}` };
-    });
-    return sortCurationTypesForDisplay(refs, curationTypesDict);
-  }, [curationTypeCounts, curationTypesDict]);
+  const availableTypes = useMemo(
+    () => getCreatorCurationTypesForHeaderPanel(curationTypeCounts, curationTypesDict),
+    [curationTypeCounts, curationTypesDict],
+  );
 
   const selectableIdSet = useMemo(() => {
     const s = new Set();
@@ -89,22 +83,10 @@ const CurationTypeSelector = ({
     });
   }, [selectableIdSet]);
 
-  const orderedGroups = useMemo(() => {
-    const list = availableTypes || [];
-    const groups = list.reduce((acc, item) => {
-      const group =
-        item?.group && String(item.group).trim() !== ""
-          ? String(item.group)
-          : t("settings.creator.curationBadges.fallbackGroup");
-      if (!acc[group]) acc[group] = { items: [], groupSortOrder: item?.groupSortOrder ?? 999999 };
-      acc[group].items.push(item);
-      if (item?.groupSortOrder != null && item.groupSortOrder < acc[group].groupSortOrder) {
-        acc[group].groupSortOrder = item.groupSortOrder;
-      }
-      return acc;
-    }, {});
-    return Object.entries(groups).sort((a, b) => a[1].groupSortOrder - b[1].groupSortOrder);
-  }, [availableTypes, t]);
+  const orderedGroups = useMemo(
+    () => groupCurationTypesForPanel(availableTypes, t("settings.creator.curationBadges.fallbackGroup")),
+    [availableTypes, t],
+  );
 
   const previewSlots = useMemo(
     () =>
@@ -241,8 +223,7 @@ const CurationTypeSelector = ({
                     {data.items.map((ct) => {
                       const id = ct.id;
                       const selected = draftIds.includes(id);
-                      const cnt =
-                        Number(curationTypeCounts[String(id)] ?? curationTypeCounts[id] ?? 0) || 0;
+                      const cnt = Number(ct.count) || 0;
                       const name = ct.name ?? `#${id}`;
                       return (
                         <button

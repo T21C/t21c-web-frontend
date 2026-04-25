@@ -5,8 +5,6 @@ import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { PassIcon, YoutubeIcon } from "@/components/common/icons";
 import { UserAvatar } from "@/components/layout";
-import { selectIconSize } from "@/utils/Utility";
-
 const ClearCard = ({scoreData, index}) => {
   const { t } = useTranslation('pages');
   const [isExpanded, setIsExpanded] = useState(false);

@@ -9,7 +9,7 @@ import { SongPopup } from "@/components/popups/Songs";
 import { ArtistPopup } from "@/components/popups/Artists";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { EditIcon, SteamIcon, DownloadIcon, VideoIcon, PassIcon, LikeIcon, PackIcon, DragHandleIcon, MetronomeIcon, ChartIcon, TimeIcon } from "@/components/common/icons";
-import { clampFloat, formatCreatorDisplay, selectIconSize } from "@/utils/Utility";
+import { clampFloat, formatCreatorDisplay } from "@/utils/Utility";
 import { ABILITIES, hasBit } from "@/utils/Abilities";
 import { permissionFlags } from "@/utils/UserPermissions";
 import { hasFlag } from "@/utils/UserPermissions";
@@ -280,7 +280,7 @@ const LevelCard = ({
             title={tag.name}
           >
             {tag.icon ? (
-              <img src={selectIconSize(tag.icon, "small")} alt={tag.name} />
+              <img src={tag.icon} alt={tag.name} />
             ) : (
               <span className="level-tag-letter">{tag.name.charAt(0).toUpperCase()}</span>
             )}
@@ -402,7 +402,7 @@ const LevelCard = ({
                     title={tag.name}
                   >
                     {tag.icon ? (
-                      <img src={selectIconSize(tag.icon, "small")} alt={tag.name} />
+                      <img src={tag.icon} alt={tag.name} />
                     ) : (
                       <span className="level-tag-letter">{tag.name.charAt(0).toUpperCase()}</span>
                     )}

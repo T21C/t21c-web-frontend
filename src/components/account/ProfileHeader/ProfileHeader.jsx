@@ -1,11 +1,15 @@
 import "./profileheader.css";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef, useLayoutEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import UserAvatar from "@/components/layout/UserAvatar/UserAvatar";
 import ChevronIcon from "@/components/common/icons/ChevronIcon";
 import { ExternalLinkIcon } from "@/components/common/icons";
 import { isoToEmoji } from "@/utils";
 import { getDefaultProfileBannerUrl } from "@/utils/profileBanners";
+import { getPortalRoot } from "@/utils/portalRoot";
+import { groupCurationTypesForPanel } from "@/utils/curationTypeUtils";
 
 function useViewportWidth() {
   const [width, setWidth] = useState(window.innerWidth);
@@ -85,8 +89,19 @@ const ProfileHeader = ({
   nameTooltipId = null,
   expandStatsAriaLabel = "Expand statistics",
   collapseStatsAriaLabel = "Collapse statistics",
+  creatorCurationPanelItems = null,
 }) => {
+  const { t } = useTranslation("pages");
   const [isStatsExpanded, setIsStatsExpanded] = useState(false);
+  const [creatorCurationOpen, setCreatorCurationOpen] = useState(false);
+  const [curationPanelPos, setCurationPanelPos] = useState(null);
+  const iconSlotsBlockRef = useRef(null);
+  const curationPortalRef = useRef(null);
+
+  const showCreatorCurationPanel =
+    mode === "creator" &&
+    Array.isArray(creatorCurationPanelItems) &&
+    creatorCurationPanelItems.length > 0;
 
   const viewportWidth = useViewportWidth();
 
@@ -138,6 +153,70 @@ const ProfileHeader = ({
     () => Array.isArray(statGroups) && statGroups.some((g) => g?.rows?.length),
     [statGroups],
   );
+
+  const curationPanelGroups = useMemo(() => {
+    if (!showCreatorCurationPanel) return [];
+    return groupCurationTypesForPanel(
+      creatorCurationPanelItems,
+      t("settings.creator.curationBadges.fallbackGroup"),
+    );
+  }, [showCreatorCurationPanel, creatorCurationPanelItems, t]);
+
+  const measureCurationPanel = useCallback(() => {
+    const el = iconSlotsBlockRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    setCurationPanelPos({
+      top: Math.round(r.bottom + 6),
+      left: Math.round(r.left),
+      minWidth: Math.max(220, Math.round(r.width)),
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!showCreatorCurationPanel) {
+      setCreatorCurationOpen(false);
+      setCurationPanelPos(null);
+    }
+  }, [showCreatorCurationPanel]);
+
+  useLayoutEffect(() => {
+    if (!creatorCurationOpen || !showCreatorCurationPanel) return undefined;
+    measureCurationPanel();
+    const el = iconSlotsBlockRef.current;
+    const ro =
+      typeof ResizeObserver !== "undefined" && el ? new ResizeObserver(() => measureCurationPanel()) : null;
+    if (ro && el) ro.observe(el);
+    window.addEventListener("scroll", measureCurationPanel, true);
+    window.addEventListener("resize", measureCurationPanel);
+    return () => {
+      ro?.disconnect();
+      window.removeEventListener("scroll", measureCurationPanel, true);
+      window.removeEventListener("resize", measureCurationPanel);
+    };
+  }, [creatorCurationOpen, showCreatorCurationPanel, measureCurationPanel]);
+
+  useEffect(() => {
+    if (!creatorCurationOpen) return undefined;
+    const onKey = (e) => {
+      if (e.key === "Escape") setCreatorCurationOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [creatorCurationOpen]);
+
+  useEffect(() => {
+    if (!creatorCurationOpen) return undefined;
+    const onPointerDown = (event) => {
+      const node = event.target;
+      if (!(node instanceof Node)) return;
+      if (iconSlotsBlockRef.current?.contains(node)) return;
+      if (curationPortalRef.current?.contains(node)) return;
+      setCreatorCurationOpen(false);
+    };
+    document.addEventListener("mousedown", onPointerDown);
+    return () => document.removeEventListener("mousedown", onPointerDown);
+  }, [creatorCurationOpen]);
 
   const badgeText =
     mode === "creator"
@@ -305,27 +384,115 @@ const ProfileHeader = ({
                   ) : null}
               </div>
               <div className="profile-header__icon-row">
-                <div className="profile-header__icon-slots">
-                  {resolvedSlots.map((slot) => (
-                    <div
-                      key={slot.key}
-                      className="profile-header__icon-slot"
-                      title={slot.tooltip ?? slot.title}
+                <div
+                  className={[
+                    "profile-header__icon-slots-block",
+                    showCreatorCurationPanel ? "profile-header__icon-slots-block--curation" : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
+                  ref={iconSlotsBlockRef}
+                >
+                  <div className="profile-header__icon-slots">
+                    {resolvedSlots.map((slot) => (
+                      <div
+                        key={slot.key}
+                        className="profile-header__icon-slot"
+                        title={slot.tooltip ?? slot.title}
+                      >
+                        {slot.iconUrl ? (
+                          <img
+                            className="profile-header__icon-slot-img"
+                            src={slot.iconUrl}
+                            alt=""
+                            decoding="async"
+                          />
+                        ) : (
+                          <span className="profile-header__icon-slot-letter">{slot.letter}</span>
+                        )}
+                        <span className="profile-header__icon-slot-badge">{slot.badge ?? slot.count ?? 0}</span>
+                      </div>
+                    ))}
+                  </div>
+                  {showCreatorCurationPanel ? (
+                    <button
+                      type="button"
+                      className="profile-header__chevron-btn profile-header__chevron-btn--curation"
+                      aria-expanded={creatorCurationOpen}
+                      aria-haspopup="dialog"
+                      aria-label={
+                        creatorCurationOpen
+                          ? t("creators.profile.curationPanel.collapseAria")
+                          : t("creators.profile.curationPanel.expandAria")
+                      }
+                      onClick={() => setCreatorCurationOpen((v) => !v)}
                     >
-                      {slot.iconUrl ? (
-                        <img
-                          className="profile-header__icon-slot-img"
-                          src={slot.iconUrl}
-                          alt=""
-                          decoding="async"
-                        />
-                      ) : (
-                        <span className="profile-header__icon-slot-letter">{slot.letter}</span>
-                      )}
-                      <span className="profile-header__icon-slot-badge">{slot.badge ?? slot.count ?? 0}</span>
-                    </div>
-                  ))}
+                      <ChevronIcon
+                        direction={creatorCurationOpen ? "up" : "down"}
+                        color="var(--color-white)"
+                        size={14}
+                      />
+                    </button>
+                  ) : null}
                 </div>
+                {showCreatorCurationPanel && creatorCurationOpen && curationPanelPos
+                  ? createPortal(
+                      <div
+                        ref={curationPortalRef}
+                        className="profile-header__curation-portal-anchor"
+                        style={{
+                          position: "fixed",
+                          top: `${curationPanelPos.top}px`,
+                          left: `${curationPanelPos.left}px`,
+                          minWidth: `${Math.min(curationPanelPos.minWidth, 416)}px`,
+                          zIndex: 10050,
+                        }}
+                      >
+                        <div
+                          className="profile-header__curation-panel"
+                          role="dialog"
+                          aria-label={t("creators.profile.curationPanel.dialogLabel")}
+                        >
+                          <div className="profile-header__curation-panel-inner">
+                            {curationPanelGroups.map(([group, data]) => (
+                              <div key={group} className="profile-header__curation-group">
+                                <h4 className="profile-header__curation-group-title">{group}</h4>
+                                <div className="profile-header__curation-chips">
+                                  {data.items.map((ct) => {
+                                    const id = ct.id;
+                                    const cnt = Number(ct.count) || 0;
+                                    const nm = ct.name ?? `#${id}`;
+                                    return (
+                                      <div
+                                        key={id}
+                                        className="profile-header__curation-chip"
+                                        title={nm}
+                                      >
+                                        {ct.icon ? (
+                                          <img
+                                            className="profile-header__curation-chip-icon"
+                                            src={ct.icon}
+                                            alt=""
+                                            decoding="async"
+                                          />
+                                        ) : (
+                                          <span className="profile-header__curation-chip-fallback">
+                                            {nm.slice(0, 2)}
+                                          </span>
+                                        )}
+                                        <span className="profile-header__curation-chip-count">{cnt}</span>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>,
+                      getPortalRoot(),
+                    )
+                  : null}
               </div>
             </div>
 
