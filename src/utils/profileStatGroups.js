@@ -114,11 +114,6 @@ export function buildPlayerStatGroups(ff, t) {
           value: formatCount(l.totalTilecountCleared),
         },
         {
-          key: "totalLevelLengthMs",
-          label: t("profile.funFacts.levelsCleared.totalLevelLengthMs"),
-          value: formatDurationMs(l.totalLevelLengthMs),
-        },
-        {
           key: "totalPlaytimeMs",
           label: t("profile.funFacts.levelsCleared.totalPlaytimeMs"),
           value: formatDurationMs(l.totalPlaytimeMs),
