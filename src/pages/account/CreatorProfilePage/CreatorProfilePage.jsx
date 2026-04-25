@@ -150,19 +150,6 @@ const CreatorProfilePage = () => {
     [profile?.funFacts?.levelsByDifficulty, difficultyDict],
   );
 
-  const canEditHeaderCurationSlots = useMemo(() => {
-    if (!user || !creatorDoc) return false;
-    const cid = Number(creatorId);
-    const linkedCreator = user.creatorId != null && Number(user.creatorId) === cid;
-    const linkedUser = creatorDoc.user?.id && user.id === creatorDoc.user.id;
-    return (
-      linkedCreator ||
-      Boolean(linkedUser) ||
-      hasFlag(user, permissionFlags.SUPER_ADMIN) ||
-      hasFlag(user, permissionFlags.HEAD_CURATOR)
-    );
-  }, [user, creatorDoc, creatorId]);
-
   const isOwnCreatorProfile = useMemo(() => {
     if (!user?.creatorId) return false;
     const cid = Number(creatorId);

@@ -73,12 +73,15 @@ export function toDifficultyGraphData(breakdownMap, difficultyDict, mode) {
   const isPasses = mode === "passes";
   const map = breakdownMap || {};
   return Object.entries(difficultyDict || {})
-    .filter(([, info]) => info?.type === "PGU")
+    .filter(([, info]) => 
+      info?.type === "PGU" 
+    || (info?.type === "SPECIAL" && info?.name.includes("Q") && mode === "levels")
+    )
     .map(([id, info]) => {
       const value = Number(map[id]) || 0;
       return {
         id: Number(info?.id ?? id),
-        name: info?.name ?? `#${id}`,
+        name: info?.name.includes("Q") ? info?.name.split(" ")[0] : info?.name ?? `#${id}`,
         passCount: isPasses ? value : 0,
         levelCount: isPasses ? 0 : value,
         sortOrder: info?.sortOrder ?? 0,
