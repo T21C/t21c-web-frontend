@@ -82,6 +82,7 @@ const ProfileHeader = ({
   statGroups = null,
   actions = null,
   verificationBadge = null,
+  nameTooltipId = null,
   expandStatsAriaLabel = "Expand statistics",
   collapseStatsAriaLabel = "Collapse statistics",
 }) => {
@@ -161,6 +162,10 @@ const ProfileHeader = ({
       : getDefaultProfileBannerUrl();
 
   const displayName = name || "—";
+  const nameTooltipProps =
+    typeof nameTooltipId === "string" && nameTooltipId.trim().length > 0
+      ? { "data-tooltip-id": nameTooltipId }
+      : {};
 
   return (
     <div className={shellClass}>
@@ -188,6 +193,7 @@ const ProfileHeader = ({
                       strokeLinejoin="round"
                       className="profile-header__name-svg-text"
                       textAnchor={config.textAlign}
+                      {...nameTooltipProps}
                     >
                       {displayName}
                     </text>
@@ -201,6 +207,7 @@ const ProfileHeader = ({
                       strokeLinejoin="round"
                       className="profile-header__name-svg-text"
                       textAnchor={config.textAlign}
+                      {...nameTooltipProps}
                     >
                       {displayName}
                     </text>
@@ -222,6 +229,7 @@ const ProfileHeader = ({
                     dx={config.dxPos}
                     className="profile-header__name-svg-text"
                     textAnchor={config.textAlign}
+                    {...nameTooltipProps}
                   >
                     {displayName}
                   </text>
@@ -272,6 +280,7 @@ const ProfileHeader = ({
                     dx={config.dxPos}
                     className="profile-header__name-svg-text vertical"
                     textAnchor={config.textAlign}
+                    {...nameTooltipProps}
                   >
                     {displayName}
                   </text>

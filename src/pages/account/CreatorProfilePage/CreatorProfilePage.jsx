@@ -88,6 +88,32 @@ const CreatorProfilePage = () => {
 
   const creatorDoc = profile?.creator || profile?.doc || profile;
 
+  const creatorAliasNames = useMemo(() => {
+    const out = [];
+    const aliases = profile?.aliases;
+    if (Array.isArray(aliases)) {
+      for (const a of aliases) {
+        const name = typeof a === "string" ? a : a?.name;
+        if (typeof name === "string" && name.trim()) out.push(name.trim());
+      }
+    }
+    const creatorAliases = profile?.creatorAliases;
+    if (Array.isArray(creatorAliases)) {
+      for (const a of creatorAliases) {
+        const name = typeof a?.name === "string" ? a.name : "";
+        if (name.trim()) out.push(name.trim());
+      }
+    }
+    const unique = [...new Set(out.map((s) => s.trim()).filter(Boolean))];
+    unique.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
+    return unique;
+  }, [profile?.aliases, profile?.creatorAliases]);
+
+  const aliasesTooltipId =
+    creatorAliasNames.length > 0 && creatorId != null
+      ? `creator-aliases-${creatorId}`
+      : null;
+
   const uploadConditionsText =
     typeof profile?.uploadConditions === "string" && profile.uploadConditions.trim().length > 0
       ? profile.uploadConditions.trim()
@@ -188,6 +214,7 @@ const CreatorProfilePage = () => {
           avatarUrl={creatorDoc.user?.avatarUrl}
           fallbackAvatarUrl=""
           name={creatorDoc.name}
+          nameTooltipId={aliasesTooltipId}
           handle={creatorDoc.user?.username}
           country={creatorDoc.user?.country || creatorDoc.country}
           badgeId={creatorDoc.id}
@@ -263,6 +290,24 @@ const CreatorProfilePage = () => {
             </>
           }
         />
+
+        {aliasesTooltipId ? (
+          <Tooltip
+            id={aliasesTooltipId}
+            place="bottom"
+            className="creator-profile-page__aliases-tooltip"
+            style={{ maxWidth: "min(24rem, 92vw)", zIndex: 20 }}
+          >
+            <div className="creator-profile-page__aliases-tooltip-title">Aliases</div>
+            <ul className="creator-profile-page__aliases-tooltip-list">
+              {creatorAliasNames.map((name) => (
+                <li key={name} className="creator-profile-page__aliases-tooltip-item">
+                  {name}
+                </li>
+              ))}
+            </ul>
+          </Tooltip>
+        ) : null}
 
         <section className="creator-profile-page__section">
           <div className="account-profile-page__section-title-row">

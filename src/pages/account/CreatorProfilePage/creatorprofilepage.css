@@ -103,3 +103,33 @@
   outline: 2px solid var(--btn-primary-light-hover);
   outline-offset: 2px;
 }
+
+.creator-profile-page .creator-profile-page__aliases-tooltip {
+  background: rgba(20, 20, 20, 0.96);
+  border: 1px solid var(--color-white-t12);
+  border-radius: 10px;
+  padding: 0.65rem 0.75rem;
+  color: var(--color-white);
+}
+
+.creator-profile-page .creator-profile-page__aliases-tooltip-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-white-t80);
+  margin-bottom: 0.35rem;
+}
+
+.creator-profile-page .creator-profile-page__aliases-tooltip-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.creator-profile-page .creator-profile-page__aliases-tooltip-item {
+  font-size: 0.95rem;
+  line-height: 1.25;
+  color: var(--color-white);
+}
