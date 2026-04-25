@@ -12,7 +12,7 @@
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
-  background: #2a2a2a;
+  background: var(--btn-neutral-dark);
   border: 1px solid #333;
   border-radius: 4px;
   cursor: pointer;
@@ -39,7 +39,7 @@
   top: 100%;
   left: 0;
   right: 0;
-  background: #2a2a2a;
+  background: var(--btn-neutral-dark);
   border: 1px solid #333;
   border-radius: 4px;
   margin-top: 4px;

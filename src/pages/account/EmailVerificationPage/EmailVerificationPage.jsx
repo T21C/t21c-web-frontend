@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import './emailVerificationPage.css';
 
@@ -156,12 +156,9 @@ const EmailVerificationPage = () => {
             <div className="success-icon">✓</div>
             <h1>Email Verified!</h1>
             <p className="status-message">Your email has been successfully verified.</p>
-            <button
-              className="action-button"
-              onClick={() => navigate('/profile')}
-            >
+            <Link className="action-button" to="/profile">
               Go to Profile
-            </button>
+            </Link>
           </>
         );
       case 'already-verified':
@@ -170,12 +167,9 @@ const EmailVerificationPage = () => {
             <div className="success-icon">✓</div>
             <h1>Email Verified</h1>
             <p className="status-message">Your email is verified. No action is needed.</p>
-            <button
-              className="action-button"
-              onClick={() => navigate('/profile')}
-            >
+            <Link className="action-button" to="/profile">
               Go to Profile
-            </button>
+            </Link>
           </>
         );
       case 'needs-verification':
@@ -196,12 +190,9 @@ const EmailVerificationPage = () => {
               </button>
               {error && <p className="error-message">{error}</p>}
             </div>
-            <button
-              className="action-button secondary"
-              onClick={() => navigate('/profile')}
-            >
+            <Link className="action-button secondary" to="/profile">
               Back to Profile
-            </button>
+            </Link>
           </>
         );
       case 'error':
@@ -221,12 +212,9 @@ const EmailVerificationPage = () => {
                 {resending ? 'Sending...' : 'Resend Verification Email'}
               </button>
             </div>
-            <button
-              className="action-button secondary"
-              onClick={() => navigate('/profile')}
-            >
+            <Link className="action-button secondary" to="/profile">
               Back to Profile
-            </button>
+            </Link>
           </>
         );
       case 'resent':
@@ -236,12 +224,9 @@ const EmailVerificationPage = () => {
             <h1>Verification Email Sent</h1>
             <p className="status-message">A new verification email has been sent to your inbox.</p>
             <p className="email-display">{user?.email || verificationEmail}</p>
-            <button
-              className="action-button"
-              onClick={() => navigate('/profile')}
-            >
+            <Link className="action-button" to="/profile">
               Back to Profile
-            </button>
+            </Link>
           </>
         );
       default:

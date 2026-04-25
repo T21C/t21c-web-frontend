@@ -1,6 +1,6 @@
 import "./packdetailpage.css";
 import React, { useEffect, useState, useRef, useMemo, useCallback } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import PackItem, { PackLevelItem } from "@/components/cards/PackItem/PackItem";
 import { MetaTags } from "@/components/common/display";
@@ -714,13 +714,9 @@ const PackDetailPage = () => {
           >
             {t('packDetail.error.retry')}
           </button>
-          <button 
-            className="back-btn"
-            style={{alignSelf: 'center'}}
-            onClick={() => navigate('/packs')}
-          >
+          <Link className="back-btn" style={{alignSelf: 'center'}} to="/packs">
             {t('packDetail.backToPacks')}
-          </button>
+          </Link>
         </div>
       </div>
     );
@@ -742,13 +738,10 @@ const PackDetailPage = () => {
       
       
       <div className="pack-body page-content-70rem">
-      <button 
-            className="back-btn"
-            onClick={() => navigate('/packs')}
-          >
-            <ArrowIcon style={{ transform: 'rotate(180deg)' }} />
-            <span>{t('packDetail.backToPacks')}</span>
-          </button>
+      <Link className="back-btn" to="/packs">
+        <ArrowIcon style={{ transform: 'rotate(180deg)' }} />
+        <span>{t('packDetail.backToPacks')}</span>
+      </Link>
           <div className="header-container">
         {/* Header */}
         <div className="header">

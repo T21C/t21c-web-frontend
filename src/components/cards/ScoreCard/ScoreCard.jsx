@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./scorecard.css"
 import "@/index.css"
 import { useTranslation } from "react-i18next";
@@ -27,7 +27,6 @@ const Judgements = ({judgements}) => {
 
 // eslint-disable-next-line react/prop-types
 const ScoreCard = ({scoreData, topScores, potentialTopScores}) => {
-  const navigate = useNavigate()
   const {t} = useTranslation('components');
   const isHiddenLevel = scoreData.level?.isHidden || false;
   const isHiddenPass = scoreData.isHidden || false;
@@ -43,13 +42,11 @@ const ScoreCard = ({scoreData, topScores, potentialTopScores}) => {
           <div className="hidden-level-icon">🔒</div>
         )}
       </div>
-      <div className="name-wrapper" onClick={() => 
-        navigate(`/passes/${scoreData.id}`)
-      }>
+      <Link className="name-wrapper" to={`/passes/${scoreData.id}`}>
           <p className='score-desc-creator'>{formatCreatorDisplay(scoreData.level)}</p>
           <p className='score-desc score-desc-song'>{scoreData.level.song}</p>
           <p className="score-exp score-exp-artist">{scoreData.level.artist ?? 'Hidden level'}</p>
-      </div>
+      </Link>
       {scoreData.isWorldsFirst && <div className="wf-badge">🏆<div className="wf-text">WF</div></div>}
       <div className="score-wrapper">
           <p className="score-exp">{t('score.card.labels.score')}</p>

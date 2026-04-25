@@ -6,7 +6,8 @@ import { CustomSelect } from '@/components/common/selectors';
 import './creatorManagement.css';
 import api from '@/utils/api';
 import { useTranslation } from 'react-i18next';
-import { CreatorActionPopup } from '@/components/popups/Creators';
+import { CreatorManagementPopup } from '@/components/popups/Creators';
+import { CreatorStatusBadge } from '@/components/common/display';
 import { SortDescIcon, SortAscIcon } from '@/components/common/icons';
 import { AccessDenied, MetaTags } from '@/components/common/display';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
@@ -34,8 +35,6 @@ const CreatorManagementPage = () => {
   const [creatorToAddSearchQuery, setCreatorToAddSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [creatorPage, setCreatorPage] = useState(1);
-  const [hideVerified, setHideVerified] = useState(false);
-  const [hideVerifiedCreators, setHideVerifiedCreators] = useState(false);
   const [activeTab, setActiveTab] = useState('credits');
   const [showMergeWarning, setShowMergeWarning] = useState(false);
   const [showSplitDialog, setShowSplitDialog] = useState(false);
@@ -50,7 +49,6 @@ const CreatorManagementPage = () => {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
   const [inputValue, setInputValue] = useState('1');
-  const [verifyingLevelId, setVerifyingLevelId] = useState(null);
   const [totalCreatorPages, setTotalCreatorPages] = useState(0);
   const [loadingCreators, setLoadingCreators] = useState(true);
   const creatorsCancelTokenRef = useRef();
@@ -93,7 +91,6 @@ const CreatorManagementPage = () => {
         page: creatorPage,
         limit: creatorsPerPage,
         search: creatorListSearchQuery,
-        hideVerified: hideVerifiedCreators,
         excludeAliases: excludeAliases,
         sort
       });
@@ -142,7 +139,6 @@ const CreatorManagementPage = () => {
         offset: (currentPage - 1) * levelsPerPage,
         limit: levelsPerPage,
         search: searchQuery,
-        hideVerified: hideVerified,
         excludeAliases: excludeAliases
       });
 
@@ -190,7 +186,7 @@ const CreatorManagementPage = () => {
   // Fetch creators when params change
   useEffect(() => {
     fetchCreators();
-  }, [creatorPage, creatorListSearchQuery, hideVerifiedCreators, sort]);
+  }, [creatorPage, creatorListSearchQuery, sort]);
 
   useEffect(() => {
     fetchLevelsAudit();
@@ -201,7 +197,7 @@ const CreatorManagementPage = () => {
         levelsCancelTokenRef.current.cancel('Dependencies changed');
       }
     };
-  }, [currentPage, searchQuery, hideVerified]);
+  }, [currentPage, searchQuery]);
 
   useEffect(() => {
     Promise.all([
@@ -396,7 +392,7 @@ const CreatorManagementPage = () => {
       name: c.name,
       role: c.role || CreditRole.CHARTER,
       isOwner: c.isOwner,
-      isVerified: c.isVerified,
+      verificationStatus: c.verificationStatus || 'allowed',
       levelCount: c.levelCount || 0,
       aliases: c.creatorAliases?.map(alias => alias.name) || []
     })) || []
@@ -441,7 +437,7 @@ const CreatorManagementPage = () => {
       name: creator.name,
       isOwner: false,
       role: assignedRole,
-      isVerified: creator.isVerified,
+      verificationStatus: creator.verificationStatus || 'allowed',
       levelCount: creator.credits?.length || 0,
       aliases: creator.creatorAliases?.map(alias => alias.name) || []
     }]);
@@ -530,7 +526,7 @@ const CreatorManagementPage = () => {
           name: c.name,
           role: c.role || CreditRole.CHARTER,
           isOwner: c.isOwner,
-          isVerified: c.isVerified,
+          verificationStatus: c.verificationStatus || 'allowed',
           credits: c.credits,
           aliases: c.creatorAliases?.map(alias => alias.name) || []
         })) || []
@@ -546,39 +542,6 @@ const CreatorManagementPage = () => {
   };
 
 
-  const handleVerifyLevel = async (levelId, e) => {
-    // Prevent the click from bubbling up to the level item
-    e.stopPropagation();
-    
-    try {
-      setVerifyingLevelId(levelId);
-      await api.post(`/v2/database/creators/level/${levelId}/verify`);
-      await fetchCreators(true);
-      await fetchLevelsAudit(true); // Refresh the levels list
-    } catch (error) {
-      console.error('Error verifying level credits:', error);
-    } finally {
-      setVerifyingLevelId(null);
-    }
-  };
-
-  const handleUnverifyLevel = async (levelId, e) => {
-    // Prevent the click from bubbling up to the level item
-    e.stopPropagation();
-    
-    try {
-      setVerifyingLevelId(levelId);
-      await api.post(`/v2/database/creators/level/${levelId}/unverify`);
-      await fetchCreators(true);
-      await fetchLevelsAudit(true); // Refresh the levels list
-    } catch (error) {
-      console.error('Error unverifying level credits:', error);
-    } finally {
-      setVerifyingLevelId(null);
-    }
-  };
-
-
   // Pagination for levels
 
   // Pagination for creators
@@ -589,7 +552,7 @@ const CreatorManagementPage = () => {
 
   // Render a level item
   const renderLevelItem = (level) => {
-    const levelClasses = `level-item ${level.isVerified ? 'verified' : ''} ${selectedLevel?.id === level.id ? 'selected' : ''}`;
+    const levelClasses = `level-item ${selectedLevel?.id === level.id ? 'selected' : ''}`;
 
     return (
       <div
@@ -599,7 +562,6 @@ const CreatorManagementPage = () => {
       >
         <div className="level-header">
           <h3>{level.song}</h3>
-          {renderVerificationStatus(level)}
         </div>
         <p>Artist: {level.artist}</p>
         <p>ID: {level.id}</p>
@@ -619,49 +581,6 @@ const CreatorManagementPage = () => {
             </span>
           ))}
         </div>
-      </div>
-    );
-  };
-
-  // Render verification status for the entire level
-  const renderVerificationStatus = (level) => {
-    const isVerifying = verifyingLevelId === level.id;
-    return (
-      <div className="verification-status" onClick={e => e.stopPropagation()}>
-        {level.isVerified ? (
-          <div className="verification-buttons">
-            <span className="verified-badge" title="All credits verified">✓</span>
-            <button
-              className={`unverify-button ${isVerifying ? 'loading' : ''}`}
-              onClick={(e) => handleUnverifyLevel(level.id, e)}
-              disabled={isVerifying}
-              title="Click to unverify all credits"
-            >
-              {isVerifying ? (
-                <svg className="spinner spinner-svg spinner-medium" viewBox="0 0 50 50">
-                  <circle cx="25" cy="25" r="20" fill="none" strokeWidth="5"></circle>
-                </svg>
-              ) : (
-                'Unverify'
-              )}
-            </button>
-          </div>
-        ) : (
-          <button
-            className={`verify-button ${isVerifying ? 'loading' : ''}`}
-            onClick={(e) => handleVerifyLevel(level.id, e)}
-            disabled={isVerifying}
-            title="Click to verify all credits"
-          >
-            {isVerifying ? (
-              <svg className="spinner spinner-svg spinner-medium" viewBox="0 0 50 50">
-                <circle cx="25" cy="25" r="20" fill="none" strokeWidth="5"></circle>
-              </svg>
-            ) : (
-              'Verify All'
-            )}
-          </button>
-        )}
       </div>
     );
   };
@@ -896,14 +815,6 @@ const CreatorManagementPage = () => {
                   </div>
                   
                   <div className="filter-options">
-                    <label className={hideVerified ? 'active' : ''}>
-                      <input
-                        type="checkbox"
-                        checked={hideVerified}
-                        onChange={(e) => setHideVerified(e.target.checked)}
-                      />
-                      Hide Verified Credits
-                    </label>
                     <label className={excludeAliases ? 'active' : ''}>
                       <input
                         type="checkbox"
@@ -1064,14 +975,6 @@ const CreatorManagementPage = () => {
                 </div>
 
                 <div className="filter-options">
-                  <label className={hideVerifiedCreators ? 'active' : ''}>
-                    <input
-                      type="checkbox"
-                      checked={hideVerifiedCreators}
-                      onChange={(e) => setHideVerifiedCreators(e.target.checked)}
-                    />
-                    {t('creatorManagement.filters.hideVerified')}
-                  </label>
                   <label className={excludeAliases ? 'active' : ''}>
                     <input
                       type="checkbox"
@@ -1123,11 +1026,15 @@ const CreatorManagementPage = () => {
                   </div>
                 ) : (
                   currentCreators.map(creator => (
-                    <div key={`${creator.role}-${creator.id}`} className={`creator-item ${creator.isVerified ? 'verified' : ''}`}>
+                    <div key={`${creator.role}-${creator.id}`} className={`creator-item creator-status-${creator.verificationStatus || 'allowed'}`}>
                       <div className="creator-info">
                         <h3>
                           {creator.name} ({t('creatorManagement.creatorInfo.id')}: {creator.id})
-                          {creator.isVerified && <span className="verified-badge" title={t('creatorManagement.creatorInfo.verifiedBadge')}>✓</span>}
+                          <CreatorStatusBadge
+                            status={creator.verificationStatus || 'allowed'}
+                            size="small"
+                            className="creator-item-status"
+                          />
                         </h3>
                         <p>{t('creatorManagement.creatorInfo.charts')}: {creator.credits?.length || 0}</p>
                         {creator.creatorAliases?.length > 0 && (
@@ -1233,7 +1140,7 @@ const CreatorManagementPage = () => {
       </div>
 
       {selectedCreatorForAction && (
-        <CreatorActionPopup
+        <CreatorManagementPopup
           creator={selectedCreatorForAction}
           onClose={handleCloseCreatorAction}
           onUpdate={handleCreatorUpdate}

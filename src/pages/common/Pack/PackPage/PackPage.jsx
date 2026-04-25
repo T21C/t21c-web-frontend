@@ -49,7 +49,6 @@ const PackPageContent = () => {
   const [showHelpPopup, setShowHelpPopup] = useState(false);
   const [displayMode, setDisplayMode] = useState('grid');
   const scrollRef = useRef(null);
-  const [pendingQuery, setPendingQuery] = useState(filters.query);
 
   // Sort options
   const sortOptions = [
@@ -80,42 +79,23 @@ const PackPageContent = () => {
 
   // No longer overriding viewMode for non-admins - default is PUBLIC
 
-  // Debounced search effect (same pattern as PassPage)
+  // Consume preset search queries from window context (e.g. cross-page nav)
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (pendingQuery !== filters.query) {
-        updateFilter('query', pendingQuery);
-        triggerRefresh();
-      }
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [pendingQuery]);
-
-  // Initialize pendingQuery with query value and check for preset queries
-  useEffect(() => {
-    setPendingQuery(filters.query);
-    
-    // Check for preset search queries from window context
     if (window.packSearchContext && window.packSearchContext.query) {
       const presetQuery = window.packSearchContext.query;
-      
-      // Set the query in the search input
-      setPendingQuery(presetQuery);
-      
-      // Clean up the window context after consuming it
+      updateFilter('query', presetQuery);
       delete window.packSearchContext;
     }
   }, []);
 
   function handleQueryChange(e) {
-    setPendingQuery(e.target.value);
+    updateFilter('query', e.target.value);
+    triggerRefresh();
   }
 
   // Handle reset
   const handleReset = useCallback(() => {
     updateFilter('query', '');
-    setPendingQuery('');
     updateFilter('viewMode', LevelPackViewModes.PUBLIC);
     updateFilter('sort', 'RECENT');
     updateFilter('order', 'DESC');
@@ -202,40 +182,39 @@ const PackPageContent = () => {
                 <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
                 <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
                 <g id="SVGRepo_iconCarrier">
-                  <path d="M12 3C7.04 3 3 7.04 3 12C3 16.96 7.04 21 12 21C16.96 21 21 16.96 21 12C21 7.04 16.96 3 12 3ZM12 19.5C7.86 19.5 4.5 16.14 4.5 12C4.5 7.86 7.86 4.5 12 4.5C16.14 4.5 19.5 7.86 19.5 12C19.5 16.14 16.14 19.5 12 19.5ZM14.3 7.7C14.91 8.31 15.25 9.13 15.25 10C15.25 10.87 14.91 11.68 14.3 12.3C13.87 12.73 13.33 13.03 12.75 13.16V13.5C12.75 13.91 12.41 14.25 12 14.25C11.59 14.25 11.25 13.91 11.25 13.5V12.5C11.25 12.09 11.59 11.75 12 11.75C12.47 11.75 12.91 11.57 13.24 11.24C13.57 10.91 13.75 10.47 13.75 10C13.75 9.53 13.57 9.09 13.24 8.76C12.58 8.1 11.43 8.1 10.77 8.76C10.44 9.09 10.26 9.53 10.26 10C10.26 10.41 9.92 10.75 9.51 10.75C9.1 10.75 8.76 10.41 8.76 10C8.76 9.13 9.1 8.32 9.71 7.7C10.94 6.47 13.08 6.47 14.31 7.7H14.3ZM13 16.25C13 16.8 12.55 17.25 12 17.25C11.45 17.25 11 16.8 11 16.25C11 15.7 11.45 15.25 12 15.25C12.55 15.25 13 15.7 13 16.25Z" fill="#ffffff"></path>
+                  <path d="M12 3C7.04 3 3 7.04 3 12C3 16.96 7.04 21 12 21C16.96 21 21 16.96 21 12C21 7.04 16.96 3 12 3ZM12 19.5C7.86 19.5 4.5 16.14 4.5 12C4.5 7.86 7.86 4.5 12 4.5C16.14 4.5 19.5 7.86 19.5 12C19.5 16.14 16.14 19.5 12 19.5ZM14.3 7.7C14.91 8.31 15.25 9.13 15.25 10C15.25 10.87 14.91 11.68 14.3 12.3C13.87 12.73 13.33 13.03 12.75 13.16V13.5C12.75 13.91 12.41 14.25 12 14.25C11.59 14.25 11.25 13.91 11.25 13.5V12.5C11.25 12.09 11.59 11.75 12 11.75C12.47 11.75 12.91 11.57 13.24 11.24C13.57 10.91 13.75 10.47 13.75 10C13.75 9.53 13.57 9.09 13.24 8.76C12.58 8.1 11.43 8.1 10.77 8.76C10.44 9.09 10.26 9.53 10.26 10C10.26 10.41 9.92 10.75 9.51 10.75C9.1 10.75 8.76 10.41 8.76 10C8.76 9.13 9.1 8.32 9.71 7.7C10.94 6.47 13.08 6.47 14.31 7.7H14.3ZM13 16.25C13 16.8 12.55 17.25 12 17.25C11.45 17.25 11 16.8 11 16.25C11 15.7 11.45 15.25 12 15.25C12.55 15.25 13 15.7 13 16.25Z" fill="currentColor"></path>
                 </g>
               </svg>
               <span>{t('pack.buttons.searchHelp')}</span>
             </button>
 
             <input
-              value={pendingQuery}
+              value={filters.query}
               autoComplete='off'
               type="text"
               placeholder={t('pack.search.placeholder')}
               onChange={handleQueryChange}
-              className={pendingQuery !== filters.query ? 'search-pending' : ''}
             />
           </div>
 
           {/* Buttons Row */}
           <div className="buttons-row">
             <FilterIcon
-              color="#ffffff"
+              color="var(--color-white)"
               onClick={() => setFilterOpen(!filterOpen)}
               data-tooltip-id="filter"
               className={`action-button ${filterOpen ? 'active' : ''}`}
             />
 
             <SortIcon
-              color="#ffffff"
+              color="var(--color-white)"
               onClick={() => setSortOpen(!sortOpen)}
               data-tooltip-id="sort"
               className={`action-button ${sortOpen ? 'active' : ''}`}
             />
 
             <SwitchIcon
-              color="#ffffff"
+              color="var(--color-white)"
               onClick={() => setDisplayMode(displayMode === 'grid' ? 'list' : 'grid')}
               data-tooltip-id="display-mode"
               className="action-button"
@@ -325,7 +304,7 @@ const PackPageContent = () => {
                     className="svg-fill"
                     style={{
                       backgroundColor:
-                        filters.order === 'ASC' ? "rgba(255, 255, 255, 0.7)" : "",
+                        filters.order === 'ASC' ? "var(--color-white-t70)" : "",
                     }}
                     value="RECENT_ASC"
                     onClick={() => {
@@ -339,7 +318,7 @@ const PackPageContent = () => {
                     className="svg-fill"
                     style={{
                       backgroundColor:
-                        filters.order === 'DESC' ? "rgba(255, 255, 255, 0.7)" : "",
+                        filters.order === 'DESC' ? "var(--color-white-t70)" : "",
                     }}
                     onClick={() => {
                       updateFilter('order', 'DESC');

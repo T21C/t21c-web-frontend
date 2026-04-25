@@ -1,39 +1,34 @@
+import "../accountProfilePage.css"
 import "./profilePage.css"
 import api from "@/utils/api";
-import { useEffect, useState, useMemo } from "react";
-import { useParams, useLocation, useNavigate } from "react-router-dom"
-import { isoToEmoji, formatNumber } from "@/utils";
-import { UserAvatar } from "@/components/layout";
-import { MetaTags } from "@/components/common/display";
+import axios from "axios";
+import { useEffect, useState, useMemo, useRef } from "react";
+import { Link, useParams, useLocation, useNavigate } from "react-router-dom"
+import { formatNumber } from "@/utils";
+import { DifficultyGraph, MetaTags } from "@/components/common/display";
 import { ScoreCard } from "@/components/cards";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
 import { AdminPlayerPopup } from "@/components/popups/Users";
-import { CreatorAssignmentPopup } from "@/components/popups/Creators";
-import { ShieldIcon, EditIcon, SortAscIcon, SortDescIcon, PackIcon, EyeIcon, EyeOffIcon } from "@/components/common/icons";
+import { ShieldIcon, EditIcon, SortAscIcon, SortDescIcon, PackIcon, EyeIcon, EyeOffIcon, ChevronIcon } from "@/components/common/icons";
 import { CaseOpenSelector, CustomSelect } from "@/components/common/selectors";
 import caseOpen from "@/assets/icons/case.png";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { ScrollButton } from "@/components/common/buttons";
 import { useProfileContext } from "@/contexts/ProfileContext";
+import { useDebouncedRequest } from "@/hooks/useDebouncedRequest";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { CreatorIcon } from "@/components/common/icons/CreatorIcon";
 import { AccountStatusBanners } from "@/components/account/AccountStatusBanners/AccountStatusBanners";
+import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
+import { buildPlayerStatGroups } from "@/utils/profileStatGroups";
+import { buildPlayerIconSlots } from "@/utils/profileIconSlots";
+import { toDifficultyGraphData } from "@/utils/statFormatters";
+import { getEffectiveProfileBannerUrl } from "@/utils/profileBanners";
 const ENABLE_ROULETTE = import.meta.env.VITE_APRIL_FOOLS === "true";
 
 const PASSES_PER_PAGE = 50;
-
-const parseRankColor = (rank) => {
-  var clr;
-  switch(rank) {
-    case 1: clr = "#efff63"; break;
-    case 2: clr = "#eeeeee"; break;
-    case 3: clr = "#ff834a"; break;
-    default: clr = "#777777"; break;
-  }
-  return clr
-}
 
 const ProfilePage = () => {
     const params = useParams()
@@ -43,16 +38,23 @@ const ProfilePage = () => {
     const { t } = useTranslation('pages');
     const { user } = useAuth();
     const [showEditPopup, setShowEditPopup] = useState(false);
-    const [showCreatorAssignment, setShowCreatorAssignment] = useState(false);
     const location = useLocation();
     const currentUrl = window.location.origin + location.pathname;
     const navigate = useNavigate();
     const [isSpinning, setIsSpinning] = useState(false);
-    
-    // Infinite scroll state
+
+    // Server-paginated passes (infinite scroll).
     const [displayedPasses, setDisplayedPasses] = useState([]);
+    const [passesTotal, setPassesTotal] = useState(0);
+    const [passesInitialLoading, setPassesInitialLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
     const [showHiddenPasses, setShowHiddenPasses] = useState(false);
+    const [scoresCollapsed, setScoresCollapsed] = useState(false);
+    const [difficultyCollapsed, setDifficultyCollapsed] = useState(false);
+    const [includeDupes, setIncludeDupes] = useState(false);
+    const runPassesRequest = useDebouncedRequest(350);
+    // Guard against stale responses when filters change mid-flight.
+    const passesRequestIdRef = useRef(0);
 
     const isOwnProfile = !playerId || Number(playerId) === user?.playerId;
 
@@ -83,15 +85,8 @@ const ProfilePage = () => {
     var valueLabels = {
       rankedScore: t('profile.valueLabels.rankedScore'),
       generalScore: t('profile.valueLabels.generalScore'),
-      ppScore: t('profile.valueLabels.ppScore'),
-      wfScore: t('profile.valueLabels.wfScore'),
-      score12K: t('profile.valueLabels.score12K'),
       averageXacc: t('profile.valueLabels.averageXacc'),
-      totalPasses: t('profile.valueLabels.totalPasses'),
-      universalPassCount: t('profile.valueLabels.universalPassCount'),
       worldsFirstCount: t('profile.valueLabels.worldsFirstCount'),
-      topDiff: t('profile.valueLabels.topDiff'),
-      top12kDiff: t('profile.valueLabels.top12kDiff')
     };
 
     useEffect(() => {
@@ -108,6 +103,65 @@ const ProfilePage = () => {
         fetchPlayer();
       }, [playerId]);
 
+      // Passes are served from a paginated endpoint so we only fetch what is
+      // visible. Sorting and searching happen server-side; the infinite
+      // scroll handler below pulls the next page as the user scrolls.
+      const fetchPassesPage = async (offset, { immediate = false } = {}) => {
+        if (!playerId) return;
+        const params = new URLSearchParams({
+          limit: String(PASSES_PER_PAGE),
+          offset: String(offset),
+          sortBy: sortType,
+          order: sortOrder,
+        });
+        if (searchQuery) params.append('query', searchQuery);
+        if (isOwnProfile && showHiddenPasses) params.append('showHidden', 'true');
+
+        const url = `${import.meta.env.VITE_PLAYERS_V3}/${playerId}/passes?${params.toString()}`;
+        const requestId = ++passesRequestIdRef.current;
+        const runner = immediate ? runPassesRequest.flush : runPassesRequest;
+        if (offset === 0) setPassesInitialLoading(true);
+        try {
+          const response = await runner(({ signal }) => api.get(url, { signal }));
+          if (requestId !== passesRequestIdRef.current) return;
+          const results = Array.isArray(response.data?.passes) ? response.data.passes : [];
+          const total = Number(response.data?.total) || 0;
+          setPassesTotal(total);
+          if (offset === 0) {
+            setDisplayedPasses(results);
+          } else {
+            setDisplayedPasses(prev => [...prev, ...results]);
+          }
+          setHasMore((offset + results.length) < total);
+        } catch (error) {
+          if (axios.isCancel(error)) return;
+          console.error('Error fetching player passes:', error);
+          if (requestId === passesRequestIdRef.current && offset === 0) {
+            setDisplayedPasses([]);
+            setPassesTotal(0);
+            setHasMore(false);
+          }
+        } finally {
+          if (requestId === passesRequestIdRef.current && offset === 0) {
+            setPassesInitialLoading(false);
+          }
+        }
+      };
+
+      useEffect(() => {
+        if (!playerId) {
+          setDisplayedPasses([]);
+          setPassesTotal(0);
+          setHasMore(false);
+          return;
+        }
+        // Reset the list when filter inputs change; fetch the first page.
+        setDisplayedPasses([]);
+        setHasMore(true);
+        fetchPassesPage(0);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [playerId, searchQuery, sortType, sortOrder, showHiddenPasses]);
+
       const handlePlayerUpdate = (updatedPlayer) => {
         setPlayerData(updatedPlayer);
       };
@@ -120,27 +174,7 @@ const ProfilePage = () => {
         setShowEditPopup(true);
       };
 
-      const handleCreatorAssignmentClick = () => {
-        setShowCreatorAssignment(true);
-      };
-
-      const handleCreatorAssignmentClose = () => {
-        setShowCreatorAssignment(false);
-      };
-
-      const handleCreatorAssignmentUpdate = () => {
-        if (playerId) {
-          const fetchPlayer = async () => {
-            try {
-              const response = await api.get(`${import.meta.env.VITE_PLAYERS_V3}/${playerId}/profile`);
-              setPlayerData(response.data);
-            } catch (error) {
-              console.error('Error fetching updated player data:', error);
-            }
-          };
-          fetchPlayer();
-        }
-        
+      const handleCreatorUserLinkedUpdate = () => {
         if (isOwnProfile && user) {
           window.dispatchEvent(new CustomEvent('auth:permission-changed'));
         }
@@ -230,149 +264,83 @@ const ProfilePage = () => {
         minItem == null || score.impact < minItem.impact ? score : minItem
       , null);
 
-      const sortByScore = (a, b) => {
-        return sortOrder === 'DESC' ? (b.scoreV2 || 0) - (a.scoreV2 || 0) : (a.scoreV2 || 0) - (b.scoreV2 || 0);
-      }
-      // Define sort options (extendable)
+      const scoresExpanded = !scoresCollapsed;
+      const difficultyExpanded = !difficultyCollapsed;
+
+      // Sort options are pure labels now — ordering is resolved server-side.
       const sortOptions = useMemo(() => [
-        { value: 'score', label: t('profile.sort.byScore'), sortFn: sortByScore },
-        { value: 'speed', label: t('profile.sort.bySpeed'), sortFn: (a, b) => {
-          const speedA = a.speed || 0;
-          const speedB = b.speed || 0;
-          if (speedA !== speedB) {
-            return sortOrder === 'DESC' ? speedB - speedA : speedA - speedB;
-          }
-          return sortByScore(a, b);
-        }},
-        { value: 'date', label: t('profile.sort.byDate'), sortFn: (a, b) => {
-          const dateA = new Date(a.vidUploadTime).getTime() || 0;
-          const dateB = new Date(b.vidUploadTime).getTime() || 0;
-          if (dateA !== dateB) {
-            return sortOrder === 'DESC' ? dateB - dateA : dateA - dateB;
-          }
-          return sortByScore(a, b);
-        }},
-        { value: 'xacc', label: t('profile.sort.byXacc'), sortFn: (a, b) => {
-          const xaccA = a.judgements?.accuracy || 0;
-          const xaccB = b.judgements?.accuracy || 0;
-          if (xaccA !== xaccB) {
-            return sortOrder === 'DESC' ? xaccB - xaccA : xaccA - xaccB;
-          }
-          return sortByScore(a, b);
-        }},
-        { 
-          value: 'difficulty', 
-          label: t('profile.sort.byDifficulty'), 
-          sortFn: (a, b) => {
-            // First: PGU difficulties sorted before others
-            const diffA = difficultyDict[a.level?.diffId];
-            const diffB = difficultyDict[b.level?.diffId];
-            const typeA = diffA?.type === "PGU" ? 0 : 1;
-            const typeB = diffB?.type === "PGU" ? 0 : 1;
-            if (typeA !== typeB) {
-              return sortOrder !== 'DESC' ? typeB - typeA : typeA - typeB;
-            }
+        { value: 'score', label: t('profile.sort.byScore') },
+        { value: 'impact', label: t('profile.sort.byImpact') },
+        { value: 'speed', label: t('profile.sort.bySpeed') },
+        { value: 'date', label: t('profile.sort.byDate') },
+        { value: 'xacc', label: t('profile.sort.byXacc') },
+        { value: 'difficulty', label: t('profile.sort.byDifficulty') },
+      ], [t]);
 
-            const sortOrderA = diffA?.sortOrder || 0;
-            const sortOrderB = diffB?.sortOrder || 0;
-            if (sortOrderA !== sortOrderB) {
-              return sortOrder === 'DESC' ? sortOrderB - sortOrderA : sortOrderA - sortOrderB;
-            }
-
-            const baseScoreA = a.level?.baseScore || diffA?.baseScore || 0;
-            const baseScoreB = b.level?.baseScore || diffB?.baseScore || 0;
-            if (baseScoreA !== baseScoreB) {
-              return sortOrder !== 'DESC' ? baseScoreB - baseScoreA : baseScoreA - baseScoreB;
-            }
-          }
-        }
-      ], [t, sortOrder, playerData?.topScores, difficultyDict]);
-
-      const selectedSortOption = useMemo(() => 
-        sortOptions.find(option => option.value === sortType),
+      const selectedSortOption = useMemo(
+        () => sortOptions.find(option => option.value === sortType),
         [sortOptions, sortType]
       );
 
-      // Define searchable fields (extendable)
-      const searchableFields = useMemo(() => ({
-        song: (pass) => pass.level?.song?.toLowerCase() || '',
-        artist: (pass) => pass.level?.artist?.toLowerCase() || '',
-        difficulty: (pass) => difficultyDict[pass.level?.diffId]?.name?.toLowerCase() || '',
-        creators: (pass) => pass.level?.levelCredits?.map(credit => 
-          credit.creator?.name?.toLowerCase() || ''
-        ).join(' ') || '',
-        team: (pass) => pass.level?.teamObject?.name?.toLowerCase() || '',
-      }), [difficultyDict]);
+      const statGroups = useMemo(
+        () => buildPlayerStatGroups(playerData?.funFacts, t),
+        [playerData?.funFacts, t],
+      );
 
-      // Filtered and sorted passes
-      const filteredAndSortedPasses = useMemo(() => {
-        if (!playerData?.passes) return [];
+      const iconSlots = useMemo(
+        () => buildPlayerIconSlots(
+          {
+            clearsByDifficulty: playerData?.funFacts?.clearsByDifficulty,
+            worldsFirstByDifficulty: playerData?.funFacts?.worldsFirstByDifficulty,
+          },
+          difficultyDict || {},
+        ),
+        [
+          playerData?.funFacts?.clearsByDifficulty,
+          playerData?.funFacts?.worldsFirstByDifficulty,
+          difficultyDict,
+        ],
+      );
 
+      const profileBannerUrl = useMemo(() => {
+        if (!playerData) return null;
+        return getEffectiveProfileBannerUrl({
+          bannerPreset: playerData.bannerPreset,
+          customBannerUrl: playerData.customBannerUrl,
+          subjectUser: { permissionFlags: playerData.user?.permissionFlags ?? 0 },
+        });
+      }, [playerData]);
 
-        let filtered = playerData.passes;
-        // Apply search filter
-        if (searchQuery) {
-          const query = searchQuery.toLowerCase();
-          filtered = filtered
-          .filter(pass => {
-            return Object.values(searchableFields).some(fieldFn => 
-              fieldFn(pass).includes(query)
-            );
-          })
-          .filter(pass => {
-            // Always filter out deleted passes
-            if (pass.isDeleted) return false;
-            
-            // Filter hidden passes based on toggle state (only for own profile)
-              // If toggle is off, hide hidden passes
-              if (showHiddenPasses && pass.isHidden) return false;
-              // For other profiles, always hide hidden passes
-              if (pass.isHidden) return false;
-            
-            return true;
-          });
-        }
+      const difficultyGraphDataWithDupes = useMemo(
+        () => toDifficultyGraphData(playerData?.funFacts?.clearsByDifficulty, difficultyDict || {}, "passes"),
+        [playerData?.funFacts?.clearsByDifficulty, difficultyDict],
+      );
 
-        // Apply sorting
-        const sortFn = sortOptions.find(opt => opt.value === sortType)?.sortFn;
-        if (sortFn) {
-          filtered = [...filtered].sort((a, b) => (b.id - a.id)).sort(sortFn);
-        }
+      const difficultyGraphDataNoDupes = useMemo(
+        () => toDifficultyGraphData(playerData?.funFacts?.clearsByDifficultyNoDupes, difficultyDict || {}, "passes"),
+        [playerData?.funFacts?.clearsByDifficultyNoDupes, difficultyDict],
+      );
 
-        return filtered;
-      }, [playerData?.passes, searchQuery, sortType, sortOrder, sortOptions, searchableFields, showHiddenPasses, isOwnProfile]);
+      // Swap the reference directly so recharts animates between the two
+      // datasets (same length/order, only `passCount` values change).
+      const difficultyGraphData = includeDupes
+        ? difficultyGraphDataWithDupes
+        : difficultyGraphDataNoDupes;
 
-      // Update displayed passes when filter/sort changes (not when filteredAndSortedPasses object changes)
-      useEffect(() => {
-        if (filteredAndSortedPasses.length > 0) {
-          setDisplayedPasses(filteredAndSortedPasses.slice(0, PASSES_PER_PAGE));
-          setHasMore(filteredAndSortedPasses.length > PASSES_PER_PAGE);
-        } else {
-          setDisplayedPasses([]);
-          setHasMore(false);
-        }
-      }, [searchQuery, sortType, sortOrder, showHiddenPasses, playerData?.passes]);
-
-      // Load more passes for infinite scroll
       const loadMorePasses = () => {
-        if (displayedPasses.length >= filteredAndSortedPasses.length) {
+        if (displayedPasses.length >= passesTotal) {
           setHasMore(false);
           return;
         }
-        const currentLength = displayedPasses.length;
-        const nextPasses = filteredAndSortedPasses.slice(currentLength, currentLength + PASSES_PER_PAGE);
-        if (nextPasses.length > 0) {
-          setDisplayedPasses(prev => [...prev, ...nextPasses]);
-          setHasMore(currentLength + nextPasses.length < filteredAndSortedPasses.length);
-        } else {
-          setHasMore(false);
-        }
+        // Subsequent pages skip the debounce — they are a direct response to
+        // the user scrolling and would feel laggy otherwise.
+        fetchPassesPage(displayedPasses.length, { immediate: true });
       };
 
       // Conditional renders after all hooks
       if (playerId && !playerData) {
         return (
-          <div className="player-page">
+          <div className="account-profile-page player-page">
             <div className="player-body" style={{height: "85vh"}}>
               <div className="loader"/>  
             </div>
@@ -382,7 +350,7 @@ const ProfilePage = () => {
 
       if (!playerId && !user) {
         return (
-          <div className="player-page">
+          <div className="account-profile-page player-page">
             <MetaTags
               title={t('profile.meta.defaultTitle')}
               description={t('profile.meta.description')}
@@ -403,7 +371,7 @@ const ProfilePage = () => {
         {user && isOwnProfile ? (
           <AccountStatusBanners variant="profile" user={user} navigate={navigate} />
         ) : null}
-        <div className="player-page">
+        <div className="account-profile-page player-page">
           <MetaTags
             title={playerData?.name ? t('profile.meta.title', { name: playerData.name }) : t('profile.meta.defaultTitle')}
             description={t('profile.meta.description', { name: playerData?.name || 'Unknown Player' })}
@@ -417,204 +385,128 @@ const ProfilePage = () => {
           {playerData != null ? (Object.keys(playerData).length > 0 ? (
             <div className="player-body">
               <div className="player-content">
-                <div className="player-header">
-                  {ENABLE_ROULETTE && (
-                    <button 
-                      className="case-open-button" 
+                <div className="player-page__hero">
+                  {ENABLE_ROULETTE ? (
+                    <button
+                      type="button"
+                      className="case-open-button"
                       onClick={handleCaseOpenClick}
                       disabled={!user && !playerId}
-                  >
-                    <img src={caseOpen} alt="Case Open" />
-                  </button>
-                  )}
-                  <div className="player-header-content">
-
-                    <div className="player-info-container">
-                      <div className="player-picture-container">
-                      <div className="player-picture-and-info">
-                      <UserAvatar 
-                        primaryUrl={playerData?.user?.avatarUrl || playerData?.pfp}
-                        fallbackUrl={playerData?.pfp || '/default-avatar.jpg'}
-                        className="player-picture"
-                      />
-                      <div className="player-id">ID: {playerData?.id || 'N/A'}</div>
-                      </div>
-                      {/* Mobile difficulty display */}
-                      <div className="mobile-diff-info">
-                      <div className="diff-info">
-                      <p>{valueLabels?.topDiff}</p>
-                      <img
-                        src={difficultyDict[playerData?.topDiffId]?.icon || "/placeholder-difficulty.png"}
-                        alt={difficultyDict[playerData?.topDiffId]?.name || 'No difficulty set'}
-                        className="diff-image"
-                      />
-                    </div>
-
-                    <div className="diff-info">
-                      <p>{valueLabels?.top12kDiff}</p>
-                      <img
-                        src={difficultyDict[playerData?.top12kDiffId]?.icon || "/placeholder-difficulty.png"}
-                        alt={difficultyDict[playerData?.top12kDiffId]?.name || 'No 12K difficulty set'}
-                        className="diff-image"
-                      />
-                    </div>
-                      </div>
-                    </div>
-                      <div className="player-info">
-                       <div className="player-name-rank">
-                         <div className="player-name-container">
-                           <h1>{playerData?.name || 'Unknown Player'}</h1>
-                           {playerData?.user?.username && (
-                             <span className="player-discord-handle">@{playerData.user.username}</span>
-                           )}
-                         </div>
-                         <div className="player-rank-flag">
-                           <h2
-                             style={{
-                               color: parseRankColor(playerData?.rankedScoreRank || 0), 
-                               backgroundColor: `${parseRankColor(playerData?.rankedScoreRank || 0)}27`,
-                           }}
-                           className={playerData?.user?.username ? "shift-rank-display" : ""}
-                           
-                           >#{playerData?.rankedScoreRank || 'Unranked'}</h2>
-                           <img
-                             src={isoToEmoji(playerData?.country || 'XX')}
-                             alt={playerData?.country || 'Unknown Country'}
-                             className="country-flag"
-                           />
-                         </div>
-                       </div>
-                     </div>
-                  </div>
-                  <div className="diff-container">
-                    <div className="diff-info">
-                      <p>{valueLabels?.topDiff}</p>
-                      <img
-                        src={difficultyDict[playerData?.topDiffId]?.icon || "/placeholder-difficulty.png"}
-                        alt={difficultyDict[playerData?.topDiffId]?.name || 'No difficulty set'}
-                        className="diff-image"
-                      />
-                    </div>
-
-                    <div className="diff-info">
-                      <p>{valueLabels?.top12kDiff}</p>
-                      <img
-                        src={difficultyDict[playerData?.top12kDiffId]?.icon || "/placeholder-difficulty.png"}
-                        alt={difficultyDict[playerData?.top12kDiffId]?.name || 'No 12K difficulty set'}
-                        className="diff-image"
-                      />
-                    </div>
-                  </div>
-                  </div>
-                  <div className="profile-button-container">
-                  {user && isOwnProfile && (
-                    <button 
-                      className="edit-button"
-                      //style={{cursor: "not-allowed", pointerEvents: "none"}}
-                      onClick={() => navigate('/profile/edit')}
                     >
-                      <EditIcon color="#fff" size={"24px"} />
+                      <img src={caseOpen} alt="Case Open" />
                     </button>
-                  )}
-                  {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
-                    <button 
-                      className="edit-button"
-                      onClick={handleAdminEditClick}
-                    >
-                      <ShieldIcon color="#fff" size={"24px"} />
-                    </button>
-                  )}
-                  {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
-                    <button 
-                      className="edit-button"
-                      onClick={handleCreatorAssignmentClick}
-                      title="Assign Creator"
-                    >
-                      <CreatorIcon className="creator-assignment-icon"
-                          color={playerData?.user?.creator ? '#5f5' : '#fff'}
-                          size={24}
-                      />
-                    </button>
-                  )}
-                  {playerData?.user?.username && (
-                    <button 
-                      className="edit-button"
-                      onClick={handleViewUserPacks}
-                      title="View User's Packs"
-                    >
-                      <PackIcon color="#fff" size={"24px"} />
-                    </button>
-                  )}
-                  
-                    {/*(user && ((isOwnProfile && hasDiscordProvider) 
-                    || hasFlag(user, permissionFlags.SUPER_ADMIN))) && (
-                    <button 
-                      className="edit-button discord-role-refresh-button" 
-                      onClick={handleDiscordRoleRefresh}
-                      title={
-                        hasFlag(user, permissionFlags.SUPER_ADMIN)
-                          ? t('profile.discordRoleSync.buttonTitle.other')
-                          : t('profile.discordRoleSync.buttonTitle.own')
-                      }
-                    >
-                      <DiscordIcon color="#fff" size={"24px"} />
-                    </button>
-                  )*/}
-                  </div>
-                </div>
-            
-              
-                <div className="score-container">
-                  <div className="score-item">
-                    <p className="score-name">{valueLabels.rankedScore}</p>
-                    <p className="score-value">{formatNumber(playerData?.rankedScore || 0)}</p>
-                  </div>
-                  <br />
-                  <div className="score-item">
-                    <p className="score-name">{valueLabels.generalScore}</p>
-                    <p className="score-value">{formatNumber(playerData?.generalScore || 0)}</p>
-                  </div>
-                  <br />
-                  <div className="score-item">
-                    <p className="score-name">{valueLabels.ppScore}</p>
-                    <p className="score-value">{formatNumber(playerData?.ppScore || 0)}</p>
-                  </div>
-                  <br />
-                  <div className="score-item">
-                    <p className="score-name">{valueLabels.wfScore}</p>
-                    <p className="score-value">{formatNumber(playerData?.wfScore || 0)}</p>
-                  </div>
-                  <br />
-                  <div className="score-item">
-                    <p className="score-name">{valueLabels.score12K}</p>
-                    <p className="score-value">{formatNumber(playerData?.score12K || 0)}</p>
-                  </div>
-                </div>
-            
-                <div className="passes-container">
-                  <div className="score-item">
-                    <p className="score-name">{valueLabels.worldsFirstCount}</p>
-                    <p className="score-value">{playerData?.worldsFirstCount || 0}</p>
-                  </div>
-                  <div className="score-item">
-                    <p className="score-name">{valueLabels.averageXacc}</p>
-                    <p className="score-value">{((playerData?.averageXacc || 0) * 100).toFixed(2)}%</p>
-                  </div>
-                  <div className="score-item">
-                    <p className="score-name">{valueLabels.totalPasses}</p>
-                    <p className="score-value">{playerData?.totalPasses || 0}</p>
-                  </div>
-                  <div className="score-item">
-                    <p className="score-name">{valueLabels.universalPassCount}</p>
-                    <p className="score-value">{playerData?.universalPassCount || 0}</p>
-                  </div>
+                  ) : null}
+                  <ProfileHeader
+                    mode="player"
+                    className="player-page__profile-header"
+                    bannerUrl={profileBannerUrl}
+                    iconSlots={iconSlots}
+                    avatarUrl={playerData?.user?.avatarUrl || playerData?.pfp}
+                    fallbackAvatarUrl={playerData?.pfp || "/default-avatar.jpg"}
+                    name={playerData?.name || t("profile.meta.defaultTitle")}
+                    handle={playerData?.user?.username}
+                    country={playerData?.country}
+                    badgeId={playerData?.rankedScoreRank}
+                    badgeLabel="#"
+                    expandStatsAriaLabel={t("profile.funFacts.expandAria")}
+                    collapseStatsAriaLabel={t("profile.funFacts.collapseAria")}
+                    statGroups={statGroups}
+                    statRows={[
+                      {
+                        key: "rankedScore",
+                        label: valueLabels.rankedScore,
+                        value: formatNumber(playerData?.rankedScore || 0),
+                      },
+                      {
+                        key: "averageXacc",
+                        label: valueLabels.averageXacc,
+                        value: `${((playerData?.averageXacc || 0) * 100).toFixed(2)}%`,
+                      },
+                      {
+                        key: "generalScore",
+                        label: valueLabels.generalScore,
+                        value: formatNumber(playerData?.generalScore || 0),
+                      },
+                    ]}
+                    actions={
+                      <>
+                        {user && isOwnProfile ? (
+                          <Link
+                            className="profile-header__action-btn"
+                            to="/settings/player"
+                            title={t("profile.editProfile")}
+                            aria-label={t("profile.editProfile")}
+                          >
+                            <EditIcon color="var(--color-white)" size={32} />
+                          </Link>
+                        ) : null}
+                        {hasFlag(user, permissionFlags.SUPER_ADMIN) ? (
+                          <button
+                            type="button"
+                            className="profile-header__action-btn"
+                            onClick={handleAdminEditClick}
+                            title={t("profile.adminEdit")}
+                            aria-label={t("profile.adminEdit")}
+                          >
+                            <ShieldIcon color="var(--color-white)" size={32} />
+                          </button>
+                        ) : null}
+                        {playerData?.user?.creator?.id ? (
+                          <Link
+                            className="profile-header__action-btn"
+                            to={`/creator/${playerData.user.creator.id}`}
+                            title={t("profile.linkToCreator", { defaultValue: "View creator profile" })}
+                            aria-label={t("profile.linkToCreator", { defaultValue: "View creator profile" })}
+                          >
+                            <CreatorIcon color="var(--color-white)" size={28} />
+                          </Link>
+                        ) : null}
+                        {playerData?.user?.username ? (
+                          <button
+                            type="button"
+                            className="profile-header__action-btn"
+                            onClick={handleViewUserPacks}
+                            title={t("profile.viewUserPacks")}
+                            aria-label={t("profile.viewUserPacks")}
+                          >
+                            <PackIcon color="var(--color-white)" size={32} />
+                          </button>
+                        ) : null}
+                      </>
+                    }
+                  />
                 </div>
               </div>
-              {playerData?.passes && playerData.passes.length > 0 && (
+              {(passesInitialLoading || displayedPasses.length > 0 || passesTotal > 0 || (playerData?.funFacts?.counts?.totalPasses ?? 0) > 0) && (
                 <div className="scores-section">
-                  <h2>{t('profile.sections.scores.title')}</h2>
+                  <div className="account-profile-page__section-title-row">
+                    <h2 className="account-profile-page__section-title">{t('profile.sections.scores.title')}</h2>
+                    <button
+                      type="button"
+                      className="account-profile-page__chevron-btn"
+                      aria-expanded={scoresExpanded}
+                      aria-label={
+                        scoresCollapsed
+                          ? t('profile.sections.scores.expand', { defaultValue: 'Expand scores' })
+                          : t('profile.sections.scores.collapse', { defaultValue: 'Collapse scores' })
+                      }
+                      onClick={() => setScoresCollapsed((v) => !v)}
+                    >
+                      <ChevronIcon direction={scoresExpanded ? 'down' : 'right'} />
+                    </button>
+                  </div>
                   
+                  {passesInitialLoading && displayedPasses.length === 0 ? (
+                    <div style={{ height: "200px", display: "flex"}}>
+                      <div className="loader loader-relative" />
+                    </div>
+                  ) : (
+                  <>
                   {/* Search and Sort Controls */}
+                  <div
+                    id="player-scores-scroll-container"
+                    className={["player-page__scores-container", scoresCollapsed ? "hidden" : ""].join(" ").trim()}
+                  >
                   <div className="scores-controls">
                     <div className="search-container">
                       <svg className="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -672,7 +564,7 @@ const ProfilePage = () => {
                     </div>
                     
                     <div className="results-count">
-                      {t('profile.labels.totalPasses', { count: filteredAndSortedPasses.length })}
+                      {t('profile.labels.totalPasses', { count: passesTotal })}
                     </div>
                   </div>
 
@@ -687,7 +579,8 @@ const ProfilePage = () => {
                         </p>
                       )
                     }
-                    scrollableTarget="scrollableDiv"
+                    loader={<div className="loader loader-relative"/>}
+                    scrollableTarget="player-scores-scroll-container"
                     style={{ overflow: 'visible' }}
                   >
                     <div className="scores-list">
@@ -696,7 +589,7 @@ const ProfilePage = () => {
                         <li key={index}>
                           <ScoreCard scoreData={score} topScores={playerData?.topScores || []} potentialTopScores={playerData?.potentialTopScores || []} />
                         </li>
-                        {lowestImpactScore && lowestImpactScore.id === score.id && playerData?.passes?.length > 20 && sortType === 'score' && sortOrder === 'DESC' && (
+                        {lowestImpactScore && lowestImpactScore.id === score.id && passesTotal > 20 && sortType === 'score' && sortOrder === 'DESC' && (
                           <div className="lowest-impact-score-indicator">
                             <p>
                               {(() => {
@@ -717,8 +610,43 @@ const ProfilePage = () => {
                       ))}
                     </div>
                   </InfiniteScroll>
+                  </div>
+                  </>
+                  )}
                 </div>
               )}
+
+              {difficultyGraphData.length > 0 ? (
+                <section className="player-page__difficulty-section">
+                  <div className="account-profile-page__section-title-row">
+                    <h2 className="account-profile-page__section-title">{t("profile.sections.difficultyBreakdown.title")}</h2>
+                    <button
+                      type="button"
+                      className="account-profile-page__chevron-btn"
+                      aria-expanded={difficultyExpanded}
+                      aria-label={
+                        difficultyCollapsed
+                          ? t('profile.sections.difficultyBreakdown.expand')
+                          : t('profile.sections.difficultyBreakdown.collapse')
+                      }
+                      onClick={() => setDifficultyCollapsed((v) => !v)}
+                    >
+                      <ChevronIcon direction={difficultyExpanded ? 'down' : 'right'} />
+                    </button>
+                  </div>
+                  <div className={["account-profile-page__collapsible", "player-page__difficulty-collapsible", difficultyCollapsed ? "hidden" : ""].join(" ").trim()}>
+                    <label className="player-page__difficulty-dupes-toggle">
+                      <input
+                        type="checkbox"
+                        checked={includeDupes}
+                        onChange={(e) => setIncludeDupes(e.target.checked)}
+                      />
+                      <span>{t('profile.sections.difficultyBreakdown.includeDupes')}</span>
+                    </label>
+                    <DifficultyGraph data={difficultyGraphData} mode="passes" />
+                  </div>
+                </section>
+              ) : null}
             </div>
           ) : <h1 className="player-notfound">{t('profile.notFound')}</h1>)
           : <div className="loader"></div>}
@@ -728,6 +656,7 @@ const ProfilePage = () => {
               player={playerData}
               onClose={() => setShowEditPopup(false)}
               onUpdate={handlePlayerUpdate}
+              onCreatorUserLinkedUpdate={handleCreatorUserLinkedUpdate}
             />
           )}
 
@@ -744,13 +673,6 @@ const ProfilePage = () => {
             </div>
           )}
 
-          {showCreatorAssignment && playerData?.user && (
-            <CreatorAssignmentPopup
-              user={playerData.user}
-              onClose={handleCreatorAssignmentClose}
-              onUpdate={handleCreatorAssignmentUpdate}
-            />
-          )}
         </div>
         </>
       );

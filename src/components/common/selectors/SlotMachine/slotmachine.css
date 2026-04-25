@@ -72,8 +72,8 @@
   }
   
   .slot-digit {
-    background: #2a2a2a;
-    border: 2px solid #3a3a3a;
+    background: var(--btn-neutral-dark);
+    border: 2px solid var(--btn-neutral-elevated);
     border-radius: 8px;
     width: 60px;
     height: 80px;
@@ -87,15 +87,15 @@
   }
   
   .slot-digit.spinning {
-    background: #3a3a3a;
+    background: var(--btn-neutral-elevated);
     border-color: #4a4a4a;
     animation: slot-digit_pulse 0.5s infinite;
   }
 
   .slot-digit.complete {
-    background: #2a2a2a;
-    border-color: #4CAF50;
-    box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+    background: var(--btn-neutral-dark);
+    border-color: var(--btn-success);
+    box-shadow: 0 0 15px var(--btn-success-glow-50);
     animation: completeslot-digit_pulse 1s ease-out;
   }
   
@@ -219,12 +219,12 @@
 
   @keyframes completeslot-digit_pulse {
     0% {
-      box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+      box-shadow: 0 0 5px var(--btn-success-glow-50);
     }
     50% {
-      box-shadow: 0 0 30px rgba(76, 175, 80, 0.8);
+      box-shadow: 0 0 30px var(--btn-success-glow-80);
     }
     100% {
-      box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+      box-shadow: 0 0 15px var(--btn-success-glow-50);
     }
   }

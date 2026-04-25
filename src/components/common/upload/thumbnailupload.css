@@ -20,7 +20,7 @@
   width: 120px;
   height: 80px;
   border-radius: 8px;
-  border: 2px solid #404040;
+  border: 2px solid var(--btn-neutral-disabled-fill);
   object-fit: cover;
 }
 
@@ -63,8 +63,8 @@
 
 .thumbnail-upload__file-label {
   padding: 0.5rem 1rem;
-  background: #2a2a2a;
-  border: 2px solid #404040;
+  background: var(--btn-neutral-dark);
+  border: 2px solid var(--btn-neutral-disabled-fill);
   border-radius: 8px;
   color: #ffffff;
   cursor: pointer;
@@ -77,7 +77,7 @@
 }
 
 .thumbnail-upload__file-label:hover:not(:disabled) {
-  border-color: #4a9eff;
+  border-color: var(--btn-primary);
   background: #1a1a1a;
 }
 
@@ -88,7 +88,7 @@
 
 .thumbnail-upload__upload-btn {
   padding: 0.5rem 1rem;
-  background: #4a9eff;
+  background: var(--btn-primary);
   color: white;
   border: none;
   border-radius: 8px;
@@ -100,8 +100,7 @@
 }
 
 .thumbnail-upload__upload-btn:hover:not(:disabled) {
-  background: #3a8eef;
-  transform: translateY(-1px);
+  background: var(--btn-primary-hover);
 }
 
 .thumbnail-upload__upload-btn:disabled {

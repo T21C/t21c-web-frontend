@@ -1,12 +1,11 @@
 import "./adminpage.css"
 
-import { useNavigate, useLocation } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import { useTranslation } from "react-i18next";
 import { MetaTags } from "@/components/common/display";
 
 const AdminPage = () => {
   const {t} = useTranslation('pages')
-  const navigate = useNavigate();
   const location = useLocation();
   const currentUrl = window.location.origin + location.pathname;
 
@@ -97,15 +96,15 @@ const AdminPage = () => {
         <h1 className="admin-title">{t("admin.title")}</h1>
         <div className="admin-grid">
           {adminLinks.map((link) => (
-            <div 
+            <Link 
               key={link.id} 
               className="admin-card"
-              onClick={() => navigate(link.path)}
+              to={link.path}
             >
               <div className="admin-card-icon">{link.icon}</div>
               <h2 className="admin-card-title">{link.title}</h2>
               <p className="admin-card-description">{link.description}</p>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

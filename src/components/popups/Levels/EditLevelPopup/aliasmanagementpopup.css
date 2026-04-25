@@ -36,7 +36,7 @@
 }
 
 .alias-management-popup .add-alias-form {
-  background-color: #2a2a2a;
+  background-color: var(--btn-neutral-dark);
   padding: 20px;
   border-radius: 6px;
   margin-bottom: 20px;
@@ -116,7 +116,7 @@
 }
 
 .alias-management-popup .error-message {
-  background-color: #ff44445d;
+  background-color: var(--danger-color-tint-36);
   color: #ff9999;
   padding: 10px;
   border-radius: 4px;
@@ -124,7 +124,7 @@
 }
 
 .alias-management-popup .aliases-list {
-  background-color: #2a2a2a;
+  background-color: var(--btn-neutral-dark);
   padding: 20px;
   border-radius: 6px;
 }
@@ -164,11 +164,11 @@
 
 .alias-management-popup .affected-levels-notice {
   background-color: rgba(0, 123, 255, 0.1);
-  border: 1px solid #007bff;
+  border: 1px solid var(--btn-primary);
   border-radius: 4px;
   padding: 10px;
   margin: 10px 0;
-  color: #007bff;
+  color: var(--btn-primary);
   font-size: 0.9em;
   text-align: center;
 }

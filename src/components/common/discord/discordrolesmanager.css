@@ -58,7 +58,7 @@
 }
 
 .discord-roles-manager__guild {
-  background: var(--bg-secondary, #2a2a2a);
+  background: var(--bg-secondary, var(--btn-neutral-dark));
   border-radius: 8px;
   overflow: hidden;
 }
@@ -187,7 +187,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.5rem 0.75rem;
-  background: var(--bg-secondary, #2a2a2a);
+  background: var(--bg-secondary, var(--btn-neutral-dark));
   border-radius: 4px;
   cursor: grab;
   transition: background-color 0.2s;
@@ -198,7 +198,7 @@
 }
 
 .discord-roles-manager__role.dragging {
-  background-color: var(--bg-tertiary, #3a3a3a);
+  background-color: var(--bg-tertiary, var(--btn-neutral-elevated));
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   opacity: 0.9;
 }
@@ -266,7 +266,7 @@
   padding: 0.5rem;
   border: 1px solid var(--border-color, #444);
   border-radius: 4px;
-  background: var(--bg-secondary, #2a2a2a);
+  background: var(--bg-secondary, var(--btn-neutral-dark));
   color: var(--text-primary, #fff);
   font-size: 0.875rem;
 }
@@ -364,7 +364,7 @@
   padding: 2rem;
   max-width: 400px;
   width: 90%;
-  border: 2px solid var(--border-color, #404040);
+  border: 2px solid var(--border-color, var(--btn-neutral-disabled-fill));
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
 }
 
@@ -398,12 +398,12 @@
 }
 
 .discord-roles-manager__confirm-button--primary {
-  background-color: #f44336;
+  background-color: var(--danger-color);
   color: #ffffff;
 }
 
 .discord-roles-manager__confirm-button--primary:hover {
-  background-color: #d32f2f;
+  background-color: var(--danger-color-hover);
 }
 
 .discord-roles-manager__confirm-button--secondary {

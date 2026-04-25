@@ -22,16 +22,32 @@
     "universalPassCount": "Universal Passes",
     "worldsFirstCount": "World's First Passes",
     "topDiff": "Top Difficulty",
-    "top12kDiff": "Top 12K Difficulty"
+    "top12kDiff": "Top 12K Difficulty",
+    "totalUniquePasses": "Total Unique Passes",
+    "topAccClearNum": "Top Acc Clear Num",
+    "tilesPressed": "Tiles Pressed"
   },
+  "editProfile": "Edit profile",
+  "adminEdit": "Admin edit",
+  "viewUserPacks": "View user's packs",
+  "linkToCreator": "View creator profile",
   "sections": {
     "scores": {
       "title": "Scores",
+      "expand": "Expand scores",
+      "collapse": "Collapse scores",
       "lowestImpactScore": "Get at least {{score}} to gain Ranked Score"
+    },
+    "difficultyBreakdown": {
+      "title": "Clears by difficulty",
+      "includeDupes": "Include duplicates",
+      "expand": "Expand difficulty breakdown",
+      "collapse": "Collapse difficulty breakdown"
     }
   },
   "sort": {
     "byScore": "By Score",
+    "byImpact": "By Impact",
     "byDate": "By Date",
     "byXacc": "By X-Accuracy",
     "byDifficulty": "By Difficulty",
@@ -47,6 +63,69 @@
   "hideHiddenPasses": "Hide hidden passes",
   "infiniteScroll": {
     "end": "You've reached the end!"
+  },
+  "funFacts": {
+    "expandAria": "Show all statistics",
+    "collapseAria": "Hide detailed statistics",
+    "groups": {
+      "counts": "Pass counts",
+      "judgements": "Judgements",
+      "levelsCleared": "Levels cleared",
+      "extremes": "Records",
+      "activity": "Activity",
+      "breakdownByType": "Clears by difficulty type"
+    },
+    "counts": {
+      "totalPasses": "Total passes",
+      "uniqueLevelsCleared": "Unique levels cleared",
+      "worldsFirstCount": "World's first clears",
+      "clears12K": "12K clears",
+      "clears16K": "16K clears",
+      "clearsNoHoldTap": "No-hold tap clears",
+      "duplicatePasses": "Duplicate clears",
+      "hiddenPasses": "Hidden passes (visible to you)"
+    },
+    "judgements": {
+      "totalTilesHit": "Total tiles hit",
+      "earlyDouble": "Early double",
+      "earlySingle": "Early single",
+      "ePerfect": "Early perfect",
+      "perfect": "Perfect",
+      "lPerfect": "Late perfect",
+      "lateSingle": "Late single",
+      "totalXacc": "General accuracy",
+      "earlyVsLateBias": "Early vs late bias"
+    },
+    "levelsCleared": {
+      "totalTilecountCleared": "Total tilecount cleared",
+      "totalLevelLengthMs": "Sum of level lengths",
+      "totalPlaytimeMs": "Estimated playtime",
+      "averageBpm": "Avg BPM (cleared levels)",
+      "totalScoreV2": "Sum of score v2"
+    },
+    "extremes": {
+      "firstPassAt": "First pass",
+      "latestPassAt": "Latest pass",
+      "bestAccuracy": "Best accuracy",
+      "worstAccuracy": "Worst accuracy",
+      "topSpeed": "Top speed",
+      "highestTilecountCleared": "Highest tilecount",
+      "longestLevelMs": "Longest level",
+      "highestBpmCleared": "Highest BPM cleared",
+      "viewPass": "View pass"
+    },
+    "activity": {
+      "accountAgeDays": "Account age (days)",
+      "daysActive": "Days with a pass",
+      "passesLast30Days": "Passes (last 30 days)",
+      "uniqueLevelsLiked": "Levels liked",
+      "packsOwned": "Packs owned",
+      "packsFavorited": "Packs favorited"
+    },
+    "difficultyType": {
+      "PGU": "PGU",
+      "SPECIAL": "Special"
+    }
   },
   "discordRoleSync": {
     "buttonTitle": {

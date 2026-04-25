@@ -136,11 +136,11 @@
 }
 
 .top-raters-overlay .stat-item:nth-child(1) {
-  border-left: 3px solid #4CAF50;
+  border-left: 3px solid var(--btn-success);
 }
 
 .top-raters-overlay .stat-item:nth-child(2) {
-  border-left: 3px solid #2196F3;
+  border-left: 3px solid var(--btn-info);
 }
 
 .top-raters-overlay .stat-item:nth-child(3) {
@@ -215,7 +215,7 @@
   position: absolute;
   width: 60px;
   height: 60px;
-  border: 2px solid #4CAF50;
+  border: 2px solid var(--btn-success);
   border-radius: 50%;
   z-index: 1;
   animation: top-raters-popup_pulse 6s infinite;
@@ -280,11 +280,11 @@
 
 
 .top-raters-overlay .total-ratings.high-value {
-  border-left: 3px solid #4CAF50;
+  border-left: 3px solid var(--btn-success);
 }
 
 .top-raters-overlay .average-per-day.high-value {
-  border-left: 3px solid #2196F3;
+  border-left: 3px solid var(--btn-info);
 }
 
 .top-raters-overlay .total-ratings .stat-value,
@@ -294,12 +294,12 @@
 }
 
 .top-raters-overlay .total-ratings.high-value .stat-value {
-  color: #4CAF50;
-  text-shadow: 0 0 8px rgba(76, 175, 80, 0.3);
+  color: var(--btn-success);
+  text-shadow: 0 0 8px var(--btn-success-tint-strong);
 }
 
 .top-raters-overlay .average-per-day.high-value .stat-value {
-  color: #2196F3;
+  color: var(--btn-info);
   text-shadow: 0 0 8px rgba(33, 150, 243, 0.3);
 }
 
@@ -322,7 +322,6 @@
 /* Add hover effects for the stat containers */
 .top-raters-overlay .total-ratings:hover,
 .top-raters-overlay .average-per-day:hover {
-  transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   transition: all 0.2s ease;
 }
@@ -394,7 +393,7 @@
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  border: 2px solid #4CAF50;
+  border: 2px solid var(--btn-success);
 }
 
 
@@ -403,7 +402,7 @@
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: #f44336;
+  background-color: var(--danger-color);
   color: white;
   padding: 12px 20px;
   border-radius: 4px;

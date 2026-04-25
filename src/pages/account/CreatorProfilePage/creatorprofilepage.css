@@ -1,0 +1,66 @@
+.creator-profile-page {
+  width: 100%;
+  min-height: 100vh;
+  padding-bottom: 5rem;
+}
+
+.creator-profile-page .creator-profile-page__body {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.creator-profile-page .creator-profile-page__loading,
+.creator-profile-page .creator-profile-page__notfound {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 4rem 1rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.creator-profile-page .creator-profile-page__section {
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem 1.5rem;
+  border-radius: 10px;
+  background: rgba(20, 20, 20, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  z-index: 1;
+}
+
+.creator-profile-page .creator-profile-page__bio-placeholder {
+  margin: 0;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.creator-profile-page .creator-profile-page__section--levels .account-profile-page__section-title-row {
+  margin-right: 1rem; 
+}
+
+.creator-profile-page .creator-profile-page__section--levels {
+  display: flex;
+  flex-direction: column;
+  transition: max-height 0.3s ease-in-out;
+  padding-right: 0.5rem;
+}
+
+.creator-profile-page .creator-profile-page__levels-container {
+  overflow-y: auto;
+  overflow-x: visible;
+  padding: 0 0.25rem;
+  margin-top: 1rem;
+  height: 60rem;
+  transition: all 0.3s ease-in-out;
+  scrollbar-gutter: stable;
+}
+
+.creator-profile-page .creator-profile-page__levels-container.hidden {
+  height: 0;
+  margin-top: 0;
+}

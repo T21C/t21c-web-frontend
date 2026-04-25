@@ -91,7 +91,6 @@
 
 .tag-selector-dropdown .select-all-button:hover {
   background: var(--color-white-t30);
-  transform: translateY(-1px);
 }
 
 .tag-selector-dropdown .tag-selector-group {
@@ -130,7 +129,6 @@
 
 .tag-selector-dropdown .tag-selector-item:hover {
   opacity: 0.9;
-  transform: translateY(-1px);
 }
 
 .tag-selector-dropdown .tag-selector-item.selected {

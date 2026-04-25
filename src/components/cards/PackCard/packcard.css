@@ -24,7 +24,7 @@
 
 .pack-card--forced-private {
   opacity: 0.7;
-  border-color: #dc3545;
+  border-color: var(--danger-color);
 }
 
 .pack-card--small {
@@ -42,11 +42,20 @@
   margin-bottom: 12px;
 }
 
+.pack-card .pack-card__link-wrap {
+  display: contents;
+}
+
+.pack-card .pack-card__owner-avatar {
+  width: 2rem;
+  height: 2rem;
+}
+
 .pack-card__icon {
   width: 48px;
   height: 48px;
   border-radius: 8px;
-  background: #2a2a2a;
+  background: var(--btn-neutral-dark);
   border: 1px solid #333333;
   display: flex;
   align-items: center;
@@ -115,8 +124,8 @@
 }
 
 .pack-card__edit-btn:hover {
-  background: #2a2a2a;
-  color: #007bff;
+  background: var(--btn-neutral-dark);
+  color: var(--btn-primary);
 }
 
 .pack-card__actions {
@@ -150,7 +159,7 @@
 }
 
 .pack-card__favorite-btn:not(:disabled):hover {
-  background: #2a2a2a;
+  background: var(--btn-neutral-dark);
   color: #ff6b6b;
 }
 
@@ -216,7 +225,7 @@
 }
 
 .pack-view-icon.forced-private {
-  color: #dc3545;
+  color: var(--danger-color);
 }
 
 .pack-card__preview {
@@ -232,7 +241,7 @@
 
 .pack-card__preview-level {
   padding: 4px 8px;
-  background: #2a2a2a;
+  background: var(--btn-neutral-dark);
   border-radius: 6px;
   border: 1px solid #333333;
 }

@@ -236,11 +236,6 @@
 
 .leaderboard-page .add-filter-button:hover:not(:disabled) {
   background-color: var(--color-purple-2);
-  transform: translateY(-1px);
-}
-
-.leaderboard-page .add-filter-button:active:not(:disabled) {
-  transform: translateY(0);
 }
 
 /* Filter Chips */
@@ -305,7 +300,7 @@
 }
 
 .leaderboard-page .filter-chip-remove:hover {
-  background-color: rgba(220, 53, 69, 0.8);
+  background-color: var(--danger-color-alpha-80);
   transform: scale(1.1);
 }
 
@@ -327,8 +322,8 @@
 }
 
 .leaderboard-page .country-clear-button:hover {
-  background-color: rgba(220, 53, 69, 0.8);
-  border-color: rgba(220, 53, 69, 1);
+  background-color: var(--danger-color-alpha-80);
+  border-color: var(--danger-color);
   transform: scale(1.05);
 }
 

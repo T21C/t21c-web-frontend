@@ -12,6 +12,7 @@ import axios from "axios";
 import { useTranslation } from "react-i18next";
 import { PassContext } from "@/contexts/PassContext";
 import api from '@/utils/api';
+import { useDebouncedRequest } from '@/hooks/useDebouncedRequest';
 import { ScrollButton } from "@/components/common/buttons";
 import { useAuth } from "@/contexts/AuthContext";
 import { DifficultyContext } from "@/contexts/DifficultyContext";
@@ -31,8 +32,8 @@ const PassPage = () => {
   const { difficulties } = useContext(DifficultyContext);
   const [showHelpPopup, setShowHelpPopup] = useState(false);
   const [selectedSpecialDiffs, setSelectedSpecialDiffs] = useState([]);
-  const [pendingQuery, setPendingQuery] = useState("");
   const [stateDisplayOpen, setStateDisplayOpen] = useState(false);
+  const runRequest = useDebouncedRequest(500);
 
   // Filter difficulties by type
   const pguDifficulties = difficulties.filter(d => d.type === 'PGU');
@@ -88,21 +89,21 @@ const PassPage = () => {
   };
 
   useEffect(() => {
-    let cancel;
-    
+    // Pagination (pageNumber > 0) bypasses the debounce so infinite scroll
+    // feels instant; filter / query / sort changes flow through the debounced
+    // runner, which collapses rapid edits into a single request and aborts any
+    // in-flight call when superseded.
+    const runner = pageNumber > 0 ? runRequest.flush : runRequest;
+    setLoading(true);
+
     const fetchPasses = async () => {
-      setLoading(true);
       try {
-        
         // Handle ID-based search
         if (query.startsWith("#") && query.length > 1) {
           const passId = query.slice(1);
           if (!isNaN(passId) && passId.trim() !== '') {
-            const response = await api.get(
-              `${import.meta.env.VITE_PASSES}/byId/${passId}`,
-              {
-                cancelToken: new axios.CancelToken((c) => (cancel = c)),
-              }
+            const response = await runner(({ signal }) =>
+              api.get(`${import.meta.env.VITE_PASSES}/byId/${passId}`, { signal })
             );
             setPassesData(response.data.results);
             setTotalPasses(response.data.count);
@@ -124,61 +125,35 @@ const PassPage = () => {
           specialDifficulties: selectedSpecialDiffs
         };
 
-        const response = await api.get(
-          `${import.meta.env.VITE_PASSES}`,
-          {
-            params: requestBody,
-            cancelToken: new axios.CancelToken((c) => (cancel = c)),
-          }
+        const response = await runner(({ signal }) =>
+          api.get(`${import.meta.env.VITE_PASSES}`, { params: requestBody, signal })
         );
 
         const newPasses = response.data.results;
-        
+
         setPassesData((prev) => {
           if (pageNumber === 0) {
             return newPasses;
           }
           return [...prev, ...newPasses];
         });
-        
+
         setHasMore(response.data.count > (pageNumber * limit) + newPasses.length);
         setTotalPasses(response.data.count);
+        setLoading(false);
       } catch (error) {
-        if (!axios.isCancel(error)) {
-          console.error('Fetch error:', error);
-        }
-      } finally {
+        if (axios.isCancel(error)) return; // superseded by a newer request
+        console.error('Fetch error:', error);
         setLoading(false);
       }
     };
 
     fetchPasses();
-
-    return () => cancel && cancel();
   }, [query, pageNumber, forceUpdate, deletedFilter, hide12k, selectedSpecialDiffs]);
-
-  // Debounced search effect
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (pendingQuery !== query) {
-        setQuery(pendingQuery);
-        setLoading(true);
-        triggerRefresh();
-      }
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [pendingQuery]);
-
-  // Initialize pendingQuery with query value
-  useEffect(() => {
-    setPendingQuery(query);
-  }, []);
 
   function resetAll() {
     setSort("SCORE_DESC");
     setQuery("");
-    setPendingQuery("");
     // Reset to initial PGU range
     setSelectedLowFilterDiff("P1");
     setSelectedHighFilterDiff("U20");
@@ -192,7 +167,8 @@ const PassPage = () => {
   }
 
   function handleQueryChange(e) {
-    setPendingQuery(e.target.value);
+    setQuery(e.target.value);
+    triggerRefresh();
   }
 
   function handleFilterOpen() {
@@ -368,12 +344,12 @@ const PassPage = () => {
             </button>
 
             <input
-              value={pendingQuery}
+              value={query}
               autoComplete='off'
               type="text"
               placeholder={t('pass.input.placeholder')}
               onChange={handleQueryChange}
-              className={pendingQuery !== query ? 'search-pending' : ''}
+              className={loading ? 'search-pending' : ''}
             />
           </div>
 

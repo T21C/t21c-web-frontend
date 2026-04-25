@@ -22,8 +22,14 @@
     "universalPassCount": "U 클리어",
     "worldsFirstCount": "세계 최초 클리어",
     "topDiff": "최고 난이도",
-    "top12kDiff": "최고 12키 난이도"
+    "top12kDiff": "최고 12키 난이도",
+    "totalUniquePasses": "총 유니크 클리어",
+    "topAccClearNum": "최고 정확도 클리어 수",
+    "tilesPressed": "타일 입력 수"
   },
+  "editProfile": "프로필 편집",
+  "adminEdit": "관리자 편집",
+  "viewUserPacks": "사용자 팩 보기",
   "sections": {
     "scores": {
       "title": "점수",
@@ -32,6 +38,7 @@
   },
   "sort": {
     "byScore": "By Score",
+    "byImpact": "By Impact",
     "byDate": "By Date",
     "byXacc": "By X-Accuracy",
     "byDifficulty": "By Difficulty",

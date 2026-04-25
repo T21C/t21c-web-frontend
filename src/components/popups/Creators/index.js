@@ -1,4 +1,5 @@
-import { CreatorActionPopup } from "./CreatorActionPopup/CreatorActionPopup";
 import { CreatorAssignmentPopup } from "./CreatorAssignmentPopup/CreatorAssignmentPopup";
+import { CreatorAssignmentPanel } from "./CreatorAssignmentPopup/CreatorAssignmentPanel";
+import { CreatorManagementPopup } from "./CreatorManagementPopup/CreatorManagementPopup";
 
-export { CreatorActionPopup, CreatorAssignmentPopup };
+export { CreatorAssignmentPopup, CreatorAssignmentPanel, CreatorManagementPopup };

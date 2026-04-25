@@ -16,7 +16,7 @@ const CallbackPage = () => {
     setRedirecting(true);
     // Redirect to profile edit page if linking failed, otherwise go to login
     if (isLinking) {
-      navigate('/profile/edit');
+      navigate('/settings/account');
     } else {
       navigate('/login');
     }

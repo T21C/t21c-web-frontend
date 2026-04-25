@@ -57,7 +57,7 @@
 }
 
 .edit-pack-popup__close:hover {
-  background: #2a2a2a;
+  background: var(--btn-neutral-dark);
   color: #ffffff;
 }
 
@@ -94,7 +94,7 @@
   padding: 12px;
   border: 1px solid #333333;
   border-radius: 8px;
-  background: #2a2a2a;
+  background: var(--btn-neutral-dark);
   color: #ffffff;
   font-size: 14px;
   transition: border-color 0.2s ease;
@@ -103,7 +103,7 @@
 .edit-pack-popup__input:focus,
 .edit-pack-popup__select:focus {
   outline: none;
-  border-color: #007bff;
+  border-color: var(--btn-primary);
 }
 
 .edit-pack-popup__input:disabled,
@@ -146,7 +146,7 @@
   height: 80px;
   border: 2px solid #333333;
   border-radius: 8px;
-  background: #2a2a2a;
+  background: var(--btn-neutral-dark);
   overflow: hidden;
 }
 
@@ -164,7 +164,7 @@
 }
 
 .edit-pack-popup__icon-upload-btn {
-  background: #007bff;
+  background-color: var(--btn-primary);
   border: none;
   border-radius: 6px;
   padding: 8px 12px;
@@ -179,8 +179,7 @@
 }
 
 .edit-pack-popup__icon-upload-btn:hover:not(:disabled) {
-  background: #0056b3;
-  transform: translateY(-1px);
+  background-color: var(--btn-primary-hover);
 }
 
 .edit-pack-popup__icon-upload-btn:disabled {
@@ -190,7 +189,7 @@
 }
 
 .edit-pack-popup__icon-remove-btn {
-  background: #dc3545;
+  background-color: var(--danger-color);
   border: none;
   border-radius: 6px;
   padding: 8px 12px;
@@ -202,8 +201,7 @@
 }
 
 .edit-pack-popup__icon-remove-btn:hover:not(:disabled) {
-  background: #c82333;
-  transform: translateY(-1px);
+  background-color: var(--danger-color-hover);
 }
 
 .edit-pack-popup__icon-remove-btn:disabled {
@@ -225,7 +223,7 @@
   margin: 0;
   width: 16px;
   height: 16px;
-  accent-color: #007bff;
+  accent-color: var(--btn-primary);
 }
 
 .edit-pack-popup__checkbox:disabled {
@@ -280,7 +278,7 @@
 }
 
 .edit-pack-popup__delete-btn {
-  background: #dc3545;
+  background-color: var(--danger-color);
   border: none;
   border-radius: 6px;
   padding: 10px 16px;
@@ -295,8 +293,7 @@
 }
 
 .edit-pack-popup__delete-btn:hover:not(:disabled) {
-  background: #c82333;
-  transform: translateY(-1px);
+  background-color: var(--danger-color-hover);
 }
 
 .edit-pack-popup__delete-btn:disabled {
@@ -306,7 +303,7 @@
 }
 
 .edit-pack-popup__cancel-btn {
-  background: #2a2a2a;
+  background-color: var(--btn-neutral-dark);
   border: 1px solid #333333;
   border-radius: 6px;
   padding: 10px 20px;
@@ -328,7 +325,7 @@
 }
 
 .edit-pack-popup__save-btn {
-  background: #007bff;
+  background-color: var(--btn-primary);
   border: none;
   border-radius: 6px;
   padding: 10px 20px;
@@ -340,8 +337,7 @@
 }
 
 .edit-pack-popup__save-btn:hover:not(:disabled) {
-  background: #0056b3;
-  transform: translateY(-1px);
+  background-color: var(--btn-primary-hover);
 }
 
 .edit-pack-popup__save-btn:disabled {
@@ -396,7 +392,7 @@
 }
 
 .edit-pack-popup__delete-cancel-btn {
-  background: #2a2a2a;
+  background: var(--btn-neutral-dark);
   border: 1px solid #333333;
   border-radius: 6px;
   padding: 10px 20px;
@@ -418,7 +414,7 @@
 }
 
 .edit-pack-popup__delete-confirm-btn {
-  background: #dc3545;
+  background-color: var(--danger-color);
   border: none;
   border-radius: 6px;
   padding: 10px 20px;
@@ -430,8 +426,7 @@
 }
 
 .edit-pack-popup__delete-confirm-btn:hover:not(:disabled) {
-  background: #c82333;
-  transform: translateY(-1px);
+  background-color: var(--danger-color-hover);
 }
 
 .edit-pack-popup__delete-confirm-btn:disabled {
@@ -540,7 +535,7 @@
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
-  background: #2a2a2a;
+  background: var(--btn-neutral-dark);
   border: 1px solid #333333;
   border-radius: 8px;
   margin-bottom: 12px;
@@ -574,7 +569,7 @@
   left: 0;
   right: 0;
   padding: 12px;
-  background: #2a2a2a;
+  background: var(--btn-neutral-dark);
   border: 1px solid #333333;
   border-top: none;
   border-radius: 0 0 8px 8px;
@@ -587,7 +582,7 @@
 .edit-pack-popup__transfer-dropdown {
   max-height: 200px;
   overflow-y: auto;
-  background: #2a2a2a;
+  background: var(--btn-neutral-dark);
   border: 1px solid #333333;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
@@ -614,7 +609,7 @@
 }
 
 .edit-pack-popup__transfer-option.selected {
-  background-color: #007bff;
+  background-color: var(--btn-primary);
 }
 
 .edit-pack-popup__transfer-option-name {
@@ -637,7 +632,7 @@
   align-items: center;
   gap: 12px;
   padding: 12px;
-  background: #2a2a2a;
+  background: var(--btn-neutral-dark);
   border: 1px solid #333333;
   border-radius: 8px;
   flex-wrap: wrap;
@@ -656,7 +651,7 @@
 }
 
 .edit-pack-popup__transfer-btn {
-  background: #dc3545;
+  background-color: var(--danger-color);
   border: none;
   border-radius: 6px;
   padding: 8px 16px;
@@ -668,8 +663,7 @@
 }
 
 .edit-pack-popup__transfer-btn:hover:not(:disabled) {
-  background: #c82333;
-  transform: translateY(-1px);
+  background-color: var(--danger-color-hover);
 }
 
 .edit-pack-popup__transfer-btn:disabled {

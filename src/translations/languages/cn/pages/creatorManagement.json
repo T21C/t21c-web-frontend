@@ -33,15 +33,13 @@
     }
   },
   "filters": {
-    "hideVerified": "隐藏已验证创作者",
     "excludeAliases": "从搜索中排除别名",
     "searchPlaceholder": "按名称或别名搜索创作者……"
   },
   "creatorInfo": {
     "id": "ID",
     "charts": "谱面",
-    "aliases": "别名",
-    "verifiedBadge": "已验证创作者"
+    "aliases": "别名"
   },
   "messages": {
     "noResults": "未找到创作者",

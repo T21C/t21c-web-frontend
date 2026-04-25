@@ -3,7 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import './editProfilePage.css';
 import { CrossIcon, DiscordIcon, EditIcon, UnlinkIcon } from '@/components/common/icons';
 import { Tooltip } from 'react-tooltip';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import api from '@/utils/api';
 import ImageSelectorPopup from '@/components/common/selectors/ImageSelectorPopup/ImageSelectorPopup';
@@ -26,7 +26,7 @@ const ProviderIcon = ({ provider, size, color="#fff" }) => {
   }
 };
 
-const EditProfilePage = () => {
+const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
   const { t } = useTranslation(['pages', 'common']);
   const {
     user,
@@ -361,11 +361,14 @@ const EditProfilePage = () => {
     }
 
     try {
-      await api.put(`${import.meta.env.VITE_PROFILE}/me`, {
+      const profilePayload = {
         username: formData.username,
-        nickname: formData.nickname,
         country: formData.country,
-      });
+      };
+      if (!user?.playerId) {
+        profilePayload.nickname = formData.nickname;
+      }
+      await api.put(`${import.meta.env.VITE_PROFILE}/me`, profilePayload);
 
       // Clear rate limit state on successful update
       setUsernameRateLimit(null);
@@ -447,10 +450,14 @@ const EditProfilePage = () => {
   return (
     <>
     <AccountStatusBanners variant="edit" user={user} navigate={navigate} />
-    <div className="edit-profile-page">
+    <div className={`edit-profile-page${embeddedInSettings ? " edit-profile-page--embedded" : ""}`}>
 
       <div className="edit-profile-container page-content-600">
-        <h1>{t('editProfile.title')}</h1>
+        {embeddedInSettings ? (
+          <h2 className="edit-profile-page__page-title">{t("editProfile.title")}</h2>
+        ) : (
+          <h1 className="edit-profile-page__page-title">{t("editProfile.title")}</h1>
+        )}
 
         {error && <div className="error-message">{error}</div>}
         {success && <div className="success-message">{success}</div>}
@@ -579,19 +586,27 @@ const EditProfilePage = () => {
             </div>
           </div>
 
-          <div className="form-group">
-            <label htmlFor="nickname">{t('editProfile.form.labels.nickname')}</label>
-            <input
-              type="text"
-              autoComplete='off'
-              id="nickname"
-              name="nickname"
-              value={formData.nickname}
-              onChange={handleInputChange}
-              required
-              className="input-field"
-            />
-          </div>
+          {user?.playerId ? (
+            <div className="edit-profile-page__nickname-moved">
+              <Link to="/settings/player" className="edit-profile-page__nickname-moved-link">
+                {t('editProfile.nicknameMoved.hint')}
+              </Link>
+            </div>
+          ) : (
+            <div className="form-group">
+              <label htmlFor="nickname">{t('editProfile.form.labels.nickname')}</label>
+              <input
+                type="text"
+                autoComplete='off'
+                id="nickname"
+                name="nickname"
+                value={formData.nickname}
+                onChange={handleInputChange}
+                required
+                className="input-field"
+              />
+            </div>
+          )}
 
           <div className="form-group">
             <label htmlFor="country">{t('editProfile.form.labels.country')}</label>

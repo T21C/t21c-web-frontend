@@ -5,6 +5,9 @@
     "defaultTitle": "Profile"
   },
   "notFound": "Aucun joueur trouvé",
+  "editProfile": "Modifier le profil",
+  "adminEdit": "Édition admin",
+  "viewUserPacks": "Voir les packs de l'utilisateur",
   "valueLabels": {
     "rankedScore": "Score Classement",
     "generalScore": "Score Général",
@@ -16,7 +19,10 @@
     "universalPasses": "Complétions Universelles",
     "WFPasses": "Complétions WF",
     "topDiff": "Difficulté Max",
-    "top12kDiff": "Difficulté 12k Max"
+    "top12kDiff": "Difficulté 12k Max",
+    "totalUniquePasses": "Complétions uniques totales",
+    "topAccClearNum": "Nombre de clears précision max",
+    "tilesPressed": "Tuiles pressées"
   },
   "sections": {
     "scores": {

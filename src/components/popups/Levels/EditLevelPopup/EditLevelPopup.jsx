@@ -96,25 +96,29 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
   const navigate = useNavigate();
   useEffect(() => {
     if (level) {
-      setFormData({
+      setFormData((prev) => ({
+        ...prev,
         song: level.songObject?.name || level.song || '',
-        songId: level.songId || null,
-        suffix: level.suffix || '',
-        diffId: level.diffId !== null ? level.diffId : 0,
-        baseScore: level.baseScore,
-        ppBaseScore: level.ppBaseScore,
-        videoLink: level.videoLink || '',
-        dlLink: level.dlLink || '',
-        workshopLink: level.workshopLink || '',
-        publicComments: level.publicComments || '',
-        rerateNum: level.rerateNum || '',
-        toRate: level.toRate || false,
-        rerateReason: level.rerateReason || '',
-        isDeleted: level.isDeleted || false,
-        isHidden: level.isHidden || false,
-        previousDiffId: level.previousDiffId,
-        previousBaseScore: level.previousBaseScore,
-      });
+        songId: level.songId ?? null,
+        suffix: level.suffix ?? '',
+        diffId: level.diffId != null ? level.diffId : 0,
+        baseScore: level.baseScore != null ? level.baseScore : null,
+        ppBaseScore:
+          level.ppBaseScore != null && level.ppBaseScore !== ''
+            ? String(level.ppBaseScore)
+            : '',
+        videoLink: level.videoLink ?? '',
+        dlLink: level.dlLink ?? '',
+        workshopLink: level.workshopLink ?? '',
+        publicComments: level.publicComments ?? '',
+        rerateNum: level.rerateNum ?? '',
+        toRate: Boolean(level.toRate),
+        rerateReason: level.rerateReason ?? '',
+        isDeleted: Boolean(level.isDeleted),
+        isHidden: Boolean(level.isHidden),
+        previousDiffId: level.previousDiffId ?? null,
+        previousBaseScore: level.previousBaseScore != null ? level.previousBaseScore : null,
+      }));
       setSelectedSong(level.songId ? { id: level.songId, name: level.songObject?.name || level.song || '' } : null);
       setHasUnsavedChanges(false);
       setIsExternallyAvailable(level.isExternallyAvailable);
@@ -380,8 +384,8 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
   }, [difficulties]);
 
   const getBaseScoreDisplay = useCallback((field = "baseScore") => {
-    if (formData[field] === null) {
-      return "";
+    if (formData[field] === null || formData[field] === undefined) {
+      return '';
     }
     const baseScore = parseFloat(formData[field]);
     const matchingDiff = difficulties.find(d => d.baseScore === baseScore);
@@ -548,10 +552,10 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
               <RatingInput
                 disabled={!isSuperAdmin}
                 value={(() => {
-                  if (formData.previousBaseScore === null) {
-                    return "";
+                  if (formData.previousBaseScore === null || formData.previousBaseScore === undefined) {
+                    return '';
                   }
-                  return formData.previousBaseScore?.toString();
+                  return String(formData.previousBaseScore);
                 })()}
                 onChange={handlePreviousBaseScoreChange}
                 difficulties={difficulties}
@@ -571,10 +575,10 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                 <RatingInput
                   disabled={!isSuperAdmin}
                   value={(() => {
-                    if (formData.baseScore === null) {
-                      return "";
+                    if (formData.baseScore === null || formData.baseScore === undefined) {
+                      return '';
                     }
-                    return formData.baseScore.toString();
+                    return String(formData.baseScore);
                   })()}
                   onChange={handleBaseScoreChange}
                   difficulties={difficulties}
@@ -668,7 +672,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                   type="number"
                   id="ppBaseScore"
                   name="ppBaseScore"
-                  value={formData.ppBaseScore}
+                  value={formData.ppBaseScore ?? ''}
                   onChange={handleInputChange}
                   disabled={!isSuperAdmin}
                 />

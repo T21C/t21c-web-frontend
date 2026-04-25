@@ -54,7 +54,20 @@ function App() {
           <Route path="register" element={<Pages.RegisterPage />} />
           <Route path="forgot-password" element={<Pages.ForgotPasswordPage />} />
           
-          <Route path="profile/edit" element={<PrivateRoute><Pages.EditProfilePage /></PrivateRoute>} />
+          <Route path="profile/edit" element={<PrivateRoute><Pages.ProfileEditRedirect /></PrivateRoute>} />
+          <Route
+            path="settings"
+            element={(
+              <PrivateRoute>
+                <Pages.SettingsLayout />
+              </PrivateRoute>
+            )}
+          >
+            <Route index element={<Pages.SettingsIndexRedirect />} />
+            <Route path="account" element={<Pages.SettingsAccountPage />} />
+            <Route path="player" element={<Pages.SettingsPlayerPage />} />
+            <Route path="creator" element={<Pages.SettingsCreatorPage />} />
+          </Route>
           <Route path="profile/verify-email" element={<Pages.EmailVerificationPage />} />
           
           <Route index path="/" element={
@@ -80,6 +93,8 @@ function App() {
           <Route path='artists/:id' element={<Pages.ArtistDetailPage />} />
           <Route path='songs' element={<Pages.SongListPage />} />
           <Route path='songs/:id' element={<Pages.SongDetailPage />} />
+          <Route path='creators' element={<Pages.CreatorsListPage />} />
+          <Route path='creator/:creatorId' element={<Pages.CreatorProfilePage />} />
 
           {/* Admin Routes - Protected */}
           <Route path='admin' element={<PrivateRoute><Pages.AdminPage /></PrivateRoute>} />

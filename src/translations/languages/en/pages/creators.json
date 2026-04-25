@@ -1,0 +1,128 @@
+{
+  "meta": {
+    "title": "Creators",
+    "description": "Browse chart creators, charters, and VFXers"
+  },
+  "input": {
+    "placeholder": "Search by creator name..."
+  },
+  "tooltips": {
+    "sort": "Sort results",
+    "reset": "Reset all filters",
+    "recentAsc": "Sort ascending",
+    "recentDesc": "Sort descending"
+  },
+  "settings": {
+    "sort": {
+      "header": "Sort Settings",
+      "sortOrder": "Sort Order",
+      "sortBy": "Sort by"
+    }
+  },
+  "sortOptions": {
+    "name": "Name",
+    "chartsTotal": "Total Charts",
+    "chartsCharted": "Charts Charted",
+    "chartsVfxed": "Charts VFX'd",
+    "chartsTeamed": "Team-assigned charts",
+    "totalChartClears": "Total Chart Clears",
+    "totalChartLikes": "Total Chart Likes"
+  },
+  "infiniteScroll": {
+    "end": "You've reached the end!"
+  },
+  "card": {
+    "verified": "Verified",
+    "chartsTotal": "{{count}} charts",
+    "noUser": "No linked account"
+  },
+  "verificationStatus": {
+    "help": {
+      "declined": "The creator has declined to have their charts featured on the forum.",
+      "pending": "Waiting on confirmation from the creator. Default state for newly added creators.",
+      "conditional": "The creator has accepted under specific conditions. Coordinate before any submissions are added.",
+      "allowed": "The creator has agreed to have their charts featured on the forum."
+    }
+  },
+  "profile": {
+    "meta": {
+      "title": "{{name}} - Creator Profile",
+      "description": "Charts and stats for {{name}}"
+    },
+    "notFound": "Creator not found",
+    "verified": "Verified",
+    "manageButton": "Manage creator",
+    "stats": {
+      "header": "Creator Stats",
+      "chartsCharted": "Charts Charted",
+      "chartsVfxed": "Charts VFX'd",
+      "chartsTeamed": "Team-assigned charts",
+      "curatedLevels": "Total curated charts",
+      "chartsTotal": "Total Charts",
+      "totalChartClears": "Total Chart Clears",
+      "totalChartLikes": "Total Chart Likes"
+    },
+    "bio": {
+      "header": "Bio",
+      "placeholder": "This creator hasn't written a bio yet."
+    },
+    "levels": {
+      "header": "Charts",
+      "empty": "No charts found for this creator yet.",
+      "searchPlaceholder": "Search this creator's charts..."
+    },
+    "sections": {
+      "difficultyBreakdown": {
+        "title": "Levels by difficulty",
+        "expand": "Expand difficulty breakdown",
+        "collapse": "Collapse difficulty breakdown"
+      }
+    },
+    "funFacts": {
+      "expandAria": "Show all statistics",
+      "collapseAria": "Hide detailed statistics",
+      "groups": {
+        "identity": "Identity",
+        "credits": "Credits",
+        "content": "Chart content",
+        "audience": "Audience",
+        "curation": "Curation & rerates",
+        "timeline": "Timeline",
+        "breakdownByType": "Levels by difficulty type"
+      },
+      "identity": {
+        "aliasCount": "Aliases",
+        "teamsJoined": "Teams joined"
+      },
+      "credits": {
+        "levelsAsCharter": "Levels as charter",
+        "levelsAsVfxer": "Levels as VFX"
+      },
+      "content": {
+        "totalTilesMade": "Tiles placed",
+        "totalLevelDurationMs": "Total chart duration",
+        "averageTilecount": "Avg tilecount",
+        "averageLevelLengthMs": "Avg level length",
+        "averageBpm": "Avg BPM",
+        "totalClearsOnLevels": "Total clears on charts",
+        "totalLikesOnLevels": "Total likes on charts",
+        "totalDownloadsOnLevels": "Total downloads on charts"
+      },
+      "audience": {
+        "uniquePlayersCleared": "Unique players who cleared",
+        "worldsFirstsOnLevels": "WF's on charts",
+        "totalTilesPlayedOnLevels": "Total tiles hit"
+      },
+      "timeline": {
+        "firstLevelAt": "First chart",
+        "latestLevelAt": "Latest chart"
+      },
+      "difficultyType": {
+        "PGU": "PGU",
+        "SPECIAL": "Special",
+        "LEGACY": "Legacy",
+        "UNKNOWN": "Other"
+      }
+    }
+  }
+}

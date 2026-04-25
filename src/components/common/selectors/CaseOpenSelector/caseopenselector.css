@@ -221,7 +221,7 @@ c {
   font-size: 1.2rem;
   font-weight: 600;
   color: #fff;
-  background: linear-gradient(to bottom, #4CAF50, #45a049);
+  background: linear-gradient(to bottom, var(--btn-success), var(--btn-success-hover));
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -231,7 +231,7 @@ c {
 
 .case-open-selector__spin-button:hover:not(:disabled) {
   transform: translateY(-2px);
-  background: linear-gradient(to bottom, #45a049, #409444);
+  background: linear-gradient(to bottom, var(--btn-success-hover), #409444);
 }
 
 .case-open-selector__spin-button:disabled {

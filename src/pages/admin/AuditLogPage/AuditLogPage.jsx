@@ -1,7 +1,9 @@
 import { useEffect, useState, useMemo, useRef, useCallback } from "react";
+import axios from "axios";
 
 import { MetaTags } from "@/components/common/display";
 import api from "@/utils/api";
+import { useDebouncedRequest } from "@/hooks/useDebouncedRequest";
 import "./auditlogpage.css";
 import "@/pages/common/sort.css";
 import { AuditLogCard } from "@/components/cards";
@@ -30,19 +32,6 @@ const initialQuickFilters = {
   sort: "createdAt",
   order: "DESC",
 };
-
-function quickFiltersEqual(a, b) {
-  return (
-    a.userId === b.userId &&
-    a.action === b.action &&
-    a.method === b.method &&
-    a.route === b.route &&
-    a.startDate === b.startDate &&
-    a.endDate === b.endDate &&
-    a.sort === b.sort &&
-    a.order === b.order
-  );
-}
 
 const Pagination = ({
   page,
@@ -98,7 +87,6 @@ const AuditLogPage = () => {
   );
 
   const [quickFilters, setQuickFilters] = useState(() => ({ ...initialQuickFilters }));
-  const [debouncedQuick, setDebouncedQuick] = useState(() => ({ ...initialQuickFilters }));
   const [heavyLidOpen, setHeavyLidOpen] = useState(false);
   const [heavyDraft, setHeavyDraft] = useState("");
   /** `null` = no heavy search run yet this session while lid is open */
@@ -106,44 +94,44 @@ const AuditLogPage = () => {
 
   const quickRef = useRef(quickFilters);
   quickRef.current = quickFilters;
-  const debouncedQuickRef = useRef(debouncedQuick);
-  debouncedQuickRef.current = debouncedQuick;
 
-  const loadLogs = useCallback(async (quick, pg, sz, q) => {
-    setLoading(true);
-    try {
+  const runRequest = useDebouncedRequest(500);
+
+  const loadLogs = useCallback(
+    async (quick, pg, sz, q) => {
+      setLoading(true);
       const params = { ...quick, page: pg, pageSize: sz };
       if (q) params.q = q;
-      Object.keys(params).forEach((k) => (params[k] === "" || params[k] == null) && delete params[k]);
-      const res = await api.get("/v2/admin/audit-log", { params });
-      setLogs(res.data.logs);
-      setTotal(res.data.total);
-    } catch (e) {
-      setLogs([]);
-      setTotal(0);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+      Object.keys(params).forEach(
+        (k) => (params[k] === "" || params[k] == null) && delete params[k]
+      );
+      try {
+        const res = await runRequest(({ signal }) =>
+          api.get("/v2/admin/audit-log", { params, signal })
+        );
+        setLogs(res.data.logs);
+        setTotal(res.data.total);
+        setLoading(false);
+      } catch (err) {
+        if (axios.isCancel(err)) return; // a newer request superseded this one
+        setLogs([]);
+        setTotal(0);
+        setLoading(false);
+      }
+    },
+    [runRequest]
+  );
 
-  // Quick mode: debounced filters, never send q
+  // Quick mode: filter typing / pagination / sort changes all flow through
+  // the debounced runner, so rapid edits coalesce into a single request.
   useEffect(() => {
     if (heavyLidOpen) return;
-    const t = setTimeout(() => {
-      setDebouncedQuick((prev) => {
-        const next = { ...quickRef.current };
-        return quickFiltersEqual(prev, next) ? prev : next;
-      });
-    }, 500);
-    return () => clearTimeout(t);
-  }, [quickFilters, heavyLidOpen]);
+    loadLogs(quickFilters, page, pageSize, undefined);
+  }, [heavyLidOpen, quickFilters, page, pageSize, loadLogs]);
 
-  useEffect(() => {
-    if (heavyLidOpen) return;
-    loadLogs(debouncedQuick, page, pageSize, undefined);
-  }, [heavyLidOpen, debouncedQuick, page, pageSize, loadLogs]);
-
-  // Heavy mode: only after a Search, react to pagination (and committed q)
+  // Heavy mode: only react to a committed Search and pagination; quick
+  // filter edits are read from the live ref so typing doesn't trigger
+  // expensive scans.
   useEffect(() => {
     if (!heavyLidOpen) return;
     if (appliedHeavyQ === null) return;
@@ -161,7 +149,6 @@ const AuditLogPage = () => {
     setHeavyLidOpen(false);
     setAppliedHeavyQ(null);
     setHeavyDraft("");
-    setDebouncedQuick({ ...quickRef.current });
   };
 
   const runHeavySearch = () => {
@@ -181,20 +168,20 @@ const AuditLogPage = () => {
     if (!heavyLidOpen) setPage(1);
   };
 
-  /** Same field again: immediate refetch (matches LevelPage handleSortType). */
+  /** Re-clicking the same sort field does not change state, so force a refetch. */
   const handleSortField = (value) => {
     if (!heavyLidOpen && quickRef.current.sort === value) {
-      loadLogs(debouncedQuickRef.current, page, pageSize, undefined);
+      loadLogs(quickRef.current, page, pageSize, undefined);
       return;
     }
     setQuickFilters((f) => ({ ...f, sort: value }));
     if (!heavyLidOpen) setPage(1);
   };
 
-  /** Same order again: immediate refetch (matches LevelPage handleSortOrder). */
+  /** Re-clicking the same order does not change state, so force a refetch. */
   const handleSortOrder = (value) => {
     if (!heavyLidOpen && quickRef.current.order === value) {
-      loadLogs(debouncedQuickRef.current, page, pageSize, undefined);
+      loadLogs(quickRef.current, page, pageSize, undefined);
       return;
     }
     setQuickFilters((f) => ({ ...f, order: value }));

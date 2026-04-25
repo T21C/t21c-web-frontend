@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import api from '@/utils/api';
+import { useDebouncedRequest } from '@/hooks/useDebouncedRequest';
 import { MetaTags } from '@/components/common/display';
 import { CustomSelect } from '@/components/common/selectors';
 import { useArtistContext } from '@/contexts/ArtistContext';
@@ -11,7 +13,6 @@ import { getVerificationClass } from '@/utils/Utility';
 
 const ArtistListPage = () => {
   const { t } = useTranslation(['pages', 'common']);
-  const navigate = useNavigate();
   const currentUrl = window.location.origin + location.pathname;
   const {
     searchQuery,
@@ -26,63 +27,44 @@ const ArtistListPage = () => {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  
-  // Cancel token ref for race condition prevention
-  const abortControllerRef = useRef(null);
+
+  // Debounced + cancellation-aware request runner. Search/filter/sort changes
+  // wait 500ms (collapsing rapid keystrokes); pagination uses `flush` so
+  // infinite scroll fires immediately when the user reaches the bottom.
+  const runRequest = useDebouncedRequest(500);
 
   useEffect(() => {
     fetchArtists(true);
-    
-    // Cleanup: abort any pending requests when component unmounts or dependencies change
-    return () => {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-    };
   }, [searchQuery, sortBy, verificationState]);
 
   const fetchArtists = async (reset = false) => {
-    // Cancel previous request if it exists
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
+    if (reset) {
+      setLoading(true);
+      setPage(1);
+      setArtists([]);
     }
-    
-    // Create new abort controller for this request
-    const abortController = new AbortController();
-    abortControllerRef.current = abortController;
-    
-    try {
-      if (reset) {
-        setLoading(true);
-        setPage(1);
-        setArtists([]);
-      }
 
-      const currentPage = reset ? 1 : page;
-      const params = {
-        page: currentPage,
-        limit: 50,
-        search: searchQuery,
-        sort: sortBy
-      };
-      
-      if (verificationState) {
-        params.verificationState = verificationState;
-      }
-      
-      const response = await api.get(`${import.meta.env.VITE_API_URL}/v2/database/artists`, {
-        params,
-        signal: abortController.signal
-      });
-      
-      // Check if request was aborted
-      if (abortController.signal.aborted) {
-        return;
-      }
+    const currentPage = reset ? 1 : page;
+    const params = {
+      page: currentPage,
+      limit: 50,
+      search: searchQuery,
+      sort: sortBy
+    };
+
+    if (verificationState) {
+      params.verificationState = verificationState;
+    }
+
+    const runner = reset ? runRequest : runRequest.flush;
+    try {
+      const response = await runner(({ signal }) =>
+        api.get(`${import.meta.env.VITE_API_URL}/v2/database/artists`, { params, signal })
+      );
 
       const data = response.data;
       const newArtists = data.artists || [];
-      
+
       if (reset) {
         setArtists(newArtists);
       } else {
@@ -92,17 +74,11 @@ const ArtistListPage = () => {
       // If no artists returned, there's no more data regardless of hasMore flag
       setHasMore(newArtists.length > 0 && (data.hasMore || false));
       setPage(currentPage + 1);
+      setLoading(false);
     } catch (error) {
-      // Don't show error if request was cancelled
-      if (api.isCancel && api.isCancel(error)) {
-        return;
-      }
+      if (axios.isCancel(error)) return; // superseded by a newer request
       console.error('Error fetching artists:', error);
-    } finally {
-      // Only update loading state if request wasn't aborted
-      if (!abortController.signal.aborted) {
-        setLoading(false);
-      }
+      setLoading(false);
     }
   };
 
@@ -206,10 +182,10 @@ const ArtistListPage = () => {
           >
             <div className="artist-cards-grid">
               {artists.map((artist) => (
-                <div
+                <Link
                   key={artist.id}
                   className="artist-card"
-                  onClick={() => navigate(`/artists/${artist.id}`)}
+                  to={`/artists/${artist.id}`}
                 >
                   {artist.avatarUrl && (
                     <div className="artist-card-avatar">
@@ -234,7 +210,7 @@ const ArtistListPage = () => {
                       </span>
                     </div>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </InfiniteScroll>

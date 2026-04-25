@@ -18,7 +18,7 @@
   padding: 1.25rem 1.5rem;
   border-radius: 8px;
   background: var(--bg-secondary, #222);
-  border: 1px solid #404040;
+  border: 1px solid var(--btn-neutral-disabled-fill);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
 }
 
@@ -92,7 +92,7 @@
 .change-email-popup-input {
   width: 100%;
   padding: 0.65rem 0.75rem;
-  border: 1px solid #404040;
+  border: 1px solid var(--btn-neutral-disabled-fill);
   border-radius: 4px;
   background: #333;
   color: #fff;

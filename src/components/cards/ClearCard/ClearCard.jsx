@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { isoToEmoji } from "@/utils";
 import "./clearcard.css"
 import { useTranslation } from "react-i18next";
@@ -9,12 +9,7 @@ import { selectIconSize } from "@/utils/Utility";
 
 const ClearCard = ({scoreData, index}) => {
   const { t } = useTranslation('pages');
-  const navigate = useNavigate()
   const [isExpanded, setIsExpanded] = useState(false);
-  
-  const redirect = () => {
-    navigate(`/profile/${scoreData.playerId}`);
-  };
 
   const toggleExpand = (e) => {
     e.stopPropagation();
@@ -53,7 +48,7 @@ const ClearCard = ({scoreData, index}) => {
           </span>
         </div>
         
-        <div className="player-info" onClick={redirect}>
+        <Link className="player-info" to={`/profile/${scoreData.playerId}`}>
           <div className="avatar-container">
             <UserAvatar 
               primaryUrl={scoreData.player.user?.avatarUrl}
@@ -65,7 +60,7 @@ const ClearCard = ({scoreData, index}) => {
             <span className="player-name">{scoreData.player.name}</span>
             <img src={isoToEmoji(scoreData.player.country)} className="country" alt=""/>
           </div>
-        </div>
+        </Link>
       </div>
 
       {/* Right Section - Score Info & Judgements */}
@@ -85,15 +80,9 @@ const ClearCard = ({scoreData, index}) => {
               <span className="late-double">{scoreData.judgements.lateDouble}</span>
             </div>
             <div className="link-container">
-            <PassIcon 
-            size={32}
-            className="video-link"
-            onClick={() => {
-              navigate(`/passes/${scoreData.id}`);
-            }} 
-            style={{
-              cursor: "pointer"
-            }}/>
+            <Link className="video-link" to={`/passes/${scoreData.id}`}>
+              <PassIcon size={32} />
+            </Link>
             {scoreData.videoLink && (
               <a className="video-link" href={scoreData.videoLink} target="_blank" rel="noopener noreferrer">
                 <YoutubeIcon size={'32px'} />

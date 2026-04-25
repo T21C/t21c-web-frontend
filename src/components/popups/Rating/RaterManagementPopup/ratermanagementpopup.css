@@ -57,8 +57,8 @@
 }
 
 .rater-management-overlay .mode-button.active {
-  background-color: #4CAF50;
-  border-color: #4CAF50;
+  background-color: var(--btn-success);
+  border-color: var(--btn-success);
   color: white;
 }
 
@@ -174,7 +174,7 @@
 .rater-management-overlay .delete-rater-button,
 .rater-management-overlay .delete-user-button {
   padding: 6px 12px;
-  background-color: #f44336;
+  background-color: var(--danger-color);
   color: white;
   border: none;
   border-radius: 4px;
@@ -185,7 +185,7 @@
 
 .rater-management-overlay .promote-button {
   padding: 6px 12px;
-  background-color: #4CAF50;
+  background-color: var(--btn-success);
   color: white;
   border: none;
   border-radius: 4px;
@@ -290,7 +290,7 @@
 }
 
 .rater-management-overlay .confirm-buttons button:first-child {
-  background-color: #4CAF50;
+  background-color: var(--btn-success);
   color: white;
 }
 
@@ -324,7 +324,7 @@
 
 .rater-management-overlay .add-rater-section button {
   padding: 8px 16px;
-  background-color: #4CAF50;
+  background-color: var(--btn-success);
   color: white;
   border: none;
   border-radius: 4px;
@@ -338,11 +338,11 @@
 }
 
 .rater-management-overlay .delete-rater-button:hover:not(:disabled) {
-  background-color: #d32f2f;
+  background-color: var(--danger-color-hover);
 }
 
 .rater-management-overlay .add-rater-section button:hover:not(:disabled) {
-  background-color: #45a049;
+  background-color: var(--btn-success-hover);
 }
 
 .rater-management-overlay .discord-input-group button:hover:not(:disabled) {
@@ -350,7 +350,7 @@
 }
 
 .rater-management-overlay .confirm-buttons button:first-child:hover:not(:disabled) {
-  background-color: #45a049;
+  background-color: var(--btn-success-hover);
 }
 
 .rater-management-overlay .confirm-buttons button:last-child:hover:not(:disabled) {
@@ -420,19 +420,19 @@
 }
 
 .rater-management-overlay .make-admin-button {
-  background-color: #4CAF50;
+  background-color: var(--btn-success);
 }
 
 .rater-management-overlay .make-admin-button:hover:not(:disabled) {
-  background-color: #45a049;
+  background-color: var(--btn-success-hover);
 }
 
 .rater-management-overlay .remove-admin-button {
-  background-color: #f44336;
+  background-color: var(--danger-color);
 }
 
 .rater-management-overlay .remove-admin-button:hover:not(:disabled) {
-  background-color: #d32f2f;
+  background-color: var(--danger-color-hover);
 }
 
 .rater-management-overlay .error-message-container {
@@ -440,7 +440,7 @@
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: #f44336;
+  background-color: var(--danger-color);
   color: white;
   padding: 12px 20px;
   border-radius: 4px;

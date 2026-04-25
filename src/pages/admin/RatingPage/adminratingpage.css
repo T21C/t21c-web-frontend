@@ -304,11 +304,11 @@
   }
 
   .admin-rating-page .admin-rating-body input:checked + .slider {
-    background-color: #2196F3;
+    background-color: var(--btn-info);
   }
 
   .admin-rating-page .admin-rating-body input:focus + .slider {
-    box-shadow: 0 0 1px #2196F3;
+    box-shadow: 0 0 1px var(--btn-info);
   }
 
   .admin-rating-page .admin-rating-body input:checked + .slider:before {
@@ -447,11 +447,6 @@
 
 .admin-rating-page .admin-rating-body .sort-buttons svg:hover {
   background-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-1px);
-}
-
-.admin-rating-page .admin-rating-body .sort-buttons svg:active {
-  transform: translateY(0);
 }
 
 /* Custom Select Overrides */

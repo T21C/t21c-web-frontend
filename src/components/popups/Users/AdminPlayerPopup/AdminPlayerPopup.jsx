@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
 import './adminplayerpopup.css';
+import '@/components/popups/Creators/CreatorAssignmentPopup/creatorAssignmentPopup.css';
 import { CloseButton } from '@/components/common/buttons';
 import api from '@/utils/api';
 import { CountrySelect } from '@/components/common/selectors';
 import { toast } from 'react-hot-toast';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/contexts/AuthContext';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { CreatorAssignmentPanel } from '@/components/popups/Creators/CreatorAssignmentPopup/CreatorAssignmentPanel';
 
-const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
+const AdminPlayerPopup = ({ player = {}, onClose, onUpdate, onCreatorUserLinkedUpdate }) => {
   const { t } = useTranslation(['components', 'common']);
+  const { user: authUser } = useAuth();
   if (!player) {
     console.error('Player prop is undefined');
     return null;
@@ -28,13 +32,6 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
   const [playerName, setPlayerName] = useState(player.name || '');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [discordInfo, setDiscordInfo] = useState({
-    username: player.discordUsername || '',
-    avatarUrl: player.discordAvatar || null,
-    avatarId: player.discordAvatarId || null,
-    id: player.discordId || null,
-    isNewData: false
-  });
   const [showMergeModal, setShowMergeModal] = useState(false);
   const [showMergeInput, setShowMergeInput] = useState(false);
   const [targetPlayerId, setTargetPlayerId] = useState('');
@@ -201,6 +198,14 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
   const handleRatingBanChange = (newRatingBanState) => {
     setPendingRatingBanState(newRatingBanState);
     setShowRatingBanConfirm(true);
+  };
+
+  const handleCreatorAssignmentUserUpdate = (updatedUser) => {
+    onUpdate?.({
+      ...player,
+      user: updatedUser,
+    });
+    onCreatorUserLinkedUpdate?.(updatedUser);
   };
 
   const handleRatingBanUpdate = async (confirmed) => {
@@ -404,19 +409,24 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
             </div>
           </div>
 
-          <div className="form-group discord-section">
-            <label htmlFor="discordId">{t('adminPopups.player.form.discord.label')}</label>
-            {discordInfo.username && (
-              <div className="discord-info">
-                <div className="discord-info-header">
-                  <div className="discord-info-header-content">
-                    <p className="discord-username">@{discordInfo.username}</p>
-                    <p className="discord-id">ID: {discordInfo.id}</p>
-                  </div>
+          {hasFlag(authUser, permissionFlags.SUPER_ADMIN) && player.user?.id && (
+            <div className="form-group creator-assignment-embed-section">
+              <label className="creator-assignment-embed-label">
+                {t('adminPopups.player.form.creatorAssignment.sectionLabel', {
+                  defaultValue: 'Creator assignment',
+                })}
+              </label>
+              <div className="creator-assignment-popup-host creator-assignment-popup-host--embedded">
+                <div className="creator-assignment-popup">
+                  <CreatorAssignmentPanel
+                    user={player.user}
+                    onUserUpdate={handleCreatorAssignmentUserUpdate}
+                    showIntro={false}
+                  />
                 </div>
               </div>
-            )}
-          </div>
+            </div>
+          )}
 
           <div className="form-group merge-section">
             <button
@@ -504,13 +514,11 @@ AdminPlayerPopup.propTypes = {
     isBanned: PropTypes.bool,
     isSubmissionsPaused: PropTypes.bool,
     isRatingBanned: PropTypes.bool,
-    discordUsername: PropTypes.string,
-    discordAvatar: PropTypes.string,
-    discordAvatarId: PropTypes.string,
-    discordId: PropTypes.string
+    user: PropTypes.object,
   }),
   onClose: PropTypes.func.isRequired,
-  onUpdate: PropTypes.func.isRequired
+  onUpdate: PropTypes.func.isRequired,
+  onCreatorUserLinkedUpdate: PropTypes.func,
 };
 
 AdminPlayerPopup.defaultProps = {
@@ -520,11 +528,7 @@ AdminPlayerPopup.defaultProps = {
     isBanned: false,
     isSubmissionsPaused: false,
     isRatingBanned: false,
-    discordUsername: '',
-    discordAvatar: null,
-    discordAvatarId: null,
-    discordId: null
-  }
+  },
 };
 
 export default AdminPlayerPopup; 

@@ -86,7 +86,7 @@
 
 .entity-action-popup .mode-tab.active {
   color: #ffffff;
-  border-bottom-color: #4CAF50;
+  border-bottom-color: var(--btn-success);
 }
 
 .entity-action-popup .form-section {
@@ -156,21 +156,21 @@
   border-radius: 50%;
   object-fit: cover;
   background-color: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(76, 175, 80, 0.5);
+  border: 2px solid var(--btn-success-glow-50);
 }
 
 .entity-action-popup .delete-avatar-btn {
   padding: 6px 12px;
-  background-color: rgba(244, 67, 54, 0.2);
-  border: 1px solid rgba(244, 67, 54, 0.5);
+  background-color: var(--danger-color-tint-20);
+  border: 1px solid var(--danger-color-tint-50);
   border-radius: 4px;
-  color: #f44336;
+  color: var(--danger-color);
   cursor: pointer;
   font-size: 0.85rem;
 }
 
 .entity-action-popup .delete-avatar-btn:hover {
-  background-color: rgba(244, 67, 54, 0.3);
+  background-color: var(--danger-color-tint-30);
 }
 
 .entity-action-popup .avatar-upload {
@@ -182,22 +182,22 @@
 
 .entity-action-popup .upload-label {
   padding: 8px 16px;
-  background-color: rgba(76, 175, 80, 0.2);
-  border: 1px solid rgba(76, 175, 80, 0.5);
+  background-color: var(--btn-success-tint);
+  border: 1px solid var(--btn-success-glow-50);
   border-radius: 4px;
-  color: #4caf50;
+  color: var(--btn-success);
   cursor: pointer;
   font-size: 0.9rem;
   transition: background-color 0.2s;
 }
 
 .entity-action-popup .upload-label:hover {
-  background-color: rgba(76, 175, 80, 0.3);
+  background-color: var(--btn-success-tint-strong);
 }
 
 .entity-action-popup .avatar-upload button {
   padding: 8px 16px;
-  background-color: #4CAF50;
+  background-color: var(--btn-success);
   border: none;
   border-radius: 4px;
   color: #ffffff;
@@ -208,7 +208,7 @@
 }
 
 .entity-action-popup .avatar-upload button:hover:not(:disabled) {
-  background-color: #45a049;
+  background-color: var(--btn-success-hover);
 }
 
 .entity-action-popup .avatar-upload button:disabled {
@@ -228,7 +228,7 @@
 
 .entity-action-popup .entity-input-group button {
   padding: 10px 16px;
-  background-color: #4CAF50;
+  background-color: var(--btn-success);
   border: none;
   border-radius: 4px;
   color: #ffffff;
@@ -237,7 +237,7 @@
 }
 
 .entity-action-popup .entity-input-group button:hover {
-  background-color: #45a049;
+  background-color: var(--btn-success-hover);
 }
 
 .entity-action-popup .evidence-link-input-group {
@@ -291,7 +291,7 @@
   align-items: center;
   gap: 6px;
   text-decoration: none;
-  color: #4CAF50;
+  color: var(--btn-success);
 }
 
 .entity-action-popup .entity-item > a:hover {
@@ -301,7 +301,7 @@
 .entity-action-popup .entity-item button {
   background: none;
   border: none;
-  color: #f44336;
+  color: var(--danger-color);
   cursor: pointer;
   font-size: 1.2em;
   padding: 0 8px;
@@ -333,8 +333,8 @@
 }
 
 .entity-action-popup .entity-result-item.selected {
-  border-color: #4CAF50;
-  background-color: rgba(76, 175, 80, 0.1);
+  border-color: var(--btn-success);
+  background-color: var(--btn-success-tint-10);
 }
 
 .entity-action-popup .entity-avatar {
@@ -379,13 +379,13 @@
 }
 
 .entity-action-popup .evidence-drop-zone:hover {
-  border-color: rgba(76, 175, 80, 0.5);
-  background-color: rgba(76, 175, 80, 0.05);
+  border-color: var(--btn-success-glow-50);
+  background-color: var(--btn-success-tint-05);
 }
 
 .entity-action-popup .evidence-drop-zone.drag-over {
-  border-color: #4CAF50;
-  background-color: rgba(76, 175, 80, 0.1);
+  border-color: var(--btn-success);
+  background-color: var(--btn-success-tint-10);
   border-style: solid;
 }
 
@@ -509,14 +509,14 @@
 }
 
 .entity-action-popup .evidence-cdn-badge {
-  background-color: rgba(76, 175, 80, 0.2);
-  color: #4CAF50;
-  border: 1px solid rgba(76, 175, 80, 0.4);
+  background-color: var(--btn-success-tint);
+  color: var(--btn-success);
+  border: 1px solid var(--btn-success-alpha-40);
 }
 
 .entity-action-popup .evidence-external-badge {
   background-color: rgba(33, 150, 243, 0.2);
-  color: #2196F3;
+  color: var(--btn-info);
   border: 1px solid rgba(33, 150, 243, 0.4);
 }
 
@@ -551,11 +551,11 @@
 }
 
 .entity-action-popup .evidence-delete-btn {
-  background-color: rgba(244, 67, 54, 0.9);
+  background-color: var(--danger-color-alpha-90);
 }
 
 .entity-action-popup .evidence-delete-btn:hover {
-  background-color: rgba(244, 67, 54, 1);
+  background-color: var(--danger-color);
   transform: scale(1.1);
 }
 
@@ -603,12 +603,12 @@
 }
 
 .entity-action-popup .evidence-save-btn {
-  background-color: rgba(76, 175, 80, 0.9);
+  background-color: var(--btn-success-alpha-90);
   color: #ffffff;
 }
 
 .entity-action-popup .evidence-save-btn:hover:not(:disabled) {
-  background-color: rgba(76, 175, 80, 1);
+  background-color: var(--btn-success);
   transform: scale(1.1);
 }
 
@@ -714,12 +714,12 @@
 }
 
 .entity-action-popup .entity-extra-info-save-btn {
-  background-color: rgba(76, 175, 80, 0.9);
+  background-color: var(--btn-success-alpha-90);
   color: #ffffff;
 }
 
 .entity-action-popup .entity-extra-info-save-btn:hover:not(:disabled) {
-  background-color: rgba(76, 175, 80, 1);
+  background-color: var(--btn-success);
   transform: scale(1.05);
 }
 
@@ -821,6 +821,7 @@
   align-items: center;
   gap: 8px;
   cursor: pointer;
+  -webkit-user-select: none;
   user-select: none;
 }
 
@@ -864,7 +865,7 @@
   width: 28px;
   height: 28px;
   padding: 0;
-  background-color: rgba(244, 67, 54, 0.9);
+  background-color: var(--danger-color-alpha-90);
   border: none;
   border-radius: 4px;
   color: #ffffff;
@@ -877,7 +878,7 @@
 }
 
 .entity-action-popup .evidence-item button:hover {
-  background-color: rgba(244, 67, 54, 1);
+  background-color: var(--danger-color);
   transform: scale(1.1);
 }
 
@@ -889,7 +890,7 @@
 
 .entity-action-popup .upload-evidence-btn {
   padding: 10px 20px;
-  background-color: #4CAF50;
+  background-color: var(--btn-success);
   border: none;
   border-radius: 4px;
   color: #ffffff;
@@ -902,7 +903,7 @@
 }
 
 .entity-action-popup .upload-evidence-btn:hover:not(:disabled) {
-  background-color: #45a049;
+  background-color: var(--btn-success-hover);
 }
 
 .entity-action-popup .upload-evidence-btn:disabled {
@@ -920,7 +921,7 @@
 .entity-action-popup .submit-button {
   flex: 1;
   padding: 12px;
-  background-color: #4CAF50;
+  background-color: var(--btn-success);
   border: none;
   border-radius: 4px;
   color: #ffffff;
@@ -930,7 +931,7 @@
 }
 
 .entity-action-popup .submit-button:hover:not(:disabled) {
-  background-color: #45a049;
+  background-color: var(--btn-success-hover);
 }
 
 .entity-action-popup .submit-button:disabled {
@@ -953,17 +954,17 @@
 }
 
 .entity-action-popup .error-message {
-  color: #f44336;
+  color: var(--danger-color);
   padding: 12px;
-  background-color: rgba(244, 67, 54, 0.1);
+  background-color: var(--danger-color-tint);
   border-radius: 4px;
   margin-top: 16px;
 }
 
 .entity-action-popup .success-message {
-  color: #4CAF50;
+  color: var(--btn-success);
   padding: 12px;
-  background-color: rgba(76, 175, 80, 0.1);
+  background-color: var(--btn-success-tint-10);
   border-radius: 4px;
   margin-top: 16px;
 }

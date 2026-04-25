@@ -58,7 +58,7 @@
 
 .entity-management-container .add-button {
   padding: 0.75rem 1.5rem;
-  background-color: #4CAF50;
+  background-color: var(--btn-success);
   border: none;
   border-radius: 4px;
   color: #ffffff;
@@ -68,7 +68,7 @@
 }
 
 .entity-management-container .add-button:hover {
-  background-color: #45a049;
+  background-color: var(--btn-success-hover);
 }
 
 .entity-management-container .entities-list {
@@ -203,7 +203,7 @@
 
 .entity-management-container .edit-button {
   background-color: rgba(33, 150, 243, 0.2);
-  color: #2196F3;
+  color: var(--btn-info);
   border: 1px solid rgba(33, 150, 243, 0.5);
 }
 
@@ -212,13 +212,13 @@
 }
 
 .entity-management-container .delete-button {
-  background-color: rgba(244, 67, 54, 0.2);
-  color: #f44336;
-  border: 1px solid rgba(244, 67, 54, 0.5);
+  background-color: var(--danger-color-tint-20);
+  color: var(--danger-color);
+  border: 1px solid var(--danger-color-tint-50);
 }
 
 .entity-management-container .delete-button:hover {
-  background-color: rgba(244, 67, 54, 0.3);
+  background-color: var(--danger-color-tint-30);
 }
 
 .entity-management-container .load-more-button {
@@ -316,7 +316,7 @@
 
 .entity-management-container .alias-input-group button {
   padding: 0.75rem 1rem;
-  background-color: #4CAF50;
+  background-color: var(--btn-success);
   border: none;
   border-radius: 4px;
   color: #ffffff;
@@ -325,7 +325,7 @@
 }
 
 .entity-management-container .alias-input-group button:hover {
-  background-color: #45a049;
+  background-color: var(--btn-success-hover);
 }
 
 .entity-management-container .aliases-list {
@@ -348,7 +348,7 @@
 .entity-management-container .alias-tag button {
   background: none;
   border: none;
-  color: #f44336;
+  color: var(--danger-color);
   cursor: pointer;
   font-size: 1.2em;
   padding: 0;
@@ -377,12 +377,12 @@
 }
 
 .entity-management-container .submit-button {
-  background-color: #4CAF50;
+  background-color: var(--btn-success);
   color: #ffffff;
 }
 
 .entity-management-container .submit-button:hover:not(:disabled) {
-  background-color: #45a049;
+  background-color: var(--btn-success-hover);
 }
 
 .entity-management-container .submit-button:disabled {

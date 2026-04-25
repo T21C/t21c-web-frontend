@@ -57,8 +57,8 @@
 }
 
 .user-management-overlay .mode-button.active {
-  background-color: #4CAF50;
-  border-color: #4CAF50;
+  background-color: var(--btn-success);
+  border-color: var(--btn-success);
   color: white;
 }
 
@@ -174,7 +174,7 @@
 
 .user-management-overlay .delete-user-button {
   padding: 6px 12px;
-  background-color: #f44336;
+  background-color: var(--danger-color);
   color: white;
   border: none;
   border-radius: 4px;
@@ -185,7 +185,7 @@
 
 .user-management-overlay .promote-button {
   padding: 6px 12px;
-  background-color: #4CAF50;
+  background-color: var(--btn-success);
   color: white;
   border: none;
   border-radius: 4px;
@@ -230,7 +230,7 @@
 
 .user-management-overlay .add-user-section button {
   padding: 8px 16px;
-  background-color: #4CAF50;
+  background-color: var(--btn-success);
   color: white;
   border: none;
   border-radius: 4px;
@@ -244,11 +244,11 @@
 }
 
 .user-management-overlay .delete-user-button:hover:not(:disabled) {
-  background-color: #d32f2f;
+  background-color: var(--danger-color-hover);
 }
 
 .user-management-overlay .add-user-section button:hover:not(:disabled) {
-  background-color: #45a049;
+  background-color: var(--btn-success-hover);
 }
 
 .user-management-overlay .header-password-input {
@@ -281,13 +281,11 @@
 }
 
 .user-management-overlay .promote-button:hover:not(:disabled) {
-  background-color: #45a049;
-  transform: translateY(-1px);
+  background-color: var(--btn-success-hover);
 }
 
 .user-management-overlay .demote-button:hover:not(:disabled) {
   background-color: #e68900;
-  transform: translateY(-1px);
 }
 
 .user-management-overlay .error-message-container {
@@ -295,7 +293,7 @@
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: #f44336;
+  background-color: var(--danger-color);
   color: white;
   padding: 12px 20px;
   border-radius: 4px;
@@ -326,9 +324,9 @@
 }
 
 .user-management-overlay .protected-status {
-  background-color: rgba(76, 175, 80, 0.2);
-  color: #4CAF50;
-  border: 1px solid rgba(76, 175, 80, 0.3);
+  background-color: var(--btn-success-tint);
+  color: var(--btn-success);
+  border: 1px solid var(--btn-success-tint-strong);
   padding: 4px 8px;
   border-radius: 4px;
   font-size: 0.8em;

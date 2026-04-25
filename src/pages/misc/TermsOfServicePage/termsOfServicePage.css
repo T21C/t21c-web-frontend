@@ -121,7 +121,7 @@
 }
 
 .tos-link {
-  color: #4a9eff;
+  color: var(--btn-primary);
   display: inline-flex;
   align-items: center;
   text-decoration: none;

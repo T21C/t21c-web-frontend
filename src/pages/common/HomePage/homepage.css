@@ -475,96 +475,6 @@
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
 }
 
-/* Tooltip customization for charts */
-.home .recharts-tooltip-wrapper {
-  filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.5));
-}
-
-.home .recharts-default-tooltip {
-  background-color: rgba(13, 13, 13, 0.95) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  border-radius: 12px !important;
-  padding: 1rem !important;
-}
-
-.home .recharts-tooltip-label {
-  color: #ffffff !important;
-  margin-bottom: 0.5rem !important;
-}
-
-.home .recharts-tooltip-item {
-  color: rgba(255, 255, 255, 0.8) !important;
-  padding: 0.25rem 0 !important;
-}
-
-/* Custom tooltip styles */
-.home .custom-tooltip {
-  background-color: rgba(13, 13, 13, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  padding: 0.5rem 0.75rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  pointer-events: none;
-}
-
-.home .tooltip-content {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.home .tooltip-left {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.35rem;
-}
-
-.home .difficulty-icon {
-  width: 32px;
-  height: 32px;
-  object-fit: contain;
-}
-
-.home .tooltip-label {
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-align: center;
-  text-shadow: 0 0 8px currentColor;
-}
-
-.home .tooltip-right {
-  flex: 1;
-  padding-left: 0.5rem;
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.home .tooltip-stats {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.home .tooltip-value {
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.8);
-}
-
-
-.home .recharts-default-tooltip {
-  background: none !important;
-  border: none !important;
-  padding: 0 !important;
-  text-shadow:rgba(0, 0, 0, 0.3) 0px 0px 10px;
-}
-
-/* Bar chart animations */
-.home .recharts-bar-rectangle {
-  transition: fill 0.3s ease-out;
-}
-
 /* Ensure animations reset */
 .home .recharts-bar {
   will-change: transform;
@@ -674,30 +584,7 @@
     text-align: center;
   }
 
-  /* Tooltip adjustments for mobile */
-  .home .custom-tooltip {
-    max-width: 90vw;
-    padding: 0.5rem;
-  }
-
-  .home .tooltip-content {
-    flex-direction: column;
-    gap: 0.5rem;
-    align-items: flex-start;
-  }
-
-  .home .tooltip-left {
-    flex-direction: row;
-    width: 100%;
-  }
-
-  .home .tooltip-right {
-    padding-left: 0;
-    border-left: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding-top: 0.5rem;
-    width: 100%;
-  }
+  /* Tooltip adjustments moved to DifficultyGraph component */
 }
 
 /* Small phone adjustments */

@@ -157,7 +157,7 @@
 .home-aprils .action-button.roulette-button:disabled {
   opacity: 0.7;
   cursor: not-allowed;
-  background: linear-gradient(45deg, #1a1a1a, #2a2a2a);
+  background: linear-gradient(45deg, #1a1a1a, var(--btn-neutral-dark));
   box-shadow: none;
 }
 

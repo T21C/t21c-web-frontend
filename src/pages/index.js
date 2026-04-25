@@ -17,11 +17,19 @@ const ArtistListPage = lazy(() => import('./common/Artist/ArtistListPage/ArtistL
 const ArtistDetailPage = lazy(() => import('./common/Artist/ArtistDetailPage/ArtistDetailPage'));
 const SongListPage = lazy(() => import('./common/Song/SongListPage/SongListPage'));
 const SongDetailPage = lazy(() => import('./common/Song/SongDetailPage/SongDetailPage'));
+const CreatorsListPage = lazy(() => import('./common/CreatorsListPage/CreatorsListPage'));
+const CreatorProfilePage = lazy(() => import('./account/CreatorProfilePage/CreatorProfilePage'));
 // Account pages
 const ProfilePage = lazy(() => import('./account/ProfilePage/ProfilePage'));
 const LoginPage = lazy(() => import('./account/LoginPage/LoginPage'));
 const RegisterPage = lazy(() => import('./account/RegisterPage/RegisterPage'));
 const EditProfilePage = lazy(() => import('./account/EditProfilePage/EditProfilePage'));
+const SettingsLayout = lazy(() => import('./account/settings/SettingsLayout'));
+const SettingsIndexRedirect = lazy(() => import('./account/settings/SettingsIndexRedirect'));
+const SettingsAccountPage = lazy(() => import('./account/settings/SettingsAccountPage'));
+const SettingsPlayerPage = lazy(() => import('./account/settings/SettingsPlayerPage'));
+const SettingsCreatorPage = lazy(() => import('./account/settings/SettingsCreatorPage'));
+const ProfileEditRedirect = lazy(() => import('./account/settings/ProfileEditRedirect'));
 const EmailVerificationPage = lazy(() => import('./account/EmailVerificationPage/EmailVerificationPage'));
 const ForgotPasswordPage = lazy(() => import('./account/ForgotPasswordPage/ForgotPasswordPage'));
 
@@ -69,11 +77,19 @@ export {
     ArtistDetailPage,
     SongListPage,
     SongDetailPage,
+    CreatorsListPage,
+    CreatorProfilePage,
     // Account related pages
     ProfilePage,
     LoginPage,
     RegisterPage,
     EditProfilePage,
+    SettingsLayout,
+    SettingsIndexRedirect,
+    SettingsAccountPage,
+    SettingsPlayerPage,
+    SettingsCreatorPage,
+    ProfileEditRedirect,
     EmailVerificationPage,
     ForgotPasswordPage,
     CallbackPage,

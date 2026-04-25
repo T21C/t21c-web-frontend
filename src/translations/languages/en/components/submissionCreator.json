@@ -47,7 +47,6 @@
   "stats": {
     "title": "Creator Statistics",
     "totalLevels": "Total Levels",
-    "verifiedLevels": "Verified",
     "charterCount": "Charter Count",
     "vfxerCount": "VFXer Count",
     "selectedRole": "Selected Role Count"
@@ -55,13 +54,11 @@
   "teamStats": {
     "title": "Team Statistics",
     "totalLevels": "Total Levels",
-    "verifiedLevels": "Verified",
     "memberCount": "Member Count",
     "members": "members"
   },
   "status": {
-    "verified": "✓ Verified Creator",
-    "verifiedTeam": "✓ Verified Team"
+    "verified": "✓ Verified Creator"
   },
   "badges": {
     "newRequest": "New Request"

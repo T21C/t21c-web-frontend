@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
@@ -60,9 +60,9 @@ const ArtistDetailPage = () => {
       <div className="artist-detail-page">
         <div className="error-container">
           <h2>{t('artistDetail.errors.' + (error || 'notFound'))}</h2>
-          <button onClick={() => navigate('/artists')} className="back-button">
+          <Link to="/artists" className="back-button">
             {t('artistDetail.backToList')}
-          </button>
+          </Link>
         </div>
       </div>
     );
@@ -161,10 +161,10 @@ const ArtistDetailPage = () => {
               <h2>{t('artistDetail.sections.relations')}</h2>
               <div className="relations-list">
                 {artist.relatedArtists.map((relatedArtist) => (
-                  <div
+                  <Link
                     key={relatedArtist.id}
                     className="relation-item"
-                    onClick={() => navigate(`/artists/${relatedArtist.id}`)}
+                    to={`/artists/${relatedArtist.id}`}
                   >
                     {relatedArtist.avatarUrl && (
                       <img 
@@ -177,7 +177,7 @@ const ArtistDetailPage = () => {
                       <span className="relation-name">{relatedArtist.name}</span>
                       <span className="relation-id">ID: {relatedArtist.id}</span>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -224,16 +224,19 @@ const ArtistDetailPage = () => {
               <h2>{t('artistDetail.sections.songs')}</h2>
               <div className="songs-list">
                 {artist.songCredits.map((credit) => (
-                  <div
+                  <Link
                     key={credit.id}
                     className="song-item"
-                    onClick={() => credit.song && navigate(`/songs/${credit.song.id}`)}
+                    to={credit.song ? `/songs/${credit.song.id}` : "#"}
+                    onClick={(e) => {
+                      if (!credit.song) e.preventDefault();
+                    }}
                   >
                     <span className="song-name">{credit.song?.name || 'Unknown'}</span>
                     {credit.role && (
                       <span className="song-role">{credit.role}</span>
                     )}
-                  </div>
+                  </Link>
                 ))}
               </div>
             </div>

@@ -41,7 +41,7 @@
 
 /* Hover effect */
 .state-display:hover::before {
-  background: #2196F3;
+  background: var(--btn-info);
 }
 
 .toggle-label {

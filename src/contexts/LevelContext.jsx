@@ -3,7 +3,7 @@ import { createContext, useState, useEffect, useRef } from "react"
 import { useDifficultyContext } from "./DifficultyContext";
 import { migrateLegacyNamesToFacet } from "@/utils/facetQueryCodec";
 
-const STORAGE_KEYS = {
+const BASE_STORAGE_KEYS = {
     LEGACY_DIFF: 'level_legacy_diff',
     FILTER_OPEN: 'level_filter_open',
     SORT_OPEN: 'level_sort_open',
@@ -28,11 +28,25 @@ const STORAGE_KEYS = {
     LEVEL_FACET_V1: 'level_facet_v1',
 };
 
+/**
+ * Build a prefixed copy of the storage key map. The prefix lets us mount
+ * multiple isolated LevelContextProviders (e.g. one global + one per
+ * creator profile) without their state colliding in storage.
+ */
+function buildStorageKeys(prefix) {
+    if (!prefix) return BASE_STORAGE_KEYS;
+    const out = {};
+    for (const k of Object.keys(BASE_STORAGE_KEYS)) {
+        out[k] = `${prefix}${BASE_STORAGE_KEYS[k]}`;
+    }
+    return out;
+}
+
 const LevelContext = createContext()
 
-function loadLevelFacetV1() {
+function loadLevelFacetV1(STORAGE_KEYS, storage) {
     try {
-        const r = localStorage.getItem(STORAGE_KEYS.LEVEL_FACET_V1);
+        const r = storage.getItem(STORAGE_KEYS.LEVEL_FACET_V1);
         if (r) {
             const p = JSON.parse(r);
             if (p && typeof p === 'object') {
@@ -48,6 +62,17 @@ function loadLevelFacetV1() {
 }
 
 const LevelContextProvider = (props) => {
+    const { storagePrefix = '' } = props;
+    // Stable per-mount key map. The prefix is treated as an immutable identity
+    // for the provider; if it changes the provider should be re-mounted (new key).
+    const STORAGE_KEYS = useRef(buildStorageKeys(storagePrefix)).current;
+    // Prefixed providers are scoped to a single embed (e.g. one creator profile).
+    // Persisting their per-id state to storage would accumulate forever, so
+    // we route them through sessionStorage instead — settings live for the tab
+    // session and disappear when it closes. The unprefixed global provider keeps
+    // using storage so the main /levels page state still persists.
+    const storage = useRef(storagePrefix ? sessionStorage : localStorage).current;
+
     const {
         noLegacyDifficulties: difficulties,
         tags,
@@ -57,42 +82,42 @@ const LevelContextProvider = (props) => {
     } = useDifficultyContext();
 
     const [levelsData, setLevelsData] = useState([])
-    const [legacyDiff, setLegacyDiff] = useState(() => localStorage.getItem(STORAGE_KEYS.LEGACY_DIFF) === 'true');
-    const [filterOpen, setFilterOpen] = useState(() => localStorage.getItem(STORAGE_KEYS.FILTER_OPEN) !== 'false');
-    const [sortOpen, setSortOpen] = useState(() => localStorage.getItem(STORAGE_KEYS.SORT_OPEN) !== 'false');
-    const [query, setQuery] = useState(() => localStorage.getItem(STORAGE_KEYS.QUERY) || "");
-    const [selectedLowFilterDiff, setSelectedLowFilterDiff] = useState(() => localStorage.getItem(STORAGE_KEYS.LOW_FILTER_DIFF) || "P1");
-    const [selectedHighFilterDiff, setSelectedHighFilterDiff] = useState(() => localStorage.getItem(STORAGE_KEYS.HIGH_FILTER_DIFF) || "U20");
-    const [sort, setSort] = useState(() => localStorage.getItem(STORAGE_KEYS.SORT) || "RECENT");
-    const [order, setOrder] = useState(() => localStorage.getItem(STORAGE_KEYS.ORDER) || "ASC");
+    const [legacyDiff, setLegacyDiff] = useState(() => storage.getItem(STORAGE_KEYS.LEGACY_DIFF) === 'true');
+    const [filterOpen, setFilterOpen] = useState(() => storage.getItem(STORAGE_KEYS.FILTER_OPEN) !== 'false');
+    const [sortOpen, setSortOpen] = useState(() => storage.getItem(STORAGE_KEYS.SORT_OPEN) !== 'false');
+    const [query, setQuery] = useState(() => storage.getItem(STORAGE_KEYS.QUERY) || "");
+    const [selectedLowFilterDiff, setSelectedLowFilterDiff] = useState(() => storage.getItem(STORAGE_KEYS.LOW_FILTER_DIFF) || "P1");
+    const [selectedHighFilterDiff, setSelectedHighFilterDiff] = useState(() => storage.getItem(STORAGE_KEYS.HIGH_FILTER_DIFF) || "U20");
+    const [sort, setSort] = useState(() => storage.getItem(STORAGE_KEYS.SORT) || "RECENT");
+    const [order, setOrder] = useState(() => storage.getItem(STORAGE_KEYS.ORDER) || "ASC");
     const [hasMore, setHasMore] = useState(true);
     const [totalLevels, setTotalLevels] = useState(0);
     const [pageNumber, setPageNumber] = useState(0);
-    const [deletedFilter, setDeletedFilter] = useState(() => localStorage.getItem(STORAGE_KEYS.DELETED_FILTER) || "hide");
-    const [availableDlFilter, setAvailableDlFilter] = useState(() => localStorage.getItem(STORAGE_KEYS.AVAILABLE_DL_FILTER) || "show");
-    const [clearedFilter, setClearedFilter] = useState(() => localStorage.getItem(STORAGE_KEYS.CLEARED_FILTER) || "show");
+    const [deletedFilter, setDeletedFilter] = useState(() => storage.getItem(STORAGE_KEYS.DELETED_FILTER) || "hide");
+    const [availableDlFilter, setAvailableDlFilter] = useState(() => storage.getItem(STORAGE_KEYS.AVAILABLE_DL_FILTER) || "show");
+    const [clearedFilter, setClearedFilter] = useState(() => storage.getItem(STORAGE_KEYS.CLEARED_FILTER) || "show");
     const [sliderRange, setSliderRange] = useState(() => {
-        const saved = localStorage.getItem(STORAGE_KEYS.SLIDER_RANGE);
+        const saved = storage.getItem(STORAGE_KEYS.SLIDER_RANGE);
         return saved ? JSON.parse(saved) : [1, 9999];
     });
     const [sliderQRange, setSliderQRange] = useState(() => {
-        const saved = localStorage.getItem(STORAGE_KEYS.SLIDER_Q_RANGE);
+        const saved = storage.getItem(STORAGE_KEYS.SLIDER_Q_RANGE);
         return saved ? JSON.parse(saved) : [];
     });
     const [sliderQRangeDrag, setSliderQRangeDrag] = useState(() => {
-        const saved = localStorage.getItem(STORAGE_KEYS.SLIDER_Q_RANGE_DRAG);
+        const saved = storage.getItem(STORAGE_KEYS.SLIDER_Q_RANGE_DRAG);
         return saved ? JSON.parse(saved) : [1, 9999];
     });
     const [selectedSpecialDiffs, setSelectedSpecialDiffs] = useState(() => {
-        const saved = localStorage.getItem(STORAGE_KEYS.SELECTED_SPECIAL_DIFFS);
+        const saved = storage.getItem(STORAGE_KEYS.SELECTED_SPECIAL_DIFFS);
         return saved ? JSON.parse(saved) : [];
     });
     const [qSliderVisible, setQSliderVisible] = useState(() => {
-        const saved = localStorage.getItem(STORAGE_KEYS.Q_SLIDER_VISIBLE);
+        const saved = storage.getItem(STORAGE_KEYS.Q_SLIDER_VISIBLE);
         return saved != null ? saved === 'true' : true;
     });
-    const [onlyMyLikes, setOnlyMyLikes] = useState(() => localStorage.getItem(STORAGE_KEYS.ONLY_MY_LIKES) === 'true');
-    const [levelFacetFilters, setLevelFacetFilters] = useState(() => loadLevelFacetV1());
+    const [onlyMyLikes, setOnlyMyLikes] = useState(() => storage.getItem(STORAGE_KEYS.ONLY_MY_LIKES) === 'true');
+    const [levelFacetFilters, setLevelFacetFilters] = useState(() => loadLevelFacetV1(STORAGE_KEYS, storage));
     const levelFacetMigrationDoneRef = useRef(false);
     // Effect to validate and adjust ranges based on difficulties
     useEffect(() => {
@@ -104,7 +129,7 @@ const LevelContextProvider = (props) => {
             if (currentRange[0] < 1 || currentRange[1] > maxDifficulty) {
                 const newRange = [1, maxDifficulty];
                 setSliderRange(newRange);
-                localStorage.setItem(STORAGE_KEYS.SLIDER_RANGE, JSON.stringify(newRange));
+                storage.setItem(STORAGE_KEYS.SLIDER_RANGE, JSON.stringify(newRange));
             }
             
             // Get available Q difficulties (includes GQ)
@@ -129,18 +154,18 @@ const LevelContextProvider = (props) => {
 
                 if (needsQRangeReset) {
                     setSliderQRange(availableQNames);
-                    localStorage.setItem(STORAGE_KEYS.SLIDER_Q_RANGE, JSON.stringify(availableQNames));
+                    storage.setItem(STORAGE_KEYS.SLIDER_Q_RANGE, JSON.stringify(availableQNames));
                 }
 
                 if (needsDragReset) {
                     setSliderQRangeDrag([minQOrder, maxQOrder]);
-                    localStorage.setItem(STORAGE_KEYS.SLIDER_Q_RANGE_DRAG, JSON.stringify([minQOrder, maxQOrder]));
+                    storage.setItem(STORAGE_KEYS.SLIDER_Q_RANGE_DRAG, JSON.stringify([minQOrder, maxQOrder]));
                 }
             } else {
                 setSliderQRange([]);
                 setSliderQRangeDrag([1, 9999]);
-                localStorage.setItem(STORAGE_KEYS.SLIDER_Q_RANGE, JSON.stringify([]));
-                localStorage.setItem(STORAGE_KEYS.SLIDER_Q_RANGE_DRAG, JSON.stringify([1, 9999]));
+                storage.setItem(STORAGE_KEYS.SLIDER_Q_RANGE, JSON.stringify([]));
+                storage.setItem(STORAGE_KEYS.SLIDER_Q_RANGE_DRAG, JSON.stringify([1, 9999]));
             }
         }
     }, [difficulties]);
@@ -150,10 +175,10 @@ const LevelContextProvider = (props) => {
         if (tagsLoading || curationTypesLoading) return;
         if (levelFacetMigrationDoneRef.current) return;
         levelFacetMigrationDoneRef.current = true;
-        if (localStorage.getItem(STORAGE_KEYS.LEVEL_FACET_V1)) return;
+        if (storage.getItem(STORAGE_KEYS.LEVEL_FACET_V1)) return;
         try {
-            const rawT = localStorage.getItem(STORAGE_KEYS.SELECTED_TAGS);
-            const rawC = localStorage.getItem(STORAGE_KEYS.SELECTED_CURATION_TYPES);
+            const rawT = storage.getItem(STORAGE_KEYS.SELECTED_TAGS);
+            const rawC = storage.getItem(STORAGE_KEYS.SELECTED_CURATION_TYPES);
             const tagNames = rawT ? JSON.parse(rawT) : [];
             const ctNames = rawC ? JSON.parse(rawC) : [];
             const next = migrateLegacyNamesToFacet(
@@ -163,86 +188,86 @@ const LevelContextProvider = (props) => {
                 curationTypes || []
             );
             setLevelFacetFilters(next);
-            localStorage.setItem(STORAGE_KEYS.LEVEL_FACET_V1, JSON.stringify(next));
+            storage.setItem(STORAGE_KEYS.LEVEL_FACET_V1, JSON.stringify(next));
         } catch (e) {
             console.error('Level facet migration failed', e);
             const fallback = { tags: null, curationTypes: null, combine: 'and' };
             setLevelFacetFilters(fallback);
-            localStorage.setItem(STORAGE_KEYS.LEVEL_FACET_V1, JSON.stringify(fallback));
+            storage.setItem(STORAGE_KEYS.LEVEL_FACET_V1, JSON.stringify(fallback));
         }
     }, [tagsLoading, curationTypesLoading, tags, curationTypes]);
 
     useEffect(() => {
         if (!levelFacetMigrationDoneRef.current) return;
-        localStorage.setItem(STORAGE_KEYS.LEVEL_FACET_V1, JSON.stringify(levelFacetFilters));
+        storage.setItem(STORAGE_KEYS.LEVEL_FACET_V1, JSON.stringify(levelFacetFilters));
     }, [levelFacetFilters]);
 
     useEffect(() => {
-        localStorage.setItem(STORAGE_KEYS.LEGACY_DIFF, legacyDiff);
+        storage.setItem(STORAGE_KEYS.LEGACY_DIFF, legacyDiff);
     }, [legacyDiff]);
 
     useEffect(() => {
-        localStorage.setItem(STORAGE_KEYS.FILTER_OPEN, filterOpen);
+        storage.setItem(STORAGE_KEYS.FILTER_OPEN, filterOpen);
     }, [filterOpen]);
 
     useEffect(() => {
-        localStorage.setItem(STORAGE_KEYS.SORT_OPEN, sortOpen);
+        storage.setItem(STORAGE_KEYS.SORT_OPEN, sortOpen);
     }, [sortOpen]);
 
     useEffect(() => {
-        localStorage.setItem(STORAGE_KEYS.QUERY, query);
+        storage.setItem(STORAGE_KEYS.QUERY, query);
     }, [query]);
 
     useEffect(() => {
-        localStorage.setItem(STORAGE_KEYS.LOW_FILTER_DIFF, selectedLowFilterDiff);
+        storage.setItem(STORAGE_KEYS.LOW_FILTER_DIFF, selectedLowFilterDiff);
     }, [selectedLowFilterDiff]);
 
     useEffect(() => {
-        localStorage.setItem(STORAGE_KEYS.HIGH_FILTER_DIFF, selectedHighFilterDiff);
+        storage.setItem(STORAGE_KEYS.HIGH_FILTER_DIFF, selectedHighFilterDiff);
     }, [selectedHighFilterDiff]);
 
     useEffect(() => {
-        localStorage.setItem(STORAGE_KEYS.SORT, sort);
+        storage.setItem(STORAGE_KEYS.SORT, sort);
     }, [sort]);
 
     useEffect(() => {
-        localStorage.setItem(STORAGE_KEYS.ORDER, order);
+        storage.setItem(STORAGE_KEYS.ORDER, order);
     }, [order]);
 
     useEffect(() => {
-        localStorage.setItem(STORAGE_KEYS.DELETED_FILTER, deletedFilter);
+        storage.setItem(STORAGE_KEYS.DELETED_FILTER, deletedFilter);
     }, [deletedFilter]);
 
     useEffect(() => {
-        localStorage.setItem(STORAGE_KEYS.CLEARED_FILTER, clearedFilter);
+        storage.setItem(STORAGE_KEYS.CLEARED_FILTER, clearedFilter);
     }, [clearedFilter]);
 
     useEffect(() => {
-        localStorage.setItem(STORAGE_KEYS.AVAILABLE_DL_FILTER, availableDlFilter);
+        storage.setItem(STORAGE_KEYS.AVAILABLE_DL_FILTER, availableDlFilter);
     }, [availableDlFilter]);
 
     useEffect(() => {
-        localStorage.setItem(STORAGE_KEYS.SLIDER_RANGE, JSON.stringify(sliderRange));
+        storage.setItem(STORAGE_KEYS.SLIDER_RANGE, JSON.stringify(sliderRange));
     }, [sliderRange]);
 
     useEffect(() => {
-        localStorage.setItem(STORAGE_KEYS.SLIDER_Q_RANGE, JSON.stringify(sliderQRange));
+        storage.setItem(STORAGE_KEYS.SLIDER_Q_RANGE, JSON.stringify(sliderQRange));
     }, [sliderQRange]);
 
     useEffect(() => {
-        localStorage.setItem(STORAGE_KEYS.SLIDER_Q_RANGE_DRAG, JSON.stringify(sliderQRangeDrag));
+        storage.setItem(STORAGE_KEYS.SLIDER_Q_RANGE_DRAG, JSON.stringify(sliderQRangeDrag));
     }, [sliderQRangeDrag]);
 
     useEffect(() => {
-        localStorage.setItem(STORAGE_KEYS.SELECTED_SPECIAL_DIFFS, JSON.stringify(selectedSpecialDiffs));
+        storage.setItem(STORAGE_KEYS.SELECTED_SPECIAL_DIFFS, JSON.stringify(selectedSpecialDiffs));
     }, [selectedSpecialDiffs]);
 
     useEffect(() => {
-        localStorage.setItem(STORAGE_KEYS.Q_SLIDER_VISIBLE, qSliderVisible);
+        storage.setItem(STORAGE_KEYS.Q_SLIDER_VISIBLE, qSliderVisible);
     }, [qSliderVisible]);
 
     useEffect(() => {
-        localStorage.setItem(STORAGE_KEYS.ONLY_MY_LIKES, onlyMyLikes);
+        storage.setItem(STORAGE_KEYS.ONLY_MY_LIKES, onlyMyLikes);
     }, [onlyMyLikes]);
 
     return (

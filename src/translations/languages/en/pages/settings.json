@@ -1,0 +1,101 @@
+{
+  "layout": {
+    "pageTitle": "Settings",
+    "sidebarTitle": "Settings",
+    "subtitle": "Manage your account, player profile, and creator profile in one place.",
+    "navAria": "Settings sections",
+    "sidebarNavAria": "Settings navigation"
+  },
+  "nav": {
+    "groups": {
+      "personal": "Personal"
+    },
+    "account": "Account",
+    "player": "Player profile",
+    "creator": "Creator profile",
+    "short": {
+      "account": "Account",
+      "player": "Player",
+      "creator": "Creator"
+    }
+  },
+  "player": {
+    "title": "Player profile",
+    "nicknameLabel": "Nickname",
+    "nicknamePlaceholder": "3–60 characters, unique",
+    "nicknameSuccess": "Nickname updated",
+    "nicknameError": "Could not update nickname",
+    "nicknameLength": "Nickname must be between 3 and 60 characters.",
+    "openProfile": "View my player profile",
+    "openProfileNewTab": "View public player profile (opens in new tab)",
+    "noPlayerTitle": "No player profile",
+    "noPlayerBody": "Your account is not linked to a player profile yet.",
+    "loadErrorTitle": "Could not load player profile",
+    "loadErrorBody": "Try again in a moment.",
+    "retry": "Retry"
+  },
+  "banner": {
+    "sectionTitle": "Profile banner",
+    "sectionExpandAria": "Expand profile banner options",
+    "sectionCollapseAria": "Collapse profile banner options",
+    "presetHint": "Pick a free banner from the list",
+    "presetGroupAria": "Banner presets",
+    "preset_default": "Default",
+    "presetSaved": "Banner saved",
+    "presetCleared": "Banner cleared (default banner will show)",
+    "presetError": "Could not update banner",
+    "clearPreset": "Use default banner",
+    "savePreset": "Save banner",
+    "customLabel": "Or upload your own (subscription)",
+    "uploadOk": "Custom banner uploaded",
+    "uploadError": "Could not upload custom banner",
+    "customEmpty": "Wider images fit the header better",
+    "customUpload": "Upload image",
+    "customUploading": "Uploading…",
+    "customReplace": "Replace image",
+    "dropzonePrimary": "Click or drop an image here",
+    "invalidFileType": "Unsupported image type. Use JPEG, PNG, WebP, GIF, or SVG.",
+    "cropperTitle": "Crop banner",
+    "removeCustom": "Remove custom banner",
+    "removedCustom": "Custom banner removed",
+    "removeError": "Could not remove custom banner",
+    "lockedHint": "You have a saved custom banner, but it is inactive until custom banners are enabled on your account. Your preset is shown publicly instead.",
+    "manifestLoading": "Loading banner list…",
+    "manifestLoadError": "Could not load the banner list; only the default preset is available until this is fixed."
+  },
+  "creator": {
+    "title": "Creator profile",
+    "displayNameLabel": "Display name",
+    "displayNamePlaceholder": "2–100 characters, unique",
+    "displayNameSuccess": "Name updated",
+    "displayNameError": "Could not update name",
+    "displayNameTooShort": "Name must be at least 2 characters.",
+    "displayNameTooLong": "Name must be at most 100 characters.",
+    "curationBadges": {
+      "toggle": "Customize header badges",
+      "hint": "Up to {{max}} ({{selected}}/{{max}})",
+      "previewAria": "Header badge preview",
+      "empty": "No curation types on credited levels yet.",
+      "saveSuccess": "Header badges updated",
+      "saveError": "Could not save header badges",
+      "fallbackGroup": "Other"
+    },
+    "aliasesLabel": "Aliases",
+    "aliasesHint": "Up to {{max}} names for search. Cannot match your display name or any other creator’s name or alias (case-insensitive).",
+    "aliasesPlaceholder": "New alias",
+    "aliasesAdd": "Add",
+    "aliasesRemoveAria": "Remove {{name}}",
+    "aliasesSuccess": "Aliases updated",
+    "aliasesError": "Could not save aliases",
+    "aliasesDuplicate": "Already listed",
+    "aliasesMax": "Maximum {{max}} aliases",
+    "aliasesTooShort": "Each alias must be at least 2 characters",
+    "aliasesMatchesDisplay": "Cannot match your display name",
+    "openPublicProfile": "View public creator profile",
+    "openPublicProfileNewTab": "View public creator profile (opens in new tab)",
+    "noCreatorTitle": "No creator profile",
+    "noCreatorBody": "Your account is not linked to a creator profile yet.",
+    "loadErrorTitle": "Could not load creator settings",
+    "loadErrorBody": "Try again later or open your public profile."
+  }
+}

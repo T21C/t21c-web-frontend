@@ -12,14 +12,14 @@
 }
 
 .curation-edit-modal__content {
-  background-color: #2a2a2a;
+  background-color: var(--btn-neutral-dark);
   border-radius: 12px;
   padding: 2rem;
   max-width: 800px;
   width: 90%;
   max-height: 90vh;
   overflow-y: auto;
-  border: 2px solid #404040;
+  border: 2px solid var(--btn-neutral-disabled-fill);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
   position: relative;
 }
@@ -63,7 +63,7 @@
   display: flex;
   gap: 0.5rem;
   margin-bottom: 1.5rem;
-  border-bottom: 1px solid #404040;
+  border-bottom: 1px solid var(--btn-neutral-disabled-fill);
   padding-bottom: 0.5rem;
 }
 
@@ -86,7 +86,7 @@
 }
 
 .curation-edit-modal__tab-button--active {
-  color: #4a9eff;
+  color: var(--btn-primary);
   background: rgba(74, 158, 255, 0.1);
 }
 
@@ -97,7 +97,7 @@
   left: 0;
   right: 0;
   height: 2px;
-  background: #4a9eff;
+  background: var(--btn-primary);
 }
 
 /* Discord Roles Tab */
@@ -112,7 +112,7 @@
 
 .curation-edit-modal__level-card {
   background: #1a1a1a;
-  border: 1px solid #404040;
+  border: 1px solid var(--btn-neutral-disabled-fill);
   border-radius: 8px;
   padding: 1rem;
 }
@@ -166,7 +166,7 @@
 
 .curation-edit-modal__row {
   padding: 1rem 1.25rem;
-  border: 2px solid #404040;
+  border: 2px solid var(--btn-neutral-disabled-fill);
   border-radius: 10px;
   background: #1a1a1a;
   display: flex;
@@ -206,10 +206,10 @@
 .curation-edit-modal__add-row-btn {
   align-self: flex-start;
   padding: 0.55rem 1rem;
-  border: 2px dashed #4a9eff;
+  border: 2px dashed var(--btn-primary);
   border-radius: 8px;
   background: transparent;
-  color: #4a9eff;
+  color: var(--btn-primary);
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s ease, color 0.2s ease;
@@ -258,7 +258,7 @@
 .curation-edit-modal__textarea,
 .curation-edit-modal__color-text {
   padding: 0.75rem;
-  border: 2px solid #404040;
+  border: 2px solid var(--btn-neutral-disabled-fill);
   border-radius: 8px;
   background: #1a1a1a;
   color: #ffffff;
@@ -271,7 +271,7 @@
 .curation-edit-modal__textarea:focus,
 .curation-edit-modal__color-text:focus {
   outline: none;
-  border-color: #4a9eff;
+  border-color: var(--btn-primary);
 }
 
 .curation-edit-modal__textarea {
@@ -284,7 +284,7 @@
   cursor: not-allowed;
   color: rgba(255, 255, 255, 0.75);
   background: #141414;
-  border-color: #2a2a2a;
+  border-color: var(--btn-neutral-dark);
 }
 
 .curation-edit-modal .curation-edit-modal__form-group--custom-css {
@@ -314,11 +314,11 @@
   cursor: not-allowed;
   color: rgba(255, 255, 255, 0.75);
   background: #141414;
-  border-color: #2a2a2a;
+  border-color: var(--btn-neutral-dark);
 }
 
 .curation-edit-modal__css-textarea:disabled:focus {
-  border-color: #2a2a2a;
+  border-color: var(--btn-neutral-dark);
 }
 
 .curation-edit-modal__preview-button {
@@ -340,7 +340,6 @@
 
 .curation-edit-modal__preview-button:hover:not(:disabled) {
   background: #1e4a7a;
-  transform: translateY(-1px);
 }
 
 .curation-edit-modal__preview-button:disabled {
@@ -384,7 +383,7 @@
   justify-content: flex-end;
   margin-top: 1rem;
   padding-top: 1rem;
-  border-top: 1px solid #404040;
+  border-top: 1px solid var(--btn-neutral-disabled-fill);
 }
 
 .curation-edit-modal__cancel-btn,
@@ -401,7 +400,7 @@
 .curation-edit-modal__cancel-btn {
   background: #333333;
   color: #ffffff;
-  border: 1px solid #404040;
+  border: 1px solid var(--btn-neutral-disabled-fill);
 }
 
 .curation-edit-modal__cancel-btn:hover:not(:disabled) {
@@ -409,13 +408,12 @@
 }
 
 .curation-edit-modal__save-btn {
-  background: #4a9eff;
+  background: var(--btn-primary);
   color: white;
 }
 
 .curation-edit-modal__save-btn:hover:not(:disabled) {
-  background: #3a8eef;
-  transform: translateY(-1px);
+  background: var(--btn-primary-hover);
 }
 
 .curation-edit-modal__cancel-btn:disabled,

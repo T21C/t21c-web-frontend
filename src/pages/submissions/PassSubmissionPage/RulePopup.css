@@ -97,13 +97,13 @@
 }
 
 .pass-rules-popup .rules-section.critical {
-  border-color: #ff4444;
+  border-color: var(--danger-color);
   background: linear-gradient(135deg, rgba(255, 68, 68, 0.1), rgba(255, 68, 68, 0.05));
   box-shadow: 0 0 20px rgba(255, 68, 68, 0.2);
 }
 
 .pass-rules-popup .rules-section.critical h3 {
-  color: #ff4444;
+  color: var(--danger-color);
   font-size: 1.3rem;
   font-weight: bold;
   text-shadow: 0 0 10px rgba(255, 68, 68, 0.5);

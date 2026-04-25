@@ -37,7 +37,7 @@
   width: 400px;
   height: calc(100vh - var(--navbar-height));
   background: #1a1a1a;
-  border-left: 2px solid #404040;
+  border-left: 2px solid var(--btn-neutral-disabled-fill);
   z-index: 1000;
   display: flex;
   flex-direction: column;
@@ -62,8 +62,8 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  background: #2a2a2a;
-  border-bottom: 1px solid #404040;
+  background: var(--btn-neutral-dark);
+  border-bottom: 1px solid var(--btn-neutral-disabled-fill);
   min-height: 80px;
   position: relative;
   z-index: 1001;
@@ -93,8 +93,8 @@
   position: fixed;
   top: calc(var(--navbar-height) + 20px);
   right: 20px;
-  background: #2a2a2a;
-  border: 2px solid #404040;
+  background: var(--btn-neutral-dark);
+  border: 2px solid var(--btn-neutral-disabled-fill);
   color: var(--color-white);
   padding: 0.75rem;
   border-radius: 8px;
@@ -112,7 +112,7 @@
 }
 
 .fixed-collapse-button:hover {
-  background: #404040;
+  background: var(--btn-neutral-disabled-fill);
   border-color: #505050;
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
@@ -159,7 +159,7 @@
 .css-editor-textarea {
   flex: 1;
   background: #0a0a0a;
-  border: 2px solid #404040;
+  border: 2px solid var(--btn-neutral-disabled-fill);
   border-radius: 8px;
   color: var(--color-white);
   font-family: 'Courier New', monospace;
@@ -178,8 +178,8 @@
 
 .css-editor-help {
   display: none;
-  background: #2a2a2a;
-  border: 1px solid #404040;
+  background: var(--btn-neutral-dark);
+  border: 1px solid var(--btn-neutral-disabled-fill);
   border-radius: 6px;
   padding: 0.75rem;
   
@@ -198,7 +198,7 @@
   display: flex;
   gap: 0.75rem;
   padding-top: 1rem;
-  border-top: 1px solid #404040;
+  border-top: 1px solid var(--btn-neutral-disabled-fill);
   flex-wrap: wrap;
 }
 
@@ -217,17 +217,17 @@
 }
 
 .return-button {
-  background: #2a2a2a;
+  background: var(--btn-neutral-dark);
   color: var(--color-white);
 }
 
 .return-button:hover:not(:disabled) {
-  background: #404040;
+  background: var(--btn-neutral-disabled-fill);
   border-color: #505050;
 }
 
 .reset-button {
-  background: #404040;
+  background: var(--btn-neutral-disabled-fill);
   color: var(--color-white);
   border: 1px solid #505050;
 }
@@ -243,7 +243,6 @@
 
 .save-button:hover:not(:disabled) {
   background: var(--color-purple-2);
-  transform: translateY(-1px);
 }
 
 .reset-button:disabled,
@@ -295,7 +294,7 @@
     right: 0;
     transform: translateY(100%);
     border-left: none;
-    border-top: 2px solid #404040;
+    border-top: 2px solid var(--btn-neutral-disabled-fill);
   }
   
   .css-editor-overlay.collapsed {

@@ -1,0 +1,118 @@
+.difficulty-graph .recharts-tooltip-wrapper {
+  filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.5));
+}
+
+.difficulty-graph .recharts-default-tooltip {
+  background-color: rgba(13, 13, 13, 0.95) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 12px !important;
+  padding: 1rem !important;
+}
+
+.difficulty-graph .recharts-tooltip-label {
+  color: #ffffff !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.difficulty-graph .recharts-tooltip-item {
+  color: rgba(255, 255, 255, 0.8) !important;
+  padding: 0.25rem 0 !important;
+}
+
+.difficulty-graph__custom-tooltip {
+  background-color: rgba(13, 13, 13, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 0.5rem 0.75rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  pointer-events: none;
+}
+
+.difficulty-graph__tooltip-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.difficulty-graph__tooltip-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.difficulty-graph__difficulty-icon {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.difficulty-graph__tooltip-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+  text-shadow: 0 0 8px currentColor;
+}
+
+.difficulty-graph__tooltip-right {
+  flex: 1;
+  padding-left: 0.5rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.difficulty-graph__tooltip-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.difficulty-graph__tooltip-value {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.difficulty-graph .recharts-default-tooltip {
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+  text-shadow: rgba(0, 0, 0, 0.3) 0px 0px 10px;
+}
+
+.difficulty-graph .recharts-bar-rectangle {
+  transition: fill 0.3s ease-out;
+}
+
+@media (max-width: 768px) {
+  .difficulty-graph__custom-tooltip {
+    max-width: 90vw;
+    padding: 0.35rem 0.5rem;
+  }
+
+  .difficulty-graph__tooltip-content {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+
+  .difficulty-graph__difficulty-icon {
+    width: 26px;
+    height: 26px;
+  }
+
+  .difficulty-graph__tooltip-left {
+    flex-direction: row;
+    gap: 0.25rem;
+    width: 100%;
+  }
+
+  .difficulty-graph__tooltip-right {
+    padding-left: 0;
+    border-left: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 0.5rem;
+    width: 100%;
+  }
+}
+

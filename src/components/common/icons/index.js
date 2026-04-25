@@ -54,6 +54,9 @@ import CalendarIcon from './CalendarIcon';
 import ScoreIcon from './ScoreIcon';
 import ChartIcon from './ChartIcon';
 import TimeIcon from './TimeIcon';
+import AdofaiIcon from './AdofaiIcon';
+import { SettingsIcon } from './SettingsIcon';
+
 export {
     DefaultAvatar,
     DiscordIcon,
@@ -110,5 +113,7 @@ export {
     CalendarIcon,
     ScoreIcon,
     ChartIcon,
-    TimeIcon
+    TimeIcon,
+    AdofaiIcon,
+    SettingsIcon
 }

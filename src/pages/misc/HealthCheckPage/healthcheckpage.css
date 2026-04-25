@@ -24,7 +24,7 @@
 }
 
 .health-check-page .refresh-button {
-  background-color: #4CAF50;
+  background-color: var(--btn-success);
   color: white;
   border: none;
   padding: 0.6rem 1.2rem;
@@ -36,7 +36,7 @@
 }
 
 .health-check-page .refresh-button:hover {
-  background-color: #45a049;
+  background-color: var(--btn-success-hover);
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
@@ -61,7 +61,7 @@
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background-color: #4CAF50;
+  background-color: var(--btn-success);
   color: white;
   border: none;
   cursor: pointer;
@@ -74,7 +74,7 @@
 }
 
 .health-check-page .fixed-refresh-button:hover {
-  background-color: #45a049;
+  background-color: var(--btn-success-hover);
   transform: translateY(-3px);
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
 }
@@ -210,15 +210,15 @@
 }
 
 .health-check-page .status-indicator.online {
-  background-color: rgba(76, 175, 80, 0.2);
+  background-color: var(--btn-success-tint);
   color: #81c784;
-  border: 1px solid rgba(76, 175, 80, 0.3);
+  border: 1px solid var(--btn-success-tint-strong);
 }
 
 .health-check-page .status-indicator.offline {
-  background-color: rgba(244, 67, 54, 0.2);
+  background-color: var(--danger-color-tint-20);
   color: #e57373;
-  border: 1px solid rgba(244, 67, 54, 0.3);
+  border: 1px solid var(--danger-color-tint-30);
 }
 
 .health-check-page .server-details {
@@ -386,7 +386,7 @@
   left: 0;
   width: 4px;
   height: 100%;
-  background-color: #4CAF50;
+  background-color: var(--btn-success);
   opacity: 0.7;
 }
 

@@ -68,14 +68,14 @@
 /* Dark theme support */
 @media (prefers-color-scheme: dark) {
   .keyContainer {
-    background-color: #2a2a2a;
+    background-color: var(--btn-neutral-dark);
     border-color: #555;
     box-shadow: 0 2px 0 #555;
     color: #ffffff;
   }
 
   .keyContainer:active {
-    box-shadow: 0 1px 0 #404040;
+    box-shadow: 0 1px 0 var(--btn-neutral-disabled-fill);
   }
 
   .keyContainer.flash::before {

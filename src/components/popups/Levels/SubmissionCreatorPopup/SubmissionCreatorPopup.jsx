@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { CustomSelect } from '@/components/common/selectors';
+import { CreatorStatusBadge } from '@/components/common/display';
 import api from '@/utils/api';
 import './submissionCreatorPopup.css';
 import { CloseButton } from '@/components/common/buttons';
@@ -398,10 +399,12 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
                             ({selectedDetails.members.length} {t('submissionCreator.teamStats.members')})
                           </span>
                         )}
-                        {selectedDetails.isVerified && (
-                          <span className="verified-status">
-                            {isTeamMode ? t('submissionCreator.status.verifiedTeam') : t('submissionCreator.status.verified')}
-                          </span>
+                        {!isTeamMode && selectedDetails.verificationStatus && (
+                          <CreatorStatusBadge
+                            status={selectedDetails.verificationStatus}
+                            size="small"
+                            className="verified-status"
+                          />
                         )}
                       </>
                     ) : (

@@ -22,8 +22,14 @@
     "universalPassCount": "U通关数",
     "worldsFirstCount": "世界首通数",
     "topDiff": "最高通关难度",
-    "top12kDiff": "最高12键通关难度"
+    "top12kDiff": "最高12键通关难度",
+    "totalUniquePasses": "唯一关卡通关总数",
+    "topAccClearNum": "最高精准通关数",
+    "tilesPressed": "按键次数"
   },
+  "editProfile": "编辑资料",
+  "adminEdit": "管理员编辑",
+  "viewUserPacks": "查看用户的谱面包",
   "sections": {
     "scores": {
       "title": "通关记录列表",
@@ -32,6 +38,7 @@
   },
   "sort": {
     "byScore": "按分数",
+    "byImpact": "按排位影响分",
     "byDate": "按日期",
     "byXacc": "按X精准度",
     "byDifficulty": "按难度",

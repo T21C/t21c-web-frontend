@@ -17,7 +17,7 @@
   border-radius: 8px;
   padding: 20px;
   width: 90%;
-  max-width: 400px;
+  max-width: 480px;
   position: relative;
 }
 
@@ -79,7 +79,7 @@
 }
 
 .admin-player-popup .save-button {
-  background-color: #4CAF50;
+  background-color: var(--btn-success);
   color: white;
 }
 
@@ -89,7 +89,7 @@
 }
 
 .admin-player-popup .cancel-button {
-  background-color: #f44336;
+  background-color: var(--danger-color);
   color: white;
 }
 
@@ -98,18 +98,28 @@
 }
 
 .admin-player-popup .error-message {
-  color: #f44336;
+  color: var(--danger-color);
   margin-bottom: 16px;
 }
 
 .admin-player-popup .form-group input[type="checkbox"] {
-  accent-color: #4CAF50;
+  accent-color: var(--btn-success);
   width: 16px;
   height: 16px;
 }
 
-.admin-player-popup .discord-section {
+.admin-player-popup .creator-assignment-embed-section {
   margin-bottom: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--color-white-t20);
+}
+
+.admin-player-popup .creator-assignment-embed-label {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--color-white);
+  font-weight: 600;
+  font-size: 1em;
 }
 
 .admin-player-popup .discord-input-group {
@@ -244,7 +254,7 @@
 
 .admin-player-popup .update-name-button {
   padding: 8px 16px;
-  background-color: #4CAF50;
+  background-color: var(--btn-success);
   color: white;
   border: none;
   border-radius: 4px;
@@ -254,7 +264,7 @@
 }
 
 .admin-player-popup .update-name-button:hover {
-  background-color: #45a049;
+  background-color: var(--btn-success-hover);
 }
 
 .admin-player-popup .update-name-button:disabled {
@@ -274,7 +284,7 @@
 
 .admin-player-popup .update-country-button {
   padding: 8px 16px;
-  background-color: #4CAF50;
+  background-color: var(--btn-success);
   color: white;
   border: none;
   border-radius: 4px;
@@ -284,7 +294,7 @@
 }
 
 .admin-player-popup .update-country-button:hover {
-  background-color: #45a049;
+  background-color: var(--btn-success-hover);
 }
 
 .admin-player-popup .update-country-button:disabled {
@@ -319,7 +329,7 @@
 .admin-player-popup .ban-label input[type="checkbox"] {
   width: 20px;
   height: 20px;
-  accent-color: #f44336;
+  accent-color: var(--danger-color);
 }
 
 .admin-player-popup .done-button {
@@ -363,7 +373,7 @@
 
 .admin-player-popup .ban-confirm-button {
   padding: 8px 16px;
-  background-color: #f44336;
+  background-color: var(--danger-color);
   color: white;
   border: none;
   border-radius: 4px;
@@ -374,7 +384,7 @@
 }
 
 .admin-player-popup .ban-confirm-button:hover {
-  background-color: #d32f2f;
+  background-color: var(--danger-color-hover);
 }
 
 .admin-player-popup .ban-cancel-button {
@@ -408,7 +418,7 @@
 
 .admin-player-popup .discord-delete-button {
   padding: 6px 12px;
-  background-color: #f44336;
+  background-color: var(--danger-color);
   color: white;
   border: none;
   border-radius: 4px;
@@ -419,7 +429,7 @@
 }
 
 .admin-player-popup .discord-delete-button:hover {
-  background-color: #d32f2f;
+  background-color: var(--danger-color-hover);
 }
 
 .admin-player-popup .discord-delete-button:disabled {
@@ -439,7 +449,7 @@
   transition: background-color 0.2s;
 }
 .admin-player-popup .discord-confirm-button {
-  background-color: #4caf50;
+  background-color: var(--btn-success);
   color: white;
 }
 
@@ -713,7 +723,7 @@
 
 /* Style checkboxes based on their function */
 .admin-player-popup .checkbox-container:nth-child(1) input[type="checkbox"] {
-  accent-color: #f44336; /* Ban checkbox - Red */
+  accent-color: var(--danger-color); /* Ban checkbox - Red */
 }
 
 .admin-player-popup .checkbox-container:nth-child(2) input[type="checkbox"] {
@@ -761,7 +771,7 @@
 }
 
 .admin-player-popup .confirm-button.ban-confirm {
-  background-color: #f44336;
+  background-color: var(--danger-color);
 }
 
 .admin-player-popup .confirm-button.pause-confirm {
@@ -778,7 +788,7 @@
 }
 
 .admin-player-popup .confirm-button:hover.ban-confirm {
-  background-color: #d32f2f;
+  background-color: var(--danger-color-hover);
 }
 
 .admin-player-popup .confirm-button:hover.pause-confirm {

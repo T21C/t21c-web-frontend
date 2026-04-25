@@ -6,10 +6,17 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.edit-profile-page .edit-profile-container h1 {
+.edit-profile-page .edit-profile-container .edit-profile-page__page-title {
   margin-bottom: 2rem;
   font-size: 2rem;
   text-align: center;
+}
+
+.edit-profile-page--embedded .edit-profile-container {
+  margin: 0 auto;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .edit-profile-page .edit-profile-container h2 {
@@ -34,6 +41,31 @@
   margin-bottom: 1rem;
 }
 
+.edit-profile-page .edit-profile-page__nickname-moved {
+  margin-bottom: 1.5rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.edit-profile-page .edit-profile-page__nickname-moved-link {
+  display: inline;
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  font-weight: 500;
+  color: var(--color-purple-1);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 0.15em;
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
+}
+
+.edit-profile-page .edit-profile-page__nickname-moved-link:hover {
+  color: var(--color-purple-2);
+  text-decoration-color: var(--color-purple-2);
+}
+
 .edit-profile-page .form-group {
   margin-bottom: 1.5rem;
 }
@@ -47,7 +79,7 @@
 .edit-profile-page .form-group .input-field {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #404040;
+  border: 1px solid var(--btn-neutral-disabled-fill);
   border-radius: 4px;
   background: #333333;
   font-size: 1rem;
@@ -63,7 +95,7 @@
   opacity: 0.5;
   cursor: not-allowed;
   pointer-events: none;
-  background: #2a2a2a;
+  background: var(--btn-neutral-dark);
 }
 
 .edit-profile-page .form-group label {
@@ -101,7 +133,7 @@
 
 .edit-profile-page .section-divider {
   height: 1px;
-  background-color: #404040;
+  background-color: var(--btn-neutral-disabled-fill);
   margin: 2rem 0;
 }
 
@@ -135,7 +167,7 @@
     margin: 1rem;
   }
 
-  .edit-profile-page .edit-profile-container h1 {
+  .edit-profile-page .edit-profile-container .edit-profile-page__page-title {
     font-size: 1.75rem;
   }
 
@@ -155,7 +187,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 1rem;
-  background-color: #2a2a2a;
+  background-color: var(--btn-neutral-dark);
   border-radius: 8px;
   margin-bottom: 1rem;
 }
@@ -232,7 +264,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #ff4444;
+  color: var(--danger-color);
   font-size: 14px;
   margin-top: 8px;
   cursor: pointer;
@@ -269,7 +301,7 @@
   width: 150px;
   height: 150px;
   margin: 0 auto;
-  border: 2px dashed #404040;
+  border: 2px dashed var(--btn-neutral-disabled-fill);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -450,7 +482,7 @@
 }
 
 .edit-profile-page .form-group .input-field.readonly {
-  background-color: #2a2a2a;
+  background-color: var(--btn-neutral-dark);
   cursor: not-allowed;
   opacity: 0.7;
   color: #888;
@@ -508,9 +540,9 @@
   gap: 1rem;
   margin-top: 0.5rem;
   padding: 1.25rem;
-  border: 1px solid rgba(220, 53, 69, 0.45);
+  border: 1px solid var(--danger-color-tint-45);
   border-radius: 8px;
-  background: rgba(220, 53, 69, 0.08);
+  background: var(--danger-color-tint-08);
 }
 
 .edit-profile-page .danger-zone h2 {

@@ -415,11 +415,11 @@
 }
 
 .difficulty-page .notification.error {
-  background-color: rgba(244, 67, 54, 0.9);
+  background-color: var(--danger-color-alpha-90);
 }
 
 .difficulty-page .notification.success {
-  background-color: rgba(76, 175, 80, 0.9);
+  background-color: var(--btn-success-alpha-90);
 }
 
 .difficulty-page .close-notification {

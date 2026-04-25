@@ -1,20 +1,10 @@
 import { useEffect, useState, useCallback } from "react";
 import "./homepage.css"
 import { Footer } from "@/components/layout";
-import { MetaTags, WeeklyGallery } from "@/components/common/display";
+import { MetaTags, WeeklyGallery, DifficultyGraph } from "@/components/common/display";
 import api from "@/utils/api";
 import { Link } from 'react-router-dom';
-import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { useTranslation } from "react-i18next";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer
-} from 'recharts';
 import { useLocation } from 'react-router-dom';
 import { ScrollButton } from "@/components/common/buttons";
 import { PassIcon, ChartIcon, LeaderboardIcon, PackIcon } from "@/components/common/icons";
@@ -33,163 +23,12 @@ const SupportButton = () => {
   )
 }
 
-
-const CustomTooltip = ({ active, payload, label }) => {
-  if (active && payload && payload.length) {
-    const difficulty = payload[0].payload;
-    return (
-      <div className="custom-tooltip">
-        <div className="tooltip-content">
-          <div className="tooltip-left">
-            <img 
-              src={difficulty.icon} 
-              alt={label} 
-              className="difficulty-icon"
-            />
-            <span className="tooltip-label" style={{ color: difficulty.originalColor }}>
-              {label}
-            </span>
-          </div>
-          <div className="tooltip-right">
-            <div className="tooltip-stats">
-              <span className="tooltip-value">
-                {difficulty.passCount.toLocaleString()} Passes
-              </span>
-              <span className="tooltip-value">
-                {difficulty.levelCount.toLocaleString()} Levels
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-  return null;
-};
-
 const StatCard = ({ value, label }) => (
   <div className="stat-card">
     <span className="stat-value">{value.toLocaleString()}</span>
     <span className="stat-label">{label}</span>
   </div>
 );
-
-const DifficultyGraph = ({ data, mode }) => {
-  const { difficultyDict } = useDifficultyContext();
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-  
-  // Combine difficulties with "J" variants
-  const combinedData = data.reduce((acc, diff) => {
-    // Skip if it's a J variant
-    if (diff.name.endsWith('J')) {
-      // Find the parent difficulty
-      const parentName = diff.name.slice(0, -1); // Remove the J
-      const parentDiff = acc.find(d => d.name === parentName);
-      
-      if (parentDiff) {
-        // Add the J variant's counts to the parent
-        parentDiff.passCount += diff.passCount;
-        parentDiff.levelCount += diff.levelCount;
-      }
-      return acc;
-    }
-    
-    // For non-J variants, add them to the accumulator
-    acc.push({
-      name: diff.name,
-      passCount: diff.passCount,
-      levelCount: diff.levelCount,
-      id: diff.id
-    });
-    
-    return acc;
-  }, []);
-
-  const chartData = combinedData.map(diff => {
-    const difficultyInfo = difficultyDict[diff.id] || {};
-    return {
-      name: diff.name,
-      value: mode === 'passes' ? diff.passCount : diff.levelCount,
-      passCount: diff.passCount,
-      levelCount: diff.levelCount,
-      fill: difficultyInfo.color || '#ff2ad1',
-      originalColor: difficultyInfo.color || '#ff2ad1',
-      icon: difficultyInfo.icon || null
-    };
-  });
-
-  const containerProps = isMobile ? {
-    width: "124%",
-    height: 200,
-    style: { position: "relative", left: "-12%" }
-  } : {
-    width: "100%",
-    height: 300
-  };
-
-  return (
-    <ResponsiveContainer {...containerProps}>
-      <BarChart 
-        data={chartData} 
-        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-        barGap={0}
-        barCategoryGap={-0.5}
-      >
-        <CartesianGrid 
-          strokeDasharray="3 3" 
-          stroke="rgba(255, 255, 255, 0.05)" 
-          vertical={false}
-        />
-        <XAxis 
-          dataKey="name" 
-          stroke="#ffffff" 
-          fontSize={12}
-          tickLine={false}
-          interval={isMobile ? 3 : 1}
-          angle={isMobile ? 45 : 0}
-          textAnchor={isMobile ? "start" : "middle"}
-          height={isMobile ? 60 : 30}
-        />
-        <YAxis 
-          stroke="#ffffff" 
-          fontSize={isMobile ? 10 : 12}
-          tickLine={false}
-          axisLine={false}
-          width={isMobile ? 35 : 45}
-        />
-        <Tooltip 
-          content={<CustomTooltip />}
-          cursor={{ fill: 'rgba(255, 255, 255, 0.05)' }}
-          offset={10}
-          wrapperStyle={{ 
-            outline: 'none',
-            zIndex: 100
-          }}
-          animationDuration={0}
-        />
-        <Bar 
-          dataKey="value" 
-          name={mode === 'passes' ? 'Passes' : 'Levels'}
-          onMouseEnter={(data, index, e) => {
-            e.target.style.fill = data.payload.originalColor;
-          }}
-          onMouseLeave={(data, index, e) => {
-            e.target.style.fill = data.payload.fill;
-          }}
-        />
-      </BarChart>
-    </ResponsiveContainer>
-  );
-};
 
 const HomePage = () => {
   const { t } = useTranslation('pages');
@@ -468,7 +307,7 @@ const HomePage = () => {
                 {Object.entries(stats.difficulties.byType).filter(([type]) => type == 'PGU').map(([type, difficulties]) => (
                   <div key={type} className="difficulty-type-section">
                     <h3>{type}</h3>
-                    <DifficultyGraph data={difficulties} mode={graphMode} />
+                    <DifficultyGraph data={difficulties} mode={graphMode} labelMode="all" />
                   </div>
                 ))}
               </div>

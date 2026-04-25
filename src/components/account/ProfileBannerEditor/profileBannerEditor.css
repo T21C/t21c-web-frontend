@@ -1,0 +1,281 @@
+.profile-banner-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--btn-neutral-disabled-fill);
+  background: color-mix(in srgb, var(--color-black) 40%, transparent);
+}
+
+.profile-banner-editor__title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--color-white);
+}
+
+.profile-banner-editor__hint,
+.profile-banner-editor__custom-label {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--color-gray-2);
+}
+
+.profile-banner-editor__manifest-status {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--color-gray-2);
+}
+
+.profile-banner-editor__preset-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
+  gap: 0.65rem;
+}
+
+.profile-banner-editor__preset-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  cursor: pointer;
+  border-radius: 8px;
+  border: 2px solid var(--btn-neutral-disabled-fill);
+  background: color-mix(in srgb, var(--color-black) 35%, transparent);
+  overflow: hidden;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.profile-banner-editor__preset-tile:hover {
+  border-color: var(--btn-primary);
+}
+
+.profile-banner-editor__preset-tile--selected {
+  border-color: var(--btn-primary);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--btn-primary) 45%, transparent);
+}
+
+.profile-banner-editor__preset-tile:focus-within {
+  outline: 2px solid var(--btn-primary-light-hover);
+  outline-offset: 2px;
+}
+
+.profile-banner-editor__preset-tile input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.profile-banner-editor__preset-tile-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.4rem;
+}
+
+.profile-banner-editor__thumb-wrap {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--btn-neutral-dark);
+}
+
+.profile-banner-editor__thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+
+.profile-banner-editor__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.profile-banner-editor__actions--preset {
+  align-items: center;
+}
+
+.profile-banner-editor__custom-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.profile-banner-editor__custom-preview-wrap {
+  position: relative;
+  width: 100%;
+  height: 12rem;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--btn-neutral-disabled-fill);
+  background: var(--btn-neutral-dark);
+}
+
+.profile-banner-editor__custom-preview-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.profile-banner-editor__custom-preview-dim {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--color-black) 50%, transparent);
+  pointer-events: none;
+}
+
+.profile-banner-editor__dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 18rem;
+  padding: 1.25rem;
+  text-align: center;
+  border-radius: 8px;
+  border: 2px dashed color-mix(in srgb, var(--color-gray-2) 55%, var(--btn-neutral-dark));
+  background: color-mix(in srgb, var(--btn-neutral-dark) 88%, transparent);
+  color: var(--color-gray-2);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.profile-banner-editor__dropzone:hover {
+  border-color: var(--btn-primary);
+  background: color-mix(in srgb, var(--btn-primary) 8%, var(--btn-neutral-dark));
+  color: var(--color-white);
+}
+
+.profile-banner-editor__dropzone--dragging {
+  border-color: var(--btn-primary);
+  background: color-mix(in srgb, var(--btn-primary) 16%, var(--btn-neutral-dark));
+  color: var(--color-white);
+}
+
+.profile-banner-editor__file-input:focus-visible + .profile-banner-editor__custom-panel .profile-banner-editor__dropzone {
+  outline: 2px solid var(--btn-primary-light-hover);
+  outline-offset: 2px;
+}
+
+.profile-banner-editor__dropzone--busy {
+  cursor: progress;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.profile-banner-editor__dropzone-icon {
+  width: 2.75rem;
+  height: 1.85rem;
+  border-radius: 4px;
+  border: 2px dashed currentColor;
+  background: color-mix(in srgb, var(--color-black) 25%, transparent);
+  position: relative;
+}
+
+.profile-banner-editor__dropzone-icon::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0.85rem;
+  height: 0.85rem;
+  transform: translate(-50%, -55%);
+  background:
+    linear-gradient(currentColor, currentColor) center/0.85rem 0.15rem no-repeat,
+    linear-gradient(currentColor, currentColor) center/0.15rem 0.85rem no-repeat;
+}
+
+.profile-banner-editor__dropzone-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: inherit;
+}
+
+.profile-banner-editor__dropzone-sub {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--color-gray-2);
+}
+
+.profile-banner-editor__custom-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.profile-banner-editor__file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.profile-banner-editor__file-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.5rem;
+  padding: 0 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.profile-banner-editor__file-trigger:focus-visible {
+  outline: 2px solid var(--btn-primary-light-hover);
+  outline-offset: 2px;
+}
+
+.profile-banner-editor__custom-actions.is-busy {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.profile-banner-editor__locked {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--warning-color);
+}
+
+.profile-banner-editor__locked--under-preview {
+  max-width: 28rem;
+}
+
+.profile-banner-editor .profile-banner-editor__btn {
+  min-height: 2.5rem;
+  padding: 0 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.profile-banner-editor .profile-banner-editor__btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}

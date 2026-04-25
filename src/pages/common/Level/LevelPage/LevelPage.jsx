@@ -9,6 +9,7 @@ import { Tooltip } from "react-tooltip";
 import InfiniteScroll from "react-infinite-scroll-component";
 import axios from "axios";
 import api from '@/utils/api';
+import { useDebouncedRequest } from '@/hooks/useDebouncedRequest';
 import { LevelContext } from "@/contexts/LevelContext";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
@@ -26,9 +27,35 @@ const currentUrl = window.location.origin + location.pathname;
 
 const limit = 50;
 
-const LevelPage = () => {
+/**
+ * @param {object} props
+ * @param {boolean} [props.embedded] - When true, suppresses page-level chrome
+ *        (MetaTags, ScrollButton, ReferencesButton, outer page width wrapper)
+ *        so the component can be dropped inside another page without conflicting
+ *        with its layout.
+ * @param {string[]} [props.disabledFeatures] - Feature flags to hide. Supported:
+ *        - 'myLikes': hides the "only my likes" toggle.
+ *        - 'help': hides the search-help button.
+ *        - 'deletedFilter': hides the deleted/hidden levels switch.
+ * @param {object} [props.hiddenFilters] - Extra filters that are silently merged
+ *        into every API request without being reflected in the UI. Use this to
+ *        pin the search to a specific scope (e.g. `{ byCreatorId: 123 }` to
+ *        restrict results to a single creator's charts). Conceptually equivalent
+ *        to appending `creatorId:123` to the user's query, but routed through
+ *        the existing typed filter params.
+ */
+const LevelPage = ({
+  embedded = false,
+  disabledFeatures = [],
+  hiddenFilters = null,
+} = {}) => {
   const { t } = useTranslation('pages');
   const { t: tc } = useTranslation('components');
+
+  const disabled = (feature) => disabledFeatures.includes(feature);
+  // Stable reference for fetch deps — re-fetch only when the actual content
+  // of hiddenFilters changes, not when a new object literal is passed in.
+  const hiddenFiltersKey = hiddenFilters ? JSON.stringify(hiddenFilters) : '';
 
   const { user } = useAuth();
   const { difficulties, curationTypes, tags } = useContext(DifficultyContext);
@@ -84,9 +111,10 @@ const LevelPage = () => {
   const [searchInput, setSearchInput] = useState(query);
   const [showTagsInCards, setShowTagsInCards] = useState(true);
 
-  // Timeout ref for debounced fetch
-  const fetchTimeoutRef = useRef(null);
-  const cancelTokenRef = useRef(null);
+  // Debounced request runner: filter/query changes wait 500ms before firing
+  // and reset the timer + abort any in-flight request when called again.
+  // Pagination calls bypass the debounce via `runRequest.flush`.
+  const runRequest = useDebouncedRequest(500);
   const isFirstFilterEffectRef = useRef(true);
 
   // Filter difficulties by type
@@ -107,72 +135,65 @@ const LevelPage = () => {
     { value: 'RANDOM', label: t('level.settings.sort.random') }
   ];
 
-  // Fetch function
-  const fetchLevelsData = useCallback(async (resetPage = false) => {
-    // Cancel any pending request
-    if (cancelTokenRef.current) {
-      cancelTokenRef.current();
-    }
-    
+  // Fetch function. `immediate=true` skips the 500ms debounce (used by
+  // pagination and explicit user-driven refresh), the default reschedules
+  // any pending request and aborts the previous in-flight one.
+  const fetchLevelsData = useCallback(async (resetPage = false, { immediate = false } = {}) => {
+    const runner = immediate ? runRequest.flush : runRequest;
+
     const fetchLevels = async () => {
+      // Combine slider special diffs with manually selected ones
+      const allSpecialDiffs = [
+        ...(qSliderVisible ? sliderQRange : []),
+        ...selectedSpecialDiffs
+      ].filter(Boolean);
+      const uniqueSpecialDiffs = [...new Set(allSpecialDiffs)];
+
+      const facetQuery = buildFacetQueryParam(levelFacetFilters);
+      const params = {
+        limit,
+        offset: resetPage ? 0 : pageNumber * limit,
+        query: query || '',
+        sort: sort + "_" + order,
+        deletedFilter: deletedFilter || 'hide',
+        clearedFilter: clearedFilter || 'show',
+        pguRange: `${selectedLowFilterDiff},${selectedHighFilterDiff}`,
+        specialDifficulties: uniqueSpecialDiffs.length > 0 ? uniqueSpecialDiffs.join(',') : undefined,
+        onlyMyLikes: user ? onlyMyLikes : undefined,
+        availableDlFilter: availableDlFilter || 'show',
+        ...(facetQuery ? { facetQuery } : {}),
+        ...(hiddenFilters || {}),
+      };
+
       try {
-        // Combine slider special diffs with manually selected ones
-        const allSpecialDiffs = [
-          ...(qSliderVisible ? sliderQRange : []),
-          ...selectedSpecialDiffs
-        ].filter(Boolean);
-        const uniqueSpecialDiffs = [...new Set(allSpecialDiffs)];
-
-        const facetQuery = buildFacetQueryParam(levelFacetFilters);
-        const params = {
-          limit,
-          offset: resetPage ? 0 : pageNumber * limit,
-          query: query || '',
-          sort: sort + "_" + order,
-          deletedFilter: deletedFilter || 'hide',
-          clearedFilter: clearedFilter || 'show',
-          pguRange: `${selectedLowFilterDiff},${selectedHighFilterDiff}`,
-          specialDifficulties: uniqueSpecialDiffs.length > 0 ? uniqueSpecialDiffs.join(',') : undefined,
-          onlyMyLikes: user ? onlyMyLikes : undefined,
-          availableDlFilter: availableDlFilter || 'show',
-          ...(facetQuery ? { facetQuery } : {}),
-        };
-
-        const response = await api.get(
-          `${import.meta.env.VITE_LEVELS}`,
-          {
-            params,
-            cancelToken: new axios.CancelToken((c) => (cancelTokenRef.current = c)),
-          }
+        const response = await runner(({ signal }) =>
+          api.get(`${import.meta.env.VITE_LEVELS}`, { params, signal })
         );
-
         const newLevels = response.data.results;
         setTotalLevels(response.data.total);
-        
+
         if (resetPage) {
           // Replace entire list for new search/filter
           setLevelsData(newLevels);
           setPageNumber(0);
         } else {
-          // Append new results for pagination
-          setLevelsData(prev => [...prev, ...newLevels]);
+          // Append new results for pagination. `prev` may transiently be null
+          // (we use null as a loading sentinel during reset/refetch) so guard
+          // with `?? []` before spreading.
+          setLevelsData(prev => [...(prev ?? []), ...newLevels]);
         }
-        
+
         setHasMore(response.data.hasMore);
       } catch (error) {
-        if (!axios.isCancel(error)) {
-          console.error('Error fetching levels:', error);
-        }
+        if (axios.isCancel(error)) return;
+        console.error('Error fetching levels:', error);
       }
     };
 
     const fetchLevelById = async () => {
       try {
-        const response = await api.get(
-          `${import.meta.env.VITE_LEVELS}/byId/${query.slice(1)}`,
-          {
-            cancelToken: new axios.CancelToken((c) => (cancelTokenRef.current = c)),
-          }
+        const response = await runner(({ signal }) =>
+          api.get(`${import.meta.env.VITE_LEVELS}/byId/${query.slice(1)}`, { signal })
         );
         if (response.data) {
           setLevelsData([response.data]);
@@ -184,35 +205,41 @@ const LevelPage = () => {
           setHasMore(false);
         }
       } catch (error) {
+        if (axios.isCancel(error)) return;
         setTotalLevels(0);
         setLevelsData([]);
-        if (!axios.isCancel(error) && error.response?.status !== 404) {
+        if (error.response?.status !== 404) {
           console.error('Error fetching level by ID:', error);
         }
       }
     };
 
-    if (query[0] == "#" && !isNaN(parseInt(query.slice(1)))) {
+    // The /byId shortcut bypasses query-string filters, so it must be skipped
+    // whenever a hidden scope is enforced (e.g. creator profile embed).
+    const canUseByIdShortcut = !hiddenFilters;
+    if (canUseByIdShortcut && query[0] == "#" && !isNaN(parseInt(query.slice(1)))) {
       await fetchLevelById();
     } else {
       await fetchLevels();
     }
   }, [
-    query, 
-    sort, 
-    order, 
-    pageNumber, 
-    deletedFilter, 
-    clearedFilter, 
+    query,
+    sort,
+    order,
+    pageNumber,
+    deletedFilter,
+    clearedFilter,
     availableDlFilter,
-    selectedLowFilterDiff, 
-    selectedHighFilterDiff, 
-    sliderQRange, 
-    qSliderVisible, 
+    selectedLowFilterDiff,
+    selectedHighFilterDiff,
+    sliderQRange,
+    qSliderVisible,
     levelFacetFilters,
-    selectedSpecialDiffs, 
-    onlyMyLikes, 
+    selectedSpecialDiffs,
+    onlyMyLikes,
     user,
+    hiddenFiltersKey,
+    runRequest,
   ]);
 
 
@@ -297,92 +324,48 @@ const LevelPage = () => {
   // Note: Removed auto-clearing of curation types when filter changes to 'hide'
   // to preserve user's selection for when they switch back to 'only' mode
 
-  // Clean up timeout when component unmounts
-  useEffect(() => {
-    return () => {
-      if (fetchTimeoutRef.current) {
-        clearTimeout(fetchTimeoutRef.current);
-      }
-      if (cancelTokenRef.current) {
-        cancelTokenRef.current();
-      }
-    };
-  }, []);
-
-  // Debounced fetch on filter/query changes
+  // Debounced fetch on filter/query changes. The 500ms debounce + cancellation
+  // is owned by `useDebouncedRequest`, so we just call it; rapid edits coalesce
+  // into a single request automatically.
   useEffect(() => {
     // On initial mount, keep existing context-backed results (e.g. browser back/forward navigation).
     // Only fetch if there is no cached data yet.
     if (isFirstFilterEffectRef.current) {
       isFirstFilterEffectRef.current = false;
-
       if (!levelsData || levelsData.length === 0) {
-        fetchTimeoutRef.current = setTimeout(() => {
-          fetchLevelsData(true);
-        }, 500);
+        fetchLevelsData(true);
       }
-
-      return () => {
-        if (fetchTimeoutRef.current) {
-          clearTimeout(fetchTimeoutRef.current);
-        }
-        if (cancelTokenRef.current) {
-          cancelTokenRef.current();
-        }
-      };
+      return;
     }
 
-    // Clear any existing timeout
-    if (fetchTimeoutRef.current) {
-      clearTimeout(fetchTimeoutRef.current);
-    }
-    
     if (pageNumber !== 0) {
       setPageNumber(0);
     }
     setHasMore(true);
-
-    // Set a new timeout to trigger fetch after 500ms
-    fetchTimeoutRef.current = setTimeout(() => {
-      setLevelsData(null);
-      fetchLevelsData(true);
-    }, 500);
-    
-    return () => {
-      if (fetchTimeoutRef.current) {
-        clearTimeout(fetchTimeoutRef.current);
-      }
-      if (cancelTokenRef.current) {
-        cancelTokenRef.current();
-      }
-    };
+    setLevelsData(null);
+    fetchLevelsData(true);
   }, [
-    query, 
+    query,
     sort,
-    order, 
-    deletedFilter, 
-    clearedFilter, 
-    availableDlFilter, 
-    selectedLowFilterDiff, 
+    order,
+    deletedFilter,
+    clearedFilter,
+    availableDlFilter,
+    selectedLowFilterDiff,
     selectedHighFilterDiff,
-    sliderQRange, 
-    qSliderVisible, 
+    sliderQRange,
+    qSliderVisible,
     levelFacetFilters,
-    selectedSpecialDiffs, 
-    onlyMyLikes, 
-    user
+    selectedSpecialDiffs,
+    onlyMyLikes,
+    user,
+    hiddenFiltersKey,
   ]);
 
-  // Direct fetch for page number changes (pagination)
+  // Direct fetch for page number changes (pagination) — bypass debounce.
   useEffect(() => {
     if (pageNumber === 0) return; // Skip initial page load, handled by debounced effect
-    
-    fetchLevelsData(false);
-    return () => {
-      if (cancelTokenRef.current) {
-        cancelTokenRef.current();
-      }
-    };
+    fetchLevelsData(false, { immediate: true });
   }, [pageNumber, fetchLevelsData]);
 
   function handleFilterOpen() {
@@ -402,11 +385,9 @@ const LevelPage = () => {
     setHasMore(true);
     setLevelsData(null);
     if (value === sort) {
-      if (fetchTimeoutRef.current) {
-        clearTimeout(fetchTimeoutRef.current);
-        fetchTimeoutRef.current = null;
-      }
-      fetchLevelsData(true);
+      // Same value re-clicked — state won't change so the filter effect won't
+      // re-fire; refetch immediately ourselves.
+      fetchLevelsData(true, { immediate: true });
       return;
     }
     setSort(value);
@@ -417,11 +398,7 @@ const LevelPage = () => {
     setHasMore(true);
     setLevelsData(null);
     if (value === order) {
-      if (fetchTimeoutRef.current) {
-        clearTimeout(fetchTimeoutRef.current);
-        fetchTimeoutRef.current = null;
-      }
-      fetchLevelsData(true);
+      fetchLevelsData(true, { immediate: true });
       return;
     }
     setOrder(value);
@@ -459,19 +436,24 @@ const LevelPage = () => {
   }
 
 
+  const pageClassName = embedded ? 'level-page level-page--embedded' : 'level-page';
+  const bodyClassName = embedded
+    ? 'level-body level-body--embedded'
+    : 'level-body page-content-70rem';
+
   if (difficulties.length === 0) {
     return (
-      <div className="level-page">
-        <MetaTags
-          title={t('level.meta.title')}
-          description={t('level.meta.description')}
-          url={currentUrl}
-          image={''}
-          type="article"
-        />
-        
-  
-        <div className="level-body page-content-70rem">
+      <div className={pageClassName}>
+        {!embedded && (
+          <MetaTags
+            title={t('level.meta.title')}
+            description={t('level.meta.description')}
+            url={currentUrl}
+            image={''}
+            type="article"
+          />
+        )}
+        <div className={bodyClassName}>
           <div className="level-body-content" style={{marginTop: "45vh"}} >
             <div className="loader loader-level-page" style={{top: "-6rem"}}></div>
             <p style={{ fontSize: "1.5rem", fontWeight: "bold", justifyContent: "center", textAlign: "center"}}>
@@ -484,36 +466,39 @@ const LevelPage = () => {
   }
 
   return (
-    <div className="level-page">
-      <MetaTags
-        title={t('level.meta.title')}
-        description={t('level.meta.description')}
-        url={currentUrl}
-        image={''}
-        type="article"
-      />
-      
+    <div className={pageClassName}>
+      {!embedded && (
+        <MetaTags
+          title={t('level.meta.title')}
+          description={t('level.meta.description')}
+          url={currentUrl}
+          image={''}
+          type="article"
+        />
+      )}
 
-      <div className="level-body page-content-70rem">
-        <ScrollButton />
-        <ReferencesButton />
+      <div className={bodyClassName}>
+        {!embedded && <ScrollButton />}
+        {!embedded && <ReferencesButton />}
         <div className="search-section">
            {/* Search Row */}
            <div className="search-row">
-             <button 
-               className="help-button"
-               onClick={() => setShowHelpPopup(true)}
-               data-tooltip-id="search"
-             >
-               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                 <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-                 <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
-                 <g id="SVGRepo_iconCarrier">
-                   <path d="M12 3C7.04 3 3 7.04 3 12C3 16.96 7.04 21 12 21C16.96 21 21 16.96 21 12C21 7.04 16.96 3 12 3ZM12 19.5C7.86 19.5 4.5 16.14 4.5 12C4.5 7.86 7.86 4.5 12 4.5C16.14 4.5 19.5 7.86 19.5 12C19.5 16.14 16.14 19.5 12 19.5ZM14.3 7.7C14.91 8.31 15.25 9.13 15.25 10C15.25 10.87 14.91 11.68 14.3 12.3C13.87 12.73 13.33 13.03 12.75 13.16V13.5C12.75 13.91 12.41 14.25 12 14.25C11.59 14.25 11.25 13.91 11.25 13.5V12.5C11.25 12.09 11.59 11.75 12 11.75C12.47 11.75 12.91 11.57 13.24 11.24C13.57 10.91 13.75 10.47 13.75 10C13.75 9.53 13.57 9.09 13.24 8.76C12.58 8.1 11.43 8.1 10.77 8.76C10.44 9.09 10.26 9.53 10.26 10C10.26 10.41 9.92 10.75 9.51 10.75C9.1 10.75 8.76 10.41 8.76 10C8.76 9.13 9.1 8.32 9.71 7.7C10.94 6.47 13.08 6.47 14.31 7.7H14.3ZM13 16.25C13 16.8 12.55 17.25 12 17.25C11.45 17.25 11 16.8 11 16.25C11 15.7 11.45 15.25 12 15.25C12.55 15.25 13 15.7 13 16.25Z" fill="#ffffff"></path>
-                 </g>
-               </svg>
-               <span>{t('level.buttons.searchHelp')}</span>
-             </button>
+             {!disabled('help') && (
+               <button 
+                 className="help-button"
+                 onClick={() => setShowHelpPopup(true)}
+                 data-tooltip-id="search"
+               >
+                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                   <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                   <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+                   <g id="SVGRepo_iconCarrier">
+                     <path d="M12 3C7.04 3 3 7.04 3 12C3 16.96 7.04 21 12 21C16.96 21 21 16.96 21 12C21 7.04 16.96 3 12 3ZM12 19.5C7.86 19.5 4.5 16.14 4.5 12C4.5 7.86 7.86 4.5 12 4.5C16.14 4.5 19.5 7.86 19.5 12C19.5 16.14 16.14 19.5 12 19.5ZM14.3 7.7C14.91 8.31 15.25 9.13 15.25 10C15.25 10.87 14.91 11.68 14.3 12.3C13.87 12.73 13.33 13.03 12.75 13.16V13.5C12.75 13.91 12.41 14.25 12 14.25C11.59 14.25 11.25 13.91 11.25 13.5V12.5C11.25 12.09 11.59 11.75 12 11.75C12.47 11.75 12.91 11.57 13.24 11.24C13.57 10.91 13.75 10.47 13.75 10C13.75 9.53 13.57 9.09 13.24 8.76C12.58 8.1 11.43 8.1 10.77 8.76C10.44 9.09 10.26 9.53 10.26 10C10.26 10.41 9.92 10.75 9.51 10.75C9.1 10.75 8.76 10.41 8.76 10C8.76 9.13 9.1 8.32 9.71 7.7C10.94 6.47 13.08 6.47 14.31 7.7H14.3ZM13 16.25C13 16.8 12.55 17.25 12 17.25C11.45 17.25 11 16.8 11 16.25C11 15.7 11.45 15.25 12 15.25C12.55 15.25 13 15.7 13 16.25Z" fill="#ffffff"></path>
+                   </g>
+                 </svg>
+                 <span>{t('level.buttons.searchHelp')}</span>
+               </button>
+             )}
 
              <input
                value={searchInput}
@@ -705,7 +690,7 @@ const LevelPage = () => {
                 </div>
               </div>
               
-              {user && (
+              {user && !disabled('myLikes') && (
               <div className="order" >
                 <div className={`wrapper-like ${onlyMyLikes ? 'active' : ''}`} onClick={() => handleLikeToggle()}>
                   <LikeIcon color={onlyMyLikes ? "var(--color-white)" : "none"} size={"22px"} />
@@ -740,7 +725,7 @@ const LevelPage = () => {
                   states={['show', 'hide', 'only']}
                 />
               </div>
-              {user && (
+              {user && !disabled('deletedFilter') && (
                 <div className="state-switches-item">
                   <span className="state-switches-label">{
                   hasFlag(user, permissionFlags.SUPER_ADMIN) 

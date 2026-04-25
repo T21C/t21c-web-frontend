@@ -86,6 +86,7 @@
   justify-content: center;
   align-items: center;
   position: relative;
+  -webkit-user-select: none;
   user-select: none;
 }
 
@@ -94,6 +95,7 @@
   max-height: 70vh;
   object-fit: contain;
   pointer-events: none;
+  -webkit-user-select: none;
   user-select: none;
 }
 
@@ -176,7 +178,7 @@
   position: absolute;
   top: 20px;
   right: 20px;
-  background-color: rgba(244, 67, 54, 0.8);
+  background-color: var(--danger-color-alpha-80);
   border: none;
   color: #ffffff;
   font-size: 1.5em;
@@ -192,7 +194,7 @@
 }
 
 .evidence-gallery-popup .delete-evidence-button:hover {
-  background-color: rgba(244, 67, 54, 1);
+  background-color: var(--danger-color);
 }
 
 .evidence-gallery-popup .evidence-thumbnails {
@@ -222,7 +224,7 @@
 }
 
 .evidence-gallery-popup .thumbnail.active {
-  border-color: #4CAF50;
+  border-color: var(--btn-success);
 }
 
 .evidence-gallery-popup .thumbnail img {
@@ -265,7 +267,7 @@
 }
 
 .evidence-gallery-popup .evidence-link {
-  color: #4CAF50;
+  color: var(--btn-success);
   text-decoration: none;
   font-size: 1.1em;
   word-break: break-all;

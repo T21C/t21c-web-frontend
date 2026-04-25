@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import api from '@/utils/api';
 import { MetaTags } from '@/components/common/display';
@@ -11,7 +11,6 @@ import './songListPage.css';
 
 const SongListPage = () => {
   const { t } = useTranslation(['pages', 'common']);
-  const navigate = useNavigate();
   const currentUrl = window.location.origin + location.pathname;
   const {
     searchQuery,
@@ -205,10 +204,10 @@ const SongListPage = () => {
           >
             <div className="song-cards-grid">
               {songs.map((song) => (
-                <div
+                <Link
                   key={song.id}
                   className="song-card"
-                  onClick={() => navigate(`/songs/${song.id}`)}
+                  to={`/songs/${song.id}`}
                 >
                   <div className="song-card-content">
                     <h3 className="song-card-name">{song.name}</h3>
@@ -247,7 +246,7 @@ const SongListPage = () => {
                       </span>
                     </div>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </InfiniteScroll>

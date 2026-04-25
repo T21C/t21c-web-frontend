@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "generatedAt": "2026-04-25T13:49:35.011Z",
+  "presets": [
+    "banners/abstract/1.jpg",
+    "banners/abstract/2.jpg",
+    "banners/abstract/3.jpg",
+    "banners/abstract/4.jpg",
+    "banners/default.svg"
+  ]
+}

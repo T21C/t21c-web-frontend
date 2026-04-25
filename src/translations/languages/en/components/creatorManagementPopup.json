@@ -1,0 +1,119 @@
+{
+  "close": "Close",
+  "modes": {
+    "update": "Update",
+    "user": "User",
+    "discord": "Discord",
+    "merge": "Merge",
+    "split": "Split"
+  },
+  "update": {
+    "name": {
+      "label": "Name",
+      "placeholder": "Enter creator name"
+    },
+    "verificationStatus": {
+      "label": "Verification status",
+      "placeholder": "Select status"
+    },
+    "aliases": {
+      "label": "Aliases",
+      "placeholder": "Add alias",
+      "add": "Add"
+    },
+    "headerBadges": {
+      "label": "Profile header badges",
+      "loading": "Loading badge data…"
+    },
+    "updateButton": "Update creator"
+  },
+  "user": {
+    "linked": {
+      "label": "Currently linked user",
+      "idLabel": "ID:",
+      "unassignButton": "Unassign user",
+      "unassignConfirm": "Remove the link between this user and the creator?",
+      "unassignYes": "Yes, unassign",
+      "unassignCancel": "Cancel"
+    },
+    "search": {
+      "label": "Search players",
+      "placeholder": "Type a player name or handle...",
+      "hint": "Start typing to search for a player to assign to this creator.",
+      "noResults": "No players matched your search.",
+      "alreadyLinked": "Already linked to another creator",
+      "assignButton": "Assign"
+    },
+    "discordFallback": {
+      "label": "Or assign by Discord ID",
+      "placeholder": "Enter Discord user ID",
+      "lookupButton": "Look up"
+    }
+  },
+  "discord": {
+    "currentUser": {
+      "label": "Current user",
+      "avatarAlt": "User avatar",
+      "idLabel": "ID:",
+      "unlinkButton": "Unlink user"
+    },
+    "discordId": {
+      "label": "Discord ID",
+      "placeholder": "Enter Discord ID",
+      "validateButton": "Validate"
+    },
+    "confirm": {
+      "avatarAlt": "Discord avatar",
+      "message": "Is this the correct Discord user?",
+      "confirmButton": "Confirm",
+      "cancelButton": "Cancel"
+    },
+    "unlinkConfirm": {
+      "message": "Are you sure you want to unlink this user?",
+      "yesButton": "Yes, unlink",
+      "cancelButton": "Cancel"
+    }
+  },
+  "merge": {
+    "warning": {
+      "title": "Warning:",
+      "message": "This will delete {{creatorName}} and reassign all credits to the selected creator. This action cannot be undone."
+    },
+    "selectTarget": {
+      "label": "Select target creator",
+      "placeholder": "Search and select target creator...",
+      "noOptions": "No matching creators"
+    },
+    "mergeButton": "Merge creators",
+    "creatorLabel": "{{name}} (ID: {{id}}, Charts: {{count}}){{aliases}}"
+  },
+  "split": {
+    "newNamesAndRoles": {
+      "label": "New creator names and roles",
+      "namePlaceholder": "Enter creator name {{index}}",
+      "rolePlaceholder": "Select role",
+      "addAnother": "+ Add another name"
+    },
+    "splitButton": "Split creator"
+  },
+  "errors": {
+    "loadCreatorsFailed": "Failed to load creators",
+    "updateFailed": "Failed to update creator",
+    "assignFailed": "Failed to assign user",
+    "unassignFailed": "Failed to unassign user",
+    "fetchDiscordFailed": "Failed to fetch Discord user",
+    "updateDiscordFailed": "Failed to update Discord info",
+    "unlinkFailed": "Failed to unlink user",
+    "mergeFailed": "Failed to merge creators",
+    "splitFailed": "Failed to split creator"
+  },
+  "success": {
+    "updated": "Creator updated successfully",
+    "userAssigned": "User assigned to creator",
+    "userUnassigned": "User unassigned from creator",
+    "discordUpdated": "Discord info updated successfully",
+    "discordUnlinked": "Discord user unlinked successfully",
+    "merged": "Creators merged successfully",
+    "split": "Creator split successfully"
+  }
+}
