@@ -88,6 +88,18 @@ const CurationTypeSelector = ({
     [curationTypeCounts, curationTypesDict, draftIds],
   );
 
+  const savedIdsNormalized = useMemo(
+    () => normalizeDraftIds(displayCurationTypeIds, selectableIdSet),
+    [displayCurationTypeIds, selectableIdSet],
+  );
+
+  const draftMatchesSaved = useMemo(
+    () =>
+      savedIdsNormalized.length === draftIds.length &&
+      savedIdsNormalized.every((id, i) => id === draftIds[i]),
+    [savedIdsNormalized, draftIds],
+  );
+
   const toggleId = useCallback((typeId) => {
     setError(null);
     setDraftIds((prev) => {
@@ -225,14 +237,19 @@ const CurationTypeSelector = ({
           </div>
         )}
         <div className="curation-type-selector__actions">
-          <button type="button" className="curation-type-selector__btn" onClick={handleReset} disabled={saving}>
+          <button
+            type="button"
+            className="curation-type-selector__btn"
+            onClick={handleReset}
+            disabled={saving || draftMatchesSaved}
+          >
             {t("buttons.reset", { ns: "common" })}
           </button>
           <button
             type="button"
             className="curation-type-selector__btn curation-type-selector__btn--primary"
             onClick={handleSave}
-            disabled={saving || !creatorId}
+            disabled={saving || !creatorId || draftMatchesSaved}
           >
             {saving ? t("buttons.saving", { ns: "common" }) : t("buttons.save", { ns: "common" })}
           </button>

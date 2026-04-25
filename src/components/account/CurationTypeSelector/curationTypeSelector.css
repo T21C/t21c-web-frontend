@@ -241,6 +241,7 @@
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .curation-type-selector .curation-type-selector__btn:disabled {
