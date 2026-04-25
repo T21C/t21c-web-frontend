@@ -38,6 +38,21 @@ const CreatorProfilePage = () => {
   const [difficultyCollapsed, setDifficultyCollapsed] = useState(false);
 
   useEffect(() => {
+    if (!user && !creatorId) {
+      navigate('/creators', { replace: true });
+    }
+    if (user && !creatorId) {
+      navigate(`/creator/${user.creatorId}`, { replace: true });
+    }
+  }, [user, creatorId, navigate]);
+
+  useEffect(() => {
+    if (creatorId == null || String(creatorId).trim() === '') {
+      setProfileLoading(false);
+      setProfile(null);
+      setProfileError('not_found');
+      return;
+    }
     let mounted = true;
     setProfileLoading(true);
     setProfileError(null);

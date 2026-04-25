@@ -94,6 +94,7 @@ function App() {
           <Route path='songs' element={<Pages.SongListPage />} />
           <Route path='songs/:id' element={<Pages.SongDetailPage />} />
           <Route path='creators' element={<Pages.CreatorsListPage />} />
+          <Route path='creator' element={<Pages.CreatorProfilePage />} />
           <Route path='creator/:creatorId' element={<Pages.CreatorProfilePage />} />
 
           {/* Admin Routes - Protected */}

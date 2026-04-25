@@ -453,16 +453,7 @@ const ProfilePage = () => {
                             <ShieldIcon color="var(--color-white)" size={32} />
                           </button>
                         ) : null}
-                        {playerData?.user?.creator?.id ? (
-                          <Link
-                            className="profile-header__action-btn"
-                            to={`/creator/${playerData.user.creator.id}`}
-                            title={t("profile.linkToCreator", { defaultValue: "View creator profile" })}
-                            aria-label={t("profile.linkToCreator", { defaultValue: "View creator profile" })}
-                          >
-                            <CreatorIcon color="var(--color-white)" size={28} />
-                          </Link>
-                        ) : null}
+                        
                         {playerData?.user?.username ? (
                           <button
                             type="button"
@@ -473,6 +464,16 @@ const ProfilePage = () => {
                           >
                             <PackIcon color="var(--color-white)" size={32} />
                           </button>
+                        ) : null}
+                        {playerData?.user?.creator?.id ? (
+                          <Link
+                            className="profile-header__action-btn"
+                            to={`/creator/${playerData.user.creator.id}`}
+                            title={t("profile.linkToCreator", { defaultValue: "View creator profile" })}
+                            aria-label={t("profile.linkToCreator", { defaultValue: "View creator profile" })}
+                          >
+                            <CreatorIcon color="var(--color-white)" size={28} />
+                          </Link>
                         ) : null}
                       </>
                     }
