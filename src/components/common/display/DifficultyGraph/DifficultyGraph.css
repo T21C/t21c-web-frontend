@@ -1,3 +1,9 @@
+.difficulty-graph {
+  overflow: visible;
+  display: flex;
+  justify-content: center;
+}
+
 .difficulty-graph .recharts-tooltip-wrapper {
   filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.5));
 }

@@ -106,7 +106,6 @@ const FacetItemPicker = ({
           placeholder={t('facetQueryBuilder.searchPlaceholder')}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          autoFocus
         />
         <div className="facet-item-picker__scroll">
           {filtered.length === 0 ? (

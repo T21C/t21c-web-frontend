@@ -52,7 +52,8 @@
     "createPack": "创建地图包",
     "reset": "重置",
     "listView": "列表",
-    "gridView": "网格"
+    "gridView": "网格",
+    "viewToggleGroup": "选择显示方式"
   },
   "buttons": {
     "searchHelp": "搜索帮助"

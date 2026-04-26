@@ -115,11 +115,6 @@ const PackPageContent = () => {
     }
   };
 
-  // Handle display mode toggle
-  const toggleDisplayMode = () => {
-    setDisplayMode(prev => prev === 'grid' ? 'list' : 'grid');
-  };
-
   const canCreatePack = user && (
     !isMyPacks || 
     hasFlag(user, permissionFlags.SUPER_ADMIN)
@@ -146,15 +141,47 @@ const PackPageContent = () => {
           </div>
           
           <div className="pack-page__actions">
-            <button
-              className="pack-page__display-toggle"
-              onClick={toggleDisplayMode}
-              data-tooltip-id="display-mode-tooltip"
-              data-tooltip-content={displayMode === 'grid' ? t('pack.actions.listView') : t('pack.actions.gridView')}
-            >
-              <SwitchIcon />
-            </button>
-            
+            <div className="pack-page__view-toggle" role="group" aria-label={t('pack.actions.viewToggleGroup')}>
+              <button
+                type="button"
+                className={`pack-page__view-toggle-btn${displayMode === 'grid' ? ' pack-page__view-toggle-btn--active' : ''}`}
+                onClick={() => setDisplayMode('grid')}
+                aria-pressed={displayMode === 'grid'}
+                aria-label={t('pack.actions.gridView')}
+                data-tooltip-id="pack-view-tooltip-grid"
+                data-tooltip-content={t('pack.actions.gridView')}
+              >
+                <span className="pack-page__view-toggle-icon" aria-hidden="true">
+                  <svg className="pack-page__view-toggle-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="4" y="4" width="6.5" height="6.5" rx="1.25" stroke="currentColor" strokeWidth="1.75" />
+                    <rect x="13.5" y="4" width="6.5" height="6.5" rx="1.25" stroke="currentColor" strokeWidth="1.75" />
+                    <rect x="4" y="13.5" width="6.5" height="6.5" rx="1.25" stroke="currentColor" strokeWidth="1.75" />
+                    <rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.25" stroke="currentColor" strokeWidth="1.75" />
+                  </svg>
+                </span>
+              </button>
+              <button
+                type="button"
+                className={`pack-page__view-toggle-btn${displayMode === 'list' ? ' pack-page__view-toggle-btn--active' : ''}`}
+                onClick={() => setDisplayMode('list')}
+                aria-pressed={displayMode === 'list'}
+                aria-label={t('pack.actions.listView')}
+                data-tooltip-id="pack-view-tooltip-list"
+                data-tooltip-content={t('pack.actions.listView')}
+              >
+                <span className="pack-page__view-toggle-icon" aria-hidden="true">
+                  <svg className="pack-page__view-toggle-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M4 7h16M4 12h16M4 17h12"
+                      stroke="currentColor"
+                      strokeWidth="1.75"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </span>
+              </button>
+            </div>
+
             {canCreatePack && (
               <button
                 className="pack-page__create-btn"
@@ -169,6 +196,13 @@ const PackPageContent = () => {
             )}
           </div>
         </div>
+
+        <Tooltip id="pack-view-tooltip-grid" place="bottom" noArrow>
+          {t('pack.actions.gridView')}
+        </Tooltip>
+        <Tooltip id="pack-view-tooltip-list" place="bottom" noArrow>
+          {t('pack.actions.listView')}
+        </Tooltip>
 
         <div className="search-section">
           {/* Search Row */}
@@ -211,13 +245,6 @@ const PackPageContent = () => {
               onClick={() => setSortOpen(!sortOpen)}
               data-tooltip-id="sort"
               className={`action-button ${sortOpen ? 'active' : ''}`}
-            />
-
-            <SwitchIcon
-              color="var(--color-white)"
-              onClick={() => setDisplayMode(displayMode === 'grid' ? 'list' : 'grid')}
-              data-tooltip-id="display-mode"
-              className="action-button"
             />
 
             <ResetIcon

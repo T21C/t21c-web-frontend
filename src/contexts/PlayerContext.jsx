@@ -14,8 +14,11 @@ const STORAGE_KEYS = {
 export const PlayerContext = createContext();
 
 export const PlayerContextProvider = ({ children }) => {
-  const [playerData, setPlayerData] = useState([]);
-  const [displayedPlayers, setDisplayedPlayers] = useState([]);
+  /** `null` = leaderboard list never loaded (LeaderboardPage shows loader). */
+  const [playerData, setPlayerData] = useState(null);
+  const [displayedPlayers, setDisplayedPlayers] = useState(null);
+  /** Last `count` from leaderboard API at offset 0; restores infinite-scroll `hasMore` when remounting without refetch. */
+  const [leaderboardListTotal, setLeaderboardListTotal] = useState(null);
   const [maxFields, setMaxFields] = useState({});
   const [filters, setFilters] = useState(() => {
     try {
@@ -75,6 +78,8 @@ export const PlayerContextProvider = ({ children }) => {
         setPlayerData,
         displayedPlayers,
         setDisplayedPlayers,
+        leaderboardListTotal,
+        setLeaderboardListTotal,
         filterOpen,
         setFilterOpen,
         sortOpen,

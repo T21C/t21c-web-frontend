@@ -1,7 +1,7 @@
 import "./creatorslistpage.css";
 import "@/pages/common/search-section.css";
 import "@/pages/common/sort.css";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import axios from "axios";
 import { CreatorCard } from "@/components/cards";
 import { CustomSelect } from "@/components/common/selectors";
@@ -30,12 +30,15 @@ const CreatorsListPage = () => {
   const { t: tc } = useTranslation('common');
   const [hasMore, setHasMore] = useState(true);
   const runRequest = useDebouncedRequest(500);
+  const isFirstListEffectRef = useRef(true);
 
   const {
     creatorData,
     setCreatorData,
     displayedCreators,
     setDisplayedCreators,
+    creatorListTotal,
+    setCreatorListTotal,
     sortOpen,
     setSortOpen,
     filterOpen,
@@ -116,6 +119,9 @@ const CreatorsListPage = () => {
       const priorLen = offset === 0 ? 0 : (displayedCreators?.length ?? 0);
       const nextLength = offset === 0 ? results.length : priorLen + results.length;
       const total = response.data.count ?? response.data.total ?? nextLength;
+      if (offset === 0) {
+        setCreatorListTotal(total);
+      }
       setHasMore(nextLength < total);
     } catch (error) {
       if (axios.isCancel(error)) return;
@@ -125,7 +131,20 @@ const CreatorsListPage = () => {
 
   // Initial / filter-driven loads are debounced; pagination uses flush so
   // infinite scroll fires immediately when the user reaches the bottom.
+  // On remount with unchanged filters, keep context-backed rows (same idea as LevelPage).
   useEffect(() => {
+    if (isFirstListEffectRef.current) {
+      isFirstListEffectRef.current = false;
+      const hasCached =
+        Array.isArray(displayedCreators) &&
+        displayedCreators.length > 0 &&
+        creatorListTotal != null;
+      if (hasCached) {
+        setHasMore(displayedCreators.length < creatorListTotal);
+        return;
+      }
+    }
+    setCreatorListTotal(null);
     setCreatorData(null);
     fetchCreators(0);
   }, [forceUpdate, query, sort, sortBy, verificationFilter]);

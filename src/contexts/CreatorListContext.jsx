@@ -18,6 +18,8 @@ export const CreatorListContextProvider = ({ children }) => {
   /** `null` = list not loaded yet (avoids empty-state flash before first fetch). */
   const [creatorData, setCreatorData] = useState(null);
   const [displayedCreators, setDisplayedCreators] = useState(null);
+  /** Last successful `count` from leaderboard API (offset 0); used to restore `hasMore` when skipping refetch on remount). */
+  const [creatorListTotal, setCreatorListTotal] = useState(null);
   const [maxFields, setMaxFields] = useState({});
   const [sortOpen, setSortOpen] = useState(() => localStorage.getItem(STORAGE_KEYS.SORT_OPEN) === 'true');
   const [filterOpen, setFilterOpen] = useState(() => localStorage.getItem(STORAGE_KEYS.FILTER_OPEN) === 'true');
@@ -71,6 +73,8 @@ export const CreatorListContextProvider = ({ children }) => {
         setCreatorData,
         displayedCreators,
         setDisplayedCreators,
+        creatorListTotal,
+        setCreatorListTotal,
         maxFields,
         setMaxFields,
         sortOpen,

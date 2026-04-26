@@ -52,7 +52,8 @@
     "createPack": "Create Pack",
     "reset": "Reset",
     "listView": "List View",
-    "gridView": "Grid View"
+    "gridView": "Grid View",
+    "viewToggleGroup": "Choose how packs are shown"
   },
   "buttons": {
     "searchHelp": "Search Help"

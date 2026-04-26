@@ -1,5 +1,5 @@
 import "./leaderboardpage.css";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { PlayerCard } from "@/components/cards";
 import { StateDisplay, CustomSelect, CountrySelect, RangeSelector } from "@/components/common/selectors";
@@ -29,12 +29,15 @@ const LeaderboardPage = () => {
   const [activeFilters, setActiveFilters] = useState({});
   const [selectedFilterKey, setSelectedFilterKey] = useState(null);
   const runRequest = useDebouncedRequest(500);
+  const isFirstListEffectRef = useRef(true);
 
   const {
     playerData,
     setPlayerData,
     displayedPlayers,
     setDisplayedPlayers,
+    leaderboardListTotal,
+    setLeaderboardListTotal,
     filterOpen,
     setFilterOpen,
     sortOpen,
@@ -116,19 +119,24 @@ const LeaderboardPage = () => {
       // rank metric; banned players get -1).
       const results = Array.isArray(response.data.results) ? response.data.results : [];
 
+      const priorLen = offset === 0 ? 0 : (displayedPlayers?.length ?? 0);
+      const nextLength = offset === 0 ? results.length : priorLen + results.length;
+      const total = response.data.count ?? nextLength;
+
       if (offset === 0) {
         setPlayerData(results);
         setDisplayedPlayers(results);
+        setLeaderboardListTotal(total);
 
         if (response.data.maxFields) {
           setMaxFields(response.data.maxFields);
         }
       } else {
-        setPlayerData(prev => prev ? [ ...prev, ...results] : [ ...results]);
-        setDisplayedPlayers(prev => prev ? [ ...prev, ...results] : [ ...results]);
+        setPlayerData(prev => [...(prev ?? []), ...results]);
+        setDisplayedPlayers(prev => [...(prev ?? []), ...results]);
       }
 
-      setHasMore(displayedPlayers.length < response.data.count);
+      setHasMore(nextLength < total);
     } catch (error) {
       if (axios.isCancel(error)) return;
       console.error('Error fetching leaderboard data:', error);
@@ -143,7 +151,20 @@ const LeaderboardPage = () => {
   }, []);
 
   useEffect(() => {
+    if (isFirstListEffectRef.current) {
+      isFirstListEffectRef.current = false;
+      const hasCached =
+        Array.isArray(displayedPlayers) &&
+        displayedPlayers.length > 0 &&
+        leaderboardListTotal != null;
+      if (hasCached) {
+        setHasMore(displayedPlayers.length < leaderboardListTotal);
+        return;
+      }
+    }
+    setLeaderboardListTotal(null);
     setPlayerData(null);
+    setDisplayedPlayers(null);
     fetchPlayers(0);
   }, [forceUpdate, query, sort, sortBy, showBanned, country, filters]);
 
@@ -496,7 +517,9 @@ const LeaderboardPage = () => {
                   currentState={showBanned}
                   onChange={(newState) => {
                     setShowBanned(newState);
-                    setDisplayedPlayers([]);
+                    setDisplayedPlayers(null);
+                    setPlayerData(null);
+                    setLeaderboardListTotal(null);
                     setForceUpdate(prev => !prev);
                   }}
                   states={['show', 'hide', 'only']}
@@ -511,13 +534,13 @@ const LeaderboardPage = () => {
         </div>
 
         <div style={{ minHeight: "500px" }}>
-          {!playerData ? (
+          {playerData === null ? (
             <div className="loader loader-level-page"></div>
           ) : (
             <InfiniteScroll
               style={{ paddingBottom: "4rem", overflow: "visible" }}
-              dataLength={displayedPlayers.length}
-              next={() => fetchPlayers(displayedPlayers.length, { immediate: true })}
+              dataLength={displayedPlayers?.length ?? 0}
+              next={() => fetchPlayers(displayedPlayers?.length ?? 0, { immediate: true })}
               hasMore={hasMore}
               loader={<div className="loader"></div>}
               endMessage={

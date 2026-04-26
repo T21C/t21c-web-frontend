@@ -390,7 +390,9 @@ const CreatorProfilePage = () => {
             hidden filter scopes results to this creator without exposing it in
             the UI.
           */}
-          <div className={["creator-profile-page__levels-container", levelsCollapsed ? "hidden" : ""].join(" ").trim()}>
+          <div
+            className={["creator-profile-page__levels-container", levelsCollapsed ? "hidden" : ""].join(" ").trim()}
+          >
           <LevelContextProvider storagePrefix={`creator_${creatorId}_`}>
             <LevelPage
               embedded

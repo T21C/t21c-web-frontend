@@ -1072,7 +1072,6 @@ const LevelSubmissions = () => {
                               }
                             }}
                             placeholder={t('levelSubmissions.details.suffixPlaceholder')}
-                            autoFocus
                           />
                           <div className="suffix-edit-buttons">
                             <button

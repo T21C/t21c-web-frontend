@@ -328,7 +328,7 @@
   
   .create-pack-popup__footer {
     padding: 16px 20px;
-    flex-direction: column-reverse;
+    flex-direction: column;
     gap: 12px;
   }
   

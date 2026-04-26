@@ -333,7 +333,11 @@ const LevelPage = ({
     if (isFirstFilterEffectRef.current) {
       isFirstFilterEffectRef.current = false;
       if (!levelsData || levelsData.length === 0) {
-        fetchLevelsData(true);
+        // Must run immediately: the debounced runner can be cancelled by
+        // InfiniteScroll's first `next()` (flush). With dataLength 0 the window
+        // is often treated as "at bottom", so page becomes 1 and offset 50
+        // runs while the page-0 request never fires — empty list, real total.
+        fetchLevelsData(true, { immediate: true });
       }
       return;
     }
@@ -809,7 +813,7 @@ const LevelPage = ({
           style={{ paddingBottom: "7rem", overflow: "visible", "position": "relative", "zIndex": "5" }}
           dataLength={levelsData.length}
           next={() => setPageNumber((prevPageNumber) => prevPageNumber + 1)}
-          hasMore={hasMore}
+          hasMore={hasMore && levelsData.length > 0}
           loader={<div className="loader loader-level-page"></div>}
           endMessage={
             <p className="end-message">

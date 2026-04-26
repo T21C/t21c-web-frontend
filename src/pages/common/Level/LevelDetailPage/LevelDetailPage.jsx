@@ -1391,10 +1391,6 @@ const LevelDetailPage = ({ mockData = null }) => {
   }, []); // Empty dependency array - only run on mount/unmount
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [detailPage]);
-
-  useEffect(() => {
     if (res?.level) {
       document.title = `${getSongDisplayName(res.level)} - ${getArtistDisplayName(res.level)} | TUF`;
     } else {

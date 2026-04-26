@@ -119,9 +119,8 @@ export const DifficultyGraph = ({ data, mode, labelMode }) => {
 
   const containerProps = isMobile
     ? {
-        width: "124%",
+        width: "100%",
         height: 200,
-        style: { position: "relative", left: "-12%" },
       }
     : {
         width: "100%",
@@ -155,6 +154,7 @@ export const DifficultyGraph = ({ data, mode, labelMode }) => {
           <YAxis
             stroke="#ffffff"
             fontSize={isMobile ? 10 : 12}
+            allowDecimals={false}
             tickLine={false}
             axisLine={false}
             width={isMobile ? 35 : 45}

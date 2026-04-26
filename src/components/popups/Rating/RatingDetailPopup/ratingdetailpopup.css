@@ -833,7 +833,7 @@
   }
 
   .rating-popup .save-button-container {
-    flex-direction: column-reverse;
+    flex-direction: column;
     gap: 0.5rem;
     align-items: center;
   }
