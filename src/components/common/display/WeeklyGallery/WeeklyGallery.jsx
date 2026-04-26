@@ -5,6 +5,7 @@ import { ArrowIcon } from '../../icons';
 import { formatCreatorDisplay } from '@/utils/Utility';
 import { NavLink } from 'react-router-dom';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
+import { getVideoDetails } from '@/utils';
 
 const WeeklyGallery = ({ 
   curations = [], 
@@ -23,7 +24,51 @@ const WeeklyGallery = ({
   const autoScrollRef = useRef(null);
   const pauseTimeoutRef = useRef(null);
   const containerRef = useRef(null);
-  
+  /** Resolved preview URLs keyed by `String(curation.id)` — async fills non-YouTube links via `getVideoDetails`. */
+  const [thumbnailUrls, setThumbnailUrls] = useState({});
+
+  const getYoutubeMqFromVideoLink = useCallback((videoLink) => {
+    if (!videoLink) return null;
+    const videoId = videoLink.match(
+      /(?:youtu\.be\/|youtube\.com\/(?:.*v=|.*\/videos\/)|youtube-nocookie\.com\/(?:embed\/|v\/)|youtube\.com\/(?:v\/|e\/|embed\/|user\/[^/]+\/u\/[0-9]+\/)|watch\?v=)([^#\&\?]*)/,
+    )?.[1];
+    return videoId ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg` : null;
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    const allowed = new Set(curations.map((c) => String(c.id)));
+
+    setThumbnailUrls((prev) => {
+      const next = {};
+      for (const [k, v] of Object.entries(prev)) {
+        if (allowed.has(k)) next[k] = v;
+      }
+      return next;
+    });
+
+    for (const c of curations) {
+      const key = String(c.id);
+      const level = c.scheduledCuration?.level || c.level;
+      if (c.previewLink || !level?.videoLink) continue;
+      if (getYoutubeMqFromVideoLink(level.videoLink)) continue;
+
+      getVideoDetails(level.videoLink)
+        .then((data) => {
+          if (cancelled) return;
+          const thumb = data?.image;
+          if (thumb) {
+            setThumbnailUrls((prev) => ({ ...prev, [key]: thumb }));
+          }
+        })
+        .catch(() => {});
+    }
+
+    return () => {
+      cancelled = true;
+    };
+  }, [curations, getYoutubeMqFromVideoLink]);
+
   // Handle auto-scroll
   useEffect(() => {
     if (isAutoScrolling && curations.length > 1) {
@@ -220,16 +265,6 @@ const WeeklyGallery = ({
     );
   }
 
-
-  const getThumbnailUrl = (level) => {
-    if (level.videoLink) {
-      const videoId = level.videoLink.match(/(?:youtu\.be\/|youtube\.com\/(?:.*v=|.*\/videos\/)|youtube-nocookie\.com\/(?:embed\/|v\/)|youtube\.com\/(?:v\/|e\/|embed\/|user\/[^/]+\/u\/[0-9]+\/)|watch\?v=)([^#\&\?]*)/)?.[1];
-      if (videoId) {
-        return `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
-      }
-    }
-    return null;
-  };
   return (
     <div 
       className={`weekly-gallery ${className}`} 
@@ -263,6 +298,13 @@ const WeeklyGallery = ({
         <div className="weekly-gallery__items">
           {curations.map((curation, index) => {
             const position = getCurationPosition(index);
+            const thumbKey = String(curation.id);
+            const levelRow = curation.scheduledCuration?.level || curation.level;
+            const thumbSrc =
+              thumbnailUrls[thumbKey] ??
+              curation.previewLink ??
+              getYoutubeMqFromVideoLink(levelRow?.videoLink) ??
+              null;
             return (
               <NavLink
                 to={`/levels/${curation.scheduledCuration?.level?.id || curation.level?.id}`}
@@ -280,18 +322,21 @@ const WeeklyGallery = ({
                 onClick={() => onCurationClick?.(curation)}
               >
                 <div className="weekly-gallery__item-preview">
-                
-                    <img 
-                      src={curation.previewLink || getThumbnailUrl(curation.level)}
-                      alt={`${curation.level?.song || 'Unknown'} thumbnail`}
+                  {thumbSrc ? (
+                    <img
+                      src={thumbSrc}
+                      alt={`${levelRow?.song || 'Unknown'} thumbnail`}
                       className="weekly-gallery__thumbnail"
                     />
-                  
+                  ) : (
+                    <div className="weekly-gallery__no-thumbnail" aria-hidden>
+                      🎵
+                    </div>
+                  )}
                 </div>
                 
                 <div className="weekly-gallery__item-overlay">
                   {(() => {
-                    const levelRow = curation.scheduledCuration?.level || curation.level;
                     const diff = difficultyDict[levelRow?.diffId];
                     let typeIcons = curation.types.filter((t) => !['V0', 'C0'].includes(t.name));
                     return (
