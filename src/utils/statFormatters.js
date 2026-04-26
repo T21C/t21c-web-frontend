@@ -79,6 +79,7 @@ export function toDifficultyGraphData(breakdownMap, difficultyDict, mode) {
          info?.name.includes("Q") 
       || info?.name.includes("P0")
       || info?.name.includes("Impossible")
+      || info?.name.includes("Unranked")
       ) && mode === "levels")
     )
     .map(([id, info]) => {
@@ -88,6 +89,10 @@ export function toDifficultyGraphData(breakdownMap, difficultyDict, mode) {
         name = "∞";
       }
       let sortOrder = info?.name.includes("P0") ? -1 : info?.sortOrder;
+      if (info?.name.includes("Unranked")) {
+        sortOrder = -2;
+        name = "0";
+      }
       return {
         id: Number(info?.id ?? id),
         name,
