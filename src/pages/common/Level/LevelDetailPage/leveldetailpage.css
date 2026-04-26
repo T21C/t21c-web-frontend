@@ -1302,6 +1302,8 @@
   
   .level-detail .header .right {
     flex: none;
+    display: flex;
+    margin-bottom: 0.5rem;
     width: 100%;
     justify-content: center;
   }
