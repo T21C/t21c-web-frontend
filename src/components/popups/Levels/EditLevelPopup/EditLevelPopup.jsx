@@ -116,6 +116,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
         rerateReason: level.rerateReason ?? '',
         isDeleted: Boolean(level.isDeleted),
         isHidden: Boolean(level.isHidden),
+        isAnnounced: Boolean(level.isAnnounced),
         previousDiffId: level.previousDiffId ?? null,
         previousBaseScore: level.previousBaseScore != null ? level.previousBaseScore : null,
       }));
