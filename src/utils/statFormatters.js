@@ -75,16 +75,25 @@ export function toDifficultyGraphData(breakdownMap, difficultyDict, mode) {
   return Object.entries(difficultyDict || {})
     .filter(([, info]) => 
       info?.type === "PGU" 
-    || (info?.type === "SPECIAL" && info?.name.includes("Q") && mode === "levels")
+    || (info?.type === "SPECIAL" && (
+         info?.name.includes("Q") 
+      || info?.name.includes("P0")
+      || info?.name.includes("Impossible")
+      ) && mode === "levels")
     )
     .map(([id, info]) => {
       const value = Number(map[id]) || 0;
+      let name = info?.name.includes("Q") ? info?.name.split(" ")[0] : info?.name ?? `#${id}`;
+      if (info?.name.includes("Impossible")) {
+        name = "∞";
+      }
+      let sortOrder = info?.name.includes("P0") ? -1 : info?.sortOrder;
       return {
         id: Number(info?.id ?? id),
-        name: info?.name.includes("Q") ? info?.name.split(" ")[0] : info?.name ?? `#${id}`,
+        name,
         passCount: isPasses ? value : 0,
         levelCount: isPasses ? 0 : value,
-        sortOrder: info?.sortOrder ?? 0,
+        sortOrder,
       };
     })
     .sort((a, b) => a.sortOrder - b.sortOrder);

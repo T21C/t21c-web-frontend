@@ -532,7 +532,7 @@ const ProfilePage = () => {
                       <ChevronIcon direction={difficultyExpanded ? 'down' : 'right'} />
                     </button>
                   </div>
-                  <div className={["account-profile-page__collapsible", "player-page__difficulty-collapsible", difficultyCollapsed ? "hidden" : ""].join(" ").trim()}>
+                  <div style={{ overflow: "visible" }} className={["account-profile-page__collapsible", "player-page__difficulty-collapsible", difficultyCollapsed ? "hidden" : ""].join(" ").trim()}>
                     <label className="player-page__difficulty-dupes-toggle">
                       <input
                         type="checkbox"

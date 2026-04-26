@@ -7,34 +7,46 @@
     "placeholder": "Search by creator name..."
   },
   "tooltips": {
+    "filter": "Filter results",
     "sort": "Sort results",
     "reset": "Reset all filters",
     "recentAsc": "Sort ascending",
     "recentDesc": "Sort descending"
   },
   "settings": {
+    "filter": {
+      "header": "Filters"
+    },
     "sort": {
       "header": "Sort Settings",
       "sortOrder": "Sort Order",
       "sortBy": "Sort by"
+    },
+    "verificationFilter": {
+      "label": "Verification status",
+      "all": "All statuses"
     }
   },
   "sortOptions": {
     "name": "Name",
-    "chartsTotal": "Total Charts",
-    "chartsCharted": "Charts Charted",
-    "chartsVfxed": "Charts VFX'd",
-    "chartsTeamed": "Team-assigned charts",
-    "totalChartClears": "Total Chart Clears",
-    "totalChartLikes": "Total Chart Likes"
+    "chartsTotal": "Total Levels",
+    "chartsCharted": "Levels Charted",
+    "chartsVfxed": "Levels VFX'd",
+    "chartsTeamed": "Levels as a team member",
+    "totalChartClears": "Total Level Clears",
+    "totalChartLikes": "Total Level Likes"
   },
   "infiniteScroll": {
     "end": "You've reached the end!"
   },
+  "list": {
+    "empty": "No creators found."
+  },
   "card": {
     "verified": "Verified",
-    "chartsTotal": "{{count}} charts",
-    "noUser": "No linked account"
+    "chartsTotal": "{{count}} levels",
+    "noUser": "No linked account",
+    "curationBadgesAria": "Curation type summary"
   },
   "verificationStatus": {
     "help": {
@@ -54,13 +66,13 @@
     "manageButton": "Manage creator",
     "stats": {
       "header": "Creator Stats",
-      "chartsCharted": "Charts Charted",
-      "chartsVfxed": "Charts VFX'd",
-      "chartsTeamed": "Team-assigned charts",
-      "curatedLevels": "Total curated charts",
-      "chartsTotal": "Total Charts",
-      "totalChartClears": "Total Chart Clears",
-      "totalChartLikes": "Total Chart Likes"
+      "chartsCharted": "Levels Charted",
+      "chartsVfxed": "Levels VFX'd",
+      "chartsTeamed": "Levels as a team member",
+      "curatedLevels": "Total curated levels",
+      "chartsTotal": "Total Levels",
+      "totalChartClears": "Total Level Clears",
+      "totalChartLikes": "Total Level Likes"
     },
     "bio": {
       "header": "Bio",

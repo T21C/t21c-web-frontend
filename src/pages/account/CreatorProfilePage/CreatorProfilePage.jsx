@@ -356,7 +356,7 @@ const CreatorProfilePage = () => {
                 <ChevronIcon direction={difficultyExpanded ? 'down' : 'right'} />
               </button>
             </div>
-            <div className={["account-profile-page__collapsible", difficultyCollapsed ? "hidden" : ""].join(" ").trim()}>
+            <div style={{ overflow: "visible" }} className={["account-profile-page__collapsible", difficultyCollapsed ? "hidden" : ""].join(" ").trim()}>
               <DifficultyGraph data={difficultyGraphData} mode="levels" />
             </div>
           </section>

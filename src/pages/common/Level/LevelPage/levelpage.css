@@ -314,6 +314,10 @@
     padding: 0 1rem;
   }
 
+  .level-page .level-body--embedded {
+    padding: 0;
+  }
+
   .level-page .level-body .input-option {
     gap: 0.35rem;
   }

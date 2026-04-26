@@ -526,10 +526,12 @@
   .profile-header__icon-slots-block {
     align-self: center;
   }
-
   .profile-header__icon-slots {
     justify-content: center;
   }
+  .profile-header-shell .profile-header__actions {
+    transform: translateX(0%);
+  }  
 }
 
 @media (max-width: 600px) {

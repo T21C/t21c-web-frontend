@@ -1,22 +1,34 @@
 import React, { createContext, useState, useEffect } from 'react';
+import {
+  normalizeCreatorLeaderboardSortBy,
+} from '@/utils/creatorLeaderboardSort';
 
 const STORAGE_KEYS = {
   SORT_OPEN: 'creator_sort_open',
+  FILTER_OPEN: 'creator_filter_open',
   QUERY: 'creator_query',
   SORT: 'creator_sort',
   SORT_BY: 'creator_sort_by',
+  VERIFICATION_FILTER: 'creator_verification_filter',
 };
 
 export const CreatorListContext = createContext(null);
 
 export const CreatorListContextProvider = ({ children }) => {
-  const [creatorData, setCreatorData] = useState([]);
-  const [displayedCreators, setDisplayedCreators] = useState([]);
+  /** `null` = list not loaded yet (avoids empty-state flash before first fetch). */
+  const [creatorData, setCreatorData] = useState(null);
+  const [displayedCreators, setDisplayedCreators] = useState(null);
   const [maxFields, setMaxFields] = useState({});
   const [sortOpen, setSortOpen] = useState(() => localStorage.getItem(STORAGE_KEYS.SORT_OPEN) === 'true');
+  const [filterOpen, setFilterOpen] = useState(() => localStorage.getItem(STORAGE_KEYS.FILTER_OPEN) === 'true');
   const [query, setQuery] = useState(() => localStorage.getItem(STORAGE_KEYS.QUERY) || '');
   const [sort, setSort] = useState(() => localStorage.getItem(STORAGE_KEYS.SORT) || 'DESC');
-  const [sortBy, setSortBy] = useState(() => localStorage.getItem(STORAGE_KEYS.SORT_BY) || 'chartsTotal');
+  const [sortBy, setSortBy] = useState(() =>
+    normalizeCreatorLeaderboardSortBy(localStorage.getItem(STORAGE_KEYS.SORT_BY)),
+  );
+  const [verificationFilter, setVerificationFilter] = useState(
+    () => localStorage.getItem(STORAGE_KEYS.VERIFICATION_FILTER) || '',
+  );
   const [loading, setLoading] = useState(true);
   const [initialLoading, setInitialLoading] = useState(true);
   const [forceUpdate, setForceUpdate] = useState(false);
@@ -24,6 +36,10 @@ export const CreatorListContextProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.SORT_OPEN, sortOpen);
   }, [sortOpen]);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.FILTER_OPEN, filterOpen);
+  }, [filterOpen]);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.QUERY, query);
@@ -37,6 +53,17 @@ export const CreatorListContextProvider = ({ children }) => {
     localStorage.setItem(STORAGE_KEYS.SORT_BY, sortBy);
   }, [sortBy]);
 
+  useEffect(() => {
+    const fixed = normalizeCreatorLeaderboardSortBy(sortBy);
+    if (fixed !== sortBy) {
+      setSortBy(fixed);
+    }
+  }, [sortBy]);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.VERIFICATION_FILTER, verificationFilter);
+  }, [verificationFilter]);
+
   return (
     <CreatorListContext.Provider
       value={{
@@ -48,12 +75,16 @@ export const CreatorListContextProvider = ({ children }) => {
         setMaxFields,
         sortOpen,
         setSortOpen,
+        filterOpen,
+        setFilterOpen,
         query,
         setQuery,
         sort,
         setSort,
         sortBy,
         setSortBy,
+        verificationFilter,
+        setVerificationFilter,
         loading,
         setLoading,
         initialLoading,

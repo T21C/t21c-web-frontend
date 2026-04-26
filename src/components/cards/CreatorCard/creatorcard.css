@@ -43,10 +43,81 @@
 
 .creator-card .creator-card__name-wrapper {
   display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
   flex: 1 1 12rem;
   min-width: 0;
+}
+
+.creator-card .creator-card__name-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.creator-card .creator-card__header-badges {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-self: center;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+  max-width: 11rem;
+}
+
+.creator-card .creator-card__badge-slot {
+  position: relative;
+  width: 1.85rem;
+  height: 1.85rem;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  color: var(--color-white);
+  text-shadow: 0 1px 2px var(--color-black-t80);
+  flex-shrink: 0;
+  background: var(--color-black-t40);
+  border: 1px solid var(--color-white-t10);
+}
+
+.creator-card .creator-card__badge-slot-letter {
+  font-size: 0.55rem;
+  line-height: 1;
+  text-align: center;
+  padding: 0 0.1rem;
+  word-break: break-all;
+}
+
+.creator-card .creator-card__badge-slot-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 50%;
+}
+
+.creator-card .creator-card__badge-slot-count {
+  position: absolute;
+  right: -0.3rem;
+  bottom: -0.3rem;
+  min-width: 0.85rem;
+  height: 0.85rem;
+  padding: 0 0.12rem;
+  border-radius: 3px;
+  background: var(--color-black-t55);
+  color: var(--color-white);
+  font-size: 0.48rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
 }
 
 .creator-card .creator-card__exp {
