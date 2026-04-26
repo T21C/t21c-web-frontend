@@ -305,7 +305,7 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty, onArtistClick 
             ) : (
               <p>{getArtistDisplayName(level)}</p>
             )}
-            <span className="createdAt">{t('levelDetail.info.createdAt')}: {formatDate(videoDetail?.timestamp || level.createdAt, i18next?.language)}</span>
+            <span className="createdAt">{t('levelDetail.info.createdAt')}: {formatDate(level.createdAt, i18next?.language)}</span>
             <CloseButton
               variant="floating"
               className="popup-close-button"
