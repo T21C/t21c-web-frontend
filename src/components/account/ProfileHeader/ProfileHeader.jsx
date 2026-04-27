@@ -247,8 +247,8 @@ const ProfileHeader = ({
       if (iconPanelPortalRef.current?.contains(node)) return;
       setIconPanelOpen(false);
     };
-    document.addEventListener("mousedown", onPointerDown);
-    return () => document.removeEventListener("mousedown", onPointerDown);
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => document.removeEventListener("pointerdown", onPointerDown);
   }, [iconPanelOpen]);
 
   const badgeText =

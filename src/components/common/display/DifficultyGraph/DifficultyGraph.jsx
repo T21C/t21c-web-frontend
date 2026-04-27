@@ -132,7 +132,7 @@ export const DifficultyGraph = ({ data, mode, labelMode }) => {
       <ResponsiveContainer {...containerProps}>
         <BarChart
           data={chartData}
-          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+          margin={{ top: 20, right: isMobile ? 0 : 30, left: 0, bottom: 0 }}
           barGap={0}
           barCategoryGap={-0.5}
         >
