@@ -44,6 +44,37 @@ const PackDownloadPopup = ({
     }
   }, [isOpen, resetState]);
 
+  useEffect(() => {
+    if (!isOpen || step !== 'processing' || !packJobId || !packJob) {
+      return;
+    }
+
+    if (packJob.phase === 'failed') {
+      const msg = packJob.error || packJob.message || t('packPopups.downloadPack.errors.generateFailed');
+      setError(msg);
+      setStep('confirm');
+      setPackJobId(null);
+      return;
+    }
+
+    if (packJob.phase === 'completed') {
+      const url = packJob?.meta?.url;
+      if (typeof url === 'string' && url.length > 0) {
+        setDownloadData({
+          url,
+          zipName: packJob?.meta?.zipName,
+          cacheKey: packJob?.meta?.cacheKey,
+          expiresAt: packJob?.meta?.expiresAt,
+        });
+        setStep('ready');
+      } else {
+        setError(t('packPopups.downloadPack.errors.noUrl'));
+        setStep('confirm');
+        setPackJobId(null);
+      }
+    }
+  }, [isOpen, step, packJobId, packJob, t]);
+
   useBodyScrollLock(isOpen);
 
   useEffect(() => {
@@ -88,12 +119,10 @@ const PackDownloadPopup = ({
 
     try {
       const response = await onRequestDownload(downloadId, { trimFolderNames });
-      if (!response || !response.url) {
-        throw new Error(t('packPopups.downloadPack.errors.noUrl'));
+      if (response?.url) {
+        setDownloadData(response);
+        setStep('ready');
       }
-
-      setDownloadData(response);
-      setStep('ready');
     } catch (err) {
       const message =
         err?.response?.data?.error ||

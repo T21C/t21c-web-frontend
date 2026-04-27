@@ -425,28 +425,7 @@ const ProfileHeader = ({
                     .filter(Boolean)
                     .join(" ")}
                 >
-                  <div className="profile-header__icon-slots">
-                    {resolvedSlots.map((slot) => (
-                      <div
-                        key={slot.key}
-                        className="profile-header__icon-slot"
-                        title={slot.tooltip ?? slot.title}
-                      >
-                        {slot.iconUrl ? (
-                          <img
-                            className="profile-header__icon-slot-img"
-                            src={slot.iconUrl}
-                            alt=""
-                            decoding="async"
-                          />
-                        ) : (
-                          <span className="profile-header__icon-slot-letter">{slot.letter}</span>
-                        )}
-                        <span className="profile-header__icon-slot-badge">{slot.badge ?? slot.count ?? 0}</span>
-                      </div>
-                    ))}
-                  </div>
-                  {showIconPanel ? (
+                    {showIconPanel ? (
                     <button
                       type="button"
                       className="profile-header__chevron-btn profile-header__chevron-btn--icon-panel"
@@ -470,6 +449,27 @@ const ProfileHeader = ({
                       />
                     </button>
                   ) : null}
+                  <div className="profile-header__icon-slots">
+                    {resolvedSlots.map((slot) => (
+                      <div
+                        key={slot.key}
+                        className="profile-header__icon-slot"
+                        title={slot.tooltip ?? slot.title}
+                      >
+                        {slot.iconUrl ? (
+                          <img
+                            className="profile-header__icon-slot-img"
+                            src={slot.iconUrl}
+                            alt=""
+                            decoding="async"
+                          />
+                        ) : (
+                          <span className="profile-header__icon-slot-letter">{slot.letter}</span>
+                        )}
+                        <span className="profile-header__icon-slot-badge">{slot.badge ?? slot.count ?? 0}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
                 <ProfileHeaderIconPanelPortal
                   open={showIconPanel && iconPanelOpen}

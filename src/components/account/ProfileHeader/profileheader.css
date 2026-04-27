@@ -347,6 +347,8 @@
   color: var(--color-white);
   cursor: pointer;
   flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent; /* removes blue flash */
+  touch-action: manipulation; /* removes delay on tap */
   transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
