@@ -101,7 +101,7 @@ const DifficultyContextProvider = (props) => {
             }
             const normalizedTypes = typesArray.map((type) => ({
                 ...type,
-                icon: selectIconSize(type.icon, "small"),
+                // icon: type.icon?.includes(".gif") ? type.icon : selectIconSize(type.icon, "small"),
             }));
             if (update && normalizedTypes.length) {
                 try {
