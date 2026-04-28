@@ -1,5 +1,5 @@
-import { Route, Routes } from "react-router-dom";
-import { Suspense } from "react";
+import { Route, Routes, useSearchParams } from "react-router-dom";
+import { Suspense, useEffect } from "react";
 import { Navigation } from "@/components/layout";
 import { PrivateRoute } from "@/components/auth";
 import { DeprecatedRedirect } from "@/components/routing/DeprecatedRedirect";
@@ -9,10 +9,19 @@ import * as Pages from '@/pages/index';
 import { Toaster } from "react-hot-toast";
 
 function App() {
+  const [searchParams] = useSearchParams();
+  const isEmbedded = searchParams.get("embed") === "true";
+
+  useEffect(() => {
+    if (!isEmbedded) return;
+
+    document.documentElement.style.setProperty("--navbar-height", "0px");
+  }, [isEmbedded]);
+
   return (
     <>
       <ScrollToTopOnNavigate />
-      <Navigation />
+      {!isEmbedded && <Navigation />}
       <div className="app-notifications" aria-live="polite">
         <Toaster
           position="bottom-right"
@@ -30,7 +39,7 @@ function App() {
         />
       </div>
       <div className="body">
-      <div className="nav-spacer" />
+      {!isEmbedded && <div className="nav-spacer" />}
       <Suspense
         fallback={
           <div
