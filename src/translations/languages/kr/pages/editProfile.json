@@ -75,6 +75,8 @@
   "linkedAccounts": {
     "title": "Linked Accounts",
     "discord": "Discord",
+    "providerId": "Discord 사용자 ID: {{id}}",
+    "providerIdHint": "Discord에 연결된 계정의 숫자 ID입니다",
     "linkDiscord": "Link Discord Account",
     "unlink": "Unlink",
     "cannotUnlinkLastProvider": "Cannot unlink last provider without a password"

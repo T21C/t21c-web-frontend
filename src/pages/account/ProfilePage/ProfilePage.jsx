@@ -91,16 +91,23 @@ const ProfilePage = () => {
     };
 
     useEffect(() => {
+        const id =
+          playerId != null && playerId !== ''
+            ? Number(playerId)
+            : NaN;
+        if (!Number.isFinite(id) || id <= 0) {
+          return;
+        }
         const fetchPlayer = async () => {
           try {
-            const response = await api.get(`${import.meta.env.VITE_PLAYERS_V3}/${playerId}/profile`);
+            const response = await api.get(`${import.meta.env.VITE_PLAYERS_V3}/${id}/profile`);
             setPlayerData(response.data);
 
           } catch (error) {
             console.error('Error fetching player data:', error);
           }
         };
-      
+
         fetchPlayer();
       }, [playerId]);
 

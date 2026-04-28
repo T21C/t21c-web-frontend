@@ -10,7 +10,7 @@ const CallbackPage = () => {
   const [loading, setLoading] = useState(true);
   const [isLinking, setIsLinking] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
-  const { fetchUser, setUser, getOriginUrl, clearOriginUrl } = useAuth();
+  const { fetchUser, getOriginUrl, clearOriginUrl } = useAuth();
 
   const handleContinue = () => {
     setRedirecting(true);
@@ -58,15 +58,15 @@ const CallbackPage = () => {
 
         if (linking) {
           if (response.status === 200) {
-            await fetchUser();
+            await fetchUser(true);
             handleSuccessfulAuth();
           } else {
             throw new Error('Linking failed');
           }
         } else {
-          const { user: userData } = response.data;
-          if (userData) {
-            setUser(userData);
+          // Load full profile (playerId, providers, etc.); OAuth JSON alone is incomplete vs /profile/me.
+          const newUser = await fetchUser(true);
+          if (newUser) {
             handleSuccessfulAuth();
           } else {
             throw new Error('No user received from server');

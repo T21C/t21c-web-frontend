@@ -406,6 +406,7 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
   };
 
   const isLastProvider = user?.password === null && user?.providers?.length === 1;
+  const discordProvider = user?.providers?.find(p => p.name === 'discord');
 
   const hasPendingDeletion = Boolean(user?.deletionExecuteAt && user?.deletionScheduledAt);
 
@@ -771,14 +772,21 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
 
         <h2>{t('editProfile.linkedAccounts.title')}</h2>
         <div className="linked-accounts">
-          {user?.providers?.some(p => p.name === 'discord') ? (
+          {discordProvider ? (
             <div className="provider-info">
-              <div className="provider-details">
-                <ProviderIcon provider="discord" size={32}/>
-                <span>{t('editProfile.linkedAccounts.discord')}</span>
-                {user?.providers?.find(p => p.name === 'discord')?.profile?.username && (
-                  <span className="provider-username">
-                    @{user.providers.find(p => p.name === 'discord').profile.username}
+              <div className="provider-details-column">
+                <div className="provider-details">
+                  <ProviderIcon provider="discord" size={32}/>
+                  <span>{t('editProfile.linkedAccounts.discord')}</span>
+                </div>
+                {discordProvider.providerId != null && discordProvider.providerId !== '' && (
+                  <span
+                    className="provider-id-line"
+                    title={t('editProfile.linkedAccounts.providerIdHint')}
+                  >
+                    {t('editProfile.linkedAccounts.providerId', {
+                      id: String(discordProvider.providerId),
+                    })}
                   </span>
                 )}
               </div>

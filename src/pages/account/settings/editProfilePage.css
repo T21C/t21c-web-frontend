@@ -192,10 +192,26 @@
   margin-bottom: 1rem;
 }
 
+.edit-profile-page .provider-details-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+  min-width: 0;
+}
+
 .edit-profile-page .provider-details {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.edit-profile-page .provider-id-line {
+  font-family: ui-monospace, system-ui, monospace;
+  font-size: 0.8125rem;
+  color: var(--btn-neutral-muted);
+  word-break: break-all;
+  line-height: 1.35;
 }
 
 .edit-profile-page .unlink-button {
@@ -222,12 +238,6 @@
 
 .edit-profile-page .link-button > svg {
   filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
-}
-
-.edit-profile-page .provider-username {
-  color: #a0a0a0;
-  font-size: 0.9rem;
-  margin-left: 0.5rem;
 }
 
 .edit-profile-page .unlink-container {
