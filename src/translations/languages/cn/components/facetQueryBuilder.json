@@ -18,5 +18,6 @@
   "pickItemTitle": "选择一项",
   "pickExcludeTitle": "选择要排除的项",
   "pickerEmpty": "无匹配项",
+  "toggleGroupAll": "切换全部",
   "fallbackGroup": "其他"
 }

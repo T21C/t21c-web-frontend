@@ -154,6 +154,20 @@ const FacetQueryBuilder = ({ items, value, onChange, title, enableGrouping = tru
     onChange(next.length ? { mode: 'simple', op: 'or', ids: next } : null);
   };
 
+  const toggleSimpleGroupAll = useCallback(
+    (idsInSubgroup) => {
+      if (idsInSubgroup.length === 0) return;
+      const cur = value?.mode === 'simple' ? [...(value.ids || [])] : [];
+      const curSet = new Set(cur);
+      const allOn = idsInSubgroup.every((id) => curSet.has(id));
+      const next = allOn
+        ? cur.filter((id) => !idsInSubgroup.includes(id))
+        : [...new Set([...cur, ...idsInSubgroup])];
+      onChange(next.length ? { mode: 'simple', op: 'or', ids: next } : null);
+    },
+    [value, onChange]
+  );
+
   const switchToAdvanced = () => {
     if (value?.mode === 'advanced') return;
     setSimpleSwitchArmed(false);
@@ -303,6 +317,31 @@ const FacetQueryBuilder = ({ items, value, onChange, title, enableGrouping = tru
   const advancedVal = value?.mode === 'advanced' ? padBetweenPairs(value) : null;
   const pairs = advancedVal?.betweenPairs || [];
 
+  const groupPickerPickedIds = useMemo(() => {
+    if (picker?.kind !== 'group' || !value || value.mode !== 'advanced') return null;
+    return new Set(value.groups[picker.index]?.ids ?? []);
+  }, [picker?.kind, picker?.index, value?.mode, value?.groups?.[picker?.index]?.ids]);
+
+  const handlePickerToggleGroupAll = useCallback(
+    (idsInSubgroup) => {
+      if (picker?.kind !== 'group' || value?.mode !== 'advanced') return;
+      const idx = picker.index;
+      const cur = value.groups[idx]?.ids ?? [];
+      const curSet = new Set(cur);
+      const allOn =
+        idsInSubgroup.length > 0 && idsInSubgroup.every((id) => curSet.has(id));
+      if (allOn) {
+        setGroupIds(
+          idx,
+          cur.filter((id) => !idsInSubgroup.includes(id))
+        );
+      } else {
+        setGroupIds(idx, [...new Set([...cur, ...idsInSubgroup])]);
+      }
+    },
+    [picker, value]
+  );
+
   const betweenGroupOptions = useMemo(
     () => [
       { value: 'and', label: t('facetQueryBuilder.and') },
@@ -422,7 +461,25 @@ const FacetQueryBuilder = ({ items, value, onChange, title, enableGrouping = tru
                 <div className="facet-query-builder__grid">
                   {orderedGroups.map(([group, data]) => (
                     <div key={group} className="facet-query-builder__group">
-                      {enableGrouping && <h4 className="facet-query-builder__group-title">{group}</h4>}
+                      <div className="facet-query-builder__group-head">
+                        {enableGrouping ? (
+                          <h4 className="facet-query-builder__group-title">{group}</h4>
+                        ) : (
+                          <span
+                            className="facet-query-builder__group-title facet-query-builder__group-title--spacer"
+                            aria-hidden
+                          />
+                        )}
+                        {data.items.length > 0 && (
+                          <button
+                            type="button"
+                            className="facet-query-builder__toggle-group-all"
+                            onClick={() => toggleSimpleGroupAll(data.items.map((it) => it.id))}
+                          >
+                            {t('facetQueryBuilder.toggleGroupAll')}
+                          </button>
+                        )}
+                      </div>
                       <div className="facet-query-builder__list">
                         {data.items.map((item) => (
                           <button
@@ -578,9 +635,12 @@ const FacetQueryBuilder = ({ items, value, onChange, title, enableGrouping = tru
         items={filteredItems}
         excludeIds={
           picker?.kind === 'group'
-            ? new Set(advancedVal?.groups[picker.index]?.ids || [])
+            ? new Set()
             : new Set(advancedVal?.excludeIds || [])
         }
+        closeOnPick={picker?.kind !== 'group'}
+        pickedIds={picker?.kind === 'group' ? groupPickerPickedIds : null}
+        onToggleGroupAll={picker?.kind === 'group' ? handlePickerToggleGroupAll : null}
         enableGrouping={enableGrouping}
         title={
           picker?.kind === 'exclude'
@@ -588,8 +648,11 @@ const FacetQueryBuilder = ({ items, value, onChange, title, enableGrouping = tru
             : t('facetQueryBuilder.pickItemTitle')
         }
         onPick={(id) => {
-          if (picker?.kind === 'group') addToGroup(picker.index, id);
-          else if (picker?.kind === 'exclude') addExclude(id);
+          if (picker?.kind === 'group') {
+            const cur = advancedVal?.groups[picker.index]?.ids ?? [];
+            if (cur.includes(id)) removeFromGroup(picker.index, id);
+            else addToGroup(picker.index, id);
+          } else if (picker?.kind === 'exclude') addExclude(id);
         }}
       />
     </div>

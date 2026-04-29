@@ -16,6 +16,12 @@ const FacetItemPicker = ({
   onPick,
   enableGrouping = true,
   title,
+  /** When false, picking does not close the dialog; list stays open until backdrop / close / outside click. */
+  closeOnPick = true,
+  /** Ids shown as selected when closeOnPick is false (e.g. advanced group picker). */
+  pickedIds = null,
+  /** Per visible subgroup: toggle select all / clear all in that subgroup (advanced group picker). */
+  onToggleGroupAll = null,
 }) => {
   const { t } = useTranslation('components');
   const [search, setSearch] = useState('');
@@ -34,12 +40,20 @@ const FacetItemPicker = ({
     return () => document.removeEventListener('keydown', onKey);
   }, [isOpen, onClose]);
 
+  const pickedSet = useMemo(() => {
+    if (!pickedIds) return new Set();
+    return pickedIds instanceof Set ? pickedIds : new Set(pickedIds);
+  }, [pickedIds]);
+
   const filtered = useMemo(() => {
     const q = search.toLowerCase().trim();
-    const list = (items || []).filter((it) => !excludeIds.has(it.id));
+    let list = items || [];
+    if (closeOnPick) {
+      list = list.filter((it) => !excludeIds.has(it.id));
+    }
     if (!q) return list;
     return list.filter((it) => String(it.name).toLowerCase().includes(q));
-  }, [items, excludeIds, search]);
+  }, [items, excludeIds, search, closeOnPick]);
 
   const orderedGroups = useMemo(() => {
     if (!enableGrouping) return [['', { items: filtered, groupSortOrder: 0 }]];
@@ -112,18 +126,43 @@ const FacetItemPicker = ({
             <p className="facet-item-picker__empty">{t('facetQueryBuilder.pickerEmpty')}</p>
           ) : (
             orderedGroups.map(([group, data]) => (
-              <div key={group} className="facet-item-picker__group">
-                {enableGrouping && <h4 className="facet-item-picker__group-title">{group}</h4>}
+              <div key={group || '__ungrouped'} className="facet-item-picker__group">
+                {(enableGrouping || onToggleGroupAll) && (
+                  <div className="facet-item-picker__group-head">
+                    {enableGrouping ? (
+                      <h4 className="facet-item-picker__group-title">{group}</h4>
+                    ) : (
+                      <span className="facet-item-picker__group-title facet-item-picker__group-title--spacer" />
+                    )}
+                    {onToggleGroupAll && data.items.length > 0 && (
+                      <button
+                        type="button"
+                        className="facet-item-picker__toggle-group-all"
+                        onMouseDown={(e) => e.stopPropagation()}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onToggleGroupAll(data.items.map((it) => it.id));
+                        }}
+                      >
+                        {t('facetQueryBuilder.toggleGroupAll')}
+                      </button>
+                    )}
+                  </div>
+                )}
                 <div className="facet-item-picker__list">
                   {data.items.map((item) => (
                     <button
                       key={item.id}
                       type="button"
-                      className="facet-item-picker__item"
+                      className={`facet-item-picker__item${
+                        !closeOnPick && pickedSet.has(item.id) ? ' is-selected' : ''
+                      }`}
                       style={{ backgroundColor: `${item.color || '#444'}40` }}
-                      onClick={() => {
+                      onMouseDown={(e) => e.stopPropagation()}
+                      onClick={(e) => {
+                        e.stopPropagation();
                         onPick(item.id);
-                        onClose();
+                        if (closeOnPick) onClose();
                       }}
                     >
                       {item.icon && (

@@ -18,6 +18,7 @@
   "pickItemTitle": "Choose an item",
   "pickExcludeTitle": "Choose item to exclude",
   "pickerEmpty": "No matching items",
+  "toggleGroupAll": "Toggle all",
   "fallbackGroup": "Other",
   "switchSimpleWillLoseSettings": "Switching to Simple mode will <b>lose grouping</b>. <br />Click again to confirm."
 }
