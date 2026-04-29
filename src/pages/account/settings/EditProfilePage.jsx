@@ -6,6 +6,7 @@ import { Tooltip } from 'react-tooltip';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import api from '@/utils/api';
+import { getCdnErrorMessage } from '@/utils/uploadErrors';
 import ImageSelectorPopup from '@/components/common/selectors/ImageSelectorPopup/ImageSelectorPopup';
 import { ChangeEmailPopup } from '@/components/popups/Users';
 import { CountrySelect } from '@/components/common/selectors';
@@ -263,15 +264,9 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
       setUser({ ...user, avatarUrl});
       toast.success(t('editProfile.success.avatarUploaded'));
     } catch (error) {
-      const errorData = error.response?.data;
-      
-      if (errorData?.code === 'VALIDATION_ERROR') {
-        errorData.details.errors.forEach(err => toast.error(err));
-        setUploadError(errorData.details.errors.join(', '));
-      } else {
-        setUploadError(errorData?.error || t('editProfile.error.failedToUploadAvatar'));
-        toast.error(errorData?.error || t('editProfile.error.failedToUploadAvatar'));
-      }
+      const msg = getCdnErrorMessage(error, t('editProfile.error.failedToUploadAvatar'));
+      setUploadError(msg);
+      toast.error(msg);
     } finally {
       setIsUploadingAvatar(false);
     }

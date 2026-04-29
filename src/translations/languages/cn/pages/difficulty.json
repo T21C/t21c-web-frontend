@@ -20,7 +20,15 @@
   },
   "loading": {
     "difficulties": "正在加载等级列表……",
-    "deleting": "正在删除……"
+    "deleting": "正在删除……",
+    "savingDifficulty": "正在保存难度……",
+    "reorderingDifficulties": "正在更新难度顺序……",
+    "savingTag": "正在创建标签……",
+    "updatingTag": "正在更新标签……",
+    "deletingTag": "正在删除标签……",
+    "reorderingTags": "正在更新标签顺序……",
+    "reorderingGroups": "正在更新分组顺序……",
+    "fetchingTags": "正在加载标签……"
   },
   "noItems": {
     "message": "未找到等级"

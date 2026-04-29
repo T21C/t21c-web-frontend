@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
+import { getCdnErrorMessage } from '@/utils/uploadErrors';
 import './entityActionPopup.css';
 import { toast } from 'react-hot-toast';
 import { isCdnSupportedImageMimeType } from '@/constants/cdnImageAccept';
@@ -463,7 +464,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
         onUpdate();
       }, 1000);
     } catch (error) {
-      const errorMessage = getErrorMessage(error, tEntity('errors.updateFailed'));
+      const errorMessage = getCdnErrorMessage(error, tEntity('errors.updateFailed'));
       setError(errorMessage);
       toast.error(errorMessage);
     } finally {
@@ -495,7 +496,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
         onUpdate();
       }, 1000);
     } catch (error) {
-      const errorMessage = getErrorMessage(error, tEntity('errors.mergeFailed'));
+      const errorMessage = getCdnErrorMessage(error, tEntity('errors.mergeFailed'));
       setError(errorMessage);
       toast.error(errorMessage);
     } finally {
@@ -542,7 +543,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
         onUpdate();
       }, 1500);
     } catch (error) {
-      const errorMessage = getErrorMessage(error, tEntity('errors.splitFailed'));
+      const errorMessage = getCdnErrorMessage(error, tEntity('errors.splitFailed'));
       setError(errorMessage);
       toast.error(errorMessage);
     } finally {
@@ -570,7 +571,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
       setNewCreditRole('');
       setCreditSearch('');
     } catch (error) {
-      const errorMessage = getErrorMessage(error, tEntity('errors.creditFailed'));
+      const errorMessage = getCdnErrorMessage(error, tEntity('errors.creditFailed'));
       toast.error(errorMessage);
     }
   };
@@ -581,7 +582,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
       toast.success(tEntity('messages.creditRemoved'));
       setCredits(credits.filter(c => c.id !== creditId));
     } catch (error) {
-      const errorMessage = getErrorMessage(error, tEntity('errors.deleteFailed'));
+      const errorMessage = getCdnErrorMessage(error, tEntity('errors.deleteFailed'));
       toast.error(errorMessage);
     }
   };
@@ -620,7 +621,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
       setNewRelationArtistId('');
       setRelationSearch('');
     } catch (error) {
-      const errorMessage = getErrorMessage(error, tEntity('errors.relationFailed'));
+      const errorMessage = getCdnErrorMessage(error, tEntity('errors.relationFailed'));
       toast.error(errorMessage);
     }
   };
@@ -650,17 +651,9 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
     } catch (error) {
       // Revert optimistic update on error
       setRelations(relations);
-      const errorMessage = getErrorMessage(error, tEntity('errors.deleteFailed'));
+      const errorMessage = getCdnErrorMessage(error, tEntity('errors.deleteFailed'));
       toast.error(errorMessage);
     }
-  };
-
-  // Helper function to extract error message, prioritizing details.errors
-  const getErrorMessage = (error, defaultMessage) => {
-    if (error?.response?.data?.details?.errors && Array.isArray(error.response.data.details.errors) && error.response.data.details.errors.length > 0) {
-      return error.response.data.details.errors[0];
-    }
-    return error?.response?.data?.error || defaultMessage;
   };
 
   const handleAvatarUpload = async () => {
@@ -692,7 +685,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
       // Refresh entity data to update parent component
       onUpdate();
     } catch (error) {
-      const errorMessage = getErrorMessage(error, tEntity('errors.uploadFailed'));
+      const errorMessage = getCdnErrorMessage(error, tEntity('errors.uploadFailed'));
       toast.error(errorMessage);
     } finally {
       setIsUploadingAvatar(false);
@@ -709,7 +702,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
       // Refresh entity data to update parent component
       onUpdate();
     } catch (error) {
-      const errorMessage = getErrorMessage(error, tEntity('errors.deleteFailed'));
+      const errorMessage = getCdnErrorMessage(error, tEntity('errors.deleteFailed'));
       toast.error(errorMessage);
     }
   };
@@ -806,7 +799,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
       // Clear preview files
       setEvidenceFiles([]);
     } catch (error) {
-      const errorMessage = getErrorMessage(error, tEntity('errors.evidenceFailed'));
+      const errorMessage = getCdnErrorMessage(error, tEntity('errors.evidenceFailed'));
       toast.error(errorMessage);
     } finally {
       setIsUploadingEvidence(false);
@@ -838,7 +831,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
       setEvidences([...evidences, response.data]);
       setNewEvidenceLink('');
     } catch (error) {
-      const errorMessage = getErrorMessage(error, tEntity('errors.evidenceFailed'));
+      const errorMessage = getCdnErrorMessage(error, tEntity('errors.evidenceFailed'));
       toast.error(errorMessage);
     }
   };
@@ -871,7 +864,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
       setEditingEvidenceId(null);
       setEditingEvidenceLink('');
     } catch (error) {
-      const errorMessage = getErrorMessage(error, tEntity('errors.evidenceFailed'));
+      const errorMessage = getCdnErrorMessage(error, tEntity('errors.evidenceFailed'));
       toast.error(errorMessage);
     }
   };
@@ -902,7 +895,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
         onUpdate(response.data);
       }
     } catch (error) {
-      const errorMessage = getErrorMessage(error, tEntity('errors.updateFailed'));
+      const errorMessage = getCdnErrorMessage(error, tEntity('errors.updateFailed'));
       toast.error(errorMessage);
     }
   };
@@ -920,7 +913,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
       toast.success(tEntity('messages.evidenceDeleted'));
       setEvidences(evidences.filter(e => e.id !== evidenceId));
     } catch (error) {
-      const errorMessage = getErrorMessage(error, tEntity('errors.deleteFailed'));
+      const errorMessage = getCdnErrorMessage(error, tEntity('errors.deleteFailed'));
       toast.error(errorMessage);
     }
   };

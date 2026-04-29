@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
+import { getCdnErrorMessage } from '@/utils/uploadErrors';
 import { CDN_IMAGE_ACCEPT, isCdnSupportedImageMimeType } from '@/constants/cdnImageAccept';
 import toast from 'react-hot-toast';
 import './thumbnailupload.css';
@@ -86,7 +87,7 @@ const ThumbnailUpload = ({
         toast.success(t('thumbnailUpload.uploadSuccess'));
       }
     } catch (error) {
-      const errorMessage = error.response?.data?.error || t('thumbnailUpload.uploadError');
+      const errorMessage = getCdnErrorMessage(error, t('thumbnailUpload.uploadError'));
       toast.error(errorMessage);
     } finally {
       setIsUploading(false);
@@ -111,7 +112,7 @@ const ThumbnailUpload = ({
       }
       toast.success(t('thumbnailUpload.removeSuccess'));
     } catch (error) {
-      const errorMessage = error.response?.data?.error || t('thumbnailUpload.removeError');
+      const errorMessage = getCdnErrorMessage(error, t('thumbnailUpload.removeError'));
       toast.error(errorMessage);
     }
   };

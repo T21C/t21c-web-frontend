@@ -11,6 +11,7 @@ import './EditPackPopup.css';
 import toast from 'react-hot-toast';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import api from '@/utils/api';
+import { getCdnErrorMessage } from '@/utils/uploadErrors';
 import { LevelPackViewModes } from '@/utils/constants';
 
 const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
@@ -85,7 +86,7 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
       toast.success(t('packPopups.editPack.success.iconUploaded'));
     } catch (error) {
       console.error('Error uploading pack icon:', error);
-      const errorMessage = error.response?.data?.error || t('packPopups.editPack.errors.iconUploadFailed');
+      const errorMessage = getCdnErrorMessage(error, t('packPopups.editPack.errors.iconUploadFailed'));
       toast.error(errorMessage);
     } finally {
       setUploadingIcon(false);

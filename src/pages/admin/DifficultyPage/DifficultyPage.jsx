@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import toast from 'react-hot-toast';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { useAuth } from "@/contexts/AuthContext";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
@@ -8,6 +9,7 @@ import { ScrollButton, CloseButton } from '@/components/common/buttons';
 import { DifficultyPopup } from '@/components/popups/Difficulties';
 import { DiscordRolesPopup } from '@/components/popups/DiscordRoles';
 import api from '@/utils/api';
+import { getCdnErrorMessage } from '@/utils/uploadErrors';
 import './difficultypage.css';
 import { EditIcon, RefreshIcon, TrashIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
@@ -28,7 +30,6 @@ const DifficultyPage = () => {
   const [isCreating, setIsCreating] = useState(false);
   const [superAdminPassword, setSuperAdminPassword] = useState('');
   const [selectedAction, setSelectedAction] = useState({ type: '', data: null });
-  const [notifications, setNotifications] = useState([]);
   const [newDifficulty, setNewDifficulty] = useState({
     id: '',
     name: '',
@@ -83,13 +84,13 @@ const DifficultyPage = () => {
     try {
       const response = await api.get(`${import.meta.env.VITE_DIFFICULTIES}/tags`, {
         headers: {
-          'X-Super-Admin-Password': verifiedPassword
-        }
+          'X-Super-Admin-Password': verifiedPassword,
+        },
       });
       setTags(response.data);
     } catch (error) {
       console.error('Error fetching tags:', error);
-      addNotification(t('difficulty.tags.notifications.fetchFailed'), 'error');
+      toast.error(t('difficulty.tags.notifications.fetchFailed'));
     } finally {
       setTagsLoading(false);
     }
@@ -97,80 +98,89 @@ const DifficultyPage = () => {
 
   const handleCreateTag = async () => {
     try {
-      const formData = new FormData();
-      formData.append('name', newTag.name);
-      formData.append('color', newTag.color);
-      if (newTag.group) {
-        formData.append('group', newTag.group);
-      }
-      
-      // If iconFile exists, append it (Priority 1: file attached -> update icon)
-      if (newTag.iconFile) {
-        formData.append('icon', newTag.iconFile);
-      } else if (newTag.icon === null) {
-        // Priority 2: null explicitly -> remove icon
-        formData.append('icon', 'null');
-      }
-      // Otherwise: no iconUrl field, server will use default (null for new tags)
+      await toast.promise(
+        (async () => {
+          const formData = new FormData();
+          formData.append('name', newTag.name);
+          formData.append('color', newTag.color);
+          if (newTag.group) {
+            formData.append('group', newTag.group);
+          }
 
-      const response = await api.post(`${import.meta.env.VITE_DIFFICULTIES}/tags`, formData, {
-        headers: {
-          'X-Super-Admin-Password': verifiedPassword,
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-      setTags(prev => [...prev, response.data]);
-      // Clean up preview URL if exists
-      if (newTag.icon && newTag.icon.startsWith('blob:')) {
-        URL.revokeObjectURL(newTag.iconUrl);
-      }
-      setIsCreatingTag(false);
-      setNewTag({ name: '', iconFile: null, icon: null, color: '#FF5733', group: '' });
-      addNotification(t('difficulty.tags.notifications.created'));
+          if (newTag.iconFile) {
+            formData.append('icon', newTag.iconFile);
+          } else if (newTag.icon === null) {
+            formData.append('icon', 'null');
+          }
+
+          const response = await api.post(`${import.meta.env.VITE_DIFFICULTIES}/tags`, formData, {
+            headers: {
+              'X-Super-Admin-Password': verifiedPassword,
+              'Content-Type': 'multipart/form-data',
+            },
+          });
+          setTags((prev) => [...prev, response.data]);
+          if (newTag.icon && newTag.icon.startsWith('blob:')) {
+            URL.revokeObjectURL(newTag.iconUrl);
+          }
+          setIsCreatingTag(false);
+          setNewTag({ name: '', iconFile: null, icon: null, color: '#FF5733', group: '' });
+          return response.data;
+        })(),
+        {
+          loading: t('difficulty.loading.savingTag'),
+          success: t('difficulty.tags.notifications.created'),
+          error: (err) => getCdnErrorMessage(err, t('difficulty.tags.notifications.createFailed')),
+        },
+      );
     } catch (error) {
       console.error('Error creating tag:', error);
-      addNotification(error.response?.data?.error || t('difficulty.tags.notifications.createFailed'), 'error');
     }
   };
 
   const handleUpdateTag = async () => {
     try {
-      const formData = new FormData();
-      formData.append('name', editingTag.name);
-      formData.append('color', editingTag.color);
-      if (editingTag.group !== undefined) {
-        formData.append('group', editingTag.group || '');
-      }
-      
-      // Priority logic:
-      // Priority 1: iconFile exists -> update icon
-      // Priority 2: iconUrl is null -> remove icon
-      // Otherwise: no change (don't send iconUrl field)
-      if (editingTag.iconFile) {
-        formData.append('icon', editingTag.iconFile);
-      } else if (editingTag.icon === null && editingTag.icon !== undefined) {
-        // Explicitly null (removed) -> send null
-        formData.append('icon', 'null');
-      }
-      // Otherwise: don't send iconUrl, server will keep existing
+      await toast.promise(
+        (async () => {
+          const formData = new FormData();
+          formData.append('name', editingTag.name);
+          formData.append('color', editingTag.color);
+          if (editingTag.group !== undefined) {
+            formData.append('group', editingTag.group || '');
+          }
 
-      const response = await api.put(`${import.meta.env.VITE_DIFFICULTIES}/tags/${editingTag.id}`, formData, {
-        headers: {
-          'X-Super-Admin-Password': verifiedPassword,
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-      setTags(prev => prev.map(tag => tag.id === editingTag.id ? response.data : tag));
-      // Clean up preview URL if it was a blob URL
-      if (editingTag.icon && editingTag.icon.startsWith('blob:')) {
-        URL.revokeObjectURL(editingTag.icon);
-      }
-      setEditingTag(null);
-      setOriginalTag(null);
-      addNotification(t('difficulty.tags.notifications.updated'));
+          if (editingTag.iconFile) {
+            formData.append('icon', editingTag.iconFile);
+          } else if (editingTag.icon === null && editingTag.icon !== undefined) {
+            formData.append('icon', 'null');
+          }
+
+          const response = await api.put(
+            `${import.meta.env.VITE_DIFFICULTIES}/tags/${editingTag.id}`,
+            formData,
+            {
+              headers: {
+                'X-Super-Admin-Password': verifiedPassword,
+                'Content-Type': 'multipart/form-data',
+              },
+            },
+          );
+          setTags((prev) => prev.map((tag) => (tag.id === editingTag.id ? response.data : tag)));
+          if (editingTag.icon && editingTag.icon.startsWith('blob:')) {
+            URL.revokeObjectURL(editingTag.icon);
+          }
+          setEditingTag(null);
+          setOriginalTag(null);
+          return response.data;
+        })(),
+        {
+          loading: t('difficulty.loading.updatingTag'),
+          success: t('difficulty.tags.notifications.updated'),
+          error: (err) => getCdnErrorMessage(err, t('difficulty.tags.notifications.updateFailed')),
+        },
+      );
     } catch (error) {
       console.error('Error updating tag:', error);
-      addNotification(error.response?.data?.error || t('difficulty.tags.notifications.updateFailed'), 'error');
     }
   };
 
@@ -219,18 +229,26 @@ const DifficultyPage = () => {
   };
 
   const handleDeleteTag = async () => {
+    const tagId = deletingTag.id;
     try {
-      await api.delete(`${import.meta.env.VITE_DIFFICULTIES}/tags/${deletingTag.id}`, {
-        headers: {
-          'X-Super-Admin-Password': verifiedPassword
-        }
-      });
-      setTags(prev => prev.filter(tag => tag.id !== deletingTag.id));
-      setDeletingTag(null);
-      addNotification(t('difficulty.tags.notifications.deleted'));
+      await toast.promise(
+        (async () => {
+          await api.delete(`${import.meta.env.VITE_DIFFICULTIES}/tags/${tagId}`, {
+            headers: {
+              'X-Super-Admin-Password': verifiedPassword,
+            },
+          });
+          setTags((prev) => prev.filter((tag) => tag.id !== tagId));
+          setDeletingTag(null);
+        })(),
+        {
+          loading: t('difficulty.loading.deletingTag'),
+          success: t('difficulty.tags.notifications.deleted'),
+          error: (err) => getCdnErrorMessage(err, t('difficulty.tags.notifications.deleteFailed')),
+        },
+      );
     } catch (error) {
       console.error('Error deleting tag:', error);
-      addNotification(error.response?.data?.error || t('difficulty.tags.notifications.deleteFailed'), 'error');
     }
   };
 
@@ -273,45 +291,62 @@ const DifficultyPage = () => {
     }
   }, [user]);
 
-  const handlePasswordSubmit = async () => {
+  const handlePasswordSubmit = async (actionOverride) => {
+    const action = actionOverride ?? selectedAction;
+    const { type, data } = action;
+    if (!type || !data) return;
+
+    setError('');
+    const loadingMessage =
+      type === 'delete' ? t('difficulty.loading.deleting') : t('difficulty.loading.savingDifficulty');
+
     try {
-      const { type, data } = selectedAction;
-      setError('');
-      
-      if (type === 'create') {
-        const response = await api.post(`${import.meta.env.VITE_DIFFICULTIES}`, {
-          ...data,
-          superAdminPassword: verifiedPassword
-        });
-        
-        // Update context state directly
-        const newDifficulty = response.data;
-        setDifficulties(prev => [...prev, newDifficulty]);
-        
-        addNotification(t('difficulty.notifications.created'));
-      } else if (type === 'edit') {
-        const response = await api.put(`${import.meta.env.VITE_DIFFICULTIES}/${data.id}`, {
-          ...data,
-          superAdminPassword: verifiedPassword
-        });
-        
-        // Update context state directly
-        const updatedDifficulty = response.data;
-        setDifficulties(prev => prev.map(diff => diff.id === updatedDifficulty.id ? updatedDifficulty : diff));
-        
-        addNotification(t('difficulty.notifications.updated'));
-      } else if (type === 'delete') {
-        await api.delete(`${import.meta.env.VITE_DIFFICULTIES}/${data.id}?fallbackId=${difficulties.find(d => d.name === data.fallbackDiff)?.id}`, {
-          data: { superAdminPassword: verifiedPassword }
-        });
-        
-        // Update context state directly
-        setDifficulties(prev => prev.filter(diff => diff.id !== data.id));
-        
-        addNotification(t('difficulty.notifications.deleted'));
-      }
-      
-      // Reset all states on success
+      await toast.promise(
+        (async () => {
+          if (type === 'create') {
+            const response = await api.post(`${import.meta.env.VITE_DIFFICULTIES}`, {
+              ...data,
+              superAdminPassword: verifiedPassword,
+            });
+            const created = response.data;
+            setDifficulties((prev) => [...prev, created]);
+            return 'create';
+          }
+          if (type === 'edit') {
+            const response = await api.put(`${import.meta.env.VITE_DIFFICULTIES}/${data.id}`, {
+              ...data,
+              superAdminPassword: verifiedPassword,
+            });
+            const updatedDifficulty = response.data;
+            setDifficulties((prev) =>
+              prev.map((diff) => (diff.id === updatedDifficulty.id ? updatedDifficulty : diff)),
+            );
+            return 'edit';
+          }
+          if (type === 'delete') {
+            await api.delete(
+              `${import.meta.env.VITE_DIFFICULTIES}/${data.id}?fallbackId=${difficulties.find((d) => d.name === data.fallbackDiff)?.id}`,
+              { data: { superAdminPassword: verifiedPassword } },
+            );
+            setDifficulties((prev) => prev.filter((diff) => diff.id !== data.id));
+            return 'delete';
+          }
+          throw new Error('Unknown action');
+        })(),
+        {
+          loading: loadingMessage,
+          success: (result) => {
+            if (result === 'create') return t('difficulty.notifications.created');
+            if (result === 'edit') return t('difficulty.notifications.updated');
+            return t('difficulty.notifications.deleted');
+          },
+          error: (err) =>
+            err.response?.status === 403
+              ? t('difficulty.passwordModal.errors.invalid')
+              : t('difficulty.passwordModal.errors.generic'),
+        },
+      );
+
       setSuperAdminPassword('');
       setSelectedAction({ type: '', data: null });
       setError('');
@@ -320,8 +355,7 @@ const DifficultyPage = () => {
       setDeletingDifficulty(null);
       setShowDeleteInput(false);
       setFallbackDiff('');
-      
-      // Reset form states
+
       setNewDifficulty({
         id: '',
         name: '',
@@ -332,23 +366,15 @@ const DifficultyPage = () => {
         baseScore: 0,
         legacy: '',
         legacyIcon: '',
-        legacyEmoji: ''
+        legacyEmoji: '',
       });
     } catch (err) {
-      const errorMessage = err.response?.status === 403 
-        ? t('difficulty.passwordModal.errors.invalid') 
-        : t('difficulty.passwordModal.errors.generic');
+      const errorMessage =
+        err?.response?.status === 403
+          ? t('difficulty.passwordModal.errors.invalid')
+          : t('difficulty.passwordModal.errors.generic');
       setError(errorMessage);
-      addNotification(errorMessage, 'error');
     }
-  };
-
-  const addNotification = (message, type = 'success') => {
-    const id = Date.now();
-    setNotifications(prev => [...prev, { id, message, type }]);
-    setTimeout(() => {
-      setNotifications(prev => prev.filter(n => n.id !== id));
-    }, 5000);
   };
 
   const handleCloseCreateModal = () => {
@@ -417,7 +443,7 @@ const DifficultyPage = () => {
       return true;
     } catch (error) {
       setError(t('difficulty.passwordModal.errors.invalid'));
-      addNotification(t('difficulty.passwordModal.errors.invalid'), 'error');
+      toast.error(t('difficulty.passwordModal.errors.invalid'));
       return false;
     }
   };
@@ -465,57 +491,62 @@ const DifficultyPage = () => {
 
   const handleDragEnd = async (result) => {
     if (!result.destination) return;
-    
-    setIsReordering(true);
-    
-    try {      
-      const items = Array.from(sortedDifficulties);
-      const [reorderedItem] = items.splice(result.source.index, 1);
-      items.splice(result.destination.index, 0, reorderedItem);
-      
-      const updatedItems = items.map((item, index) => ({
-        ...item,
-        sortOrder: index
-      }));
-      
-      setDifficulties(updatedItems);
-      
-      const response = await api.put(`${import.meta.env.VITE_DIFFICULTIES}/sort-orders`, {
-        sortOrders: updatedItems.map(item => ({
-          id: item.id,
-          sortOrder: item.sortOrder
-        }))
-      }, {
-        headers: {
-          'X-Super-Admin-Password': verifiedPassword
-        }
-      });
 
-      
-      addNotification(t('difficulty.notifications.reordered'), 'success');
-      } catch (err) {
-        console.error('Error updating sort orders:', {
-          error: err.message,
-          status: err.response?.status,
-          difficultyId: movedDifficulty?.id,
-          difficultyName: movedDifficulty?.name
-        });
-        addNotification(t('difficulty.notifications.reorderFailed'), 'error');
-        // Revert to previous state on error instead of full refresh
-        await reloadDifficulties();
-      } finally {
+    setIsReordering(true);
+
+    const items = Array.from(sortedDifficulties);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    const updatedItems = items.map((item, index) => ({
+      ...item,
+      sortOrder: index,
+    }));
+
+    setDifficulties(updatedItems);
+
+    try {
+      await toast.promise(
+        api.put(
+          `${import.meta.env.VITE_DIFFICULTIES}/sort-orders`,
+          {
+            sortOrders: updatedItems.map((item) => ({
+              id: item.id,
+              sortOrder: item.sortOrder,
+            })),
+          },
+          {
+            headers: {
+              'X-Super-Admin-Password': verifiedPassword,
+            },
+          },
+        ),
+        {
+          loading: t('difficulty.loading.reorderingDifficulties'),
+          success: t('difficulty.notifications.reordered'),
+          error: t('difficulty.notifications.reorderFailed'),
+        },
+      );
+    } catch (err) {
+      console.error('Error updating sort orders:', {
+        error: err.message,
+        status: err.response?.status,
+        difficultyId: reorderedItem?.id,
+        difficultyName: reorderedItem?.name,
+      });
+      await reloadDifficulties();
+    } finally {
       setIsReordering(false);
     }
   };
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    if (isCreating) {
-      setSelectedAction({ type: 'create', data: newDifficulty });
-    } else {
-      setSelectedAction({ type: 'edit', data: editingDifficulty });
-    }
-    handlePasswordSubmit();
+    const action = isCreating
+      ? { type: 'create', data: newDifficulty }
+      : { type: 'edit', data: editingDifficulty };
+    setSelectedAction(action);
+    void handlePasswordSubmit(action);
   };
 
   const handleTagDragEnd = async (result, groupName) => {
@@ -546,21 +577,29 @@ const DifficultyPage = () => {
         return updated ? updated : tag;
       }));
       
-      await api.put(`${import.meta.env.VITE_DIFFICULTIES}/tags/sort-orders`, {
-        sortOrders: updatedItems.map(item => ({
-          id: item.id,
-          sortOrder: item.sortOrder
-        }))
-      }, {
-        headers: {
-          'X-Super-Admin-Password': verifiedPassword
-        }
-      });
-
-      addNotification(t('difficulty.tags.notifications.reordered'), 'success');
+      await toast.promise(
+        api.put(
+          `${import.meta.env.VITE_DIFFICULTIES}/tags/sort-orders`,
+          {
+            sortOrders: updatedItems.map((item) => ({
+              id: item.id,
+              sortOrder: item.sortOrder,
+            })),
+          },
+          {
+            headers: {
+              'X-Super-Admin-Password': verifiedPassword,
+            },
+          },
+        ),
+        {
+          loading: t('difficulty.loading.reorderingTags'),
+          success: t('difficulty.tags.notifications.reordered'),
+          error: t('difficulty.tags.notifications.reorderFailed'),
+        },
+      );
     } catch (err) {
       console.error('Error updating tag sort orders:', err);
-      addNotification(t('difficulty.tags.notifications.reorderFailed'), 'error');
       await fetchTags();
     } finally {
       setIsTagsReordering(false);
@@ -593,18 +632,24 @@ const DifficultyPage = () => {
         return tag;
       }));
       
-      await api.put(`${import.meta.env.VITE_DIFFICULTIES}/tags/group-sort-orders`, {
-        groups: groupUpdates
-      }, {
-        headers: {
-          'X-Super-Admin-Password': verifiedPassword
-        }
-      });
-
-      addNotification(t('difficulty.groups.notifications.reordered'), 'success');
+      await toast.promise(
+        api.put(
+          `${import.meta.env.VITE_DIFFICULTIES}/tags/group-sort-orders`,
+          { groups: groupUpdates },
+          {
+            headers: {
+              'X-Super-Admin-Password': verifiedPassword,
+            },
+          },
+        ),
+        {
+          loading: t('difficulty.loading.reorderingGroups'),
+          success: t('difficulty.groups.notifications.reordered'),
+          error: t('difficulty.groups.notifications.reorderFailed'),
+        },
+      );
     } catch (err) {
       console.error('Error updating group sort orders:', err);
-      addNotification(t('difficulty.groups.notifications.reorderFailed'), 'error');
       await fetchTags();
     } finally {
       setIsGroupsReordering(false);
@@ -639,20 +684,31 @@ const DifficultyPage = () => {
 
   const handleDirectDelete = async () => {
     if (!fallbackDiff || fallbackDiff === String(deletingDifficulty?.id)) return;
+    const diffId = deletingDifficulty.id;
     try {
       setIsLoading(true);
-      await api.delete(`${import.meta.env.VITE_DIFFICULTIES}/${deletingDifficulty.id}?fallbackId=${difficulties.find(d => d.name === fallbackDiff)?.id}`, {
-        data: { superAdminPassword: verifiedPassword }
-      });
-      // Update local state directly instead of full refresh
-      setDifficulties(prev => prev.filter(diff => diff.id !== deletingDifficulty.id));
-      addNotification(t('difficulty.notifications.deleted'));
-      setDeletingDifficulty(null);
-      setShowDeleteInput(false);
-      setFallbackDiff('');
+      await toast.promise(
+        (async () => {
+          await api.delete(
+            `${import.meta.env.VITE_DIFFICULTIES}/${diffId}?fallbackId=${difficulties.find((d) => d.name === fallbackDiff)?.id}`,
+            { data: { superAdminPassword: verifiedPassword } },
+          );
+          setDifficulties((prev) => prev.filter((diff) => diff.id !== diffId));
+          setDeletingDifficulty(null);
+          setShowDeleteInput(false);
+          setFallbackDiff('');
+        })(),
+        {
+          loading: t('difficulty.loading.deleting'),
+          success: t('difficulty.notifications.deleted'),
+          error: (err) =>
+            err.response?.status === 403
+              ? t('difficulty.passwordModal.errors.invalid')
+              : t('difficulty.passwordModal.errors.generic'),
+        },
+      );
     } catch (err) {
       setError(t('difficulty.passwordModal.errors.generic'));
-      addNotification(t('difficulty.passwordModal.errors.generic'), 'error');
     } finally {
       setIsLoading(false);
     }
@@ -1457,21 +1513,6 @@ const DifficultyPage = () => {
             roleType="DIFFICULTY"
             verifiedPassword={verifiedPassword}
           />
-
-          <div className="notifications">
-            {notifications.map(({ id, message, type }) => (
-              <div key={id} className={`notification ${type}`}>
-                {message}
-                <CloseButton
-                  variant="inline"
-                  size="sm"
-                  className="close-notification"
-                  onClick={() => setNotifications(prev => prev.filter(n => n.id !== id))}
-                  aria-label={t('buttons.close', { ns: 'common' })}
-                />
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </>

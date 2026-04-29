@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { EditIcon, PencilIcon, QuestionmarkCircleIcon, TrashIcon, DragHandleIcon } from '@/components/common/icons';
 import { CustomSelect, StateDisplay } from '@/components/common/selectors';
 import api from '@/utils/api';
+import { getCdnErrorMessage } from '@/utils/uploadErrors';
 import './difficultypopup.css';
 import toast from 'react-hot-toast';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -944,7 +945,10 @@ const DifficultyPopup = ({
           refreshDifficulties(response.data);
           onClose();
         } catch (err) {
-          const errorMessage = err.response?.data?.error || t(isCreating ? 'difficultyPopup.errors.createFailed' : 'difficultyPopup.errors.updateFailed');
+          const errorMessage = getCdnErrorMessage(
+            err,
+            t(isCreating ? 'difficultyPopup.errors.createFailed' : 'difficultyPopup.errors.updateFailed'),
+          );
           showToast(errorMessage, 'error');
           console.error(err);
         }

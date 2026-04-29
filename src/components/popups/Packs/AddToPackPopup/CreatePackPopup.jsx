@@ -5,6 +5,7 @@ import { ImageSelectorPopup, CustomSelect } from '@/components/common/selectors'
 import './CreatePackPopup.css';
 import toast from 'react-hot-toast';
 import api from '@/utils/api';
+import { getCdnErrorMessage } from '@/utils/uploadErrors';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { useAuth } from '@/contexts/AuthContext';
 import { LevelPackViewModes } from '@/utils/constants';
@@ -126,7 +127,7 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
           });
         } catch (iconError) {
           console.error('Error uploading pack icon:', iconError);
-          const errorMessage = iconError.response?.data?.error || t('packPopups.createPack.errors.iconUploadFailed');
+          const errorMessage = getCdnErrorMessage(iconError, t('packPopups.createPack.errors.iconUploadFailed'));
           toast.error(errorMessage, {
             duration: 4000,
             position: 'top-right',

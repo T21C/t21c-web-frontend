@@ -2,6 +2,7 @@ import { useCallback, useEffect, useId, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";
 import api from "@/utils/api";
+import { getCdnErrorMessage } from "@/utils/uploadErrors";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { DEFAULT_PROFILE_BANNER_PRESET_PATH } from "@/constants/bannerPresets";
 import { customProfileBannersEnabled, publicAssetUrl } from "@/utils/profileBanners";
@@ -165,7 +166,7 @@ const ProfileBannerEditor = ({
       onPresetDraftChange(undefined);
       toast.success(t("settings.banner.presetSaved"));
     } catch (err) {
-      const msg = err?.response?.data?.error || t("settings.banner.presetError");
+      const msg = getCdnErrorMessage(err, t("settings.banner.presetError"));
       toast.error(msg);
     } finally {
       setPresetSaveBusy(false);
@@ -197,7 +198,7 @@ const ProfileBannerEditor = ({
         }
         toast.success(t("settings.banner.uploadOk"));
       } catch (err) {
-        const msg = err?.response?.data?.error || t("settings.banner.uploadError");
+        const msg = getCdnErrorMessage(err, t("settings.banner.uploadError"));
         toast.error(msg);
       } finally {
         setCustomBusy(false);
@@ -286,7 +287,7 @@ const ProfileBannerEditor = ({
       }
       toast.success(t("settings.banner.removedCustom"));
     } catch (err) {
-      const msg = err?.response?.data?.error || t("settings.banner.removeError");
+      const msg = getCdnErrorMessage(err, t("settings.banner.removeError"));
       toast.error(msg);
     } finally {
       setCustomBusy(false);

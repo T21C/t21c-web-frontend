@@ -22,7 +22,16 @@
     "understand": "J'ai pris conscience des risques"
   },
   "loading": {
-    "difficulties": "Chargement des difficultés..."
+    "difficulties": "Chargement des difficultés...",
+    "deleting": "Suppression...",
+    "savingDifficulty": "Enregistrement de la difficulté...",
+    "reorderingDifficulties": "Mise à jour de l'ordre des difficultés...",
+    "savingTag": "Création du tag...",
+    "updatingTag": "Mise à jour du tag...",
+    "deletingTag": "Suppression du tag...",
+    "reorderingTags": "Mise à jour de l'ordre des tags...",
+    "reorderingGroups": "Mise à jour de l'ordre des groupes...",
+    "fetchingTags": "Chargement des tags..."
   },
   "noItems": {
     "message": "Aucune difficulté trouvée."

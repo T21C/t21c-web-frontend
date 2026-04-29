@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
+import { getCdnErrorMessage } from '@/utils/uploadErrors';
 import './typemanagementpopup.css';
 import toast from 'react-hot-toast';
 import { EditIcon, TrashIcon } from '@/components/common/icons';
@@ -295,7 +296,10 @@ const TypeManagementPopup = ({
       await syncTypesWithContext();
       handleBackToList();
     } catch (error) {
-      const errorMessage = error.response?.data?.error || `Failed to ${mode === POPUP_MODES.CREATE ? 'create' : 'update'} curation type`;
+      const errorMessage = getCdnErrorMessage(
+        error,
+        `Failed to ${mode === POPUP_MODES.CREATE ? 'create' : 'update'} curation type`,
+      );
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);

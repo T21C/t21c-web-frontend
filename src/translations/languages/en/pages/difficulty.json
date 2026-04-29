@@ -20,7 +20,15 @@
   },
   "loading": {
     "difficulties": "Loading difficulties...",
-    "deleting": "Deleting..."
+    "deleting": "Deleting...",
+    "savingDifficulty": "Saving difficulty...",
+    "reorderingDifficulties": "Updating difficulty order...",
+    "savingTag": "Creating tag...",
+    "updatingTag": "Updating tag...",
+    "deletingTag": "Deleting tag...",
+    "reorderingTags": "Updating tag order...",
+    "reorderingGroups": "Updating group order...",
+    "fetchingTags": "Loading tags..."
   },
   "noItems": {
     "message": "No difficulties found."

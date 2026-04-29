@@ -22,7 +22,16 @@
     "understand": "위험을 이해했습니다"
   },
   "loading": {
-    "difficulties": "난이도 불러오는 중..."
+    "difficulties": "난이도 불러오는 중...",
+    "deleting": "삭제 중...",
+    "savingDifficulty": "난이도 저장 중...",
+    "reorderingDifficulties": "난이도 순서 변경 중...",
+    "savingTag": "태그 생성 중...",
+    "updatingTag": "태그 수정 중...",
+    "deletingTag": "태그 삭제 중...",
+    "reorderingTags": "태그 순서 변경 중...",
+    "reorderingGroups": "그룹 순서 변경 중...",
+    "fetchingTags": "태그 불러오는 중..."
   },
   "noItems": {
     "message": "등록된 난이도가 없습니다."

@@ -22,7 +22,16 @@
     "understand": "Rozumiem ryzyko"
   },
   "loading": {
-    "difficulties": "Ładowanie poziomów trudności..."
+    "difficulties": "Ładowanie poziomów trudności...",
+    "deleting": "Usuwanie...",
+    "savingDifficulty": "Zapisywanie poziomu trudności...",
+    "reorderingDifficulties": "Aktualizowanie kolejności...",
+    "savingTag": "Tworzenie tagu...",
+    "updatingTag": "Aktualizowanie tagu...",
+    "deletingTag": "Usuwanie tagu...",
+    "reorderingTags": "Aktualizowanie kolejności tagów...",
+    "reorderingGroups": "Aktualizowanie kolejności grup...",
+    "fetchingTags": "Ładowanie tagów..."
   },
   "noItems": {
     "message": "Nie znaleziono poziomów trudności."

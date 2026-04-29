@@ -8,6 +8,7 @@ import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { CustomSelect } from '@/components/common/selectors';
 import { EntityActionPopup } from '@/components/popups/Entities';
 import api from '@/utils/api';
+import { getCdnErrorMessage } from '@/utils/uploadErrors';
 import { toast } from 'react-hot-toast';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import './entityManagementPage.css';
@@ -186,7 +187,7 @@ const EntityManagementPage = ({ type = 'artist' }) => {
       setAvatarPreview(null);
       fetchEntities(true);
     } catch (error) {
-      toast.error(error.response?.data?.error || tEntity('errors.createFailed'));
+      toast.error(getCdnErrorMessage(error, tEntity('errors.createFailed')));
     } finally {
       setIsCreating(false);
     }
