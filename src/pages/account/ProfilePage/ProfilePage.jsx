@@ -100,7 +100,13 @@ const ProfilePage = () => {
         }
         const fetchPlayer = async () => {
           try {
-            const response = await api.get(`${import.meta.env.VITE_PLAYERS_V3}/${id}/profile`);
+            const qs =
+              isOwnProfile && showHiddenPasses
+                ? '?showHidden=true'
+                : '';
+            const response = await api.get(
+              `${import.meta.env.VITE_PLAYERS_V3}/${id}/profile${qs}`,
+            );
             setPlayerData(response.data);
 
           } catch (error) {
@@ -109,7 +115,7 @@ const ProfilePage = () => {
         };
 
         fetchPlayer();
-      }, [playerId]);
+      }, [playerId, isOwnProfile, showHiddenPasses]);
 
       // Passes are served from a paginated endpoint so we only fetch what is
       // visible. Sorting and searching happen server-side; the infinite
