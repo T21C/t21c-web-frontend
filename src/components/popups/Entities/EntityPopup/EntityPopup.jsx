@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import api from '@/utils/api';
+import { getPortalRoot } from '@/utils/portalRoot';
 import './entityPopup.css';
 import { ExternalLinkIcon } from '@/components/common/icons';
 import { CloseButton } from '@/components/common/buttons';
@@ -74,13 +76,32 @@ export const EntityPopup = ({ artist, song, onClose, type = 'artist' }) => {
     fetchEntityData();
   }, [artist, song, type]);
 
+  useEffect(() => {
+    const isOpen = loading || !!entityData;
+    if (!isOpen) return undefined;
+
+    const root = getPortalRoot();
+    const prevOverflow = root.style.overflow;
+    root.style.overflow = 'hidden';
+    return () => {
+      root.style.overflow = prevOverflow;
+    };
+  }, [loading, entityData]);
+
+  const renderPortal = (content) => createPortal(content, getPortalRoot());
+
+  const overlayProps = {
+    className: 'entity-popup-overlay',
+    onClick: (e) => e.target === e.currentTarget && onClose(),
+  };
+
   if (loading) {
-    return (
-      <div className="entity-popup-overlay">
+    return renderPortal(
+      <div {...overlayProps}>
         <div className="entity-popup" ref={popupRef}>
           <div className="popup-loading">{t('loading.generic', { ns: 'common' })}</div>
         </div>
-      </div>
+      </div>,
     );
   }
 
@@ -102,8 +123,8 @@ export const EntityPopup = ({ artist, song, onClose, type = 'artist' }) => {
     }
   };
 
-  return (
-    <div className="entity-popup-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
+  return renderPortal(
+    <div {...overlayProps}>
       <div className="entity-popup" ref={popupRef}>
         <div className="popup-header">
           <div className="popup-header-content">
@@ -238,7 +259,7 @@ export const EntityPopup = ({ artist, song, onClose, type = 'artist' }) => {
           </div>
         </div>
       </div>
-    </div>
+    </div>,
   );
 };
 

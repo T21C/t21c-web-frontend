@@ -121,20 +121,72 @@ const AliasesDropdown = ({ aliases, show, onClose }) => {
   );
 };
 
-const TagsDropdown = ({ tags, show, onClose }) => {
+const TagsDropdown = ({ tags, show, onClose, anchorRef }) => {
   const { t } = useTranslation('pages');
   const dropdownRef = useRef(null);
+  const [coords, setCoords] = useState({ top: 0, left: 0, placement: "bottom" });
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      const dropdownEl = dropdownRef.current;
+      const anchorEl = anchorRef?.current;
+      const target = event.target;
+
+      if (dropdownEl?.contains(target)) return;
+      if (anchorEl?.contains(target)) return;
+
+      if (dropdownEl) {
         onClose();
       }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [onClose]);
+  }, [onClose, anchorRef]);
+
+  useLayoutEffect(() => {
+    if (!show) return;
+
+    const updateCoords = () => {
+      const dropdownEl = dropdownRef.current;
+      const anchorEl = anchorRef?.current;
+      if (!dropdownEl || !anchorEl) return;
+
+      const margin = 8;
+      const gap = 6;
+
+      const anchorRect = anchorEl.getBoundingClientRect();
+      const dropdownRect = dropdownEl.getBoundingClientRect();
+
+      let left = anchorRect.left;
+      let top = anchorRect.bottom + gap;
+      let placement = "bottom";
+
+      const maxLeft = window.innerWidth - margin - dropdownRect.width;
+      left = Math.min(Math.max(left, margin), Math.max(margin, maxLeft));
+
+      if (top + dropdownRect.height > window.innerHeight - margin) {
+        const topAbove = anchorRect.top - gap - dropdownRect.height;
+        if (topAbove >= margin) {
+          top = topAbove;
+          placement = "top";
+        } else {
+          top = Math.max(margin, window.innerHeight - margin - dropdownRect.height);
+        }
+      }
+
+      setCoords({ top, left, placement });
+    };
+
+    updateCoords();
+    window.addEventListener("resize", updateCoords);
+    // Capture scroll from any scroll container (not just window)
+    window.addEventListener("scroll", updateCoords, true);
+    return () => {
+      window.removeEventListener("resize", updateCoords);
+      window.removeEventListener("scroll", updateCoords, true);
+    };
+  }, [show, anchorRef, tags?.length]);
 
   const handleDropdownClick = (e) => {
     e.stopPropagation();
@@ -166,12 +218,23 @@ const TagsDropdown = ({ tags, show, onClose }) => {
 
   const orderedGroups = Object.values(groupedTags).sort((a, b) => a.groupSortOrder - b.groupSortOrder);
 
-  return (
-    <div className="tags-dropdown" ref={dropdownRef} onClick={handleDropdownClick}>
-      <div className="tags-header">{t('levelDetail.tags.header') || 'Tags'}</div>
+  return createPortal(
+    <div
+      className="tags-dropdown"
+      ref={dropdownRef}
+      onClick={handleDropdownClick}
+      data-placement={coords.placement}
+      style={{
+        position: "fixed",
+        top: coords.top,
+        left: coords.left,
+        zIndex: 130,
+      }}
+    >
+      <div className="tags-header">{t("levelDetail.tags.header") || "Tags"}</div>
       <div className="tags-grouped-list">
         {orderedGroups.map((group) => (
-          <div key={group.name || 'ungrouped'} className="tags-group">
+          <div key={group.name || "ungrouped"} className="tags-group">
             {group.name && <div className="tags-group-header">{group.name}</div>}
             <div className="tags-group-items">
               {group.tags.map((tag) => (
@@ -179,9 +242,9 @@ const TagsDropdown = ({ tags, show, onClose }) => {
                   key={tag.id}
                   className="tag-chip"
                   style={{
-                    '--tag-bg-color': `${tag.color}40`,
-                    '--tag-border-color': tag.color,
-                    '--tag-text-color': tag.color
+                    "--tag-bg-color": `${tag.color}40`,
+                    "--tag-border-color": tag.color,
+                    "--tag-text-color": tag.color,
                   }}
                   title={tag.name}
                 >
@@ -197,7 +260,8 @@ const TagsDropdown = ({ tags, show, onClose }) => {
           </div>
         ))}
       </div>
-    </div>
+    </div>,
+    getPortalRoot(),
   );
 };
 
@@ -640,6 +704,7 @@ const LevelDetailPage = ({ mockData = null }) => {
   const weeklyHeaderCornerSlotRef = useRef(null);
   const toRateHeaderCornerSlotRef = useRef(null);
   const rerateHistoryAnchorRef = useRef(null);
+  const tagsAnchorRef = useRef(null);
 
   const closeWeeklyAppearanceDropdown = useCallback(() => setShowWeeklyAppearanceDropdown(false), []);
   const closeToRatePendingDropdown = useCallback(() => setShowToRatePendingDropdown(false), []);
@@ -1977,7 +2042,11 @@ const LevelDetailPage = ({ mockData = null }) => {
                 
                 {/* Tags display */}
                 {tags && tags.length > 0 && (
-                  <div className="level-tags-container" data-open={showTagsDropdown}>
+                  <div
+                    ref={tagsAnchorRef}
+                    className="level-tags-container"
+                    data-open={showTagsDropdown}
+                  >
                     <span 
                       className={`tag-list-arrow ${showTagsDropdown ? 'open' : ''}`}
                       onMouseDown={(e) => {
@@ -2017,6 +2086,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                       tags={tags}
                       show={showTagsDropdown}
                       onClose={handleDropdownClose}
+                      anchorRef={tagsAnchorRef}
                     />
                   </div>
                 )}

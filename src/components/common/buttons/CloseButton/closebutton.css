@@ -3,6 +3,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: fit-content;
+  height: fit-content;
   padding: 0;
   margin: 0;
   border: none;
