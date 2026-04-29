@@ -20,7 +20,7 @@ const PackDownloadPopup = ({
   const [step, setStep] = useState('confirm');
   const [error, setError] = useState(null);
   const [downloadData, setDownloadData] = useState(null);
-  const [trimFolderNames, setTrimFolderNames] = useState(true);
+  const [trimFolderNames, setTrimFolderNames] = useState(false);
   const [packJobId, setPackJobId] = useState(null);
 
   const { job: packJob } = useJobProgressStream(
