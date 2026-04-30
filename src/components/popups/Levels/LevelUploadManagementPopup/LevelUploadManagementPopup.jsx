@@ -56,6 +56,19 @@ const LevelUploadManagementPopup = ({
     return fallbackMessage;
   };
 
+  /** Orphan assembled session or zip missing on server — safe to retry once with `forceNew` on /init. */
+  const isRecoverableStaleAssembledUpload = (err) => {
+    const status = err?.response?.status;
+    const msg = typeof err?.response?.data?.error === 'string' ? err.response.data.error : '';
+    if (status === 409) {
+      return /fresh|missing|readable|workspace|ENOENT|disk|sync|chunked upload/i.test(msg);
+    }
+    if (status === 500 && /ENOENT|assembled zip not readable|not readable at/i.test(msg)) {
+      return true;
+    }
+    return false;
+  };
+
   const fetchLevelFiles = async () => {
     if (formData.dlLink && formData.dlLink !== 'removed' && isCdnUrl(formData.dlLink)) {
       try {
@@ -168,57 +181,83 @@ const LevelUploadManagementPopup = ({
       setIsUploading(true);
       setError(null);
       setUploadProgress(0);
-      const jobId = crypto.randomUUID();
-      setCdnJobId(jobId);
 
-      const client = new ChunkedUploadClient({ kind: 'level-zip' });
-      const { session: uploadSession } = await client.upload(file, {
-        meta: { levelId: level.id },
-        signal,
-        onProgress: ({ phase, percent }) => {
-          const clamped = Math.max(0, Math.min(100, Number.isFinite(percent) ? percent : 0));
-          // Hashing + uploading together occupy 0..95%; completing the final 5% is an approximation.
-          if (phase === 'hashing') setUploadProgress(Math.round(clamped * 0.15));
-          else if (phase === 'uploading') setUploadProgress(15 + Math.round(clamped * 0.8));
-          else if (phase === 'completing') setUploadProgress(95 + Math.round(clamped * 0.05));
-        },
-      });
+      const maxAttempts = 2;
+      let lastError = null;
+      for (let attempt = 0; attempt < maxAttempts; attempt++) {
+        const jobId = crypto.randomUUID();
+        setCdnJobId(jobId);
+        const forceNew = attempt > 0;
 
-      if (signal.aborted) return;
+        try {
+          const client = new ChunkedUploadClient({ kind: 'level-zip' });
+          const { session: uploadSession } = await client.upload(file, {
+            meta: { levelId: level.id },
+            signal,
+            forceNew,
+            onProgress: ({ phase, percent }) => {
+              const clamped = Math.max(0, Math.min(100, Number.isFinite(percent) ? percent : 0));
+              if (phase === 'hashing') setUploadProgress(Math.round(clamped * 0.15));
+              else if (phase === 'uploading') setUploadProgress(15 + Math.round(clamped * 0.8));
+              else if (phase === 'completing') setUploadProgress(95 + Math.round(clamped * 0.05));
+            },
+          });
 
-      const response = await api.post(
-        `${import.meta.env.VITE_LEVELS}/${level.id}/upload`,
-        {
-          sessionId: uploadSession.id,
-          uploadJobId: jobId,
-        },
-        {
-          signal,
-          timeout: 120 * 60 * 1000,
-        },
-      );
+          if (signal.aborted) return;
 
-      if (signal.aborted) {
-        return;
-      }
+          const response = await api.post(
+            `/v3/levels/${level.id}/upload`,
+            {
+              sessionId: uploadSession.id,
+              uploadJobId: jobId,
+            },
+            {
+              signal,
+              timeout: 120 * 60 * 1000,
+            },
+          );
 
-      if (response.status === 202) {
-        const job = await waitForJobCompletion(jobId, { signal, timeoutMs: 120 * 60 * 1000 });
-        const newId = job?.newFileId ?? job?.meta?.newFileId;
-        if (!newId || typeof newId !== 'string') {
-          throw new Error('Upload finished but server did not return a file id');
+          if (signal.aborted) {
+            return;
+          }
+
+          if (response.status === 202) {
+            const job = await waitForJobCompletion(jobId, { signal, timeoutMs: 120 * 60 * 1000 });
+            const newId = job?.newFileId ?? job?.meta?.newFileId;
+            if (!newId || typeof newId !== 'string') {
+              throw new Error('Upload finished but server did not return a file id');
+            }
+            const base = String(import.meta.env.VITE_CDN_URL || '').replace(/\/$/, '');
+            const newDlLink = `${base}/${newId}`;
+            applySuccessfulLevelUpload({}, newDlLink, { closeUrlPanel: false });
+            return;
+          }
+
+          if (response.data.success) {
+            const updatedLevel = response.data.level || {};
+            const newDlLink = updatedLevel.dlLink || response.data.dlLink;
+            applySuccessfulLevelUpload(updatedLevel, newDlLink, { closeUrlPanel: false });
+            return;
+          }
+
+          lastError = new Error('Upload response was not successful');
+        } catch (err) {
+          lastError = err;
+          const retry =
+            attempt < maxAttempts - 1 &&
+            !signal.aborted &&
+            !(api.isCancel && api.isCancel(err)) &&
+            err?.name !== 'AbortError' &&
+            err?.name !== 'CanceledError' &&
+            isRecoverableStaleAssembledUpload(err);
+          if (retry) {
+            setUploadProgress(0);
+            continue;
+          }
+          throw err;
         }
-        const base = String(import.meta.env.VITE_CDN_URL || '').replace(/\/$/, '');
-        const newDlLink = `${base}/${newId}`;
-        applySuccessfulLevelUpload({}, newDlLink, { closeUrlPanel: false });
-        return;
       }
-
-      if (response.data.success) {
-        const updatedLevel = response.data.level || {};
-        const newDlLink = updatedLevel.dlLink || response.data.dlLink;
-        applySuccessfulLevelUpload(updatedLevel, newDlLink, { closeUrlPanel: false });
-      }
+      throw lastError || new Error('Upload failed');
     } catch (error) {
       // Don't show error if request was cancelled (user closed popup or navigated away)
       if (api.isCancel && api.isCancel(error)) {
@@ -258,7 +297,7 @@ const LevelUploadManagementPopup = ({
       setCdnJobId(jobId);
 
       const response = await api.post(
-        `${import.meta.env.VITE_LEVELS}/${level.id}/upload-from-url`,
+        `/v3/levels/${level.id}/upload-from-url`,
         { url: trimmed, uploadJobId: jobId },
         {
           signal,
@@ -309,7 +348,7 @@ const LevelUploadManagementPopup = ({
     try {
       setIsSelecting(true);
       setError(null);
-      const result = await api.post(`${import.meta.env.VITE_LEVELS}/${level.id}/select-level`, {
+      const result = await api.post(`/v3/levels/${level.id}/select-level`, {
         selectedLevel,
       });
 
@@ -333,7 +372,7 @@ const LevelUploadManagementPopup = ({
     }
 
     try {
-      const response = await api.delete(`${import.meta.env.VITE_LEVELS}/${level.id}/upload`);
+      const response = await api.delete(`/v3/levels/${level.id}/upload`);
       if (response.data && response.data.success) {
         // Update formData with removed dlLink
         setFormData(prev => ({ ...prev, dlLink: "removed" }));

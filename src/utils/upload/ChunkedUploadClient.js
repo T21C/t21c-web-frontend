@@ -20,7 +20,8 @@ import { createSHA256 } from 'hash-wasm';
  *   4. POST /v2/upload/sessions/:id/complete — server verifies the sha256 and returns the final session.
  *
  * Supports resume: if a session with the same hash+size+kind exists for the user, the server
- * returns it from /init and the client will only upload missing chunks.
+ * returns it from /init and the client will only upload missing chunks. Pass `forceNew: true`
+ * on `upload()` to drop that session server-side (e.g. after a 409 / missing assembled file).
  *
  * Supports cancel: passing `signal.abort()` aborts in-flight XHRs AND best-effort calls
  * DELETE /v2/upload/sessions/:id so the server tears down the row + workspace immediately.
@@ -118,7 +119,7 @@ export class ChunkedUploadClient {
     this.retries = retries;
   }
 
-  async #init({ file, hash, meta, chunkSize, signal }) {
+  async #init({ file, hash, meta, chunkSize, signal, forceNew = false }) {
     const body = {
       kind: this.kind,
       originalName: file.name.normalize('NFC'),
@@ -127,6 +128,7 @@ export class ChunkedUploadClient {
       declaredHash: hash,
       chunkSize,
       meta: meta ?? null,
+      ...(forceNew ? { forceNew: true } : {}),
     };
     try {
       const res = await api.post(`${this.baseUrl}/init`, body, { signal });
@@ -174,11 +176,12 @@ export class ChunkedUploadClient {
    * @param {Record<string, unknown>} [opts.meta] - Kind-specific metadata (e.g. `{ levelId }`).
    * @param {(p: { phase: 'hashing'|'uploading'|'completing', percent: number }) => void} [opts.onProgress]
    * @param {AbortSignal} [opts.signal]
+   * @param {boolean} [opts.forceNew] - If true, server drops any resumable session for this file and starts fresh.
    * @returns {Promise<{ session: any }>}
    */
   async upload(file, opts = {}) {
     if (!file || !(file instanceof Blob)) throw new Error('upload(): file must be a Blob/File');
-    const { meta = null, onProgress, signal } = opts;
+    const { meta = null, onProgress, signal, forceNew = false } = opts;
 
     const fire = (phase, percent) => onProgress?.({ phase, percent: Math.max(0, Math.min(100, percent)) });
 
@@ -189,7 +192,7 @@ export class ChunkedUploadClient {
     });
     fire('hashing', 100);
 
-    const init = await this.#init({ file, hash, meta, chunkSize: this.chunkSize, signal });
+    const init = await this.#init({ file, hash, meta, chunkSize: this.chunkSize, signal, forceNew });
     const session = init.session;
     const sessionId = session.id;
 
