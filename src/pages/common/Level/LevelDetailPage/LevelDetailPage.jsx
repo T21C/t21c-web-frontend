@@ -357,12 +357,12 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty, onArtistClick 
       </div>
     );
   };
-  return (
+  return createPortal(
     <>
       <div className="level-detail-popup-overlay" onClick={onClose}></div>
-      <div className="level-detail-popup popup-scale-up">
+      <div className="level-detail-popup">
         <div className="popup-content">
-          <div className="popup-header" style={{ '--popup-header-bg': difficulty?.color ? `#${difficulty.color}ff` : undefined }}>
+          <div className="popup-header" style={{ '--popup-header-bg': difficulty?.color ? `${difficulty.color}cc` : undefined }}>
             <h2>{getSongDisplayName(level)}</h2>
             {level?.songObject?.artists && Array.isArray(level.songObject.artists) && level.songObject.artists.length > 0 ? (
               <p className="popup-header__artists">{renderArtists()}</p>
@@ -445,7 +445,8 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty, onArtistClick 
           </div>
         </div>
       </div>
-    </>
+    </>,
+    getPortalRoot(),
   );
 };
 

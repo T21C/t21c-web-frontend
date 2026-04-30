@@ -7,7 +7,7 @@
 /* ============================================
    CSS CUSTOM PROPERTIES (DESIGN TOKENS)
    ============================================ */
-.level-detail {
+.level-detail, .level-detail-popup-overlay, .level-detail-popup {
   /* Color System */
   --primary-bg: var(--color-black);
   --primary-text: var(--color-white);
@@ -325,14 +325,14 @@
   text-decoration-color: rgba(255, 255, 255, 0.7);
 }
 
-.level-detail .level-detail-popup .each-info__artist-name {
+.level-detail-popup .each-info__artist-name {
   cursor: pointer;
   text-decoration: underline;
   text-decoration-color: rgba(255, 255, 255, 0);
   transition: text-decoration-color 0.2s;
 }
 
-.level-detail .level-detail-popup .each-info__artist-name:hover {
+.level-detail-popup .each-info__artist-name:hover {
   text-decoration-color: rgba(255, 255, 255, 0.7);
 }
 
@@ -1568,7 +1568,6 @@
 }
 
 .level-detail-popup .popup-content {
-  background-color: var(--glass-bg);
   border: 1px solid var(--glass-border);
   border-radius: var(--border-radius-lg);
   overflow: hidden;
@@ -1587,18 +1586,6 @@
   position: relative;
   background-size: cover;
   background-position: center;
-}
-
-.level-detail-popup .popup-content .popup-header:before {
-  content: "";
-  position: absolute;
-  width: 100%;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.6);
-  z-index: 1;
 }
 
 .level-detail-popup .popup-content .popup-header .createdAt {
@@ -1794,21 +1781,6 @@
 .level-detail-popup .popup-content .popup-body .links svg {
   width: 2.5rem;
   height: 2.5rem;
-}
-
-.popup-scale-up {
-  animation: scaleUpAnimation 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes scaleUpAnimation {
-  from {
-    transform: translate(-50%, -50%) scaleY(0);
-    opacity: 0;
-  }
-  to {
-    transform: translate(-50%, -50%) scaleY(1);
-    opacity: 1;
-  }
 }
 
 /* ============================================
