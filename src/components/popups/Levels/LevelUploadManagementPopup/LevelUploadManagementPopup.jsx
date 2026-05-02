@@ -123,12 +123,13 @@ const LevelUploadManagementPopup = ({
 
   useEffect(() => {
     const v = level?.dlLink;
+    const ws = typeof level?.workshopLink === 'string' ? level.workshopLink.trim() : '';
     if (!v || v === 'removed') {
-      setImportUrl('');
+      setImportUrl(ws || '');
     } else {
       setImportUrl(String(v));
     }
-  }, [level?.id, level?.dlLink]);
+  }, [level?.id, level?.dlLink, level?.workshopLink]);
 
   useEffect(() => {
     setUrlImportPanelOpen(false);
@@ -592,6 +593,11 @@ const LevelUploadManagementPopup = ({
                       className="upload-import-button"
                       onClick={() => {
                         setError(null);
+                        const ws =
+                          typeof level?.workshopLink === 'string' ? level.workshopLink.trim() : '';
+                        if (ws) {
+                          setImportUrl(ws);
+                        }
                         setUrlImportPanelOpen(true);
                       }}
                       disabled={isUploading}

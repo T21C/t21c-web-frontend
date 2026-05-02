@@ -43,7 +43,7 @@
   },
   "uploadFromUrl": {
     "title": "从 URL 上传",
-    "placeholder": "https://…",
+    "placeholder": "https://… 或 Steam 创意工坊链接",
     "submit": "导入",
     "closePanelAria": "关闭并返回上传选项"
   },

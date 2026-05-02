@@ -43,7 +43,7 @@
   },
   "uploadFromUrl": {
     "title": "Upload from URL",
-    "placeholder": "https://…",
+    "placeholder": "https://… or Steam Workshop link",
     "submit": "Import",
     "closePanelAria": "Close and return to upload options"
   },

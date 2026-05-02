@@ -43,7 +43,7 @@
   },
   "uploadFromUrl": {
     "title": "Upload from URL",
-    "placeholder": "https://…",
+    "placeholder": "https://… 또는 Steam 창작마당 링크",
     "submit": "Import",
     "closePanelAria": "Close and return to upload options"
   },
