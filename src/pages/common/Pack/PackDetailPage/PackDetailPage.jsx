@@ -95,6 +95,33 @@ const countPackItems = (items = []) => {
   }, 0);
 };
 
+/** Merge GET /packs/:id/cdnData into tree items for size estimates (download UI). */
+const enrichPackItemTree = (items, cdnMap) => {
+  if (!items?.length) return [];
+  return items.map((item) => {
+    const next = { ...item };
+    if (item.children?.length) {
+      next.children = enrichPackItemTree(item.children, cdnMap);
+    }
+    if (item.type === 'level' && item.levelId != null && cdnMap) {
+      const meta = cdnMap.get(item.levelId);
+      if (meta) {
+        if (meta.fileId) {
+          next.downloadSizeBytes = meta.size ?? null;
+          next.cdnDownload = {
+            fileId: meta.fileId,
+            size: meta.size ?? null,
+            originalFilename: meta.originalFilename ?? null,
+          };
+        } else {
+          next.downloadSizeBytes = null;
+        }
+      }
+    }
+    return next;
+  });
+};
+
 const PackDetailPage = () => {
   const { t } = useTranslation('pages');
   const { id } = useParams();
@@ -108,18 +135,37 @@ const PackDetailPage = () => {
   const [showEditPopup, setShowEditPopup] = useState(false);
   const [expandedFolders, setExpandedFolders] = useState(new Set());
   const [downloadContext, setDownloadContext] = useState(null);
+  const [cdnMetadataByLevelId, setCdnMetadataByLevelId] = useState(() => new Map());
   const scrollRef = useRef(null);
   const lastMousePosRef = useRef({ x: 0, y: 0 });
 
-  const packItems = pack?.items || [];
+  const fetchPackCdnData = useCallback(async () => {
+    if (!id) return;
+    try {
+      const response = await api.get(`/v2/database/levels/packs/${id}/cdnData`);
+      const map = new Map();
+      for (const it of response.data.items ?? []) {
+        map.set(it.levelId, it);
+      }
+      setCdnMetadataByLevelId(map);
+    } catch (err) {
+      console.error('Error fetching pack CDN metadata:', err);
+      setCdnMetadataByLevelId(new Map());
+    }
+  }, [id]);
+
+  const packItems = useMemo(
+    () => enrichPackItemTree(pack?.items || [], cdnMetadataByLevelId),
+    [pack?.items, cdnMetadataByLevelId]
+  );
   const packSizeSummary = useMemo(() => summarizePackSize(packItems), [packItems]);
   const packSizeLabel = useMemo(() => formatEstimatedSize(packSizeSummary), [packSizeSummary]);
   const packDownloadDisabled = packSizeSummary.levelCount === 0;
   const sortedRootItems = useMemo(() => sortItemsByOrder(packItems), [packItems]);
   const totalRenderableItems = useMemo(() => countPackItems(packItems), [packItems]);
 
-  // Fetch pack details
-  const fetchPack = async (silent = false) => {
+  // Fetch pack details (CDN sizes loaded separately via fetchPackCdnData)
+  const fetchPack = useCallback(async (silent = false) => {
     try {
       if (!silent) {
         setLoading(true);
@@ -128,6 +174,7 @@ const PackDetailPage = () => {
       
       const response = await api.get(`/v2/database/levels/packs/${id}?tree=true`);
       setPack(response.data);
+      fetchPackCdnData();
     } catch (error) {
       console.error('Error fetching pack:', error);
       if (!silent) {
@@ -145,16 +192,17 @@ const PackDetailPage = () => {
         setLoading(false);
       }
     }
-  };
+  }, [id, t, fetchPackCdnData]);
 
   useEffect(() => {
     if (id) {
+      setCdnMetadataByLevelId(new Map());
       // Load expanded folders from cookies for this pack
       const savedExpandedFolders = getPackExpandedFolders(id);
       setExpandedFolders(savedExpandedFolders);
       fetchPack();
     }
-  }, [id]);
+  }, [id, fetchPack]);
 
   // Listen for pack updates from external sources (e.g., AddToPackPopup)
   useEffect(() => {
@@ -166,7 +214,7 @@ const PackDetailPage = () => {
 
     window.addEventListener('packUpdated', handlePackUpdate);
     return () => window.removeEventListener('packUpdated', handlePackUpdate);
-  }, [id, pack?.id]);
+  }, [id, pack?.id, fetchPack]);
 
   // Handle edit pack
   const handleEditPack = async (updatedPack) => {
@@ -237,7 +285,7 @@ const PackDetailPage = () => {
   const handleCollapseExpandAll = (expand) => {
     if (!pack?.items) return;
     
-    const allFolderIds = getAllFolderIds(pack.items);
+    const allFolderIds = getAllFolderIds(packItems);
     const newExpandedFolders = expand ? new Set(allFolderIds) : new Set();
     
     setExpandedFolders(newExpandedFolders);
@@ -251,7 +299,7 @@ const PackDetailPage = () => {
   // Check if all folders are expanded
   const areAllFoldersExpanded = () => {
     if (!pack?.items) return false;
-    const allFolderIds = getAllFolderIds(pack.items);
+    const allFolderIds = getAllFolderIds(packItems);
     return allFolderIds.length > 0 && allFolderIds.every(folderId => expandedFolders.has(folderId));
   };
 
@@ -580,7 +628,7 @@ const PackDetailPage = () => {
     }
 
     const activeId = parseInt(draggableId.replace('item-', ''), 10);
-    const activeItem = findItem(pack.items, activeId);
+    const activeItem = findItem(packItems, activeId);
 
     if (!activeItem) {
       console.error('Active item not found');
@@ -594,7 +642,7 @@ const PackDetailPage = () => {
           toast.error(t('packDetail.move.cannotMoveIntoSelf'));
           return;
         }
-        const nextParentId = findParentId(pack.items, currentParentId);
+        const nextParentId = findParentId(packItems, currentParentId);
         if (nextParentId === undefined || nextParentId === 0) {
           break;
         }
@@ -603,7 +651,7 @@ const PackDetailPage = () => {
     }
 
     try {
-      const newTree = cloneTree(pack.items);
+      const newTree = cloneTree(packItems);
       const moveSucceeded = moveItemInTree(newTree, {
         sourceParentId,
         sourceIndex: source.index,
@@ -634,6 +682,7 @@ const PackDetailPage = () => {
       });
 
       setPack(prevPack => ({ ...prevPack, items: response.data.items }));
+      fetchPackCdnData();
       toast.success(t('packDetail.move.success'));
       
       window.dispatchEvent(new CustomEvent('packUpdated', {
@@ -723,7 +772,7 @@ const PackDetailPage = () => {
   }
 
   const currentUrl = window.location.origin + location.pathname;
-  const totalLevels = countLevels(pack.items);
+  const totalLevels = countLevels(packItems);
   const isDownloadPopupOpen = Boolean(downloadContext);
   const popupContextName = downloadContext?.name || pack?.name;
   const popupSizeSummary = downloadContext?.sizeSummary || packSizeSummary;
@@ -878,7 +927,7 @@ const PackDetailPage = () => {
         {/* Content */}
         <div className="content" ref={scrollRef}>
           <div className="levels-header">
-          {pack?.items && pack.items.length > 0 && getAllFolderIds(pack.items).length > 0 && (
+          {pack?.items && pack.items.length > 0 && getAllFolderIds(packItems).length > 0 && (
             <div className="tree-controls">
               {areAllFoldersExpanded() ? (
                 <button
@@ -937,7 +986,7 @@ const PackDetailPage = () => {
                 renderClone={(provided, snapshot, rubric) => {
                   // Find the item being dragged from the flat list of all items
                   const draggedItemId = parseInt(rubric.draggableId.replace('item-', ''), 10);
-                  const draggedItem = findItem(pack.items, draggedItemId);
+                  const draggedItem = findItem(packItems, draggedItemId);
                   
                   return (
                     <RenderClone
@@ -969,7 +1018,7 @@ const PackDetailPage = () => {
                         onRenameFolder={handleRenameFolder}
                         onDeleteItem={handleDeleteItem}
                         onDownloadFolder={handleFolderDownload}
-                        allItems={pack.items}
+                        allItems={packItems}
                         findItemFn={findItem}
                       />
                     ))}
