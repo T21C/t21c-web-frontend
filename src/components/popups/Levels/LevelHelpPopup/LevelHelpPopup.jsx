@@ -92,6 +92,7 @@ export const LevelHelpPopup = ({ onClose }) => {
           { token: 'id', titleKey: 'level.helpPopup.v2.fields.id.title', descKey: 'level.helpPopup.v2.fields.id.desc' },
           { token: '#', titleKey: 'level.helpPopup.v2.fields.hashtag.title', descKey: 'level.helpPopup.v2.fields.hashtag.desc' },
           { token: 'dlLink', titleKey: 'level.helpPopup.v2.fields.dlLink.title', descKey: 'level.helpPopup.v2.fields.dlLink.desc' },
+          { token: 'workshopLink', titleKey: 'level.helpPopup.v2.fields.workshopLink.title', descKey: 'level.helpPopup.v2.fields.workshopLink.desc' },
           { token: 'legacyDllink', titleKey: 'level.helpPopup.v2.fields.legacyDllink.title', descKey: 'level.helpPopup.v2.fields.legacyDllink.desc' },
           { token: 'videolink', titleKey: 'level.helpPopup.v2.fields.videolink.title', descKey: 'level.helpPopup.v2.fields.videolink.desc' },
         ],

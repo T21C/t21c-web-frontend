@@ -39,7 +39,7 @@
           "intro": "Niektóre pola najlepiej działają jako dopasowania dokładne lub identyfikatory wewnętrzne.",
           "examples": {
             "idExact": "<b><code>id=1234</code></b> filtruje konkretny poziom po id.",
-            "linkMatch": "<b><code>dlLink:drive.google</code></b> filtruje po fragmencie linku do pobrania."
+            "linkMatch": "<b><code>dlLink:drive.google</code></b> filtruje po fragmencie linku do pobrania. <b><code>workshopLink:steamcommunity</code></b> działa tak samo dla adresów Steam Workshop."
           }
         },
         "tips": {
@@ -72,6 +72,7 @@
         "id": { "title": "ID poziomu", "desc": "Filtruj po liczbowym id poziomu." },
         "hashtag": { "title": "ID poziomu (alt)", "desc": "Użycie <code>#123</code> jest tym samym co <code>id=123</code>." },
         "dlLink": { "title": "Link do pobrania", "desc": "Filtruj po tekście linku do pobrania." },
+        "workshopLink": { "title": "Link warsztatu", "desc": "Filtruj po URL Steam Workshop (lub innego warsztatu) — te same reguły wieloznaczne co dla dlLink." },
         "legacyDllink": { "title": "Legacy link do pobrania", "desc": "Filtruj po legacy linku do pobrania (starsze wpisy)." },
         "videolink": { "title": "Link do wideo", "desc": "Filtruj po tekście linku do wideo." }
       }

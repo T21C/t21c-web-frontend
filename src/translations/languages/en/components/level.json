@@ -39,7 +39,7 @@
           "intro": "Some fields are best used for exact matches or internal identifiers.",
           "examples": {
             "idExact": "<b><code>id=1234</code></b> filters a specific level by numeric id.",
-            "linkMatch": "<b><code>dlLink:drive.google</code></b> matches download links by partial text."
+            "linkMatch": "<b><code>dlLink:drive.google</code></b> matches download links by partial text. <b><code>workshopLink:steamcommunity</code></b> matches Steam Workshop URLs the same way."
           }
         },
         "tips": {
@@ -122,6 +122,10 @@
         "dlLink": {
           "title": "Download link",
           "desc": "Filter by download link text."
+        },
+        "workshopLink": {
+          "title": "Workshop link",
+          "desc": "Filter by Steam Workshop (or other workshop) URL text, same wildcard rules as dlLink."
         },
         "legacyDllink": {
           "title": "Legacy download link",

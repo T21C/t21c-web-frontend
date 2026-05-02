@@ -39,7 +39,7 @@
           "intro": "部分字段用于精确匹配或内部标识。",
           "examples": {
             "idExact": "<b><code>id=1234</code></b> 按关卡ID搜索。",
-            "linkMatch": "<b><code>dlLink:drive.google</code></b> 按下载链接部分文本搜索。"
+            "linkMatch": "<b><code>dlLink:drive.google</code></b> 按下载链接部分文本搜索。<b><code>workshopLink:steamcommunity</code></b> 以同样方式匹配 Steam 创意工坊链接。"
           }
         },
         "tips": {
@@ -72,6 +72,7 @@
         "id": { "title": "关卡 ID", "desc": "按关卡 ID 搜索。" },
         "hashtag": { "title": "关卡 ID（简写）", "desc": "<code>#123</code> 和 <code>id=123</code>效果相同。" },
         "dlLink": { "title": "下载链接", "desc": "按下载链接搜索。" },
+        "workshopLink": { "title": "创意工坊链接", "desc": "按 Steam 创意工坊（或其他 workshop）URL 搜索，通配规则与 dlLink 相同。" },
         "legacyDllink": { "title": "旧下载链接", "desc": "按旧字段下载链接搜索。" },
         "videolink": { "title": "视频链接", "desc": "按视频链接搜索。" }
       }
