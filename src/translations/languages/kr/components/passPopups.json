@@ -33,7 +33,7 @@
       },
       "judgements": {
         "ePerfect": "빠름",
-        "perfect": "완벽",
+        "perfect": "정확",
         "lPerfect": "느림",
         "tooearly": "너무 빠름",
         "early": "빠름!",

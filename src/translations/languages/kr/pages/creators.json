@@ -1,0 +1,148 @@
+{
+  "meta": {
+    "title": "제작자",
+    "description": "Browse chart creators, charters, and VFXers"
+  },
+  "input": {
+    "placeholder": "제작자명 검색..."
+  },
+  "tooltips": {
+    "filter": "필터",
+    "sort": "정렬",
+    "reset": "모든 필터 초기화",
+    "recentAsc": "오름차순",
+    "recentDesc": "내림차순"
+  },
+  "settings": {
+    "filter": {
+      "header": "필터"
+    },
+    "sort": {
+      "header": "정렬 설정",
+      "sortOrder": "정렬 순서",
+      "sortBy": "정렬 기준"
+    },
+    "verificationFilter": {
+      "label": "인증 상태",
+      "all": "모든 상태"
+    }
+  },
+  "sortOptions": {
+    "name": "이름",
+    "chartsTotal": "총 레벨",
+    "chartsCharted": "채보 레벨",
+    "chartsVfxed": "이펙트 레벨",
+    "chartsTeamed": "팀 명의 레벨",
+    "totalChartClears": "모든 레벨 클리어 수",
+    "totalChartLikes": "모든 레벨 좋아요 수"
+  },
+  "infiniteScroll": {
+    "end": "제일 아래에 도달했어요!"
+  },
+  "list": {
+    "empty": "제작자 발견되지 않음"
+  },
+  "card": {
+    "verified": "인증됨",
+    "chartsTotal": "레벨 {{count}}개",
+    "noUser": "연동된 계정 없음",
+    "curationBadgesAria": "큐레이션 유형 요약"
+  },
+  "verificationStatus": {
+    "help": {
+      "declined": "The creator has declined to have their charts featured on the forum.",
+      "pending": "Waiting on confirmation from the creator. Default state for newly added creators.",
+      "conditional": "The creator has accepted under specific conditions. Coordinate before any submissions are added.",
+      "allowed": "The creator has agreed to have their charts featured on the forum."
+    }
+  },
+  "profile": {
+    "meta": {
+      "title": "{{name}} - 제작자 프로필",
+      "description": "Charts and stats for {{name}}"
+    },
+    "notFound": "제작자 발견되지 않음",
+    "verified": "인증됨",
+    "manageButton": "제작자 관리",
+    "stats": {
+      "header": "제작자 상태",
+      "chartsCharted": "채보 제작 레벨",
+      "chartsVfxed": "이펙트 제작 레벨",
+      "chartsTeamed": "Levels as a team member",
+      "curatedLevels": "모든 큐레이션 레벨",
+      "chartsTotal": "모든 레벨",
+      "totalChartClears": "모든 레벨 클리어 수",
+      "totalChartLikes": "모든 레벨 좋아요 수"
+    },
+    "bio": {
+      "header": "소개",
+      "placeholder": "내 소개를 작성하지 않음"
+    },
+    "uploadConditions": {
+      "tooltipAria": "View chart upload conditions"
+    },
+    "curationPanel": {
+      "expandAria": "Show all curation types and level counts",
+      "collapseAria": "Hide curation types list",
+      "dialogLabel": "Curation types on credited levels"
+    },
+    "levels": {
+      "header": "Charts",
+      "empty": "No charts found for this creator yet.",
+      "searchPlaceholder": "Search this creator's charts..."
+    },
+    "sections": {
+      "difficultyBreakdown": {
+        "title": "Levels by difficulty",
+        "expand": "Expand difficulty breakdown",
+        "collapse": "Collapse difficulty breakdown"
+      }
+    },
+    "funFacts": {
+      "expandAria": "Show all statistics",
+      "collapseAria": "Hide detailed statistics",
+      "groups": {
+        "identity": "기본 정보",
+        "credits": "Credits",
+        "content": "Chart content",
+        "audience": "Audience",
+        "curation": "Curation & rerates",
+        "timeline": "Timeline",
+        "breakdownByType": "난이도별 레벨"
+      },
+      "identity": {
+        "aliasCount": "별칭",
+        "teamsJoined": "팀 참여"
+      },
+      "credits": {
+        "levelsAsCharter": "채보 참여 레벨",
+        "levelsAsVfxer": "이펙트 참여 레벨"
+      },
+      "content": {
+        "totalTilesMade": "총 타일 수",
+        "totalLevelDurationMs": "총 채보 길이",
+        "averageTilecount": "평균 타일 수",
+        "averageLevelLengthMs": "평균 채보 길이",
+        "averageBpm": "평균 BPM",
+        "totalClearsOnLevels": "모든 레벨 클리어 수",
+        "totalLikesOnLevels": "모든 레벨 좋아요 수",
+        "totalDownloadsOnLevels": "모든 레벨 다운로드 수"
+      },
+      "audience": {
+        "uniquePlayersCleared": "클리어한 플레이어 수",
+        "worldsFirstsOnLevels": "WF's on charts",
+        "totalTilesPlayedOnLevels": "Total tiles hit"
+      },
+      "timeline": {
+        "firstLevelAt": "첫 제작",
+        "latestLevelAt": "최근 제작"
+      },
+      "difficultyType": {
+        "PGU": "PGU",
+        "SPECIAL": "특수 난이도",
+        "LEGACY": "Legacy",
+        "UNKNOWN": "Other"
+      }
+    }
+  }
+}

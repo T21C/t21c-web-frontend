@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "팩 - TUF",
+    "title": "맵 팩 - TUF",
     "description": "커뮤니티에서 만들어진 레벨 팩을 탐색하고 발견하세요",
     "myPacksTitle": "내 팩 - TUF",
     "myPacksDescription": "당신의 팩을 관리하고 보세요"
@@ -42,17 +42,17 @@
     "myLikes": "내 즐겨찾기"
   },
   "viewMode": {
-    "all": "All",
-    "public": "Public",
-    "linkonly": "Link Only",
-    "private": "Private",
+    "all": "전체",
+    "public": "공개",
+    "linkonly": "일부 공개",
+    "private": "비공개",
     "forcedPrivate": "Forced Private"
   },
   "actions": {
-    "createPack": "Create Pack",
-    "reset": "Reset",
-    "listView": "List View",
-    "gridView": "Grid View",
+    "createPack": "팩 만들기",
+    "reset": "리셋",
+    "listView": "목록 보기",
+    "gridView": "그리드 보기",
     "viewToggleGroup": "표시 방식 선택"
   },
   "buttons": {

@@ -24,32 +24,24 @@
     "environment": "Environment",
     "mainServerStatus": "Main Server Status"
   },
-  "probes": {
-    "title": "헬스 모니터 프로브",
-    "description": "독립 헬스 서비스(3883)가 주기적으로 실행하는 점검입니다. 지연 시간은 해당 프로브의 왕복 시간입니다.",
-    "skipped": "건너뜀",
-    "latency": "지연",
-    "message": "메시지",
-    "detailHttpStatus": "HTTP 상태",
-    "detailUrl": "대상 URL",
-    "errorCode": "오류 코드",
-    "configTitle": "설정된 대상",
-    "configMain": "메인 API",
-    "configCdn": "CDN",
-    "configCdc": "CDC",
-    "configNginx": "Nginx",
-    "configInterval": "프로브 간격",
-    "configTimeout": "프로브 타임아웃",
-    "configNone": "미설정",
-    "names": {
-      "database": "데이터베이스",
-      "mainServer": "메인 API",
-      "cdn": "CDN",
-      "cdc": "CDC",
-      "nginx": "Nginx"
-    }
+  "memoryUsage": {
+    "title": "Memory Usage",
+    "rssMemory": "RSS Memory",
+    "heapTotal": "Heap Total",
+    "heapUsed": "Heap Used",
+    "externalMemory": "External Memory",
+    "arrayBuffers": "Array Buffers",
+    "max": "Max: {{value}}"
+  },
+  "memoryLimits": {
+    "title": "Memory Limits",
+    "heapSizeLimit": "Heap Size Limit",
+    "totalAvailableSize": "Total Available Size",
+    "totalHeapSizeExecutable": "Total Heap Size Executable",
+    "totalPhysicalSize": "Total Physical Size",
+    "maxRSS": "Max RSS"
   },
   "refresh": {
     "ariaLabel": "Refresh health data"
   }
-}
+} 

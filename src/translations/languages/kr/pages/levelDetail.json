@@ -4,22 +4,26 @@
     "description": "{{song}} by {{creator}}"
   },
   "banners": {
-    "deleted": "This level has been deleted",
-    "hidden": "This level is currently hidden",
-    "notFound": "Level not found"
+    "deleted": "이 레벨은 삭제되었습니다",
+    "hidden": "이 레벨은 현재 숨겨졌습니다",
+    "notFound": "레벨이 발견되지 않음"
   },
-  
+    "song": {
+    "clickToViewDetails": "세부 정보 보기"
+  },  
   "buttons": {
-    "edit": "Edit Level",
-    "close": "Close",
-    "viewRating": "View Previous Ratings",
-    "like": "Like",
-    "unlike": "Unlike",
-    "update": "Update Level",
-    "saveRating": "Save Rating"
+    "edit": "레벨 수정",
+    "close": "닫기",
+    "viewRating": "이전 책정 보기",
+    "like": "좋아요",
+    "unlike": "좋아요 취소",
+    "update": "레벨 업데이트",
+    "saveRating": "책정 저장",
+    "addToPack": "팩에 추가"
   },
   "tooltips": {
-    "loginRequired": "좋아요를 누르려면 로그인 하세요"
+    "loginRequired": "좋아요를 누르려면 로그인 하세요",
+    "editDisabled": "이 레벨은 2명 이상의 제작자가 할당되어 있습니다. 소유자가 되어야 한다고 생각되면 관리자에게 문의해주세요."
   },
   "links": {
     "download": "레벨 다운로드",
@@ -30,7 +34,10 @@
     }
   },
   "aliases": {
-    "header": "부명의"
+    "header": "별칭"
+  },
+  "artists": {
+    "more": "{{count}}명"
   },
   "stats": {
     "firstClear": {
@@ -42,7 +49,7 @@
       "value": "{{player}} | {{score}}"
     },
     "highestSpeed": {
-      "label": "최고 점수",
+      "label": "최고 속도",
       "value": "{{player}} | {{speed}}x"
     },
     "highestAccuracy": {
@@ -53,7 +60,7 @@
       "label": "총 클리어 수",
       "value": "{{count}}"
     },
-    "waiting": "Loading..."
+    "waiting": "로딩 중..."
   },
   "info": {
     "title": "레벨 정보",
@@ -65,16 +72,22 @@
     },
     "difficulty": "난이도",
     "baseScore": "기반 점수",
+    "ppBaseScore": "완벽한 플레이 기반 점수",
     "aliases": "별칭",
-    "comments": "Comments"
+    "comments": "댓글",
+    "createdAt": "제작일"
   },
   "leaderboard": {
     "header": "리더보드",
+    "refresh": "리더보드 새로고침",
     "notBeaten": "이 레벨은 아직 클리어되지 않았어요!",
+    "noClearsYet": "클리어 없음!",
+    "challenge": "최초 클리어에 도전해 보시겠어요?",
     "tooltips": {
       "time": "날짜순",
       "accuracy": "정확도순",
-      "score": "점수순"
+      "score": "점수순",
+      "speed": "속도순"
     }
   },
   "dialog": {
@@ -87,16 +100,36 @@
   },
   "errors": {
     "loginRequired": "좋아요를 누르려면 로그인을 해야합니다",
-    "likeFailed": "Failed to update like status"
+    "likeFailed": "상태 업데이트를 실패했습니다"
   },
   "messages": {
     "liked": "좋아요!",
     "unliked": "좋아요 취소"
   },
+  "rerateHistory": {
+    "header": "재책정 역사",
+    "open": "재책정 역사 보기",
+    "close": "재책정 역사 닫기",
+    "noHistory": "재책정 기록 없음",
+    "previous": "이전",
+    "current": "현재",
+    "baseScore": "기반 점수",
+    "date": "Date",
+    "user": "User"
+  },
   "toRatePending": {
-    "header": "재평가 대기",
+    "header": "재책정 대기",
     "rerateNumber": "요청 난이도",
     "rerateMessage": "메시지",
     "noDetails": "추가 정보가 없습니다."
+  },
+  "tags": {
+    "header": "레벨 태그"
+  },
+  "weeklyAppearance": {
+    "header": "Weekly Appearances",
+    "primary": "Primary",
+    "secondary": "Secondary",
+    "position": "Position {{position}}"
   }
 } 

@@ -39,7 +39,7 @@
           "intro": "일부 필드는 정확히 일치하거나 내부 식별자를 대상으로 합니다.",
           "examples": {
             "idExact": "<b><code>id=1234</code></b> 특정 레벨 ID로 필터.",
-            "linkMatch": "<b><code>dlLink:drive.google</code></b> 다운로드 링크 일부 문자열로 필터. <b><code>workshopLink:steamcommunity</code></b> 는 Steam 창작마당 URL도 같은 방식으로 필터합니다."
+            "linkMatch": "<b><code>dlLink:drive.google</code></b> 다운로드 링크 일부 문자열로 필터."
           }
         },
         "tips": {
@@ -72,7 +72,6 @@
         "id": { "title": "레벨 ID", "desc": "숫자 레벨 ID로 필터." },
         "hashtag": { "title": "레벨 ID (대체)", "desc": "<code>#123</code> 은 <code>id=123</code> 과 동일합니다." },
         "dlLink": { "title": "다운로드 링크", "desc": "다운로드 링크 문자열로 필터." },
-        "workshopLink": { "title": "창작마당 링크", "desc": "Steam 창작마당(또는 기타 workshop) URL 문자열로 필터. dlLink와 동일한 와일드카드 규칙." },
         "legacyDllink": { "title": "레거시 다운로드 링크", "desc": "구형 항목의 레거시 다운로드 링크 문자열로 필터." },
         "videolink": { "title": "영상 링크", "desc": "영상 링크 문자열로 필터." }
       }

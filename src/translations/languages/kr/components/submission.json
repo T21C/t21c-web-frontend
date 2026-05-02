@@ -34,7 +34,7 @@
       "vfxer": "이펙터 (선택)",
       "team": "팀 이름 (선택)",
       "dlLink": "다운로드 링크",
-      "workshop": "워크숍 링크",
+      "workshop": "창작마당 링크",
       "dlLinksOr": "또는"
     },
     "submit": "제출",
@@ -86,7 +86,7 @@
       "feelDiff": "체감 난이도 (예: G12)",
       "team": "팀 이름 (선택)",
       "dlLink": "다운로드 링크",
-      "workshop": "워크숍 링크",
+      "workshop": "창작마당 링크",
       "is16K": "16키 이상 클리어",
       "is12K": "12키 이하 클리어"
     },
@@ -94,7 +94,7 @@
       "tooearly": "너무 빠름",
       "early": "빠름!",
       "ePerfect": "빠름",
-      "perfect": "완벽",
+      "perfect": "정확",
       "lPerfect": "느림",
       "late": "느림!"
     },

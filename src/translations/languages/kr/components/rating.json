@@ -129,7 +129,7 @@
       "requirements": {
         "title": "요구 사항",
         "points": {
-          "comment": "-2 책정 시 댓글이 필요합니다",
+          "comment": "Censored 책정 시 댓글이 필요합니다",
           "format": "책정은 PGU 형식(P1-P20, G1-G20, U1-U20) 또는 유효한 특수 책정이여야 합니다",
           "special": "특수 책정은 미리 정의되어 있으며 수정할 수 없습니다"
         }

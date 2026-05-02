@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "클리어 기록",
+    "title": "클리어",
     "description": "플레이어 업적을 탐색하고 발견하세요"
   },
   "loading": {
@@ -39,10 +39,15 @@
         "score": "점수",
         "accuracy": "정확도",
         "difficulty": "난이도",
+        "speed": "속도",
         "random": "무작위"
       }
+    },
+    "stateDisplay": {
+      "title": "보기 설정"
     }
   },
+  "totalResults": "총 {{count}}개",
   "infScroll": {
     "end": "목록 끝"
   }

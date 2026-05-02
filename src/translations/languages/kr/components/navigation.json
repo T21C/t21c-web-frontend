@@ -8,7 +8,7 @@
       "packs": "레벨 팩",
       "info": "정보",
       "more": "더보기",
-      "pass": "클리어 기록",
+      "pass": "클리어",
       "submission": "제출",
       "rating": "책정",
       "curations": "큐레이션",
@@ -35,7 +35,7 @@
         "allPacks": "모든 팩"
       },
       "more": {
-        "passes": "클리어 기록",
+        "passes": "클리어",
         "rating": "책정",
         "tufHelper": "TUFHelper",
         "tos": "ToS",

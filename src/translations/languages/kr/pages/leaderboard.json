@@ -10,13 +10,19 @@
     "filter": "결과 필터링",
     "sort": "결과 정렬",
     "reset": "모든 필터 초기화",
-    "recentAsc": "오름차순 정렬",
-    "recentDesc": "내림차순 정렬"
+    "recentAsc": "오름차순",
+    "recentDesc": "내림차순"
   },
   "settings": {
     "filter": {
-      "header": "필터 설정"
-    },
+      "header": "필터 설정",
+      "country": "국가 또는 지역",
+      "addStatFilters": "스탯 필터 추가",
+      "selectStatPlaceholder": "필터에 추가할 스탯 선택...",
+      "addFilterButton": "필터 추가",
+      "min": "Min",
+      "max": "Max"
+    },                                      
     "sort": {
       "header": "정렬 설정",
       "sortOrder": "정렬 순서",
@@ -37,7 +43,7 @@
     "ppScore": "완벽한 플레이 점수",
     "wfScore": "최초 점수",
     "score12K": "12키 점수",
-    "averageXacc": "평균 X-정확도",
+    "averageXacc": "평균 절대정확도",
     "totalPasses": "총 클리어 수",
     "universalPassCount": "전체 클리어 수",
     "worldsFirstCount": "최초 클리어 수",

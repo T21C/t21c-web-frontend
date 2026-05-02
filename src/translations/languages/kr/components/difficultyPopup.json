@@ -1,7 +1,11 @@
 {
   "tabs": {
     "details": "세부 정보",
-    "announcement": "공지"
+    "announcement": "공지",
+    "discordRoles": "DIscord 역할"
+  },
+  "discordRoles": {
+    "title": "Discord 역할 연동"
   },
   "modal": {
     "create": {
@@ -30,7 +34,10 @@
       "roleId": "역할 ID",
       "roleIdPlaceholder": "역할 ID 입력",
       "label": "역할 이름",
-      "labelPlaceholder": "역할 이름 입력"
+      "labelPlaceholder": "역할 이름 입력",
+      "messageFormat": "Message Format",
+      "messageFormatPlaceholder": "예) {count} {difficultyName} Clears! {ping}",
+      "messageFormatHint": "Template for grouped message. Use variables: {count}, {difficultyName}, {ping}. Messages will be grouped by role ID AND difficultyName if included."
     }
   },
   "form": {
@@ -48,13 +55,29 @@
       "sortOrder": "정렬 순서",
       "legacy": "레거시 이름"
     },
+    "optional": "선택적",
     "placeholders": {
-      "color": "#RRGGBB"
+      "color": "#RRGGBB",
+      "id": "Auto-assign if empty"
+    },
+    "helpText": {
+      "id": "Leave empty to automatically assign the smallest available ID"
+    },
+    "icon": {
+      "change": "아이콘 교체",
+      "select": "아이콘 선택",
+      "help": "아이콘 파일 업로드 (JPEG, PNG, WebP, or SVG, max 5MB)"
+    },
+    "legacyIcon": {
+      "change": "레거시 아이콘 교체",
+      "select": "레거시 아이콘 선택",
+      "help": "레거시 아이콘 이미지 업로드 (JPEG, PNG, WebP, or SVG, max 5MB) - Optional"
     }
   },
   "difficultyTypes": {
     "PGU": "PGU",
-    "SPECIAL": "특수"
+    "SPECIAL": "특수",
+    "LEGACY": "레거시"
   },
   "announcements": {
     "title": "{{diffName}}의 공지 지시어",
@@ -86,7 +109,47 @@
       "channelDeleteSuccess": "채널이 삭제되었습니다",
       "roleAddSuccess": "역할이 추가되었습니다",
       "roleUpdateSuccess": "역할이 수정되었습니다",
-      "roleDeleteSuccess": "역할이 삭제되었습니다"
+      "roleDeleteSuccess": "역할이 삭제되었습니다",
+      "messageGroupKey": "Message Group Key",
+      "messageGroupKey.placeholder": "예) Universal 클리어,  Galactic 클리어",
+      "messageGroupKey.hint": "Directives with the same group key will be combined into a single message",
+      "messageFormat": "메시지 포맷 탬플릿",
+      "messageFormat.placeholder": "예) {count} {difficultyName} Clears! {ping}",
+      "messageFormat.hint": "Template for the grouped message content. Available variables:",
+      "messageFormat.variables": "Available variables:",
+      "messageFormat.variablesList": "{count} - number of passes, {difficultyName} - difficulty name, {ping} - role ping",
+      "optional": "Optional"
+    },
+    "notifications": {
+      "saved": "Directives saved successfully"
+    },
+    "errors": {
+      "saveFailed": "Failed to save directives",
+      "groupKeyFormatRequired": "If Message Group Key is provided, Message Format is required",
+      "formatGroupKeyRequired": "If Message Format is provided, Message Group Key is required",
+      "invalidFormatVariables": "Message format contains invalid variables. Valid variables are: {count}, {difficultyName}, {ping}"
+    },
+    "channel": {
+      "notifications": {
+        "updated": "Channel updated successfully",
+        "created": "Channel created successfully",
+        "deleted": "Channel deleted successfully"
+      },
+      "errors": {
+        "saveFailed": "Failed to save channel",
+        "deleteFailed": "Failed to delete channel"
+      }
+    },
+    "role": {
+      "notifications": {
+        "updated": "Role updated successfully",
+        "created": "Role created successfully",
+        "deleted": "Role deleted successfully"
+      },
+      "errors": {
+        "saveFailed": "Failed to save role",
+        "deleteFailed": "Failed to delete role"
+      }
     },
     "triggerType": {
       "PASS": "클리어 공지",

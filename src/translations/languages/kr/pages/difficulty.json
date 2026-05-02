@@ -15,11 +15,11 @@
   },
   "buttons": {
     "create": "새 난이도 생성",
-    "creating": "생성 중...",
     "save": "저장",
     "cancel": "취소",
     "confirm": "확인",
-    "understand": "위험을 이해했습니다"
+    "understand": "위험을 이해했습니다",
+    "discordRoles": "Discord 역할 동기화"
   },
   "loading": {
     "difficulties": "난이도 불러오는 중...",
@@ -38,7 +38,7 @@
   },
   "difficultyTypes": {
     "PGU": "PGU",
-    "SPECIAL": "SPECIAL"
+    "SPECIAL": "특수"
   },
   "form": {
     "labels": {
@@ -59,7 +59,9 @@
       "fallbackId": "대체할 난이도의 ID를 입력하세요"
     },
     "helpText": {
-      "fallbackId": "{{name}}을(를) 사용하는 모든 레벨이 이 난이도로 업데이트됩니다."
+      "fallbackId": "{{name}}을(를) 사용하는 모든 레벨이 이 난이도로 업데이트됩니다.",
+      "fallbackDiff": "{{name}}을(를) 사용하는 모든 레벨이 이 난이도로 업데이트됩니다."
+
     }
   },
   "modal": {
@@ -99,6 +101,76 @@
     "created": "난이도가 성공적으로 생성되었습니다",
     "updated": "난이도가 성공적으로 업데이트되었습니다",
     "deleted": "난이도가 성공적으로 삭제되었습니다",
-    "reordered": "난이도 순서가 성공적으로 변경되었습니다"
+    "reordered": "난이도 순서가 성공적으로 변경되었습니다",
+    "reorderFailed": "난이도 순서가 변경을 실패했습니다"
+  },
+  "tabs": {
+    "difficulties": "난이도",
+    "tags": "태그",
+    "groups": "그룹"
+  },
+  "tags": {
+    "createButton": "태그 생성",
+    "noTags": "태그 미발견됨. 당신의 첫 태그를 만드세요!",
+    "ungrouped": "Ungrouped",
+    "tagCount": "{{count}} tag{{plural}}",
+    "create": {
+      "title": "태그 생성",
+      "name": "이름",
+      "color": "색상",
+      "group": {
+        "label": "그룹 (선택 사항)",
+        "placeholder": "그룹명 입력"
+      },
+      "icon": {
+        "label": "아이콘 (선택 사항)",
+        "preview": "미리 보기",
+        "remove": "아이콘 제거"
+      },
+      "createButton": "생성",
+      "cancelButton": "취소"
+    },
+    "edit": {
+      "title": "태그 수정",
+      "name": "이름",
+      "color": "색상",
+      "group": {
+        "label": "그룹 (선택 사항)",
+        "placeholder": "그룹명 입력"
+      },
+      "icon": {
+        "label": "아이콘 (선택 사항)",
+        "preview": "미리 보기",
+        "remove": "아이콘 제거"
+      },
+      "updateButton": "Update",
+      "cancelButton": "Cancel",
+      "unsavedChanges": "저장하지 않은 변경 사항이 있습니다. 정말로 닫으실건가요?"
+    },
+    "delete": {
+      "title": "태그 제거",
+      "message": "Are you sure you want to delete the tag \"{{name}}\"?",
+      "description": "This action cannot be undone. The tag will be removed from all levels.",
+      "deleteButton": "Delete",
+      "cancelButton": "Cancel"
+    },
+    "notifications": {
+      "fetchFailed": "Failed to fetch tags",
+      "created": "Tag created successfully",
+      "createFailed": "Failed to create tag",
+      "updated": "Tag updated successfully",
+      "updateFailed": "Failed to update tag",
+      "deleted": "Tag deleted successfully",
+      "deleteFailed": "Failed to delete tag",
+      "reordered": "Tags reordered successfully",
+      "reorderFailed": "Failed to reorder tags"
+    }
+  },
+  "groups": {
+    "noGroups": "No groups found. Create tags with groups first!",
+    "notifications": {
+      "reordered": "Groups reordered successfully",
+      "reorderFailed": "Failed to reorder groups"
+    }
   }
 }

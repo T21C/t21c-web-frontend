@@ -2,15 +2,15 @@
   "title": "Submission Rules and Guidelines",
   "close": "×",
   "strictOnly": {
-    "title": "ONLY STRICT CLEARS ARE ACCEPTED",
-    "note": "If you're playing workshop levels, use the level editor in it in order to switch to strict"
+    "title": "오직 엄격 클리어만 인정됩니다",
+    "note": "만약 창작마당 레벨을 플레이 중이라면, 레벨 에디터를 사용해 엄격 판정으로 바꾸세요"
   },
   "noMobile": {
-    "title": "NO MOBILE CLEARS ALLOWED"
+    "title": "모바일 클리어 비허용"
   },
   "clearRules": {
-    "title": "Clear Submission Rules",
-    "intro": "To ensure fairness, integrity, and equal competition in clear submissions, the following rules apply:"
+    "title": "클리어 제출 규칙",
+    "intro": "클리어 제출에서 공정성, 무결성, 그리고 동등한 경쟁을 보장하기 위해 다음 규칙이 적용됩니다:"
   },
   "rules": {
     "rule1": {

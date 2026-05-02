@@ -71,7 +71,67 @@
     "end": "제일 아래에 도달했어요!"
   },
   "funFacts": {
-    "difficultyHeaderGridCellTooltip": "{{name}} · {{count}}회 클리어"
+    "expandAria": "Show all statistics",
+    "collapseAria": "Hide detailed statistics",
+    "difficultyHeaderGridCellTooltip": "{{name}} · {{count}}회 클리어",
+    "groups": {
+      "counts": "클리어 수",
+      "judgements": "판정",
+      "levelsCleared": "클리어한 레벨",
+      "extremes": "기록",
+      "activity": "활동",
+      "breakdownByType": "클리어한 난이도 수"
+    },
+    "counts": {
+      "totalPasses": "총 클리어 횟수",
+      "uniqueLevelsCleared": "난이도별 클리어",
+      "worldsFirstCount": "세계 최초 클리어",
+      "clears12K": "12키 클리어",
+      "clears16K": "16키 클리어",
+      "clearsNoHoldTap": "No-hold tap clears",
+      "duplicatePasses": "중복 클리어",
+      "hiddenPasses": "숨겨진 클리어 (visible to you)"
+    },
+    "judgements": {
+      "totalTilesHit": "총 누른 타일",
+      "earlyDouble": "너무 빠름",
+      "earlySingle": "빠름!",
+      "ePerfect": "빠름",
+      "perfect": "정확",
+      "lPerfect": "느림",
+      "lateSingle": "느림!",
+      "totalXacc": "평균 정확도",
+      "earlyVsLateBias": "빠름/느림 쏠림"
+    },
+    "levelsCleared": {
+      "totalTilecountCleared": "클리어한 총 타일 수",
+      "totalPlaytimeMs": "예상 플레이 시간",
+      "averageBpm": "평균 BPM (클리어한 레벨)",
+      "totalScoreV2": "Sum of score v2"
+    },
+    "extremes": {
+      "firstPassAt": "첫 클리어",
+      "latestPassAt": "최근 클리어",
+      "bestAccuracy": "최고 정확도",
+      "worstAccuracy": "최저 정확도",
+      "topSpeed": "최고 속도",
+      "highestTilecountCleared": "최고 타일 수",
+      "longestLevelMs": "최장 길이",
+      "highestBpmCleared": "클리어한 최고 BPM",
+      "viewPass": "클리어 보기"
+    },
+    "activity": {
+      "accountAgeDays": "가입 일수",
+      "daysActive": "클리어한 날 수",
+      "passesLast30Days": "최근 30일 클리어 수",
+      "uniqueLevelsLiked": "좋아요 표시한 레벨 수",
+      "packsOwned": "제작판 팩 수",
+      "packsFavorited": "좋아요 표시한 팩 수"
+    },
+    "difficultyType": {
+      "PGU": "PGU",
+      "SPECIAL": "특수 난이도"
+    }
   },
   "discordRoleSync": {
     "buttonTitle": {

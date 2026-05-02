@@ -62,23 +62,23 @@
     "failed": "이메일을 변경할 수 없습니다. 다시 시도하세요."
   },
   "password": {
-    "title": "Password",
-    "addPassword": "Add Password",
-    "newPassword": "New Password",
-    "confirmPassword": "Confirm Password",
-    "currentPassword": "Current Password",
-    "confirmNewPassword": "Confirm New Password",
-    "createPassword": "Create Password",
-    "changePassword": "Change Password",
-    "updatePassword": "Update Password"
+    "title": "비밀번호",
+    "addPassword": "비밀번호 추가",
+    "newPassword": "새 비밀번호",
+    "confirmPassword": "비밀번호 확인",
+    "currentPassword": "현재 비밀번호",
+    "confirmNewPassword": "새 비밀번호 확인",
+    "createPassword": "비밀번호 만들기",
+    "changePassword": "비밀번호 변경",
+    "updatePassword": "비밀번호 업데이트"
   },
   "linkedAccounts": {
-    "title": "Linked Accounts",
+    "title": "연결된 계정",
     "discord": "Discord",
     "providerId": "Discord 사용자 ID: {{id}}",
     "providerIdHint": "Discord에 연결된 계정의 숫자 ID입니다",
-    "linkDiscord": "Link Discord Account",
-    "unlink": "Unlink",
+    "linkDiscord": "Discord 계정 연결",
+    "unlink": "연결 해제",
     "cannotUnlinkLastProvider": "Cannot unlink last provider without a password"
   },
   "dangerZone": {
