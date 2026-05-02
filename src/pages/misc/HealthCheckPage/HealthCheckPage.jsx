@@ -6,6 +6,26 @@ import './healthcheckpage.css';
 import { formatDate } from '@/utils/Utility';
 import i18next from 'i18next';
 
+/** Order matches the standalone health service probe list. */
+const PROBE_ORDER = ['database', 'mainServer', 'cdn', 'cdc', 'nginx'];
+
+/** Strip large / redundant fields from `details` before rendering (e.g. full main API JSON). */
+function getProbeDetailEntries(details) {
+  if (!details || typeof details !== 'object') return [];
+  const out = [];
+  const { url, status, errorCode } = details;
+  if (typeof url === 'string' && url.length > 0) {
+    out.push({ key: 'url', value: url });
+  }
+  if (typeof status === 'number') {
+    out.push({ key: 'status', value: String(status) });
+  }
+  if (errorCode !== undefined && errorCode !== null && String(errorCode).length > 0) {
+    out.push({ key: 'errorCode', value: String(errorCode) });
+  }
+  return out;
+}
+
 const HealthCheckPage = () => {
   const { t } = useTranslation('pages');
   const [healthData, setHealthData] = useState(null);
@@ -63,26 +83,6 @@ const HealthCheckPage = () => {
     return `${days}d ${hours}h ${minutes}m ${seconds}s`;
   };
 
-  const formatMemory = (bytes) => {
-    if (!bytes) return 'N/A';
-    
-    // Convert to GB if over 1GB, otherwise show in MB
-    if (bytes >= 1024 * 1024 * 1024) {
-      const gb = bytes / (1024 * 1024 * 1024);
-      return `${gb.toFixed(2)} GB`;
-    }
-    
-    const mb = bytes / (1024 * 1024);
-    return `${mb.toFixed(2)} MB`;
-  };
-
-  const formatMemoryForComparison = (bytes) => {
-    if (!bytes) return 0;
-    
-    // Always convert to bytes for comparison
-    return bytes;
-  };
-
   const getStatusColor = (status) => {
     switch (status) {
       case 'online':
@@ -107,16 +107,6 @@ const HealthCheckPage = () => {
       default:
         return '?';
     }
-  };
-
-  const calculateMemoryPercentage = (used, total) => {
-    if (!used || !total) return 0;
-    
-    // Convert both values to the same unit (bytes) for accurate percentage calculation
-    const usedBytes = formatMemoryForComparison(used);
-    const totalBytes = formatMemoryForComparison(total);
-    
-    return Math.round((usedBytes / totalBytes) * 100);
   };
 
   return (
@@ -247,93 +237,99 @@ const HealthCheckPage = () => {
                   </div>
                 </div>
               </div>
-              
-              <div className="memory-usage">
-                <h3>{t('healthCheck.memoryUsage.title')}</h3>
-                <div className="memory-grid">
-                  <div className="memory-item">
-                    <div className="memory-label">{t('healthCheck.memoryUsage.rssMemory')}</div>
-                    <div className="memory-value">{formatMemory(healthData.memoryUsage?.rss)}</div>
-                    {healthData.memoryLimits?.rssLimit && (
-                      <div className="memory-limit">
-                        <span>{t('healthCheck.memoryUsage.max', { value: formatMemory(healthData.memoryLimits.rssLimit) })}</span>
-                        <div className="memory-bar">
-                          <div 
-                            className="memory-bar-fill" 
-                            style={{ 
-                              width: `${calculateMemoryPercentage(healthData.memoryUsage?.rss, healthData.memoryLimits?.rssLimit)}%`,
-                              backgroundColor: calculateMemoryPercentage(healthData.memoryUsage?.rss, healthData.memoryLimits?.rssLimit) > 80 ? '#F44336' : '#4CAF50'
-                            }}
-                          ></div>
+
+              {healthData.details?.probes && (
+                <div className="probes-section">
+                  <h3>{t('healthCheck.probes.title')}</h3>
+                  <p className="probes-intro">{t('healthCheck.probes.description')}</p>
+
+                  {healthData.details.config && (
+                    <div className="probes-config">
+                      <h4>{t('healthCheck.probes.configTitle')}</h4>
+                      <dl className="probes-config-grid">
+                        <div className="probes-config-row">
+                          <dt>{t('healthCheck.probes.configMain')}</dt>
+                          <dd>{healthData.details.config.mainServerUrl || '—'}</dd>
                         </div>
-                      </div>
-                    )}
-                  </div>
-                  
-                  <div className="memory-item">
-                    <div className="memory-label">{t('healthCheck.memoryUsage.heapTotal')}</div>
-                    <div className="memory-value">{formatMemory(healthData.memoryUsage?.heapTotal)}</div>
-                    {healthData.memoryLimits?.heapSizeLimit && (
-                      <div className="memory-limit">
-                        <span>{t('healthCheck.memoryUsage.max', { value: formatMemory(healthData.memoryLimits.heapSizeLimit) })}</span>
-                        <div className="memory-bar">
-                          <div 
-                            className="memory-bar-fill" 
-                            style={{ 
-                              width: `${calculateMemoryPercentage(healthData.memoryUsage?.heapTotal, healthData.memoryLimits?.heapSizeLimit)}%`,
-                              backgroundColor: calculateMemoryPercentage(healthData.memoryUsage?.heapTotal, healthData.memoryLimits?.heapSizeLimit) > 80 ? '#F44336' : '#4CAF50'
-                            }}
-                          ></div>
+                        <div className="probes-config-row">
+                          <dt>{t('healthCheck.probes.configCdn')}</dt>
+                          <dd>{healthData.details.config.cdnUrl || '—'}</dd>
                         </div>
-                      </div>
-                    )}
-                  </div>
-                  
-                  <div className="memory-item">
-                    <div className="memory-label">{t('healthCheck.memoryUsage.heapUsed')}</div>
-                    <div className="memory-value">{formatMemory(healthData.memoryUsage?.heapUsed)}</div>
-                  </div>
-                  
-                  <div className="memory-item">
-                    <div className="memory-label">{t('healthCheck.memoryUsage.externalMemory')}</div>
-                    <div className="memory-value">{formatMemory(healthData.memoryUsage?.external)}</div>
-                  </div>
-                  
-                  <div className="memory-item">
-                    <div className="memory-label">{t('healthCheck.memoryUsage.arrayBuffers')}</div>
-                    <div className="memory-value">{formatMemory(healthData.memoryUsage?.arrayBuffers)}</div>
-                  </div>
-                </div>
-              </div>
-              
-              {healthData.memoryLimits && (
-                <div className="memory-limits">
-                  <h3>{t('healthCheck.memoryLimits.title')}</h3>
-                  <div className="limits-grid">
-                    <div className="limit-item">
-                      <div className="limit-label">{t('healthCheck.memoryLimits.heapSizeLimit')}</div>
-                      <div className="limit-value">{formatMemory(healthData.memoryLimits.heapSizeLimit)}</div>
+                        <div className="probes-config-row">
+                          <dt>{t('healthCheck.probes.configCdc')}</dt>
+                          <dd>{healthData.details.config.cdcUrl || '—'}</dd>
+                        </div>
+                        <div className="probes-config-row">
+                          <dt>{t('healthCheck.probes.configNginx')}</dt>
+                          <dd>
+                            {healthData.details.config.nginxUrl
+                              ? healthData.details.config.nginxUrl
+                              : t('healthCheck.probes.configNone')}
+                          </dd>
+                        </div>
+                        <div className="probes-config-row">
+                          <dt>{t('healthCheck.probes.configInterval')}</dt>
+                          <dd>{healthData.details.config.probeIntervalMs ?? '—'} ms</dd>
+                        </div>
+                        <div className="probes-config-row">
+                          <dt>{t('healthCheck.probes.configTimeout')}</dt>
+                          <dd>{healthData.details.config.probeTimeoutMs ?? '—'} ms</dd>
+                        </div>
+                      </dl>
                     </div>
-                    
-                    <div className="limit-item">
-                      <div className="limit-label">{t('healthCheck.memoryLimits.totalAvailableSize')}</div>
-                      <div className="limit-value">{formatMemory(healthData.memoryLimits.totalAvailableSize)}</div>
-                    </div>
-                    
-                    <div className="limit-item">
-                      <div className="limit-label">{t('healthCheck.memoryLimits.totalHeapSizeExecutable')}</div>
-                      <div className="limit-value">{formatMemory(healthData.memoryLimits.totalHeapSizeExecutable)}</div>
-                    </div>
-                    
-                    <div className="limit-item">
-                      <div className="limit-label">{t('healthCheck.memoryLimits.totalPhysicalSize')}</div>
-                      <div className="limit-value">{formatMemory(healthData.memoryLimits.totalPhysicalSize)}</div>
-                    </div>
-                    
-                    <div className="limit-item">
-                      <div className="limit-label">{t('healthCheck.memoryLimits.maxRSS')}</div>
-                      <div className="limit-value">{formatMemory(healthData.memoryLimits.rssLimit)}</div>
-                    </div>
+                  )}
+
+                  <div className="probes-grid">
+                    {PROBE_ORDER.map((probeName) => {
+                      const probe = healthData.details.probes[probeName];
+                      if (!probe) return null;
+                      const skipped = probe.skipped === true;
+                      const stateClass = skipped ? 'skipped' : probe.ok ? 'online' : 'offline';
+                      const label = t(`healthCheck.probes.names.${probeName}`);
+                      const detailRows = getProbeDetailEntries(probe.details);
+
+                      return (
+                        <div key={probeName} className={`probe-card ${stateClass}`}>
+                          <div className="probe-card-header">
+                            <h4>{label}</h4>
+                            <span className={`probe-state ${stateClass}`}>
+                              {skipped
+                                ? t('healthCheck.probes.skipped')
+                                : probe.ok
+                                  ? t('healthCheck.status.online')
+                                  : t('healthCheck.status.offline')}
+                            </span>
+                          </div>
+                          {skipped && probe.message && (
+                            <p className="probe-skipped-note">{probe.message}</p>
+                          )}
+                          {!skipped && (
+                            <dl className="probe-meta">
+                              <div className="probe-meta-row">
+                                <dt>{t('healthCheck.probes.latency')}</dt>
+                                <dd>{typeof probe.durationMs === 'number' ? `${probe.durationMs} ms` : '—'}</dd>
+                              </div>
+                              {probe.message && (
+                                <div className="probe-meta-row">
+                                  <dt>{t('healthCheck.probes.message')}</dt>
+                                  <dd className="probe-message">{probe.message}</dd>
+                                </div>
+                              )}
+                              {detailRows.map((row) => (
+                                <div key={row.key} className="probe-meta-row">
+                                  <dt>
+                                    {row.key === 'url' && t('healthCheck.probes.detailUrl')}
+                                    {row.key === 'status' && t('healthCheck.probes.detailHttpStatus')}
+                                    {row.key === 'errorCode' && t('healthCheck.probes.errorCode')}
+                                  </dt>
+                                  <dd className="probe-detail-value">{row.value}</dd>
+                                </div>
+                              ))}
+                            </dl>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}

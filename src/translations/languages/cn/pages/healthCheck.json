@@ -24,24 +24,32 @@
     "environment": "环境",
     "mainServerStatus": "主服务器状态"
   },
-  "memoryUsage": {
-    "title": "已使用内存",
-    "rssMemory": "RSS内存",
-    "heapTotal": "总堆大小",
-    "heapUsed": "已使用堆大小",
-    "externalMemory": "外部内存",
-    "arrayBuffers": "数组缓冲区",
-    "max": "最大值：{{value}}"
-  },
-  "memoryLimits": {
-    "title": "内存限制",
-    "heapSizeLimit": "堆大小限制",
-    "totalAvailableSize": "总可用大小",
-    "totalHeapSizeExecutable": "总可执行堆大小",
-    "totalPhysicalSize": "总物理内存大小",
-    "maxRSS": "最大RSS内存"
+  "probes": {
+    "title": "健康监控探针",
+    "description": "由独立健康服务（端口 3883）定期执行的检查。延迟为该探针的往返耗时。",
+    "skipped": "已跳过",
+    "latency": "延迟",
+    "message": "说明",
+    "detailHttpStatus": "HTTP 状态码",
+    "detailUrl": "目标 URL",
+    "errorCode": "错误代码",
+    "configTitle": "监控目标",
+    "configMain": "主 API",
+    "configCdn": "CDN",
+    "configCdc": "CDC",
+    "configNginx": "Nginx",
+    "configInterval": "探针间隔",
+    "configTimeout": "探针超时",
+    "configNone": "未设置",
+    "names": {
+      "database": "数据库",
+      "mainServer": "主 API",
+      "cdn": "CDN",
+      "cdc": "CDC",
+      "nginx": "Nginx"
+    }
   },
   "refresh": {
     "ariaLabel": "刷新健康数据"
   }
-} 
+}

@@ -24,24 +24,32 @@
     "environment": "Environment",
     "mainServerStatus": "Main Server Status"
   },
-  "memoryUsage": {
-    "title": "Memory Usage",
-    "rssMemory": "RSS Memory",
-    "heapTotal": "Heap Total",
-    "heapUsed": "Heap Used",
-    "externalMemory": "External Memory",
-    "arrayBuffers": "Array Buffers",
-    "max": "Max: {{value}}"
-  },
-  "memoryLimits": {
-    "title": "Memory Limits",
-    "heapSizeLimit": "Heap Size Limit",
-    "totalAvailableSize": "Total Available Size",
-    "totalHeapSizeExecutable": "Total Heap Size Executable",
-    "totalPhysicalSize": "Total Physical Size",
-    "maxRSS": "Max RSS"
+  "probes": {
+    "title": "Health monitor probes",
+    "description": "Independent checks run by the standalone health service (port 3883). Latency is round-trip for that probe only.",
+    "skipped": "Skipped",
+    "latency": "Latency",
+    "message": "Message",
+    "detailHttpStatus": "HTTP status",
+    "detailUrl": "Target URL",
+    "errorCode": "Error code",
+    "configTitle": "Configured targets",
+    "configMain": "Main API",
+    "configCdn": "CDN",
+    "configCdc": "CDC",
+    "configNginx": "Nginx",
+    "configInterval": "Probe interval",
+    "configTimeout": "Probe timeout",
+    "configNone": "Not set",
+    "names": {
+      "database": "Database",
+      "mainServer": "Main API",
+      "cdn": "CDN",
+      "cdc": "CDC",
+      "nginx": "Nginx"
+    }
   },
   "refresh": {
     "ariaLabel": "Refresh health data"
   }
-} 
+}
