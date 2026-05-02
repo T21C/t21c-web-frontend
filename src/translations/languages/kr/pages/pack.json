@@ -1,45 +1,45 @@
 {
   "meta": {
-    "title": "Packs - TUF",
-    "description": "Browse and discover level packs created by the community",
-    "myPacksTitle": "My Packs - TUF",
-    "myPacksDescription": "Manage and view your personal level packs"
+    "title": "팩 - TUF",
+    "description": "커뮤니티에서 만들어진 레벨 팩을 탐색하고 발견하세요",
+    "myPacksTitle": "내 팩 - TUF",
+    "myPacksDescription": "당신의 팩을 관리하고 보세요"
   },
   "title": {
-    "allPacks": "Level Packs",
-    "myPacks": "My Packs"
+    "allPacks": "레벨 팩",
+    "myPacks": "내 팩"
   },
   "subtitle": {
-    "allPacks": "Discover and explore level packs created by the community",
+    "allPacks": "커뮤니티에서 만들어진 레벨 팩을 탐색하고 발견하세요",
     "myPacks": "Manage your personal collection of level packs"
   },
   "search": {
-    "placeholder": "Search packs...",
-    "search": "Search"
+    "placeholder": "팩 검색...",
+    "search": "검색"
   },
   "filters": {
-    "title": "Filters",
-    "toggle": "Toggle filters",
-    "owner": "Owner",
-    "ownerPlaceholder": "Enter username",
-    "viewMode": "View Mode",
-    "viewModePlaceholder": "Select view mode",
-    "pinnedOnly": "Show Only Pinned"
+    "title": "필터",
+    "toggle": "필터",
+    "owner": "소유자",
+    "ownerPlaceholder": "사용자명 입력",
+    "viewMode": "보기 방법",
+    "viewModePlaceholder": "보기 방법 선택",
+    "pinnedOnly": "고정된 팩만 보기"
   },
   "sort": {
-    "title": "Sort",
-    "toggle": "Toggle sort options",
-    "header": "Sort by",
-    "by": "Sort by",
-    "placeholder": "Select sort option",
-    "recent": "Recent",
-    "name": "Name",
-    "levels": "Level Count",
-    "favorites": "Favorites",
-    "ascending": "Ascending",
-    "order": "Order",
-    "descending": "Descending",
-    "myLikes": "My Likes"
+    "title": "정렬",
+    "toggle": "정렬 방법",
+    "header": "정렬 기준",
+    "by": "정렬 기준",
+    "placeholder": "정렬 방법 선택",
+    "recent": "최신",
+    "name": "이름",
+    "levels": "레벨 수",
+    "favorites": "좋아요 수",
+    "ascending": "오름차순",
+    "order": "정렬 순서",
+    "descending": "내림차순",
+    "myLikes": "내 즐겨찾기"
   },
   "viewMode": {
     "all": "All",
@@ -56,10 +56,10 @@
     "viewToggleGroup": "표시 방식 선택"
   },
   "buttons": {
-    "searchHelp": "Search Help"
+    "searchHelp": "검색 도움말"
   },
   "toolTip": {
-    "search": "Search Help",
+    "search": "검색 도움말",
     "filter": "Toggle Filters",
     "sort": "Toggle Sort Options",
     "reset": "Reset All Filters"

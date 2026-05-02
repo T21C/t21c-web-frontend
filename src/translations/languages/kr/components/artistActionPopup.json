@@ -4,10 +4,10 @@
     "update": "업데이트",
     "merge": "병합",
     "split": "분리",
-    "aliases": "이명(Alias)",
+    "aliases": "별칭)",
     "links": "링크",
     "evidence": "증거",
-    "relations": "Relations"
+    "relations": "참여"
   },
   "form": {
     "name": "이름",
@@ -30,20 +30,20 @@
     "deleteOriginal": "Delete original artist after splitting"
   },
   "aliases": {
-    "add": "이명(Alias) 추가",
-    "placeholder": "이명(Alias) 입력"
+    "add": "별칭(Alias) 추가",
+    "placeholder": "별칭(Alias) 입력"
   },
   "links": {
     "add": "링크 추가",
     "placeholder": "URL 입력"
   },
   "entityExtraInfo": {
-    "label": "Extra Info",
+    "label": "추가 정보",
     "placeholder": "Additional notes or information about this {{type}}",
     "empty": "No extra info added"
   },
   "evidence": {
-    "add": "Upload Evidence Images",
+    "add": "증거 이미지 업로드",
     "addLink": "Add External Evidence Link",
     "linkPlaceholder": "Enter external URL",
     "extraInfo": "Extra Info",
@@ -72,28 +72,28 @@
     "splitting": "분리 중...",
     "checking": "확인 중...",
     "proceed": "Proceed",
-    "deleteAvatar": "Avatar 제거",
-    "selectAvatar": "Avatar 파일 선택",
+    "deleteAvatar": "아바타 제거",
+    "selectAvatar": "아바타 파일 선택",
     "addRelation": "Add Relation",
     "removeRelation": "Remove Relation"
   },
   "messages": {
-    "updated": "Artist updated successfully",
-    "merged": "Artists merged successfully",
-    "split": "Artist split into '{{name1}}' and '{{name2}}'",
-    "splitSuccess": "Artist split successfully",
-    "avatarUploaded": "Avatar uploaded successfully",
-    "avatarDeleted": "Avatar deleted successfully",
-    "evidenceAdded": "Evidence added successfully",
-    "evidenceUpdated": "Evidence updated successfully",
-    "evidenceDeleted": "Evidence deleted successfully",
-    "entityExtraInfoUpdated": "Extra info updated successfully",
+    "updated": "작곡가가 성공적으로 업데이트되었습니다",
+    "merged": "작곡가가 성공적으로 병합되었습니다",
+    "split": "작곡가를 '{{name1}}'와 '{{name2}}'로 분리",
+    "splitSuccess": "작곡가를 성공적으로 분리되었습니다",
+    "avatarUploaded": "아바타가 성공적으로 업로드되었습니다",
+    "avatarDeleted": "아바타가 성공적으로 삭제되었습니다",
+    "evidenceAdded": "증거가 성공적으로 추가되었습니다",
+    "evidenceUpdated": "증거가 성공적으로 업데이트되었습니다",
+    "evidenceDeleted": "증거가 성공적으로 삭제되었습니다",
+    "entityExtraInfoUpdated": "추가 정보가 성공적으로 업데이트되었습니다",
     "relationAdded": "Relation added successfully",
     "relationRemoved": "Relation removed successfully"
   },
   "errors": {
-    "updateFailed": "Failed to update artist",
-    "mergeFailed": "Failed to merge artists",
+    "updateFailed": "작곡가 업데이트를 실패했습니다",
+    "mergeFailed": "작곡가 병합을 실패했습니다",
     "splitFailed": "Failed to split artist",
     "selectTarget": "Please select a target artist",
     "bothNamesRequired": "Both artist names are required",
@@ -102,9 +102,9 @@
     "entitiesMustBeDifferent": "Target artists must be different",
     "checkFailed": "Failed to check existing artists",
     "loadArtistsFailed": "Failed to load artists",
-    "noFile": "Please select a file",
+    "noFile": "파일을 선택해주세요",
     "uploadFailed": "Failed to upload avatar",
-    "deleteFailed": "Failed to delete",
+    "deleteFailed": "삭제 실패",
     "evidenceFailed": "Failed to add evidence",
     "invalidFileType": "Please select image files only",
     "invalidLink": "Please enter a valid link"

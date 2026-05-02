@@ -118,13 +118,13 @@
         }
       },
       "filters": {
-        "title": "可用过滤器",
+        "title": "可用筛选条件",
         "hideRated": "隐藏已评级",
         "hideRatedDesc": "隐藏你已评级的关卡",
         "lowDiff": "低难度",
-        "lowDiffDesc": "过滤被标记为低难度的关卡",
+        "lowDiffDesc": "筛选被标记为低难度的关卡",
         "fourVote": "4+ 评级",
-        "fourVoteDesc": "过滤拥有超过4个评级的关卡"
+        "fourVoteDesc": "筛选拥有超过4个评级的关卡"
       },
       "requirements": {
         "title": "需求",

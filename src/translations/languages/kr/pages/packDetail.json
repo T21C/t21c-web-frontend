@@ -1,17 +1,17 @@
 {
   "loading": "Loading pack details...",
   "by": "by",
-  "backToPacks": "Back to Packs",
+  "backToPacks": "팩으로 돌아가기",
   "viewMode": {
-    "public": "Public",
-    "linkonly": "Link Only",
-    "private": "Private",
+    "public": "공개",
+    "linkonly": "일부 공개",
+    "private": "비공개",
     "forcedPrivate": "Forced Private"
   },
   "stats": {
-    "levels": "Levels",
+    "levels": "레벨",
     "items": "Items",
-    "created": "Created"
+    "created": "제작일"
   },
   "items": {
     "title": "Items",
@@ -25,8 +25,8 @@
     "addLevel": "Add Level",
     "collapseAll": "Collapse All",
     "expandAll": "Expand All",
-    "addToFavorites": "Add to Favorites",
-    "removeFromFavorites": "Remove from Favorites",
+    "addToFavorites": "좋아요",
+    "removeFromFavorites": "좋아요 취소",
     "downloadPack": "Download Pack",
     "downloadFolder": "Download Folder"
   },

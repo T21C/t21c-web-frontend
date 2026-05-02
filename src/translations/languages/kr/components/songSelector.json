@@ -1,13 +1,13 @@
 {
-  "title": "Select Song",
+  "title": "곡 택",
   "loading": "Loading...",
   "currentSong": {
-    "label": "Current Song",
-    "none": "No song selected"
+    "label": "현재 곡",
+    "none": "곡 선택되지 않음"
   },
   "search": {
     "placeholder": "Search for a song...",
-    "noResults": "No songs found"
+    "noResults": "곡 발견되지 않음"
   },
   "buttons": {
     "createNew": "Request New Song",
@@ -27,11 +27,11 @@
     "artists": "Artists"
   },
   "status": {
-    "allowed": "Allowed",
-    "ysmodOnly": "YSMod Only",
+    "allowed": "허가",
+    "ysmodOnly": "YouTube Stream 모드 전용",
     "conditional": "Conditional",
-    "pending": "Pending",
-    "declined": "Declined"
+    "pending": "보류",
+    "declined": "거절"
   },
   "messages": {
     "success": {

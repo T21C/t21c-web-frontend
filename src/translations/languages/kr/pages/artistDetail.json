@@ -1,21 +1,21 @@
 {
-  "title": "Artist Details",
+  "title": "작곡가 세부 정보",
   "meta": {
-    "title": "Artist - TUF",
+    "title": "작곡가 - TUF",
     "description": "View artist information for {{name}}"
   },
   "sections": {
-    "aliases": "Aliases",
-    "links": "Links",
-    "songs": "Songs",
-    "extraInfo": "Extra Info",
-    "evidence": "Evidence",
-    "levels": "Levels",
-    "relations": "Relations"
+    "aliases": "별칭",
+    "links": "링크",
+    "songs": "곡",
+    "extraInfo": "추가 정보",
+    "evidence": "증거",
+    "levels": "레벨",
+    "relations": "참여"
   },
-  "backToList": "Back to Artists",
+  "backToList": "작곡가로 돌아가기",
   "errors": {
-    "notFound": "Artist not found",
-    "loadFailed": "Failed to load artist"
+    "notFound": "작곡가가 발견되지 않음",
+    "loadFailed": "작곡가 불러오기 실패"
   }
 }

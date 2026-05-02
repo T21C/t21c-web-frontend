@@ -4,7 +4,8 @@
     "description": "{{playerName}}의 {{song}} - {{artist}} 클리어 기록 보기"
   },
   "banners": {
-    "deleted": "이 클리어 기록은 삭제되었습니다"
+    "deleted": "이 클리어 기록은 삭제되었습니다",
+    "hidden": "이 클리어 기록은 리더보드에서 숨겨졌습니다"
   },
   "level": {
     "baseScore": "{{score}}PP",
@@ -35,11 +36,11 @@
       "value": "{{accuracy}}%"
     },
     "speed": {
-      "label": "스피드",
+      "label": "속도",
       "value": "{{speed}}x"
     },
     "feelingRating": {
-      "label": "느낌 평점",
+      "label": "체감 난이도",
       "value": "{{rating}}",
       "none": "없음"
     }
@@ -58,7 +59,7 @@
         "value": "{{count}}"
       },
       "perfect": {
-        "label": "완벽",
+        "label": "정확",
         "value": "{{count}}"
       },
       "latePerfect": {
@@ -85,12 +86,33 @@
   },
   "video": {
     "notAvailable": {
-      "text": "비디오를 사용할 수 없습니다",
+      "text": "영상을 이용할 수 없음",
       "watchOnYoutube": "YouTube에서 보기"
     }
   },
   "buttons": {
     "edit": "클리어 정보 수정"
+  },
+  "actions": {
+    "hide": "리더보드에서 숨기기",
+    "unhide": "리더보드에 표시하기"
+  },
+  "confirm": {
+    "hide": {
+      "title": "클리어 숨기기",
+      "message": "Are you sure you want to hide this pass from the leaderboard? It will only be visible to you.",
+      "confirm": "Hide Pass",
+      "processing": "Hiding..."
+    },
+    "unhide": {
+      "title": "Show Pass",
+      "message": "Are you sure you want to show this pass on the leaderboard? It will be visible to everyone.",
+      "confirm": "Show Pass",
+      "processing": "Showing..."
+    }
+  },
+  "errors": {
+    "toggleHidden": "Failed to toggle pass visibility"
   }
 }
 

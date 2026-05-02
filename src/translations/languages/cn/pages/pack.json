@@ -18,12 +18,12 @@
     "search": "搜索"
   },
   "filters": {
-    "title": "过滤器",
-    "toggle": "切换过滤器",
+    "title": "筛选",
+    "toggle": "调整筛选选项",
     "owner": "所有者",
     "ownerPlaceholder": "输入用户名",
-    "viewMode": "预览模式",
-    "viewModePlaceholder": "选择预览模式",
+    "viewMode": "可见性",
+    "viewModePlaceholder": "选择可见性",
     "pinnedOnly": "仅显示已固定"
   },
   "sort": {
@@ -53,16 +53,16 @@
     "reset": "重置",
     "listView": "列表",
     "gridView": "网格",
-    "viewToggleGroup": "选择显示方式"
+    "viewToggleGroup": "选择地图包如何展示"
   },
   "buttons": {
     "searchHelp": "搜索帮助"
   },
   "toolTip": {
     "search": "搜索帮助",
-    "filter": "切换过滤器",
+    "filter": "切换筛选条件",
     "sort": "切换排序选项",
-    "reset": "重置所有过滤器"
+    "reset": "重置所有筛选条件"
   },
   "create": {
     "success": "创建地图包成功！",

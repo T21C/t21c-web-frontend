@@ -18,11 +18,9 @@
   },
   "search": {
     "placeholder": "搜索创作者……",
-    "loading": "搜索中……",
     "noResults": "未找到创作者",
     "teamPlaceholder": "搜索团队……",
-    "noTeamsFound": "未找到团队",
-    "searchingTeams": "搜索团队中……"
+    "noTeamsFound": "未找到团队"
   },
   "createForm": {
     "title": "新建创作者",
@@ -49,8 +47,8 @@
   "stats": {
     "title": "创作者统计数据",
     "totalLevels": "总关卡数",
-    "charterCount": "采音师数",
-    "vfxerCount": "特效师数",
+    "charterCount": "参与采音数",
+    "vfxerCount": "参与特效数",
     "selectedRole": "选中的身份数"
   },
   "teamStats": {
@@ -69,10 +67,8 @@
     "assign": "分配创作者",
     "assignTeam": "分配团队",
     "confirm": "确认分配",
-    "cancel": "取消",
     "create": "创建创作者",
     "createTeam": "创建团队",
-    "creating": "创建中……",
     "createNew": "新建",
     "addAlias": "添加别名",
     "change": "更改",

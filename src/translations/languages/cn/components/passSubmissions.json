@@ -8,13 +8,13 @@
     "judgements": {
       "label": "判定：",
       "fields": {
-        "earlyDouble": "双早",
-        "earlySingle": "单早",
-        "ePerfect": "早判",
-        "perfect": "大P",
-        "lPerfect": "晚判",
-        "lateSingle": "单晚",
-        "lateDouble": "双晚"
+        "earlyDouble": "太快！！",
+        "earlySingle": "太快！",
+        "ePerfect": "稍快！",
+        "perfect": "完美！",
+        "lPerfect": "稍慢！",
+        "lateSingle": "太慢！",
+        "lateDouble": "太慢！！"
       }
     },
     "flags": {
@@ -34,11 +34,11 @@
     "discord": {
       "assignButton": "分配 Discord 信息"
     },
-    "newProfile": "请求新个人资料",
+    "newProfile": "请求创建新个人资料",
     "manageProfile": "管理玩家"
   },
   "buttons": {
-    "allow": "允许",
+    "allow": "通过",
     "decline": "拒绝",
     "reset": "重置",
     "clear": "清除",
@@ -58,7 +58,7 @@
   "success": {
     "playerAssigned": "成功分配给 {{playerName}}",
     "autoAllow": "已自动通过 {{count}} 项通关记录",
-    "playerCreated": "成功创建并分配{{playerName}}",
+    "playerCreated": "成功创建并分配 {{playerName}}",
     "patch": "已更新"
   },
   "edit": {

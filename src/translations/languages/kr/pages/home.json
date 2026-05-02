@@ -30,7 +30,16 @@
     "discord": {
       "title": "저희의 Discord에 참여하세요!"
     },
-    "comingSoon": "더 재미있는 기능이 곧 추가됩니다..."
+    "comingSoon": "더 재미있는 기능이 곧 추가됩니다...",
+    "donate": "Support me on Ko-fi!"
+  },
+  "weeklies": {
+    "title": "주간 레벨",
+    "description": "이번주의 추천된 큐레이션입니다",
+    "primary": "Legendary",
+    "secondary": "Loved",
+    "error": "Failed to load weeklies",
+    "empty": "No levels scheduled for this week"
   },
   "footer": {
     "about": {
@@ -45,7 +54,8 @@
       "leaderboard": "리더보드",
       "aboutUs": "소개",
       "privacyPolicy": "개인정보처리방침",
-      "termsOfService": "서비스 이용약관"
+      "termsOfService": "서비스 이용약관",
+      "apiDocs": "API Documentation"
     },
     "community": {
       "title": "커뮤니티",
@@ -53,7 +63,7 @@
       "github": "GitHub"
     },
     "copyright": {
-      "main": "© 2026 TUF. Not affiliated with 7th Beat Games.",
+      "main": "© {{year}} TUF. Not affiliated with 7th Beat Games.",
       "credit": "❤️를 담아 V0W4N이 제작"
     }
   }

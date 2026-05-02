@@ -8,6 +8,9 @@
     "hidden": "本关卡已被隐藏",
     "notFound": "未找到关卡"
   },
+  "song": {
+    "clickToViewDetails": "点击查看详细信息"
+  },
   "buttons": {
     "edit": "编辑关卡信息",
     "close": "关闭",
@@ -20,7 +23,7 @@
   },
   "tooltips": {
     "loginRequired": "登录以收藏此关卡",
-    "editDisabled": "此关卡已分配超过两个采音师。如果您认为自己应该是​所有者，请联系管理员。"
+    "editDisabled": "此关卡有超过两个采音师。如果你认为自己应该是​所有者，请联系管理员。"
     },
   "links": {
     "download": "下载关卡",
@@ -32,6 +35,9 @@
   },
     "aliases": {
     "header": "别名"
+  },
+  "artists": {
+    "more": "另有 {{count}} 个"
   },
   "stats": {
     "firstClear": {
@@ -116,7 +122,7 @@
   "toRatePending": {
     "header": "待重新评级",
     "rerateNumber": "请求评级",
-    "rerateMessage": "说明",
+    "rerateMessage": "重评信息",
     "noDetails": "未填写额外信息。"
   },
   "tags": {

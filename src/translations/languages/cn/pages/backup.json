@@ -16,15 +16,8 @@
   },
   "buttons": {
     "create": "创建 MySQL 备份",
-    "creating": "创建中……",
     "restore": "恢复",
-    "delete": "删除",
-    "save": "保存",
-    "saving": "保存中……",
-    "cancel": "取消",
-    "confirm": "确认",
     "upload": "上传",
-    "uploading": "上传中……",
     "download": "下载",
     "verifying": "验证中……"
   },

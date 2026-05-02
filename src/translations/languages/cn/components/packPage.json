@@ -5,10 +5,10 @@
     "noResults": "未找到符合条件的地图包"
   },
   "filters": {
-    "title": "过滤器",
+    "title": "筛选条件",
     "owner": {
       "label": "所有者",
-      "placeholder": "按所有者过滤……",
+      "placeholder": "按所有者筛选……",
       "myPacks": "我的地图包"
     },
     "viewMode": {
@@ -39,7 +39,7 @@
     "title": "未找到地图包",
     "message": "没有符合你当前筛选条件的地图包。",
     "suggestions": {
-      "clearFilters": "尝试重置过滤器",
+      "clearFilters": "尝试重置筛选条件",
       "createPack": "创建你的第一个地图包"
     }
   },

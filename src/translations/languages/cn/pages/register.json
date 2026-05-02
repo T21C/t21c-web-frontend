@@ -35,8 +35,7 @@
       "error": "需要 Captcha 验证"
     },
     "submit": {
-      "default": "创建账户",
-      "loading": "正在创建账户..."
+      "default": "创建账户"
     }
   },
   "success": {

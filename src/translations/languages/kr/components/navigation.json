@@ -3,16 +3,16 @@
     "links": {
       "home": "홈",
       "levels": "레벨",
-      "leaderboard": "순위표",
+      "leaderboard": "리더보드",
       "creators": "제작자",
-      "packs": "Packs",
+      "packs": "레벨 팩",
       "info": "정보",
       "more": "더보기",
       "pass": "클리어 기록",
       "submission": "제출",
       "rating": "책정",
-      "curations": "Curation",
-      "signIn": "Sign in",
+      "curations": "큐레이션",
+      "signIn": "로그인",
       "admin": {
         "rating": "책정",
         "submissions": "제출물",
@@ -32,7 +32,7 @@
         "songs": "곡"
       },
       "packs": {
-        "allPacks": "All Packs"
+        "allPacks": "모든 팩"
       },
       "more": {
         "passes": "클리어 기록",

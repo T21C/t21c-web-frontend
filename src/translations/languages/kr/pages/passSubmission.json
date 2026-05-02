@@ -30,7 +30,7 @@
   },
   "judgements": {
     "ePerfect": "빠름",
-    "perfect": "완벽",
+    "perfect": "정확",
     "lPerfect": "느림",
     "tooearly": "너무 빠름",
     "early": "빠름!",
@@ -39,8 +39,8 @@
   "acc": "정확도: ",
   "scoreCalc": "점수: ",
   "holdTooltip": "기본 홀드 동작이 사용된 경우 체크하세요",
-  "12kTooltip": "12키가 사용된 경우 체크하세요 (키 12개 이하)",
-  "16kTooltip": "16키가 사용된 경우 체크하세요 (키 13개 이상)",
+  "12kTooltip": "12키가 사용된 경우 체크하세요 (12키 이하)",
+  "16kTooltip": "16키가 사용된 경우 체크하세요 (13키 이상)",
   "tooltip": "알 수 없는 난이도입니다. 관리자가 이해할 수 있도록 작성해주세요. 예: G1-G5, 17~18+, U1 등",
   "alert": {
     "success": "클리어가 성공적으로 제출되었습니다!",
@@ -66,7 +66,7 @@
     "speed": "배속",
     "feelingRating": "체감 난이도",
     "ePerfect": "빠름",
-    "perfect": "완벽",
+    "perfect": "정확",
     "lPerfect": "느림",
     "tooEarly": "너무 빠름",
     "early": "빠름!",

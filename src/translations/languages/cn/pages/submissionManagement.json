@@ -5,11 +5,11 @@
   },
   "header": {
     "title": "管理提交项目",
-    "refresh": "刷新提交项目"
+    "refresh": "刷新"
   },
   "tabs": {
     "levels": "关卡提交列表",
     "passes": "通关记录提交列表",
-    "autoAllow": "自动通过合规通关记录"
+    "autoAllow": "自动通过有效通关记录"
   }
 } 

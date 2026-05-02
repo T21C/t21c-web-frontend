@@ -8,9 +8,9 @@
   "notLoggedIn": "未登录",
   "emailVerification": "请验证邮箱地址以访问所有功能",
   "banned": "你的账号已被封禁",
-  "accountScheduledDeletion": "你的账号已安排在 {{date}} 删除。在此之前可在「编辑资料」中取消。",
+  "accountScheduledDeletion": "你的账号已安排在 {{date}} 注销。在此之前可在“编辑个人资料”中取消。",
   "submissionSuspended": "你的提交功能已被暂停",
-  "searchForOther": "无法显示你的个人资料，搜索其他玩家",
+  "searchForOther": "无法显示你的个人资料，请搜索其他玩家",
   "valueLabels": {
     "rankedScore": "排位分数",
     "generalScore": "全局分数",
@@ -18,27 +18,42 @@
     "wfScore": "世界首通分数",
     "score12K": "12键分数",
     "averageXacc": "平均X精准度",
-    "totalPasses": "总通关数",
+    "totalPasses": "总击破数",
     "universalPassCount": "U通关数",
     "worldsFirstCount": "世界首通数",
     "topDiff": "最高通关难度",
     "top12kDiff": "最高12键通关难度",
-    "totalUniquePasses": "唯一关卡通关总数",
-    "topAccClearNum": "最高精准通关数",
-    "tilesPressed": "按键次数"
+    "totalUniquePasses": "总击破谱面数",
+    "topAccClearNum": "最高精准度数",
+    "tilesPressed": "总经过砖块数"
   },
-  "editProfile": "编辑资料",
-  "adminEdit": "管理员编辑",
-  "viewUserPacks": "查看用户的谱面包",
+  "editProfile": "编辑个人资料",
+  "adminEdit": "管理员页面",
+  "viewUserPacks": "查看用户的地图包",
+  "linkToCreator": "查看创作者个人资料",
+  "bio": {
+    "header": "个人简介",
+    "placeholder": "这个人很神秘，什么都没有写。",
+    "expand": "展开",
+    "collapse": "收起"
+  },
   "sections": {
     "scores": {
       "title": "通关记录列表",
+      "expand": "展开",
+      "collapse": "收起",
       "lowestImpactScore": "排位分加分下限：{{score}}"
+    },
+    "difficultyBreakdown": {
+      "title": "通关记录统计列表",
+      "includeDupes": "包含重击破",
+      "expand": "展开",
+      "collapse": "收起"
     }
   },
   "sort": {
     "byScore": "按分数",
-    "byImpact": "按排位影响分",
+    "byImpact": "按加分",
     "byDate": "按日期",
     "byXacc": "按X精准度",
     "byDifficulty": "按难度",
@@ -56,7 +71,67 @@
     "end": "已经到底啦！"
   },
   "funFacts": {
-    "difficultyHeaderGridCellTooltip": "{{name}} · {{count}} 次通关"
+    "expandAria": "显示所有统计数据",
+    "collapseAria": "收起统计数据",
+    "difficultyHeaderGridCellTooltip": "{{name}} · {{count}} 个通关记录",
+    "groups": {
+      "counts": "通关记录",
+      "judgements": "判定结果",
+      "levelsCleared": "总体统计",
+      "extremes": "总体记录",
+      "activity": "活跃状况",
+      "breakdownByType": "通关难度类型"
+    },
+    "counts": {
+      "totalPasses": "总通关记录数",
+      "uniqueLevelsCleared": "击破关卡数",
+      "worldsFirstCount": "世界首通数",
+      "clears12K": "12键通关记录数",
+      "clears16K": "16键通关记录数",
+      "clearsNoHoldTap": "非默认长按设置通关数",
+      "duplicatePasses": "重击破数",
+      "hiddenPasses": "已隐藏通关记录（仅对你可见）"
+    },
+    "judgements": {
+      "totalTilesHit": "总经过砖块数",
+      "earlyDouble": "“太快！！”数",
+      "earlySingle": "“太快！”数",
+      "ePerfect": "“稍快！”数",
+      "perfect": "“完美！”数",
+      "lPerfect": "“稍慢！”数",
+      "lateSingle": "“太慢！”数",
+      "totalXacc": "总体精准度",
+      "earlyVsLateBias": "快慢比例"
+    },
+    "levelsCleared": {
+      "totalTilecountCleared": "总经过砖块数",
+      "totalPlaytimeMs": "预估游戏时间",
+      "averageBpm": "平均初始BPM（已通过关卡）",
+      "totalScoreV2": "得分总和"
+    },
+    "extremes": {
+      "firstPassAt": "第一个通关记录",
+      "latestPassAt": "最新的通关记录",
+      "bestAccuracy": "最好精准度",
+      "worstAccuracy": "最坏精准度",
+      "topSpeed": "最高飙速",
+      "highestTilecountCleared": "最多关卡物量数",
+      "longestLevelMs": "最长关卡时长",
+      "highestBpmCleared": "最高初始BPM",
+      "viewPass": "查看"
+    },
+    "activity": {
+      "accountAgeDays": "账户创建时间（天）",
+      "daysActive": "平均单个击破所需时间",
+      "passesLast30Days": "通关记录（过去30天）",
+      "uniqueLevelsLiked": "已收藏关卡",
+      "packsOwned": "创建的地图包",
+      "packsFavorited": "收藏的地图包"
+    },
+    "difficultyType": {
+      "PGU": "PGU",
+      "SPECIAL": "特殊"
+    }
   },
   "discordRoleSync": {
     "buttonTitle": {

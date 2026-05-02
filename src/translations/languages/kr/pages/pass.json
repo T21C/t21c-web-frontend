@@ -1,21 +1,22 @@
 {
   "meta": {
-    "title": "클리어 리스트",
+    "title": "클리어 기록",
     "description": "플레이어 업적을 탐색하고 발견하세요"
   },
   "loading": {
     "difficulties": "난이도 로딩 중..."
   },
   "input": {
-    "placeholder": "플레이어 이름, 곡명 또는 아티스트로 검색..."
+    "placeholder": "플레이어 이름, 곡명 또는 작곡가명으로 검색..."
   },
   "toolTip": {
     "filter": "결과 필터",
     "sort": "결과 정렬",
     "reset": "모든 필터 초기화",
-    "search": "고급 검색 사용법 배우기",
+    "search": "고급 검색 사용법",
     "orderAsc": "오름차순",
-    "orderDesc": "내림차순"
+    "orderDesc": "내림차순",
+    "stateDisplay": "보기 설정"
   },
   "buttons": {
     "searchHelp": "검색 도움말"

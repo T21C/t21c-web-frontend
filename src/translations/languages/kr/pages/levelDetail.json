@@ -19,79 +19,79 @@
     "saveRating": "Save Rating"
   },
   "tooltips": {
-    "loginRequired": "Login to like this level"
+    "loginRequired": "좋아요를 누르려면 로그인 하세요"
   },
   "links": {
-    "download": "Download Level",
-    "workshop": "Steam Workshop",
+    "download": "레벨 다운로드",
+    "workshop": "Steam 창작마당",
     "thumbnailNotFound": {
-      "text": "Video thumbnail not found",
-      "goToVideo": "Go to video"
+      "text": "영상 썸네일 발견되지 않음",
+      "goToVideo": "영상 바로가기"
     }
   },
   "aliases": {
-    "header": "Alternative Names"
+    "header": "부명의"
   },
   "stats": {
     "firstClear": {
-      "label": "First Clear",
+      "label": "최초 클리어",
       "value": "{{player}} | {{date}}"
     },
     "highestScore": {
-      "label": "Highest Score",
+      "label": "최고 점수",
       "value": "{{player}} | {{score}}"
     },
     "highestSpeed": {
-      "label": "Highest Speed",
+      "label": "최고 점수",
       "value": "{{player}} | {{speed}}x"
     },
     "highestAccuracy": {
-      "label": "Highest Accuracy",
+      "label": "최고 정확도",
       "value": "{{player}} | {{accuracy}}%"
     },
     "totalClears": {
-      "label": "Total Clears",
+      "label": "총 클리어 수",
       "value": "{{count}}"
     },
     "waiting": "Loading..."
   },
   "info": {
-    "title": "Level Information",
-    "team": "Team",
-    "creator": "Creator",
+    "title": "레벨 정보",
+    "team": "팀",
+    "creator": "제작자",
     "roles": {
-      "charter": "Charter(s)",
-      "vfxer": "VFXer(s)"
+      "charter": "채보",
+      "vfxer": "이펙트"
     },
-    "difficulty": "Difficulty",
-    "baseScore": "Base Score",
-    "aliases": "Aliases",
+    "difficulty": "난이도",
+    "baseScore": "기반 점수",
+    "aliases": "별칭",
     "comments": "Comments"
   },
   "leaderboard": {
-    "header": "Leaderboard",
-    "notBeaten": "This level hasn't been beaten yet!",
+    "header": "리더보드",
+    "notBeaten": "이 레벨은 아직 클리어되지 않았어요!",
     "tooltips": {
-      "time": "Sort by clear date",
-      "accuracy": "Sort by accuracy",
-      "score": "Sort by score"
+      "time": "날짜순",
+      "accuracy": "정확도순",
+      "score": "점수순"
     }
   },
   "dialog": {
-    "fullInfo": "Full Info"
+    "fullInfo": "전체 정보"
   },
   "components": {
     "clearCard": {
-      "feeling": "Feeling:"
+      "feeling": "체감:"
     }
   },
   "errors": {
-    "loginRequired": "You need to be logged in to like this level",
+    "loginRequired": "좋아요를 누르려면 로그인을 해야합니다",
     "likeFailed": "Failed to update like status"
   },
   "messages": {
-    "liked": "Liked!",
-    "unliked": "Unliked"
+    "liked": "좋아요!",
+    "unliked": "좋아요 취소"
   },
   "toRatePending": {
     "header": "재평가 대기",

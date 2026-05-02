@@ -12,7 +12,6 @@
     "noResults": "未找到玩家",
     "creation": {
       "button": "创建新玩家 \"{{name}}\"",
-      "loading": "正在创建玩家 \"{{name}}\"...",
       "error": "创建玩家失败"
     }
   },
@@ -24,9 +23,6 @@
     "invalid": "玩家数据无效"
   },
   "buttons": {
-    "save": "保存",
-    "cancel": "取消",
-    "create": "创建新玩家 \"{{name}}\"",
-    "loading": "正在创建玩家 \"{{name}}\"..."
+    "create": "创建新玩家 \"{{name}}\""
   }
 } 

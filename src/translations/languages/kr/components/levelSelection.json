@@ -1,12 +1,12 @@
 {
-  "title": "Select Level File",
-  "description": "Multiple level files were found in the zip. Please select the main level file:",
+  "title": "레벨 파일 선택",
+  "description": "압축 파일에서 여러 레벨 파일이 발견되었습니다. 메인 레벨 파일을 선택해주세요:",
   "buttons": {
-    "submit": "Submit"
+    "submit": "제출"
   },
   "fileInfo": {
-    "song": "Song: {{song}}",
-    "size": "Size: {{size}}",
-    "youtube": "Has YouTube Stream"
+    "song": "곡: {{song}}",
+    "size": "크기: {{size}}",
+    "youtube": "YouTube Stream 요구"
   }
 } 

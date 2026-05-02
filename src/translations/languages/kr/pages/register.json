@@ -1,14 +1,14 @@
 {
-  "title": "Create Account",
+  "title": "계정 생성",
   "form": {
     "email": {
       "label": "Email",
-      "error": "Invalid email format"
+      "error": "유효하지 않은 email 형식"
     },
     "username": {
-      "label": "Username",
+      "label": "사용자명",
       "error": {
-        "length": "Username must be between 3 and 20 characters",
+        "length": "사용자명은 3자에서 20자 사이어야 합니다",
         "characters": "Username can only contain alphanumeric characters, underscores _ and hyphens -"
       },
       "tooltip": {
@@ -27,19 +27,19 @@
     },
     "terms": {
       "label": "I have read and agree with the",
-      "privacyPolicy": "Privacy Policy",
+      "privacyPolicy": "개인정보처리방침침 ",
       "and": "and",
-      "termsOfService": "Terms of Service"
+      "termsOfService": "이용약관"
     },
     "captcha": {
-      "error": "Captcha is required"
+      "error": "Captcha 필요"
     },
     "submit": {
-      "default": "Create Account"
+      "default": "계정 생성"
     }
   },
   "success": {
-    "title": "Registration Successful!",
+    "title": "성공적으로 등록했습니다!",
     "message": "Please check your email to verify your account. You can go to your profile now.",
     "usernameModified": "Your username was modified to {{username}} because the original username was already taken.",
     "goToProfile": "Go to Profile"
@@ -55,6 +55,6 @@
     "register": "Register with Discord"
   },
   "login": {
-    "link": "Already have an account? Log in"
+    "link": "이미 계정이 있으신가요? 로그인"
   }
 } 

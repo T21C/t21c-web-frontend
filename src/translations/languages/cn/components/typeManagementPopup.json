@@ -25,12 +25,25 @@
     "created": "精选关卡类型创建成功",
     "updated": "精选关卡类型更新成功",
     "deleted": "精选关卡类型删除成功",
-    "reordered": "精选关卡类型重新排序成功",
-    "reorderFailed": "精选关卡类型重新排序失败"
+    "reordered": "精选关卡类型重排序成功",
+    "reorderFailed": "精选关卡类型重排序失败",
+    "groupsReordered": "精选关卡类型分组重排序成功",
+    "groupReorderFailed": "精选关卡类型分组重排序失败"
+  },
+  "tabs": {
+    "types": "类型",
+    "groups": "分组"
+  },
+  "groups": {
+    "ungrouped": "未分组",
+    "empty": "无分组",
+    "typeCount": "{{count}} 个类型"
   },
   "form": {
     "name": "类型名称",
     "namePlaceholder": "输入精选关卡类型名称",
+    "group": "分组",
+    "groupPlaceholder": "可选 —— 相同的标签将不同的类型分为一组",
     "color": "颜色",
     "icon": "图标",
     "iconHelp": "为此精选关卡类型上传图标（JPEG、PNG、WebP、SVG，最大1MB)",
@@ -50,7 +63,6 @@
     "levelListLegendaryGlow": "传奇关卡列表辉度"
   },
   "buttons": {
-    "cancel": "取消",
     "create": "创建类型",
     "update": "更新类型",
     "submitting": "正在提交……"

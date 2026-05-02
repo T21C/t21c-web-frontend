@@ -16,7 +16,7 @@
     "dlLink": "下载链接",
     "workshopLink": "工坊链接",
     "levelId": "关卡 ID",
-    "speed": "飙速速率",
+    "speed": "飙速速度",
     "feelingRating": "体感难度",
     "ePerfect": "稍快！",
     "perfect": "完美！",
@@ -24,7 +24,7 @@
     "tooEarly": "太快！！",
     "early": "太快！",
     "late": "太慢！",
-    "isNoHold": "无长按",
+    "isNoHold": "非默认长按设置长按",
     "is12K": "12键",
     "is16K": "16键"
   },

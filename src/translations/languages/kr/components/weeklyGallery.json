@@ -1,8 +1,8 @@
 {
-  "empty": "No curations available",
+  "empty": "큐레이션 없음",
   "navigation": {
-    "previous": "Previous curation",
-    "next": "Next curation",
+    "previous": "이전 큐레이션",
+    "next": "다음 큐레이션",
     "goTo": "Go to curation {{position}}"
   }
 }

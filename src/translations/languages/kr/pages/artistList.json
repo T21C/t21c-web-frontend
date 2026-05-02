@@ -1,24 +1,24 @@
 {
-  "title": "Artists",
+  "title": "작곡가",
   "meta": {
-    "title": "Artists - TUF",
+    "title": "작곡가 - TUF",
     "description": "Browse all artists"
   },
   "search": {
-    "placeholder": "Search artists..."
+    "placeholder": "작곡가 검색..."
   },
   "filter": {
-    "verificationState": "Verification State"
+    "verificationState": "승인 상태"
   },
   "sort": {
-    "label": "Sort by:",
-    "nameAsc": "Name (A-Z)",
-    "nameDesc": "Name (Z-A)",
-    "idAsc": "ID (Low to High)",
-    "idDesc": "ID (High to Low)"
+    "label": "정렬",
+    "nameAsc": "오름차순 (A-Z)",
+    "nameDesc": "내림차순 (Z-A)",
+    "idAsc": "ID (오름차순)",
+    "idDesc": "ID (내림차순)"
   },
   "infScroll": {
     "end": "You've reached the end!"
   },
-  "noArtists": "No artists found"
+  "noArtists": "작곡가 발견되지 않음"
 }

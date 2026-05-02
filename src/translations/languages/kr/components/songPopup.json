@@ -1,12 +1,12 @@
 {
   "aliases": {
-    "title": "Aliases"
+    "title": "별칭"
   },
   "links": {
-    "title": "Links"
+    "title": "링크"
   },
   "artists": {
-    "title": "Artists"
+    "title": "작곡가"
   },
-  "viewDetails": "View Full Details"
+  "viewDetails": "전체 정보 보기"
 }

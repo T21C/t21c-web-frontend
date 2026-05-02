@@ -14,9 +14,7 @@
   "buttons": {
     "addCreator": "添加新创作者",
     "manageCreator": "管理创作者",
-    "cancel": "取消",
-    "create": "创建创作者",
-    "creating": "创建中……"
+    "create": "创建创作者"
   },
   "form": {
     "title": "添加新创作者",

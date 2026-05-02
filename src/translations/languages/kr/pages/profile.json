@@ -30,30 +30,45 @@
   "editProfile": "프로필 편집",
   "adminEdit": "관리자 편집",
   "viewUserPacks": "사용자 팩 보기",
+  "linkToCreator": "제작자 프로필 보기",
+  "bio": {
+    "header": "내 소개",
+    "placeholder": "내 소개를 작성하지 않음",
+    "expand": "내 소개 확장",
+    "collapse": "내 소개 축소"
+  },
   "sections": {
     "scores": {
       "title": "점수",
-      "lowestImpactScore": "최소 {{score}}를 얻어 Ranked Score를 얻으세요"
+      "expand": "점수 확장",
+      "collapse": "점수 축소",
+      "lowestImpactScore": "최소 {{score}}를 얻어 랭크 점수를 얻으세요"
+    },
+    "difficultyBreakdown": {
+      "title": "난이도별 클리어",
+      "includeDupes": "중복 포함",
+      "expand": "Expand difficulty breakdown",
+      "collapse": "Collapse difficulty breakdown"
     }
   },
   "sort": {
-    "byScore": "By Score",
-    "byImpact": "By Impact",
-    "byDate": "By Date",
-    "byXacc": "By X-Accuracy",
-    "byDifficulty": "By Difficulty",
-    "bySpeed": "By Speed"
+    "byScore": "점수",
+    "byImpact": "Impact",
+    "byDate": "날짜",
+    "byXacc": "절대정확도",
+    "byDifficulty": "난이도",
+    "bySpeed": "속도"
   },
   "search": {
-    "placeholder": "Search passes..."
+    "placeholder": "클리어 검색..."
   },
   "labels": {
-    "totalPasses": "{{count}} passes"
+    "totalPasses": "{{count}}개 클리어"
   },
   "showHiddenPasses": "Show hidden passes",
   "hideHiddenPasses": "Hide hidden passes",
   "infiniteScroll": {
-    "end": "You've reached the end!"
+    "end": "제일 아래에 도달했어요!"
   },
   "funFacts": {
     "difficultyHeaderGridCellTooltip": "{{name}} · {{count}}회 클리어"

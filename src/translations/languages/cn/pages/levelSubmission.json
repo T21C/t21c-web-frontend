@@ -28,7 +28,7 @@
     "nolink": "未提供链接"
   },
   "tooltip": "未知难度。仍然可以提交，但请确保管理员能够读懂。正确的难度格式范例：G13；P7~P13；21.1+；19~20.0+",
-  "suffixTooltip": "这将被放在曲名之后，例如，在此处输入 \"<bold>Nerfed</bold>\" 将显示为 \"曲名 <bold>Nerfed</bold>\"",
+  "suffixTooltip": "这将被放在曲名之后。例如，在此处输入 \"<bold>Nerfed</bold>\" 将显示为 \"曲名 <bold>Nerfed</bold>\"",
   "buttons": {
     "addCharter": "添加采音师",
     "addVfxer": "添加特效师",

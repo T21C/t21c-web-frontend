@@ -7,7 +7,6 @@
       "labels": {
         "song": "曲名",
         "suffix": "后缀",
-        "artist": "曲师",
         "creator": "制作者",
         "charter": "谱师",
         "vfxer": "特效师",
@@ -81,9 +80,6 @@
       "noResults": "无匹配结果",
       "noAvailableTags": "无可用标签",
       "addTag": "添加标签",
-      "cancel": "取消",
-      "saving": "保存中……",
-      "save": "保存",
       "errors": {
         "fetchTags": "标签获取失败",
         "saveTags": "标签保存失败"

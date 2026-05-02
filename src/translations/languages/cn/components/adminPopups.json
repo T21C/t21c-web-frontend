@@ -16,33 +16,21 @@
         "label": "封禁玩家",
         "confirm": {
           "ban": "确认封禁该玩家？",
-          "unban": "确认解封该玩家？",
-          "buttons": {
-            "confirm": "确认",
-            "cancel": "取消"
-          }
+          "unban": "确认解封该玩家？"
         }
       },
       "pause": {
         "label": "暂停提交申请",
         "confirm": {
           "pause": "确认暂停该玩家的提交申请？",
-          "resume": "确认恢复该玩家的提交申请？",
-          "buttons": {
-            "confirm": "确认",
-            "cancel": "取消"
-          }
+          "resume": "确认恢复该玩家的提交申请？"
         }
       },
       "ratingBan": {
         "label": "禁止评级",
         "confirm": {
           "ban": "确认禁止该玩家评级？",
-          "unban": "确认再次允许该玩家评级？",
-          "buttons": {
-            "confirm": "确认",
-            "cancel": "取消"
-          }
+          "unban": "确认再次允许该玩家评级？"
         }
       },
       "merge": {
@@ -54,8 +42,7 @@
           "warning": "所有通关记录都将被转移到目标玩家名下，且此玩家的记录会被删除。",
           "buttons": {
             "understand": "我明白",
-            "confirm": "确认合并",
-            "cancel": "取消"
+            "confirm": "确认合并"
           }
         }
       },
@@ -63,20 +50,12 @@
         "label": "Discord ID",
         "placeholder": "输入 Discord ID 以验证",
         "buttons": {
-          "validate": "验证",
-          "remove": "删除"
+          "validate": "验证"
         },
         "confirm": {
-          "message": "确认更新此玩家的 Discord 信息？",
-          "buttons": {
-            "confirm": "确认",
-            "cancel": "取消"
-          }
+          "message": "确认更新此玩家的 Discord 信息？"
         }
       }
-    },
-    "buttons": {
-      "done": "完成"
     },
     "errors": {
       "nameUpdate": "更新玩家名称失败",

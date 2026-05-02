@@ -2,7 +2,6 @@
   "title": "选择关卡文件",
   "description": "压缩文件中找到多个关卡文件。请选择主关卡文件：",
   "buttons": {
-    "cancel": "取消",
     "submit": "提交"
   },
   "fileInfo": {

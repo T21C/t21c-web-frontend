@@ -1,0 +1,123 @@
+{
+  "close": "关闭",
+  "modes": {
+    "update": "基本",
+    "user": "用户",
+    "discord": "Discord 账户",
+    "merge": "合并",
+    "split": "拆分"
+  },
+  "update": {
+    "name": {
+      "label": "名称",
+      "placeholder": "输入创作者名称"
+    },
+    "verificationStatus": {
+      "label": "认证状态",
+      "placeholder": "选择"
+    },
+    "uploadConditions": {
+      "label": "谱面上传条件",
+      "placeholder": "可选的条件说明（例如，何时允许上传）。最多 2000 字符。"
+    },
+    "aliases": {
+      "label": "别名",
+      "placeholder": "输入要添加的别名",
+      "add": "添加"
+    },
+    "headerBadges": {
+      "label": "勋章墙",
+      "loading": "正在加载勋章数据……"
+    },
+    "updateButton": "保存并更新"
+  },
+  "user": {
+    "linked": {
+      "label": "当前已绑定用户",
+      "idLabel": "ID：",
+      "unassignButton": "解绑",
+      "unassignConfirm": "确定解除用户和创作者的绑定关系？",
+      "unassignYes": "解绑",
+      "unassignCancel": "取消"
+    },
+    "search": {
+      "label": "搜索玩家",
+      "placeholder": "输入玩家名称或昵称……",
+      "hint": "键入以搜索要与该创作者绑定的玩家。",
+      "noResults": "无匹配结果。",
+      "alreadyLinked": "已于另一创作者绑定",
+      "assignButton": "绑定"
+    },
+    "discordFallback": {
+      "label": "或通过 Discord 用户 ID 绑定",
+      "placeholder": "输入 Discord 用户 ID",
+      "lookupButton": "查询"
+    }
+  },
+  "discord": {
+    "currentUser": {
+      "label": "当前用户",
+      "avatarAlt": "用户头像",
+      "idLabel": "ID:",
+      "unlinkButton": "解绑用户"
+    },
+    "discordId": {
+      "label": "Discord ID",
+      "placeholder": "输入 Discord 用户 ID",
+      "validateButton": "验证"
+    },
+    "confirm": {
+      "avatarAlt": "Discord 头像",
+      "message": "这是正确的 Discord 用户吗？",
+      "confirmButton": "确认",
+      "cancelButton": "取消"
+    },
+    "unlinkConfirm": {
+      "message": "你确定解绑此用户吗？",
+      "yesButton": "解绑",
+      "cancelButton": "取消"
+    }
+  },
+  "merge": {
+    "warning": {
+      "title": "警告：",
+      "message": "这将删除 {{creatorName}} 并重新绑定所有谱面至此创作者。此操作不可撤销。"
+    },
+    "selectTarget": {
+      "label": "选择目标创作者",
+      "placeholder": "搜索目标创作者……",
+      "noOptions": "无匹配结果"
+    },
+    "mergeButton": "合并创作者",
+    "creatorLabel": "{{name}} （ID：{{id}}，{{count}}个关卡）{{aliases}}"
+  },
+  "split": {
+    "newNamesAndRoles": {
+      "label": "新创作者名称和身份",
+      "namePlaceholder": "输入创作者名称 {{index}}",
+      "rolePlaceholder": "选择身份",
+      "addAnother": "+ 添加更多名称"
+    },
+    "splitButton": "拆分创作者"
+  },
+  "errors": {
+    "loadCreatorsFailed": "创作者加载失败",
+    "updateFailed": "创作者更新失败",
+    "assignFailed": "用户绑定失败",
+    "unassignFailed": "用户解绑失败",
+    "fetchDiscordFailed": "Discord 用户获取失败",
+    "updateDiscordFailed": "Discord 信息获取失败",
+    "unlinkFailed": "用户解绑失败",
+    "mergeFailed": "创作者合并失败",
+    "splitFailed": "创作者拆分失败"
+  },
+  "success": {
+    "updated": "创作者更新成功",
+    "userAssigned": "创作者绑定用户成功",
+    "userUnassigned": "创作者解绑用户成功",
+    "discordUpdated": "Discord 信息更新成功",
+    "discordUnlinked": "Discord 用户解绑成功",
+    "merged": "创作者合并成功",
+    "split": "创作者拆分成功"
+  }
+}

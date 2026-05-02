@@ -1,0 +1,148 @@
+{
+  "meta": {
+    "title": "创作者",
+    "description": "浏览谱面创作者、采音师和特效师"
+  },
+  "input": {
+    "placeholder": "搜索"
+  },
+  "tooltips": {
+    "filter": "筛选",
+    "sort": "排序",
+    "reset": "重置",
+    "recentAsc": "升序",
+    "recentDesc": "降序"
+  },
+  "settings": {
+    "filter": {
+      "header": "筛选"
+    },
+    "sort": {
+      "header": "排序设置",
+      "sortOrder": "排序设置",
+      "sortBy": "按……排序"
+    },
+    "verificationFilter": {
+      "label": "认证状态",
+      "all": "所有"
+    }
+  },
+  "sortOptions": {
+    "name": "名称",
+    "chartsTotal": "总关卡数",
+    "chartsCharted": "参与采音数",
+    "chartsVfxed": "参与特效数",
+    "chartsTeamed": "合作创作数",
+    "totalChartClears": "被通过次数",
+    "totalChartLikes": "被收藏次数"
+  },
+  "infiniteScroll": {
+    "end": "已到达底部！"
+  },
+  "list": {
+    "empty": "未找到创作者。"
+  },
+  "card": {
+    "verified": "已验证",
+    "chartsTotal": "{{count}} 个关卡",
+    "noUser": "无已链接账户",
+    "curationBadgesAria": "精选类型总和"
+  },
+  "verificationStatus": {
+    "help": {
+      "declined": "创作者拒绝将谱面提交到论坛上。",
+      "pending": "等待创作者确认。新建创作者默认选项。",
+      "conditional": "创作者同意在特定情况下提交谱面。请在提交前与创作者协调。",
+      "allowed": "创作者同意将谱面提交到论坛上。"
+    }
+  },
+  "profile": {
+    "meta": {
+      "title": "{{name}} - 创作者个人资料",
+      "description": "{{name}} 的谱面和统计信息"
+    },
+    "notFound": "未找到创作者",
+    "verified": "已验证",
+    "manageButton": "管理创作者",
+    "stats": {
+      "header": "创作者状态",
+      "chartsCharted": "参与采音数",
+      "chartsVfxed": "参与特效数",
+      "chartsTeamed": "合作创作数",
+      "curatedLevels": "总被精选谱面数",
+      "chartsTotal": "总关卡数",
+      "totalChartClears": "被通过次数",
+      "totalChartLikes": "被收藏次数"
+    },
+    "bio": {
+      "header": "个人简介",
+      "placeholder": "这个人很神秘，什么都没有写。"
+    },
+    "uploadConditions": {
+      "tooltipAria": "查看关卡上传条件"
+    },
+    "curationPanel": {
+      "expandAria": "显示所有精选类型和关卡数量",
+      "collapseAria": "隐藏精选类型列表",
+      "dialogLabel": "已制作关卡精选类型"
+    },
+    "levels": {
+      "header": "所有关卡",
+      "empty": "该创作者未创作关卡。",
+      "searchPlaceholder": "搜索该创作者的关卡……"
+    },
+    "sections": {
+      "difficultyBreakdown": {
+        "title": "关卡统计列表",
+        "expand": "展开",
+        "collapse": "收起"
+      }
+    },
+    "funFacts": {
+      "expandAria": "显示所有统计数据",
+      "collapseAria": "收起统计数据",
+      "groups": {
+        "identity": "身份信息",
+        "credits": "参与创作",
+        "content": "创作统计",
+        "audience": "作品受众",
+        "curation": "精选与重评",
+        "timeline": "创作历程",
+        "breakdownByType": "关卡难度类型"
+      },
+      "identity": {
+        "aliasCount": "别名",
+        "teamsJoined": "已加入团队"
+      },
+      "credits": {
+        "levelsAsCharter": "参与采音数",
+        "levelsAsVfxer": "参与特效数"
+      },
+      "content": {
+        "totalTilesMade": "采过的砖块数",
+        "totalLevelDurationMs": "总关卡时长",
+        "averageTilecount": "平均关卡物量数",
+        "averageLevelLengthMs": "平均关卡时长",
+        "averageBpm": "平均BPM",
+        "totalClearsOnLevels": "关卡被通关次数",
+        "totalLikesOnLevels": "关卡被收藏次数",
+        "totalDownloadsOnLevels": "关卡被下载次数"
+      },
+      "audience": {
+        "uniquePlayersCleared": "谱面受众人数",
+        "worldsFirstsOnLevels": "关卡世界首通数",
+        "totalTilesPlayedOnLevels": "总经过物量数"
+      },
+      "timeline": {
+        "firstLevelAt": "第一个谱面",
+        "latestLevelAt": "最新的谱面"
+      },
+      "difficultyType": {
+        "PGU": "PGU",
+        "SPECIAL": "特殊",
+        "LEGACY": "经典",
+        "UNKNOWN": "其他"
+      }
+    }
+  }
+}

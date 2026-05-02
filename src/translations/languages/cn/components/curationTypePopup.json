@@ -27,7 +27,6 @@
     }
   },
   "actions": {
-    "cancel": "取消",
     "create": "创建",
     "update": "更新",
     "submitting": "提交中……"

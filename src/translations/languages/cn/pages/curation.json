@@ -27,8 +27,7 @@
     "title": "需要超管密码",
     "description": "请输入你的超管密码以继续",
     "placeholder": "输入密码",
-    "submit": "提交",
-    "cancel": "取消"
+    "submit": "确认"
   },
   "initialPassword": {
     "title": "需要超管权限",

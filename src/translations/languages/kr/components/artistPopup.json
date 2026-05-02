@@ -1,12 +1,12 @@
 {
   "aliases": {
-    "title": "Aliases"
+    "title": "별칭"
   },
   "links": {
-    "title": "Links"
+    "title": "링크"
   },
-  "viewDetails": "View Full Details",
+  "viewDetails": "전체 정보 보기",
   "relations": {
-    "title": "Relations"
+    "title": "참여"
   }
 }
