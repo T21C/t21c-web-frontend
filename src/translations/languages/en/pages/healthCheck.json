@@ -26,7 +26,7 @@
   },
   "probes": {
     "title": "Health monitor probes",
-    "description": "Independent checks run by the standalone health service (port 3883). Latency is round-trip for that probe only.",
+    "description": "Independent checks run by the standalone health service. Latency is round-trip for that probe only.",
     "skipped": "Skipped",
     "latency": "Latency",
     "message": "Message",
