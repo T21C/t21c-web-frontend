@@ -95,47 +95,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
   const [selectedSong, setSelectedSong] = useState(null);
   const navigate = useNavigate();
   useEffect(() => {
-    if (level) {
-      setFormData((prev) => ({
-        ...prev,
-        song: level.songObject?.name || level.song || '',
-        songId: level.songId ?? null,
-        suffix: level.suffix ?? '',
-        diffId: level.diffId != null ? level.diffId : 0,
-        baseScore: level.baseScore != null ? level.baseScore : null,
-        ppBaseScore:
-          level.ppBaseScore != null && level.ppBaseScore !== ''
-            ? String(level.ppBaseScore)
-            : '',
-        videoLink: level.videoLink ?? '',
-        dlLink: level.dlLink ?? '',
-        workshopLink: level.workshopLink ?? '',
-        publicComments: level.publicComments ?? '',
-        rerateNum: level.rerateNum ?? '',
-        toRate: Boolean(level.toRate),
-        rerateReason: level.rerateReason ?? '',
-        isDeleted: Boolean(level.isDeleted),
-        isHidden: Boolean(level.isHidden),
-        isAnnounced: Boolean(level.isAnnounced),
-        previousDiffId: level.previousDiffId ?? null,
-        previousBaseScore: level.previousBaseScore != null ? level.previousBaseScore : null,
-      }));
-      setSelectedSong(level.songId ? { id: level.songId, name: level.songObject?.name || level.song || '' } : null);
-      setHasUnsavedChanges(false);
-      setIsExternallyAvailable(level.isExternallyAvailable);
-      
-      // Fetch level tags
-      const fetchTags = async () => {
-        try {
-          const response = await api.get(`${import.meta.env.VITE_DIFFICULTIES}/levels/${level.id}/tags`);
-          setLevelTags(response.data || []);
-        } catch (err) {
-          console.error('Error fetching level tags:', err);
-          setLevelTags([]);
-        }
-      };
-      fetchTags();
-    }
+    let cancelled = false;
 
     const handleEsc = (e) => {
       if (e.key === 'Escape') {
@@ -144,10 +104,79 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     };
     window.addEventListener('keydown', handleEsc);
 
+    const run = async () => {
+      if (!level) {
+        return;
+      }
+
+      let src = level;
+      if (level._packViewMinimal && isSuperAdmin) {
+        try {
+          const response = await api.get(`${import.meta.env.VITE_LEVELS}/${level.id}`);
+          const full = response.data?.level ?? response.data;
+          if (!cancelled && full) {
+            src = full;
+          }
+        } catch (err) {
+          console.error('Error loading full level for editor:', err);
+        }
+      }
+
+      if (cancelled) {
+        return;
+      }
+
+      setFormData((prev) => ({
+        ...prev,
+        song: src.songObject?.name || src.song || '',
+        songId: src.songId ?? null,
+        suffix: src.suffix ?? '',
+        diffId: src.diffId != null ? src.diffId : 0,
+        baseScore: src.baseScore != null ? src.baseScore : null,
+        ppBaseScore:
+          src.ppBaseScore != null && src.ppBaseScore !== ''
+            ? String(src.ppBaseScore)
+            : '',
+        videoLink: src.videoLink ?? '',
+        dlLink: src.dlLink ?? '',
+        workshopLink: src.workshopLink ?? '',
+        publicComments: src.publicComments ?? '',
+        rerateNum: src.rerateNum ?? '',
+        toRate: Boolean(src.toRate),
+        rerateReason: src.rerateReason ?? '',
+        isDeleted: Boolean(src.isDeleted),
+        isHidden: Boolean(src.isHidden),
+        isAnnounced: Boolean(src.isAnnounced),
+        previousDiffId: src.previousDiffId ?? null,
+        previousBaseScore: src.previousBaseScore != null ? src.previousBaseScore : null,
+      }));
+      setSelectedSong(src.songId ? { id: src.songId, name: src.songObject?.name || src.song || '' } : null);
+      setHasUnsavedChanges(false);
+      setIsExternallyAvailable(src.isExternallyAvailable);
+
+      const fetchTags = async () => {
+        try {
+          const response = await api.get(`${import.meta.env.VITE_DIFFICULTIES}/levels/${level.id}/tags`);
+          if (!cancelled) {
+            setLevelTags(response.data || []);
+          }
+        } catch (err) {
+          console.error('Error fetching level tags:', err);
+          if (!cancelled) {
+            setLevelTags([]);
+          }
+        }
+      };
+      fetchTags();
+    };
+
+    run();
+
     return () => {
+      cancelled = true;
       window.removeEventListener('keydown', handleEsc);
     };
-  }, [level]);
+  }, [level, isSuperAdmin]);
 
   useBodyScrollLock(true);
 
