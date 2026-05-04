@@ -1,55 +1,53 @@
 {
   "title": "System Health Status",
+  "metaDescription": "High-level view of whether TUF services are responding.",
   "lastUpdated": "Last updated: {{time}}",
-  "error": "Failed to fetch health data: {{error}}",
-  "status": {
-    "online": "ONLINE",
-    "degraded": "DEGRADED",
-    "offline": "OFFLINE"
+  "loadError": "Status could not be loaded. Please try again later.",
+  "overall": {
+    "online": "Online",
+    "degraded": "Degraded",
+    "offline": "Service unavailable"
   },
-  "serverInfo": {
-    "title": "Server Information",
-    "status": "Status",
-    "uptime": "Uptime"
+  "serviceState": {
+    "ok": "OK",
+    "down": "Unavailable"
   },
   "serviceChecks": {
-    "title": "Service Checks",
     "database": "Database",
-    "socketServer": "Socket Server"
+    "mainServer": "Main server",
+    "cdnService": "CDN",
+    "nginxService": "Nginx",
+    "skipped": "Not monitored"
   },
-  "systemInfo": {
-    "title": "System Information",
-    "nodeVersion": "Node Version",
-    "platform": "Platform",
-    "environment": "Environment",
-    "mainServerStatus": "Main Server Status"
-  },
-  "probes": {
-    "title": "Health monitor probes",
-    "description": "Independent checks run by the standalone health service. Latency is round-trip for that probe only.",
-    "skipped": "Skipped",
-    "latency": "Latency",
-    "message": "Message",
-    "detailHttpStatus": "HTTP status",
-    "detailUrl": "Target URL",
-    "errorCode": "Error code",
-    "configTitle": "Configured targets",
-    "configMain": "Main API",
-    "configCdn": "CDN",
-    "configCdc": "CDC",
-    "configNginx": "Nginx",
-    "configInterval": "Probe interval",
-    "configTimeout": "Probe timeout",
-    "configNone": "Not set",
-    "names": {
-      "database": "Database",
-      "mainServer": "Main API",
-      "cdn": "CDN",
-      "cdc": "CDC",
-      "nginx": "Nginx"
-    }
+  "responseTime": {
+    "ms": "{{ms}} ms",
+    "skipped": "—",
+    "unavailable": "—",
+    "ariaLabel": "Latest check response time"
   },
   "refresh": {
-    "ariaLabel": "Refresh health data"
+    "ariaLabel": "Refresh status"
+  },
+  "latency": {
+    "title": "Response times",
+    "yAxisLabel": "Milliseconds",
+    "loadError": "Could not load response time data.",
+    "empty": "No samples in this range yet.",
+    "windowLabel": "Time range",
+    "series": {
+      "database": "Database",
+      "mainServer": "Main server",
+      "cdn": "CDN"
+    },
+    "windows": {
+      "1h": "Last hour",
+      "3h": "Last 3 hours",
+      "6h": "Last 6 hours",
+      "12h": "Last 12 hours",
+      "24h": "Last 24 hours",
+      "3d": "Last 3 days",
+      "7d": "Last 7 days",
+      "14d": "Last 14 days"
+    }
   }
 }

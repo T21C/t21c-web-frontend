@@ -1,47 +1,53 @@
 {
-  "title": "System Health Status",
-  "lastUpdated": "Last updated: {{time}}",
-  "error": "Failed to fetch health data: {{error}}",
-  "status": {
-    "online": "ONLINE",
-    "degraded": "DEGRADED",
-    "offline": "OFFLINE"
+  "title": "시스템 상태",
+  "metaDescription": "TUF 서비스 응답 여부를 간단히 확인합니다.",
+  "lastUpdated": "마지막 업데이트: {{time}}",
+  "loadError": "상태를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.",
+  "overall": {
+    "online": "정상",
+    "degraded": "일부 제한",
+    "offline": "장애"
   },
-  "serverInfo": {
-    "title": "Server Information",
-    "status": "Status",
-    "uptime": "Uptime"
+  "serviceState": {
+    "ok": "정상",
+    "down": "이용 불가"
   },
   "serviceChecks": {
-    "title": "Service Checks",
     "database": "Database",
-    "socketServer": "Socket Server"
+    "mainServer": "메인 서버",
+    "cdnService": "CDN",
+    "nginxService": "Nginx",
+    "skipped": "모니터링 안 함"
   },
-  "systemInfo": {
-    "title": "System Information",
-    "nodeVersion": "Node Version",
-    "platform": "Platform",
-    "environment": "Environment",
-    "mainServerStatus": "Main Server Status"
-  },
-  "memoryUsage": {
-    "title": "Memory Usage",
-    "rssMemory": "RSS Memory",
-    "heapTotal": "Heap Total",
-    "heapUsed": "Heap Used",
-    "externalMemory": "External Memory",
-    "arrayBuffers": "Array Buffers",
-    "max": "Max: {{value}}"
-  },
-  "memoryLimits": {
-    "title": "Memory Limits",
-    "heapSizeLimit": "Heap Size Limit",
-    "totalAvailableSize": "Total Available Size",
-    "totalHeapSizeExecutable": "Total Heap Size Executable",
-    "totalPhysicalSize": "Total Physical Size",
-    "maxRSS": "Max RSS"
+  "responseTime": {
+    "ms": "{{ms}}ms",
+    "skipped": "—",
+    "unavailable": "—",
+    "ariaLabel": "가장 최근 점검 응답 시간"
   },
   "refresh": {
-    "ariaLabel": "Refresh health data"
+    "ariaLabel": "상태 새로고침"
+  },
+  "latency": {
+    "title": "응답 시간 추이",
+    "yAxisLabel": "밀리초",
+    "loadError": "응답 시간 데이터를 불러오지 못했습니다.",
+    "empty": "이 구간에 아직 기록이 없습니다.",
+    "windowLabel": "기간",
+    "series": {
+      "database": "Database",
+      "mainServer": "메인 서버",
+      "cdn": "CDN"
+    },
+    "windows": {
+      "1h": "지난 1시간",
+      "3h": "지난 3시간",
+      "6h": "지난 6시간",
+      "12h": "지난 12시간",
+      "24h": "지난 24시간",
+      "3d": "지난 3일",
+      "7d": "지난 7일",
+      "14d": "지난 14일"
+    }
   }
-} 
+}
