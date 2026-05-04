@@ -235,10 +235,9 @@ body {
 
 .loader-relative {
   position: relative;
-  left: 50%;
-  height: 100px;
   width: 0;
-  top: 100px;
+  left: unset;
+  top: unset;
 }
 
 .loader-offset {

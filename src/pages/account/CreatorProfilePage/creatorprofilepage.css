@@ -54,17 +54,15 @@
   display: flex;
   flex-direction: column;
   transition: max-height 0.3s ease-in-out;
-  padding-right: 0.5rem;
 }
 
 .creator-profile-page .creator-profile-page__levels-container {
   overflow-y: auto;
   overflow-x: visible;
-  padding: 0 0.25rem;
   margin-top: 1rem;
   height: 60rem;
   transition: all 0.3s ease-in-out;
-  scrollbar-gutter: stable;
+  scrollbar-gutter: stable both-edges;
 }
 
 .creator-profile-page .creator-profile-page__levels-container.hidden {

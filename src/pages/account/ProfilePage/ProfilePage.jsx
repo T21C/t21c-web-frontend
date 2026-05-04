@@ -577,14 +577,7 @@ const ProfilePage = () => {
                       <ChevronIcon direction={scoresExpanded ? 'down' : 'right'} />
                     </button>
                   </div>
-                  
-                  {passesInitialLoading && displayedPasses.length === 0 ? (
-                    <div style={{ height: "200px", display: "flex"}}>
-                      <div className="loader loader-relative" />
-                    </div>
-                  ) : (
-                  <>
-                  {/* Search and Sort Controls */}
+
                   <div
                     id="player-scores-scroll-container"
                     className={["player-page__scores-container", scoresCollapsed ? "hidden" : ""].join(" ").trim()}
@@ -650,6 +643,11 @@ const ProfilePage = () => {
                     </div>
                   </div>
 
+                  {passesInitialLoading && displayedPasses.length === 0 ? (
+                    <div className="scores-section__list-loading" aria-busy="true" aria-live="polite">
+                      <div className="loader loader-relative" />
+                    </div>
+                  ) : (
                   <InfiniteScroll
                     dataLength={displayedPasses.length}
                     next={loadMorePasses}
@@ -663,7 +661,7 @@ const ProfilePage = () => {
                     }
                     loader={<div className="loader loader-relative"/>}
                     scrollableTarget="player-scores-scroll-container"
-                    style={{ overflow: 'visible' }}
+                    style={{ overflow: 'visible', paddingBottom: '6rem' }}
                   >
                     <div className="scores-list">
                       {displayedPasses.map((score, index) => (
@@ -692,9 +690,8 @@ const ProfilePage = () => {
                       ))}
                     </div>
                   </InfiniteScroll>
-                  </div>
-                  </>
                   )}
+                  </div>
                 </div>
               )}
             </div>
