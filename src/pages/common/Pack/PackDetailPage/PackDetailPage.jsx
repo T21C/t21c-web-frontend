@@ -112,6 +112,9 @@ const enrichPackItemTree = (items, cdnMap) => {
             fileId: meta.fileId,
             size: meta.size ?? null,
             originalFilename: meta.originalFilename ?? null,
+            ...(meta.metadata && typeof meta.metadata === 'object'
+              ? { metadata: meta.metadata }
+              : {}),
           };
         } else {
           next.downloadSizeBytes = null;

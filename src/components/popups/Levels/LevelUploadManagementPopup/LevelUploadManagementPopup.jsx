@@ -73,8 +73,8 @@ const LevelUploadManagementPopup = ({
     if (formData.dlLink && formData.dlLink !== 'removed' && isCdnUrl(formData.dlLink)) {
       try {
         const fileId = formData.dlLink.split('/').pop();
-        const response = await fetch(`${import.meta.env.VITE_CDN_URL}/${fileId}/metadata`);
-        const data = await response.json();
+        const response = await api.get(`${import.meta.env.VITE_LEVELS}/cdn-zip-metadata/${fileId}`);
+        const data = response.data;
         
         if (data.metadata) {
           const allLevelFiles = Array.isArray(data.metadata.allLevelFiles) ? data.metadata.allLevelFiles : [];

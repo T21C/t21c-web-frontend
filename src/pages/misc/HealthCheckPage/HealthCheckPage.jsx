@@ -280,31 +280,28 @@ function HealthLatencySection({ t }) {
                 color: '#ddd'
                 }} />
               <Line
-                type="monotone"
+                type="linear"
                 dataKey="database"
                 name={t('healthCheck.latency.series.database')}
                 stroke="var(--btn-success)"
                 strokeWidth={2}
                 dot={false}
-                connectNulls
               />
               <Line
-                type="monotone"
+                type="linear"
                 dataKey="mainServer"
                 name={t('healthCheck.latency.series.mainServer')}
                 stroke="var(--danger-color)"
                 strokeWidth={2}
                 dot={false}
-                connectNulls
               />
               <Line
-                type="monotone"
+                type="linear"
                 dataKey="cdn"
                 name={t('healthCheck.latency.series.cdn')}
                 stroke="var(--warning-color)"
                 strokeWidth={2}
                 dot={false}
-                connectNulls
               />
             </LineChart>
           </ResponsiveContainer>
