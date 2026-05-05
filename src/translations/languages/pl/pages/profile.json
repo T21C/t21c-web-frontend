@@ -29,6 +29,26 @@
   "sections": {
     "scores": {
       "title": "Wyniki"
+    },
+    "rankHistory": {
+      "title": "Ranking w czasie",
+      "expand": "Pokaż historię rankingu",
+      "collapse": "Ukryj historię rankingu",
+      "metricLabel": "Typ rankingu",
+      "rangeLabel": "Zakres czasu",
+      "loading": "Wczytywanie historii…",
+      "empty": "Brak zapisanej historii rankingu.",
+      "error": "Nie udało się wczytać historii rankingu.",
+      "range30": "Ostatnie 30 dni",
+      "range90": "Ostatnie 90 dni",
+      "range365": "Ostatni rok",
+      "rangeAll": "Cały okres",
+      "metricRanked": "Ranking (ranked score)",
+      "metricGeneral": "Ranking (general score)",
+      "yAxisRank": "Miejsce",
+      "tooltipToday": "Dziś",
+      "tooltipOneDayAgo": "1 dzień temu",
+      "tooltipDaysAgo": "{{count}} dni temu"
     }
   },
   "funFacts": {

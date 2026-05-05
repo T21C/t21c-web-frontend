@@ -27,6 +27,26 @@
   "sections": {
     "scores": {
       "title": "Scores"
+    },
+    "rankHistory": {
+      "title": "Classement dans le temps",
+      "expand": "Afficher l’historique du classement",
+      "collapse": "Masquer l’historique du classement",
+      "metricLabel": "Type de rang",
+      "rangeLabel": "Période",
+      "loading": "Chargement de l’historique…",
+      "empty": "Aucun historique de rang enregistré.",
+      "error": "Impossible de charger l’historique du classement.",
+      "range30": "30 derniers jours",
+      "range90": "90 derniers jours",
+      "range365": "Dernière année",
+      "rangeAll": "Tout le temps",
+      "metricRanked": "Rang (score classé)",
+      "metricGeneral": "Rang (score général)",
+      "yAxisRank": "Rang",
+      "tooltipToday": "Aujourd’hui",
+      "tooltipOneDayAgo": "Il y a 1 jour",
+      "tooltipDaysAgo": "Il y a {{count}} jours"
     }
   },
   "funFacts": {

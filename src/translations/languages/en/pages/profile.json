@@ -49,6 +49,26 @@
       "includeDupes": "Include duplicates",
       "expand": "Expand difficulty breakdown",
       "collapse": "Collapse difficulty breakdown"
+    },
+    "rankHistory": {
+      "title": "Leaderboard rank over time",
+      "expand": "Expand rank history",
+      "collapse": "Collapse rank history",
+      "metricLabel": "Rank type",
+      "rangeLabel": "Time range",
+      "loading": "Loading rank history…",
+      "empty": "No rank history stored yet.",
+      "error": "Could not load rank history.",
+      "range30": "Last 30 days",
+      "range90": "Last 90 days",
+      "range365": "Last year",
+      "rangeAll": "All time",
+      "metricRanked": "Ranked score rank",
+      "metricGeneral": "General score rank",
+      "yAxisRank": "Rank",
+      "tooltipToday": "Today",
+      "tooltipOneDayAgo": "1 day ago",
+      "tooltipDaysAgo": "{{count}} days ago"
     }
   },
   "sort": {

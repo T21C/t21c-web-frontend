@@ -49,6 +49,26 @@
       "includeDupes": "중복 포함",
       "expand": "Expand difficulty breakdown",
       "collapse": "Collapse difficulty breakdown"
+    },
+    "rankHistory": {
+      "title": "리더보드 순위 변화",
+      "expand": "순위 기록 펼치기",
+      "collapse": "순위 기록 접기",
+      "metricLabel": "순위 종류",
+      "rangeLabel": "기간",
+      "loading": "순위 기록 불러오는 중…",
+      "empty": "저장된 순위 기록이 없습니다.",
+      "error": "순위 기록을 불러올 수 없습니다.",
+      "range30": "최근 30일",
+      "range90": "최근 90일",
+      "range365": "최근 1년",
+      "rangeAll": "전체 기간",
+      "metricRanked": "랭크 점수 순위",
+      "metricGeneral": "일반 점수 순위",
+      "yAxisRank": "순위",
+      "tooltipToday": "오늘",
+      "tooltipOneDayAgo": "1일 전",
+      "tooltipDaysAgo": "{{count}}일 전"
     }
   },
   "sort": {

@@ -49,6 +49,26 @@
       "includeDupes": "包含重击破",
       "expand": "展开",
       "collapse": "收起"
+    },
+    "rankHistory": {
+      "title": "排行榜名次变化",
+      "expand": "展开名次历史",
+      "collapse": "收起名次历史",
+      "metricLabel": "名次类型",
+      "rangeLabel": "时间范围",
+      "loading": "正在加载名次历史…",
+      "empty": "暂无已存储的名次历史。",
+      "error": "无法加载名次历史。",
+      "range30": "最近30天",
+      "range90": "最近90天",
+      "range365": "最近一年",
+      "rangeAll": "全部时间",
+      "metricRanked": "排位分名次",
+      "metricGeneral": "总分名次",
+      "yAxisRank": "名次",
+      "tooltipToday": "今天",
+      "tooltipOneDayAgo": "1 天前",
+      "tooltipDaysAgo": "{{count}} 天前"
     }
   },
   "sort": {

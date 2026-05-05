@@ -502,3 +502,70 @@
     transform: none;
   }
 }
+
+/* Leaderboard rank history (Recharts) */
+.player-page__rank-history {
+  width: 100%;
+  max-width: 50rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.player-page__rank-history .rank-history__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+.player-page__rank-history .rank-history__control {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.player-page__rank-history .rank-history__control-label {
+  font-size: 0.8rem;
+  color: var(--color-gray-2);
+}
+
+.player-page__rank-history .rank-history__range-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.player-page__rank-history .rank-history__range-btn {
+  padding: 0.35rem 0.65rem;
+  border-radius: 6px;
+  border: 1px solid var(--btn-primary);
+  background: var(--btn-neutral-dark);
+  color: var(--color-white);
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.player-page__rank-history .rank-history__range-btn:hover:not(:disabled) {
+  background: var(--btn-primary-hover);
+  border-color: var(--btn-primary-hover);
+}
+
+.player-page__rank-history .rank-history__range-btn--active {
+  background: var(--btn-primary);
+  border-color: var(--btn-primary);
+}
+
+.player-page__rank-history .rank-history__chart-wrap {
+  width: 100%;
+  height: 280px;
+}
+
+.player-page__rank-history .rank-history__status {
+  font-size: 0.9rem;
+  color: var(--color-gray-2);
+}
+
+.player-page__rank-history .rank-history__status--error {
+  color: var(--danger-color);
+}

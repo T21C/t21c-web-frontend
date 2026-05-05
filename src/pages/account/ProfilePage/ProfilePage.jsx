@@ -26,7 +26,49 @@ import { buildPlayerStatGroups } from "@/utils/profileStatGroups";
 import { buildPlayerIconSlots } from "@/utils/profileIconSlots";
 import { toDifficultyGraphData } from "@/utils/statFormatters";
 import { getEffectiveProfileBannerUrl } from "@/utils/profileBanners";
+import {
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+} from "recharts";
 const ENABLE_ROULETTE = import.meta.env.VITE_APRIL_FOOLS === "true";
+
+function utcYmd(d) {
+  return d.toISOString().slice(0, 10);
+}
+
+function computeRankHistoryFromTo(rangeKey, createdAtIso) {
+  const to = utcYmd(new Date());
+  const tMs = Date.now();
+  const created =
+    typeof createdAtIso === "string" && createdAtIso.length >= 10
+      ? createdAtIso.slice(0, 10)
+      : "2020-01-01";
+  let from;
+  if (rangeKey === "30d") from = utcYmd(new Date(tMs - 30 * 86400000));
+  else if (rangeKey === "90d") from = utcYmd(new Date(tMs - 90 * 86400000));
+  else if (rangeKey === "365d") from = utcYmd(new Date(tMs - 365 * 86400000));
+  else from = created <= to ? created : to;
+  if (from > to) return { from: to, to };
+  return { from, to };
+}
+
+/** Whole UTC calendar days between date-only `YYYY-MM-DD` and today UTC (start of day). Null if invalid. */
+function utcWholeDaysAgo(isoDateOnly) {
+  const m = /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/.exec(String(isoDateOnly).trim());
+  if (!m) return null;
+  const y = Number(m[1]);
+  const mo = Number(m[2]) - 1;
+  const d = Number(m[3]);
+  const pointMs = Date.UTC(y, mo, d);
+  const now = new Date();
+  const todayMs = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+  return Math.round((todayMs - pointMs) / 86400000);
+}
 
 const PASSES_PER_PAGE = 50;
 
@@ -56,6 +98,13 @@ const ProfilePage = () => {
     const runPassesRequest = useDebouncedRequest(350);
     // Guard against stale responses when filters change mid-flight.
     const passesRequestIdRef = useRef(0);
+
+    const [rankHistoryCollapsed, setRankHistoryCollapsed] = useState(false);
+    const [rankHistoryMetric, setRankHistoryMetric] = useState("rankedScore");
+    const [rankHistoryRange, setRankHistoryRange] = useState("365d");
+    const [rankHistorySeries, setRankHistorySeries] = useState([]);
+    const [rankHistoryLoading, setRankHistoryLoading] = useState(false);
+    const [rankHistoryError, setRankHistoryError] = useState(null);
 
     const isOwnProfile = !playerId || Number(playerId) === user?.playerId;
 
@@ -345,6 +394,91 @@ const ProfilePage = () => {
         ? difficultyGraphDataWithDupes
         : difficultyGraphDataNoDupes;
 
+      const rankHistoryMetricOptions = useMemo(
+        () => [
+          { value: 'rankedScore', label: t('profile.sections.rankHistory.metricRanked') },
+          { value: 'generalScore', label: t('profile.sections.rankHistory.metricGeneral') },
+        ],
+        [t],
+      );
+
+      const rankHistorySelectedMetricOption = useMemo(
+        () =>
+          rankHistoryMetricOptions.find((o) => o.value === rankHistoryMetric) ??
+          rankHistoryMetricOptions[0],
+        [rankHistoryMetricOptions, rankHistoryMetric],
+      );
+
+      useEffect(() => {
+        const id =
+          playerId != null && playerId !== ''
+            ? Number(playerId)
+            : NaN;
+        if (!Number.isFinite(id) || id <= 0 || !playerData) {
+          setRankHistorySeries([]);
+          return;
+        }
+        let cancelled = false;
+        (async () => {
+          setRankHistoryLoading(true);
+          setRankHistoryError(null);
+          try {
+            const { from, to } = computeRankHistoryFromTo(
+              rankHistoryRange,
+              playerData.createdAt,
+            );
+            const res = await api.get(
+              `${import.meta.env.VITE_PLAYERS_V3}/${id}/rank-history?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`,
+            );
+            if (cancelled) return;
+            setRankHistorySeries(Array.isArray(res.data?.series) ? res.data.series : []);
+          } catch (e) {
+            if (!cancelled) {
+              setRankHistoryError(
+                e?.response?.data?.error || e?.message || 'error',
+              );
+              setRankHistorySeries([]);
+            }
+          } finally {
+            if (!cancelled) setRankHistoryLoading(false);
+          }
+        })();
+        return () => {
+          cancelled = true;
+        };
+      }, [playerId, playerData, rankHistoryRange]);
+
+      const rankHistoryChartData = useMemo(() => {
+        if (!rankHistorySeries.length) return [];
+        return rankHistorySeries.map((p) => ({
+          date: p.date,
+          rank:
+            rankHistoryMetric === 'rankedScore'
+              ? p.rankedScoreRank
+              : p.generalScoreRank,
+        }));
+      }, [rankHistorySeries, rankHistoryMetric]);
+
+      /** Y-axis: pad ±10 around observed min/max ranks (not 0–max). */
+      const rankHistoryYDomain = useMemo(() => {
+        const nums = rankHistoryChartData
+          .map((d) => d.rank)
+          .filter((r) => r != null && Number.isFinite(Number(r)))
+          .map(Number);
+        if (nums.length === 0) return [1, 11];
+        const minR = Math.min(...nums);
+        const maxR = Math.max(...nums);
+        const low =
+          minR < 1 ? minR - 10 : Math.max(1, minR - 10);
+        let high = maxR + 10;
+        if (low >= high) {
+          high = low + 10;
+        }
+        return [low, high];
+      }, [rankHistoryChartData]);
+
+      const rankHistoryExpanded = !rankHistoryCollapsed;
+
       const loadMorePasses = () => {
         if (displayedPasses.length >= passesTotal) {
           setHasMore(false);
@@ -558,6 +692,147 @@ const ProfilePage = () => {
                   </div>
                 </section>
               ) : null}
+
+              <section className="player-page__section player-page__rank-history">
+                <div className="account-profile-page__section-title-row">
+                  <h2 className="account-profile-page__section-title">
+                    {t('profile.sections.rankHistory.title')}
+                  </h2>
+                  <button
+                    type="button"
+                    className="account-profile-page__chevron-btn"
+                    aria-expanded={rankHistoryExpanded}
+                    aria-label={
+                      rankHistoryCollapsed
+                        ? t('profile.sections.rankHistory.expand')
+                        : t('profile.sections.rankHistory.collapse')
+                    }
+                    onClick={() => setRankHistoryCollapsed((v) => !v)}
+                  >
+                    <ChevronIcon direction={rankHistoryExpanded ? 'down' : 'right'} />
+                  </button>
+                </div>
+                <div
+                  className={[
+                    'account-profile-page__collapsible',
+                    rankHistoryCollapsed ? 'hidden' : '',
+                  ]
+                    .join(' ')
+                    .trim()}
+                >
+                  <div className="rank-history__controls">
+                    <div className="rank-history__control">
+                      <span className="rank-history__control-label">
+                        {t('profile.sections.rankHistory.metricLabel')}
+                      </span>
+                      <CustomSelect
+                        options={rankHistoryMetricOptions}
+                        value={rankHistorySelectedMetricOption}
+                        onChange={(option) => setRankHistoryMetric(option.value)}
+                        width="14rem"
+                        menuPlacement="bottom"
+                        isSearchable={false}
+                      />
+                    </div>
+                    <div className="rank-history__control">
+                      <span className="rank-history__control-label">
+                        {t('profile.sections.rankHistory.rangeLabel')}
+                      </span>
+                      <div className="rank-history__range-buttons">
+                        {[
+                          { key: '30d', label: t('profile.sections.rankHistory.range30') },
+                          { key: '90d', label: t('profile.sections.rankHistory.range90') },
+                          { key: '365d', label: t('profile.sections.rankHistory.range365') },
+                          { key: 'all', label: t('profile.sections.rankHistory.rangeAll') },
+                        ].map((b) => (
+                          <button
+                            key={b.key}
+                            type="button"
+                            className={[
+                              'rank-history__range-btn',
+                              rankHistoryRange === b.key ? 'rank-history__range-btn--active' : '',
+                            ]
+                              .join(' ')
+                              .trim()}
+                            onClick={() => setRankHistoryRange(b.key)}
+                          >
+                            {b.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  {rankHistoryLoading ? (
+                    <div className="rank-history__status" aria-busy="true">
+                      {t('profile.sections.rankHistory.loading')}
+                    </div>
+                  ) : null}
+                  {rankHistoryError ? (
+                    <div className="rank-history__status rank-history__status--error">
+                      {t('profile.sections.rankHistory.error')}
+                    </div>
+                  ) : null}
+                  {!rankHistoryLoading && !rankHistoryError && rankHistoryChartData.length === 0 ? (
+                    <div className="rank-history__status">{t('profile.sections.rankHistory.empty')}</div>
+                  ) : null}
+                  {!rankHistoryLoading && !rankHistoryError && rankHistoryChartData.length > 0 ? (
+                    <div className="rank-history__chart-wrap">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={rankHistoryChartData} margin={{ top: 8, right: 12, left: 0, bottom: 0 }}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.12)" />
+                          <XAxis
+                            dataKey="date"
+                            tick={{ fill: 'var(--color-gray-2)', fontSize: 11 }}
+                            interval="preserveStartEnd"
+                          />
+                          <YAxis
+                            dataKey="rank"
+                            domain={rankHistoryYDomain}
+                            reversed
+                            allowDecimals={false}
+                            width={44}
+                            tick={{ fill: 'var(--color-gray-2)', fontSize: 11 }}
+                            label={{
+                              value: t('profile.sections.rankHistory.yAxisRank'),
+                              angle: -90,
+                              position: 'insideLeft',
+                              fill: 'var(--color-gray-2)',
+                              fontSize: 11,
+                            }}
+                          />
+                          <Tooltip
+                            contentStyle={{
+                              background: 'var(--color-black)',
+                              border: '1px solid var(--btn-neutral-heavy)',
+                              color: 'var(--color-white)',
+                            }}
+                            labelStyle={{ color: 'var(--color-gray-2)' }}
+                            labelFormatter={(label) => {
+                              if (typeof label !== 'string') return label != null ? String(label) : '';
+                              const days = utcWholeDaysAgo(label);
+                              if (days === null) return label;
+                              if (days < 0) return label;
+                              if (days === 0) return t('profile.sections.rankHistory.tooltipToday');
+                              if (days === 1) return t('profile.sections.rankHistory.tooltipOneDayAgo');
+                              return t('profile.sections.rankHistory.tooltipDaysAgo', { count: days });
+                            }}
+                            formatter={(value) => [value != null ? `#${value}` : '—', t('profile.sections.rankHistory.yAxisRank')]}
+                          />
+                          <Line
+                            type="stepAfter"
+                            dataKey="rank"
+                            stroke="var(--btn-primary)"
+                            strokeWidth={4}
+                            dot={false}
+                            connectNulls={false}
+                            isAnimationActive={true}
+                          />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
+                  ) : null}
+                </div>
+              </section>
 
               {(passesInitialLoading || displayedPasses.length > 0 || passesTotal > 0 || (playerData?.funFacts?.counts?.totalPasses ?? 0) > 0) && (
                 <div className="scores-section">

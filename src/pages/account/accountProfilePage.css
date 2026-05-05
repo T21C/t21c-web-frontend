@@ -48,14 +48,15 @@
   own rules on top of or instead of this one.
 */
 .account-profile-page .account-profile-page__collapsible {
-  overflow: hidden;
   transition: all 0.3s ease-in-out;
   max-height: 40rem;
+  overflow: visible;
   margin-top: 1rem;
 }
 
 .account-profile-page .account-profile-page__collapsible.hidden {
   max-height: 0;
+  overflow: hidden;
   margin-top: 0;
   opacity: 0;
 }
