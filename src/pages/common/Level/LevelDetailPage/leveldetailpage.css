@@ -1586,6 +1586,7 @@
   position: relative;
   background-size: cover;
   background-position: center;
+  text-shadow: 0 1px 6px var(--color-black-t70);
 }
 
 .level-detail-popup .popup-content .popup-header .createdAt {

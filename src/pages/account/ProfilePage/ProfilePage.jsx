@@ -35,6 +35,8 @@ import {
   CartesianGrid,
   Tooltip,
 } from "recharts";
+import { formatDateShort } from "@/utils/Utility";
+import i18next from 'i18next';
 const ENABLE_ROULETTE = import.meta.env.VITE_APRIL_FOOLS === "true";
 
 function utcYmd(d) {
@@ -451,7 +453,7 @@ const ProfilePage = () => {
       const rankHistoryChartData = useMemo(() => {
         if (!rankHistorySeries.length) return [];
         return rankHistorySeries.map((p) => ({
-          date: p.date,
+          date: formatDateShort(p.date, i18next?.language),
           rank:
             rankHistoryMetric === 'rankedScore'
               ? p.rankedScoreRank
@@ -461,6 +463,7 @@ const ProfilePage = () => {
 
       /** Y-axis: pad ±10 around observed min/max ranks (not 0–max). */
       const rankHistoryYDomain = useMemo(() => {
+        const delta = 5;
         const nums = rankHistoryChartData
           .map((d) => d.rank)
           .filter((r) => r != null && Number.isFinite(Number(r)))
@@ -469,13 +472,24 @@ const ProfilePage = () => {
         const minR = Math.min(...nums);
         const maxR = Math.max(...nums);
         const low =
-          minR < 1 ? minR - 10 : Math.max(1, minR - 10);
-        let high = maxR + 10;
+          minR < 1 ? minR - delta : Math.max(1, minR - delta);
+        let high = maxR + delta;
         if (low >= high) {
-          high = low + 10;
+          high = low + delta;
         }
         return [low, high];
       }, [rankHistoryChartData]);
+
+      const getTicks = (min, max, step = 5) => {
+        const ticks = [];
+        const start = Math.ceil(min / step) * step;
+      
+        for (let i = start; i <= max; i += step) {
+          ticks.push(i);
+        }
+      
+        return ticks;
+      };
 
       const rankHistoryExpanded = !rankHistoryCollapsed;
 
@@ -779,11 +793,11 @@ const ProfilePage = () => {
                     <div className="rank-history__chart-wrap">
                       <ResponsiveContainer width="100%" height="100%">
                         <LineChart data={rankHistoryChartData} margin={{ top: 8, right: 12, left: 0, bottom: 0 }}>
-                          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.12)" />
+                          <CartesianGrid vertical={false} stroke="rgba(255,255,255,0.12)" />
                           <XAxis
                             dataKey="date"
                             tick={{ fill: 'var(--color-gray-2)', fontSize: 11 }}
-                            interval="preserveStartEnd"
+                            interval="equidistantPreserveStart"
                           />
                           <YAxis
                             dataKey="rank"
@@ -791,6 +805,7 @@ const ProfilePage = () => {
                             reversed
                             allowDecimals={false}
                             width={44}
+                            ticks={getTicks(rankHistoryYDomain[0], rankHistoryYDomain[1], 10)}
                             tick={{ fill: 'var(--color-gray-2)', fontSize: 11 }}
                             label={{
                               value: t('profile.sections.rankHistory.yAxisRank'),
@@ -819,7 +834,7 @@ const ProfilePage = () => {
                             formatter={(value) => [value != null ? `#${value}` : '—', t('profile.sections.rankHistory.yAxisRank')]}
                           />
                           <Line
-                            type="stepAfter"
+                            type="bump"
                             dataKey="rank"
                             stroke="var(--btn-primary)"
                             strokeWidth={4}

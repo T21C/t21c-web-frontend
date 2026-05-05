@@ -372,6 +372,19 @@ export function formatDate(date, language = 'en') {
   return new Date(date).toLocaleString(localeMap[language] || 'en-GB', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 }
 
+export function formatDateShort(date, language = 'en') {
+  if (!date) return '';
+  const d = new Date(date);
+  const now = new Date();
+  const options = { month: 'short', day: 'numeric' };
+  // If different year, include it
+  if (d.getFullYear() !== now.getFullYear()) {
+    options.year = 'numeric';
+    options.day = undefined;
+  }
+  return d.toLocaleString(localeMap[language] || 'en-GB', options);
+}
+
 export function isCdnUrl(url) {
   return url?.startsWith(import.meta.env.VITE_CDN_URL);
 }
