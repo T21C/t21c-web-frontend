@@ -567,7 +567,7 @@
   color: var(--color-gray-2);
   justify-self: center;
   position: absolute;
-  bottom: -12px;
+  bottom: 5px;
 }
 
 .player-page__rank-history .rank-history__status--error {
