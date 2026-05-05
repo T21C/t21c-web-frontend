@@ -44,6 +44,9 @@ function utcYmd(d) {
 }
 
 function computeRankHistoryFromTo(rangeKey, createdAtIso) {
+  if (rangeKey === "all") {
+    return null;
+  }
   const to = utcYmd(new Date());
   const tMs = Date.now();
   const created =
@@ -425,12 +428,18 @@ const ProfilePage = () => {
           setRankHistoryLoading(true);
           setRankHistoryError(null);
           try {
-            const { from, to } = computeRankHistoryFromTo(
+            const range = computeRankHistoryFromTo(
               rankHistoryRange,
               playerData.createdAt,
             );
+            const from = range?.from;
+            const to = range?.to;
+            const query =
+              from && to
+                ? `?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`
+                : '';
             const res = await api.get(
-              `${import.meta.env.VITE_PLAYERS_V3}/${id}/rank-history?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`,
+              `${import.meta.env.VITE_PLAYERS_V3}/${id}/rank-history${query}`,
             );
             if (cancelled) return;
             setRankHistorySeries(Array.isArray(res.data?.series) ? res.data.series : []);
