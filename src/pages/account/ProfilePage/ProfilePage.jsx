@@ -461,6 +461,25 @@ const ProfilePage = () => {
         }));
       }, [rankHistorySeries, rankHistoryMetric]);
 
+      /**
+       * Force chart remount when core inputs change so the line redraws from fresh state
+       * instead of tweening between different datasets.
+       */
+      const rankHistoryChartKey = useMemo(() => {
+        const first = rankHistoryChartData[0];
+        const last = rankHistoryChartData[rankHistoryChartData.length - 1];
+        return [
+          rankHistoryMetric,
+          rankHistoryRange,
+          rankHistoryLoading ? 'loading' : 'ready',
+          rankHistoryChartData.length,
+          first?.date ?? 'none',
+          first?.rank ?? 'none',
+          last?.date ?? 'none',
+          last?.rank ?? 'none',
+        ].join('|');
+      }, [rankHistoryMetric, rankHistoryRange, rankHistoryLoading, rankHistoryChartData]);
+
       /** Y-axis: pad ±10 around observed min/max ranks (not 0–max). */
       const rankHistoryYDomain = useMemo(() => {
         const delta = 5;
@@ -776,6 +795,65 @@ const ProfilePage = () => {
                       </div>
                     </div>
                   </div>
+                  <div className="rank-history__chart-wrap">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart
+                        key={rankHistoryChartKey}
+                        data={rankHistoryChartData}
+                        margin={{ top: 8, right: 12, left: 0, bottom: 0 }}
+                      >
+                        <CartesianGrid vertical={false} stroke="rgba(255,255,255,0.12)" />
+                        <XAxis
+                          dataKey="date"
+                          tick={{ fill: 'var(--color-gray-2)', fontSize: 11 }}
+                          interval="equidistantPreserveStart"
+                        />
+                        <YAxis
+                          dataKey="rank"
+                          domain={rankHistoryYDomain}
+                          reversed
+                          allowDecimals={false}
+                          width={44}
+                          ticks={getTicks(rankHistoryYDomain[0], rankHistoryYDomain[1], 10)}
+                          tick={{ fill: 'var(--color-gray-2)', fontSize: 11 }}
+                          label={{
+                            value: t('profile.sections.rankHistory.yAxisRank'),
+                            angle: -90,
+                            position: 'insideLeft',
+                            fill: 'var(--color-gray-2)',
+                            fontSize: 11,
+                          }}
+                        />
+                        <Tooltip
+                          contentStyle={{
+                            background: 'var(--color-black)',
+                            border: '1px solid var(--btn-neutral-heavy)',
+                            color: 'var(--color-white)',
+                          }}
+                          labelStyle={{ color: 'var(--color-gray-2)' }}
+                          labelFormatter={(label) => {
+                            if (typeof label !== 'string') return label != null ? String(label) : '';
+                            const days = utcWholeDaysAgo(label);
+                            if (days === null) return label;
+                            if (days < 0) return label;
+                            if (days === 0) return t('profile.sections.rankHistory.tooltipToday');
+                            if (days === 1) return t('profile.sections.rankHistory.tooltipOneDayAgo');
+                            return t('profile.sections.rankHistory.tooltipDaysAgo', { count: days });
+                          }}
+                          formatter={(value) => [value != null ? `#${value}` : '—', t('profile.sections.rankHistory.yAxisRank')]}
+                        />
+                        <Line
+                          type="bump"
+                          dataKey="rank"
+                          stroke="var(--btn-primary)"
+                          strokeWidth={4}
+                          dot={false}
+                          connectNulls={false}
+                          isAnimationActive={true}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
                   {rankHistoryLoading ? (
                     <div className="rank-history__status" aria-busy="true">
                       {t('profile.sections.rankHistory.loading')}
@@ -788,63 +866,6 @@ const ProfilePage = () => {
                   ) : null}
                   {!rankHistoryLoading && !rankHistoryError && rankHistoryChartData.length === 0 ? (
                     <div className="rank-history__status">{t('profile.sections.rankHistory.empty')}</div>
-                  ) : null}
-                  {!rankHistoryLoading && !rankHistoryError && rankHistoryChartData.length > 0 ? (
-                    <div className="rank-history__chart-wrap">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={rankHistoryChartData} margin={{ top: 8, right: 12, left: 0, bottom: 0 }}>
-                          <CartesianGrid vertical={false} stroke="rgba(255,255,255,0.12)" />
-                          <XAxis
-                            dataKey="date"
-                            tick={{ fill: 'var(--color-gray-2)', fontSize: 11 }}
-                            interval="equidistantPreserveStart"
-                          />
-                          <YAxis
-                            dataKey="rank"
-                            domain={rankHistoryYDomain}
-                            reversed
-                            allowDecimals={false}
-                            width={44}
-                            ticks={getTicks(rankHistoryYDomain[0], rankHistoryYDomain[1], 10)}
-                            tick={{ fill: 'var(--color-gray-2)', fontSize: 11 }}
-                            label={{
-                              value: t('profile.sections.rankHistory.yAxisRank'),
-                              angle: -90,
-                              position: 'insideLeft',
-                              fill: 'var(--color-gray-2)',
-                              fontSize: 11,
-                            }}
-                          />
-                          <Tooltip
-                            contentStyle={{
-                              background: 'var(--color-black)',
-                              border: '1px solid var(--btn-neutral-heavy)',
-                              color: 'var(--color-white)',
-                            }}
-                            labelStyle={{ color: 'var(--color-gray-2)' }}
-                            labelFormatter={(label) => {
-                              if (typeof label !== 'string') return label != null ? String(label) : '';
-                              const days = utcWholeDaysAgo(label);
-                              if (days === null) return label;
-                              if (days < 0) return label;
-                              if (days === 0) return t('profile.sections.rankHistory.tooltipToday');
-                              if (days === 1) return t('profile.sections.rankHistory.tooltipOneDayAgo');
-                              return t('profile.sections.rankHistory.tooltipDaysAgo', { count: days });
-                            }}
-                            formatter={(value) => [value != null ? `#${value}` : '—', t('profile.sections.rankHistory.yAxisRank')]}
-                          />
-                          <Line
-                            type="bump"
-                            dataKey="rank"
-                            stroke="var(--btn-primary)"
-                            strokeWidth={4}
-                            dot={false}
-                            connectNulls={false}
-                            isAnimationActive={true}
-                          />
-                        </LineChart>
-                      </ResponsiveContainer>
-                    </div>
                   ) : null}
                 </div>
               </section>

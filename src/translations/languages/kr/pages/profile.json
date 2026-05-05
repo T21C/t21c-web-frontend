@@ -51,7 +51,7 @@
       "collapse": "Collapse difficulty breakdown"
     },
     "rankHistory": {
-      "title": "리더보드 순위 변화",
+      "title": "순위 변화",
       "expand": "순위 기록 펼치기",
       "collapse": "순위 기록 접기",
       "metricLabel": "순위 종류",

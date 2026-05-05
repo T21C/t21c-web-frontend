@@ -31,7 +31,7 @@
       "title": "Wyniki"
     },
     "rankHistory": {
-      "title": "Ranking w czasie",
+      "title": "Miejsce w czasie",
       "expand": "Pokaż historię rankingu",
       "collapse": "Ukryj historię rankingu",
       "metricLabel": "Typ rankingu",

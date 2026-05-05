@@ -51,7 +51,7 @@
       "collapse": "收起"
     },
     "rankHistory": {
-      "title": "排行榜名次变化",
+      "title": "名次变化",
       "expand": "展开名次历史",
       "collapse": "收起名次历史",
       "metricLabel": "名次类型",

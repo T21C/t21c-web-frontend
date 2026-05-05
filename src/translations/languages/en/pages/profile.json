@@ -51,7 +51,7 @@
       "collapse": "Collapse difficulty breakdown"
     },
     "rankHistory": {
-      "title": "Leaderboard rank over time",
+      "title": "Rank over time",
       "expand": "Expand rank history",
       "collapse": "Collapse rank history",
       "metricLabel": "Rank type",

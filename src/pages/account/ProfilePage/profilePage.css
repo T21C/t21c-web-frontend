@@ -254,6 +254,7 @@
 }
 
 .player-page .player-page__section {
+  position: relative;
   margin-top: 20px;
   padding: 20px;
   width: 1000px;
@@ -509,13 +510,13 @@
   max-width: 50rem;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
 }
 
 .player-page__rank-history .rank-history__controls {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
+  justify-content: center;
   align-items: flex-end;
 }
 
@@ -564,6 +565,9 @@
 .player-page__rank-history .rank-history__status {
   font-size: 0.9rem;
   color: var(--color-gray-2);
+  justify-self: center;
+  position: absolute;
+  bottom: -12px;
 }
 
 .player-page__rank-history .rank-history__status--error {

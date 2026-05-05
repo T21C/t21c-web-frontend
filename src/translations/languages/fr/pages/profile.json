@@ -29,7 +29,7 @@
       "title": "Scores"
     },
     "rankHistory": {
-      "title": "Classement dans le temps",
+      "title": "Rang dans le temps",
       "expand": "Afficher l’historique du classement",
       "collapse": "Masquer l’historique du classement",
       "metricLabel": "Type de rang",
