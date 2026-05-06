@@ -1,3 +1,4 @@
+// tuf-search: #useScript
 import { useState, useEffect } from 'react';
 
 export const useScript = (src) => {

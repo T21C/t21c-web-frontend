@@ -1,3 +1,4 @@
+// tuf-search: #ReferencesPopup #referencesPopup #popups #difficulties #references
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './referencespopup.css';

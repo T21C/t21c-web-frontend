@@ -1,3 +1,4 @@
+// tuf-search: #selectors #index
 import { CountrySelect } from "./CountrySelect/CountrySelect";
 import DifficultySlider from "./DifficultySlider/DifficultySlider";
 import { PlayerInput } from "./PlayerInput/PlayerInput";

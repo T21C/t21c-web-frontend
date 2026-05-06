@@ -1,3 +1,4 @@
+/* tuf-search: #CloseButton #closeButton #buttons */
 /* CloseButton: parent must be position: relative when variant="floating". */
 .tuf-close-button {
   display: inline-flex;

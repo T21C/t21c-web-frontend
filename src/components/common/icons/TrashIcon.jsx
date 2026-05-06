@@ -1,3 +1,4 @@
+// tuf-search: #TrashIcon #trashIcon #icons
 import React from 'react';
 
 export const TrashIcon = ({ color, size }) => {

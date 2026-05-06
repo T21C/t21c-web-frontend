@@ -1,3 +1,4 @@
+// tuf-search: #ExternalLinkIcon #externalLinkIcon #icons
 import React from 'react';
 
 export const ExternalLinkIcon = ({ color = "#fff", size = 24, className="", ...props }) => {

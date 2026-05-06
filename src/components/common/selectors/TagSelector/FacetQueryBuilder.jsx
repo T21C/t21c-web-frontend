@@ -1,3 +1,4 @@
+// tuf-search: #FacetQueryBuilder #facetQueryBuilder #selectors #tagSelector
 import React, { useMemo, useState, useRef, useEffect, useId, useCallback } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Tooltip } from 'react-tooltip';

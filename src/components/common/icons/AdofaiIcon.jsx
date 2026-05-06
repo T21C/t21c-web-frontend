@@ -1,3 +1,4 @@
+// tuf-search: #AdofaiIcon #adofaiIcon #icons
 import React from 'react';
 
 export const AdofaiIcon = ({ color = "#fff", size = 24, rotation = -20, ...props }) => {

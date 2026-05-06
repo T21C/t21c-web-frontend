@@ -1,3 +1,4 @@
+// tuf-search: #ShieldIcon #shieldIcon #icons
 import React from 'react';
 
 export const ShieldIcon = ({ color = "#fff", size = 24 }) => {

@@ -1,3 +1,4 @@
+// tuf-search: #CreatePackPopup #createPackPopup #popups #packs #addToPack
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CrossIcon, ImageIcon } from '@/components/common/icons';

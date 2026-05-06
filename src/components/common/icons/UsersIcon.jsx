@@ -1,3 +1,4 @@
+// tuf-search: #UsersIcon #usersIcon #icons
 import React from 'react';
 
 const UsersIcon = ({ size = "16px", color = "currentColor", className = "" }) => {

@@ -1,3 +1,4 @@
+// tuf-search: #AnnouncementPage #announcementPage #admin #announcement — Announcements
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "@/contexts/AuthContext";
 

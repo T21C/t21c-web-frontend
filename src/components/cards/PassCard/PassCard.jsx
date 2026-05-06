@@ -1,3 +1,4 @@
+// tuf-search: #PassCard #passCard #cards
 import { Link } from "react-router-dom";
 import "./passcard.css"
 import { useTranslation } from "react-i18next";

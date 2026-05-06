@@ -1,3 +1,4 @@
+// tuf-search: #CDNTosPopup #cDNTosPopup #popups #levels #cDNTos
 import { useTranslation } from 'react-i18next';
 import './cdntospopup.css';
 import { useState } from 'react';

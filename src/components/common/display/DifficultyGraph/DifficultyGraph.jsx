@@ -1,3 +1,4 @@
+// tuf-search: #DifficultyGraph #difficultyGraph #display
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";

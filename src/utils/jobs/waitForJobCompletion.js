@@ -1,3 +1,4 @@
+// tuf-search: #waitForJobCompletion #jobs
 import api from '@/utils/api';
 
 /**

@@ -1,3 +1,4 @@
+// tuf-search: #SettingsContext #settingsContext
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
 
 const STORAGE_KEY = "settings.layout.profileBannerExpanded";

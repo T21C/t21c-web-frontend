@@ -1,3 +1,4 @@
+// tuf-search: #ScoreCard #scoreCard #cards
 import { Link } from "react-router-dom";
 import "./scorecard.css"
 import "@/index.css"

@@ -1,3 +1,4 @@
+// tuf-search: #SlotMachine #slotMachine #selectors
 import './slotmachine.css';
 import { useState, useEffect } from 'react';
 

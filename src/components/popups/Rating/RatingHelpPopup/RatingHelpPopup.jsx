@@ -1,3 +1,4 @@
+// tuf-search: #RatingHelpPopup #ratingHelpPopup #popups #rating #ratingHelp
 import React, { useEffect, useRef } from 'react';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import './ratinghelppopup.css';

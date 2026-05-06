@@ -1,3 +1,4 @@
+// tuf-search: #profileStatGroups
 import {
   formatCount,
   formatDurationMs,

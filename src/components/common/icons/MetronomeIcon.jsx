@@ -1,3 +1,4 @@
+// tuf-search: #MetronomeIcon #metronomeIcon #icons
 import React from 'react';
 
 export const MetronomeIcon = ({ color = "#fff", size = 24 }) => {

@@ -1,3 +1,4 @@
+// tuf-search: #PinIcon #pinIcon #icons
 import React from 'react';
 
 const PinIcon = ({ size = "16px", color = "#ffffff", className = "", ...props }) => {

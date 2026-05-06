@@ -1,3 +1,4 @@
+// tuf-search: #packs #Packs #index #popups
 import EditPackPopup from "./EditPackPopup/EditPackPopup";
 import PackDownloadPopup from "./PackDownloadPopup/PackDownloadPopup";
 import AddToPackPopup from "./AddToPackPopup/AddToPackPopup";

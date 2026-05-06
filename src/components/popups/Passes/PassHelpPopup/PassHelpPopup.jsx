@@ -1,3 +1,4 @@
+// tuf-search: #PassHelpPopup #passHelpPopup #popups #passes #passHelp
 import React, { useEffect, useRef } from 'react';
 import './passhelppopup.css';
 import { useTranslation } from 'react-i18next';

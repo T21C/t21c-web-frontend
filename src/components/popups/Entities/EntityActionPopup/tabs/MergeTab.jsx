@@ -1,3 +1,4 @@
+// tuf-search: #MergeTab #mergeTab #popups #entities #entityAction #tabs
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 export const MergeTab = ({

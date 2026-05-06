@@ -1,3 +1,4 @@
+// tuf-search: #cookieUtils
 /**
  * Local storage utility (replaces cookie-based preference storage).
  * Same API as before for compatibility; values persist until cleared.

@@ -1,3 +1,4 @@
+// tuf-search: #InfoIcon #infoIcon #icons
 import React from 'react';
 
 export const InfoIcon = ({ color = "#fff", size = 24, className="", ...props }) => {

@@ -1,3 +1,4 @@
+// tuf-search: #cards #index
 
 import LevelCard from "./LevelCard/LevelCard";
 import PlayerCard from "./PlayerCard/PlayerCard";

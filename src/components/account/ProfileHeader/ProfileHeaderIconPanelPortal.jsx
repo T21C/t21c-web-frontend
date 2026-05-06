@@ -1,3 +1,4 @@
+// tuf-search: #ProfileHeaderIconPanelPortal #profileHeaderIconPanelPortal #account #profileHeader
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { Tooltip } from "react-tooltip";

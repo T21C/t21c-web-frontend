@@ -1,3 +1,4 @@
+// tuf-search: #ProfileBannerEditor #profileBannerEditor #account
 import { useCallback, useEffect, useId, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";

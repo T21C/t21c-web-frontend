@@ -1,3 +1,4 @@
+// tuf-search: #ProfileContext #profileContext
 import React, { createContext, useState, useEffect, useContext } from 'react';
 
 const PROFILE_SETTINGS_KEY = 'profile_settings';

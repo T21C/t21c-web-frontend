@@ -1,3 +1,4 @@
+// tuf-search: #RandomIcon #randomIcon #icons
 const RandomIcon = ({ className, style, ...props }) => {
   return (
     <svg

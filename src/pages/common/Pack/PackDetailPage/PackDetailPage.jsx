@@ -1,3 +1,4 @@
+// tuf-search: #PackDetailPage #packDetailPage #pack #packDetail
 import "./packdetailpage.css";
 import React, { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";

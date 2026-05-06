@@ -1,3 +1,4 @@
+// tuf-search: #PackCard #packCard #cards
 import { Link } from "react-router-dom";
 import "./packcard.css"
 import { useTranslation } from "react-i18next";

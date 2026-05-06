@@ -1,3 +1,4 @@
+// tuf-search: #SearchIcon #searchIcon #icons
 import React from 'react';
 
 const SearchIcon = ({ size = "16px", color = "currentColor", className = "" }) => {

@@ -1,3 +1,4 @@
+// tuf-search: #countryCodes
 export const COUNTRY_CODES = [
     { code: 'AF', name: 'Afghanistan' },
     { code: 'AL', name: 'Albania' },

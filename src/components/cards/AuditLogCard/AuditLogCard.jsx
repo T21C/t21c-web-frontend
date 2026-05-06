@@ -1,3 +1,4 @@
+// tuf-search: #AuditLogCard #auditLogCard #cards
 import { useState } from "react";
 
 function PrettyJSON({ value }) {

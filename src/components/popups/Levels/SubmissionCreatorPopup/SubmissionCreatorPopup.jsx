@@ -1,3 +1,4 @@
+// tuf-search: #SubmissionCreatorPopup #submissionCreatorPopup #popups #levels #submissionCreator
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';

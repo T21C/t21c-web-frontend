@@ -1,3 +1,4 @@
+// tuf-search: #LinksTab #linksTab #popups #entities #entityAction #tabs
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ExternalLinkIcon } from '@/components/common/icons';

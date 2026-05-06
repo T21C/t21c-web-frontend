@@ -1,3 +1,4 @@
+// tuf-search: #LanguageSelector #languageSelector #layout #navigation
 import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { getPortalRoot } from "@/utils/portalRoot";

@@ -1,3 +1,4 @@
+// tuf-search: #DiscordIcon #discordIcon #icons
 import React from 'react';
 
 export const DiscordIcon = ({ color = "#5865F2", size = 24 }) => {

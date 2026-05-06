@@ -1,3 +1,4 @@
+// tuf-search: #CreatorAssignmentPopup #creatorAssignmentPopup #popups #creators #creatorAssignment
 import React, { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';

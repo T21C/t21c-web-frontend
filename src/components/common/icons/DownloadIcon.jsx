@@ -1,3 +1,4 @@
+// tuf-search: #DownloadIcon #downloadIcon #icons
 const DownloadIcon = ({size = "", className = "", color = "#ffffff", strokeWidth = "1.5", ...props}) => {
     return(
       <svg width={size || "100%"} height={size || "100%"} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

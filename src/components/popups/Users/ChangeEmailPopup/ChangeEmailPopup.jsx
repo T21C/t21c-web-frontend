@@ -1,3 +1,4 @@
+// tuf-search: #ChangeEmailPopup #changeEmailPopup #popups #users #changeEmail
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { getPortalRoot } from '@/utils/portalRoot';

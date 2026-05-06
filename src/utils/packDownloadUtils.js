@@ -1,3 +1,4 @@
+// tuf-search: #packDownloadUtils
 import { formatFileSize } from './zipUtils';
 
 const LEVEL_TYPE = 'level';

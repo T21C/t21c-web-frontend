@@ -1,3 +1,4 @@
+// tuf-search: #CurationSelectionPopup #curationSelectionPopup #popups #curations #curationSelection
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';

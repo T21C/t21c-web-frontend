@@ -1,3 +1,4 @@
+// tuf-search: #ItemPickManager #itemPickManager #selectors
 import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import { TrashIcon } from '@/components/common/icons';
 import './itemPickManager.css';

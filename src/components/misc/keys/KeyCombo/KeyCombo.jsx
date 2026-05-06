@@ -1,3 +1,4 @@
+// tuf-search: #KeyCombo #keyCombo #keys
 import React, { useState, useEffect, useCallback } from 'react';
 import KeyDisplay from '../KeyDisplay/KeyDisplay';
 import './keycombo.css';

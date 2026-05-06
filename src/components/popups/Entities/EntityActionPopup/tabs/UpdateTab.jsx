@@ -1,3 +1,4 @@
+// tuf-search: #UpdateTab #updateTab #popups #entities #entityAction #tabs
 import React from 'react';
 import { CustomSelect } from '@/components/common/selectors';
 import { useTranslation } from 'react-i18next';

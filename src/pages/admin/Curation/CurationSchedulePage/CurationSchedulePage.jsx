@@ -1,3 +1,4 @@
+// tuf-search: #CurationSchedulePage #curationSchedulePage #admin #curation #curationSchedule — Curation Schedule Management
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from "@/contexts/AuthContext";
 

@@ -1,3 +1,4 @@
+// tuf-search: #UserMenu #userMenu #layout #navigation
 import React, { useState, useRef, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";

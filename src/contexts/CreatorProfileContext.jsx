@@ -1,3 +1,4 @@
+// tuf-search: #CreatorProfileContext #creatorProfileContext
 import React, { createContext, useState, useEffect, useContext } from 'react';
 
 const CREATOR_PROFILE_SETTINGS_KEY = 'creator_profile_settings';

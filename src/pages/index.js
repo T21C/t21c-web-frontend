@@ -1,3 +1,4 @@
+// tuf-search: #pages #index
 import { lazy } from 'react';
 
 // Common pages

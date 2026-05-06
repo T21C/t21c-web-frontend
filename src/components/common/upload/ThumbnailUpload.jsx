@@ -1,3 +1,4 @@
+// tuf-search: #ThumbnailUpload #thumbnailUpload #upload
 import React, { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';

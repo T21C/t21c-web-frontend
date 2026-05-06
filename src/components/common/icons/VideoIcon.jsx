@@ -1,3 +1,4 @@
+// tuf-search: #VideoIcon #videoIcon #icons
 const VideoIcon = ({size = "", className = "", color = "#ffffff", ...props}) => {
     return(
       <svg width={size} height={size} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke={color} {...props}>

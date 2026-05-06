@@ -1,3 +1,4 @@
+// tuf-search: #CreditsTab #creditsTab #popups #entities #entityAction #tabs
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 export const CreditsTab = ({

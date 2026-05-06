@@ -1,3 +1,4 @@
+// tuf-search: #ReratesTab #reratesTab #admin #announcement — Announcements
 import api from '@/utils/api';
 import '../announcementpage.css';
 import { useState } from 'react';

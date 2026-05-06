@@ -1,3 +1,4 @@
+// tuf-search: #EmailVerificationPage #emailVerificationPage #account #emailVerification
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';

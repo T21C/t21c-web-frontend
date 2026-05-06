@@ -1,3 +1,4 @@
+// tuf-search: #AliasManagementPopup #aliasManagementPopup #popups #levels #editLevel
 import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import './aliasmanagementpopup.css';

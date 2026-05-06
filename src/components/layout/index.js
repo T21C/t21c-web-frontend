@@ -1,3 +1,4 @@
+// tuf-search: #layout #index
 import Footer from './Footer/Footer'
 import Navigation from './Navigation/Navigation'
 import Profile from './Profile/Profile'

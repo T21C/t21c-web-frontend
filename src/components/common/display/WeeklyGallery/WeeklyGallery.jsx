@@ -1,3 +1,4 @@
+// tuf-search: #WeeklyGallery #weeklyGallery #display
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import './WeeklyGallery.css';

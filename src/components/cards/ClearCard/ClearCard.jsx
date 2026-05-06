@@ -1,3 +1,4 @@
+// tuf-search: #ClearCard #clearCard #cards
 import { Link } from "react-router-dom";
 import { isoToEmoji } from "@/utils";
 import "./clearcard.css"

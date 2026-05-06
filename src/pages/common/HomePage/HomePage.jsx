@@ -1,3 +1,4 @@
+// tuf-search: #HomePage #homePage #home — Home
 import { useEffect, useState, useCallback } from "react";
 import "./homepage.css"
 import { Footer } from "@/components/layout";

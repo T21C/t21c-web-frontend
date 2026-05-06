@@ -1,3 +1,4 @@
+// tuf-search: #curations #Curations #index #popups
 import TypeManagementPopup from "./TypeManagementPopup/TypeManagementPopup";
 import CurationEditPopup from "./CurationEditPopup/CurationEditPopup";
 import CurationSelectionPopup from "./CurationSelectionPopup/CurationSelectionPopup";

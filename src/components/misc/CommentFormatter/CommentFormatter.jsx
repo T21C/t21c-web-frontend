@@ -1,3 +1,4 @@
+// tuf-search: #CommentFormatter #commentFormatter
 import React from 'react';
 import './commentFormatter.css';
 

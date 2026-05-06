@@ -1,3 +1,4 @@
+// tuf-search: #CrownIcon #crownIcon #icons
 import React from 'react';
 
 const CrownIcon = ({ className = '', size = "24px"}) => {

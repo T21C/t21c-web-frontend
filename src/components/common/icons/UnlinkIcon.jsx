@@ -1,3 +1,4 @@
+// tuf-search: #UnlinkIcon #unlinkIcon #icons
 import React from 'react';
 
 export const UnlinkIcon = ({ color, size }) => {

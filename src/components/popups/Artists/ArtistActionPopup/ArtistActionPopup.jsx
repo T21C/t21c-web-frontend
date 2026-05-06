@@ -1,3 +1,4 @@
+// tuf-search: #ArtistActionPopup #artistActionPopup #popups #artists #artistAction
 import React from 'react';
 import { EntityActionPopup } from '@/components/popups/Entities';
 

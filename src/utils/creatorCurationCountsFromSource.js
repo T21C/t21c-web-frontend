@@ -1,3 +1,4 @@
+// tuf-search: #creatorCurationCountsFromSource
 /**
  * Normalize creator leaderboard / ES `curationTypeCountPairs` into the
  * `Record<typeId string, count>` shape expected by {@link buildCreatorIconSlots}.

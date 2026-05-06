@@ -1,3 +1,4 @@
+// tuf-search: #LinkIcon #linkIcon #icons
 import React from 'react';
 
 export const LinkIcon = ({ color = "#fff", size = 24 }) => {

@@ -1,3 +1,4 @@
+// tuf-search: #CreatorAssignmentPanel #creatorAssignmentPanel #popups #creators #creatorAssignment
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CustomSelect } from '@/components/common/selectors';

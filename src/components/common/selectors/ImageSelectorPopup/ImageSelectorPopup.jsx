@@ -1,3 +1,4 @@
+// tuf-search: #ImageSelectorPopup #imageSelectorPopup #selectors #imageSelector
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { toast } from 'react-hot-toast';
 import { Cropper, FixedCropper, CircleStencil, RectangleStencil, ImageRestriction } from 'react-advanced-cropper';

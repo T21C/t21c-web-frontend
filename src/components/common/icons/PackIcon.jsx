@@ -1,3 +1,4 @@
+// tuf-search: #PackIcon #packIcon #icons
 import React from 'react';
 
 const PackIcon = ({ size = "24px", color = "currentColor", className = "" }) => {

@@ -1,3 +1,4 @@
+// tuf-search: #SortDescIcon #sortDescIcon #icons
 const SortDescIcon = ({ className, style, ...props }) => {
   return (
     <svg

@@ -1,3 +1,4 @@
+// tuf-search: #UploadIcon #uploadIcon #icons
 import React from 'react';
 
 export const UploadIcon = ({ color, size, strokeWidth = 1.5, ...props }) => {

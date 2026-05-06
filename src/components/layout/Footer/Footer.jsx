@@ -1,3 +1,4 @@
+// tuf-search: #Footer #layout #footer
 import { useTranslation } from "react-i18next";
 import { Link } from 'react-router-dom';
 import './footer.css';

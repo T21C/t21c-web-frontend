@@ -1,3 +1,4 @@
+// tuf-search: #TermsOfServicePage #termsOfServicePage #termsOfService
 import "./termsOfServicePage.css";
 import { Footer } from "@/components/layout";
 import { MetaTags } from "@/components/common/display";

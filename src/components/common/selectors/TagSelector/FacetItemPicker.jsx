@@ -1,3 +1,4 @@
+// tuf-search: #FacetItemPicker #facetItemPicker #selectors #tagSelector
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';

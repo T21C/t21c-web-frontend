@@ -1,3 +1,4 @@
+// tuf-search: #CreatorProfilePage #creatorProfilePage #account #creatorProfile
 import "../accountProfilePage.css";
 import "./creatorprofilepage.css";
 import { useEffect, useMemo, useState } from "react";

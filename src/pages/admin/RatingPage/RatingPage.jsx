@@ -1,3 +1,4 @@
+// tuf-search: #RatingPage #ratingPage #admin #rating — Rating Management
 
 import { MetaTags } from "@/components/common/display";
 import { StateDisplay } from "@/components/common/selectors";

@@ -1,3 +1,4 @@
+// tuf-search: #SteamIcon #steamIcon #icons
 import React from 'react';
 
 export const SteamIcon = ({ color = '#fff', size = "24px" }) => {

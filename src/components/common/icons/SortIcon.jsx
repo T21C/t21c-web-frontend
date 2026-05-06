@@ -1,3 +1,4 @@
+// tuf-search: #SortIcon #sortIcon #icons
 import React from 'react';
 
 export const SortIcon = ({ color = "#fff", size = "32px",  ...props }) => {

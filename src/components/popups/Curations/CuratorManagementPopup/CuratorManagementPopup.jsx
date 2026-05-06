@@ -1,3 +1,4 @@
+// tuf-search: #CuratorManagementPopup #curatorManagementPopup #popups #curations #curatorManagement
 import React from 'react';
 import UserManagementPopup from '../../Users/UserManagementPopup/UserManagementPopup';
 import PropTypes from 'prop-types';

@@ -1,3 +1,4 @@
+// tuf-search: #main #entry — Vite entry
 import ReactDOM from 'react-dom/client';
 import App from '@/App';
 import '@/index.css';

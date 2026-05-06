@@ -1,3 +1,4 @@
+// tuf-search: #SongSelectorPopup #songSelectorPopup #popups #songs #songSelector
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';

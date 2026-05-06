@@ -1,3 +1,4 @@
+// tuf-search: #zipUtils
 /**
  * Utility functions for handling archive uploads.
  *

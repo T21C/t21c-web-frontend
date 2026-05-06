@@ -1,3 +1,4 @@
+// tuf-search: #CrossedPhoneIcon #crossedPhoneIcon #icons
 import React from 'react';
 
 export const CrossedPhoneIcon = ({ color = "#fff", size = 24, ...props }) => {

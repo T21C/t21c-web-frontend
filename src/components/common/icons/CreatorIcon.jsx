@@ -1,3 +1,4 @@
+// tuf-search: #CreatorIcon #creatorIcon #icons
 import React from 'react';
 
 export const CreatorIcon = ({ color = "#fff", size = 24, ...props }) => {

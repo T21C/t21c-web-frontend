@@ -1,3 +1,4 @@
+// tuf-search: #DifficultySlider #difficultySlider #selectors
 import React, { useRef, useState, useCallback, useEffect } from 'react';
 import './difficultyslider.css';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';

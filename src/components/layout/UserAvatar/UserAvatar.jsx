@@ -1,3 +1,4 @@
+// tuf-search: #UserAvatar #userAvatar #layout
 import { useState, useEffect, useRef } from 'react';
 import DefaultAvatar from '@/components/common/icons/DefaultAvatar';
 import './useravatar.css';

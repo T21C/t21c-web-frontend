@@ -1,3 +1,4 @@
+// tuf-search: #Abilities
 export const ABILITIES = {
   CUSTOM_CSS: 1n << 0n,
   CURATOR_ASSIGNABLE: 1n << 6n,

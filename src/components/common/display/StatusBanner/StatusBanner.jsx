@@ -1,3 +1,4 @@
+// tuf-search: #StatusBanner #statusBanner #display
 import './statusBanner.css';
 
 const placementClass = (placement) =>

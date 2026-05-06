@@ -1,3 +1,4 @@
+// tuf-search: #ChunkedUploadClient #chunkedUploadClient #upload
 import api from '@/utils/api';
 import { createSHA256 } from 'hash-wasm';
 

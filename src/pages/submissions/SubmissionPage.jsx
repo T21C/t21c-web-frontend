@@ -1,3 +1,4 @@
+// tuf-search: #SubmissionPage #submissionPage #submissions
 import "./submissionpage.css"
 
 import { useNavigate } from "react-router-dom"

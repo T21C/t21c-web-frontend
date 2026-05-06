@@ -1,3 +1,4 @@
+// tuf-search: #FilterIcon #filterIcon #icons
 import React from 'react';
 
 export const FilterIcon = ({ color = "#fff", size = "32px",  ...props }) => {

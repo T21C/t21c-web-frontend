@@ -1,3 +1,4 @@
+// tuf-search: #PassPage #passPage #pass — Pass List
 import "./passpage.css";
 import "@/pages/common/sort.css";
 import "@/pages/common/search-section.css";

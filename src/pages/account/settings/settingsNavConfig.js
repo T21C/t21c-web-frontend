@@ -1,3 +1,4 @@
+// tuf-search: #settingsNavConfig #account #settings
 /**
  * Settings hub navigation. Add rows here for new areas (billing, security, …).
  * @typedef {{

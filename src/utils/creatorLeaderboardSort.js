@@ -1,3 +1,4 @@
+// tuf-search: #creatorLeaderboardSort
 /**
  * Leaderboard `sortBy` values — must stay in sync with server `validCreatorSortOptions`.
  * First entry is the default when storage is missing or invalid.

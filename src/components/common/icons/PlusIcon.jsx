@@ -1,3 +1,4 @@
+// tuf-search: #PlusIcon #plusIcon #icons
 import React from 'react';
 
 const PlusIcon = ({ size = "16px", color = "currentColor", className = "" }) => {

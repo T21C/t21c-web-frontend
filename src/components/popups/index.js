@@ -1,3 +1,4 @@
+// tuf-search: #popups #index
 // Re-exports from group barrels. Prefer importing from specific groups
 // (e.g. @/components/popups/Packs) so only that group is bundled with the page.
 export * from "./Packs";

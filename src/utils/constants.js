@@ -1,3 +1,4 @@
+// tuf-search: #constants
 export const LevelPackViewModes = {
     PUBLIC: 1,
     LINKONLY: 2,

@@ -1,3 +1,4 @@
+// tuf-search: #ArrowIcon #arrowIcon #icons
 import React from 'react';
 
 export const ArrowIcon = ({ color = "#fff", size = 24, ...props }) => {

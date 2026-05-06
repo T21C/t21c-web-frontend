@@ -1,3 +1,4 @@
+// tuf-search: #EyeOffIcon #eyeOffIcon #icons
 import React from 'react';
 
 const EyeOffIcon = ({ size = "16px", color = "currentColor", className = "" }) => {

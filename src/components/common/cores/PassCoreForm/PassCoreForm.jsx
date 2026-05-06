@@ -1,3 +1,4 @@
+// tuf-search: #PassCoreForm #passCoreForm #cores
 import { useTranslation } from 'react-i18next';
 import { Tooltip } from 'react-tooltip';
 import './PassCoreForm.css';

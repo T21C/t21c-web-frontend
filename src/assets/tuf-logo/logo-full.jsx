@@ -1,3 +1,4 @@
+// tuf-search: #logo-full #tufLogo
 export default function LogoFullSVG ({...props}) {
     return (
 <svg {...props} xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" width="100%" viewBox="0 0 3209 959" xmlSpace="preserve">

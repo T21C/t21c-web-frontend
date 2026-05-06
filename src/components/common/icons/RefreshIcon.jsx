@@ -1,3 +1,4 @@
+// tuf-search: #RefreshIcon #refreshIcon #icons
 import React from 'react';
 
 export const RefreshIcon = ({ color, size }) => {

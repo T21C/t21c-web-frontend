@@ -1,3 +1,4 @@
+// tuf-search: #PackPage #packPage #pack — Packs - TUF
 import "./packpage.css";
 import "@/pages/common/sort.css";
 import "@/pages/common/search-section.css";

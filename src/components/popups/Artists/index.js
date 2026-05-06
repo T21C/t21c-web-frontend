@@ -1,3 +1,4 @@
+// tuf-search: #artists #Artists #index #popups
 import { ArtistPopup } from "./ArtistPopup/ArtistPopup";
 import { ArtistSelectorPopup } from "./ArtistSelectorPopup/ArtistSelectorPopup";
 import { ArtistActionPopup } from "./ArtistActionPopup/ArtistActionPopup";

@@ -1,3 +1,4 @@
+// tuf-search: #LeaderboardIcon #leaderboardIcon #icons
 import React from 'react';
 
 export const LeaderboardIcon = ({ color="#fff", size=24, ...props }) => {

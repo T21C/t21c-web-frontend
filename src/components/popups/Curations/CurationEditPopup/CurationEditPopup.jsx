@@ -1,3 +1,4 @@
+// tuf-search: #CurationEditPopup #curationEditPopup #popups #curations #curationEdit
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation } from 'react-router-dom';

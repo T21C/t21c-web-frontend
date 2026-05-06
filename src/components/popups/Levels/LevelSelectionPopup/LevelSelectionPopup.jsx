@@ -1,3 +1,4 @@
+// tuf-search: #LevelSelectionPopup #levelSelectionPopup #popups #levels #levelSelection
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';

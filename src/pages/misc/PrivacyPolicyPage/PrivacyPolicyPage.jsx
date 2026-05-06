@@ -1,3 +1,4 @@
+// tuf-search: #PrivacyPolicyPage #privacyPolicyPage #privacyPolicy
 import "./privacyPolicyPage.css";
 import { Footer } from "@/components/layout";
 import { MetaTags } from "@/components/common/display";

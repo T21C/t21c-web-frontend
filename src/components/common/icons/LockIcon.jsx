@@ -1,3 +1,4 @@
+// tuf-search: #LockIcon #lockIcon #icons
 import React from 'react';
 
 const LockIcon = ({ size = "16px", color = "currentColor", className = "" }) => {

@@ -1,3 +1,4 @@
+// tuf-search: #DifficultyPopup #difficultyPopup #popups #difficulties #difficulty
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EditIcon, PencilIcon, QuestionmarkCircleIcon, TrashIcon, DragHandleIcon } from '@/components/common/icons';

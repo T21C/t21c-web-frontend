@@ -1,3 +1,4 @@
+// tuf-search: #TimeIcon #timeIcon #icons
 export default function TimeIcon({ color = "#fff", size = 24 }) {
     return (
     <svg width={size} height={size} viewBox="-3 -3 28 30" fill={color} xmlns="http://www.w3.org/2000/svg" stroke={color}>

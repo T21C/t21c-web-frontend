@@ -1,3 +1,4 @@
+// tuf-search: #EyeIcon #eyeIcon #icons
 import React from 'react';
 
 const EyeIcon = ({ size = "16px", color = "currentColor", className = "" }) => {

@@ -1,3 +1,4 @@
+// tuf-search: #SettingsLayout #settingsLayout #account #settings
 import { NavLink, Outlet } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";

@@ -1,3 +1,4 @@
+// tuf-search: #useBodyScrollLock
 import { useEffect } from 'react';
 
 /**

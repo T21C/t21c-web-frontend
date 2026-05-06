@@ -1,3 +1,4 @@
+// tuf-search: #PassSubmissionPage #passSubmissionPage #submissions #passSubmission
 
 import "./passsubmission.css";
 import placeholder from "@/assets/placeholder/3.png";

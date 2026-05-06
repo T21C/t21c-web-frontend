@@ -1,3 +1,4 @@
+// tuf-search: #navigationConfig #layout #navigation
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 
 /**

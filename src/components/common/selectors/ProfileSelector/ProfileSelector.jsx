@@ -1,3 +1,4 @@
+// tuf-search: #ProfileSelector #profileSelector #selectors
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import api from '@/utils/api';

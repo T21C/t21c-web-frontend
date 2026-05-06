@@ -1,3 +1,4 @@
+// tuf-search: #CurationPage #curationPage #admin #curation — Curation Management
 import React, { useState, useEffect, useRef } from 'react';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { useAuth } from "@/contexts/AuthContext";

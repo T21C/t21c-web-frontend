@@ -1,3 +1,4 @@
+// tuf-search: #CreatorsListPage #creatorsListPage #creatorsList
 import "./creatorslistpage.css";
 import "@/pages/common/search-section.css";
 import "@/pages/common/sort.css";

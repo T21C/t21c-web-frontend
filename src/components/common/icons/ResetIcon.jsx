@@ -1,3 +1,4 @@
+// tuf-search: #ResetIcon #resetIcon #icons
 import React from 'react';
 
 export const ResetIcon = ({ color = "#fff", size = "32px",  ...props }) => {

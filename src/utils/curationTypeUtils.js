@@ -1,3 +1,4 @@
+// tuf-search: #curationTypeUtils
 import { permissionFlags } from "./UserPermissions";
 import { ABILITIES } from "./Abilities";
 // Client-side utility functions for curation type abilities

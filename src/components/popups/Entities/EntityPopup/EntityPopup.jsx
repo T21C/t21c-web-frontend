@@ -1,3 +1,4 @@
+// tuf-search: #EntityPopup #entityPopup #popups #entities #entity
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';

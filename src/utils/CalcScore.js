@@ -1,3 +1,4 @@
+// tuf-search: #CalcScore #calcScore
 import calcAcc from "./CalcAcc"
 
 const gmConst = 315

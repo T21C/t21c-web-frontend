@@ -1,3 +1,4 @@
+// tuf-search: #uploadErrors
 /**
  * Builds a user-visible message from CDN / API error payloads.
  * Prefers `details.errors` (Shape A), then legacy flat `errors`, then `error`.

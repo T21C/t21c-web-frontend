@@ -1,3 +1,4 @@
+// tuf-search: #ArtistContext #artistContext
 import { createContext, useContext, useState, useEffect } from 'react';
 
 const STORAGE_KEYS = {

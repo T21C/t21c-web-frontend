@@ -1,3 +1,4 @@
+// tuf-search: #CloseButton #closeButton #buttons
 import { CrossIcon } from '@/components/common/icons';
 import './closebutton.css';
 

@@ -1,3 +1,4 @@
+// tuf-search: #profileBanners
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { DEFAULT_PROFILE_BANNER_PRESET_PATH } from "@/constants/bannerPresets";
 

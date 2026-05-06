@@ -1,3 +1,4 @@
+// tuf-search: #LevelHelpPopup #levelHelpPopup #popups #levels #levelHelp
 import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
 import './levelhelppopup.css';
 import { Trans, useTranslation } from 'react-i18next';

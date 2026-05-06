@@ -1,3 +1,4 @@
+// tuf-search: #EntityActionPopup #entityActionPopup #popups #entities #entityAction
 import React, { useState, useEffect, useRef } from 'react';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { useTranslation } from 'react-i18next';

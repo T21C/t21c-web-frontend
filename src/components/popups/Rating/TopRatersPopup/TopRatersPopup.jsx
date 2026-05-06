@@ -1,3 +1,4 @@
+// tuf-search: #TopRatersPopup #topRatersPopup #popups #rating #topRaters
 import React, { useState, useEffect, useCallback } from 'react';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import './topraterspopup.css';

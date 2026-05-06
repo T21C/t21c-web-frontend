@@ -1,3 +1,4 @@
+// tuf-search: #CheckmarkIcon #checkmarkIcon #icons
 import React from 'react';
 
 export const CheckmarkIcon = ({ color = "#fff", size = 24 }) => {

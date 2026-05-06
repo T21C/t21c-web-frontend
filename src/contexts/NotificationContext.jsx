@@ -1,3 +1,4 @@
+// tuf-search: #NotificationContext #notificationContext
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import api from '@/utils/api';
 import { useAuth } from './AuthContext';

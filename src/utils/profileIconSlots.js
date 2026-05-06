@@ -1,3 +1,4 @@
+// tuf-search: #profileIconSlots
 /**
  * Build ProfileHeader `iconSlots` for players (P/G/U + WF-based GQ/UQ) and creators (curation types).
  */

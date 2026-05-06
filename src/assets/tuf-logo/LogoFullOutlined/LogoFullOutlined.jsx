@@ -1,3 +1,4 @@
+// tuf-search: #LogoFullOutlined #logoFullOutlined #tufLogo
 import LogoFullSVG from "../logo-full";
 import "./logofulloutlined.css";
 

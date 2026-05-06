@@ -1,3 +1,4 @@
+// tuf-search: #auth #index
 import PrivateRoute from './PrivateRoute/PrivateRoute';
 import ReCAPTCHA from './ReCaptcha/ReCaptcha';
 

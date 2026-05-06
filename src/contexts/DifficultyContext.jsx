@@ -1,3 +1,4 @@
+// tuf-search: #DifficultyContext #difficultyContext
 /* eslint-disable react/prop-types */
 import { createContext, useState, useEffect, useContext, useRef } from "react";
 import api from "@/utils/api";

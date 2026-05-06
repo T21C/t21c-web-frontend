@@ -1,3 +1,4 @@
+// tuf-search: #CalcAcc #calcAcc
 
 function arraySum(arr) {
     return arr.reduce(add, 0);

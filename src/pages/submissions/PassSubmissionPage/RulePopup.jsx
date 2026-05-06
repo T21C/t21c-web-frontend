@@ -1,3 +1,4 @@
+// tuf-search: #RulePopup #rulePopup #submissions #passSubmission
 import { CheckmarkIcon, CrossedPhoneIcon, CrossIcon } from "@/components/common/icons";
 import { useTranslation } from "react-i18next";
 

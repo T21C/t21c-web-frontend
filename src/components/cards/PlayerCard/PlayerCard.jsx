@@ -1,3 +1,4 @@
+// tuf-search: #PlayerCard #playerCard #cards
 import { Link } from "react-router-dom";
 import "./playercard.css"
 import { useTranslation } from "react-i18next";

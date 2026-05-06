@@ -1,3 +1,4 @@
+// tuf-search: #SongManagementPage #songManagementPage #admin #songManagement — Song Management - TUF
 import React from 'react';
 import EntityManagementPage from '../EntityManagementPage/EntityManagementPage';
 

@@ -1,3 +1,4 @@
+// tuf-search: #FetchIcon #fetchIcon #icons
 import React from 'react';
 
 const size = "40px"

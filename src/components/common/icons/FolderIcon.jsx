@@ -1,3 +1,4 @@
+// tuf-search: #FolderIcon #folderIcon #icons
 import React from 'react';
 
 const FolderIcon = ({ className = "", size = 24, ...props }) => {

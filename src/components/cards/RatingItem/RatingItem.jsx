@@ -1,3 +1,4 @@
+// tuf-search: #RatingItem #ratingItem #cards
 import './ratingitem.css';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

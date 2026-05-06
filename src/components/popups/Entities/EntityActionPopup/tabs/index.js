@@ -1,3 +1,4 @@
+// tuf-search: #tabs #index #popups #entities #entityAction
 export { UpdateTab } from './UpdateTab';
 export { MergeTab } from './MergeTab';
 export { SplitTab } from './SplitTab';

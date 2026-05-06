@@ -1,3 +1,4 @@
+// tuf-search: #DragHandleIcon #dragHandleIcon #icons
 import React from 'react';
 
 export const DragHandleIcon = ({ color = "#fff", size = "24px", className = "", ...props }) => {

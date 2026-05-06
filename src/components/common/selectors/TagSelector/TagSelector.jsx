@@ -1,3 +1,4 @@
+// tuf-search: #TagSelector #tagSelector #selectors
 import React, { useState, useRef, useEffect } from 'react';
 import './tagselector.css';
 import { useTranslation } from 'react-i18next';

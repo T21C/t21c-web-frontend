@@ -1,3 +1,4 @@
+// tuf-search: #icons #index
 import DefaultAvatar from './DefaultAvatar';
 import { DiscordIcon } from './DiscordIcon';
 import DownloadIcon from './DownloadIcon';

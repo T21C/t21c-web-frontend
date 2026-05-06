@@ -1,3 +1,4 @@
+// tuf-search: #RatingInput #ratingInput #selectors
 import { useState, useEffect, useCallback } from 'react';
 import "./ratinginput.css";
 import { useTranslation } from 'react-i18next';

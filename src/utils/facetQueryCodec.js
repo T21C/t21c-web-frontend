@@ -1,3 +1,4 @@
+// tuf-search: #facetQueryCodec
 /**
  * Client helpers for facet query v1 (tags / curation types).
  * Mirrors server/src/misc/utils/search/facetQuery.ts semantics.

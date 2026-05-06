@@ -1,3 +1,4 @@
+// tuf-search: #UserPermissions #userPermissions
 export const permissionFlags = {
   SUPER_ADMIN: 1n << 62n,        
   RATER: 1n << 61n,              

@@ -1,3 +1,4 @@
+// tuf-search: #ServerCloudIcon #serverCloudIcon #icons
 const ServerCloudIcon = ({size = "", className = "", color = "#ffffff", strokeWidth = "1.5", ...props}) => {
     return(
     <svg {...props} width={size || "100%"} height={size || "100%"} viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" class="icon">

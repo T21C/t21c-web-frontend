@@ -1,3 +1,4 @@
+// tuf-search: #WarningIcon #warningIcon #icons
 import React from 'react';
 
 export const WarningIcon = ({ color = "#fff", size = "24px", strokeWidth = "2" }) => {

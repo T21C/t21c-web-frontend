@@ -1,3 +1,4 @@
+// tuf-search: #DifficultyPage #difficultyPage #admin #difficulty — Manage Difficulties
 import React, { useState, useEffect, useMemo } from 'react';
 import toast from 'react-hot-toast';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';

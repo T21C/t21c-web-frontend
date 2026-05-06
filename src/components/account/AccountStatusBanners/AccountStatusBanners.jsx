@@ -1,3 +1,4 @@
+// tuf-search: #AccountStatusBanners #accountStatusBanners #account
 import { useTranslation } from 'react-i18next';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { StatusBanner } from '@/components/common/display/StatusBanner/StatusBanner';

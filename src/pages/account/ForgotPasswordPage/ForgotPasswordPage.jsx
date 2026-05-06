@@ -1,3 +1,4 @@
+// tuf-search: #ForgotPasswordPage #forgotPasswordPage #account #forgotPassword — Forgot Password
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';

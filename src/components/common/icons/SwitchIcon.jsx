@@ -1,3 +1,4 @@
+// tuf-search: #SwitchIcon #switchIcon #icons
 import React from 'react';
 
 export const SwitchIcon = ({ color, size, ...props }) => {

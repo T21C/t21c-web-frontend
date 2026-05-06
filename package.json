@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "tuf-search-tags": "node scripts/tuf-search-tags.mjs",
     "generate:banners": "node scripts/generateBannerManifest.mjs",
     "predev": "node scripts/generateBannerManifest.mjs",
     "dev": "vite --host",

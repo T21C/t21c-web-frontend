@@ -1,3 +1,4 @@
+// tuf-search: #PackHelpPopup #packHelpPopup #popups #packs #packHelp
 import React, { useEffect, useRef } from 'react';
 import './packhelppopup.css';
 import { useTranslation } from 'react-i18next';

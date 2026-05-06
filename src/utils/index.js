@@ -1,3 +1,4 @@
+// tuf-search: #utils #index
 import twemoji from '@discordapp/twemoji';
 import api from "@/utils/api";
 import * as Utility from "@/utils/Utility";

@@ -1,3 +1,4 @@
+// tuf-search: #RatingFilterContext #ratingFilterContext
 import { createContext, useContext, useState, useEffect } from 'react';
 
 const RatingFilterContext = createContext();

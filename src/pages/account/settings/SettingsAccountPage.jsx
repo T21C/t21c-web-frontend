@@ -1,3 +1,4 @@
+// tuf-search: #SettingsAccountPage #settingsAccountPage #account #settings
 import EditProfilePage from "./EditProfilePage";
 
 const SettingsAccountPage = () => {

@@ -1,3 +1,4 @@
+// tuf-search: #DiscordRolesPopup #discordRolesPopup #popups #discordRoles
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';

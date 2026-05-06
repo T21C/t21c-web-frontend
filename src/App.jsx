@@ -1,3 +1,4 @@
+// tuf-search: #App #root — application shell
 import { Route, Routes, useSearchParams } from "react-router-dom";
 import { Suspense, useEffect } from "react";
 import { Navigation } from "@/components/layout";

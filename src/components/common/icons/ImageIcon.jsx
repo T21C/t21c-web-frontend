@@ -1,3 +1,4 @@
+// tuf-search: #ImageIcon #imageIcon #icons
 import React from 'react';
 
 const ImageIcon = ({ size = "16px", color = "currentColor", className = "" }) => {

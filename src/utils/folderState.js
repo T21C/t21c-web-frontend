@@ -1,3 +1,4 @@
+// tuf-search: #folderState
 // Utility for managing folder expansion state in localStorage
 const FOLDER_STATE_KEY = 'pack_folder_states';
 const PACK_FOLDER_STATES_KEY = 'pack_expanded_folders';

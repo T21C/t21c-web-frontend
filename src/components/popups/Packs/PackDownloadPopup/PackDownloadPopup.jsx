@@ -1,3 +1,4 @@
+// tuf-search: #PackDownloadPopup #packDownloadPopup #popups #packs #packDownload
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';

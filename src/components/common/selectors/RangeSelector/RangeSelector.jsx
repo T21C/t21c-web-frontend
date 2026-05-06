@@ -1,3 +1,4 @@
+// tuf-search: #RangeSelector #rangeSelector #selectors
 import React, { useRef, useState, useCallback, useEffect } from 'react';
 import './rangeselector.css';
 

@@ -1,3 +1,4 @@
+// tuf-search: #useJobProgressStream
 import { useEffect, useState } from 'react';
 
 const baseURL = import.meta.env.VITE_API_URL || '';

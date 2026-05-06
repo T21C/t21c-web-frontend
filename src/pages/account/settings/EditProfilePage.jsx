@@ -1,3 +1,4 @@
+// tuf-search: #EditProfilePage #editProfilePage #account #settings
 import React, { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import './editProfilePage.css';

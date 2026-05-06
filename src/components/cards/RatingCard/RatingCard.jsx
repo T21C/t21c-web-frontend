@@ -1,3 +1,4 @@
+// tuf-search: #RatingCard #ratingCard #cards
 import { LinkIcon } from '@/components/common/icons/LinkIcon';
 import './ratingcard.css';
 import { calculateRatingValue, formatCreatorDisplay, formatDate } from '@/utils/Utility';

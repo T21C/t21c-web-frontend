@@ -1,3 +1,4 @@
+// tuf-search: #ChevronIcon #chevronIcon #icons
 import React from 'react';
 
 const ChevronIcon = ({ className = "", color = "currentColor", size = 16, direction = "right", ...props }) => {

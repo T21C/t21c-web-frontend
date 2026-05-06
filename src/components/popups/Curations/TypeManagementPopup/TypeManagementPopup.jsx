@@ -1,3 +1,4 @@
+// tuf-search: #TypeManagementPopup #typeManagementPopup #popups #curations #typeManagement
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';

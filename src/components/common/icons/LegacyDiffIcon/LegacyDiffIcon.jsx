@@ -1,3 +1,4 @@
+// tuf-search: #LegacyDiffIcon #legacyDiffIcon #icons
 import "./legacydifficon.css";
 
 export default function LegacyDiffIcon({ diff, size = 32 }) {

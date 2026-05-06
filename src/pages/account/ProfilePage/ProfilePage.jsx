@@ -1,3 +1,4 @@
+// tuf-search: #ProfilePage #profilePage #account #profile — {{name}}
 import "../accountProfilePage.css"
 import "./profilePage.css"
 import api from "@/utils/api";

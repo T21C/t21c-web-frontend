@@ -1,3 +1,4 @@
+// tuf-search: #PassIcon #passIcon #icons
 import React from 'react';
 
 export const PassIcon = ({ color="#fff", size=24, ...props }) => {

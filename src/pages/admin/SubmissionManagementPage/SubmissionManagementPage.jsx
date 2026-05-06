@@ -1,3 +1,4 @@
+// tuf-search: #SubmissionManagementPage #submissionManagementPage #admin #submissionManagement — Submission Management
 import { useState, useEffect } from 'react';
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";

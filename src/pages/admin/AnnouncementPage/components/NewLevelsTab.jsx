@@ -1,3 +1,4 @@
+// tuf-search: #NewLevelsTab #newLevelsTab #admin #announcement — Announcements
 import '../announcementpage.css';
 import api from '@/utils/api';
 import { useState } from 'react';

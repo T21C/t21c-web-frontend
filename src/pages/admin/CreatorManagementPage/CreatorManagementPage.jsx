@@ -1,3 +1,4 @@
+// tuf-search: #CreatorManagementPage #creatorManagementPage #admin #creatorManagement — Creator Management
 import { useState, useEffect, useRef } from 'react';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { useAuth } from '@/contexts/AuthContext';

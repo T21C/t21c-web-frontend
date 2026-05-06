@@ -1,3 +1,4 @@
+// tuf-search: #EvidenceTab #evidenceTab #popups #entities #entityAction #tabs
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { isImageUrl, isCdnUrl } from '@/utils/Utility';

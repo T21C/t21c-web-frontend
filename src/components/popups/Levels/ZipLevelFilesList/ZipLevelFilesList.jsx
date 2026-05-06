@@ -1,3 +1,4 @@
+// tuf-search: #ZipLevelFilesList #zipLevelFilesList #popups #levels
 import React from 'react';
 import './ziplevelfileslist.css';
 

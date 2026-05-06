@@ -1,3 +1,4 @@
+// tuf-search: #AccessDenied #accessDenied #display
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { MetaTags } from '@/components/common/display';

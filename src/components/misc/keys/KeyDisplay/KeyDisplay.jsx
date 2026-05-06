@@ -1,3 +1,4 @@
+// tuf-search: #KeyDisplay #keyDisplay #keys
 import React, { useState, useEffect } from 'react';
 import './keydisplay.css';
 

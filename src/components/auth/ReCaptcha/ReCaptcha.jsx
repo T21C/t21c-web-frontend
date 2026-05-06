@@ -1,3 +1,4 @@
+// tuf-search: #ReCaptcha #reCaptcha #auth
 import React, { useState, useEffect, useRef } from 'react';
 
 const ReCAPTCHA = ({ onVerify }) => {

@@ -1,3 +1,4 @@
+// tuf-search: #ParseJudgements #parseJudgements
 export const parseJudgements = (updatedForm) => {
     const judgementFields = ['tooEarly', 'early', 'ePerfect', 'perfect', 'lPerfect', 'late'];
     

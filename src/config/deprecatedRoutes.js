@@ -1,3 +1,4 @@
+// tuf-search: #deprecatedRoutes #config
 /**
  * Deprecated route definitions for redirecting old URLs to current routes.
  * Each entry: { path, redirect } where redirect(location) returns the target path.

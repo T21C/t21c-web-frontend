@@ -1,3 +1,4 @@
+// tuf-search: #CrossIcon #crossIcon #icons
 import React from 'react';
 
 export const CrossIcon = ({ color = "#fff", size = 24, ...props }) => {

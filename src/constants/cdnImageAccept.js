@@ -1,3 +1,4 @@
+// tuf-search: #cdnImageAccept #constants
 /**
  * MIME types allowed for CDN image uploads.
  * Keep in sync with `IMAGE_TYPES[].formats` (server) and `CDN_IMAGE_MIME_TYPES` in multerMemoryUploads.ts.

@@ -1,3 +1,4 @@
+// tuf-search: #statFormatters
 /**
  * Shared formatters for profile / creator fun-fact stats.
  */

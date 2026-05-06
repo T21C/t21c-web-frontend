@@ -1,3 +1,4 @@
+// tuf-search: #PackItem #packItem #cards
 import React, { useMemo } from 'react';
 import { Draggable, Droppable } from '@hello-pangea/dnd';
 import { useTranslation } from 'react-i18next';

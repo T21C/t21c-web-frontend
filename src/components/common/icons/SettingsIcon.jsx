@@ -1,3 +1,4 @@
+// tuf-search: #SettingsIcon #settingsIcon #icons
 import React from 'react';
 
 export const SettingsIcon = ({ color = "#fff", size = "24px", strokeWidth = "2"}) => {

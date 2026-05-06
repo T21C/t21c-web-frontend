@@ -1,3 +1,4 @@
+// tuf-search: #Utility #utils — shared client helpers
 const DIFFICULTY_LEVELS = {
   'P': { base: 0, max: 20 },    // P1-P20
   'G': { base: 20, max: 20 },   // G1-G10 (values 21-30)

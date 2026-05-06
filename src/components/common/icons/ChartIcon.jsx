@@ -1,3 +1,4 @@
+// tuf-search: #ChartIcon #chartIcon #icons
 import React from 'react';
 
 const ChartIcon = ({ size = "24px", color = "#fff", className = "", ...props }) => {

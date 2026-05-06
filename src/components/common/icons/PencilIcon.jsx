@@ -1,3 +1,4 @@
+// tuf-search: #PencilIcon #pencilIcon #icons
 import React from 'react';
 
 export const PencilIcon = ({ color = "#fff", size = "24px", strokeWidth = "2"}) => {

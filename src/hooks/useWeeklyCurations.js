@@ -1,3 +1,4 @@
+// tuf-search: #useWeeklyCurations
 import { useState, useEffect } from 'react';
 import api from '@/utils/api';
 

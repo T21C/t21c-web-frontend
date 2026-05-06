@@ -1,3 +1,4 @@
+// tuf-search: #AboutUsPage #aboutUsPage #aboutUs
 import "./aboutuspage.css";
 import { Footer, UserAvatar } from "@/components/layout";
 import { MetaTags } from "@/components/common/display";

@@ -1,3 +1,4 @@
+// tuf-search: #DeprecatedRedirect #deprecatedRedirect #routing
 import { Navigate, useLocation } from "react-router-dom";
 
 /**

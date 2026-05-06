@@ -1,3 +1,4 @@
+// tuf-search: #CreatorManagementPopup #creatorManagementPopup #popups #creators #creatorManagement
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';

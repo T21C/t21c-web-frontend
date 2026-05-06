@@ -1,3 +1,4 @@
+// tuf-search: #CreatorStatusBadge #creatorStatusBadge #display
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import './creatorStatusBadge.css';

@@ -1,3 +1,4 @@
+// tuf-search: #EditIcon #editIcon #icons
 import React from 'react';
 
 export const EditIcon = ({ color = "#fff", size = "24px", ...props }) => {
