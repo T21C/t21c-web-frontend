@@ -118,15 +118,34 @@
 }
 
 .level-card .icon-wrapper {
+  margin-left: auto;
+}
+
+.level-card .icon-wrapper,
+.level-card .clearcount-wrapper-inner {
+  position: relative;
   display: flex;
   align-items: center;
   flex: 0.25;
   gap: 0.25rem;
   font-size: 1.15em;
   font-weight: 600;
-  margin-left: auto;
 }
 
+.level-card .totalclears-wrapper-inner {
+  position: absolute;
+  font-size: 0.9rem;
+  text-align: center;
+  width: 100%;
+  color: transparent;
+  transition: color 0.2s ease-out, bottom 0.3s ease-out;
+  bottom: -0.25rem;
+}
+
+.level-card:hover .totalclears-wrapper-inner {
+  color: var(--color-white-t90);
+  bottom: -1rem;
+}
 
 
 .level-card .song-wrapper {

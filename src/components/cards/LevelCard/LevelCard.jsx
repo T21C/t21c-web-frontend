@@ -20,6 +20,7 @@ import {
   sortCurationTypesForDisplay,
 } from "@/utils/curationTypeUtils";
 import { formatDuration } from "@/utils/levelHelpers";
+import { Tooltip } from "react-tooltip";
 
 /** Curation type names hidden from the difficulty-arc curation icons */
 const HIDDEN_CURATION_ARC_TYPE_NAMES = new Set(['C0', 'V0']);
@@ -209,8 +210,25 @@ const LevelCard = ({
   const renderStatsIcons = ({ showLikes = true } = {}) => (
     <>
       <div className="icon-wrapper" data-opacity={level.clears ? 1 : 0}>
-        <div className="icon-value">{level.clears || 0}</div>
-        <PassIcon color="#ffffff" size={"24px"} />
+        <div className="clearcount-wrapper-inner">
+          <div className="icon-value">{level.uniqueClears || 0}</div>
+          <PassIcon color="#ffffff" size={"24px"} />
+          {level.clears !== level.uniqueClears && (
+          <div className="totalclears-wrapper-inner">
+            <div
+              className="icon-value"
+              data-tooltip-id="total-clears-tooltip"
+              data-tooltip-content={t('cards.level.totalClears')}
+            >
+              {level.clears || 0}
+            </div>
+          </div>
+          )}
+        </div>
+        <Tooltip id="total-clears-tooltip" place="left">
+            {t('cards.level.totalClears')}
+        </Tooltip>
+
       </div>
       {showLikes && (
         <div className="icon-wrapper" data-opacity={level.likes ? 1 : 0}>

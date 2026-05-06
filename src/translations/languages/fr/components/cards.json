@@ -6,6 +6,7 @@
   "level": {
     "creator": "Créateur",
     "clears": "Complétions",
+    "totalClears": "Total complétions",
     "buttons": {
       "edit": "Modifier"
     },

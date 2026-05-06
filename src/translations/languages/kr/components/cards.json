@@ -6,6 +6,7 @@
   "level": {
     "creator": "제작자",
     "clears": "클리어",
+    "totalClears": "전체 클리어",
     "buttons": {
       "edit": "편집"
     },

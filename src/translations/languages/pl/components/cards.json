@@ -6,6 +6,7 @@
   "level": {
     "creator": "Twórca",
     "clears": "Przejścia",
+    "totalClears": "Łącznie przejść",
     "buttons": {
       "edit": "Edytuj"
     },

@@ -6,6 +6,7 @@
   "level": {
     "creator": "关卡设计",
     "clears": "通关总数",
+    "totalClears": "总通关",
     "addToPack": "添加至地图包",
     "buttons": {
       "addToPack": "添加至地图包"
