@@ -16,11 +16,13 @@
   background-color: #1a1a1a;
   border-radius: 8px;
   padding: 24px;
-  width: 90%;
-  max-width: 500px;
+  width: min(500px, calc(100vw - 40px));
+  min-width: min(280px, 100%);
+  max-width: 100%;
   max-height: 90vh;
   margin: 20px auto;
   overflow-y: auto;
+  overflow-x: auto;
   position: relative;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
@@ -263,9 +265,10 @@
 
 @media (max-width: 768px) {
   .creator-assignment-popup-host .creator-assignment-popup {
-    width: 95%;
+    min-width: 0;
+    max-width: none;
     padding: 16px;
-    margin: 10px auto;
+    margin: 0;
   }
 
   .creator-assignment-popup-host .popup-content {
@@ -297,4 +300,11 @@
 
 .admin-player-popup .creator-assignment-popup-host--embedded {
   margin-bottom: 0;
+}
+
+@media (max-width: 480px) {
+  .creator-assignment-popup-host .creator-assignment-popup {
+    width: 100vw;
+    margin: 0;
+  }
 }

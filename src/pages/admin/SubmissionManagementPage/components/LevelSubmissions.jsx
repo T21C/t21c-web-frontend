@@ -595,10 +595,10 @@ const LevelSubmissions = () => {
         setSubmissions(prevSubmissions => prevSubmissions.map(s => 
           s.id === submissionId ? { ...s, ...response.data } : s
         ));
-        toast.success(t('levelSubmissions.messages.suffixUpdated'));
+        toast.success(t('levelSubmissions.messages.success.suffixUpdated'));
       } catch (error) {
         console.error('Error updating suffix:', error);
-        toast.error(t('levelSubmissions.errors.suffixUpdateFailed'));
+        toast.error(t('levelSubmissions.messages.error.suffixUpdateFailed'));
       }
     }
     

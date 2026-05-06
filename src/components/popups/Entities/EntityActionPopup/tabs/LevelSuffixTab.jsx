@@ -83,9 +83,9 @@ export const LevelSuffixTab = ({
 
       setCurrentSuffix(normalizedSuffix);
       setHasDifferentSuffixes(false);
-      setSuccess(tEntity('messages.suffixUpdated'));
+      setSuccess(tEntity('messages.success.suffixUpdated'));
       setError('');
-      toast.success(tEntity('messages.suffixUpdated'));
+      toast.success(tEntity('messages.success.suffixUpdated'));
       
       setTimeout(() => {
         onUpdate();
@@ -111,15 +111,15 @@ export const LevelSuffixTab = ({
 
       setCurrentSuffix(normalizedSuffix);
       setHasDifferentSuffixes(false);
-      setSuccess(tEntity('messages.suffixUpdated'));
+      setSuccess(tEntity('messages.success.suffixUpdated'));
       setError('');
-      toast.success(tEntity('messages.suffixUpdated'));
+      toast.success(tEntity('messages.success.suffixUpdated'));
       
       setTimeout(() => {
         onUpdate();
       }, 1000);
     } catch (err) {
-      const errorMessage = getErrorMessage(err, tEntity('errors.suffixUpdateFailed'));
+      const errorMessage = getErrorMessage(err, tEntity('messages.error.suffixUpdateFailed'));
       setError(errorMessage);
       setSuccess('');
       toast.error(errorMessage);
