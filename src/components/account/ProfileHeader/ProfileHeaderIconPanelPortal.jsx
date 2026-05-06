@@ -5,10 +5,17 @@ import { getPortalRoot } from "@/utils/portalRoot";
 import "./profileHeaderIconPanelPortal.css";
 
 const PROFILE_HEADER_DIFFICULTY_GRID_TOOLTIP_ID = "profile-header-difficulty-grid-tooltip";
+const PROFILE_HEADER_SPECIAL_DIFFICULTY_GRID_TOOLTIP_ID = "profile-header-special-difficulty-grid-tooltip";
 
 const filterDiffs = (d) => {
   const nameCheck = d.name !== "Unranked";
   const typeCheck = d.type !== "LEGACY" && d.type !== "SPECIAL";
+  return nameCheck && typeCheck;
+};
+
+const filterSpecialDiffs = (d) => {
+  const nameCheck = !["Unranked", "Impossible", "Qq"].includes(d.name);
+  const typeCheck = d.type === "SPECIAL";
   return nameCheck && typeCheck;
 };
 
@@ -30,6 +37,43 @@ export default function ProfileHeaderIconPanelPortal({
   const { t } = useTranslation("pages");
 
   if (!open || !pos) return null;
+
+  const renderDifficultyGrid = ({ filter, tooltipId }) => (
+    <div className="profile-header__difficulty-grid">
+      {(playerDifficultyPanelDifficulties || []).filter(filter).sort((a, b) => a.sortOrder - b.sortOrder).map((d) => {
+        const id = d?.id;
+        const icon = d?.icon;
+        const name = d?.name ?? `#${id}`;
+        const clears =
+          Number(
+            playerDifficultyPanelClearsByDifficulty?.[String(id)] ??
+              playerDifficultyPanelClearsByDifficulty?.[id] ??
+              0,
+          ) || 0;
+        const lit = clears > 0;
+        const tooltipContent = t("profile.funFacts.difficultyHeaderGridCellTooltip", {
+          name,
+          count: clears,
+        });
+        return (
+          <div
+            key={id ?? name}
+            className="profile-header__difficulty-cell"
+            data-lit={lit ? "true" : "false"}
+            data-tooltip-id={tooltipId}
+            data-tooltip-content={tooltipContent}
+            aria-label={tooltipContent}
+          >
+            {icon ? (
+              <img className="profile-header__difficulty-cell-img" src={icon} alt="" decoding="async" />
+            ) : (
+              <span className="profile-header__difficulty-cell-fallback">{String(name).slice(0, 2)}</span>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
 
   return createPortal(
     <div
@@ -74,44 +118,24 @@ export default function ProfileHeaderIconPanelPortal({
         <>
           <div className="profile-header__icon-panel" role="dialog" aria-label={playerDialogLabel}>
             <div className="profile-header__icon-panel-inner">
-              <div className="profile-header__difficulty-grid">
-                {(playerDifficultyPanelDifficulties || []).filter(filterDiffs).map((d) => {
-                  const id = d?.id;
-                  const icon = d?.icon;
-                  const name = d?.name ?? `#${id}`;
-                  const clears =
-                    Number(
-                      playerDifficultyPanelClearsByDifficulty?.[String(id)] ??
-                        playerDifficultyPanelClearsByDifficulty?.[id] ??
-                        0,
-                    ) || 0;
-                  const lit = clears > 0;
-                  const tooltipContent = t("profile.funFacts.difficultyHeaderGridCellTooltip", {
-                    name,
-                    count: clears,
-                  });
-                  return (
-                    <div
-                      key={id ?? name}
-                      className="profile-header__difficulty-cell"
-                      data-lit={lit ? "true" : "false"}
-                      data-tooltip-id={PROFILE_HEADER_DIFFICULTY_GRID_TOOLTIP_ID}
-                      data-tooltip-content={tooltipContent}
-                      aria-label={tooltipContent}
-                    >
-                      {icon ? (
-                        <img className="profile-header__difficulty-cell-img" src={icon} alt="" decoding="async" />
-                      ) : (
-                        <span className="profile-header__difficulty-cell-fallback">{String(name).slice(0, 2)}</span>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
+              {renderDifficultyGrid({
+                filter: filterDiffs,
+                tooltipId: PROFILE_HEADER_DIFFICULTY_GRID_TOOLTIP_ID,
+              })}
+              <hr className="profile-header__difficulty-grid-separator" />
+              {renderDifficultyGrid({
+                filter: filterSpecialDiffs,
+                tooltipId: PROFILE_HEADER_SPECIAL_DIFFICULTY_GRID_TOOLTIP_ID,
+              })}
             </div>
           </div>
           <Tooltip
             id={PROFILE_HEADER_DIFFICULTY_GRID_TOOLTIP_ID}
+            className="profile-header__difficulty-grid-tooltip"
+            place="top"
+          />
+          <Tooltip
+            id={PROFILE_HEADER_SPECIAL_DIFFICULTY_GRID_TOOLTIP_ID}
             className="profile-header__difficulty-grid-tooltip"
             place="top"
           />

@@ -267,7 +267,7 @@ const ProfileHeader = ({
   const handleDisplay =
     handle != null && String(handle).length ? String(handle).replace(/^@/, "") : "";
 
-  const shellClass = ["profile-header-shell", className].filter(Boolean).join(" ");
+  const shellClass = `profile-header-shell ${className}`;
   const bannerImageSrc =
     bannerUrl != null && String(bannerUrl).trim().length > 0
       ? String(bannerUrl).trim()
@@ -418,12 +418,7 @@ const ProfileHeader = ({
               </div>
               <div className="profile-header__icon-row" ref={iconRowRef}>
                 <div
-                  className={[
-                    "profile-header__icon-slots-block",
-                    showIconPanel ? "profile-header__icon-slots-block--curation" : "",
-                  ]
-                    .filter(Boolean)
-                    .join(" ")}
+                  className={`profile-header__icon-slots-block ${showIconPanel ? "profile-header__icon-slots-block--curation" : ""}`}
                 >
                     {showIconPanel ? (
                     <button
@@ -480,6 +475,7 @@ const ProfileHeader = ({
                   curationPanelGroups={curationPanelGroups}
                   playerDifficultyPanelDifficulties={playerDifficultyPanelDifficulties}
                   playerDifficultyPanelClearsByDifficulty={playerDifficultyPanelClearsByDifficulty}
+
                 />
               </div>
             </div>
@@ -490,7 +486,7 @@ const ProfileHeader = ({
                   <div key={row.key} className="profile-header__stat-row">
                     <span className="profile-header__stat-label">{row.label}</span>
                     <span
-                      className={["profile-header__stat-value", row.valueClassName || ""].filter(Boolean).join(" ")}
+                      className={`profile-header__stat-value ${row.valueClassName || ""}`}
                     >
                       {row.value}
                     </span>
@@ -530,9 +526,7 @@ const ProfileHeader = ({
                           <div key={row.key} className="profile-header__stat-row">
                             <span className="profile-header__stat-label">{row.label}</span>
                             <span
-                              className={["profile-header__stat-value", row.valueClassName || ""]
-                                .filter(Boolean)
-                                .join(" ")}
+                              className={`profile-header__stat-value ${row.valueClassName || ""}`}
                             >
                               {row.linkTo ? (
                                 <span className="profile-fun-facts__linked-extreme">
