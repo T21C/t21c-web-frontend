@@ -427,6 +427,7 @@ const ProfilePage = () => {
         (async () => {
           setRankHistoryLoading(true);
           setRankHistoryError(null);
+          setRankHistorySeries([]);
           try {
             const range = computeRankHistoryFromTo(
               rankHistoryRange,
