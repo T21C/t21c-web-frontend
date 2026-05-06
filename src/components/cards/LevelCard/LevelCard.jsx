@@ -218,17 +218,16 @@ const LevelCard = ({
           <div className="totalclears-wrapper-inner">
             <div
               className="icon-value"
-              data-tooltip-id="total-clears-tooltip"
+              data-tooltip-id={"total-clears-tooltip"+level.id}
               data-tooltip-content={t('cards.level.totalClears')}
             >
               {level.clears || 0}
             </div>
           </div>
-          )}
+          )}        
         </div>
-        <Tooltip id="total-clears-tooltip" place="left">
-            {t('cards.level.totalClears')}
-        </Tooltip>
+        <Tooltip id={"total-clears-tooltip"+level.id} place="left"/>
+
 
       </div>
       {showLikes && (
