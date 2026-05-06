@@ -85,6 +85,7 @@ const Navigation = ({ children, config: externalConfig = null }) => {
         return (
           <NavLinkItem
             key={item.to || index}
+            icon={item.icon}
             to={item.to}
             label={item.translationKey}
             className={item.className}

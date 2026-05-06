@@ -40,7 +40,8 @@
       "browsePasses": "Explorer les complétions",
       "browsePacks": "Explorer les packs",
       "leaderboard": "Classement",
-      "aboutUs": "A propos de nous"
+      "aboutUs": "A propos de nous",
+      "apiDocs": "API Docs"
     },
     "community": {
       "title": "Communauté",

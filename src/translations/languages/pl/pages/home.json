@@ -43,7 +43,8 @@
       "browsePasses": "Przeglądaj przejścia",
       "browsePacks": "Przeglądaj pakiety",
       "leaderboard": "Lista rankingowa",
-      "aboutUs": "O nas"
+      "aboutUs": "O nas",
+      "apiDocs": "API Docs"
     },
     "community": {
       "title": "Społeczność",

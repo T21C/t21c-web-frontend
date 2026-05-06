@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 const NavLinkItem = ({ 
   to, 
   label, 
+  icon,
   className = "",
   linkClassName = "" 
 }) => {

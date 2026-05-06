@@ -40,7 +40,8 @@
         "tufHelper": "TUFHelper",
         "tos": "ToS",
         "privacyPolicy": "개인정보 처리방침",
-        "aboutUs": "TUF 소개"
+        "aboutUs": "TUF 소개",
+        "apiDocs": "API 문서"
       },
       "user": {
         "myProfile": "내 프로필",

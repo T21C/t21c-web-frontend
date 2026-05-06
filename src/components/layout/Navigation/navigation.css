@@ -200,14 +200,16 @@
 }
 
 .nav-dropdown-item {
-  padding: 0.75rem 1rem;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  font-size: 1.1rem;
   color: var(--color-white);
+  gap: 0.75rem;
   text-decoration: none;
   transition: all 0.15s ease;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: flex-start;
-  justify-content: space-between;
   position: relative;
 }
 
@@ -239,6 +241,9 @@
 .nav-dropdown-item--disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  flex-direction: column;
+  gap: 0;
+
 }
 
 .nav-dropdown-item--disabled:hover {

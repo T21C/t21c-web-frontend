@@ -38,9 +38,11 @@
         "passes": "Passes",
         "rating": "Rating",
         "tufHelper": "TUFHelper",
+        "tufExtension": "TUFExtension",
         "tos": "ToS",
         "privacyPolicy": "Privacy Policy",
-        "aboutUs": "About Us"
+        "aboutUs": "About Us",
+        "apiDocs": "API Docs"
       },
       "user": {
         "myProfile": "My Profile",

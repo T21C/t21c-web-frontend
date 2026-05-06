@@ -1,4 +1,7 @@
 // tuf-search: #navigationConfig #layout #navigation
+import { ExternalLinkIcon } from "@/components/common/icons";
+import { ChromeIcon } from "@/components/common/icons/ChromeIcon";
+import { FirefoxIcon } from "@/components/common/icons/FirefoxIcon";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 
 /**
@@ -8,6 +11,30 @@ import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
  * This config completely defines the navigation structure.
  * The Navigation component is data-driven and renders based on this config.
  */
+
+
+const tufExtensionLinks = {
+  chrome: {to: "https://chromewebstore.google.com/detail/tufextension/nfbkilgekbcbaipecmehlnlakccgbcfa", 
+    translationKey: "navigation.main.dropdowns.more.tufExtension", 
+    attachIcon: <ExternalLinkIcon size={16} color="var(--color-white-t80)"/>,
+    icon: <ChromeIcon size={24} />},
+  firefox: {to: "https://addons.mozilla.org/en-US/firefox/addon/tufextension/", 
+    translationKey: "navigation.main.dropdowns.more.tufExtension",
+    attachIcon: <ExternalLinkIcon size={16} color="var(--color-white-t80)"/>,
+    icon: <FirefoxIcon size={24} />},
+};
+
+function getTufExtensionVer() {
+  const ua = navigator.userAgent.toLowerCase();
+  if (ua.includes("chrome") || ua.includes("edg") || ua.includes("opr")) {
+    return tufExtensionLinks.chrome;
+  } else if (ua.includes("firefox")) {
+    return tufExtensionLinks.firefox;
+  } else {
+    return null;
+  }
+}
+
 
 /**
  * Creates user menu items configuration
@@ -98,11 +125,10 @@ export const createNavigationConfig = (context = {}) => {
           { to: "/rating", translationKey: "navigation.main.dropdowns.more.rating" },
           { to: "/admin/curations", translationKey: "navigation.main.dropdowns.admin.curations" },
           { divider: true },
-          {
-            disabled: true,
-            translationKey: "navigation.main.dropdowns.more.tufHelper",
-            badge: "navigation.main.badges.underConstruction",
-          },
+          { to: "https://github.com/coyami-ke/TUFHelper/releases", 
+            translationKey: "navigation.main.dropdowns.more.tufHelper", 
+            attachIcon: <ExternalLinkIcon size={16} color="var(--color-white-t80)"/>},
+          { ...getTufExtensionVer() },
           { divider: true },
           { to: "/songs", translationKey: "navigation.main.dropdowns.creators.songs" },
           { to: "/artists", translationKey: "navigation.main.dropdowns.creators.artists" },
@@ -110,6 +136,9 @@ export const createNavigationConfig = (context = {}) => {
           { to: "/terms-of-service", translationKey: "navigation.main.dropdowns.more.tos" },
           { to: "/privacy-policy", translationKey: "navigation.main.dropdowns.more.privacyPolicy" },
           { to: "/about", translationKey: "navigation.main.dropdowns.more.aboutUs" },
+          { to: "https://api.tuforums.com/docs/", 
+            translationKey: "navigation.main.dropdowns.more.apiDocs",
+            attachIcon: <ExternalLinkIcon size={16} color="var(--color-white-t80)"/>},
         ],
         isActive: (pathname) =>
           pathname.startsWith("/passes") ||

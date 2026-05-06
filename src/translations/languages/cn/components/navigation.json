@@ -40,7 +40,8 @@
         "tufHelper": "TUF Helper",
         "tos": "服务条款",
         "privacyPolicy": "隐私政策",
-        "aboutUs": "关于我们"
+        "aboutUs": "关于我们",
+        "apiDocs": "API 文档"
       },
       "user": {
         "myProfile": "个人资料",

@@ -111,9 +111,11 @@ const NavDropdown = ({
                 }
                 onClick={() => setIsOpen(false)}
               >
-                {item.translationKey
+                <span className="nav-dropdown-item-label">{item.translationKey
                   ? t(item.translationKey)
                   : item.label}
+                {item.attachIcon}</span>
+                {item.icon}
               </NavLink>
             );
           })}
