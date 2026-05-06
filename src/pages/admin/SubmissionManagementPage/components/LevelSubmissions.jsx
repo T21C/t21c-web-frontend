@@ -847,7 +847,7 @@ const LevelSubmissions = () => {
             >
               <div className="submission-header">
                 <h3>
-                  {submission.songObject?.name || submission.song}
+                  {submission.songObject?.name || submission.song} {submission.suffix && ` ${submission.suffix}`}
                   {submission.songRequest?.isNewRequest && (
                     <span className="request-badge">{t('levelSubmissions.badges.newRequest')}</span>
                   )}
