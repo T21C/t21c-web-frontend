@@ -442,6 +442,13 @@ export const CreatorManagementPopup = ({ creator, onClose, onUpdate, curationPro
 
   const isSuperAdminViewer = Boolean(user && hasFlag(user, permissionFlags.SUPER_ADMIN));
 
+  const hasLinkedUserAccount = Boolean(
+    creator?.user?.id ||
+      (creator?.userId != null &&
+        creator.userId !== '' &&
+        String(creator.userId).toLowerCase() !== 'null'),
+  );
+
   const visibleTabs = useMemo(
     () => TABS.filter((tab) => tab.id !== 'delete' || isSuperAdminViewer),
     [isSuperAdminViewer],
@@ -848,14 +855,16 @@ export const CreatorManagementPopup = ({ creator, onClose, onUpdate, curationPro
                   >
                     {tt('superAdminDanger.purgeButton')}
                   </button>
-                  <button
-                    type="button"
-                    className="super-admin-danger__btn super-admin-danger__btn--unlink btn-fill-neutral-heavy"
-                    onClick={handleAdminUnlinkCreator}
-                    disabled={isLoading}
-                  >
-                    {tt('superAdminDanger.unlinkButton')}
-                  </button>
+                  {hasLinkedUserAccount ? (
+                    <button
+                      type="button"
+                      className="super-admin-danger__btn super-admin-danger__btn--unlink btn-fill-neutral-heavy"
+                      onClick={handleAdminUnlinkCreator}
+                      disabled={isLoading}
+                    >
+                      {tt('superAdminDanger.unlinkButton')}
+                    </button>
+                  ) : null}
                 </div>
               </div>
             )}
