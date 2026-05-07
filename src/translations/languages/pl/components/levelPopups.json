@@ -41,6 +41,10 @@
         "restore": {
           "default": "Odzyskaj poziom",
           "restoring": "Odzyskiwanie..."
+        },
+        "permanentDelete": {
+          "default": "Usuń trwale",
+          "deleting": "Usuwanie..."
         }
       }
     },
@@ -49,13 +53,15 @@
       "delete": "Czy chcesz usunąć ten poziom? Tej czynności nie można cofnąć.",
       "hide": "Czy chcesz ukryć ten poziom?",
       "unhide": "Czy chcesz ponownie ujawnić ten poziom?",
-      "restore": "Czy chcesz odzyskać ten poziom?"
+      "restore": "Czy chcesz odzyskać ten poziom?",
+      "permanentDelete": "Trwale usunąć ten poziom? Tego nie da się cofnąć. Wszystkie passy, oceny i pliki (pobieranie, miniatury kuracji) zostaną usunięte."
     },
     "errors": {
       "update": "Nie udało się zaaktualizować poziomu",
       "delete": "Nie udało się usunąć poziomu",
       "toggleHidden": "Nie udało się zmienić statusu ukrycia",
-      "restore": "Nie udało się odzyskać poziomu"
+      "restore": "Nie udało się odzyskać poziomu",
+      "permanentDelete": "Nie udało się trwale usunąć poziomu"
     },
     "chartStats": {
       "title": "Metadane chartu",

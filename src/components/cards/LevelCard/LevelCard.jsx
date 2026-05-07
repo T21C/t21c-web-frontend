@@ -115,6 +115,9 @@ const LevelCard = ({
 
   // Handlers
   const handleLevelUpdate = (updatedData) => {
+    if (updatedData?.permanentDelete) {
+      return;
+    }
     const updatedLevel = updatedData.level || updatedData || {};
     setLevel(prevLevel => ({
       ...prevLevel,

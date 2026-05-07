@@ -43,6 +43,10 @@
         "restore": {
           "default": "레벨 복구",
           "restoring": "복구 중..."
+        },
+        "permanentDelete": {
+          "default": "영구 삭제",
+          "deleting": "삭제 중..."
         }
       }
     },
@@ -51,13 +55,15 @@
       "delete": "이 레벨을 삭제하시겠습니까? 나중에 복구할 수 있습니다.",
       "hide": "이 레벨을 숨기시겠습니까?",
       "unhide": "이 레벨을 다시 표시하시겠습니까?",
-      "restore": "이 레벨을 복구하시겠습니까?"
+      "restore": "이 레벨을 복구하시겠습니까?",
+      "permanentDelete": "이 레벨을 영구 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다. 모든 클리어, 평가 및 저장된 파일(다운로드·큐레이션 이미지)이 제거됩니다."
     },
     "errors": {
       "update": "레벨 업데이트 실패",
       "delete": "소프트 삭제 실패",
       "toggleHidden": "숨김 상태 전환 실패",
-      "restore": "레벨 복구 실패"
+      "restore": "레벨 복구 실패",
+      "permanentDelete": "레벨 영구 삭제 실패"
     },
     "chartStats": {
       "title": "채보 메타데이터",

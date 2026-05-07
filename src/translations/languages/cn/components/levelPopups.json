@@ -52,6 +52,10 @@
           "default": "恢复关卡",
           "restoring": "恢复中……"
         },
+        "permanentDelete": {
+          "default": "永久删除",
+          "deleting": "删除中……"
+        },
         "manageTags": "管理标签"
       }
     },
@@ -60,13 +64,15 @@
       "delete": "确认删除本关卡？删除后可以恢复。",
       "hide": "确认隐藏本关卡？",
       "unhide": "确认取消隐藏本关卡？",
-      "restore": "确认恢复本关卡？"
+      "restore": "确认恢复本关卡？",
+      "permanentDelete": "确定永久删除本关卡？此操作无法撤销。所有通关记录、评分及已存文件（下载包与推荐预览图等）都将被删除。"
     },
     "errors": {
       "update": "更新关卡失败",
       "delete": "软删除失败",
       "toggleHidden": "切换隐藏状态失败",
       "restore": "恢复关卡失败",
+      "permanentDelete": "永久删除关卡失败",
       "cannotCreateSong": "无法在编辑关卡时创建新歌曲。请选择现有歌曲。"
     },
     "chartStats": {

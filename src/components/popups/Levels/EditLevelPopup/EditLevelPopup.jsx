@@ -86,6 +86,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState(null);
   const [isHideMode, setIsHideMode] = useState(false);
+  const [isPermanentDeleteMode, setIsPermanentDeleteMode] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const { difficulties } = useDifficultyContext();
   const [showAliasManagement, setShowAliasManagement] = useState(false);
@@ -156,6 +157,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
       }));
       setSelectedSong(src.songId ? { id: src.songId, name: src.songObject?.name || src.song || '' } : null);
       setHasUnsavedChanges(false);
+      setIsPermanentDeleteMode(false);
       setIsExternallyAvailable(src.isExternallyAvailable);
 
       const fetchTags = async () => {
@@ -386,6 +388,11 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     setIsHideMode(!isHideMode);
   };
 
+  const toggleRestoreMode = (e) => {
+    e.stopPropagation();
+    setIsPermanentDeleteMode(!isPermanentDeleteMode);
+  };
+
   const handleRestore = async () => {
     if (!window.confirm(t('levelPopups.edit.confirmations.restore'))) {
       return;
@@ -406,6 +413,33 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     } catch (err) {
       console.error(err);
       setError(err.response?.data?.message || t('levelPopups.edit.errors.restore'));
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handlePermanentDelete = async () => {
+    if (!window.confirm(t('levelPopups.edit.confirmations.permanentDelete'))) {
+      return;
+    }
+
+    setIsSaving(true);
+    setError(null);
+
+    try {
+      await api.delete(`${import.meta.env.VITE_LEVELS}/${level.id}/permanent`);
+      if (onUpdate) {
+        await onUpdate({ permanentDelete: true, deletedLevelId: level.id });
+      }
+      setHasUnsavedChanges(false);
+      onClose();
+    } catch (err) {
+      console.error(err);
+      setError(
+        err.response?.data?.error ||
+          err.response?.data?.message ||
+          t('levelPopups.edit.errors.permanentDelete'),
+      );
     } finally {
       setIsSaving(false);
     }
@@ -881,14 +915,34 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                 {isSaving ? t('loading.saving', { ns: 'common' }) : t('levelPopups.edit.form.buttons.save.default')}
               </button>
               {level.isDeleted ? (
-                <button 
-                  type="button"
-                  className="restore-button btn-fill-success"
-                  onClick={handleRestore}
-                  disabled={isSaving}
-                >
-                  {isSaving ? t('levelPopups.edit.form.buttons.restore.restoring') : t('levelPopups.edit.form.buttons.restore.default')}
-                </button>
+                isSuperAdmin ? (
+                  <button
+                    type="button"
+                    className={`restore-toggle-button ${isPermanentDeleteMode ? 'btn-fill-danger permanent-delete-mode' : 'btn-fill-success'}`}
+                    onClick={isPermanentDeleteMode ? handlePermanentDelete : handleRestore}
+                    disabled={isSaving}
+                  >
+                    <span className="restore-toggle-button-text">
+                    {isSaving
+                      ? isPermanentDeleteMode
+                        ? t('levelPopups.edit.form.buttons.permanentDelete.deleting')
+                        : t('levelPopups.edit.form.buttons.restore.restoring')
+                      : isPermanentDeleteMode
+                        ? t('levelPopups.edit.form.buttons.permanentDelete.default')
+                        : t('levelPopups.edit.form.buttons.restore.default')}
+                    </span>
+                    <div className="toggle-arrow" onClick={toggleRestoreMode} aria-hidden />
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="restore-button btn-fill-success"
+                    onClick={handleRestore}
+                    disabled={isSaving}
+                  >
+                    {isSaving ? t('levelPopups.edit.form.buttons.restore.restoring') : t('levelPopups.edit.form.buttons.restore.default')}
+                  </button>
+                )
               ) : level.isHidden ? (
                 <button 
                   type="button"

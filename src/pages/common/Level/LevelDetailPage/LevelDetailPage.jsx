@@ -5,7 +5,7 @@ import "./leveldetailpage.css"
 import placeholder from "@/assets/placeholder/3.png";
 import React, { useEffect, useLayoutEffect, useState, useRef, useCallback, useMemo } from "react";
 import { createPortal } from "react-dom";
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { getPortalRoot } from "@/utils/portalRoot";
 
 import {
@@ -637,6 +637,7 @@ const LevelDetailPage = ({ mockData = null }) => {
   const { t } = useTranslation(['pages', 'common']);
   const { id } = useParams();
   const detailPage = useLocation();
+  const navigate = useNavigate();
   
   // Use previewLevelId if in preview mode, otherwise use URL parameter
   const effectiveId = id || mockData?.level.id;
@@ -2503,6 +2504,10 @@ const LevelDetailPage = ({ mockData = null }) => {
           level={res.level}
           onClose={() => setOpenEditDialog(false)}
           onUpdate={(updatedLevel) => {
+            if (updatedLevel?.permanentDelete) {
+              navigate('/levels');
+              return;
+            }
             const newLevel = updatedLevel.level || updatedLevel;
             setRes(prevRes => ({
               ...prevRes,

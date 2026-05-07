@@ -228,6 +228,57 @@
   transform: rotate(180deg);
 }
 
+.edit-level-popup-overlay .restore-toggle-button {
+  max-width: 13rem;
+  position: relative;
+  text-align: left;
+}
+
+.edit-level-popup-overlay .restore-toggle-button-text {
+  margin-left: 0.5rem;
+}
+
+.edit-level-popup-overlay .restore-toggle-button:disabled::before {
+  filter: none;
+  background-color: var(--btn-secondary);
+}
+
+.edit-level-popup-overlay .restore-toggle-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.85;
+}
+
+.edit-level-popup-overlay .restore-toggle-button .toggle-arrow {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.edit-level-popup-overlay .restore-toggle-button .toggle-arrow::after {
+  content: '';
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid white;
+  transition: transform 0.3s ease;
+}
+
+.edit-level-popup-overlay .restore-toggle-button .toggle-arrow:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.edit-level-popup-overlay .restore-toggle-button.permanent-delete-mode .toggle-arrow::after {
+  transform: rotate(180deg);
+}
+
 .edit-level-popup-overlay .difficulty-row {
   display: flex;
   align-items: center;
@@ -589,7 +640,8 @@
 
   .edit-level-popup-overlay .save-button,
   .edit-level-popup-overlay .delete-button,
-  .edit-level-popup-overlay .restore-button {
+  .edit-level-popup-overlay .restore-button,
+  .edit-level-popup-overlay .restore-toggle-button {
     max-width: none;
     width: 100%;
     padding: 14px;
@@ -650,7 +702,8 @@
 
   .edit-level-popup-overlay .save-button,
   .edit-level-popup-overlay .delete-button,
-  .edit-level-popup-overlay .restore-button {
+  .edit-level-popup-overlay .restore-button,
+  .edit-level-popup-overlay .restore-toggle-button {
     padding: 12px;
     font-size: 14px;
   }

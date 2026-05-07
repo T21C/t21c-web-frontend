@@ -52,6 +52,10 @@
           "default": "Restore Level",
           "restoring": "Restoring..."
         },
+        "permanentDelete": {
+          "default": "Delete permanently",
+          "deleting": "Deleting..."
+        },
         "manageTags": "Manage Tags"
       }
     },
@@ -60,13 +64,15 @@
       "delete": "Do you want to delete this level? This can be undone later.",
       "hide": "Do you want to hide this level?",
       "unhide": "Do you want to unhide this level?",
-      "restore": "Do you want to restore this level?"
+      "restore": "Do you want to restore this level?",
+      "permanentDelete": "Permanently delete this level? This cannot be undone. All passes, ratings, and stored files (download and curation images) will be removed."
     },
     "errors": {
       "update": "Failed to update level",
       "delete": "Soft deletion failed",
       "toggleHidden": "Failed to toggle hidden status",
       "restore": "Failed to restore level",
+      "permanentDelete": "Failed to permanently delete level",
       "cannotCreateSong": "Cannot create new songs from level edit. Please select an existing song."
     },
     "chartStats": {

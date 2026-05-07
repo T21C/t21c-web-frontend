@@ -568,6 +568,16 @@ const RatingPage = () => {
                 }}
                 onUpdate={(updatedData) => {
                   if (updatedData) {
+                    if (updatedData.permanentDelete && updatedData.deletedLevelId != null) {
+                      const rid = updatedData.deletedLevelId;
+                      setRatings(prev => (prev || []).filter(r => r.level?.id !== rid));
+                      if (selectedRating?.level?.id === rid) {
+                        setSelectedRating(null);
+                      }
+                      setOpenEditDialog(false);
+                      setSelectedLevel(null);
+                      return;
+                    }
                     const updatedLevel = updatedData.level || updatedData;
                     const shouldRemove = updatedLevel.toRate === false;
                     if (shouldRemove) {

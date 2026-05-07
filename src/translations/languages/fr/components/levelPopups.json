@@ -31,11 +31,19 @@
           "saving": "Sauvegarde ..."
         },
         "delete": {
-          "default": "Su^pprimer",
+          "default": "Supprimer",
           "deleting": "Suppression ...",
           "hide": "Cacher",
           "unhide": "Révéler",
           "processing": "Traitement ..."
+        },
+        "restore": {
+          "default": "Restaurer le niveau",
+          "restoring": "Restauration..."
+        },
+        "permanentDelete": {
+          "default": "Supprimer définitivement",
+          "deleting": "Suppression..."
         }
       }
     },
@@ -44,13 +52,15 @@
       "delete": "Voulez-vous supprimer ce niveau ? Il pourra être restauré plus tard.",
       "hide": "Voulez-vous cacher ce niveau ?",
       "unhide": "Voulez-vous révéler ce niveau ?",
-      "restore": "Voulez-vous restaurer ce niveau ?"
+      "restore": "Voulez-vous restaurer ce niveau ?",
+      "permanentDelete": "Supprimer définitivement ce niveau ? Action irréversible. Toutes les passes, notes et fichiers stockés (téléchargement et images de curation) seront supprimés."
     },
     "errors": {
       "update": "Échec de la mise à jour du niveau",
       "delete": "Échec de la suppression",
       "toggleHidden": "Échec du changement de statu caché",
-      "restore": "Échec de la restauration"
+      "restore": "Échec de la restauration",
+      "permanentDelete": "Échec de la suppression définitive"
     },
     "chartStats": {
       "title": "Métadonnées du chart",
