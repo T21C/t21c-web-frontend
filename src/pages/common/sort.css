@@ -182,7 +182,7 @@
       }
     
       .sort .sort-option {
-        gap: 1.5rem;
+        gap: 1rem;
         justify-content: center;
       }
     
@@ -211,10 +211,7 @@
     .filter {
         border-radius: 0.75rem;
       }
-    .sort .sort-option {
-      gap: 1.5rem;
-      justify-content: center;
-    }
+
     .sort .sort-option .wrapper {
         justify-content: flex-start;
     }

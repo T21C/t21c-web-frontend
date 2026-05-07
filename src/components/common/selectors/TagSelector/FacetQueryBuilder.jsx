@@ -1,9 +1,11 @@
 // tuf-search: #FacetQueryBuilder #facetQueryBuilder #selectors #tagSelector
-import React, { useMemo, useState, useRef, useEffect, useId, useCallback } from 'react';
+import React, { useMemo, useState, useRef, useEffect, useLayoutEffect, useId, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { Trans, useTranslation } from 'react-i18next';
 import { Tooltip } from 'react-tooltip';
 import { CustomSelect } from '@/components/common/selectors';
 import FacetItemPicker from './FacetItemPicker';
+import { getPortalRoot } from '@/utils/portalRoot';
 import './facetquerybuilder.css';
 //import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 
@@ -77,7 +79,10 @@ const FacetQueryBuilder = ({ items, value, onChange, title, enableGrouping = tru
   const [picker, setPicker] = useState(null);
   const [simpleSwitchArmed, setSimpleSwitchArmed] = useState(false);
   const builderRootRef = useRef(null);
+  const toggleRef = useRef(null);
+  const panelContentRef = useRef(null);
   const pickerOverlayRef = useRef(null);
+  const [panelBox, setPanelBox] = useState(null);
   //useBodyScrollLock(isOpen || Boolean(picker));
 
   const uiMode = value?.mode === 'advanced' ? 'advanced' : 'simple';
@@ -108,6 +113,67 @@ const FacetQueryBuilder = ({ items, value, onChange, title, enableGrouping = tru
     return () => clearTimeout(id);
   }, [simpleSwitchArmed]);
 
+  const updatePanelAnchor = useCallback(() => {
+    if (!isOpen || !toggleRef.current) {
+      setPanelBox(null);
+      return;
+    }
+    const rect = toggleRef.current.getBoundingClientRect();
+    const margin = 8;
+    const vw = window.innerWidth;
+    const fullWidthMode = vw <= 768;
+    let width;
+    let left;
+    if (fullWidthMode) {
+      left = 0;
+      width = '100%';
+    } else {
+      const maxPanelWidth = Math.min(512, vw - 2 * margin);
+      width = maxPanelWidth;
+      left = rect.left;
+      if (left + width > vw - margin) {
+        left = Math.max(margin, vw - margin - width);
+      }
+      if (left < margin) left = margin;
+    }
+    const top = rect.bottom + margin * 0.5;
+    const maxHeight = Math.min(
+      640,
+      Math.max(160, window.innerHeight - top - margin)
+    );
+    setPanelBox({
+      top,
+      left,
+      width,
+      maxHeight,
+      fullWidth: fullWidthMode,
+    });
+  }, [isOpen]);
+
+  useLayoutEffect(() => {
+    updatePanelAnchor();
+  }, [updatePanelAnchor]);
+
+  useEffect(() => {
+    if (!isOpen) return undefined;
+    const onReanchor = () => updatePanelAnchor();
+    window.addEventListener('resize', onReanchor);
+    window.addEventListener('scroll', onReanchor, true);
+    return () => {
+      window.removeEventListener('resize', onReanchor);
+      window.removeEventListener('scroll', onReanchor, true);
+    };
+  }, [isOpen, updatePanelAnchor]);
+
+  useEffect(() => {
+    if (!isOpen) return undefined;
+    const onKey = (e) => {
+      if (e.key === 'Escape') setIsOpen(false);
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [isOpen]);
+
   useEffect(() => {
     if (!isOpen && !picker) return undefined;
 
@@ -126,6 +192,7 @@ const FacetQueryBuilder = ({ items, value, onChange, title, enableGrouping = tru
 
       if (pickerOverlayRef.current?.contains(target)) return;
       if (isInsideReactSelectMenu(target)) return;
+      if (panelContentRef.current?.contains(target)) return;
       if (builderRootRef.current?.contains(target)) return;
 
       if (picker) {
@@ -361,12 +428,24 @@ const FacetQueryBuilder = ({ items, value, onChange, title, enableGrouping = tru
 
   if (!items) return null;
 
+  const portalPanelStyle = panelBox
+    ? {
+        top: panelBox.top,
+        left: panelBox.left,
+        width: panelBox.width,
+        maxHeight: panelBox.maxHeight,
+      }
+    : undefined;
+
+  const portalRoot = typeof document !== 'undefined' ? getPortalRoot() : null;
+
   return (
     <div
       ref={builderRootRef}
       className={`facet-query-builder ${isOpen ? 'facet-query-builder--open' : ''}`}
     >
       <button
+        ref={toggleRef}
         type="button"
         className="facet-query-builder__toggle"
         onClick={() => setIsOpen(!isOpen)}
@@ -380,23 +459,16 @@ const FacetQueryBuilder = ({ items, value, onChange, title, enableGrouping = tru
         </svg>
       </button>
 
-      {isOpen && (
-        <>
-          {/*
-          <div
-            className="facet-query-builder__backdrop"
-            onMouseDown={(e) => e.stopPropagation()}
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsOpen(false);
-            }}
-            aria-hidden
-          />
-          */}
-          <div
-            className="facet-query-builder__panel"
-            onMouseDown={resetSimpleSwitchArmedUnlessSimpleButton}
-          >
+      {isOpen && portalRoot &&
+        createPortal(
+            <div
+              ref={panelContentRef}
+              className={`facet-query-builder__panel facet-query-builder__panel--portal${
+                panelBox?.fullWidth ? ' facet-query-builder__panel--full-width' : ''
+              }`}
+              style={portalPanelStyle}
+              onMouseDown={resetSimpleSwitchArmedUnlessSimpleButton}
+            >
             <div className="facet-query-builder__toolbar">
               <button
                 type="button"
@@ -518,7 +590,7 @@ const FacetQueryBuilder = ({ items, value, onChange, title, enableGrouping = tru
                         </span>
                         <div className="facet-query-builder__select facet-query-builder__select--between">
                           <CustomSelect
-                            width="6rem"
+                            width="fit-content"
                             value={betweenGroupOptions.find(
                               (o) => o.value === (pairs[gi - 1] || advancedVal.betweenGroups)
                             )}
@@ -625,9 +697,9 @@ const FacetQueryBuilder = ({ items, value, onChange, title, enableGrouping = tru
                 </div>
               </div>
             )}
-          </div>
-        </>
-      )}
+          </div>,
+          portalRoot
+        )}
 
       <FacetItemPicker
         isOpen={Boolean(picker)}
