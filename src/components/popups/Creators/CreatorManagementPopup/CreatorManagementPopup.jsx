@@ -28,9 +28,9 @@ const roleOptions = Object.entries(CreditRole).map(([key, value]) => ({
 const TABS = [
   { id: 'update', i18nKey: 'modes.update' },
   { id: 'user', i18nKey: 'modes.user' },
-  { id: 'discord', i18nKey: 'modes.discord' },
   { id: 'merge', i18nKey: 'modes.merge' },
   { id: 'split', i18nKey: 'modes.split' },
+  { id: 'delete', i18nKey: 'modes.delete' },
 ];
 
 export const CreatorManagementPopup = ({ creator, onClose, onUpdate, curationProfileInitial = null }) => {
@@ -60,7 +60,6 @@ export const CreatorManagementPopup = ({ creator, onClose, onUpdate, curationPro
   const [discordId, setDiscordId] = useState('');
   const [pendingDiscordInfo, setPendingDiscordInfo] = useState(null);
   const [showDiscordConfirm, setShowDiscordConfirm] = useState(false);
-  const [showUnlinkConfirm, setShowUnlinkConfirm] = useState(false);
 
   const [mergeTarget, setMergeTarget] = useState(null);
   const [mergeTargetSearch, setMergeTargetSearch] = useState('');
@@ -74,6 +73,7 @@ export const CreatorManagementPopup = ({ creator, onClose, onUpdate, curationPro
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [hasPendingChanges, setHasPendingChanges] = useState(false);
+  const [superAdminDangerPassword, setSuperAdminDangerPassword] = useState('');
 
   useBodyScrollLock(true);
 
@@ -393,27 +393,6 @@ export const CreatorManagementPopup = ({ creator, onClose, onUpdate, curationPro
     }
   };
 
-  const handleUnlinkConfirm = async (confirmed) => {
-    if (!confirmed) {
-      setShowUnlinkConfirm(false);
-      return;
-    }
-    try {
-      setIsLoading(true);
-      const res = await api.delete(`/v2/database/creators/${creator.id}/discord`);
-      if (res.status === 200) {
-        toast.success(tt('success.discordUnlinked'));
-        onUpdate?.();
-      }
-    } catch (err) {
-      console.error('Error unlinking Discord:', err);
-      toast.error(tt('errors.unlinkFailed'));
-    } finally {
-      setIsLoading(false);
-      setShowUnlinkConfirm(false);
-    }
-  };
-
   const handleMerge = async () => {
     if (!mergeTarget) return;
     setIsLoading(true);
@@ -461,6 +440,67 @@ export const CreatorManagementPopup = ({ creator, onClose, onUpdate, curationPro
     label: t(`verification.${s}`, { ns: 'common' }),
   }));
 
+  const isSuperAdminViewer = Boolean(user && hasFlag(user, permissionFlags.SUPER_ADMIN));
+
+  const visibleTabs = useMemo(
+    () => TABS.filter((tab) => tab.id !== 'delete' || isSuperAdminViewer),
+    [isSuperAdminViewer],
+  );
+
+  useEffect(() => {
+    if (mode === 'delete' && !isSuperAdminViewer) {
+      setMode('update');
+    }
+  }, [mode, isSuperAdminViewer]);
+
+  const handleAdminPurgeCreator = async () => {
+    if (!isSuperAdminViewer) return;
+    if (!superAdminDangerPassword.trim()) {
+      toast.error(tt('superAdminDanger.passwordRequired'));
+      return;
+    }
+    if (!window.confirm(tt('superAdminDanger.confirmPurge'))) return;
+    setIsLoading(true);
+    clearMessages();
+    try {
+      await api.delete(`/v2/admin/creators/${creator.id}`, {
+        headers: {'X-Super-Admin-Password': superAdminDangerPassword},
+      });
+      toast.success(tt('superAdminDanger.successPurge'));
+      onUpdate?.();
+      onClose();
+    } catch (err) {
+      const m = err.response?.data?.message || err.response?.data?.error;
+      toast.error(m || tt('superAdminDanger.purgeFailed'));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAdminUnlinkCreator = async () => {
+    if (!isSuperAdminViewer) return;
+    if (!superAdminDangerPassword.trim()) {
+      toast.error(tt('superAdminDanger.passwordRequired'));
+      return;
+    }
+    if (!window.confirm(tt('superAdminDanger.confirmUnlink'))) return;
+    setIsLoading(true);
+    clearMessages();
+    try {
+      await api.delete(`/v2/admin/creators/${creator.id}?unlinkOnly=1`, {
+        headers: {'X-Super-Admin-Password': superAdminDangerPassword},
+      });
+      toast.success(tt('superAdminDanger.successUnlink'));
+      onUpdate?.();
+      onClose();
+    } catch (err) {
+      const m = err.response?.data?.message || err.response?.data?.error;
+      toast.error(m || tt('superAdminDanger.unlinkFailed'));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="creator-management-popup-container">
       <div className="creator-management-popup-overlay">
@@ -482,7 +522,7 @@ export const CreatorManagementPopup = ({ creator, onClose, onUpdate, curationPro
               )}
             </h2>
             <div className="mode-selector">
-              {TABS.map((tab) => (
+              {visibleTabs.map((tab) => (
                 <button
                   key={tab.id}
                   className={`mode-btn ${mode === tab.id ? 'active' : ''}`}
@@ -717,6 +757,45 @@ export const CreatorManagementPopup = ({ creator, onClose, onUpdate, curationPro
                         </div>
                       </div>
                     </div>
+
+                    {showDiscordConfirm && pendingDiscordInfo && (
+                      <div className="discord-confirm-container">
+                        <div className="discord-preview">
+                          {pendingDiscordInfo.avatarUrl && (
+                            <img
+                              src={pendingDiscordInfo.avatarUrl}
+                              alt={tt('discord.confirm.avatarAlt')}
+                              className="discord-avatar"
+                            />
+                          )}
+                          <div>
+                            <p className="discord-username">@{pendingDiscordInfo.username}</p>
+                            <p className="discord-id">
+                              {tt('discord.currentUser.idLabel')} {pendingDiscordInfo.id}
+                            </p>
+                          </div>
+                        </div>
+                        <p className="discord-confirm-message">{tt('discord.confirm.message')}</p>
+                        <div className="discord-confirm-buttons">
+                          <button
+                            type="button"
+                            onClick={() => handleDiscordConfirm(true)}
+                            disabled={isLoading}
+                            className="discord-confirm-button"
+                          >
+                            {tt('discord.confirm.confirmButton')}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDiscordConfirm(false)}
+                            disabled={isLoading}
+                            className="discord-cancel-button"
+                          >
+                            {tt('discord.confirm.cancelButton')}
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </>
                 )}
 
@@ -746,116 +825,38 @@ export const CreatorManagementPopup = ({ creator, onClose, onUpdate, curationPro
               </div>
             )}
 
-            {mode === 'discord' && (
-              <div className="discord-form">
-                {creator?.user ? (
-                  <div className="form-group">
-                    <label>{tt('discord.currentUser.label')}</label>
-                    <div className="linked-user-info">
-                      {creator.user.avatarUrl && (
-                        <img
-                          src={creator.user.avatarUrl}
-                          alt={tt('discord.currentUser.avatarAlt')}
-                          className="user-avatar"
-                        />
-                      )}
-                      <div className="user-info-content">
-                        <p className="user-username">@{creator.user.username}</p>
-                        <p className="user-id">
-                          {tt('discord.currentUser.idLabel')} {creator.user.id}
-                        </p>
-                        <button
-                          onClick={() => setShowUnlinkConfirm(true)}
-                          className="unlink-button"
-                          type="button"
-                        >
-                          {tt('discord.currentUser.unlinkButton')}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="form-group">
-                    <label>{tt('discord.discordId.label')}</label>
-                    <div className="discord-input-group">
-                      <input
-                        type="text"
-                        value={discordId}
-                        onChange={(e) => setDiscordId(e.target.value)}
-                        placeholder={tt('discord.discordId.placeholder')}
-                        disabled={isLoading || showDiscordConfirm}
-                      />
-                      <button
-                        onClick={handleDiscordIdSubmit}
-                        disabled={isLoading || showDiscordConfirm || !discordId}
-                        className="fetch-discord-button"
-                      >
-                        {tt('discord.discordId.validateButton')}
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                {showDiscordConfirm && pendingDiscordInfo && (
-                  <div className="discord-confirm-container">
-                    <div className="discord-preview">
-                      {pendingDiscordInfo.avatarUrl && (
-                        <img
-                          src={pendingDiscordInfo.avatarUrl}
-                          alt={tt('discord.confirm.avatarAlt')}
-                          className="discord-avatar"
-                        />
-                      )}
-                      <div>
-                        <p className="discord-username">@{pendingDiscordInfo.username}</p>
-                        <p className="discord-id">
-                          {tt('discord.currentUser.idLabel')} {pendingDiscordInfo.id}
-                        </p>
-                      </div>
-                    </div>
-                    <p className="discord-confirm-message">{tt('discord.confirm.message')}</p>
-                    <div className="discord-confirm-buttons">
-                      <button
-                        onClick={() => handleDiscordConfirm(true)}
-                        disabled={isLoading}
-                        className="discord-confirm-button"
-                      >
-                        {tt('discord.confirm.confirmButton')}
-                      </button>
-                      <button
-                        onClick={() => handleDiscordConfirm(false)}
-                        disabled={isLoading}
-                        className="discord-cancel-button"
-                      >
-                        {tt('discord.confirm.cancelButton')}
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                {showUnlinkConfirm && (
-                  <div className="confirm-dialog">
-                    <div className="confirm-content">
-                      <p>{tt('discord.unlinkConfirm.message')}</p>
-                      <div className="confirm-buttons">
-                        <button
-                          onClick={() => handleUnlinkConfirm(true)}
-                          className="confirm-yes"
-                          disabled={isLoading}
-                        >
-                          {tt('discord.unlinkConfirm.yesButton')}
-                        </button>
-                        <button
-                          onClick={() => handleUnlinkConfirm(false)}
-                          className="confirm-no"
-                          disabled={isLoading}
-                        >
-                          {tt('discord.unlinkConfirm.cancelButton')}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
+            {mode === 'delete' && isSuperAdminViewer && (
+              <div className="delete-tab super-admin-danger">
+                <h3 className="super-admin-danger__title">{tt('superAdminDanger.title')}</h3>
+                <p className="super-admin-danger__hint">{tt('superAdminDanger.hint')}</p>
+                <input
+                  type="password"
+                  name="superadmin-creator-danger-password"
+                  autoComplete="off"
+                  className="super-admin-danger__password"
+                  value={superAdminDangerPassword}
+                  onChange={(e) => setSuperAdminDangerPassword(e.target.value)}
+                  placeholder={tt('superAdminDanger.passwordPlaceholder')}
+                  disabled={isLoading}
+                />
+                <div className="super-admin-danger__actions">
+                  <button
+                    type="button"
+                    className="super-admin-danger__btn super-admin-danger__btn--purge btn-fill-danger"
+                    onClick={handleAdminPurgeCreator}
+                    disabled={isLoading}
+                  >
+                    {tt('superAdminDanger.purgeButton')}
+                  </button>
+                  <button
+                    type="button"
+                    className="super-admin-danger__btn super-admin-danger__btn--unlink btn-fill-neutral-heavy"
+                    onClick={handleAdminUnlinkCreator}
+                    disabled={isLoading}
+                  >
+                    {tt('superAdminDanger.unlinkButton')}
+                  </button>
+                </div>
               </div>
             )}
 

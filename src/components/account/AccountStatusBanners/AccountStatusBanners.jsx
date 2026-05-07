@@ -20,11 +20,16 @@ export function AccountStatusBanners({ variant = 'edit', user, navigate }) {
   const hasPendingDeletion = Boolean(user.deletionExecuteAt && user.deletionScheduledAt);
 
   if (hasPendingDeletion) {
+    const withCreator = Boolean(user.deletionIncludeCreator);
     return (
       <StatusBanner tone="warning" placement="dock" role="status">
-        {t('profile.accountScheduledDeletion', {
-          date: formatDeletionInstant(user.deletionExecuteAt),
-        })}
+        {withCreator
+          ? t('profile.accountScheduledDeletionWithCreator', {
+              date: formatDeletionInstant(user.deletionExecuteAt),
+            })
+          : t('profile.accountScheduledDeletion', {
+              date: formatDeletionInstant(user.deletionExecuteAt),
+            })}
       </StatusBanner>
     );
   }

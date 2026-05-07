@@ -3,9 +3,9 @@
   "modes": {
     "update": "基本",
     "user": "用户",
-    "discord": "Discord 账户",
     "merge": "合并",
-    "split": "拆分"
+    "split": "拆分",
+    "delete": "删除"
   },
   "update": {
     "name": {
@@ -99,6 +99,20 @@
       "addAnother": "+ 添加更多名称"
     },
     "splitButton": "拆分创作者"
+  },
+  "superAdminDanger": {
+    "title": "危险操作（超级管理员）",
+    "hint": "以下操作需要超级管理员密码。",
+    "passwordPlaceholder": "超级管理员密码",
+    "passwordRequired": "请输入超级管理员密码。",
+    "purgeButton": "彻底清理创作者资料",
+    "unlinkButton": "仅解除与用户关联",
+    "confirmPurge": "确定彻底清理该创作者？仅由其署名的关卡将被删除；合作谱面将移除其署名。此操作不可撤销。",
+    "confirmUnlink": "仅解除该创作者与其用户账号的关联？创作者行与谱面署名将保留。",
+    "successPurge": "创作者资料已清理。",
+    "successUnlink": "已解除与用户关联。",
+    "purgeFailed": "无法清理创作者。",
+    "unlinkFailed": "无法解除关联。"
   },
   "errors": {
     "loadCreatorsFailed": "创作者加载失败",

@@ -685,52 +685,68 @@ const ProfilePage = () => {
                       },
                     ]}
                     actions={
-                      <>
-                        {user && isOwnProfile ? (
-                          <Link
-                            className="profile-header__action-btn"
-                            to="/settings/player"
-                            title={t("profile.editProfile")}
-                            aria-label={t("profile.editProfile")}
-                          >
-                            <EditIcon color="var(--color-white)" size={32} />
-                          </Link>
-                        ) : null}
-                        {hasFlag(user, permissionFlags.SUPER_ADMIN) ? (
-                          <button
-                            type="button"
-                            className="profile-header__action-btn"
-                            onClick={handleAdminEditClick}
-                            title={t("profile.adminEdit")}
-                            aria-label={t("profile.adminEdit")}
-                          >
-                            <ShieldIcon color="var(--color-white)" size={32} />
-                          </button>
-                        ) : null}
-                        
-                        {playerData?.user?.username ? (
-                          <button
-                            type="button"
-                            className="profile-header__action-btn"
-                            onClick={handleViewUserPacks}
-                            title={t("profile.viewUserPacks")}
-                            aria-label={t("profile.viewUserPacks")}
-                          >
-                            <PackIcon color="var(--color-white)" size={32} />
-                          </button>
-                        ) : null}
-                        {playerData?.user?.creator?.id ? (
-                          <Link
-                            className="profile-header__action-btn"
-                            to={`/creator/${playerData.user.creator.id}`}
-                            title={t("profile.linkToCreator", { defaultValue: "View creator profile" })}
-                            aria-label={t("profile.linkToCreator", { defaultValue: "View creator profile" })}
-                          >
-                            <CreatorIcon color="var(--color-white)" size={28} />
-                          </Link>
-                        ) : null}
-                      </>
+                      (() => {
+                        const elements = [];
+
+                        if (user && isOwnProfile) {
+                          elements.push(
+                            <Link
+                              key="edit"
+                              className="profile-header__action-btn"
+                              to="/settings/player"
+                              title={t("profile.editProfile")}
+                              aria-label={t("profile.editProfile")}
+                            >
+                              <EditIcon color="var(--color-white)" size={32} />
+                            </Link>
+                          );
+                        }
+                        if (hasFlag(user, permissionFlags.SUPER_ADMIN)) {
+                          elements.push(
+                            <button
+                              key="admin-edit"
+                              type="button"
+                              className="profile-header__action-btn"
+                              onClick={handleAdminEditClick}
+                              title={t("profile.adminEdit")}
+                              aria-label={t("profile.adminEdit")}
+                            >
+                              <ShieldIcon color="var(--color-white)" size={32} />
+                            </button>
+                          );
+                        }
+                        if (playerData?.user?.username) {
+                          elements.push(
+                            <button
+                              key="packs"
+                              type="button"
+                              className="profile-header__action-btn"
+                              onClick={handleViewUserPacks}
+                              title={t("profile.viewUserPacks")}
+                              aria-label={t("profile.viewUserPacks")}
+                            >
+                              <PackIcon color="var(--color-white)" size={32} />
+                            </button>
+                          );
+                        }
+                        if (playerData?.user?.creator?.id) {
+                          elements.push(
+                            <Link
+                              key="creator-link"
+                              className="profile-header__action-btn"
+                              to={`/creator/${playerData.user.creator.id}`}
+                              title={t("profile.linkToCreator", { defaultValue: "View creator profile" })}
+                              aria-label={t("profile.linkToCreator", { defaultValue: "View creator profile" })}
+                            >
+                              <CreatorIcon color="var(--color-white)" size={28} />
+                            </Link>
+                          );
+                        }
+
+                        return elements.length > 0 ? <>{elements}</> : null;
+                      })()
                     }
+               
                   />
                 </div>
               </div>

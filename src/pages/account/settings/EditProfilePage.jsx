@@ -67,6 +67,7 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
   const [isUsernameEditing, setIsUsernameEditing] = useState(false);
   const [originalUsername, setOriginalUsername] = useState(user?.username || '');
   const [isDeletionBusy, setIsDeletionBusy] = useState(false);
+  const [deletionIncludeCreator, setDeletionIncludeCreator] = useState(false);
 
   useBodyScrollLock(isAvatarPopupOpen || isEmailChangePopupOpen);
 
@@ -419,8 +420,12 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
     if (!window.confirm(t('editProfile.dangerZone.confirmDelete'))) return;
     setIsDeletionBusy(true);
     try {
-      await api.post(`${import.meta.env.VITE_PROFILE}/me/delete`);
+      await api.post(`${import.meta.env.VITE_PROFILE}/me/delete`, {
+        deletionIncludeCreator:
+          Boolean(user?.creatorId) && Boolean(deletionIncludeCreator),
+      });
       await fetchUser(true);
+      setDeletionIncludeCreator(false);
       toast.success(t('editProfile.dangerZone.successScheduled'));
     } catch (err) {
       toast.error(
@@ -833,6 +838,11 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
                     date: formatDeletionInstant(user.deletionExecuteAt),
                   })}
                 </li>
+                {user.deletionIncludeCreator ? (
+                  <li className="danger-zone__dates-note">
+                    {t('editProfile.dangerZone.pendingIncludesCreator')}
+                  </li>
+                ) : null}
               </ul>
               <div className="danger-zone__actions">
                 <button
@@ -848,17 +858,30 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
               </div>
             </div>
           ) : (
-            <div className="danger-zone__actions">
-              <button
-                type="button"
-                className="button danger-zone__button danger-zone__button--destructive btn-fill-danger"
-                onClick={handleScheduleAccountDeletion}
-                disabled={isDeletionBusy}
-              >
-                {isDeletionBusy
-                  ? t('editProfile.dangerZone.scheduling')
-                  : t('editProfile.dangerZone.deleteButton')}
-              </button>
+            <div className="danger-zone__schedule-block">
+              {user?.creatorId ? (
+                <label className="danger-zone__include-creator">
+                  <input
+                    type="checkbox"
+                    checked={deletionIncludeCreator}
+                    onChange={(e) => setDeletionIncludeCreator(e.target.checked)}
+                    disabled={isDeletionBusy}
+                  />
+                  <span>{t('editProfile.dangerZone.includeCreatorCheckbox')}</span>
+                </label>
+              ) : null}
+              <div className="danger-zone__actions">
+                <button
+                  type="button"
+                  className="button danger-zone__button danger-zone__button--destructive btn-fill-danger"
+                  onClick={handleScheduleAccountDeletion}
+                  disabled={isDeletionBusy}
+                >
+                  {isDeletionBusy
+                    ? t('editProfile.dangerZone.scheduling')
+                    : t('editProfile.dangerZone.deleteButton')}
+                </button>
+              </div>
             </div>
           )}
         </div>

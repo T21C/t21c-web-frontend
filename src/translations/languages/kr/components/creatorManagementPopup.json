@@ -3,9 +3,9 @@
   "modes": {
     "update": "업데이트",
     "user": "사용자",
-    "discord": "Discord",
     "merge": "병합",
-    "split": "분리"
+    "split": "분리",
+    "delete": "삭제"
   },
   "update": {
     "name": {
@@ -99,6 +99,20 @@
       "addAnother": "+ Add another name"
     },
     "splitButton": "Split creator"
+  },
+  "superAdminDanger": {
+    "title": "위험 구역 (슈퍼 관리자)",
+    "hint": "다음 작업에는 슈퍼 관리자 비밀번호가 필요합니다.",
+    "passwordPlaceholder": "슈퍼 관리자 비밀번호",
+    "passwordRequired": "슈퍼 관리자 비밀번호를 입력하세요.",
+    "purgeButton": "크리에이터 프로필 완전 정리",
+    "unlinkButton": "사용자 연결만 해제",
+    "confirmPurge": "이 크리에이터를 완전히 정리할까요? 솔로 레벨은 삭제되고 콜라보에서는 크레딧이 제거됩니다. 되돌릴 수 없습니다.",
+    "confirmUnlink": "사용자 계정과의 연결만 해제할까요? 크리에이터 행과 채보 크레딧은 유지됩니다.",
+    "successPurge": "크리에이터 프로필이 정리되었습니다.",
+    "successUnlink": "사용자에서 크리에이터 연결이 해제되었습니다.",
+    "purgeFailed": "크리에이터를 정리하지 못했습니다.",
+    "unlinkFailed": "연결 해제에 실패했습니다."
   },
   "errors": {
     "loadCreatorsFailed": "Failed to load creators",

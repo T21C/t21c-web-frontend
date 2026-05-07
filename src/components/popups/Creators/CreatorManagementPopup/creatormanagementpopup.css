@@ -215,9 +215,9 @@
 
 .creator-management-popup-container .update-form,
 .creator-management-popup-container .user-form,
-.creator-management-popup-container .discord-form,
 .creator-management-popup-container .merge-form,
-.creator-management-popup-container .split-form {
+.creator-management-popup-container .split-form,
+.creator-management-popup-container .delete-tab {
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -693,6 +693,59 @@
 .creator-management-popup-container .confirm-yes:disabled,
 .creator-management-popup-container .confirm-no:disabled {
   opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.creator-management-popup-container .super-admin-danger {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--danger-color-tint-45, rgba(220, 80, 80, 0.45));
+  background: var(--danger-color-tint-08, rgba(220, 80, 80, 0.08));
+}
+
+.creator-management-popup-container .super-admin-danger__title {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--text-color, #eee);
+}
+
+.creator-management-popup-container .super-admin-danger__hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-white-t70, rgba(255, 255, 255, 0.7));
+  line-height: 1.35;
+}
+
+.creator-management-popup-container .super-admin-danger__password {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--color-white-t20);
+  background: var(--color-black);
+  color: var(--color-white);
+  font-size: 0.9rem;
+}
+
+.creator-management-popup-container .super-admin-danger__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.creator-management-popup-container .super-admin-danger__btn {
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.creator-management-popup-container .super-admin-danger__btn:disabled {
+  opacity: 0.65;
   cursor: not-allowed;
 }
 

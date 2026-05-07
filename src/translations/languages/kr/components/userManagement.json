@@ -48,6 +48,18 @@
     "alreadyHighestRole": "User already has the highest role",
     "alreadyLowestRole": "User already has the lowest role",
     "noRoleToRemove": "User has no role to remove",
-    "cannotRemoveBottomRole": "Cannot remove user from base role - they can only be demoted"
+    "cannotRemoveBottomRole": "Cannot remove user from base role - they can only be demoted",
+    "scheduleAccountConfirm": "이 사용자의 계정 삭제를 예약할까요? 3일간 리더보드에서 숨겨진 뒤 영구 삭제됩니다.",
+    "scheduleWithCreatorConfirm": "계정 삭제와 함께 실행 시 연결된 크리에이터 프로필을 정리할까요? 솔로 레벨은 영구 삭제되고 콜라보 크레딧은 제거됩니다.",
+    "scheduleOwnConfirm": "관리자 본인 계정의 삭제를 예약합니다. 계속할까요?",
+    "scheduleDeletionFailed": "계정 삭제를 예약할 수 없습니다."
+  },
+  "adminDeletion": {
+    "regionLabel": "계정 삭제 (슈퍼 관리자)",
+    "pendingTitle": "이미 계정 삭제가 예약됨",
+    "executesAt": "영구 삭제: {{date}}",
+    "includesCreator": "실행 시 크리에이터 프로필 정리 포함.",
+    "includeCreator": "실행 시 연결된 크리에이터 프로필도 정리 (솔로 레벨 삭제, 콜라보 크레딧 제거)",
+    "scheduleButton": "계정 삭제 예약"
   }
 }

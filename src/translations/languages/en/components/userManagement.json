@@ -48,6 +48,18 @@
     "alreadyHighestRole": "User already has the highest role",
     "alreadyLowestRole": "User already has the lowest role",
     "noRoleToRemove": "User has no role to remove",
-    "cannotRemoveBottomRole": "Cannot remove user from base role - they can only be demoted"
+    "cannotRemoveBottomRole": "Cannot remove user from base role - they can only be demoted",
+    "scheduleAccountConfirm": "Schedule account deletion for this user? They will be leaderboard-hidden for 3 days, then permanently deleted.",
+    "scheduleWithCreatorConfirm": "Schedule account deletion and purge their linked creator profile when it runs? Solo-credited levels will be permanently removed; collaboration credits will be stripped.",
+    "scheduleOwnConfirm": "You are scheduling account deletion for your own admin account. Continue?",
+    "scheduleDeletionFailed": "Could not schedule account deletion."
+  },
+  "adminDeletion": {
+    "regionLabel": "Account deletion (super admin)",
+    "pendingTitle": "Account deletion already scheduled",
+    "executesAt": "Permanent deletion: {{date}}",
+    "includesCreator": "Includes creator profile purge when executed.",
+    "includeCreator": "Also purge linked creator profile on execution (solo levels removed, collab credits stripped)",
+    "scheduleButton": "Schedule account deletion"
   }
 }

@@ -96,7 +96,9 @@
     "successScheduled": "已安排注销账户。",
     "successCanceled": "已取消注销账户。",
     "errorSchedule": "无法安排注销账户。",
-    "errorCancel": "无法取消注销账户。"
+    "errorCancel": "无法取消注销账户。",
+    "includeCreatorCheckbox": "同时移除我的创作者资料与谱面署名。仅由我署名的关卡将被永久删除。",
+    "pendingIncludesCreator": "删除执行时将清理已关联的创作者资料（单人关卡删除，合作谱面仅移除您的署名）。"
   }
 }
 

@@ -96,7 +96,9 @@
     "successScheduled": "계정 삭제가 예약되었습니다.",
     "successCanceled": "계정 삭제 예약이 취소되었습니다.",
     "errorSchedule": "계정 삭제를 예약할 수 없습니다.",
-    "errorCancel": "삭제 예약을 취소할 수 없습니다."
+    "errorCancel": "삭제 예약을 취소할 수 없습니다.",
+    "includeCreatorCheckbox": "크리에이터 프로필과 채보 크레딧도 함께 제거합니다. 혼자만 크레딧된 레벨은 영구 삭제됩니다.",
+    "pendingIncludesCreator": "삭제 실행 시 연결된 크리에이터 프로필이 정리됩니다(솔로 레벨 삭제, 콜라보 크레딧 제거)."
   }
 }
 

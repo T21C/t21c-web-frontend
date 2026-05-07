@@ -96,7 +96,9 @@
     "successScheduled": "Account deletion scheduled.",
     "successCanceled": "Account deletion canceled.",
     "errorSchedule": "Could not schedule account deletion.",
-    "errorCancel": "Could not cancel account deletion."
+    "errorCancel": "Could not cancel account deletion.",
+    "includeCreatorCheckbox": "Also remove my creator profile and chart credits. Levels where I am the only credited creator will be permanently removed.",
+    "pendingIncludesCreator": "When deletion runs, your linked creator profile will be purged (solo levels removed, collaboration credits stripped)."
   }
 }
 

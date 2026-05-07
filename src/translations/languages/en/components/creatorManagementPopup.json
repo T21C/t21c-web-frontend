@@ -3,9 +3,9 @@
   "modes": {
     "update": "Update",
     "user": "User",
-    "discord": "Discord",
     "merge": "Merge",
-    "split": "Split"
+    "split": "Split",
+    "delete": "Delete"
   },
   "update": {
     "name": {
@@ -99,6 +99,20 @@
       "addAnother": "+ Add another name"
     },
     "splitButton": "Split creator"
+  },
+  "superAdminDanger": {
+    "title": "Danger zone (super admin)",
+    "hint": "Super admin password is required for these actions.",
+    "passwordPlaceholder": "Super admin password",
+    "passwordRequired": "Enter the super admin password.",
+    "purgeButton": "Purge creator profile",
+    "unlinkButton": "Unlink user only",
+    "confirmPurge": "Permanently purge this creator? Solo-credited levels will be removed. Collaboration credits for this creator will be stripped. This cannot be undone.",
+    "confirmUnlink": "Only unlink this creator from their user account? The creator row and chart credits remain.",
+    "successPurge": "Creator profile purged.",
+    "successUnlink": "Creator unlinked from user.",
+    "purgeFailed": "Could not purge creator.",
+    "unlinkFailed": "Could not unlink creator."
   },
   "errors": {
     "loadCreatorsFailed": "Failed to load creators",

@@ -9,6 +9,7 @@
   "emailVerification": "请验证邮箱地址以访问所有功能",
   "banned": "你的账号已被封禁",
   "accountScheduledDeletion": "你的账号已安排在 {{date}} 注销。在此之前可在“编辑个人资料”中取消。",
+  "accountScheduledDeletionWithCreator": "你的账号已安排在 {{date}} 注销，并将包含创作者资料及相关谱面数据的清理。在此之前可在“编辑个人资料”中取消。",
   "submissionSuspended": "你的提交功能已被暂停",
   "searchForOther": "无法显示你的个人资料，请搜索其他玩家",
   "valueLabels": {
