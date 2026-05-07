@@ -515,7 +515,7 @@
 @media (max-width: 480px) {
   .pass-core-form .info input {
     padding: 0.6rem 0.4rem;
-    font-size: 0.95rem;
+    font-size: 0.8rem;
   }
 
   .pass-core-form .info .youtube-input .youtube-info {
@@ -554,6 +554,25 @@
     width: 1.75rem;
     height: 1.75rem;
   }
+
+  .pass-core-form .info .id-input .information .level-info,
+  .pass-core-form .info .youtube-input .yt-info {
+    font-size: 0.8rem;
+  }
+
+  .pass-core-form .accuracy .top, .pass-core-form .accuracy .bottom {
+    gap: 0.5rem;
+  }
+
+  .pass-core-form .fetch-icon {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .pass-core-form .info .info-input {
+    flex-wrap: wrap;
+  }
+
 }
 
 @media (max-width: 360px) {
@@ -562,18 +581,18 @@
   }
 
   .pass-core-form .info h1 {
-    font-size: 1.1rem;
+    font-size: 1rem;
     margin-bottom: 0.4rem;
   }
 
   .pass-core-form .info input {
     padding: 0.5rem 0.3rem;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
   }
 
   .pass-core-form .info > .submit {
     padding: 0.7rem;
-    font-size: 0.95rem;
+    font-size: 0.8rem;
   }
 
   .pass-core-form .info .id-input .search-container input {

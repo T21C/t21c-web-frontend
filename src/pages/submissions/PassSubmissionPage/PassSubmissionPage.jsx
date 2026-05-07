@@ -481,7 +481,7 @@ const PassSubmissionPage = () => {
               />
             ) : null
           }
-          renderVerified={() => <FetchIcon form={form} levelLoading={levelLoading} level={level} color={getIconColor()} />}
+          renderVerified={() => <FetchIcon className="fetch-icon" form={form} levelLoading={levelLoading} level={level} color={getIconColor()} />}
           renderGotoLink={() => (
             <a
               href={level ? (level["id"] == form.levelId ? `/levels/${level["id"]}` : "#") : "#"}

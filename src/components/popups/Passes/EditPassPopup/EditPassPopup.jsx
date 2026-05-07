@@ -227,7 +227,7 @@ const handleSubmit = async (e) => {
           onInputChange={handleInputChange}
           renderVerified={() => {
             const color = !form.levelId ? "#ffc107" : levelLoading ? "#ffc107" : level ? "#28a745" : "#dc3545";
-            return <FetchIcon form={form} levelLoading={levelLoading} level={level} color={color} />;
+            return <FetchIcon className="fetch-icon" form={form} levelLoading={levelLoading} level={level} color={color} />;
           }}
           renderGotoLink={() => (
             <a
