@@ -34,6 +34,30 @@ const MobileDropdown = ({
     setIsOpen(false);
   }, [location]);
 
+  // Close dropdown on outside tap/click (and Escape)
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handlePointerDown = (e) => {
+      const root = dropdownRef.current;
+      if (!root) return;
+      if (root.contains(e.target)) return;
+      setIsOpen(false);
+    };
+
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") setIsOpen(false);
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown, true);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown, true);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen]);
+
   // Handle viewport positioning
   useEffect(() => {
     if (isOpen && menuRef.current && dropdownRef.current) {

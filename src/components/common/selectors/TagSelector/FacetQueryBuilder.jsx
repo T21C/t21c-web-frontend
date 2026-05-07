@@ -536,7 +536,7 @@ const FacetQueryBuilder = ({ items, value, onChange, title, enableGrouping = tru
                       <div className="facet-query-builder__cond-head">
                         <div className="facet-query-builder__select facet-query-builder__select--quant">
                           <CustomSelect
-                            width="6rem"
+                            width="fit-content"
                             value={quantifierOptions.find((o) => o.value === grp.quantifier)}
                             onChange={(opt) =>
                               setQuantifier(gi, opt?.value === 'any' ? 'any' : 'all')

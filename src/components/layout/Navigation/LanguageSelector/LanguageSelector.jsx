@@ -184,7 +184,7 @@ const LanguageSelector = ({ variant = "desktop", asListItem = null }) => {
           </li>
 
           {mobileDropdownContent &&
-            createPortal(mobileDropdownContent, getPortalRoot())}
+            createPortal(mobileDropdownContent, getPortalRoot('root'))}
         </>
       );
     } else {
