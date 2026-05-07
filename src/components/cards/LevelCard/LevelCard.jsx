@@ -63,8 +63,6 @@ const LevelCard = ({
   const [thumbnailUrl, setThumbnailUrl] = useState('');
   const { difficultyDict, curationTypesDict, tagsDict } = useDifficultyContext();
   const difficultyInfo = difficultyDict[level.diffId];
-  const chartTilecount = level.tilecount;
-  const chartBpm = level.bpm;
   const curationsList = useMemo(() => {
     const raw = level.curations?.length
       ? level.curations
@@ -196,7 +194,7 @@ const LevelCard = ({
         <p className="level-desc">
           {songName} 
         </p>
-        {tags && tags.length > 0 && renderTagsWrapper()}
+        {renderTagsWrapper()}
       </div>
     );
   };
@@ -281,10 +279,14 @@ const LevelCard = ({
   );
 
   const renderTagsWrapper = () => {
-    if (!tags || tags.length === 0) return null;
 
+    const hasTags = tags && tags.length > 0;
+    const hasMetadata = level.tilecount !== null || level.bpm !== null || level.levelLengthInMs !== null;
     return (
-      <div className="level-underline-wrapper">
+      <div className="level-underline-wrapper" 
+       style={{ marginTop: hasTags && hasMetadata ? '' : '0' }}
+      >
+        {hasTags && (
       <div className="level-tags-wrapper">
         {tags.map((tag) => (
           <div
@@ -304,26 +306,26 @@ const LevelCard = ({
             )}
           </div>
         ))}
-      
-      </div>
-      {(chartTilecount != null && chartTilecount !== '') || (chartBpm != null && chartBpm !== '') ? (
-        <div className="metadata-block">
-          {level.levelLengthInMs != null && level.levelLengthInMs !== '' && (
+        </div>
+        )}
+      {hasMetadata ? (
+        <div className={`metadata-block ${hasTags ? '' : 'no-tags'}`}>
+          {level.levelLengthInMs !== null && (
             <div className="metadata-item">
               <TimeIcon size={18} />
               <span className="metadata-value">{formatDuration(level.levelLengthInMs)}</span>
             </div>
           )}
-          {chartTilecount != null && chartTilecount !== '' && (
+          {level.tilecount !== null && (
           <div className="metadata-item">
             <ChartIcon size={18}  />
-            <span className="metadata-value">{chartTilecount}</span>
+            <span className="metadata-value">{level.tilecount}</span>
           </div>
           )}
-          {chartBpm != null && chartBpm !== '' && (
+          {level.bpm !== null && (
           <div className="metadata-item">
             <MetronomeIcon size={18} />
-            <span className="metadata-value">{clampFloat(chartBpm, 2)}</span>
+            <span className="metadata-value">{clampFloat(level.bpm, 2)}</span>
           </div>
           )}
         </div>

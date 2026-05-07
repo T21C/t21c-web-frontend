@@ -1432,6 +1432,11 @@
   margin-left: 0.5rem;
 }
 
+.level-card .metadata-block.no-tags {
+  flex: unset;
+  margin-left: 0;
+}
+
 .level-card .metadata-item {
   padding: 0.1rem 0.25rem;
   border-radius: 0.25rem;

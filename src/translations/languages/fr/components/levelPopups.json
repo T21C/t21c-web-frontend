@@ -51,6 +51,27 @@
       "delete": "Échec de la suppression",
       "toggleHidden": "Échec du changement de statu caché",
       "restore": "Échec de la restauration"
+    },
+    "chartStats": {
+      "title": "Métadonnées du chart",
+      "openButtonTitle": "Modifier BPM, tuiles et durée (hors CDN)",
+      "clearHint": "Laisser un champ vide puis enregistrer pour l'effacer.",
+      "preview": "Aperçu",
+      "save": "Enregistrer",
+      "saving": "Enregistrement...",
+      "cancel": "Annuler",
+      "toastSaved": "Métadonnées du chart enregistrées",
+      "labels": {
+        "bpm": "BPM",
+        "tilecount": "Nombre de tuiles",
+        "lengthSeconds": "Durée (secondes)"
+      },
+      "errors": {
+        "save": "Échec de l'enregistrement des métadonnées",
+        "bpm": "Le BPM doit être un nombre supérieur à 0",
+        "tilecount": "Le nombre de tuiles doit être un entier positif ou nul",
+        "length": "La durée doit être un nombre positif ou nul (secondes, décimales autorisées)"
+      }
     }
   }
 } 

@@ -69,6 +69,27 @@
       "restore": "恢复关卡失败",
       "cannotCreateSong": "无法在编辑关卡时创建新歌曲。请选择现有歌曲。"
     },
+    "chartStats": {
+      "title": "谱面元数据",
+      "openButtonTitle": "编辑 BPM、物量与时长（非 CDN）",
+      "clearHint": "留空并保存可清除对应字段。",
+      "preview": "预览",
+      "save": "保存",
+      "saving": "保存中…",
+      "cancel": "取消",
+      "toastSaved": "谱面元数据已保存",
+      "labels": {
+        "bpm": "BPM",
+        "tilecount": "物量",
+        "lengthSeconds": "时长（秒）"
+      },
+      "errors": {
+        "save": "保存谱面元数据失败",
+        "bpm": "BPM 必须为大于 0 的数字",
+        "tilecount": "物量必须为非负整数",
+        "length": "时长必须为非负数（秒，可含小数）"
+      }
+    },
     "tags": {
       "title": "管理关卡标签",
       "currentTags": "当前标签",

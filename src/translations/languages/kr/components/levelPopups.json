@@ -58,6 +58,27 @@
       "delete": "소프트 삭제 실패",
       "toggleHidden": "숨김 상태 전환 실패",
       "restore": "레벨 복구 실패"
+    },
+    "chartStats": {
+      "title": "채보 메타데이터",
+      "openButtonTitle": "BPM·타일 수·길이 편집 (비 CDN)",
+      "clearHint": "비우고 저장하면 해당 값이 삭제됩니다.",
+      "preview": "미리보기",
+      "save": "저장",
+      "saving": "저장 중...",
+      "cancel": "취소",
+      "toastSaved": "채보 메타데이터가 저장되었습니다",
+      "labels": {
+        "bpm": "BPM",
+        "tilecount": "타일 수",
+        "lengthSeconds": "길이 (초)"
+      },
+      "errors": {
+        "save": "채보 메타데이터 저장 실패",
+        "bpm": "BPM은 0보다 큰 숫자여야 합니다",
+        "tilecount": "타일 수는 0 이상의 정수여야 합니다",
+        "length": "길이는 0 이상의 숫자(초, 소수 가능)여야 합니다"
+      }
     }
   }
 }

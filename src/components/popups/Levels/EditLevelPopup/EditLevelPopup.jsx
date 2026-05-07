@@ -19,6 +19,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { SongSelectorPopup } from '@/components/popups/Songs';
 import { CloseButton } from '@/components/common/buttons';
+import { ChartIcon } from '@/components/common/icons';
+import { AdminLevelChartStatsPopup } from './AdminLevelChartStatsPopup';
 
 export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPage = false }) => {
   const { t } = useTranslation(['components', 'common']);
@@ -93,6 +95,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
   const [isExternallyAvailable, setIsExternallyAvailable] = useState(false);
   const [isRefreshingTags, setIsRefreshingTags] = useState(false);
   const [showSongSelector, setShowSongSelector] = useState(false);
+  const [showChartStatsPopup, setShowChartStatsPopup] = useState(false);
   const [selectedSong, setSelectedSong] = useState(null);
   const navigate = useNavigate();
   useEffect(() => {
@@ -802,6 +805,25 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                     title={isDlLinkDisabled() ? getDlLinkDisabledReason() : ''}
                     style={{cursor: isDlLinkDisabled() ? 'help' : ''}}
                   />
+                  {isSuperAdmin && (
+                    <button
+                      type="button"
+                      className="edit-level-popup__chart-stats-button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (isDlLinkDisabled()) {
+                          toast.error(getDlLinkDisabledReason() || 'Unavailable');
+                          return;
+                        }
+                        setShowChartStatsPopup(true);
+                      }}
+                      title={t('levelPopups.edit.chartStats.openButtonTitle')}
+                      disabled={isDlLinkDisabled()}
+                    >
+                      <ChartIcon color="white" size={20} />
+                    </button>
+                  )}
                   <button
                     className="edit-level-popup__upload-button"
                     onClick={handleOpenUploadManagement}
@@ -950,6 +972,18 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
           initialSong={selectedSong}
           selectedArtist={null} // No artist filtering for level edit
           allowCreate={false} // Only allow selecting existing songs
+        />
+      )}
+
+      {showChartStatsPopup && (
+        <AdminLevelChartStatsPopup
+          level={level}
+          onClose={() => setShowChartStatsPopup(false)}
+          onSaved={(patch) => {
+            if (onUpdate) {
+              onUpdate({ level: { id: level.id, ...patch } });
+            }
+          }}
         />
       )}
     </div>

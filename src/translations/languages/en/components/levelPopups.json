@@ -69,6 +69,27 @@
       "restore": "Failed to restore level",
       "cannotCreateSong": "Cannot create new songs from level edit. Please select an existing song."
     },
+    "chartStats": {
+      "title": "Chart metadata",
+      "openButtonTitle": "Edit BPM, tile count & length (non-CDN only)",
+      "clearHint": "Leave a field empty and save to clear that value.",
+      "preview": "Preview",
+      "save": "Save",
+      "saving": "Saving...",
+      "cancel": "Cancel",
+      "toastSaved": "Chart metadata saved",
+      "labels": {
+        "bpm": "BPM",
+        "tilecount": "Tile count",
+        "lengthSeconds": "Length (seconds)"
+      },
+      "errors": {
+        "save": "Failed to save chart metadata",
+        "bpm": "BPM must be a number greater than 0",
+        "tilecount": "Tile count must be a non-negative integer",
+        "length": "Length must be a non-negative number (seconds, decimals allowed)"
+      }
+    },
     "tags": {
       "title": "Manage Level Tags",
       "currentTags": "Current Tags",

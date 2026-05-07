@@ -56,6 +56,27 @@
       "delete": "Nie udało się usunąć poziomu",
       "toggleHidden": "Nie udało się zmienić statusu ukrycia",
       "restore": "Nie udało się odzyskać poziomu"
+    },
+    "chartStats": {
+      "title": "Metadane chartu",
+      "openButtonTitle": "Edytuj BPM, kafelki i długość (bez CDN)",
+      "clearHint": "Pozostaw pole puste i zapisz, aby je wyczyścić.",
+      "preview": "Podgląd",
+      "save": "Zapisz",
+      "saving": "Zapisywanie...",
+      "cancel": "Anuluj",
+      "toastSaved": "Zapisano metadane chartu",
+      "labels": {
+        "bpm": "BPM",
+        "tilecount": "Liczba kafelków",
+        "lengthSeconds": "Długość (sekundy)"
+      },
+      "errors": {
+        "save": "Nie udało się zapisać metadanych chartu",
+        "bpm": "BPM musi być liczbą większą od 0",
+        "tilecount": "Liczba kafelków musi być nieujemną liczbą całkowitą",
+        "length": "Długość musi być nieujemną liczbą (sekundy, dopuszczalne ułamki)"
+      }
     }
   }
 } 
