@@ -7,6 +7,7 @@
     "speed": "飙速",
     "judgements": {
       "label": "判定：",
+      "tilecountMismatchTooltip": "判定总和 <b>{{hitSum}}</b> 与关卡 tile 数 <b>{{tilecount}}</b> 不一致。",
       "fields": {
         "earlyDouble": "太快！！",
         "earlySingle": "太快！",

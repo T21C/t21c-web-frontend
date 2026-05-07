@@ -73,5 +73,11 @@
     "late": "느림!",
     "rulesAccepted": "규칙 확인",
     "keyMode": "12K/16K"
+  },
+  "tilecountMismatch": {
+    "title": "판정 합계가 레벨 타일 수와 일치하지 않습니다",
+    "body": "이 레벨 차트는 <b>{{tilecount}}</b>타일입니다. 판정 합계는 <b>{{hitSum}}</b>입니다. 입력이 잘못되었을 수 있습니다.",
+    "reviewInputs": "취소",
+    "submitAnyway": "그래도 제출"
   }
 }

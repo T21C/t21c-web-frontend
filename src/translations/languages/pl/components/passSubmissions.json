@@ -8,6 +8,7 @@
     "speed": "Prędkość",
     "judgements": {
       "label": "Judgment'y:",
+      "tilecountMismatchTooltip": "Suma judgmentów <b>{{hitSum}}</b> nie zgadza się z liczbą kafli poziomu <b>{{tilecount}}</b>.",
       "types": {
       },
       "fields": {

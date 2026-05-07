@@ -76,5 +76,11 @@
   "rules": {
     "checkbox": "我已阅读并确认已遵守",
     "rulesLink": "提交规则和指南"
+  },
+  "tilecountMismatch": {
+    "title": "判定总和与关卡 tile 数量不一致",
+    "body": "该关卡谱面有 <b>{{tilecount}}</b> 个 tile。你的判定总和为 <b>{{hitSum}}</b>。这些数值可能有误。",
+    "reviewInputs": "取消",
+    "submitAnyway": "仍要提交"
   }
 } 

@@ -1,9 +1,14 @@
 // tuf-search: #PassSubmissionEditableMeta #passSubmissionEditableMeta #admin #submissionManagement — Submission Management
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import { Tooltip } from 'react-tooltip';
 import { toast } from 'react-hot-toast';
 import api from '@/utils/api';
 import { formatCreatorDisplay, validateSpeed } from '@/utils/Utility';
+import {
+  getPassJudgementHitCountFromSubmissionJudgements,
+  isTilecountJudgementMismatch,
+} from '@/utils/passJudgementHitCount';
 
 function truncateString(str, maxLength) {
   if (str == null || typeof str !== 'string') return '';
@@ -102,6 +107,25 @@ export default function PassSubmissionEditableMeta({
   const [draftJudgements, setDraftJudgements] = useState(() => judgementsFromSubmission(submission));
   const [draftSpeed, setDraftSpeed] = useState('');
   const [draftFlags, setDraftFlags] = useState(() => flagsFromSubmission(submission));
+
+  const judgementHitSum = useMemo(
+    () => getPassJudgementHitCountFromSubmissionJudgements(submission.judgements),
+    [submission.judgements],
+  );
+
+  const hasTilecountMismatch = useMemo(
+    () =>
+      isTilecountJudgementMismatch(submission.level?.tilecount, judgementHitSum),
+    [submission.level?.tilecount, judgementHitSum],
+  );
+
+  const levelTilecountForTooltip = useMemo(() => {
+    const tc = submission.level?.tilecount;
+    if (tc == null || !Number.isFinite(Number(tc))) return null;
+    return Math.floor(Number(tc));
+  }, [submission.level?.tilecount]);
+
+  const tilecountTooltipId = `pass-submission-tilecount-${submission.id}`;
 
   const patch = useCallback(
     async (body) => {
@@ -486,7 +510,12 @@ export default function PassSubmissionEditableMeta({
         <div className="pass-submission-meta-row-main">
           {!editingJudgements ? (
             <>
-              <div className="judgements-details">
+              <div
+                className={`judgements-details${hasTilecountMismatch ? ' judgements-details--tilecount-mismatch pass-submission-judgements-tooltip-anchor' : ''}`}
+                data-tooltip-id={
+                  hasTilecountMismatch && levelTilecountForTooltip != null ? tilecountTooltipId : undefined
+                }
+              >
                 {JUDGEMENT_KEYS.map((k) => (
                   <span key={k} className={`judgement ${JUDGEMENT_CLASS[k]}`}>
                     {submission.judgements?.[k] !== null && submission.judgements?.[k] !== undefined
@@ -501,33 +530,56 @@ export default function PassSubmissionEditableMeta({
             </>
           ) : (
             <div className="pass-submission-judgements-edit">
-              <div className="pass-submission-judgements-inputs">
-                {JUDGEMENT_KEYS.map((k) => (
-                  <label key={k} className="pass-submission-judgement-field">
-                    <span className="pass-submission-judgement-label">{t(`passSubmissions.details.judgements.fields.${k}`)}</span>
-                    <input
-                      type="text"
-                      inputMode="numeric"
-                      value={draftJudgements[k]}
-                      onChange={(e) =>
-                        setDraftJudgements((prev) => ({ ...prev, [k]: e.target.value }))
-                      }
-                    />
-                  </label>
-                ))}
+              <div
+                className={`pass-submission-judgements-inputs${hasTilecountMismatch ? ' pass-submission-judgements-inputs--tilecount-mismatch pass-submission-judgements-tooltip-anchor' : ''}`}
+                data-tooltip-id={
+                  hasTilecountMismatch && levelTilecountForTooltip != null ? tilecountTooltipId : undefined
+                }
+              >
+                  {JUDGEMENT_KEYS.map((k) => (
+                    <label key={k} className="pass-submission-judgement-field">
+                      <span className="pass-submission-judgement-label">{t(`passSubmissions.details.judgements.fields.${k}`)}</span>
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        value={draftJudgements[k]}
+                        onChange={(e) =>
+                          setDraftJudgements((prev) => ({ ...prev, [k]: e.target.value }))
+                        }
+                      />
+                    </label>
+                  ))}
+                </div>
+                <div className="pass-submission-meta-actions">
+                  <button type="button" className="pass-submission-meta-save" onClick={saveJudgements}>
+                    {t('passSubmissions.edit.save')}
+                  </button>
+                  <button type="button" className="pass-submission-meta-cancel" onClick={cancelEditJudgements}>
+                    {t('passSubmissions.edit.cancel')}
+                  </button>
+                </div>
               </div>
-              <div className="pass-submission-meta-actions">
-                <button type="button" className="pass-submission-meta-save" onClick={saveJudgements}>
-                  {t('passSubmissions.edit.save')}
-                </button>
-                <button type="button" className="pass-submission-meta-cancel" onClick={cancelEditJudgements}>
-                  {t('passSubmissions.edit.cancel')}
-                </button>
-              </div>
-            </div>
-          )}
+            )}
         </div>
       </div>
+
+      {hasTilecountMismatch && levelTilecountForTooltip != null && (
+        <Tooltip
+          id={tilecountTooltipId}
+          place="top"
+          className="pass-submission-tilecount-tooltip"
+        >
+          <Trans
+            i18nKey="passSubmissions.details.judgements.tilecountMismatchTooltip"
+            ns="components"
+            values={{
+              hitSum: judgementHitSum,
+              tilecount: levelTilecountForTooltip,
+            }}
+            components={{ b: <b /> }}
+          />
+        </Tooltip>
+      )}
 
       <div className="detail-row pass-submission-meta-row">
         <span className="detail-label">{t('passSubmissions.details.flags.label')}</span>

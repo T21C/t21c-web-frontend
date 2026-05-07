@@ -810,6 +810,44 @@
     font-size: 1.1rem;
   }
 
+  /* react-tooltip (portal); anchor on .judgements-details (view) or .pass-submission-judgements-inputs (edit) */
+  .submission-admin-page .pass-submission-card .pass-submission-judgements-tooltip-anchor {
+    position: relative;
+    z-index: 4;
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-tilecount-tooltip {
+    max-width: min(22rem, 92vw);
+    padding: 0.5rem 0.65rem;
+    border-radius: 6px;
+    border: 1px solid color-mix(in srgb, var(--warning-color) 55%, transparent);
+    background-color: var(--color-black);
+    color: var(--color-gray-2);
+    font-size: 0.85rem;
+    line-height: 1.4;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+    z-index: 30;
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-tilecount-tooltip b {
+    color: var(--color-white);
+    font-weight: 700;
+  }
+
+  .submission-admin-page .pass-submission-card .judgements-details--tilecount-mismatch {
+    outline: 2px solid color-mix(in srgb, var(--warning-color) 65%, transparent);
+    outline-offset: 2px;
+    background-color: color-mix(in srgb, var(--btn-warning) 18%, transparent);
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-judgements-inputs--tilecount-mismatch {
+    outline: 2px solid color-mix(in srgb, var(--warning-color) 65%, transparent);
+    outline-offset: 2px;
+    padding: 0.35rem;
+    border-radius: 4px;
+    background-color: color-mix(in srgb, var(--btn-warning) 12%, transparent);
+  }
+
   .submission-admin-page .submission-card .judgement {
     font-weight: 600;
     padding: 4px 8px;

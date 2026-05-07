@@ -114,3 +114,53 @@
     margin: 1rem;
   }
 }
+
+.pass-submission-page .tilecount-mismatch-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.pass-submission-page .tilecount-mismatch-modal {
+  width: 100%;
+  max-width: 28rem;
+  border-radius: 8px;
+  background-color: var(--color-black);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.pass-submission-page .tilecount-mismatch-modal h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: var(--color-white);
+}
+
+.pass-submission-page .tilecount-mismatch-modal-body {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: var(--color-gray-2);
+}
+
+.pass-submission-page .tilecount-mismatch-modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.pass-submission-page .tilecount-mismatch-modal-actions .tilecount-mismatch-review-btn,
+.pass-submission-page .tilecount-mismatch-modal-actions .tilecount-mismatch-submit-anyway-btn {
+  padding: 0.45rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+}

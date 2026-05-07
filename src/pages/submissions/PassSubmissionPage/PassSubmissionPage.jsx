@@ -7,7 +7,7 @@ import { useEffect, useState, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { FetchIcon } from "@/components/common/icons";
 import { hasAnyFlag, hasFlag, permissionFlags } from "@/utils/UserPermissions";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import api from "@/utils/api";
 import { StagingModeWarning } from "@/components/common/display";
 import { PlayerInput } from "@/components/common/selectors";
@@ -20,6 +20,10 @@ import toast from "react-hot-toast";
 import { PassCoreForm } from "@/components/common/cores/PassCoreForm/PassCoreForm";
 import { usePassCoreForm } from "@/components/common/cores/PassCoreForm/usePassCoreForm";
 import { truncateString } from "@/utils/Utility";
+import {
+  getPassJudgementHitCountFromForm,
+  isTilecountJudgementMismatch,
+} from "@/utils/passJudgementHitCount";
 
 
 const PassSubmissionPage = () => {
@@ -74,6 +78,7 @@ const PassSubmissionPage = () => {
     return savedRulesState === 'true';
   });
   const [showRulesPopup, setShowRulesPopup] = useState(false);
+  const [showTilecountMismatchModal, setShowTilecountMismatchModal] = useState(false);
 
   // Add color logic for FetchIcon
   const getIconColor = () => {
@@ -205,6 +210,50 @@ const PassSubmissionPage = () => {
     return url;
   };
 
+  const performSubmit = async () => {
+    setSubmission(true);
+
+    try {
+      const cleanedVideoUrl = cleanVideoUrl(form.videoLink);
+
+      const payload = {
+        levelId: form.levelId,
+        videoLink: cleanedVideoUrl,
+        passer: form.leaderboardName || '',
+        passerId: form.playerId || null,
+        passerRequest: false,
+        speed: form.speed,
+        feelingDifficulty: form.feelingRating,
+        title: videoDetail?.title || '',
+        rawTime: videoDetail?.timestamp || new Date().toISOString(),
+        earlyDouble: parseInt(form.tooEarly) || 0,
+        earlySingle: parseInt(form.early) || 0,
+        ePerfect: parseInt(form.ePerfect) || 0,
+        perfect: parseInt(form.perfect) || 0,
+        lPerfect: parseInt(form.lPerfect) || 0,
+        lateSingle: parseInt(form.late) || 0,
+        lateDouble: 0,
+        is12K: isUDiff && form.is12K,
+        isNoHoldTap: form.isNoHold,
+        is16K: isUDiff && form.is16K,
+      };
+
+      await submitPass(payload);
+      toast.success(t('passSubmission.alert.success'));
+      setFormStateKey(prevKey => prevKey + 1);
+      setForm(initialFormState);
+      setSearchInput('');
+
+    } catch (err) {
+      console.error("Submission error:", err);
+      const errMsg = err.details || err.message || "Unknown error occurred";
+      toast.error(`${t('passSubmission.alert.error')} ${truncateString(errMsg?.message || errMsg?.toString?.() || errMsg, 120)}`);
+    } finally {
+      setSubmission(false);
+      setSubmitAttempt(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -249,47 +298,13 @@ const PassSubmissionPage = () => {
       return;
     }
 
-    setSubmission(true);
-
-    try {
-      const cleanedVideoUrl = cleanVideoUrl(form.videoLink);
-
-      const payload = {
-        levelId: form.levelId,
-        videoLink: cleanedVideoUrl,
-        passer: form.leaderboardName || '',
-        passerId: form.playerId || null,
-        passerRequest: false,
-        speed: form.speed,
-        feelingDifficulty: form.feelingRating,
-        title: videoDetail?.title || '',
-        rawTime: videoDetail?.timestamp || new Date().toISOString(),
-        earlyDouble: parseInt(form.tooEarly) || 0,
-        earlySingle: parseInt(form.early) || 0,
-        ePerfect: parseInt(form.ePerfect) || 0,
-        perfect: parseInt(form.perfect) || 0,
-        lPerfect: parseInt(form.lPerfect) || 0,
-        lateSingle: parseInt(form.late) || 0,
-        lateDouble: 0,
-        is12K: isUDiff && form.is12K,
-        isNoHoldTap: form.isNoHold,
-        is16K: isUDiff && form.is16K,
-      };
-
-      await submitPass(payload);
-      toast.success(t('passSubmission.alert.success'));
-      setFormStateKey(prevKey => prevKey + 1);
-      setForm(initialFormState);
-      setSearchInput('');
-
-    } catch (err) {
-      console.error("Submission error:", err);
-      const errMsg = err.details || err.message || "Unknown error occurred";
-      toast.error(`${t('passSubmission.alert.error')} ${truncateString(errMsg?.message || errMsg?.toString?.() || errMsg, 120)}`);
-    } finally {
-      setSubmission(false);
-      setSubmitAttempt(false);
+    const hitSum = getPassJudgementHitCountFromForm(form);
+    if (isTilecountJudgementMismatch(level?.tilecount, hitSum)) {
+      setShowTilecountMismatchModal(true);
+      return;
     }
+
+    await performSubmit();
   };
 
   const searchLevels = async (query) => {
@@ -562,6 +577,51 @@ const PassSubmissionPage = () => {
       </div>
 
       {showRulesPopup && <RulePopup setShowRulesPopup={setShowRulesPopup} />}
+
+      {showTilecountMismatchModal && (
+        <div
+          className="tilecount-mismatch-modal-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="tilecount-mismatch-title"
+          onClick={() => setShowTilecountMismatchModal(false)}
+        >
+          <div className="tilecount-mismatch-modal" onClick={(e) => e.stopPropagation()}>
+            <h2 id="tilecount-mismatch-title">{t('passSubmission.tilecountMismatch.title')}</h2>
+            <p className="tilecount-mismatch-modal-body">
+              <Trans
+                i18nKey="passSubmission.tilecountMismatch.body"
+                ns="pages"
+                values={{
+                  tilecount: level?.tilecount,
+                  hitSum: getPassJudgementHitCountFromForm(form),
+                }}
+                components={{ b: <b /> }}
+              />
+            </p>
+            <div className="tilecount-mismatch-modal-actions">
+              <button
+                type="button"
+                className="tilecount-mismatch-review-btn btn-fill-secondary"
+                onClick={() => setShowTilecountMismatchModal(false)}
+              >
+                {t('passSubmission.tilecountMismatch.reviewInputs')}
+              </button>
+              <button
+                type="button"
+                className="tilecount-mismatch-submit-anyway-btn btn-fill-danger alt"
+                onClick={async () => {
+                  setShowTilecountMismatchModal(false);
+                  await performSubmit();
+                }}
+                disabled={submission}
+              >
+                {t('passSubmission.tilecountMismatch.submitAnyway')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

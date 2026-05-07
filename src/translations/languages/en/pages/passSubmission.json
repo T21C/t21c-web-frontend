@@ -76,5 +76,11 @@
   "rules": {
     "checkbox": "I've read and confirm that I have followed the",
     "rulesLink": "rules and guidelines"
+  },
+  "tilecountMismatch": {
+    "title": "Judgement total does not match level tilecount",
+    "body": "This level's chart has <b>{{tilecount}}</b> tiles. Your total judgements add up to <b>{{hitSum}}</b>. These values might be wrong.",
+    "reviewInputs": "Cancel",
+    "submitAnyway": "Submit anyway"
   }
 } 

@@ -7,6 +7,7 @@
     "speed": "Speed",
     "judgements": {
       "label": "Judgements",
+      "tilecountMismatchTooltip": "Sum of judgements <b>{{hitSum}}</b> does not match the level tilecount <b>{{tilecount}}</b>.",
       "fields": {
         "earlyDouble": "ED",
         "earlySingle": "ES",

@@ -70,5 +70,11 @@
     "needJudg": "Entrez les jugements",
     "needInfo": "Entrez toute les informations requises",
     "noInfo": "Aucune information disponible"
+  },
+  "tilecountMismatch": {
+    "title": "Le total des jugements ne correspond pas au nombre de tuiles du niveau",
+    "body": "Ce niveau comporte <b>{{tilecount}}</b> tuiles. Le total de tes jugements est <b>{{hitSum}}</b>. Ces valeurs peuvent être incorrectes.",
+    "reviewInputs": "Annuler",
+    "submitAnyway": "Soumettre quand même"
   }
 } 

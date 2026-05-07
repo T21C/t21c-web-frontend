@@ -8,6 +8,7 @@
     "speed": "Vitesse",
     "judgements": {
       "label": "Jugements:",
+      "tilecountMismatchTooltip": "La somme des jugements <b>{{hitSum}}</b> ne correspond pas au nombre de tuiles du niveau <b>{{tilecount}}</b>.",
       "types": {
         "earlyDouble": "Double Tôt",
         "earlySingle": "Simple Tôt",

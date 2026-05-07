@@ -70,5 +70,11 @@
     "needJudg": "Wpisz judgment'y",
     "needInfo": "Wpisz wszystkie wymagane informacje",
     "noInfo": "Brak dostępnych informacji"
+  },
+  "tilecountMismatch": {
+    "title": "Suma judgmentów nie zgadza się z liczbą kafli poziomu",
+    "body": "Ten poziom ma <b>{{tilecount}}</b> kafli. Suma twoich judgmentów to <b>{{hitSum}}</b>. Te wartości mogą być błędne.",
+    "reviewInputs": "Anuluj",
+    "submitAnyway": "Wyślij mimo to"
   }
 } 
