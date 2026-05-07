@@ -88,5 +88,8 @@
       "deleteFailed": "软删除失败",
       "restoreFailed": "恢复失败"
     }
+  },
+  "imageSelector": {
+    "rotationHintTooltip": "<p><strong>鼠标滚轮</strong><br />按住 <kbd>Shift</kbd> 并在本对话框 <em>任意位置</em> 滚动即可旋转（不必在裁剪区上）。按住 <kbd>Shift</kbd> + <kbd>Ctrl</kbd> 时滚轮步进 <em>更细</em>。</p><p><strong>方向键</strong><br /><kbd>←</kbd> / <kbd>→</kbd>：每次 1°；加 <kbd>Shift</kbd>：10°；加 <kbd>Shift</kbd> + <kbd>Ctrl</kbd>：1°。</p>"
   }
 } 

@@ -64,14 +64,26 @@
     height: 340px;
 }
 
-.cropper {
+/* CropperJS root (all image types; GIF export uses super-image-cropper on save) */
+.image-selector-popup .image-selector-popup__cropper-wrap {
     width: 100%;
     height: 100%;
+    max-height: 400px;
 }
 
-.stencil {
-    border: 2px solid #fff;
-    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.75);
+.image-selector-popup .image-selector-popup__cropper-wrap .image-selector-popup__cropper-img {
+    display: block;
+    max-width: 100%;
+}
+
+.image-selector-popup .image-selector-popup__cropper-wrap--avatar-circle .cropper-view-box,
+.image-selector-popup .image-selector-popup__cropper-wrap--avatar-circle .cropper-face {
+    border-radius: 50%;
+}
+
+.image-selector-popup .image-selector-popup__cropper-wrap .cropper-container {
+    width: 100%;
+    height: 100%;
 }
 
 .upload-placeholder {
@@ -128,6 +140,66 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+}
+
+.image-selector-popup .rotation-hint {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--color-gray-3);
+    cursor: help;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 2px;
+}
+
+.image-selector-popup .rotation-hint:focus-visible {
+    outline: 2px solid var(--btn-primary);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+.image-selector-popup__rotation-tooltip {
+    max-width: min(22rem, 90vw);
+    z-index: 1100 !important;
+    text-align: left;
+    line-height: 1.45;
+}
+
+.image-selector-popup__rotation-tooltip p {
+    margin: 0 0 0.65rem 0;
+    color: var(--text-color);
+    font-size: 13px;
+}
+
+.image-selector-popup__rotation-tooltip p:last-child {
+    margin-bottom: 0;
+}
+
+.image-selector-popup__rotation-tooltip strong {
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+.image-selector-popup__rotation-tooltip em {
+    font-style: normal;
+    color: var(--color-purple-1);
+    font-weight: 500;
+}
+
+.image-selector-popup__rotation-tooltip kbd {
+    display: inline-block;
+    margin: 0 0.1em;
+    padding: 0.1em 0.45em;
+    font-size: 0.85em;
+    font-family: inherit;
+    font-weight: 600;
+    color: var(--text-color);
+    background: var(--btn-neutral-dark);
+    border: 1px solid var(--btn-neutral-muted);
+    border-radius: 4px;
+    box-shadow: 0 1px 0 var(--color-black);
 }
 
 .rotation-slider {
@@ -200,7 +272,7 @@
     border-color: #555;
 }
 
-/* Cropper custom styles — circle only for avatar (FixedCropper + circle stencil) */
+/* CropperJS — circle mask for avatar; banner basic corners */
 .image-selector-popup--avatar .cropper-view-box,
 .image-selector-popup--avatar .cropper-face {
     border-radius: 50%;

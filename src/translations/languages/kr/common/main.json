@@ -88,5 +88,8 @@
       "deleteFailed": "소프트 삭제에 실패했습니다",
       "restoreFailed": "복구에 실패했습니다"
     }
+  },
+  "imageSelector": {
+    "rotationHintTooltip": "<p><strong>마우스 휠</strong><br /><kbd>Shift</kbd>를 누른 채 이 대화창 <em>아무 곳</em>에서나 스크롤하면 회전합니다(자르기 영역 위일 필요 없음). <kbd>Shift</kbd> + <kbd>Ctrl</kbd>를 함께 누르면 휠 단위가 <em>더 촘촘</em>합니다.</p><p><strong>방향키</strong><br /><kbd>←</kbd> / <kbd>→</kbd>: 1°; <kbd>Shift</kbd> 누르면 10°; <kbd>Shift</kbd> + <kbd>Ctrl</kbd> 누르면 1°.</p>"
   }
 } 

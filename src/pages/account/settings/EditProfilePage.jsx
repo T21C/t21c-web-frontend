@@ -223,21 +223,53 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
   };
 
 
-  const handleFileSelect = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+  const performAvatarUpload = useCallback(
+    async (file) => {
+      setIsUploadingAvatar(true);
+      setUploadError(null);
+      const formData = new FormData();
+      formData.append('avatar', file);
+      try {
+        const response = await api.post(`${import.meta.env.VITE_PROFILE}/avatar`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        const avatarUrl = response.data.avatar.urls.medium;
+        setAvatarPreview(avatarUrl);
+        setUser((prev) => (prev ? { ...prev, avatarUrl } : prev));
+        toast.success(t('editProfile.success.avatarUploaded'));
+      } catch (error) {
+        const msg = getCdnErrorMessage(error, t('editProfile.error.failedToUploadAvatar'));
+        setUploadError(msg);
+        toast.error(msg);
+      } finally {
+        setIsUploadingAvatar(false);
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
+      }
+    },
+    [setUser, t],
+  );
 
+  const beginAvatarFileSelection = useCallback((file) => {
     if (!isCdnSupportedImageMimeType(file.type)) {
       toast.error(t('editProfile.error.invalidFileType'));
       return;
     }
-
     const reader = new FileReader();
     reader.onload = () => {
       setInitialImage(reader.result);
       setIsAvatarPopupOpen(true);
     };
     reader.readAsDataURL(file);
+  }, [t]);
+
+  const handleFileSelect = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    beginAvatarFileSelection(file);
   };
 
   const handlePopupClose = () => {
@@ -249,28 +281,7 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
   };
 
   const handlePopupSave = async (file) => {
-    setIsUploadingAvatar(true);
-    const formData = new FormData();
-    formData.append('avatar', file);
-
-    try {
-      const response = await api.post(`${import.meta.env.VITE_PROFILE}/avatar`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      const avatarUrl = response.data.avatar.urls.medium;
-      setAvatarPreview(avatarUrl);
-      setUser({ ...user, avatarUrl});
-      toast.success(t('editProfile.success.avatarUploaded'));
-    } catch (error) {
-      const msg = getCdnErrorMessage(error, t('editProfile.error.failedToUploadAvatar'));
-      setUploadError(msg);
-      toast.error(msg);
-    } finally {
-      setIsUploadingAvatar(false);
-    }
+    await performAvatarUpload(file);
   };
 
   const handleAvatarRemove = async () => {
@@ -303,25 +314,17 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
     setIsDragging(false);
   }, []);
 
-  const handleDrop = useCallback((e) => {
-    e.preventDefault();
-    setIsDragging(false);
-    
-    const file = e.dataTransfer.files[0];
-    if (!file) return;
+  const handleDrop = useCallback(
+    (e) => {
+      e.preventDefault();
+      setIsDragging(false);
 
-    if (!isCdnSupportedImageMimeType(file.type)) {
-      toast.error(t('editProfile.error.invalidFileType'));
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      setInitialImage(reader.result);
-      setIsAvatarPopupOpen(true);
-    };
-    reader.readAsDataURL(file);
-  }, []);
+      const file = e.dataTransfer.files[0];
+      if (!file) return;
+      beginAvatarFileSelection(file);
+    },
+    [beginAvatarFileSelection],
+  );
 
   const handleCountryChange = (country) => {
     setFormData((prev) => ({
