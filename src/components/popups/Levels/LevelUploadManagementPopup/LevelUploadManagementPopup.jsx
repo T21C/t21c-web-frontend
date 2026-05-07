@@ -122,6 +122,34 @@ const LevelUploadManagementPopup = ({
     fetchLevelFiles();
   }, [formData]);
 
+  const refreshLevelMetadata = async () => {
+    try {
+      const response = await api.get(`${import.meta.env.VITE_LEVELS}/${level.id}`);
+      const fullLevel = response?.data?.level ?? response?.data?.data?.level ?? response?.data ?? null;
+      if (!fullLevel) return;
+
+      // Keep local edit form in sync with server-derived metadata changes (tilecount, songObject, etc.)
+      setFormData((prev) => ({
+        ...prev,
+        // Only patch fields that exist in this popup's editable form state.
+        dlLink: fullLevel.dlLink ?? prev.dlLink,
+        videoLink: fullLevel.videoLink ?? prev.videoLink,
+        workshopLink: fullLevel.workshopLink ?? prev.workshopLink,
+        songId: fullLevel.songId ?? prev.songId,
+        song: fullLevel.songObject?.name ?? fullLevel.song ?? prev.song,
+        suffix: fullLevel.suffix ?? prev.suffix,
+      }));
+
+      // Propagate to parent (EditLevelPopup passes onUpdate here) so metadata updates without refresh.
+      if (setLevel) {
+        setLevel({ level: fullLevel });
+      }
+    } catch (error) {
+      // Non-fatal: upload/select already succeeded; this is just metadata refresh.
+      console.warn('[LevelUploadManagementPopup] Failed to refresh level metadata:', error);
+    }
+  };
+
   useEffect(() => {
     const v = level?.dlLink;
     const ws = typeof level?.workshopLink === 'string' ? level.workshopLink.trim() : '';
@@ -169,6 +197,8 @@ const LevelUploadManagementPopup = ({
       setUrlImportPanelOpen(false);
     }
     fetchLevelFiles();
+    // Ensure server-derived metadata (e.g. tilecount) is updated in UI without refresh.
+    void refreshLevelMetadata();
   };
 
   const handleZipUpload = async (event) => {
@@ -358,6 +388,8 @@ const LevelUploadManagementPopup = ({
         setTargetLevel(selectedLevel);
         // Fetch updated files to reflect any changes
         fetchLevelFiles();
+        // Also refresh the level record so tilecount / metadata updates immediately.
+        void refreshLevelMetadata();
       } else {
         setError(result.data.error || t('levelUploadManagement.errors.selectFailed'));
       }
