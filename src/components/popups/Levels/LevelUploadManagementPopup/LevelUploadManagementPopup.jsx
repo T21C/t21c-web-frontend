@@ -519,10 +519,10 @@ const LevelUploadManagementPopup = ({
                 <div className="zip-name">{t('levelUploadManagement.sections.levelSelection.originalZip.title', { name: originalZip.name })}</div>
                 <div className="zip-size">{t('levelUploadManagement.sections.levelSelection.originalZip.size', { size: (originalZip.size / 1024 / 1024).toFixed(2) })}</div>
               </div>
-            {Object.keys(songFiles).length > 0 && (
+            {songFiles && Object.keys(songFiles).length > 0 && (
               <div className="song-files-info">
                 <h4>{t('levelUploadManagement.sections.levelSelection.songFiles.title')}</h4>
-                {Object.entries(songFiles).map(([filename, file]) => (
+                {songFiles && Object.entries(songFiles).map(([filename, file]) => (
                   <div key={filename} className="song-file">
                     <span className="song-name">{file.name}</span>
                     <span className="song-size">{t('levelUploadManagement.sections.levelSelection.songFiles.size', { size: (file.size / 1024 / 1024).toFixed(2) })}</span>
