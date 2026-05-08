@@ -62,6 +62,39 @@
   transition: background-color 0.2s ease;
 }
 
+.status-banner.status-banner--dismissible {
+  justify-content: flex-start;
+  gap: var(--spacing-sm, 8px);
+  padding-right: var(--spacing-xs, 4px);
+}
+
+.status-banner-slot .status-banner__main {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md, 8px);
+  min-width: 0;
+  text-align: center;
+}
+
+.status-banner-slot .status-banner__dismiss.tuf-close-button {
+  flex-shrink: 0;
+  color: var(--color-white);
+}
+
+.status-banner-slot .status-banner__dismiss.tuf-close-button:hover:not(:disabled) {
+  background-color: var(--color-white-t15);
+}
+
+.status-banner-slot .status-banner__dismiss.tuf-close-button:active:not(:disabled) {
+  background-color: var(--color-white-t20);
+}
+
+.status-banner-slot .status-banner__dismiss.tuf-close-button:focus-visible {
+  outline-color: var(--color-white-t70);
+}
+
 .status-banner__label {
   font-size: 16px;
   font-weight: 600;
@@ -160,6 +193,15 @@
     word-wrap: break-word;
     padding: var(--spacing-md, 12px);
     text-align: center;
+  }
+
+  .status-banner-slot--content .status-banner.status-banner--dismissible {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .status-banner-slot--content .status-banner.status-banner--dismissible .status-banner__main {
+    flex-direction: column;
   }
 
   .status-banner-slot--content .status-banner__icon svg {

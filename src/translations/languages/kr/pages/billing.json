@@ -1,46 +1,89 @@
 {
   "title": "결제 및 구독",
-  "subtitle": "TUFStellar 구독을 관리하고 최근 결제 내역을 확인하세요.",
+  "subtitle": "TUFStellar 구독 상태, 중요한 일정, 최근 결제 내역을 한곳에서 확인하세요.",
   "loadError": "결제 정보를 불러올 수 없습니다. 잠시 후 다시 시도해 주세요.",
   "status": {
     "title": "구독 상태",
     "active": "활성",
-    "inactive": "비활성",
-    "cancelling": "해지 예정"
+    "inactive": "미구독",
+    "cancelling": "이번 주기 후 종료"
+  },
+  "summary": {
+    "inactive": "유료 이용 기간이 없습니다. 아래에서 구독하면 TUFStellar 혜택을 이용할 수 있습니다.",
+    "activeRenewing": "구독이 활성이며 표시된 날짜에 자동 갱신됩니다. 해지하지 않는 한 그때까지 혜택이 유지됩니다.",
+    "activeCancelling": "자동 갱신을 끄셨습니다. 아래 이용 종료일까지는 혜택이 그대로입니다. 다시 켜려면 재구독을 이용하세요.",
+    "checkoutPending": "결제는 완료되었고 결제 파트너와 활성화를 마무리하는 중입니다. 곧 해지 등 일부 기능을 사용할 수 있습니다."
+  },
+  "details": {
+    "title": "구독 상세",
+    "empty": "구독 후 갱신·이용 일정이 여기에 표시됩니다. 인보이스·거래 번호는 아래 활동 목록에서 확인하세요."
   },
   "hints": {
-    "activating": "구독 활성화가 거의 끝났습니다. 잠시 후 해지할 수 있습니다."
+    "activating": "활성화가 거의 끝났습니다. 잠시 후 해지할 수 있습니다."
   },
   "fields": {
-    "plan": "플랜",
-    "renewsOn": "갱신일",
+    "renewsOn": "다음 갱신일",
     "cancelsOn": "이용 종료일",
-    "cancelledAt": "해지 시점"
+    "cancelledAt": "갱신 중지 시점"
   },
   "actions": {
+    "sectionTitle": "할 수 있는 작업",
     "subscribe": "TUFStellar 구독하기",
+    "subscribeDescription": "새 탭에서 안전한 결제 페이지가 열립니다. 그곳에서 결제를 완료하면 구독이 시작됩니다.",
     "subscribing": "결제 페이지를 여는 중…",
-    "resubscribing": "구독 재개 중…",
-    "resubscribe": "재구독",
-    "cancel": "구독 해지",
-    "retry": "다시 시도"
+    "resubscribing": "자동 갱신을 다시 켜는 중…",
+    "resubscribe": "자동 갱신 다시 켜기",
+    "resubscribeDescription": "현재 구독에 대해 자동 갱신을 다시 활성화합니다. 다음 결제일까지 추가 청구는 없습니다.",
+    "cancel": "자동 갱신 중지",
+    "cancelDescription": "이후 갱신만 중지합니다. 현재 결제 주기가 끝날 때까지 TUFStellar 혜택은 유지됩니다.",
+    "retry": "다시 시도",
+    "refreshPage": "결제 정보 새로 고침",
+    "noneNeeded": "지금은 여기서 할 작업이 없습니다. 결제를 마치거나 구독이 바뀐 뒤 다시 확인해 주세요."
   },
   "history": {
     "title": "최근 활동",
-    "empty": "아직 결제 내역이 없습니다.",
+    "subtitle": "각 행은 결제사에서 받은 알림입니다(최신순). 특정 결제에 대해 문의할 때는「인보이스 및 참조」열의 값을 알려 주세요.",
+    "empty": "아직 결제 이벤트가 없습니다. 구독하거나 변경하면 여기에 표시됩니다.",
+    "noReferences": "—",
     "cols": {
       "date": "일시",
-      "event": "이벤트",
-      "status": "상태",
+      "event": "유형",
+      "references": "인보이스 및 참조",
+      "status": "처리 상태",
       "amount": "금액"
+    },
+    "refLabels": {
+      "invoice_id": "인보이스 ID",
+      "foreign_invoice": "가맹점 / 외부 주문",
+      "order_id": "주문 ID",
+      "transaction_id": "거래 ID",
+      "subscription_id": "구독 ID",
+      "checkout_external_id": "결제 참조"
+    },
+    "processingStatus": {
+      "processed": "완료",
+      "received": "수신됨",
+      "failed": "실패",
+      "ignored": "무시됨"
+    },
+    "events": {
+      "payment": "결제",
+      "order_paid": "주문 결제 완료",
+      "create_subscription": "구독 생성",
+      "update_subscription": "구독 업데이트",
+      "cancel_subscription": "구독 취소",
+      "non_renewal_subscription": "갱신 종료",
+      "refund": "환불",
+      "partial_refund": "부분 환불",
+      "order_canceled": "주문 취소"
     }
   },
   "cancelConfirm": {
-    "title": "구독을 해지하시겠어요?",
-    "body": "TUFStellar 구독을 해지할까요? {{date}}까지는 계속 이용할 수 있습니다.",
-    "keep": "구독 유지",
-    "confirm": "예, 해지합니다",
-    "confirming": "해지 처리 중…"
+    "title": "자동 갱신을 중지할까요?",
+    "body": "이후 자동 결제는 없습니다. {{date}}까지는 혜택을 계속 이용할 수 있습니다.",
+    "keep": "갱신 유지",
+    "confirm": "갱신 중지",
+    "confirming": "처리 중…"
   },
   "toasts": {
     "startingCheckout": "결제 페이지를 여는 중…",
@@ -49,12 +92,12 @@
     "checkoutBlockedActive": "이미 활성 구독이 있습니다. 결제 정보를 새로 고쳤습니다.",
     "checkoutUseResubscribe": "플랜이 종료 예정입니다. 새 결제 대신 재구독을 이용하세요.",
     "subscriptionNotReady": "구독이 아직 활성화 중이거나 결제 정보가 준비되지 않았습니다. 새로 고친 뒤 잠시 후 다시 시도하세요.",
-    "cancelling": "구독 해지 중…",
-    "cancelRequested": "해지 요청이 접수되었습니다. 현재 결제 주기가 끝날 때까지 혜택이 유지됩니다.",
+    "cancelling": "갱신 중지 중…",
+    "cancelRequested": "자동 갱신이 꺼졌습니다. 현재 주기 종료까지 혜택이 유지됩니다.",
     "cancelError": "해지에 실패했습니다. 다시 시도해 주세요.",
-    "resubscribing": "구독 재개 중…",
-    "resubscribeSuccess": "구독이 재개되었습니다. 자동 갱신이 다시 켜졌습니다.",
-    "resubscribeError": "구독을 재개할 수 없습니다. 다시 시도해 주세요."
+    "resubscribing": "자동 갱신을 다시 켜는 중…",
+    "resubscribeSuccess": "현재 구독에 대해 자동 갱신이 다시 켜졌습니다.",
+    "resubscribeError": "갱신을 재개할 수 없습니다. 다시 시도해 주세요."
   },
   "callback": {
     "title": "구독을 마무리하는 중",

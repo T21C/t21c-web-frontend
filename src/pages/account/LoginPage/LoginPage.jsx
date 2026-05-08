@@ -20,8 +20,14 @@ const LoginPage = () => {
   const [captchaKey, setCaptchaKey] = useState(0); // Key to force re-render of ReCaptcha
   const timerRef = useRef(null);
   const navigate = useNavigate();
-  const { login, loginWithDiscord, getOriginUrl } = useAuth();
+  const { user, login, loginWithDiscord, getOriginUrl } = useAuth();
   const { t } = useTranslation('pages');
+  
+  useEffect(() => {
+    if (user) {
+      navigate('/profile');
+    }
+  }, [user]);
 
   // Handle countdown timer for rate limiting
   useEffect(() => {

@@ -1,4 +1,7 @@
 // tuf-search: #StatusBanner #statusBanner #display
+import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { CloseButton } from '@/components/common/buttons';
 import './statusBanner.css';
 
 const placementClass = (placement) =>
@@ -16,6 +19,7 @@ const placementClass = (placement) =>
  * - stack — full width with bottom margin (e.g. above a form column)
  *
  * Pass `icon` for a leading graphic (SVG or icon component).
+ * Pass `dismissible` to show a dismiss control; optional `onDismiss` runs after hide.
  */
 export function StatusBanner({
   tone = 'danger',
@@ -24,27 +28,68 @@ export function StatusBanner({
   children,
   interactive = false,
   onClick,
+  dismissible = false,
+  onDismiss,
+  dismissAriaLabel,
   className = '',
   slotClassName = '',
   role,
   tabIndex,
   ...props
 }) {
+  const { t } = useTranslation('common');
+  const [userDismissed, setUserDismissed] = useState(false);
+
+  const dismissLabel = dismissAriaLabel ?? t('buttons.close');
+
+  const handleDismissClick = useCallback(
+    (e) => {
+      e.stopPropagation();
+      setUserDismissed(true);
+      onDismiss?.(e);
+    },
+    [onDismiss],
+  );
+
   const slotClasses = [placementClass(placement), slotClassName].filter(Boolean).join(' ');
   const bannerClasses = [
     'status-banner',
     `status-banner--tone-${tone}`,
     interactive && 'status-banner--interactive',
+    dismissible && 'status-banner--dismissible',
     className,
   ]
     .filter(Boolean)
     .join(' ');
 
-  const content = (
+  const mainContent = (
     <>
       {icon != null ? <span className="status-banner__icon">{icon}</span> : null}
       <span className="status-banner__label">{children}</span>
     </>
+  );
+
+  const dismissControl =
+    dismissible ? (
+      <CloseButton
+        type="button"
+        variant="floating"
+        placement="top-end"
+        size="sm"
+        className="status-banner__dismiss"
+        style={{ top: 'unset' }}
+        aria-label={dismissLabel}
+        onClick={handleDismissClick}
+      />
+    ) : null;
+
+  const innerContent = dismissible ? (
+    <>
+      <div className="status-banner__main">{mainContent}</div>
+      {dismissControl}
+    </>
+  ) : (
+    mainContent
   );
 
   const handleKeyDown = (e) => {
@@ -54,6 +99,10 @@ export function StatusBanner({
       onClick(e);
     }
   };
+
+  if (userDismissed && dismissible) {
+    return null;
+  }
 
   if (interactive && onClick) {
     return (
@@ -66,7 +115,7 @@ export function StatusBanner({
           onClick={onClick}
           onKeyDown={handleKeyDown}
         >
-          {content}
+          {innerContent}
         </div>
       </div>
     );
@@ -75,7 +124,7 @@ export function StatusBanner({
   return (
     <div className={slotClasses}>
       <div className={bannerClasses} role={role ?? 'status'} {...props}>
-        {content}
+        {innerContent}
       </div>
     </div>
   );

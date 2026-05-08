@@ -22,7 +22,7 @@ export function AccountStatusBanners({ variant = 'edit', user, navigate }) {
   if (hasPendingDeletion) {
     const withCreator = Boolean(user.deletionIncludeCreator);
     return (
-      <StatusBanner tone="warning" placement="dock" role="status">
+      <StatusBanner dismissible tone="warning" placement="dock" role="status">
         {withCreator
           ? t('profile.accountScheduledDeletionWithCreator', {
               date: formatDeletionInstant(user.deletionExecuteAt),
@@ -36,7 +36,7 @@ export function AccountStatusBanners({ variant = 'edit', user, navigate }) {
 
   if (hasFlag(user, permissionFlags.BANNED)) {
     return (
-      <StatusBanner tone="danger" placement="dock" role="status">
+      <StatusBanner dismissible tone="danger" placement="dock" role="status">
         {t('profile.banned')}
       </StatusBanner>
     );
@@ -44,7 +44,7 @@ export function AccountStatusBanners({ variant = 'edit', user, navigate }) {
 
   if (hasFlag(user, permissionFlags.SUBMISSIONS_PAUSED)) {
     return (
-      <StatusBanner tone="caution" placement="dock" role="status">
+      <StatusBanner dismissible tone="caution" placement="dock" role="status">
         {t('profile.submissionSuspended')}
       </StatusBanner>
     );

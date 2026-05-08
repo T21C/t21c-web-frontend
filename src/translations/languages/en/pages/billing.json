@@ -1,46 +1,89 @@
 {
   "title": "Billing",
-  "subtitle": "Manage your TUFStellar subscription and review recent activity.",
+  "subtitle": "See your TUFStellar subscription status, important dates, and recent payment activity in one place.",
   "loadError": "Could not load billing details. Try again in a moment.",
   "status": {
-    "title": "Subscription",
+    "title": "Subscription status",
     "active": "Active",
-    "inactive": "Inactive",
-    "cancelling": "Cancelling"
+    "inactive": "Not subscribed",
+    "cancelling": "Ending after this period"
+  },
+  "summary": {
+    "inactive": "You do not have an active paid period right now. Subscribe below to unlock TUFStellar benefits.",
+    "activeRenewing": "Your subscription is active and renews automatically on the date shown. Benefits stay on until that renewal unless you cancel.",
+    "activeCancelling": "You turned off automatic renewal. You keep full benefits until the access end date below. Use Resubscribe if you change your mind.",
+    "checkoutPending": "Your payment went through and we are finishing activation with our billing partner. Cancel and some account actions may appear shortly."
+  },
+  "details": {
+    "title": "Subscription details",
+    "empty": "After you subscribe, renewal and access dates will appear here. For invoice and transaction IDs, use the activity table below."
   },
   "hints": {
-    "activating": "Your subscription is finishing activation — cancel will be available shortly."
+    "activating": "Activation is almost done — cancel will be available in a moment."
   },
   "fields": {
-    "plan": "Plan",
-    "renewsOn": "Renews on",
-    "cancelsOn": "Access ends on",
-    "cancelledAt": "Cancelled at"
+    "renewsOn": "Next renewal",
+    "cancelsOn": "Access ends",
+    "cancelledAt": "Renewal stopped on"
   },
   "actions": {
+    "sectionTitle": "What you can do",
     "subscribe": "Subscribe to TUFStellar",
+    "subscribeDescription": "Opens our secure checkout in a new browser tab. Complete payment there to activate your subscription.",
     "subscribing": "Opening checkout…",
-    "resubscribing": "Resuming subscription…",
-    "resubscribe": "Resubscribe",
-    "cancel": "Cancel subscription",
-    "retry": "Retry"
+    "resubscribing": "Turning renewals back on…",
+    "resubscribe": "Resume automatic renewal",
+    "resubscribeDescription": "Starts billing renewals again for your existing subscription. You are not charged again until your next renewal date.",
+    "cancel": "Stop automatic renewal",
+    "cancelDescription": "Cancels future renewals only. You keep TUFStellar access until the end of the current paid period.",
+    "retry": "Try again",
+    "refreshPage": "Refresh billing data",
+    "noneNeeded": "There is nothing to do here right now. Check back after checkout or when your subscription changes."
   },
   "history": {
     "title": "Recent activity",
-    "empty": "No billing activity yet.",
+    "subtitle": "Each row is a billing notification we received, newest first. Use the reference column when you contact support or your bank about a specific charge.",
+    "empty": "No billing events yet. After you subscribe or make changes, entries will show up here.",
+    "noReferences": "—",
     "cols": {
-      "date": "Date",
-      "event": "Event",
-      "status": "Status",
+      "date": "When",
+      "event": "What happened",
+      "references": "Invoice & references",
+      "status": "Processing",
       "amount": "Amount"
+    },
+    "refLabels": {
+      "invoice_id": "Invoice ID",
+      "foreign_invoice": "Merchant / foreign invoice",
+      "order_id": "Order ID",
+      "transaction_id": "Transaction ID",
+      "subscription_id": "Subscription ID",
+      "checkout_external_id": "Checkout reference"
+    },
+    "processingStatus": {
+      "processed": "Done",
+      "received": "Received",
+      "failed": "Failed",
+      "ignored": "Ignored"
+    },
+    "events": {
+      "payment": "Payment",
+      "order_paid": "Order paid",
+      "create_subscription": "Subscription created",
+      "update_subscription": "Subscription updated",
+      "cancel_subscription": "Subscription cancelled",
+      "non_renewal_subscription": "Renewal ended",
+      "refund": "Refund",
+      "partial_refund": "Partial refund",
+      "order_canceled": "Order cancelled"
     }
   },
   "cancelConfirm": {
-    "title": "Cancel subscription",
-    "body": "Cancel your TUFStellar subscription? You keep access until {{date}}.",
-    "keep": "Keep subscription",
-    "confirm": "Yes, cancel",
-    "confirming": "Cancelling…"
+    "title": "Stop automatic renewal?",
+    "body": "Future renewals will stop. You keep TUFStellar benefits until {{date}}.",
+    "keep": "Keep renewing",
+    "confirm": "Stop renewals",
+    "confirming": "Stopping renewals…"
   },
   "toasts": {
     "startingCheckout": "Starting checkout…",
@@ -49,12 +92,12 @@
     "checkoutBlockedActive": "You already have an active subscription. Billing details were refreshed.",
     "checkoutUseResubscribe": "Your plan is set to end — use Resubscribe instead of starting a new checkout.",
     "subscriptionNotReady": "Subscription is still activating or billing details are not ready yet. Refresh and try again shortly.",
-    "cancelling": "Cancelling subscription…",
-    "cancelRequested": "Cancellation requested. Benefits stay until the period ends.",
+    "cancelling": "Stopping renewals…",
+    "cancelRequested": "Automatic renewal is off. Benefits stay until the period ends.",
     "cancelError": "Could not cancel. Please try again.",
-    "resubscribing": "Resuming subscription…",
-    "resubscribeSuccess": "Subscription resumed — renewals are turned back on.",
-    "resubscribeError": "Could not resume subscription. Please try again."
+    "resubscribing": "Turning renewals back on…",
+    "resubscribeSuccess": "Renewals are on again for your current subscription.",
+    "resubscribeError": "Could not resume renewals. Please try again."
   },
   "callback": {
     "title": "Finalizing your subscription",

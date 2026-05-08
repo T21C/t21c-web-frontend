@@ -153,12 +153,12 @@ const PassDetailPage = () => {
       
       <div className="pass-detail">
         {pass?.isDeleted && (
-          <StatusBanner tone="danger" placement="centered" icon={<TrashIcon color="#fff" size="24px" />}>
+          <StatusBanner dismissible tone="danger" placement="centered" icon={<TrashIcon color="#fff" size="24px" />}>
             {t('passDetail.banners.deleted')}
           </StatusBanner>
         )}
         {pass?.isHidden && !pass?.isDeleted && (
-          <StatusBanner tone="muted" placement="centered" icon={<EyeOffIcon color="rgba(255,255,255,0.6)" size="24px" />}>
+          <StatusBanner dismissible tone="muted" placement="centered" icon={<EyeOffIcon color="rgba(255,255,255,0.6)" size="24px" />}>
             {t('passDetail.banners.hidden')}
           </StatusBanner>
         )}

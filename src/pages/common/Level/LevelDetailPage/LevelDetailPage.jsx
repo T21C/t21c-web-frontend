@@ -1801,7 +1801,7 @@ const LevelDetailPage = ({ mockData = null }) => {
       <div className="level-detail">
         
         <div className="wrapper-level">
-          <StatusBanner tone="dangerGradient" placement="content" icon={<LevelBannerWarningIcon />}>
+          <StatusBanner dismissible tone="dangerGradient" placement="content" icon={<LevelBannerWarningIcon />}>
             {t('levelDetail.banners.notFound')}
           </StatusBanner>
         </div>
@@ -1876,11 +1876,11 @@ const LevelDetailPage = ({ mockData = null }) => {
 
         <div className="wrapper-level">
         {res?.level?.isDeleted ? (
-          <StatusBanner tone="dangerGradient" placement="content" icon={<LevelBannerWarningIcon />}>
+          <StatusBanner dismissible tone="dangerGradient" placement="content" icon={<LevelBannerWarningIcon />}>
             {t('levelDetail.banners.deleted')}
           </StatusBanner>
         ) : res?.level?.isHidden ? (
-          <StatusBanner tone="neutral" placement="content" icon={<LevelBannerWarningIcon />}>
+          <StatusBanner dismissible tone="neutral" placement="content" icon={<LevelBannerWarningIcon />}>
             {t('levelDetail.banners.hidden')}
           </StatusBanner>
         ) : null}
