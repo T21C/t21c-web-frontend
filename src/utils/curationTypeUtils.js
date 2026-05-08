@@ -1,6 +1,7 @@
 // tuf-search: #curationTypeUtils
 import { permissionFlags } from "./UserPermissions";
 import { ABILITIES } from "./Abilities";
+import { selectIconSize } from "./Utility";
 // Client-side utility functions for curation type abilities
 // This mirrors the server-side functionality but for use in React components
 
