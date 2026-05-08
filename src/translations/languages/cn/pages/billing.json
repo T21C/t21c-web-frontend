@@ -8,6 +8,9 @@
     "inactive": "未订阅",
     "cancelling": "即将到期"
   },
+  "hints": {
+    "activating": "订阅正在完成激活，稍后便可取消订阅。"
+  },
   "fields": {
     "plan": "套餐",
     "renewsOn": "续订时间",
@@ -17,6 +20,7 @@
   "actions": {
     "subscribe": "订阅 TUFStellar",
     "subscribing": "正在打开收银台…",
+    "resubscribing": "正在恢复订阅…",
     "resubscribe": "重新订阅",
     "cancel": "取消订阅",
     "retry": "重试"
@@ -42,9 +46,15 @@
     "startingCheckout": "正在启动收银台…",
     "checkoutOpened": "请在新标签页中完成付款。若没有打开新标签页，请为本站允许弹出窗口。",
     "checkoutError": "无法启动收银台，请稍后重试。",
+    "checkoutBlockedActive": "你已有有效订阅，账单信息已更新。",
+    "checkoutUseResubscribe": "当前方案将在周期结束后停止，请使用「重新订阅」而不是新开收银台。",
+    "subscriptionNotReady": "订阅仍在激活或账单信息尚未就绪，请刷新页面并稍后重试。",
     "cancelling": "正在取消订阅…",
     "cancelRequested": "已发起取消申请。权益将保留至当前周期结束。",
-    "cancelError": "取消失败，请稍后重试。"
+    "cancelError": "取消失败，请稍后重试。",
+    "resubscribing": "正在恢复订阅…",
+    "resubscribeSuccess": "订阅已恢复，自动续订已重新开启。",
+    "resubscribeError": "无法恢复订阅，请稍后重试。"
   },
   "callback": {
     "title": "正在完成订阅",

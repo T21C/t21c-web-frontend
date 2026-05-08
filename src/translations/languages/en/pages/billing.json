@@ -8,6 +8,9 @@
     "inactive": "Inactive",
     "cancelling": "Cancelling"
   },
+  "hints": {
+    "activating": "Your subscription is finishing activation — cancel will be available shortly."
+  },
   "fields": {
     "plan": "Plan",
     "renewsOn": "Renews on",
@@ -17,6 +20,7 @@
   "actions": {
     "subscribe": "Subscribe to TUFStellar",
     "subscribing": "Opening checkout…",
+    "resubscribing": "Resuming subscription…",
     "resubscribe": "Resubscribe",
     "cancel": "Cancel subscription",
     "retry": "Retry"
@@ -42,9 +46,15 @@
     "startingCheckout": "Starting checkout…",
     "checkoutOpened": "Complete your purchase in the new tab. Allow pop-ups for this site if checkout did not appear.",
     "checkoutError": "Could not start checkout. Please try again.",
+    "checkoutBlockedActive": "You already have an active subscription. Billing details were refreshed.",
+    "checkoutUseResubscribe": "Your plan is set to end — use Resubscribe instead of starting a new checkout.",
+    "subscriptionNotReady": "Subscription is still activating or billing details are not ready yet. Refresh and try again shortly.",
     "cancelling": "Cancelling subscription…",
     "cancelRequested": "Cancellation requested. Benefits stay until the period ends.",
-    "cancelError": "Could not cancel. Please try again."
+    "cancelError": "Could not cancel. Please try again.",
+    "resubscribing": "Resuming subscription…",
+    "resubscribeSuccess": "Subscription resumed — renewals are turned back on.",
+    "resubscribeError": "Could not resume subscription. Please try again."
   },
   "callback": {
     "title": "Finalizing your subscription",

@@ -49,6 +49,7 @@ const BillingPage = () => {
   const [loading, setLoading] = useState(true);
   const [errorState, setErrorState] = useState(false);
   const [subscribing, setSubscribing] = useState(false);
+  const [resubscribing, setResubscribing] = useState(false);
   const [cancelling, setCancelling] = useState(false);
   const [confirmCancelOpen, setConfirmCancelOpen] = useState(false);
 
@@ -77,11 +78,33 @@ const BillingPage = () => {
   }, [fetchAll]);
 
   const statusKey = useMemo(() => {
-    if (!billingState) return "inactive";
-    if (billingState.active && billingState.cancelledAt) return "cancelling";
-    if (billingState.active) return "active";
-    return "inactive";
+    const L = billingState?.lifecycle;
+    if (!billingState || !L) return "inactive";
+    if (L === "inactive") return "inactive";
+    if (L === "active_cancelling") return "cancelling";
+    return "active";
   }, [billingState]);
+
+  const { canCheckout, canCancel, canResubscribe } = useMemo(() => {
+    const a = billingState?.allowedActions;
+    return {
+      canCheckout: Boolean(a?.checkout),
+      canCancel: Boolean(a?.cancel),
+      canResubscribe: Boolean(a?.resubscribe),
+    };
+  }, [billingState?.allowedActions]);
+
+  const billingToastForCode = useCallback(
+    (code, fallbackMsg) => {
+      if (code === "SUBSCRIPTION_ALREADY_ACTIVE") return t("billing.toasts.checkoutBlockedActive");
+      if (code === "USE_RESUBSCRIBE") return t("billing.toasts.checkoutUseResubscribe");
+      if (code === "SUBSCRIPTION_NOT_READY" || code === "NO_RECURRING_SUBSCRIPTION") {
+        return t("billing.toasts.subscriptionNotReady");
+      }
+      return fallbackMsg;
+    },
+    [t],
+  );
 
   const expiresAtFormatted = useMemo(
     () => formatDate(billingState?.expiresAt, locale),
@@ -105,12 +128,37 @@ const BillingPage = () => {
       window.open(url, "_blank", "noopener,noreferrer");
       toast.success(t("billing.toasts.checkoutOpened"), { id: toastId });
     } catch (e) {
-      const msg = e?.response?.data?.error?.message || t("billing.toasts.checkoutError");
+      const code = e?.response?.data?.error?.code;
+      const msg = billingToastForCode(code, e?.response?.data?.error?.message || t("billing.toasts.checkoutError"));
       toast.error(msg, { id: toastId });
+      if (code === "SUBSCRIPTION_ALREADY_ACTIVE" || code === "USE_RESUBSCRIBE") {
+        try {
+          await fetchAll();
+        } catch {
+          /* ignore */
+        }
+      }
     } finally {
       setSubscribing(false);
     }
-  }, [subscribing, t]);
+  }, [subscribing, t, billingToastForCode, fetchAll]);
+
+  const handleResubscribe = useCallback(async () => {
+    if (resubscribing) return;
+    setResubscribing(true);
+    const toastId = toast.loading(t("billing.toasts.resubscribing"));
+    try {
+      await api.post("/v3/billing/xsolla/resubscribe");
+      toast.success(t("billing.toasts.resubscribeSuccess"), { id: toastId });
+      await fetchAll();
+      try { await fetchUser(true); } catch { /* ignore */ }
+    } catch (e) {
+      const msg = e?.response?.data?.error?.message || t("billing.toasts.resubscribeError");
+      toast.error(msg, { id: toastId });
+    } finally {
+      setResubscribing(false);
+    }
+  }, [resubscribing, t, fetchAll, fetchUser]);
 
   const handleCancel = useCallback(async () => {
     if (cancelling) return;
@@ -123,12 +171,24 @@ const BillingPage = () => {
       await fetchAll();
       try { await fetchUser(true); } catch { /* ignore */ }
     } catch (e) {
-      const msg = e?.response?.data?.error?.message || t("billing.toasts.cancelError");
+      const code = e?.response?.data?.error?.code;
+      const msg = billingToastForCode(code, e?.response?.data?.error?.message || t("billing.toasts.cancelError"));
       toast.error(msg, { id: toastId });
+      if (
+        code === "NO_ACTIVE_SUBSCRIPTION"
+        || code === "SUBSCRIPTION_NOT_READY"
+        || code === "NO_RECURRING_SUBSCRIPTION"
+      ) {
+        try {
+          await fetchAll();
+        } catch {
+          /* ignore */
+        }
+      }
     } finally {
       setCancelling(false);
     }
-  }, [cancelling, t, fetchAll, fetchUser]);
+  }, [cancelling, t, fetchAll, fetchUser, billingToastForCode]);
 
   if (loading && !billingState) {
     return (
@@ -197,7 +257,7 @@ const BillingPage = () => {
         </div>
 
         <div className="billing-page__actions">
-          {statusKey === "active" ? (
+          {canCancel ? (
             <button
               type="button"
               className="billing-page__btn billing-page__btn--danger"
@@ -208,7 +268,26 @@ const BillingPage = () => {
             </button>
           ) : null}
 
-          {statusKey !== "active" ? (
+          {billingState?.lifecycle === "active_checkout_pending" ? (
+            <p className="settings-sub-page__text billing-page__actions-hint">
+              {t("billing.hints.activating")}
+            </p>
+          ) : null}
+
+          {canResubscribe ? (
+            <button
+              type="button"
+              className="billing-page__btn billing-page__btn--primary"
+              onClick={handleResubscribe}
+              disabled={resubscribing}
+            >
+              {resubscribing
+                ? t("billing.actions.resubscribing", { defaultValue: t("buttons.loading", { ns: "common", defaultValue: "Loading..." }) })
+                : t("billing.actions.resubscribe")}
+            </button>
+          ) : null}
+
+          {canCheckout ? (
             <button
               type="button"
               className="billing-page__btn billing-page__btn--primary"
@@ -217,9 +296,7 @@ const BillingPage = () => {
             >
               {subscribing
                 ? t("billing.actions.subscribing", { defaultValue: t("buttons.loading", { ns: "common", defaultValue: "Loading..." }) })
-                : statusKey === "cancelling"
-                  ? t("billing.actions.resubscribe")
-                  : t("billing.actions.subscribe")}
+                : t("billing.actions.subscribe")}
             </button>
           ) : null}
         </div>

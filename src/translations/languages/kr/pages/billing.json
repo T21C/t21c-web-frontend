@@ -8,6 +8,9 @@
     "inactive": "비활성",
     "cancelling": "해지 예정"
   },
+  "hints": {
+    "activating": "구독 활성화가 거의 끝났습니다. 잠시 후 해지할 수 있습니다."
+  },
   "fields": {
     "plan": "플랜",
     "renewsOn": "갱신일",
@@ -17,6 +20,7 @@
   "actions": {
     "subscribe": "TUFStellar 구독하기",
     "subscribing": "결제 페이지를 여는 중…",
+    "resubscribing": "구독 재개 중…",
     "resubscribe": "재구독",
     "cancel": "구독 해지",
     "retry": "다시 시도"
@@ -42,9 +46,15 @@
     "startingCheckout": "결제 페이지를 여는 중…",
     "checkoutOpened": "새 탭에서 결제를 완료하세요. 창이 열리지 않았다면 이 사이트의 팝업 차단을 해제하세요.",
     "checkoutError": "결제를 시작할 수 없습니다. 다시 시도해 주세요.",
+    "checkoutBlockedActive": "이미 활성 구독이 있습니다. 결제 정보를 새로 고쳤습니다.",
+    "checkoutUseResubscribe": "플랜이 종료 예정입니다. 새 결제 대신 재구독을 이용하세요.",
+    "subscriptionNotReady": "구독이 아직 활성화 중이거나 결제 정보가 준비되지 않았습니다. 새로 고친 뒤 잠시 후 다시 시도하세요.",
     "cancelling": "구독 해지 중…",
     "cancelRequested": "해지 요청이 접수되었습니다. 현재 결제 주기가 끝날 때까지 혜택이 유지됩니다.",
-    "cancelError": "해지에 실패했습니다. 다시 시도해 주세요."
+    "cancelError": "해지에 실패했습니다. 다시 시도해 주세요.",
+    "resubscribing": "구독 재개 중…",
+    "resubscribeSuccess": "구독이 재개되었습니다. 자동 갱신이 다시 켜졌습니다.",
+    "resubscribeError": "구독을 재개할 수 없습니다. 다시 시도해 주세요."
   },
   "callback": {
     "title": "구독을 마무리하는 중",
