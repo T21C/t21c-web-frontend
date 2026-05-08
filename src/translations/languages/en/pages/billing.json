@@ -1,0 +1,61 @@
+{
+  "title": "Billing",
+  "subtitle": "Manage your TUFStellar subscription and review recent activity.",
+  "loadError": "Could not load billing details. Try again in a moment.",
+  "status": {
+    "title": "Subscription",
+    "active": "Active",
+    "inactive": "Inactive",
+    "cancelling": "Cancelling"
+  },
+  "fields": {
+    "plan": "Plan",
+    "renewsOn": "Renews on",
+    "cancelsOn": "Access ends on",
+    "cancelledAt": "Cancelled at"
+  },
+  "actions": {
+    "subscribe": "Subscribe to TUFStellar",
+    "subscribing": "Opening checkout…",
+    "resubscribe": "Resubscribe",
+    "cancel": "Cancel subscription",
+    "retry": "Retry"
+  },
+  "history": {
+    "title": "Recent activity",
+    "empty": "No billing activity yet.",
+    "cols": {
+      "date": "Date",
+      "event": "Event",
+      "status": "Status",
+      "amount": "Amount"
+    }
+  },
+  "cancelConfirm": {
+    "title": "Cancel subscription",
+    "body": "Cancel your TUFStellar subscription? You keep access until {{date}}.",
+    "keep": "Keep subscription",
+    "confirm": "Yes, cancel",
+    "confirming": "Cancelling…"
+  },
+  "toasts": {
+    "startingCheckout": "Starting checkout…",
+    "checkoutOpened": "Complete your purchase in the new tab. Allow pop-ups for this site if checkout did not appear.",
+    "checkoutError": "Could not start checkout. Please try again.",
+    "cancelling": "Cancelling subscription…",
+    "cancelRequested": "Cancellation requested. Benefits stay until the period ends.",
+    "cancelError": "Could not cancel. Please try again."
+  },
+  "callback": {
+    "title": "Finalizing your subscription",
+    "waiting": "Confirming your payment with our system…",
+    "done": "All set!",
+    "success": "Subscription activated!",
+    "pending": "Payment received — finalizing your subscription…",
+    "redirectingToBilling": "Redirecting to billing…",
+    "errorTitle": "Payment not completed",
+    "statusNotDone": "Payment was not completed. You can try again from the billing page.",
+    "backToBilling": "Back to billing",
+    "invoice": "Invoice"
+  }
+}

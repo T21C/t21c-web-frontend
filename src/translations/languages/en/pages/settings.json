@@ -13,10 +13,12 @@
     "account": "Account",
     "player": "Player profile",
     "creator": "Creator profile",
+    "billing": "Billing",
     "short": {
       "account": "Account",
       "player": "Player",
-      "creator": "Creator"
+      "creator": "Creator",
+      "billing": "Billing"
     }
   },
   "player": {

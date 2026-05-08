@@ -1,0 +1,61 @@
+{
+  "title": "订阅与账单",
+  "subtitle": "管理你的 TUFStellar 订阅并查看近期活动。",
+  "loadError": "无法加载账单信息，请稍后重试。",
+  "status": {
+    "title": "订阅状态",
+    "active": "已激活",
+    "inactive": "未订阅",
+    "cancelling": "即将到期"
+  },
+  "fields": {
+    "plan": "套餐",
+    "renewsOn": "续订时间",
+    "cancelsOn": "权益截止",
+    "cancelledAt": "取消时间"
+  },
+  "actions": {
+    "subscribe": "订阅 TUFStellar",
+    "subscribing": "正在打开收银台…",
+    "resubscribe": "重新订阅",
+    "cancel": "取消订阅",
+    "retry": "重试"
+  },
+  "history": {
+    "title": "近期活动",
+    "empty": "暂无账单记录。",
+    "cols": {
+      "date": "时间",
+      "event": "事件",
+      "status": "状态",
+      "amount": "金额"
+    }
+  },
+  "cancelConfirm": {
+    "title": "取消订阅",
+    "body": "确定取消你的 TUFStellar 订阅吗？你将保留访问权限直到 {{date}}。",
+    "keep": "保留订阅",
+    "confirm": "确认取消",
+    "confirming": "正在取消…"
+  },
+  "toasts": {
+    "startingCheckout": "正在启动收银台…",
+    "checkoutOpened": "请在新标签页中完成付款。若没有打开新标签页，请为本站允许弹出窗口。",
+    "checkoutError": "无法启动收银台，请稍后重试。",
+    "cancelling": "正在取消订阅…",
+    "cancelRequested": "已发起取消申请。权益将保留至当前周期结束。",
+    "cancelError": "取消失败，请稍后重试。"
+  },
+  "callback": {
+    "title": "正在完成订阅",
+    "waiting": "正在与系统确认付款…",
+    "done": "全部完成！",
+    "success": "订阅已激活！",
+    "pending": "付款已接收，正在完成订阅…",
+    "redirectingToBilling": "正在前往账单页面…",
+    "errorTitle": "付款未完成",
+    "statusNotDone": "付款未完成。你可以在账单页面重试。",
+    "backToBilling": "返回账单页面",
+    "invoice": "订单号"
+  }
+}

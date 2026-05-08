@@ -79,6 +79,7 @@ function App() {
             <Route path="account" element={<Pages.SettingsAccountPage />} />
             <Route path="player" element={<Pages.SettingsPlayerPage />} />
             <Route path="creator" element={<Pages.SettingsCreatorPage />} />
+            <Route path="billing" element={<Pages.SettingsBillingPage />} />
           </Route>
           <Route path="profile/verify-email" element={<Pages.EmailVerificationPage />} />
           

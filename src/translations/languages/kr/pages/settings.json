@@ -13,10 +13,12 @@
     "account": "계정",
     "player": "플레이어 프로필",
     "creator": "크리에이터 프로필",
+    "billing": "결제 및 구독",
     "short": {
       "account": "계정",
       "player": "플레이어",
-      "creator": "크리에이터"
+      "creator": "크리에이터",
+      "billing": "결제"
     }
   },
   "player": {

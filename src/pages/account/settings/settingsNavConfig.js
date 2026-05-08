@@ -45,6 +45,12 @@ export const SETTINGS_NAV_GROUPS = [
         shortLabelKey: "settings.nav.short.creator",
         visible: hasCreator,
       },
+      {
+        path: "billing",
+        labelKey: "settings.nav.billing",
+        shortLabelKey: "settings.nav.short.billing",
+        visible: alwaysVisible,
+      },
     ],
   },
 ];

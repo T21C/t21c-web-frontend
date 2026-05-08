@@ -13,10 +13,12 @@
     "account": "账户",
     "player": "玩家信息",
     "creator": "创作者信息",
+    "billing": "订阅与账单",
     "short": {
       "account": "账户",
       "player": "玩家",
-      "creator": "创作者"
+      "creator": "创作者",
+      "billing": "账单"
     }
   },
   "player": {

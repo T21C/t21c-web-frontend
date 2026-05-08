@@ -1,0 +1,61 @@
+{
+  "title": "결제 및 구독",
+  "subtitle": "TUFStellar 구독을 관리하고 최근 결제 내역을 확인하세요.",
+  "loadError": "결제 정보를 불러올 수 없습니다. 잠시 후 다시 시도해 주세요.",
+  "status": {
+    "title": "구독 상태",
+    "active": "활성",
+    "inactive": "비활성",
+    "cancelling": "해지 예정"
+  },
+  "fields": {
+    "plan": "플랜",
+    "renewsOn": "갱신일",
+    "cancelsOn": "이용 종료일",
+    "cancelledAt": "해지 시점"
+  },
+  "actions": {
+    "subscribe": "TUFStellar 구독하기",
+    "subscribing": "결제 페이지를 여는 중…",
+    "resubscribe": "재구독",
+    "cancel": "구독 해지",
+    "retry": "다시 시도"
+  },
+  "history": {
+    "title": "최근 활동",
+    "empty": "아직 결제 내역이 없습니다.",
+    "cols": {
+      "date": "일시",
+      "event": "이벤트",
+      "status": "상태",
+      "amount": "금액"
+    }
+  },
+  "cancelConfirm": {
+    "title": "구독을 해지하시겠어요?",
+    "body": "TUFStellar 구독을 해지할까요? {{date}}까지는 계속 이용할 수 있습니다.",
+    "keep": "구독 유지",
+    "confirm": "예, 해지합니다",
+    "confirming": "해지 처리 중…"
+  },
+  "toasts": {
+    "startingCheckout": "결제 페이지를 여는 중…",
+    "checkoutOpened": "새 탭에서 결제를 완료하세요. 창이 열리지 않았다면 이 사이트의 팝업 차단을 해제하세요.",
+    "checkoutError": "결제를 시작할 수 없습니다. 다시 시도해 주세요.",
+    "cancelling": "구독 해지 중…",
+    "cancelRequested": "해지 요청이 접수되었습니다. 현재 결제 주기가 끝날 때까지 혜택이 유지됩니다.",
+    "cancelError": "해지에 실패했습니다. 다시 시도해 주세요."
+  },
+  "callback": {
+    "title": "구독을 마무리하는 중",
+    "waiting": "결제를 확인하는 중…",
+    "done": "완료되었습니다.",
+    "success": "구독이 활성화되었습니다!",
+    "pending": "결제가 접수되었습니다. 구독을 마무리하는 중…",
+    "redirectingToBilling": "결제 페이지로 이동 중…",
+    "errorTitle": "결제가 완료되지 않았습니다",
+    "statusNotDone": "결제가 완료되지 않았습니다. 결제 페이지에서 다시 시도해 주세요.",
+    "backToBilling": "결제 페이지로 돌아가기",
+    "invoice": "인보이스"
+  }
+}
