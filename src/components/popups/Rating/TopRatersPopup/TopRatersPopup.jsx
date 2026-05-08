@@ -6,6 +6,7 @@ import api from '@/utils/api';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { UserAvatar } from '@/components/layout';
+import { userAvatarUrls } from '@/utils/playerAvatarDisplay';
 import { CrownIcon } from '@/components/common/icons';
 import { CloseButton } from '@/components/common/buttons';
 
@@ -34,8 +35,7 @@ const TopRaterEntry = ({ rater, rank, averagePerDay }) => {
       <div className="rater-info">
         <div className="avatar-container">
           <UserAvatar 
-            primaryUrl={rater.avatarUrl}
-            fallbackUrl={rater.pfp}
+            {...userAvatarUrls(rater)}
           />
           {hasCircleOrnament && (
             <div className="circle-ornament"></div>

@@ -12,6 +12,7 @@ import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import api from '@/utils/api';
 import './creatormanagementpopup.css';
+import { userAvatarDisplayUrl } from '@/utils/playerAvatarDisplay';
 
 const CreditRole = {
   CHARTER: 'charter',
@@ -508,6 +509,8 @@ export const CreatorManagementPopup = ({ creator, onClose, onUpdate, curationPro
     }
   };
 
+  const linkedUserDisplayAvatar = creator?.user ? userAvatarDisplayUrl(creator.user) : null;
+
   return (
     <div className="creator-management-popup-container">
       <div className="creator-management-popup-overlay">
@@ -658,9 +661,9 @@ export const CreatorManagementPopup = ({ creator, onClose, onUpdate, curationPro
                   <div className="form-group">
                     <label>{tt('user.linked.label')}</label>
                     <div className="linked-user-info">
-                      {creator.user.avatarUrl && (
+                      {linkedUserDisplayAvatar && (
                         <img
-                          src={creator.user.avatarUrl}
+                          src={linkedUserDisplayAvatar}
                           alt={creator.user.username}
                           className="user-avatar"
                         />
@@ -711,7 +714,7 @@ export const CreatorManagementPopup = ({ creator, onClose, onUpdate, curationPro
                           return (
                             <div key={player.id} className="player-result-row">
                               <img
-                                src={player.user?.avatarUrl || player.pfp}
+                                src={userAvatarDisplayUrl(player) || ''}
                                 alt={player.name}
                                 className="player-pfp"
                               />

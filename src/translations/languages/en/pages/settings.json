@@ -51,7 +51,7 @@
     "presetError": "Could not update banner",
     "clearPreset": "Use default banner",
     "savePreset": "Save banner",
-    "customLabel": "Or upload your own (subscription)",
+    "customLabel": "Or upload your own (TUFStellar subscriber)",
     "uploadOk": "Custom banner uploaded",
     "uploadError": "Could not upload custom banner",
     "customEmpty": "Wider images fit the header better",

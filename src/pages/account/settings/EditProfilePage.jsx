@@ -16,6 +16,7 @@ import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { AccountStatusBanners } from '@/components/account/AccountStatusBanners/AccountStatusBanners';
 import { CDN_IMAGE_ACCEPT, isCdnSupportedImageMimeType } from '@/constants/cdnImageAccept';
+import { userAvatarDisplayUrl } from '@/utils/playerAvatarDisplay';
 
 const usernameChangeCooldown = 1 * 24 * 60 * 60 * 1000; // 1 day
 
@@ -55,7 +56,7 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  const [avatarPreview, setAvatarPreview] = useState(user?.avatarUrl ? user.avatarUrl : null);
+  const [avatarPreview, setAvatarPreview] = useState(user ? userAvatarDisplayUrl(user) : null);
   const [uploadError, setUploadError] = useState(null);
   const fileInputRef = useRef(null);
   const [isAvatarPopupOpen, setIsAvatarPopupOpen] = useState(false);
@@ -236,9 +237,22 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
             'Content-Type': 'multipart/form-data',
           },
         });
-        const avatarUrl = response.data.avatar.urls.medium;
-        setAvatarPreview(avatarUrl);
-        setUser((prev) => (prev ? { ...prev, avatarUrl } : prev));
+        const urls = response.data.avatar?.urls;
+        const isGifUpload = Boolean(response.data.avatarIsGif);
+        const nextUrl =
+          isGifUpload && urls?.original_animated
+            ? urls.original_animated
+            : urls?.medium ?? urls?.original ?? null;
+        setAvatarPreview(nextUrl);
+        setUser((prev) =>
+          prev
+            ? {
+                ...prev,
+                avatarUrl: nextUrl,
+                avatarIsGif: isGifUpload,
+              }
+            : prev,
+        );
         toast.success(t('editProfile.success.avatarUploaded'));
       } catch (error) {
         const msg = getCdnErrorMessage(error, t('editProfile.error.failedToUploadAvatar'));
@@ -296,7 +310,7 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
       await api.delete(`${import.meta.env.VITE_PROFILE}/avatar`);
 
       setAvatarPreview(null);
-      setUser({ ...user, avatarUrl: null, avatarId: null });
+      setUser({ ...user, avatarUrl: null, avatarId: null, avatarIsGif: false });
       toast.success(t('editProfile.success.avatarRemoved'));
     } catch (error) {
       toast.error(error.response?.data?.error || t('editProfile.error.failedToRemoveAvatar'));

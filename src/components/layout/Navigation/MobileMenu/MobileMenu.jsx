@@ -3,6 +3,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { UserAvatar } from "@/components/layout";
+import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import { createUserMenuItems } from "../navigationConfig";
 import LanguageSelector from "../LanguageSelector/LanguageSelector";
 import MobileDropdown from "../MobileDropdown/MobileDropdown";
@@ -98,8 +99,7 @@ const MobileMenu = ({
             const userButtonContent = (
               <div className="nav-mobile-user-button-content">
                 <UserAvatar
-                  primaryUrl={user?.avatarUrl}
-                  fallbackUrl={user?.pfp}
+                  {...userAvatarUrls(user)}
                   className="nav-mobile-user-avatar"
                 />
                 <div className="nav-mobile-user-info">

@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import api from '@/utils/api';
 import "./playerinput.css";
 import { useTranslation } from 'react-i18next';
+import { userAvatarDisplayUrl } from '@/utils/playerAvatarDisplay';
 
 export const PlayerInput = ({ value, onChange, onSelect, allowCreatePlayer = true }) => {
   const { t } = useTranslation(['components', 'common']);
@@ -188,7 +189,7 @@ export const PlayerInput = ({ value, onChange, onSelect, allowCreatePlayer = tru
                       className="player-option"
                       onClick={() => handleSelect(player)}
                     >
-                      <img src={player.user?.avatarUrl || player.pfp} alt={player.name} className="player-pfp" />
+                      <img src={userAvatarDisplayUrl(player) || ''} alt={player.name} className="player-pfp" />
                       <div className="player-info-container">
                         <div className="player-info">
                           <span className="player-name">

@@ -234,8 +234,7 @@ const SettingsPlayerPage = () => {
           iconSlots={iconSlots}
           playerDifficultyPanelDifficulties={difficulties}
           playerDifficultyPanelClearsByDifficulty={clearsByDifficultyForHeader}
-          avatarUrl={playerData?.user?.avatarUrl || playerData?.pfp}
-          fallbackAvatarUrl={playerData?.pfp || "/default-avatar.jpg"}
+          avatarSubject={playerData}
           name={playerData?.name || t("profile.meta.defaultTitle")}
           handle={playerData?.user?.username}
           country={playerData?.country}

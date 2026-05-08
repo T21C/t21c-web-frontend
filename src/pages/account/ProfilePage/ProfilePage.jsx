@@ -27,6 +27,7 @@ import { buildPlayerStatGroups } from "@/utils/profileStatGroups";
 import { buildPlayerIconSlots, pguNumberToQTier } from "@/utils/profileIconSlots";
 import { toDifficultyGraphData } from "@/utils/statFormatters";
 import { getEffectiveProfileBannerUrl } from "@/utils/profileBanners";
+import { userAvatarDisplayUrl } from "@/utils/playerAvatarDisplay";
 import {
   ResponsiveContainer,
   LineChart,
@@ -630,7 +631,7 @@ const ProfilePage = () => {
             title={playerData?.name ? t('profile.meta.title', { name: playerData.name }) : t('profile.meta.defaultTitle')}
             description={t('profile.meta.description', { name: playerData?.name || 'Unknown Player' })}
             url={currentUrl}
-            image={playerData?.user?.avatarUrl || playerData?.pfp || '/default-avatar.jpg'}
+            image={userAvatarDisplayUrl(playerData) || '/default-avatar.jpg'}
             type="profile"
           />
           
@@ -657,8 +658,7 @@ const ProfilePage = () => {
                     iconSlots={iconSlots}
                     playerDifficultyPanelDifficulties={difficulties}
                     playerDifficultyPanelClearsByDifficulty={difficultyPanelClearsByDifficulty}
-                    avatarUrl={playerData?.user?.avatarUrl || playerData?.pfp}
-                    fallbackAvatarUrl={playerData?.pfp || "/default-avatar.jpg"}
+                    avatarSubject={playerData}
                     name={playerData?.name || t("profile.meta.defaultTitle")}
                     handle={playerData?.user?.username}
                     country={playerData?.country}

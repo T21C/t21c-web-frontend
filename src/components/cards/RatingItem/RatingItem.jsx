@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Tooltip } from 'react-tooltip';
 import { CommentFormatter } from '@/components/misc';
 import { UserAvatar } from '@/components/layout';
+import { userAvatarUrls } from '@/utils/playerAvatarDisplay';
 import { CrownIcon } from '@/components/common/icons';
 import { formatDate } from '@/utils/Utility';
 import i18next from 'i18next';
@@ -40,8 +41,7 @@ export const RatingItem = ({ ratingDetail, isSuperAdmin, onDelete, weeklyRaterAc
           <div className="rating-item-header">
             <div className="rater-avatar-container">
               <UserAvatar
-                primaryUrl={user?.avatarUrl}
-                fallbackUrl={user?.pfp}
+                {...userAvatarUrls(user)}
                 className="rater-avatar"
               />
               {hasCircleOrnament && (

@@ -1,5 +1,6 @@
 // tuf-search: #AuditLogCard #auditLogCard #cards
 import { useState } from "react";
+import { userAvatarDisplayUrl } from "@/utils/playerAvatarDisplay";
 
 function PrettyJSON({ value }) {
   let parsedValue = value;
@@ -32,6 +33,7 @@ export default function AuditLogCard({ log, user }) {
   const [showResult, setShowResult] = useState(false);
   const methodColor = methodColors[log.method] || "#888";
   const date = new Date(log.createdAt).toLocaleString();
+  const auditAvatarUrl = user ? userAvatarDisplayUrl(user) : null;
 
   return (
     <div className="auditlog-card">
@@ -43,8 +45,8 @@ export default function AuditLogCard({ log, user }) {
           {user ? (
             <>
               <span className="auditlog-user-name">{user.username}</span>
-              {user.avatarUrl && (
-                <img src={user.avatarUrl} alt="avatar" className="auditlog-user-avatar" />
+              {auditAvatarUrl && (
+                <img src={auditAvatarUrl} alt="avatar" className="auditlog-user-avatar" />
               )}
             </>
           ) : (

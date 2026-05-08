@@ -7,7 +7,7 @@ export const permissionFlags = {
   RATING_BANNED: 1n << 58n,      
   HEAD_CURATOR: 1n << 32n,       
   CURATOR: 1n << 31n,            
-  CUSTOM_PROFILE_BANNER: 1n << 1n,
+  TUF_STELLAR: 1n << 2n,
   EMAIL_VERIFIED: 1n << 0n,      
 };
 

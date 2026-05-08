@@ -472,8 +472,7 @@ const SettingsCreatorPage = () => {
           bannerUrl={settingsCreatorBannerUrl}
           iconSlots={iconSlots}
           creatorCurationPanelItems={creatorCurationPanelItems}
-          avatarUrl={creatorDoc.user?.avatarUrl}
-          fallbackAvatarUrl=""
+          avatarSubject={creatorDoc}
           name={creatorDoc.name}
           handle={creatorDoc.user?.username}
           country={creatorDoc.user?.country || creatorDoc.country}

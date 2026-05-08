@@ -4,6 +4,7 @@ import "./passcard.css"
 import { useTranslation } from "react-i18next";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { UserAvatar } from "@/components/layout";
+import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 
 const PassCard = ({ pass }) => {
   const { t } = useTranslation('components');
@@ -31,7 +32,7 @@ const PassCard = ({ pass }) => {
         />
       <div className="pass-info-wrapper">
         <div className="group">
-          <p className="pass-exp">#{pass.id} - {pass.player.name}<UserAvatar className="user-avatar" primaryUrl={pass.player.avatarUrl} /> </p>
+          <p className="pass-exp">#{pass.id} - {pass.player.name}<UserAvatar {...userAvatarUrls(pass.player)} className="user-avatar" /> </p>
           {pass.isWorldsFirst && <span className="wf-badge">{t('cards.pass.flags.worldsFirst')}</span>}
         </div>
         <p className='pass-desc'>{pass.level.song}</p>

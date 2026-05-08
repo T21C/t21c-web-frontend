@@ -13,6 +13,7 @@ import { usePackContext } from "@/contexts/PackContext";
 import api from "@/utils/api";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { UserAvatar } from "@/components/layout";
+import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import { Tooltip } from "react-tooltip";
 import { getPackExpandedFolders, setPackExpandedFolders } from "@/utils/folderState";
 import toast from 'react-hot-toast';
@@ -828,7 +829,7 @@ const PackDetailPage = () => {
               <div className="meta">
                 <div className="owner">
                   <UserAvatar 
-                    primaryUrl={pack.packOwner?.avatarUrl || 'Unknown'} 
+                    {...userAvatarUrls(pack.packOwner)} 
                     className="owner-avatar"
                   />
                   <span className="owner-name">

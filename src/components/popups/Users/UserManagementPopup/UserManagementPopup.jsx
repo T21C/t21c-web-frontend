@@ -5,6 +5,7 @@ import api from '@/utils/api';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { UserAvatar } from '@/components/layout';
+import { userAvatarUrls } from '@/utils/playerAvatarDisplay';
 import { hasAnyFlag, permissionFlags } from '@/utils/UserPermissions';
 import { hasFlag } from '@/utils/UserPermissions';
 import { CloseButton } from '@/components/common/buttons';
@@ -294,8 +295,7 @@ const UserEntry = ({ user, onUpdate, onDelete, superAdminPassword, onError, role
       >
         <div className="user-info">
           <UserAvatar 
-            primaryUrl={user.avatarUrl}
-            fallbackUrl={user.pfp}
+            {...userAvatarUrls(user)}
           />
           <div className="user-text">
             <span className="user-name">

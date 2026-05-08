@@ -206,8 +206,7 @@ const CreatorProfilePage = () => {
           bannerUrl={creatorBannerUrl}
           iconSlots={iconSlots}
           creatorCurationPanelItems={creatorCurationPanelItems}
-          avatarUrl={creatorDoc.user?.avatarUrl}
-          fallbackAvatarUrl=""
+          avatarSubject={creatorDoc}
           name={creatorDoc.name}
           nameTooltipId={aliasesTooltipId}
           handle={creatorDoc.user?.username}

@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useContext, useMemo } from "react";
 import "./creatorcard.css";
 import { UserAvatar } from "@/components/layout";
+import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import { CreatorStatusBadge } from "@/components/common/display";
 import { CreatorListContext } from "@/contexts/CreatorListContext";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
@@ -60,8 +61,7 @@ const CreatorCard = ({ creator }) => {
     <Link className="creator-card" to={`/creator/${creator.id}`}>
       <div className="creator-card__avatar">
         <UserAvatar
-          primaryUrl={creator.user?.avatarUrl}
-          fallbackUrl={null}
+          {...userAvatarUrls(creator)}
         />
       </div>
 

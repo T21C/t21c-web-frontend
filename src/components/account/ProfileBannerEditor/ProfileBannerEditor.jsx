@@ -6,7 +6,7 @@ import api from "@/utils/api";
 import { getCdnErrorMessage } from "@/utils/uploadErrors";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { DEFAULT_PROFILE_BANNER_PRESET_PATH } from "@/constants/bannerPresets";
-import { customProfileBannersEnabled, publicAssetUrl } from "@/utils/profileBanners";
+import { customProfileBannersEnabled, publicAssetUrl, subjectHasCustomBannerEntitlement } from "@/utils/profileBanners";
 import { isCdnSupportedImageMimeType } from "@/constants/cdnImageAccept";
 import ImageSelectorPopup from "@/components/common/selectors/ImageSelectorPopup/ImageSelectorPopup";
 import "./profileBannerEditor.css";
@@ -112,14 +112,10 @@ const ProfileBannerEditor = ({
     if (!customProfileBannersEnabled()) return false;
     if (!authUser) return false;
     if (variant === "player") {
-      return (
-        hasFlag(authUser, permissionFlags.CUSTOM_PROFILE_BANNER) ||
-        hasFlag(authUser, permissionFlags.SUPER_ADMIN)
-      );
+      return subjectHasCustomBannerEntitlement(authUser);
     }
     return (
-      hasFlag(authUser, permissionFlags.CUSTOM_PROFILE_BANNER) ||
-      hasFlag(authUser, permissionFlags.SUPER_ADMIN) ||
+      subjectHasCustomBannerEntitlement(authUser) ||
       hasFlag(authUser, permissionFlags.HEAD_CURATOR)
     );
   })();

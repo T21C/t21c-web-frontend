@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import './profile.css';
 import { useTranslation } from 'react-i18next';
 import { UserAvatar } from '@/components/layout';
+import { userAvatarUrls } from '@/utils/playerAvatarDisplay';
 
 function Profile() {
   const { user, logout, initiateLogin } = useAuth();
@@ -27,8 +28,7 @@ function Profile() {
             <h5>@{user?.username}</h5>
           </div>
           <UserAvatar 
-            primaryUrl={user?.avatarUrl}
-            fallbackUrl={user?.pfp}
+            {...userAvatarUrls(user)}
             className="profile-avatar"
           />
           <button className="btn-logout profile-button" onClick={logout}>

@@ -8,6 +8,7 @@ import ChevronIcon from "@/components/common/icons/ChevronIcon";
 import { ExternalLinkIcon } from "@/components/common/icons";
 import { isoToEmoji } from "@/utils";
 import { getDefaultProfileBannerUrl } from "@/utils/profileBanners";
+import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import { groupCurationTypesForPanel } from "@/utils/curationTypeUtils";
 import ProfileHeaderIconPanelPortal from "./ProfileHeaderIconPanelPortal";
 
@@ -73,8 +74,8 @@ const formatPlayerBadgeText = (rank) => {
 const ProfileHeader = ({
   mode = "player",
   className = "",
-  avatarUrl,
-  fallbackAvatarUrl = "",
+  /** Player doc, creator doc, or auth `user` — CDN + GIF / subscription + `pfp` resolved in one place. */
+  avatarSubject = null,
   name = "",
   handle,
   country,
@@ -99,6 +100,11 @@ const ProfileHeader = ({
   const [iconPanelPos, setIconPanelPos] = useState(null);
   const iconRowRef = useRef(null);
   const iconPanelPortalRef = useRef(null);
+
+  const { primaryUrl: resolvedPrimaryAvatarUrl, fallbackUrl: resolvedFallbackAvatarUrl } = useMemo(
+    () => userAvatarUrls(avatarSubject),
+    [avatarSubject],
+  );
 
   const defaults = DEFAULT_PLAYER_ICON_SLOTS;
   const resolvedSlots = useMemo(() => {
@@ -363,8 +369,8 @@ const ProfileHeader = ({
               <div className="profile-header__avatar-ring">
                 <div className="profile-header__avatar-wrap">
                   <UserAvatar
-                    primaryUrl={avatarUrl}
-                    fallbackUrl={fallbackAvatarUrl}
+                    primaryUrl={resolvedPrimaryAvatarUrl || ""}
+                    fallbackUrl={resolvedFallbackAvatarUrl || ""}
                     className="profile-header__avatar"
                   />
                 </div>

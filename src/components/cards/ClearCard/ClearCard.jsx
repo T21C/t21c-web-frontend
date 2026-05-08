@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { PassIcon, YoutubeIcon } from "@/components/common/icons";
 import { UserAvatar } from "@/components/layout";
+import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 const ClearCard = ({scoreData, index}) => {
   const { t } = useTranslation('pages');
   const [isExpanded, setIsExpanded] = useState(false);
@@ -50,8 +51,7 @@ const ClearCard = ({scoreData, index}) => {
         <Link className="player-info" to={`/profile/${scoreData.playerId}`}>
           <div className="avatar-container">
             <UserAvatar 
-              primaryUrl={scoreData.player.user?.avatarUrl}
-              fallbackUrl={scoreData.player.pfp}
+              {...userAvatarUrls(scoreData.player)}
               className="pfp"
             />
           </div>

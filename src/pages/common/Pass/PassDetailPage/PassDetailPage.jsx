@@ -3,6 +3,7 @@ import "./passdetailpage.css";
 import { useEffect, useState } from "react";
 import { useParams, Link } from 'react-router-dom';
 import { UserAvatar } from "@/components/layout";
+import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import { formatNumber, getVideoDetails, isoToEmoji } from "@/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
@@ -187,8 +188,7 @@ const PassDetailPage = () => {
             <div className="pass-player-card">
               <div className="player-avatar">
                 <UserAvatar 
-                  primaryUrl={pass.player?.avatarUrl}
-                  fallbackUrl={pass.player?.pfp}
+                  {...userAvatarUrls(pass.player)}
                 />
               </div>
               <div className="player-info">

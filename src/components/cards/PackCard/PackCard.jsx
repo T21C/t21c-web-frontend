@@ -9,6 +9,7 @@ import { EditIcon, PinIcon, LockIcon, EyeIcon, LikeIcon } from "@/components/com
 import toast from 'react-hot-toast';
 import { usePackContext } from "@/contexts/PackContext";
 import { UserAvatar } from "@/components/layout";
+import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import { permissionFlags } from "@/utils/UserPermissions";
 import { hasFlag } from "@/utils/UserPermissions";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
@@ -179,7 +180,7 @@ const PackCard = ({
           <div className="pack-card__footer">
             <div className="pack-card__owner">
               <UserAvatar 
-                primaryUrl={pack.packOwner?.avatarUrl || 'Unknown'} 
+                {...userAvatarUrls(pack.packOwner)} 
                 className="pack-card__owner-avatar"
               />
               <span className="pack-card__owner-name">

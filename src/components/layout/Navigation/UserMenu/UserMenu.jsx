@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { UserAvatar } from "@/components/layout";
+import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import { createUserMenuItems } from "../navigationConfig";
 import { ChevronIcon } from "@/components/common/icons";
 import "./userMenu.css";
@@ -62,8 +63,7 @@ const UserMenu = ({ isActive }) => {
         onClick={() => setIsOpen(!isOpen)}
       >
       <UserAvatar
-        primaryUrl={user?.avatarUrl}
-        fallbackUrl={user?.pfp}
+        {...userAvatarUrls(user)}
         className="nav-user-avatar"
       />
         <div className="nav-user-info">

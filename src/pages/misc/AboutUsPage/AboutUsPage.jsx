@@ -1,6 +1,7 @@
 // tuf-search: #AboutUsPage #aboutUsPage #aboutUs
 import "./aboutuspage.css";
 import { Footer, UserAvatar } from "@/components/layout";
+import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import { MetaTags } from "@/components/common/display";
 import { useTranslation } from "react-i18next";
 import { useState, useEffect, useCallback } from "react";
@@ -145,8 +146,7 @@ const AboutUsPage = () => {
                       {raters.map((rater) => (
                         <div key={rater.discordId} className="credit-item">
                           <UserAvatar 
-                            primaryUrl={rater.avatarUrl}
-                            fallbackUrl={rater.player.pfp}
+                            {...userAvatarUrls(rater)}
                             className="rater-avatar"
                           />
                           <div className="rater-info">

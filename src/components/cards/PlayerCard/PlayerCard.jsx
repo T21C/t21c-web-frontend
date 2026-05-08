@@ -6,6 +6,7 @@ import { useContext } from "react";
 import { PlayerContext } from "@/contexts/PlayerContext";
 import { formatNumber } from "@/utils";
 import { UserAvatar } from "@/components/layout";
+import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import { useAuth } from "@/contexts/AuthContext";
 import { permissionFlags } from "@/utils/UserPermissions";
 import { hasFlag } from "@/utils/UserPermissions";
@@ -101,8 +102,7 @@ const PlayerCard = ({player, onCreatorAssignmentClick}) => {
         <div className="img-wrapper">
           <div className="image-container">
             <UserAvatar  
-              primaryUrl={player.user?.avatarUrl}
-              fallbackUrl={player.pfp}
+              {...userAvatarUrls(player)}
             />
           </div>
           
