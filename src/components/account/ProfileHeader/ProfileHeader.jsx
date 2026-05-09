@@ -305,7 +305,7 @@ const ProfileHeader = ({
     const transform = profileNameTextDimensions != null
         ? `translate(${profileNameTextDimensions.x + profileNameTextDimensions.width + STELLAR_ICON_GAP}, ${STELLAR_ICON_DY})`
         : `translate(${STELLAR_ICON_GAP}, ${STELLAR_ICON_DY})`;
-    return transform + " scale(1.6)";
+    return transform + " scale(1.5)";
     }, [profileNameTextDimensions]);
 
   return (
@@ -385,12 +385,13 @@ const ProfileHeader = ({
                     </text>
                     <g transform={stellarIconGroupTransform}>
                       <TUFStellarIcon
-                        groupOnly
+                        svg
+                        variant="1"
                         className="profile-header__stellar-icon"
                         size={STELLAR_ICON_SIZE}
                         color="#fff"
                         data-tooltip-id={PROFILE_HEADER_STELLAR_TOOLTIP_ID}
-                        style={{ filter: "drop-shadow(0 0 4px rgba(0, 0, 255, 1))" }}
+                        style={{ filter: "drop-shadow(0 0 6px rgba(255, 255, 255, 0.2))" }}
                       />
                     </g>
                   </g>

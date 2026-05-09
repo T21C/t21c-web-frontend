@@ -59,10 +59,6 @@
   margin-bottom: 0.25rem;
 }
 
-.settings-sub-page__block {
-  margin-top: 0.5rem;
-}
-
 .settings-sub-page__header-preview {
   display: flex;
   flex-direction: column;
