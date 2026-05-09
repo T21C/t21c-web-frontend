@@ -9,8 +9,12 @@ import api from "@/utils/api";
 import { formatNumber } from "@/utils";
 import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
 import ProfileBannerEditor from "@/components/account/ProfileBannerEditor/ProfileBannerEditor";
-import { getEffectiveProfileBannerUrl } from "@/utils/profileBanners";
-import { ExternalLinkIcon, ChevronIcon } from "@/components/common/icons";
+import {
+  getEffectiveProfileBannerUrl,
+  isTufStellarSubscriptionActive,
+  normalizeTufStellarIconVariant,
+} from "@/utils/profileBanners";
+import { ExternalLinkIcon, ChevronIcon, TUFStellarIcon } from "@/components/common/icons";
 import { useSettings } from "@/contexts/SettingsContext";
 import { buildPlayerStatGroups } from "@/utils/profileStatGroups";
 import { buildPlayerIconSlots } from "@/utils/profileIconSlots";
@@ -34,11 +38,7 @@ const SettingsPlayerPage = () => {
   const [bioFieldError, setBioFieldError] = useState("");
   /** `undefined` = follow server; `null` = draft “use default”; string = draft preset path. */
   const [bannerPresetDraft, setBannerPresetDraft] = useState(undefined);
-
-  const playerPath = useMemo(() => {
-    if (playerId == null) return "/profile";
-    return `/profile/${playerId}`;
-  }, [playerId]);
+  const [stellarVariantSaving, setStellarVariantSaving] = useState(false);
 
   const fetchProfile = useCallback(async () => {
     if (playerId == null || !Number.isFinite(playerId)) {
@@ -164,6 +164,31 @@ const SettingsPlayerPage = () => {
     }
   }, [nicknameDraft, playerData?.country, fetchUser, fetchProfile, t]);
 
+  const handleSaveStellarVariant = useCallback(
+    async (variant) => {
+      if (playerId == null || !Number.isFinite(playerId)) return;
+      const v = String(variant).trim();
+      if (!["1", "2", "3"].includes(v)) return;
+      if (normalizeTufStellarIconVariant(playerData?.tufStellarIconVariant) === v) return;
+      setStellarVariantSaving(true);
+      try {
+        const { data } = await api.patch(
+          `${import.meta.env.VITE_PLAYERS_V3}/me/tuf-stellar-icon-variant`,
+          { variant: v },
+        );
+        const next = normalizeTufStellarIconVariant(data?.tufStellarIconVariant ?? v);
+        setPlayerData((p) => (p && typeof p === "object" ? { ...p, tufStellarIconVariant: next } : p));
+        toast.success(t("settings.player.stellarIconSaved"));
+      } catch (e) {
+        const msg = e?.response?.data?.error || t("settings.player.stellarIconError");
+        toast.error(msg);
+      } finally {
+        setStellarVariantSaving(false);
+      }
+    },
+    [playerId, playerData?.tufStellarIconVariant, t],
+  );
+
   const handleSaveBio = useCallback(async () => {
     if (playerId == null || !Number.isFinite(playerId)) return;
     const trimmed = bioDraft.trim();
@@ -235,6 +260,7 @@ const SettingsPlayerPage = () => {
           playerDifficultyPanelDifficulties={difficulties}
           playerDifficultyPanelClearsByDifficulty={clearsByDifficultyForHeader}
           avatarSubject={playerData}
+          stellarIconVariant={normalizeTufStellarIconVariant(playerData?.tufStellarIconVariant)}
           name={playerData?.name || t("profile.meta.defaultTitle")}
           handle={playerData?.user?.username}
           country={playerData?.country}
@@ -317,6 +343,44 @@ const SettingsPlayerPage = () => {
           />
         </div>
       </section>
+
+      {isTufStellarSubscriptionActive(user) ? (
+        <section
+          className="settings-sub-page__stellar-variant"
+          aria-labelledby="settings-player-stellar-heading"
+        >
+          <h2 id="settings-player-stellar-heading" className="settings-sub-page__stellar-variant-title">
+            {t("settings.player.stellarIconTitle")}
+          </h2>
+          <p className="settings-sub-page__text">{t("settings.player.stellarIconHint")}</p>
+          <div
+            className="settings-sub-page__stellar-variant-options"
+            role="group"
+            aria-label={t("settings.player.stellarIconGroupAria")}
+          >
+            {["1", "2", "3"].map((id) => {
+              const active = normalizeTufStellarIconVariant(playerData?.tufStellarIconVariant) === id;
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  className={
+                    active
+                      ? "settings-sub-page__stellar-variant-btn settings-sub-page__stellar-variant-btn--active"
+                      : "settings-sub-page__stellar-variant-btn"
+                  }
+                  onClick={() => handleSaveStellarVariant(id)}
+                  disabled={stellarVariantSaving}
+                  aria-pressed={active}
+                  aria-label={t(`settings.player.stellarIconOption${id}`)}
+                >
+                  <TUFStellarIcon size={40} variant={id} />
+                </button>
+              );
+            })}
+          </div>
+        </section>
+      ) : null}
 
       <div className="settings-sub-page__block settings-sub-page__field">
         <label htmlFor="settings-player-nickname">{t("settings.player.nicknameLabel")}</label>

@@ -146,6 +146,11 @@
   white-space: nowrap;
 }
 
+.creator-card .creator-card__tuf-stellar-icon {
+  flex-shrink: 0;
+  display: block;
+}
+
 .creator-card .creator-card__verified {
   display: inline-flex;
   align-items: center;

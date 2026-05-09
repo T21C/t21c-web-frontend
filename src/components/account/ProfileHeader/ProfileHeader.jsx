@@ -8,7 +8,11 @@ import UserAvatar from "@/components/layout/UserAvatar/UserAvatar";
 import ChevronIcon from "@/components/common/icons/ChevronIcon";
 import { ExternalLinkIcon, HeartIcon, TUFStellarIcon } from "@/components/common/icons";
 import { isoToEmoji } from "@/utils";
-import { getDefaultProfileBannerUrl } from "@/utils/profileBanners";
+import {
+  getDefaultProfileBannerUrl,
+  isTufStellarSubscriptionActive,
+  normalizeTufStellarIconVariant,
+} from "@/utils/profileBanners";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import { groupCurationTypesForPanel } from "@/utils/curationTypeUtils";
 import ProfileHeaderIconPanelPortal from "./ProfileHeaderIconPanelPortal";
@@ -97,6 +101,8 @@ const ProfileHeader = ({
   creatorCurationPanelItems = null,
   playerDifficultyPanelDifficulties = null,
   playerDifficultyPanelClearsByDifficulty = null,
+  /** Shown only when `avatarSubject.user` has active TUFStellar; normalized to `1`|`2`|`3`. */
+  stellarIconVariant = "1",
 }) => {
   const { t } = useTranslation("pages");
   const [isStatsExpanded, setIsStatsExpanded] = useState(false);
@@ -308,6 +314,12 @@ const ProfileHeader = ({
     return transform + " scale(1.5)";
     }, [profileNameTextDimensions]);
 
+  const showStellarBadge = isTufStellarSubscriptionActive(avatarSubject?.user);
+  const resolvedStellarVariant = useMemo(
+    () => normalizeTufStellarIconVariant(stellarIconVariant),
+    [stellarIconVariant],
+  );
+
   return (
     <div className={shellClass}>
       <div className="profile-header">
@@ -349,9 +361,11 @@ const ProfileHeader = ({
                     >
                       {displayName}
                     </text>
+                    {showStellarBadge ? (
                     <g transform={stellarIconGroupTransform}>
                     <circle cx={STELLAR_ICON_GAP} cy={STELLAR_ICON_DY+(STELLAR_ICON_SIZE)/2} r={(STELLAR_ICON_SIZE+8)/2} fill="black" />
                     </g>
+                    ) : null}
                   </g>
                     <g transform={`translate(${config.circleOffset}, 0)`}>
                     <circle cy={config.circleCy} cx={config.circleCx} r={config.circleR} fill="black" />
@@ -376,10 +390,11 @@ const ProfileHeader = ({
                     >
                       {displayName}
                     </text>
+                    {showStellarBadge ? (
                     <g transform={stellarIconGroupTransform}>
                       <TUFStellarIcon
                         svg
-                        variant="1"
+                        variant={resolvedStellarVariant}
                         className="profile-header__stellar-icon"
                         size={STELLAR_ICON_SIZE}
                         color="#fff"
@@ -387,11 +402,14 @@ const ProfileHeader = ({
                         style={{ filter: "drop-shadow(0 0 6px rgba(255, 255, 255, 0.2))" }}
                       />
                     </g>
+                    ) : null}
                   </g>
                 </svg>
+                {showStellarBadge ? (
                 <Tooltip style={{ display: "flex", alignItems: "center", gap: "0.25rem", fontWeight: "500", fontSize: "1rem"}} id={PROFILE_HEADER_STELLAR_TOOLTIP_ID} place="top" noArrow>
                   {t("profile.stellarSubscriberIconTooltip")} <HeartIcon size={18} color="#f44" fill="#f44" strokeWidth="2" />
                 </Tooltip>
+                ) : null}
               </div>
         </div>
         <div className="profile-header__banner-wrap" aria-hidden="true">

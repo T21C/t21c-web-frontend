@@ -54,6 +54,13 @@ export function isTufStellarSubscriptionActive(subjectUser) {
   return Number.isFinite(t) && t > Date.now();
 }
 
+/** @param {unknown} raw @returns {"1" | "2" | "3"} */
+export function normalizeTufStellarIconVariant(raw) {
+  const s = raw == null ? "" : String(raw).trim();
+  if (s === "2" || s === "3") return s;
+  return "1";
+}
+
 /**
  * Profile subject may render custom CDN banner when entitled.
  * @param {{ permissionFlags?: string | number | bigint; tufStellarSubscriptionExpiresAt?: string | null } | null | undefined} subjectUser

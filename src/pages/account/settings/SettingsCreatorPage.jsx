@@ -10,9 +10,13 @@ import api from "@/utils/api";
 import CurationTypeSelector from "@/components/account/CurationTypeSelector/CurationTypeSelector";
 import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
 import ProfileBannerEditor from "@/components/account/ProfileBannerEditor/ProfileBannerEditor";
-import { getEffectiveProfileBannerUrl } from "@/utils/profileBanners";
+import {
+  getEffectiveProfileBannerUrl,
+  isTufStellarSubscriptionActive,
+  normalizeTufStellarIconVariant,
+} from "@/utils/profileBanners";
 import { CreatorStatusBadge } from "@/components/common/display";
-import { ExternalLinkIcon, ChevronIcon, InfoIcon } from "@/components/common/icons";
+import { ExternalLinkIcon, ChevronIcon, InfoIcon, TUFStellarIcon } from "@/components/common/icons";
 import { CustomSelect } from "@/components/common/selectors";
 import { useSettings } from "@/contexts/SettingsContext";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
@@ -65,6 +69,7 @@ const SettingsCreatorPage = () => {
   const [verificationSaving, setVerificationSaving] = useState(false);
   const [verificationFieldError, setVerificationFieldError] = useState("");
   const [bannerPresetDraft, setBannerPresetDraft] = useState(undefined);
+  const [stellarVariantSaving, setStellarVariantSaving] = useState(false);
 
   useEffect(() => {
     if (creatorId == null || !Number.isFinite(creatorId)) {
@@ -303,6 +308,31 @@ const SettingsCreatorPage = () => {
     }
   }, [aliasList, t]);
 
+  const handleSaveCreatorStellarVariant = useCallback(
+    async (variant) => {
+      if (creatorId == null || !Number.isFinite(creatorId)) return;
+      const v = String(variant).trim();
+      if (!["1", "2", "3"].includes(v)) return;
+      if (normalizeTufStellarIconVariant(creatorDoc?.tufStellarIconVariant) === v) return;
+      setStellarVariantSaving(true);
+      try {
+        const { data } = await api.patch(
+          `${import.meta.env.VITE_CREATORS_V3}/${creatorId}/tuf-stellar-icon-variant`,
+          { variant: v },
+        );
+        const next = normalizeTufStellarIconVariant(data?.tufStellarIconVariant ?? v);
+        setProfile((p) => (p && typeof p === "object" ? { ...p, tufStellarIconVariant: next } : p));
+        toast.success(t("settings.creator.stellarIconSaved"));
+      } catch (e) {
+        const msg = e?.response?.data?.error || t("settings.creator.stellarIconError");
+        toast.error(msg);
+      } finally {
+        setStellarVariantSaving(false);
+      }
+    },
+    [creatorId, creatorDoc?.tufStellarIconVariant, t],
+  );
+
   const handleSaveBio = useCallback(async () => {
     if (creatorId == null || !Number.isFinite(creatorId)) return;
     const trimmed = bioDraft.trim();
@@ -473,6 +503,9 @@ const SettingsCreatorPage = () => {
           iconSlots={iconSlots}
           creatorCurationPanelItems={creatorCurationPanelItems}
           avatarSubject={creatorDoc}
+          stellarIconVariant={normalizeTufStellarIconVariant(
+            profile?.tufStellarIconVariant ?? creatorDoc?.tufStellarIconVariant,
+          )}
           name={creatorDoc.name}
           handle={creatorDoc.user?.username}
           country={creatorDoc.user?.country || creatorDoc.country}
@@ -563,6 +596,47 @@ const SettingsCreatorPage = () => {
           />
         </div>
       </section>
+
+      {isTufStellarSubscriptionActive(user) ? (
+        <section
+          className="settings-sub-page__stellar-variant"
+          aria-labelledby="settings-creator-stellar-heading"
+        >
+          <h2 id="settings-creator-stellar-heading" className="settings-sub-page__stellar-variant-title">
+            {t("settings.creator.stellarIconTitle")}
+          </h2>
+          <p className="settings-sub-page__text">{t("settings.creator.stellarIconHint")}</p>
+          <div
+            className="settings-sub-page__stellar-variant-options"
+            role="group"
+            aria-label={t("settings.creator.stellarIconGroupAria")}
+          >
+            {["1", "2", "3"].map((id) => {
+              const active =
+                normalizeTufStellarIconVariant(
+                  profile?.tufStellarIconVariant ?? creatorDoc?.tufStellarIconVariant,
+                ) === id;
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  className={
+                    active
+                      ? "settings-sub-page__stellar-variant-btn settings-sub-page__stellar-variant-btn--active"
+                      : "settings-sub-page__stellar-variant-btn"
+                  }
+                  onClick={() => handleSaveCreatorStellarVariant(id)}
+                  disabled={stellarVariantSaving}
+                  aria-pressed={active}
+                  aria-label={t(`settings.creator.stellarIconOption${id}`)}
+                >
+                  <TUFStellarIcon size={40} variant={id} />
+                </button>
+              );
+            })}
+          </div>
+        </section>
+      ) : null}
 
       {canEditHeaderCurationSlots ? (
         <div className="settings-sub-page__block settings-sub-page__field">

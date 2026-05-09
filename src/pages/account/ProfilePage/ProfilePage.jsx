@@ -26,7 +26,7 @@ import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { buildPlayerStatGroups } from "@/utils/profileStatGroups";
 import { buildPlayerIconSlots, pguNumberToQTier } from "@/utils/profileIconSlots";
 import { toDifficultyGraphData } from "@/utils/statFormatters";
-import { getEffectiveProfileBannerUrl } from "@/utils/profileBanners";
+import { getEffectiveProfileBannerUrl, normalizeTufStellarIconVariant } from "@/utils/profileBanners";
 import { userAvatarDisplayUrl } from "@/utils/playerAvatarDisplay";
 import {
   ResponsiveContainer,
@@ -659,6 +659,7 @@ const ProfilePage = () => {
                     playerDifficultyPanelDifficulties={difficulties}
                     playerDifficultyPanelClearsByDifficulty={difficultyPanelClearsByDifficulty}
                     avatarSubject={playerData}
+                    stellarIconVariant={normalizeTufStellarIconVariant(playerData?.tufStellarIconVariant)}
                     name={playerData?.name || t("profile.meta.defaultTitle")}
                     handle={playerData?.user?.username}
                     country={playerData?.country}

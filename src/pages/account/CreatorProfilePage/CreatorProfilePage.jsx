@@ -20,7 +20,7 @@ import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { buildCreatorIconSlots } from "@/utils/profileIconSlots";
 import { getCreatorCurationTypesForHeaderPanel } from "@/utils/curationTypeUtils";
 import { toDifficultyGraphData } from "@/utils/statFormatters";
-import { getEffectiveProfileBannerUrl } from "@/utils/profileBanners";
+import { getEffectiveProfileBannerUrl, normalizeTufStellarIconVariant } from "@/utils/profileBanners";
 
 const CreatorProfilePage = () => {
   const { creatorId } = useParams();
@@ -207,6 +207,7 @@ const CreatorProfilePage = () => {
           iconSlots={iconSlots}
           creatorCurationPanelItems={creatorCurationPanelItems}
           avatarSubject={creatorDoc}
+          stellarIconVariant={normalizeTufStellarIconVariant(creatorDoc?.tufStellarIconVariant)}
           name={creatorDoc.name}
           nameTooltipId={aliasesTooltipId}
           handle={creatorDoc.user?.username}
