@@ -1,6 +1,6 @@
 {
   "title": "订阅与账单",
-  "subtitle": "在同一页面查看 TUFStellar 订阅状态、重要日期与近期付款动态。",
+  "subtitle": "查看订阅与续订日期。",
   "loadError": "无法加载账单信息，请稍后重试。",
   "status": {
     "title": "订阅状态",
@@ -9,41 +9,38 @@
     "cancelling": "本周期后结束"
   },
   "summary": {
-    "inactive": "当前没有有效的付费周期。在下方订阅即可解锁 TUFStellar 权益。",
-    "activeRenewing": "订阅已生效，会在所示日期自动续订。除非取消，否则权益会持续有效。",
-    "activeCancelling": "你已关闭自动续订。在下方「权益截止」日期前仍享有完整权益；改变主意可使用「重新订阅」。",
-    "checkoutPending": "付款已成功，我们正在与支付服务商完成激活。稍后可用取消等操作。"
+    "inactive": "在下方订阅即可开启 TUFStellar 权益。",
+    "activeRenewing": "将在所示日期自动续订。",
+    "activeCancelling": "已取消续订 — 权益截止日前仍可用；需要的话可使用「重新订阅」。",
+    "checkoutPending": "付款已收到，正在完成激活。"
   },
   "details": {
-    "title": "订阅详情",
-    "empty": "订阅成功后，将在此显示续订与权益日期。发票与交易编号请查看下方活动列表。"
+    "title": "订阅详情"
   },
   "hints": {
-    "activating": "激活即将完成，稍后便可取消订阅。"
+    "activating": "即将完成 — 稍后即可取消。"
   },
   "fields": {
     "renewsOn": "下次续订",
     "cancelsOn": "权益截止",
-    "cancelledAt": "停止续订时间"
+    "cancelledAt": "取消时间"
   },
   "actions": {
-    "sectionTitle": "你可以做什么",
     "subscribe": "订阅 TUFStellar",
-    "subscribeDescription": "在新标签页打开安全收银台，在那里完成付款即可开通订阅。",
+    "subscribeDescription": "在新标签页打开收银台。",
     "subscribing": "正在打开收银台…",
     "resubscribing": "正在恢复自动续订…",
     "resubscribe": "恢复自动续订",
-    "resubscribeDescription": "为当前订阅重新开启自动续订；下次扣款仍按原续订日进行。",
-    "cancel": "停止自动续订",
-    "cancelDescription": "仅取消后续续订；当前付费周期结束前仍可正常使用 TUFStellar。",
+    "resubscribeDescription": "为当前订阅重新开启自动续订。",
+    "cancel": "取消订阅",
+    "cancelDescription": "当前付费周期结束前仍可正常使用。",
     "retry": "重试",
     "refreshPage": "刷新账单数据",
-    "noneNeeded": "目前没有需要操作的事项。完成结账或订阅变更后可再来查看。"
+    "noneNeeded": "目前没有需要操作的事项。"
   },
   "history": {
     "title": "近期活动",
-    "subtitle": "每一行是我们收到的一条账单通知（新的在前）。联系客服或银行处理某笔扣款时，请使用「发票与参考」列中的编号。",
-    "empty": "暂无账单事件。订阅或变更后会在此显示。",
+    "subtitle": "最新在上。参考编号便于客服核对扣款。",
     "noReferences": "—",
     "cols": {
       "date": "时间",
@@ -79,21 +76,21 @@
     }
   },
   "cancelConfirm": {
-    "title": "停止自动续订？",
-    "body": "后续将不再自动扣款。你在 {{date}} 前仍可正常使用权益。",
-    "keep": "保留续订",
-    "confirm": "停止续订",
-    "confirming": "正在处理…"
+    "title": "取消订阅？",
+    "body": "你在 {{date}} 前仍可正常使用权益。",
+    "keep": "保留订阅",
+    "confirm": "确认取消",
+    "confirming": "正在取消…"
   },
   "toasts": {
     "startingCheckout": "正在启动收银台…",
-    "checkoutOpened": "请在新标签页中完成付款。若没有打开新标签页，请为本站允许弹出窗口。",
+    "checkoutOpened": "请在新标签页完成付款。若未打开，请允许本站弹出窗口。",
     "checkoutError": "无法启动收银台，请稍后重试。",
     "checkoutBlockedActive": "你已有有效订阅，账单信息已更新。",
-    "checkoutUseResubscribe": "当前方案将在周期结束后停止，请使用「重新订阅」而不是新开收银台。",
-    "subscriptionNotReady": "订阅仍在激活或账单信息尚未就绪，请刷新页面并稍后重试。",
-    "cancelling": "正在停止续订…",
-    "cancelRequested": "已关闭自动续订，权益保留至当前周期结束。",
+    "checkoutUseResubscribe": "当前方案将在周期结束后停止，请使用「重新订阅」。",
+    "subscriptionNotReady": "订阅仍在激活，请刷新并稍后重试。",
+    "cancelling": "正在取消订阅…",
+    "cancelRequested": "订阅已取消，权益保留至当前周期结束。",
     "cancelError": "取消失败，请稍后重试。",
     "resubscribing": "正在恢复自动续订…",
     "resubscribeSuccess": "已为当前订阅重新开启自动续订。",

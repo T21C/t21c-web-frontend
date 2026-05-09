@@ -57,6 +57,7 @@ import ChartIcon from './ChartIcon';
 import TimeIcon from './TimeIcon';
 import AdofaiIcon from './AdofaiIcon';
 import { SettingsIcon } from './SettingsIcon';
+import { TUFStellarIcon } from './TUFStellarIcon';
 
 export {
     DefaultAvatar,
@@ -116,5 +117,6 @@ export {
     ChartIcon,
     TimeIcon,
     AdofaiIcon,
-    SettingsIcon
+    SettingsIcon,
+    TUFStellarIcon,
 }

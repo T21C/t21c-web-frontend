@@ -96,7 +96,7 @@ const BillingPage = () => {
     if (L === "active_cancelling") return "cancelling";
     return "active";
   }, [billingState]);
-
+  
   const summaryKey = useMemo(() => {
     const L = billingState?.lifecycle;
     if (!L || L === "inactive") return "inactive";
@@ -266,8 +266,10 @@ const BillingPage = () => {
 
         <div className="billing-page__layout">
           <div className="billing-page__column">
-            <div className="billing-page__status-heading-row">
-              <span className={`billing-page__pill billing-page__pill--${statusKey}`}>
+            <div
+              className={`billing-page__status-label billing-page__pill billing-page__pill--${statusKey}`}
+            >
+              <span className="billing-page__status-label-text">
                 {t(STATUS_LABEL_KEY[statusKey])}
               </span>
             </div>
@@ -276,36 +278,33 @@ const BillingPage = () => {
             </p>
           </div>
 
-          <div className="billing-page__column">
-            <h4 className="billing-page__details-heading">{t("billing.details.title")}</h4>
-            <div className="billing-page__detail-list">
-              {!hasSubscriptionDetailRows ? (
-                <p className="billing-page__detail-hint">{t("billing.details.empty")}</p>
-              ) : null}
-              {expiresAtFormatted ? (
-                <div className="billing-page__detail-row">
-                  <p className="billing-page__detail-term">
-                    {statusKey === "cancelling"
-                      ? t("billing.fields.cancelsOn")
-                      : t("billing.fields.renewsOn")}
-                  </p>
-                  <p className="billing-page__detail-def">{expiresAtFormatted}</p>
-                </div>
-              ) : null}
+          {hasSubscriptionDetailRows ? (
+            <div className="billing-page__column">
+              {/* <h4 className="billing-page__details-heading">{t("billing.details.title")}</h4> */}
+              <div className="billing-page__detail-list">
+                {expiresAtFormatted ? (
+                  <div className="billing-page__detail-row">
+                    <p className="billing-page__detail-term">
+                      {statusKey === "cancelling"
+                        ? t("billing.fields.cancelsOn")
+                        : t("billing.fields.renewsOn")}
+                    </p>
+                    <p className="billing-page__detail-def">{expiresAtFormatted}</p>
+                  </div>
+                ) : null}
 
-              {statusKey === "cancelling" && cancelledAtFormatted ? (
-                <div className="billing-page__detail-row">
-                  <p className="billing-page__detail-term">{t("billing.fields.cancelledAt")}</p>
-                  <p className="billing-page__detail-def">{cancelledAtFormatted}</p>
-                </div>
-              ) : null}
+                {statusKey === "cancelling" && cancelledAtFormatted ? (
+                  <div className="billing-page__detail-row">
+                    <p className="billing-page__detail-term">{t("billing.fields.cancelledAt")}</p>
+                    <p className="billing-page__detail-def">{cancelledAtFormatted}</p>
+                  </div>
+                ) : null}
+              </div>
             </div>
-          </div>
+          ) : null}
         </div>
 
         <div className="billing-page__actions-panel">
-          <h4 className="billing-page__actions-heading">{t("billing.actions.sectionTitle")}</h4>
-
           {isCheckoutPending ? (
             <p className="billing-page__actions-hint">{t("billing.hints.activating")}</p>
           ) : null}
@@ -370,16 +369,14 @@ const BillingPage = () => {
         </div>
       </section>
 
-      <section className="billing-page__card" aria-labelledby="billing-history-heading">
-        <div className="billing-page__section-head">
-          <h3 id="billing-history-heading" className="billing-page__card-title">
-            {t("billing.history.title")}
-          </h3>
-          <p className="billing-page__history-intro">{t("billing.history.subtitle")}</p>
-        </div>
-        {events.length === 0 ? (
-          <p className="settings-sub-page__text">{t("billing.history.empty")}</p>
-        ) : (
+      {events.length > 0 ? (
+        <section className="billing-page__card" aria-labelledby="billing-history-heading">
+          <div className="billing-page__section-head">
+            <h3 id="billing-history-heading" className="billing-page__card-title">
+              {t("billing.history.title")}
+            </h3>
+            <p className="billing-page__history-intro">{t("billing.history.subtitle")}</p>
+          </div>
           <div className="billing-page__history-table-wrap" role="region" aria-label={t("billing.history.title")}>
             <table className="billing-page__history-table">
               <thead>
@@ -429,8 +426,8 @@ const BillingPage = () => {
               </tbody>
             </table>
           </div>
-        )}
-      </section>
+        </section>
+      ) : null}
 
       {confirmCancelOpen ? (
         <div
@@ -450,8 +447,7 @@ const BillingPage = () => {
             <p className="billing-page__modal-text">
               {t("billing.cancelConfirm.body", {
                 date: expiresAtFormatted ?? "",
-                defaultValue:
-                  "Cancel your TUFStellar subscription? You keep access until {{date}}.",
+                defaultValue: "You keep TUFStellar benefits until {{date}}.",
               })}
             </p>
             <div className="billing-page__modal-actions">

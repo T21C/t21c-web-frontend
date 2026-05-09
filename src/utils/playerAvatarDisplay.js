@@ -2,8 +2,9 @@
 /**
  * Profile CDN avatars (players/creators/auth users — not artist entities).
  * Use {@link userAvatarDisplayUrl} for a single `src` string, or {@link userAvatarUrls} with `<UserAvatar {...userAvatarUrls(subject)} />`.
- */import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
-import { isTufStellarSubscriptionActiveFromExpiry } from "@/utils/profileBanners";
+ */
+import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
+import { isTufStellarSubscriptionActive } from "@/utils/profileBanners";
 
 /**
  * Whether the subject may show animated GIF avatar URLs (CDN `*_animated` segments).
@@ -12,8 +13,7 @@ import { isTufStellarSubscriptionActiveFromExpiry } from "@/utils/profileBanners
 export function subscriptionAllowsAnimatedProfileAvatar(subjectUser) {
   if (!subjectUser) return false;
   if (hasFlag(subjectUser, permissionFlags.SUPER_ADMIN)) return true;
-  if (hasFlag(subjectUser, permissionFlags.TUF_STELLAR)) return true;
-  return isTufStellarSubscriptionActiveFromExpiry(subjectUser);
+  return isTufStellarSubscriptionActive(subjectUser);
 }
 
 /**

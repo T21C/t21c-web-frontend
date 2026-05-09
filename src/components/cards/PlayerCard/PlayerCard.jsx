@@ -8,9 +8,10 @@ import { formatNumber } from "@/utils";
 import { UserAvatar } from "@/components/layout";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import { useAuth } from "@/contexts/AuthContext";
-import { permissionFlags } from "@/utils/UserPermissions";
-import { hasFlag } from "@/utils/UserPermissions";
+import { permissionFlags, hasFlag } from "@/utils/UserPermissions";
+import { isTufStellarSubscriptionActive } from "@/utils/profileBanners";
 import { CreatorIcon } from "@/components/common/icons/CreatorIcon";
+import { TUFStellarIcon } from "@/components/common/icons";
 
 const diffFields = ["topDiff", "top12kDiff"];
 const passes = ["totalPasses", "universalPassCount", "worldsFirstCount"];
@@ -33,8 +34,6 @@ const PlayerCard = ({player, onCreatorAssignmentClick}) => {
     topDiff: t('cards.player.stats.topDiff'),
     top12kDiff: t('cards.player.stats.top12kDiff')
   };
-
-  console.log( player )
 
   const handleCreatorAssignmentClick = (e) => {
     e.preventDefault();
@@ -121,15 +120,18 @@ const PlayerCard = ({player, onCreatorAssignmentClick}) => {
           <div className="name-container">
             <p className='player-name'>
               {player.name}
+              {player.user && isTufStellarSubscriptionActive(player.user) && (
+                <TUFStellarIcon size={28} className="tuf-stellar-icon" color="#fff" style={{marginLeft: "0.5rem", filter: "drop-shadow(0 0 4px rgba(0, 0, 255, 1))"}} />
+              )}
               {user && player.user && hasFlag(user, permissionFlags.SUPER_ADMIN) && (
-        <button
-          className="creator-assignment-btn"
-          onClick={handleCreatorAssignmentClick}
-          title="Assign Creator"
-        >
-          <CreatorIcon className="creator-assignment-icon" color={player.user.creator ? '#5f5' : '#fff'} />
-        </button>
-      )}
+                <button
+                  className="creator-assignment-btn"
+                  onClick={handleCreatorAssignmentClick}
+                  title="Assign Creator"
+                >
+                  <CreatorIcon className="creator-assignment-icon" color={player.user.creator ? '#5f5' : '#fff'} />
+                </button>
+              )}
             </p>
             {player.user?.username && (
               <span className="player-discord-handle">@{player.user?.username}</span>

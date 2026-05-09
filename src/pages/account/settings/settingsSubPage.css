@@ -404,6 +404,8 @@
 
 .settings-sub-page .settings-sub-page__banner-collapsible {
   overflow: hidden;
+  display: flex;
+  justify-content: center;
   transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, margin 0.25s ease;
   max-height: 30rem;
   margin-top: 0.5rem;

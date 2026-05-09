@@ -1,6 +1,6 @@
 {
   "title": "Billing",
-  "subtitle": "See your TUFStellar subscription status, important dates, and recent payment activity in one place.",
+  "subtitle": "Your subscription and renewal dates.",
   "loadError": "Could not load billing details. Try again in a moment.",
   "status": {
     "title": "Subscription status",
@@ -9,41 +9,38 @@
     "cancelling": "Ending after this period"
   },
   "summary": {
-    "inactive": "You do not have an active paid period right now. Subscribe below to unlock TUFStellar benefits.",
-    "activeRenewing": "Your subscription is active and renews automatically on the date shown. Benefits stay on until that renewal unless you cancel.",
-    "activeCancelling": "You turned off automatic renewal. You keep full benefits until the access end date below. Use Resubscribe if you change your mind.",
-    "checkoutPending": "Your payment went through and we are finishing activation with our billing partner. Cancel and some account actions may appear shortly."
+    "inactive": "Subscribe below to turn on TUFStellar benefits.",
+    "activeRenewing": "Renews automatically on the date shown.",
+    "activeCancelling": "Cancelling — you keep benefits until the access end date. Use Resubscribe to undo.",
+    "checkoutPending": "Payment received — we are finishing activation."
   },
   "details": {
-    "title": "Subscription details",
-    "empty": "After you subscribe, renewal and access dates will appear here. For invoice and transaction IDs, use the activity table below."
+    "title": "Subscription details"
   },
   "hints": {
-    "activating": "Activation is almost done — cancel will be available in a moment."
+    "activating": "Almost ready — cancellation will be available shortly."
   },
   "fields": {
     "renewsOn": "Next renewal",
     "cancelsOn": "Access ends",
-    "cancelledAt": "Renewal stopped on"
+    "cancelledAt": "Cancelled on"
   },
   "actions": {
-    "sectionTitle": "What you can do",
     "subscribe": "Subscribe to TUFStellar",
-    "subscribeDescription": "Opens our secure checkout in a new browser tab. Complete payment there to activate your subscription.",
+    "subscribeDescription": "Opens checkout in a new tab.",
     "subscribing": "Opening checkout…",
     "resubscribing": "Turning renewals back on…",
     "resubscribe": "Resume automatic renewal",
-    "resubscribeDescription": "Starts billing renewals again for your existing subscription. You are not charged again until your next renewal date.",
-    "cancel": "Stop automatic renewal",
-    "cancelDescription": "Cancels future renewals only. You keep TUFStellar access until the end of the current paid period.",
+    "resubscribeDescription": "Turns billing back on for your current plan.",
+    "cancel": "Cancel subscription",
+    "cancelDescription": "Access stays until this billing period ends.",
     "retry": "Try again",
     "refreshPage": "Refresh billing data",
-    "noneNeeded": "There is nothing to do here right now. Check back after checkout or when your subscription changes."
+    "noneNeeded": "Nothing to change here right now."
   },
   "history": {
     "title": "Recent activity",
-    "subtitle": "Each row is a billing notification we received, newest first. Use the reference column when you contact support or your bank about a specific charge.",
-    "empty": "No billing events yet. After you subscribe or make changes, entries will show up here.",
+    "subtitle": "Newest first. Reference IDs help support match a charge.",
     "noReferences": "—",
     "cols": {
       "date": "When",
@@ -79,21 +76,21 @@
     }
   },
   "cancelConfirm": {
-    "title": "Stop automatic renewal?",
-    "body": "Future renewals will stop. You keep TUFStellar benefits until {{date}}.",
-    "keep": "Keep renewing",
-    "confirm": "Stop renewals",
-    "confirming": "Stopping renewals…"
+    "title": "Cancel your subscription?",
+    "body": "You keep TUFStellar benefits until {{date}}.",
+    "keep": "Keep subscription",
+    "confirm": "Confirm cancellation",
+    "confirming": "Cancelling…"
   },
   "toasts": {
     "startingCheckout": "Starting checkout…",
-    "checkoutOpened": "Complete your purchase in the new tab. Allow pop-ups for this site if checkout did not appear.",
+    "checkoutOpened": "Complete payment in the new tab. Allow pop-ups if it did not open.",
     "checkoutError": "Could not start checkout. Please try again.",
     "checkoutBlockedActive": "You already have an active subscription. Billing details were refreshed.",
     "checkoutUseResubscribe": "Your plan is set to end — use Resubscribe instead of starting a new checkout.",
-    "subscriptionNotReady": "Subscription is still activating or billing details are not ready yet. Refresh and try again shortly.",
-    "cancelling": "Stopping renewals…",
-    "cancelRequested": "Automatic renewal is off. Benefits stay until the period ends.",
+    "subscriptionNotReady": "Subscription is still activating. Refresh and try again shortly.",
+    "cancelling": "Cancelling subscription…",
+    "cancelRequested": "Subscription cancelled. Benefits stay until the period ends.",
     "cancelError": "Could not cancel. Please try again.",
     "resubscribing": "Turning renewals back on…",
     "resubscribeSuccess": "Renewals are on again for your current subscription.",

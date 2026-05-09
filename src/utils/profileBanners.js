@@ -44,10 +44,10 @@ export function presetPathToUrl(preset) {
 }
 
 /**
- * TUFStellar subscription window (server sends `tufStellarSubscriptionExpiresAt` on auth user).
+ * TUFStellar subscription window (server sends `tufStellarSubscriptionExpiresAt` on user / ES docs).
  * @param {{ tufStellarSubscriptionExpiresAt?: string | null } | null | undefined} subjectUser
  */
-export function isTufStellarSubscriptionActiveFromExpiry(subjectUser) {
+export function isTufStellarSubscriptionActive(subjectUser) {
   const raw = subjectUser?.tufStellarSubscriptionExpiresAt;
   if (raw == null || raw === "") return false;
   const t = new Date(raw).getTime();
@@ -61,8 +61,7 @@ export function isTufStellarSubscriptionActiveFromExpiry(subjectUser) {
 export function subjectHasCustomBannerEntitlement(subjectUser) {
   if (!subjectUser) return false;
   return (
-    isTufStellarSubscriptionActiveFromExpiry(subjectUser) ||
-    hasFlag(subjectUser, permissionFlags.TUF_STELLAR) ||
+    isTufStellarSubscriptionActive(subjectUser) ||
     hasFlag(subjectUser, permissionFlags.SUPER_ADMIN)
   );
 }
