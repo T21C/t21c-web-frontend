@@ -290,8 +290,8 @@ const ProfileHeader = ({
       ? { "data-tooltip-id": nameTooltipId }
       : {};
 
-  const STELLAR_ICON_SIZE = 32;
-  const STELLAR_ICON_GAP = 12;
+  const STELLAR_ICON_SIZE = 28;
+  const STELLAR_ICON_GAP = 14;
   /** Pin to the same local y as `<text>` (hanging baseline at 0). Do not use bbox height — stacked glyphs skew vertical centering. */
   const STELLAR_ICON_DY = 0;
   const { textRef: profileNameTextRef, dimensions: profileNameTextDimensions } = useSvgTextDimensions(
@@ -350,14 +350,7 @@ const ProfileHeader = ({
                       {displayName}
                     </text>
                     <g transform={stellarIconGroupTransform}>
-                      <TUFStellarIcon
-                        groupOnly
-                        className="profile-header__stellar-icon"
-                        size={STELLAR_ICON_SIZE}
-                        strokeWidth="7"
-                        color="#000"
-                        style={{ filter: "drop-shadow(0 0 2px rgba(0, 0, 0, 1))"}}
-                      />
+                    <circle cx={STELLAR_ICON_GAP} cy={STELLAR_ICON_DY+(STELLAR_ICON_SIZE)/2} r={(STELLAR_ICON_SIZE+8)/2} fill="black" />
                     </g>
                   </g>
                     <g transform={`translate(${config.circleOffset}, 0)`}>

@@ -121,7 +121,11 @@ const PlayerCard = ({player, onCreatorAssignmentClick}) => {
             <p className='player-name'>
               {player.name}
               {player.user && isTufStellarSubscriptionActive(player.user) && (
-                <TUFStellarIcon size={28} className="tuf-stellar-icon" color="#fff" style={{marginLeft: "0.5rem", filter: "drop-shadow(0 0 4px rgba(0, 0, 255, 1))"}} />
+                <TUFStellarIcon 
+                size={28} 
+                className="tuf-stellar-icon" 
+                color="#fff" 
+                style={{marginLeft: "0rem"}}/>
               )}
               {user && player.user && hasFlag(user, permissionFlags.SUPER_ADMIN) && (
                 <button
