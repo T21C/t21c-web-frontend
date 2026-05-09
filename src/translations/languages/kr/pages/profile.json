@@ -32,6 +32,7 @@
   "adminEdit": "관리자 편집",
   "viewUserPacks": "사용자 팩 보기",
   "linkToCreator": "제작자 프로필 보기",
+  "stellarSubscriberIconTooltip": "TUFStellar 구독자",
   "bio": {
     "header": "내 소개",
     "placeholder": "내 소개를 작성하지 않음",

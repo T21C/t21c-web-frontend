@@ -3,14 +3,18 @@ import "./profileheader.css";
 import { useState, useMemo, useEffect, useRef, useLayoutEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { Tooltip } from "react-tooltip";
 import UserAvatar from "@/components/layout/UserAvatar/UserAvatar";
 import ChevronIcon from "@/components/common/icons/ChevronIcon";
-import { ExternalLinkIcon } from "@/components/common/icons";
+import { ExternalLinkIcon, HeartIcon, TUFStellarIcon } from "@/components/common/icons";
 import { isoToEmoji } from "@/utils";
 import { getDefaultProfileBannerUrl } from "@/utils/profileBanners";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import { groupCurationTypesForPanel } from "@/utils/curationTypeUtils";
 import ProfileHeaderIconPanelPortal from "./ProfileHeaderIconPanelPortal";
+import { useSvgTextDimensions } from "@/hooks/useSvgTextDimensions";
+
+const PROFILE_HEADER_STELLAR_TOOLTIP_ID = "profile-header-stellar-subscriber";
 
 function useViewportWidth() {
   const [width, setWidth] = useState(window.innerWidth);
@@ -286,6 +290,24 @@ const ProfileHeader = ({
       ? { "data-tooltip-id": nameTooltipId }
       : {};
 
+  const STELLAR_ICON_SIZE = 32;
+  const STELLAR_ICON_GAP = 12;
+  /** Pin to the same local y as `<text>` (hanging baseline at 0). Do not use bbox height — stacked glyphs skew vertical centering. */
+  const STELLAR_ICON_DY = 0;
+  const { textRef: profileNameTextRef, dimensions: profileNameTextDimensions } = useSvgTextDimensions(
+    displayName,
+    config.dxPos,
+    config.textAlign,
+    viewportWidth,
+  );
+  const stellarIconGroupTransform = useMemo(() => {
+
+    const transform = profileNameTextDimensions != null
+        ? `translate(${profileNameTextDimensions.x + profileNameTextDimensions.width + STELLAR_ICON_GAP}, ${STELLAR_ICON_DY})`
+        : `translate(${STELLAR_ICON_GAP}, ${STELLAR_ICON_DY})`;
+    return transform + " scale(1.6)";
+    }, [profileNameTextDimensions]);
+
   return (
     <div className={shellClass}>
       <div className="profile-header">
@@ -316,20 +338,28 @@ const ProfileHeader = ({
                     >
                       {displayName}
                     </text>
+                    <g style={{transform: `translate(${config.nameXPosition}, ${config.nameYPosition})`}}>
                     <text
-                      x={`${config.nameXPosition}`}
-                      y={`${config.nameYPosition}`}
-                      fill="black"
-                      stroke="black"
-                      strokeWidth="16px"
+                      id="name-text"
+                      ref={profileNameTextRef}
                       dx={config.dxPos}
-                      strokeLinejoin="round"
                       className="profile-header__name-svg-text"
                       textAnchor={config.textAlign}
                       {...nameTooltipProps}
                     >
                       {displayName}
                     </text>
+                    <g transform={stellarIconGroupTransform}>
+                      <TUFStellarIcon
+                        groupOnly
+                        className="profile-header__stellar-icon"
+                        size={STELLAR_ICON_SIZE}
+                        strokeWidth="7"
+                        color="#000"
+                        style={{ filter: "drop-shadow(0 0 2px rgba(0, 0, 0, 1))"}}
+                      />
+                    </g>
+                  </g>
                     <g transform={`translate(${config.circleOffset}, 0)`}>
                     <circle cy={config.circleCy} cx={config.circleCx} r={config.circleR} fill="black" />
                     </g>
@@ -342,17 +372,32 @@ const ProfileHeader = ({
                   className="profile-header__name-svg"
                   dominantBaseline="hanging"
                 >
-                  <text
-                    x={`${config.nameXPosition}`}
-                    y={`${config.nameYPosition}`}
-                    dx={config.dxPos}
-                    className="profile-header__name-svg-text"
-                    textAnchor={config.textAlign}
-                    {...nameTooltipProps}
-                  >
-                    {displayName}
-                  </text>
+                  <g style={{transform: `translate(${config.nameXPosition}, ${config.nameYPosition})`}}>
+                    <text
+                      id="name-text"
+                      ref={profileNameTextRef}
+                      dx={config.dxPos}
+                      className="profile-header__name-svg-text"
+                      textAnchor={config.textAlign}
+                      {...nameTooltipProps}
+                    >
+                      {displayName}
+                    </text>
+                    <g transform={stellarIconGroupTransform}>
+                      <TUFStellarIcon
+                        groupOnly
+                        className="profile-header__stellar-icon"
+                        size={STELLAR_ICON_SIZE}
+                        color="#fff"
+                        data-tooltip-id={PROFILE_HEADER_STELLAR_TOOLTIP_ID}
+                        style={{ filter: "drop-shadow(0 0 4px rgba(0, 0, 255, 1))" }}
+                      />
+                    </g>
+                  </g>
                 </svg>
+                <Tooltip style={{ display: "flex", alignItems: "center", gap: "0.25rem", fontWeight: "500", fontSize: "1rem"}} id={PROFILE_HEADER_STELLAR_TOOLTIP_ID} place="top" noArrow>
+                  {t("profile.stellarSubscriberIconTooltip")} <HeartIcon size={18} color="#f44" fill="#f44" strokeWidth="2" />
+                </Tooltip>
               </div>
         </div>
         <div className="profile-header__banner-wrap" aria-hidden="true">

@@ -32,6 +32,7 @@
   "adminEdit": "管理员页面",
   "viewUserPacks": "查看用户的地图包",
   "linkToCreator": "查看创作者个人资料",
+  "stellarSubscriberIconTooltip": "TUFStellar 订阅用户",
   "bio": {
     "header": "个人简介",
     "placeholder": "这个人很神秘，什么都没有写。",

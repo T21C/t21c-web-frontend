@@ -58,7 +58,7 @@
 .profile-header__name-position {
   position: relative;
   top: 0;
-  z-index: 2;
+  z-index: 4;
   height: 0;
 }
 
@@ -543,6 +543,9 @@
     width: 100%;
   }
   .profile-header__name-svg-text:not(.vertical) {
+    display: none;
+  }
+  .profile-header__stellar-icon:not(.vertical) {
     display: none;
   }
   .profile-header__name-vertical {

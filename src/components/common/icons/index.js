@@ -58,6 +58,7 @@ import TimeIcon from './TimeIcon';
 import AdofaiIcon from './AdofaiIcon';
 import { SettingsIcon } from './SettingsIcon';
 import { TUFStellarIcon } from './TUFStellarIcon';
+import { HeartIcon } from './HeartIcon';
 
 export {
     DefaultAvatar,
@@ -119,4 +120,5 @@ export {
     AdofaiIcon,
     SettingsIcon,
     TUFStellarIcon,
+    HeartIcon,
 }

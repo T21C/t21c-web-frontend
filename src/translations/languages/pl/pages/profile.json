@@ -26,6 +26,7 @@
   "editProfile": "Edytuj profil",
   "adminEdit": "Edycja administratora",
   "viewUserPacks": "Pakiety użytkownika",
+  "stellarSubscriberIconTooltip": "Subskrybent TUFStellar",
   "sections": {
     "scores": {
       "title": "Wyniki"

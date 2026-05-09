@@ -32,6 +32,7 @@
   "adminEdit": "Admin edit",
   "viewUserPacks": "View user's packs",
   "linkToCreator": "View creator profile",
+  "stellarSubscriberIconTooltip": "TUFStellar Subscriber",
   "bio": {
     "header": "Bio",
     "placeholder": "This player hasn't written a bio yet.",
