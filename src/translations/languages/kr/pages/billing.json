@@ -1,57 +1,115 @@
 {
   "title": "결제 및 구독",
-  "subtitle": "구독 및 갱신 일정을 확인하세요.",
   "loadError": "결제 정보를 불러올 수 없습니다. 잠시 후 다시 시도해 주세요.",
+  "access": {
+    "title": "이용 권한",
+    "statusActive": "이용 중",
+    "statusInactive": "없음",
+    "untilDate": "{{date}}까지",
+    "oneTimeCushion": "현재 유료 구독 기간 이후 일회성 구매·선물에서 약 {{duration}}가 포함되어 있습니다.",
+    "remainingApproxDays_one": "{{count}}일",
+    "remainingApproxDays_other": "{{count}}일"
+  },
+  "subscription": {
+    "title": "구독",
+    "productName": "TUFStellar",
+    "planWithTerm": "{{product}} — {{term}}",
+    "status": {
+      "inactive": "없음",
+      "active_renewing": "자동 갱신",
+      "active_cancelling": "갱신 안 함",
+      "active_checkout_pending": "활성화 중"
+    }
+  },
+  "purchase": {
+    "title": "결제",
+    "modeGroupAria": "결제 유형"
+  },
   "status": {
     "title": "구독 상태",
     "active": "활성",
     "inactive": "미구독",
-    "cancelling": "이번 주기 후 종료"
+    "cancelling": "갱신 안 함"
   },
   "summary": {
-    "inactive": "아래에서 구독하면 TUFStellar 혜택을 이용할 수 있습니다.",
-    "activeRenewing": "표시된 날짜에 자동 갱신됩니다.",
-    "activeCancelling": "취소 예정 — 이용 종료일까지 혜택 유지. 재구독으로 되돌릴 수 있습니다.",
-    "checkoutPending": "결제 완료 — 활성화를 마무리하는 중입니다."
+    "inactive": "",
+    "activeRenewing": "",
+    "activeCancelling": "",
+    "checkoutPending": "활성화 처리 중."
   },
   "details": {
     "title": "구독 상세"
   },
   "hints": {
-    "activating": "거의 완료 — 곧 취소할 수 있습니다."
+    "activating": "거의 완료."
   },
   "fields": {
-    "renewsOn": "다음 갱신일",
-    "cancelsOn": "이용 종료일",
-    "cancelledAt": "취소일"
+    "plan": "플랜",
+    "renewsOn": "갱신",
+    "nextSubscriptionCharge": "다음 구독 결제",
+    "cancelsOn": "종료",
+    "cancelledAt": "취소"
+  },
+  "checkout": {
+    "modeOneTime": "일회성",
+    "modeSubscription": "구독",
+    "purchaseAsGift": "선물로 구매",
+    "searchUsersPlaceholder": "사용자 검색",
+    "changeRecipient": "변경",
+    "openRecipientProfileAria": "프로필 열기: {{name}}",
+    "searchLoading": "검색 중…",
+    "searchNoResults": "결과 없음",
+    "clearRecipientAria": "받는 사람 지우기",
+    "chooseTerm": "기간",
+    "sliderAria": "이용 기간",
+    "tickMonths": "{{count}}",
+    "durationMonths_one": "{{count}}개월",
+    "durationMonths_other": "{{count}}개월",
+    "priceUsdWhole": "USD {{amount}}",
+    "savePercent": "{{pct}}% 절약",
+    "summaryAria": "{{duration}}, 총 USD {{price}}",
+    "summaryAriaWithSave": "{{duration}}, 총 USD {{price}}, {{pct}}% 절약",
+    "autoRenew": "자동 갱신",
+    "autoRenewHint": "끄면 이번 기간 후 이용이 종료되며, 다시 구독해야 합니다. 이용 중에는 \"자동 갱신 다시 켜기\"로 나중에 다시 켤 수 있습니다."
   },
   "actions": {
     "subscribe": "TUFStellar 구독하기",
-    "subscribeDescription": "새 탭에서 결제 페이지가 열립니다.",
+    "subscribeDescription": "기간과 자동 갱신 여부를 선택한 뒤 새 탭에서 결제합니다.",
+    "openingCheckout": "결제 페이지를 여는 중…",
+    "continueCheckout": "결제 계속",
     "subscribing": "결제 페이지를 여는 중…",
-    "resubscribing": "자동 갱신을 다시 켜는 중…",
-    "resubscribe": "자동 갱신 다시 켜기",
+    "resubscribing": "복구 중…",
+    "resubscribe": "갱신 재개",
     "resubscribeDescription": "현재 구독에 자동 갱신을 다시 켭니다.",
     "cancel": "구독 취소",
     "cancelDescription": "현재 결제 주기가 끝날 때까지 혜택은 유지됩니다.",
     "retry": "다시 시도",
-    "refreshPage": "결제 정보 새로 고침",
-    "noneNeeded": "지금은 할 작업이 없습니다."
+    "refreshPage": "새로 고침",
+    "noneNeeded": "조치 없음."
   },
   "history": {
-    "title": "최근 활동",
-    "subtitle": "최신순. 참조 번호로 결제 문의 시 확인이 빠릅니다.",
+    "title": "내역",
+    "subtitle": "",
     "noReferences": "—",
     "cols": {
       "date": "일시",
       "event": "유형",
-      "references": "인보이스 및 참조",
-      "status": "처리 상태",
+      "references": "참조",
+      "support": "지원",
+      "status": "상태",
       "amount": "금액"
+    },
+    "copySupport": "정보 복사",
+    "copySupportDone": "지원용 정보를 복사했습니다.",
+    "copySupportFail": "복사하지 못했습니다.",
+    "fallbackUser": "사용자",
+    "activity": {
+      "giftReceived": "{{name}}님의 선물",
+      "giftSent": "{{name}}님에게 선물"
     },
     "refLabels": {
       "invoice_id": "인보이스 ID",
-      "foreign_invoice": "가맹점 / 외부 주문",
+      "foreign_invoice": "외부 인보이스",
       "order_id": "주문 ID",
       "transaction_id": "거래 ID",
       "subscription_id": "구독 ID",
@@ -59,15 +117,15 @@
     },
     "processingStatus": {
       "processed": "완료",
-      "received": "수신됨",
+      "received": "수신",
       "failed": "실패",
-      "ignored": "무시됨"
+      "ignored": "무시"
     },
     "events": {
       "payment": "결제",
-      "order_paid": "주문 결제 완료",
+      "order_paid": "주문 결제",
       "create_subscription": "구독 생성",
-      "update_subscription": "구독 업데이트",
+      "update_subscription": "구독 변경",
       "cancel_subscription": "구독 취소",
       "non_renewal_subscription": "갱신 종료",
       "refund": "환불",
@@ -77,24 +135,34 @@
   },
   "cancelConfirm": {
     "title": "구독을 취소할까요?",
-    "body": "{{date}}까지는 혜택을 계속 이용할 수 있습니다.",
-    "keep": "구독 유지",
-    "confirm": "취소 확인",
-    "confirming": "취소 처리 중…"
+    "body": "{{date}}까지 이용 가능.",
+    "keep": "유지",
+    "confirm": "갱신 취소",
+    "confirming": "처리 중…"
   },
   "toasts": {
     "startingCheckout": "결제 페이지를 여는 중…",
-    "checkoutOpened": "새 탭에서 결제를 완료하세요. 창이 안 열리면 팝업을 허용하세요.",
-    "checkoutError": "결제를 시작할 수 없습니다. 다시 시도해 주세요.",
-    "checkoutBlockedActive": "이미 활성 구독이 있습니다. 결제 정보를 새로 고쳤습니다.",
-    "checkoutUseResubscribe": "플랜이 종료 예정입니다. 새 결제 대신 재구독을 이용하세요.",
-    "subscriptionNotReady": "구독이 아직 활성화 중입니다. 새로 고친 뒤 잠시 후 다시 시도하세요.",
-    "cancelling": "구독 취소 중…",
-    "cancelRequested": "구독이 취소되었습니다. 현재 주기 종료까지 혜택이 유지됩니다.",
-    "cancelError": "취소에 실패했습니다. 다시 시도해 주세요.",
-    "resubscribing": "자동 갱신을 다시 켜는 중…",
-    "resubscribeSuccess": "현재 구독에 대해 자동 갱신이 다시 켜졌습니다.",
-    "resubscribeError": "갱신을 재개할 수 없습니다. 다시 시도해 주세요."
+    "checkoutOpened": "새 탭에서 결제를 완료하세요.",
+    "checkoutError": "결제를 시작할 수 없습니다.",
+    "checkoutInvalidTerm": "기간이 올바르지 않습니다.",
+    "checkoutBlockedActive": "이미 활성 구독이 있습니다.",
+    "checkoutUseResubscribe": "새 결제 대신 갱신 재개를 이용하세요.",
+    "subscriptionNotReady": "아직 활성화 중입니다.",
+    "cancelling": "취소 중…",
+    "cancelRequested": "갱신이 취소되었습니다.",
+    "cancelError": "취소에 실패했습니다.",
+    "resubscribing": "복구 중…",
+    "resubscribeSuccess": "자동 갱신이 다시 켜졌습니다.",
+    "resubscribeError": "갱신을 재개할 수 없습니다.",
+    "resubscribeTerminatedUseCheckout": "구독이 완전히 취소되었습니다. 다시 구독해 주세요.",
+    "giftRecipientNotFound": "계정을 찾을 수 없습니다.",
+    "giftRecipientBlocked": "받을 수 없는 계정입니다.",
+    "giftEmailRequired": "이메일이 필요합니다.",
+    "invalidRecipientId": "대상이 올바르지 않습니다.",
+    "recipientRequired": "받는 사람을 선택하세요.",
+    "subscriptionSelfOnly": "구독 결제는 본인만 가능합니다.",
+    "billingAccountBlocked": "계정 상태로 이용할 수 없습니다.",
+    "searchQueryInvalid": "검색어가 너무 깁니다."
   },
   "callback": {
     "title": "구독을 마무리하는 중",

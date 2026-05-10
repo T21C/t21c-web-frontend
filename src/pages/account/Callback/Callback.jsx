@@ -100,13 +100,18 @@ const CallbackPage = () => {
 
         const lockKey = `${invoiceId || ''}|${foreignInvoice || ''}|${xsollaStatus || ''}`;
         if (xsollaCallbackLocks.get(lockKey)) {
-          if (!cancelled) navigate('/settings/billing', { replace: true });
+          setLoading(false);
+          setRedirecting(true);
+          navigateTimerId = window.setTimeout(() => {
+            if (!cancelled) navigate('/settings/billing', { replace: true });
+          }, 400);
           return;
         }
         xsollaCallbackLocks.set(lockKey, true);
 
         try {
-          if (!cancelled) await fetchUser(true);
+          /* silent: global AuthProvider hides entire app while loading — would unmount this page and abort polling */
+          if (!cancelled) await fetchUser(true, { silent: true });
         } catch {
           /* keep going; webhook may still arrive */
         }
@@ -131,7 +136,7 @@ const CallbackPage = () => {
         if (cancelled) return;
 
         try {
-          await fetchUser(true);
+          await fetchUser(true, { silent: true });
         } catch { /* ignore */ }
 
         if (cancelled) return;
@@ -228,6 +233,9 @@ const CallbackPage = () => {
     return () => {
       cancelled = true;
       if (navigateTimerId != null) window.clearTimeout(navigateTimerId);
+      const urlParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
+      const lk = `${urlParams.get('invoice_id') || ''}|${urlParams.get('foreignInvoice') || ''}|${urlParams.get('status') || ''}`;
+      if (lk !== '||') xsollaCallbackLocks.delete(lk);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

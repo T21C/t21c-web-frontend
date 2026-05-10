@@ -4,9 +4,10 @@ import PropTypes from 'prop-types';
 import api from '@/utils/api';
 import './profileselector.css';
 import { useTranslation } from 'react-i18next';
+import { userAvatarDisplayUrl } from '@/utils/playerAvatarDisplay';
 
 export const ProfileSelector = ({
-  type, // 'player', 'charter', 'vfx', 'team'
+  type, // 'player', 'charter', 'vfx', 'team', 'user'
   value,
   onChange,
   required,
@@ -37,9 +38,12 @@ export const ProfileSelector = ({
 
   // Sync searchTerm with external value changes
   useEffect(() => {
-    if (value?.name) {
+    if (value?.name != null && String(value.name).trim() !== '') {
       setSearchTerm(value.name);
-      setIsRequestingNew(value.isNewRequest || false);
+      setIsRequestingNew(Boolean(value.isNewRequest));
+    } else {
+      setSearchTerm('');
+      setIsRequestingNew(false);
     }
   }, [value]);
 
@@ -55,6 +59,8 @@ export const ProfileSelector = ({
         return import.meta.env.VITE_CREATORS;
       case 'team':
         return import.meta.env.VITE_TEAMS;
+      case 'user':
+        return null;
       default:
         return '';
     }
@@ -63,30 +69,49 @@ export const ProfileSelector = ({
   // Search profiles
   useEffect(() => {
     const searchProfiles = async () => {
-      if (!searchTerm || searchTerm.length < 1) {
+      const trimmed = searchTerm.trim();
+      if (type === 'user') {
+        if (!trimmed || trimmed.length < 2) {
+          setProfiles([]);
+          return;
+        }
+      } else if (!searchTerm || searchTerm.length < 1) {
         setProfiles([]);
         return;
       }
 
       setLoading(true);
       try {
-        const endpoint = getEndpoint();
-        const encodedSearchTerm = encodeURIComponent(searchTerm);
-        // v3 player search uses `/search?query=`; other endpoints keep `/search/:name`.
-        const url = type === 'player'
-          ? `${endpoint}/search?query=${encodedSearchTerm}`
-          : `${endpoint}/search/${encodedSearchTerm}`;
-        const response = await api.get(url);
-        if (type === 'player') {
-          const body = response.data;
-          const rows = Array.isArray(body) ? body : (body?.results ?? []);
-          // v3 returns flat player docs directly — no `player` wrapper.
+        if (type === 'user') {
+          const response = await api.get('/v3/billing/recipient-search', {
+            params: { q: trimmed },
+          });
+          const rows = Array.isArray(response.data?.users) ? response.data.users : [];
           setProfiles(rows);
         } else {
-          setProfiles(response.data);
+          const endpoint = getEndpoint();
+          if (!endpoint) {
+            setProfiles([]);
+            return;
+          }
+          const encodedSearchTerm = encodeURIComponent(searchTerm);
+          // v3 player search uses `/search?query=`; other endpoints keep `/search/:name`.
+          const url = type === 'player'
+            ? `${endpoint}/search?query=${encodedSearchTerm}`
+            : `${endpoint}/search/${encodedSearchTerm}`;
+          const response = await api.get(url);
+          if (type === 'player') {
+            const body = response.data;
+            const rows = Array.isArray(body) ? body : (body?.results ?? []);
+            // v3 returns flat player docs directly — no `player` wrapper.
+            setProfiles(rows);
+          } else {
+            setProfiles(response.data);
+          }
         }
       } catch (error) {
         console.error('Error searching profiles:', error);
+        setProfiles([]);
       } finally {
         setLoading(false);
       }
@@ -98,6 +123,23 @@ export const ProfileSelector = ({
 
   // Handle profile selection
   const handleSelect = (profile) => {
+    if (type === 'user') {
+      const primary = profile.username || profile.nickname || profile.id;
+      setSearchTerm(primary);
+      setShowDropdown(false);
+      setIsRequestingNew(false);
+      onChange({
+        id: profile.id,
+        name: primary,
+        type: 'user',
+        isNewRequest: false,
+        playerId: profile.playerId ?? null,
+        username: profile.username ?? null,
+        nickname: profile.nickname ?? null,
+        avatarUrl: profile.avatarUrl ?? null,
+      });
+      return;
+    }
     setSearchTerm(profile.name);
     setShowDropdown(false);
     setIsRequestingNew(false);
@@ -111,6 +153,7 @@ export const ProfileSelector = ({
 
   // Handle new profile request
   const handleRequestNew = () => {
+    if (type === 'user') return;
     setIsRequestingNew(true);
     setShowDropdown(false);
     onChange({
@@ -146,7 +189,7 @@ export const ProfileSelector = ({
         )}
       </div>
 
-      {showDropdown && searchTerm.length >= 1 && !disabled && (
+      {showDropdown && !disabled && (type === 'user' ? searchTerm.trim().length >= 2 : searchTerm.length >= 1) ? (
         <div className="profile-selector-dropdown">
           {loading ? (
             <div className="profile-selector-loading">
@@ -154,17 +197,49 @@ export const ProfileSelector = ({
             </div>
           ) : (
             <>
-              {profiles.map((profile) => (
-                <div
-                  key={profile.id}
-                  className="profile-selector-option"
-                  onClick={() => handleSelect(profile)}
-                >
-                  {profile.name}
-                  {profile.type && <span className="profile-type">{profile.type}</span>}
-                </div>
-              ))}
-              {searchTerm.length >= 1 && (
+              {type === 'user'
+                ? profiles.map((profile) => {
+                    const avatarSrc = userAvatarDisplayUrl(profile);
+                    const primary = profile.username || profile.nickname || profile.id;
+                    const showSecondary = profile.nickname && profile.username && profile.nickname !== profile.username;
+                    return (
+                      <button
+                        key={profile.id}
+                        type="button"
+                        className="profile-selector-option profile-selector-option--user"
+                        onClick={() => handleSelect(profile)}
+                      >
+                        <span className="profile-selector-user-row">
+                          {avatarSrc ? (
+                            <img
+                              className="profile-selector-user-avatar"
+                              src={avatarSrc}
+                              alt=""
+                            />
+                          ) : (
+                            <span className="profile-selector-user-avatar profile-selector-user-avatar--placeholder" aria-hidden />
+                          )}
+                          <span className="profile-selector-user-text">
+                            <span className="profile-selector-user-primary">{primary}</span>
+                            {showSecondary ? (
+                              <span className="profile-selector-user-secondary">{profile.nickname}</span>
+                            ) : null}
+                          </span>
+                        </span>
+                      </button>
+                    );
+                  })
+                : profiles.map((profile) => (
+                    <div
+                      key={profile.id}
+                      className="profile-selector-option"
+                      onClick={() => handleSelect(profile)}
+                    >
+                      {profile.name}
+                      {profile.type && <span className="profile-type">{profile.type}</span>}
+                    </div>
+                  ))}
+              {type !== 'user' && searchTerm.length >= 1 ? (
                 <div className="profile-selector-request">
                   {profiles.length === 0 && (
                     <div className="profile-selector-no-results">
@@ -172,25 +247,31 @@ export const ProfileSelector = ({
                     </div>
                   )}
                   <button
+                    type="button"
                     className="profile-selector-request-new"
                     onClick={handleRequestNew}
                   >
                     {type === 'team' ? t('profileSelector.requestNewTeam') : t('profileSelector.requestNew')}
                   </button>
                 </div>
-              )}
+              ) : null}
+              {type === 'user' && !loading && profiles.length === 0 && searchTerm.trim().length >= 2 ? (
+                <div className="profile-selector-no-results profile-selector-no-results--standalone">
+                  {t('profileSelector.noResults')}
+                </div>
+              ) : null}
             </>
           )}
         </div>
-      )}
+      ) : null}
     </div>
   );
 };
 
 ProfileSelector.propTypes = {
-  type: PropTypes.oneOf(['player', 'charter', 'vfx', 'team']).isRequired,
+  type: PropTypes.oneOf(['player', 'charter', 'vfx', 'team', 'user']).isRequired,
   value: PropTypes.shape({
-    id: PropTypes.number,
+    id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     name: PropTypes.string,
     type: PropTypes.string,
     isNewRequest: PropTypes.bool

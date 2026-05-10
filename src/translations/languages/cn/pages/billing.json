@@ -1,65 +1,123 @@
 {
   "title": "订阅与账单",
-  "subtitle": "查看订阅与续订日期。",
   "loadError": "无法加载账单信息，请稍后重试。",
+  "access": {
+    "title": "访问权限",
+    "statusActive": "有效",
+    "statusInactive": "无",
+    "untilDate": "至 {{date}}",
+    "oneTimeCushion": "在当前付费订阅周期之后，还包含约 {{duration}} 的一次性购买或礼物时间。",
+    "remainingApproxDays_one": "{{count}} 天",
+    "remainingApproxDays_other": "{{count}} 天"
+  },
+  "subscription": {
+    "title": "订阅",
+    "productName": "TUFStellar",
+    "planWithTerm": "{{product}} — {{term}}",
+    "status": {
+      "inactive": "无",
+      "active_renewing": "自动续订",
+      "active_cancelling": "不续订",
+      "active_checkout_pending": "激活中"
+    }
+  },
+  "purchase": {
+    "title": "结账",
+    "modeGroupAria": "结账类型"
+  },
   "status": {
     "title": "订阅状态",
     "active": "已激活",
     "inactive": "未订阅",
-    "cancelling": "本周期后结束"
+    "cancelling": "不续订"
   },
   "summary": {
-    "inactive": "在下方订阅即可开启 TUFStellar 权益。",
-    "activeRenewing": "将在所示日期自动续订。",
-    "activeCancelling": "已取消续订 — 权益截止日前仍可用；需要的话可使用「重新订阅」。",
-    "checkoutPending": "付款已收到，正在完成激活。"
+    "inactive": "",
+    "activeRenewing": "",
+    "activeCancelling": "",
+    "checkoutPending": "正在完成激活。"
   },
   "details": {
     "title": "订阅详情"
   },
   "hints": {
-    "activating": "即将完成 — 稍后即可取消。"
+    "activating": "即将完成。"
   },
   "fields": {
-    "renewsOn": "下次续订",
-    "cancelsOn": "权益截止",
-    "cancelledAt": "取消时间"
+    "plan": "方案",
+    "renewsOn": "续订",
+    "nextSubscriptionCharge": "下次订阅扣款",
+    "cancelsOn": "截止",
+    "cancelledAt": "取消"
+  },
+  "checkout": {
+    "modeOneTime": "一次性",
+    "modeSubscription": "订阅",
+    "purchaseAsGift": "作为礼物购买",
+    "searchUsersPlaceholder": "搜索用户",
+    "changeRecipient": "更改",
+    "openRecipientProfileAria": "打开资料：{{name}}",
+    "searchLoading": "搜索中…",
+    "searchNoResults": "无匹配",
+    "clearRecipientAria": "清除收款人",
+    "chooseTerm": "时长",
+    "sliderAria": "时长",
+    "tickMonths": "{{count}}",
+    "durationMonths_one": "{{count}} 个月",
+    "durationMonths_other": "{{count}} 个月",
+    "priceUsdWhole": "USD {{amount}}",
+    "savePercent": "省 {{pct}}%",
+    "summaryAria": "{{duration}}，合计 USD {{price}}",
+    "summaryAriaWithSave": "{{duration}}，合计 USD {{price}}，省 {{pct}}%",
+    "autoRenew": "自动续订",
+    "autoRenewHint": "关闭则本期结束后权益结束，需再次订阅。在仍有访问权限期间，可随时使用「恢复自动续订」重新开启。"
   },
   "actions": {
     "subscribe": "订阅 TUFStellar",
-    "subscribeDescription": "在新标签页打开收银台。",
+    "subscribeDescription": "选择时长与是否自动续订，然后在新标签页打开收银台。",
+    "openingCheckout": "正在打开收银台…",
+    "continueCheckout": "前往结账",
     "subscribing": "正在打开收银台…",
-    "resubscribing": "正在恢复自动续订…",
-    "resubscribe": "恢复自动续订",
+    "resubscribing": "恢复中…",
+    "resubscribe": "恢复续订",
     "resubscribeDescription": "为当前订阅重新开启自动续订。",
     "cancel": "取消订阅",
     "cancelDescription": "当前付费周期结束前仍可正常使用。",
     "retry": "重试",
-    "refreshPage": "刷新账单数据",
-    "noneNeeded": "目前没有需要操作的事项。"
+    "refreshPage": "刷新",
+    "noneNeeded": "无需操作。"
   },
   "history": {
-    "title": "近期活动",
-    "subtitle": "最新在上。参考编号便于客服核对扣款。",
+    "title": "记录",
+    "subtitle": "",
     "noReferences": "—",
     "cols": {
       "date": "时间",
       "event": "类型",
-      "references": "发票与参考",
-      "status": "处理状态",
+      "references": "参考",
+      "support": "支持",
+      "status": "状态",
       "amount": "金额"
     },
+    "copySupport": "复制详情",
+    "copySupportDone": "已复制支持用详情。",
+    "copySupportFail": "无法复制。",
+    "fallbackUser": "用户",
+    "activity": {
+      "giftReceived": "来自 {{name}} 的礼物",
+      "giftSent": "赠予 {{name}} 的礼物"
+    },
     "refLabels": {
-      "invoice_id": "发票号",
-      "foreign_invoice": "商户 / 外部订单号",
+      "invoice_id": "发票 ID",
+      "foreign_invoice": "外部发票",
       "order_id": "订单 ID",
       "transaction_id": "交易 ID",
       "subscription_id": "订阅 ID",
-      "checkout_external_id": "收银台参考号"
+      "checkout_external_id": "结账参考"
     },
     "processingStatus": {
-      "processed": "已完成",
-      "received": "已接收",
+      "processed": "完成",
+      "received": "已收到",
       "failed": "失败",
       "ignored": "已忽略"
     },
@@ -77,24 +135,34 @@
   },
   "cancelConfirm": {
     "title": "取消订阅？",
-    "body": "你在 {{date}} 前仍可正常使用权益。",
-    "keep": "保留订阅",
-    "confirm": "确认取消",
-    "confirming": "正在取消…"
+    "body": "权益至 {{date}}。",
+    "keep": "保留",
+    "confirm": "停止续订",
+    "confirming": "处理中…"
   },
   "toasts": {
     "startingCheckout": "正在启动收银台…",
-    "checkoutOpened": "请在新标签页完成付款。若未打开，请允许本站弹出窗口。",
-    "checkoutError": "无法启动收银台，请稍后重试。",
-    "checkoutBlockedActive": "你已有有效订阅，账单信息已更新。",
-    "checkoutUseResubscribe": "当前方案将在周期结束后停止，请使用「重新订阅」。",
-    "subscriptionNotReady": "订阅仍在激活，请刷新并稍后重试。",
-    "cancelling": "正在取消订阅…",
-    "cancelRequested": "订阅已取消，权益保留至当前周期结束。",
-    "cancelError": "取消失败，请稍后重试。",
-    "resubscribing": "正在恢复自动续订…",
-    "resubscribeSuccess": "已为当前订阅重新开启自动续订。",
-    "resubscribeError": "无法恢复续订，请稍后重试。"
+    "checkoutOpened": "请在新标签页完成付款。",
+    "checkoutError": "无法启动收银台。",
+    "checkoutInvalidTerm": "时长无效。",
+    "checkoutBlockedActive": "已有有效订阅。",
+    "checkoutUseResubscribe": "请使用「恢复续订」。",
+    "subscriptionNotReady": "仍在激活中。",
+    "cancelling": "正在取消…",
+    "cancelRequested": "已停止续订。",
+    "cancelError": "取消失败。",
+    "resubscribing": "恢复中…",
+    "resubscribeSuccess": "已重新开启自动续订。",
+    "resubscribeError": "无法恢复续订。",
+    "resubscribeTerminatedUseCheckout": "该订阅已彻底取消，请重新订阅。",
+    "giftRecipientNotFound": "未找到用户。",
+    "giftRecipientBlocked": "该账号无法接受。",
+    "giftEmailRequired": "需要邮箱。",
+    "invalidRecipientId": "收款人不正确。",
+    "recipientRequired": "请先选择收款人。",
+    "subscriptionSelfOnly": "订阅仅限本人账号。",
+    "billingAccountBlocked": "当前无法使用账单功能。",
+    "searchQueryInvalid": "搜索内容过长。"
   },
   "callback": {
     "title": "正在完成订阅",
