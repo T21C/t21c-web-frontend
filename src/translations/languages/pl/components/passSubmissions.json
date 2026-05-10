@@ -86,7 +86,7 @@
       "confirm": "Potwierdź",
       "cancel": "Anuluj"
     },
-    "tooltip": "{{discordUsername}} → {{playerName}}"
+    "tooltip": "{{discordUsername}} ➔ {{playerName}}"
   },
   "notifications": {
     "autoAllow": "Zaakceptowano automatycznie {{count}} zgłoszenia/eń"

@@ -82,7 +82,7 @@
   "modal": {
     "title": "确认操作",
     "confirmMessage": "将把 @{{username}} 分配给 {{playerName}}。继续？",
-    "tooltip": "{{discordUsername}} → {{playerName}}"
+    "tooltip": "{{discordUsername}} ➔ {{playerName}}"
   },
   "notifications": {
     "autoAllow": "已自动通过 {{count}} 项通关记录"

@@ -64,11 +64,11 @@ function main() {
     fs.mkdirSync(distBannersDir, { recursive: true });
     const distManifest = path.join(distBannersDir, "manifest.json");
     fs.writeFileSync(distManifest, json, "utf8");
-    console.log(`[generateBannerManifest] build out → ${path.relative(clientRoot, distManifest)}`);
+    console.log(`[generateBannerManifest] build out ➔ ${path.relative(clientRoot, distManifest)}`);
   }
 
-  console.log(`[generateBannerManifest] ${presets.length} preset(s) → ${path.relative(clientRoot, publicOut)}`);
-  console.log(`[generateBannerManifest] copied allowlist → ${serverManifestPath}`);
+  console.log(`[generateBannerManifest] ${presets.length} preset(s) ➔ ${path.relative(clientRoot, publicOut)}`);
+  console.log(`[generateBannerManifest] copied allowlist ➔ ${serverManifestPath}`);
 }
 
 main();

@@ -12,7 +12,7 @@ const XSOLLA_POLL_TIMEOUT_MS = 25000;
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-/** Survives React 18 Strict Mode (effect mount → unmount → remount): skip duplicate Xsolla handler runs for the same return URL. */
+/** Survives React 18 Strict Mode (effect mount ➔ unmount ➔ remount): skip duplicate Xsolla handler runs for the same return URL. */
 const xsollaCallbackLocks = new Map();
 
 function readXsollaParams(search) {

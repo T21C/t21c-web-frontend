@@ -11,7 +11,7 @@
     "segmentSourceGift": "礼物",
     "segmentSourceGiftFrom": "{{name}} 赠送",
     "segmentSourceUnknown": "购买",
-    "segmentWindow": "{{start}} → {{end}}",
+    "segmentWindow": "{{start}} ➔ {{end}}",
     "segmentRemaining": "该段剩余约 {{duration}}",
     "remainingLessThanOneDay": "不足一天",
     "remainingApproxDays_one": "{{count}} 天",

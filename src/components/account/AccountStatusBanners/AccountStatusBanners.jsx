@@ -61,7 +61,7 @@ export function AccountStatusBanners({ variant = 'edit', user, navigate }) {
       >
         {t('profile.emailVerification')}
         <span className="status-banner__arrow" aria-hidden>
-          →
+          ➔
         </span>
       </StatusBanner>
     );

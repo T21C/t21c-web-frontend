@@ -85,7 +85,7 @@
       "confirm": "확인",
       "cancel": "취소"
     },
-    "tooltip": "{{discordUsername}} → {{playerName}}"
+    "tooltip": "{{discordUsername}} ➔ {{playerName}}"
   },
   "notifications": {
     "autoAllow": "{{count}}개의 제출물이 자동 승인되었습니다"

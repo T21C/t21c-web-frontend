@@ -15,7 +15,7 @@ export function formatFloat(n, digits = 2) {
   return x.toFixed(digits);
 }
 
-/** ratio in 0..1 → percent string */
+/** ratio in 0..1 ➔ percent string */
 export function formatPercentRatio(r) {
   const x = Number(r);
   if (!Number.isFinite(x)) return "0%";
@@ -29,7 +29,7 @@ export function formatDateIso(iso) {
   return d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
 }
 
-/** milliseconds → short human duration */
+/** milliseconds ➔ short human duration */
 export function formatDurationMs(ms) {
   const s = Number(ms);
   if (!Number.isFinite(s) || s <= 0) return "0";

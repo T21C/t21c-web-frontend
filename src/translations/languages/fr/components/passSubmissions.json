@@ -48,7 +48,7 @@
         "confirm": "Confirmer",
         "cancel": "Annuler"
       },
-      "tooltip": "{{discordUsername}} → {{playerName}}"
+      "tooltip": "{{discordUsername}} ➔ {{playerName}}"
     }
   },
   "buttons": {
@@ -98,7 +98,7 @@
       "confirm": "Confirmer",
       "cancel": "Annuler"
     },
-    "tooltip": "{{discordUsername}} → {{playerName}}"
+    "tooltip": "{{discordUsername}} ➔ {{playerName}}"
   },
   "notifications": {
     "autoAllow": "Approbation auto de {{count}} soumissions"

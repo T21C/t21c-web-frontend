@@ -17,7 +17,7 @@ export function tufStellarAccessAllowsAnimatedProfileAvatar(subjectUser) {
 }
 
 /**
- * Swap CDN profile path `…_animated` → `…_static` (JPEG) when the subject cannot use animation.
+ * Swap CDN profile path `…_animated` ➔ `…_static` (JPEG) when the subject cannot use animation.
  * @param {string | null | undefined} url
  */
 export function swapProfileAvatarAnimatedToStatic(url) {

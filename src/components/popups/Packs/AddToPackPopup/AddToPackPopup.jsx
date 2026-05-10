@@ -342,7 +342,7 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
                     disabled={currentPage === totalPages}
                     className="add-to-pack-popup__page-btn"
                   >
-                    →
+                    ➔
                   </button>
                 </div>
               )}

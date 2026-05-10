@@ -334,7 +334,7 @@ const CurationSelectionPopup = ({
               disabled={currentPage === totalPages}
               className="curation-selection-modal__page-btn"
             >
-              {t('curationSelectionPopup.pagination.next')} →
+              {t('curationSelectionPopup.pagination.next')} ➔
             </button>
           </div>
         )}

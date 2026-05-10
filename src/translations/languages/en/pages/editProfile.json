@@ -27,7 +27,7 @@
     "confirmRemove": "Are you sure you want to remove your avatar? This action cannot be undone."
   },
   "nicknameMoved": {
-    "hint": "Nickname is edited under Settings → Player profile."
+    "hint": "Nickname is edited under Settings ➔ Player profile."
   },
   "form": {
     "labels": {
@@ -38,7 +38,7 @@
     },
     "emailVerification": {
       "message": "You need to verify your email",
-      "arrow": "→"
+      "arrow": "➔"
     },
     "buttons": {
       "saveChanges": "Save Changes",

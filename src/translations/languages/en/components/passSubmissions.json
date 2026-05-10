@@ -82,7 +82,7 @@
   "modal": {
     "title": "Confirm Action",
     "confirmMessage": "Will assign @{{username}} to {{playerName}}. Proceed?",
-    "tooltip": "{{discordUsername}} → {{playerName}}"
+    "tooltip": "{{discordUsername}} ➔ {{playerName}}"
   },
   "notifications": {
     "autoAllow": "Auto-approved {{count}} submissions"

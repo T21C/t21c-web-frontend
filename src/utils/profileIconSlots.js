@@ -5,7 +5,7 @@
 
 const PGU_REGEX = /^([PGUpgu])(\d{1,2})$/;
 
-/** 1-based n in 1..20 → Q tier 0..4 (four difficulties per bucket). */
+/** 1-based n in 1..20 ➔ Q tier 0..4 (four difficulties per bucket). */
 export function pguNumberToQTier(n) {
   const num = Number(n);
   if (!Number.isFinite(num) || num < 1 || num > 20) return null;
@@ -298,7 +298,7 @@ function buildCreatorCountEntries(counts, dict) {
 }
 
 /**
- * Single C→V→O→H lap: at most one remainder dequeue per family (next eligible in that family’s queue).
+ * Single C➔V➔O➔H lap: at most one remainder dequeue per family (next eligible in that family’s queue).
  * @param {object[]} slots
  * @param {Set<number>} used
  * @param {Record<string, { id: number; cnt: number; type: object; name: string; tier: number }[]>} remainderQueues

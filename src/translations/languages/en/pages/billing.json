@@ -11,7 +11,7 @@
     "segmentSourceGift": "Gift",
     "segmentSourceGiftFrom": "Gift from {{name}}",
     "segmentSourceUnknown": "Purchase",
-    "segmentWindow": "{{start}} → {{end}}",
+    "segmentWindow": "{{start}} ➔ {{end}}",
     "segmentRemaining": "{{duration}} left in this chunk",
     "remainingLessThanOneDay": "less than a day",
     "remainingApproxDays_one": "{{count}} day",

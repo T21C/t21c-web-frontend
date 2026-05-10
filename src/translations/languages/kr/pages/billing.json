@@ -11,7 +11,7 @@
     "segmentSourceGift": "선물",
     "segmentSourceGiftFrom": "{{name}}님의 선물",
     "segmentSourceUnknown": "구매",
-    "segmentWindow": "{{start}} → {{end}}",
+    "segmentWindow": "{{start}} ➔ {{end}}",
     "segmentRemaining": "이 구간에 약 {{duration}} 남음",
     "remainingLessThanOneDay": "1일 미만",
     "remainingApproxDays_one": "{{count}}일",
