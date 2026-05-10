@@ -6,7 +6,10 @@
     "statusActive": "有效",
     "statusInactive": "无",
     "untilDate": "至 {{date}}",
-    "oneTimeCushion": "在当前付费订阅周期之后，还包含约 {{duration}} 的一次性购买或礼物时间。",
+    "subscriptionPaidPeriodRemaining": "当前付费订阅周期内剩余约 {{duration}}（至 {{date}}）。",
+    "giftAccessAfterPaidPeriod": "约有 {{duration}} 的访问来自礼物或一次性购买（在时间线上先于订阅时段使用）。",
+    "giftAccessOnly": "礼物或一次性购买还提供约 {{duration}} 的访问时间。",
+    "remainingLessThanOneDay": "不足一天",
     "remainingApproxDays_one": "{{count}} 天",
     "remainingApproxDays_other": "{{count}} 天"
   },
@@ -74,7 +77,7 @@
   },
   "actions": {
     "subscribe": "订阅 TUFStellar",
-    "subscribeDescription": "选择时长与是否自动续订，然后在新标签页打开收银台。",
+    "subscribeDescription": "选择时长并在新标签页打开收银台。订阅默认自动续订；不想续订请选择一次性。",
     "openingCheckout": "正在打开收银台…",
     "continueCheckout": "前往结账",
     "subscribing": "正在打开收银台…",
@@ -106,6 +109,17 @@
     "activity": {
       "giftReceived": "来自 {{name}} 的礼物",
       "giftSent": "赠予 {{name}} 的礼物"
+    },
+    "product": {
+      "giftMonths_one": "TUFStellar — {{count}} 个月（礼物）",
+      "giftMonths_other": "TUFStellar — {{count}} 个月（礼物）",
+      "subscriptionMonths_one": "TUFStellar — {{count}} 个月（订阅）",
+      "subscriptionMonths_other": "TUFStellar — {{count}} 个月（订阅）",
+      "termMonths_one": "TUFStellar — {{count}} 个月",
+      "termMonths_other": "TUFStellar — {{count}} 个月",
+      "sku": "SKU：{{sku}}",
+      "planId": "方案 ID：{{planId}}",
+      "itemId": "条目：{{itemId}}"
     },
     "refLabels": {
       "invoice_id": "发票 ID",

@@ -17,6 +17,7 @@
 }
 
 .billing-page .billing-page__header--toolbar {
+  width: 100%;
   flex-direction: row;
   flex-wrap: wrap;
   align-items: flex-start;
@@ -543,6 +544,18 @@
   font-size: 0.9rem;
   color: var(--color-white);
   line-height: 1.35;
+}
+
+.billing-page .billing-page__event-cell-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.billing-page .billing-page__event-product-detail {
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: var(--color-gray-2);
 }
 
 .billing-page .billing-page__ref-list {

@@ -79,6 +79,32 @@ function eventTypeLabel(eventType, t) {
   return t(`billing.history.events.${eventType}`, { defaultValue: eventType });
 }
 
+function billingHistoryProductDetail(product, t) {
+  if (!product || typeof product !== "object") return "";
+  const { kind, months, sku, planExternalId, itemId } = product;
+  const parts = [];
+
+  if (months != null && Number.isFinite(Number(months))) {
+    const c = Number(months);
+    if (kind === "gift") {
+      parts.push(t("billing.history.product.giftMonths", { count: c }));
+    } else if (kind === "subscription") {
+      parts.push(t("billing.history.product.subscriptionMonths", { count: c }));
+    } else {
+      parts.push(t("billing.history.product.termMonths", { count: c }));
+    }
+  }
+
+  if (!parts.length) {
+    if (sku) parts.push(t("billing.history.product.sku", { sku }));
+    else if (planExternalId) parts.push(t("billing.history.product.planId", { planId: planExternalId }));
+    else if (itemId) parts.push(t("billing.history.product.itemId", { itemId }));
+    return parts.join(" · ");
+  }
+
+  return parts.join(" · ");
+}
+
 function historyEventLabel(ev, t) {
   const kind = ev.activityKind ?? "default";
   if (kind === "gift_received") {
@@ -112,6 +138,14 @@ function buildSupportCopyPayload(ev) {
     `created_at: ${ev.createdAt}`,
     `processed_at: ${ev.processedAt ?? ""}`,
   ];
+  const p = ev.product;
+  if (p && typeof p === "object") {
+    if (p.kind) lines.push(`product_kind: ${p.kind}`);
+    if (p.months != null) lines.push(`product_months: ${p.months}`);
+    if (p.sku) lines.push(`product_sku: ${p.sku}`);
+    if (p.planExternalId) lines.push(`plan_external_id: ${p.planExternalId}`);
+    if (p.itemId) lines.push(`xsolla_item_id: ${p.itemId}`);
+  }
   if (ev.amount != null && Number.isFinite(Number(ev.amount))) {
     lines.push(`amount: ${ev.amount}${ev.currency ? ` ${ev.currency}` : ""}`);
   }
@@ -124,7 +158,8 @@ function buildSupportCopyPayload(ev) {
 
 function approxDaysRemainingLabel(ms, t) {
   if (!Number.isFinite(ms) || ms <= 0) return "";
-  const days = Math.max(1, Math.ceil(ms / 86_400_000));
+  if (ms < 86_400_000) return t("billing.access.remainingLessThanOneDay");
+  const days = Math.ceil(ms / 86_400_000);
   return t("billing.access.remainingApproxDays", { count: days });
 }
 
@@ -146,8 +181,7 @@ const BillingPage = () => {
   const [cancelling, setCancelling] = useState(false);
   const [confirmCancelOpen, setConfirmCancelOpen] = useState(false);
   const [checkoutTermIndex, setCheckoutTermIndex] = useState(2);
-  const [checkoutAutoRenew, setCheckoutAutoRenew] = useState(false);
-  const [checkoutMode, setCheckoutMode] = useState("gift");
+  const [checkoutMode, setCheckoutMode] = useState("subscription");
   const [purchaseAsGift, setPurchaseAsGift] = useState(false);
   const [giftRecipient, setGiftRecipient] = useState(null);
 
@@ -192,10 +226,21 @@ const BillingPage = () => {
   const accessExpiresAt = billingState?.access?.expiresAt ?? billingState?.expiresAt ?? null;
   const recurringPeriodEndsAt =
     billingState?.subscription?.recurringPeriodEndsAt ?? billingState?.access?.recurringPeriodEndsAt ?? null;
-  const oneTimeRemainingMsRaw = billingState?.access?.oneTimeRemainingMs;
-  const oneTimeRemainingMs =
-    oneTimeRemainingMsRaw != null && Number.isFinite(Number(oneTimeRemainingMsRaw))
-      ? Number(oneTimeRemainingMsRaw)
+  const nominalPeriodEndsAt =
+    billingState?.subscription?.nominalPeriodEndsAt ?? billingState?.access?.nominalPeriodEndsAt ?? null;
+  const subscriptionFundedCoverageEndsAt =
+    billingState?.access?.subscriptionFundedCoverageEndsAt ?? null;
+  const giftFundedRemainingMsRaw =
+    billingState?.access?.giftFundedRemainingMs ?? billingState?.access?.oneTimeRemainingMs;
+  const giftFundedRemainingMs =
+    giftFundedRemainingMsRaw != null && Number.isFinite(Number(giftFundedRemainingMsRaw))
+      ? Number(giftFundedRemainingMsRaw)
+      : 0;
+
+  const subscriptionPaidPeriodRemainingMsRaw = billingState?.access?.subscriptionPaidPeriodRemainingMs;
+  const subscriptionPaidPeriodRemainingMs =
+    subscriptionPaidPeriodRemainingMsRaw != null && Number.isFinite(Number(subscriptionPaidPeriodRemainingMsRaw))
+      ? Number(subscriptionPaidPeriodRemainingMsRaw)
       : 0;
 
   const subscriptionLifecycle = billingState?.subscription?.lifecycle ?? billingState?.lifecycle ?? "inactive";
@@ -221,6 +266,13 @@ const BillingPage = () => {
       canResubscribe: Boolean(subscriptionAllowed?.resubscribe ?? a?.resubscribe),
     };
   }, [billingState?.allowedActions, subscriptionAllowed]);
+
+  useEffect(() => {
+    if (!billingState) return;
+    if (checkoutMode === "subscription" && !canPurchaseSubscription && canPurchaseGift) {
+      setCheckoutMode("gift");
+    }
+  }, [billingState, checkoutMode, canPurchaseSubscription, canPurchaseGift]);
 
   const canOpenCheckout =
     checkoutMode === "subscription"
@@ -266,6 +318,17 @@ const BillingPage = () => {
   const recurringEndsFormatted = useMemo(
     () => formatDate(recurringPeriodEndsAt, locale),
     [recurringPeriodEndsAt, locale],
+  );
+
+  const nominalPeriodEndsFormatted = useMemo(
+    () => formatDate(nominalPeriodEndsAt, locale),
+    [nominalPeriodEndsAt, locale],
+  );
+
+  const subscriptionPaidThroughFormatted = useMemo(
+    () =>
+      formatDate(subscriptionFundedCoverageEndsAt ?? nominalPeriodEndsAt ?? recurringPeriodEndsAt, locale),
+    [subscriptionFundedCoverageEndsAt, nominalPeriodEndsAt, recurringPeriodEndsAt, locale],
   );
 
   const subscriptionRenewalDisplayFormatted = recurringEndsFormatted ?? subscriptionExpiresFormatted;
@@ -362,7 +425,6 @@ const BillingPage = () => {
         if (purchaseAsGift && giftRecipient?.userId) payload.recipientUserId = giftRecipient.userId;
       } else {
         payload.mode = "subscription";
-        payload.autoRenew = checkoutAutoRenew;
       }
       const { data } = await api.post("/v3/billing/xsolla/checkout", payload);
       const url = data?.url;
@@ -389,7 +451,6 @@ const BillingPage = () => {
     purchaseAsGift,
     giftRecipient,
     checkoutTermIndex,
-    checkoutAutoRenew,
     t,
     billingToastForCode,
     fetchAll,
@@ -506,11 +567,23 @@ const BillingPage = () => {
             </p>
           ) : null}
         </div>
-        {accessActive && hasRecurringSubscription && oneTimeRemainingMs > 0 ? (
+        {accessActive && hasRecurringSubscription && subscriptionPaidPeriodRemainingMs > 0 ? (
           <p className="billing-page__access-meta">
-            {t("billing.access.oneTimeCushion", {
-              duration: approxDaysRemainingLabel(oneTimeRemainingMs, t),
+            {t("billing.access.subscriptionPaidPeriodRemaining", {
+              duration: approxDaysRemainingLabel(subscriptionPaidPeriodRemainingMs, t),
+              date: subscriptionPaidThroughFormatted || "",
             })}
+          </p>
+        ) : null}
+        {accessActive && giftFundedRemainingMs > 0 ? (
+          <p className="billing-page__access-meta">
+            {hasRecurringSubscription
+              ? t("billing.access.giftAccessAfterPaidPeriod", {
+                  duration: approxDaysRemainingLabel(giftFundedRemainingMs, t),
+                })
+              : t("billing.access.giftAccessOnly", {
+                  duration: approxDaysRemainingLabel(giftFundedRemainingMs, t),
+                })}
           </p>
         ) : null}
       </section>
@@ -619,21 +692,21 @@ const BillingPage = () => {
           <div className="billing-page__mode-toggle" role="group" aria-label={t("billing.purchase.modeGroupAria")}>
             <button
               type="button"
-              className={`billing-page__btn billing-page__mode-btn ${checkoutMode === "gift" ? "billing-page__mode-btn--selected" : "billing-page__btn--ghost"}`}
-              aria-pressed={checkoutMode === "gift"}
-              onClick={() => setCheckoutMode("gift")}
-              disabled={!canPurchaseGift}
-            >
-              {t("billing.checkout.modeOneTime")}
-            </button>
-            <button
-              type="button"
               className={`billing-page__btn billing-page__mode-btn ${checkoutMode === "subscription" ? "billing-page__mode-btn--selected" : "billing-page__btn--ghost"}`}
               aria-pressed={checkoutMode === "subscription"}
               onClick={() => setCheckoutMode("subscription")}
               disabled={!canPurchaseSubscription}
             >
               {t("billing.checkout.modeSubscription")}
+            </button>
+            <button
+              type="button"
+              className={`billing-page__btn billing-page__mode-btn ${checkoutMode === "gift" ? "billing-page__mode-btn--selected" : "billing-page__btn--ghost"}`}
+              aria-pressed={checkoutMode === "gift"}
+              onClick={() => setCheckoutMode("gift")}
+              disabled={!canPurchaseGift}
+            >
+              {t("billing.checkout.modeOneTime")}
             </button>
           </div>
 
@@ -685,22 +758,6 @@ const BillingPage = () => {
                   />
                 )
               ) : null}
-            </div>
-          ) : null}
-
-          {checkoutMode === "subscription" ? (
-            <div className="billing-page__auto-renew">
-              <label className="billing-page__auto-renew-row">
-                <input
-                  type="checkbox"
-                  className="billing-page__auto-renew-input"
-                  checked={checkoutAutoRenew}
-                  onChange={(ev) => setCheckoutAutoRenew(ev.target.checked)}
-                />
-                <span className="billing-page__auto-renew-label-text">
-                  {t("billing.checkout.autoRenew")}
-                </span>
-              </label>
             </div>
           ) : null}
 
@@ -788,11 +845,17 @@ const BillingPage = () => {
               <tbody>
                 {events.map((ev) => {
                   const amountStr = formatAmount(ev.amount, ev.currency, locale);
+                  const productDetail = billingHistoryProductDetail(ev.product, t);
                   return (
                     <tr key={ev.id}>
                       <td>{formatDate(ev.createdAt, locale)}</td>
                       <td>
-                        <span className="billing-page__event-type-label">{historyEventLabel(ev, t)}</span>
+                        <div className="billing-page__event-cell-stack">
+                          <span className="billing-page__event-type-label">{historyEventLabel(ev, t)}</span>
+                          {productDetail ? (
+                            <span className="billing-page__event-product-detail">{productDetail}</span>
+                          ) : null}
+                        </div>
                       </td>
                       <td>
                         <span className={`billing-page__event-status billing-page__event-status--${ev.status}`}>

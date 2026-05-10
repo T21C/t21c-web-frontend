@@ -6,7 +6,10 @@
     "statusActive": "Active",
     "statusInactive": "None",
     "untilDate": "Until {{date}}",
-    "oneTimeCushion": "Includes about {{duration}} from one-time purchases or gifts after your current paid subscription period.",
+    "subscriptionPaidPeriodRemaining": "About {{duration}} left in your current paid subscription period (through {{date}}).",
+    "giftAccessAfterPaidPeriod": "About {{duration}} of access from gifts or one-time purchases (applied before subscription time on your timeline).",
+    "giftAccessOnly": "About {{duration}} of access remains from gifts or one-time purchases.",
+    "remainingLessThanOneDay": "less than a day",
     "remainingApproxDays_one": "{{count}} day",
     "remainingApproxDays_other": "{{count}} days"
   },
@@ -74,7 +77,7 @@
   },
   "actions": {
     "subscribe": "Subscribe to TUFStellar",
-    "subscribeDescription": "Pick a term and optional auto-renewal, then open checkout in a new tab.",
+    "subscribeDescription": "Pick a term and open checkout in a new tab. Subscription renews automatically; use one-time if you prefer not to renew.",
     "openingCheckout": "Opening checkout…",
     "continueCheckout": "Continue to checkout",
     "subscribing": "Opening checkout…",
@@ -106,6 +109,17 @@
     "activity": {
       "giftReceived": "Gift from {{name}}",
       "giftSent": "Gift to {{name}}"
+    },
+    "product": {
+      "giftMonths_one": "TUFStellar — {{count}} month (gift)",
+      "giftMonths_other": "TUFStellar — {{count}} months (gift)",
+      "subscriptionMonths_one": "TUFStellar — {{count}} month (subscription)",
+      "subscriptionMonths_other": "TUFStellar — {{count}} months (subscription)",
+      "termMonths_one": "TUFStellar — {{count}} month",
+      "termMonths_other": "TUFStellar — {{count}} months",
+      "sku": "SKU: {{sku}}",
+      "planId": "Plan ID: {{planId}}",
+      "itemId": "Item: {{itemId}}"
     },
     "refLabels": {
       "invoice_id": "Invoice ID",
