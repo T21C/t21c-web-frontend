@@ -11,7 +11,7 @@ import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
 import ProfileBannerEditor from "@/components/account/ProfileBannerEditor/ProfileBannerEditor";
 import {
   getEffectiveProfileBannerUrl,
-  isTufStellarSubscriptionActive,
+  isTufStellarAccessActive,
   normalizeTufStellarIconVariant,
 } from "@/utils/profileBanners";
 import { ExternalLinkIcon, ChevronIcon, TUFStellarIcon } from "@/components/common/icons";
@@ -344,7 +344,7 @@ const SettingsPlayerPage = () => {
         </div>
       </section>
 
-      {isTufStellarSubscriptionActive(user) ? (
+      {isTufStellarAccessActive(user) ? (
         <section
           className="settings-sub-page__stellar-variant"
           aria-labelledby="settings-player-stellar-heading"

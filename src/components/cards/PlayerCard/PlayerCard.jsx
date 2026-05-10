@@ -9,7 +9,7 @@ import { UserAvatar } from "@/components/layout";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import { useAuth } from "@/contexts/AuthContext";
 import { permissionFlags, hasFlag } from "@/utils/UserPermissions";
-import { isTufStellarSubscriptionActive, normalizeTufStellarIconVariant } from "@/utils/profileBanners";
+import { isTufStellarAccessActive, normalizeTufStellarIconVariant } from "@/utils/profileBanners";
 import { CreatorIcon } from "@/components/common/icons/CreatorIcon";
 import { TUFStellarIcon } from "@/components/common/icons";
 
@@ -120,7 +120,7 @@ const PlayerCard = ({player, onCreatorAssignmentClick}) => {
           <div className="name-container">
             <p className='player-name'>
               {player.name}
-              {player.user && isTufStellarSubscriptionActive(player.user) && (
+              {player.user && isTufStellarAccessActive(player.user) && (
                 <TUFStellarIcon
                   size={28}
                   className="tuf-stellar-icon"

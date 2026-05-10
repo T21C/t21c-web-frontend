@@ -1,5 +1,5 @@
 // tuf-search: #App #root — application shell
-import { Route, Routes, useSearchParams } from "react-router-dom";
+import { Navigate, Route, Routes, useSearchParams } from "react-router-dom";
 import { Suspense, useEffect } from "react";
 import { Navigation } from "@/components/layout";
 import { PrivateRoute } from "@/components/auth";
@@ -81,6 +81,8 @@ function App() {
             <Route path="creator" element={<Pages.SettingsCreatorPage />} />
             <Route path="billing" element={<Pages.SettingsBillingPage />} />
           </Route>
+          <Route path="tuf-stellar/checkout" element={<PrivateRoute><Navigate to="/tuf-stellar#purchase" replace /></PrivateRoute>} />
+          <Route path="tuf-stellar" element={<PrivateRoute><Pages.TufStellarManagePage /></PrivateRoute>} />
           <Route path="profile/verify-email" element={<Pages.EmailVerificationPage />} />
           
           <Route index path="/" element={

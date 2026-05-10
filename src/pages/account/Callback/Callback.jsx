@@ -145,9 +145,9 @@ const CallbackPage = () => {
         setRedirecting(true);
 
         if (confirmed) {
-          toast.success(t('billing.callback.success', { defaultValue: 'Subscription activated!' }));
+          toast.success(t('billing.callback.success'));
         } else {
-          toast(t('billing.callback.pending', { defaultValue: 'Payment received — finalizing your subscription...' }));
+          toast(t('billing.callback.pending'));
         }
 
         navigateTimerId = window.setTimeout(() => {
@@ -260,7 +260,7 @@ const CallbackPage = () => {
             </>
           ) : (
             <>
-              <h1>{t('billing.callback.title', { defaultValue: 'Finalizing your subscription' })}</h1>
+              <h1>{t('billing.callback.title')}</h1>
               <p className="status-message">
                 {loading
                   ? t('billing.callback.waiting', { defaultValue: 'Confirming your payment with our system...' })

@@ -10,7 +10,7 @@ import { ExternalLinkIcon, HeartIcon, TUFStellarIcon } from "@/components/common
 import { isoToEmoji } from "@/utils";
 import {
   getDefaultProfileBannerUrl,
-  isTufStellarSubscriptionActive,
+  isTufStellarAccessActive,
   normalizeTufStellarIconVariant,
 } from "@/utils/profileBanners";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
@@ -82,7 +82,7 @@ const formatPlayerBadgeText = (rank) => {
 const ProfileHeader = ({
   mode = "player",
   className = "",
-  /** Player doc, creator doc, or auth `user` — CDN + GIF / subscription + `pfp` resolved in one place. */
+  /** Player doc, creator doc, or auth `user` — CDN + GIF / TUFStellar access + `pfp` resolved in one place. */
   avatarSubject = null,
   name = "",
   handle,
@@ -314,7 +314,7 @@ const ProfileHeader = ({
     return transform + " scale(1.5)";
     }, [profileNameTextDimensions]);
 
-  const showStellarBadge = isTufStellarSubscriptionActive(avatarSubject?.user);
+  const showStellarBadge = isTufStellarAccessActive(avatarSubject?.user);
   const resolvedStellarVariant = useMemo(
     () => normalizeTufStellarIconVariant(stellarIconVariant),
     [stellarIconVariant],

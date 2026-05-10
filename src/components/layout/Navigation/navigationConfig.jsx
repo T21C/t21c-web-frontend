@@ -52,6 +52,10 @@ export const createUserMenuItems = (user) => {
       translationKey: "navigation.main.dropdowns.user.myProfile",
     },
     {
+      to: "/tuf-stellar",
+      translationKey: "navigation.main.dropdowns.user.tufStellar",
+    },
+    {
       disabled: true,
       badge: "navigation.main.badges.underConstruction",
       to: "/submission",
@@ -192,7 +196,7 @@ export const createNavigationConfig = (context = {}) => {
         component: "UserMenu",
         props: {
           isActive: (pathname) =>
-            pathname.startsWith("/profile")
+            pathname.startsWith("/profile") || pathname.startsWith("/tuf-stellar")
         },
         // Conditional rendering based on user
         condition: () => !!user,

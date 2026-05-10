@@ -31,6 +31,7 @@ const SettingsAccountPage = lazy(() => import('./account/settings/SettingsAccoun
 const SettingsPlayerPage = lazy(() => import('./account/settings/SettingsPlayerPage'));
 const SettingsCreatorPage = lazy(() => import('./account/settings/SettingsCreatorPage'));
 const SettingsBillingPage = lazy(() => import('./account/settings/BillingPage/BillingPage'));
+const TufStellarManagePage = lazy(() => import('./account/settings/BillingPage/TufStellarManagePage'));
 const ProfileEditRedirect = lazy(() => import('./account/settings/ProfileEditRedirect'));
 const EmailVerificationPage = lazy(() => import('./account/EmailVerificationPage/EmailVerificationPage'));
 const ForgotPasswordPage = lazy(() => import('./account/ForgotPasswordPage/ForgotPasswordPage'));
@@ -92,6 +93,7 @@ export {
     SettingsPlayerPage,
     SettingsCreatorPage,
     SettingsBillingPage,
+    TufStellarManagePage,
     ProfileEditRedirect,
     EmailVerificationPage,
     ForgotPasswordPage,

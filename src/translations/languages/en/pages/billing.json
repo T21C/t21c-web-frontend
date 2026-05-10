@@ -6,56 +6,18 @@
     "statusActive": "Active",
     "statusInactive": "None",
     "untilDate": "Until {{date}}",
-    "subscriptionPaidPeriodRemaining": "About {{duration}} left in your current paid subscription period (through {{date}}).",
-    "giftAccessAfterPaidPeriod": "About {{duration}} of access from gifts or one-time purchases (applied before subscription time on your timeline).",
-    "giftAccessOnly": "About {{duration}} of access remains from gifts or one-time purchases.",
+    "purchaseStackRemaining": "About {{duration}} from your stacked one-time purchases.",
+    "segmentSourceSelf": "Your purchase",
+    "segmentSourceGift": "Gift",
+    "segmentSourceGiftFrom": "Gift from {{name}}",
+    "segmentSourceUnknown": "Purchase",
+    "segmentWindow": "{{start}} → {{end}}",
+    "segmentRemaining": "{{duration}} left in this chunk",
     "remainingLessThanOneDay": "less than a day",
     "remainingApproxDays_one": "{{count}} day",
     "remainingApproxDays_other": "{{count}} days"
   },
-  "subscription": {
-    "title": "Subscription",
-    "productName": "TUFStellar",
-    "planWithTerm": "{{product}} — {{term}}",
-    "status": {
-      "inactive": "None",
-      "active_renewing": "Renewing",
-      "active_cancelling": "Non-renewing",
-      "active_checkout_pending": "Activating"
-    }
-  },
-  "purchase": {
-    "title": "Checkout",
-    "modeGroupAria": "Checkout type"
-  },
-  "status": {
-    "title": "Subscription status",
-    "active": "Active",
-    "inactive": "Not subscribed",
-    "cancelling": "Non-renewing"
-  },
-  "summary": {
-    "inactive": "",
-    "activeRenewing": "",
-    "activeCancelling": "",
-    "checkoutPending": "Finishing activation."
-  },
-  "details": {
-    "title": "Subscription details"
-  },
-  "hints": {
-    "activating": "Almost ready."
-  },
-  "fields": {
-    "plan": "Plan",
-    "renewsOn": "Renews",
-    "nextSubscriptionCharge": "Next subscription charge",
-    "cancelsOn": "Ends",
-    "cancelledAt": "Cancelled"
-  },
   "checkout": {
-    "modeOneTime": "One-time",
-    "modeSubscription": "Subscribe",
     "purchaseAsGift": "Purchase as a gift",
     "searchUsersPlaceholder": "Search users",
     "changeRecipient": "Change",
@@ -72,23 +34,15 @@
     "savePercent": "save {{pct}}%",
     "summaryAria": "{{duration}}, USD {{price}} total",
     "summaryAriaWithSave": "{{duration}}, USD {{price}} total, save {{pct}} percent",
-    "autoRenew": "Auto-renew",
-    "autoRenewHint": "If off, your plan ends after this term unless you subscribe again. You can turn renewals back on later with \"Resume automatic renewal\" while you still have access."
+    "modeGroupAria": "Checkout options",
+    "projectedAccessUntil": "Buying this will extend your TUFStellar until {{date}}."
   },
   "actions": {
-    "subscribe": "Subscribe to TUFStellar",
-    "subscribeDescription": "Pick a term and open checkout in a new tab. Subscription renews automatically; use one-time if you prefer not to renew.",
     "openingCheckout": "Opening checkout…",
     "continueCheckout": "Continue to checkout",
-    "subscribing": "Opening checkout…",
-    "resubscribing": "Resuming…",
-    "resubscribe": "Resume renewal",
-    "resubscribeDescription": "Turns billing back on for your current plan.",
-    "cancel": "Cancel subscription",
-    "cancelDescription": "Access stays until this billing period ends.",
     "retry": "Try again",
     "refreshPage": "Refresh",
-    "noneNeeded": "No actions."
+    "noneNeeded": "Purchases are not available for this account."
   },
   "history": {
     "title": "Activity",
@@ -111,14 +65,11 @@
       "giftSent": "Gift to {{name}}"
     },
     "product": {
-      "giftMonths_one": "TUFStellar — {{count}} month (gift)",
-      "giftMonths_other": "TUFStellar — {{count}} months (gift)",
-      "subscriptionMonths_one": "TUFStellar — {{count}} month (subscription)",
-      "subscriptionMonths_other": "TUFStellar — {{count}} months (subscription)",
+      "purchaseMonths_one": "TUFStellar — {{count}} month (one-time)",
+      "purchaseMonths_other": "TUFStellar — {{count}} months (one-time)",
       "termMonths_one": "TUFStellar — {{count}} month",
       "termMonths_other": "TUFStellar — {{count}} months",
       "sku": "SKU: {{sku}}",
-      "planId": "Plan ID: {{planId}}",
       "itemId": "Item: {{itemId}}"
     },
     "refLabels": {
@@ -126,7 +77,7 @@
       "foreign_invoice": "Merchant / foreign invoice",
       "order_id": "Order ID",
       "transaction_id": "Transaction ID",
-      "subscription_id": "Subscription ID",
+      "subscription_id": "Xsolla subscription reference",
       "checkout_external_id": "Checkout reference"
     },
     "processingStatus": {
@@ -138,52 +89,50 @@
     "events": {
       "payment": "Payment",
       "order_paid": "Order paid",
-      "create_subscription": "Subscription created",
-      "update_subscription": "Subscription updated",
-      "cancel_subscription": "Subscription cancelled",
-      "non_renewal_subscription": "Renewal ended",
+      "create_subscription": "Partner billing notice",
+      "update_subscription": "Partner billing notice",
+      "cancel_subscription": "Partner billing notice",
+      "non_renewal_subscription": "Partner billing notice",
       "refund": "Refund",
       "partial_refund": "Partial refund",
       "order_canceled": "Order cancelled"
     }
   },
-  "cancelConfirm": {
-    "title": "Cancel subscription?",
-    "body": "Access until {{date}}.",
-    "keep": "Keep",
-    "confirm": "Cancel renewal",
-    "confirming": "Cancelling…"
+  "pages": {
+    "billingTitle": "Billing & activity",
+    "tufStellarTitle": "TUFStellar",
+    "tufStellarSubtitle": "Buy stacked access time or gift it to another player.",
+    "checkoutTitle": "Checkout",
+    "checkoutEntryTitle": "Purchase access time",
+    "goToCheckoutSubscribe": "Buy access",
+    "goToCheckoutGift": "Gift access",
+    "backToTufStellar": "Back to TUFStellar",
+    "buyTufStellar": "Buy TUFStellar"
+  },
+  "crossLinks": {
+    "navAria": "Related billing pages",
+    "manageTufStellar": "Manage TUFStellar",
+    "viewBillingHistory": "Billing & activity"
   },
   "toasts": {
     "startingCheckout": "Starting checkout…",
     "checkoutOpened": "Complete payment in the new tab.",
     "checkoutError": "Could not start checkout. Please try again.",
     "checkoutInvalidTerm": "Invalid term. Refresh and try again.",
-    "checkoutBlockedActive": "You already have an active subscription. Refreshed.",
-    "checkoutUseResubscribe": "Use Resume renewal instead of new checkout.",
-    "subscriptionNotReady": "Still activating. Refresh shortly.",
-    "cancelling": "Cancelling…",
-    "cancelRequested": "Renewal cancelled.",
-    "cancelError": "Could not cancel. Try again.",
-    "resubscribing": "Resuming…",
-    "resubscribeSuccess": "Renewals are on again.",
-    "resubscribeError": "Could not resume renewals.",
-    "resubscribeTerminatedUseCheckout": "That subscription was fully canceled. Use Subscribe to start again.",
     "giftRecipientNotFound": "User not found.",
     "giftRecipientBlocked": "That account can't receive this right now.",
     "giftEmailRequired": "Recipient needs an email on file (or yours for self-checkout).",
     "invalidRecipientId": "Invalid recipient.",
     "recipientRequired": "Choose a recipient.",
-    "subscriptionSelfOnly": "Subscribe is for your account only.",
     "billingAccountBlocked": "Billing unavailable for this account.",
     "searchQueryInvalid": "Search text is too long."
   },
   "callback": {
-    "title": "Finalizing your subscription",
+    "title": "Finalizing your purchase",
     "waiting": "Confirming your payment with our system…",
     "done": "All set!",
-    "success": "Subscription activated!",
-    "pending": "Payment received — finalizing your subscription…",
+    "success": "Purchase complete!",
+    "pending": "Payment received — applying your access…",
     "redirectingToBilling": "Redirecting to billing…",
     "errorTitle": "Payment not completed",
     "statusNotDone": "Payment was not completed. You can try again from the billing page.",

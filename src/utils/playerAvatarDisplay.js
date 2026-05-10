@@ -4,16 +4,16 @@
  * Use {@link userAvatarDisplayUrl} for a single `src` string, or {@link userAvatarUrls} with `<UserAvatar {...userAvatarUrls(subject)} />`.
  */
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
-import { isTufStellarSubscriptionActive } from "@/utils/profileBanners";
+import { isTufStellarAccessActive } from "@/utils/profileBanners";
 
 /**
  * Whether the subject may show animated GIF avatar URLs (CDN `*_animated` segments).
  * @param {{ permissionFlags?: string | number | bigint; tufStellarSubscriptionExpiresAt?: string | null } | null | undefined} subjectUser
  */
-export function subscriptionAllowsAnimatedProfileAvatar(subjectUser) {
+export function tufStellarAccessAllowsAnimatedProfileAvatar(subjectUser) {
   if (!subjectUser) return false;
   if (hasFlag(subjectUser, permissionFlags.SUPER_ADMIN)) return true;
-  return isTufStellarSubscriptionActive(subjectUser);
+  return isTufStellarAccessActive(subjectUser);
 }
 
 /**
@@ -30,7 +30,7 @@ function resolveCdnAvatarForIdentity(subjectUser, avatarUrl) {
   const u = typeof avatarUrl === "string" && avatarUrl.trim() ? avatarUrl.trim() : null;
   if (!u) return null;
   if (!subjectUser?.avatarIsGif) return u;
-  if (subscriptionAllowsAnimatedProfileAvatar(subjectUser)) return u;
+  if (tufStellarAccessAllowsAnimatedProfileAvatar(subjectUser)) return u;
   return swapProfileAvatarAnimatedToStatic(u);
 }
 
@@ -56,7 +56,7 @@ function profileIdentity(subject) {
 }
 
 /**
- * Resolved URLs for {@link UserAvatar}: CDN (with GIF / subscription swap) as primary, Discord `pfp` as load fallback when CDN exists.
+ * Resolved URLs for {@link UserAvatar}: CDN (with GIF / access swap) as primary, Discord `pfp` as load fallback when CDN exists.
  * @param {object | null | undefined} subject — auth `user`, ES player/creator doc, `pass.player`, `pack.packOwner`, etc.
  * @returns {{ primaryUrl: string | null, fallbackUrl: string | null }}
  */

@@ -6,56 +6,18 @@
     "statusActive": "이용 중",
     "statusInactive": "없음",
     "untilDate": "{{date}}까지",
-    "subscriptionPaidPeriodRemaining": "현재 유료 구독 기간에 약 {{duration}} 남았습니다({{date}}까지).",
-    "giftAccessAfterPaidPeriod": "선물·일회성 구매로 약 {{duration}} 이용 가능합니다(타임라인에서 구독 시간보다 먼저 적용됩니다).",
-    "giftAccessOnly": "선물·일회성 구매로 약 {{duration}} 동안 이용할 수 있습니다.",
+    "purchaseStackRemaining": "구매한 이용 시간이 겹쳐 적용 중이며, 약 {{duration}} 남았습니다.",
+    "segmentSourceSelf": "직접 구매",
+    "segmentSourceGift": "선물",
+    "segmentSourceGiftFrom": "{{name}}님의 선물",
+    "segmentSourceUnknown": "구매",
+    "segmentWindow": "{{start}} → {{end}}",
+    "segmentRemaining": "이 구간에 약 {{duration}} 남음",
     "remainingLessThanOneDay": "1일 미만",
     "remainingApproxDays_one": "{{count}}일",
     "remainingApproxDays_other": "{{count}}일"
   },
-  "subscription": {
-    "title": "구독",
-    "productName": "TUFStellar",
-    "planWithTerm": "{{product}} — {{term}}",
-    "status": {
-      "inactive": "없음",
-      "active_renewing": "자동 갱신",
-      "active_cancelling": "갱신 안 함",
-      "active_checkout_pending": "활성화 중"
-    }
-  },
-  "purchase": {
-    "title": "결제",
-    "modeGroupAria": "결제 유형"
-  },
-  "status": {
-    "title": "구독 상태",
-    "active": "활성",
-    "inactive": "미구독",
-    "cancelling": "갱신 안 함"
-  },
-  "summary": {
-    "inactive": "",
-    "activeRenewing": "",
-    "activeCancelling": "",
-    "checkoutPending": "활성화 처리 중."
-  },
-  "details": {
-    "title": "구독 상세"
-  },
-  "hints": {
-    "activating": "거의 완료."
-  },
-  "fields": {
-    "plan": "플랜",
-    "renewsOn": "갱신",
-    "nextSubscriptionCharge": "다음 구독 결제",
-    "cancelsOn": "종료",
-    "cancelledAt": "취소"
-  },
   "checkout": {
-    "modeOneTime": "일회성",
-    "modeSubscription": "구독",
     "purchaseAsGift": "선물로 구매",
     "searchUsersPlaceholder": "사용자 검색",
     "changeRecipient": "변경",
@@ -72,23 +34,15 @@
     "savePercent": "{{pct}}% 절약",
     "summaryAria": "{{duration}}, 총 USD {{price}}",
     "summaryAriaWithSave": "{{duration}}, 총 USD {{price}}, {{pct}}% 절약",
-    "autoRenew": "자동 갱신",
-    "autoRenewHint": "끄면 이번 기간 후 이용이 종료되며, 다시 구독해야 합니다. 이용 중에는 \"자동 갱신 다시 켜기\"로 나중에 다시 켤 수 있습니다."
+    "modeGroupAria": "결제 옵션",
+    "projectedAccessUntil": "구매 시 TUFStellar 이용이 {{date}}까지 연장됩니다."
   },
   "actions": {
-    "subscribe": "TUFStellar 구독하기",
-    "subscribeDescription": "기간을 선택한 뒤 새 탭에서 결제합니다. 구독은 기본적으로 자동 갱신되며, 갱신 없이 원하면 일회성을 선택하세요.",
     "openingCheckout": "결제 페이지를 여는 중…",
     "continueCheckout": "결제 계속",
-    "subscribing": "결제 페이지를 여는 중…",
-    "resubscribing": "복구 중…",
-    "resubscribe": "갱신 재개",
-    "resubscribeDescription": "현재 구독에 자동 갱신을 다시 켭니다.",
-    "cancel": "구독 취소",
-    "cancelDescription": "현재 결제 주기가 끝날 때까지 혜택은 유지됩니다.",
     "retry": "다시 시도",
     "refreshPage": "새로 고침",
-    "noneNeeded": "조치 없음."
+    "noneNeeded": "이 계정에서는 구매할 수 없습니다."
   },
   "history": {
     "title": "내역",
@@ -111,14 +65,11 @@
       "giftSent": "{{name}}님에게 선물"
     },
     "product": {
-      "giftMonths_one": "TUFStellar — {{count}}개월 (선물)",
-      "giftMonths_other": "TUFStellar — {{count}}개월 (선물)",
-      "subscriptionMonths_one": "TUFStellar — {{count}}개월 (구독)",
-      "subscriptionMonths_other": "TUFStellar — {{count}}개월 (구독)",
+      "purchaseMonths_one": "TUFStellar — {{count}}개월 (일회성)",
+      "purchaseMonths_other": "TUFStellar — {{count}}개월 (일회성)",
       "termMonths_one": "TUFStellar — {{count}}개월",
       "termMonths_other": "TUFStellar — {{count}}개월",
       "sku": "SKU: {{sku}}",
-      "planId": "플랜 ID: {{planId}}",
       "itemId": "항목: {{itemId}}"
     },
     "refLabels": {
@@ -126,7 +77,7 @@
       "foreign_invoice": "외부 인보이스",
       "order_id": "주문 ID",
       "transaction_id": "거래 ID",
-      "subscription_id": "구독 ID",
+      "subscription_id": "Xsolla 구독 참조",
       "checkout_external_id": "결제 참조"
     },
     "processingStatus": {
@@ -138,52 +89,50 @@
     "events": {
       "payment": "결제",
       "order_paid": "주문 결제",
-      "create_subscription": "구독 생성",
-      "update_subscription": "구독 변경",
-      "cancel_subscription": "구독 취소",
-      "non_renewal_subscription": "갱신 종료",
+      "create_subscription": "파트너 결제 알림",
+      "update_subscription": "파트너 결제 알림",
+      "cancel_subscription": "파트너 결제 알림",
+      "non_renewal_subscription": "파트너 결제 알림",
       "refund": "환불",
       "partial_refund": "부분 환불",
       "order_canceled": "주문 취소"
     }
   },
-  "cancelConfirm": {
-    "title": "구독을 취소할까요?",
-    "body": "{{date}}까지 이용 가능.",
-    "keep": "유지",
-    "confirm": "갱신 취소",
-    "confirming": "처리 중…"
+  "pages": {
+    "billingTitle": "결제 및 활동",
+    "tufStellarTitle": "TUFStellar",
+    "tufStellarSubtitle": "겹쳐 적용되는 이용 시간을 구매하거나 다른 플레이어에게 선물하세요.",
+    "checkoutTitle": "결제",
+    "checkoutEntryTitle": "이용 기간 구매",
+    "goToCheckoutSubscribe": "이용 구매",
+    "goToCheckoutGift": "선물로 제공",
+    "backToTufStellar": "TUFStellar로 돌아가기",
+    "buyTufStellar": "TUFStellar 구매"
+  },
+  "crossLinks": {
+    "navAria": "관련 결제 페이지",
+    "manageTufStellar": "TUFStellar 관리",
+    "viewBillingHistory": "결제 및 활동"
   },
   "toasts": {
     "startingCheckout": "결제 페이지를 여는 중…",
     "checkoutOpened": "새 탭에서 결제를 완료하세요.",
     "checkoutError": "결제를 시작할 수 없습니다.",
     "checkoutInvalidTerm": "기간이 올바르지 않습니다.",
-    "checkoutBlockedActive": "이미 활성 구독이 있습니다.",
-    "checkoutUseResubscribe": "새 결제 대신 갱신 재개를 이용하세요.",
-    "subscriptionNotReady": "아직 활성화 중입니다.",
-    "cancelling": "취소 중…",
-    "cancelRequested": "갱신이 취소되었습니다.",
-    "cancelError": "취소에 실패했습니다.",
-    "resubscribing": "복구 중…",
-    "resubscribeSuccess": "자동 갱신이 다시 켜졌습니다.",
-    "resubscribeError": "갱신을 재개할 수 없습니다.",
-    "resubscribeTerminatedUseCheckout": "구독이 완전히 취소되었습니다. 다시 구독해 주세요.",
     "giftRecipientNotFound": "계정을 찾을 수 없습니다.",
     "giftRecipientBlocked": "받을 수 없는 계정입니다.",
     "giftEmailRequired": "이메일이 필요합니다.",
     "invalidRecipientId": "대상이 올바르지 않습니다.",
     "recipientRequired": "받는 사람을 선택하세요.",
-    "subscriptionSelfOnly": "구독 결제는 본인만 가능합니다.",
     "billingAccountBlocked": "계정 상태로 이용할 수 없습니다.",
     "searchQueryInvalid": "검색어가 너무 깁니다."
   },
   "callback": {
-    "title": "구독을 마무리하는 중",
+    "title": "구매를 마무리하는 중",
     "waiting": "결제를 확인하는 중…",
     "done": "완료되었습니다.",
-    "success": "구독이 활성화되었습니다!",
-    "pending": "결제가 접수되었습니다. 구독을 마무리하는 중…",
+    "success": "구매가 완료되었습니다!",
+    "pending": "결제가 접수되었습니다. 이용을 적용하는 중…",
     "redirectingToBilling": "결제 페이지로 이동 중…",
     "errorTitle": "결제가 완료되지 않았습니다",
     "statusNotDone": "결제가 완료되지 않았습니다. 결제 페이지에서 다시 시도해 주세요.",

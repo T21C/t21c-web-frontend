@@ -14,7 +14,7 @@ import {
   curationCountsRecordFromLeaderboardHit,
   displayCurationTypeIdsFromHit,
 } from "@/utils/creatorCurationCountsFromSource";
-import { isTufStellarSubscriptionActive, normalizeTufStellarIconVariant } from "@/utils/profileBanners";
+import { isTufStellarAccessActive, normalizeTufStellarIconVariant } from "@/utils/profileBanners";
 import { TUFStellarIcon } from "@/components/common/icons";
 
 const SECONDARY_KEYS = ["totalChartClears", "totalChartLikes"];
@@ -74,7 +74,7 @@ const CreatorCard = ({ creator }) => {
           </p>
           <div className="creator-card__name-row">
             <span className="creator-card__name">{creator.name}</span>
-            {creator.user && isTufStellarSubscriptionActive(creator.user) && (
+            {creator.user && isTufStellarAccessActive(creator.user) && (
               <TUFStellarIcon
                 size={24}
                 className="creator-card__tuf-stellar-icon"

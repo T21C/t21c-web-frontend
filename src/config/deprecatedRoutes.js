@@ -24,6 +24,15 @@ export const DEPRECATED_ROUTES = [
     redirect: (location) => `/rating${location.hash || ""}`,
   },
 
+  {
+    path: "settings/tuf-stellar/checkout",
+    redirect: () => "/tuf-stellar#purchase",
+  },
+  {
+    path: "settings/tuf-stellar",
+    redirect: () => "/tuf-stellar",
+  },
+
   // Add more deprecated routes here, e.g.:
   // {
   //   path: "oldpass",

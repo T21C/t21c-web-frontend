@@ -6,56 +6,18 @@
     "statusActive": "有效",
     "statusInactive": "无",
     "untilDate": "至 {{date}}",
-    "subscriptionPaidPeriodRemaining": "当前付费订阅周期内剩余约 {{duration}}（至 {{date}}）。",
-    "giftAccessAfterPaidPeriod": "约有 {{duration}} 的访问来自礼物或一次性购买（在时间线上先于订阅时段使用）。",
-    "giftAccessOnly": "礼物或一次性购买还提供约 {{duration}} 的访问时间。",
+    "purchaseStackRemaining": "当前已购时长叠加中，约剩 {{duration}}。",
+    "segmentSourceSelf": "您购买的时长",
+    "segmentSourceGift": "礼物",
+    "segmentSourceGiftFrom": "{{name}} 赠送",
+    "segmentSourceUnknown": "购买",
+    "segmentWindow": "{{start}} → {{end}}",
+    "segmentRemaining": "该段剩余约 {{duration}}",
     "remainingLessThanOneDay": "不足一天",
     "remainingApproxDays_one": "{{count}} 天",
     "remainingApproxDays_other": "{{count}} 天"
   },
-  "subscription": {
-    "title": "订阅",
-    "productName": "TUFStellar",
-    "planWithTerm": "{{product}} — {{term}}",
-    "status": {
-      "inactive": "无",
-      "active_renewing": "自动续订",
-      "active_cancelling": "不续订",
-      "active_checkout_pending": "激活中"
-    }
-  },
-  "purchase": {
-    "title": "结账",
-    "modeGroupAria": "结账类型"
-  },
-  "status": {
-    "title": "订阅状态",
-    "active": "已激活",
-    "inactive": "未订阅",
-    "cancelling": "不续订"
-  },
-  "summary": {
-    "inactive": "",
-    "activeRenewing": "",
-    "activeCancelling": "",
-    "checkoutPending": "正在完成激活。"
-  },
-  "details": {
-    "title": "订阅详情"
-  },
-  "hints": {
-    "activating": "即将完成。"
-  },
-  "fields": {
-    "plan": "方案",
-    "renewsOn": "续订",
-    "nextSubscriptionCharge": "下次订阅扣款",
-    "cancelsOn": "截止",
-    "cancelledAt": "取消"
-  },
   "checkout": {
-    "modeOneTime": "一次性",
-    "modeSubscription": "订阅",
     "purchaseAsGift": "作为礼物购买",
     "searchUsersPlaceholder": "搜索用户",
     "changeRecipient": "更改",
@@ -72,23 +34,15 @@
     "savePercent": "省 {{pct}}%",
     "summaryAria": "{{duration}}，合计 USD {{price}}",
     "summaryAriaWithSave": "{{duration}}，合计 USD {{price}}，省 {{pct}}%",
-    "autoRenew": "自动续订",
-    "autoRenewHint": "关闭则本期结束后权益结束，需再次订阅。在仍有访问权限期间，可随时使用「恢复自动续订」重新开启。"
+    "modeGroupAria": "结账选项",
+    "projectedAccessUntil": "购买后，您的 TUFStellar 将延长至 {{date}}。"
   },
   "actions": {
-    "subscribe": "订阅 TUFStellar",
-    "subscribeDescription": "选择时长并在新标签页打开收银台。订阅默认自动续订；不想续订请选择一次性。",
     "openingCheckout": "正在打开收银台…",
     "continueCheckout": "前往结账",
-    "subscribing": "正在打开收银台…",
-    "resubscribing": "恢复中…",
-    "resubscribe": "恢复续订",
-    "resubscribeDescription": "为当前订阅重新开启自动续订。",
-    "cancel": "取消订阅",
-    "cancelDescription": "当前付费周期结束前仍可正常使用。",
     "retry": "重试",
     "refreshPage": "刷新",
-    "noneNeeded": "无需操作。"
+    "noneNeeded": "当前账号无法购买。"
   },
   "history": {
     "title": "记录",
@@ -111,14 +65,11 @@
       "giftSent": "赠予 {{name}} 的礼物"
     },
     "product": {
-      "giftMonths_one": "TUFStellar — {{count}} 个月（礼物）",
-      "giftMonths_other": "TUFStellar — {{count}} 个月（礼物）",
-      "subscriptionMonths_one": "TUFStellar — {{count}} 个月（订阅）",
-      "subscriptionMonths_other": "TUFStellar — {{count}} 个月（订阅）",
+      "purchaseMonths_one": "TUFStellar — {{count}} 个月（一次性）",
+      "purchaseMonths_other": "TUFStellar — {{count}} 个月（一次性）",
       "termMonths_one": "TUFStellar — {{count}} 个月",
       "termMonths_other": "TUFStellar — {{count}} 个月",
       "sku": "SKU：{{sku}}",
-      "planId": "方案 ID：{{planId}}",
       "itemId": "条目：{{itemId}}"
     },
     "refLabels": {
@@ -126,7 +77,7 @@
       "foreign_invoice": "外部发票",
       "order_id": "订单 ID",
       "transaction_id": "交易 ID",
-      "subscription_id": "订阅 ID",
+      "subscription_id": "Xsolla 订阅参考编号",
       "checkout_external_id": "结账参考"
     },
     "processingStatus": {
@@ -138,52 +89,50 @@
     "events": {
       "payment": "付款",
       "order_paid": "订单已付",
-      "create_subscription": "订阅已创建",
-      "update_subscription": "订阅已更新",
-      "cancel_subscription": "订阅已取消",
-      "non_renewal_subscription": "续订已终止",
+      "create_subscription": "合作方账单通知",
+      "update_subscription": "合作方账单通知",
+      "cancel_subscription": "合作方账单通知",
+      "non_renewal_subscription": "合作方账单通知",
       "refund": "退款",
       "partial_refund": "部分退款",
       "order_canceled": "订单已取消"
     }
   },
-  "cancelConfirm": {
-    "title": "取消订阅？",
-    "body": "权益至 {{date}}。",
-    "keep": "保留",
-    "confirm": "停止续订",
-    "confirming": "处理中…"
+  "pages": {
+    "billingTitle": "账单与动态",
+    "tufStellarTitle": "TUFStellar",
+    "tufStellarSubtitle": "购买可叠加的访问时长，或赠送给其他玩家。",
+    "checkoutTitle": "结账",
+    "checkoutEntryTitle": "购买访问时长",
+    "goToCheckoutSubscribe": "购买访问",
+    "goToCheckoutGift": "赠送访问",
+    "backToTufStellar": "返回 TUFStellar",
+    "buyTufStellar": "购买 TUFStellar"
+  },
+  "crossLinks": {
+    "navAria": "相关账单页面",
+    "manageTufStellar": "管理 TUFStellar",
+    "viewBillingHistory": "账单与动态"
   },
   "toasts": {
     "startingCheckout": "正在启动收银台…",
     "checkoutOpened": "请在新标签页完成付款。",
     "checkoutError": "无法启动收银台。",
     "checkoutInvalidTerm": "时长无效。",
-    "checkoutBlockedActive": "已有有效订阅。",
-    "checkoutUseResubscribe": "请使用「恢复续订」。",
-    "subscriptionNotReady": "仍在激活中。",
-    "cancelling": "正在取消…",
-    "cancelRequested": "已停止续订。",
-    "cancelError": "取消失败。",
-    "resubscribing": "恢复中…",
-    "resubscribeSuccess": "已重新开启自动续订。",
-    "resubscribeError": "无法恢复续订。",
-    "resubscribeTerminatedUseCheckout": "该订阅已彻底取消，请重新订阅。",
     "giftRecipientNotFound": "未找到用户。",
     "giftRecipientBlocked": "该账号无法接受。",
     "giftEmailRequired": "需要邮箱。",
     "invalidRecipientId": "收款人不正确。",
     "recipientRequired": "请先选择收款人。",
-    "subscriptionSelfOnly": "订阅仅限本人账号。",
     "billingAccountBlocked": "当前无法使用账单功能。",
     "searchQueryInvalid": "搜索内容过长。"
   },
   "callback": {
-    "title": "正在完成订阅",
+    "title": "正在完成购买",
     "waiting": "正在与系统确认付款…",
     "done": "全部完成！",
-    "success": "订阅已激活！",
-    "pending": "付款已接收，正在完成订阅…",
+    "success": "购买已完成！",
+    "pending": "付款已接收，正在开通访问…",
     "redirectingToBilling": "正在前往账单页面…",
     "errorTitle": "付款未完成",
     "statusNotDone": "付款未完成。你可以在账单页面重试。",

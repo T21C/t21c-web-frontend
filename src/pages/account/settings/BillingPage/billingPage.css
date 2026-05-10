@@ -39,6 +39,84 @@
 
 .billing-page .billing-page__subtitle {
   margin: 0;
+  color: var(--color-white-t70);
+}
+
+.billing-page .billing-page__cross-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.billing-page .billing-page__cross-links--toolbar {
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.billing-page .billing-page__cross-links-buy {
+  flex-shrink: 0;
+}
+
+.billing-page .billing-page__checkout-plan-callout {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--btn-primary) 14%, var(--color-black));
+  box-shadow: 0 1px 0 var(--color-white-t10);
+}
+
+.billing-page .billing-page__checkout-plan-callout-text {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--color-white-t85);
+}
+
+.billing-page .billing-page__checkout-current-plan {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.65rem;
+}
+
+.billing-page .billing-page__checkout-current-plan-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--color-white-t55);
+}
+
+.billing-page .billing-page__checkout-current-plan-value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-white);
+}
+
+.billing-page .billing-page__manage-checkout-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.billing-page .billing-page__header--checkout .billing-page__header-text {
+  gap: 0.5rem;
+}
+
+.billing-page .billing-page__back-link {
+  font-size: 0.9rem;
+  color: var(--color-white-t80);
+  text-decoration: none;
+  width: fit-content;
+}
+
+.billing-page .billing-page__back-link:hover {
+  text-decoration: underline;
 }
 
 .billing-page .billing-page__card {
@@ -91,6 +169,53 @@
   margin: 0;
   font-size: 0.88rem;
   line-height: 1.45;
+  color: var(--color-gray-2);
+}
+
+.billing-page .billing-page__access-segments {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.billing-page .billing-page__access-segment {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-white-t10);
+  background: var(--color-black-t10);
+}
+
+.billing-page .billing-page__access-segment-main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.75rem;
+}
+
+.billing-page .billing-page__access-segment-source {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-white);
+}
+
+.billing-page .billing-page__access-segment-term {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--color-white-t75);
+}
+
+.billing-page .billing-page__access-segment-dates {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.8rem;
+  line-height: 1.35;
   color: var(--color-gray-2);
 }
 
@@ -447,8 +572,7 @@
 
 .billing-page .billing-page__subscription-actions .billing-page__btn--danger {
   background: #c6414199;
-  font-size: 0.8rem;
-  opacity: 0.8;
+  opacity: 1;
   min-height: 1.75rem;
 }
 
@@ -824,6 +948,16 @@
   color: var(--color-gray-2);
 }
 
+.billing-page .billing-page__term-summary-preview {
+  margin: 0.35rem 0 0;
+  padding-top: 0.45rem;
+  border-top: 1px solid var(--color-white-t10);
+  font-size: 0.82rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--color-white-t85);
+}
+
 .billing-page .billing-page__gift-option {
   display: flex;
   flex-direction: column;
@@ -960,26 +1094,6 @@
   outline: 2px solid var(--btn-primary-light-hover);
   outline-offset: 2px;
   border-color: var(--color-white-t20);
-}
-
-.billing-page .billing-page__mode-toggle {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.billing-page .billing-page__mode-btn {
-  flex: 1 1 10rem;
-}
-
-.billing-page .billing-page__mode-btn--selected {
-  border-color: var(--btn-primary-light-hover);
-  background: var(--btn-primary);
-  color: var(--color-white);
-}
-
-.billing-page .billing-page__mode-btn--selected:hover:not(:disabled) {
-  background: var(--btn-primary-hover);
 }
 
 .billing-page .billing-page__recipient-input {

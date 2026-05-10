@@ -45,6 +45,7 @@
       },
       "user": {
         "myProfile": "个人资料",
+        "tufStellar": "TUFStellar",
         "mySubmissions": "提交记录",
         "notifications": "通知",
         "settings": "设置",

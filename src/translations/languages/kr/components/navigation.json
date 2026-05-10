@@ -45,6 +45,7 @@
       },
       "user": {
         "myProfile": "내 프로필",
+        "tufStellar": "TUFStellar",
         "mySubmissions": "내 제출물",
         "notifications": "알림",
         "settings": "설정",
