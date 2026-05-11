@@ -8,6 +8,7 @@ import { ScrollToTopOnNavigate } from "@/components/routing/ScrollToTopOnNavigat
 import { DEPRECATED_ROUTES } from "@/config/deprecatedRoutes";
 import * as Pages from '@/pages/index';
 import { Toaster } from "react-hot-toast";
+import { TufStellarRoute } from "@/components/routing/TufStellarRoute";
 
 function App() {
   const [searchParams] = useSearchParams();
@@ -81,8 +82,26 @@ function App() {
             <Route path="creator" element={<Pages.SettingsCreatorPage />} />
             <Route path="billing" element={<Pages.SettingsBillingPage />} />
           </Route>
-          <Route path="tuf-stellar/checkout" element={<PrivateRoute><Navigate to="/tuf-stellar#purchase" replace /></PrivateRoute>} />
-          <Route path="tuf-stellar" element={<PrivateRoute><Pages.TufStellarManagePage /></PrivateRoute>} />
+          <Route
+            path="tuf-stellar/checkout"
+            element={(
+              <PrivateRoute>
+                <TufStellarRoute>
+                  <Navigate to="/tuf-stellar#purchase" replace />
+                </TufStellarRoute>
+              </PrivateRoute>
+            )}
+          />
+          <Route
+            path="tuf-stellar"
+            element={(
+              <PrivateRoute>
+                <TufStellarRoute>
+                  <Pages.TufStellarManagePage />
+                </TufStellarRoute>
+              </PrivateRoute>
+            )}
+          />
           <Route path="profile/verify-email" element={<Pages.EmailVerificationPage />} />
           
           <Route index path="/" element={

@@ -1,6 +1,8 @@
 // tuf-search: #BillingPage #billingPage #account #settings #billing
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { isTufStellarEnabledForUser } from "@/utils/tufStellarFeature";
 import { BillingAccessSection } from "./BillingAccessSection";
 import { BillingHistorySection } from "./BillingHistorySection";
 import { useBillingData } from "./useBillingData";
@@ -8,6 +10,7 @@ import "./billingPage.css";
 
 const BillingPage = () => {
   const { t } = useTranslation(["pages", "common"]);
+  const { user } = useAuth();
 
   const billing = useBillingData({ loadEvents: true });
 
@@ -55,11 +58,13 @@ const BillingPage = () => {
         </div>
       ) : null}
 
-      <nav className="billing-page__cross-links" aria-label={t("billing.crossLinks.navAria")}>
-        <Link className="billing-page__btn billing-page__btn--ghost billing-page__cross-link" to="/tuf-stellar">
-          {t("billing.crossLinks.manageTufStellar")}
-        </Link>
-      </nav>
+      {isTufStellarEnabledForUser(user) ? (
+        <nav className="billing-page__cross-links" aria-label={t("billing.crossLinks.navAria")}>
+          <Link className="billing-page__btn billing-page__btn--ghost billing-page__cross-link" to="/tuf-stellar">
+            {t("billing.crossLinks.manageTufStellar")}
+          </Link>
+        </nav>
+      ) : null}
 
       <BillingAccessSection
         accessPillKey={accessPillKey}

@@ -51,10 +51,14 @@ export const createUserMenuItems = (user) => {
       to: "/profile",
       translationKey: "navigation.main.dropdowns.user.myProfile",
     },
-    {
-      to: "/tuf-stellar",
-      translationKey: "navigation.main.dropdowns.user.tufStellar",
-    },
+    ...(user.tufStellarEnabled
+      ? [
+          {
+            to: "/tuf-stellar",
+            translationKey: "navigation.main.dropdowns.user.tufStellar",
+          },
+        ]
+      : []),
     {
       disabled: true,
       badge: "navigation.main.badges.underConstruction",

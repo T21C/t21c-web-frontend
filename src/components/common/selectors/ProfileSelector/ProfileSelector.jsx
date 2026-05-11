@@ -5,6 +5,8 @@ import api from '@/utils/api';
 import './profileselector.css';
 import { useTranslation } from 'react-i18next';
 import { userAvatarDisplayUrl } from '@/utils/playerAvatarDisplay';
+import { useAuth } from '@/contexts/AuthContext';
+import { isTufStellarEnabledForUser } from '@/utils/tufStellarFeature';
 
 export const ProfileSelector = ({
   type, // 'player', 'charter', 'vfx', 'team', 'user'
@@ -16,6 +18,7 @@ export const ProfileSelector = ({
   disabled
 }) => {
   const { t } = useTranslation('components');
+  const { user } = useAuth();
   const selectorRef = useRef(null);
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -71,6 +74,11 @@ export const ProfileSelector = ({
     const searchProfiles = async () => {
       const trimmed = searchTerm.trim();
       if (type === 'user') {
+        if (!isTufStellarEnabledForUser(user)) {
+          setProfiles([]);
+          setLoading(false);
+          return;
+        }
         if (!trimmed || trimmed.length < 2) {
           setProfiles([]);
           return;
@@ -119,7 +127,7 @@ export const ProfileSelector = ({
 
     const timeoutId = setTimeout(searchProfiles, 300);
     return () => clearTimeout(timeoutId);
-  }, [searchTerm, type]);
+  }, [searchTerm, type, user]);
 
   // Handle profile selection
   const handleSelect = (profile) => {

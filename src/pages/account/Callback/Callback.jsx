@@ -127,7 +127,11 @@ const CallbackPage = () => {
               confirmed = true;
               break;
             }
-          } catch {
+          } catch (e) {
+            const code = e?.response?.data?.error?.code;
+            if (e?.response?.status === 404 && code === 'TUF_STELLAR_DISABLED') {
+              break;
+            }
             /* network blip; keep polling */
           }
           await wait(XSOLLA_POLL_INTERVAL_MS);

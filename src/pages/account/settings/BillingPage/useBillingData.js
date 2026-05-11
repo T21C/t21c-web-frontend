@@ -4,13 +4,14 @@ import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import api from "@/utils/api";
+import { isTufStellarEnabledForUser } from "@/utils/tufStellarFeature";
 import { computePurchasePreviewProjectedExpiresIso, TUF_STELLAR_TERM_OPTIONS } from "./billingUtils";
 
 /** @param {{ loadEvents?: boolean, enableTermPreview?: boolean }} options */
 export function useBillingData(options = {}) {
   const { loadEvents = false, enableTermPreview = false } = options;
   const { t } = useTranslation(["pages", "common"]);
-  const { fetchUser } = useAuth();
+  const { fetchUser, user } = useAuth();
 
   const [billingState, setBillingState] = useState(null);
   const [events, setEvents] = useState([]);
@@ -26,6 +27,14 @@ export function useBillingData(options = {}) {
     const cacheBust = { _t: Date.now() };
     const meParams = forceRefresh ? { ...cacheBust, refresh: 1 } : cacheBust;
     const eventsParams = forceRefresh ? { limit: 20, ...cacheBust, refresh: 1 } : { limit: 20, ...cacheBust };
+
+    if (!isTufStellarEnabledForUser(user)) {
+      setLoading(false);
+      setErrorState(false);
+      setBillingState(null);
+      setEvents([]);
+      return;
+    }
 
     setLoading(true);
     setErrorState(false);
@@ -58,7 +67,7 @@ export function useBillingData(options = {}) {
     } finally {
       setLoading(false);
     }
-  }, [loadEvents]);
+  }, [loadEvents, user, fetchUser]);
 
   useEffect(() => {
     fetchAll();
@@ -171,6 +180,10 @@ export function useBillingData(options = {}) {
 
   const handleCheckout = useCallback(async () => {
     if (subscribing) return;
+    if (!isTufStellarEnabledForUser(user)) {
+      toast.error(t("billing.toasts.checkoutError"));
+      return;
+    }
     if (purchaseAsGift && !giftRecipient?.userId) {
       toast.error(t("billing.toasts.recipientRequired"));
       return;
@@ -194,7 +207,7 @@ export function useBillingData(options = {}) {
     } finally {
       setSubscribing(false);
     }
-  }, [subscribing, purchaseAsGift, giftRecipient, checkoutTermIndex, t, billingToastForCode]);
+  }, [subscribing, user, purchaseAsGift, giftRecipient, checkoutTermIndex, t, billingToastForCode]);
 
   const showIdleNote = billingState && !canPurchaseOneTime;
 
