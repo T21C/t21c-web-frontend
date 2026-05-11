@@ -1,5 +1,5 @@
 // tuf-search: #LevelUploadManagementPopup #levelUploadManagementPopup #popups #levels #levelUploadManagement
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import api from '@/utils/api';
 import './leveluploadmanagementpopup.css';
 import { useTranslation } from 'react-i18next';
@@ -70,10 +70,17 @@ const LevelUploadManagementPopup = ({
     return false;
   };
 
-  const fetchLevelFiles = async () => {
-    if (formData.dlLink && formData.dlLink !== 'removed' && isCdnUrl(formData.dlLink)) {
+  /**
+   * Load LEVELZIP file list from the search API (proxies CDN metadata).
+   * @param {string} [dlLinkOverride] — When set (e.g. right after upload), use this URL instead of
+   *   `formData.dlLink`. Required because `setFormData` does not update the closure until the next
+   *   render; calling without an override immediately after upload would still request the old file id.
+   */
+  const fetchLevelFiles = useCallback(async (dlLinkOverride) => {
+    const dlLink = dlLinkOverride ?? formData.dlLink;
+    if (dlLink && dlLink !== 'removed' && isCdnUrl(dlLink)) {
       try {
-        const fileId = formData.dlLink.split('/').pop();
+        const fileId = dlLink.split('/').pop();
         const response = await api.get(`${import.meta.env.VITE_LEVELS}/cdn-zip-metadata/${fileId}`);
         const data = response.data;
         
@@ -116,23 +123,29 @@ const LevelUploadManagementPopup = ({
         setError(t('levelUploadManagement.errors.fetchFailed'));
       }
     }
-  };
+  }, [formData.dlLink, t]);
 
   useEffect(() => {
-    fetchLevelFiles();
-  }, [formData]);
+    void fetchLevelFiles();
+  }, [fetchLevelFiles]);
 
-  const refreshLevelMetadata = async () => {
+  const refreshLevelMetadata = async (dlLinkHint) => {
     try {
       const response = await api.get(`${import.meta.env.VITE_LEVELS}/${level.id}`);
       const fullLevel = response?.data?.level ?? response?.data?.data?.level ?? response?.data ?? null;
       if (!fullLevel) return;
 
+      const hint =
+        dlLinkHint != null && dlLinkHint !== '' && dlLinkHint !== 'removed' && isCdnUrl(String(dlLinkHint))
+          ? String(dlLinkHint)
+          : null;
+
       // Keep local edit form in sync with server-derived metadata changes (tilecount, songObject, etc.)
       setFormData((prev) => ({
         ...prev,
-        // Only patch fields that exist in this popup's editable form state.
-        dlLink: fullLevel.dlLink ?? prev.dlLink,
+        // After upload, GET /levels/:id can briefly return a cached old dlLink; prefer the link we
+        // just received from the upload job so we do not regress to a removed / stale file id.
+        dlLink: hint ?? fullLevel.dlLink ?? prev.dlLink,
         videoLink: fullLevel.videoLink ?? prev.videoLink,
         workshopLink: fullLevel.workshopLink ?? prev.workshopLink,
         songId: fullLevel.songId ?? prev.songId,
@@ -142,7 +155,7 @@ const LevelUploadManagementPopup = ({
 
       // Propagate to parent (EditLevelPopup passes onUpdate here) so metadata updates without refresh.
       if (setLevel) {
-        setLevel({ level: fullLevel });
+        setLevel({ level: hint ? { ...fullLevel, dlLink: hint } : fullLevel });
       }
     } catch (error) {
       // Non-fatal: upload/select already succeeded; this is just metadata refresh.
@@ -196,9 +209,9 @@ const LevelUploadManagementPopup = ({
     if (closeUrlPanel) {
       setUrlImportPanelOpen(false);
     }
-    fetchLevelFiles();
+    void fetchLevelFiles(newDlLink);
     // Ensure server-derived metadata (e.g. tilecount) is updated in UI without refresh.
-    void refreshLevelMetadata();
+    void refreshLevelMetadata(newDlLink);
   };
 
   const handleZipUpload = async (event) => {
