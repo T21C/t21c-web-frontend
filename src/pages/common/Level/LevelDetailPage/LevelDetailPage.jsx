@@ -708,6 +708,8 @@ const LevelDetailPage = ({ mockData = null }) => {
   const toRateHeaderCornerSlotRef = useRef(null);
   const rerateHistoryAnchorRef = useRef(null);
   const tagsAnchorRef = useRef(null);
+  /** Tracks last seen CDN zip identity so we can refetch `/cdnData` after upload/import (`dlLink` / `fileId` change). */
+  const cdnZipIdentityRef = useRef(null);
 
   const closeWeeklyAppearanceDropdown = useCallback(() => setShowWeeklyAppearanceDropdown(false), []);
   const closeToRatePendingDropdown = useCallback(() => setShowToRatePendingDropdown(false), []);
@@ -1166,33 +1168,59 @@ const LevelDetailPage = ({ mockData = null }) => {
   }, [effectiveId, user?.id, mockData]);
 
   /** CDN zip metadata for download popup (downloadCount comes from level row in GET /levels/:id). */
-  const fetchCdnDownloadExtras = useCallback(async () => {
-    if (!effectiveId || mockData) {
-      return;
-    }
+  const fetchCdnDownloadExtras = useCallback(
+    async (opts = {}) => {
+      const { retryIfBothNull = false } = opts;
+      if (!effectiveId || mockData) {
+        return;
+      }
 
-    try {
-      const response = await api.get(`${import.meta.env.VITE_LEVELS}/${effectiveId}/cdnData`);
-      setRes(prevRes => {
-        if (!prevRes) return prevRes;
-        return {
-          ...prevRes,
-          metadata: response.data.metadata ?? prevRes.metadata ?? null,
-          transformOptions: response.data.transformOptions ?? prevRes.transformOptions ?? null
-        };
-      });
-    } catch (error) {
-      console.error("Error fetching CDN download extras:", error);
-      setRes(prevRes => {
-        if (!prevRes) return prevRes;
-        return {
-          ...prevRes,
-          metadata: prevRes.metadata ?? null,
-          transformOptions: prevRes.transformOptions ?? null
-        };
-      });
-    }
-  }, [effectiveId, mockData]);
+      const maxAttempts = retryIfBothNull ? 8 : 1;
+      const delayForAttempt = (i) => Math.min(2500, 350 * (i + 1));
+
+      for (let attempt = 0; attempt < maxAttempts; attempt++) {
+        try {
+          const response = await api.get(`${import.meta.env.VITE_LEVELS}/${effectiveId}/cdnData`);
+          const rawMeta = response.data.metadata;
+          const rawOpts = response.data.transformOptions;
+          const metadata = rawMeta ?? null;
+          const transformOptions = rawOpts ?? null;
+          const bothNull = metadata === null && transformOptions === null;
+
+          if (bothNull && retryIfBothNull && attempt < maxAttempts - 1) {
+            await new Promise((r) => setTimeout(r, delayForAttempt(attempt)));
+            continue;
+          }
+
+          setRes((prevRes) => {
+            if (!prevRes) return prevRes;
+            return {
+              ...prevRes,
+              metadata: rawMeta ?? prevRes.metadata ?? null,
+              transformOptions: rawOpts ?? prevRes.transformOptions ?? null
+            };
+          });
+          return;
+        } catch (error) {
+          console.error('Error fetching CDN download extras:', error);
+          if (retryIfBothNull && attempt < maxAttempts - 1) {
+            await new Promise((r) => setTimeout(r, delayForAttempt(attempt)));
+            continue;
+          }
+          setRes((prevRes) => {
+            if (!prevRes) return prevRes;
+            return {
+              ...prevRes,
+              metadata: prevRes.metadata ?? null,
+              transformOptions: prevRes.transformOptions ?? null
+            };
+          });
+          return;
+        }
+      }
+    },
+    [effectiveId, mockData]
+  );
 
   const fetchPassesForLevel = useCallback(async () => {
     if (!effectiveId || mockData) {
@@ -1283,9 +1311,11 @@ const LevelDetailPage = ({ mockData = null }) => {
       }
       
       // Assemble extra bits from separate endpoints: passes, CDN download extras, like status
+      const levelFromApi = levelData.data?.level;
+      const retryCdnExtras = !!(levelFromApi?.dlLink && isCdnUrl(levelFromApi.dlLink));
       await Promise.all([
         fetchPassesForLevel(),
-        fetchCdnDownloadExtras(),
+        fetchCdnDownloadExtras({ retryIfBothNull: retryCdnExtras }),
         fetchIsLiked(),
         fetchRatingData()
       ]);
@@ -1302,6 +1332,33 @@ const LevelDetailPage = ({ mockData = null }) => {
       setIsRefreshingLeaderboard(false);
     }
   }, [effectiveId, mockData, t, fetchIsLiked, fetchCdnDownloadExtras, fetchPassesForLevel, fetchRatingData]);
+
+  useEffect(() => {
+    cdnZipIdentityRef.current = null;
+  }, [effectiveId]);
+
+  useEffect(() => {
+    if (!effectiveId || mockData || !res?.level) {
+      return;
+    }
+    if (String(res.level.id) !== String(effectiveId)) {
+      return;
+    }
+    const dl = res.level.dlLink;
+    if (!dl || dl === 'removed' || !isCdnUrl(dl)) {
+      return;
+    }
+    const key = `${res.level.fileId ?? ''}|${dl}`;
+    const prev = cdnZipIdentityRef.current;
+    if (prev === key) {
+      return;
+    }
+    cdnZipIdentityRef.current = key;
+    if (prev !== null) {
+      setRes((p) => (p ? { ...p, metadata: undefined, transformOptions: undefined } : p));
+      void fetchCdnDownloadExtras({ retryIfBothNull: true });
+    }
+  }, [effectiveId, mockData, res?.level?.id, res?.level?.dlLink, res?.level?.fileId, fetchCdnDownloadExtras]);
 
   useEffect(() => {
     fetchLevelData();
