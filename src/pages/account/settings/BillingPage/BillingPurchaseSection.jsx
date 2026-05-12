@@ -47,6 +47,7 @@ export function BillingPurchaseSection({
           />
           <span className="billing-page__auto-renew-label-text">{t("billing.checkout.purchaseAsGift")}</span>
         </label>
+        {purchaseAsGift ? <p className="billing-page__gift-non-refundable">{t("billing.checkout.giftNonRefundable")}</p> : null}
 
         {purchaseAsGift ? (
           giftRecipient?.userId ? (

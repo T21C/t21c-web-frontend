@@ -656,10 +656,34 @@
   text-align: right;
 }
 
-.billing-page .billing-page__col--support,
-.billing-page .billing-page__history-table thead th.billing-page__col--support {
+.billing-page .billing-page__col--actions,
+.billing-page .billing-page__history-table thead th.billing-page__col--actions {
   text-align: right;
   white-space: nowrap;
+}
+
+.billing-page .billing-page__history-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.35rem;
+}
+
+.billing-page .billing-page__history-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  min-height: 2rem;
+  padding: 0;
+  color: var(--color-white);
+}
+
+.billing-page .billing-page__history-refund-btn {
+  min-height: 2rem;
+  padding: 0 0.65rem;
+  font-size: 0.82rem;
 }
 
 .billing-page .billing-page__support-copy {
@@ -970,7 +994,6 @@
 .billing-page .billing-page__gift-option {
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
 }
 
 .billing-page .billing-page__gift-checkbox-row {
@@ -980,8 +1003,18 @@
   cursor: pointer;
 }
 
+.billing-page .billing-page__gift-non-refundable {
+  margin: 0;
+  padding-left: 1.75rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--btn-warning);
+}
+
 .billing-page .billing-page__recipient-selected {
   display: flex;
+  margin-top: 0.35rem;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.65rem;

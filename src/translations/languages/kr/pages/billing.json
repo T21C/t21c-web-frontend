@@ -19,6 +19,7 @@
   },
   "checkout": {
     "purchaseAsGift": "선물로 구매",
+    "giftNonRefundable": "선물은 환불되지 않습니다. 받는 사람을 신중히 선택하세요.",
     "searchUsersPlaceholder": "사용자 검색",
     "changeRecipient": "변경",
     "openRecipientProfileAria": "프로필 열기: {{name}}",
@@ -52,10 +53,11 @@
       "date": "일시",
       "event": "유형",
       "references": "참조",
-      "support": "지원",
+      "actions": "작업",
       "status": "상태",
       "amount": "금액"
     },
+    "copyDetailsAria": "지원용 정보 복사",
     "copySupport": "정보 복사",
     "copySupportDone": "지원용 정보를 복사했습니다.",
     "copySupportFail": "복사하지 못했습니다.",
@@ -100,6 +102,38 @@
       "order_canceled": "주문 취소",
       "checkout_session_completed": "구매 완료",
       "charge_refunded": "환불 처리"
+    },
+    "refundButton": "환불",
+    "refundConfirmTitle": "이 구매를 환불할까요?",
+    "refundPolicy180": "Stripe는 원 결제일로부터 {{days}}일 이내에만 환불을 허용합니다. 시스템에서 자동으로 확인합니다.",
+    "refundFullBody": "약 {{refund}}가 환불됩니다. 환불 처리가 완료되면(보통 몇 분 이내) 이 구매로 부여된 이용 권한이 종료됩니다.",
+    "refundPartialBody": "이미 사용한 기간은 월 {{listRate}} 기준(약 {{listCharge}})으로 계산됩니다. 약 {{refund}}가 환불됩니다. 환불이 완료되면 이 구매의 이용 권한이 종료됩니다.",
+    "refundConfirm": "환불 확인",
+    "refundCancel": "취소",
+    "refundLoadingPreview": "환불 가능 여부 확인 중…",
+    "refundSubmitting": "처리 중…",
+    "refundSuccess": "환불이 접수되었습니다. 내역은 곧 갱신됩니다.",
+    "refundReason": {
+      "NOT_FOUND": "해당 결제 기록을 찾을 수 없습니다.",
+      "NOT_STRIPE_CHECKOUT": "Stripe 결제만 여기서 환불할 수 있습니다.",
+      "WRONG_STATUS": "환불할 수 있는 상태가 아닙니다.",
+      "NOT_PURCHASER": "결제한 사람만 환불을 요청할 수 있습니다.",
+      "GIFT_NOT_ALLOWED": "선물은 환불되지 않습니다.",
+      "NO_PAYMENT_INTENT": "이 이벤트에 연결된 결제가 없습니다.",
+      "NO_SEGMENT": "이 구매에 연결된 이용 구간이 더 이상 없습니다.",
+      "SEGMENT_EXPIRED": "이 이용 기간이 이미 종료되었습니다.",
+      "TOO_OLD": "환불 가능 기간이 지났습니다.",
+      "ALREADY_REFUNDED": "이미 환불된 결제입니다.",
+      "ZERO_REFUND": "현재 정책으로는 환불할 금액이 없습니다.",
+      "STRIPE_LOAD_FAILED": "결제 정보를 불러올 수 없습니다."
+    },
+    "refundErrors": {
+      "REFUND_GIFT_NOT_ALLOWED": "선물은 환불되지 않습니다.",
+      "REFUND_TOO_OLD": "환불 가능 기간이 지났습니다.",
+      "REFUND_ALREADY_REFUNDED": "이미 환불된 구매입니다.",
+      "REFUND_ZERO_AMOUNT": "환불할 금액이 없습니다.",
+      "REFUND_NOT_ELIGIBLE": "이 구매는 환불할 수 없습니다.",
+      "STRIPE_ERROR": "Stripe에서 환불을 완료하지 못했습니다. 다시 시도하거나 지원팀에 문의하세요."
     }
   },
   "pages": {

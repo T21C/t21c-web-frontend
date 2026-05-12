@@ -74,7 +74,7 @@ const BillingPage = () => {
         accessSegments={accessSegments}
       />
 
-      <BillingHistorySection events={billing.events} />
+      <BillingHistorySection events={billing.events} onAfterRefund={() => fetchAll({ forceRefresh: true })} />
     </div>
   );
 };

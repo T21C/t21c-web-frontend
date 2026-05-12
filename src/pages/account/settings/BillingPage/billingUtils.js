@@ -1,6 +1,6 @@
 // tuf-search: #BillingPage #billingUtils
 
-/** Must match server `tufStellarProductCatalog.ts` order and pricing display. */
+/** Must match server `tufStellarProductCatalog.ts` order and pricing display. First entry `priceUsd` is the list rate per month for refunds. */
 export const TUF_STELLAR_TERM_OPTIONS = [
   { months: 1, priceUsd: 3 },
   { months: 2, priceUsd: 6 },
@@ -191,4 +191,32 @@ export function approxDaysRemainingLabel(ms, t) {
 
 export function processingStatusLabel(status, t) {
   return t(`billing.history.processingStatus.${status}`, { defaultValue: status });
+}
+
+export function formatMinorCurrency(cents, currency, locale) {
+  if (cents == null || !Number.isFinite(Number(cents))) return null;
+  return formatAmount(Number(cents) / 100, currency, locale);
+}
+
+/** Heuristic only — server validates on preview and refund. */
+export function isStripeRefundCandidate(ev) {
+  return (
+    ev?.provider === "stripe" &&
+    ev?.eventType === "checkout.session.completed" &&
+    ev?.status === "processed" &&
+    ev?.activityKind === "one_time_self"
+  );
+}
+
+export function billingRefundPreviewReasonMessage(reasonCode, t) {
+  if (!reasonCode || reasonCode === "ELIGIBLE") return "";
+  const msg = t(`billing.history.refundReason.${reasonCode}`, { defaultValue: "" });
+  return msg || "";
+}
+
+export function billingRefundPostErrorToast(code, t) {
+  if (!code) return null;
+  const key = `billing.history.refundErrors.${code}`;
+  const translated = t(key);
+  return translated !== key ? translated : null;
 }

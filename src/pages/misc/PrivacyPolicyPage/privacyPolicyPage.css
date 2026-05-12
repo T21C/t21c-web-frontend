@@ -148,6 +148,16 @@
   margin: 0.5rem 0;
 }
 
+.privacy-policy .privacy-inline-link {
+  color: var(--btn-primary);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.privacy-policy .privacy-inline-link:hover {
+  color: var(--btn-primary-hover);
+}
+
 .privacy-policy .discord-button {
   background-color: rgba(0,0,0,0.25);
   color: var(--color-white);

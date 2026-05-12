@@ -108,6 +108,11 @@ export function useBillingData(options = {}) {
       if (code === "INVALID_SEARCH_QUERY") return t("billing.toasts.searchQueryInvalid");
       if (code === "MISCONFIGURED") return t("billing.toasts.checkoutError");
       if (code === "STRIPE_ERROR") return t("billing.toasts.checkoutError");
+      if (code === "REFUND_GIFT_NOT_ALLOWED") return t("billing.history.refundErrors.REFUND_GIFT_NOT_ALLOWED");
+      if (code === "REFUND_TOO_OLD") return t("billing.history.refundErrors.REFUND_TOO_OLD");
+      if (code === "REFUND_ALREADY_REFUNDED") return t("billing.history.refundErrors.REFUND_ALREADY_REFUNDED");
+      if (code === "REFUND_ZERO_AMOUNT") return t("billing.history.refundErrors.REFUND_ZERO_AMOUNT");
+      if (code === "REFUND_NOT_ELIGIBLE") return t("billing.history.refundErrors.REFUND_NOT_ELIGIBLE");
       return fallbackMsg;
     },
     [t],

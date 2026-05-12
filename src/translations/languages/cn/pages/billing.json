@@ -19,6 +19,7 @@
   },
   "checkout": {
     "purchaseAsGift": "作为礼物购买",
+    "giftNonRefundable": "礼物不可退款。请谨慎选择收款人。",
     "searchUsersPlaceholder": "搜索用户",
     "changeRecipient": "更改",
     "openRecipientProfileAria": "打开资料：{{name}}",
@@ -52,10 +53,11 @@
       "date": "时间",
       "event": "类型",
       "references": "参考",
-      "support": "支持",
+      "actions": "操作",
       "status": "状态",
       "amount": "金额"
     },
+    "copyDetailsAria": "复制支持用详情",
     "copySupport": "复制详情",
     "copySupportDone": "已复制支持用详情。",
     "copySupportFail": "无法复制。",
@@ -100,6 +102,38 @@
       "order_canceled": "订单已取消",
       "checkout_session_completed": "购买已完成",
       "charge_refunded": "已退款"
+    },
+    "refundButton": "退款",
+    "refundConfirmTitle": "确认退款此笔购买？",
+    "refundPolicy180": "Stripe 规定原交易后 {{days}} 天内可退款；系统会自动校验。",
+    "refundFullBody": "预计退回约 {{refund}}。退款完成后，该笔购买对应的访问权限将结束（通常几分钟内）。",
+    "refundPartialBody": "已使用的时间按 {{listRate}} / 月 计费（约 {{listCharge}}）。预计退回约 {{refund}}。退款完成后，该笔购买的访问权限将结束。",
+    "refundConfirm": "确认退款",
+    "refundCancel": "取消",
+    "refundLoadingPreview": "正在校验退款…",
+    "refundSubmitting": "处理中…",
+    "refundSuccess": "已提交退款，记录将稍后更新。",
+    "refundReason": {
+      "NOT_FOUND": "未找到该账单记录。",
+      "NOT_STRIPE_CHECKOUT": "仅 Stripe 结账可在此退款。",
+      "WRONG_STATUS": "当前状态不可退款。",
+      "NOT_PURCHASER": "仅付款人可申请退款。",
+      "GIFT_NOT_ALLOWED": "礼物不可退款。",
+      "NO_PAYMENT_INTENT": "该事件未关联支付。",
+      "NO_SEGMENT": "该购买已不再关联有效权益。",
+      "SEGMENT_EXPIRED": "该访问期限已结束。",
+      "TOO_OLD": "已超过可退款期限。",
+      "ALREADY_REFUNDED": "该笔款项已退款。",
+      "ZERO_REFUND": "按当前规则无可退款金额。",
+      "STRIPE_LOAD_FAILED": "无法加载支付详情。"
+    },
+    "refundErrors": {
+      "REFUND_GIFT_NOT_ALLOWED": "礼物不可退款。",
+      "REFUND_TOO_OLD": "已超过可退款期限。",
+      "REFUND_ALREADY_REFUNDED": "该购买已退款。",
+      "REFUND_ZERO_AMOUNT": "无可退款金额。",
+      "REFUND_NOT_ELIGIBLE": "该购买无法退款。",
+      "STRIPE_ERROR": "Stripe 无法完成退款，请重试或联系支持。"
     }
   },
   "pages": {

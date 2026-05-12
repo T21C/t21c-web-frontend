@@ -19,6 +19,7 @@
   },
   "checkout": {
     "purchaseAsGift": "Purchase as a gift",
+    "giftNonRefundable": "Gifts are not refundable. Choose the recipient carefully.",
     "searchUsersPlaceholder": "Search users",
     "changeRecipient": "Change",
     "openRecipientProfileAria": "Open profile: {{name}}",
@@ -52,10 +53,11 @@
       "date": "When",
       "event": "Event",
       "references": "References",
-      "support": "Support",
+      "actions": "Actions",
       "status": "Status",
       "amount": "Amount"
     },
+    "copyDetailsAria": "Copy details for support",
     "copySupport": "Copy details",
     "copySupportDone": "Support details copied.",
     "copySupportFail": "Could not copy.",
@@ -100,6 +102,38 @@
       "order_canceled": "Order cancelled",
       "checkout_session_completed": "Purchase completed",
       "charge_refunded": "Refund processed"
+    },
+    "refundButton": "Refund",
+    "refundConfirmTitle": "Refund this purchase?",
+    "refundPolicy180": "Stripe only allows refunds within {{days}} days of the original charge. This safeguard is enforced automatically.",
+    "refundFullBody": "You will receive about {{refund}} back. Your access from this purchase will end after the refund is processed (usually within a few minutes).",
+    "refundPartialBody": "Time already used is priced at {{listRate}} per month (about {{listCharge}} retained). You will receive about {{refund}} back. Access from this purchase ends after the refund completes.",
+    "refundConfirm": "Confirm refund",
+    "refundCancel": "Cancel",
+    "refundLoadingPreview": "Checking refund…",
+    "refundSubmitting": "Processing…",
+    "refundSuccess": "Refund submitted. Activity will update shortly.",
+    "refundReason": {
+      "NOT_FOUND": "That billing record was not found.",
+      "NOT_STRIPE_CHECKOUT": "Only Stripe checkouts can be refunded here.",
+      "WRONG_STATUS": "This row is not in a refundable state.",
+      "NOT_PURCHASER": "Only the purchaser can refund this payment.",
+      "GIFT_NOT_ALLOWED": "Gifts are not refundable.",
+      "NO_PAYMENT_INTENT": "No payment is linked to this event.",
+      "NO_SEGMENT": "No entitlement is linked to this purchase anymore.",
+      "SEGMENT_EXPIRED": "This access period has already ended.",
+      "TOO_OLD": "This charge is past the refund window.",
+      "ALREADY_REFUNDED": "This charge has already been refunded.",
+      "ZERO_REFUND": "There is nothing to refund under the current policy.",
+      "STRIPE_LOAD_FAILED": "Could not load payment details."
+    },
+    "refundErrors": {
+      "REFUND_GIFT_NOT_ALLOWED": "Gifts are not refundable.",
+      "REFUND_TOO_OLD": "This charge is past the refund window.",
+      "REFUND_ALREADY_REFUNDED": "This purchase has already been refunded.",
+      "REFUND_ZERO_AMOUNT": "Nothing to refund.",
+      "REFUND_NOT_ELIGIBLE": "This purchase cannot be refunded.",
+      "STRIPE_ERROR": "Stripe could not complete the refund. Try again or contact support."
     }
   },
   "pages": {

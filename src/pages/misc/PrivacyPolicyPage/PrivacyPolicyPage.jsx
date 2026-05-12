@@ -89,6 +89,10 @@ const PrivacyPolicyPage = () => {
                       plaintext passwords).
                     </li>
                     <li>Miscellaneous information you provide, such as a profile picture, a bio, or a banner image.</li>
+                    <li>
+                      Billing and purchase metadata when you use paid features (for example, transaction references and
+                      entitlement fulfillment records associated with your account).
+                    </li>
                   </ul>
                 </div>
                 <div className="data-category">
@@ -150,6 +154,11 @@ const PrivacyPolicyPage = () => {
                   technical updates, and support responses).
                 </li>
                 <li>Detecting, investigating, and helping prevent fraud, abuse, and security incidents.</li>
+                <li>
+                  Processing optional paid features (for example, TUFStellar access purchases), including creating and
+                  maintaining billing records, granting and revoking access entitlements, and reconciling transactions
+                  with payment processors.
+                </li>
                 <li>Complying with applicable law and responding to lawful requests.</li>
               </ul>
               <p>
@@ -205,17 +214,57 @@ const PrivacyPolicyPage = () => {
             </section>
 
             <section className="privacy-section">
-              <h2>8. Payment Processing (if applicable)</h2>
+              <h2>8. Payments, TUFStellar, and Payment Processors</h2>
               <p>
-                If we introduce paid features or subscriptions, payment transactions may be processed
-                by third-party payment processors (for example, Stripe). We do not intend to
-                store full payment card details on our systems, and payment processors typically
-                collect and process payment information subject to their own terms and privacy
-                policies.
+                Certain optional features of the Services may be offered for a fee (for example, TUFStellar, which
+                provides stacked access time on the platform based on the product configuration available at checkout).
+                When you choose to purchase a paid feature, payment information is collected and processed by a
+                third-party payment processor. We currently use <strong>Stripe, Inc.</strong> and its affiliates as a
+                payment processor for eligible purchases. Stripe processes payments subject to its own terms and
+                privacy policy, and you should review those documents before completing a transaction:
+              </p>
+              <ul>
+                <li>
+                  Stripe Services Agreement:{" "}
+                  <a href="https://stripe.com/legal" className="privacy-inline-link" target="_blank" rel="noopener noreferrer">
+                    https://stripe.com/legal
+                  </a>
+                </li>
+                <li>
+                  Stripe Privacy Policy:{" "}
+                  <a href="https://stripe.com/privacy" className="privacy-inline-link" target="_blank" rel="noopener noreferrer">
+                    https://stripe.com/privacy
+                  </a>
+                </li>
+              </ul>
+              <p>
+                We do not intend to store full payment card numbers on our systems for Stripe Checkout flows configured
+                in this manner. We may receive and store limited payment-related records needed to operate the Services,
+                which may include:
+              </p>
+              <ul>
+                <li>
+                  Transaction metadata (for example, payment intent identifiers, checkout session identifiers, currency,
+                  amounts, timestamps, and payment status events).
+                </li>
+                <li>
+                  Internal billing event records (for example, webhook payloads or summaries) used for fulfillment,
+                  auditability, customer support, fraud prevention, and dispute handling.
+                </li>
+                <li>
+                  Purchase fulfillment data required to grant and revoke access entitlements (for example, associations
+                  between a purchase and the account that received access, including gift recipients where applicable).
+                </li>
+              </ul>
+              <p>
+                If you purchase access for another user (&quot;gift&quot;), information necessary to deliver the
+                entitlement may be processed and retained (for example, recipient identifiers and purchase metadata).
+                Commercial terms for gifts—including that gifts may be non-refundable—are described in our Terms of
+                Service.
               </p>
               <p>
-                You should review the applicable processor&apos;s privacy policy before submitting
-                payment information.
+                We may share Personal Information with Stripe and other service providers strictly as needed to
+                process payments, prevent fraud, and operate paid features, consistent with Section 7.
               </p>
             </section>
 
