@@ -61,7 +61,7 @@
     "copySupport": "정보 복사",
     "copySupportDone": "지원용 정보를 복사했습니다.",
     "copySupportFail": "복사하지 못했습니다.",
-    "fallbackUser": "사용자",
+    "unknownUser": "알 수 없음",
     "activity": {
       "giftReceived": "{{name}}님의 선물",
       "giftSent": "{{name}}님에게 선물"

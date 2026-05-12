@@ -61,7 +61,7 @@
     "copySupport": "Copy details",
     "copySupportDone": "Support details copied.",
     "copySupportFail": "Could not copy.",
-    "fallbackUser": "User",
+    "unknownUser": "Unknown",
     "activity": {
       "giftReceived": "Gift from {{name}}",
       "giftSent": "Gift to {{name}}"

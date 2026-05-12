@@ -135,7 +135,7 @@ export function billingHistoryProductDetail(product, t) {
 export function historyEventLabel(ev, t) {
   const kind = ev.activityKind ?? "default";
   if (kind === "gift_received") {
-    const u = ev.counterpartyUsername || t("billing.history.fallbackUser");
+    const u = ev.counterpartyUsername || t("billing.history.unknownUser");
     const nick =
       ev.counterpartyNickname && ev.counterpartyNickname !== ev.counterpartyUsername
         ? ` (${ev.counterpartyNickname})`
@@ -143,7 +143,7 @@ export function historyEventLabel(ev, t) {
     return t("billing.history.activity.giftReceived", { name: `${u}${nick}` });
   }
   if (kind === "gift_sent") {
-    const u = ev.counterpartyUsername || t("billing.history.fallbackUser");
+    const u = ev.counterpartyUsername || t("billing.history.unknownUser");
     const nick =
       ev.counterpartyNickname && ev.counterpartyNickname !== ev.counterpartyUsername
         ? ` (${ev.counterpartyNickname})`

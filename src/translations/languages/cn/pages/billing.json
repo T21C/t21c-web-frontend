@@ -61,7 +61,7 @@
     "copySupport": "复制详情",
     "copySupportDone": "已复制支持用详情。",
     "copySupportFail": "无法复制。",
-    "fallbackUser": "用户",
+    "unknownUser": "未知用户",
     "activity": {
       "giftReceived": "来自 {{name}} 的礼物",
       "giftSent": "赠予 {{name}} 的礼物"
