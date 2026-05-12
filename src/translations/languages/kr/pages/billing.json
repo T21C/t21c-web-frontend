@@ -176,6 +176,9 @@
     "statusNotDone": "결제가 완료되지 않았습니다. 결제 페이지에서 다시 시도해 주세요.",
     "backToBilling": "결제 페이지로 돌아가기",
     "invoice": "인보이스",
-    "session": "결제 세션"
+    "session": "결제 세션",
+    "sessionForbidden": "이 결제 링크는 현재 로그인한 계정과 일치하지 않습니다.",
+    "sessionNotFound": "해당 결제 세션을 찾을 수 없습니다.",
+    "fulfillmentFailed": "결제는 확인되었지만 이용 적용을 마치지 못했습니다. 결제 세션 ID와 함께 지원팀에 문의하세요."
   }
 }

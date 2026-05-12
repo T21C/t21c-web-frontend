@@ -176,6 +176,9 @@
     "statusNotDone": "Payment was not completed. You can try again from the billing page.",
     "backToBilling": "Back to billing",
     "invoice": "Invoice",
-    "session": "Checkout session"
+    "session": "Checkout session",
+    "sessionForbidden": "This payment link does not match your account.",
+    "sessionNotFound": "We could not find that checkout session.",
+    "fulfillmentFailed": "Payment was recorded but we could not finish applying access. Contact support with your checkout session id."
   }
 }

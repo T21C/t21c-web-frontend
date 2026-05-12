@@ -105,18 +105,33 @@ const CallbackPage = () => {
 
         const startedAt = Date.now();
         let confirmed = false;
+        let pollError = '';
+
         while (!cancelled && Date.now() - startedAt < BILLING_POLL_TIMEOUT_MS) {
           try {
-            const res = await api.get('/v3/billing/me');
-            const expiresAt = res?.data?.expiresAt ? new Date(res.data.expiresAt).getTime() : null;
-            const active = Boolean(res?.data?.active && expiresAt && expiresAt > Date.now());
-            if (active) {
+            const { data } = await api.get('/v3/billing/stripe/checkout-status', {
+              params: { session_id: sessionId },
+            });
+            if (data?.fulfillmentReady) {
               confirmed = true;
               break;
             }
+            if (data?.fulfillmentFailed) {
+              pollError = 'fulfillment_failed';
+              break;
+            }
           } catch (e) {
+            const status = e?.response?.status;
             const code = e?.response?.data?.error?.code;
-            if (e?.response?.status === 404 && code === 'TUF_STELLAR_DISABLED') {
+            if (status === 403 && code === 'CHECKOUT_SESSION_FORBIDDEN') {
+              pollError = 'session_forbidden';
+              break;
+            }
+            if (status === 404 && code === 'CHECKOUT_SESSION_NOT_FOUND') {
+              pollError = 'session_not_found';
+              break;
+            }
+            if (status === 404 && code === 'TUF_STELLAR_DISABLED') {
               break;
             }
             /* network blip; keep polling */
@@ -128,9 +143,27 @@ const CallbackPage = () => {
 
         try {
           await fetchUser(true, { silent: true });
-        } catch { /* ignore */ }
+        } catch {
+          /* ignore */
+        }
 
         if (cancelled) return;
+
+        if (pollError === 'session_forbidden') {
+          setError(t('billing.callback.sessionForbidden'));
+          setLoading(false);
+          return;
+        }
+        if (pollError === 'session_not_found') {
+          setError(t('billing.callback.sessionNotFound'));
+          setLoading(false);
+          return;
+        }
+        if (pollError === 'fulfillment_failed') {
+          setError(t('billing.callback.fulfillmentFailed'));
+          setLoading(false);
+          return;
+        }
 
         setLoading(false);
         setRedirecting(true);
