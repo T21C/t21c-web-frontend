@@ -70,21 +70,23 @@
       "termMonths_one": "TUFStellar — {{count}} 个月",
       "termMonths_other": "TUFStellar — {{count}} 个月",
       "sku": "SKU：{{sku}}",
-      "itemId": "条目：{{itemId}}"
+      "itemId": "条目：{{itemId}}",
+      "stripePriceId": "Stripe 价格：{{priceId}}"
     },
     "refLabels": {
       "invoice_id": "发票 ID",
       "foreign_invoice": "外部发票",
       "order_id": "订单 ID",
-      "transaction_id": "交易 ID",
-      "subscription_id": "Xsolla 订阅参考编号",
-      "checkout_external_id": "结账参考"
+      "transaction_id": "交易 / 支付 ID",
+      "subscription_id": "旧版订阅参考编号",
+      "checkout_external_id": "结账会话 ID"
     },
     "processingStatus": {
       "processed": "完成",
       "received": "已收到",
       "failed": "失败",
-      "ignored": "已忽略"
+      "ignored": "已忽略",
+      "refunded": "已退款"
     },
     "events": {
       "payment": "付款",
@@ -95,7 +97,9 @@
       "non_renewal_subscription": "合作方账单通知",
       "refund": "退款",
       "partial_refund": "部分退款",
-      "order_canceled": "订单已取消"
+      "order_canceled": "订单已取消",
+      "checkout_session_completed": "购买已完成",
+      "charge_refunded": "已退款"
     }
   },
   "pages": {
@@ -137,6 +141,7 @@
     "errorTitle": "付款未完成",
     "statusNotDone": "付款未完成。你可以在账单页面重试。",
     "backToBilling": "返回账单页面",
-    "invoice": "订单号"
+    "invoice": "订单号",
+    "session": "结账会话"
   }
 }

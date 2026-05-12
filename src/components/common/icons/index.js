@@ -59,7 +59,7 @@ import AdofaiIcon from './AdofaiIcon';
 import { SettingsIcon } from './SettingsIcon';
 import { TUFStellarIcon } from './TUFStellarIcon';
 import { HeartIcon } from './HeartIcon';
-
+import { CopyIcon } from './CopyIcon';
 export {
     DefaultAvatar,
     DiscordIcon,
@@ -121,4 +121,5 @@ export {
     SettingsIcon,
     TUFStellarIcon,
     HeartIcon,
+    CopyIcon,
 }

@@ -70,21 +70,23 @@
       "termMonths_one": "TUFStellar — {{count}} month",
       "termMonths_other": "TUFStellar — {{count}} months",
       "sku": "SKU: {{sku}}",
-      "itemId": "Item: {{itemId}}"
+      "itemId": "Item: {{itemId}}",
+      "stripePriceId": "Stripe price: {{priceId}}"
     },
     "refLabels": {
       "invoice_id": "Invoice ID",
       "foreign_invoice": "Merchant / foreign invoice",
       "order_id": "Order ID",
-      "transaction_id": "Transaction ID",
-      "subscription_id": "Xsolla subscription reference",
-      "checkout_external_id": "Checkout reference"
+      "transaction_id": "Transaction / payment ID",
+      "subscription_id": "Legacy subscription reference",
+      "checkout_external_id": "Checkout session ID"
     },
     "processingStatus": {
       "processed": "Done",
       "received": "Received",
       "failed": "Failed",
-      "ignored": "Ignored"
+      "ignored": "Ignored",
+      "refunded": "Refunded"
     },
     "events": {
       "payment": "Payment",
@@ -95,7 +97,9 @@
       "non_renewal_subscription": "Partner billing notice",
       "refund": "Refund",
       "partial_refund": "Partial refund",
-      "order_canceled": "Order cancelled"
+      "order_canceled": "Order cancelled",
+      "checkout_session_completed": "Purchase completed",
+      "charge_refunded": "Refund processed"
     }
   },
   "pages": {
@@ -137,6 +141,7 @@
     "errorTitle": "Payment not completed",
     "statusNotDone": "Payment was not completed. You can try again from the billing page.",
     "backToBilling": "Back to billing",
-    "invoice": "Invoice"
+    "invoice": "Invoice",
+    "session": "Checkout session"
   }
 }

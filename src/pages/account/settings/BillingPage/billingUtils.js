@@ -87,8 +87,19 @@ export function formatAmount(amount, currency, locale) {
   }
 }
 
+/** Stripe uses dotted event names; i18n keys use underscores to avoid nested-key collisions. */
+export function billingEventTypeTranslationKey(eventType) {
+  if (eventType == null || eventType === "") return "";
+  return String(eventType).replace(/\./g, "_");
+}
+
 export function eventTypeLabel(eventType, t) {
-  return t(`billing.history.events.${eventType}`, { defaultValue: eventType });
+  const key = billingEventTypeTranslationKey(eventType);
+  return t(`billing.history.events.${key}`, { defaultValue: eventType });
+}
+
+export function referenceKindLabel(kind, t) {
+  return t(`billing.history.refLabels.${kind}`, { defaultValue: kind });
 }
 
 export function billingHistoryProductDetail(product, t) {
@@ -107,7 +118,14 @@ export function billingHistoryProductDetail(product, t) {
 
   if (!parts.length) {
     if (sku) parts.push(t("billing.history.product.sku", { sku }));
-    else if (itemId) parts.push(t("billing.history.product.itemId", { itemId }));
+    else if (itemId) {
+      const id = String(itemId);
+      if (id.startsWith("price_")) {
+        parts.push(t("billing.history.product.stripePriceId", { priceId: id }));
+      } else {
+        parts.push(t("billing.history.product.itemId", { itemId: id }));
+      }
+    }
     return parts.join(" · ");
   }
 
@@ -138,7 +156,7 @@ export function historyEventLabel(ev, t) {
   return eventTypeLabel(ev.eventType, t);
 }
 
-export function buildSupportCopyPayload(ev) {
+export function buildSupportCopyPayload(ev, t) {
   const lines = [
     `billing_event_id: ${ev.id}`,
     `provider: ${ev.provider}`,
@@ -152,14 +170,14 @@ export function buildSupportCopyPayload(ev) {
     if (p.kind) lines.push(`product_kind: ${p.kind}`);
     if (p.months != null) lines.push(`product_months: ${p.months}`);
     if (p.sku) lines.push(`product_sku: ${p.sku}`);
-    if (p.itemId) lines.push(`xsolla_item_id: ${p.itemId}`);
+    if (p.itemId) lines.push(`stripe_price_id: ${p.itemId}`);
   }
   if (ev.amount != null && Number.isFinite(Number(ev.amount))) {
     lines.push(`amount: ${ev.amount}${ev.currency ? ` ${ev.currency}` : ""}`);
   }
   const refs = Array.isArray(ev.references) ? ev.references : [];
   for (const ref of refs) {
-    lines.push(`${ref.kind}: ${ref.value}`);
+    lines.push(`${referenceKindLabel(ref.kind, t)}: ${ref.value}`);
   }
   return lines.join("\n");
 }

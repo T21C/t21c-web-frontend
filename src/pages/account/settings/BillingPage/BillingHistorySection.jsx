@@ -17,7 +17,7 @@ export function BillingHistorySection({ events }) {
 
   const copyBillingSupportInfo = useCallback(
     async (ev) => {
-      const text = buildSupportCopyPayload(ev);
+      const text = buildSupportCopyPayload(ev, t);
       try {
         await navigator.clipboard.writeText(text);
         toast.success(t("billing.history.copySupportDone"));

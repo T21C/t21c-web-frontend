@@ -7,32 +7,28 @@ import { useAuth } from "@/contexts/AuthContext";
 import api from '@/utils/api';
 import './callback.css';
 
-const XSOLLA_POLL_INTERVAL_MS = 1500;
-const XSOLLA_POLL_TIMEOUT_MS = 25000;
+const BILLING_POLL_INTERVAL_MS = 1500;
+const BILLING_POLL_TIMEOUT_MS = 25000;
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-/** Survives React 18 Strict Mode (effect mount ➔ unmount ➔ remount): skip duplicate Xsolla handler runs for the same return URL. */
-const xsollaCallbackLocks = new Map();
+/** Survives React 18 Strict Mode: skip duplicate billing return handler runs for the same URL. */
+const billingCallbackLocks = new Map();
 
-function readXsollaParams(search) {
+function readBillingReturnParams(search) {
   const urlParams = new URLSearchParams(search);
-  const invoiceId = urlParams.get('invoice_id');
-  const foreignInvoice = urlParams.get('foreignInvoice');
+  const sessionId = urlParams.get('session_id');
   return {
-    invoiceId,
-    foreignInvoice,
-    xsollaStatus: urlParams.get('status'),
-    isXsollaReturn: Boolean(invoiceId || foreignInvoice),
-    lockKey: `${invoiceId || ''}|${foreignInvoice || ''}|${urlParams.get('status') || ''}`,
+    sessionId,
+    isBillingReturn: Boolean(sessionId && String(sessionId).trim().length > 0),
+    lockKey: `stripe|${sessionId || ''}`,
   };
 }
 
-function initialXsollaState(search) {
-  const { invoiceId, foreignInvoice, xsollaStatus } = readXsollaParams(search);
+function initialBillingState(search) {
+  const { sessionId } = readBillingReturnParams(search);
   return {
-    status: xsollaStatus || '',
-    invoiceId: invoiceId || foreignInvoice || null,
+    sessionId: sessionId || null,
   };
 }
 
@@ -40,14 +36,14 @@ const CallbackPage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation('pages');
   const search = typeof window !== 'undefined' ? window.location.search : '';
-  const xsollaFromUrl = readXsollaParams(search);
+  const billingFromUrl = readBillingReturnParams(search);
 
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
   const [isLinking, setIsLinking] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
-  const [mode, setMode] = useState(() => (xsollaFromUrl.isXsollaReturn ? 'xsolla' : 'oauth'));
-  const [xsollaState, setXsollaState] = useState(() => initialXsollaState(search));
+  const [mode, setMode] = useState(() => (billingFromUrl.isBillingReturn ? 'billing' : 'oauth'));
+  const [billingState, setBillingState] = useState(() => initialBillingState(search));
   const { fetchUser, getOriginUrl } = useAuth();
 
   /** OAuth branch only: stable empty-string ref so finally doesn't read stale state `error`. */
@@ -55,7 +51,7 @@ const CallbackPage = () => {
 
   const handleContinue = () => {
     setRedirecting(true);
-    if (mode === 'xsolla') {
+    if (mode === 'billing') {
       navigate('/settings/billing', { replace: true });
       return;
     }
@@ -83,23 +79,15 @@ const CallbackPage = () => {
     const handleCallback = async () => {
       const urlParams = new URLSearchParams(window.location.search);
 
-      const invoiceId = urlParams.get('invoice_id');
-      const foreignInvoice = urlParams.get('foreignInvoice');
-      const xsollaStatus = urlParams.get('status');
-      const isXsollaReturn = Boolean(invoiceId || foreignInvoice);
+      const sessionId = urlParams.get('session_id');
+      const isBillingReturn = Boolean(sessionId && String(sessionId).trim().length > 0);
 
-      if (isXsollaReturn) {
-        setMode('xsolla');
-        setXsollaState({ status: xsollaStatus || '', invoiceId: invoiceId || foreignInvoice || null });
+      if (isBillingReturn) {
+        setMode('billing');
+        setBillingState({ sessionId: sessionId || null });
 
-        if (xsollaStatus && xsollaStatus !== 'done') {
-          setError(t('billing.callback.statusNotDone', { defaultValue: 'Payment was not completed. You can try again from the billing page.' }));
-          setLoading(false);
-          return;
-        }
-
-        const lockKey = `${invoiceId || ''}|${foreignInvoice || ''}|${xsollaStatus || ''}`;
-        if (xsollaCallbackLocks.get(lockKey)) {
+        const lockKey = `stripe|${sessionId || ''}`;
+        if (billingCallbackLocks.get(lockKey)) {
           setLoading(false);
           setRedirecting(true);
           navigateTimerId = window.setTimeout(() => {
@@ -107,10 +95,9 @@ const CallbackPage = () => {
           }, 400);
           return;
         }
-        xsollaCallbackLocks.set(lockKey, true);
+        billingCallbackLocks.set(lockKey, true);
 
         try {
-          /* silent: global AuthProvider hides entire app while loading — would unmount this page and abort polling */
           if (!cancelled) await fetchUser(true, { silent: true });
         } catch {
           /* keep going; webhook may still arrive */
@@ -118,7 +105,7 @@ const CallbackPage = () => {
 
         const startedAt = Date.now();
         let confirmed = false;
-        while (!cancelled && Date.now() - startedAt < XSOLLA_POLL_TIMEOUT_MS) {
+        while (!cancelled && Date.now() - startedAt < BILLING_POLL_TIMEOUT_MS) {
           try {
             const res = await api.get('/v3/billing/me');
             const expiresAt = res?.data?.expiresAt ? new Date(res.data.expiresAt).getTime() : null;
@@ -134,7 +121,7 @@ const CallbackPage = () => {
             }
             /* network blip; keep polling */
           }
-          await wait(XSOLLA_POLL_INTERVAL_MS);
+          await wait(BILLING_POLL_INTERVAL_MS);
         }
 
         if (cancelled) return;
@@ -238,13 +225,14 @@ const CallbackPage = () => {
       cancelled = true;
       if (navigateTimerId != null) window.clearTimeout(navigateTimerId);
       const urlParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
-      const lk = `${urlParams.get('invoice_id') || ''}|${urlParams.get('foreignInvoice') || ''}|${urlParams.get('status') || ''}`;
-      if (lk !== '||') xsollaCallbackLocks.delete(lk);
+      const sid = urlParams.get('session_id');
+      const lk = `stripe|${sid || ''}`;
+      if (lk !== 'stripe|') billingCallbackLocks.delete(lk);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (mode === 'xsolla') {
+  if (mode === 'billing') {
     return (
       <div className="callback-page">
         <div className="callback-container">
@@ -272,10 +260,13 @@ const CallbackPage = () => {
                     ? t('billing.callback.redirectingToBilling', { defaultValue: 'Redirecting to billing...' })
                     : t('billing.callback.done', { defaultValue: 'All set!' })}
               </p>
-              {xsollaState.invoiceId && (
-                <p className="redirect-message">
-                  {t('billing.callback.invoice', { defaultValue: 'Invoice' })}: {xsollaState.invoiceId}
-                </p>
+              {billingState.sessionId && (
+                <div className="callback-page__checkout-session-meta">
+                  <span className="callback-page__checkout-session-label">
+                    {t('billing.callback.session', { defaultValue: 'Checkout session' })}
+                  </span>
+                  <code className="callback-page__checkout-session-id">{billingState.sessionId}</code>
+                </div>
               )}
             </>
           )}

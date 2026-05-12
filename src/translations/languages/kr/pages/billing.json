@@ -70,21 +70,23 @@
       "termMonths_one": "TUFStellar — {{count}}개월",
       "termMonths_other": "TUFStellar — {{count}}개월",
       "sku": "SKU: {{sku}}",
-      "itemId": "항목: {{itemId}}"
+      "itemId": "항목: {{itemId}}",
+      "stripePriceId": "Stripe 가격: {{priceId}}"
     },
     "refLabels": {
       "invoice_id": "인보이스 ID",
       "foreign_invoice": "외부 인보이스",
       "order_id": "주문 ID",
-      "transaction_id": "거래 ID",
-      "subscription_id": "Xsolla 구독 참조",
-      "checkout_external_id": "결제 참조"
+      "transaction_id": "거래 / 결제 ID",
+      "subscription_id": "이전 구독 참조",
+      "checkout_external_id": "결제 세션 ID"
     },
     "processingStatus": {
       "processed": "완료",
       "received": "수신",
       "failed": "실패",
-      "ignored": "무시"
+      "ignored": "무시",
+      "refunded": "환불됨"
     },
     "events": {
       "payment": "결제",
@@ -95,7 +97,9 @@
       "non_renewal_subscription": "파트너 결제 알림",
       "refund": "환불",
       "partial_refund": "부분 환불",
-      "order_canceled": "주문 취소"
+      "order_canceled": "주문 취소",
+      "checkout_session_completed": "구매 완료",
+      "charge_refunded": "환불 처리"
     }
   },
   "pages": {
@@ -137,6 +141,7 @@
     "errorTitle": "결제가 완료되지 않았습니다",
     "statusNotDone": "결제가 완료되지 않았습니다. 결제 페이지에서 다시 시도해 주세요.",
     "backToBilling": "결제 페이지로 돌아가기",
-    "invoice": "인보이스"
+    "invoice": "인보이스",
+    "session": "결제 세션"
   }
 }

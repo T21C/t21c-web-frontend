@@ -106,6 +106,8 @@ export function useBillingData(options = {}) {
       if (code === "INVALID_RECIPIENT_ID") return t("billing.toasts.invalidRecipientId");
       if (code === "BILLING_ACCOUNT_BLOCKED") return t("billing.toasts.billingAccountBlocked");
       if (code === "INVALID_SEARCH_QUERY") return t("billing.toasts.searchQueryInvalid");
+      if (code === "MISCONFIGURED") return t("billing.toasts.checkoutError");
+      if (code === "STRIPE_ERROR") return t("billing.toasts.checkoutError");
       return fallbackMsg;
     },
     [t],
@@ -195,7 +197,7 @@ export function useBillingData(options = {}) {
     try {
       const payload = { months: term.months };
       if (purchaseAsGift && giftRecipient?.userId) payload.recipientUserId = giftRecipient.userId;
-      const { data } = await api.post("/v3/billing/xsolla/checkout", payload);
+      const { data } = await api.post("/v3/billing/stripe/checkout", payload);
       const url = data?.url;
       if (!url) throw new Error("Missing checkout url");
       window.open(url, "_blank", "noopener,noreferrer");

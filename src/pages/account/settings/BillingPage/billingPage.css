@@ -179,6 +179,8 @@
   margin: 0;
   padding: 0;
   list-style: none;
+  max-height: 30rem;
+  overflow-y: auto;
 }
 
 .billing-page .billing-page__access-segment {
@@ -649,11 +651,13 @@
   border-bottom: none;
 }
 
-.billing-page .billing-page__col--right {
+.billing-page .billing-page__col--right,
+.billing-page .billing-page__history-table thead th.billing-page__col--right {
   text-align: right;
 }
 
-.billing-page .billing-page__col--support {
+.billing-page .billing-page__col--support,
+.billing-page .billing-page__history-table thead th.billing-page__col--support {
   text-align: right;
   white-space: nowrap;
 }
@@ -742,6 +746,11 @@
 .billing-page .billing-page__event-status--failed {
   border-color: color-mix(in srgb, var(--btn-danger) 60%, transparent);
   background: color-mix(in srgb, var(--btn-danger) 16%, transparent);
+}
+
+.billing-page .billing-page__event-status--refunded {
+  border-color: color-mix(in srgb, var(--btn-warning) 60%, transparent);
+  background: color-mix(in srgb, var(--btn-warning) 16%, transparent);
 }
 
 .billing-page .billing-page__event-status--received {
