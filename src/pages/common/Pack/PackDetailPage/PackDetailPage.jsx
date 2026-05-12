@@ -486,6 +486,48 @@ const PackDetailPage = () => {
     }));
   };
 
+  /**
+   * Reorder PUT returns structure-only items (no referencedLevel). Re-hydrate from the
+   * previous tree so we do not refetch the full pack or lose level cards.
+   */
+  const buildLevelMetaByPackItemId = (items, map = new Map()) => {
+    for (const item of items || []) {
+      if (item.type === 'level') {
+        map.set(item.id, {
+          referencedLevel: item.referencedLevel ?? null,
+          isCleared: !!item.isCleared,
+        });
+      }
+      if (item.children?.length) {
+        buildLevelMetaByPackItemId(item.children, map);
+      }
+    }
+    return map;
+  };
+
+  const mergePackStructureWithReferencedLevels = (prevItems, structureOnlyItems) => {
+    const metaByItemId = buildLevelMetaByPackItemId(prevItems);
+    const walk = (nodes) =>
+      (nodes || []).map((node) => {
+        if (node.type === 'level') {
+          const meta = metaByItemId.get(node.id);
+          return {
+            ...node,
+            referencedLevel: meta?.referencedLevel ?? null,
+            isCleared: meta?.isCleared ?? false,
+          };
+        }
+        if (node.type === 'folder') {
+          return {
+            ...node,
+            children: node.children ? walk(node.children) : undefined,
+          };
+        }
+        return node;
+      });
+    return walk(structureOnlyItems);
+  };
+
   // Helper to create minimal tree structure for backend (only id, parentId, sortOrder)
   const createMinimalTreeStructure = (items) => {
     return items.map(item => ({
@@ -686,7 +728,10 @@ const PackDetailPage = () => {
         items: minimalTree
       });
 
-      setPack(prevPack => ({ ...prevPack, items: response.data.items }));
+      setPack((prevPack) => ({
+        ...prevPack,
+        items: mergePackStructureWithReferencedLevels(prevPack.items, response.data.items),
+      }));
       fetchPackCdnData();
       toast.success(t('packDetail.move.success'));
       

@@ -62,15 +62,16 @@ const LevelCard = ({
   const [showArtistPopup, setShowArtistPopup] = useState(false);
   const [thumbnailUrl, setThumbnailUrl] = useState('');
   const { difficultyDict, curationTypesDict, tagsDict } = useDifficultyContext();
-  const difficultyInfo = difficultyDict[level.diffId];
+  const difficultyInfo = level != null ? difficultyDict[level.diffId] : undefined;
   const curationsList = useMemo(() => {
+    if (!level) return [];
     const raw = level.curations?.length
       ? level.curations
       : level.curation
         ? [level.curation]
         : [];
     return sortCurationsForDisplay(raw, curationTypesDict);
-  }, [level.curations, level.curation, curationTypesDict]);
+  }, [level, curationTypesDict]);
   /** Up to 4 curation type icons from the level’s curation (M2M types) */
   const curationTypeIconSlots = useMemo(() => {
     const first = curationsList[0];
@@ -91,27 +92,30 @@ const LevelCard = ({
   }, [curationsList, curationTypesDict]);
 
   // Computed values
-  const wsLink = level.ws || level.wsLink || level.workshopLink;
-  const dlLink = level.dl || level.dlLink;
+  const wsLink = level?.ws || level?.wsLink || level?.workshopLink;
+  const dlLink = level?.dl || level?.dlLink;
   const dlLinkValid = dlLink && dlLink.match(/http[s]?:\/\//) ? true : false;
-  const customBaseScore = level.baseScore && level.baseScore !== difficultyDict[level.diffId]?.baseScore ? level.baseScore : null;
-  const tagIds = (displayMode !== 'normal' || !showTags) ? [] : (level.tags?.map((item) => item.id) || []);
+  const customBaseScore =
+    level?.baseScore && level.baseScore !== difficultyDict[level.diffId]?.baseScore
+      ? level.baseScore
+      : null;
+  const tagIds = (displayMode !== 'normal' || !showTags) ? [] : (level?.tags?.map((item) => item.id) || []);
   const tags = tagIds.map((id) => tagsDict[id]).filter(Boolean); // Filter out undefined/null tags
-  const hasSongPopup = (level.songs && level.songs.length > 0) ? true : false;
-  const hasArtistPopup = (level.artists && level.artists.length > 0) ? true : false;
-  const levelDetailTo = `/levels/${level.id}`;
+  const hasSongPopup = (level?.songs && level.songs.length > 0) ? true : false;
+  const hasArtistPopup = (level?.artists && level.artists.length > 0) ? true : false;
+  const levelDetailTo = level?.id != null ? `/levels/${level.id}` : '#';
 
   useBodyScrollLock(showEditPopup || showAddToPackPopup || showSongPopup || showArtistPopup);
 
   // Fetch thumbnail for grid mode
   useEffect(() => {
-    if (displayMode === 'grid' && level.videoLink) {
+    if (displayMode === 'grid' && level?.videoLink) {
       const videoId = level.videoLink.match(/(?:youtu\.be\/|youtube\.com\/(?:.*v=|.*\/videos\/)|youtube-nocookie\.com\/(?:embed\/|v\/)|youtube\.com\/(?:v\/|e\/|embed\/|user\/[^/]+\/u\/[0-9]+\/)|watch\?v=)([^#\&\?]*)/)?.[1];
       if (videoId) {
         setThumbnailUrl(`https://img.youtube.com/vi/${videoId}/mqdefault.jpg`);
       }
     }
-  }, [level.videoLink, displayMode]);
+  }, [level?.videoLink, displayMode]);
 
   // Handlers
   const handleLevelUpdate = (updatedData) => {
@@ -462,6 +466,27 @@ const LevelCard = ({
   // PACK MODE
   // ============================================
   if (displayMode === 'pack') {
+    if (!level) {
+      return (
+        <div className={`level-card pack ${getGlowClass()}`}>
+          {canEdit && dragHandleProps && (
+            <div {...dragHandleProps} className="level-card__drag-handle" title="Drag to reorder or move">
+              <DragHandleIcon />
+            </div>
+          )}
+          <div className="level-card-wrapper">
+            <p className="level-desc" style={{ padding: '0.75rem 1rem' }}>
+              Level data unavailable
+            </p>
+            {canEdit && onDeleteItem && packItem && (
+              <button type="button" className="level-card__delete-btn" onClick={(e) => { e.stopPropagation(); onDeleteItem(packItem); }}>
+                Remove from pack
+              </button>
+            )}
+          </div>
+        </div>
+      );
+    }
     const renderPackTwoLineLayout = () => (
       <>
         <Link className="level-card__link-wrap" to={levelDetailTo} aria-label={getSongDisplayName(level)}>
