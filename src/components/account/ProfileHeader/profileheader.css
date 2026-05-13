@@ -246,6 +246,7 @@
 
 .profile-header__handle-row {
   display: flex;
+  margin-left: 1rem;
   flex-direction: row;
   align-items: center;
   flex-wrap: wrap;
@@ -575,9 +576,6 @@
   .profile-header__body {
     justify-content: center;
   }
-  .profile-header__center {
-    align-items: center;
-  }
   .profile-header__left {
     height: 7.5rem;
   }
@@ -596,6 +594,8 @@
   .profile-header__body { flex-direction: column; }
   .profile-header__center {
     width: 100%;
+    align-items: center;
+    z-index: 4;
   }
   .profile-header__name-svg-text:not(.vertical) {
     display: none;
@@ -606,9 +606,13 @@
   .profile-header__name-vertical {
     display: block;
     width: 100%;
+    padding: 3px;
   }
   .profile-header__left {
     width: 100%;
+  }
+  .profile-header__handle-row {
+    margin-left: 0;
   }
   .profile-header__icon-slots {
     width: unset;

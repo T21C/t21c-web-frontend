@@ -164,7 +164,7 @@ const ProfileHeader = ({
       nameYPosition: "7.65rem", 
       dxPos: "0", 
       textAlign: "left",
-      circleCx: "5rem",
+      circleCx: "80.5",
       circleOffset: "0",
       circleCy: "9rem",
       circleR: "4rem",
@@ -176,17 +176,16 @@ const ProfileHeader = ({
         nameYPosition: "0",
         textAlign: "middle",
         circleCx: "50%",
-        circleOffset: "0"
+        circleOffset: "0.5"
       };
     }
     else if (viewportWidth <= 768) {
       return {
         ...defaultConfig,
         nameXPosition: "50%", 
-        dxPos: "56", 
-        textAlign: "middle",
+        dxPos: "-64", 
         circleCx: "50%",
-        circleOffset: "-148"
+        circleOffset: "-147.5"
       };
     } 
       else {
