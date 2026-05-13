@@ -56,6 +56,7 @@ import {
   sortCurationsForDisplay,
 } from "@/utils/curationTypeUtils";
 import i18next from "i18next";
+import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 
 const minus2Reasons = []
 const gimmickReasons = []
@@ -268,7 +269,7 @@ const TagsDropdown = ({ tags, show, onClose, anchorRef }) => {
 
 const FullInfoPopup = ({ level, onClose, videoDetail, difficulty, onArtistClick }) => {
   const { t } = useTranslation('pages');
-
+  useBodyScrollLock(true);
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === 'Escape') {

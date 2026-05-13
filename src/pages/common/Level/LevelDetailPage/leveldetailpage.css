@@ -1342,7 +1342,7 @@
   }
   
   .level-detail-popup .popup-content .popup-body .credits-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   
   .level-detail-popup .popup-content .popup-body .team-info .each-info {
@@ -1669,7 +1669,7 @@
 /* Full Info Popup Specific Styles */
 .level-detail-popup .popup-content .popup-body .credits-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: var(--spacing-md);
   padding: var(--spacing-md);
   background-color: rgba(255, 255, 255, 0.1);
@@ -1681,6 +1681,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-sm);
+  min-width: 0;
 }
 
 .level-detail-popup .popup-content .popup-body .role-header {
@@ -1689,6 +1690,8 @@
   padding-bottom: var(--spacing-sm);
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   margin-bottom: var(--spacing-sm);
+  min-width: 0;
+  overflow-wrap: break-word;
 }
 
 .level-detail-popup .popup-content .popup-body .owner-badge {
@@ -1702,9 +1705,15 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xs);
+  min-width: 0;
 }
 
 .level-detail-popup .popup-content .popup-body a.creator-name {
+  display: block;
+  max-width: 100%;
+  min-width: 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
   text-decoration: underline;
   text-decoration-color: transparent;
   transition: text-decoration-color 0.15s ease-out;
@@ -2433,10 +2442,6 @@
     width: 95%;
     max-width: none;
     margin: 0;
-  }
-  
-  .level-detail-popup .popup-content {
-    max-height: 95vh;
   }
 }
 
