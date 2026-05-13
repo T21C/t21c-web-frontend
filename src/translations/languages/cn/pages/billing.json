@@ -12,7 +12,7 @@
     "segmentSourceGiftFrom": "{{name}} 赠送",
     "segmentSourceUnknown": "购买",
     "segmentWindow": "{{start}} ➔ {{end}}",
-    "segmentRemaining": "该段剩余约 {{duration}}",
+    "segmentRemaining": "剩余 {{duration}}",
     "remainingLessThanOneDay": "不足一天",
     "remainingApproxDays_one": "{{count}} 天",
     "remainingApproxDays_other": "{{count}} 天"
@@ -32,9 +32,10 @@
     "durationMonths_one": "{{count}} 个月",
     "durationMonths_other": "{{count}} 个月",
     "priceUsdWhole": "USD {{amount}}",
+    "priceFormatted": "{{price}}",
     "savePercent": "省 {{pct}}%",
-    "summaryAria": "{{duration}}，合计 USD {{price}}",
-    "summaryAriaWithSave": "{{duration}}，合计 USD {{price}}，省 {{pct}}%",
+    "summaryAria": "{{duration}}，合计 {{price}}",
+    "summaryAriaWithSave": "{{duration}}，合计 {{price}}，省 {{pct}}%",
     "modeGroupAria": "结账选项",
     "projectedAccessUntil": "购买后，您的 TUFStellar 将延长至 {{date}}。"
   },

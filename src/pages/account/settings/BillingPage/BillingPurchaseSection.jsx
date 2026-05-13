@@ -115,8 +115,8 @@ export function BillingPurchaseSection({
 
         <div className="billing-page__term-summary-box" aria-live="polite">
           <p className="billing-page__term-summary-price">
-            {t("billing.checkout.priceUsdWhole", {
-              amount: checkoutTermPreview.priceWholeUsd,
+            {t("billing.checkout.priceFormatted", {
+              price: checkoutTermPreview.formattedPrice,
             })}
           </p>
           <p className="billing-page__term-summary-duration">{checkoutTermPreview.duration}</p>

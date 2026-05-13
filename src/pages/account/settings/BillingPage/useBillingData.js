@@ -5,12 +5,17 @@ import { toast } from "react-hot-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import api from "@/utils/api";
 import { isTufStellarEnabledForUser } from "@/utils/tufStellarFeature";
-import { computePurchasePreviewProjectedExpiresIso, TUF_STELLAR_TERM_OPTIONS } from "./billingUtils";
+import {
+  computePurchasePreviewProjectedExpiresIso,
+  formatAmount,
+  TUF_STELLAR_DISPLAY_USD_FALLBACK_AMOUNTS,
+  TUF_STELLAR_TERM_OPTIONS,
+} from "./billingUtils";
 
 /** @param {{ loadEvents?: boolean, enableTermPreview?: boolean }} options */
 export function useBillingData(options = {}) {
   const { loadEvents = false, enableTermPreview = false } = options;
-  const { t } = useTranslation(["pages", "common"]);
+  const { t, i18n } = useTranslation(["pages", "common"]);
   const { fetchUser, user } = useAuth();
 
   const [billingState, setBillingState] = useState(null);
@@ -145,27 +150,39 @@ export function useBillingData(options = {}) {
 
   const checkoutTermPreview = useMemo(() => {
     const term = selectedCheckoutTerm;
-    const baseline = TUF_STELLAR_TERM_OPTIONS[0];
-    const baselinePerMonth = baseline.priceUsd / baseline.months;
-    const listUsd = term.months * baselinePerMonth;
-    const rawSave = listUsd > term.priceUsd ? Math.round((1 - term.priceUsd / listUsd) * 100) : 0;
+    const pd = billingState?.pricingDisplay;
+    const currency = pd?.currency ?? "USD";
+    const amounts = pd?.amountsByMonths ?? TUF_STELLAR_DISPLAY_USD_FALLBACK_AMOUNTS;
+    const key = String(term.months);
+    const bundleMajor = Number(amounts[key]);
+    const oneMonthMajor = Number(amounts["1"]);
+    const listMajor = term.months * oneMonthMajor;
+    const rawSave =
+      Number.isFinite(bundleMajor) &&
+      Number.isFinite(listMajor) &&
+      listMajor > bundleMajor &&
+      listMajor > 0
+        ? Math.round((1 - bundleMajor / listMajor) * 100)
+        : 0;
     const duration = t("billing.checkout.durationMonths", { count: term.months });
-    const priceWholeUsd = Math.round(term.priceUsd);
+    const locale = i18n.language || undefined;
+    const formattedPrice =
+      formatAmount(bundleMajor, currency, locale) ?? `${bundleMajor} ${currency}`;
     const ariaText =
       rawSave > 0
         ? t("billing.checkout.summaryAriaWithSave", {
-            price: priceWholeUsd,
+            price: formattedPrice,
             duration,
             pct: rawSave,
           })
-        : t("billing.checkout.summaryAria", { price: priceWholeUsd, duration });
+        : t("billing.checkout.summaryAria", { price: formattedPrice, duration });
     return {
-      priceWholeUsd,
+      formattedPrice,
       duration,
       savePct: rawSave,
       ariaText,
     };
-  }, [selectedCheckoutTerm, t]);
+  }, [selectedCheckoutTerm, billingState?.pricingDisplay, t, i18n.language]);
 
   const canOpenCheckout = canPurchaseOneTime && (!purchaseAsGift || Boolean(giftRecipient?.userId));
 

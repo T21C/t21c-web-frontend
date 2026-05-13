@@ -1,14 +1,28 @@
 // tuf-search: #BillingPage #billingUtils
 
-/** Must match server `tufStellarProductCatalog.ts` order and pricing display. First entry `priceUsd` is the list rate per month for refunds. */
+/**
+ * Catalog term lengths only (order matches server `TUF_STELLAR_ALLOWED_MONTHS`).
+ * Display amounts come from GET /v3/billing/me `pricingDisplay`; USD fallback below matches
+ * server `tufStellarDisplayPriceMatrix.ts` when the API field is absent.
+ */
 export const TUF_STELLAR_TERM_OPTIONS = [
-  { months: 1, priceUsd: 3 },
-  { months: 2, priceUsd: 6 },
-  { months: 3, priceUsd: 8 },
-  { months: 6, priceUsd: 16 },
-  { months: 9, priceUsd: 24 },
-  { months: 12, priceUsd: 30 },
+  { months: 1 },
+  { months: 2 },
+  { months: 3 },
+  { months: 6 },
+  { months: 9 },
+  { months: 12 },
 ];
+
+/** Major-unit USD amounts keyed like `pricingDisplay.amountsByMonths` (client-only fallback). */
+export const TUF_STELLAR_DISPLAY_USD_FALLBACK_AMOUNTS = {
+  "1": 3,
+  "2": 6,
+  "3": 8,
+  "6": 16,
+  "9": 24,
+  "12": 30,
+};
 
 /** Keep in sync with server `misc/utils/time/addCalendarMonthsUtc.ts`. */
 export function addCalendarMonthsUtc(from, months) {

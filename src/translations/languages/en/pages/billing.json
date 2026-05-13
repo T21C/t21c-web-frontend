@@ -12,7 +12,7 @@
     "segmentSourceGiftFrom": "Gift from {{name}}",
     "segmentSourceUnknown": "Purchase",
     "segmentWindow": "{{start}} ➔ {{end}}",
-    "segmentRemaining": "{{duration}} left in this chunk",
+    "segmentRemaining": "{{duration}} left",
     "remainingLessThanOneDay": "less than a day",
     "remainingApproxDays_one": "{{count}} day",
     "remainingApproxDays_other": "{{count}} days"
@@ -32,9 +32,10 @@
     "durationMonths_one": "{{count}} month",
     "durationMonths_other": "{{count}} months",
     "priceUsdWhole": "USD {{amount}}",
+    "priceFormatted": "{{price}}",
     "savePercent": "save {{pct}}%",
-    "summaryAria": "{{duration}}, USD {{price}} total",
-    "summaryAriaWithSave": "{{duration}}, USD {{price}} total, save {{pct}} percent",
+    "summaryAria": "{{duration}}, {{price}} total",
+    "summaryAriaWithSave": "{{duration}}, {{price}} total, save {{pct}} percent",
     "modeGroupAria": "Checkout options",
     "projectedAccessUntil": "Buying this will extend your TUFStellar until {{date}}."
   },

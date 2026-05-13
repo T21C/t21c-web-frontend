@@ -12,7 +12,7 @@
     "segmentSourceGiftFrom": "{{name}}님의 선물",
     "segmentSourceUnknown": "구매",
     "segmentWindow": "{{start}} ➔ {{end}}",
-    "segmentRemaining": "이 구간에 약 {{duration}} 남음",
+    "segmentRemaining": "{{duration}} 남음",
     "remainingLessThanOneDay": "1일 미만",
     "remainingApproxDays_one": "{{count}}일",
     "remainingApproxDays_other": "{{count}}일"
@@ -32,9 +32,10 @@
     "durationMonths_one": "{{count}}개월",
     "durationMonths_other": "{{count}}개월",
     "priceUsdWhole": "USD {{amount}}",
+    "priceFormatted": "{{price}}",
     "savePercent": "{{pct}}% 절약",
-    "summaryAria": "{{duration}}, 총 USD {{price}}",
-    "summaryAriaWithSave": "{{duration}}, 총 USD {{price}}, {{pct}}% 절약",
+    "summaryAria": "{{duration}}, 총 {{price}}",
+    "summaryAriaWithSave": "{{duration}}, 총 {{price}}, {{pct}}% 절약",
     "modeGroupAria": "결제 옵션",
     "projectedAccessUntil": "구매 시 TUFStellar 이용이 {{date}}까지 연장됩니다."
   },
