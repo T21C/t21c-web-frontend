@@ -169,7 +169,7 @@ const ProfileHeader = ({
       circleCy: "9rem",
       circleR: "4rem",
     }
-    if (viewportWidth < 600) {
+    if (viewportWidth <= 600) {
       return {
         ...defaultConfig,
         nameXPosition: "50%",
@@ -179,11 +179,11 @@ const ProfileHeader = ({
         circleOffset: "0"
       };
     }
-    else if (viewportWidth < 768) {
+    else if (viewportWidth <= 768) {
       return {
         ...defaultConfig,
-        nameXPosition: "60%", 
-        dxPos: "16", 
+        nameXPosition: "50%", 
+        dxPos: "56", 
         textAlign: "middle",
         circleCx: "50%",
         circleOffset: "-148"
@@ -298,21 +298,11 @@ const ProfileHeader = ({
 
   const STELLAR_ICON_SIZE = 28;
   const STELLAR_ICON_GAP = 14;
+  const STELLAR_ICON_HALF = STELLAR_ICON_SIZE / 2;
   /** Pin to the same local y as `<text>` (hanging baseline at 0). Do not use bbox height — stacked glyphs skew vertical centering. */
   const STELLAR_ICON_DY = 0;
-  const { textRef: profileNameTextRef, dimensions: profileNameTextDimensions } = useSvgTextDimensions(
-    displayName,
-    config.dxPos,
-    config.textAlign,
-    viewportWidth,
-  );
-  const stellarIconGroupTransform = useMemo(() => {
-
-    const transform = profileNameTextDimensions != null
-        ? `translate(${profileNameTextDimensions.x + profileNameTextDimensions.width + STELLAR_ICON_GAP}, ${STELLAR_ICON_DY})`
-        : `translate(${STELLAR_ICON_GAP}, ${STELLAR_ICON_DY})`;
-    return transform + " scale(1.5)";
-    }, [profileNameTextDimensions]);
+  const isNarrowNameLayout = viewportWidth < 600;
+  const showStellarInBannerOverlay = !isNarrowNameLayout;
 
   const showStellarBadge = isTufStellarAccessActive(avatarSubject?.user);
   const resolvedStellarVariant = useMemo(
@@ -320,98 +310,110 @@ const ProfileHeader = ({
     [stellarIconVariant],
   );
 
+  /** Shift name slightly when a trailing stellar icon shares the row (middle anchor). */
+  const stellarMiddleNameDxNudge =
+    showStellarBadge && config.textAlign === "middle" ? -STELLAR_ICON_HALF : 0;
+  const overlayNameDx = (Number(config.dxPos) || 0) + stellarMiddleNameDxNudge;
+
+  const overlayNameDims = useSvgTextDimensions(
+    displayName,
+    String(overlayNameDx),
+    config.textAlign,
+    viewportWidth,
+  );
+  const verticalNameDims = useSvgTextDimensions(
+    displayName,
+    String(overlayNameDx),
+    config.textAlign,
+    viewportWidth,
+  );
+
+  const verticalNameFoRef = useRef(null);
+  const [verticalFoBBox, setVerticalFoBBox] = useState(null);
+
+  useLayoutEffect(() => {
+    if (!isNarrowNameLayout || !showStellarBadge) {
+      setVerticalFoBBox(null);
+      return undefined;
+    }
+    const fo = verticalNameFoRef.current;
+    if (!fo) {
+      setVerticalFoBBox(null);
+      return undefined;
+    }
+    const measure = () => {
+      try {
+        const b = fo.getBBox();
+        setVerticalFoBBox({ x: b.x, y: b.y, width: b.width, height: b.height });
+      } catch {
+        setVerticalFoBBox(null);
+      }
+    };
+    measure();
+    const ro =
+      typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(() => {
+            requestAnimationFrame(measure);
+          })
+        : null;
+    if (ro) ro.observe(fo);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro?.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [
+    isNarrowNameLayout,
+    showStellarBadge,
+    displayName,
+    overlayNameDx,
+    config.textAlign,
+    config.nameXPosition,
+    config.nameYPosition,
+  ]);
+
+  const profileNameTextDimensions = isNarrowNameLayout
+    ? showStellarBadge
+      ? verticalFoBBox
+      : verticalNameDims.dimensions
+    : overlayNameDims.dimensions;
+
+  const stellarIconGroupTransform = useMemo(() => {
+    if (profileNameTextDimensions == null) {
+      return `translate(${STELLAR_ICON_GAP}, ${STELLAR_ICON_DY}) scale(1.5)`;
+    }
+    const { x, y, width, height } = profileNameTextDimensions;
+    const tx = x + width + STELLAR_ICON_GAP;
+    const scaledIcon = STELLAR_ICON_SIZE * 1.5;
+    const alignStellarToFoBlock =
+      isNarrowNameLayout && showStellarBadge && profileNameTextDimensions != null;
+    const ty = alignStellarToFoBlock
+      ? y + height / 2 - scaledIcon / 2
+      : STELLAR_ICON_DY;
+    return `translate(${tx}, ${ty}) scale(1.5)`;
+  }, [profileNameTextDimensions, isNarrowNameLayout, showStellarBadge]);
+
   return (
     <div className={shellClass}>
       <div className="profile-header">
-        <div className="profile-header__name-position">
-            <div className="profile-header__name-wrap name-mask">
-              <svg
-                className="profile-header__name-svg"
-                dominantBaseline="hanging"
+      {showStellarBadge ? (
+              <Tooltip
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.25rem",
+                  fontWeight: "500",
+                  fontSize: "1rem",
+                  zIndex: "1000",
+                }}
+                id={PROFILE_HEADER_STELLAR_TOOLTIP_ID}
+                place="top"
+                noArrow
               >
-                <defs>
-                  <mask 
-                  id="name-cutout-mask"
-                  maskUnits="userSpaceOnUse"
-                  maskContentUnits="userSpaceOnUse"
-                  >
-                    <rect x="0" y="0" width="100%" height="100%" fill="white" />
-                    <text
-                      x={`${config.nameXPosition}`}
-                      y={`${config.nameYPosition}`}
-                      fill="black"
-                      stroke="black"
-                      strokeWidth="8px"
-                      dx={config.dxPos}
-                      strokeLinejoin="round"
-                      className="profile-header__name-svg-text"
-                      textAnchor={config.textAlign}
-                      {...nameTooltipProps}
-                    >
-                      {displayName}
-                    </text>
-                    <g style={{transform: `translate(${config.nameXPosition}, ${config.nameYPosition})`}}>
-                    <text
-                      id="name-text"
-                      ref={profileNameTextRef}
-                      dx={config.dxPos}
-                      className="profile-header__name-svg-text"
-                      textAnchor={config.textAlign}
-                      {...nameTooltipProps}
-                    >
-                      {displayName}
-                    </text>
-                    {showStellarBadge ? (
-                    <g transform={stellarIconGroupTransform}>
-                    <circle cx={STELLAR_ICON_GAP} cy={STELLAR_ICON_DY+(STELLAR_ICON_SIZE)/2} r={(STELLAR_ICON_SIZE+8)/2} fill="black" />
-                    </g>
-                    ) : null}
-                  </g>
-                    <g transform={`translate(${config.circleOffset}, 0)`}>
-                    <circle cy={config.circleCy} cx={config.circleCx} r={config.circleR} fill="black" />
-                    </g>
-                  </mask>
-                </defs>
-              </svg>
-              </div>
-              <div className="profile-header__name-wrap">
-                <svg
-                  className="profile-header__name-svg"
-                  dominantBaseline="hanging"
-                >
-                  <g style={{transform: `translate(${config.nameXPosition}, ${config.nameYPosition})`}}>
-                    <text
-                      id="name-text"
-                      ref={profileNameTextRef}
-                      dx={config.dxPos}
-                      className="profile-header__name-svg-text"
-                      textAnchor={config.textAlign}
-                      {...nameTooltipProps}
-                    >
-                      {displayName}
-                    </text>
-                    {showStellarBadge ? (
-                    <g transform={stellarIconGroupTransform}>
-                      <TUFStellarIcon
-                        svg
-                        variant={resolvedStellarVariant}
-                        className="profile-header__stellar-icon"
-                        size={STELLAR_ICON_SIZE}
-                        color="#fff"
-                        data-tooltip-id={PROFILE_HEADER_STELLAR_TOOLTIP_ID}
-                        style={{ filter: "drop-shadow(0 0 6px rgba(255, 255, 255, 0.2))" }}
-                      />
-                    </g>
-                    ) : null}
-                  </g>
-                </svg>
-                {showStellarBadge ? (
-                <Tooltip style={{ display: "flex", alignItems: "center", gap: "0.25rem", fontWeight: "500", fontSize: "1rem"}} id={PROFILE_HEADER_STELLAR_TOOLTIP_ID} place="top" noArrow>
-                  {t("profile.stellarSubscriberIconTooltip")} <HeartIcon size={18} color="#f44" fill="#f44" strokeWidth="2" />
-                </Tooltip>
-                ) : null}
-              </div>
-        </div>
+                {t("profile.stellarSubscriberIconTooltip")}{" "}
+                <HeartIcon size={18} color="#f44" fill="#f44" strokeWidth="2" />
+              </Tooltip>
+            ) : null}
         <div className="profile-header__banner-wrap" aria-hidden="true">
           <img
             className="profile-header__banner-img"
@@ -419,6 +421,56 @@ const ProfileHeader = ({
             alt=""
             decoding="async"
           />
+        </div>
+        <div className="profile-header__name-mask-defs" aria-hidden="true">
+          <div className="profile-header__name-wrap name-mask">
+            <svg className="profile-header__name-svg" dominantBaseline="hanging">
+              <defs>
+                <mask
+                  id="name-cutout-mask"
+                  maskUnits="userSpaceOnUse"
+                  maskContentUnits="userSpaceOnUse"
+                >
+                  <rect x="0" y="0" width="100%" height="100%" fill="white" />
+                  <text
+                    x={`${config.nameXPosition}`}
+                    y={`${config.nameYPosition}`}
+                    fill="black"
+                    stroke="black"
+                    strokeWidth="8px"
+                    dx={overlayNameDx}
+                    strokeLinejoin="round"
+                    className="profile-header__name-svg-text"
+                    textAnchor={config.textAlign}
+                  >
+                    {displayName}
+                  </text>
+                  <g style={{ transform: `translate(${config.nameXPosition}, ${config.nameYPosition})` }}>
+                    <text
+                      dx={overlayNameDx}
+                      className="profile-header__name-svg-text"
+                      textAnchor={config.textAlign}
+                    >
+                      {displayName}
+                    </text>
+                    {showStellarBadge && showStellarInBannerOverlay ? (
+                      <g transform={stellarIconGroupTransform}>
+                        <circle
+                          cx={STELLAR_ICON_GAP}
+                          cy={STELLAR_ICON_DY + STELLAR_ICON_SIZE / 2}
+                          r={(STELLAR_ICON_SIZE + 8) / 2}
+                          fill="black"
+                        />
+                      </g>
+                    ) : null}
+                  </g>
+                  <g transform={`translate(${config.circleOffset}, 0)`}>
+                    <circle cy={config.circleCy} cx={config.circleCx} r={config.circleR} fill="black" />
+                  </g>
+                </mask>
+              </defs>
+            </svg>
+          </div>
         </div>
         <div className="profile-header__inner">
           <div className="profile-header__body">
@@ -446,20 +498,78 @@ const ProfileHeader = ({
                 {badgeText}
               </div>
               <div className="profile-header__name-vertical">
-              <svg
-                  className="profile-header__name-svg"
-                  dominantBaseline="hanging"
-                >
-                  <text
-                    x={`${config.nameXPosition}`}
-                    y={`${config.nameYPosition}`}
-                    dx={config.dxPos}
-                    className="profile-header__name-svg-text vertical"
-                    textAnchor={config.textAlign}
-                    {...nameTooltipProps}
+                <svg className="profile-header__name-svg profile-header__name-svg--vertical" dominantBaseline="hanging">
+                  <g
+                    style={{
+                      transform: `translate(${config.nameXPosition}, ${config.nameYPosition})`,
+                    }}
                   >
-                    {displayName}
-                  </text>
+                    {isNarrowNameLayout && showStellarBadge ? (
+                      <>
+                        <foreignObject
+                          ref={verticalNameFoRef}
+                          x="-50%"
+                          y="0"
+                          width="100%"
+                          height="12rem"
+                        >
+                          <div
+                            xmlns="http://www.w3.org/1999/xhtml"
+                            style={{
+                              position: "relative",
+                              display: "flex",
+                              textAlign: "center",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              gap: "0.25rem",
+                              width: "100%"
+                            }}
+                            {...nameTooltipProps}
+                          >
+                            <span className="profile-header__name-vertical-fo">
+                            {displayName}
+                            </span>
+                            
+                            {showStellarBadge ? (
+                              <TUFStellarIcon
+                                variant={resolvedStellarVariant}
+                                className="profile-header__stellar-icon vertical"
+                                size={STELLAR_ICON_SIZE*1.25}
+                                color="#fff"
+                                data-tooltip-id={PROFILE_HEADER_STELLAR_TOOLTIP_ID}
+                                style={{ filter: "drop-shadow(0 0 6px rgba(255, 255, 255, 0.2))" }}
+                              />
+                          ) : null}
+                          </div>
+
+                        </foreignObject>
+                        <g
+                          className="profile-header__stellar-hit profile-header__stellar-hit--vertical"
+                          transform={stellarIconGroupTransform}
+                        >
+                          <TUFStellarIcon
+                            svg
+                            variant={resolvedStellarVariant}
+                            className="profile-header__stellar-icon vertical"
+                            size={STELLAR_ICON_SIZE}
+                            color="#fff"
+                            data-tooltip-id={PROFILE_HEADER_STELLAR_TOOLTIP_ID}
+                            style={{ filter: "drop-shadow(0 0 6px rgba(255, 255, 255, 0.2))" }}
+                          />
+                        </g>
+                      </>
+                    ) : (
+                      <text
+                        ref={verticalNameDims.textRef}
+                        dx={overlayNameDx}
+                        className="profile-header__name-svg-text vertical"
+                        textAnchor={config.textAlign}
+                        {...nameTooltipProps}
+                      >
+                        {displayName}
+                      </text>
+                    )}
+                  </g>
                 </svg>
               </div>
             </div>
@@ -484,32 +594,8 @@ const ProfileHeader = ({
                 <div
                   className={`profile-header__icon-slots-block ${showIconPanel ? "profile-header__icon-slots-block--curation" : ""}`}
                 >
-                    {showIconPanel ? (
-                    <button
-                      type="button"
-                      className="profile-header__chevron-btn profile-header__chevron-btn--icon-panel"
-                      aria-expanded={iconPanelOpen}
-                      aria-haspopup="dialog"
-                      aria-label={
-                        iconPanelOpen
-                          ? (mode === "creator"
-                              ? t("creators.profile.curationPanel.collapseAria")
-                              : t("profile.funFacts.collapseAria"))
-                          : (mode === "creator"
-                              ? t("creators.profile.curationPanel.expandAria")
-                              : t("profile.funFacts.expandAria"))
-                      }
-                      onClick={() => setIconPanelOpen((v) => !v)}
-                    >
-                      <ChevronIcon
-                        direction={iconPanelOpen ? "up" : "down"}
-                        color="var(--color-white)"
-                        size={14}
-                      />
-                    </button>
-                  ) : null}
                   <div className="profile-header__icon-slots">
-                    {resolvedSlots.map((slot) => (
+                    {resolvedSlots.map((slot, index) => (
                       <div
                         key={slot.key}
                         className="profile-header__icon-slot"
@@ -526,6 +612,30 @@ const ProfileHeader = ({
                           <span className="profile-header__icon-slot-letter">{slot.letter}</span>
                         )}
                         <span className="profile-header__icon-slot-badge">{slot.badge ?? slot.count ?? 0}</span>
+                        {showIconPanel && index === resolvedSlots.length - 1 ? (
+                          <button
+                            type="button"
+                            className="profile-header__chevron-btn profile-header__chevron-btn--icon-panel"
+                            aria-expanded={iconPanelOpen}
+                            aria-haspopup="dialog"
+                            aria-label={
+                              iconPanelOpen
+                                ? (mode === "creator"
+                                    ? t("creators.profile.curationPanel.collapseAria")
+                                    : t("profile.funFacts.collapseAria"))
+                                : (mode === "creator"
+                                    ? t("creators.profile.curationPanel.expandAria")
+                                    : t("profile.funFacts.expandAria"))
+                            }
+                            onClick={() => setIconPanelOpen((v) => !v)}
+                          >
+                            <ChevronIcon
+                              direction={iconPanelOpen ? "up" : "down"}
+                              color="var(--color-white)"
+                              size={14}
+                            />
+                          </button>
+                        ) : null}
                       </div>
                     ))}
                   </div>
@@ -617,6 +727,41 @@ const ProfileHeader = ({
               </div>
             </div>
           ) : null}
+        </div>
+        <div className="profile-header__name-overlay">
+          <div className="profile-header__name-wrap">
+            <svg className="profile-header__name-svg" dominantBaseline="hanging">
+              <g
+                style={{
+                  transform: `translate(${config.nameXPosition}, ${config.nameYPosition})`,
+                }}
+              >
+                <text
+                  ref={overlayNameDims.textRef}
+                  dx={overlayNameDx}
+                  className="profile-header__name-svg-text"
+                  textAnchor={config.textAlign}
+                  {...nameTooltipProps}
+                >
+                  {displayName}
+                </text>
+                {showStellarBadge && showStellarInBannerOverlay ? (
+                  <g className="profile-header__stellar-hit" transform={stellarIconGroupTransform}>
+                    <TUFStellarIcon
+                      svg
+                      variant={resolvedStellarVariant}
+                      className="profile-header__stellar-icon"
+                      size={STELLAR_ICON_SIZE}
+                      color="#fff"
+                      data-tooltip-id={PROFILE_HEADER_STELLAR_TOOLTIP_ID}
+                      style={{ filter: "drop-shadow(0 0 6px rgba(255, 255, 255, 0.2))" }}
+                    />
+                  </g>
+                ) : null}
+              </g>
+            </svg>
+            
+          </div>
         </div>
       </div>
       {actions ? (

@@ -55,11 +55,37 @@
   mask-size: 100% 100%;
 }
 
-.profile-header__name-position {
+/* Mask definition only: below inner content; no pointer capture (see name-overlay for hit targets). */
+.profile-header__name-mask-defs {
   position: relative;
-  top: 0;
-  z-index: 4;
+  z-index: 0;
   height: 0;
+  width: 100%;
+  pointer-events: none;
+}
+
+/* Visible name + stellar: painted above inner; transparent regions pass events through to inner. */
+.profile-header__name-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 3;
+  height: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.profile-header__name-overlay .profile-header__name-svg {
+  pointer-events: none;
+}
+
+.profile-header__name-overlay .profile-header__name-svg-text {
+  pointer-events: auto;
+}
+
+.profile-header__name-overlay .profile-header__stellar-hit {
+  pointer-events: auto;
 }
 
 .profile-header__name-wrap {
@@ -69,6 +95,32 @@
 .profile-header__name-svg {
   width: 100%;
   height: 15rem;
+}
+
+.profile-header__name-svg.profile-header__name-svg--vertical {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 2.5rem;
+  max-height: 14rem;
+}
+
+.profile-header .profile-header__name-vertical-fo {
+  box-sizing: border-box;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0;
+  padding: 0 0.35rem;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--color-white);
+  text-align: center;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  hyphens: auto;
 }
 
 .profile-header__name-svg-text {
@@ -96,7 +148,7 @@
 
 .profile-header__inner {
   position: relative;
-  z-index: 3;
+  z-index: 2;
   display: flex;
   flex-direction: column;
 }
@@ -124,7 +176,7 @@
   top: 0.75rem;
   right: 0;
   transform: translateX(125%);
-  z-index: 3;
+  z-index: 5;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -192,8 +244,7 @@
   align-self: start;
 }
 
-.profile-header__handle-row,
-.profile-header__icon-row {
+.profile-header__handle-row {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -217,6 +268,9 @@
   font-size: 0.95rem;
   color: var(--color-white-t80);
 }
+.profile-header__icon-row{
+  width: fit-content;
+}
 
 .profile-header__icon-slots-block {
   position: relative;
@@ -234,6 +288,7 @@
   display: flex;
   flex-direction: row;
   width: 17rem;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem;
   z-index: 2;
@@ -551,5 +606,22 @@
   .profile-header__name-vertical {
     display: block;
     width: 100%;
+  }
+  .profile-header__left {
+    width: 100%;
+  }
+  .profile-header__icon-slots {
+    width: unset;
+  }
+}
+
+.profile-header__name-vertical .profile-header__stellar-hit--vertical {
+  pointer-events: auto;
+}
+
+/* Under 768px layout: keep overlay under inner so it does not sit above interactive rows; name/stellar remain visible through transparent body areas. */
+@media (max-width: 768px) {
+  .profile-header__name-overlay {
+    z-index: 3;
   }
 }

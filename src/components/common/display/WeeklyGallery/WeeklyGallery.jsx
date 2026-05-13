@@ -232,28 +232,32 @@ const WeeklyGallery = ({
     };
   };
 
-    // Handle arrow key navigation
-    useEffect(() => {
-      if (curations.length <= 1) return;
-  
-      const handleKeyDown = (event) => {
-        // Only handle arrow keys if not typing in an input field
-        if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
-          return;
-        }
-  
-        if (event.key === 'ArrowLeft') {
-          event.preventDefault();
-          goToPrevious();
-        } else if (event.key === 'ArrowRight') {
-          event.preventDefault();
-          goToNext();
-        }
-      };
-  
-      window.addEventListener('keydown', handleKeyDown);
-      return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [curations.length, goToNext, goToPrevious]);
+  // Handle arrow key navigation
+  useEffect(() => {
+    if (curations.length <= 1) return;
+
+    const handleKeyDown = (event) => {
+      const el = event.target;
+      if (el?.tagName === 'INPUT' || el?.tagName === 'TEXTAREA' || el?.isContentEditable) {
+        return;
+      }
+      // No intercepting browser/OS shortcuts
+      if (event.altKey || event.metaKey || event.ctrlKey) {
+        return;
+      }
+
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        goToPrevious();
+      } else if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        goToNext();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [curations.length, goToNext, goToPrevious]);
 
   if (curations.length === 0) {
     return (
