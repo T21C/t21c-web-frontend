@@ -205,7 +205,7 @@ const SettingsCreatorPage = () => {
     return getEffectiveProfileBannerUrl({
       bannerPreset: effectiveBannerPreset,
       customBannerUrl: profile.customBannerUrl,
-      subjectUser: { permissionFlags: flags },
+      subjectUser: creatorDoc.user,
     });
   }, [profile, creatorDoc?.user, user?.permissionFlags, bannerPresetDraft]);
 

@@ -127,7 +127,7 @@ const CreatorProfilePage = () => {
     return getEffectiveProfileBannerUrl({
       bannerPreset: profile.bannerPreset,
       customBannerUrl: profile.customBannerUrl,
-      subjectUser: { permissionFlags: u?.permissionFlags ?? 0 },
+      subjectUser: u,
     });
   }, [profile, creatorDoc]);
 

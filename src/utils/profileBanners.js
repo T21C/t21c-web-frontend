@@ -83,6 +83,10 @@ export function subjectHasCustomBannerEntitlement(subjectUser) {
  */
 export function getEffectiveProfileBannerUrl({ bannerPreset, customBannerUrl, subjectUser }) {
   const custom = typeof customBannerUrl === "string" && customBannerUrl.trim() ? customBannerUrl.trim() : null;
+  console.log("custom", custom);
+  console.log("customProfileBannersEnabled", customProfileBannersEnabled());
+  console.log("isHttpLikeUrl(custom)", isHttpLikeUrl(custom));
+  console.log("subjectHasCustomBannerEntitlement(subjectUser)", subjectUser);
   if (
     customProfileBannersEnabled() &&
     custom &&

@@ -439,7 +439,7 @@ const ProfilePage = () => {
         return getEffectiveProfileBannerUrl({
           bannerPreset: playerData.bannerPreset,
           customBannerUrl: playerData.customBannerUrl,
-          subjectUser: { permissionFlags: playerData.user?.permissionFlags ?? 0 },
+          subjectUser: playerData.user,
         });
       }, [playerData]);
 

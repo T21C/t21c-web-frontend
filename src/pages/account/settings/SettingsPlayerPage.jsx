@@ -135,7 +135,7 @@ const SettingsPlayerPage = () => {
     return getEffectiveProfileBannerUrl({
       bannerPreset: effectiveBannerPreset,
       customBannerUrl: playerData.customBannerUrl,
-      subjectUser: { permissionFlags: flags },
+      subjectUser: playerData.user,
     });
   }, [playerData, user?.permissionFlags, bannerPresetDraft]);
 
