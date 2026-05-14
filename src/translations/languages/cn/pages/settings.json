@@ -54,6 +54,7 @@
     "sectionExpandAria": "展开",
     "sectionCollapseAria": "收起",
     "presetHint": "从列表中选择一个横幅",
+    "freePresetsHiddenForCustom": "已选择自定义横幅，免费横幅列表已隐藏。",
     "presetGroupAria": "横幅预设",
     "preset_default": "默认",
     "presetSaved": "横幅已保存",

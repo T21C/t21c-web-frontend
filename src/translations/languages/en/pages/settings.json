@@ -54,6 +54,7 @@
     "sectionExpandAria": "Expand profile banner options",
     "sectionCollapseAria": "Collapse profile banner options",
     "presetHint": "Pick a free banner from the list",
+    "freePresetsHiddenForCustom": "Free banners are hidden while a custom banner is selected.",
     "presetGroupAria": "Banner presets",
     "preset_default": "Default",
     "presetSaved": "Banner saved",

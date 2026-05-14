@@ -15,7 +15,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import './entityManagementPage.css';
 import { Link } from 'react-router-dom';
 import { getVerificationClass, isCdnUrl, isImageUrl } from '@/utils/Utility';
-import { EvidenceGalleryPopup } from '@/components/popups/Evidence';
+import { GalleryInspectPopup } from '@/components/popups/Evidence';
 import { CDN_IMAGE_ACCEPT } from '@/constants/cdnImageAccept';
 
 const EntityManagementPage = ({ type = 'artist' }) => {
@@ -454,9 +454,10 @@ const EntityManagementPage = ({ type = 'artist' }) => {
       )}
 
       {showEvidenceGallery && (
-        <EvidenceGalleryPopup
+        <GalleryInspectPopup
           evidence={showEvidenceGallery}
           onClose={() => setShowEvidenceGallery(null)}
+          showTitleHeader={true}
         />
       )}
 

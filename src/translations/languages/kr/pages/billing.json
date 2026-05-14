@@ -17,6 +17,45 @@
     "remainingApproxDays_one": "{{count}}일",
     "remainingApproxDays_other": "{{count}}일"
   },
+  "benefits": {
+    "sectionTitle": "TUFStellar에 포함되는 항목",
+    "expand": "포함 항목 펼치기",
+    "collapse": "포함 항목 접기",
+    "demoImageEnlargeAria": "크게 보기",
+    "includedHeading": "포함",
+    "included": {
+      "animatedPfp": {
+        "title": "애니메이션 프로필 사진",
+        "body": "GIF를 프로필 사진으로 설정할 수 있습니다."
+      },
+      "customBanners": {
+        "title": "커스텀 배너",
+        "body": "프로필 헤더 뒤에 원하는 배너 이미지를 설정할 수 있습니다. 애니메이션 이미지도 지원합니다."
+      },
+      "supporterIcon": {
+        "title": "서포터 아이콘",
+        "body": "리더보드와 프로필에서 이름 옆에 표시될 서포터 아이콘을 고를 수 있습니다."
+      }
+    },
+    "comingHeading": "곧 제공 예정",
+    "comingIntro": "TUFStellar는 계속 개발 중입니다. 아래는 목표로 하는 기능이며, 일정은 변경될 수 있습니다.",
+    "coming": {
+      "gradients": {
+        "title": "커스텀 그라데이션",
+        "body": "CSS 스타일 그라데이션을 골라 프로필 모습을 더 세밀하게 조절할 수 있습니다."
+      },
+      "bios": {
+        "title": "더 풍부한 소개",
+        "body": "간단한 마크다운 형식을 지원해 일반 텍스트 이상으로 소개를 구성할 수 있습니다."
+      },
+      "layout": {
+        "title": "프로필 레이아웃",
+        "body": "프로필 섹션 순서를 바꿀 수 있습니다(예: 난이도 통계보다 순위 기록을 위에 두기 등)."
+      }
+    },
+    "ideasHeading": "의견을 환영합니다",
+    "ideasBody": "TUFStellar는 이제 막 시작했습니다. 프로필이나 사이트를 더 즐겁게 만들 아이디어가 있다면 <discordLink>Discord에서 알려 주세요</discordLink>. 제안은 꼼꼼히 읽습니다."
+  },
   "checkout": {
     "purchaseAsGift": "선물로 구매",
     "giftNonRefundable": "선물은 환불되지 않습니다. 받는 사람을 신중히 선택하세요.",

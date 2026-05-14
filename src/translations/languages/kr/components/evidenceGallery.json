@@ -1,13 +1,14 @@
 {
-  "title": "Evidence Gallery",
-  "noEvidence": "No evidence available",
-  "previous": "Previous image",
-  "next": "Next image",
-  "delete": "Delete evidence",
-  "confirmDelete": "Are you sure you want to delete this evidence?",
-  "type": "Type",
-  "resetZoom": "Reset zoom",
-  "reset": "Reset",
-  "externalLinkHint": "Click to open external link",
-  "extraInfo": "Additional Information"
+  "title": "증빙 갤러리",
+  "noEvidence": "표시할 증빙이 없습니다",
+  "previous": "이전 이미지",
+  "next": "다음 이미지",
+  "delete": "증빙 삭제",
+  "confirmDelete": "이 증빙을 삭제할까요?",
+  "type": "유형",
+  "resetZoom": "확대/축소 초기화",
+  "reset": "초기화",
+  "externalLinkHint": "클릭하여 외부 링크 열기",
+  "openInNewTab": "새 탭에서 열기",
+  "extraInfo": "추가 정보"
 }

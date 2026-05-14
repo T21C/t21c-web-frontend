@@ -177,6 +177,7 @@
   height: 60px;
   max-width: 200px;
   border-radius: 8px;
+  cursor: zoom-in;
 }
 
 .entity-management-container .evidence-link-item {

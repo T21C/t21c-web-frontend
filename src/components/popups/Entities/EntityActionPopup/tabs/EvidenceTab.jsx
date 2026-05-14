@@ -2,7 +2,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { isImageUrl, isCdnUrl } from '@/utils/Utility';
-import { EvidenceGalleryPopup } from '@/components/popups/Evidence';
+import { GalleryInspectPopup } from '@/components/popups/Evidence';
 import { CDN_IMAGE_ACCEPT } from '@/constants/cdnImageAccept';
 
 export const EvidenceTab = ({
@@ -316,11 +316,12 @@ export const EvidenceTab = ({
       )}
 
       {showEvidenceGallery && (
-        <EvidenceGalleryPopup
+        <GalleryInspectPopup
           evidence={evidences}
           onClose={() => setShowEvidenceGallery(false)}
           onDelete={handleDeleteEvidence}
           canDelete={true}
+          showTitleHeader={true}
         />
       )}
     </div>

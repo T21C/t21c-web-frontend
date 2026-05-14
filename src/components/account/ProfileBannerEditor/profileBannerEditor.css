@@ -25,6 +25,17 @@
   color: var(--color-gray-2);
 }
 
+.profile-banner-editor .profile-banner-editor__preset-hidden-info {
+  margin: 0;
+  font-size: 0.84rem;
+  line-height: 1.45;
+  color: var(--color-white-t80);
+  padding: 0.5rem 0.65rem;
+  border-radius: 6px;
+  border: 1px solid var(--color-white-t15);
+  background: var(--color-white-t5);
+}
+
 .profile-banner-editor__manifest-status {
   margin: 0;
   font-size: 0.88rem;

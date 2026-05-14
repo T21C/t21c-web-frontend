@@ -17,6 +17,45 @@
     "remainingApproxDays_one": "{{count}} day",
     "remainingApproxDays_other": "{{count}} days"
   },
+  "benefits": {
+    "sectionTitle": "What's included with TUFStellar",
+    "expand": "Show what's included",
+    "collapse": "Hide what's included",
+    "demoImageEnlargeAria": "View full size",
+    "includedHeading": "Included",
+    "included": {
+      "animatedPfp": {
+        "title": "Animated profile pictures",
+        "body": "Set an animated GIF as your profile picture."
+      },
+      "customBanners": {
+        "title": "Custom banners",
+        "body": "Set your own banner image behind your profile header, including animated images."
+      },
+      "supporterIcon": {
+        "title": "Supporter icon",
+        "body": "Pick a supporter icon that appears next to your name on leaderboards and on your profile."
+      }
+    },
+    "comingHeading": "Coming next",
+    "comingIntro": "We're still building out TUFStellar. Here's what we're working toward (timing may change):",
+    "coming": {
+      "gradients": {
+        "title": "Custom gradients",
+        "body": "Choose CSS-style gradients for more control over how your profile looks."
+      },
+      "bios": {
+        "title": "Richer bios",
+        "body": "Support for a simple formatting language (Markdown) so you can structure your bio beyond plain text."
+      },
+      "layout": {
+        "title": "Profile layout",
+        "body": "Reorder profile sections (for example, put rank history above difficulty stats) so what you care about shows up first."
+      }
+    },
+    "ideasHeading": "Ideas welcome",
+    "ideasBody": "TUFStellar is new, and we'd love your input. If you have a feature that would make your profile or the site more fun to use, <discordLink>tell us in Discord</discordLink> — we read suggestions."
+  },
   "checkout": {
     "purchaseAsGift": "Purchase as a gift",
     "giftNonRefundable": "Gifts are not refundable. Choose the recipient carefully.",

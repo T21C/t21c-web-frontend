@@ -17,6 +17,45 @@
     "remainingApproxDays_one": "{{count}} 天",
     "remainingApproxDays_other": "{{count}} 天"
   },
+  "benefits": {
+    "sectionTitle": "TUFStellar 包含哪些内容",
+    "expand": "展开查看包含内容",
+    "collapse": "收起包含内容",
+    "demoImageEnlargeAria": "查看大图",
+    "includedHeading": "已包含",
+    "included": {
+      "animatedPfp": {
+        "title": "动态头像",
+        "body": "可将动图（GIF）设为个人头像。"
+      },
+      "customBanners": {
+        "title": "自定义横幅",
+        "body": "可在个人资料页头部背后设置自定义横幅图片，支持动图。"
+      },
+      "supporterIcon": {
+        "title": "支持者图标",
+        "body": "可选择在排行榜与个人资料中显示在您名字旁的支持者图标。"
+      }
+    },
+    "comingHeading": "即将推出",
+    "comingIntro": "我们正在持续完善 TUFStellar。以下是我们努力的方向（上线时间可能会有所调整）：",
+    "coming": {
+      "gradients": {
+        "title": "自定义渐变",
+        "body": "支持类似 CSS 的渐变，以更精细地控制个人资料外观。"
+      },
+      "bios": {
+        "title": "更丰富的个人简介",
+        "body": "支持简单的 Markdown 格式，让您可以在纯文本之外组织简介内容。"
+      },
+      "layout": {
+        "title": "资料版式",
+        "body": "可调整个人资料各部分顺序（例如将段位历史置于难度统计之上），让您关心的内容优先展示。"
+      }
+    },
+    "ideasHeading": "欢迎提出建议",
+    "ideasBody": "TUFStellar 尚在完善，我们非常期待您的想法。若有能让个人资料或网站更有趣的功能，请<discordLink>在 Discord 告诉我们</discordLink>，我们会认真阅读建议。"
+  },
   "checkout": {
     "purchaseAsGift": "作为礼物购买",
     "giftNonRefundable": "礼物不可退款。请谨慎选择收款人。",

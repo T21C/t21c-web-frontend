@@ -295,65 +295,79 @@ const ProfileBannerEditor = ({
   const clearDisabled =
     serverNorm === null && (presetDraft === undefined || presetDraft === null);
 
+  /** Custom banner wins over free presets; picking presets would not change the visible banner. */
+  const hideFreePresetPicker = hasStoredCustom && canEditCustom;
+
   return (
     <div className="profile-banner-editor">
       {showHeading ? (
         <h3 className="profile-banner-editor__title">{t("settings.banner.sectionTitle")}</h3>
       ) : null}
-      <p className="profile-banner-editor__hint">{t("settings.banner.presetHint")}</p>
+      {hideFreePresetPicker ? (
+        <p className="profile-banner-editor__preset-hidden-info" role="status">
+          {t("settings.banner.freePresetsHiddenForCustom")}
+        </p>
+      ) : null}
+      {hideFreePresetPicker ? null : (
+        <p className="profile-banner-editor__hint">{t("settings.banner.presetHint")}</p>
+      )}
 
-      {manifestStatus === "loading" ? (
+      {manifestStatus === "loading" && !hideFreePresetPicker ? (
         <p className="profile-banner-editor__manifest-status">{t("settings.banner.manifestLoading")}</p>
       ) : null}
 
-      <div
-        className="profile-banner-editor__preset-grid"
-        role="radiogroup"
-        aria-label={t("settings.banner.presetGroupAria")}
-      >
-        {displayPresets.map((p) => {
-          const selected = selectedPath === p;
-          return (
-            <label
-              key={p}
-              className={`profile-banner-editor__preset-tile${selected ? " profile-banner-editor__preset-tile--selected" : ""}`}
-              aria-label={p}
-            >
-              <input
-                type="radio"
-                name="profile-banner-preset"
-                checked={selected}
-                onChange={() => onPresetDraftChange(p)}
-                disabled={tileBusy}
-              />
-              <span className="profile-banner-editor__preset-tile-body">
-                <span className="profile-banner-editor__thumb-wrap">
-                  <img className="profile-banner-editor__thumb" src={publicAssetUrl(p)} alt="" loading="lazy" />
+      {hideFreePresetPicker ? null : (
+        <div
+          className="profile-banner-editor__preset-grid"
+          role="radiogroup"
+          aria-label={t("settings.banner.presetGroupAria")}
+        >
+          {displayPresets.map((p) => {
+            const selected = selectedPath === p;
+            return (
+              <label
+                key={p}
+                className={`profile-banner-editor__preset-tile${selected ? " profile-banner-editor__preset-tile--selected" : ""}`}
+                aria-label={p}
+              >
+                <input
+                  type="radio"
+                  name="profile-banner-preset"
+                  checked={selected}
+                  onChange={() => onPresetDraftChange(p)}
+                  disabled={tileBusy}
+                />
+                <span className="profile-banner-editor__preset-tile-body">
+                  <span className="profile-banner-editor__thumb-wrap">
+                    <img className="profile-banner-editor__thumb" src={publicAssetUrl(p)} alt="" loading="lazy" />
+                  </span>
                 </span>
-              </span>
-            </label>
-          );
-        })}
-      </div>
+              </label>
+            );
+          })}
+        </div>
+      )}
 
-      <div className="profile-banner-editor__actions profile-banner-editor__actions--preset">
-        <button
-          type="button"
-          className="profile-banner-editor__btn profile-banner-editor__btn--secondary btn-fill-secondary"
-          onClick={() => clearPresetDraft()}
-          disabled={tileBusy || clearDisabled}
-        >
-          {t("settings.banner.clearPreset")}
-        </button>
-        <button
-          type="button"
-          className="profile-banner-editor__btn profile-banner-editor__btn--primary btn-fill-primary"
-          onClick={() => savePresetToServer()}
-          disabled={tileBusy || !hasPresetChanges}
-        >
-          {presetSaveBusy ? t("buttons.saving", { ns: "common" }) : t("settings.banner.savePreset")}
-        </button>
-      </div>
+      {hideFreePresetPicker ? null : (
+        <div className="profile-banner-editor__actions profile-banner-editor__actions--preset">
+          <button
+            type="button"
+            className="profile-banner-editor__btn profile-banner-editor__btn--secondary btn-fill-secondary"
+            onClick={() => clearPresetDraft()}
+            disabled={tileBusy || clearDisabled}
+          >
+            {t("settings.banner.clearPreset")}
+          </button>
+          <button
+            type="button"
+            className="profile-banner-editor__btn profile-banner-editor__btn--primary btn-fill-primary"
+            onClick={() => savePresetToServer()}
+            disabled={tileBusy || !hasPresetChanges}
+          >
+            {presetSaveBusy ? t("buttons.saving", { ns: "common" }) : t("settings.banner.savePreset")}
+          </button>
+        </div>
+      )}
 
       {canEditCustom || hasStoredCustom ? (
         <div className="profile-banner-editor__custom">

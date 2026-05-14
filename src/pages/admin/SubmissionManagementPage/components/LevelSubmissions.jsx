@@ -11,7 +11,7 @@ import { SubmissionCreatorPopup } from '@/components/popups/Levels';
 import { SongSelectorPopup } from '@/components/popups/Songs';
 import { ArtistSelectorPopup } from '@/components/popups/Artists';
 import { EntityActionPopup } from '@/components/popups/Entities';
-import { EvidenceGalleryPopup } from '@/components/popups/Evidence';
+import { GalleryInspectPopup } from '@/components/popups/Evidence';
 import { CreatorAssignmentPopup } from '@/components/popups/Creators';
 import { toast } from "react-hot-toast";
 import { ServerCloudIcon, WarningIcon } from "@/components/common/icons";
@@ -1448,12 +1448,13 @@ const LevelSubmissions = () => {
 
       {/* Evidence Gallery Popup */}
       {showEvidenceGallery && selectedEvidenceSubmission && (
-        <EvidenceGalleryPopup
+        <GalleryInspectPopup
           evidence={selectedEvidenceSubmission.evidence || []}
           onClose={() => {
             setShowEvidenceGallery(false);
             setSelectedEvidenceSubmission(null);
           }}
+          showTitleHeader={true}
         />
       )}
     </>

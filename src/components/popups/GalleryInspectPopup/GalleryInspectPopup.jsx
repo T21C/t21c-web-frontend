@@ -1,13 +1,20 @@
-// tuf-search: #EvidenceGalleryPopup #evidenceGalleryPopup #popups #evidence #evidenceGallery
+// tuf-search: #GalleryInspectPopup #galleryInspectPopup #popups
+// showTitleHeader: false hides the titled header for lightweight image inspection (toolbar: close only).
 import React, { useState, useEffect, useRef } from 'react';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { useTranslation } from 'react-i18next';
 import { isImageUrl } from '@/utils/Utility';
-import './evidenceGalleryPopup.css';
+import './galleryInspectPopup.css';
 import { ChevronIcon, ExternalLinkIcon } from '@/components/common/icons';
 import { CloseButton } from '@/components/common/buttons';
 
-export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDelete = false }) => {
+export const GalleryInspectPopup = ({
+  evidence,
+  onClose,
+  onDelete = null,
+  canDelete = false,
+  showTitleHeader = true,
+}) => {
   const { t } = useTranslation(['components', 'common']);
   const popupRef = useRef(null);
   const imageRef = useRef(null);
@@ -214,16 +221,30 @@ export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDe
 
   if (evidenceList.length === 0) {
     return (
-      <div className="evidence-gallery-popup-overlay" onClick={onClose}>
-        <div className="evidence-gallery-popup" ref={popupRef} onClick={(e) => e.stopPropagation()}>
-          <div className="popup-header">
-            <h2>{t('evidenceGallery.title')}</h2>
-            <CloseButton
-              variant="inline"
-              onClick={onClose}
-              aria-label={t('buttons.close', { ns: 'common' })}
-            />
-          </div>
+      <div className="gallery-inspect-popup-overlay" onClick={onClose}>
+        <div
+          className={`gallery-inspect-popup${!showTitleHeader ? ' gallery-inspect-popup--minimal' : ''}`}
+          ref={popupRef}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {showTitleHeader ? (
+            <div className="popup-header">
+              <h2>{t('evidenceGallery.title')}</h2>
+              <CloseButton
+                variant="inline"
+                onClick={onClose}
+                aria-label={t('buttons.close', { ns: 'common' })}
+              />
+            </div>
+          ) : (
+            <div className="gallery-inspect-popup__toolbar-minimal" onClick={(e) => e.stopPropagation()}>
+              <CloseButton
+                variant="inline"
+                onClick={onClose}
+                aria-label={t('buttons.close', { ns: 'common' })}
+              />
+            </div>
+          )}
           <div className="popup-content">
             <p className="no-evidence">{t('evidenceGallery.noEvidence')}</p>
           </div>
@@ -236,19 +257,40 @@ export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDe
   const isImage = isImageUrl(currentEvidence.link);
 
   return (
-    <div className="evidence-gallery-popup-overlay" onClick={onClose}>
-      <div className="evidence-gallery-popup" ref={popupRef} onClick={(e) => e.stopPropagation()}>
-        <div className="popup-header">
-          <h2>
-            {t('evidenceGallery.title')} ({currentIndex + 1}/{evidenceList.length})
-            <ExternalLinkIcon onClick={() => window.open(currentEvidence.link, '_blank')} />
-          </h2>
-          <CloseButton
-            variant="inline"
-            onClick={onClose}
-            aria-label={t('buttons.close', { ns: 'common' })}
-          />
-        </div>
+    <div className="gallery-inspect-popup-overlay" onClick={onClose}>
+      <div
+        className={`gallery-inspect-popup${!showTitleHeader ? ' gallery-inspect-popup--minimal' : ''}`}
+        ref={popupRef}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {showTitleHeader ? (
+          <div className="popup-header">
+            <h2>
+              {t('evidenceGallery.title')} ({currentIndex + 1}/{evidenceList.length})
+              <button
+                type="button"
+                className="gallery-inspect-popup__header-external"
+                onClick={() => window.open(currentEvidence.link, '_blank', 'noopener,noreferrer')}
+                aria-label={t('evidenceGallery.openInNewTab')}
+              >
+                <ExternalLinkIcon />
+              </button>
+            </h2>
+            <CloseButton
+              variant="inline"
+              onClick={onClose}
+              aria-label={t('buttons.close', { ns: 'common' })}
+            />
+          </div>
+        ) : (
+          <div className="gallery-inspect-popup__toolbar-minimal" onClick={(e) => e.stopPropagation()}>
+            <CloseButton
+              variant="inline"
+              onClick={onClose}
+              aria-label={t('buttons.close', { ns: 'common' })}
+            />
+          </div>
+        )}
 
         <div className="popup-content">
           {isImage ? (
@@ -420,4 +462,4 @@ export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDe
   );
 };
 
-export default EvidenceGalleryPopup;
+export default GalleryInspectPopup;

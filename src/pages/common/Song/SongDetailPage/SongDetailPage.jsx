@@ -7,7 +7,7 @@ import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { getVerificationClass, isImageUrl } from '@/utils/Utility';
 import api from '@/utils/api';
 import { MetaTags } from '@/components/common/display';
-import { EvidenceGalleryPopup } from '@/components/popups/Evidence';
+import { GalleryInspectPopup } from '@/components/popups/Evidence';
 import { EntityActionPopup } from '@/components/popups/Entities';
 import { EditIcon, ExternalLinkIcon } from '@/components/common/icons';
 import { LevelCard } from '@/components/cards';
@@ -237,9 +237,10 @@ const SongDetailPage = () => {
 
 
       {showEvidenceGallery && song.evidences && (
-        <EvidenceGalleryPopup
+        <GalleryInspectPopup
           evidence={song.evidences}
           onClose={() => setShowEvidenceGallery(false)}
+          showTitleHeader={true}
         />
       )}
 

@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router-dom";
 import { BillingAccessSection } from "./BillingAccessSection";
+import { BillingPurchaseBenefitsSection } from "./BillingPurchaseBenefitsSection";
 import { BillingPurchaseSection } from "./BillingPurchaseSection";
 import { useBillingData } from "./useBillingData";
 import "./billingPage.css";
@@ -94,6 +95,8 @@ const TufStellarManagePage = () => {
         purchaseFundedRemainingMs={purchaseFundedRemainingMs}
         accessSegments={accessSegments}
       />
+
+      <BillingPurchaseBenefitsSection />
 
       <BillingPurchaseSection
         canPurchaseOneTime={canPurchaseOneTime}

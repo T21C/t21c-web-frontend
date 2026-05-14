@@ -5,6 +5,7 @@
  */
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { isTufStellarAccessActive } from "@/utils/profileBanners";
+import { selectIconSize } from "./Utility";
 
 /**
  * Whether the subject may show animated GIF avatar URLs (CDN `*_animated` segments).
@@ -23,7 +24,7 @@ export function tufStellarAccessAllowsAnimatedProfileAvatar(subjectUser) {
 export function swapProfileAvatarAnimatedToStatic(url) {
   if (typeof url !== "string" || !url.trim()) return url ?? null;
   if (url.includes("_animated")) return url.replace(/_animated/g, "_static");
-  return url.replace(/\/original(?=$|[?#])/, "/original_static");
+  return url+"_static";
 }
 
 function resolveCdnAvatarForIdentity(subjectUser, avatarUrl) {
@@ -65,7 +66,7 @@ export function userAvatarUrls(subject) {
     return { primaryUrl: null, fallbackUrl: null };
   }
   const identity = profileIdentity(subject);
-  const cdn = pickCdnAvatarUrl(subject);
+  const cdn = selectIconSize(pickCdnAvatarUrl(subject), "large");
   const pfp = pickPfpUrl(subject);
   if (cdn) {
     const swapped = resolveCdnAvatarForIdentity(identity, cdn) || cdn;

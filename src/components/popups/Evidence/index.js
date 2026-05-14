@@ -1,4 +1,2 @@
-// tuf-search: #evidence #Evidence #index #popups
-import { EvidenceGalleryPopup } from "./EvidenceGalleryPopup/EvidenceGalleryPopup";
-
-export { EvidenceGalleryPopup };
+// tuf-search: #EvidencePopups
+export { GalleryInspectPopup } from "../GalleryInspectPopup/GalleryInspectPopup.jsx";
