@@ -18,7 +18,7 @@ import { DifficultyContext } from "@/contexts/DifficultyContext";
 import { ReferencesButton, ScrollButton } from "@/components/common/buttons";
 import { MetaTags } from "@/components/common/display";
 import { DifficultySlider, TagSelector, FacetQueryBuilder } from "@/components/common/selectors";
-import { buildFacetQueryParam, facetDomainHasFilter } from "@/utils/facetQueryCodec";
+import { buildFacetQueryParam } from "@/utils/facetQueryCodec";
 import { SortAscIcon, SortDescIcon, ResetIcon, SortIcon , FilterIcon, LikeIcon, SwitchIcon, EyeIcon, EyeOffIcon} from "@/components/common/icons";
 import { LevelHelpPopup } from "@/components/popups/Levels";
 import toast from 'react-hot-toast';
@@ -117,6 +117,8 @@ const LevelPage = ({
   // Pagination calls bypass the debounce via `runRequest.flush`.
   const runRequest = useDebouncedRequest(500);
   const isFirstFilterEffectRef = useRef(true);
+  // Latest fetcher for pagination effect (see assignment after `fetchLevelsData`).
+  const fetchLevelsDataRef = useRef(null);
 
   // Filter difficulties by type
   const pguDifficulties = difficulties.filter(d => d.type === 'PGU').sort((a, b) => a.sortOrder - b.sortOrder);
@@ -242,6 +244,7 @@ const LevelPage = ({
     hiddenFiltersKey,
     runRequest,
   ]);
+  fetchLevelsDataRef.current = fetchLevelsData;
 
 
   function handleLikeToggle() {
@@ -368,10 +371,13 @@ const LevelPage = ({
   ]);
 
   // Direct fetch for page number changes (pagination) — bypass debounce.
+  // Deps are only `pageNumber`: do not depend on `fetchLevelsData` or any
+  // callback that churns when filters/user change — that re-ran this effect
+  // with the same page index and re-requested the same offset (duplicate rows).
   useEffect(() => {
     if (pageNumber === 0) return; // Skip initial page load, handled by debounced effect
-    fetchLevelsData(false, { immediate: true });
-  }, [pageNumber, fetchLevelsData]);
+    fetchLevelsDataRef.current(false, { immediate: true });
+  }, [pageNumber]);
 
   function handleFilterOpen() {
     setFilterOpen(!filterOpen);
@@ -824,7 +830,7 @@ const LevelPage = ({
           <div className={`${viewMode === 'grid' ? 'level-cards-grid' : ''} infinite-scroll-container`}>
             {levelsData.map((l, index) => (
               <LevelCard
-                key={index}
+                key={l.id ?? index}
                 level={l}
                 user={user}
                 displayMode={viewMode}
