@@ -12,6 +12,9 @@
     "browsePacks": "浏览地图包",
     "leaderboard": "排行榜"
   },
+  "tooltips": {
+    "tufStellarOut": "TUFStellar 已上线！"
+  },
   "stats": {
     "overview": {
       "title": "总览",

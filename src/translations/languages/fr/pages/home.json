@@ -12,6 +12,9 @@
     "browsePacks": "Explorer les packs",
     "leaderboard": "Classement"
   },
+  "tooltips": {
+    "tufStellarOut": "TUFStellar est disponible !"
+  },
   "stats": {
     "overview": {
       "title": "Aperçu",

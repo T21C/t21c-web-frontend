@@ -12,6 +12,9 @@
     "browsePacks": "Browse Packs",
     "leaderboard": "Leaderboard"
   },
+  "tooltips": {
+    "tufStellarOut": "TUFStellar is out!"
+  },
   "stats": {
     "overview": {
       "title": "Overview",

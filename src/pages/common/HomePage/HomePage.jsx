@@ -6,9 +6,10 @@ import { MetaTags, WeeklyGallery, DifficultyGraph } from "@/components/common/di
 import api from "@/utils/api";
 import { Link } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
+import { Tooltip } from "react-tooltip";
 import { useLocation } from 'react-router-dom';
 import { ScrollButton } from "@/components/common/buttons";
-import { PassIcon, ChartIcon, LeaderboardIcon, PackIcon } from "@/components/common/icons";
+import { PassIcon, ChartIcon, LeaderboardIcon, PackIcon, TUFStellarIcon } from "@/components/common/icons";
 import { useWeeklyCurations } from "@/hooks/useWeeklyCurations";
 import LogoFullOutlineSVG from "@/assets/tuf-logo/LogoFullOutlined/LogoFullOutlined";
 
@@ -92,9 +93,21 @@ const HomePage = () => {
       
       <ScrollButton />
       <div className="home-container">
+        <Tooltip id="home-tuf-stellar" style={{ zIndex: 1000, fontSize: "1.4rem", fontWeight: "500", padding: "0.75rem 1.25rem" }}>
+              {t('home.tooltips.tufStellarOut')}
+        </Tooltip>
         <div className="content-container">
           <div className="title-section">
-            <LogoFullOutlineSVG className="logo-container" />
+            <LogoFullOutlineSVG className="logo-container">
+            <Link to="/tuf-stellar" className="tufs-release-icon-container" 
+                data-tooltip-id="home-tuf-stellar">
+              <TUFStellarIcon
+                variant="2"
+                className="tufs-release-icon tufs-release-icon-hover"
+              />
+            </Link>
+            </LogoFullOutlineSVG>
+
             { /*
             <h1 
               className={`main-title`}

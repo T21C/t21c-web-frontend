@@ -115,10 +115,12 @@ export function BillingPurchaseBenefitsSection() {
             <p className="billing-page__benefits-segment-body">{t("billing.benefits.coming.bios.body")}</p>
           </div>
 
+          {/* will be global
           <div className="billing-page__benefits-segment billing-page__benefits-segment--comingLayout">
             <span className="billing-page__benefits-segment-title">{t("billing.benefits.coming.layout.title")}</span>
             <p className="billing-page__benefits-segment-body">{t("billing.benefits.coming.layout.body")}</p>
           </div>
+          */}
 
           <div className="billing-page__benefits-segment billing-page__benefits-segment--ideas">
             <h4 className="billing-page__benefits-subheading billing-page__benefits-subheading--inline">

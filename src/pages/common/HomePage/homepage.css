@@ -33,7 +33,7 @@
 .home .logo-container {
   position: relative;
   margin: 0 auto;
-  width: clamp(500px, 70%, 1000px);
+  width: clamp(500px, 100%, 1000px);
   height: auto;
 }
 
@@ -265,6 +265,39 @@
   position: relative;
   z-index: 21;
   text-align: center;
+}
+
+
+.home .tufs-release-icon-container {
+  height: auto;
+  position: absolute;
+  z-index: 1000;
+  opacity: 0.5;
+  transition: transform 0.3s ease, opacity 0.5s ease;
+  bottom: 0;
+  right: 2rem;
+}
+
+.home .tufs-release-icon-container:hover {
+  transform: scale(1.07) ;
+  opacity: 1;
+}
+
+.home .tufs-release-icon {
+  width: clamp(2.25rem, 7vw, 4rem);
+  height: auto;
+  object-fit: contain;
+  animation: tufs-release-icon-spin 20s linear infinite;
+}
+
+
+@keyframes tufs-release-icon-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes fadeIn {
@@ -521,6 +554,11 @@
     padding: 1rem 1rem 2rem 1rem;
   }
 
+  .home .tufs-release-icon-container {
+    right: 0;
+    bottom: -1rem;
+  }
+
   .home .weekly-curations-section {
     margin: 2rem 0;
     padding: 1.5rem;
@@ -592,6 +630,11 @@
 @media (max-width: 480px) {
   .home .home-container {
     padding: 0rem 0.75rem 1.5rem 0.75rem;
+  }
+
+  .home .tufs-release-icon-container {
+    right: -0.5rem;
+    bottom: -1.5rem;
   }
 
   .home .weekly-curations-section {

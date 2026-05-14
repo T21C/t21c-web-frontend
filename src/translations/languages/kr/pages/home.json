@@ -12,6 +12,9 @@
     "browsePacks": "맵 팩 둘러보기",
     "leaderboard": "리더보드"
   },
+  "tooltips": {
+    "tufStellarOut": "TUFStellar가 출시되었어요!"
+  },
   "stats": {
     "overview": {
       "title": "개요",
