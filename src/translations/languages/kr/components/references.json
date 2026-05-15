@@ -1,7 +1,7 @@
 {
   "button": {
-    "label": "참조 열기",
-    "text": "참조"
+    "label": "기준 레벨 열기",
+    "text": "기준 레벨"
   },
   "popup": {
     "title": "{{tab}} 난이도",
@@ -18,15 +18,15 @@
       "switchToExtended": "확장 보기로 전환",
       "switchToCompact": "간략 보기로 전환"
     },
-    "loading": "참조 불러오는 중...",
+    "loading": "기준 레벨 불러오는 중...",
     "errors": {
-      "loadFailed": "참조 불러오기 실패",
+      "loadFailed": "기줄 레벨 불러오기 실패",
       "saveFailed": "변경 사항 저장 실패",
-      "invalidType": "잘못된 참조 유형: {{type}}"
+      "invalidType": "잘못된 기준 유형: {{type}}"
     },
     "messages": {
-      "saveSuccess": "참조가 성공적으로 저장되었습니다",
-      "parseError": "참조 구문 분석 오류: {{error}}"
+      "saveSuccess": "기준 레벨이 성공적으로 저장되었습니다",
+      "parseError": "기준 구문 분석 오류: {{error}}"
     },
     "levelCount": {
       "singular": "1개 레벨",
@@ -34,8 +34,8 @@
     },
     "noType": "유형 없음",
     "help": {
-      "title": "참조 유형 시스템",
-      "description": "참조 시스템은 여러 글자 조합을 사용하여 참조를 분류합니다:",
+      "title": "기준 유형 시스템",
+      "description": "기준 시스템은 여러 글자 조합을 사용하여 기준를 분류합니다:",
       "types": {
         "title": "유형",
         "R": "Rolling - 어려운 구간에서 주요 기법이 롤링인 레벨입니다.",
@@ -48,8 +48,8 @@
     "editMode": {
       "placeholder": "쉼표로 구분된 레벨 ID를 입력하세요",
       "help": {
-        "title": "참조 유형 시스템 - 편집 모드",
-        "description": "참조 시스템은 여러 글자 조합을 사용하여 참조를 분류합니다:",
+        "title": "기준 유형 시스템 - 편집 모드",
+        "description": "기준 시스템은 여러 글자 조합을 사용하여 기준를 분류합니다:",
         "types": {
           "title": "유형",
           "R": "Rolling - 어려운 구간에서 주요 기법이 롤링인 레벨입니다.",
@@ -71,7 +71,7 @@
             "유형은 조합 가능(e.g., RI, TK)",
             "레벨 ID는 쉼표로 구분",
             "빈 줄은 무시됨",
-            "유형 없는 참조는 별도 줄에 작성"
+            "유형 없는 기준은 별도 줄에 작성"
           ]
         }
       }
