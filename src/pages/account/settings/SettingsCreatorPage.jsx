@@ -177,6 +177,19 @@ const SettingsCreatorPage = () => {
 
   const effectiveDisplayIds = liveDisplayIds ?? profile?.displayCurationTypeIds;
 
+  const aliasesTooltipId =
+    aliasList.length > 0 && creatorId != null
+      ? `creator-aliases-${creatorId}`
+      : null;
+
+  const sortedAliasNamesForTooltip = useMemo(
+    () =>
+      [...aliasList].sort((a, b) =>
+        a.localeCompare(b, undefined, { sensitivity: "base" }),
+      ),
+    [aliasList],
+  );
+
   const iconSlots = useMemo(
     () =>
       buildCreatorIconSlots(
@@ -506,6 +519,7 @@ const SettingsCreatorPage = () => {
           stellarIconVariant={normalizeTufStellarIconVariant(
             profile?.tufStellarIconVariant ?? creatorDoc?.tufStellarIconVariant,
           )}
+          nameTooltipId={aliasesTooltipId}
           name={creatorDoc.name}
           handle={creatorDoc.user?.username}
           country={creatorDoc.user?.country || creatorDoc.country}
@@ -553,6 +567,25 @@ const SettingsCreatorPage = () => {
             </Link>
           }
         />
+        {aliasesTooltipId ? (
+          <Tooltip
+            id={aliasesTooltipId}
+            place="bottom"
+            className="settings-sub-page__aliases-tooltip"
+            style={{ maxWidth: "min(24rem, 92vw)", zIndex: 20 }}
+          >
+            <div className="settings-sub-page__aliases-tooltip-title">
+              {t("settings.creator.aliasesLabel")}
+            </div>
+            <ul className="settings-sub-page__aliases-tooltip-list">
+              {sortedAliasNamesForTooltip.map((name) => (
+                <li key={name} className="settings-sub-page__aliases-tooltip-item">
+                  {name}
+                </li>
+              ))}
+            </ul>
+          </Tooltip>
+        ) : null}
       </div>
 
       <section className="settings-sub-page__banner-section" aria-labelledby="settings-creator-banner-heading">

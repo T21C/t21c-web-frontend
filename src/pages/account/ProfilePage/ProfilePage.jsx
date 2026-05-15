@@ -656,6 +656,7 @@ const ProfilePage = () => {
                     className="player-page__profile-header"
                     bannerUrl={profileBannerUrl}
                     iconSlots={iconSlots}
+                    nameTooltipId={"default"}
                     playerDifficultyPanelDifficulties={difficulties}
                     playerDifficultyPanelClearsByDifficulty={difficultyPanelClearsByDifficulty}
                     avatarSubject={playerData}

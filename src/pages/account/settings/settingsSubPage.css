@@ -99,6 +99,36 @@
   outline-offset: 2px;
 }
 
+.settings-sub-page .settings-sub-page__aliases-tooltip {
+  background: var(--color-black-t95);
+  border: 1px solid var(--color-white-t12);
+  border-radius: 10px;
+  padding: 0.65rem 0.75rem;
+  color: var(--color-white);
+}
+
+.settings-sub-page .settings-sub-page__aliases-tooltip-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-white-t80);
+  margin-bottom: 0.35rem;
+}
+
+.settings-sub-page .settings-sub-page__aliases-tooltip-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.settings-sub-page .settings-sub-page__aliases-tooltip-item {
+  font-size: 0.95rem;
+  line-height: 1.25;
+  color: var(--color-white);
+}
+
 .settings-sub-page .settings-sub-page__field {
   display: flex;
   flex-direction: column;

@@ -19,6 +19,8 @@ import ProfileHeaderIconPanelPortal from "./ProfileHeaderIconPanelPortal";
 import { useSvgTextDimensions } from "@/hooks/useSvgTextDimensions";
 
 const PROFILE_HEADER_STELLAR_TOOLTIP_ID = "profile-header-stellar-subscriber";
+/** When `nameTooltipId` is `"default"`, name hits use this id and a local Tooltip shows the full `name`. */
+const PROFILE_HEADER_NAME_DEFAULT_TOOLTIP_ID = "profile-header-name-default-tooltip";
 
 function useViewportWidth() {
   const [width, setWidth] = useState(window.innerWidth);
@@ -95,6 +97,7 @@ const ProfileHeader = ({
   statGroups = null,
   actions = null,
   verificationBadge = null,
+  /** Tooltip for the banner/display name: a string id for `react-tooltip`, or `"default"` for a built-in tooltip with the full `name`. */
   nameTooltipId = null,
   expandStatsAriaLabel = "Expand statistics",
   collapseStatsAriaLabel = "Collapse statistics",
@@ -206,6 +209,15 @@ const ProfileHeader = ({
     );
   }, [showCreatorCurationPanel, creatorCurationPanelItems, t]);
 
+  /** Player difficulty portal: fixed width from CSS (see profileHeaderIconPanelPortal.css) instead of measured `--profile-header-icon-panel-min-width`. */
+  const iconPanelPortalAnchorVariant = useMemo(() => {
+    if (mode !== "player") return null;
+    const c = className || "";
+    if (c.includes("player-page__profile-header")) return "player-page";
+    if (c.includes("settings-sub-page__profile-header")) return "settings-player";
+    return null;
+  }, [mode, className]);
+
   const measureIconPanel = useCallback(() => {
     const row = iconRowRef.current;
     if (!row) return;
@@ -290,10 +302,18 @@ const ProfileHeader = ({
       : getDefaultProfileBannerUrl();
 
   const displayName = name || "—";
+  const isDefaultNameTooltip =
+    typeof nameTooltipId === "string" && nameTooltipId.trim().toLowerCase() === "default";
+  const fullNicknameTooltipText =
+    name == null ? "" : (typeof name === "string" ? name : String(name)).trim();
   const nameTooltipProps =
-    typeof nameTooltipId === "string" && nameTooltipId.trim().length > 0
-      ? { "data-tooltip-id": nameTooltipId }
-      : {};
+    isDefaultNameTooltip && fullNicknameTooltipText.length > 0
+      ? { "data-tooltip-id": PROFILE_HEADER_NAME_DEFAULT_TOOLTIP_ID }
+      : typeof nameTooltipId === "string" &&
+          nameTooltipId.trim().length > 0 &&
+          !isDefaultNameTooltip
+        ? { "data-tooltip-id": nameTooltipId.trim() }
+        : {};
 
   const STELLAR_ICON_SIZE = 28;
   const STELLAR_ICON_GAP = 14;
@@ -413,6 +433,16 @@ const ProfileHeader = ({
                 <HeartIcon size={18} color="#f44" fill="#f44" strokeWidth="2" />
               </Tooltip>
             ) : null}
+      {isDefaultNameTooltip && fullNicknameTooltipText.length > 0 ? (
+        <Tooltip
+          id={PROFILE_HEADER_NAME_DEFAULT_TOOLTIP_ID}
+          place="bottom-start"
+          noArrow
+          style={{ maxWidth: "min(24rem, 92vw)", zIndex: 20, marginTop: "-0.5rem" }}
+        >
+          {fullNicknameTooltipText}
+        </Tooltip>
+      ) : null}
         <div className="profile-header__banner-wrap" aria-hidden="true">
           <img
             className="profile-header__banner-img"
@@ -503,7 +533,7 @@ const ProfileHeader = ({
                       transform: `translate(${config.nameXPosition}, ${config.nameYPosition})`,
                     }}
                   >
-                    {isNarrowNameLayout && showStellarBadge ? (
+                    {isNarrowNameLayout && showStellarBadge || true ? (
                       <>
                         <foreignObject
                           ref={verticalNameFoRef}
@@ -549,7 +579,7 @@ const ProfileHeader = ({
                           <TUFStellarIcon
                             svg
                             variant={resolvedStellarVariant}
-                            className="profile-header__stellar-icon vertical"
+                            className="profile-header__stellar-icon"
                             size={STELLAR_ICON_SIZE}
                             color="#fff"
                             data-tooltip-id={PROFILE_HEADER_STELLAR_TOOLTIP_ID}
@@ -644,6 +674,7 @@ const ProfileHeader = ({
                   pos={iconPanelPos}
                   mode={mode}
                   portalRef={iconPanelPortalRef}
+                  anchorVariant={iconPanelPortalAnchorVariant}
                   creatorDialogLabel={t("creators.profile.curationPanel.dialogLabel")}
                   curationPanelGroups={curationPanelGroups}
                   playerDifficultyPanelDifficulties={playerDifficultyPanelDifficulties}

@@ -257,6 +257,7 @@ const SettingsPlayerPage = () => {
           className="settings-sub-page__profile-header"
           bannerUrl={settingsBannerUrl}
           iconSlots={iconSlots}
+          nameTooltipId={"default"}
           playerDifficultyPanelDifficulties={difficulties}
           playerDifficultyPanelClearsByDifficulty={clearsByDifficultyForHeader}
           avatarSubject={playerData}

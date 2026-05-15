@@ -1,8 +1,9 @@
 // tuf-search: #PlayerCard #playerCard #cards
 import { Link } from "react-router-dom";
-import "./playercard.css"
+import "./playercard.css";
 import { useTranslation } from "react-i18next";
-import { useContext } from "react";
+import { useCallback, useContext, useLayoutEffect, useRef, useState } from "react";
+import { Tooltip } from "react-tooltip";
 import { PlayerContext } from "@/contexts/PlayerContext";
 import { formatNumber } from "@/utils";
 import { UserAvatar } from "@/components/layout";
@@ -16,10 +17,54 @@ import { TUFStellarIcon } from "@/components/common/icons";
 const diffFields = ["topDiff", "top12kDiff"];
 const passes = ["totalPasses", "universalPassCount", "worldsFirstCount"];
 
-const PlayerCard = ({player, onCreatorAssignmentClick}) => {
+const PlayerCard = ({ player, onCreatorAssignmentClick }) => {
   const { sortBy } = useContext(PlayerContext);
-  const { t } = useTranslation('components');
+  const { t } = useTranslation("components");
   const { user } = useAuth();
+
+  const playerNameRef = useRef(null);
+  const playerNameTextRef = useRef(null);
+  const [nameNeedsTooltip, setNameNeedsTooltip] = useState(false);
+  const nameTooltipId = `player-card-name-tooltip-${player.id}`;
+
+  const updateNameTooltip = useCallback(() => {
+    const textEl = playerNameTextRef.current;
+    if (!textEl) {
+      setNameNeedsTooltip(false);
+      return;
+    }
+    const displayName = typeof player.name === "string" ? player.name.trim() : String(player.name ?? "").trim();
+    if (!displayName) {
+      setNameNeedsTooltip(false);
+      return;
+    }
+    setNameNeedsTooltip(textEl.scrollWidth > textEl.clientWidth + 1);
+  }, [player.name]);
+
+  useLayoutEffect(() => {
+    updateNameTooltip();
+    const nameRow = playerNameRef.current;
+    const textEl = playerNameTextRef.current;
+    const ro =
+      typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(() => {
+            requestAnimationFrame(updateNameTooltip);
+          })
+        : null;
+    if (ro && nameRow) ro.observe(nameRow);
+    if (ro && textEl) ro.observe(textEl);
+    window.addEventListener("resize", updateNameTooltip);
+    return () => {
+      ro?.disconnect();
+      window.removeEventListener("resize", updateNameTooltip);
+    };
+  }, [
+    updateNameTooltip,
+    player.name,
+    player.user,
+    player.tufStellarIconVariant,
+    user,
+  ]);
 
   const sortLabels = {
     rankedScore: t('cards.player.stats.rankedScore'),
@@ -118,9 +163,15 @@ const PlayerCard = ({player, onCreatorAssignmentClick}) => {
             <p className="player-exp">{t('cards.player.title')} | ID: {player.id}</p>
           </div>
           <div className="name-container">
-            <p className='player-name'>
-              {player.name}
-              {player.user && isTufStellarAccessActive(player.user) && (
+            <p
+              ref={playerNameRef}
+              className="player-name"
+              {...(nameNeedsTooltip ? { "data-tooltip-id": nameTooltipId } : {})}
+            >
+              <span ref={playerNameTextRef} className="player-name-text">
+                {player.name}
+              </span>
+              {player.user && isTufStellarAccessActive(player.user) || 1 && (
                 <TUFStellarIcon
                   size={28}
                   className="tuf-stellar-icon"
@@ -135,7 +186,7 @@ const PlayerCard = ({player, onCreatorAssignmentClick}) => {
                   onClick={handleCreatorAssignmentClick}
                   title="Assign Creator"
                 >
-                  <CreatorIcon className="creator-assignment-icon" color={player.user.creator ? '#5f5' : '#fff'} />
+                  <CreatorIcon className="creator-assignment-icon" color={player.user.creator ? "#5f5" : "#fff"} />
                 </button>
               )}
             </p>
@@ -168,6 +219,16 @@ const PlayerCard = ({player, onCreatorAssignmentClick}) => {
           ))}
         </div>
       </Link>
+      {nameNeedsTooltip ? (
+        <Tooltip
+          id={nameTooltipId}
+          className="player-card__name-tooltip"
+          place="top"
+          style={{ maxWidth: "min(22rem, 90vw)", zIndex: 10 }}
+        >
+          {player.name}
+        </Tooltip>
+      ) : null}
     </div>
   );
 };

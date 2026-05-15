@@ -117,10 +117,9 @@
   letter-spacing: -0.02em;
   line-height: 1.15;
   color: var(--color-white);
+  word-break: keep-all;
+  overflow: hidden;
   text-align: center;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-  hyphens: auto;
 }
 
 .profile-header__name-svg-text {
@@ -362,9 +361,9 @@
 }
 
 .profile-header__stat-row {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 0.65rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
   align-items: baseline;
   padding: 0.4rem 0;
   border-bottom: 1px solid var(--color-white-t10);
@@ -377,11 +376,9 @@
 .profile-header__stat-label {
   font-size: 0.78rem;
   text-transform: uppercase;
-  white-space: nowrap;
   letter-spacing: 0.04em;
   color: var(--color-white-t60);
   padding-right: 0.65rem;
-  border-right: 1px solid var(--color-white-t15);
 }
 
 .profile-header__stat-value {

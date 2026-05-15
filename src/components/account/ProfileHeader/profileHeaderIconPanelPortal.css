@@ -11,6 +11,15 @@
   box-sizing: border-box;
 }
 
+/* Player profile + settings preview: width from 10 difficulty cells (2.25rem) + inner padding (0.75rem × 2), not measured row width. */
+.profile-header__icon-panel-portal-anchor.profile-header__icon-panel-portal-anchor--player-page,
+.profile-header__icon-panel-portal-anchor.profile-header__icon-panel-portal-anchor--settings-player {
+  --profile-header-difficulty-ten-col-width: calc(10 * 2.25rem + 1.5rem);
+  min-width: unset;
+  width: max(var(--profile-header-difficulty-ten-col-width), 90vw);
+  max-width: min(90vw, var(--profile-header-difficulty-ten-col-width));
+}
+
 .profile-header__curation-panel,
 .profile-header__icon-panel {
   box-sizing: border-box;
@@ -105,7 +114,7 @@
 
 .profile-header__difficulty-grid {
   display: grid;
-  grid-template-columns: repeat(10, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(2.25rem, 1fr));
   width: 100%;
 }
 

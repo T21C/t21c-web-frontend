@@ -29,6 +29,8 @@ export default function ProfileHeaderIconPanelPortal({
   pos,
   mode,
   portalRef,
+  /** `player-page` | `settings-player`: CSS sets anchor width; omit measured `--profile-header-icon-panel-min-width`. */
+  anchorVariant = null,
   creatorDialogLabel,
   curationPanelGroups,
   playerDialogLabel = "Difficulties cleared",
@@ -76,17 +78,26 @@ export default function ProfileHeaderIconPanelPortal({
     </div>
   );
 
+  const anchorClassName = [
+    "profile-header__icon-panel-portal-anchor",
+    anchorVariant ? `profile-header__icon-panel-portal-anchor--${anchorVariant}` : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const omitMeasuredMinWidth = mode === "player" && anchorVariant != null;
+
   return createPortal(
     <div
       ref={portalRef}
-      className="profile-header__icon-panel-portal-anchor"
-      style={
-        {
-          "--profile-header-icon-panel-top": `${pos.top}px`,
-          "--profile-header-icon-panel-row-center": `${pos.rowCenter}px`,
-          "--profile-header-icon-panel-min-width": `${pos.minWidth}px`,
-        }
-      }
+      className={anchorClassName}
+      style={{
+        "--profile-header-icon-panel-top": `${pos.top}px`,
+        "--profile-header-icon-panel-row-center": `${pos.rowCenter}px`,
+        ...(omitMeasuredMinWidth
+          ? {}
+          : { "--profile-header-icon-panel-min-width": `${pos.minWidth}px` }),
+      }}
     >
       {mode === "creator" ? (
         <div className="profile-header__icon-panel" role="dialog" aria-label={creatorDialogLabel}>
