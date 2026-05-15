@@ -171,7 +171,7 @@ const PlayerCard = ({ player, onCreatorAssignmentClick }) => {
               <span ref={playerNameTextRef} className="player-name-text">
                 {player.name}
               </span>
-              {player.user && isTufStellarAccessActive(player.user) || 1 && (
+              {player.user && isTufStellarAccessActive(player.user) && (
                 <TUFStellarIcon
                   size={28}
                   className="tuf-stellar-icon"
