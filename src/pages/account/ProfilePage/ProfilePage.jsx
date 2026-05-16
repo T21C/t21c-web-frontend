@@ -8,7 +8,7 @@ import { Link, useParams, useLocation, useNavigate } from "react-router-dom"
 import { formatNumber } from "@/utils";
 import { DifficultyGraph, MetaTags } from "@/components/common/display";
 import { ScoreCard } from "@/components/cards";
-import { useTranslation } from "react-i18next";
+import { useTranslation, Trans } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
 import { AdminPlayerPopup } from "@/components/popups/Users";
 import { ShieldIcon, EditIcon, SortAscIcon, SortDescIcon, PackIcon, EyeIcon, EyeOffIcon, ChevronIcon } from "@/components/common/icons";
@@ -669,6 +669,7 @@ const ProfilePage = () => {
                     expandStatsAriaLabel={t("profile.funFacts.expandAria")}
                     collapseStatsAriaLabel={t("profile.funFacts.collapseAria")}
                     statGroups={statGroups}
+                    statRowFilter={(row) => isOwnProfile || row.key !== "hiddenPasses"}
                     statRows={[
                       {
                         key: "rankedScore",
@@ -1070,17 +1071,14 @@ const ProfilePage = () => {
                         {lowestImpactScore && lowestImpactScore.id === score.id && passesTotal > 20 && sortType === 'score' && sortOrder === 'DESC' && (
                           <div className="lowest-impact-score-indicator">
                             <p>
-                              {(() => {
-                                const text = t('profile.sections.scores.lowestImpactScore');
-                                const parts = text.split('{{score}}');
-                                return (
-                                  <>
-                                    {parts[0]}
-                                    <b style={{color: '#0f0'}}>{(score.scoreV2+0.01).toFixed(2)}PP</b>
-                                    {parts[1]}
-                                  </>
-                                );
-                              })()}
+                              <Trans
+                                t={t}
+                                i18nKey="profile.sections.scores.lowestImpactScore"
+                                values={{
+                                  score: `${(Number(score.scoreV2) + 0.01).toFixed(2)}PP`,
+                                }}
+                                components={{ pp: <b style={{ color: "#0f0" }} /> }}
+                              />
                             </p>
                           </div>
                         )}

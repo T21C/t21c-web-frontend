@@ -162,7 +162,7 @@ const AliasManagementPopup = ({ levelId, onClose }) => {
               e.stopPropagation();
               onClose();
             }}
-            aria-label={t('buttons.close')}
+            aria-label={t('buttons.close', { ns: 'common' })}
           />
         </div>
 

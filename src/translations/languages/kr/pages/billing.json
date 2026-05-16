@@ -30,11 +30,15 @@
       },
       "customBanners": {
         "title": "커스텀 배너",
-        "body": "프로필 헤더 뒤에 원하는 배너 이미지를 설정할 수 있습니다. 애니메이션 이미지도 지원합니다."
+        "body": "프로필 배너 이미지를 직접 설정할 수 있습니다. 애니메이션 배너도 사용할 수 있습니다."
       },
       "supporterIcon": {
         "title": "서포터 아이콘",
-        "body": "리더보드와 프로필에서 이름 옆에 표시될 서포터 아이콘을 고를 수 있습니다."
+        "body": "이름 옆에 표시될 서포터 아이콘을 고를 수 있습니다."
+      },
+      "levelPacks": {
+        "title": "더 많은 팩과 항목",
+        "body": "<packStat><packMult>×5</packMult><start><packRange>(20 ➔ 100)</packRange></start></packStat> 더 많은 팩을 얻고, 각 팩마다 <itemStat><itemMult>×10</itemMult><itemRange>(250 ➔ 2500)</itemRange></itemStat> 더 많은 항목을 유지할 수 있습니다."
       }
     },
     "comingHeading": "곧 제공 예정",

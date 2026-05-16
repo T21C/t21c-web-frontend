@@ -40,7 +40,7 @@ export function StatusBanner({
   const { t } = useTranslation('common');
   const [userDismissed, setUserDismissed] = useState(false);
 
-  const dismissLabel = dismissAriaLabel ?? t('buttons.close');
+  const dismissLabel = dismissAriaLabel ?? t('buttons.close', { ns: 'common' });
 
   const handleDismissClick = useCallback(
     (e) => {

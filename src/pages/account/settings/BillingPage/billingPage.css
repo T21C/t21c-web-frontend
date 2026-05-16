@@ -1288,25 +1288,6 @@
     gap: 0.75rem 1rem;
     align-items: start;
   }
-
-  .billing-page .billing-page__benefits-included-grid .billing-page__benefits-segment--includedAnimatedPfp {
-    grid-column: 1;
-    grid-row: 1;
-  }
-
-  .billing-page .billing-page__benefits-included-grid .billing-page__benefits-segment--includedBanners {
-    grid-column: 2;
-    grid-row: 1;
-  }
-
-  .billing-page .billing-page__benefits-included-grid .billing-page__benefits-segment--includedSupporterIcon {
-    grid-column: 1 / -1;
-    grid-row: 2;
-  }
-
-  .billing-page .billing-page__benefits-included-grid > .billing-page__benefits-segment {
-    min-width: 0;
-  }
 }
 
 .billing-page .billing-page__benefits-subheading {
@@ -1358,8 +1339,7 @@
 }
 
 .billing-page .billing-page__media-fit--full-width {
-  width: 100%;
-  align-self: stretch;
+  width: fit-content;
 }
 
 .billing-page .billing-page__media-fit--max-h-10 {
@@ -1378,6 +1358,8 @@
   gap: 0.35rem;
   padding: 0.65rem 0.75rem;
   border-radius: 8px;
+  justify-content: center;
+  align-items: center;
   height: 100%;
   border: 1px solid var(--color-white-t10);
   background: var(--color-black-t10);
@@ -1400,11 +1382,96 @@
   margin-top: 0;
 }
 
+.billing-page .billing-page__benefits-segment-body--levelPacks {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  white-space: pre-wrap;
+}
+
+.billing-page .billing-page__benefits-pack-stat {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 0.4rem 0;
+}
+
+.billing-page .billing-page__benefits-pack-stat-mult {
+  font-weight: 700;
+  font-size: 1.05em;
+  line-height: 1.5;
+  color: var(--color-white);
+  white-space: nowrap;
+}
+
+.billing-page .billing-page__benefits-pack-stat-range {
+  position: absolute;
+  bottom: 0;
+  font-weight: 300;
+  font-size: clamp(0.6rem, 0.55rem + 0.6vw, 0.7rem);
+  line-height: 1.2;
+  color: var(--color-white-t55);
+  white-space: nowrap;
+}
+
+/* Horizontal anchor chosen in JS from stat vs `.billing-page__benefits-level-packs-main` */
+.billing-page .billing-page__benefits-pack-stat-range--align-center {
+  left: 50%;
+  right: auto;
+  transform: translate(-50%, 60%);
+}
+
+.billing-page .billing-page__benefits-pack-stat-range--align-start {
+  left: 0;
+  right: auto;
+  transform: translateY(60%);
+}
+
+.billing-page .billing-page__benefits-pack-stat-range--align-end {
+  left: auto;
+  right: 0;
+  transform: translateY(60%);
+}
+
+.billing-page .billing-page__benefits-segment--includedLevelPacks {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.75rem 1rem;
+  border-color: color-mix(in srgb, var(--btn-primary) 35%, var(--color-white-t10));
+  background: color-mix(in srgb, var(--btn-primary) 10%, var(--color-black-t10));
+}
+
+.billing-page .billing-page__benefits-level-packs-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 min(100%, 16rem);
+  min-width: 0;
+}
+
+.billing-page .billing-page__benefits-demo-trigger--pack {
+  flex: 0 1 auto;
+  max-width: 100%;
+  margin-inline: 0;
+  align-self: flex-start;
+  border-radius: 8px;
+  border: 1px solid var(--color-white-t15);
+  box-shadow: 0 2px 12px var(--color-black-t30);
+}
+
+.billing-page .billing-page__benefits-demo-trigger--pack .billing-page__benefits-segment-image--packDemo {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
 .billing-page .billing-page__benefits-segment--includedAnimatedPfp {
   flex-direction: row;
   flex-wrap: wrap;
   align-items: flex-start;
-  justify-content: space-between;
   gap: 0.75rem 1rem;
   border-color: color-mix(in srgb, var(--btn-primary) 35%, var(--color-white-t10));
   background: color-mix(in srgb, var(--btn-primary) 10%, var(--color-black-t10));
@@ -1436,6 +1503,7 @@
 
 .billing-page .billing-page__benefits-segment--includedAnimatedPfp .billing-page__benefits-demo-trigger--pfp {
   flex: 0 1 auto;
+  justify-self: center;
   max-width: 100%;
   margin-inline: auto;
   align-self: flex-start;
@@ -1478,9 +1546,6 @@
 .billing-page .billing-page__benefits-segment--includedSupporterIcon {
   flex-direction: row;
   flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.75rem 1rem;
   min-width: 0;
   border-color: color-mix(in srgb, var(--color-purple-2) 40%, var(--color-white-t10));
   background: color-mix(in srgb, var(--color-purple-2) 12%, var(--color-black-t10));
@@ -1494,6 +1559,44 @@
   min-width: 0;
 }
 
+.billing-page .billing-page__benefits-demo-trigger--iconDemos {
+  flex: 0 1 auto;
+  max-width: 100%;
+  align-self: flex-start;
+  border-radius: 8px;
+  border: 1px solid var(--color-white-t15);
+  box-shadow: 0 2px 12px var(--color-black-t30);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.billing-page .billing-page__benefits-icon-demos {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-width: 0;
+  padding: 0.2rem 0.3rem;
+}
+
+.billing-page .billing-page__benefits-demo-trigger-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-width: 0;
+  padding: 0.2rem 0.3rem;
+}
+
+.billing-page .billing-page__benefits-icon-demo-thumb {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 100%;
+  border-radius: 4px;
+}
+
 .billing-page .billing-page__benefits-segment--includedSupporterIcon .billing-page__benefits-supporter-icons {
   display: flex;
   flex-direction: row;
@@ -1504,14 +1607,13 @@
   flex: 0 1 auto;
   min-width: 0;
   max-width: 100%;
-  align-self: center;
 }
 
 .billing-page .billing-page__benefits-segment--includedSupporterIcon .billing-page__benefits-supporter-icon {
   display: block;
   box-sizing: border-box;
   width: 2.5rem;
-  height: 2.5rem;
+  height: auto;
   padding: 0.2rem;
   object-fit: contain;
   flex-shrink: 0;
@@ -1568,6 +1670,17 @@
     margin-inline: 0;
     align-self: center;
     width: min(22rem, 100%);
+    max-width: fit-content;
+  }
+
+  .billing-page .billing-page__benefits-segment--includedLevelPacks {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .billing-page .billing-page__benefits-demo-trigger--pack {
+    align-self: center;
+    width: min(22rem, 100%);
     max-width: 100%;
   }
 
@@ -1579,5 +1692,11 @@
   .billing-page .billing-page__benefits-segment--includedSupporterIcon .billing-page__benefits-supporter-icons {
     justify-content: center;
     align-self: center;
+  }
+
+  .billing-page .billing-page__benefits-segment--includedSupporterIcon .billing-page__benefits-demo-trigger--iconDemos {
+    align-self: center;
+    width: min(22rem, 100%);
+    max-width: 100%;
   }
 }

@@ -30,11 +30,15 @@
       },
       "customBanners": {
         "title": "自定义横幅",
-        "body": "可在个人资料页头部背后设置自定义横幅图片，支持动图。"
+        "body": "设置您自己的个人资料横幅图片，包括动图。"
       },
       "supporterIcon": {
         "title": "支持者图标",
-        "body": "可选择在排行榜与个人资料中显示在您名字旁的支持者图标。"
+        "body": "可选择显示在您名字旁的支持者图标。"
+      },
+      "levelPacks": {
+        "title": "更多关卡包与条目",
+        "body": "获得 <packStat><packMult>×5</packMult><packRange>(20 ➔ 100)</packRange></packStat> 更多关卡包，且每个包可保留 <itemStat><itemMult>×10</itemMult><itemRange>(250 ➔ 2500)</itemRange></itemStat> 更多条目。"
       }
     },
     "comingHeading": "即将推出",

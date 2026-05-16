@@ -455,7 +455,7 @@ export const CaseOpenSelector = ({ targetPlayerId, onClose, isSpinning: parentIs
           variant="floating"
           className="case-open-selector__close-button"
           onClick={onClose}
-          aria-label={t('buttons.close')}
+          aria-label={t('buttons.close', { ns: 'common' })}
         />
       )}
     </div>

@@ -454,7 +454,7 @@ const WheelPopup = ({ items, seed, onSelect, onClose, handleTimeout }) => {
           className="level-close-button"
           onClick={onClose}
           disabled={isSpinning}
-          aria-label={t('buttons.close')}
+          aria-label={t('buttons.close', { ns: 'common' })}
           style={{
             opacity: isSpinning ? 0.5 : 1,
             cursor: isSpinning ? 'not-allowed' : 'pointer',

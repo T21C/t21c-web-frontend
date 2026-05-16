@@ -44,7 +44,7 @@
       "title": "通关记录列表",
       "expand": "展开",
       "collapse": "收起",
-      "lowestImpactScore": "排位分加分下限：{{score}}"
+      "lowestImpactScore": "排位分加分下限：<pp>{{score}}</pp>"
     },
     "difficultyBreakdown": {
       "title": "通关记录统计列表",
@@ -111,6 +111,7 @@
       "clears12K": "12键通关记录数",
       "clears16K": "16键通关记录数",
       "clearsNoHoldTap": "非默认长按设置通关数",
+      "totalPurePerfectClears": "纯完美通关总数",
       "duplicatePasses": "重击破数",
       "hiddenPasses": "已隐藏通关记录（仅对你可见）"
     },
@@ -144,7 +145,6 @@
     },
     "activity": {
       "accountAgeDays": "账户创建时间（天）",
-      "daysActive": "平均单个击破所需时间",
       "passesLast30Days": "通关记录（过去30天）",
       "uniqueLevelsLiked": "已收藏关卡",
       "packsOwned": "创建的地图包",

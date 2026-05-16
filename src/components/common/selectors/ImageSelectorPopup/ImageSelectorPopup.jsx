@@ -386,7 +386,7 @@ const ImageSelectorPopup = ({
             >
                 <div className="image-selector-popup-header">
                     <h2>{popupTitle}</h2>
-                    <CloseButton variant="inline" onClick={onClose} aria-label={t('buttons.close')} />
+                    <CloseButton variant="inline" onClick={onClose} aria-label={t('buttons.close', { ns: 'common' })} />
                 </div>
 
                 <div className="image-selector-popup-content">

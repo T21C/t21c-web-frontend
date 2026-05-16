@@ -30,11 +30,15 @@
       },
       "customBanners": {
         "title": "Custom banners",
-        "body": "Set your own banner image behind your profile header, including animated images."
+        "body": "Set your own profile banner images, including animated ones."
       },
       "supporterIcon": {
         "title": "Supporter icon",
-        "body": "Pick a supporter icon that appears next to your name on leaderboards and on your profile."
+        "body": "Pick a supporter icon that appears next to your name."
+      },
+      "levelPacks": {
+        "title": "More packs & items",
+        "body": "Get <packStat><packMult>×5</packMult><packRange>(20 ➔ 100)</packRange></packStat> more packs, and keep <itemStat><itemMult>×10</itemMult><itemRange>(250 ➔ 2500)</itemRange></itemStat> more items in each."
       }
     },
     "comingHeading": "Coming next",

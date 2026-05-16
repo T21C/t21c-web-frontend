@@ -44,7 +44,7 @@
       "title": "Scores",
       "expand": "Expand scores",
       "collapse": "Collapse scores",
-      "lowestImpactScore": "Get at least {{score}} to gain Ranked Score"
+      "lowestImpactScore": "Get at least <pp>{{score}}</pp> to gain Ranked Score"
     },
     "difficultyBreakdown": {
       "title": "Clears by difficulty",
@@ -111,7 +111,8 @@
       "clears12K": "12K clears",
       "clears16K": "16K clears",
       "clearsNoHoldTap": "No-hold tap clears",
-      "duplicatePasses": "Duplicate clears",
+      "totalPurePerfectClears": "Total pure perfects",
+      "duplicatePasses": "Reclears",
       "hiddenPasses": "Hidden passes (visible to you)"
     },
     "judgements": {
@@ -144,7 +145,6 @@
     },
     "activity": {
       "accountAgeDays": "Account age (days)",
-      "daysActive": "Days with a pass",
       "passesLast30Days": "Passes (last 30 days)",
       "uniqueLevelsLiked": "Levels liked",
       "packsOwned": "Packs owned",

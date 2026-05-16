@@ -80,6 +80,7 @@ const formatPlayerBadgeText = (rank) => {
 /**
  * Shared profile / creator banner header (dual mode).
  * Presentational: parents supply statRows (collapsed), statGroups (expanded), actions, iconSlots.
+ * @param {(row: { key: string }) => boolean} [statRowFilter] — Return false to omit a row from collapsed stats and expanded fun-fact groups.
  */
 const ProfileHeader = ({
   mode = "player",
@@ -95,6 +96,8 @@ const ProfileHeader = ({
   iconSlots,
   statRows = [],
   statGroups = null,
+  /** Collapsed `statRows` and each `statGroups[].rows` entry is kept when this returns true. */
+  statRowFilter = () => true,
   actions = null,
   verificationBadge = null,
   /** Tooltip for the banner/display name: a string id for `react-tooltip`, or `"default"` for a built-in tooltip with the full `name`. */
@@ -686,7 +689,7 @@ const ProfileHeader = ({
 
             <div className="profile-header__stats">
               <div className="profile-header__stat-rows">
-                {statRows.map((row) => (
+                {statRows.filter(statRowFilter).map((row) => (
                   <div key={row.key} className="profile-header__stat-row">
                     <span className="profile-header__stat-label">{row.label}</span>
                     <span
@@ -726,7 +729,7 @@ const ProfileHeader = ({
                     <section key={group.key} className="profile-header__stat-group">
                       <h2 className="profile-header__stat-group-title">{group.label}</h2>
                       <div className="profile-header__stat-group-rows">
-                        {group.rows.map((row) => (
+                        {group.rows.filter(statRowFilter).map((row) => (
                           <div key={row.key} className="profile-header__stat-row">
                             <span className="profile-header__stat-label">{row.label}</span>
                             <span

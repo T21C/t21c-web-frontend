@@ -272,7 +272,7 @@ export const RouletteWheel = ({
           className="roulette-wheel-popup-close"
           onClick={onClose}
           disabled={isSpinning}
-          aria-label={t('buttons.close')}
+          aria-label={t('buttons.close', { ns: 'common' })}
           style={{
             opacity: isSpinning ? 0.5 : 1,
             cursor: isSpinning ? 'not-allowed' : 'pointer',

@@ -66,10 +66,17 @@ export function buildPlayerStatGroups(ff, t) {
         },
         { key: "clears12K", label: t("profile.funFacts.counts.clears12K"), value: formatCount(c.clears12K) },
         { key: "clears16K", label: t("profile.funFacts.counts.clears16K"), value: formatCount(c.clears16K) },
+        /*
         {
           key: "clearsNoHoldTap",
           label: t("profile.funFacts.counts.clearsNoHoldTap"),
           value: formatCount(c.clearsNoHoldTap),
+        },
+        */
+        {
+          key: "totalPurePerfectClears",
+          label: t("profile.funFacts.counts.totalPurePerfectClears"),
+          value: formatCount(c.totalPurePerfectClears),
         },
         {
           key: "duplicatePasses",
@@ -124,11 +131,13 @@ export function buildPlayerStatGroups(ff, t) {
           label: t("profile.funFacts.levelsCleared.averageBpm"),
           value: formatFloat(l.averageBpm, 2),
         },
+        /*
         {
           key: "totalScoreV2",
           label: t("profile.funFacts.levelsCleared.totalScoreV2"),
           value: formatFloat(l.totalScoreV2, 2),
         },
+        */
       ],
     },
     {
@@ -190,7 +199,6 @@ export function buildPlayerStatGroups(ff, t) {
       label: t("profile.funFacts.groups.activity"),
       rows: [
         { key: "accountAgeDays", label: t("profile.funFacts.activity.accountAgeDays"), value: formatCount(a.accountAgeDays) },
-        { key: "daysActive", label: t("profile.funFacts.activity.daysActive"), value: formatCount(a.daysActive) },
         {
           key: "passesLast30Days",
           label: t("profile.funFacts.activity.passesLast30Days"),
