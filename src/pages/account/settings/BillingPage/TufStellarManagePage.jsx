@@ -38,6 +38,9 @@ const TufStellarManagePage = () => {
     canOpenCheckout,
     handleCheckout,
     termAccessPreview,
+    checkoutCurrencyOptions,
+    selectedCheckoutCurrencyOption,
+    handleCheckoutCurrencyChange,
   } = billing;
 
   useEffect(() => {
@@ -113,6 +116,9 @@ const TufStellarManagePage = () => {
         canOpenCheckout={canOpenCheckout}
         onCheckout={handleCheckout}
         termAccessPreview={termAccessPreview}
+        checkoutCurrencyOptions={checkoutCurrencyOptions}
+        selectedCheckoutCurrencyOption={selectedCheckoutCurrencyOption}
+        onCheckoutCurrencyChange={handleCheckoutCurrencyChange}
       />
 
       {showIdleNote ? (

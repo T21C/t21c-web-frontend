@@ -8,7 +8,8 @@ import { isTufStellarEnabledForUser } from "@/utils/tufStellarFeature";
 import {
   computePurchasePreviewProjectedExpiresIso,
   formatAmount,
-  TUF_STELLAR_DISPLAY_USD_FALLBACK_AMOUNTS,
+  getCheckoutAmountsForCurrency,
+  TUF_STELLAR_CHECKOUT_CURRENCIES,
   TUF_STELLAR_TERM_OPTIONS,
 } from "./billingUtils";
 
@@ -26,6 +27,7 @@ export function useBillingData(options = {}) {
   const [checkoutTermIndex, setCheckoutTermIndex] = useState(2);
   const [purchaseAsGift, setPurchaseAsGift] = useState(false);
   const [giftRecipient, setGiftRecipient] = useState(null);
+  const [checkoutCurrency, setCheckoutCurrency] = useState("auto");
 
   const fetchAll = useCallback(async (opts = {}) => {
     const forceRefresh = Boolean(opts.forceRefresh);
@@ -105,6 +107,7 @@ export function useBillingData(options = {}) {
   const billingToastForCode = useCallback(
     (code, fallbackMsg) => {
       if (code === "INVALID_CHECKOUT_TERM") return t("billing.toasts.checkoutInvalidTerm");
+      if (code === "INVALID_CHECKOUT_CURRENCY") return t("billing.toasts.checkoutInvalidCurrency");
       if (code === "GIFT_RECIPIENT_NOT_FOUND") return t("billing.toasts.giftRecipientNotFound");
       if (code === "GIFT_RECIPIENT_BLOCKED") return t("billing.toasts.giftRecipientBlocked");
       if (code === "GIFT_EMAIL_REQUIRED") return t("billing.toasts.giftEmailRequired");
@@ -124,6 +127,26 @@ export function useBillingData(options = {}) {
   );
 
   const selectedCheckoutTerm = TUF_STELLAR_TERM_OPTIONS[checkoutTermIndex] ?? TUF_STELLAR_TERM_OPTIONS[0];
+
+  const effectiveCheckoutCurrency = useMemo(() => {
+    if (checkoutCurrency === "auto") {
+      return billingState?.pricingDisplay?.currency ?? "USD";
+    }
+    return checkoutCurrency;
+  }, [checkoutCurrency, billingState?.pricingDisplay?.currency]);
+
+  const checkoutCurrencyOptions = useMemo(
+    () => [
+      { value: "auto", label: t("billing.checkout.currencyAuto") },
+      ...TUF_STELLAR_CHECKOUT_CURRENCIES.map((code) => ({ value: code, label: code })),
+    ],
+    [t],
+  );
+
+  const selectedCheckoutCurrencyOption = useMemo(
+    () => checkoutCurrencyOptions.find((o) => o.value === checkoutCurrency) ?? checkoutCurrencyOptions[0],
+    [checkoutCurrencyOptions, checkoutCurrency],
+  );
 
   /** Instant preview — same calendar logic as GET /v3/billing/me?previewMonths (see billingUtils). */
   const termAccessPreview = useMemo(() => {
@@ -150,9 +173,11 @@ export function useBillingData(options = {}) {
 
   const checkoutTermPreview = useMemo(() => {
     const term = selectedCheckoutTerm;
-    const pd = billingState?.pricingDisplay;
-    const currency = pd?.currency ?? "USD";
-    const amounts = pd?.amountsByMonths ?? TUF_STELLAR_DISPLAY_USD_FALLBACK_AMOUNTS;
+    const currency = effectiveCheckoutCurrency;
+    const amounts =
+      checkoutCurrency === "auto" && billingState?.pricingDisplay?.amountsByMonths
+        ? billingState.pricingDisplay.amountsByMonths
+        : getCheckoutAmountsForCurrency(currency);
     const key = String(term.months);
     const bundleMajor = Number(amounts[key]);
     const oneMonthMajor = Number(amounts["1"]);
@@ -182,7 +207,7 @@ export function useBillingData(options = {}) {
       savePct: rawSave,
       ariaText,
     };
-  }, [selectedCheckoutTerm, billingState?.pricingDisplay, t, i18n.language]);
+  }, [selectedCheckoutTerm, effectiveCheckoutCurrency, checkoutCurrency, billingState?.pricingDisplay, t, i18n.language]);
 
   const canOpenCheckout = canPurchaseOneTime && (!purchaseAsGift || Boolean(giftRecipient?.userId));
 
@@ -202,6 +227,10 @@ export function useBillingData(options = {}) {
     setGiftRecipient(null);
   }, []);
 
+  const handleCheckoutCurrencyChange = useCallback((opt) => {
+    setCheckoutCurrency(opt?.value ?? "auto");
+  }, []);
+
   const handleCheckout = useCallback(async () => {
     if (subscribing) return;
     if (!isTufStellarEnabledForUser(user)) {
@@ -217,7 +246,7 @@ export function useBillingData(options = {}) {
     setSubscribing(true);
     const toastId = toast.loading(t("billing.toasts.startingCheckout"));
     try {
-      const payload = { months: term.months };
+      const payload = { months: term.months, currency: checkoutCurrency };
       if (purchaseAsGift && giftRecipient?.userId) payload.recipientUserId = giftRecipient.userId;
       const { data } = await api.post("/v3/billing/stripe/checkout", payload);
       const url = data?.url;
@@ -231,7 +260,7 @@ export function useBillingData(options = {}) {
     } finally {
       setSubscribing(false);
     }
-  }, [subscribing, user, purchaseAsGift, giftRecipient, checkoutTermIndex, t, billingToastForCode]);
+  }, [subscribing, user, purchaseAsGift, giftRecipient, checkoutTermIndex, checkoutCurrency, t, billingToastForCode]);
 
   const showIdleNote = billingState && !canPurchaseOneTime;
 
@@ -263,5 +292,10 @@ export function useBillingData(options = {}) {
     handleRecipientProfileChange,
     clearRecipient,
     handleCheckout,
+    checkoutCurrency,
+    setCheckoutCurrency,
+    checkoutCurrencyOptions,
+    selectedCheckoutCurrencyOption,
+    handleCheckoutCurrencyChange,
   };
 }

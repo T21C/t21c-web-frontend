@@ -80,7 +80,9 @@
     "summaryAria": "{{duration}}，合计 {{price}}",
     "summaryAriaWithSave": "{{duration}}，合计 {{price}}，省 {{pct}}%",
     "modeGroupAria": "结账选项",
-    "projectedAccessUntil": "购买后，您的 TUFStellar 将延长至 {{date}}。"
+    "projectedAccessUntil": "购买后，您的 TUFStellar 将延长至 {{date}}。",
+    "currencyLabel": "结账货币",
+    "currencyAuto": "自动"
   },
   "actions": {
     "openingCheckout": "正在打开收银台…",
@@ -201,6 +203,7 @@
     "checkoutOpened": "请在新标签页完成付款。",
     "checkoutError": "无法启动收银台。",
     "checkoutInvalidTerm": "时长无效。",
+    "checkoutInvalidCurrency": "货币无效。",
     "giftRecipientNotFound": "未找到用户。",
     "giftRecipientBlocked": "该账号无法接受。",
     "giftEmailRequired": "需要邮箱。",

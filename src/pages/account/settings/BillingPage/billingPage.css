@@ -6,7 +6,7 @@
   gap: 1.25rem;
   width: min(100%, 56rem);
   justify-self: center;
-  padding: 0 2rem;
+  padding: 0 2rem 3rem;
   --glint-angle: -70deg;
   --billing-tooltip-bg: #332f8658;
 }
@@ -357,6 +357,10 @@
   flex-wrap: wrap;
   gap: 0.6rem;
   align-items: center;
+}
+
+.billing-page .billing-page__currency-select {
+  flex: 0 0 auto;
 }
 
 .billing-page .billing-page__idle-note {

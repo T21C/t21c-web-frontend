@@ -80,7 +80,9 @@
     "summaryAria": "{{duration}}, {{price}} total",
     "summaryAriaWithSave": "{{duration}}, {{price}} total, save {{pct}} percent",
     "modeGroupAria": "Checkout options",
-    "projectedAccessUntil": "Buying this will extend your TUFStellar until {{date}}."
+    "projectedAccessUntil": "Buying this will extend your TUFStellar until {{date}}.",
+    "currencyLabel": "Checkout currency",
+    "currencyAuto": "Auto"
   },
   "actions": {
     "openingCheckout": "Opening checkout…",
@@ -201,6 +203,7 @@
     "checkoutOpened": "Complete payment in the new tab.",
     "checkoutError": "Could not start checkout. Please try again.",
     "checkoutInvalidTerm": "Invalid term. Refresh and try again.",
+    "checkoutInvalidCurrency": "Invalid currency. Refresh and try again.",
     "giftRecipientNotFound": "User not found.",
     "giftRecipientBlocked": "That account can't receive this right now.",
     "giftEmailRequired": "Recipient needs an email on file (or yours for self-checkout).",

@@ -4,6 +4,16 @@ import ReactSelect, { components } from 'react-select';
 import { getPortalRoot } from '@/utils/portalRoot';
 import './select.css';
 
+/** Map `direction` shorthand to react-select `menuPlacement`. */
+function resolveMenuPlacement(direction, menuPlacementProp) {
+  if (menuPlacementProp != null && menuPlacementProp !== '') {
+    return menuPlacementProp;
+  }
+  if (direction === 'up') return 'top';
+  if (direction === 'auto') return 'auto';
+  return 'bottom';
+}
+
 const CustomSelect = ({
   options = [],
   value,
@@ -11,20 +21,30 @@ const CustomSelect = ({
   label,
   width = "12rem",
   maxHeight = "",
+  /** Shorthand: `down` (default), `up` (menu above control), or `auto`. Overridden by `menuPlacement`. */
+  direction = "down",
+  menuPlacement: menuPlacementProp,
   menuPortalTarget,
   backgroundColor = "rgba(255, 255, 255, 0.2)",
   placeholderColor = "#fff8",
   ...props
 }) => {
+  const menuPlacement = resolveMenuPlacement(direction, menuPlacementProp);
   const [isClosing, setIsClosing] = useState(false);
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const closeTimeoutRef = useRef(null);
 
-  // Custom Menu component to handle animation
-  const Menu = (props) => {
-    const { children, ...rest } = props;
+  // Custom Menu component to handle animation (placement from react-select when menu opens above/below)
+  const Menu = (menuProps) => {
+    const { children, placement, ...rest } = menuProps;
+    const placementClass =
+      placement === 'top' ? 'custom-select-menu--top' : 'custom-select-menu--bottom';
     return (
-      <components.Menu {...rest} className={`custom-select-menu ${isClosing ? 'closing' : ''}`}>
+      <components.Menu
+        {...rest}
+        placement={placement}
+        className={`custom-select-menu ${placementClass} ${isClosing ? 'closing' : ''}`}
+      >
         {children}
       </components.Menu>
     );
@@ -102,7 +122,7 @@ const CustomSelect = ({
         color: "#fff"
       }
     }),
-    menu: (provided) => ({
+    menu: (provided, state) => ({
       ...provided,
       backgroundColor: "rgba(0, 0, 0, 0.95)",
       backdropFilter: "blur(8px)",
@@ -111,7 +131,8 @@ const CustomSelect = ({
       boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
       overflow: "hidden",
       zIndex: 9999,
-      margin: "4px 0",
+      marginTop: state.placement === 'top' ? 0 : '4px',
+      marginBottom: state.placement === 'top' ? '4px' : 0,
       maxHeight: maxHeight
     }),
     option: (provided, state) => ({
@@ -183,6 +204,7 @@ const CustomSelect = ({
           }}
           options={Array.isArray(options) ? options : []}
           menuPortalTarget={menuPortalTarget ?? getPortalRoot()}
+          menuPlacement={menuPlacement}
           classNamePrefix="custom-select"
           styles={customStyles}
           components={{ Menu }}

@@ -2,7 +2,7 @@
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ProfileSelector } from "@/components/common/selectors";
+import { CustomSelect, ProfileSelector } from "@/components/common/selectors";
 import { BillingGiftRecipientPreview } from "./BillingGiftRecipientPreview";
 import { formatDateDayOnly, TUF_STELLAR_TERM_OPTIONS } from "./billingUtils";
 
@@ -21,6 +21,9 @@ export function BillingPurchaseSection({
   canOpenCheckout,
   onCheckout,
   termAccessPreview,
+  checkoutCurrencyOptions,
+  selectedCheckoutCurrencyOption,
+  onCheckoutCurrencyChange,
 }) {
   const { t, i18n } = useTranslation("pages");
   const locale = i18n.language || undefined;
@@ -146,6 +149,16 @@ export function BillingPurchaseSection({
               })
             : t("billing.actions.continueCheckout")}
         </button>
+        <CustomSelect
+          className="billing-page__currency-select"
+          options={checkoutCurrencyOptions}
+          value={selectedCheckoutCurrencyOption}
+          onChange={onCheckoutCurrencyChange}
+          width="7.5rem"
+          direction="up"
+          isDisabled={!canPurchaseOneTime}
+          aria-label={t("billing.checkout.currencyLabel")}
+        />
       </div>
     </section>
   );

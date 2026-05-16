@@ -17,7 +17,14 @@
 /* Menu animations */
 .custom-select-menu {
   animation: dropdownExpand 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.custom-select-menu--bottom {
   transform-origin: top;
+}
+
+.custom-select-menu--top {
+  transform-origin: bottom;
 }
 
 /* Override react-select's default max-height */
