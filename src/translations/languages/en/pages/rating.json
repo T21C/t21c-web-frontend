@@ -51,5 +51,8 @@
       "title": "No ratings available",
       "subtitle": "All rated!"
     }
+  },
+  "infiniteScroll": {
+    "end": "You've reached the end!"
   }
 } 

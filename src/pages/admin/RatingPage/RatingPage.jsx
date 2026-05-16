@@ -4,6 +4,7 @@ import { MetaTags } from "@/components/common/display";
 import { StateDisplay } from "@/components/common/selectors";
 import "./adminratingpage.css";
 import { useEffect, useState, useCallback, useMemo } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRatingFilter } from "@/contexts/RatingFilterContext";
 import { useTranslation } from "react-i18next";
@@ -19,6 +20,8 @@ import { Tooltip } from "react-tooltip";
 import { RatingHelpPopup } from "@/components/popups/Rating";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
+
+const RATINGS_BATCH = 30;
 
 const RatingPage = () => {
   const { t } = useTranslation('pages');
@@ -58,6 +61,7 @@ const RatingPage = () => {
   const [connectedManagers, setConnectedManagers] = useState(0);
   const [showTopRaters, setShowTopRaters] = useState(false);
   const [weeklyRaterActivity, setWeeklyRaterActivity] = useState([]);
+  const [visibleCount, setVisibleCount] = useState(RATINGS_BATCH);
 
   const fetchRatings = useCallback(async () => {
     try {
@@ -340,6 +344,29 @@ const RatingPage = () => {
     return filtered;
   }, [sortedRatings, hideRated, lowDiffFilter, fourVoteFilter, searchQuery, user, difficultyDict]);
 
+  const displayedRatings = useMemo(
+    () => filteredRatings.slice(0, visibleCount),
+    [filteredRatings, visibleCount]
+  );
+
+  const hasMoreRatings = visibleCount < filteredRatings.length;
+
+  const loadMoreRatings = useCallback(() => {
+    setVisibleCount((prev) =>
+      Math.min(prev + RATINGS_BATCH, filteredRatings.length)
+    );
+  }, [filteredRatings.length]);
+
+  useEffect(() => {
+    setVisibleCount(RATINGS_BATCH);
+  }, [sortOrder, sortType, hideRated, lowDiffFilter, fourVoteFilter, searchQuery]);
+
+  useEffect(() => {
+    if (visibleCount > filteredRatings.length) {
+      setVisibleCount(Math.max(RATINGS_BATCH, filteredRatings.length));
+    }
+  }, [filteredRatings.length, visibleCount]);
+
   // Add keyboard shortcut handler for force-refresh
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -530,9 +557,22 @@ const RatingPage = () => {
             </div>
           {ratings && ratings.length > 0 ? (
           <>
-            <div className="rating-cards">
-              {filteredRatings
-                .map((rating, index) => (
+            <InfiniteScroll
+              style={{ paddingBottom: "4rem", overflow: "visible" }}
+              dataLength={displayedRatings.length}
+              next={loadMoreRatings}
+              hasMore={hasMoreRatings && displayedRatings.length > 0}
+              loader={<div className="loader loader-level-page" />}
+              endMessage={
+                displayedRatings.length > 0 && (
+                  <p className="end-message">
+                    <b>{t('rating.infiniteScroll.end')}</b>
+                  </p>
+                )
+              }
+            >
+              <div className="rating-cards">
+                {displayedRatings.map((rating, index) => (
                   <RatingCard
                     key={rating.id}
                     rating={rating}
@@ -544,7 +584,8 @@ const RatingPage = () => {
                     onEditLevel={() => handleEditLevel(rating.level.id)}
                   />
                 ))}
-            </div>
+              </div>
+            </InfiniteScroll>
 
             {selectedRating && (
               <RatingDetailPopup

@@ -71,6 +71,7 @@ export const RatingDetailPopup = ({
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [showSecondRatings, setShowSecondRatings] = useState(false);
   const [isAutorating, setIsAutorating] = useState(false);
+  const [isCommentFieldOpen, setIsCommentFieldOpen] = useState(false);
 
   const popupRef = useRef(null);
 
@@ -498,7 +499,15 @@ export const RatingDetailPopup = ({
             </span>
             </div>
           </div>
-          
+          {selectedRating.level.rerateReason && (
+            <div
+            onClick={() => setIsCommentFieldOpen(!isCommentFieldOpen)} 
+            className={`detail-field comment-field ${isCommentFieldOpen ? 'open' : ''}`}
+            >
+              <span className="detail-label">{t('rating.detailPopup.labels.rerateReason')}</span>
+              <div className="detail-value">{selectedRating.level.rerateReason}</div>
+            </div>
+          )}
           <div className="popup-main-content-container">
             <div className="popup-main-content">
               <div className="video-container">

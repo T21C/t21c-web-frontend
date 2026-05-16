@@ -22,5 +22,8 @@
       "title": "Aucune évaluation disponible",
       "subtitle": "Vous avez tout évalué!"
     }
+  },
+  "infiniteScroll": {
+    "end": "Vous avez atteint la fin !"
   }
 } 

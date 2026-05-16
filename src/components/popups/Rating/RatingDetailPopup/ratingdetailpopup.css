@@ -99,6 +99,49 @@
     z-index: 1001;
 }
 
+.rating-popup .detail-field.comment-field {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    width: 100%;
+    margin-bottom: 0.75rem;
+    padding: 0.65rem 0.75rem;
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.2);
+    max-height: 3.75rem;
+    overflow: visible;
+    box-sizing: border-box;
+    transition: height 0.3s ease, background 0.2s ease;
+    cursor: pointer;
+}
+
+.rating-popup .detail-field.comment-field:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.rating-popup .detail-field.comment-field.open {
+    max-height: 30rem;
+}
+
+.rating-popup .detail-field.comment-field .detail-label {
+    font-size: 0.85rem;
+    color: var(--color-gray-3);
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+.rating-popup .detail-field.comment-field .detail-value {
+    font-size: 0.95rem;
+    color: var(--text-color);
+    width: 100%;
+    overflow: hidden;
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.45;
+    max-height: none;
+    text-overflow: unset;
+}
+
 .rating-popup .popup-content {
     display: flex;
     flex-direction: column;
@@ -281,6 +324,22 @@
   .rating-popup .toggle-details-btn {
     display: none;
   }
+  
+  .rating-popup .detail-field.comment-field {
+    height: 4rem;
+  }
+  
+  .rating-popup .detail-field.comment-field.open {
+    height: 30rem;
+  }
+
+  .rating-popup .detail-field.comment-field,
+  .rating-popup .detail-field.comment-field.open {
+    max-height: unset;
+  }
+
+
+
 }
 
 .rating-popup .toggle-details-btn span {
@@ -766,12 +825,13 @@
   }
 
   .rating-popup {
-    padding: 5rem 0 1rem 2rem;
+    padding: var(--navbar-height) 0 0 0;
     width: 100%;
-    height: 100%;
-    max-height: 100vh;
+    height: 100vh;
+    max-height: unset;
     margin: 0;
     border-radius: 0;
+    overflow-y: hidden;
     display: flex;
     flex-direction: column;
   }
@@ -784,7 +844,7 @@
   .rating-popup .popup-content {
     flex: 1;
     overflow-y: auto;
-    padding-right: 2rem;
+    padding: 1rem;
   }
 
   .rating-popup .popup-main-content {
@@ -855,10 +915,6 @@
 
 /* Small phone adjustments */
 @media (max-width: 480px) {
-  .rating-popup {
-    padding: 4.5rem 1rem 1rem 1rem;
-  }
-
   .rating-popup .rating-popup-close.tuf-close-button--floating {
     top: 5rem;
     right: 1.5rem;
@@ -912,11 +968,6 @@
     padding: 0.4rem 0.75rem;
     font-size: 0.85rem;
   }
-
-  .rating-popup .popup-content {
-    padding-right: 0;
-  }
-
 }
 
 /* Landscape mode adjustments */

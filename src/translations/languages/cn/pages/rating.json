@@ -51,5 +51,8 @@
       "title": "没有需要评级的关卡",
       "subtitle": "已全部评完！"
     }
+  },
+  "infiniteScroll": {
+    "end": "已到底部！"
   }
 } 

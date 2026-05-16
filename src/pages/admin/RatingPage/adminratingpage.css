@@ -590,6 +590,7 @@
 .admin-rating-page .admin-rating-body .search-input {
   background: transparent;
   resize: none;
+  overflow: hidden;
   border: none;
   color: var(--color-white);
   font-size: 0.95rem;
@@ -710,4 +711,12 @@
     transform: scale(1);
     opacity: 0;
   }
+}
+
+.admin-rating-page .end-message {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-top: 2rem;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.6);
 }

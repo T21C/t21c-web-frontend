@@ -50,5 +50,8 @@
       "title": "평가가 없습니다",
       "subtitle": "모두 평가 완료!"
     }
+  },
+  "infiniteScroll": {
+    "end": "끝에 도달했습니다!"
   }
 }

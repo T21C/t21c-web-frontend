@@ -44,5 +44,8 @@
       "title": "Brak dostępnych ocen",
       "subtitle": "Wszystko ocenione!"
     }
+  },
+  "infiniteScroll": {
+    "end": "To już koniec!"
   }
 } 
