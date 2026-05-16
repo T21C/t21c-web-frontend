@@ -1434,7 +1434,7 @@
 
 .level-card .metadata-block.no-tags {
   flex: unset;
-  margin-left: 0;
+  margin-left: auto;
 }
 
 .level-card .metadata-item {

@@ -99,7 +99,9 @@ const LevelCard = ({
     level?.baseScore && level.baseScore !== difficultyDict[level.diffId]?.baseScore
       ? level.baseScore
       : null;
-  const tagIds = (displayMode !== 'normal' || !showTags) ? [] : (level?.tags?.map((item) => item.id) || []);
+  const resolvesTagBadges =
+    showTags && (displayMode === 'normal' || displayMode === 'pack' || displayMode === 'grid');
+  const tagIds = resolvesTagBadges ? (level?.tags?.map((item) => item.id) || []) : [];
   const tags = tagIds.map((id) => tagsDict[id]).filter(Boolean); // Filter out undefined/null tags
   const hasSongPopup = (level?.songs && level.songs.length > 0) ? true : false;
   const hasArtistPopup = (level?.artists && level.artists.length > 0) ? true : false;
