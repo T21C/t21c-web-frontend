@@ -148,7 +148,7 @@ export const createNavigationConfig = (context = {}) => {
           { to: "https://api.tuforums.com/docs/", 
             translationKey: "navigation.main.dropdowns.more.apiDocs",
             attachIcon: <ExternalLinkIcon size={16} color="var(--color-white-t80)"/>},
-          { to: "/assets-catalog", 
+          { to: "/asset-list", 
             translationKey: "navigation.main.dropdowns.more.assets"},
         ],
         isActive: (pathname) =>
@@ -158,7 +158,7 @@ export const createNavigationConfig = (context = {}) => {
           pathname.startsWith("/terms-of-service") ||
           pathname.startsWith("/privacy-policy") ||
           pathname === "/about" ||
-          pathname.startsWith("/assets-catalog"),
+          pathname.startsWith("/asset-list"),
       },
     ],
 
