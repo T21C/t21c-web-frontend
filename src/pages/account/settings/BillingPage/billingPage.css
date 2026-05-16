@@ -1420,19 +1420,19 @@
 .billing-page .billing-page__benefits-pack-stat-range--align-center {
   left: 50%;
   right: auto;
-  transform: translate(-50%, 60%);
+  transform: translate(-50%, 80%);
 }
 
 .billing-page .billing-page__benefits-pack-stat-range--align-start {
   left: 0;
   right: auto;
-  transform: translateY(60%);
+  transform: translateY(80%);
 }
 
 .billing-page .billing-page__benefits-pack-stat-range--align-end {
   left: auto;
   right: 0;
-  transform: translateY(60%);
+  transform: translateY(80%);
 }
 
 .billing-page .billing-page__benefits-segment--includedLevelPacks {
