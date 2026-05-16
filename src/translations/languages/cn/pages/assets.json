@@ -1,0 +1,30 @@
+{
+  "meta": {
+    "title": "资源 | TUF",
+    "description": "标签、难度图标、精选类型、React 图标模块与静态资源 URL 目录。"
+  },
+  "header": {
+    "title": "资源",
+    "lede": "本页汇总展示全部资产（标签、难度、精选类型），以及 <code>components/common/icons</code> 与 <code>src/assets</code> 下的 SVG 图标与静态文件。"
+  },
+  "sections": {
+    "tags": { "title": "关卡标签", "hint": "与难度服务 `/tags` 接口数据一致。" },
+    "difficulties": { "title": "难度图标" },
+    "curationTypes": { "title": "精选类型", "hint": "关卡页与创作者资料使用的精选类型目录。" },
+    "jsxIcons": {
+      "title": "JSX 图标",
+      "hint": "<code>src/components/common/icons</code> 下的每个 <code>*.jsx</code> 图标文件。"
+    },
+    "staticAssets": {
+      "title": "静态资源（`src/assets`）",
+      "hint": "图片与字体文件。字体文件仅显示占位标签。"
+    }
+  },
+  "filter": { "label": "筛选", "labelDifficultyName": "难度名称", "placeholderJsx": "按路径或文件名筛选…", "placeholderStatic": "按路径筛选…", "placeholderTags": "按分组或标签名称搜索…", "placeholderDifficultyName": "按难度名称筛选…", "noMatches": "没有符合当前筛选条件的项。" },
+  "status": { "loading": "加载中…", "empty": "没有数据。" },
+  "jsx": { "noComponent": "未找到组件导出" },
+  "static": { "copyUrl": "复制 URL" },
+  "difficultiesFilter": {
+    "legacyToggleLabel": "LEGACY 类型难度"
+  }
+}

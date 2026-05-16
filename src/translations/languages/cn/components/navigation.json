@@ -41,7 +41,8 @@
         "tos": "服务条款",
         "privacyPolicy": "隐私政策",
         "aboutUs": "关于我们",
-        "apiDocs": "API 文档"
+        "apiDocs": "API 文档",
+        "assets": "资源"
       },
       "user": {
         "myProfile": "个人资料",

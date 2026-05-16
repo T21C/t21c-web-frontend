@@ -417,9 +417,21 @@ export function isImageUrl(url) {
   return false;
 }
 
+/**
+ * Swap CDN icon size path segment (`small` | `medium` | `large` | `original`) to the requested size.
+ * Replaces every occurrence so URLs stay consistent whether they currently use `/medium`, `/original`, etc.
+ * If no size segment is present, returns the URL unchanged.
+ *
+ * @param {string | null | undefined} url
+ * @param {'small' | 'medium' | 'large' | 'original'} [size='small']
+ * @returns {string | null}
+ */
 export function selectIconSize(url, size = "small") {
-  if (!url) return null;
-  return url.replace('/original', `/${size}`);
+  if (url == null || url === "") return null;
+  if (typeof url !== "string") return null;
+  const allowed = new Set(["small", "medium", "large", "original"]);
+  const token = allowed.has(size) ? size : "small";
+  return url.replace(/\/(?:small|medium|large|original)(?=\/|\.|\?|#|$)/gi, `/${token}`);
 }
 
 /** Base score as display string (no suffix); trims trailing fraction zeros, keeps one 0 after "." if needed. */

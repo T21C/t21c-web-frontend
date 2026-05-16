@@ -41,7 +41,8 @@
         "tos": "ToS",
         "privacyPolicy": "개인정보 처리방침",
         "aboutUs": "TUF 소개",
-        "apiDocs": "API 문서"
+        "apiDocs": "API 문서",
+        "assets": "에셋"
       },
       "user": {
         "myProfile": "내 프로필",

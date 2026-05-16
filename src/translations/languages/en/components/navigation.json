@@ -42,7 +42,8 @@
         "tos": "ToS",
         "privacyPolicy": "Privacy Policy",
         "aboutUs": "About Us",
-        "apiDocs": "API Docs"
+        "apiDocs": "API Docs",
+        "assets": "Assets"
       },
       "user": {
         "myProfile": "My Profile",

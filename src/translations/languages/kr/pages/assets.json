@@ -1,0 +1,30 @@
+{
+  "meta": {
+    "title": "에셋 | TUF",
+    "description": "태그, 난이도 아이콘, 큐레이션 유형, React 아이콘 모듈, 정적 에셋 URL 목록입니다."
+  },
+  "header": {
+    "title": "에셋",
+    "lede": "태그·난이도·큐레이션 유형을 포함한 모든 에셋과, <code>components/common/icons</code> 및 <code>src/assets</code> 아래 SVG 아이콘·정적 파일을 한눈에 보는 카탈로그입니다."
+  },
+  "sections": {
+    "tags": { "title": "레벨 태그", "hint": "난이도 서비스 `/tags`와 동일한 데이터입니다." },
+    "difficulties": { "title": "난이도 아이콘", "hint": "`sortOrder` 기준 정렬, 아이콘은 CDN `original` 크기입니다. 스위치로 `type`이 `LEGACY`인 행을 숨기거나 표시합니다." },
+    "curationTypes": { "title": "큐레이션 유형", "hint": "레벨·크리에이터에서 사용하는 큐레이션 타입입니다." },
+    "jsxIcons": {
+      "title": "JSX 아이콘",
+      "hint": "<code>src/components/common/icons</code> 아래의 모든 <code>*.jsx</code> 아이콘 파일입니다."
+    },
+    "staticAssets": {
+      "title": "정적 에셋 (`src/assets`)",
+      "hint": "이미지·폰트 파일입니다. 폰트는 타일에 표시만 합니다."
+    }
+  },
+  "filter": { "label": "필터", "labelDifficultyName": "난이도 이름", "placeholderJsx": "경로·파일명으로 필터…", "placeholderStatic": "경로로 필터…", "placeholderTags": "그룹 또는 태그 이름으로 검색…", "placeholderDifficultyName": "난이도 이름으로 필터…", "noMatches": "현재 필터와 일치하는 항목이 없습니다." },
+  "status": { "loading": "불러오는 중…", "empty": "항목이 없습니다." },
+  "jsx": { "noComponent": "컴포넌트 export 없음" },
+  "static": { "copyUrl": "URL 복사" },
+  "difficultiesFilter": {
+    "legacyToggleLabel": "LEGACY 타입 난이도"
+  }
+}

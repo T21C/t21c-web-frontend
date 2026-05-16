@@ -144,9 +144,12 @@ export const createNavigationConfig = (context = {}) => {
           { to: "/terms-of-service", translationKey: "navigation.main.dropdowns.more.tos" },
           { to: "/privacy-policy", translationKey: "navigation.main.dropdowns.more.privacyPolicy" },
           { to: "/about", translationKey: "navigation.main.dropdowns.more.aboutUs" },
+          { divider: true },
           { to: "https://api.tuforums.com/docs/", 
             translationKey: "navigation.main.dropdowns.more.apiDocs",
             attachIcon: <ExternalLinkIcon size={16} color="var(--color-white-t80)"/>},
+          { to: "/assets", 
+            translationKey: "navigation.main.dropdowns.more.assets"},
         ],
         isActive: (pathname) =>
           pathname.startsWith("/passes") ||
@@ -154,7 +157,8 @@ export const createNavigationConfig = (context = {}) => {
           pathname.startsWith("/rating") ||
           pathname.startsWith("/terms-of-service") ||
           pathname.startsWith("/privacy-policy") ||
-          pathname === "/about",
+          pathname === "/about" ||
+          pathname.startsWith("/assets"),
       },
     ],
 
