@@ -24,6 +24,14 @@
   "status": { "loading": "加载中…", "empty": "没有数据。" },
   "jsx": { "noComponent": "未找到组件导出" },
   "static": { "copyUrl": "复制 URL" },
+  "actions": {
+    "open": "打开",
+    "download": "下载",
+    "groupAria": "资源文件操作",
+    "copyColorHex": "复制颜色 {{color}}",
+    "colorCopied": "已复制 {{color}}",
+    "colorCopyFailed": "无法复制到剪贴板"
+  },
   "difficultiesFilter": {
     "legacyToggleLabel": "LEGACY 类型难度"
   }

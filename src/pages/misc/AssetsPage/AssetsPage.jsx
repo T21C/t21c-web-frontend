@@ -1,6 +1,7 @@
 // tuf-search: #AssetsPage #assetsPage #misc
 import { Component, useMemo, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
+import toast from "react-hot-toast";
 import { MetaTags } from "@/components/common/display";
 import { Footer } from "@/components/layout";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
@@ -12,10 +13,12 @@ import {
 import { getStaticAssetGalleryEntries } from "@/utils/staticAssetGalleryModules";
 import { selectIconSize } from "@/utils/Utility";
 import { StateDisplay } from "@/components/common/selectors";
-import { DownloadIcon, ExternalLinkIcon } from "@/components/common/icons";
+import { CopyIcon, DownloadIcon, ExternalLinkIcon } from "@/components/common/icons";
 import "./assetsPage.css";
+import { Tooltip } from "react-tooltip";
 
 const ASSET_ACTION_ICON_SIZE = 18;
+const DIFF_COLOR_COPY_ICON_SIZE = 14;
 
 function suggestFilenameFromUrl(url, fallbackStem) {
   try {
@@ -325,12 +328,34 @@ export default function AssetsPage() {
                     )}
                   </div>
                   <div className="assets-page__diff-meta">
-                    <span className="assets-page__diff-name">{d.name}</span>
-                    <code className="assets-page__mono-muted">
-                      id {d.id} · {d.type}
-                    </code>
+                    <div className="assets-page__diff-title-row">
+                      <span className="assets-page__diff-name">{d.name}</span>
+                    </div>
+                    <span className="assets-page__diff-type">{d.type}</span>
                     {d.color ? (
-                      <span className="assets-page__color-chip" style={{ background: d.color }} title={d.color} />
+                      <div className="assets-page__diff-color-row">
+                        <span className="assets-page__color-chip" style={{ background: d.color }} title={d.color} />
+                        <button
+                          type="button"
+                          className="assets-page__color-copy"
+                          aria-label={t("assets.actions.copyColorHex", { color: d.color })}
+                          onClick={() => {
+                            void (async () => {
+                              try {
+                                await navigator.clipboard.writeText(d.color);
+                                toast.success(t("assets.actions.colorCopied", { color: d.color }));
+                              } catch {
+                                toast.error(t("assets.actions.colorCopyFailed"));
+                              }
+                            })();
+                          }}
+                        >
+                          <CopyIcon data-tooltip-id={`diff-color-copy-tooltip-${d.id}`} size={DIFF_COLOR_COPY_ICON_SIZE} color="currentColor" aria-hidden />
+                        </button>
+                        <Tooltip id={`diff-color-copy-tooltip-${d.id}`} place="bottom" style={{ zIndex: 10 }}>
+                          <span>{t("assets.actions.copyColorHex", { color: d.color })}</span>
+                        </Tooltip>
+                      </div>
                     ) : null}
                   </div>
                   {diffIconUrl ? <AssetUrlActions url={diffIconUrl} downloadStem={`difficulty-${d.id}`} /> : null}

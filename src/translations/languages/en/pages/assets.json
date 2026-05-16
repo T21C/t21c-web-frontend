@@ -51,7 +51,10 @@
   "actions": {
     "open": "Open",
     "download": "Download",
-    "groupAria": "Asset file actions"
+    "groupAria": "Asset file actions",
+    "copyColorHex": "Copy color {{color}}",
+    "colorCopied": "Copied {{color}}",
+    "colorCopyFailed": "Could not copy to clipboard"
   },
   "difficultiesFilter": {
     "legacyToggleLabel": "Legacy difficulties"
