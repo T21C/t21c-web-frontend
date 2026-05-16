@@ -12,7 +12,7 @@ import { EditPassPopup } from "@/components/popups/Passes";
 import { MetaTags } from "@/components/common/display";
 import { StatusBanner } from "@/components/common/display/StatusBanner/StatusBanner";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
-import { formatDate } from "@/utils/Utility";
+import { formatDate, validateFeelingRating } from "@/utils/Utility";
 import i18next from "i18next";
 import { EyeIcon, EyeOffIcon, TrashIcon } from "@/components/common/icons";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
@@ -38,9 +38,13 @@ const PassDetailPage = () => {
   const { user } = useAuth();
   const { difficultyDict } = useDifficultyContext();
   const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [openEditFeelingRatingPopup, setOpenEditFeelingRatingPopup] = useState(false);
   const [particles, setParticles] = useState([]);
   const [showHideConfirm, setShowHideConfirm] = useState(false);
   const [isTogglingHidden, setIsTogglingHidden] = useState(false);
+  const [feelingRating, setFeelingRating] = useState('');
+  const [isSavingFeelingRating, setIsSavingFeelingRating] = useState(false);
+  const [feelingRatingError, setFeelingRatingError] = useState(null);
 
   // Function to generate random particle properties
   const generateParticle = (index) => ({
@@ -83,6 +87,42 @@ const PassDetailPage = () => {
       }));
     } catch (error) {
       console.error("Error fetching pass data:", error);
+    }
+  };
+
+  const handleOpenFeelingRatingPopup = () => {
+    setFeelingRating(res?.pass?.feelingRating || '');
+    setFeelingRatingError(null);
+    setOpenEditFeelingRatingPopup(true);
+  };
+
+  const handleCloseFeelingRatingPopup = () => {
+    if (isSavingFeelingRating) return;
+    setOpenEditFeelingRatingPopup(false);
+    setFeelingRatingError(null);
+  };
+
+  const handleSaveFeelingRating = async () => {
+    const value = feelingRating.trim();
+    if (!value) {
+      setFeelingRatingError(t('passDetail.errors.feelingRatingRequired'));
+      return;
+    }
+
+    setIsSavingFeelingRating(true);
+    setFeelingRatingError(null);
+    try {
+      await api.patch(`${import.meta.env.VITE_PASSES}/${id}/feeling-rating`, {
+        feelingRating: value,
+      });
+      await fetchPassData();
+      setOpenEditFeelingRatingPopup(false);
+    } catch (error) {
+      console.error("Error updating feeling rating:", error);
+      const serverMessage = error?.response?.data?.error;
+      setFeelingRatingError(serverMessage || t('passDetail.errors.updateFeelingRating'));
+    } finally {
+      setIsSavingFeelingRating(false);
     }
   };
 
@@ -136,6 +176,7 @@ const PassDetailPage = () => {
   const accuracy = pass.accuracy;
   const levelDiff = difficultyDict[pass.level?.diffId];
   const baseScore = pass.level?.baseScore || levelDiff?.baseScore;
+  const isOwnPass = user && user.playerId === pass.player?.id;
 
   return (
     <>
@@ -367,7 +408,7 @@ const PassDetailPage = () => {
           </div>
 
           <div className="pass-actions">
-            {user && user.playerId === pass.player?.id && (
+            {isOwnPass && (
               <button 
                 className={`hide-button btn-fill-glass ${pass.isHidden ? 'hidden' : ''}`}
                 onClick={handleToggleHidden}
@@ -383,14 +424,23 @@ const PassDetailPage = () => {
                 )}
               </button>
             )}
-            {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
+            {hasFlag(user, permissionFlags.SUPER_ADMIN) ? (
               <button className="edit-button btn-fill-accent" onClick={() => setOpenEditDialog(true)}>
                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   <path d="M18.5 2.50001C18.8978 2.10219 19.4374 1.87869 20 1.87869C20.5626 1.87869 21.1022 2.10219 21.5 2.50001C21.8978 2.89784 22.1213 3.4374 22.1213 4.00001C22.1213 4.56262 21.8978 5.10219 21.5 5.50001L12 15L8 16L9 12L18.5 2.50001Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </button>
-            )}
+            ) : 
+            isOwnPass && (
+            <button className="edit-button btn-fill-glass" onClick={handleOpenFeelingRatingPopup}>
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M18.5 2.50001C18.8978 2.10219 19.4374 1.87869 20 1.87869C20.5626 1.87869 21.1022 2.10219 21.5 2.50001C21.8978 2.89784 22.1213 3.4374 22.1213 4.00001C22.1213 4.56262 21.8978 5.10219 21.5 5.50001L12 15L8 16L9 12L18.5 2.50001Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+            )
+            }
           </div>
         </div>
 
@@ -423,6 +473,45 @@ const PassDetailPage = () => {
               fetchPassData();
             }}
           />
+        )}
+
+        {openEditFeelingRatingPopup && (
+          <div className="hide-confirm-overlay" onClick={handleCloseFeelingRatingPopup}>
+            <div className="hide-confirm-dialog" onClick={(e) => e.stopPropagation()}>
+              <h3>{t('passDetail.feelingRating.title')}</h3>
+              <input
+                type="text"
+                value={feelingRating}
+                onChange={(e) => {
+                  setFeelingRating(e.target.value);
+                  if (feelingRatingError) setFeelingRatingError(null);
+                }}
+                placeholder={t('passDetail.feelingRating.placeholder')}
+                disabled={isSavingFeelingRating}
+              />
+              {feelingRatingError && (
+                <p className="feeling-rating-error">{feelingRatingError}</p>
+              )}
+              <div className="hide-confirm-actions">
+                <button
+                  className="confirm-button btn-fill-primary"
+                  onClick={handleSaveFeelingRating}
+                  disabled={isSavingFeelingRating}
+                >
+                  {isSavingFeelingRating
+                    ? t('passDetail.feelingRating.saving')
+                    : t('buttons.confirm', { ns: 'common' })}
+                </button>
+                <button
+                  className="cancel-button btn-fill-neutral-dark"
+                  onClick={handleCloseFeelingRatingPopup}
+                  disabled={isSavingFeelingRating}
+                >
+                  {t('buttons.cancel', { ns: 'common' })}
+                </button>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </>

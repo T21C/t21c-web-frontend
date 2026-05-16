@@ -111,7 +111,14 @@
       "processing": "Showing..."
     }
   },
+  "feelingRating": {
+    "title": "Edit Feeling Rating",
+    "placeholder": "e.g. U15, G18~G20",
+    "saving": "Saving..."
+  },
   "errors": {
-    "toggleHidden": "Failed to toggle pass visibility"
+    "toggleHidden": "Failed to toggle pass visibility",
+    "updateFeelingRating": "Failed to update feeling rating",
+    "feelingRatingRequired": "Feeling rating is required"
   }
 } 

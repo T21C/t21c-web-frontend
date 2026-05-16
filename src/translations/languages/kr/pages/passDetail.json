@@ -111,8 +111,15 @@
       "processing": "Showing..."
     }
   },
+  "feelingRating": {
+    "title": "체감 난이도 수정",
+    "placeholder": "예: U15, G18~G20",
+    "saving": "저장 중..."
+  },
   "errors": {
-    "toggleHidden": "Failed to toggle pass visibility"
+    "toggleHidden": "Failed to toggle pass visibility",
+    "updateFeelingRating": "체감 난이도 업데이트에 실패했습니다",
+    "feelingRatingRequired": "체감 난이도를 입력해 주세요"
   }
 }
 

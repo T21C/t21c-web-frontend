@@ -91,5 +91,14 @@
   },
   "buttons": {
     "edit": "Gérer les détails de la complétion"
+  },
+  "feelingRating": {
+    "title": "Modifier la difficulté ressentie",
+    "placeholder": "ex. U15, G18~G20",
+    "saving": "Enregistrement..."
+  },
+  "errors": {
+    "updateFeelingRating": "Échec de la mise à jour de la difficulté ressentie",
+    "feelingRatingRequired": "La difficulté ressentie est obligatoire"
   }
 } 

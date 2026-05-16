@@ -91,5 +91,14 @@
   },
   "buttons": {
     "edit": "Edytuj informacje o przejściu"
+  },
+  "feelingRating": {
+    "title": "Edytuj szacowany poziom trudności",
+    "placeholder": "np. U15, G18~G20",
+    "saving": "Zapisywanie..."
+  },
+  "errors": {
+    "updateFeelingRating": "Nie udało się zaktualizować szacowanego poziomu trudności",
+    "feelingRatingRequired": "Szacowany poziom trudności jest wymagany"
   }
 } 

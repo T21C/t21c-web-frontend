@@ -111,7 +111,14 @@
       "processing": "取消中……"
     }
   },
+  "feelingRating": {
+    "title": "编辑体感难度",
+    "placeholder": "例如 U15、G18~G20",
+    "saving": "保存中……"
+  },
   "errors": {
-    "toggleHidden": "可见性更改失败"
+    "toggleHidden": "可见性更改失败",
+    "updateFeelingRating": "体感难度更新失败",
+    "feelingRatingRequired": "体感难度不能为空"
   }
 } 
