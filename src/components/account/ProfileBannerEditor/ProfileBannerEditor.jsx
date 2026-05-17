@@ -7,7 +7,11 @@ import { getCdnErrorMessage } from "@/utils/uploadErrors";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { DEFAULT_PROFILE_BANNER_PRESET_PATH } from "@/constants/bannerPresets";
 import { customProfileBannersEnabled, publicAssetUrl, subjectHasCustomBannerEntitlement } from "@/utils/profileBanners";
-import { isCdnSupportedImageMimeType } from "@/constants/cdnImageAccept";
+import {
+  CDN_IMAGE_ACCEPT,
+  cdnImageOutputFromFile,
+  isCdnSupportedImageMimeType,
+} from "@/constants/cdnImageAccept";
 import ImageSelectorPopup from "@/components/common/selectors/ImageSelectorPopup/ImageSelectorPopup";
 import "./profileBannerEditor.css";
 
@@ -125,7 +129,8 @@ const ProfileBannerEditor = ({
   const customUploadId = useId();
   const [isDraggingFile, setIsDraggingFile] = useState(false);
   const [cropperOpen, setCropperOpen] = useState(false);
-  const [pendingImage, setPendingImage] = useState(null);
+  const [cropperSession, setCropperSession] = useState(0);
+  const [pendingCrop, setPendingCrop] = useState(null);
 
   const applyPatch = useCallback(
     (patch) => {
@@ -211,9 +216,19 @@ const ProfileBannerEditor = ({
         toast.error(t("settings.banner.invalidFileType"));
         return;
       }
+      const output = cdnImageOutputFromFile(file, "banner");
+      if (file.type === "image/svg+xml") {
+        void uploadCustom(file);
+        return;
+      }
       const reader = new FileReader();
       reader.onload = () => {
-        setPendingImage(reader.result);
+        setPendingCrop({
+          src: reader.result,
+          mimeType: output.mimeType,
+          fileName: output.fileName,
+        });
+        setCropperSession((n) => n + 1);
         setCropperOpen(true);
       };
       reader.onerror = () => {
@@ -221,7 +236,7 @@ const ProfileBannerEditor = ({
       };
       reader.readAsDataURL(file);
     },
-    [canEditCustom, customBusy, t],
+    [canEditCustom, customBusy, t, uploadCustom],
   );
 
   const handleFileChange = useCallback(
@@ -235,7 +250,7 @@ const ProfileBannerEditor = ({
 
   const handleCropperClose = useCallback(() => {
     setCropperOpen(false);
-    setPendingImage(null);
+    setPendingCrop(null);
   }, []);
 
   const handleCropperSave = useCallback(
@@ -378,7 +393,7 @@ const ProfileBannerEditor = ({
               id={customUploadId}
               className="profile-banner-editor__file-input"
               type="file"
-              accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml"
+              accept={CDN_IMAGE_ACCEPT}
               disabled={customBusy}
               onChange={handleFileChange}
             />
@@ -452,16 +467,17 @@ const ProfileBannerEditor = ({
 
       {canEditCustom ? (
         <ImageSelectorPopup
+          key={cropperSession}
           isOpen={cropperOpen}
           onClose={handleCropperClose}
           onSave={handleCropperSave}
-          initialImage={pendingImage}
+          initialImage={pendingCrop?.src ?? null}
           mode="banner"
-          outputMimeType="image/jpeg"
+          outputMimeType={pendingCrop?.mimeType ?? "image/png"}
           outputQuality={0.92}
           outputMaxWidth={BANNER_OUTPUT_MAX_WIDTH}
           outputMaxHeight={BANNER_OUTPUT_MAX_HEIGHT}
-          outputFileName="banner.jpg"
+          outputFileName={pendingCrop?.fileName ?? "banner.png"}
           title={t("settings.banner.cropperTitle")}
           cropperVariant="basic"
         />

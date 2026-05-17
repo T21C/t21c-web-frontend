@@ -22,3 +22,39 @@ export const CDN_IMAGE_ACCEPT = CDN_IMAGE_MIME_TYPES.join(',');
 export function isCdnSupportedImageMimeType(mimeType) {
   return Boolean(mimeType && CDN_IMAGE_MIME_TYPES.includes(mimeType));
 }
+
+/**
+ * @param {string} mimeType
+ * @returns {string} Extension with leading dot (e.g. `.png`)
+ */
+export function cdnImageExtensionFromMime(mimeType) {
+  switch (mimeType) {
+    case "image/jpeg":
+    case "image/jpg":
+      return ".jpg";
+    case "image/png":
+      return ".png";
+    case "image/webp":
+      return ".webp";
+    case "image/gif":
+      return ".gif";
+    case "image/svg+xml":
+      return ".svg";
+    default:
+      return ".png";
+  }
+}
+
+/**
+ * Output file metadata for CDN uploads, preserving the browser-reported MIME type.
+ * @param {File} file
+ * @param {string} [defaultBaseName]
+ */
+export function cdnImageOutputFromFile(file, defaultBaseName = "image") {
+  const mimeType = file.type || "image/png";
+  const ext = cdnImageExtensionFromMime(mimeType);
+  const rawName = typeof file.name === "string" ? file.name.trim() : "";
+  const fileName =
+    rawName && rawName.toLowerCase().endsWith(ext) ? rawName : `${defaultBaseName}${ext}`;
+  return { mimeType, fileName };
+}

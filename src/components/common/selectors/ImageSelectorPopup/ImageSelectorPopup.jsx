@@ -86,7 +86,7 @@ const ImageSelectorPopup = ({
             toggleDragModeOnDblclick: false,
         };
         if (isBanner && useBasicCropper) {
-            return { ...base, autoCropArea: 1 };
+            return { ...base, autoCropArea: 0.85 };
         }
         if (isBanner && !useBasicCropper) {
             return { ...base, aspectRatio: fixedAspect };
@@ -95,6 +95,13 @@ const ImageSelectorPopup = ({
     }, [isBanner, useBasicCropper, fixedAspect]);
 
     useEffect(() => {
+        if (!isOpen) {
+            setCropperReady(false);
+            cropperInstanceRef.current?.destroy();
+            cropperInstanceRef.current = null;
+            return undefined;
+        }
+
         if (!image) {
             setCropperReady(false);
             return undefined;
@@ -112,29 +119,45 @@ const ImageSelectorPopup = ({
             if (cancelled || !cropImageRef.current) return;
             cropperInstanceRef.current?.destroy();
             cropperInstanceRef.current = null;
-            const cropper = new CropperJS(cropImageRef.current, getCropperJsOptions());
+            setCropperReady(false);
+
+            const cropper = new CropperJS(cropImageRef.current, {
+                ...getCropperJsOptions(),
+                ready() {
+                    if (cancelled) return;
+                    cropper.reset();
+                    setCropperReady(true);
+                },
+            });
             cropperInstanceRef.current = cropper;
-            setCropperReady(true);
         };
 
-        setCropperReady(false);
         cropperInstanceRef.current?.destroy();
         cropperInstanceRef.current = null;
+        setCropperReady(false);
+
+        const scheduleBoot = () => {
+            if (cancelled) return;
+            requestAnimationFrame(() => {
+                if (cancelled) return;
+                boot();
+            });
+        };
 
         if (img.complete && img.naturalWidth) {
-            boot();
+            scheduleBoot();
         } else {
-            img.addEventListener('load', boot, { once: true });
+            img.addEventListener('load', scheduleBoot, { once: true });
         }
 
         return () => {
             cancelled = true;
-            img.removeEventListener('load', boot);
+            img.removeEventListener('load', scheduleBoot);
             cropperInstanceRef.current?.destroy();
             cropperInstanceRef.current = null;
             setCropperReady(false);
         };
-    }, [image, getCropperJsOptions]);
+    }, [isOpen, image, getCropperJsOptions]);
 
     /**
      * CropperJS rotates the image around the canvas center. After each rotateTo,
@@ -206,7 +229,14 @@ const ImageSelectorPopup = ({
         }
     }, [applyRotationToCropper]);
 
-    React.useEffect(() => {
+    useEffect(() => {
+        if (!isOpen) {
+            setImage(null);
+            setCropperReady(false);
+            cropperInstanceRef.current?.destroy();
+            cropperInstanceRef.current = null;
+            return;
+        }
         if (initialImage) {
             setImage(initialImage);
             resetRotation();
@@ -214,7 +244,7 @@ const ImageSelectorPopup = ({
             setImage(currentAvatar);
             resetRotation();
         }
-    }, [currentAvatar, initialImage, resetRotation]);
+    }, [isOpen, currentAvatar, initialImage, resetRotation]);
 
     useEffect(() => {
         if (isOpen) {
@@ -357,8 +387,12 @@ const ImageSelectorPopup = ({
                 throw new Error('Failed to get cropped canvas');
             }
 
+            const blobQuality =
+                outputMimeType === 'image/jpeg' || outputMimeType === 'image/webp'
+                    ? outputQuality
+                    : undefined;
             const blob = await new Promise(resolve =>
-                canvas.toBlob(resolve, outputMimeType, outputQuality),
+                canvas.toBlob(resolve, outputMimeType, blobQuality),
             );
 
             const file = new File([blob], resolvedFileName, { type: outputMimeType });
