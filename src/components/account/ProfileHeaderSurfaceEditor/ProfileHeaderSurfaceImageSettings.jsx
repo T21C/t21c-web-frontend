@@ -16,6 +16,7 @@ import {
   normalizeImageSizeDimensionAxis,
   normalizeImageSizeDimensions,
 } from "@/utils/profileHeaderSurfaceStyle";
+import { CDN_IMAGE_ACCEPT } from "@/constants/cdnImageAccept.js";
 import { valuesToSelectOptions } from "./profileHeaderSurfaceEditorUtils";
 import ProfileHeaderSurfaceAxisPositionRow from "./ProfileHeaderSurfaceAxisPositionRow";
 import ProfileHeaderSurfaceAxisSizeRow from "./ProfileHeaderSurfaceAxisSizeRow";
@@ -50,7 +51,7 @@ export default function ProfileHeaderSurfaceImageSettings({
         <input
           ref={fileInputRef}
           type="file"
-          accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml"
+          accept={CDN_IMAGE_ACCEPT}
           className="profile-header-surface-image-settings__file-input"
           onChange={(ev) => {
             const f = ev.target.files?.[0];
@@ -83,7 +84,7 @@ export default function ProfileHeaderSurfaceImageSettings({
         <input
           ref={fileInputRef}
           type="file"
-          accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml"
+          accept={CDN_IMAGE_ACCEPT}
           className="profile-header-surface-image-settings__file-input"
           onChange={(ev) => {
             const f = ev.target.files?.[0];
@@ -175,7 +176,7 @@ export default function ProfileHeaderSurfaceImageSettings({
       <input
         ref={fileInputRef}
         type="file"
-        accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml"
+        accept={CDN_IMAGE_ACCEPT}
         className="profile-header-surface-image-settings__file-input"
         onChange={(ev) => {
           const f = ev.target.files?.[0];

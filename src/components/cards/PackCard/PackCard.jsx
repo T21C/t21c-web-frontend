@@ -184,7 +184,7 @@ const PackCard = ({
                 className="pack-card__owner-avatar"
               />
               <span className="pack-card__owner-name">
-                {pack.packOwner?.nickname || 'Unknown'}
+                {pack.packOwner?.nickname || pack.packOwner?.username || 'Unknown'}
               </span>
             </div>
             

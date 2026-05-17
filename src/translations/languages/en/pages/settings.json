@@ -156,7 +156,11 @@
     "imageUploaded": "Background image uploaded",
     "imageError": "Could not upload image",
     "imageRemoved": "Background image removed",
-    "imageRemoveError": "Could not remove image"
+    "imageRemoveError": "Could not remove image",
+    "invalidFileType": "Unsupported image type. Use JPEG, PNG, WebP, GIF, or SVG.",
+    "imageFileTooLarge": "Image must be {{maxMb}} MB or smaller.",
+    "imageDimensionsTooSmall": "Image must be at least {{minWidth}}×{{minHeight}} pixels.",
+    "imageUnreadable": "Could not read this image file."
   },
   "banner": {
     "sectionTitle": "Profile banner",

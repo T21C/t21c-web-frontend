@@ -8,7 +8,7 @@ import {
   customProfileBannersEnabled,
   subjectHasCustomBannerEntitlement,
 } from "@/utils/profileBanners";
-import { isCdnSupportedImageMimeType } from "@/constants/cdnImageAccept";
+import { validateCdnBannerImageFile } from "@/utils/validateCdnBannerImage.js";
 import {
   GRADIENT_LAYER_TYPES,
   SURFACE_STACK_KIND_GRADIENT,
@@ -153,10 +153,21 @@ export function useProfileHeaderSurfaceEditor({
   );
 
   const selectImageFile = useCallback(
-    (layerId, file) => {
+    async (layerId, file) => {
       if (!layerId || !file || !canEdit) return;
-      if (!isCdnSupportedImageMimeType(file.type)) {
-        toast.error(t("settings.banner.invalidFileType"));
+      const validation = await validateCdnBannerImageFile(file);
+      if (!validation.ok) {
+        const messageKeyByReason = {
+          invalidFileType: "settings.headerSurface.invalidFileType",
+          fileTooLarge: "settings.headerSurface.imageFileTooLarge",
+          dimensionsTooSmall: "settings.headerSurface.imageDimensionsTooSmall",
+          unreadable: "settings.headerSurface.imageUnreadable",
+        };
+        const messageKey =
+          messageKeyByReason[validation.reason] ??
+          "settings.headerSurface.imageUnreadable";
+        toast.error(t(messageKey, validation));
+        if (fileInputRef.current) fileInputRef.current.value = "";
         return;
       }
       setPendingImages((prev) => {
