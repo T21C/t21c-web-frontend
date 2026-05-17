@@ -97,3 +97,41 @@ export function getEffectiveProfileBannerUrl({ bannerPreset, customBannerUrl, su
 export function getDefaultProfileBannerUrl() {
   return presetPathToUrl(DEFAULT_PROFILE_BANNER_PRESET_PATH);
 }
+
+/**
+ * Whether the viewer may see custom header surface (gradients + CDN image).
+ * @param {{ permissionFlags?: string | number | bigint; tufStellarSubscriptionExpiresAt?: string | null } | null | undefined} subjectUser
+ */
+export function subjectHasHeaderSurfaceEntitlement(subjectUser) {
+  return subjectHasCustomBannerEntitlement(subjectUser);
+}
+
+/**
+ * Resolve header surface style + image URL for ProfileHeader card shell.
+ * @param {{
+ *   profileHeaderSurfaceStyle?: object | null,
+ *   profileHeaderSurfaceImageUrl?: string | null,
+ *   subjectUser?: { permissionFlags?: string | number | bigint; tufStellarSubscriptionExpiresAt?: string | null } | null,
+ * }} args
+ */
+export function getEffectiveProfileHeaderSurface({
+  profileHeaderSurfaceStyle,
+  profileHeaderSurfaceImageUrl,
+  subjectUser,
+}) {
+  if (!subjectHasHeaderSurfaceEntitlement(subjectUser)) {
+    return { style: null, imageUrl: null };
+  }
+  const style =
+    profileHeaderSurfaceStyle &&
+    typeof profileHeaderSurfaceStyle === "object" &&
+    !Array.isArray(profileHeaderSurfaceStyle)
+      ? profileHeaderSurfaceStyle
+      : null;
+  const rawUrl =
+    typeof profileHeaderSurfaceImageUrl === "string" && profileHeaderSurfaceImageUrl.trim()
+      ? profileHeaderSurfaceImageUrl.trim()
+      : null;
+  const imageUrl = rawUrl && isHttpLikeUrl(rawUrl) ? rawUrl : null;
+  return { style, imageUrl };
+}

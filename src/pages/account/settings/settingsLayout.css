@@ -134,16 +134,24 @@
   flex: 1;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .settings-layout {
-    flex-direction: column;
+    --settings-layout-drawer-height: 5.25rem;
   }
 
   .settings-layout__sidebar {
-    flex: 0 0 auto;
+    position: fixed;
+    top: var(--navbar-height);
+    left: 0;
+    right: 0;
+    z-index: 90;
+    flex: none;
     width: 100%;
+    min-height: var(--settings-layout-drawer-height);
     border-right: none;
     border-bottom: 1px solid var(--color-white-t10);
+    background: var(--color-black);
+    box-shadow: 0 4px 16px var(--color-black-t50);
   }
 
   .settings-layout__sidebar-head {
@@ -157,6 +165,7 @@
     gap: 0.75rem;
     padding: 0 0.5rem 0.65rem;
     overflow-x: auto;
+    overflow-y: hidden;
     scrollbar-width: thin;
   }
 
@@ -190,6 +199,12 @@
     width: 1.25rem;
     height: 3px;
     border-radius: 2px 2px 0 0;
+  }
+
+  .settings-layout__main {
+    flex: 1 1 auto;
+    width: 100%;
+    padding-top: var(--settings-layout-drawer-height);
   }
 
   .settings-layout__main-inner {

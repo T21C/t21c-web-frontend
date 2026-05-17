@@ -9,11 +9,18 @@ import api from "@/utils/api";
 import { formatNumber } from "@/utils";
 import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
 import ProfileBannerEditor from "@/components/account/ProfileBannerEditor/ProfileBannerEditor";
+import ProfileHeaderSurfaceEditor from "@/components/account/ProfileHeaderSurfaceEditor/ProfileHeaderSurfaceEditor";
+import {
+  SettingsPreviewSection,
+  SettingsSectionPreviewControls,
+} from "@/components/account/SettingsPreviewSection/SettingsPreviewSection";
 import {
   getEffectiveProfileBannerUrl,
+  getEffectiveProfileHeaderSurface,
   isTufStellarAccessActive,
   normalizeTufStellarIconVariant,
 } from "@/utils/profileBanners";
+import { parseProfileHeaderSurfaceStyle } from "@/utils/profileHeaderSurfaceStyle";
 import { ExternalLinkIcon, ChevronIcon, TUFStellarIcon } from "@/components/common/icons";
 import { useSettings } from "@/contexts/SettingsContext";
 import { buildPlayerStatGroups } from "@/utils/profileStatGroups";
@@ -23,7 +30,7 @@ import "./settingsSubPage.css";
 const SettingsPlayerPage = () => {
   const { t } = useTranslation(["pages", "common"]);
   const { user, fetchUser } = useAuth();
-  const { profileBannerExpanded, setProfileBannerExpanded } = useSettings();
+  const { profileBannerExpanded, setProfileBannerExpanded, previewFocusSectionId } = useSettings();
   const { difficultyDict, difficulties } = useDifficultyContext();
   const playerId = user?.playerId != null ? Number(user.playerId) : null;
 
@@ -38,6 +45,8 @@ const SettingsPlayerPage = () => {
   const [bioFieldError, setBioFieldError] = useState("");
   /** `undefined` = follow server; `null` = draft “use default”; string = draft preset path. */
   const [bannerPresetDraft, setBannerPresetDraft] = useState(undefined);
+  /** `undefined` = server; object/null = draft surface style */
+  const [headerSurfaceStyleDraft, setHeaderSurfaceStyleDraft] = useState(undefined);
   const [stellarVariantSaving, setStellarVariantSaving] = useState(false);
 
   const fetchProfile = useCallback(async () => {
@@ -66,6 +75,7 @@ const SettingsPlayerPage = () => {
 
   useEffect(() => {
     setBannerPresetDraft(undefined);
+    setHeaderSurfaceStyleDraft(undefined);
   }, [playerId]);
 
   useEffect(() => {
@@ -138,6 +148,22 @@ const SettingsPlayerPage = () => {
       subjectUser: playerData.user,
     });
   }, [playerData, user?.permissionFlags, bannerPresetDraft]);
+
+  const settingsHeaderSurface = useMemo(() => {
+    if (!playerData) return { style: null, imageUrl: null };
+    const draftParsed =
+      headerSurfaceStyleDraft === undefined
+        ? parseProfileHeaderSurfaceStyle(playerData.profileHeaderSurfaceStyle)
+        : headerSurfaceStyleDraft === null
+          ? null
+          : parseProfileHeaderSurfaceStyle(headerSurfaceStyleDraft);
+    const imageUrl = playerData.profileHeaderSurfaceImageUrl ?? null;
+    return getEffectiveProfileHeaderSurface({
+      profileHeaderSurfaceStyle: draftParsed,
+      profileHeaderSurfaceImageUrl: imageUrl,
+      subjectUser: playerData.user ?? user,
+    });
+  }, [playerData, user, headerSurfaceStyleDraft]);
 
   const handleSaveNickname = useCallback(async () => {
     const trimmed = nicknameDraft.trim();
@@ -250,12 +276,20 @@ const SettingsPlayerPage = () => {
   }
 
   return (
-    <div className="settings-sub-page">
+    <div
+      className={
+        previewFocusSectionId
+          ? "settings-sub-page settings-sub-page--focus-preview"
+          : "settings-sub-page"
+      }
+    >
       <div className="settings-sub-page__header-preview">
         <ProfileHeader
           mode="player"
           className="settings-sub-page__profile-header"
           bannerUrl={settingsBannerUrl}
+          headerSurfaceStyle={settingsHeaderSurface.style}
+          headerSurfaceImageUrl={settingsHeaderSurface.imageUrl}
           iconSlots={iconSlots}
           nameTooltipId={"default"}
           playerDifficultyPanelDifficulties={difficulties}
@@ -302,25 +336,107 @@ const SettingsPlayerPage = () => {
         />
       </div>
 
-      <section className="settings-sub-page__banner-section" aria-labelledby="settings-player-banner-heading">
+      <SettingsPreviewSection
+        sectionId="headerSurface"
+        className="settings-sub-page__banner-section"
+        aria-labelledby="settings-player-header-surface-heading"
+      >
+        <div className="settings-sub-page__header-surface-section-head">
+          <h2
+            id="settings-player-header-surface-heading"
+            className="settings-sub-page__banner-section-title"
+          >
+            {t("settings.headerSurface.sectionTitle")}
+          </h2>
+          <SettingsSectionPreviewControls
+            sectionId="headerSurface"
+            headingId="settings-player-header-surface-heading"
+            title={t("settings.headerSurface.sectionTitle")}
+          />
+        </div>
+        <ProfileHeaderSurfaceEditor
+          variant="player"
+          authUser={user}
+          surfaceStyle={playerData?.profileHeaderSurfaceStyle}
+          styleDraft={headerSurfaceStyleDraft}
+          onStyleDraftChange={setHeaderSurfaceStyleDraft}
+          surfaceImageUrl={playerData?.profileHeaderSurfaceImageUrl}
+          onApplied={(patch) => {
+            setPlayerData((p) => (p && typeof p === "object" ? { ...p, ...patch } : p));
+            if (Object.prototype.hasOwnProperty.call(patch, "profileHeaderSurfaceStyle")) {
+              setHeaderSurfaceStyleDraft(undefined);
+            }
+          }}
+          profilePreviewProps={{
+            mode: "player",
+            bannerUrl: settingsBannerUrl,
+            headerSurfaceStyle: settingsHeaderSurface.style,
+            headerSurfaceImageUrl: settingsHeaderSurface.imageUrl,
+            iconSlots,
+            nameTooltipId: "default",
+            playerDifficultyPanelDifficulties: difficulties,
+            playerDifficultyPanelClearsByDifficulty: clearsByDifficultyForHeader,
+            avatarSubject: playerData,
+            stellarIconVariant: normalizeTufStellarIconVariant(playerData?.tufStellarIconVariant),
+            name: playerData?.name || t("profile.meta.defaultTitle"),
+            handle: playerData?.user?.username,
+            country: playerData?.country,
+            badgeId: playerData?.rankedScoreRank,
+            badgeLabel: "#",
+            expandStatsAriaLabel: t("profile.funFacts.expandAria"),
+            collapseStatsAriaLabel: t("profile.funFacts.collapseAria"),
+            statGroups,
+            statRows: [
+              {
+                key: "rankedScore",
+                label: valueLabels.rankedScore,
+                value: formatNumber(playerData?.rankedScore || 0),
+              },
+              {
+                key: "averageXacc",
+                label: valueLabels.averageXacc,
+                value: `${((playerData?.averageXacc || 0) * 100).toFixed(2)}%`,
+              },
+              {
+                key: "generalScore",
+                label: valueLabels.generalScore,
+                value: formatNumber(playerData?.generalScore || 0),
+              },
+            ],
+          }}
+        />
+      </SettingsPreviewSection>
+
+      <SettingsPreviewSection
+        sectionId="banner"
+        className="settings-sub-page__banner-section"
+        aria-labelledby="settings-player-banner-heading"
+      >
         <div className="settings-sub-page__banner-section-head">
           <h2 id="settings-player-banner-heading" className="settings-sub-page__banner-section-title">
             {t("settings.banner.sectionTitle")}
           </h2>
-          <button
-            type="button"
-            className="settings-sub-page__banner-chevron"
-            aria-expanded={profileBannerExpanded}
-            aria-controls="settings-player-banner-panel"
-            aria-label={
-              profileBannerExpanded
-                ? t("settings.banner.sectionCollapseAria")
-                : t("settings.banner.sectionExpandAria")
-            }
-            onClick={() => setProfileBannerExpanded((v) => !v)}
-          >
-            <ChevronIcon direction={profileBannerExpanded ? "down" : "right"} />
-          </button>
+          <div className="settings-sub-page__section-head-actions">
+            <SettingsSectionPreviewControls
+              sectionId="banner"
+              headingId="settings-player-banner-heading"
+              title={t("settings.banner.sectionTitle")}
+            />
+            <button
+              type="button"
+              className="settings-sub-page__banner-chevron"
+              aria-expanded={profileBannerExpanded}
+              aria-controls="settings-player-banner-panel"
+              aria-label={
+                profileBannerExpanded
+                  ? t("settings.banner.sectionCollapseAria")
+                  : t("settings.banner.sectionExpandAria")
+              }
+              onClick={() => setProfileBannerExpanded((v) => !v)}
+            >
+              <ChevronIcon direction={profileBannerExpanded ? "down" : "right"} />
+            </button>
+          </div>
         </div>
         <div
           id="settings-player-banner-panel"
@@ -343,10 +459,11 @@ const SettingsPlayerPage = () => {
             }}
           />
         </div>
-      </section>
+      </SettingsPreviewSection>
 
       {isTufStellarAccessActive(user) ? (
-        <section
+        <SettingsPreviewSection
+          sectionId="stellar"
           className="settings-sub-page__stellar-variant"
           aria-labelledby="settings-player-stellar-heading"
         >
@@ -380,11 +497,21 @@ const SettingsPlayerPage = () => {
               );
             })}
           </div>
-        </section>
+        </SettingsPreviewSection>
       ) : null}
 
-      <div className="settings-sub-page__block settings-sub-page__field">
-        <label htmlFor="settings-player-nickname">{t("settings.player.nicknameLabel")}</label>
+      <SettingsPreviewSection
+        sectionId="nickname"
+        className="settings-sub-page__block settings-sub-page__field"
+      >
+        <div className="settings-sub-page__field-head">
+          <label htmlFor="settings-player-nickname">{t("settings.player.nicknameLabel")}</label>
+          <SettingsSectionPreviewControls
+            sectionId="nickname"
+            headingId="settings-player-nickname"
+            title={t("settings.player.nicknameLabel")}
+          />
+        </div>
         <div className="settings-sub-page__control-row">
           <input
             id="settings-player-nickname"
@@ -414,10 +541,17 @@ const SettingsPlayerPage = () => {
             {nicknameFieldError}
           </p>
         ) : null}
-      </div>
+      </SettingsPreviewSection>
 
-      <div className="settings-sub-page__block settings-sub-page__field">
-        <label htmlFor="settings-player-bio">{t("settings.player.bioLabel")}</label>
+      <SettingsPreviewSection sectionId="bio" className="settings-sub-page__block settings-sub-page__field">
+        <div className="settings-sub-page__field-head">
+          <label htmlFor="settings-player-bio">{t("settings.player.bioLabel")}</label>
+          <SettingsSectionPreviewControls
+            sectionId="bio"
+            headingId="settings-player-bio"
+            title={t("settings.player.bioLabel")}
+          />
+        </div>
         <div className="settings-sub-page__control-row settings-sub-page__control-row--stack">
           <textarea
             id="settings-player-bio"
@@ -446,7 +580,7 @@ const SettingsPlayerPage = () => {
             {bioFieldError}
           </p>
         ) : null}
-      </div>
+      </SettingsPreviewSection>
     </div>
   );
 };

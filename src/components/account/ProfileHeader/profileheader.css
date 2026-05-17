@@ -25,6 +25,27 @@
   );
 }
 
+.profile-header.profile-header--custom-surface {
+  background: none;
+}
+
+.profile-header__surface-stack {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.profile-header__surface-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+
+
 /* Banner strip above the inner body. */
 .profile-header__banner-wrap {
   position: relative;
@@ -573,6 +594,12 @@
   .profile-header__body {
     justify-content: center;
   }
+  .profile-header__stats {
+    flex: unset;
+    width: 100%;
+    margin-top: -2rem;
+  }
+
   .profile-header__left {
     height: 7.5rem;
   }
@@ -593,6 +620,9 @@
     width: 100%;
     align-items: center;
     z-index: 4;
+  }
+  .profile-header__stats {
+    margin-top: 0;
   }
   .profile-header__name-svg-text:not(.vertical) {
     display: none;

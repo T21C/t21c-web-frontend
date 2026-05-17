@@ -13,6 +13,10 @@ import {
   isTufStellarAccessActive,
   normalizeTufStellarIconVariant,
 } from "@/utils/profileBanners";
+import {
+  buildSurfaceStackRenderLayers,
+  parseProfileHeaderSurfaceStyle,
+} from "@/utils/profileHeaderSurfaceStyle";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import { groupCurationTypesForPanel } from "@/utils/curationTypeUtils";
 import ProfileHeaderIconPanelPortal from "./ProfileHeaderIconPanelPortal";
@@ -93,6 +97,9 @@ const ProfileHeader = ({
   badgeId,
   badgeLabel = "#",
   bannerUrl = null,
+  headerSurfaceStyle = null,
+  /** CDN URL for surface background image layer. */
+  headerSurfaceImageUrl = null,
   iconSlots,
   statRows = [],
   statGroups = null,
@@ -299,6 +306,22 @@ const ProfileHeader = ({
     handle != null && String(handle).length ? String(handle).replace(/^@/, "") : "";
 
   const shellClass = `profile-header-shell ${className}`;
+
+  const surfaceStackLayers = useMemo(() => {
+    const parsed = parseProfileHeaderSurfaceStyle(headerSurfaceStyle);
+    if (!parsed) return null;
+    const imageUrl =
+      typeof headerSurfaceImageUrl === "string" && headerSurfaceImageUrl.trim()
+        ? headerSurfaceImageUrl.trim()
+        : null;
+    const layers = buildSurfaceStackRenderLayers(parsed, imageUrl);
+    return layers.length > 0 ? layers : null;
+  }, [headerSurfaceStyle, headerSurfaceImageUrl]);
+
+  const headerClassName = surfaceStackLayers
+    ? "profile-header profile-header--custom-surface"
+    : "profile-header";
+
   const bannerImageSrc =
     bannerUrl != null && String(bannerUrl).trim().length > 0
       ? String(bannerUrl).trim()
@@ -323,7 +346,7 @@ const ProfileHeader = ({
   const STELLAR_ICON_HALF = STELLAR_ICON_SIZE / 2;
   /** Pin to the same local y as `<text>` (hanging baseline at 0). Do not use bbox height — stacked glyphs skew vertical centering. */
   const STELLAR_ICON_DY = 0;
-  const isNarrowNameLayout = viewportWidth < 600;
+  const isNarrowNameLayout = viewportWidth <= 600;
   const showStellarInBannerOverlay = !isNarrowNameLayout;
 
   const showStellarBadge = isTufStellarAccessActive(avatarSubject?.user);
@@ -417,7 +440,22 @@ const ProfileHeader = ({
 
   return (
     <div className={shellClass}>
-      <div className="profile-header">
+      <div className={headerClassName}>
+      {surfaceStackLayers ? (
+        <div className="profile-header__surface-stack" aria-hidden>
+          {surfaceStackLayers.map((layer) => (
+            <div
+              key={layer.key}
+              className="profile-header__surface-layer"
+              style={{
+                ...layer.style,
+                opacity: layer.opacity,
+                visibility: layer.visible ? "visible" : "hidden",
+              }}
+            />
+          ))}
+        </div>
+      ) : null}
       {showStellarBadge ? (
               <Tooltip
                 style={{
@@ -811,3 +849,4 @@ const ProfileHeader = ({
 };
 
 export default ProfileHeader;
+

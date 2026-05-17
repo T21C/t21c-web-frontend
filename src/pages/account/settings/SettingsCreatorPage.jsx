@@ -10,11 +10,18 @@ import api from "@/utils/api";
 import CurationTypeSelector from "@/components/account/CurationTypeSelector/CurationTypeSelector";
 import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
 import ProfileBannerEditor from "@/components/account/ProfileBannerEditor/ProfileBannerEditor";
+import ProfileHeaderSurfaceEditor from "@/components/account/ProfileHeaderSurfaceEditor/ProfileHeaderSurfaceEditor";
+import {
+  SettingsPreviewSection,
+  SettingsSectionPreviewControls,
+} from "@/components/account/SettingsPreviewSection/SettingsPreviewSection";
 import {
   getEffectiveProfileBannerUrl,
+  getEffectiveProfileHeaderSurface,
   isTufStellarAccessActive,
   normalizeTufStellarIconVariant,
 } from "@/utils/profileBanners";
+import { parseProfileHeaderSurfaceStyle } from "@/utils/profileHeaderSurfaceStyle";
 import { CreatorStatusBadge } from "@/components/common/display";
 import { ExternalLinkIcon, ChevronIcon, InfoIcon, TUFStellarIcon } from "@/components/common/icons";
 import { CustomSelect } from "@/components/common/selectors";
@@ -43,7 +50,7 @@ const SettingsCreatorPage = () => {
   const { t } = useTranslation(["pages", "common"]);
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { profileBannerExpanded, setProfileBannerExpanded } = useSettings();
+  const { profileBannerExpanded, setProfileBannerExpanded, previewFocusSectionId } = useSettings();
   const { difficultyDict, curationTypesDict } = useDifficultyContext();
   const creatorId = user?.creatorId != null ? Number(user.creatorId) : null;
 
@@ -69,6 +76,7 @@ const SettingsCreatorPage = () => {
   const [verificationSaving, setVerificationSaving] = useState(false);
   const [verificationFieldError, setVerificationFieldError] = useState("");
   const [bannerPresetDraft, setBannerPresetDraft] = useState(undefined);
+  const [headerSurfaceStyleDraft, setHeaderSurfaceStyleDraft] = useState(undefined);
   const [stellarVariantSaving, setStellarVariantSaving] = useState(false);
 
   useEffect(() => {
@@ -106,6 +114,7 @@ const SettingsCreatorPage = () => {
 
   useEffect(() => {
     setBannerPresetDraft(undefined);
+    setHeaderSurfaceStyleDraft(undefined);
   }, [creatorId]);
 
   const creatorDoc = profile?.creator || profile?.doc || profile;
@@ -221,6 +230,22 @@ const SettingsCreatorPage = () => {
       subjectUser: creatorDoc.user,
     });
   }, [profile, creatorDoc?.user, user?.permissionFlags, bannerPresetDraft]);
+
+  const settingsCreatorHeaderSurface = useMemo(() => {
+    if (!profile) return { style: null, imageUrl: null };
+    const u = profile.user || creatorDoc?.user;
+    const draftParsed =
+      headerSurfaceStyleDraft === undefined
+        ? parseProfileHeaderSurfaceStyle(profile.profileHeaderSurfaceStyle)
+        : headerSurfaceStyleDraft === null
+          ? null
+          : parseProfileHeaderSurfaceStyle(headerSurfaceStyleDraft);
+    return getEffectiveProfileHeaderSurface({
+      profileHeaderSurfaceStyle: draftParsed,
+      profileHeaderSurfaceImageUrl: profile.profileHeaderSurfaceImageUrl,
+      subjectUser: u,
+    });
+  }, [profile, creatorDoc?.user, headerSurfaceStyleDraft]);
 
   const handleDraftChange = useCallback((ids) => {
     setLiveDisplayIds(Array.isArray(ids) ? [...ids] : null);
@@ -507,12 +532,20 @@ const SettingsCreatorPage = () => {
   }
 
   return (
-    <div className="settings-sub-page">
+    <div
+      className={
+        previewFocusSectionId
+          ? "settings-sub-page settings-sub-page--focus-preview"
+          : "settings-sub-page"
+      }
+    >
       <div className="settings-sub-page__header-preview">
         <ProfileHeader
           mode="creator"
           className="settings-sub-page__profile-header"
           bannerUrl={settingsCreatorBannerUrl}
+          headerSurfaceStyle={settingsCreatorHeaderSurface.style}
+          headerSurfaceImageUrl={settingsCreatorHeaderSurface.imageUrl}
           iconSlots={iconSlots}
           creatorCurationPanelItems={creatorCurationPanelItems}
           avatarSubject={creatorDoc}
@@ -588,25 +621,93 @@ const SettingsCreatorPage = () => {
         ) : null}
       </div>
 
-      <section className="settings-sub-page__banner-section" aria-labelledby="settings-creator-banner-heading">
+      <SettingsPreviewSection
+        sectionId="headerSurface"
+        className="settings-sub-page__banner-section"
+        aria-labelledby="settings-creator-header-surface-heading"
+      >
+        <div className="settings-sub-page__header-surface-section-head">
+          <h2
+            id="settings-creator-header-surface-heading"
+            className="settings-sub-page__banner-section-title"
+          >
+            {t("settings.headerSurface.sectionTitle")}
+          </h2>
+          <SettingsSectionPreviewControls
+            sectionId="headerSurface"
+            headingId="settings-creator-header-surface-heading"
+            title={t("settings.headerSurface.sectionTitle")}
+          />
+        </div>
+        <ProfileHeaderSurfaceEditor
+            variant="creator"
+            creatorId={creatorId}
+            authUser={user}
+            surfaceStyle={profile?.profileHeaderSurfaceStyle}
+            styleDraft={headerSurfaceStyleDraft}
+            onStyleDraftChange={setHeaderSurfaceStyleDraft}
+            surfaceImageUrl={profile?.profileHeaderSurfaceImageUrl}
+            onApplied={(patch) => {
+              setProfile((p) => (p && typeof p === "object" ? { ...p, ...patch } : p));
+              if (Object.prototype.hasOwnProperty.call(patch, "profileHeaderSurfaceStyle")) {
+                setHeaderSurfaceStyleDraft(undefined);
+              }
+            }}
+          profilePreviewProps={{
+            mode: "creator",
+            bannerUrl: settingsCreatorBannerUrl,
+            headerSurfaceStyle: settingsCreatorHeaderSurface.style,
+            headerSurfaceImageUrl: settingsCreatorHeaderSurface.imageUrl,
+            iconSlots,
+            creatorCurationPanelItems,
+            avatarSubject: creatorDoc,
+            stellarIconVariant: normalizeTufStellarIconVariant(
+              profile?.tufStellarIconVariant ?? creatorDoc?.tufStellarIconVariant,
+            ),
+            nameTooltipId: aliasesTooltipId,
+            name: creatorDoc.name,
+            handle: creatorDoc.user?.username,
+            country: creatorDoc.user?.country || creatorDoc.country,
+            badgeId: creatorDoc.id,
+            badgeLabel: "ID:",
+            expandStatsAriaLabel: t("creators.profile.funFacts.expandAria"),
+            collapseStatsAriaLabel: t("creators.profile.funFacts.collapseAria"),
+            statGroups,
+            statRows: collapsedCreatorStatRows,
+          }}
+        />
+      </SettingsPreviewSection>
+
+      <SettingsPreviewSection
+        sectionId="banner"
+        className="settings-sub-page__banner-section"
+        aria-labelledby="settings-creator-banner-heading"
+      >
         <div className="settings-sub-page__banner-section-head">
           <h2 id="settings-creator-banner-heading" className="settings-sub-page__banner-section-title">
             {t("settings.banner.sectionTitle")}
           </h2>
-          <button
-            type="button"
-            className="settings-sub-page__banner-chevron"
-            aria-expanded={profileBannerExpanded}
-            aria-controls="settings-creator-banner-panel"
-            aria-label={
-              profileBannerExpanded
-                ? t("settings.banner.sectionCollapseAria")
-                : t("settings.banner.sectionExpandAria")
-            }
-            onClick={() => setProfileBannerExpanded((v) => !v)}
-          >
-            <ChevronIcon direction={profileBannerExpanded ? "down" : "right"} />
-          </button>
+          <div className="settings-sub-page__section-head-actions">
+            <SettingsSectionPreviewControls
+              sectionId="banner"
+              headingId="settings-creator-banner-heading"
+              title={t("settings.banner.sectionTitle")}
+            />
+            <button
+              type="button"
+              className="settings-sub-page__banner-chevron"
+              aria-expanded={profileBannerExpanded}
+              aria-controls="settings-creator-banner-panel"
+              aria-label={
+                profileBannerExpanded
+                  ? t("settings.banner.sectionCollapseAria")
+                  : t("settings.banner.sectionExpandAria")
+              }
+              onClick={() => setProfileBannerExpanded((v) => !v)}
+            >
+              <ChevronIcon direction={profileBannerExpanded ? "down" : "right"} />
+            </button>
+          </div>
         </div>
         <div
           id="settings-creator-banner-panel"
@@ -628,10 +729,11 @@ const SettingsCreatorPage = () => {
             onApplied={(patch) => setProfile((p) => (p && typeof p === "object" ? { ...p, ...patch } : p))}
           />
         </div>
-      </section>
+      </SettingsPreviewSection>
 
       {isTufStellarAccessActive(user) ? (
-        <section
+        <SettingsPreviewSection
+          sectionId="stellar"
           className="settings-sub-page__stellar-variant"
           aria-labelledby="settings-creator-stellar-heading"
         >
@@ -668,12 +770,22 @@ const SettingsCreatorPage = () => {
               );
             })}
           </div>
-        </section>
+        </SettingsPreviewSection>
       ) : null}
 
       {canEditHeaderCurationSlots ? (
-        <div className="settings-sub-page__block settings-sub-page__field">
-          <label htmlFor="settings-creator-display-name">{t("settings.creator.displayNameLabel")}</label>
+        <SettingsPreviewSection
+          sectionId="displayName"
+          className="settings-sub-page__block settings-sub-page__field"
+        >
+          <div className="settings-sub-page__field-head">
+            <label htmlFor="settings-creator-display-name">{t("settings.creator.displayNameLabel")}</label>
+            <SettingsSectionPreviewControls
+              sectionId="displayName"
+              headingId="settings-creator-display-name"
+              title={t("settings.creator.displayNameLabel")}
+            />
+          </div>
           <div className="settings-sub-page__control-row">
             <input
               id="settings-creator-display-name"
@@ -703,10 +815,10 @@ const SettingsCreatorPage = () => {
               {displayNameFieldError}
             </p>
           ) : null}
-        </div>
+        </SettingsPreviewSection>
       ) : null}
 
-      <div className="settings-sub-page__block">
+      <SettingsPreviewSection sectionId="curation" className="settings-sub-page__block">
         <CurationTypeSelector
           creatorId={creatorId}
           curationTypeCounts={profile?.curationTypeCounts}
@@ -717,11 +829,18 @@ const SettingsCreatorPage = () => {
           onDraftChange={handleDraftChange}
           embeddedSectionLabel={t("settings.creator.curationBadges.sectionLabel")}
         />
-      </div>
+      </SettingsPreviewSection>
 
       {canEditHeaderCurationSlots ? (
-        <div className="settings-sub-page__block settings-sub-page__field">
-          <label htmlFor="settings-creator-bio">{t("settings.creator.bioLabel")}</label>
+        <SettingsPreviewSection sectionId="bio" className="settings-sub-page__block settings-sub-page__field">
+          <div className="settings-sub-page__field-head">
+            <label htmlFor="settings-creator-bio">{t("settings.creator.bioLabel")}</label>
+            <SettingsSectionPreviewControls
+              sectionId="bio"
+              headingId="settings-creator-bio"
+              title={t("settings.creator.bioLabel")}
+            />
+          </div>
           <div className="settings-sub-page__control-row settings-sub-page__control-row--stack">
             <textarea
               id="settings-creator-bio"
@@ -750,14 +869,24 @@ const SettingsCreatorPage = () => {
               {bioFieldError}
             </p>
           ) : null}
-        </div>
+        </SettingsPreviewSection>
       ) : null}
 
       {canEditHeaderCurationSlots ? (
-        <div className="settings-sub-page__block settings-sub-page__field settings-sub-page__creator-upload-conditions">
-          <label htmlFor="settings-creator-upload-conditions">
-            {t("settings.creator.uploadConditionsLabel")}
-          </label>
+        <SettingsPreviewSection
+          sectionId="uploadConditions"
+          className="settings-sub-page__block settings-sub-page__field settings-sub-page__creator-upload-conditions"
+        >
+          <div className="settings-sub-page__field-head">
+            <label htmlFor="settings-creator-upload-conditions">
+              {t("settings.creator.uploadConditionsLabel")}
+            </label>
+            <SettingsSectionPreviewControls
+              sectionId="uploadConditions"
+              headingId="settings-creator-upload-conditions"
+              title={t("settings.creator.uploadConditionsLabel")}
+            />
+          </div>
           <div className="settings-sub-page__control-row settings-sub-page__control-row--stack">
             <textarea
               id="settings-creator-upload-conditions"
@@ -788,12 +917,22 @@ const SettingsCreatorPage = () => {
               {uploadConditionsFieldError}
             </p>
           ) : null}
-        </div>
+        </SettingsPreviewSection>
       ) : null}
 
       {canEditHeaderCurationSlots ? (
-        <div className="settings-sub-page__block settings-sub-page__field settings-sub-page__creator-verification">
-          <label htmlFor="settings-creator-verification">{t("settings.creator.verificationLabel")}</label>
+        <SettingsPreviewSection
+          sectionId="verification"
+          className="settings-sub-page__block settings-sub-page__field settings-sub-page__creator-verification"
+        >
+          <div className="settings-sub-page__field-head">
+            <label htmlFor="settings-creator-verification">{t("settings.creator.verificationLabel")}</label>
+            <SettingsSectionPreviewControls
+              sectionId="verification"
+              headingId="settings-creator-verification"
+              title={t("settings.creator.verificationLabel")}
+            />
+          </div>
           <div className="settings-sub-page__control-row settings-sub-page__control-row--verification">
             <CustomSelect
               inputId="settings-creator-verification"
@@ -823,12 +962,19 @@ const SettingsCreatorPage = () => {
               {verificationFieldError}
             </p>
           ) : null}
-        </div>
+        </SettingsPreviewSection>
       ) : null}
 
       {canEditHeaderCurationSlots ? (
-        <div className="settings-sub-page__block settings-sub-page__aliases">
-          <p className="settings-sub-page__aliases-section-label">{t("settings.creator.aliasesLabel")}</p>
+        <SettingsPreviewSection sectionId="aliases" className="settings-sub-page__block settings-sub-page__aliases">
+          <div className="settings-sub-page__field-head">
+            <p className="settings-sub-page__aliases-section-label">{t("settings.creator.aliasesLabel")}</p>
+            <SettingsSectionPreviewControls
+              sectionId="aliases"
+              headingId="settings-creator-aliases"
+              title={t("settings.creator.aliasesLabel")}
+            />
+          </div>
           <p className="settings-sub-page__aliases-hint">
             {t("settings.creator.aliasesHint", { max: MAX_CREATOR_ALIASES })}
           </p>
@@ -894,7 +1040,7 @@ const SettingsCreatorPage = () => {
               {aliasFieldError}
             </p>
           ) : null}
-        </div>
+        </SettingsPreviewSection>
       ) : null}
 
     </div>

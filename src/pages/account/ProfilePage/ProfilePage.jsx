@@ -26,7 +26,11 @@ import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { buildPlayerStatGroups } from "@/utils/profileStatGroups";
 import { buildPlayerIconSlots, pguNumberToQTier } from "@/utils/profileIconSlots";
 import { toDifficultyGraphData } from "@/utils/statFormatters";
-import { getEffectiveProfileBannerUrl, normalizeTufStellarIconVariant } from "@/utils/profileBanners";
+import {
+  getEffectiveProfileBannerUrl,
+  getEffectiveProfileHeaderSurface,
+  normalizeTufStellarIconVariant,
+} from "@/utils/profileBanners";
 import { userAvatarDisplayUrl } from "@/utils/playerAvatarDisplay";
 import {
   ResponsiveContainer,
@@ -443,6 +447,15 @@ const ProfilePage = () => {
         });
       }, [playerData]);
 
+      const profileHeaderSurface = useMemo(() => {
+        if (!playerData) return { style: null, imageUrl: null };
+        return getEffectiveProfileHeaderSurface({
+          profileHeaderSurfaceStyle: playerData.profileHeaderSurfaceStyle,
+          profileHeaderSurfaceImageUrl: playerData.profileHeaderSurfaceImageUrl,
+          subjectUser: playerData.user,
+        });
+      }, [playerData]);
+
       const difficultyGraphDataWithDupes = useMemo(
         () => toDifficultyGraphData(playerData?.funFacts?.clearsByDifficulty, difficultyDict || {}, "passes"),
         [playerData?.funFacts?.clearsByDifficulty, difficultyDict],
@@ -655,6 +668,8 @@ const ProfilePage = () => {
                     mode="player"
                     className="player-page__profile-header"
                     bannerUrl={profileBannerUrl}
+                    headerSurfaceStyle={profileHeaderSurface.style}
+                    headerSurfaceImageUrl={profileHeaderSurface.imageUrl}
                     iconSlots={iconSlots}
                     nameTooltipId={"default"}
                     playerDifficultyPanelDifficulties={difficulties}

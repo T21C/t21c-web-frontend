@@ -25,6 +25,7 @@ function writeStoredExpanded(expanded) {
 
 export function SettingsProvider({ children }) {
   const [profileBannerExpanded, setProfileBannerExpandedState] = useState(readStoredExpanded);
+  const [previewFocusSectionId, setPreviewFocusSectionId] = useState(null);
 
   const setProfileBannerExpanded = useCallback((next) => {
     setProfileBannerExpandedState((prev) => {
@@ -39,8 +40,10 @@ export function SettingsProvider({ children }) {
     () => ({
       profileBannerExpanded,
       setProfileBannerExpanded,
+      previewFocusSectionId,
+      setPreviewFocusSectionId,
     }),
-    [profileBannerExpanded, setProfileBannerExpanded],
+    [profileBannerExpanded, setProfileBannerExpanded, previewFocusSectionId],
   );
 
   return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>;

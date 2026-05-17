@@ -20,7 +20,11 @@ import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { buildCreatorIconSlots } from "@/utils/profileIconSlots";
 import { getCreatorCurationTypesForHeaderPanel } from "@/utils/curationTypeUtils";
 import { toDifficultyGraphData } from "@/utils/statFormatters";
-import { getEffectiveProfileBannerUrl, normalizeTufStellarIconVariant } from "@/utils/profileBanners";
+import {
+  getEffectiveProfileBannerUrl,
+  getEffectiveProfileHeaderSurface,
+  normalizeTufStellarIconVariant,
+} from "@/utils/profileBanners";
 
 const CreatorProfilePage = () => {
   const { creatorId } = useParams();
@@ -121,6 +125,16 @@ const CreatorProfilePage = () => {
       ? profile.uploadConditions.trim()
       : "";
 
+  const creatorHeaderSurface = useMemo(() => {
+    if (!profile) return { style: null, imageUrl: null };
+    const u = profile.user || creatorDoc?.user;
+    return getEffectiveProfileHeaderSurface({
+      profileHeaderSurfaceStyle: profile.profileHeaderSurfaceStyle,
+      profileHeaderSurfaceImageUrl: profile.profileHeaderSurfaceImageUrl,
+      subjectUser: u,
+    });
+  }, [profile, creatorDoc]);
+
   const creatorBannerUrl = useMemo(() => {
     if (!profile) return null;
     const u = profile.user || creatorDoc?.user;
@@ -204,6 +218,8 @@ const CreatorProfilePage = () => {
           mode="creator"
           className="creator-profile-page__profile-header"
           bannerUrl={creatorBannerUrl}
+          headerSurfaceStyle={creatorHeaderSurface.style}
+          headerSurfaceImageUrl={creatorHeaderSurface.imageUrl}
           iconSlots={iconSlots}
           creatorCurationPanelItems={creatorCurationPanelItems}
           avatarSubject={creatorDoc}
