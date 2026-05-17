@@ -6,7 +6,6 @@
   padding: 1rem;
   max-width: min(100%, 46rem);
   border-radius: 8px;
-  border: 1px solid var(--btn-neutral-disabled-fill);
   background: color-mix(in srgb, var(--color-black) 40%, transparent);
 }
 
