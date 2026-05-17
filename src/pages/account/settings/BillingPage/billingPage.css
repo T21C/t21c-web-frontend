@@ -1547,6 +1547,34 @@
   gap: 0.35rem;
 }
 
+.billing-page .billing-page__benefits-segment--includedCustomBackground {
+  gap: 0.65rem;
+  min-width: 0;
+  border-color: color-mix(in srgb, var(--btn-primary-alt) 35%, var(--color-white-t10));
+  background: color-mix(in srgb, var(--btn-primary-alt) 10%, var(--color-black-t10));
+}
+
+.billing-page .billing-page__benefits-segment--includedCustomBackground .billing-page__benefits-segment-copy--backgroundIntro {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.billing-page .billing-page__benefits-segment--includedCustomBackground .billing-page__benefits-demo-trigger--background {
+  border-radius: 6px;
+  border: 1px solid var(--color-white-t15);
+  box-shadow: 0 2px 10px var(--color-black-t25);
+}
+
+.billing-page
+  .billing-page__benefits-segment--includedCustomBackground
+  .billing-page__benefits-demo-trigger--background
+  .billing-page__benefits-segment-image--backgroundDemo {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
 .billing-page .billing-page__benefits-segment--includedSupporterIcon {
   flex-direction: row;
   flex-wrap: wrap;
@@ -1627,7 +1655,6 @@
   background: color-mix(in srgb, var(--color-black-t20) 55%, transparent);
 }
 
-.billing-page .billing-page__benefits-segment--comingGradients,
 .billing-page .billing-page__benefits-segment--comingBios,
 .billing-page .billing-page__benefits-segment--comingLayout {
   border-style: dashed;

@@ -8,6 +8,7 @@ import bannerDemo from "@/assets/misc/banner demo.jpg";
 import packDemo from "@/assets/misc/pack demo.png";
 import iconDemo1 from "@/assets/misc/name demo1.jpg";
 import iconDemo2 from "@/assets/misc/name demo2.png";
+import backgroundDemo from "@/assets/misc/custom bg demo.jpg";
 const BENEFITS_PANEL_ID = "billing-purchase-benefits-panel";
 const DISCORD_SUGGESTIONS_URL = "https://discord.gg/AjyAVbqaxf";
 
@@ -183,6 +184,32 @@ export function BillingPurchaseBenefitsSection() {
               </button>
             </div>
 
+            <div className="billing-page__benefits-segment billing-page__benefits-segment--includedCustomBackground">
+              <div className="billing-page__benefits-segment-copy billing-page__benefits-segment-copy--backgroundIntro">
+                <span className="billing-page__benefits-segment-title">
+                  {t("billing.benefits.included.customBackground.title")}
+                </span>
+                <p className="billing-page__benefits-segment-body">
+                  {t("billing.benefits.included.customBackground.body")}
+                </p>
+              </div>
+              <button
+                type="button"
+                className="billing-page__benefits-demo-trigger billing-page__benefits-demo-trigger--background billing-page__media-fit billing-page__media-fit--full-width billing-page__media-fit--max-h-10"
+                onClick={() =>
+                  setBenefitsDemoGallery([{ id: "billing-benefits-background-demo", link: backgroundDemo }])
+                }
+                aria-label={t("billing.benefits.demoImageEnlargeAria")}
+              >
+                <img
+                  src={backgroundDemo}
+                  alt=""
+                  className="billing-page__benefits-segment-image billing-page__benefits-segment-image--backgroundDemo billing-page__media-fit__img"
+                  decoding="async"
+                />
+              </button>
+            </div>
+
             <div className="billing-page__benefits-segment billing-page__benefits-segment--includedSupporterIcon">
               <div className="billing-page__benefits-segment-copy">
                 <span className="billing-page__benefits-segment-title">{t("billing.benefits.included.supporterIcon.title")}</span>
@@ -268,11 +295,6 @@ export function BillingPurchaseBenefitsSection() {
             {t("billing.benefits.comingHeading")}
           </h4>
           <p className="billing-page__benefits-lead">{t("billing.benefits.comingIntro")}</p>
-
-          <div className="billing-page__benefits-segment billing-page__benefits-segment--comingGradients">
-            <span className="billing-page__benefits-segment-title">{t("billing.benefits.coming.gradients.title")}</span>
-            <p className="billing-page__benefits-segment-body">{t("billing.benefits.coming.gradients.body")}</p>
-          </div>
 
           <div className="billing-page__benefits-segment billing-page__benefits-segment--comingBios">
             <span className="billing-page__benefits-segment-title">{t("billing.benefits.coming.bios.title")}</span>

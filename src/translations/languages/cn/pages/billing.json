@@ -32,6 +32,10 @@
         "title": "自定义横幅",
         "body": "设置您自己的个人资料横幅图片，包括动图。"
       },
+      "customBackground": {
+        "title": "自定义资料背景",
+        "body": "使用编辑器叠加图片与渐变，为个人资料打造独特外观。"
+      },
       "supporterIcon": {
         "title": "支持者图标",
         "body": "可选择显示在您名字旁的支持者图标。"
@@ -44,10 +48,6 @@
     "comingHeading": "即将推出",
     "comingIntro": "我们正在持续完善 TUFStellar。以下是我们努力的方向（上线时间可能会有所调整）：",
     "coming": {
-      "gradients": {
-        "title": "自定义渐变",
-        "body": "支持类似 CSS 的渐变，以更精细地控制个人资料外观。"
-      },
       "bios": {
         "title": "更丰富的个人简介",
         "body": "支持简单的 Markdown 格式，让您可以在纯文本之外组织简介内容。"
