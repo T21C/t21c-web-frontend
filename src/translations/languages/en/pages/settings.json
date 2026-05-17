@@ -79,6 +79,8 @@
     "moveUp": "Move layer up",
     "moveDown": "Move layer down",
     "removeLayer": "Remove layer",
+    "removeLayerConfirm": "Remove this layer from the stack?",
+    "removeImageLayerConfirm": "Remove the background image layer?",
     "gradientType": "Gradient type",
     "gradientTypes": {
       "linear": "Linear",
@@ -118,6 +120,9 @@
     "layerOpacityLabel": "Opacity",
     "layerHide": "Hide layer",
     "layerShow": "Show layer",
+    "layerRenameAria": "Rename layer",
+    "layerRenamePlaceholder": "Layer name",
+    "dragLayerAria": "Drag to reorder layer",
     "saveStyle": "Save background",
     "revertDraft": "Revert changes",
     "clearStyle": "Reset to default",

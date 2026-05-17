@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { CustomSelect } from "@/components/common/selectors";
 import {
+  BLEND_MODES,
   RADIAL_SHAPES,
   RADIAL_SIZES,
   MAX_PROFILE_HEADER_SURFACE_STOPS,
@@ -22,6 +23,13 @@ export default function ProfileHeaderSurfaceLayerSettings({
     () => [
       { value: "", label: t("settings.headerSurface.radialSizeDefault") },
       ...valuesToSelectOptions(RADIAL_SIZES),
+    ],
+    [t],
+  );
+  const blendModeOptions = useMemo(
+    () => [
+      { value: "normal", label: t("settings.headerSurface.blendModeNormal", { defaultValue: "normal" }) },
+      ...valuesToSelectOptions(BLEND_MODES.filter((m) => m !== "normal")),
     ],
     [t],
   );
@@ -48,10 +56,36 @@ export default function ProfileHeaderSurfaceLayerSettings({
               const stops = entry.stops;
               const opacity = entry.opacity;
               const visible = entry.visible;
+              const blendMode = entry.blendMode;
+              const id = entry.id;
+              const label = entry.label;
               Object.assign(entry, createEmptyGradientLayer(opt.value));
+              entry.id = id;
               entry.stops = stops;
               entry.opacity = opacity;
               entry.visible = visible;
+              if (blendMode) entry.blendMode = blendMode;
+              if (label) entry.label = label;
+            });
+          }}
+          width="100%"
+        />
+      </div>
+
+      <div className="profile-header-surface-layer-settings__field profile-header-surface-layer-settings__field--select">
+        <CustomSelect
+          inputId={`profile-header-surface-gradient-blend-${stackIndex}`}
+          label={t("settings.headerSurface.blendMode")}
+          options={blendModeOptions}
+          value={blendModeOptions.find((o) => o.value === (layer.blendMode ?? "normal")) ?? null}
+          onChange={(opt) => {
+            if (!opt?.value) return;
+            patchStackEntry(stackIndex, (entry) => {
+              if (opt.value === "normal") {
+                delete entry.blendMode;
+              } else {
+                entry.blendMode = opt.value;
+              }
             });
           }}
           width="100%"

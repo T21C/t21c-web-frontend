@@ -281,23 +281,28 @@ export function useProfileHeaderSurfaceEditor({
   const insertImageLayer = useCallback(() => {
     if (stackHasImageLayer(workingStyle.stack)) {
       toast.error(t("settings.headerSurface.imageLayerExists"));
-      return;
+      return null;
     }
+    let newId = null;
     patchWorking((s) => {
       if (stackHasImageLayer(s.stack)) return;
       const next = ensureImageStackEntry(s);
       Object.assign(s, next);
+      const imageEntry = s.stack.find((e) => e.kind === SURFACE_STACK_KIND_IMAGE);
+      newId = imageEntry?.id ?? null;
     });
+    return newId;
   }, [patchWorking, workingStyle.stack, t]);
 
-  const moveLayer = useCallback(
-    (stackIndex, direction) => {
+  const reorderStack = useCallback(
+    (activeId, overId) => {
+      if (!activeId || !overId || activeId === overId) return;
       patchWorking((s) => {
-        const target = stackIndex + direction;
-        if (target < 0 || target >= s.stack.length) return;
-        const tmp = s.stack[target];
-        s.stack[target] = s.stack[stackIndex];
-        s.stack[stackIndex] = tmp;
+        const from = s.stack.findIndex((e) => e.id === activeId);
+        const to = s.stack.findIndex((e) => e.id === overId);
+        if (from < 0 || to < 0) return;
+        const [item] = s.stack.splice(from, 1);
+        s.stack.splice(to, 0, item);
       });
     },
     [patchWorking],
@@ -368,7 +373,7 @@ export function useProfileHeaderSurfaceEditor({
     markImageRemoved,
     addLayer,
     insertImageLayer,
-    moveLayer,
+    reorderStack,
     removeLayer,
     imageSettings,
     previewImageUrl,

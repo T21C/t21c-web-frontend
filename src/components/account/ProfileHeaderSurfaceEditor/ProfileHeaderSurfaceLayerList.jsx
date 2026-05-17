@@ -1,30 +1,55 @@
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import {
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  horizontalListSortingStrategy,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import {
   MAX_PROFILE_HEADER_SURFACE_LAYERS,
-  SURFACE_STACK_KIND_GRADIENT,
-  SURFACE_STACK_KIND_IMAGE,
   countGradientStackEntries,
 } from "@/utils/profileHeaderSurfaceStyle";
-import ProfileHeaderSurfaceLayerOpacityControl from "./ProfileHeaderSurfaceLayerOpacityControl";
-import ProfileHeaderSurfaceLayerThumb from "./ProfileHeaderSurfaceLayerThumb";
+import ProfileHeaderSurfaceLayerSortableItem from "./ProfileHeaderSurfaceLayerSortableItem";
 
 export default function ProfileHeaderSurfaceLayerList({
   layout = "rail",
   stack,
-  selectedStackIndex,
-  onSelectStackIndex,
+  selectedStackId,
+  onSelectStackId,
   onAddLayer,
   onAddImage,
   stackHasImageLayer,
   previewImageUrl,
   imageSettings,
-  onMoveLayer,
+  onReorderStack,
   onRemoveLayer,
   onPatchStackEntry,
 }) {
   const { t } = useTranslation(["pages"]);
   const isDrawer = layout === "drawer";
   const gradientCount = countGradientStackEntries(stack);
+
+  const stackIds = useMemo(() => stack.map((e) => e.id), [stack]);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    onReorderStack(active.id, over.id);
+  };
 
   return (
     <div
@@ -62,104 +87,34 @@ export default function ProfileHeaderSurfaceLayerList({
           </button>
         </div>
       </div>
-      <ul
-        className="profile-header-surface-layer-list__items"
-        role="listbox"
-        aria-label={t("settings.headerSurface.drawerLayersAria")}
-      >
-        {stack.map((entry, stackIndex) => {
-          const selected = selectedStackIndex === stackIndex;
-          const isImage = entry.kind === SURFACE_STACK_KIND_IMAGE;
-          let gradientOrdinal = 0;
-          if (!isImage) {
-            for (let i = 0; i <= stackIndex; i += 1) {
-              if (stack[i]?.kind === SURFACE_STACK_KIND_GRADIENT) gradientOrdinal += 1;
-            }
-          }
-
-          return (
-            <li key={stackIndex} role="presentation" className="profile-header-surface-layer-list__item">
-              <div className="profile-header-surface-layer-list__chip-row">
-                <button
-                  type="button"
-                  role="option"
-                  aria-selected={selected}
-                  className={
-                    selected
-                      ? "profile-header-surface-layer-list__chip profile-header-surface-layer-list__chip--selected"
-                      : "profile-header-surface-layer-list__chip"
-                  }
-                  onClick={() => onSelectStackIndex(stackIndex)}
-                >
-                  <ProfileHeaderSurfaceLayerThumb
-                    entry={entry}
-                    previewImageUrl={previewImageUrl}
-                    imageSettings={imageSettings}
-                  />
-                  <span className="profile-header-surface-layer-list__chip-text">
-                    <span className="profile-header-surface-layer-list__chip-label">
-                      {isImage
-                        ? t("settings.headerSurface.backgroundImageRow")
-                        : t("settings.headerSurface.layerN", { n: gradientOrdinal })}
-                    </span>
-                    {!isImage ? (
-                      <span className="profile-header-surface-layer-list__chip-type">{entry.type}</span>
-                    ) : null}
-                  </span>
-                </button>
-                <ProfileHeaderSurfaceLayerOpacityControl
-                  visible={entry.visible !== false}
-                  opacity={entry.opacity ?? 1}
-                  onToggleVisible={() =>
-                    onPatchStackEntry(stackIndex, (e) => {
-                      e.visible = e.visible === false;
-                    })
-                  }
-                  onOpacityChange={(next) =>
-                    onPatchStackEntry(stackIndex, (e) => {
-                      e.opacity = next;
-                    })
-                  }
-                />
-              </div>
-              {!isDrawer ? (
-                <div className="profile-header-surface-layer-list__item-actions">
-                  <button
-                    type="button"
-                    className="profile-header-surface-layer-list__icon-btn"
-                    disabled={stackIndex === 0}
-                    aria-label={t("settings.headerSurface.moveUp")}
-                    onClick={() => onMoveLayer(stackIndex, -1)}
-                  >
-                    ↑
-                  </button>
-                  <button
-                    type="button"
-                    className="profile-header-surface-layer-list__icon-btn"
-                    disabled={stackIndex >= stack.length - 1}
-                    aria-label={t("settings.headerSurface.moveDown")}
-                    onClick={() => onMoveLayer(stackIndex, 1)}
-                  >
-                    ↓
-                  </button>
-                  <button
-                    type="button"
-                    className="profile-header-surface-layer-list__icon-btn profile-header-surface-layer-list__icon-btn--danger"
-                    aria-label={
-                      isImage
-                        ? t("settings.headerSurface.removeImageLayer")
-                        : t("settings.headerSurface.removeLayer")
-                    }
-                    onClick={() => onRemoveLayer(stackIndex)}
-                  >
-                    ×
-                  </button>
-                </div>
-              ) : null}
-            </li>
-          );
-        })}
-      </ul>
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext
+          items={stackIds}
+          strategy={isDrawer ? horizontalListSortingStrategy : verticalListSortingStrategy}
+        >
+          <ul
+            className="profile-header-surface-layer-list__items"
+            role="listbox"
+            aria-label={t("settings.headerSurface.drawerLayersAria")}
+          >
+            {stack.map((entry, stackIndex) => (
+              <ProfileHeaderSurfaceLayerSortableItem
+                key={entry.id}
+                entry={entry}
+                stack={stack}
+                stackIndex={stackIndex}
+                selected={selectedStackId === entry.id}
+                isDrawer={isDrawer}
+                previewImageUrl={previewImageUrl}
+                imageSettings={imageSettings}
+                onSelectStackId={onSelectStackId}
+                onPatchStackEntry={onPatchStackEntry}
+                onRemoveLayer={onRemoveLayer}
+              />
+            ))}
+          </ul>
+        </SortableContext>
+      </DndContext>
     </div>
   );
 }

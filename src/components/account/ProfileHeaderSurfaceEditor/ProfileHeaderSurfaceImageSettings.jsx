@@ -60,6 +60,39 @@ export default function ProfileHeaderSurfaceImageSettings({
     );
   }
 
+  if (!previewImageUrl) {
+    return (
+      <div className="profile-header-surface-image-settings">
+        <h4 className="profile-header-surface-image-settings__subtitle">
+          {t("settings.headerSurface.imageTitle")}
+        </h4>
+        <p className="profile-header-surface-image-settings__hint">
+          {t("settings.headerSurface.imageSaveHint")}
+        </p>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml"
+          className="profile-header-surface-image-settings__file-input"
+          onChange={(ev) => {
+            const f = ev.target.files?.[0];
+            if (f) onSelectImageFile(f);
+          }}
+        />
+        <div className="profile-header-surface-image-settings__actions">
+          <button
+            type="button"
+            className="btn-fill-primary"
+            disabled={saveBusy}
+            onClick={() => fileInputRef.current?.click()}
+          >
+            {t("settings.headerSurface.uploadImage")}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   const position = imageSettings.position ?? { xPercent: 50, yPercent: 50 };
   const sizeValue = typeof imageSettings.size === "string" ? imageSettings.size : "custom";
 
@@ -71,11 +104,9 @@ export default function ProfileHeaderSurfaceImageSettings({
       <p className="profile-header-surface-image-settings__hint">
         {t("settings.headerSurface.imageSaveHint")}
       </p>
-      {previewImageUrl ? (
-        <div className="profile-header-surface-image-settings__preview-wrap">
-          <img src={previewImageUrl} alt="" className="profile-header-surface-image-settings__preview" />
-        </div>
-      ) : null}
+      <div className="profile-header-surface-image-settings__preview-wrap">
+        <img src={previewImageUrl} alt="" className="profile-header-surface-image-settings__preview" />
+      </div>
       <input
         ref={fileInputRef}
         type="file"
@@ -93,20 +124,16 @@ export default function ProfileHeaderSurfaceImageSettings({
           disabled={saveBusy}
           onClick={() => fileInputRef.current?.click()}
         >
-          {previewImageUrl
-            ? t("settings.headerSurface.replaceImage")
-            : t("settings.headerSurface.uploadImage")}
+          {t("settings.headerSurface.replaceImage")}
         </button>
-        {previewImageUrl ? (
-          <button
-            type="button"
-            className="btn-fill-secondary"
-            disabled={saveBusy}
-            onClick={onMarkImageRemoved}
-          >
-            {t("settings.headerSurface.removeImage")}
-          </button>
-        ) : null}
+        <button
+          type="button"
+          className="btn-fill-secondary"
+          disabled={saveBusy}
+          onClick={onMarkImageRemoved}
+        >
+          {t("settings.headerSurface.removeImage")}
+        </button>
       </div>
       <div className="profile-header-surface-image-settings__controls">
         <div className="profile-header-surface-image-settings__field profile-header-surface-image-settings__field--select">

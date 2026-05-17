@@ -1,5 +1,5 @@
 // tuf-search: #ProfileHeaderSurfaceEditorPopup
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { createPortal } from "react-dom";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
@@ -9,7 +9,11 @@ import { useProfileHeaderSurfaceEditor } from "./useProfileHeaderSurfaceEditor";
 import ProfileHeaderSurfaceLayerList from "./ProfileHeaderSurfaceLayerList";
 import ProfileHeaderSurfaceLayerSettings from "./ProfileHeaderSurfaceLayerSettings";
 import ProfileHeaderSurfaceImageSettings from "./ProfileHeaderSurfaceImageSettings";
-import { SURFACE_STACK_KIND_GRADIENT, SURFACE_STACK_KIND_IMAGE } from "@/utils/profileHeaderSurfaceStyle";
+import {
+  SURFACE_STACK_KIND_GRADIENT,
+  SURFACE_STACK_KIND_IMAGE,
+  findStackIndexById,
+} from "@/utils/profileHeaderSurfaceStyle";
 import "./profileHeaderSurfaceEditorPopup.css";
 import { getPortalRoot } from "@/utils/portalRoot";
 
@@ -33,7 +37,7 @@ export default function ProfileHeaderSurfaceEditorPopup({
 }) {
   const { t } = useTranslation(["pages", "common"]);
   const panelRef = useRef(null);
-  const [selectedStackIndex, setSelectedStackIndex] = useState(0);
+  const [selectedStackId, setSelectedStackId] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const editor = useProfileHeaderSurfaceEditor({
@@ -57,7 +61,7 @@ export default function ProfileHeaderSurfaceEditorPopup({
     gradientTypeOptions,
     addLayer,
     insertImageLayer,
-    moveLayer,
+    reorderStack,
     removeLayer,
     imageSettings,
     previewImageUrl,
@@ -82,14 +86,27 @@ export default function ProfileHeaderSurfaceEditorPopup({
   useEffect(() => {
     if (!isOpen) return;
     setDrawerOpen(false);
-    setSelectedStackIndex(0);
+    if (workingStack.length > 0) {
+      setSelectedStackId(workingStack[0].id);
+    } else {
+      setSelectedStackId(null);
+    }
   }, [isOpen]);
 
   useEffect(() => {
-    if (selectedStackIndex >= workingStack.length) {
-      setSelectedStackIndex(Math.max(0, workingStack.length - 1));
+    if (!selectedStackId) {
+      if (workingStack.length > 0) setSelectedStackId(workingStack[0].id);
+      return;
     }
-  }, [workingStack.length, selectedStackIndex]);
+    if (findStackIndexById(workingStack, selectedStackId) < 0) {
+      setSelectedStackId(workingStack[0]?.id ?? null);
+    }
+  }, [workingStack, selectedStackId]);
+
+  const selectedStackIndex = useMemo(
+    () => findStackIndexById(workingStack, selectedStackId),
+    [workingStack, selectedStackId],
+  );
 
   const requestClose = useCallback(() => {
     if (isDirtySinceOpen && !window.confirm(t("settings.headerSurface.closeConfirm"))) {
@@ -126,21 +143,26 @@ export default function ProfileHeaderSurfaceEditorPopup({
 
   const handleRemoveStackLayer = (stackIndex) => {
     const entry = workingStack[stackIndex];
+    const confirmMessage =
+      entry?.kind === SURFACE_STACK_KIND_IMAGE
+        ? t("settings.headerSurface.removeImageLayerConfirm")
+        : t("settings.headerSurface.removeLayerConfirm");
+    if (!window.confirm(confirmMessage)) return;
+
     if (entry?.kind === SURFACE_STACK_KIND_IMAGE) {
       markImageRemoved();
     }
+    const removedId = entry?.id;
     removeLayer(stackIndex);
-    if (selectedStackIndex === stackIndex) {
-      const nextLen = workingStack.length - 1;
-      setSelectedStackIndex(nextLen > 0 ? Math.min(stackIndex, nextLen - 1) : 0);
-    } else if (selectedStackIndex > stackIndex) {
-      setSelectedStackIndex(selectedStackIndex - 1);
+    if (selectedStackId === removedId) {
+      const nextStack = workingStack.filter((_, i) => i !== stackIndex);
+      setSelectedStackId(nextStack[0]?.id ?? null);
     }
   };
 
   if (!isOpen) return null;
 
-  const selectedEntry = workingStack[selectedStackIndex];
+  const selectedEntry = selectedStackIndex >= 0 ? workingStack[selectedStackIndex] : null;
   const isImageSelected = selectedEntry?.kind === SURFACE_STACK_KIND_IMAGE;
 
   const previewProps = {
@@ -150,22 +172,20 @@ export default function ProfileHeaderSurfaceEditorPopup({
   };
 
   const handleAddImageLayer = () => {
-    if (stackHasImageLayer) return;
-    const nextIndex = workingStack.length;
-    insertImageLayer();
-    setSelectedStackIndex(nextIndex);
+    const newId = insertImageLayer();
+    if (newId) setSelectedStackId(newId);
   };
 
   const layerListProps = {
     stack: workingStack,
-    selectedStackIndex,
-    onSelectStackIndex: setSelectedStackIndex,
+    selectedStackId,
+    onSelectStackId: setSelectedStackId,
     onAddLayer: addLayer,
     onAddImage: handleAddImageLayer,
     stackHasImageLayer,
     previewImageUrl,
     imageSettings,
-    onMoveLayer: moveLayer,
+    onReorderStack: reorderStack,
     onRemoveLayer: handleRemoveStackLayer,
     onPatchStackEntry: patchStackEntry,
   };
@@ -214,7 +234,7 @@ export default function ProfileHeaderSurfaceEditorPopup({
             ) : (
               <ProfileHeaderSurfaceLayerSettings
                 layer={selectedEntry?.kind === SURFACE_STACK_KIND_GRADIENT ? selectedEntry : null}
-                stackIndex={selectedStackIndex}
+                stackIndex={selectedStackIndex >= 0 ? selectedStackIndex : 0}
                 patchStackEntry={patchStackEntry}
                 gradientTypeOptions={gradientTypeOptions}
               />

@@ -6,6 +6,38 @@ export const MAX_PROFILE_HEADER_SURFACE_STOPS = 8;
 export const MIN_PROFILE_HEADER_SURFACE_STOPS = 2;
 export const SURFACE_STACK_KIND_GRADIENT = "gradient";
 export const SURFACE_STACK_KIND_IMAGE = "image";
+export const MAX_PROFILE_HEADER_SURFACE_LAYER_LABEL_LENGTH = 32;
+export const MAX_PROFILE_HEADER_SURFACE_STACK_ENTRY_ID_LENGTH = 64;
+
+const STACK_ENTRY_ID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const DANGEROUS_LABEL =
+  /url\s*\(|var\s*\(|expression\s*\(|@import|javascript:|\/\*|\*\/|;|\\|<\/|<>/i;
+
+export function createStackEntryId() {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+  return `layer-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+}
+
+function parseStackId(raw, assignIfMissing) {
+  if (typeof raw === "string" && raw.length > 0 && raw.length <= MAX_PROFILE_HEADER_SURFACE_STACK_ENTRY_ID_LENGTH) {
+    if (STACK_ENTRY_ID_RE.test(raw) || /^[a-zA-Z0-9_-]+$/.test(raw)) {
+      return raw;
+    }
+  }
+  return assignIfMissing ? createStackEntryId() : null;
+}
+
+function parseStackLabel(raw) {
+  if (raw === undefined || raw === null || raw === "") return undefined;
+  if (typeof raw !== "string") return null;
+  const s = raw.trim();
+  if (!s.length || s.length > MAX_PROFILE_HEADER_SURFACE_LAYER_LABEL_LENGTH) return null;
+  if (DANGEROUS_LABEL.test(s)) return null;
+  return s;
+}
 
 export const GRADIENT_LAYER_TYPES = [
   "linear",
@@ -172,6 +204,10 @@ function parseGradientLayerFields(raw) {
     layer.angleDeg = parseAngle(raw.angleDeg);
   }
 
+  if (typeof raw.blendMode === "string" && BLEND_MODES.includes(raw.blendMode) && raw.blendMode !== "normal") {
+    layer.blendMode = raw.blendMode;
+  }
+
   return layer;
 }
 
@@ -201,12 +237,18 @@ function parseImageSettings(raw) {
 function parseStackEntry(raw) {
   if (!raw || typeof raw !== "object") return null;
   const kind = raw.kind;
+  const id = parseStackId(raw.id, true);
+  if (!id) return null;
+  const label = parseStackLabel(raw.label);
+  if (label === null) return null;
 
   if (kind === SURFACE_STACK_KIND_IMAGE) {
     return {
+      id,
       kind: SURFACE_STACK_KIND_IMAGE,
       opacity: parseOpacity(raw.opacity),
       visible: parseVisible(raw.visible),
+      ...(label ? { label } : {}),
     };
   }
 
@@ -214,9 +256,11 @@ function parseStackEntry(raw) {
     const fields = parseGradientLayerFields(raw);
     if (!fields) return null;
     return {
+      id,
       kind: SURFACE_STACK_KIND_GRADIENT,
       opacity: parseOpacity(raw.opacity),
       visible: parseVisible(raw.visible),
+      ...(label ? { label } : {}),
       ...fields,
     };
   }
@@ -280,6 +324,11 @@ export function countGradientStackEntries(stack) {
 
 export function stackHasImageLayer(stack) {
   return stack.some((e) => e.kind === SURFACE_STACK_KIND_IMAGE);
+}
+
+export function findStackIndexById(stack, id) {
+  if (!id || !Array.isArray(stack)) return -1;
+  return stack.findIndex((e) => e.id === id);
 }
 
 function formatStops(stops) {
@@ -349,11 +398,15 @@ export function buildSurfaceStackRenderLayers(style, imageUrl) {
       const visible = entry.visible !== false;
 
       if (entry.kind === SURFACE_STACK_KIND_GRADIENT) {
+        const style = { background: buildGradientLayerCss(entry) };
+        if (entry.blendMode && entry.blendMode !== "normal") {
+          style.mixBlendMode = entry.blendMode;
+        }
         return {
           key: `gradient-${index}`,
           visible,
           opacity,
-          style: { background: buildGradientLayerCss(entry) },
+          style,
         };
       }
 
@@ -376,6 +429,7 @@ export function createDefaultProfileHeaderSurfaceStyle() {
     version: PROFILE_HEADER_SURFACE_STYLE_VERSION,
     stack: [
       {
+        id: createStackEntryId(),
         kind: SURFACE_STACK_KIND_GRADIENT,
         type: "linear",
         angleDeg: 135,
@@ -392,6 +446,7 @@ export function createDefaultProfileHeaderSurfaceStyle() {
 
 export function createEmptyGradientLayer(type = "linear") {
   return {
+    id: createStackEntryId(),
     kind: SURFACE_STACK_KIND_GRADIENT,
     type,
     angleDeg: 135,
@@ -408,6 +463,7 @@ export function createEmptyGradientLayer(type = "linear") {
 
 export function createImageStackEntry() {
   return {
+    id: createStackEntryId(),
     kind: SURFACE_STACK_KIND_IMAGE,
     opacity: 1,
     visible: true,
