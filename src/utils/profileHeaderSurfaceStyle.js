@@ -350,53 +350,31 @@ function formatAxisLength(axis) {
   return `${axis.value}%`;
 }
 
-function buildAxisPositionTokens(axis) {
+/** One axis token for valid two-value `background-position` syntax. */
+function formatImagePositionComponent(axis) {
   const { side, value } = axis;
   if (side === "center" && value === 0) {
-    return ["center"];
-  }
-  if (value === 0 && side !== "center") {
-    return [side];
-  }
-  return [side, formatAxisLength(axis)];
-}
-
-function combineImagePositionTokens(xTokens, yTokens) {
-  if (
-    xTokens.length === 1 &&
-    yTokens.length === 1 &&
-    xTokens[0] === "center" &&
-    yTokens[0] === "center"
-  ) {
     return "center";
   }
-
-  const xOnly = xTokens.length === 1;
-  const yOnly = yTokens.length === 1;
-  const xPair = xTokens.length === 2;
-  const yPair = yTokens.length === 2;
-
-  if (xOnly && yOnly) {
-    return `${xTokens[0]} ${yTokens[0]}`;
+  if (value === 0) {
+    return side;
   }
-  if (xPair && yPair) {
-    return `${yTokens[0]} ${yTokens[1]} ${xTokens[0]} ${xTokens[1]}`;
+  if (side === "center") {
+    const magnitude = formatAxisLength({ unit: axis.unit, value: Math.abs(value) });
+    const op = value >= 0 ? "+" : "-";
+    return `calc(50% ${op} ${magnitude})`;
   }
-  if (xPair && yOnly) {
-    return `${xTokens[0]} ${xTokens[1]} ${yTokens[0]}`;
-  }
-  if (xOnly && yPair) {
-    return `${xTokens[0]} ${yTokens[0]} ${yTokens[1]}`;
-  }
-  return [...yTokens, ...xTokens].join(" ");
+  return `${side} ${formatAxisLength(axis)}`;
 }
 
 function formatImageBackgroundPosition(position) {
   const pos = normalizeImagePosition(position);
-  return combineImagePositionTokens(
-    buildAxisPositionTokens(pos.x),
-    buildAxisPositionTokens(pos.y),
-  );
+  const x = formatImagePositionComponent(pos.x);
+  const y = formatImagePositionComponent(pos.y);
+  if (x === "center" && y === "center") {
+    return "center";
+  }
+  return `${x} ${y}`;
 }
 
 function parseStops(raw) {
@@ -678,11 +656,8 @@ export function buildImageLayerDomStyle(imageUrl, settings, options = {}) {
     backgroundSize: formatImageBackgroundSize(settings),
     backgroundRepeat: settings.repeat,
   };
-  if (options.ignorePosition === true) {
-    style.backgroundPosition = "center center";
-  } else {
-    style.backgroundPosition = formatImageBackgroundPosition(settings.position);
-  }
+  style.backgroundPosition =
+    options.ignorePosition === true ? "center" : formatImageBackgroundPosition(settings.position);
   if (settings.blendMode && settings.blendMode !== "normal") {
     style.mixBlendMode = settings.blendMode;
   }

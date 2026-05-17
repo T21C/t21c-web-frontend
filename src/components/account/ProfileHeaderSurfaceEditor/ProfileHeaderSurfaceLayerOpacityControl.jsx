@@ -21,8 +21,9 @@ export default function ProfileHeaderSurfaceLayerOpacityControl({
         setOpen(false);
       }
     };
-    document.addEventListener("mousedown", onDoc);
-    return () => document.removeEventListener("mousedown", onDoc);
+    // Capture phase: popup panel stops mousedown propagation on bubble.
+    document.addEventListener("mousedown", onDoc, true);
+    return () => document.removeEventListener("mousedown", onDoc, true);
   }, [open]);
 
   const percent = Math.round((opacity ?? 1) * 100);
