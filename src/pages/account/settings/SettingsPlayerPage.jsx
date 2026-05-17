@@ -150,17 +150,16 @@ const SettingsPlayerPage = () => {
   }, [playerData, user?.permissionFlags, bannerPresetDraft]);
 
   const settingsHeaderSurface = useMemo(() => {
-    if (!playerData) return { style: null, imageUrl: null };
+    if (!playerData) return { style: null, imageAssets: {} };
     const draftParsed =
       headerSurfaceStyleDraft === undefined
         ? parseProfileHeaderSurfaceStyle(playerData.profileHeaderSurfaceStyle)
         : headerSurfaceStyleDraft === null
           ? null
           : parseProfileHeaderSurfaceStyle(headerSurfaceStyleDraft);
-    const imageUrl = playerData.profileHeaderSurfaceImageUrl ?? null;
     return getEffectiveProfileHeaderSurface({
       profileHeaderSurfaceStyle: draftParsed,
-      profileHeaderSurfaceImageUrl: imageUrl,
+      profileHeaderSurfaceImageAssets: playerData.profileHeaderSurfaceImageAssets,
       subjectUser: playerData.user ?? user,
     });
   }, [playerData, user, headerSurfaceStyleDraft]);
@@ -289,7 +288,7 @@ const SettingsPlayerPage = () => {
           className="settings-sub-page__profile-header"
           bannerUrl={settingsBannerUrl}
           headerSurfaceStyle={settingsHeaderSurface.style}
-          headerSurfaceImageUrl={settingsHeaderSurface.imageUrl}
+          headerSurfaceImageAssets={settingsHeaderSurface.imageAssets}
           iconSlots={iconSlots}
           nameTooltipId={"default"}
           playerDifficultyPanelDifficulties={difficulties}
@@ -360,7 +359,7 @@ const SettingsPlayerPage = () => {
           surfaceStyle={playerData?.profileHeaderSurfaceStyle}
           styleDraft={headerSurfaceStyleDraft}
           onStyleDraftChange={setHeaderSurfaceStyleDraft}
-          surfaceImageUrl={playerData?.profileHeaderSurfaceImageUrl}
+          surfaceImageAssets={playerData?.profileHeaderSurfaceImageAssets}
           onApplied={(patch) => {
             setPlayerData((p) => (p && typeof p === "object" ? { ...p, ...patch } : p));
             if (Object.prototype.hasOwnProperty.call(patch, "profileHeaderSurfaceStyle")) {
@@ -371,7 +370,7 @@ const SettingsPlayerPage = () => {
             mode: "player",
             bannerUrl: settingsBannerUrl,
             headerSurfaceStyle: settingsHeaderSurface.style,
-            headerSurfaceImageUrl: settingsHeaderSurface.imageUrl,
+            headerSurfaceImageAssets: settingsHeaderSurface.imageAssets,
             iconSlots,
             nameTooltipId: "default",
             playerDifficultyPanelDifficulties: difficulties,

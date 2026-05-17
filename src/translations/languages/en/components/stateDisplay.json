@@ -9,7 +9,8 @@
     "PASS": "Pass",
     "LEVEL": "New Level",
     "percent": "%",
-    "pixel": "px"
+    "pixel": "px",
+    "keyword": "side"
   },
   "accessDenied": {
     "title": "Access Denied",

@@ -1,7 +1,11 @@
-/** Profile header surface style: ordered DOM stack + shared image settings. */
+/** Profile header surface style: ordered DOM stack + per-layer image settings (v3). */
 
-export const PROFILE_HEADER_SURFACE_STYLE_VERSION = 2;
-export const MAX_PROFILE_HEADER_SURFACE_LAYERS = 10;
+export const PROFILE_HEADER_SURFACE_STYLE_VERSION = 3;
+export const MAX_PROFILE_HEADER_SURFACE_STACK_ENTRIES = 15;
+export const MAX_PROFILE_HEADER_SURFACE_IMAGE_LAYERS = 10;
+/** @deprecated Use MAX_PROFILE_HEADER_SURFACE_STACK_ENTRIES */
+export const MAX_PROFILE_HEADER_SURFACE_LAYERS = MAX_PROFILE_HEADER_SURFACE_STACK_ENTRIES;
+export const MAX_PROFILE_HEADER_SURFACE_JSON_BYTES = 32_768;
 export const MAX_PROFILE_HEADER_SURFACE_STOPS = 8;
 export const MIN_PROFILE_HEADER_SURFACE_STOPS = 2;
 export const SURFACE_STACK_KIND_GRADIENT = "gradient";
@@ -61,13 +65,31 @@ export const IMAGE_REPEAT = ["no-repeat", "repeat", "repeat-x", "repeat-y", "spa
 
 export const IMAGE_DIMENSION_PERCENT_MIN = 0;
 export const IMAGE_DIMENSION_PERCENT_MAX = 300;
+export const IMAGE_DIMENSION_PIXEL_MIN = 0;
+export const IMAGE_DIMENSION_PIXEL_MAX = 4000;
+export const IMAGE_SIZE_OFFSET_UNITS = ["percent", "pixel"];
 export const IMAGE_REPEAT_TILE = IMAGE_REPEAT.filter((r) => r !== "no-repeat");
 
 export const IMAGE_POSITION_PERCENT_MIN = -100;
 export const IMAGE_POSITION_PERCENT_MAX = 200;
 export const IMAGE_POSITION_PIXEL_MIN = -1000;
 export const IMAGE_POSITION_PIXEL_MAX = 1000;
-export const IMAGE_POSITION_UNITS = ["percent", "pixel"];
+export const IMAGE_POSITION_OFFSET_UNITS = ["percent", "pixel"];
+export const IMAGE_POSITION_HORIZONTAL_KEYWORDS = ["left", "center", "right"];
+export const IMAGE_POSITION_VERTICAL_KEYWORDS = ["top", "center", "bottom"];
+
+const DEFAULT_IMAGE_POSITION_AXIS_X = { side: "center", unit: "percent", value: 0 };
+const DEFAULT_IMAGE_POSITION_AXIS_Y = { side: "center", unit: "percent", value: 0 };
+
+export function createDefaultImagePosition() {
+  return {
+    x: { ...DEFAULT_IMAGE_POSITION_AXIS_X },
+    y: { ...DEFAULT_IMAGE_POSITION_AXIS_Y },
+  };
+}
+
+/** Offset surface image layers below the profile header banner strip. */
+export const PROFILE_HEADER_SURFACE_IMAGE_BANNER_PAD_TOP = "9rem";
 
 export function isImageTilingEnabled(repeat) {
   return repeat !== "no-repeat";
@@ -179,46 +201,68 @@ function parseGradientPosition(raw) {
   return { xPercent: x, yPercent: y };
 }
 
-function parseImagePositionPixel(raw) {
+function clampImagePositionOffset(value, unit) {
+  if (unit === "pixel") {
+    return clamp(Math.round(value), IMAGE_POSITION_PIXEL_MIN, IMAGE_POSITION_PIXEL_MAX);
+  }
+  return round1(clamp(value, IMAGE_POSITION_PERCENT_MIN, IMAGE_POSITION_PERCENT_MAX));
+}
+
+function parseImagePositionAxisOffset(raw, unit) {
   const n = Number(raw);
-  if (!Number.isFinite(n)) return null;
-  return Math.round(n);
+  if (!Number.isFinite(n)) return 0;
+  return clampImagePositionOffset(n, unit);
+}
+
+/** Normalize one axis (`x` | `y`) for UI and rendering. */
+export function normalizeImagePositionAxis(raw, axis) {
+  const sides = axis === "x" ? IMAGE_POSITION_HORIZONTAL_KEYWORDS : IMAGE_POSITION_VERTICAL_KEYWORDS;
+  const fallback = axis === "x" ? DEFAULT_IMAGE_POSITION_AXIS_X : DEFAULT_IMAGE_POSITION_AXIS_Y;
+
+  if (!raw || typeof raw !== "object") {
+    return { ...fallback };
+  }
+
+  let side = raw.side;
+  if (typeof side !== "string" || !sides.includes(side)) {
+    side = fallback.side;
+  }
+
+  const unit = raw.unit === "pixel" ? "pixel" : "percent";
+  const value = parseImagePositionAxisOffset(raw.value, unit);
+
+  return { side, unit, value };
+}
+
+/** Read image position for UI. */
+export function normalizeImagePosition(raw) {
+  if (!raw || typeof raw !== "object") {
+    return createDefaultImagePosition();
+  }
+
+  return {
+    x: normalizeImagePositionAxis(raw.x, "x"),
+    y: normalizeImagePositionAxis(raw.y, "y"),
+  };
 }
 
 function parseImagePosition(raw) {
   if (!raw || typeof raw !== "object") return null;
-  const unit = raw.unit === "pixel" ? "pixel" : "percent";
-  if (unit === "pixel") {
-    const x = parseImagePositionPixel(raw.x ?? raw.xPx);
-    const y = parseImagePositionPixel(raw.y ?? raw.yPx);
-    if (x === null || y === null) return null;
-    return { unit: "pixel", x, y };
-  }
-  const x = parsePositionPercent(raw.x ?? raw.xPercent);
-  const y = parsePositionPercent(raw.y ?? raw.yPercent);
-  if (x === null || y === null) return null;
-  return { unit: "percent", x, y };
-}
+  if (!raw.x || typeof raw.x !== "object" || !raw.y || typeof raw.y !== "object") return null;
 
-/** Read image position for UI (supports legacy `{ xPercent, yPercent }`). */
-export function normalizeImagePosition(raw) {
-  if (!raw || typeof raw !== "object") {
-    return { unit: "percent", x: 50, y: 50 };
+  const position = {
+    x: normalizeImagePositionAxis(raw.x, "x"),
+    y: normalizeImagePositionAxis(raw.y, "y"),
+  };
+  if (
+    !IMAGE_POSITION_HORIZONTAL_KEYWORDS.includes(position.x.side) ||
+    !IMAGE_POSITION_VERTICAL_KEYWORDS.includes(position.y.side) ||
+    !IMAGE_POSITION_OFFSET_UNITS.includes(position.x.unit) ||
+    !IMAGE_POSITION_OFFSET_UNITS.includes(position.y.unit)
+  ) {
+    return null;
   }
-  if (raw.unit === "pixel" || raw.xPx != null || raw.yPx != null) {
-    const parsed = parseImagePosition({ unit: "pixel", x: raw.x ?? raw.xPx, y: raw.y ?? raw.yPx });
-    return parsed ?? { unit: "pixel", x: 0, y: 0 };
-  }
-  const parsed = parseImagePosition({
-    unit: "percent",
-    x: raw.x ?? raw.xPercent,
-    y: raw.y ?? raw.yPercent,
-  });
-  return parsed ?? { unit: "percent", x: 50, y: 50 };
-}
-
-export function defaultImagePositionForUnit(unit) {
-  return unit === "pixel" ? { unit: "pixel", x: 0, y: 0 } : { unit: "percent", x: 50, y: 50 };
+  return position;
 }
 
 /** Resolve object-fit / background-size keyword (`cover` | `contain` | `auto`). */
@@ -227,57 +271,132 @@ export function normalizeImageSizeFit(raw) {
   return "cover";
 }
 
-/** @deprecated Use normalizeImageSizeFit */
-export function normalizeImageSize(size) {
-  return normalizeImageSizeFit(size);
-}
+const DEFAULT_IMAGE_SIZE_AXIS = { unit: "percent", value: 100 };
 
-const DEFAULT_IMAGE_SIZE_DIMENSIONS = { widthPercent: 100, heightPercent: 100 };
-
-function parseImageDimensionPercent(raw) {
-  const n = Number(raw);
-  if (!Number.isFinite(n)) return null;
-  return round1(n);
-}
-
-function parseImageSizeDimensions(raw) {
-  if (!raw || typeof raw !== "object") return { ...DEFAULT_IMAGE_SIZE_DIMENSIONS };
-  const w = parseImageDimensionPercent(raw.widthPercent);
-  const h = parseImageDimensionPercent(raw.heightPercent);
+export function createDefaultImageSizeDimensions() {
   return {
-    widthPercent: w ?? DEFAULT_IMAGE_SIZE_DIMENSIONS.widthPercent,
-    heightPercent: h ?? DEFAULT_IMAGE_SIZE_DIMENSIONS.heightPercent,
+    width: { ...DEFAULT_IMAGE_SIZE_AXIS },
+    height: { ...DEFAULT_IMAGE_SIZE_AXIS },
   };
 }
 
-/** Read manual background size % for UI. */
-export function getImageSizeDimensions(settings) {
-  if (!settings || typeof settings !== "object") return { ...DEFAULT_IMAGE_SIZE_DIMENSIONS };
-  if (settings.sizeDimensions && typeof settings.sizeDimensions === "object") {
-    return parseImageSizeDimensions(settings.sizeDimensions);
+function clampImageSizeValue(value, unit) {
+  if (unit === "pixel") {
+    return clamp(Math.round(value), IMAGE_DIMENSION_PIXEL_MIN, IMAGE_DIMENSION_PIXEL_MAX);
   }
-  if (settings.size && typeof settings.size === "object") {
-    return parseImageSizeDimensions(settings.size);
-  }
-  return { ...DEFAULT_IMAGE_SIZE_DIMENSIONS };
+  return round1(clamp(value, IMAGE_DIMENSION_PERCENT_MIN, IMAGE_DIMENSION_PERCENT_MAX));
 }
 
-export function imageSizeDimensionsFromValues(sizeX, sizeY) {
-  return { widthPercent: sizeX, heightPercent: sizeY };
+function parseImageSizeAxisValue(raw, unit) {
+  const n = Number(raw);
+  if (!Number.isFinite(n)) return DEFAULT_IMAGE_SIZE_AXIS.value;
+  return clampImageSizeValue(n, unit);
 }
 
-function parseImageSizeFit(raw, legacySize) {
+function parseImageSizeDimensionAxis(raw, axisKey) {
+  if (!raw || typeof raw !== "object") {
+    return { ...DEFAULT_IMAGE_SIZE_AXIS };
+  }
+  const unit = raw.unit === "pixel" ? "pixel" : "percent";
+  const value = parseImageSizeAxisValue(raw.value, unit);
+  return { unit, value };
+}
+
+/** Normalize one size axis (`width` | `height`) for UI and rendering. */
+export function normalizeImageSizeDimensionAxis(raw, axisKey) {
+  return parseImageSizeDimensionAxis(raw, axisKey);
+}
+
+/** Read manual background size dimensions for UI. */
+export function normalizeImageSizeDimensions(raw) {
+  if (!raw || typeof raw !== "object") {
+    return createDefaultImageSizeDimensions();
+  }
+  return {
+    width: normalizeImageSizeDimensionAxis(raw.width, "width"),
+    height: normalizeImageSizeDimensionAxis(raw.height, "height"),
+  };
+}
+
+function parseImageSizeDimensions(raw) {
+  if (!raw || typeof raw !== "object") return null;
+  if (!raw.width || typeof raw.width !== "object" || !raw.height || typeof raw.height !== "object") {
+    return null;
+  }
+
+  const width = parseImageSizeDimensionAxis(raw.width, "width");
+  const height = parseImageSizeDimensionAxis(raw.height, "height");
+  if (
+    !IMAGE_SIZE_OFFSET_UNITS.includes(width.unit) ||
+    !IMAGE_SIZE_OFFSET_UNITS.includes(height.unit)
+  ) {
+    return null;
+  }
+  return { width, height };
+}
+
+function formatSizeAxisLength(axis) {
+  if (axis.unit === "pixel") return `${axis.value}px`;
+  return `${axis.value}%`;
+}
+
+function parseImageSizeFit(raw) {
   if (typeof raw === "string" && IMAGE_SIZE_PRESETS.includes(raw)) return raw;
-  if (typeof legacySize === "string" && IMAGE_SIZE_PRESETS.includes(legacySize)) return legacySize;
   return "cover";
+}
+
+function formatAxisLength(axis) {
+  if (axis.unit === "pixel") return `${axis.value}px`;
+  return `${axis.value}%`;
+}
+
+function buildAxisPositionTokens(axis) {
+  const { side, value } = axis;
+  if (side === "center" && value === 0) {
+    return ["center"];
+  }
+  if (value === 0 && side !== "center") {
+    return [side];
+  }
+  return [side, formatAxisLength(axis)];
+}
+
+function combineImagePositionTokens(xTokens, yTokens) {
+  if (
+    xTokens.length === 1 &&
+    yTokens.length === 1 &&
+    xTokens[0] === "center" &&
+    yTokens[0] === "center"
+  ) {
+    return "center";
+  }
+
+  const xOnly = xTokens.length === 1;
+  const yOnly = yTokens.length === 1;
+  const xPair = xTokens.length === 2;
+  const yPair = yTokens.length === 2;
+
+  if (xOnly && yOnly) {
+    return `${xTokens[0]} ${yTokens[0]}`;
+  }
+  if (xPair && yPair) {
+    return `${yTokens[0]} ${yTokens[1]} ${xTokens[0]} ${xTokens[1]}`;
+  }
+  if (xPair && yOnly) {
+    return `${xTokens[0]} ${xTokens[1]} ${yTokens[0]}`;
+  }
+  if (xOnly && yPair) {
+    return `${xTokens[0]} ${yTokens[0]} ${yTokens[1]}`;
+  }
+  return [...yTokens, ...xTokens].join(" ");
 }
 
 function formatImageBackgroundPosition(position) {
   const pos = normalizeImagePosition(position);
-  if (pos.unit === "pixel") {
-    return `${pos.x}px ${pos.y}px`;
-  }
-  return `${pos.x}% ${pos.y}%`;
+  return combineImagePositionTokens(
+    buildAxisPositionTokens(pos.x),
+    buildAxisPositionTokens(pos.y),
+  );
 }
 
 function parseStops(raw) {
@@ -334,12 +453,10 @@ function parseGradientLayerFields(raw) {
 
 function parseImageSettings(raw) {
   if (!raw || typeof raw !== "object") return null;
-  const sizeFit = parseImageSizeFit(raw.sizeFit, raw.size);
-  const sizeDimensions = parseImageSizeDimensions(
-    raw.sizeDimensions ?? (typeof raw.size === "object" ? raw.size : undefined),
-  );
+  const sizeFit = parseImageSizeFit(raw.sizeFit);
+  const sizeDimensions = parseImageSizeDimensions(raw.sizeDimensions);
   const position = parseImagePosition(raw.position);
-  if (!position) return null;
+  if (!sizeDimensions || !position) return null;
   if (!IMAGE_REPEAT.includes(raw.repeat)) return null;
 
   const image = { sizeFit, sizeDimensions, position, repeat: raw.repeat };
@@ -348,6 +465,9 @@ function parseImageSettings(raw) {
   }
   if (typeof raw.blendMode === "string" && BLEND_MODES.includes(raw.blendMode) && raw.blendMode !== "normal") {
     image.blendMode = raw.blendMode;
+  }
+  if (raw.padForBanner === true) {
+    image.padForBanner = true;
   }
   return image;
 }
@@ -388,10 +508,9 @@ function parseStackEntry(raw) {
 
 function parseStack(rawStack) {
   if (!Array.isArray(rawStack)) return null;
-  if (rawStack.length > MAX_PROFILE_HEADER_SURFACE_LAYERS + 1) return null;
+  if (rawStack.length === 0 || rawStack.length > MAX_PROFILE_HEADER_SURFACE_STACK_ENTRIES) return null;
 
   let imageCount = 0;
-  let gradientCount = 0;
   const stack = [];
 
   for (const entry of rawStack) {
@@ -399,10 +518,7 @@ function parseStack(rawStack) {
     if (!parsed) return null;
     if (parsed.kind === SURFACE_STACK_KIND_IMAGE) {
       imageCount += 1;
-      if (imageCount > 1) return null;
-    } else {
-      gradientCount += 1;
-      if (gradientCount > MAX_PROFILE_HEADER_SURFACE_LAYERS) return null;
+      if (imageCount > MAX_PROFILE_HEADER_SURFACE_IMAGE_LAYERS) return null;
     }
     stack.push(parsed);
   }
@@ -410,28 +526,47 @@ function parseStack(rawStack) {
   return stack;
 }
 
+function parseImagesMap(rawImages, imageIds) {
+  if (imageIds.length === 0) {
+    if (rawImages !== undefined && rawImages !== null) return null;
+    return undefined;
+  }
+  if (!rawImages || typeof rawImages !== "object" || Array.isArray(rawImages)) return null;
+
+  const images = {};
+  for (const id of imageIds) {
+    const parsed = parseImageSettings(rawImages[id]);
+    if (!parsed) return null;
+    images[id] = parsed;
+  }
+
+  const keys = Object.keys(rawImages).sort();
+  const expected = [...imageIds].sort();
+  if (keys.length !== expected.length || keys.some((k, i) => k !== expected[i])) {
+    return null;
+  }
+
+  return images;
+}
+
+/** Parse and validate v3 style JSON. */
 export function parseProfileHeaderSurfaceStyle(input) {
   if (input === null || input === undefined) return null;
   if (!input || typeof input !== "object" || Array.isArray(input)) return null;
   if (input.version !== PROFILE_HEADER_SURFACE_STYLE_VERSION) return null;
+  if (input.image !== undefined && input.image !== null) return null;
 
   const stack = parseStack(input.stack);
-  if (!stack || stack.length === 0) return null;
+  if (!stack) return null;
 
-  let image;
-  const hasImageLayer = stack.some((e) => e.kind === SURFACE_STACK_KIND_IMAGE);
-  if (hasImageLayer) {
-    if (input.image === undefined || input.image === null) return null;
-    image = parseImageSettings(input.image);
-    if (!image) return null;
-  } else if (input.image != null) {
-    return null;
-  }
+  const imageIds = getImageStackEntryIds(stack);
+  const images = parseImagesMap(input.images, imageIds);
+  if (images === null) return null;
 
   return {
     version: PROFILE_HEADER_SURFACE_STYLE_VERSION,
     stack,
-    ...(image ? { image } : {}),
+    ...(images ? { images } : {}),
   };
 }
 
@@ -439,8 +574,51 @@ export function countGradientStackEntries(stack) {
   return stack.filter((e) => e.kind === SURFACE_STACK_KIND_GRADIENT).length;
 }
 
+export function countImageStackEntries(stack) {
+  return stack.filter((e) => e.kind === SURFACE_STACK_KIND_IMAGE).length;
+}
+
+export function getImageStackEntryIds(stack) {
+  if (!Array.isArray(stack)) return [];
+  return stack.filter((e) => e.kind === SURFACE_STACK_KIND_IMAGE).map((e) => e.id);
+}
+
 export function stackHasImageLayer(stack) {
   return stack.some((e) => e.kind === SURFACE_STACK_KIND_IMAGE);
+}
+
+export function pruneImagesMap(stack, images) {
+  const ids = new Set(getImageStackEntryIds(stack));
+  if (!images || typeof images !== "object") return {};
+  const next = {};
+  for (const id of ids) {
+    if (images[id]) next[id] = images[id];
+  }
+  return next;
+}
+
+export function parseProfileHeaderSurfaceImageAssets(input) {
+  if (input == null) return {};
+  if (typeof input !== "object" || Array.isArray(input)) return {};
+  const out = {};
+  for (const [layerId, val] of Object.entries(input)) {
+    if (!layerId || !val || typeof val !== "object") continue;
+    const assetId = typeof val.assetId === "string" ? val.assetId.trim() : "";
+    const url = typeof val.url === "string" ? val.url.trim() : "";
+    if (assetId && url) out[layerId] = { assetId, url };
+  }
+  return out;
+}
+
+export function canAddStackEntry(stack) {
+  return Array.isArray(stack) && stack.length < MAX_PROFILE_HEADER_SURFACE_STACK_ENTRIES;
+}
+
+export function canAddImageLayer(stack) {
+  return (
+    canAddStackEntry(stack) &&
+    countImageStackEntries(stack) < MAX_PROFILE_HEADER_SURFACE_IMAGE_LAYERS
+  );
 }
 
 export function findStackIndexById(stack, id) {
@@ -486,16 +664,11 @@ function escapeCssUrl(url) {
 }
 
 function formatImageBackgroundSize(settings) {
-  const fit = normalizeImageSizeFit(settings.sizeFit ?? settings.size);
-  const { widthPercent, heightPercent } = getImageSizeDimensions(settings);
-  const isDefaultDims =
-    widthPercent === DEFAULT_IMAGE_SIZE_DIMENSIONS.widthPercent &&
-    heightPercent === DEFAULT_IMAGE_SIZE_DIMENSIONS.heightPercent;
-  if (isDefaultDims) return fit;
+  const dims = normalizeImageSizeDimensions(settings.sizeDimensions);
   if (settings.sizeDimensionsLinked === true) {
-    return `${widthPercent}%`;
+    return formatSizeAxisLength(dims.width);
   }
-  return `${widthPercent}% ${heightPercent}%`;
+  return `${formatSizeAxisLength(dims.width)} ${formatSizeAxisLength(dims.height)}`;
 }
 
 export function buildImageLayerDomStyle(imageUrl, settings, options = {}) {
@@ -513,15 +686,20 @@ export function buildImageLayerDomStyle(imageUrl, settings, options = {}) {
   if (settings.blendMode && settings.blendMode !== "normal") {
     style.mixBlendMode = settings.blendMode;
   }
+  if (settings.padForBanner === true && options.ignorePosition !== true) {
+    style.top = PROFILE_HEADER_SURFACE_IMAGE_BANNER_PAD_TOP;
+  }
   return style;
 }
 
 /** Ordered DOM layer models for ProfileHeader surface stack. */
-export function buildSurfaceStackRenderLayers(style, imageUrl) {
+export function buildSurfaceStackRenderLayers(style, imageAssetsByLayerId) {
   if (!style?.stack?.length) return [];
 
-  const url =
-    typeof imageUrl === "string" && imageUrl.trim().length > 0 ? imageUrl.trim() : null;
+  const assets =
+    imageAssetsByLayerId && typeof imageAssetsByLayerId === "object" && !Array.isArray(imageAssetsByLayerId)
+      ? imageAssetsByLayerId
+      : {};
 
   return style.stack
     .map((entry, index) => {
@@ -529,24 +707,28 @@ export function buildSurfaceStackRenderLayers(style, imageUrl) {
       const visible = entry.visible !== false;
 
       if (entry.kind === SURFACE_STACK_KIND_GRADIENT) {
-        const style = { background: buildGradientLayerCss(entry) };
+        const layerStyle = { background: buildGradientLayerCss(entry) };
         if (entry.blendMode && entry.blendMode !== "normal") {
-          style.mixBlendMode = entry.blendMode;
+          layerStyle.mixBlendMode = entry.blendMode;
         }
         return {
-          key: `gradient-${index}`,
+          key: `gradient-${entry.id ?? index}`,
           visible,
           opacity,
-          style,
+          style: layerStyle,
         };
       }
 
-      if (entry.kind === SURFACE_STACK_KIND_IMAGE && url && style.image) {
+      if (entry.kind === SURFACE_STACK_KIND_IMAGE) {
+        const settings = style.images?.[entry.id];
+        const assetUrl =
+          typeof assets[entry.id]?.url === "string" ? assets[entry.id].url.trim() : "";
+        if (!assetUrl || !settings) return null;
         return {
-          key: `image-${index}`,
+          key: `image-${entry.id ?? index}`,
           visible,
           opacity,
-          style: buildImageLayerDomStyle(url, style.image),
+          style: buildImageLayerDomStyle(assetUrl, settings),
         };
       }
 
@@ -634,26 +816,44 @@ export function createImageStackEntry() {
 
 export function createDefaultImageSettings() {
   return {
-    sizeFit: "cover",
-    sizeDimensions: { ...DEFAULT_IMAGE_SIZE_DIMENSIONS },
-    position: { unit: "percent", x: 50, y: 50 },
+    sizeDimensions: createDefaultImageSizeDimensions(),
+    position: createDefaultImagePosition(),
     repeat: "no-repeat",
   };
 }
 
-export function ensureImageStackEntry(style) {
-  if (stackHasImageLayer(style.stack)) return style;
+/** Append a new image layer with default settings (caller must respect caps). */
+export function addImageLayerToStyle(style) {
+  const entry = createImageStackEntry();
+  const images = { ...(style.images ?? {}), [entry.id]: createDefaultImageSettings() };
   return {
-    ...style,
-    stack: [...style.stack, createImageStackEntry()],
-    image: style.image ?? createDefaultImageSettings(),
+    style: {
+      ...style,
+      version: PROFILE_HEADER_SURFACE_STYLE_VERSION,
+      stack: [...style.stack, entry],
+      images,
+    },
+    newLayerId: entry.id,
   };
 }
 
-export function removeImageStackEntry(style) {
+/** Remove one image layer and its settings by stack index. */
+export function removeImageLayerAtIndex(style, stackIndex) {
+  const entry = style.stack[stackIndex];
+  if (!entry || entry.kind !== SURFACE_STACK_KIND_IMAGE) return style;
+  const nextStack = style.stack.filter((_, i) => i !== stackIndex);
+  const images = { ...(style.images ?? {}) };
+  delete images[entry.id];
+  const pruned = pruneImagesMap(nextStack, images);
   return {
     ...style,
-    stack: style.stack.filter((e) => e.kind !== SURFACE_STACK_KIND_IMAGE),
-    image: undefined,
+    version: PROFILE_HEADER_SURFACE_STYLE_VERSION,
+    stack: nextStack,
+    ...(Object.keys(pruned).length ? { images: pruned } : {}),
   };
+}
+
+export function getImageSettingsForLayer(style, layerId) {
+  if (!layerId || !style?.images) return null;
+  return style.images[layerId] ?? null;
 }

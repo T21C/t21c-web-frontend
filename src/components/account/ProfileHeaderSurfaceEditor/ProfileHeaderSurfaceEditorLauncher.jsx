@@ -6,7 +6,9 @@ import {
 } from "@/utils/profileBanners";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import {
-  countGradientStackEntries,
+  countImageStackEntries,
+  getImageStackEntryIds,
+  MAX_PROFILE_HEADER_SURFACE_STACK_ENTRIES,
   parseProfileHeaderSurfaceStyle,
 } from "@/utils/profileHeaderSurfaceStyle";
 import { deepCloneStyle } from "./profileHeaderSurfaceEditorUtils";
@@ -20,17 +22,17 @@ export default function ProfileHeaderSurfaceEditorLauncher({
   surfaceStyle,
   styleDraft,
   onStyleDraftChange,
-  surfaceImageUrl,
+  surfaceImageAssets,
   onApplied,
   profilePreviewProps,
-  onPreviewImageUrlChange,
+  onPreviewImageAssetsChange,
 }) {
   const { t } = useTranslation(["pages"]);
   const [isOpen, setIsOpen] = useState(false);
   const snapshotAtOpenRef = useRef(null);
-  const snapshotImageUrlRef = useRef(null);
-  const snapshotPendingImageRef = useRef(null);
-  const [pendingImage, setPendingImage] = useState(null);
+  const snapshotImageAssetsRef = useRef(null);
+  const snapshotPendingImagesRef = useRef(null);
+  const [pendingImages, setPendingImages] = useState({});
 
   const canEdit = useMemo(() => {
     if (!customProfileBannersEnabled()) return false;
@@ -47,30 +49,43 @@ export default function ProfileHeaderSurfaceEditorLauncher({
     [surfaceStyle],
   );
 
-  const previewImageUrl = useMemo(() => {
-    if (pendingImage?.remove) return null;
-    if (pendingImage?.previewUrl) return pendingImage.previewUrl;
-    return surfaceImageUrl ?? null;
-  }, [pendingImage, surfaceImageUrl]);
+  const effectiveStyle = useMemo(() => {
+    if (styleDraft === undefined) return serverStyle;
+    if (styleDraft === null) return null;
+    return parseProfileHeaderSurfaceStyle(styleDraft);
+  }, [styleDraft, serverStyle]);
+
+  const previewImageAssets = useMemo(() => {
+    const base =
+      surfaceImageAssets && typeof surfaceImageAssets === "object" ? { ...surfaceImageAssets } : {};
+    const stack = effectiveStyle?.stack ?? [];
+    for (const layerId of getImageStackEntryIds(stack)) {
+      const pending = pendingImages[layerId];
+      if (pending?.remove) {
+        delete base[layerId];
+      } else if (pending?.previewUrl) {
+        base[layerId] = { assetId: base[layerId]?.assetId ?? "pending", url: pending.previewUrl };
+      }
+    }
+    return base;
+  }, [surfaceImageAssets, pendingImages, effectiveStyle?.stack]);
 
   useEffect(() => {
-    onPreviewImageUrlChange?.(previewImageUrl);
-  }, [previewImageUrl, onPreviewImageUrlChange]);
+    onPreviewImageAssetsChange?.(previewImageAssets);
+  }, [previewImageAssets, onPreviewImageAssetsChange]);
 
   const summaryText = useMemo(() => {
-    const draft =
-      styleDraft === undefined
-        ? serverStyle
-        : styleDraft === null
-          ? null
-          : parseProfileHeaderSurfaceStyle(styleDraft);
-    const gradientCount = draft ? countGradientStackEntries(draft.stack) : 0;
-    const hasImage = Boolean(previewImageUrl);
-    if (!gradientCount && !hasImage) {
+    const draft = effectiveStyle;
+    const stackCount = draft?.stack?.length ?? 0;
+    const imageCount = draft ? countImageStackEntries(draft.stack) : 0;
+    if (!stackCount && !imageCount) {
       return t("settings.headerSurface.hint");
     }
-    return t("settings.headerSurface.layersLabel", { count: gradientCount, max: 10 });
-  }, [styleDraft, serverStyle, previewImageUrl, t]);
+    return t("settings.headerSurface.layersLabel", {
+      count: stackCount,
+      max: MAX_PROFILE_HEADER_SURFACE_STACK_ENTRIES,
+    });
+  }, [effectiveStyle, t]);
 
   const handleOpen = useCallback(() => {
     if (styleDraft === undefined) {
@@ -80,12 +95,14 @@ export default function ProfileHeaderSurfaceEditorLauncher({
     } else {
       snapshotAtOpenRef.current = deepCloneStyle(parseProfileHeaderSurfaceStyle(styleDraft));
     }
-    snapshotImageUrlRef.current = surfaceImageUrl ?? null;
-    snapshotPendingImageRef.current = pendingImage
-      ? { ...pendingImage, file: pendingImage.file ?? null }
+    snapshotImageAssetsRef.current = surfaceImageAssets ? { ...surfaceImageAssets } : null;
+    snapshotPendingImagesRef.current = pendingImages
+      ? Object.fromEntries(
+          Object.entries(pendingImages).map(([id, entry]) => [id, { ...entry, file: entry.file ?? null }]),
+        )
       : null;
     setIsOpen(true);
-  }, [styleDraft, surfaceImageUrl, pendingImage]);
+  }, [styleDraft, surfaceImageAssets, pendingImages]);
 
   const handleDiscardDraft = useCallback(() => {
     const snap = snapshotAtOpenRef.current;
@@ -96,22 +113,22 @@ export default function ProfileHeaderSurfaceEditorLauncher({
     } else {
       onStyleDraftChange(deepCloneStyle(snap));
     }
-    setPendingImage(snapshotPendingImageRef.current);
+    setPendingImages(snapshotPendingImagesRef.current ?? {});
   }, [onStyleDraftChange]);
 
   const mergedPreviewProps = useMemo(
     () => ({
       ...profilePreviewProps,
-      headerSurfaceImageUrl: previewImageUrl,
+      headerSurfaceImageAssets: previewImageAssets,
     }),
-    [profilePreviewProps, previewImageUrl],
+    [profilePreviewProps, previewImageAssets],
   );
 
   if (!canEdit) {
     return (
       <div className="profile-header-surface-launcher profile-header-surface-launcher--locked">
         <p className="profile-header-surface-launcher__hint">{t("settings.headerSurface.lockedHint")}</p>
-        {serverStyle || surfaceImageUrl ? (
+        {serverStyle || Object.keys(surfaceImageAssets ?? {}).length > 0 ? (
           <p className="profile-header-surface-launcher__hint">
             {t("settings.headerSurface.lockedHasSaved")}
           </p>
@@ -138,12 +155,13 @@ export default function ProfileHeaderSurfaceEditorLauncher({
         surfaceStyle={surfaceStyle}
         styleDraft={styleDraft}
         onStyleDraftChange={onStyleDraftChange}
-        surfaceImageUrl={surfaceImageUrl}
+        surfaceImageAssets={surfaceImageAssets}
         onApplied={onApplied}
         profilePreviewProps={mergedPreviewProps}
-        snapshotPendingImage={snapshotPendingImageRef.current}
-        onPendingImageChange={setPendingImage}
+        snapshotPendingImages={snapshotPendingImagesRef.current}
+        onPendingImagesChange={setPendingImages}
       />
     </div>
   );
 }
+

@@ -1,9 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
-import {
-  MAX_PROFILE_HEADER_SURFACE_LAYERS,
-  countGradientStackEntries,
-} from "@/utils/profileHeaderSurfaceStyle";
+import { MAX_PROFILE_HEADER_SURFACE_STACK_ENTRIES } from "@/utils/profileHeaderSurfaceStyle";
 import ProfileHeaderSurfaceLayerSortableItem from "./ProfileHeaderSurfaceLayerSortableItem";
 
 const STACK_DROPPABLE_ID = "profile-header-surface-stack";
@@ -15,16 +12,16 @@ export default function ProfileHeaderSurfaceLayerList({
   onSelectStackId,
   onAddLayer,
   onAddImage,
-  stackHasImageLayer,
-  previewImageUrl,
-  imageSettings,
+  canAddStackEntry,
+  canAddImageLayer,
+  previewImageAssets,
   onReorderStack,
   onRemoveLayer,
   onPatchStackEntry,
 }) {
   const { t } = useTranslation(["pages"]);
   const isDrawer = layout === "drawer";
-  const gradientCount = countGradientStackEntries(stack);
+  const stackCount = stack.length;
 
   const handleDragEnd = (result) => {
     const { destination, source } = result;
@@ -36,8 +33,7 @@ export default function ProfileHeaderSurfaceLayerList({
 
   const itemProps = {
     stack,
-    previewImageUrl,
-    imageSettings,
+    previewImageAssets,
     onSelectStackId,
     onPatchStackEntry,
     onRemoveLayer,
@@ -55,8 +51,8 @@ export default function ProfileHeaderSurfaceLayerList({
         {!isDrawer ? (
           <span className="profile-header-surface-layer-list__label">
             {t("settings.headerSurface.layersLabel", {
-              count: gradientCount,
-              max: MAX_PROFILE_HEADER_SURFACE_LAYERS,
+              count: stackCount,
+              max: MAX_PROFILE_HEADER_SURFACE_STACK_ENTRIES,
             })}
           </span>
         ) : null}
@@ -64,7 +60,7 @@ export default function ProfileHeaderSurfaceLayerList({
           <button
             type="button"
             className="btn-fill-secondary profile-header-surface-layer-list__add"
-            disabled={gradientCount >= MAX_PROFILE_HEADER_SURFACE_LAYERS}
+            disabled={!canAddStackEntry}
             onClick={onAddLayer}
           >
             {t("settings.headerSurface.addLayer")}
@@ -72,34 +68,34 @@ export default function ProfileHeaderSurfaceLayerList({
           <button
             type="button"
             className="btn-fill-secondary profile-header-surface-layer-list__add"
-            disabled={stackHasImageLayer}
+            disabled={!canAddImageLayer}
             onClick={onAddImage}
           >
             {t("settings.headerSurface.addImage")}
           </button>
         </div>
       </div>
+
       <DragDropContext onDragEnd={handleDragEnd}>
-        <Droppable droppableId={STACK_DROPPABLE_ID} direction="vertical">
-          {(provided, snapshot) => (
+        <Droppable droppableId={STACK_DROPPABLE_ID}>
+          {(provided) => (
             <div
               ref={provided.innerRef}
               {...provided.droppableProps}
-              className={
-                snapshot.isDraggingOver
-                  ? "profile-header-surface-layer-list__items profile-header-surface-layer-list__items--dragging-over"
-                  : "profile-header-surface-layer-list__items"
-              }
+              className="profile-header-surface-layer-list__items"
               role="listbox"
-              aria-label={t("settings.headerSurface.drawerLayersAria")}
+              aria-label={t("settings.headerSurface.layersLabel", {
+                count: stackCount,
+                max: MAX_PROFILE_HEADER_SURFACE_STACK_ENTRIES,
+              })}
             >
-              {stack.map((entry, stackIndex) => (
+              {stack.map((entry, index) => (
                 <ProfileHeaderSurfaceLayerSortableItem
                   key={entry.id}
                   draggableId={entry.id}
-                  index={stackIndex}
+                  index={index}
                   entry={entry}
-                  stackIndex={stackIndex}
+                  stackIndex={index}
                   selected={selectedStackId === entry.id}
                   {...itemProps}
                 />

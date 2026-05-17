@@ -9,7 +9,8 @@
     "PASS": "클리어",
     "LEVEL": "신규 채보",
     "percent": "%",
-    "pixel": "px"
+    "pixel": "px",
+    "keyword": "side"
   },
   "accessDenied": {
     "title": "접근 거부",

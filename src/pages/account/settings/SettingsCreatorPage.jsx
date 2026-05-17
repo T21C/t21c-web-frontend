@@ -232,7 +232,7 @@ const SettingsCreatorPage = () => {
   }, [profile, creatorDoc?.user, user?.permissionFlags, bannerPresetDraft]);
 
   const settingsCreatorHeaderSurface = useMemo(() => {
-    if (!profile) return { style: null, imageUrl: null };
+    if (!profile) return { style: null, imageAssets: {} };
     const u = profile.user || creatorDoc?.user;
     const draftParsed =
       headerSurfaceStyleDraft === undefined
@@ -242,7 +242,7 @@ const SettingsCreatorPage = () => {
           : parseProfileHeaderSurfaceStyle(headerSurfaceStyleDraft);
     return getEffectiveProfileHeaderSurface({
       profileHeaderSurfaceStyle: draftParsed,
-      profileHeaderSurfaceImageUrl: profile.profileHeaderSurfaceImageUrl,
+      profileHeaderSurfaceImageAssets: profile.profileHeaderSurfaceImageAssets,
       subjectUser: u,
     });
   }, [profile, creatorDoc?.user, headerSurfaceStyleDraft]);
@@ -545,7 +545,7 @@ const SettingsCreatorPage = () => {
           className="settings-sub-page__profile-header"
           bannerUrl={settingsCreatorBannerUrl}
           headerSurfaceStyle={settingsCreatorHeaderSurface.style}
-          headerSurfaceImageUrl={settingsCreatorHeaderSurface.imageUrl}
+          headerSurfaceImageAssets={settingsCreatorHeaderSurface.imageAssets}
           iconSlots={iconSlots}
           creatorCurationPanelItems={creatorCurationPanelItems}
           avatarSubject={creatorDoc}
@@ -646,7 +646,7 @@ const SettingsCreatorPage = () => {
             surfaceStyle={profile?.profileHeaderSurfaceStyle}
             styleDraft={headerSurfaceStyleDraft}
             onStyleDraftChange={setHeaderSurfaceStyleDraft}
-            surfaceImageUrl={profile?.profileHeaderSurfaceImageUrl}
+            surfaceImageAssets={profile?.profileHeaderSurfaceImageAssets}
             onApplied={(patch) => {
               setProfile((p) => (p && typeof p === "object" ? { ...p, ...patch } : p));
               if (Object.prototype.hasOwnProperty.call(patch, "profileHeaderSurfaceStyle")) {
@@ -657,7 +657,7 @@ const SettingsCreatorPage = () => {
             mode: "creator",
             bannerUrl: settingsCreatorBannerUrl,
             headerSurfaceStyle: settingsCreatorHeaderSurface.style,
-            headerSurfaceImageUrl: settingsCreatorHeaderSurface.imageUrl,
+            headerSurfaceImageAssets: settingsCreatorHeaderSurface.imageAssets,
             iconSlots,
             creatorCurationPanelItems,
             avatarSubject: creatorDoc,

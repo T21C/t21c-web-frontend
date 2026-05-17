@@ -13,18 +13,49 @@ import {
   GRADIENT_LAYER_TYPES,
   SURFACE_STACK_KIND_GRADIENT,
   SURFACE_STACK_KIND_IMAGE,
-  MAX_PROFILE_HEADER_SURFACE_LAYERS,
+  MAX_PROFILE_HEADER_SURFACE_STACK_ENTRIES,
+  addImageLayerToStyle,
+  canAddImageLayer,
+  canAddStackEntry,
   countGradientStackEntries,
   createDefaultImageSettings,
   createDefaultProfileHeaderSurfaceStyle,
   createEmptyGradientLayer,
-  createImageStackEntry,
-  ensureImageStackEntry,
+  getImageStackEntryIds,
+  parseProfileHeaderSurfaceImageAssets,
   parseProfileHeaderSurfaceStyle,
-  removeImageStackEntry,
-  stackHasImageLayer,
+  removeImageLayerAtIndex,
 } from "@/utils/profileHeaderSurfaceStyle";
 import { deepCloneStyle } from "./profileHeaderSurfaceEditorUtils";
+
+function revokePendingEntry(entry) {
+  if (entry?.previewUrl?.startsWith("blob:")) {
+    URL.revokeObjectURL(entry.previewUrl);
+  }
+}
+
+function revokeAllPending(pendingImages) {
+  if (!pendingImages || typeof pendingImages !== "object") return;
+  for (const entry of Object.values(pendingImages)) {
+    revokePendingEntry(entry);
+  }
+}
+
+function buildPreviewImageAssets(serverAssets, pendingImages, stack) {
+  const assets = { ...parseProfileHeaderSurfaceImageAssets(serverAssets) };
+  for (const layerId of getImageStackEntryIds(stack)) {
+    const pending = pendingImages?.[layerId];
+    if (pending?.remove) {
+      delete assets[layerId];
+    } else if (pending?.previewUrl) {
+      assets[layerId] = {
+        assetId: assets[layerId]?.assetId ?? "pending",
+        url: pending.previewUrl,
+      };
+    }
+  }
+  return assets;
+}
 
 export function useProfileHeaderSurfaceEditor({
   variant,
@@ -33,23 +64,24 @@ export function useProfileHeaderSurfaceEditor({
   surfaceStyle,
   styleDraft,
   onStyleDraftChange,
-  surfaceImageUrl,
+  surfaceImageAssets,
   onApplied,
   isOpen = false,
   snapshotAtOpen = null,
-  snapshotPendingImage = null,
+  snapshotPendingImages = null,
+  selectedImageLayerId = null,
 }) {
   const { t } = useTranslation(["pages", "common"]);
   const fileInputRef = useRef(null);
   const [saveBusy, setSaveBusy] = useState(false);
-  const [pendingImage, setPendingImage] = useState(null);
+  const [pendingImages, setPendingImages] = useState({});
   const [touchedSinceOpen, setTouchedSinceOpen] = useState(false);
 
   useEffect(() => {
-    if (snapshotPendingImage !== undefined) {
-      setPendingImage(snapshotPendingImage);
+    if (snapshotPendingImages !== undefined) {
+      setPendingImages(snapshotPendingImages ? { ...snapshotPendingImages } : {});
     }
-  }, [snapshotPendingImage]);
+  }, [snapshotPendingImages]);
 
   useEffect(() => {
     if (isOpen) setTouchedSinceOpen(false);
@@ -80,11 +112,10 @@ export function useProfileHeaderSurfaceEditor({
     [effectiveDraft],
   );
 
-  const previewImageUrl = useMemo(() => {
-    if (pendingImage?.remove) return null;
-    if (pendingImage?.previewUrl) return pendingImage.previewUrl;
-    return surfaceImageUrl ?? null;
-  }, [pendingImage, surfaceImageUrl]);
+  const previewImageAssets = useMemo(
+    () => buildPreviewImageAssets(surfaceImageAssets, pendingImages, workingStyle.stack),
+    [surfaceImageAssets, pendingImages, workingStyle.stack],
+  );
 
   const markTouched = useCallback(() => {
     setTouchedSinceOpen(true);
@@ -107,124 +138,150 @@ export function useProfileHeaderSurfaceEditor({
     [workingStyle, updateDraft, markTouched],
   );
 
-  const revokePreviewUrl = useCallback((entry) => {
-    if (entry?.previewUrl?.startsWith("blob:")) {
-      URL.revokeObjectURL(entry.previewUrl);
-    }
-  }, []);
+  const patchImageSettings = useCallback(
+    (layerId, fn) => {
+      if (!layerId) return;
+      patchWorking((s) => {
+        if (!s.images) s.images = {};
+        const current = s.images[layerId] ?? createDefaultImageSettings();
+        const next = { ...current };
+        fn(next);
+        s.images[layerId] = next;
+      });
+    },
+    [patchWorking],
+  );
 
   const selectImageFile = useCallback(
-    (file) => {
-      if (!file || !canEdit) return;
+    (layerId, file) => {
+      if (!layerId || !file || !canEdit) return;
       if (!isCdnSupportedImageMimeType(file.type)) {
         toast.error(t("settings.banner.invalidFileType"));
         return;
       }
-      setPendingImage((prev) => {
-        revokePreviewUrl(prev);
+      setPendingImages((prev) => {
+        revokePendingEntry(prev[layerId]);
         return {
-          file,
-          previewUrl: URL.createObjectURL(file),
-          remove: false,
+          ...prev,
+          [layerId]: {
+            file,
+            previewUrl: URL.createObjectURL(file),
+            remove: false,
+          },
         };
       });
-      patchWorking((s) => {
-        const next = ensureImageStackEntry(s);
-        Object.assign(s, next);
-      });
+      markTouched();
       if (fileInputRef.current) fileInputRef.current.value = "";
     },
-    [canEdit, patchWorking, revokePreviewUrl, t],
+    [canEdit, markTouched, t],
   );
 
-  const markImageRemoved = useCallback(() => {
-    setPendingImage((prev) => {
-      revokePreviewUrl(prev);
-      return { file: null, previewUrl: null, remove: true };
-    });
-    patchWorking((s) => {
-      const next = removeImageStackEntry(s);
-      Object.assign(s, next);
-    });
-    if (fileInputRef.current) fileInputRef.current.value = "";
-  }, [patchWorking, revokePreviewUrl]);
+  const markImageRemovedForLayer = useCallback(
+    (layerId) => {
+      if (!layerId) return;
+      setPendingImages((prev) => {
+        revokePendingEntry(prev[layerId]);
+        const serverHadAsset = Boolean(parseProfileHeaderSurfaceImageAssets(surfaceImageAssets)[layerId]);
+        if (!serverHadAsset) {
+          const next = { ...prev };
+          delete next[layerId];
+          return next;
+        }
+        return {
+          ...prev,
+          [layerId]: { file: null, previewUrl: null, remove: true },
+        };
+      });
+      markTouched();
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    },
+    [surfaceImageAssets, markTouched],
+  );
 
-  const deleteSurfaceImage = useCallback(async () => {
-    if (variant === "player") {
-      await api.delete(`${import.meta.env.VITE_PROFILE}/player/header-surface-image`);
-    } else {
-      await api.delete(`${import.meta.env.VITE_CREATORS_V3}/${creatorId}/header-surface-image`);
-    }
-    onApplied?.({
-      profileHeaderSurfaceImageId: null,
-      profileHeaderSurfaceImageUrl: null,
-    });
-  }, [variant, creatorId, onApplied]);
+  const deleteSurfaceImageForLayer = useCallback(
+    async (layerId) => {
+      const params = { layerId };
+      if (variant === "player") {
+        const res = await api.delete(`${import.meta.env.VITE_PROFILE}/player/header-surface-image`, {
+          params,
+        });
+        return res.data;
+      }
+      const res = await api.delete(
+        `${import.meta.env.VITE_CREATORS_V3}/${creatorId}/header-surface-image`,
+        { params },
+      );
+      return res.data;
+    },
+    [variant, creatorId],
+  );
+
+  const uploadSurfaceImageForLayer = useCallback(
+    async (layerId, file) => {
+      const form = new FormData();
+      form.append("image", file);
+      form.append("layerId", layerId);
+      if (variant === "player") {
+        const res = await api.post(
+          `${import.meta.env.VITE_PROFILE}/player/header-surface-image`,
+          form,
+          { headers: { "Content-Type": "multipart/form-data" } },
+        );
+        return res.data;
+      }
+      const res = await api.post(
+        `${import.meta.env.VITE_CREATORS_V3}/${creatorId}/header-surface-image`,
+        form,
+        { headers: { "Content-Type": "multipart/form-data" } },
+      );
+      return res.data;
+    },
+    [variant, creatorId],
+  );
 
   const handleSaveStyle = useCallback(async () => {
     if (!canEdit) return false;
     setSaveBusy(true);
     try {
       const payload = styleDraft === undefined ? workingStyle : styleDraft;
-      const hasImageLayerInPayload =
-        payload != null && stackHasImageLayer(payload.stack);
 
-      if (hasImageLayerInPayload && pendingImage?.file) {
-        const form = new FormData();
-        form.append("image", pendingImage.file);
-        let data;
-        if (variant === "player") {
-          const res = await api.post(
-            `${import.meta.env.VITE_PROFILE}/player/header-surface-image`,
-            form,
-            { headers: { "Content-Type": "multipart/form-data" } },
-          );
-          data = res.data;
-        } else {
-          const res = await api.post(
-            `${import.meta.env.VITE_CREATORS_V3}/${creatorId}/header-surface-image`,
-            form,
-            { headers: { "Content-Type": "multipart/form-data" } },
-          );
-          data = res.data;
-        }
-        onApplied?.({
-          profileHeaderSurfaceImageId: data.profileHeaderSurfaceImageId,
-          profileHeaderSurfaceImageUrl: data.profileHeaderSurfaceImageUrl,
-        });
-      } else if (
-        surfaceImageUrl &&
-        (!hasImageLayerInPayload || pendingImage?.remove)
-      ) {
-        await deleteSurfaceImage();
-      }
+      let styleData;
       if (variant === "player") {
         const { data } = await api.patch(`${import.meta.env.VITE_PROFILE}/player/header-surface-style`, {
           style: payload,
         });
-        onApplied?.({
-          profileHeaderSurfaceStyle: data.profileHeaderSurfaceStyle ?? null,
-          ...(data.profileHeaderSurfaceImageId === null
-            ? { profileHeaderSurfaceImageId: null, profileHeaderSurfaceImageUrl: null }
-            : {}),
-        });
+        styleData = data;
       } else {
         const { data } = await api.patch(
           `${import.meta.env.VITE_CREATORS_V3}/${creatorId}/header-surface-style`,
           { style: payload },
         );
-        onApplied?.({
-          profileHeaderSurfaceStyle: data.profileHeaderSurfaceStyle ?? null,
-          ...(data.profileHeaderSurfaceImageId === null
-            ? { profileHeaderSurfaceImageId: null, profileHeaderSurfaceImageUrl: null }
-            : {}),
-        });
+        styleData = data;
       }
 
+      let latestAssets = parseProfileHeaderSurfaceImageAssets(
+        styleData.profileHeaderSurfaceImageAssets,
+      );
+
+      for (const [layerId, pending] of Object.entries(pendingImages)) {
+        if (pending?.remove) {
+          const delData = await deleteSurfaceImageForLayer(layerId);
+          latestAssets = parseProfileHeaderSurfaceImageAssets(delData?.profileHeaderSurfaceImageAssets);
+        } else if (pending?.file) {
+          const upData = await uploadSurfaceImageForLayer(layerId, pending.file);
+          latestAssets = parseProfileHeaderSurfaceImageAssets(upData?.profileHeaderSurfaceImageAssets);
+        }
+      }
+
+      onApplied?.({
+        profileHeaderSurfaceStyle: styleData.profileHeaderSurfaceStyle ?? null,
+        profileHeaderSurfaceImageAssets: Object.keys(latestAssets).length ? latestAssets : null,
+      });
+
       onStyleDraftChange(undefined);
-      setPendingImage((prev) => {
-        revokePreviewUrl(prev);
-        return null;
+      setPendingImages((prev) => {
+        revokeAllPending(prev);
+        return {};
       });
       toast.success(t("settings.headerSurface.styleSaved"));
       return true;
@@ -245,23 +302,19 @@ export function useProfileHeaderSurfaceEditor({
     creatorId,
     onApplied,
     onStyleDraftChange,
-    pendingImage,
-    surfaceImageUrl,
-    deleteSurfaceImage,
-    revokePreviewUrl,
+    pendingImages,
+    deleteSurfaceImageForLayer,
+    uploadSurfaceImageForLayer,
     t,
   ]);
 
-  const resetPendingImageToSnapshot = useCallback(
-    (snap) => {
-      setPendingImage((prev) => {
-        revokePreviewUrl(prev);
-        if (!snap) return null;
-        return { ...snap };
-      });
-    },
-    [revokePreviewUrl],
-  );
+  const resetPendingImagesToSnapshot = useCallback((snap) => {
+    setPendingImages((prev) => {
+      revokeAllPending(prev);
+      if (!snap) return {};
+      return { ...snap };
+    });
+  }, []);
 
   const handleResetStyle = useCallback(() => {
     if (snapshotAtOpen === undefined) {
@@ -271,35 +324,34 @@ export function useProfileHeaderSurfaceEditor({
     } else {
       updateDraft(deepCloneStyle(snapshotAtOpen));
     }
-    resetPendingImageToSnapshot(snapshotPendingImage);
+    resetPendingImagesToSnapshot(snapshotPendingImages);
     setTouchedSinceOpen(false);
   }, [
     snapshotAtOpen,
-    snapshotPendingImage,
+    snapshotPendingImages,
     onStyleDraftChange,
     updateDraft,
-    resetPendingImageToSnapshot,
+    resetPendingImagesToSnapshot,
   ]);
 
   const addLayer = useCallback(() => {
     patchWorking((s) => {
-      if (countGradientStackEntries(s.stack) >= MAX_PROFILE_HEADER_SURFACE_LAYERS) return;
+      if (!canAddStackEntry(s.stack)) return;
       s.stack.push(createEmptyGradientLayer("linear", s.stack));
     });
   }, [patchWorking]);
 
   const insertImageLayer = useCallback(() => {
-    if (stackHasImageLayer(workingStyle.stack)) {
-      toast.error(t("settings.headerSurface.imageLayerExists"));
+    if (!canAddImageLayer(workingStyle.stack)) {
+      toast.error(t("settings.headerSurface.maxImageLayers"));
       return null;
     }
     let newId = null;
     patchWorking((s) => {
-      if (stackHasImageLayer(s.stack)) return;
-      const next = ensureImageStackEntry(s);
+      if (!canAddImageLayer(s.stack)) return;
+      const { style: next, newLayerId } = addImageLayerToStyle(s);
       Object.assign(s, next);
-      const imageEntry = s.stack.find((e) => e.kind === SURFACE_STACK_KIND_IMAGE);
-      newId = imageEntry?.id ?? null;
+      newId = newLayerId;
     });
     return newId;
   }, [patchWorking, workingStyle.stack, t]);
@@ -325,27 +377,39 @@ export function useProfileHeaderSurfaceEditor({
 
   const removeLayer = useCallback(
     (stackIndex) => {
-      let removedImageLayer = false;
+      const entry = workingStyle.stack[stackIndex];
+      let removedImageId = null;
       patchWorking((s) => {
-        const entry = s.stack[stackIndex];
-        if (entry?.kind === SURFACE_STACK_KIND_IMAGE) {
-          s.stack.splice(stackIndex, 1);
-          delete s.image;
-          removedImageLayer = true;
+        const target = s.stack[stackIndex];
+        if (target?.kind === SURFACE_STACK_KIND_IMAGE) {
+          removedImageId = target.id;
+          const next = removeImageLayerAtIndex(s, stackIndex);
+          s.stack = next.stack;
+          s.images = next.images;
+          if (!s.images) delete s.images;
           return;
         }
-        if (countGradientStackEntries(s.stack) <= 1 && !stackHasImageLayer(s.stack)) return;
+        if (countGradientStackEntries(s.stack) <= 1) return;
         s.stack.splice(stackIndex, 1);
       });
-      if (removedImageLayer) {
-        setPendingImage((prev) => {
-          revokePreviewUrl(prev);
-          return surfaceImageUrl ? { file: null, previewUrl: null, remove: true } : null;
+      if (removedImageId) {
+        setPendingImages((prev) => {
+          revokePendingEntry(prev[removedImageId]);
+          const next = { ...prev };
+          const serverHad = Boolean(
+            parseProfileHeaderSurfaceImageAssets(surfaceImageAssets)[removedImageId],
+          );
+          if (serverHad) {
+            next[removedImageId] = { file: null, previewUrl: null, remove: true };
+          } else {
+            delete next[removedImageId];
+          }
+          return next;
         });
         if (fileInputRef.current) fileInputRef.current.value = "";
       }
     },
-    [patchWorking, revokePreviewUrl, surfaceImageUrl],
+    [patchWorking, workingStyle.stack, surfaceImageAssets],
   );
 
   const patchStackEntry = useCallback(
@@ -359,7 +423,16 @@ export function useProfileHeaderSurfaceEditor({
     [patchWorking],
   );
 
-  const imageSettings = workingStyle.image ?? createDefaultImageSettings();
+  const activeImageLayerId = useMemo(() => {
+    if (selectedImageLayerId) return selectedImageLayerId;
+    const ids = getImageStackEntryIds(workingStyle.stack);
+    return ids[0] ?? null;
+  }, [selectedImageLayerId, workingStyle.stack]);
+
+  const imageSettings = useMemo(() => {
+    if (!activeImageLayerId) return createDefaultImageSettings();
+    return workingStyle.images?.[activeImageLayerId] ?? createDefaultImageSettings();
+  }, [activeImageLayerId, workingStyle.images]);
 
   const gradientTypeOptions = useMemo(
     () =>
@@ -378,23 +451,28 @@ export function useProfileHeaderSurfaceEditor({
     isDirtySinceOpen: touchedSinceOpen,
     patchWorking,
     patchStackEntry,
+    patchImageSettings,
     handleSaveStyle,
     handleResetStyle,
     selectImageFile,
-    markImageRemoved,
+    markImageRemovedForLayer,
     addLayer,
     insertImageLayer,
     reorderStack,
     removeLayer,
     imageSettings,
-    previewImageUrl,
-    pendingImage,
-    resetPendingImageToSnapshot,
+    activeImageLayerId,
+    previewImageAssets,
+    pendingImages,
+    resetPendingImagesToSnapshot,
     gradientTypeOptions,
     fileInputRef,
     saveBusy,
     SURFACE_STACK_KIND_GRADIENT,
     SURFACE_STACK_KIND_IMAGE,
-    stackHasImageLayer: stackHasImageLayer(workingStyle.stack),
+    canAddStackEntry: canAddStackEntry(workingStyle.stack),
+    canAddImageLayer: canAddImageLayer(workingStyle.stack),
+    stackEntryCount: workingStyle.stack.length,
+    maxStackEntries: MAX_PROFILE_HEADER_SURFACE_STACK_ENTRIES,
   };
 }

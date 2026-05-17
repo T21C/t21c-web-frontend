@@ -1,44 +1,37 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { CustomSelect, StateDisplay } from "@/components/common/selectors";
+import { CustomSelect } from "@/components/common/selectors";
 import { LinkIcon } from "@/components/common/icons/LinkIcon";
 import { UnlinkIcon } from "@/components/common/icons";
 import {
   BLEND_MODES,
-  IMAGE_DIMENSION_PERCENT_MAX,
-  IMAGE_DIMENSION_PERCENT_MIN,
-  IMAGE_POSITION_PERCENT_MAX,
-  IMAGE_POSITION_PERCENT_MIN,
-  IMAGE_POSITION_PIXEL_MAX,
-  IMAGE_POSITION_PIXEL_MIN,
+  IMAGE_POSITION_HORIZONTAL_KEYWORDS,
+  IMAGE_POSITION_VERTICAL_KEYWORDS,
   IMAGE_REPEAT_TILE,
-  IMAGE_SIZE_PRESETS,
-  createDefaultImageSettings,
-  defaultImagePositionForUnit,
-  getImageSizeDimensions,
-  imageSizeDimensionsFromValues,
+  createDefaultImagePosition,
+  createDefaultImageSizeDimensions,
   isImageTilingEnabled,
   normalizeImagePosition,
-  normalizeImageSizeFit,
+  normalizeImagePositionAxis,
+  normalizeImageSizeDimensionAxis,
+  normalizeImageSizeDimensions,
 } from "@/utils/profileHeaderSurfaceStyle";
 import { valuesToSelectOptions } from "./profileHeaderSurfaceEditorUtils";
-import ProfileHeaderSurfaceSliderField from "./ProfileHeaderSurfaceSliderField";
-
-const DEFAULT_IMAGE_SETTINGS = createDefaultImageSettings();
+import ProfileHeaderSurfaceAxisPositionRow from "./ProfileHeaderSurfaceAxisPositionRow";
+import ProfileHeaderSurfaceAxisSizeRow from "./ProfileHeaderSurfaceAxisSizeRow";
 
 export default function ProfileHeaderSurfaceImageSettings({
   imageSettings,
   previewImageUrl,
-  patchWorking,
+  patchImageSettings,
   fileInputRef,
   saveBusy,
   onSelectImageFile,
   onMarkImageRemoved,
-  hasImageInStack,
+  imageLayerId,
 }) {
   const { t } = useTranslation(["pages"]);
 
-  const imageSizeFitOptions = useMemo(() => valuesToSelectOptions(IMAGE_SIZE_PRESETS), []);
   const imageTileRepeatOptions = useMemo(() => valuesToSelectOptions(IMAGE_REPEAT_TILE), []);
   const blendModeOptions = useMemo(
     () => [
@@ -48,7 +41,7 @@ export default function ProfileHeaderSurfaceImageSettings({
     [t],
   );
 
-  if (!hasImageInStack || !imageSettings) {
+  if (!imageLayerId || !imageSettings) {
     return (
       <div className="profile-header-surface-image-settings">
         <h4 className="profile-header-surface-image-settings__subtitle">
@@ -61,7 +54,7 @@ export default function ProfileHeaderSurfaceImageSettings({
           className="profile-header-surface-image-settings__file-input"
           onChange={(ev) => {
             const f = ev.target.files?.[0];
-            if (f) onSelectImageFile(f);
+            if (f && imageLayerId) onSelectImageFile(imageLayerId, f);
           }}
         />
         <div className="profile-header-surface-image-settings__actions">
@@ -94,7 +87,7 @@ export default function ProfileHeaderSurfaceImageSettings({
           className="profile-header-surface-image-settings__file-input"
           onChange={(ev) => {
             const f = ev.target.files?.[0];
-            if (f) onSelectImageFile(f);
+            if (f && imageLayerId) onSelectImageFile(imageLayerId, f);
           }}
         />
         <div className="profile-header-surface-image-settings__actions">
@@ -112,17 +105,34 @@ export default function ProfileHeaderSurfaceImageSettings({
   }
 
   const position = normalizeImagePosition(imageSettings.position);
-  const sizeFitValue = normalizeImageSizeFit(imageSettings.sizeFit ?? imageSettings.size);
-  const { sizeX, sizeY } = (() => {
-    const dims = getImageSizeDimensions(imageSettings);
-    return { sizeX: dims.widthPercent, sizeY: dims.heightPercent };
-  })();
-  const isPixelPosition = position.unit === "pixel";
-  const positionSuffix = isPixelPosition ? "px" : "%";
-  const positionInputMin = isPixelPosition ? IMAGE_POSITION_PIXEL_MIN : IMAGE_POSITION_PERCENT_MIN;
-  const positionInputMax = isPixelPosition ? IMAGE_POSITION_PIXEL_MAX : IMAGE_POSITION_PERCENT_MAX;
-  const positionSliderMin = positionInputMin;
-  const positionSliderMax = positionInputMax;
+  const sizeDimensions = normalizeImageSizeDimensions(imageSettings.sizeDimensions);
+  const patchPositionAxis = (axisKey, partial) => {
+    patchImageSettings((img) => {
+      const current = normalizeImagePosition(img.position);
+      const axis = normalizeImagePositionAxis(current[axisKey], axisKey);
+      img.position = {
+        ...current,
+        [axisKey]: { ...axis, ...partial },
+      };
+    });
+  };
+  const patchSizeAxis = (axisKey, partial) => {
+    patchImageSettings((img) => {
+      const current = normalizeImageSizeDimensions(img.sizeDimensions);
+      const axis = normalizeImageSizeDimensionAxis(current[axisKey], axisKey);
+      const nextAxis = { ...axis, ...partial };
+      const next = {
+        ...current,
+        [axisKey]: nextAxis,
+      };
+      if (img.sizeDimensionsLinked === true) {
+        const otherKey = axisKey === "width" ? "height" : "width";
+        next[otherKey] = { ...nextAxis };
+      }
+      img.sizeDimensions = next;
+      delete img.size;
+    });
+  };
   const sizeLinked = imageSettings.sizeDimensionsLinked === true;
   const tilingEnabled = isImageTilingEnabled(imageSettings.repeat ?? "no-repeat");
   const tileRepeatValue = tilingEnabled ? imageSettings.repeat : "repeat";
@@ -136,7 +146,31 @@ export default function ProfileHeaderSurfaceImageSettings({
         {t("settings.headerSurface.imageSaveHint")}
       </p>
       <div className="profile-header-surface-image-settings__preview-wrap">
-        <img src={previewImageUrl} alt="" className="profile-header-surface-image-settings__preview" />
+        <div className="profile-header-surface-image-settings__preview-media">
+          <img src={previewImageUrl} alt="" className="profile-header-surface-image-settings__preview" />
+        </div>
+        <div className="profile-header-surface-image-settings__field profile-header-surface-image-settings__field--select profile-header-surface-image-settings__preview-blend">
+          <CustomSelect
+            inputId="profile-header-surface-image-blend-mode"
+            label={t("settings.headerSurface.blendMode")}
+            direction="auto"
+            options={blendModeOptions}
+            value={
+              blendModeOptions.find((o) => o.value === (imageSettings.blendMode ?? "normal")) ?? null
+            }
+            onChange={(opt) => {
+              if (!opt?.value) return;
+              patchImageSettings((img) => {
+                if (opt.value === "normal") {
+                  delete img.blendMode;
+                } else {
+                  img.blendMode = opt.value;
+                }
+              });
+            }}
+            width="100%"
+          />
+        </div>
       </div>
       <input
         ref={fileInputRef}
@@ -145,7 +179,7 @@ export default function ProfileHeaderSurfaceImageSettings({
         className="profile-header-surface-image-settings__file-input"
         onChange={(ev) => {
           const f = ev.target.files?.[0];
-          if (f) onSelectImageFile(f);
+          if (f && imageLayerId) onSelectImageFile(imageLayerId, f);
         }}
       />
       <div className="profile-header-surface-image-settings__actions">
@@ -165,135 +199,58 @@ export default function ProfileHeaderSurfaceImageSettings({
         >
           {t("settings.headerSurface.removeImage")}
         </button>
-      </div>
-      <div className="profile-header-surface-image-settings__controls">
-        <div className="profile-header-surface-image-settings__field profile-header-surface-image-settings__field--select">
-          <CustomSelect
-            inputId="profile-header-surface-image-size-fit"
-            label={t("settings.headerSurface.sizeFit")}
-            direction="auto"
-            options={imageSizeFitOptions}
-            value={imageSizeFitOptions.find((o) => o.value === sizeFitValue) ?? null}
-            onChange={(opt) => {
-              if (!opt?.value) return;
-              patchWorking((s) => {
-                if (!s.image) return;
-                s.image.sizeFit = opt.value;
-                delete s.image.size;
-              });
-            }}
-            width="100%"
-          />
-        </div>
-        <div className="profile-header-surface-image-settings__field profile-header-surface-image-settings__field--select">
-          <CustomSelect
-            inputId="profile-header-surface-image-blend-mode"
-            label={t("settings.headerSurface.blendMode")}
-            direction="auto"
-            options={blendModeOptions}
-            value={
-              blendModeOptions.find((o) => o.value === (imageSettings.blendMode ?? "normal")) ?? null
-            }
-            onChange={(opt) => {
-              if (!opt?.value) return;
-              patchWorking((s) => {
-                if (!s.image) return;
-                if (opt.value === "normal") {
-                  delete s.image.blendMode;
+        <label className="profile-header-surface-image-settings__toggle-field">
+          <input
+            type="checkbox"
+            checked={imageSettings.padForBanner === true}
+            onChange={(ev) => {
+              patchImageSettings((img) => {
+                if (ev.target.checked) {
+                  img.padForBanner = true;
                 } else {
-                  s.image.blendMode = opt.value;
+                  delete img.padForBanner;
                 }
               });
             }}
-            width="100%"
           />
-        </div>
+          <span>{t("settings.headerSurface.padForBanner")}</span>
+        </label>
+      </div>
+      <div className="profile-header-surface-image-settings__controls">
         <div className="profile-header-surface-image-settings__position-group">
-          <StateDisplay
-            className="profile-header-surface-image-settings__position-unit"
-            currentState={position.unit}
-            states={["percent", "pixel"]}
-            onChange={(unit) =>
-              patchWorking((s) => {
-                if (!s.image) return;
-                s.image.position = defaultImagePositionForUnit(unit);
+          <ProfileHeaderSurfaceAxisPositionRow
+            axis="x"
+            axisKey="x"
+            sideOptions={IMAGE_POSITION_HORIZONTAL_KEYWORDS}
+            position={position}
+            onPatchAxis={patchPositionAxis}
+          />
+          <ProfileHeaderSurfaceAxisPositionRow
+            axis="y"
+            axisKey="y"
+            sideOptions={IMAGE_POSITION_VERTICAL_KEYWORDS}
+            position={position}
+            onPatchAxis={patchPositionAxis}
+          />
+          <button
+            type="button"
+            className="btn-fill-secondary profile-header-surface-image-settings__row-reset"
+            onClick={() =>
+              patchImageSettings((img) => {
+                img.position = createDefaultImagePosition();
               })
             }
-            label={t("settings.headerSurface.positionUnit")}
-            width={72}
-            showValue
+          >
+            {t("settings.headerSurface.resetRow")}
+          </button>
+        </div>
+        <div className="profile-header-surface-image-settings__size-group">
+          <ProfileHeaderSurfaceAxisSizeRow
+            axisKey="width"
+            sizeDimensions={sizeDimensions}
+            onPatchAxis={patchSizeAxis}
           />
-          <div className="profile-header-surface-image-settings__field-row profile-header-surface-image-settings__field-row--span">
-            <ProfileHeaderSurfaceSliderField
-              className="profile-header-surface-image-settings__field"
-              label={t("settings.headerSurface.positionX")}
-            value={position.x}
-            sliderMin={positionSliderMin}
-            sliderMax={positionSliderMax}
-            inputMin={positionInputMin}
-            inputMax={positionInputMax}
-            suffix={positionSuffix}
-            onChange={(n) =>
-              patchWorking((s) => {
-                if (!s.image) return;
-                const current = normalizeImagePosition(s.image.position);
-                s.image.position = { unit: current.unit, x: n, y: current.y };
-              })
-            }
-          />
-          <ProfileHeaderSurfaceSliderField
-            className="profile-header-surface-image-settings__field"
-            label={t("settings.headerSurface.positionY")}
-            value={position.y}
-            sliderMin={positionSliderMin}
-            sliderMax={positionSliderMax}
-            inputMin={positionInputMin}
-            inputMax={positionInputMax}
-            suffix={positionSuffix}
-            onChange={(n) =>
-              patchWorking((s) => {
-                if (!s.image) return;
-                const current = normalizeImagePosition(s.image.position);
-                s.image.position = { unit: current.unit, x: current.x, y: n };
-              })
-            }
-          />
-            <button
-              type="button"
-              className="btn-fill-secondary profile-header-surface-image-settings__row-reset"
-              onClick={() =>
-                patchWorking((s) => {
-                  if (!s.image) return;
-                  s.image.position = { ...DEFAULT_IMAGE_SETTINGS.position };
-                })
-              }
-            >
-              {t("settings.headerSurface.resetRow")}
-            </button>
-          </div>
-          <div className="profile-header-surface-image-settings__field-row profile-header-surface-image-settings__field-row--span profile-header-surface-image-settings__field-row--size">
-            <ProfileHeaderSurfaceSliderField
-              className="profile-header-surface-image-settings__field"
-              label={t("settings.headerSurface.sizeX")}
-              value={sizeX}
-              sliderMin={IMAGE_DIMENSION_PERCENT_MIN}
-              sliderMax={IMAGE_DIMENSION_PERCENT_MAX}
-              inputMin={IMAGE_DIMENSION_PERCENT_MIN}
-              inputMax={IMAGE_DIMENSION_PERCENT_MAX}
-              suffix="%"
-              onChange={(n) =>
-                patchWorking((s) => {
-                  if (!s.image) return;
-                  if (sizeLinked) {
-                    s.image.sizeDimensions = imageSizeDimensionsFromValues(n, n);
-                  } else {
-                    const dims = getImageSizeDimensions(s.image);
-                    s.image.sizeDimensions = imageSizeDimensionsFromValues(n, dims.heightPercent);
-                  }
-                  delete s.image.size;
-                })
-              }
-            />
+          <div className="profile-header-surface-image-settings__size-link-row">
             <button
               type="button"
               className={
@@ -313,20 +270,19 @@ export default function ProfileHeaderSurfaceImageSettings({
                   : t("settings.headerSurface.linkSizeLinked")
               }
               onClick={() => {
-                patchWorking((s) => {
-                  if (!s.image) return;
+                patchImageSettings((img) => {
                   const next = !sizeLinked;
                   if (next) {
-                    const dims = getImageSizeDimensions(s.image);
-                    s.image.sizeDimensionsLinked = true;
-                    s.image.sizeDimensions = imageSizeDimensionsFromValues(
-                      dims.widthPercent,
-                      dims.widthPercent,
-                    );
+                    const dims = normalizeImageSizeDimensions(img.sizeDimensions);
+                    img.sizeDimensionsLinked = true;
+                    img.sizeDimensions = {
+                      width: { ...dims.width },
+                      height: { ...dims.width },
+                    };
                   } else {
-                    delete s.image.sizeDimensionsLinked;
+                    delete img.sizeDimensionsLinked;
                   }
-                  delete s.image.size;
+                  delete img.size;
                 });
               }}
             >
@@ -336,42 +292,25 @@ export default function ProfileHeaderSurfaceImageSettings({
                 <UnlinkIcon size={18} color="currentColor" />
               )}
             </button>
-            <ProfileHeaderSurfaceSliderField
-              className="profile-header-surface-image-settings__field"
-              label={t("settings.headerSurface.sizeY")}
-              value={sizeY}
-              sliderMin={IMAGE_DIMENSION_PERCENT_MIN}
-              sliderMax={IMAGE_DIMENSION_PERCENT_MAX}
-              inputMin={IMAGE_DIMENSION_PERCENT_MIN}
-              inputMax={IMAGE_DIMENSION_PERCENT_MAX}
-              suffix="%"
-              onChange={(n) =>
-                patchWorking((s) => {
-                  if (!s.image) return;
-                  if (sizeLinked) {
-                    s.image.sizeDimensions = imageSizeDimensionsFromValues(n, n);
-                  } else {
-                    const dims = getImageSizeDimensions(s.image);
-                    s.image.sizeDimensions = imageSizeDimensionsFromValues(dims.widthPercent, n);
-                  }
-                  delete s.image.size;
-                })
-              }
-            />
-            <button
-              type="button"
-              className="btn-fill-secondary profile-header-surface-image-settings__row-reset"
-              onClick={() =>
-                patchWorking((s) => {
-                  if (!s.image) return;
-                  s.image.sizeDimensions = { ...DEFAULT_IMAGE_SETTINGS.sizeDimensions };
-                  delete s.image.size;
-                })
-              }
-            >
-              {t("settings.headerSurface.resetRow")}
-            </button>
           </div>
+          <ProfileHeaderSurfaceAxisSizeRow
+            axisKey="height"
+            sizeDimensions={sizeDimensions}
+            onPatchAxis={patchSizeAxis}
+          />
+          <button
+            type="button"
+            className="btn-fill-secondary profile-header-surface-image-settings__row-reset"
+            onClick={() =>
+              patchImageSettings((img) => {
+                img.sizeDimensions = createDefaultImageSizeDimensions();
+                delete img.sizeDimensionsLinked;
+                delete img.size;
+              })
+            }
+          >
+            {t("settings.headerSurface.resetRow")}
+          </button>
         </div>
         <div className="profile-header-surface-image-settings__tiling-group">
           <label className="profile-header-surface-image-settings__toggle-field">
@@ -380,14 +319,13 @@ export default function ProfileHeaderSurfaceImageSettings({
               checked={tilingEnabled}
               onChange={(ev) => {
                 const enabled = ev.target.checked;
-                patchWorking((s) => {
-                  if (!s.image) return;
+                patchImageSettings((img) => {
                   if (!enabled) {
-                    s.image.repeat = "no-repeat";
+                    img.repeat = "no-repeat";
                     return;
                   }
-                  if (!isImageTilingEnabled(s.image.repeat)) {
-                    s.image.repeat = "repeat";
+                  if (!isImageTilingEnabled(img.repeat)) {
+                    img.repeat = "repeat";
                   }
                 });
               }}
@@ -405,8 +343,8 @@ export default function ProfileHeaderSurfaceImageSettings({
                   value={imageTileRepeatOptions.find((o) => o.value === tileRepeatValue) ?? null}
                   onChange={(opt) => {
                     if (!opt?.value) return;
-                    patchWorking((s) => {
-                      if (s.image) s.image.repeat = opt.value;
+                    patchImageSettings((img) => {
+                      img.repeat = opt.value;
                     });
                   }}
                   width="100%"

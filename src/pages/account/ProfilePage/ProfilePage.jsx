@@ -448,10 +448,10 @@ const ProfilePage = () => {
       }, [playerData]);
 
       const profileHeaderSurface = useMemo(() => {
-        if (!playerData) return { style: null, imageUrl: null };
+        if (!playerData) return { style: null, imageAssets: {} };
         return getEffectiveProfileHeaderSurface({
           profileHeaderSurfaceStyle: playerData.profileHeaderSurfaceStyle,
-          profileHeaderSurfaceImageUrl: playerData.profileHeaderSurfaceImageUrl,
+          profileHeaderSurfaceImageAssets: playerData.profileHeaderSurfaceImageAssets,
           subjectUser: playerData.user,
         });
       }, [playerData]);
@@ -669,7 +669,7 @@ const ProfilePage = () => {
                     className="player-page__profile-header"
                     bannerUrl={profileBannerUrl}
                     headerSurfaceStyle={profileHeaderSurface.style}
-                    headerSurfaceImageUrl={profileHeaderSurface.imageUrl}
+                    headerSurfaceImageAssets={profileHeaderSurface.imageAssets}
                     iconSlots={iconSlots}
                     nameTooltipId={"default"}
                     playerDifficultyPanelDifficulties={difficulties}

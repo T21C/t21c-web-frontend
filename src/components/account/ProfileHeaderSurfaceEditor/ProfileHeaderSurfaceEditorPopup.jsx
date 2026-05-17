@@ -28,11 +28,11 @@ export default function ProfileHeaderSurfaceEditorPopup({
   surfaceStyle,
   styleDraft,
   onStyleDraftChange,
-  surfaceImageUrl,
+  surfaceImageAssets,
   onApplied,
   profilePreviewProps,
-  snapshotPendingImage = null,
-  onPendingImageChange,
+  snapshotPendingImages = null,
+  onPendingImagesChange,
 }) {
   const { t } = useTranslation(["pages", "common"]);
   const panelRef = useRef(null);
@@ -46,11 +46,12 @@ export default function ProfileHeaderSurfaceEditorPopup({
     surfaceStyle,
     styleDraft,
     onStyleDraftChange,
-    surfaceImageUrl,
+    surfaceImageAssets,
     onApplied,
     isOpen,
     snapshotAtOpen,
-    snapshotPendingImage,
+    snapshotPendingImages,
+    selectedImageLayerId: selectedStackId,
   });
 
   const {
@@ -63,20 +64,23 @@ export default function ProfileHeaderSurfaceEditorPopup({
     reorderStack,
     removeLayer,
     imageSettings,
-    previewImageUrl,
+    previewImageAssets,
+    patchImageSettings,
     fileInputRef,
     saveBusy,
     handleSaveStyle,
     handleResetStyle,
     selectImageFile,
-    markImageRemoved,
+    markImageRemovedForLayer,
     isDirtySinceOpen,
-    stackHasImageLayer,
+    canAddStackEntry,
+    canAddImageLayer,
+    activeImageLayerId,
   } = editor;
 
   useEffect(() => {
-    onPendingImageChange?.(editor.pendingImage);
-  }, [editor.pendingImage, onPendingImageChange]);
+    onPendingImagesChange?.(editor.pendingImages);
+  }, [editor.pendingImages, onPendingImagesChange]);
 
   useBodyScrollLock(isOpen);
 
@@ -146,8 +150,8 @@ export default function ProfileHeaderSurfaceEditorPopup({
         : t("settings.headerSurface.removeLayerConfirm");
     if (!window.confirm(confirmMessage)) return;
 
-    if (entry?.kind === SURFACE_STACK_KIND_IMAGE) {
-      markImageRemoved();
+    if (entry?.kind === SURFACE_STACK_KIND_IMAGE && entry.id) {
+      markImageRemovedForLayer(entry.id);
     }
     const removedId = entry?.id;
     removeLayer(stackIndex);
@@ -165,7 +169,7 @@ export default function ProfileHeaderSurfaceEditorPopup({
   const previewProps = {
     ...profilePreviewProps,
     headerSurfaceStyle: styleDraft === undefined ? surfaceStyle : styleDraft,
-    headerSurfaceImageUrl: previewImageUrl,
+    headerSurfaceImageAssets: previewImageAssets,
   };
 
   const handleAddImageLayer = () => {
@@ -179,9 +183,9 @@ export default function ProfileHeaderSurfaceEditorPopup({
     onSelectStackId: setSelectedStackId,
     onAddLayer: addLayer,
     onAddImage: handleAddImageLayer,
-    stackHasImageLayer,
-    previewImageUrl,
-    imageSettings,
+    canAddStackEntry,
+    canAddImageLayer,
+    previewImageAssets,
     onReorderStack: reorderStack,
     onRemoveLayer: handleRemoveStackLayer,
     onPatchStackEntry: patchStackEntry,
@@ -220,13 +224,15 @@ export default function ProfileHeaderSurfaceEditorPopup({
             {isImageSelected ? (
               <ProfileHeaderSurfaceImageSettings
                 imageSettings={imageSettings}
-                previewImageUrl={previewImageUrl}
-                patchWorking={patchWorking}
+                imageLayerId={activeImageLayerId}
+                previewImageUrl={activeImageLayerId ? previewImageAssets[activeImageLayerId]?.url : null}
+                patchImageSettings={(fn) => patchImageSettings(activeImageLayerId, fn)}
                 fileInputRef={fileInputRef}
                 saveBusy={saveBusy}
                 onSelectImageFile={selectImageFile}
-                onMarkImageRemoved={markImageRemoved}
-                hasImageInStack={stackHasImageLayer}
+                onMarkImageRemoved={() => {
+                  if (activeImageLayerId) markImageRemovedForLayer(activeImageLayerId);
+                }}
               />
             ) : (
               <ProfileHeaderSurfaceLayerSettings

@@ -1,6 +1,10 @@
 // tuf-search: #profileBanners
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { DEFAULT_PROFILE_BANNER_PRESET_PATH } from "@/constants/bannerPresets";
+import {
+  parseProfileHeaderSurfaceImageAssets,
+  parseProfileHeaderSurfaceStyle,
+} from "@/utils/profileHeaderSurfaceStyle";
 
 function isHttpLikeUrl(value) {
   if (typeof value !== "string") return false;
@@ -107,31 +111,37 @@ export function subjectHasHeaderSurfaceEntitlement(subjectUser) {
 }
 
 /**
- * Resolve header surface style + image URL for ProfileHeader card shell.
+ * Resolve header surface style + per-layer image assets for ProfileHeader card shell.
  * @param {{
  *   profileHeaderSurfaceStyle?: object | null,
- *   profileHeaderSurfaceImageUrl?: string | null,
+ *   profileHeaderSurfaceImageAssets?: object | null,
  *   subjectUser?: { permissionFlags?: string | number | bigint; tufStellarSubscriptionExpiresAt?: string | null } | null,
  * }} args
  */
 export function getEffectiveProfileHeaderSurface({
   profileHeaderSurfaceStyle,
-  profileHeaderSurfaceImageUrl,
+  profileHeaderSurfaceImageAssets,
   subjectUser,
 }) {
   if (!subjectHasHeaderSurfaceEntitlement(subjectUser)) {
-    return { style: null, imageUrl: null };
+    return { style: null, imageAssets: {} };
   }
-  const style =
+  const rawStyle =
     profileHeaderSurfaceStyle &&
     typeof profileHeaderSurfaceStyle === "object" &&
     !Array.isArray(profileHeaderSurfaceStyle)
       ? profileHeaderSurfaceStyle
       : null;
-  const rawUrl =
-    typeof profileHeaderSurfaceImageUrl === "string" && profileHeaderSurfaceImageUrl.trim()
-      ? profileHeaderSurfaceImageUrl.trim()
-      : null;
-  const imageUrl = rawUrl && isHttpLikeUrl(rawUrl) ? rawUrl : null;
-  return { style, imageUrl };
+
+  const style = rawStyle ? parseProfileHeaderSurfaceStyle(rawStyle) : null;
+  const parsedAssets = parseProfileHeaderSurfaceImageAssets(profileHeaderSurfaceImageAssets);
+
+  const imageAssets = {};
+  for (const [layerId, row] of Object.entries(parsedAssets)) {
+    if (row?.url && isHttpLikeUrl(row.url)) {
+      imageAssets[layerId] = row;
+    }
+  }
+
+  return { style, imageAssets };
 }

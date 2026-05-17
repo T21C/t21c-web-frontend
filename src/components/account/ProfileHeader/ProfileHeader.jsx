@@ -98,8 +98,8 @@ const ProfileHeader = ({
   badgeLabel = "#",
   bannerUrl = null,
   headerSurfaceStyle = null,
-  /** CDN URL for surface background image layer. */
-  headerSurfaceImageUrl = null,
+  /** Per-layer CDN assets for surface image stack entries (`layerId` → `{ assetId, url }`). */
+  headerSurfaceImageAssets = null,
   iconSlots,
   statRows = [],
   statGroups = null,
@@ -310,13 +310,15 @@ const ProfileHeader = ({
   const surfaceStackLayers = useMemo(() => {
     const parsed = parseProfileHeaderSurfaceStyle(headerSurfaceStyle);
     if (!parsed) return null;
-    const imageUrl =
-      typeof headerSurfaceImageUrl === "string" && headerSurfaceImageUrl.trim()
-        ? headerSurfaceImageUrl.trim()
-        : null;
-    const layers = buildSurfaceStackRenderLayers(parsed, imageUrl);
+    const assets =
+      headerSurfaceImageAssets &&
+      typeof headerSurfaceImageAssets === "object" &&
+      !Array.isArray(headerSurfaceImageAssets)
+        ? headerSurfaceImageAssets
+        : {};
+    const layers = buildSurfaceStackRenderLayers(parsed, assets);
     return layers.length > 0 ? layers : null;
-  }, [headerSurfaceStyle, headerSurfaceImageUrl]);
+  }, [headerSurfaceStyle, headerSurfaceImageAssets]);
 
   const headerClassName = surfaceStackLayers
     ? "profile-header profile-header--custom-surface"

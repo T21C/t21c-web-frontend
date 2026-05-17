@@ -9,7 +9,8 @@
     "PASS": "已通过",
     "LEVEL": "新关卡",
     "percent": "%",
-    "pixel": "px"
+    "pixel": "px",
+    "keyword": "side"
   },
   "accessDenied": {
     "title": "拒绝访问",

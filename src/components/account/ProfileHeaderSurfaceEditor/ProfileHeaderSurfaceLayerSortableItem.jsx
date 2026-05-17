@@ -14,8 +14,7 @@ export default function ProfileHeaderSurfaceLayerSortableItem({
   stack,
   stackIndex,
   selected,
-  previewImageUrl,
-  imageSettings,
+  previewImageAssets,
   onSelectStackId,
   onPatchStackEntry,
   onRemoveLayer,
@@ -63,8 +62,7 @@ export default function ProfileHeaderSurfaceLayerSortableItem({
             >
               <ProfileHeaderSurfaceLayerThumb
                 entry={entry}
-                previewImageUrl={previewImageUrl}
-                imageSettings={imageSettings}
+                previewImageUrl={previewImageAssets?.[entry.id]?.url ?? null}
               />
               <span className="profile-header-surface-layer-list__chip-text">
                 <ProfileHeaderSurfaceLayerName

@@ -126,11 +126,11 @@ const CreatorProfilePage = () => {
       : "";
 
   const creatorHeaderSurface = useMemo(() => {
-    if (!profile) return { style: null, imageUrl: null };
+    if (!profile) return { style: null, imageAssets: {} };
     const u = profile.user || creatorDoc?.user;
     return getEffectiveProfileHeaderSurface({
       profileHeaderSurfaceStyle: profile.profileHeaderSurfaceStyle,
-      profileHeaderSurfaceImageUrl: profile.profileHeaderSurfaceImageUrl,
+      profileHeaderSurfaceImageAssets: profile.profileHeaderSurfaceImageAssets,
       subjectUser: u,
     });
   }, [profile, creatorDoc]);
@@ -219,7 +219,7 @@ const CreatorProfilePage = () => {
           className="creator-profile-page__profile-header"
           bannerUrl={creatorBannerUrl}
           headerSurfaceStyle={creatorHeaderSurface.style}
-          headerSurfaceImageUrl={creatorHeaderSurface.imageUrl}
+          headerSurfaceImageAssets={creatorHeaderSurface.imageAssets}
           iconSlots={iconSlots}
           creatorCurationPanelItems={creatorCurationPanelItems}
           avatarSubject={creatorDoc}
