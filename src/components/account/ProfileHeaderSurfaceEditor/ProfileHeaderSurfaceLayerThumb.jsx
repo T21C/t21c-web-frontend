@@ -10,7 +10,7 @@ export default function ProfileHeaderSurfaceLayerThumb({ entry, previewImageUrl,
     return (
       <span
         className="profile-header-surface-layer-list__thumb"
-        style={{ background: buildGradientLayerCss(entry) }}
+        style={{ background: buildGradientLayerCss(entry, { ignorePosition: true }) }}
         aria-hidden
       />
     );
@@ -20,7 +20,7 @@ export default function ProfileHeaderSurfaceLayerThumb({ entry, previewImageUrl,
     return (
       <span
         className="profile-header-surface-layer-list__thumb"
-        style={buildImageLayerDomStyle(previewImageUrl, imageSettings)}
+        style={buildImageLayerDomStyle(previewImageUrl, imageSettings, { ignorePosition: true })}
         aria-hidden
       />
     );

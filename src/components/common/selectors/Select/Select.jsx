@@ -1,16 +1,17 @@
 // tuf-search: #Select #selectors #select
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import ReactSelect, { components } from 'react-select';
 import { getPortalRoot } from '@/utils/portalRoot';
+import { computeSelectMenuPlacement, estimateSelectMenuHeight } from './selectMenuPlacement';
 import './select.css';
 
 /** Map `direction` shorthand to react-select `menuPlacement`. */
-function resolveMenuPlacement(direction, menuPlacementProp) {
+function resolveMenuPlacement(direction, menuPlacementProp, autoPlacement) {
   if (menuPlacementProp != null && menuPlacementProp !== '') {
     return menuPlacementProp;
   }
   if (direction === 'up') return 'top';
-  if (direction === 'auto') return 'auto';
+  if (direction === 'auto') return autoPlacement;
   return 'bottom';
 }
 
@@ -29,10 +30,21 @@ const CustomSelect = ({
   placeholderColor = "#fff8",
   ...props
 }) => {
-  const menuPlacement = resolveMenuPlacement(direction, menuPlacementProp);
+  const containerRef = useRef(null);
+  const [autoPlacement, setAutoPlacement] = useState('bottom');
+  const usesAutoPlacement = direction === 'auto' && (menuPlacementProp == null || menuPlacementProp === '');
+  const menuPlacement = resolveMenuPlacement(direction, menuPlacementProp, autoPlacement);
   const [isClosing, setIsClosing] = useState(false);
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const closeTimeoutRef = useRef(null);
+
+  const measureAutoPlacement = useCallback(() => {
+    const el = containerRef.current;
+    if (!el) return 'bottom';
+    const optionCount = Array.isArray(options) ? options.length : 0;
+    const menuHeight = estimateSelectMenuHeight({ optionCount, maxHeight });
+    return computeSelectMenuPlacement(el, menuHeight);
+  }, [options, maxHeight]);
 
   // Custom Menu component to handle animation (placement from react-select when menu opens above/below)
   const Menu = (menuProps) => {
@@ -70,6 +82,9 @@ const CustomSelect = ({
 
   const handleMenuOpen = () => {
     setIsClosing(false);
+    if (usesAutoPlacement) {
+      setAutoPlacement(measureAutoPlacement());
+    }
     setMenuIsOpen(true);
     if (closeTimeoutRef.current) {
       clearTimeout(closeTimeoutRef.current);
@@ -179,8 +194,9 @@ const CustomSelect = ({
   };
 
   return (
-    <div 
-      className="custom-select-container" 
+    <div
+      ref={containerRef}
+      className="custom-select-container"
       style={{ width: width }}
       onMouseDown={(e) => {
         // Prevent right-clicks and stop propagation to prevent popup from closing
@@ -205,6 +221,8 @@ const CustomSelect = ({
           options={Array.isArray(options) ? options : []}
           menuPortalTarget={menuPortalTarget ?? getPortalRoot()}
           menuPlacement={menuPlacement}
+          menuShouldScrollIntoView={false}
+          menuPosition="fixed"
           classNamePrefix="custom-select"
           styles={customStyles}
           components={{ Menu }}

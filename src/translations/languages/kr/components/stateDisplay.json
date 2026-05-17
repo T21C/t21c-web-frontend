@@ -7,7 +7,9 @@
     "12k": "12키",
     "16k": "16키",
     "PASS": "클리어",
-    "LEVEL": "신규 채보"
+    "LEVEL": "신규 채보",
+    "percent": "%",
+    "pixel": "px"
   },
   "accessDenied": {
     "title": "접근 거부",

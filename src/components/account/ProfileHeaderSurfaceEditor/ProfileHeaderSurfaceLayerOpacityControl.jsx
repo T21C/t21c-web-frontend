@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { EyeIcon, EyeOffIcon } from "@/components/common/icons";
+import ProfileHeaderSurfaceSliderField from "./ProfileHeaderSurfaceSliderField";
 
 export default function ProfileHeaderSurfaceLayerOpacityControl({
   visible,
@@ -65,17 +66,17 @@ export default function ProfileHeaderSurfaceLayerOpacityControl({
           aria-label={t("settings.headerSurface.layerOpacityLabel")}
           onMouseDown={(ev) => ev.stopPropagation()}
         >
-          <label className="profile-header-surface-layer-opacity__slider-field">
-            <span>{t("settings.headerSurface.layerOpacityLabel")}</span>
-            <input
-              type="range"
-              min={0}
-              max={100}
-              value={percent}
-              onChange={(ev) => onOpacityChange(Number(ev.target.value) / 100)}
-            />
-            <span className="profile-header-surface-layer-opacity__value">{percent}%</span>
-          </label>
+          <ProfileHeaderSurfaceSliderField
+            className="profile-header-surface-layer-opacity__slider-field"
+            label={t("settings.headerSurface.layerOpacityLabel")}
+            value={percent}
+            sliderMin={0}
+            sliderMax={100}
+            inputMin={0}
+            inputMax={100}
+            suffix="%"
+            onChange={(n) => onOpacityChange(n / 100)}
+          />
           <button
             type="button"
             className="profile-header-surface-layer-opacity__hide-btn"

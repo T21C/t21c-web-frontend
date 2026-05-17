@@ -510,8 +510,6 @@
   position: sticky;
   top: 0;
   z-index: 2;
-  padding-bottom: 0.5rem;
-  background: var(--color-black);
 }
 
 .settings-sub-page .settings-sub-page__stellar-variant {

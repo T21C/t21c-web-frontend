@@ -7,7 +7,9 @@
     "12k": "12K",
     "16k": "16K",
     "PASS": "Pass",
-    "LEVEL": "New Level"
+    "LEVEL": "New Level",
+    "percent": "%",
+    "pixel": "px"
   },
   "accessDenied": {
     "title": "Access Denied",

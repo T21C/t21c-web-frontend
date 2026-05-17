@@ -7,7 +7,9 @@
     "12k": "12键",
     "16k": "16键",
     "PASS": "已通过",
-    "LEVEL": "新关卡"
+    "LEVEL": "新关卡",
+    "percent": "%",
+    "pixel": "px"
   },
   "accessDenied": {
     "title": "拒绝访问",

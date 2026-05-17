@@ -24,7 +24,7 @@ import {
   removeImageStackEntry,
   stackHasImageLayer,
 } from "@/utils/profileHeaderSurfaceStyle";
-import { deepCloneStyle, stylesEqual } from "./profileHeaderSurfaceEditorUtils";
+import { deepCloneStyle } from "./profileHeaderSurfaceEditorUtils";
 
 export function useProfileHeaderSurfaceEditor({
   variant,
@@ -35,20 +35,25 @@ export function useProfileHeaderSurfaceEditor({
   onStyleDraftChange,
   surfaceImageUrl,
   onApplied,
+  isOpen = false,
   snapshotAtOpen = null,
-  snapshotImageUrl = null,
   snapshotPendingImage = null,
 }) {
   const { t } = useTranslation(["pages", "common"]);
   const fileInputRef = useRef(null);
   const [saveBusy, setSaveBusy] = useState(false);
   const [pendingImage, setPendingImage] = useState(null);
+  const [touchedSinceOpen, setTouchedSinceOpen] = useState(false);
 
   useEffect(() => {
     if (snapshotPendingImage !== undefined) {
       setPendingImage(snapshotPendingImage);
     }
   }, [snapshotPendingImage]);
+
+  useEffect(() => {
+    if (isOpen) setTouchedSinceOpen(false);
+  }, [isOpen]);
 
   const canEdit = useMemo(() => {
     if (!customProfileBannersEnabled()) return false;
@@ -81,38 +86,9 @@ export function useProfileHeaderSurfaceEditor({
     return surfaceImageUrl ?? null;
   }, [pendingImage, surfaceImageUrl]);
 
-  const hasStyleDraftChanges = useMemo(() => {
-    if (styleDraft === undefined) return false;
-    if (styleDraft === null && serverStyle === null) return false;
-    if (styleDraft === null || serverStyle === null) return true;
-    return !stylesEqual(styleDraft, serverStyle);
-  }, [styleDraft, serverStyle]);
-
-  const hasImageDraftChanges = useMemo(() => {
-    if (!pendingImage) return false;
-    if (pendingImage.remove && surfaceImageUrl) return true;
-    if (pendingImage.file) return true;
-    return false;
-  }, [pendingImage, surfaceImageUrl]);
-
-  const hasStyleChanges = hasStyleDraftChanges || hasImageDraftChanges;
-
-  const isDirtySinceOpen = useMemo(() => {
-    const styleDirty =
-      snapshotAtOpen === undefined && styleDraft === undefined
-        ? false
-        : snapshotAtOpen === null && styleDraft === null
-          ? false
-          : !stylesEqual(styleDraft, snapshotAtOpen);
-
-    const imageDirty =
-      (pendingImage?.file || pendingImage?.remove) !==
-        (snapshotPendingImage?.file || snapshotPendingImage?.remove) ||
-      (pendingImage?.previewUrl ?? null) !== (snapshotPendingImage?.previewUrl ?? null) ||
-      (pendingImage?.remove && snapshotImageUrl);
-
-    return styleDirty || imageDirty;
-  }, [snapshotAtOpen, styleDraft, pendingImage, snapshotPendingImage, snapshotImageUrl]);
+  const markTouched = useCallback(() => {
+    setTouchedSinceOpen(true);
+  }, []);
 
   const updateDraft = useCallback(
     (next) => {
@@ -126,8 +102,9 @@ export function useProfileHeaderSurfaceEditor({
       const base = deepCloneStyle(workingStyle);
       fn(base);
       updateDraft(base);
+      markTouched();
     },
-    [workingStyle, updateDraft],
+    [workingStyle, updateDraft, markTouched],
   );
 
   const revokePreviewUrl = useCallback((entry) => {
@@ -172,21 +149,27 @@ export function useProfileHeaderSurfaceEditor({
     if (fileInputRef.current) fileInputRef.current.value = "";
   }, [patchWorking, revokePreviewUrl]);
 
+  const deleteSurfaceImage = useCallback(async () => {
+    if (variant === "player") {
+      await api.delete(`${import.meta.env.VITE_PROFILE}/player/header-surface-image`);
+    } else {
+      await api.delete(`${import.meta.env.VITE_CREATORS_V3}/${creatorId}/header-surface-image`);
+    }
+    onApplied?.({
+      profileHeaderSurfaceImageId: null,
+      profileHeaderSurfaceImageUrl: null,
+    });
+  }, [variant, creatorId, onApplied]);
+
   const handleSaveStyle = useCallback(async () => {
     if (!canEdit) return false;
     setSaveBusy(true);
     try {
-      if (pendingImage?.remove && surfaceImageUrl) {
-        if (variant === "player") {
-          await api.delete(`${import.meta.env.VITE_PROFILE}/player/header-surface-image`);
-        } else {
-          await api.delete(`${import.meta.env.VITE_CREATORS_V3}/${creatorId}/header-surface-image`);
-        }
-        onApplied?.({
-          profileHeaderSurfaceImageId: null,
-          profileHeaderSurfaceImageUrl: null,
-        });
-      } else if (pendingImage?.file) {
+      const payload = styleDraft === undefined ? workingStyle : styleDraft;
+      const hasImageLayerInPayload =
+        payload != null && stackHasImageLayer(payload.stack);
+
+      if (hasImageLayerInPayload && pendingImage?.file) {
         const form = new FormData();
         form.append("image", pendingImage.file);
         let data;
@@ -209,20 +192,33 @@ export function useProfileHeaderSurfaceEditor({
           profileHeaderSurfaceImageId: data.profileHeaderSurfaceImageId,
           profileHeaderSurfaceImageUrl: data.profileHeaderSurfaceImageUrl,
         });
+      } else if (
+        surfaceImageUrl &&
+        (!hasImageLayerInPayload || pendingImage?.remove)
+      ) {
+        await deleteSurfaceImage();
       }
-
-      const payload = styleDraft === undefined ? workingStyle : styleDraft;
       if (variant === "player") {
         const { data } = await api.patch(`${import.meta.env.VITE_PROFILE}/player/header-surface-style`, {
           style: payload,
         });
-        onApplied?.({ profileHeaderSurfaceStyle: data.profileHeaderSurfaceStyle ?? null });
+        onApplied?.({
+          profileHeaderSurfaceStyle: data.profileHeaderSurfaceStyle ?? null,
+          ...(data.profileHeaderSurfaceImageId === null
+            ? { profileHeaderSurfaceImageId: null, profileHeaderSurfaceImageUrl: null }
+            : {}),
+        });
       } else {
         const { data } = await api.patch(
           `${import.meta.env.VITE_CREATORS_V3}/${creatorId}/header-surface-style`,
           { style: payload },
         );
-        onApplied?.({ profileHeaderSurfaceStyle: data.profileHeaderSurfaceStyle ?? null });
+        onApplied?.({
+          profileHeaderSurfaceStyle: data.profileHeaderSurfaceStyle ?? null,
+          ...(data.profileHeaderSurfaceImageId === null
+            ? { profileHeaderSurfaceImageId: null, profileHeaderSurfaceImageUrl: null }
+            : {}),
+        });
       }
 
       onStyleDraftChange(undefined);
@@ -251,30 +247,44 @@ export function useProfileHeaderSurfaceEditor({
     onStyleDraftChange,
     pendingImage,
     surfaceImageUrl,
+    deleteSurfaceImage,
     revokePreviewUrl,
     t,
   ]);
 
-  const handleResetStyle = useCallback(() => {
-    updateDraft(serverStyle ? deepCloneStyle(serverStyle) : null);
-    setPendingImage((prev) => {
-      revokePreviewUrl(prev);
-      return null;
-    });
-  }, [serverStyle, updateDraft, revokePreviewUrl]);
+  const resetPendingImageToSnapshot = useCallback(
+    (snap) => {
+      setPendingImage((prev) => {
+        revokePreviewUrl(prev);
+        if (!snap) return null;
+        return { ...snap };
+      });
+    },
+    [revokePreviewUrl],
+  );
 
-  const handleClearStyle = useCallback(() => {
-    updateDraft(null);
-    setPendingImage((prev) => {
-      revokePreviewUrl(prev);
-      return surfaceImageUrl ? { file: null, previewUrl: null, remove: true } : null;
-    });
-  }, [updateDraft, revokePreviewUrl, surfaceImageUrl]);
+  const handleResetStyle = useCallback(() => {
+    if (snapshotAtOpen === undefined) {
+      onStyleDraftChange(undefined);
+    } else if (snapshotAtOpen === null) {
+      onStyleDraftChange(null);
+    } else {
+      updateDraft(deepCloneStyle(snapshotAtOpen));
+    }
+    resetPendingImageToSnapshot(snapshotPendingImage);
+    setTouchedSinceOpen(false);
+  }, [
+    snapshotAtOpen,
+    snapshotPendingImage,
+    onStyleDraftChange,
+    updateDraft,
+    resetPendingImageToSnapshot,
+  ]);
 
   const addLayer = useCallback(() => {
     patchWorking((s) => {
       if (countGradientStackEntries(s.stack) >= MAX_PROFILE_HEADER_SURFACE_LAYERS) return;
-      s.stack.push(createEmptyGradientLayer("linear"));
+      s.stack.push(createEmptyGradientLayer("linear", s.stack));
     });
   }, [patchWorking]);
 
@@ -315,18 +325,27 @@ export function useProfileHeaderSurfaceEditor({
 
   const removeLayer = useCallback(
     (stackIndex) => {
+      let removedImageLayer = false;
       patchWorking((s) => {
         const entry = s.stack[stackIndex];
         if (entry?.kind === SURFACE_STACK_KIND_IMAGE) {
           s.stack.splice(stackIndex, 1);
           delete s.image;
+          removedImageLayer = true;
           return;
         }
         if (countGradientStackEntries(s.stack) <= 1 && !stackHasImageLayer(s.stack)) return;
         s.stack.splice(stackIndex, 1);
       });
+      if (removedImageLayer) {
+        setPendingImage((prev) => {
+          revokePreviewUrl(prev);
+          return surfaceImageUrl ? { file: null, previewUrl: null, remove: true } : null;
+        });
+        if (fileInputRef.current) fileInputRef.current.value = "";
+      }
     },
-    [patchWorking],
+    [patchWorking, revokePreviewUrl, surfaceImageUrl],
   );
 
   const patchStackEntry = useCallback(
@@ -351,29 +370,16 @@ export function useProfileHeaderSurfaceEditor({
     [t],
   );
 
-  const resetPendingImageToSnapshot = useCallback(
-    (snap) => {
-      setPendingImage((prev) => {
-        revokePreviewUrl(prev);
-        if (!snap) return null;
-        return { ...snap };
-      });
-    },
-    [revokePreviewUrl],
-  );
-
   return {
     canEdit,
     serverStyle,
     workingStyle,
     workingStack: workingStyle.stack,
-    hasStyleChanges,
-    isDirtySinceOpen,
+    isDirtySinceOpen: touchedSinceOpen,
     patchWorking,
     patchStackEntry,
     handleSaveStyle,
     handleResetStyle,
-    handleClearStyle,
     selectImageFile,
     markImageRemoved,
     addLayer,

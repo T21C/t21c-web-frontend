@@ -141,7 +141,6 @@ export default function ProfileHeaderSurfaceEditorLauncher({
         surfaceImageUrl={surfaceImageUrl}
         onApplied={onApplied}
         profilePreviewProps={mergedPreviewProps}
-        snapshotImageUrl={snapshotImageUrlRef.current}
         snapshotPendingImage={snapshotPendingImageRef.current}
         onPendingImageChange={setPendingImage}
       />

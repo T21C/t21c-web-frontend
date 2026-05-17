@@ -9,6 +9,7 @@ import {
   createEmptyGradientLayer,
 } from "@/utils/profileHeaderSurfaceStyle";
 import { valuesToSelectOptions } from "./profileHeaderSurfaceEditorUtils";
+import ProfileHeaderSurfaceSliderField from "./ProfileHeaderSurfaceSliderField";
 
 export default function ProfileHeaderSurfaceLayerSettings({
   layer,
@@ -44,75 +45,76 @@ export default function ProfileHeaderSurfaceLayerSettings({
 
   return (
     <div className="profile-header-surface-layer-settings">
-      <div className="profile-header-surface-layer-settings__field profile-header-surface-layer-settings__field--select">
-        <CustomSelect
-          inputId={`profile-header-surface-gradient-type-${stackIndex}`}
-          label={t("settings.headerSurface.gradientType")}
-          options={gradientTypeOptions}
-          value={gradientTypeOptions.find((o) => o.value === layer.type) ?? null}
-          onChange={(opt) => {
-            if (!opt?.value) return;
-            patchStackEntry(stackIndex, (entry) => {
-              const stops = entry.stops;
-              const opacity = entry.opacity;
-              const visible = entry.visible;
-              const blendMode = entry.blendMode;
-              const id = entry.id;
-              const label = entry.label;
-              Object.assign(entry, createEmptyGradientLayer(opt.value));
-              entry.id = id;
-              entry.stops = stops;
-              entry.opacity = opacity;
-              entry.visible = visible;
-              if (blendMode) entry.blendMode = blendMode;
-              if (label) entry.label = label;
-            });
-          }}
-          width="100%"
-        />
-      </div>
-
-      <div className="profile-header-surface-layer-settings__field profile-header-surface-layer-settings__field--select">
-        <CustomSelect
-          inputId={`profile-header-surface-gradient-blend-${stackIndex}`}
-          label={t("settings.headerSurface.blendMode")}
-          options={blendModeOptions}
-          value={blendModeOptions.find((o) => o.value === (layer.blendMode ?? "normal")) ?? null}
-          onChange={(opt) => {
-            if (!opt?.value) return;
-            patchStackEntry(stackIndex, (entry) => {
-              if (opt.value === "normal") {
-                delete entry.blendMode;
-              } else {
-                entry.blendMode = opt.value;
-              }
-            });
-          }}
-          width="100%"
-        />
+      <div className="profile-header-surface-layer-settings__field-row profile-header-surface-layer-settings__field-row--select-pair">
+        <div className="profile-header-surface-layer-settings__field profile-header-surface-layer-settings__field--select">
+          <CustomSelect
+            inputId={`profile-header-surface-gradient-type-${stackIndex}`}
+            label={t("settings.headerSurface.gradientType")}
+            direction="auto"
+            options={gradientTypeOptions}
+            value={gradientTypeOptions.find((o) => o.value === layer.type) ?? null}
+            onChange={(opt) => {
+              if (!opt?.value) return;
+              patchStackEntry(stackIndex, (entry) => {
+                const stops = entry.stops;
+                const opacity = entry.opacity;
+                const visible = entry.visible;
+                const blendMode = entry.blendMode;
+                const id = entry.id;
+                const label = entry.label;
+                Object.assign(entry, createEmptyGradientLayer(opt.value));
+                entry.id = id;
+                entry.stops = stops;
+                entry.opacity = opacity;
+                entry.visible = visible;
+                if (blendMode) entry.blendMode = blendMode;
+                if (label) entry.label = label;
+              });
+            }}
+            width="100%"
+          />
+        </div>
+        <div className="profile-header-surface-layer-settings__field profile-header-surface-layer-settings__field--select">
+          <CustomSelect
+            inputId={`profile-header-surface-gradient-blend-${stackIndex}`}
+            label={t("settings.headerSurface.blendMode")}
+            direction="auto"
+            options={blendModeOptions}
+            value={blendModeOptions.find((o) => o.value === (layer.blendMode ?? "normal")) ?? null}
+            onChange={(opt) => {
+              if (!opt?.value) return;
+              patchStackEntry(stackIndex, (entry) => {
+                if (opt.value === "normal") {
+                  delete entry.blendMode;
+                } else {
+                  entry.blendMode = opt.value;
+                }
+              });
+            }}
+            width="100%"
+          />
+        </div>
       </div>
 
       {(layer.type === "linear" ||
         layer.type === "repeating-linear" ||
         layer.type === "conic" ||
         layer.type === "repeating-conic") && (
-        <label className="profile-header-surface-layer-settings__field">
-          <span>{t("settings.headerSurface.angle")}</span>
-          <input
-            type="range"
-            min={0}
-            max={360}
-            value={layer.angleDeg ?? 0}
-            onChange={(ev) =>
-                patchStackEntry(stackIndex, (entry) => {
-                entry.angleDeg = Number(ev.target.value);
-              })
-            }
-          />
-          <span className="profile-header-surface-layer-settings__field-value">
-            {layer.angleDeg ?? 0}°
-          </span>
-        </label>
+        <ProfileHeaderSurfaceSliderField
+          className="profile-header-surface-layer-settings__field"
+          label={t("settings.headerSurface.angle")}
+          value={layer.angleDeg ?? 0}
+          sliderMin={0}
+          sliderMax={360}
+          inputMin={0}
+          inputMax={360}
+          suffix="°"
+          onChange={(n) =>
+            patchStackEntry(stackIndex, (entry) => {
+              entry.angleDeg = n;
+            })
+          }
+        />
       )}
 
       {(layer.type === "radial" ||
@@ -120,40 +122,42 @@ export default function ProfileHeaderSurfaceLayerSettings({
         layer.type === "conic" ||
         layer.type === "repeating-conic") && (
         <div className="profile-header-surface-layer-settings__field-row">
-          <label className="profile-header-surface-layer-settings__field">
-            <span>{t("settings.headerSurface.centerX")}</span>
-            <input
-              type="range"
-              min={0}
-              max={100}
-              value={layer.position?.xPercent ?? 50}
-              onChange={(ev) =>
-                patchStackEntry(stackIndex, (entry) => {
-                  entry.position = {
-                    ...(entry.position ?? { xPercent: 50, yPercent: 50 }),
-                    xPercent: Number(ev.target.value),
-                  };
-                })
-              }
-            />
-          </label>
-          <label className="profile-header-surface-layer-settings__field">
-            <span>{t("settings.headerSurface.centerY")}</span>
-            <input
-              type="range"
-              min={0}
-              max={100}
-              value={layer.position?.yPercent ?? 50}
-              onChange={(ev) =>
-                patchStackEntry(stackIndex, (entry) => {
-                  entry.position = {
-                    ...(entry.position ?? { xPercent: 50, yPercent: 50 }),
-                    yPercent: Number(ev.target.value),
-                  };
-                })
-              }
-            />
-          </label>
+          <ProfileHeaderSurfaceSliderField
+            className="profile-header-surface-layer-settings__field"
+            label={t("settings.headerSurface.centerX")}
+            value={layer.position?.xPercent ?? 50}
+            sliderMin={0}
+            sliderMax={100}
+            inputMin={0}
+            inputMax={100}
+            suffix="%"
+            onChange={(n) =>
+              patchStackEntry(stackIndex, (entry) => {
+                entry.position = {
+                  ...(entry.position ?? { xPercent: 50, yPercent: 50 }),
+                  xPercent: n,
+                };
+              })
+            }
+          />
+          <ProfileHeaderSurfaceSliderField
+            className="profile-header-surface-layer-settings__field"
+            label={t("settings.headerSurface.centerY")}
+            value={layer.position?.yPercent ?? 50}
+            sliderMin={0}
+            sliderMax={100}
+            inputMin={0}
+            inputMax={100}
+            suffix="%"
+            onChange={(n) =>
+              patchStackEntry(stackIndex, (entry) => {
+                entry.position = {
+                  ...(entry.position ?? { xPercent: 50, yPercent: 50 }),
+                  yPercent: n,
+                };
+              })
+            }
+          />
         </div>
       )}
 
@@ -163,6 +167,7 @@ export default function ProfileHeaderSurfaceLayerSettings({
             <CustomSelect
               inputId={`profile-header-surface-radial-shape-${stackIndex}`}
               label={t("settings.headerSurface.radialShape")}
+              direction="auto"
               options={radialShapeOptions}
               value={radialShapeOptions.find((o) => o.value === (layer.shape ?? "ellipse")) ?? null}
               onChange={(opt) => {
@@ -178,6 +183,7 @@ export default function ProfileHeaderSurfaceLayerSettings({
             <CustomSelect
               inputId={`profile-header-surface-radial-size-${stackIndex}`}
               label={t("settings.headerSurface.radialSize")}
+              direction="auto"
               options={radialSizeOptions}
               value={radialSizeOptions.find((o) => o.value === (layer.size ?? "")) ?? radialSizeOptions[0]}
               onChange={(opt) => {
@@ -223,21 +229,21 @@ export default function ProfileHeaderSurfaceLayerSettings({
               }
               aria-label={t("settings.headerSurface.stopColor")}
             />
-            <input
-              type="range"
-              min={0}
-              max={100}
+            <ProfileHeaderSurfaceSliderField
+              variant="inline"
+              aria-label={t("settings.headerSurface.stopOffset")}
               value={stop.offsetPercent}
-              onChange={(ev) =>
+              sliderMin={0}
+              sliderMax={100}
+              inputMin={0}
+              inputMax={100}
+              suffix="%"
+              onChange={(n) =>
                 patchStackEntry(stackIndex, (entry) => {
-                  entry.stops[stopIndex].offsetPercent = Number(ev.target.value);
+                  entry.stops[stopIndex].offsetPercent = n;
                 })
               }
-              aria-label={t("settings.headerSurface.stopOffset")}
             />
-            <span className="profile-header-surface-layer-settings__field-value">
-              {stop.offsetPercent}%
-            </span>
             <button
               type="button"
               className="profile-header-surface-layer-settings__icon-btn profile-header-surface-layer-settings__icon-btn--danger"
@@ -257,4 +263,3 @@ export default function ProfileHeaderSurfaceLayerSettings({
     </div>
   );
 }
-

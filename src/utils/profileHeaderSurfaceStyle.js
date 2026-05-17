@@ -58,6 +58,20 @@ export const RADIAL_SIZES = [
 
 export const IMAGE_SIZE_PRESETS = ["cover", "contain", "auto"];
 export const IMAGE_REPEAT = ["no-repeat", "repeat", "repeat-x", "repeat-y", "space", "round"];
+
+export const IMAGE_DIMENSION_PERCENT_MIN = 0;
+export const IMAGE_DIMENSION_PERCENT_MAX = 300;
+export const IMAGE_REPEAT_TILE = IMAGE_REPEAT.filter((r) => r !== "no-repeat");
+
+export const IMAGE_POSITION_PERCENT_MIN = -100;
+export const IMAGE_POSITION_PERCENT_MAX = 200;
+export const IMAGE_POSITION_PIXEL_MIN = -1000;
+export const IMAGE_POSITION_PIXEL_MAX = 1000;
+export const IMAGE_POSITION_UNITS = ["percent", "pixel"];
+
+export function isImageTilingEnabled(repeat) {
+  return repeat !== "no-repeat";
+}
 export const BLEND_MODES = [
   "normal",
   "multiply",
@@ -145,18 +159,125 @@ function parsePercent(raw) {
   return round1(clamp(n, 0, 100));
 }
 
+function parsePositionPercent(raw) {
+  const n = Number(raw);
+  if (!Number.isFinite(n)) return null;
+  return round1(n);
+}
+
 function parseAngle(raw) {
   const n = Number(raw);
   if (!Number.isFinite(n)) return 0;
   return round1(((n % 360) + 360) % 360);
 }
 
-function parsePosition(raw) {
+function parseGradientPosition(raw) {
   if (!raw || typeof raw !== "object") return null;
-  const x = parsePercent(raw.xPercent);
-  const y = parsePercent(raw.yPercent);
+  const x = parsePositionPercent(raw.xPercent);
+  const y = parsePositionPercent(raw.yPercent);
   if (x === null || y === null) return null;
   return { xPercent: x, yPercent: y };
+}
+
+function parseImagePositionPixel(raw) {
+  const n = Number(raw);
+  if (!Number.isFinite(n)) return null;
+  return Math.round(n);
+}
+
+function parseImagePosition(raw) {
+  if (!raw || typeof raw !== "object") return null;
+  const unit = raw.unit === "pixel" ? "pixel" : "percent";
+  if (unit === "pixel") {
+    const x = parseImagePositionPixel(raw.x ?? raw.xPx);
+    const y = parseImagePositionPixel(raw.y ?? raw.yPx);
+    if (x === null || y === null) return null;
+    return { unit: "pixel", x, y };
+  }
+  const x = parsePositionPercent(raw.x ?? raw.xPercent);
+  const y = parsePositionPercent(raw.y ?? raw.yPercent);
+  if (x === null || y === null) return null;
+  return { unit: "percent", x, y };
+}
+
+/** Read image position for UI (supports legacy `{ xPercent, yPercent }`). */
+export function normalizeImagePosition(raw) {
+  if (!raw || typeof raw !== "object") {
+    return { unit: "percent", x: 50, y: 50 };
+  }
+  if (raw.unit === "pixel" || raw.xPx != null || raw.yPx != null) {
+    const parsed = parseImagePosition({ unit: "pixel", x: raw.x ?? raw.xPx, y: raw.y ?? raw.yPx });
+    return parsed ?? { unit: "pixel", x: 0, y: 0 };
+  }
+  const parsed = parseImagePosition({
+    unit: "percent",
+    x: raw.x ?? raw.xPercent,
+    y: raw.y ?? raw.yPercent,
+  });
+  return parsed ?? { unit: "percent", x: 50, y: 50 };
+}
+
+export function defaultImagePositionForUnit(unit) {
+  return unit === "pixel" ? { unit: "pixel", x: 0, y: 0 } : { unit: "percent", x: 50, y: 50 };
+}
+
+/** Resolve object-fit / background-size keyword (`cover` | `contain` | `auto`). */
+export function normalizeImageSizeFit(raw) {
+  if (typeof raw === "string" && IMAGE_SIZE_PRESETS.includes(raw)) return raw;
+  return "cover";
+}
+
+/** @deprecated Use normalizeImageSizeFit */
+export function normalizeImageSize(size) {
+  return normalizeImageSizeFit(size);
+}
+
+const DEFAULT_IMAGE_SIZE_DIMENSIONS = { widthPercent: 100, heightPercent: 100 };
+
+function parseImageDimensionPercent(raw) {
+  const n = Number(raw);
+  if (!Number.isFinite(n)) return null;
+  return round1(n);
+}
+
+function parseImageSizeDimensions(raw) {
+  if (!raw || typeof raw !== "object") return { ...DEFAULT_IMAGE_SIZE_DIMENSIONS };
+  const w = parseImageDimensionPercent(raw.widthPercent);
+  const h = parseImageDimensionPercent(raw.heightPercent);
+  return {
+    widthPercent: w ?? DEFAULT_IMAGE_SIZE_DIMENSIONS.widthPercent,
+    heightPercent: h ?? DEFAULT_IMAGE_SIZE_DIMENSIONS.heightPercent,
+  };
+}
+
+/** Read manual background size % for UI. */
+export function getImageSizeDimensions(settings) {
+  if (!settings || typeof settings !== "object") return { ...DEFAULT_IMAGE_SIZE_DIMENSIONS };
+  if (settings.sizeDimensions && typeof settings.sizeDimensions === "object") {
+    return parseImageSizeDimensions(settings.sizeDimensions);
+  }
+  if (settings.size && typeof settings.size === "object") {
+    return parseImageSizeDimensions(settings.size);
+  }
+  return { ...DEFAULT_IMAGE_SIZE_DIMENSIONS };
+}
+
+export function imageSizeDimensionsFromValues(sizeX, sizeY) {
+  return { widthPercent: sizeX, heightPercent: sizeY };
+}
+
+function parseImageSizeFit(raw, legacySize) {
+  if (typeof raw === "string" && IMAGE_SIZE_PRESETS.includes(raw)) return raw;
+  if (typeof legacySize === "string" && IMAGE_SIZE_PRESETS.includes(legacySize)) return legacySize;
+  return "cover";
+}
+
+function formatImageBackgroundPosition(position) {
+  const pos = normalizeImagePosition(position);
+  if (pos.unit === "pixel") {
+    return `${pos.x}px ${pos.y}px`;
+  }
+  return `${pos.x}% ${pos.y}%`;
 }
 
 function parseStops(raw) {
@@ -190,7 +311,7 @@ function parseGradientLayerFields(raw) {
   }
 
   if (type === "radial" || type === "repeating-radial" || type === "conic" || type === "repeating-conic") {
-    layer.position = parsePosition(raw.position) ?? { xPercent: 50, yPercent: 50 };
+    layer.position = parseGradientPosition(raw.position) ?? { xPercent: 50, yPercent: 50 };
   }
 
   if (type === "radial" || type === "repeating-radial") {
@@ -211,23 +332,20 @@ function parseGradientLayerFields(raw) {
   return layer;
 }
 
-function parseImageSize(raw) {
-  if (typeof raw === "string" && IMAGE_SIZE_PRESETS.includes(raw)) return raw;
-  if (!raw || typeof raw !== "object") return null;
-  const w = parsePercent(raw.widthPercent);
-  const h = parsePercent(raw.heightPercent);
-  if (w === null || h === null) return null;
-  return { widthPercent: w, heightPercent: h };
-}
-
 function parseImageSettings(raw) {
   if (!raw || typeof raw !== "object") return null;
-  const size = parseImageSize(raw.size);
-  const position = parsePosition(raw.position);
-  if (!size || !position) return null;
+  const sizeFit = parseImageSizeFit(raw.sizeFit, raw.size);
+  const sizeDimensions = parseImageSizeDimensions(
+    raw.sizeDimensions ?? (typeof raw.size === "object" ? raw.size : undefined),
+  );
+  const position = parseImagePosition(raw.position);
+  if (!position) return null;
   if (!IMAGE_REPEAT.includes(raw.repeat)) return null;
 
-  const image = { size, position, repeat: raw.repeat };
+  const image = { sizeFit, sizeDimensions, position, repeat: raw.repeat };
+  if (raw.sizeDimensionsLinked === true) {
+    image.sizeDimensionsLinked = true;
+  }
   if (typeof raw.blendMode === "string" && BLEND_MODES.includes(raw.blendMode) && raw.blendMode !== "normal") {
     image.blendMode = raw.blendMode;
   }
@@ -307,8 +425,7 @@ export function parseProfileHeaderSurfaceStyle(input) {
     image = parseImageSettings(input.image);
     if (!image) return null;
   } else if (input.image != null) {
-    image = parseImageSettings(input.image);
-    if (!image) return null;
+    return null;
   }
 
   return {
@@ -335,9 +452,10 @@ function formatStops(stops) {
   return stops.map((s) => `${s.color} ${s.offsetPercent}%`).join(", ");
 }
 
-export function buildGradientLayerCss(layer) {
+export function buildGradientLayerCss(layer, options = {}) {
   const stops = formatStops(layer.stops);
   const { type } = layer;
+  const ignorePosition = options.ignorePosition === true;
 
   if (type === "linear") {
     return `linear-gradient(${layer.angleDeg ?? 0}deg, ${stops})`;
@@ -346,7 +464,9 @@ export function buildGradientLayerCss(layer) {
     return `repeating-linear-gradient(${layer.angleDeg ?? 0}deg, ${stops})`;
   }
 
-  const pos = layer.position ?? { xPercent: 50, yPercent: 50 };
+  const pos = ignorePosition
+    ? { xPercent: 50, yPercent: 50 }
+    : (layer.position ?? { xPercent: 50, yPercent: 50 });
   const at = `${pos.xPercent}% ${pos.yPercent}%`;
 
   if (type === "radial" || type === "repeating-radial") {
@@ -365,20 +485,31 @@ function escapeCssUrl(url) {
   return url.replace(/"/g, "%22").replace(/\)/g, "%29");
 }
 
-function formatImageSize(size) {
-  if (typeof size === "string") return size;
-  return `${size.widthPercent}% ${size.heightPercent}%`;
+function formatImageBackgroundSize(settings) {
+  const fit = normalizeImageSizeFit(settings.sizeFit ?? settings.size);
+  const { widthPercent, heightPercent } = getImageSizeDimensions(settings);
+  const isDefaultDims =
+    widthPercent === DEFAULT_IMAGE_SIZE_DIMENSIONS.widthPercent &&
+    heightPercent === DEFAULT_IMAGE_SIZE_DIMENSIONS.heightPercent;
+  if (isDefaultDims) return fit;
+  if (settings.sizeDimensionsLinked === true) {
+    return `${widthPercent}%`;
+  }
+  return `${widthPercent}% ${heightPercent}%`;
 }
 
-export function buildImageLayerDomStyle(imageUrl, settings) {
+export function buildImageLayerDomStyle(imageUrl, settings, options = {}) {
   const safeUrl = escapeCssUrl(imageUrl);
-  const position = `${settings.position.xPercent}% ${settings.position.yPercent}%`;
   const style = {
     backgroundImage: `url("${safeUrl}")`,
-    backgroundPosition: position,
-    backgroundSize: formatImageSize(settings.size),
+    backgroundSize: formatImageBackgroundSize(settings),
     backgroundRepeat: settings.repeat,
   };
+  if (options.ignorePosition === true) {
+    style.backgroundPosition = "center center";
+  } else {
+    style.backgroundPosition = formatImageBackgroundPosition(settings.position);
+  }
   if (settings.blendMode && settings.blendMode !== "normal") {
     style.mixBlendMode = settings.blendMode;
   }
@@ -424,6 +555,48 @@ export function buildSurfaceStackRenderLayers(style, imageUrl) {
     .filter(Boolean);
 }
 
+const DEFAULT_LAYER_LABEL_RE = /^Layer\s+(\d+)$/i;
+
+/** Next unused default gradient label: "Layer 1", "Layer 2", … */
+export function getNextDefaultLayerLabel(stack) {
+  const used = new Set();
+  if (Array.isArray(stack)) {
+    for (const entry of stack) {
+      if (entry?.kind !== SURFACE_STACK_KIND_GRADIENT) continue;
+      const label = entry?.label?.trim();
+      if (!label) continue;
+      const match = label.match(DEFAULT_LAYER_LABEL_RE);
+      if (match) used.add(Number(match[1]));
+    }
+  }
+  let n = 1;
+  while (used.has(n)) n += 1;
+  return `Layer ${n}`;
+}
+
+const DEFAULT_GRADIENT_LAYER_STOPS = [
+  { color: "#291148", offsetPercent: 0 },
+  { color: "#971993", offsetPercent: 100 },
+];
+
+/** Shared default gradient fields for new layers and the initial editor style. */
+function createDefaultGradientLayerFields(type = "linear") {
+  const fields = {
+    type,
+    angleDeg: 135,
+    opacity: 1,
+    visible: true,
+    stops: DEFAULT_GRADIENT_LAYER_STOPS.map((stop) => ({ ...stop })),
+  };
+  if (type === "radial" || type === "repeating-radial" || type === "conic" || type === "repeating-conic") {
+    fields.position = { xPercent: 50, yPercent: 50 };
+  }
+  if (type === "radial" || type === "repeating-radial") {
+    fields.shape = "ellipse";
+  }
+  return fields;
+}
+
 export function createDefaultProfileHeaderSurfaceStyle() {
   return {
     version: PROFILE_HEADER_SURFACE_STYLE_VERSION,
@@ -431,34 +604,23 @@ export function createDefaultProfileHeaderSurfaceStyle() {
       {
         id: createStackEntryId(),
         kind: SURFACE_STACK_KIND_GRADIENT,
-        type: "linear",
-        angleDeg: 135,
-        opacity: 1,
-        visible: true,
-        stops: [
-          { color: "#3d1f5c", offsetPercent: 0 },
-          { color: "#5c2040", offsetPercent: 100 },
-        ],
+        label: "Layer 1",
+        ...createDefaultGradientLayerFields("linear"),
       },
     ],
   };
 }
 
-export function createEmptyGradientLayer(type = "linear") {
-  return {
+export function createEmptyGradientLayer(type = "linear", stackForLabel) {
+  const layer = {
     id: createStackEntryId(),
     kind: SURFACE_STACK_KIND_GRADIENT,
-    type,
-    angleDeg: 135,
-    position: { xPercent: 50, yPercent: 50 },
-    shape: "ellipse",
-    opacity: 1,
-    visible: true,
-    stops: [
-      { color: "#4a2d6e", offsetPercent: 0 },
-      { color: "#2a1a3d", offsetPercent: 100 },
-    ],
+    ...createDefaultGradientLayerFields(type),
   };
+  if (Array.isArray(stackForLabel)) {
+    layer.label = getNextDefaultLayerLabel(stackForLabel);
+  }
+  return layer;
 }
 
 export function createImageStackEntry() {
@@ -472,8 +634,9 @@ export function createImageStackEntry() {
 
 export function createDefaultImageSettings() {
   return {
-    size: "cover",
-    position: { xPercent: 50, yPercent: 50 },
+    sizeFit: "cover",
+    sizeDimensions: { ...DEFAULT_IMAGE_SIZE_DIMENSIONS },
+    position: { unit: "percent", x: 50, y: 50 },
     repeat: "no-repeat",
   };
 }

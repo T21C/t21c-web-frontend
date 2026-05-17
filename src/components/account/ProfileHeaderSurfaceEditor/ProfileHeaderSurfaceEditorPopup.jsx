@@ -31,7 +31,6 @@ export default function ProfileHeaderSurfaceEditorPopup({
   surfaceImageUrl,
   onApplied,
   profilePreviewProps,
-  snapshotImageUrl = null,
   snapshotPendingImage = null,
   onPendingImageChange,
 }) {
@@ -49,8 +48,8 @@ export default function ProfileHeaderSurfaceEditorPopup({
     onStyleDraftChange,
     surfaceImageUrl,
     onApplied,
+    isOpen,
     snapshotAtOpen,
-    snapshotImageUrl,
     snapshotPendingImage,
   });
 
@@ -69,11 +68,9 @@ export default function ProfileHeaderSurfaceEditorPopup({
     saveBusy,
     handleSaveStyle,
     handleResetStyle,
-    handleClearStyle,
     selectImageFile,
     markImageRemoved,
     isDirtySinceOpen,
-    hasStyleChanges,
     stackHasImageLayer,
   } = editor;
 
@@ -270,23 +267,15 @@ export default function ProfileHeaderSurfaceEditorPopup({
           <button
             type="button"
             className="btn-fill-secondary"
-            disabled={!hasStyleChanges || saveBusy}
+            disabled={!isDirtySinceOpen || saveBusy}
             onClick={handleResetStyle}
           >
             {t("settings.headerSurface.revertDraft")}
           </button>
           <button
             type="button"
-            className="btn-fill-secondary"
-            disabled={saveBusy}
-            onClick={handleClearStyle}
-          >
-            {t("settings.headerSurface.clearStyle")}
-          </button>
-          <button
-            type="button"
             className="btn-fill-primary"
-            disabled={!hasStyleChanges || saveBusy}
+            disabled={!isDirtySinceOpen || saveBusy}
             onClick={handleSaveAndClose}
           >
             {t("settings.headerSurface.saveStyle")}
