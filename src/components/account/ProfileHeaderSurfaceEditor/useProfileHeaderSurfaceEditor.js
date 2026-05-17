@@ -295,14 +295,19 @@ export function useProfileHeaderSurfaceEditor({
   }, [patchWorking, workingStyle.stack, t]);
 
   const reorderStack = useCallback(
-    (activeId, overId) => {
-      if (!activeId || !overId || activeId === overId) return;
+    (fromIndex, toIndex) => {
+      if (fromIndex === toIndex) return;
       patchWorking((s) => {
-        const from = s.stack.findIndex((e) => e.id === activeId);
-        const to = s.stack.findIndex((e) => e.id === overId);
-        if (from < 0 || to < 0) return;
-        const [item] = s.stack.splice(from, 1);
-        s.stack.splice(to, 0, item);
+        if (
+          fromIndex < 0 ||
+          toIndex < 0 ||
+          fromIndex >= s.stack.length ||
+          toIndex >= s.stack.length
+        ) {
+          return;
+        }
+        const [item] = s.stack.splice(fromIndex, 1);
+        s.stack.splice(toIndex, 0, item);
       });
     },
     [patchWorking],

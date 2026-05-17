@@ -1,24 +1,12 @@
-import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  DndContext,
-  KeyboardSensor,
-  PointerSensor,
-  closestCenter,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import {
-  SortableContext,
-  horizontalListSortingStrategy,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+import { DragDropContext, Droppable } from "@hello-pangea/dnd";
 import {
   MAX_PROFILE_HEADER_SURFACE_LAYERS,
   countGradientStackEntries,
 } from "@/utils/profileHeaderSurfaceStyle";
 import ProfileHeaderSurfaceLayerSortableItem from "./ProfileHeaderSurfaceLayerSortableItem";
+
+const STACK_DROPPABLE_ID = "profile-header-surface-stack";
 
 export default function ProfileHeaderSurfaceLayerList({
   layout = "rail",
@@ -38,17 +26,21 @@ export default function ProfileHeaderSurfaceLayerList({
   const isDrawer = layout === "drawer";
   const gradientCount = countGradientStackEntries(stack);
 
-  const stackIds = useMemo(() => stack.map((e) => e.id), [stack]);
+  const handleDragEnd = (result) => {
+    const { destination, source } = result;
+    if (!destination) return;
+    if (destination.droppableId !== source.droppableId) return;
+    if (destination.index === source.index) return;
+    onReorderStack(source.index, destination.index);
+  };
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
-  );
-
-  const handleDragEnd = (event) => {
-    const { active, over } = event;
-    if (!over || active.id === over.id) return;
-    onReorderStack(active.id, over.id);
+  const itemProps = {
+    stack,
+    previewImageUrl,
+    imageSettings,
+    onSelectStackId,
+    onPatchStackEntry,
+    onRemoveLayer,
   };
 
   return (
@@ -87,34 +79,36 @@ export default function ProfileHeaderSurfaceLayerList({
           </button>
         </div>
       </div>
-      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-        <SortableContext
-          items={stackIds}
-          strategy={isDrawer ? horizontalListSortingStrategy : verticalListSortingStrategy}
-        >
-          <ul
-            className="profile-header-surface-layer-list__items"
-            role="listbox"
-            aria-label={t("settings.headerSurface.drawerLayersAria")}
-          >
-            {stack.map((entry, stackIndex) => (
-              <ProfileHeaderSurfaceLayerSortableItem
-                key={entry.id}
-                entry={entry}
-                stack={stack}
-                stackIndex={stackIndex}
-                selected={selectedStackId === entry.id}
-                isDrawer={isDrawer}
-                previewImageUrl={previewImageUrl}
-                imageSettings={imageSettings}
-                onSelectStackId={onSelectStackId}
-                onPatchStackEntry={onPatchStackEntry}
-                onRemoveLayer={onRemoveLayer}
-              />
-            ))}
-          </ul>
-        </SortableContext>
-      </DndContext>
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <Droppable droppableId={STACK_DROPPABLE_ID} direction="vertical">
+          {(provided, snapshot) => (
+            <div
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+              className={
+                snapshot.isDraggingOver
+                  ? "profile-header-surface-layer-list__items profile-header-surface-layer-list__items--dragging-over"
+                  : "profile-header-surface-layer-list__items"
+              }
+              role="listbox"
+              aria-label={t("settings.headerSurface.drawerLayersAria")}
+            >
+              {stack.map((entry, stackIndex) => (
+                <ProfileHeaderSurfaceLayerSortableItem
+                  key={entry.id}
+                  draggableId={entry.id}
+                  index={stackIndex}
+                  entry={entry}
+                  stackIndex={stackIndex}
+                  selected={selectedStackId === entry.id}
+                  {...itemProps}
+                />
+              ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
     </div>
   );
 }

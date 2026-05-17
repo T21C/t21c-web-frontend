@@ -363,10 +363,24 @@
   flex-direction: row;
   align-items: center;
   gap: 0.35rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .profile-header-surface-popup .profile-header-surface-layer-list__item--dragging {
-  z-index: 2;
+  opacity: 0.95;
+  background: var(--color-bg-secondary, #1a1a1a);
+  border-radius: 6px;
+  box-shadow: 0 8px 24px var(--color-black-t50);
+}
+
+.profile-header-surface-popup [data-rbd-drag-handle-context-id] {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.profile-header-surface-popup .profile-header-surface-layer-list__items--dragging-over {
+  background: var(--color-white-t05);
+  border-radius: 6px;
 }
 
 .profile-header-surface-popup .profile-header-surface-layer-list__item-main {
@@ -377,28 +391,46 @@
   min-width: 0;
 }
 
-.profile-header-surface-popup .profile-header-surface-layer-list__drag-handle {
+.profile-header-surface-popup .profile-header-surface-layer-list__drag-zone {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 1.5rem;
-  min-height: 2.25rem;
-  padding: 0;
+  align-self: stretch;
+  padding: 0.35rem 0.5rem;
+  margin: -0.15rem 0;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   background: transparent;
   color: var(--color-white-t50);
   cursor: grab;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.profile-header-surface-popup .profile-header-surface-layer-list__drag-handle:hover {
+.profile-header-surface-popup .profile-header-surface-layer-list__drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.profile-header-surface-popup .profile-header-surface-layer-list__item--dragging .profile-header-surface-layer-list__drag-zone {
+  cursor: grabbing;
+}
+
+.profile-header-surface-popup .profile-header-surface-layer-list__drag-zone:hover {
   color: var(--color-white-t80);
   background: var(--color-black-t25);
 }
 
-.profile-header-surface-popup .profile-header-surface-layer-list__drag-handle:active {
+.profile-header-surface-popup .profile-header-surface-layer-list__drag-zone:active {
   cursor: grabbing;
+}
+
+.profile-header-surface-popup .profile-header-surface-layer-list__drag-zone:focus-visible {
+  outline: 2px solid var(--btn-primary-light-hover);
+  outline-offset: 2px;
 }
 
 .profile-header-surface-popup .profile-header-surface-layer-list__item-main .profile-header-surface-layer-list__chip {
@@ -426,10 +458,20 @@
 
 .profile-header-surface-popup .profile-header-surface-layer-list__chip-label[role="button"] {
   cursor: text;
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .profile-header-surface-popup .profile-header-surface-layer-list__chip-label[role="button"]:hover {
   text-decoration: underline;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .profile-header-surface-popup .profile-header-surface-layer-list__chip-label[role="button"]:hover {
+    text-decoration: none;
+  }
 }
 
 .profile-header-surface-popup .profile-header-surface-layer-opacity {
@@ -625,16 +667,15 @@
   .profile-header-surface-popup__drawer {
     display: block;
     position: fixed;
-    right: 0;
     top: var(--navbar-height, 4rem);
     bottom: 0;
     z-index: 1110;
-    transform: translateX(calc(100% - var(--layer-sidebar-width)));
-    transition: transform 0.25s ease;
+    right: calc(-1 * min(18rem, 85vw) + var(--layer-sidebar-width, 1rem));
+    transition: right 0.25s ease;
   }
 
   .profile-header-surface-popup__drawer.profile-header-surface-popup__drawer--open {
-    transform: translateX(0);
+    right: 0;
   }
 
   .profile-header-surface-popup__drawer-toggle {
@@ -669,6 +710,8 @@
   }
 
   .profile-header-surface-popup__drawer-panel {
+    display: flex;
+    flex-direction: column;
     height: 100%;
     width: min(18rem, 85vw);
     padding: 0.75rem;
@@ -677,21 +720,18 @@
     overflow: hidden;
   }
 
+  .profile-header-surface-popup .profile-header-surface-layer-list--drawer {
+    flex: 1;
+    min-height: 0;
+  }
+
   .profile-header-surface-popup .profile-header-surface-layer-list--drawer .profile-header-surface-layer-list__items {
-    flex-direction: row;
-    overflow-x: auto;
+    flex: 1;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     padding-bottom: 0.25rem;
-  }
-
-  .profile-header-surface-popup .profile-header-surface-layer-list--drawer .profile-header-surface-layer-list__item {
-    flex-shrink: 0;
-    min-width: 12rem;
-  }
-
-  .profile-header-surface-popup .profile-header-surface-layer-list--drawer .profile-header-surface-layer-list__chip {
-    width: auto;
-    min-width: 0;
-    flex-shrink: 1;
   }
 
   .profile-header-surface-popup .profile-header-surface-layer-list--drawer .profile-header-surface-layer-list__head-actions {
