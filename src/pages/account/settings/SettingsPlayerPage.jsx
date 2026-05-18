@@ -1,6 +1,6 @@
 // tuf-search: #SettingsPlayerPage #settingsPlayerPage #account #settings
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";
 import { useAuth } from "@/contexts/AuthContext";
@@ -20,7 +20,9 @@ import {
   isTufStellarAccessActive,
   normalizeTufStellarIconVariant,
 } from "@/utils/profileBanners";
-import { ExternalLinkIcon, ChevronIcon, TUFStellarIcon } from "@/components/common/icons";
+import { ExternalLinkIcon, ChevronIcon } from "@/components/common/icons";
+import { SettingsSaveField } from "@/components/account/SettingsSaveField/SettingsSaveField";
+import { SettingsStellarIconField } from "@/components/account/SettingsSaveField/SettingsStellarIconField";
 import { useSettings } from "@/contexts/SettingsContext";
 import { buildPlayerStatGroups } from "@/utils/profileStatGroups";
 import { buildPlayerIconSlots } from "@/utils/profileIconSlots";
@@ -51,6 +53,7 @@ const SettingsPlayerPage = () => {
   const [bannerPresetDraft, setBannerPresetDraft] = useState(undefined);
   /** `undefined` = server; object/null = draft surface style */
   const [headerSurfaceStyleDraft, setHeaderSurfaceStyleDraft] = useState(undefined);
+  const [stellarVariantDraft, setStellarVariantDraft] = useState(null);
   const [stellarVariantSaving, setStellarVariantSaving] = useState(false);
 
   const fetchProfile = useCallback(async (options = {}) => {
@@ -88,6 +91,7 @@ const SettingsPlayerPage = () => {
   useEffect(() => {
     setBannerPresetDraft(undefined);
     setHeaderSurfaceStyleDraft(undefined);
+    setStellarVariantDraft(null);
   }, [playerId]);
 
   useEffect(() => {
@@ -166,6 +170,35 @@ const SettingsPlayerPage = () => {
     });
   }, [playerData, user?.permissionFlags, bannerPresetDraft]);
 
+  const savedStellarVariant = useMemo(
+    () => normalizeTufStellarIconVariant(playerData?.tufStellarIconVariant),
+    [playerData?.tufStellarIconVariant],
+  );
+
+  const previewStellarVariant = stellarVariantDraft ?? savedStellarVariant;
+  const stellarVariantMatchesSaved = previewStellarVariant === savedStellarVariant;
+
+  const previewDisplayName = useMemo(() => {
+    const draft = nicknameDraft.trim();
+    if (draft.length) return draft;
+    const savedNick = playerData?.user?.nickname;
+    if (typeof savedNick === "string" && savedNick.trim()) return savedNick.trim();
+    return playerData?.name || t("profile.meta.defaultTitle");
+  }, [nicknameDraft, playerData?.user?.nickname, playerData?.name, t]);
+
+  const nicknameMatchesSaved = useMemo(() => {
+    const savedNick =
+      typeof playerData?.user?.nickname === "string"
+        ? playerData.user.nickname.trim()
+        : String(playerData?.name ?? "").trim();
+    return nicknameDraft.trim() === savedNick;
+  }, [nicknameDraft, playerData?.user?.nickname, playerData?.name]);
+
+  const bioMatchesSaved = useMemo(() => {
+    const saved = playerData?.bio == null ? "" : String(playerData.bio);
+    return bioDraft.trim() === saved.trim();
+  }, [playerData?.bio, bioDraft]);
+
   const settingsHeaderSurface = useMemo(() => {
     if (!playerData) return { style: null, imageAssets: {} };
     const styleForSurface =
@@ -204,30 +237,27 @@ const SettingsPlayerPage = () => {
     }
   }, [nicknameDraft, playerData?.country, fetchUser, fetchProfile, t]);
 
-  const handleSaveStellarVariant = useCallback(
-    async (variant) => {
-      if (playerId == null || !Number.isFinite(playerId)) return;
-      const v = String(variant).trim();
-      if (!["1", "2", "3"].includes(v)) return;
-      if (normalizeTufStellarIconVariant(playerData?.tufStellarIconVariant) === v) return;
-      setStellarVariantSaving(true);
-      try {
-        const { data } = await api.patch(
-          `${import.meta.env.VITE_PLAYERS_V3}/me/tuf-stellar-icon-variant`,
-          { variant: v },
-        );
-        const next = normalizeTufStellarIconVariant(data?.tufStellarIconVariant ?? v);
-        setPlayerData((p) => (p && typeof p === "object" ? { ...p, tufStellarIconVariant: next } : p));
-        toast.success(t("settings.player.stellarIconSaved"));
-      } catch (e) {
-        const msg = e?.response?.data?.error || t("settings.player.stellarIconError");
-        toast.error(msg);
-      } finally {
-        setStellarVariantSaving(false);
-      }
-    },
-    [playerId, playerData?.tufStellarIconVariant, t],
-  );
+  const handleSaveStellarVariant = useCallback(async () => {
+    if (playerId == null || !Number.isFinite(playerId)) return;
+    const v = previewStellarVariant;
+    if (!["1", "2", "3"].includes(v) || stellarVariantMatchesSaved) return;
+    setStellarVariantSaving(true);
+    try {
+      const { data } = await api.patch(
+        `${import.meta.env.VITE_PLAYERS_V3}/me/tuf-stellar-icon-variant`,
+        { variant: v },
+      );
+      const next = normalizeTufStellarIconVariant(data?.tufStellarIconVariant ?? v);
+      setPlayerData((p) => (p && typeof p === "object" ? { ...p, tufStellarIconVariant: next } : p));
+      setStellarVariantDraft(null);
+      toast.success(t("settings.player.stellarIconSaved"));
+    } catch (e) {
+      const msg = e?.response?.data?.error || t("settings.player.stellarIconError");
+      toast.error(msg);
+    } finally {
+      setStellarVariantSaving(false);
+    }
+  }, [playerId, previewStellarVariant, stellarVariantMatchesSaved, t]);
 
   const handleSaveBio = useCallback(async () => {
     if (playerId == null || !Number.isFinite(playerId)) return;
@@ -309,8 +339,8 @@ const SettingsPlayerPage = () => {
           playerDifficultyPanelDifficulties={difficulties}
           playerDifficultyPanelClearsByDifficulty={clearsByDifficultyForHeader}
           avatarSubject={playerData}
-          stellarIconVariant={normalizeTufStellarIconVariant(playerData?.tufStellarIconVariant)}
-          name={playerData?.name || t("profile.meta.defaultTitle")}
+          stellarIconVariant={previewStellarVariant}
+          name={previewDisplayName}
           handle={playerData?.user?.username}
           country={playerData?.country}
           badgeId={playerData?.rankedScoreRank}
@@ -391,8 +421,8 @@ const SettingsPlayerPage = () => {
             playerDifficultyPanelDifficulties: difficulties,
             playerDifficultyPanelClearsByDifficulty: clearsByDifficultyForHeader,
             avatarSubject: playerData,
-            stellarIconVariant: normalizeTufStellarIconVariant(playerData?.tufStellarIconVariant),
-            name: playerData?.name || t("profile.meta.defaultTitle"),
+            stellarIconVariant: previewStellarVariant,
+            name: previewDisplayName,
             handle: playerData?.user?.username,
             country: playerData?.country,
             badgeId: playerData?.rankedScoreRank,
@@ -476,125 +506,71 @@ const SettingsPlayerPage = () => {
       </SettingsPreviewSection>
 
       {isTufStellarAccessActive(user) ? (
-        <SettingsPreviewSection
+        <SettingsStellarIconField
           sectionId="stellar"
-          className="settings-sub-page__stellar-variant"
-          aria-labelledby="settings-player-stellar-heading"
-        >
-          <h2 id="settings-player-stellar-heading" className="settings-sub-page__stellar-variant-title">
-            {t("settings.player.stellarIconTitle")}
-          </h2>
-          <p className="settings-sub-page__text">{t("settings.player.stellarIconHint")}</p>
-          <div
-            className="settings-sub-page__stellar-variant-options"
-            role="group"
-            aria-label={t("settings.player.stellarIconGroupAria")}
-          >
-            {["1", "2", "3"].map((id) => {
-              const active = normalizeTufStellarIconVariant(playerData?.tufStellarIconVariant) === id;
-              return (
-                <button
-                  key={id}
-                  type="button"
-                  className={
-                    active
-                      ? "settings-sub-page__stellar-variant-btn settings-sub-page__stellar-variant-btn--active"
-                      : "settings-sub-page__stellar-variant-btn"
-                  }
-                  onClick={() => handleSaveStellarVariant(id)}
-                  disabled={stellarVariantSaving}
-                  aria-pressed={active}
-                  aria-label={t(`settings.player.stellarIconOption${id}`)}
-                >
-                  <TUFStellarIcon size={40} variant={id} />
-                </button>
-              );
-            })}
-          </div>
-        </SettingsPreviewSection>
+          headingId="settings-player-stellar-heading"
+          title={t("settings.player.stellarIconTitle")}
+          hint={t("settings.player.stellarIconHint")}
+          groupAriaLabel={t("settings.player.stellarIconGroupAria")}
+          value={previewStellarVariant}
+          onChange={setStellarVariantDraft}
+          onSave={handleSaveStellarVariant}
+          saving={stellarVariantSaving}
+          matchesSaved={stellarVariantMatchesSaved}
+          getOptionAriaLabel={(id) => t(`settings.player.stellarIconOption${id}`)}
+        />
       ) : null}
 
-      <SettingsPreviewSection
+      <SettingsSaveField
         sectionId="nickname"
-        className="settings-sub-page__block settings-sub-page__field"
+        label={t("settings.player.nicknameLabel")}
+        inputId="settings-player-nickname"
+        onSave={handleSaveNickname}
+        saving={nicknameSaving}
+        matchesSaved={nicknameMatchesSaved}
+        fieldError={nicknameFieldError}
       >
-        <div className="settings-sub-page__field-head">
-          <label htmlFor="settings-player-nickname">{t("settings.player.nicknameLabel")}</label>
-          <SettingsSectionPreviewControls
-            sectionId="nickname"
-            headingId="settings-player-nickname"
-            title={t("settings.player.nicknameLabel")}
-          />
-        </div>
-        <div className="settings-sub-page__control-row">
-          <input
-            id="settings-player-nickname"
-            type="text"
-            autoComplete="off"
-            className="settings-sub-page__input"
-            maxLength={60}
-            placeholder={t("settings.player.nicknamePlaceholder")}
-            value={nicknameDraft}
-            onChange={(ev) => {
-              setNicknameDraft(ev.target.value);
-              if (nicknameFieldError) setNicknameFieldError("");
-            }}
-            disabled={nicknameSaving}
-          />
-          <button
-            type="button"
-            className="settings-sub-page__save-btn"
-            onClick={handleSaveNickname}
-            disabled={nicknameSaving}
-          >
-            {nicknameSaving ? t("buttons.saving", { ns: "common" }) : t("buttons.save", { ns: "common" })}
-          </button>
-        </div>
-        {nicknameFieldError ? (
-          <p className="settings-sub-page__field-error" role="alert">
-            {nicknameFieldError}
-          </p>
-        ) : null}
-      </SettingsPreviewSection>
+        <input
+          id="settings-player-nickname"
+          type="text"
+          autoComplete="off"
+          className="settings-sub-page__input"
+          maxLength={60}
+          placeholder={t("settings.player.nicknamePlaceholder")}
+          value={nicknameDraft}
+          onChange={(ev) => {
+            setNicknameDraft(ev.target.value);
+            if (nicknameFieldError) setNicknameFieldError("");
+          }}
+          disabled={nicknameSaving}
+        />
+      </SettingsSaveField>
 
-      <SettingsPreviewSection sectionId="bio" className="settings-sub-page__block settings-sub-page__field">
-        <div className="settings-sub-page__field-head">
-          <label htmlFor="settings-player-bio">{t("settings.player.bioLabel")}</label>
-          <SettingsSectionPreviewControls
-            sectionId="bio"
-            headingId="settings-player-bio"
-            title={t("settings.player.bioLabel")}
-          />
-        </div>
-        <div className="settings-sub-page__control-row settings-sub-page__control-row--stack">
-          <textarea
-            id="settings-player-bio"
-            className="settings-sub-page__textarea"
-            maxLength={2000}
-            placeholder={t("settings.player.bioPlaceholder")}
-            value={bioDraft}
-            onChange={(ev) => {
-              setBioDraft(ev.target.value);
-              if (bioFieldError) setBioFieldError("");
-            }}
-            disabled={bioSaving}
-            rows={5}
-          />
-          <button
-            type="button"
-            className="settings-sub-page__save-btn"
-            onClick={handleSaveBio}
-            disabled={bioSaving}
-          >
-            {bioSaving ? t("buttons.saving", { ns: "common" }) : t("buttons.save", { ns: "common" })}
-          </button>
-        </div>
-        {bioFieldError ? (
-          <p className="settings-sub-page__field-error" role="alert">
-            {bioFieldError}
-          </p>
-        ) : null}
-      </SettingsPreviewSection>
+      <SettingsSaveField
+        sectionId="bio"
+        label={t("settings.player.bioLabel")}
+        inputId="settings-player-bio"
+        onSave={handleSaveBio}
+        saving={bioSaving}
+        matchesSaved={bioMatchesSaved}
+        fieldError={bioFieldError}
+        stack
+      >
+        <textarea
+          id="settings-player-bio"
+          className="settings-sub-page__textarea"
+          maxLength={2000}
+          placeholder={t("settings.player.bioPlaceholder")}
+          value={bioDraft}
+          onChange={(ev) => {
+            setBioDraft(ev.target.value);
+            if (bioFieldError) setBioFieldError("");
+          }}
+          disabled={bioSaving}
+          rows={5}
+        />
+      </SettingsSaveField>
+
     </div>
   );
 };

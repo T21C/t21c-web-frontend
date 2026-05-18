@@ -22,7 +22,9 @@ import {
   normalizeTufStellarIconVariant,
 } from "@/utils/profileBanners";
 import { CreatorStatusBadge } from "@/components/common/display";
-import { ExternalLinkIcon, ChevronIcon, InfoIcon, TUFStellarIcon } from "@/components/common/icons";
+import { ExternalLinkIcon, ChevronIcon, InfoIcon } from "@/components/common/icons";
+import { SettingsSaveField } from "@/components/account/SettingsSaveField/SettingsSaveField";
+import { SettingsStellarIconField } from "@/components/account/SettingsSaveField/SettingsStellarIconField";
 import { CustomSelect } from "@/components/common/selectors";
 import { useSettings } from "@/contexts/SettingsContext";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
@@ -76,6 +78,7 @@ const SettingsCreatorPage = () => {
   const [verificationFieldError, setVerificationFieldError] = useState("");
   const [bannerPresetDraft, setBannerPresetDraft] = useState(undefined);
   const [headerSurfaceStyleDraft, setHeaderSurfaceStyleDraft] = useState(undefined);
+  const [stellarVariantDraft, setStellarVariantDraft] = useState(null);
   const [stellarVariantSaving, setStellarVariantSaving] = useState(false);
 
   useEffect(() => {
@@ -114,13 +117,30 @@ const SettingsCreatorPage = () => {
   useEffect(() => {
     setBannerPresetDraft(undefined);
     setHeaderSurfaceStyleDraft(undefined);
+    setStellarVariantDraft(null);
   }, [creatorId]);
 
   const creatorDoc = profile?.creator || profile?.doc || profile;
-  const uploadConditionsPreview =
-    typeof uploadConditionsDraft === "string" && uploadConditionsDraft.trim().length > 0
-      ? uploadConditionsDraft.trim()
-      : "";
+  const savedStellarVariant = useMemo(
+    () =>
+      normalizeTufStellarIconVariant(profile?.tufStellarIconVariant ?? creatorDoc?.tufStellarIconVariant),
+    [profile?.tufStellarIconVariant, creatorDoc?.tufStellarIconVariant],
+  );
+
+  const previewStellarVariant = stellarVariantDraft ?? savedStellarVariant;
+  const stellarVariantMatchesSaved = previewStellarVariant === savedStellarVariant;
+
+  const previewDisplayName = useMemo(() => {
+    const draft = displayNameDraft.trim();
+    if (draft.length) return draft;
+    return String(creatorDoc?.name ?? "");
+  }, [displayNameDraft, creatorDoc?.name]);
+
+  const previewVerificationStatus = CREATOR_SELF_VERIFICATION.includes(verificationDraft)
+    ? verificationDraft
+    : "allowed";
+
+  const uploadConditionsPreview = uploadConditionsDraft.trim();
 
   useEffect(() => {
     if (!creatorDoc) return;
@@ -343,30 +363,27 @@ const SettingsCreatorPage = () => {
     }
   }, [aliasList, t]);
 
-  const handleSaveCreatorStellarVariant = useCallback(
-    async (variant) => {
-      if (creatorId == null || !Number.isFinite(creatorId)) return;
-      const v = String(variant).trim();
-      if (!["1", "2", "3"].includes(v)) return;
-      if (normalizeTufStellarIconVariant(creatorDoc?.tufStellarIconVariant) === v) return;
-      setStellarVariantSaving(true);
-      try {
-        const { data } = await api.patch(
-          `${import.meta.env.VITE_CREATORS_V3}/${creatorId}/tuf-stellar-icon-variant`,
-          { variant: v },
-        );
-        const next = normalizeTufStellarIconVariant(data?.tufStellarIconVariant ?? v);
-        setProfile((p) => (p && typeof p === "object" ? { ...p, tufStellarIconVariant: next } : p));
-        toast.success(t("settings.creator.stellarIconSaved"));
-      } catch (e) {
-        const msg = e?.response?.data?.error || t("settings.creator.stellarIconError");
-        toast.error(msg);
-      } finally {
-        setStellarVariantSaving(false);
-      }
-    },
-    [creatorId, creatorDoc?.tufStellarIconVariant, t],
-  );
+  const handleSaveCreatorStellarVariant = useCallback(async () => {
+    if (creatorId == null || !Number.isFinite(creatorId)) return;
+    const v = previewStellarVariant;
+    if (!["1", "2", "3"].includes(v) || stellarVariantMatchesSaved) return;
+    setStellarVariantSaving(true);
+    try {
+      const { data } = await api.patch(
+        `${import.meta.env.VITE_CREATORS_V3}/${creatorId}/tuf-stellar-icon-variant`,
+        { variant: v },
+      );
+      const next = normalizeTufStellarIconVariant(data?.tufStellarIconVariant ?? v);
+      setProfile((p) => (p && typeof p === "object" ? { ...p, tufStellarIconVariant: next } : p));
+      setStellarVariantDraft(null);
+      toast.success(t("settings.creator.stellarIconSaved"));
+    } catch (e) {
+      const msg = e?.response?.data?.error || t("settings.creator.stellarIconError");
+      toast.error(msg);
+    } finally {
+      setStellarVariantSaving(false);
+    }
+  }, [creatorId, previewStellarVariant, stellarVariantMatchesSaved, t]);
 
   const handleSaveBio = useCallback(async () => {
     if (creatorId == null || !Number.isFinite(creatorId)) return;
@@ -546,11 +563,9 @@ const SettingsCreatorPage = () => {
           iconSlots={iconSlots}
           creatorCurationPanelItems={creatorCurationPanelItems}
           avatarSubject={creatorDoc}
-          stellarIconVariant={normalizeTufStellarIconVariant(
-            profile?.tufStellarIconVariant ?? creatorDoc?.tufStellarIconVariant,
-          )}
+          stellarIconVariant={previewStellarVariant}
           nameTooltipId={aliasesTooltipId}
-          name={creatorDoc.name}
+          name={previewDisplayName}
           handle={creatorDoc.user?.username}
           country={creatorDoc.user?.country || creatorDoc.country}
           badgeId={creatorDoc.id}
@@ -559,9 +574,9 @@ const SettingsCreatorPage = () => {
           collapseStatsAriaLabel={t("creators.profile.funFacts.collapseAria")}
           statGroups={statGroups}
           verificationBadge={
-            creatorDoc.verificationStatus ? (
+            previewVerificationStatus ? (
               <span className="settings-sub-page__verification-wrap">
-                <CreatorStatusBadge status={creatorDoc.verificationStatus} size="medium" />
+                <CreatorStatusBadge status={previewVerificationStatus} size="medium" />
                 {uploadConditionsPreview ? (
                   <>
                     <button
@@ -658,11 +673,9 @@ const SettingsCreatorPage = () => {
             iconSlots,
             creatorCurationPanelItems,
             avatarSubject: creatorDoc,
-            stellarIconVariant: normalizeTufStellarIconVariant(
-              profile?.tufStellarIconVariant ?? creatorDoc?.tufStellarIconVariant,
-            ),
+            stellarIconVariant: previewStellarVariant,
             nameTooltipId: aliasesTooltipId,
-            name: creatorDoc.name,
+            name: previewDisplayName,
             handle: creatorDoc.user?.username,
             country: creatorDoc.user?.country || creatorDoc.country,
             badgeId: creatorDoc.id,
@@ -729,90 +742,46 @@ const SettingsCreatorPage = () => {
       </SettingsPreviewSection>
 
       {isTufStellarAccessActive(user) ? (
-        <SettingsPreviewSection
+        <SettingsStellarIconField
           sectionId="stellar"
-          className="settings-sub-page__stellar-variant"
-          aria-labelledby="settings-creator-stellar-heading"
-        >
-          <h2 id="settings-creator-stellar-heading" className="settings-sub-page__stellar-variant-title">
-            {t("settings.creator.stellarIconTitle")}
-          </h2>
-          <p className="settings-sub-page__text">{t("settings.creator.stellarIconHint")}</p>
-          <div
-            className="settings-sub-page__stellar-variant-options"
-            role="group"
-            aria-label={t("settings.creator.stellarIconGroupAria")}
-          >
-            {["1", "2", "3"].map((id) => {
-              const active =
-                normalizeTufStellarIconVariant(
-                  profile?.tufStellarIconVariant ?? creatorDoc?.tufStellarIconVariant,
-                ) === id;
-              return (
-                <button
-                  key={id}
-                  type="button"
-                  className={
-                    active
-                      ? "settings-sub-page__stellar-variant-btn settings-sub-page__stellar-variant-btn--active"
-                      : "settings-sub-page__stellar-variant-btn"
-                  }
-                  onClick={() => handleSaveCreatorStellarVariant(id)}
-                  disabled={stellarVariantSaving}
-                  aria-pressed={active}
-                  aria-label={t(`settings.creator.stellarIconOption${id}`)}
-                >
-                  <TUFStellarIcon size={40} variant={id} />
-                </button>
-              );
-            })}
-          </div>
-        </SettingsPreviewSection>
+          headingId="settings-creator-stellar-heading"
+          title={t("settings.creator.stellarIconTitle")}
+          hint={t("settings.creator.stellarIconHint")}
+          groupAriaLabel={t("settings.creator.stellarIconGroupAria")}
+          value={previewStellarVariant}
+          onChange={setStellarVariantDraft}
+          onSave={handleSaveCreatorStellarVariant}
+          saving={stellarVariantSaving}
+          matchesSaved={stellarVariantMatchesSaved}
+          getOptionAriaLabel={(id) => t(`settings.creator.stellarIconOption${id}`)}
+        />
       ) : null}
 
       {canEditHeaderCurationSlots ? (
-        <SettingsPreviewSection
+        <SettingsSaveField
           sectionId="displayName"
-          className="settings-sub-page__block settings-sub-page__field"
+          label={t("settings.creator.displayNameLabel")}
+          inputId="settings-creator-display-name"
+          onSave={handleSaveCreatorDisplayName}
+          saving={displayNameSaving}
+          matchesSaved={displayNameMatchesSaved}
+          fieldError={displayNameFieldError}
         >
-          <div className="settings-sub-page__field-head">
-            <label htmlFor="settings-creator-display-name">{t("settings.creator.displayNameLabel")}</label>
-            <SettingsSectionPreviewControls
-              sectionId="displayName"
-              headingId="settings-creator-display-name"
-              title={t("settings.creator.displayNameLabel")}
-            />
-          </div>
-          <div className="settings-sub-page__control-row">
-            <input
-              id="settings-creator-display-name"
-              type="text"
-              autoComplete="off"
-              className="settings-sub-page__input"
-              maxLength={100}
-              placeholder={t("settings.creator.displayNamePlaceholder")}
-              value={displayNameDraft}
-              onChange={(ev) => {
-                setDisplayNameDraft(ev.target.value);
-                if (displayNameFieldError) setDisplayNameFieldError("");
-              }}
-              disabled={displayNameSaving}
-            />
-            <button
-              type="button"
-              className="settings-sub-page__save-btn"
-              onClick={handleSaveCreatorDisplayName}
-              disabled={displayNameSaving || displayNameMatchesSaved}
-            >
-              {displayNameSaving ? t("buttons.saving", { ns: "common" }) : t("buttons.save", { ns: "common" })}
-            </button>
-          </div>
-          {displayNameFieldError ? (
-            <p className="settings-sub-page__field-error" role="alert">
-              {displayNameFieldError}
-            </p>
-          ) : null}
-        </SettingsPreviewSection>
+          <input
+            id="settings-creator-display-name"
+            type="text"
+            autoComplete="off"
+            className="settings-sub-page__input"
+            maxLength={100}
+            placeholder={t("settings.creator.displayNamePlaceholder")}
+            value={displayNameDraft}
+            onChange={(ev) => {
+              setDisplayNameDraft(ev.target.value);
+              if (displayNameFieldError) setDisplayNameFieldError("");
+            }}
+            disabled={displayNameSaving}
+          />
+        </SettingsSaveField>
       ) : null}
 
       <SettingsPreviewSection sectionId="curation" className="settings-sub-page__block">
@@ -829,137 +798,85 @@ const SettingsCreatorPage = () => {
       </SettingsPreviewSection>
 
       {canEditHeaderCurationSlots ? (
-        <SettingsPreviewSection sectionId="bio" className="settings-sub-page__block settings-sub-page__field">
-          <div className="settings-sub-page__field-head">
-            <label htmlFor="settings-creator-bio">{t("settings.creator.bioLabel")}</label>
-            <SettingsSectionPreviewControls
-              sectionId="bio"
-              headingId="settings-creator-bio"
-              title={t("settings.creator.bioLabel")}
-            />
-          </div>
-          <div className="settings-sub-page__control-row settings-sub-page__control-row--stack">
-            <textarea
-              id="settings-creator-bio"
-              className="settings-sub-page__textarea"
-              maxLength={2000}
-              placeholder={t("settings.creator.bioPlaceholder")}
-              value={bioDraft}
-              onChange={(ev) => {
-                setBioDraft(ev.target.value);
-                if (bioFieldError) setBioFieldError("");
-              }}
-              disabled={bioSaving}
-              rows={5}
-            />
-            <button
-              type="button"
-              className="settings-sub-page__save-btn"
-              onClick={handleSaveBio}
-              disabled={bioSaving || bioMatchesSaved}
-            >
-              {bioSaving ? t("buttons.saving", { ns: "common" }) : t("buttons.save", { ns: "common" })}
-            </button>
-          </div>
-          {bioFieldError ? (
-            <p className="settings-sub-page__field-error" role="alert">
-              {bioFieldError}
-            </p>
-          ) : null}
-        </SettingsPreviewSection>
+        <SettingsSaveField
+          sectionId="bio"
+          label={t("settings.creator.bioLabel")}
+          inputId="settings-creator-bio"
+          onSave={handleSaveBio}
+          saving={bioSaving}
+          matchesSaved={bioMatchesSaved}
+          fieldError={bioFieldError}
+          stack
+        >
+          <textarea
+            id="settings-creator-bio"
+            className="settings-sub-page__textarea"
+            maxLength={2000}
+            placeholder={t("settings.creator.bioPlaceholder")}
+            value={bioDraft}
+            onChange={(ev) => {
+              setBioDraft(ev.target.value);
+              if (bioFieldError) setBioFieldError("");
+            }}
+            disabled={bioSaving}
+            rows={5}
+          />
+        </SettingsSaveField>
       ) : null}
 
       {canEditHeaderCurationSlots ? (
-        <SettingsPreviewSection
+        <SettingsSaveField
           sectionId="uploadConditions"
-          className="settings-sub-page__block settings-sub-page__field settings-sub-page__creator-upload-conditions"
+          label={t("settings.creator.uploadConditionsLabel")}
+          inputId="settings-creator-upload-conditions"
+          onSave={handleSaveUploadConditions}
+          saving={uploadConditionsSaving}
+          matchesSaved={uploadConditionsMatchSaved}
+          fieldError={uploadConditionsFieldError}
+          stack
+          sectionClassName="settings-sub-page__block settings-sub-page__field settings-sub-page__creator-upload-conditions"
         >
-          <div className="settings-sub-page__field-head">
-            <label htmlFor="settings-creator-upload-conditions">
-              {t("settings.creator.uploadConditionsLabel")}
-            </label>
-            <SettingsSectionPreviewControls
-              sectionId="uploadConditions"
-              headingId="settings-creator-upload-conditions"
-              title={t("settings.creator.uploadConditionsLabel")}
-            />
-          </div>
-          <div className="settings-sub-page__control-row settings-sub-page__control-row--stack">
-            <textarea
-              id="settings-creator-upload-conditions"
-              className="settings-sub-page__textarea"
-              maxLength={2000}
-              placeholder={t("settings.creator.uploadConditionsPlaceholder")}
-              value={uploadConditionsDraft}
-              onChange={(ev) => {
-                setUploadConditionsDraft(ev.target.value);
-                if (uploadConditionsFieldError) setUploadConditionsFieldError("");
-              }}
-              disabled={uploadConditionsSaving}
-              rows={5}
-            />
-            <button
-              type="button"
-              className="settings-sub-page__save-btn"
-              onClick={handleSaveUploadConditions}
-              disabled={uploadConditionsSaving || uploadConditionsMatchSaved}
-            >
-              {uploadConditionsSaving
-                ? t("buttons.saving", { ns: "common" })
-                : t("buttons.save", { ns: "common" })}
-            </button>
-          </div>
-          {uploadConditionsFieldError ? (
-            <p className="settings-sub-page__field-error" role="alert">
-              {uploadConditionsFieldError}
-            </p>
-          ) : null}
-        </SettingsPreviewSection>
+          <textarea
+            id="settings-creator-upload-conditions"
+            className="settings-sub-page__textarea"
+            maxLength={2000}
+            placeholder={t("settings.creator.uploadConditionsPlaceholder")}
+            value={uploadConditionsDraft}
+            onChange={(ev) => {
+              setUploadConditionsDraft(ev.target.value);
+              if (uploadConditionsFieldError) setUploadConditionsFieldError("");
+            }}
+            disabled={uploadConditionsSaving}
+            rows={5}
+          />
+        </SettingsSaveField>
       ) : null}
 
       {canEditHeaderCurationSlots ? (
-        <SettingsPreviewSection
+        <SettingsSaveField
           sectionId="verification"
-          className="settings-sub-page__block settings-sub-page__field settings-sub-page__creator-verification"
+          label={t("settings.creator.verificationLabel")}
+          inputId="settings-creator-verification"
+          onSave={handleSaveVerification}
+          saving={verificationSaving}
+          matchesSaved={verificationMatchesSaved}
+          fieldError={verificationFieldError}
+          controlRowClassName="settings-sub-page__control-row--verification"
+          sectionClassName="settings-sub-page__block settings-sub-page__field settings-sub-page__creator-verification"
         >
-          <div className="settings-sub-page__field-head">
-            <label htmlFor="settings-creator-verification">{t("settings.creator.verificationLabel")}</label>
-            <SettingsSectionPreviewControls
-              sectionId="verification"
-              headingId="settings-creator-verification"
-              title={t("settings.creator.verificationLabel")}
-            />
-          </div>
-          <div className="settings-sub-page__control-row settings-sub-page__control-row--verification">
-            <CustomSelect
-              inputId="settings-creator-verification"
-              options={verificationSelfOptions}
-              value={verificationSelfOptions.find((o) => o.value === verificationDraft) ?? null}
-              onChange={(opt) => {
-                setVerificationDraft(opt?.value || "allowed");
-                if (verificationFieldError) setVerificationFieldError("");
-              }}
-              placeholder={t("settings.creator.verificationPlaceholder")}
-              width="min(100%, 22rem)"
-              isDisabled={verificationSaving}
-            />
-            <button
-              type="button"
-              className="settings-sub-page__save-btn"
-              onClick={handleSaveVerification}
-              disabled={verificationSaving || verificationMatchesSaved}
-            >
-              {verificationSaving
-                ? t("buttons.saving", { ns: "common" })
-                : t("buttons.save", { ns: "common" })}
-            </button>
-          </div>
-          {verificationFieldError ? (
-            <p className="settings-sub-page__field-error" role="alert">
-              {verificationFieldError}
-            </p>
-          ) : null}
-        </SettingsPreviewSection>
+          <CustomSelect
+            inputId="settings-creator-verification"
+            options={verificationSelfOptions}
+            value={verificationSelfOptions.find((o) => o.value === verificationDraft) ?? null}
+            onChange={(opt) => {
+              setVerificationDraft(opt?.value || "allowed");
+              if (verificationFieldError) setVerificationFieldError("");
+            }}
+            placeholder={t("settings.creator.verificationPlaceholder")}
+            width="min(100%, 22rem)"
+            isDisabled={verificationSaving}
+          />
+        </SettingsSaveField>
       ) : null}
 
       {canEditHeaderCurationSlots ? (

@@ -520,11 +520,29 @@
   margin-bottom: 0.5rem;
 }
 
+.settings-sub-page .settings-sub-page__stellar-variant-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+}
+
 .settings-sub-page .settings-sub-page__stellar-variant-title {
   margin: 0;
   font-size: 1.1rem;
   font-weight: 600;
   color: var(--color-white);
+}
+
+.settings-sub-page .settings-sub-page__stellar-variant-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  width: 100%;
 }
 
 .settings-sub-page .settings-sub-page__stellar-variant-options {
