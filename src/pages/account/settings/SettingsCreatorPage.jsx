@@ -21,7 +21,6 @@ import {
   isTufStellarAccessActive,
   normalizeTufStellarIconVariant,
 } from "@/utils/profileBanners";
-import { parseProfileHeaderSurfaceStyle } from "@/utils/profileHeaderSurfaceStyle";
 import { CreatorStatusBadge } from "@/components/common/display";
 import { ExternalLinkIcon, ChevronIcon, InfoIcon, TUFStellarIcon } from "@/components/common/icons";
 import { CustomSelect } from "@/components/common/selectors";
@@ -234,14 +233,12 @@ const SettingsCreatorPage = () => {
   const settingsCreatorHeaderSurface = useMemo(() => {
     if (!profile) return { style: null, imageAssets: {} };
     const u = profile.user || creatorDoc?.user;
-    const draftParsed =
+    const styleForSurface =
       headerSurfaceStyleDraft === undefined
-        ? parseProfileHeaderSurfaceStyle(profile.profileHeaderSurfaceStyle)
-        : headerSurfaceStyleDraft === null
-          ? null
-          : parseProfileHeaderSurfaceStyle(headerSurfaceStyleDraft);
+        ? profile.profileHeaderSurfaceStyle
+        : headerSurfaceStyleDraft;
     return getEffectiveProfileHeaderSurface({
-      profileHeaderSurfaceStyle: draftParsed,
+      profileHeaderSurfaceStyle: styleForSurface,
       profileHeaderSurfaceImageAssets: profile.profileHeaderSurfaceImageAssets,
       subjectUser: u,
     });

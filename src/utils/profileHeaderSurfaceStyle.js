@@ -107,21 +107,39 @@ function clampPadFromTopValue(value, unit) {
   return round1(clamp(value, PAD_FROM_TOP_PERCENT_MIN, PAD_FROM_TOP_PERCENT_MAX));
 }
 
-/** Normalize top padding for UI and rendering (`top` on the surface layer). */
+function parsePadFromTopUnit(raw) {
+  if (raw === "pixel" || raw === "px") return "pixel";
+  if (raw === "percent" || raw === "%") return "percent";
+  return "percent";
+}
+
+/** Normalize pad-from-top offset for UI and rendering. */
 export function normalizePadFromTop(raw) {
   if (!raw || typeof raw !== "object") {
     return createDefaultPadFromTop();
   }
-  const unit = raw.unit === "pixel" ? "pixel" : "percent";
+  const unit = parsePadFromTopUnit(raw.unit);
   const n = Number(raw.value);
   const value = Number.isFinite(n) ? clampPadFromTopValue(n, unit) : 0;
   return { unit, value };
 }
 
-export function formatPadFromTopCss(padFromTop) {
+/** Apply pad-from-top as layer `top` (px / %) with explicit edges (class default uses longhands, not `inset`). */
+export function applyPadFromTopLayerStyle(style, padFromTop) {
   const pad = normalizePadFromTop(padFromTop);
-  if (pad.value === 0) return null;
-  return pad.unit === "pixel" ? `${pad.value}px` : `${pad.value}%`;
+  if (pad.value === 0) {
+    style.inset = undefined;
+    style.top = "0";
+    style.right = "0";
+    style.bottom = "0";
+    style.left = "0";
+    return;
+  }
+  style.inset = "unset";
+  style.top = formatAxisLength(pad);
+  style.left = "0";
+  style.right = "0";
+  style.bottom = "0";
 }
 
 function parsePadFromTop(raw) {
@@ -591,6 +609,25 @@ export function parseProfileHeaderSurfaceStyle(input) {
   };
 }
 
+/** Strict parse first; fall back to in-memory editor draft for live preview. */
+export function coerceProfileHeaderSurfaceStyleForRender(input) {
+  const parsed = parseProfileHeaderSurfaceStyle(input);
+  if (parsed) return parsed;
+  if (input === null || input === undefined) return null;
+  if (typeof input !== "object" || Array.isArray(input)) return null;
+  if (input.version !== PROFILE_HEADER_SURFACE_STYLE_VERSION) return null;
+  if (!Array.isArray(input.stack)) return null;
+  return {
+    version: PROFILE_HEADER_SURFACE_STYLE_VERSION,
+    stack: input.stack,
+    ...(input.images &&
+    typeof input.images === "object" &&
+    !Array.isArray(input.images)
+      ? { images: input.images }
+      : {}),
+  };
+}
+
 export function countGradientStackEntries(stack) {
   return stack.filter((e) => e.kind === SURFACE_STACK_KIND_GRADIENT).length;
 }
@@ -701,14 +738,11 @@ export function buildImageLayerDomStyle(imageUrl, settings, options = {}) {
   };
   style.backgroundPosition =
     options.ignorePosition === true ? "center" : formatImageBackgroundPosition(settings.position);
+  if (options.ignorePosition !== true) {
+    applyPadFromTopLayerStyle(style, settings.padFromTop);
+  }
   if (settings.blendMode && settings.blendMode !== "normal") {
     style.mixBlendMode = settings.blendMode;
-  }
-  if (options.ignorePosition !== true) {
-    const topPad = formatPadFromTopCss(settings.padFromTop);
-    if (topPad) {
-      style.top = topPad;
-    }
   }
   return style;
 }

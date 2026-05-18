@@ -1,6 +1,6 @@
 // tuf-search: #ProfileHeader #profileHeader #account
 import "./profileheader.css";
-import { useState, useMemo, useEffect, useRef, useLayoutEffect, useCallback } from "react";
+import { useState, useMemo, useEffect, useRef, useLayoutEffect, useCallback, useId } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Tooltip } from "react-tooltip";
@@ -15,7 +15,7 @@ import {
 } from "@/utils/profileBanners";
 import {
   buildSurfaceStackRenderLayers,
-  parseProfileHeaderSurfaceStyle,
+  coerceProfileHeaderSurfaceStyleForRender,
 } from "@/utils/profileHeaderSurfaceStyle";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import { groupCurationTypesForPanel } from "@/utils/curationTypeUtils";
@@ -26,14 +26,25 @@ const PROFILE_HEADER_STELLAR_TOOLTIP_ID = "profile-header-stellar-subscriber";
 /** When `nameTooltipId` is `"default"`, name hits use this id and a local Tooltip shows the full `name`. */
 const PROFILE_HEADER_NAME_DEFAULT_TOOLTIP_ID = "profile-header-name-default-tooltip";
 
-function useViewportWidth() {
-  const [width, setWidth] = useState(window.innerWidth);
+/** Tracks `.profile-header` inline size so layout breakpoints match `@container profile-header` CSS. */
+function useProfileHeaderContainerWidth(headerRef) {
+  const [width, setWidth] = useState(0);
 
-  useEffect(() => {
-    const handleResize = () => setWidth(window.innerWidth);
+  useLayoutEffect(() => {
+    const el = headerRef.current;
+    if (!el) return undefined;
 
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    const update = () => {
+      const w = Math.round(el.getBoundingClientRect().width);
+      if (w > 0) setWidth(w);
+    };
+
+    update();
+    const ro = new ResizeObserver(() => {
+      requestAnimationFrame(update);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
   }, []);
 
   return width;
@@ -118,9 +129,18 @@ const ProfileHeader = ({
   stellarIconVariant = "1",
 }) => {
   const { t } = useTranslation("pages");
+  const nameCutoutMaskId = `profile-header-name-cutout${useId().replace(/:/g, "")}`;
+  const bannerMaskStyle = useMemo(
+    () => ({
+      WebkitMaskImage: `url(#${nameCutoutMaskId})`,
+      maskImage: `url(#${nameCutoutMaskId})`,
+    }),
+    [nameCutoutMaskId],
+  );
   const [isStatsExpanded, setIsStatsExpanded] = useState(false);
   const [iconPanelOpen, setIconPanelOpen] = useState(false);
   const [iconPanelPos, setIconPanelPos] = useState(null);
+  const headerRef = useRef(null);
   const iconRowRef = useRef(null);
   const iconPanelPortalRef = useRef(null);
 
@@ -169,7 +189,9 @@ const ProfileHeader = ({
 
   const showIconPanel = showCreatorCurationPanel || showPlayerDifficultyPanel;
 
-  const viewportWidth = useViewportWidth();
+  const containerWidth = useProfileHeaderContainerWidth(headerRef);
+  /** Wide layout until the header element has been measured (avoids a mobile-layout flash). */
+  const layoutWidth = containerWidth > 0 ? containerWidth : 1200;
 
   const config = useMemo(() => {
     const defaultConfig = {
@@ -182,7 +204,7 @@ const ProfileHeader = ({
       circleCy: "9rem",
       circleR: "4rem",
     }
-    if (viewportWidth <= 600) {
+    if (layoutWidth <= 600) {
       return {
         ...defaultConfig,
         nameXPosition: "50%",
@@ -192,7 +214,7 @@ const ProfileHeader = ({
         circleOffset: "0.5"
       };
     }
-    else if (viewportWidth <= 768) {
+    else if (layoutWidth <= 768) {
       return {
         ...defaultConfig,
         nameXPosition: "50%", 
@@ -204,7 +226,7 @@ const ProfileHeader = ({
       else {
       return defaultConfig;
     }
-  }, [viewportWidth]);
+  }, [layoutWidth]);
 
   const hasExpandableStats = useMemo(
     () => Array.isArray(statGroups) && statGroups.some((g) => g?.rows?.length),
@@ -232,9 +254,9 @@ const ProfileHeader = ({
     const row = iconRowRef.current;
     if (!row) return;
     const r = row.getBoundingClientRect();
-    const vw = window.innerWidth;
+    const headerW = headerRef.current?.getBoundingClientRect().width ?? 0;
     const margin = 12;
-    const maxW = Math.max(200, vw - margin * 2);
+    const maxW = Math.max(200, (headerW > 0 ? headerW : window.innerWidth) - margin * 2);
     const preferred = 360;
     const panelWidth = Math.min(preferred, maxW, Math.max(200, r.width));
     setIconPanelPos({
@@ -255,13 +277,20 @@ const ProfileHeader = ({
     if (!iconPanelOpen || !showIconPanel) return undefined;
     measureIconPanel();
     const el = iconRowRef.current;
+    const headerEl = headerRef.current;
     const ro =
       typeof ResizeObserver !== "undefined" && el ? new ResizeObserver(() => measureIconPanel()) : null;
     if (ro && el) ro.observe(el);
+    const headerRo =
+      typeof ResizeObserver !== "undefined" && headerEl
+        ? new ResizeObserver(() => measureIconPanel())
+        : null;
+    if (headerRo && headerEl) headerRo.observe(headerEl);
     window.addEventListener("scroll", measureIconPanel, true);
     window.addEventListener("resize", measureIconPanel);
     return () => {
       ro?.disconnect();
+      headerRo?.disconnect();
       window.removeEventListener("scroll", measureIconPanel, true);
       window.removeEventListener("resize", measureIconPanel);
     };
@@ -308,7 +337,7 @@ const ProfileHeader = ({
   const shellClass = `profile-header-shell ${className}`;
 
   const surfaceStackLayers = useMemo(() => {
-    const parsed = parseProfileHeaderSurfaceStyle(headerSurfaceStyle);
+    const parsed = coerceProfileHeaderSurfaceStyleForRender(headerSurfaceStyle);
     if (!parsed) return null;
     const assets =
       headerSurfaceImageAssets &&
@@ -348,7 +377,7 @@ const ProfileHeader = ({
   const STELLAR_ICON_HALF = STELLAR_ICON_SIZE / 2;
   /** Pin to the same local y as `<text>` (hanging baseline at 0). Do not use bbox height — stacked glyphs skew vertical centering. */
   const STELLAR_ICON_DY = 0;
-  const isNarrowNameLayout = viewportWidth <= 600;
+  const isNarrowNameLayout = layoutWidth <= 600;
   const showStellarInBannerOverlay = !isNarrowNameLayout;
 
   const showStellarBadge = isTufStellarAccessActive(avatarSubject?.user);
@@ -366,13 +395,13 @@ const ProfileHeader = ({
     displayName,
     String(overlayNameDx),
     config.textAlign,
-    viewportWidth,
+    layoutWidth,
   );
   const verticalNameDims = useSvgTextDimensions(
     displayName,
     String(overlayNameDx),
     config.textAlign,
-    viewportWidth,
+    layoutWidth,
   );
 
   const verticalNameFoRef = useRef(null);
@@ -404,10 +433,17 @@ const ProfileHeader = ({
           })
         : null;
     if (ro) ro.observe(fo);
-    window.addEventListener("resize", measure);
+    const headerEl = headerRef.current;
+    const headerRo =
+      typeof ResizeObserver !== "undefined" && headerEl
+        ? new ResizeObserver(() => {
+            requestAnimationFrame(measure);
+          })
+        : null;
+    if (headerRo && headerEl) headerRo.observe(headerEl);
     return () => {
       ro?.disconnect();
-      window.removeEventListener("resize", measure);
+      headerRo?.disconnect();
     };
   }, [
     isNarrowNameLayout,
@@ -442,7 +478,7 @@ const ProfileHeader = ({
 
   return (
     <div className={shellClass}>
-      <div className={headerClassName}>
+      <div ref={headerRef} className={headerClassName}>
       {surfaceStackLayers ? (
         <div className="profile-header__surface-stack" aria-hidden>
           {surfaceStackLayers.map((layer) => (
@@ -481,7 +517,11 @@ const ProfileHeader = ({
           id={PROFILE_HEADER_NAME_DEFAULT_TOOLTIP_ID}
           place="bottom-start"
           noArrow
-          style={{ maxWidth: "min(24rem, 92vw)", zIndex: 20, marginTop: "-0.5rem" }}
+          style={{
+            maxWidth: `min(24rem, ${layoutWidth > 0 ? Math.round(layoutWidth * 0.92) : 384}px)`,
+            zIndex: 20,
+            marginTop: "-0.5rem",
+          }}
         >
           {fullNicknameTooltipText}
         </Tooltip>
@@ -492,6 +532,7 @@ const ProfileHeader = ({
             src={bannerImageSrc}
             alt=""
             decoding="async"
+            style={bannerMaskStyle}
           />
         </div>
         <div className="profile-header__name-mask-defs" aria-hidden="true">
@@ -499,7 +540,7 @@ const ProfileHeader = ({
             <svg className="profile-header__name-svg" dominantBaseline="hanging">
               <defs>
                 <mask
-                  id="name-cutout-mask"
+                  id={nameCutoutMaskId}
                   maskUnits="userSpaceOnUse"
                   maskContentUnits="userSpaceOnUse"
                 >

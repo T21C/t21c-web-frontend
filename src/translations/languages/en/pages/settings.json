@@ -65,6 +65,8 @@
     "drawerLayersAria": "Gradient layers and background image",
     "selectLayer": "Select layer",
     "backgroundImageRow": "Background image",
+    "previewWidthLabel": "Preview width",
+    "previewResizeAria": "Drag to change preview width",
     "closeConfirm": "You have unsaved changes. Discard them and close?",
     "cancel": "Cancel",
     "title": "Card background",

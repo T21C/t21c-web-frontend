@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { createPortal } from "react-dom";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 import { CloseButton } from "@/components/common/buttons";
-import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
+import ProfileHeaderSurfacePreviewFrame from "./ProfileHeaderSurfacePreviewFrame";
 import { useProfileHeaderSurfaceEditor } from "./useProfileHeaderSurfaceEditor";
 import ProfileHeaderSurfaceLayerList from "./ProfileHeaderSurfaceLayerList";
 import ProfileHeaderSurfaceLayerSettings from "./ProfileHeaderSurfaceLayerSettings";
@@ -217,12 +217,7 @@ export default function ProfileHeaderSurfaceEditorPopup({
         </header>
 
         <div className="profile-header-surface-popup__body">
-          <div className="profile-header-surface-popup__preview">
-            <ProfileHeader
-              {...previewProps}
-              className="profile-header-surface-popup__profile-header"
-            />
-          </div>
+          <ProfileHeaderSurfacePreviewFrame isOpen={isOpen} previewProps={previewProps} />
 
           <div className="profile-header-surface-popup__settings">
             {isImageSelected ? (

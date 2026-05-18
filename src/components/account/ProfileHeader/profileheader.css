@@ -5,7 +5,8 @@
   position: relative;
   display: flex;
   justify-content: center;
-  width: fit-content;
+  width: 100%;
+  max-width: 50rem;
   align-self: center;
 }
 
@@ -15,8 +16,10 @@
   --profile-header-banner-height: 9rem;
   position: relative;
   width: 100%;
-  max-width: 50rem;
+  max-width: 100%;
   border-radius: 10px;
+  container-type: inline-size;
+  container-name: profile-header;
   overflow: visible;
   background: linear-gradient(
     135deg,
@@ -40,7 +43,10 @@
 
 .profile-header__surface-layer {
   position: absolute;
-  inset: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   pointer-events: none;
 }
 
@@ -66,9 +72,7 @@
   object-fit: cover;
   object-position: center;
 
-  -webkit-mask: url(#name-cutout-mask);
-  mask: url(#name-cutout-mask);
-
+  /* Mask URL is set per instance on the element (see ProfileHeader.jsx) — avoids duplicate-id collisions. */
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
 
@@ -587,10 +591,10 @@
 @media (max-width: 1024px) {
   .profile-header-shell .profile-header__actions {
     transform: translateX(4vw);
-  }  
+  }
 }
 
-@media (max-width: 768px) {
+@container profile-header (width <= 768px) {
   .profile-header__body {
     justify-content: center;
   }
@@ -612,9 +616,12 @@
   .profile-header-shell .profile-header__actions {
     transform: translateX(0%);
   }  
+  .profile-header__name-overlay {
+    z-index: 3;
+  }
 }
 
-@media (max-width: 600px) {
+@container profile-header (width <= 600px) {
   .profile-header__body { flex-direction: column; }
   .profile-header__center {
     width: 100%;
@@ -648,11 +655,4 @@
 
 .profile-header__name-vertical .profile-header__stellar-hit--vertical {
   pointer-events: auto;
-}
-
-/* Under 768px layout: keep overlay under inner so it does not sit above interactive rows; name/stellar remain visible through transparent body areas. */
-@media (max-width: 768px) {
-  .profile-header__name-overlay {
-    z-index: 3;
-  }
 }

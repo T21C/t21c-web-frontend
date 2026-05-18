@@ -20,7 +20,6 @@ import {
   isTufStellarAccessActive,
   normalizeTufStellarIconVariant,
 } from "@/utils/profileBanners";
-import { parseProfileHeaderSurfaceStyle } from "@/utils/profileHeaderSurfaceStyle";
 import { ExternalLinkIcon, ChevronIcon, TUFStellarIcon } from "@/components/common/icons";
 import { useSettings } from "@/contexts/SettingsContext";
 import { buildPlayerStatGroups } from "@/utils/profileStatGroups";
@@ -169,14 +168,12 @@ const SettingsPlayerPage = () => {
 
   const settingsHeaderSurface = useMemo(() => {
     if (!playerData) return { style: null, imageAssets: {} };
-    const draftParsed =
+    const styleForSurface =
       headerSurfaceStyleDraft === undefined
-        ? parseProfileHeaderSurfaceStyle(playerData.profileHeaderSurfaceStyle)
-        : headerSurfaceStyleDraft === null
-          ? null
-          : parseProfileHeaderSurfaceStyle(headerSurfaceStyleDraft);
+        ? playerData.profileHeaderSurfaceStyle
+        : headerSurfaceStyleDraft;
     return getEffectiveProfileHeaderSurface({
-      profileHeaderSurfaceStyle: draftParsed,
+      profileHeaderSurfaceStyle: styleForSurface,
       profileHeaderSurfaceImageAssets: playerData.profileHeaderSurfaceImageAssets,
       subjectUser: playerData.user ?? user,
     });

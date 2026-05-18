@@ -14,7 +14,7 @@
 .profile-header-surface-popup {
   display: flex;
   flex-direction: column;
-  width: min(72rem, 100%);
+  width: min(90rem, 100%);
   max-height: min(90vh, 100%);
   border-radius: 10px;
   background: var(--color-bg-secondary, #1a1a1a);
@@ -55,11 +55,88 @@
 
 .profile-header-surface-popup__preview {
   grid-area: preview;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
   min-width: 0;
 }
 
+.profile-header-surface-popup__preview-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+
+.profile-header-surface-popup__preview-width-value {
+  font-variant-numeric: tabular-nums;
+  color: var(--color-white-t70);
+}
+
+.profile-header-surface-popup__preview-stage {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.profile-header-surface-popup__preview-viewport {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 10px;
+  border: 1px solid var(--color-white-t15);
+  background: var(--btn-neutral-dark);
+}
+
+.profile-header-surface-popup__preview-resize-handle {
+  flex: 0 0 0.625rem;
+  align-self: stretch;
+  width: 0.625rem;
+  min-height: 4rem;
+  margin-left: 0.25rem;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  cursor: ew-resize;
+  background: var(--color-white-t10);
+  touch-action: none;
+}
+
+.profile-header-surface-popup__preview-resize-handle::before {
+  content: "";
+  display: block;
+  width: 2px;
+  height: 1.5rem;
+  margin: auto;
+  border-radius: 1px;
+  background: var(--color-white-t35);
+}
+
+.profile-header-surface-popup__preview-resize-handle:hover,
+.profile-header-surface-popup__preview-resize-handle:focus-visible {
+  background: var(--color-white-t20);
+}
+
+.profile-header-surface-popup__preview-resize-handle:focus-visible {
+  outline: 2px solid var(--btn-primary-light-hover);
+  outline-offset: 2px;
+}
+
+.profile-header-surface-popup__preview-viewport .profile-header-surface-popup__profile-header,
+.profile-header-surface-popup__preview-viewport .profile-header-shell,
+.profile-header-surface-popup__preview-viewport .profile-header {
+  width: 100%;
+  max-width: none;
+}
+
 .profile-header-surface-popup__profile-header {
-  width: fit-content;
+  width: 100%;
 }
 
 .profile-header-surface-popup__settings {
@@ -106,6 +183,8 @@
   border-radius: 6px;
   cursor: pointer;
   white-space: nowrap;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .profile-header-surface-popup .btn-fill-primary:disabled,
