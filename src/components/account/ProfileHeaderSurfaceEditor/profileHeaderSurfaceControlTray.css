@@ -1,0 +1,13 @@
+.profile-header-surface-control-tray {
+  padding: 0.35rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid var(--color-white-t10);
+  background: var(--color-black-t20);
+}
+
+.profile-header-surface-control-tray .profile-header-surface-slider-field__controls.profile-header-surface-control-tray {
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}

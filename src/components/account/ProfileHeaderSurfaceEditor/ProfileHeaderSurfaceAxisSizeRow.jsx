@@ -6,9 +6,14 @@ import {
   IMAGE_DIMENSION_PIXEL_MAX,
   IMAGE_DIMENSION_PIXEL_MIN,
   IMAGE_SIZE_OFFSET_UNITS,
+  OFFSET_PERCENT_EXTREME_MAX,
+  OFFSET_PERCENT_EXTREME_MIN,
+  OFFSET_PIXEL_EXTREME_MAX,
+  OFFSET_PIXEL_EXTREME_MIN,
   normalizeImageSizeDimensionAxis,
 } from "@/utils/profileHeaderSurfaceStyle";
 import ProfileHeaderSurfaceSliderField from "./ProfileHeaderSurfaceSliderField";
+import "./profileHeaderSurfaceControlTray.css";
 
 export default function ProfileHeaderSurfaceAxisSizeRow({
   axisKey,
@@ -20,6 +25,8 @@ export default function ProfileHeaderSurfaceAxisSizeRow({
   const isPixel = axisSize.unit === "pixel";
   const sliderMin = isPixel ? IMAGE_DIMENSION_PIXEL_MIN : IMAGE_DIMENSION_PERCENT_MIN;
   const sliderMax = isPixel ? IMAGE_DIMENSION_PIXEL_MAX : IMAGE_DIMENSION_PERCENT_MAX;
+  const inputMin = isPixel ? OFFSET_PIXEL_EXTREME_MIN : OFFSET_PERCENT_EXTREME_MIN;
+  const inputMax = isPixel ? OFFSET_PIXEL_EXTREME_MAX : OFFSET_PERCENT_EXTREME_MAX;
   const suffix = isPixel ? "px" : "%";
   const rowLabel =
     axisKey === "width"
@@ -46,8 +53,8 @@ export default function ProfileHeaderSurfaceAxisSizeRow({
           value={axisSize.value}
           sliderMin={sliderMin}
           sliderMax={sliderMax}
-          inputMin={sliderMin}
-          inputMax={sliderMax}
+          inputMin={inputMin}
+          inputMax={inputMax}
           suffix={suffix}
           onChange={(n) => onPatchAxis(axisKey, { value: n })}
         />

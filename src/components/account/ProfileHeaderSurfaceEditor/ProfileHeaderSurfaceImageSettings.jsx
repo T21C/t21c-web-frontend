@@ -10,19 +10,18 @@ import {
   IMAGE_REPEAT_TILE,
   createDefaultImagePosition,
   createDefaultImageSizeDimensions,
-  createDefaultPadFromTop,
   isImageTilingEnabled,
   normalizeImagePosition,
   normalizeImagePositionAxis,
   normalizeImageSizeDimensionAxis,
   normalizeImageSizeDimensions,
-  normalizePadFromTop,
 } from "@/utils/profileHeaderSurfaceStyle";
-import ProfileHeaderSurfacePadFromTopRow from "./ProfileHeaderSurfacePadFromTopRow";
+import ProfileHeaderSurfaceLayerPadGroup from "./ProfileHeaderSurfaceLayerPadGroup";
 import { CDN_IMAGE_ACCEPT } from "@/constants/cdnImageAccept.js";
 import { valuesToSelectOptions } from "./profileHeaderSurfaceEditorUtils";
 import ProfileHeaderSurfaceAxisPositionRow from "./ProfileHeaderSurfaceAxisPositionRow";
 import ProfileHeaderSurfaceAxisSizeRow from "./ProfileHeaderSurfaceAxisSizeRow";
+import "./profileHeaderSurfaceControlTray.css";
 
 export default function ProfileHeaderSurfaceImageSettings({
   imageSettings,
@@ -205,29 +204,13 @@ export default function ProfileHeaderSurfaceImageSettings({
         </button>
       </div>
       <div className="profile-header-surface-image-settings__controls">
-      <div className="profile-header-surface-image-settings__pad-from-top-group">
-          <ProfileHeaderSurfacePadFromTopRow
-            padFromTop={imageSettings.padFromTop}
-            onPatch={(partial) => {
-              patchImageSettings((img) => {
-                const base = img.padFromTop ?? createDefaultPadFromTop();
-                img.padFromTop = normalizePadFromTop({ ...base, ...partial });
-              });
-            }}
-          />
-          <button
-            type="button"
-            className="btn-fill-secondary profile-header-surface-image-settings__row-reset"
-            onClick={() =>
-              patchImageSettings((img) => {
-                delete img.padFromTop;
-              })
-            }
-          >
-            {t("settings.headerSurface.resetRow")}
-          </button>
-        </div>
+      <ProfileHeaderSurfaceLayerPadGroup
+          layerPad={imageSettings.layerPad}
+          legacyPadFromTop={imageSettings.padFromTop}
+          patchImageSettings={patchImageSettings}
+        />
         <div className="profile-header-surface-image-settings__position-group">
+          <div className="profile-header-surface-control-tray">
           <ProfileHeaderSurfaceAxisPositionRow
             axis="x"
             axisKey="x"
@@ -242,6 +225,7 @@ export default function ProfileHeaderSurfaceImageSettings({
             position={position}
             onPatchAxis={patchPositionAxis}
           />
+          </div>
           <button
             type="button"
             className="btn-fill-secondary profile-header-surface-image-settings__row-reset"
@@ -255,6 +239,7 @@ export default function ProfileHeaderSurfaceImageSettings({
           </button>
         </div>
         <div className="profile-header-surface-image-settings__size-group">
+          <div className="profile-header-surface-control-tray">
           <ProfileHeaderSurfaceAxisSizeRow
             axisKey="width"
             sizeDimensions={sizeDimensions}
@@ -308,6 +293,7 @@ export default function ProfileHeaderSurfaceImageSettings({
             sizeDimensions={sizeDimensions}
             onPatchAxis={patchSizeAxis}
           />
+          </div>
           <button
             type="button"
             className="btn-fill-secondary profile-header-surface-image-settings__row-reset"
@@ -343,7 +329,7 @@ export default function ProfileHeaderSurfaceImageSettings({
             <span>{t("settings.headerSurface.enableTiling")}</span>
           </label>
           {tilingEnabled ? (
-            <div className="profile-header-surface-image-settings__tiling-settings">
+            <div className="profile-header-surface-image-settings__tiling-settings profile-header-surface-control-tray">
               <div className="profile-header-surface-image-settings__field profile-header-surface-image-settings__field--select">
                 <CustomSelect
                   inputId="profile-header-surface-image-tile-mode"

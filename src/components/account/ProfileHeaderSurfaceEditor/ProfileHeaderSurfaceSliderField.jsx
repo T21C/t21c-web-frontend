@@ -1,4 +1,6 @@
 import { useCallback, useState } from "react";
+import "./profileHeaderSurfaceControlTray.css";
+import "./profileHeaderSurfaceSliderField.css";
 
 function roundNumeric(n, step) {
   if (step >= 1) return Math.round(n);

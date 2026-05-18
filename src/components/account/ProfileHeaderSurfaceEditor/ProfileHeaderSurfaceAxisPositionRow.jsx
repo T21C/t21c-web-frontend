@@ -7,9 +7,14 @@ import {
   IMAGE_POSITION_PERCENT_MIN,
   IMAGE_POSITION_PIXEL_MAX,
   IMAGE_POSITION_PIXEL_MIN,
+  OFFSET_PERCENT_EXTREME_MAX,
+  OFFSET_PERCENT_EXTREME_MIN,
+  OFFSET_PIXEL_EXTREME_MAX,
+  OFFSET_PIXEL_EXTREME_MIN,
   normalizeImagePositionAxis,
 } from "@/utils/profileHeaderSurfaceStyle";
 import ProfileHeaderSurfaceSliderField from "./ProfileHeaderSurfaceSliderField";
+import "./profileHeaderSurfaceControlTray.css";
 
 export default function ProfileHeaderSurfaceAxisPositionRow({
   axis,
@@ -23,6 +28,8 @@ export default function ProfileHeaderSurfaceAxisPositionRow({
   const isPixel = axisPosition.unit === "pixel";
   const sliderMin = isPixel ? IMAGE_POSITION_PIXEL_MIN : IMAGE_POSITION_PERCENT_MIN;
   const sliderMax = isPixel ? IMAGE_POSITION_PIXEL_MAX : IMAGE_POSITION_PERCENT_MAX;
+  const inputMin = isPixel ? OFFSET_PIXEL_EXTREME_MIN : OFFSET_PERCENT_EXTREME_MIN;
+  const inputMax = isPixel ? OFFSET_PIXEL_EXTREME_MAX : OFFSET_PERCENT_EXTREME_MAX;
   const suffix = isPixel ? "px" : "%";
 
   const sideSelectOptions = useMemo(
@@ -79,8 +86,8 @@ export default function ProfileHeaderSurfaceAxisPositionRow({
           value={axisPosition.value}
           sliderMin={sliderMin}
           sliderMax={sliderMax}
-          inputMin={sliderMin}
-          inputMax={sliderMax}
+          inputMin={inputMin}
+          inputMax={inputMax}
           suffix={suffix}
           onChange={(n) => onPatchAxis(axisKey, { value: n })}
         />

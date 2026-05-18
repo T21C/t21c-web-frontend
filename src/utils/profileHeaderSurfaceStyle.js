@@ -63,6 +63,7 @@ export const RADIAL_SIZES = [
 export const IMAGE_SIZE_PRESETS = ["cover", "contain", "auto"];
 export const IMAGE_REPEAT = ["no-repeat", "repeat", "repeat-x", "repeat-y", "space", "round"];
 
+/** Slider drag range for size axes (UI only). */
 export const IMAGE_DIMENSION_PERCENT_MIN = 0;
 export const IMAGE_DIMENSION_PERCENT_MAX = 300;
 export const IMAGE_DIMENSION_PIXEL_MIN = 0;
@@ -70,10 +71,17 @@ export const IMAGE_DIMENSION_PIXEL_MAX = 4000;
 export const IMAGE_SIZE_OFFSET_UNITS = ["percent", "pixel"];
 export const IMAGE_REPEAT_TILE = IMAGE_REPEAT.filter((r) => r !== "no-repeat");
 
+/** Slider drag range for position / layer inset offsets (UI only). */
 export const IMAGE_POSITION_PERCENT_MIN = -100;
 export const IMAGE_POSITION_PERCENT_MAX = 200;
 export const IMAGE_POSITION_PIXEL_MIN = -1000;
 export const IMAGE_POSITION_PIXEL_MAX = 1000;
+
+/** Stored values & number inputs: only block absurd magnitudes (e.g. 100000px). */
+export const OFFSET_PERCENT_EXTREME_MIN = -1_000_000;
+export const OFFSET_PERCENT_EXTREME_MAX = 1_000_000;
+export const OFFSET_PIXEL_EXTREME_MIN = -1_000_000;
+export const OFFSET_PIXEL_EXTREME_MAX = 1_000_000;
 export const IMAGE_POSITION_OFFSET_UNITS = ["percent", "pixel"];
 export const IMAGE_POSITION_HORIZONTAL_KEYWORDS = ["left", "center", "right"];
 export const IMAGE_POSITION_VERTICAL_KEYWORDS = ["top", "center", "bottom"];
@@ -88,58 +96,124 @@ export function createDefaultImagePosition() {
   };
 }
 
-export const PAD_FROM_TOP_OFFSET_UNITS = IMAGE_SIZE_OFFSET_UNITS;
-export const PAD_FROM_TOP_PERCENT_MIN = IMAGE_POSITION_PERCENT_MIN;
-export const PAD_FROM_TOP_PERCENT_MAX = IMAGE_POSITION_PERCENT_MAX;
-export const PAD_FROM_TOP_PIXEL_MIN = IMAGE_POSITION_PIXEL_MIN;
-export const PAD_FROM_TOP_PIXEL_MAX = IMAGE_POSITION_PIXEL_MAX;
+export const LAYER_PAD_EDGES = ["top", "right", "bottom", "left"];
 
-const DEFAULT_PAD_FROM_TOP = { unit: "pixel", value: 0 };
+export const LAYER_PAD_OFFSET_UNITS = IMAGE_SIZE_OFFSET_UNITS;
+export const LAYER_PAD_PERCENT_MIN = IMAGE_POSITION_PERCENT_MIN;
+export const LAYER_PAD_PERCENT_MAX = IMAGE_POSITION_PERCENT_MAX;
+export const LAYER_PAD_PIXEL_MIN = IMAGE_POSITION_PIXEL_MIN;
+export const LAYER_PAD_PIXEL_MAX = IMAGE_POSITION_PIXEL_MAX;
 
+/** @deprecated Use LAYER_PAD_* */
+export const PAD_FROM_TOP_OFFSET_UNITS = LAYER_PAD_OFFSET_UNITS;
+export const PAD_FROM_TOP_PERCENT_MIN = LAYER_PAD_PERCENT_MIN;
+export const PAD_FROM_TOP_PERCENT_MAX = LAYER_PAD_PERCENT_MAX;
+export const PAD_FROM_TOP_PIXEL_MIN = LAYER_PAD_PIXEL_MIN;
+export const PAD_FROM_TOP_PIXEL_MAX = LAYER_PAD_PIXEL_MAX;
+
+const DEFAULT_LAYER_PAD_AXIS = { unit: "pixel", value: 0 };
+
+export function createDefaultLayerPadAxis() {
+  return { ...DEFAULT_LAYER_PAD_AXIS };
+}
+
+/** @deprecated Use createDefaultLayerPadAxis */
 export function createDefaultPadFromTop() {
-  return { ...DEFAULT_PAD_FROM_TOP };
+  return createDefaultLayerPadAxis();
 }
 
-function clampPadFromTopValue(value, unit) {
+/** Normalize offset magnitude; no practical cap (200% etc. allowed). */
+export function sanitizeAxisOffsetValue(value, unit) {
   if (unit === "pixel") {
-    return clamp(Math.round(value), PAD_FROM_TOP_PIXEL_MIN, PAD_FROM_TOP_PIXEL_MAX);
+    return clamp(Math.round(value), OFFSET_PIXEL_EXTREME_MIN, OFFSET_PIXEL_EXTREME_MAX);
   }
-  return round1(clamp(value, PAD_FROM_TOP_PERCENT_MIN, PAD_FROM_TOP_PERCENT_MAX));
+  return round1(clamp(value, OFFSET_PERCENT_EXTREME_MIN, OFFSET_PERCENT_EXTREME_MAX));
 }
 
-function parsePadFromTopUnit(raw) {
+function parseLayerPadAxisUnit(raw) {
   if (raw === "pixel" || raw === "px") return "pixel";
   if (raw === "percent" || raw === "%") return "percent";
   return "percent";
 }
 
-/** Normalize pad-from-top offset for UI and rendering. */
-export function normalizePadFromTop(raw) {
+/** Normalize one layer-edge inset offset for UI and rendering. */
+export function normalizeLayerPadAxis(raw) {
   if (!raw || typeof raw !== "object") {
-    return createDefaultPadFromTop();
+    return createDefaultLayerPadAxis();
   }
-  const unit = parsePadFromTopUnit(raw.unit);
+  const unit = parseLayerPadAxisUnit(raw.unit);
   const n = Number(raw.value);
-  const value = Number.isFinite(n) ? clampPadFromTopValue(n, unit) : 0;
+  const value = Number.isFinite(n) ? sanitizeAxisOffsetValue(n, unit) : 0;
   return { unit, value };
 }
 
-/** Apply pad-from-top as layer `top` only; other edges stay on `.profile-header__surface-layer` defaults. */
-export function applyPadFromTopLayerStyle(style, padFromTop) {
-  const pad = normalizePadFromTop(padFromTop);
-  if (pad.value === 0) {
-    style.top = undefined;
-    return;
-  }
-  style.top = formatAxisLength(pad);
+/** @deprecated Use normalizeLayerPadAxis */
+export function normalizePadFromTop(raw) {
+  return normalizeLayerPadAxis(raw);
 }
 
-function parsePadFromTop(raw) {
+/** UI map for all four edges (fills missing keys; migrates legacy `padFromTop` → top). */
+export function normalizeLayerPadForUi(layerPad, legacyPadFromTop) {
+  const pads = {};
+  for (const edge of LAYER_PAD_EDGES) {
+    const raw =
+      edge === "top" && layerPad?.top === undefined && legacyPadFromTop != null
+        ? legacyPadFromTop
+        : layerPad?.[edge];
+    pads[edge] = normalizeLayerPadAxis(raw);
+  }
+  return pads;
+}
+
+/** Apply per-edge layer inset (`top` / `right` / `bottom` / `left`); zero clears inline override. */
+export function applyLayerPadStyle(style, layerPad, legacyPadFromTop) {
+  const pads = normalizeLayerPadForUi(layerPad, legacyPadFromTop);
+  for (const edge of LAYER_PAD_EDGES) {
+    const pad = pads[edge];
+    if (pad.value === 0) {
+      style[edge] = undefined;
+    } else {
+      style[edge] = formatAxisLength(pad);
+    }
+  }
+}
+
+/** @deprecated Use applyLayerPadStyle */
+export function applyPadFromTopLayerStyle(style, padFromTop) {
+  applyLayerPadStyle(style, padFromTop != null ? { top: padFromTop } : undefined);
+}
+
+function parseLayerPadAxis(raw) {
   if (raw === undefined || raw === null) return undefined;
   if (typeof raw !== "object") return null;
-  const pad = normalizePadFromTop(raw);
-  if (!PAD_FROM_TOP_OFFSET_UNITS.includes(pad.unit)) return null;
+  const pad = normalizeLayerPadAxis(raw);
+  if (!LAYER_PAD_OFFSET_UNITS.includes(pad.unit)) return null;
   return pad;
+}
+
+function parseLayerPad(rawLayerPad, legacyPadFromTop) {
+  let source =
+    rawLayerPad && typeof rawLayerPad === "object" && !Array.isArray(rawLayerPad)
+      ? { ...rawLayerPad }
+      : {};
+  if (legacyPadFromTop !== undefined && legacyPadFromTop !== null) {
+    if (typeof legacyPadFromTop !== "object") return null;
+    if (source.top === undefined) {
+      source.top = legacyPadFromTop;
+    }
+  }
+  if (Object.keys(source).length === 0) return undefined;
+
+  const layerPad = {};
+  for (const edge of LAYER_PAD_EDGES) {
+    if (source[edge] === undefined) continue;
+    const axis = parseLayerPadAxis(source[edge]);
+    if (axis === null) return null;
+    if (axis.value !== 0) {
+      layerPad[edge] = axis;
+    }
+  }
+  return Object.keys(layerPad).length > 0 ? layerPad : undefined;
 }
 
 export function isImageTilingEnabled(repeat) {
@@ -252,17 +326,10 @@ function parseGradientPosition(raw) {
   return { xPercent: x, yPercent: y };
 }
 
-function clampImagePositionOffset(value, unit) {
-  if (unit === "pixel") {
-    return clamp(Math.round(value), IMAGE_POSITION_PIXEL_MIN, IMAGE_POSITION_PIXEL_MAX);
-  }
-  return round1(clamp(value, IMAGE_POSITION_PERCENT_MIN, IMAGE_POSITION_PERCENT_MAX));
-}
-
 function parseImagePositionAxisOffset(raw, unit) {
   const n = Number(raw);
   if (!Number.isFinite(n)) return 0;
-  return clampImagePositionOffset(n, unit);
+  return sanitizeAxisOffsetValue(n, unit);
 }
 
 /** Normalize one axis (`x` | `y`) for UI and rendering. */
@@ -331,17 +398,10 @@ export function createDefaultImageSizeDimensions() {
   };
 }
 
-function clampImageSizeValue(value, unit) {
-  if (unit === "pixel") {
-    return clamp(Math.round(value), IMAGE_DIMENSION_PIXEL_MIN, IMAGE_DIMENSION_PIXEL_MAX);
-  }
-  return round1(clamp(value, IMAGE_DIMENSION_PERCENT_MIN, IMAGE_DIMENSION_PERCENT_MAX));
-}
-
 function parseImageSizeAxisValue(raw, unit) {
   const n = Number(raw);
   if (!Number.isFinite(n)) return DEFAULT_IMAGE_SIZE_AXIS.value;
-  return clampImageSizeValue(n, unit);
+  return sanitizeAxisOffsetValue(n, unit);
 }
 
 function parseImageSizeDimensionAxis(raw, axisKey) {
@@ -495,10 +555,10 @@ function parseImageSettings(raw) {
   if (typeof raw.blendMode === "string" && BLEND_MODES.includes(raw.blendMode) && raw.blendMode !== "normal") {
     image.blendMode = raw.blendMode;
   }
-  const padFromTop = parsePadFromTop(raw.padFromTop);
-  if (padFromTop === null) return null;
-  if (padFromTop) {
-    image.padFromTop = padFromTop;
+  const layerPad = parseLayerPad(raw.layerPad, raw.padFromTop);
+  if (layerPad === null) return null;
+  if (layerPad) {
+    image.layerPad = layerPad;
   }
   return image;
 }
@@ -731,7 +791,7 @@ export function buildImageLayerDomStyle(imageUrl, settings, options = {}) {
   style.backgroundPosition =
     options.ignorePosition === true ? "center" : formatImageBackgroundPosition(settings.position);
   if (options.ignorePosition !== true) {
-    applyPadFromTopLayerStyle(style, settings.padFromTop);
+    applyLayerPadStyle(style, settings.layerPad, settings.padFromTop);
   }
   if (settings.blendMode && settings.blendMode !== "normal") {
     style.mixBlendMode = settings.blendMode;
