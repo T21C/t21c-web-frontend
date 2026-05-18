@@ -68,6 +68,8 @@ export function useProfileHeaderSurfaceEditor({
   onApplied,
   isOpen = false,
   snapshotAtOpen = null,
+  snapshotFollowServer = false,
+  onRestoreOpenSnapshot,
   snapshotPendingImages = null,
   selectedImageLayerId = null,
 }) {
@@ -328,20 +330,23 @@ export function useProfileHeaderSurfaceEditor({
   }, []);
 
   const handleResetStyle = useCallback(() => {
-    if (snapshotAtOpen === undefined) {
+    if (typeof onRestoreOpenSnapshot === "function") {
+      onRestoreOpenSnapshot();
+    } else if (snapshotFollowServer) {
       onStyleDraftChange(undefined);
     } else if (snapshotAtOpen === null) {
       onStyleDraftChange(null);
-    } else {
-      updateDraft(deepCloneStyle(snapshotAtOpen));
+    } else if (snapshotAtOpen) {
+      onStyleDraftChange(deepCloneStyle(snapshotAtOpen));
     }
     resetPendingImagesToSnapshot(snapshotPendingImages);
     setTouchedSinceOpen(false);
   }, [
     snapshotAtOpen,
+    snapshotFollowServer,
     snapshotPendingImages,
+    onRestoreOpenSnapshot,
     onStyleDraftChange,
-    updateDraft,
     resetPendingImagesToSnapshot,
   ]);
 

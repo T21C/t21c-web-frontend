@@ -7,10 +7,12 @@ import {
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import {
   countImageStackEntries,
+  createDefaultProfileHeaderSurfaceStyle,
   getImageStackEntryIds,
   MAX_PROFILE_HEADER_SURFACE_STACK_ENTRIES,
   parseProfileHeaderSurfaceStyle,
 } from "@/utils/profileHeaderSurfaceStyle";
+import { useSettings } from "@/contexts/SettingsContext";
 import { deepCloneStyle } from "./profileHeaderSurfaceEditorUtils";
 import ProfileHeaderSurfaceEditorPopup from "./ProfileHeaderSurfaceEditorPopup";
 import "./profileHeaderSurfaceEditorLauncher.css";
@@ -28,8 +30,10 @@ export default function ProfileHeaderSurfaceEditorLauncher({
   onPreviewImageAssetsChange,
 }) {
   const { t } = useTranslation(["pages"]);
+  const { setHeaderSurfaceEditorOpen } = useSettings();
   const [isOpen, setIsOpen] = useState(false);
   const snapshotAtOpenRef = useRef(null);
+  const snapshotFollowServerRef = useRef(false);
   const snapshotImageAssetsRef = useRef(null);
   const snapshotPendingImagesRef = useRef(null);
   const [pendingImages, setPendingImages] = useState({});
@@ -74,6 +78,11 @@ export default function ProfileHeaderSurfaceEditorLauncher({
     onPreviewImageAssetsChange?.(previewImageAssets);
   }, [previewImageAssets, onPreviewImageAssetsChange]);
 
+  useEffect(() => {
+    setHeaderSurfaceEditorOpen(isOpen);
+    return () => setHeaderSurfaceEditorOpen(false);
+  }, [isOpen, setHeaderSurfaceEditorOpen]);
+
   const summaryText = useMemo(() => {
     const draft = effectiveStyle;
     const stackCount = draft?.stack?.length ?? 0;
@@ -87,13 +96,29 @@ export default function ProfileHeaderSurfaceEditorLauncher({
     });
   }, [effectiveStyle, t]);
 
+  const restoreOpenSnapshot = useCallback(() => {
+    if (snapshotFollowServerRef.current) {
+      onStyleDraftChange(undefined);
+    } else if (snapshotAtOpenRef.current === null) {
+      onStyleDraftChange(null);
+    } else {
+      onStyleDraftChange(deepCloneStyle(snapshotAtOpenRef.current));
+    }
+    setPendingImages(snapshotPendingImagesRef.current ?? {});
+  }, [onStyleDraftChange]);
+
   const handleOpen = useCallback(() => {
-    if (styleDraft === undefined) {
-      snapshotAtOpenRef.current = undefined;
-    } else if (styleDraft === null) {
+    snapshotFollowServerRef.current = styleDraft === undefined;
+    if (styleDraft === null) {
       snapshotAtOpenRef.current = null;
     } else {
-      snapshotAtOpenRef.current = deepCloneStyle(parseProfileHeaderSurfaceStyle(styleDraft));
+      const resolved =
+        styleDraft === undefined
+          ? parseProfileHeaderSurfaceStyle(surfaceStyle)
+          : parseProfileHeaderSurfaceStyle(styleDraft);
+      snapshotAtOpenRef.current = deepCloneStyle(
+        resolved ?? createDefaultProfileHeaderSurfaceStyle(),
+      );
     }
     snapshotImageAssetsRef.current = surfaceImageAssets ? { ...surfaceImageAssets } : null;
     snapshotPendingImagesRef.current = pendingImages
@@ -102,19 +127,11 @@ export default function ProfileHeaderSurfaceEditorLauncher({
         )
       : null;
     setIsOpen(true);
-  }, [styleDraft, surfaceImageAssets, pendingImages]);
+  }, [styleDraft, surfaceStyle, surfaceImageAssets, pendingImages]);
 
   const handleDiscardDraft = useCallback(() => {
-    const snap = snapshotAtOpenRef.current;
-    if (snap === undefined) {
-      onStyleDraftChange(undefined);
-    } else if (snap === null) {
-      onStyleDraftChange(null);
-    } else {
-      onStyleDraftChange(deepCloneStyle(snap));
-    }
-    setPendingImages(snapshotPendingImagesRef.current ?? {});
-  }, [onStyleDraftChange]);
+    restoreOpenSnapshot();
+  }, [restoreOpenSnapshot]);
 
   const mergedPreviewProps = useMemo(
     () => ({
@@ -148,6 +165,8 @@ export default function ProfileHeaderSurfaceEditorLauncher({
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         snapshotAtOpen={snapshotAtOpenRef.current}
+        snapshotFollowServer={snapshotFollowServerRef.current}
+        onRestoreOpenSnapshot={restoreOpenSnapshot}
         onDiscardDraft={handleDiscardDraft}
         variant={variant}
         creatorId={creatorId}

@@ -30,7 +30,12 @@ import "./settingsSubPage.css";
 const SettingsPlayerPage = () => {
   const { t } = useTranslation(["pages", "common"]);
   const { user, fetchUser } = useAuth();
-  const { profileBannerExpanded, setProfileBannerExpanded, previewFocusSectionId } = useSettings();
+  const {
+    profileBannerExpanded,
+    setProfileBannerExpanded,
+    previewFocusSectionId,
+    headerSurfaceEditorOpen,
+  } = useSettings();
   const { difficultyDict, difficulties } = useDifficultyContext();
   const playerId = user?.playerId != null ? Number(user.playerId) : null;
 
@@ -49,23 +54,31 @@ const SettingsPlayerPage = () => {
   const [headerSurfaceStyleDraft, setHeaderSurfaceStyleDraft] = useState(undefined);
   const [stellarVariantSaving, setStellarVariantSaving] = useState(false);
 
-  const fetchProfile = useCallback(async () => {
+  const fetchProfile = useCallback(async (options = {}) => {
+    const background = Boolean(options.background);
     if (playerId == null || !Number.isFinite(playerId)) {
-      setLoading(false);
-      setPlayerData(null);
+      if (!background) {
+        setLoading(false);
+        setPlayerData(null);
+      }
       return;
     }
-    setLoading(true);
-    setError(false);
+    if (!background) {
+      setLoading(true);
+      setError(false);
+    }
     try {
       const response = await api.get(`${import.meta.env.VITE_PLAYERS_V3}/${playerId}/profile`);
       setPlayerData(response.data);
+      if (!background) setError(false);
     } catch (e) {
       console.error("Settings player profile fetch failed:", e);
-      setError(true);
-      setPlayerData(null);
+      if (!background) {
+        setError(true);
+        setPlayerData(null);
+      }
     } finally {
-      setLoading(false);
+      if (!background) setLoading(false);
     }
   }, [playerId]);
 
@@ -83,7 +96,7 @@ const SettingsPlayerPage = () => {
     const next = playerData.user?.nickname ?? playerData.name ?? "";
     setNicknameDraft(next);
     setNicknameFieldError("");
-  }, [playerData]);
+  }, [playerId, playerData?.user?.nickname, playerData?.name]);
 
   useEffect(() => {
     if (!playerData) return;
@@ -91,13 +104,18 @@ const SettingsPlayerPage = () => {
     setBioFieldError("");
   }, [playerData?.bio, playerId]);
 
+  const hasSettingsDrafts =
+    headerSurfaceStyleDraft !== undefined || bannerPresetDraft !== undefined;
+
   useEffect(() => {
     const onVis = () => {
-      if (document.visibilityState === "visible") fetchProfile();
+      if (document.visibilityState !== "visible") return;
+      if (headerSurfaceEditorOpen || hasSettingsDrafts) return;
+      fetchProfile({ background: true });
     };
     document.addEventListener("visibilitychange", onVis);
     return () => document.removeEventListener("visibilitychange", onVis);
-  }, [fetchProfile]);
+  }, [fetchProfile, headerSurfaceEditorOpen, hasSettingsDrafts]);
 
   const valueLabels = useMemo(
     () => ({
@@ -178,7 +196,7 @@ const SettingsPlayerPage = () => {
         country: playerData?.country ?? "",
       });
       await fetchUser();
-      await fetchProfile();
+      await fetchProfile({ background: true });
       toast.success(t("settings.player.nicknameSuccess"));
     } catch (e) {
       const msg = e?.response?.data?.error || t("settings.player.nicknameError");

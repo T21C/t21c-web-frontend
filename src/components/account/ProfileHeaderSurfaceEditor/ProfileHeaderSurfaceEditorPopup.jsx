@@ -21,6 +21,8 @@ export default function ProfileHeaderSurfaceEditorPopup({
   isOpen,
   onClose,
   snapshotAtOpen,
+  snapshotFollowServer,
+  onRestoreOpenSnapshot,
   onDiscardDraft,
   variant,
   creatorId = null,
@@ -50,6 +52,8 @@ export default function ProfileHeaderSurfaceEditorPopup({
     onApplied,
     isOpen,
     snapshotAtOpen,
+    snapshotFollowServer,
+    onRestoreOpenSnapshot,
     snapshotPendingImages,
     selectedImageLayerId: selectedStackId,
   });

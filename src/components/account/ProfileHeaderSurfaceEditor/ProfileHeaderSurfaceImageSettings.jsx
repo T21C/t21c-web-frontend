@@ -10,12 +10,15 @@ import {
   IMAGE_REPEAT_TILE,
   createDefaultImagePosition,
   createDefaultImageSizeDimensions,
+  createDefaultPadFromTop,
   isImageTilingEnabled,
   normalizeImagePosition,
   normalizeImagePositionAxis,
   normalizeImageSizeDimensionAxis,
   normalizeImageSizeDimensions,
+  normalizePadFromTop,
 } from "@/utils/profileHeaderSurfaceStyle";
+import ProfileHeaderSurfacePadFromTopRow from "./ProfileHeaderSurfacePadFromTopRow";
 import { CDN_IMAGE_ACCEPT } from "@/constants/cdnImageAccept.js";
 import { valuesToSelectOptions } from "./profileHeaderSurfaceEditorUtils";
 import ProfileHeaderSurfaceAxisPositionRow from "./ProfileHeaderSurfaceAxisPositionRow";
@@ -200,24 +203,30 @@ export default function ProfileHeaderSurfaceImageSettings({
         >
           {t("settings.headerSurface.removeImage")}
         </button>
-        <label className="profile-header-surface-image-settings__toggle-field">
-          <input
-            type="checkbox"
-            checked={imageSettings.padForBanner === true}
-            onChange={(ev) => {
+      </div>
+      <div className="profile-header-surface-image-settings__controls">
+      <div className="profile-header-surface-image-settings__pad-from-top-group">
+          <ProfileHeaderSurfacePadFromTopRow
+            padFromTop={imageSettings.padFromTop}
+            onPatch={(partial) => {
               patchImageSettings((img) => {
-                if (ev.target.checked) {
-                  img.padForBanner = true;
-                } else {
-                  delete img.padForBanner;
-                }
+                const base = img.padFromTop ?? createDefaultPadFromTop();
+                img.padFromTop = normalizePadFromTop({ ...base, ...partial });
               });
             }}
           />
-          <span>{t("settings.headerSurface.padForBanner")}</span>
-        </label>
-      </div>
-      <div className="profile-header-surface-image-settings__controls">
+          <button
+            type="button"
+            className="btn-fill-secondary profile-header-surface-image-settings__row-reset"
+            onClick={() =>
+              patchImageSettings((img) => {
+                delete img.padFromTop;
+              })
+            }
+          >
+            {t("settings.headerSurface.resetRow")}
+          </button>
+        </div>
         <div className="profile-header-surface-image-settings__position-group">
           <ProfileHeaderSurfaceAxisPositionRow
             axis="x"

@@ -88,8 +88,49 @@ export function createDefaultImagePosition() {
   };
 }
 
-/** Offset surface image layers below the profile header banner strip. */
-export const PROFILE_HEADER_SURFACE_IMAGE_BANNER_PAD_TOP = "9rem";
+export const PAD_FROM_TOP_OFFSET_UNITS = IMAGE_SIZE_OFFSET_UNITS;
+export const PAD_FROM_TOP_PERCENT_MIN = IMAGE_POSITION_PERCENT_MIN;
+export const PAD_FROM_TOP_PERCENT_MAX = IMAGE_POSITION_PERCENT_MAX;
+export const PAD_FROM_TOP_PIXEL_MIN = IMAGE_POSITION_PIXEL_MIN;
+export const PAD_FROM_TOP_PIXEL_MAX = IMAGE_POSITION_PIXEL_MAX;
+
+const DEFAULT_PAD_FROM_TOP = { unit: "pixel", value: 0 };
+
+export function createDefaultPadFromTop() {
+  return { ...DEFAULT_PAD_FROM_TOP };
+}
+
+function clampPadFromTopValue(value, unit) {
+  if (unit === "pixel") {
+    return clamp(Math.round(value), PAD_FROM_TOP_PIXEL_MIN, PAD_FROM_TOP_PIXEL_MAX);
+  }
+  return round1(clamp(value, PAD_FROM_TOP_PERCENT_MIN, PAD_FROM_TOP_PERCENT_MAX));
+}
+
+/** Normalize top padding for UI and rendering (`top` on the surface layer). */
+export function normalizePadFromTop(raw) {
+  if (!raw || typeof raw !== "object") {
+    return createDefaultPadFromTop();
+  }
+  const unit = raw.unit === "pixel" ? "pixel" : "percent";
+  const n = Number(raw.value);
+  const value = Number.isFinite(n) ? clampPadFromTopValue(n, unit) : 0;
+  return { unit, value };
+}
+
+export function formatPadFromTopCss(padFromTop) {
+  const pad = normalizePadFromTop(padFromTop);
+  if (pad.value === 0) return null;
+  return pad.unit === "pixel" ? `${pad.value}px` : `${pad.value}%`;
+}
+
+function parsePadFromTop(raw) {
+  if (raw === undefined || raw === null) return undefined;
+  if (typeof raw !== "object") return null;
+  const pad = normalizePadFromTop(raw);
+  if (!PAD_FROM_TOP_OFFSET_UNITS.includes(pad.unit)) return null;
+  return pad;
+}
 
 export function isImageTilingEnabled(repeat) {
   return repeat !== "no-repeat";
@@ -444,8 +485,10 @@ function parseImageSettings(raw) {
   if (typeof raw.blendMode === "string" && BLEND_MODES.includes(raw.blendMode) && raw.blendMode !== "normal") {
     image.blendMode = raw.blendMode;
   }
-  if (raw.padForBanner === true) {
-    image.padForBanner = true;
+  const padFromTop = parsePadFromTop(raw.padFromTop);
+  if (padFromTop === null) return null;
+  if (padFromTop) {
+    image.padFromTop = padFromTop;
   }
   return image;
 }
@@ -661,8 +704,11 @@ export function buildImageLayerDomStyle(imageUrl, settings, options = {}) {
   if (settings.blendMode && settings.blendMode !== "normal") {
     style.mixBlendMode = settings.blendMode;
   }
-  if (settings.padForBanner === true && options.ignorePosition !== true) {
-    style.top = PROFILE_HEADER_SURFACE_IMAGE_BANNER_PAD_TOP;
+  if (options.ignorePosition !== true) {
+    const topPad = formatPadFromTopCss(settings.padFromTop);
+    if (topPad) {
+      style.top = topPad;
+    }
   }
   return style;
 }
@@ -792,6 +838,7 @@ export function createImageStackEntry() {
 export function createDefaultImageSettings() {
   return {
     sizeDimensions: createDefaultImageSizeDimensions(),
+    sizeDimensionsLinked: true,
     position: createDefaultImagePosition(),
     repeat: "no-repeat",
   };

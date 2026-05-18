@@ -300,6 +300,41 @@
   grid-column: 1 / -1;
 }
 
+.profile-header-surface-popup .profile-header-surface-image-settings__pad-from-top-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  grid-column: 1 / -1;
+}
+
+.profile-header-surface-popup .profile-header-surface-image-settings__pad-from-top-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.profile-header-surface-popup .profile-header-surface-image-settings__pad-from-top-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.profile-header-surface-popup .profile-header-surface-image-settings__pad-from-top-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+.profile-header-surface-popup .profile-header-surface-image-settings__pad-from-top-unit .state-display-container {
+  justify-content: flex-start;
+}
+
+.profile-header-surface-popup .profile-header-surface-image-settings__pad-from-top-slider {
+  flex: 1 1 min(12rem, 100%);
+  min-width: 0;
+}
+
 .profile-header-surface-popup .profile-header-surface-image-settings__size-axis-row {
   display: flex;
   flex-direction: column;
@@ -384,9 +419,9 @@
 .profile-header-surface-popup .profile-header-surface-image-settings__row-reset {
   flex: 0 0 auto;
   align-self: flex-end;
-  padding: 0.35rem 0.75rem;
+  padding: 0.15rem 0.55rem;
   font-size: 0.75rem;
-  min-height: 1.75rem;
+  min-height: 1.25rem;
   white-space: nowrap;
 }
 

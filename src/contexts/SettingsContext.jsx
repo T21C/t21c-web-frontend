@@ -26,6 +26,8 @@ function writeStoredExpanded(expanded) {
 export function SettingsProvider({ children }) {
   const [profileBannerExpanded, setProfileBannerExpandedState] = useState(readStoredExpanded);
   const [previewFocusSectionId, setPreviewFocusSectionId] = useState(null);
+  /** True while the header-surface edit popup is open (survives tab visibility refetches). */
+  const [headerSurfaceEditorOpen, setHeaderSurfaceEditorOpen] = useState(false);
 
   const setProfileBannerExpanded = useCallback((next) => {
     setProfileBannerExpandedState((prev) => {
@@ -42,8 +44,15 @@ export function SettingsProvider({ children }) {
       setProfileBannerExpanded,
       previewFocusSectionId,
       setPreviewFocusSectionId,
+      headerSurfaceEditorOpen,
+      setHeaderSurfaceEditorOpen,
     }),
-    [profileBannerExpanded, setProfileBannerExpanded, previewFocusSectionId],
+    [
+      profileBannerExpanded,
+      setProfileBannerExpanded,
+      previewFocusSectionId,
+      headerSurfaceEditorOpen,
+    ],
   );
 
   return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>;
