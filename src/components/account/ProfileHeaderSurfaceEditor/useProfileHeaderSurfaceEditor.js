@@ -350,6 +350,14 @@ export function useProfileHeaderSurfaceEditor({
     resetPendingImagesToSnapshot,
   ]);
 
+  /** Replace draft with the v3 default template (fixes legacy / invalid stored styles). */
+  const handleResetToDefault = useCallback(() => {
+    if (!window.confirm(t("settings.headerSurface.clearStyleConfirm"))) return;
+    onStyleDraftChange(deepCloneStyle(createDefaultProfileHeaderSurfaceStyle()));
+    resetPendingImagesToSnapshot(null);
+    setTouchedSinceOpen(true);
+  }, [onStyleDraftChange, resetPendingImagesToSnapshot, t]);
+
   const addLayer = useCallback(() => {
     patchWorking((s) => {
       if (!canAddStackEntry(s.stack)) return;
@@ -470,6 +478,7 @@ export function useProfileHeaderSurfaceEditor({
     patchImageSettings,
     handleSaveStyle,
     handleResetStyle,
+    handleResetToDefault,
     selectImageFile,
     markImageRemovedForLayer,
     addLayer,

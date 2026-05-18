@@ -155,6 +155,7 @@
     "saveStyle": "Save background",
     "revertDraft": "Revert changes",
     "clearStyle": "Reset to default",
+    "clearStyleConfirm": "Replace the entire card background with the default gradient layer? Pending image uploads in this session will be cleared. Save to apply on your profile.",
     "styleSaved": "Card background saved",
     "styleError": "Could not save card background",
     "imageUploaded": "Background image uploaded",

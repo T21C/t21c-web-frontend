@@ -162,10 +162,23 @@
 .profile-header-surface-popup__footer {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
   gap: 0.5rem;
-  justify-content: flex-end;
   padding: 1rem 1.25rem;
   border-top: 1px solid var(--color-white-t10);
+}
+
+.profile-header-surface-popup__footer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+.profile-header-surface-popup__footer-reset-default {
+  flex-shrink: 0;
 }
 
 /* Fill buttons: global btn-fill-* supplies color; popup supplies shape & type */

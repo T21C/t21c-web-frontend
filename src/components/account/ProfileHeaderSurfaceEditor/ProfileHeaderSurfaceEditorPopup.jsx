@@ -74,6 +74,7 @@ export default function ProfileHeaderSurfaceEditorPopup({
     saveBusy,
     handleSaveStyle,
     handleResetStyle,
+    handleResetToDefault,
     selectImageFile,
     markImageRemovedForLayer,
     isDirtySinceOpen,
@@ -271,20 +272,30 @@ export default function ProfileHeaderSurfaceEditorPopup({
         <footer className="profile-header-surface-popup__footer">
           <button
             type="button"
-            className="btn-fill-secondary"
-            disabled={!isDirtySinceOpen || saveBusy}
-            onClick={handleResetStyle}
+            className="btn-fill-secondary profile-header-surface-popup__footer-reset-default"
+            disabled={saveBusy}
+            onClick={handleResetToDefault}
           >
-            {t("settings.headerSurface.revertDraft")}
+            {t("settings.headerSurface.clearStyle")}
           </button>
-          <button
-            type="button"
-            className="btn-fill-primary"
-            disabled={!isDirtySinceOpen || saveBusy}
-            onClick={handleSaveAndClose}
-          >
-            {t("settings.headerSurface.saveStyle")}
-          </button>
+          <div className="profile-header-surface-popup__footer-actions">
+            <button
+              type="button"
+              className="btn-fill-secondary"
+              disabled={!isDirtySinceOpen || saveBusy}
+              onClick={handleResetStyle}
+            >
+              {t("settings.headerSurface.revertDraft")}
+            </button>
+            <button
+              type="button"
+              className="btn-fill-primary"
+              disabled={!isDirtySinceOpen || saveBusy}
+              onClick={handleSaveAndClose}
+            >
+              {t("settings.headerSurface.saveStyle")}
+            </button>
+          </div>
         </footer>
       </div>
     </div>,
