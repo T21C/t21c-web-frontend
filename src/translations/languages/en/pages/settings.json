@@ -72,7 +72,7 @@
     "title": "Card background",
     "hint": "Stack gradients and an optional background image. Reorder layers to blend; save to upload images.",
     "lockedHint": "TUFStellar subscribers can customize the profile card background.",
-    "lockedHasSaved": "A saved style may appear on your public profile for subscribers.",
+    "lockedHasSaved": "You have a saved style, it will appear again once you resubscribe.",
     "layersLabel": "Layers ({{count}}/{{max}})",
     "addLayer": "Add layer",
     "addImage": "Add image",
@@ -199,7 +199,7 @@
     "removeCustom": "Remove custom banner",
     "removedCustom": "Custom banner removed",
     "removeError": "Could not remove custom banner",
-    "lockedHint": "You have a saved custom banner, but it is inactive until custom banners are enabled on your account. Your preset is shown publicly instead.",
+    "lockedHint": "You have a saved custom banner, but it is inactive until you resubscribe, a free preset is shown for now.",
     "manifestLoading": "Loading banner list…",
     "manifestLoadError": "Could not load the banner list; only the default preset is available until this is fixed."
   },

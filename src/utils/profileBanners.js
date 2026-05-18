@@ -72,8 +72,7 @@ export function normalizeTufStellarIconVariant(raw) {
 export function subjectHasCustomBannerEntitlement(subjectUser) {
   if (!subjectUser) return false;
   return (
-    isTufStellarAccessActive(subjectUser) ||
-    hasFlag(subjectUser, permissionFlags.SUPER_ADMIN)
+    isTufStellarAccessActive(subjectUser)
   );
 }
 

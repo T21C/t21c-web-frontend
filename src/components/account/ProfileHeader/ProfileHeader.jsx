@@ -12,6 +12,7 @@ import {
   getDefaultProfileBannerUrl,
   isTufStellarAccessActive,
   normalizeTufStellarIconVariant,
+  subjectHasHeaderSurfaceEntitlement,
 } from "@/utils/profileBanners";
 import {
   buildSurfaceStackRenderLayers,
@@ -337,6 +338,8 @@ const ProfileHeader = ({
   const shellClass = `profile-header-shell ${className}`;
 
   const surfaceStackLayers = useMemo(() => {
+    if (!avatarSubject?.user) return null;
+    if (!subjectHasHeaderSurfaceEntitlement(avatarSubject?.user)) return null;
     const parsed = coerceProfileHeaderSurfaceStyleForRender(headerSurfaceStyle);
     if (!parsed) return null;
     const assets =

@@ -13,6 +13,8 @@
 
 .profile-header-surface-launcher--locked {
   padding: 0.25rem 0;
+  gap: 0.25rem;
+  align-items: center;
 }
 
 .profile-header-surface-launcher .btn-fill-primary {

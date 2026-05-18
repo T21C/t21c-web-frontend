@@ -276,10 +276,6 @@
   color: var(--warning-color);
 }
 
-.profile-banner-editor__locked--under-preview {
-  max-width: 28rem;
-}
-
 .profile-banner-editor .profile-banner-editor__btn {
   min-height: 2.5rem;
   padding: 0 1rem;
