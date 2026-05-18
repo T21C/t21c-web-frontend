@@ -124,22 +124,14 @@ export function normalizePadFromTop(raw) {
   return { unit, value };
 }
 
-/** Apply pad-from-top as layer `top` (px / %) with explicit edges (class default uses longhands, not `inset`). */
+/** Apply pad-from-top as layer `top` only; other edges stay on `.profile-header__surface-layer` defaults. */
 export function applyPadFromTopLayerStyle(style, padFromTop) {
   const pad = normalizePadFromTop(padFromTop);
   if (pad.value === 0) {
-    style.inset = undefined;
-    style.top = "0";
-    style.right = "0";
-    style.bottom = "0";
-    style.left = "0";
+    style.top = undefined;
     return;
   }
-  style.inset = "unset";
   style.top = formatAxisLength(pad);
-  style.left = "0";
-  style.right = "0";
-  style.bottom = "0";
 }
 
 function parsePadFromTop(raw) {
