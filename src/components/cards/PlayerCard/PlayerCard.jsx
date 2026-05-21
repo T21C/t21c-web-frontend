@@ -68,6 +68,7 @@ const PlayerCard = ({ player, onCreatorAssignmentClick }) => {
 
   const sortLabels = {
     rankedScore: t('cards.player.stats.rankedScore'),
+    totalScoreV2: t('cards.player.stats.totalScoreV2'),
     generalScore: t('cards.player.stats.generalScore'),
     ppScore: t('cards.player.stats.ppScore'),
     wfScore: t('cards.player.stats.wfScore'),
@@ -97,9 +98,9 @@ const PlayerCard = ({ player, onCreatorAssignmentClick }) => {
       label: sortLabels.rankedScore,
       value: formatNumber(player.rankedScore),
     },
-    generalScore: {
-      label: sortLabels.generalScore,
-      value: formatNumber(player.generalScore),
+    totalScoreV2: {
+      label: sortLabels.totalScoreV2,
+      value: formatNumber(player.totalScoreV2),
     },
     averageXacc: {
       label: sortLabels.averageXacc,
@@ -112,7 +113,7 @@ const PlayerCard = ({ player, onCreatorAssignmentClick }) => {
     label: sortLabels[sortBy],
     value: diffFields.includes(sortBy)
       ? (primaryValue?.name ?? '-')
-      : (primaryValue ?? player.generalScore ?? 0),
+      : (primaryValue ?? player.totalScoreV2 ?? player.generalScore ?? 0),
   };
 
   const excludeKeys = Object.keys(scoreFields).filter(key => key === prioritizedField);
@@ -123,7 +124,9 @@ const PlayerCard = ({ player, onCreatorAssignmentClick }) => {
     .map(key => scoreFields[key]);
 
   if (secondaryFields.length > 2) {
-    secondaryFields = secondaryFields.filter(field => field.label !== sortLabels.generalScore);
+    secondaryFields = secondaryFields.filter(
+      field => field.label !== sortLabels.totalScoreV2,
+    );
   }
 
   if (!diffFields.includes(sortBy)) {

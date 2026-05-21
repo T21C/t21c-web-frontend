@@ -63,7 +63,7 @@ const LeaderboardPage = () => {
 
   const sortOptions = [
     { value: 'rankedScore', label: t('leaderboard.sortOptions.rankedScore') },
-    { value: 'generalScore', label: t('leaderboard.sortOptions.generalScore') },
+    { value: 'totalScoreV2', label: t('leaderboard.sortOptions.totalScoreV2') },
     { value: 'ppScore', label: t('leaderboard.sortOptions.ppScore') },
     { value: 'wfScore', label: t('leaderboard.sortOptions.wfScore') },
     { value: 'wfPPScore', label: t('leaderboard.sortOptions.wfPPScore') },
@@ -71,6 +71,7 @@ const LeaderboardPage = () => {
     { value: 'totalPasses', label: t('leaderboard.sortOptions.totalPasses') },
     { value: 'universalPassCount', label: t('leaderboard.sortOptions.universalPassCount') },
     { value: 'score12K', label: t('leaderboard.sortOptions.score12K') },
+    { value: 'generalScore', label: t('leaderboard.sortOptions.generalScore') },
     { value: 'worldsFirstCount', label: t('leaderboard.sortOptions.worldsFirstCount') },
     { value: 'worldsFirstPPCount', label: t('leaderboard.sortOptions.worldsFirstPPCount') },
     { value: 'topDiff', label: t('leaderboard.sortOptions.topDiff') },
@@ -79,11 +80,12 @@ const LeaderboardPage = () => {
 
   const filterableFields = [
     { key: 'rankedScore', label: t('leaderboard.sortOptions.rankedScore'), maxKey: 'maxRankedScore', step: 1 },
-    { key: 'generalScore', label: t('leaderboard.sortOptions.generalScore'), maxKey: 'maxGeneralScore', step: 1 },
+    { key: 'totalScoreV2', label: t('leaderboard.sortOptions.totalScoreV2'), maxKey: 'maxTotalScoreV2', step: 1 },
     { key: 'ppScore', label: t('leaderboard.sortOptions.ppScore'), maxKey: 'maxPpScore', step: 1 },
     { key: 'wfScore', label: t('leaderboard.sortOptions.wfScore'), maxKey: 'maxWfScore', step: 1 },
     { key: 'wfPPScore', label: t('leaderboard.sortOptions.wfPPScore'), maxKey: 'maxWfPPScore', step: 1 },
     { key: 'score12K', label: t('leaderboard.sortOptions.score12K'), maxKey: 'maxScore12K', step: 1 },
+    { key: 'generalScore', label: t('leaderboard.sortOptions.generalScore'), maxKey: 'maxGeneralScore', step: 1 },
     { key: 'averageXacc', label: t('leaderboard.sortOptions.averageXacc'), maxKey: 'maxAverageXacc', step: 0.01, isPercentage: true },
     { key: 'totalPasses', label: t('leaderboard.sortOptions.totalPasses'), maxKey: 'maxTotalPasses', step: 1 },
     { key: 'universalPassCount', label: t('leaderboard.sortOptions.universalPassCount'), maxKey: 'maxUniversalPassCount', step: 1 },

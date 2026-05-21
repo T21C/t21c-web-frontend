@@ -33,6 +33,7 @@
   },
   "sortOptions": {
     "rankedScore": "Wyniku rankingowego",
+    "totalScoreV2": "Wyniku całkowitego",
     "generalScore": "Wyniku ogólnego",
     "ppScore": "Wyniku PP",
     "wfScore": "Wyniku WF",

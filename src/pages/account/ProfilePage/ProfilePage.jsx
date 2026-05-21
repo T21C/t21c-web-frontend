@@ -11,7 +11,8 @@ import { ScoreCard } from "@/components/cards";
 import { useTranslation, Trans } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
 import { AdminPlayerPopup } from "@/components/popups/Users";
-import { ShieldIcon, EditIcon, SortAscIcon, SortDescIcon, PackIcon, EyeIcon, EyeOffIcon, ChevronIcon } from "@/components/common/icons";
+import { ShieldIcon, EditIcon, SortAscIcon, SortDescIcon, PackIcon, EyeIcon, EyeOffIcon, ChevronIcon, InfoIcon } from "@/components/common/icons";
+import { Tooltip as ProfileTooltip } from "react-tooltip";
 import { CaseOpenSelector, CustomSelect } from "@/components/common/selectors";
 import caseOpen from "@/assets/icons/case.png";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -104,6 +105,7 @@ const ProfilePage = () => {
     const [showHiddenPasses, setShowHiddenPasses] = useState(false);
     const [bioCollapsed, setBioCollapsed] = useState(false);
     const [scoresCollapsed, setScoresCollapsed] = useState(false);
+    const [scoreBreakdownCollapsed, setScoreBreakdownCollapsed] = useState(false);
     const [difficultyCollapsed, setDifficultyCollapsed] = useState(false);
     const [includeDupes, setIncludeDupes] = useState(false);
     const runPassesRequest = useDebouncedRequest(350);
@@ -146,9 +148,13 @@ const ProfilePage = () => {
     var valueLabels = {
       rankedScore: t('profile.valueLabels.rankedScore'),
       generalScore: t('profile.valueLabels.generalScore'),
+      totalScoreV2: t('profile.valueLabels.totalScoreV2'),
+      ppScore: t('profile.valueLabels.ppScore'),
+      wfScore: t('profile.valueLabels.wfScore'),
+      wfPPScore: t('profile.valueLabels.wfPPScore'),
+      score12K: t('profile.valueLabels.score12K'),
       averageXacc: t('profile.valueLabels.averageXacc'),
       worldsFirstCount: t('profile.valueLabels.worldsFirstCount'),
-      wfPPScore: t('profile.valueLabels.wfPPScore'),
       worldsFirstPPCount: t('profile.valueLabels.worldsFirstPPCount'),
     };
 
@@ -341,6 +347,7 @@ const ProfilePage = () => {
       , null);
 
       const scoresExpanded = !scoresCollapsed;
+      const scoreBreakdownExpanded = !scoreBreakdownCollapsed;
       const difficultyExpanded = !difficultyCollapsed;
       const bioExpanded = !bioCollapsed;
 
@@ -360,9 +367,37 @@ const ProfilePage = () => {
       );
 
       const statGroups = useMemo(
-        () => buildPlayerStatGroups(playerData?.funFacts, t, difficultyDict || {}),
-        [playerData?.funFacts, t, difficultyDict],
+        () => buildPlayerStatGroups(playerData?.funFacts, t, difficultyDict || {}, playerData),
+        [playerData, t, difficultyDict],
       );
+
+      const scoreBreakdownTiles = useMemo(() => {
+        if (!playerData) return [];
+        const fields = [
+          { key: "rankedScore" },
+          { key: "totalScoreV2" },
+          { key: "generalScore" },
+          { key: "ppScore" },
+          { key: "wfScore" },
+          { key: "wfPPScore" },
+          { key: "score12K" },
+          { key: "averageXacc", isXacc: true },
+        ];
+        return fields.map((field) => {
+          const raw = playerData[field.key];
+          let value;
+          if (field.isXacc) {
+            value = `${((Number(raw) || 0) * 100).toFixed(2)}%`;
+          } else {
+            value = formatNumber(Number(raw) || 0);
+          }
+          return {
+            key: field.key,
+            label: valueLabels[field.key] ?? field.key,
+            value,
+          };
+        });
+      }, [playerData, valueLabels]);
 
       const clearsByDifficultyForHeader =
         playerData?.funFacts?.clearsByDifficultyNoDupes ?? playerData?.funFacts?.clearsByDifficulty;
@@ -699,9 +734,9 @@ const ProfilePage = () => {
                         value: `${((playerData?.averageXacc || 0) * 100).toFixed(2)}%`,
                       },
                       {
-                        key: "generalScore",
-                        label: valueLabels.generalScore,
-                        value: formatNumber(playerData?.generalScore || 0),
+                        key: "totalScoreV2",
+                        label: valueLabels.totalScoreV2,
+                        value: formatNumber(playerData?.totalScoreV2 || 0),
                       },
                     ]}
                     actions={
@@ -798,6 +833,68 @@ const ProfilePage = () => {
                   </div>
                 </div>
               </section>
+
+              {scoreBreakdownTiles.length > 0 ? (
+                <section className="player-page__section player-page__score-breakdown">
+                  <div className="account-profile-page__section-title-row">
+                    <h2 className="account-profile-page__section-title">
+                      {t("profile.sections.scoreBreakdown.title")}
+                    </h2>
+                    <button
+                      type="button"
+                      className="account-profile-page__chevron-btn"
+                      aria-expanded={scoreBreakdownExpanded}
+                      aria-label={
+                        scoreBreakdownCollapsed
+                          ? t("profile.sections.scoreBreakdown.expand")
+                          : t("profile.sections.scoreBreakdown.collapse")
+                      }
+                      onClick={() => setScoreBreakdownCollapsed((v) => !v)}
+                    >
+                      <ChevronIcon direction={scoreBreakdownExpanded ? "down" : "right"} />
+                    </button>
+                  </div>
+                  <div
+                    className={[
+                      "account-profile-page__collapsible",
+                      "player-page__score-breakdown-collapsible",
+                      scoreBreakdownCollapsed ? "hidden" : "",
+                    ]
+                      .join(" ")
+                      .trim()}
+                  >
+                    <div className="player-page__score-breakdown-grid">
+                      {scoreBreakdownTiles.map((tile) => {
+                        const tooltipId = `player-score-breakdown-${playerId}-${tile.key}`;
+                        return (
+                          <div key={tile.key} className="player-page__score-breakdown-tile">
+                            <div className="player-page__score-breakdown-label-row">
+                              <span className="player-page__score-breakdown-label">{tile.label}</span>
+                              <button
+                                type="button"
+                                className="player-page__score-breakdown-info-btn"
+                                data-tooltip-id={tooltipId}
+                                aria-label={t(`profile.sections.scoreBreakdown.tooltips.${tile.key}.aria`)}
+                              >
+                                <InfoIcon color="#fff8" size={16} />
+                              </button>
+                              <ProfileTooltip
+                                id={tooltipId}
+                                place="top"
+                                className="player-page__score-breakdown-tooltip"
+                                style={{ maxWidth: "min(22rem, 92vw)", zIndex: 30 }}
+                              >
+                                {t(`profile.sections.scoreBreakdown.tooltips.${tile.key}.description`)}
+                              </ProfileTooltip>
+                            </div>
+                            <span className="player-page__score-breakdown-value">{tile.value}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </section>
+              ) : null}
 
               {difficultyGraphData.length > 0 ? (
                 <section className="player-page__difficulty-section">

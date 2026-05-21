@@ -37,6 +37,7 @@
     "title": "플레이어",
     "stats": {
       "rankedScore": "공식 점수",
+      "totalScoreV2": "총 점수",
       "generalScore": "일반 점수",
       "ppScore": "완벽한 플레이 점수",
       "wfScore": "최초 클리어 점수",

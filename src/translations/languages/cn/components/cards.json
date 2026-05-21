@@ -38,6 +38,7 @@
     "title": "玩家",
     "stats": {
       "rankedScore": "排位分数",
+      "totalScoreV2": "总分",
       "generalScore": "全局分数",
       "ppScore": "PP 分数",
       "wfScore": "世界首通分数",

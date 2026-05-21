@@ -37,6 +37,7 @@
     "title": "Gracz",
     "stats": {
       "rankedScore": "Wynik rankingowy",
+      "totalScoreV2": "Wynik całkowity",
       "generalScore": "Wynik ogólny",
       "ppScore": "Wynik PP",
       "wfScore": "Wynik WF",

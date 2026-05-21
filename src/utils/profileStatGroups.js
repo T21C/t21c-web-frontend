@@ -6,6 +6,7 @@ import {
   formatPercentRatio,
   formatDateIso,
 } from "@/utils/statFormatters";
+import { formatNumber } from "@/utils";
 import calcAcc from "@/utils/CalcAcc";
 import { clampFloat } from "@/utils/Utility";
 
@@ -85,8 +86,9 @@ function xaccFromJudgementTotals(j) {
  * @param {object | null | undefined} ff server `funFacts` payload
  * @param {(key: string) => string} t i18n `t` bound to `pages` namespace
  * @param {Record<string, { name?: string }>} [difficultyDict] for P/G/U name bucketing
+ * @param {object | null | undefined} [playerScores] ES player doc score fields for the scores group
  */
-export function buildPlayerStatGroups(ff, t, difficultyDict = {}) {
+export function buildPlayerStatGroups(ff, t, difficultyDict = {}, playerScores = null) {
   if (!ff || typeof ff !== "object") return [];
 
   const c = ff.counts || {};
@@ -106,7 +108,46 @@ export function buildPlayerStatGroups(ff, t, difficultyDict = {}) {
     };
   };
 
-  const groups = [
+  /** @type {Array<{ key: string, label: string, value: string }>} */
+  const scoreRows = [];
+  if (playerScores && typeof playerScores === "object") {
+    const ps = playerScores;
+    const scoreFieldDefs = [
+      { key: "rankedScore", labelKey: "profile.funFacts.scores.rankedScore" },
+      { key: "totalScoreV2", labelKey: "profile.funFacts.scores.totalScoreV2" },
+      { key: "ppScore", labelKey: "profile.funFacts.scores.ppScore" },
+      { key: "wfScore", labelKey: "profile.funFacts.scores.wfScore" },
+      { key: "wfPPScore", labelKey: "profile.funFacts.scores.wfPPScore" },
+      { key: "score12K", labelKey: "profile.funFacts.scores.score12K" },
+      { key: "averageXacc", labelKey: "profile.funFacts.scores.averageXacc", isXacc: true },
+    ];
+    for (const def of scoreFieldDefs) {
+      const raw = ps[def.key];
+      if (raw == null && !def.isXacc) continue;
+      let value;
+      if (def.isXacc) {
+        value = formatPercentRatio(Number(raw) || 0);
+      } else {
+        value = formatNumber(Number(raw) || 0);
+      }
+      scoreRows.push({
+        key: def.key,
+        label: t(def.labelKey),
+        value,
+      });
+    }
+  }
+
+  const groups = [];
+  if (scoreRows.length > 0) {
+    groups.push({
+      key: "scores",
+      label: t("profile.funFacts.groups.scores"),
+      rows: scoreRows,
+    });
+  }
+
+  groups.push(
     {
       key: "counts",
       label: t("profile.funFacts.groups.counts"),
@@ -194,15 +235,16 @@ export function buildPlayerStatGroups(ff, t, difficultyDict = {}) {
           label: t("profile.funFacts.levelsCleared.averageBpm"),
           value: formatFloat(l.averageBpm, 2),
         },
-        /*
         {
-          key: "totalScoreV2",
-          label: t("profile.funFacts.levelsCleared.totalScoreV2"),
-          value: formatFloat(l.totalScoreV2, 2),
+          key: "totalRawScoreV2",
+          label: t("profile.funFacts.levelsCleared.totalRawScoreV2"),
+          value: formatFloat(l.totalRawScoreV2, 2),
         },
-        */
       ],
     },
+  );
+
+  groups.push(
     {
       key: "extremes",
       label: t("profile.funFacts.groups.extremes"),
@@ -257,6 +299,9 @@ export function buildPlayerStatGroups(ff, t, difficultyDict = {}) {
         },
       ],
     },
+  );
+
+  groups.push(
     {
       key: "activity",
       label: t("profile.funFacts.groups.activity"),
@@ -280,7 +325,7 @@ export function buildPlayerStatGroups(ff, t, difficultyDict = {}) {
         },
       ],
     },
-  ];
+  );
 
   const typeRows = PLAYER_CLEARS_BY_NAME_BUCKET_ORDER.map((k) => ({
     key: `type_${k}`,

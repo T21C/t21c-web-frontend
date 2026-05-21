@@ -39,6 +39,7 @@
   },
   "sortOptions": {
     "rankedScore": "Ranked Score",
+    "totalScoreV2": "Total Score",
     "generalScore": "General Score",
     "ppScore": "PP Score",
     "wfScore": "WF Score",

@@ -26,6 +26,7 @@
     "worldsFirstPPCount": "World's First PP Passes",
     "topDiff": "Top Difficulty",
     "top12kDiff": "Top 12K Difficulty",
+    "totalScoreV2": "Total Score",
     "totalUniquePasses": "Total Unique Passes",
     "topAccClearNum": "Top Acc Clear Num",
     "tilesPressed": "Tiles Pressed"
@@ -47,6 +48,45 @@
       "expand": "Expand scores",
       "collapse": "Collapse scores",
       "lowestImpactScore": "Get at least <pp>{{score}}</pp> to gain Ranked Score"
+    },
+    "scoreBreakdown": {
+      "title": "Score breakdown",
+      "expand": "Expand score breakdown",
+      "collapse": "Collapse score breakdown",
+      "tooltips": {
+        "rankedScore": {
+          "aria": "Explain Ranked Score",
+          "description": "Decaying sum of 20 best clears (excluding reclears)"
+        },
+        "totalScoreV2": {
+          "aria": "Explain Total Score",
+          "description": "Sum of all clears without reclears"
+        },
+        "generalScore": {
+          "aria": "Explain General Score",
+          "description": "Sum of all clears including reclears"
+        },
+        "ppScore": {
+          "aria": "Explain PP Score",
+          "description": "Ranked Score, but all clears must also be pure perfects"
+        },
+        "wfScore": {
+          "aria": "Explain WF Score",
+          "description": "Sum of all level base scores from world's first passes"
+        },
+        "wfPPScore": {
+          "aria": "Explain WF PP Score",
+          "description": "Sum of all scores from world's first and pure perfect passes"
+        },
+        "score12K": {
+          "aria": "Explain 12K Score",
+          "description": "Ranked Score, but all clears must be 12k"
+        },
+        "averageXacc": {
+          "aria": "Explain Average X-Accuracy",
+          "description": "Average accuracy of top 20 passes"
+        }
+      }
     },
     "difficultyBreakdown": {
       "title": "Clears by difficulty",
@@ -99,6 +139,7 @@
     "collapseAria": "Hide detailed statistics",
     "difficultyHeaderGridCellTooltip": "{{name}} · {{count}} clears",
     "groups": {
+      "scores": "Scores",
       "counts": "Pass counts",
       "judgements": "Judgements",
       "levelsCleared": "Levels cleared",
@@ -133,7 +174,19 @@
       "totalTilecountCleared": "Total tilecount cleared",
       "totalPlaytimeMs": "Estimated playtime",
       "averageBpm": "Avg BPM (cleared levels)",
-      "totalScoreV2": "Sum of score v2"
+      "totalRawScoreV2": "Raw sum of all pass scores"
+    },
+    "scores": {
+      "rankedScore": "Ranked Score",
+      "generalScore": "General Score",
+      "totalScoreV2": "Total Score",
+      "ppScore": "PP Score",
+      "wfScore": "WF Score",
+      "wfPPScore": "WF PP Score",
+      "score12K": "12K Score",
+      "averageXacc": "Average X-Accuracy",
+      "worldsFirstCount": "World's First Passes",
+      "worldsFirstPPCount": "World's First PP Passes"
     },
     "extremes": {
       "firstPassAt": "First pass",

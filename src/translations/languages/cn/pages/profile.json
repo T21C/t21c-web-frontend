@@ -26,6 +26,7 @@
     "worldsFirstPPCount": "世界首通 PP 数",
     "topDiff": "最高通关难度",
     "top12kDiff": "最高12键通关难度",
+    "totalScoreV2": "总分",
     "totalUniquePasses": "总击破谱面数",
     "topAccClearNum": "最高精准度数",
     "tilesPressed": "总经过砖块数"
@@ -47,6 +48,45 @@
       "expand": "展开",
       "collapse": "收起",
       "lowestImpactScore": "排位分加分下限：<pp>{{score}}</pp>"
+    },
+    "scoreBreakdown": {
+      "title": "分数明细",
+      "expand": "展开分数明细",
+      "collapse": "收起分数明细",
+      "tooltips": {
+        "rankedScore": {
+          "aria": "说明排位分数",
+          "description": "前 20 个最高通关记录的衰减总和（不含重击破）"
+        },
+        "totalScoreV2": {
+          "aria": "说明总分",
+          "description": "所有通关记录分数之和（不含重击破）"
+        },
+        "generalScore": {
+          "aria": "说明全局分数",
+          "description": "所有通关记录分数之和（含重击破）"
+        },
+        "ppScore": {
+          "aria": "说明 PP 分数",
+          "description": "与排位分相同，但所有通关必须为纯完美"
+        },
+        "wfScore": {
+          "aria": "说明世界首通分数",
+          "description": "世界首通通关对应关卡基础分之和"
+        },
+        "wfPPScore": {
+          "aria": "说明世界首通 PP 分数",
+          "description": "世界首通且纯完美通关的分数之和"
+        },
+        "score12K": {
+          "aria": "说明 12 键分数",
+          "description": "与排位分相同，但所有通关必须为 12 键"
+        },
+        "averageXacc": {
+          "aria": "说明平均 X 精准度",
+          "description": "前 20 个通关记录的平均精准度"
+        }
+      }
     },
     "difficultyBreakdown": {
       "title": "通关记录统计列表",
@@ -99,6 +139,7 @@
     "collapseAria": "收起统计数据",
     "difficultyHeaderGridCellTooltip": "{{name}} · {{count}} 个通关记录",
     "groups": {
+      "scores": "分数",
       "counts": "通关记录",
       "judgements": "判定结果",
       "levelsCleared": "总体统计",
@@ -133,7 +174,19 @@
       "totalTilecountCleared": "总经过砖块数",
       "totalPlaytimeMs": "预估游戏时间",
       "averageBpm": "平均初始BPM（已通过关卡）",
-      "totalScoreV2": "得分总和"
+      "totalRawScoreV2": "所有通关记录分数总和（含重击破）"
+    },
+    "scores": {
+      "rankedScore": "排位分数",
+      "generalScore": "全局分数",
+      "totalScoreV2": "总分",
+      "ppScore": "PP 分数",
+      "wfScore": "世界首通分数",
+      "wfPPScore": "世界首通 PP 分数",
+      "score12K": "12键分数",
+      "averageXacc": "平均X精准度",
+      "worldsFirstCount": "世界首通数",
+      "worldsFirstPPCount": "世界首通 PP 数"
     },
     "extremes": {
       "firstPassAt": "第一个通关记录",

@@ -26,6 +26,7 @@
     "worldsFirstPPCount": "세계 최초 PP 클리어",
     "topDiff": "최고 난이도",
     "top12kDiff": "최고 12키 난이도",
+    "totalScoreV2": "총 점수",
     "totalUniquePasses": "총 유니크 클리어",
     "topAccClearNum": "최고 정확도 클리어 수",
     "tilesPressed": "타일 입력 수"
@@ -47,6 +48,45 @@
       "expand": "점수 확장",
       "collapse": "점수 축소",
       "lowestImpactScore": "최소 <pp>{{score}}</pp>를 얻어 랭크 점수를 얻으세요"
+    },
+    "scoreBreakdown": {
+      "title": "점수 상세",
+      "expand": "점수 상세 확장",
+      "collapse": "점수 상세 축소",
+      "tooltips": {
+        "rankedScore": {
+          "aria": "랭크 점수 설명",
+          "description": "상위 20개 최고 클리어의 감쇠 합 (재클리어 제외)"
+        },
+        "totalScoreV2": {
+          "aria": "총 점수 설명",
+          "description": "재클리어를 제외한 모든 클리어 점수의 합"
+        },
+        "generalScore": {
+          "aria": "일반 점수 설명",
+          "description": "재클리어를 포함한 모든 클리어 점수의 합"
+        },
+        "ppScore": {
+          "aria": "PP 점수 설명",
+          "description": "랭크 점수와 같지만, 모든 클리어가 퓨어 퍼펙트여야 함"
+        },
+        "wfScore": {
+          "aria": "WF 점수 설명",
+          "description": "세계 최초 클리어의 레벨 기본 점수 합"
+        },
+        "wfPPScore": {
+          "aria": "WF PP 점수 설명",
+          "description": "세계 최초이면서 퓨어 퍼펙트인 클리어 점수의 합"
+        },
+        "score12K": {
+          "aria": "12키 점수 설명",
+          "description": "랭크 점수와 같지만, 모든 클리어가 12키여야 함"
+        },
+        "averageXacc": {
+          "aria": "평균 절대정확도 설명",
+          "description": "상위 20개 패스의 평균 정확도"
+        }
+      }
     },
     "difficultyBreakdown": {
       "title": "난이도별 클리어",
@@ -99,6 +139,7 @@
     "collapseAria": "Hide detailed statistics",
     "difficultyHeaderGridCellTooltip": "{{name}} · {{count}}회 클리어",
     "groups": {
+      "scores": "점수",
       "counts": "클리어 수",
       "judgements": "판정",
       "levelsCleared": "클리어한 레벨",
@@ -133,7 +174,19 @@
       "totalTilecountCleared": "클리어한 총 타일 수",
       "totalPlaytimeMs": "예상 플레이 시간",
       "averageBpm": "평균 BPM (클리어한 레벨)",
-      "totalScoreV2": "Sum of score v2"
+      "totalRawScoreV2": "모든 클리어 점수 합 (중복 포함)"
+    },
+    "scores": {
+      "rankedScore": "랭크 점수",
+      "generalScore": "일반 점수",
+      "totalScoreV2": "총 점수",
+      "ppScore": "완벽한 플레이 점수",
+      "wfScore": "세계 최초 점수",
+      "wfPPScore": "세계 최초 PP 점수",
+      "score12K": "12키 점수",
+      "averageXacc": "평균 절대정확도",
+      "worldsFirstCount": "세계 최초 클리어",
+      "worldsFirstPPCount": "세계 최초 PP 클리어"
     },
     "extremes": {
       "firstPassAt": "첫 클리어",
