@@ -42,11 +42,13 @@
     "generalScore": "General Score",
     "ppScore": "PP Score",
     "wfScore": "WF Score",
+    "wfPPScore": "WF PP Score",
     "score12K": "12K Score",
     "averageXacc": "Average X-acc",
     "totalPasses": "Total Passes",
     "universalPassCount": "Universal Passes",
     "worldsFirstCount": "WF Passes",
+    "worldsFirstPPCount": "WF PP Passes",
     "topDiff": "Top Difficulty",
     "top12kDiff": "Top 12K Difficulty"
   },

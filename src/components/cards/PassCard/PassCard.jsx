@@ -34,6 +34,7 @@ const PassCard = ({ pass }) => {
         <div className="group">
           <p className="pass-exp">#{pass.id} - {pass.player.name}<UserAvatar {...userAvatarUrls(pass.player)} className="user-avatar" /> </p>
           {pass.isWorldsFirst && <span className="wf-badge">{t('cards.pass.flags.worldsFirst')}</span>}
+          {pass.isWorldsFirstPP && <span className="wf-badge">{t('cards.pass.flags.worldsFirstPP')}</span>}
         </div>
         <p className='pass-desc'>{pass.level.song}</p>
       </div>

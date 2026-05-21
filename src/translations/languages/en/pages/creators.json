@@ -131,6 +131,7 @@
       "audience": {
         "uniquePlayersCleared": "Unique players who cleared",
         "worldsFirstsOnLevels": "WF's on charts",
+        "worldsFirstPPsOnLevels": "WF PP's on charts",
         "totalTilesPlayedOnLevels": "Total tiles hit"
       },
       "timeline": {

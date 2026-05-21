@@ -131,6 +131,7 @@
       "audience": {
         "uniquePlayersCleared": "谱面受众人数",
         "worldsFirstsOnLevels": "关卡世界首通数",
+        "worldsFirstPPsOnLevels": "关卡世界首通 PP 数",
         "totalTilesPlayedOnLevels": "总经过物量数"
       },
       "timeline": {

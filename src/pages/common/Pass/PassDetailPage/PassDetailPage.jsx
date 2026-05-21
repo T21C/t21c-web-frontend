@@ -304,10 +304,13 @@ const PassDetailPage = () => {
                   </span>
                 </div>
               </div>
-              {(pass.isWorldsFirst || pass.is12K || pass.is16K || pass.isNoHoldTap) && (
+              {(pass.isWorldsFirst || pass.isWorldsFirstPP || pass.is12K || pass.is16K || pass.isNoHoldTap) && (
                 <div className="flags-container">
                   {pass.isWorldsFirst && (
                     <span className="worlds-first">{t('passDetail.flags.worldsFirst')}</span>
+                  )}
+                  {pass.isWorldsFirstPP && (
+                    <span className="worlds-first">{t('passDetail.flags.worldsFirstPP')}</span>
                   )}
                   {(pass.is12K || pass.is16K || pass.isNoHoldTap) && (
                     <div className="flags">

@@ -15,7 +15,7 @@ import { CreatorIcon } from "@/components/common/icons/CreatorIcon";
 import { TUFStellarIcon } from "@/components/common/icons";
 
 const diffFields = ["topDiff", "top12kDiff"];
-const passes = ["totalPasses", "universalPassCount", "worldsFirstCount"];
+const passes = ["totalPasses", "universalPassCount", "worldsFirstCount", "worldsFirstPPCount"];
 
 const PlayerCard = ({ player, onCreatorAssignmentClick }) => {
   const { sortBy } = useContext(PlayerContext);
@@ -71,11 +71,13 @@ const PlayerCard = ({ player, onCreatorAssignmentClick }) => {
     generalScore: t('cards.player.stats.generalScore'),
     ppScore: t('cards.player.stats.ppScore'),
     wfScore: t('cards.player.stats.wfScore'),
+    wfPPScore: t('cards.player.stats.wfPPScore'),
     score12K: t('cards.player.stats.score12K'),
     averageXacc: t('cards.player.stats.averageXacc'),
     totalPasses: t('cards.player.stats.totalPasses'),
     universalPassCount: t('cards.player.stats.universalPassCount'),
     worldsFirstCount: t('cards.player.stats.worldsFirstCount'),
+    worldsFirstPPCount: t('cards.player.stats.worldsFirstPPCount'),
     topDiff: t('cards.player.stats.topDiff'),
     top12kDiff: t('cards.player.stats.top12kDiff')
   };

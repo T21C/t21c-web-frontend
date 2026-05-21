@@ -122,6 +122,11 @@ export function buildPlayerStatGroups(ff, t, difficultyDict = {}) {
           label: t("profile.funFacts.counts.worldsFirstCount"),
           value: formatCount(c.worldsFirstCount),
         },
+        {
+          key: "worldsFirstPPCount",
+          label: t("profile.funFacts.counts.worldsFirstPPCount"),
+          value: formatCount(c.worldsFirstPPCount),
+        },
         { key: "clears12K", label: t("profile.funFacts.counts.clears12K"), value: formatCount(c.clears12K) },
         { key: "clears16K", label: t("profile.funFacts.counts.clears16K"), value: formatCount(c.clears16K) },
         /*
@@ -387,6 +392,11 @@ export function buildCreatorStatGroups(ff, t, difficultyDict) {
           key: "worldsFirstsOnLevels",
           label: t("creators.profile.funFacts.audience.worldsFirstsOnLevels"),
           value: formatCount(au.worldsFirstsOnLevels),
+        },
+        {
+          key: "worldsFirstPPsOnLevels",
+          label: t("creators.profile.funFacts.audience.worldsFirstPPsOnLevels"),
+          value: formatCount(au.worldsFirstPPsOnLevels),
         },
         {
           key: "totalTilesPlayedOnLevels",

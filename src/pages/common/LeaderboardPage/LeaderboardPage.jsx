@@ -66,11 +66,13 @@ const LeaderboardPage = () => {
     { value: 'generalScore', label: t('leaderboard.sortOptions.generalScore') },
     { value: 'ppScore', label: t('leaderboard.sortOptions.ppScore') },
     { value: 'wfScore', label: t('leaderboard.sortOptions.wfScore') },
+    { value: 'wfPPScore', label: t('leaderboard.sortOptions.wfPPScore') },
     { value: 'averageXacc', label: t('leaderboard.sortOptions.averageXacc') },
     { value: 'totalPasses', label: t('leaderboard.sortOptions.totalPasses') },
     { value: 'universalPassCount', label: t('leaderboard.sortOptions.universalPassCount') },
     { value: 'score12K', label: t('leaderboard.sortOptions.score12K') },
     { value: 'worldsFirstCount', label: t('leaderboard.sortOptions.worldsFirstCount') },
+    { value: 'worldsFirstPPCount', label: t('leaderboard.sortOptions.worldsFirstPPCount') },
     { value: 'topDiff', label: t('leaderboard.sortOptions.topDiff') },
     { value: 'top12kDiff', label: t('leaderboard.sortOptions.top12kDiff') }
   ];
@@ -80,11 +82,13 @@ const LeaderboardPage = () => {
     { key: 'generalScore', label: t('leaderboard.sortOptions.generalScore'), maxKey: 'maxGeneralScore', step: 1 },
     { key: 'ppScore', label: t('leaderboard.sortOptions.ppScore'), maxKey: 'maxPpScore', step: 1 },
     { key: 'wfScore', label: t('leaderboard.sortOptions.wfScore'), maxKey: 'maxWfScore', step: 1 },
+    { key: 'wfPPScore', label: t('leaderboard.sortOptions.wfPPScore'), maxKey: 'maxWfPPScore', step: 1 },
     { key: 'score12K', label: t('leaderboard.sortOptions.score12K'), maxKey: 'maxScore12K', step: 1 },
     { key: 'averageXacc', label: t('leaderboard.sortOptions.averageXacc'), maxKey: 'maxAverageXacc', step: 0.01, isPercentage: true },
     { key: 'totalPasses', label: t('leaderboard.sortOptions.totalPasses'), maxKey: 'maxTotalPasses', step: 1 },
     { key: 'universalPassCount', label: t('leaderboard.sortOptions.universalPassCount'), maxKey: 'maxUniversalPassCount', step: 1 },
     { key: 'worldsFirstCount', label: t('leaderboard.sortOptions.worldsFirstCount'), maxKey: 'maxWorldsFirstCount', step: 1 },
+    { key: 'worldsFirstPPCount', label: t('leaderboard.sortOptions.worldsFirstPPCount'), maxKey: 'maxWorldsFirstPPCount', step: 1 },
   ];
 
   const fetchPlayers = async (offset = 0, { immediate = false } = {}) => {

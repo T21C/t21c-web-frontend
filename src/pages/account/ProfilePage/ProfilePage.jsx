@@ -148,6 +148,8 @@ const ProfilePage = () => {
       generalScore: t('profile.valueLabels.generalScore'),
       averageXacc: t('profile.valueLabels.averageXacc'),
       worldsFirstCount: t('profile.valueLabels.worldsFirstCount'),
+      wfPPScore: t('profile.valueLabels.wfPPScore'),
+      worldsFirstPPCount: t('profile.valueLabels.worldsFirstPPCount'),
     };
 
     useEffect(() => {

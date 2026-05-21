@@ -47,6 +47,7 @@
   },
   "flags": {
     "worldsFirst": "🏆 世界首通！ 🏆",
+    "worldsFirstPP": "🏆 世界首通 PP！ 🏆",
     "12k": "12键",
     "16k": "16键",
     "noHoldTap": "非默认长按设置"

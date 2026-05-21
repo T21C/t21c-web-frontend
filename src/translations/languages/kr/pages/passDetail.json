@@ -47,6 +47,7 @@
   },
   "flags": {
     "worldsFirst": "🏆 세계 최초! 🏆",
+    "worldsFirstPP": "🏆 세계 최초 PP! 🏆",
     "12k": "12키",
     "16k": "16키",
     "noHoldTap": "기본 홀드 동작"

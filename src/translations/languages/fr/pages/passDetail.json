@@ -46,6 +46,7 @@
   },
   "flags": {
     "worldsFirst": "🏆 Première mondiale! 🏆",
+    "worldsFirstPP": "🏆 Première mondiale PP! 🏆",
     "12k": "12K",
     "16k": "16K",
     "noHoldTap": "Pas de maintients alternatifs"

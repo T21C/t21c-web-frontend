@@ -25,6 +25,7 @@
     },
     "flags": {
       "worldsFirst": "世界首通",
+      "worldsFirstPP": "世界首通 PP",
       "twelveKey": "12键",
       "sixteenKey": "16键",
       "noHoldTap": "非默认长按设置"
@@ -40,11 +41,13 @@
       "generalScore": "全局分数",
       "ppScore": "PP 分数",
       "wfScore": "世界首通分数",
+      "wfPPScore": "世界首通 PP 分数",
       "score12K": "12键分数",
       "averageXacc": "平均X-精准度",
       "totalPasses": "总通关数",
       "universalPassCount": "U级通关数",
       "worldsFirstCount": "世界首通数",
+      "worldsFirstPPCount": "世界首通 PP 数",
       "topDiff": "最高通关难度",
       "top12kDiff": "最高12键通关难度"
     }

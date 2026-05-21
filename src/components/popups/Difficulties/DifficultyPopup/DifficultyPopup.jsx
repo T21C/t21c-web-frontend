@@ -682,7 +682,7 @@ const DifficultyPopup = ({
   ], [t]);
 
   const conditionTypeOptions = useMemo(() => 
-    ['ACCURACY', 'WORLDS_FIRST', 'BASE_SCORE', 'CUSTOM'].map(type => ({
+    ['ACCURACY', 'WORLDS_FIRST', 'WORLDS_FIRST_PP', 'BASE_SCORE', 'CUSTOM'].map(type => ({
       value: type,
       label: getConditionTypeOption(type)
     }))

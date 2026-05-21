@@ -161,6 +161,7 @@
         "options": {
           "ACCURACY": "Accuracy",
           "WORLDS_FIRST": "World's First",
+          "WORLDS_FIRST_PP": "World's First PP",
           "BASE_SCORE": "Base Score",
           "CUSTOM": "Custom"
         }

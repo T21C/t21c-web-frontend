@@ -42,11 +42,13 @@
     "generalScore": "일반 점수",
     "ppScore": "완벽한 플레이 점수",
     "wfScore": "최초 점수",
+    "wfPPScore": "최초 PP 점수",
     "score12K": "12키 점수",
     "averageXacc": "평균 절대정확도",
     "totalPasses": "총 클리어 수",
     "universalPassCount": "전체 클리어 수",
     "worldsFirstCount": "최초 클리어 수",
+    "worldsFirstPPCount": "최초 PP 클리어 수",
     "topDiff": "최고 난이도",
     "top12kDiff": "12키 최고 난이도"
   },

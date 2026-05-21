@@ -24,6 +24,7 @@
     },
     "flags": {
       "worldsFirst": "WF",
+      "worldsFirstPP": "WF PP",
       "twelveKey": "12K",
       "sixteenKey": "16K",
       "noHoldTap": "NHT"

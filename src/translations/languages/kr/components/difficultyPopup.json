@@ -161,6 +161,7 @@
         "options": {
           "ACCURACY": "정확도",
           "WORLDS_FIRST": "최초",
+          "WORLDS_FIRST_PP": "최초 PP",
           "BASE_SCORE": "기본 점수",
           "CUSTOM": "사용자 지정"
         }
