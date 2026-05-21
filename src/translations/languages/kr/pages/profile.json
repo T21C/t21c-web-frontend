@@ -151,8 +151,10 @@
       "packsFavorited": "좋아요 표시한 팩 수"
     },
     "difficultyType": {
-      "PGU": "PGU",
-      "SPECIAL": "특수 난이도"
+      "PLANETARY": "행성",
+      "GALACTIC": "은하",
+      "UNIVERSAL": "우주",
+      "SPECIAL": "특수"
     }
   },
   "discordRoleSync": {

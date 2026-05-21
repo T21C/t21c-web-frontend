@@ -131,8 +131,8 @@ const SettingsPlayerPage = () => {
   );
 
   const statGroups = useMemo(
-    () => buildPlayerStatGroups(playerData?.funFacts, t),
-    [playerData?.funFacts, t],
+    () => buildPlayerStatGroups(playerData?.funFacts, t, difficultyDict || {}),
+    [playerData?.funFacts, t, difficultyDict],
   );
 
   const clearsByDifficultyForHeader =

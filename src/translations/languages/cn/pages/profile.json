@@ -151,7 +151,9 @@
       "packsFavorited": "收藏的地图包"
     },
     "difficultyType": {
-      "PGU": "PGU",
+      "PLANETARY": "行星",
+      "GALACTIC": "银河",
+      "UNIVERSAL": "宇宙",
       "SPECIAL": "特殊"
     }
   },

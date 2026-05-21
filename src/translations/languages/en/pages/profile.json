@@ -151,7 +151,9 @@
       "packsFavorited": "Packs favorited"
     },
     "difficultyType": {
-      "PGU": "PGU",
+      "PLANETARY": "Planetary",
+      "GALACTIC": "Galactic",
+      "UNIVERSAL": "Universal",
       "SPECIAL": "Special"
     }
   },

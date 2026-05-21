@@ -9,6 +9,63 @@ import {
 import calcAcc from "@/utils/CalcAcc";
 import { clampFloat } from "@/utils/Utility";
 
+/** Display order for name-based PGU clears breakdown on player profiles. */
+export const PLAYER_CLEARS_BY_NAME_BUCKET_ORDER = [
+  "PLANETARY",
+  "GALACTIC",
+  "UNIVERSAL",
+  "SPECIAL",
+];
+
+const PGU_DIFFICULTY_NAME_REGEX = /^([PGUpgu])(\d+)$/i;
+
+/**
+ * Sum pass clears into Planetary / Galactic / Universal / Special from difficulty names
+ * matching P{n}, G{n}, U{n}; everything else (GQ, UQ, etc.) counts as Special.
+ *
+ * @param {object | null | undefined} ff server `funFacts`
+ * @param {Record<string, { name?: string }>} difficultyDict
+ */
+export function bucketClearsByDifficultyName(ff, difficultyDict) {
+  /** @type {Record<string, number>} */
+  const buckets = Object.fromEntries(
+    PLAYER_CLEARS_BY_NAME_BUCKET_ORDER.map((k) => [k, 0]),
+  );
+
+  const clears =
+    ff?.clearsByDifficulty && typeof ff.clearsByDifficulty === "object"
+      ? ff.clearsByDifficulty
+      : {};
+  const dict =
+    difficultyDict && typeof difficultyDict === "object" ? difficultyDict : {};
+
+  for (const [diffIdKey, raw] of Object.entries(clears)) {
+    const cnt = Number(raw) || 0;
+    if (cnt <= 0) continue;
+
+    const name =
+      dict?.[diffIdKey]?.name ?? dict?.[String(diffIdKey)]?.name;
+    if (typeof name !== "string") {
+      buckets.SPECIAL += cnt;
+      continue;
+    }
+
+    const m = name.trim().match(PGU_DIFFICULTY_NAME_REGEX);
+    if (!m) {
+      buckets.SPECIAL += cnt;
+      continue;
+    }
+
+    const letter = String(m[1]).toUpperCase();
+    if (letter === "P") buckets.PLANETARY += cnt;
+    else if (letter === "G") buckets.GALACTIC += cnt;
+    else if (letter === "U") buckets.UNIVERSAL += cnt;
+    else buckets.SPECIAL += cnt;
+  }
+
+  return buckets;
+}
+
 /** X-accuracy style ratio from aggregated judgement counts (same weighting as {@link calcAcc}). */
 function xaccFromJudgementTotals(j) {
   const inp = [
@@ -27,8 +84,9 @@ function xaccFromJudgementTotals(j) {
 /**
  * @param {object | null | undefined} ff server `funFacts` payload
  * @param {(key: string) => string} t i18n `t` bound to `pages` namespace
+ * @param {Record<string, { name?: string }>} [difficultyDict] for P/G/U name bucketing
  */
-export function buildPlayerStatGroups(ff, t) {
+export function buildPlayerStatGroups(ff, t, difficultyDict = {}) {
   if (!ff || typeof ff !== "object") return [];
 
   const c = ff.counts || {};
@@ -36,7 +94,7 @@ export function buildPlayerStatGroups(ff, t) {
   const l = ff.levelsCleared || {};
   const x = ff.extremes || {};
   const a = ff.activity || {};
-  const byType = ff.clearsByDifficultyType || {};
+  const byNameBucket = bucketClearsByDifficultyName(ff, difficultyDict);
 
   const passLinkMeta = (passId) => {
     if (passId == null) return null;
@@ -219,10 +277,10 @@ export function buildPlayerStatGroups(ff, t) {
     },
   ];
 
-  const typeRows = ["PGU", "SPECIAL"].map((k) => ({
+  const typeRows = PLAYER_CLEARS_BY_NAME_BUCKET_ORDER.map((k) => ({
     key: `type_${k}`,
     label: t(`profile.funFacts.difficultyType.${k}`),
-    value: formatCount(byType[k] ?? 0),
+    value: formatCount(byNameBucket[k] ?? 0),
   }));
 
   groups.push({
