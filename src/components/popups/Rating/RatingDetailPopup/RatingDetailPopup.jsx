@@ -310,7 +310,7 @@ export const RatingDetailPopup = ({
     setCommentError(false);
 
     try {
-      if (pendingComment.length > 1000) {
+      if (pendingComment.length > 10000) {
         setCommentError(true);
         setSaveError(t('rating.detailPopup.errors.commentLength'));
         setIsSaving(false);

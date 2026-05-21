@@ -294,45 +294,47 @@ const RatingPage = () => {
       // Search functionality
       if (searchQuery) {
         const query = searchQuery.toLowerCase().split("-vote")[0];
-        
+        const matches = (text) => text?.toLowerCase().includes(query);
+
         // Basic level info search
         const basicMatch = 
-          rating.level.song?.toLowerCase().includes(query) ||
-          rating.level.artist?.toLowerCase().includes(query) ||
+          matches(rating.level.song) ||
+          matches(rating.level.artist) ||
           rating.level.id?.toString().includes(query) ||
-          difficultyDict[rating.level.diffId]?.name?.toLowerCase().includes(query) ||
-          difficultyDict[rating.averageDifficultyId]?.name?.toLowerCase().includes(query) ||
-          difficultyDict[rating.communityDifficultyId]?.name?.toLowerCase().includes(query)
+          matches(difficultyDict[rating.level.diffId]?.name) ||
+          matches(difficultyDict[rating.averageDifficultyId]?.name) ||
+          matches(difficultyDict[rating.communityDifficultyId]?.name);
 
         if (basicMatch) return true;
 
-        // Search in level credits (creators)
-        const creatorMatch = rating.level.levelCredits?.some(credit => 
-          credit.creator?.name?.toLowerCase().includes(query) ||
-          credit.creator?.aliases?.some(alias => 
-            alias.toLowerCase().includes(query)
-          )
-        );
+        // Level-specific song/artist aliases
+        if (rating.level.aliases?.some(alias =>
+          (alias.field === 'song' || alias.field === 'artist') && matches(alias.alias)
+        )) return true;
 
-        if (creatorMatch) return true;
+        // Linked song + artist entity aliases
+        const { songObject } = rating.level;
+        if (songObject) {
+          if (matches(songObject.name)) return true;
+          if (songObject.aliases?.some(a => matches(a.alias))) return true;
+          if (songObject.credits?.some(credit =>
+            matches(credit.artist?.name) ||
+            credit.artist?.aliases?.some(a => matches(a.alias))
+          )) return true;
+        }
+
+        // Search in level credits (creators)
+        if (rating.level.levelCredits?.some(credit => 
+          matches(credit.creator?.name) ||
+          credit.creator?.creatorAliases?.some(alias => matches(alias.name))
+        )) return true;
 
         // Search in team
-        const teamMatch = rating.level.teamObject && (
-          rating.level.teamObject.name?.toLowerCase().includes(query) ||
-          rating.level.teamObject.aliases?.some(alias => 
-            alias.toLowerCase().includes(query)
-          )
-        );
-
-        if (teamMatch) return true;
-
-        // Search in level aliases
-        const aliasMatch = rating.level.aliases?.some(alias =>
-          (alias.field === 'song' && alias.alias.toLowerCase().includes(query)) ||
-          (alias.field === 'artist' && alias.alias.toLowerCase().includes(query))
-        );
-
-        if (aliasMatch) return true;
+        const team = rating.level.teamObject;
+        if (team && (
+          matches(team.name) ||
+          team.teamAliases?.some(alias => matches(alias.name))
+        )) return true;
 
         return false;
       }
