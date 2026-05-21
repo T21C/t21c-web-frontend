@@ -16,7 +16,7 @@
 
 /* Menu animations */
 .custom-select-menu {
-  animation: dropdownExpand 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: dropdownExpand 0.5s var(--ease-out-expo) forwards;
 }
 
 .custom-select-menu--bottom {
@@ -34,7 +34,7 @@
 }
 
 .custom-select-menu.closing {
-  animation: dropdownCollapse 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: dropdownCollapse 0.3s var(--ease-out-expo) forwards;
   pointer-events: none;
 }
 

@@ -2,7 +2,7 @@
 import React from 'react';
 import { CustomSelect } from '@/components/common/selectors';
 import { useTranslation } from 'react-i18next';
-import { CDN_IMAGE_ACCEPT } from '@/constants/cdnImageAccept';
+import { CDN_IMAGE_ACCEPT } from '@/config/constants/cdnImageAccept';
 export const UpdateTab = ({
   type,
   name,

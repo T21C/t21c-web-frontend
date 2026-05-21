@@ -5,7 +5,7 @@ import CropperJS from 'cropperjs';
 import 'cropperjs/dist/cropper.css';
 import { SuperImageCropper } from 'super-image-cropper';
 import './ImageSelectorPopup.css';
-import { CDN_IMAGE_ACCEPT, isCdnSupportedImageMimeType } from '@/constants/cdnImageAccept';
+import { CDN_IMAGE_ACCEPT, isCdnSupportedImageMimeType } from '@/config/constants/cdnImageAccept';
 import { Trans, useTranslation } from 'react-i18next';
 import { Tooltip } from 'react-tooltip';
 import { CloseButton } from '@/components/common/buttons';

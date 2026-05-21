@@ -29,7 +29,7 @@
     width: clamp(40rem, 56%, 80rem);
     position: relative;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    animation: slideInPopup-rating-popup 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: slideInPopup-rating-popup 0.3s var(--ease-out-expo) forwards;
     transform-origin: center;
     will-change: transform, opacity, clip-path;
     overflow-y: auto;
@@ -37,7 +37,7 @@
 }
 
 .rating-popup.exiting {
-    animation: slideOutPopup-rating-popup 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: slideOutPopup-rating-popup 0.2s var(--ease-out-expo) forwards;
 }
 
 @keyframes fadeInBackground-rating-popup {
@@ -385,7 +385,7 @@
     margin-left: 1rem;
     gap: 0.25rem;
     max-width: 30%;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.4s var(--ease-out-expo);
     opacity: 1;
     overflow: hidden;
 }
@@ -597,7 +597,7 @@
 }
 
 .rating-popup .dropdown-toggle-icon {
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 0.3s var(--ease-out-expo);
 }
 
 .rating-popup .dropdown-toggle-icon.open {

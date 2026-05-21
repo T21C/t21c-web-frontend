@@ -26,7 +26,7 @@ import { hasAnyFlag, hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { QuestionmarkCircleIcon } from "@/components/common/icons";
 import { Tooltip } from "react-tooltip";
 import toast from "react-hot-toast";
-import { CDN_IMAGE_ACCEPT } from '@/constants/cdnImageAccept';
+import { CDN_IMAGE_ACCEPT } from '@/config/constants/cdnImageAccept';
 import {
   validateLevel,
   uploadLevelZip,

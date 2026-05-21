@@ -1,9 +1,38 @@
 // tuf-search: #ArrowIcon #arrowIcon #icons
 import React from 'react';
 
-export const ArrowIcon = ({ color = "#fff", size = 24, ...props }) => {
+export const ArrowIcon = ({ color = "#fff", headWidth = 0, stemWidth = 0, size = 24, direction = "down", ...props }) => {
+  const rotation = {
+    down: "0deg",
+    up: "180deg",
+    left: "270deg",
+    right: "90deg"
+  };
+  console.log(rotation[direction]);
   return (
-    <svg {...props} width={size} height={size} viewBox="0 0 20 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M7.82054 20.7313C8.21107 21.1218 8.84423 21.1218 9.23476 20.7313L15.8792 14.0868C17.0505 12.9155 17.0508 11.0167 15.88 9.84497L9.3097 3.26958C8.91918 2.87905 8.28601 2.87905 7.89549 3.26958C7.50497 3.6601 7.50497 4.29327 7.89549 4.68379L14.4675 11.2558C14.8581 11.6464 14.8581 12.2795 14.4675 12.67L7.82054 19.317C7.43002 19.7076 7.43002 20.3407 7.82054 20.7313Z" fill={color}></path> </g></svg>
-  )
+    <svg 
+    {...props} 
+    style={{ transform: `rotate(${rotation[direction]})` }}
+    width={size} 
+    height={size} 
+    viewBox="0 0 500 500" 
+    fill="none" 
+    xmlns="http://www.w3.org/2000/svg">
+    <path 
+    d={`M 1473.651 ${348.097 - stemWidth} `+
+       ` H 1783.383`+
+       ` L 1783.383 ${289.667 - headWidth} `+
+       ` L 1954.511 375.231`+
+       ` L 1783.383 ${460.795 + headWidth} `+
+       ` L 1783.383 ${402.366 + stemWidth} `+
+       ` H ${1473.651}`+
+       ` V ${348.097 + stemWidth} `+
+       ` Z`} 
+    fill={color}
+    stroke={color}
+    strokeWidth="1"
+      transform="matrix(0, 1, -1, 0, 625.231027, -1464.080588)"
+    />
+  </svg>
+  );
 };
-

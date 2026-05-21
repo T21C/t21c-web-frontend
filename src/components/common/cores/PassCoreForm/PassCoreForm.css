@@ -145,7 +145,7 @@
   opacity: 0;
   padding: 0 0.5rem;
   pointer-events: none;
-  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.5s var(--ease-out-expo);
 }
 
 .pass-core-form .info .id-input .level-dropdown.expanded {

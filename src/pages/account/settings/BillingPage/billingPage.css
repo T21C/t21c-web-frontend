@@ -5,7 +5,7 @@
   flex-direction: column;
   gap: 1.25rem;
   width: min(100%, 56rem);
-  justify-self: center;
+  margin: 0 auto;
   padding: 0 2rem 3rem;
   --glint-angle: -70deg;
   --billing-tooltip-bg: #332f8658;

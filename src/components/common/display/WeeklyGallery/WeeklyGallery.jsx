@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import './WeeklyGallery.css';
-import { ArrowIcon } from '../../icons';
+import { ChevronIcon } from '../../icons';
 import { formatCreatorDisplay } from '@/utils/Utility';
 import { NavLink } from 'react-router-dom';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
@@ -287,14 +287,14 @@ const WeeklyGallery = ({
               onClick={goToPrevious}
               aria-label={t('weeklyGallery.navigation.previous')}
             >
-              <ArrowIcon style={{ transform: 'rotate(180deg)' }} />
+              <ChevronIcon size={28} direction="left" />
             </button>
             <button 
               className="weekly-gallery__arrow weekly-gallery__arrow--right"
               onClick={goToNext}
               aria-label={t('weeklyGallery.navigation.next')}
             >
-              <ArrowIcon />
+              <ChevronIcon size={28} direction="right" />
             </button>
           </>
         )}

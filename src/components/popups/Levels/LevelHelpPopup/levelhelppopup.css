@@ -125,7 +125,7 @@
   overflow-y: scroll;
   gap: 0.75rem;
   max-height: 0;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.4s var(--ease-out-expo);
 }
 
 .level-help-popup .level-help-popup__section-panel.open {

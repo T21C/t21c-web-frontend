@@ -16,7 +16,7 @@ import './entityManagementPage.css';
 import { Link } from 'react-router-dom';
 import { getVerificationClass, isCdnUrl, isImageUrl } from '@/utils/Utility';
 import { GalleryInspectPopup } from '@/components/popups/Evidence';
-import { CDN_IMAGE_ACCEPT } from '@/constants/cdnImageAccept';
+import { CDN_IMAGE_ACCEPT } from '@/config/constants/cdnImageAccept';
 
 const EntityManagementPage = ({ type = 'artist' }) => {
   const { t } = useTranslation(['pages', 'common']);

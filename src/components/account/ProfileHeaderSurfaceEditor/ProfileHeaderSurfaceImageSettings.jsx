@@ -17,7 +17,7 @@ import {
   normalizeImageSizeDimensions,
 } from "@/utils/profileHeaderSurfaceStyle";
 import ProfileHeaderSurfaceLayerPadGroup from "./ProfileHeaderSurfaceLayerPadGroup";
-import { CDN_IMAGE_ACCEPT } from "@/constants/cdnImageAccept.js";
+import { CDN_IMAGE_ACCEPT } from "@/config/constants/cdnImageAccept.js";
 import { valuesToSelectOptions } from "./profileHeaderSurfaceEditorUtils";
 import ProfileHeaderSurfaceAxisPositionRow from "./ProfileHeaderSurfaceAxisPositionRow";
 import ProfileHeaderSurfaceAxisSizeRow from "./ProfileHeaderSurfaceAxisSizeRow";

@@ -1,5 +1,5 @@
 // tuf-search: #validateCdnBannerImage #cdn
-import { isCdnSupportedImageMimeType } from "@/constants/cdnImageAccept.js";
+import { isCdnSupportedImageMimeType } from "@/config/constants/cdnImageAccept.js";
 
 /**
  * Matches `getValidationOptionsForType('BANNER')` and `multerMemoryCdnImage10Mb`.

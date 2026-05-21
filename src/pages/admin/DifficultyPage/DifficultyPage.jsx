@@ -17,7 +17,7 @@ import { useTranslation } from 'react-i18next';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { RatingInput } from '@/components/common/selectors';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
-import { CDN_IMAGE_ACCEPT } from '@/constants/cdnImageAccept';
+import { CDN_IMAGE_ACCEPT } from '@/config/constants/cdnImageAccept';
 
 const DifficultyPage = () => {
   const { user } = useAuth();

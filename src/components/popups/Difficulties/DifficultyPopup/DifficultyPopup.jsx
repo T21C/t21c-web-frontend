@@ -8,7 +8,7 @@ import { getCdnErrorMessage } from '@/utils/uploadErrors';
 import './difficultypopup.css';
 import toast from 'react-hot-toast';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { CDN_IMAGE_ACCEPT, isCdnSupportedImageMimeType } from '@/constants/cdnImageAccept';
+import { CDN_IMAGE_ACCEPT, isCdnSupportedImageMimeType } from '@/config/constants/cdnImageAccept';
 import { CloseButton } from '@/components/common/buttons';
 
 const DIRECTIVE_MODES = {

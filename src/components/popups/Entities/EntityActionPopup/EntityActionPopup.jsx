@@ -6,7 +6,7 @@ import api from '@/utils/api';
 import { getCdnErrorMessage } from '@/utils/uploadErrors';
 import './entityActionPopup.css';
 import { toast } from 'react-hot-toast';
-import { isCdnSupportedImageMimeType } from '@/constants/cdnImageAccept';
+import { isCdnSupportedImageMimeType } from '@/config/constants/cdnImageAccept';
 import { UpdateTab, MergeTab, SplitTab, AliasesTab, LinksTab, CreditsTab, EvidenceTab, LevelSuffixTab, RelationsTab } from './tabs';
 import { CloseButton } from '@/components/common/buttons';
 

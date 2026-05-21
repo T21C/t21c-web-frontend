@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 import { EditIcon, TrashIcon } from '@/components/common/icons';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { ABILITIES } from '@/utils/Abilities';
-import { CDN_IMAGE_ACCEPT, isCdnSupportedImageMimeType } from '@/constants/cdnImageAccept';
+import { CDN_IMAGE_ACCEPT, isCdnSupportedImageMimeType } from '@/config/constants/cdnImageAccept';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { CloseButton } from '@/components/common/buttons';
 

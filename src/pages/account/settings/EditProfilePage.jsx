@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { AccountStatusBanners } from '@/components/account/AccountStatusBanners/AccountStatusBanners';
-import { CDN_IMAGE_ACCEPT, isCdnSupportedImageMimeType } from '@/constants/cdnImageAccept';
+import { CDN_IMAGE_ACCEPT, isCdnSupportedImageMimeType } from '@/config/constants/cdnImageAccept';
 import { userAvatarDisplayUrl } from '@/utils/playerAvatarDisplay';
 
 const usernameChangeCooldown = 1 * 24 * 60 * 60 * 1000; // 1 day

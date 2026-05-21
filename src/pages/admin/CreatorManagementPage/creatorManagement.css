@@ -1371,7 +1371,7 @@
 
 .creator-management-page .add-creator-button {
   padding: 10px 20px;
-  background-color: var(--btn-success);
+  background-color: var(--success-color);
   color: white;
   border: none;
   border-radius: 4px;
@@ -1709,7 +1709,7 @@
 
 .creator-management-page .add-creator-button {
   padding: 8px 16px;
-  background-color: var(--btn-success);
+  background-color: var(--success-color);
   color: white;
   border: none;
   border-radius: 4px;

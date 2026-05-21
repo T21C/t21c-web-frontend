@@ -40,7 +40,8 @@ import {
   CalendarIcon, 
   ScoreIcon,
   RefreshIcon,
-  TimeIcon
+  TimeIcon,
+  ArrowIcon
 } from "@/components/common/icons";
 import { createEventSystem, formatBaseScore, formatCreatorDisplay, formatDate, isCdnUrl, selectIconSize } from "@/utils/Utility";
 import { getSongDisplayName, getArtistDisplayName, formatDuration } from "@/utils/levelHelpers";
@@ -77,15 +78,6 @@ const getHighScores = (players) => {
     highestSpeed: sortedPlayers.some(p => p.speed) ? 
       sortedPlayers.reduce((a, b) => (b.speed || 0) > (a.speed || 0) ? b : a) : null
   };
-};
-
-
-const SortIncidator = ({ direction }) => {
-  return (
-    <span className={`sort-direction-indicator ${direction === "desc" ? "flip-up" : "flip-down"}`}>
-      🠇
-    </span>
-  );
 };
 
 const AliasesDropdown = ({ aliases, show, onClose }) => {
@@ -714,6 +706,14 @@ const LevelDetailPage = ({ mockData = null }) => {
 
   const closeWeeklyAppearanceDropdown = useCallback(() => setShowWeeklyAppearanceDropdown(false), []);
   const closeToRatePendingDropdown = useCallback(() => setShowToRatePendingDropdown(false), []);
+
+  const sortArrowDirection = useMemo(() => {
+    return sortDirection === "desc" ? "up" : "down";
+  }, [sortDirection]);
+
+  const sortIndicatorIcon = (direction) => {
+    return <ArrowIcon className="sort-direction-indicator" direction={direction} headWidth={35} stemWidth={8} />;
+  };
 
   const handleArtistClick = (artist) => {
     setClickedArtist(artist);
@@ -2507,7 +2507,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                   value="TIME" 
                   />
                   {leaderboardSort === "TIME" && (
-                    <SortIncidator direction={sortDirection} />
+                    sortIndicatorIcon(sortArrowDirection)
                   )}
                 </div>
 
@@ -2518,7 +2518,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                   value="ACC" 
                   />
                   {leaderboardSort === "ACC" && (
-                    <SortIncidator direction={sortDirection} />
+                    sortIndicatorIcon(sortArrowDirection)
                   )}
                 </div>
 
@@ -2526,7 +2526,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                 <div className="sort-button-container" onClick={() => handleSort("SPEED")}>
                   <SpeedIcon className={`svg-fill ${leaderboardSort === "SPEED" ? "active" : ""}`} data-tooltip-id = "sp" />
                   {leaderboardSort === "SPEED" && (
-                    <SortIncidator direction={sortDirection} />
+                    sortIndicatorIcon(sortArrowDirection)
                   )}
                 </div>
 
@@ -2534,7 +2534,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                 <div className="sort-button-container" onClick={() => handleSort("SCR")}>
                   <ScoreIcon className={`svg-fill ${leaderboardSort === "SCR" ? "active" : ""}`} data-tooltip-id = "sc" value="SCR" />
                   {leaderboardSort === "SCR" && (
-                    <SortIncidator direction={sortDirection} />
+                    sortIndicatorIcon(sortArrowDirection)
                   )}
                 </div>
               </div>

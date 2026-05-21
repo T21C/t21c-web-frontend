@@ -5,13 +5,13 @@ import { toast } from "react-hot-toast";
 import api from "@/utils/api";
 import { getCdnErrorMessage } from "@/utils/uploadErrors";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
-import { DEFAULT_PROFILE_BANNER_PRESET_PATH } from "@/constants/bannerPresets";
+import { DEFAULT_PROFILE_BANNER_PRESET_PATH } from "@/config/constants/bannerPresets";
 import { customProfileBannersEnabled, publicAssetUrl, subjectHasCustomBannerEntitlement } from "@/utils/profileBanners";
 import {
   CDN_IMAGE_ACCEPT,
   cdnImageOutputFromFile,
   isCdnSupportedImageMimeType,
-} from "@/constants/cdnImageAccept";
+} from "@/config/constants/cdnImageAccept";
 import ImageSelectorPopup from "@/components/common/selectors/ImageSelectorPopup/ImageSelectorPopup";
 import "./profileBannerEditor.css";
 

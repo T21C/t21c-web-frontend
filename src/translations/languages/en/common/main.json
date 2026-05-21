@@ -48,7 +48,9 @@
     "update": "Update",
     "upload": "Upload",
     "return": "Return",
-    "reset": "Reset"
+    "reset": "Reset",
+    "create": "Create",
+    "createNew": "Create New"
   },
   "confirmations": {
     "unsavedChanges": "You have unsaved changes. Are you sure you want to leave?"

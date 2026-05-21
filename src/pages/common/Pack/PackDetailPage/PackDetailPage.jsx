@@ -838,7 +838,7 @@ const PackDetailPage = () => {
       
       <div className="pack-body page-content-70rem">
       <Link className="back-btn" to="/packs">
-        <ArrowIcon style={{ transform: 'rotate(180deg)' }} />
+        <ChevronIcon size={28} direction="left" />
         <span>{t('packDetail.backToPacks')}</span>
       </Link>
           <div className="header-container">

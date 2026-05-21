@@ -3,7 +3,7 @@ import React, { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
 import { getCdnErrorMessage } from '@/utils/uploadErrors';
-import { CDN_IMAGE_ACCEPT, isCdnSupportedImageMimeType } from '@/constants/cdnImageAccept';
+import { CDN_IMAGE_ACCEPT, isCdnSupportedImageMimeType } from '@/config/constants/cdnImageAccept';
 import toast from 'react-hot-toast';
 import './thumbnailupload.css';
 

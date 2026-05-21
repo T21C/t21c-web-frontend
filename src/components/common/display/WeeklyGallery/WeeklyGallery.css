@@ -29,7 +29,7 @@
 .weekly-gallery__item {
   position: absolute;
   transform-origin: center;
-  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.6s var(--ease-out-expo);
   cursor: pointer;
   border-radius: 16px;
   overflow: hidden;
@@ -304,7 +304,7 @@
 .weekly-gallery__arrow {
   position: absolute;
   top: 50%;
-  transform: translateY(-50%);
+  transform: translateY(-50%) scale(1.001); /* ??? to prevent snapping i guess?? */
   width: 48px;
   height: 48px;
   border: none;

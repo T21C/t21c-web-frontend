@@ -1019,15 +1019,20 @@
 }
 
 .level-detail .rank .leaderboard-sort .sort-direction-indicator {
-  color: var(--primary-text);
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-left: -0.2rem;
-  text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+  width: 1.7rem;
+  height: 1.7rem;
+  margin: 0 -0.6rem;
+  background-color: unset;
+  border: none;
+  padding: var(--spacing-xs);
+  border-radius: var(--border-radius);
+  cursor: default;
+  transition: all 0.2s var(--ease-out-expo);
 }
 
-.level-detail .rank .leaderboard-sort .sort-direction-indicator.flip-up {
-  transform: rotate(180deg);
+.level-detail .rank .leaderboard-sort .sort-direction-indicator:hover {
+  background-color: unset;
+  border: none;
 }
 
 .level-detail .rank .rank-header {
