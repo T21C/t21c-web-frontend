@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import PackItem, { PackLevelItem } from "@/components/cards/PackItem/PackItem";
 import { MetaTags } from "@/components/common/display";
 import { ScrollButton } from "@/components/common/buttons";
-import { EditIcon, PinIcon, LockIcon, EyeIcon, UsersIcon, ArrowIcon, PlusIcon, LikeIcon, DownloadIcon } from "@/components/common/icons";
+import { EditIcon, PinIcon, LockIcon, EyeIcon, UsersIcon, ArrowIcon, PlusIcon, LikeIcon, DownloadIcon, ChevronIcon } from "@/components/common/icons";
 import { EditPackPopup, PackDownloadPopup } from "@/components/popups/Packs";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePackContext } from "@/contexts/PackContext";
