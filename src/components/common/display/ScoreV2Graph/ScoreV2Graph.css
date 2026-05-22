@@ -1,0 +1,214 @@
+/* tuf-search: #ScoreV2Graph #scorev2Graph #display */
+.scorev2-graph {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  width: 100%;
+}
+
+.scorev2-graph__controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.scorev2-graph__misses-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.scorev2-graph__misses-label {
+  color: var(--secondary-text);
+  font-size: 0.9em;
+  min-width: 4.5rem;
+}
+
+.scorev2-graph__misses-slider {
+  flex: 1;
+  min-width: 120px;
+  accent-color: var(--btn-primary);
+}
+
+.scorev2-graph__misses-input {
+  width: 4rem;
+  padding: 4px 8px;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--border-radius);
+  background: var(--btn-neutral-dark);
+  color: var(--primary-text);
+  font-size: 0.9em;
+}
+
+.scorev2-graph__chart-wrap {
+  width: 100%;
+  height: 240px;
+}
+
+.scorev2-graph__empty {
+  color: var(--secondary-text);
+  font-size: 0.9em;
+  text-align: center;
+  padding: var(--spacing-md);
+}
+
+.scorev2-graph .recharts-tooltip-wrapper {
+  filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.5));
+}
+
+.scorev2-graph .recharts-default-tooltip {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+
+.scorev2-graph-tooltip {
+  background-color: var(--color-black);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--border-radius);
+  padding: 0.65rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 16rem;
+  box-shadow: var(--shadow-lg);
+}
+
+.scorev2-graph-tooltip__summary {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.scorev2-graph-tooltip__accuracy {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-white);
+}
+
+.scorev2-graph-tooltip__score {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--btn-primary);
+}
+
+.scorev2-graph-tooltip__judgements {
+  display: flex;
+  align-items: stretch;
+  gap: 3px;
+  background-color: color-mix(in srgb, var(--color-black) 40%, transparent);
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.scorev2-graph-tooltip__judgement-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+  min-width: 2.25rem;
+}
+
+.scorev2-graph-tooltip__judgement-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  line-height: 1.1;
+  text-align: center;
+}
+
+.scorev2-graph-tooltip__judgement-value {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+  min-width: 1.75rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-align: center;
+  background-color: color-mix(in srgb, var(--color-black) 35%, transparent);
+}
+
+/* Judgement colors — aligned with pass submission admin cards */
+.scorev2-graph-tooltip__judgement-label--miss,
+.scorev2-graph-tooltip__judgement-value--miss {
+  color: #ff0000;
+}
+
+.scorev2-graph-tooltip__judgement-label--early,
+.scorev2-graph-tooltip__judgement-value--early,
+.scorev2-graph-tooltip__judgement-label--late,
+.scorev2-graph-tooltip__judgement-value--late {
+  color: #ff6f4d;
+}
+
+.scorev2-graph-tooltip__judgement-label--e-perfect,
+.scorev2-graph-tooltip__judgement-value--e-perfect,
+.scorev2-graph-tooltip__judgement-label--l-perfect,
+.scorev2-graph-tooltip__judgement-value--l-perfect {
+  color: #fcff4d;
+}
+
+.scorev2-graph-tooltip__judgement-label--perfect,
+.scorev2-graph-tooltip__judgement-value--perfect {
+  color: #5fff4e;
+}
+
+.scorev2-graph-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  background: var(--color-black);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--border-radius);
+  padding: 12px 16px;
+  min-width: 320px;
+  width: min(600px, 95vw);
+  z-index: 120;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.scorev2-graph-dropdown__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  color: var(--secondary-text);
+  font-size: 1.1em;
+  font-weight: 600;
+  margin-bottom: var(--spacing-xs);
+  border-bottom: 1px solid var(--glass-border);
+  padding-bottom: 4px;
+}
+
+.scorev2-graph-dropdown__title {
+  flex: 1;
+  min-width: 0;
+}
+
+.scorev2-graph-dropdown__pp-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75em;
+  font-weight: 500;
+  color: var(--color-gray-2);
+  cursor: pointer;
+  flex-shrink: 0;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.scorev2-graph-dropdown__pp-toggle input[type="checkbox"] {
+  accent-color: var(--btn-primary);
+  cursor: pointer;
+}

@@ -119,6 +119,27 @@
     "date": "날짜",
     "user": "사용자"
   },
+  "scoreGraph": {
+    "header": "점수 대 정확도",
+    "open": "점수·정확도 차트 보기",
+    "close": "점수 차트 닫기",
+    "missesLabel": "미스",
+    "missesAria": "미스 수",
+    "noTilecount": "차트를 그리려면 타일 수가 필요합니다.",
+    "emptyCurve": "이 레벨에 대한 점수 곡선 데이터가 없습니다.",
+    "tooltipScore": "점수",
+    "tooltipMisses": "미스",
+    "tooltipEPerfect": "E/L 퍼펙트",
+    "tooltipEarly": "얼리/레이트",
+    "disablePP": "PP 비활성화",
+    "judgementsAria": "판정 분포",
+    "judgementMiss": "MISS",
+    "judgementEarly": "EARLY",
+    "judgementEPerfect": "EP",
+    "judgementPerfect": "P",
+    "judgementLPerfect": "LP",
+    "judgementLate": "LATE"
+  },
   "toRatePending": {
     "header": "재책정 대기",
     "rerateNumber": "요청 난이도",

@@ -119,6 +119,27 @@
     "date": "日期",
     "user": "用户"
   },
+  "scoreGraph": {
+    "header": "分数与精度",
+    "open": "显示分数与精度图表",
+    "close": "关闭分数图表",
+    "missesLabel": "Miss",
+    "missesAria": "Miss 数量",
+    "noTilecount": "需要 tilecount 才能绘制此图表。",
+    "emptyCurve": "该关卡没有可用的分数曲线数据。",
+    "tooltipScore": "分数",
+    "tooltipMisses": "Miss",
+    "tooltipEPerfect": "E/L Perfect",
+    "tooltipEarly": "Early/Late",
+    "disablePP": "禁用 PP",
+    "judgementsAria": "判定分布",
+    "judgementMiss": "MISS",
+    "judgementEarly": "EARLY",
+    "judgementEPerfect": "EP",
+    "judgementPerfect": "P",
+    "judgementLPerfect": "LP",
+    "judgementLate": "LATE"
+  },
   "toRatePending": {
     "header": "待重新评级",
     "rerateNumber": "请求评级",

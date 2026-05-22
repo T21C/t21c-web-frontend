@@ -219,7 +219,6 @@
 }
 
 .level-detail .pp-display {
-  text-shadow: 0 1px 7px rgba(0, 0, 0, 1);
   font-size: var(--font-size-sm);
   font-weight: 600;
   color: var(--secondary-text);
@@ -519,6 +518,33 @@
   right: -50%;
   flex-direction: column;
   align-items: center;
+}
+
+.level-detail .scorev2-graph-dropdown-anchor {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.level-detail .wrapper-level .difficulty-icon-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  border-radius: var(--border-radius);
+  transition: box-shadow var(--transition-normal);
+}
+
+.level-detail .wrapper-level .difficulty-icon-trigger:hover,
+.level-detail .wrapper-level .difficulty-icon-trigger.open {
+  background: var(--color-white-t15);
 }
 
 .level-detail .header-corner-icon {
@@ -1369,7 +1395,8 @@
 }
 
 @media (max-width: 600px) {
-  .level-detail .rerate-history-dropdown {
+  .level-detail .rerate-history-dropdown,
+  .level-detail .scorev2-graph-dropdown {
     min-width: 180px;
     max-width: 98vw;
     left: 50%;
@@ -2359,6 +2386,7 @@
 /* Improve dropdown positioning on mobile */
 @media (max-width: 768px) {
   .level-detail .rerate-history-dropdown,
+  .level-detail .scorev2-graph-dropdown,
   .level-detail .title-container .aliases-dropdown,
   .curation-tooltip-dropdown:not(.level-detail__curation-inline-assignee),
   .level-detail .weekly-appearance-dropdown,
@@ -2372,7 +2400,8 @@
     z-index: var(--z-modal);
   }
   
-  .level-detail .rerate-history-dropdown {
+  .level-detail .rerate-history-dropdown,
+  .level-detail .scorev2-graph-dropdown {
     max-width: 90vw;
     min-width: 280px;
   }

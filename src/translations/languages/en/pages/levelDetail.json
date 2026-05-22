@@ -119,6 +119,27 @@
     "date": "Date",
     "user": "User"
   },
+  "scoreGraph": {
+    "header": "Score vs accuracy",
+    "open": "Show score vs accuracy chart",
+    "close": "Close score chart",
+    "missesLabel": "Misses",
+    "missesAria": "Miss count",
+    "noTilecount": "Tilecount is required to plot this chart.",
+    "emptyCurve": "No score curve data for this level.",
+    "tooltipScore": "Score",
+    "tooltipMisses": "Misses",
+    "tooltipEPerfect": "E/L perfect",
+    "tooltipEarly": "Early/Late",
+    "disablePP": "Disable PP",
+    "judgementsAria": "Judgement breakdown",
+    "judgementMiss": "MISS",
+    "judgementEarly": "EARLY",
+    "judgementEPerfect": "EP",
+    "judgementPerfect": "P",
+    "judgementLPerfect": "LP",
+    "judgementLate": "LATE"
+  },
   "toRatePending": {
     "header": "Pending rerate",
     "rerateNumber": "Requested rating",

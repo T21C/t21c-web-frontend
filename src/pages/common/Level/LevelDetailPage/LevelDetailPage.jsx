@@ -23,7 +23,7 @@ import { ArtistPopup } from "@/components/popups/Artists";
 import { useAuth } from "@/contexts/AuthContext";
 import api from "@/utils/api";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
-import { MetaTags } from "@/components/common/display";
+import { MetaTags, ScoreV2GraphDropdown } from "@/components/common/display";
 import { StatusBanner } from "@/components/common/display/StatusBanner/StatusBanner";
 import { 
   DownloadIcon, 
@@ -694,12 +694,15 @@ const LevelDetailPage = ({ mockData = null }) => {
   const [showDownloadPopup, setShowDownloadPopup] = useState(false);
   const [showRerateDropdown, setShowRerateDropdown] = useState(false);
   const [rerateArrowEnabled, setRerateArrowEnabled] = useState(true);
+  const [showScoreGraphDropdown, setShowScoreGraphDropdown] = useState(false);
+  const [scoreGraphIconEnabled, setScoreGraphIconEnabled] = useState(true);
   const [isRefreshingLeaderboard, setIsRefreshingLeaderboard] = useState(false);
   const [showWeeklyAppearanceDropdown, setShowWeeklyAppearanceDropdown] = useState(false);
   const [showToRatePendingDropdown, setShowToRatePendingDropdown] = useState(false);
   const weeklyHeaderCornerSlotRef = useRef(null);
   const toRateHeaderCornerSlotRef = useRef(null);
   const rerateHistoryAnchorRef = useRef(null);
+  const scoreGraphAnchorRef = useRef(null);
   const tagsAnchorRef = useRef(null);
   /** Tracks last seen CDN zip identity so we can refetch `/cdnData` after upload/import (`dlLink` / `fileId` change). */
   const cdnZipIdentityRef = useRef(null);
@@ -1094,6 +1097,26 @@ const LevelDetailPage = ({ mockData = null }) => {
     }
     setShowRerateDropdown(true);
     setRerateArrowEnabled(false);
+  };
+
+  const handleScoreGraphDropdownClose = () => {
+    setShowScoreGraphDropdown(false);
+    const enableIcon = () => {
+      setScoreGraphIconEnabled(true);
+      window.removeEventListener('mouseup', enableIcon);
+    };
+    window.addEventListener('mouseup', enableIcon);
+  };
+
+  const handleScoreGraphDropdownToggle = (e) => {
+    e.stopPropagation();
+    if (!scoreGraphIconEnabled) return;
+    if (showScoreGraphDropdown) {
+      handleScoreGraphDropdownClose();
+      return;
+    }
+    setShowScoreGraphDropdown(true);
+    setScoreGraphIconEnabled(false);
   };
 
   useEffect(() => {
@@ -2019,7 +2042,37 @@ const LevelDetailPage = ({ mockData = null }) => {
               <div className="level-id mobile">#{effectiveId}</div>
               <div className="difficulty-curation-row">
               <div className="diff rerate-history-container">
-                {difficulty?.icon ? (
+                {difficulty?.icon && res.level?.tilecount ? (
+                  <div ref={scoreGraphAnchorRef} className="scorev2-graph-dropdown-anchor">
+                    <button
+                      type="button"
+                      className={`difficulty-icon-trigger ${showScoreGraphDropdown ? 'open' : ''}`}
+                      aria-expanded={showScoreGraphDropdown}
+                      aria-haspopup="dialog"
+                      title={t('levelDetail.scoreGraph.open', { defaultValue: 'Show score vs accuracy chart' })}
+                      onClick={handleScoreGraphDropdownToggle}
+                    >
+                      <img
+                        src={difficulty.icon}
+                        alt={difficulty.name || 'Difficulty icon'}
+                        className="difficulty-icon"
+                      />
+                    </button>
+                    <ScoreV2GraphDropdown
+                      show={showScoreGraphDropdown}
+                      onClose={handleScoreGraphDropdownClose}
+                      containerRef={scoreGraphAnchorRef}
+                      tilecount={res.level.tilecount}
+                      levelData={{
+                        baseScore: res.level.baseScore,
+                        ppBaseScore: res.level.ppBaseScore,
+                        diffId: res.level.diffId,
+                        difficulty,
+                      }}
+                      difficultyDict={difficultyDict}
+                    />
+                  </div>
+                ) : difficulty?.icon ? (
                   <img
                     src={difficulty.icon}
                     alt={difficulty.name || 'Difficulty icon'}
