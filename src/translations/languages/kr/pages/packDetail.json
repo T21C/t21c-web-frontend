@@ -14,7 +14,7 @@
     "created": "제작일"
   },
   "items": {
-    "title": "Items",
+    "title": "항목",
     "dragHint": "Drag items to reorder or move into folders",
     "empty": "This pack has no items yet.",
     "dragToReorder": "Drag to reorder"

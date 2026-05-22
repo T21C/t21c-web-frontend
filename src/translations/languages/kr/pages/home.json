@@ -7,7 +7,7 @@
     "revamped": "리뉴얼됨"
   },
   "buttons": {
-    "browseLevels": "채보 둘러보기",
+    "browseLevels": "레벨 둘러보기",
     "browsePasses": "클리어 기록 보기",
     "browsePacks": "맵 팩 둘러보기",
     "leaderboard": "리더보드"
@@ -18,7 +18,7 @@
   "stats": {
     "overview": {
       "title": "개요",
-      "totalLevels": "총 채보 수",
+      "totalLevels": "총 레벨 수",
       "totalPasses": "총 클리어 수",
       "totalPlayers": "총 플레이어 수",
       "passesLast30Days": "최근 30일 클리어 수"
@@ -38,10 +38,10 @@
   },
   "weeklies": {
     "title": "주간 레벨",
-    "description": "이번주의 추천된 큐레이션입니다",
+    "description": "이번주의 큐레이션 추천입니다",
     "primary": "Legendary",
     "secondary": "Loved",
-    "error": "Failed to load weeklies",
+    "error": "주간 레벨 불러오기 실패",
     "empty": "No levels scheduled for this week"
   },
   "footer": {
@@ -51,7 +51,7 @@
     },
     "quickLinks": {
       "title": "빠른 링크",
-      "browseLevels": "채보 둘러보기",
+      "browseLevels": "레벨 둘러보기",
       "browsePasses": "클리어 둘러보기",
       "browsePacks": "맵 팩 둘러보기",
       "leaderboard": "리더보드",
@@ -66,7 +66,7 @@
       "github": "GitHub"
     },
     "copyright": {
-      "main": "© {{year}} TUF. Not affiliated with 7th Beat Games.",
+      "main": "© {{year}} TUF. 7th Beat Games와 무관합니다.",
       "credit": "❤️를 담아 V0W4N이 제작"
     }
   }

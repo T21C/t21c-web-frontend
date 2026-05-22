@@ -53,10 +53,12 @@
       "baseScore": "기본 점수:",
       "sortOrder": "정렬 순서:",
       "legacy": "레거시:",
-      "fallbackId": "대체 난이도 ID 입력:"
+      "fallbackId": "대체 난이도 ID 입력:",
+      "fallbackDiff": "대체 난이도:"
     },
     "placeholders": {
-      "fallbackId": "대체할 난이도의 ID를 입력하세요"
+      "fallbackId": "대체할 난이도의 ID를 입력하세요",
+      "fallbackDiff": "대체할 난이도를 입력해주세요"
     },
     "helpText": {
       "fallbackId": "{{name}}을(를) 사용하는 모든 레벨이 이 난이도로 업데이트됩니다.",
@@ -75,7 +77,7 @@
       "title": "난이도 삭제",
       "warning": {
         "title": "⚠️ 경고: 파괴적인 작업 ⚠️",
-        "message": "다음 난이도를 삭제하려고 합니다: {{name}}",
+        "message": "{{name}} 난이도를 삭제하려고 합니다.",
         "description": "이 작업은:",
         "points": [
           "되돌릴 수 없습니다",

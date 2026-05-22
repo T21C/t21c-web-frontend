@@ -38,6 +38,7 @@
         "passes": "클리어",
         "rating": "책정",
         "tufHelper": "TUFHelper",
+        "tufExtension": "TUFExtension",
         "tos": "ToS",
         "privacyPolicy": "개인정보 처리방침",
         "aboutUs": "TUF 소개",
@@ -61,7 +62,7 @@
         "creators": "제작자",
         "backups": "백업",
         "auditLog": "Audit Log",
-        "curations": "Curations",
+        "curations": "큐레이션",
         "songs": "곡",
         "artists": "작곡가"
       }

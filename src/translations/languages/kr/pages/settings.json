@@ -28,6 +28,11 @@
     "nicknameSuccess": "닉네임이 변경되었습니다",
     "nicknameError": "닉네임을 변경할 수 없습니다",
     "nicknameLength": "닉네임은 3자 이상 60자 이하여야 합니다.",
+    "bioLabel": "내 소개",
+    "bioPlaceholder": "사람들에게 당신에 대해 알려주세요! (최대 2000자)",
+    "bioTooLong": "내 소개는 최대 2000자 입니다.",
+    "bioSuccess": "내 소개 업데이트됨",
+    "bioError": "내 소개를 업데이트 할 수 없습니다",
     "openProfile": "내 플레이어 프로필 보기",
     "openProfileNewTab": "공개 플레이어 프로필 새 탭에서 열기",
     "noPlayerTitle": "플레이어 프로필 없음",
@@ -43,6 +48,12 @@
     "stellarIconOption3": "스타일 3",
     "stellarIconSaved": "아이콘 스타일이 저장되었습니다",
     "stellarIconError": "아이콘 스타일을 저장할 수 없습니다"
+  },
+  "preview": {
+    "enter": "미리보기",
+    "enterAria": "{{section}}만 미리보기",
+    "exit": "미리보기 나가기",
+    "exitAria": "전체 설정 보기 + 미리보기 나가기"
   },
   "banner": {
     "sectionTitle": "프로필 배너",
@@ -82,6 +93,11 @@
     "displayNameError": "이름을 변경할 수 없습니다",
     "displayNameTooShort": "이름은 2자 이상이어야 합니다.",
     "displayNameTooLong": "이름은 100자 이하여야 합니다.",
+    "bioLabel": "내 소개",
+    "bioPlaceholder": "사람들에게 당신에 대해 알려주세요! (최대 2000자)",
+    "bioTooLong": "내 소개는 최대 2000자 입니다.",
+    "bioSuccess": "내 소개 업데이트됨",
+    "bioError": "내 소개를 업데이트 할 수 없습니다",
     "aliasesLabel": "별칭",
     "aliasesHint": "검색용 최대 {{max}}개. 표시 이름·다른 크리에이터 이름·별칭과 겹칠 수 없습니다(대소문자 무시).",
     "aliasesPlaceholder": "새 별칭",

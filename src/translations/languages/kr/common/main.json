@@ -48,7 +48,9 @@
     "update": "업데이트",
     "upload": "업로드",
     "return": "Return",
-    "reset": "초기화"
+    "reset": "초기화",
+    "create": "만들기",
+    "createNew": "새로 만들기"
   },
   "confirmations": {
     "unsavedChanges": "저장하지 않은 변경 사항이 있습니다. 정말로 나가시겠습니까?"
@@ -74,7 +76,7 @@
     "mostly_declined": "대부분 거절",
     "mostly_allowed": "대부분 허가",
     "conditional": "조건 있음",
-    "ysmod_only": "YoutubeStreamMod 전용",
+    "ysmod_only": "YoutubeStreamMod 필요",
     "allowed": "허가",
     "tuf_verified": "TUF 인증됨"
   },

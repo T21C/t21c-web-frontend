@@ -26,9 +26,9 @@
       }
     },
     "terms": {
-      "label": "I have read and agree with the",
-      "privacyPolicy": "개인정보처리방침침 ",
-      "and": "and",
+      "label": "개인정보처리방침과 이용약관을 읽었으며, 동의합니다. ",
+      "privacyPolicy": "개인정보처리방침",
+      "and": ", ",
       "termsOfService": "이용약관"
     },
     "captcha": {

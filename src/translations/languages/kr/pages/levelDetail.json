@@ -58,7 +58,8 @@
     },
     "totalClears": {
       "label": "총 클리어 수",
-      "value": "{{count}}"
+      "value": "{{count}}",
+      "tooltip": "총 {{total}}개 클리어, {{unique}}명 클리어"
     },
     "waiting": "로딩 중..."
   },
@@ -80,6 +81,7 @@
   "leaderboard": {
     "header": "리더보드",
     "refresh": "리더보드 새로고침",
+    "refreshed": "리더보드 새로고침됨!",
     "notBeaten": "이 레벨은 아직 클리어되지 않았어요!",
     "noClearsYet": "클리어 없음!",
     "challenge": "최초 클리어에 도전해 보시겠어요?",
@@ -114,8 +116,8 @@
     "previous": "이전",
     "current": "현재",
     "baseScore": "기반 점수",
-    "date": "Date",
-    "user": "User"
+    "date": "날짜",
+    "user": "사용자"
   },
   "toRatePending": {
     "header": "재책정 대기",
@@ -127,9 +129,9 @@
     "header": "레벨 태그"
   },
   "weeklyAppearance": {
-    "header": "Weekly Appearances",
-    "primary": "Primary",
-    "secondary": "Secondary",
+    "header": "주간 노출",
+    "primary": "1순위",
+    "secondary": "2순위",
     "position": "Position {{position}}"
   }
 } 

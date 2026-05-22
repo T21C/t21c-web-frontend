@@ -59,6 +59,10 @@
   "warnings": {
     "pendingProfiles": "다음 프로필이 생성 요청됩니다:"
   },
+  "rules": {
+    "checkbox": "저는 규칙을 읽었으며 이를 준수했음을 확인합니다.",
+    "rulesLink": "규칙 보기"
+  },
   "fieldShort": {
     "levelId": "레벨 ID",
     "videoLink": "영상 링크",
@@ -72,7 +76,7 @@
     "early": "빠름!",
     "late": "느림!",
     "rulesAccepted": "규칙 확인",
-    "keyMode": "12K/16K"
+    "keyMode": "12키/16키"
   },
   "tilecountMismatch": {
     "title": "판정 합계가 레벨 타일 수와 일치하지 않습니다",

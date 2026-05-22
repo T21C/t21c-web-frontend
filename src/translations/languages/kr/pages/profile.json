@@ -56,35 +56,35 @@
       "tooltips": {
         "rankedScore": {
           "aria": "랭크 점수 설명",
-          "description": "상위 20개 최고 클리어의 감쇠 합 (재클리어 제외)"
+          "description": "상위 20개 클리어 점수 합산 (순위 낮을수록 감소, 재클리어 제외)"
         },
         "totalScoreV2": {
           "aria": "총 점수 설명",
-          "description": "재클리어를 제외한 모든 클리어 점수의 합"
+          "description": "모든 클리어 점수 합산 (재클리어 제외)"
         },
         "generalScore": {
           "aria": "일반 점수 설명",
-          "description": "재클리어를 포함한 모든 클리어 점수의 합"
+          "description": "모든 클리어 점수 합산 (재클리어 포함)"
         },
         "ppScore": {
-          "aria": "PP 점수 설명",
-          "description": "랭크 점수와 같지만, 모든 클리어가 퓨어 퍼펙트여야 함"
+          "aria": "완벽한 플레이 점수 설명",
+          "description": "랭크 점수와 같지만, 모든 클리어가 완벽한 플레이"
         },
         "wfScore": {
-          "aria": "WF 점수 설명",
-          "description": "세계 최초 클리어의 레벨 기본 점수 합"
+          "aria": "세계 최초 점수 설명",
+          "description": "세계 최초 클리어한 레벨 기본 점수 합산"
         },
         "wfPPScore": {
-          "aria": "WF PP 점수 설명",
-          "description": "세계 최초이면서 퓨어 퍼펙트인 클리어 점수의 합"
+          "aria": "세계 최초 PP 점수 설명",
+          "description": "세계 최초로 완벽한 플레이한 클리어 점수 합산"
         },
         "score12K": {
           "aria": "12키 점수 설명",
-          "description": "랭크 점수와 같지만, 모든 클리어가 12키여야 함"
+          "description": "랭크 점수와 같지만, 모든 클리어가 12키"
         },
         "averageXacc": {
           "aria": "평균 절대정확도 설명",
-          "description": "상위 20개 패스의 평균 정확도"
+          "description": "상위 20개 클리어의 평균 정확도"
         }
       }
     },
@@ -117,7 +117,7 @@
   },
   "sort": {
     "byScore": "점수",
-    "byImpact": "Impact",
+    "byImpact": "랭크",
     "byDate": "날짜",
     "byXacc": "절대정확도",
     "byDifficulty": "난이도",
@@ -129,8 +129,8 @@
   "labels": {
     "totalPasses": "{{count}}개 클리어"
   },
-  "showHiddenPasses": "Show hidden passes",
-  "hideHiddenPasses": "Hide hidden passes",
+  "showHiddenPasses": "숨긴 클리어 보기",
+  "hideHiddenPasses": "숨긴 클리어 숨기기",
   "infiniteScroll": {
     "end": "제일 아래에 도달했어요!"
   },
@@ -155,9 +155,9 @@
       "clears12K": "12키 클리어",
       "clears16K": "16키 클리어",
       "clearsNoHoldTap": "No-hold tap clears",
-      "totalPurePerfectClears": "퓨어 퍼펙트 클리어 합계",
+      "totalPurePerfectClears": "완벽한 클리어 합계",
       "duplicatePasses": "중복 클리어",
-      "hiddenPasses": "숨겨진 클리어 (visible to you)"
+      "hiddenPasses": "숨긴 클리어 (나에게만 보여짐)"
     },
     "judgements": {
       "totalTilesHit": "총 누른 타일",
@@ -174,7 +174,7 @@
       "totalTilecountCleared": "클리어한 총 타일 수",
       "totalPlaytimeMs": "예상 플레이 시간",
       "averageBpm": "평균 BPM (클리어한 레벨)",
-      "totalRawScoreV2": "모든 클리어 점수 합 (중복 포함)"
+      "totalRawScoreV2": "총 점수 (중복 포함)"
     },
     "scores": {
       "rankedScore": "랭크 점수",
@@ -182,11 +182,11 @@
       "totalScoreV2": "총 점수",
       "ppScore": "완벽한 플레이 점수",
       "wfScore": "세계 최초 점수",
-      "wfPPScore": "세계 최초 PP 점수",
+      "wfPPScore": "세계 최초 완플 점수",
       "score12K": "12키 점수",
       "averageXacc": "평균 절대정확도",
       "worldsFirstCount": "세계 최초 클리어",
-      "worldsFirstPPCount": "세계 최초 PP 클리어"
+      "worldsFirstPPCount": "세계 최초 완플 클리어"
     },
     "extremes": {
       "firstPassAt": "첫 클리어",
@@ -203,13 +203,13 @@
       "accountAgeDays": "가입 일수",
       "passesLast30Days": "최근 30일 클리어 수",
       "uniqueLevelsLiked": "좋아요 표시한 레벨 수",
-      "packsOwned": "제작판 팩 수",
+      "packsOwned": "제작한 팩 수",
       "packsFavorited": "좋아요 표시한 팩 수"
     },
     "difficultyType": {
-      "PLANETARY": "행성",
-      "GALACTIC": "은하",
-      "UNIVERSAL": "우주",
+      "PLANETARY": "P",
+      "GALACTIC": "G",
+      "UNIVERSAL": "U",
       "SPECIAL": "특수"
     }
   },

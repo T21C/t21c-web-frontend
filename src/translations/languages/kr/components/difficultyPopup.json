@@ -228,10 +228,7 @@
     }
   },
   "buttons": {
-    "create": "생성",
-    "save": "저장",
-    "delete": "삭제",
-    "cancel": "취소"
+    "create": "생성"
   },
   "errors": {
     "passwordRequired": "슈퍼 관리자 비밀번호가 필요합니다",

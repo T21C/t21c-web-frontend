@@ -7,11 +7,12 @@
     "creator": "제작자",
     "clears": "클리어",
     "totalClears": "전체 클리어",
+    "addToPack": "팩에 추가",
     "buttons": {
-      "edit": "편집"
+      "addToPack": "팩에 추가"
     },
     "links": {
-      "workshop": "워크숍 링크",
+      "workshop": "창작마당 링크",
       "download": "다운로드 링크",
       "unavailable": "링크 없음"
     }
@@ -24,7 +25,7 @@
     },
     "flags": {
       "worldsFirst": "최초",
-      "worldsFirstPP": "최초 PP",
+      "worldsFirstPP": "최초 완플!",
       "twelveKey": "12키",
       "sixteenKey": "16키",
       "noHoldTap": "홀드 설정 꺼짐"
@@ -41,7 +42,7 @@
       "generalScore": "일반 점수",
       "ppScore": "완벽한 플레이 점수",
       "wfScore": "최초 클리어 점수",
-      "wfPPScore": "최초 PP 점수",
+      "wfPPScore": "최초 완벽한 플레이 점수",
       "score12K": "12키 점수",
       "averageXacc": "평균 절대정확도",
       "totalPasses": "총 클리어 수",
@@ -82,7 +83,7 @@
       "forcedPrivate": "비공개 (잠김)"
     },
     "stats": {
-      "levels": "레벨(들)"
+      "levels": "레벨"
     }
   }
 }
