@@ -60,20 +60,20 @@
   },
   "toolTip": {
     "search": "검색 도움말",
-    "filter": "Toggle Filters",
-    "sort": "Toggle Sort Options",
-    "reset": "Reset All Filters"
+    "filter": "필터",
+    "sort": "정렬",
+    "reset": "필터 초기화"
   },
   "create": {
-    "success": "Pack created successfully!",
-    "error": "Failed to create pack"
+    "success": "팩이 성공적으로 생성되었습니다!",
+    "error": "팩 생성을 실패했습니다"
   },
   "loading": {
-    "more": "Loading more packs..."
+    "more": "더 많은 팩 로딩 중..."
   },
   "error": {
-    "loadFailed": "Failed to load packs",
-    "retry": "Retry"
+    "loadFailed": "팩 불러오기 실패",
+    "retry": "재시도"
   },
-  "endMessage": "No more packs to load"
+  "endMessage": "불러올 팩 없음"
 }

@@ -1,5 +1,5 @@
 {
-  "title": "Edit Profile",
+  "title": "프로필 수정",
   "error": {
     "newPasswordsDoNotMatch": "New passwords do not match",
     "failedToChangePassword": "Failed to change password",
@@ -32,17 +32,17 @@
   "form": {
     "labels": {
       "username": "Username",
-      "nickname": "Nickname",
-      "email": "Email",
-      "country": "Country or Region"
+      "nickname": "닉네임",
+      "email": "이메일",
+      "country": "국가/지역"
     },
     "emailVerification": {
-      "message": "You need to verify your email",
+      "message": "이메일을 인증해야 합니다",
       "arrow": "➔"
     },
     "buttons": {
-      "saveChanges": "Save Changes",
-      "saving": "Saving..."
+      "saveChanges": "변경 사항 저장",
+      "saving": "저장 중..."
     }
   },
   "emailChange": {

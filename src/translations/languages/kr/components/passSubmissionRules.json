@@ -1,12 +1,12 @@
 {
-  "title": "Submission Rules and Guidelines",
+  "title": "제출 규칙 및 가이드라인",
   "close": "×",
   "strictOnly": {
     "title": "오직 엄격 클리어만 인정됩니다",
     "note": "만약 창작마당 레벨을 플레이 중이라면, 레벨 에디터를 사용해 엄격 판정으로 바꾸세요"
   },
   "noMobile": {
-    "title": "모바일 클리어 비허용"
+    "title": "모바일 클리어 금지"
   },
   "clearRules": {
     "title": "클리어 제출 규칙",
@@ -14,94 +14,94 @@
   },
   "rules": {
     "rule1": {
-      "title": "Rule 1 – Modified Keycaps (Multi-switch Presses)",
+      "title": "규칙 1번 – 개조된 키캡 (다중 키 입력)",
       "offenses": {
-        "first": "1st Offense:",
-        "second": "2nd Offense:",
-        "third": "3rd Offense:"
+        "first": "1차 위반:",
+        "second": "2차 위반:",
+        "third": "3차 위반:"
       },
       "penalties": {
-        "first": "Warning and deletion of clear",
-        "second": "1-month ban",
-        "third": "6-month ban"
+        "first": "경고 및 클리어 삭제",
+        "second": "1개월 차단",
+        "third": "6개월 차단"
       },
-      "explanation": "Using modified keycaps that allow multiple switches to be pressed at once provides an unfair mechanical advantage."
+      "explanation": "여러 스위치를 동시에 누를 수 있도록 개조된 키캡을 사용하는 것은 불공정한 물리적 이점을 제공합니다."
     },
     "rule2": {
-      "title": "Rule 2 – Untruthful Edited Judgements (Accuracy Manipulation)",
+      "title": "규칙 2번 – 판정 결과 조작 (정확도 조작)",
       "offenses": {
-        "first": "1st Offense:",
-        "second": "2nd Offense:",
-        "third": "3rd Offense:"
+        "first": "1차 위반:",
+        "second": "2차 위반:",
+        "third": "3차 위반:"
       },
       "penalties": {
-        "first": "Warning and adjustment of clear judgements",
-        "second": "1-month ban",
-        "third": "6-month ban"
+        "first": "경고 및 클리어 판정 수정",
+        "second": "1개월 차단",
+        "third": "6개월 차단"
       },
-      "explanation": "Editing judgment data, especially to artificially improve accuracy, undermines leaderboard integrity."
+      "explanation": "판정을 수정하는 것, 특히 정확도를 인위적으로 높이는 행위는 리더보드의 신뢰성을 훼손합니다."
     },
     "rule3": {
-      "title": "Rule 3 – Edited Starting BPM (Overload Mechanic Abuse)",
+      "title": "규칙 3번 – 시작 BPM 수정 (과부하 메커니즘 악용)",
       "offenses": {
-        "first": "1st Offense:",
-        "second": "2nd Offense:"
+        "first": "1차 위반:",
+        "second": "2차 위반:"
       },
       "penalties": {
-        "first": "Deletion of clear and 3-month ban",
-        "second": "6-month ban"
+        "first": "클리어 기록 삭제 및 3개월 차단",
+        "second": "6개월 차단"
       },
-      "explanation": "Altering the starting BPM to bypass intended difficulty (e.g., manipulating overload mechanics) is prohibited."
+      "explanation": "의도된 난이도를 우회하기 위해 시작 BPM을 변경하는 행위(예: 과부하 메커니즘 조작)는 금지됩니다."
     },
     "rule4": {
-      "title": "Rule 4 – Spliced Clears",
+      "title": "규칙 4번 – 짜깁기 클리어 (편집)",
       "offenses": {
-        "first": "1st Offense:"
+        "first": "1차 위반:"
       },
       "penalties": {
-        "first": "6-month ban"
+        "first": "6개월 차단"
       },
-      "explanation": "Combining partial playthroughs into one \"clear\" video or replay misrepresents actual performance."
+      "explanation": "여러 플레이 영상을 하나의 \"클리어\" 영상이나 리플레이로 합치는 것은 실제 실력을 왜곡하는 행위입니다."
     },
     "rule5": {
-      "title": "Rule 5 – Timescale Abuse",
+      "title": "규칙 5번 – 배속 조작 악용",
       "offenses": {
-        "first": "1st Offense:"
+        "first": "1차 위반:"
       },
       "penalties": {
-        "first": "6-month ban"
+        "first": "6개월 차단"
       },
-      "explanation": "Intentionally altering game speed to gain an advantage invalidates score legitimacy."
+      "explanation": "이점을 얻기 위해 게임 속도를 의도적으로 변경하는 것은 점수의 정당성을 무효화합니다."
     },
     "rule6": {
-      "title": "Rule 6 – Keep Audio Buffer at least 256 when using FMOD",
+      "title": "규칙 6번 – FMOD 사용 시 오디오 버퍼를 최소 256으로 유지하기",
       "required": {
-        "label": "Required Setting:",
-        "text": "Audio buffer must be set to 256 or higher when using FMOD."
+        "label": "필수 설정:",
+        "text": "FMOD를 사용할 때는 오디오 버퍼를 256 이상으로 설정해야 합니다."
       },
-      "explanation": "Ensures timing consistency across all players and prevents desync-related advantages due to audio engine replacement."
+      "explanation": "이는 모든 플레이어 간의 타이밍 일관성을 보장하고, 오디오 엔진 교체로 인한 싱크 어긋남 관련 이점을 방지합니다."
     },
     "rule7": {
-      "title": "Rule 7 – Chart Modification Restrictions",
-      "allowed": "Allowed:",
-      "allowedText": "Removal of visual effects (e.g., via Enhanced Effect Remover or direct download conversion).",
-      "notAllowed": "Not Allowed:",
-      "notAllowedText": "Any gameplay-affecting edits.",
-      "specialCase": "Special Case:",
-      "specialCaseText": "If fixing a chart resolves an off-sync issue, contact staff before submitting the clear.",
-      "explanation": "Prevents gameplay changes that could alter difficulty, while allowing harmless visual adjustments.",
-      "note": "In levels with decoration-based gimmicks that directly affect gameplay the converter cannot be used, you should instead opt for specialized mods."
+      "title": "규칙 7번 – 채보 수정 제한",
+      "allowed": "허용:",
+      "allowedText": "시각 효과 제거 (예: Enhanced Effect Remover 모드 사용 또는 직접 다운로드 변환)",
+      "notAllowed": "금지:",
+      "notAllowedText": "게임 플레이에 영향을 주는 모든 수정 행위",
+      "specialCase": "예외:",
+      "specialCaseText": "채보를 수정하여 싱크가 맞지 않는 문제를 해결하는 경우, 클리어 기록을 제출하기 전에 스태프에게 문의하세요.",
+      "explanation": "난이도를 변화시킬 수 있는 게임 플레이 변경은 방지하면서, 플레이에 지장이 없는 시각적 조정은 허용합니다.",
+      "note": "게임 플레이에 직접적인 영향을 주는 장식 기반 기믹이 있는 레벨에서는 변환기를 사용할 수 없으며, 전용 모드를 사용해야 합니다."
     },
     "rule8": {
-      "title": "Rule 8 – General Misconduct",
+      "title": "규칙 8번 – 일반적인 부적절한 행위",
       "caseByCase": {
-        "label": "Case-by-case basis:",
-        "text": "Harassment or toxicity in server chats may result in server timeouts. Extreme cases (doxxing, threats of harm, etc.) can result in server and leaderboard bans."
+        "label": "사안에 따라 적용(케바케):",
+        "text": "서버 채팅에서의 괴롭힘이나 공격적인 태도는 서버 타임아웃 처분으로 이어질 수 있습니다. 심각한 경우 (신상 털기, 위해 협박 등)에는 서버 및 리더보드 이용이 차단될 수 있습니다."
       },
-      "explanation": "Maintaining a respectful and safe community environment is essential. Be nice."
+      "explanation": "존중하고 안전한 커뮤니티 환경을 유지하는 것은 필수적입니다. 친절하게 대해주세요."
     }
   },
   "footer": {
-    "note": "Additional rules may be added when necessary to maintain fairness and uphold competition standards."
+    "note": "공정성을 유지하고 경쟁 표준을 지키기 위해 필요한 경우 추가 규칙이 더해질 수 있습니다."
   }
 }

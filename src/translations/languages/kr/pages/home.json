@@ -8,8 +8,8 @@
   },
   "buttons": {
     "browseLevels": "레벨 둘러보기",
-    "browsePasses": "클리어 기록 보기",
-    "browsePacks": "맵 팩 둘러보기",
+    "browsePasses": "클리어 기록",
+    "browsePacks": "레벨 팩",
     "leaderboard": "리더보드"
   },
   "tooltips": {

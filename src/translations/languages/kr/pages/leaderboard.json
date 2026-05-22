@@ -7,9 +7,9 @@
     "placeholder": "플레이어 이름으로 검색..."
   },
   "tooltips": {
-    "filter": "결과 필터링",
-    "sort": "결과 정렬",
-    "reset": "모든 필터 초기화",
+    "filter": "필터",
+    "sort": "정렬",
+    "reset": "필터 초기화",
     "recentAsc": "오름차순",
     "recentDesc": "내림차순"
   },
