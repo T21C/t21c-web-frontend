@@ -329,7 +329,7 @@ export function buildPlayerStatGroups(ff, t, difficultyDict = {}, playerScores =
 
   const typeRows = PLAYER_CLEARS_BY_NAME_BUCKET_ORDER.map((k) => ({
     key: `type_${k}`,
-    label: t(`profile.funFacts.difficultyType.${k}`),
+    label: k,
     value: formatCount(byNameBucket[k] ?? 0),
   }));
 
