@@ -582,6 +582,28 @@
   cursor: not-allowed;
 }
 
+.edit-level-popup__xacc-curve-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: end;
+  padding: 8px;
+  background-color: var(--btn-primary);
+  color: var(--color-white);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+
+.edit-level-popup__xacc-curve-button:hover {
+  background-color: var(--btn-primary-hover);
+}
+
 .edit-level-popup .manage-creators-btn {
   padding: 8px 12px;
   border-radius: 4px;
@@ -813,7 +835,8 @@
 /* Mobile Adjustments */
 @media (max-width: 768px) {
   .edit-level-popup__upload-button,
-  .edit-level-popup__chart-stats-button {
+  .edit-level-popup__chart-stats-button,
+  .edit-level-popup__xacc-curve-button {
     padding: 6px;
     min-width: 32px;
     height: 32px;
@@ -823,7 +846,8 @@
 /* Small Phone Adjustments */
 @media (max-width: 360px) {
   .edit-level-popup__upload-button,
-  .edit-level-popup__chart-stats-button {
+  .edit-level-popup__chart-stats-button,
+  .edit-level-popup__xacc-curve-button {
     padding: 4px;
     min-width: 28px;
     height: 28px;

@@ -19,8 +19,9 @@ import { useAuth } from '@/contexts/AuthContext';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { SongSelectorPopup } from '@/components/popups/Songs';
 import { CloseButton } from '@/components/common/buttons';
-import { ChartIcon } from '@/components/common/icons';
+import { ChartIcon, GraphIcon } from '@/components/common/icons';
 import { AdminLevelChartStatsPopup } from './AdminLevelChartStatsPopup';
+import { AdminLevelXaccCurvePopup } from './AdminLevelXaccCurvePopup';
 
 export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPage = false }) => {
   const { t } = useTranslation(['components', 'common']);
@@ -97,6 +98,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
   const [isRefreshingTags, setIsRefreshingTags] = useState(false);
   const [showSongSelector, setShowSongSelector] = useState(false);
   const [showChartStatsPopup, setShowChartStatsPopup] = useState(false);
+  const [showXaccCurvePopup, setShowXaccCurvePopup] = useState(false);
   const [selectedSong, setSelectedSong] = useState(null);
   const navigate = useNavigate();
   useEffect(() => {
@@ -745,6 +747,19 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                   disabled={!isSuperAdmin}
                 />
               </div>
+              <button
+                type="button"
+                disabled={!isSuperAdmin}
+                className={`edit-level-popup__xacc-curve-button ${isSuperAdmin ? 'field-enabled' : ''}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowXaccCurvePopup(true);
+                }}
+                title={t('levelPopups.edit.xaccCurve.openButtonTitle')}
+              >
+                <GraphIcon size="20px" />
+              </button>
             </div>
 
             <div className={`form-group ${isSuperAdmin ? 'field-enabled' : ''}`}>
@@ -840,23 +855,25 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                     style={{cursor: isDlLinkDisabled() ? 'help' : ''}}
                   />
                   {isSuperAdmin && (
-                    <button
-                      type="button"
-                      className="edit-level-popup__chart-stats-button"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        if (isDlLinkDisabled()) {
-                          toast.error(getDlLinkDisabledReason() || 'Unavailable');
-                          return;
-                        }
-                        setShowChartStatsPopup(true);
-                      }}
-                      title={t('levelPopups.edit.chartStats.openButtonTitle')}
-                      disabled={isDlLinkDisabled()}
-                    >
-                      <ChartIcon color="white" size={20} />
-                    </button>
+                    <>
+                      <button
+                        type="button"
+                        className="edit-level-popup__chart-stats-button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          if (isDlLinkDisabled()) {
+                            toast.error(getDlLinkDisabledReason() || 'Unavailable');
+                            return;
+                          }
+                          setShowChartStatsPopup(true);
+                        }}
+                        title={t('levelPopups.edit.chartStats.openButtonTitle')}
+                        disabled={isDlLinkDisabled()}
+                      >
+                        <ChartIcon color="white" size={20} />
+                      </button>
+                    </>
                   )}
                   <button
                     className="edit-level-popup__upload-button"
@@ -1033,6 +1050,18 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
         <AdminLevelChartStatsPopup
           level={level}
           onClose={() => setShowChartStatsPopup(false)}
+          onSaved={(patch) => {
+            if (onUpdate) {
+              onUpdate({ level: { id: level.id, ...patch } });
+            }
+          }}
+        />
+      )}
+
+      {showXaccCurvePopup && (
+        <AdminLevelXaccCurvePopup
+          level={level}
+          onClose={() => setShowXaccCurvePopup(false)}
           onSaved={(patch) => {
             if (onUpdate) {
               onUpdate({ level: { id: level.id, ...patch } });

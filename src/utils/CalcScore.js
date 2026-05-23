@@ -1,6 +1,9 @@
 // tuf-search: #CalcScore #calcScore
 import calcAcc from "./CalcAcc"
-import { xaccMultiplier as xaccCurveMultiplier } from "./scoreV2XaccCurve.js"
+import {
+    resolveXaccCurveForLevelData,
+    xaccMultiplier as xaccCurveMultiplier,
+} from "./scoreV2XaccCurve.js"
 
 const gmConst = 315
 const start = 1
@@ -81,7 +84,7 @@ const getScore = (passData, levelData, difficultyDict = {}) => {
     accuracy === 1 && levelData.ppBaseScore ? levelData.ppBaseScore :
     levelData.baseScore ? levelData.baseScore
     : diff?.baseScore || 0;
-    const xaccMtp = getXaccMtp(inputs, base)
+    const xaccMtp = getXaccMtp(inputs, base, resolveXaccCurveForLevelData(levelData))
     var speedMtp = 0
     var score = 0
     if (diff?.name == "Marathon"){

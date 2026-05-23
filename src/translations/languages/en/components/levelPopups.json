@@ -75,6 +75,25 @@
       "permanentDelete": "Failed to permanently delete level",
       "cannotCreateSong": "Cannot create new songs from level edit. Please select an existing song."
     },
+    "xaccCurve": {
+      "title": "Xacc score curve",
+      "openButtonTitle": "Edit per-level xacc curve (recalculates passes)",
+      "hint": "Adjust pole offset (E) and top multiplier (G). Saving recalculates all passes on this level.",
+      "tilecountFallback": "Tile count is missing; preview uses 100 tiles.",
+      "resetDefaults": "Reset to site defaults",
+      "save": "Save",
+      "saving": "Saving…",
+      "cancel": "Cancel",
+      "toastSaved": "Xacc curve saved; passes are being recalculated",
+      "sliderDisplay": "Slider {{value}}",
+      "labels": {
+        "pole": "Pole offset (E)",
+        "top": "Top multiplier (G)"
+      },
+      "errors": {
+        "save": "Failed to save xacc curve"
+      }
+    },
     "chartStats": {
       "title": "Chart metadata",
       "openButtonTitle": "Edit BPM, tile count & length (non-CDN only)",

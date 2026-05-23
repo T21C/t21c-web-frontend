@@ -60,6 +60,7 @@ import { SettingsIcon } from './SettingsIcon';
 import { TUFStellarIcon } from './TUFStellarIcon';
 import { HeartIcon } from './HeartIcon';
 import { CopyIcon } from './CopyIcon';
+import GraphIcon from './GraphIcon';
 export {
     DefaultAvatar,
     DiscordIcon,
@@ -122,4 +123,5 @@ export {
     TUFStellarIcon,
     HeartIcon,
     CopyIcon,
+    GraphIcon,
 }

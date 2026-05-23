@@ -75,6 +75,25 @@
       "permanentDelete": "永久删除关卡失败",
       "cannotCreateSong": "无法在编辑关卡时创建新歌曲。请选择现有歌曲。"
     },
+    "xaccCurve": {
+      "title": "Xacc 分数曲线",
+      "openButtonTitle": "编辑关卡 xacc 曲线（会重算所有通关）",
+      "hint": "调整极点偏移 (E) 与顶部倍率 (G)。保存后将重算本关卡所有通关分数。",
+      "tilecountFallback": "缺少物量；预览使用 100 物。",
+      "resetDefaults": "恢复站点默认值",
+      "save": "保存",
+      "saving": "保存中…",
+      "cancel": "取消",
+      "toastSaved": "Xacc 曲线已保存，正在重算通关",
+      "sliderDisplay": "滑块 {{value}}",
+      "labels": {
+        "pole": "极点偏移 (E)",
+        "top": "顶部倍率 (G)"
+      },
+      "errors": {
+        "save": "保存 xacc 曲线失败"
+      }
+    },
     "chartStats": {
       "title": "谱面元数据",
       "openButtonTitle": "编辑 BPM、物量与时长（非 CDN）",

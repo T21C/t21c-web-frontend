@@ -1,7 +1,10 @@
 // tuf-search: #scoreV2Curve #ScoreV2Curve
 import calcAcc from "./CalcAcc";
 import { getScoreV2 } from "./CalcScore";
-import { XACC_CURVE_DEFAULTS } from "./scoreV2XaccCurve.js";
+import {
+  XACC_CURVE_DEFAULTS,
+  resolveXaccCurveForLevelData,
+} from "./scoreV2XaccCurve.js";
 
 const MAX_CHART_POINTS = 180;
 /** Pure ePerfect ladder (PP … PP+NeP); no early substitution in tooltip below this. */
@@ -24,6 +27,10 @@ const curveCache = new Map();
 const CURVE_CACHE_MAX = 48;
 
 function curveCacheKey(hitTiles, misses, levelData, speed, isNoHoldTap) {
+  const curve = resolveXaccCurveForLevelData(levelData);
+  const curveKey = curve
+    ? `${curve.poleOffset}|${curve.topMultiplier}`
+    : "default";
   return [
     hitTiles,
     misses,
@@ -31,6 +38,7 @@ function curveCacheKey(hitTiles, misses, levelData, speed, isNoHoldTap) {
     levelData?.ppBaseScore ?? "",
     levelData?.diffId ?? "",
     levelData?.difficulty?.name ?? "",
+    curveKey,
     speed,
     isNoHoldTap ? 1 : 0,
   ].join("|");

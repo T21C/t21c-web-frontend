@@ -22,6 +22,43 @@ export const XACC_CURVE_DEFAULTS = {
     poleOffset: 0.0054,
 }
 
+export const XACC_POLE_OFFSET_MIN = 0.0005
+export const XACC_POLE_OFFSET_MAX = 0.05
+export const XACC_TOP_MULTIPLIER_MIN = 2
+export const XACC_TOP_MULTIPLIER_MAX = 15
+
+/**
+ * @param {LevelXaccCurveSource | null | undefined} level
+ * @returns {XaccCurveConfig | undefined}
+ */
+export function pickLevelXaccCurve(level) {
+    if (!level) return undefined
+    const pole = level.xaccPoleOffset ?? level.xaccCurve?.poleOffset
+    const top = level.xaccTopMultiplier ?? level.xaccCurve?.topMultiplier
+    if (pole == null && top == null) return undefined
+    return {
+        poleOffset: pole ?? XACC_CURVE_DEFAULTS.poleOffset,
+        topMultiplier: top ?? XACC_CURVE_DEFAULTS.topMultiplier,
+    }
+}
+
+/**
+ * @typedef {Object} LevelXaccCurveSource
+ * @property {number | null} [xaccPoleOffset]
+ * @property {number | null} [xaccTopMultiplier]
+ * @property {XaccCurveConfig} [xaccCurve]
+ */
+
+/**
+ * @param {LevelXaccCurveSource | null | undefined} levelData
+ * @returns {XaccCurveConfig | undefined}
+ */
+export function resolveXaccCurveForLevelData(levelData) {
+    if (!levelData) return undefined
+    if (levelData.xaccCurve) return levelData.xaccCurve
+    return pickLevelXaccCurve(levelData)
+}
+
 /**
  * @param {XaccCurveConfig | null | undefined} overrides
  * @returns {Required<XaccCurveConfig>}

@@ -18,6 +18,7 @@ import {
   SCOREV2_CURVE_ACCURACY_CUTOFF,
 } from "@/utils/scoreV2Curve";
 import { formatScore } from "@/utils/Utility";
+import { pickLevelXaccCurve } from "@/utils/scoreV2XaccCurve.js";
 import { ScoreV2GraphTooltip } from "./ScoreV2GraphTooltip";
 import "./ScoreV2Graph.css";
 
@@ -30,27 +31,34 @@ export const ScoreV2Graph = ({
   speed = 1,
   isNoHoldTap = false,
   disablePP = false,
+  xaccCurve,
 }) => {
   const { t } = useTranslation("pages");
   const [misses, setMisses] = useState(0);
+
+  const effectiveLevelData = useMemo(() => {
+    const curve =
+      xaccCurve ?? levelData?.xaccCurve ?? pickLevelXaccCurve(levelData);
+    if (!curve) return levelData;
+    return { ...levelData, xaccCurve: curve };
+  }, [levelData, xaccCurve]);
 
   const levelCurveKey = useMemo(
     () =>
       [
         tilecount,
-        levelData?.baseScore,
-        levelData?.ppBaseScore,
-        levelData?.diffId,
-        levelData?.difficulty?.name,
+        effectiveLevelData?.baseScore,
+        effectiveLevelData?.ppBaseScore,
+        effectiveLevelData?.diffId,
+        effectiveLevelData?.difficulty?.name,
+        effectiveLevelData?.xaccCurve?.poleOffset ?? "",
+        effectiveLevelData?.xaccCurve?.topMultiplier ?? "",
         speed,
         isNoHoldTap,
       ].join("|"),
     [
       tilecount,
-      levelData?.baseScore,
-      levelData?.ppBaseScore,
-      levelData?.diffId,
-      levelData?.difficulty?.name,
+      effectiveLevelData,
       speed,
       isNoHoldTap,
     ],
@@ -61,12 +69,12 @@ export const ScoreV2Graph = ({
       enumerateScoreV2CurvePoints({
         tilecount,
         misses: 0,
-        levelData,
+        levelData: effectiveLevelData,
         difficultyDict,
         speed,
         isNoHoldTap,
       }),
-    [levelCurveKey, tilecount, levelData, difficultyDict, speed, isNoHoldTap],
+    [levelCurveKey, tilecount, effectiveLevelData, difficultyDict, speed, isNoHoldTap],
   );
 
   const chartData = useMemo(() => {
@@ -74,12 +82,12 @@ export const ScoreV2Graph = ({
     return enumerateScoreV2CurvePoints({
       tilecount,
       misses,
-      levelData,
+      levelData: effectiveLevelData,
       difficultyDict,
       speed,
       isNoHoldTap,
     });
-  }, [misses, zeroMissCurve, levelCurveKey, tilecount, levelData, difficultyDict, speed, isNoHoldTap]);
+  }, [misses, zeroMissCurve, levelCurveKey, tilecount, effectiveLevelData, difficultyDict, speed, isNoHoldTap]);
 
   const displayData = useMemo(() => {
     if (!disablePP) return chartData;
@@ -98,7 +106,7 @@ export const ScoreV2Graph = ({
         ? maxFromCurve
         : getScoreV2CurveYMax({
             tilecount,
-            levelData,
+            levelData: effectiveLevelData,
             difficultyDict,
             speed,
             isNoHoldTap,
@@ -106,7 +114,7 @@ export const ScoreV2Graph = ({
           });
     if (maxScore <= 0) return [0, 1];
     return [0, maxScore];
-  }, [zeroMissCurve, disablePP, tilecount, levelData, difficultyDict, speed, isNoHoldTap]);
+  }, [zeroMissCurve, disablePP, tilecount, effectiveLevelData, difficultyDict, speed, isNoHoldTap]);
 
   const xAxisDomain = useMemo(() => {
     if (!displayData.length) return [SCOREV2_CURVE_ACCURACY_CUTOFF * 100, 100];
@@ -236,4 +244,8 @@ ScoreV2Graph.propTypes = {
   speed: PropTypes.number,
   isNoHoldTap: PropTypes.bool,
   disablePP: PropTypes.bool,
+  xaccCurve: PropTypes.shape({
+    poleOffset: PropTypes.number,
+    topMultiplier: PropTypes.number,
+  }),
 };
