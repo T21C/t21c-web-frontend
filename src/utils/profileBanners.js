@@ -48,6 +48,25 @@ export function presetPathToUrl(preset) {
 }
 
 /**
+ * Auth session user merged with profile payload user so Stellar expiry is available in settings
+ * even when `/v2/auth/profile/me` has not been refreshed after purchase.
+ * @param {object | null | undefined} authUser
+ * @param {object | null | undefined} profileUser
+ */
+export function resolveStellarEntitlementSubject(authUser, profileUser) {
+  if (!authUser && !profileUser) return null;
+  return {
+    ...(profileUser && typeof profileUser === "object" ? profileUser : {}),
+    ...(authUser && typeof authUser === "object" ? authUser : {}),
+    tufStellarSubscriptionExpiresAt:
+      authUser?.tufStellarSubscriptionExpiresAt ??
+      profileUser?.tufStellarSubscriptionExpiresAt ??
+      null,
+    permissionFlags: authUser?.permissionFlags ?? profileUser?.permissionFlags ?? 0,
+  };
+}
+
+/**
  * Active TUFStellar access (purchase-funded expiry on user / ES docs as `tufStellarSubscriptionExpiresAt`).
  * @param {{ tufStellarSubscriptionExpiresAt?: string | null } | null | undefined} subjectUser
  */

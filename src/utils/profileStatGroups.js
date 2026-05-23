@@ -24,18 +24,18 @@ const PGU_DIFFICULTY_NAME_REGEX = /^([PGUpgu])(\d+)$/i;
  * Sum pass clears into Planetary / Galactic / Universal / Special from difficulty names
  * matching P{n}, G{n}, U{n}; everything else (GQ, UQ, etc.) counts as Special.
  *
- * @param {object | null | undefined} ff server `funFacts`
+ * @param {Record<string, number> | object | null | undefined} clearsByDifficulty diffId -> clear count
  * @param {Record<string, { name?: string }>} difficultyDict
  */
-export function bucketClearsByDifficultyName(ff, difficultyDict) {
+export function bucketClearsByDifficultyName(clearsByDifficulty, difficultyDict) {
   /** @type {Record<string, number>} */
   const buckets = Object.fromEntries(
     PLAYER_CLEARS_BY_NAME_BUCKET_ORDER.map((k) => [k, 0]),
   );
 
   const clears =
-    ff?.clearsByDifficulty && typeof ff.clearsByDifficulty === "object"
-      ? ff.clearsByDifficulty
+    clearsByDifficulty && typeof clearsByDifficulty === "object"
+      ? clearsByDifficulty
       : {};
   const dict =
     difficultyDict && typeof difficultyDict === "object" ? difficultyDict : {};
@@ -67,6 +67,16 @@ export function bucketClearsByDifficultyName(ff, difficultyDict) {
   return buckets;
 }
 
+/** Unique-level clears first; total pass count in parentheses when reclears exist. */
+function formatDedupedClearCount(deduped, total) {
+  const unique = Math.trunc(Number(deduped) || 0);
+  const all = Math.trunc(Number(total) || 0);
+  if (all > unique) {
+    return `${formatCount(unique)} (${formatCount(all)})`;
+  }
+  return formatCount(unique);
+}
+
 /** X-accuracy style ratio from aggregated judgement counts (same weighting as {@link calcAcc}). */
 function xaccFromJudgementTotals(j) {
   const inp = [
@@ -96,7 +106,11 @@ export function buildPlayerStatGroups(ff, t, difficultyDict = {}, playerScores =
   const l = ff.levelsCleared || {};
   const x = ff.extremes || {};
   const a = ff.activity || {};
-  const byNameBucket = bucketClearsByDifficultyName(ff, difficultyDict);
+  const byNameBucketTotal = bucketClearsByDifficultyName(ff.clearsByDifficulty, difficultyDict);
+  const byNameBucketDeduped = bucketClearsByDifficultyName(
+    ff.clearsByDifficultyNoDupes ?? ff.clearsByDifficulty,
+    difficultyDict,
+  );
 
   const passLinkMeta = (passId) => {
     if (passId == null) return null;
@@ -327,11 +341,19 @@ export function buildPlayerStatGroups(ff, t, difficultyDict = {}, playerScores =
     },
   );
 
-  const typeRows = PLAYER_CLEARS_BY_NAME_BUCKET_ORDER.map((k) => ({
-    key: `type_${k}`,
-    label: k,
-    value: formatCount(byNameBucket[k] ?? 0),
-  }));
+  const typeRows = PLAYER_CLEARS_BY_NAME_BUCKET_ORDER.map((k) => {
+    const deduped = Math.trunc(Number(byNameBucketDeduped[k]) || 0);
+    const total = Math.trunc(Number(byNameBucketTotal[k]) || 0);
+    const hasReclears = total > deduped;
+    return {
+      key: `type_${k}`,
+      label: k,
+      value: formatDedupedClearCount(deduped, total),
+      tooltipContent: hasReclears
+        ? t("profile.funFacts.clearsByTypeTooltipWithReclears", { unique: deduped, total })
+        : t("profile.funFacts.clearsByTypeTooltip", { count: deduped }),
+    };
+  });
 
   groups.push({
     key: "breakdownByType",

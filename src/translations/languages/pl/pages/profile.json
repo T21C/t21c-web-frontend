@@ -53,6 +53,8 @@
     }
   },
   "funFacts": {
-    "difficultyHeaderGridCellTooltip": "{{name}} · {{count}} ukończeń"
+    "difficultyHeaderGridCellTooltip": "{{name}} · {{count}} ukończeń",
+    "clearsByTypeTooltip": "{{count}} unikalnych poziomów ukończonych w tym typie trudności",
+    "clearsByTypeTooltipWithReclears": "{{unique}} unikalnych poziomów ukończonych ({{total}} przejść łącznie, w tym powtórzenia tego samego poziomu)"
   }
 } 

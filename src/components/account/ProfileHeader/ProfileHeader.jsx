@@ -24,6 +24,8 @@ import ProfileHeaderIconPanelPortal from "./ProfileHeaderIconPanelPortal";
 import { useSvgTextDimensions } from "@/hooks/useSvgTextDimensions";
 
 const PROFILE_HEADER_STELLAR_TOOLTIP_ID = "profile-header-stellar-subscriber";
+/** Shared id for fun-fact stat row values that expose `data-tooltip-content`. */
+const PROFILE_HEADER_STAT_ROW_TOOLTIP_ID = "profile-header-stat-row-tooltip";
 /** When `nameTooltipId` is `"default"`, name hits use this id and a local Tooltip shows the full `name`. */
 const PROFILE_HEADER_NAME_DEFAULT_TOOLTIP_ID = "profile-header-name-default-tooltip";
 
@@ -231,6 +233,13 @@ const ProfileHeader = ({
 
   const hasExpandableStats = useMemo(
     () => Array.isArray(statGroups) && statGroups.some((g) => g?.rows?.length),
+    [statGroups],
+  );
+
+  const hasStatRowTooltips = useMemo(
+    () =>
+      Array.isArray(statGroups) &&
+      statGroups.some((g) => g?.rows?.some((row) => typeof row?.tooltipContent === "string" && row.tooltipContent.length > 0)),
     [statGroups],
   );
 
@@ -817,7 +826,13 @@ const ProfileHeader = ({
                           <div key={row.key} className="profile-header__stat-row">
                             <span className="profile-header__stat-label">{row.label}</span>
                             <span
-                              className={`profile-header__stat-value ${row.valueClassName || ""}`}
+                              className={`profile-header__stat-value ${row.valueClassName || ""} ${row.tooltipContent ? "profile-header__stat-value--tooltip" : ""}`}
+                              {...(row.tooltipContent
+                                ? {
+                                    "data-tooltip-id": PROFILE_HEADER_STAT_ROW_TOOLTIP_ID,
+                                    "data-tooltip-content": row.tooltipContent,
+                                  }
+                                : {})}
                             >
                               {row.linkTo ? (
                                 <span className="profile-fun-facts__linked-extreme">
@@ -841,6 +856,14 @@ const ProfileHeader = ({
                     </section>
                   ))}
                 </div>
+                {hasStatRowTooltips ? (
+                  <Tooltip
+                    id={PROFILE_HEADER_STAT_ROW_TOOLTIP_ID}
+                    place="top"
+                    noArrow
+                    className="profile-header__stat-row-tooltip"
+                  />
+                ) : null}
               </div>
             </div>
           ) : null}

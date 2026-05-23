@@ -138,6 +138,8 @@
     "expandAria": "Show all statistics",
     "collapseAria": "Hide detailed statistics",
     "difficultyHeaderGridCellTooltip": "{{name}} · {{count}}회 클리어",
+    "clearsByTypeTooltip": "이 난이도 유형에서 클리어한 고유 레벨 {{count}}개",
+    "clearsByTypeTooltipWithReclears": "고유 레벨 {{unique}}개 클리어 (같은 레벨 재클리어 포함 총 {{total}}회)",
     "groups": {
       "scores": "점수",
       "counts": "클리어 수",

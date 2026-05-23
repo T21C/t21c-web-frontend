@@ -20,6 +20,7 @@ import {
   getEffectiveProfileHeaderSurface,
   isTufStellarAccessActive,
   normalizeTufStellarIconVariant,
+  resolveStellarEntitlementSubject,
 } from "@/utils/profileBanners";
 import { CreatorStatusBadge } from "@/components/common/display";
 import { ExternalLinkIcon, ChevronIcon, InfoIcon } from "@/components/common/icons";
@@ -231,6 +232,13 @@ const SettingsCreatorPage = () => {
   const creatorCurationPanelItems = useMemo(
     () => getCreatorCurationTypesForHeaderPanel(profile?.curationTypeCounts, curationTypesDict || {}),
     [profile?.curationTypeCounts, curationTypesDict],
+  );
+
+  const creatorProfileUser = profile?.user || creatorDoc?.user;
+
+  const stellarEntitlementSubject = useMemo(
+    () => resolveStellarEntitlementSubject(user, creatorProfileUser),
+    [user, creatorProfileUser],
   );
 
   const settingsCreatorBannerUrl = useMemo(() => {
@@ -654,7 +662,7 @@ const SettingsCreatorPage = () => {
         <ProfileHeaderSurfaceEditor
             variant="creator"
             creatorId={creatorId}
-            authUser={user}
+            authUser={stellarEntitlementSubject}
             surfaceStyle={profile?.profileHeaderSurfaceStyle}
             styleDraft={headerSurfaceStyleDraft}
             onStyleDraftChange={setHeaderSurfaceStyleDraft}
@@ -731,7 +739,7 @@ const SettingsCreatorPage = () => {
             variant="creator"
             showHeading={false}
             creatorId={creatorId}
-            authUser={user}
+            authUser={stellarEntitlementSubject}
             bannerPreset={profile?.bannerPreset}
             presetDraft={bannerPresetDraft}
             onPresetDraftChange={setBannerPresetDraft}
@@ -741,7 +749,7 @@ const SettingsCreatorPage = () => {
         </div>
       </SettingsPreviewSection>
 
-      {isTufStellarAccessActive(user) ? (
+      {isTufStellarAccessActive(stellarEntitlementSubject) ? (
         <SettingsStellarIconField
           sectionId="stellar"
           headingId="settings-creator-stellar-heading"

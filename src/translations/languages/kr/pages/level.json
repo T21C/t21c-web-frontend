@@ -28,6 +28,7 @@
       "recent": "ID",
       "difficulty": "난이도",
       "clears": "클리어 수",
+      "totalClears": "전체 클리어",
       "likes": "좋아요 수",
       "baseScore": "기반 점수",
       "bpm": "BPM",

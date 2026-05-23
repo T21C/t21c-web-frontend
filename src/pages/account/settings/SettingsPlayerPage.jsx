@@ -19,6 +19,7 @@ import {
   getEffectiveProfileHeaderSurface,
   isTufStellarAccessActive,
   normalizeTufStellarIconVariant,
+  resolveStellarEntitlementSubject,
 } from "@/utils/profileBanners";
 import { ExternalLinkIcon, ChevronIcon } from "@/components/common/icons";
 import { SettingsSaveField } from "@/components/account/SettingsSaveField/SettingsSaveField";
@@ -154,6 +155,11 @@ const SettingsPlayerPage = () => {
       playerData?.funFacts?.worldsFirstByDifficulty,
       difficultyDict,
     ],
+  );
+
+  const stellarEntitlementSubject = useMemo(
+    () => resolveStellarEntitlementSubject(user, playerData?.user),
+    [user, playerData?.user],
   );
 
   const settingsBannerUrl = useMemo(() => {
@@ -402,7 +408,7 @@ const SettingsPlayerPage = () => {
         </div>
         <ProfileHeaderSurfaceEditor
           variant="player"
-          authUser={user}
+          authUser={stellarEntitlementSubject}
           surfaceStyle={playerData?.profileHeaderSurfaceStyle}
           styleDraft={headerSurfaceStyleDraft}
           onStyleDraftChange={setHeaderSurfaceStyleDraft}
@@ -495,7 +501,7 @@ const SettingsPlayerPage = () => {
           <ProfileBannerEditor
             variant="player"
             showHeading={false}
-            authUser={user}
+            authUser={stellarEntitlementSubject}
             bannerPreset={playerData?.bannerPreset}
             presetDraft={bannerPresetDraft}
             onPresetDraftChange={setBannerPresetDraft}
@@ -507,7 +513,7 @@ const SettingsPlayerPage = () => {
         </div>
       </SettingsPreviewSection>
 
-      {isTufStellarAccessActive(user) ? (
+      {isTufStellarAccessActive(stellarEntitlementSubject) ? (
         <SettingsStellarIconField
           sectionId="stellar"
           headingId="settings-player-stellar-heading"

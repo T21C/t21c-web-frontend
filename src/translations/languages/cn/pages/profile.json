@@ -138,6 +138,8 @@
     "expandAria": "显示所有统计数据",
     "collapseAria": "收起统计数据",
     "difficultyHeaderGridCellTooltip": "{{name}} · {{count}} 个通关记录",
+    "clearsByTypeTooltip": "该难度类型下通关的独立关卡数：{{count}}",
+    "clearsByTypeTooltipWithReclears": "独立关卡 {{unique}} 个（含同一关卡重复通关共 {{total}} 次）",
     "groups": {
       "scores": "分数",
       "counts": "通关记录",

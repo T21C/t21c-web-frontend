@@ -28,6 +28,7 @@
       "recent": "ID",
       "difficulty": "Difficulty",
       "clears": "Clears",
+      "totalClears": "Total Clears",
       "likes": "Likes",
       "baseScore": "Base Score",
       "bpm": "BPM",

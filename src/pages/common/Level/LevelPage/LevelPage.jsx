@@ -130,6 +130,7 @@ const LevelPage = ({
     { value: 'RECENT', label: t('level.settings.sort.recent') },
     { value: 'DIFF', label: t('level.settings.sort.difficulty') },
     { value: 'CLEARS', label: t('level.settings.sort.clears') },
+    { value: 'TOTAL_CLEARS', label: t('level.settings.sort.totalClears') },
     { value: 'LIKES', label: t('level.settings.sort.likes') },
     { value: 'BASESCORE', label: t('level.settings.sort.baseScore') },
     { value: 'BPM', label: t('level.settings.sort.bpm') },
