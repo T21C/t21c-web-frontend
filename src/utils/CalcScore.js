@@ -1,5 +1,6 @@
 // tuf-search: #CalcScore #calcScore
 import calcAcc from "./CalcAcc"
+import { xaccMultiplier as xaccCurveMultiplier } from "./scoreV2XaccCurve.js"
 
 const gmConst = 315
 const start = 1
@@ -44,25 +45,10 @@ const getScoreV2Mtp = (inputs) => {
     }
     }
 
-    const getXaccMtp = (inp, baseScore) => {
-
-        const xacc = calcAcc(inp, true)
-        const xacc_percentage = xacc * 100
-
-        if (xacc_percentage < 95){
-            return 1
-        }
-        if (xacc_percentage < 100){
-            return (-0.027 / (xacc - 1.0054) + 0.513)
-        }
-        if (xacc_percentage == 100){
-            const a = 2100;
-            const k = 14;
-            const h = -a / (k - 6);
-          
-            return (-a) / (baseScore - h) + k;
-        }
-    }
+const getXaccMtp = (inp, baseScore, curveOverrides) => {
+    const xacc = calcAcc(inp, true)
+    return xaccCurveMultiplier(xacc, baseScore, curveOverrides)
+}
     
 
 const getSpeedMtp = (SPEED, isDesBus=false)=>{

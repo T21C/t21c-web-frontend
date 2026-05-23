@@ -1,6 +1,7 @@
 // tuf-search: #scoreV2Curve #ScoreV2Curve
 import calcAcc from "./CalcAcc";
 import { getScoreV2 } from "./CalcScore";
+import { XACC_CURVE_DEFAULTS } from "./scoreV2XaccCurve.js";
 
 const MAX_CHART_POINTS = 180;
 /** Pure ePerfect ladder (PP … PP+NeP); no early substitution in tooltip below this. */
@@ -13,7 +14,7 @@ const WEIGHT_EPERFECT = 0.25;
 const WEIGHT_EARLY = 0.6;
 
 /** ScoreV2 xacc curve is only meaningful at/above this accuracy. */
-export const SCOREV2_CURVE_ACCURACY_CUTOFF = 0.95;
+export const SCOREV2_CURVE_ACCURACY_CUTOFF = XACC_CURVE_DEFAULTS.cutoff;
 
 export function isPurePerfectAccuracy(accuracy) {
   return Number(accuracy) >= 1 - 1e-9;
