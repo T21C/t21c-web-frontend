@@ -103,6 +103,7 @@
   color: var(--color-gray-2);
   cursor: pointer;
   flex-shrink: 0;
+  -webkit-user-select: none;
   user-select: none;
 }
 
