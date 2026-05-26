@@ -32,20 +32,19 @@ import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { buildCreatorStatGroups, buildCreatorCollapsedStatRows } from "@/utils/profileStatGroups";
 import { buildCreatorIconSlots } from "@/utils/profileIconSlots";
 import { getCreatorCurationTypesForHeaderPanel } from "@/utils/curationTypeUtils";
+import {
+  mergeOptimisticAliasNameList,
+  mergeOptimisticAliasRows,
+  normalizeProfileAliasNames,
+  readProfileAliasNamesChronological,
+} from "@/utils/profileAliasNames";
 import "./settingsSubPage.css";
 
 const MAX_CREATOR_ALIASES = 20;
 const CREATOR_SELF_VERIFICATION = ["declined", "conditional", "allowed"];
 
 function readAliasNamesFromProfile(profile) {
-  const raw = profile?.aliases;
-  if (!Array.isArray(raw)) return [];
-  const out = [];
-  for (const a of raw) {
-    const s = typeof a === "string" ? a : a?.name;
-    if (typeof s === "string" && s.trim()) out.push(s.trim());
-  }
-  return out;
+  return readProfileAliasNamesChronological(profile, profile?.name ?? profile?.creator?.name);
 }
 
 const SettingsCreatorPage = () => {
@@ -206,17 +205,13 @@ const SettingsCreatorPage = () => {
 
   const effectiveDisplayIds = liveDisplayIds ?? profile?.displayCurationTypeIds;
 
-  const aliasesTooltipId =
-    aliasList.length > 0 && creatorId != null
-      ? `creator-aliases-${creatorId}`
-      : null;
-
-  const sortedAliasNamesForTooltip = useMemo(
+  const previewAliasNames = useMemo(
     () =>
-      [...aliasList].sort((a, b) =>
-        a.localeCompare(b, undefined, { sensitivity: "base" }),
+      normalizeProfileAliasNames(
+        { aliases: aliasList.map((name) => ({ name })) },
+        previewDisplayName,
       ),
-    [aliasList],
+    [aliasList, previewDisplayName],
   );
 
   const iconSlots = useMemo(
@@ -292,6 +287,7 @@ const SettingsCreatorPage = () => {
       return;
     }
     if (creatorId == null || !Number.isFinite(creatorId)) return;
+    const previousDisplayName = String(creatorDoc?.name ?? "").trim();
     setDisplayNameFieldError("");
     setDisplayNameSaving(true);
     const toastId = toast.loading(t("loading.saving", { ns: "common" }));
@@ -300,10 +296,21 @@ const SettingsCreatorPage = () => {
         name: trimmed,
       });
       const nextName = typeof data?.name === "string" ? data.name : trimmed;
+      const nextAliases = mergeOptimisticAliasRows(
+        profile?.aliases,
+        previousDisplayName,
+        nextName,
+      );
+      const nextAliasNames = mergeOptimisticAliasNameList(
+        aliasList,
+        previousDisplayName,
+        nextName,
+      );
       setProfile((p) => {
         if (!p || typeof p !== "object") return p;
-        return { ...p, name: nextName };
+        return { ...p, name: nextName, aliases: nextAliases };
       });
+      setAliasList(nextAliasNames);
       setDisplayNameDraft(nextName);
       toast.success(t("settings.creator.displayNameSuccess"), { id: toastId });
     } catch (err) {
@@ -313,7 +320,7 @@ const SettingsCreatorPage = () => {
     } finally {
       setDisplayNameSaving(false);
     }
-  }, [displayNameDraft, creatorId, t]);
+  }, [displayNameDraft, creatorId, creatorDoc?.name, profile?.aliases, aliasList, t]);
 
   const handleAddAlias = useCallback(() => {
     const trimmed = newAliasInput.trim();
@@ -572,7 +579,7 @@ const SettingsCreatorPage = () => {
           creatorCurationPanelItems={creatorCurationPanelItems}
           avatarSubject={creatorDoc}
           stellarIconVariant={previewStellarVariant}
-          nameTooltipId={aliasesTooltipId}
+          aliasNames={previewAliasNames}
           name={previewDisplayName}
           handle={creatorDoc.user?.username}
           country={creatorDoc.user?.country || creatorDoc.country}
@@ -620,25 +627,6 @@ const SettingsCreatorPage = () => {
             </Link>
           }
         />
-        {aliasesTooltipId ? (
-          <Tooltip
-            id={aliasesTooltipId}
-            place="bottom"
-            className="settings-sub-page__aliases-tooltip"
-            style={{ maxWidth: "min(24rem, 92vw)", zIndex: 20 }}
-          >
-            <div className="settings-sub-page__aliases-tooltip-title">
-              {t("settings.creator.aliasesLabel")}
-            </div>
-            <ul className="settings-sub-page__aliases-tooltip-list">
-              {sortedAliasNamesForTooltip.map((name) => (
-                <li key={name} className="settings-sub-page__aliases-tooltip-item">
-                  {name}
-                </li>
-              ))}
-            </ul>
-          </Tooltip>
-        ) : null}
       </div>
 
       <SettingsPreviewSection
@@ -682,7 +670,7 @@ const SettingsCreatorPage = () => {
             creatorCurationPanelItems,
             avatarSubject: creatorDoc,
             stellarIconVariant: previewStellarVariant,
-            nameTooltipId: aliasesTooltipId,
+            aliasNames: previewAliasNames,
             name: previewDisplayName,
             handle: creatorDoc.user?.username,
             country: creatorDoc.user?.country || creatorDoc.country,

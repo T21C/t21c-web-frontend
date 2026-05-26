@@ -33,6 +33,7 @@ import {
   normalizeTufStellarIconVariant,
 } from "@/utils/profileBanners";
 import { userAvatarDisplayUrl } from "@/utils/playerAvatarDisplay";
+import { normalizeProfileAliasNames } from "@/utils/profileAliasNames";
 import {
   ResponsiveContainer,
   LineChart,
@@ -493,6 +494,11 @@ const ProfilePage = () => {
         });
       }, [playerData]);
 
+      const playerAliasNames = useMemo(
+        () => normalizeProfileAliasNames(playerData, playerData?.name),
+        [playerData],
+      );
+
       const difficultyGraphDataWithDupes = useMemo(
         () => toDifficultyGraphData(playerData?.funFacts?.clearsByDifficulty, difficultyDict || {}, "passes"),
         [playerData?.funFacts?.clearsByDifficulty, difficultyDict],
@@ -708,7 +714,7 @@ const ProfilePage = () => {
                     headerSurfaceStyle={profileHeaderSurface.style}
                     headerSurfaceImageAssets={profileHeaderSurface.imageAssets}
                     iconSlots={iconSlots}
-                    nameTooltipId={"default"}
+                    aliasNames={playerAliasNames}
                     playerDifficultyPanelDifficulties={difficulties}
                     playerDifficultyPanelClearsByDifficulty={difficultyPanelClearsByDifficulty}
                     avatarSubject={playerData}

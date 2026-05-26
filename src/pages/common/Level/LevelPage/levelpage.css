@@ -10,6 +10,7 @@
 /* Embedded mode: drop the page-content-70rem width cap and the page-level
    padding so the host page controls the surrounding layout. */
 .level-page--embedded {
+  padding: 0.15rem;
   width: 100%;
 }
 .level-page--embedded .level-body--embedded {

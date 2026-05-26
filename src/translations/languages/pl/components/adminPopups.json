@@ -12,6 +12,12 @@
         "label": "Kraj lub Region",
         "button": "Zapisz"
       },
+      "aliases": {
+        "label": "Aliasy wyszukiwania",
+        "placeholder": "Dodaj dawną nazwę",
+        "add": "Dodaj",
+        "save": "Zapisz aliasy"
+      },
       "ban": {
         "label": "Zbanuj gracza",
         "confirm": {
@@ -64,12 +70,14 @@
       "discordUpdate": "Nie udało się zmienić danych Discord gracza",
       "discordRemove": "Nie udało się usunąć danych Discord gracza",
       "mergePlayer": "Nie udało się połączyć graczy",
-      "invalidTargetId": "Niepoprawne ID gracza docelowego"
+      "invalidTargetId": "Niepoprawne ID gracza docelowego",
+      "aliasesUpdate": "Nie udało się zaktualizować aliasów"
     },
     "success": {
       "discordUpdate": "Pomyślnie zmieniono dane Discord gracza",
       "discordRemove": "Pomyślnie usunięto dane Discord gracza",
-      "mergePlayer": "Pomyślnie połączono graczy"
+      "mergePlayer": "Pomyślnie połączono graczy",
+      "aliasesUpdated": "Aliasy zostały zaktualizowane"
     }
   }
 } 

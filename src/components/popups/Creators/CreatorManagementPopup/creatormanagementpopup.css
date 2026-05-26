@@ -59,11 +59,29 @@
   flex-wrap: wrap;
 }
 
-.creator-management-popup-container .mode-selector {
-  display: flex;
+/*
+ * Equal-width button rows (tabs, confirm pairs, danger actions).
+ * auto-fill keeps orphan items in a single column instead of stretching (auto-fit would).
+ */
+.creator-management-popup-container .popup-btn-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
   gap: 8px;
-  flex-wrap: wrap;
-  justify-content: center;
+  width: 100%;
+}
+
+.creator-management-popup-container .popup-btn-grid > * {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.creator-management-popup-container .popup-btn-grid--block {
+  grid-template-columns: 1fr;
+}
+
+.creator-management-popup-container .mode-selector {
+  width: 100%;
 }
 
 .creator-management-popup-container .mode-btn {
@@ -75,8 +93,6 @@
   cursor: pointer;
   transition: all 0.2s ease;
   font-weight: 500;
-  flex: 1;
-  min-width: 100px;
   text-align: center;
 }
 
@@ -118,11 +134,48 @@
   box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
 }
 
-.creator-management-popup-container .form-group--header-badges {
-  padding-top: 4px;
+.creator-management-popup-container .creator-profile-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
-.creator-management-popup-container .header-badges-loading {
+.creator-management-popup-container .creator-profile-tab__intro {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #a0a0a0;
+  line-height: 1.45;
+}
+
+.creator-management-popup-container .creator-profile-tab__section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-top: 0.25rem;
+  border-top: 1px solid var(--btn-neutral-disabled-fill);
+}
+
+.creator-management-popup-container .creator-profile-tab__section:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.creator-management-popup-container .creator-profile-tab__section-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.creator-management-popup-container .creator-profile-tab__section-hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #888;
+  line-height: 1.4;
+}
+
+.creator-management-popup-container .creator-profile-tab__loading,
+.creator-management-popup-container .creator-profile-tab__readonly {
   margin: 0;
   font-size: 0.85rem;
   color: #a0a0a0;
@@ -215,6 +268,8 @@
 
 .creator-management-popup-container .update-form,
 .creator-management-popup-container .user-form,
+.creator-management-popup-container .player-moderation-form,
+.creator-management-popup-container .player-link-form,
 .creator-management-popup-container .merge-form,
 .creator-management-popup-container .split-form,
 .creator-management-popup-container .delete-tab {
@@ -223,8 +278,105 @@
   gap: 20px;
 }
 
-.creator-management-popup-container .action-button {
+.creator-management-popup-container .popup-header-meta {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-white-t60);
+  margin-top: 4px;
+}
+
+.creator-management-popup-container .form-hint {
+  margin: 0;
+  color: var(--color-white-t60);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.creator-management-popup-container .moderation-option {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 6px;
+  background-color: var(--btn-neutral-dark);
+  border: 1px solid var(--color-white-t12);
+}
+
+.creator-management-popup-container .moderation-option__label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-white);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.creator-management-popup-container .moderation-option__label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--danger-color);
+  cursor: pointer;
+}
+
+.creator-management-popup-container .moderation-option__label--rating input[type="checkbox"] {
+  accent-color: #9c27b0;
+}
+
+.creator-management-popup-container .moderation-option:nth-child(2) .moderation-option__label input[type="checkbox"] {
+  accent-color: #ff9800;
+}
+
+.creator-management-popup-container .moderation-confirm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.creator-management-popup-container .moderation-confirm p {
+  margin: 0;
+  color: var(--color-white-t80);
+  font-size: 0.9rem;
+}
+
+.creator-management-popup-container .moderation-confirm__actions {
   width: 100%;
+}
+
+.creator-management-popup-container .merge-target-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--btn-neutral-disabled-fill);
+  border-radius: 4px;
+  background-color: var(--btn-neutral-dark);
+  color: #ffffff;
+  box-sizing: border-box;
+}
+
+.creator-management-popup-container .creator-assignment-popup-host--embedded {
+  width: 100%;
+}
+
+.creator-management-popup-container .creator-assignment-popup-host--embedded .creator-assignment-popup {
+  width: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 16px;
+  background-color: var(--btn-neutral-dark);
+  border: 1px solid var(--color-white-t12);
+  border-radius: 6px;
+  box-shadow: none;
+}
+
+.creator-management-popup-container .update-form > .action-button,
+.creator-management-popup-container .merge-form > .action-button,
+.creator-management-popup-container .split-form > .action-button {
+  width: 100%;
+}
+
+.creator-management-popup-container .action-button {
   padding: 12px;
   background-color: var(--btn-primary);
   color: #ffffff;
@@ -506,9 +658,7 @@
 }
 
 .creator-management-popup-container .discord-confirm-buttons {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
+  width: 100%;
 }
 
 .creator-management-popup-container .discord-confirm-button,
@@ -656,9 +806,7 @@
 }
 
 .creator-management-popup-container .confirm-buttons {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
+  width: 100%;
 }
 
 .creator-management-popup-container .confirm-yes,
@@ -730,9 +878,7 @@
 }
 
 .creator-management-popup-container .super-admin-danger__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  width: 100%;
 }
 
 .creator-management-popup-container .super-admin-danger__btn {
@@ -756,25 +902,8 @@
     margin: 16px;
   }
 
-  .creator-management-popup-container .mode-selector {
-    flex-direction: column;
-  }
-
-  .creator-management-popup-container .mode-btn {
-    width: 100%;
-    min-width: unset;
-  }
-
-  .creator-management-popup-container .discord-confirm-buttons,
-  .creator-management-popup-container .confirm-buttons {
-    flex-direction: column;
-  }
-
-  .creator-management-popup-container .discord-confirm-button,
-  .creator-management-popup-container .discord-cancel-button,
-  .creator-management-popup-container .confirm-yes,
-  .creator-management-popup-container .confirm-no {
-    width: 100%;
+  .creator-management-popup-container .popup-btn-grid {
+    grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
   }
 
   .creator-management-popup-container .split-name-role-container {

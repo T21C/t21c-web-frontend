@@ -1,5 +1,6 @@
 {
   "title": "管理已上传关卡",
+  "dropToUpload": "松开以上传",
   "errors": {
     "invalidZip": "压缩文件无效",
     "invalidZipSize": "压缩文件过大（最大 {{maxSize}} MB）",

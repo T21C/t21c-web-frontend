@@ -1,5 +1,6 @@
 {
   "title": "Manage Level Upload",
+  "dropToUpload": "Drop to upload",
   "errors": {
     "invalidZip": "Invalid zip file",
     "invalidZipSize": "Zip file size is too large (max {{maxSize}} MB)",

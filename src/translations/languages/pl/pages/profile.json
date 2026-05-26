@@ -27,6 +27,9 @@
   "adminEdit": "Edycja administratora",
   "viewUserPacks": "Pakiety użytkownika",
   "stellarSubscriberIconTooltip": "Subskrybent TUFStellar",
+  "header": {
+    "aka": "znany też jako"
+  },
   "sections": {
     "scores": {
       "title": "Wyniki"

@@ -10,7 +10,7 @@ import { CrossIcon } from '@/components/common/icons';
 import { CloseButton } from '@/components/common/buttons';
 import { useJobProgressStream } from '@/hooks/useJobProgressStream';
 import ZipLevelFilesList from '@/components/popups/Levels/ZipLevelFilesList/ZipLevelFilesList';
-import { ARCHIVE_ACCEPT_ATTR } from '@/utils/zipUtils';
+import { ARCHIVE_ACCEPT_ATTR, isAcceptedArchiveFile } from '@/utils/zipUtils';
 
 const LevelUploadManagementPopup = ({
   level,
@@ -34,6 +34,8 @@ const LevelUploadManagementPopup = ({
   const [songFiles, setSongFiles] = useState({});
   const fileInputRef = useRef(null);
   const abortControllerRef = useRef(null);
+  const dragCounterRef = useRef(0);
+  const [isDragOver, setIsDragOver] = useState(false);
   const { t } = useTranslation(['components', 'common']);
 
   const { job: cdnJob } = useJobProgressStream(cdnJobId, Boolean(isUploading && cdnJobId));
@@ -214,8 +216,49 @@ const LevelUploadManagementPopup = ({
     void refreshLevelMetadata(newDlLink);
   };
 
-  const handleZipUpload = async (event) => {
-    const file = event.target.files[0];
+  const handleDragEnter = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (isUploading) return;
+    dragCounterRef.current += 1;
+    if (dragCounterRef.current === 1) {
+      setIsDragOver(true);
+    }
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (isUploading) return;
+    dragCounterRef.current -= 1;
+    if (dragCounterRef.current <= 0) {
+      dragCounterRef.current = 0;
+      setIsDragOver(false);
+    }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragCounterRef.current = 0;
+    setIsDragOver(false);
+    if (isUploading) return;
+
+    const file = e.dataTransfer?.files?.[0];
+    if (!file) return;
+    if (!isAcceptedArchiveFile(file)) {
+      setError(t('levelUploadManagement.errors.invalidZip'));
+      return;
+    }
+    void processZipUpload(file);
+  };
+
+  const processZipUpload = async (file) => {
     if (!file) return;
 
     // Create abort controller for this upload
@@ -223,6 +266,8 @@ const LevelUploadManagementPopup = ({
     const signal = abortControllerRef.current.signal;
 
     try {
+      dragCounterRef.current = 0;
+      setIsDragOver(false);
       setIsUploading(true);
       setError(null);
       setUploadProgress(0);
@@ -317,6 +362,15 @@ const LevelUploadManagementPopup = ({
       setIsUploading(false);
       setCdnJobId(null);
       abortControllerRef.current = null;
+    }
+  };
+
+  const handleZipUpload = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    await processZipUpload(file);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
 
@@ -482,9 +536,32 @@ const LevelUploadManagementPopup = ({
           ? `${cdnJob.message} · ${fillPct.toFixed(0)}%`
           : t('levelUploadManagement.upload.progress', { progress: uploadProgress.toFixed(2) });
 
+  const showDropOverlay = isDragOver && !isUploading;
+
   return (
-    <div className="level-upload-management-popup" onClick={handleOverlayClick}>
-      <div className="level-upload-management-content" onClick={handleContentClick}>
+    <div
+      className="level-upload-management-popup"
+      onClick={handleOverlayClick}
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+    >
+      <div
+        className={`level-upload-management-content${showDropOverlay ? ' is-drop-target' : ''}`}
+        onClick={handleContentClick}
+      >
+        {showDropOverlay && (
+          <div className="level-upload-drop-zone" aria-live="polite">
+            <p className="level-upload-drop-zone__message">
+              {t('levelUploadManagement.dropToUpload')}
+            </p>
+          </div>
+        )}
+        <div
+          className="level-upload-management-body"
+          aria-hidden={showDropOverlay}
+        >
         <div className="level-upload-management-header">
           <h2>{t('levelUploadManagement.title')}</h2>
           <CloseButton
@@ -676,6 +753,7 @@ const LevelUploadManagementPopup = ({
           </div>
           </>
         )}
+        </div>
       </div>
     </div>
   );

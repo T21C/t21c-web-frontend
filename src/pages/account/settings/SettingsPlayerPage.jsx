@@ -27,6 +27,10 @@ import { SettingsStellarIconField } from "@/components/account/SettingsSaveField
 import { useSettings } from "@/contexts/SettingsContext";
 import { buildPlayerStatGroups } from "@/utils/profileStatGroups";
 import { buildPlayerIconSlots } from "@/utils/profileIconSlots";
+import {
+  mergeOptimisticAliasRows,
+  normalizeProfileAliasNames,
+} from "@/utils/profileAliasNames";
 import "./settingsSubPage.css";
 
 const SettingsPlayerPage = () => {
@@ -194,6 +198,11 @@ const SettingsPlayerPage = () => {
     return playerData?.name || t("profile.meta.defaultTitle");
   }, [nicknameDraft, playerData?.user?.nickname, playerData?.name, t]);
 
+  const previewAliasNames = useMemo(
+    () => normalizeProfileAliasNames(playerData, previewDisplayName),
+    [playerData, previewDisplayName],
+  );
+
   const nicknameMatchesSaved = useMemo(() => {
     const savedNick =
       typeof playerData?.user?.nickname === "string"
@@ -226,6 +235,10 @@ const SettingsPlayerPage = () => {
       setNicknameFieldError(t("settings.player.nicknameLength"));
       return;
     }
+    const previousDisplayName =
+      typeof playerData?.user?.nickname === "string" && playerData.user.nickname.trim()
+        ? playerData.user.nickname.trim()
+        : String(playerData?.name ?? "").trim();
     setNicknameFieldError("");
     setNicknameSaving(true);
     try {
@@ -234,7 +247,27 @@ const SettingsPlayerPage = () => {
         country: playerData?.country ?? "",
       });
       await fetchUser();
-      await fetchProfile({ background: true });
+      if (playerId != null && Number.isFinite(playerId)) {
+        const response = await api.get(
+          `${import.meta.env.VITE_PLAYERS_V3}/${playerId}/profile`,
+        );
+        const fetched = response.data;
+        const aliases = mergeOptimisticAliasRows(
+          fetched?.aliases,
+          previousDisplayName,
+          trimmed,
+        );
+        setPlayerData({
+          ...fetched,
+          name: trimmed,
+          aliases,
+          user: fetched?.user
+            ? { ...fetched.user, nickname: trimmed }
+            : fetched?.user,
+        });
+      } else {
+        await fetchProfile({ background: true });
+      }
       toast.success(t("settings.player.nicknameSuccess"));
     } catch (e) {
       const msg = e?.response?.data?.error || t("settings.player.nicknameError");
@@ -243,7 +276,7 @@ const SettingsPlayerPage = () => {
     } finally {
       setNicknameSaving(false);
     }
-  }, [nicknameDraft, playerData?.country, fetchUser, fetchProfile, t]);
+  }, [nicknameDraft, playerData, playerId, fetchUser, fetchProfile, t]);
 
   const handleSaveStellarVariant = useCallback(async () => {
     if (playerId == null || !Number.isFinite(playerId)) return;
@@ -343,7 +376,7 @@ const SettingsPlayerPage = () => {
           headerSurfaceStyle={settingsHeaderSurface.style}
           headerSurfaceImageAssets={settingsHeaderSurface.imageAssets}
           iconSlots={iconSlots}
-          nameTooltipId={"default"}
+          aliasNames={previewAliasNames}
           playerDifficultyPanelDifficulties={difficulties}
           playerDifficultyPanelClearsByDifficulty={clearsByDifficultyForHeader}
           avatarSubject={playerData}
@@ -425,7 +458,7 @@ const SettingsPlayerPage = () => {
             headerSurfaceStyle: settingsHeaderSurface.style,
             headerSurfaceImageAssets: settingsHeaderSurface.imageAssets,
             iconSlots,
-            nameTooltipId: "default",
+            aliasNames: previewAliasNames,
             playerDifficultyPanelDifficulties: difficulties,
             playerDifficultyPanelClearsByDifficulty: clearsByDifficultyForHeader,
             avatarSubject: playerData,

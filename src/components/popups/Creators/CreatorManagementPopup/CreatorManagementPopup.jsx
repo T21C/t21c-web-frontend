@@ -6,13 +6,15 @@ import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { CloseButton } from '@/components/common/buttons';
 import { CustomSelect } from '@/components/common/selectors';
 import { CreatorStatusBadge } from '@/components/common/display/CreatorStatusBadge/CreatorStatusBadge';
-import CurationTypeSelector from '@/components/account/CurationTypeSelector/CurationTypeSelector';
 import { useAuth } from '@/contexts/AuthContext';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import api from '@/utils/api';
 import './creatormanagementpopup.css';
 import { userAvatarDisplayUrl } from '@/utils/playerAvatarDisplay';
+import AliasListEditor from './AliasListEditor';
+import CreatorProfileTab from './CreatorProfileTab';
+import PlayerManagementPanel from './PlayerManagementPanel';
 
 const CreditRole = {
   CHARTER: 'charter',
@@ -28,18 +30,37 @@ const roleOptions = Object.entries(CreditRole).map(([key, value]) => ({
 
 const TABS = [
   { id: 'update', i18nKey: 'modes.update' },
+  { id: 'profile', i18nKey: 'modes.profile' },
   { id: 'user', i18nKey: 'modes.user' },
   { id: 'merge', i18nKey: 'modes.merge' },
   { id: 'split', i18nKey: 'modes.split' },
   { id: 'delete', i18nKey: 'modes.delete' },
 ];
 
-export const CreatorManagementPopup = ({ creator, onClose, onUpdate, curationProfileInitial = null }) => {
+export const CreatorManagementPopup = ({
+  creator,
+  player = null,
+  onClose,
+  onUpdate,
+  onCreatorUserLinkedUpdate,
+  curationProfileInitial = null,
+}) => {
   const { t } = useTranslation(['components', 'common']);
   const tt = (key, opts) => t(`creatorManagementPopup.${key}`, opts);
   const popupRef = useRef(null);
   const { user } = useAuth();
   const { curationTypesDict } = useDifficultyContext();
+
+  if (player?.id) {
+    return (
+      <PlayerManagementPanel
+        player={player}
+        onClose={onClose}
+        onUpdate={onUpdate}
+        onCreatorUserLinkedUpdate={onCreatorUserLinkedUpdate}
+      />
+    );
+  }
 
   const [mode, setMode] = useState('update');
   const [curationProfile, setCurationProfile] = useState(curationProfileInitial);
@@ -451,15 +472,23 @@ export const CreatorManagementPopup = ({ creator, onClose, onUpdate, curationPro
   );
 
   const visibleTabs = useMemo(
-    () => TABS.filter((tab) => tab.id !== 'delete' || isSuperAdminViewer),
-    [isSuperAdminViewer],
+    () =>
+      TABS.filter((tab) => {
+        if (tab.id === 'delete' && !isSuperAdminViewer) return false;
+        if (tab.id === 'profile' && !canEditHeaderBadges) return false;
+        return true;
+      }),
+    [isSuperAdminViewer, canEditHeaderBadges],
   );
 
   useEffect(() => {
     if (mode === 'delete' && !isSuperAdminViewer) {
       setMode('update');
     }
-  }, [mode, isSuperAdminViewer]);
+    if (mode === 'profile' && !canEditHeaderBadges) {
+      setMode('update');
+    }
+  }, [mode, isSuperAdminViewer, canEditHeaderBadges]);
 
   const handleAdminPurgeCreator = async () => {
     if (!isSuperAdminViewer) return;
@@ -531,7 +560,7 @@ export const CreatorManagementPopup = ({ creator, onClose, onUpdate, curationPro
                 />
               )}
             </h2>
-            <div className="mode-selector">
+            <div className="mode-selector popup-btn-grid">
               {visibleTabs.map((tab) => (
                 <button
                   key={tab.id}
@@ -593,51 +622,17 @@ export const CreatorManagementPopup = ({ creator, onClose, onUpdate, curationPro
                   />
                 </div>
 
-                <div className="form-group">
-                  <label>{tt('update.aliases.label')}</label>
-                  <div className="alias-input-group">
-                    <input
-                      type="text"
-                      autoComplete="off"
-                      value={newAlias}
-                      onChange={(e) => setNewAlias(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          e.preventDefault();
-                          handleAddAlias();
-                        }
-                      }}
-                      placeholder={tt('update.aliases.placeholder')}
-                    />
-                    <button onClick={handleAddAlias}>{tt('update.aliases.add')}</button>
-                  </div>
-                  <div className="aliases-list">
-                    {aliases.map((alias, i) => (
-                      <div key={`${alias}-${i}`} className="alias-tag">
-                        {alias}
-                        <button onClick={() => handleRemoveAlias(alias)}>&times;</button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {canEditHeaderBadges ? (
-                  <div className="form-group form-group--header-badges">
-                    {curationProfileLoading && !curationProfile ? (
-                      <p className="header-badges-loading">{tt('update.headerBadges.loading')}</p>
-                    ) : (
-                      <CurationTypeSelector
-                        embeddedSectionLabel={tt('update.headerBadges.label')}
-                        creatorId={Number(creator.id)}
-                        curationTypeCounts={curationProfile?.curationTypeCounts ?? {}}
-                        displayCurationTypeIds={curationProfile?.displayCurationTypeIds}
-                        curationTypesDict={curationTypesDict || {}}
-                        canEdit={canEditHeaderBadges}
-                        onSaved={handleCurationBadgesSaved}
-                      />
-                    )}
-                  </div>
-                ) : null}
+                <AliasListEditor
+                  aliases={aliases}
+                  newAlias={newAlias}
+                  onNewAliasChange={setNewAlias}
+                  onAdd={handleAddAlias}
+                  onRemove={handleRemoveAlias}
+                  disabled={isLoading}
+                  label={tt('update.aliases.label')}
+                  placeholder={tt('update.aliases.placeholder')}
+                  addLabel={tt('update.aliases.add')}
+                />
 
                 <button
                   className={`action-button ${isLoading ? 'loading' : ''}`}
@@ -653,6 +648,18 @@ export const CreatorManagementPopup = ({ creator, onClose, onUpdate, curationPro
                   )}
                 </button>
               </div>
+            )}
+
+            {mode === 'profile' && (
+              <CreatorProfileTab
+                creatorId={Number(creator.id)}
+                canEdit={canEditHeaderBadges}
+                curationProfile={curationProfile}
+                curationProfileLoading={curationProfileLoading}
+                curationTypesDict={curationTypesDict}
+                onBadgesSaved={handleCurationBadgesSaved}
+                tt={tt}
+              />
             )}
 
             {mode === 'user' && (
@@ -786,7 +793,7 @@ export const CreatorManagementPopup = ({ creator, onClose, onUpdate, curationPro
                           </div>
                         </div>
                         <p className="discord-confirm-message">{tt('discord.confirm.message')}</p>
-                        <div className="discord-confirm-buttons">
+                        <div className="discord-confirm-buttons popup-btn-grid">
                           <button
                             type="button"
                             onClick={() => handleDiscordConfirm(true)}
@@ -813,7 +820,7 @@ export const CreatorManagementPopup = ({ creator, onClose, onUpdate, curationPro
                   <div className="confirm-dialog">
                     <div className="confirm-content">
                       <p>{tt('user.linked.unassignConfirm')}</p>
-                      <div className="confirm-buttons">
+                      <div className="confirm-buttons popup-btn-grid">
                         <button
                           onClick={handleUnassignUser}
                           className="confirm-yes"
@@ -849,7 +856,7 @@ export const CreatorManagementPopup = ({ creator, onClose, onUpdate, curationPro
                   placeholder={tt('superAdminDanger.passwordPlaceholder')}
                   disabled={isLoading}
                 />
-                <div className="super-admin-danger__actions">
+                <div className="super-admin-danger__actions popup-btn-grid">
                   <button
                     type="button"
                     className="super-admin-danger__btn super-admin-danger__btn--purge btn-fill-danger"

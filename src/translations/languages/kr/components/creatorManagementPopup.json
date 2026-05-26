@@ -2,6 +2,7 @@
   "close": "닫기",
   "modes": {
     "update": "업데이트",
+    "profile": "프로필",
     "user": "사용자",
     "merge": "병합",
     "split": "분리",
@@ -25,11 +26,17 @@
       "placeholder": "Add alias",
       "add": "Add"
     },
-    "headerBadges": {
-      "label": "Profile header badges",
-      "loading": "Loading badge data…"
-    },
     "updateButton": "Update creator"
+  },
+  "profile": {
+    "intro": "공개 프로필 헤더에 표시되는 제작자 정보를 관리합니다.",
+    "headerBadges": {
+      "title": "헤더 배지",
+      "hint": "프로필 헤더에 표시할 큐레이션 유형을 선택합니다(최대 5개). 변경 사항은 즉시 저장됩니다.",
+      "selectorLabel": "표시할 배지 유형",
+      "loading": "배지 데이터 불러오는 중…",
+      "noPermission": "이 제작자의 프로필 헤더 배지를 수정할 권한이 없습니다."
+    }
   },
   "user": {
     "linked": {
@@ -124,6 +131,54 @@
     "unlinkFailed": "Failed to unlink user",
     "mergeFailed": "Failed to merge creators",
     "splitFailed": "Failed to split creator"
+  },
+  "player": {
+    "titleFallback": "플레이어",
+    "idLabel": "ID {{id}}",
+    "modes": {
+      "update": "프로필",
+      "moderation": "제재",
+      "link": "크리에이터",
+      "merge": "병합"
+    },
+    "update": {
+      "name": { "label": "표시 이름", "placeholder": "플레이어 이름" },
+      "country": { "label": "국가 또는 지역" },
+      "saveButton": "변경 저장"
+    },
+    "moderation": {
+      "ban": "플레이어 차단",
+      "pause": "제출 일시중지",
+      "ratingBan": "평가 차단",
+      "banConfirm": "이 플레이어를 차단하시겠습니까?",
+      "unbanConfirm": "차단을 해제하시겠습니까?",
+      "pauseConfirm": "제출을 일시중지하시겠습니까?",
+      "resumeConfirm": "제출을 재개하시겠습니까?",
+      "ratingBanConfirm": "평가를 차단하시겠습니까?",
+      "ratingUnbanConfirm": "평가를 다시 허용하시겠습니까?"
+    },
+    "link": { "hint": "이 계정에 연결된 크리에이터 프로필을 할당하거나 제거합니다." },
+    "merge": {
+      "warning": {
+        "title": "경고:",
+        "message": "모든 패스가 대상 플레이어로 이동하고 {{name}}은(는) 삭제됩니다. 되돌릴 수 없습니다."
+      },
+      "understandButton": "이해했습니다 — 계속",
+      "targetId": { "label": "대상 플레이어 ID", "placeholder": "대상 플레이어 ID 입력" },
+      "mergeButton": "플레이어 병합"
+    },
+    "errors": {
+      "updateFailed": "플레이어 업데이트 실패",
+      "banUpdate": "차단 상태 업데이트 실패",
+      "pauseUpdate": "제출 일시중지 업데이트 실패",
+      "ratingBanUpdate": "평가 차단 업데이트 실패",
+      "mergeFailed": "플레이어 병합 실패"
+    },
+    "success": {
+      "updated": "플레이어가 업데이트되었습니다",
+      "moderation": "제재 설정이 업데이트되었습니다",
+      "merge": "플레이어가 병합되었습니다"
+    }
   },
   "success": {
     "updated": "Creator updated successfully",

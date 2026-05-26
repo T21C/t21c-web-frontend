@@ -21,13 +21,12 @@ import {
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import { groupCurationTypesForPanel } from "@/utils/curationTypeUtils";
 import ProfileHeaderIconPanelPortal from "./ProfileHeaderIconPanelPortal";
+import ProfileHeaderNameAliasesTooltip from "./ProfileHeaderNameAliasesTooltip";
 import { useSvgTextDimensions } from "@/hooks/useSvgTextDimensions";
 
 const PROFILE_HEADER_STELLAR_TOOLTIP_ID = "profile-header-stellar-subscriber";
 /** Shared id for fun-fact stat row values that expose `data-tooltip-content`. */
 const PROFILE_HEADER_STAT_ROW_TOOLTIP_ID = "profile-header-stat-row-tooltip";
-/** When `nameTooltipId` is `"default"`, name hits use this id and a local Tooltip shows the full `name`. */
-const PROFILE_HEADER_NAME_DEFAULT_TOOLTIP_ID = "profile-header-name-default-tooltip";
 
 /** Tracks `.profile-header` inline size so layout breakpoints match `@container profile-header` CSS. */
 function useProfileHeaderContainerWidth(headerRef) {
@@ -121,7 +120,9 @@ const ProfileHeader = ({
   statRowFilter = () => true,
   actions = null,
   verificationBadge = null,
-  /** Tooltip for the banner/display name: a string id for `react-tooltip`, or `"default"` for a built-in tooltip with the full `name`. */
+  /** Former display names for the built-in name tooltip ("a.k.a." list). */
+  aliasNames = [],
+  /** Optional external tooltip id; omit or `"default"` for built-in name + aliases tooltip. */
   nameTooltipId = null,
   expandStatsAriaLabel = "Expand statistics",
   collapseStatsAriaLabel = "Collapse statistics",
@@ -132,6 +133,7 @@ const ProfileHeader = ({
   stellarIconVariant = "1",
 }) => {
   const { t } = useTranslation("pages");
+  const internalNameTooltipId = useId().replace(/:/g, "");
   const nameCutoutMaskId = `profile-header-name-cutout${useId().replace(/:/g, "")}`;
   const bannerMaskStyle = useMemo(
     () => ({
@@ -371,18 +373,23 @@ const ProfileHeader = ({
       : getDefaultProfileBannerUrl();
 
   const displayName = name || "—";
-  const isDefaultNameTooltip =
-    typeof nameTooltipId === "string" && nameTooltipId.trim().toLowerCase() === "default";
-  const fullNicknameTooltipText =
+  const displayNameText =
     name == null ? "" : (typeof name === "string" ? name : String(name)).trim();
-  const nameTooltipProps =
-    isDefaultNameTooltip && fullNicknameTooltipText.length > 0
-      ? { "data-tooltip-id": PROFILE_HEADER_NAME_DEFAULT_TOOLTIP_ID }
-      : typeof nameTooltipId === "string" &&
-          nameTooltipId.trim().length > 0 &&
-          !isDefaultNameTooltip
-        ? { "data-tooltip-id": nameTooltipId.trim() }
-        : {};
+  const useBuiltInNameTooltip =
+    !nameTooltipId ||
+    (typeof nameTooltipId === "string" &&
+      nameTooltipId.trim().toLowerCase() === "default");
+  const activeNameTooltipId = useBuiltInNameTooltip
+    ? displayNameText.length > 0
+      ? internalNameTooltipId
+      : null
+    : typeof nameTooltipId === "string" && nameTooltipId.trim().length > 0
+      ? nameTooltipId.trim()
+      : null;
+  const nameTooltipProps = activeNameTooltipId
+    ? { "data-tooltip-id": activeNameTooltipId }
+    : {};
+  const resolvedAliasNames = Array.isArray(aliasNames) ? aliasNames : [];
 
   const STELLAR_ICON_SIZE = 28;
   const STELLAR_ICON_GAP = 14;
@@ -524,19 +531,15 @@ const ProfileHeader = ({
                 <HeartIcon size={18} color="#f44" fill="#f44" strokeWidth="2" />
               </Tooltip>
             ) : null}
-      {isDefaultNameTooltip && fullNicknameTooltipText.length > 0 ? (
-        <Tooltip
-          id={PROFILE_HEADER_NAME_DEFAULT_TOOLTIP_ID}
-          place="bottom-start"
-          noArrow
+      {useBuiltInNameTooltip && displayNameText.length > 0 ? (
+        <ProfileHeaderNameAliasesTooltip
+          tooltipId={internalNameTooltipId}
+          displayName={displayNameText}
+          aliasNames={resolvedAliasNames}
           style={{
             maxWidth: `min(24rem, ${layoutWidth > 0 ? Math.round(layoutWidth * 0.92) : 384}px)`,
-            zIndex: 20,
-            marginTop: "-0.5rem",
           }}
-        >
-          {fullNicknameTooltipText}
-        </Tooltip>
+        />
       ) : null}
         <div className="profile-header__banner-wrap" aria-hidden="true">
           <img

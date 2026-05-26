@@ -24,6 +24,38 @@
   position: relative;
 }
 
+.level-upload-management-content.is-drop-target {
+  overflow: hidden;
+}
+
+.level-upload-management-popup .level-upload-drop-zone {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  box-sizing: border-box;
+  border-radius: 8px;
+  border: 2px dashed var(--btn-primary);
+  background-color: color-mix(in srgb, #1a1a1a 88%, var(--btn-primary));
+}
+
+.level-upload-management-popup .level-upload-management-body[aria-hidden='true'] {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.level-upload-management-popup .level-upload-drop-zone__message {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-white);
+  text-align: center;
+}
+
 .level-upload-management-header {
   display: flex;
   justify-content: space-between;

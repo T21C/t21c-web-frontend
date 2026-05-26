@@ -12,6 +12,12 @@
         "label": "국가 또는 지역",
         "button": "업데이트"
       },
+      "aliases": {
+        "label": "검색 별칭",
+        "placeholder": "이전 이름 추가",
+        "add": "추가",
+        "save": "별칭 저장"
+      },
       "ban": {
         "label": "플레이어 차단",
         "confirm": {
@@ -67,12 +73,14 @@
       "discordUpdate": "디스코드 정보 업데이트 실패",
       "discordRemove": "디스코드 정보 삭제 실패",
       "mergePlayer": "플레이어 병합 실패",
-      "invalidTargetId": "잘못된 대상 플레이어 ID"
+      "invalidTargetId": "잘못된 대상 플레이어 ID",
+      "aliasesUpdate": "별칭 업데이트 실패"
     },
     "success": {
       "discordUpdate": "디스코드 정보가 성공적으로 업데이트되었습니다",
       "discordRemove": "디스코드 정보가 성공적으로 제거되었습니다",
-      "mergePlayer": "플레이어가 성공적으로 병합되었습니다"
+      "mergePlayer": "플레이어가 성공적으로 병합되었습니다",
+      "aliasesUpdated": "별칭이 성공적으로 업데이트되었습니다"
     }
   }
 }

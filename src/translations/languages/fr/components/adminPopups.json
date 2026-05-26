@@ -12,6 +12,12 @@
         "label": "Pays ou Région",
         "button": "Mettre à jour"
       },
+      "aliases": {
+        "label": "Alias de recherche",
+        "placeholder": "Ajouter un ancien nom",
+        "add": "Ajouter",
+        "save": "Enregistrer les alias"
+      },
       "ban": {
         "label": "Bannir Joueur",
         "confirm": {
@@ -48,11 +54,13 @@
       "banUpdate": "Échec du changement de bannissement",
       "discordFetch": "Échec de la recherche d'ID Discord",
       "discordUpdate": "Échec du changement des info Discord",
-      "discordRemove": "Échec de la suppression des info Discord"
+      "discordRemove": "Échec de la suppression des info Discord",
+      "aliasesUpdate": "Échec de la mise à jour des alias"
     },
     "success": {
       "discordUpdate": "Info Discord mises à jour avec succès",
-      "discordRemove": "Info Discord supprimées avec succès"
+      "discordRemove": "Info Discord supprimées avec succès",
+      "aliasesUpdated": "Alias mis à jour avec succès"
     }
   }
 } 

@@ -12,6 +12,12 @@
         "label": "国家",
         "button": "更新"
       },
+      "aliases": {
+        "label": "搜索别名",
+        "placeholder": "添加曾用名以便搜索",
+        "add": "添加",
+        "save": "保存别名"
+      },
       "ban": {
         "label": "封禁玩家",
         "confirm": {
@@ -67,12 +73,14 @@
       "discordUpdate": "更新 Discord 信息失败",
       "discordRemove": "删除 Discord 信息失败",
       "mergePlayer": "合并玩家失败",
-      "invalidTargetId": "目标玩家 ID 无效"
+      "invalidTargetId": "目标玩家 ID 无效",
+      "aliasesUpdate": "别名更新失败"
     },
     "success": {
       "discordUpdate": "Discord 信息更新成功",
       "discordRemove": "Discord 信息删除成功",
-      "mergePlayer": "合并玩家成功"
+      "mergePlayer": "合并玩家成功",
+      "aliasesUpdated": "别名更新成功"
     }
   }
 } 

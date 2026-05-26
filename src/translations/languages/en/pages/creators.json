@@ -139,8 +139,11 @@
         "latestLevelAt": "Latest chart"
       },
       "difficultyType": {
-        "PGU": "PGU",
+        "PLANETARY": "Planetary",
+        "GALACTIC": "Galactic",
+        "UNIVERSAL": "Universal",
         "SPECIAL": "Special",
+        "PGU": "PGU",
         "LEGACY": "Legacy",
         "UNKNOWN": "Other"
       }

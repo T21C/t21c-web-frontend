@@ -676,3 +676,47 @@
 .profile-header__name-vertical .profile-header__stellar-hit--vertical {
   pointer-events: auto;
 }
+
+.profile-header .profile-header__name-tooltip {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: left;
+}
+
+.profile-header .profile-header__name-tooltip-display {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--color-white);
+  word-break: break-word;
+}
+
+.profile-header .profile-header__name-tooltip-aka {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.profile-header .profile-header__name-tooltip-aka-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-white-t80);
+  text-transform: lowercase;
+}
+
+.profile-header .profile-header__name-tooltip-aka-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.profile-header .profile-header__name-tooltip-aka-item {
+  font-size: 0.95rem;
+  line-height: 1.25;
+  color: var(--color-white);
+  word-break: break-word;
+}

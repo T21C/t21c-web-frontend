@@ -2,6 +2,7 @@
   "close": "关闭",
   "modes": {
     "update": "基本",
+    "profile": "资料",
     "user": "用户",
     "merge": "合并",
     "split": "拆分",
@@ -25,11 +26,17 @@
       "placeholder": "输入要添加的别名",
       "add": "添加"
     },
-    "headerBadges": {
-      "label": "勋章墙",
-      "loading": "正在加载勋章数据……"
-    },
     "updateButton": "保存并更新"
+  },
+  "profile": {
+    "intro": "管理该创作者在公开资料页头部的展示方式。",
+    "headerBadges": {
+      "title": "头部勋章",
+      "hint": "选择要在资料页头部显示的谱面类型（最多 5 个）。更改会立即保存。",
+      "selectorLabel": "显示的勋章类型",
+      "loading": "正在加载勋章数据……",
+      "noPermission": "您没有权限编辑该创作者的资料页头部勋章。"
+    }
   },
   "user": {
     "linked": {
@@ -124,6 +131,54 @@
     "unlinkFailed": "用户解绑失败",
     "mergeFailed": "创作者合并失败",
     "splitFailed": "创作者拆分失败"
+  },
+  "player": {
+    "titleFallback": "玩家",
+    "idLabel": "ID {{id}}",
+    "modes": {
+      "update": "资料",
+      "moderation": "管理",
+      "link": "创作者",
+      "merge": "合并"
+    },
+    "update": {
+      "name": { "label": "显示名称", "placeholder": "输入玩家名称" },
+      "country": { "label": "国家或地区" },
+      "saveButton": "保存更改"
+    },
+    "moderation": {
+      "ban": "封禁玩家",
+      "pause": "暂停提交",
+      "ratingBan": "禁止评分",
+      "banConfirm": "确认封禁该玩家？",
+      "unbanConfirm": "确认解封该玩家？",
+      "pauseConfirm": "确认暂停该玩家的提交？",
+      "resumeConfirm": "确认恢复该玩家的提交？",
+      "ratingBanConfirm": "确认禁止该玩家评分？",
+      "ratingUnbanConfirm": "确认允许该玩家再次评分？"
+    },
+    "link": { "hint": "为此账号分配或移除关联的创作者资料。" },
+    "merge": {
+      "warning": {
+        "title": "警告：",
+        "message": "所有通关将转移到目标玩家，{{name}} 将被删除。此操作无法撤销。"
+      },
+      "understandButton": "我已了解 — 继续",
+      "targetId": { "label": "目标玩家 ID", "placeholder": "输入目标玩家 ID" },
+      "mergeButton": "合并玩家"
+    },
+    "errors": {
+      "updateFailed": "玩家更新失败",
+      "banUpdate": "封禁状态更新失败",
+      "pauseUpdate": "暂停提交更新失败",
+      "ratingBanUpdate": "评分封禁更新失败",
+      "mergeFailed": "玩家合并失败"
+    },
+    "success": {
+      "updated": "玩家已更新",
+      "moderation": "管理设置已更新",
+      "merge": "玩家合并成功"
+    }
   },
   "success": {
     "updated": "创作者更新成功",

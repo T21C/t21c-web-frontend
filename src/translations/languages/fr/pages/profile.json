@@ -9,6 +9,9 @@
   "adminEdit": "Édition admin",
   "viewUserPacks": "Voir les packs de l'utilisateur",
   "stellarSubscriberIconTooltip": "Abonné TUFStellar",
+  "header": {
+    "aka": "alias"
+  },
   "valueLabels": {
     "rankedScore": "Score Classement",
     "generalScore": "Score Général",

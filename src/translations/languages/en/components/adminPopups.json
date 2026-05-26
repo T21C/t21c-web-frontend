@@ -12,6 +12,12 @@
         "label": "Country or Region",
         "button": "Update"
       },
+      "aliases": {
+        "label": "Search aliases",
+        "placeholder": "Add former name for search",
+        "add": "Add",
+        "save": "Save aliases"
+      },
       "ban": {
         "label": "Ban Player",
         "confirm": {
@@ -67,12 +73,14 @@
       "discordUpdate": "Failed to update Discord info",
       "discordRemove": "Failed to remove Discord info",
       "mergePlayer": "Failed to merge player",
-      "invalidTargetId": "Invalid target player ID"
+      "invalidTargetId": "Invalid target player ID",
+      "aliasesUpdate": "Failed to update aliases"
     },
     "success": {
       "discordUpdate": "Discord info updated successfully",
       "discordRemove": "Discord info removed successfully",
-      "mergePlayer": "Player merged successfully"
+      "mergePlayer": "Player merged successfully",
+      "aliasesUpdated": "Aliases updated successfully"
     }
   }
 } 

@@ -2,6 +2,7 @@
   "close": "Close",
   "modes": {
     "update": "Update",
+    "profile": "Profile",
     "user": "User",
     "merge": "Merge",
     "split": "Split",
@@ -25,11 +26,17 @@
       "placeholder": "Add alias",
       "add": "Add"
     },
-    "headerBadges": {
-      "label": "Profile header badges",
-      "loading": "Loading badge data…"
-    },
     "updateButton": "Update creator"
+  },
+  "profile": {
+    "intro": "Manage how this creator appears on their public profile header.",
+    "headerBadges": {
+      "title": "Header badges",
+      "hint": "Choose which curation types appear on the profile header (up to five slots). Changes save immediately.",
+      "selectorLabel": "Displayed badge types",
+      "loading": "Loading badge data…",
+      "noPermission": "You do not have permission to edit this creator's profile header badges."
+    }
   },
   "user": {
     "linked": {
@@ -124,6 +131,64 @@
     "unlinkFailed": "Failed to unlink user",
     "mergeFailed": "Failed to merge creators",
     "splitFailed": "Failed to split creator"
+  },
+  "player": {
+    "titleFallback": "Player",
+    "idLabel": "ID {{id}}",
+    "modes": {
+      "update": "Profile",
+      "moderation": "Moderation",
+      "link": "Creator",
+      "merge": "Merge"
+    },
+    "update": {
+      "name": {
+        "label": "Display name",
+        "placeholder": "Enter player name"
+      },
+      "country": {
+        "label": "Country or region"
+      },
+      "saveButton": "Save changes"
+    },
+    "moderation": {
+      "ban": "Ban player",
+      "pause": "Pause submissions",
+      "ratingBan": "Ban from rating",
+      "banConfirm": "Ban this player?",
+      "unbanConfirm": "Unban this player?",
+      "pauseConfirm": "Pause submissions for this player?",
+      "resumeConfirm": "Resume submissions for this player?",
+      "ratingBanConfirm": "Ban this player from rating?",
+      "ratingUnbanConfirm": "Allow this player to rate again?"
+    },
+    "link": {
+      "hint": "Assign or remove a creator profile linked to this user account."
+    },
+    "merge": {
+      "warning": {
+        "title": "Warning:",
+        "message": "All passes will move to the target player and {{name}} will be deleted. This cannot be undone."
+      },
+      "understandButton": "I understand — continue",
+      "targetId": {
+        "label": "Target player ID",
+        "placeholder": "Enter target player ID"
+      },
+      "mergeButton": "Merge players"
+    },
+    "errors": {
+      "updateFailed": "Failed to update player",
+      "banUpdate": "Failed to update ban status",
+      "pauseUpdate": "Failed to update submission pause",
+      "ratingBanUpdate": "Failed to update rating ban",
+      "mergeFailed": "Failed to merge player"
+    },
+    "success": {
+      "updated": "Player updated successfully",
+      "moderation": "Moderation settings updated",
+      "merge": "Players merged successfully"
+    }
   },
   "success": {
     "updated": "Creator updated successfully",

@@ -378,7 +378,7 @@ export function buildCreatorStatGroups(ff, t, difficultyDict) {
   const au = ff.audience || {};
   const tl = ff.timeline || {};
   const byDiff = ff.levelsByDifficulty || {};
-  const byType = ff.levelsByDifficultyType || {};
+  const byNameBucket = bucketClearsByDifficultyName(byDiff, difficultyDict);
 
   const groups = [
     {
@@ -493,10 +493,10 @@ export function buildCreatorStatGroups(ff, t, difficultyDict) {
   groups.push({
     key: "breakdownByType",
     label: t("creators.profile.funFacts.groups.breakdownByType"),
-    rows: ["PGU", "SPECIAL"].map((k) => ({
+    rows: PLAYER_CLEARS_BY_NAME_BUCKET_ORDER.map((k) => ({
       key: `type_${k}`,
-      label: t(`creators.profile.funFacts.difficultyType.${k}`),
-      value: formatCount(byType[k] ?? 0),
+      label: t(`profile.funFacts.difficultyType.${k}`),
+      value: formatCount(byNameBucket[k] ?? 0),
     })),
   });
 
