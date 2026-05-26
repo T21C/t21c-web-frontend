@@ -8,13 +8,15 @@
     "username": {
       "label": "사용자명",
       "error": {
-        "length": "사용자명은 3자에서 20자 사이어야 합니다",
-        "characters": "Username can only contain alphanumeric characters, underscores _ and hyphens -"
+        "length": "사용자명은 2자에서 32자 사이여야 합니다",
+        "characters": "사용자명은 영문, 숫자, 밑줄(_) 및 마침표(.)만 사용할 수 있습니다",
+        "consecutivePeriods": "사용자명에 마침표를 연속으로 둘 수 없습니다 (..)"
       },
       "tooltip": {
-        "default": "If your username collides with other player's name (not users!), a random number will be added to make it unique: Jipper ➔ Jipper_123456",
-        "length": "Username must be between 3 and 20 characters. Your username is currently {{length}} characters.",
-        "characters": "Invalid character \"{{char}}\" at position {{position}}. Username can only contain alphanumeric characters, underscores _ and hyphens -."
+        "default": "Discord와 동일: 영문, 숫자, _ 및 . (2–32자). 다른 플레이어 이름과 겹치면 접미사가 붙을 수 있습니다.",
+        "length": "사용자명은 2자에서 32자 사이여야 합니다. 현재 {{length}}자입니다.",
+        "characters": "{{position}}번째 문자 \"{{char}}\"이(가) 잘못되었습니다. 영문, 숫자, _ 및 . 만 사용하세요.",
+        "consecutivePeriods": "마침표를 연속으로 사용할 수 없습니다 (..)."
       }
     },
     "password": {

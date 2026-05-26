@@ -17,6 +17,11 @@ import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { AccountStatusBanners } from '@/components/account/AccountStatusBanners/AccountStatusBanners';
 import { CDN_IMAGE_ACCEPT, isCdnSupportedImageMimeType } from '@/config/constants/cdnImageAccept';
 import { userAvatarDisplayUrl } from '@/utils/playerAvatarDisplay';
+import {
+  getUsernameFormatError,
+  sanitizeUsernameInput,
+  USERNAME_MAX_LEN,
+} from '@/utils/usernameValidation';
 
 const usernameChangeCooldown = 1 * 24 * 60 * 60 * 1000; // 1 day
 
@@ -158,12 +163,10 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
     };
   }, []);
 
-  const usernameAlphanumericRegex = /^[a-zA-Z0-9_]*$/;
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     if (name === 'username') {
-      const sanitized = value.replace(/[^a-zA-Z0-9_]/g, '');
+      const sanitized = sanitizeUsernameInput(value);
       setFormData((prev) => ({
         ...prev,
         [name]: sanitized,
@@ -368,10 +371,23 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
     setError('');
     setSuccess('');
 
-    if (formData.username && !usernameAlphanumericRegex.test(formData.username)) {
-      setError(t('editProfile.error.usernameAlphanumeric'));
-      setIsSavingProfile(false);
-      return;
+    if (formData.username) {
+      const usernameFormatError = getUsernameFormatError(formData.username);
+      if (usernameFormatError?.type === 'length') {
+        setError(t('editProfile.error.usernameLength'));
+        setIsSavingProfile(false);
+        return;
+      }
+      if (usernameFormatError?.type === 'consecutivePeriods') {
+        setError(t('editProfile.error.usernameConsecutivePeriods'));
+        setIsSavingProfile(false);
+        return;
+      }
+      if (usernameFormatError?.type === 'characters') {
+        setError(t('editProfile.error.usernameAlphanumeric'));
+        setIsSavingProfile(false);
+        return;
+      }
     }
 
     try {
@@ -610,6 +626,7 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
                 className={`input-field ${usernameRateLimit ? 'disabled' : ''} ${!isUsernameEditing ? 'readonly' : ''}`}
                 disabled={!!usernameRateLimit || !isUsernameEditing}
                 readOnly={!isUsernameEditing && !usernameRateLimit}
+                maxLength={USERNAME_MAX_LEN}
               />
               {!usernameRateLimit && (
                 <button

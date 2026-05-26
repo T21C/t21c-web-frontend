@@ -9,7 +9,9 @@
     "invalidFileType": "文件格式无效。请上传 JPEG、PNG、WebP、GIF 或 SVG 图像",
     "failedToUploadAvatar": "上传头像失败",
     "failedToRemoveAvatar": "删除头像失败",
-    "usernameAlphanumeric": "用户名只能包含字母、数字和下划线",
+    "usernameAlphanumeric": "用户名只能包含字母、数字、下划线（_）和句点（.）",
+    "usernameLength": "用户名必须介于 2 到 32 个字符之间",
+    "usernameConsecutivePeriods": "用户名不能包含连续两个句点（..）",
     "usernameChangeRateLimited": "用户名每天只能更改一次，请稍后再试。"
   },
   "success": {

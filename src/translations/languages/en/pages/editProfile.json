@@ -9,7 +9,9 @@
     "invalidFileType": "Invalid file type. Please upload a JPEG, PNG, WebP, GIF, or SVG image.",
     "failedToUploadAvatar": "Failed to upload avatar",
     "failedToRemoveAvatar": "Failed to remove avatar",
-    "usernameAlphanumeric": "Username can only contain letters, numbers and underscores",
+    "usernameAlphanumeric": "Username can only contain letters, numbers, underscores (_) and periods (.)",
+    "usernameLength": "Username must be between 2 and 32 characters",
+    "usernameConsecutivePeriods": "Username cannot contain two consecutive periods (..)",
     "usernameChangeRateLimited": "You can only change your username once per day. Please try again later."
   },
   "success": {

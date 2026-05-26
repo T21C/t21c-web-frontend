@@ -138,8 +138,8 @@
     "expandAria": "Show all statistics",
     "collapseAria": "Hide detailed statistics",
     "difficultyHeaderGridCellTooltip": "{{name}} · {{count}} clears",
-    "clearsByTypeTooltip": "{{count}} unique levels cleared at this difficulty type",
-    "clearsByTypeTooltipWithReclears": "{{unique}} unique levels cleared ({{total}} total passes, including reclears on the same level)",
+    "clearsByTypeTooltip": "{{count}} unique levels cleared",
+    "clearsByTypeTooltipWithReclears": "{{unique}} unique levels cleared ({{total}} total passes)",
     "groups": {
       "scores": "Scores",
       "counts": "Pass counts",

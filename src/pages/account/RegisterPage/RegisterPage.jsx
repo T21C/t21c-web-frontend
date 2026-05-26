@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { Tooltip } from 'react-tooltip';
 import { QuestionmarkCircleIcon, WarningIcon } from '@/components/common/icons';
 import ReCAPTCHA from '@/components/auth/ReCaptcha/ReCaptcha';
+import { sanitizeUsernameInput, USERNAME_MAX_LEN, validateUsername } from '@/utils/usernameValidation';
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -57,39 +58,21 @@ const RegisterPage = () => {
     return emailRegex.test(email);
   };
 
-  const validateUsername = (username) => {
-    if (username.length < 3 || username.length > 20) {
+  const validateUsernameField = (username) => {
+    const result = validateUsername(username);
+    if (!result.isValid) {
+      const messageKey =
+        result.errorType === 'length'
+          ? 'register.form.username.error.length'
+          : result.errorType === 'consecutivePeriods'
+            ? 'register.form.username.error.consecutivePeriods'
+            : 'register.form.username.error.characters';
       return {
-        isValid: false,
-        message: t('register.form.username.error.length'),
-        invalidChar: '',
-        invalidCharIndex: -1,
-        errorType: 'length'
+        ...result,
+        message: t(messageKey),
       };
     }
-    
-    const usernameRegex = /^[a-zA-Z0-9_-]+$/;
-    if (!usernameRegex.test(username)) {
-      for (let i = 0; i < username.length; i++) {
-        if (!/^[a-zA-Z0-9_-]$/.test(username[i])) {
-          return {
-            isValid: false,
-            message: t('register.form.username.error.characters'),
-            invalidChar: username[i],
-            invalidCharIndex: i,
-            errorType: 'characters'
-          };
-        }
-      }
-    }
-    
-    return {
-      isValid: true,
-      message: '',
-      invalidChar: '',
-      invalidCharIndex: -1,
-      errorType: ''
-    };
+    return result;
   };
 
   const validatePassword = (password) => {
@@ -121,7 +104,7 @@ const RegisterPage = () => {
     }
     
     if (formData.username) {
-      const usernameValidation = validateUsername(formData.username);
+      const usernameValidation = validateUsernameField(formData.username);
       if (!usernameValidation.isValid) {
         errors.username = usernameValidation.message;
         isValid = false;
@@ -151,9 +134,10 @@ const RegisterPage = () => {
     if (type === 'checkbox') {
       setAgreedToTerms(checked);
     } else {
+      const nextValue = name === 'username' ? sanitizeUsernameInput(value) : value;
       setFormData((prev) => ({
         ...prev,
-        [name]: value,
+        [name]: nextValue,
       }));
       
       setValidationErrors(prev => ({
@@ -162,7 +146,7 @@ const RegisterPage = () => {
       }));
   
       if (name === 'username') {
-        setUsernameValidationState(validateUsername(value));
+        setUsernameValidationState(validateUsernameField(nextValue));
       }
     }
   };
@@ -176,7 +160,7 @@ const RegisterPage = () => {
         email: validateEmail(value) ? '' : t('register.form.email.error'),
       }));
     } else if (name === 'username' && value) {
-      const usernameValidation = validateUsername(value);
+      const usernameValidation = validateUsernameField(value);
       setUsernameValidationState(usernameValidation);
       setValidationErrors(prev => ({
         ...prev,
@@ -338,6 +322,8 @@ const RegisterPage = () => {
     if (!usernameValidationState.isValid && formData.username) {
       if (usernameValidationState.errorType === 'length') {
         return t('register.form.username.tooltip.length', { length: formData.username.length });
+      } else if (usernameValidationState.errorType === 'consecutivePeriods') {
+        return t('register.form.username.tooltip.consecutivePeriods');
       } else if (usernameValidationState.errorType === 'characters') {
         return t('register.form.username.tooltip.characters', { 
           char: usernameValidationState.invalidChar,
@@ -395,6 +381,7 @@ const RegisterPage = () => {
                   onChange={handleChange}
                   onBlur={handleBlur}
                   required
+                  maxLength={USERNAME_MAX_LEN}
                   className={validationErrors.username ? 'input-error' : ''}
                 /> 
                 <div 

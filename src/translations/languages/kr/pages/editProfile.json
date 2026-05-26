@@ -9,7 +9,9 @@
     "invalidFileType": "Invalid file type. Please upload a JPEG, PNG, WebP, GIF, or SVG image.",
     "failedToUploadAvatar": "Failed to upload avatar",
     "failedToRemoveAvatar": "Failed to remove avatar",
-    "usernameAlphanumeric": "Username can only contain letters, numbers and underscores",
+    "usernameAlphanumeric": "사용자명은 영문, 숫자, 밑줄(_) 및 마침표(.)만 사용할 수 있습니다",
+    "usernameLength": "사용자명은 2자에서 32자 사이여야 합니다",
+    "usernameConsecutivePeriods": "사용자명에 마침표를 연속으로 둘 수 없습니다 (..)",
     "usernameChangeRateLimited": "사용자 이름은 하루에 한 번만 변경할 수 있습니다. 나중에 다시 시도하세요."
   },
   "success": {

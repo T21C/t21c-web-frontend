@@ -52,7 +52,7 @@
   },
   "funFacts": {
     "difficultyHeaderGridCellTooltip": "{{name}} · {{count}} complétions",
-    "clearsByTypeTooltip": "{{count}} niveaux uniques complétés pour ce type de difficulté",
-    "clearsByTypeTooltipWithReclears": "{{unique}} niveaux uniques complétés ({{total}} passes au total, reclears inclus sur le même niveau)"
+    "clearsByTypeTooltip": "{{count}} niveaux uniques complétés",
+    "clearsByTypeTooltipWithReclears": "{{unique}} niveaux uniques complétés ({{total}} passes au total)"
   }
 } 
