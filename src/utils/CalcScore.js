@@ -20,11 +20,14 @@ function add(accumulator, a) {
   return accumulator + a;
 }
 
+/** Applied by getScoreV2 when miss count is zero (matches plotted zero-miss curve). */
+export const SCORE_V2_ZERO_MISS_MULTIPLIER = 1.1
+
 const getScoreV2Mtp = (inputs) => {
     const misses = inputs[0]
     const tiles = arraySum(inputs.slice(1))
     if (!misses){
-        return 1.1
+        return SCORE_V2_ZERO_MISS_MULTIPLIER
     }
     const tp = (start + end) / 2
     const tpDeduc = (startDeduc + endDeduc) / 2

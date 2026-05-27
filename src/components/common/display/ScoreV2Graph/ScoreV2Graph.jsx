@@ -10,12 +10,14 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  ReferenceDot,
 } from "recharts";
 import {
   enumerateScoreV2CurvePoints,
   getScoreV2CurveYMax,
   isPurePerfectAccuracy,
-  SCOREV2_CURVE_ACCURACY_CUTOFF,
+  scoreV2GraphXAxisDomain,
+  interpolateCurveScoreAtAccuracy,
 } from "@/utils/scoreV2Curve";
 import { formatScore } from "@/utils/Utility";
 import { pickLevelXaccCurve } from "@/utils/scoreV2XaccCurve.js";
@@ -23,6 +25,21 @@ import { ScoreV2GraphTooltip } from "./ScoreV2GraphTooltip";
 import "./ScoreV2Graph.css";
 
 const SLIDER_MAX = 50;
+
+const PIN_MARKER_STYLE = {
+  anchor: {
+    fill: "var(--color-gray-2)",
+    stroke: "var(--color-white)",
+  },
+  pin1: {
+    fill: "var(--btn-primary)",
+    stroke: "var(--color-white)",
+  },
+  pin2: {
+    fill: "var(--warning-color, var(--btn-primary))",
+    stroke: "var(--color-white)",
+  },
+};
 
 export const ScoreV2Graph = ({
   tilecount,
@@ -32,6 +49,11 @@ export const ScoreV2Graph = ({
   isNoHoldTap = false,
   disablePP = false,
   xaccCurve,
+  pinMarkers,
+  /** When set and disablePP is false, Y axis is fixed to [0, yAxisMax]. With disablePP, top is derived from the visible curve. */
+  yAxisMax = null,
+  /** When true, pin markers use the given scores (admin editor); otherwise snap Y to the plotted curve. */
+  pinMarkersUseExactScores = false,
 }) => {
   const { t } = useTranslation("pages");
   const [misses, setMisses] = useState(0);
@@ -94,16 +116,40 @@ export const ScoreV2Graph = ({
     return chartData.filter((p) => !isPurePerfectAccuracy(p.accuracy));
   }, [chartData, disablePP]);
 
+  const resolvedPinMarkers = useMemo(() => {
+    if (!pinMarkers?.length) return [];
+    if (pinMarkersUseExactScores) return pinMarkers;
+    return pinMarkers.map((pin) => {
+      const curveScore = interpolateCurveScoreAtAccuracy(
+        displayData,
+        pin.accuracyPct,
+      );
+      return {
+        ...pin,
+        score: curveScore ?? pin.score,
+      };
+    });
+  }, [pinMarkers, displayData, pinMarkersUseExactScores]);
+
   const yAxisDomain = useMemo(() => {
-    const pool = disablePP
-      ? zeroMissCurve.filter((p) => !isPurePerfectAccuracy(p.accuracy))
-      : zeroMissCurve;
-    const maxFromCurve = pool.length
-      ? Math.max(...pool.map((p) => p.score))
+    const fixedMax = Number(yAxisMax);
+    if (
+      !disablePP &&
+      Number.isFinite(fixedMax) &&
+      fixedMax > 0
+    ) {
+      return [0, fixedMax];
+    }
+
+    const maxFromCurve = displayData.length
+      ? Math.max(...displayData.map((p) => p.score))
+      : 0;
+    const maxFromPins = resolvedPinMarkers.length
+      ? Math.max(...resolvedPinMarkers.map((p) => p.score))
       : 0;
     const maxScore =
-      maxFromCurve > 0
-        ? maxFromCurve
+      Math.max(maxFromCurve, maxFromPins) > 0
+        ? Math.max(maxFromCurve, maxFromPins)
         : getScoreV2CurveYMax({
             tilecount,
             levelData: effectiveLevelData,
@@ -114,19 +160,25 @@ export const ScoreV2Graph = ({
           });
     if (maxScore <= 0) return [0, 1];
     return [0, maxScore];
-  }, [zeroMissCurve, disablePP, tilecount, effectiveLevelData, difficultyDict, speed, isNoHoldTap]);
+  }, [
+    yAxisMax,
+    disablePP,
+    displayData,
+    resolvedPinMarkers,
+    tilecount,
+    effectiveLevelData,
+    difficultyDict,
+    speed,
+    isNoHoldTap,
+  ]);
 
   const xAxisDomain = useMemo(() => {
-    if (!displayData.length) return [SCOREV2_CURVE_ACCURACY_CUTOFF * 100, 100];
     const pcts = displayData.map((d) => d.accuracyPct);
-    const dataMin = Math.min(...pcts);
-    const dataMax = Math.max(...pcts);
-    const span = Math.max(dataMax - dataMin, 0.5);
-    return [
-      Math.max(SCOREV2_CURVE_ACCURACY_CUTOFF * 100, dataMin - span * 0.02),
-      dataMax + Math.max(span * 0.1, 0.35),
-    ];
-  }, [displayData]);
+    if (resolvedPinMarkers.length) {
+      pcts.push(...resolvedPinMarkers.map((p) => p.accuracyPct));
+    }
+    return scoreV2GraphXAxisDomain(pcts);
+  }, [displayData, resolvedPinMarkers]);
 
   const handleSliderChange = (e) => {
     setMisses(Math.max(0, parseInt(e.target.value, 10) || 0));
@@ -224,6 +276,22 @@ export const ScoreV2Graph = ({
                 connectNulls
                 isAnimationActive={false}
               />
+              {resolvedPinMarkers.map((pin) => {
+                const style = PIN_MARKER_STYLE[pin.variant] ?? PIN_MARKER_STYLE.pin1;
+                return (
+                  <ReferenceDot
+                    key={pin.id}
+                    x={pin.accuracyPct}
+                    y={pin.score}
+                    r={5}
+                    fill={style.fill}
+                    stroke={style.stroke}
+                    strokeWidth={2}
+                    isFront
+                    ifOverflow="visible"
+                  />
+                );
+              })}
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -248,4 +316,14 @@ ScoreV2Graph.propTypes = {
     poleOffset: PropTypes.number,
     topMultiplier: PropTypes.number,
   }),
+  pinMarkers: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      accuracyPct: PropTypes.number.isRequired,
+      score: PropTypes.number.isRequired,
+      variant: PropTypes.oneOf(["anchor", "pin1", "pin2"]),
+    }),
+  ),
+  yAxisMax: PropTypes.number,
+  pinMarkersUseExactScores: PropTypes.bool,
 };

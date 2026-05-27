@@ -1,5 +1,5 @@
 // tuf-search: #AdminLevelXaccCurvePopup #xaccCurve #levels #admin
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createPortal } from 'react-dom';
 import './adminlevelxacccurvepopup.css';
@@ -9,13 +9,38 @@ import { getPortalRoot } from '@/utils/portalRoot';
 import toast from 'react-hot-toast';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { ScoreV2Graph } from '@/components/common/display/ScoreV2Graph/ScoreV2Graph';
+import { formatScore } from '@/utils/Utility';
 import {
-  defaultSliderValues,
-  levelToSliderValues,
-  poleOffsetFromSlider,
-  slidersToXaccCurve,
-  topMultiplierFromSlider,
-} from '@/utils/scoreV2XaccCurveSliders.js';
+  XACC_CURVE_DEFAULTS,
+  pickLevelXaccCurve,
+  levelUsesSiteXaccDefaults,
+  xaccMultiplierFromDisplayScore,
+} from '@/utils/scoreV2XaccCurve.js';
+import {
+  defaultPinSliderValues,
+  levelToPinSliderValues,
+  maxAccXSliderFromAccYSlider,
+  minAccYSliderFromAccXSlider,
+  pinSlidersToXaccCurve,
+  pinValuesFromSliders,
+  resolvePurePerfectScoreV2,
+  scoreFromSlider,
+  scoreToSlider,
+  accuracyFromSliderPin1,
+  accuracyFromSliderPin2,
+  accuracyToSliderPin1,
+  accuracyToSliderPin2,
+  scoreV2AtAccuracy,
+} from '@/utils/scoreV2XaccCurvePins.js';
+import { XaccPinJudgementInputs } from './XaccPinJudgementInputs.jsx';
+import { XaccPinPassPicker } from './XaccPinPassPicker.jsx';
+import {
+  EMPTY_JUDGEMENT_FORM,
+  judgementFormFromPass,
+  resolvePassDisplayScore,
+  sortPassesByScoreDesc,
+  accuracyFromJudgementForm,
+} from '@/utils/xaccPinJudgements.js';
 
 function formatPoleOffset(value) {
   return Number(value).toFixed(4);
@@ -25,86 +50,818 @@ function formatTopMultiplier(value) {
   return Number(value).toFixed(3);
 }
 
+function resolvePinBaseScore(level, difficultyDict) {
+  if (level?.baseScore > 0) return level.baseScore;
+  if (level?.difficulty?.baseScore > 0) return level.difficulty.baseScore;
+  const diff = difficultyDict?.[level?.diffId];
+  if (diff?.baseScore > 0) return diff.baseScore;
+  return 100;
+}
+
+function hasExplicitBaseScore(level, difficultyDict) {
+  if (level?.baseScore > 0) return true;
+  if (level?.difficulty?.baseScore > 0) return true;
+  const diff = difficultyDict?.[level?.diffId];
+  return diff?.baseScore > 0;
+}
+
+function pinInputDraftsFromPins(pins) {
+  return {
+    accX: (pins.accX * 100).toFixed(2),
+    scoreX: pins.scoreX.toFixed(2),
+    accY: (pins.accY * 100).toFixed(2),
+    scoreY: pins.scoreY.toFixed(2),
+  };
+}
+
 export const AdminLevelXaccCurvePopup = ({ level, onClose, onSaved }) => {
   const { t } = useTranslation(['components', 'pages']);
   const { difficultyDict } = useDifficultyContext();
-  const initial = useMemo(() => levelToSliderValues(level), [level?.id, level?.xaccPoleOffset, level?.xaccTopMultiplier]);
+  const baseScore = useMemo(
+    () => resolvePinBaseScore(level, difficultyDict),
+    [level?.baseScore, level?.diffId, difficultyDict],
+  );
+  const baseScoreHint = !hasExplicitBaseScore(level, difficultyDict);
 
-  const [poleDisplay, setPoleDisplay] = useState(initial.poleDisplay);
-  const [topDisplay, setTopDisplay] = useState(initial.topDisplay);
+  const usesSiteDefaults = levelUsesSiteXaccDefaults(level);
+  const initialCurve = usesSiteDefaults
+    ? XACC_CURVE_DEFAULTS
+    : pickLevelXaccCurve(level) ?? XACC_CURVE_DEFAULTS;
+  const initialCapLevelData = useMemo(
+    () => ({
+      baseScore,
+      ppBaseScore: level?.ppBaseScore ?? 0,
+      diffId: level?.diffId,
+      difficulty: level?.difficulty ?? difficultyDict?.[level?.diffId],
+      xaccCurve: initialCurve,
+    }),
+    [baseScore, level?.ppBaseScore, level?.diffId, level?.difficulty, difficultyDict, initialCurve],
+  );
+  const tilecountForCap = level?.tilecount > 0 ? level.tilecount : 100;
+
+  const initialPurePerfectCap = useMemo(
+    () =>
+      resolvePurePerfectScoreV2(
+        initialCapLevelData,
+        difficultyDict,
+        tilecountForCap,
+      ),
+    [initialCapLevelData, difficultyDict, tilecountForCap],
+  );
+
+  const pinContext = useMemo(
+    () => ({
+      levelData: initialCapLevelData,
+      difficultyDict,
+      tilecount: tilecountForCap,
+    }),
+    [initialCapLevelData, difficultyDict, tilecountForCap],
+  );
+
+  const initial = useMemo(
+    () =>
+      usesSiteDefaults
+        ? defaultPinSliderValues(
+            level,
+            baseScore,
+            initialPurePerfectCap,
+            pinContext,
+          )
+        : levelToPinSliderValues(
+            level,
+            baseScore,
+            initialPurePerfectCap,
+            pinContext,
+          ),
+    [
+      level?.id,
+      level?.xaccCurveMeta,
+      level?.xaccPoleOffset,
+      level?.xaccTopMultiplier,
+      baseScore,
+      initialPurePerfectCap,
+      pinContext,
+      usesSiteDefaults,
+    ],
+  );
+
+  const [accXDisplay, setAccXDisplay] = useState(initial.accXDisplay);
+  const [scoreXDisplay, setScoreXDisplay] = useState(initial.scoreXDisplay);
+  const [accYDisplay, setAccYDisplay] = useState(initial.accYDisplay);
+  const [scoreYDisplay, setScoreYDisplay] = useState(initial.scoreYDisplay);
+  const [pinScoreX, setPinScoreX] = useState(initial.scoreX);
+  const [pinScoreY, setPinScoreY] = useState(initial.scoreY);
+  const [pinAccX, setPinAccX] = useState(initial.accX);
+  const [pinAccY, setPinAccY] = useState(initial.accY);
   const [saveAsDefaults, setSaveAsDefaults] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const [disablePP, setDisablePP] = useState(false);
-
-  const poleOffset = poleOffsetFromSlider(poleDisplay);
-  const topMultiplier = topMultiplierFromSlider(topDisplay);
-  const draftCurve = slidersToXaccCurve(poleDisplay, topDisplay);
-
+  const [pinInputMode, setPinInputMode] = useState('accuracy');
+  const [levelPasses, setLevelPasses] = useState([]);
+  const [passesLoading, setPassesLoading] = useState(false);
+  const [openPassPickerPin, setOpenPassPickerPin] = useState(null);
+  const [pin1Judgements, setPin1Judgements] = useState(() => ({
+    ...EMPTY_JUDGEMENT_FORM,
+  }));
+  const [pin2Judgements, setPin2Judgements] = useState(() => ({
+    ...EMPTY_JUDGEMENT_FORM,
+  }));
+  const pinInputFocusRef = useRef(new Set());
+  const panelRef = useRef(null);
+  const pointerDownOutsideRef = useRef(false);
+  const lastValidCurveRef = useRef({
+    poleOffset: initialCurve.poleOffset,
+    topMultiplier: initialCurve.topMultiplier,
+  });
   const tilecount = level?.tilecount > 0 ? level.tilecount : 100;
   const tilecountHint = !level?.tilecount || level.tilecount <= 0;
 
-  const graphLevelData = useMemo(
+  const pinOverrides = useMemo(
     () => ({
-      baseScore: level?.baseScore ?? 0,
+      accX: pinAccX,
+      accY: pinAccY,
+      scoreX: pinScoreX,
+      scoreY: pinScoreY,
+    }),
+    [pinAccX, pinAccY, pinScoreX, pinScoreY],
+  );
+
+  const curveForCap = lastValidCurveRef.current;
+  const capLevelData = useMemo(
+    () => ({
+      baseScore,
       ppBaseScore: level?.ppBaseScore ?? 0,
       diffId: level?.diffId,
-      difficulty: level?.difficulty,
-      xaccCurve: draftCurve,
+      difficulty: level?.difficulty ?? difficultyDict?.[level?.diffId],
+      xaccCurve: curveForCap,
     }),
     [
-      level?.baseScore,
+      baseScore,
       level?.ppBaseScore,
       level?.diffId,
       level?.difficulty,
+      difficultyDict,
+      curveForCap.poleOffset,
+      curveForCap.topMultiplier,
+    ],
+  );
+
+  const scoreCapForFit = useMemo(
+    () => resolvePurePerfectScoreV2(capLevelData, difficultyDict, tilecount),
+    [capLevelData, difficultyDict, tilecount],
+  );
+
+  const pinEdits =
+    pinAccX !== initial.accX ||
+    pinAccY !== initial.accY ||
+    pinScoreX !== initial.scoreX ||
+    pinScoreY !== initial.scoreY;
+
+  const hasChanges = saveAsDefaults || pinEdits;
+
+  const requestClose = useCallback(() => {
+    if (
+      hasChanges &&
+      !window.confirm(t('levelPopups.edit.confirmations.unsavedChanges'))
+    ) {
+      return;
+    }
+    onClose();
+  }, [hasChanges, onClose, t]);
+
+  /** Keep site E/G on mount, after reset, until the user moves a pin control. */
+  const lockSiteDefaultCurve = saveAsDefaults || (usesSiteDefaults && !pinEdits);
+
+  const fitResult = useMemo(
+    () =>
+      pinSlidersToXaccCurve(
+        accXDisplay,
+        scoreXDisplay,
+        accYDisplay,
+        scoreYDisplay,
+        baseScore,
+        scoreCapForFit,
+        pinOverrides,
+        lastValidCurveRef.current,
+      ),
+    [
+      accXDisplay,
+      scoreXDisplay,
+      accYDisplay,
+      scoreYDisplay,
+      baseScore,
+      scoreCapForFit,
+      pinOverrides,
+    ],
+  );
+
+  const fitOk = fitResult.ok;
+  const fitError = fitResult.error;
+
+  if (fitOk && fitResult.xaccCurve && !lockSiteDefaultCurve) {
+    lastValidCurveRef.current = fitResult.xaccCurve;
+  }
+
+  const draftCurve = lockSiteDefaultCurve
+    ? XACC_CURVE_DEFAULTS
+    : fitResult.xaccCurve ?? lastValidCurveRef.current;
+  const derivedE = lockSiteDefaultCurve
+    ? XACC_CURVE_DEFAULTS.poleOffset
+    : fitResult.derivedE ?? draftCurve.poleOffset;
+  const derivedG = lockSiteDefaultCurve
+    ? XACC_CURVE_DEFAULTS.topMultiplier
+    : fitResult.derivedG ?? draftCurve.topMultiplier;
+
+  const accXMax = maxAccXSliderFromAccYSlider(accYDisplay);
+  const accYMin = minAccYSliderFromAccXSlider(accXDisplay);
+
+  const graphLevelData = useMemo(
+    () => ({
+      baseScore,
+      ppBaseScore: level?.ppBaseScore ?? 0,
+      diffId: level?.diffId,
+      difficulty: level?.difficulty ?? difficultyDict?.[level?.diffId],
+      xaccCurve: draftCurve,
+    }),
+    [
+      baseScore,
+      level?.ppBaseScore,
+      level?.diffId,
+      level?.difficulty,
+      difficultyDict,
       draftCurve.poleOffset,
       draftCurve.topMultiplier,
     ],
   );
 
-  const hasChanges =
-    saveAsDefaults ||
-    poleDisplay !== initial.poleDisplay ||
-    topDisplay !== initial.topDisplay;
+  const graphPurePerfectCap = useMemo(
+    () => resolvePurePerfectScoreV2(graphLevelData, difficultyDict, tilecount),
+    [graphLevelData, difficultyDict, tilecount],
+  );
+
+  const scoreCap =
+    graphPurePerfectCap > 0 ? graphPurePerfectCap : scoreCapForFit;
+
+  const resolvedPins = useMemo(
+    () =>
+      pinValuesFromSliders(
+        accXDisplay,
+        scoreXDisplay,
+        accYDisplay,
+        scoreYDisplay,
+        baseScore,
+        scoreCap,
+        pinOverrides,
+      ),
+    [
+      accXDisplay,
+      scoreXDisplay,
+      accYDisplay,
+      scoreYDisplay,
+      baseScore,
+      scoreCap,
+      pinOverrides,
+    ],
+  );
+
+  const [pinInputDrafts, setPinInputDrafts] = useState(() =>
+    pinInputDraftsFromPins(
+      pinValuesFromSliders(
+        initial.accXDisplay,
+        initial.scoreXDisplay,
+        initial.accYDisplay,
+        initial.scoreYDisplay,
+        baseScore,
+        initialPurePerfectCap,
+        {
+          accX: initial.accX,
+          accY: initial.accY,
+          scoreX: initial.scoreX,
+          scoreY: initial.scoreY,
+        },
+      ),
+    ),
+  );
 
   useEffect(() => {
-    const next = levelToSliderValues(level);
-    setPoleDisplay(next.poleDisplay);
-    setTopDisplay(next.topDisplay);
+    const siteDefaults = levelUsesSiteXaccDefaults(level);
+    const curve = siteDefaults
+      ? XACC_CURVE_DEFAULTS
+      : pickLevelXaccCurve(level) ?? XACC_CURVE_DEFAULTS;
+    lastValidCurveRef.current = {
+      poleOffset: curve.poleOffset,
+      topMultiplier: curve.topMultiplier,
+    };
+    const capData = {
+      baseScore,
+      ppBaseScore: level?.ppBaseScore ?? 0,
+      diffId: level?.diffId,
+      difficulty: level?.difficulty ?? difficultyDict?.[level?.diffId],
+      xaccCurve: curve,
+    };
+    const nextMax = resolvePurePerfectScoreV2(capData, difficultyDict, tilecount);
+    const next = siteDefaults
+      ? defaultPinSliderValues(level, baseScore, nextMax, {
+          levelData: capData,
+          difficultyDict,
+          tilecount,
+        })
+      : levelToPinSliderValues(level, baseScore, nextMax, {
+          levelData: capData,
+          difficultyDict,
+          tilecount,
+        });
+    setAccXDisplay(next.accXDisplay);
+    setScoreXDisplay(next.scoreXDisplay);
+    setAccYDisplay(next.accYDisplay);
+    setScoreYDisplay(next.scoreYDisplay);
+    setPinScoreX(next.scoreX);
+    setPinScoreY(next.scoreY);
+    setPinAccX(next.accX);
+    setPinAccY(next.accY);
     setSaveAsDefaults(false);
     setError(null);
-  }, [level?.id, level?.xaccPoleOffset, level?.xaccTopMultiplier]);
+    pinInputFocusRef.current.clear();
+    setPinInputDrafts(
+      pinInputDraftsFromPins(
+        pinValuesFromSliders(
+          next.accXDisplay,
+          next.scoreXDisplay,
+          next.accYDisplay,
+          next.scoreYDisplay,
+          baseScore,
+          nextMax,
+          { scoreX: next.scoreX, scoreY: next.scoreY },
+        ),
+      ),
+    );
+  }, [level?.id, level?.xaccCurveMeta, level?.xaccPoleOffset, level?.xaccTopMultiplier, baseScore, difficultyDict, tilecount]);
+
+  useEffect(() => {
+    const focused = pinInputFocusRef.current;
+    setPinInputDrafts((prev) => {
+      const next = { ...prev };
+      if (!focused.has('accX')) {
+        next.accX = (pinAccX * 100).toFixed(2);
+      }
+      if (!focused.has('scoreX')) {
+        next.scoreX = pinScoreX.toFixed(2);
+      }
+      if (!focused.has('accY')) {
+        next.accY = (pinAccY * 100).toFixed(2);
+      }
+      if (!focused.has('scoreY')) {
+        next.scoreY = pinScoreY.toFixed(2);
+      }
+      return next;
+    });
+  }, [pinAccX, pinAccY, pinScoreX, pinScoreY]);
 
   useEffect(() => {
     const onEsc = (e) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key !== 'Escape') {
+        return;
+      }
+      if (openPassPickerPin != null) {
+        setOpenPassPickerPin(null);
+        return;
+      }
+      requestClose();
     };
     window.addEventListener('keydown', onEsc);
     return () => window.removeEventListener('keydown', onEsc);
-  }, [onClose]);
+  }, [requestClose, openPassPickerPin]);
+
+  useEffect(() => {
+    const onMouseDown = (e) => {
+      const panel = panelRef.current;
+      pointerDownOutsideRef.current = Boolean(
+        panel && !panel.contains(e.target),
+      );
+    };
+    const onMouseUp = (e) => {
+      const panel = panelRef.current;
+      if (
+        pointerDownOutsideRef.current &&
+        panel &&
+        !panel.contains(e.target)
+      ) {
+        requestClose();
+      }
+      pointerDownOutsideRef.current = false;
+    };
+    document.addEventListener('mousedown', onMouseDown);
+    document.addEventListener('mouseup', onMouseUp);
+    return () => {
+      document.removeEventListener('mousedown', onMouseDown);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+  }, [requestClose]);
+
+  useEffect(() => {
+    if (!level?.id) {
+      setLevelPasses([]);
+      return undefined;
+    }
+    let cancelled = false;
+    setPassesLoading(true);
+    api
+      .get(`${import.meta.env.VITE_PASSES}/level/${level.id}`)
+      .then((res) => {
+        if (!cancelled) {
+          setLevelPasses(Array.isArray(res.data) ? res.data : []);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setLevelPasses([]);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setPassesLoading(false);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [level?.id]);
+
+  const levelPassesByScore = useMemo(
+    () => sortPassesByScoreDesc(levelPasses),
+    [levelPasses],
+  );
+
+  useEffect(() => {
+    if (pinInputMode === 'accuracy') {
+      return;
+    }
+    const acc1 = accuracyFromJudgementForm(pin1Judgements);
+    const acc2 = accuracyFromJudgementForm(pin2Judgements);
+    if (acc1 != null && Number.isFinite(acc1)) {
+      setPinAccX(acc1);
+    }
+    if (acc2 != null && Number.isFinite(acc2)) {
+      setPinAccY(acc2);
+    }
+  }, [pinInputMode, pin1Judgements, pin2Judgements]);
+
+  const showJudgementInputs = pinInputMode !== 'accuracy';
+  const computedAccuracyLabel = t(
+    'levelPopups.edit.xaccCurve.inputMode.computedAccuracy',
+  );
+
+  const applyPassToPin = useCallback(
+    (pass, pin) => {
+      if (!pass || (pin !== 1 && pin !== 2)) {
+        return;
+      }
+      const form = judgementFormFromPass(pass);
+      const score = resolvePassDisplayScore(pass);
+      setPinInputMode('judgements');
+      setSaveAsDefaults(false);
+      const scoreDisplay = scoreToSlider(score, baseScore, scoreCap);
+      if (pin === 1) {
+        setPin1Judgements(form);
+        setPinScoreX(score);
+        setScoreXDisplay(scoreDisplay);
+      } else {
+        setPin2Judgements(form);
+        setPinScoreY(score);
+        setScoreYDisplay(scoreDisplay);
+      }
+      setOpenPassPickerPin(null);
+    },
+    [baseScore, scoreCap],
+  );
+
+  const togglePassPicker = (pin) => {
+    setOpenPassPickerPin((prev) => (prev === pin ? null : pin));
+  };
+
+  const handleJudgementChange = (pin, key, value) => {
+    setSaveAsDefaults(false);
+    if (pin === 1) {
+      setPin1Judgements((prev) => ({ ...prev, [key]: value }));
+    } else {
+      setPin2Judgements((prev) => ({ ...prev, [key]: value }));
+    }
+  };
+
+  const handlePinInputModeChange = (mode) => {
+    setPinInputMode(mode);
+    setSaveAsDefaults(false);
+  };
+
+  const handleAccXChange = (value) => {
+    const next = Math.min(Number(value), accXMax);
+    setAccXDisplay(next);
+    setPinAccX(accuracyFromSliderPin1(next));
+    setSaveAsDefaults(false);
+  };
+
+  const handleScoreXChange = (value) => {
+    const display = Number(value);
+    setScoreXDisplay(display);
+    setPinScoreX(scoreFromSlider(display, baseScore, scoreCap));
+    setSaveAsDefaults(false);
+  };
+
+  const handleAccYChange = (value) => {
+    const next = Math.max(Number(value), accYMin);
+    setAccYDisplay(next);
+    setPinAccY(accuracyFromSliderPin2(next));
+    setSaveAsDefaults(false);
+  };
+
+  const handleScoreYChange = (value) => {
+    const display = Number(value);
+    setScoreYDisplay(display);
+    setPinScoreY(scoreFromSlider(display, baseScore, scoreCap));
+    setSaveAsDefaults(false);
+  };
+
+  const setPinInputFocused = (field, focused) => {
+    if (focused) {
+      pinInputFocusRef.current.add(field);
+    } else {
+      pinInputFocusRef.current.delete(field);
+    }
+  };
+
+  const handlePinInputDraftChange = (field, raw) => {
+    setPinInputDrafts((prev) => ({ ...prev, [field]: raw }));
+  };
+
+  const resolvedPinInputDisplay = (field) => {
+    if (field === 'accX') return (resolvedPins.accX * 100).toFixed(2);
+    if (field === 'accY') return (resolvedPins.accY * 100).toFixed(2);
+    if (field === 'scoreX') return pinScoreX.toFixed(2);
+    return pinScoreY.toFixed(2);
+  };
+
+  const commitPinInputDraft = (field) => {
+    const raw = pinInputDrafts[field];
+    if (field === 'accX') {
+      const pct = parseFloat(raw);
+      if (Number.isFinite(pct)) {
+        const acc = pct / 100;
+        setPinAccX(acc);
+        setAccXDisplay(accuracyToSliderPin1(acc));
+        setSaveAsDefaults(false);
+        return true;
+      }
+      return false;
+    }
+    if (field === 'accY') {
+      const pct = parseFloat(raw);
+      if (Number.isFinite(pct)) {
+        const acc = pct / 100;
+        setPinAccY(acc);
+        setAccYDisplay(accuracyToSliderPin2(acc));
+        setSaveAsDefaults(false);
+        return true;
+      }
+      return false;
+    }
+    if (field === 'scoreX') {
+      const score = parseFloat(raw);
+      if (Number.isFinite(score)) {
+        const clamped = Math.min(scoreCap, Math.max(0, score));
+        setPinScoreX(clamped);
+        setScoreXDisplay(scoreToSlider(clamped, baseScore, scoreCap));
+        setSaveAsDefaults(false);
+        return true;
+      }
+      return false;
+    }
+    if (field === 'scoreY') {
+      const score = parseFloat(raw);
+      if (Number.isFinite(score)) {
+        const clamped = Math.min(scoreCap, Math.max(0, score));
+        setPinScoreY(clamped);
+        setScoreYDisplay(scoreToSlider(clamped, baseScore, scoreCap));
+        setSaveAsDefaults(false);
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const handlePinInputBlur = (field) => {
+    setPinInputFocused(field, false);
+    if (!commitPinInputDraft(field)) {
+      setPinInputDrafts((prev) => ({
+        ...prev,
+        [field]: resolvedPinInputDisplay(field),
+      }));
+    }
+  };
+
+  const handlePinInputKeyDown = (e, field) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      e.currentTarget.blur();
+      return;
+    }
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      setPinInputFocused(field, false);
+      setPinInputDrafts((prev) => ({
+        ...prev,
+        [field]: resolvedPinInputDisplay(field),
+      }));
+      e.currentTarget.blur();
+    }
+  };
 
   const handleReset = () => {
-    const def = defaultSliderValues();
-    setPoleDisplay(def.poleDisplay);
-    setTopDisplay(def.topDisplay);
+    lastValidCurveRef.current = { ...XACC_CURVE_DEFAULTS };
+    const capData = {
+      baseScore,
+      ppBaseScore: level?.ppBaseScore ?? 0,
+      diffId: level?.diffId,
+      difficulty: level?.difficulty ?? difficultyDict?.[level?.diffId],
+      xaccCurve: XACC_CURVE_DEFAULTS,
+    };
+    const resetCap = resolvePurePerfectScoreV2(capData, difficultyDict, tilecount);
+    const def = defaultPinSliderValues(level, baseScore, resetCap, {
+      levelData: capData,
+      difficultyDict,
+      tilecount,
+    });
+    setAccXDisplay(def.accXDisplay);
+    setScoreXDisplay(def.scoreXDisplay);
+    setAccYDisplay(def.accYDisplay);
+    setScoreYDisplay(def.scoreYDisplay);
+    setPinScoreX(def.scoreX);
+    setPinScoreY(def.scoreY);
+    setPinAccX(def.accX);
+    setPinAccY(def.accY);
     setSaveAsDefaults(true);
     setError(null);
+    pinInputFocusRef.current.clear();
+    setPinInputDrafts(
+      pinInputDraftsFromPins(
+        pinValuesFromSliders(
+          def.accXDisplay,
+          def.scoreXDisplay,
+          def.accYDisplay,
+          def.scoreYDisplay,
+          baseScore,
+          resetCap,
+          {
+            accX: def.accX,
+            accY: def.accY,
+            scoreX: def.scoreX,
+            scoreY: def.scoreY,
+          },
+        ),
+      ),
+    );
+  };
+
+  const resolveSlidersFromDrafts = () => {
+    let nextAccX = accXDisplay;
+    let nextScoreX = scoreXDisplay;
+    let nextAccY = accYDisplay;
+    let nextScoreY = scoreYDisplay;
+    let nextPinScoreX = pinScoreX;
+    let nextPinScoreY = pinScoreY;
+    let nextPinAccX = pinAccX;
+    let nextPinAccY = pinAccY;
+
+    const pctX = parseFloat(pinInputDrafts.accX);
+    if (Number.isFinite(pctX)) {
+      nextPinAccX = pctX / 100;
+      nextAccX = accuracyToSliderPin1(nextPinAccX);
+    }
+    const pctY = parseFloat(pinInputDrafts.accY);
+    if (Number.isFinite(pctY)) {
+      nextPinAccY = pctY / 100;
+      nextAccY = accuracyToSliderPin2(nextPinAccY);
+    }
+    const scoreX = parseFloat(pinInputDrafts.scoreX);
+    if (Number.isFinite(scoreX)) {
+      nextPinScoreX = Math.min(scoreCap, Math.max(0, scoreX));
+      nextScoreX = scoreToSlider(nextPinScoreX, baseScore, scoreCap);
+    }
+    const scoreY = parseFloat(pinInputDrafts.scoreY);
+    if (Number.isFinite(scoreY)) {
+      nextPinScoreY = Math.min(scoreCap, Math.max(0, scoreY));
+      nextScoreY = scoreToSlider(nextPinScoreY, baseScore, scoreCap);
+    }
+
+    return {
+      accXDisplay: nextAccX,
+      scoreXDisplay: nextScoreX,
+      accYDisplay: nextAccY,
+      scoreYDisplay: nextScoreY,
+      pinScoreX: nextPinScoreX,
+      pinScoreY: nextPinScoreY,
+      pinAccX: nextPinAccX,
+      pinAccY: nextPinAccY,
+    };
   };
 
   const handleSave = async (e) => {
     e.preventDefault();
-    if (!hasChanges) {
+    pinInputFocusRef.current.clear();
+
+    const sliders = resolveSlidersFromDrafts();
+    const saveOverrides = {
+      accX: sliders.pinAccX,
+      accY: sliders.pinAccY,
+      scoreX: sliders.pinScoreX,
+      scoreY: sliders.pinScoreY,
+    };
+    setAccXDisplay(sliders.accXDisplay);
+    setScoreXDisplay(sliders.scoreXDisplay);
+    setAccYDisplay(sliders.accYDisplay);
+    setScoreYDisplay(sliders.scoreYDisplay);
+    setPinScoreX(sliders.pinScoreX);
+    setPinScoreY(sliders.pinScoreY);
+    setPinAccX(sliders.pinAccX);
+    setPinAccY(sliders.pinAccY);
+    setPinInputDrafts(
+      pinInputDraftsFromPins(
+        pinValuesFromSliders(
+          sliders.accXDisplay,
+          sliders.scoreXDisplay,
+          sliders.accYDisplay,
+          sliders.scoreYDisplay,
+          baseScore,
+          scoreCap,
+          saveOverrides,
+        ),
+      ),
+    );
+
+    const slidersChanged =
+      sliders.pinAccX !== initial.accX ||
+      sliders.pinAccY !== initial.accY ||
+      sliders.pinScoreX !== initial.scoreX ||
+      sliders.pinScoreY !== initial.scoreY;
+
+    if (!saveAsDefaults && !slidersChanged) {
       onClose();
+      return;
+    }
+
+    const saveFit = pinSlidersToXaccCurve(
+      sliders.accXDisplay,
+      sliders.scoreXDisplay,
+      sliders.accYDisplay,
+      sliders.scoreYDisplay,
+      baseScore,
+      scoreCap,
+      saveOverrides,
+    );
+
+    if (!saveAsDefaults && !saveFit.ok) {
+      const msg =
+        saveFit.error || t('levelPopups.edit.xaccCurve.errors.fit');
+      setError(msg);
       return;
     }
     setError(null);
     setSaving(true);
     try {
+      const pinsToStore =
+        saveFit.ok && saveFit.pins
+          ? saveFit.pins
+          : pinValuesFromSliders(
+              sliders.accXDisplay,
+              sliders.scoreXDisplay,
+              sliders.accYDisplay,
+              sliders.scoreYDisplay,
+              baseScore,
+              scoreCap,
+              saveOverrides,
+            );
       const payload = saveAsDefaults
-        ? { xaccPoleOffset: null, xaccTopMultiplier: null }
+        ? { xaccCurveMeta: null }
         : {
-            xaccPoleOffset: poleOffset,
-            xaccTopMultiplier: topMultiplier,
+            xaccCurveMeta: {
+              poleOffset: saveFit.derivedE,
+              topMultiplier: saveFit.derivedG,
+              pins: {
+                accX: pinsToStore.accX,
+                accY: pinsToStore.accY,
+                scoreX: pinsToStore.scoreX,
+                scoreY: pinsToStore.scoreY,
+                multX: xaccMultiplierFromDisplayScore(
+                  pinsToStore.scoreX,
+                  baseScore,
+                ),
+                multY: xaccMultiplierFromDisplayScore(
+                  pinsToStore.scoreY,
+                  baseScore,
+                ),
+                scoresAreXaccMultipliers: true,
+              },
+            },
           };
       const res = await api.patch(
         `${import.meta.env.VITE_LEVELS}/${level.id}/xacc-curve`,
@@ -113,8 +870,7 @@ export const AdminLevelXaccCurvePopup = ({ level, onClose, onSaved }) => {
       const updated = res.data?.level;
       if (updated && onSaved) {
         onSaved({
-          xaccPoleOffset: updated.xaccPoleOffset ?? null,
-          xaccTopMultiplier: updated.xaccTopMultiplier ?? null,
+          xaccCurveMeta: updated.xaccCurveMeta ?? null,
         });
       }
       toast.success(t('levelPopups.edit.xaccCurve.toastSaved'));
@@ -130,15 +886,46 @@ export const AdminLevelXaccCurvePopup = ({ level, onClose, onSaved }) => {
     }
   };
 
-  const handleOverlay = (e) => {
-    if (e.target === e.currentTarget) onClose();
-  };
+  const anchorScore = useMemo(() => {
+    const atCutoff = scoreV2AtAccuracy(
+      XACC_CURVE_DEFAULTS.cutoff,
+      graphLevelData,
+      difficultyDict,
+      tilecount,
+    );
+    return Number.isFinite(atCutoff) ? atCutoff : baseScore;
+  }, [graphLevelData, difficultyDict, tilecount, baseScore]);
+
+  const pinMarkers = useMemo(() => {
+    const pins = resolvedPins;
+    const cutoff = XACC_CURVE_DEFAULTS.cutoff;
+    return [
+      {
+        id: 'anchor',
+        accuracyPct: cutoff * 100,
+        score: anchorScore,
+        variant: 'anchor',
+      },
+      {
+        id: 'pin1',
+        accuracyPct: pins.accX * 100,
+        score: pins.scoreX,
+        variant: 'pin1',
+      },
+      {
+        id: 'pin2',
+        accuracyPct: pins.accY * 100,
+        score: pins.scoreY,
+        variant: 'pin2',
+      },
+    ];
+  }, [resolvedPins, anchorScore]);
 
   const content = (
-    <div className="admin-level-xacc-curve-popup" onClick={handleOverlay}>
+    <div className="admin-level-xacc-curve-popup">
       <div
+        ref={panelRef}
         className="admin-level-xacc-curve-popup__panel"
-        onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-labelledby="admin-xacc-curve-title"
       >
@@ -150,7 +937,7 @@ export const AdminLevelXaccCurvePopup = ({ level, onClose, onSaved }) => {
             variant="inline"
             onClick={(e) => {
               e.stopPropagation();
-              onClose();
+              requestClose();
             }}
             aria-label={t('levelPopups.edit.close')}
           />
@@ -158,6 +945,19 @@ export const AdminLevelXaccCurvePopup = ({ level, onClose, onSaved }) => {
         <p className="admin-level-xacc-curve-popup__hint">
           {t('levelPopups.edit.xaccCurve.hint')}
         </p>
+        <p className="admin-level-xacc-curve-popup__hint admin-level-xacc-curve-popup__hint--constraint">
+          {t('levelPopups.edit.xaccCurve.constraintHint', {
+            defaultValue:
+              'If pins cannot be fit exactly, the last E/G curve is kept and pins may appear off the plotted line.',
+          })}
+        </p>
+        {baseScoreHint ? (
+          <p className="admin-level-xacc-curve-popup__hint admin-level-xacc-curve-popup__hint--warn">
+            {t('levelPopups.edit.xaccCurve.baseScoreFallback', {
+              base: formatScore(baseScore),
+            })}
+          </p>
+        ) : null}
         {tilecountHint ? (
           <p className="admin-level-xacc-curve-popup__hint admin-level-xacc-curve-popup__hint--warn">
             {t('levelPopups.edit.xaccCurve.tilecountFallback')}
@@ -167,52 +967,213 @@ export const AdminLevelXaccCurvePopup = ({ level, onClose, onSaved }) => {
           className="admin-level-xacc-curve-popup__form"
           onSubmit={handleSave}
         >
-          <div className="admin-level-xacc-curve-popup__sliders">
-            <div className="admin-level-xacc-curve-popup__slider-row">
-              <label htmlFor="xacc-pole-slider">
-                {t('levelPopups.edit.xaccCurve.labels.pole')}
-              </label>
-              <input
-                id="xacc-pole-slider"
-                type="range"
-                min={1}
-                max={100}
-                value={poleDisplay}
-                onChange={(e) => {
-                  setPoleDisplay(Number(e.target.value));
-                  setSaveAsDefaults(false);
-                }}
-              />
-              <span className="admin-level-xacc-curve-popup__slider-meta">
-                {t('levelPopups.edit.xaccCurve.sliderDisplay', {
-                  value: poleDisplay,
-                })}{' '}
-                · E = {formatPoleOffset(poleOffset)}
-              </span>
-            </div>
-            <div className="admin-level-xacc-curve-popup__slider-row">
-              <label htmlFor="xacc-top-slider">
-                {t('levelPopups.edit.xaccCurve.labels.top')}
-              </label>
-              <input
-                id="xacc-top-slider"
-                type="range"
-                min={1}
-                max={100}
-                value={topDisplay}
-                onChange={(e) => {
-                  setTopDisplay(Number(e.target.value));
-                  setSaveAsDefaults(false);
-                }}
-              />
-              <span className="admin-level-xacc-curve-popup__slider-meta">
-                {t('levelPopups.edit.xaccCurve.sliderDisplay', {
-                  value: topDisplay,
-                })}{' '}
-                · G = {formatTopMultiplier(topMultiplier)}
-              </span>
+          <div className="admin-level-xacc-curve-popup__mode-row">
+            <span className="admin-level-xacc-curve-popup__pin-heading">
+              {t('levelPopups.edit.xaccCurve.inputMode.heading')}
+            </span>
+            <div
+              className="admin-level-xacc-curve-popup__mode-tabs"
+              role="tablist"
+              aria-label={t('levelPopups.edit.xaccCurve.inputMode.heading')}
+            >
+              {[
+                { id: 'accuracy', label: t('levelPopups.edit.xaccCurve.inputMode.accuracy') },
+                { id: 'judgements', label: t('levelPopups.edit.xaccCurve.inputMode.judgements') },
+              ].map(({ id, label }) => (
+                <button
+                  key={id}
+                  type="button"
+                  role="tab"
+                  aria-selected={pinInputMode === id}
+                  className={
+                    pinInputMode === id
+                      ? 'admin-level-xacc-curve-popup__mode-tab admin-level-xacc-curve-popup__mode-tab--active'
+                      : 'admin-level-xacc-curve-popup__mode-tab'
+                  }
+                  onClick={() => handlePinInputModeChange(id)}
+                >
+                  {label}
+                </button>
+              ))}
             </div>
           </div>
+          <div className="admin-level-xacc-curve-popup__pin-grid">
+            <div className="admin-level-xacc-curve-popup__pin-group">
+              <div className="admin-level-xacc-curve-popup__pin-group-header">
+                <span className="admin-level-xacc-curve-popup__pin-heading">
+                  {t('levelPopups.edit.xaccCurve.labels.pin1')}
+                </span>
+                <XaccPinPassPicker
+                  passes={levelPassesByScore}
+                  loading={passesLoading}
+                  open={openPassPickerPin === 1}
+                  onToggle={() => togglePassPicker(1)}
+                  onSelectPass={(pass) => applyPassToPin(pass, 1)}
+                  ariaLabel={t('levelPopups.edit.xaccCurve.inputMode.loadFromPassPin1')}
+                  loadingLabel={t('levelPopups.edit.xaccCurve.inputMode.passLoading')}
+                  emptyLabel={t('levelPopups.edit.xaccCurve.inputMode.passEmpty')}
+                />
+              </div>
+              {!showJudgementInputs ? (
+                <div className="admin-level-xacc-curve-popup__slider-row">
+                  <label htmlFor="xacc-pin1-acc-slider">
+                    {t('levelPopups.edit.xaccCurve.labels.pinAccuracy')}
+                  </label>
+                  <input
+                    id="xacc-pin1-acc-slider"
+                    type="range"
+                    min={1}
+                    max={accXMax}
+                    value={Math.min(accXDisplay, accXMax)}
+                    onChange={(e) => handleAccXChange(e.target.value)}
+                  />
+                  <span className="admin-level-xacc-curve-popup__slider-meta">
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      className="admin-level-xacc-curve-popup__pin-input"
+                      value={pinInputDrafts.accX}
+                      onChange={(e) => handlePinInputDraftChange('accX', e.target.value)}
+                      onFocus={() => setPinInputFocused('accX', true)}
+                      onBlur={() => handlePinInputBlur('accX')}
+                      onKeyDown={(e) => handlePinInputKeyDown(e, 'accX')}
+                      aria-label={t('levelPopups.edit.xaccCurve.labels.pinAccuracy')}
+                    />
+                    <span className="admin-level-xacc-curve-popup__pin-input-suffix">%</span>
+                  </span>
+                </div>
+              ) : (
+                <XaccPinJudgementInputs
+                  form={pin1Judgements}
+                  onChange={(key, value) => handleJudgementChange(1, key, value)}
+                  computedAccuracyLabel={computedAccuracyLabel}
+                />
+              )}
+              <div className="admin-level-xacc-curve-popup__slider-row">
+                <label htmlFor="xacc-pin1-score-slider">
+                  {t('levelPopups.edit.xaccCurve.labels.pinScore')}
+                </label>
+                <input
+                  id="xacc-pin1-score-slider"
+                  type="range"
+                  min={1}
+                  max={100}
+                  value={scoreXDisplay}
+                  onChange={(e) => handleScoreXChange(e.target.value)}
+                />
+                <span className="admin-level-xacc-curve-popup__slider-meta">
+                  <input
+                    type="text"
+                    inputMode="decimal"
+                    className="admin-level-xacc-curve-popup__pin-input"
+                    value={pinInputDrafts.scoreX}
+                    onChange={(e) => handlePinInputDraftChange('scoreX', e.target.value)}
+                    onFocus={() => setPinInputFocused('scoreX', true)}
+                    onBlur={() => handlePinInputBlur('scoreX')}
+                    onKeyDown={(e) => handlePinInputKeyDown(e, 'scoreX')}
+                    aria-label={t('levelPopups.edit.xaccCurve.labels.pinScore')}
+                  />
+                </span>
+              </div>
+            </div>
+            <div className="admin-level-xacc-curve-popup__pin-group">
+              <div className="admin-level-xacc-curve-popup__pin-group-header">
+                <span className="admin-level-xacc-curve-popup__pin-heading">
+                  {t('levelPopups.edit.xaccCurve.labels.pin2')}
+                </span>
+                <XaccPinPassPicker
+                  passes={levelPassesByScore}
+                  loading={passesLoading}
+                  open={openPassPickerPin === 2}
+                  onToggle={() => togglePassPicker(2)}
+                  onSelectPass={(pass) => applyPassToPin(pass, 2)}
+                  ariaLabel={t('levelPopups.edit.xaccCurve.inputMode.loadFromPassPin2')}
+                  loadingLabel={t('levelPopups.edit.xaccCurve.inputMode.passLoading')}
+                  emptyLabel={t('levelPopups.edit.xaccCurve.inputMode.passEmpty')}
+                />
+              </div>
+              {!showJudgementInputs ? (
+                <div className="admin-level-xacc-curve-popup__slider-row">
+                  <label htmlFor="xacc-pin2-acc-slider">
+                    {t('levelPopups.edit.xaccCurve.labels.pinAccuracy')}
+                  </label>
+                  <input
+                    id="xacc-pin2-acc-slider"
+                    type="range"
+                    min={accYMin}
+                    max={100}
+                    value={Math.max(accYDisplay, accYMin)}
+                    onChange={(e) => handleAccYChange(e.target.value)}
+                  />
+                  <span className="admin-level-xacc-curve-popup__slider-meta">
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      className="admin-level-xacc-curve-popup__pin-input"
+                      value={pinInputDrafts.accY}
+                      onChange={(e) => handlePinInputDraftChange('accY', e.target.value)}
+                      onFocus={() => setPinInputFocused('accY', true)}
+                      onBlur={() => handlePinInputBlur('accY')}
+                      onKeyDown={(e) => handlePinInputKeyDown(e, 'accY')}
+                      aria-label={t('levelPopups.edit.xaccCurve.labels.pinAccuracy')}
+                    />
+                    <span className="admin-level-xacc-curve-popup__pin-input-suffix">%</span>
+                  </span>
+                </div>
+              ) : (
+                <XaccPinJudgementInputs
+                  form={pin2Judgements}
+                  onChange={(key, value) => handleJudgementChange(2, key, value)}
+                  computedAccuracyLabel={computedAccuracyLabel}
+                />
+              )}
+              <div className="admin-level-xacc-curve-popup__slider-row">
+                <label htmlFor="xacc-pin2-score-slider">
+                  {t('levelPopups.edit.xaccCurve.labels.pinScore')}
+                </label>
+                <input
+                  id="xacc-pin2-score-slider"
+                  type="range"
+                  min={1}
+                  max={100}
+                  value={scoreYDisplay}
+                  onChange={(e) => handleScoreYChange(e.target.value)}
+                />
+                <span className="admin-level-xacc-curve-popup__slider-meta">
+                  <input
+                    type="text"
+                    inputMode="decimal"
+                    className="admin-level-xacc-curve-popup__pin-input"
+                    value={pinInputDrafts.scoreY}
+                    onChange={(e) => handlePinInputDraftChange('scoreY', e.target.value)}
+                    onFocus={() => setPinInputFocused('scoreY', true)}
+                    onBlur={() => handlePinInputBlur('scoreY')}
+                    onKeyDown={(e) => handlePinInputKeyDown(e, 'scoreY')}
+                    aria-label={t('levelPopups.edit.xaccCurve.labels.pinScore')}
+                  />
+                </span>
+              </div>
+            </div>
+          </div>
+          <div className="admin-level-xacc-curve-popup__derived">
+            <span>
+              {t('levelPopups.edit.xaccCurve.labels.pole')}: E ={' '}
+              {formatPoleOffset(derivedE)}
+            </span>
+            <span>
+              {t('levelPopups.edit.xaccCurve.labels.top')}: G ={' '}
+              {formatTopMultiplier(derivedG)}
+            </span>
+          </div>
+          {!fitOk && fitError && !lockSiteDefaultCurve ? (
+            <div className="admin-level-xacc-curve-popup__error admin-level-xacc-curve-popup__error--fit">
+              {t('levelPopups.edit.xaccCurve.fitWarning', {
+                error: fitError,
+                defaultValue:
+                  'Pins do not lie on a single hyperbola with the last E/G: {{error}}. Markers show your values; adjust pins or scores to fit.',
+              })}
+            </div>
+          ) : null}
           <button
             type="button"
             className="admin-level-xacc-curve-popup__btn admin-level-xacc-curve-popup__btn--secondary btn-fill-neutral-muted"
@@ -243,6 +1204,9 @@ export const AdminLevelXaccCurvePopup = ({ level, onClose, onSaved }) => {
               difficultyDict={difficultyDict}
               xaccCurve={draftCurve}
               disablePP={disablePP}
+              pinMarkers={pinMarkers}
+              yAxisMax={graphPurePerfectCap}
+              pinMarkersUseExactScores
             />
           </div>
           {error ? (
@@ -252,7 +1216,7 @@ export const AdminLevelXaccCurvePopup = ({ level, onClose, onSaved }) => {
             <button
               type="button"
               className="admin-level-xacc-curve-popup__btn admin-level-xacc-curve-popup__btn--secondary btn-fill-neutral-muted"
-              onClick={onClose}
+              onClick={requestClose}
               disabled={saving}
             >
               {t('levelPopups.edit.xaccCurve.cancel')}
@@ -260,7 +1224,7 @@ export const AdminLevelXaccCurvePopup = ({ level, onClose, onSaved }) => {
             <button
               type="submit"
               className="admin-level-xacc-curve-popup__btn admin-level-xacc-curve-popup__btn--primary btn-fill-primary"
-              disabled={saving || !hasChanges}
+              disabled={saving || !hasChanges || (!saveAsDefaults && !fitOk)}
             >
               {saving
                 ? t('levelPopups.edit.xaccCurve.saving')

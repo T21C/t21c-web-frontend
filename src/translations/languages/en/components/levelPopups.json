@@ -78,7 +78,10 @@
     "xaccCurve": {
       "title": "Xacc score curve",
       "openButtonTitle": "Edit per-level xacc curve (recalculates passes)",
-      "hint": "Adjust pole offset (E) and top multiplier (G). Saving recalculates all passes on this level.",
+      "hint": "Set two interior score pins (95% is fixed at base score). A hyperbola is fitted through all three points; derived E and G are shown below.",
+      "constraintHint": "If pins cannot be fit exactly, the last E/G curve is kept and pins may appear off the plotted line.",
+      "fitWarning": "Pins do not lie on a single hyperbola with the last E/G: {{error}}. Markers show your values; adjust pins or scores to fit.",
+      "baseScoreFallback": "Level base score is missing; pin scores use {{base}} for scaling.",
       "tilecountFallback": "Tile count is missing; preview uses 100 tiles.",
       "resetDefaults": "Reset to site defaults",
       "save": "Save",
@@ -86,12 +89,27 @@
       "cancel": "Cancel",
       "toastSaved": "Xacc curve saved; passes are being recalculated",
       "sliderDisplay": "Slider {{value}}",
+      "inputMode": {
+        "accuracy": "Accuracy & score",
+        "judgements": "Judgements & score",
+        "heading": "Pin input mode",
+        "computedAccuracy": "Accuracy (from judgements)",
+        "passEmpty": "No passes on this level",
+        "passLoading": "Loading passes…",
+        "loadFromPassPin1": "Load a pass into pin 1",
+        "loadFromPassPin2": "Load a pass into pin 2"
+      },
       "labels": {
+        "pin1": "Pin 1",
+        "pin2": "Pin 2",
+        "pinAccuracy": "Accuracy",
+        "pinScore": "Score",
         "pole": "Pole offset (E)",
         "top": "Top multiplier (G)"
       },
       "errors": {
-        "save": "Failed to save xacc curve"
+        "save": "Failed to save xacc curve",
+        "fit": "Could not fit a valid hyperbola to these pins"
       }
     },
     "chartStats": {

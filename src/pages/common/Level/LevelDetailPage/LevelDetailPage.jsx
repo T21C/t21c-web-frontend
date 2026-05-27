@@ -2068,8 +2068,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                         ppBaseScore: res.level.ppBaseScore,
                         diffId: res.level.diffId,
                         difficulty,
-                        xaccPoleOffset: res.level.xaccPoleOffset ?? null,
-                        xaccTopMultiplier: res.level.xaccTopMultiplier ?? null,
+                        xaccCurveMeta: res.level.xaccCurveMeta ?? null,
                       }}
                       difficultyDict={difficultyDict}
                     />

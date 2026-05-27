@@ -19,6 +19,55 @@ const WEIGHT_EARLY = 0.6;
 /** ScoreV2 xacc curve is only meaningful at/above this accuracy. */
 export const SCOREV2_CURVE_ACCURACY_CUTOFF = XACC_CURVE_DEFAULTS.cutoff;
 
+/** Minimum accuracy span for score graph x-axis (% points). */
+export const SCOREV2_GRAPH_X_MIN_SPAN = 0.5;
+/** Minimum right-side padding beyond data max (% points); span×0.1 can exceed this. */
+export const SCOREV2_GRAPH_X_RIGHT_PAD = 0.35;
+
+/**
+ * X-axis domain for ScoreV2 graph from accuracy % samples (curve + optional pins).
+ * @param {number[]} accuracyPcts Values in [0, 100].
+ * @returns {[number, number]}
+ */
+export function scoreV2GraphXAxisDomain(accuracyPcts) {
+  if (!accuracyPcts.length) {
+    return [SCOREV2_CURVE_ACCURACY_CUTOFF * 100, 100];
+  }
+  const dataMin = Math.min(...accuracyPcts);
+  const dataMax = Math.max(...accuracyPcts);
+  const span = Math.max(dataMax - dataMin, SCOREV2_GRAPH_X_MIN_SPAN);
+  return [
+    Math.max(SCOREV2_CURVE_ACCURACY_CUTOFF * 100, dataMin - span * 0.02),
+    dataMax + Math.max(span * 0.1, SCOREV2_GRAPH_X_RIGHT_PAD),
+  ];
+}
+
+/**
+ * Linear score at an accuracy % from enumerated curve points.
+ * @param {{ accuracyPct: number, score: number }[]} points
+ * @param {number} accuracyPct
+ * @returns {number | null}
+ */
+export function interpolateCurveScoreAtAccuracy(points, accuracyPct) {
+  if (!points?.length || !Number.isFinite(accuracyPct)) return null;
+  const sorted = [...points].sort((a, b) => a.accuracyPct - b.accuracyPct);
+  if (accuracyPct <= sorted[0].accuracyPct) return sorted[0].score;
+  if (accuracyPct >= sorted[sorted.length - 1].accuracyPct) {
+    return sorted[sorted.length - 1].score;
+  }
+  for (let i = 0; i < sorted.length - 1; i += 1) {
+    const a = sorted[i];
+    const b = sorted[i + 1];
+    if (accuracyPct >= a.accuracyPct && accuracyPct <= b.accuracyPct) {
+      const span = b.accuracyPct - a.accuracyPct;
+      if (span <= 0) return a.score;
+      const t = (accuracyPct - a.accuracyPct) / span;
+      return a.score + t * (b.score - a.score);
+    }
+  }
+  return sorted[sorted.length - 1].score;
+}
+
 export function isPurePerfectAccuracy(accuracy) {
   return Number(accuracy) >= 1 - 1e-9;
 }

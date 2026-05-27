@@ -78,7 +78,10 @@
     "xaccCurve": {
       "title": "Xacc 分数曲线",
       "openButtonTitle": "编辑关卡 xacc 曲线（会重算所有通关）",
-      "hint": "调整极点偏移 (E) 与顶部倍率 (G)。保存后将重算本关卡所有通关分数。",
+      "hint": "设置两个内部分数锚点（95% 固定为基准分）。三点拟合双曲线；下方显示推导的 E 与 G。",
+      "constraintHint": "若锚点无法精确拟合，将保留上一组 E/G，锚点可能显示在曲线外。",
+      "fitWarning": "锚点与当前 E/G 双曲线不完全重合：{{error}}。标记显示你设置的值，请调整锚点或分数以拟合。",
+      "baseScoreFallback": "缺少关卡基准分；锚点分数按 {{base}} 缩放。",
       "tilecountFallback": "缺少物量；预览使用 100 物。",
       "resetDefaults": "恢复站点默认值",
       "save": "保存",
@@ -86,12 +89,27 @@
       "cancel": "取消",
       "toastSaved": "Xacc 曲线已保存，正在重算通关",
       "sliderDisplay": "滑块 {{value}}",
+      "inputMode": {
+        "accuracy": "准确率与分数",
+        "judgements": "判定与分数",
+        "heading": "锚点输入方式",
+        "computedAccuracy": "准确率（由判定计算）",
+        "passEmpty": "该关卡暂无通关记录",
+        "passLoading": "加载通关中…",
+        "loadFromPassPin1": "将通关加载到锚点 1",
+        "loadFromPassPin2": "将通关加载到锚点 2"
+      },
       "labels": {
+        "pin1": "锚点 1",
+        "pin2": "锚点 2",
+        "pinAccuracy": "精度",
+        "pinScore": "分数",
         "pole": "极点偏移 (E)",
         "top": "顶部倍率 (G)"
       },
       "errors": {
-        "save": "保存 xacc 曲线失败"
+        "save": "保存 xacc 曲线失败",
+        "fit": "无法为这些锚点拟合有效双曲线"
       }
     },
     "chartStats": {

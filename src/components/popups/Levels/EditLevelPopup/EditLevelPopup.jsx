@@ -1,5 +1,5 @@
 // tuf-search: #EditLevelPopup #editLevelPopup #popups #levels #editLevel
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import './editlevelpopup.css';
 import api from '@/utils/api';
@@ -90,6 +90,28 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
   const [isPermanentDeleteMode, setIsPermanentDeleteMode] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const { difficulties } = useDifficultyContext();
+  const xaccEditorLevel = useMemo(() => {
+    const parsedBase =
+      formData.baseScore !== null &&
+      formData.baseScore !== '' &&
+      !Number.isNaN(parseFloat(formData.baseScore))
+        ? parseFloat(formData.baseScore)
+        : null;
+    const diffId =
+      formData.diffId !== '' && formData.diffId != null
+        ? Number(formData.diffId)
+        : level?.diffId;
+    const difficulty =
+      difficulties?.find((d) => d.id === diffId) ?? level?.difficulty;
+    return {
+      ...level,
+      diffId,
+      baseScore:
+        parsedBase ??
+        (level?.baseScore > 0 ? level.baseScore : difficulty?.baseScore ?? null),
+      difficulty,
+    };
+  }, [level, formData.baseScore, formData.diffId, difficulties]);
   const [showAliasManagement, setShowAliasManagement] = useState(false);
   const [showUploadManagement, setShowUploadManagement] = useState(false);
   const [showTagManagement, setShowTagManagement] = useState(false);
@@ -1060,7 +1082,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
 
       {showXaccCurvePopup && (
         <AdminLevelXaccCurvePopup
-          level={level}
+          level={xaccEditorLevel}
           onClose={() => setShowXaccCurvePopup(false)}
           onSaved={(patch) => {
             if (onUpdate) {
