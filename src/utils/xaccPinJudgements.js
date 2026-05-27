@@ -1,6 +1,6 @@
 // tuf-search: #xaccPinJudgements #judgements #xaccCurve
 import calcAcc from './CalcAcc.js'
-import { getScoreV2 } from './CalcScore.js'
+import { getScoreV2, scoreV2MtpFromMisses } from './CalcScore.js'
 
 /** Pass / submission judgement fields (string counts for inputs). */
 export const EMPTY_JUDGEMENT_FORM = {
@@ -28,6 +28,22 @@ function parseCount(value) {
 }
 
 /** Client calcAcc / getScoreV2 6-element judgement array. */
+export function missCountFromJudgementForm(form) {
+    return judgementFormToCalcArray(form)[0]
+}
+
+export function hitTilesFromJudgementForm(form) {
+    const arr = judgementFormToCalcArray(form)
+    return arr.slice(1).reduce((a, b) => a + b, 0)
+}
+
+export function scoreV2MtpFromJudgementForm(form, fallbackHitTiles = 0) {
+    const misses = missCountFromJudgementForm(form)
+    const hits = hitTilesFromJudgementForm(form)
+    const hitTiles = hits > 0 ? hits : Math.max(0, Math.floor(Number(fallbackHitTiles)) || 0)
+    return scoreV2MtpFromMisses(misses, hitTiles)
+}
+
 export function judgementFormToCalcArray(form) {
     if (!form) {
         return [0, 0, 0, 0, 0, 0]

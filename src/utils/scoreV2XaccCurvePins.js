@@ -271,6 +271,26 @@ function pinSliderValuesFromPins(pins, base, scoreMax) {
  * @param {{ scoreX?: number, scoreY?: number, accX?: number, accY?: number } | null} [pinOverrides]
  *   Authoritative pin values (e.g. manual score input or seeded defaults).
  */
+/**
+ * Accuracy for save: keep full-precision state when the draft is only the 2-decimal label.
+ * Use draft when the user edited the % input to a different string.
+ */
+export function resolveAccuracyPctForSave(draftPctStr, stateAccFraction) {
+    const state = Number(stateAccFraction)
+    const pct = parseFloat(draftPctStr)
+    if (!Number.isFinite(pct)) {
+        return Number.isFinite(state) ? state : 0
+    }
+    const fromDraft = pct / 100
+    if (!Number.isFinite(state)) {
+        return fromDraft
+    }
+    if (String(draftPctStr).trim() === (state * 100).toFixed(2)) {
+        return state
+    }
+    return fromDraft
+}
+
 export function pinValuesFromSliders(
     accXDisplay,
     scoreXDisplay,
@@ -431,6 +451,7 @@ export function pinSlidersToXaccCurve(
     scoreMax,
     scoreOverrides = null,
     fallbackCurve = null,
+    fitContext = null,
 ) {
     const pins = pinValuesFromSliders(
         accXDisplay,
@@ -441,7 +462,29 @@ export function pinSlidersToXaccCurve(
         scoreMax,
         scoreOverrides,
     )
-    const fit = fitXaccCurveFromPins(pins)
+    const hitTiles = Math.max(
+        1,
+        Math.floor(Number(fitContext?.hitTiles)) ||
+            Math.floor(Number(scoreOverrides?.hitTiles)) ||
+            100,
+    )
+    const missesX =
+        scoreOverrides?.missesX != null
+            ? Math.max(0, Math.floor(Number(scoreOverrides.missesX)) || 0)
+            : 0
+    const missesY =
+        scoreOverrides?.missesY != null
+            ? Math.max(0, Math.floor(Number(scoreOverrides.missesY)) || 0)
+            : 0
+    const ppBaseScore =
+        fitContext?.ppBaseScore ?? scoreOverrides?.ppBaseScore ?? undefined
+    const fit = fitXaccCurveFromPins({
+        ...pins,
+        hitTiles,
+        missesX,
+        missesY,
+        ppBaseScore,
+    })
     const fb = resolveXaccCurveConfig(
         fallbackCurve ?? XACC_CURVE_DEFAULTS,
     )

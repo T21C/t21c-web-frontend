@@ -19,6 +19,12 @@ const WEIGHT_EARLY = 0.6;
 /** ScoreV2 xacc curve is only meaningful at/above this accuracy. */
 export const SCOREV2_CURVE_ACCURACY_CUTOFF = XACC_CURVE_DEFAULTS.cutoff;
 
+/** Fixed x-axis for admin xacc curve editor (does not shrink to slice max accuracy). */
+export const SCOREV2_XACC_ADMIN_GRAPH_X_DOMAIN = [
+  SCOREV2_CURVE_ACCURACY_CUTOFF * 100,
+  100.5,
+];
+
 /** Minimum accuracy span for score graph x-axis (% points). */
 export const SCOREV2_GRAPH_X_MIN_SPAN = 0.5;
 /** Minimum right-side padding beyond data max (% points); span×0.1 can exceed this. */
@@ -29,6 +35,44 @@ export const SCOREV2_GRAPH_X_RIGHT_PAD = 0.35;
  * @param {number[]} accuracyPcts Values in [0, 100].
  * @returns {[number, number]}
  */
+/**
+ * Map chart pointer X (pixels) to accuracy % using the plotted x-axis domain and offset.
+ * Avoids Recharts tick-snapping when multiple series / sparse points share the chart.
+ */
+export function accuracyPctFromChartPointer(chartX, offset, xDomain) {
+  if (!Number.isFinite(chartX) || !offset || !xDomain?.length) {
+    return null;
+  }
+  const min = Number(xDomain[0]);
+  const max = Number(xDomain[1]);
+  const width = Number(offset.width);
+  const left = Number(offset.left);
+  if (!Number.isFinite(min) || !Number.isFinite(max) || width <= 0) {
+    return null;
+  }
+  const t = (chartX - left) / width;
+  if (!Number.isFinite(t)) {
+    return null;
+  }
+  const acc = min + t * (max - min);
+  return Math.min(max, Math.max(min, acc));
+}
+
+/**
+ * Max accuracy % for axis hover on the zero-miss curve (100% with PP, last plotted point without).
+ * @param {{ accuracyPct: number }[]} zeroMissPoints Filtered zero-miss display points.
+ * @param {{ disablePP?: boolean }} [options]
+ */
+export function scoreV2GraphHoverAccuracyMax(zeroMissPoints, { disablePP = false } = {}) {
+  if (!zeroMissPoints?.length) {
+    return null;
+  }
+  if (!disablePP) {
+    return 100;
+  }
+  return Math.max(...zeroMissPoints.map((p) => p.accuracyPct));
+}
+
 export function scoreV2GraphXAxisDomain(accuracyPcts) {
   if (!accuracyPcts.length) {
     return [SCOREV2_CURVE_ACCURACY_CUTOFF * 100, 100];
@@ -48,6 +92,35 @@ export function scoreV2GraphXAxisDomain(accuracyPcts) {
  * @param {number} accuracyPct
  * @returns {number | null}
  */
+/**
+ * Nearest enumerated point + interpolated score for axis-following tooltips.
+ * @param {{ accuracyPct: number, score: number, judgementCounts?: object }[]} points
+ * @param {number} accuracyPct
+ */
+export function nearestCurvePointForTooltip(points, accuracyPct) {
+  if (!points?.length || !Number.isFinite(accuracyPct)) {
+    return null;
+  }
+  const score = interpolateCurveScoreAtAccuracy(points, accuracyPct);
+  if (!Number.isFinite(score)) {
+    return null;
+  }
+  let best = points[0];
+  let bestDist = Math.abs(points[0].accuracyPct - accuracyPct);
+  for (let i = 1; i < points.length; i += 1) {
+    const d = Math.abs(points[i].accuracyPct - accuracyPct);
+    if (d < bestDist) {
+      bestDist = d;
+      best = points[i];
+    }
+  }
+  return {
+    ...best,
+    accuracyPct,
+    score,
+  };
+}
+
 export function interpolateCurveScoreAtAccuracy(points, accuracyPct) {
   if (!points?.length || !Number.isFinite(accuracyPct)) return null;
   const sorted = [...points].sort((a, b) => a.accuracyPct - b.accuracyPct);

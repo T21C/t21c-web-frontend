@@ -1,5 +1,5 @@
 // tuf-search: #ScoreV2Graph #scorev2Graph #display
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
 import {
@@ -11,17 +11,22 @@ import {
   Tooltip,
   ResponsiveContainer,
   ReferenceDot,
+  Customized,
 } from "recharts";
 import {
   enumerateScoreV2CurvePoints,
   getScoreV2CurveYMax,
   isPurePerfectAccuracy,
   scoreV2GraphXAxisDomain,
+  SCOREV2_XACC_ADMIN_GRAPH_X_DOMAIN,
   interpolateCurveScoreAtAccuracy,
+  accuracyPctFromChartPointer,
+  scoreV2GraphHoverAccuracyMax,
 } from "@/utils/scoreV2Curve";
 import { formatScore } from "@/utils/Utility";
 import { pickLevelXaccCurve } from "@/utils/scoreV2XaccCurve.js";
 import { ScoreV2GraphTooltip } from "./ScoreV2GraphTooltip";
+import { ScoreV2GraphCustomLayer } from "./ScoreV2GraphCustomLayer";
 import "./ScoreV2Graph.css";
 
 const SLIDER_MAX = 50;
@@ -41,6 +46,9 @@ const PIN_MARKER_STYLE = {
   },
 };
 
+/** Recharts series name for the primary (zero-miss) curve — only this line drives tooltips. */
+const ZERO_MISS_CURVE_NAME = "zeroMiss";
+
 export const ScoreV2Graph = ({
   tilecount,
   levelData,
@@ -50,13 +58,20 @@ export const ScoreV2Graph = ({
   disablePP = false,
   xaccCurve,
   pinMarkers,
+  /** Dotted miss-count slices for admin xacc pins (misses > 0 only). */
+  missSliceOverlays = null,
   /** When set and disablePP is false, Y axis is fixed to [0, yAxisMax]. With disablePP, top is derived from the visible curve. */
   yAxisMax = null,
   /** When true, pin markers use the given scores (admin editor); otherwise snap Y to the plotted curve. */
   pinMarkersUseExactScores = false,
+  /** Admin xacc editor: hide misses control, fixed 95–100.5% x-axis, solid line always zero misses. */
+  adminXaccEditor = false,
 }) => {
   const { t } = useTranslation("pages");
   const [misses, setMisses] = useState(0);
+  const [hoverAccuracyPct, setHoverAccuracyPct] = useState(null);
+  const chartPlotOffsetRef = useRef(null);
+  const chartMisses = adminXaccEditor ? 0 : misses;
 
   const effectiveLevelData = useMemo(() => {
     const curve =
@@ -100,21 +115,59 @@ export const ScoreV2Graph = ({
   );
 
   const chartData = useMemo(() => {
-    if (misses === 0) return zeroMissCurve;
+    if (chartMisses === 0) return zeroMissCurve;
     return enumerateScoreV2CurvePoints({
       tilecount,
-      misses,
+      misses: chartMisses,
       levelData: effectiveLevelData,
       difficultyDict,
       speed,
       isNoHoldTap,
     });
-  }, [misses, zeroMissCurve, levelCurveKey, tilecount, effectiveLevelData, difficultyDict, speed, isNoHoldTap]);
+  }, [chartMisses, zeroMissCurve, levelCurveKey, tilecount, effectiveLevelData, difficultyDict, speed, isNoHoldTap]);
 
-  const displayData = useMemo(() => {
-    if (!disablePP) return chartData;
-    return chartData.filter((p) => !isPurePerfectAccuracy(p.accuracy));
-  }, [chartData, disablePP]);
+  const filterCurveForDisplay = useCallback(
+    (points) => {
+      if (!disablePP) return points;
+      return points.filter((p) => !isPurePerfectAccuracy(p.accuracy));
+    },
+    [disablePP],
+  );
+
+  const displayData = useMemo(
+    () => filterCurveForDisplay(chartData),
+    [chartData, filterCurveForDisplay],
+  );
+
+  const overlayCurveData = useMemo(() => {
+    if (!missSliceOverlays?.length) return [];
+    return missSliceOverlays.map((overlay) => {
+      const hitTiles =
+        overlay.hitTiles > 0
+          ? overlay.hitTiles
+          : tilecount;
+      const points = enumerateScoreV2CurvePoints({
+        tilecount: hitTiles,
+        misses: overlay.misses,
+        levelData: effectiveLevelData,
+        difficultyDict,
+        speed,
+        isNoHoldTap,
+      });
+      return {
+        ...overlay,
+        points: filterCurveForDisplay(points),
+      };
+    });
+  }, [
+    missSliceOverlays,
+    tilecount,
+    effectiveLevelData,
+    difficultyDict,
+    speed,
+    isNoHoldTap,
+    filterCurveForDisplay,
+  ]);
 
   const resolvedPinMarkers = useMemo(() => {
     if (!pinMarkers?.length) return [];
@@ -147,9 +200,16 @@ export const ScoreV2Graph = ({
     const maxFromPins = resolvedPinMarkers.length
       ? Math.max(...resolvedPinMarkers.map((p) => p.score))
       : 0;
+    const maxFromOverlays = overlayCurveData.length
+      ? Math.max(
+          ...overlayCurveData.flatMap((o) =>
+            o.points.length ? o.points.map((p) => p.score) : [0],
+          ),
+        )
+      : 0;
     const maxScore =
-      Math.max(maxFromCurve, maxFromPins) > 0
-        ? Math.max(maxFromCurve, maxFromPins)
+      Math.max(maxFromCurve, maxFromPins, maxFromOverlays) > 0
+        ? Math.max(maxFromCurve, maxFromPins, maxFromOverlays)
         : getScoreV2CurveYMax({
             tilecount,
             levelData: effectiveLevelData,
@@ -165,6 +225,7 @@ export const ScoreV2Graph = ({
     disablePP,
     displayData,
     resolvedPinMarkers,
+    overlayCurveData,
     tilecount,
     effectiveLevelData,
     difficultyDict,
@@ -172,13 +233,70 @@ export const ScoreV2Graph = ({
     isNoHoldTap,
   ]);
 
+  const useAxisHover =
+    adminXaccEditor || (overlayCurveData?.length ?? 0) > 0;
+
+  const zeroMissDisplayData = useMemo(
+    () => filterCurveForDisplay(zeroMissCurve),
+    [zeroMissCurve, filterCurveForDisplay],
+  );
+
+  const tooltipCurveData = useAxisHover ? zeroMissDisplayData : displayData;
+
+  const hoverAccuracyMax = useMemo(
+    () => scoreV2GraphHoverAccuracyMax(zeroMissDisplayData, { disablePP }),
+    [zeroMissDisplayData, disablePP],
+  );
+
   const xAxisDomain = useMemo(() => {
+    if (adminXaccEditor) {
+      return [...SCOREV2_XACC_ADMIN_GRAPH_X_DOMAIN];
+    }
     const pcts = displayData.map((d) => d.accuracyPct);
     if (resolvedPinMarkers.length) {
       pcts.push(...resolvedPinMarkers.map((p) => p.accuracyPct));
     }
     return scoreV2GraphXAxisDomain(pcts);
-  }, [displayData, resolvedPinMarkers]);
+  }, [adminXaccEditor, displayData, resolvedPinMarkers]);
+
+  const handleChartMouseMove = useCallback(
+    (state) => {
+      if (!useAxisHover) {
+        return;
+      }
+      const acc = accuracyPctFromChartPointer(
+        state?.chartX,
+        chartPlotOffsetRef.current,
+        xAxisDomain,
+      );
+      if (acc == null) {
+        return;
+      }
+      const clamped =
+        hoverAccuracyMax != null && Number.isFinite(hoverAccuracyMax)
+          ? Math.min(acc, hoverAccuracyMax)
+          : acc;
+      setHoverAccuracyPct(clamped);
+    },
+    [useAxisHover, xAxisDomain, hoverAccuracyMax],
+  );
+
+  const handleChartMouseLeave = useCallback(() => {
+    setHoverAccuracyPct(null);
+  }, []);
+
+  const renderCustomLayer = useCallback(
+    (layerProps) => (
+      <ScoreV2GraphCustomLayer
+        {...layerProps}
+        layoutRef={chartPlotOffsetRef}
+        overlays={overlayCurveData}
+        hoverAccuracyPct={hoverAccuracyPct}
+        zeroMissCurveData={zeroMissDisplayData}
+      />
+    ),
+    [overlayCurveData, hoverAccuracyPct, zeroMissDisplayData],
+  );
 
   const handleSliderChange = (e) => {
     setMisses(Math.max(0, parseInt(e.target.value, 10) || 0));
@@ -208,30 +326,32 @@ export const ScoreV2Graph = ({
 
   return (
     <div className="scorev2-graph">
-      <div className="scorev2-graph__controls">
-        <div className="scorev2-graph__misses-row">
-          <span className="scorev2-graph__misses-label">
-            {t("levelDetail.scoreGraph.missesLabel", { defaultValue: "Misses" })}
-          </span>
-          <input
-            type="range"
-            className="scorev2-graph__misses-slider"
-            min={0}
-            max={SLIDER_MAX}
-            value={Math.min(misses, SLIDER_MAX)}
-            onChange={handleSliderChange}
-            aria-label={t("levelDetail.scoreGraph.missesAria", { defaultValue: "Miss count" })}
-          />
-          <input
-            type="number"
-            className="scorev2-graph__misses-input"
-            min={0}
-            value={misses}
-            onChange={handleInputChange}
-            aria-label={t("levelDetail.scoreGraph.missesAria", { defaultValue: "Miss count" })}
-          />
+      {!adminXaccEditor ? (
+        <div className="scorev2-graph__controls">
+          <div className="scorev2-graph__misses-row">
+            <span className="scorev2-graph__misses-label">
+              {t("levelDetail.scoreGraph.missesLabel", { defaultValue: "Misses" })}
+            </span>
+            <input
+              type="range"
+              className="scorev2-graph__misses-slider"
+              min={0}
+              max={SLIDER_MAX}
+              value={Math.min(misses, SLIDER_MAX)}
+              onChange={handleSliderChange}
+              aria-label={t("levelDetail.scoreGraph.missesAria", { defaultValue: "Miss count" })}
+            />
+            <input
+              type="number"
+              className="scorev2-graph__misses-input"
+              min={0}
+              value={misses}
+              onChange={handleInputChange}
+              aria-label={t("levelDetail.scoreGraph.missesAria", { defaultValue: "Miss count" })}
+            />
+          </div>
         </div>
-      </div>
+      ) : null}
       {displayData.length === 0 ? (
         <p className="scorev2-graph__empty">
           {t("levelDetail.scoreGraph.emptyCurve", { defaultValue: "No score curve data for this level." })}
@@ -242,6 +362,8 @@ export const ScoreV2Graph = ({
             <LineChart
               data={displayData}
               margin={{ top: 8, right: 28, left: 4, bottom: 4 }}
+              onMouseMove={useAxisHover ? handleChartMouseMove : undefined}
+              onMouseLeave={useAxisHover ? handleChartMouseLeave : undefined}
             >
               <CartesianGrid
                 strokeDasharray="3 3"
@@ -252,7 +374,7 @@ export const ScoreV2Graph = ({
                 dataKey="accuracyPct"
                 type="number"
                 domain={xAxisDomain}
-                allowDataOverflow
+                allowDataOverflow={!adminXaccEditor}
                 tick={{ fill: "var(--color-gray-2)", fontSize: 11 }}
                 tickFormatter={(v) => `${Number(v).toFixed(1)}%`}
                 tickLine={false}
@@ -266,16 +388,48 @@ export const ScoreV2Graph = ({
                 tickLine={false}
                 width={56}
               />
-              <Tooltip content={<ScoreV2GraphTooltip />} />
+              {useAxisHover ? (
+                <Tooltip
+                  active={hoverAccuracyPct != null}
+                  cursor={false}
+                  isAnimationActive={false}
+                  animationDuration={0}
+                  content={() => (
+                    <ScoreV2GraphTooltip
+                      active={hoverAccuracyPct != null}
+                      hoverAccuracyPct={hoverAccuracyPct}
+                      curveData={tooltipCurveData}
+                      axisTooltip
+                    />
+                  )}
+                />
+              ) : (
+                <Tooltip
+                  isAnimationActive={false}
+                  animationDuration={0}
+                  content={(tooltipProps) => (
+                    <ScoreV2GraphTooltip {...tooltipProps} />
+                  )}
+                />
+              )}
               <Line
+                name={ZERO_MISS_CURVE_NAME}
                 type="monotone"
                 dataKey="score"
                 stroke="var(--btn-primary)"
                 strokeWidth={2}
                 dot={false}
+                activeDot={
+                  useAxisHover
+                    ? false
+                    : { r: 4, stroke: "var(--color-white)", strokeWidth: 2 }
+                }
                 connectNulls
                 isAnimationActive={false}
               />
+              {useAxisHover ? (
+                <Customized component={renderCustomLayer} />
+              ) : null}
               {resolvedPinMarkers.map((pin) => {
                 const style = PIN_MARKER_STYLE[pin.variant] ?? PIN_MARKER_STYLE.pin1;
                 return (
@@ -326,4 +480,13 @@ ScoreV2Graph.propTypes = {
   ),
   yAxisMax: PropTypes.number,
   pinMarkersUseExactScores: PropTypes.bool,
+  adminXaccEditor: PropTypes.bool,
+  missSliceOverlays: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      misses: PropTypes.number.isRequired,
+      variant: PropTypes.oneOf(["pin1", "pin2"]),
+      hitTiles: PropTypes.number,
+    }),
+  ),
 };

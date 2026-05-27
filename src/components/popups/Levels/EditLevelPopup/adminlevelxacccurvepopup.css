@@ -159,7 +159,18 @@
 
 .admin-level-xacc-curve-popup__graph-toolbar {
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.admin-level-xacc-curve-popup__hint--graph {
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+.admin-level-xacc-curve-popup__graph-toolbar .admin-level-xacc-curve-popup__pp-toggle {
+  align-self: flex-end;
 }
 
 .admin-level-xacc-curve-popup__pp-toggle {

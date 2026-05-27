@@ -1,5 +1,5 @@
 // tuf-search: #scoreV2XaccCurve #xaccCurve
-import { SCORE_V2_ZERO_MISS_MULTIPLIER } from './CalcScore.js'
+import { SCORE_V2_ZERO_MISS_MULTIPLIER, scoreV2MtpFromMisses } from './CalcScore.js'
 /**
  * Normalized hyperbola xacc multiplier on [cutoff, 1):
  *   t = (xacc - cutoff) / (1 - cutoff)
@@ -33,8 +33,10 @@ export const XACC_POLE_OFFSET_MAX = 1 - 1e-9
 export const XACC_TOP_MULTIPLIER_MIN = 1 + 1e-9
 export const XACC_TOP_MULTIPLIER_MAX = 999
 
-/** Minimum accuracy gap between pin 1 and pin 2 (0.2%). */
+/** Minimum accuracy gap between pin 1 and pin 2 (0.2%) — slider / UI only. */
 export const XACC_PIN_ACC_GAP = 0.002
+/** Minimum gap for hyperbola fit (pass-derived pins may be closer than UI gap). */
+export const XACC_FIT_MIN_PIN_ACC_GAP = 1e-9
 /** Interior pin 1 lower bound — above cutoff. */
 export const XACC_PIN_ACC_MIN = XACC_CURVE_DEFAULTS.cutoff + 0.005
 /** Interior pin 1 accuracy upper bound (< 100%). */
@@ -367,18 +369,18 @@ export function clampPin2Score(cutoff, accX, scoreX, accY, scoreY, baseScore) {
  * @returns {XaccPinValues}
  */
 /**
- * Map a plotted ScoreV2 (zero-miss) score to the xacc hyperbola multiplier at cutoff.
+ * Map plotted ScoreV2 to xacc hyperbola multiplier (strips miss-debuff / zero-miss bonus).
  * @param {number} displayScore
  * @param {number} baseScore
- * @param {number} [zeroMissMtp]
+ * @param {number} [scoreV2Mtp] Miss-debuff multiplier for this pin slice (1.1 when zero misses).
  */
 export function xaccMultiplierFromDisplayScore(
     displayScore,
     baseScore,
-    zeroMissMtp = SCORE_V2_ZERO_MISS_MULTIPLIER,
+    scoreV2Mtp = SCORE_V2_ZERO_MISS_MULTIPLIER,
 ) {
     const base = Number(baseScore)
-    const mtp = Number(zeroMissMtp)
+    const mtp = Number(scoreV2Mtp)
     if (!Number.isFinite(base) || base <= 0 || !Number.isFinite(mtp) || mtp <= 0) {
         return NaN
     }
@@ -386,16 +388,32 @@ export function xaccMultiplierFromDisplayScore(
 }
 
 /**
- * ScoreV2 at cutoff with xacc multiplier `mult` (zero misses, speed 1).
+ * ScoreV2 at cutoff with xacc multiplier `mult` for a given miss-debuff slice.
  */
+/**
+ * Rating base used by getScoreV2 at a given accuracy (pp base only at true 100%).
+ */
+export function resolveScoreV2RatingBase(accuracy, levelBaseScore, ppBaseScore) {
+    const acc = Number(accuracy)
+    const level = Number(levelBaseScore)
+    const pp = Number(ppBaseScore)
+    if (acc >= 1 - 1e-9 && Number.isFinite(pp) && pp > 0) {
+        return pp
+    }
+    if (Number.isFinite(level) && level > 0) {
+        return level
+    }
+    return 100
+}
+
 export function displayScoreFromXaccMultiplier(
     mult,
     baseScore,
-    zeroMissMtp = SCORE_V2_ZERO_MISS_MULTIPLIER,
+    scoreV2Mtp = SCORE_V2_ZERO_MISS_MULTIPLIER,
 ) {
     const base = Number(baseScore)
     const m = Number(mult)
-    const mtp = Number(zeroMissMtp)
+    const mtp = Number(scoreV2Mtp)
     if (!Number.isFinite(base) || base <= 0) return 0
     if (!Number.isFinite(m) || !Number.isFinite(mtp)) return 0
     return base * m * mtp
@@ -424,11 +442,14 @@ export function xaccCurveToPinValues(cfg, baseScore) {
  * @typedef {Object} FitXaccCurveFromPinsInput
  * @property {number} accX
  * @property {number} accY
- * @property {number} scoreX Plotted ScoreV2 at accX (includes zero-miss multiplier).
+ * @property {number} scoreX Plotted ScoreV2 at accX for this pin's miss slice.
  * @property {number} scoreY
  * @property {number} baseScore
  * @property {number} [cutoff]
- * @property {number} [zeroMissMultiplier] Defaults to {@link SCORE_V2_ZERO_MISS_MULTIPLIER}.
+ * @property {number} [hitTiles] Level hit tiles for miss-debuff (defaults to 100).
+ * @property {number} [missesX] Pin 1 miss count (default 0).
+ * @property {number} [missesY] Pin 2 miss count (default 0).
+ * @property {number} [ppBaseScore] Pure-perfect base for 100% accuracy branch.
  */
 
 /**
@@ -457,16 +478,24 @@ export function fitXaccCurveFromPins(pins) {
     if (baseScore <= 0) {
         return { ok: false, error: 'Level base score must be positive' }
     }
-    if (accX <= cutoff || accY > XACC_PIN2_ACC_MAX || accY <= accX + XACC_PIN_ACC_GAP) {
-        return { ok: false, error: 'Pin accuracies must satisfy cutoff < X < Y <= 100%' }
+    if (
+        accX <= cutoff ||
+        accY > XACC_PIN2_ACC_MAX + 1e-9 ||
+        accY <= accX + XACC_FIT_MIN_PIN_ACC_GAP
+    ) {
+        return { ok: false, error: 'Pin accuracies must satisfy cutoff < X < Y (Y at most 100%)' }
     }
 
-    const zeroMissMtp =
-        Number(pins.zeroMissMultiplier) > 0
-            ? Number(pins.zeroMissMultiplier)
-            : SCORE_V2_ZERO_MISS_MULTIPLIER
-    const multX = xaccMultiplierFromDisplayScore(scoreX, baseScore, zeroMissMtp)
-    const multY = xaccMultiplierFromDisplayScore(scoreY, baseScore, zeroMissMtp)
+    const hitTiles = Math.max(1, Math.floor(Number(pins.hitTiles)) || 100)
+    const missesX = Math.max(0, Math.floor(Number(pins.missesX)) || 0)
+    const missesY = Math.max(0, Math.floor(Number(pins.missesY)) || 0)
+    const ppBase = Number(pins.ppBaseScore)
+    const baseX = resolveScoreV2RatingBase(accX, baseScore, ppBase)
+    const baseY = resolveScoreV2RatingBase(accY, baseScore, ppBase)
+    const mtpX = scoreV2MtpFromMisses(missesX, hitTiles)
+    const mtpY = scoreV2MtpFromMisses(missesY, hitTiles)
+    const multX = xaccMultiplierFromDisplayScore(scoreX, baseX, mtpX)
+    const multY = xaccMultiplierFromDisplayScore(scoreY, baseY, mtpY)
     if (multX < XACC_PIN_MULT_MIN || multY < XACC_PIN_MULT_MIN) {
         return { ok: false, error: 'Pin scores cannot be negative' }
     }

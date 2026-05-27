@@ -23,7 +23,7 @@ function add(accumulator, a) {
 /** Applied by getScoreV2 when miss count is zero (matches plotted zero-miss curve). */
 export const SCORE_V2_ZERO_MISS_MULTIPLIER = 1.1
 
-const getScoreV2Mtp = (inputs) => {
+export const getScoreV2Mtp = (inputs) => {
     const misses = inputs[0]
     const tiles = arraySum(inputs.slice(1))
     if (!misses){
@@ -50,6 +50,19 @@ const getScoreV2Mtp = (inputs) => {
         return 1 - endDeduc / 100
     }
     }
+
+/**
+ * ScoreV2 miss-debuff multiplier for a miss count and hit-tile count (speed 1, no no-hold).
+ * Zero misses returns {@link SCORE_V2_ZERO_MISS_MULTIPLIER}.
+ */
+export function scoreV2MtpFromMisses(misses, hitTiles) {
+    const m = Math.max(0, Math.floor(Number(misses)) || 0)
+    const hits = Math.max(0, Math.floor(Number(hitTiles)) || 0)
+    if (hits <= 0) {
+        return m === 0 ? SCORE_V2_ZERO_MISS_MULTIPLIER : 1
+    }
+    return getScoreV2Mtp([m, 0, 0, hits, 0, 0])
+}
 
 const getXaccMtp = (inp, baseScore, curveOverrides) => {
     const xacc = calcAcc(inp, true)

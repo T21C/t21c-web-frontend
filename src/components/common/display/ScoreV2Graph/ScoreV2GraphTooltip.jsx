@@ -2,6 +2,7 @@
 import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
 import { formatScore } from "@/utils/Utility";
+import { nearestCurvePointForTooltip } from "@/utils/scoreV2Curve";
 
 const JUDGEMENT_COLUMNS = [
   { key: "miss", labelKey: "levelDetail.scoreGraph.judgementMiss", className: "miss" },
@@ -12,10 +13,32 @@ const JUDGEMENT_COLUMNS = [
   { key: "late", labelKey: "levelDetail.scoreGraph.judgementLate", className: "late" },
 ];
 
-export const ScoreV2GraphTooltip = ({ active, payload }) => {
+const ZERO_MISS_CURVE_NAME = "zeroMiss";
+
+export const ScoreV2GraphTooltip = ({
+  active,
+  payload,
+  label,
+  hoverAccuracyPct,
+  curveData,
+  axisTooltip,
+}) => {
   const { t } = useTranslation("pages");
-  if (!active || !payload?.length) return null;
-  const row = payload[0]?.payload;
+  if (!active) return null;
+
+  let row = null;
+  if (axisTooltip && curveData?.length) {
+    const accPct =
+      hoverAccuracyPct != null && Number.isFinite(Number(hoverAccuracyPct))
+        ? Number(hoverAccuracyPct)
+        : Number(label);
+    row = nearestCurvePointForTooltip(curveData, accPct);
+  } else {
+    if (!payload?.length) return null;
+    const mainEntry =
+      payload.find((p) => p.name === ZERO_MISS_CURVE_NAME) ?? payload[0];
+    row = mainEntry?.payload;
+  }
   if (!row?.judgementCounts) return null;
 
   const counts = row.judgementCounts;
@@ -51,4 +74,8 @@ export const ScoreV2GraphTooltip = ({ active, payload }) => {
 ScoreV2GraphTooltip.propTypes = {
   active: PropTypes.bool,
   payload: PropTypes.array,
+  label: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  hoverAccuracyPct: PropTypes.number,
+  curveData: PropTypes.array,
+  axisTooltip: PropTypes.bool,
 };
