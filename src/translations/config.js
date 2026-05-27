@@ -69,7 +69,6 @@ const initializeTranslations = async () => {
       },
       ns: NAMESPACES,
       defaultNS: 'common',
-      debug: true,
       resources: {},
     });
 
