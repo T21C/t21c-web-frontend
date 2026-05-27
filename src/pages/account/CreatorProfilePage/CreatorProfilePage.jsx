@@ -25,6 +25,7 @@ import {
   normalizeTufStellarIconVariant,
 } from "@/utils/profileBanners";
 import { normalizeProfileAliasNames } from "@/utils/profileAliasNames";
+import { Tooltip } from "react-tooltip";
 
 const CreatorProfilePage = () => {
   const { creatorId } = useParams();
