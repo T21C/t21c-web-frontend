@@ -14,8 +14,7 @@ import {
   XACC_CURVE_DEFAULTS,
   pickLevelXaccCurve,
   levelUsesSiteXaccDefaults,
-  xaccMultiplierFromDisplayScore,
-  resolveScoreV2RatingBase,
+  resolveXaccCurveConfig,
 } from '@/utils/scoreV2XaccCurve.js';
 import {
   defaultPinSliderValues,
@@ -45,14 +44,22 @@ import {
   missCountFromJudgementForm,
   hitTilesFromJudgementForm,
 } from '@/utils/xaccPinJudgements.js';
-import { scoreV2MtpFromMisses } from '@/utils/CalcScore.js';
+import {
+  buildXaccEditorBaseline,
+  serializeXaccCurveEditorState,
+  xaccEditorBaselineMatches,
+  xaccPinValuesMatch,
+} from '@/utils/xaccCurveEditorState.js';
 
+/** Full precision for copying E/G into site defaults or level meta. */
 function formatPoleOffset(value) {
-  return Number(value).toFixed(4);
+  const n = Number(value);
+  return Number.isFinite(n) ? n.toFixed(10) : '—';
 }
 
 function formatTopMultiplier(value) {
-  return Number(value).toFixed(3);
+  const n = Number(value);
+  return Number.isFinite(n) ? n.toFixed(8) : '—';
 }
 
 function resolvePinBaseScore(level, difficultyDict) {
@@ -161,16 +168,31 @@ export const AdminLevelXaccCurvePopup = ({ level, onClose, onSaved }) => {
   const [saveAsDefaults, setSaveAsDefaults] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
-  const [disablePP, setDisablePP] = useState(false);
-  const [pinInputMode, setPinInputMode] = useState('accuracy');
+  const [disablePP, setDisablePP] = useState(
+    () => initial.editor?.disablePP ?? false,
+  );
+  const [pinInputMode, setPinInputMode] = useState(
+    () => initial.editor?.pinInputMode ?? 'accuracy',
+  );
   const [levelPasses, setLevelPasses] = useState([]);
   const [passesLoading, setPassesLoading] = useState(false);
   const [openPassPickerPin, setOpenPassPickerPin] = useState(null);
   const [pin1Judgements, setPin1Judgements] = useState(() => ({
-    ...EMPTY_JUDGEMENT_FORM,
+    ...(initial.editor?.pin1Judgements ?? EMPTY_JUDGEMENT_FORM),
   }));
   const [pin2Judgements, setPin2Judgements] = useState(() => ({
-    ...EMPTY_JUDGEMENT_FORM,
+    ...(initial.editor?.pin2Judgements ?? EMPTY_JUDGEMENT_FORM),
+  }));
+  const [pin1SourcePassId, setPin1SourcePassId] = useState(
+    () => initial.editor?.pin1SourcePassId ?? null,
+  );
+  const [pin2SourcePassId, setPin2SourcePassId] = useState(
+    () => initial.editor?.pin2SourcePassId ?? null,
+  );
+  const [storedPinMisses, setStoredPinMisses] = useState(() => ({
+    hitTiles: initial.hitTiles ?? tilecountForCap,
+    missesX: initial.missesX ?? 0,
+    missesY: initial.missesY ?? 0,
   }));
   const pinInputFocusRef = useRef(new Set());
   const panelRef = useRef(null);
@@ -187,15 +209,22 @@ export const AdminLevelXaccCurvePopup = ({ level, onClose, onSaved }) => {
     if (pinInputMode === 'judgements') {
       const hits1 = hitTilesFromJudgementForm(pin1Judgements);
       const hits2 = hitTilesFromJudgementForm(pin2Judgements);
-      const hitTiles = Math.max(levelHits, hits1, hits2, 1);
-      return {
-        hitTiles,
-        missesX: missCountFromJudgementForm(pin1Judgements),
-        missesY: missCountFromJudgementForm(pin2Judgements),
-      };
+      const missesX = missCountFromJudgementForm(pin1Judgements);
+      const missesY = missCountFromJudgementForm(pin2Judgements);
+      if (hits1 > 0 || hits2 > 0 || missesX > 0 || missesY > 0) {
+        return {
+          hitTiles: Math.max(levelHits, hits1, hits2, 1),
+          missesX,
+          missesY,
+        };
+      }
     }
-    return { hitTiles: levelHits, missesX: 0, missesY: 0 };
-  }, [pinInputMode, pin1Judgements, pin2Judgements, tilecount]);
+    return {
+      hitTiles: storedPinMisses.hitTiles || levelHits,
+      missesX: storedPinMisses.missesX,
+      missesY: storedPinMisses.missesY,
+    };
+  }, [pinInputMode, pin1Judgements, pin2Judgements, tilecount, storedPinMisses]);
 
   const pinOverrides = useMemo(
     () => ({
@@ -234,13 +263,69 @@ export const AdminLevelXaccCurvePopup = ({ level, onClose, onSaved }) => {
     [capLevelData, difficultyDict, tilecount],
   );
 
-  const pinEdits =
-    pinAccX !== initial.accX ||
-    pinAccY !== initial.accY ||
-    pinScoreX !== initial.scoreX ||
-    pinScoreY !== initial.scoreY;
+  const [changeBaseline, setChangeBaseline] = useState(() =>
+    buildXaccEditorBaseline(
+      {
+        accX: initial.accX,
+        accY: initial.accY,
+        scoreX: initial.scoreX,
+        scoreY: initial.scoreY,
+      },
+      initial.editor,
+    ),
+  );
 
-  const hasChanges = saveAsDefaults || pinEdits;
+  const hasChanges = useMemo(() => {
+    if (saveAsDefaults) {
+      return true;
+    }
+    return !xaccEditorBaselineMatches(
+      buildXaccEditorBaseline(
+        {
+          accX: pinAccX,
+          accY: pinAccY,
+          scoreX: pinScoreX,
+          scoreY: pinScoreY,
+        },
+        {
+          pinInputMode,
+          disablePP,
+          pin1Judgements,
+          pin2Judgements,
+          pin1SourcePassId,
+          pin2SourcePassId,
+        },
+      ),
+      changeBaseline,
+    );
+  }, [
+    saveAsDefaults,
+    changeBaseline,
+    pinAccX,
+    pinAccY,
+    pinScoreX,
+    pinScoreY,
+    pinInputMode,
+    disablePP,
+    pin1Judgements,
+    pin2Judgements,
+    pin1SourcePassId,
+    pin2SourcePassId,
+  ]);
+
+  const pinEdits = useMemo(
+    () =>
+      !xaccPinValuesMatch(
+        {
+          accX: pinAccX,
+          accY: pinAccY,
+          scoreX: pinScoreX,
+          scoreY: pinScoreY,
+        },
+        changeBaseline,
+      ),
+    [pinAccX, pinAccY, pinScoreX, pinScoreY, changeBaseline],
+  );
 
   const requestClose = useCallback(() => {
     if (
@@ -254,6 +339,25 @@ export const AdminLevelXaccCurvePopup = ({ level, onClose, onSaved }) => {
 
   /** Keep site E/G on mount, after reset, until the user moves a pin control. */
   const lockSiteDefaultCurve = saveAsDefaults || (usesSiteDefaults && !pinEdits);
+
+  const savedMetaCurve = useMemo(() => {
+    if (usesSiteDefaults) {
+      return null;
+    }
+    const picked = pickLevelXaccCurve(level);
+    if (!picked) {
+      return null;
+    }
+    return resolveXaccCurveConfig(picked);
+  }, [
+    level?.xaccCurveMeta,
+    level?.xaccPoleOffset,
+    level?.xaccTopMultiplier,
+    usesSiteDefaults,
+  ]);
+
+  /** Refit E/G only while editing; reopen uses stored meta curve exactly. */
+  const useLiveFitCurve = !lockSiteDefaultCurve && pinEdits;
 
   const fitContext = useMemo(
     () => ({
@@ -291,19 +395,21 @@ export const AdminLevelXaccCurvePopup = ({ level, onClose, onSaved }) => {
   const fitOk = fitResult.ok;
   const fitError = fitResult.error;
 
-  if (fitOk && fitResult.xaccCurve && !lockSiteDefaultCurve) {
+  if (useLiveFitCurve && fitOk && fitResult.xaccCurve) {
     lastValidCurveRef.current = fitResult.xaccCurve;
+  } else if (savedMetaCurve && !useLiveFitCurve) {
+    lastValidCurveRef.current = savedMetaCurve;
   }
 
-  const draftCurve = lockSiteDefaultCurve
+  const authoritativeCurve = lockSiteDefaultCurve
     ? XACC_CURVE_DEFAULTS
-    : fitResult.xaccCurve ?? lastValidCurveRef.current;
-  const derivedE = lockSiteDefaultCurve
-    ? XACC_CURVE_DEFAULTS.poleOffset
-    : fitResult.derivedE ?? draftCurve.poleOffset;
-  const derivedG = lockSiteDefaultCurve
-    ? XACC_CURVE_DEFAULTS.topMultiplier
-    : fitResult.derivedG ?? draftCurve.topMultiplier;
+    : useLiveFitCurve && fitOk && fitResult.xaccCurve
+      ? fitResult.xaccCurve
+      : savedMetaCurve ?? lastValidCurveRef.current;
+
+  const draftCurve = authoritativeCurve;
+  const derivedE = authoritativeCurve.poleOffset;
+  const derivedG = authoritativeCurve.topMultiplier;
 
   const accXMax = maxAccXSliderFromAccYSlider(accYDisplay);
   const accYMin = minAccYSliderFromAccXSlider(accXDisplay);
@@ -412,20 +518,47 @@ export const AdminLevelXaccCurvePopup = ({ level, onClose, onSaved }) => {
     setPinScoreY(next.scoreY);
     setPinAccX(next.accX);
     setPinAccY(next.accY);
+    setStoredPinMisses({
+      hitTiles: next.hitTiles ?? tilecount,
+      missesX: next.missesX ?? 0,
+      missesY: next.missesY ?? 0,
+    });
+    const editor = next.editor ?? null;
+    if (editor) {
+      setPinInputMode(editor.pinInputMode);
+      setPin1Judgements({ ...editor.pin1Judgements });
+      setPin2Judgements({ ...editor.pin2Judgements });
+      setPin1SourcePassId(editor.pin1SourcePassId);
+      setPin2SourcePassId(editor.pin2SourcePassId);
+      setDisablePP(editor.disablePP);
+    } else {
+      setPinInputMode('accuracy');
+      setPin1Judgements({ ...EMPTY_JUDGEMENT_FORM });
+      setPin2Judgements({ ...EMPTY_JUDGEMENT_FORM });
+      setPin1SourcePassId(null);
+      setPin2SourcePassId(null);
+      setDisablePP(false);
+    }
     setSaveAsDefaults(false);
     setError(null);
     pinInputFocusRef.current.clear();
     setPinInputDrafts(
-      pinInputDraftsFromPins(
-        pinValuesFromSliders(
-          next.accXDisplay,
-          next.scoreXDisplay,
-          next.accYDisplay,
-          next.scoreYDisplay,
-          baseScore,
-          nextMax,
-          { scoreX: next.scoreX, scoreY: next.scoreY },
-        ),
+      pinInputDraftsFromPins({
+        accX: next.accX,
+        accY: next.accY,
+        scoreX: next.scoreX,
+        scoreY: next.scoreY,
+      }),
+    );
+    setChangeBaseline(
+      buildXaccEditorBaseline(
+        {
+          accX: next.accX,
+          accY: next.accY,
+          scoreX: next.scoreX,
+          scoreY: next.scoreY,
+        },
+        editor,
       ),
     );
   }, [level?.id, level?.xaccCurveMeta, level?.xaccPoleOffset, level?.xaccTopMultiplier, baseScore, difficultyDict, tilecount]);
@@ -532,10 +665,14 @@ export const AdminLevelXaccCurvePopup = ({ level, onClose, onSaved }) => {
     const acc1 = accuracyFromJudgementForm(pin1Judgements);
     const acc2 = accuracyFromJudgementForm(pin2Judgements);
     if (acc1 != null && Number.isFinite(acc1)) {
-      setPinAccX(acc1);
+      setPinAccX((prev) =>
+        Math.abs(prev - acc1) > 1e-12 ? acc1 : prev,
+      );
     }
     if (acc2 != null && Number.isFinite(acc2)) {
-      setPinAccY(acc2);
+      setPinAccY((prev) =>
+        Math.abs(prev - acc2) > 1e-12 ? acc2 : prev,
+      );
     }
   }, [pinInputMode, pin1Judgements, pin2Judgements]);
 
@@ -554,12 +691,18 @@ export const AdminLevelXaccCurvePopup = ({ level, onClose, onSaved }) => {
       setPinInputMode('judgements');
       setSaveAsDefaults(false);
       const scoreDisplay = scoreToSlider(score, baseScore, scoreCap);
+      const passId =
+        pass.id != null && Number.isFinite(Number(pass.id))
+          ? Math.floor(Number(pass.id))
+          : null;
       if (pin === 1) {
         setPin1Judgements(form);
+        setPin1SourcePassId(passId);
         setPinScoreX(score);
         setScoreXDisplay(scoreDisplay);
       } else {
         setPin2Judgements(form);
+        setPin2SourcePassId(passId);
         setPinScoreY(score);
         setScoreYDisplay(scoreDisplay);
       }
@@ -731,6 +874,35 @@ export const AdminLevelXaccCurvePopup = ({ level, onClose, onSaved }) => {
     setPinScoreY(def.scoreY);
     setPinAccX(def.accX);
     setPinAccY(def.accY);
+    setPinInputMode('accuracy');
+    setPin1Judgements({ ...EMPTY_JUDGEMENT_FORM });
+    setPin2Judgements({ ...EMPTY_JUDGEMENT_FORM });
+    setPin1SourcePassId(null);
+    setPin2SourcePassId(null);
+    setDisablePP(false);
+    setStoredPinMisses({
+      hitTiles: tilecount,
+      missesX: 0,
+      missesY: 0,
+    });
+    setChangeBaseline(
+      buildXaccEditorBaseline(
+        {
+          accX: def.accX,
+          accY: def.accY,
+          scoreX: def.scoreX,
+          scoreY: def.scoreY,
+        },
+        {
+          pinInputMode: 'accuracy',
+          disablePP: false,
+          pin1Judgements: { ...EMPTY_JUDGEMENT_FORM },
+          pin2Judgements: { ...EMPTY_JUDGEMENT_FORM },
+          pin1SourcePassId: null,
+          pin2SourcePassId: null,
+        },
+      ),
+    );
     setSaveAsDefaults(true);
     setError(null);
     pinInputFocusRef.current.clear();
@@ -825,13 +997,27 @@ export const AdminLevelXaccCurvePopup = ({ level, onClose, onSaved }) => {
       ...pinMissContext,
     };
 
-    const slidersChanged =
-      committed.accX !== initial.accX ||
-      committed.accY !== initial.accY ||
-      committed.scoreX !== initial.scoreX ||
-      committed.scoreY !== initial.scoreY;
+    const committedSnapshot = buildXaccEditorBaseline(
+      {
+        accX: committed.accX,
+        accY: committed.accY,
+        scoreX: committed.scoreX,
+        scoreY: committed.scoreY,
+      },
+      {
+        pinInputMode,
+        disablePP,
+        pin1Judgements,
+        pin2Judgements,
+        pin1SourcePassId,
+        pin2SourcePassId,
+      },
+    );
 
-    if (!saveAsDefaults && !slidersChanged) {
+    if (
+      !saveAsDefaults &&
+      xaccEditorBaselineMatches(committedSnapshot, changeBaseline)
+    ) {
       onClose();
       return;
     }
@@ -858,48 +1044,34 @@ export const AdminLevelXaccCurvePopup = ({ level, onClose, onSaved }) => {
     setError(null);
     setSaving(true);
     try {
-      const pinsToStore = saveFit.pins ?? {
-        accX: committed.accX,
-        accY: committed.accY,
-        scoreX: committed.scoreX,
-        scoreY: committed.scoreY,
-        baseScore,
-      };
       const payload = saveAsDefaults
         ? { xaccCurveMeta: null }
         : {
             xaccCurveMeta: {
               poleOffset: saveFit.derivedE,
               topMultiplier: saveFit.derivedG,
+              editor: serializeXaccCurveEditorState({
+                pinInputMode,
+                disablePP,
+                accXDisplay,
+                scoreXDisplay,
+                accYDisplay,
+                scoreYDisplay,
+                pin1Judgements,
+                pin2Judgements,
+                pin1SourcePassId,
+                pin2SourcePassId,
+              }),
               pins: {
-                accX: pinsToStore.accX,
-                accY: pinsToStore.accY,
-                scoreX: pinsToStore.scoreX,
-                scoreY: pinsToStore.scoreY,
-                multX: xaccMultiplierFromDisplayScore(
-                  pinsToStore.scoreX,
-                  resolveScoreV2RatingBase(
-                    pinsToStore.accX,
-                    baseScore,
-                    level?.ppBaseScore,
-                  ),
-                  scoreV2MtpFromMisses(
-                    pinMissContext.missesX,
-                    pinMissContext.hitTiles,
-                  ),
-                ),
-                multY: xaccMultiplierFromDisplayScore(
-                  pinsToStore.scoreY,
-                  resolveScoreV2RatingBase(
-                    pinsToStore.accY,
-                    baseScore,
-                    level?.ppBaseScore,
-                  ),
-                  scoreV2MtpFromMisses(
-                    pinMissContext.missesY,
-                    pinMissContext.hitTiles,
-                  ),
-                ),
+                accX: committed.accX,
+                accY: committed.accY,
+                scoreX: committed.scoreX,
+                scoreY: committed.scoreY,
+                multX: saveFit.multX,
+                multY: saveFit.multY,
+                missesX: pinMissContext.missesX,
+                missesY: pinMissContext.missesY,
+                hitTiles: pinMissContext.hitTiles,
                 scoresAreXaccMultipliers: true,
               },
             },
@@ -914,6 +1086,7 @@ export const AdminLevelXaccCurvePopup = ({ level, onClose, onSaved }) => {
           xaccCurveMeta: updated.xaccCurveMeta ?? null,
         });
       }
+      setChangeBaseline(committedSnapshot);
       toast.success(t('levelPopups.edit.xaccCurve.toastSaved'));
       onClose();
     } catch (err) {
@@ -1217,16 +1390,16 @@ export const AdminLevelXaccCurvePopup = ({ level, onClose, onSaved }) => {
             </div>
           </div>
           <div className="admin-level-xacc-curve-popup__derived">
-            <span>
+            <span className="admin-level-xacc-curve-popup__derived-value">
               {t('levelPopups.edit.xaccCurve.labels.pole')}: E ={' '}
-              {formatPoleOffset(derivedE)}
+              <code>{formatPoleOffset(derivedE)}</code>
             </span>
-            <span>
+            <span className="admin-level-xacc-curve-popup__derived-value">
               {t('levelPopups.edit.xaccCurve.labels.top')}: G ={' '}
-              {formatTopMultiplier(derivedG)}
+              <code>{formatTopMultiplier(derivedG)}</code>
             </span>
           </div>
-          {!fitOk && fitError && !lockSiteDefaultCurve ? (
+          {!fitOk && fitError && useLiveFitCurve ? (
             <div className="admin-level-xacc-curve-popup__error admin-level-xacc-curve-popup__error--fit">
               {t('levelPopups.edit.xaccCurve.fitWarning', {
                 error: fitError,

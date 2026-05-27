@@ -1,10 +1,14 @@
 // tuf-search: #scoreV2XaccCurvePins
-import { getScoreV2 } from './CalcScore.js'
+import { getScoreV2, scoreV2MtpFromMisses } from './CalcScore.js'
 import {
     enumerateScoreV2CurvePoints,
     interpolateCurveScoreAtAccuracy,
     buildJudgements,
 } from './scoreV2Curve.js'
+import {
+    applyEditorStateToPinSliders,
+    editorStateFromXaccCurveMeta,
+} from './xaccCurveEditorState.js'
 import {
     XACC_CURVE_DEFAULTS,
     XACC_SITE_DEFAULT_PIN1_ACC,
@@ -20,6 +24,7 @@ import {
     levelUsesSiteXaccDefaults,
     xaccMultiplier,
     displayScoreFromXaccMultiplier,
+    resolveScoreV2RatingBase,
 } from './scoreV2XaccCurve.js'
 
 const SLIDER_MIN = 1
@@ -346,9 +351,13 @@ export function levelToPinSliderValues(
     const difficultyDict = context?.difficultyDict ?? {}
     const tilecount = context?.tilecount > 0 ? context.tilecount : 100
 
+    const pinResolveContext = {
+        ppBaseScore: level?.ppBaseScore ?? 0,
+        hitTiles: tilecount,
+    }
     const useDefaults = levelUsesSiteXaccDefaults(level)
     const pins = storedPins
-        ? resolvePinsFromMeta(storedPins, base, curve)
+        ? resolvePinsFromMeta(storedPins, base, curve, pinResolveContext)
         : useDefaults
             ? siteDefaultPinValues(levelData, difficultyDict, tilecount, base)
             : pinsOnCurveAtDefaultLocations(
@@ -359,13 +368,35 @@ export function levelToPinSliderValues(
                   base,
               )
 
-    return {
-        ...pinSliderValuesFromPins(pins, base, scoreMax),
-        useDefaults,
-    }
+    const missesX =
+        storedPins?.missesX != null
+            ? Math.max(0, Math.floor(Number(storedPins.missesX)) || 0)
+            : 0
+    const missesY =
+        storedPins?.missesY != null
+            ? Math.max(0, Math.floor(Number(storedPins.missesY)) || 0)
+            : 0
+    const hitTiles =
+        storedPins?.hitTiles != null
+            ? Math.max(1, Math.floor(Number(storedPins.hitTiles)) || tilecount)
+            : tilecount
+
+    const editor = editorStateFromXaccCurveMeta(meta)
+    const sliderSeed = pinSliderValuesFromPins(pins, base, scoreMax)
+
+    return applyEditorStateToPinSliders(
+        {
+            ...sliderSeed,
+            useDefaults,
+            missesX,
+            missesY,
+            hitTiles,
+        },
+        editor,
+    )
 }
 
-function resolvePinsFromMeta(rawPins, baseScore, curve) {
+function resolvePinsFromMeta(rawPins, baseScore, curve, context = {}) {
     const fallback = pinsOnCurveAtDefaultLocations(
         curve,
         { baseScore, xaccCurve: curve },
@@ -389,21 +420,33 @@ function resolvePinsFromMeta(rawPins, baseScore, curve) {
             ? Number(rawPins.multY)
             : NaN
 
+    const hitTiles = Math.max(
+        1,
+        Math.floor(Number(rawPins.hitTiles)) ||
+            Math.floor(Number(context.hitTiles)) ||
+            100,
+    )
+    const missesX = Math.max(0, Math.floor(Number(rawPins.missesX)) || 0)
+    const missesY = Math.max(0, Math.floor(Number(rawPins.missesY)) || 0)
+    const ppBase = context.ppBaseScore
+
+    const scoreFromMult = (mult, acc, misses) => {
+        if (!Number.isFinite(mult)) return NaN
+        const ratingBase = resolveScoreV2RatingBase(acc, baseScore, ppBase)
+        const mtp = scoreV2MtpFromMisses(misses, hitTiles)
+        if (rawPins.scoresAreXaccMultipliers) {
+            return displayScoreFromXaccMultiplier(mult, ratingBase, mtp)
+        }
+        return baseScore * mult
+    }
+
     const scoreX = Number.isFinite(storedScoreX)
         ? storedScoreX
-        : Number.isFinite(multX)
-            ? rawPins.scoresAreXaccMultipliers
-                ? displayScoreFromXaccMultiplier(multX, baseScore)
-                : baseScore * multX
-            : fallback.scoreX
+        : scoreFromMult(multX, Number.isFinite(accX) ? accX : fallback.accX, missesX)
 
     const scoreY = Number.isFinite(storedScoreY)
         ? storedScoreY
-        : Number.isFinite(multY)
-            ? rawPins.scoresAreXaccMultipliers
-                ? displayScoreFromXaccMultiplier(multY, baseScore)
-                : baseScore * multY
-            : fallback.scoreY
+        : scoreFromMult(multY, Number.isFinite(accY) ? accY : fallback.accY, missesY)
 
     return {
         accX: Number.isFinite(accX) ? accX : fallback.accX,
@@ -434,11 +477,21 @@ export function defaultPinSliderValues(
         context?.tilecount > 0 ? context.tilecount : 100,
         base,
     )
-    return pinSliderValuesFromPins(
-        pins,
-        base,
-        scoreMax ??
-            resolvePinScoreMax(level, base, curve.topMultiplier),
+    const tc = context?.tilecount > 0 ? context.tilecount : 100
+    return applyEditorStateToPinSliders(
+        {
+            ...pinSliderValuesFromPins(
+                pins,
+                base,
+                scoreMax ??
+                    resolvePinScoreMax(level, base, curve.topMultiplier),
+            ),
+            missesX: 0,
+            missesY: 0,
+            hitTiles: tc,
+            useDefaults: true,
+        },
+        null,
     )
 }
 
@@ -506,6 +559,8 @@ export function pinSlidersToXaccCurve(
     return {
         ok: true,
         pins,
+        multX: fit.multX,
+        multY: fit.multY,
         xaccCurve: {
             poleOffset: fit.poleOffset,
             topMultiplier: fit.topMultiplier,

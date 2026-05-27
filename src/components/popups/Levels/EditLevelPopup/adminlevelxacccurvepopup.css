@@ -89,6 +89,15 @@
   color: var(--color-white-t55);
 }
 
+.admin-level-xacc-curve-popup__derived-value code {
+  font-family: ui-monospace, "Cascadia Mono", "Segoe UI Mono", monospace;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-white);
+  -webkit-user-select: all;
+  user-select: all;
+}
+
 @media (max-width: 560px) {
   .admin-level-xacc-curve-popup__pin-grid {
     grid-template-columns: 1fr;

@@ -535,7 +535,7 @@ export function fitXaccCurveFromPins(pins) {
         return { ok: false, error: 'Fixed 95% anchor does not match this hyperbola' }
     }
 
-    return { ok: true, poleOffset: E, topMultiplier: G }
+    return { ok: true, poleOffset: E, topMultiplier: G, multX, multY }
 }
 
 /**
