@@ -8,7 +8,6 @@ export const ArrowIcon = ({ color = "#fff", headWidth = 0, stemWidth = 0, size =
     left: "270deg",
     right: "90deg"
   };
-  console.log(rotation[direction]);
   return (
     <svg 
     {...props} 
