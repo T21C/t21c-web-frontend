@@ -6,6 +6,7 @@ import LevelUploadManagementPopup from "./LevelUploadManagementPopup/LevelUpload
 import CDNTosPopup from "./CDNTosPopup/CDNTosPopup";
 import SubmissionCreatorPopup from "./SubmissionCreatorPopup/SubmissionCreatorPopup";
 import LevelDownloadPopup from "./LevelDownloadPopup/LevelDownloadPopup";
+import WebAdofaiViewerButton from "./WebAdofaiViewerButton/WebAdofaiViewerButton";
 
 export {
   EditLevelPopup,
@@ -15,4 +16,5 @@ export {
   CDNTosPopup,
   SubmissionCreatorPopup,
   LevelDownloadPopup,
+  WebAdofaiViewerButton,
 };

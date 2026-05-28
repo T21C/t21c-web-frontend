@@ -6,18 +6,39 @@ import path from 'path'
 export default defineConfig(({ command, mode }) => {
   // Load env file based on mode
   const env = loadEnv(mode, process.cwd(), '')
+
+  const getEnv = (key) => env[key] || process.env[key]
+
+  const modeApiUrlEnvKey = mode === 'production'
+    ? 'VITE_PROD_API_URL'
+    : mode === 'staging'
+      ? 'VITE_STAGING_API_URL'
+      : 'VITE_DEV_API_URL'
+
+  const requiredEnvKeys = mode === 'development'
+    ? [modeApiUrlEnvKey, 'VITE_LEVELS', 'VITE_DIFFICULTIES', 'VITE_CURATIONS']
+    : [modeApiUrlEnvKey]
+
+  const missingEnvKeys = requiredEnvKeys.filter((key) => !getEnv(key))
+  if (missingEnvKeys.length > 0) {
+    console.warn(
+      `[vite] Missing env vars for ${mode}: ${missingEnvKeys.join(', ')}. ` +
+      'API-backed pages may fail until your .env is configured.'
+    )
+  }
+
   // Determine API URL based on environment
   const apiUrl = mode === 'production' 
-    ? env.VITE_PROD_API_URL 
+    ? getEnv('VITE_PROD_API_URL')
     : mode === 'staging' 
-      ? env.VITE_STAGING_API_URL 
-      : env.VITE_DEV_API_URL
+      ? getEnv('VITE_STAGING_API_URL')
+      : getEnv('VITE_DEV_API_URL')
   
   const ownUrl = mode === 'production' 
-    ? env.VITE_OWN_PROD_URL 
+    ? getEnv('VITE_OWN_PROD_URL')
     : mode === 'staging' 
-      ? env.VITE_OWN_STAGING_URL 
-      : env.VITE_OWN_DEV_URL
+      ? getEnv('VITE_OWN_STAGING_URL')
+      : getEnv('VITE_OWN_DEV_URL')
 
   const port = mode === 'production' ? 5000 : 5173
 
@@ -76,7 +97,7 @@ export default defineConfig(({ command, mode }) => {
         usePolling: true
       },
       proxy: {
-        '/v2|/(levels|passes|profile)/\\d+$|/packs/[0-9A-Za-z]{8,}$': {
+        '^/v2': {
           target: apiUrl || 'http://localhost:3002',
           changeOrigin: true,
           secure: false,

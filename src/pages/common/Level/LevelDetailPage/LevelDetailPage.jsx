@@ -16,7 +16,11 @@ import {
 import { Tooltip } from "react-tooltip";
 import { useTranslation } from "react-i18next";
 import { ClearCard } from "@/components/cards";
-import { EditLevelPopup, LevelDownloadPopup } from "@/components/popups/Levels";
+import {
+  EditLevelPopup,
+  LevelDownloadPopup,
+  WebAdofaiViewerButton,
+} from "@/components/popups/Levels";
 import { RatingDetailPopup } from "@/components/popups/Rating";
 import { AddToPackPopup } from "@/components/popups/Packs";
 import { SongPopup } from "@/components/popups/Songs";
@@ -1894,6 +1898,7 @@ const LevelDetailPage = ({ mockData = null }) => {
         image={''}
         type="article"
       />
+      <WebAdofaiViewerButton levelId={effectiveId} />
       <div 
         className={`level-detail ${(res?.level?.curation && !externalCssOverride) || externalCssOverride ? 'curated' : ''}`}
         data-custom-styles={(externalCssOverride || curationStyles) ? "true" : undefined}
