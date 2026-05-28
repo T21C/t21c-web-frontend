@@ -180,7 +180,9 @@
     "trimFolderNames": "Shorten folder names for path compatibility",
     "errors": {
       "noUrl": "Download link was not returned by the server.",
-      "generateFailed": "Failed to generate download link."
+      "generateFailed": "Failed to generate download link.",
+      "diskFull": "The server does not have enough temporary disk space for this pack. Try again later or download a smaller selection.",
+      "queueBusy": "The server is preparing other pack downloads. Please wait a few minutes and try again."
     }
   }
 }

@@ -8,6 +8,24 @@ import { formatEstimatedSize } from '@/utils/packDownloadUtils';
 import { CloseButton } from '@/components/common/buttons';
 
 const DEFAULT_SIZE_SUMMARY = { totalBytes: 0, missingCount: 0, levelCount: 0 };
+const MAX_DOWNLOAD_SIZE_BYTES = 15 * 1024 * 1024 * 1024; // 15GB
+
+function resolvePackDownloadErrorMessage(err, packJob, t) {
+  const code = err?.response?.data?.code;
+  if (code === 'PACK_DISK_FULL') {
+    return t('packPopups.downloadPack.errors.diskFull');
+  }
+  if (code === 'PACK_QUEUE_BUSY') {
+    return t('packPopups.downloadPack.errors.queueBusy');
+  }
+  return (
+    err?.response?.data?.error ||
+    err?.message ||
+    packJob?.error ||
+    packJob?.message ||
+    t('packPopups.downloadPack.errors.generateFailed')
+  );
+}
 
 const PackDownloadPopup = ({
   isOpen,
@@ -29,7 +47,6 @@ const PackDownloadPopup = ({
     Boolean(isOpen && step === 'processing' && packJobId)
   );
 
-  const MAX_DOWNLOAD_SIZE_BYTES = 15 * 1024 * 1024 * 1024; // 15GB
   const exceedsSizeLimit = (sizeSummary?.totalBytes || 0) > MAX_DOWNLOAD_SIZE_BYTES;
 
   const resetState = useCallback(() => {
@@ -51,7 +68,7 @@ const PackDownloadPopup = ({
     }
 
     if (packJob.phase === 'failed') {
-      const msg = packJob.error || packJob.message || t('packPopups.downloadPack.errors.generateFailed');
+      const msg = resolvePackDownloadErrorMessage(null, packJob, t);
       setError(msg);
       setStep('confirm');
       setPackJobId(null);
@@ -125,10 +142,7 @@ const PackDownloadPopup = ({
         setStep('ready');
       }
     } catch (err) {
-      const message =
-        err?.response?.data?.error ||
-        err?.message ||
-        t('packPopups.downloadPack.errors.generateFailed');
+      const message = resolvePackDownloadErrorMessage(err, null, t);
       setError(message);
       setStep('confirm');
       setPackJobId(null);

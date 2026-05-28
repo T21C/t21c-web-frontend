@@ -180,7 +180,9 @@
     "trimFolderNames": "缩短文件夹名称以兼容路径长度限制",
     "errors": {
       "noUrl": "服务器未返回下载链接。",
-      "generateFailed": "生成下载链接失败。"
+      "generateFailed": "生成下载链接失败。",
+      "diskFull": "服务器临时磁盘空间不足，无法生成此地图包。请稍后重试或选择较小的下载范围。",
+      "queueBusy": "服务器正在处理其他地图包下载，请稍后再试。"
     }
   }
 }
