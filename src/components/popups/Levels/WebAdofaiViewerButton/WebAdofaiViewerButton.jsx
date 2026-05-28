@@ -63,7 +63,9 @@ const WebAdofaiViewerButton = ({ levelId }) => {
           className="web-adofai-viewer-frame"
           title="Web ADOFAI level viewer"
           src={iframeSrc}
-              allow="autoplay; fullscreen"
+          allow="autoplay; fullscreen"
+          referrerPolicy="strict-origin-when-cross-origin"
+          sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-downloads"
         />
       </section>
     </div>
