@@ -87,7 +87,8 @@
       "save": "Save",
       "saving": "Saving…",
       "cancel": "Cancel",
-      "toastSaved": "Xacc curve saved; passes are being recalculated",
+      "toastSaved": "Xacc curve saved",
+      "toastSavedWithPasses": "Xacc curve saved. {{count}} pass scores recalculated.",
       "sliderDisplay": "Slider {{value}}",
       "inputMode": {
         "accuracy": "Accuracy & score",

@@ -1086,7 +1086,11 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
           onClose={() => setShowXaccCurvePopup(false)}
           onSaved={(patch) => {
             if (onUpdate) {
-              onUpdate({ level: { id: level.id, ...patch } });
+              onUpdate({
+                level: { id: level.id, ...patch },
+                refetchPasses: Boolean(patch?.refetchPasses),
+                passesRecalculated: patch?.passesRecalculated,
+              });
             }
           }}
         />

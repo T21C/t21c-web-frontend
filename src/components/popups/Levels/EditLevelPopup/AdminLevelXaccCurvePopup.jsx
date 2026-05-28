@@ -1084,10 +1084,21 @@ export const AdminLevelXaccCurvePopup = ({ level, onClose, onSaved }) => {
       if (updated && onSaved) {
         onSaved({
           xaccCurveMeta: updated.xaccCurveMeta ?? null,
+          passesRecalculated: res.data?.passesRecalculated ?? 0,
+          refetchPasses: true,
         });
       }
       setChangeBaseline(committedSnapshot);
-      toast.success(t('levelPopups.edit.xaccCurve.toastSaved'));
+      const passCount = res.data?.passesRecalculated;
+      toast.success(
+        Number.isFinite(passCount) && passCount > 0
+          ? t('levelPopups.edit.xaccCurve.toastSavedWithPasses', {
+              count: passCount,
+              defaultValue:
+                'Curve saved. {{count}} pass scores recalculated.',
+            })
+          : t('levelPopups.edit.xaccCurve.toastSaved'),
+      );
       onClose();
     } catch (err) {
       console.error(err);

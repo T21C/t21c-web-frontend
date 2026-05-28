@@ -87,7 +87,8 @@
       "save": "保存",
       "saving": "保存中…",
       "cancel": "取消",
-      "toastSaved": "Xacc 曲线已保存，正在重算通关",
+      "toastSaved": "Xacc 曲线已保存",
+      "toastSavedWithPasses": "Xacc 曲线已保存，已重算 {{count}} 条通关分数。",
       "sliderDisplay": "滑块 {{value}}",
       "inputMode": {
         "accuracy": "准确率与分数",
