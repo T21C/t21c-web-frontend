@@ -1,0 +1,107 @@
+/* tuf-search: #WebAdofaiViewerButton #webAdofai #levelDetail */
+.web-adofai-viewer-button {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  z-index: 90;
+  min-height: 3rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  padding: 0 1.25rem;
+  background: linear-gradient(135deg, #5339b2, #2f0565);
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  box-shadow: 0 12px 32px rgba(47, 5, 101, 0.35);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.web-adofai-viewer-button:hover {
+  border-color: rgba(255, 255, 255, 0.34);
+  box-shadow: 0 14px 40px rgba(47, 5, 101, 0.45);
+  transform: translateY(-2px);
+}
+
+.web-adofai-viewer-button:focus-visible,
+.web-adofai-viewer-close:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+.web-adofai-viewer-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 130;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  background: rgba(0, 0, 0, 0.72);
+}
+
+.web-adofai-viewer-dialog {
+  position: relative;
+  display: flex;
+  aspect-ratio: 16 / 9;
+  width: min(calc(100vw - 6rem), calc((100vh - 6rem) * 16 / 9));
+  max-height: calc(100vh - 6rem);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  background: #111118;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.58);
+}
+
+.web-adofai-viewer-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.72);
+  color: #fff;
+  cursor: pointer;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.web-adofai-viewer-close:hover {
+  background: rgba(0, 0, 0, 0.9);
+}
+
+.web-adofai-viewer-frame {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #fff;
+}
+
+@media (max-width: 768px) {
+  .web-adofai-viewer-button {
+    right: 1rem;
+    bottom: 1rem;
+    min-height: 2.75rem;
+    padding: 0 1rem;
+    font-size: 0.85rem;
+  }
+
+  .web-adofai-viewer-overlay {
+    padding: 1rem;
+  }
+
+  .web-adofai-viewer-dialog {
+    width: min(calc(100vw - 2rem), calc((100vh - 2rem) * 16 / 9));
+    max-height: calc(100vh - 2rem);
+  }
+}
