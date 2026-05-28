@@ -9,6 +9,46 @@ import "./languageSelector.css";
 import { useTranslation } from 'react-i18next';
 import { changeAppLanguage, normalizeLanguage } from "@/translations/config";
 
+const DEFAULT_LANGUAGES = {
+  en: { display: "English", countryCode: "us", status: 100 },
+  pl: { display: "Polski", countryCode: "pl", status: 0 },
+  kr: { display: "한국어", countryCode: "kr", status: 0 },
+  cn: { display: "中文", countryCode: "cn", status: 0 },
+  id: { display: "Bahasa Indonesia", countryCode: "id", status: 0 },
+  jp: { display: "日本語", countryCode: "jp", status: 0 },
+  ru: { display: "Русский", countryCode: "ru", status: 0 },
+  de: { display: "Deutsch", countryCode: "de", status: 0 },
+  fr: { display: "Français", countryCode: "fr", status: 0 },
+  es: { display: "Español", countryCode: "es", status: 0 },
+};
+
+function normalizeLanguageOptions(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return DEFAULT_LANGUAGES;
+  }
+
+  return Object.entries(DEFAULT_LANGUAGES).reduce((options, [code, fallback]) => {
+    const next = value[code];
+    options[code] =
+      next && typeof next === "object"
+        ? {
+            display:
+              typeof next.display === "string" && next.display.trim()
+                ? next.display
+                : fallback.display,
+            countryCode:
+              typeof next.countryCode === "string" && next.countryCode.trim()
+                ? next.countryCode
+                : fallback.countryCode,
+            status: Number.isFinite(Number(next.status))
+              ? Number(next.status)
+              : fallback.status,
+          }
+        : fallback;
+    return options;
+  }, {});
+}
+
 /**
  * Language selector component
  * @param {Object} props
@@ -18,18 +58,7 @@ import { changeAppLanguage, normalizeLanguage } from "@/translations/config";
 const LanguageSelector = ({ variant = "desktop", asListItem = null }) => {
   const { t, i18n } = useTranslation('components');
   const [isOpen, setIsOpen] = useState(false);
-  const [languages, setLanguages] = useState({
-    en: { display: "English", countryCode: "us", status: 100 },
-    pl: { display: "Polski", countryCode: "pl", status: 0 },
-    kr: { display: "한국어", countryCode: "kr", status: 0 },
-    cn: { display: "中文", countryCode: "cn", status: 0 },
-    id: { display: "Bahasa Indonesia", countryCode: "id", status: 0 },
-    jp: { display: "日本語", countryCode: "jp", status: 0 },
-    ru: { display: "Русский", countryCode: "ru", status: 0 },
-    de: { display: "Deutsch", countryCode: "de", status: 0 },
-    fr: { display: "Français", countryCode: "fr", status: 0 },
-    es: { display: "Español", countryCode: "es", status: 0 },
-  });
+  const [languages, setLanguages] = useState(DEFAULT_LANGUAGES);
 
   const dropdownRef = useRef(null);
   const portalRef = useRef(null);
@@ -40,9 +69,10 @@ const LanguageSelector = ({ variant = "desktop", asListItem = null }) => {
     const fetchLanguageStatus = async () => {
       try {
         const response = await api.get("/v2/utils/languages");
-        setLanguages(response.data);
+        setLanguages(normalizeLanguageOptions(response.data));
       } catch (error) {
         console.error("Error fetching language status:", error);
+        setLanguages(DEFAULT_LANGUAGES);
       }
     };
 
@@ -74,7 +104,7 @@ const LanguageSelector = ({ variant = "desktop", asListItem = null }) => {
       if (a.status !== b.status) {
         return b.status - a.status;
       }
-      return a.display.localeCompare(b.display);
+      return a.display.localeCompare(b.display || keyB);
     })
     .reduce((obj, [key, value]) => {
       obj[key] = value;
@@ -96,7 +126,7 @@ const LanguageSelector = ({ variant = "desktop", asListItem = null }) => {
   const handleChangeLanguage = async (newLanguage, e) => {
     e.stopPropagation();
 
-    if (languages[newLanguage].status === 0) {
+    if (!languages[newLanguage] || languages[newLanguage].status === 0) {
       return;
     }
 
