@@ -1,0 +1,14 @@
+/* tuf-search: #portaledPanel — shared shell for panels portaled via usePortaledPanelAnchor */
+.portaled-panel {
+  position: fixed;
+  box-sizing: border-box;
+  pointer-events: auto;
+}
+
+.portaled-panel--z-dropdown {
+  z-index: 130;
+}
+
+.portaled-panel--z-popover {
+  z-index: 9998;
+}

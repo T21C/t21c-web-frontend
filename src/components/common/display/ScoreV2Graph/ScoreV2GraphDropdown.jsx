@@ -1,14 +1,16 @@
 // tuf-search: #ScoreV2GraphDropdown #scorev2Graph #display
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
+import { PORTALED_PANEL_CLASS, usePortaledPanelAnchor } from "@/hooks/usePortaledPanelAnchor";
 import { ScoreV2Graph } from "./ScoreV2Graph";
 import "./ScoreV2Graph.css";
 
 export const ScoreV2GraphDropdown = ({
   show,
   onClose,
-  containerRef,
+  containerRef: anchorRef,
   tilecount,
   levelData,
   difficultyDict,
@@ -17,16 +19,25 @@ export const ScoreV2GraphDropdown = ({
 }) => {
   const { t } = useTranslation("pages");
   const [disablePP, setDisablePP] = useState(false);
+  const panelRef = useRef(null);
+
+  const { panelStyle, placement, portalRoot } = usePortaledPanelAnchor({
+    open: show,
+    anchorRef,
+    panelRef,
+    reanchorDeps: [tilecount, levelData, disablePP],
+  });
 
   useEffect(() => {
     if (!show) return;
     const handlePointerDownCapture = (event) => {
-      if (containerRef?.current?.contains(event.target)) return;
+      if (anchorRef?.current?.contains(event.target)) return;
+      if (panelRef?.current?.contains(event.target)) return;
       onClose();
     };
     document.addEventListener("mousedown", handlePointerDownCapture, true);
     return () => document.removeEventListener("mousedown", handlePointerDownCapture, true);
-  }, [show, onClose, containerRef]);
+  }, [show, onClose, anchorRef]);
 
   useEffect(() => {
     if (!show) return;
@@ -37,10 +48,17 @@ export const ScoreV2GraphDropdown = ({
     return () => document.removeEventListener("keydown", onKey);
   }, [show, onClose]);
 
-  if (!show) return null;
+  if (!show || !portalRoot) return null;
 
-  return (
-    <div className="scorev2-graph-dropdown" role="dialog" aria-label={t("levelDetail.scoreGraph.header", { defaultValue: "Score curve" })}>
+  return createPortal(
+    <div
+      ref={panelRef}
+      className={`scorev2-graph-dropdown scorev2-graph-dropdown--portal ${PORTALED_PANEL_CLASS} portaled-panel--z-dropdown`}
+      role="dialog"
+      aria-label={t("levelDetail.scoreGraph.header", { defaultValue: "Score curve" })}
+      data-placement={placement}
+      style={panelStyle}
+    >
       <div className="scorev2-graph-dropdown__header">
         <span className="scorev2-graph-dropdown__title">
           {t("levelDetail.scoreGraph.header", { defaultValue: "Score vs accuracy" })}
@@ -62,7 +80,8 @@ export const ScoreV2GraphDropdown = ({
         isNoHoldTap={isNoHoldTap}
         disablePP={disablePP}
       />
-    </div>
+    </div>,
+    portalRoot,
   );
 };
 

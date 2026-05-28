@@ -514,6 +514,7 @@
 
 .level-detail .rerate-history-dropdown-anchor {
   position: relative;
+  z-index: 1;
   display: flex;
   right: -50%;
   flex-direction: column;
@@ -522,6 +523,7 @@
 
 .level-detail .scorev2-graph-dropdown-anchor {
   position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1395,15 +1397,14 @@
 }
 
 @media (max-width: 600px) {
-  .level-detail .rerate-history-dropdown,
-  .level-detail .scorev2-graph-dropdown {
+  .level-detail .rerate-history-dropdown {
     min-width: 180px;
     max-width: 98vw;
     left: 50%;
     transform: translateX(-50%);
     padding: var(--spacing-xs) 4px;
   }
-  
+
   .level-detail .rerate-history-icon img {
     width: 24px;
     height: 24px;
@@ -2386,7 +2387,6 @@
 /* Improve dropdown positioning on mobile */
 @media (max-width: 768px) {
   .level-detail .rerate-history-dropdown,
-  .level-detail .scorev2-graph-dropdown,
   .level-detail .title-container .aliases-dropdown,
   .curation-tooltip-dropdown:not(.level-detail__curation-inline-assignee),
   .level-detail .weekly-appearance-dropdown,
@@ -2399,9 +2399,8 @@
     overflow-y: auto;
     z-index: var(--z-modal);
   }
-  
-  .level-detail .rerate-history-dropdown,
-  .level-detail .scorev2-graph-dropdown {
+
+  .level-detail .rerate-history-dropdown {
     max-width: 90vw;
     min-width: 280px;
   }

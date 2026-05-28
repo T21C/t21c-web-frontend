@@ -161,20 +161,30 @@
 }
 
 .scorev2-graph-dropdown {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 0;
   background: var(--color-black);
   border: 1px solid var(--glass-border);
   border-radius: var(--border-radius);
   padding: 12px 16px;
   min-width: 320px;
   width: min(600px, 95vw);
-  z-index: 120;
   box-shadow: var(--shadow-lg);
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xs);
+}
+
+/* Portaled under .body — layout shell; position from portaled-panel + usePortaledPanelAnchor */
+.scorev2-graph-dropdown--portal {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+@media (max-width: 768px) {
+  .scorev2-graph-dropdown--portal {
+    width: min(600px, 90vw);
+    min-width: 280px;
+    max-width: 90vw;
+  }
 }
 
 .scorev2-graph-dropdown__header {

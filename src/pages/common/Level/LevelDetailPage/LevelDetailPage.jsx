@@ -7,6 +7,7 @@ import React, { useEffect, useLayoutEffect, useState, useRef, useCallback, useMe
 import { createPortal } from "react-dom";
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { getPortalRoot } from "@/utils/portalRoot";
+import { PORTALED_PANEL_CLASS, usePortaledPanelAnchor } from "@/hooks/usePortaledPanelAnchor";
 
 import {
   getVideoDetails
@@ -117,12 +118,18 @@ const AliasesDropdown = ({ aliases, show, onClose }) => {
 
 const TagsDropdown = ({ tags, show, onClose, anchorRef }) => {
   const { t } = useTranslation('pages');
-  const dropdownRef = useRef(null);
-  const [coords, setCoords] = useState({ top: 0, left: 0, placement: "bottom" });
+  const panelRef = useRef(null);
+
+  const { panelStyle, placement, portalRoot } = usePortaledPanelAnchor({
+    open: show,
+    anchorRef,
+    panelRef,
+    reanchorDeps: [tags?.length],
+  });
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      const dropdownEl = dropdownRef.current;
+      const dropdownEl = panelRef.current;
       const anchorEl = anchorRef?.current;
       const target = event.target;
 
@@ -138,55 +145,11 @@ const TagsDropdown = ({ tags, show, onClose, anchorRef }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [onClose, anchorRef]);
 
-  useLayoutEffect(() => {
-    if (!show) return;
-
-    const updateCoords = () => {
-      const dropdownEl = dropdownRef.current;
-      const anchorEl = anchorRef?.current;
-      if (!dropdownEl || !anchorEl) return;
-
-      const margin = 8;
-      const gap = 6;
-
-      const anchorRect = anchorEl.getBoundingClientRect();
-      const dropdownRect = dropdownEl.getBoundingClientRect();
-
-      let left = anchorRect.left;
-      let top = anchorRect.bottom + gap;
-      let placement = "bottom";
-
-      const maxLeft = window.innerWidth - margin - dropdownRect.width;
-      left = Math.min(Math.max(left, margin), Math.max(margin, maxLeft));
-
-      if (top + dropdownRect.height > window.innerHeight - margin) {
-        const topAbove = anchorRect.top - gap - dropdownRect.height;
-        if (topAbove >= margin) {
-          top = topAbove;
-          placement = "top";
-        } else {
-          top = Math.max(margin, window.innerHeight - margin - dropdownRect.height);
-        }
-      }
-
-      setCoords({ top, left, placement });
-    };
-
-    updateCoords();
-    window.addEventListener("resize", updateCoords);
-    // Capture scroll from any scroll container (not just window)
-    window.addEventListener("scroll", updateCoords, true);
-    return () => {
-      window.removeEventListener("resize", updateCoords);
-      window.removeEventListener("scroll", updateCoords, true);
-    };
-  }, [show, anchorRef, tags?.length]);
-
   const handleDropdownClick = (e) => {
     e.stopPropagation();
   };
 
-  if (!show || !tags?.length) return null;
+  if (!show || !tags?.length || !portalRoot) return null;
 
   // Sort tags by groupSortOrder then sortOrder
   const sortedTags = [...tags].sort((a, b) => {
@@ -214,16 +177,11 @@ const TagsDropdown = ({ tags, show, onClose, anchorRef }) => {
 
   return createPortal(
     <div
-      className="tags-dropdown"
-      ref={dropdownRef}
+      className={`tags-dropdown ${PORTALED_PANEL_CLASS} portaled-panel--z-dropdown`}
+      ref={panelRef}
       onClick={handleDropdownClick}
-      data-placement={coords.placement}
-      style={{
-        position: "fixed",
-        top: coords.top,
-        left: coords.left,
-        zIndex: 130,
-      }}
+      data-placement={placement}
+      style={panelStyle}
     >
       <div className="tags-header">{t("levelDetail.tags.header") || "Tags"}</div>
       <div className="tags-grouped-list">
@@ -255,7 +213,7 @@ const TagsDropdown = ({ tags, show, onClose, anchorRef }) => {
         ))}
       </div>
     </div>,
-    getPortalRoot(),
+    portalRoot,
   );
 };
 

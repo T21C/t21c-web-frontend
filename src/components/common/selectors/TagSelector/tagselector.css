@@ -1,4 +1,6 @@
 /* tuf-search: #TagSelector #tagSelector #selectors */
+
+/* In-page trigger shell (stays in layout) */
 .tag-selector-dropdown {
   position: relative;
   width: fit-content;
@@ -43,43 +45,36 @@
   margin-right: 0.5rem;
 }
 
-.tag-selector-dropdown .tag-selector-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-  cursor: pointer;
-  touch-action: none;
-  -webkit-tap-highlight-color: transparent;
-  -webkit-user-select: none;
-  user-select: none;
-}
-
-.tag-selector-dropdown .tag-selector-grid {
-  position: absolute;
-  top: calc(100% + 0.5rem);
-  left: 0;
-  width: 30rem;
+/* Portaled panel root — self-contained under .body (see usePortaledPanelAnchor) */
+.tag-selector-panel {
   background: var(--color-black);
   border: 1px solid var(--color-white-t20);
   border-radius: 4px;
   padding: 1rem;
-  z-index: 1000;
-  max-height: 600px;
-  overflow-y: auto;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  overflow-y: auto;
+  max-height: min(600px, 80vh);
 }
 
-.tag-selector-dropdown .tag-selector-header {
+.tag-selector-panel.tag-selector-panel--full-width {
+  max-width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.tag-selector-panel .tag-selector-header {
   display: flex;
   justify-content: space-between;
   padding-bottom: 0.5rem;
 }
 
-.tag-selector-dropdown .select-all-button {
+.tag-selector-panel .tag-selector-header h3 {
+  margin: 0;
+  color: var(--color-white);
+}
+
+.tag-selector-panel .select-all-button {
   background: var(--color-white-t20);
   color: var(--color-white);
   border: none;
@@ -90,19 +85,19 @@
   transition: all 0.2s ease;
 }
 
-.tag-selector-dropdown .select-all-button:hover {
+.tag-selector-panel .select-all-button:hover {
   background: var(--color-white-t30);
 }
 
-.tag-selector-dropdown .tag-selector-group {
+.tag-selector-panel .tag-selector-group {
   margin-bottom: 1.5rem;
 }
 
-.tag-selector-dropdown .tag-selector-group:last-child {
+.tag-selector-panel .tag-selector-group:last-child {
   margin-bottom: 0;
 }
 
-.tag-selector-dropdown .group-title {
+.tag-selector-panel .group-title {
   color: var(--color-white);
   font-size: 0.9rem;
   margin-bottom: 0.75rem;
@@ -110,13 +105,13 @@
   border-bottom: 1px solid var(--color-white-t20);
 }
 
-.tag-selector-dropdown .tag-selector-list {
+.tag-selector-panel .tag-selector-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: 0.5rem;
 }
 
-.tag-selector-dropdown .tag-selector-item {
+.tag-selector-panel .tag-selector-item {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -128,116 +123,94 @@
   opacity: 0.8;
 }
 
-.tag-selector-dropdown .tag-selector-item:hover {
+.tag-selector-panel .tag-selector-item:hover {
   opacity: 0.9;
 }
 
-.tag-selector-dropdown .tag-selector-item.selected {
+.tag-selector-panel .tag-selector-item.selected {
   opacity: 1;
   box-shadow: 0 0 0 2px var(--color-white);
 }
 
-.tag-selector-dropdown .tag-selector-icon {
+.tag-selector-panel .tag-selector-icon {
   width: 28px;
   height: 28px;
   object-fit: contain;
 }
 
-.tag-selector-dropdown .tag-selector-name {
+.tag-selector-panel .tag-selector-name {
   font-size: 0.9rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* Mobile Styles */
 @media (max-width: 768px) {
   .tag-selector-dropdown {
     width: 100%;
   }
 
-  .tag-selector-dropdown .tag-selector-grid {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 90%;
-    max-width: 400px;
-    max-height: 80vh;
-    border-radius: 8px;
-    background: var(--color-black);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  }
-
-  .tag-selector-dropdown .tag-selector-list {
+  .tag-selector-panel .tag-selector-list {
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
     gap: 0.75rem;
   }
 
-  .tag-selector-dropdown .tag-selector-item {
+  .tag-selector-panel .tag-selector-item {
     padding: 0.75rem;
     font-size: 1.1rem;
     touch-action: manipulation;
   }
 
-  .tag-selector-dropdown .tag-selector-icon {
+  .tag-selector-panel .tag-selector-icon {
     width: 24px;
     height: 24px;
   }
 
-  .tag-selector-dropdown .tag-selector-name {
+  .tag-selector-panel .tag-selector-name {
     font-size: 1rem;
   }
 
-  .tag-selector-dropdown .select-all-button {
+  .tag-selector-panel .select-all-button {
     padding: 0.75rem 1rem;
     font-size: 1rem;
   }
 }
 
 @media (max-width: 480px) {
-  .tag-selector-dropdown .tag-selector-grid {
-    width: 95%;
+  .tag-selector-panel {
     padding: 0.75rem;
   }
 
-  .tag-selector-dropdown .tag-selector-list {
+  .tag-selector-panel .tag-selector-list {
     grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
     gap: 0.5rem;
   }
 
-  .tag-selector-dropdown .tag-selector-item {
+  .tag-selector-panel .tag-selector-item {
     padding: 0.5rem;
     font-size: 1rem;
   }
 
-  .tag-selector-dropdown .tag-selector-icon {
+  .tag-selector-panel .tag-selector-icon {
     width: 20px;
     height: 20px;
   }
 
-  .tag-selector-dropdown .tag-selector-name {
+  .tag-selector-panel .tag-selector-name {
     font-size: 0.9rem;
   }
 
-  .tag-selector-dropdown .group-title {
+  .tag-selector-panel .group-title {
     font-size: 0.85rem;
     margin-bottom: 0.5rem;
   }
 
-  .tag-selector-dropdown .tag-selector-header h3 {
+  .tag-selector-panel .tag-selector-header h3 {
     font-size: 1rem;
   }
 
-  .tag-selector-dropdown .select-all-button {
+  .tag-selector-panel .select-all-button {
     padding: 0.5rem 0.75rem;
     font-size: 0.9rem;
   }
 }
-
-/* Mobile Styles */
-@media (max-width: 768px) {
-  .tag-selector-dropdown::before {
-    display: none;
-  }
-} 
