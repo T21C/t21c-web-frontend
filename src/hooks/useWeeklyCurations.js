@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #useWeeklyCurations
 import { useState, useEffect } from 'react';
 import api from '@/utils/api';
@@ -14,7 +15,7 @@ export const useWeeklyCurations = () => {
         setError(null);
         
         // Let the server handle date management - no parameters needed
-        const response = await api.get(`${import.meta.env.VITE_CURATIONS}/schedules`);
+        const response = await api.get(`${routes.admin.curations.root()}/schedules`);
         
         setWeeklies(response.data.schedules || []);
       } catch (err) {

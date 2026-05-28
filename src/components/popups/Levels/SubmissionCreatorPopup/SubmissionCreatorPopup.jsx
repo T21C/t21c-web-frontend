@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #SubmissionCreatorPopup #submissionCreatorPopup #popups #levels #submissionCreator
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -110,9 +111,9 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
       try {
         let response;
         if (isTeamMode) {
-          response = await api.get(`${import.meta.env.VITE_TEAMS}/search/${encodeURIComponent(searchQuery)}`);
+          response = await api.get(`${routes.database.creators.teams.root()}/search/${encodeURIComponent(searchQuery)}`);
         } else {
-          response = await api.get(`${import.meta.env.VITE_CREATORS}/search/${encodeURIComponent(searchQuery)}`);
+          response = await api.get(`${routes.database.creators.root()}/search/${encodeURIComponent(searchQuery)}`);
         }
         setSearchResults(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
@@ -132,7 +133,7 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
     if (!creatorId) return null;
 
     try {
-      const response = await api.get(`${import.meta.env.VITE_CREATORS}/byId/${creatorId}`);
+      const response = await api.get(`${routes.database.creators.root()}/byId/${creatorId}`);
       const creator = response.data;
       
       if (!creator) {
@@ -153,7 +154,7 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
     if (!teamId) return;
 
     try {
-      const response = await api.get(`${import.meta.env.VITE_TEAMS}/byId/${teamId}`);
+      const response = await api.get(`${routes.database.creators.teams.root()}/byId/${teamId}`);
       const team = response.data;
       
       if (!team) {
@@ -201,7 +202,7 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
       }
 
       const response = await api.post(
-        `${import.meta.env.VITE_SUBMISSION_API}/levels/${submission.id}/creators`,
+        `${routes.admin.submissions.root()}/levels/${submission.id}/creators`,
         {
           name: newName.trim(),
           aliases: newAliases
@@ -283,7 +284,7 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
           };
 
       const finalSubmission = await api.put(
-        `${import.meta.env.VITE_SUBMISSION_API}/levels/${submission.id}/profiles`,
+        `${routes.admin.submissions.root()}/levels/${submission.id}/profiles`,
         updateData
       );
 

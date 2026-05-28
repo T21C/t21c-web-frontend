@@ -7,6 +7,7 @@ import CreatePackPopup from './CreatePackPopup';
 import './AddToPackPopup.css';
 import toast from 'react-hot-toast';
 import api from '@/utils/api';
+import { routes } from '@/api/routes';
 import { useNavigate } from 'react-router-dom';
 import { formatCreatorDisplay } from "@/utils/Utility";
 import { createPortal } from 'react-dom';
@@ -49,7 +50,7 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
         query: `owner:${user.username},levelId:${level.id},${searchQuery}`,
       };
 
-      const [response, levelContainingResponse] = await Promise.all([api.get('/v2/database/levels/packs', { params }), api.get('/v2/database/levels/packs', { params: levelContainingParams })]);
+      const [response, levelContainingResponse] = await Promise.all([api.get(routes.database.levels.packs.root(), { params }), api.get(routes.database.levels.packs.root(), { params: levelContainingParams })]);
       setUserPacks(response.data.packs || []);
       setTotalPacks(response.data.total || 0);
       setTotalPages(Math.ceil((response.data.total || 0) / LIMIT));
@@ -84,7 +85,7 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
 
   // Standalone pack operations
   const addLevelToPack = async (packId, levelId, parentId = 0) => {
-    const response = await api.post(`/v2/database/levels/packs/${packId}/items`, {
+    const response = await api.post(routes.database.levels.packs.items(packId), {
       type: 'level',
       levelIds: levelId,
       parentId
@@ -93,7 +94,7 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
   };
 
   const createPack = async (packData) => {
-    const response = await api.post('/v2/database/levels/packs', packData);
+    const response = await api.post(routes.database.levels.packs.root(), packData);
     return response.data;
   };
 

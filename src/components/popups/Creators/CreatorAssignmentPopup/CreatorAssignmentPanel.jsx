@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { CustomSelect } from '@/components/common/selectors';
 import { CreatorStatusBadge } from '@/components/common/display';
 import api from '@/utils/api';
+import { routes } from '@/api/routes';
 import { toast } from 'react-hot-toast';
 
 /**
@@ -52,7 +53,7 @@ export const CreatorAssignmentPanel = ({ user, onUserUpdate, showIntro = true })
           sort: 'NAME_ASC',
         });
 
-        const response = await api.get(`/v2/database/creators?${params}`, {
+        const response = await api.get(`${routes.database.creators.root()}?${params}`, {
           cancelToken: cancelToken.token,
         });
 
@@ -90,7 +91,7 @@ export const CreatorAssignmentPanel = ({ user, onUserUpdate, showIntro = true })
 
     try {
       const response = await api.put(
-        `/v2/database/creators/assign-creator-to-user/${user.id}/${selectedCreator.id}`,
+        routes.database.creators.assignCreatorToUser(user.id, selectedCreator.id),
       );
 
       if (response.status === 200) {
@@ -125,7 +126,7 @@ export const CreatorAssignmentPanel = ({ user, onUserUpdate, showIntro = true })
 
     try {
       const response = await api.delete(
-        `/v2/database/creators/remove-creator-from-user/${user.id}`,
+        routes.database.creators.removeCreatorFromUser(user.id),
       );
 
       if (response.status === 200) {

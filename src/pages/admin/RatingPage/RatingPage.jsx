@@ -1,3 +1,5 @@
+import { routes } from '@/api/routes';
+import { apiUrl } from '@/config/urls';
 // tuf-search: #RatingPage #ratingPage #admin #rating — Rating Management
 
 import { MetaTags } from "@/components/common/display";
@@ -69,8 +71,8 @@ const RatingPage = () => {
       const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
       
       const [ratingsResponse, weeklyActivityResponse] = await Promise.all([
-        api.get(import.meta.env.VITE_RATING_API),
-        api.get(`/v2/admin/statistics/ratings-per-user?date=${weekAgo}&limit=1000`)
+        api.get(routes.admin.rating()),
+        api.get(`${routes.admin.statisticsRatingsPerUser()}?date=${weekAgo}&limit=1000`)
       ]);
       
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -134,7 +136,7 @@ const RatingPage = () => {
           params.set('userId', user.id);
         }
 
-        const url = `${import.meta.env.VITE_API_URL}/v2/events?${params.toString()}`;
+        const url = `${apiUrl(routes.events())}?${params.toString()}`;
         console.debug('SSE Client: Connecting to', url);
 
         eventSource = new EventSource(url, {
@@ -246,7 +248,7 @@ const RatingPage = () => {
   const handleEditLevel = async (levelId) => {
     try {
       // Fetch full level data
-      const response = await api.get(`${import.meta.env.VITE_LEVELS}/${levelId}`);
+      const response = await api.get(`${routes.database.levels.root()}/${levelId}`);
       if (response && response.data) {
         setSelectedLevel(response.data);
         setOpenEditDialog(true);

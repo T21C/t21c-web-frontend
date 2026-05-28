@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import './topraterspopup.css';
 import api from '@/utils/api';
+import { routes } from '@/api/routes';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { UserAvatar } from '@/components/layout';
@@ -124,7 +125,7 @@ const TopRatersPopup = ({ onClose }) => {
   const fetchTopRaters = useCallback(async (page = 1) => {
     try {
       setIsLoading(true);
-      const response = await api.get(`/v2/admin/statistics/ratings-per-user?startDate=${selectedStartDate}&endDate=${selectedEndDate}&page=${page}&limit=20`);
+      const response = await api.get(`${routes.admin.statisticsRatingsPerUser()}?startDate=${selectedStartDate}&endDate=${selectedEndDate}&page=${page}&limit=20`);
       
       const { 
         ratingsPerUser, 

@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #ReratesTab #reratesTab #admin #announcement — Announcements
 import api from '@/utils/api';
 import '../announcementpage.css';
@@ -22,7 +23,7 @@ const ReratesTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onRem
       onRemove(level.id);
       
       // Silently remove from announcement list without announcing
-      await api.post(`${import.meta.env.VITE_WEBHOOK}/silent-remove/rerates`, {
+      await api.post(`${routes.webhook.root()}/silent-remove/rerates`, {
         levelIds: [level.id]
       });
     } catch (err) {

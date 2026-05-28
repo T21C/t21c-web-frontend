@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #AboutUsPage #aboutUsPage #aboutUs
 import "./aboutuspage.css";
 import { Footer, UserAvatar } from "@/components/layout";
@@ -20,7 +21,7 @@ const AboutUsPage = () => {
   useEffect(() => {
     const fetchRaters = async () => {
       try {
-        const response = await api.get(import.meta.env.VITE_RATERS_API);
+        const response = await api.get(routes.admin.raters());
         // Sort raters with super admins first
         setRaters(response.data.sort((a, b) => {
           if (hasFlag(a, permissionFlags.SUPER_ADMIN) === hasFlag(b, permissionFlags.SUPER_ADMIN)) {

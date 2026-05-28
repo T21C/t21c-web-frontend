@@ -3,6 +3,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
+import { routes } from '@/api/routes';
 import toast from 'react-hot-toast';
 import { TrashIcon, EditIcon } from '@/components/common/icons';
 import { RatingInput, CustomSelect } from '@/components/common/selectors';
@@ -149,7 +150,7 @@ const DiscordRolesManager = ({
   const loadGuilds = async () => {
     setIsLoading(true);
     try {
-      const response = await api.get('/v2/admin/discord/guilds');
+      const response = await api.get(routes.admin.discord.guilds());
       setGuilds(response.data || []);
       setError('');
     } catch (err) {
@@ -193,7 +194,7 @@ const DiscordRolesManager = ({
   // Guild CRUD operations
   const handleCreateGuild = async () => {
     try {
-      const response = await api.post('/v2/admin/discord/guilds', guildForm, {
+      const response = await api.post(routes.admin.discord.guilds(), guildForm, {
         headers: getHeaders()
       });
       setGuilds([...guilds, response.data]);
@@ -208,7 +209,7 @@ const DiscordRolesManager = ({
 
   const handleUpdateGuild = async () => {
     try {
-      const response = await api.put(`/v2/admin/discord/guilds/${editingGuild.id}`, guildForm, {
+      const response = await api.put(routes.admin.discord.guild(editingGuild.id), guildForm, {
         headers: getHeaders()
       });
       // Merge response data with existing guild data to preserve roles array
@@ -235,7 +236,7 @@ const DiscordRolesManager = ({
     if (!confirm(t('discordRoles.guild.confirmDelete'))) return;
     
     try {
-      await api.delete(`/v2/admin/discord/guilds/${guildId}`, {
+      await api.delete(routes.admin.discord.guild(guildId), {
         headers: getHeaders()
       });
       setGuilds(guilds.filter(g => g.id !== guildId));
@@ -290,7 +291,7 @@ const DiscordRolesManager = ({
         minDifficultyId: roleType === 'DIFFICULTY' ? (roleForm.minDifficultyId || difficultyId) : null,
         curationTypeId: roleType === 'CURATION' ? (roleForm.curationTypeId || curationTypeId) : null,
       };
-      const response = await api.post(`/v2/admin/discord/guilds/${selectedGuildId}/roles`, payload, {
+      const response = await api.post(routes.admin.discord.guildRoles(selectedGuildId), payload, {
         headers: getHeaders()
       });
       
@@ -321,7 +322,7 @@ const DiscordRolesManager = ({
         minDifficultyId: roleType === 'DIFFICULTY' ? roleForm.minDifficultyId : null,
         curationTypeId: roleType === 'CURATION' ? roleForm.curationTypeId : null,
       };
-      const response = await api.put(`/v2/admin/discord/guilds/${selectedGuildId}/roles/${editingRole.id}`, payload, {
+      const response = await api.put(routes.admin.discord.guildRole(selectedGuildId, editingRole.id), payload, {
         headers: getHeaders()
       });
       
@@ -349,7 +350,7 @@ const DiscordRolesManager = ({
     if (!confirm(t('discordRoles.role.confirmDelete'))) return;
     
     try {
-      await api.delete(`/v2/admin/discord/guilds/${selectedGuildId}/roles/${editingRole.id}`, {
+      await api.delete(routes.admin.discord.guildRole(selectedGuildId, editingRole.id), {
         headers: getHeaders()
       });
       
@@ -464,7 +465,7 @@ const DiscordRolesManager = ({
       }));
       
       // Send reorder request to backend with the sorted list of IDs
-      await api.put(`/v2/admin/discord/guilds/${guildId}/roles/reorder`, {
+      await api.put(routes.admin.discord.guildRolesReorder(guildId), {
         roleIds: roleIds
       }, {
         headers: getHeaders()

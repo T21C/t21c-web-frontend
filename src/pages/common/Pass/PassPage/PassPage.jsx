@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #PassPage #passPage #pass — Pass List
 import "./passpage.css";
 import "@/pages/common/sort.css";
@@ -104,7 +105,7 @@ const PassPage = () => {
           const passId = query.slice(1);
           if (!isNaN(passId) && passId.trim() !== '') {
             const response = await runner(({ signal }) =>
-              api.get(`${import.meta.env.VITE_PASSES}/byId/${passId}`, { signal })
+              api.get(`${routes.database.passes.root()}/byId/${passId}`, { signal })
             );
             setPassesData(response.data.results);
             setTotalPasses(response.data.count);
@@ -127,7 +128,7 @@ const PassPage = () => {
         };
 
         const response = await runner(({ signal }) =>
-          api.get(`${import.meta.env.VITE_PASSES}`, { params: requestBody, signal })
+          api.get(`${routes.database.passes.root()}`, { params: requestBody, signal })
         );
 
         const newPasses = response.data.results;

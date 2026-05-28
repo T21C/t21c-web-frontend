@@ -9,7 +9,7 @@ import { ChunkedUploadClient } from '@/utils/upload/ChunkedUploadClient';
  * in-flight request + tells the server to drop the session. A fresh AbortController is minted
  * for every `upload()` call so the hook can be reused across multiple uploads.
  */
-export function useChunkedUpload({ kind, baseUrl, chunkSize, parallelism, retries } = {}) {
+export function useChunkedUpload({ kind, chunkSize, parallelism, retries } = {}) {
   const [isUploading, setIsUploading] = useState(false);
   const [progress, setProgress] = useState({ phase: 'idle', percent: 0 });
   const [error, setError] = useState(null);
@@ -18,7 +18,7 @@ export function useChunkedUpload({ kind, baseUrl, chunkSize, parallelism, retrie
   const clientRef = useRef(null);
 
   if (!clientRef.current || clientRef.current.kind !== kind) {
-    clientRef.current = new ChunkedUploadClient({ kind, baseUrl, chunkSize, parallelism, retries });
+    clientRef.current = new ChunkedUploadClient({ kind, chunkSize, parallelism, retries });
   }
 
   const upload = useCallback(

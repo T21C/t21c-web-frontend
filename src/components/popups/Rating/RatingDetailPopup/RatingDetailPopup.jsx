@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #RatingDetailPopup #ratingDetailPopup #popups #rating #ratingDetail
 import "./ratingdetailpopup.css";
 import { useEffect, useState, useRef } from 'react';
@@ -21,7 +22,7 @@ const videoCache = new Map();
 
 async function updateRating(id, rating, comment, isCommunityRating = false) {
   try {
-    const response = await api.put(`${import.meta.env.VITE_RATING_API}/${id}`, {
+    const response = await api.put(`${routes.admin.rating()}/${id}`, {
       rating,
       comment,
       isCommunityRating
@@ -239,9 +240,9 @@ export const RatingDetailPopup = ({
     if (isAutorating) return;
     setIsAutorating(true);
     try {
-      await api.post(`${import.meta.env.VITE_API_URL}/v2/external/autorate/${ratingId}`);
+      await api.post(routes.external.autorate(ratingId));
       toast.success(t('rating.detailPopup.messages.autorateSuccess'));
-      const { data } = await api.get(import.meta.env.VITE_RATING_API);
+      const { data } = await api.get(routes.admin.rating());
       setRatings(data);
       const updated = data?.find((r) => r.id === selectedRating?.id);
       if (updated) setSelectedRating(updated);
@@ -396,7 +397,7 @@ export const RatingDetailPopup = ({
 
   const handleDeleteRating = async (userId) => {
     try {
-      const response = await api.delete(`${import.meta.env.VITE_RATING_API}/${selectedRating.id}/detail/${userId}`);
+      const response = await api.delete(`${routes.admin.rating()}/${selectedRating.id}/detail/${userId}`);
       
       if (response.status === 200) {
         // Update the local state

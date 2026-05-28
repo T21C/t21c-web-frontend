@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #ProfileBannerEditor #profileBannerEditor #account
 import { useCallback, useEffect, useId, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -145,21 +146,21 @@ const ProfileBannerEditor = ({
     try {
       if (variant === "player") {
         if (presetDraft === null) {
-          await api.delete(`${import.meta.env.VITE_PROFILE}/player/banner-preset`);
+          await api.delete(`${routes.auth.profile.root()}/player/banner-preset`);
           applyPatch({ bannerPreset: null });
         } else {
-          const { data } = await api.patch(`${import.meta.env.VITE_PROFILE}/player/banner-preset`, {
+          const { data } = await api.patch(`${routes.auth.profile.root()}/player/banner-preset`, {
             preset: presetDraft,
           });
           applyPatch({ bannerPreset: data?.bannerPreset ?? presetDraft });
         }
       } else if (creatorId != null && Number.isFinite(creatorId)) {
         if (presetDraft === null) {
-          await api.delete(`${import.meta.env.VITE_CREATORS_V3}/${creatorId}/banner-preset`);
+          await api.delete(`${routes.creatorsV3.root()}/${creatorId}/banner-preset`);
           applyPatch({ bannerPreset: null });
         } else {
           const { data } = await api.patch(
-            `${import.meta.env.VITE_CREATORS_V3}/${creatorId}/banner-preset`,
+            `${routes.creatorsV3.root()}/${creatorId}/banner-preset`,
             { preset: presetDraft },
           );
           applyPatch({ bannerPreset: data?.bannerPreset ?? presetDraft });
@@ -183,14 +184,14 @@ const ProfileBannerEditor = ({
       body.append("banner", file);
       try {
         if (variant === "player") {
-          const { data } = await api.post(`${import.meta.env.VITE_PROFILE}/player/banner-custom`, body);
+          const { data } = await api.post(`${routes.auth.profile.root()}/player/banner-custom`, body);
           applyPatch({
             customBannerUrl: data?.customBannerUrl ?? null,
             customBannerId: data?.customBannerId ?? null,
           });
         } else if (creatorId != null && Number.isFinite(creatorId)) {
           const { data } = await api.post(
-            `${import.meta.env.VITE_CREATORS_V3}/${creatorId}/banner-custom`,
+            `${routes.creatorsV3.root()}/${creatorId}/banner-custom`,
             body,
           );
           applyPatch({
@@ -291,10 +292,10 @@ const ProfileBannerEditor = ({
     setCustomBusy(true);
     try {
       if (variant === "player") {
-        await api.delete(`${import.meta.env.VITE_PROFILE}/player/banner-custom`);
+        await api.delete(`${routes.auth.profile.root()}/player/banner-custom`);
         applyPatch({ customBannerUrl: null, customBannerId: null });
       } else if (creatorId != null && Number.isFinite(creatorId)) {
-        await api.delete(`${import.meta.env.VITE_CREATORS_V3}/${creatorId}/banner-custom`);
+        await api.delete(`${routes.creatorsV3.root()}/${creatorId}/banner-custom`);
         applyPatch({ customBannerUrl: null, customBannerId: null });
       }
       toast.success(t("settings.banner.removedCustom"));

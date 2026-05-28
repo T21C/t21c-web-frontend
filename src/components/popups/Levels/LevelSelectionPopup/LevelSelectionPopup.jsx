@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #LevelSelectionPopup #levelSelectionPopup #popups #levels #levelSelection
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -62,7 +63,7 @@ const LevelSelectionPopup = ({
         curatedTypesFilter: 'hide',
       });
 
-      const response = await api.get(`${import.meta.env.VITE_LEVELS}?${params}`);
+      const response = await api.get(`${routes.database.levels.root()}?${params}`);
       setLevels(response.data.results || []);
       setTotalPages(Math.ceil(response.data.total / LIMIT) || 1);
     } catch (error) {

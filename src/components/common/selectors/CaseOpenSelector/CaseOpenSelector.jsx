@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #CaseOpenSelector #caseOpenSelector #selectors
 import React, { useState, useEffect, useRef } from 'react';
 import './caseopenselector.css';
@@ -114,7 +115,7 @@ export const CaseOpenSelector = ({ targetPlayerId, onClose, isSpinning: parentIs
 
   const reloadModifiers = async () => {
     try {
-      const response = await api.get(`${import.meta.env.VITE_PLAYERS}/${targetPlayerId}/modifiers`);
+      const response = await api.get(`${routes.database.players.root()}/${targetPlayerId}/modifiers`);
       setModifiers(response.data.modifiers);
       
     } catch (error) {
@@ -125,7 +126,7 @@ export const CaseOpenSelector = ({ targetPlayerId, onClose, isSpinning: parentIs
 
   const fetchModifiers = async () => {
     try {
-      const response = await api.get(`${import.meta.env.VITE_PLAYERS}/${targetPlayerId}/modifiers`);
+      const response = await api.get(`${routes.database.players.root()}/${targetPlayerId}/modifiers`);
       setModifiers(response.data.modifiers);
       setProbabilities(response.data.probabilities);
       
@@ -219,7 +220,7 @@ export const CaseOpenSelector = ({ targetPlayerId, onClose, isSpinning: parentIs
     }
 
     try {
-      const response = await api.post(`${import.meta.env.VITE_PLAYERS}/modifiers/generate`, {
+      const response = await api.post(`${routes.database.players.root()}/modifiers/generate`, {
         targetPlayerId
       });
       const newModifier = response.data.modifier;

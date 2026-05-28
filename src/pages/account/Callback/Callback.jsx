@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
 import { useAuth } from "@/contexts/AuthContext";
 import api from '@/utils/api';
+import { routes } from '@/api/routes';
 import './callback.css';
 
 const BILLING_POLL_INTERVAL_MS = 1500;
@@ -109,7 +110,7 @@ const CallbackPage = () => {
 
         while (!cancelled && Date.now() - startedAt < BILLING_POLL_TIMEOUT_MS) {
           try {
-            const { data } = await api.get('/v3/billing/stripe/checkout-status', {
+            const { data } = await api.get(routes.billingV3.stripe.checkoutStatus(), {
               params: { session_id: sessionId },
             });
             if (data?.fulfillmentReady) {
@@ -200,7 +201,7 @@ const CallbackPage = () => {
       }
 
       try {
-        const link = linking ? `/v2/auth/oauth/link/${provider}` : `/v2/auth/oauth/callback/${provider}`;
+        const link = linking ? routes.auth.oauthLink(provider) : routes.auth.oauthCallback(provider);
         const response = await api.post(link, { code, linking });
 
         if (cancelled) return;

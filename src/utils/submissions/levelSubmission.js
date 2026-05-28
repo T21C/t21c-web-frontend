@@ -1,5 +1,6 @@
 // tuf-search: #levelSubmission #submissions
 import api from '@/utils/api';
+import { routes } from '@/api/routes';
 import ChunkedUploadClient from '@/utils/upload/ChunkedUploadClient';
 
 /**
@@ -15,8 +16,6 @@ import ChunkedUploadClient from '@/utils/upload/ChunkedUploadClient';
  * errors, upload progress, final submit spinner) without caring about the
  * orchestration.
  */
-
-const FORM_BASE = '/v2/form/level';
 
 function throwFromError(err, fallbackMessage) {
   const data = err?.response?.data;
@@ -36,7 +35,7 @@ function throwFromError(err, fallbackMessage) {
  */
 export async function validateLevel(payload, { signal } = {}) {
   try {
-    const res = await api.post(`${FORM_BASE}/validate`, payload, { signal });
+    const res = await api.post(routes.form.level.validate(), payload, { signal });
     return res.data;
   } catch (err) {
     throwFromError(err, 'Validation failed');
@@ -90,7 +89,7 @@ export async function submitLevel({
   }
 
   try {
-    const res = await api.post(`${FORM_BASE}/submit`, formData, {
+    const res = await api.post(routes.form.level.submit(), formData, {
       signal,
       onUploadProgress:
         typeof onUploadProgress === 'function'
@@ -110,7 +109,7 @@ export async function submitLevel({
 export async function selectLevelChart({ submissionId, selectedLevel, signal } = {}) {
   try {
     const res = await api.post(
-      `${FORM_BASE}/select-level`,
+      routes.form.level.selectLevel(),
       { submissionId, selectedLevel },
       { signal },
     );

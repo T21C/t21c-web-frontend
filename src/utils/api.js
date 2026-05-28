@@ -1,7 +1,9 @@
 // tuf-search: #api
 import axios from 'axios';
+import { routes } from '@/api/routes';
+import { API_BASE } from '@/config/env';
 
-const baseURL = import.meta.env.VITE_API_URL;
+const baseURL = API_BASE;
 
 const api = axios.create({
   baseURL,
@@ -80,7 +82,7 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        await api.post('/v2/auth/refresh');
+        await api.post(routes.auth.refresh());
         processQueue(null);
         return api(originalRequest);
       } catch (refreshError) {

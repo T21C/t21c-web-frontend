@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #EntityPopup #entityPopup #popups #entities #entity
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
@@ -59,8 +60,8 @@ export const EntityPopup = ({ artist, song, onClose, type = 'artist' }) => {
         try {
           setLoading(true);
           const endpoint = type === 'artist' 
-            ? `${import.meta.env.VITE_API_URL}/v2/database/artists/${entity.id}`
-            : `${import.meta.env.VITE_API_URL}/v2/database/songs/${entity.id}`;
+            ? routes.database.artists.byId(entity.id)
+            : routes.database.songs.byId(entity.id);
           const response = await api.get(endpoint);
           setEntityData(response.data);
         } catch (error) {

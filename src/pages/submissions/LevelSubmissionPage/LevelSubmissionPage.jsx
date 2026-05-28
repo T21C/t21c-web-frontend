@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #LevelSubmissionPage #levelSubmissionPage #submissions #levelSubmission
 
 import "./levelsubmission.css";
@@ -844,7 +845,7 @@ const LevelSubmissionPage = () => {
               // If a valid song is selected (not a new request), fetch artists and auto-assign them
               if (finalSongData.songId && !finalSongData.isNewRequest) {
                 try {
-                  const response = await api.get(`${import.meta.env.VITE_API_URL}/v2/database/songs/${finalSongData.songId}`);
+                  const response = await api.get(routes.database.songs.byId(finalSongData.songId));
                   const songDetails = response.data;
                   
                   if (songDetails?.credits && songDetails.credits.length > 0) {

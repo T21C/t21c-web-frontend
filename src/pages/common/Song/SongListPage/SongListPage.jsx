@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #SongListPage #songListPage #song #songList — Songs - TUF
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -70,7 +71,7 @@ const SongListPage = () => {
         params.verificationState = verificationState;
       }
       
-      const response = await api.get(`${import.meta.env.VITE_API_URL}/v2/database/songs`, {
+      const response = await api.get(routes.database.songs.root(), {
         params,
         signal: abortController.signal
       });

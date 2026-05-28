@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #CurationTypeSelector #curationTypeSelector #account
 import "./curationTypeSelector.css";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -126,7 +127,7 @@ const CurationTypeSelector = ({
     setError(null);
     const toastId = toast.loading(t("loading.saving", { ns: "common" }));
     try {
-      const url = `${import.meta.env.VITE_CREATORS_V3}/${creatorId}/display-curation-types`;
+      const url = `${routes.creatorsV3.root()}/${creatorId}/display-curation-types`;
       const res = await api.patch(url, { ids: draftIds });
       const next = Array.isArray(res.data?.displayCurationTypeIds)
         ? res.data.displayCurationTypeIds

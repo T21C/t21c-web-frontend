@@ -15,9 +15,7 @@ export default defineConfig(({ command, mode }) => {
       ? 'VITE_STAGING_API_URL'
       : 'VITE_DEV_API_URL'
 
-  const requiredEnvKeys = mode === 'development'
-    ? [modeApiUrlEnvKey, 'VITE_LEVELS', 'VITE_DIFFICULTIES', 'VITE_CURATIONS']
-    : [modeApiUrlEnvKey]
+  const requiredEnvKeys = [modeApiUrlEnvKey]
 
   const missingEnvKeys = requiredEnvKeys.filter((key) => !getEnv(key))
   if (missingEnvKeys.length > 0) {

@@ -1,3 +1,5 @@
+import { routes } from '@/api/routes';
+import { apiUrl } from '@/config/urls';
 // tuf-search: #NotificationContext #notificationContext
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import api from '@/utils/api';
@@ -61,7 +63,7 @@ export const NotificationProvider = ({ children }) => {
     }
 
     try {
-      const response = await api.get(`${import.meta.env.VITE_API_URL}/v2/admin/statistics`);
+      const response = await api.get(routes.admin.statistics());
       const { totalPendingSubmissions, pendingLevelSubmissions, pendingPassSubmissions } = response.data;
       
       setPendingSubmissions(totalPendingSubmissions);
@@ -104,8 +106,7 @@ export const NotificationProvider = ({ children }) => {
       return;
     }
 
-    const apiUrl = import.meta.env.VITE_API_URL;
-    const eventsEndpoint = `${apiUrl}/v2/events`;
+    const eventsEndpoint = apiUrl(routes.events());
 
     console.debug('SSE: Setting up new connection');
     eventSourceRef.current = new EventSource(eventsEndpoint, {

@@ -1,7 +1,7 @@
+import { routes } from '@/api/routes';
+import { apiUrl } from '@/config/urls';
 // tuf-search: #useJobProgressStream
 import { useEffect, useState } from 'react';
-
-const baseURL = import.meta.env.VITE_API_URL || '';
 
 /**
  * Subscribe to GET /v2/jobs/:jobId/stream (SSE, cookie auth).
@@ -19,7 +19,7 @@ export function useJobProgressStream(jobId, enabled) {
     }
 
     setStreamError(null);
-    const url = `${baseURL.replace(/\/$/, '')}/v2/jobs/${encodeURIComponent(jobId)}/stream`;
+    const url = apiUrl(routes.jobs.stream(jobId));
     const es = new EventSource(url, { withCredentials: true });
     let closed = false;
     let terminal = false;

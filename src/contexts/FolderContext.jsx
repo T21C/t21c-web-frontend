@@ -1,6 +1,7 @@
 // tuf-search: #FolderContext #folderContext
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import api from '@/utils/api';
+import { routes } from '@/api/routes';
 import toast from 'react-hot-toast';
 
 const FolderContext = createContext();
@@ -23,7 +24,7 @@ export const FolderProvider = ({ children }) => {
     try {
       setLoading(true);
       const params = parentFolderId !== null ? { parentFolderId } : {};
-      const response = await api.get('/v2/database/levels/packs/folders', { params });
+      const response = await api.get(routes.database.levels.packs.folders.root(), { params });
       setFolders(response.data.folders || []);
       
       // Restore expanded state for folders that were previously expanded
@@ -48,7 +49,7 @@ export const FolderProvider = ({ children }) => {
   // Create a new folder
   const createFolder = useCallback(async (name, parentFolderId = null) => {
     try {
-      const response = await api.post('/v2/database/levels/packs/folders', {
+      const response = await api.post(routes.database.levels.packs.folders.root(), {
         name,
         parentFolderId
       });
@@ -69,7 +70,7 @@ export const FolderProvider = ({ children }) => {
   // Rename a folder
   const renameFolder = useCallback(async (folderId, newName) => {
     try {
-      const response = await api.put(`/v2/database/levels/packs/folders/${folderId}`, {
+      const response = await api.put(routes.database.levels.packs.folders.byId(folderId), {
         name: newName
       });
       
@@ -93,7 +94,7 @@ export const FolderProvider = ({ children }) => {
   // Delete a folder
   const deleteFolder = useCallback(async (folderId) => {
     try {
-      await api.delete(`/v2/database/levels/packs/folders/${folderId}`);
+      await api.delete(routes.database.levels.packs.folders.byId(folderId));
       
       setFolders(prev => prev.filter(folder => folder.id !== folderId));
       setExpandedFolders(prev => {
@@ -126,7 +127,7 @@ export const FolderProvider = ({ children }) => {
       });
 
       // Update on server
-      await api.put(`/v2/database/levels/packs/folders/${folderId}`, {
+      await api.put(routes.database.levels.packs.folders.byId(folderId), {
         isExpanded
       });
       
@@ -154,7 +155,7 @@ export const FolderProvider = ({ children }) => {
   // Move pack to folder
   const movePackToFolder = useCallback(async (packId, folderId) => {
     try {
-      await api.put(`/v2/database/levels/packs/${packId}`, {
+      await api.put(routes.database.levels.packs.byId(packId), {
         folderId
       });
       
@@ -170,7 +171,7 @@ export const FolderProvider = ({ children }) => {
   // Reorder folders and packs
   const reorderItems = useCallback(async (folders, packs) => {
     try {
-      await api.put('/v2/database/levels/packs/folders/reorder', {
+      await api.put(routes.database.levels.packs.folders.reorder(), {
         folders,
         packs
       });

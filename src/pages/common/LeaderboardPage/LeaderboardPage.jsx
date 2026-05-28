@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #LeaderboardPage #leaderboardPage #leaderboard — Leaderboard
 import "./leaderboardpage.css";
 import { useContext, useEffect, useRef, useState } from "react";
@@ -116,7 +117,7 @@ const LeaderboardPage = () => {
       params.append('filters', JSON.stringify({...apiFilters, country: country}));
     }
 
-    const endpoint = `${import.meta.env.VITE_LEADERBOARD_V3}?${params.toString()}`;
+    const endpoint = `${routes.playersV3.leaderboard()}?${params.toString()}`;
     const runner = immediate ? runRequest.flush : runRequest;
     try {
       const response = await runner(({ signal }) => api.get(endpoint, { signal }));

@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #NewLevelsTab #newLevelsTab #admin #announcement — Announcements
 import '../announcementpage.css';
 import api from '@/utils/api';
@@ -22,7 +23,7 @@ const NewLevelsTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onR
       onRemove(level.id);
       
       // Silently remove from announcement list without announcing
-      await api.post(`${import.meta.env.VITE_WEBHOOK}/silent-remove/levels`, {
+      await api.post(`${routes.webhook.root()}/silent-remove/levels`, {
         levelIds: [level.id]
       });
     } catch (err) {

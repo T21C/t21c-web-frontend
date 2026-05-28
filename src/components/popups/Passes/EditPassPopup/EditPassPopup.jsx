@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #EditPassPopup #editPassPopup #popups #passes #editPass
 import './editpasspopup.css';
 import { useTranslation } from 'react-i18next'; 
@@ -121,7 +122,7 @@ const handleSubmit = async (e) => {
 
     
     const response = await api.put(
-      `${import.meta.env.VITE_PASSES}/${pass.id}`,
+      `${routes.database.passes.root()}/${pass.id}`,
       updateData,
       {
         headers: {
@@ -159,7 +160,7 @@ const handleSubmit = async (e) => {
     const toastId = toast.loading(t('loading.generic', { ns: 'common' }));
 
     try {
-      const response = await api.delete(`${import.meta.env.VITE_PASSES}/${pass.id}`);
+      const response = await api.delete(`${routes.database.passes.root()}/${pass.id}`);
       if (response.data) {
         if (onUpdate) {
           await onUpdate(response.data.pass);
@@ -184,7 +185,7 @@ const handleSubmit = async (e) => {
     const toastId = toast.loading(t('loading.generic', { ns: 'common' }));
 
     try {
-      const response = await api.patch(`${import.meta.env.VITE_PASSES}/${pass.id}/restore`);
+      const response = await api.patch(`${routes.database.passes.root()}/${pass.id}/restore`);
       if (response.data) {
         if (onUpdate) {
           await onUpdate(response.data);

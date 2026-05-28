@@ -4,6 +4,7 @@ import { createPortal } from "react-dom";
 import { getPortalRoot } from "@/utils/portalRoot";
 import { isoToEmoji } from "@/utils";
 import api from "@/utils/api";
+import { routes } from '@/api/routes';
 import { ChevronIcon } from "@/components/common/icons";
 import "./languageSelector.css";
 import { useTranslation } from 'react-i18next';
@@ -68,7 +69,7 @@ const LanguageSelector = ({ variant = "desktop", asListItem = null }) => {
   useEffect(() => {
     const fetchLanguageStatus = async () => {
       try {
-        const response = await api.get("/v2/utils/languages");
+        const response = await api.get(routes.utils.languages());
         setLanguages(normalizeLanguageOptions(response.data));
       } catch (error) {
         console.error("Error fetching language status:", error);

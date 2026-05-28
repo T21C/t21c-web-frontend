@@ -1,3 +1,5 @@
+import { routes } from '@/api/routes';
+import { API_BASE } from '@/config/env';
 // tuf-search: #BackupPage #backupPage #admin #backup — Backups
 import { MetaTags } from "@/components/common/display";
 import "./adminbackuppage.css";
@@ -47,7 +49,7 @@ const UploadZone = ({ onUploadComplete, storedPassword, isLoadingBackups }) => {
       formData.append('backup', file);
       
       const response = await api.post(
-        `${import.meta.env.VITE_BACKUP_API}/upload`,
+        `${routes.admin.backup.root()}/upload`,
         formData,
         {
           headers: {
@@ -214,7 +216,7 @@ const BackupList = ({ backups, isLoadingBackups, showConfirmation, storedPasswor
     try {
       setRenameLoading(true);
       const response = await api.post(
-        `${import.meta.env.VITE_BACKUP_API}/rename/${backup.filename}`,
+        `${routes.admin.backup.root()}/rename/${backup.filename}`,
         { newName: newName + getFileNameAndExtension(backup.filename)[1] },
         {
           headers: {
@@ -257,7 +259,7 @@ const BackupList = ({ backups, isLoadingBackups, showConfirmation, storedPasswor
       setDownloadIndeterminate(prev => ({ ...prev, [backup.filename]: true }));
 
       const response = await api.get(
-        `${import.meta.env.VITE_BACKUP_API}/download/${backup.filename}`,
+        `${routes.admin.backup.root()}/download/${backup.filename}`,
         {
           headers: {
             'X-Super-Admin-Password': storedPassword
@@ -473,7 +475,7 @@ const BackupPage = () => {
     try {
       setIsVerifyingPassword(true);
       await api.head(
-        `${import.meta.env.VITE_API_URL}${import.meta.env.VITE_VERIFY_PASSWORD}?origin=backup`,
+        `${API_BASE}${routes.admin.verifyPassword()}?origin=backup`,
         {
           headers: {
             'X-Super-Admin-Password': password
@@ -532,7 +534,7 @@ const BackupPage = () => {
     try {
       setIsCreatingBackup(true);
       const response = await api.post(
-        `${import.meta.env.VITE_BACKUP_API}/create`, 
+        `${routes.admin.backup.root()}/create`, 
         {},
         {
           headers: {
@@ -556,7 +558,7 @@ const BackupPage = () => {
     try {
       setIsDeletingBackup(true);
       const response = await api.delete(
-        `${import.meta.env.VITE_BACKUP_API}/delete/${filename}`,
+        `${routes.admin.backup.root()}/delete/${filename}`,
         {
           headers: {
             'X-Super-Admin-Password': storedPassword
@@ -579,7 +581,7 @@ const BackupPage = () => {
     try {
       setIsRestoringBackup(true);
       const response = await api.post(
-        `${import.meta.env.VITE_BACKUP_API}/restore/${filename}`,
+        `${routes.admin.backup.root()}/restore/${filename}`,
         {},
         {
           headers: {
@@ -601,7 +603,7 @@ const BackupPage = () => {
   const loadBackups = async () => {
     try {
       setIsLoadingBackups(true);
-      const response = await api.get(`${import.meta.env.VITE_BACKUP_API}/list`);
+      const response = await api.get(`${routes.admin.backup.root()}/list`);
       setBackups(response?.data?.mysql || []);
     } catch (error) {
       console.error('Failed to load backups:', error);

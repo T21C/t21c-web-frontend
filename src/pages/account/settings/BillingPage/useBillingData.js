@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import api from "@/utils/api";
+import { routes } from '@/api/routes';
 import { isTufStellarEnabledForUser } from "@/utils/tufStellarFeature";
 import {
   computePurchasePreviewProjectedExpiresIso,
@@ -46,9 +47,9 @@ export function useBillingData(options = {}) {
     setLoading(true);
     setErrorState(false);
     try {
-      const requests = [api.get("/v3/billing/me", { params: meParams })];
+      const requests = [api.get(routes.billingV3.me(), { params: meParams })];
       if (loadEvents) {
-        requests.push(api.get("/v3/billing/me/events", { params: eventsParams }));
+        requests.push(api.get(routes.billingV3.meEvents(), { params: eventsParams }));
       }
       const results = await Promise.all(requests);
       const stateRes = results[0];
@@ -248,7 +249,7 @@ export function useBillingData(options = {}) {
     try {
       const payload = { months: term.months, currency: checkoutCurrency };
       if (purchaseAsGift && giftRecipient?.userId) payload.recipientUserId = giftRecipient.userId;
-      const { data } = await api.post("/v3/billing/stripe/checkout", payload);
+      const { data } = await api.post(routes.billingV3.stripe.checkout(), payload);
       const url = data?.url;
       if (!url) throw new Error("Missing checkout url");
       window.open(url, "_blank", "noopener,noreferrer");

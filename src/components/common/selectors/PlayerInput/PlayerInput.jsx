@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #PlayerInput #playerInput #selectors
 import { useState, useEffect } from 'react';
 import api from '@/utils/api';
@@ -25,7 +26,7 @@ export const PlayerInput = ({ value, onChange, onSelect, allowCreatePlayer = tru
     setIsLoading(true);
     try {
       const response = await api.get(
-        `${import.meta.env.VITE_PLAYERS_V3}/search?query=${encodeURIComponent(searchTerm)}`,
+        `${routes.playersV3.root()}/search?query=${encodeURIComponent(searchTerm)}`,
       );
       const body = response.data;
       const players = Array.isArray(body) ? body : (body?.results ?? []);
@@ -69,7 +70,7 @@ export const PlayerInput = ({ value, onChange, onSelect, allowCreatePlayer = tru
     if (player.isNew) {
       setCreationStatus('creating');
       try {
-        const response = await api.post(`${import.meta.env.VITE_PLAYERS}/create`, {
+        const response = await api.post(`${routes.database.players.root()}/create`, {
           name: player.name
         });
         const newPlayer = response.data;

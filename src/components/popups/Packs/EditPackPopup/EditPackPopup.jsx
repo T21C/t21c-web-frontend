@@ -12,6 +12,7 @@ import './EditPackPopup.css';
 import toast from 'react-hot-toast';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import api from '@/utils/api';
+import { routes } from '@/api/routes';
 import { getCdnErrorMessage } from '@/utils/uploadErrors';
 import { LevelPackViewModes } from '@/utils/constants';
 
@@ -72,7 +73,7 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
       const formData = new FormData();
       formData.append('icon', file);
 
-      const response = await api.post(`/v2/database/levels/packs/${pack.id}/icon`, formData, {
+      const response = await api.post(routes.database.levels.packs.icon(pack.id), formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -97,7 +98,7 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
   const handleIconRemove = async () => {
     setUploadingIcon(true);
     try {
-      await api.delete(`/v2/database/levels/packs/${pack.id}/icon`);
+      await api.delete(routes.database.levels.packs.icon(pack.id));
 
       // Update form data to remove icon URL
       setFormData(prev => ({
@@ -125,7 +126,7 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
 
     setLoading(true);
     try {
-      const response = await api.put(`/v2/database/levels/packs/${pack.id}`, formData);
+      const response = await api.put(routes.database.levels.packs.byId(pack.id), formData);
       onUpdate?.(response.data);
       onClose();
       toast.success(t('packPopups.editPack.success.updated'));
@@ -140,7 +141,7 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
   const handleDelete = async () => {
     setLoading(true);
     try {
-      await api.delete(`/v2/database/levels/packs/${pack.id}`);
+      await api.delete(routes.database.levels.packs.byId(pack.id));
       onClose();
       // Call the onDelete callback if provided (for navigation, etc.)
       onDelete?.();
@@ -164,7 +165,7 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
       setTransferOwnershipLoading(true);
       try {
         const encodedSearch = encodeURIComponent(transferOwnershipSearch);
-        const response = await api.get(`/v2/database/levels/packs/users/search/${encodedSearch}`);
+        const response = await api.get(routes.database.levels.packs.usersSearch(encodedSearch));
         setTransferOwnershipUsers(response.data || []);
       } catch (error) {
         console.error('Error searching users:', error);
@@ -186,7 +187,7 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
 
     setTransferringOwnership(true);
     try {
-      const response = await api.put(`/v2/database/levels/packs/${pack.id}/transfer-ownership`, {
+      const response = await api.put(routes.database.levels.packs.transferOwnership(pack.id), {
         newOwnerId: selectedNewOwner.id
       });
       

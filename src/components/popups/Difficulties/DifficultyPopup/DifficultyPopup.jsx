@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #DifficultyPopup #difficultyPopup #popups #difficulties #difficulty
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -150,7 +151,7 @@ const DifficultyPopup = ({
     
     setIsLoadingDirectives(true);
     try {
-      const response = await api.get(`${import.meta.env.VITE_DIFFICULTIES}/${difficulty.id}/directives`, {
+      const response = await api.get(`${routes.database.difficulties.root()}/${difficulty.id}/directives`, {
         headers: {
           'X-Super-Admin-Password': verifiedPassword
         }
@@ -193,7 +194,7 @@ const DifficultyPopup = ({
 
   const loadAvailableRoles = async () => {
     try {
-      const response = await api.get(`${import.meta.env.VITE_DIFFICULTIES}/roles`, {
+      const response = await api.get(`${routes.database.difficulties.root()}/roles`, {
         headers: {
           'X-Super-Admin-Password': verifiedPassword
         }
@@ -207,7 +208,7 @@ const DifficultyPopup = ({
 
   const loadAvailableChannels = async () => {
     try {
-      const response = await api.get(`${import.meta.env.VITE_DIFFICULTIES}/channels`, {
+      const response = await api.get(`${routes.database.difficulties.root()}/channels`, {
         headers: {
           'X-Super-Admin-Password': verifiedPassword
         }
@@ -224,7 +225,7 @@ const DifficultyPopup = ({
         };
         
         await api.post(
-          `${import.meta.env.VITE_DIFFICULTIES}/channels`,
+          `${routes.database.difficulties.root()}/channels`,
           defaultChannel,
           {
             headers: {
@@ -234,7 +235,7 @@ const DifficultyPopup = ({
         );
         
         // Refresh channels after creating default
-        const updatedResponse = await api.get(`${import.meta.env.VITE_DIFFICULTIES}/channels`, {
+        const updatedResponse = await api.get(`${routes.database.difficulties.root()}/channels`, {
           headers: {
             'X-Super-Admin-Password': verifiedPassword
           }
@@ -346,7 +347,7 @@ const DifficultyPopup = ({
       
       // Send to API
       const response = await api.post(
-        `${import.meta.env.VITE_DIFFICULTIES}/${difficulty.id}/directives`,
+        `${routes.database.difficulties.root()}/${difficulty.id}/directives`,
         { directives: formattedDirectives },
         {
           headers: {
@@ -372,7 +373,7 @@ const DifficultyPopup = ({
 
     try {
       await api.post(
-        `${import.meta.env.VITE_DIFFICULTIES}/${difficulty.id}/directives`,
+        `${routes.database.difficulties.root()}/${difficulty.id}/directives`,
         { directives: pendingDirectives },
         {
           headers: {
@@ -479,7 +480,7 @@ const DifficultyPopup = ({
       if (channelModalSource === 'edit' && selectedChannel) {
         // Update existing channel
         await api.put(
-          `${import.meta.env.VITE_DIFFICULTIES}/channels/${selectedChannel.id}`,
+          `${routes.database.difficulties.root()}/channels/${selectedChannel.id}`,
           {
             label: channelLabel,
             webhookUrl: channelWebhookUrl
@@ -494,7 +495,7 @@ const DifficultyPopup = ({
       } else {
         // Create new channel
         await api.post(
-          `${import.meta.env.VITE_DIFFICULTIES}/channels`,
+          `${routes.database.difficulties.root()}/channels`,
           {
             label: channelLabel,
             webhookUrl: channelWebhookUrl
@@ -536,7 +537,7 @@ const DifficultyPopup = ({
       if (roleModalSource === 'edit' && selectedRole) {
           // Update existing role
         await api.put(
-          `${import.meta.env.VITE_DIFFICULTIES}/roles/${selectedRole.id}`,
+          `${routes.database.difficulties.root()}/roles/${selectedRole.id}`,
           {
             roleId: selectedRole.roleId,
             label: selectedRole.label,
@@ -552,7 +553,7 @@ const DifficultyPopup = ({
       } else {
         // Create new role
         await api.post(
-          `${import.meta.env.VITE_DIFFICULTIES}/roles`,
+          `${routes.database.difficulties.root()}/roles`,
           {
             roleId: selectedRole.roleId,
             label: selectedRole.label,
@@ -590,7 +591,7 @@ const DifficultyPopup = ({
     
     try {
       await api.delete(
-        `${import.meta.env.VITE_DIFFICULTIES}/channels/${selectedChannel.id}`,
+        `${routes.database.difficulties.root()}/channels/${selectedChannel.id}`,
         {
           headers: {
             'X-Super-Admin-Password': verifiedPassword
@@ -617,7 +618,7 @@ const DifficultyPopup = ({
     
     try {
       await api.delete(
-        `${import.meta.env.VITE_DIFFICULTIES}/roles/${selectedRole.id}`,
+        `${routes.database.difficulties.root()}/roles/${selectedRole.id}`,
         {
           headers: {
             'X-Super-Admin-Password': verifiedPassword
@@ -923,7 +924,7 @@ const DifficultyPopup = ({
           }
 
           const response = await api[isCreating ? 'post' : 'put'](
-            `${import.meta.env.VITE_DIFFICULTIES}${isCreating ? '' : `/${difficulty.id}`}`,
+            `${routes.database.difficulties.root()}${isCreating ? '' : `/${difficulty.id}`}`,
             formData,
             {
               headers: {

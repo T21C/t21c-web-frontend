@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";
@@ -215,13 +216,13 @@ export function useProfileHeaderSurfaceEditor({
     async (layerId) => {
       const params = { layerId };
       if (variant === "player") {
-        const res = await api.delete(`${import.meta.env.VITE_PROFILE}/player/header-surface-image`, {
+        const res = await api.delete(`${routes.auth.profile.root()}/player/header-surface-image`, {
           params,
         });
         return res.data;
       }
       const res = await api.delete(
-        `${import.meta.env.VITE_CREATORS_V3}/${creatorId}/header-surface-image`,
+        `${routes.creatorsV3.root()}/${creatorId}/header-surface-image`,
         { params },
       );
       return res.data;
@@ -236,14 +237,14 @@ export function useProfileHeaderSurfaceEditor({
       form.append("layerId", layerId);
       if (variant === "player") {
         const res = await api.post(
-          `${import.meta.env.VITE_PROFILE}/player/header-surface-image`,
+          `${routes.auth.profile.root()}/player/header-surface-image`,
           form,
           { headers: { "Content-Type": "multipart/form-data" } },
         );
         return res.data;
       }
       const res = await api.post(
-        `${import.meta.env.VITE_CREATORS_V3}/${creatorId}/header-surface-image`,
+        `${routes.creatorsV3.root()}/${creatorId}/header-surface-image`,
         form,
         { headers: { "Content-Type": "multipart/form-data" } },
       );
@@ -260,13 +261,13 @@ export function useProfileHeaderSurfaceEditor({
 
       let styleData;
       if (variant === "player") {
-        const { data } = await api.patch(`${import.meta.env.VITE_PROFILE}/player/header-surface-style`, {
+        const { data } = await api.patch(`${routes.auth.profile.root()}/player/header-surface-style`, {
           style: payload,
         });
         styleData = data;
       } else {
         const { data } = await api.patch(
-          `${import.meta.env.VITE_CREATORS_V3}/${creatorId}/header-surface-style`,
+          `${routes.creatorsV3.root()}/${creatorId}/header-surface-style`,
           { style: payload },
         );
         styleData = data;

@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";
 import { CopyIcon } from "@/components/common/icons";
 import api from "@/utils/api";
+import { routes } from '@/api/routes';
 import {
   billingHistoryProductDetail,
   billingRefundPostErrorToast,
@@ -42,7 +43,7 @@ export function BillingHistorySection({ events, onAfterRefund }) {
     async (ev) => {
       const toastId = toast.loading(t("billing.history.refundLoadingPreview"));
       try {
-        const { data } = await api.get("/v3/billing/stripe/refund-preview", {
+        const { data } = await api.get(routes.billingV3.stripe.refundPreview(), {
           params: { billingEventId: ev.id },
         });
         toast.dismiss(toastId);
@@ -69,7 +70,7 @@ export function BillingHistorySection({ events, onAfterRefund }) {
     if (!refundModal?.ev?.id) return;
     setRefundSubmitting(true);
     try {
-      await api.post("/v3/billing/stripe/refund", { billingEventId: refundModal.ev.id });
+      await api.post(routes.billingV3.stripe.refund(), { billingEventId: refundModal.ev.id });
       toast.success(t("billing.history.refundSuccess"));
       setRefundModal(null);
       if (typeof onAfterRefund === "function") {

@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #ArtistSelectorPopup #artistSelectorPopup #popups #artists #artistSelector
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -90,7 +91,7 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
 
       setIsSearching(true);
       try {
-        const response = await api.get(`${import.meta.env.VITE_API_URL}/v2/database/artists`, {
+        const response = await api.get(routes.database.artists.root(), {
           params: {
             search: searchQuery,
             page: 1,
@@ -118,7 +119,7 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
     if (!artistId) return null;
 
     try {
-      const response = await api.get(`${import.meta.env.VITE_API_URL}/v2/database/artists/${artistId}`);
+      const response = await api.get(routes.database.artists.byId(artistId));
       const artist = response.data;
       
       if (!artist) {

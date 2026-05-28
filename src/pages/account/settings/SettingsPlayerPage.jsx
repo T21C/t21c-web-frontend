@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #SettingsPlayerPage #settingsPlayerPage #account #settings
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
@@ -75,7 +76,7 @@ const SettingsPlayerPage = () => {
       setError(false);
     }
     try {
-      const response = await api.get(`${import.meta.env.VITE_PLAYERS_V3}/${playerId}/profile`);
+      const response = await api.get(`${routes.playersV3.root()}/${playerId}/profile`);
       setPlayerData(response.data);
       if (!background) setError(false);
     } catch (e) {
@@ -242,14 +243,14 @@ const SettingsPlayerPage = () => {
     setNicknameFieldError("");
     setNicknameSaving(true);
     try {
-      await api.put(`${import.meta.env.VITE_PROFILE}/me`, {
+      await api.put(`${routes.auth.profile.root()}/me`, {
         nickname: trimmed,
         country: playerData?.country ?? "",
       });
       await fetchUser();
       if (playerId != null && Number.isFinite(playerId)) {
         const response = await api.get(
-          `${import.meta.env.VITE_PLAYERS_V3}/${playerId}/profile`,
+          `${routes.playersV3.root()}/${playerId}/profile`,
         );
         const fetched = response.data;
         const aliases = mergeOptimisticAliasRows(
@@ -285,7 +286,7 @@ const SettingsPlayerPage = () => {
     setStellarVariantSaving(true);
     try {
       const { data } = await api.patch(
-        `${import.meta.env.VITE_PLAYERS_V3}/me/tuf-stellar-icon-variant`,
+        `${routes.playersV3.root()}/me/tuf-stellar-icon-variant`,
         { variant: v },
       );
       const next = normalizeTufStellarIconVariant(data?.tufStellarIconVariant ?? v);
@@ -311,7 +312,7 @@ const SettingsPlayerPage = () => {
     setBioSaving(true);
     const toastId = toast.loading(t("loading.saving", { ns: "common" }));
     try {
-      const { data } = await api.patch(`${import.meta.env.VITE_PLAYERS_V3}/me/bio`, {
+      const { data } = await api.patch(`${routes.playersV3.root()}/me/bio`, {
         bio: trimmed.length ? trimmed : null,
       });
       const nextBio = typeof data?.bio === "string" ? data.bio : "";

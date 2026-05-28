@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './usermanagementpopup.css';
 import api from '@/utils/api';
+import { routes } from '@/api/routes';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { UserAvatar } from '@/components/layout';
@@ -14,7 +15,7 @@ import { CloseButton } from '@/components/common/buttons';
 const ROLE_CONFIGS = {
   rater: {
     title: 'Raters',
-    endpoint: '/v2/admin/users',
+    endpoint: routes.admin.users.root(),
     roles: [
       { flag: permissionFlags.RATER, name: 'rater', label: 'userManagement.roles.rater' },
       { flag: permissionFlags.SUPER_ADMIN, name: 'superadmin', label: 'userManagement.roles.superadmin' }
@@ -22,7 +23,7 @@ const ROLE_CONFIGS = {
   },
   curator: {
     title: 'Curators',
-    endpoint: '/v2/admin/users/curators',
+    endpoint: routes.admin.users.curators(),
     roles: [
       { flag: permissionFlags.CURATOR, name: 'curator', label: 'userManagement.roles.curator' },
       { flag: permissionFlags.HEAD_CURATOR, name: 'headcurator', label: 'userManagement.roles.headCurator' }
@@ -148,7 +149,7 @@ const UserEntry = ({ user, onUpdate, onDelete, superAdminPassword, onError, role
           role: targetRole.name
         };
 
-        await api.post(`/v2/admin/users/grant-role`, payload, {
+        await api.post(routes.admin.users.grantRole(), payload, {
           headers: hasFlag(currentUser, permissionFlags.SUPER_ADMIN) ? {
             'X-Super-Admin-Password': superAdminPassword
           } : {}
@@ -166,7 +167,7 @@ const UserEntry = ({ user, onUpdate, onDelete, superAdminPassword, onError, role
           role: currentRole.name
         };
 
-        await api.post(`/v2/admin/users/revoke-role`, payload, {
+        await api.post(routes.admin.users.revokeRole(), payload, {
           headers: hasFlag(currentUser, permissionFlags.SUPER_ADMIN) ? {
             'X-Super-Admin-Password': superAdminPassword
           } : {}
@@ -215,7 +216,7 @@ const UserEntry = ({ user, onUpdate, onDelete, superAdminPassword, onError, role
         userId: user.id,
         role: currentRole.name
       };
-      await api.post(`/v2/admin/users/revoke-role`, payload, {
+      await api.post(routes.admin.users.revokeRole(), payload, {
         headers: hasFlag(currentUser, permissionFlags.SUPER_ADMIN) ? {
           'X-Super-Admin-Password': superAdminPassword
         } : {}
@@ -251,7 +252,7 @@ const UserEntry = ({ user, onUpdate, onDelete, superAdminPassword, onError, role
     try {
       setIsLoading(true);
       await api.post(
-        `/v2/admin/users/${user.id}/schedule-account-deletion`,
+        routes.admin.users.scheduleAccountDeletion(user.id),
         {
           deletionIncludeCreator: Boolean(scheduleIncludeCreator && user.creatorId),
         },
@@ -516,7 +517,7 @@ const UserManagementPopup = ({ onClose, currentUser, initialMode = 'rater' }) =>
         username: newUserUsername,
         role: roleConfig.roles[0].name // Start with the lowest role
       };
-      await api.post('/v2/admin/users/grant-role', payload, {
+      await api.post(routes.admin.users.grantRole(), payload, {
         headers: hasFlag(currentUser, permissionFlags.SUPER_ADMIN) ? {
           'X-Super-Admin-Password': superAdminPassword
         } : {}

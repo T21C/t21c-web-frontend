@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #CurationPreviewPage #curationPreviewPage #curationPreview
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
@@ -27,12 +28,12 @@ const CurationPreviewPage = () => {
     const fetchCuration = async () => {
       try {
         setIsLoading(true);
-        const response = await api.get(`${import.meta.env.VITE_CURATIONS}/${id}`);
+        const response = await api.get(`${routes.admin.curations.root()}/${id}`);
         setCuration(response.data);
         
         // Fetch level details if not included
         if (response.data.levelId) {
-          const levelResponse = await api.get(`${import.meta.env.VITE_LEVELS}/${response.data.levelId}`);
+          const levelResponse = await api.get(`${routes.database.levels.root()}/${response.data.levelId}`);
           setLevel(levelResponse.data);
         }
       } catch (error) {

@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #EditProfilePage #editProfilePage #account #settings
 import React, { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -235,7 +236,7 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
       const formData = new FormData();
       formData.append('avatar', file);
       try {
-        const response = await api.post(`${import.meta.env.VITE_PROFILE}/avatar`, formData, {
+        const response = await api.post(`${routes.auth.profile.root()}/avatar`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -310,7 +311,7 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
 
     setIsUploadingAvatar(true);
     try {
-      await api.delete(`${import.meta.env.VITE_PROFILE}/avatar`);
+      await api.delete(`${routes.auth.profile.root()}/avatar`);
 
       setAvatarPreview(null);
       setUser({ ...user, avatarUrl: null, avatarId: null, avatarIsGif: false });
@@ -398,7 +399,7 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
       if (!user?.playerId) {
         profilePayload.nickname = formData.nickname;
       }
-      await api.put(`${import.meta.env.VITE_PROFILE}/me`, profilePayload);
+      await api.put(`${routes.auth.profile.root()}/me`, profilePayload);
 
       // Clear rate limit state on successful update
       setUsernameRateLimit(null);
@@ -450,7 +451,7 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
     if (!window.confirm(t('editProfile.dangerZone.confirmDelete'))) return;
     setIsDeletionBusy(true);
     try {
-      await api.post(`${import.meta.env.VITE_PROFILE}/me/delete`, {
+      await api.post(`${routes.auth.profile.root()}/me/delete`, {
         deletionIncludeCreator:
           Boolean(user?.creatorId) && Boolean(deletionIncludeCreator),
       });
@@ -470,7 +471,7 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
     if (!window.confirm(t('editProfile.dangerZone.confirmCancel'))) return;
     setIsDeletionBusy(true);
     try {
-      await api.post(`${import.meta.env.VITE_PROFILE}/me/delete/cancel`);
+      await api.post(`${routes.auth.profile.root()}/me/delete/cancel`);
       await fetchUser(true);
       toast.success(t('editProfile.dangerZone.successCanceled'));
     } catch (err) {

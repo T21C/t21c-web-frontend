@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #utils #index
 import twemoji from '@discordapp/twemoji';
 import api from "@/utils/api";
@@ -13,7 +14,7 @@ export function formatNumber(num, digits = 2) {
 
 async function getVideoDetails(url) {
   if (!url) return null;
-  return await api.get(`${import.meta.env.VITE_API_URL}/v2/media/video-details/${encodeURIComponent(url)}`).then(res => res.data);
+  return await api.get(routes.media.videoDetails(url)).then(res => res.data);
 }
 
 

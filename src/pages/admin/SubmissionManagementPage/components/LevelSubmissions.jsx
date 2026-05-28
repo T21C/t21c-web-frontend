@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #LevelSubmissions #levelSubmissions #admin #submissionManagement — Submission Management
 import { getVideoDetails } from "@/utils";
 import placeholder from "@/assets/placeholder/1.png"
@@ -121,7 +122,7 @@ const LevelSubmissions = () => {
       setAnimatingCards({});
       setDisabledButtons({});
       
-      const response = await api.get(`${import.meta.env.VITE_SUBMISSION_API}/levels/pending`);
+      const response = await api.get(`${routes.admin.submissions.root()}/levels/pending`);
       const data = await response.data;
       
       setSubmissions(data);
@@ -185,7 +186,7 @@ const LevelSubmissions = () => {
 
       // Wait for animation to complete before removing
       setTimeout(async () => {
-        const response = await api.put(`${import.meta.env.VITE_SUBMISSION_API}/levels/${submissionId}/${action}`);
+        const response = await api.put(`${routes.admin.submissions.root()}/levels/${submissionId}/${action}`);
         
         if (response.status === 200) {
           setSubmissions(prev => prev.filter(sub => sub.id !== submissionId));
@@ -247,7 +248,7 @@ const LevelSubmissions = () => {
         }
       };
 
-      await api.put(`${import.meta.env.VITE_SUBMISSION_API}/levels/${submission.id}/profiles`, updateData);
+      await api.put(`${routes.admin.submissions.root()}/levels/${submission.id}/profiles`, updateData);
 
       // Now proceed with approval
       await handleSubmission(submission.id, 'approve');
@@ -375,7 +376,7 @@ const LevelSubmissions = () => {
   const handleAddCreator = async (submissionId, role) => {
     try {
       const response = await api.post(
-        `${import.meta.env.VITE_SUBMISSION_API}/levels/${submissionId}/creator-requests`,
+        `${routes.admin.submissions.root()}/levels/${submissionId}/creator-requests`,
         { role }
       );
       
@@ -416,7 +417,7 @@ const LevelSubmissions = () => {
         // Delete all artist requests before setting the song (discard artist state)
         const deletePromises = submission.artistRequests.map(artistRequest => 
           api.delete(
-            `${import.meta.env.VITE_SUBMISSION_API}/levels/${selectedSongSubmission.id}/artist-requests/${artistRequest.id}`
+            `${routes.admin.submissions.root()}/levels/${selectedSongSubmission.id}/artist-requests/${artistRequest.id}`
           ).catch(err => {
             // Log error but continue - if deletion fails, we'll refresh after song is set anyway
             console.error('Error deleting artist request:', err);
@@ -440,7 +441,7 @@ const LevelSubmissions = () => {
       }
       
       const response = await api.put(
-        `${import.meta.env.VITE_SUBMISSION_API}/levels/${selectedSongSubmission.id}/song`,
+        `${routes.admin.submissions.root()}/levels/${selectedSongSubmission.id}/song`,
         requestData
       );
       
@@ -530,7 +531,7 @@ const LevelSubmissions = () => {
       if (!submission?.songId && !submission?.songRequest) {
         try {
           await api.post(
-            `${import.meta.env.VITE_SUBMISSION_API}/levels/${selectedArtistSubmission.id}/song-requests`
+            `${routes.admin.submissions.root()}/levels/${selectedArtistSubmission.id}/song-requests`
           );
         } catch (error) {
           // If song request creation fails, log but continue with artist update
@@ -542,7 +543,7 @@ const LevelSubmissions = () => {
       const artistRequestId = selectedArtistRequest?.id || artistData.artistRequestId || null;
       
       const response = await api.put(
-        `${import.meta.env.VITE_SUBMISSION_API}/levels/${selectedArtistSubmission.id}/artist`,
+        `${routes.admin.submissions.root()}/levels/${selectedArtistSubmission.id}/artist`,
         {
           artistId: artistData.artistId || null,
           artistRequestId: artistRequestId,
@@ -590,7 +591,7 @@ const LevelSubmissions = () => {
     if (newSuffix !== currentSuffix) {
       try {
         const response = await api.put(
-          `${import.meta.env.VITE_SUBMISSION_API}/levels/${submissionId}/suffix`,
+          `${routes.admin.submissions.root()}/levels/${submissionId}/suffix`,
           { suffix: newSuffix }
         );
         setSubmissions(prevSubmissions => prevSubmissions.map(s => 
@@ -632,7 +633,7 @@ const LevelSubmissions = () => {
   const handleRemoveCreator = async (submissionId, requestId) => {
     try {
       const response = await api.delete(
-        `${import.meta.env.VITE_SUBMISSION_API}/levels/${submissionId}/creator-requests/${requestId}`
+        `${routes.admin.submissions.root()}/levels/${submissionId}/creator-requests/${requestId}`
       );
       
       // Update the submissions list with the new data
@@ -676,7 +677,7 @@ const LevelSubmissions = () => {
     if (submission.songId) {
       try {
         const response = await api.get(
-          `${import.meta.env.VITE_API_URL}/v2/database/songs/${submission.songId}`
+          routes.database.songs.byId(submission.songId)
         );
         setSelectedSongForManagement({
           ...submission,
@@ -702,7 +703,7 @@ const LevelSubmissions = () => {
     if (submission.artistId) {
       try {
         const response = await api.get(
-          `${import.meta.env.VITE_API_URL}/v2/database/artists/${submission.artistId}`
+          routes.database.artists.byId(submission.artistId)
         );
         setSelectedArtistForManagement({
           ...submission,
@@ -741,7 +742,7 @@ const LevelSubmissions = () => {
   const handleAddSongRequest = async (submissionId) => {
     try {
       const response = await api.post(
-        `${import.meta.env.VITE_SUBMISSION_API}/levels/${submissionId}/song-requests`
+        `${routes.admin.submissions.root()}/levels/${submissionId}/song-requests`
       );
       
       setSubmissions(prevSubmissions => prevSubmissions.map(submission => {
@@ -771,7 +772,7 @@ const LevelSubmissions = () => {
   const handleAddArtistRequest = async (submissionId) => {
     try {
       const response = await api.post(
-        `${import.meta.env.VITE_SUBMISSION_API}/levels/${submissionId}/artist-requests`
+        `${routes.admin.submissions.root()}/levels/${submissionId}/artist-requests`
       );
       
       setSubmissions(prevSubmissions => prevSubmissions.map(submission => {
@@ -802,7 +803,7 @@ const LevelSubmissions = () => {
   const handleRemoveArtistRequest = async (submissionId, artistRequestId) => {
     try {
       const response = await api.delete(
-        `${import.meta.env.VITE_SUBMISSION_API}/levels/${submissionId}/artist-requests/${artistRequestId}`
+        `${routes.admin.submissions.root()}/levels/${submissionId}/artist-requests/${artistRequestId}`
       );
       
       setSubmissions(prevSubmissions => prevSubmissions.map(submission => {

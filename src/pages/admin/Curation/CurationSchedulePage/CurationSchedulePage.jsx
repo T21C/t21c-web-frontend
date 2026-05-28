@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #CurationSchedulePage #curationSchedulePage #admin #curation #curationSchedule — Curation Schedule Management
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from "@/contexts/AuthContext";
@@ -65,7 +66,7 @@ const CurationSchedulePage = () => {
     try {
       setIsLoading(true);
       // Ensure the date is sent in UTC format
-      const response = await api.get(`${import.meta.env.VITE_CURATIONS}/schedules`, {
+      const response = await api.get(`${routes.admin.curations.root()}/schedules`, {
         params: {
           weekStart: currentMonday.toISOString().split('T')[0]
         }
@@ -93,7 +94,7 @@ const CurationSchedulePage = () => {
   const handleCurationSelect = async (curation) => {
     try {
       // Ensure the date is sent in UTC format
-      await api.post(`${import.meta.env.VITE_CURATIONS}/schedules`, {
+      await api.post(`${routes.admin.curations.root()}/schedules`, {
         curationId: curation.id,
         weekStart: currentMonday.toISOString().split('T')[0],
         listType: selectionMode.type // 'primary' or 'secondary'
@@ -110,7 +111,7 @@ const CurationSchedulePage = () => {
 
   const handleRemoveCuration = async (scheduleId) => {
     try {
-      await api.delete(`${import.meta.env.VITE_CURATIONS}/schedules/${scheduleId}`);
+      await api.delete(`${routes.admin.curations.root()}/schedules/${scheduleId}`);
       toast.success(t('curationSchedule.notifications.removed'));
       fetchSchedules();
     } catch (error) {

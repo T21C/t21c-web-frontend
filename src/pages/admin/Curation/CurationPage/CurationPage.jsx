@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #CurationPage #curationPage #admin #curation — Curation Management
 import React, { useState, useEffect, useRef } from 'react';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
@@ -77,7 +78,7 @@ const CurationPage = () => {
       // Create new cancel token
       verifyPasswordCancelTokenRef.current = api.CancelToken.source();
 
-      await api.head(`${import.meta.env.VITE_VERIFY_PASSWORD}?origin=curation`, {
+      await api.head(`${routes.admin.verifyPassword()}?origin=curation`, {
         headers: {
           'X-Super-Admin-Password': password
         },
@@ -147,7 +148,7 @@ const CurationPage = () => {
       // Create new cancel token
       levelSelectCancelTokenRef.current = api.CancelToken.source();
 
-      const response = await api.post(`${import.meta.env.VITE_CURATIONS}`, {
+      const response = await api.post(`${routes.admin.curations.root()}`, {
         levelId: selection.levelId
       }, {
         cancelToken: levelSelectCancelTokenRef.current.token
@@ -221,7 +222,7 @@ const CurationPage = () => {
       // Create new cancel token
       deleteCurationCancelTokenRef.current = api.CancelToken.source();
 
-      await api.delete(`${import.meta.env.VITE_CURATIONS}/${curation.id}`, {
+      await api.delete(`${routes.admin.curations.root()}/${curation.id}`, {
         cancelToken: deleteCurationCancelTokenRef.current.token
       });
       setLevelInstances((prev) =>
@@ -281,7 +282,7 @@ const CurationPage = () => {
       });
       if (facetQuery) params.append('facetQuery', facetQuery);
 
-      const response = await api.get(`${import.meta.env.VITE_CURATIONS}?${params}`, {
+      const response = await api.get(`${routes.admin.curations.root()}?${params}`, {
         cancelToken: fetchCurationsCancelTokenRef.current.token
       });
       setLevelInstances(response.data.levelInstances ?? []);

@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #ProfileSelector #profileSelector #selectors
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
@@ -55,13 +56,13 @@ export const ProfileSelector = ({
   const getEndpoint = () => {
     switch (type) {
       case 'player':
-        return import.meta.env.VITE_PLAYERS_V3;
+        return routes.playersV3.root();
       case 'charter':
-        return import.meta.env.VITE_CREATORS;
+        return routes.database.creators.root();
       case 'vfx':
-        return import.meta.env.VITE_CREATORS;
+        return routes.database.creators.root();
       case 'team':
-        return import.meta.env.VITE_TEAMS;
+        return routes.database.creators.teams.root();
       case 'user':
         return null;
       default:
@@ -91,7 +92,7 @@ export const ProfileSelector = ({
       setLoading(true);
       try {
         if (type === 'user') {
-          const response = await api.get('/v3/billing/recipient-search', {
+          const response = await api.get(routes.billingV3.recipientSearch(), {
             params: { q: trimmed },
           });
           const rows = Array.isArray(response.data?.users) ? response.data.users : [];

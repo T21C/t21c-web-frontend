@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #TypeManagementPopup #typeManagementPopup #popups #curations #typeManagement
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -167,7 +168,7 @@ const TypeManagementPopup = ({
 
     try {
       setIsLoading(true);
-      await api.delete(`${import.meta.env.VITE_CURATIONS}/types/${type.id}`, {
+      await api.delete(`${routes.admin.curations.root()}/types/${type.id}`, {
         headers: {
           'X-Super-Admin-Password': verifiedPassword
         }
@@ -262,14 +263,14 @@ const TypeManagementPopup = ({
 
       let response;
       if (mode === POPUP_MODES.CREATE) {
-        response = await api.post(`${import.meta.env.VITE_CURATIONS}/types`, submitData, {
+        response = await api.post(`${routes.admin.curations.root()}/types`, submitData, {
           headers: {
             'X-Super-Admin-Password': verifiedPassword
           }
         });
         toast.success(t('typeManagementPopup.notifications.created'));
       } else {
-        response = await api.put(`${import.meta.env.VITE_CURATIONS}/types/${selectedType.id}`, submitData, {
+        response = await api.put(`${routes.admin.curations.root()}/types/${selectedType.id}`, submitData, {
           headers: {
             'X-Super-Admin-Password': verifiedPassword
           }
@@ -283,7 +284,7 @@ const TypeManagementPopup = ({
         formDataIcon.append('icon', formData.icon);
         
         const iconResponse = await api.post(
-          `${import.meta.env.VITE_CURATIONS}/types/${response.data.id}/icon`,
+          `${routes.admin.curations.root()}/types/${response.data.id}/icon`,
           formDataIcon,
           {
             headers: {
@@ -333,7 +334,7 @@ const TypeManagementPopup = ({
       });
 
       await api.put(
-        `${import.meta.env.VITE_CURATIONS}/types/sort-orders`,
+        `${routes.admin.curations.root()}/types/sort-orders`,
         {
           sortOrders: updatedItems.map((item) => ({
             id: item.id,
@@ -393,7 +394,7 @@ const TypeManagementPopup = ({
       );
 
       await api.put(
-        `${import.meta.env.VITE_CURATIONS}/types/group-sort-orders`,
+        `${routes.admin.curations.root()}/types/group-sort-orders`,
         { groups: groupUpdates },
         {
           headers: {

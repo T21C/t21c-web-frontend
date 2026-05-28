@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #CreatorProfilePage #creatorProfilePage #account #creatorProfile
 import "../accountProfilePage.css";
 import "./creatorprofilepage.css";
@@ -63,7 +64,7 @@ const CreatorProfilePage = () => {
     let mounted = true;
     setProfileLoading(true);
     setProfileError(null);
-    const url = `${import.meta.env.VITE_CREATORS_V3}/${creatorId}/profile`;
+    const url = `${routes.creatorsV3.root()}/${creatorId}/profile`;
     api.get(url)
       .then((res) => {
         if (!mounted) return;

@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #SongSelectorPopup #songSelectorPopup #popups #songs #songSelector
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -167,7 +168,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
           }
         }
 
-        const response = await api.get(`${import.meta.env.VITE_API_URL}/v2/database/songs`, {
+        const response = await api.get(routes.database.songs.root(), {
           params
         });
         
@@ -191,7 +192,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
     if (!songId) return null;
 
     try {
-      const response = await api.get(`${import.meta.env.VITE_API_URL}/v2/database/songs/${songId}`);
+      const response = await api.get(routes.database.songs.byId(songId));
       const song = response.data;
       
       if (!song) {
@@ -228,7 +229,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
       if (artistIds.length > 0) {
         setIsLoadingDetails(true);
         try {
-          const response = await api.get(`${import.meta.env.VITE_API_URL}/v2/database/songs/${song.id}`);
+          const response = await api.get(routes.database.songs.byId(song.id));
           const songData = response.data;
           const songArtistIds = new Set(songData?.credits?.map(credit => credit.artist?.id).filter(Boolean) || []);
           const hasAllArtists = artistIds.every(id => songArtistIds.has(id));

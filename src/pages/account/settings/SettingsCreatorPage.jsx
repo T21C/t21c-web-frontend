@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #SettingsCreatorPage #settingsCreatorPage #account #settings
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -90,7 +91,7 @@ const SettingsCreatorPage = () => {
     let mounted = true;
     setLoading(true);
     setError(null);
-    const url = `${import.meta.env.VITE_CREATORS_V3}/${creatorId}/profile`;
+    const url = `${routes.creatorsV3.root()}/${creatorId}/profile`;
     api
       .get(url)
       .then((res) => {
@@ -292,7 +293,7 @@ const SettingsCreatorPage = () => {
     setDisplayNameSaving(true);
     const toastId = toast.loading(t("loading.saving", { ns: "common" }));
     try {
-      const { data } = await api.patch(`${import.meta.env.VITE_CREATORS_V3}/me/name`, {
+      const { data } = await api.patch(`${routes.creatorsV3.root()}/me/name`, {
         name: trimmed,
       });
       const nextName = typeof data?.name === "string" ? data.name : trimmed;
@@ -360,7 +361,7 @@ const SettingsCreatorPage = () => {
     setAliasSaving(true);
     const toastId = toast.loading(t("loading.saving", { ns: "common" }));
     try {
-      const { data } = await api.patch(`${import.meta.env.VITE_CREATORS_V3}/me/aliases`, {
+      const { data } = await api.patch(`${routes.creatorsV3.root()}/me/aliases`, {
         aliases: aliasList,
       });
       const next = Array.isArray(data?.aliases) ? data.aliases : [];
@@ -385,7 +386,7 @@ const SettingsCreatorPage = () => {
     setStellarVariantSaving(true);
     try {
       const { data } = await api.patch(
-        `${import.meta.env.VITE_CREATORS_V3}/${creatorId}/tuf-stellar-icon-variant`,
+        `${routes.creatorsV3.root()}/${creatorId}/tuf-stellar-icon-variant`,
         { variant: v },
       );
       const next = normalizeTufStellarIconVariant(data?.tufStellarIconVariant ?? v);
@@ -411,7 +412,7 @@ const SettingsCreatorPage = () => {
     setBioSaving(true);
     const toastId = toast.loading(t("loading.saving", { ns: "common" }));
     try {
-      const { data } = await api.patch(`${import.meta.env.VITE_CREATORS_V3}/me/bio`, {
+      const { data } = await api.patch(`${routes.creatorsV3.root()}/me/bio`, {
         bio: trimmed.length ? trimmed : null,
       });
       const nextBio = typeof data?.bio === "string" ? data.bio : "";
@@ -438,7 +439,7 @@ const SettingsCreatorPage = () => {
     setUploadConditionsSaving(true);
     const toastId = toast.loading(t("loading.saving", { ns: "common" }));
     try {
-      const { data } = await api.patch(`${import.meta.env.VITE_CREATORS_V3}/me/upload-conditions`, {
+      const { data } = await api.patch(`${routes.creatorsV3.root()}/me/upload-conditions`, {
         uploadConditions: trimmed.length ? trimmed : null,
       });
       const next =
@@ -473,7 +474,7 @@ const SettingsCreatorPage = () => {
     setVerificationSaving(true);
     const toastId = toast.loading(t("loading.saving", { ns: "common" }));
     try {
-      const { data } = await api.patch(`${import.meta.env.VITE_CREATORS_V3}/me/verification-status`, {
+      const { data } = await api.patch(`${routes.creatorsV3.root()}/me/verification-status`, {
         verificationStatus: verificationDraft,
       });
       const next = typeof data?.verificationStatus === "string" ? data.verificationStatus : verificationDraft;

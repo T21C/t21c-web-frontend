@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #PassesTab #passesTab #admin #announcement — Announcements
 import '../announcementpage.css';
 import api from '@/utils/api';
@@ -22,7 +23,7 @@ const PassesTab = ({ passes, selectedPasses, onCheckboxChange, isLoading, onRemo
       onRemove(pass.id);
       
       // Silently remove from announcement list without announcing
-      await api.post(`${import.meta.env.VITE_WEBHOOK}/silent-remove/passes`, {
+      await api.post(`${routes.webhook.root()}/silent-remove/passes`, {
         passIds: [pass.id]
       });
     } catch (err) {

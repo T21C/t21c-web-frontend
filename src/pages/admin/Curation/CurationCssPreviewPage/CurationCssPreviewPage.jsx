@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #CurationCssPreviewPage #curationCssPreviewPage #admin #curation #curationCssPreview — CSS Preview - TUF
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
@@ -74,8 +75,8 @@ const CurationCssPreviewPage = () => {
         
         // Fetch level data first
         try {
-          const levelResponse = await api.get(`${import.meta.env.VITE_LEVELS}/${levelId}`);
-          const passesResponse = await api.get(`${import.meta.env.VITE_PASSES}/level/${levelId}`);
+          const levelResponse = await api.get(`${routes.database.levels.root()}/${levelId}`);
+          const passesResponse = await api.get(`${routes.database.passes.root()}/level/${levelId}`);
           
           setLevelData({
             ...levelResponse.data,
@@ -143,7 +144,7 @@ const CurationCssPreviewPage = () => {
         customColor: curation.customColor ?? null
       };
 
-      const response = await api.put(`${import.meta.env.VITE_CURATIONS}/${curation.id}`, payload);
+      const response = await api.put(`${routes.admin.curations.root()}/${curation.id}`, payload);
 
       const updatedCuration = response.data?.curation ?? { ...curation, customCSS };
       setCuration(updatedCuration);

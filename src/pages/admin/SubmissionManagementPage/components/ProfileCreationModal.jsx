@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #ProfileCreationModal #profileCreationModal #admin #submissionManagement — Submission Management
 import { useState } from 'react';
 import PropTypes from 'prop-types';
@@ -25,11 +26,10 @@ export const ProfileCreationModal = ({ profiles, onComplete, onCancel }) => {
   const getEndpoint = (type) => {
     switch (type) {
       case 'charter':
-        return `${import.meta.env.VITE_API}/players`;
       case 'vfx':
-        return `${import.meta.env.VITE_API}/players`;
+        return routes.database.players.create();
       case 'team':
-        return `${import.meta.env.VITE_API}/teams`;
+        return routes.database.creators.teams.root();
       default:
         return null;
     }

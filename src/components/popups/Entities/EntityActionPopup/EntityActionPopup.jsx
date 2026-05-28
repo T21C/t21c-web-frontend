@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
+import { routes } from '@/api/routes';
 import { getCdnErrorMessage } from '@/utils/uploadErrors';
 import './entityActionPopup.css';
 import { toast } from 'react-hot-toast';
@@ -162,7 +163,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
           sort: 'NAME_ASC'
         });
 
-        const endpoint = type === 'song' ? '/v2/database/songs' : '/v2/database/artists';
+        const endpoint = type === 'song' ? routes.database.songs.root() : routes.database.artists.root();
         const response = await api.get(`${endpoint}?${params}`, {
           cancelToken: cancelToken.token
         });
@@ -221,7 +222,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
           sort: 'NAME_ASC'
         });
 
-        const response = await api.get(`/v2/database/artists?${params}`, {
+        const response = await api.get(`${routes.database.artists.root()}?${params}`, {
           cancelToken: cancelToken.token
         });
 
@@ -270,7 +271,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
           sort: 'NAME_ASC'
         });
 
-        const endpoint = type === 'song' ? '/v2/database/songs' : '/v2/database/artists';
+        const endpoint = type === 'song' ? routes.database.songs.root() : routes.database.artists.root();
         const response = await api.get(`${endpoint}?${params}`, {
           cancelToken: cancelToken1.token
         });
@@ -305,7 +306,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
           sort: 'NAME_ASC'
         });
 
-        const endpoint = type === 'song' ? '/v2/database/songs' : '/v2/database/artists';
+        const endpoint = type === 'song' ? routes.database.songs.root() : routes.database.artists.root();
         const response = await api.get(`${endpoint}?${params}`, {
           cancelToken: cancelToken2.token
         });
@@ -363,7 +364,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
           sort: 'NAME_ASC'
         });
 
-        const response = await api.get(`/v2/database/artists?${params}`, {
+        const response = await api.get(`${routes.database.artists.root()}?${params}`, {
           cancelToken: cancelToken.token
         });
 
@@ -423,7 +424,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
     setSuccess('');
 
     try {
-      const endpoint = type === 'song' ? `/v2/database/songs/${entityId}` : `/v2/database/artists/${entityId}`;
+      const endpoint = type === 'song' ? routes.database.songs.byId(entityId) : routes.database.artists.byId(entityId);
       await api.put(endpoint, {
         name: name.trim(),
         verificationState
@@ -485,8 +486,8 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
 
     try {
       const endpoint = type === 'song' 
-        ? `/v2/database/songs/${entityId}/merge`
-        : `/v2/database/artists/${entityId}/merge`;
+        ? routes.database.songs.merge(entityId)
+        : routes.database.artists.merge(entityId);
       await api.post(endpoint, {
         targetId: currentMergeTarget.id
       });
@@ -522,8 +523,8 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
 
     try {
       const endpoint = type === 'song' 
-        ? `/v2/database/songs/${entityId}/split`
-        : `/v2/database/artists/${entityId}/split`;
+        ? routes.database.songs.split(entityId)
+        : routes.database.artists.split(entityId);
       
       const response = await api.post(endpoint, {
         targetId1: splitEntity1.id,
@@ -560,13 +561,13 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
     }
 
     try {
-      await api.post(`/v2/database/songs/${entityId}/credits`, {
+      await api.post(routes.database.songs.credits(entityId), {
         artistId: parseInt(newCreditArtistId),
         role: newCreditRole.trim() || null
       });
 
       toast.success(tEntity('messages.creditAdded'));
-      const response = await api.get(`/v2/database/songs/${entityId}`);
+      const response = await api.get(routes.database.songs.byId(entityId));
       setCredits(response.data.credits || []);
       setNewCreditArtistId('');
       setNewCreditRole('');
@@ -579,7 +580,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
 
   const handleRemoveCredit = async (creditId) => {
     try {
-      await api.delete(`/v2/database/songs/${entityId}/credits/${creditId}`);
+      await api.delete(routes.database.songs.credit(entityId, creditId));
       toast.success(tEntity('messages.creditRemoved'));
       setCredits(credits.filter(c => c.id !== creditId));
     } catch (error) {
@@ -596,7 +597,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
     }
 
     try {
-      const response = await api.post(`/v2/database/artists/${entityId}/relations`, {
+      const response = await api.post(routes.database.artists.relations(entityId), {
         relatedArtistId: parseInt(newRelationArtistId)
       });
 
@@ -635,7 +636,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
     setRelations(updatedRelations);
     
     try {
-      await api.delete(`/v2/database/artists/${entityId}/relations/${relatedArtistId}`);
+      await api.delete(routes.database.artists.relation(entityId, relatedArtistId));
       
       // Update the artist prop locally
       const updatedArtist = {
@@ -669,7 +670,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
       formData.append('avatar', avatarFile);
 
       const response = await api.post(
-        `/v2/database/artists/${entityId}/avatar`,
+        routes.database.artists.avatar(entityId),
         formData,
         {
           headers: {
@@ -696,7 +697,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
   const handleDeleteAvatar = async () => {
     if (type !== 'artist') return;
     try {
-      await api.delete(`/v2/database/artists/${entityId}/avatar`);
+      await api.delete(routes.database.artists.avatar(entityId));
       setAvatarUrl('');
       setAvatarPreview(null);
       toast.success(tEntity('messages.avatarDeleted'));
@@ -784,8 +785,8 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
       });
 
       const endpoint = type === 'song'
-        ? `/v2/database/songs/${entityId}/evidences/upload`
-        : `/v2/database/artists/${entityId}/evidences/upload`;
+        ? routes.database.songs.evidencesUpload(entityId)
+        : routes.database.artists.evidencesUpload(entityId);
       await api.post(endpoint, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
@@ -794,7 +795,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
 
       toast.success(tEntity('messages.evidenceAdded'));
       // Refresh entity data
-      const fetchEndpoint = type === 'song' ? `/v2/database/songs/${entityId}` : `/v2/database/artists/${entityId}`;
+      const fetchEndpoint = type === 'song' ? routes.database.songs.byId(entityId) : routes.database.artists.byId(entityId);
       const response = await api.get(fetchEndpoint);
       setEvidences(response.data.evidences || []);
       // Clear preview files
@@ -823,8 +824,8 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
 
     try {
       const endpoint = type === 'song'
-        ? `/v2/database/songs/${entityId}/evidences`
-        : `/v2/database/artists/${entityId}/evidences`;
+        ? routes.database.songs.evidences(entityId)
+        : routes.database.artists.evidences(entityId);
       const response = await api.post(endpoint, { 
         link: newEvidenceLink.trim()
       });
@@ -855,8 +856,8 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
 
     try {
       const endpoint = type === 'song'
-        ? `/v2/database/songs/${entityId}/evidences/${evidenceId}`
-        : `/v2/database/artists/${entityId}/evidences/${evidenceId}`;
+        ? routes.database.songs.evidence(entityId, evidenceId)
+        : routes.database.artists.evidence(entityId, evidenceId);
       const response = await api.put(endpoint, { 
         link: editingEvidenceLink.trim()
       });
@@ -883,8 +884,8 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
   const handleSaveEntityExtraInfo = async () => {
     try {
       const endpoint = type === 'song'
-        ? `/v2/database/songs/${entityId}`
-        : `/v2/database/artists/${entityId}`;
+        ? routes.database.songs.byId(entityId)
+        : routes.database.artists.byId(entityId);
       const response = await api.put(endpoint, { 
         extraInfo: editingEntityExtraInfo.trim() || null
       });
@@ -908,8 +909,8 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
 
     try {
       const endpoint = type === 'song'
-        ? `/v2/database/songs/${entityId}/evidences/${evidenceId}`
-        : `/v2/database/artists/${entityId}/evidences/${evidenceId}`;
+        ? routes.database.songs.evidence(entityId, evidenceId)
+        : routes.database.artists.evidence(entityId, evidenceId);
       await api.delete(endpoint);
       toast.success(tEntity('messages.evidenceDeleted'));
       setEvidences(evidences.filter(e => e.id !== evidenceId));

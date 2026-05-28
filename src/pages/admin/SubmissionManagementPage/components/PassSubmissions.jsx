@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #PassSubmissions #passSubmissions #admin #submissionManagement — Submission Management
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -43,7 +44,7 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
 
 
   const getPlayerData = async (playerId) => {
-    const response = await api.get(`${import.meta.env.VITE_PLAYERS_V3}/${playerId}`);
+    const response = await api.get(`${routes.playersV3.root()}/${playerId}`);
     return response.data;
   };
 
@@ -86,7 +87,7 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
       setAnimatingCards({});
       setDisabledButtons({});
       
-      const response = await api.get(`${import.meta.env.VITE_SUBMISSION_API}/passes/pending`);
+      const response = await api.get(`${routes.admin.submissions.root()}/passes/pending`);
       const data = await response.data;
       
       // Initialize player search values with passer names
@@ -114,7 +115,7 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
         return;
       }
 
-      const response = await api.put(`${import.meta.env.VITE_SUBMISSION_API}/passes/${submissionId}/assign-player`, 
+      const response = await api.put(`${routes.admin.submissions.root()}/passes/${submissionId}/assign-player`, 
         { playerId: player.id },
         { headers: { 'Content-Type': 'application/json' } }
       );
@@ -172,7 +173,7 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
       }));
 
       setTimeout(async () => {
-        const response = await api.put(`${import.meta.env.VITE_SUBMISSION_API}/passes/${submissionId}/${action}`);
+        const response = await api.put(`${routes.admin.submissions.root()}/passes/${submissionId}/${action}`);
         
         if (response.status === 200) {
           setSubmissions(prev => prev.filter(sub => sub.id !== submissionId));
@@ -267,7 +268,7 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
   const handleAutoAllow = async () => {
     try {
       setIsAutoAllowing(true);
-      const response = await api.post(`${import.meta.env.VITE_SUBMISSION_API}/auto-approve/passes`);
+      const response = await api.post(`${routes.admin.submissions.root()}/auto-approve/passes`);
       
       if (response.data.results) {
         const successCount = response.data.results.filter(r => r.success).length || 0;

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
+import { routes } from '@/api/routes';
 import { toast } from 'react-hot-toast';
 
 
@@ -37,7 +38,7 @@ export const LevelSuffixTab = ({
       setIsLoadingData(true);
       try {
         // Fetch levels for this song
-        const response = await api.get(`/v2/database/songs/${song.id}/levels/info`);
+        const response = await api.get(routes.database.songs.levelsInfo(song.id));
 
         const levels = response.data.levels || [];
         setLevelCount(levels.length);
@@ -78,7 +79,7 @@ export const LevelSuffixTab = ({
     try {
       const normalizedSuffix = newSuffix.trim() || null;
       
-      await api.post(`/v2/database/songs/${song.id}/levels/suffix`, {
+      await api.post(routes.database.songs.levelsSuffix(song.id), {
         suffix: normalizedSuffix
       });
 
@@ -106,7 +107,7 @@ export const LevelSuffixTab = ({
     try {
       const normalizedSuffix = emptySuffix.trim() || null;
       
-      await api.post(`/v2/database/songs/${song.id}/levels/suffix`, {
+      await api.post(routes.database.songs.levelsSuffix(song.id), {
         suffix: normalizedSuffix
       });
 

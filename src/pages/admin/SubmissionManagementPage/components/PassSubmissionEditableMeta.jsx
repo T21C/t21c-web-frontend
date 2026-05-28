@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #PassSubmissionEditableMeta #passSubmissionEditableMeta #admin #submissionManagement — Submission Management
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -130,7 +131,7 @@ export default function PassSubmissionEditableMeta({
   const patch = useCallback(
     async (body) => {
       const res = await api.put(
-        `${import.meta.env.VITE_SUBMISSION_API}/passes/${submission.id}`,
+        `${routes.admin.submissions.root()}/passes/${submission.id}`,
         body,
         { headers: { 'Content-Type': 'application/json' } },
       );
@@ -157,7 +158,7 @@ export default function PassSubmissionEditableMeta({
     }
     levelFetchCancelTokenRef.current = api.CancelToken.source();
     api
-      .get(`${import.meta.env.VITE_LEVELS}/${idStr}`, {
+      .get(`${routes.database.levels.root()}/${idStr}`, {
         cancelToken: levelFetchCancelTokenRef.current.token,
       })
       .then((response) => {
@@ -192,7 +193,7 @@ export default function PassSubmissionEditableMeta({
     }
     searchCancelTokenRef.current = api.CancelToken.source();
     try {
-      const response = await api.get(`${import.meta.env.VITE_LEVELS}`, {
+      const response = await api.get(`${routes.database.levels.root()}`, {
         params: { query, limit: 50, offset: 0 },
         cancelToken: searchCancelTokenRef.current.token,
       });

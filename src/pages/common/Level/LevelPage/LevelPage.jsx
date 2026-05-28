@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #LevelPage #levelPage #level — Levels - TUF
 
 import "./levelpage.css";
@@ -171,7 +172,7 @@ const LevelPage = ({
 
       try {
         const response = await runner(({ signal }) =>
-          api.get(`${import.meta.env.VITE_LEVELS}`, { params, signal })
+          api.get(`${routes.database.levels.root()}`, { params, signal })
         );
         const newLevels = response.data.results;
         setTotalLevels(response.data.total);
@@ -197,7 +198,7 @@ const LevelPage = ({
     const fetchLevelById = async () => {
       try {
         const response = await runner(({ signal }) =>
-          api.get(`${import.meta.env.VITE_LEVELS}/byId/${query.slice(1)}`, { signal })
+          api.get(`${routes.database.levels.root()}/byId/${query.slice(1)}`, { signal })
         );
         if (response.data) {
           setLevelsData([response.data]);

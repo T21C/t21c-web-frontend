@@ -1,6 +1,7 @@
 // tuf-search: #AuthContext #authContext
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import api from '@/utils/api';
+import { routes } from '@/api/routes';
 import { useNotification } from './NotificationContext';
 import { useNavigate } from 'react-router-dom';
 import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
@@ -73,7 +74,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const bootAuth = async () => {
       try {
-        const response = await api.get('/v2/auth/profile/me');
+        const response = await api.get(routes.auth.profile.me());
         setUser(response.data.user);
         if (hasAnyFlag(response.data.user, [permissionFlags.SUPER_ADMIN, permissionFlags.RATER])) {
           restartNotifications(true);
@@ -81,8 +82,8 @@ export const AuthProvider = ({ children }) => {
       } catch (err) {
         if (err.response?.status === 401) {
           try {
-            await api.post('/v2/auth/refresh');
-            const retry = await api.get('/v2/auth/profile/me');
+            await api.post(routes.auth.refresh());
+            const retry = await api.get(routes.auth.profile.me());
             setUser(retry.data.user);
             if (hasAnyFlag(retry.data.user, [permissionFlags.SUPER_ADMIN, permissionFlags.RATER])) {
               restartNotifications(true);
@@ -105,7 +106,7 @@ export const AuthProvider = ({ children }) => {
     if (!user) return;
     
     try {
-      const response = await api.get('/v2/auth/profile/me');
+      const response = await api.get(routes.auth.profile.me());
       const currentVerificationState = hasFlag(response.data.user, permissionFlags.EMAIL_VERIFIED);
       // If verification state has changed, update user
       if (currentVerificationState !== hasFlag(user, permissionFlags.EMAIL_VERIFIED)) {
@@ -136,7 +137,7 @@ export const AuthProvider = ({ children }) => {
       if (!silent) {
         setLoading(true);
       }
-      const response = await api.get('/v2/auth/profile/me');
+      const response = await api.get(routes.auth.profile.me());
       const newUser = response.data.user;
       setUser(newUser);
       if (hasAnyFlag(newUser, [permissionFlags.SUPER_ADMIN, permissionFlags.RATER])) {
@@ -176,7 +177,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (emailOrUsername, password, captchaToken = null) => { 
     try {
-      const response = await api.post('/v2/auth/login', {
+      const response = await api.post(routes.auth.login(), {
         emailOrUsername,
         password,
         captchaToken
@@ -191,7 +192,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (userData) => {
     try {
-      const response = await api.post('/v2/auth/register', userData);
+      const response = await api.post(routes.auth.register(), userData);
       if (response.data.user) {
         setUser(response.data.user);
         if (hasAnyFlag(response.data.user, [permissionFlags.SUPER_ADMIN, permissionFlags.RATER])) {
@@ -215,7 +216,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await api.post('/v2/auth/logout');
+      await api.post(routes.auth.logout());
     } catch (e) {
       // ignore
     }
@@ -226,7 +227,7 @@ export const AuthProvider = ({ children }) => {
 
   const loginWithDiscord = async () => {
     try {
-      const response = await api.get('/v2/auth/login/discord');
+      const response = await api.get(routes.auth.loginDiscord());
       window.location.href = response.data.url;
     } catch (error) {
       console.error('Discord login error:', error);
@@ -245,7 +246,7 @@ export const AuthProvider = ({ children }) => {
         throw new Error('Unsupported provider');
       }
 
-      const response = await api.get(`/v2/auth/oauth/link/${provider}`);
+      const response = await api.get(routes.auth.oauthLink(provider));
 
       // Open Discord auth in a new window
       window.location.href = response.data.url;
@@ -258,7 +259,7 @@ export const AuthProvider = ({ children }) => {
 
   const unlinkProvider = async (provider) => {
     try {
-      await api.post(`/v2/auth/oauth/unlink/${provider}`);
+      await api.post(routes.auth.oauthUnlink(provider));
       await fetchUser();
     } catch (error) {
       console.error('Provider unlinking error:', error);
@@ -268,7 +269,7 @@ export const AuthProvider = ({ children }) => {
 
   const updateProfile = async (data) => {
     try {
-      const response = await api.put('/v2/auth/profile/me', data);
+      const response = await api.put(routes.auth.profile.me(), data);
       setUser(response.data.user);
       return response.data;
     } catch (error) {
@@ -278,7 +279,7 @@ export const AuthProvider = ({ children }) => {
 
   const changePassword = async (data) => {
     try {
-      const response = await api.put('/v2/auth/profile/password', data);
+      const response = await api.put(routes.auth.profilePassword(), data);
       await fetchUser();
       return response.data;
     } catch (error) {
@@ -288,7 +289,7 @@ export const AuthProvider = ({ children }) => {
 
   const verifyEmail = async (token) => {
     try {
-      const response = await api.post('/v2/auth/verify/email', { token });
+      const response = await api.post(routes.auth.verify.email(), { token });
       // Force refresh: default fetchUser throttles within 1s and would leave stale isEmailVerified
       const profileUser = await fetchUser(true, { silent: true });
       window.dispatchEvent(new Event('auth:permission-changed'));
@@ -303,7 +304,7 @@ export const AuthProvider = ({ children }) => {
 
   const resendVerification = async () => {
     try {
-      const response = await api.post('/v2/auth/verify/resend');
+      const response = await api.post(routes.auth.verify.resend());
       return response.data;
     } catch (error) {
       throw new Error(error.response?.data?.message || 'Failed to resend verification email');
@@ -312,7 +313,7 @@ export const AuthProvider = ({ children }) => {
 
   const changeEmail = async (email) => {
     try {
-      const response = await api.post('/v2/auth/verify/change-email', { email });
+      const response = await api.post(routes.auth.verify.changeEmail(), { email });
       if (response.data?.user) {
         setUser((prev) =>
           prev
@@ -335,7 +336,7 @@ export const AuthProvider = ({ children }) => {
 
   const requestPasswordReset = async (email, captchaToken = null) => {
     try {
-      const response = await api.post('/v2/auth/forgot-password/request', {
+      const response = await api.post(routes.auth.forgotPassword.request(), {
         email,
         captchaToken
       });
@@ -347,7 +348,7 @@ export const AuthProvider = ({ children }) => {
 
   const resetPassword = async (token, password) => {
     try {
-      const response = await api.post('/v2/auth/forgot-password/reset', {
+      const response = await api.post(routes.auth.forgotPassword.reset(), {
         token,
         password
       });

@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -68,7 +69,7 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
 
   const refreshPlayerAliasesFromServer = useCallback(async () => {
     if (!player?.id) return player?.playerAliases ?? [];
-    const response = await api.get(`${import.meta.env.VITE_PLAYERS}/${player.id}`);
+    const response = await api.get(`${routes.database.players.root()}/${player.id}`);
     const rows = response.data?.playerAliases ?? [];
     setAliases(rows.map((a) => a.name));
     return rows;
@@ -161,12 +162,12 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
     clearMessages();
     try {
       if (playerName.trim() !== (player.name || '').trim()) {
-        await api.put(`${import.meta.env.VITE_PLAYERS}/${player.id}/name`, {
+        await api.put(`${routes.database.players.root()}/${player.id}/name`, {
           name: playerName.trim(),
         });
       }
       if (selectedCountry !== player.country) {
-        await api.put(`${import.meta.env.VITE_PLAYERS}/${player.id}/country`, {
+        await api.put(`${routes.database.players.root()}/${player.id}/country`, {
           country: selectedCountry,
         });
       }
@@ -174,7 +175,7 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
         JSON.stringify([...aliases]) !== JSON.stringify([...originalAliases]);
       let playerAliases = player.playerAliases;
       if (aliasesChanged) {
-        const response = await api.put(`${import.meta.env.VITE_PLAYERS}/${player.id}/aliases`, {
+        const response = await api.put(`${routes.database.players.root()}/${player.id}/aliases`, {
           aliases,
         });
         playerAliases = response.data?.playerAliases ?? [];
@@ -216,7 +217,7 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
     setIsLoading(true);
     clearMessages();
     try {
-      await api.patch(`${import.meta.env.VITE_PLAYERS}/${player.id}/ban`, {
+      await api.patch(`${routes.database.players.root()}/${player.id}/ban`, {
         isBanned: pendingBanState,
       });
       setIsBanned(pendingBanState);
@@ -239,7 +240,7 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
     setIsLoading(true);
     clearMessages();
     try {
-      await api.patch(`${import.meta.env.VITE_PLAYERS}/${player.id}/pause-submissions`, {
+      await api.patch(`${routes.database.players.root()}/${player.id}/pause-submissions`, {
         isSubmissionsPaused: pendingPauseState,
       });
       setIsSubmissionsPaused(pendingPauseState);
@@ -262,7 +263,7 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
     setIsLoading(true);
     clearMessages();
     try {
-      await api.patch(`/v2/admin/users/${player.id}/rating-ban`, {
+      await api.patch(routes.admin.users.ratingBan(player.id), {
         isRatingBanned: pendingRatingBanState,
       });
       setIsRatingBanned(pendingRatingBanState);
@@ -281,7 +282,7 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
     setIsLoading(true);
     clearMessages();
     try {
-      await api.post(`${import.meta.env.VITE_PLAYERS}/${player.id}/merge`, {
+      await api.post(`${routes.database.players.root()}/${player.id}/merge`, {
         targetPlayerId: parseInt(targetPlayerId, 10),
       });
       toast.success(tt('player.success.merge'));

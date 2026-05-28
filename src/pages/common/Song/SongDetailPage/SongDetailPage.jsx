@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #SongDetailPage #songDetailPage #song #songDetail — Song - TUF
 import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
@@ -35,7 +36,7 @@ const SongDetailPage = () => {
   const fetchSong = async () => {
     try {
       setLoading(true);
-      const response = await api.get(`${import.meta.env.VITE_API_URL}/v2/database/songs/${id}`);
+      const response = await api.get(routes.database.songs.byId(id));
       setSong(response.data);
     } catch (error) {
       console.error('Error fetching song:', error);

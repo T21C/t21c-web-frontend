@@ -1,3 +1,6 @@
+import { routes } from '@/api/routes';
+import { API_BASE } from '@/config/env';
+import { apiUrl } from '@/config/urls';
 // tuf-search: #HealthCheckPage #healthCheckPage #healthCheck
 import React, { useState, useEffect, useMemo } from 'react';
 
@@ -136,7 +139,6 @@ function HealthDashboardBody({ healthData, t, getStatusColor, getStatusIcon }) {
 }
 
 function HealthLatencySection({ t }) {
-  const apiBase = import.meta.env.VITE_API_URL || '';
   const [windowKey, setWindowKey] = useState('24h');
   const [payload, setPayload] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -157,15 +159,13 @@ function HealthLatencySection({ t }) {
   );
 
   useEffect(() => {
-    if (!apiBase) return undefined;
-
     let cancelled = false;
 
     async function load() {
       setLoading(true);
       setLatError(null);
       try {
-        const url = `${apiBase.replace(/\/$/, '')}/v2/health/latency?window=${encodeURIComponent(windowKey)}`;
+        const url = `${apiUrl(routes.health.latency())}?window=${encodeURIComponent(windowKey)}`;
         const response = await fetch(url);
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}`);
@@ -192,7 +192,7 @@ function HealthLatencySection({ t }) {
     return () => {
       cancelled = true;
     };
-  }, [apiBase, windowKey, t]);
+  }, [windowKey, t]);
 
   const chartRows = useMemo(() => {
     const pts = payload?.points;
@@ -205,7 +205,7 @@ function HealthLatencySection({ t }) {
     }));
   }, [payload]);
 
-  if (!apiBase) {
+  if (!API_BASE) {
     return null;
   }
 

@@ -1,3 +1,5 @@
+import { routes } from '@/api/routes';
+import { apiUrl } from '@/config/urls';
 // tuf-search: #HomePage #homePage #homePageAprils
 import { useEffect, useState, useCallback } from "react";
 import "./homepage.css"
@@ -328,7 +330,7 @@ const WheelPopup = ({ items, seed, onSelect, onClose, handleTimeout }) => {
 
   useEffect(() => {
     const img = new Image();
-    img.src = `${import.meta.env.VITE_API_URL}${import.meta.env.VITE_WHEEL_IMAGE}/${seed}`;
+    img.src = apiUrl(routes.media.wheelImage(seed));
     img.onload = () => setImageLoaded(true);
   }, [seed]);
 
@@ -421,7 +423,7 @@ const WheelPopup = ({ items, seed, onSelect, onClose, handleTimeout }) => {
         requestData.publicComments = selectedGimmickReason;
       }
 
-      const response = await api.put(`${import.meta.env.VITE_LEVELS}/${selectedItem.id}/difficulty`, requestData);
+      const response = await api.put(`${routes.database.levels.root()}/${selectedItem.id}/difficulty`, requestData);
       
       handleTimeout(response.data.timeout);
       
@@ -473,7 +475,7 @@ const WheelPopup = ({ items, seed, onSelect, onClose, handleTimeout }) => {
                 }}
               >
                 <img 
-                  src={`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_WHEEL_IMAGE}/${seed}`}
+                  src={apiUrl(routes.media.wheelImage(seed))}
                   alt="Roulette Wheel"
                 />
               </div>
@@ -653,8 +655,8 @@ const HomePage = () => {
   const preloadWheelData = async () => {
     try {
       const [statsResponse, levelsResponse] = await Promise.all([
-        api.get(import.meta.env.VITE_STATISTICS),
-        api.get(`${import.meta.env.VITE_LEVELS}/all-levels`)
+        api.get(routes.database.statistics()),
+        api.get(`${routes.database.levels.root()}/all-levels`)
       ]);
       setStats(statsResponse.data);
       

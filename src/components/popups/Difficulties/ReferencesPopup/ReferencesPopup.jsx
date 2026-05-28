@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #ReferencesPopup #referencesPopup #popups #difficulties #references
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -306,7 +307,7 @@ const ReferencesPopup = ({ onClose }) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await api.get(`${import.meta.env.VITE_API_URL}/v2/database/references`);
+      const response = await api.get(routes.database.references());
       setReferences(response.data);
     } catch (err) {
       console.error('Error fetching references:', err);
@@ -454,7 +455,7 @@ const ReferencesPopup = ({ onClose }) => {
         const newReferences = parseReferenceString(editedLevelIds[diffId]);
         
         // Send bulk update request
-        await api.put(`${import.meta.env.VITE_API_URL}/v2/database/references/bulk/${diffId}`, {
+        await api.put(routes.database.referencesBulk(diffId), {
           references: newReferences
         });
 

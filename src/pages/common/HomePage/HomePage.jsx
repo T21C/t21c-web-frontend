@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #HomePage #homePage #home — Home
 import { useEffect, useState, useCallback } from "react";
 import "./homepage.css"
@@ -48,7 +49,7 @@ const HomePage = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await api.get(import.meta.env.VITE_STATISTICS);
+        const response = await api.get(routes.database.statistics());
         setStats(response.data);
       } catch (error) {
         console.error('Failed to fetch statistics:', error);

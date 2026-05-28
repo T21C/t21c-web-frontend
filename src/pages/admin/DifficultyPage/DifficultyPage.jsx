@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #DifficultyPage #difficultyPage #admin #difficulty — Manage Difficulties
 import React, { useState, useEffect, useMemo } from 'react';
 import toast from 'react-hot-toast';
@@ -83,7 +84,7 @@ const DifficultyPage = () => {
   const fetchTags = async () => {
     setTagsLoading(true);
     try {
-      const response = await api.get(`${import.meta.env.VITE_DIFFICULTIES}/tags`, {
+      const response = await api.get(`${routes.database.difficulties.root()}/tags`, {
         headers: {
           'X-Super-Admin-Password': verifiedPassword,
         },
@@ -114,7 +115,7 @@ const DifficultyPage = () => {
             formData.append('icon', 'null');
           }
 
-          const response = await api.post(`${import.meta.env.VITE_DIFFICULTIES}/tags`, formData, {
+          const response = await api.post(`${routes.database.difficulties.root()}/tags`, formData, {
             headers: {
               'X-Super-Admin-Password': verifiedPassword,
               'Content-Type': 'multipart/form-data',
@@ -157,7 +158,7 @@ const DifficultyPage = () => {
           }
 
           const response = await api.put(
-            `${import.meta.env.VITE_DIFFICULTIES}/tags/${editingTag.id}`,
+            `${routes.database.difficulties.root()}/tags/${editingTag.id}`,
             formData,
             {
               headers: {
@@ -234,7 +235,7 @@ const DifficultyPage = () => {
     try {
       await toast.promise(
         (async () => {
-          await api.delete(`${import.meta.env.VITE_DIFFICULTIES}/tags/${tagId}`, {
+          await api.delete(`${routes.database.difficulties.root()}/tags/${tagId}`, {
             headers: {
               'X-Super-Admin-Password': verifiedPassword,
             },
@@ -305,7 +306,7 @@ const DifficultyPage = () => {
       await toast.promise(
         (async () => {
           if (type === 'create') {
-            const response = await api.post(`${import.meta.env.VITE_DIFFICULTIES}`, {
+            const response = await api.post(`${routes.database.difficulties.root()}`, {
               ...data,
               superAdminPassword: verifiedPassword,
             });
@@ -314,7 +315,7 @@ const DifficultyPage = () => {
             return 'create';
           }
           if (type === 'edit') {
-            const response = await api.put(`${import.meta.env.VITE_DIFFICULTIES}/${data.id}`, {
+            const response = await api.put(`${routes.database.difficulties.root()}/${data.id}`, {
               ...data,
               superAdminPassword: verifiedPassword,
             });
@@ -326,7 +327,7 @@ const DifficultyPage = () => {
           }
           if (type === 'delete') {
             await api.delete(
-              `${import.meta.env.VITE_DIFFICULTIES}/${data.id}?fallbackId=${difficulties.find((d) => d.name === data.fallbackDiff)?.id}`,
+              `${routes.database.difficulties.root()}/${data.id}?fallbackId=${difficulties.find((d) => d.name === data.fallbackDiff)?.id}`,
               { data: { superAdminPassword: verifiedPassword } },
             );
             setDifficulties((prev) => prev.filter((diff) => diff.id !== data.id));
@@ -409,7 +410,7 @@ const DifficultyPage = () => {
 
   const handleCreateDifficulty = async () => {
     try {
-      const response = await api.post(`${import.meta.env.VITE_DIFFICULTIES}`, {
+      const response = await api.post(`${routes.database.difficulties.root()}`, {
         ...newDifficulty,
         superAdminPassword: verifiedPassword
       });
@@ -421,7 +422,7 @@ const DifficultyPage = () => {
 
   const handleUpdateDifficulty = async (difficulty) => {
     try {
-      const response = await api.put(`${import.meta.env.VITE_DIFFICULTIES}/${difficulty.id}`, {
+      const response = await api.put(`${routes.database.difficulties.root()}/${difficulty.id}`, {
         ...difficulty,
         superAdminPassword: verifiedPassword
       });
@@ -433,7 +434,7 @@ const DifficultyPage = () => {
 
   const verifyPassword = async (password) => {
     try {
-      await api.head(`${import.meta.env.VITE_VERIFY_PASSWORD}?origin=difficulty`, {
+      await api.head(`${routes.admin.verifyPassword()}?origin=difficulty`, {
         headers: {
           'X-Super-Admin-Password': password
         }
@@ -509,7 +510,7 @@ const DifficultyPage = () => {
     try {
       await toast.promise(
         api.put(
-          `${import.meta.env.VITE_DIFFICULTIES}/sort-orders`,
+          `${routes.database.difficulties.root()}/sort-orders`,
           {
             sortOrders: updatedItems.map((item) => ({
               id: item.id,
@@ -580,7 +581,7 @@ const DifficultyPage = () => {
       
       await toast.promise(
         api.put(
-          `${import.meta.env.VITE_DIFFICULTIES}/tags/sort-orders`,
+          `${routes.database.difficulties.root()}/tags/sort-orders`,
           {
             sortOrders: updatedItems.map((item) => ({
               id: item.id,
@@ -635,7 +636,7 @@ const DifficultyPage = () => {
       
       await toast.promise(
         api.put(
-          `${import.meta.env.VITE_DIFFICULTIES}/tags/group-sort-orders`,
+          `${routes.database.difficulties.root()}/tags/group-sort-orders`,
           { groups: groupUpdates },
           {
             headers: {
@@ -691,7 +692,7 @@ const DifficultyPage = () => {
       await toast.promise(
         (async () => {
           await api.delete(
-            `${import.meta.env.VITE_DIFFICULTIES}/${diffId}?fallbackId=${difficulties.find((d) => d.name === fallbackDiff)?.id}`,
+            `${routes.database.difficulties.root()}/${diffId}?fallbackId=${difficulties.find((d) => d.name === fallbackDiff)?.id}`,
             { data: { superAdminPassword: verifiedPassword } },
           );
           setDifficulties((prev) => prev.filter((diff) => diff.id !== diffId));

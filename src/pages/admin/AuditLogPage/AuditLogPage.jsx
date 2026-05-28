@@ -4,6 +4,7 @@ import axios from "axios";
 
 import { MetaTags } from "@/components/common/display";
 import api from "@/utils/api";
+import { routes } from '@/api/routes';
 import { useDebouncedRequest } from "@/hooks/useDebouncedRequest";
 import "./auditlogpage.css";
 import "@/pages/common/sort.css";
@@ -108,7 +109,7 @@ const AuditLogPage = () => {
       );
       try {
         const res = await runRequest(({ signal }) =>
-          api.get("/v2/admin/audit-log", { params, signal })
+          api.get(routes.admin.auditLog(), { params, signal })
         );
         setLogs(res.data.logs);
         setTotal(res.data.total);

@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #CurationSelectionPopup #curationSelectionPopup #popups #curations #curationSelection
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -75,7 +76,7 @@ const CurationSelectionPopup = ({
         excludeIds.forEach((id) => params.append('excludeIds', id));
       }
 
-      const response = await api.get(`${import.meta.env.VITE_CURATIONS}?${params}`);
+      const response = await api.get(`${routes.admin.curations.root()}?${params}`);
 
       setCurations(response.data.curations);
       setTotalPages(Math.ceil(response.data.total / LIMIT) || 0);

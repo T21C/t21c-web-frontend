@@ -2,53 +2,27 @@
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {
-  // API Base URLs
+  // Per-environment hosts (see .env — active VITE_*_URL vars point at one of these)
   readonly VITE_DEV_API_URL: string;
   readonly VITE_STAGING_API_URL: string;
   readonly VITE_PROD_API_URL: string;
   readonly VITE_OWN_DEV_URL: string;
   readonly VITE_OWN_STAGING_URL: string;
   readonly VITE_OWN_PROD_URL: string;
+  readonly VITE_DEV_CDN_URL: string;
+  readonly VITE_PROD_CDN_URL: string;
+
+  // Active base URLs for the current build (set in .env / .env.production)
   readonly VITE_API_URL: string;
   readonly VITE_OWN_URL: string;
-
-  // Authentication Endpoints
-  readonly VITE_VERIFY_PASSWORD: string;
-  readonly VITE_AUTH_ME: string;
-
-  // Core Endpoints
-  readonly VITE_LEVELS: string;
-  readonly VITE_PASSES: string;
-  readonly VITE_PLAYERS: string;
-  readonly VITE_PLAYERS_V3: string;
-  readonly VITE_LEADERBOARD_V3: string;
-  readonly VITE_CREATORS: string;
-  readonly VITE_CREATORS_V3: string;
-  readonly VITE_CREATORS_LEADERBOARD_V3: string;
-  readonly VITE_TEAMS: string;
-
-  // Rating Related
-  readonly VITE_RATING_API: string;
-  readonly VITE_SUBMISSION_API: string;
-  readonly VITE_RATERS: string;
-
-  // Statistics and Other Endpoints
-  readonly VITE_STATISTICS: string;
-  readonly VITE_PROFILE: string;
-  readonly VITE_IMAGE: string;
-  readonly VITE_BILIBILI_API: string;
-  readonly VITE_DIFFICULTIES: string;
-  readonly VITE_WEBHOOK: string;
-  readonly VITE_BACKUP_API: string;
-  readonly VITE_RATERS_API: string;
-
-  readonly VITE_APRIL_FOOLS: boolean;
-
   readonly VITE_CDN_URL: string;
 
-  readonly VITE_CHUNK_UPLOAD_URL: string;
+  // Feature flags & public keys
+  readonly VITE_APRIL_FOOLS: string;
+  readonly VITE_CUSTOM_PROFILE_BANNERS_ENABLED: string;
+  readonly VITE_RECAPTCHA_SITE_KEY: string;
 }
 
 interface ImportMeta {
   readonly env: ImportMetaEnv;
-} 
+}

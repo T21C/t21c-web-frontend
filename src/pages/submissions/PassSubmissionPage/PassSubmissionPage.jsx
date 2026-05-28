@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #PassSubmissionPage #passSubmissionPage #submissions #passSubmission
 
 import "./passsubmission.css";
@@ -139,7 +140,7 @@ const PassSubmissionPage = () => {
       const { username } = user;
       try {
         // Search for profiles matching the channel name (v3 flat player docs)
-        const searchUrl = `${import.meta.env.VITE_PLAYERS_V3}/search?query=${encodeURIComponent(username)}`;
+        const searchUrl = `${routes.playersV3.root()}/search?query=${encodeURIComponent(username)}`;
 
         const response = await api.get(searchUrl);
         const body = response.data;
@@ -322,7 +323,7 @@ const PassSubmissionPage = () => {
     searchCancelTokenRef.current = api.CancelToken.source();
 
     try {
-      const response = await api.get(`${import.meta.env.VITE_LEVELS}`, 
+      const response = await api.get(`${routes.database.levels.root()}`, 
         {
           params: {
             query,

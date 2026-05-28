@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #EditLevelPopup #editLevelPopup #popups #levels #editLevel
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { createPortal } from 'react-dom';
@@ -141,7 +142,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
       let src = level;
       if (level._packViewMinimal && isSuperAdmin) {
         try {
-          const response = await api.get(`${import.meta.env.VITE_LEVELS}/${level.id}`);
+          const response = await api.get(`${routes.database.levels.root()}/${level.id}`);
           const full = response.data?.level ?? response.data;
           if (!cancelled && full) {
             src = full;
@@ -186,7 +187,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
 
       const fetchTags = async () => {
         try {
-          const response = await api.get(`${import.meta.env.VITE_DIFFICULTIES}/levels/${level.id}/tags`);
+          const response = await api.get(`${routes.database.difficulties.root()}/levels/${level.id}/tags`);
           if (!cancelled) {
             setLevelTags(response.data || []);
           }
@@ -323,7 +324,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
       };
 
       const response = await api.put(
-        isSuperAdmin ? `${import.meta.env.VITE_LEVELS}/${level.id}` : `${import.meta.env.VITE_LEVELS}/own/${level.id}`,
+        isSuperAdmin ? `${routes.database.levels.root()}/${level.id}` : `${routes.database.levels.root()}/own/${level.id}`,
         levelData
       );
 
@@ -354,7 +355,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     setError(null);
 
     try {
-      const response = await api.delete(`${import.meta.env.VITE_LEVELS}/${level.id}`);
+      const response = await api.delete(`${routes.database.levels.root()}/${level.id}`);
       if (response.data) {
         const updatedFields = response.data.level || response.data || {};
         if (onUpdate) {
@@ -380,7 +381,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     setError(null);
 
     try {
-      const response = await api.patch(`${import.meta.env.VITE_LEVELS}/${level.id}/toggle-hidden`);
+      const response = await api.patch(`${routes.database.levels.root()}/${level.id}/toggle-hidden`);
       if (response.data) {
         const updatedFields = response.data.level || response.data || {};
         if (onUpdate) {
@@ -426,7 +427,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     setError(null);
 
     try {
-      const response = await api.patch(`${import.meta.env.VITE_LEVELS}/${level.id}/restore`);
+      const response = await api.patch(`${routes.database.levels.root()}/${level.id}/restore`);
       if (response.data) {
         const updatedFields = response.data.level || response.data || {};
         if (onUpdate) {
@@ -451,7 +452,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     setError(null);
 
     try {
-      await api.delete(`${import.meta.env.VITE_LEVELS}/${level.id}/permanent`);
+      await api.delete(`${routes.database.levels.root()}/${level.id}/permanent`);
       if (onUpdate) {
         await onUpdate({ permanentDelete: true, deletedLevelId: level.id });
       }
@@ -503,7 +504,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
 
     setIsRefreshingTags(true);
     try {
-      const response = await api.post(`${import.meta.env.VITE_LEVELS}/${level.id}/refresh-tags`);
+      const response = await api.post(`${routes.database.levels.root()}/${level.id}/refresh-tags`);
       if (response.data?.success) {
         const { removedTags, assignedTags } = response.data;
         
@@ -523,7 +524,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
         }
 
         // Fetch updated tags
-        const tagsResponse = await api.get(`${import.meta.env.VITE_DIFFICULTIES}/levels/${level.id}/tags`);
+        const tagsResponse = await api.get(`${routes.database.difficulties.root()}/levels/${level.id}/tags`);
         setLevelTags(tagsResponse.data || []);
         // Update the level data if onUpdate is available
         if (onUpdate) {

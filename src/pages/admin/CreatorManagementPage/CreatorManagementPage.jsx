@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { CustomSelect } from '@/components/common/selectors';
 import './creatorManagement.css';
 import api from '@/utils/api';
+import { routes } from '@/api/routes';
 import { useTranslation } from 'react-i18next';
 import { CreatorManagementPopup } from '@/components/popups/Creators';
 import { CreatorStatusBadge } from '@/components/common/display';
@@ -103,7 +104,7 @@ const CreatorManagementPage = () => {
 
       // Create new cancel token for creators
       creatorsCancelTokenRef.current = api.CancelToken.source();
-      const response = await api.get(`/v2/database/creators?${params}`, {
+      const response = await api.get(`${routes.database.creators.root()}?${params}`, {
         cancelToken: creatorsCancelTokenRef.current.token
       });
 
@@ -143,7 +144,7 @@ const CreatorManagementPage = () => {
         excludeAliases: excludeAliases
       });
 
-      const response = await api.get(`/v2/database/creators/levels-audit?${params}`, {
+      const response = await api.get(`${routes.database.creators.levelsAudit()}?${params}`, {
         cancelToken: levelsCancelTokenRef.current.token
       });
       if (response.data) {
@@ -230,7 +231,7 @@ const CreatorManagementPage = () => {
           excludeAliases: excludeAliases
         });
 
-        const response = await api.get(`/v2/database/creators?${params}`, {
+        const response = await api.get(`${routes.database.creators.root()}?${params}`, {
           cancelToken: cancelToken.token
         });
 
@@ -284,7 +285,7 @@ const CreatorManagementPage = () => {
     try {
       setLoadingTeams(true);
       teamsCancelTokenRef.current = api.CancelToken.source();
-      const response = await api.get(`/v2/database/creators/teams${search ? `?search=${search}` : ''}`, {
+      const response = await api.get(`${routes.database.creators.teams.root()}${search ? `?search=${search}` : ''}`, {
         cancelToken: teamsCancelTokenRef.current.token
       });
       if (response.status === 200) {
@@ -320,7 +321,7 @@ const CreatorManagementPage = () => {
     
     setIsCreatingTeam(true);
     try {
-      await api.post('/v2/database/creators/teams', newTeamData);
+      await api.post(routes.database.creators.teams.root(), newTeamData);
       await fetchTeams(teamSearchQuery);
       setShowAddTeamForm(false);
       setNewTeamData({ name: '', description: '', aliases: [] });
@@ -341,7 +342,7 @@ const CreatorManagementPage = () => {
     
     setIsUpdatingTeam(true);
     try {
-      await api.put(`/v2/database/creators/teams/${selectedTeam.id}`, newTeamData);
+      await api.put(routes.database.creators.teams.pathById(selectedTeam.id), newTeamData);
       await fetchTeams(teamSearchQuery);
       setSelectedTeam(null);
       setNewTeamData({ name: '', description: '', aliases: [] });
@@ -360,7 +361,7 @@ const CreatorManagementPage = () => {
     }
     
     try {
-      await api.delete(`/v2/database/creators/teams/${teamId}`);
+      await api.delete(routes.database.creators.teams.pathById(teamId));
       await fetchTeams(teamSearchQuery);
       toast.success('Team deleted successfully');
     } catch (error) {
@@ -470,18 +471,18 @@ const CreatorManagementPage = () => {
     try {
       // Save team changes
       if (pendingTeam) {
-        await api.put(`/v2/database/creators/level/${selectedLevel.id}/team`, {
+        await api.put(routes.database.creators.levelTeam(selectedLevel.id), {
           teamId: pendingTeam.id,
           name: pendingTeam.name,
           members: pendingCreators.map(c => c.id)
         });
       } else {
         // Remove team if none is selected
-        await api.delete(`/v2/database/creators/level/${selectedLevel.id}/team`);
+        await api.delete(routes.database.creators.levelTeam(selectedLevel.id));
       }
 
       // Save creator changes - using the correct endpoint
-      const response = await api.put(`/v2/database/creators/level/${selectedLevel.id}`, {
+      const response = await api.put(routes.database.creators.level(selectedLevel.id), {
         creators: pendingCreators.map(c => ({
           id: c.id,
           role: c.role,
@@ -1210,7 +1211,7 @@ const CreatorManagementPage = () => {
                   }
                   setIsCreatingCreator(true);
                   try {
-                    await api.post('/v2/database/creators', newCreatorData);
+                    await api.post(routes.database.creators.root(), newCreatorData);
                     await fetchCreators();
                     setShowAddCreatorForm(false);
                     setNewCreatorData({ name: '', aliases: [] });

@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef } from "react"
 import axios from "axios";
 import api from '@/utils/api';
+import { routes } from '@/api/routes';
 import { useDebouncedRequest } from '@/hooks/useDebouncedRequest';
 import { useAuth } from './AuthContext';
 import { useLocation } from 'react-router-dom';
@@ -89,7 +90,7 @@ const PackContextProvider = (props) => {
         const runner = pageNumber > 0 ? runRequest.flush : runRequest;
         try {
             const response = await runner(({ signal }) =>
-                api.get('/v2/database/levels/packs', { params, signal })
+                api.get(routes.database.levels.packs.root(), { params, signal })
             );
             const newPacks = response.data.packs || [];
 
@@ -152,7 +153,7 @@ const PackContextProvider = (props) => {
         setFavoritesLoading(true);
         setError(false);
         try {
-            const response = await api.get('/v2/database/levels/packs/favorites');
+            const response = await api.get(routes.database.levels.packs.favorites());
             setFavorites(response.data.packs || []);
         } catch (error) {
             console.error('Error fetching favorites:', error);
@@ -175,7 +176,7 @@ const PackContextProvider = (props) => {
     // General pack operations (for page use)
     const createPack = async (packData) => {
         try {
-            const response = await api.post('/v2/database/levels/packs', packData);
+            const response = await api.post(routes.database.levels.packs.root(), packData);
             // Refresh page pack list
             triggerRefresh();
             return response.data;
@@ -187,7 +188,7 @@ const PackContextProvider = (props) => {
 
     const updatePack = async (packId, updateData) => {
         try {
-            const response = await api.put(`/v2/database/levels/packs/${packId}`, updateData);
+            const response = await api.put(routes.database.levels.packs.byId(packId), updateData);
             triggerRefresh();
             return response.data;
         } catch (error) {
@@ -198,7 +199,7 @@ const PackContextProvider = (props) => {
 
     const deletePack = async (packId) => {
         try {
-            await api.delete(`/v2/database/levels/packs/${packId}`);
+            await api.delete(routes.database.levels.packs.byId(packId));
             triggerRefresh();
         } catch (error) {
             console.error('Error deleting pack:', error);
@@ -209,7 +210,7 @@ const PackContextProvider = (props) => {
     // Add level to pack
     const addLevelToPack = async (packId, levelId, sortOrder = null) => {
         try {
-            const response = await api.post(`/v2/database/levels/packs/${packId}/levels`, {
+            const response = await api.post(routes.database.levels.packs.levels(packId), {
                 levelId,
                 sortOrder
             });
@@ -223,7 +224,7 @@ const PackContextProvider = (props) => {
     // Remove level from pack
     const removeLevelFromPack = async (packId, levelId) => {
         try {
-            await api.delete(`/v2/database/levels/packs/${packId}/levels/${levelId}`);
+            await api.delete(routes.database.levels.packs.level(packId, levelId));
         } catch (error) {
             console.error('Error removing level from pack:', error);
             throw error;
@@ -233,7 +234,7 @@ const PackContextProvider = (props) => {
     // Reorder levels in pack
     const reorderPackLevels = async (packId, levelOrders) => {
         try {
-            await api.put(`/v2/database/levels/packs/${packId}/levels/reorder`, {
+            await api.put(routes.database.levels.packs.levelsReorder(packId), {
                 levelOrders
             });
         } catch (error) {
@@ -263,7 +264,7 @@ const PackContextProvider = (props) => {
             const currentlyFavorited = packs.some(pack => pack.id === packId && pack.isFavorited);
             const desiredFavorited = !currentlyFavorited;
             
-            const response = await api.put(`/v2/database/levels/packs/${packId}/favorite`, { 
+            const response = await api.put(routes.database.levels.packs.favorite(packId), { 
                 favorited: desiredFavorited 
             });
 

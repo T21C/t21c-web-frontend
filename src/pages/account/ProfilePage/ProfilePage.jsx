@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #ProfilePage #profilePage #account #profile — {{name}}
 import "../accountProfilePage.css"
 import "./profilePage.css"
@@ -174,7 +175,7 @@ const ProfilePage = () => {
                 ? '?showHidden=true'
                 : '';
             const response = await api.get(
-              `${import.meta.env.VITE_PLAYERS_V3}/${id}/profile${qs}`,
+              `${routes.playersV3.root()}/${id}/profile${qs}`,
             );
             setPlayerData(response.data);
 
@@ -200,7 +201,7 @@ const ProfilePage = () => {
         if (searchQuery) params.append('query', searchQuery);
         if (isOwnProfile && showHiddenPasses) params.append('showHidden', 'true');
 
-        const url = `${import.meta.env.VITE_PLAYERS_V3}/${playerId}/passes?${params.toString()}`;
+        const url = `${routes.playersV3.root()}/${playerId}/passes?${params.toString()}`;
         const requestId = ++passesRequestIdRef.current;
         const runner = immediate ? runPassesRequest.flush : runPassesRequest;
         if (offset === 0) setPassesInitialLoading(true);
@@ -300,7 +301,7 @@ const ProfilePage = () => {
               return;
             }
             targetUserId = playerData.user.id;
-            response = await api.post(`/v2/admin/discord/sync/user/${targetUserId}`);
+            response = await api.post(routes.admin.discord.syncUser(targetUserId));
           } else {
             // Non-admin users can only sync their own roles
             if (!user?.id) {
@@ -308,7 +309,7 @@ const ProfilePage = () => {
               return;
             }
             targetUserId = user.id;
-            response = await api.post(`/v2/auth/profile/sync-roles`);
+            response = await api.post(routes.auth.profile.syncRoles());
           }
 
 
@@ -556,7 +557,7 @@ const ProfilePage = () => {
                 ? `?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`
                 : '';
             const res = await api.get(
-              `${import.meta.env.VITE_PLAYERS_V3}/${id}/rank-history${query}`,
+              `${routes.playersV3.root()}/${id}/rank-history${query}`,
             );
             if (cancelled) return;
             setRankHistorySeries(Array.isArray(res.data?.series) ? res.data.series : []);

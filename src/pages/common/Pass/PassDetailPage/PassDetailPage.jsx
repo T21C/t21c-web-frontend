@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #PassDetailPage #passDetailPage #pass #passDetail — {{song}}
 import "./passdetailpage.css";
 import { useEffect, useState } from "react";
@@ -80,7 +81,7 @@ const PassDetailPage = () => {
 
   const fetchPassData = async () => {
     try {
-      const passData = await api.get(`${import.meta.env.VITE_PASSES}/${id}`);
+      const passData = await api.get(routes.database.passes.byIdPath(id));
       setRes(prevRes => ({
         ...prevRes,
         pass: passData.data
@@ -112,7 +113,7 @@ const PassDetailPage = () => {
     setIsSavingFeelingRating(true);
     setFeelingRatingError(null);
     try {
-      await api.patch(`${import.meta.env.VITE_PASSES}/${id}/feeling-rating`, {
+      await api.patch(routes.database.passes.feelingRating(id), {
         feelingRating: value,
       });
       await fetchPassData();
@@ -134,7 +135,7 @@ const PassDetailPage = () => {
 
     setIsTogglingHidden(true);
     try {
-      await api.patch(`${import.meta.env.VITE_PASSES}/${id}/toggle-hidden`);
+      await api.patch(routes.database.passes.toggleHidden(id));
       await fetchPassData();
       setShowHideConfirm(false);
     } catch (error) {

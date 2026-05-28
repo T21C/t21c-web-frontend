@@ -6,6 +6,7 @@ import { ImageSelectorPopup, CustomSelect } from '@/components/common/selectors'
 import './CreatePackPopup.css';
 import toast from 'react-hot-toast';
 import api from '@/utils/api';
+import { routes } from '@/api/routes';
 import { getCdnErrorMessage } from '@/utils/uploadErrors';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { useAuth } from '@/contexts/AuthContext';
@@ -112,7 +113,7 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
           const iconFormData = new FormData();
           iconFormData.append('icon', formData.iconFile);
 
-          await api.post(`/v2/database/levels/packs/${newPack.id}/icon`, iconFormData, {
+          await api.post(routes.database.levels.packs.icon(newPack.id), iconFormData, {
             headers: {
               'Content-Type': 'multipart/form-data',
             },

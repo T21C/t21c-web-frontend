@@ -1,5 +1,6 @@
 // tuf-search: #waitForJobCompletion #jobs
 import api from '@/utils/api';
+import { routes } from '@/api/routes';
 
 /**
  * Poll GET /v2/jobs/:jobId until the job reaches a terminal phase (completed | failed).
@@ -16,7 +17,7 @@ export async function waitForJobCompletion(jobId, opts = {}) {
     if (signal?.aborted) {
       throw new DOMException('aborted', 'AbortError');
     }
-    const { data } = await api.get(`/v2/jobs/${encodeURIComponent(jobId)}`, { signal });
+    const { data } = await api.get(routes.jobs.byId(jobId), { signal });
     const phase = data?.phase;
     if (phase === 'failed') {
       const err = new Error(typeof data?.error === 'string' ? data.error : 'Processing failed');

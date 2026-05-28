@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #ArtistListPage #artistListPage #artist #artistList — Artists - TUF
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
@@ -60,7 +61,7 @@ const ArtistListPage = () => {
     const runner = reset ? runRequest : runRequest.flush;
     try {
       const response = await runner(({ signal }) =>
-        api.get(`${import.meta.env.VITE_API_URL}/v2/database/artists`, { params, signal })
+        api.get(routes.database.artists.root(), { params, signal })
       );
 
       const data = response.data;

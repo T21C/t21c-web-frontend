@@ -9,6 +9,7 @@ import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { CustomSelect } from '@/components/common/selectors';
 import { EntityActionPopup } from '@/components/popups/Entities';
 import api from '@/utils/api';
+import { routes } from '@/api/routes';
 import { getCdnErrorMessage } from '@/utils/uploadErrors';
 import { toast } from 'react-hot-toast';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -100,7 +101,7 @@ const EntityManagementPage = ({ type = 'artist' }) => {
         params.verificationState = verificationFilter;
       }
 
-      const endpoint = type === 'song' ? '/v2/database/songs' : '/v2/database/artists';
+      const endpoint = type === 'song' ? routes.database.songs.root() : routes.database.artists.root();
       const response = await api.get(endpoint, { 
         params,
         signal: abortController.signal
@@ -152,7 +153,7 @@ const EntityManagementPage = ({ type = 'artist' }) => {
 
     setIsCreating(true);
     try {
-      const endpoint = type === 'song' ? '/v2/database/songs' : '/v2/database/artists';
+      const endpoint = type === 'song' ? routes.database.songs.root() : routes.database.artists.root();
       
       if (type === 'artist') {
         const formData = new FormData();
@@ -202,7 +203,7 @@ const EntityManagementPage = ({ type = 'artist' }) => {
     if (!window.confirm(tEntity('confirmDelete'))) return;
 
     try {
-      const endpoint = type === 'song' ? `/v2/database/songs/${entityId}` : `/v2/database/artists/${entityId}`;
+      const endpoint = type === 'song' ? routes.database.songs.byId(entityId) : routes.database.artists.byId(entityId);
       await api.delete(endpoint);
       toast.success(tEntity('messages.deleted'));
       fetchEntities(true);

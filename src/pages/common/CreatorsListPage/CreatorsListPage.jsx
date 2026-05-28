@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #CreatorsListPage #creatorsListPage #creatorsList
 import "./creatorslistpage.css";
 import "@/pages/common/search-section.css";
@@ -100,7 +101,7 @@ const CreatorsListPage = () => {
         JSON.stringify({ verificationStatus: verificationFilter }),
       );
     }
-    const endpoint = `${import.meta.env.VITE_CREATORS_LEADERBOARD_V3}?${params.toString()}`;
+    const endpoint = `${routes.creatorsV3.leaderboard()}?${params.toString()}`;
     const runner = immediate ? runRequest.flush : runRequest;
     try {
       const response = await runner(({ signal }) => api.get(endpoint, { signal }));

@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #AnnouncementPage #announcementPage #admin #announcement — Announcements
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "@/contexts/AuthContext";
@@ -39,9 +40,9 @@ const AnnouncementPage = () => {
     setError(null);
     try {
       const [newLevelsResponse, reratesResponse, passesResponse] = await Promise.all([
-        api.get(`${import.meta.env.VITE_LEVELS}/unannounced/new`),
-        api.get(`${import.meta.env.VITE_LEVELS}/unannounced/rerates`),
-        api.get(`${import.meta.env.VITE_PASSES}/unannounced/new`)
+        api.get(`${routes.database.levels.root()}/unannounced/new`),
+        api.get(`${routes.database.levels.root()}/unannounced/rerates`),
+        api.get(`${routes.database.passes.root()}/unannounced/new`)
       ]);
       
       setNewLevels(newLevelsResponse.data);
@@ -117,7 +118,7 @@ const AnnouncementPage = () => {
     setError(null);
     try {
       if (validLevelIds.length > 0) {
-        await api.post(`${import.meta.env.VITE_WEBHOOK}/${activeTab === 'newLevels' ? 'levels' : 'rerates'}`, {
+        await api.post(`${routes.webhook.root()}/${activeTab === 'newLevels' ? 'levels' : 'rerates'}`, {
           levelIds: validLevelIds
         });
         
@@ -126,7 +127,7 @@ const AnnouncementPage = () => {
       }
 
       if (validPassIds.length > 0) {
-        await api.post(`${import.meta.env.VITE_WEBHOOK}/passes`, {
+        await api.post(`${routes.webhook.root()}/passes`, {
           passIds: validPassIds
         });
         
@@ -151,8 +152,8 @@ const AnnouncementPage = () => {
   const handleLevelUpdate = async (updatedData) => {
     try {
       const [newLevelsResponse, reratesResponse] = await Promise.all([
-        api.get(`${import.meta.env.VITE_LEVELS}/unannounced/new`),
-        api.get(`${import.meta.env.VITE_LEVELS}/unannounced/rerates`)
+        api.get(`${routes.database.levels.root()}/unannounced/new`),
+        api.get(`${routes.database.levels.root()}/unannounced/rerates`)
       ]);
 
       setNewLevels(newLevelsResponse.data);

@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #usePassCoreForm #cores #passCoreForm
 import { useEffect, useMemo, useRef, useState } from "react";
 import api from "@/utils/api";
@@ -87,7 +88,7 @@ export function usePassCoreForm({
     levelFetchCancelTokenRef.current = api.CancelToken.source();
 
     api
-      .get(`${import.meta.env.VITE_LEVELS}/${levelId}`, { cancelToken: levelFetchCancelTokenRef.current.token })
+      .get(`${routes.database.levels.root()}/${levelId}`, { cancelToken: levelFetchCancelTokenRef.current.token })
       .then((response) => {
         // Some endpoints return `{ level }`, older code used `{ data: { level } }`
         const chosenLevel = response?.data?.level ?? response?.data?.data?.level ?? null;

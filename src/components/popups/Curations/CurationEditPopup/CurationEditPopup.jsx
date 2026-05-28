@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #CurationEditPopup #curationEditPopup #popups #curations #curationEdit
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -130,7 +131,7 @@ const CurationEditPopup = ({
     if (!levelId) return;
     setIsLoading(true);
     try {
-      const res = await api.get(`${import.meta.env.VITE_CURATIONS}`, {
+      const res = await api.get(`${routes.admin.curations.root()}`, {
         params: { levelId, limit: 200 },
       });
       const list = res.data.curations || [];
@@ -227,7 +228,7 @@ const CurationEditPopup = ({
       if (canEditCustomColor) {
         body.customColor = form.customColor;
       }
-      const res = await api.put(`${import.meta.env.VITE_CURATIONS}/level/${levelId}`, body);
+      const res = await api.put(`${routes.admin.curations.root()}/level/${levelId}`, body);
       toast.success(t('curationEditPopup.notifications.updated'));
       onUpdate({ levelId, curations: res.data.curations, level: res.data.curations[0]?.level });
       onClose();
@@ -407,7 +408,7 @@ const CurationEditPopup = ({
                       setForm((p) => ({ ...p, previewLink: null }));
                       if (onCurationPatched) onCurationPatched({ id: form.id, previewLink: null, levelId });
                     }}
-                    uploadEndpoint={`${import.meta.env.VITE_CURATIONS}/${form.id}/thumbnail`}
+                    uploadEndpoint={`${routes.admin.curations.root()}/${form.id}/thumbnail`}
                   />
                 </div>
               )}

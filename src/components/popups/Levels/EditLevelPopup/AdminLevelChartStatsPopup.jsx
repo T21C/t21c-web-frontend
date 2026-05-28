@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #AdminLevelChartStatsPopup #chartStats #levels #admin
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -95,7 +96,7 @@ export const AdminLevelChartStatsPopup = ({ level, onClose, onSaved }) => {
             : Math.round(Number(lengthSeconds) * 1000),
       };
       const res = await api.patch(
-        `${import.meta.env.VITE_LEVELS}/${level.id}/chart-stats`,
+        `${routes.database.levels.root()}/${level.id}/chart-stats`,
         payload,
       );
       const updated = res.data?.level;

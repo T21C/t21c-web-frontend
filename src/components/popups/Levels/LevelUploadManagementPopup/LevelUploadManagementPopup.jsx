@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #LevelUploadManagementPopup #levelUploadManagementPopup #popups #levels #levelUploadManagement
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import api from '@/utils/api';
@@ -83,7 +84,7 @@ const LevelUploadManagementPopup = ({
     if (dlLink && dlLink !== 'removed' && isCdnUrl(dlLink)) {
       try {
         const fileId = dlLink.split('/').pop();
-        const response = await api.get(`${import.meta.env.VITE_LEVELS}/cdn-zip-metadata/${fileId}`);
+        const response = await api.get(`${routes.database.levels.root()}/cdn-zip-metadata/${fileId}`);
         const data = response.data;
         
         if (data.metadata) {
@@ -133,7 +134,7 @@ const LevelUploadManagementPopup = ({
 
   const refreshLevelMetadata = async (dlLinkHint) => {
     try {
-      const response = await api.get(`${import.meta.env.VITE_LEVELS}/${level.id}`);
+      const response = await api.get(`${routes.database.levels.root()}/${level.id}`);
       const fullLevel = response?.data?.level ?? response?.data?.data?.level ?? response?.data ?? null;
       if (!fullLevel) return;
 
@@ -296,7 +297,7 @@ const LevelUploadManagementPopup = ({
           if (signal.aborted) return;
 
           const response = await api.post(
-            `/v3/levels/${level.id}/upload`,
+            routes.levelsV3.upload(level.id),
             {
               sessionId: uploadSession.id,
               uploadJobId: jobId,
@@ -396,7 +397,7 @@ const LevelUploadManagementPopup = ({
       setCdnJobId(jobId);
 
       const response = await api.post(
-        `/v3/levels/${level.id}/upload-from-url`,
+        routes.levelsV3.uploadFromUrl(level.id),
         { url: trimmed, uploadJobId: jobId },
         {
           signal,
@@ -447,7 +448,7 @@ const LevelUploadManagementPopup = ({
     try {
       setIsSelecting(true);
       setError(null);
-      const result = await api.post(`/v3/levels/${level.id}/select-level`, {
+      const result = await api.post(routes.levelsV3.selectLevel(level.id), {
         selectedLevel,
       });
 
@@ -473,7 +474,7 @@ const LevelUploadManagementPopup = ({
     }
 
     try {
-      const response = await api.delete(`/v3/levels/${level.id}/upload`);
+      const response = await api.delete(routes.levelsV3.upload(level.id));
       if (response.data && response.data.success) {
         // Update formData with removed dlLink
         setFormData(prev => ({ ...prev, dlLink: "removed" }));

@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #CreatorManagementPopup #creatorManagementPopup #popups #creators #creatorManagement
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -109,7 +110,7 @@ export const CreatorManagementPopup = ({
     if (!creator?.id) return undefined;
     let cancelled = false;
     setCurationProfileLoading(true);
-    const url = `${import.meta.env.VITE_CREATORS_V3}/${creator.id}/profile`;
+    const url = `${routes.creatorsV3.root()}/${creator.id}/profile`;
     api
       .get(url)
       .then((res) => {
@@ -221,7 +222,7 @@ export const CreatorManagementPopup = ({
           search: mergeTargetSearch,
           sort: 'NAME_ASC',
         });
-        const res = await api.get(`/v2/database/creators?${params}`, {
+        const res = await api.get(`${routes.database.creators.root()}?${params}`, {
           cancelToken: cancelToken.token,
         });
         setAvailableCreators(res.data.results.filter(c => c.id !== creator?.id));
@@ -252,7 +253,7 @@ export const CreatorManagementPopup = ({
     const timer = setTimeout(async () => {
       try {
         const res = await api.get(
-          `${import.meta.env.VITE_PLAYERS_V3}/search?query=${encodeURIComponent(trimmed)}`
+          `${routes.playersV3.root()}/search?query=${encodeURIComponent(trimmed)}`
         );
         if (cancelled) return;
         const body = res.data;
@@ -296,7 +297,7 @@ export const CreatorManagementPopup = ({
     clearMessages();
     try {
       const res = await api.patch(
-        `${import.meta.env.VITE_CREATORS_V3}/${creator.id}/managed-update`,
+        `${routes.creatorsV3.root()}/${creator.id}/managed-update`,
         {
           name: name.trim(),
           aliases,
@@ -326,7 +327,7 @@ export const CreatorManagementPopup = ({
     try {
       const userOrPlayerId = player.user?.id || player.id;
       const res = await api.put(
-        `/v2/database/creators/assign-creator-to-user/${userOrPlayerId}/${creator.id}`
+        routes.database.creators.assignCreatorToUser(userOrPlayerId, creator.id)
       );
       if (res.status === 200) {
         setSuccess(tt('success.userAssigned'));
@@ -349,7 +350,7 @@ export const CreatorManagementPopup = ({
     clearMessages();
     try {
       const res = await api.delete(
-        `/v2/database/creators/remove-creator-from-user/${creator.user.id}`
+        routes.database.creators.removeCreatorFromUser(creator.user.id)
       );
       if (res.status === 200) {
         setSuccess(tt('success.userUnassigned'));
@@ -369,7 +370,7 @@ export const CreatorManagementPopup = ({
     if (!discordId) return;
     try {
       setIsLoading(true);
-      const res = await api.get(`/v2/admin/users/discord/${discordId}`);
+      const res = await api.get(routes.admin.users.discord(discordId));
       if (res.status !== 200) {
         toast.error(res.data?.details || tt('errors.fetchDiscordFailed'));
         return;
@@ -398,7 +399,7 @@ export const CreatorManagementPopup = ({
     try {
       setIsLoading(true);
       const res = await api.put(
-        `/v2/database/creators/${creator.id}/discord/${pendingDiscordInfo.id}`
+        routes.database.creators.discord(creator.id, pendingDiscordInfo.id)
       );
       if (res.status === 200) {
         toast.success(tt('success.discordUpdated'));
@@ -420,7 +421,7 @@ export const CreatorManagementPopup = ({
     setIsLoading(true);
     clearMessages();
     try {
-      await api.post('/v2/database/creators/merge', {
+      await api.post(routes.database.creators.merge(), {
         sourceId: creator.id,
         targetId: mergeTarget.id,
       });
@@ -441,7 +442,7 @@ export const CreatorManagementPopup = ({
     setIsLoading(true);
     clearMessages();
     try {
-      await api.post('/v2/database/creators/split', {
+      await api.post(routes.database.creators.split(), {
         creatorId: creator.id,
         newNames: validNames,
         roles: validNames.map((_, i) => splitRoles?.[i] || defaultRole),
@@ -500,7 +501,7 @@ export const CreatorManagementPopup = ({
     setIsLoading(true);
     clearMessages();
     try {
-      await api.delete(`/v2/admin/creators/${creator.id}`, {
+      await api.delete(routes.admin.creators.byId(creator.id), {
         headers: {'X-Super-Admin-Password': superAdminDangerPassword},
       });
       toast.success(tt('superAdminDanger.successPurge'));
@@ -524,7 +525,7 @@ export const CreatorManagementPopup = ({
     setIsLoading(true);
     clearMessages();
     try {
-      await api.delete(`/v2/admin/creators/${creator.id}?unlinkOnly=1`, {
+      await api.delete(`${routes.admin.creators.byId(creator.id)}?unlinkOnly=1`, {
         headers: {'X-Super-Admin-Password': superAdminDangerPassword},
       });
       toast.success(tt('superAdminDanger.successUnlink'));

@@ -1,5 +1,6 @@
 // tuf-search: #ChunkedUploadClient #chunkedUploadClient #upload
 import api from '@/utils/api';
+import { routes } from '@/api/routes';
 import { createSHA256 } from 'hash-wasm';
 
 /**
@@ -63,14 +64,14 @@ async function sha256OfFile(file, { signal, onProgress } = {}) {
   return hasher.digest('hex');
 }
 
-async function putChunk({ baseUrl, sessionId, index, blob, signal, retries, onProgress }) {
+async function putChunk({ sessionId, index, blob, signal, retries, onProgress }) {
   let attempt = 0;
   let lastErr = null;
   while (attempt <= retries) {
     if (signal?.aborted) throw new DOMException('aborted', 'AbortError');
     try {
       await api.post(
-        `${baseUrl}/sessions/${encodeURIComponent(sessionId)}/chunks/${index}`,
+        routes.upload.sessionChunk(sessionId, index),
         blob,
         {
           headers: { 'Content-Type': 'application/octet-stream' },
@@ -111,10 +112,9 @@ export class ChunkedUploadClient {
    * @param {number} [opts.parallelism] - Number of concurrent chunk PUTs.
    * @param {number} [opts.retries] - Per-chunk retry budget on retriable errors.
    */
-  constructor({ kind, baseUrl = '/v2/upload', chunkSize = DEFAULT_CHUNK_SIZE, parallelism = DEFAULT_PARALLEL, retries = DEFAULT_RETRIES } = {}) {
+  constructor({ kind, chunkSize = DEFAULT_CHUNK_SIZE, parallelism = DEFAULT_PARALLEL, retries = DEFAULT_RETRIES } = {}) {
     if (!kind) throw new Error('ChunkedUploadClient: `kind` is required');
     this.kind = kind;
-    this.baseUrl = baseUrl;
     this.chunkSize = chunkSize;
     this.parallelism = Math.max(1, Math.min(8, parallelism));
     this.retries = retries;
@@ -132,7 +132,7 @@ export class ChunkedUploadClient {
       ...(forceNew ? { forceNew: true } : {}),
     };
     try {
-      const res = await api.post(`${this.baseUrl}/init`, body, { signal });
+      const res = await api.post(routes.upload.init(), body, { signal });
       return res.data;
     } catch (err) {
       throw new UploadError(err?.response?.data?.error || 'Upload init failed', {
@@ -145,7 +145,7 @@ export class ChunkedUploadClient {
 
   async #complete({ sessionId, signal }) {
     try {
-      const res = await api.post(`${this.baseUrl}/sessions/${encodeURIComponent(sessionId)}/complete`, {}, {
+      const res = await api.post(routes.upload.sessionComplete(sessionId), {}, {
         signal,
         timeout: 10 * 60 * 1000,
       });
@@ -163,7 +163,7 @@ export class ChunkedUploadClient {
   async cancel(sessionId) {
     if (!sessionId) return;
     try {
-      await api.delete(`${this.baseUrl}/sessions/${encodeURIComponent(sessionId)}`);
+      await api.delete(routes.upload.session(sessionId));
     } catch {
       // Intentional: cancel must never throw.
     }
@@ -230,7 +230,6 @@ export class ChunkedUploadClient {
           const blob = file.slice(start, end);
           chunkProgress.set(idx, 0);
           await putChunk({
-            baseUrl: this.baseUrl,
             sessionId,
             index: idx,
             blob,

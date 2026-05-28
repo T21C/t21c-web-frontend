@@ -11,6 +11,7 @@ import { EditPackPopup, PackDownloadPopup } from "@/components/popups/Packs";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePackContext } from "@/contexts/PackContext";
 import api from "@/utils/api";
+import { routes } from '@/api/routes';
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { UserAvatar } from "@/components/layout";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
@@ -147,7 +148,7 @@ const PackDetailPage = () => {
   const fetchPackCdnData = useCallback(async () => {
     if (!id) return;
     try {
-      const response = await api.get(`/v2/database/levels/packs/${id}/cdnData`);
+      const response = await api.get(routes.database.levels.packs.cdnData(id));
       const map = new Map();
       for (const it of response.data.items ?? []) {
         map.set(it.levelId, it);
@@ -177,7 +178,7 @@ const PackDetailPage = () => {
         setError(false);
       }
       
-      const response = await api.get(`/v2/database/levels/packs/${id}?tree=true`);
+      const response = await api.get(`${routes.database.levels.packs.byId(id)}?tree=true`);
       setPack(response.data);
       fetchPackCdnData();
     } catch (error) {
@@ -314,7 +315,7 @@ const PackDetailPage = () => {
     if (!folderName?.trim()) return;
 
     try {
-      await api.post(`/v2/database/levels/packs/${pack.id}/items`, {
+      await api.post(routes.database.levels.packs.items(pack.id), {
         type: 'folder',
         name: folderName.trim(),
         parentId: 0
@@ -339,7 +340,7 @@ const PackDetailPage = () => {
     if (!levelId?.trim()) return;
 
     try {
-      await api.post(`/v2/database/levels/packs/${pack.id}/items`, {
+      await api.post(routes.database.levels.packs.items(pack.id), {
         type: 'level',
         levelIds: levelId,
         parentId: 0
@@ -399,7 +400,7 @@ const PackDetailPage = () => {
     }
 
     const response = await api.post(
-      `/v2/database/levels/packs/${pack.id}/download-link`,
+      routes.database.levels.packs.downloadLink(pack.id),
       payload
     );
 
@@ -412,7 +413,7 @@ const PackDetailPage = () => {
     if (!newName?.trim() || newName === item.name) return;
 
     try {
-      await api.put(`/v2/database/levels/packs/${pack.id}/items/${item.id}`, {
+      await api.put(routes.database.levels.packs.item(pack.id, item.id), {
         name: newName.trim()
       });
       
@@ -438,7 +439,7 @@ const PackDetailPage = () => {
     if (!confirm(confirmMessage)) return;
 
     try {
-      await api.delete(`/v2/database/levels/packs/${pack.id}/items/${item.id}`);
+      await api.delete(routes.database.levels.packs.item(pack.id, item.id));
       
       toast.success(t('packDetail.deleteItem.success'));
       await fetchPack(true); // Silent refetch
@@ -724,7 +725,7 @@ const PackDetailPage = () => {
       }
 
       const minimalTree = createMinimalTreeStructure(newTree);
-      const response = await api.put(`/v2/database/levels/packs/${pack.id}/tree`, {
+      const response = await api.put(routes.database.levels.packs.tree(pack.id), {
         items: minimalTree
       });
 

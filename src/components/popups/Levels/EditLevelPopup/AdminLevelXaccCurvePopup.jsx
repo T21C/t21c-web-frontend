@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #AdminLevelXaccCurvePopup #xaccCurve #levels #admin
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -632,7 +633,7 @@ export const AdminLevelXaccCurvePopup = ({ level, onClose, onSaved }) => {
     let cancelled = false;
     setPassesLoading(true);
     api
-      .get(`${import.meta.env.VITE_PASSES}/level/${level.id}`)
+      .get(`${routes.database.passes.root()}/level/${level.id}`)
       .then((res) => {
         if (!cancelled) {
           setLevelPasses(Array.isArray(res.data) ? res.data : []);
@@ -1077,7 +1078,7 @@ export const AdminLevelXaccCurvePopup = ({ level, onClose, onSaved }) => {
             },
           };
       const res = await api.patch(
-        `${import.meta.env.VITE_LEVELS}/${level.id}/xacc-curve`,
+        `${routes.database.levels.root()}/${level.id}/xacc-curve`,
         payload,
       );
       const updated = res.data?.level;

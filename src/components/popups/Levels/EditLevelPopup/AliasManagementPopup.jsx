@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #AliasManagementPopup #aliasManagementPopup #popups #levels #editLevel
 import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -29,7 +30,7 @@ const AliasManagementPopup = ({ levelId, onClose }) => {
   useEffect(() => {
     const fetchLevelData = async () => {
       try {
-        const response = await api.get(`${import.meta.env.VITE_LEVELS}/byId/${levelId}`);
+        const response = await api.get(`${routes.database.levels.root()}/byId/${levelId}`);
         setLevelData(response.data);
       } catch (err) {
         console.error('Error fetching level data:', err);
@@ -67,7 +68,7 @@ const AliasManagementPopup = ({ levelId, onClose }) => {
           matchType: newAlias.matchType
         });
 
-        const response = await api.get(`${import.meta.env.VITE_LEVELS}/alias-propagation-count/${levelId}?${params}`);
+        const response = await api.get(`${routes.database.levels.root()}/alias-propagation-count/${levelId}?${params}`);
         setAffectedLevelsCount(response.data.count);
 
         // Update the error state if needed
@@ -100,7 +101,7 @@ const AliasManagementPopup = ({ levelId, onClose }) => {
   const fetchAliases = async () => {
     try {
       setLoading(true);
-      const response = await api.get(`${import.meta.env.VITE_LEVELS}/${levelId}/aliases`);
+      const response = await api.get(`${routes.database.levels.root()}/${levelId}/aliases`);
       setAliases(response.data);
     } catch (err) {
       setError('Failed to fetch aliases');
@@ -114,7 +115,7 @@ const AliasManagementPopup = ({ levelId, onClose }) => {
     e.preventDefault();
     try {
       setLoading(true);
-      await api.post(`${import.meta.env.VITE_LEVELS}/${levelId}/aliases`, newAlias);
+      await api.post(`${routes.database.levels.root()}/${levelId}/aliases`, newAlias);
       setNewAlias({ field: 'song', alias: '', propagate: false, matchType: 'exact' });
       await fetchAliases();
     } catch (err) {
@@ -128,7 +129,7 @@ const AliasManagementPopup = ({ levelId, onClose }) => {
   const handleUpdateAlias = async (aliasId, updatedAlias) => {
     try {
       setLoading(true);
-      await api.put(`${import.meta.env.VITE_LEVELS}/${levelId}/aliases/${aliasId}`, { alias: updatedAlias });
+      await api.put(`${routes.database.levels.root()}/${levelId}/aliases/${aliasId}`, { alias: updatedAlias });
       await fetchAliases();
     } catch (err) {
       setError('Failed to update alias');
@@ -141,7 +142,7 @@ const AliasManagementPopup = ({ levelId, onClose }) => {
   const handleDeleteAlias = async (aliasId) => {
     try {
       setLoading(true);
-      await api.delete(`${import.meta.env.VITE_LEVELS}/${levelId}/aliases/${aliasId}`);
+      await api.delete(`${routes.database.levels.root()}/${levelId}/aliases/${aliasId}`);
       await fetchAliases();
     } catch (err) {
       setError('Failed to delete alias');

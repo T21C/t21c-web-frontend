@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #TagManagementPopup #tagManagementPopup #popups #levels #editLevel
 import { useState, useEffect } from 'react';
 import './editlevelpopup.css';
@@ -23,7 +24,7 @@ export const TagManagementPopup = ({ levelId, currentTags = [], onClose, onSave 
     const fetchTags = async () => {
       setIsLoading(true);
       try {
-        const response = await api.get(`${import.meta.env.VITE_DIFFICULTIES}/tags`);
+        const response = await api.get(`${routes.database.difficulties.root()}/tags`);
         setAllTags(response.data || []);
       } catch (err) {
         console.error('Error fetching tags:', err);
@@ -45,12 +46,12 @@ export const TagManagementPopup = ({ levelId, currentTags = [], onClose, onSave 
     setError(null);
 
     try {
-      await api.post(`${import.meta.env.VITE_DIFFICULTIES}/levels/${levelId}/tags`, {
+      await api.post(`${routes.database.difficulties.root()}/levels/${levelId}/tags`, {
         tagIds: selectedIds,
       });
 
       const updatedTagsResponse = await api.get(
-        `${import.meta.env.VITE_DIFFICULTIES}/levels/${levelId}/tags`
+        `${routes.database.difficulties.root()}/levels/${levelId}/tags`
       );
 
       onSave(updatedTagsResponse.data || []);

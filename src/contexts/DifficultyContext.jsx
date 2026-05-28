@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #DifficultyContext #difficultyContext
 /* eslint-disable react/prop-types */
 import { createContext, useState, useEffect, useContext, useRef } from "react";
@@ -37,7 +38,7 @@ const DifficultyContextProvider = (props) => {
             let diffsArray = [];
             if (update) {
                 // Fetch fresh data from server
-                const response = await api.get(import.meta.env.VITE_DIFFICULTIES, {
+                const response = await api.get(routes.database.difficulties.root(), {
                     headers: {
                         'Cache-Control': 'no-cache',
                     }
@@ -85,7 +86,7 @@ const DifficultyContextProvider = (props) => {
             let typesArray = [];
             if (update) {
                 // Fetch fresh data from server with no-cache to ensure latest data
-                const response = await api.get(`${import.meta.env.VITE_CURATIONS}/types`, {
+                const response = await api.get(`${routes.admin.curations.root()}/types`, {
                     headers: {
                         'Cache-Control': 'no-cache',
                     }
@@ -133,7 +134,7 @@ const DifficultyContextProvider = (props) => {
             let tagsArray = [];
             if (update) {
                 // Fetch fresh data from server with no-cache to ensure latest data
-                const response = await api.get(`${import.meta.env.VITE_DIFFICULTIES}/tags`, {
+                const response = await api.get(`${routes.database.difficulties.root()}/tags`, {
                     headers: {
                         'Cache-Control': 'no-cache',
                     }
@@ -175,7 +176,7 @@ const DifficultyContextProvider = (props) => {
 
     useEffect(() => {
         const runFetch = async () => {
-            const hash = await api.get(`${import.meta.env.VITE_DIFFICULTIES}/hash`).then(res => res.data?.hash);
+            const hash = await api.get(`${routes.database.difficulties.root()}/hash`).then(res => res.data?.hash);
             const storedHash = localStorage.getItem('difficultiesHash');
             const doUpdate = hash !== storedHash;
             await Promise.all([fetchDifficulties(doUpdate), fetchCurationTypes(doUpdate), fetchTags(doUpdate)]);
@@ -190,7 +191,7 @@ const DifficultyContextProvider = (props) => {
     }, [difficulties]);
 
     const validateHash = async () => {
-        const hash = await api.get(`${import.meta.env.VITE_DIFFICULTIES}/hash`).then(res => res.data?.hash);
+        const hash = await api.get(`${routes.database.difficulties.root()}/hash`).then(res => res.data?.hash);
         const storedHash = localStorage.getItem('difficultiesHash');
         if(hash !== storedHash) {
             await Promise.all([fetchDifficulties(true), fetchCurationTypes(true), fetchTags(true)]);

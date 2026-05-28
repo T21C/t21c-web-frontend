@@ -1,3 +1,4 @@
+import { routes } from '@/api/routes';
 // tuf-search: #LevelDetailPage #levelDetailPage #level #levelDetail — {{song}}
 /* eslint-disable no-unused-vars */
 // eslint-disable-next-line no-unused-vars
@@ -1128,7 +1129,7 @@ const LevelDetailPage = ({ mockData = null }) => {
     }
     
     try {
-      const response = await api.get(`${import.meta.env.VITE_LEVELS}/${effectiveId}/isLiked`);
+      const response = await api.get(`${routes.database.levels.root()}/${effectiveId}/isLiked`);
       setRes(prevRes => {
         if (!prevRes) return prevRes;
         return {
@@ -1166,7 +1167,7 @@ const LevelDetailPage = ({ mockData = null }) => {
 
       for (let attempt = 0; attempt < maxAttempts; attempt++) {
         try {
-          const response = await api.get(`${import.meta.env.VITE_LEVELS}/${effectiveId}/cdnData`);
+          const response = await api.get(`${routes.database.levels.root()}/${effectiveId}/cdnData`);
           const rawMeta = response.data.metadata;
           const rawOpts = response.data.transformOptions;
           const metadata = rawMeta ?? null;
@@ -1214,7 +1215,7 @@ const LevelDetailPage = ({ mockData = null }) => {
     }
 
     try {
-      const response = await api.get(`${import.meta.env.VITE_PASSES}/level/${effectiveId}`);
+      const response = await api.get(`${routes.database.passes.root()}/level/${effectiveId}`);
       const passes = Array.isArray(response.data) ? response.data : [];
       setRes(prevRes => {
         if (!prevRes?.level) return prevRes;
@@ -1247,7 +1248,7 @@ const LevelDetailPage = ({ mockData = null }) => {
     }
 
     try {
-      const response = await api.get(`${import.meta.env.VITE_LEVELS}/${effectiveId}/ratings`);
+      const response = await api.get(`${routes.database.levels.root()}/${effectiveId}/ratings`);
       setRes(prevRes => {
         if (!prevRes) return prevRes;
         return {
@@ -1274,7 +1275,7 @@ const LevelDetailPage = ({ mockData = null }) => {
     }
     
     try {
-      const levelData = await api.get(`${import.meta.env.VITE_LEVELS}/${effectiveId}`);
+      const levelData = await api.get(`${routes.database.levels.root()}/${effectiveId}`);
 
       if (levelData.data.timeout) {
         setLevelTimeout(levelData.data.timeout);
@@ -1769,7 +1770,7 @@ const LevelDetailPage = ({ mockData = null }) => {
         requestData.publicComments = publicComments;
       }
 
-      const response = await api.put(`${import.meta.env.VITE_LEVELS}/${effectiveId}/timeout`, requestData);
+      const response = await api.put(`${routes.database.levels.root()}/${effectiveId}/timeout`, requestData);
       
       if (response.data.timeout) {
         setLevelTimeout(response.data.timeout);
@@ -1808,7 +1809,7 @@ const LevelDetailPage = ({ mockData = null }) => {
     setIsLiking(true);
     try {
       const action = res.isLiked ? 'unlike' : 'like';
-      const response = await api.put(`${import.meta.env.VITE_LEVELS}/${effectiveId}/like`, { action });
+      const response = await api.put(`${routes.database.levels.root()}/${effectiveId}/like`, { action });
       
       if (response.data.success) {
         setRes(prevRes => ({
