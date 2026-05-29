@@ -150,7 +150,6 @@
 
 .level-detail .header .left .level-id.mobile {
   display: none;
-  position: fixed;
 }
 
 .level-detail .header .right {
@@ -496,15 +495,25 @@
   color: #ddd;
 }
 
-/* Top-left header badges (weekly lists, pending rerate, …) */
+/* Top-left: level id (mobile) + header badges (weekly lists, pending rerate, …) */
+.level-detail .level-detail-header-mobile-bar {
+  position: absolute;
+  top: var(--spacing-sm);
+  left: var(--spacing-sm);
+  z-index: 20;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-xs);
+  overflow: visible;
+}
+
 .level-detail .level-detail-header-corner-icons {
   display: flex;
-  align-items: flex-start;
-  position: absolute;
-  top: 0;
-  left: 0;
+  flex-direction: row;
+  align-items: center;
   gap: var(--spacing-xs);
-  z-index: 20;
+  flex-shrink: 0;
 }
 
 .level-detail .header-corner-icon-slot {
@@ -514,7 +523,7 @@
 
 .level-detail .rerate-history-dropdown-anchor {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   display: flex;
   right: -50%;
   flex-direction: column;
@@ -1399,9 +1408,7 @@
 @media (max-width: 600px) {
   .level-detail .rerate-history-dropdown {
     min-width: 180px;
-    max-width: 98vw;
-    left: 50%;
-    transform: translateX(-50%);
+    max-width: min(98vw, 320px);
     padding: var(--spacing-xs) 4px;
   }
 
@@ -1947,6 +1954,16 @@
   transform: rotate(180deg);
 }
 
+@media (hover: hover) {
+  .level-detail .rerate-arrow:not([data-disabled="true"]):hover {
+    transform: scale(1.2);
+  }
+
+  .level-detail .rerate-arrow.open:not([data-disabled="true"]):hover {
+    transform: scale(1.2) rotate(180deg);
+  }
+}
+
 .level-detail .rerate-arrow .rerate-arrow-icon,
 .level-detail .rerate-arrow .rerate-history-icon {
   position: absolute;
@@ -2301,10 +2318,15 @@
 @media (max-width: 768px) {
   .level-detail .wrapper-level button,
   .level-detail .left .like-button,
-  .level-detail .rerate-arrow,
   .level-detail .title-container .tag-list-arrow {
     min-height: 16px;
     min-width: 16px;  
+  }
+
+  .level-detail .rerate-arrow {
+    min-height: 2rem;
+    min-width: 2rem;
+    touch-action: manipulation;
   }
   
   .level-detail .rank .sort svg {
@@ -2335,16 +2357,12 @@
 
   .level-detail .header .left .level-id.mobile {
     font-size: 0.75rem;
-    z-index: 2;
-    display: unset;
-    position: absolute;
-    top: var(--spacing-sm);
-    left: var(--spacing-sm);
-    min-height: 24px;
-    min-width: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
+    min-height: 24px;
+    min-width: 40px;
+    flex-shrink: 0;
   }
 }
 
@@ -2384,13 +2402,11 @@
   }
 }
 
-/* Improve dropdown positioning on mobile */
+/* Centered modal-style dropdowns on mobile (aliases, weekly, curation tooltips) */
 @media (max-width: 768px) {
-  .level-detail .rerate-history-dropdown,
   .level-detail .title-container .aliases-dropdown,
   .curation-tooltip-dropdown:not(.level-detail__curation-inline-assignee),
-  .level-detail .weekly-appearance-dropdown,
-  .level-detail .to-rate-pending-dropdown {
+  .level-detail .weekly-appearance-dropdown {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -2398,11 +2414,6 @@
     max-height: 80vh;
     overflow-y: auto;
     z-index: var(--z-modal);
-  }
-
-  .level-detail .rerate-history-dropdown {
-    max-width: 90vw;
-    min-width: 280px;
   }
   
   .level-detail .title-container .aliases-dropdown {
@@ -2420,10 +2431,63 @@
     min-width: 200px;
   }
 
-  .level-detail .weekly-appearance-dropdown,
-  .level-detail .to-rate-pending-dropdown {
+  .level-detail .weekly-appearance-dropdown {
     max-width: 90vw;
     min-width: 280px;
+  }
+}
+
+/* Anchor rerate / to-rate dropdowns beside their triggers on mobile */
+@media (max-width: 768px) {
+  .level-detail .level-detail-header-mobile-bar,
+  .level-detail .level-detail-header-corner-icons,
+  .level-detail .header-corner-icon-slot,
+  .level-detail .header .left,
+  .level-detail .difficulty-curation-row,
+  .level-detail .rerate-history-container {
+    overflow: visible;
+  }
+
+  .level-detail .rerate-history-dropdown-anchor {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 2.75rem;
+    height: 2.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .level-detail .rerate-history-dropdown-anchor .rerate-arrow {
+    position: static;
+    bottom: auto;
+    right: auto;
+  }
+
+  .level-detail .rerate-history-dropdown,
+  .level-detail .to-rate-pending-dropdown {
+    position: absolute;
+    transform: none;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: var(--z-modal);
+  }
+
+  .level-detail .rerate-history-dropdown {
+    top: calc(100% + 4px);
+    right: 0;
+    left: auto;
+    max-width: min(90vw, 320px);
+    min-width: 200px;
+  }
+
+  .level-detail .to-rate-pending-dropdown {
+    top: calc(100% + 8px);
+    left: 0;
+    right: auto;
+    max-width: min(90vw, 320px);
+    min-width: 200px;
   }
 }
 
@@ -2630,13 +2694,16 @@
 @media (max-width: 768px) {
   .level-detail .wrapper-level button,
   .level-detail .left .like-button,
-  .level-detail .rerate-arrow,
   .level-detail .title-container .tag-list-arrow,
   .level-detail .rank .sort svg,
   .level-detail .difficulty-icon,
   .level-detail .rating-icon,
   .curation-type-icon {
     border-radius: 8px;
+  }
+
+  .level-detail .rerate-arrow {
+    border-radius: 50%;
   }
   
   .level-detail .pp-display,
@@ -2673,9 +2740,18 @@
 @media (hover: hover) and (max-width: 768px) {
   .level-detail .wrapper-level button:hover,
   .level-detail .left .like-button.available:hover,
-  .level-detail .rerate-arrow:hover,
   .level-detail .title-container .tag-list-arrow:hover {
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  }
+
+  .level-detail .rerate-arrow:not([data-disabled="true"]):hover {
+    transform: scale(1.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  }
+
+  .level-detail .rerate-arrow.open:not([data-disabled="true"]):hover {
+    transform: scale(1.2) rotate(180deg);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   }
   
@@ -2688,9 +2764,18 @@
 @media (max-width: 768px) {
   .level-detail .wrapper-level button:active,
   .level-detail .left .like-button.available:active,
-  .level-detail .rerate-arrow:active,
   .level-detail .title-container .tag-list-arrow:active {
     transform: translateY(0);
+    transition: transform 0.1s ease-out;
+  }
+
+  .level-detail .rerate-arrow:not([data-disabled="true"]):active {
+    transform: scale(1.15);
+    transition: transform 0.1s ease-out;
+  }
+
+  .level-detail .rerate-arrow.open:not([data-disabled="true"]):active {
+    transform: scale(1.15) rotate(180deg);
     transition: transform 0.1s ease-out;
   }
   
@@ -3055,6 +3140,34 @@
 .rerate-arrow[data-disabled="false"] {
   pointer-events: auto;
   opacity: 1;
+}
+
+/* Touch-friendly rerate control in difficulty container */
+@media (hover: none) and (pointer: coarse) {
+  .level-detail .rerate-arrow {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    width: 2.75rem;
+    height: 2.75rem;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .level-detail .rerate-arrow:not([data-disabled="true"]):hover {
+    transform: none;
+  }
+
+  .level-detail .rerate-arrow.open:not([data-disabled="true"]):hover {
+    transform: rotate(180deg);
+  }
+
+  .level-detail .rerate-arrow:not([data-disabled="true"]):active {
+    transform: scale(1.15);
+  }
+
+  .level-detail .rerate-arrow.open:not([data-disabled="true"]):active {
+    transform: scale(1.15) rotate(180deg);
+  }
 }
 
 /* Level tags container */

@@ -1933,77 +1933,79 @@ const LevelDetailPage = ({ mockData = null }) => {
           <div className="header">
             <div className="left">
 
-              {(res?.level?.curationSchedules?.length > 0 || res?.level?.toRate) && (
-                <div className="level-detail-header-corner-icons">
-                  {res?.level?.curationSchedules?.length > 0 && (
-                    <div ref={weeklyHeaderCornerSlotRef} className="header-corner-icon-slot">
-                      <div
-                        className="header-corner-icon"
-                        role="button"
-                        tabIndex={0}
-                        aria-expanded={showWeeklyAppearanceDropdown}
-                        aria-haspopup="dialog"
-                        aria-label={t('levelDetail.weeklyAppearance.header')}
-                        title={t('levelDetail.weeklyAppearance.header')}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setShowWeeklyAppearanceDropdown((open) => !open);
-                        }}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
+              <div className="level-detail-header-mobile-bar">
+                <div className="level-id mobile">#{effectiveId}</div>
+                {(res?.level?.curationSchedules?.length > 0 || res?.level?.toRate) && (
+                  <div className="level-detail-header-corner-icons">
+                    {res?.level?.curationSchedules?.length > 0 && (
+                      <div ref={weeklyHeaderCornerSlotRef} className="header-corner-icon-slot">
+                        <div
+                          className="header-corner-icon"
+                          role="button"
+                          tabIndex={0}
+                          aria-expanded={showWeeklyAppearanceDropdown}
+                          aria-haspopup="dialog"
+                          aria-label={t('levelDetail.weeklyAppearance.header')}
+                          title={t('levelDetail.weeklyAppearance.header')}
+                          onClick={(e) => {
+                            e.stopPropagation();
                             setShowWeeklyAppearanceDropdown((open) => !open);
-                          }
-                        }}
-                      >
-                        <CalendarIcon
-                          size={"20px"}
-                          color="#fff"
-                          className="weekly-appearance-icon-icon"
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              setShowWeeklyAppearanceDropdown((open) => !open);
+                            }
+                          }}
+                        >
+                          <CalendarIcon
+                            size={"20px"}
+                            color="#fff"
+                            className="weekly-appearance-icon-icon"
+                          />
+                        </div>
+                        <WeeklyAppearanceDropdown
+                          schedules={res?.level?.curationSchedules}
+                          show={showWeeklyAppearanceDropdown}
+                          onClose={closeWeeklyAppearanceDropdown}
+                          containerRef={weeklyHeaderCornerSlotRef}
                         />
                       </div>
-                      <WeeklyAppearanceDropdown
-                        schedules={res?.level?.curationSchedules}
-                        show={showWeeklyAppearanceDropdown}
-                        onClose={closeWeeklyAppearanceDropdown}
-                        containerRef={weeklyHeaderCornerSlotRef}
-                      />
-                    </div>
-                  )}
-                  {res?.level?.toRate && (
-                    <div ref={toRateHeaderCornerSlotRef} className="header-corner-icon-slot">
-                      <div
-                        className="header-corner-icon"
-                        role="button"
-                        tabIndex={0}
-                        aria-expanded={showToRatePendingDropdown}
-                        aria-haspopup="dialog"
-                        aria-label={t('levelDetail.toRatePending.header')}
-                        title={t('levelDetail.toRatePending.header')}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setShowToRatePendingDropdown((open) => !open);
-                        }}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
+                    )}
+                    {res?.level?.toRate && (
+                      <div ref={toRateHeaderCornerSlotRef} className="header-corner-icon-slot">
+                        <div
+                          className="header-corner-icon"
+                          role="button"
+                          tabIndex={0}
+                          aria-expanded={showToRatePendingDropdown}
+                          aria-haspopup="dialog"
+                          aria-label={t('levelDetail.toRatePending.header')}
+                          title={t('levelDetail.toRatePending.header')}
+                          onClick={(e) => {
+                            e.stopPropagation();
                             setShowToRatePendingDropdown((open) => !open);
-                          }
-                        }}
-                      >
-                        <RefreshIcon color="#fff" size={"20px"} />
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              setShowToRatePendingDropdown((open) => !open);
+                            }
+                          }}
+                        >
+                          <RefreshIcon color="#fff" size={"20px"} />
+                        </div>
+                        <ToRatePendingDropdown
+                          level={res.level}
+                          show={showToRatePendingDropdown}
+                          onClose={closeToRatePendingDropdown}
+                          containerRef={toRateHeaderCornerSlotRef}
+                        />
                       </div>
-                      <ToRatePendingDropdown
-                        level={res.level}
-                        show={showToRatePendingDropdown}
-                        onClose={closeToRatePendingDropdown}
-                        containerRef={toRateHeaderCornerSlotRef}
-                      />
-                    </div>
-                  )}
-                </div>
-              )}
-              <div className="level-id mobile">#{effectiveId}</div>
+                    )}
+                  </div>
+                )}
+              </div>
               <div className="difficulty-curation-row">
               <div className="diff rerate-history-container">
                 {difficulty?.icon && res.level?.tilecount ? (
