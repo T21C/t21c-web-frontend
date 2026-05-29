@@ -11,12 +11,15 @@ const DEFAULT_SIZE_SUMMARY = { totalBytes: 0, missingCount: 0, levelCount: 0 };
 const MAX_DOWNLOAD_SIZE_BYTES = 15 * 1024 * 1024 * 1024; // 15GB
 
 function resolvePackDownloadErrorMessage(err, packJob, t) {
-  const code = err?.response?.data?.code;
+  const code = err?.response?.data?.code ?? packJob?.meta?.code;
   if (code === 'PACK_DISK_FULL') {
     return t('packPopups.downloadPack.errors.diskFull');
   }
   if (code === 'PACK_QUEUE_BUSY') {
     return t('packPopups.downloadPack.errors.queueBusy');
+  }
+  if (code === 'PACK_SIZE_LIMIT_EXCEEDED') {
+    return t('packPopups.downloadPack.errors.sizeExceeded');
   }
   return (
     err?.response?.data?.error ||
