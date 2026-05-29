@@ -37,6 +37,7 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
     is16K: pass.is16K || false,
     isAnnounced: pass.isAnnounced || false,
     isDuplicate: pass.isDuplicate || false,
+    isAdofaiV2: pass.isAdofaiV2 || false,
     vidUploadTime: pass.vidUploadTime || new Date().toISOString()
   };
   const { user } = useAuth();
@@ -107,6 +108,7 @@ const handleSubmit = async (e) => {
       isNoHoldTap: form.isNoHold,
       isAnnounced: form.isAnnounced,
       isDuplicate: form.isDuplicate,
+      isAdofaiV2: form.isAdofaiV2,
 
       // Judgements in the exact format expected by the API
       judgements: {
@@ -283,6 +285,11 @@ const handleSubmit = async (e) => {
                 <input type="checkbox" name="isDuplicate" checked={form.isDuplicate} onChange={handleInputChange} />
                 <span className="checkmark"></span>
                 <span>Is Duplicate</span>
+              </label>
+              <label className="checkbox-container">
+                <input type="checkbox" name="isAdofaiV2" checked={form.isAdofaiV2} onChange={handleInputChange} />
+                <span className="checkmark"></span>
+                <span>ADOFAI v2</span>
               </label>
             </div>
           )}

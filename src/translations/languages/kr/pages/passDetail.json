@@ -50,7 +50,9 @@
     "worldsFirstPP": "🏆 세계 최초 완벽한 플레이! 🏆",
     "12k": "12키",
     "16k": "16키",
-    "noHoldTap": "기본 외 홀드 타일 동작"
+    "noHoldTap": "기본 외 홀드 타일 동작",
+    "adofaiV2": "ADOFAI v2",
+    "adofaiV2Note": "Recorded on ADOFAI v2"
   },
   "judgements": {
     "title": "판정",

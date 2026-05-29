@@ -62,6 +62,7 @@ const PassCard = ({ pass }) => {
         {pass.is12K && <div className="flag">{t('cards.pass.flags.twelveKey')}</div>}
         {pass.is16K && <div className="flag">{t('cards.pass.flags.sixteenKey')}</div>}
         {pass.isNoHoldTap && <div className="flag">{t('cards.pass.flags.noHoldTap')}</div>}
+        {pass.isAdofaiV2 && <div className="flag">{t('cards.pass.flags.adofaiV2')}</div>}
       </div>
       </Link>
 

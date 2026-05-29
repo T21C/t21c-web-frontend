@@ -305,7 +305,7 @@ const PassDetailPage = () => {
                   </span>
                 </div>
               </div>
-              {(pass.isWorldsFirst || pass.isWorldsFirstPP || pass.is12K || pass.is16K || pass.isNoHoldTap) && (
+              {(pass.isWorldsFirst || pass.isWorldsFirstPP || pass.is12K || pass.is16K || pass.isNoHoldTap || pass.isAdofaiV2) && (
                 <div className="flags-container">
                   {pass.isWorldsFirst && (
                     <span className="worlds-first">{t('passDetail.flags.worldsFirst')}</span>
@@ -313,11 +313,16 @@ const PassDetailPage = () => {
                   {pass.isWorldsFirstPP && (
                     <span className="worlds-first">{t('passDetail.flags.worldsFirstPP')}</span>
                   )}
-                  {(pass.is12K || pass.is16K || pass.isNoHoldTap) && (
+                  {(pass.is12K || pass.is16K || pass.isNoHoldTap || pass.isAdofaiV2) && (
                     <div className="flags">
                       {pass.is12K && <span className="flag">{t('passDetail.flags.12k')}</span>}
                       {pass.is16K && <span className="flag">{t('passDetail.flags.16k')}</span>}
                       {pass.isNoHoldTap && <span className="flag">{t('passDetail.flags.noHoldTap')}</span>}
+                      {pass.isAdofaiV2 && (
+                        <span className="flag" title={t('passDetail.flags.adofaiV2Note')}>
+                          {t('passDetail.flags.adofaiV2')}
+                        </span>
+                      )}
                     </div>
                   )}
                 </div>
