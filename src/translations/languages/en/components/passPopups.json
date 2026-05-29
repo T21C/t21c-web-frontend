@@ -11,7 +11,8 @@
         "feelDiff": "Feeling Difficulty",
         "nohold": "No Hold",
         "is12K": "12K",
-        "is16K": "16K"
+        "is16K": "16K",
+        "isAdofaiV2": "ADOFAI v2"
       },
       "levelInfo": {
         "song": "Song Name",
@@ -45,6 +46,7 @@
     "holdTooltip": "Check this if a different hold tile behavior was used (no holding required etc.)",
     "12kTooltip": "Check this if 12K was used (12 or less keys)",
     "16kTooltip": "Check this if 16K was used (13+ keys)",
+    "adofaiV2Tooltip": "Check this if the clear was recorded on ADOFAI v2",
     "tooltip": "Unknown difficulty, make sure the managers will understand it. Valid examples: G1-G5, 17~18+, U1, etc.",
     "alert": {
       "success": "Pass updated successfully!",

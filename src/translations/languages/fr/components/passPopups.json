@@ -11,7 +11,8 @@
         "feelDiff": "Difficulté Ressentie",
         "nohold": "Pas de maintien",
         "is12K": "12K",
-        "is16K": "16K"
+        "is16K": "16K",
+        "isAdofaiV2": "ADOFAI v2"
       },
       "levelInfo": {
         "song": "Chanson",
@@ -45,6 +46,7 @@
     "holdTooltip": "Notes tapées seulement, pas de note maintenue",
     "12kTooltip": "Variante 12 touches",
     "16kTooltip": "Variante 16 touches",
+    "adofaiV2Tooltip": "Check this if the clear was recorded on ADOFAI v2",
     "tooltip": "Entrez un nombre entre 1 et 10",
     "alert": {
       "success": "Complétion mise à jour avec succès !",

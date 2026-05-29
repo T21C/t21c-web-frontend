@@ -11,7 +11,8 @@
         "feelDiff": "体感难度",
         "nohold": "非默认长按设置",
         "is12K": "12键",
-        "is16K": "16键"
+        "is16K": "16键",
+        "isAdofaiV2": "ADOFAI v2"
       },
       "levelInfo": {
         "song": "曲名",
@@ -45,6 +46,7 @@
     "holdTooltip": "如果使用了非默认长按选项，请勾选此项",
     "12kTooltip": "如果使用了不多于12个键，请选中此项",
     "16kTooltip": "如果使用了不少于16个键，请选中此项",
+    "adofaiV2Tooltip": "Check this if the clear was recorded on ADOFAI v2",
     "tooltip": "未知难度，请确保管理员能够读懂。有效示例：G1-G5、17~18+、U1 等。",
     "alert": {
       "success": "通关记录更新成功！",

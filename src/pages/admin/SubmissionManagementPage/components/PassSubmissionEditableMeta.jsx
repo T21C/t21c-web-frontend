@@ -52,6 +52,7 @@ function flagsFromSubmission(sub) {
     is12K: !!f.is12K,
     isNoHoldTap: !!f.isNoHoldTap,
     is16K: !!f.is16K,
+    isAdofaiV2: !!f.isAdofaiV2,
   };
 }
 
@@ -72,6 +73,7 @@ function diffFlags(snap, draft) {
   if (snap.is12K !== draft.is12K) out.is12K = draft.is12K;
   if (snap.isNoHoldTap !== draft.isNoHoldTap) out.isNoHoldTap = draft.isNoHoldTap;
   if (snap.is16K !== draft.is16K) out.is16K = draft.is16K;
+  if (snap.isAdofaiV2 !== draft.isAdofaiV2) out.isAdofaiV2 = draft.isAdofaiV2;
   return out;
 }
 
@@ -591,6 +593,7 @@ export default function PassSubmissionEditableMeta({
                 {flags?.is12K && <span>{t('passSubmissions.details.flags.types.12k')}</span>}
                 {flags?.isNoHoldTap && <span>{t('passSubmissions.details.flags.types.nht')}</span>}
                 {flags?.is16K && <span>{t('passSubmissions.details.flags.types.16k')}</span>}
+                {flags?.isAdofaiV2 && <span>{t('passSubmissions.details.flags.types.adofaiV2')}</span>}
               </div>
               <button type="button" className="pass-submission-meta-edit-btn" onClick={beginEditFlags}>
                 {t('passSubmissions.edit.edit')}
@@ -621,6 +624,14 @@ export default function PassSubmissionEditableMeta({
                   onChange={(e) => setDraftFlags((f) => ({ ...f, is16K: e.target.checked }))}
                 />
                 <span>{t('passSubmissions.details.flags.types.16k')}</span>
+              </label>
+              <label className="pass-submission-flag-field">
+                <input
+                  type="checkbox"
+                  checked={draftFlags.isAdofaiV2}
+                  onChange={(e) => setDraftFlags((f) => ({ ...f, isAdofaiV2: e.target.checked }))}
+                />
+                <span>{t('passSubmissions.details.flags.types.adofaiV2')}</span>
               </label>
               <div className="pass-submission-meta-actions">
                 <button type="button" className="pass-submission-meta-save" onClick={saveFlags}>

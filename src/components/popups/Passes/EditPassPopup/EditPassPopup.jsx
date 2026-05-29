@@ -286,11 +286,6 @@ const handleSubmit = async (e) => {
                 <span className="checkmark"></span>
                 <span>Is Duplicate</span>
               </label>
-              <label className="checkbox-container">
-                <input type="checkbox" name="isAdofaiV2" checked={form.isAdofaiV2} onChange={handleInputChange} />
-                <span className="checkmark"></span>
-                <span>ADOFAI v2</span>
-              </label>
             </div>
           )}
           renderSubmitActions={() => (

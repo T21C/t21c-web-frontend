@@ -8,7 +8,8 @@
     "speed": "Prędkość (opcj., >=1.0)",
     "feelDiff": "Szacowany poziom trudności",
     "is12K": "12K",
-    "is16K": "16K"
+    "is16K": "16K",
+    "isAdofaiV2": "ADOFAI v2"
   },
   "levelInfo": {
     "song": "Utwór",
@@ -41,6 +42,7 @@
   "holdTooltip": "Zaznacz, jeśli nie użyłeś wciśnięcia przy przytrzymaniu (NHT)",
   "12kTooltip": "Zaznacz, jeśli użyłeś 12 lub mniej klawiszy",
   "16kTooltip": "Zaznacz, jeśli użyłeś 13 lub więcej klawiszy",
+  "adofaiV2Tooltip": "Check this if the clear was recorded on ADOFAI v2",
   "tooltip": "Wpisz numer 1-10",
   "alert": {
     "success": "Pomyślnie przesłano przejście!",

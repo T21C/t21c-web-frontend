@@ -8,7 +8,8 @@
     "speed": "Vitesse (opt., >=1.0)",
     "feelDiff": "Difficulté ressentie",
     "is12K": "12K",
-    "is16K": "16K"
+    "is16K": "16K",
+    "isAdofaiV2": "ADOFAI v2"
   },
   "levelInfo": {
     "song": "Chanson",
@@ -41,6 +42,7 @@
   "holdTooltip": "Cochez ceci si vous n'avez pas utilisé les maintients alternatifs",
   "12kTooltip": "Cochez ceci si vous avez utilisé 12 touches",
   "16kTooltip": "Cochez ceci si vous avez utilisé 16 touches",
+  "adofaiV2Tooltip": "Check this if the clear was recorded on ADOFAI v2",
   "tooltip": "Entrez un numéro entre 1 et 10",
   "alert": {
     "success": "Complétion envoyée!",

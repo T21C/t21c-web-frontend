@@ -11,7 +11,8 @@
         "feelDiff": "Szacowany poziom trudności",
         "nohold": "Bez holder'ów",
         "is12K": "12K",
-        "is16K": "16K"
+        "is16K": "16K",
+        "isAdofaiV2": "ADOFAI v2"
       },
       "levelInfo": {
         "song": "Piosenka",
@@ -45,6 +46,7 @@
     "holdTooltip": "Bez holder'ów",
     "12kTooltip": "Wariant 12K",
     "16kTooltip": "Wariant 16K",
+    "adofaiV2Tooltip": "Check this if the clear was recorded on ADOFAI v2",
     "tooltip": "Wpisz numer 1-10",
     "alert": {
       "success": "Pomyślnie zaaktualizowano przejście!",

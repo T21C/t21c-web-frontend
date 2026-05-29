@@ -43,7 +43,8 @@ const PassSubmissionPage = () => {
     late: '',
     isNoHold: false,
     is12K: false,
-    is16K: false
+    is16K: false,
+    isAdofaiV2: false,
   };
 
   const { t } = useTranslation('pages');
@@ -237,6 +238,7 @@ const PassSubmissionPage = () => {
         is12K: isUDiff && form.is12K,
         isNoHoldTap: form.isNoHold,
         is16K: isUDiff && form.is16K,
+        isAdofaiV2: form.isAdofaiV2,
       };
 
       await submitPass(payload);

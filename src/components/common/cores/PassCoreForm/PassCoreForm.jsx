@@ -30,6 +30,8 @@ export const PASS_CORE_COPY = {
     is12kTooltip: 'passSubmission.12kTooltip',
     is16kLabel: 'passSubmission.submInfo.is16K',
     is16kTooltip: 'passSubmission.16kTooltip',
+    adofaiV2Label: 'passSubmission.submInfo.isAdofaiV2',
+    adofaiV2Tooltip: 'passSubmission.adofaiV2Tooltip',
     ePerfect: 'passSubmission.judgements.ePerfect',
     perfect: 'passSubmission.judgements.perfect',
     lPerfect: 'passSubmission.judgements.lPerfect',
@@ -69,6 +71,8 @@ export const PASS_CORE_COPY = {
     is12kTooltip: 'passPopups.edit.12kTooltip',
     is16kLabel: 'passPopups.edit.form.submInfo.is16K',
     is16kTooltip: 'passPopups.edit.16kTooltip',
+    adofaiV2Label: 'passPopups.edit.form.submInfo.isAdofaiV2',
+    adofaiV2Tooltip: 'passPopups.edit.adofaiV2Tooltip',
     ePerfect: 'passPopups.edit.form.judgements.ePerfect',
     perfect: 'passPopups.edit.form.judgements.perfect',
     lPerfect: 'passPopups.edit.form.judgements.lPerfect',
@@ -355,6 +359,18 @@ export function PassCoreForm({
               />
               <span>{t(copy.is16kLabel, { ns: copy.ns })}</span>
               <Tooltip className="tooltip" id="16kTooltip" place="bottom-end" effect="solid" />
+            </div>
+
+            <div className="keycount-checkbox" data-tooltip-id="adofaiV2Tooltip" data-tooltip-content={t(copy.adofaiV2Tooltip, { ns: copy.ns })}>
+              <input
+                type="checkbox"
+                value={form.isAdofaiV2}
+                onChange={onInputChange}
+                name="isAdofaiV2"
+                checked={!!form.isAdofaiV2}
+              />
+              <span>{t(copy.adofaiV2Label, { ns: copy.ns })}</span>
+              <Tooltip className="tooltip" id="adofaiV2Tooltip" place="bottom-end" effect="solid" />
             </div>
           </div>
         </div>
