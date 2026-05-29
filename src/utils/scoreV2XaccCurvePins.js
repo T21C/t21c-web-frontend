@@ -245,7 +245,7 @@ export function pinsOnCurveAtDefaultLocations(xaccCurve, _levelData, _difficulty
     }
 }
 
-/** Site-default E/G (5.545 / 0.0054) → pin locations on that hyperbola. */
+/** Site-default E/G (5.51289781 / 0.0054017154) → pin locations on that hyperbola. */
 export function siteDefaultPinValues(_levelData, _difficultyDict, _tilecount, baseScore) {
     return pinsOnCurveAtDefaultLocations(
         XACC_CURVE_DEFAULTS,

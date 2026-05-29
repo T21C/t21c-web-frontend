@@ -6,20 +6,20 @@ import { SCORE_V2_ZERO_MISS_MULTIPLIER, scoreV2MtpFromMisses } from './CalcScore
  *   u(t) = (g(t) - 1) / (topMultiplier - 1)   with u(0)=0, u(1)=1
  *   mtp  = 1 + (topMultiplier - 1) * u(t)
  *
- * Site defaults: E = 0.0054, G = 5.545 at the 95% anchor (xacc mult = 1).
+ * Site defaults: E = 0.0054017154, G = 5.51289781 at the 95% anchor (xacc mult = 1).
  */
 
 /** @typedef {Object} XaccCurveConfig
  * @property {number} [cutoff] Accuracy at which the xacc band starts (default 0.95).
- * @property {number} [topMultiplier] Multiplier at xacc -> 1- (default 5.545).
- * @property {number} [poleOffset] Pole offset above 1 (E); pole = 1 + poleOffset (default 0.0054).
+ * @property {number} [topMultiplier] Multiplier at xacc -> 1- (default 5.51289781).
+ * @property {number} [poleOffset] Pole offset above 1 (E); pole = 1 + poleOffset (default 0.0054017154).
  */
 
 /** @type {Required<XaccCurveConfig>} */
 export const XACC_CURVE_DEFAULTS = {
     cutoff: 0.95,
-    topMultiplier: 5.545,
-    poleOffset: 0.0054,
+    topMultiplier: 5.51289781,
+    poleOffset: 0.0054017154,
 }
 
 /** Site-default interior pin accuracies (fractions, not %). */
