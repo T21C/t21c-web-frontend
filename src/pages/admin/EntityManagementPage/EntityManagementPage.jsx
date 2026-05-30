@@ -12,7 +12,7 @@ import api from '@/utils/api';
 import { routes } from '@/api/routes';
 import { getCdnErrorMessage } from '@/utils/uploadErrors';
 import { toast } from 'react-hot-toast';
-import InfiniteScroll from 'react-infinite-scroll-component';
+import { VirtualList } from '@/components/common/VirtualList';
 import './entityManagementPage.css';
 import { Link } from 'react-router-dom';
 import { getVerificationClass, isCdnUrl, isImageUrl } from '@/utils/Utility';
@@ -338,11 +338,12 @@ const EntityManagementPage = ({ type = 'artist' }) => {
         {loading && entities.length === 0 ? (
           <div className="loader loader-level-page"></div>
         ) : (
-          <InfiniteScroll
+          <VirtualList
             style={{ paddingBottom: "7rem", overflow: "visible" }}
-            dataLength={entities.length}
-            next={handleLoadMore}
+            items={entities}
+            loadMore={handleLoadMore}
             hasMore={hasMore}
+            listClassName="entities-list"
             loader={<div className="loader loader-level-page"></div>}
             endMessage={
               entities.length > 0 && (
@@ -351,86 +352,81 @@ const EntityManagementPage = ({ type = 'artist' }) => {
                 </p>
               )
             }
-          >
-            <div className="entities-list">
-              {entities.length === 0 ? (
-                <div className="no-results">{tEntity(noResultsKey)}</div>
-              ) : (
-                entities.map((entity) => (
-                  <div key={entity.id} className="entity-item">
-                    <div className="entity-info">
-                      {type === 'artist' && entity.avatarUrl && (
-                        <img src={entity.avatarUrl} alt={entity.name} className="entity-avatar" />
+            renderItem={(entity) => (
+              <div className="entity-item">
+                <div className="entity-info">
+                  {type === 'artist' && entity.avatarUrl && (
+                    <img src={entity.avatarUrl} alt={entity.name} className="entity-avatar" />
+                  )}
+                  <div className="entity-details">
+                    <Link to={`/${type}s/${entity.id}`} className="entity-name-link">
+                      {entity.name} (ID: {entity.id})
+                    </Link>
+                    <div className="entity-meta">
+                      <span className={getVerificationClass(entity.verificationState)}>
+                        {t(`verification.${entity.verificationState}`, { ns: 'common' })}
+                      </span>
+                      {entity.aliases && entity.aliases.length > 0 && (
+                        <span className="aliases-count">
+                          {entity.aliases.length} {tEntity('aliases')}
+                        </span>
                       )}
-                      <div className="entity-details">
-                        <Link to={`/${type}s/${entity.id}`} className="entity-name-link">
-                          {entity.name} (ID: {entity.id})
-                        </Link>
-                        <div className="entity-meta">
-                          <span className={getVerificationClass(entity.verificationState)}>
-                            {t(`verification.${entity.verificationState}`, { ns: 'common' })}
-                          </span>
-                          {entity.aliases && entity.aliases.length > 0 && (
-                            <span className="aliases-count">
-                              {entity.aliases.length} {tEntity('aliases')}
+                      {type === 'song' && entity.credits && entity.credits.length > 0 && (
+                        <div className="entity-credits">
+                          {entity.credits.map((credit, index) => (
+                            <span key={credit.id} className="entity-credit-tag">
+                              {credit.artist?.name || 'Unknown'}
+                              {index < entity.credits.length - 1 && <span className="entity-credit-separator">, </span>}
                             </span>
-                          )}
-                          {type === 'song' && entity.credits && entity.credits.length > 0 && (
-                            <div className="entity-credits">
-                              {entity.credits.map((credit, index) => (
-                                <span key={credit.id} className="entity-credit-tag">
-                                  {credit.artist?.name || 'Unknown'}
-                                  {index < entity.credits.length - 1 && <span className="entity-credit-separator">, </span>}
-                                </span>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="evidence-list">
-                      {entity.evidences && entity.evidences.length > 0 && (
-                        <div className="evidence-list" onClick={() => openEvidenceGallery(entity)}>
-                          {entity.evidences.map((evidence) => {
-
-                            const isImage = isImageUrl(evidence.link);
-                            const isCdn = isCdnUrl(evidence.link);
-                            const isExternal = !isImage && !isCdn;
-                            return (
-                            <div key={evidence.id} className="evidence-item">
-                              {isImage ? (
-                                <img src={evidence.link} alt="Evidence" />
-                              ) : (
-                                <div className="evidence-link-item">
-                                  <span className="evidence-link-icon">🔗</span>
-                                </div>
-                              )}
-                            </div>
-                            )
-                          })}
+                          ))}
                         </div>
                       )}
                     </div>
-                    <div className="entity-actions">
-                      <button
-                        className="edit-button"
-                        onClick={() => setSelectedEntity(entity)}
-                      >
-                        {t('buttons.edit', { ns: 'common' })}
-                      </button>
-                      <button
-                        className="delete-button"
-                        onClick={() => handleDelete(entity.id)}
-                      >
-                        {t('buttons.delete', { ns: 'common' })}
-                      </button>
-                    </div>
-
                   </div>
-                ))
-              )}
-            </div>
-          </InfiniteScroll>
+                </div>
+                <div className="evidence-list">
+                  {entity.evidences && entity.evidences.length > 0 && (
+                    <div className="evidence-list" onClick={() => openEvidenceGallery(entity)}>
+                      {entity.evidences.map((evidence) => {
+                        const isImage = isImageUrl(evidence.link);
+                        const isCdn = isCdnUrl(evidence.link);
+                        return (
+                          <div key={evidence.id} className="evidence-item">
+                            {isImage ? (
+                              <img src={evidence.link} alt="Evidence" />
+                            ) : (
+                              <div className="evidence-link-item">
+                                <span className="evidence-link-icon">🔗</span>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+                <div className="entity-actions">
+                  <button
+                    className="edit-button"
+                    onClick={() => setSelectedEntity(entity)}
+                  >
+                    {t('buttons.edit', { ns: 'common' })}
+                  </button>
+                  <button
+                    className="delete-button"
+                    onClick={() => handleDelete(entity.id)}
+                  >
+                    {t('buttons.delete', { ns: 'common' })}
+                  </button>
+                </div>
+              </div>
+            )}
+            computeItemKey={(index, entity) => entity?.id ?? index}
+          />
+        )}
+
+        {!loading && entities.length === 0 && (
+          <div className="no-results">{tEntity(noResultsKey)}</div>
         )}
 
       {selectedEntity && (

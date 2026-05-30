@@ -6,7 +6,7 @@ import axios from "axios";
 import { PlayerCard } from "@/components/cards";
 import { StateDisplay, CustomSelect, CountrySelect, RangeSelector } from "@/components/common/selectors";
 import { Tooltip } from "react-tooltip";
-import InfiniteScroll from "react-infinite-scroll-component";
+import { VirtualList } from "@/components/common/VirtualList";
 import api from '@/utils/api';
 import { useDebouncedRequest } from '@/hooks/useDebouncedRequest';
 import { PlayerContext } from "@/contexts/PlayerContext";
@@ -564,10 +564,10 @@ const LeaderboardPage = () => {
           {playerData === null ? (
             <div className="loader loader-level-page"></div>
           ) : (
-            <InfiniteScroll
+            <VirtualList
               style={{ paddingBottom: "4rem", overflow: "visible" }}
-              dataLength={displayedPlayers?.length ?? 0}
-              next={() => fetchPlayers(displayedPlayers?.length ?? 0, { immediate: true })}
+              items={displayedPlayers}
+              loadMore={() => fetchPlayers(displayedPlayers?.length ?? 0, { immediate: true })}
               hasMore={hasMore}
               loader={<div className="loader"></div>}
               endMessage={
@@ -577,16 +577,15 @@ const LeaderboardPage = () => {
                   </p>
                 )
               }
-            >
-              {displayedPlayers.map((playerStat) => (
+              renderItem={(playerStat) => (
                 <PlayerCard
-                  key={playerStat.id}
                   currSort={sortBy}
                   player={playerStat}
                   onCreatorAssignmentClick={handleCreatorAssignmentClick}
                 />
-              ))}
-            </InfiniteScroll>
+              )}
+              computeItemKey={(index, playerStat) => playerStat?.id ?? index}
+            />
           )}
         </div>
       </div>

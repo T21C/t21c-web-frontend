@@ -8,7 +8,7 @@ import { useContext, useEffect, useState, useCallback, useRef } from "react";
 import { LevelCard } from "@/components/cards";
 import { StateDisplay, CustomSelect } from "@/components/common/selectors";
 import { Tooltip } from "react-tooltip";
-import InfiniteScroll from "react-infinite-scroll-component";
+import { VirtualList } from "@/components/common/VirtualList";
 import axios from "axios";
 import api from '@/utils/api';
 import { useDebouncedRequest } from '@/hooks/useDebouncedRequest';
@@ -843,30 +843,29 @@ const LevelPage = ({
         </div>
 
         {levelsData ? (
-        <InfiniteScroll
-          style={{ paddingBottom: "7rem", overflow: "visible", "position": "relative", "zIndex": "5" }}
-          dataLength={levelsData.length}
-          next={() => setPageNumber((prevPageNumber) => prevPageNumber + 1)}
+        <VirtualList
+          style={{ paddingBottom: "7rem", overflow: "visible", position: "relative", zIndex: 5 }}
+          items={levelsData}
+          loadMore={() => setPageNumber((prevPageNumber) => prevPageNumber + 1)}
           hasMore={hasMore && levelsData.length > 0}
           loader={<div className="loader loader-level-page"></div>}
           endMessage={
             <p className="end-message">
               <b>{t('level.infScroll.end')}</b>
             </p>}
-        >
-          <div className={`${viewMode === 'grid' ? 'level-cards-grid' : ''} infinite-scroll-container`}>
-            {levelsData.map((l, index) => (
-              <LevelCard
-                key={l.id ?? index}
-                level={l}
-                user={user}
-                displayMode={viewMode}
-                size={cardSize}
-                showTags={showTagsInCards}
-              />
-            ))}
-          </div>
-        </InfiniteScroll>
+          grid={viewMode === 'grid'}
+          listClassName={viewMode === 'grid' ? 'level-cards-grid' : 'infinite-scroll-container'}
+          renderItem={(l, index) => (
+            <LevelCard
+              level={l}
+              user={user}
+              displayMode={viewMode}
+              size={cardSize}
+              showTags={showTagsInCards}
+            />
+          )}
+          computeItemKey={(index, l) => l?.id ?? index}
+        />
         ) : (
           <div className="loader loader-level-page"></div>
         )}

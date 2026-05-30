@@ -9,7 +9,7 @@ import { MetaTags } from "@/components/common/display";
 import { PassCard } from "@/components/cards";
 import { StateDisplay, CustomSelect } from "@/components/common/selectors";
 import { Tooltip } from "react-tooltip";
-import InfiniteScroll from "react-infinite-scroll-component";
+import { VirtualList } from "@/components/common/VirtualList";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
 import { PassContext } from "@/contexts/PassContext";
@@ -260,13 +260,10 @@ const PassPage = () => {
 
     // Data loaded (passesData is an array)
     return (
-      <InfiniteScroll
+      <VirtualList
         style={{paddingBottom: "6rem", minHeight: "90vh", overflow: "visible", marginTop: "-1rem" }}
-        dataLength={passesData.length}
-        next={() => {
-          const newPage = pageNumber + 1;
-          setPageNumber(newPage);
-        }}
+        items={passesData}
+        loadMore={() => setPageNumber(pageNumber + 1)}
         hasMore={hasMore && !loading}
         loader={
           <div style={{ paddingTop: "6rem" }}>
@@ -280,19 +277,11 @@ const PassPage = () => {
             </p>
           )
         }
-      >
-        {passesData.map((pass, index) => (
-          <PassCard
-            key={pass.passId || index}
-            pass={pass}
-          />
-        ))}
-        {loading && passesData.length > 0 && (
-          <div style={{ paddingTop: "2rem" }}>
-            <div className="loader loader-level-page"></div>
-          </div>
+        renderItem={(pass, index) => (
+          <PassCard pass={pass} />
         )}
-      </InfiniteScroll>
+        computeItemKey={(index, pass) => pass?.passId ?? index}
+      />
     );
   };
 

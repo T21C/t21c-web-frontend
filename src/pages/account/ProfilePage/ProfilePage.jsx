@@ -16,7 +16,7 @@ import { ShieldIcon, EditIcon, SortAscIcon, SortDescIcon, PackIcon, EyeIcon, Eye
 import { Tooltip as ProfileTooltip } from "react-tooltip";
 import { CaseOpenSelector, CustomSelect } from "@/components/common/selectors";
 import caseOpen from "@/assets/icons/case.png";
-import InfiniteScroll from "react-infinite-scroll-component";
+import { VirtualList, useScrollParent } from "@/components/common/VirtualList";
 import { ScrollButton } from "@/components/common/buttons";
 import { useProfileContext } from "@/contexts/ProfileContext";
 import { useDebouncedRequest } from "@/hooks/useDebouncedRequest";
@@ -114,6 +114,7 @@ const ProfilePage = () => {
     const runPassesRequest = useDebouncedRequest(350);
     // Guard against stale responses when filters change mid-flight.
     const passesRequestIdRef = useRef(0);
+    const { scrollRef: scoresScrollRef, scrollParent: scoresScrollParent } = useScrollParent();
 
     const [rankHistoryCollapsed, setRankHistoryCollapsed] = useState(false);
     const [rankHistoryMetric, setRankHistoryMetric] = useState("rankedScore");
@@ -1106,6 +1107,7 @@ const ProfilePage = () => {
 
                   <div
                     id="player-scores-scroll-container"
+                    ref={scoresScrollRef}
                     className={["player-page__scores-container", scoresCollapsed ? "hidden" : ""].join(" ").trim()}
                   >
                   <div className="scores-controls">
@@ -1174,10 +1176,12 @@ const ProfilePage = () => {
                       <div className="loader loader-relative" />
                     </div>
                   ) : (
-                  <InfiniteScroll
-                    dataLength={displayedPasses.length}
-                    next={loadMorePasses}
+                  <VirtualList
+                    customScrollParent={scoresScrollParent}
+                    items={displayedPasses}
+                    loadMore={loadMorePasses}
                     hasMore={hasMore}
+                    listClassName="scores-list"
                     endMessage={
                       displayedPasses.length > 0 && (
                         <p style={{ textAlign: 'center', padding: '1rem', color: 'rgba(255, 255, 255, 0.6)' }}>
@@ -1186,13 +1190,10 @@ const ProfilePage = () => {
                       )
                     }
                     loader={<div className="loader loader-relative"/>}
-                    scrollableTarget="player-scores-scroll-container"
                     style={{ overflow: 'visible', paddingBottom: '6rem' }}
-                  >
-                    <div className="scores-list">
-                      {displayedPasses.map((score, index) => (
-                        <div key={index}>
-                        <li key={index}>
+                    renderItem={(score, index) => (
+                      <div>
+                        <li>
                           <ScoreCard scoreData={score} topScores={playerData?.topScores || []} potentialTopScores={playerData?.potentialTopScores || []} />
                         </li>
                         {lowestImpactScore && lowestImpactScore.id === score.id && passesTotal > 20 && sortType === 'score' && sortOrder === 'DESC' && (
@@ -1209,10 +1210,10 @@ const ProfilePage = () => {
                             </p>
                           </div>
                         )}
-                        </div>
-                      ))}
-                    </div>
-                  </InfiniteScroll>
+                      </div>
+                    )}
+                    computeItemKey={(index, score) => score?.id ?? index}
+                  />
                   )}
                   </div>
                 </div>

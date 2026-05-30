@@ -7,7 +7,7 @@ import { useContext, useEffect, useState, useCallback, useRef } from "react";
 import { PackCard } from "@/components/cards";
 import { CustomSelect } from "@/components/common/selectors";
 import { Tooltip } from "react-tooltip";
-import InfiniteScroll from "react-infinite-scroll-component";
+import { VirtualList } from "@/components/common/VirtualList";
 import { PackContext } from "@/contexts/PackContext";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -396,11 +396,14 @@ const PackPageContent = () => {
               </button>
             </div>
           ) : (
-            <InfiniteScroll
+            <>
+            <VirtualList
               style={{ paddingBottom: "7rem", minHeight: "50vh", overflow: "visible" }}
-              dataLength={packs?.length || 0}
-              next={loadMore}
+              items={packs ?? []}
+              loadMore={loadMore}
               hasMore={hasMore}
+              grid={displayMode === 'grid'}
+              listClassName={`pack-page__grid pack-page__grid--${displayMode}`}
               loader={
                 <div className="pack-page__loading">
                   <div className="spinner spinner-large"></div>
@@ -412,32 +415,28 @@ const PackPageContent = () => {
                   <p>{t('pack.endMessage')}</p>
                 </div>
               }
-              scrollableTarget={scrollRef.current || undefined}
-            >
-              <div className={`pack-page__grid pack-page__grid--${displayMode}`}>
-                {packs.map((pack, index) => (
-                    <PackCard
-                    key={pack.id}
-                    index={index}
-                    packId={pack.id}
-                    user={user}
-                    sortBy={filters.sort}
-                    displayMode={displayMode}
-                    size="medium"
-                  />
-                ))}
-              </div>
-              
-              {/* Show error message for infinite scroll failures */}
-              {error && packs.length > 0 && (
-                <div className="pack-page__infinite-error">
-                  <p>{t('pack.error.loadMoreFailed')}</p>
-                  <button onClick={retryLoadMore} className="pack-page__retry-btn">
-                    {t('pack.error.retry')}
-                  </button>
-                </div>
+              renderItem={(pack, index) => (
+                <PackCard
+                  index={index}
+                  packId={pack.id}
+                  user={user}
+                  sortBy={filters.sort}
+                  displayMode={displayMode}
+                  size="medium"
+                />
               )}
-            </InfiniteScroll>
+              computeItemKey={(index, pack) => pack?.id ?? index}
+            />
+
+            {error && packs.length > 0 && (
+              <div className="pack-page__infinite-error">
+                <p>{t('pack.error.loadMoreFailed')}</p>
+                <button onClick={retryLoadMore} className="pack-page__retry-btn">
+                  {t('pack.error.retry')}
+                </button>
+              </div>
+            )}
+            </>
           )}
         </div>
 

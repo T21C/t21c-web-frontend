@@ -1,0 +1,42 @@
+.virtual-list {
+  position: relative;
+  z-index: 5;
+  width: 100%;
+}
+
+.virtual-list--window {
+  overflow: visible;
+}
+
+.virtual-list__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.virtual-list__grid-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  justify-content: center;
+  padding: 1rem;
+  gap: 1rem;
+  max-width: 100%;
+}
+
+.virtual-list__grid-list.level-cards-grid {
+  /* Preserve level page grid spacing when class is forwarded */
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.virtual-list__grid-item {
+  display: flex;
+  justify-content: center;
+}
+
+.virtual-list__footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}

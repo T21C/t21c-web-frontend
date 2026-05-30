@@ -3,7 +3,7 @@ import { routes } from '@/api/routes';
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import InfiniteScroll from 'react-infinite-scroll-component';
+import { VirtualList } from '@/components/common/VirtualList';
 import api from '@/utils/api';
 import { MetaTags } from '@/components/common/display';
 import { CustomSelect } from '@/components/common/selectors';
@@ -190,11 +190,13 @@ const SongListPage = () => {
         {loading && songs.length === 0 ? (
           <div className="loader loader-level-page"></div>
         ) : songs.length > 0 ? (
-          <InfiniteScroll
+          <VirtualList
             style={{ paddingBottom: "7rem", minHeight: "100vh", overflow: "visible" }}
-            dataLength={songs.length}
-            next={handleLoadMore}
+            items={songs}
+            loadMore={handleLoadMore}
             hasMore={hasMore}
+            grid
+            listClassName="song-cards-grid"
             loader={<div className="loader loader-level-page"></div>}
             endMessage={
               songs.length > 0 && (
@@ -203,55 +205,52 @@ const SongListPage = () => {
                 </p>
               )
             }
-          >
-            <div className="song-cards-grid">
-              {songs.map((song) => (
-                <Link
-                  key={song.id}
-                  className="song-card"
-                  to={`/songs/${song.id}`}
-                >
-                  <div className="song-card-content">
-                    <h3 className="song-card-name">{song.name}</h3>
-                    {song.aliases && song.aliases.length > 0 && (
-                      <div className="song-card-aliases">
-                        {song.aliases.slice(0, 2).map((alias) => (
-                          <span key={alias.id} className="alias-tag">{alias.alias}</span>
-                        ))}
-                        {song.aliases.length > 2 && (
-                          <span className="alias-more">+{song.aliases.length - 2}</span>
-                        )}
-                      </div>
-                    )}
-                    {song.credits && song.credits.length > 0 && (
-                      <div className="song-card-artists">
-                        {song.credits.slice(0, 2).map((credit) => (
-                          <div key={credit.id} className="artist-item">
-                            {credit.artist?.avatarUrl && (
-                              <img
-                                src={credit.artist.avatarUrl}
-                                alt={credit.artist.name}
-                                className="artist-avatar-small"
-                              />
-                            )}
-                            <span className="artist-name">{credit.artist?.name || 'Unknown'}</span>
-                          </div>
-                        ))}
-                        {song.credits.length > 2 && (
-                          <span className="artist-more">+{song.credits.length - 2}</span>
-                        )}
-                      </div>
-                    )}
-                    <div className="song-card-verification">
-                      <span className={getVerificationClass(song.verificationState)}>
-                        {t(`verification.${song.verificationState}`, { ns: 'common' })}
-                      </span>
+            renderItem={(song) => (
+              <Link
+                className="song-card"
+                to={`/songs/${song.id}`}
+              >
+                <div className="song-card-content">
+                  <h3 className="song-card-name">{song.name}</h3>
+                  {song.aliases && song.aliases.length > 0 && (
+                    <div className="song-card-aliases">
+                      {song.aliases.slice(0, 2).map((alias) => (
+                        <span key={alias.id} className="alias-tag">{alias.alias}</span>
+                      ))}
+                      {song.aliases.length > 2 && (
+                        <span className="alias-more">+{song.aliases.length - 2}</span>
+                      )}
                     </div>
+                  )}
+                  {song.credits && song.credits.length > 0 && (
+                    <div className="song-card-artists">
+                      {song.credits.slice(0, 2).map((credit) => (
+                        <div key={credit.id} className="artist-item">
+                          {credit.artist?.avatarUrl && (
+                            <img
+                              src={credit.artist.avatarUrl}
+                              alt={credit.artist.name}
+                              className="artist-avatar-small"
+                            />
+                          )}
+                          <span className="artist-name">{credit.artist?.name || 'Unknown'}</span>
+                        </div>
+                      ))}
+                      {song.credits.length > 2 && (
+                        <span className="artist-more">+{song.credits.length - 2}</span>
+                      )}
+                    </div>
+                  )}
+                  <div className="song-card-verification">
+                    <span className={getVerificationClass(song.verificationState)}>
+                      {t(`verification.${song.verificationState}`, { ns: 'common' })}
+                    </span>
                   </div>
-                </Link>
-              ))}
-            </div>
-          </InfiniteScroll>
+                </div>
+              </Link>
+            )}
+            computeItemKey={(index, song) => song?.id ?? index}
+          />
         ) : (
           <div className="no-songs">
             <p>{t('songList.noSongs')}</p>

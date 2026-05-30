@@ -6,7 +6,7 @@ import { MetaTags } from "@/components/common/display";
 import { StateDisplay } from "@/components/common/selectors";
 import "./adminratingpage.css";
 import { useEffect, useState, useCallback, useMemo } from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
+import { VirtualList } from "@/components/common/VirtualList";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRatingFilter } from "@/contexts/RatingFilterContext";
 import { useTranslation } from "react-i18next";
@@ -561,11 +561,12 @@ const RatingPage = () => {
             </div>
           {ratings && ratings.length > 0 ? (
           <>
-            <InfiniteScroll
+            <VirtualList
               style={{ paddingBottom: "4rem", overflow: "visible" }}
-              dataLength={displayedRatings.length}
-              next={loadMoreRatings}
+              items={displayedRatings}
+              loadMore={loadMoreRatings}
               hasMore={hasMoreRatings && displayedRatings.length > 0}
+              listClassName="rating-cards"
               loader={<div className="loader loader-level-page" />}
               endMessage={
                 displayedRatings.length > 0 && (
@@ -574,22 +575,19 @@ const RatingPage = () => {
                   </p>
                 )
               }
-            >
-              <div className="rating-cards">
-                {displayedRatings.map((rating, index) => (
-                  <RatingCard
-                    key={rating.id}
-                    rating={rating}
-                    index={index}
-                    setSelectedRating={setSelectedRating}
-                    user={user}
-                    isSuperAdmin={hasFlag(user, permissionFlags.SUPER_ADMIN)}
-                    showDetailedView={showDetailedView}
-                    onEditLevel={() => handleEditLevel(rating.level.id)}
-                  />
-                ))}
-              </div>
-            </InfiniteScroll>
+              renderItem={(rating, index) => (
+                <RatingCard
+                  rating={rating}
+                  index={index}
+                  setSelectedRating={setSelectedRating}
+                  user={user}
+                  isSuperAdmin={hasFlag(user, permissionFlags.SUPER_ADMIN)}
+                  showDetailedView={showDetailedView}
+                  onEditLevel={() => handleEditLevel(rating.level.id)}
+                />
+              )}
+              computeItemKey={(index, rating) => rating?.id ?? index}
+            />
 
             {selectedRating && (
               <RatingDetailPopup

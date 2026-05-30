@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import placeholder from '@/assets/placeholder/1.png';
 import { getVideoDetails } from "@/utils";
 import "../adminsubmissionpage.css";
+import { VirtualList } from '@/components/common/VirtualList';
 import api from "@/utils/api";
 import { PlayerInput } from '@/components/common/selectors';
 import { toast } from 'react-hot-toast';
@@ -315,8 +316,10 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
         {isLoading ? (
           <div className="loader loader-submission-detail"/>
         ) : (
-          submissions.map((submission) => (
-            <div key={submission.id} className={`submission-card pass-submission-card ${animatingCards[submission.id] || ''}`}>
+          <VirtualList
+            items={submissions}
+            renderItem={(submission) => (
+            <div className={`submission-card pass-submission-card ${animatingCards[submission.id] || ''}`}>
               <div className="submission-header">
                 <h3>{submission.title || "Null"}</h3>
                 <span className="submission-date">
@@ -451,7 +454,9 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
                 </div>
               </div>
             </div>
-          ))
+            )}
+            computeItemKey={(index, submission) => submission?.id ?? index}
+          />
         )}
       </div>
 

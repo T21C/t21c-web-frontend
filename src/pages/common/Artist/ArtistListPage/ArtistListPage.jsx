@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import InfiniteScroll from 'react-infinite-scroll-component';
+import { VirtualList } from '@/components/common/VirtualList';
 import api from '@/utils/api';
 import { useDebouncedRequest } from '@/hooks/useDebouncedRequest';
 import { MetaTags } from '@/components/common/display';
@@ -168,11 +168,13 @@ const ArtistListPage = () => {
         {loading && artists.length === 0 ? (
           <div className="loader loader-level-page"></div>
         ) : (
-          <InfiniteScroll
+          <VirtualList
             style={{ paddingBottom: "7rem", overflow: "visible" }}
-            dataLength={artists.length}
-            next={handleLoadMore}
+            items={artists}
+            loadMore={handleLoadMore}
             hasMore={hasMore}
+            grid
+            listClassName="artist-cards-grid"
             loader={<div className="loader loader-level-page"></div>}
             endMessage={
               artists.length > 0 && (
@@ -181,41 +183,38 @@ const ArtistListPage = () => {
                 </p>
               )
             }
-          >
-            <div className="artist-cards-grid">
-              {artists.map((artist) => (
-                <Link
-                  key={artist.id}
-                  className="artist-card"
-                  to={`/artists/${artist.id}`}
-                >
-                  {artist.avatarUrl && (
-                    <div className="artist-card-avatar">
-                      <img src={artist.avatarUrl} alt={artist.name} />
+            renderItem={(artist) => (
+              <Link
+                className="artist-card"
+                to={`/artists/${artist.id}`}
+              >
+                {artist.avatarUrl && (
+                  <div className="artist-card-avatar">
+                    <img src={artist.avatarUrl} alt={artist.name} />
+                  </div>
+                )}
+                <div className="artist-card-content">
+                  <h3 className="artist-card-name">{artist.name}</h3>
+                  {artist.aliases && artist.aliases.length > 0 && (
+                    <div className="artist-card-aliases">
+                      {artist.aliases.slice(0, 2).map((alias) => (
+                        <span key={alias.id} className="alias-tag">{alias.alias}</span>
+                      ))}
+                      {artist.aliases.length > 2 && (
+                        <span className="alias-more">+{artist.aliases.length - 2}</span>
+                      )}
                     </div>
                   )}
-                  <div className="artist-card-content">
-                    <h3 className="artist-card-name">{artist.name}</h3>
-                    {artist.aliases && artist.aliases.length > 0 && (
-                      <div className="artist-card-aliases">
-                        {artist.aliases.slice(0, 2).map((alias) => (
-                          <span key={alias.id} className="alias-tag">{alias.alias}</span>
-                        ))}
-                        {artist.aliases.length > 2 && (
-                          <span className="alias-more">+{artist.aliases.length - 2}</span>
-                        )}
-                      </div>
-                    )}
-                    <div className="artist-card-verification">
-                      <span className={getVerificationClass(artist.verificationState)}>
-                        {t(`verification.${artist.verificationState}`, { ns: 'common' })}
-                      </span>
-                    </div>
+                  <div className="artist-card-verification">
+                    <span className={getVerificationClass(artist.verificationState)}>
+                      {t(`verification.${artist.verificationState}`, { ns: 'common' })}
+                    </span>
                   </div>
-                </Link>
-              ))}
-            </div>
-          </InfiniteScroll>
+                </div>
+              </Link>
+            )}
+            computeItemKey={(index, artist) => artist?.id ?? index}
+          />
         )}
 
         {!loading && artists.length === 0 && (

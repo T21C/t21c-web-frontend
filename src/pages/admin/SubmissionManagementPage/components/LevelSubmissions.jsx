@@ -4,6 +4,7 @@ import { getVideoDetails } from "@/utils";
 import placeholder from "@/assets/placeholder/1.png"
 import "../adminsubmissionpage.css";
 import { useState, useEffect } from "react";
+import { VirtualList } from '@/components/common/VirtualList';
 import { useTranslation } from "react-i18next";
 import { isImageUrl } from "@/utils/Utility";
 import api from "@/utils/api";
@@ -841,9 +842,10 @@ const LevelSubmissions = () => {
         {isLoading ? (  
           <div className="loader loader-submission-detail"/>
         ) : (
-          submissions.map((submission) => (
+          <VirtualList
+            items={submissions}
+            renderItem={(submission) => (
             <div 
-              key={submission.id} 
               className={`submission-card ${animatingCards[submission.id] || ''}`}
             >
               <div className="submission-header">
@@ -1373,7 +1375,10 @@ const LevelSubmissions = () => {
                 </div>
               </div>
             </div>
-          )))}
+            )}
+            computeItemKey={(index, submission) => submission?.id ?? index}
+          />
+        )}
       </div>
 
       {showCreatorPopup && selectedSubmission && (

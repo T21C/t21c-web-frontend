@@ -8,7 +8,7 @@ import axios from "axios";
 import { CreatorCard } from "@/components/cards";
 import { CustomSelect } from "@/components/common/selectors";
 import { Tooltip } from "react-tooltip";
-import InfiniteScroll from "react-infinite-scroll-component";
+import { VirtualList } from "@/components/common/VirtualList";
 import api from '@/utils/api';
 import {
   CREATOR_LEADERBOARD_DEFAULT_SORT_BY,
@@ -307,10 +307,10 @@ const CreatorsListPage = () => {
           {creatorData === null ? (
             <div className="loader loader-level-page"></div>
           ) : (displayedCreators?.length ?? 0) > 0 ? (
-            <InfiniteScroll
+            <VirtualList
               style={{ paddingBottom: "4rem", overflow: "visible" }}
-              dataLength={displayedCreators.length}
-              next={() => fetchCreators(displayedCreators.length, { immediate: true })}
+              items={displayedCreators}
+              loadMore={() => fetchCreators(displayedCreators.length, { immediate: true })}
               hasMore={hasMore}
               loader={<div className="loader loader-level-page"></div>}
               endMessage={
@@ -318,11 +318,11 @@ const CreatorsListPage = () => {
                   <b>{t('creators.infiniteScroll.end')}</b>
                 </p>
               }
-            >
-              {displayedCreators.map((creator) => (
-                <CreatorCard key={creator.id} creator={creator} />
-              ))}
-            </InfiniteScroll>
+              renderItem={(creator) => (
+                <CreatorCard creator={creator} />
+              )}
+              computeItemKey={(index, creator) => creator?.id ?? index}
+            />
           ) : (
             <div className="creators-list-page__empty">
               <p className="end-message">

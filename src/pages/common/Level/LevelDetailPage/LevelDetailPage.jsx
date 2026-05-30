@@ -17,6 +17,7 @@ import {
 import { Tooltip } from "react-tooltip";
 import { useTranslation } from "react-i18next";
 import { ClearCard } from "@/components/cards";
+import { VirtualList, useScrollParent } from "@/components/common/VirtualList";
 import {
   EditLevelPopup,
   LevelDownloadPopup,
@@ -602,6 +603,7 @@ const LevelDetailPage = ({ mockData = null }) => {
   const [sortDirection, setSortDirection] = useState("desc"); // "desc" or "asc"
   const [infoLoading, setInfoLoading] = useState(true);
   const [sortedLeaderboard, setSortedLeaderboard] = useState([]);
+  const { scrollRef: rankListScrollRef, scrollParent: rankListScrollParent } = useScrollParent();
   const [clearCount, setClearCount] = useState(0);
   const [hasRepeatedClears, setHasRepeatedClears] = useState(false);
   const [videoDetail, setVideoDetail] = useState(null);
@@ -2559,16 +2561,20 @@ const LevelDetailPage = ({ mockData = null }) => {
                 </div>
               </div>
             ) : <></>}
-            <div className="rank-list">
+            <div className="rank-list" ref={rankListScrollRef}>
               {!infoLoading ? 
                 sortedLeaderboard.length > 0 ? (
-                  getSortedLeaderboard().map((each, index) => (
-                    <ClearCard 
-                      scoreData={each} 
-                      index={index} 
-                      key={`${each.id}`}
-                    />
-                  ))
+                  <VirtualList
+                    customScrollParent={rankListScrollParent}
+                    items={getSortedLeaderboard()}
+                    renderItem={(each, index) => (
+                      <ClearCard
+                        scoreData={each}
+                        index={index}
+                      />
+                    )}
+                    computeItemKey={(index, each) => each?.id ?? index}
+                  />
                 ) : (
                   <h3>{t('levelDetail.leaderboard.noClearsYet')}</h3>
                 )
