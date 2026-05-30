@@ -874,7 +874,7 @@
   );
   background-size: 300% 1%;
   border-radius: inherit;
-  z-index: -2;
+  z-index: 1;
   animation: basicGlow 8s ease-in-out infinite;
   opacity: 0.4;
 }
@@ -891,7 +891,7 @@
   );
   background-size: 300% 1%;
   border-radius: inherit;
-  z-index: -1;
+  z-index: 1;
   animation: basicGlow 8s ease-in-out infinite reverse;
   opacity: 0.2;
 }
@@ -907,6 +907,7 @@
 
 .level-card.basic-glow:not(.grid) .level-card-wrapper {
   background: rgba(0, 0, 0, 0.4);
+  z-index: 2;
   border: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
 }
@@ -938,7 +939,7 @@
 }
 
 .level-card.basic-glow:not(.grid) {
-  z-index: -2;
+  z-index: 2;
 }
 
 .level-card.legendary:not(.grid)::before {
@@ -954,7 +955,7 @@
   );
   background-size: 400% 1%;
   border-radius: inherit;
-  z-index: -1;
+  z-index: 3;
   animation: legendaryGlow 10s ease-in-out infinite;
   opacity: 1;
   filter: brightness(1.5);
@@ -964,6 +965,7 @@
   content: '';
   position: absolute;
   inset: 0;
+  z-index: 4;
   background: linear-gradient(90deg, 
     rgba(0, 255, 255, 1), 
     rgba(139, 0, 255, 1), 
@@ -975,7 +977,7 @@
   );
   background-size: 400% 400%;
   border-radius: inherit;
-  z-index: -1;
+  z-index: 3;
   animation: legendaryGlow 10s cubic-bezier(0.37, 0, 0.63, 1) infinite reverse;
   opacity: 0.1;
   transition: opacity 0.3s ease, filter 0.3s ease;
@@ -995,6 +997,7 @@
   background: rgba(0, 0, 0, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.15);
   position: relative;
+  z-index: 5;
   transition: all 0s ease;
 }
 

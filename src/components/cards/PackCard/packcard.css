@@ -331,11 +331,19 @@
 /* Grid layout adjustments */
 .pack-card--grid {
   height: 100%;
+  /* Consistent height keeps the virtualized grid rows uniform so the windowed
+     list doesn't re-measure and jump (flicker) on each scroll */
+  min-height: 230px;
   display: flex;
   flex-direction: column;
 }
 
 .pack-card--grid .pack-card__info {
+  flex: 1;
+}
+
+/* Preview fills remaining card height so short/long packs stay the same size */
+.pack-card--grid .pack-card__preview {
   flex: 1;
 }
 

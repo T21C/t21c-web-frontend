@@ -402,6 +402,7 @@ const PackPageContent = () => {
               items={packs ?? []}
               loadMore={loadMore}
               hasMore={hasMore}
+              overscan={800}
               grid={displayMode === 'grid'}
               listClassName={`pack-page__grid pack-page__grid--${displayMode}`}
               loader={

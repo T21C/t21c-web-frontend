@@ -179,12 +179,22 @@
   gap: 20px;
 }
 
-.pack-page__grid--grid {
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+.pack-page__grid--list {
+  grid-template-columns: minmax(0, 1fr);
 }
 
-.pack-page__grid--list {
-  grid-template-columns: 1fr;
+/* Force each virtualized grid cell to a consistent width so cards don't
+   shrink to their content and long content can't blow out the track */
+.pack-page .pack-page__grid .virtual-list__grid-item {
+  width: 100%;
+  min-width: 0;
+  justify-content: stretch;
+}
+
+.pack-page .pack-page__grid .virtual-list__grid-item > .pack-card {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .pack-page__loading {
@@ -231,10 +241,6 @@
   .pack-page__container {
     padding: 16px;
   }
-  
-  .pack-page__grid--grid {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  }
 }
 
 /* Tablet and large phone optimizations */
@@ -251,8 +257,7 @@
     font-size: 28px;
   }
   
-  .pack-page__grid--grid {
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  .pack-page__grid {
     gap: 16px;
   }
 }
@@ -340,10 +345,6 @@
   
   .pack-page__grid {
     gap: 16px;
-  }
-  
-  .pack-page__grid--grid {
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   }
   
   .pack-page__loading {
