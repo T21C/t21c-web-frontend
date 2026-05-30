@@ -4,6 +4,8 @@ import { UnlinkIcon } from "@/components/common/icons";
 import {
   MAX_BLOCK_ROTATION,
   MIN_BLOCK_ROTATION,
+  STAGE_WIDTH,
+  STAGE_HEIGHT,
   clampBlockRotation,
   getAspectRatio,
   normalizeLayout,
@@ -33,7 +35,6 @@ export default function BioCanvasLayoutControls({
   const heightDisabled = resizeBehavior === "widthOnly";
   const supportsAspectLock = resizeBehavior === "aspect" || resizeBehavior === "free";
   const showAspectLink = supportsAspectLock && !heightDisabled;
-  const hasImageActions = Boolean(onResetCrop || onFillCanvas);
 
   const [draft, setDraft] = useState(() => layoutToDraft(layout, normalized));
 
@@ -79,6 +80,24 @@ export default function BioCanvasLayoutControls({
     setDraft((prev) => ({ ...prev, x: "0", y: "0" }));
   };
 
+  const alignHorizontal = (mode) => {
+    const w = normalized.w;
+    let x = 0;
+    if (mode === "center") x = Math.round((STAGE_WIDTH - w) / 2);
+    else if (mode === "right") x = STAGE_WIDTH - w;
+    onChange({ ...layout, x });
+    setDraft((prev) => ({ ...prev, x: String(x) }));
+  };
+
+  const alignVertical = (mode) => {
+    const h = normalized.h;
+    let y = 0;
+    if (mode === "center") y = Math.round((STAGE_HEIGHT - h) / 2);
+    else if (mode === "bottom") y = STAGE_HEIGHT - h;
+    onChange({ ...layout, y });
+    setDraft((prev) => ({ ...prev, y: String(y) }));
+  };
+
   const bumpRotation = (delta) => {
     setRotation((layout?.rotation ?? rotation ?? 0) + delta);
   };
@@ -104,8 +123,68 @@ export default function BioCanvasLayoutControls({
 
   return (
     <div className="bio-canvas-editor__layout-controls">
-      {renderField("x")}
-      {renderField("y")}
+      <div className="bio-canvas-editor__position-grid">
+        {renderField("x")}
+        {renderField("y")}
+        <div className="bio-canvas-editor__align-group" role="group" aria-label="Align horizontally">
+          <button
+            type="button"
+            className="btn-fill-neutral"
+            aria-label="Align left"
+            title="Align left"
+            onClick={() => alignHorizontal("left")}
+          >
+            &#8676;
+          </button>
+          <button
+            type="button"
+            className="btn-fill-neutral"
+            aria-label="Align horizontal center"
+            title="Align horizontal center"
+            onClick={() => alignHorizontal("center")}
+          >
+            &#8596;
+          </button>
+          <button
+            type="button"
+            className="btn-fill-neutral"
+            aria-label="Align right"
+            title="Align right"
+            onClick={() => alignHorizontal("right")}
+          >
+            &#8677;
+          </button>
+        </div>
+        <div className="bio-canvas-editor__align-group" role="group" aria-label="Align vertically">
+          <button
+            type="button"
+            className="btn-fill-neutral"
+            aria-label="Align top"
+            title="Align top"
+            onClick={() => alignVertical("top")}
+          >
+            &#10514;
+          </button>
+          <button
+            type="button"
+            className="btn-fill-neutral"
+            aria-label="Align vertical center"
+            title="Align vertical center"
+            onClick={() => alignVertical("center")}
+          >
+            &#8597;
+          </button>
+          <button
+            type="button"
+            className="btn-fill-neutral"
+            aria-label="Align bottom"
+            title="Align bottom"
+            onClick={() => alignVertical("bottom")}
+          >
+            &#10515;
+          </button>
+        </div>
+      </div>
       <div className="bio-canvas-editor__size-fields">
         {renderField("w")}
         {showAspectLink ? (

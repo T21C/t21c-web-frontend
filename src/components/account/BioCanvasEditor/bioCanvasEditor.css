@@ -393,6 +393,31 @@
   outline-offset: 2px;
 }
 
+.bio-canvas-editor__position-grid {
+  display: grid;
+  flex: 1 1 100%;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.bio-canvas-editor__align-group {
+  display: flex;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.bio-canvas-editor__align-group [class*="btn-fill-"] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  font-size: 1rem;
+  line-height: 1;
+}
+
 .bio-canvas-editor__position-controls {
   display: flex;
   flex: 1 1 100%;

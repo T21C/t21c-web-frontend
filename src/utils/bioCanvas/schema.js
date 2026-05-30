@@ -236,7 +236,7 @@ export function createBlock(type, id, existingBlocks = []) {
   return {
     id: id ?? createBlockId(),
     type: descriptor.type,
-    layout: createDefaultLayout(descriptor),
+    layout: { ...createDefaultLayout(descriptor), locked: true },
     data: descriptor.createDefault(),
   };
 }
