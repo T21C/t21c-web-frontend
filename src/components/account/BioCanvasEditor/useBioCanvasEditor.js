@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";
 import { routes } from "@/api/routes";
@@ -96,12 +96,93 @@ export function useBioCanvasEditor({
     [imageAssets, pendingImages],
   );
 
+  const historyRef = useRef([]);
+  const redoRef = useRef([]);
+  const workingCanvasRef = useRef(workingCanvas);
+  workingCanvasRef.current = workingCanvas;
+  const suspendHistoryRef = useRef(false);
+  const [historyDepth, setHistoryDepth] = useState(0);
+  const [redoDepth, setRedoDepth] = useState(0);
+
+  useEffect(() => {
+    if (isOpen) {
+      historyRef.current = [];
+      redoRef.current = [];
+      suspendHistoryRef.current = false;
+      setHistoryDepth(0);
+      setRedoDepth(0);
+    }
+  }, [isOpen]);
+
+  const pushHistorySnapshot = useCallback(() => {
+    const prev = workingCanvasRef.current;
+    if (!prev) return;
+    historyRef.current.push(JSON.stringify(prev));
+    if (historyRef.current.length > 100) historyRef.current.shift();
+    setHistoryDepth(historyRef.current.length);
+  }, []);
+
   const patchWorking = useCallback(
     (nextCanvas) => {
+      if (!suspendHistoryRef.current) {
+        pushHistorySnapshot();
+        if (redoRef.current.length) {
+          redoRef.current = [];
+          setRedoDepth(0);
+        }
+      }
       onCanvasDraftChange?.(nextCanvas);
     },
-    [onCanvasDraftChange],
+    [onCanvasDraftChange, pushHistorySnapshot],
   );
+
+  // Coalesce a continuous interaction (e.g. dragging) into one history entry:
+  // record the pre-interaction state once, then suspend per-change snapshots.
+  const beginHistoryStep = useCallback(() => {
+    if (suspendHistoryRef.current) return;
+    pushHistorySnapshot();
+    if (redoRef.current.length) {
+      redoRef.current = [];
+      setRedoDepth(0);
+    }
+    suspendHistoryRef.current = true;
+  }, [pushHistorySnapshot]);
+
+  const endHistoryStep = useCallback(() => {
+    suspendHistoryRef.current = false;
+  }, []);
+
+  const undo = useCallback(() => {
+    if (!historyRef.current.length) return;
+    const prevJson = historyRef.current.pop();
+    setHistoryDepth(historyRef.current.length);
+    const current = workingCanvasRef.current;
+    if (current) {
+      redoRef.current.push(JSON.stringify(current));
+      setRedoDepth(redoRef.current.length);
+    }
+    try {
+      onCanvasDraftChange?.(JSON.parse(prevJson));
+    } catch {
+      // ignore malformed history snapshot
+    }
+  }, [onCanvasDraftChange]);
+
+  const redo = useCallback(() => {
+    if (!redoRef.current.length) return;
+    const nextJson = redoRef.current.pop();
+    setRedoDepth(redoRef.current.length);
+    const current = workingCanvasRef.current;
+    if (current) {
+      historyRef.current.push(JSON.stringify(current));
+      setHistoryDepth(historyRef.current.length);
+    }
+    try {
+      onCanvasDraftChange?.(JSON.parse(nextJson));
+    } catch {
+      // ignore malformed redo snapshot
+    }
+  }, [onCanvasDraftChange]);
 
   const patchBlock = useCallback(
     (blockId, patch) => {
@@ -338,6 +419,12 @@ export function useBioCanvasEditor({
     handleSave,
     handleReset,
     handleClear,
+    undo,
+    redo,
+    canUndo: historyDepth > 0,
+    canRedo: redoDepth > 0,
+    beginHistoryStep,
+    endHistoryStep,
     isDirtySinceOpen,
     pendingImages,
   };

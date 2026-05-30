@@ -125,6 +125,8 @@ export default function BioCanvasStage({
   selectedBlockId,
   onSelectBlockId,
   onPatchLayout,
+  onInteractionStart,
+  onInteractionEnd,
   className = "",
 }) {
   const blocks = canvas?.blocks ?? [];
@@ -184,6 +186,7 @@ export default function BioCanvasStage({
       interaction.originY = y;
       interaction.dragging = true;
       onSelectBlockId?.(blockId);
+      onInteractionStart?.();
       return true;
     };
 
@@ -215,7 +218,9 @@ export default function BioCanvasStage({
       const interaction = interactionRef.current;
       if (!interaction) return;
 
-      if (!interaction.dragging) {
+      if (interaction.dragging) {
+        onInteractionEnd?.();
+      } else {
         const nextId = pickStackSelection(interaction.hits, interaction.selectedAtDown);
         onSelectBlockId?.(nextId);
       }
@@ -232,7 +237,7 @@ export default function BioCanvasStage({
       window.removeEventListener("pointerup", handlePointerUp);
       window.removeEventListener("pointercancel", handlePointerUp);
     };
-  }, [onPatchLayout, onSelectBlockId]);
+  }, [onPatchLayout, onSelectBlockId, onInteractionStart, onInteractionEnd]);
 
   if (!blocks.length) {
     return (

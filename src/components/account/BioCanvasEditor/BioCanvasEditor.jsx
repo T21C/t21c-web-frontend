@@ -67,6 +67,8 @@ export default function BioCanvasEditor({
           selectedBlockId={selectedBlockId}
           onSelectBlockId={onSelectBlockId}
           onPatchLayout={patchLayout}
+          onInteractionStart={editor.beginHistoryStep}
+          onInteractionEnd={editor.endHistoryStep}
         />
         {validationErrors.length ? (
           <div className="bio-canvas-editor__validation-errors" role="alert">
