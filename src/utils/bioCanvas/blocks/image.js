@@ -10,6 +10,9 @@ export const DEFAULT_IMAGE_CROP = {
   zoom: 1,
 };
 
+/** Crop preset used by "Fit image to frame" — centers and fills the block frame. */
+export const FIT_IMAGE_TO_FRAME_CROP = { ...DEFAULT_IMAGE_CROP };
+
 const DANGEROUS_ALT = /url\s*\(|var\s*\(|expression\s*\(|@import|javascript:|\/\*|\*\/|<\/|<>/i;
 
 export const imageCropSchema = z.object({

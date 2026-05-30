@@ -128,9 +128,12 @@ export default function ImageBlockEditor({
               className="btn-fill-secondary"
               onClick={() => onFitToContainer?.()}
             >
-              Fit to container
+              Fit image to frame
             </button>
           </div>
+          <p className="bio-canvas-editor__hint">
+            Centers crop position and resets zoom so the image fills this block&apos;s frame.
+          </p>
         </>
       ) : (
         <p className="bio-canvas-editor__hint">No image uploaded yet.</p>

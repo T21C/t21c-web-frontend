@@ -4,6 +4,9 @@ import SocialBlockEditor from "./SocialBlockEditor.jsx";
 import ImageBlockEditor from "./ImageBlockEditor.jsx";
 import EmbedBlockEditor from "./EmbedBlockEditor.jsx";
 import FeaturedLevelsBlockEditor from "./FeaturedLevelsBlockEditor.jsx";
+import { BLOCK_TYPE_LABELS } from "@/utils/bioCanvas/registry.js";
+
+export { BLOCK_TYPE_LABELS };
 
 export const BLOCK_EDITORS = {
   text: TextBlockEditor,
@@ -17,12 +20,3 @@ export const BLOCK_EDITORS = {
 export function getBlockEditor(type) {
   return BLOCK_EDITORS[type] ?? null;
 }
-
-export const BLOCK_TYPE_LABELS = {
-  text: "Text",
-  link: "Link",
-  social: "Social",
-  image: "Image",
-  embed: "Video",
-  featuredLevels: "Featured",
-};

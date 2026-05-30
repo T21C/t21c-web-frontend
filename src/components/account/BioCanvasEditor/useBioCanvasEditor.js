@@ -18,7 +18,7 @@ import {
   parseBioCanvasImageAssets,
 } from "@/utils/bioCanvas";
 import { readImageFileDimensions } from "@/utils/validateCdnBannerImage.js";
-import { DEFAULT_IMAGE_CROP } from "@/utils/bioCanvas/blocks/image.js";
+import { DEFAULT_IMAGE_CROP, FIT_IMAGE_TO_FRAME_CROP } from "@/utils/bioCanvas/blocks/image.js";
 
 function deepCloneCanvas(canvas) {
   return canvas ? JSON.parse(JSON.stringify(canvas)) : null;
@@ -247,32 +247,12 @@ export function useBioCanvasEditor({
   );
 
   const fitImageToContainer = useCallback(
-    async (blockId) => {
+    (blockId) => {
       const block = workingCanvas?.blocks?.find((b) => b.id === blockId);
       if (!block || block.type !== "image") return;
-
-      let h = block.layout?.h ?? 200;
-      const pending = pendingImages[blockId];
-      if (pending?.naturalWidth && pending?.naturalHeight) {
-        h = Math.round(STAGE_WIDTH * (pending.naturalHeight / pending.naturalWidth));
-      } else {
-        const url =
-          buildPreviewImageAssets(imageAssets, pendingImages)[blockId]?.url ??
-          parseBioCanvasImageAssets(imageAssets)[blockId]?.url;
-        if (url) {
-          try {
-            const dims = await readImageUrlDimensions(url);
-            h = Math.round(STAGE_WIDTH * (dims.height / dims.width));
-          } catch {
-            // keep current height if dimensions unreadable
-          }
-        }
-      }
-
-      h = Math.min(STAGE_HEIGHT, Math.max(MIN_BLOCK_H, h));
-      patchLayout(blockId, { x: 0, y: 0, w: STAGE_WIDTH, h, locked: false });
+      patchBlockData(blockId, { crop: { ...FIT_IMAGE_TO_FRAME_CROP } });
     },
-    [workingCanvas, pendingImages, imageAssets, patchLayout],
+    [workingCanvas, patchBlockData],
   );
 
   const isDirtySinceOpen = useMemo(() => {

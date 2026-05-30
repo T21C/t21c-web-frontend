@@ -3,6 +3,8 @@ import {
   STAGE_WIDTH,
   STAGE_HEIGHT,
   MIN_BLOCK_H,
+  MIN_BLOCK_X,
+  MIN_BLOCK_Y,
   computeStageContentHeight,
   getBlockDescriptor,
   normalizeLayout,
@@ -121,7 +123,12 @@ export default function BioCanvasStage({
                 size={{ width: w, height: h }}
                 position={{ x, y }}
                 scale={scale}
-                bounds="parent"
+                bounds={{
+                  left: MIN_BLOCK_X,
+                  top: MIN_BLOCK_Y,
+                  right: STAGE_WIDTH,
+                  bottom: STAGE_HEIGHT,
+                }}
                 lockAspectRatio={lockRatio}
                 enableResizing={getResizeHandles(resizeBehavior)}
                 onDragStart={() => onSelectBlockId?.(block.id)}

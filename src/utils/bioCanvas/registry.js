@@ -22,6 +22,19 @@ export function getBlockDescriptor(type) {
 
 export const BLOCK_TYPES = BLOCK_DESCRIPTORS.map((d) => d.type);
 
+export const BLOCK_TYPE_LABELS = {
+  text: "Text",
+  link: "Link",
+  social: "Social",
+  image: "Image",
+  embed: "Video",
+  featuredLevels: "Featured",
+};
+
+export function getBlockTypeLabel(type) {
+  return BLOCK_TYPE_LABELS[type] ?? type ?? "Unknown";
+}
+
 export {
   textBlockDescriptor,
   linkBlockDescriptor,

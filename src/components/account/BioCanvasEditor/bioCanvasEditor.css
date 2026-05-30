@@ -396,6 +396,34 @@
   font-size: 0.875rem;
 }
 
+.bio-canvas-editor__validation-errors {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid var(--color-red, #c0392b);
+  border-radius: 0.375rem;
+  background: var(--color-black-t40);
+}
+
+.bio-canvas-editor__validation-title {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.bio-canvas-editor__validation-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.8125rem;
+  color: var(--color-gray-2);
+}
+
 @media (max-width: 900px) {
   .bio-canvas-editor {
     grid-template-columns: 1fr;

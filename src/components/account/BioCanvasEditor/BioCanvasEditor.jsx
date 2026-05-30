@@ -1,8 +1,9 @@
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import BioCanvasBlockList from "./BioCanvasBlockList.jsx";
 import BioCanvasLayoutControls from "./BioCanvasLayoutControls.jsx";
 import BioCanvasStage from "./BioCanvasStage.jsx";
-import { getBlockDescriptor } from "@/utils/bioCanvas";
+import { getBlockDescriptor, collectBioCanvasBlockErrors } from "@/utils/bioCanvas";
 import { getBlockEditor, BLOCK_TYPE_LABELS } from "./blockEditors/index.js";
 
 export default function BioCanvasEditor({
@@ -36,6 +37,11 @@ export default function BioCanvasEditor({
     ? previewImageAssets[selectedBlock.id]?.url
     : null;
 
+  const validationErrors = useMemo(
+    () => collectBioCanvasBlockErrors(workingCanvas),
+    [workingCanvas],
+  );
+
   return (
     <div className="bio-canvas-editor">
       <input
@@ -62,6 +68,20 @@ export default function BioCanvasEditor({
           onSelectBlockId={onSelectBlockId}
           onPatchLayout={patchLayout}
         />
+        {validationErrors.length ? (
+          <div className="bio-canvas-editor__validation-errors" role="alert">
+            <p className="bio-canvas-editor__validation-title">
+              {validationErrors.length === 1
+                ? "Fix this issue before saving:"
+                : `Fix ${validationErrors.length} issues before saving:`}
+            </p>
+            <ul className="bio-canvas-editor__validation-list">
+              {validationErrors.map((error) => (
+                <li key={error}>{error}</li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
       </div>
 
       <div className="bio-canvas-editor__workspace">
