@@ -259,7 +259,9 @@ export default function BioCanvasStage({
             const isSelected = selectedBlockId === block.id;
             const resizeBehavior = descriptor.resizeBehavior ?? "widthOnly";
             const lockRatio =
-              locked && resizeBehavior === "aspect" ? getAspectRatio(layout) : false;
+              locked && (resizeBehavior === "aspect" || resizeBehavior === "free")
+                ? getAspectRatio(layout)
+                : false;
             const showPlaceholder = isBlockEmptyInEditor(block, imageAssets);
 
             return (

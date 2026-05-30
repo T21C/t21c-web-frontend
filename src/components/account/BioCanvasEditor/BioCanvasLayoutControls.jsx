@@ -20,10 +20,11 @@ function layoutToDraft(layout, normalized) {
 
 export default function BioCanvasLayoutControls({ blockId, layout, descriptor, onChange }) {
   const normalized = normalizeLayout(layout, descriptor);
-  const { locked = true } = layout ?? {};
+  const locked = normalized.locked ?? false;
   const rotation = normalized.rotation ?? 0;
   const resizeBehavior = descriptor?.resizeBehavior ?? "widthOnly";
   const heightDisabled = resizeBehavior === "widthOnly";
+  const supportsAspectLock = resizeBehavior === "aspect" || resizeBehavior === "free";
 
   const [draft, setDraft] = useState(() => layoutToDraft(layout, normalized));
 
@@ -42,7 +43,7 @@ export default function BioCanvasLayoutControls({ blockId, layout, descriptor, o
 
     let next = { ...layout, [key]: n };
 
-    if (resizeBehavior === "aspect" && locked && (key === "w" || key === "h")) {
+    if (supportsAspectLock && locked && (key === "w" || key === "h")) {
       const ratio = getAspectRatio(layout);
       if (key === "w") {
         next.h = Math.round(n / ratio);
@@ -160,7 +161,7 @@ export default function BioCanvasLayoutControls({ blockId, layout, descriptor, o
           </button>
         </div>
       </label>
-      {resizeBehavior === "aspect" ? (
+      {supportsAspectLock ? (
         <label className="bio-canvas-editor__field bio-canvas-editor__field--checkbox">
           <input
             type="checkbox"
