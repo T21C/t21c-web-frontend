@@ -1428,14 +1428,33 @@
   transform: translateY(80%);
 }
 
+/* Shared space-palette shell — each included cell sets --benefits-segment-accent (manual hex, radiance → deep) */
+.billing-page .billing-page__benefits-segment--includedAnimatedPfp,
+.billing-page .billing-page__benefits-segment--includedBanners,
+.billing-page .billing-page__benefits-segment--includedCustomBackground,
+.billing-page .billing-page__benefits-segment--includedSupporterIcon,
+.billing-page .billing-page__benefits-segment--includedLevelPacks,
+.billing-page .billing-page__benefits-segment--includedBioCanvas {
+  border-color: color-mix(in srgb, var(--benefits-segment-accent) 38%, var(--color-white-t10));
+  background: color-mix(in srgb, var(--benefits-segment-accent) 11%, var(--color-black-t10));
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--benefits-segment-accent) 14%, transparent);
+}
+
+.billing-page .billing-page__benefits-segment--includedAnimatedPfp {
+  --benefits-segment-accent: #8d70ff;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.75rem 1rem;
+}
+
 .billing-page .billing-page__benefits-segment--includedLevelPacks {
+  --benefits-segment-accent: #5f72dc;
   flex-direction: row;
   flex-wrap: wrap;
   align-items: flex-start;
   justify-content: center;
   gap: 0.75rem 1rem;
-  border-color: color-mix(in srgb, var(--btn-primary) 35%, var(--color-white-t10));
-  background: color-mix(in srgb, var(--btn-primary) 10%, var(--color-black-t10));
 }
 
 .billing-page .billing-page__benefits-level-packs-main {
@@ -1459,15 +1478,6 @@
   border: none;
   border-radius: 0;
   box-shadow: none;
-}
-
-.billing-page .billing-page__benefits-segment--includedAnimatedPfp {
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: 0.75rem 1rem;
-  border-color: color-mix(in srgb, var(--btn-primary) 35%, var(--color-white-t10));
-  background: color-mix(in srgb, var(--btn-primary) 10%, var(--color-black-t10));
 }
 
 .billing-page .billing-page__benefits-segment--includedAnimatedPfp .billing-page__benefits-segment-copy {
@@ -1524,10 +1534,9 @@
 }
 
 .billing-page .billing-page__benefits-segment--includedBanners {
+  --benefits-segment-accent: #643dff;
   gap: 0.65rem;
   min-width: 0;
-  border-color: color-mix(in srgb, var(--btn-success) 32%, var(--color-white-t10));
-  background: color-mix(in srgb, var(--btn-success) 8%, var(--color-black-t10));
 }
 
 .billing-page .billing-page__benefits-segment--includedBanners .billing-page__benefits-segment-copy--bannerIntro {
@@ -1537,10 +1546,9 @@
 }
 
 .billing-page .billing-page__benefits-segment--includedCustomBackground {
+  --benefits-segment-accent: #7c5cff;
   gap: 0.65rem;
   min-width: 0;
-  border-color: color-mix(in srgb, var(--btn-primary-alt) 35%, var(--color-white-t10));
-  background: color-mix(in srgb, var(--btn-primary-alt) 10%, var(--color-black-t10));
 }
 
 .billing-page .billing-page__benefits-segment--includedCustomBackground .billing-page__benefits-segment-copy--backgroundIntro {
@@ -1565,11 +1573,10 @@
 }
 
 .billing-page .billing-page__benefits-segment--includedSupporterIcon {
+  --benefits-segment-accent: #745bda;
   flex-direction: row;
   flex-wrap: wrap;
   min-width: 0;
-  border-color: color-mix(in srgb, var(--color-purple-2) 40%, var(--color-white-t10));
-  background: color-mix(in srgb, var(--color-purple-2) 12%, var(--color-black-t10));
 }
 
 .billing-page .billing-page__benefits-segment--includedSupporterIcon .billing-page__benefits-segment-copy {
@@ -1639,24 +1646,62 @@
   object-fit: contain;
   flex-shrink: 0;
   border-radius: 8px;
-  border: 1px solid var(--color-white-t15);
-  box-shadow: 0 2px 10px var(--color-black-t25);
+  border: 1px solid color-mix(in srgb, var(--benefits-segment-accent) 28%, var(--color-white-t15));
+  box-shadow: 0 2px 10px color-mix(in srgb, var(--benefits-segment-accent) 18%, var(--color-black-t25));
   background: color-mix(in srgb, var(--color-black-t20) 55%, transparent);
 }
 
-.billing-page .billing-page__benefits-segment--comingBios,
-.billing-page .billing-page__benefits-segment--comingLayout {
-  border-style: dashed;
-  border-color: var(--color-white-t20);
-  background: var(--color-black-t5);
+.billing-page .billing-page__benefits-segment--includedBioCanvas {
+  --benefits-segment-accent: #4a90e2;
+  flex-direction: row;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.billing-page .billing-page__benefits-segment--includedBioCanvas .billing-page__benefits-segment-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1 1 min(100%, 14rem);
+  min-width: 0;
+}
+
+.billing-page .billing-page__benefits-demo-trigger--bioDemos {
+  flex: 0 1 auto;
+  max-width: 100%;
+  align-self: flex-start;
+  border-radius: 8px;
+  border: 1px solid var(--color-white-t15);
+  box-shadow: 0 2px 12px var(--color-black-t30);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.billing-page .billing-page__benefits-segment--includedAnimatedPfp .billing-page__benefits-demo-trigger,
+.billing-page .billing-page__benefits-segment--includedBanners .billing-page__benefits-demo-trigger,
+.billing-page .billing-page__benefits-segment--includedCustomBackground .billing-page__benefits-demo-trigger,
+.billing-page .billing-page__benefits-segment--includedSupporterIcon .billing-page__benefits-demo-trigger,
+.billing-page .billing-page__benefits-segment--includedLevelPacks .billing-page__benefits-demo-trigger,
+.billing-page .billing-page__benefits-segment--includedBioCanvas .billing-page__benefits-demo-trigger {
+  border-color: color-mix(in srgb, var(--benefits-segment-accent) 32%, var(--color-white-t15));
+  box-shadow: 0 2px 12px color-mix(in srgb, var(--benefits-segment-accent) 20%, var(--color-black-t30));
+}
+
+.billing-page .billing-page__benefits-segment--includedAnimatedPfp .billing-page__benefits-demo-trigger:focus-visible,
+.billing-page .billing-page__benefits-segment--includedBanners .billing-page__benefits-demo-trigger:focus-visible,
+.billing-page .billing-page__benefits-segment--includedCustomBackground .billing-page__benefits-demo-trigger:focus-visible,
+.billing-page .billing-page__benefits-segment--includedSupporterIcon .billing-page__benefits-demo-trigger:focus-visible,
+.billing-page .billing-page__benefits-segment--includedLevelPacks .billing-page__benefits-demo-trigger:focus-visible,
+.billing-page .billing-page__benefits-segment--includedBioCanvas .billing-page__benefits-demo-trigger:focus-visible {
+  outline-color: color-mix(in srgb, var(--benefits-segment-accent) 70%, var(--color-white));
 }
 
 .billing-page .billing-page__benefits-segment--ideas {
   gap: 0.5rem;
   margin-top: 0.25rem;
   padding: 0.85rem 0.9rem;
-  border-color: var(--color-white-t15);
-  background: color-mix(in srgb, var(--btn-primary) 6%, var(--color-black-t10));
+  border-color: color-mix(in srgb, #8d70ff 22%, var(--color-white-t15));
+  background: color-mix(in srgb, #8d70ff 6%, var(--color-black-t10));
 }
 
 .billing-page .billing-page__benefits-discord-link {
@@ -1715,6 +1760,17 @@
   }
 
   .billing-page .billing-page__benefits-segment--includedSupporterIcon .billing-page__benefits-demo-trigger--iconDemos {
+    align-self: center;
+    width: min(22rem, 100%);
+    max-width: 100%;
+  }
+
+  .billing-page .billing-page__benefits-segment--includedBioCanvas {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .billing-page .billing-page__benefits-segment--includedBioCanvas .billing-page__benefits-demo-trigger--bioDemos {
     align-self: center;
     width: min(22rem, 100%);
     max-width: 100%;

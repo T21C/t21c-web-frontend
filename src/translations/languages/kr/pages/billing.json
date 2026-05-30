@@ -43,18 +43,10 @@
       "levelPacks": {
         "title": "더 많은 팩과 항목",
         "body": "<packStat><packMult>×5</packMult><start><packRange>(20 ➔ 100)</packRange></start></packStat> 더 많은 팩을 얻고, 각 팩마다 <itemStat><itemMult>×10</itemMult><itemRange>(250 ➔ 2500)</itemRange></itemStat> 더 많은 항목을 유지할 수 있습니다."
-      }
-    },
-    "comingHeading": "곧 제공 예정",
-    "comingIntro": "TUFStellar는 계속 개발 중입니다. 아래는 목표로 하는 기능이며, 일정은 변경될 수 있습니다.",
-    "coming": {
-      "bios": {
-        "title": "더 풍부한 소개",
-        "body": "간단한 마크다운 형식을 지원해 일반 텍스트 이상으로 소개를 구성할 수 있습니다."
       },
-      "layout": {
-        "title": "프로필 레이아웃",
-        "body": "프로필 섹션 순서를 바꿀 수 있습니다(예: 난이도 통계보다 순위 기록을 위에 두기 등)."
+      "bioCanvas": {
+        "title": "커스텀 소개 캔버스",
+        "body": "시각적 캔버스 에디터로 소개를 꾸미세요. 텍스트, 이미지, 동영상, 링크를 추가하고 프로필에 표시할 수 있습니다."
       }
     },
     "ideasHeading": "의견을 환영합니다",

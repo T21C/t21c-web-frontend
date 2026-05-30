@@ -10,6 +10,8 @@ import packDemo from "@/assets/misc/pack demo.png";
 import iconDemo1 from "@/assets/misc/name demo1.jpg";
 import iconDemo2 from "@/assets/misc/name demo2.png";
 import backgroundDemo from "@/assets/misc/custom bg demo.jpg";
+import editorPreview from "@/assets/misc/editor preview.jpg";
+import bioPreview from "@/assets/misc/bio preview.jpg";
 const BENEFITS_PANEL_ID = "billing-purchase-benefits-panel";
 const DISCORD_SUGGESTIONS_URL = "https://discord.gg/AjyAVbqaxf";
 
@@ -295,24 +297,40 @@ export function BillingPurchaseBenefitsSection() {
                 />
               </button>
             </div>
-          </div>
-          <hr style={{ margin: "0.5rem 0", borderColor: "var(--color-white-t10)" }} />
-          <h4 className="billing-page__benefits-subheading billing-page__benefits-subheading--spaced">
-            {t("billing.benefits.comingHeading")}
-          </h4>
-          <p className="billing-page__benefits-lead">{t("billing.benefits.comingIntro")}</p>
 
-          <div className="billing-page__benefits-segment billing-page__benefits-segment--comingBios">
-            <span className="billing-page__benefits-segment-title">{t("billing.benefits.coming.bios.title")}</span>
-            <p className="billing-page__benefits-segment-body">{t("billing.benefits.coming.bios.body")}</p>
+            <div className="billing-page__benefits-segment billing-page__benefits-segment--includedBioCanvas">
+              <div className="billing-page__benefits-segment-copy">
+                <span className="billing-page__benefits-segment-title">{t("billing.benefits.included.bioCanvas.title")}</span>
+                <p className="billing-page__benefits-segment-body">{t("billing.benefits.included.bioCanvas.body")}</p>
+              </div>
+              <button
+                type="button"
+                className="billing-page__benefits-demo-trigger billing-page__benefits-demo-trigger--bioDemos billing-page__media-fit billing-page__media-fit--max-h-10"
+                onClick={() =>
+                  setBenefitsDemoGallery([
+                    { id: "billing-benefits-bio-editor-demo", link: editorPreview },
+                    { id: "billing-benefits-bio-preview-demo", link: bioPreview },
+                  ])
+                }
+                aria-label={t("billing.benefits.demoImageEnlargeAria")}
+              >
+                <span className="billing-page__benefits-icon-demos" aria-hidden>
+                  <img
+                    src={editorPreview}
+                    alt=""
+                    className="billing-page__benefits-icon-demo-thumb billing-page__media-fit__img"
+                    decoding="async"
+                  />
+                  <img
+                    src={bioPreview}
+                    alt=""
+                    className="billing-page__benefits-icon-demo-thumb billing-page__media-fit__img"
+                    decoding="async"
+                  />
+                </span>
+              </button>
+            </div>
           </div>
-
-          {/* will be global
-          <div className="billing-page__benefits-segment billing-page__benefits-segment--comingLayout">
-            <span className="billing-page__benefits-segment-title">{t("billing.benefits.coming.layout.title")}</span>
-            <p className="billing-page__benefits-segment-body">{t("billing.benefits.coming.layout.body")}</p>
-          </div>
-          */}
 
           <div className="billing-page__benefits-segment billing-page__benefits-segment--ideas">
             <h4 className="billing-page__benefits-subheading billing-page__benefits-subheading--inline">

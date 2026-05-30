@@ -191,10 +191,11 @@ const SongListPage = () => {
           <div className="loader loader-level-page"></div>
         ) : songs.length > 0 ? (
           <VirtualList
-            style={{ paddingBottom: "7rem", minHeight: "100vh", overflow: "visible" }}
+            style={{ paddingBottom: "7rem", minHeight: "50vh", overflow: "visible" }}
             items={songs}
             loadMore={handleLoadMore}
             hasMore={hasMore}
+            overscan={800}
             grid
             listClassName="song-cards-grid"
             loader={<div className="loader loader-level-page"></div>}

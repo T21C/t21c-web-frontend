@@ -43,18 +43,10 @@
       "levelPacks": {
         "title": "更多关卡包与条目",
         "body": "获得 <packStat><packMult>×5</packMult><packRange>(20 ➔ 100)</packRange></packStat> 更多关卡包，且每个包可保留 <itemStat><itemMult>×10</itemMult><itemRange>(250 ➔ 2500)</itemRange></itemStat> 更多条目。"
-      }
-    },
-    "comingHeading": "即将推出",
-    "comingIntro": "我们正在持续完善 TUFStellar。以下是我们努力的方向（上线时间可能会有所调整）：",
-    "coming": {
-      "bios": {
-        "title": "更丰富的个人简介",
-        "body": "支持简单的 Markdown 格式，让您可以在纯文本之外组织简介内容。"
       },
-      "layout": {
-        "title": "资料版式",
-        "body": "可调整个人资料各部分顺序（例如将段位历史置于难度统计之上），让您关心的内容优先展示。"
+      "bioCanvas": {
+        "title": "自定义简介画布",
+        "body": "使用可视化画布编辑器设计个人简介——添加文字、图片、视频和链接，并在个人资料中展示。"
       }
     },
     "ideasHeading": "欢迎提出建议",

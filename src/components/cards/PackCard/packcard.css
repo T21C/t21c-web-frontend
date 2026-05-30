@@ -331,9 +331,6 @@
 /* Grid layout adjustments */
 .pack-card--grid {
   height: 100%;
-  /* Consistent height keeps the virtualized grid rows uniform so the windowed
-     list doesn't re-measure and jump (flicker) on each scroll */
-  min-height: 230px;
   display: flex;
   flex-direction: column;
 }

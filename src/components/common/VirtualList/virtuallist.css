@@ -8,30 +8,43 @@
   overflow: visible;
 }
 
+/* List mode: column stack; each item wrapper spans the row */
 .virtual-list__list {
   display: flex;
   flex-direction: column;
+  align-items: stretch;
   gap: 0;
-}
-
-.virtual-list__grid-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  justify-content: center;
-  padding: 1rem;
-  gap: 1rem;
+  width: 100%;
   max-width: 100%;
 }
 
-.virtual-list__grid-list.level-cards-grid {
-  /* Preserve level page grid spacing when class is forwarded */
-  padding: 1rem;
-  gap: 1rem;
+.virtual-list__list-item {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
+/* Grid mode: layout (grid/flex) comes from listClassName */
+.virtual-list__grid-list {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Let the parent grid/flex layout size the cell; avoid forced % width (breaks VirtuosoGrid measure) */
 .virtual-list__grid-item {
-  display: flex;
-  justify-content: center;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  justify-self: stretch;
+  align-self: stretch;
+}
+
+/* Flex-wrapped grids (level cards) keep intrinsic card width */
+.virtual-list__grid-list.level-cards-grid .virtual-list__grid-item {
+  justify-self: auto;
+  align-self: auto;
+  width: auto;
+  max-width: none;
 }
 
 .virtual-list__footer {

@@ -64,6 +64,7 @@ const VirtualList = ({
 
   const listComponents = useMemo(() => {
     const listClass = ['virtual-list__list', listClassName].filter(Boolean).join(' ');
+    const listItemClass = ['virtual-list__list-item', itemClassName].filter(Boolean).join(' ');
 
     return {
       List: forwardRef(function VirtualListList({ style: listStyle, children, ...props }, ref) {
@@ -73,9 +74,14 @@ const VirtualList = ({
           </div>
         );
       }),
+      Item: ({ children, className, ...props }) => (
+        <div {...props} className={[listItemClass, className].filter(Boolean).join(' ')}>
+          {children}
+        </div>
+      ),
       Footer: footerComponent,
     };
-  }, [listClassName, footerComponent]);
+  }, [listClassName, itemClassName, footerComponent]);
 
   const gridComponents = useMemo(() => {
     const gridListClass = ['virtual-list__grid-list', listClassName].filter(Boolean).join(' ');
@@ -89,8 +95,8 @@ const VirtualList = ({
           </div>
         );
       }),
-      Item: ({ children, ...props }) => (
-        <div {...props} className={gridItemClass}>
+      Item: ({ children, className, ...props }) => (
+        <div {...props} className={[gridItemClass, className].filter(Boolean).join(' ')}>
           {children}
         </div>
       ),

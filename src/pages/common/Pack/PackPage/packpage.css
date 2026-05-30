@@ -183,15 +183,17 @@
   grid-template-columns: minmax(0, 1fr);
 }
 
-/* Force each virtualized grid cell to a consistent width so cards don't
-   shrink to their content and long content can't blow out the track */
-.pack-page .pack-page__grid .virtual-list__grid-item {
-  width: 100%;
-  min-width: 0;
-  justify-content: stretch;
+.pack-page__grid:not(.pack-page__grid--list) {
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
 
-.pack-page .pack-page__grid .virtual-list__grid-item > .pack-card {
+.pack-page .pack-page__grid:not(.pack-page__grid--list) .virtual-list__grid-item {
+  width: 100%;
+  min-width: 0;
+}
+
+.pack-page .pack-page__grid:not(.pack-page__grid--list) .virtual-list__grid-item > .pack-card {
+  display: flex;
   width: 100%;
   min-width: 0;
   box-sizing: border-box;

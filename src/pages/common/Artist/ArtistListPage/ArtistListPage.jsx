@@ -169,10 +169,11 @@ const ArtistListPage = () => {
           <div className="loader loader-level-page"></div>
         ) : (
           <VirtualList
-            style={{ paddingBottom: "7rem", overflow: "visible" }}
+            style={{ paddingBottom: "7rem", minHeight: "50vh", overflow: "visible" }}
             items={artists}
             loadMore={handleLoadMore}
             hasMore={hasMore}
+            overscan={800}
             grid
             listClassName="artist-cards-grid"
             loader={<div className="loader loader-level-page"></div>}

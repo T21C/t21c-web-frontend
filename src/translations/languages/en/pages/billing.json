@@ -43,18 +43,10 @@
       "levelPacks": {
         "title": "More packs & items",
         "body": "Get <packStat><packMult>×5</packMult><packRange>(20 ➔ 100)</packRange></packStat> more packs, and keep <itemStat><itemMult>×10</itemMult><itemRange>(250 ➔ 2500)</itemRange></itemStat> more items in each."
-      }
-    },
-    "comingHeading": "Coming next",
-    "comingIntro": "We're still building out TUFStellar. Here's what we're working toward (timing may change):",
-    "coming": {
-      "bios": {
-        "title": "Richer bios",
-        "body": "Support for a simple formatting language (Markdown) so you can structure your bio beyond plain text."
       },
-      "layout": {
-        "title": "Profile layout",
-        "body": "Reorder profile sections (for example, put rank history above difficulty stats) so what you care about shows up first."
+      "bioCanvas": {
+        "title": "Custom bio canvas",
+        "body": "Design your bio with a visual canvas editor — add text, images, videos, and links, then show it on your profile."
       }
     },
     "ideasHeading": "Ideas welcome",
