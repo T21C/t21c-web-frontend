@@ -7,6 +7,8 @@ export const MIN_BLOCK_W = 40;
 export const MIN_BLOCK_H = 24;
 export const MIN_BLOCK_X = -STAGE_WIDTH;
 export const MIN_BLOCK_Y = -STAGE_HEIGHT;
+export const MAX_BLOCK_X = STAGE_WIDTH;
+export const MAX_BLOCK_Y = STAGE_HEIGHT;
 export const MIN_BLOCK_ROTATION = -360;
 export const MAX_BLOCK_ROTATION = 360;
 
@@ -48,8 +50,8 @@ export function normalizeLayout(raw, descriptor, legacyStackY = STAGE_PADDING) {
     if (hasFreeformLayout(raw) && !isLegacyLayout(raw)) {
       let w = clampInt(raw.w, MIN_BLOCK_W, STAGE_WIDTH);
       let h = clampInt(raw.h, MIN_BLOCK_H, STAGE_MAX_HEIGHT);
-      let x = clampInt(raw.x, MIN_BLOCK_X, STAGE_WIDTH - w);
-      let y = clampInt(raw.y, MIN_BLOCK_Y, STAGE_MAX_HEIGHT - h);
+      let x = clampInt(raw.x, MIN_BLOCK_X, MAX_BLOCK_X);
+      let y = clampInt(raw.y, MIN_BLOCK_Y, MAX_BLOCK_Y);
       let locked;
       if (raw.locked !== undefined) {
         locked = raw.locked !== false;

@@ -64,6 +64,11 @@ export default function BioCanvasLayoutControls({ blockId, layout, descriptor, o
     onChange({ ...layout, rotation: clampBlockRotation(nextRotation, 0) });
   };
 
+  const resetPosition = () => {
+    onChange({ ...layout, x: 0, y: 0 });
+    setDraft((prev) => ({ ...prev, x: "0", y: "0" }));
+  };
+
   const bumpRotation = (delta) => {
     setRotation((layout?.rotation ?? rotation ?? 0) + delta);
   };
@@ -92,6 +97,16 @@ export default function BioCanvasLayoutControls({ blockId, layout, descriptor, o
           </label>
         );
       })}
+      <div className="bio-canvas-editor__position-controls">
+        <button
+          type="button"
+          className="btn-fill-secondary"
+          aria-label="Reset position to origin"
+          onClick={resetPosition}
+        >
+          Reset position
+        </button>
+      </div>
       <label className="bio-canvas-editor__field bio-canvas-editor__field--rotation">
         <span>Rotate ({rotation}°)</span>
         <input

@@ -28,6 +28,18 @@ const ASPECT_RESIZE = {
 
 const FREE_RESIZE = { ...ASPECT_RESIZE };
 
+const RESIZE_HANDLE_CLASS = "react-resizable-handle";
+const RESIZE_HANDLE_CLASSES = {
+  top: RESIZE_HANDLE_CLASS,
+  right: RESIZE_HANDLE_CLASS,
+  bottom: RESIZE_HANDLE_CLASS,
+  left: RESIZE_HANDLE_CLASS,
+  topRight: RESIZE_HANDLE_CLASS,
+  bottomRight: RESIZE_HANDLE_CLASS,
+  bottomLeft: RESIZE_HANDLE_CLASS,
+  topLeft: RESIZE_HANDLE_CLASS,
+};
+
 const WIDTH_ONLY_RESIZE = {
   top: false,
   right: true,
@@ -259,6 +271,7 @@ export default function BioCanvasStage({
                 scale={scale}
                 lockAspectRatio={lockRatio}
                 disableDragging
+                resizeHandleClasses={RESIZE_HANDLE_CLASSES}
                 enableResizing={isSelected ? getResizeHandles(resizeBehavior) : false}
                 onResizeStop={(_e, _dir, ref, _delta, position) => {
                   onPatchLayout?.(block.id, {
