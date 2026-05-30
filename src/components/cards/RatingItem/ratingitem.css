@@ -71,14 +71,6 @@
     white-space: pre-wrap;
     max-height: 500px;
     overflow-y: auto;
-    transition: max-height 0.3s ease;
-  }
-
-  .rating-comment.hidden {
-    max-height: 0;
-    margin-top: 0;
-    padding: 0;
-    overflow: hidden;
   }
 
   .other-rating-item.expanded {

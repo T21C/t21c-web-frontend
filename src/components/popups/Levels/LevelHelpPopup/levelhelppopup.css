@@ -119,18 +119,17 @@
 }
 
 .level-help-popup .level-help-popup__section-panel {
-  padding: 0 1rem 0 1rem;
+  padding: 0 1rem;
   display: flex;
   flex-direction: column;
-  overflow-y: scroll;
+  overflow-y: auto;
   gap: 0.75rem;
-  max-height: 0;
-  transition: all 0.4s var(--ease-out-expo);
+  max-height: min(70vh, 500px);
+  transition: padding 0.4s var(--ease-out-expo);
 }
 
 .level-help-popup .level-help-popup__section-panel.open {
   padding: 1rem;
-  max-height: 500px;
 }
 
 .level-help-popup .level-help-popup__intro {

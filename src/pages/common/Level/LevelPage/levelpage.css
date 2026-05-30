@@ -603,20 +603,8 @@
   z-index: 2;
 }
 
-.level-page .level-body .q-slider-wrapper.hidden {
-  opacity: 0;
-  pointer-events: none;
-  margin-top: 0;
-}
-
-.level-page .level-body .sliders-container:not(.has-sliders) .q-slider-wrapper.hidden {
-  max-height: 0;
-}
-
-
-.level-page .level-body .q-slider-wrapper.visible {
+.level-page .level-body .q-slider-wrapper {
   overflow: visible;
-  opacity: 1;
   transform: translateX(0);
 }
 

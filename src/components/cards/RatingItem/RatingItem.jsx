@@ -7,6 +7,7 @@ import { CommentFormatter } from '@/components/misc';
 import { UserAvatar } from '@/components/layout';
 import { userAvatarUrls } from '@/utils/playerAvatarDisplay';
 import { CrownIcon } from '@/components/common/icons';
+import { Collapsible, CollapsibleContent } from '@/components/common/Collapsible';
 import { formatDate } from '@/utils/Utility';
 import i18next from 'i18next';
 
@@ -106,9 +107,13 @@ export const RatingItem = ({ ratingDetail, isSuperAdmin, onDelete, weeklyRaterAc
             </div>
           </div>
           {comment && (
-            <div className={`rating-comment ${!isExpanded ? 'hidden' : ''}`}>
+            <Collapsible open={isExpanded} onOpenChange={setIsExpanded} duration="0.3s" easing="ease">
+              <CollapsibleContent>
+            <div className="rating-comment">
               <CommentFormatter>{comment}</CommentFormatter>
             </div>
+              </CollapsibleContent>
+            </Collapsible>
           )}
         </div>
       </div>

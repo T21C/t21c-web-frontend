@@ -11,6 +11,7 @@ import toast from 'react-hot-toast';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { CDN_IMAGE_ACCEPT, isCdnSupportedImageMimeType } from '@/config/constants/cdnImageAccept';
 import { CloseButton } from '@/components/common/buttons';
+import { Collapsible, CollapsibleContent } from '@/components/common/Collapsible';
 
 const DIRECTIVE_MODES = {
   STATIC: 'STATIC',
@@ -1441,7 +1442,16 @@ const DifficultyPopup = ({
                                       </div>
                                     </div>
 
-                                    <div className={`difficulty-modal__directive-content ${expandedDirectives[index] ? 'expanded' : ''}`}>
+                                    <Collapsible
+                                      open={!!expandedDirectives[index]}
+                                      onOpenChange={(open) =>
+                                        setExpandedDirectives((prev) => ({ ...prev, [index]: open }))
+                                      }
+                                      revealOverflow
+                                      duration="0.3s"
+                                    >
+                                      <CollapsibleContent>
+                                    <div className="difficulty-modal__directive-content">
                                       <div className="difficulty-modal__directive-actions">
                                         <button
                                           type="button"
@@ -1603,7 +1613,16 @@ const DifficultyPopup = ({
                                             </svg>
                                           </button>
                                         </div>
-                                        <div className={`difficulty-modal__actions-content ${expandedActions[index] ? 'expanded' : ''}`}>
+                                        <Collapsible
+                                          open={!!expandedActions[index]}
+                                          onOpenChange={(open) =>
+                                            setExpandedActions((prev) => ({ ...prev, [index]: open }))
+                                          }
+                                          revealOverflow
+                                          duration="0.3s"
+                                        >
+                                          <CollapsibleContent>
+                                        <div className="difficulty-modal__actions-content">
                                           {directive?.actions?.map((action, actionIndex) => (
                                             <div key={actionIndex} className="difficulty-modal__action-item">
                                               <button
@@ -1719,6 +1738,8 @@ const DifficultyPopup = ({
                                             {t('difficultyPopup.announcements.actions.add')}
                                           </button>
                                         </div>
+                                          </CollapsibleContent>
+                                        </Collapsible>
                                       </div>
 
                                       <div className="difficulty-modal__form-group-checkbox">
@@ -1745,6 +1766,8 @@ const DifficultyPopup = ({
                                         </label>
                                       </div>
                                     </div>
+                                      </CollapsibleContent>
+                                    </Collapsible>
                                   </div>
                                 )}
                               </Draggable>

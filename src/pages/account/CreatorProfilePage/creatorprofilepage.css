@@ -62,13 +62,7 @@
   overflow-x: visible;
   margin-top: 1rem;
   height: 60rem;
-  transition: all 0.3s ease-in-out;
   scrollbar-gutter: stable both-edges;
-}
-
-.creator-profile-page .creator-profile-page__levels-container.hidden {
-  height: 0;
-  margin-top: 0;
 }
 
 .creator-profile-page .creator-profile-page__verification-wrap {

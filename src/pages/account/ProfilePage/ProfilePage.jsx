@@ -17,6 +17,7 @@ import { Tooltip as ProfileTooltip } from "react-tooltip";
 import { CaseOpenSelector, CustomSelect } from "@/components/common/selectors";
 import caseOpen from "@/assets/icons/case.png";
 import { VirtualList, useScrollParent } from "@/components/common/VirtualList";
+import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
 import { ScrollButton } from "@/components/common/buttons";
 import { useProfileContext } from "@/contexts/ProfileContext";
 import { useDebouncedRequest } from "@/hooks/useDebouncedRequest";
@@ -832,7 +833,15 @@ const ProfilePage = () => {
                     <ChevronIcon direction={bioExpanded ? 'down' : 'right'} />
                   </button>
                 </div>
-                <div className={["account-profile-page__collapsible", bioCollapsed ? "hidden" : ""].join(" ").trim()}>
+                <Collapsible
+                  open={!bioCollapsed}
+                  onOpenChange={(open) => setBioCollapsed(!open)}
+                  revealOverflow
+                  duration="0.3s"
+                  easing="ease-in-out"
+                >
+                  <CollapsibleContent>
+                <div className="account-profile-page__collapsible">
                   <div className="player-page__bio">
                     {playerData?.bioCanvas?.blocks?.length > 0 ? (
                       <BioCanvasRenderer
@@ -846,6 +855,8 @@ const ProfilePage = () => {
                     )}
                   </div>
                 </div>
+                  </CollapsibleContent>
+                </Collapsible>
               </section>
 
               {scoreBreakdownTiles.length > 0 ? (
@@ -868,15 +879,15 @@ const ProfilePage = () => {
                       <ChevronIcon direction={scoreBreakdownExpanded ? "down" : "right"} />
                     </button>
                   </div>
-                  <div
-                    className={[
-                      "account-profile-page__collapsible",
-                      "player-page__score-breakdown-collapsible",
-                      scoreBreakdownCollapsed ? "hidden" : "",
-                    ]
-                      .join(" ")
-                      .trim()}
+                  <Collapsible
+                    open={!scoreBreakdownCollapsed}
+                    onOpenChange={(open) => setScoreBreakdownCollapsed(!open)}
+                    revealOverflow
+                    duration="0.3s"
+                    easing="ease-in-out"
                   >
+                    <CollapsibleContent>
+                  <div className="account-profile-page__collapsible player-page__score-breakdown-collapsible">
                     <div className="player-page__score-breakdown-grid">
                       {scoreBreakdownTiles.map((tile) => {
                         const tooltipId = `player-score-breakdown-${playerId}-${tile.key}`;
@@ -907,6 +918,8 @@ const ProfilePage = () => {
                       })}
                     </div>
                   </div>
+                    </CollapsibleContent>
+                  </Collapsible>
                 </section>
               ) : null}
 
@@ -928,7 +941,15 @@ const ProfilePage = () => {
                       <ChevronIcon direction={difficultyExpanded ? 'down' : 'right'} />
                     </button>
                   </div>
-                  <div style={{ overflow: "visible" }} className={["account-profile-page__collapsible", "player-page__difficulty-collapsible", difficultyCollapsed ? "hidden" : ""].join(" ").trim()}>
+                  <Collapsible
+                    open={!difficultyCollapsed}
+                    onOpenChange={(open) => setDifficultyCollapsed(!open)}
+                    revealOverflow
+                    duration="0.3s"
+                    easing="ease-in-out"
+                  >
+                    <CollapsibleContent>
+                  <div className="account-profile-page__collapsible player-page__difficulty-collapsible">
                     <label className="player-page__difficulty-dupes-toggle">
                       <input
                         type="checkbox"
@@ -939,6 +960,8 @@ const ProfilePage = () => {
                     </label>
                     <DifficultyGraph data={difficultyGraphData} mode="passes" />
                   </div>
+                    </CollapsibleContent>
+                  </Collapsible>
                 </section>
               ) : null}
 
@@ -961,14 +984,15 @@ const ProfilePage = () => {
                     <ChevronIcon direction={rankHistoryExpanded ? 'down' : 'right'} />
                   </button>
                 </div>
-                <div
-                  className={[
-                    'account-profile-page__collapsible',
-                    rankHistoryCollapsed ? 'hidden' : '',
-                  ]
-                    .join(' ')
-                    .trim()}
+                <Collapsible
+                  open={!rankHistoryCollapsed}
+                  onOpenChange={(open) => setRankHistoryCollapsed(!open)}
+                  revealOverflow
+                  duration="0.3s"
+                  easing="ease-in-out"
                 >
+                  <CollapsibleContent>
+                <div className="account-profile-page__collapsible">
                   <div className="rank-history__controls">
                     <div className="rank-history__control">
                       <span className="rank-history__control-label">
@@ -1084,6 +1108,8 @@ const ProfilePage = () => {
                     <div className="rank-history__status">{t('profile.sections.rankHistory.empty')}</div>
                   ) : null}
                 </div>
+                  </CollapsibleContent>
+                </Collapsible>
               </section>
 
               {(passesInitialLoading || displayedPasses.length > 0 || passesTotal > 0 || (playerData?.funFacts?.counts?.totalPasses ?? 0) > 0) && (
@@ -1105,10 +1131,18 @@ const ProfilePage = () => {
                     </button>
                   </div>
 
+                  <Collapsible
+                    open={!scoresCollapsed}
+                    onOpenChange={(open) => setScoresCollapsed(!open)}
+                    revealOverflow
+                    duration="0.3s"
+                    easing="ease-in-out"
+                  >
+                    <CollapsibleContent>
                   <div
                     id="player-scores-scroll-container"
                     ref={scoresScrollRef}
-                    className={["player-page__scores-container", scoresCollapsed ? "hidden" : ""].join(" ").trim()}
+                    className="player-page__scores-container"
                   >
                   <div className="scores-controls">
                     <div className="search-container">
@@ -1216,6 +1250,8 @@ const ProfilePage = () => {
                   />
                   )}
                   </div>
+                    </CollapsibleContent>
+                  </Collapsible>
                 </div>
               )}
             </div>

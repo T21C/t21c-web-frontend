@@ -435,20 +435,9 @@
 }
 
 .settings-sub-page .settings-sub-page__banner-collapsible {
-  overflow: hidden;
   display: flex;
   justify-content: center;
-  transition: max-height 0.4s var(--ease-out-expo), opacity 0.25s ease, margin 0.25s ease;
-  max-height: 50rem;
   margin-top: 0.5rem;
-}
-
-.settings-sub-page .settings-sub-page__banner-collapsible.settings-sub-page__banner-collapsible--collapsed {
-  max-height: 0;
-  margin-top: 0;
-  margin-bottom: 0;
-  opacity: 0;
-  pointer-events: none;
 }
 
 .settings-sub-page__section--preview-hidden {

@@ -596,7 +596,14 @@ const LevelPage = ({
                 />
               </div>
               <div className={`sliders-container ${qSliderVisible ? 'has-sliders' : ''}`}>
-                <div className={`q-slider-wrapper ${qSliderVisible ? 'visible' : 'hidden'}`}>
+                <Collapsible
+                  open={qSliderVisible}
+                  onOpenChange={setQSliderVisible}
+                  revealOverflow
+                  duration="0.3s"
+                >
+                  <CollapsibleContent>
+                <div className="q-slider-wrapper">
                   <DifficultySlider
                     values={sliderQRangeDrag}
                     onChange={handleSliderQChange}
@@ -604,6 +611,8 @@ const LevelPage = ({
                     mode="q"
                   />
                 </div>
+                  </CollapsibleContent>
+                </Collapsible>
               </div>
               <div className="filter-row">
                 <div className={`special-difficulties-wrapper`}>

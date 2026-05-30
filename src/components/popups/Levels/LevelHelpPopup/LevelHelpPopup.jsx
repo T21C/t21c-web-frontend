@@ -3,6 +3,7 @@ import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
 import './levelhelppopup.css';
 import { Trans, useTranslation } from 'react-i18next';
 import { CloseButton } from '@/components/common/buttons';
+import { Collapsible, CollapsibleContent } from '@/components/common/Collapsible';
 
 export const LevelHelpPopup = ({ onClose }) => {
   const { t } = useTranslation(['components']);
@@ -159,12 +160,20 @@ export const LevelHelpPopup = ({ onClose }) => {
                     </span>
                   </button>
 
-                  <div
-                    id={panelId}
-                    role="region"
-                    aria-labelledby={buttonId}
-                    className={`level-help-popup__section-panel ${isOpen ? 'open' : ''}`}
+                  <Collapsible
+                    open={isOpen}
+                    onOpenChange={(open) => {
+                      if (open) setOpenSection(sec.id);
+                      else if (openSection === sec.id) setOpenSection('');
+                    }}
+                    revealOverflow
+                    duration="0.4s"
                   >
+                    <CollapsibleContent
+                      id={panelId}
+                      aria-labelledby={buttonId}
+                      className={`level-help-popup__section-panel ${isOpen ? 'open' : ''}`}
+                    >
                     {sec.introKey && <p className="level-help-popup__intro">{t(sec.introKey)}</p>}
 
                     {sec.fields && (
@@ -221,7 +230,8 @@ export const LevelHelpPopup = ({ onClose }) => {
                         ))}
                       </ul>
                     )}
-                  </div>
+                    </CollapsibleContent>
+                  </Collapsible>
                 </div>
               );
             })}

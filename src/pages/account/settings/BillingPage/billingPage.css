@@ -1258,18 +1258,7 @@
 }
 
 .billing-page .billing-page__benefits-collapsible {
-  transition:
-    all 0.3s ease-in-out;
-  max-height: 100rem;
-  overflow: visible;
   margin-top: 1.5rem;
-}
-
-.billing-page .billing-page__benefits-collapsible.hidden {
-  max-height: 0;
-  overflow: hidden;
-  margin-top: 0;
-  opacity: 0;
 }
 
 .billing-page .billing-page__benefits-body {

@@ -25,6 +25,7 @@ import {
 } from "@/utils/profileBanners";
 import { CreatorStatusBadge } from "@/components/common/display";
 import { ExternalLinkIcon, ChevronIcon, InfoIcon } from "@/components/common/icons";
+import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
 import { SettingsSaveField } from "@/components/account/SettingsSaveField/SettingsSaveField";
 import { SettingsStellarIconField } from "@/components/account/SettingsSaveField/SettingsStellarIconField";
 import { CustomSelect } from "@/components/common/selectors";
@@ -716,14 +717,17 @@ const SettingsCreatorPage = () => {
             </button>
           </div>
         </div>
-        <div
-          id="settings-creator-banner-panel"
-          className={
-            profileBannerExpanded
-              ? "settings-sub-page__banner-collapsible"
-              : "settings-sub-page__banner-collapsible settings-sub-page__banner-collapsible--collapsed"
-          }
+        <Collapsible
+          open={profileBannerExpanded}
+          onOpenChange={setProfileBannerExpanded}
+          revealOverflow
+          duration="0.4s"
         >
+          <CollapsibleContent
+            id="settings-creator-banner-panel"
+            className="settings-sub-page__banner-collapsible-region"
+          >
+        <div className="settings-sub-page__banner-collapsible">
           <ProfileBannerEditor
             variant="creator"
             showHeading={false}
@@ -736,6 +740,8 @@ const SettingsCreatorPage = () => {
             onApplied={(patch) => setProfile((p) => (p && typeof p === "object" ? { ...p, ...patch } : p))}
           />
         </div>
+          </CollapsibleContent>
+        </Collapsible>
       </SettingsPreviewSection>
 
       {isTufStellarAccessActive(stellarEntitlementSubject) ? (

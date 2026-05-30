@@ -2,6 +2,7 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { ChevronIcon, TUFStellarIcon } from "@/components/common/icons";
+import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
 import { GalleryInspectPopup } from "@/components/popups/Evidence";
 import pfpDemo from "@/assets/misc/pfp demo.gif";
 import bannerDemo from "@/assets/misc/banner demo.jpg";
@@ -63,8 +64,8 @@ function BillingPackStatRange({ children }) {
     if (!rangeEl) return undefined;
 
     const run = () => {
-      const collapsible = rangeEl.closest(".billing-page__benefits-collapsible");
-      if (collapsible?.classList.contains("hidden")) return;
+      const region = rangeEl.closest('[role="region"]');
+      if (region?.getAttribute("aria-hidden") === "true") return;
 
       const container = rangeEl.closest(".billing-page__benefits-level-packs-main");
       const stat = rangeEl.closest(".billing-page__benefits-pack-stat");
@@ -78,7 +79,7 @@ function BillingPackStatRange({ children }) {
 
     const container = rangeEl.closest(".billing-page__benefits-level-packs-main");
     const stat = rangeEl.closest(".billing-page__benefits-pack-stat");
-    const collapsible = rangeEl.closest(".billing-page__benefits-collapsible");
+    const region = rangeEl.closest('[role="region"]');
 
     const ro = new ResizeObserver(() => {
       requestAnimationFrame(run);
@@ -86,7 +87,7 @@ function BillingPackStatRange({ children }) {
     if (container) ro.observe(container);
     if (stat) ro.observe(stat);
     ro.observe(rangeEl);
-    if (collapsible) ro.observe(collapsible);
+    if (region) ro.observe(region);
 
     window.addEventListener("resize", run);
     return () => {
@@ -132,10 +133,15 @@ export function BillingPurchaseBenefitsSection() {
           <ChevronIcon direction={expanded ? "down" : "right"} />
         </button>
       </div>
-      <div
-        id={BENEFITS_PANEL_ID}
-        className={["billing-page__benefits-collapsible", benefitsCollapsed ? "hidden" : ""].join(" ").trim()}
+      <Collapsible
+        open={expanded}
+        onOpenChange={(open) => setBenefitsCollapsed(!open)}
+        revealOverflow
+        duration="0.3s"
+        easing="ease-in-out"
       >
+        <CollapsibleContent id={BENEFITS_PANEL_ID}>
+      <div className="billing-page__benefits-collapsible">
         <div className="billing-page__benefits-body">
           <h4 className="billing-page__benefits-subheading">{t("billing.benefits.includedHeading")}</h4>
 
@@ -331,6 +337,8 @@ export function BillingPurchaseBenefitsSection() {
           </div>
         </div>
       </div>
+        </CollapsibleContent>
+      </Collapsible>
 
       {benefitsDemoGallery ? (
         <GalleryInspectPopup

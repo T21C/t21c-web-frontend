@@ -24,6 +24,7 @@ import {
   resolveStellarEntitlementSubject,
 } from "@/utils/profileBanners";
 import { ExternalLinkIcon, ChevronIcon } from "@/components/common/icons";
+import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
 import { SettingsSaveField } from "@/components/account/SettingsSaveField/SettingsSaveField";
 import { SettingsStellarIconField } from "@/components/account/SettingsSaveField/SettingsStellarIconField";
 import { useSettings } from "@/contexts/SettingsContext";
@@ -536,14 +537,17 @@ const SettingsPlayerPage = () => {
             </button>
           </div>
         </div>
-        <div
-          id="settings-player-banner-panel"
-          className={
-            profileBannerExpanded
-              ? "settings-sub-page__banner-collapsible"
-              : "settings-sub-page__banner-collapsible settings-sub-page__banner-collapsible--collapsed"
-          }
+        <Collapsible
+          open={profileBannerExpanded}
+          onOpenChange={setProfileBannerExpanded}
+          revealOverflow
+          duration="0.4s"
         >
+          <CollapsibleContent
+            id="settings-player-banner-panel"
+            className="settings-sub-page__banner-collapsible-region"
+          >
+        <div className="settings-sub-page__banner-collapsible">
           <ProfileBannerEditor
             variant="player"
             showHeading={false}
@@ -557,6 +561,8 @@ const SettingsPlayerPage = () => {
             }}
           />
         </div>
+          </CollapsibleContent>
+        </Collapsible>
       </SettingsPreviewSection>
 
       {isTufStellarAccessActive(stellarEntitlementSubject) ? (

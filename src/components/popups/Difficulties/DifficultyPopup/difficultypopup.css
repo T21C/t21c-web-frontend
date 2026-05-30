@@ -1360,18 +1360,8 @@
   transition: transform 0.2s ease;
 }
 
-/* Directive Content Styles */
 .difficulty-modal__directive-content {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease-out;
-  opacity: 0;
-}
-
-.difficulty-modal__directive-content.expanded {
-  max-height: 2000px;
-  opacity: 1;
-  transition: max-height 0.5s ease-in, opacity 0.2s ease-in;
+  overflow: visible;
 }
 
 /* Actions Section Styles */
@@ -1383,16 +1373,8 @@
 }
 
 .difficulty-modal__actions-content {
-  max-height: 0;
   overflow-y: auto;
-  transition: max-height 0.3s ease-out;
-  opacity: 0;
-}
-
-.difficulty-modal__actions-content.expanded {
-  max-height: 1000px;
-  opacity: 1;
-  transition: max-height 0.5s ease-in, opacity 0.2s ease-in;
+  max-height: min(60vh, 1000px);
 }
 
 .difficulty-modal__directive-actions {

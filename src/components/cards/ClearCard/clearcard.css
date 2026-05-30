@@ -135,13 +135,6 @@
   transition: all 0.3s ease;
 }
 
-.clear-card .collapsible-fields.hidden {
-  max-height: 0;
-  opacity: 0;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-}
 
 .clear-card .score-info {
   display: flex;

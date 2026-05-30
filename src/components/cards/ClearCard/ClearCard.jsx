@@ -5,6 +5,7 @@ import "./clearcard.css"
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { PassIcon, YoutubeIcon } from "@/components/common/icons";
+import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
 import { UserAvatar } from "@/components/layout";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 const ClearCard = ({scoreData, index}) => {
@@ -64,7 +65,13 @@ const ClearCard = ({scoreData, index}) => {
 
       {/* Right Section - Score Info & Judgements */}
       <div className="card-section details-section">
-        <div className={`collapsible-fields ${isExpanded ? 'hidden' : ''}`}>
+        <Collapsible
+          open={!isExpanded}
+          onOpenChange={(open) => setIsExpanded(!open)}
+          duration="0.3s"
+        >
+          <CollapsibleContent>
+        <div className="collapsible-fields">
           <div className="score-info">
             <div className="score-value">{scoreData.scoreV2.toFixed(2)}</div>
             <div className="score-accuracy">{(scoreData.accuracy * 100).toFixed(2)}%</div>
@@ -90,6 +97,8 @@ const ClearCard = ({scoreData, index}) => {
             </div>
           </div>
         </div>
+          </CollapsibleContent>
+        </Collapsible>
 
         <div className="bottom-row">
           <div className="feeling-rating">

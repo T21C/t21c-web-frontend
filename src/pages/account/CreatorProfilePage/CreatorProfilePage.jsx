@@ -16,6 +16,7 @@ import { ScrollButton } from "@/components/common/buttons";
 import { ChevronIcon, AdofaiIcon, EditIcon, ShieldIcon, InfoIcon } from "@/components/common/icons";
 import { CreatorManagementPopup } from "@/components/popups/Creators";
 import LevelPage from "@/pages/common/Level/LevelPage/LevelPage";
+import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { buildCreatorIconSlots } from "@/utils/profileIconSlots";
 import { getCreatorCurationTypesForHeaderPanel } from "@/utils/curationTypeUtils";
@@ -302,7 +303,15 @@ const CreatorProfilePage = () => {
               <ChevronIcon direction={bioExpanded ? 'down' : 'right'} />
             </button>
           </div>
-          <div className={["account-profile-page__collapsible", bioCollapsed ? "hidden" : ""].join(" ").trim()}>
+          <Collapsible
+            open={!bioCollapsed}
+            onOpenChange={(open) => setBioCollapsed(!open)}
+            revealOverflow
+            duration="0.3s"
+            easing="ease-in-out"
+          >
+            <CollapsibleContent>
+          <div className="account-profile-page__collapsible">
             <div className="creator-profile-page__bio">
               {typeof profile?.bio === 'string' && profile.bio.trim().length > 0 ? (
                 <p className="creator-profile-page__bio-text">{profile.bio}</p>
@@ -313,6 +322,8 @@ const CreatorProfilePage = () => {
               )}
             </div>
           </div>
+            </CollapsibleContent>
+          </Collapsible>
         </section>
 
         {difficultyGraphData.length > 0 ? (
@@ -336,9 +347,19 @@ const CreatorProfilePage = () => {
                 <ChevronIcon direction={difficultyExpanded ? 'down' : 'right'} />
               </button>
             </div>
-            <div style={{ overflow: "visible" }} className={["account-profile-page__collapsible", difficultyCollapsed ? "hidden" : ""].join(" ").trim()}>
+            <Collapsible
+              open={!difficultyCollapsed}
+              onOpenChange={(open) => setDifficultyCollapsed(!open)}
+              revealOverflow
+              duration="0.3s"
+              easing="ease-in-out"
+            >
+              <CollapsibleContent>
+            <div className="account-profile-page__collapsible">
               <DifficultyGraph data={difficultyGraphData} mode="levels" />
             </div>
+              </CollapsibleContent>
+            </Collapsible>
           </section>
         ) : null}
 
@@ -370,9 +391,15 @@ const CreatorProfilePage = () => {
             hidden filter scopes results to this creator without exposing it in
             the UI.
           */}
-          <div
-            className={["creator-profile-page__levels-container", levelsCollapsed ? "hidden" : ""].join(" ").trim()}
+          <Collapsible
+            open={!levelsCollapsed}
+            onOpenChange={(open) => setLevelsCollapsed(!open)}
+            revealOverflow
+            duration="0.3s"
+            easing="ease-in-out"
           >
+            <CollapsibleContent>
+          <div className="creator-profile-page__levels-container">
           <LevelContextProvider storagePrefix={`creator_${creatorId}_`}>
             <LevelPage
               embedded
@@ -381,6 +408,8 @@ const CreatorProfilePage = () => {
             />
           </LevelContextProvider>
           </div>
+            </CollapsibleContent>
+          </Collapsible>
         </section>
       </div>
 
