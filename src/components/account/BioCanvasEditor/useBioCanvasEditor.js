@@ -251,8 +251,9 @@ export function useBioCanvasEditor({
       const block = workingCanvas?.blocks?.find((b) => b.id === blockId);
       if (!block || block.type !== "image") return;
       patchBlockData(blockId, { crop: { ...FIT_IMAGE_TO_FRAME_CROP } });
+      patchLayout(blockId, { x: 0, y: 0, w: STAGE_WIDTH, h: STAGE_HEIGHT, rotation: 0 });
     },
-    [workingCanvas, patchBlockData],
+    [workingCanvas, patchBlockData, patchLayout],
   );
 
   const isDirtySinceOpen = useMemo(() => {
