@@ -280,10 +280,7 @@ export default function BioCanvasStage({
             return (
               <Rnd
                 key={block.id}
-                style={{
-                  zIndex: index + 1,
-                  rotate: rotation ? `${rotation}deg` : undefined,
-                }}
+                style={{ zIndex: index + 1 }}
                 size={{ width: w, height: h }}
                 position={{ x, y }}
                 scale={scale}
@@ -306,7 +303,16 @@ export default function BioCanvasStage({
               >
                 <div
                   className="bio-canvas-stage-editor__block"
-                  style={{ width: "100%", height: "100%" }}
+                  style={
+                    rotation
+                      ? {
+                          transform: `rotate(${rotation}deg)`,
+                          transformOrigin: "center center",
+                          width: "100%",
+                          height: "100%",
+                        }
+                      : undefined
+                  }
                 >
                   {showPlaceholder ? (
                     <div className="bio-canvas-stage-editor__placeholder">
