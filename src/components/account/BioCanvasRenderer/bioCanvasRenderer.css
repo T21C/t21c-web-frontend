@@ -7,15 +7,13 @@
 
 .bio-canvas-renderer .bio-canvas-stage {
   position: relative;
-  width: 100%;
+  width: fit-content;
   max-width: 100%;
+  justify-self: center;
   overflow: hidden;
 }
 
 .bio-canvas-renderer .bio-canvas-stage__inner {
-  position: absolute;
-  top: 0;
-  left: 0;
   transform-origin: top left;
 }
 
