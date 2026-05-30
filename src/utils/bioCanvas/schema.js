@@ -233,11 +233,10 @@ export function coerceBioCanvasForRender(input) {
 export function createBlock(type, id, existingBlocks = []) {
   const descriptor = getBlockDescriptor(type);
   if (!descriptor) return null;
-  const stackY = computeNextStackY(existingBlocks);
   return {
     id: id ?? createBlockId(),
     type: descriptor.type,
-    layout: createDefaultLayout(descriptor, stackY),
+    layout: createDefaultLayout(descriptor),
     data: descriptor.createDefault(),
   };
 }

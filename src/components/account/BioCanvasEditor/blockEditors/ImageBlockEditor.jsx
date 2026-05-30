@@ -19,8 +19,6 @@ export default function ImageBlockEditor({
   onPatchData,
   onSelectImage,
   previewUrl,
-  onResetCrop,
-  onFitToContainer,
 }) {
   const crop = normalizeImageCrop(block.data?.crop);
   const dragRef = useRef(null);
@@ -72,6 +70,17 @@ export default function ImageBlockEditor({
     <div className="bio-canvas-editor__fields">
       {previewUrl ? (
         <>
+          <div className="bio-canvas-editor__field">
+            <span>Fit</span>
+            <CustomSelect
+              options={FIT_OPTIONS}
+              value={selectedFit}
+              onChange={(option) => patchCrop({ fit: option.value })}
+              width="100%"
+              backgroundColor="var(--color-black-t40)"
+              isSearchable={false}
+            />
+          </div>
           <div
             className="bio-canvas-editor__crop-preview"
             onPointerDown={handlePointerDown}
@@ -104,36 +113,6 @@ export default function ImageBlockEditor({
               onChange={(ev) => patchCrop({ zoom: Number(ev.target.value) })}
             />
           </label>
-          <div className="bio-canvas-editor__field">
-            <span>Fit</span>
-            <CustomSelect
-              options={FIT_OPTIONS}
-              value={selectedFit}
-              onChange={(option) => patchCrop({ fit: option.value })}
-              width="100%"
-              backgroundColor="var(--color-black-t40)"
-              isSearchable={false}
-            />
-          </div>
-          <div className="bio-canvas-editor__crop-actions">
-            <button
-              type="button"
-              className="btn-fill-neutral"
-              onClick={() => onResetCrop?.()}
-            >
-              Reset crop
-            </button>
-            <button
-              type="button"
-              className="btn-fill-secondary"
-              onClick={() => onFitToContainer?.()}
-            >
-              Fill canvas
-            </button>
-          </div>
-          <p className="bio-canvas-editor__hint">
-            Stretches the image to cover the entire canvas (position 0,0 and full width &amp; height).
-          </p>
         </>
       ) : (
         <p className="bio-canvas-editor__hint">No image uploaded yet.</p>

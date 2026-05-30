@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { LinkIcon } from "@/components/common/icons/LinkIcon";
+import { UnlinkIcon } from "@/components/common/icons";
 import {
   MAX_BLOCK_ROTATION,
   MIN_BLOCK_ROTATION,
@@ -6,8 +8,6 @@ import {
   getAspectRatio,
   normalizeLayout,
 } from "@/utils/bioCanvas/layout.js";
-
-const LAYOUT_FIELDS = ["x", "y", "w", "h"];
 
 function layoutToDraft(layout, normalized) {
   return {
@@ -18,13 +18,22 @@ function layoutToDraft(layout, normalized) {
   };
 }
 
-export default function BioCanvasLayoutControls({ blockId, layout, descriptor, onChange }) {
+export default function BioCanvasLayoutControls({
+  blockId,
+  layout,
+  descriptor,
+  onChange,
+  onResetCrop,
+  onFillCanvas,
+}) {
   const normalized = normalizeLayout(layout, descriptor);
   const locked = normalized.locked ?? false;
   const rotation = normalized.rotation ?? 0;
   const resizeBehavior = descriptor?.resizeBehavior ?? "widthOnly";
   const heightDisabled = resizeBehavior === "widthOnly";
   const supportsAspectLock = resizeBehavior === "aspect" || resizeBehavior === "free";
+  const showAspectLink = supportsAspectLock && !heightDisabled;
+  const hasImageActions = Boolean(onResetCrop || onFillCanvas);
 
   const [draft, setDraft] = useState(() => layoutToDraft(layout, normalized));
 
@@ -74,39 +83,82 @@ export default function BioCanvasLayoutControls({ blockId, layout, descriptor, o
     setRotation((layout?.rotation ?? rotation ?? 0) + delta);
   };
 
+  const renderField = (key) => (
+    <label key={key} className="bio-canvas-editor__field bio-canvas-editor__field--inline">
+      <span>{key.toUpperCase()}</span>
+      <input
+        type="number"
+        value={draft[key] ?? ""}
+        onChange={(ev) => setDraft((prev) => ({ ...prev, [key]: ev.target.value }))}
+        onBlur={() => commitField(key, draft[key])}
+        onKeyDown={(ev) => {
+          if (ev.key === "Enter") {
+            ev.preventDefault();
+            commitField(key, draft[key]);
+            ev.currentTarget.blur();
+          }
+        }}
+      />
+    </label>
+  );
+
   return (
     <div className="bio-canvas-editor__layout-controls">
-      {LAYOUT_FIELDS.map((key) => {
-        if (key === "h" && heightDisabled) return null;
-        const label = key.toUpperCase();
-        return (
-          <label key={key} className="bio-canvas-editor__field bio-canvas-editor__field--inline">
-            <span>{label}</span>
-            <input
-              type="number"
-              value={draft[key] ?? ""}
-              onChange={(ev) => setDraft((prev) => ({ ...prev, [key]: ev.target.value }))}
-              onBlur={() => commitField(key, draft[key])}
-              onKeyDown={(ev) => {
-                if (ev.key === "Enter") {
-                  ev.preventDefault();
-                  commitField(key, draft[key]);
-                  ev.currentTarget.blur();
-                }
-              }}
-            />
-          </label>
-        );
-      })}
+      {renderField("x")}
+      {renderField("y")}
+      <div className="bio-canvas-editor__size-fields">
+        {renderField("w")}
+        {showAspectLink ? (
+          <button
+            type="button"
+            className={
+              locked
+                ? "bio-canvas-editor__aspect-link bio-canvas-editor__aspect-link--active"
+                : "bio-canvas-editor__aspect-link"
+            }
+            aria-pressed={locked}
+            aria-label={locked ? "Unlock aspect ratio" : "Lock aspect ratio"}
+            title={locked ? "Unlock aspect ratio" : "Lock aspect ratio"}
+            onClick={() => onChange({ ...layout, locked: !locked })}
+          >
+            {locked ? (
+              <LinkIcon size={16} color="currentColor" />
+            ) : (
+              <UnlinkIcon size={16} color="currentColor" />
+            )}
+          </button>
+        ) : null}
+        {!heightDisabled ? renderField("h") : null}
+      </div>
       <div className="bio-canvas-editor__position-controls">
         <button
           type="button"
-          className="btn-fill-secondary"
+          className="btn-fill-secondary bio-canvas-editor__position-controls-reset"
           aria-label="Reset position to origin"
           onClick={resetPosition}
         >
           Reset position
         </button>
+        {onResetCrop ? (
+          <button
+            type="button"
+            className="btn-fill-neutral"
+            aria-label="Reset image crop"
+            onClick={() => onResetCrop()}
+          >
+            Reset crop
+          </button>
+        ) : null}
+        {onFillCanvas ? (
+          <button
+            type="button"
+            className="btn-fill-neutral"
+            aria-label="Fill canvas with image"
+            onClick={() => onFillCanvas()}
+          >
+            Fill canvas
+          </button>
+        ) : null}
       </div>
       <label className="bio-canvas-editor__field bio-canvas-editor__field--rotation">
         <span>Rotate ({rotation}°)</span>
@@ -161,16 +213,6 @@ export default function BioCanvasLayoutControls({ blockId, layout, descriptor, o
           </button>
         </div>
       </label>
-      {supportsAspectLock ? (
-        <label className="bio-canvas-editor__field bio-canvas-editor__field--checkbox">
-          <input
-            type="checkbox"
-            checked={locked !== false}
-            onChange={(ev) => onChange({ ...layout, locked: ev.target.checked })}
-          />
-          <span>Lock aspect ratio</span>
-        </label>
-      ) : null}
     </div>
   );
 }

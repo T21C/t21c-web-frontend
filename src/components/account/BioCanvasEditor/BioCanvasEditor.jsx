@@ -108,6 +108,16 @@ export default function BioCanvasEditor({
               layout={selectedBlock.layout}
               descriptor={selectedDescriptor}
               onChange={(layout) => patchLayout(selectedBlock.id, layout)}
+              onResetCrop={
+                selectedBlock.type === "image"
+                  ? () => resetImageCrop(selectedBlock.id)
+                  : undefined
+              }
+              onFillCanvas={
+                selectedBlock.type === "image"
+                  ? () => fitImageToContainer(selectedBlock.id)
+                  : undefined
+              }
             />
             {BlockEditor ? (
               <BlockEditor
@@ -115,16 +125,6 @@ export default function BioCanvasEditor({
                 onPatchData={(patch) => patchBlockData(selectedBlock.id, patch)}
                 onSelectImage={() => selectImageFile(selectedBlock.id)}
                 previewUrl={previewUrl}
-                onResetCrop={
-                  selectedBlock.type === "image"
-                    ? () => resetImageCrop(selectedBlock.id)
-                    : undefined
-                }
-                onFitToContainer={
-                  selectedBlock.type === "image"
-                    ? () => fitImageToContainer(selectedBlock.id)
-                    : undefined
-                }
               />
             ) : null}
           </div>

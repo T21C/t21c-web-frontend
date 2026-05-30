@@ -57,6 +57,26 @@ export default function BioCanvasEditorPopup({
     onClose?.();
   }, [editor, onClose, t]);
 
+  const handleResetConfirm = useCallback(() => {
+    const ok = window.confirm(
+      t("settings.bioCanvas.resetConfirm", {
+        defaultValue: "Reset all changes made since you opened the editor?",
+      }),
+    );
+    if (!ok) return;
+    editor.handleReset();
+  }, [editor, t]);
+
+  const handleClearConfirm = useCallback(() => {
+    const ok = window.confirm(
+      t("settings.bioCanvas.clearConfirm", {
+        defaultValue: "Clear all content from the canvas?",
+      }),
+    );
+    if (!ok) return;
+    editor.handleClear();
+  }, [editor, t]);
+
   if (!isOpen) return null;
 
   return createPortal(
@@ -77,12 +97,14 @@ export default function BioCanvasEditorPopup({
         />
 
         <div className="bio-canvas-editor-popup__actions">
-          <button type="button" className="btn-fill-neutral" onClick={editor.handleReset} disabled={editor.saveBusy}>
-            {t("settings.bioCanvas.reset", { defaultValue: "Reset" })}
-          </button>
-          <button type="button" className="btn-fill-danger" onClick={editor.handleClear} disabled={editor.saveBusy}>
-            {t("settings.bioCanvas.clear", { defaultValue: "Clear all" })}
-          </button>
+          <div className="bio-canvas-editor-popup__actions-left">
+            <button type="button" className="btn-fill-neutral" onClick={handleResetConfirm} disabled={editor.saveBusy}>
+              {t("settings.bioCanvas.reset", { defaultValue: "Reset" })}
+            </button>
+            <button type="button" className="btn-fill-danger" onClick={handleClearConfirm} disabled={editor.saveBusy}>
+              {t("settings.bioCanvas.clear", { defaultValue: "Clear all" })}
+            </button>
+          </div>
           <button
             type="button"
             className="btn-fill-primary"

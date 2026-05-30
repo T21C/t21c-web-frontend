@@ -45,7 +45,14 @@
 .bio-canvas-editor-popup__actions {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.bio-canvas-editor-popup__actions-left {
+  display: flex;
+  flex-wrap: wrap;
   gap: 0.75rem;
 }
 
@@ -346,6 +353,46 @@
   margin-bottom: 0.75rem;
 }
 
+.bio-canvas-editor__size-fields {
+  display: flex;
+  flex: 1 1 100%;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.bio-canvas-editor__aspect-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border-radius: 0.375rem;
+  border: 1px solid var(--color-white-t10);
+  background: var(--color-black-t40);
+  color: var(--color-white-t60);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.bio-canvas-editor__aspect-link:hover {
+  border-color: var(--color-white-t25);
+  color: var(--text-color);
+  background: var(--color-black-t30);
+}
+
+.bio-canvas-editor__aspect-link--active {
+  border-color: var(--color-purple-2);
+  color: var(--text-color);
+  background: var(--color-black-t30);
+}
+
+.bio-canvas-editor__aspect-link:focus-visible {
+  outline: 2px solid var(--color-purple-2);
+  outline-offset: 2px;
+}
+
 .bio-canvas-editor__position-controls {
   display: flex;
   flex: 1 1 100%;
@@ -357,6 +404,10 @@
   padding: 0.4rem 0.5rem;
   font-size: 0.8125rem;
   line-height: 1.2;
+}
+
+.bio-canvas-editor__position-controls .bio-canvas-editor__position-controls-reset {
+  flex: 2;
 }
 
 .bio-canvas-editor__field--rotation {
