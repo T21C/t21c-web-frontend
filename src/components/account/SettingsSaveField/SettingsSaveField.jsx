@@ -32,6 +32,7 @@ export function SettingsSaveField({
   matchesSaved = false,
   fieldError = "",
   stack = false,
+  hideActions = false,
   controlRowClassName = "",
   sectionClassName = "settings-sub-page__block settings-sub-page__field",
   labelElement = "label",
@@ -57,7 +58,9 @@ export function SettingsSaveField({
       </div>
       <div className={controlRowClass}>
         {children}
-        <SettingsSaveButton saving={saving} matchesSaved={matchesSaved} onClick={onSave} />
+        {hideActions ? null : (
+          <SettingsSaveButton saving={saving} matchesSaved={matchesSaved} onClick={onSave} />
+        )}
       </div>
       {fieldError ? (
         <p className="settings-sub-page__field-error" role="alert">

@@ -24,6 +24,7 @@ import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { CreatorIcon } from "@/components/common/icons/CreatorIcon";
 import { AccountStatusBanners } from "@/components/account/AccountStatusBanners/AccountStatusBanners";
 import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
+import BioCanvasRenderer from "@/components/account/BioCanvasRenderer";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { buildPlayerStatGroups } from "@/utils/profileStatGroups";
 import { buildPlayerIconSlots, pguNumberToQTier } from "@/utils/profileIconSlots";
@@ -832,10 +833,15 @@ const ProfilePage = () => {
                 </div>
                 <div className={["account-profile-page__collapsible", bioCollapsed ? "hidden" : ""].join(" ").trim()}>
                   <div className="player-page__bio">
-                    {typeof playerData?.bio === 'string' && playerData.bio.trim().length > 0 ? (
+                    {playerData?.bioCanvas?.blocks?.length > 0 ? (
+                      <BioCanvasRenderer
+                        canvas={playerData.bioCanvas}
+                        imageAssets={playerData.bioCanvasImageAssets}
+                      />
+                    ) : typeof playerData?.bio === "string" && playerData.bio.trim().length > 0 ? (
                       <p className="player-page__bio-text">{playerData.bio}</p>
                     ) : (
-                      <p className="player-page__bio-placeholder">{t('profile.bio.placeholder')}</p>
+                      <p className="player-page__bio-placeholder">{t("profile.bio.placeholder")}</p>
                     )}
                   </div>
                 </div>

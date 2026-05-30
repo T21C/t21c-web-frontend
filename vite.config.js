@@ -47,6 +47,9 @@ export default defineConfig(({ command, mode }) => {
     plugins: [
       react()
     ],
+    define: {
+      'process.env.DRAGGABLE_DEBUG': JSON.stringify(''),
+    },
     logLevel: 'info',
     resolve: {
       alias: {
@@ -54,7 +57,12 @@ export default defineConfig(({ command, mode }) => {
       }
     },
     optimizeDeps: {
-      include: ['react-helmet-async', 'hash-wasm']
+      include: ['react-helmet-async', 'hash-wasm', 'react-rnd', 'react-draggable'],
+      esbuildOptions: {
+        define: {
+          'process.env.DRAGGABLE_DEBUG': JSON.stringify(''),
+        },
+      },
     },
     build: {
       sourcemap: mode === 'development',

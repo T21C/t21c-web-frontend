@@ -277,6 +277,13 @@
   color: rgba(255, 255, 255, 0.85);
 }
 
+.player-page .player-page__bio {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
 .player-page .player-page__difficulty-collapsible {
   display: flex;
   flex-direction: column;

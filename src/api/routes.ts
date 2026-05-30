@@ -286,6 +286,8 @@ export const routes = {
     rankHistory: (playerId: string | number) => `/v3/players/${enc(playerId)}/rank-history`,
     leaderboard: () => '/v3/players/leaderboard',
     meBio: () => '/v3/players/me/bio',
+    meBioCanvas: () => '/v3/players/me/bio-canvas',
+    meBioCanvasImage: () => '/v3/players/me/bio-canvas/image',
     meTufStellarIconVariant: () => '/v3/players/me/tuf-stellar-icon-variant',
   },
 

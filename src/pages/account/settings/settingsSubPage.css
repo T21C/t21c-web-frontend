@@ -6,7 +6,7 @@
   color: var(--color-white);
   align-items: center;
   align-self: center;
-  width: min(100%, 50rem);
+  width: 100%;
 }
 
 .settings-sub-page--centered {

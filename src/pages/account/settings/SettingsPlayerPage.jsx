@@ -11,6 +11,7 @@ import { formatNumber } from "@/utils";
 import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
 import ProfileBannerEditor from "@/components/account/ProfileBannerEditor/ProfileBannerEditor";
 import ProfileHeaderSurfaceEditor from "@/components/account/ProfileHeaderSurfaceEditor/ProfileHeaderSurfaceEditor";
+import { BioCanvasEditorLauncher } from "@/components/account/BioCanvasEditor";
 import {
   SettingsPreviewSection,
   SettingsSectionPreviewControls,
@@ -32,6 +33,7 @@ import {
   mergeOptimisticAliasRows,
   normalizeProfileAliasNames,
 } from "@/utils/profileAliasNames";
+import { isTufStellarEnabledForUser } from "@/utils/tufStellarFeature";
 import "./settingsSubPage.css";
 
 const SettingsPlayerPage = () => {
@@ -57,6 +59,8 @@ const SettingsPlayerPage = () => {
   const [bioFieldError, setBioFieldError] = useState("");
   /** `undefined` = follow server; `null` = draft “use default”; string = draft preset path. */
   const [bannerPresetDraft, setBannerPresetDraft] = useState(undefined);
+  /** `undefined` = server; object/null = draft bio canvas */
+  const [bioCanvasDraft, setBioCanvasDraft] = useState(undefined);
   /** `undefined` = server; object/null = draft surface style */
   const [headerSurfaceStyleDraft, setHeaderSurfaceStyleDraft] = useState(undefined);
   const [stellarVariantDraft, setStellarVariantDraft] = useState(null);
@@ -96,6 +100,7 @@ const SettingsPlayerPage = () => {
 
   useEffect(() => {
     setBannerPresetDraft(undefined);
+    setBioCanvasDraft(undefined);
     setHeaderSurfaceStyleDraft(undefined);
     setStellarVariantDraft(null);
   }, [playerId]);
@@ -114,7 +119,14 @@ const SettingsPlayerPage = () => {
   }, [playerData?.bio, playerId]);
 
   const hasSettingsDrafts =
-    headerSurfaceStyleDraft !== undefined || bannerPresetDraft !== undefined;
+    headerSurfaceStyleDraft !== undefined ||
+    bannerPresetDraft !== undefined ||
+    bioCanvasDraft !== undefined;
+
+  const canUseBioCanvas = useMemo(
+    () => isTufStellarEnabledForUser(user) && isTufStellarAccessActive(user),
+    [user],
+  );
 
   useEffect(() => {
     const onVis = () => {
@@ -592,25 +604,49 @@ const SettingsPlayerPage = () => {
         sectionId="bio"
         label={t("settings.player.bioLabel")}
         inputId="settings-player-bio"
-        onSave={handleSaveBio}
-        saving={bioSaving}
-        matchesSaved={bioMatchesSaved}
-        fieldError={bioFieldError}
+        onSave={canUseBioCanvas ? undefined : handleSaveBio}
+        saving={canUseBioCanvas ? false : bioSaving}
+        matchesSaved={canUseBioCanvas ? true : bioMatchesSaved}
+        fieldError={canUseBioCanvas ? "" : bioFieldError}
         stack
+        hideActions={canUseBioCanvas}
       >
-        <textarea
-          id="settings-player-bio"
-          className="settings-sub-page__textarea"
-          maxLength={2000}
-          placeholder={t("settings.player.bioPlaceholder")}
-          value={bioDraft}
-          onChange={(ev) => {
-            setBioDraft(ev.target.value);
-            if (bioFieldError) setBioFieldError("");
-          }}
-          disabled={bioSaving}
-          rows={5}
-        />
+        {canUseBioCanvas ? (
+          <BioCanvasEditorLauncher
+            authUser={user}
+            canvas={bioCanvasDraft !== undefined ? bioCanvasDraft : playerData?.bioCanvas}
+            canvasDraft={bioCanvasDraft}
+            onCanvasDraftChange={setBioCanvasDraft}
+            imageAssets={playerData?.bioCanvasImageAssets}
+            onApplied={(payload) => {
+              setBioCanvasDraft(undefined);
+              setPlayerData((p) =>
+                p && typeof p === "object"
+                  ? {
+                      ...p,
+                      bioCanvas: payload.bioCanvas ?? null,
+                      bioCanvasImageAssets: payload.bioCanvasImageAssets ?? null,
+                      bio: payload.bio ?? null,
+                    }
+                  : p,
+              );
+            }}
+          />
+        ) : (
+          <textarea
+            id="settings-player-bio"
+            className="settings-sub-page__textarea"
+            maxLength={2000}
+            placeholder={t("settings.player.bioPlaceholder")}
+            value={bioDraft}
+            onChange={(ev) => {
+              setBioDraft(ev.target.value);
+              if (bioFieldError) setBioFieldError("");
+            }}
+            disabled={bioSaving}
+            rows={5}
+          />
+        )}
       </SettingsSaveField>
 
     </div>
