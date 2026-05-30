@@ -118,19 +118,8 @@
   background-color: #0004;
   border-radius: 1rem;
   padding: 1.25rem 1.75rem;
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   height: fit-content;
-  max-height: 500px;
   margin-bottom: 1rem;
-}
-
-.state-switches.hidden {
-  opacity: 0;
-  padding: 0;
-  pointer-events: none;
-  overflow: hidden;
-  margin: 0;
-  max-height: 0;
 }
 
 .state-switches .state-switches-option {

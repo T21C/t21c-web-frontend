@@ -21,6 +21,7 @@ import { MetaTags } from "@/components/common/display";
 import { DifficultySlider, TagSelector, FacetQueryBuilder } from "@/components/common/selectors";
 import { buildFacetQueryParam } from "@/utils/facetQueryCodec";
 import { SortAscIcon, SortDescIcon, ResetIcon, SortIcon , FilterIcon, LikeIcon, SwitchIcon, EyeIcon, EyeOffIcon} from "@/components/common/icons";
+import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
 import { LevelHelpPopup } from "@/components/popups/Levels";
 import toast from 'react-hot-toast';
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
@@ -573,9 +574,15 @@ const LevelPage = ({
 
         <div className="input-setting">
 
-          <div
-            className={`filter settings-class ${filterOpen ? 'visible' : 'hidden'}`}
+          <Collapsible
+            open={filterOpen}
+            onOpenChange={setFilterOpen}
+            revealOverflow
+            duration="0.5s"
+            easing="cubic-bezier(0.4, 0, 0.2, 1)"
           >
+            <CollapsibleContent>
+          <div className="filter settings-class">
             <h2 className="setting-title">
               {t('level.settingExp.headerFilter')}
             </h2>
@@ -654,10 +661,18 @@ const LevelPage = ({
 
             </div>
           </div>
+            </CollapsibleContent>
+          </Collapsible>
 
-          <div
-            className={`sort sort-class ${sortOpen ? 'visible' : 'hidden'}`}
+          <Collapsible
+            open={sortOpen}
+            onOpenChange={setSortOpen}
+            revealOverflow
+            duration="0.5s"
+            easing="cubic-bezier(0.4, 0, 0.2, 1)"
           >
+            <CollapsibleContent>
+          <div className="sort sort-class">
             <h2 className="setting-title">
               {t('level.settingExp.headerSort')}
             </h2>
@@ -713,10 +728,18 @@ const LevelPage = ({
               )}
             </div>
           </div>
+            </CollapsibleContent>
+          </Collapsible>
 
-          <div
-            className={`state-switches state-switches-class ${stateDisplayOpen ? 'visible' : 'hidden'}`}
+          <Collapsible
+            open={stateDisplayOpen}
+            onOpenChange={setStateDisplayOpen}
+            revealOverflow
+            duration="0.5s"
+            easing="cubic-bezier(0.4, 0, 0.2, 1)"
           >
+            <CollapsibleContent>
+          <div className="state-switches state-switches-class">
             <div className="state-switches-option">
               <div className="state-switches-item">
                 <span className="state-switches-label">{t('level.settingExp.clearedLevels')}</span>
@@ -755,6 +778,8 @@ const LevelPage = ({
               )}
             </div>
           </div>
+            </CollapsibleContent>
+          </Collapsible>
         </div>
         <span className="total-search-results">{t('level.totalResults', { count: totalLevels })}</span>
         <div className="view-mode-section">

@@ -16,29 +16,12 @@
   margin-top: 1rem;
 }
 
-/* Settings animations */
-.pass-page .pass-body .settings-class {
+.pass-page .pass-body .settings-class,
+.pass-page .pass-body .sort-class,
+.pass-page .pass-body .state-switches-class {
   padding: 1rem 2rem;
   position: relative;
-  transition: all 0.6s var(--ease-out-expo);
-  overflow: visible;
   margin-bottom: 1rem;
-  opacity: 1;
-  max-height: 500px;
-}
-
-.pass-page .pass-body .settings-class.hidden {
-  max-height: 0;
-  opacity: 0;
-  padding: 0;
-  margin: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.pass-page .pass-body .settings-class.visible {
-  opacity: 1;
-  pointer-events: auto;
 }
 
 .pass-page .pass-body .filter-row {
@@ -64,10 +47,6 @@
   box-sizing: border-box;
 }
 
-
-.pass-page .pass-body .settings-class {
-  transition: all 0.6s var(--ease-out-expo);
-}
 
 /* Loader styles */
 .pass-page .loader-pass-page {

@@ -20,6 +20,7 @@ import { useTranslation } from "react-i18next";
 import { ScrollButton } from "@/components/common/buttons";
 import { MetaTags } from "@/components/common/display";
 import { SortDescIcon, SortAscIcon, ResetIcon, SortIcon, FilterIcon } from "@/components/common/icons";
+import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
 
 const currentUrl = window.location.origin + location.pathname;
 const limit = 30;
@@ -221,9 +222,15 @@ const CreatorsListPage = () => {
         </div>
 
         <div className="input-setting">
-          <div
-            className={`filter settings-class ${filterOpen ? 'visible' : 'hidden'}`}
+          <Collapsible
+            open={filterOpen}
+            onOpenChange={setFilterOpen}
+            revealOverflow
+            duration="0.5s"
+            easing="cubic-bezier(0.4, 0, 0.2, 1)"
           >
+            <CollapsibleContent>
+          <div className="filter settings-class">
             <h2 className="setting-title">
               {t('creators.settings.filter.header')}
             </h2>
@@ -239,10 +246,18 @@ const CreatorsListPage = () => {
               </div>
             </div>
           </div>
+            </CollapsibleContent>
+          </Collapsible>
 
-          <div
-            className={`sort sort-class ${sortOpen ? 'visible' : 'hidden'}`}
+          <Collapsible
+            open={sortOpen}
+            onOpenChange={setSortOpen}
+            revealOverflow
+            duration="0.5s"
+            easing="cubic-bezier(0.4, 0, 0.2, 1)"
           >
+            <CollapsibleContent>
+          <div className="sort sort-class">
             <h2 className="setting-title">
               {t('creators.settings.sort.header')}
             </h2>
@@ -284,6 +299,8 @@ const CreatorsListPage = () => {
               </div>
             </div>
           </div>
+            </CollapsibleContent>
+          </Collapsible>
         </div>
 
         <div className="creators-list-page__list" style={{ minHeight: "500px" }}>

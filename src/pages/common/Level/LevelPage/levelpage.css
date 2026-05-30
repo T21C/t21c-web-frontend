@@ -25,29 +25,11 @@
   z-index: 100;
 }
 .level-page .level-body .settings-class,
-.sort-class {
+.level-page .level-body .sort-class,
+.level-page .level-body .state-switches-class {
   padding: 1rem 2rem;
   position: relative;
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: visible;
   margin-bottom: 1rem;
-  opacity: 1;
-  max-height: 400px;
-}
-.level-page .level-body .settings-class.hidden,
-.sort-class.hidden {
-  max-height: 0;
-  opacity: 0;
-  padding-top: 0;
-  overflow: hidden;
-  padding-bottom: 0;
-  margin: 0;
-  pointer-events: none;
-}
-.level-page .level-body .settings-class.visible,
-.sort-class.visible {
-  opacity: 1;
-  pointer-events: auto;
 }
 .level-page .level-body .spacer-setting {
   width: 100%;

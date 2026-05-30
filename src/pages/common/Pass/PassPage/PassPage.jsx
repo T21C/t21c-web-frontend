@@ -21,6 +21,7 @@ import { DifficultyContext } from "@/contexts/DifficultyContext";
 import { DifficultySlider, TagSelector } from "@/components/common/selectors";
 import { PassHelpPopup } from "@/components/popups/Passes";
 import { ResetIcon, SortIcon, FilterIcon, SortAscIcon, SortDescIcon, SwitchIcon } from "@/components/common/icons";
+import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 const currentUrl = window.location.origin + location.pathname;
 
@@ -405,9 +406,14 @@ const PassPage = () => {
         </div>
 
         <div className="input-setting">
-          <div
-            className={`filter settings-class ${filterOpen ? 'visible' : 'hidden'}`}
+          <Collapsible
+            open={filterOpen}
+            onOpenChange={setFilterOpen}
+            revealOverflow
+            duration="0.6s"
           >
+            <CollapsibleContent>
+          <div className="filter settings-class">
             <h2 className="setting-title">{t('pass.settings.filter.title')}</h2>
             <div className="filter-section">
               <div className="filter-row">
@@ -430,10 +436,17 @@ const PassPage = () => {
               </div>
             </div>
           </div>
+            </CollapsibleContent>
+          </Collapsible>
 
-          <div
-            className={`sort sort-class ${sortOpen ? 'visible' : 'hidden'}`}
+          <Collapsible
+            open={sortOpen}
+            onOpenChange={setSortOpen}
+            revealOverflow
+            duration="0.6s"
           >
+            <CollapsibleContent>
+          <div className="sort sort-class">
             <h2 className="setting-title">
               {t('pass.settings.sort.title')}
             </h2>
@@ -483,10 +496,17 @@ const PassPage = () => {
               </div>
             </div>
           </div>
+            </CollapsibleContent>
+          </Collapsible>
 
-          <div
-            className={`state-switches state-switches-class ${stateDisplayOpen ? 'visible' : 'hidden'}`}
+          <Collapsible
+            open={stateDisplayOpen}
+            onOpenChange={setStateDisplayOpen}
+            revealOverflow
+            duration="0.6s"
           >
+            <CollapsibleContent>
+          <div className="state-switches state-switches-class">
             <div className="state-switches-option">
               {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
                 <div className="state-switches-item">
@@ -514,6 +534,8 @@ const PassPage = () => {
               </div>
             </div>
           </div>
+            </CollapsibleContent>
+          </Collapsible>
         </div>
 
         <span className="total-search-results">{t('pass.totalResults', { count: totalPasses })}</span>

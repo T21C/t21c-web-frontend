@@ -15,6 +15,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { ScrollButton } from "@/components/common/buttons";
 import { MetaTags } from "@/components/common/display";
 import { SortAscIcon, SortDescIcon, ResetIcon, SortIcon, FilterIcon, SwitchIcon, LikeIcon } from "@/components/common/icons";
+import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
 import { CreatePackPopup, PackHelpPopup } from "@/components/popups/Packs";
 import toast from 'react-hot-toast';
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
@@ -275,9 +276,15 @@ const PackPageContent = () => {
         </div>
 
         <div className="input-setting">
-          <div
-            className={`filter settings-class ${filterOpen ? 'visible' : 'hidden'}`}
+          <Collapsible
+            open={filterOpen}
+            onOpenChange={setFilterOpen}
+            revealOverflow
+            duration="0.5s"
+            easing="cubic-bezier(0.4, 0, 0.2, 1)"
           >
+            <CollapsibleContent>
+          <div className="filter settings-class">
             <h2 className="setting-title">{t('pack.filters.title')}</h2>
             <div className="filter-section">
               <div className="filter-row">
@@ -300,10 +307,18 @@ const PackPageContent = () => {
               </div>
             </div>
           </div>
+            </CollapsibleContent>
+          </Collapsible>
 
-          <div
-            className={`sort sort-class ${sortOpen ? 'visible' : 'hidden'}`}
+          <Collapsible
+            open={sortOpen}
+            onOpenChange={setSortOpen}
+            revealOverflow
+            duration="0.5s"
+            easing="cubic-bezier(0.4, 0, 0.2, 1)"
           >
+            <CollapsibleContent>
+          <div className="sort sort-class">
             <h2 className="setting-title">
               {t('pack.sort.title')}
             </h2>
@@ -368,6 +383,8 @@ const PackPageContent = () => {
               )}
             </div>
           </div>
+            </CollapsibleContent>
+          </Collapsible>
         </div>
 
         <div className="pack-page__content" ref={scrollRef}>

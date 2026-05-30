@@ -15,6 +15,7 @@ import { ScrollButton } from "@/components/common/buttons";
 import { MetaTags } from "@/components/common/display";
 import { useAuth } from "@/contexts/AuthContext";
 import { SortDescIcon, SortAscIcon, SortIcon, FilterIcon, ResetIcon } from "@/components/common/icons";
+import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
 import { CreatorAssignmentPopup } from "@/components/popups/Creators";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 
@@ -336,7 +337,14 @@ const LeaderboardPage = () => {
         </div>
 
         <div className="input-setting">
-          <div className={`filter settings-class ${filterOpen ? 'visible' : 'hidden'}`}>
+          <Collapsible
+            open={filterOpen}
+            onOpenChange={setFilterOpen}
+            revealOverflow
+            duration="0.6s"
+          >
+            <CollapsibleContent>
+          <div className="filter settings-class">
             <h2 className="setting-title">
               {t('leaderboard.settings.filter.header')}
             </h2>
@@ -475,8 +483,17 @@ const LeaderboardPage = () => {
               </div>
             </div>
           </div>
+            </CollapsibleContent>
+          </Collapsible>
 
-          <div className={`sort settings-class ${sortOpen ? 'visible' : 'hidden'}`}>
+          <Collapsible
+            open={sortOpen}
+            onOpenChange={setSortOpen}
+            revealOverflow
+            duration="0.6s"
+          >
+            <CollapsibleContent>
+          <div className="sort settings-class">
             <h2 className="setting-title">
               {t('leaderboard.settings.sort.header')}
             </h2>
@@ -539,6 +556,8 @@ const LeaderboardPage = () => {
               )}
             </div>
           </div>
+            </CollapsibleContent>
+          </Collapsible>
         </div>
 
         <div style={{ minHeight: "500px" }}>

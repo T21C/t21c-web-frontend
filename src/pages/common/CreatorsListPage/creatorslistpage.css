@@ -21,28 +21,7 @@
 .creators-list-page .sort-class {
   padding: 1rem 2rem;
   position: relative;
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: visible;
   margin-bottom: 1rem;
-  opacity: 1;
-  max-height: 400px;
-}
-
-.creators-list-page .settings-class.hidden,
-.creators-list-page .sort-class.hidden {
-  max-height: 0;
-  opacity: 0;
-  padding-top: 0;
-  overflow: hidden;
-  padding-bottom: 0;
-  margin: 0;
-  pointer-events: none;
-}
-
-.creators-list-page .settings-class.visible,
-.creators-list-page .sort-class.visible {
-  opacity: 1;
-  pointer-events: auto;
 }
 
 .creators-list-page .filter-section {
