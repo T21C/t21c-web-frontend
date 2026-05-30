@@ -123,14 +123,27 @@
   transform-origin: top left;
 }
 
+.bio-canvas-stage-editor img {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 .bio-canvas-stage-editor__rnd {
   pointer-events: none;
 }
 
 .bio-canvas-stage-editor__rnd--selected {
-  pointer-events: auto;
+  pointer-events: none;
   outline: 2px solid var(--color-purple-2);
   outline-offset: 1px;
+}
+
+.bio-canvas-stage-editor__rnd .react-resizable-handle {
+  pointer-events: auto;
+  width: 10px;
+  height: 10px;
+  background: var(--color-purple-2);
+  border-radius: 2px;
 }
 
 .bio-canvas-stage-editor__block {
@@ -155,13 +168,6 @@
   color: var(--color-gray-2);
   font-size: 0.8125rem;
   text-align: center;
-}
-
-.bio-canvas-stage-editor__rnd .react-resizable-handle {
-  width: 10px;
-  height: 10px;
-  background: var(--color-purple-2);
-  border-radius: 2px;
 }
 
 .bio-canvas-editor__field--checkbox {
@@ -235,6 +241,8 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .bio-canvas-editor__block-item--selected {
@@ -379,6 +387,8 @@
   display: block;
   max-width: 100%;
   border-radius: 0.375rem;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .bio-canvas-editor__crop-preview {

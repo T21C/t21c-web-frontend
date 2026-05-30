@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { Rnd } from "react-rnd";
 import {
   STAGE_WIDTH,
@@ -12,6 +12,8 @@ import { getAspectRatio } from "@/utils/bioCanvas/layout.js";
 import { getBlockRenderer } from "../BioCanvasRenderer/blockRenderers/index.js";
 import { useStageScale } from "../BioCanvasRenderer/useStageScale.js";
 import { BLOCK_TYPE_LABELS } from "./blockEditors/index.js";
+
+const DRAG_THRESHOLD_PX = 4;
 
 const ASPECT_RESIZE = {
   top: true,
@@ -66,17 +68,30 @@ function getEditorPlaceholderLabel(block) {
   return `${typeLabel} block`;
 }
 
-function findBlockAtPoint(blocks, px, py) {
+/** Block ids at a stage point, topmost first (matches paint order). */
+function getBlocksAtPoint(blocks, px, py) {
+  const hits = [];
   for (let index = blocks.length - 1; index >= 0; index -= 1) {
     const block = blocks[index];
     const descriptor = getBlockDescriptor(block.type);
     if (!descriptor) continue;
     const { x, y, w, h } = normalizeLayout(block.layout, descriptor);
     if (px >= x && px < x + w && py >= y && py < y + h) {
-      return block.id;
+      hits.push(block.id);
     }
   }
-  return null;
+  return hits;
+}
+
+function pickStackSelection(hits, selectedBlockId) {
+  if (!hits.length) return null;
+  const index = hits.indexOf(selectedBlockId);
+  if (index === -1) return hits[0];
+  return hits[(index + 1) % hits.length];
+}
+
+function isResizeHandleTarget(target) {
+  return target instanceof Element && Boolean(target.closest(".react-resizable-handle"));
 }
 
 export default function BioCanvasStage({
@@ -90,18 +105,109 @@ export default function BioCanvasStage({
   const blocks = canvas?.blocks ?? [];
   const { wrapperRef, scale } = useStageScale();
   const innerRef = useRef(null);
+  const interactionRef = useRef(null);
+  const selectedBlockIdRef = useRef(selectedBlockId);
+  const blocksRef = useRef(blocks);
+  const scaleRef = useRef(scale);
 
-  const handleStagePointerDown = useCallback(
+  selectedBlockIdRef.current = selectedBlockId;
+  blocksRef.current = blocks;
+  scaleRef.current = scale;
+
+  const getStagePoint = useCallback((event) => {
+    const rect = innerRef.current.getBoundingClientRect();
+    return {
+      px: (event.clientX - rect.left) / scaleRef.current,
+      py: (event.clientY - rect.top) / scaleRef.current,
+      clientX: event.clientX,
+      clientY: event.clientY,
+    };
+  }, []);
+
+  const handleInnerPointerDown = useCallback(
     (event) => {
+      if (event.button !== 0) return;
+      if (isResizeHandleTarget(event.target)) return;
       if (event.target !== innerRef.current) return;
 
-      const rect = innerRef.current.getBoundingClientRect();
-      const px = (event.clientX - rect.left) / scale;
-      const py = (event.clientY - rect.top) / scale;
-      onSelectBlockId?.(findBlockAtPoint(blocks, px, py));
+      const { px, py, clientX, clientY } = getStagePoint(event);
+      const hits = getBlocksAtPoint(blocksRef.current, px, py);
+
+      interactionRef.current = {
+        hits,
+        selectedAtDown: selectedBlockIdRef.current,
+        startClientX: clientX,
+        startClientY: clientY,
+        originX: 0,
+        originY: 0,
+        blockId: null,
+        dragging: false,
+      };
     },
-    [blocks, onSelectBlockId, scale],
+    [getStagePoint],
   );
+
+  useEffect(() => {
+    const beginDrag = (interaction, blockId) => {
+      const block = blocksRef.current.find((row) => row.id === blockId);
+      const descriptor = block ? getBlockDescriptor(block.type) : null;
+      if (!block || !descriptor) return false;
+
+      const { x, y } = normalizeLayout(block.layout, descriptor);
+      interaction.blockId = blockId;
+      interaction.originX = x;
+      interaction.originY = y;
+      interaction.dragging = true;
+      onSelectBlockId?.(blockId);
+      return true;
+    };
+
+    const handlePointerMove = (event) => {
+      const interaction = interactionRef.current;
+      if (!interaction) return;
+
+      const dx = event.clientX - interaction.startClientX;
+      const dy = event.clientY - interaction.startClientY;
+      if (!interaction.dragging) {
+        if (Math.hypot(dx, dy) < DRAG_THRESHOLD_PX) return;
+
+        const { hits, selectedAtDown } = interaction;
+        const dragId =
+          selectedAtDown && hits.includes(selectedAtDown) ? selectedAtDown : hits[0] ?? null;
+        if (!dragId || !beginDrag(interaction, dragId)) {
+          interactionRef.current = null;
+        }
+        return;
+      }
+
+      onPatchLayout?.(interaction.blockId, {
+        x: Math.round(interaction.originX + dx / scaleRef.current),
+        y: Math.round(interaction.originY + dy / scaleRef.current),
+      });
+    };
+
+    const handlePointerUp = () => {
+      const interaction = interactionRef.current;
+      if (!interaction) return;
+
+      if (!interaction.dragging) {
+        const nextId = pickStackSelection(interaction.hits, interaction.selectedAtDown);
+        onSelectBlockId?.(nextId);
+      }
+
+      interactionRef.current = null;
+    };
+
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", handlePointerUp);
+    window.addEventListener("pointercancel", handlePointerUp);
+
+    return () => {
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", handlePointerUp);
+      window.removeEventListener("pointercancel", handlePointerUp);
+    };
+  }, [onPatchLayout, onSelectBlockId]);
 
   if (!blocks.length) {
     return (
@@ -128,7 +234,7 @@ export default function BioCanvasStage({
             height: contentHeight,
             transform: `scale(${scale})`,
           }}
-          onPointerDown={handleStagePointerDown}
+          onPointerDown={handleInnerPointerDown}
         >
           {blocks.map((block, index) => {
             const descriptor = getBlockDescriptor(block.type);
@@ -152,13 +258,8 @@ export default function BioCanvasStage({
                 position={{ x, y }}
                 scale={scale}
                 lockAspectRatio={lockRatio}
-                disableDragging={!isSelected}
+                disableDragging
                 enableResizing={isSelected ? getResizeHandles(resizeBehavior) : false}
-                onDragStart={() => onSelectBlockId?.(block.id)}
-                onResizeStart={() => onSelectBlockId?.(block.id)}
-                onDragStop={(_e, data) => {
-                  onPatchLayout?.(block.id, { x: data.x, y: data.y });
-                }}
                 onResizeStop={(_e, _dir, ref, _delta, position) => {
                   onPatchLayout?.(block.id, {
                     x: position.x,
