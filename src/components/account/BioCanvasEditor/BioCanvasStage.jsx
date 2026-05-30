@@ -1,10 +1,9 @@
+import { useCallback, useRef } from "react";
 import { Rnd } from "react-rnd";
 import {
   STAGE_WIDTH,
   STAGE_HEIGHT,
   MIN_BLOCK_H,
-  MIN_BLOCK_X,
-  MIN_BLOCK_Y,
   computeStageContentHeight,
   getBlockDescriptor,
   normalizeLayout,
@@ -67,6 +66,19 @@ function getEditorPlaceholderLabel(block) {
   return `${typeLabel} block`;
 }
 
+function findBlockAtPoint(blocks, px, py) {
+  for (let index = blocks.length - 1; index >= 0; index -= 1) {
+    const block = blocks[index];
+    const descriptor = getBlockDescriptor(block.type);
+    if (!descriptor) continue;
+    const { x, y, w, h } = normalizeLayout(block.layout, descriptor);
+    if (px >= x && px < x + w && py >= y && py < y + h) {
+      return block.id;
+    }
+  }
+  return null;
+}
+
 export default function BioCanvasStage({
   canvas,
   imageAssets,
@@ -77,6 +89,19 @@ export default function BioCanvasStage({
 }) {
   const blocks = canvas?.blocks ?? [];
   const { wrapperRef, scale } = useStageScale();
+  const innerRef = useRef(null);
+
+  const handleStagePointerDown = useCallback(
+    (event) => {
+      if (event.target !== innerRef.current) return;
+
+      const rect = innerRef.current.getBoundingClientRect();
+      const px = (event.clientX - rect.left) / scale;
+      const py = (event.clientY - rect.top) / scale;
+      onSelectBlockId?.(findBlockAtPoint(blocks, px, py));
+    },
+    [blocks, onSelectBlockId, scale],
+  );
 
   if (!blocks.length) {
     return (
@@ -96,14 +121,16 @@ export default function BioCanvasStage({
     >
       <div className="bio-canvas-stage-editor__viewport" style={{ height: scaledHeight }}>
         <div
+          ref={innerRef}
           className="bio-canvas-stage-editor__inner"
           style={{
             width: STAGE_WIDTH,
             height: contentHeight,
             transform: `scale(${scale})`,
           }}
+          onPointerDown={handleStagePointerDown}
         >
-          {blocks.map((block) => {
+          {blocks.map((block, index) => {
             const descriptor = getBlockDescriptor(block.type);
             const Renderer = getBlockRenderer(block.type);
             if (!Renderer || !descriptor) return null;
@@ -120,17 +147,13 @@ export default function BioCanvasStage({
             return (
               <Rnd
                 key={block.id}
+                style={{ zIndex: index + 1 }}
                 size={{ width: w, height: h }}
                 position={{ x, y }}
                 scale={scale}
-                bounds={{
-                  left: MIN_BLOCK_X,
-                  top: MIN_BLOCK_Y,
-                  right: STAGE_WIDTH,
-                  bottom: STAGE_HEIGHT,
-                }}
                 lockAspectRatio={lockRatio}
-                enableResizing={getResizeHandles(resizeBehavior)}
+                disableDragging={!isSelected}
+                enableResizing={isSelected ? getResizeHandles(resizeBehavior) : false}
                 onDragStart={() => onSelectBlockId?.(block.id)}
                 onResizeStart={() => onSelectBlockId?.(block.id)}
                 onDragStop={(_e, data) => {
@@ -148,7 +171,6 @@ export default function BioCanvasStage({
                   "bio-canvas-stage-editor__rnd",
                   isSelected ? "bio-canvas-stage-editor__rnd--selected" : "",
                 ].filter(Boolean).join(" ")}
-                onMouseDown={() => onSelectBlockId?.(block.id)}
               >
                 <div
                   className="bio-canvas-stage-editor__block"

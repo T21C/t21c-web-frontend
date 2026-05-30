@@ -1,10 +1,36 @@
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { BLOCK_TYPE_LABELS } from "./blockEditors/index.js";
+import { BlockListIcon } from "./blockListIcons.jsx";
 
 const DROPPABLE_ID = "bio-canvas-blocks";
 
+function BlockListVisual({ block, imageAssets }) {
+  const imageUrl =
+    block.type === "image" && typeof imageAssets?.[block.id]?.url === "string"
+      ? imageAssets[block.id].url.trim()
+      : "";
+
+  if (imageUrl) {
+    return (
+      <img
+        className="bio-canvas-editor__block-item-thumb"
+        src={imageUrl}
+        alt=""
+        draggable={false}
+      />
+    );
+  }
+
+  return (
+    <span className="bio-canvas-editor__block-item-icon-fallback">
+      <BlockListIcon type={block.type} />
+    </span>
+  );
+}
+
 export default function BioCanvasBlockList({
   blocks,
+  imageAssets,
   selectedBlockId,
   onSelectBlockId,
   onReorderBlocks,
@@ -40,6 +66,9 @@ export default function BioCanvasBlockList({
                         snapshot.isDragging ? "bio-canvas-editor__block-item--dragging" : "",
                       ].filter(Boolean).join(" ")}
                     >
+                      <span className="bio-canvas-editor__block-item-icon" aria-hidden="true">
+                        <BlockListVisual block={block} imageAssets={imageAssets} />
+                      </span>
                       <button
                         type="button"
                         className="bio-canvas-editor__block-select"

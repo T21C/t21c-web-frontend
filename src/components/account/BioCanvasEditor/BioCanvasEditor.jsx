@@ -87,6 +87,7 @@ export default function BioCanvasEditor({
       <div className="bio-canvas-editor__workspace">
         <BioCanvasBlockList
           blocks={blocks}
+          imageAssets={previewImageAssets}
           selectedBlockId={selectedBlockId}
           onSelectBlockId={onSelectBlockId}
           onReorderBlocks={reorderBlocks}
