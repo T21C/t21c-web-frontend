@@ -306,6 +306,35 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.bio-canvas-editor__field--rotation {
+  flex: 1 1 100%;
+}
+
+.bio-canvas-editor__field--rotation input[type="range"] {
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  accent-color: var(--color-purple-2);
+  cursor: pointer;
+}
+
+.bio-canvas-editor__rotation-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.bio-canvas-editor__rotation-controls [class*="btn-fill-"] {
+  flex: 1;
+  min-width: 2.25rem;
+  padding: 0.4rem 0.5rem;
+  font-size: 0.8125rem;
+  line-height: 1.2;
 }
 
 .bio-canvas-editor__social-row {

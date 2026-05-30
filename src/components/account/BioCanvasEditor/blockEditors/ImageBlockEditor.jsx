@@ -20,6 +20,7 @@ export default function ImageBlockEditor({
   onSelectImage,
   previewUrl,
   onResetCrop,
+  onFitToContainer,
 }) {
   const crop = normalizeImageCrop(block.data?.crop);
   const dragRef = useRef(null);
@@ -121,6 +122,13 @@ export default function ImageBlockEditor({
               onClick={() => onResetCrop?.()}
             >
               Reset crop
+            </button>
+            <button
+              type="button"
+              className="btn-fill-secondary"
+              onClick={() => onFitToContainer?.()}
+            >
+              Fit to container
             </button>
           </div>
         </>

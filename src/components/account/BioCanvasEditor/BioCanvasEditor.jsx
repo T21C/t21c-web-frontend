@@ -24,6 +24,7 @@ export default function BioCanvasEditor({
     selectImageFile,
     handleImageFileChange,
     resetImageCrop,
+    fitImageToContainer,
   } = editor;
 
   const blocks = workingCanvas?.blocks ?? [];
@@ -82,6 +83,7 @@ export default function BioCanvasEditor({
               {BLOCK_TYPE_LABELS[selectedBlock.type] ?? selectedBlock.type}
             </h3>
             <BioCanvasLayoutControls
+              blockId={selectedBlock.id}
               layout={selectedBlock.layout}
               descriptor={selectedDescriptor}
               onChange={(layout) => patchLayout(selectedBlock.id, layout)}
@@ -95,6 +97,11 @@ export default function BioCanvasEditor({
                 onResetCrop={
                   selectedBlock.type === "image"
                     ? () => resetImageCrop(selectedBlock.id)
+                    : undefined
+                }
+                onFitToContainer={
+                  selectedBlock.type === "image"
+                    ? () => fitImageToContainer(selectedBlock.id)
                     : undefined
                 }
               />

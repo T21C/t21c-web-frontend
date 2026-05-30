@@ -8,12 +8,12 @@ import { validateCdnBannerImageFile } from "@/utils/validateCdnBannerImage.js";
 import {
   BIO_CANVAS_VERSION,
   MAX_BIO_CANVAS_BLOCKS,
+  MIN_BLOCK_H,
   STAGE_HEIGHT,
   STAGE_WIDTH,
   createBlock,
   getBlockDescriptor,
   getImageBlockIds,
-  normalizeLayout,
   parseBioCanvas,
   parseBioCanvasImageAssets,
 } from "@/utils/bioCanvas";
@@ -129,9 +129,7 @@ export function useBioCanvasEditor({
     (blockId, layoutPatch) => {
       const block = workingCanvas?.blocks?.find((b) => b.id === blockId);
       if (!block) return;
-      const descriptor = getBlockDescriptor(block.type);
-      const nextLayout = normalizeLayout({ ...block.layout, ...layoutPatch }, descriptor);
-      patchBlock(blockId, { layout: nextLayout });
+      patchBlock(blockId, { layout: { ...block.layout, ...layoutPatch } });
     },
     [workingCanvas, patchBlock],
   );
@@ -248,6 +246,35 @@ export function useBioCanvasEditor({
     [pendingImages, imageAssets, patchBlockData, patchLayout],
   );
 
+  const fitImageToContainer = useCallback(
+    async (blockId) => {
+      const block = workingCanvas?.blocks?.find((b) => b.id === blockId);
+      if (!block || block.type !== "image") return;
+
+      let h = block.layout?.h ?? 200;
+      const pending = pendingImages[blockId];
+      if (pending?.naturalWidth && pending?.naturalHeight) {
+        h = Math.round(STAGE_WIDTH * (pending.naturalHeight / pending.naturalWidth));
+      } else {
+        const url =
+          buildPreviewImageAssets(imageAssets, pendingImages)[blockId]?.url ??
+          parseBioCanvasImageAssets(imageAssets)[blockId]?.url;
+        if (url) {
+          try {
+            const dims = await readImageUrlDimensions(url);
+            h = Math.round(STAGE_WIDTH * (dims.height / dims.width));
+          } catch {
+            // keep current height if dimensions unreadable
+          }
+        }
+      }
+
+      h = Math.min(STAGE_HEIGHT, Math.max(MIN_BLOCK_H, h));
+      patchLayout(blockId, { x: 0, y: 0, w: STAGE_WIDTH, h, locked: false });
+    },
+    [workingCanvas, pendingImages, imageAssets, patchLayout],
+  );
+
   const isDirtySinceOpen = useMemo(() => {
     const baseline = snapshotAtOpen ?? canvas;
     const current = canvasDraft !== undefined ? canvasDraft : canvas;
@@ -325,6 +352,7 @@ export function useBioCanvasEditor({
     selectImageFile,
     handleImageFileChange,
     resetImageCrop,
+    fitImageToContainer,
     saveBusy,
     handleSave,
     handleReset,

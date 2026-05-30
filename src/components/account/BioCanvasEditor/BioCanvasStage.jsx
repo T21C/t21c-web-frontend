@@ -5,6 +5,7 @@ import {
   MIN_BLOCK_H,
   computeStageContentHeight,
   getBlockDescriptor,
+  normalizeLayout,
 } from "@/utils/bioCanvas";
 import { getAspectRatio } from "@/utils/bioCanvas/layout.js";
 import { getBlockRenderer } from "../BioCanvasRenderer/blockRenderers/index.js";
@@ -106,7 +107,8 @@ export default function BioCanvasStage({
             if (!Renderer || !descriptor) return null;
 
             const layout = block.layout ?? {};
-            const { x = 0, y = 0, w = 600, h = 120, locked = true } = layout;
+            const normalized = normalizeLayout(layout, descriptor);
+            const { x, y, w, h, locked = true, rotation = 0 } = normalized;
             const isSelected = selectedBlockId === block.id;
             const resizeBehavior = descriptor.resizeBehavior ?? "widthOnly";
             const lockRatio =
@@ -141,7 +143,19 @@ export default function BioCanvasStage({
                 ].filter(Boolean).join(" ")}
                 onMouseDown={() => onSelectBlockId?.(block.id)}
               >
-                <div className="bio-canvas-stage-editor__block">
+                <div
+                  className="bio-canvas-stage-editor__block"
+                  style={
+                    rotation
+                      ? {
+                          transform: `rotate(${rotation}deg)`,
+                          transformOrigin: "center center",
+                          width: "100%",
+                          height: "100%",
+                        }
+                      : undefined
+                  }
+                >
                   {showPlaceholder ? (
                     <div className="bio-canvas-stage-editor__placeholder">
                       {getEditorPlaceholderLabel(block)}

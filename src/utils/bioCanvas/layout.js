@@ -5,6 +5,8 @@ export const STAGE_PADDING = 24;
 export const STAGE_BLOCK_GAP = 16;
 export const MIN_BLOCK_W = 40;
 export const MIN_BLOCK_H = 24;
+export const MIN_BLOCK_ROTATION = -360;
+export const MAX_BLOCK_ROTATION = 360;
 
 const LEGACY_ALIGN = ["left", "center", "right"];
 const LEGACY_WIDTH = ["full", "half"];
@@ -13,6 +15,12 @@ function clampInt(value, min, max) {
   const n = Math.round(Number(value));
   if (!Number.isFinite(n)) return min;
   return Math.min(max, Math.max(min, n));
+}
+
+export function clampBlockRotation(value, fallback = 0) {
+  const n = Math.round(Number(value));
+  if (!Number.isFinite(n)) return fallback;
+  return Math.min(MAX_BLOCK_ROTATION, Math.max(MIN_BLOCK_ROTATION, n));
 }
 
 function isLegacyLayout(raw) {
@@ -46,7 +54,8 @@ export function normalizeLayout(raw, descriptor, legacyStackY = STAGE_PADDING) {
       } else {
         locked = descriptor?.resizeBehavior === "aspect";
       }
-      return { x, y, w, h, locked };
+      const rotation = clampBlockRotation(raw.rotation, 0);
+      return { x, y, w, h, locked, rotation };
     }
 
     if (isLegacyLayout(raw)) {
@@ -58,7 +67,7 @@ export function normalizeLayout(raw, descriptor, legacyStackY = STAGE_PADDING) {
       else if (align === "right") x = STAGE_WIDTH - w;
       const h = defaultH;
       const y = legacyStackY;
-      return { x, y, w, h, locked: defaultLocked(descriptor) };
+      return { x, y, w, h, locked: defaultLocked(descriptor), rotation: 0 };
     }
   }
 
@@ -66,7 +75,7 @@ export function normalizeLayout(raw, descriptor, legacyStackY = STAGE_PADDING) {
   const h = defaultH;
   const x = Math.round((STAGE_WIDTH - w) / 2);
   const y = legacyStackY;
-  return { x, y, w, h, locked: defaultLocked(descriptor) };
+  return { x, y, w, h, locked: defaultLocked(descriptor), rotation: 0 };
 }
 
 export function createDefaultLayout(descriptor, stackY = STAGE_PADDING) {
@@ -106,6 +115,11 @@ export function getBlockPositionStyle(layout, descriptor) {
     style.overflow = "hidden";
   } else {
     style.minHeight = normalized.h;
+  }
+
+  if (normalized.rotation) {
+    style.transform = `rotate(${normalized.rotation}deg)`;
+    style.transformOrigin = "center center";
   }
 
   return style;
