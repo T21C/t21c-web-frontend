@@ -87,8 +87,21 @@ function getBlocksAtPoint(blocks, px, py) {
     const block = blocks[index];
     const descriptor = getBlockDescriptor(block.type);
     if (!descriptor) continue;
-    const { x, y, w, h } = normalizeLayout(block.layout, descriptor);
-    if (px >= x && px < x + w && py >= y && py < y + h) {
+    const { x, y, w, h, rotation = 0 } = normalizeLayout(block.layout, descriptor);
+    let localX = px;
+    let localY = py;
+    if (rotation) {
+      const cx = x + w / 2;
+      const cy = y + h / 2;
+      const theta = (-rotation * Math.PI) / 180;
+      const cos = Math.cos(theta);
+      const sin = Math.sin(theta);
+      const dx = px - cx;
+      const dy = py - cy;
+      localX = cx + dx * cos - dy * sin;
+      localY = cy + dx * sin + dy * cos;
+    }
+    if (localX >= x && localX < x + w && localY >= y && localY < y + h) {
       hits.push(block.id);
     }
   }
@@ -267,7 +280,10 @@ export default function BioCanvasStage({
             return (
               <Rnd
                 key={block.id}
-                style={{ zIndex: index + 1 }}
+                style={{
+                  zIndex: index + 1,
+                  rotate: rotation ? `${rotation}deg` : undefined,
+                }}
                 size={{ width: w, height: h }}
                 position={{ x, y }}
                 scale={scale}
@@ -290,16 +306,7 @@ export default function BioCanvasStage({
               >
                 <div
                   className="bio-canvas-stage-editor__block"
-                  style={
-                    rotation
-                      ? {
-                          transform: `rotate(${rotation}deg)`,
-                          transformOrigin: "center center",
-                          width: "100%",
-                          height: "100%",
-                        }
-                      : undefined
-                  }
+                  style={{ width: "100%", height: "100%" }}
                 >
                   {showPlaceholder ? (
                     <div className="bio-canvas-stage-editor__placeholder">

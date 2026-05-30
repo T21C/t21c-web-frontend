@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LinkIcon } from "@/components/common/icons/LinkIcon";
 import { UnlinkIcon } from "@/components/common/icons";
 import {
@@ -37,10 +37,18 @@ export default function BioCanvasLayoutControls({
   const showAspectLink = supportsAspectLock && !heightDisabled;
 
   const [draft, setDraft] = useState(() => layoutToDraft(layout, normalized));
+  const focusedKeyRef = useRef(null);
 
   useEffect(() => {
-    setDraft(layoutToDraft(layout, normalized));
-  }, [blockId]);
+    setDraft((prev) => {
+      const fresh = layoutToDraft(layout, normalized);
+      const active = focusedKeyRef.current;
+      if (active && prev[active] !== undefined) {
+        fresh[active] = prev[active];
+      }
+      return fresh;
+    });
+  }, [blockId, normalized.x, normalized.y, normalized.w, normalized.h]);
 
   const commitField = (key, rawValue) => {
     if (rawValue === "" || rawValue === "-") {
@@ -80,20 +88,35 @@ export default function BioCanvasLayoutControls({
     setDraft((prev) => ({ ...prev, x: "0", y: "0" }));
   };
 
+  const getRotatedBounds = () => {
+    const { w, h } = normalized;
+    const theta = (rotation * Math.PI) / 180;
+    const cos = Math.abs(Math.cos(theta));
+    const sin = Math.abs(Math.sin(theta));
+    return {
+      bboxW: w * cos + h * sin,
+      bboxH: w * sin + h * cos,
+    };
+  };
+
   const alignHorizontal = (mode) => {
-    const w = normalized.w;
-    let x = 0;
+    const { w } = normalized;
+    const { bboxW } = getRotatedBounds();
+    const margin = (bboxW - w) / 2;
+    let x = Math.round(margin);
     if (mode === "center") x = Math.round((STAGE_WIDTH - w) / 2);
-    else if (mode === "right") x = STAGE_WIDTH - w;
+    else if (mode === "right") x = Math.round(STAGE_WIDTH - w - margin);
     onChange({ ...layout, x });
     setDraft((prev) => ({ ...prev, x: String(x) }));
   };
 
   const alignVertical = (mode) => {
-    const h = normalized.h;
-    let y = 0;
+    const { h } = normalized;
+    const { bboxH } = getRotatedBounds();
+    const margin = (bboxH - h) / 2;
+    let y = Math.round(margin);
     if (mode === "center") y = Math.round((STAGE_HEIGHT - h) / 2);
-    else if (mode === "bottom") y = STAGE_HEIGHT - h;
+    else if (mode === "bottom") y = Math.round(STAGE_HEIGHT - h - margin);
     onChange({ ...layout, y });
     setDraft((prev) => ({ ...prev, y: String(y) }));
   };
@@ -108,8 +131,14 @@ export default function BioCanvasLayoutControls({
       <input
         type="number"
         value={draft[key] ?? ""}
+        onFocus={() => {
+          focusedKeyRef.current = key;
+        }}
         onChange={(ev) => setDraft((prev) => ({ ...prev, [key]: ev.target.value }))}
-        onBlur={() => commitField(key, draft[key])}
+        onBlur={() => {
+          focusedKeyRef.current = null;
+          commitField(key, draft[key]);
+        }}
         onKeyDown={(ev) => {
           if (ev.key === "Enter") {
             ev.preventDefault();
