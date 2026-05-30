@@ -122,7 +122,7 @@ export const getScoreV2 = (passData, levelData, difficultyDict = {}) => {
     var mtp = getScoreV2Mtp(inputs);
     if (passData['isNoHoldTap']) 
        {
-        mtp *= 0.9
+        mtp *= 0.95
     };
     
     return (scoreOrig * mtp)
