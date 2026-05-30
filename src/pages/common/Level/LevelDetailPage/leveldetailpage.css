@@ -213,8 +213,7 @@
   width: 1.8rem;
   height: 1.8rem;
   border-radius: 50%;
-  border: 2px solid var(--glass-border);
-  background: var(--glass-bg);
+  z-index: 3;
 }
 
 .level-detail .pp-display {
