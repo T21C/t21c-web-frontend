@@ -96,6 +96,8 @@
     "bioTooLong": "个人简介最多2000个字符。",
     "bioSuccess": "个人简介已更新",
     "bioError": "无法更新个人简介",
+    "bioCanvasSuccess": "个人简介画布已保存",
+    "bioCanvasError": "无法保存个人简介画布",
     "uploadConditionsLabel": "谱面上传情况说明",
     "uploadConditionsPlaceholder": "允许上传谱面的情况，最多2000字符，将公开展示。",
     "uploadConditionsTooLong": "谱面上传情况说明最多2000个字符。",

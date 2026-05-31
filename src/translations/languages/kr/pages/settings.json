@@ -102,6 +102,8 @@
     "bioTooLong": "내 소개는 최대 2000자 입니다.",
     "bioSuccess": "내 소개 업데이트됨",
     "bioError": "내 소개를 업데이트 할 수 없습니다",
+    "bioCanvasSuccess": "바이오 캔버스가 저장되었습니다",
+    "bioCanvasError": "바이오 캔버스를 저장할 수 없습니다",
     "aliasesLabel": "별칭",
     "aliasesHint": "검색용 최대 {{max}}개. 표시 이름·다른 크리에이터 이름·별칭과 겹칠 수 없습니다(대소문자 무시).",
     "aliasesPlaceholder": "새 별칭",

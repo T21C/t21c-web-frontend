@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";
-import { routes } from "@/api/routes";
 import api from "@/utils/api";
+import { getBioCanvasApiRoutes } from "@/utils/bioCanvasApi";
 import { getCdnErrorMessage } from "@/utils/uploadErrors";
 import { validateCdnBannerImageFile } from "@/utils/validateCdnBannerImage.js";
 import {
@@ -72,6 +72,7 @@ function buildPreviewImageAssets(serverAssets, pendingImages) {
 }
 
 export function useBioCanvasEditor({
+  profileKind = "player",
   canvas,
   canvasDraft,
   onCanvasDraftChange,
@@ -81,6 +82,11 @@ export function useBioCanvasEditor({
   snapshotAtOpen,
 }) {
   const { t } = useTranslation(["pages", "common"]);
+  const bioCanvasRoutes = useMemo(() => getBioCanvasApiRoutes(profileKind), [profileKind]);
+  const saveSuccessKey =
+    profileKind === "creator" ? "settings.creator.bioCanvasSuccess" : "settings.player.bioCanvasSuccess";
+  const saveErrorKey =
+    profileKind === "creator" ? "settings.creator.bioCanvasError" : "settings.player.bioCanvasError";
   const fileInputRef = useRef(null);
   const pendingBlockIdRef = useRef(null);
   const [saveBusy, setSaveBusy] = useState(false);
@@ -355,7 +361,7 @@ export function useBioCanvasEditor({
         return;
       }
 
-      const { data } = await api.patch(routes.playersV3.meBioCanvas(), { canvas: parsed });
+      const { data } = await api.patch(bioCanvasRoutes.patchCanvas(), { canvas: parsed });
       let nextAssets = data?.bioCanvasImageAssets ?? imageAssets;
 
       for (const blockId of getImageBlockIds(parsed)) {
@@ -366,7 +372,7 @@ export function useBioCanvasEditor({
         form.append("image", pending.file);
         form.append("blockId", blockId);
 
-        const uploadRes = await api.post(routes.playersV3.meBioCanvasImage(), form, {
+        const uploadRes = await api.post(bioCanvasRoutes.postImage(), form, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         nextAssets = uploadRes.data?.bioCanvasImageAssets ?? nextAssets;
@@ -380,14 +386,27 @@ export function useBioCanvasEditor({
         bio: data?.bio ?? null,
       });
       onCanvasDraftChange?.(undefined);
-      toast.success(t("settings.player.bioCanvasSuccess", { defaultValue: "Bio canvas saved" }), { id: toastId });
+      toast.success(t(saveSuccessKey, { defaultValue: "Bio canvas saved" }), { id: toastId });
     } catch (err) {
-      const msg = err?.response?.data?.error || getCdnErrorMessage(err) || t("settings.player.bioCanvasError", { defaultValue: "Failed to save bio canvas" });
+      const msg =
+        err?.response?.data?.error ||
+        getCdnErrorMessage(err) ||
+        t(saveErrorKey, { defaultValue: "Failed to save bio canvas" });
       toast.error(msg, { id: toastId });
     } finally {
       setSaveBusy(false);
     }
-  }, [workingCanvas, pendingImages, imageAssets, onApplied, onCanvasDraftChange, t]);
+  }, [
+    workingCanvas,
+    pendingImages,
+    imageAssets,
+    onApplied,
+    onCanvasDraftChange,
+    t,
+    bioCanvasRoutes,
+    saveSuccessKey,
+    saveErrorKey,
+  ]);
 
   const handleReset = useCallback(() => {
     revokeAllPending(pendingImages);

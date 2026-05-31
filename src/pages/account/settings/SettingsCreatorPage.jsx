@@ -12,6 +12,7 @@ import CurationTypeSelector from "@/components/account/CurationTypeSelector/Cura
 import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
 import ProfileBannerEditor from "@/components/account/ProfileBannerEditor/ProfileBannerEditor";
 import ProfileHeaderSurfaceEditor from "@/components/account/ProfileHeaderSurfaceEditor/ProfileHeaderSurfaceEditor";
+import { BioCanvasEditorLauncher } from "@/components/account/BioCanvasEditor";
 import {
   SettingsPreviewSection,
   SettingsSectionPreviewControls,
@@ -23,6 +24,7 @@ import {
   normalizeTufStellarIconVariant,
   resolveStellarEntitlementSubject,
 } from "@/utils/profileBanners";
+import { isTufStellarEnabledForUser } from "@/utils/tufStellarFeature";
 import { CreatorStatusBadge } from "@/components/common/display";
 import { ExternalLinkIcon, ChevronIcon, InfoIcon } from "@/components/common/icons";
 import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
@@ -72,6 +74,8 @@ const SettingsCreatorPage = () => {
   const [bioDraft, setBioDraft] = useState("");
   const [bioSaving, setBioSaving] = useState(false);
   const [bioFieldError, setBioFieldError] = useState("");
+  /** `undefined` = server; object/null = draft bio canvas */
+  const [bioCanvasDraft, setBioCanvasDraft] = useState(undefined);
   const [uploadConditionsDraft, setUploadConditionsDraft] = useState("");
   const [uploadConditionsSaving, setUploadConditionsSaving] = useState(false);
   const [uploadConditionsFieldError, setUploadConditionsFieldError] = useState("");
@@ -118,6 +122,7 @@ const SettingsCreatorPage = () => {
 
   useEffect(() => {
     setBannerPresetDraft(undefined);
+    setBioCanvasDraft(undefined);
     setHeaderSurfaceStyleDraft(undefined);
     setStellarVariantDraft(null);
   }, [creatorId]);
@@ -236,6 +241,11 @@ const SettingsCreatorPage = () => {
   const stellarEntitlementSubject = useMemo(
     () => resolveStellarEntitlementSubject(user, creatorProfileUser),
     [user, creatorProfileUser],
+  );
+
+  const canUseBioCanvas = useMemo(
+    () => isTufStellarEnabledForUser(user) && isTufStellarAccessActive(stellarEntitlementSubject),
+    [user, stellarEntitlementSubject],
   );
 
   const settingsCreatorBannerUrl = useMemo(() => {
@@ -807,25 +817,52 @@ const SettingsCreatorPage = () => {
           sectionId="bio"
           label={t("settings.creator.bioLabel")}
           inputId="settings-creator-bio"
-          onSave={handleSaveBio}
-          saving={bioSaving}
-          matchesSaved={bioMatchesSaved}
-          fieldError={bioFieldError}
+          onSave={canUseBioCanvas ? undefined : handleSaveBio}
+          saving={canUseBioCanvas ? false : bioSaving}
+          matchesSaved={canUseBioCanvas ? true : bioMatchesSaved}
+          fieldError={canUseBioCanvas ? "" : bioFieldError}
           stack
+          hideActions={canUseBioCanvas}
+          hidePreviewControls={canUseBioCanvas}
+          collapsible={canUseBioCanvas}
         >
-          <textarea
-            id="settings-creator-bio"
-            className="settings-sub-page__textarea"
-            maxLength={2000}
-            placeholder={t("settings.creator.bioPlaceholder")}
-            value={bioDraft}
-            onChange={(ev) => {
-              setBioDraft(ev.target.value);
-              if (bioFieldError) setBioFieldError("");
-            }}
-            disabled={bioSaving}
-            rows={5}
-          />
+          {canUseBioCanvas ? (
+            <BioCanvasEditorLauncher
+              profileKind="creator"
+              authUser={stellarEntitlementSubject}
+              canvas={bioCanvasDraft !== undefined ? bioCanvasDraft : profile?.bioCanvas}
+              canvasDraft={bioCanvasDraft}
+              onCanvasDraftChange={setBioCanvasDraft}
+              imageAssets={profile?.bioCanvasImageAssets}
+              onApplied={(payload) => {
+                setBioCanvasDraft(undefined);
+                setProfile((p) =>
+                  p && typeof p === "object"
+                    ? {
+                        ...p,
+                        bioCanvas: payload.bioCanvas ?? null,
+                        bioCanvasImageAssets: payload.bioCanvasImageAssets ?? null,
+                        bio: payload.bio ?? null,
+                      }
+                    : p,
+                );
+              }}
+            />
+          ) : (
+            <textarea
+              id="settings-creator-bio"
+              className="settings-sub-page__textarea"
+              maxLength={2000}
+              placeholder={t("settings.creator.bioPlaceholder")}
+              value={bioDraft}
+              onChange={(ev) => {
+                setBioDraft(ev.target.value);
+                if (bioFieldError) setBioFieldError("");
+              }}
+              disabled={bioSaving}
+              rows={5}
+            />
+          )}
         </SettingsSaveField>
       ) : null}
 

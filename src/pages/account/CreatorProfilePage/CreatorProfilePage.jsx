@@ -12,6 +12,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { LevelContextProvider } from "@/contexts/LevelContext";
 import { DifficultyGraph, MetaTags, CreatorStatusBadge } from "@/components/common/display";
 import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
+import BioCanvasRenderer from "@/components/account/BioCanvasRenderer/BioCanvasRenderer";
 import { ScrollButton } from "@/components/common/buttons";
 import { ChevronIcon, AdofaiIcon, EditIcon, ShieldIcon, InfoIcon } from "@/components/common/icons";
 import { CreatorManagementPopup } from "@/components/popups/Creators";
@@ -316,11 +317,16 @@ const CreatorProfilePage = () => {
             <CollapsibleContent>
           <div className="account-profile-page__collapsible">
             <div className="creator-profile-page__bio">
-              {typeof profile?.bio === 'string' && profile.bio.trim().length > 0 ? (
+              {profile?.bioCanvas?.blocks?.length > 0 ? (
+                <BioCanvasRenderer
+                  canvas={profile.bioCanvas}
+                  imageAssets={profile.bioCanvasImageAssets}
+                />
+              ) : typeof profile?.bio === "string" && profile.bio.trim().length > 0 ? (
                 <p className="creator-profile-page__bio-text">{profile.bio}</p>
               ) : (
                 <p className="creator-profile-page__bio-placeholder">
-                  {t('creators.profile.bio.placeholder')}
+                  {t("creators.profile.bio.placeholder")}
                 </p>
               )}
             </div>

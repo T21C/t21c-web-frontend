@@ -11,6 +11,7 @@ import { createDefaultBioCanvas, parseBioCanvas } from "@/utils/bioCanvas";
 import "./bioCanvasEditor.css";
 
 export default function BioCanvasEditorPopup({
+  profileKind = "player",
   isOpen,
   onClose,
   canvas,
@@ -29,6 +30,7 @@ export default function BioCanvasEditorPopup({
   }, [isOpen]);
 
   const editor = useBioCanvasEditor({
+    profileKind,
     canvas,
     canvasDraft,
     onCanvasDraftChange,

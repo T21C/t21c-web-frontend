@@ -220,6 +220,8 @@
     "bioTooLong": "Bio must be at most 2000 characters.",
     "bioSuccess": "Bio updated",
     "bioError": "Could not update bio",
+    "bioCanvasSuccess": "Bio canvas saved",
+    "bioCanvasError": "Could not save bio canvas",
     "uploadConditionsLabel": "Chart upload conditions",
     "uploadConditionsPlaceholder": "When and how you accept chart uploads (max 2000 characters). Shown to visitors on your public profile.",
     "uploadConditionsTooLong": "Upload conditions must be at most 2000 characters.",

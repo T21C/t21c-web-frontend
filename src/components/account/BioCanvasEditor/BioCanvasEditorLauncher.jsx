@@ -8,6 +8,7 @@ import BioCanvasRenderer from "../BioCanvasRenderer/BioCanvasRenderer.jsx";
 import "./bioCanvasEditorLauncher.css";
 
 export default function BioCanvasEditorLauncher({
+  profileKind = "player",
   authUser,
   canvas,
   canvasDraft,
@@ -52,6 +53,7 @@ export default function BioCanvasEditorLauncher({
       </button>
 
       <BioCanvasEditorPopup
+        profileKind={profileKind}
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         canvas={canvas ?? createDefaultBioCanvas()}
