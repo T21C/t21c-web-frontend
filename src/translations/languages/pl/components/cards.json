@@ -23,12 +23,12 @@
       "speed": "Prędkość"
     },
     "flags": {
-      "worldsFirst": "WF",
-      "worldsFirstPP": "WF PP",
+      "worldsFirst": "🏆 Pierwsze przejście! 🏆",
+      "worldsFirstPP": "🏆 Pierwsze przejście PP! 🏆",
       "twelveKey": "12K",
       "sixteenKey": "16K",
       "noHoldTap": "NHT",
-      "adofaiV2": "ADOFAI v2"
+      "adofaiV2": "<adofaiicon></adofaiicon> v2"
     },
     "links": {
       "video": "Obejrzyj wideo"

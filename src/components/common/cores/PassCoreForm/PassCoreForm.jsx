@@ -244,6 +244,23 @@ export function PassCoreForm({
                 )}
               </div>
             </div>
+          ) : mode === 'edit' ? (
+            <div className="youtube-info">
+              <div className="yt-info">
+                <p style={{ color: '#aaa' }}>{t(copy.videoNoLink, { ns: copy.ns })}</p>
+              </div>
+              <div className="yt-info">
+                <h4>{t(copy.videoTimestampLabel, { ns: copy.ns })}</h4>
+                <input
+                  type="text"
+                  autoComplete="off"
+                  placeholder="YYYY-MM-DDTHH:MM:SS"
+                  name="vidUploadTime"
+                  value={form.vidUploadTime}
+                  onChange={onInputChange}
+                />
+              </div>
+            </div>
           ) : (
             <div className="yt-info">
               <p style={{ color: '#aaa' }}>{t(copy.videoNoLink, { ns: copy.ns })}</p>

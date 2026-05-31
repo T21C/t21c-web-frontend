@@ -574,41 +574,23 @@
 }
 
 
-/* Sliders container for horizontal positioning */
-.level-page .level-body .sliders-container {
-  display: flex;
-  gap: 1rem;
-  align-items: flex-end;
-  justify-content: flex-end;
+/* Q slider — same full-width layout as the PGU filter-row slider above */
+.level-page .level-body .filter-row--q-slider {
   width: 100%;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-}
-
-.level-page .level-body .sliders-container.has-sliders {
+  min-width: 0;
   justify-content: flex-end;
 }
 
-/* Q Slider Wrapper */
-.level-page .level-body .q-slider-wrapper {
+
+.level-page .level-body .filter-row--q-slider .tuf-collapsible__region {
+  width: 100%;
+}
+
+.level-page .level-body .filter-row--q-slider .q-slider-collapsible {
   width: 45%;
-  align-self: flex-end;
-  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1)
-  , opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  align-items: center;
-  margin-top: 0.5rem;
-  position: relative;
-  max-height: 80px;
-  z-index: 2;
 }
 
-.level-page .level-body .q-slider-wrapper {
-  overflow: visible;
-  transform: translateX(0);
-}
-
-.level-page .level-body .q-slider-wrapper .difficulty-slider {
+.level-page .level-body .filter-row--q-slider .difficulty-slider-container {
   width: 100%;
 }
 
@@ -663,20 +645,6 @@
   .level-page .level-body .q-toggle-button {
     margin-left: 0;
     margin-top: 0.5rem;
-  }
-  
-  .level-page .level-body .q-slider-wrapper {
-    width: 100%;
-  }
-
-  .level-page .level-body .sliders-container {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .level-page .level-body .sliders-container {
-    margin: 0 1.5rem;
-    width: auto;
   }
 }
 

@@ -24,12 +24,12 @@
       "speed": "배속"
     },
     "flags": {
-      "worldsFirst": "최초",
-      "worldsFirstPP": "최초 완플!",
+      "worldsFirst": "🏆 세계 최초! 🏆",
+      "worldsFirstPP": "🏆 세계 최초 완벽한 플레이! 🏆",
       "twelveKey": "12키",
       "sixteenKey": "16키",
       "noHoldTap": "홀드 설정 꺼짐",
-      "adofaiV2": "ADOFAI v2"
+      "adofaiV2": "<adofaiicon></adofaiicon> v2"
     },
     "links": {
       "video": "영상 보기"

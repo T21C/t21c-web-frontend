@@ -1069,6 +1069,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-wrap: nowrap;
   gap: var(--spacing-sm);
 }
 
@@ -1082,6 +1083,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  min-width: 2.25rem;
+  padding: 0;
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 6px;
@@ -1513,6 +1519,11 @@
   .level-detail button {
     width: 100%;
     justify-content: center;
+  }
+
+  .level-detail .rank .refresh-leaderboard-button {
+    width: 2.25rem;
+    min-width: 2.25rem;
   }
   
   /* Very small mobile inline curation adjustments */

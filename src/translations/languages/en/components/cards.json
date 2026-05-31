@@ -24,12 +24,12 @@
       "speed": "Speed"
     },
     "flags": {
-      "worldsFirst": "WF",
-      "worldsFirstPP": "WF PP",
+      "worldsFirst": "🏆 World's First! 🏆",
+      "worldsFirstPP": "🏆 World's First PP! 🏆",
       "twelveKey": "12K",
       "sixteenKey": "16K",
       "noHoldTap": "NHT",
-      "adofaiV2": "ADOFAI v2"
+      "adofaiV2": "<adofaiicon></adofaiicon> v2"
     },
     "links": {
       "video": "Watch video"

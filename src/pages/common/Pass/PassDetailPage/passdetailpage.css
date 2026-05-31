@@ -295,6 +295,13 @@
   font-weight: 500;
 }
 
+.pass-detail .flag--adofai-v2 {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  white-space: nowrap;
+}
+
 .pass-detail .judgements {
   margin-top: 1rem;
   background-color: #0005;

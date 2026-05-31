@@ -25,12 +25,6 @@ const BASE_REQUIRED_FIELDS = [
 
 const JUDGEMENT_FIELDS = ["ePerfect", "perfect", "lPerfect", "tooEarly", "early", "late"];
 
-function validateIsoTimestamp(timestamp) {
-  if (!timestamp || timestamp.trim() === "") return false;
-  const isoRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?$/;
-  return isoRegex.test(timestamp.trim());
-}
-
 export function usePassCoreForm({
   mode,
   initialForm,
@@ -181,29 +175,42 @@ export function usePassCoreForm({
   const validate = (nextForm) => {
     const validationResult = {};
     const displayValidationRes = {};
+    const isEdit = mode === "edit";
 
-    for (const field of BASE_REQUIRED_FIELDS) {
-      if (JUDGEMENT_FIELDS.includes(field)) {
-        validationResult[field] = nextForm[field]?.trim?.() !== "" && validateNumber(nextForm[field]);
-      } else {
-        validationResult[field] = nextForm[field]?.trim?.() !== "";
+    if (isEdit) {
+      // Edit / admin pass updates: only require a valid level; allow empty or free-form text elsewhere
+      validationResult.levelId = !(level === null || level === undefined);
+      validationResult.videoLink = true;
+      validationResult.feelingRating = true;
+      validationResult.speed = true;
+      validationResult.vidUploadTime = true;
+
+      for (const field of JUDGEMENT_FIELDS) {
+        validationResult[field] = true;
       }
-    }
 
-    validationResult.levelId = !(level === null || level === undefined);
-    validationResult.videoLink = Boolean(videoDetail);
-
-    const frValid = validateFeelingRating(nextForm.feelingRating);
-    const speedValid = validateSpeed(nextForm.speed);
-    setIsValidFeelingRating(frValid);
-    setIsValidSpeed(speedValid);
-    validationResult.speed = speedValid;
-
-    if (mode === "edit") {
-      const timestampValid = validateIsoTimestamp(nextForm.vidUploadTime);
-      setIsValidTimestamp(timestampValid);
-      validationResult.vidUploadTime = timestampValid;
+      const frTrimmed = nextForm.feelingRating?.trim?.() ?? "";
+      const speedTrimmed = nextForm.speed?.trim?.() ?? "";
+      setIsValidFeelingRating(!frTrimmed || validateFeelingRating(nextForm.feelingRating));
+      setIsValidSpeed(!speedTrimmed || validateSpeed(nextForm.speed));
+      setIsValidTimestamp(true);
     } else {
+      for (const field of BASE_REQUIRED_FIELDS) {
+        if (JUDGEMENT_FIELDS.includes(field)) {
+          validationResult[field] = nextForm[field]?.trim?.() !== "" && validateNumber(nextForm[field]);
+        } else {
+          validationResult[field] = nextForm[field]?.trim?.() !== "";
+        }
+      }
+
+      validationResult.levelId = !(level === null || level === undefined);
+      validationResult.videoLink = Boolean(videoDetail);
+
+      const frValid = validateFeelingRating(nextForm.feelingRating);
+      const speedValid = validateSpeed(nextForm.speed);
+      setIsValidFeelingRating(frValid);
+      setIsValidSpeed(speedValid);
+      validationResult.speed = speedValid;
       setIsValidTimestamp(true);
     }
 

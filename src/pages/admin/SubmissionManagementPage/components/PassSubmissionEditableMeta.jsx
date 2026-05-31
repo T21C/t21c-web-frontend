@@ -5,7 +5,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { Tooltip } from 'react-tooltip';
 import { toast } from 'react-hot-toast';
 import api from '@/utils/api';
-import { formatCreatorDisplay, validateSpeed } from '@/utils/Utility';
+import { formatCreatorDisplay } from '@/utils/Utility';
 import {
   getPassJudgementHitCountFromSubmissionJudgements,
   isTilecountJudgementMismatch,
@@ -314,11 +314,12 @@ export default function PassSubmissionEditableMeta({
   };
 
   const saveSpeed = async () => {
-    if (!validateSpeed(draftSpeed)) {
+    const trimmed = draftSpeed.trim();
+    const parsed = trimmed === '' ? 1 : parseFloat(trimmed);
+    if (Number.isNaN(parsed)) {
       toast.error(t('passSubmissions.errors.patch'));
       return;
     }
-    const parsed = parseFloat(draftSpeed || '1');
     const snapParsed = parseFloat(snapSpeedRef.current || '1');
     if (parsed === snapParsed) {
       cancelEditSpeed();

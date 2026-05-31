@@ -607,22 +607,23 @@ const LevelPage = ({
                   mode="pgu"
                 />
               </div>
-              <div className={`sliders-container ${qSliderVisible ? 'has-sliders' : ''}`}>
+              <div className="filter-row filter-row--q-slider">
                 <Collapsible
                   open={qSliderVisible}
                   onOpenChange={setQSliderVisible}
                   revealOverflow
                   duration="0.3s"
+                  className="q-slider-collapsible"
                 >
-                  <CollapsibleContent>
-                <div className="q-slider-wrapper">
-                  <DifficultySlider
-                    values={sliderQRangeDrag}
-                    onChange={handleSliderQChange}
-                    onChangeComplete={handleSliderQChangeComplete}
-                    mode="q"
-                  />
-                </div>
+                  <CollapsibleContent
+                    clipClassName={qSliderVisible ? 'tuf-collapsible__clip--overflow-visible' : ''}
+                  >
+                    <DifficultySlider
+                      values={sliderQRangeDrag}
+                      onChange={handleSliderQChange}
+                      onChangeComplete={handleSliderQChangeComplete}
+                      mode="q"
+                    />
                   </CollapsibleContent>
                 </Collapsible>
               </div>

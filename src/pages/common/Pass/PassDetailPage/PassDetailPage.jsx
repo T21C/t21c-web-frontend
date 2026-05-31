@@ -16,6 +16,7 @@ import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { formatDate, validateFeelingRating } from "@/utils/Utility";
 import i18next from "i18next";
 import { EyeIcon, EyeOffIcon, TrashIcon } from "@/components/common/icons";
+import PassAdofaiV2Flag from "@/components/cards/PassAdofaiV2Flag";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 
 const currentUrl = window.location.origin + location.pathname;
@@ -319,9 +320,12 @@ const PassDetailPage = () => {
                       {pass.is16K && <span className="flag">{t('passDetail.flags.16k')}</span>}
                       {pass.isNoHoldTap && <span className="flag">{t('passDetail.flags.noHoldTap')}</span>}
                       {pass.isAdofaiV2 && (
-                        <span className="flag" title={t('passDetail.flags.adofaiV2Note')}>
-                          {t('passDetail.flags.adofaiV2')}
-                        </span>
+                        <PassAdofaiV2Flag
+                          className="flag flag--adofai-v2"
+                          i18nKey="passDetail.flags.adofaiV2"
+                          ns="pages"
+                          title={t('passDetail.flags.adofaiV2Note')}
+                        />
                       )}
                     </div>
                   )}

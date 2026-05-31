@@ -48,8 +48,8 @@ const ScoreCard = ({scoreData, topScores, potentialTopScores}) => {
           <p className='score-desc score-desc-song'>{scoreData.level.song}</p>
           <p className="score-exp score-exp-artist">{scoreData.level.artist ?? 'Hidden level'}</p>
       </Link>
-      {scoreData.isWorldsFirst && <div className="wf-badge">🏆<div className="wf-text">WF</div></div>}
-      {scoreData.isWorldsFirstPP && <div className="wf-badge">🏆<div className="wf-text">WF PP</div></div>}
+      {scoreData.isWorldsFirst && <span className="wf-badge">{t('cards.pass.flags.worldsFirst')}</span>}
+      {scoreData.isWorldsFirstPP && <span className="wf-badge">{t('cards.pass.flags.worldsFirstPP')}</span>}
       <div className="score-wrapper">
           <p className="score-exp">{t('score.card.labels.score')}</p>
           <p className='score-desc'>{formatScore(scoreData.scoreV2)}</p>

@@ -23,11 +23,11 @@
       "speed": "Vitesse"
     },
     "flags": {
-      "worldsFirst": "WF",
-      "worldsFirstPP": "WF PP",
+      "worldsFirst": "🏆 Première mondiale! 🏆",
+      "worldsFirstPP": "🏆 Première mondiale PP! 🏆",
       "twelveKey": "12K",
       "noHoldTap": "NHT",
-      "adofaiV2": "ADOFAI v2"
+      "adofaiV2": "<adofaiicon></adofaiicon> v2"
     },
     "links": {
       "video": "Voir la vidéo"

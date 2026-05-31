@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { UserAvatar } from "@/components/layout";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
+import PassAdofaiV2Flag from "../PassAdofaiV2Flag";
 
 const PassCard = ({ pass }) => {
   const { t } = useTranslation('components');
@@ -62,7 +63,7 @@ const PassCard = ({ pass }) => {
         {pass.is12K && <div className="flag">{t('cards.pass.flags.twelveKey')}</div>}
         {pass.is16K && <div className="flag">{t('cards.pass.flags.sixteenKey')}</div>}
         {pass.isNoHoldTap && <div className="flag">{t('cards.pass.flags.noHoldTap')}</div>}
-        {pass.isAdofaiV2 && <div className="flag">{t('cards.pass.flags.adofaiV2')}</div>}
+        {pass.isAdofaiV2 && <PassAdofaiV2Flag className="flag flag--adofai-v2" />}
       </div>
       </Link>
 

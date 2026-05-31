@@ -24,12 +24,12 @@
       "speed": "飙速"
     },
     "flags": {
-      "worldsFirst": "世界首通",
-      "worldsFirstPP": "世界首通 PP",
+      "worldsFirst": "🏆 世界首通！ 🏆",
+      "worldsFirstPP": "🏆 世界首通 PP！ 🏆",
       "twelveKey": "12键",
       "sixteenKey": "16键",
       "noHoldTap": "非默认长按设置",
-      "adofaiV2": "ADOFAI v2"
+      "adofaiV2": "<adofaiicon></adofaiicon> v2"
     },
     "links": {
       "video": "观看视频"
