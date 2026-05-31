@@ -192,13 +192,6 @@
   z-index: 10;
 }
 
-.level-detail .inline-curation-display {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-
 .level-detail .difficulty-icon {
   width: 4rem;
   height: 4rem;
@@ -1361,10 +1354,10 @@
   .level-detail .difficulty-curation-row {
     gap: var(--spacing-xl);
   }
-  
-  .level-detail .inline-curation-icon {
-    width: 1.5rem;
-    height: 1.5rem;
+
+  .level-detail .level-detail__curation-type-icon-img {
+    width: 2.75rem;
+    height: 2.75rem;
   }
   
   /* Position like button absolutely in top right */
@@ -1391,14 +1384,6 @@
     gap: var(--spacing-xs);
   }
 
-  .level-detail .header .left .curation-type-container-wrapper {
-    display: none;
-  }
-
-  .level-detail .header .left .curation-type-container-wrapper.mobile {
-    order: 1; 
-    display: flex;
-  }
   .level-detail .title-container {
     align-items: center;
   }
@@ -1420,10 +1405,10 @@
   .level-detail .difficulty-curation-row {
     gap: var(--spacing-md);
   }
-  
-  .level-detail .inline-curation-icon {
-    width: 1.25rem;
-    height: 1.25rem;
+
+  .level-detail .level-detail__curation-type-icon-img {
+    width: 2.5rem;
+    height: 2.5rem;
   }
 }
 
@@ -1535,10 +1520,10 @@
     gap: var(--spacing-xs);
     order: 0;
   }
-  
-  .level-detail .inline-curation-icon {
-    width: 1rem;
-    height: 1rem;
+
+  .level-detail .level-detail__curation-type-icon-img {
+    width: 2.25rem;
+    height: 2.25rem;
   }
   
   /* Ensure like button positioning on very small screens */
@@ -2022,40 +2007,8 @@
 }
 
 /* ============================================
-   CURATION TYPE
+   CURATION TYPE TOOLTIPS
    ============================================ */
-
-.curation-type-container-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-  z-index: 2;
-}
-.level-detail .curation-type-container-wrapper.mobile {
-  display: none;
-}
-
-.curation-type-container {
-  display: flex;
-  align-items: center;
-  cursor: help;
-  transition: all var(--transition-normal);
-}
-
-.curation-type-container:hover {
-  transform: scale(1.1);
-}
-
-.curation-type-icon {
-  width: 3rem;
-  height: 3rem;
-  transition: all var(--transition-normal);
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-}
-
-.curation-type-icon:hover {
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
-}
 
 /* Curation Tooltip Dropdown */
 .curation-tooltip-dropdown {
@@ -2327,6 +2280,12 @@
     min-width: 2rem;
     touch-action: manipulation;
   }
+
+  .level-detail .level-detail__curation-icon-cell {
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+    touch-action: manipulation;
+  }
   
   .level-detail .rank .sort svg {
     min-height: 16px;
@@ -2404,12 +2363,12 @@
 /* Centered modal-style dropdowns on mobile (aliases, weekly, curation tooltips) */
 @media (max-width: 768px) {
   .level-detail .title-container .aliases-dropdown,
-  .curation-tooltip-dropdown:not(.level-detail__curation-inline-assignee),
+  .curation-tooltip-dropdown.curation-tooltip-dropdown--portal,
   .level-detail .weekly-appearance-dropdown {
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
     max-height: 80vh;
     overflow-y: auto;
     z-index: var(--z-modal);
@@ -2420,12 +2379,7 @@
     min-width: 280px;
   }
   
-  .curation-tooltip-dropdown:not(.level-detail__curation-inline-assignee) {
-    max-width: 90vw;
-    min-width: 300px;
-  }
-
-  .level-detail .level-detail__curation-inline-assignee {
+  .curation-tooltip-dropdown.curation-tooltip-dropdown--portal {
     max-width: min(90vw, 320px);
     min-width: 200px;
   }
@@ -2644,11 +2598,8 @@
   .level-detail .wrapper-level button,
   .level-detail .left .like-button,
   .level-detail .rerate-arrow,
-  .level-detail .title-container .tag-list-arrow {
-    will-change: transform;
-  }
-  
-  .level-detail .curation-type-container {
+  .level-detail .title-container .tag-list-arrow,
+  .level-detail .level-detail__curation-icon-cell {
     will-change: transform;
   }
 }
@@ -2666,7 +2617,7 @@
   
   .level-detail .difficulty-icon,
   .level-detail .rating-icon,
-  .curation-type-icon {
+  .level-detail .level-detail__curation-type-icon-img {
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }
@@ -2697,7 +2648,7 @@
   .level-detail .rank .sort svg,
   .level-detail .difficulty-icon,
   .level-detail .rating-icon,
-  .curation-type-icon {
+  .level-detail .level-detail__curation-type-icon-img {
     border-radius: 8px;
   }
 
@@ -2753,8 +2704,8 @@
     transform: scale(1.2) rotate(180deg);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   }
-  
-  .level-detail .curation-type-container:hover {
+
+  .level-detail .level-detail__curation-icon-cell:hover {
     transform: scale(1.05);
   }
 }
@@ -2777,8 +2728,8 @@
     transform: scale(1.15) rotate(180deg);
     transition: transform 0.1s ease-out;
   }
-  
-  .level-detail .curation-type-container:active {
+
+  .level-detail .level-detail__curation-icon-cell:active {
     transform: scale(1.02);
     transition: transform 0.1s ease-out;
   }
@@ -2890,7 +2841,7 @@
   
   .level-detail .difficulty-icon,
   .level-detail .rating-icon,
-  .curation-type-icon {
+  .level-detail .level-detail__curation-type-icon-img {
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
   }
 }
@@ -2900,7 +2851,7 @@
   
   .level-detail .difficulty-icon,
   .level-detail .rating-icon,
-  .curation-type-icon {
+  .level-detail .level-detail__curation-type-icon-img {
     object-fit: contain;
     object-position: center;
   }
@@ -2910,7 +2861,7 @@
 @media (max-width: 768px) {  
   .level-detail .difficulty-icon,
   .level-detail .rating-icon,
-  .curation-type-icon {
+  .level-detail .level-detail__curation-type-icon-img {
     image-rendering: -webkit-optimize-contrast;
   }
 }
@@ -3091,20 +3042,6 @@
     -o-transform: translateZ(0);
     transform: translateZ(0);
   }
-}
-
-.level-detail .inline-curation-icon {
-  width: 3rem;
-  height: 3rem;
-  object-fit: contain;
-  filter: drop-shadow(var(--shadow-sm));
-  transition: all var(--transition-normal);
-  cursor: help;
-}
-
-.level-detail .inline-curation-icon:hover {
-  transform: scale(1.1);
-  filter: drop-shadow(var(--shadow-md));
 }
 
 /* ============================================
@@ -3352,6 +3289,53 @@
   justify-content: center;
 }
 
+.level-detail .level-detail__curation-icon-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: transform var(--transition-normal), filter var(--transition-normal);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.level-detail .level-detail__curation-icon-with-tooltip[data-open="true"] .level-detail__curation-icon-cell {
+  transform: scale(1.05);
+}
+
+.level-detail .level-detail__curation-icon-with-tooltip[data-open="true"] .level-detail__curation-type-icon-img {
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+}
+
+@media (hover: hover) {
+  .level-detail .level-detail__curation-icon-cell:hover {
+    transform: scale(1.08);
+  }
+
+  .level-detail .level-detail__curation-icon-cell:hover .level-detail__curation-type-icon-img {
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .level-detail .level-detail__curation-icon-cell {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+  }
+
+  .level-detail .level-detail__curation-icon-cell:hover {
+    transform: none;
+  }
+
+  .level-detail .level-detail__curation-icon-cell:active,
+  .level-detail .level-detail__curation-icon-with-tooltip[data-open="true"] .level-detail__curation-icon-cell {
+    transform: scale(1.05);
+  }
+}
 
 /* Portaled curation tooltip: position comes from inline style (fixed to viewport) */
 .curation-tooltip-dropdown.curation-tooltip-dropdown--portal {
@@ -3366,6 +3350,9 @@
   height: 3.25rem;
   border-radius: 50%;
   object-fit: contain;
+  transition: filter var(--transition-normal);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  pointer-events: none;
 }
 
 .level-detail .level-detail__curation-icon-placeholder {

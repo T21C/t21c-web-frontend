@@ -440,6 +440,11 @@
   margin-top: 0.5rem;
 }
 
+.settings-sub-page .settings-sub-page__field-collapsible-region {
+  width: 100%;
+  min-width: 0;
+}
+
 .settings-sub-page__section--preview-hidden {
   display: none !important;
 }

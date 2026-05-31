@@ -618,6 +618,8 @@ const SettingsPlayerPage = () => {
         fieldError={canUseBioCanvas ? "" : bioFieldError}
         stack
         hideActions={canUseBioCanvas}
+        hidePreviewControls={canUseBioCanvas}
+        collapsible={canUseBioCanvas}
       >
         {canUseBioCanvas ? (
           <BioCanvasEditorLauncher

@@ -55,6 +55,10 @@
     "exit": "미리보기 나가기",
     "exitAria": "전체 설정 보기 + 미리보기 나가기"
   },
+  "bioCanvas": {
+    "sectionExpandAria": "바이오 캔버스 미리보기 펼치기",
+    "sectionCollapseAria": "바이오 캔버스 미리보기 접기"
+  },
   "banner": {
     "sectionTitle": "프로필 배너",
     "sectionExpandAria": "프로필 배너 옵션 펼치기",

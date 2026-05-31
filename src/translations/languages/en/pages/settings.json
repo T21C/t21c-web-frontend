@@ -55,6 +55,10 @@
     "exit": "Exit preview",
     "exitAria": "Exit preview mode and show all settings"
   },
+  "bioCanvas": {
+    "sectionExpandAria": "Expand bio canvas preview",
+    "sectionCollapseAria": "Collapse bio canvas preview"
+  },
   "headerSurface": {
     "sectionTitle": "Header card background",
     "sectionExpandAria": "Expand header background options",

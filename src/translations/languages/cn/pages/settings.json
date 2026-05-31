@@ -49,6 +49,10 @@
     "stellarIconSaved": "图标样式已保存",
     "stellarIconError": "无法保存图标样式"
   },
+  "bioCanvas": {
+    "sectionExpandAria": "展开个人简介画布预览",
+    "sectionCollapseAria": "收起个人简介画布预览"
+  },
   "banner": {
     "sectionTitle": "横幅",
     "sectionExpandAria": "展开",
