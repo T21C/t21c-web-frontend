@@ -517,7 +517,6 @@
   position: relative;
   z-index: 2;
   display: flex;
-  right: -50%;
   flex-direction: column;
   align-items: center;
 }
@@ -1396,13 +1395,13 @@
 }
 
 @media (max-width: 600px) {
-  .level-detail .rerate-history-dropdown {
+  .rerate-history-dropdown {
     min-width: 180px;
     max-width: min(98vw, 320px);
     padding: var(--spacing-xs) 4px;
   }
 
-  .level-detail .rerate-history-icon img {
+  .rerate-history-dropdown .rerate-history-icon img {
     width: 24px;
     height: 24px;
   }
@@ -1832,27 +1831,26 @@
 /* ============================================
    RERATE HISTORY DROPDOWN
    ============================================ */
-.level-detail .rerate-history-dropdown {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 0;
+.rerate-history-dropdown {
   background: var(--color-black);
   border: 1px solid var(--glass-border);
   border-radius: var(--border-radius);
   padding: 12px 16px;
   min-width: 220px;
   max-width: 480px;
-  z-index: 120;
+  box-sizing: border-box;
   box-shadow: var(--shadow-lg);
   font-size: 1em;
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xs);
+  overflow-y: auto;
+  overflow-x: hidden;
   -webkit-user-select: text;
   user-select: text;
 }
 
-.level-detail .rerate-history-header {
+.rerate-history-dropdown .rerate-history-header {
   color: var(--secondary-text);
   font-size: 1.1em;
   font-weight: 600;
@@ -1861,7 +1859,7 @@
   padding-bottom: 4px;
 }
 
-.level-detail .rerate-history-sequence {
+.rerate-history-dropdown .rerate-history-sequence {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xs);
@@ -1869,34 +1867,34 @@
   max-width: 100%;
 }
 
-.level-detail .rerate-history-row {
+.rerate-history-dropdown .rerate-history-row {
   display: flex;
   align-items: center;
   gap: 18px;
   flex-wrap: wrap;
 }
 
-.level-detail .rerate-history-step {
+.rerate-history-dropdown .rerate-history-step {
   display: flex;
   align-items: center;
   gap: 4px;
   flex-wrap: nowrap;
 }
 
-.level-detail .rerate-history-icon {
+.rerate-history-dropdown .rerate-history-icon {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 32px;
 }
 
-.level-detail .rerate-history-icon img {
+.rerate-history-dropdown .rerate-history-icon img {
   width: 32px;
   height: 32px;
   object-fit: contain;
 }
 
-.level-detail .rerate-history-basescore {
+.rerate-history-dropdown .rerate-history-basescore {
   font-size: 0.7em;
   color: #c5c5c5;
   background: rgba(34, 34, 34, 0.7);
@@ -1906,7 +1904,7 @@
   font-weight: 500;
 }
 
-.level-detail .rerate-history-arrow {
+.rerate-history-dropdown .rerate-history-arrow {
   font-size: 1.5em;
   color: var(--secondary-text);
   margin: 0 6px;
@@ -1914,7 +1912,7 @@
   user-select: none;
 }
 
-.level-detail .rerate-history-meta {
+.rerate-history-dropdown .rerate-history-meta {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -1925,7 +1923,7 @@
   gap: 2px;
 }
 
-.level-detail .rerate-history-user {
+.rerate-history-dropdown .rerate-history-user {
   color: #e0cfff;
 }
 
@@ -2401,7 +2399,7 @@
   }
 }
 
-/* Anchor rerate / to-rate dropdowns beside their triggers on mobile */
+/* Anchor rerate trigger / to-rate dropdowns beside their triggers on mobile */
 @media (max-width: 768px) {
   .level-detail .level-detail-header-mobile-bar,
   .level-detail .level-detail-header-corner-icons,
@@ -2414,10 +2412,8 @@
 
   .level-detail .rerate-history-dropdown-anchor {
     position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 2.75rem;
-    height: 2.75rem;
+    bottom: -15%;
+    right: -15%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2429,21 +2425,12 @@
     right: auto;
   }
 
-  .level-detail .rerate-history-dropdown,
   .level-detail .to-rate-pending-dropdown {
     position: absolute;
     transform: none;
     max-height: 70vh;
     overflow-y: auto;
     z-index: var(--z-modal);
-  }
-
-  .level-detail .rerate-history-dropdown {
-    top: calc(100% + 4px);
-    right: 0;
-    left: auto;
-    max-width: min(90vw, 320px);
-    min-width: 200px;
   }
 
   .level-detail .to-rate-pending-dropdown {

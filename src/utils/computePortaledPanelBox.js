@@ -13,8 +13,31 @@
  * @param {{ width: number, height: number }} [params.viewport]
  * @param {number | null} [params.fullWidthBelow] - at or below this vw, use full-bleed panel
  * @param {number | null} [params.maxPanelWidth] - fixed width (FacetQueryBuilder desktop); ignores panel width
+ * @param {DOMRect | null} [params.boundaryRect] - optional container to clamp horizontal size/position
+ * @param {'start' | 'end'} [params.horizontalAlign='start'] - anchor panel to start or end of trigger
  * @returns {object | null}
  */
+function getHorizontalClipBounds(boundaryRect, vw, margin) {
+  const viewportClipLeft = margin;
+  const viewportClipRight = vw - margin;
+  const clipLeft = boundaryRect
+    ? Math.max(viewportClipLeft, boundaryRect.left + margin)
+    : viewportClipLeft;
+  const clipRight = boundaryRect
+    ? Math.min(viewportClipRight, boundaryRect.right - margin)
+    : viewportClipRight;
+  return {
+    clipLeft,
+    clipRight,
+    availableWidth: Math.max(0, clipRight - clipLeft),
+  };
+}
+
+function clampHorizontalLeft(left, panelWidth, clipLeft, clipRight) {
+  const maxLeft = clipRight - panelWidth;
+  return Math.min(Math.max(left, clipLeft), Math.max(clipLeft, maxLeft));
+}
+
 export function computePortaledPanelBox({
   anchorRect,
   panelRect = null,
@@ -27,17 +50,20 @@ export function computePortaledPanelBox({
     : { width: 0, height: 0 },
   fullWidthBelow = null,
   maxPanelWidth = null,
+  boundaryRect = null,
+  horizontalAlign = "start",
 }) {
   const vw = viewport.width;
   const vh = viewport.height;
+  const { clipLeft, clipRight, availableWidth } = getHorizontalClipBounds(boundaryRect, vw, margin);
 
   if (fullWidthBelow != null && vw <= fullWidthBelow) {
     const top = anchorRect.bottom + margin * 0.5;
     const maxHeight = Math.min(maxHeightCap, Math.max(minHeight, vh - top - margin));
     return {
       top,
-      left: 0,
-      width: "100%",
+      left: clipLeft,
+      width: availableWidth > 0 ? availableWidth : Math.max(0, vw - 2 * margin),
       maxHeight,
       fullWidth: true,
       placement: "bottom",
@@ -48,17 +74,23 @@ export function computePortaledPanelBox({
   let left;
 
   if (maxPanelWidth != null) {
-    width = Math.min(maxPanelWidth, vw - 2 * margin);
-    left = anchorRect.left;
-    if (left + width > vw - margin) {
-      left = Math.max(margin, vw - margin - width);
-    }
-    if (left < margin) left = margin;
+    width = Math.min(maxPanelWidth, availableWidth || vw - 2 * margin, vw - 2 * margin);
+    left = horizontalAlign === "end" ? anchorRect.right - width : anchorRect.left;
+    left = clampHorizontalLeft(left, width, clipLeft, clipRight);
   } else {
     if (!panelRect) return null;
-    left = anchorRect.left;
-    const maxLeft = vw - margin - panelRect.width;
-    left = Math.min(Math.max(left, margin), Math.max(margin, maxLeft));
+
+    let panelWidth = panelRect.width;
+    if (availableWidth > 0 && panelWidth > availableWidth) {
+      panelWidth = availableWidth;
+    }
+
+    left = horizontalAlign === "end" ? anchorRect.right - panelWidth : anchorRect.left;
+    left = clampHorizontalLeft(left, panelWidth, clipLeft, clipRight);
+
+    if (availableWidth > 0 && panelRect.width > availableWidth) {
+      width = availableWidth;
+    }
   }
 
   let top = anchorRect.bottom + gap;
@@ -79,6 +111,7 @@ export function computePortaledPanelBox({
 
   const box = { top, left, maxHeight, placement, fullWidth: false };
   if (width != null) box.width = width;
+  if (availableWidth > 0) box.maxWidth = availableWidth;
   return box;
 }
 
@@ -90,6 +123,7 @@ export function portaledPanelBoxToStyle(panelBox) {
     left: panelBox.left,
   };
   if (panelBox.width != null) style.width = panelBox.width;
+  if (panelBox.maxWidth != null) style.maxWidth = panelBox.maxWidth;
   if (panelBox.maxHeight != null) style.maxHeight = panelBox.maxHeight;
   return style;
 }

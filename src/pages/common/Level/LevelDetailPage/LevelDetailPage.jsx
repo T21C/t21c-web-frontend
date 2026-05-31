@@ -514,13 +514,25 @@ const WeeklyAppearanceDropdown = ({ schedules, show, onClose, containerRef }) =>
   );
 };
 
-const RerateHistoryDropdown = ({ show, onClose, rerateHistory, difficultyDict, containerRef }) => {
+const RerateHistoryDropdown = ({ show, onClose, rerateHistory, difficultyDict, containerRef, boundaryRef }) => {
   const { t } = useTranslation(['pages', 'common']);
+  const panelRef = useRef(null);
+
+  const { panelStyle, placement, portalRoot } = usePortaledPanelAnchor({
+    open: show,
+    anchorRef: containerRef,
+    panelRef,
+    boundaryRef,
+    horizontalAlign: 'end',
+    reanchorDeps: [rerateHistory?.length],
+    maxHeightCap: typeof window !== 'undefined' ? window.innerHeight * 0.7 : 640,
+  });
 
   useEffect(() => {
     if (!show) return;
     const handlePointerDownCapture = (event) => {
       if (containerRef?.current?.contains(event.target)) return;
+      if (panelRef?.current?.contains(event.target)) return;
       onClose();
     };
     document.addEventListener('mousedown', handlePointerDownCapture, true);
@@ -536,10 +548,15 @@ const RerateHistoryDropdown = ({ show, onClose, rerateHistory, difficultyDict, c
     return () => document.removeEventListener('keydown', onKey);
   }, [show, onClose]);
 
-  if (!show || !rerateHistory?.length) return null;
+  if (!show || !rerateHistory?.length || !portalRoot) return null;
 
-  return (
-    <div className="rerate-history-dropdown">
+  return createPortal(
+    <div
+      ref={panelRef}
+      className={`rerate-history-dropdown ${PORTALED_PANEL_CLASS} portaled-panel--z-dropdown`}
+      data-placement={placement}
+      style={panelStyle}
+    >
       <div className="rerate-history-header">{t('levelDetail.rerateHistory.header', { defaultValue: 'Rerate History' })}</div>
       <div className="rerate-history-sequence">
         {rerateHistory.slice().reverse().map((entry, idx) => {
@@ -575,7 +592,8 @@ const RerateHistoryDropdown = ({ show, onClose, rerateHistory, difficultyDict, c
           );
         })}
       </div>
-    </div>
+    </div>,
+    portalRoot,
   );
 };
 
@@ -667,6 +685,7 @@ const LevelDetailPage = ({ mockData = null }) => {
   const weeklyHeaderCornerSlotRef = useRef(null);
   const toRateHeaderCornerSlotRef = useRef(null);
   const rerateHistoryAnchorRef = useRef(null);
+  const wrapperLevelRef = useRef(null);
   const scoreGraphAnchorRef = useRef(null);
   const tagsAnchorRef = useRef(null);
   /** Tracks last seen CDN zip identity so we can refetch `/cdnData` after upload/import (`dlLink` / `fileId` change). */
@@ -1911,6 +1930,28 @@ const LevelDetailPage = ({ mockData = null }) => {
     return (a.sortOrder ?? 0) - (b.sortOrder ?? 0);
   });
 
+  const rerateHistoryAnchorNode = res?.rerateHistory?.length > 0 ? (
+    <div ref={rerateHistoryAnchorRef} className="rerate-history-dropdown-anchor">
+      <span
+        className={`rerate-arrow ${showRerateDropdown ? 'open' : ''}`}
+        onClick={handleRerateDropdownToggle}
+        title={t('levelDetail.rerateHistory.header', { defaultValue: 'Show rerate history' })}
+        data-disabled={!rerateArrowEnabled}
+      >
+        <HistoryListIcon className="rerate-history-icon" size={"24px"} />
+        <span className="rerate-arrow-icon">&#9660;</span>
+      </span>
+      <RerateHistoryDropdown
+        rerateHistory={res?.rerateHistory}
+        show={showRerateDropdown}
+        onClose={handleRerateDropdownClose}
+        difficultyDict={difficultyDict}
+        containerRef={rerateHistoryAnchorRef}
+        boundaryRef={wrapperLevelRef}
+      />
+    </div>
+  ) : null;
+
   return (
     <div>
       <MetaTags
@@ -1940,7 +1981,7 @@ const LevelDetailPage = ({ mockData = null }) => {
       >
         
 
-        <div className="wrapper-level">
+        <div className="wrapper-level" ref={wrapperLevelRef}>
         {res?.level?.isDeleted ? (
           <StatusBanner dismissible tone="dangerGradient" placement="content" icon={<LevelBannerWarningIcon />}>
             {t('levelDetail.banners.deleted')}
@@ -2031,6 +2072,7 @@ const LevelDetailPage = ({ mockData = null }) => {
               <div className="diff rerate-history-container">
                 {difficulty?.icon && res.level?.tilecount ? (
                   <div ref={scoreGraphAnchorRef} className="scorev2-graph-dropdown-anchor">
+                    {rerateHistoryAnchorNode}
                     <button
                       type="button"
                       className={`difficulty-icon-trigger ${showScoreGraphDropdown ? 'open' : ''}`}
@@ -2061,11 +2103,14 @@ const LevelDetailPage = ({ mockData = null }) => {
                     />
                   </div>
                 ) : difficulty?.icon ? (
-                  <img
-                    src={difficulty.icon}
-                    alt={difficulty.name || 'Difficulty icon'}
-                    className="difficulty-icon"
-                  />
+                  <div className="scorev2-graph-dropdown-anchor">
+                    {rerateHistoryAnchorNode}
+                    <img
+                      src={difficulty.icon}
+                      alt={difficulty.name || 'Difficulty icon'}
+                      className="difficulty-icon"
+                    />
+                  </div>
                 ) : null}
                 {res.ratings?.averageDifficultyId &&
                  difficultyDict[res.ratings?.averageDifficultyId]?.icon &&
@@ -2077,26 +2122,6 @@ const LevelDetailPage = ({ mockData = null }) => {
                     alt="Rating icon"
                   />
                 ) : null}
-                {res?.rerateHistory?.length > 0 && (
-                  <div ref={rerateHistoryAnchorRef} className="rerate-history-dropdown-anchor">
-                    <span
-                      className={`rerate-arrow ${showRerateDropdown ? 'open' : ''}`}
-                      onClick={handleRerateDropdownToggle}
-                      title={t('levelDetail.rerateHistory.header', { defaultValue: 'Show rerate history' })}
-                      data-disabled={!rerateArrowEnabled}
-                    >
-                      <HistoryListIcon className="rerate-history-icon" size={"24px"}/>
-                      <span className="rerate-arrow-icon">&#9660;</span>
-                    </span>
-                    <RerateHistoryDropdown
-                      rerateHistory={res?.rerateHistory}
-                      show={showRerateDropdown}
-                      onClose={handleRerateDropdownClose}
-                      difficultyDict={difficultyDict}
-                      containerRef={rerateHistoryAnchorRef}
-                    />
-                  </div>
-                )}
                 <div className="pp-display">
                   {formatBaseScore(res.level.baseScore || difficulty?.baseScore || 0)}PP
                 </div>

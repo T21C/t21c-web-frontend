@@ -23,6 +23,8 @@ export const PORTALED_PANEL_CLASS = "portaled-panel";
  * @param {number} [options.minHeight]
  * @param {number | null} [options.fullWidthBelow] - full-bleed panel at or below this viewport width
  * @param {number | null} [options.maxPanelWidth] - fixed width mode (no panel measurement)
+ * @param {import('react').RefObject<HTMLElement>} [options.boundaryRef] - clamp panel within this element
+ * @param {'start' | 'end'} [options.horizontalAlign='start'] - horizontal alignment to anchor
  */
 export function usePortaledPanelAnchor({
   open,
@@ -35,6 +37,8 @@ export function usePortaledPanelAnchor({
   minHeight = 160,
   fullWidthBelow = null,
   maxPanelWidth = null,
+  boundaryRef = null,
+  horizontalAlign = "start",
 }) {
   const [panelBox, setPanelBox] = useState(null);
 
@@ -47,6 +51,8 @@ export function usePortaledPanelAnchor({
     const anchorRect = anchorRef.current.getBoundingClientRect();
     const panelRect = panelRef?.current?.getBoundingClientRect() ?? null;
 
+    const boundaryRect = boundaryRef?.current?.getBoundingClientRect() ?? null;
+
     const box = computePortaledPanelBox({
       anchorRect,
       panelRect,
@@ -56,6 +62,8 @@ export function usePortaledPanelAnchor({
       minHeight,
       fullWidthBelow,
       maxPanelWidth,
+      boundaryRect,
+      horizontalAlign,
     });
 
     setPanelBox(box);
@@ -69,6 +77,8 @@ export function usePortaledPanelAnchor({
     minHeight,
     fullWidthBelow,
     maxPanelWidth,
+    boundaryRef,
+    horizontalAlign,
   ]);
 
   useLayoutEffect(() => {
