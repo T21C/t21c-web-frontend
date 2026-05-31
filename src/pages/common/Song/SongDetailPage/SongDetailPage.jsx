@@ -53,7 +53,9 @@ const SongDetailPage = () => {
   if (loading) {
     return (
       <div className="song-detail-page">
-        <div className="loader loader-level-detail"></div>
+        <div className="loader-shell loader-shell--fill">
+          <div className="loader loader-relative" />
+        </div>
       </div>
     );
   }

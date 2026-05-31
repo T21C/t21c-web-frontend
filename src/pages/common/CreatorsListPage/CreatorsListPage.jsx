@@ -305,14 +305,16 @@ const CreatorsListPage = () => {
 
         <div className="creators-list-page__list" style={{ minHeight: "500px" }}>
           {creatorData === null ? (
-            <div className="loader loader-level-page"></div>
+            <div className="loader-shell loader-shell--tall">
+              <div className="loader loader-relative" />
+            </div>
           ) : (displayedCreators?.length ?? 0) > 0 ? (
             <VirtualList
               style={{ paddingBottom: "4rem", overflow: "visible" }}
               items={displayedCreators}
               loadMore={() => fetchCreators(displayedCreators.length, { immediate: true })}
               hasMore={hasMore}
-              loader={<div className="loader loader-level-page"></div>}
+              loader={<div className="loader loader-relative"></div>}
               endMessage={
                 <p className="end-message">
                   <b>{t('creators.infiniteScroll.end')}</b>

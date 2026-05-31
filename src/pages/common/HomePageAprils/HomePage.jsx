@@ -792,7 +792,11 @@ const HomePage = () => {
         </div>
 
         {stats == null ? 
-        (<div className="loader loader-level-page" style={{marginBottom: "400px"}}/>)
+        (
+          <div className="loader-shell loader-shell--tall">
+            <div className="loader loader-relative" />
+          </div>
+        )
         :(
           <div className="stats-container">
             <section className="stats-section overview">

@@ -47,9 +47,59 @@
   max-width: none;
 }
 
+/* CSS grid card layouts (artist/song/pack lists): stretch direct children to the cell */
+.virtual-list__grid-list:not(.level-cards-grid) .virtual-list__grid-item {
+  width: 100%;
+  min-width: 0;
+}
+
+.virtual-list__grid-list:not(.level-cards-grid) .virtual-list__grid-item > * {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
 .virtual-list__footer {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   width: 100%;
+  min-height: calc(var(--loader-size, 200px) + 2rem);
+  padding: 1rem 0 2rem;
+  box-sizing: border-box;
+  overflow: hidden;
+  position: relative;
 }
+
+.virtual-list__footer .loader-relative {
+  margin-inline: auto;
+}
+
+/* List mode: footer is a direct row in the flex column */
+.virtual-list__list .virtual-list__footer {
+  align-self: stretch;
+  max-width: 100%;
+}
+
+/* CSS grid virt lists (artist/song/pack): footer must span all columns */
+.virtual-list__grid-list:not(.level-cards-grid) .virtual-list__footer {
+  grid-column: 1 / -1;
+  width: 100%;
+  max-width: 100%;
+  justify-self: stretch;
+}
+
+/* Flex-wrapped level cards: footer spans the full row */
+.virtual-list__grid-list.level-cards-grid .virtual-list__footer {
+  flex: 1 0 100%;
+  flex-basis: 100%;
+  width: 100%;
+  max-width: 100%;
+  align-self: stretch;
+  box-sizing: border-box;
+}
+

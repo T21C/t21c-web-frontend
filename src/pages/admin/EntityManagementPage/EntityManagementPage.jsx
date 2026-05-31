@@ -273,7 +273,9 @@ const EntityManagementPage = ({ type = 'artist' }) => {
           description={tEntity('meta.description')}
           url={currentUrl}
         />
-        <div className="loader loader-level-detail"></div>
+        <div className="loader-shell loader-shell--fill">
+          <div className="loader loader-relative" />
+        </div>
       </div>
     );
   }
@@ -336,7 +338,9 @@ const EntityManagementPage = ({ type = 'artist' }) => {
         </div>
 
         {loading && entities.length === 0 ? (
-          <div className="loader loader-level-page"></div>
+          <div className="loader-shell loader-shell--tall">
+            <div className="loader loader-relative" />
+          </div>
         ) : (
           <VirtualList
             style={{ paddingBottom: "7rem", overflow: "visible" }}
@@ -344,7 +348,7 @@ const EntityManagementPage = ({ type = 'artist' }) => {
             loadMore={handleLoadMore}
             hasMore={hasMore}
             listClassName="entities-list"
-            loader={<div className="loader loader-level-page"></div>}
+            loader={<div className="loader loader-relative"></div>}
             endMessage={
               entities.length > 0 && (
                 <p className="end-message">

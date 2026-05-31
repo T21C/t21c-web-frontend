@@ -560,16 +560,18 @@ const LeaderboardPage = () => {
           </Collapsible>
         </div>
 
-        <div style={{ minHeight: "500px" }}>
+        <div className="leaderboard-page__list" style={{ minHeight: "500px" }}>
           {playerData === null ? (
-            <div className="loader loader-level-page"></div>
+            <div className="loader-shell loader-shell--tall">
+              <div className="loader loader-relative" />
+            </div>
           ) : (
             <VirtualList
               style={{ paddingBottom: "4rem", overflow: "visible" }}
               items={displayedPlayers}
               loadMore={() => fetchPlayers(displayedPlayers?.length ?? 0, { immediate: true })}
               hasMore={hasMore}
-              loader={<div className="loader"></div>}
+              loader={<div className="loader loader-relative" />}
               endMessage={
                 displayedPlayers.length > 0 && (
                   <p style={{ textAlign: "center" }}>

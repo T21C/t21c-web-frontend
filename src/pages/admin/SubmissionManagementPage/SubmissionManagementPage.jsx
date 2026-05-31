@@ -53,7 +53,9 @@ const SubmissionManagementPage = () => {
         
         <div className="submission-admin-page">
           <div className="submissions-admin-container">
-            <div className="loader loader-level-detail"/>
+            <div className="loader-shell loader-shell--tall">
+              <div className="loader loader-relative" />
+            </div>
           </div>
         </div>
       </>

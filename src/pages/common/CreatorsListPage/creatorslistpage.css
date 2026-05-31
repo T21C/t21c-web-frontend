@@ -42,6 +42,29 @@
   flex-direction: column;
 }
 
+.creators-list-page .creators-list-page__list .virtual-list__list {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.creators-list-page .creators-list-page__list .virtual-list__footer {
+  align-self: stretch;
+}
+
+.creators-list-page .creators-list-page__list .virtual-list__list-item {
+  width: 100%;
+  min-width: 0;
+}
+
+.creators-list-page .creators-list-page__list .virtual-list__list-item > .creator-card {
+  width: 100%;
+  margin-bottom: 0;
+  box-sizing: border-box;
+}
+
 .creators-list-page .creators-list-page__empty {
   display: flex;
   flex-direction: column;

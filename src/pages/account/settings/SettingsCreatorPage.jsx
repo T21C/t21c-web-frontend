@@ -545,7 +545,9 @@ const SettingsCreatorPage = () => {
   if (loading) {
     return (
       <div className="settings-sub-page settings-sub-page--centered">
-        <div className="loader loader-level-detail" />
+        <div className="loader-shell loader-shell--tall">
+          <div className="loader loader-relative" />
+        </div>
       </div>
     );
   }

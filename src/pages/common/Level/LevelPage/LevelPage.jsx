@@ -40,6 +40,8 @@ const limit = 50;
  *        - 'myLikes': hides the "only my likes" toggle.
  *        - 'help': hides the search-help button.
  *        - 'deletedFilter': hides the deleted/hidden levels switch.
+ * @param {HTMLElement|null} [props.customScrollParent] - Scroll container for Virtuoso
+ *        when the list is not window-scrolled (e.g. embedded creator profile levels panel).
  * @param {object} [props.hiddenFilters] - Extra filters that are silently merged
  *        into every API request without being reflected in the UI. Use this to
  *        pin the search to a specific scope (e.g. `{ byCreatorId: 123 }` to
@@ -51,6 +53,7 @@ const LevelPage = ({
   embedded = false,
   disabledFeatures = [],
   hiddenFilters = null,
+  customScrollParent = undefined,
 } = {}) => {
   const { t } = useTranslation('pages');
   const { t: tc } = useTranslation('components');
@@ -113,6 +116,7 @@ const LevelPage = ({
   const [stateDisplayOpen, setStateDisplayOpen] = useState(false);
   const [searchInput, setSearchInput] = useState(query);
   const [showTagsInCards, setShowTagsInCards] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   // Debounced request runner: filter/query changes wait 500ms before firing
   // and reset the timer + abort any in-flight request when called again.
@@ -224,10 +228,9 @@ const LevelPage = ({
     // whenever a hidden scope is enforced (e.g. creator profile embed).
     const canUseByIdShortcut = !hiddenFilters;
     if (canUseByIdShortcut && query[0] == "#" && !isNaN(parseInt(query.slice(1)))) {
-      await fetchLevelById();
-    } else {
-      await fetchLevels();
+      return fetchLevelById();
     }
+    return fetchLevels();
   }, [
     query,
     sort,
@@ -379,7 +382,16 @@ const LevelPage = ({
   // with the same page index and re-requested the same offset (duplicate rows).
   useEffect(() => {
     if (pageNumber === 0) return; // Skip initial page load, handled by debounced effect
-    fetchLevelsDataRef.current(false, { immediate: true });
+    let cancelled = false;
+    setLoadingMore(true);
+    fetchLevelsDataRef.current(false, { immediate: true }).finally(() => {
+      if (!cancelled) {
+        setLoadingMore(false);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [pageNumber]);
 
   function handleFilterOpen() {
@@ -468,9 +480,9 @@ const LevelPage = ({
           />
         )}
         <div className={bodyClassName}>
-          <div className="level-body-content" style={{marginTop: "45vh"}} >
-            <div className="loader loader-level-page" style={{top: "-6rem"}}></div>
-            <p style={{ fontSize: "1.5rem", fontWeight: "bold", justifyContent: "center", textAlign: "center"}}>
+          <div className="loader-shell loader-shell--fill">
+            <div className="loader loader-relative" />
+            <p style={{ fontSize: "1.5rem", fontWeight: "bold", justifyContent: "center", textAlign: "center", margin: 0 }}>
               {t('level.loading.difficulties')}
             </p>
           </div>
@@ -855,9 +867,15 @@ const LevelPage = ({
         <VirtualList
           style={{ paddingBottom: "7rem", overflow: "visible", position: "relative", zIndex: 5 }}
           items={levelsData}
-          loadMore={() => setPageNumber((prevPageNumber) => prevPageNumber + 1)}
+          customScrollParent={customScrollParent}
+          loadingMore={loadingMore}
+          loadMore={() => {
+            if (!loadingMore && hasMore && levelsData?.length > 0) {
+              setPageNumber((prevPageNumber) => prevPageNumber + 1);
+            }
+          }}
           hasMore={hasMore && levelsData.length > 0}
-          loader={<div className="loader loader-level-page"></div>}
+          loader={<div className="loader loader-relative" />}
           endMessage={
             <p className="end-message">
               <b>{t('level.infScroll.end')}</b>
@@ -876,7 +894,9 @@ const LevelPage = ({
           computeItemKey={(index, l) => l?.id ?? index}
         />
         ) : (
-          <div className="loader loader-level-page"></div>
+          <div className="loader-shell loader-shell--tall">
+            <div className="loader loader-relative" />
+          </div>
         )}
         {showHelpPopup && (<LevelHelpPopup onClose={() => setShowHelpPopup(false)} />)}
       </div>

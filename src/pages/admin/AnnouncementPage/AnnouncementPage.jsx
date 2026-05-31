@@ -205,7 +205,9 @@ const AnnouncementPage = () => {
         
         <div className="announcement-page">
           <div className="announcement-container page-content">
-            <div className="loader loader-level-detail"/>
+            <div className="loader-shell loader-shell--tall">
+              <div className="loader loader-relative" />
+            </div>
           </div>
         </div>
       </>

@@ -44,12 +44,8 @@ function App() {
       {!isEmbedded && <div className="nav-spacer" />}
       <Suspense
         fallback={
-          <div
-            style={{
-              width: "100vw",
-            }}
-          >
-            <div className="loader loader-level-detail"></div>
+          <div className="loader-shell loader-shell--fill">
+            <div className="loader loader-relative" />
           </div>
         }
       >

@@ -9,7 +9,11 @@ import { isTufStellarEnabledForUser } from "@/utils/tufStellarFeature";
 export function TufStellarRoute({ children }) {
   const { user, loading } = useAuth();
   if (loading) {
-    return <div className="loader loader-level-detail" />;
+    return (
+      <div className="loader-shell loader-shell--tall">
+        <div className="loader loader-relative" />
+      </div>
+    );
   }
   if (!isTufStellarEnabledForUser(user)) {
     return <Navigate to="/settings/billing" replace />;

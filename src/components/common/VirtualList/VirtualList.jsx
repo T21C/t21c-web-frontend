@@ -30,6 +30,7 @@ const VirtualList = ({
   listClassName = '',
   itemClassName = '',
   customScrollParent,
+  loadingMore = false,
   overscan = 200,
   style,
   className = '',
@@ -45,10 +46,10 @@ const VirtualList = ({
   }, [customScrollParent]);
 
   const handleEndReached = useCallback(() => {
-    if (hasMore && loadMore) {
+    if (hasMore && loadMore && !loadingMore && safeItems.length > 0) {
       loadMore();
     }
-  }, [hasMore, loadMore]);
+  }, [hasMore, loadMore, loadingMore, safeItems.length]);
 
   const footerComponent = useCallback(
     () => (
@@ -74,7 +75,7 @@ const VirtualList = ({
           </div>
         );
       }),
-      Item: ({ children, className, ...props }) => (
+      Item: ({ children, className, item: _item, ...props }) => (
         <div {...props} className={[listItemClass, className].filter(Boolean).join(' ')}>
           {children}
         </div>
@@ -95,7 +96,7 @@ const VirtualList = ({
           </div>
         );
       }),
-      Item: ({ children, className, ...props }) => (
+      Item: ({ children, className, item: _item, ...props }) => (
         <div {...props} className={[gridItemClass, className].filter(Boolean).join(' ')}>
           {children}
         </div>

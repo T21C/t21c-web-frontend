@@ -166,7 +166,9 @@ const ArtistListPage = () => {
         </div>
 
         {loading && artists.length === 0 ? (
-          <div className="loader loader-level-page"></div>
+          <div className="loader-shell loader-shell--tall">
+            <div className="loader loader-relative" />
+          </div>
         ) : (
           <VirtualList
             style={{ paddingBottom: "7rem", minHeight: "50vh", overflow: "visible" }}
@@ -176,7 +178,7 @@ const ArtistListPage = () => {
             overscan={800}
             grid
             listClassName="artist-cards-grid"
-            loader={<div className="loader loader-level-page"></div>}
+            loader={<div className="loader loader-relative"></div>}
             endMessage={
               artists.length > 0 && (
                 <p className="end-message">

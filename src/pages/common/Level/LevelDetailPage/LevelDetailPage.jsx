@@ -1858,15 +1858,14 @@ const LevelDetailPage = ({ mockData = null }) => {
   if (res == null)
     return (
       <div className="level-detail-loading-container">
-        
-        <div className="loader loader-level-detail"></div>
+        <div className="loader loader-relative" />
       </div>
     );
 
   if (difficulties.length === 0) {
     return (
       <div className="level-detail-loading-container">
-        <div className="loader loader-level-detail"></div>
+        <div className="loader loader-relative" />
         <p
           style={{
             fontSize: '1.5rem',
@@ -2579,7 +2578,9 @@ const LevelDetailPage = ({ mockData = null }) => {
                   <h3>{t('levelDetail.leaderboard.noClearsYet')}</h3>
                 )
                 :
-                <div className="loader loader-level-detail-rank"></div>
+                <div className="loader-shell loader-shell--rank">
+                  <div className="loader loader-relative loader-compact" />
+                </div>
               }
             </div>
           </div>

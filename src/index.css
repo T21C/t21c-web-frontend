@@ -261,21 +261,93 @@ body {
 }
 
 
+/*
+ * Dual-ring SVG loader (.loader)
+ *
+ * Visual: ::before / ::after (200×200). Positioning: layout modifiers on the host.
+ *
+ * - loader-relative — parent uses flex/grid to center (footers, shells, VirtualList)
+ * - loader-centered — host at 50%/50% of a positioned ancestor (page/modal loading)
+ * - loader-compact — half-size rings (dense panels)
+ * - loader-offset — vertical bias (rating idle state)
+ *
+ * Prefer loader-shell + loader-relative over magic marginTop / left:50% hacks.
+ */
 .loader {
+  --loader-size: 200px;
   position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  flex-shrink: 0;
+}
+
+/* In-flow layout: host reserves space so ::before/::after do not spill over siblings */
+.loader-relative {
+  position: relative;
+  left: unset;
+  top: unset;
+  width: var(--loader-size);
+  height: var(--loader-size);
+  flex-shrink: 0;
+}
+
+.loader-relative::before,
+.loader-relative::after {
   left: 50%;
   top: 50%;
 }
 
-.loader-relative {
-  position: relative;
-  width: 0;
-  left: unset;
-  top: unset;
+.loader-relative.loader-compact {
+  --loader-size: 100px;
+}
+
+.loader-centered {
+  left: 50%;
+  top: 50%;
 }
 
 .loader-offset {
   top: 62%;
+}
+
+.loader-compact::before {
+  transform: translateX(-50%) translateY(-50%) scale(0.5) rotate(100deg);
+}
+
+.loader-compact::after {
+  transform: translateX(-50%) translateY(-50%) scale(-0.5, 0.5);
+}
+
+.loader-shell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.loader-shell--fill {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.loader-shell--tall {
+  min-height: 12.5rem;
+}
+
+.loader-shell--rank {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 150px;
+  width: 100%;
+}
+
+.loader-shell--submission {
+  min-height: 12.5rem;
 }
 
 .loader:before, .loader:after, .new-loader:before, .new-loader:after {
@@ -291,26 +363,6 @@ body {
 .loader:after {
   transform: translateX(-50%) translateY(-50%) scale(-1,1);
   content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><radialGradient id="a12" cx=".66" fx=".66" cy=".3125" fy=".3125" gradientTransform="scale(1.5)"><stop offset="0" stop-color="%23152CFF"></stop><stop offset=".3" stop-color="%23152CFF" stop-opacity=".9"></stop><stop offset=".6" stop-color="%23152CFF" stop-opacity=".6"></stop><stop offset=".8" stop-color="%23152CFF" stop-opacity=".3"></stop><stop offset="1" stop-color="%23152CFF" stop-opacity="0"></stop></radialGradient><circle transform-origin="center" fill="none" stroke="url(%23a12)" stroke-width="15" stroke-linecap="round" stroke-dasharray="200 1000" stroke-dashoffset="0" cx="100" cy="100" r="70"><animateTransform type="rotate" attributeName="transform" calcMode="spline" dur="2.1" values="360;0" keyTimes="0;1" keySplines="0 0 1 1" repeatCount="indefinite"></animateTransform></circle><circle transform-origin="center" fill="none" opacity="0" stroke="%23152CFF" stroke-width="11" stroke-linecap="round" cx="100" cy="100" r="70"></circle></svg>')
-}
-
-.loader-level-detail {
-  left: 50%;
-  top: 45%;
-}
-
-.loader-level-detail-rank {
-  left: 50%;
-  top: 50%;
-  transform: translateX(-50%) translateY(-50%) scale(-0.5,0.5);
-}
-
-.loader-level-page {
-  position: relative;
-  height: 0px;
-  width: 0;
-  left: 50%;
-  top: 100px;
-  transform: translateX(0%) translateY(0%);
 }
 .vid-logo-wrapper .svg-fill:hover svg {
   transition: transform 0.3s ease;

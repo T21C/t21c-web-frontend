@@ -80,6 +80,16 @@
   padding-bottom: 2rem;
 }
 
+.entity-management-container .entities-list .virtual-list__list-item {
+  width: 100%;
+  min-width: 0;
+}
+
+.entity-management-container .entities-list .virtual-list__list-item > .entity-item {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .entity-management-container .entity-item {
   display: flex;
   width: 100%;

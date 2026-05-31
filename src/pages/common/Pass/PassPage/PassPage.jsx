@@ -240,9 +240,9 @@ const PassPage = () => {
     // Initial difficulties loading
     if (difficulties.length === 0) {
       return (
-        <div className="pass-body-content" style={{marginTop: "45vh"}} >
-          <div className="loader loader-level-page" style={{top: "-6rem"}}></div>
-          <p style={{ fontSize: "1.5rem", fontWeight: "bold", justifyContent: "center", textAlign: "center"}}>
+        <div className="loader-shell loader-shell--fill">
+          <div className="loader loader-relative" />
+          <p style={{ fontSize: "1.5rem", fontWeight: "bold", justifyContent: "center", textAlign: "center", margin: 0 }}>
             {t('pass.loading.difficulties')}
           </p>
         </div>
@@ -252,8 +252,8 @@ const PassPage = () => {
     // Loading state (passesData is null)
     if (passesData === null) {
       return (
-        <div className="pass-body-content" style={{marginTop: "45vh"}} >
-          <div className="loader loader-level-page" style={{top: "-6rem"}}></div>
+        <div className="loader-shell loader-shell--fill">
+          <div className="loader loader-relative" />
         </div>
       );
     }
@@ -265,11 +265,7 @@ const PassPage = () => {
         items={passesData}
         loadMore={() => setPageNumber(pageNumber + 1)}
         hasMore={hasMore && !loading}
-        loader={
-          <div style={{ paddingTop: "6rem" }}>
-            <div className="loader loader-level-page"></div>
-          </div>
-        }
+        loader={<div className="loader loader-relative" />}
         endMessage={
           !loading && (
             <p className="end-message">

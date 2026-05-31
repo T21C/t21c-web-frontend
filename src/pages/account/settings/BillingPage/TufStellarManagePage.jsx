@@ -54,7 +54,9 @@ const TufStellarManagePage = () => {
   if (loading && !billing.billingState) {
     return (
       <div className="billing-page">
-        <div className="loader loader-level-detail" />
+        <div className="loader-shell loader-shell--tall">
+          <div className="loader loader-relative" />
+        </div>
       </div>
     );
   }

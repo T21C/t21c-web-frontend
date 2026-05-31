@@ -748,7 +748,9 @@ const CreatorManagementPage = () => {
         />
         
         <div className="creator-management-container page-content">
-          <div className="loader loader-level-detail"/>
+          <div className="loader-shell loader-shell--tall">
+            <div className="loader loader-relative" />
+          </div>
         </div>
       </div>
     );

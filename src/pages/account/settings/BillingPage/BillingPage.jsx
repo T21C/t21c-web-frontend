@@ -28,7 +28,9 @@ const BillingPage = () => {
   if (loading && !billing.billingState) {
     return (
       <div className="settings-sub-page settings-sub-page--centered billing-page">
-        <div className="loader loader-level-detail" />
+        <div className="loader-shell loader-shell--tall">
+          <div className="loader loader-relative" />
+        </div>
       </div>
     );
   }

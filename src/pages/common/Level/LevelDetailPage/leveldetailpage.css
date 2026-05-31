@@ -2626,11 +2626,11 @@
     justify-content: center;
   }
   
-  .level-detail .loader-level-detail {
+  .level-detail .loader-shell--tall {
     min-height: 300px;
   }
   
-  .level-detail .loader-level-detail-rank {
+  .level-detail .loader-shell--rank {
     min-height: 150px;
   }
 }
@@ -3118,8 +3118,12 @@
 
 /* Loading container */
 .level-detail-loading-container {
-  height: 100vh;
-  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
 }
 
 /* Rerate history container */

@@ -16,6 +16,7 @@ import { ScrollButton } from "@/components/common/buttons";
 import { ChevronIcon, AdofaiIcon, EditIcon, ShieldIcon, InfoIcon } from "@/components/common/icons";
 import { CreatorManagementPopup } from "@/components/popups/Creators";
 import LevelPage from "@/pages/common/Level/LevelPage/LevelPage";
+import { useScrollParent } from "@/components/common/VirtualList";
 import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { buildCreatorIconSlots } from "@/utils/profileIconSlots";
@@ -85,6 +86,8 @@ const CreatorProfilePage = () => {
   // Pin the embedded level search to this creator. The hidden filter is
   // applied silently on every fetch and behaves like an `creatorId:<id>`
   // term tacked onto the user's query.
+  const { scrollRef: levelsScrollRef, scrollParent: levelsScrollParent } = useScrollParent();
+
   const embeddedHiddenFilters = useMemo(
     () => ({ byCreatorId: creatorId }),
     [creatorId],
@@ -165,7 +168,7 @@ const CreatorProfilePage = () => {
     return (
       <div className="account-profile-page creator-profile-page">
         <div className="creator-profile-page__loading">
-          <div className="loader loader-level-detail"></div>
+          <div className="loader loader-relative"></div>
         </div>
       </div>
     );
@@ -399,10 +402,11 @@ const CreatorProfilePage = () => {
             easing="ease-in-out"
           >
             <CollapsibleContent>
-          <div className="creator-profile-page__levels-container">
+          <div ref={levelsScrollRef} className="creator-profile-page__levels-container">
           <LevelContextProvider storagePrefix={`creator_${creatorId}_`}>
             <LevelPage
               embedded
+              customScrollParent={levelsScrollParent}
               hiddenFilters={embeddedHiddenFilters}
               disabledFeatures={['myLikes']}
             />

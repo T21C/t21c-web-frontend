@@ -21,6 +21,12 @@ import { Tooltip } from "react-tooltip";
 import { formatDate } from "@/utils/Utility";
 import i18next from "i18next";
 import { CreatorIcon } from "@/components/common/icons/CreatorIcon";
+import {
+  SUBMISSION_DISMISS_MS,
+  clearCardPhase,
+  getSubmissionCardClassName,
+  hasVisibleSubmissions,
+} from './submissionDismiss';
 
 
 const LevelSubmissions = () => {
@@ -28,7 +34,7 @@ const LevelSubmissions = () => {
   
   const [submissions, setSubmissions] = useState([]);
   const [videoEmbeds, setVideoEmbeds] = useState({});
-  const [animatingCards, setAnimatingCards] = useState({});
+  const [cardPhases, setCardPhases] = useState({});
   const [disabledButtons, setDisabledButtons] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [profileCreation, setProfileCreation] = useState({
@@ -120,7 +126,7 @@ const LevelSubmissions = () => {
     try {
       setIsLoading(true);
       // Reset animation and disabled states when fetching new data
-      setAnimatingCards({});
+      setCardPhases({});
       setDisabledButtons({});
       
       const response = await api.get(`${routes.admin.submissions.root()}/levels/pending`);
@@ -179,48 +185,27 @@ const LevelSubmissions = () => {
         [submissionId]: true
       }));
       
-      // Set animation state
-      setAnimatingCards(prev => ({
-        ...prev,
-        [submissionId]: action
-      }));
+      setCardPhases((prev) => ({ ...prev, [submissionId]: action }));
 
-      // Wait for animation to complete before removing
-      setTimeout(async () => {
-        const response = await api.put(`${routes.admin.submissions.root()}/levels/${submissionId}/${action}`);
-        
-        if (response.status === 200) {
-          setSubmissions(prev => prev.filter(sub => sub.id !== submissionId));
-          setAnimatingCards(prev => {
-            const newState = { ...prev };
-            delete newState[submissionId];
-            return newState;
-          });
-          // Clean up disabled state
-          setDisabledButtons(prev => {
-            const newState = { ...prev };
-            delete newState[submissionId];
-            return newState;
-          });
-        }
-        else {
-          console.error('Error updating submission:', response.statusText);
-          // Re-enable buttons on error
-          setDisabledButtons(prev => {
-            const newState = { ...prev };
-            delete newState[submissionId];
-            return newState;
-          });
-        }
-      }, 500);
+      const [response] = await Promise.all([
+        api.put(`${routes.admin.submissions.root()}/levels/${submissionId}/${action}`),
+        new Promise((resolve) => setTimeout(resolve, SUBMISSION_DISMISS_MS)),
+      ]);
 
+      if (response.status === 200) {
+        setCardPhases((prev) => ({ ...prev, [submissionId]: 'placeholder' }));
+      } else {
+        console.error('Error updating submission:', response.statusText);
+        clearCardPhase(setCardPhases, submissionId);
+      }
     } catch (error) {
       console.error(`Error ${action}ing submission:`, error);
-      // Re-enable buttons on error
-      setDisabledButtons(prev => {
-        const newState = { ...prev };
-        delete newState[submissionId];
-        return newState;
+      clearCardPhase(setCardPhases, submissionId);
+    } finally {
+      setDisabledButtons((prev) => {
+        const next = { ...prev };
+        delete next[submissionId];
+        return next;
       });
     }
   };
@@ -832,7 +817,7 @@ const LevelSubmissions = () => {
     }
   };
 
-  if (submissions?.length === 0 && !isLoading) {
+  if (!hasVisibleSubmissions(submissions, cardPhases) && !isLoading) {
     return <p className="no-submissions">{t('levelSubmissions.noSubmissions')}</p>;
   }
 
@@ -840,14 +825,24 @@ const LevelSubmissions = () => {
     <>
       <div className="submissions-list">  
         {isLoading ? (  
-          <div className="loader loader-submission-detail"/>
+          <div className="loader-shell loader-shell--submission">
+            <div className="loader loader-relative" />
+          </div>
         ) : (
           <VirtualList
             items={submissions}
-            renderItem={(submission) => (
-            <div 
-              className={`submission-card ${animatingCards[submission.id] || ''}`}
-            >
+            renderItem={(submission) => {
+              const phase = cardPhases[submission.id];
+              if (phase === 'placeholder') {
+                return (
+                  <div
+                    className="submission-card submission-card--placeholder"
+                    aria-hidden="true"
+                  />
+                );
+              }
+              return (
+            <div className={getSubmissionCardClassName('submission-card', phase)}>
               <div className="submission-header">
                 <h3>
                   {submission.songObject?.name || submission.song} {submission.suffix && ` ${submission.suffix}`}
@@ -1375,7 +1370,8 @@ const LevelSubmissions = () => {
                 </div>
               </div>
             </div>
-            )}
+            );
+            }}
             computeItemKey={(index, submission) => submission?.id ?? index}
           />
         )}

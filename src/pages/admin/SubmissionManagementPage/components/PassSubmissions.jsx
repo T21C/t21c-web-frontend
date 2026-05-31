@@ -16,6 +16,12 @@ import { AdminPlayerPopup } from '@/components/popups/Users';
 import { formatDate } from '@/utils/Utility';
 import i18next from 'i18next';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
+import {
+  SUBMISSION_DISMISS_MS,
+  clearCardPhase,
+  getSubmissionCardClassName,
+  hasVisibleSubmissions,
+} from './submissionDismiss';
 
 
 const PassSubmissions = ({ setIsAutoAllowing }) => {
@@ -24,7 +30,7 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
   const [submissions, setSubmissions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [videoEmbeds, setVideoEmbeds] = useState({});
-  const [animatingCards, setAnimatingCards] = useState({});
+  const [cardPhases, setCardPhases] = useState({});
   const [disabledButtons, setDisabledButtons] = useState({});
   const [playerSearchValues, setPlayerSearchValues] = useState({});
   const [playerData, setPlayerData] = useState(null);
@@ -85,7 +91,7 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
     try {
       setIsLoading(true);
       // Reset animation and disabled states when fetching new data
-      setAnimatingCards({});
+      setCardPhases({});
       setDisabledButtons({});
       
       const response = await api.get(`${routes.admin.submissions.root()}/passes/pending`);
@@ -168,44 +174,28 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
         [submissionId]: true
       }));
       
-      setAnimatingCards(prev => ({
-        ...prev,
-        [submissionId]: action
-      }));
+      setCardPhases((prev) => ({ ...prev, [submissionId]: action }));
 
-      setTimeout(async () => {
-        const response = await api.put(`${routes.admin.submissions.root()}/passes/${submissionId}/${action}`);
-        
-        if (response.status === 200) {
-          setSubmissions(prev => prev.filter(sub => sub.id !== submissionId));
-          setAnimatingCards(prev => {
-            const newState = { ...prev };
-            delete newState[submissionId];
-            return newState;
-          });
-          setDisabledButtons(prev => {
-            const newState = { ...prev };
-            delete newState[submissionId];
-            return newState;
-          });
-        }
-        else {
-          console.error('Error updating submission:', response.statusText);
-          setDisabledButtons(prev => {
-            const newState = { ...prev };
-            delete newState[submissionId];
-            return newState;
-          });
-        }
-      }, 500);
+      const [response] = await Promise.all([
+        api.put(`${routes.admin.submissions.root()}/passes/${submissionId}/${action}`),
+        new Promise((resolve) => setTimeout(resolve, SUBMISSION_DISMISS_MS)),
+      ]);
 
+      if (response.status === 200) {
+        setCardPhases((prev) => ({ ...prev, [submissionId]: 'placeholder' }));
+      } else {
+        console.error('Error updating submission:', response.statusText);
+        clearCardPhase(setCardPhases, submissionId);
+      }
     } catch (error) {
       console.error('Error processing submission:', error);
       toast.error(t('passSubmissions.errors.processing'));
-      setDisabledButtons(prev => {
-        const newState = { ...prev };
-        delete newState[submissionId];
-        return newState;
+      clearCardPhase(setCardPhases, submissionId);
+    } finally {
+      setDisabledButtons((prev) => {
+        const next = { ...prev };
+        delete next[submissionId];
+        return next;
       });
     }
   };
@@ -306,7 +296,7 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
     };
   }, []);
 
-  if (submissions?.length === 0 && !isLoading) {
+  if (!hasVisibleSubmissions(submissions, cardPhases) && !isLoading) {
     return <p className="no-submissions">{t('passSubmissions.noSubmissions')}</p>;
   }
 
@@ -314,12 +304,24 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
     <>
       <div className="submissions-list">
         {isLoading ? (
-          <div className="loader loader-submission-detail"/>
+          <div className="loader-shell loader-shell--submission">
+            <div className="loader loader-relative" />
+          </div>
         ) : (
           <VirtualList
             items={submissions}
-            renderItem={(submission) => (
-            <div className={`submission-card pass-submission-card ${animatingCards[submission.id] || ''}`}>
+            renderItem={(submission) => {
+              const phase = cardPhases[submission.id];
+              if (phase === 'placeholder') {
+                return (
+                  <div
+                    className="submission-card pass-submission-card submission-card--placeholder"
+                    aria-hidden="true"
+                  />
+                );
+              }
+              return (
+            <div className={getSubmissionCardClassName('submission-card pass-submission-card', phase)}>
               <div className="submission-header">
                 <h3>{submission.title || "Null"}</h3>
                 <span className="submission-date">
@@ -454,7 +456,8 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
                 </div>
               </div>
             </div>
-            )}
+            );
+            }}
             computeItemKey={(index, submission) => submission?.id ?? index}
           />
         )}

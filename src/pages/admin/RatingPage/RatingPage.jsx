@@ -401,7 +401,9 @@ const RatingPage = () => {
         />
         
         <div className="admin-rating-body">
-          <div className="loader loader-level-detail"/>
+          <div className="loader-shell loader-shell--fill">
+            <div className="loader loader-relative" />
+          </div>
         </div>
       </div>
     );
@@ -567,7 +569,7 @@ const RatingPage = () => {
               loadMore={loadMoreRatings}
               hasMore={hasMoreRatings && displayedRatings.length > 0}
               listClassName="rating-cards"
-              loader={<div className="loader loader-level-page" />}
+              loader={<div className="loader loader-relative" />}
               endMessage={
                 displayedRatings.length > 0 && (
                   <p className="end-message">

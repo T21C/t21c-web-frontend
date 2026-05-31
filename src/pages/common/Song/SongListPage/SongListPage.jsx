@@ -188,7 +188,9 @@ const SongListPage = () => {
         </div>
 
         {loading && songs.length === 0 ? (
-          <div className="loader loader-level-page"></div>
+          <div className="loader-shell loader-shell--tall">
+            <div className="loader loader-relative" />
+          </div>
         ) : songs.length > 0 ? (
           <VirtualList
             style={{ paddingBottom: "7rem", minHeight: "50vh", overflow: "visible" }}
@@ -198,7 +200,7 @@ const SongListPage = () => {
             overscan={800}
             grid
             listClassName="song-cards-grid"
-            loader={<div className="loader loader-level-page"></div>}
+            loader={<div className="loader loader-relative"></div>}
             endMessage={
               songs.length > 0 && (
                 <p className="end-message">
