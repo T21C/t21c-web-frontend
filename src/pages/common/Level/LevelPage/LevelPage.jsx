@@ -112,7 +112,6 @@ const LevelPage = ({
 
   const [showHelpPopup, setShowHelpPopup] = useState(false);
   const [viewMode, setViewMode] = useState('normal');
-  const [cardSize, setCardSize] = useState('medium');
   const [stateDisplayOpen, setStateDisplayOpen] = useState(false);
   const [searchInput, setSearchInput] = useState(query);
   const [showTagsInCards, setShowTagsInCards] = useState(true);
@@ -827,41 +826,15 @@ const LevelPage = ({
               }}
               title={t('level.toolTip.compactView')}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M3 4h18v1H3V4zm0 7h18v1H3v-1zm0 7h18v1H3v-1z"/>
-              </svg>
-            </button>
-            <button 
-              className={`view-mode-button ${viewMode === 'grid' ? 'active' : ''}`}
-              onClick={() => {
-                setViewMode('grid');
-                // View mode change doesn't need refresh, it's just UI
-              }}
-              title={t('level.toolTip.gridView')}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M3 3h7v7H3V3zm11 0h7v7h-7V3zm0 11h7v7h-7v-7zm-11 0h7v7H3v-7z"/>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 24" fill="currentColor">
+                <path d="M3 
+                5h18v1H3V5zm0 
+                4h18v1H3V9zm0 
+                4h18v1H3V13zm0 
+                4h18v1H3V17"/>
               </svg>
             </button>
           </div>
-
-          {viewMode === 'grid' && (
-            <div className="size-slider-container">
-              <p>{t('level.settingExp.cardSize')}</p>
-              <input
-                type="range"
-                min="0"
-                max="2"
-                step="1"
-                className="size-slider"
-                value={cardSize === 'small' ? 0 : cardSize === 'medium' ? 1 : 2}
-                onChange={(e) => {
-                  const sizes = ['small', 'medium', 'large'];
-                  setCardSize(sizes[e.target.value]);
-                }}
-              />
-            </div>
-          )}
         </div>
 
         {levelsData ? (
@@ -881,14 +854,12 @@ const LevelPage = ({
             <p className="end-message">
               <b>{t('level.infScroll.end')}</b>
             </p>}
-          grid={viewMode === 'grid'}
-          listClassName={viewMode === 'grid' ? 'level-cards-grid' : 'infinite-scroll-container'}
+          listClassName="infinite-scroll-container"
           renderItem={(l, index) => (
             <LevelCard
               level={l}
               user={user}
               displayMode={viewMode}
-              size={cardSize}
               showTags={showTagsInCards}
             />
           )}

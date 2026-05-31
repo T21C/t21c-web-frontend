@@ -16,7 +16,6 @@
     "reset": "Resetuj wszystkie filtry",
     "normalView": "Widok normalny",
     "compactView": "Widok kompaktowy",
-    "gridView": "Widok siatki",
     "recentAsc": "Sortuj od najstarszych",
     "recentDesc": "Sortuj od najnowszych",
     "diffAsc": "Sortuj od najłatwiejszych",
@@ -48,7 +47,6 @@
     "sortRandom": "Losowe sortowanie",
     "sortClears": "Sortuj według ilości przejść",
     "viewMode": "Tryb przeglądania",
-    "cardSize": "Rozmiar kart",
     "clearedLevels": "Z przejściami",
     "deletedLevels": "Usunięte poziomy"
   },

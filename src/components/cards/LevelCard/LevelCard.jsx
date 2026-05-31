@@ -31,7 +31,6 @@ const LevelCard = ({
   packItem = null,
   user,
   displayMode = 'normal',
-  size = 'medium',
   showTags = true,
   // Pack mode specific props
   canEdit = false,
@@ -60,7 +59,6 @@ const LevelCard = ({
   const [showAddToPackPopup, setShowAddToPackPopup] = useState(false);
   const [showSongPopup, setShowSongPopup] = useState(false);
   const [showArtistPopup, setShowArtistPopup] = useState(false);
-  const [thumbnailUrl, setThumbnailUrl] = useState('');
   const { difficultyDict, curationTypesDict, tagsDict } = useDifficultyContext();
   const difficultyInfo = level != null ? difficultyDict[level.diffId] : undefined;
   const curationsList = useMemo(() => {
@@ -100,7 +98,7 @@ const LevelCard = ({
       ? level.baseScore
       : null;
   const resolvesTagBadges =
-    showTags && (displayMode === 'normal' || displayMode === 'pack' || displayMode === 'grid');
+    showTags && (displayMode === 'normal' || displayMode === 'pack');
   const tagIds = resolvesTagBadges ? (level?.tags?.map((item) => item.id) || []) : [];
   const tags = tagIds.map((id) => tagsDict[id]).filter(Boolean); // Filter out undefined/null tags
   const hasSongPopup = (level?.songs && level.songs.length > 0) ? true : false;
@@ -108,16 +106,6 @@ const LevelCard = ({
   const levelDetailTo = level?.id != null ? `/levels/${level.id}` : '#';
 
   useBodyScrollLock(showEditPopup || showAddToPackPopup || showSongPopup || showArtistPopup);
-
-  // Fetch thumbnail for grid mode
-  useEffect(() => {
-    if (displayMode === 'grid' && level?.videoLink) {
-      const videoId = level.videoLink.match(/(?:youtu\.be\/|youtube\.com\/(?:.*v=|.*\/videos\/)|youtube-nocookie\.com\/(?:embed\/|v\/)|youtube\.com\/(?:v\/|e\/|embed\/|user\/[^/]+\/u\/[0-9]+\/)|watch\?v=)([^#\&\?]*)/)?.[1];
-      if (videoId) {
-        setThumbnailUrl(`https://img.youtube.com/vi/${videoId}/mqdefault.jpg`);
-      }
-    }
-  }, [level?.videoLink, displayMode]);
 
   // Handlers
   const handleLevelUpdate = (updatedData) => {
@@ -393,76 +381,6 @@ const LevelCard = ({
       )}
     </>
   );
-
-  // ============================================
-  // GRID MODE
-  // ============================================
-  if (displayMode === 'grid') {
-    return (
-      <div 
-        className={`level-card grid size-${size} ${getGlowClass()}`} 
-        data-deleted={level.isDeleted}
-        data-hidden={level.isHidden && !level.isDeleted}
-        style={{ '--difficulty-color': difficultyInfo?.color || '#fff' }}
-      >
-        <div 
-          className="level-card-wrapper"
-          style={{ '--card-bg-image': thumbnailUrl ? `url(${thumbnailUrl})` : 'none' }}
-        >
-          <Link className="level-card__link-wrap" to={levelDetailTo} aria-label={getSongDisplayName(level)}>
-          <div className="difficulty-icon-wrapper">
-            <img src={difficultyDict[difficultyInfo?.id]?.icon} alt={difficultyInfo?.name || 'Difficulty icon'} />
-          </div>
-
-          {tags && tags.length > 0 && (
-            <div className="level-tags-grid">
-              {tags.map((tag, index) => {
-                const isFirstInOddRow = tags.length % 2 === 1 && index === 0;
-                return (
-                  <div
-                    key={tag.id}
-                    className="level-tag-badge"
-                    style={{
-                      '--tag-bg-color': `${tag.color}80`,
-                      '--tag-border-color': tag.color,
-                      '--tag-text-color': tag.color,
-                    }}
-                    data-span-full={isFirstInOddRow}
-                    title={tag.name}
-                  >
-                    {tag.icon ? (
-                      <img src={tag.icon} alt={tag.name} />
-                    ) : (
-                      <span className="level-tag-letter">{tag.name.charAt(0).toUpperCase()}</span>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          )}
-
-          <div className="content-overlay">
-            <div className="title-section">{getSongDisplayName(level)}</div>
-            <div className="creator-section">
-              {getArtistDisplayName(level)} - {formatCreatorDisplay(level)}
-            </div>
-          </div>
-          </Link>
-        </div>
-
-        <div className="dropdown-tongue">
-          <div className="dropdown-content">
-            <div className="info-row">
-              <span>#{level.id} - 🏆 {level.clears || 0}</span>
-              {renderDownloadLinks({ showSteam: !!wsLink, showAddToPack: false })}
-            </div>
-          </div>
-        </div>
-
-        {renderPopups()}
-      </div>
-    );
-  }
 
   // ============================================
   // PACK MODE
