@@ -19,7 +19,7 @@
     "addType": "Add to filter",
     "allTypes": "All Types",
     "search": "Search",
-    "searchPlaceholder": "Search by song, artist, or creator..."
+    "searchPlaceholder": "Search by song, artist, creator, or aliases (#123 for level ID)..."
   },
   "loading": "Loading curations...",
   "empty": "No curations found",
