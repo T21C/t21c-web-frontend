@@ -24,8 +24,10 @@
       "speed": "飙速"
     },
     "flags": {
-      "worldsFirst": "🏆 世界首通！ 🏆",
-      "worldsFirstPP": "🏆 世界首通 PP！ 🏆",
+      "worldsFirst": "WF",
+      "worldsFirstPP": "WF PP",
+      "worldsFirstClearTooltip": "世界首通！",
+      "worldsFirstPurePerfectTooltip": "世界首通纯完美！",
       "twelveKey": "12键",
       "sixteenKey": "16键",
       "noHoldTap": "非默认长按设置",

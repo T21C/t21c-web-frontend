@@ -7,7 +7,7 @@ import calcAcc from "@/utils/CalcAcc";
 import { getScoreV2 } from "@/utils/CalcScore";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { parseJudgements } from "@/utils/ParseJudgements";
-import { validateFeelingRating, validateNumber, validateSpeed } from "@/utils/Utility";
+import { normalizeKeyCount, validateFeelingRating, validateNumber, validateSpeed } from "@/utils/Utility";
 import { useTranslation } from "react-i18next";
 import { getPassCoreCopy } from "./PassCoreForm";
 
@@ -39,7 +39,6 @@ export function usePassCoreForm({
   initialForm,
   rejectDeletedLevel = false,
   isUDiffLevel = () => false,
-  requireKeyModeWhenUDiff = false,
   extraValidation = () => ({}),
 }) {
   const copy = getPassCoreCopy(mode);
@@ -53,6 +52,8 @@ export function usePassCoreForm({
   const [submitAttempt, setSubmitAttempt] = useState(false);
 
   const [isValidFeelingRating, setIsValidFeelingRating] = useState(true);
+  const [isValidExpectedRating, setIsValidExpectedRating] = useState(true);
+  const [isValidKeyCount, setIsValidKeyCount] = useState(true);
   const [isValidSpeed, setIsValidSpeed] = useState(true);
   const [isValidTimestamp, setIsValidTimestamp] = useState(true);
 
@@ -196,11 +197,21 @@ export function usePassCoreForm({
     const displayValidationRes = {};
     const isEdit = mode === "edit";
 
+    const keyCountTrimmed = nextForm.keyCount?.trim?.() ?? "";
+    const keyCountParsed =
+      keyCountTrimmed !== "" && validateNumber(keyCountTrimmed) && normalizeKeyCount(keyCountTrimmed) !== null;
+
     if (isEdit) {
+      const keyCountValid =
+        keyCountTrimmed === "" ||
+        (validateNumber(keyCountTrimmed) && normalizeKeyCount(keyCountTrimmed) !== null);
+      setIsValidKeyCount(keyCountValid);
       // Edit / admin pass updates: only require a valid level; allow empty or free-form text elsewhere
       validationResult.levelId = !(level === null || level === undefined);
       validationResult.videoLink = true;
       validationResult.feelingRating = true;
+      validationResult.expectedRating = true;
+      validationResult.keyCount = keyCountValid;
       validationResult.speed = true;
       validationResult.vidUploadTime = true;
 
@@ -209,8 +220,10 @@ export function usePassCoreForm({
       }
 
       const frTrimmed = nextForm.feelingRating?.trim?.() ?? "";
+      const erTrimmed = nextForm.expectedRating?.trim?.() ?? "";
       const speedTrimmed = nextForm.speed?.trim?.() ?? "";
       setIsValidFeelingRating(!frTrimmed || validateFeelingRating(nextForm.feelingRating));
+      setIsValidExpectedRating(!erTrimmed || validateFeelingRating(nextForm.expectedRating));
       setIsValidSpeed(!speedTrimmed || validateSpeed(nextForm.speed));
       setIsValidTimestamp(true);
     } else {
@@ -224,17 +237,18 @@ export function usePassCoreForm({
 
       validationResult.levelId = !(level === null || level === undefined);
       validationResult.videoLink = Boolean(videoDetail);
+      validationResult.keyCount = keyCountParsed;
+      setIsValidKeyCount(keyCountTrimmed === "" || keyCountParsed);
 
       const frValid = validateFeelingRating(nextForm.feelingRating);
+      const erTrimmed = nextForm.expectedRating?.trim?.() ?? "";
+      const erValid = !erTrimmed || validateFeelingRating(nextForm.expectedRating);
       const speedValid = validateSpeed(nextForm.speed);
       setIsValidFeelingRating(frValid);
-      setIsValidSpeed(speedValid);
+      setIsValidExpectedRating(erValid);
+      validationResult.expectedRating = erValid;
       validationResult.speed = speedValid;
       setIsValidTimestamp(true);
-    }
-
-    if (requireKeyModeWhenUDiff && isUDiff) {
-      validationResult.keyMode = Boolean(nextForm.is12K || nextForm.is16K);
     }
 
     const extras = extraValidation({ form: nextForm, level, videoDetail, isUDiff });
@@ -259,10 +273,6 @@ export function usePassCoreForm({
 
     setForm((prev) => {
       const next = { ...prev, [name]: inputValue };
-
-      if (name === "is16K" && inputValue) next.is12K = false;
-      if (name === "is12K" && inputValue) next.is16K = false;
-
       updateAccuracyAndScore(next);
       return next;
     });
@@ -278,6 +288,8 @@ export function usePassCoreForm({
     isFormValid,
     isFormValidDisplay,
     isValidFeelingRating,
+    isValidExpectedRating,
+    isValidKeyCount,
     isValidSpeed,
     isValidTimestamp,
     level,
@@ -289,5 +301,4 @@ export function usePassCoreForm({
     isUDiff,
     handleInputChange,
   };
-}
-
+};

@@ -24,8 +24,10 @@
       "speed": "배속"
     },
     "flags": {
-      "worldsFirst": "🏆 세계 최초! 🏆",
-      "worldsFirstPP": "🏆 세계 최초 완벽한 플레이! 🏆",
+      "worldsFirst": "WF",
+      "worldsFirstPP": "WF PP",
+      "worldsFirstClearTooltip": "세계 최초 클리어!",
+      "worldsFirstPurePerfectTooltip": "세계 최초 PP 클리어!",
       "twelveKey": "12키",
       "sixteenKey": "16키",
       "noHoldTap": "홀드 설정 꺼짐",

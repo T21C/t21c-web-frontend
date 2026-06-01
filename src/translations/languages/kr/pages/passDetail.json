@@ -46,8 +46,8 @@
     }
   },
   "flags": {
-    "worldsFirst": "🏆 세계 최초! 🏆",
-    "worldsFirstPP": "🏆 세계 최초 완벽한 플레이! 🏆",
+    "worldsFirst": "WF",
+    "worldsFirstPP": "WF PP",
     "12k": "12키",
     "16k": "16키",
     "noHoldTap": "기본 외 홀드 타일 동작",

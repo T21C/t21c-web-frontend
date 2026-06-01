@@ -1,0 +1,16 @@
+/* tuf-search: #WorldsFirstFlag #worldsFirst #wf #cards */
+.worlds-first-flag {
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffd70022;
+  padding: 2px 0.4rem;
+  border-radius: 4px;
+  text-shadow: 0 0 5px #ffd70077;
+  color: gold;
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: default;
+}

@@ -173,6 +173,40 @@ export function validateNumber ( value){
     const regex = new RegExp("^\\d+$")
     return regex.test(value)
 }
+
+export function normalizeKeyCount(raw) {
+  if (raw === null || raw === undefined || raw === '') {
+    return null;
+  }
+  const n = typeof raw === 'number' ? raw : parseInt(String(raw), 10);
+  if (!Number.isFinite(n) || n <= 0) {
+    return null;
+  }
+  return n;
+}
+
+/** @returns {'keyCount'|'12k'|'16k'|null} */
+export function getPassKeycountBadgeType(pass) {
+  const count = normalizeKeyCount(pass?.keyCount);
+  if (count != null) {
+    return 'keyCount';
+  }
+  if (pass?.is16K) {
+    return '16k';
+  }
+  if (pass?.is12K) {
+    return '12k';
+  }
+  return null;
+}
+
+export function getPassKeycountBadgeValue(pass) {
+  const type = getPassKeycountBadgeType(pass);
+  if (type === 'keyCount') {
+    return normalizeKeyCount(pass.keyCount);
+  }
+  return null;
+}
 export function clampFloat(value, maxDecimals = 2) {
   if (value === null || value === undefined) return "1.0";
   return parseFloat(Number(value).toFixed(maxDecimals)).toString();

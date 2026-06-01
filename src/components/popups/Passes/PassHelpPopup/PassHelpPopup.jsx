@@ -1,83 +1,16 @@
 // tuf-search: #PassHelpPopup #passHelpPopup #popups #passes #passHelp
-import React, { useEffect, useRef } from 'react';
-import './passhelppopup.css';
-import { useTranslation } from 'react-i18next';
-import { CloseButton } from '@/components/common/buttons';
+import React from 'react';
+import { SearchHelpPopup } from '@/components/common/SearchHelpPopup';
+import { PASS_SEARCH_HELP_SECTIONS } from '@/components/common/SearchHelpPopup/passSearchHelpSections';
 
-export const PassHelpPopup = ({ onClose }) => {
-  const { t } = useTranslation(['components']);
-  const popupRef = useRef(null);
-
-  useEffect(() => {
-    const handleEscapeKey = (event) => {
-      if (event.key === 'Escape') {
-        onClose();
-      }
-    };
-
-    const handleClickOutside = (event) => {
-      if (popupRef.current && !popupRef.current.contains(event.target)) {
-        onClose();
-      }
-    };
-
-    document.addEventListener('keydown', handleEscapeKey);
-    document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('keydown', handleEscapeKey);
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [onClose]);
-
-  return (
-    <div className="pass-help-popup-overlay">
-      <div className="pass-help-popup" ref={popupRef}>
-        <CloseButton
-          variant="floating"
-          onClick={onClose}
-          aria-label={t('pass.helpPopup.closeButton')}
-        />
-
-        <div className="help-content">
-          <h2>{t('pass.helpPopup.title')}</h2>
-
-          <section>
-            <h3>{t('pass.helpPopup.sections.search.title')}</h3>
-            <p>{t('pass.helpPopup.sections.search.description')}</p>
-            <div className="examples">
-              <h4>{t('pass.helpPopup.sections.search.examples.title')}</h4>
-              <ul>
-                <li><b><code>player:Name</code></b> - {t('pass.helpPopup.sections.search.examples.playerField')}</li>
-                <li><b><code>video:Link</code></b> - {t('pass.helpPopup.sections.search.examples.videoField')}</li>
-              </ul>
-            </div>
-          </section>
-
-          <section>
-            <h3>{t('pass.helpPopup.sections.operators.title')}</h3>
-            <p>{t('pass.helpPopup.sections.operators.description')}</p>
-            <div className="examples">
-              <h4>{t('pass.helpPopup.sections.operators.examples.title')}</h4>
-              <ul>
-                <li><b><code>player:Name, video:Link</code></b> - {t('pass.helpPopup.sections.operators.examples.and')}</li>
-                <li><b><code>player=Exact | player:Partial</code></b> - {t('pass.helpPopup.sections.operators.examples.or')}</li>
-                <li><b><code>player:Name, video:Link | player=Exact</code></b> - {t('pass.helpPopup.sections.operators.examples.complex')}</li>
-              </ul>
-            </div>
-          </section>
-
-          <section>
-            <h3>{t('pass.helpPopup.sections.tips.title')}</h3>
-            <ul>
-              <li>{t('pass.helpPopup.sections.tips.points.caseSensitive')}</li>
-              <li>{t('pass.helpPopup.sections.tips.points.partial')}</li>
-              <li>{t('pass.helpPopup.sections.tips.points.spaces')}</li>
-              <li>{t('pass.helpPopup.sections.tips.points.order')}</li>
-            </ul>
-          </section>
-        </div>
-      </div>
-    </div>
-  );
-}; 
+export const PassHelpPopup = ({ onClose }) => (
+  <SearchHelpPopup
+    onClose={onClose}
+    titleKey="pass.helpPopup.title"
+    subtitleKey="pass.helpPopup.v2.subtitle"
+    closeButtonKey="pass.helpPopup.closeButton"
+    examplesTitleKey="pass.helpPopup.v2.examplesTitle"
+    sections={PASS_SEARCH_HELP_SECTIONS}
+    defaultOpenSection="basics"
+  />
+);

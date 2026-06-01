@@ -23,8 +23,10 @@
       "speed": "Prędkość"
     },
     "flags": {
-      "worldsFirst": "🏆 Pierwsze przejście! 🏆",
-      "worldsFirstPP": "🏆 Pierwsze przejście PP! 🏆",
+      "worldsFirst": "WF",
+      "worldsFirstPP": "WF PP",
+      "worldsFirstClearTooltip": "Pierwsze przejście na świecie!",
+      "worldsFirstPurePerfectTooltip": "Pierwsze przejście Pure Perfect na świecie!",
       "twelveKey": "12K",
       "sixteenKey": "16K",
       "noHoldTap": "NHT",

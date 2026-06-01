@@ -2256,12 +2256,19 @@ const LevelDetailPage = ({ mockData = null }) => {
                             }
                           }}
                         >
-                          <button
-                            type="button"
+                          <div
                             className="level-detail__curation-icon-cell"
+                            role="button"
+                            tabIndex={0}
                             aria-expanded={isTooltipOpen}
                             aria-label={typeLabel}
                             onClick={() => handleCurationTooltipToggle(curation.id)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                handleCurationTooltipToggle(curation.id);
+                              }
+                            }}
                           >
                             {typesSorted.map((t) => (
                               <img
@@ -2271,7 +2278,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                                 className="level-detail__curation-type-icon-img"
                               />
                             ))}
-                          </button>
+                          </div>
                         </div>
                       );
                     })}

@@ -24,8 +24,11 @@
       "speed": "Speed"
     },
     "flags": {
-      "worldsFirst": "🏆 World's First! 🏆",
-      "worldsFirstPP": "🏆 World's First PP! 🏆",
+      "worldsFirst": "WF",
+      "worldsFirstPP": "WF PP",
+      "worldsFirstClearTooltip": "World's First Clear!",
+      "worldsFirstPurePerfectTooltip": "World's First Pure Perfect!",
+      "keyCount": "{{count}}K",
       "twelveKey": "12K",
       "sixteenKey": "16K",
       "noHoldTap": "NHT",

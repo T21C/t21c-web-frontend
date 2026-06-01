@@ -3,7 +3,7 @@ import { routes } from '@/api/routes';
 import './editpasspopup.css';
 import { useTranslation } from 'react-i18next'; 
 import { useAuth } from '@/contexts/AuthContext';
-import { formatCreatorDisplay } from '@/utils/Utility';
+import { formatCreatorDisplay, normalizeKeyCount } from '@/utils/Utility';
 import placeholder from '@/assets/placeholder/4.png';
 import { FetchIcon } from '@/components/common/icons';
 import { useNavigate } from 'react-router-dom';
@@ -26,6 +26,8 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
     playerId: pass.playerId || '',
     leaderboardName: pass.player.name || '',
     feelingRating: pass.feelingRating || '',
+    expectedRating: pass.expectedRating || '',
+    keyCount: pass.keyCount != null ? String(pass.keyCount) : '',
     ePerfect: pass.judgements.ePerfect.toString() || '',
     perfect: pass.judgements.perfect.toString() || '',
     lPerfect: pass.judgements.lPerfect.toString() || '',
@@ -33,8 +35,6 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
     early: pass.judgements.earlySingle.toString() || '',
     late: pass.judgements.lateSingle.toString() || '',
     isNoHold: pass.isNoHoldTap || false,
-    is12K: pass.is12K || false,
-    is16K: pass.is16K || false,
     isAnnounced: pass.isAnnounced || false,
     isDuplicate: pass.isDuplicate || false,
     isAdofaiV2: pass.isAdofaiV2 || false,
@@ -53,6 +53,8 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
     isFormValid,
     isFormValidDisplay,
     isValidFeelingRating,
+    isValidExpectedRating,
+    isValidKeyCount,
     isValidSpeed,
     isValidTimestamp,
     level,
@@ -60,7 +62,6 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
     videoDetail,
     accuracy,
     score,
-    isUDiff,
     handleInputChange,
   } = usePassCoreForm({
     mode: "edit",
@@ -100,11 +101,11 @@ const handleSubmit = async (e) => {
       playerId: form.playerId,
       speed: parseFloat(form.speed) >= 1 ? parseFloat(form.speed) : 1,
       feelingRating: form.feelingRating,
+      expectedRating: form.expectedRating?.trim() || null,
+      keyCount: normalizeKeyCount(form.keyCount),
       vidTitle: videoDetail?.title || level?.song || '',
       videoLink: form.videoLink,
       vidUploadTime: form.vidUploadTime,
-      is12K: isUDiff && form.is12K,
-      is16K: isUDiff && form.is16K,
       isNoHoldTap: form.isNoHold,
       isAnnounced: form.isAnnounced,
       isDuplicate: form.isDuplicate,
@@ -219,6 +220,8 @@ const handleSubmit = async (e) => {
           isFormValidDisplay={isFormValidDisplay}
           isValidSpeed={isValidSpeed}
           isValidFeelingRating={isValidFeelingRating}
+          isValidExpectedRating={isValidExpectedRating}
+          isValidKeyCount={isValidKeyCount}
           isValidTimestamp={isValidTimestamp}
           submitAttempt={submitAttempt}
           isFormValid={isFormValid}

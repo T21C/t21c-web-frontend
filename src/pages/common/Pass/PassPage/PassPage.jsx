@@ -81,6 +81,7 @@ const PassPage = () => {
     { value: 'XACC', label: t('pass.settings.sort.options.accuracy') },
     { value: 'DIFF', label: t('pass.settings.sort.options.difficulty') },
     { value: 'SPEED', label: t('pass.settings.sort.options.speed') },
+    { value: 'KEYCOUNT', label: t('pass.settings.sort.options.keyCount') },
     { value: 'RANDOM', label: t('pass.settings.sort.options.random') }
   ];
 

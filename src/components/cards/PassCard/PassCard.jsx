@@ -6,6 +6,8 @@ import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { UserAvatar } from "@/components/layout";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import PassAdofaiV2Flag from "../PassAdofaiV2Flag";
+import WorldsFirstFlag from "../WorldsFirstFlag/WorldsFirstFlag";
+import { normalizeKeyCount } from "@/utils/Utility";
 
 const PassCard = ({ pass }) => {
   const { t } = useTranslation('components');
@@ -34,8 +36,12 @@ const PassCard = ({ pass }) => {
       <div className="pass-info-wrapper">
         <div className="group">
           <p className="pass-exp">#{pass.id} - {pass.player.name}<UserAvatar {...userAvatarUrls(pass.player)} className="user-avatar" /> </p>
-          {pass.isWorldsFirst && <span className="wf-badge">{t('cards.pass.flags.worldsFirst')}</span>}
-          {pass.isWorldsFirstPP && <span className="wf-badge">{t('cards.pass.flags.worldsFirstPP')}</span>}
+          {pass.isWorldsFirst && (
+            <WorldsFirstFlag variant="clear" tooltipIndex={`${pass.id}-clear`} className="wf-badge" />
+          )}
+          {pass.isWorldsFirstPP && (
+            <WorldsFirstFlag variant="pp" tooltipIndex={`${pass.id}-pp`} className="wf-badge" />
+          )}
         </div>
         <p className='pass-desc'>{pass.level.song}</p>
       </div>
@@ -60,8 +66,14 @@ const PassCard = ({ pass }) => {
       </div>
 
       <div className="flags-wrapper">
-        {pass.is12K && <div className="flag">{t('cards.pass.flags.twelveKey')}</div>}
-        {pass.is16K && <div className="flag">{t('cards.pass.flags.sixteenKey')}</div>}
+        {normalizeKeyCount(pass.keyCount) != null ? (
+          <div className="flag">{t('cards.pass.flags.keyCount', { count: normalizeKeyCount(pass.keyCount) })}</div>
+        ) : (
+          <>
+            {pass.is12K && <div className="flag">{t('cards.pass.flags.twelveKey')}</div>}
+            {pass.is16K && <div className="flag">{t('cards.pass.flags.sixteenKey')}</div>}
+          </>
+        )}
         {pass.isNoHoldTap && <div className="flag">{t('cards.pass.flags.noHoldTap')}</div>}
         {pass.isAdofaiV2 && <PassAdofaiV2Flag className="flag flag--adofai-v2" />}
       </div>

@@ -23,8 +23,10 @@
       "speed": "Vitesse"
     },
     "flags": {
-      "worldsFirst": "🏆 Première mondiale! 🏆",
-      "worldsFirstPP": "🏆 Première mondiale PP! 🏆",
+      "worldsFirst": "WF",
+      "worldsFirstPP": "WF PP",
+      "worldsFirstClearTooltip": "Première clear mondiale !",
+      "worldsFirstPurePerfectTooltip": "Première clear Pure Perfect mondiale !",
       "twelveKey": "12K",
       "noHoldTap": "NHT",
       "adofaiV2": "<adofaiicon></adofaiicon> v2"

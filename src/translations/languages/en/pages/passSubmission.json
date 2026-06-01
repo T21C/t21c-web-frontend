@@ -6,9 +6,9 @@
     "altname": "Leaderboard Name",
     "nohold": "Alt. Tap Option",
     "speed": "Speed (opt., >=1.0)",
-    "feelDiff": "Feeling Difficulty",
-    "is12K": "12K",
-    "is16K": "16K",
+    "keyCount": "Key Count",
+    "feelDiff": "Feeling Rating",
+    "expectedDiff": "Expected Rating (opt.)",
     "isAdofaiV2": "ADOFAI v2"
   },
   "levelInfo": {
@@ -40,10 +40,10 @@
   "acc": "Accuracy: ",
   "scoreCalc": "Score: ",
   "holdTooltip": "Check this if a different hold tile behavior was used (no holding required etc.)",
-  "12kTooltip": "Check this if 12K was used (12 or less keys)",
-  "16kTooltip": "Check this if 16K was used (13+ keys)",
+  "keyCountTooltip": "Number of keys used for this pass.",
+  "feelingTooltip": "How hard it felt for you personally. Valid examples: G1-G5, 17~18+, U1, etc.",
+  "expectedTooltip": "What difficulty the level should be rated as (optional). Same format as feeling rating.",
   "adofaiV2Tooltip": "Check this if the clear was recorded on ADOFAI v2",
-  "tooltip": "Unknown difficulty, make sure the managers will understand it. Valid examples: G1-G5, 17~18+, U1, etc.",
   "alert": {
     "success": "Pass submitted successfully!",
     "error": "Error: ",
@@ -57,14 +57,15 @@
     "player": "Player",
     "speed": "Speed",
     "feelingRating": "Feeling difficulty",
+    "expectedRating": "Expected difficulty",
+    "keyCount": "Key count",
     "ePerfect": "Early Perfect",
     "perfect": "Perfect",
     "lPerfect": "Late Perfect",
     "tooEarly": "Too Early",
     "early": "Early",
     "late": "Late",
-    "rulesAccepted": "Rules accepted",
-    "keyMode": "12K/16K"
+    "rulesAccepted": "Rules accepted"
   },
   "score": {
     "needId": "Enter level ID",
@@ -85,4 +86,4 @@
     "reviewInputs": "Cancel",
     "submitAnyway": "Submit anyway"
   }
-} 
+}

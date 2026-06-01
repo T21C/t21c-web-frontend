@@ -2,6 +2,7 @@ import { routes } from '@/api/routes';
 // tuf-search: #PassDetailPage #passDetailPage #pass #passDetail — {{song}}
 import "./passdetailpage.css";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useParams, Link } from 'react-router-dom';
 import { UserAvatar } from "@/components/layout";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
@@ -13,11 +14,13 @@ import { EditPassPopup } from "@/components/popups/Passes";
 import { MetaTags } from "@/components/common/display";
 import { StatusBanner } from "@/components/common/display/StatusBanner/StatusBanner";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
-import { formatDate, validateFeelingRating } from "@/utils/Utility";
+import { formatDate, normalizeKeyCount, validateFeelingRating } from "@/utils/Utility";
 import i18next from "i18next";
 import { EyeIcon, EyeOffIcon, TrashIcon } from "@/components/common/icons";
 import PassAdofaiV2Flag from "@/components/cards/PassAdofaiV2Flag";
+import WorldsFirstFlag from "@/components/cards/WorldsFirstFlag/WorldsFirstFlag";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
+import { getPortalRoot } from "@/utils/portalRoot";
 
 const currentUrl = window.location.origin + location.pathname;
 
@@ -305,19 +308,31 @@ const PassDetailPage = () => {
                     {pass.feelingRating ? t('passDetail.stats.feelingRating.value', { rating: pass.feelingRating }) : t('passDetail.stats.feelingRating.none')}
                   </span>
                 </div>
+                <div className="info-item">
+                  <p>{t('passDetail.stats.expectedRating.label')}</p>
+                  <span className="info-desc">
+                    {pass.expectedRating ? t('passDetail.stats.expectedRating.value', { rating: pass.expectedRating }) : t('passDetail.stats.expectedRating.none')}
+                  </span>
+                </div>
               </div>
-              {(pass.isWorldsFirst || pass.isWorldsFirstPP || pass.is12K || pass.is16K || pass.isNoHoldTap || pass.isAdofaiV2) && (
+              {(pass.isWorldsFirst || pass.isWorldsFirstPP || normalizeKeyCount(pass.keyCount) != null || pass.is12K || pass.is16K || pass.isNoHoldTap || pass.isAdofaiV2) && (
                 <div className="flags-container">
                   {pass.isWorldsFirst && (
-                    <span className="worlds-first">{t('passDetail.flags.worldsFirst')}</span>
+                    <WorldsFirstFlag variant="clear" tooltipIndex={`${pass.id}-detail-clear`} className="worlds-first" />
                   )}
                   {pass.isWorldsFirstPP && (
-                    <span className="worlds-first">{t('passDetail.flags.worldsFirstPP')}</span>
+                    <WorldsFirstFlag variant="pp" tooltipIndex={`${pass.id}-detail-pp`} className="worlds-first" />
                   )}
-                  {(pass.is12K || pass.is16K || pass.isNoHoldTap || pass.isAdofaiV2) && (
+                  {(normalizeKeyCount(pass.keyCount) != null || pass.is12K || pass.is16K || pass.isNoHoldTap || pass.isAdofaiV2) && (
                     <div className="flags">
-                      {pass.is12K && <span className="flag">{t('passDetail.flags.12k')}</span>}
-                      {pass.is16K && <span className="flag">{t('passDetail.flags.16k')}</span>}
+                      {normalizeKeyCount(pass.keyCount) != null ? (
+                        <span className="flag">{t('passDetail.flags.keyCount', { count: normalizeKeyCount(pass.keyCount) })}</span>
+                      ) : (
+                        <>
+                          {pass.is12K && <span className="flag">{t('passDetail.flags.12k')}</span>}
+                          {pass.is16K && <span className="flag">{t('passDetail.flags.16k')}</span>}
+                        </>
+                      )}
                       {pass.isNoHoldTap && <span className="flag">{t('passDetail.flags.noHoldTap')}</span>}
                       {pass.isAdofaiV2 && (
                         <PassAdofaiV2Flag
@@ -477,16 +492,18 @@ const PassDetailPage = () => {
           </div>
         )}
 
-        {openEditDialog && (
-          <EditPassPopup
-            pass={pass}
-            onClose={() => setOpenEditDialog(false)}
-            onUpdate={() => {
-              setOpenEditDialog(false);
-              fetchPassData();
-            }}
-          />
-        )}
+        {openEditDialog &&
+          createPortal(
+            <EditPassPopup
+              pass={pass}
+              onClose={() => setOpenEditDialog(false)}
+              onUpdate={() => {
+                setOpenEditDialog(false);
+                fetchPassData();
+              }}
+            />,
+            getPortalRoot(),
+          )}
 
         {openEditFeelingRatingPopup && (
           <div className="hide-confirm-overlay" onClick={handleCloseFeelingRatingPopup}>

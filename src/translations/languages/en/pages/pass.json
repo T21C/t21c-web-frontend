@@ -40,6 +40,7 @@
         "accuracy": "Accuracy",
         "difficulty": "Difficulty",
         "speed": "Speed",
+        "keyCount": "Key Count",
         "random": "Random"
       }
     },

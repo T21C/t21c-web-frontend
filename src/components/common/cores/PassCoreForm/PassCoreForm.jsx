@@ -22,14 +22,14 @@ export const PASS_CORE_COPY = {
     videoTimestampLabel: 'passSubmission.videoInfo.timestamp',
     videoNoLink: 'passSubmission.videoInfo.nolink',
     speedPlaceholder: 'passSubmission.submInfo.speed',
+    keyCountPlaceholder: 'passSubmission.submInfo.keyCount',
+    keyCountTooltip: 'passSubmission.keyCountTooltip',
     feelingPlaceholder: 'passSubmission.submInfo.feelDiff',
-    feelingTooltip: 'passSubmission.tooltip',
+    feelingTooltip: 'passSubmission.feelingTooltip',
+    expectedPlaceholder: 'passSubmission.submInfo.expectedDiff',
+    expectedTooltip: 'passSubmission.expectedTooltip',
     holdLabel: 'passSubmission.submInfo.nohold',
     holdTooltip: 'passSubmission.holdTooltip',
-    is12kLabel: 'passSubmission.submInfo.is12K',
-    is12kTooltip: 'passSubmission.12kTooltip',
-    is16kLabel: 'passSubmission.submInfo.is16K',
-    is16kTooltip: 'passSubmission.16kTooltip',
     adofaiV2Label: 'passSubmission.submInfo.isAdofaiV2',
     adofaiV2Tooltip: 'passSubmission.adofaiV2Tooltip',
     ePerfect: 'passSubmission.judgements.ePerfect',
@@ -63,14 +63,14 @@ export const PASS_CORE_COPY = {
     videoTimestampLabel: 'passPopups.edit.form.videoInfo.timestamp',
     videoNoLink: 'passPopups.edit.form.videoInfo.nolink',
     speedPlaceholder: 'passPopups.edit.form.submInfo.speed',
+    keyCountPlaceholder: 'passPopups.edit.form.submInfo.keyCount',
+    keyCountTooltip: 'passPopups.edit.keyCountTooltip',
     feelingPlaceholder: 'passPopups.edit.form.submInfo.feelDiff',
-    feelingTooltip: 'passPopups.edit.tooltip',
+    feelingTooltip: 'passPopups.edit.feelingTooltip',
+    expectedPlaceholder: 'passPopups.edit.form.submInfo.expectedDiff',
+    expectedTooltip: 'passPopups.edit.expectedTooltip',
     holdLabel: 'passPopups.edit.form.submInfo.nohold',
     holdTooltip: 'passPopups.edit.holdTooltip',
-    is12kLabel: 'passPopups.edit.form.submInfo.is12K',
-    is12kTooltip: 'passPopups.edit.12kTooltip',
-    is16kLabel: 'passPopups.edit.form.submInfo.is16K',
-    is16kTooltip: 'passPopups.edit.16kTooltip',
     adofaiV2Label: 'passPopups.edit.form.submInfo.isAdofaiV2',
     adofaiV2Tooltip: 'passPopups.edit.adofaiV2Tooltip',
     ePerfect: 'passPopups.edit.form.judgements.ePerfect',
@@ -99,11 +99,12 @@ export function PassCoreForm({
   isFormValidDisplay,
   isValidSpeed,
   isValidFeelingRating,
+  isValidExpectedRating,
+  isValidKeyCount,
   isValidTimestamp,
   submitAttempt,
   isFormValid,
   holdCheckboxVisibility,
-  keyModeError,
   level,
   levelLoading,
   videoDetail,
@@ -126,7 +127,61 @@ export function PassCoreForm({
   const copy = getPassCoreCopy(mode);
   const { t } = useTranslation([copy.ns, 'common']);
   const holdVisibility = holdCheckboxVisibility ?? 'visible';
-  const showKeyModeError = Boolean(keyModeError);
+
+  const renderRatingField = ({
+    name,
+    placeholderKey,
+    tooltipKey,
+    tooltipId,
+    isValid,
+    autocomplete,
+  }) => (
+    <div className="info-input-field rating-field">
+      <input
+        type="text"
+        autoComplete={autocomplete}
+        placeholder={t(placeholderKey, { ns: copy.ns })}
+        name={name}
+        value={form[name] ?? ''}
+        onChange={onInputChange}
+        style={{
+          borderColor: isFormValidDisplay[name] ? '' : 'red',
+          backgroundColor: !isValid ? '#ffff0044' : '',
+        }}
+      />
+      <div
+        className="fr-tooltip-icon"
+        data-tooltip-id={!isValid ? tooltipId : ''}
+        data-tooltip-content={t(tooltipKey, { ns: copy.ns })}
+      >
+        <span
+          style={{
+            visibility: !isValid ? 'visible' : 'hidden',
+            ...(mode === 'submit'
+              ? {
+                  color: 'red',
+                  padding: '0.2rem 0.4rem',
+                  borderRadius: '5px',
+                }
+              : {}),
+          }}
+        >
+          ?
+        </span>
+        <Tooltip
+          className="tooltip"
+          id={tooltipId}
+          place="bottom-end"
+          effect="solid"
+          style={{
+            maxWidth: '300px',
+            zIndex: 100,
+            background: 'var(--color-black)',
+          }}
+        />
+      </div>
+    </div>
+  );
 
   return (
     <form
@@ -271,7 +326,7 @@ export function PassCoreForm({
 
         {renderPrimarySelector ? <div className="info-input">{renderPrimarySelector()}</div> : null}
 
-        <div className="info-input">
+        <div className="info-input info-input-grid">
           <input
             type="text"
             autoComplete="off"
@@ -285,50 +340,58 @@ export function PassCoreForm({
             }}
           />
 
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+          <div className="info-input-field keycount-field">
             <input
-              type="text"
-              autoComplete={mode === 'submit' ? 'pass-feeling-rating' : 'off'}
-              placeholder={t(copy.feelingPlaceholder, { ns: copy.ns })}
-              name="feelingRating"
-              value={form.feelingRating}
+              type="number"
+              min={1}
+              step={1}
+              autoComplete="off"
+              placeholder={t(copy.keyCountPlaceholder, { ns: copy.ns })}
+              name="keyCount"
+              value={form.keyCount ?? ''}
               onChange={onInputChange}
               style={{
-                borderColor: isFormValidDisplay.feelingRating ? '' : 'red',
-                backgroundColor: !isValidFeelingRating ? '#ffff0044' : '',
+                borderColor: isFormValidDisplay.keyCount ? '' : 'red',
+                backgroundColor: !isValidKeyCount ? '#faa' : 'transparent',
               }}
             />
-
             <div
               className="fr-tooltip-icon"
-              data-tooltip-id={!isValidFeelingRating ? 'fr-tooltip' : ''}
-              data-tooltip-content={t(copy.feelingTooltip, { ns: copy.ns })}
+              data-tooltip-id="keycount-tooltip"
+              data-tooltip-content={t(copy.keyCountTooltip, { ns: copy.ns })}
             >
-              <span
+              <span>?</span>
+              <Tooltip
+                className="tooltip"
+                id="keycount-tooltip"
+                place="bottom-end"
+                effect="solid"
                 style={{
-                  visibility: !isValidFeelingRating ? 'visible' : 'hidden',
-                  ...(mode === 'submit'
-                    ? {
-                        color: 'red',
-                        padding: '0.2rem 0.4rem',
-                        borderRadius: '5px',
-                      }
-                    : {}),
+                  maxWidth: '300px',
+                  zIndex: 100,
+                  background: 'var(--color-black)',
                 }}
-              >
-                ?
-              </span>
-              <Tooltip 
-              className="tooltip" 
-              id="fr-tooltip" 
-              place="bottom-end" 
-              effect="solid" 
-              style={{ 
-                maxWidth: '300px', 
-                zIndex: 100, 
-                background: 'var(--color-black)' }} />
+              />
             </div>
           </div>
+
+          {renderRatingField({
+            name: 'feelingRating',
+            placeholderKey: copy.feelingPlaceholder,
+            tooltipKey: copy.feelingTooltip,
+            tooltipId: 'feeling-rating-tooltip',
+            isValid: isValidFeelingRating,
+            autocomplete: mode === 'submit' ? 'pass-feeling-rating' : 'off',
+          })}
+
+          {renderRatingField({
+            name: 'expectedRating',
+            placeholderKey: copy.expectedPlaceholder,
+            tooltipKey: copy.expectedTooltip,
+            tooltipId: 'expected-rating-tooltip',
+            isValid: isValidExpectedRating,
+            autocomplete: 'off',
+          })}
         </div>
 
         <div className="checkbox-row">
@@ -350,32 +413,6 @@ export function PassCoreForm({
                 checked={form.isNoHold}
               />
               <span>{t(copy.holdLabel, { ns: copy.ns })}</span>
-            </div>
-
-            <div className="keycount-checkbox" data-tooltip-id="12kTooltip" data-tooltip-content={t(copy.is12kTooltip, { ns: copy.ns })}>
-              <input
-                type="checkbox"
-                value={form.is12K}
-                onChange={onInputChange}
-                name="is12K"
-                checked={form.is12K}
-                style={{ outline: showKeyModeError ? '2px solid red' : 'none' }}
-              />
-              <span>{t(copy.is12kLabel, { ns: copy.ns })}</span>
-              <Tooltip className="tooltip" id="12kTooltip" place="bottom-end" effect="solid" />
-            </div>
-
-            <div className="keycount-checkbox" data-tooltip-id="16kTooltip" data-tooltip-content={t(copy.is16kTooltip, { ns: copy.ns })}>
-              <input
-                type="checkbox"
-                value={form.is16K}
-                onChange={onInputChange}
-                name="is16K"
-                checked={form.is16K}
-                style={{ outline: showKeyModeError ? '2px solid red' : 'none' }}
-              />
-              <span>{t(copy.is16kLabel, { ns: copy.ns })}</span>
-              <Tooltip className="tooltip" id="16kTooltip" place="bottom-end" effect="solid" />
             </div>
 
             <div className="keycount-checkbox" data-tooltip-id="adofaiV2Tooltip" data-tooltip-content={t(copy.adofaiV2Tooltip, { ns: copy.ns })}>

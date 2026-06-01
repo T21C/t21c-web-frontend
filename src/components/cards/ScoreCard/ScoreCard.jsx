@@ -8,6 +8,7 @@ import { formatNumber } from "@/utils";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { Tooltip } from "react-tooltip";
 import { formatCreatorDisplay } from "@/utils/Utility";
+import WorldsFirstFlag from "../WorldsFirstFlag/WorldsFirstFlag";
 
 const Judgements = ({judgements}) => {
   return (
@@ -48,8 +49,12 @@ const ScoreCard = ({scoreData, topScores, potentialTopScores}) => {
           <p className='score-desc score-desc-song'>{scoreData.level.song}</p>
           <p className="score-exp score-exp-artist">{scoreData.level.artist ?? 'Hidden level'}</p>
       </Link>
-      {scoreData.isWorldsFirst && <span className="wf-badge">{t('cards.pass.flags.worldsFirst')}</span>}
-      {scoreData.isWorldsFirstPP && <span className="wf-badge">{t('cards.pass.flags.worldsFirstPP')}</span>}
+      {scoreData.isWorldsFirst && (
+        <WorldsFirstFlag variant="clear" tooltipIndex={`${scoreData.id}-clear`} className="wf-badge" />
+      )}
+      {scoreData.isWorldsFirstPP && (
+        <WorldsFirstFlag variant="pp" tooltipIndex={`${scoreData.id}-pp`} className="wf-badge" />
+      )}
       <div className="score-wrapper">
           <p className="score-exp">{t('score.card.labels.score')}</p>
           <p className='score-desc'>{formatScore(scoreData.scoreV2)}</p>

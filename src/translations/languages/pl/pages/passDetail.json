@@ -45,8 +45,8 @@
     }
   },
   "flags": {
-    "worldsFirst": "🏆 Pierwsze przejście! 🏆",
-    "worldsFirstPP": "🏆 Pierwsze przejście PP! 🏆",
+    "worldsFirst": "WF",
+    "worldsFirstPP": "WF PP",
     "12k": "12K",
     "16k": "16K",
     "noHoldTap": "Bez wciśnięcia przy przytrzymaniu (NHT)",

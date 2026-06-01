@@ -15,7 +15,7 @@ import { PlayerInput } from "@/components/common/selectors";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { useNavigate } from "react-router-dom";
 import RulePopup from "./RulePopup";
-import { formatCreatorDisplay } from "@/utils/Utility";
+import { formatCreatorDisplay, normalizeKeyCount } from "@/utils/Utility";
 import { getCookie, setCookie } from "@/utils/cookieUtils";
 import toast from "react-hot-toast";
 import { PassCoreForm } from "@/components/common/cores/PassCoreForm/PassCoreForm";
@@ -34,7 +34,9 @@ const PassSubmissionPage = () => {
     playerId: '',
     leaderboardName: '',
     speed: '',
+    keyCount: '',
     feelingRating: '',
+    expectedRating: '',
     ePerfect: '',
     perfect: '',
     lPerfect: '',
@@ -42,8 +44,6 @@ const PassSubmissionPage = () => {
     early: '',
     late: '',
     isNoHold: false,
-    is12K: false,
-    is16K: false,
     isAdofaiV2: false,
   };
 
@@ -98,6 +98,8 @@ const PassSubmissionPage = () => {
     isFormValid,
     isFormValidDisplay,
     isValidFeelingRating,
+    isValidExpectedRating,
+    isValidKeyCount,
     isValidSpeed,
     level,
     setLevel,
@@ -105,7 +107,6 @@ const PassSubmissionPage = () => {
     videoDetail,
     accuracy,
     score,
-    isUDiff,
     handleInputChange,
   } = usePassCoreForm({
     mode: "submit",
@@ -113,7 +114,6 @@ const PassSubmissionPage = () => {
     rejectDeletedLevel: true,
     isUDiffLevel: (lvl) =>
       difficultyDict[lvl?.diffId]?.name?.[0] === "U" || difficultyDict[lvl?.diffId]?.name?.[0] === "Q",
-    requireKeyModeWhenUDiff: true,
     extraValidation: ({ form: nextForm }) => ({
       playerId: Boolean(nextForm.playerId),
       rulesAccepted: hasReadPassRules,
@@ -226,6 +226,8 @@ const PassSubmissionPage = () => {
         passerRequest: false,
         speed: form.speed,
         feelingDifficulty: form.feelingRating,
+        expectedDifficulty: form.expectedRating?.trim() || null,
+        keyCount: normalizeKeyCount(form.keyCount),
         title: videoDetail?.title || '',
         rawTime: videoDetail?.timestamp || new Date().toISOString(),
         earlyDouble: parseInt(form.tooEarly) || 0,
@@ -235,9 +237,7 @@ const PassSubmissionPage = () => {
         lPerfect: parseInt(form.lPerfect) || 0,
         lateSingle: parseInt(form.late) || 0,
         lateDouble: 0,
-        is12K: isUDiff && form.is12K,
         isNoHoldTap: form.isNoHold,
-        is16K: isUDiff && form.is16K,
         isAdofaiV2: form.isAdofaiV2,
       };
 
@@ -281,6 +281,8 @@ const PassSubmissionPage = () => {
           player: 'Player',
           speed: 'Speed',
           feelingRating: 'Feeling difficulty',
+          expectedRating: 'Expected difficulty',
+          keyCount: 'Key count',
           ePerfect: 'Early Perfect',
           perfect: 'Perfect',
           lPerfect: 'Late Perfect',
@@ -288,7 +290,6 @@ const PassSubmissionPage = () => {
           early: 'Early',
           late: 'Late',
           rulesAccepted: 'Rules accepted',
-          keyMode: '12K/16K',
         };
         return t(`passSubmission.fieldShort.${k}`, { defaultValue: fallback[k] || k });
       };
@@ -420,13 +421,14 @@ const PassSubmissionPage = () => {
           isFormValidDisplay={isFormValidDisplay}
           isValidSpeed={isValidSpeed}
           isValidFeelingRating={isValidFeelingRating}
+          isValidExpectedRating={isValidExpectedRating}
+          isValidKeyCount={isValidKeyCount}
           isValidTimestamp={true}
           submitAttempt={submitAttempt}
           isFormValid={isFormValid}
           holdCheckboxVisibility={
             !level?.tags || level?.tags?.some((tag) => tag.name === "Hold") ? "visible" : "hidden"
           }
-          keyModeError={isUDiff && submitAttempt && !isFormValid.keyMode}
           level={level}
           levelLoading={levelLoading}
           videoDetail={videoDetail}

@@ -2,6 +2,82 @@
   "helpPopup": {
     "title": "Pomoc w wyszukiwaniu",
     "closeButton": "Zamknij",
+    "v2": {
+      "subtitle": "Zaawansowane wyszukiwanie przejść używa tego samego języka zapytań co poziomy. Użyj tokenów pól, operatorów i zakresów, aby szybko zawęzić wyniki.",
+      "examplesTitle": "Przykłady",
+      "groups": {
+        "basics": {
+          "title": "Podstawy (jak zapytania są parsowane)",
+          "intro": "Zapisuj warunki jako field:value lub field=value. Użyj przecinków dla AND w grupie oraz | dla grup OR.",
+          "examples": {
+            "and": "<b><code>player:Name, video:youtube</code></b><br/>Oba warunki muszą pasować (AND).",
+            "or": "<b><code>player=Exact | player:Partial</code></b><br/>Wystarczy dopasowanie jednej grupy (OR).",
+            "not": "<b><code>player:Name, \\!hidden</code></b><br/>Wyklucz wyniki zawierające dany termin (NOT)."
+          }
+        },
+        "playerAndMedia": {
+          "title": "Pola gracza i wideo",
+          "intro": "Te pola dopasowują nazwy graczy i metadane wideo przejścia. : to częściowe dopasowanie, = to dokładne.",
+          "examples": {
+            "partialVsExact": "<b><code>player:yo</code></b> dopasowuje częściowo, <b><code>player=yoon</code></b> dokładnie.",
+            "videoAndTitle": "<b><code>video:youtube.com</code></b> linki wideo; <b><code>vidtitle:clear</code></b> tytuły wideo.",
+            "mixFields": "<b><code>player:Name, vidtitle:run</code></b><br/>Łącz pola gracza i wideo w jednej grupie."
+          }
+        },
+        "levelContext": {
+          "title": "Pola poziomu (powiązane z przejściem)",
+          "intro": "Filtruj przejścia według właściwości powiązanego poziomu. Nazwy pól używają notacji z kropką.",
+          "examples": {
+            "songArtist": "<b><code>level.song:hello, level.artist:cam</code></b> filtruje po utworze i artyście poziomu.",
+            "dlLink": "<b><code>level.dlLink:drive.google</code></b> dopasowuje tekst linku pobierania poziomu."
+          }
+        },
+        "numeric": {
+          "title": "Liczba klawiszy (zakresy)",
+          "intro": "Filtruj po liczbie klawiszy wartościami dokładnymi lub porównaniami. Użyj >, <, >=, <= dla zakresów.",
+          "examples": {
+            "exact": "<b><code>keycount:12</code></b> lub <b><code>keycount=12</code></b> dla dokładnej liczby klawiszy.",
+            "range": "<b><code>keycount:>8, keycount:<12</code></b> liczba klawiszy między 8 a 12.",
+            "combine": "<b><code>player:Name, keycount:>=13</code></b><br/>Połącz z filtrami gracza lub poziomu."
+          }
+        },
+        "idsAndShortcuts": {
+          "title": "ID i skróty",
+          "intro": "Przejdź do konkretnego przejścia lub filtruj po numerycznym id gracza.",
+          "examples": {
+            "hashtag": "<b><code>#123</code></b> w pasku wyszukiwania ładuje przejście o id 123.",
+            "playerId": "<b><code>player.id=456</code></b> filtruje przejścia po dokładnym id gracza."
+          }
+        },
+        "tips": {
+          "title": "Wskazówki",
+          "intro": "Kilka szczegółów, które pomagają uniknąć niespodzianek.",
+          "bullets": {
+            "caseInsensitive": "Wyszukiwanie nie uwzględnia wielkości liter.",
+            "spacesAllowed": "Spacje są dozwolone w wartościach: player:Epic player działa.",
+            "orderDoesNotMatter": "Kolejność warunków w grupie nie ma znaczenia.",
+            "groupingMentalModel": "Myśl o tym jak (A AND B) OR (C AND D): przecinki budują grupy AND, | dzieli grupy OR.",
+            "plainSearch": "Bez prefiksu pola zwykły tekst przeszukuje nazwy graczy, utwory/artystów poziomu, linki wideo i więcej."
+          }
+        }
+      },
+      "fields": {
+        "operatorColon": { "title": "Częściowe dopasowanie", "desc": "Użyj : dla częściowego dopasowania (np. player:yo)." },
+        "operatorEquals": { "title": "Dokładne dopasowanie", "desc": "Użyj = dla dokładnego dopasowania (np. player=yoon)." },
+        "operatorComma": { "title": "AND w grupie", "desc": "Warunki oddzielone przecinkami muszą być spełnione w grupie." },
+        "operatorPipe": { "title": "OR między grupami", "desc": "Użyj | aby podzielić zapytanie na grupy OR." },
+        "operatorNot": { "title": "NOT (wykluczenie)", "desc": "Prefiks \\! wyklucza wyniki zawierające dany termin." },
+        "player": { "title": "Nazwa gracza", "desc": "Filtruj po wyświetlanej nazwie lub nazwie użytkownika." },
+        "playerId": { "title": "Id gracza", "desc": "Filtruj po numerycznym id gracza (dokładne dopasowanie)." },
+        "video": { "title": "Link wideo", "desc": "Filtruj po tekście URL wideo." },
+        "vidtitle": { "title": "Tytuł wideo", "desc": "Filtruj po tytule wideo przejścia." },
+        "levelSong": { "title": "Utwór poziomu", "desc": "Filtruj po nazwie utworu powiązanego poziomu." },
+        "levelArtist": { "title": "Artysta poziomu", "desc": "Filtruj po nazwie artysty powiązanego poziomu." },
+        "levelDlLink": { "title": "Link pobierania poziomu", "desc": "Filtruj po tekście linku pobierania powiązanego poziomu." },
+        "keycount": { "title": "Liczba klawiszy", "desc": "Filtruj po liczbie klawiszy. Obsługuje wartości dokładne i zakresy." },
+        "hashtag": { "title": "Id przejścia (skrót)", "desc": "Wpisanie <code>#123</code> w pasku wyszukiwania ładuje przejście o id 123." }
+      }
+    },
     "sections": {
       "search": {
         "title": "Wyszukiwanie zaawansowane",
@@ -34,4 +110,4 @@
       }
     }
   }
-} 
+}

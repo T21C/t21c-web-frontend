@@ -43,11 +43,17 @@
       "label": "Feeling Rating",
       "value": "{{rating}}",
       "none": "None"
+    },
+    "expectedRating": {
+      "label": "Expected Rating",
+      "value": "{{rating}}",
+      "none": "None"
     }
   },
   "flags": {
-    "worldsFirst": "🏆 World's First! 🏆",
-    "worldsFirstPP": "🏆 World's First PP! 🏆",
+    "worldsFirst": "WF",
+    "worldsFirstPP": "WF PP",
+    "keyCount": "{{count}}K",
     "12k": "12K",
     "16k": "16K",
     "noHoldTap": "Alt. Tap Option",

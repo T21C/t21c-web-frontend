@@ -177,17 +177,6 @@
 
 .score-card .wf-badge {
   font-size: 0.85rem;
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-shadow: 0 0 10px #ffd70099;
-  color: gold;
-  background-color: #ffd70022;
-  padding: 2px 0.4rem;
-  border-radius: 4px;
-  white-space: nowrap;
-  flex-shrink: 0;
 }
 
 .score-card .score-impact {
