@@ -25,6 +25,15 @@ const BASE_REQUIRED_FIELDS = [
 
 const JUDGEMENT_FIELDS = ["ePerfect", "perfect", "lPerfect", "tooEarly", "early", "late"];
 
+// ADOFAI v3 release; uploads before this are ADOFAI v2 (last v2 day: 2026-04-30).
+const ADOFAI_V3_RELEASE_UTC = Date.UTC(2026, 4, 1);
+
+function isAdofaiV2EraVideoTimestamp(timestamp) {
+  if (!timestamp) return false;
+  const videoDate = new Date(timestamp);
+  return !Number.isNaN(videoDate.getTime()) && videoDate.getTime() < ADOFAI_V3_RELEASE_UTC;
+}
+
 export function usePassCoreForm({
   mode,
   initialForm,
@@ -114,6 +123,9 @@ export function usePassCoreForm({
     const videoLink = form?.videoLink ?? "";
     if (!videoLink) {
       setVideoDetail(null);
+      if (mode === "submit") {
+        setForm((prev) => (prev.isAdofaiV2 ? { ...prev, isAdofaiV2: false } : prev));
+      }
       return;
     }
 
@@ -122,16 +134,23 @@ export function usePassCoreForm({
       .then((details) => {
         if (!alive) return;
         setVideoDetail(details || null);
+        if (mode === "submit") {
+          const isAdofaiV2 = isAdofaiV2EraVideoTimestamp(details?.timestamp);
+          setForm((prev) => (prev.isAdofaiV2 === isAdofaiV2 ? prev : { ...prev, isAdofaiV2 }));
+        }
       })
       .catch(() => {
         if (!alive) return;
         setVideoDetail(null);
+        if (mode === "submit") {
+          setForm((prev) => (prev.isAdofaiV2 ? { ...prev, isAdofaiV2: false } : prev));
+        }
       });
 
     return () => {
       alive = false;
     };
-  }, [form.videoLink]);
+  }, [form.videoLink, mode]);
 
   const updateAccuracyAndScore = (nextForm, nextLevel) => {
     const lvl = nextLevel ?? level;

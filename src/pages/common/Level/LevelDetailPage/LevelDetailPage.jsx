@@ -74,7 +74,7 @@ const ENABLE_ROULETTE = import.meta.env.VITE_APRIL_FOOLS === "true";
 
 const getHighScores = (players) => {
   if (!players?.length) return null;
-  const sortedPlayers = players.sort((a, b) => 
+  const sortedPlayers = [...players].sort((a, b) => 
     new Date(a.vidUploadTime) - new Date(b.vidUploadTime));
   return {
     firstClear: sortedPlayers[0],
@@ -85,6 +85,17 @@ const getHighScores = (players) => {
     highestSpeed: sortedPlayers.some(p => p.speed) ? 
       sortedPlayers.reduce((a, b) => (b.speed || 0) > (a.speed || 0) ? b : a) : null
   };
+};
+
+const StatClearLink = ({ pass, children }) => {
+  if (!pass?.id) {
+    return <span className="info-desc">{children}</span>;
+  }
+  return (
+    <Link className="info-desc info-desc-link" to={`/passes/${pass.id}`}>
+      {children}
+    </Link>
+  );
 };
 
 const AliasesDropdown = ({ aliases, show, onClose }) => {
@@ -1628,6 +1639,11 @@ const LevelDetailPage = ({ mockData = null }) => {
     return [...sortedLeaderboard].sort((a, b) => (a._sortOrder || 999) - (b._sortOrder || 999));
   };
 
+  const highScores = useMemo(
+    () => getHighScores(res?.level?.passes),
+    [res?.level?.passes],
+  );
+
   function changeDialogState(){
     setOpenDialog(!openDialog)
   }
@@ -2423,58 +2439,66 @@ const LevelDetailPage = ({ mockData = null }) => {
               {sortedLeaderboard.length > 0 ? (<>
               <div className="info-item">
                 <p>{t('levelDetail.stats.firstClear.label')}</p>
-                <span className="info-desc">
-                  {!infoLoading ? 
-                    (sortedLeaderboard.length > 0 ? 
-                      t('levelDetail.stats.firstClear.value', {
-                        player: getHighScores(getSortedLeaderboard()).firstClear.player.name,
-                        date: getHighScores(getSortedLeaderboard()).firstClear.vidUploadTime.slice(0, 10)
-                      })
-                      : "-")
-                    : t('levelDetail.stats.waiting')}
-                </span>
+                {!infoLoading && sortedLeaderboard.length > 0 && highScores ? (
+                  <StatClearLink pass={highScores.firstClear}>
+                    {t('levelDetail.stats.firstClear.value', {
+                      player: highScores.firstClear.player.name,
+                      date: highScores.firstClear.vidUploadTime.slice(0, 10),
+                    })}
+                  </StatClearLink>
+                ) : (
+                  <span className="info-desc">
+                    {!infoLoading && sortedLeaderboard.length > 0 ? '-' : t('levelDetail.stats.waiting')}
+                  </span>
+                )}
               </div>
 
               <div className="info-item">
                 <p>{t('levelDetail.stats.highestScore.label')}</p>
-                <span className="info-desc">
-                  {!infoLoading ? 
-                    (sortedLeaderboard.length > 0 ? 
-                      t('levelDetail.stats.highestScore.value', {
-                        player: getHighScores(res?.level?.passes).highestScore.player.name,
-                        score: getHighScores(res?.level?.passes).highestScore.scoreV2.toFixed(2)
-                      })
-                      : "-")
-                    : t('levelDetail.stats.waiting')}
-                </span>
+                {!infoLoading && sortedLeaderboard.length > 0 && highScores ? (
+                  <StatClearLink pass={highScores.highestScore}>
+                    {t('levelDetail.stats.highestScore.value', {
+                      player: highScores.highestScore.player.name,
+                      score: highScores.highestScore.scoreV2.toFixed(2),
+                    })}
+                  </StatClearLink>
+                ) : (
+                  <span className="info-desc">
+                    {!infoLoading && sortedLeaderboard.length > 0 ? '-' : t('levelDetail.stats.waiting')}
+                  </span>
+                )}
               </div>
 
               <div className="info-item">
                 <p>{t('levelDetail.stats.highestSpeed.label')}</p>
-                <span className="info-desc">
-                  {!infoLoading ? 
-                    (sortedLeaderboard.length > 0 && getHighScores(res?.level?.passes).highestSpeed ? 
-                      t('levelDetail.stats.highestSpeed.value', {
-                        player: getHighScores(res?.level?.passes).highestSpeed.player.name,
-                        speed: getHighScores(res?.level?.passes).highestSpeed.speed || 1
-                      })
-                      : "-")
-                    : t('levelDetail.stats.waiting')}
-                </span>
+                {!infoLoading && sortedLeaderboard.length > 0 && highScores?.highestSpeed ? (
+                  <StatClearLink pass={highScores.highestSpeed}>
+                    {t('levelDetail.stats.highestSpeed.value', {
+                      player: highScores.highestSpeed.player.name,
+                      speed: highScores.highestSpeed.speed || 1,
+                    })}
+                  </StatClearLink>
+                ) : (
+                  <span className="info-desc">
+                    {!infoLoading && sortedLeaderboard.length > 0 ? '-' : t('levelDetail.stats.waiting')}
+                  </span>
+                )}
               </div>
 
               <div className="info-item">
                 <p>{t('levelDetail.stats.highestAccuracy.label')}</p>
-                <span className="info-desc">
-                  {!infoLoading ? 
-                    (sortedLeaderboard.length > 0 ? 
-                      t('levelDetail.stats.highestAccuracy.value', {
-                        player: getHighScores(res?.level?.passes).highestAcc.player.name,
-                        accuracy: (getHighScores(res?.level?.passes).highestAcc.accuracy * 100).toFixed(2)
-                      })
-                      : "-")
-                    : t('levelDetail.stats.waiting')}
-                </span>
+                {!infoLoading && sortedLeaderboard.length > 0 && highScores ? (
+                  <StatClearLink pass={highScores.highestAcc}>
+                    {t('levelDetail.stats.highestAccuracy.value', {
+                      player: highScores.highestAcc.player.name,
+                      accuracy: (highScores.highestAcc.accuracy * 100).toFixed(2),
+                    })}
+                  </StatClearLink>
+                ) : (
+                  <span className="info-desc">
+                    {!infoLoading && sortedLeaderboard.length > 0 ? '-' : t('levelDetail.stats.waiting')}
+                  </span>
+                )}
               </div>
 
               <div className="info-item">

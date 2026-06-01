@@ -823,6 +823,18 @@
   text-shadow: 0 0 5px #000;
 }
 
+.level-detail .level-detail-body .info .info-item .info-desc-link {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.level-detail .level-detail-body .info .info-item .info-desc-link:hover {
+  filter: brightness(1.15);
+  text-decoration: underline;
+}
+
 .level-detail .level-detail-body .info .info-button {
   max-height: 2.8rem;
   height: 100%;
