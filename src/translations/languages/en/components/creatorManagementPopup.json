@@ -42,6 +42,7 @@
     "linked": {
       "label": "Currently linked user",
       "idLabel": "ID:",
+      "unknownUser": "Linked user account",
       "unassignButton": "Unassign user",
       "unassignConfirm": "Remove the link between this user and the creator?",
       "unassignYes": "Yes, unassign",

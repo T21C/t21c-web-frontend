@@ -196,6 +196,8 @@
   width: 4rem;
   height: 4rem;
   object-fit: contain;
+  -webkit-user-select: none;
+  user-select: none;
   filter: drop-shadow(var(--shadow-sm));
 }
 
@@ -514,11 +516,13 @@
 }
 
 .level-detail .rerate-history-dropdown-anchor {
-  position: relative;
+  position: absolute;
   z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
+  bottom: 0;
+  right: 0;
 }
 
 .level-detail .scorev2-graph-dropdown-anchor {
@@ -2285,8 +2289,8 @@
   }
 
   .level-detail .rerate-arrow {
-    min-height: 2rem;
-    min-width: 2rem;
+    min-height: 1.75rem;
+    min-width: 1.75rem;
     touch-action: manipulation;
   }
 

@@ -465,12 +465,6 @@
   color: #ffffff;
 }
 
-.creator-management-popup-container .user-id {
-  margin: 0;
-  font-size: 0.85em;
-  color: #a0a0a0;
-}
-
 .creator-management-popup-container .unlink-button {
   padding: 6px 12px;
   background-color: var(--danger-color);
@@ -548,12 +542,6 @@
   font-size: 0.85em;
 }
 
-.creator-management-popup-container .player-warning {
-  color: #ffc107;
-  font-size: 0.8em;
-  margin-top: 2px;
-}
-
 .creator-management-popup-container .assign-row-button {
   padding: 6px 12px;
   background-color: var(--btn-primary);
@@ -612,19 +600,10 @@
   cursor: not-allowed;
 }
 
-.creator-management-popup-container .discord-confirm-container {
-  padding: 20px;
-  background-color: #1a1a1a;
-  border-radius: 6px;
-  border: 1px solid var(--btn-neutral-disabled-fill);
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
 .creator-management-popup-container .discord-preview {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 16px;
   padding: 12px;
   background-color: var(--btn-neutral-dark);
@@ -655,10 +634,6 @@
   text-align: center;
   font-weight: 500;
   margin: 0;
-}
-
-.creator-management-popup-container .discord-confirm-buttons {
-  width: 100%;
 }
 
 .creator-management-popup-container .discord-confirm-button,

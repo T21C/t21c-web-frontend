@@ -253,7 +253,7 @@ export const CreatorManagementPopup = ({
     const timer = setTimeout(async () => {
       try {
         const res = await api.get(
-          `${routes.playersV3.root()}/search?query=${encodeURIComponent(trimmed)}`
+          `${routes.playersV3.root()}/search?query=${encodeURIComponent(trimmed)}&excludeCreatorLinked=true`
         );
         if (cancelled) return;
         const body = res.data;
@@ -330,30 +330,27 @@ export const CreatorManagementPopup = ({
         routes.database.creators.assignCreatorToUser(userOrPlayerId, creator.id)
       );
       if (res.status === 200) {
-        setSuccess(tt('success.userAssigned'));
         toast.success(tt('success.userAssigned'));
         onUpdate?.();
       }
     } catch (err) {
       console.error('Error assigning user to creator:', err);
-      const msg = err.response?.data?.error || tt('errors.assignFailed');
-      setError(msg);
-      toast.error(msg);
+      toast.error(err.response?.data?.error || tt('errors.assignFailed'));
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleUnassignUser = async () => {
-    if (!creator?.user?.id) return;
+    const linkedUserId = creator?.user?.id || creator?.userId;
+    if (!linkedUserId) return;
     setIsLoading(true);
     clearMessages();
     try {
       const res = await api.delete(
-        routes.database.creators.removeCreatorFromUser(creator.user.id)
+        routes.database.creators.removeCreatorFromUser(linkedUserId)
       );
       if (res.status === 200) {
-        setSuccess(tt('success.userUnassigned'));
         toast.success(tt('success.userUnassigned'));
         onUpdate?.();
       }
@@ -665,21 +662,22 @@ export const CreatorManagementPopup = ({
 
             {mode === 'user' && (
               <div className="user-form">
-                {creator?.user ? (
+                {hasLinkedUserAccount ? (
                   <div className="form-group">
                     <label>{tt('user.linked.label')}</label>
                     <div className="linked-user-info">
                       {linkedUserDisplayAvatar && (
                         <img
                           src={linkedUserDisplayAvatar}
-                          alt={creator.user.username}
+                          alt={creator.user?.username || ''}
                           className="user-avatar"
                         />
                       )}
                       <div className="user-info-content">
-                        <p className="user-username">@{creator.user.username}</p>
-                        <p className="user-id">
-                          {tt('user.linked.idLabel')} {creator.user.id}
+                        <p className="user-username">
+                          {creator.user?.username
+                            ? `@${creator.user.username}`
+                            : tt('user.linked.unknownUser')}
                         </p>
                         <button
                           onClick={() => setShowUnassignConfirm(true)}
@@ -717,40 +715,32 @@ export const CreatorManagementPopup = ({
                             : tt('user.search.hint')}
                         </div>
                       ) : (
-                        playerResults.map((player) => {
-                          const alreadyLinked = !!player.user?.creatorId;
-                          return (
-                            <div key={player.id} className="player-result-row">
-                              <img
-                                src={userAvatarDisplayUrl(player) || ''}
-                                alt={player.name}
-                                className="player-pfp"
-                              />
-                              <div className="player-result-info">
-                                <span className="player-name">
-                                  {player.user?.nickname || player.name}
+                        playerResults.map((player) => (
+                          <div key={player.id} className="player-result-row">
+                            <img
+                              src={userAvatarDisplayUrl(player) || ''}
+                              alt={player.name}
+                              className="player-pfp"
+                            />
+                            <div className="player-result-info">
+                              <span className="player-name">
+                                {player.user?.nickname || player.name}
+                              </span>
+                              {player.user?.username && (
+                                <span className="player-handle">
+                                  @{player.user.username}
                                 </span>
-                                {player.user?.username && (
-                                  <span className="player-handle">
-                                    @{player.user.username}
-                                  </span>
-                                )}
-                                {alreadyLinked && (
-                                  <span className="player-warning">
-                                    {tt('user.search.alreadyLinked')}
-                                  </span>
-                                )}
-                              </div>
-                              <button
-                                className="assign-row-button"
-                                onClick={() => handleAssignPlayer(player)}
-                                disabled={isLoading}
-                              >
-                                {tt('user.search.assignButton')}
-                              </button>
+                              )}
                             </div>
-                          );
-                        })
+                            <button
+                              className="assign-row-button"
+                              onClick={() => handleAssignPlayer(player)}
+                              disabled={isLoading}
+                            >
+                              {tt('user.search.assignButton')}
+                            </button>
+                          </div>
+                        ))
                       )}
                     </div>
 
@@ -775,46 +765,48 @@ export const CreatorManagementPopup = ({
                         </div>
                       </div>
                     </div>
+                  </>
+                )}
 
-                    {showDiscordConfirm && pendingDiscordInfo && (
-                      <div className="discord-confirm-container">
-                        <div className="discord-preview">
-                          {pendingDiscordInfo.avatarUrl && (
-                            <img
-                              src={pendingDiscordInfo.avatarUrl}
-                              alt={tt('discord.confirm.avatarAlt')}
-                              className="discord-avatar"
-                            />
-                          )}
-                          <div>
-                            <p className="discord-username">@{pendingDiscordInfo.username}</p>
-                            <p className="discord-id">
-                              {tt('discord.currentUser.idLabel')} {pendingDiscordInfo.id}
-                            </p>
-                          </div>
-                        </div>
-                        <p className="discord-confirm-message">{tt('discord.confirm.message')}</p>
-                        <div className="discord-confirm-buttons popup-btn-grid">
-                          <button
-                            type="button"
-                            onClick={() => handleDiscordConfirm(true)}
-                            disabled={isLoading}
-                            className="discord-confirm-button"
-                          >
-                            {tt('discord.confirm.confirmButton')}
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleDiscordConfirm(false)}
-                            disabled={isLoading}
-                            className="discord-cancel-button"
-                          >
-                            {tt('discord.confirm.cancelButton')}
-                          </button>
+                {showDiscordConfirm && pendingDiscordInfo && (
+                  <div className="confirm-dialog">
+                    <div className="confirm-content">
+                      <div className="discord-preview">
+                        {pendingDiscordInfo.avatarUrl && (
+                          <img
+                            src={pendingDiscordInfo.avatarUrl}
+                            alt={tt('discord.confirm.avatarAlt')}
+                            className="discord-avatar"
+                          />
+                        )}
+                        <div>
+                          <p className="discord-username">@{pendingDiscordInfo.username}</p>
+                          <p className="discord-id">
+                            {tt('discord.currentUser.idLabel')} {pendingDiscordInfo.id}
+                          </p>
                         </div>
                       </div>
-                    )}
-                  </>
+                      <p className="discord-confirm-message">{tt('discord.confirm.message')}</p>
+                      <div className="confirm-buttons popup-btn-grid">
+                        <button
+                          type="button"
+                          onClick={() => handleDiscordConfirm(true)}
+                          disabled={isLoading}
+                          className="discord-confirm-button"
+                        >
+                          {tt('discord.confirm.confirmButton')}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDiscordConfirm(false)}
+                          disabled={isLoading}
+                          className="discord-cancel-button"
+                        >
+                          {tt('discord.confirm.cancelButton')}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 )}
 
                 {showUnassignConfirm && (
