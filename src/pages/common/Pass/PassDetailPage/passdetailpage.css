@@ -217,6 +217,12 @@
   margin-bottom: 1rem;
 }
 
+@media (max-width: 768px) {
+  .pass-detail .pass-detail-body {
+    flex-direction: column;
+  }
+}
+
 .pass-detail .info {
   flex: 1;
   background-color: var(--color-white-t10);
