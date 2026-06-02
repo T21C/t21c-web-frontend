@@ -73,11 +73,10 @@ export function StatusBanner({
     dismissible ? (
       <CloseButton
         type="button"
-        variant="floating"
+        variant="inline"
         placement="top-end"
         size="sm"
         className="status-banner__dismiss"
-        style={{ top: 'unset' }}
         aria-label={dismissLabel}
         onClick={handleDismissClick}
       />

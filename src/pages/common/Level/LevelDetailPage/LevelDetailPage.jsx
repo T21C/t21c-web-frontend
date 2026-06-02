@@ -1977,7 +1977,9 @@ const LevelDetailPage = ({ mockData = null }) => {
         image={''}
         type="article"
       />
-      <WebAdofaiViewerButton levelId={effectiveId} />
+      {res.level.fileId && !res.level.isDeleted && !res.level.isHidden && (
+        <WebAdofaiViewerButton levelId={effectiveId} />
+      )}
       <div 
         className={`level-detail ${(res?.level?.curation && !externalCssOverride) || externalCssOverride ? 'curated' : ''}`}
         data-custom-styles={(externalCssOverride || curationStyles) ? "true" : undefined}
