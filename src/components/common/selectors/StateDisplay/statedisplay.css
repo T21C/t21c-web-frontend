@@ -22,9 +22,9 @@
   position: relative;
   overflow: visible;
   box-sizing: border-box;
+  transition: background 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* State indicator (thumb) */
 .state-display::before {
   content: '';
   position: absolute;
@@ -40,9 +40,40 @@
   left: var(--current-position);
 }
 
-/* Hover effect */
 .state-display:hover::before {
   background: var(--btn-info);
+}
+
+/* On/off binary track mode (activeStates prop) */
+.state-display--binary-track {
+  background: rgba(0, 0, 0, 0.28);
+}
+
+.state-display--binary-track.state-display--active-track {
+  background: var(--btn-info);
+}
+
+.state-display--binary-track.state-display--active-track:hover {
+  background: var(--btn-info-light-hover);
+}
+
+.state-display--binary-track:not(.state-display--active-track):hover {
+  background: var(--btn-info-dark-hover);
+}
+
+.state-display--binary-track::before {
+  background: var(--color-white);
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.28),
+    0 0 0 1px rgba(0, 0, 0, 0.12);
+}
+
+.state-display--binary-track:hover::before {
+  background: var(--color-white);
+  box-shadow:
+    0 2px 5px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(0, 0, 0, 0.14);
 }
 
 .toggle-label {
@@ -60,4 +91,4 @@
   min-width: 40px;
   -webkit-user-select: none;
   user-select: none;
-} 
+}

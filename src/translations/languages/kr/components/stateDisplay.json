@@ -10,7 +10,9 @@
     "LEVEL": "신규 채보",
     "percent": "%",
     "pixel": "px",
-    "keyword": "side"
+    "keyword": "side",
+    "on": "켜기",
+    "off": "끄기"
   },
   "accessDenied": {
     "title": "접근 거부",

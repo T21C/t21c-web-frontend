@@ -91,6 +91,9 @@
       "accuracy": "Sort by accuracy",
       "score": "Sort by score",
       "speed": "Sort by speed"
+    },
+    "dedupe": {
+      "label": "Hide Reclears"
     }
   },
   "dialog": {

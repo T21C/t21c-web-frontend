@@ -2,7 +2,9 @@
   "states": {
     "hide": "Cacher",
     "show": "Montrer",
-    "only": "Seulement"
+    "only": "Seulement",
+    "on": "Activé",
+    "off": "Désactivé"
   },
   "accessDenied": {
     "title": "Accès refusé",

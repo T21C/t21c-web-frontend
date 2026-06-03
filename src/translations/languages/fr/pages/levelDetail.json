@@ -50,6 +50,9 @@
       "time": "Trier par date de complétion",
       "accuracy": "Trier par précision",
       "score": "Trier par score"
+    },
+    "dedupe": {
+      "label": "Masquer les re-clears"
     }
   },
   "dialog": {

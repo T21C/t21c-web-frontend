@@ -68,6 +68,9 @@
       "accuracy": "Sortuj według dokładności",
       "score": "Sortuj według wyniku",
       "speed": "Sortuj według prędkości"
+    },
+    "dedupe": {
+      "label": "Ukryj powtórne clear'y"
     }
   },
   "dialog": {

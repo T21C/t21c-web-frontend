@@ -10,7 +10,9 @@
     "LEVEL": "新关卡",
     "percent": "%",
     "pixel": "px",
-    "keyword": "side"
+    "keyword": "side",
+    "on": "开",
+    "off": "关"
   },
   "accessDenied": {
     "title": "拒绝访问",

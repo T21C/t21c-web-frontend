@@ -10,7 +10,9 @@
     "LEVEL": "New Level",
     "percent": "%",
     "pixel": "px",
-    "keyword": "side"
+    "keyword": "side",
+    "on": "On",
+    "off": "Off"
   },
   "accessDenied": {
     "title": "Access Denied",

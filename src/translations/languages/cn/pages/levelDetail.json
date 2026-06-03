@@ -91,6 +91,9 @@
       "accuracy": "按精准度排序",
       "score": "按分数排序",
       "speed": "按飙速速度排序"
+    },
+    "dedupe": {
+      "label": "隐藏重复通关"
     }
   },
   "dialog": {

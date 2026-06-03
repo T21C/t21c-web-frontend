@@ -14,6 +14,7 @@ const StateDisplay = ({
   padding = 0,
   showLabel = true,
   showValue = true,
+  activeStates = [],
   className = ''
 }) => {
   const { t } = useTranslation('components');
@@ -60,12 +61,19 @@ const StateDisplay = ({
     padding: `${dimensions.verticalPadding}px ${dimensions.horizontalPadding}px`
   };
 
+  const isBinaryTrack = activeStates.length > 0;
+  const isActiveTrack = isBinaryTrack && activeStates.includes(currentState);
+
   return (
     <div className={`state-display-toggle ${className}`}>
       {showLabel && label && <span className="toggle-label">{label}</span>}
       <div className="state-display-container">
         <div 
-          className="state-display"
+          className={[
+            'state-display',
+            isBinaryTrack && 'state-display--binary-track',
+            isActiveTrack && 'state-display--active-track',
+          ].filter(Boolean).join(' ')}
           data-state={currentState}
           onClick={handleClick}
           style={style}
@@ -90,6 +98,7 @@ StateDisplay.propTypes = {
   padding: PropTypes.number,
   showLabel: PropTypes.bool,
   showValue: PropTypes.bool,
+  activeStates: PropTypes.arrayOf(PropTypes.string),
   className: PropTypes.string
 };
 

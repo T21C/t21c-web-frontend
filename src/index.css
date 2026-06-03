@@ -44,6 +44,9 @@
   --btn-admin-purple-hover: color-mix(in srgb, var(--btn-admin-purple) 58%, #fff);
   --btn-info: #2196f3;
   --btn-info-hover: color-mix(in srgb, var(--btn-info) 78%, #000);
+  /* Toggle track hovers: off-hover < on-hover < --btn-info (on rest) */
+  --btn-info-dark-hover: color-mix(in srgb, var(--btn-info) 54%, #000);
+  --btn-info-light-hover: color-mix(in srgb, var(--btn-info) 84%, #000);
   --danger-color-hover: color-mix(in srgb, var(--danger-color) 82%, #000);
   --btn-warning-hover: color-mix(in srgb, var(--btn-warning) 78%, #000);
   --btn-danger-intense-hover: color-mix(in srgb, var(--btn-danger-intense) 68%, #fff);

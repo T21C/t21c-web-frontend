@@ -91,6 +91,9 @@
       "accuracy": "정확도순",
       "score": "점수순",
       "speed": "속도순"
+    },
+    "dedupe": {
+      "label": "중복 클리어 숨기기"
     }
   },
   "dialog": {

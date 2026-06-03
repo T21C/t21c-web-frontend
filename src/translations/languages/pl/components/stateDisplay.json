@@ -5,7 +5,9 @@
     "only": "Tylko",
     "all": "Wszystko",
     "12k": "12K",
-    "16k": "16K"
+    "16k": "16K",
+    "on": "Wł.",
+    "off": "Wył."
   },
   "accessDenied": {
     "title": "Brak dostępu",

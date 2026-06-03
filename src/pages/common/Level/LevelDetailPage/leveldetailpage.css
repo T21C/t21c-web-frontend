@@ -1140,9 +1140,28 @@
 
 .level-detail .rank .leaderboard-sort {
   display: flex;
+  align-items: center;
   gap: var(--spacing-md);
   padding: var(--spacing-sm);
   padding-left: var(--spacing-md);
+}
+
+.level-detail .rank .leaderboard-sort .leaderboard-sort-dedupe {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.level-detail .rank .leaderboard-sort .leaderboard-sort-dedupe .state-display-toggle {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--border-radius);
+  gap: var(--spacing-sm);
+}
+
+.level-detail .rank .leaderboard-sort .leaderboard-sort-dedupe .toggle-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-white);
 }
 
 .level-detail .rank .leaderboard-sort > * {

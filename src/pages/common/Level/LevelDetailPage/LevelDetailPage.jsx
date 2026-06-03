@@ -53,7 +53,7 @@ import {
 } from "@/components/common/icons";
 import { createEventSystem, formatBaseScore, formatCreatorDisplay, formatDate, isCdnUrl, selectIconSize } from "@/utils/Utility";
 import { getSongDisplayName, getArtistDisplayName, formatDuration } from "@/utils/levelHelpers";
-import { RouletteWheel, SlotMachine } from '@/components/common/selectors';
+import { RouletteWheel, SlotMachine, StateDisplay } from '@/components/common/selectors';
 import { CloseButton } from '@/components/common/buttons';
 import { toast } from 'react-hot-toast';
 import { ABILITIES, hasBit } from '@/utils/Abilities';
@@ -87,6 +87,64 @@ const getHighScores = (players) => {
     highestSpeed: sortedPlayers.some(p => p.speed) ? 
       sortedPlayers.reduce((a, b) => (b.speed || 0) > (a.speed || 0) ? b : a) : null
   };
+};
+
+const getPassUploadTime = (pass) => (
+  pass.vidUploadTime ? new Date(pass.vidUploadTime).getTime() : 0
+);
+
+const getLeaderboardSortValue = (pass, sortType) => {
+  switch (sortType) {
+    case 'TIME':
+      return getPassUploadTime(pass);
+    case 'ACC':
+      return pass.judgements?.accuracy ?? pass.accuracy ?? 0;
+    case 'SPEED':
+      return pass.speed ?? 0;
+    case 'SCR':
+    default:
+      return pass.scoreV2 ?? 0;
+  }
+};
+
+const pickBestPassForSort = (existing, candidate, sortType, sortDirection) => {
+  if (sortType === 'TIME') {
+    const preferHigher = sortDirection === 'desc';
+    const existingTime = getPassUploadTime(existing);
+    const candidateTime = getPassUploadTime(candidate);
+    if (candidateTime !== existingTime) {
+      return preferHigher
+        ? (candidateTime > existingTime ? candidate : existing)
+        : (candidateTime < existingTime ? candidate : existing);
+    }
+  } else {
+    const existingVal = getLeaderboardSortValue(existing, sortType);
+    const candidateVal = getLeaderboardSortValue(candidate, sortType);
+    if (candidateVal !== existingVal) {
+      return candidateVal > existingVal ? candidate : existing;
+    }
+  }
+
+  const existingTime = getPassUploadTime(existing);
+  const candidateTime = getPassUploadTime(candidate);
+  if (candidateTime !== existingTime) {
+    return candidateTime > existingTime ? candidate : existing;
+  }
+  return (candidate.id ?? 0) > (existing.id ?? 0) ? candidate : existing;
+};
+
+const dedupePassesByPlayer = (passes, sortType, sortDirection) => {
+  const byPlayer = new Map();
+  for (const pass of passes) {
+    const playerKey = pass.playerId ?? pass.id;
+    const existing = byPlayer.get(playerKey);
+    if (!existing) {
+      byPlayer.set(playerKey, pass);
+    } else {
+      byPlayer.set(playerKey, pickBestPassForSort(existing, pass, sortType, sortDirection));
+    }
+  }
+  return Array.from(byPlayer.values());
 };
 
 const StatClearLink = ({ pass, children }) => {
@@ -713,6 +771,7 @@ const LevelDetailPage = ({ mockData = null }) => {
   const [res, setRes] = useState(null);
   const [leaderboardSort, setLeaderboardSort] = useState("SCR");
   const [sortDirection, setSortDirection] = useState("desc"); // "desc" or "asc"
+  const [leaderboardDedupe, setLeaderboardDedupe] = useState("on");
   const [infoLoading, setInfoLoading] = useState(true);
   const [sortedLeaderboard, setSortedLeaderboard] = useState([]);
   const { scrollRef: rankListScrollRef, scrollParent: rankListScrollParent } = useScrollParent();
@@ -1017,15 +1076,16 @@ const LevelDetailPage = ({ mockData = null }) => {
   }, [activeCurationTooltipId, curationsSorted]);
 
   useEffect(() => {
-    const uniqueClears = new Set(sortedLeaderboard.map(player => player.playerId));
-    if (uniqueClears.size !== sortedLeaderboard.length) {
+    const passes = res?.level?.passes ?? [];
+    const uniqueClears = new Set(passes.map((pass) => pass.playerId));
+    if (uniqueClears.size !== passes.length) {
       setClearCount(uniqueClears.size.toString());
       setHasRepeatedClears(true);
     } else {
-      setClearCount(sortedLeaderboard.length.toString());
+      setClearCount(passes.length.toString());
       setHasRepeatedClears(false);
     }
-  }, [sortedLeaderboard]);
+  }, [res?.level?.passes]);
 
 
   // Simple CSS sanitizer - remove dangerous content
@@ -1691,7 +1751,10 @@ const LevelDetailPage = ({ mockData = null }) => {
 
   const sortLeaderboard = useCallback(() => {
     if (!res?.level?.passes) return [];
-    const passes = [...res.level.passes]; // Create a copy to avoid mutating original array
+    const allPasses = [...res.level.passes];
+    const passes = leaderboardDedupe === "on"
+      ? dedupePassesByPlayer(allPasses, leaderboardSort, sortDirection)
+      : allPasses;
     const isDescending = sortDirection === "desc";
     
     let sortedPasses = [];
@@ -1726,29 +1789,20 @@ const LevelDetailPage = ({ mockData = null }) => {
         break;
     }
     return sortedPasses;
-  }, [res?.level?.passes, leaderboardSort, sortDirection]);
+  }, [res?.level?.passes, leaderboardSort, sortDirection, leaderboardDedupe]);
 
-  // Assign explicit sort order to passes data
   useEffect(() => {
     if (!res?.level?.passes) {
       setSortedLeaderboard([]);
       return;
     }
 
-    // Get the sorted order and assign explicit sortOrder to each item
     const sorted = sortLeaderboard();
-    
-    // Assign sortOrder to the original passes based on the sorted position
-    const passesWithSortOrder = res.level.passes.map(pass => {
-      const sortedIndex = sorted.findIndex(sortedItem => sortedItem.id === pass.id);
-      return {
-        ...pass,
-        _sortOrder: sortedIndex !== -1 ? sortedIndex+1 : 999 // Put unfound items at the end
-      };
-    });
-    
-    setSortedLeaderboard(passesWithSortOrder);
-  }, [res?.level?.passes, leaderboardSort, sortDirection, sortLeaderboard]);
+    setSortedLeaderboard(sorted.map((pass, index) => ({
+      ...pass,
+      _sortOrder: index + 1,
+    })));
+  }, [res?.level?.passes, leaderboardSort, sortDirection, leaderboardDedupe, sortLeaderboard]);
 
   // Helper function to get sorted leaderboard data
   const getSortedLeaderboard = () => {
@@ -1759,6 +1813,8 @@ const LevelDetailPage = ({ mockData = null }) => {
     () => getHighScores(res?.level?.passes),
     [res?.level?.passes],
   );
+
+  const totalPassCount = res?.level?.passes?.length ?? 0;
 
   function changeDialogState(){
     setOpenDialog(!openDialog)
@@ -2586,10 +2642,10 @@ const LevelDetailPage = ({ mockData = null }) => {
           <div className="level-detail-body">
 
             <div className="info">
-              {sortedLeaderboard.length > 0 ? (<>
+              {totalPassCount > 0 ? (<>
               <div className="info-item">
                 <p>{t('levelDetail.stats.firstClear.label')}</p>
-                {!infoLoading && sortedLeaderboard.length > 0 && highScores ? (
+                {!infoLoading && totalPassCount > 0 && highScores ? (
                   <StatClearLink pass={highScores.firstClear}>
                     {t('levelDetail.stats.firstClear.value', {
                       player: highScores.firstClear.player.name,
@@ -2598,14 +2654,14 @@ const LevelDetailPage = ({ mockData = null }) => {
                   </StatClearLink>
                 ) : (
                   <span className="info-desc">
-                    {!infoLoading && sortedLeaderboard.length > 0 ? '-' : t('levelDetail.stats.waiting')}
+                    {!infoLoading && totalPassCount > 0 ? '-' : t('levelDetail.stats.waiting')}
                   </span>
                 )}
               </div>
 
               <div className="info-item">
                 <p>{t('levelDetail.stats.highestScore.label')}</p>
-                {!infoLoading && sortedLeaderboard.length > 0 && highScores ? (
+                {!infoLoading && totalPassCount > 0 && highScores ? (
                   <StatClearLink pass={highScores.highestScore}>
                     {t('levelDetail.stats.highestScore.value', {
                       player: highScores.highestScore.player.name,
@@ -2614,14 +2670,14 @@ const LevelDetailPage = ({ mockData = null }) => {
                   </StatClearLink>
                 ) : (
                   <span className="info-desc">
-                    {!infoLoading && sortedLeaderboard.length > 0 ? '-' : t('levelDetail.stats.waiting')}
+                    {!infoLoading && totalPassCount > 0 ? '-' : t('levelDetail.stats.waiting')}
                   </span>
                 )}
               </div>
 
               <div className="info-item">
                 <p>{t('levelDetail.stats.highestSpeed.label')}</p>
-                {!infoLoading && sortedLeaderboard.length > 0 && highScores?.highestSpeed ? (
+                {!infoLoading && totalPassCount > 0 && highScores?.highestSpeed ? (
                   <StatClearLink pass={highScores.highestSpeed}>
                     {t('levelDetail.stats.highestSpeed.value', {
                       player: highScores.highestSpeed.player.name,
@@ -2630,14 +2686,14 @@ const LevelDetailPage = ({ mockData = null }) => {
                   </StatClearLink>
                 ) : (
                   <span className="info-desc">
-                    {!infoLoading && sortedLeaderboard.length > 0 ? '-' : t('levelDetail.stats.waiting')}
+                    {!infoLoading && totalPassCount > 0 ? '-' : t('levelDetail.stats.waiting')}
                   </span>
                 )}
               </div>
 
               <div className="info-item">
                 <p>{t('levelDetail.stats.highestAccuracy.label')}</p>
-                {!infoLoading && sortedLeaderboard.length > 0 && highScores ? (
+                {!infoLoading && totalPassCount > 0 && highScores ? (
                   <StatClearLink pass={highScores.highestAcc}>
                     {t('levelDetail.stats.highestAccuracy.value', {
                       player: highScores.highestAcc.player.name,
@@ -2646,7 +2702,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                   </StatClearLink>
                 ) : (
                   <span className="info-desc">
-                    {!infoLoading && sortedLeaderboard.length > 0 ? '-' : t('levelDetail.stats.waiting')}
+                    {!infoLoading && totalPassCount > 0 ? '-' : t('levelDetail.stats.waiting')}
                   </span>
                 )}
               </div>
@@ -2658,12 +2714,12 @@ const LevelDetailPage = ({ mockData = null }) => {
                   data-tooltip-id="total-clears-tooltip" 
                   data-tooltip-content={
                     hasRepeatedClears 
-                      ? t('levelDetail.stats.totalClears.tooltip', { unique: clearCount, total: sortedLeaderboard.length }) 
+                      ? t('levelDetail.stats.totalClears.tooltip', { unique: clearCount, total: totalPassCount }) 
                       : undefined
                   }
                   >
                     {!infoLoading ? 
-                      `${sortedLeaderboard.length} (${clearCount})` 
+                      `${totalPassCount} (${clearCount})` 
                       : t('levelDetail.stats.waiting')}
                 </span>
                 {hasRepeatedClears && <Tooltip id="total-clears-tooltip" place="left" noArrow />}
@@ -2775,6 +2831,20 @@ const LevelDetailPage = ({ mockData = null }) => {
                   {leaderboardSort === "SCR" && (
                     sortIndicatorIcon(sortArrowDirection)
                   )}
+                </div>
+
+                <div className="leaderboard-sort-dedupe">
+                  <StateDisplay
+                    label={t('levelDetail.leaderboard.dedupe.label')}
+                    currentState={leaderboardDedupe}
+                    onChange={setLeaderboardDedupe}
+                    states={['off', 'on']}
+                    activeStates={['on']}
+                    showValue={false}
+                    width={56}
+                    height={24}
+                    padding={3}
+                  />
                 </div>
               </div>
             ) : <></>}
