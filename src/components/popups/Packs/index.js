@@ -1,8 +1,9 @@
 // tuf-search: #packs #Packs #index #popups
 import EditPackPopup from "./EditPackPopup/EditPackPopup";
 import PackDownloadPopup from "./PackDownloadPopup/PackDownloadPopup";
+import PackExportPopup from "./PackExportPopup/PackExportPopup";
 import AddToPackPopup from "./AddToPackPopup/AddToPackPopup";
 import CreatePackPopup from "./AddToPackPopup/CreatePackPopup";
 import { PackHelpPopup } from "./PackHelpPopup/PackHelpPopup";
 
-export { EditPackPopup, PackDownloadPopup, AddToPackPopup, CreatePackPopup, PackHelpPopup };
+export { EditPackPopup, PackDownloadPopup, PackExportPopup, AddToPackPopup, CreatePackPopup, PackHelpPopup };

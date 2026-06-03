@@ -28,6 +28,7 @@
     "addToFavorites": "收藏",
     "removeFromFavorites": "取消收藏",
     "downloadPack": "下载地图包",
+    "exportAs": "导出为",
     "downloadFolder": "下载文件夹"
   },
   "download": {

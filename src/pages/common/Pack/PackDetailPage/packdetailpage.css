@@ -67,11 +67,26 @@
   margin-bottom: 1rem;
 }
 
+.pack-detail-page .pack-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  min-width: 60%;
+  margin-bottom: 1rem;
+}
+
+.pack-detail-page .pack-top-bar .back-btn {
+  margin-bottom: 0;
+}
+
 .pack-detail-page .header-container {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
   min-width: 60%;
+  width: 100%;
 }
 
 .pack-detail-page .back-btn {
@@ -250,6 +265,31 @@
 }
 
 .pack-detail-page .download-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.pack-detail-page .pack-top-bar .export-btn {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-white-t20);
+  border-radius: 8px;
+  background: var(--color-white-t10);
+  color: var(--color-white);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.pack-detail-page .pack-top-bar .export-btn:hover:not(:disabled) {
+  background: var(--color-white-t20);
+  border-color: var(--color-white-t30);
+}
+
+.pack-detail-page .pack-top-bar .export-btn:disabled {
   cursor: not-allowed;
   opacity: 0.55;
 }

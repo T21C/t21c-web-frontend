@@ -184,5 +184,26 @@
       "diskFull": "服务器临时磁盘空间不足，无法生成此地图包。请稍后重试或选择较小的下载范围。",
       "queueBusy": "服务器正在处理其他地图包下载，请稍后再试。"
     }
+  },
+  "exportPack": {
+    "title": "导出 {{contextName}}",
+    "defaultContextName": "地图包",
+    "description": "下载 {{contextName}} 中关卡的表格文件。",
+    "formatLabel": "格式",
+    "format": {
+      "xlsx": "Excel (.xlsx)",
+      "csv": "CSV (.csv)"
+    },
+    "structureLabel": "布局",
+    "structure": {
+      "includeFolders": "包含文件夹（分区行）",
+      "flatten": "扁平列表（仅关卡，保持顺序）"
+    },
+    "export": "导出",
+    "exporting": "正在导出…",
+    "unavailable": "不可用",
+    "errors": {
+      "exportFailed": "导出失败，请重试。"
+    }
   }
 }

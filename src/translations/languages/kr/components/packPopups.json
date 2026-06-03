@@ -184,5 +184,26 @@
       "diskFull": "The server does not have enough temporary disk space for this pack. Try again later or download a smaller selection.",
       "queueBusy": "The server is preparing other pack downloads. Please wait a few minutes and try again."
     }
+  },
+  "exportPack": {
+    "title": "Export {{contextName}}",
+    "defaultContextName": "Pack",
+    "description": "Download a spreadsheet of levels in {{contextName}}.",
+    "formatLabel": "Format",
+    "format": {
+      "xlsx": "Excel (.xlsx)",
+      "csv": "CSV (.csv)"
+    },
+    "structureLabel": "Layout",
+    "structure": {
+      "includeFolders": "Include pack folders (section rows)",
+      "flatten": "Flatten list (levels only, same order)"
+    },
+    "export": "Export",
+    "exporting": "Exporting…",
+    "unavailable": "Unavailable",
+    "errors": {
+      "exportFailed": "Failed to export pack. Please try again."
+    }
   }
 }

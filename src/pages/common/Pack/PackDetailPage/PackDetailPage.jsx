@@ -6,8 +6,8 @@ import { useTranslation } from "react-i18next";
 import PackItem, { PackLevelItem } from "@/components/cards/PackItem/PackItem";
 import { MetaTags } from "@/components/common/display";
 import { ScrollButton } from "@/components/common/buttons";
-import { EditIcon, PinIcon, LockIcon, EyeIcon, UsersIcon, ArrowIcon, PlusIcon, LikeIcon, DownloadIcon, ChevronIcon } from "@/components/common/icons";
-import { EditPackPopup, PackDownloadPopup } from "@/components/popups/Packs";
+import { EditIcon, PinIcon, LockIcon, EyeIcon, UsersIcon, ArrowIcon, PlusIcon, LikeIcon, DownloadIcon, ChevronIcon, ExternalLinkIcon } from "@/components/common/icons";
+import { EditPackPopup, PackDownloadPopup, PackExportPopup } from "@/components/popups/Packs";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePackContext } from "@/contexts/PackContext";
 import api from "@/utils/api";
@@ -141,6 +141,7 @@ const PackDetailPage = () => {
   const [showEditPopup, setShowEditPopup] = useState(false);
   const [expandedFolders, setExpandedFolders] = useState(new Set());
   const [downloadContext, setDownloadContext] = useState(null);
+  const [showExportPopup, setShowExportPopup] = useState(false);
   const [cdnMetadataByLevelId, setCdnMetadataByLevelId] = useState(() => new Map());
   const scrollRef = useRef(null);
   const lastMousePosRef = useRef({ x: 0, y: 0 });
@@ -167,6 +168,7 @@ const PackDetailPage = () => {
   const packSizeSummary = useMemo(() => summarizePackSize(packItems), [packItems]);
   const packSizeLabel = useMemo(() => formatEstimatedSize(packSizeSummary), [packSizeSummary]);
   const packDownloadDisabled = packSizeSummary.levelCount === 0;
+  const packExportDisabled = packSizeSummary.levelCount === 0;
   const sortedRootItems = useMemo(() => sortItemsByOrder(packItems), [packItems]);
   const totalRenderableItems = useMemo(() => countPackItems(packItems), [packItems]);
 
@@ -838,10 +840,29 @@ const PackDetailPage = () => {
       
       
       <div className="pack-body page-content-70rem">
-      <Link className="back-btn" to="/packs">
-        <ChevronIcon size={28} direction="left" />
-        <span>{t('packDetail.backToPacks')}</span>
-      </Link>
+        <div className="pack-top-bar">
+          <Link className="back-btn" to="/packs">
+            <ChevronIcon size={28} direction="left" />
+            <span>{t('packDetail.backToPacks')}</span>
+          </Link>
+          <button
+            type="button"
+            className="export-btn"
+            onClick={() => setShowExportPopup(true)}
+            disabled={packExportDisabled}
+            data-tooltip-id="export-pack-tooltip"
+            data-tooltip-content={
+              packExportDisabled
+                ? t('packDetail.items.empty')
+                : t('packDetail.actions.exportAs')
+            }
+            data-tooltip-place="bottom"
+          >
+            <ExternalLinkIcon color="#ffffff" size="20px" />
+            <span>{t('packDetail.actions.exportAs')}</span>
+          </button>
+          <Tooltip id="export-pack-tooltip" place="bottom" noArrow />
+        </div>
           <div className="header-container">
         {/* Header */}
         <div className="header">
@@ -1110,6 +1131,14 @@ const PackDetailPage = () => {
         contextName={popupContextName}
         sizeSummary={popupSizeSummary}
         onRequestDownload={handleRequestDownload}
+      />
+
+      <PackExportPopup
+        isOpen={showExportPopup}
+        onClose={() => setShowExportPopup(false)}
+        packName={pack?.name}
+        pack={pack}
+        packItems={packItems}
       />
 
       {showEditPopup && (
