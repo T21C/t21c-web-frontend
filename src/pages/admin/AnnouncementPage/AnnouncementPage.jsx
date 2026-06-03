@@ -21,10 +21,10 @@ const AnnouncementPage = () => {
   const currentUrl = window.location.origin + location.pathname;
 
   const [activeTab, setActiveTab] = useState('newLevels');
-  const [newLevels, setNewLevels] = useState([]);
-  const [rerates, setRerates] = useState([]);
+  const [newLevelEntries, setNewLevelEntries] = useState([]);
+  const [rerateEntries, setRerateEntries] = useState([]);
   const [passes, setPasses] = useState([]);
-  const [selectedLevels, setSelectedLevels] = useState([]);
+  const [selectedQueueRowIds, setSelectedQueueRowIds] = useState([]);
   const [selectedPasses, setSelectedPasses] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isAnnouncing, setIsAnnouncing] = useState(false);
@@ -44,24 +44,25 @@ const AnnouncementPage = () => {
         api.get(`${routes.database.levels.root()}/unannounced/rerates`),
         api.get(`${routes.database.passes.root()}/unannounced/new`)
       ]);
-      
-      setNewLevels(newLevelsResponse.data);
-      setRerates(reratesResponse.data);
+
+      setNewLevelEntries(newLevelsResponse.data);
+      setRerateEntries(reratesResponse.data);
       setPasses(passesResponse.data);
 
-      setSelectedLevels(prev => {
-        return prev.filter(id => {
+      setSelectedQueueRowIds(prev =>
+        prev.filter(id => {
           if (activeTab === 'newLevels') {
-            return newLevelsResponse.data.some(level => level.id === id);
-          } else if (activeTab === 'rerates') {
-            return reratesResponse.data.some(level => level.id === id);
+            return newLevelsResponse.data.some(e => e.queueRowId === id);
+          }
+          if (activeTab === 'rerates') {
+            return reratesResponse.data.some(e => e.queueRowId === id);
           }
           return false;
-        });
-      });
-      
-      setSelectedPasses(prev => 
-        prev.filter(id => passesResponse.data.some(pass => pass.id === id))
+        }),
+      );
+
+      setSelectedPasses(prev =>
+        prev.filter(id => passesResponse.data.some(pass => pass.id === id)),
       );
     } catch (err) {
       setError(t('announcement.errors.fetchFailed'));
@@ -71,13 +72,12 @@ const AnnouncementPage = () => {
     }
   };
 
-  const handleLevelCheckboxChange = (levelId) => {
-    setSelectedLevels(prev => {
-      if (prev.includes(levelId)) {
-        return prev.filter(id => id !== levelId);
-      } else {
-        return [...prev, levelId];
+  const handleQueueRowCheckboxChange = (queueRowId) => {
+    setSelectedQueueRowIds(prev => {
+      if (prev.includes(queueRowId)) {
+        return prev.filter(id => id !== queueRowId);
       }
+      return [...prev, queueRowId];
     });
   };
 
@@ -85,16 +85,15 @@ const AnnouncementPage = () => {
     setSelectedPasses(prev => {
       if (prev.includes(passId)) {
         return prev.filter(id => id !== passId);
-      } else {
-        return [...prev, passId];
       }
+      return [...prev, passId];
     });
   };
 
-  const handleRemoveLevel = (levelId) => {
-    setNewLevels(prev => prev.filter(level => level.id !== levelId));
-    setRerates(prev => prev.filter(level => level.id !== levelId));
-    setSelectedLevels(prev => prev.filter(id => id !== levelId));
+  const handleRemoveQueueRow = (queueRowId) => {
+    setNewLevelEntries(prev => prev.filter(e => e.queueRowId !== queueRowId));
+    setRerateEntries(prev => prev.filter(e => e.queueRowId !== queueRowId));
+    setSelectedQueueRowIds(prev => prev.filter(id => id !== queueRowId));
   };
 
   const handleRemovePass = (passId) => {
@@ -103,13 +102,19 @@ const AnnouncementPage = () => {
   };
 
   const handleAnnounce = async () => {
-    const hasSelectedItems = selectedLevels.length > 0 || selectedPasses.length > 0;
+    const hasSelectedItems =
+      selectedQueueRowIds.length > 0 || selectedPasses.length > 0;
     if (!hasSelectedItems) return;
 
     const validPassIds = selectedPasses.filter(id => !isNaN(id) && id > 0);
-    const validLevelIds = selectedLevels.filter(id => !isNaN(id) && id > 0);
+    const validQueueRowIds = selectedQueueRowIds.filter(
+      id => !isNaN(id) && id > 0,
+    );
 
-    if (validPassIds.length !== selectedPasses.length || validLevelIds.length !== selectedLevels.length) {
+    if (
+      validPassIds.length !== selectedPasses.length ||
+      validQueueRowIds.length !== selectedQueueRowIds.length
+    ) {
       setError(t('announcement.errors.invalidIds'));
       return;
     }
@@ -117,24 +122,29 @@ const AnnouncementPage = () => {
     setIsAnnouncing(true);
     setError(null);
     try {
-      if (validLevelIds.length > 0) {
-        await api.post(`${routes.webhook.root()}/${activeTab === 'newLevels' ? 'levels' : 'rerates'}`, {
-          levelIds: validLevelIds
-        });
-        
-        setNewLevels(prev => prev.filter(level => !validLevelIds.includes(level.id)));
-        setRerates(prev => prev.filter(level => !validLevelIds.includes(level.id)));
+      if (validQueueRowIds.length > 0) {
+        await api.post(
+          `${routes.webhook.root()}/${activeTab === 'newLevels' ? 'levels' : 'rerates'}`,
+          { queueRowIds: validQueueRowIds },
+        );
+
+        setNewLevelEntries(prev =>
+          prev.filter(e => !validQueueRowIds.includes(e.queueRowId)),
+        );
+        setRerateEntries(prev =>
+          prev.filter(e => !validQueueRowIds.includes(e.queueRowId)),
+        );
       }
 
       if (validPassIds.length > 0) {
         await api.post(`${routes.webhook.root()}/passes`, {
-          passIds: validPassIds
+          passIds: validPassIds,
         });
-        
+
         setPasses(prev => prev.filter(pass => !validPassIds.includes(pass.id)));
       }
 
-      setSelectedLevels([]);
+      setSelectedQueueRowIds([]);
       setSelectedPasses([]);
     } catch (err) {
       setError(t('announcement.errors.announceFailed'));
@@ -149,30 +159,26 @@ const AnnouncementPage = () => {
     setEditingLevel(level);
   };
 
-  const handleLevelUpdate = async (updatedData) => {
+  const handleLevelUpdate = async () => {
     try {
       const [newLevelsResponse, reratesResponse] = await Promise.all([
         api.get(`${routes.database.levels.root()}/unannounced/new`),
-        api.get(`${routes.database.levels.root()}/unannounced/rerates`)
+        api.get(`${routes.database.levels.root()}/unannounced/rerates`),
       ]);
 
-      setNewLevels(newLevelsResponse.data);
-      setRerates(reratesResponse.data);
+      setNewLevelEntries(newLevelsResponse.data);
+      setRerateEntries(reratesResponse.data);
 
-      const newNewLevels = new Set(newLevelsResponse.data.map(l => l.id));
-      const newRerates = new Set(reratesResponse.data.map(l => l.id));
+      const newIds = new Set(newLevelsResponse.data.map(e => e.queueRowId));
+      const rerateIds = new Set(reratesResponse.data.map(e => e.queueRowId));
 
-      setSelectedLevels(prev => {
-        return prev.filter(id => {
-          if (activeTab === 'newLevels') {
-            return newNewLevels.has(id) && !newRerates.has(id);
-          }
-          else if (activeTab === 'rerates') {
-            return newRerates.has(id) && !newNewLevels.has(id);
-          }
+      setSelectedQueueRowIds(prev =>
+        prev.filter(id => {
+          if (activeTab === 'newLevels') return newIds.has(id);
+          if (activeTab === 'rerates') return rerateIds.has(id);
           return false;
-        });
-      });
+        }),
+      );
     } catch (err) {
       console.error('Error refreshing data:', err);
     }
@@ -185,10 +191,11 @@ const AnnouncementPage = () => {
       const shouldSelectAll = selectedPasses.length !== passes.length;
       setSelectedPasses(shouldSelectAll ? allPassIds : []);
     } else {
-      const currentLevels = activeTab === 'newLevels' ? newLevels : rerates;
-      const allLevelIds = currentLevels.map(level => level.id);
-      const shouldSelectAll = selectedLevels.length !== currentLevels.length;
-      setSelectedLevels(shouldSelectAll ? allLevelIds : []);
+      const currentEntries =
+        activeTab === 'newLevels' ? newLevelEntries : rerateEntries;
+      const allIds = currentEntries.map(e => e.queueRowId);
+      const shouldSelectAll = selectedQueueRowIds.length !== currentEntries.length;
+      setSelectedQueueRowIds(shouldSelectAll ? allIds : []);
     }
   };
 
@@ -202,7 +209,7 @@ const AnnouncementPage = () => {
           image="/og-image.jpg"
           type="website"
         />
-        
+
         <div className="announcement-page">
           <div className="announcement-container page-content">
             <div className="loader-shell loader-shell--tall">
@@ -216,7 +223,7 @@ const AnnouncementPage = () => {
 
   if (!hasFlag(user, permissionFlags.SUPER_ADMIN)) {
     return (
-      <AccessDenied 
+      <AccessDenied
         metaTitle={t('announcement.meta.title')}
         metaDescription={t('announcement.meta.description')}
         currentUrl={currentUrl}
@@ -234,7 +241,7 @@ const AnnouncementPage = () => {
           image="/og-image.jpg"
           type="website"
         />
-        
+
         <div className="announcement-page">
           <ScrollButton />
           <div className="announcement-container page-content">
@@ -257,13 +264,13 @@ const AnnouncementPage = () => {
         image="/og-image.jpg"
         type="website"
       />
-      
+
       <div className="announcement-page">
         <ScrollButton />
         <div className="announcement-container page-content">
           <div className="header-container">
             <h1>{t('announcement.header.title')}</h1>
-            <button 
+            <button
               className="refresh-button"
               onClick={fetchItems}
               disabled={isLoading}
@@ -279,7 +286,7 @@ const AnnouncementPage = () => {
                 className={`tab-button ${activeTab === 'newLevels' ? 'active' : ''}`}
                 onClick={() => {
                   setActiveTab('newLevels');
-                  setSelectedLevels([]);
+                  setSelectedQueueRowIds([]);
                   setSelectedPasses([]);
                 }}
               >
@@ -289,7 +296,7 @@ const AnnouncementPage = () => {
                 className={`tab-button ${activeTab === 'rerates' ? 'active' : ''}`}
                 onClick={() => {
                   setActiveTab('rerates');
-                  setSelectedLevels([]);
+                  setSelectedQueueRowIds([]);
                   setSelectedPasses([]);
                 }}
               >
@@ -299,7 +306,7 @@ const AnnouncementPage = () => {
                 className={`tab-button ${activeTab === 'passes' ? 'active' : ''}`}
                 onClick={() => {
                   setActiveTab('passes');
-                  setSelectedLevels([]);
+                  setSelectedQueueRowIds([]);
                   setSelectedPasses([]);
                 }}
               >
@@ -311,29 +318,34 @@ const AnnouncementPage = () => {
           <button
             className="select-all-button"
             onClick={handleSelectAll}
-            disabled={isLoading || (
-              activeTab === 'passes' ? passes.length === 0 : 
-              activeTab === 'newLevels' ? newLevels.length === 0 : 
-              rerates.length === 0
-            )}
-          >
-            {activeTab === 'passes' 
-              ? selectedPasses.length === passes.length 
-                ? t('announcement.buttons.deselectAll') 
-                : t('announcement.buttons.selectAll')
-              : selectedLevels.length === (activeTab === 'newLevels' ? newLevels : rerates).length 
-                ? t('announcement.buttons.deselectAll') 
-                : t('announcement.buttons.selectAll')
+            disabled={
+              isLoading ||
+              (activeTab === 'passes'
+                ? passes.length === 0
+                : activeTab === 'newLevels'
+                  ? newLevelEntries.length === 0
+                  : rerateEntries.length === 0)
             }
+          >
+            {activeTab === 'passes'
+              ? selectedPasses.length === passes.length
+                ? t('announcement.buttons.deselectAll')
+                : t('announcement.buttons.selectAll')
+              : selectedQueueRowIds.length ===
+                  (activeTab === 'newLevels'
+                    ? newLevelEntries
+                    : rerateEntries).length
+                ? t('announcement.buttons.deselectAll')
+                : t('announcement.buttons.selectAll')}
           </button>
           {error && <div className="error-message">{error}</div>}
 
           {activeTab === 'newLevels' && (
             <NewLevelsTab
-              levels={newLevels}
-              selectedLevels={selectedLevels}
-              onCheckboxChange={handleLevelCheckboxChange}
-              onRemove={handleRemoveLevel}
+              entries={newLevelEntries}
+              selectedQueueRowIds={selectedQueueRowIds}
+              onCheckboxChange={handleQueueRowCheckboxChange}
+              onRemove={handleRemoveQueueRow}
               onEdit={handleEditLevel}
               isLoading={isLoading}
             />
@@ -341,10 +353,10 @@ const AnnouncementPage = () => {
 
           {activeTab === 'rerates' && (
             <ReratesTab
-              levels={rerates}
-              selectedLevels={selectedLevels}
-              onCheckboxChange={handleLevelCheckboxChange}
-              onRemove={handleRemoveLevel}
+              entries={rerateEntries}
+              selectedQueueRowIds={selectedQueueRowIds}
+              onCheckboxChange={handleQueueRowCheckboxChange}
+              onRemove={handleRemoveQueueRow}
               onEdit={handleEditLevel}
               isLoading={isLoading}
             />
@@ -365,11 +377,16 @@ const AnnouncementPage = () => {
               className="announce-button"
               onClick={handleAnnounce}
               disabled={
-                isLoading || isAnnouncing || 
-                (activeTab === 'passes' ? selectedPasses.length === 0 : selectedLevels.length === 0)
+                isLoading ||
+                isAnnouncing ||
+                (activeTab === 'passes'
+                  ? selectedPasses.length === 0
+                  : selectedQueueRowIds.length === 0)
               }
             >
-              {isAnnouncing ? t('announcement.buttons.announcing') : t('announcement.buttons.announce')}
+              {isAnnouncing
+                ? t('announcement.buttons.announcing')
+                : t('announcement.buttons.announce')}
             </button>
           </div>
         </div>
@@ -387,4 +404,4 @@ const AnnouncementPage = () => {
   );
 };
 
-export default AnnouncementPage; 
+export default AnnouncementPage;

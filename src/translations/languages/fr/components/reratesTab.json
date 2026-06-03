@@ -1,5 +1,11 @@
 {
   "noRerates": "Aucune réévaluation a annoncer",
+  "facets": {
+    "diff": "Difficulté",
+    "baseScore": "Score de base",
+    "ppBaseScore": "Score de base PP",
+    "curve": "Courbe de score"
+  },
   "errors": {
     "removeLevel": "Echec de la suppression de {{song}}. Veuillez rééssayer."
   },
@@ -7,6 +13,8 @@
     "title": "{{song}} - {{artist}}",
     "subtitle": {
       "difficulty": "{{oldDifficulty}} ➔ {{newDifficulty}}",
+      "baseScore": "{{oldBaseScore}}PP ➔ {{newBaseScore}}PP",
+      "ppBaseScore": "{{oldPpBaseScore}}PP ➔ {{newPpBaseScore}}PP",
       "team": " • {{team}}"
     }
   },

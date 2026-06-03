@@ -1,5 +1,11 @@
 {
   "noRerates": "没有要公布的重评项目",
+  "facets": {
+    "diff": "难度",
+    "baseScore": "基础分",
+    "ppBaseScore": "PP 基础分",
+    "curve": "分数曲线"
+  },
   "errors": {
     "removeLevel": "删除 {{song}} 失败，请重试。"
   },
@@ -8,6 +14,7 @@
     "subtitle": {
       "difficulty": "{{oldDifficulty}} ➔ {{newDifficulty}}",
       "baseScore": "{{oldBaseScore}}PP ➔ {{newBaseScore}}PP",
+      "ppBaseScore": "{{oldPpBaseScore}}PP ➔ {{newPpBaseScore}}PP",
       "team": " • {{team}}"
     }
   },

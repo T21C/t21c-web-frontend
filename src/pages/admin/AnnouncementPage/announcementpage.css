@@ -343,3 +343,33 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+.announcement-page .announcement-facet-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+}
+
+.announcement-page .announcement-facet-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-white);
+  background-color: var(--color-white-t20);
+  border-radius: 999px;
+}
+
+.announcement-page .rerate-curve-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+.announcement-page .rerate-curve-preview-line {
+  display: block;
+}
