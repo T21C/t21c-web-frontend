@@ -133,5 +133,12 @@
     "primary": "1순위",
     "secondary": "2순위",
     "position": "Position {{position}}"
+  },
+  "packAppearance": {
+    "header": "팩 수록",
+    "by": "{{owner}}",
+    "levels": "레벨",
+    "loading": "불러오는 중…",
+    "unknownOwner": "알 수 없음"
   }
 } 

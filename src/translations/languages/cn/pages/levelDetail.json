@@ -154,5 +154,12 @@
     "primary": "优秀",
     "secondary": "传奇",
     "position": "位于 {{position}}"
+  },
+  "packAppearance": {
+    "header": "关卡包收录",
+    "by": "作者 {{owner}}",
+    "levels": "个关卡",
+    "loading": "加载中…",
+    "unknownOwner": "未知"
   }
 } 

@@ -57,6 +57,7 @@ import { CloseButton } from '@/components/common/buttons';
 import { toast } from 'react-hot-toast';
 import { ABILITIES, hasBit } from '@/utils/Abilities';
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
+import { LevelPackViewModes } from "@/utils/constants";
 import {
   getCurationTypesResolved,
   hasAbility,
@@ -525,6 +526,87 @@ const WeeklyAppearanceDropdown = ({ schedules, show, onClose, containerRef }) =>
   );
 };
 
+const PackAppearanceDropdown = ({ packs, show, onClose, containerRef }) => {
+  const { t } = useTranslation(['pages', 'common']);
+  const panelRef = useRef(null);
+
+  const { panelStyle, placement, portalRoot } = usePortaledPanelAnchor({
+    open: show,
+    anchorRef: containerRef,
+    panelRef,
+    horizontalAlign: 'end',
+    reanchorDeps: [packs?.length],
+    maxHeightCap: typeof window !== 'undefined' ? window.innerHeight * 0.7 : 640,
+  });
+
+  useEffect(() => {
+    if (!show) return;
+    const handlePointerDownCapture = (event) => {
+      if (containerRef?.current?.contains(event.target)) return;
+      if (panelRef?.current?.contains(event.target)) return;
+      onClose();
+    };
+    document.addEventListener('mousedown', handlePointerDownCapture, true);
+    return () => document.removeEventListener('mousedown', handlePointerDownCapture, true);
+  }, [show, onClose, containerRef]);
+
+  useEffect(() => {
+    if (!show) return;
+    const onKey = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [show, onClose]);
+
+  if (!show || !portalRoot) return null;
+  if (!packs?.length) return null;
+
+  return createPortal(
+    <div
+      ref={panelRef}
+      className={`pack-appearance-dropdown ${PORTALED_PANEL_CLASS} portaled-panel--z-dropdown`}
+      data-placement={placement}
+      style={panelStyle}
+      role="dialog"
+      aria-label={t('levelDetail.packAppearance.header')}
+    >
+      <div className="pack-appearance-header">{t('levelDetail.packAppearance.header')}</div>
+      <div className="pack-appearance-list">
+        {packs.map((pack) => {
+          const ownerLabel =
+            pack.packOwner?.username || pack.packOwner?.nickname || t('levelDetail.packAppearance.unknownOwner');
+          return (
+            <Link
+              key={pack.id}
+              to={`/packs/${pack.id}`}
+              className="pack-appearance-item"
+              onClick={onClose}
+            >
+              <div className="pack-appearance-icon">
+                {pack.iconUrl ? (
+                  <img src={pack.iconUrl} alt="" className="pack-appearance-icon-image" />
+                ) : (
+                  <span className="pack-appearance-icon-placeholder" aria-hidden>📦</span>
+                )}
+              </div>
+              <div className="pack-appearance-info">
+                <span className="pack-appearance-name">{pack.name}</span>
+                <span className="pack-appearance-meta">
+                  {t('levelDetail.packAppearance.by', { owner: ownerLabel })}
+                  {' · '}
+                  {pack.totalLevelCount || 0} {t('levelDetail.packAppearance.levels')}
+                </span>
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+    </div>,
+    portalRoot,
+  );
+};
+
 const RerateHistoryDropdown = ({ show, onClose, rerateHistory, difficultyDict, containerRef, boundaryRef }) => {
   const { t } = useTranslation(['pages', 'common']);
   const panelRef = useRef(null);
@@ -692,8 +774,11 @@ const LevelDetailPage = ({ mockData = null }) => {
   const [scoreGraphIconEnabled, setScoreGraphIconEnabled] = useState(true);
   const [isRefreshingLeaderboard, setIsRefreshingLeaderboard] = useState(false);
   const [showWeeklyAppearanceDropdown, setShowWeeklyAppearanceDropdown] = useState(false);
+  const [showPackAppearanceDropdown, setShowPackAppearanceDropdown] = useState(false);
   const [showToRatePendingDropdown, setShowToRatePendingDropdown] = useState(false);
+  const [publicPackAppearances, setPublicPackAppearances] = useState([]);
   const weeklyHeaderCornerSlotRef = useRef(null);
+  const packHeaderCornerSlotRef = useRef(null);
   const toRateHeaderCornerSlotRef = useRef(null);
   const rerateHistoryAnchorRef = useRef(null);
   const wrapperLevelRef = useRef(null);
@@ -703,6 +788,7 @@ const LevelDetailPage = ({ mockData = null }) => {
   const cdnZipIdentityRef = useRef(null);
 
   const closeWeeklyAppearanceDropdown = useCallback(() => setShowWeeklyAppearanceDropdown(false), []);
+  const closePackAppearanceDropdown = useCallback(() => setShowPackAppearanceDropdown(false), []);
   const closeToRatePendingDropdown = useCallback(() => setShowToRatePendingDropdown(false), []);
 
   const sortArrowDirection = useMemo(() => {
@@ -1404,6 +1490,40 @@ const LevelDetailPage = ({ mockData = null }) => {
   }, [effectiveId, mockData]); // Don't include fetchLevelData to avoid infinite loop
 
   useEffect(() => {
+    if (!effectiveId || mockData) {
+      setPublicPackAppearances([]);
+      return undefined;
+    }
+
+    let cancelled = false;
+
+    api
+      .get(routes.database.levels.packs.root(), {
+        params: {
+          limit: 100,
+          offset: 0,
+          query: `levelId:${effectiveId},viewMode:${LevelPackViewModes.PUBLIC}`,
+          sort: 'RECENT',
+          order: 'DESC',
+        },
+      })
+      .then((response) => {
+        if (cancelled) return;
+        const packs = (response.data.packs || []).filter(
+          (pack) => !pack.viewMode || pack.viewMode === LevelPackViewModes.PUBLIC,
+        );
+        setPublicPackAppearances(packs);
+      })
+      .catch(() => {
+        if (!cancelled) setPublicPackAppearances([]);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [effectiveId, mockData]);
+
+  useEffect(() => {
     if (res?.level?.videoLink) {
       getVideoDetails(res.level.videoLink).then(setVideoDetail);
     }
@@ -2015,7 +2135,7 @@ const LevelDetailPage = ({ mockData = null }) => {
 
               <div className="level-detail-header-mobile-bar">
                 <div className="level-id mobile">#{effectiveId}</div>
-                {(res?.level?.curationSchedules?.length > 0 || res?.level?.toRate) && (
+                {(res?.level?.curationSchedules?.length > 0 || res?.level?.toRate || publicPackAppearances.length > 0) && (
                   <div className="level-detail-header-corner-icons">
                     {res?.level?.curationSchedules?.length > 0 && (
                       <div ref={weeklyHeaderCornerSlotRef} className="header-corner-icon-slot">
@@ -2049,6 +2169,37 @@ const LevelDetailPage = ({ mockData = null }) => {
                           show={showWeeklyAppearanceDropdown}
                           onClose={closeWeeklyAppearanceDropdown}
                           containerRef={weeklyHeaderCornerSlotRef}
+                        />
+                      </div>
+                    )}
+                    {publicPackAppearances.length > 0 && (
+                      <div ref={packHeaderCornerSlotRef} className="header-corner-icon-slot">
+                        <div
+                          className="header-corner-icon"
+                          role="button"
+                          tabIndex={0}
+                          aria-expanded={showPackAppearanceDropdown}
+                          aria-haspopup="dialog"
+                          aria-label={t('levelDetail.packAppearance.header')}
+                          title={t('levelDetail.packAppearance.header')}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowPackAppearanceDropdown((open) => !open);
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              setShowPackAppearanceDropdown((open) => !open);
+                            }
+                          }}
+                        >
+                          <PackIcon color="#fff" size="20px" className="pack-appearance-icon-icon" />
+                        </div>
+                        <PackAppearanceDropdown
+                          packs={publicPackAppearances}
+                          show={showPackAppearanceDropdown}
+                          onClose={closePackAppearanceDropdown}
+                          containerRef={packHeaderCornerSlotRef}
                         />
                       </div>
                     )}

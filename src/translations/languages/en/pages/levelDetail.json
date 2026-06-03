@@ -154,5 +154,12 @@
     "primary": "Primary",
     "secondary": "Secondary",
     "position": "Position {{position}}"
+  },
+  "packAppearance": {
+    "header": "Pack Appearances",
+    "by": "by {{owner}}",
+    "levels": "levels",
+    "loading": "Loading packs…",
+    "unknownOwner": "Unknown"
   }
 } 
