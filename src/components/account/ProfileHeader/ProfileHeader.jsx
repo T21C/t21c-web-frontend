@@ -617,24 +617,28 @@ const ProfileHeader = ({
                   />
                 </div>
               </div>
-              <div className="profile-header__badge-wrap">
-                <div
-                  className="profile-header__badge"
-                  style={
-                    mode === "player" && badgeText !== "Unranked"
-                      ? {
-                          color: rankColor,
-                          backgroundColor: `${rankColor}27`,
-                        }
-                      : undefined
-                  }
-                >
-                  {badgeText}
+              {(mode === "player" || resolvedProfileId != null) ? (
+                <div className="profile-header__badge-wrap">
+                  {mode === "player" ? (
+                    <div
+                      className="profile-header__badge"
+                      style={
+                        badgeText !== "Unranked"
+                          ? {
+                              color: rankColor,
+                              backgroundColor: `${rankColor}27`,
+                            }
+                          : undefined
+                      }
+                    >
+                      {badgeText}
+                    </div>
+                  ) : null}
+                  {resolvedProfileId != null ? (
+                    <div className="profile-header__profile-id">id: {resolvedProfileId}</div>
+                  ) : null}
                 </div>
-                {resolvedProfileId != null ? (
-                  <div className="profile-header__profile-id">id: {resolvedProfileId}</div>
-                ) : null}
-              </div>
+              ) : null}
               <div className="profile-header__name-vertical">
                 <svg className="profile-header__name-svg profile-header__name-svg--vertical" dominantBaseline="hanging">
                   <g
