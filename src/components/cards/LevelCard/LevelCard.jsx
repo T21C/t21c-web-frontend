@@ -37,7 +37,8 @@ const LevelCard = ({
   // Pack mode specific props
   canEdit = false,
   onDeleteItem,
-  dragHandleProps = null
+  dragHandleProps = null,
+  onRequestMove = null,
 }) => {
   const [isTwoLineLayout, setIsTwoLineLayout] = useState(false);
   
@@ -389,12 +390,31 @@ const LevelCard = ({
   // ============================================
   // PACK MODE
   // ============================================
+  const handlePackDragHandleClick = (e) => {
+    if (!canEdit || !onRequestMove || !packItem) return;
+    e.stopPropagation();
+    onRequestMove(packItem);
+  };
+
   if (displayMode === 'pack') {
     if (!level) {
       return (
         <div className={`level-card pack ${getGlowClass()}`}>
           {canEdit && dragHandleProps && (
-            <div {...dragHandleProps} className="level-card__drag-handle" title="Drag to reorder or move">
+            <div
+              {...dragHandleProps}
+              className="level-card__drag-handle"
+              title="Click to move, or drag"
+              onClick={handlePackDragHandleClick}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handlePackDragHandleClick(e);
+                }
+              }}
+            >
               <DragHandleIcon />
             </div>
           )}
@@ -455,7 +475,20 @@ const LevelCard = ({
         data-hidden={level.isHidden && !level.isDeleted}
       >
         {canEdit && dragHandleProps && (
-          <div {...dragHandleProps} className="level-card__drag-handle" title="Drag to reorder or move">
+          <div
+            {...dragHandleProps}
+            className="level-card__drag-handle"
+            title="Click to move, or drag"
+            onClick={handlePackDragHandleClick}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handlePackDragHandleClick(e);
+              }
+            }}
+          >
             <DragHandleIcon />
           </div>
         )}

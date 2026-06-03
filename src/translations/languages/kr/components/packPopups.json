@@ -205,5 +205,23 @@
     "errors": {
       "exportFailed": "Failed to export pack. Please try again."
     }
+  },
+  "placement": {
+    "titleAddFolder": "Add folder",
+    "titleAddLevel": "Add levels",
+    "titleMove": "Move item",
+    "folderName": "Folder name",
+    "folderNamePlaceholder": "Enter folder name",
+    "levelIds": "Level IDs",
+    "levelIdsPlaceholder": "e.g. 1234, 5678 or one per line",
+    "positionLabel": "Position in pack",
+    "root": "Pack root",
+    "insertHere": "Insert at position {{index}} in {{path}}",
+    "insertShort": "#{{index}}",
+    "dividerHint": "Hover a line to select an insertion point",
+    "addFolder": "Add folder",
+    "addLevels": "Add levels",
+    "move": "Move here",
+    "submitting": "Saving…"
   }
 }

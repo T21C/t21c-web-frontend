@@ -205,5 +205,23 @@
     "errors": {
       "exportFailed": "导出失败，请重试。"
     }
+  },
+  "placement": {
+    "titleAddFolder": "添加文件夹",
+    "titleAddLevel": "添加关卡",
+    "titleMove": "移动项目",
+    "folderName": "文件夹名称",
+    "folderNamePlaceholder": "输入文件夹名称",
+    "levelIds": "关卡 ID",
+    "levelIdsPlaceholder": "例如 1234、5678 或每行一个",
+    "positionLabel": "在地图包中的位置",
+    "root": "地图包根目录",
+    "insertHere": "在 {{path}} 的位置 {{index}} 插入",
+    "insertShort": "第 {{index}} 位",
+    "dividerHint": "将鼠标悬停在分割线上以选择插入位置",
+    "addFolder": "添加文件夹",
+    "addLevels": "添加关卡",
+    "move": "移动到此",
+    "submitting": "保存中…"
   }
 }

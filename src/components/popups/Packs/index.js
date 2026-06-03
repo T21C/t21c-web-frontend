@@ -2,8 +2,17 @@
 import EditPackPopup from "./EditPackPopup/EditPackPopup";
 import PackDownloadPopup from "./PackDownloadPopup/PackDownloadPopup";
 import PackExportPopup from "./PackExportPopup/PackExportPopup";
+import PackItemPlacementPopup from "./PackItemPlacementPopup/PackItemPlacementPopup";
 import AddToPackPopup from "./AddToPackPopup/AddToPackPopup";
 import CreatePackPopup from "./AddToPackPopup/CreatePackPopup";
 import { PackHelpPopup } from "./PackHelpPopup/PackHelpPopup";
 
-export { EditPackPopup, PackDownloadPopup, PackExportPopup, AddToPackPopup, CreatePackPopup, PackHelpPopup };
+export {
+  EditPackPopup,
+  PackDownloadPopup,
+  PackExportPopup,
+  PackItemPlacementPopup,
+  AddToPackPopup,
+  CreatePackPopup,
+  PackHelpPopup,
+};

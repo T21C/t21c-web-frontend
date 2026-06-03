@@ -7,7 +7,12 @@ import PackItem, { PackLevelItem } from "@/components/cards/PackItem/PackItem";
 import { MetaTags } from "@/components/common/display";
 import { ScrollButton } from "@/components/common/buttons";
 import { EditIcon, PinIcon, LockIcon, EyeIcon, UsersIcon, ArrowIcon, PlusIcon, LikeIcon, DownloadIcon, ChevronIcon, ExternalLinkIcon } from "@/components/common/icons";
-import { EditPackPopup, PackDownloadPopup, PackExportPopup } from "@/components/popups/Packs";
+import { EditPackPopup, PackDownloadPopup, PackExportPopup, PackItemPlacementPopup } from "@/components/popups/Packs";
+import {
+  moveItemToPosition,
+  insertNodesAtPosition,
+  isFolderMoveIntoDescendant,
+} from '@/utils/packTreePlacement';
 import { useAuth } from "@/contexts/AuthContext";
 import { usePackContext } from "@/contexts/PackContext";
 import api from "@/utils/api";
@@ -142,6 +147,8 @@ const PackDetailPage = () => {
   const [expandedFolders, setExpandedFolders] = useState(new Set());
   const [downloadContext, setDownloadContext] = useState(null);
   const [showExportPopup, setShowExportPopup] = useState(false);
+  const [placement, setPlacement] = useState({ open: false, mode: 'add-folder', item: null });
+  const [placementSubmitting, setPlacementSubmitting] = useState(false);
   const [cdnMetadataByLevelId, setCdnMetadataByLevelId] = useState(() => new Map());
   const scrollRef = useRef(null);
   const lastMousePosRef = useRef({ x: 0, y: 0 });
@@ -335,6 +342,162 @@ const PackDetailPage = () => {
       toast.error(t('packDetail.createFolder.error'));
     }
   };
+
+  const closePlacement = useCallback(() => {
+    setPlacement({ open: false, mode: 'add-folder', item: null });
+  }, []);
+
+  const openAddFolderPlacement = useCallback(() => {
+    setPlacement({ open: true, mode: 'add-folder', item: null });
+  }, []);
+
+  const openAddLevelPlacement = useCallback(() => {
+    setPlacement({ open: true, mode: 'add-level', item: null });
+  }, []);
+
+  const openMovePlacement = useCallback((item) => {
+    if (!item) return;
+    setPlacement({ open: true, mode: 'move', item });
+  }, []);
+
+  const persistPackTree = useCallback(async (newTree, destParentId, packId) => {
+    setPack((prev) => ({ ...prev, items: newTree }));
+
+    if (destParentId && destParentId !== 0) {
+      setExpandedFolders((prev) => {
+        const newSet = new Set(prev);
+        newSet.add(destParentId);
+        if (id) {
+          setPackExpandedFolders(id, newSet);
+        }
+        return newSet;
+      });
+    }
+
+    const minimalTree = createMinimalTreeStructure(newTree);
+    const response = await api.put(routes.database.levels.packs.tree(packId), {
+      items: minimalTree,
+    });
+
+    setPack((prevPack) => ({
+      ...prevPack,
+      items: mergePackStructureWithReferencedLevels(prevPack.items, response.data.items),
+    }));
+    fetchPackCdnData();
+  }, [id, fetchPackCdnData]);
+
+  const handlePlacementSubmit = useCallback(async ({ mode, parentId, index, name, levelIds }) => {
+    if (!pack?.id) return;
+
+    setPlacementSubmitting(true);
+    try {
+      const destParentId = parentId ?? 0;
+
+      if (mode === 'move') {
+        const movingItem = placement.item;
+        if (!movingItem) return;
+
+        if (
+          movingItem.type === 'folder' &&
+          isFolderMoveIntoDescendant(packItems, movingItem.id, destParentId)
+        ) {
+          toast.error(t('packDetail.move.cannotMoveIntoSelf'));
+          return;
+        }
+
+        const newTree = moveItemToPosition(packItems, movingItem.id, destParentId, index);
+        if (!newTree) {
+          toast.error(t('packDetail.move.error'));
+          return;
+        }
+
+        await persistPackTree(newTree, destParentId, pack.id);
+        toast.success(t('packDetail.move.success'));
+        closePlacement();
+      } else if (mode === 'add-folder') {
+        const response = await api.post(routes.database.levels.packs.items(pack.id), {
+          type: 'folder',
+          name,
+          parentId: destParentId,
+        });
+
+        const created = response.data;
+        const node = {
+          ...created,
+          type: 'folder',
+          children: undefined,
+        };
+
+        const newTree = insertNodesAtPosition(packItems, [node], destParentId, index);
+        if (!newTree) {
+          await fetchPack(true);
+          closePlacement();
+          return;
+        }
+
+        await persistPackTree(newTree, destParentId, pack.id);
+        toast.success(t('packDetail.createFolder.success'));
+        closePlacement();
+      } else if (mode === 'add-level') {
+        const response = await api.post(routes.database.levels.packs.items(pack.id), {
+          type: 'level',
+          levelIds,
+          parentId: destParentId,
+        });
+
+        const raw = response.data;
+        const createdList = Array.isArray(raw) ? raw : raw?.items ?? [];
+        if (createdList.length === 0) {
+          toast.success(t('packDetail.addLevel.success'));
+          closePlacement();
+          await fetchPack(true);
+          return;
+        }
+
+        const nodes = createdList.map((row) => ({
+          ...row,
+          type: 'level',
+          referencedLevel: row.referencedLevel ?? null,
+        }));
+
+        const newTree = insertNodesAtPosition(packItems, nodes, destParentId, index);
+        if (!newTree) {
+          await fetchPack(true);
+          closePlacement();
+          return;
+        }
+
+        await persistPackTree(newTree, destParentId, pack.id);
+        toast.success(t('packDetail.addLevel.success'));
+        closePlacement();
+      }
+
+      window.dispatchEvent(new CustomEvent('packUpdated', {
+        detail: { packId: pack.id },
+      }));
+    } catch (error) {
+      console.error('Placement submit failed:', error);
+      const message =
+        error.response?.data?.error ||
+        (mode === 'move'
+          ? t('packDetail.move.error')
+          : mode === 'add-folder'
+            ? t('packDetail.createFolder.error')
+            : t('packDetail.addLevel.error'));
+      toast.error(message);
+      await fetchPack(true);
+    } finally {
+      setPlacementSubmitting(false);
+    }
+  }, [
+    pack?.id,
+    packItems,
+    placement.item,
+    persistPackTree,
+    closePlacement,
+    fetchPack,
+    t,
+  ]);
 
   // Handle adding new level (supports single ID or comma-separated IDs for bulk insert)
   const handleAddLevel = async () => {
@@ -1026,20 +1189,44 @@ const PackDetailPage = () => {
             <div className="levels-header-right">
               {canEdit && (
                 <div className="add-buttons">
-                  <button
-                    className="add-btn"
-                    onClick={handleAddFolder}
-                    title={t('packDetail.actions.addFolder')}
-                  >
-                    <PlusIcon /> 📁 {t('packDetail.actions.addFolder')}
-                  </button>
-                  <button
-                    className="add-btn"
-                    onClick={handleAddLevel}
-                    title={t('packDetail.actions.addLevel')}
-                  >
-                    <PlusIcon /> 🎵 {t('packDetail.actions.addLevel')}
-                  </button>
+                  <div className="add-buttons__group">
+                    <button
+                      type="button"
+                      className="add-btn"
+                      onClick={handleAddFolder}
+                      title={t('packDetail.actions.addFolder')}
+                    >
+                      <PlusIcon /> 📁 {t('packDetail.actions.addFolder')}
+                    </button>
+                    <button
+                      type="button"
+                      className="add-to-folder-btn"
+                      onClick={openAddFolderPlacement}
+                      title={t('packDetail.actions.addToFolder')}
+                      aria-label={t('packDetail.actions.addToFolder')}
+                    >
+                      ➔📁
+                    </button>
+                  </div>
+                  <div className="add-buttons__group">
+                    <button
+                      type="button"
+                      className="add-btn"
+                      onClick={handleAddLevel}
+                      title={t('packDetail.actions.addLevel')}
+                    >
+                      <PlusIcon /> 🎵 {t('packDetail.actions.addLevel')}
+                    </button>
+                    <button
+                      type="button"
+                      className="add-to-folder-btn"
+                      onClick={openAddLevelPlacement}
+                      title={t('packDetail.actions.addToFolder')}
+                      aria-label={t('packDetail.actions.addToFolder')}
+                    >
+                      ➔📁
+                    </button>
+                  </div>
                 </div>
               )}
               {canEdit && totalRenderableItems > 1 && (
@@ -1090,6 +1277,7 @@ const PackDetailPage = () => {
                         onRenameFolder={handleRenameFolder}
                         onDeleteItem={handleDeleteItem}
                         onDownloadFolder={handleFolderDownload}
+                        onRequestMove={openMovePlacement}
                         allItems={packItems}
                         findItemFn={findItem}
                       />
@@ -1104,18 +1292,34 @@ const PackDetailPage = () => {
               <p>{t('packDetail.items.empty')}</p>
               {canEdit && (
                 <div className="empty-actions">
-                  <button
-                    className="add-btn"
-                    onClick={handleAddFolder}
-                  >
-                    <PlusIcon /> {t('packDetail.actions.addFolder')}
-                  </button>
-                  <button
-                    className="add-btn"
-                    onClick={handleAddLevel}
-                  >
-                    <PlusIcon /> {t('packDetail.actions.addLevel')}
-                  </button>
+                  <div className="add-buttons__group">
+                    <button type="button" className="add-btn" onClick={handleAddFolder}>
+                      <PlusIcon /> {t('packDetail.actions.addFolder')}
+                    </button>
+                    <button
+                      type="button"
+                      className="add-to-folder-btn"
+                      onClick={openAddFolderPlacement}
+                      title={t('packDetail.actions.addToFolder')}
+                      aria-label={t('packDetail.actions.addToFolder')}
+                    >
+                      ➔📁
+                    </button>
+                  </div>
+                  <div className="add-buttons__group">
+                    <button type="button" className="add-btn" onClick={handleAddLevel}>
+                      <PlusIcon /> {t('packDetail.actions.addLevel')}
+                    </button>
+                    <button
+                      type="button"
+                      className="add-to-folder-btn"
+                      onClick={openAddLevelPlacement}
+                      title={t('packDetail.actions.addToFolder')}
+                      aria-label={t('packDetail.actions.addToFolder')}
+                    >
+                      ➔📁
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
@@ -1139,6 +1343,16 @@ const PackDetailPage = () => {
         packName={pack?.name}
         pack={pack}
         packItems={packItems}
+      />
+
+      <PackItemPlacementPopup
+        isOpen={placement.open}
+        onClose={closePlacement}
+        mode={placement.mode}
+        packItems={packItems}
+        movingItem={placement.item}
+        onSubmit={handlePlacementSubmit}
+        submitting={placementSubmitting}
       />
 
       {showEditPopup && (

@@ -492,10 +492,35 @@
   flex-wrap: wrap;
 }
 
+.pack-detail-page .add-buttons__group {
+  display: flex;
+  align-items: stretch;
+}
+
+.pack-detail-page .add-to-folder-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0.65rem;
+  border: none;
+  border-radius: 0 6px 6px 0;
+  background: var(--color-white-t10);
+  color: var(--color-white);
+  font-size: 0.9rem;
+  line-height: 0;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.pack-detail-page .add-to-folder-btn:hover {
+  background: var(--color-white-t20);
+  border-color: var(--color-white-t30);
+}
+
 .pack-detail-page .add-btn {
-  padding: 0.5rem 1rem;
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
+  padding: 0.5rem 0.65rem;
+  border: none;
+  border-radius: 6px 0 0 6px;
   background: var(--color-white-t10);
   color: var(--color-white);
   font-weight: 500;

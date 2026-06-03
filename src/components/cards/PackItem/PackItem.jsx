@@ -20,7 +20,8 @@ export const PackLevelItem = ({
   isReordering,
   user,
   onDeleteItem,
-  dragHandleProps
+  dragHandleProps,
+  onRequestMove,
 }) => {
   return (
     <LevelCard 
@@ -31,6 +32,7 @@ export const PackLevelItem = ({
       isReordering={isReordering}
       onDeleteItem={onDeleteItem}
       dragHandleProps={dragHandleProps}
+      onRequestMove={onRequestMove}
     />
   );
 };
@@ -46,6 +48,7 @@ const PackItem = ({
   onRenameFolder,
   onDeleteItem,
   onDownloadFolder,
+  onRequestMove,
   depth = 0,
   // For renderClone support in nested Droppables
   allItems,
@@ -84,6 +87,7 @@ const PackItem = ({
                 user={user}
                 onDeleteItem={onDeleteItem}
                 dragHandleProps={provided.dragHandleProps}
+                onRequestMove={onRequestMove}
               />
             </div>
           </div>
@@ -113,7 +117,11 @@ const PackItem = ({
                 type="button"
                 className="pack-item__drag-handle"
                 {...provided.dragHandleProps}
-                title={t('pages:packDetail.items.dragToReorder', 'Drag to reorder')}
+                title={t('pages:packDetail.actions.moveItem', 'Click to move, or drag')}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onRequestMove?.(item);
+                }}
               >
                 <DragHandleIcon />
               </button>
@@ -308,6 +316,7 @@ const PackItem = ({
                       onRenameFolder={onRenameFolder}
                       onDeleteItem={onDeleteItem}
                       onDownloadFolder={onDownloadFolder}
+                      onRequestMove={onRequestMove}
                       allItems={allItems}
                       findItemFn={findItemFn}
                     />
