@@ -73,7 +73,7 @@
 
 @media (max-width: 768px) {
   .pass-submission-page .form-container {
-    margin: 2rem 1rem;
+    margin: 2rem 0;
     width: 100%;
     max-width: 100%;
   }
@@ -93,7 +93,7 @@
 
 @media (max-width: 480px) {
   .pass-submission-page .form-container {
-    margin: 1rem 0.5rem;
+    margin: 1rem 0;
   }
 
   .pass-submission-page .staging-mode-warning {
@@ -105,7 +105,7 @@
 
 @media (max-width: 360px) {
   .pass-submission-page .form-container {
-    margin: 0.5rem 0.25rem;
+    margin: 0.5rem 0;
   }
 }
 
