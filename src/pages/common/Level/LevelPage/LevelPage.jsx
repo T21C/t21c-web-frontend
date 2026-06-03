@@ -440,7 +440,8 @@ const LevelPage = ({
   }
 
   function resetAll() {
-    setSort("RECENT_DESC");
+    setSort("RECENT");
+    setOrder("DESC");
     setSearchInput("");
     setQuery("");
     // Reset to initial PGU range

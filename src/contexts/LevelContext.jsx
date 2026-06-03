@@ -62,6 +62,54 @@ function loadLevelFacetV1(STORAGE_KEYS, storage) {
     return { tags: null, curationTypes: null, combine: 'and' };
 }
 
+const LEVEL_SORT_TYPES = new Set([
+    'RECENT', 'DIFF', 'CLEARS', 'TOTAL_CLEARS', 'LIKES',
+    'BASESCORE', 'BPM', 'TILES', 'TIME', 'RANDOM',
+]);
+
+/** Parse sort + order from storage (supports legacy combined values like RECENT_DESC). */
+function loadLevelSort(storage, keys) {
+    const savedSort = storage.getItem(keys.SORT);
+    const savedOrder = storage.getItem(keys.ORDER);
+
+    if (savedOrder === 'ASC' || savedOrder === 'DESC') {
+        if (savedSort && LEVEL_SORT_TYPES.has(savedSort)) {
+            return { sort: savedSort, order: savedOrder };
+        }
+        if (savedSort?.endsWith('_ASC')) {
+            const type = savedSort.slice(0, -4);
+            if (LEVEL_SORT_TYPES.has(type)) {
+                return { sort: type, order: 'ASC' };
+            }
+        }
+        if (savedSort?.endsWith('_DESC')) {
+            const type = savedSort.slice(0, -5);
+            if (LEVEL_SORT_TYPES.has(type)) {
+                return { sort: type, order: 'DESC' };
+            }
+        }
+    }
+
+    if (savedSort?.endsWith('_ASC')) {
+        const type = savedSort.slice(0, -4);
+        if (LEVEL_SORT_TYPES.has(type)) {
+            return { sort: type, order: 'ASC' };
+        }
+    }
+    if (savedSort?.endsWith('_DESC')) {
+        const type = savedSort.slice(0, -5);
+        if (LEVEL_SORT_TYPES.has(type)) {
+            return { sort: type, order: 'DESC' };
+        }
+    }
+
+    if (savedSort && LEVEL_SORT_TYPES.has(savedSort)) {
+        return { sort: savedSort, order: 'DESC' };
+    }
+
+    return { sort: 'RECENT', order: 'DESC' };
+}
+
 const LevelContextProvider = (props) => {
     const { storagePrefix = '' } = props;
     // Stable per-mount key map. The prefix is treated as an immutable identity
@@ -89,8 +137,8 @@ const LevelContextProvider = (props) => {
     const [query, setQuery] = useState(() => storage.getItem(STORAGE_KEYS.QUERY) || "");
     const [selectedLowFilterDiff, setSelectedLowFilterDiff] = useState(() => storage.getItem(STORAGE_KEYS.LOW_FILTER_DIFF) || "P1");
     const [selectedHighFilterDiff, setSelectedHighFilterDiff] = useState(() => storage.getItem(STORAGE_KEYS.HIGH_FILTER_DIFF) || "U20");
-    const [sort, setSort] = useState(() => storage.getItem(STORAGE_KEYS.SORT) || "RECENT");
-    const [order, setOrder] = useState(() => storage.getItem(STORAGE_KEYS.ORDER) || "ASC");
+    const [sort, setSort] = useState(() => loadLevelSort(storage, STORAGE_KEYS).sort);
+    const [order, setOrder] = useState(() => loadLevelSort(storage, STORAGE_KEYS).order);
     const [hasMore, setHasMore] = useState(true);
     const [totalLevels, setTotalLevels] = useState(0);
     const [pageNumber, setPageNumber] = useState(0);
