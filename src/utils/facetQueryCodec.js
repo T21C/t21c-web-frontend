@@ -15,6 +15,16 @@ export function facetDomainHasFilter(d) {
   return false;
 }
 
+/** Positive (include) facet ids from simple or advanced domains — excludes excludeIds. */
+export function collectFacetDomainIncludedIds(d) {
+  if (!d) return [];
+  if (d.mode === 'simple') return [...(d.ids || [])];
+  if (d.mode === 'advanced') {
+    return (d.groups || []).flatMap((g) => g.ids || []);
+  }
+  return [];
+}
+
 /**
  * Collapse empty groups and rebuild betweenPairs for the API payload.
  * @param {object} adv

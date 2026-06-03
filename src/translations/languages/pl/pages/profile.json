@@ -32,7 +32,8 @@
   },
   "sections": {
     "scores": {
-      "title": "Wyniki"
+      "title": "Wyniki",
+      "hideReclears": "Ukryj powtórzenia"
     },
     "rankHistory": {
       "title": "Miejsce w czasie",

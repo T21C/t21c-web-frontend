@@ -50,6 +50,7 @@
       "title": "通关记录列表",
       "expand": "展开",
       "collapse": "收起",
+      "hideReclears": "隐藏重复通关",
       "lowestImpactScore": "排位分加分下限：<pp>{{score}}</pp>"
     },
     "scoreBreakdown": {

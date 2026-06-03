@@ -107,6 +107,7 @@ const ProfilePage = () => {
     const [passesInitialLoading, setPassesInitialLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
     const [showHiddenPasses, setShowHiddenPasses] = useState(false);
+    const [hideReclears, setHideReclears] = useState(false);
     const [bioCollapsed, setBioCollapsed] = useState(false);
     const [scoresCollapsed, setScoresCollapsed] = useState(false);
     const [scoreBreakdownCollapsed, setScoreBreakdownCollapsed] = useState(false);
@@ -203,6 +204,7 @@ const ProfilePage = () => {
         });
         if (searchQuery) params.append('query', searchQuery);
         if (isOwnProfile && showHiddenPasses) params.append('showHidden', 'true');
+        if (hideReclears) params.append('bestPerLevel', 'true');
 
         const url = `${routes.playersV3.root()}/${playerId}/passes?${params.toString()}`;
         const requestId = ++passesRequestIdRef.current;
@@ -247,7 +249,7 @@ const ProfilePage = () => {
         setHasMore(true);
         fetchPassesPage(0);
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [playerId, searchQuery, sortType, sortOrder, showHiddenPasses]);
+      }, [playerId, searchQuery, sortType, sortOrder, showHiddenPasses, hideReclears]);
 
       const handlePlayerUpdate = (updatedPlayer) => {
         setPlayerData(updatedPlayer);
@@ -1188,16 +1190,26 @@ const ProfilePage = () => {
                           />
                         </div>
                       </div>
-                      
-                      {isOwnProfile && (
-                        <button
-                          className="toggle-hidden-passes-button"
-                          onClick={() => setShowHiddenPasses(!showHiddenPasses)}
-                          title={showHiddenPasses ? t('profile.hideHiddenPasses') : t('profile.showHiddenPasses')}
-                        >
-                          {showHiddenPasses ? <EyeIcon size="20px" /> : <EyeOffIcon size="20px" />}
-                        </button>
-                      )}
+
+                      <div className="scores-controls-row__actions">
+                        <label className="scores-hide-reclears-toggle">
+                          <input
+                            type="checkbox"
+                            checked={hideReclears}
+                            onChange={(e) => setHideReclears(e.target.checked)}
+                          />
+                          <span>{t('profile.sections.scores.hideReclears')}</span>
+                        </label>
+                        {isOwnProfile && (
+                          <button
+                            className="toggle-hidden-passes-button"
+                            onClick={() => setShowHiddenPasses(!showHiddenPasses)}
+                            title={showHiddenPasses ? t('profile.hideHiddenPasses') : t('profile.showHiddenPasses')}
+                          >
+                            {showHiddenPasses ? <EyeIcon size="20px" /> : <EyeOffIcon size="20px" />}
+                          </button>
+                        )}
+                      </div>
                     </div>
                     
                     <div className="results-count">

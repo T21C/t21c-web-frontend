@@ -4,7 +4,7 @@ import { routes } from '@/api/routes';
 import "./levelpage.css";
 import "@/pages/common/sort.css";
 import "@/pages/common/search-section.css";
-import { useContext, useEffect, useState, useCallback, useRef } from "react";
+import { useContext, useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { LevelCard } from "@/components/cards";
 import { StateDisplay, CustomSelect } from "@/components/common/selectors";
 import { Tooltip } from "react-tooltip";
@@ -19,7 +19,7 @@ import { DifficultyContext } from "@/contexts/DifficultyContext";
 import { ReferencesButton, ScrollButton } from "@/components/common/buttons";
 import { MetaTags } from "@/components/common/display";
 import { DifficultySlider, TagSelector, FacetQueryBuilder } from "@/components/common/selectors";
-import { buildFacetQueryParam } from "@/utils/facetQueryCodec";
+import { buildFacetQueryParam, collectFacetDomainIncludedIds } from "@/utils/facetQueryCodec";
 import { SortAscIcon, SortDescIcon, ResetIcon, SortIcon , FilterIcon, LikeIcon, SwitchIcon, EyeIcon, EyeOffIcon} from "@/components/common/icons";
 import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
 import { LevelHelpPopup } from "@/components/popups/Levels";
@@ -116,6 +116,16 @@ const LevelPage = ({
   const [searchInput, setSearchInput] = useState(query);
   const [showTagsInCards, setShowTagsInCards] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
+
+  const showC0V0CurationIcons = useMemo(() => {
+    const includedIds = collectFacetDomainIncludedIds(levelFacetFilters.curationTypes);
+    if (!includedIds.length) return false;
+    const hiddenNames = new Set(['C0', 'V0']);
+    return includedIds.some((id) => {
+      const name = curationTypes.find((t) => t.id === id)?.name;
+      return hiddenNames.has(name);
+    });
+  }, [levelFacetFilters.curationTypes, curationTypes]);
 
   // Debounced request runner: filter/query changes wait 500ms before firing
   // and reset the timer + abort any in-flight request when called again.
@@ -861,6 +871,7 @@ const LevelPage = ({
               user={user}
               displayMode={viewMode}
               showTags={showTagsInCards}
+              showC0V0CurationIcons={showC0V0CurationIcons}
             />
           )}
           computeItemKey={(index, l) => l?.id ?? index}

@@ -50,6 +50,7 @@
       "title": "점수",
       "expand": "점수 확장",
       "collapse": "점수 축소",
+      "hideReclears": "재클리어 숨기기",
       "lowestImpactScore": "최소 <pp>{{score}}</pp>를 얻어 랭크 점수를 얻으세요"
     },
     "scoreBreakdown": {

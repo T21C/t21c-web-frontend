@@ -32,6 +32,8 @@ const LevelCard = ({
   user,
   displayMode = 'normal',
   showTags = true,
+  /** When true, show C0/V0 on the difficulty-arc curation icons (level list filter). */
+  showC0V0CurationIcons = false,
   // Pack mode specific props
   canEdit = false,
   onDeleteItem,
@@ -60,6 +62,8 @@ const LevelCard = ({
   const [showSongPopup, setShowSongPopup] = useState(false);
   const [showArtistPopup, setShowArtistPopup] = useState(false);
   const { difficultyDict, curationTypesDict, tagsDict } = useDifficultyContext();
+  const revealHiddenCurationArcTypes =
+    showC0V0CurationIcons || !!packItem || displayMode === 'pack';
   const difficultyInfo = level != null ? difficultyDict[level.diffId] : undefined;
   const curationsList = useMemo(() => {
     if (!level) return [];
@@ -79,7 +83,7 @@ const LevelCard = ({
       .filter((t) => {
         const info = curationTypesDict[t.id] || t;
         const name = info?.name ?? t.name;
-        return !HIDDEN_CURATION_ARC_TYPE_NAMES.has(name);
+        return revealHiddenCurationArcTypes || !HIDDEN_CURATION_ARC_TYPE_NAMES.has(name);
       })
       .slice(0, 4)
       .map((t) => {
@@ -87,7 +91,7 @@ const LevelCard = ({
         return { key: t.id, typeId: t.id, icon: info?.icon };
       })
       .filter((x) => x.icon);
-  }, [curationsList, curationTypesDict]);
+  }, [curationsList, curationTypesDict, revealHiddenCurationArcTypes]);
 
   // Computed values
   const wsLink = level?.ws || level?.wsLink || level?.workshopLink;
@@ -421,7 +425,6 @@ const LevelCard = ({
             {renderStatsIcons({ showLikes: false })}
           </Link>
           {renderDownloadLinks({ 
-            showSteam: false, 
             showAddToPack: false, 
             editMarginZero: true 
           })}
@@ -438,7 +441,6 @@ const LevelCard = ({
           {renderStatsIcons({ showLikes: false })}
         </Link>
         {renderDownloadLinks({ 
-          showSteam: false, 
           showAddToPack: false, 
           editMarginZero: true 
         })}

@@ -30,7 +30,8 @@
   },
   "sections": {
     "scores": {
-      "title": "Scores"
+      "title": "Scores",
+      "hideReclears": "Masquer les re-complétions"
     },
     "rankHistory": {
       "title": "Rang dans le temps",

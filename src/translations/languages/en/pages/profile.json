@@ -50,6 +50,7 @@
       "title": "Scores",
       "expand": "Expand scores",
       "collapse": "Collapse scores",
+      "hideReclears": "Hide reclears",
       "lowestImpactScore": "Get at least <pp>{{score}}</pp> to gain Ranked Score"
     },
     "scoreBreakdown": {
