@@ -59,7 +59,7 @@
     "pendingTitle": "Account deletion already scheduled",
     "executesAt": "Permanent deletion: {{date}}",
     "includesCreator": "Includes creator profile purge when executed.",
-    "includeCreator": "Also purge linked creator profile on execution (solo levels removed, collab credits stripped)",
+    "includeCreator": "Also purge linked creator profile on execution (solo levels soft-deleted, credits stripped)",
     "scheduleButton": "Schedule account deletion"
   }
 }

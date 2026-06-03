@@ -59,7 +59,7 @@
     "pendingTitle": "이미 계정 삭제가 예약됨",
     "executesAt": "영구 삭제: {{date}}",
     "includesCreator": "실행 시 크리에이터 프로필 정리 포함.",
-    "includeCreator": "실행 시 연결된 크리에이터 프로필도 정리 (솔로 레벨 삭제, 콜라보 크레딧 제거)",
+    "includeCreator": "실행 시 연결된 크리에이터 프로필도 정리 (솔로 레벨 소프트 삭제, 크레딧 제거)",
     "scheduleButton": "계정 삭제 예약"
   }
 }

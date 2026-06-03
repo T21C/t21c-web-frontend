@@ -59,7 +59,7 @@
     "pendingTitle": "已安排账户注销",
     "executesAt": "永久注销：{{date}}",
     "includesCreator": "执行时将包含创作者资料清理。",
-    "includeCreator": "执行时也清理关联的创作者资料（单人关卡删除，合作仅移除署名）",
+    "includeCreator": "执行时也清理关联的创作者资料（单人关卡软删除，移除署名）",
     "scheduleButton": "安排账户注销"
   }
 }

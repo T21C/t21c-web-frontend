@@ -99,8 +99,8 @@
     "successCanceled": "Account deletion canceled.",
     "errorSchedule": "Could not schedule account deletion.",
     "errorCancel": "Could not cancel account deletion.",
-    "includeCreatorCheckbox": "Also remove my creator profile and chart credits. Levels where I am the only credited creator will be permanently removed.",
-    "pendingIncludesCreator": "When deletion runs, your linked creator profile will be purged (solo levels removed, collaboration credits stripped)."
+    "includeCreatorCheckbox": "Also remove my creator profile and chart credits. Solo levels will be hidden (soft-deleted) and show no credited creator; collaborations only drop my credit.",
+    "pendingIncludesCreator": "When deletion runs, your creator profile will be removed, your credits stripped (unknown creator), and solo levels soft-deleted to keep chart files."
   }
 }
 

@@ -99,8 +99,8 @@
     "successCanceled": "已取消注销账户。",
     "errorSchedule": "无法安排注销账户。",
     "errorCancel": "无法取消注销账户。",
-    "includeCreatorCheckbox": "同时移除我的创作者资料与谱面署名。仅由我署名的关卡将被永久删除。",
-    "pendingIncludesCreator": "删除执行时将清理已关联的创作者资料（单人关卡删除，合作谱面仅移除您的署名）。"
+    "includeCreatorCheckbox": "同时移除我的创作者资料与谱面署名。仅由我署名的关卡将隐藏（软删除）且不再显示创作者；合作谱面仅移除我的署名。",
+    "pendingIncludesCreator": "删除执行时将移除创作者资料、剥离您的署名（创作者显示为未知），单人关卡软删除以保留谱面文件。"
   }
 }
 
