@@ -10,6 +10,15 @@ export const MAX_TEXT_FONT_SIZE = 72;
 export const DEFAULT_TEXT_FONT_SIZE = 16;
 export const DEFAULT_TEXT_HEADING_FONT_SIZE = 20;
 export const TEXT_ALIGNMENTS = ["left", "center", "right"];
+export const TEXT_COLOR_REGEX = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
+export const DEFAULT_TEXT_COLOR_PICKER = "#e0e0e0";
+
+export function parseTextBlockColor(value) {
+  if (typeof value !== "string") return null;
+  const trimmed = value.trim();
+  if (!trimmed.length || trimmed.length > 7 || !TEXT_COLOR_REGEX.test(trimmed)) return null;
+  return trimmed.toLowerCase();
+}
 
 const zPlainText = (max) =>
   z
@@ -26,6 +35,19 @@ export function clampTextFontSize(value, fallback = DEFAULT_TEXT_FONT_SIZE) {
 
 const zFontSize = () => z.number().optional();
 
+const zTextColor = () =>
+  z
+    .string()
+    .max(7)
+    .optional()
+    .transform((value) => {
+      if (value === undefined) return undefined;
+      return parseTextBlockColor(value) ?? undefined;
+    })
+    .refine((value) => value === undefined || parseTextBlockColor(value) !== null, {
+      message: "Invalid text color",
+    });
+
 const zBodyText = (max) =>
   z
     .string()
@@ -38,6 +60,7 @@ export const textBlockDataSchema = z.object({
   fontSize: zFontSize(),
   headingFontSize: zFontSize(),
   align: z.enum(TEXT_ALIGNMENTS).optional().default("left"),
+  color: zTextColor(),
 });
 
 export const textBlockDescriptor = {

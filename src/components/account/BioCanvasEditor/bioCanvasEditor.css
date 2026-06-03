@@ -331,7 +331,7 @@
   flex: 1;
 }
 
-.bio-canvas-editor__field input,
+.bio-canvas-editor__field input:not([type="color"]),
 .bio-canvas-editor__field textarea {
   width: 100%;
   padding: 0.5rem 0.65rem;
@@ -360,6 +360,64 @@
   flex-wrap: wrap;
   gap: 0.75rem;
   margin-bottom: 0.75rem;
+}
+
+.bio-canvas-editor__color-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.bio-canvas-editor__color-input {
+  flex: 0 0 auto;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 1px solid var(--color-white-t10);
+  border-radius: 0.375rem;
+  background: transparent;
+  cursor: pointer;
+}
+
+.bio-canvas-editor__color-input::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.bio-canvas-editor__color-input::-webkit-color-swatch {
+  border: none;
+  border-radius: calc(0.375rem - 1px);
+}
+
+.bio-canvas-editor__color-input::-moz-color-swatch {
+  border: none;
+  border-radius: calc(0.375rem - 1px);
+}
+
+.bio-canvas-editor__color-value {
+  flex: 1;
+  font-size: 0.8125rem;
+  color: var(--color-gray-2);
+}
+
+.bio-canvas-editor__color-reset {
+  padding: 0.35rem 0.65rem;
+  border: 1px solid var(--color-white-t10);
+  border-radius: 0.375rem;
+  background: var(--color-black-t40);
+  color: var(--text-color);
+  font-size: 0.8125rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.bio-canvas-editor__color-reset:hover:not(:disabled) {
+  border-color: var(--color-white-t25);
+  background: var(--color-black-t30);
+}
+
+.bio-canvas-editor__color-reset:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 .bio-canvas-editor__size-fields {

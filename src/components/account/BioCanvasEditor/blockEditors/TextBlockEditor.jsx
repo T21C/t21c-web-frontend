@@ -1,5 +1,9 @@
 import { CustomSelect } from "@/components/common/selectors";
-import { TEXT_ALIGNMENTS } from "@/utils/bioCanvas/blocks/text.js";
+import {
+  DEFAULT_TEXT_COLOR_PICKER,
+  TEXT_ALIGNMENTS,
+  parseTextBlockColor,
+} from "@/utils/bioCanvas/blocks/text.js";
 
 const ALIGN_OPTIONS = TEXT_ALIGNMENTS.map((value) => ({
   value,
@@ -7,8 +11,10 @@ const ALIGN_OPTIONS = TEXT_ALIGNMENTS.map((value) => ({
 }));
 
 export default function TextBlockEditor({ block, onPatchData }) {
-  const { heading, body, fontSize, headingFontSize, align } = block.data ?? {};
+  const { heading, body, fontSize, headingFontSize, align, color } = block.data ?? {};
   const selectedAlign = ALIGN_OPTIONS.find((option) => option.value === (align ?? "left")) ?? ALIGN_OPTIONS[0];
+  const parsedColor = parseTextBlockColor(color);
+  const pickerColor = parsedColor ?? DEFAULT_TEXT_COLOR_PICKER;
 
   const patchFontSize = (key, rawValue) => {
     if (rawValue === "") {
@@ -68,6 +74,27 @@ export default function TextBlockEditor({ block, onPatchData }) {
           backgroundColor="var(--color-black-t40)"
           isSearchable={false}
         />
+      </div>
+      <div className="bio-canvas-editor__field">
+        <span>Text color</span>
+        <div className="bio-canvas-editor__color-row">
+          <input
+            type="color"
+            className="bio-canvas-editor__color-input"
+            value={pickerColor}
+            onChange={(ev) => onPatchData({ color: ev.target.value })}
+            aria-label="Text color"
+          />
+          <span className="bio-canvas-editor__color-value">{parsedColor ?? "Default"}</span>
+          <button
+            type="button"
+            className="bio-canvas-editor__color-reset"
+            disabled={!parsedColor}
+            onClick={() => onPatchData({ color: undefined })}
+          >
+            Reset
+          </button>
+        </div>
       </div>
     </div>
   );
