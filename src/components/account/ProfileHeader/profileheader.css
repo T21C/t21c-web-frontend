@@ -249,6 +249,13 @@
   user-select: none;
 }
 
+.profile-header__badge-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
 .profile-header__badge {
   font-size: 1.35rem;
   font-weight: 800;
@@ -258,6 +265,14 @@
   color: var(--color-white);
   text-shadow: 0 1px 0 var(--color-black-t80);
   background-color: var(--color-black-t35);
+}
+
+.profile-header__profile-id {
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--color-gray-2);
+  text-shadow: 0 1px 4px var(--color-black);
 }
 
 .profile-header__center {

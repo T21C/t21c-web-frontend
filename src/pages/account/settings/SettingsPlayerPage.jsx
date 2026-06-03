@@ -401,7 +401,7 @@ const SettingsPlayerPage = () => {
           handle={playerData?.user?.username}
           country={playerData?.country}
           badgeId={playerData?.rankedScoreRank}
-          badgeLabel="#"
+          profileId={playerData?.id ?? playerId}
           expandStatsAriaLabel={t("profile.funFacts.expandAria")}
           collapseStatsAriaLabel={t("profile.funFacts.collapseAria")}
           statGroups={statGroups}
@@ -483,7 +483,7 @@ const SettingsPlayerPage = () => {
             handle: playerData?.user?.username,
             country: playerData?.country,
             badgeId: playerData?.rankedScoreRank,
-            badgeLabel: "#",
+            profileId: playerData?.id ?? playerId,
             expandStatsAriaLabel: t("profile.funFacts.expandAria"),
             collapseStatsAriaLabel: t("profile.funFacts.collapseAria"),
             statGroups,

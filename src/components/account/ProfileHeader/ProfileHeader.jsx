@@ -108,7 +108,8 @@ const ProfileHeader = ({
   handle,
   country,
   badgeId,
-  badgeLabel = "#",
+  /** Shown under the leaderboard rank badge as `id: NN`. Falls back to `avatarSubject.id`. */
+  profileId,
   bannerUrl = null,
   headerSurfaceStyle = null,
   /** Per-layer CDN assets for surface image stack entries (`layerId` → `{ assetId, url }`). */
@@ -330,10 +331,14 @@ const ProfileHeader = ({
     return () => document.removeEventListener("pointerdown", onPointerDown);
   }, [iconPanelOpen]);
 
-  const badgeText =
-    mode === "creator"
-      ? `${badgeLabel}${badgeId ?? ""}`.trim()
-      : formatPlayerBadgeText(badgeId);
+  const badgeText = formatPlayerBadgeText(badgeId);
+
+  const resolvedProfileId = useMemo(() => {
+    const raw = profileId ?? avatarSubject?.id;
+    const n = Number(raw);
+    if (!Number.isFinite(n) || n <= 0) return null;
+    return Math.trunc(n);
+  }, [profileId, avatarSubject?.id]);
 
   const rankNum = Number(badgeId);
   const rankForColor =
@@ -612,18 +617,23 @@ const ProfileHeader = ({
                   />
                 </div>
               </div>
-              <div
-                className="profile-header__badge"
-                style={
-                  mode === "player" && badgeText !== "Unranked"
-                    ? {
-                        color: rankColor,
-                        backgroundColor: `${rankColor}27`,
-                      }
-                    : undefined
-                }
-              >
-                {badgeText}
+              <div className="profile-header__badge-wrap">
+                <div
+                  className="profile-header__badge"
+                  style={
+                    mode === "player" && badgeText !== "Unranked"
+                      ? {
+                          color: rankColor,
+                          backgroundColor: `${rankColor}27`,
+                        }
+                      : undefined
+                  }
+                >
+                  {badgeText}
+                </div>
+                {resolvedProfileId != null ? (
+                  <div className="profile-header__profile-id">id: {resolvedProfileId}</div>
+                ) : null}
               </div>
               <div className="profile-header__name-vertical">
                 <svg className="profile-header__name-svg profile-header__name-svg--vertical" dominantBaseline="hanging">

@@ -214,8 +214,8 @@ const CreatorProfilePage = () => {
           aliasNames={creatorAliasNames}
           handle={creatorDoc.user?.username}
           country={creatorDoc.user?.country || creatorDoc.country}
-          badgeId={creatorDoc.id}
-          badgeLabel="ID:"
+          badgeId={creatorDoc?.rank ?? creatorDoc?.chartsTotalRank}
+          profileId={creatorDoc?.id}
           expandStatsAriaLabel={t("creators.profile.funFacts.expandAria")}
           collapseStatsAriaLabel={t("creators.profile.funFacts.collapseAria")}
           statGroups={statGroups}
