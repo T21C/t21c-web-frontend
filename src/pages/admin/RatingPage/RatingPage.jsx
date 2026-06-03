@@ -3,9 +3,11 @@ import { apiUrl } from '@/config/urls';
 // tuf-search: #RatingPage #ratingPage #admin #rating — Rating Management
 
 import { MetaTags } from "@/components/common/display";
+import { buildStaticPageMeta } from '@/utils/meta';
 import { StateDisplay } from "@/components/common/selectors";
 import "./adminratingpage.css";
 import { useEffect, useState, useCallback, useMemo } from "react";
+import { useLocation } from 'react-router-dom';
 import { VirtualList } from "@/components/common/VirtualList";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRatingFilter } from "@/contexts/RatingFilterContext";
@@ -27,7 +29,18 @@ const RATINGS_BATCH = 30;
 
 const RatingPage = () => {
   const { t } = useTranslation('pages');
-  const currentUrl = window.location.origin + location.pathname;
+  const location = useLocation();
+  const pageMeta = useMemo(
+    () =>
+      buildStaticPageMeta({
+        title: t('rating.meta.title'),
+        description: t('rating.meta.description'),
+        pathname: location.pathname,
+        image: '/og-image.jpg',
+        type: 'website',
+      }),
+    [t, location.pathname],
+  );
   const { user } = useAuth();
   const { 
     sortOrder, 
@@ -392,14 +405,8 @@ const RatingPage = () => {
   if (user === undefined) {
     return (
       <div className="admin-rating-page">
-        <MetaTags
-          title={t('rating.meta.title')}
-          description={t('rating.meta.description')}
-          url={currentUrl}
-          image="/og-image.jpg"
-          type="website"
-        />
-        
+        <MetaTags {...pageMeta} />
+
         <div className="admin-rating-body">
           <div className="loader-shell loader-shell--fill">
             <div className="loader loader-relative" />
@@ -411,14 +418,8 @@ const RatingPage = () => {
 
   return (
     <div className="admin-rating-page">
-      <MetaTags
-        title={t('rating.meta.title')}
-        description={t('rating.meta.description')}
-        url={currentUrl}
-        image="/og-image.jpg"
-        type="website"
-      />
-      
+      <MetaTags {...pageMeta} />
+
       <div className="admin-rating-body">
         <ScrollButton />
         <ReferencesButton />

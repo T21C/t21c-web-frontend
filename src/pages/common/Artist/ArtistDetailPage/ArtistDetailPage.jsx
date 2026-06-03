@@ -1,13 +1,14 @@
 import { routes } from '@/api/routes';
 // tuf-search: #ArtistDetailPage #artistDetailPage #artist #artistDetail — Artist - TUF
-import React, { useState, useEffect } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { getVerificationClass, isImageUrl } from '@/utils/Utility';
 import api from '@/utils/api';
 import { MetaTags } from '@/components/common/display';
+import { buildArtistMeta } from '@/utils/meta';
 import { GalleryInspectPopup } from '@/components/popups/Evidence';
 import { EntityActionPopup } from '@/components/popups/Entities';
 import { EditIcon, ExternalLinkIcon } from '@/components/common/icons';
@@ -17,7 +18,7 @@ const ArtistDetailPage = () => {
   const { t } = useTranslation('pages');
   const { id } = useParams();
   const navigate = useNavigate();
-  const currentUrl = window.location.origin + location.pathname;
+  const location = useLocation();
   const { user } = useAuth();
 
   const [artist, setArtist] = useState(null);
@@ -31,6 +32,11 @@ const ArtistDetailPage = () => {
   useEffect(() => {
     fetchArtist();
   }, [id]);
+
+  const artistMeta = useMemo(
+    () => (artist ? buildArtistMeta(artist, t, { pathname: location.pathname }) : null),
+    [artist, t, location.pathname],
+  );
 
   const fetchArtist = async () => {
     try {
@@ -74,13 +80,7 @@ const ArtistDetailPage = () => {
 
   return (
     <div className="artist-detail-page">
-      <MetaTags
-        title={`${artist.name} - ${t('artistDetail.meta.title')}`}
-        description={t('artistDetail.meta.description', { name: artist.name })}
-        url={currentUrl}
-        image={artist.avatarUrl || "/og-image.jpg"}
-        type="article"
-      />
+      {artistMeta ? <MetaTags {...artistMeta} /> : null}
 
       <div className="artist-detail-container page-content-1000">
         <div className="artist-header">

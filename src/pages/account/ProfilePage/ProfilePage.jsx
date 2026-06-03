@@ -8,6 +8,7 @@ import { useEffect, useState, useMemo, useRef } from "react";
 import { Link, useParams, useLocation, useNavigate } from "react-router-dom"
 import { formatNumber } from "@/utils";
 import { DifficultyGraph, MetaTags } from "@/components/common/display";
+import { buildPlayerMeta } from '@/utils/meta';
 import { ScoreCard } from "@/components/cards";
 import { useTranslation, Trans } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
@@ -97,8 +98,15 @@ const ProfilePage = () => {
     const { user } = useAuth();
     const [showEditPopup, setShowEditPopup] = useState(false);
     const location = useLocation();
-    const currentUrl = window.location.origin + location.pathname;
     const navigate = useNavigate();
+    const playerMeta = useMemo(() => {
+      const resolvedId = playerId || playerData?.id;
+      return buildPlayerMeta(playerData || null, t, {
+        pathname: location.pathname,
+        playerId: resolvedId,
+        avatarUrl: playerData ? userAvatarDisplayUrl(playerData) : undefined,
+      });
+    }, [playerId, playerData, t, location.pathname]);
     const [isSpinning, setIsSpinning] = useState(false);
 
     // Server-paginated passes (infinite scroll).
@@ -668,13 +676,7 @@ const ProfilePage = () => {
       if (!playerId && !user) {
         return (
           <div className="account-profile-page player-page">
-            <MetaTags
-              title={t('profile.meta.defaultTitle')}
-              description={t('profile.meta.description')}
-              url={currentUrl}
-              image={'/default-avatar.jpg'}
-              type="profile"
-          />
+            <MetaTags {...playerMeta} />
             <div className="player-body" style={{height: "85vh"}}>
                 <h1 className="player-notfound">{t('profile.notLoggedIn')}</h1>
                 <h2 className="player-search-for-other" onClick={handleSearchForOther}>{t('profile.searchForOther')}</h2>
@@ -689,13 +691,7 @@ const ProfilePage = () => {
           <AccountStatusBanners variant="profile" user={user} navigate={navigate} />
         ) : null}
         <div className="account-profile-page player-page">
-          <MetaTags
-            title={playerData?.name ? t('profile.meta.title', { name: playerData.name }) : t('profile.meta.defaultTitle')}
-            description={t('profile.meta.description', { name: playerData?.name || 'Unknown Player' })}
-            url={currentUrl}
-            image={userAvatarDisplayUrl(playerData) || '/default-avatar.jpg'}
-            type="profile"
-          />
+          <MetaTags {...playerMeta} />
           
           <ScrollButton />
 

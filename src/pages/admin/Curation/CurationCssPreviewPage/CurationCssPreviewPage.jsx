@@ -214,12 +214,10 @@ const CurationCssPreviewPage = () => {
 
   // Check if user can access this curation
   if (!canAccessCuration(curation)) {
-    const currentUrl = window.location.origin + location.pathname;
     return (
-      <AccessDenied 
+      <AccessDenied
         metaTitle={t('curationCssPreview.meta.title')}
         metaDescription={t('curationCssPreview.meta.description')}
-        currentUrl={currentUrl}
       />
     );
   }
@@ -227,12 +225,10 @@ const CurationCssPreviewPage = () => {
   const curationTypesForCss = getCurationTypesResolved(curation, curationTypesDict);
   const hasAnyCustomCssType = curationTypesForCss.some((t) => hasBit(t?.abilities, ABILITIES.CUSTOM_CSS));
   if (!hasAnyCustomCssType) {
-    const currentUrl = window.location.origin + location.pathname;
     return (
-      <AccessDenied 
+      <AccessDenied
         metaTitle={t('curationCssPreview.meta.title')}
         metaDescription={t('curationCssPreview.meta.description')}
-        currentUrl={currentUrl}
       />
     );
   }

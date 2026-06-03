@@ -1,7 +1,8 @@
 import { routes } from '@/api/routes';
 // tuf-search: #LeaderboardPage #leaderboardPage #leaderboard — Leaderboard
 import "./leaderboardpage.css";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState, useMemo } from "react";
+import { useLocation } from 'react-router-dom';
 import axios from "axios";
 import { PlayerCard } from "@/components/cards";
 import { StateDisplay, CustomSelect, CountrySelect, RangeSelector } from "@/components/common/selectors";
@@ -13,17 +14,18 @@ import { PlayerContext } from "@/contexts/PlayerContext";
 import { useTranslation } from "react-i18next";
 import { ScrollButton } from "@/components/common/buttons";
 import { MetaTags } from "@/components/common/display";
+import { buildLeaderboardMeta } from '@/utils/meta';
 import { useAuth } from "@/contexts/AuthContext";
 import { SortDescIcon, SortAscIcon, SortIcon, FilterIcon, ResetIcon } from "@/components/common/icons";
 import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
 import { CreatorAssignmentPopup } from "@/components/popups/Creators";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 
-const currentUrl = window.location.origin + location.pathname;
 const limit = 30;
 
 const LeaderboardPage = () => {
   const { t } = useTranslation('pages');
+  const location = useLocation();
   const { user } = useAuth();
   const [hasMore, setHasMore] = useState(true);
   const [showCreatorAssignment, setShowCreatorAssignment] = useState(false);
@@ -62,6 +64,17 @@ const LeaderboardPage = () => {
     forceUpdate,
     setForceUpdate
   } = useContext(PlayerContext);
+
+  const pageMeta = useMemo(
+    () =>
+      buildLeaderboardMeta({
+        title: t('leaderboard.meta.title'),
+        description: t('leaderboard.meta.description'),
+        pathname: location.pathname,
+        players: displayedPlayers,
+      }),
+    [t, location.pathname, displayedPlayers],
+  );
 
   const sortOptions = [
     { value: 'rankedScore', label: t('leaderboard.sortOptions.rankedScore') },
@@ -276,13 +289,7 @@ const LeaderboardPage = () => {
 
   return (
     <div className="leaderboard-page">
-      <MetaTags
-        title={t('leaderboard.meta.title')}
-        description={t('leaderboard.meta.description')}
-        url={currentUrl}
-        image="/leaderboard-preview.jpg"
-        type="website"
-      />
+      <MetaTags {...pageMeta} />
       
 
       <div className="leaderboard-body page-content-70rem">

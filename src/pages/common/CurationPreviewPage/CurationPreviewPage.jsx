@@ -1,9 +1,10 @@
 import { routes } from '@/api/routes';
 // tuf-search: #CurationPreviewPage #curationPreviewPage #curationPreview
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useParams, useLocation } from 'react-router-dom';
 
 import { MetaTags } from '@/components/common/display';
+import { buildStaticPageMeta } from '@/utils/meta';
 import { ScrollButton } from '@/components/common/buttons';
 import api from '@/utils/api';
 import './curationpreviewpage.css';
@@ -17,12 +18,23 @@ const CurationPreviewPage = () => {
   const { id } = useParams();
   const { t } = useTranslation('pages');
   const { difficultyDict } = useDifficultyContext();
-  const currentUrl = window.location.origin + location.pathname;
+  const location = useLocation();
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [curation, setCuration] = useState(null);
   const [level, setLevel] = useState(null);
+
+  const pageMeta = useMemo(
+    () =>
+      buildStaticPageMeta({
+        title: t('curationPreview.meta.title', { song: level?.song || 'Unknown' }),
+        description: t('curationPreview.meta.description', { song: level?.song || 'Unknown' }),
+        pathname: location.pathname,
+        noindex: true,
+      }),
+    [t, location.pathname, level?.song],
+  );
 
   useEffect(() => {
     const fetchCuration = async () => {
@@ -72,11 +84,7 @@ const CurationPreviewPage = () => {
 
   return (
     <div className="curation-preview-page">
-      <MetaTags 
-        title={t('curationPreview.meta.title', { song: level?.song || 'Unknown' })}
-        description={t('curationPreview.meta.description', { song: level?.song || 'Unknown' })}
-        url={currentUrl}
-      />
+      <MetaTags {...pageMeta} />
       
       
       

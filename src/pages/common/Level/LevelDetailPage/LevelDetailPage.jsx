@@ -31,6 +31,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import api from "@/utils/api";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { MetaTags, ScoreV2GraphDropdown } from "@/components/common/display";
+import { buildLevelMeta } from "@/utils/meta";
 import { StatusBanner } from "@/components/common/display/StatusBanner/StatusBanner";
 import { 
   DownloadIcon, 
@@ -747,7 +748,10 @@ const LevelDetailPage = ({ mockData = null }) => {
   const { difficultyDict, curationTypesDict, difficulties } = useDifficultyContext();
 
   const location = useLocation();
-  const currentUrl = window.location.origin + location.pathname;
+  const levelMeta = useMemo(() => {
+    if (!res?.level) return null;
+    return buildLevelMeta(res.level, t, { pathname: location.pathname });
+  }, [res?.level, t, location.pathname]);
 
   const [isLongDescription, setIsLongDescription] = useState(false);
 
@@ -1674,14 +1678,6 @@ const LevelDetailPage = ({ mockData = null }) => {
     };
   }, []); // Empty dependency array - only run on mount/unmount
 
-  useEffect(() => {
-    if (res?.level) {
-      document.title = `${getSongDisplayName(res.level)} - ${getArtistDisplayName(res.level)} | TUF`;
-    } else {
-      document.title = 'Loading Level... | TUF';
-    }
-  }, [res?.level]);
-
   function handleSort(sort) {
     if (leaderboardSort === sort) {
       // Same sort clicked, toggle direction
@@ -2090,13 +2086,7 @@ const LevelDetailPage = ({ mockData = null }) => {
 
   return (
     <div>
-      <MetaTags
-        title={getSongDisplayName(res?.level)}
-        description={t('levelDetail.meta.description', { song: getSongDisplayName(res?.level), creator: res?.level?.creator })}
-        url={currentUrl}
-        image={''}
-        type="article"
-      />
+      {levelMeta ? <MetaTags {...levelMeta} /> : null}
       {res.level.fileId && !res.level.isDeleted && !res.level.isHidden && (
         <WebAdofaiViewerButton levelId={effectiveId} />
       )}

@@ -3,12 +3,14 @@ import { routes } from '@/api/routes';
 
 import "./levelsubmission.css";
 import placeholder from "@/assets/placeholder/3.png";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
+import { useLocation } from 'react-router-dom';
 import { getVideoDetails } from "@/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { validateFeelingRating } from "@/utils/Utility";
 import { Trans, useTranslation } from "react-i18next";
-import { StagingModeWarning } from "@/components/common/display";
+import { StagingModeWarning, MetaTags } from "@/components/common/display";
+import { buildStaticPageMeta } from '@/utils/meta';
 import { ProfileSelector } from "@/components/common/selectors";
 import { LevelSelectionPopup, CDNTosPopup } from "@/components/popups/Levels";
 import { SongSelectorPopup } from "@/components/popups/Songs";
@@ -112,6 +114,17 @@ const LevelSubmissionPage = () => {
   };
 
   const { t } = useTranslation('pages');
+  const location = useLocation();
+  const pageMeta = useMemo(
+    () =>
+      buildStaticPageMeta({
+        title: t('levelSubmission.title'),
+        description: t('submission.meta.description'),
+        pathname: location.pathname,
+        noindex: true,
+      }),
+    [t, location.pathname],
+  );
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -790,7 +803,7 @@ const LevelSubmissionPage = () => {
 
   return (
     <div className="level-submission-page">
-      
+      <MetaTags {...pageMeta} />
       <div className="form-container">
         {import.meta.env.MODE !== "production" && <StagingModeWarning />}
 

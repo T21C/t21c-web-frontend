@@ -1,13 +1,13 @@
 // tuf-search: #LoginPage #loginPage #account #login — Login
-import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 import './loginPage.css';
 
 import { MetaTags } from '@/components/common/display';
+import { buildStaticPageMeta } from '@/utils/meta';
 import ReCAPTCHA from '@/components/auth/ReCaptcha/ReCaptcha';
-const currentUrl = window.location.origin + location.pathname;
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -22,7 +22,19 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const { user, login, loginWithDiscord, getOriginUrl } = useAuth();
   const { t } = useTranslation('pages');
-  
+  const location = useLocation();
+  const pageMeta = useMemo(
+    () =>
+      buildStaticPageMeta({
+        title: t('login.meta.title'),
+        description: t('login.meta.description'),
+        pathname: location.pathname,
+        type: 'article',
+        noindex: true,
+      }),
+    [t, location.pathname],
+  );
+
   useEffect(() => {
     if (user) {
       navigate('/profile');
@@ -199,13 +211,7 @@ const LoginPage = () => {
 
   return (
     <div className="login-page-wrapper">
-       <MetaTags
-          title={t('login.meta.title')}
-          description={t('login.meta.description')}
-          url={currentUrl}
-          image={''}
-          type="article"
-      />
+       <MetaTags {...pageMeta} />
       
       <div className="login-page">
         <div className="login-container">

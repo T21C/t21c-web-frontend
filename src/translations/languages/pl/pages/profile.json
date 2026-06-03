@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "{{name}} | TUF",
-    "description": "Sprawdź profil i osiągnięcia gracza {{name}}",
+    "title": "{{name}}",
+    "description": "Profil, przejścia i osiągnięcia gracza {{name}} · The Universal Forums",
     "defaultTitle": "Profil"
   },
   "notFound": "Nie znaleziono gracza",

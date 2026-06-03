@@ -1,10 +1,11 @@
 // tuf-search: #PackDetailPage #packDetailPage #pack #packDetail
 import "./packdetailpage.css";
 import React, { useEffect, useState, useRef, useMemo, useCallback } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import PackItem, { PackLevelItem } from "@/components/cards/PackItem/PackItem";
 import { MetaTags } from "@/components/common/display";
+import { buildPackMeta } from '@/utils/meta';
 import { ScrollButton } from "@/components/common/buttons";
 import { EditIcon, PinIcon, LockIcon, EyeIcon, UsersIcon, ArrowIcon, PlusIcon, LikeIcon, DownloadIcon, ChevronIcon, ExternalLinkIcon } from "@/components/common/icons";
 import { EditPackPopup, PackDownloadPopup, PackExportPopup, PackItemPlacementPopup } from "@/components/popups/Packs";
@@ -137,6 +138,7 @@ const PackDetailPage = () => {
   const { t } = useTranslation('pages');
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
   const { toggleFavorite } = usePackContext();
   
@@ -173,11 +175,19 @@ const PackDetailPage = () => {
     [pack?.items, cdnMetadataByLevelId]
   );
   const packSizeSummary = useMemo(() => summarizePackSize(packItems), [packItems]);
+  const totalLevels = packSizeSummary.levelCount;
   const packSizeLabel = useMemo(() => formatEstimatedSize(packSizeSummary), [packSizeSummary]);
-  const packDownloadDisabled = packSizeSummary.levelCount === 0;
-  const packExportDisabled = packSizeSummary.levelCount === 0;
+  const packDownloadDisabled = totalLevels === 0;
+  const packExportDisabled = totalLevels === 0;
   const sortedRootItems = useMemo(() => sortItemsByOrder(packItems), [packItems]);
   const totalRenderableItems = useMemo(() => countPackItems(packItems), [packItems]);
+  const packMeta = useMemo(() => {
+    if (!pack) return null;
+    return buildPackMeta(pack, t, {
+      pathname: location.pathname,
+      totalLevels,
+    });
+  }, [pack, t, location.pathname, totalLevels]);
 
   // Fetch pack details (CDN sizes loaded separately via fetchPackCdnData)
   const fetchPack = useCallback(async (silent = false) => {
@@ -911,16 +921,6 @@ const PackDetailPage = () => {
     }
   };
 
-  // Count total levels (recursive)
-  const countLevels = (items) => {
-    let count = 0;
-    items?.forEach(item => {
-      if (item.type === 'level') count++;
-      if (item.children) count += countLevels(item.children);
-    });
-    return count;
-  };
-
   // Get view mode icon and text
   const getViewModeIcon = () => {
     if (!pack) return null;
@@ -987,19 +987,13 @@ const PackDetailPage = () => {
     );
   }
 
-  const currentUrl = window.location.origin + location.pathname;
-  const totalLevels = countLevels(packItems);
   const isDownloadPopupOpen = Boolean(downloadContext);
   const popupContextName = downloadContext?.name || pack?.name;
   const popupSizeSummary = downloadContext?.sizeSummary || packSizeSummary;
 
   return (
     <div className="pack-detail-page">
-      <MetaTags 
-        title={`${pack.name} - Pack - TUF`}
-        description={`Level pack: ${pack.name} by ${pack.packOwner?.username || 'Unknown'}. Contains ${totalLevels} levels.`}
-        url={currentUrl}
-      />
+      {packMeta ? <MetaTags {...packMeta} /> : null}
       
       
       <div className="pack-body page-content-70rem">

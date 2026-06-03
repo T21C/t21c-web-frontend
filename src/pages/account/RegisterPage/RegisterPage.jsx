@@ -1,6 +1,6 @@
 // tuf-search: #RegisterPage #registerPage #account #register
-import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './registerPage.css';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
@@ -8,6 +8,8 @@ import { useTranslation } from 'react-i18next';
 import { Tooltip } from 'react-tooltip';
 import { QuestionmarkCircleIcon, WarningIcon } from '@/components/common/icons';
 import ReCAPTCHA from '@/components/auth/ReCaptcha/ReCaptcha';
+import { MetaTags } from '@/components/common/display';
+import { buildStaticPageMeta } from '@/utils/meta';
 import { sanitizeUsernameInput, USERNAME_MAX_LEN, validateUsername } from '@/utils/usernameValidation';
 
 const RegisterPage = () => {
@@ -42,6 +44,16 @@ const RegisterPage = () => {
   const navigate = useNavigate();
   const { user, loginWithDiscord, register } = useAuth();
   const { t } = useTranslation('pages');
+  const location = useLocation();
+  const pageMeta = useMemo(
+    () =>
+      buildStaticPageMeta({
+        title: t('register.title'),
+        pathname: location.pathname,
+        noindex: true,
+      }),
+    [t, location.pathname],
+  );
 
   const handleCaptchaVerify = (token) => {
     setCaptchaToken(token);
@@ -295,7 +307,7 @@ const RegisterPage = () => {
   if (success) {
     return (
       <div className="register-page-wrapper">
-        
+        <MetaTags {...pageMeta} />
         <div className="register-page">
           <div className="register-container">
             <div className="success-container">
@@ -337,7 +349,7 @@ const RegisterPage = () => {
 
   return (
     <div className="register-page-wrapper">
-      
+      <MetaTags {...pageMeta} />
       <div className="register-page">
         <div className="register-container">
           <h1>{t('register.title')}</h1>

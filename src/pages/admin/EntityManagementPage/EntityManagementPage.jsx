@@ -1,5 +1,5 @@
 // tuf-search: #EntityManagementPage #entityManagementPage #admin #entityManagement
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { useArtistContext } from '@/contexts/ArtistContext';
@@ -14,7 +14,8 @@ import { getCdnErrorMessage } from '@/utils/uploadErrors';
 import { toast } from 'react-hot-toast';
 import { VirtualList } from '@/components/common/VirtualList';
 import './entityManagementPage.css';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { buildStaticPageMeta } from '@/utils/meta';
 import { getVerificationClass, isCdnUrl, isImageUrl } from '@/utils/Utility';
 import { GalleryInspectPopup } from '@/components/popups/Evidence';
 import { CDN_IMAGE_ACCEPT } from '@/config/constants/cdnImageAccept';
@@ -28,8 +29,18 @@ const EntityManagementPage = ({ type = 'artist' }) => {
   const { user } = useAuth();
   const artistContext = useArtistContext();
   const songContext = useSongContext();
-  const currentUrl = window.location.origin + location.pathname;
-  
+  const location = useLocation();
+  const pageMeta = useMemo(
+    () =>
+      buildStaticPageMeta({
+        title: tEntity('meta.title'),
+        description: tEntity('meta.description'),
+        pathname: location.pathname,
+        noindex: true,
+      }),
+    [tEntity, location.pathname],
+  );
+
   // Use context values based on type
   const context = type === 'song' ? songContext : artistContext;
   const searchQuery = context.searchQuery;
@@ -268,11 +279,7 @@ const EntityManagementPage = ({ type = 'artist' }) => {
   if (user?.permissionFlags === undefined) {
     return (
       <div className="entity-management-page">
-        <MetaTags
-          title={tEntity('meta.title')}
-          description={tEntity('meta.description')}
-          url={currentUrl}
-        />
+        <MetaTags {...pageMeta} />
         <div className="loader-shell loader-shell--fill">
           <div className="loader loader-relative" />
         </div>
@@ -285,18 +292,13 @@ const EntityManagementPage = ({ type = 'artist' }) => {
       <AccessDenied
         metaTitle={tEntity('meta.title')}
         metaDescription={tEntity('meta.description')}
-        currentUrl={currentUrl}
       />
     );
   }
 
   return (
     <div className="entity-management-page">
-      <MetaTags
-        title={tEntity('meta.title')}
-        description={tEntity('meta.description')}
-        url={currentUrl}
-      />
+      <MetaTags {...pageMeta} />
 
       <div className="entity-management-container page-content">
         <h1>{tEntity('title')}</h1>

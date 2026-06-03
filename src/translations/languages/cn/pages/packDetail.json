@@ -1,4 +1,8 @@
 {
+  "meta": {
+    "title": "{{name}} - 地图包",
+    "description": "{{owner}} 的地图包 {{name}} — 共 {{count}} 个关卡 · The Universal Forums"
+  },
   "loading": "正在加载地图包详细信息……",
   "by": "创建者：",
   "backToPacks": "返回主页",

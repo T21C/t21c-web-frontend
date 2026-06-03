@@ -1,16 +1,17 @@
 import { routes } from '@/api/routes';
 // tuf-search: #CurationSchedulePage #curationSchedulePage #admin #curation #curationSchedule — Curation Schedule Management
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useAuth } from "@/contexts/AuthContext";
 
 import { MetaTags, AccessDenied } from '@/components/common/display';
+import { buildStaticPageMeta } from '@/utils/meta';
 import { ScrollButton } from '@/components/common/buttons';
 import api from '@/utils/api';
 import './curationschedulepage.css';
 import { ChevronIcon, TrashIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { CurationSelectionPopup } from '@/components/popups/Curations';
 import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { canAssignCurationType } from '@/utils/curationTypeUtils';
@@ -21,7 +22,17 @@ import i18next from 'i18next';
 const CurationSchedulePage = () => {
   const { user } = useAuth();
   const { t } = useTranslation('pages');
-  const currentUrl = window.location.origin + location.pathname;
+  const location = useLocation();
+  const pageMeta = useMemo(
+    () =>
+      buildStaticPageMeta({
+        title: t('curationSchedule.meta.title'),
+        description: t('curationSchedule.meta.description'),
+        pathname: location.pathname,
+        noindex: true,
+      }),
+    [t, location.pathname],
+  );
 
   const [isLoading, setIsLoading] = useState(false);
   const [schedules, setSchedules] = useState([]);
@@ -163,11 +174,7 @@ const CurationSchedulePage = () => {
 
   return (
     <div className="curation-schedule-page">
-      <MetaTags 
-        title={t('curationSchedule.meta.title')}
-        description={t('curationSchedule.meta.description')}
-        url={currentUrl}
-      />
+      <MetaTags {...pageMeta} />
       
       
       <div className="curation-schedule-page__content">

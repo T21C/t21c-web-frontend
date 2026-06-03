@@ -2,19 +2,28 @@
 import "./privacyPolicyPage.css";
 import { Footer } from "@/components/layout";
 import { MetaTags } from "@/components/common/display";
+import { useLocation } from 'react-router-dom';
+import { buildStaticPageMeta } from '@/utils/meta';
+import { useMemo } from 'react';
 
 const PrivacyPolicyPage = () => {
-  const currentUrl = window.location.origin + location.pathname;
+  const location = useLocation();
+  const pageMeta = useMemo(
+    () =>
+      buildStaticPageMeta({
+        title: 'Privacy Policy',
+        description:
+          'Learn about how The Universal Forums (TUF) collects, uses, and protects your personal information',
+        pathname: location.pathname,
+        image: '/og-image.jpg',
+        type: 'website',
+      }),
+    [location.pathname],
+  );
 
   return (
     <>
-      <MetaTags
-        title="Privacy Policy | TUF"
-        description="Learn about how The Universal Forums (TUF) collects, uses, and protects your personal information"
-        url={currentUrl}
-        image="/og-image.jpg"
-        type="website"
-      />
+      <MetaTags {...pageMeta} />
 
       <div className="privacy-policy">
         <div className="privacy-container page-content-70rem">

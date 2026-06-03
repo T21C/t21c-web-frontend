@@ -1,9 +1,10 @@
 // tuf-search: #ForgotPasswordPage #forgotPasswordPage #account #forgotPassword — Forgot Password
-import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 
 import { MetaTags } from '@/components/common/display';
+import { buildStaticPageMeta } from '@/utils/meta';
 import ReCAPTCHA from '@/components/auth/ReCaptcha/ReCaptcha';
 import { useTranslation } from 'react-i18next';
 import './forgotPasswordPage.css';
@@ -24,6 +25,18 @@ const ForgotPasswordPage = () => {
   const { requestPasswordReset, resetPassword, initiateLogin } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation('pages');
+  const location = useLocation();
+  const pageMeta = useMemo(
+    () =>
+      buildStaticPageMeta({
+        title: t('forgotPassword.meta.title'),
+        description: t('forgotPassword.meta.description'),
+        pathname: location.pathname,
+        type: 'website',
+        noindex: true,
+      }),
+    [t, location.pathname],
+  );
 
   // Handle countdown timer for rate limiting
   useEffect(() => {
@@ -397,12 +410,7 @@ const ForgotPasswordPage = () => {
 
   return (
     <div className="forgot-password-page">
-      <MetaTags
-        title={t('forgotPassword.meta.title')}
-        description={t('forgotPassword.meta.description')}
-        url={window.location.href}
-        type="website"
-      />
+      <MetaTags {...pageMeta} />
       
       <div className="reset-container">
         {renderContent()}

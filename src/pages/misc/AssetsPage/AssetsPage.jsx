@@ -3,6 +3,8 @@ import { Component, useMemo, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 import { MetaTags } from "@/components/common/display";
+import { buildStaticPageMeta } from '@/utils/meta';
+import { useLocation } from 'react-router-dom';
 import { Footer } from "@/components/layout";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import {
@@ -145,7 +147,18 @@ export default function AssetsPage() {
   /** `show` = include `LEGACY` difficulties; `hide` = omit them. */
   const [legacyDifficultiesState, setLegacyDifficultiesState] = useState("show");
 
-  const currentUrl = typeof window !== "undefined" ? `${window.location.origin}${window.location.pathname}` : "";
+  const location = useLocation();
+  const pageMeta = useMemo(
+    () =>
+      buildStaticPageMeta({
+        title: t('assets.meta.title'),
+        description: t('assets.meta.description'),
+        pathname: location.pathname,
+        image: '/og-image.jpg',
+        type: 'website',
+      }),
+    [t, location.pathname],
+  );
 
   const jsxEntries = useMemo(() => {
     const all = getIconGalleryModuleEntries();
@@ -198,13 +211,7 @@ export default function AssetsPage() {
 
   return (
     <>
-      <MetaTags
-        title={t("assets.meta.title")}
-        description={t("assets.meta.description")}
-        url={currentUrl}
-        image="/og-image.jpg"
-        type="website"
-      />
+      <MetaTags {...pageMeta} />
       <div className="assets-page">
         <div className="assets-page__container page-content-70rem">
           <header className="assets-page__header">

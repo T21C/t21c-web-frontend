@@ -1,6 +1,7 @@
 import { routes } from '@/api/routes';
 // tuf-search: #ArtistListPage #artistListPage #artist #artistList — Artists - TUF
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -8,6 +9,7 @@ import { VirtualList } from '@/components/common/VirtualList';
 import api from '@/utils/api';
 import { useDebouncedRequest } from '@/hooks/useDebouncedRequest';
 import { MetaTags } from '@/components/common/display';
+import { buildStaticPageMeta } from '@/utils/meta';
 import { CustomSelect } from '@/components/common/selectors';
 import { useArtistContext } from '@/contexts/ArtistContext';
 import './artistListPage.css';
@@ -15,7 +17,18 @@ import { getVerificationClass } from '@/utils/Utility';
 
 const ArtistListPage = () => {
   const { t } = useTranslation(['pages', 'common']);
-  const currentUrl = window.location.origin + location.pathname;
+  const location = useLocation();
+  const pageMeta = useMemo(
+    () =>
+      buildStaticPageMeta({
+        title: t('artistList.meta.title'),
+        description: t('artistList.meta.description'),
+        pathname: location.pathname,
+        image: '/og-image.jpg',
+        type: 'website',
+      }),
+    [t, location.pathname],
+  );
   const {
     searchQuery,
     sortBy,
@@ -121,13 +134,7 @@ const ArtistListPage = () => {
 
   return (
     <div className="artist-list-page">
-      <MetaTags
-        title={t('artistList.meta.title')}
-        description={t('artistList.meta.description')}
-        url={currentUrl}
-        image="/og-image.jpg"
-        type="website"
-      />
+      <MetaTags {...pageMeta} />
 
       <div className="artist-list-container page-content">
         <h1>{t('artistList.title')}</h1>

@@ -1,9 +1,9 @@
 import { routes } from '@/api/routes';
 // tuf-search: #PassDetailPage #passDetailPage #pass #passDetail — {{song}}
 import "./passdetailpage.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { createPortal } from "react-dom";
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import { UserAvatar } from "@/components/layout";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import { formatNumber, getVideoDetails, isoToEmoji } from "@/utils";
@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import api from "@/utils/api";
 import { EditPassPopup } from "@/components/popups/Passes";
 import { MetaTags } from "@/components/common/display";
+import { buildPassMeta } from "@/utils/meta";
 import { StatusBanner } from "@/components/common/display/StatusBanner/StatusBanner";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { formatDate, normalizeKeyCount, validateFeelingRating } from "@/utils/Utility";
@@ -21,8 +22,6 @@ import PassAdofaiV2Flag from "@/components/cards/PassAdofaiV2Flag";
 import WorldsFirstFlag from "@/components/cards/WorldsFirstFlag/WorldsFirstFlag";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { getPortalRoot } from "@/utils/portalRoot";
-
-const currentUrl = window.location.origin + location.pathname;
 
 const parseRankColor = (rank) => {
   var clr;
@@ -38,6 +37,7 @@ const parseRankColor = (rank) => {
 const PassDetailPage = () => {
   const { t } = useTranslation(['pages', 'common']);
   const { id } = useParams();
+  const location = useLocation();
   const [res, setRes] = useState(null);
   const [videoDetail, setVideoDetail] = useState(null);
   const { user } = useAuth();
@@ -169,6 +169,11 @@ const PassDetailPage = () => {
     }
   }, [res?.pass]);
 
+  const passMeta = useMemo(
+    () => (res?.pass ? buildPassMeta(res.pass, t, { pathname: location.pathname }) : null),
+    [res?.pass, t, location.pathname],
+  );
+
   if (res == null)
     return (
       <div className="pass-detail-page">
@@ -185,17 +190,7 @@ const PassDetailPage = () => {
 
   return (
     <>
-      <MetaTags
-        title={t('passDetail.meta.title', { song: pass.level?.song })}
-        description={t('passDetail.meta.description', { 
-          playerName: pass.player?.name,
-          song: pass.level?.song,
-          artist: pass.level?.artist
-        })}
-        url={currentUrl}
-        image={pass.level?.videoLink ? pass.level?.videoLink : "/leaderboard-preview.jpg"}
-        type="website"
-      />
+      {passMeta ? <MetaTags {...passMeta} /> : null}
       
       <div className="pass-detail">
         {pass?.isDeleted && (

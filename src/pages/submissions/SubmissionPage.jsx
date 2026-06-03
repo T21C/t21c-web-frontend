@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next";
 import { MetaTags } from "@/components/common/display";
 import { useLocation } from 'react-router-dom';
+import { buildStaticPageMeta } from '@/utils/meta';
+import { useMemo } from 'react';
 import { useAuth } from "@/contexts/AuthContext";
 import { hasAnyFlag, hasFlag, permissionFlags } from "@/utils/UserPermissions";
 
@@ -13,7 +15,18 @@ const SubmissionPage = () => {
   const { user } = useAuth()
   const navigate = useNavigate();
   const location = useLocation();
-  const currentUrl = window.location.origin + location.pathname;
+  const pageMeta = useMemo(
+    () =>
+      buildStaticPageMeta({
+        title: t('submission.meta.title'),
+        description: t('submission.meta.description'),
+        pathname: location.pathname,
+        image: '/submission-preview.jpg',
+        type: t('submission.meta.type'),
+        noindex: true,
+      }),
+    [t, location.pathname],
+  );
   if (!user) {
     navigate('/login')
   }
@@ -29,13 +42,7 @@ const SubmissionPage = () => {
   const noAccess = hasAnyFlag(user, [permissionFlags.SUBMISSIONS_PAUSED, permissionFlags.BANNED]) || !hasFlag(user, permissionFlags.EMAIL_VERIFIED)
   return (
     <div className="submission-page">
-      <MetaTags
-        title={t('submission.meta.title')}
-        description={t('submission.meta.description')}
-        url={currentUrl}
-        image="/submission-preview.jpg"
-        type={t('submission.meta.type')}
-      />
+      <MetaTags {...pageMeta} />
       
       
       <div className={`submission-container ${noAccess && "banner-container"}`}>

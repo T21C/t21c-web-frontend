@@ -4,8 +4,10 @@ import "./aboutuspage.css";
 import { Footer, UserAvatar } from "@/components/layout";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import { MetaTags } from "@/components/common/display";
+import { buildStaticPageMeta } from '@/utils/meta';
 import { useTranslation } from "react-i18next";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { useLocation } from 'react-router-dom';
 import api from "@/utils/api";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 
@@ -13,7 +15,18 @@ const CURRENT_VERSION = 'v2.4';
 
 const AboutUsPage = () => {
   const { t } = useTranslation('pages');
-  const currentUrl = window.location.origin + location.pathname;
+  const location = useLocation();
+  const pageMeta = useMemo(
+    () =>
+      buildStaticPageMeta({
+        title: t('about.meta.title'),
+        description: t('about.meta.description'),
+        pathname: location.pathname,
+        image: '/og-image.jpg',
+        type: 'website',
+      }),
+    [t, location.pathname],
+  );
   const [raters, setRaters] = useState([]);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [boundingRect, setBoundingRect] = useState(null);
@@ -73,13 +86,7 @@ const AboutUsPage = () => {
   
   return (
     <>
-      <MetaTags
-        title={t('about.meta.title')}
-        description={t('about.meta.description')}
-        url={currentUrl}
-        image="/og-image.jpg"
-        type="website"
-      />
+      <MetaTags {...pageMeta} />
         
         <div className="about-us">
         <div className="about-us-container page-content-70rem">

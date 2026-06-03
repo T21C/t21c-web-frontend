@@ -1,7 +1,8 @@
 {
   "meta": {
-    "title": "{{song}} | TUF",
-    "description": "{{song}} by {{creator}}"
+    "title": "{{song}} - {{artist}}",
+    "description": "{{artist}}의 {{song}} — {{creator}} 제작 · The Universal Forums",
+    "fallbackName": "레벨"
   },
   "banners": {
     "deleted": "이 레벨은 삭제되었습니다",

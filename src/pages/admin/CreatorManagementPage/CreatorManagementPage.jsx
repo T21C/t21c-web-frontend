@@ -1,5 +1,6 @@
 // tuf-search: #CreatorManagementPage #creatorManagementPage #admin #creatorManagement — Creator Management
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -12,11 +13,9 @@ import { CreatorManagementPopup } from '@/components/popups/Creators';
 import { CreatorStatusBadge } from '@/components/common/display';
 import { SortDescIcon, SortAscIcon } from '@/components/common/icons';
 import { AccessDenied, MetaTags } from '@/components/common/display';
+import { buildStaticPageMeta } from '@/utils/meta';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import toast from 'react-hot-toast';
-const currentUrl = window.location.origin + location.pathname;
-
-
 const CreditRole = {
   CHARTER: 'charter',
   VFXER: 'vfxer',
@@ -45,6 +44,18 @@ const CreatorManagementPage = () => {
   const maxCreatorResults = 100;
   const [selectedCreatorForAction, setSelectedCreatorForAction] = useState(null);
   const { t } = useTranslation('pages');
+  const location = useLocation();
+  const pageMeta = useMemo(
+    () =>
+      buildStaticPageMeta({
+        title: t('creatorManagement.meta.title'),
+        description: t('creatorManagement.meta.description'),
+        pathname: location.pathname,
+        type: 'article',
+        noindex: true,
+      }),
+    [t, location.pathname],
+  );
   const [sort, setSort] = useState('NAME_ASC');
   const [pendingTeam, setPendingTeam] = useState(null);
   const [pendingCreators, setPendingCreators] = useState([]);
@@ -739,13 +750,7 @@ const CreatorManagementPage = () => {
   if (user.permissionFlags === undefined) {
     return (
       <div className="creator-management-page">
-        <MetaTags
-          title="Creator Management"
-          description="Manage creators and level credits"
-          url={window.location.origin + location.pathname}
-          image="/og-image.jpg"
-          type="website"
-        />
+        <MetaTags {...pageMeta} />
         
         <div className="creator-management-container page-content">
           <div className="loader-shell loader-shell--tall">
@@ -758,23 +763,16 @@ const CreatorManagementPage = () => {
 
   if (!hasFlag(user, permissionFlags.SUPER_ADMIN)) {
     return (
-      <AccessDenied 
+      <AccessDenied
         metaTitle="Creator Management"
         metaDescription="Manage creators and level credits"
-        currentUrl={window.location.origin + location.pathname}
       />
     );
   }
 
   return (
     <>
-      <MetaTags
-          title={t('creatorManagement.meta.title')}
-          description={t('creatorManagement.meta.description')}
-          url={currentUrl}
-          image={''}
-          type="article"
-      />
+      <MetaTags {...pageMeta} />
       
       <div className="creator-management-page">
         <div className="creator-management-container page-content">

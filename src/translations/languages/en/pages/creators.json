@@ -59,7 +59,7 @@
   "profile": {
     "meta": {
       "title": "{{name}} - Creator Profile",
-      "description": "Charts and stats for {{name}}"
+      "description": "Charts and stats for {{name}} — {{count}} levels on The Universal Forums"
     },
     "notFound": "Creator not found",
     "verified": "Verified",

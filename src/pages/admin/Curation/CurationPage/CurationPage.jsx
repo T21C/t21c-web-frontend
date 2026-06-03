@@ -1,11 +1,12 @@
 import { routes } from '@/api/routes';
 // tuf-search: #CurationPage #curationPage #admin #curation — Curation Management
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { useAuth } from "@/contexts/AuthContext";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 
 import { MetaTags, AccessDenied } from '@/components/common/display';
+import { buildStaticPageMeta } from '@/utils/meta';
 import { ScrollButton } from '@/components/common/buttons';
 import api from '@/utils/api';
 import './curationpage.css';
@@ -29,7 +30,16 @@ const CurationPage = () => {
   const { user } = useAuth();
   const { curationTypes, reloadCurationTypes, difficultyDict, curationTypesDict } = useDifficultyContext();
   const { t } = useTranslation(['pages', 'common']);
-  const currentUrl = window.location.origin + location.pathname;
+  const pageMeta = useMemo(
+    () =>
+      buildStaticPageMeta({
+        title: t('curation.meta.title'),
+        description: t('curation.meta.description'),
+        pathname: location.pathname,
+        noindex: true,
+      }),
+    [t, location.pathname],
+  );
 
   const [isLoading, setIsLoading] = useState(false);
   const [levelInstances, setLevelInstances] = useState([]);
@@ -451,11 +461,7 @@ const CurationPage = () => {
 
   return (
     <div className="curation-page">
-      <MetaTags 
-        title={t('curation.meta.title')}
-        description={t('curation.meta.description')}
-        url={currentUrl}
-      />
+      <MetaTags {...pageMeta} />
       
       
       

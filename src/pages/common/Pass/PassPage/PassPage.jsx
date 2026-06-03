@@ -3,9 +3,11 @@ import { routes } from '@/api/routes';
 import "./passpage.css";
 import "@/pages/common/sort.css";
 import "@/pages/common/search-section.css";
-import { useContext, useEffect, useState, useCallback } from "react";
+import { useContext, useEffect, useState, useCallback, useMemo } from "react";
+import { useLocation } from 'react-router-dom';
 
 import { MetaTags } from "@/components/common/display";
+import { buildStaticPageMeta } from '@/utils/meta';
 import { PassCard } from "@/components/cards";
 import { StateDisplay, CustomSelect } from "@/components/common/selectors";
 import { Tooltip } from "react-tooltip";
@@ -23,12 +25,22 @@ import { PassHelpPopup } from "@/components/popups/Passes";
 import { ResetIcon, SortIcon, FilterIcon, SortAscIcon, SortDescIcon, SwitchIcon } from "@/components/common/icons";
 import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
-const currentUrl = window.location.origin + location.pathname;
-
 const limit = 30;
 
 const PassPage = () => {
   const { t } = useTranslation('pages');
+  const location = useLocation();
+  const pageMeta = useMemo(
+    () =>
+      buildStaticPageMeta({
+        title: t('pass.meta.title'),
+        description: t('pass.meta.description'),
+        pathname: location.pathname,
+        image: '/passes-preview.jpg',
+        type: 'article',
+      }),
+    [t, location.pathname],
+  );
 
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
@@ -285,15 +297,8 @@ const PassPage = () => {
   if (difficulties.length === 0) {
     return (
       <div className="pass-page">
-        <MetaTags
-          title={t('pass.meta.title')}
-          description={t('pass.meta.description')}
-          url={currentUrl}
-          image="/passes-preview.jpg"
-          type="article"
-        />
-        
-  
+        <MetaTags {...pageMeta} />
+
         <div className="pass-body page-content-70rem">
           {renderContent()}
         </div>
@@ -303,14 +308,7 @@ const PassPage = () => {
 
   return (
     <div className="pass-page">
-      <MetaTags
-        title={t('pass.meta.title')}
-        description={t('pass.meta.description')}
-        url={currentUrl}
-        image="/passes-preview.jpg"
-        type="article"
-      />
-      
+      <MetaTags {...pageMeta} />
 
       <div className="pass-body page-content-70rem">
         <ScrollButton />

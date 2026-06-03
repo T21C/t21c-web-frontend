@@ -18,6 +18,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { DifficultyContext } from "@/contexts/DifficultyContext";
 import { ReferencesButton, ScrollButton } from "@/components/common/buttons";
 import { MetaTags } from "@/components/common/display";
+import { buildStaticPageMeta } from '@/utils/meta';
+import { useLocation } from 'react-router-dom';
 import { DifficultySlider, TagSelector, FacetQueryBuilder } from "@/components/common/selectors";
 import { buildFacetQueryParam, collectFacetDomainIncludedIds } from "@/utils/facetQueryCodec";
 import { SortAscIcon, SortDescIcon, ResetIcon, SortIcon , FilterIcon, LikeIcon, SwitchIcon, EyeIcon, EyeOffIcon} from "@/components/common/icons";
@@ -25,8 +27,6 @@ import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible
 import { LevelHelpPopup } from "@/components/popups/Levels";
 import toast from 'react-hot-toast';
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
-
-const currentUrl = window.location.origin + location.pathname;
 
 const limit = 50;
 
@@ -57,6 +57,17 @@ const LevelPage = ({
 } = {}) => {
   const { t } = useTranslation('pages');
   const { t: tc } = useTranslation('components');
+  const location = useLocation();
+  const pageMeta = useMemo(
+    () =>
+      buildStaticPageMeta({
+        title: t('level.meta.title'),
+        description: t('level.meta.description'),
+        pathname: location.pathname,
+        type: 'article',
+      }),
+    [t, location.pathname],
+  );
 
   const disabled = (feature) => disabledFeatures.includes(feature);
   // Stable reference for fetch deps — re-fetch only when the actual content
@@ -480,15 +491,7 @@ const LevelPage = ({
   if (difficulties.length === 0) {
     return (
       <div className={pageClassName}>
-        {!embedded && (
-          <MetaTags
-            title={t('level.meta.title')}
-            description={t('level.meta.description')}
-            url={currentUrl}
-            image={''}
-            type="article"
-          />
-        )}
+        {!embedded && <MetaTags {...pageMeta} />}
         <div className={bodyClassName}>
           <div className="loader-shell loader-shell--fill">
             <div className="loader loader-relative" />
@@ -503,15 +506,7 @@ const LevelPage = ({
 
   return (
     <div className={pageClassName}>
-      {!embedded && (
-        <MetaTags
-          title={t('level.meta.title')}
-          description={t('level.meta.description')}
-          url={currentUrl}
-          image={''}
-          type="article"
-        />
-      )}
+      {!embedded && <MetaTags {...pageMeta} />}
 
       <div className={bodyClassName}>
         {!embedded && <ScrollButton />}

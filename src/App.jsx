@@ -5,6 +5,7 @@ import { Navigation } from "@/components/layout";
 import { PrivateRoute } from "@/components/auth";
 import { DeprecatedRedirect } from "@/components/routing/DeprecatedRedirect";
 import { ScrollToTopOnNavigate } from "@/components/routing/ScrollToTopOnNavigate";
+import { RouteDocumentHead } from "@/components/routing/RouteDocumentHead";
 import { DEPRECATED_ROUTES } from "@/config/deprecatedRoutes";
 import * as Pages from '@/pages/index';
 import { Toaster } from "react-hot-toast";
@@ -23,6 +24,7 @@ function App() {
   return (
     <>
       <ScrollToTopOnNavigate />
+      <RouteDocumentHead />
       {!isEmbedded && <Navigation />}
       <div className="app-notifications" aria-live="polite">
         <Toaster

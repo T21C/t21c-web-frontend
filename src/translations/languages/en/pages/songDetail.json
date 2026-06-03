@@ -1,8 +1,8 @@
 {
   "title": "Song Details",
   "meta": {
-    "title": "Song - TUF",
-    "description": "View song information for {{name}}"
+    "title": "{{name}}",
+    "description": "View song information and levels for {{name}} on The Universal Forums"
   },
   "sections": {
     "aliases": "Aliases",

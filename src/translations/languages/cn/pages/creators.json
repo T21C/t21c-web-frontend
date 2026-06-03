@@ -59,7 +59,7 @@
   "profile": {
     "meta": {
       "title": "{{name}} - 创作者个人资料",
-      "description": "{{name}} 的谱面和统计信息"
+      "description": "{{name}} 的谱面与统计 — 共 {{count}} 个关卡 · The Universal Forums"
     },
     "notFound": "未找到创作者",
     "verified": "已验证",

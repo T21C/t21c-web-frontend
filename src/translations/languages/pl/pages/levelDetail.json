@@ -1,7 +1,8 @@
 {
   "meta": {
-    "title": "{{song}} | TUF",
-    "description": "{{song}} autorstwa {{creator}}"
+    "title": "{{song}} - {{artist}}",
+    "description": "{{song}} autorstwa {{artist}} — chart od {{creator}} · The Universal Forums",
+    "fallbackName": "Poziom"
   },
   "banners": {
     "deleted": "Ten poziom został usunięty",

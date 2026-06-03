@@ -16,6 +16,8 @@ import {
 } from 'recharts';
 
 import { MetaTags } from '@/components/common/display';
+import { buildStaticPageMeta } from '@/utils/meta';
+import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import './healthcheckpage.css';
 import { formatDate } from '@/utils/Utility';
@@ -314,6 +316,19 @@ function HealthLatencySection({ t }) {
 
 const HealthCheckPage = () => {
   const { t } = useTranslation('pages');
+  const location = useLocation();
+  const pageMeta = useMemo(
+    () =>
+      buildStaticPageMeta({
+        title: t('healthCheck.title'),
+        description: t('healthCheck.metaDescription'),
+        pathname: location.pathname,
+        image: '/og-image.jpg',
+        type: 'website',
+        noindex: true,
+      }),
+    [t, location.pathname],
+  );
   const [healthData, setHealthData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -382,13 +397,7 @@ const HealthCheckPage = () => {
 
   return (
     <div className="health-check-page">
-      <MetaTags
-        title={t('healthCheck.title') + ' | TUF'}
-        description={t('healthCheck.metaDescription')}
-        url={window.location.origin + '/health'}
-        image="/og-image.jpg"
-        type="website"
-      />
+      <MetaTags {...pageMeta} />
 
       <div className="health-check-container page-content">
         <h1>{t('healthCheck.title')}</h1>

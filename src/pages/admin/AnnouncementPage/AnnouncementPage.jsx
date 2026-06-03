@@ -1,6 +1,7 @@
 import { routes } from '@/api/routes';
 // tuf-search: #AnnouncementPage #announcementPage #admin #announcement — Announcements
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useAuth } from "@/contexts/AuthContext";
 
 import { ScrollButton } from '@/components/common/buttons';
@@ -13,12 +14,24 @@ import PassesTab from './components/PassesTab';
 import { RefreshIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
 import { AccessDenied, MetaTags } from '@/components/common/display';
+import { buildStaticPageMeta } from '@/utils/meta';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 
 const AnnouncementPage = () => {
   const { user } = useAuth();
   const { t } = useTranslation('pages');
-  const currentUrl = window.location.origin + location.pathname;
+  const location = useLocation();
+  const pageMeta = useMemo(
+    () =>
+      buildStaticPageMeta({
+        title: t('announcement.meta.title'),
+        description: t('announcement.meta.description'),
+        pathname: location.pathname,
+        image: '/og-image.jpg',
+        noindex: true,
+      }),
+    [t, location.pathname],
+  );
 
   const [activeTab, setActiveTab] = useState('newLevels');
   const [newLevelEntries, setNewLevelEntries] = useState([]);
@@ -202,13 +215,7 @@ const AnnouncementPage = () => {
   if (user.permissionFlags === undefined) {
     return (
       <>
-        <MetaTags
-          title={t('announcement.meta.title')}
-          description={t('announcement.meta.description')}
-          url={currentUrl}
-          image="/og-image.jpg"
-          type="website"
-        />
+        <MetaTags {...pageMeta} />
 
         <div className="announcement-page">
           <div className="announcement-container page-content">
@@ -226,7 +233,6 @@ const AnnouncementPage = () => {
       <AccessDenied
         metaTitle={t('announcement.meta.title')}
         metaDescription={t('announcement.meta.description')}
-        currentUrl={currentUrl}
       />
     );
   }
@@ -234,13 +240,7 @@ const AnnouncementPage = () => {
   if (error) {
     return (
       <>
-        <MetaTags
-          title={t('announcement.meta.title')}
-          description={t('announcement.meta.description')}
-          url={currentUrl}
-          image="/og-image.jpg"
-          type="website"
-        />
+        <MetaTags {...pageMeta} />
 
         <div className="announcement-page">
           <ScrollButton />
@@ -257,13 +257,7 @@ const AnnouncementPage = () => {
 
   return (
     <>
-      <MetaTags
-        title={t('announcement.meta.title')}
-        description={t('announcement.meta.description')}
-        url={currentUrl}
-        image="/og-image.jpg"
-        type="website"
-      />
+      <MetaTags {...pageMeta} />
 
       <div className="announcement-page">
         <ScrollButton />

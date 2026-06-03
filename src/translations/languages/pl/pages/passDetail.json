@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "{{song}} | TUF",
-    "description": "Zobacz przejście {{song}} - {{artist}} gracza {{playerName}}"
+    "title": "Clear {{playerName}}: {{song}} - {{artist}}",
+    "description": "{{playerName}} przeszedł {{song}} autorstwa {{artist}} — {{difficulty}} · Wynik {{score}}"
   },
   "banners": {
     "deleted": "To przejście zostało usunięte"

@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "{{song}} | TUF",
-    "description": "查看 {{playerName}} 通关 {{song}} - {{artist}} 的记录"
+    "title": "{{playerName}} 通关 {{song}} - {{artist}}",
+    "description": "{{playerName}} 通关了 {{artist}} 的 {{song}} — {{difficulty}} · 分数 {{score}}"
   },
   "banners": {
     "deleted": "该通关记录已被删除",

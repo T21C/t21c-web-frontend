@@ -1,6 +1,6 @@
 import { routes } from '@/api/routes';
 // tuf-search: #HomePage #homePage #home — Home
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import "./homepage.css"
 import { Footer } from "@/components/layout";
 import { MetaTags, WeeklyGallery, DifficultyGraph } from "@/components/common/display";
@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 import { Tooltip } from "react-tooltip";
 import { useLocation } from 'react-router-dom';
+import { buildStaticPageMeta, siteJsonLd } from '@/utils/meta';
 import { ScrollButton } from "@/components/common/buttons";
 import { PassIcon, ChartIcon, LeaderboardIcon, PackIcon, TUFStellarIcon } from "@/components/common/icons";
 import { useWeeklyCurations } from "@/hooks/useWeeklyCurations";
@@ -40,7 +41,18 @@ const HomePage = () => {
   const [isUserActive, setIsUserActive] = useState(true);
   const [activeListType, setActiveListType] = useState('primary'); // 'primary' or 'secondary'
   const location = useLocation();
-  const currentUrl = window.location.origin + location.pathname;
+  const pageMeta = useMemo(
+    () =>
+      buildStaticPageMeta({
+        title: t('home.meta.title'),
+        description: t('home.meta.description'),
+        pathname: location.pathname,
+        image: '/og-image.jpg',
+        type: 'website',
+        jsonLd: siteJsonLd(),
+      }),
+    [t, location.pathname],
+  );
   
   // Fetch weekly curations
   const { weeklies, isLoading: weekliesLoading, error: weekliesError } = useWeeklyCurations();
@@ -83,13 +95,7 @@ const HomePage = () => {
   }, []);
 
   return (<>
-    <MetaTags
-      title={t('home.meta.title')}
-      description={t('home.meta.description')}
-      url={currentUrl}
-      image="/og-image.jpg"
-      type="website"
-    />
+    <MetaTags {...pageMeta} />
     <div className="home">
       
       <ScrollButton />

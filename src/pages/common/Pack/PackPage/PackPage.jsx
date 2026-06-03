@@ -2,7 +2,7 @@
 import "./packpage.css";
 import "@/pages/common/sort.css";
 import "@/pages/common/search-section.css";
-import { useContext, useEffect, useState, useCallback, useRef } from "react";
+import { useContext, useEffect, useState, useCallback, useRef, useMemo } from "react";
 
 import { PackCard } from "@/components/cards";
 import { CustomSelect } from "@/components/common/selectors";
@@ -14,14 +14,13 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
 import { ScrollButton } from "@/components/common/buttons";
 import { MetaTags } from "@/components/common/display";
+import { buildStaticPageMeta } from '@/utils/meta';
 import { SortAscIcon, SortDescIcon, ResetIcon, SortIcon, FilterIcon, SwitchIcon, LikeIcon } from "@/components/common/icons";
 import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
 import { CreatePackPopup, PackHelpPopup } from "@/components/popups/Packs";
 import toast from 'react-hot-toast';
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { LevelPackViewModes } from "@/utils/constants";
-
-const currentUrl = window.location.origin + location.pathname;
 
 // Internal component that uses unified PackContext
 const PackPageContent = () => {
@@ -30,6 +29,15 @@ const PackPageContent = () => {
   const { user } = useAuth();
   const location = useLocation();
   const isMyPacks = location.pathname === '/packs/my';
+  const pageMeta = useMemo(
+    () =>
+      buildStaticPageMeta({
+        title: isMyPacks ? t('pack.meta.myPacksTitle') : t('pack.meta.title'),
+        description: isMyPacks ? t('pack.meta.myPacksDescription') : t('pack.meta.description'),
+        pathname: location.pathname,
+      }),
+    [t, location.pathname, isMyPacks],
+  );
   
   const {
     packs,
@@ -124,11 +132,7 @@ const PackPageContent = () => {
 
   return (
     <div className="pack-page">
-      <MetaTags 
-        title={isMyPacks ? t('pack.meta.myPacksTitle') : t('pack.meta.title')}
-        description={isMyPacks ? t('pack.meta.myPacksDescription') : t('pack.meta.description')}
-        url={currentUrl}
-      />
+      <MetaTags {...pageMeta} />
       
       
       <div className="pack-page__container page-content-70rem">

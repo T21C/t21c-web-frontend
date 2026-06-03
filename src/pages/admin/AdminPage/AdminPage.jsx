@@ -4,11 +4,23 @@ import "./adminpage.css"
 import { Link, useLocation } from "react-router-dom"
 import { useTranslation } from "react-i18next";
 import { MetaTags } from "@/components/common/display";
+import { buildStaticPageMeta } from '@/utils/meta';
+import { useMemo } from 'react';
 
 const AdminPage = () => {
   const {t} = useTranslation('pages')
   const location = useLocation();
-  const currentUrl = window.location.origin + location.pathname;
+  const pageMeta = useMemo(
+    () =>
+      buildStaticPageMeta({
+        title: t('admin.meta.title'),
+        description: t('admin.meta.description'),
+        pathname: location.pathname,
+        type: 'website',
+        noindex: true,
+      }),
+    [t, location.pathname],
+  );
 
   const adminLinks = [
     {
@@ -85,12 +97,7 @@ const AdminPage = () => {
 
   return (
     <div className="admin-page">
-      <MetaTags
-        title={t("admin.meta.title")}
-        description={t("admin.meta.description")}
-        url={currentUrl}
-        type="website"
-      />
+      <MetaTags {...pageMeta} />
       
       
       <div className="admin-container">

@@ -1,22 +1,30 @@
 // tuf-search: #TermsOfServicePage #termsOfServicePage #termsOfService
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useMemo } from "react";
 import "./termsOfServicePage.css";
 import { Footer } from "@/components/layout";
 import { MetaTags } from "@/components/common/display";
+import { buildStaticPageMeta } from '@/utils/meta';
 import { ExternalLinkIcon } from "@/components/common/icons";
 
 const TermsOfServicePage = () => {
-  const currentUrl = window.location.origin + location.pathname;
+  const location = useLocation();
+  const pageMeta = useMemo(
+    () =>
+      buildStaticPageMeta({
+        title: 'Terms of Service',
+        description:
+          'Terms of Service for The Universal Forums (TUF), including account rules, content policy, payments, and limitations of liability.',
+        pathname: location.pathname,
+        image: '/og-image.jpg',
+        type: 'website',
+      }),
+    [location.pathname],
+  );
 
   return (
     <>
-      <MetaTags
-        title="Terms of Service | TUF"
-        description="Terms of Service for The Universal Forums (TUF), including account rules, content policy, payments, and limitations of liability."
-        url={currentUrl}
-        image="/og-image.jpg"
-        type="website"
-      />
+      <MetaTags {...pageMeta} />
 
       <div className="terms-of-service">
         <div className="terms-container page-content-70rem">

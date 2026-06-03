@@ -1,6 +1,6 @@
-{
+﻿{
   "meta": {
-    "title": "Backups | TUF",
+    "title": "Backups",
     "description": "Manage MySQL backups for The Universal Forums (TUF)"
   },
   "header": {

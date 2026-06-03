@@ -1,7 +1,7 @@
 import { routes } from '@/api/routes';
 import { apiUrl } from '@/config/urls';
 // tuf-search: #HomePage #homePage #homePageAprils
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import "./homepage.css"
 import { Footer } from "@/components/layout";
 import { MetaTags } from "@/components/common/display";
@@ -20,6 +20,7 @@ import {
   ResponsiveContainer
 } from 'recharts';
 import { useLocation } from 'react-router-dom';
+import { buildStaticPageMeta, siteJsonLd } from '@/utils/meta';
 import { ScrollButton, CloseButton } from "@/components/common/buttons";
 import { PassIcon, ChartIcon, LeaderboardIcon } from "@/components/common/icons";
 import { RouletteWheel, SlotMachine } from '@/components/common/selectors';
@@ -619,7 +620,18 @@ const HomePage = () => {
   const [showWheel, setShowWheel] = useState(false);
   const [wheelData, setWheelData] = useState(null);
   const location = useLocation();
-  const currentUrl = window.location.origin + location.pathname;
+  const pageMeta = useMemo(
+    () =>
+      buildStaticPageMeta({
+        title: t('home.meta.title'),
+        description: t('home.meta.description'),
+        pathname: location.pathname,
+        image: '/og-image.jpg',
+        type: 'website',
+        jsonLd: siteJsonLd(),
+      }),
+    [t, location.pathname],
+  );
   const [timeout, setTimeoutState] = useState(null);
   const [remainingTime, setRemainingTime] = useState(null);
 
@@ -714,13 +726,7 @@ const HomePage = () => {
 
 
   return (<>
-    <MetaTags
-      title={tHome('meta.title')}
-      description={tHome('meta.description')}
-      url={currentUrl}
-      image="/og-image.jpg"
-      type="website"
-    />
+    <MetaTags {...pageMeta} />
     <div className="home">
       
       <ScrollButton />

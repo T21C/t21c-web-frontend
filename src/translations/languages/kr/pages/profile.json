@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "{{name}} | TUF",
-    "description": "{{name}}의 프로필과 업적 보기",
+    "title": "{{name}}",
+    "description": "{{name}}의 프로필, 클리어 및 업적 · The Universal Forums",
     "defaultTitle": "프로필"
   },
   "notFound": "플레이어를 찾을 수 없습니다",

@@ -4,6 +4,8 @@ import { API_BASE } from '@/config/env';
 import { MetaTags } from "@/components/common/display";
 import "./adminbackuppage.css";
 import { useEffect, useState, useMemo } from "react";
+import { useLocation } from 'react-router-dom';
+import { buildStaticPageMeta } from '@/utils/meta';
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
 import { ScrollButton } from "@/components/common/buttons";
@@ -454,7 +456,18 @@ const formatFileSize = (bytes) => {
 const BackupPage = () => {
   const { t } = useTranslation(['pages', 'common']);
   const { user } = useAuth();
-  const currentUrl = window.location.origin + location.pathname;
+  const location = useLocation();
+  const pageMeta = useMemo(
+    () =>
+      buildStaticPageMeta({
+        title: t('backup.meta.title'),
+        description: t('backup.meta.description'),
+        pathname: location.pathname,
+        image: '/og-image.jpg',
+        noindex: true,
+      }),
+    [t, location.pathname],
+  );
   const [backups, setBackups] = useState([]);
   const [sortOrder, setSortOrder] = useState('newest');
   const [showInitialPasswordModal, setShowInitialPasswordModal] = useState(true);
@@ -637,13 +650,7 @@ const BackupPage = () => {
   if (user.permissionFlags === undefined) {
     return (
       <div className="admin-backup-page">
-        <MetaTags
-          title={t('backup.meta.title')}
-          description={t('backup.meta.description')}
-          url={currentUrl}
-          image="/og-image.jpg"
-          type="website"
-        />
+        <MetaTags {...pageMeta} />
         
         <div className="admin-backup-body page-content">
           <div className="loader-shell loader-shell--tall">
@@ -659,20 +666,13 @@ const BackupPage = () => {
       <AccessDenied 
         metaTitle={t('backup.meta.title')}
         metaDescription={t('backup.meta.description')}
-        currentUrl={currentUrl}
       />
     );
   }
 
   return (
     <div className="admin-backup-page">
-      <MetaTags
-        title={t('backup.meta.title')}
-        description={t('backup.meta.description')}
-        url={currentUrl}
-        image="/og-image.jpg"
-        type="website"
-      />
+      <MetaTags {...pageMeta} />
       <div className="admin-backup-body page-content">
         <div className="header-container">
           <div className="total-size">

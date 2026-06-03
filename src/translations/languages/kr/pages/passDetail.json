@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "{{song}} | TUF",
-    "description": "{{playerName}}의 {{song}} - {{artist}} 클리어 기록 보기"
+    "title": "{{playerName}}'s clear of {{song}} - {{artist}}",
+    "description": "{{playerName}} cleared {{song}} by {{artist}} — {{difficulty}} · Score {{score}}"
   },
   "banners": {
     "deleted": "이 클리어 기록은 삭제되었습니다",

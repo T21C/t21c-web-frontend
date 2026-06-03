@@ -4,16 +4,17 @@ import { routes } from '@/api/routes';
 import "./passsubmission.css";
 import placeholder from "@/assets/placeholder/3.png";
 import { submitPass } from "@/utils/submissions/passSubmission";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { FetchIcon } from "@/components/common/icons";
 import { hasAnyFlag, hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { Trans, useTranslation } from "react-i18next";
 import api from "@/utils/api";
-import { StagingModeWarning } from "@/components/common/display";
+import { StagingModeWarning, MetaTags } from "@/components/common/display";
+import { buildStaticPageMeta } from '@/utils/meta';
 import { PlayerInput } from "@/components/common/selectors";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
-import { useNavigate } from "react-router-dom";
 import RulePopup from "./RulePopup";
 import { formatCreatorDisplay, normalizeKeyCount } from "@/utils/Utility";
 import { getCookie, setCookie } from "@/utils/cookieUtils";
@@ -48,6 +49,17 @@ const PassSubmissionPage = () => {
   };
 
   const { t } = useTranslation('pages');
+  const location = useLocation();
+  const pageMeta = useMemo(
+    () =>
+      buildStaticPageMeta({
+        title: t('passSubmission.title'),
+        description: t('submission.meta.description'),
+        pathname: location.pathname,
+        noindex: true,
+      }),
+    [t, location.pathname],
+  );
   const { difficultyDict } = useDifficultyContext();
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -411,7 +423,7 @@ const PassSubmissionPage = () => {
 
   return (
     <div className="pass-submission-page">
-      
+      <MetaTags {...pageMeta} />
       <div className="form-container">
         {import.meta.env.MODE !== "production" && <StagingModeWarning />}
         <PassCoreForm

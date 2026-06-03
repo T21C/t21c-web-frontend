@@ -1,6 +1,6 @@
-{
+﻿{
   "meta": {
-    "title": "创作者管理 - TUF",
+    "title": "创作者管理",
     "description": "在TUF数据库中管理创作者和他们的别名"
   },
   "header": {

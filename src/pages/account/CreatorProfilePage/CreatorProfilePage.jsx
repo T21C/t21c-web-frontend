@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
 import { LevelContextProvider } from "@/contexts/LevelContext";
 import { DifficultyGraph, MetaTags, CreatorStatusBadge } from "@/components/common/display";
+import { buildCreatorMeta } from '@/utils/meta';
 import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
 import BioCanvasRenderer from "@/components/account/BioCanvasRenderer/BioCanvasRenderer";
 import { ScrollButton } from "@/components/common/buttons";
@@ -163,7 +164,14 @@ const CreatorProfilePage = () => {
     [stats, profile?.funFacts, t],
   );
 
-  const currentUrl = window.location.origin + location.pathname;
+  const creatorMeta = useMemo(() => {
+    if (!creatorDoc) return null;
+    return buildCreatorMeta(creatorDoc, t, {
+      pathname: location.pathname,
+      creatorId,
+      levelCount: profile?.funFacts?.totalLevels ?? 0,
+    });
+  }, [creatorDoc, t, location.pathname, creatorId, profile?.funFacts?.totalLevels]);
 
   if (profileLoading) {
     return (
@@ -191,12 +199,7 @@ const CreatorProfilePage = () => {
 
   return (
     <div className="account-profile-page creator-profile-page">
-      <MetaTags
-        title={t('creators.profile.meta.title', { name: creatorDoc.name })}
-        description={t('creators.profile.meta.description', { name: creatorDoc.name })}
-        url={currentUrl}
-        type="profile"
-      />
+      {creatorMeta ? <MetaTags {...creatorMeta} /> : null}
       <ScrollButton />
 
       <div className="creator-profile-page__body page-content-70rem">

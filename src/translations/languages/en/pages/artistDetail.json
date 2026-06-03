@@ -1,8 +1,8 @@
 {
   "title": "Artist Details",
   "meta": {
-    "title": "Artist - TUF",
-    "description": "View artist information for {{name}}"
+    "title": "{{name}}",
+    "description": "View artist information and levels for {{name}} on The Universal Forums"
   },
   "sections": {
     "aliases": "Aliases",

@@ -1,8 +1,8 @@
 {
   "title": "작곡가 세부 정보",
   "meta": {
-    "title": "작곡가 - TUF",
-    "description": "View artist information for {{name}}"
+    "title": "{{name}}",
+    "description": "{{name}}의 작곡가 정보 및 레벨 · The Universal Forums"
   },
   "sections": {
     "aliases": "별칭",

@@ -3,6 +3,8 @@ import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import axios from "axios";
 
 import { MetaTags } from "@/components/common/display";
+import { buildStaticPageMeta } from '@/utils/meta';
+import { useLocation } from 'react-router-dom';
 import api from "@/utils/api";
 import { routes } from '@/api/routes';
 import { useDebouncedRequest } from "@/hooks/useDebouncedRequest";
@@ -76,7 +78,18 @@ const Pagination = ({
 };
 
 const AuditLogPage = () => {
-  const currentUrl = window.location.href;
+  const location = useLocation();
+  const pageMeta = useMemo(
+    () =>
+      buildStaticPageMeta({
+        title: 'Audit Logs',
+        description: 'Audit Logs',
+        pathname: location.pathname,
+        image: '/og-image.jpg',
+        noindex: true,
+      }),
+    [location.pathname],
+  );
   const [logs, setLogs] = useState([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -196,13 +209,7 @@ const AuditLogPage = () => {
 
   return (
     <div className="auditlog-page">
-      <MetaTags
-        title="Audit Logs"
-        description="Audit Logs"
-        url={currentUrl}
-        image="/og-image.jpg"
-        type="website"
-      />
+      <MetaTags {...pageMeta} />
 
       <div className="auditlog-container page-content">
         <h1>Audit Logs</h1>

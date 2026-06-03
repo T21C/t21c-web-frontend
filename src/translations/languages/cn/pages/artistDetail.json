@@ -1,8 +1,8 @@
 {
   "title": "艺术家信息",
   "meta": {
-    "title": "艺术家 - TUF",
-    "description": "查看艺术家 {{name}} 的信息"
+    "title": "{{name}}",
+    "description": "查看艺术家 {{name}} 的信息与关卡 · The Universal Forums"
   },
   "sections": {
     "aliases": "别名",

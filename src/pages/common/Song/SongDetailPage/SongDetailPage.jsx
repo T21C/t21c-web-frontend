@@ -1,13 +1,14 @@
 import { routes } from '@/api/routes';
 // tuf-search: #SongDetailPage #songDetailPage #song #songDetail — Song - TUF
-import React, { useState, useEffect } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { getVerificationClass, isImageUrl } from '@/utils/Utility';
 import api from '@/utils/api';
 import { MetaTags } from '@/components/common/display';
+import { buildSongMeta } from '@/utils/meta';
 import { GalleryInspectPopup } from '@/components/popups/Evidence';
 import { EntityActionPopup } from '@/components/popups/Entities';
 import { EditIcon, ExternalLinkIcon } from '@/components/common/icons';
@@ -18,7 +19,7 @@ const SongDetailPage = () => {
   const { t } = useTranslation('pages');
   const { id } = useParams();
   const navigate = useNavigate();
-  const currentUrl = window.location.origin + location.pathname;
+  const location = useLocation();
   const { user } = useAuth();
 
   const [song, setSong] = useState(null);
@@ -32,6 +33,11 @@ const SongDetailPage = () => {
   useEffect(() => {
     fetchSong();
   }, [id]);
+
+  const songMeta = useMemo(
+    () => (song ? buildSongMeta(song, t, { pathname: location.pathname }) : null),
+    [song, t, location.pathname],
+  );
 
   const fetchSong = async () => {
     try {
@@ -75,13 +81,7 @@ const SongDetailPage = () => {
 
   return (
     <div className="song-detail-page">
-      <MetaTags
-        title={`${song.name} - ${t('songDetail.meta.title')}`}
-        description={t('songDetail.meta.description', { name: song.name })}
-        url={currentUrl}
-        image="/og-image.jpg"
-        type="article"
-      />
+      {songMeta ? <MetaTags {...songMeta} /> : null}
 
       <div className="song-detail-container page-content-1000">
         <div className="song-header">

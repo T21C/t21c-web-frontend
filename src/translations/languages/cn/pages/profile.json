@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "{{name}} | TUF",
-    "description": "查看 {{name}} 的档案与成就",
+    "title": "{{name}}",
+    "description": "查看 {{name}} 的档案、通关与成就 · The Universal Forums",
     "defaultTitle": "档案"
   },
   "notFound": "未找到玩家",

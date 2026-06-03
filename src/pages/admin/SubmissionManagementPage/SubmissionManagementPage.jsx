@@ -1,9 +1,11 @@
 // tuf-search: #SubmissionManagementPage #submissionManagementPage #admin #submissionManagement — Submission Management
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
 import "./adminsubmissionpage.css";
 import { AccessDenied, MetaTags } from '@/components/common/display';
+import { buildStaticPageMeta } from '@/utils/meta';
 
 import { ScrollButton } from '@/components/common/buttons';
 import LevelSubmissions from './components/LevelSubmissions';
@@ -14,7 +16,18 @@ import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 
 const SubmissionManagementPage = () => {
   const { t } = useTranslation('pages');
-  const currentUrl = window.location.origin + location.pathname;
+  const location = useLocation();
+  const pageMeta = useMemo(
+    () =>
+      buildStaticPageMeta({
+        title: t('submissionManagement.meta.title'),
+        description: t('submissionManagement.meta.description'),
+        pathname: location.pathname,
+        image: '/og-image.jpg',
+        noindex: true,
+      }),
+    [t, location.pathname],
+  );
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('levels'); // 'levels' or 'passes'
   const [isAutoAllowing, setIsAutoAllowing] = useState(false);
@@ -43,13 +56,7 @@ const SubmissionManagementPage = () => {
   if (user.permissionFlags === undefined) {
     return (
       <>
-        <MetaTags
-          title={t('submissionManagement.meta.title')}
-          description={t('submissionManagement.meta.description')}
-          url={currentUrl}
-          image="/og-image.jpg"
-          type="website"
-        />
+        <MetaTags {...pageMeta} />
         
         <div className="submission-admin-page">
           <div className="submissions-admin-container">
@@ -64,23 +71,16 @@ const SubmissionManagementPage = () => {
 
   if (!hasFlag(user, permissionFlags.SUPER_ADMIN)) {
     return (
-      <AccessDenied 
+      <AccessDenied
         metaTitle={t('submissionManagement.meta.title')}
         metaDescription={t('submissionManagement.meta.description')}
-        currentUrl={currentUrl}
       />
     );
   }
 
   return (
     <>
-      <MetaTags
-        title={t('submissionManagement.meta.title')}
-        description={t('submissionManagement.meta.description')}
-        url={currentUrl}
-        image="/og-image.jpg"
-        type="website"
-      />
+      <MetaTags {...pageMeta} />
       
       <div className="submission-admin-page">
         <ScrollButton />

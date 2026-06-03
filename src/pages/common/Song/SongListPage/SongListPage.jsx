@@ -1,11 +1,12 @@
 import { routes } from '@/api/routes';
 // tuf-search: #SongListPage #songListPage #song #songList — Songs - TUF
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { VirtualList } from '@/components/common/VirtualList';
 import api from '@/utils/api';
 import { MetaTags } from '@/components/common/display';
+import { buildStaticPageMeta } from '@/utils/meta';
 import { CustomSelect } from '@/components/common/selectors';
 import { useSongContext } from '@/contexts/SongContext';
 import { getVerificationClass } from '@/utils/Utility';
@@ -13,7 +14,18 @@ import './songListPage.css';
 
 const SongListPage = () => {
   const { t } = useTranslation(['pages', 'common']);
-  const currentUrl = window.location.origin + location.pathname;
+  const location = useLocation();
+  const pageMeta = useMemo(
+    () =>
+      buildStaticPageMeta({
+        title: t('songList.meta.title'),
+        description: t('songList.meta.description'),
+        pathname: location.pathname,
+        image: '/og-image.jpg',
+        type: 'website',
+      }),
+    [t, location.pathname],
+  );
   const {
     searchQuery,
     sortBy,
@@ -143,13 +155,7 @@ const SongListPage = () => {
 
   return (
     <div className="song-list-page">
-      <MetaTags
-        title={t('songList.meta.title')}
-        description={t('songList.meta.description')}
-        url={currentUrl}
-        image="/og-image.jpg"
-        type="website"
-      />
+      <MetaTags {...pageMeta} />
 
       <div className="song-list-container page-content">
         <h1>{t('songList.title')}</h1>

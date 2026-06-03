@@ -7,6 +7,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 
 import { MetaTags, AccessDenied } from '@/components/common/display';
+import { buildStaticPageMeta } from '@/utils/meta';
+import { useLocation } from 'react-router-dom';
 import { ScrollButton, CloseButton } from '@/components/common/buttons';
 import { DifficultyPopup } from '@/components/popups/Difficulties';
 import { DiscordRolesPopup } from '@/components/popups/DiscordRoles';
@@ -24,7 +26,18 @@ const DifficultyPage = () => {
   const { user } = useAuth();
   const { difficulties, loading: contextLoading, reloadDifficulties, setDifficulties } = useDifficultyContext();
   const { t } = useTranslation(['pages', 'common']);
-  const currentUrl = window.location.origin + location.pathname;
+  const location = useLocation();
+  const pageMeta = useMemo(
+    () =>
+      buildStaticPageMeta({
+        title: t('difficulty.meta.title'),
+        description: t('difficulty.meta.description'),
+        pathname: location.pathname,
+        image: '/og-image.jpg',
+        noindex: true,
+      }),
+    [t, location.pathname],
+  );
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -719,13 +732,7 @@ const DifficultyPage = () => {
   if (user.permissionFlags === undefined) {
     return (
       <div className="difficulty-page">
-        <MetaTags
-          title={t('difficulty.meta.title')}
-          description={t('difficulty.meta.description')}
-          url={currentUrl}
-          image="/og-image.jpg"
-          type="website"
-        />
+        <MetaTags {...pageMeta} />
         
         <div className="difficulty-container page-content">
           <div className="loader-shell loader-shell--tall">
@@ -741,20 +748,13 @@ const DifficultyPage = () => {
       <AccessDenied 
         metaTitle={t('difficulty.meta.title')}
         metaDescription={t('difficulty.meta.description')}
-        currentUrl={currentUrl}
       />
     );
   }
 
   return (
     <>
-      <MetaTags
-        title={t('difficulty.meta.title')}
-        description={t('difficulty.meta.description')}
-        url={currentUrl}
-        image="/og-image.jpg"
-        type="website"
-      />
+      <MetaTags {...pageMeta} />
       
       <div className="difficulty-page">
         {!isAnyPopupOpen && <ScrollButton />}

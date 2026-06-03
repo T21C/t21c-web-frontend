@@ -1,4 +1,8 @@
 {
+  "meta": {
+    "title": "{{name}} - 팩",
+    "description": "{{owner}}의 레벨 팩 {{name}} — {{count}}개 레벨 · The Universal Forums"
+  },
   "loading": "Loading pack details...",
   "by": "by",
   "backToPacks": "팩으로 돌아가기",

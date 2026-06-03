@@ -19,10 +19,11 @@ import { CreatorListContext } from "@/contexts/CreatorListContext";
 import { useTranslation } from "react-i18next";
 import { ScrollButton } from "@/components/common/buttons";
 import { MetaTags } from "@/components/common/display";
+import { buildStaticPageMeta } from '@/utils/meta';
+import { useLocation } from 'react-router-dom';
 import { SortDescIcon, SortAscIcon, ResetIcon, SortIcon, FilterIcon } from "@/components/common/icons";
 import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
 
-const currentUrl = window.location.origin + location.pathname;
 const limit = 30;
 
 /** Matches server `validCreatorVerificationStatuses` for leaderboard `filters`. */
@@ -30,6 +31,17 @@ const CREATOR_VERIFICATION_STATUSES = ['declined', 'pending', 'conditional', 'al
 
 const CreatorsListPage = () => {
   const { t } = useTranslation('pages');
+  const location = useLocation();
+  const pageMeta = useMemo(
+    () =>
+      buildStaticPageMeta({
+        title: t('creators.meta.title'),
+        description: t('creators.meta.description'),
+        pathname: location.pathname,
+        type: 'website',
+      }),
+    [t, location.pathname],
+  );
   const { t: tc } = useTranslation('common');
   const [hasMore, setHasMore] = useState(true);
   const runRequest = useDebouncedRequest(500);
@@ -168,12 +180,7 @@ const CreatorsListPage = () => {
 
   return (
     <div className="creators-list-page">
-      <MetaTags
-        title={t('creators.meta.title')}
-        description={t('creators.meta.description')}
-        url={currentUrl}
-        type="website"
-      />
+      <MetaTags {...pageMeta} />
 
       <div className="creators-list-page__body page-content-70rem">
         <ScrollButton />

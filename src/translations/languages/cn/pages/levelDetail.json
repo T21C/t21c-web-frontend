@@ -1,7 +1,8 @@
 {
   "meta": {
-    "title": "{{song}} | TUF",
-    "description": "由 {{creator}} 设计制作的 {{song}}"
+    "title": "{{song}} - {{artist}}",
+    "description": "{{artist}} 的 {{song}} — 由 {{creator}} 制作 · The Universal Forums",
+    "fallbackName": "关卡"
   },
   "banners": {
     "deleted": "本关卡已被删除",

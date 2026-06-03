@@ -1,8 +1,8 @@
 {
   "title": "歌曲信息",
   "meta": {
-    "title": "歌曲 - TUF",
-    "description": "查看歌曲 {{name}} 的信息"
+    "title": "{{name}}",
+    "description": "查看歌曲 {{name}} 的信息与关卡 · The Universal Forums"
   },
   "sections": {
     "aliases": "别名",

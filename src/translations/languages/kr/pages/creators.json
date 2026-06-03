@@ -59,7 +59,7 @@
   "profile": {
     "meta": {
       "title": "{{name}} - 제작자 프로필",
-      "description": "Charts and stats for {{name}}"
+      "description": "{{name}}의 차트 및 통계 — {{count}}개 레벨 · The Universal Forums"
     },
     "notFound": "제작자 발견되지 않음",
     "verified": "인증됨",

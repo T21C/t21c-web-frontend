@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "{{song}} | TUF",
-    "description": "View the pass of {{playerName}} for {{song}} - {{artist}}"
+    "title": "{{playerName}}'s clear of {{song}} - {{artist}}",
+    "description": "{{playerName}} cleared {{song}} by {{artist}} — {{difficulty}} · Score {{score}}"
   },
   "banners": {
     "deleted": "This pass has been deleted",

@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "{{song}} | TUF",
-    "description": "Voir la complétion de  {{song}} - {{artist}} par {{playerName}}"
+    "title": "Clear de {{playerName}} : {{song}} - {{artist}}",
+    "description": "{{playerName}} a clear {{song}} par {{artist}} — {{difficulty}} · Score {{score}}"
   },
   "banners": {
     "deleted": "Cette complétion a été supprimée"

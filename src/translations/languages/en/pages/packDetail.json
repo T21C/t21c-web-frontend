@@ -1,4 +1,8 @@
 {
+  "meta": {
+    "title": "{{name}} - Pack",
+    "description": "Level pack {{name}} by {{owner}} — {{count}} levels on The Universal Forums"
+  },
   "loading": "Loading pack details...",
   "by": "by",
   "backToPacks": "Back to Packs",
