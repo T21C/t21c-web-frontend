@@ -6,22 +6,9 @@ export const MAX_EMBED_TITLE_LENGTH = 120;
 
 const DANGEROUS_TITLE = /url\s*\(|var\s*\(|expression\s*\(|@import|javascript:|\/\*|\*\/|<\/|<>/i;
 
-const EMBED_HOST_PATTERNS = [
-  { host: /(^|\.)youtube\.com$|(^|\.)youtu\.be$/i, label: "youtube" },
-  { host: /(^|\.)bilibili\.com$/i, label: "bilibili" },
-];
+import { getVideoProvider } from "../../videoLink.js";
 
-export function getEmbedProvider(url) {
-  try {
-    const host = new URL(url).hostname.replace(/^www\./i, "");
-    for (const row of EMBED_HOST_PATTERNS) {
-      if (row.host.test(host)) return row.label;
-    }
-    return null;
-  } catch {
-    return null;
-  }
-}
+export { getVideoProvider, getVideoProvider as getEmbedProvider };
 
 /** Extract YouTube video id from common watch/short/embed URLs. */
 export function extractYouTubeVideoId(url) {
@@ -55,7 +42,7 @@ export function getYouTubeThumbnailUrl(url) {
   return videoId ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg` : null;
 }
 
-const zEmbedUrl = zSafeUrl.refine((url) => getEmbedProvider(url) !== null, {
+const zEmbedUrl = zSafeUrl.refine((url) => getVideoProvider(url) !== null, {
   message: "Only YouTube and Bilibili video links are supported",
 });
 
@@ -84,5 +71,5 @@ export const embedBlockDescriptor = {
 
 export function isLikelyEmbedUrl(raw) {
   const parsed = parseSafeUrl(raw);
-  return parsed !== null && getEmbedProvider(parsed) !== null;
+  return parsed !== null && getVideoProvider(parsed) !== null;
 }

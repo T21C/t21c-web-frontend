@@ -19,6 +19,7 @@ import hideIcons from '@/assets/icons/RITK hidden.png'
 import showIcons from '@/assets/icons/RITK visible.png'
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { formatCreatorDisplay } from '@/utils/Utility';
+import { VideoLinkIcon } from '@/components/common/icons';
 
 const hexToRgb = (hex) => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -518,9 +519,7 @@ const ReferencesPopup = ({ onClose }) => {
           className="video-link"
           onClick={(e) => e.stopPropagation()}
         >
-          <svg className="youtube-icon" viewBox="0 0 24 24">
-            <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
-          </svg>
+          <VideoLinkIcon url={level.videoLink} className="youtube-icon" />
         </a>
       )}
     </div>

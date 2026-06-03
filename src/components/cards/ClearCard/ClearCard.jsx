@@ -4,7 +4,7 @@ import { isoToEmoji } from "@/utils";
 import "./clearcard.css"
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
-import { PassIcon, YoutubeIcon } from "@/components/common/icons";
+import { PassIcon, VideoLinkIcon } from "@/components/common/icons";
 import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
 import { UserAvatar } from "@/components/layout";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
@@ -91,7 +91,7 @@ const ClearCard = ({scoreData, index}) => {
             </Link>
             {scoreData.videoLink && (
               <a className="video-link" href={scoreData.videoLink} target="_blank" rel="noopener noreferrer">
-                <YoutubeIcon size={'32px'} />
+                <VideoLinkIcon url={scoreData.videoLink} size="32px" />
               </a>
             )}
             </div>

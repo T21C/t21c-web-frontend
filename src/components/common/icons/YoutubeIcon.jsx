@@ -11,6 +11,7 @@ const YoutubeIcon = ({ className = '', size = "24px", ...props}) => {
     viewBox="0 -3 20 20" 
     version="1.1" 
     xmlns="http://www.w3.org/2000/svg"
+     transform="scale(0.9)"
     >
     <g id="SVGRepo_iconCarrier">
       <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
