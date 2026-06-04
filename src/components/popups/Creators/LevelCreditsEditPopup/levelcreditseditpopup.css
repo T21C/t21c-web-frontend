@@ -1,0 +1,452 @@
+/* tuf-search: #LevelCreditsEditPopup #levelCreditsEditPopup #popups #creators */
+.level-credits-edit-popup-container .level-credits-edit-popup-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup {
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 760px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 24px 24px 0;
+  flex-shrink: 0;
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__title {
+  margin: 0;
+  font-size: 1.35rem;
+  color: var(--color-white);
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__subtitle {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__team-input-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__team-select {
+  flex: 1;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__team-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__team-badge.existing {
+  background-color: color-mix(in srgb, var(--btn-primary) 10%, transparent);
+  color: var(--btn-primary);
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__team-badge.new {
+  background-color: var(--btn-success-tint-10);
+  color: var(--btn-success);
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__credits-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__credit-zones {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__credit-zone {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 120px;
+  padding: 12px;
+  border: 2px dashed var(--btn-neutral-disabled-fill);
+  border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.12);
+  transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s, opacity 0.2s;
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__credit-zone--charter {
+  border-color: color-mix(in srgb, var(--btn-info) 45%, var(--btn-neutral-disabled-fill));
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__credit-zone--charter .level-credits-edit-popup__zone-title {
+  color: var(--btn-info);
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__credit-zone--vfxer {
+  border-color: color-mix(in srgb, var(--btn-admin-purple) 45%, var(--btn-neutral-disabled-fill));
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__credit-zone--vfxer .level-credits-edit-popup__zone-title {
+  color: var(--btn-admin-purple);
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__credit-zone.is-drag-over.level-credits-edit-popup__credit-zone--charter {
+  border-color: var(--btn-info);
+  background-color: color-mix(in srgb, var(--btn-info) 14%, rgba(0, 0, 0, 0.12));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--btn-info) 35%, transparent);
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__credit-zone.is-drag-over.level-credits-edit-popup__credit-zone--vfxer {
+  border-color: var(--btn-admin-purple);
+  background-color: color-mix(in srgb, var(--btn-admin-purple) 14%, rgba(0, 0, 0, 0.12));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--btn-admin-purple) 35%, transparent);
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__credit-zone.is-drop-disabled {
+  opacity: 0.45;
+  border-color: var(--btn-neutral-muted);
+  cursor: not-allowed;
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__zone-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__zone-title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__zone-count {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__zone-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__zone-search-icon {
+  position: absolute;
+  left: 10px;
+  color: var(--color-text-secondary);
+  pointer-events: none;
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__zone-search-input {
+  width: 100%;
+  padding: 8px 10px 8px 34px;
+  border: 1px solid var(--btn-neutral-disabled-fill);
+  border-radius: 6px;
+  background-color: rgba(0, 0, 0, 0.25);
+  color: var(--color-white);
+  font-size: 0.9rem;
+  transition: border-color 0.2s;
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__zone-search-input::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__zone-search-input:focus {
+  outline: none;
+  border-color: var(--btn-primary);
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__already-exists {
+  margin-left: auto;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-white);
+  background-color: color-mix(in srgb, var(--btn-warning) 75%, #000);
+  border-radius: 4px;
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__zone-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 60px;
+  max-height: 280px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__zone-empty {
+  margin: 0;
+  padding: 16px 8px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__creator-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  border: 1px solid var(--btn-neutral-disabled-fill);
+  transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__creator-item:hover {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-color: var(--btn-primary);
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__creator-item.is-sortable-ghost {
+  opacity: 0.35;
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__creator-item--overlay {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  border-color: var(--btn-primary);
+  cursor: grabbing;
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: grab;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__drag-handle:hover {
+  background: var(--color-hover);
+  color: var(--color-text);
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__drag-handle:active {
+  cursor: grabbing;
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__creator-name {
+  flex: 1;
+  min-width: 0;
+  color: var(--color-white);
+  font-size: 1rem;
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__creator-marquee {
+  width: 100%;
+  font-size: 0.9rem;
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__creator-name-primary {
+  color: var(--color-white);
+  font-size: 1rem;
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__creator-name-meta {
+  color: var(--color-text-secondary);
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__creator-item:hover .marquee-text--overflows {
+  text-overflow: clip;
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__creator-item:hover .marquee-text--overflows .marquee-text__inner {
+  animation: level-credits-edit-marquee var(--marquee-duration, 6s) var(--ease-in-out-sine) infinite;
+}
+
+@keyframes level-credits-edit-marquee {
+  0%,
+  15% {
+    transform: translateX(0);
+  }
+  45%,
+  55% {
+    transform: translateX(calc(-1 * var(--marquee-distance, 0px)));
+  }
+  85%,
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__creator-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__remove {
+  padding: 8px 16px;
+  background-color: color-mix(in srgb, var(--btn-danger) 10%, transparent);
+  color: var(--btn-danger);
+  border: 1px solid var(--btn-danger);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 0.9rem;
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__remove:hover {
+  background-color: color-mix(in srgb, var(--btn-danger) 20%, transparent);
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__toggle-owner {
+  padding: 8px 16px;
+  background-color: rgba(180, 180, 180, 0.1);
+  color: #b4b4b4;
+  border: 1px solid #b4b4b4;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+  font-size: 0.9rem;
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__toggle-owner:hover {
+  background-color: rgba(180, 180, 180, 0.2);
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__toggle-owner.is-owner {
+  background-color: color-mix(in srgb, var(--btn-info) 25%, transparent);
+  color: var(--btn-info);
+  border-color: var(--btn-info);
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__add-creator {
+  width: 100%;
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__creator-select {
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__footer {
+  display: flex;
+  gap: 12px;
+  padding: 16px 24px 24px;
+  border-top: 1px solid var(--btn-neutral-disabled-fill);
+  flex-shrink: 0;
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__btn {
+  flex: 1;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, opacity 0.2s;
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__btn--save {
+  background-color: var(--btn-primary);
+  color: var(--color-white);
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__btn--save:hover:not(:disabled) {
+  background-color: var(--btn-primary-hover);
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__btn--save:disabled {
+  background-color: var(--btn-neutral-heavy);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__btn--cancel {
+  background-color: var(--btn-neutral-muted);
+  color: var(--color-white);
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__btn--cancel:hover:not(:disabled) {
+  background-color: var(--btn-neutral);
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__btn--cancel:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+@media (max-width: 768px) {
+  .level-credits-edit-popup-container .level-credits-edit-popup__creator-name {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .level-credits-edit-popup-container .level-credits-edit-popup__creator-controls {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .level-credits-edit-popup-container .level-credits-edit-popup__toggle-owner,
+  .level-credits-edit-popup-container .level-credits-edit-popup__remove {
+    width: 100%;
+  }
+
+  .level-credits-edit-popup-container .level-credits-edit-popup__team-input-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .level-credits-edit-popup-container .level-credits-edit-popup__footer {
+    flex-direction: column;
+  }
+}

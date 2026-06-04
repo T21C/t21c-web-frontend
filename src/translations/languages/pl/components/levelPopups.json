@@ -84,5 +84,9 @@
         "length": "Długość musi być nieujemną liczbą (sekundy, dopuszczalne ułamki)"
       }
     }
+  },
+  "creditsEdit": {
+    "searchPlaceholder": "Szukaj twórców…",
+    "noResults": "Brak pasujących twórców"
   }
 } 

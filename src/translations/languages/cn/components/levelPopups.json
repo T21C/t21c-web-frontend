@@ -189,5 +189,9 @@
       "noBackup": "无可用备份。请联系管理员。",
       "downloadLegacy": "下载原始备份"
     }
+  },
+  "creditsEdit": {
+    "searchPlaceholder": "搜索创作者…",
+    "noResults": "没有匹配的创作者"
   }
 } 

@@ -9,31 +9,21 @@ import './creatorManagement.css';
 import api from '@/utils/api';
 import { routes } from '@/api/routes';
 import { useTranslation } from 'react-i18next';
-import { CreatorManagementPopup } from '@/components/popups/Creators';
+import { CreatorManagementPopup, LevelCreditsEditPopup } from '@/components/popups/Creators';
 import { CreatorStatusBadge } from '@/components/common/display';
 import { SortDescIcon, SortAscIcon } from '@/components/common/icons';
 import { AccessDenied, MetaTags } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import toast from 'react-hot-toast';
-const CreditRole = {
-  CHARTER: 'charter',
-  VFXER: 'vfxer',
-};
-
-const roleOptions = Object.entries(CreditRole).map(([key, value]) => ({
-  value,
-  label: value.charAt(0).toUpperCase() + value.slice(1)
-}));
 
 const CreatorManagementPage = () => {
   const { user } = useAuth();
   const [creators, setCreators] = useState([]);
   const [levels, setLevels] = useState([]);
-  const [selectedLevel, setSelectedLevel] = useState(null);
+  const [creditsEditLevel, setCreditsEditLevel] = useState(null);
   const [searchQuery, setSearchQuery] = useState(decodeURIComponent(window.location.search.split('search=')[1] || ""));
   const [creatorListSearchQuery, setCreatorListSearchQuery] = useState('');
-  const [creatorToAddSearchQuery, setCreatorToAddSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [creatorPage, setCreatorPage] = useState(1);
   const [activeTab, setActiveTab] = useState('credits');
@@ -41,7 +31,6 @@ const CreatorManagementPage = () => {
   const [showSplitDialog, setShowSplitDialog] = useState(false);
   const levelsPerPage = 50;
   const creatorsPerPage = 100;
-  const maxCreatorResults = 100;
   const [selectedCreatorForAction, setSelectedCreatorForAction] = useState(null);
   const { t } = useTranslation('pages');
   const location = useLocation();
@@ -57,9 +46,6 @@ const CreatorManagementPage = () => {
     [t, location.pathname],
   );
   const [sort, setSort] = useState('NAME_ASC');
-  const [pendingTeam, setPendingTeam] = useState(null);
-  const [pendingCreators, setPendingCreators] = useState([]);
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
   const [inputValue, setInputValue] = useState('1');
   const [totalCreatorPages, setTotalCreatorPages] = useState(0);
@@ -67,7 +53,6 @@ const CreatorManagementPage = () => {
   const creatorsCancelTokenRef = useRef();
   const levelsCancelTokenRef = useRef();
   const [excludeAliases, setExcludeAliases] = useState(false);
-  const [availableCreators, setAvailableCreators] = useState(null);
   const [showAddCreatorForm, setShowAddCreatorForm] = useState(false);
   const [newCreatorData, setNewCreatorData] = useState({
     name: '',
@@ -163,13 +148,6 @@ const CreatorManagementPage = () => {
         const totalPages = Math.ceil(response.data.count / levelsPerPage);
         setTotalPages(totalPages);
 
-        // Update selected level if one is selected
-        if (selectedLevel) {
-          const updatedLevel = response.data.results.find(l => l.id === selectedLevel.id);
-          if (updatedLevel) {
-            setSelectedLevel(updatedLevel);
-          }
-        }
       }
     } catch (error) {
       if (!api.isCancel(error)) {
@@ -219,57 +197,7 @@ const CreatorManagementPage = () => {
     ]).catch(console.error);
   }, [excludeAliases]);
 
-  useEffect(() => {
-    let cancelToken;
-
-    const fetchAvailableCreators = async () => {
-      try {
-        // Cancel any in-flight request
-        if (cancelToken) {
-          cancelToken.cancel('New search initiated');
-        }
-
-        // Create new cancel token
-        cancelToken = api.CancelToken.source();
-        
-        // Clear current results while loading
-        setAvailableCreators(null);
-        
-        const params = new URLSearchParams({
-          page: 1,
-          limit: maxCreatorResults,
-          search: creatorToAddSearchQuery,
-          excludeAliases: excludeAliases
-        });
-
-        const response = await api.get(`${routes.database.creators.root()}?${params}`, {
-          cancelToken: cancelToken.token
-        });
-
-        // Filter out creators that are already added
-        setAvailableCreators(response.data.results.filter(
-          creator => !pendingCreators.some(pc => pc.id === creator.id && pc.role === creator.role)
-        ));
-      } catch (error) {
-        if (!api.isCancel(error)) {
-          console.error('Error fetching creators:', error);
-          setAvailableCreators([]);
-        }
-      }
-    };
-
-    if (selectedLevel) {
-      fetchAvailableCreators();
-    }
-
-    return () => {
-      if (cancelToken) {
-        cancelToken.cancel('Component unmounted or search changed');
-      }
-    };
-  }, [creatorToAddSearchQuery, selectedLevel, pendingCreators, excludeAliases]);
-
-  useBodyScrollLock(showMergeWarning || showSplitDialog);
+  useBodyScrollLock(showMergeWarning || showSplitDialog || !!creditsEditLevel);
 
   useEffect(() => {
     const handleEscape = (e) => {
@@ -391,169 +319,9 @@ const CreatorManagementPage = () => {
     setNewTeamAlias('');
   };
 
-  const handleSelectLevel = (level) => {
-    // Clear all creator-related state immediately when switching levels
-    setAvailableCreators(null);
-    setCreatorToAddSearchQuery('');
-    setSelectedLevel(level);
-    setPendingTeam(level.team ? {
-      id: level.team.id,
-      name: level.team.name
-    } : null);
-    const creators = level.currentCreators?.map(c => ({
-      id: c.id,
-      name: c.name,
-      role: c.role || CreditRole.CHARTER,
-      isOwner: c.isOwner,
-      verificationStatus: c.verificationStatus || 'allowed',
-      levelCount: c.levelCount || 0,
-      aliases: c.creatorAliases?.map(alias => alias.name) || []
-    })) || []
-    setPendingCreators(creators);
-    setHasUnsavedChanges(false);
+  const handleOpenCreditsEdit = (level) => {
+    setCreditsEditLevel(level);
   };
-
-  const handleTeamInputChange = (input, isUserInput = true) => {
-    // If input is empty, it means we want to remove the team
-    if (!input) {
-      setPendingTeam(null);
-      setHasUnsavedChanges(true);
-      return;
-    }
-
-    const matchingTeam = teamsList?.find(t => t.name.toLowerCase() === input?.toLowerCase());
-    const newPendingTeam = matchingTeam ? { id: matchingTeam.id, name: matchingTeam.name } : { name: input };
-    setPendingTeam(newPendingTeam);
-    setHasUnsavedChanges(true);
-  };
-
-  const handleAddCreator = (creator) => {
-    
-    // Check if creator already exists and what role(s) they have
-    const existingCreatorRoles = pendingCreators
-      .filter(c => c.id === creator.id)
-      .map(c => c.role);
-
-    // Determine the role to assign
-    let assignedRole = CreditRole.CHARTER; // Default
-    if (existingCreatorRoles.includes(CreditRole.CHARTER)) {
-      // If they already have charter, assign vfxer
-      assignedRole = CreditRole.VFXER;
-    } else if (existingCreatorRoles.includes(CreditRole.VFXER)) {
-      // If they already have vfxer, assign charter
-      assignedRole = CreditRole.CHARTER;
-    }
-    // If they have both roles already, still assign charter (though this shouldn't happen due to filtering)
-    
-    setPendingCreators(prev => [...prev, {
-      id: creator.id,
-      name: creator.name,
-      isOwner: false,
-      role: assignedRole,
-      verificationStatus: creator.verificationStatus || 'allowed',
-      levelCount: creator.credits?.length || 0,
-      aliases: creator.creatorAliases?.map(alias => alias.name) || []
-    }]);
-    setHasUnsavedChanges(true);
-  };
-
-  const handleRemoveCreator = (creatorId, role) => {
-    setPendingCreators(prev => prev.filter(c => !(c.id === creatorId && c.role === role)));
-    setHasUnsavedChanges(true);
-  };
-
-  const handleChangeRole = (creatorId, newRole) => {
-    setPendingCreators(prev => prev.map(c => 
-      c.id === creatorId ? { ...c, role: newRole } : c
-    ));
-    setHasUnsavedChanges(true);
-  };
-
-  const handleToggleOwner = (creatorId) => {
-    setPendingCreators(prev => prev.map(c => 
-      c.id === creatorId ? { ...c, isOwner: !c.isOwner } : c
-    ));
-    setHasUnsavedChanges(true);
-  };
-
-  const handleSaveChanges = async () => {
-    if (!selectedLevel) return;
-
-    try {
-      // Save team changes
-      if (pendingTeam) {
-        await api.put(routes.database.creators.levelTeam(selectedLevel.id), {
-          teamId: pendingTeam.id,
-          name: pendingTeam.name,
-          members: pendingCreators.map(c => c.id)
-        });
-      } else {
-        // Remove team if none is selected
-        await api.delete(routes.database.creators.levelTeam(selectedLevel.id));
-      }
-
-      // Save creator changes - using the correct endpoint
-      const response = await api.put(routes.database.creators.level(selectedLevel.id), {
-        creators: pendingCreators.map(c => ({
-          id: c.id,
-          role: c.role,
-          isOwner: c.isOwner
-        }))
-      });
-
-      await fetchLevelsAudit();
-      
-      // Check status code and use response message if available
-      if (response.status >= 200 && response.status < 300) {
-        const message = response.data?.message || 'Changes saved successfully';
-        toast.success(message);
-      } else {
-        toast.error(response.data?.message || 'Failed to save changes');
-      }
-      
-      setHasUnsavedChanges(false);
-    } catch (error) {
-      console.error('Error saving changes:', error);
-      // Check if error response has a message and status code
-      if (error.response?.status >= 200 && error.response?.status < 300) {
-        // Success status but caught as error (shouldn't happen, but handle it)
-        const message = error.response.data?.message || 'Changes saved successfully';
-        toast.success(message);
-        await fetchLevelsAudit();
-        setHasUnsavedChanges(false);
-      } else {
-        toast.error(error.response?.data?.message || error.response?.data?.error || 'Failed to save changes');
-      }
-    }
-  };
-
-  const handleCancelChanges = () => {
-    if (hasUnsavedChanges) {
-      if (selectedLevel) {
-        setPendingTeam(selectedLevel.team ? {
-          id: selectedLevel.team.id,
-          name: selectedLevel.team.name
-        } : null);
-        const creators = selectedLevel.currentCreators?.map(c => ({
-          id: c.id,
-          name: c.name,
-          role: c.role || CreditRole.CHARTER,
-          isOwner: c.isOwner,
-          verificationStatus: c.verificationStatus || 'allowed',
-          credits: c.credits,
-          aliases: c.creatorAliases?.map(alias => alias.name) || []
-        })) || []
-        setPendingCreators(creators);
-        setHasUnsavedChanges(false);
-      }
-    } else {
-      // If no unsaved changes, deselect the level
-      setSelectedLevel(null);
-      setPendingTeam(null);
-      setPendingCreators([]);
-    }
-  };
-
 
   // Pagination for levels
 
@@ -564,14 +332,19 @@ const CreatorManagementPage = () => {
   const paginateCreators = (pageNumber) => setCreatorPage(pageNumber);
 
   // Render a level item
-  const renderLevelItem = (level) => {
-    const levelClasses = `level-item ${selectedLevel?.id === level.id ? 'selected' : ''}`;
-
-    return (
+  const renderLevelItem = (level) => (
       <div
         key={level.id}
-        className={levelClasses}
-        onClick={() => handleSelectLevel(level)}
+        className="level-item"
+        onClick={() => handleOpenCreditsEdit(level)}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleOpenCreditsEdit(level);
+          }
+        }}
       >
         <div className="level-header">
           <h3>{level.song}</h3>
@@ -595,139 +368,7 @@ const CreatorManagementPage = () => {
           ))}
         </div>
       </div>
-    );
-  };
-
-  // Check if a creator appears with both roles (charter and vfxer)
-  const hasCreatorBothRoles = (creatorId) => {
-    const creatorRoles = pendingCreators
-      .filter(c => c.id === creatorId)
-      .map(c => c.role);
-    return creatorRoles.includes(CreditRole.CHARTER) && creatorRoles.includes(CreditRole.VFXER);
-  };
-
-  // Render team management section
-  const renderTeamSection = () => {
-    if (!selectedLevel) return null;
-
-    return (
-        <div className="team-header">
-          <div className="team-input-group">
-            <CustomSelect
-              options={teamsList.map(team => ({
-                value: team.name,
-                label: team.name
-              }))}
-              value={pendingTeam ? { 
-                value: pendingTeam.name, 
-                label: pendingTeam.name 
-              } : null}
-              onChange={(selected) => {
-                handleTeamInputChange(selected?.value || '');
-              }}
-              onInputChange={(input, { action }) => {
-                if (action === 'input-change') {
-                  handleTeamInputChange(input);
-                }
-              }}
-              isCreatable={true}
-              isClearable={true}
-              placeholder="Enter or select team name..."
-              className="team-select"
-            />
-            {pendingTeam && (
-              <span className={pendingTeam.id ? 'existing-team' : 'new-team'}>
-                {pendingTeam.id ? `ID: ${pendingTeam.id}` : 'New Team'}
-              </span>
-            )}
-          </div>
-
-        <div className="credits-section">
-          <div className="creator-list">
-            {pendingCreators.map(creator => {
-              return (
-              <div key={`${creator.role}-${creator.id}`} className="creator-item">
-                <span className="creator-name">
-                  {creator.name.length > 25 ? `${creator.name.substring(0, 25)}...` : creator.name}
-                  <span className="creator-details">
-                    (ID: {creator.id} • {creator.levelCount} {creator.levelCount?.toString().endsWith('1') ? 'level' : 'levels'})
-                    {creator.aliases && creator.aliases.length > 0 && (
-                      <span className="creator-aliases"> • Aliases: {creator.aliases.join(', ')}</span>
-                    )}
-                  </span>
-                </span>
-                <div className="creator-controls">
-                <button 
-                    className={`toggle-owner-button ${creator.isOwner ? 'is-owner' : ''}`}
-                    onClick={() => handleToggleOwner(creator.id)}
-                  >
-                    {creator.isOwner ? 'Remove Owner' : 'Make Owner'}
-                  </button>
-                  <CustomSelect
-                    value={roleOptions.find(opt => opt.value === creator.role)}
-                    options={roleOptions.filter(opt => 
-                      opt.value === CreditRole.CHARTER || 
-                      opt.value === CreditRole.VFXER
-                    )}
-                    onChange={(selected) => handleChangeRole(creator.id, selected.value)}
-                    className={`role-select ${hasCreatorBothRoles(creator.id) ? 'disabled' : ''}`}
-                    isDisabled={hasCreatorBothRoles(creator.id)}
-                  />
-                  <button
-                    className="remove-creator-button"
-                    onClick={() => handleRemoveCreator(creator.id, creator.role)}
-                  >
-                    Remove
-                  </button>
-                </div>
-              </div>
-              );
-            })}
-          </div>
-          
-          <div className="add-creator">
-            <CustomSelect
-              options={availableCreators === null ? [] : availableCreators.map(creator => ({
-                value: creator.id,
-                label: `${creator.name} (ID: ${creator.id}, Charts: ${creator.credits?.length || 0})${creator.creatorAliases?.length > 0 ? ` [${creator.creatorAliases.map(alias => alias.name).join(', ')}]` : ''}`
-              }))}
-              value={null}
-              onChange={(option) => {
-                const creator = availableCreators?.find(c => c.id === option?.value);
-                if (creator) {
-                  handleAddCreator(creator);
-                }
-              }}
-              placeholder="Search and select creator..."
-              onInputChange={(value) => setCreatorToAddSearchQuery(value)}
-              isSearchable={true}
-              className="creator-select"
-              width="50%"
-              isLoading={availableCreators === null}
-              noOptionsMessage={() => availableCreators === null ? "Loading..." : "Type to search creators..."}
-            />
-          </div>
-
-          <div className="management-actions">
-            <button
-              className="save-button"
-              onClick={handleSaveChanges}
-              disabled={!hasUnsavedChanges}
-            >
-              Save Changes
-            </button>
-            <button
-              className={hasUnsavedChanges ? "cancel-button" : "deselect-button"}
-              onClick={handleCancelChanges}
-            >
-              {hasUnsavedChanges ? 'Cancel Changes' : 'Deselect Level'}
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
+  );
 
   const handleCreatorAction = (creator) => {
     setSelectedCreatorForAction(creator);
@@ -870,17 +511,6 @@ const CreatorManagementPage = () => {
                   </div>
                 </div>
 
-
-                {selectedLevel && (
-                  <div className="edit-credits-panel">
-                    <h3>Edit Credits for {selectedLevel.song}</h3>
-                    
-                    {/* Team Management Section */}
-                    {renderTeamSection()}
-
-
-                  </div>
-                )}
 
                 <div className="levels-list">
                   {levels.map(level => renderLevelItem(level))}
@@ -1146,6 +776,16 @@ const CreatorManagementPage = () => {
           creator={selectedCreatorForAction}
           onClose={handleCloseCreatorAction}
           onUpdate={handleCreatorUpdate}
+        />
+      )}
+
+      {creditsEditLevel && (
+        <LevelCreditsEditPopup
+          level={creditsEditLevel}
+          teamsList={teamsList}
+          excludeAliases={excludeAliases}
+          onClose={() => setCreditsEditLevel(null)}
+          onSaved={fetchLevelsAudit}
         />
       )}
 

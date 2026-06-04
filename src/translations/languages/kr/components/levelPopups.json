@@ -86,5 +86,9 @@
         "length": "길이는 0 이상의 숫자(초, 소수 가능)여야 합니다"
       }
     }
+  },
+  "creditsEdit": {
+    "searchPlaceholder": "크리에이터 검색…",
+    "noResults": "일치하는 크리에이터가 없습니다"
   }
 }

@@ -189,5 +189,9 @@
       "noBackup": "No backup is available. Please contact an administrator.",
       "downloadLegacy": "Download Legacy Backup"
     }
+  },
+  "creditsEdit": {
+    "searchPlaceholder": "Search creators…",
+    "noResults": "No matching creators"
   }
 } 

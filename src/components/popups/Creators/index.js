@@ -2,5 +2,6 @@
 import { CreatorAssignmentPopup } from "./CreatorAssignmentPopup/CreatorAssignmentPopup";
 import { CreatorAssignmentPanel } from "./CreatorAssignmentPopup/CreatorAssignmentPanel";
 import { CreatorManagementPopup } from "./CreatorManagementPopup/CreatorManagementPopup";
+import { LevelCreditsEditPopup } from "./LevelCreditsEditPopup/LevelCreditsEditPopup";
 
-export { CreatorAssignmentPopup, CreatorAssignmentPanel, CreatorManagementPopup };
+export { CreatorAssignmentPopup, CreatorAssignmentPanel, CreatorManagementPopup, LevelCreditsEditPopup };

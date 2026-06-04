@@ -83,5 +83,9 @@
         "length": "La durée doit être un nombre positif ou nul (secondes, décimales autorisées)"
       }
     }
+  },
+  "creditsEdit": {
+    "searchPlaceholder": "Rechercher des créateurs…",
+    "noResults": "Aucun créateur correspondant"
   }
 } 

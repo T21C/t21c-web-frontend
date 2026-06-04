@@ -1882,6 +1882,8 @@
 .level-detail-popup .popup-content .popup-body .owner-badge {
   background-color: var(--primary-color);
   color: var(--tertiary-text);
+  line-height: 0.25;
+  margin-top: var(--spacing-xs);
   border-radius: var(--border-radius);
   font-size: var(--font-size-xs);
 }
