@@ -108,7 +108,7 @@ const ProfileHeader = ({
   handle,
   country,
   badgeId,
-  /** Shown under the leaderboard rank badge as `id: NN`. Falls back to `avatarSubject.id`. */
+  /** Shown under the leaderboard rank badge as `ID NN`. Falls back to `avatarSubject.id`. */
   profileId,
   bannerUrl = null,
   headerSurfaceStyle = null,
@@ -635,7 +635,7 @@ const ProfileHeader = ({
                     </div>
                   ) : null}
                   {resolvedProfileId != null ? (
-                    <div className="profile-header__profile-id">id: {resolvedProfileId}</div>
+                    <div className="profile-header__profile-id">ID {resolvedProfileId}</div>
                   ) : null}
                 </div>
               ) : null}

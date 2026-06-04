@@ -20,6 +20,9 @@
     },
     "flags": {
       "label": "Flags",
+      "keyCount": "{{count}}K",
+      "keyCountLabel": "Key Count",
+      "keyCountPlaceholder": "Optional",
       "types": {
         "12k": "12K",
         "nht": "NHT",
@@ -55,7 +58,8 @@
     "autoAllow": "Error auto-allowing submissions",
     "profileUpdate": "Failed to update submission with profile",
     "needProfileCreation": "Profile needs to be created before approval",
-    "patch": "Failed to update submission"
+    "patch": "Failed to update submission",
+    "invalidKeyCount": "Key count must be a positive integer"
   },
   "success": {
     "playerAssigned": "Successfully assigned to {{playerName}}",

@@ -30,6 +30,9 @@
     },
     "flags": {
       "label": "Flags:",
+      "keyCount": "{{count}}K",
+      "keyCountLabel": "Nombre de touches",
+      "keyCountPlaceholder": "Optionnel",
       "types": {
         "12k": "12K",
         "nht": "NHT",
@@ -69,7 +72,8 @@
     "autoAllow": "Échec de l'approbation Auto des soumissions",
     "loading": "Échec du chargement des soumissions",
     "saving": "Échec de la sauvegarde des soumissions",
-    "patch": "Échec de la mise à jour de la soumission"
+    "patch": "Échec de la mise à jour de la soumission",
+    "invalidKeyCount": "Le nombre de touches doit être un entier positif"
   },
   "success": {
     "autoAllow": "Approbation auto de {{count}} soumission",

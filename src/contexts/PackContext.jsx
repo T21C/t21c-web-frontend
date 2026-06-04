@@ -6,7 +6,7 @@ import api from '@/utils/api';
 import { routes } from '@/api/routes';
 import { useDebouncedRequest } from '@/hooks/useDebouncedRequest';
 import { useAuth } from './AuthContext';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { LevelPackViewModes } from "@/utils/constants";
 
 const PackContext = createContext()
@@ -14,6 +14,7 @@ const PackContext = createContext()
 const PackContextProvider = (props) => {
     const { user } = useAuth();
     const location = useLocation();
+    const navigate = useNavigate();
     
     const [packs, setPacks] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -43,26 +44,48 @@ const PackContextProvider = (props) => {
         });
     }, [filters]);
 
-    // Handle URL query parameters and window context
-    useEffect(() => {
-        const urlParams = new URLSearchParams(location.search);
-        const levelId = urlParams.get('levelId');
-        
-        // Check for window context first (higher priority)
-        if (window.packSearchContext && window.packSearchContext.query) {
-            const contextQuery = window.packSearchContext.query;
-            setFilters(prev => ({ ...prev, query: contextQuery }));
-            // Clear the context after using it
-            delete window.packSearchContext;
-        } else if (levelId) {
-            // Set query to search for this level ID
-            const levelQuery = `levelId:${levelId}`;
-            setFilters(prev => ({ ...prev, query: levelQuery }));
-        }
-    }, [location.search]);
-
     // Force update state for triggering re-fetches
     const [forceUpdate, setForceUpdate] = useState(false);
+
+    const applyPresetQuery = useCallback((query, { force = false } = {}) => {
+        const trimmed = typeof query === 'string' ? query.trim() : '';
+        if (!force && filtersRef.current.query === trimmed) {
+            return;
+        }
+        const nextFilters = { ...filtersRef.current, query: trimmed };
+        filtersRef.current = nextFilters;
+        setFilters(nextFilters);
+        setPageNumber(0);
+        setPacks([]);
+        setError(false);
+        setForceUpdate((f) => !f);
+    }, []);
+
+    // Preset searches from router state, window context, or URL (?levelId=)
+    useEffect(() => {
+        const stateQuery = location.state?.packSearchQuery;
+        if (typeof stateQuery === 'string' && stateQuery.trim()) {
+            applyPresetQuery(stateQuery, { force: true });
+            navigate(
+                { pathname: location.pathname, search: location.search },
+                { replace: true, state: null },
+            );
+            return;
+        }
+
+        if (window.packSearchContext?.query) {
+            const contextQuery = window.packSearchContext.query;
+            delete window.packSearchContext;
+            applyPresetQuery(contextQuery, { force: true });
+            return;
+        }
+
+        const urlParams = new URLSearchParams(location.search);
+        const levelId = urlParams.get('levelId');
+        if (levelId) {
+            applyPresetQuery(`levelId:${levelId}`);
+        }
+    }, [location.pathname, location.search, location.key, location.state, applyPresetQuery, navigate]);
 
     // Debounced + cancellation-aware request runner. Filter / query changes
     // wait 500ms (collapsing rapid keystrokes into one request); pagination

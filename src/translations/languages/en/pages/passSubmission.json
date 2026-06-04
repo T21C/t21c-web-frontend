@@ -6,7 +6,7 @@
     "altname": "Leaderboard Name",
     "nohold": "Alt. Tap Option",
     "speed": "Speed (opt., >=1.0)",
-    "keyCount": "Key Count",
+    "keyCount": "Key Count (opt.)",
     "feelDiff": "Feeling Rating",
     "expectedDiff": "Expected Rating (opt.)",
     "isAdofaiV2": "ADOFAI v2"
@@ -40,7 +40,7 @@
   "acc": "Accuracy: ",
   "scoreCalc": "Score: ",
   "holdTooltip": "Check this if a different hold tile behavior was used (no holding required etc.)",
-  "keyCountTooltip": "Number of keys used for this pass.",
+  "keyCountTooltip": "Number of keys used for this pass. Required for U and UQ.",
   "feelingTooltip": "How hard it felt for you personally. Valid examples: G1-G5, 17~18+, U1, etc.",
   "expectedTooltip": "What difficulty the level should be rated as (optional). Same format as feeling rating.",
   "adofaiV2Tooltip": "Check this if the clear was recorded on ADOFAI v2",

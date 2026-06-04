@@ -23,6 +23,9 @@
     },
     "flags": {
       "label": "Oznaczenia:",
+      "keyCount": "{{count}}K",
+      "keyCountLabel": "Liczba klawiszy",
+      "keyCountPlaceholder": "Opcjonalnie",
       "types": {
         "12k": "12K",
         "nht": "NHT",
@@ -56,7 +59,8 @@
     "playerAssignment": "Nie udało się przypisać gracza",
     "processing": "Błąd podczas przetwarzania zgłoszenia",
     "autoAllow": "Nie udało się automatycznie zaakceptować zgłoszeń",
-    "patch": "Nie udało się zaktualizować zgłoszenia"
+    "patch": "Nie udało się zaktualizować zgłoszenia",
+    "invalidKeyCount": "Liczba klawiszy musi być dodatnią liczbą całkowitą"
   },
   "success": {
     "playerAssigned": "Pomyślnie przypisano do {{playerName}}",

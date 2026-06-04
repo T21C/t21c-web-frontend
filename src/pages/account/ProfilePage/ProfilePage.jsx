@@ -292,11 +292,9 @@ const ProfilePage = () => {
       const handleViewUserPacks = () => {
         const handle = playerData?.user?.username;
         if (handle) {
-          window.packSearchContext = {
-            query: `owner:${handle}`,
-            timestamp: Date.now()
-          };
-          navigate('/packs');
+          navigate('/packs', {
+            state: { packSearchQuery: `owner:${handle}` },
+          });
         }
       };
 

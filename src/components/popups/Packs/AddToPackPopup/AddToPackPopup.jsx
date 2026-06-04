@@ -150,12 +150,9 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
   // Handle looking up level in packs
   const handleLookupInPacks = () => {
     onClose();
-    // Use window context to pass the search query
-    window.packSearchContext = {
-      query: `levelId:${level.id}`,
-      timestamp: Date.now()
-    };
-    navigate('/packs');
+    navigate('/packs', {
+      state: { packSearchQuery: `levelId:${level.id}` },
+    });
   };
 
   // Check if level is already in any pack

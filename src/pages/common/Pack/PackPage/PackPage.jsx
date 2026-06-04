@@ -89,15 +89,6 @@ const PackPageContent = () => {
 
   // No longer overriding viewMode for non-admins - default is PUBLIC
 
-  // Consume preset search queries from window context (e.g. cross-page nav)
-  useEffect(() => {
-    if (window.packSearchContext && window.packSearchContext.query) {
-      const presetQuery = window.packSearchContext.query;
-      updateFilter('query', presetQuery);
-      delete window.packSearchContext;
-    }
-  }, []);
-
   function handleQueryChange(e) {
     updateFilter('query', e.target.value);
     triggerRefresh();

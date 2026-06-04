@@ -5,7 +5,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { Tooltip } from 'react-tooltip';
 import { toast } from 'react-hot-toast';
 import api from '@/utils/api';
-import { formatCreatorDisplay } from '@/utils/Utility';
+import { formatCreatorDisplay, normalizeKeyCount } from '@/utils/Utility';
 import {
   getPassJudgementHitCountFromSubmissionJudgements,
   isTilecountJudgementMismatch,
@@ -46,12 +46,14 @@ function judgementsFromSubmission(sub) {
   return o;
 }
 
+function keyCountDraftFromSubmission(sub) {
+  return sub.keyCount != null ? String(sub.keyCount) : '';
+}
+
 function flagsFromSubmission(sub) {
   const f = sub.flags || {};
   return {
-    is12K: !!f.is12K,
     isNoHoldTap: !!f.isNoHoldTap,
-    is16K: !!f.is16K,
     isAdofaiV2: !!f.isAdofaiV2,
   };
 }
@@ -70,11 +72,21 @@ function diffJudgements(snapStr, draftStr) {
 
 function diffFlags(snap, draft) {
   const out = {};
-  if (snap.is12K !== draft.is12K) out.is12K = draft.is12K;
   if (snap.isNoHoldTap !== draft.isNoHoldTap) out.isNoHoldTap = draft.isNoHoldTap;
-  if (snap.is16K !== draft.is16K) out.is16K = draft.is16K;
   if (snap.isAdofaiV2 !== draft.isAdofaiV2) out.isAdofaiV2 = draft.isAdofaiV2;
   return out;
+}
+
+function keyCountPatchValue(draftStr) {
+  const trimmed = draftStr.trim();
+  if (trimmed === '') return null;
+  return normalizeKeyCount(trimmed);
+}
+
+function keyCountChanged(snapStr, draftStr) {
+  const snapVal = snapStr.trim() === '' ? null : normalizeKeyCount(snapStr);
+  const draftVal = keyCountPatchValue(draftStr);
+  return snapVal !== draftVal;
 }
 
 export default function PassSubmissionEditableMeta({
@@ -106,9 +118,11 @@ export default function PassSubmissionEditableMeta({
   const snapJudgementsRef = useRef(null);
   const snapSpeedRef = useRef(null);
   const snapFlagsRef = useRef(null);
+  const snapKeyCountRef = useRef(null);
 
   const [draftJudgements, setDraftJudgements] = useState(() => judgementsFromSubmission(submission));
   const [draftSpeed, setDraftSpeed] = useState('');
+  const [draftKeyCount, setDraftKeyCount] = useState(() => keyCountDraftFromSubmission(submission));
   const [draftFlags, setDraftFlags] = useState(() => flagsFromSubmission(submission));
 
   const judgementHitSum = useMemo(
@@ -334,7 +348,9 @@ export default function PassSubmissionEditableMeta({
   };
 
   const beginEditFlags = () => {
+    snapKeyCountRef.current = keyCountDraftFromSubmission(submission);
     snapFlagsRef.current = flagsFromSubmission(submission);
+    setDraftKeyCount(keyCountDraftFromSubmission(submission));
     setDraftFlags(flagsFromSubmission(submission));
     setEditingFlags(true);
   };
@@ -344,13 +360,30 @@ export default function PassSubmissionEditableMeta({
   };
 
   const saveFlags = async () => {
-    const diff = diffFlags(snapFlagsRef.current, draftFlags);
-    if (Object.keys(diff).length === 0) {
+    const trimmed = draftKeyCount.trim();
+    if (trimmed !== '' && keyCountPatchValue(trimmed) === null) {
+      toast.error(t('passSubmissions.errors.invalidKeyCount'));
+      return;
+    }
+
+    const flagsDiff = diffFlags(snapFlagsRef.current, draftFlags);
+    const keyCountDiff = keyCountChanged(snapKeyCountRef.current, draftKeyCount);
+
+    if (!keyCountDiff && Object.keys(flagsDiff).length === 0) {
       cancelEditFlags();
       return;
     }
+
+    const body = {};
+    if (keyCountDiff) {
+      body.keyCount = keyCountPatchValue(draftKeyCount);
+    }
+    if (Object.keys(flagsDiff).length > 0) {
+      body.flags = flagsDiff;
+    }
+
     try {
-      await patch({ flags: diff });
+      await patch(body);
       cancelEditFlags();
     } catch {
       toast.error(t('passSubmissions.errors.patch'));
@@ -359,6 +392,16 @@ export default function PassSubmissionEditableMeta({
 
   const level = submission.level;
   const flags = submission.flags;
+
+  const keyCountDisplay = useMemo(() => {
+    const count = normalizeKeyCount(submission.keyCount);
+    if (count != null) {
+      return t('passSubmissions.details.flags.keyCount', { count });
+    }
+    if (flags?.is16K) return t('passSubmissions.details.flags.types.16k');
+    if (flags?.is12K) return t('passSubmissions.details.flags.types.12k');
+    return null;
+  }, [submission.keyCount, flags?.is12K, flags?.is16K, t]);
   const diffIconKey = level?.diffId;
 
   return (
@@ -591,9 +634,8 @@ export default function PassSubmissionEditableMeta({
           {!editingFlags ? (
             <>
               <div className="flags-details">
-                {flags?.is12K && <span>{t('passSubmissions.details.flags.types.12k')}</span>}
+                {keyCountDisplay && <span>{keyCountDisplay}</span>}
                 {flags?.isNoHoldTap && <span>{t('passSubmissions.details.flags.types.nht')}</span>}
-                {flags?.is16K && <span>{t('passSubmissions.details.flags.types.16k')}</span>}
                 {flags?.isAdofaiV2 && <span>{t('passSubmissions.details.flags.types.adofaiV2')}</span>}
               </div>
               <button type="button" className="pass-submission-meta-edit-btn" onClick={beginEditFlags}>
@@ -602,13 +644,20 @@ export default function PassSubmissionEditableMeta({
             </>
           ) : (
             <div className="pass-submission-flags-edit">
-              <label className="pass-submission-flag-field">
+              <label className="pass-submission-keycount-field">
+                <span className="pass-submission-keycount-label">
+                  {t('passSubmissions.details.flags.keyCountLabel')}
+                </span>
                 <input
-                  type="checkbox"
-                  checked={draftFlags.is12K}
-                  onChange={(e) => setDraftFlags((f) => ({ ...f, is12K: e.target.checked }))}
+                  type="number"
+                  min={1}
+                  step={1}
+                  autoComplete="off"
+                  placeholder={t('passSubmissions.details.flags.keyCountPlaceholder')}
+                  value={draftKeyCount}
+                  onChange={(e) => setDraftKeyCount(e.target.value)}
+                  className="pass-submission-keycount-input"
                 />
-                <span>{t('passSubmissions.details.flags.types.12k')}</span>
               </label>
               <label className="pass-submission-flag-field">
                 <input
@@ -617,14 +666,6 @@ export default function PassSubmissionEditableMeta({
                   onChange={(e) => setDraftFlags((f) => ({ ...f, isNoHoldTap: e.target.checked }))}
                 />
                 <span>{t('passSubmissions.details.flags.types.nht')}</span>
-              </label>
-              <label className="pass-submission-flag-field">
-                <input
-                  type="checkbox"
-                  checked={draftFlags.is16K}
-                  onChange={(e) => setDraftFlags((f) => ({ ...f, is16K: e.target.checked }))}
-                />
-                <span>{t('passSubmissions.details.flags.types.16k')}</span>
               </label>
               <label className="pass-submission-flag-field">
                 <input

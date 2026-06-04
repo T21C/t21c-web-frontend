@@ -20,6 +20,9 @@
     },
     "flags": {
       "label": "标签：",
+      "keyCount": "{{count}}键",
+      "keyCountLabel": "键数",
+      "keyCountPlaceholder": "可选",
       "types": {
         "12k": "12键",
         "nht": "非默认长按设置",
@@ -55,7 +58,8 @@
     "autoAllow": "自动通过提交项目失败",
     "profileUpdate": "无法通过个人资料更新通关记录",
     "needProfileCreation": "批准前需创建个人资料",
-    "patch": "更新失败"
+    "patch": "更新失败",
+    "invalidKeyCount": "键数必须为正整数"
   },
   "success": {
     "playerAssigned": "成功分配给 {{playerName}}",

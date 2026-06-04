@@ -185,6 +185,22 @@ export function normalizeKeyCount(raw) {
   return n;
 }
 
+/** Pass submissions require keyCount only on UQ0–UQ4 and U1–U20 levels. */
+export function difficultyRequiresPassKeyCount(difficultyName) {
+  if (!difficultyName || typeof difficultyName !== 'string') {
+    return false;
+  }
+  if (/^UQ[0-4]$/.test(difficultyName)) {
+    return true;
+  }
+  const uMatch = difficultyName.match(/^U(\d+)$/);
+  if (!uMatch) {
+    return false;
+  }
+  const tier = parseInt(uMatch[1], 10);
+  return tier >= 1 && tier <= 20;
+}
+
 /** @returns {'keyCount'|'12k'|'16k'|null} */
 export function getPassKeycountBadgeType(pass) {
   const count = normalizeKeyCount(pass?.keyCount);

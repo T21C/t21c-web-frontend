@@ -39,6 +39,7 @@ export function usePassCoreForm({
   initialForm,
   rejectDeletedLevel = false,
   isUDiffLevel = () => false,
+  isKeyCountRequiredLevel = () => false,
   extraValidation = () => ({}),
 }) {
   const copy = getPassCoreCopy(mode);
@@ -65,6 +66,10 @@ export function usePassCoreForm({
   const [videoDetail, setVideoDetail] = useState(null);
 
   const isUDiff = useMemo(() => Boolean(level && isUDiffLevel(level)), [level, isUDiffLevel]);
+  const keyCountRequired = useMemo(
+    () => Boolean(level && isKeyCountRequiredLevel(level)),
+    [level, isKeyCountRequiredLevel],
+  );
 
   const levelFetchCancelTokenRef = useRef(null);
 
@@ -237,8 +242,15 @@ export function usePassCoreForm({
 
       validationResult.levelId = !(level === null || level === undefined);
       validationResult.videoLink = Boolean(videoDetail);
-      validationResult.keyCount = keyCountParsed;
-      setIsValidKeyCount(keyCountTrimmed === "" || keyCountParsed);
+      if (keyCountRequired) {
+        validationResult.keyCount = keyCountParsed;
+        setIsValidKeyCount(keyCountParsed);
+      } else {
+        validationResult.keyCount =
+          keyCountTrimmed === "" ||
+          (validateNumber(keyCountTrimmed) && normalizeKeyCount(keyCountTrimmed) !== null);
+        setIsValidKeyCount(keyCountTrimmed === "" || keyCountParsed);
+      }
 
       const frValid = validateFeelingRating(nextForm.feelingRating);
       const erTrimmed = nextForm.expectedRating?.trim?.() ?? "";
@@ -265,7 +277,7 @@ export function usePassCoreForm({
   useEffect(() => {
     validate(form);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [form, level, videoDetail, submitAttempt, isUDiff]);
+  }, [form, level, videoDetail, submitAttempt, isUDiff, keyCountRequired]);
 
   const handleInputChange = (e) => {
     const { name, type, value, checked } = e.target;

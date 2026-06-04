@@ -20,6 +20,9 @@
     },
     "flags": {
       "label": "플래그",
+      "keyCount": "{{count}}K",
+      "keyCountLabel": "키 수",
+      "keyCountPlaceholder": "선택",
       "types": {
         "12k": "12K",
         "nht": "NHT",
@@ -55,7 +58,8 @@
     "playerAssignment": "플레이어 지정에 실패했습니다",
     "processing": "제출물 처리 중 오류가 발생했습니다",
     "autoAllow": "자동 허용 중 오류가 발생했습니다",
-    "patch": "제출물을 업데이트하지 못했습니다"
+    "patch": "제출물을 업데이트하지 못했습니다",
+    "invalidKeyCount": "키 수는 양의 정수여야 합니다"
   },
   "success": {
     "playerAssigned": "{{playerName}}(으)로 성공적으로 지정되었습니다",

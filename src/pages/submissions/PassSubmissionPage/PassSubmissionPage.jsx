@@ -16,7 +16,7 @@ import { buildStaticPageMeta } from '@/utils/meta';
 import { PlayerInput } from "@/components/common/selectors";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import RulePopup from "./RulePopup";
-import { formatCreatorDisplay, normalizeKeyCount } from "@/utils/Utility";
+import { difficultyRequiresPassKeyCount, formatCreatorDisplay, normalizeKeyCount } from "@/utils/Utility";
 import { getCookie, setCookie } from "@/utils/cookieUtils";
 import toast from "react-hot-toast";
 import { PassCoreForm } from "@/components/common/cores/PassCoreForm/PassCoreForm";
@@ -126,6 +126,8 @@ const PassSubmissionPage = () => {
     rejectDeletedLevel: true,
     isUDiffLevel: (lvl) =>
       difficultyDict[lvl?.diffId]?.name?.[0] === "U" || difficultyDict[lvl?.diffId]?.name?.[0] === "Q",
+    isKeyCountRequiredLevel: (lvl) =>
+      difficultyRequiresPassKeyCount(difficultyDict[lvl?.diffId]?.name),
     extraValidation: ({ form: nextForm }) => ({
       playerId: Boolean(nextForm.playerId),
       rulesAccepted: hasReadPassRules,
