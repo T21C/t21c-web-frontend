@@ -223,5 +223,19 @@
     "addLevels": "Add levels",
     "move": "Move here",
     "submitting": "Saving…"
+  },
+  "addLevelsConfirm": {
+    "title": "Some levels cannot be added",
+    "titleAllInvalid": "No levels can be added",
+    "message": "{{validCount}} level(s) can be added. The following cannot:",
+    "messageAllInvalid": "None of the specified levels can be added:",
+    "invalidHeading": "Cannot add ({{count}})",
+    "proceed": "Add {{count}} level(s)",
+    "submitting": "Adding…",
+    "reasons": {
+      "notFound": "Level not found",
+      "alreadyInPack": "Already in this location",
+      "quotaExceeded": "Pack item limit reached"
+    }
   }
 }

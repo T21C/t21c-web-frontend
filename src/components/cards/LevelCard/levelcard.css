@@ -90,11 +90,37 @@
   top: 3px;
   left: 3px;
 }
-.level-card .level-exp,
-.level-card .level-desc,
 .level-card .level-id {
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.level-card .marquee-text.level-exp,
+.level-card .marquee-text.level-desc {
+  width: 100%;
+}
+
+.level-card:hover .marquee-text--overflows {
+  text-overflow: clip;
+}
+
+.level-card:hover .marquee-text--overflows .marquee-text__inner {
+  animation: level-card-marquee var(--marquee-duration, 6s) var(--ease-in-out-sine) infinite;
+}
+
+@keyframes level-card-marquee {
+  0%,
+  15% {
+    transform: translateX(0);
+  }
+  45%,
+  55% {
+    transform: translateX(calc(-1 * var(--marquee-distance, 0px)));
+  }
+  85%,
+  100% {
+    transform: translateX(0);
+  }
 }
 .level-card .img-wrapper {
   width: 3rem;
@@ -1011,6 +1037,10 @@
   .level-card.legendary::after {
     background: rgba(0, 255, 255, 0.1);
     opacity: 0.3;
+  }
+
+  .level-card:hover .marquee-text--overflows .marquee-text__inner {
+    animation: none;
   }
 }
 

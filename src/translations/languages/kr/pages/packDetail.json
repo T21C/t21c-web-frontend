@@ -49,6 +49,7 @@
   "addLevel": {
     "prompt": "Enter a level ID to add",
     "success": "Level added successfully",
+    "partialSuccess": "{{added}}개 레벨 추가됨 ({{skipped}}개 건너뜀)",
     "error": "Failed to add level"
   },
   "renameFolder": {

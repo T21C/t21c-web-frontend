@@ -8,7 +8,7 @@ import { MetaTags } from "@/components/common/display";
 import { buildPackMeta } from '@/utils/meta';
 import { ScrollButton } from "@/components/common/buttons";
 import { EditIcon, PinIcon, LockIcon, EyeIcon, UsersIcon, ArrowIcon, PlusIcon, LikeIcon, DownloadIcon, ChevronIcon, ExternalLinkIcon } from "@/components/common/icons";
-import { EditPackPopup, PackDownloadPopup, PackExportPopup, PackItemPlacementPopup } from "@/components/popups/Packs";
+import { EditPackPopup, PackDownloadPopup, PackExportPopup, PackItemPlacementPopup, PackAddLevelsConfirmPopup } from "@/components/popups/Packs";
 import {
   moveItemToPosition,
   insertNodesAtPosition,
@@ -28,6 +28,7 @@ import { summarizePackSize, summarizeFolderSize, formatEstimatedSize } from '@/u
 import { DragDropContext, Droppable } from '@hello-pangea/dnd';
 import i18next from 'i18next';
 import { formatDate } from '@/utils/Utility';
+import { validatePackLevelInsert, executePackLevelInsert } from '@/utils/packLevelInsert';
 
 const ROOT_DROPPABLE_ID = 'folder-root';
 
@@ -151,6 +152,16 @@ const PackDetailPage = () => {
   const [showExportPopup, setShowExportPopup] = useState(false);
   const [placement, setPlacement] = useState({ open: false, mode: 'add-folder', item: null });
   const [placementSubmitting, setPlacementSubmitting] = useState(false);
+  const [levelInsertConfirm, setLevelInsertConfirm] = useState({
+    open: false,
+    validLevelIds: [],
+    invalid: [],
+    parentId: 0,
+    index: null,
+    skippedCount: 0,
+    fromPlacement: false,
+  });
+  const [levelInsertSubmitting, setLevelInsertSubmitting] = useState(false);
   const [cdnMetadataByLevelId, setCdnMetadataByLevelId] = useState(() => new Map());
   const scrollRef = useRef(null);
   const lastMousePosRef = useRef({ x: 0, y: 0 });
@@ -396,6 +407,156 @@ const PackDetailPage = () => {
     fetchPackCdnData();
   }, [id, fetchPackCdnData]);
 
+  const closeLevelInsertConfirm = useCallback(() => {
+    setLevelInsertConfirm({
+      open: false,
+      validLevelIds: [],
+      invalid: [],
+      parentId: 0,
+      index: null,
+      skippedCount: 0,
+      fromPlacement: false,
+    });
+  }, []);
+
+  const showAddLevelSuccessToast = useCallback((addedCount, skippedCount) => {
+    if (skippedCount > 0) {
+      toast.success(t('packDetail.addLevel.partialSuccess', { added: addedCount, skipped: skippedCount }));
+      return;
+    }
+    toast.success(t('packDetail.addLevel.success'));
+  }, [t]);
+
+  const submitValidatedLevelInsert = useCallback(async ({
+    validLevelIds,
+    parentId,
+    index,
+    skippedCount = 0,
+    fromPlacement = false,
+  }) => {
+    if (!pack?.id || validLevelIds.length === 0) return;
+
+    const raw = await executePackLevelInsert(pack.id, validLevelIds, parentId);
+    const createdList = Array.isArray(raw) ? raw : raw?.items ?? [];
+    const destParentId = parentId ?? 0;
+
+    if (fromPlacement && index != null) {
+      if (createdList.length === 0) {
+        showAddLevelSuccessToast(0, skippedCount);
+        closePlacement();
+        await fetchPack(true);
+      } else {
+        const nodes = createdList.map((row) => ({
+          ...row,
+          type: 'level',
+          referencedLevel: row.referencedLevel ?? null,
+        }));
+
+        const newTree = insertNodesAtPosition(packItems, nodes, destParentId, index);
+        if (!newTree) {
+          await fetchPack(true);
+          closePlacement();
+        } else {
+          await persistPackTree(newTree, destParentId, pack.id);
+          showAddLevelSuccessToast(createdList.length, skippedCount);
+          closePlacement();
+        }
+      }
+    } else {
+      showAddLevelSuccessToast(createdList.length || validLevelIds.length, skippedCount);
+      await fetchPack(true);
+    }
+
+    window.dispatchEvent(new CustomEvent('packUpdated', {
+      detail: { packId: pack.id },
+    }));
+    closeLevelInsertConfirm();
+  }, [
+    pack?.id,
+    packItems,
+    persistPackTree,
+    closePlacement,
+    fetchPack,
+    showAddLevelSuccessToast,
+    closeLevelInsertConfirm,
+  ]);
+
+  const requestLevelInsert = useCallback(async ({
+    levelIds,
+    parentId,
+    index = null,
+    fromPlacement = false,
+  }) => {
+    if (!pack?.id) return;
+
+    if (fromPlacement) {
+      setPlacementSubmitting(true);
+    } else {
+      setLevelInsertSubmitting(true);
+    }
+
+    try {
+      const { validLevelIds, invalid } = await validatePackLevelInsert(
+        pack.id,
+        levelIds,
+        parentId ?? 0,
+      );
+
+      if (invalid.length === 0) {
+        await submitValidatedLevelInsert({
+          validLevelIds,
+          parentId: parentId ?? 0,
+          index,
+          skippedCount: 0,
+          fromPlacement,
+        });
+        return;
+      }
+
+      setLevelInsertConfirm({
+        open: true,
+        validLevelIds,
+        invalid,
+        parentId: parentId ?? 0,
+        index,
+        skippedCount: invalid.length,
+        fromPlacement,
+      });
+    } catch (error) {
+      console.error('Level insert validation failed:', error);
+      toast.error(error.response?.data?.error || t('packDetail.addLevel.error'));
+      await fetchPack(true);
+    } finally {
+      if (fromPlacement) {
+        setPlacementSubmitting(false);
+      } else {
+        setLevelInsertSubmitting(false);
+      }
+    }
+  }, [pack?.id, submitValidatedLevelInsert, fetchPack, t]);
+
+  const handleLevelInsertConfirm = useCallback(async () => {
+    const { validLevelIds, parentId, index, skippedCount, fromPlacement } = levelInsertConfirm;
+    if (validLevelIds.length === 0) return;
+
+    setLevelInsertSubmitting(true);
+    try {
+      await submitValidatedLevelInsert({
+        validLevelIds,
+        parentId,
+        index,
+        skippedCount,
+        fromPlacement,
+      });
+    } catch (error) {
+      console.error('Error adding levels:', error);
+      toast.error(error.response?.data?.error || t('packDetail.addLevel.error'));
+      await fetchPack(true);
+    } finally {
+      setLevelInsertSubmitting(false);
+    }
+  }, [levelInsertConfirm, submitValidatedLevelInsert, fetchPack, t]);
+
   const handlePlacementSubmit = useCallback(async ({ mode, parentId, index, name, levelIds }) => {
     if (!pack?.id) return;
 
@@ -449,37 +610,13 @@ const PackDetailPage = () => {
         toast.success(t('packDetail.createFolder.success'));
         closePlacement();
       } else if (mode === 'add-level') {
-        const response = await api.post(routes.database.levels.packs.items(pack.id), {
-          type: 'level',
+        await requestLevelInsert({
           levelIds,
           parentId: destParentId,
+          index,
+          fromPlacement: true,
         });
-
-        const raw = response.data;
-        const createdList = Array.isArray(raw) ? raw : raw?.items ?? [];
-        if (createdList.length === 0) {
-          toast.success(t('packDetail.addLevel.success'));
-          closePlacement();
-          await fetchPack(true);
-          return;
-        }
-
-        const nodes = createdList.map((row) => ({
-          ...row,
-          type: 'level',
-          referencedLevel: row.referencedLevel ?? null,
-        }));
-
-        const newTree = insertNodesAtPosition(packItems, nodes, destParentId, index);
-        if (!newTree) {
-          await fetchPack(true);
-          closePlacement();
-          return;
-        }
-
-        await persistPackTree(newTree, destParentId, pack.id);
-        toast.success(t('packDetail.addLevel.success'));
-        closePlacement();
+        return;
       }
 
       window.dispatchEvent(new CustomEvent('packUpdated', {
@@ -506,6 +643,7 @@ const PackDetailPage = () => {
     persistPackTree,
     closePlacement,
     fetchPack,
+    requestLevelInsert,
     t,
   ]);
 
@@ -514,24 +652,11 @@ const PackDetailPage = () => {
     const levelId = prompt(t('packDetail.addLevel.prompt'));
     if (!levelId?.trim()) return;
 
-    try {
-      await api.post(routes.database.levels.packs.items(pack.id), {
-        type: 'level',
-        levelIds: levelId,
-        parentId: 0
-      });
-      
-      toast.success(t('packDetail.addLevel.success'));
-      await fetchPack(true); // Silent refetch
-      
-      // Notify any other listeners that the pack was updated
-      window.dispatchEvent(new CustomEvent('packUpdated', {
-        detail: { packId: pack.id }
-      }));
-    } catch (error) {
-      console.error('Error adding level:', error);
-      toast.error(error.response?.data?.error || t('packDetail.addLevel.error'));
-    }
+    await requestLevelInsert({
+      levelIds: levelId,
+      parentId: 0,
+      fromPlacement: false,
+    });
   };
 
   const handlePackDownloadClick = () => {
@@ -1347,6 +1472,16 @@ const PackDetailPage = () => {
         movingItem={placement.item}
         onSubmit={handlePlacementSubmit}
         submitting={placementSubmitting}
+      />
+
+      <PackAddLevelsConfirmPopup
+        isOpen={levelInsertConfirm.open}
+        invalid={levelInsertConfirm.invalid}
+        validCount={levelInsertConfirm.validLevelIds.length}
+        allInvalid={levelInsertConfirm.validLevelIds.length === 0}
+        onConfirm={handleLevelInsertConfirm}
+        onCancel={closeLevelInsertConfirm}
+        submitting={levelInsertSubmitting}
       />
 
       {showEditPopup && (

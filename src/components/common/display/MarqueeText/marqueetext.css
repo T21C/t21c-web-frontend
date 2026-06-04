@@ -1,0 +1,14 @@
+.marquee-text {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
+}
+
+.marquee-text__inner {
+  display: inline-block;
+  max-width: none;
+}

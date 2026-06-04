@@ -49,6 +49,7 @@
   "addLevel": {
     "prompt": "输入关卡ID：",
     "success": "关卡添加成功",
+    "partialSuccess": "已添加 {{added}} 个关卡（跳过 {{skipped}} 个）",
     "error": "关卡添加失败"
   },
   "renameFolder": {

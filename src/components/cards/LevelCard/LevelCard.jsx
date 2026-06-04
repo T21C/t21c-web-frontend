@@ -22,6 +22,7 @@ import {
 } from "@/utils/curationTypeUtils";
 import { formatDuration } from "@/utils/levelHelpers";
 import { Tooltip } from "react-tooltip";
+import MarqueeText from "@/components/common/display/MarqueeText/MarqueeText";
 
 /** Curation type names hidden from the difficulty-arc curation icons */
 const HIDDEN_CURATION_ARC_TYPE_NAMES = new Set(['C0', 'V0']);
@@ -188,14 +189,13 @@ const LevelCard = ({
     return (
       <div className="song-wrapper">
         <div className="group">
-          <p className="level-exp">
-            #{level.id} -{' '}
-            {artistName}
-          </p>
+          <MarqueeText className="level-exp" as="p">
+            #{level.id} - {artistName}
+          </MarqueeText>
         </div>
-        <p className="level-desc">
-          {songName} 
-        </p>
+        <MarqueeText className="level-desc" as="p">
+          {songName}
+        </MarqueeText>
         {renderTagsWrapper()}
       </div>
     );
@@ -204,7 +204,9 @@ const LevelCard = ({
   const renderCreatorInfo = () => (
     <div className="creator-wrapper">
       <p className="level-exp">{t('cards.level.creator')}</p>
-      <div className="level-desc">{formatCreatorDisplay(level)}</div>
+      <MarqueeText className="level-desc" as="div">
+        {formatCreatorDisplay(level)}
+      </MarqueeText>
     </div>
   );
 

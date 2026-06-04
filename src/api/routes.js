@@ -176,6 +176,8 @@ export const routes = {
         cdnData: (packId) => `/v2/database/levels/packs/${enc(packId)}/cdnData`,
         tree: (packId) => `/v2/database/levels/packs/${enc(packId)}/tree`,
         items: (packId) => `/v2/database/levels/packs/${enc(packId)}/items`,
+        validateItems: (packId) =>
+          `/v2/database/levels/packs/${enc(packId)}/items/validate-levels`,
         item: (packId, itemId) =>
           `/v2/database/levels/packs/${enc(packId)}/items/${enc(itemId)}`,
         downloadLink: (packId) =>

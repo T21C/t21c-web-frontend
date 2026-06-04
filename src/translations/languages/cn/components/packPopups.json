@@ -223,5 +223,19 @@
     "addLevels": "添加关卡",
     "move": "移动到此",
     "submitting": "保存中…"
+  },
+  "addLevelsConfirm": {
+    "title": "部分关卡无法添加",
+    "titleAllInvalid": "无法添加任何关卡",
+    "message": "可添加 {{validCount}} 个关卡。以下关卡无法添加：",
+    "messageAllInvalid": "指定的关卡均无法添加：",
+    "invalidHeading": "无法添加（{{count}}）",
+    "proceed": "添加 {{count}} 个关卡",
+    "submitting": "添加中…",
+    "reasons": {
+      "notFound": "关卡不存在",
+      "alreadyInPack": "已在此位置",
+      "quotaExceeded": "已达地图包项目上限"
+    }
   }
 }
