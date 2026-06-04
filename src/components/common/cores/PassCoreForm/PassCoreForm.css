@@ -72,6 +72,22 @@
   background-color: rgba(255, 255, 255, 0.08);
 }
 
+.pass-core-form .info input.field-invalid-dark {
+  border-bottom-color: var(--btn-danger-intense);
+  background-color: var(--danger-color-tint-30);
+}
+
+.pass-core-form .info input.field-invalid-dark:focus {
+  border-bottom-color: var(--btn-danger-intense);
+  background-color: var(--danger-color-tint-40);
+}
+
+.pass-core-form .info .field-invalid-dark-hint {
+  color: var(--btn-danger-intense);
+  padding: 0.2rem 0.4rem;
+  border-radius: 5px;
+}
+
 .pass-core-form .info .youtube-input {
   display: flex;
   flex-direction: column;

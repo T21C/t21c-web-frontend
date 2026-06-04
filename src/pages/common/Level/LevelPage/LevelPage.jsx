@@ -209,8 +209,16 @@ const LevelPage = ({
         } else {
           // Append new results for pagination. `prev` may transiently be null
           // (we use null as a loading sentinel during reset/refetch) so guard
-          // with `?? []` before spreading.
-          setLevelsData(prev => [...(prev ?? []), ...newLevels]);
+          // with `?? []` before spreading. Dedupe by id: offset pagination over
+          // tied/unstable sort orders can re-return an already-loaded level, and
+          // a duplicate id breaks Virtuoso's key-based reconciliation (it
+          // renders the dup into many slots, replicating rows over the list).
+          setLevelsData(prev => {
+            const base = prev ?? [];
+            const seen = new Set(base.map(l => l?.id).filter(id => id != null));
+            const deduped = newLevels.filter(l => l?.id == null || !seen.has(l.id));
+            return [...base, ...deduped];
+          });
         }
 
         setHasMore(response.data.hasMore);

@@ -135,7 +135,10 @@ export function PassCoreForm({
     tooltipId,
     isValid,
     autocomplete,
-  }) => (
+    useDarkInvalidHighlight = false,
+  }) => {
+    const showInvalid = !isFormValidDisplay[name];
+    return (
     <div className="info-input-field rating-field">
       <input
         type="text"
@@ -144,10 +147,15 @@ export function PassCoreForm({
         name={name}
         value={form[name] ?? ''}
         onChange={onInputChange}
-        style={{
-          borderColor: isFormValidDisplay[name] ? '' : 'red',
-          backgroundColor: !isValid ? '#ffff0044' : '',
-        }}
+        className={showInvalid && useDarkInvalidHighlight ? 'field-invalid-dark' : undefined}
+        style={
+          showInvalid && !useDarkInvalidHighlight
+            ? {
+                borderColor: 'red',
+                backgroundColor: !isValid ? '#ffff0044' : '',
+              }
+            : undefined
+        }
       />
       <div
         className="fr-tooltip-icon"
@@ -155,9 +163,14 @@ export function PassCoreForm({
         data-tooltip-content={t(tooltipKey, { ns: copy.ns })}
       >
         <span
+          className={
+            !isValid && useDarkInvalidHighlight && mode === 'submit'
+              ? 'field-invalid-dark-hint'
+              : undefined
+          }
           style={{
             visibility: !isValid ? 'visible' : 'hidden',
-            ...(mode === 'submit'
+            ...(mode === 'submit' && !useDarkInvalidHighlight
               ? {
                   color: 'red',
                   padding: '0.2rem 0.4rem',
@@ -181,7 +194,8 @@ export function PassCoreForm({
         />
       </div>
     </div>
-  );
+    );
+  };
 
   return (
     <form
@@ -350,10 +364,7 @@ export function PassCoreForm({
               name="keyCount"
               value={form.keyCount ?? ''}
               onChange={onInputChange}
-              style={{
-                borderColor: isFormValidDisplay.keyCount ? '' : 'red',
-                backgroundColor: !isValidKeyCount ? '#faa' : 'transparent',
-              }}
+              className={!isFormValidDisplay.keyCount ? 'field-invalid-dark' : undefined}
             />
             <div
               className="fr-tooltip-icon"
@@ -382,6 +393,7 @@ export function PassCoreForm({
             tooltipId: 'feeling-rating-tooltip',
             isValid: isValidFeelingRating,
             autocomplete: mode === 'submit' ? 'pass-feeling-rating' : 'off',
+            useDarkInvalidHighlight: true,
           })}
 
           {renderRatingField({
