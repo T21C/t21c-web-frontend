@@ -6,7 +6,11 @@
   "input": {
     "placeholder": "Search by creator name..."
   },
+  "buttons": {
+    "searchHelp": "Search Help"
+  },
   "tooltips": {
+    "searchHelp": "Learn how to search creators and filter by curation types",
     "filter": "Filter results",
     "sort": "Sort results",
     "reset": "Reset all filters",
@@ -25,6 +29,9 @@
     "verificationFilter": {
       "label": "Verification status",
       "all": "All statuses"
+    },
+    "curationTypes": {
+      "label": "Curation Types"
     }
   },
   "sortOptions": {

@@ -11,7 +11,29 @@ const STORAGE_KEYS = {
   SORT: 'creator_sort',
   SORT_BY: 'creator_sort_by',
   VERIFICATION_FILTER: 'creator_verification_filter',
+  CREATOR_FACET_V1: 'creator_facet_v1',
 };
+
+const DEFAULT_CREATOR_FACET_FILTERS = {
+  curationTypes: null,
+  combine: 'and',
+};
+
+function loadCreatorFacetV1() {
+  try {
+    const r = localStorage.getItem(STORAGE_KEYS.CREATOR_FACET_V1);
+    if (r) {
+      const p = JSON.parse(r);
+      if (p && typeof p === 'object') {
+        return {
+          curationTypes: p.curationTypes ?? null,
+          combine: p.combine === 'or' ? 'or' : 'and',
+        };
+      }
+    }
+  } catch { /* ignore */ }
+  return { ...DEFAULT_CREATOR_FACET_FILTERS };
+}
 
 export const CreatorListContext = createContext(null);
 
@@ -32,6 +54,7 @@ export const CreatorListContextProvider = ({ children }) => {
   const [verificationFilter, setVerificationFilter] = useState(
     () => localStorage.getItem(STORAGE_KEYS.VERIFICATION_FILTER) || '',
   );
+  const [creatorFacetFilters, setCreatorFacetFilters] = useState(loadCreatorFacetV1);
   const [loading, setLoading] = useState(true);
   const [initialLoading, setInitialLoading] = useState(true);
   const [forceUpdate, setForceUpdate] = useState(false);
@@ -67,6 +90,10 @@ export const CreatorListContextProvider = ({ children }) => {
     localStorage.setItem(STORAGE_KEYS.VERIFICATION_FILTER, verificationFilter);
   }, [verificationFilter]);
 
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.CREATOR_FACET_V1, JSON.stringify(creatorFacetFilters));
+  }, [creatorFacetFilters]);
+
   return (
     <CreatorListContext.Provider
       value={{
@@ -90,6 +117,8 @@ export const CreatorListContextProvider = ({ children }) => {
         setSortBy,
         verificationFilter,
         setVerificationFilter,
+        creatorFacetFilters,
+        setCreatorFacetFilters,
         loading,
         setLoading,
         initialLoading,

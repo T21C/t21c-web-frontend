@@ -9,8 +9,9 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/common/Collapsible';
+import { SearchHelpCode } from './searchHelpTransUtils.jsx';
 
-const TRANS_COMPONENTS = { code: <code />, b: <b />, br: <br /> };
+const TRANS_COMPONENTS = { code: <SearchHelpCode />, b: <b />, br: <br /> };
 
 function SearchHelpSectionBody({
   section,

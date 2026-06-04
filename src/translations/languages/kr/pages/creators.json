@@ -6,7 +6,11 @@
   "input": {
     "placeholder": "제작자명 검색..."
   },
+  "buttons": {
+    "searchHelp": "검색 도움말"
+  },
   "tooltips": {
+    "searchHelp": "제작자 검색 및 큐레이션 유형 필터 사용법",
     "filter": "필터",
     "sort": "정렬",
     "reset": "모든 필터 초기화",
@@ -25,6 +29,9 @@
     "verificationFilter": {
       "label": "인증 상태",
       "all": "모든 상태"
+    },
+    "curationTypes": {
+      "label": "큐레이션 유형"
     }
   },
   "sortOptions": {

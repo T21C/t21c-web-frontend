@@ -26,7 +26,8 @@
 
 .creators-list-page .filter-section {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: flex-end;
   gap: 1rem;
 }
 
@@ -35,6 +36,11 @@
   gap: 1rem;
   align-items: flex-end;
   flex-wrap: wrap;
+}
+
+.creators-list-page .creators-list-page__curation-facet-row {
+  width: 100%;
+  align-items: stretch;
 }
 
 .creators-list-page .creators-list-page__list {
