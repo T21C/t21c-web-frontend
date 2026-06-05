@@ -1144,6 +1144,7 @@
   gap: var(--spacing-md);
   padding: var(--spacing-sm);
   padding-left: var(--spacing-md);
+  flex-wrap: wrap;
 }
 
 .level-detail .rank .leaderboard-sort .leaderboard-sort-dedupe {

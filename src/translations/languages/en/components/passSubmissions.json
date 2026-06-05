@@ -4,6 +4,7 @@
     "level": "Level",
     "player": "Player",
     "feelingDiff": "Feeling Difficulty",
+    "expectedDiff": "Expected Rating",
     "speed": "Speed",
     "judgements": {
       "label": "Judgements",

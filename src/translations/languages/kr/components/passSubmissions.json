@@ -4,6 +4,7 @@
     "level": "레벨",
     "player": "플레이어",
     "feelingDiff": "체감 난이도",
+    "expectedDiff": "예상 난이도",
     "speed": "배속",
     "judgements": {
       "label": "판정",

@@ -4,6 +4,7 @@
     "level": "关卡",
     "player": "玩家",
     "feelingDiff": "体感难度",
+    "expectedDiff": "预期难度",
     "speed": "飙速",
     "judgements": {
       "label": "判定：",

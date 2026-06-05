@@ -275,6 +275,10 @@
   text-shadow: 0 1px 4px var(--color-black);
 }
 
+.profile-header__profile-id--center {
+  display: none;
+}
+
 .profile-header__center {
   display: flex;
   flex-direction: column;
@@ -676,6 +680,13 @@
     display: block;
     width: 100%;
     padding: 3px;
+  }
+  .profile-header__badge-wrap .profile-header__profile-id {
+    display: none;
+  }
+  .profile-header__profile-id--center {
+    display: block;
+    margin-bottom: 0.15rem;
   }
   .profile-header__left {
     width: 100%;

@@ -336,6 +336,11 @@
   flex: 1;
 }
 
+.submission-admin-page .detail-value-none {
+  opacity: 0.5;
+  font-style: italic;
+}
+
 .submission-admin-page .entity-actions {
   display: flex;
   gap: 8px;

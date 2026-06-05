@@ -717,6 +717,11 @@ const ProfileHeader = ({
             </div>
 
             <div className="profile-header__center">
+              {resolvedProfileId != null ? (
+                <div className="profile-header__profile-id profile-header__profile-id--center">
+                  ID {resolvedProfileId}
+                </div>
+              ) : null}
               <div className="profile-header__handle-row">
                 {country ? (
                   <img

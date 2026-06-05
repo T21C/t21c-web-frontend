@@ -5,6 +5,7 @@
     "levelId": "ID de niveau :",
     "player": "Joueur.se :",
     "feelingDiff": "Diff. Ressentie :",
+    "expectedDiff": "Diff. Attendue :",
     "speed": "Vitesse",
     "judgements": {
       "label": "Jugements:",

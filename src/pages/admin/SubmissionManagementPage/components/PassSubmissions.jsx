@@ -346,7 +346,12 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
 
                         <div className="detail-row">
                           <span className="detail-label">{t('passSubmissions.details.feelingDiff')}</span>
-                          <span className="detail-value">{submission.feelingDifficulty || "Null"}</span>
+                          <span className="detail-value">{submission.feelingDifficulty || <span className="detail-value-none">None</span>}</span>
+                        </div>
+
+                        <div className="detail-row">
+                          <span className="detail-label">{t('passSubmissions.details.expectedDiff')}</span>
+                          <span className="detail-value">{submission.expectedDifficulty || <span className="detail-value-none">None</span>}</span>
                         </div>
                       </>
                     }
