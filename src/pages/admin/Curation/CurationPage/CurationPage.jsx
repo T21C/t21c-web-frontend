@@ -23,6 +23,7 @@ import { canAssignCurationType } from '@/utils/curationTypeUtils';
 import { formatCreatorDisplay } from '@/utils/Utility';
 import { FacetQueryBuilder } from '@/components/common/selectors';
 import { buildFacetQueryParam } from '@/utils/facetQueryCodec';
+import { normalizeLevelSearchQuery } from '@/utils/normalizeEntitySearchQuery';
 
 const CurationPage = () => {
   const navigate = useNavigate();
@@ -495,7 +496,7 @@ const CurationPage = () => {
               aria-autocomplete='none'
               type="text"
               value={filters.search}
-              onChange={(e) => handleFilterChange('search', e.target.value)}
+              onChange={(e) => handleFilterChange('search', normalizeLevelSearchQuery(e.target.value))}
               placeholder={t('curation.filters.searchPlaceholder')}
             />
           </div>

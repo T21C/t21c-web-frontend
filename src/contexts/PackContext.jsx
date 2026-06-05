@@ -8,6 +8,7 @@ import { useDebouncedRequest } from '@/hooks/useDebouncedRequest';
 import { useAuth } from './AuthContext';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { LevelPackViewModes } from "@/utils/constants";
+import { parseHashtagPackQuery } from '@/utils/normalizeEntitySearchQuery';
 
 const PackContext = createContext()
 
@@ -98,6 +99,32 @@ const PackContextProvider = (props) => {
         setError(false);
 
         const currentFilters = filtersRef.current;
+        const trimmedQuery = currentFilters.query.trim();
+        const packLookupId = parseHashtagPackQuery(trimmedQuery);
+        const runner = pageNumber > 0 ? runRequest.flush : runRequest;
+
+        if (packLookupId && pageNumber === 0) {
+            try {
+                const response = await runner(({ signal }) =>
+                    api.get(routes.database.levels.packs.byId(packLookupId), { signal })
+                );
+                const pack = response.data;
+                setPacks(pack ? [pack] : []);
+                setHasMore(false);
+                setLoading(false);
+                return;
+            } catch (error) {
+                if (axios.isCancel(error)) return;
+                setPacks([]);
+                setHasMore(false);
+                setLoading(false);
+                if (error.response?.status !== 404) {
+                    console.error('Error fetching pack by id:', error);
+                }
+                return;
+            }
+        }
+
         const params = {
             offset: pageNumber * 30,
             limit: 30,
@@ -106,11 +133,10 @@ const PackContextProvider = (props) => {
         };
 
         // Add search parameters
-        if (currentFilters.query.trim()) params.query = currentFilters.query.trim();
+        if (trimmedQuery) params.query = trimmedQuery;
         if (currentFilters.viewMode !== 'all') params.viewMode = currentFilters.viewMode;
         if (currentFilters.myLikesOnly) params.myLikesOnly = currentFilters.myLikesOnly;
 
-        const runner = pageNumber > 0 ? runRequest.flush : runRequest;
         try {
             const response = await runner(({ signal }) =>
                 api.get(routes.database.levels.packs.root(), { params, signal })

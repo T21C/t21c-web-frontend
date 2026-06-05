@@ -7,6 +7,7 @@ import { VirtualList } from '@/components/common/VirtualList';
 import api from '@/utils/api';
 import { MetaTags } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
+import { normalizeSongSearchQuery } from '@/utils/normalizeEntitySearchQuery';
 import { CustomSelect } from '@/components/common/selectors';
 import { useSongContext } from '@/contexts/SongContext';
 import { getVerificationClass } from '@/utils/Utility';
@@ -125,7 +126,7 @@ const SongListPage = () => {
   };
 
   const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
+    setSearchQuery(normalizeSongSearchQuery(e.target.value));
   };
 
   const handleVerificationChange = (option) => {

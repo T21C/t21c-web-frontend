@@ -13,6 +13,10 @@ import { formatCreatorDisplay } from "@/utils/Utility";
 import { createPortal } from 'react-dom';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { getPortalRoot } from '@/utils/portalRoot';
+import {
+  normalizePackSearchQuery,
+  parseHashtagPackQuery,
+} from '@/utils/normalizeEntitySearchQuery';
 
 const AddToPackPopup = ({ level, onClose, onSuccess }) => {
   const { t } = useTranslation('components');
@@ -35,6 +39,35 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
   // Fetch user packs on mount
   const fetchUserPacks = async () => {
     if (!user?.username) return;
+
+    const packLookupId = parseHashtagPackQuery(searchQuery.trim());
+    if (packLookupId) {
+      try {
+        setLoading(true);
+        const response = await api.get(routes.database.levels.packs.byId(packLookupId));
+        const pack = response.data;
+        const isOwner = pack?.packOwner?.username === user.username;
+        const ownedPack = pack && isOwner ? [pack] : [];
+        setUserPacks(ownedPack);
+        setTotalPacks(ownedPack.length);
+        setTotalPages(ownedPack.length > 0 ? 1 : 0);
+        setLevelContainingPacks(
+          ownedPack.filter((p) => p.packItems?.some((item) => item.levelId === level.id)),
+        );
+        return;
+      } catch (error) {
+        if (error.response?.status !== 404) {
+          console.error('Error fetching pack by id:', error);
+        }
+        setUserPacks([]);
+        setTotalPacks(0);
+        setTotalPages(1);
+        setLevelContainingPacks([]);
+        return;
+      } finally {
+        setLoading(false);
+      }
+    }
     
     try {
       setLoading(true);
@@ -74,7 +107,7 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
 
   // Handle search input changes
   const handleSearchChange = (value) => {
-    setSearchQuery(value);
+    setSearchQuery(normalizePackSearchQuery(value));
     setCurrentPage(1); // Reset to first page when searching
   };
 

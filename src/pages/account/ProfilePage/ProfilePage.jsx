@@ -29,6 +29,7 @@ import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
 import BioCanvasRenderer from "@/components/account/BioCanvasRenderer";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { buildPlayerStatGroups } from "@/utils/profileStatGroups";
+import { normalizePassSearchQuery } from '@/utils/normalizeEntitySearchQuery';
 import { buildPlayerIconSlots, pguNumberToQTier } from "@/utils/profileIconSlots";
 import { toDifficultyGraphData } from "@/utils/statFormatters";
 import {
@@ -1153,7 +1154,7 @@ const ProfilePage = () => {
                         name="search"
                         autoComplete="off"
                         value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onChange={(e) => setSearchQuery(normalizePassSearchQuery(e.target.value))}
                       />
                     </div>
                     

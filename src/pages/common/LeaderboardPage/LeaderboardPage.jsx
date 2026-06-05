@@ -20,6 +20,7 @@ import { SortDescIcon, SortAscIcon, SortIcon, FilterIcon, ResetIcon } from "@/co
 import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
 import { CreatorAssignmentPopup } from "@/components/popups/Creators";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
+import { normalizePlayerSearchQuery } from '@/utils/normalizeEntitySearchQuery';
 
 const limit = 30;
 
@@ -109,6 +110,8 @@ const LeaderboardPage = () => {
   ];
 
   const fetchPlayers = async (offset = 0, { immediate = false } = {}) => {
+    const runner = immediate ? runRequest.flush : runRequest;
+
     const params = new URLSearchParams({
       query: query,
       sortBy: sortBy,
@@ -132,7 +135,6 @@ const LeaderboardPage = () => {
     }
 
     const endpoint = `${routes.playersV3.leaderboard()}?${params.toString()}`;
-    const runner = immediate ? runRequest.flush : runRequest;
     try {
       const response = await runner(({ signal }) => api.get(endpoint, { signal }));
 
@@ -191,7 +193,7 @@ const LeaderboardPage = () => {
   }, [forceUpdate, query, sort, sortBy, showBanned, country, filters]);
 
   function handleQueryChange(e) {
-    setQuery(e.target.value);
+    setQuery(normalizePlayerSearchQuery(e.target.value));
     setForceUpdate(prev => !prev);
   }
 

@@ -21,6 +21,7 @@ import { CreatePackPopup, PackHelpPopup } from "@/components/popups/Packs";
 import toast from 'react-hot-toast';
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { LevelPackViewModes } from "@/utils/constants";
+import { normalizePackSearchQuery } from '@/utils/normalizeEntitySearchQuery';
 
 // Internal component that uses unified PackContext
 const PackPageContent = () => {
@@ -90,7 +91,7 @@ const PackPageContent = () => {
   // No longer overriding viewMode for non-admins - default is PUBLIC
 
   function handleQueryChange(e) {
-    updateFilter('query', e.target.value);
+    updateFilter('query', normalizePackSearchQuery(e.target.value));
     triggerRefresh();
   }
 

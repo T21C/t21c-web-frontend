@@ -7,6 +7,7 @@ import api from '@/utils/api';
 import './songSelectorPopup.css';
 import { CloseButton } from '@/components/common/buttons';
 import { getVerificationClass } from '@/utils/Utility';
+import { normalizeSongSearchQuery } from '@/utils/normalizeEntitySearchQuery';
 import { CustomSelect } from '@/components/common/selectors';
 
 export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selectedArtist = null, allowCreate = true }) => {
@@ -435,7 +436,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                       type="text"
                       className="search-input"
                       value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onChange={(e) => setSearchQuery(normalizeSongSearchQuery(e.target.value))}
                       placeholder={t('songSelector.search.placeholder')}
                       disabled={Array.isArray(selectedArtist) 
                         ? selectedArtist.some(a => a.isNewRequest)

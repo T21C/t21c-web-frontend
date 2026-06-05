@@ -9,6 +9,7 @@ import { CloseButton } from '@/components/common/buttons';
 import toast from 'react-hot-toast';
 import { FacetQueryBuilder } from '@/components/common/selectors';
 import { buildFacetQueryParam } from '@/utils/facetQueryCodec';
+import { normalizeLevelSearchQuery } from '@/utils/normalizeEntitySearchQuery';
 
 function makeEmptyCurationFacet() {
   return {
@@ -148,7 +149,7 @@ const CurationSelectionPopup = ({
   };
 
   const handleSearch = (value) => {
-    setSearchTerm(value);
+    setSearchTerm(normalizeLevelSearchQuery(value));
     setCurrentPage(1);
   };
 

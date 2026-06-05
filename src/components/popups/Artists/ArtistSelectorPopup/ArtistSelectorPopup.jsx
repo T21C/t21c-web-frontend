@@ -7,6 +7,7 @@ import api from '@/utils/api';
 import { CustomSelect } from '@/components/common/selectors';
 import './artistSelectorPopup.css';
 import { CloseButton } from '@/components/common/buttons';
+import { normalizeArtistSearchQuery } from '@/utils/normalizeEntitySearchQuery';
 
 export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null }) => {
   const { t } = useTranslation(['components', 'common']);
@@ -287,7 +288,7 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
                       autoComplete='off'
                       className="search-input"
                       value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onChange={(e) => setSearchQuery(normalizeArtistSearchQuery(e.target.value))}
                       placeholder={t('artistSelector.search.placeholder')}
                     />
                     <button 

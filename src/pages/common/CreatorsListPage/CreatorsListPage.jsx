@@ -26,6 +26,10 @@ import { useLocation } from 'react-router-dom';
 import { SortDescIcon, SortAscIcon, ResetIcon, SortIcon, FilterIcon } from "@/components/common/icons";
 import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
 import { CreatorHelpPopup } from "@/components/popups/Creators/CreatorHelpPopup/CreatorHelpPopup";
+import {
+  normalizeCreatorSearchQuery,
+  parseHashtagIdQuery,
+} from '@/utils/normalizeEntitySearchQuery';
 
 const limit = 30;
 
@@ -109,6 +113,32 @@ const CreatorsListPage = () => {
   );
 
   const fetchCreators = async (offset = 0, { immediate = false } = {}) => {
+    const runner = immediate ? runRequest.flush : runRequest;
+    const creatorId = parseHashtagIdQuery(query);
+    if (creatorId && offset === 0) {
+      try {
+        const response = await runner(({ signal }) =>
+          api.get(`${routes.creatorsV3.root()}/${creatorId}`, { signal })
+        );
+        const creator = response.data;
+        setCreatorData(creator ? [creator] : []);
+        setDisplayedCreators(creator ? [creator] : []);
+        setCreatorListTotal(creator ? 1 : 0);
+        setHasMore(false);
+        return;
+      } catch (error) {
+        if (axios.isCancel(error)) return;
+        setCreatorData([]);
+        setDisplayedCreators([]);
+        setCreatorListTotal(0);
+        setHasMore(false);
+        if (error.response?.status !== 404) {
+          console.error('Error fetching creator by id:', error);
+        }
+        return;
+      }
+    }
+
     const sortByParam = normalizeCreatorLeaderboardSortBy(sortBy);
     const params = new URLSearchParams({
       query,
@@ -128,7 +158,6 @@ const CreatorsListPage = () => {
       params.set('facetQuery', facetQuery);
     }
     const endpoint = `${routes.creatorsV3.leaderboard()}?${params.toString()}`;
-    const runner = immediate ? runRequest.flush : runRequest;
     try {
       const response = await runner(({ signal }) => api.get(endpoint, { signal }));
       const results = Array.isArray(response.data.results) ? response.data.results : [];
@@ -178,7 +207,7 @@ const CreatorsListPage = () => {
   }, [forceUpdate, query, sort, sortBy, verificationFilter, creatorFacetFilters]);
 
   const handleQueryChange = (e) => {
-    setQuery(e.target.value);
+    setQuery(normalizeCreatorSearchQuery(e.target.value));
     setForceUpdate(prev => !prev);
   };
 

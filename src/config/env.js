@@ -12,6 +12,20 @@ export const API_BASE = normalizeOrigin(import.meta.env.VITE_API_URL);
 export const OWN_BASE = normalizeOrigin(import.meta.env.VITE_OWN_URL);
 export const CDN_BASE = normalizeOrigin(import.meta.env.VITE_CDN_URL);
 
+/** All known site origins (dev/staging/prod) for parsing pasted level links in search. */
+export const OWN_URL_BASES = [
+  ...new Set(
+    [
+      import.meta.env.VITE_OWN_URL,
+      import.meta.env.VITE_OWN_DEV_URL,
+      import.meta.env.VITE_OWN_STAGING_URL,
+      import.meta.env.VITE_OWN_PROD_URL,
+    ]
+      .map(normalizeOrigin)
+      .filter(Boolean),
+  ),
+];
+
 export const APRIL_FOOLS_ENABLED = envBool(import.meta.env.VITE_APRIL_FOOLS, false);
 export const CUSTOM_PROFILE_BANNERS_ENABLED = envBool(
   import.meta.env.VITE_CUSTOM_PROFILE_BANNERS_ENABLED,

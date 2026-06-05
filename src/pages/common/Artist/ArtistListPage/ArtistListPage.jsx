@@ -10,6 +10,7 @@ import api from '@/utils/api';
 import { useDebouncedRequest } from '@/hooks/useDebouncedRequest';
 import { MetaTags } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
+import { normalizeArtistSearchQuery } from '@/utils/normalizeEntitySearchQuery';
 import { CustomSelect } from '@/components/common/selectors';
 import { useArtistContext } from '@/contexts/ArtistContext';
 import './artistListPage.css';
@@ -104,7 +105,7 @@ const ArtistListPage = () => {
   };
 
   const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
+    setSearchQuery(normalizeArtistSearchQuery(e.target.value));
   };
   
   const handleVerificationChange = (option) => {

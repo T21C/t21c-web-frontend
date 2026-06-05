@@ -25,6 +25,7 @@ import { PassHelpPopup } from "@/components/popups/Passes";
 import { ResetIcon, SortIcon, FilterIcon, SortAscIcon, SortDescIcon, SwitchIcon } from "@/components/common/icons";
 import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
+import { normalizePassSearchQuery } from '@/utils/normalizeEntitySearchQuery';
 const limit = 30;
 
 const PassPage = () => {
@@ -183,7 +184,7 @@ const PassPage = () => {
   }
 
   function handleQueryChange(e) {
-    setQuery(e.target.value);
+    setQuery(normalizePassSearchQuery(e.target.value));
     triggerRefresh();
   }
 

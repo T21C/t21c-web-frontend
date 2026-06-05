@@ -26,6 +26,7 @@ import {
   getPassJudgementHitCountFromForm,
   isTilecountJudgementMismatch,
 } from "@/utils/passJudgementHitCount";
+import { normalizeLevelSearchQuery } from '@/utils/normalizeEntitySearchQuery';
 
 
 const PassSubmissionPage = () => {
@@ -326,7 +327,8 @@ const PassSubmissionPage = () => {
   };
 
   const searchLevels = async (query) => {
-    if (!query) {
+    const normalizedQuery = normalizeLevelSearchQuery(query);
+    if (!normalizedQuery) {
       setSearchResults([]);
       return;
     }
@@ -343,7 +345,7 @@ const PassSubmissionPage = () => {
       const response = await api.get(`${routes.database.levels.root()}`, 
         {
           params: {
-            query,
+            query: normalizedQuery,
             limit: 50,
             offset: 0,
           },
@@ -369,13 +371,13 @@ const PassSubmissionPage = () => {
   };
 
   const handleLevelInputChange = (e) => {
-    const value = e.target.value;
+    const normalizedValue = normalizeLevelSearchQuery(e.target.value);
     setForm(prev => ({
       ...prev,
-      levelId: value
+      levelId: normalizedValue
     }));
-    setSearchInput(value);
-    
+    setSearchInput(normalizedValue);
+
     // Clear any existing timeout
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
@@ -383,8 +385,8 @@ const PassSubmissionPage = () => {
 
     // Set new timeout for search
     searchTimeoutRef.current = setTimeout(() => {
-      if (value) {
-        searchLevels(value);
+      if (normalizedValue) {
+        searchLevels(normalizedValue);
       } else {
         setSearchResults([]);
       }

@@ -27,6 +27,7 @@ import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible
 import { LevelHelpPopup } from "@/components/popups/Levels";
 import toast from 'react-hot-toast';
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
+import { normalizeLevelSearchQuery } from '@/utils/normalizeEntitySearchQuery';
 
 const limit = 50;
 
@@ -352,7 +353,7 @@ const LevelPage = ({
   }
 
   function handleQueryChange(e) {
-    const newValue = e.target.value;
+    const newValue = normalizeLevelSearchQuery(e.target.value);
     setSearchInput(newValue);
     setQuery(newValue);
     setPageNumber(0);

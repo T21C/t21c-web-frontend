@@ -19,6 +19,10 @@ import { buildStaticPageMeta } from '@/utils/meta';
 import { getVerificationClass, isCdnUrl, isImageUrl } from '@/utils/Utility';
 import { GalleryInspectPopup } from '@/components/popups/Evidence';
 import { CDN_IMAGE_ACCEPT } from '@/config/constants/cdnImageAccept';
+import {
+  normalizeArtistSearchQuery,
+  normalizeSongSearchQuery,
+} from '@/utils/normalizeEntitySearchQuery';
 
 const EntityManagementPage = ({ type = 'artist' }) => {
   const { t } = useTranslation(['pages', 'common']);
@@ -310,7 +314,11 @@ const EntityManagementPage = ({ type = 'artist' }) => {
               className="search-input"
               placeholder={tEntity('search.placeholder')}
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => setSearchQuery(
+                type === 'song'
+                  ? normalizeSongSearchQuery(e.target.value)
+                  : normalizeArtistSearchQuery(e.target.value),
+              )}
             />
           </div>
 

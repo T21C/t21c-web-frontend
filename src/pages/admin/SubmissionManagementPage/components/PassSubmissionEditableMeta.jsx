@@ -10,6 +10,7 @@ import {
   getPassJudgementHitCountFromSubmissionJudgements,
   isTilecountJudgementMismatch,
 } from '@/utils/passJudgementHitCount';
+import { normalizeLevelSearchQuery } from '@/utils/normalizeEntitySearchQuery';
 
 function truncateString(str, maxLength) {
   if (str == null || typeof str !== 'string') return '';
@@ -200,7 +201,8 @@ export default function PassSubmissionEditableMeta({
   }, [levelInput, editingLevel]);
 
   const searchLevels = async (query) => {
-    if (!query) {
+    const normalizedQuery = normalizeLevelSearchQuery(query);
+    if (!normalizedQuery) {
       setLevelSearchResults([]);
       return;
     }
@@ -210,7 +212,7 @@ export default function PassSubmissionEditableMeta({
     searchCancelTokenRef.current = api.CancelToken.source();
     try {
       const response = await api.get(`${routes.database.levels.root()}`, {
-        params: { query, limit: 50, offset: 0 },
+        params: { query: normalizedQuery, limit: 50, offset: 0 },
         cancelToken: searchCancelTokenRef.current.token,
       });
       setLevelSearchResults(response.data.results || []);
@@ -222,7 +224,7 @@ export default function PassSubmissionEditableMeta({
   };
 
   const handleLevelInputChange = (e) => {
-    const value = e.target.value;
+    const value = normalizeLevelSearchQuery(e.target.value);
     setLevelInput(value);
     if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
     searchTimeoutRef.current = setTimeout(() => {

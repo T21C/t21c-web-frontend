@@ -9,6 +9,7 @@ import { formatCreatorDisplay } from '@/utils/Utility';
 import ZipLevelFilesList from '@/components/popups/Levels/ZipLevelFilesList/ZipLevelFilesList';
 import { CloseButton } from '@/components/common/buttons';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
+import { normalizeLevelSearchQuery } from '@/utils/normalizeEntitySearchQuery';
 
 const LIMIT = 20;
 
@@ -123,7 +124,7 @@ const LevelSelectionPopup = ({
   };
 
   const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
+    setSearchTerm(normalizeLevelSearchQuery(e.target.value));
     setCurrentPage(1);
     setInputValue('1');
   };
