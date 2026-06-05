@@ -855,6 +855,7 @@ const LevelPage = ({
         <VirtualList
           style={{ paddingBottom: "7rem", overflow: "visible", position: "relative", zIndex: 5 }}
           items={levelsData}
+          defaultItemHeight={viewMode === 'compact' ? 64 : 90}
           customScrollParent={customScrollParent}
           loadingMore={loadingMore}
           loadMore={() => {

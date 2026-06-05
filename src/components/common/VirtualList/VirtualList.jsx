@@ -32,6 +32,7 @@ const VirtualList = ({
   customScrollParent,
   loadingMore = false,
   overscan = 200,
+  defaultItemHeight,
   style,
   className = '',
 }) => {
@@ -149,6 +150,7 @@ const VirtualList = ({
     <div className={rootClassName} style={style}>
       <Virtuoso
         {...sharedProps}
+        {...(defaultItemHeight ? { defaultItemHeight } : {})}
         components={listComponents}
         itemContent={itemContent}
       />
