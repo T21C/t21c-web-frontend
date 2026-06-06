@@ -586,7 +586,7 @@ const LevelSubmissions = () => {
         toast.success(t('levelSubmissions.messages.success.suffixUpdated'));
       } catch (error) {
         console.error('Error updating suffix:', error);
-        toast.error(t('levelSubmissions.messages.error.suffixUpdateFailed'));
+        toast.error(t('levelSubmissions.errors.suffixUpdateFailed'));
       }
     }
     
@@ -1263,7 +1263,7 @@ const LevelSubmissions = () => {
                               className="add-creator-button"
                               onClick={() => handleAddCreator(submission.id, role)}
                             >
-                              {t('levelSubmissions.buttons.addCreator', { role })}
+                              {t(`levelSubmissions.buttons.add${role === 'vfxer' ? 'Vfxer' : 'Charter'}`)}
                             </button>
                           </div>
                         )}

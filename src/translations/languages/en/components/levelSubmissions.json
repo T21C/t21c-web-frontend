@@ -66,7 +66,12 @@
       "approve": "Failed to approve submission",
       "reject": "Failed to reject submission"
     },
-    "artistLockedToSong": "Artist is fixed to the selected song and cannot be changed"
+    "artistLockedToSong": "Artist is fixed to the selected song and cannot be changed",
+    "songUpdated": "Song updated successfully",
+    "artistUpdated": "Artist updated successfully",
+    "songRequestAdded": "Song request added successfully",
+    "artistRequestAdded": "Artist request added successfully",
+    "artistRequestRemoved": "Artist request removed successfully"
   },
   "warnings": {
     "pendingProfiles": "This profile will be requested for creation:",

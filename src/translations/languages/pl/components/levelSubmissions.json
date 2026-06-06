@@ -1,23 +1,116 @@
 {
+  "title": "Zgłoszenia poziomów",
   "noSubmissions": "Brak zgłoszeń oczekujących sprawdzenia",
+  "loading": "Ładowanie zgłoszeń...",
+  "error": "Błąd ładowania zgłoszeń",
   "details": {
+    "song": "Utwór:",
+    "suffix": "Sufiks:",
+    "suffixPlaceholder": "Opcjonalny sufiks (np. \"Nerfed\")",
     "artist": "Artysta/ści:",
     "charter": "Charter(zy):",
     "difficulty": "Poziom trudności:",
     "download": {
       "label": "Link do pobrania:",
       "directLink": "Link bezpośredni",
-      "notAvailable": "Niedostępny"
+      "notAvailable": "Niedostępny",
+      "cdnLink": "Lokalny link CDN"
     },
     "workshop": {
       "label": "Warsztat Steam:",
       "link": "Link do Warsztatu Steam"
     },
     "team": "Drużyna:",
-    "vfxer": "VFXer(zy):"
+    "vfxer": "VFXer(zy):",
+    "submitter": "Zgłaszający:",
+    "evidence": "Dowody:"
   },
   "buttons": {
+    "manageCreator": "Zarządzaj twórcą",
+    "manageTeam": "Zarządzaj drużyną",
+    "manageSong": "Zarządzaj utworem",
+    "manageArtist": "Zarządzaj artystą",
+    "changeSong": "Zmień utwór",
+    "changeArtist": "Zmień artystę",
+    "addSongRequest": "Zgłoś jako nowy utwór",
+    "addArtistRequest": "Dodaj nowego artystę",
+    "removeArtist": "Usuń artystę",
     "allow": "Akceptuj",
-    "decline": "Odrzuć"
+    "decline": "Odrzuć",
+    "addCharter": "Dodaj chartera",
+    "addVfxer": "Dodaj VFX-era",
+    "remove": "Usuń",
+    "searchCreator": "Szukaj",
+    "createCreator": "Utwórz nowego",
+    "assignCreator": "Przypisz istniejącego",
+    "addTeam": "Dodaj drużynę",
+    "addCreator": "Dodaj twórcę"
+  },
+  "labels": {
+    "levelName": "Poziom",
+    "creatorName": "Twórca",
+    "submittedOn": "Zgłoszono"
+  },
+  "badges": {
+    "newRequest": "Nowe",
+    "unassigned": "Nieprzypisane"
+  },
+  "messages": {
+    "success": {
+      "approved": "Zgłoszenie zostało zaakceptowane",
+      "rejected": "Zgłoszenie zostało odrzucone",
+      "suffixUpdated": "Sufiks został zaktualizowany"
+    },
+    "error": {
+      "generic": "Wystąpił błąd",
+      "approve": "Nie udało się zaakceptować zgłoszenia",
+      "reject": "Nie udało się odrzucić zgłoszenia"
+    },
+    "artistLockedToSong": "Artysta jest przypisany do wybranego utworu i nie można go zmienić",
+    "songUpdated": "Utwór został zaktualizowany",
+    "artistUpdated": "Artysta został zaktualizowany",
+    "songRequestAdded": "Prośba o utwór została dodana",
+    "artistRequestAdded": "Prośba o artystę została dodana",
+    "artistRequestRemoved": "Prośba o artystę została usunięta"
+  },
+  "warnings": {
+    "pendingProfiles": "Ten profil zostanie zgłoszony do utworzenia:",
+    "creatorExists": "Twórca o tej nazwie już istnieje",
+    "invalidCreator": "Nieprawidłowa nazwa twórcy",
+    "duplicateCreator": "Ten twórca został już dodany"
+  },
+  "creators": {
+    "search": {
+      "placeholder": "Szukaj istniejących twórców...",
+      "noResults": "Nie znaleziono twórców",
+      "loading": "Wyszukiwanie..."
+    },
+    "create": {
+      "title": "Utwórz nowego twórcę",
+      "namePlaceholder": "Wprowadź nazwę twórcy",
+      "success": "Twórca został utworzony",
+      "error": "Nie udało się utworzyć twórcy"
+    },
+    "assign": {
+      "title": "Przypisz twórcę",
+      "success": "Twórca został przypisany",
+      "error": "Nie udało się przypisać twórcy"
+    }
+  },
+  "errors": {
+    "profileUpdate": "Nie udało się zaktualizować zgłoszenia profilami",
+    "addCreatorFailed": "Nie udało się dodać twórcy",
+    "removeCreatorFailed": "Nie udało się usunąć twórcy",
+    "cannotRemoveLastCharter": "Nie można usunąć ostatniego chartera",
+    "needProfiles": "Wszystkie profile twórców muszą być przypisane przed akceptacją",
+    "needSongAndArtist": "Utwór i artysta muszą być ustawione przed akceptacją",
+    "needArtistForSong": "Artysta musi być ustawiony przed zarządzaniem utworem",
+    "artistLockedToSong": "Nie można zmodyfikować artysty: jest przypisany do wybranego utworu",
+    "suffixUpdateFailed": "Nie udało się zaktualizować sufiksu",
+    "updateSongFailed": "Nie udało się zaktualizować utworu",
+    "updateArtistFailed": "Nie udało się zaktualizować artysty",
+    "addSongRequestFailed": "Nie udało się dodać prośby o utwór",
+    "addArtistRequestFailed": "Nie udało się dodać prośby o artystę",
+    "removeArtistRequestFailed": "Nie udało się usunąć prośby o artystę"
   }
-} 
+}

@@ -4,24 +4,37 @@
   "loading": "제출물 불러오는 중...",
   "error": "제출물 불러오기 오류",
   "details": {
+    "song": "곡:",
+    "suffix": "접미사:",
+    "suffixPlaceholder": "선택적 접미사 (예: \"Nerfed\")",
     "artist": "아티스트:",
     "charter": "채보자:",
     "difficulty": "난이도:",
     "download": {
       "label": "다운로드:",
       "directLink": "직접 링크",
-      "notAvailable": "이용 불가"
+      "notAvailable": "이용 불가",
+      "cdnLink": "로컬 CDN 링크"
     },
     "workshop": {
       "label": "워크숍:",
       "link": "워크숍 링크"
     },
     "team": "팀:",
-    "vfxer": "이펙터:"
+    "vfxer": "이펙터:",
+    "submitter": "제출자:",
+    "evidence": "증거:"
   },
   "buttons": {
     "manageCreator": "제작자 관리",
     "manageTeam": "팀 관리",
+    "manageSong": "곡 관리",
+    "manageArtist": "아티스트 관리",
+    "changeSong": "곡 변경",
+    "changeArtist": "아티스트 변경",
+    "addSongRequest": "새 곡으로 요청",
+    "addArtistRequest": "새 아티스트 추가",
+    "removeArtist": "아티스트 제거",
     "allow": "허용",
     "decline": "거부",
     "addCharter": "채보자 추가",
@@ -39,18 +52,26 @@
     "submittedOn": "제출일"
   },
   "badges": {
-    "newRequest": "신규"
+    "newRequest": "신규",
+    "unassigned": "미지정"
   },
   "messages": {
     "success": {
       "approved": "제출물이 성공적으로 승인되었습니다",
-      "rejected": "제출물이 성공적으로 거부되었습니다"
+      "rejected": "제출물이 성공적으로 거부되었습니다",
+      "suffixUpdated": "접미사가 성공적으로 업데이트되었습니다"
     },
     "error": {
       "generic": "오류가 발생했습니다",
       "approve": "승인에 실패했습니다",
       "reject": "거부에 실패했습니다"
-    }
+    },
+    "artistLockedToSong": "아티스트는 선택한 곡에 고정되어 변경할 수 없습니다",
+    "songUpdated": "곡이 성공적으로 업데이트되었습니다",
+    "artistUpdated": "아티스트가 성공적으로 업데이트되었습니다",
+    "songRequestAdded": "곡 요청이 추가되었습니다",
+    "artistRequestAdded": "아티스트 요청이 추가되었습니다",
+    "artistRequestRemoved": "아티스트 요청이 제거되었습니다"
   },
   "warnings": {
     "pendingProfiles": "이 프로필이 생성 요청됩니다:",
@@ -75,5 +96,21 @@
       "success": "제작자가 성공적으로 지정되었습니다",
       "error": "제작자 지정에 실패했습니다"
     }
+  },
+  "errors": {
+    "profileUpdate": "프로필로 제출물 업데이트에 실패했습니다",
+    "addCreatorFailed": "제작자 추가에 실패했습니다",
+    "removeCreatorFailed": "제작자 제거에 실패했습니다",
+    "cannotRemoveLastCharter": "마지막 채보자는 제거할 수 없습니다",
+    "needProfiles": "승인 전에 모든 제작자 프로필을 지정해야 합니다",
+    "needSongAndArtist": "승인 전에 곡과 아티스트를 모두 설정해야 합니다",
+    "needArtistForSong": "곡 관리 전에 아티스트를 설정해야 합니다",
+    "artistLockedToSong": "아티스트를 수정할 수 없습니다: 선택한 곡에 고정되어 있습니다",
+    "suffixUpdateFailed": "접미사 업데이트에 실패했습니다",
+    "updateSongFailed": "곡 업데이트에 실패했습니다",
+    "updateArtistFailed": "아티스트 업데이트에 실패했습니다",
+    "addSongRequestFailed": "곡 요청 추가에 실패했습니다",
+    "addArtistRequestFailed": "아티스트 요청 추가에 실패했습니다",
+    "removeArtistRequestFailed": "아티스트 요청 제거에 실패했습니다"
   }
 }

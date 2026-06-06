@@ -66,7 +66,12 @@
       "approve": "提交批准失败",
       "reject": "提交拒绝失败"
     },
-      "artistLockedToSong": "曲师已固定至所选歌曲且无法更改"
+    "artistLockedToSong": "曲师已固定至所选歌曲且无法更改",
+    "songUpdated": "歌曲更新成功",
+    "artistUpdated": "艺术家更新成功",
+    "songRequestAdded": "歌曲请求添加成功",
+    "artistRequestAdded": "曲师请求添加成功",
+    "artistRequestRemoved": "曲师请求移除成功"
   },
   "warnings": {
     "pendingProfiles": "将申请创建下列个人资料：",

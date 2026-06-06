@@ -1,23 +1,116 @@
 {
+  "title": "Soumissions de niveaux",
   "noSubmissions": "Aucune soumission de niveau en attente de classement",
+  "loading": "Chargement des soumissions...",
+  "error": "Erreur lors du chargement des soumissions",
   "details": {
+    "song": "Musique :",
+    "suffix": "Suffixe :",
+    "suffixPlaceholder": "Suffixe optionnel (ex. \"Nerfed\")",
     "artist": "Artiste :",
     "charter": "Charteur :",
     "difficulty": "Difficulté :",
     "download": {
       "label": "Téléchargement :",
       "directLink": "Lien Direct",
-      "notAvailable": "Non Disponible"
+      "notAvailable": "Non Disponible",
+      "cdnLink": "Lien CDN local"
     },
     "workshop": {
       "label": "Workshop :",
       "link": "Lien Workshop"
     },
     "team": "Équipe:",
-    "vfxer": "Effecteur :"
+    "vfxer": "Effecteur :",
+    "submitter": "Soumetteur :",
+    "evidence": "Preuves :"
   },
   "buttons": {
+    "manageCreator": "Gérer le créateur",
+    "manageTeam": "Gérer l'équipe",
+    "manageSong": "Gérer la musique",
+    "manageArtist": "Gérer l'artiste",
+    "changeSong": "Changer la musique",
+    "changeArtist": "Changer l'artiste",
+    "addSongRequest": "Demander comme nouvelle musique",
+    "addArtistRequest": "Ajouter un nouvel artiste",
+    "removeArtist": "Retirer l'artiste",
     "allow": "Autoriser",
-    "decline": "Refuser"
+    "decline": "Refuser",
+    "addCharter": "Ajouter un charteur",
+    "addVfxer": "Ajouter un effecteur",
+    "remove": "Retirer",
+    "searchCreator": "Rechercher",
+    "createCreator": "Créer nouveau",
+    "assignCreator": "Assigner existant",
+    "addTeam": "Ajouter une équipe",
+    "addCreator": "Ajouter un créateur"
+  },
+  "labels": {
+    "levelName": "Niveau",
+    "creatorName": "Créateur",
+    "submittedOn": "Soumis le"
+  },
+  "badges": {
+    "newRequest": "Nouveau",
+    "unassigned": "Non assigné"
+  },
+  "messages": {
+    "success": {
+      "approved": "Soumission approuvée avec succès",
+      "rejected": "Soumission rejetée avec succès",
+      "suffixUpdated": "Suffixe mis à jour avec succès"
+    },
+    "error": {
+      "generic": "Une erreur s'est produite",
+      "approve": "Échec de l'approbation de la soumission",
+      "reject": "Échec du rejet de la soumission"
+    },
+    "artistLockedToSong": "L'artiste est fixé à la musique sélectionnée et ne peut pas être modifié",
+    "songUpdated": "Musique mise à jour avec succès",
+    "artistUpdated": "Artiste mis à jour avec succès",
+    "songRequestAdded": "Demande de musique ajoutée avec succès",
+    "artistRequestAdded": "Demande d'artiste ajoutée avec succès",
+    "artistRequestRemoved": "Demande d'artiste retirée avec succès"
+  },
+  "warnings": {
+    "pendingProfiles": "Ce profil sera demandé pour création :",
+    "creatorExists": "Un créateur avec ce nom existe déjà",
+    "invalidCreator": "Nom de créateur invalide",
+    "duplicateCreator": "Ce créateur a déjà été ajouté"
+  },
+  "creators": {
+    "search": {
+      "placeholder": "Rechercher des créateurs existants...",
+      "noResults": "Aucun créateur trouvé",
+      "loading": "Recherche..."
+    },
+    "create": {
+      "title": "Créer un nouveau créateur",
+      "namePlaceholder": "Entrez le nom du créateur",
+      "success": "Créateur créé avec succès",
+      "error": "Échec de la création du créateur"
+    },
+    "assign": {
+      "title": "Assigner un créateur",
+      "success": "Créateur assigné avec succès",
+      "error": "Échec de l'assignation du créateur"
+    }
+  },
+  "errors": {
+    "profileUpdate": "Échec de la mise à jour de la soumission avec les profils",
+    "addCreatorFailed": "Échec de l'ajout du créateur",
+    "removeCreatorFailed": "Échec de la suppression du créateur",
+    "cannotRemoveLastCharter": "Impossible de retirer le dernier charteur",
+    "needProfiles": "Tous les profils de créateurs doivent être assignés avant l'approbation",
+    "needSongAndArtist": "La musique et l'artiste doivent être définis avant l'approbation",
+    "needArtistForSong": "L'artiste doit être défini avant de gérer la musique",
+    "artistLockedToSong": "Impossible de modifier l'artiste : il est fixé à la musique sélectionnée",
+    "suffixUpdateFailed": "Échec de la mise à jour du suffixe",
+    "updateSongFailed": "Échec de la mise à jour de la musique",
+    "updateArtistFailed": "Échec de la mise à jour de l'artiste",
+    "addSongRequestFailed": "Échec de l'ajout de la demande de musique",
+    "addArtistRequestFailed": "Échec de l'ajout de la demande d'artiste",
+    "removeArtistRequestFailed": "Échec de la suppression de la demande d'artiste"
   }
-} 
+}
