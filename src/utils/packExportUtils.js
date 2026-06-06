@@ -18,7 +18,7 @@ export const PACK_EXPORT_HEADERS = [
   'Download',
   'Clear Amount',
   'Charters',
-  'Creators',
+  'VFXers',
 ];
 
 const sortItemsByOrder = (items = []) =>
