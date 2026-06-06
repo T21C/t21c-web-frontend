@@ -3,6 +3,7 @@
 import { createContext, useState, useEffect, useRef } from "react"
 import { useDifficultyContext } from "./DifficultyContext";
 import { migrateLegacyNamesToFacet } from "@/utils/facetQueryCodec";
+import { getDefaultQSliderRange } from "@/utils/getDefaultQSliderRange";
 
 const BASE_STORAGE_KEYS = {
     LEGACY_DIFF: 'level_legacy_diff',
@@ -181,7 +182,6 @@ const LevelContextProvider = (props) => {
                 storage.setItem(STORAGE_KEYS.SLIDER_RANGE, JSON.stringify(newRange));
             }
             
-            // Get available Q difficulties (includes GQ)
             const qDifficulties = difficulties
                 .filter(d => d.name.includes('Q'))
                 .sort((a, b) => a.sortOrder - b.sortOrder);
@@ -190,6 +190,7 @@ const LevelContextProvider = (props) => {
                 const availableQNames = qDifficulties.map(d => d.name);
                 const minQOrder = qDifficulties[0].sortOrder;
                 const maxQOrder = qDifficulties[qDifficulties.length - 1].sortOrder;
+                const defaultQRange = getDefaultQSliderRange(difficulties);
 
                 // Validate and adjust sliderQRange if needed
                 const currentQRange = [...sliderQRange];
@@ -202,13 +203,13 @@ const LevelContextProvider = (props) => {
                     currentQRangeDrag[1] > maxQOrder;
 
                 if (needsQRangeReset) {
-                    setSliderQRange(availableQNames);
-                    storage.setItem(STORAGE_KEYS.SLIDER_Q_RANGE, JSON.stringify(availableQNames));
+                    setSliderQRange(defaultQRange.names);
+                    storage.setItem(STORAGE_KEYS.SLIDER_Q_RANGE, JSON.stringify(defaultQRange.names));
                 }
 
                 if (needsDragReset) {
-                    setSliderQRangeDrag([minQOrder, maxQOrder]);
-                    storage.setItem(STORAGE_KEYS.SLIDER_Q_RANGE_DRAG, JSON.stringify([minQOrder, maxQOrder]));
+                    setSliderQRangeDrag(defaultQRange.drag);
+                    storage.setItem(STORAGE_KEYS.SLIDER_Q_RANGE_DRAG, JSON.stringify(defaultQRange.drag));
                 }
             } else {
                 setSliderQRange([]);

@@ -28,6 +28,7 @@ import { LevelHelpPopup } from "@/components/popups/Levels";
 import toast from 'react-hot-toast';
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { normalizeLevelSearchQuery } from '@/utils/normalizeEntitySearchQuery';
+import { getDefaultQSliderRange } from '@/utils/getDefaultQSliderRange';
 
 const limit = 50;
 
@@ -316,8 +317,9 @@ const LevelPage = ({
 
   const handleSliderQChangeComplete = useCallback((newRange) => {
     if (!newRange) {
-      setSliderQRange(qDifficulties.map(d => d.name));
-      setSliderQRangeDrag([qDifficulties[0]?.sortOrder || 1, qDifficulties[qDifficulties.length - 1]?.sortOrder || 1]);
+      const { names, drag } = getDefaultQSliderRange(difficulties);
+      setSliderQRange(names);
+      setSliderQRangeDrag(drag);
       return;
     }
 
@@ -469,13 +471,11 @@ const LevelPage = ({
     setSelectedHighFilterDiff("U20");
     setSliderRange([1, difficulties.find(d => d.name === "U20").sortOrder]);
     
-    // Reset Q range to first and last Q difficulty (includes GQ)
-    if (qDifficulties.length > 0) {
-      setSliderQRange(qDifficulties.map(d => d.name));
-      setSliderQRangeDrag([qDifficulties[0].sortOrder, qDifficulties[qDifficulties.length - 1].sortOrder]);
-    } else {
-      setSliderQRange([]);
-      setSliderQRangeDrag([1, 1]);
+    // Reset Q range to Qq through UQ4
+    {
+      const { names, drag } = getDefaultQSliderRange(difficulties);
+      setSliderQRange(names);
+      setSliderQRangeDrag(drag);
     }
     
     // Reset special difficulties
