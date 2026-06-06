@@ -17,10 +17,22 @@ export const PACK_EXPORT_HEADERS = [
   'Video Link',
   'Download',
   'Clear Amount',
+  'Charters',
+  'Creators',
 ];
 
 const sortItemsByOrder = (items = []) =>
   [...items].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+
+function joinCreditNamesByRole(level, role) {
+  const credits = level?.levelCredits;
+  if (!Array.isArray(credits) || credits.length === 0) return '';
+
+  return credits
+    .filter((credit) => credit?.role?.toLowerCase() === role)
+    .map((credit) => credit?.creator?.name.replace(/,/g, ' ') ?? '')
+    .join(', ');
+}
 
 function formatCurationColumn(level, curationTypesDict) {
   const curations = sortCurationsForDisplay(level?.curations, curationTypesDict);
@@ -48,7 +60,7 @@ function joinFolderPath(segments) {
 }
 
 function emptyFolderRowCells(folderPath) {
-  return [folderPath, '', '', '', '', '', '', '', '', ''];
+  return [folderPath, '', '', '', '', '', '', '', '', '', '', ''];
 }
 
 function traversePackTree(items, includeFolders, folderPathSegments, onRow) {
@@ -119,6 +131,8 @@ export function buildExportRows(
           '',
           '',
           '',
+          '',
+          '',
         ],
       });
       return;
@@ -137,6 +151,8 @@ export function buildExportRows(
         level.videoLink ?? '',
         level.dlLink || level.workshopLink || level.ws || '',
         level.clears ?? '',
+        joinCreditNamesByRole(level, 'charter'),
+        joinCreditNamesByRole(level, 'vfxer'),
       ],
     });
   });
