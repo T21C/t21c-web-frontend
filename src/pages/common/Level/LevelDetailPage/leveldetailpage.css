@@ -3276,6 +3276,7 @@
   align-items: center;
   gap: 0.25rem;
   transition: gap 0.3s ease;
+  flex-wrap: wrap;
   z-index: 1;
 }
 

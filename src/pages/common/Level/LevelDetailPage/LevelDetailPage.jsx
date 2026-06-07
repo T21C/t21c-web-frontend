@@ -2985,25 +2985,27 @@ const LevelDetailPage = ({ mockData = null }) => {
           }}
         />
       )}
-      {showDownloadPopup && (
+      {showDownloadPopup &&
+        createPortal(
           <LevelDownloadPopup
-              isOpen={showDownloadPopup}
-              onClose={() => setShowDownloadPopup(false)}
-              levelId={id}
-              fileId={res.level.fileId}
-              dlLink={res.level.dlLink}
-              legacyDllink={res.level.legacyDllink}
-              metadata={res.metadata}
-              transformOptions={res.transformOptions}
-              incrementAccessCount={() => setRes(prevRes => ({
-                ...prevRes,
-                level: {
-                  ...prevRes.level,
-                  downloadCount: (prevRes.level?.downloadCount || 0) + 1
-                }
-              }))}
-          />
-      )}
+            isOpen={showDownloadPopup}
+            onClose={() => setShowDownloadPopup(false)}
+            levelId={id}
+            fileId={res.level.fileId}
+            dlLink={res.level.dlLink}
+            legacyDllink={res.level.legacyDllink}
+            metadata={res.metadata}
+            transformOptions={res.transformOptions}
+            incrementAccessCount={() => setRes(prevRes => ({
+              ...prevRes,
+              level: {
+                ...prevRes.level,
+                downloadCount: (prevRes.level?.downloadCount || 0) + 1
+              }
+            }))}
+          />,
+          getPortalRoot(),
+        )}
 
       {activeCurationForTooltip &&
         createPortal(
