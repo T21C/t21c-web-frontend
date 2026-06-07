@@ -1,7 +1,7 @@
 import { routes } from '@/api/routes';
 // tuf-search: #EditLevelPopup #editLevelPopup #popups #levels #editLevel
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { createPortal } from 'react-dom';
+import { Portal } from '@/components/common/Portal';
 import './editlevelpopup.css';
 import api from '@/utils/api';
 import { RatingInput } from '@/components/common/selectors';
@@ -15,7 +15,6 @@ import toast from 'react-hot-toast';
 import { TagManagementPopup } from './TagManagementPopup';
 import { isCdnUrl } from '@/utils/Utility';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
-import { getPortalRoot } from '@/utils/portalRoot';
 import { useAuth } from '@/contexts/AuthContext';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { SongSelectorPopup } from '@/components/popups/Songs';
@@ -1099,6 +1098,5 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     </div>
   );
 
-  // Use portal to render popup at document.body level to escape stacking context
-  return createPortal(popupContent, getPortalRoot());
+  return <Portal>{popupContent}</Portal>;
 }; 

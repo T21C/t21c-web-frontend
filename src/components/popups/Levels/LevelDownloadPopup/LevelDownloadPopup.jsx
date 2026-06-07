@@ -8,6 +8,7 @@ import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 import { CloseButton } from '@/components/common/buttons';
+import { Portal } from '@/components/common/Portal';
 import { formatFileSize } from '@/utils/zipUtils';
 
 const LevelDownloadPopup = ({
@@ -164,6 +165,7 @@ const LevelDownloadPopup = ({
     if (!isOpen) return null;
     
     return (
+        <Portal when={isOpen}>
         <div className="level-download-popup">
             <div className="level-download-content" ref={popupRef}>
                 <CloseButton
@@ -369,6 +371,7 @@ const LevelDownloadPopup = ({
                 )}
             </div>
         </div>
+        </Portal>
     );
 };
 

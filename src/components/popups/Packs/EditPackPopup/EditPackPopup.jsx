@@ -1,8 +1,7 @@
 // tuf-search: #EditPackPopup #editPackPopup #popups #packs #editPack
 import { useState, useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
+import { Portal } from '@/components/common/Portal';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
-import { getPortalRoot } from '@/utils/portalRoot';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { CrossIcon, ImageIcon, TrashIcon } from '@/components/common/icons';
@@ -440,7 +439,7 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
                       disabled={transferringOwnership}
                     />
                   </div>
-                  {transferOwnershipSearch.length >= 1 && createPortal(
+                  <Portal when={transferOwnershipSearch.length >= 1}>
                     <div className="edit-pack-popup__transfer-dropdown" ref={transferDropdownRef}>
                       {transferOwnershipLoading ? (
                         <div className="edit-pack-popup__transfer-loading">
@@ -472,9 +471,8 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
                           </div>
                         ))
                       )}
-                    </div>,
-                    getPortalRoot()
-                  )}
+                    </div>
+                  </Portal>
                   {selectedNewOwner && (
                     <div className="edit-pack-popup__transfer-selected">
                       <span className="edit-pack-popup__transfer-selected-label">

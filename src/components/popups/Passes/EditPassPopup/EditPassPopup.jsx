@@ -15,6 +15,7 @@ import { PassCoreForm } from '@/components/common/cores/PassCoreForm/PassCoreFor
 import { usePassCoreForm } from '@/components/common/cores/PassCoreForm/usePassCoreForm';
 import { truncateString } from '@/utils/Utility';
 import { CloseButton } from '@/components/common/buttons';
+import { Portal } from '@/components/common/Portal';
 
 export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
   const { t } = useTranslation('components');
@@ -205,6 +206,7 @@ const handleSubmit = async (e) => {
   };
 
   return (
+    <Portal>
     <div className="edit-pass-popup-overlay">
       <div className="form-container">
         <CloseButton
@@ -316,5 +318,6 @@ const handleSubmit = async (e) => {
         />
         </div>
       </div>
+    </Portal>
     );
 }; 

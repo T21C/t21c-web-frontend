@@ -1,7 +1,7 @@
 // tuf-search: #ProfileHeaderSurfaceEditorPopup
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { createPortal } from "react-dom";
+import { Portal } from "@/components/common/Portal";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 import { CloseButton } from "@/components/common/buttons";
 import ProfileHeaderSurfacePreviewFrame from "./ProfileHeaderSurfacePreviewFrame";
@@ -15,8 +15,6 @@ import {
   findStackIndexById,
 } from "@/utils/profileHeaderSurfaceStyle";
 import "./profileHeaderSurfaceEditorPopup.css";
-import { getPortalRoot } from "@/utils/portalRoot";
-
 export default function ProfileHeaderSurfaceEditorPopup({
   isOpen,
   onClose,
@@ -196,7 +194,8 @@ export default function ProfileHeaderSurfaceEditorPopup({
     onPatchStackEntry: patchStackEntry,
   };
 
-  return createPortal(
+  return (
+    <Portal>
     <div
       className="profile-header-surface-popup-overlay"
       role="presentation"
@@ -298,7 +297,7 @@ export default function ProfileHeaderSurfaceEditorPopup({
           </div>
         </footer>
       </div>
-    </div>,
-    getPortalRoot(),
+    </div>
+    </Portal>
   );
 }

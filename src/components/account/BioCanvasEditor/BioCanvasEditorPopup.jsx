@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { createPortal } from "react-dom";
+import { Portal } from "@/components/common/Portal";
 import { Tooltip } from "react-tooltip";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 import { CloseButton } from "@/components/common/buttons";
-import { getPortalRoot } from "@/utils/portalRoot";
 import BioCanvasEditor from "./BioCanvasEditor.jsx";
 import { useBioCanvasEditor } from "./useBioCanvasEditor.js";
 import { createDefaultBioCanvas, parseBioCanvas } from "@/utils/bioCanvas";
@@ -106,7 +105,8 @@ export default function BioCanvasEditorPopup({
 
   if (!isOpen) return null;
 
-  return createPortal(
+  return (
+    <Portal>
     <div className="bio-canvas-editor-popup" role="presentation">
       <button type="button" className="bio-canvas-editor-popup__backdrop" aria-label="Close" onClick={handleClose} />
       <div className="bio-canvas-editor-popup__panel" role="dialog" aria-modal="true">
@@ -168,8 +168,8 @@ export default function BioCanvasEditorPopup({
           </button>
         </div>
       </div>
-    </div>,
-    getPortalRoot(),
+    </div>
+    </Portal>
   );
 }
 

@@ -1,7 +1,6 @@
 // tuf-search: #ChangeEmailPopup #changeEmailPopup #popups #users #changeEmail
 import React, { useState, useEffect } from 'react';
-import { createPortal } from 'react-dom';
-import { getPortalRoot } from '@/utils/portalRoot';
+import { Portal } from '@/components/common/Portal';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { CloseButton } from '@/components/common/buttons';
@@ -82,7 +81,8 @@ const ChangeEmailPopup = ({ isOpen, onClose, currentEmail, changeEmail }) => {
     }
   };
 
-  return createPortal(
+  return (
+    <Portal>
     <div
       className="change-email-popup-overlay"
       role="presentation"
@@ -151,8 +151,8 @@ const ChangeEmailPopup = ({ isOpen, onClose, currentEmail, changeEmail }) => {
           </div>
         </form>
       </div>
-    </div>,
-    getPortalRoot()
+    </div>
+    </Portal>
   );
 };
 

@@ -2,7 +2,6 @@ import { routes } from '@/api/routes';
 // tuf-search: #PassDetailPage #passDetailPage #pass #passDetail — {{song}}
 import "./passdetailpage.css";
 import { useEffect, useState, useMemo } from "react";
-import { createPortal } from "react-dom";
 import { useParams, Link, useLocation } from 'react-router-dom';
 import { UserAvatar } from "@/components/layout";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
@@ -21,8 +20,6 @@ import { EyeIcon, EyeOffIcon, TrashIcon } from "@/components/common/icons";
 import PassAdofaiV2Flag from "@/components/cards/PassAdofaiV2Flag";
 import WorldsFirstFlag from "@/components/cards/WorldsFirstFlag/WorldsFirstFlag";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
-import { getPortalRoot } from "@/utils/portalRoot";
-
 const parseRankColor = (rank) => {
   var clr;
   switch(rank) {
@@ -487,18 +484,16 @@ const PassDetailPage = () => {
           </div>
         )}
 
-        {openEditDialog &&
-          createPortal(
-            <EditPassPopup
-              pass={pass}
-              onClose={() => setOpenEditDialog(false)}
-              onUpdate={() => {
-                setOpenEditDialog(false);
-                fetchPassData();
-              }}
-            />,
-            getPortalRoot(),
-          )}
+        {openEditDialog && (
+          <EditPassPopup
+            pass={pass}
+            onClose={() => setOpenEditDialog(false)}
+            onUpdate={() => {
+              setOpenEditDialog(false);
+              fetchPassData();
+            }}
+          />
+        )}
 
         {openEditFeelingRatingPopup && (
           <div className="hide-confirm-overlay" onClick={handleCloseFeelingRatingPopup}>

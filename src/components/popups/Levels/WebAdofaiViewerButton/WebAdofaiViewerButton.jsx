@@ -1,7 +1,6 @@
 // tuf-search: #WebAdofaiViewerButton #webAdofai #levelDetail
 import React, { useEffect, useMemo, useState } from "react";
-import { createPortal } from "react-dom";
-import { getPortalRoot } from "@/utils/portalRoot";
+import { Portal } from "@/components/common/Portal";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 import "./webadofaiviewerbutton.css";
 
@@ -81,7 +80,7 @@ const WebAdofaiViewerButton = ({ levelId }) => {
       >
         Web ADOFAI
       </button>
-      {modal ? createPortal(modal, getPortalRoot()) : null}
+      <Portal when={isOpen}>{modal}</Portal>
     </>
   );
 };

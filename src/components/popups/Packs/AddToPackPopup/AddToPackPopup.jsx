@@ -10,9 +10,8 @@ import api from '@/utils/api';
 import { routes } from '@/api/routes';
 import { useNavigate } from 'react-router-dom';
 import { formatCreatorDisplay } from "@/utils/Utility";
-import { createPortal } from 'react-dom';
+import { Portal } from '@/components/common/Portal';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
-import { getPortalRoot } from '@/utils/portalRoot';
 import {
   normalizePackSearchQuery,
   parseHashtagPackQuery,
@@ -415,7 +414,7 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
       )}
     </>
   );
-  return createPortal(popupContent, getPortalRoot());
+  return <Portal>{popupContent}</Portal>;
 };
 
 export default AddToPackPopup;

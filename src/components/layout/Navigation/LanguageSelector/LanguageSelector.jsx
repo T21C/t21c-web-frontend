@@ -1,7 +1,6 @@
 // tuf-search: #LanguageSelector #languageSelector #layout #navigation
 import React, { useState, useEffect, useRef } from "react";
-import { createPortal } from "react-dom";
-import { getPortalRoot } from "@/utils/portalRoot";
+import { Portal } from "@/components/common/Portal";
 import { isoToEmoji } from "@/utils";
 import api from "@/utils/api";
 import { routes } from '@/api/routes';
@@ -214,8 +213,9 @@ const LanguageSelector = ({ variant = "desktop", asListItem = null }) => {
             {buttonContent}
           </li>
 
-          {mobileDropdownContent &&
-            createPortal(mobileDropdownContent, getPortalRoot('root'))}
+          <Portal when={!!mobileDropdownContent} mount="root">
+            {mobileDropdownContent}
+          </Portal>
         </>
       );
     } else {
@@ -229,8 +229,9 @@ const LanguageSelector = ({ variant = "desktop", asListItem = null }) => {
             {buttonContent}
           </div>
 
-          {mobileDropdownContent &&
-            createPortal(mobileDropdownContent, getPortalRoot())}
+          <Portal when={!!mobileDropdownContent}>
+            {mobileDropdownContent}
+          </Portal>
         </>
       );
     }

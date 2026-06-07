@@ -1,8 +1,7 @@
 // tuf-search: #ProfileHeaderIconPanelPortal #profileHeaderIconPanelPortal #account #profileHeader
-import { createPortal } from "react-dom";
+import { Portal } from "@/components/common/Portal";
 import { useTranslation } from "react-i18next";
 import { Tooltip } from "react-tooltip";
-import { getPortalRoot } from "@/utils/portalRoot";
 import "./profileHeaderIconPanelPortal.css";
 
 const PROFILE_HEADER_DIFFICULTY_GRID_TOOLTIP_ID = "profile-header-difficulty-grid-tooltip";
@@ -87,7 +86,8 @@ export default function ProfileHeaderIconPanelPortal({
 
   const omitMeasuredMinWidth = mode === "player" && anchorVariant != null;
 
-  return createPortal(
+  return (
+    <Portal>
     <div
       ref={portalRef}
       className={anchorClassName}
@@ -153,8 +153,8 @@ export default function ProfileHeaderIconPanelPortal({
           />
         </>
       )}
-    </div>,
-    getPortalRoot(),
+    </div>
+    </Portal>
   );
 }
 

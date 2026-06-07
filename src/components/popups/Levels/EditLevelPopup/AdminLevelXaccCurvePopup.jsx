@@ -2,11 +2,10 @@ import { routes } from '@/api/routes';
 // tuf-search: #AdminLevelXaccCurvePopup #xaccCurve #levels #admin
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { createPortal } from 'react-dom';
+import { Portal } from '@/components/common/Portal';
 import './adminlevelxacccurvepopup.css';
 import api from '@/utils/api';
 import { CloseButton } from '@/components/common/buttons';
-import { getPortalRoot } from '@/utils/portalRoot';
 import toast from 'react-hot-toast';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { ScoreV2Graph } from '@/components/common/display/ScoreV2Graph/ScoreV2Graph';
@@ -1492,5 +1491,5 @@ export const AdminLevelXaccCurvePopup = ({ level, onClose, onSaved }) => {
     </div>
   );
 
-  return createPortal(content, getPortalRoot());
+  return <Portal>{content}</Portal>;
 };

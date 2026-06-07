@@ -1,7 +1,6 @@
 // tuf-search: #EnhancedSelect #enhancedSelect #popups #levels #levelDownload
 import React, { useState, useRef, useEffect } from 'react';
-import { createPortal } from 'react-dom';
-import { getPortalRoot } from '@/utils/portalRoot';
+import { Portal } from '@/components/common/Portal';
 import './EnhancedSelect.css';
 
 const EnhancedSelect = ({ 
@@ -232,7 +231,7 @@ const EnhancedSelect = ({
                 </div>
             </div>
             
-            {isOpen && hasOptions && createPortal(
+            <Portal when={isOpen && hasOptions}>
                 <div 
                     className="enhanced-select-dropdown" 
                     ref={dropdownRef}
@@ -280,9 +279,8 @@ const EnhancedSelect = ({
                             />
                         )}
                     </div>
-                </div>,
-                getPortalRoot()
-            )}
+                </div>
+            </Portal>
         </div>
     );
 };

@@ -1,6 +1,6 @@
 // tuf-search: #TagSelector #tagSelector #selectors
 import React, { useState, useRef, useEffect } from "react";
-import { createPortal } from "react-dom";
+import { Portal } from "@/components/common/Portal";
 import "./tagselector.css";
 import { useTranslation } from "react-i18next";
 import { PORTALED_PANEL_CLASS, usePortaledPanelAnchor } from "@/hooks/usePortaledPanelAnchor";
@@ -206,7 +206,7 @@ const TagSelector = ({
         </svg>
       </button>
 
-      {isOpen && portalRoot && createPortal(panelContent, portalRoot)}
+      <Portal when={isOpen} root={portalRoot}>{panelContent}</Portal>
     </div>
   );
 };

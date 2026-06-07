@@ -1,6 +1,6 @@
 // tuf-search: #ScoreV2GraphDropdown #scorev2Graph #display
 import { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
+import { Portal } from "@/components/common/Portal";
 import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
 import { PORTALED_PANEL_CLASS, usePortaledPanelAnchor } from "@/hooks/usePortaledPanelAnchor";
@@ -50,7 +50,8 @@ export const ScoreV2GraphDropdown = ({
 
   if (!show || !portalRoot) return null;
 
-  return createPortal(
+  return (
+    <Portal when={show} root={portalRoot}>
     <div
       ref={panelRef}
       className={`scorev2-graph-dropdown scorev2-graph-dropdown--portal ${PORTALED_PANEL_CLASS} portaled-panel--z-dropdown`}
@@ -80,8 +81,8 @@ export const ScoreV2GraphDropdown = ({
         isNoHoldTap={isNoHoldTap}
         disablePP={disablePP}
       />
-    </div>,
-    portalRoot,
+    </div>
+    </Portal>
   );
 };
 

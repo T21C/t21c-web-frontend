@@ -5,9 +5,8 @@ import { routes } from '@/api/routes';
 import "./leveldetailpage.css"
 import placeholder from "@/assets/placeholder/3.png";
 import React, { useEffect, useLayoutEffect, useState, useRef, useCallback, useMemo } from "react";
-import { createPortal } from "react-dom";
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
-import { getPortalRoot } from "@/utils/portalRoot";
+import { Portal } from "@/components/common/Portal";
 import { PORTALED_PANEL_CLASS, usePortaledPanelAnchor } from "@/hooks/usePortaledPanelAnchor";
 
 import {
@@ -252,7 +251,8 @@ const TagsDropdown = ({ tags, show, onClose, anchorRef }) => {
 
   const orderedGroups = Object.values(groupedTags).sort((a, b) => a.groupSortOrder - b.groupSortOrder);
 
-  return createPortal(
+  return (
+    <Portal root={portalRoot}>
     <div
       className={`tags-dropdown ${PORTALED_PANEL_CLASS} portaled-panel--z-dropdown`}
       ref={panelRef}
@@ -289,8 +289,8 @@ const TagsDropdown = ({ tags, show, onClose, anchorRef }) => {
           </div>
         ))}
       </div>
-    </div>,
-    portalRoot,
+    </div>
+    </Portal>
   );
 };
 
@@ -386,7 +386,8 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty, onArtistClick 
       </div>
     );
   };
-  return createPortal(
+  return (
+    <Portal>
     <>
       <div className="level-detail-popup-overlay" onClick={onClose}></div>
       <div className="level-detail-popup">
@@ -474,8 +475,8 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty, onArtistClick 
           </div>
         </div>
       </div>
-    </>,
-    getPortalRoot(),
+    </>
+    </Portal>
   );
 };
 
@@ -621,7 +622,8 @@ const PackAppearanceDropdown = ({ packs, show, onClose, containerRef }) => {
   if (!show || !portalRoot) return null;
   if (!packs?.length) return null;
 
-  return createPortal(
+  return (
+    <Portal root={portalRoot}>
     <div
       ref={panelRef}
       className={`pack-appearance-dropdown ${PORTALED_PANEL_CLASS} portaled-panel--z-dropdown`}
@@ -661,8 +663,8 @@ const PackAppearanceDropdown = ({ packs, show, onClose, containerRef }) => {
           );
         })}
       </div>
-    </div>,
-    portalRoot,
+    </div>
+    </Portal>
   );
 };
 
@@ -702,7 +704,8 @@ const RerateHistoryDropdown = ({ show, onClose, rerateHistory, difficultyDict, c
 
   if (!show || !rerateHistory?.length || !portalRoot) return null;
 
-  return createPortal(
+  return (
+    <Portal root={portalRoot}>
     <div
       ref={panelRef}
       className={`rerate-history-dropdown ${PORTALED_PANEL_CLASS} portaled-panel--z-dropdown`}
@@ -744,8 +747,8 @@ const RerateHistoryDropdown = ({ show, onClose, rerateHistory, difficultyDict, c
           );
         })}
       </div>
-    </div>,
-    portalRoot,
+    </div>
+    </Portal>
   );
 };
 
@@ -2985,80 +2988,76 @@ const LevelDetailPage = ({ mockData = null }) => {
           }}
         />
       )}
-      {showDownloadPopup &&
-        createPortal(
-          <LevelDownloadPopup
-            isOpen={showDownloadPopup}
-            onClose={() => setShowDownloadPopup(false)}
-            levelId={id}
-            fileId={res.level.fileId}
-            dlLink={res.level.dlLink}
-            legacyDllink={res.level.legacyDllink}
-            metadata={res.metadata}
-            transformOptions={res.transformOptions}
-            incrementAccessCount={() => setRes(prevRes => ({
-              ...prevRes,
-              level: {
-                ...prevRes.level,
-                downloadCount: (prevRes.level?.downloadCount || 0) + 1
-              }
-            }))}
-          />,
-          getPortalRoot(),
-        )}
+      {showDownloadPopup && (
+        <LevelDownloadPopup
+          isOpen={showDownloadPopup}
+          onClose={() => setShowDownloadPopup(false)}
+          levelId={id}
+          fileId={res.level.fileId}
+          dlLink={res.level.dlLink}
+          legacyDllink={res.level.legacyDllink}
+          metadata={res.metadata}
+          transformOptions={res.transformOptions}
+          incrementAccessCount={() => setRes(prevRes => ({
+            ...prevRes,
+            level: {
+              ...prevRes.level,
+              downloadCount: (prevRes.level?.downloadCount || 0) + 1
+            }
+          }))}
+        />
+      )}
 
-      {activeCurationForTooltip &&
-        createPortal(
-          (() => {
-            const typesSortedPortal = getCurationTypesResolved(
-              activeCurationForTooltip,
-              curationTypesDict,
-            );
-            const typeLabelPortal = typesSortedPortal.map((t) => t.name).join(", ") || "Curation";
-            const assignerPortal = activeCurationForTooltip.assignedByUser;
-            return (
-              <div
-                ref={curationTooltipPanelRef}
-                className="curation-tooltip-dropdown level-detail__curation-inline-assignee curation-tooltip-dropdown--portal"
-                role="tooltip"
-                style={{
-                  position: "fixed",
-                  top: curationTooltipCoords.top,
-                  left: curationTooltipCoords.left,
-                  transform: "translateX(-50%)",
-                  zIndex: 121,
-                }}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="curation-tooltip-type">{typeLabelPortal}</div>
-                {typesSortedPortal.every((t) => hasAbility(t, ABILITIES.SHOW_ASSIGNER)) && (
-                  <>
-                    <div className="curation-tooltip-assigned">assigned by</div>
-                    <div className="curation-tooltip-user">
-                      {assignerPortal?.avatarUrl && (
-                        <img
-                          className="curation-tooltip-avatar"
-                          src={selectIconSize(assignerPortal.avatarUrl, "small")}
-                          alt={assignerPortal.nickname || "User"}
-                        />
-                      )}
-                      <span className="curation-tooltip-name">
-                        {assignerPortal?.nickname || "Unknown"}
-                      </span>
-                      <span className="curation-tooltip-username">
-                        @{assignerPortal?.username || "unknown"}
-                      </span>
-                    </div>
-                  </>
-                )}
-                <div className="curation-tooltip-time">
-                  Updated on {formatDate(activeCurationForTooltip.updatedAt, i18next?.language)}
-                </div>
+      {activeCurationForTooltip && (() => {
+        const typesSortedPortal = getCurationTypesResolved(
+          activeCurationForTooltip,
+          curationTypesDict,
+        );
+        const typeLabelPortal = typesSortedPortal.map((t) => t.name).join(", ") || "Curation";
+        const assignerPortal = activeCurationForTooltip.assignedByUser;
+        return (
+          <Portal when={!!activeCurationForTooltip}>
+            <div
+              ref={curationTooltipPanelRef}
+              className="curation-tooltip-dropdown level-detail__curation-inline-assignee curation-tooltip-dropdown--portal"
+              role="tooltip"
+              style={{
+                position: "fixed",
+                top: curationTooltipCoords.top,
+                left: curationTooltipCoords.left,
+                transform: "translateX(-50%)",
+                zIndex: 121,
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="curation-tooltip-type">{typeLabelPortal}</div>
+              {typesSortedPortal.every((t) => hasAbility(t, ABILITIES.SHOW_ASSIGNER)) && (
+                <>
+                  <div className="curation-tooltip-assigned">assigned by</div>
+                  <div className="curation-tooltip-user">
+                    {assignerPortal?.avatarUrl && (
+                      <img
+                        className="curation-tooltip-avatar"
+                        src={selectIconSize(assignerPortal.avatarUrl, "small")}
+                        alt={assignerPortal.nickname || "User"}
+                      />
+                    )}
+                    <span className="curation-tooltip-name">
+                      {assignerPortal?.nickname || "Unknown"}
+                    </span>
+                    <span className="curation-tooltip-username">
+                      @{assignerPortal?.username || "unknown"}
+                    </span>
+                  </div>
+                </>
+              )}
+              <div className="curation-tooltip-time">
+                Updated on {formatDate(activeCurationForTooltip.updatedAt, i18next?.language)}
               </div>
-            );
-          })(),
-          getPortalRoot()
-        )}
+            </div>
+          </Portal>
+        );
+      })()}
 
       </div>
     </div>

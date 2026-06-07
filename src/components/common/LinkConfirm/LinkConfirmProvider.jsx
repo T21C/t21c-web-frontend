@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useMemo, useRef, useState } from "react";
-import { createPortal } from "react-dom";
+import { Portal } from "@/components/common/Portal";
 import { useTranslation } from "react-i18next";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 import { formatUrlForDisplay, getUrlHost, parseSafeUrl } from "@/utils/bioCanvas/urls.js";
@@ -34,7 +34,8 @@ function LinkConfirmModal({ pending, onConfirm, onCancel }) {
   const displayUrl = formatUrlForDisplay(pending.url);
   const host = getUrlHost(pending.url);
 
-  return createPortal(
+  return (
+    <Portal mount="documentBody">
     <div className="link-confirm" role="presentation">
       <button type="button" className="link-confirm__backdrop" aria-label={t("bioCanvas.linkConfirm.cancel")} onClick={onCancel} />
       <div className="link-confirm__panel" role="dialog" aria-modal="true" aria-labelledby="link-confirm-title">
@@ -69,8 +70,8 @@ function LinkConfirmModal({ pending, onConfirm, onCancel }) {
           </button>
         </div>
       </div>
-    </div>,
-    document.body,
+    </div>
+    </Portal>
   );
 }
 

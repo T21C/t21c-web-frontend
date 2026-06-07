@@ -1,8 +1,7 @@
 // tuf-search: #FacetItemPicker #facetItemPicker #selectors #tagSelector
 import React, { useMemo, useState, useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
+import { Portal } from '@/components/common/Portal';
 import { useTranslation } from 'react-i18next';
-import { getPortalRoot } from '@/utils/portalRoot';
 import './facetitempicker.css';
 
 /**
@@ -75,8 +74,6 @@ const FacetItemPicker = ({
 
   if (!isOpen) return null;
 
-  const root = getPortalRoot();
-
   const setOverlayNode = (el) => {
     if (overlayRef) {
       if (typeof overlayRef === 'function') overlayRef(el);
@@ -84,7 +81,8 @@ const FacetItemPicker = ({
     }
   };
 
-  return createPortal(
+  return (
+    <Portal>
     <div ref={setOverlayNode} className="facet-item-picker" role="dialog" aria-modal="true">
       <button
         type="button"
@@ -178,8 +176,8 @@ const FacetItemPicker = ({
           )}
         </div>
       </div>
-    </div>,
-    root
+    </div>
+    </Portal>
   );
 };
 

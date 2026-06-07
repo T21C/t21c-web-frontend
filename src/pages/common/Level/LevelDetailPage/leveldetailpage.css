@@ -3512,7 +3512,7 @@
   color: var(--primary-text);
 }
 
-.level-detail .level-detail__curation-inline-assignee .curation-tooltip-avatar {
+.curation-tooltip-dropdown--portal .curation-tooltip-avatar {
   width: 3.25rem;
   height: 3.25rem;
 }

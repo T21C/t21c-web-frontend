@@ -1,7 +1,7 @@
 import { routes } from '@/api/routes';
 // tuf-search: #EntityPopup #entityPopup #popups #entities #entity
 import React, { useState, useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
+import { Portal } from '@/components/common/Portal';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import api from '@/utils/api';
@@ -90,20 +90,20 @@ export const EntityPopup = ({ artist, song, onClose, type = 'artist' }) => {
     };
   }, [loading, entityData]);
 
-  const renderPortal = (content) => createPortal(content, getPortalRoot());
-
   const overlayProps = {
     className: 'entity-popup-overlay',
     onClick: (e) => e.target === e.currentTarget && onClose(),
   };
 
   if (loading) {
-    return renderPortal(
-      <div {...overlayProps}>
-        <div className="entity-popup" ref={popupRef}>
-          <div className="popup-loading">{t('loading.generic', { ns: 'common' })}</div>
+    return (
+      <Portal>
+        <div {...overlayProps}>
+          <div className="entity-popup" ref={popupRef}>
+            <div className="popup-loading">{t('loading.generic', { ns: 'common' })}</div>
+          </div>
         </div>
-      </div>,
+      </Portal>
     );
   }
 
@@ -125,7 +125,8 @@ export const EntityPopup = ({ artist, song, onClose, type = 'artist' }) => {
     }
   };
 
-  return renderPortal(
+  return (
+    <Portal>
     <div {...overlayProps}>
       <div className="entity-popup" ref={popupRef}>
         <div className="popup-header">
@@ -261,7 +262,8 @@ export const EntityPopup = ({ artist, song, onClose, type = 'artist' }) => {
           </div>
         </div>
       </div>
-    </div>,
+    </div>
+    </Portal>
   );
 };
 

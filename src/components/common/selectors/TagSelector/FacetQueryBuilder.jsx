@@ -1,6 +1,6 @@
 // tuf-search: #FacetQueryBuilder #facetQueryBuilder #selectors #tagSelector
 import React, { useMemo, useState, useRef, useEffect, useId, useCallback } from 'react';
-import { createPortal } from 'react-dom';
+import { Portal } from '@/components/common/Portal';
 import { Trans, useTranslation } from 'react-i18next';
 import { Tooltip } from 'react-tooltip';
 import { CustomSelect } from '@/components/common/selectors';
@@ -403,8 +403,7 @@ const FacetQueryBuilder = ({ items, value, onChange, title, enableGrouping = tru
         </svg>
       </button>
 
-      {isOpen && portalRoot &&
-        createPortal(
+      <Portal when={isOpen} root={portalRoot}>
             <div
               ref={panelContentRef}
               className={`facet-query-builder__panel facet-query-builder__panel--portal ${PORTALED_PANEL_CLASS} portaled-panel--z-popover${
@@ -641,9 +640,8 @@ const FacetQueryBuilder = ({ items, value, onChange, title, enableGrouping = tru
                 </div>
               </div>
             )}
-          </div>,
-          portalRoot
-        )}
+          </div>
+      </Portal>
 
       <FacetItemPicker
         isOpen={Boolean(picker)}

@@ -1,8 +1,7 @@
 // tuf-search: #CreatorAssignmentPopup #creatorAssignmentPopup #popups #creators #creatorAssignment
 import React, { useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
+import { Portal } from '@/components/common/Portal';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
-import { getPortalRoot } from '@/utils/portalRoot';
 import { useTranslation } from 'react-i18next';
 import { CloseButton } from '@/components/common/buttons';
 import './creatorAssignmentPopup.css';
@@ -51,5 +50,5 @@ export const CreatorAssignmentPopup = ({ user, onClose, onUpdate }) => {
     </div>
   );
 
-  return createPortal(popupContent, getPortalRoot());
+  return <Portal>{popupContent}</Portal>;
 };

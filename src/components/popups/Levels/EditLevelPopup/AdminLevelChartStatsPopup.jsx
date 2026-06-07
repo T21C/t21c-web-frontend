@@ -2,11 +2,10 @@ import { routes } from '@/api/routes';
 // tuf-search: #AdminLevelChartStatsPopup #chartStats #levels #admin
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { createPortal } from 'react-dom';
+import { Portal } from '@/components/common/Portal';
 import './adminlevelchartstatspopup.css';
 import api from '@/utils/api';
 import { CloseButton } from '@/components/common/buttons';
-import { getPortalRoot } from '@/utils/portalRoot';
 import { formatSecondsAsHhMmSs } from '@/utils/levelHelpers';
 import toast from 'react-hot-toast';
 
@@ -226,5 +225,5 @@ export const AdminLevelChartStatsPopup = ({ level, onClose, onSaved }) => {
     </div>
   );
 
-  return createPortal(content, getPortalRoot());
+  return <Portal>{content}</Portal>;
 };
