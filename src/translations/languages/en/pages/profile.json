@@ -80,7 +80,7 @@
         },
         "wfPPScore": {
           "aria": "Explain WF PP Score",
-          "description": "Sum of all scores from world's first and pure perfect passes"
+          "description": "Sum of all level base scores from world's first pure perfect passes"
         },
         "score12K": {
           "aria": "Explain 12K Score",

@@ -80,7 +80,7 @@
         },
         "wfPPScore": {
           "aria": "说明世界首通 PP 分数",
-          "description": "世界首通且纯完美通关的分数之和"
+          "description": "世界首通纯完美通关对应关卡基础分之和"
         },
         "score12K": {
           "aria": "说明 12 键分数",

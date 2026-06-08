@@ -80,7 +80,7 @@
         },
         "wfPPScore": {
           "aria": "세계 최초 PP 점수 설명",
-          "description": "세계 최초로 완벽한 플레이한 클리어 점수 합산"
+          "description": "세계 최초 완벽한 플레이 클리어한 레벨 기본 점수 합산"
         },
         "score12K": {
           "aria": "12키 점수 설명",
