@@ -20,6 +20,11 @@
   max-width: min(90vw, var(--profile-header-difficulty-ten-col-width));
 }
 
+/* Settings preview: stay above page content but below editor modals (z-index 1100+). */
+.profile-header__icon-panel-portal-anchor.profile-header__icon-panel-portal-anchor--settings-player {
+  z-index: 5;
+}
+
 .profile-header__curation-panel,
 .profile-header__icon-panel {
   box-sizing: border-box;

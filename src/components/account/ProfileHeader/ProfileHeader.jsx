@@ -256,10 +256,10 @@ const ProfileHeader = ({
 
   /** Player difficulty portal: fixed width from CSS (see profileHeaderIconPanelPortal.css) instead of measured `--profile-header-icon-panel-min-width`. */
   const iconPanelPortalAnchorVariant = useMemo(() => {
-    if (mode !== "player") return null;
     const c = className || "";
-    if (c.includes("player-page__profile-header")) return "player-page";
     if (c.includes("settings-sub-page__profile-header")) return "settings-player";
+    if (mode !== "player") return null;
+    if (c.includes("player-page__profile-header")) return "player-page";
     return null;
   }, [mode, className]);
 
