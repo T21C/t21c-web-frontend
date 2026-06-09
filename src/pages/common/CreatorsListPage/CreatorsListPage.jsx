@@ -389,6 +389,12 @@ const CreatorsListPage = () => {
           </Collapsible>
         </div>
 
+        {creatorListTotal != null && (
+          <span className="total-search-results">
+            {t('totalResults', { ns: 'common', count: creatorListTotal })}
+          </span>
+        )}
+
         <div className="creators-list-page__list" style={{ minHeight: "500px" }}>
           {creatorData === null ? (
             <div className="loader-shell loader-shell--tall">

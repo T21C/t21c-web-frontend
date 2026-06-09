@@ -1,6 +1,7 @@
 import { routes } from '@/api/routes';
 // tuf-search: #LeaderboardPage #leaderboardPage #leaderboard — Leaderboard
 import "./leaderboardpage.css";
+import "@/pages/common/search-section.css";
 import { useContext, useEffect, useRef, useState, useMemo } from "react";
 import { useLocation } from 'react-router-dom';
 import axios from "axios";
@@ -568,6 +569,12 @@ const LeaderboardPage = () => {
             </CollapsibleContent>
           </Collapsible>
         </div>
+
+        {leaderboardListTotal != null && (
+          <span className="total-search-results">
+            {t('totalResults', { ns: 'common', count: leaderboardListTotal })}
+          </span>
+        )}
 
         <div className="leaderboard-page__list" style={{ minHeight: "500px" }}>
           {playerData === null ? (

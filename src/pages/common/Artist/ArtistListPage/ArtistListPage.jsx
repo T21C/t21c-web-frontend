@@ -14,6 +14,7 @@ import { normalizeArtistSearchQuery } from '@/utils/normalizeEntitySearchQuery';
 import { CustomSelect } from '@/components/common/selectors';
 import { useArtistContext } from '@/contexts/ArtistContext';
 import './artistListPage.css';
+import '@/pages/common/search-section.css';
 import { getVerificationClass } from '@/utils/Utility';
 
 const ArtistListPage = () => {
@@ -43,6 +44,7 @@ const ArtistListPage = () => {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [totalArtists, setTotalArtists] = useState(null);
 
   // Debounced + cancellation-aware request runner. Search/filter/sort changes
   // wait 500ms (collapsing rapid keystrokes); pagination uses `flush` so
@@ -58,6 +60,7 @@ const ArtistListPage = () => {
       setLoading(true);
       setPage(1);
       setArtists([]);
+      setTotalArtists(null);
     }
 
     const currentPage = reset ? 1 : page;
@@ -83,6 +86,7 @@ const ArtistListPage = () => {
 
       if (reset) {
         setArtists(newArtists);
+        setTotalArtists(data.total ?? 0);
       } else {
         setArtists(prev => [...prev, ...newArtists]);
       }
@@ -172,6 +176,12 @@ const ArtistListPage = () => {
             />
           </div>
         </div>
+
+        {totalArtists != null && (
+          <span className="total-search-results">
+            {t('totalResults', { ns: 'common', count: totalArtists })}
+          </span>
+        )}
 
         {loading && artists.length === 0 ? (
           <div className="loader-shell loader-shell--tall">

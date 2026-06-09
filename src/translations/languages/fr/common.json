@@ -38,6 +38,7 @@
   "promoteTo": "Promouvoir en {{role}}",
   "demoteTo": "Rétrograder en {{role}}",
   "currentRole": "Rôle actuel",
+  "totalResults": "{{count}} résultats au total",
   "pagination": {
     "previous": "Précédent",
     "next": "Suivant",

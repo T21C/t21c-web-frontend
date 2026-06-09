@@ -23,6 +23,7 @@ const PackContextProvider = (props) => {
 
     const [hasMore, setHasMore] = useState(true);
     const [pageNumber, setPageNumber] = useState(0);
+    const [totalPacks, setTotalPacks] = useState(null);
 
     const [favorites, setFavorites] = useState([]);
     const [favoritesLoading, setFavoritesLoading] = useState(false);
@@ -58,6 +59,7 @@ const PackContextProvider = (props) => {
         setFilters(nextFilters);
         setPageNumber(0);
         setPacks([]);
+        setTotalPacks(null);
         setError(false);
         setForceUpdate((f) => !f);
     }, []);
@@ -110,12 +112,14 @@ const PackContextProvider = (props) => {
                 );
                 const pack = response.data;
                 setPacks(pack ? [pack] : []);
+                setTotalPacks(pack ? 1 : 0);
                 setHasMore(false);
                 setLoading(false);
                 return;
             } catch (error) {
                 if (axios.isCancel(error)) return;
                 setPacks([]);
+                setTotalPacks(0);
                 setHasMore(false);
                 setLoading(false);
                 if (error.response?.status !== 404) {
@@ -142,6 +146,7 @@ const PackContextProvider = (props) => {
                 api.get(routes.database.levels.packs.root(), { params, signal })
             );
             const newPacks = response.data.packs || [];
+            const total = response.data.total ?? 0;
 
             // Use functional updates to avoid race conditions
             setPacks(prevPacks => {
@@ -151,7 +156,10 @@ const PackContextProvider = (props) => {
                     return [...prevPacks, ...newPacks];
                 }
             });
-            setHasMore(newPacks.length === 30);
+            if (pageNumber === 0) {
+                setTotalPacks(total);
+            }
+            setHasMore((pageNumber + 1) * 30 < total);
             setLoading(false);
         } catch (error) {
             if (axios.isCancel(error)) return; // superseded by a newer request
@@ -165,6 +173,7 @@ const PackContextProvider = (props) => {
     const triggerRefresh = useCallback(() => {
         setPageNumber(0);
         setPacks([]);
+        setTotalPacks(null);
         setError(false);
         if (filtersRef.current.viewMode === 'favorites') {
             setFavorites([]);
@@ -196,6 +205,7 @@ const PackContextProvider = (props) => {
     const fetchFavorites = useCallback(async () => {
         if (!user) {
             setFavorites([]);
+            setTotalPacks(0);
             return;
         }
 
@@ -203,11 +213,14 @@ const PackContextProvider = (props) => {
         setError(false);
         try {
             const response = await api.get(routes.database.levels.packs.favorites());
-            setFavorites(response.data.packs || []);
+            const favoritePacks = response.data.packs || [];
+            setFavorites(favoritePacks);
+            setTotalPacks(favoritePacks.length);
         } catch (error) {
             console.error('Error fetching favorites:', error);
             setError(true);
             setFavorites([]);
+            setTotalPacks(0);
         } finally {
             setFavoritesLoading(false);
         }
@@ -353,6 +366,7 @@ const PackContextProvider = (props) => {
         error,
         hasMore,
         pageNumber,
+        totalPacks,
 
         // Favorites state
         favorites,

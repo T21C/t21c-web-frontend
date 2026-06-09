@@ -6,7 +6,6 @@
 .creators-list-page .creators-list-page__body {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
   margin: 0 auto;
   padding: 0 1rem;
 }

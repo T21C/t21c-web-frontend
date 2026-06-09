@@ -45,6 +45,7 @@ const PackPageContent = () => {
     filters,
     error,
     hasMore,
+    totalPacks,
     triggerRefresh,
     loadMore,
     retryLoadMore,
@@ -382,6 +383,12 @@ const PackPageContent = () => {
             </CollapsibleContent>
           </Collapsible>
         </div>
+
+        {totalPacks != null && (
+          <span className="total-search-results">
+            {t('totalResults', { ns: 'common', count: totalPacks })}
+          </span>
+        )}
 
         <div className="pack-page__content" ref={scrollRef}>
           {error && packs.length === 0 ? (

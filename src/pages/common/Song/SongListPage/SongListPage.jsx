@@ -12,6 +12,7 @@ import { CustomSelect } from '@/components/common/selectors';
 import { useSongContext } from '@/contexts/SongContext';
 import { getVerificationClass } from '@/utils/Utility';
 import './songListPage.css';
+import '@/pages/common/search-section.css';
 
 const SongListPage = () => {
   const { t } = useTranslation(['pages', 'common']);
@@ -40,6 +41,7 @@ const SongListPage = () => {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [totalSongs, setTotalSongs] = useState(null);
   
   // Cancel token ref for race condition prevention
   const abortControllerRef = useRef(null);
@@ -70,6 +72,7 @@ const SongListPage = () => {
         setLoading(true);
         setPage(1);
         setSongs([]);
+        setTotalSongs(null);
       }
 
       const currentPage = reset ? 1 : page;
@@ -99,6 +102,7 @@ const SongListPage = () => {
       
       if (reset) {
         setSongs(newSongs);
+        setTotalSongs(data.total ?? 0);
       } else {
         setSongs(prev => [...prev, ...newSongs]);
       }
@@ -193,6 +197,12 @@ const SongListPage = () => {
             />
           </div>
         </div>
+
+        {totalSongs != null && (
+          <span className="total-search-results">
+            {t('totalResults', { ns: 'common', count: totalSongs })}
+          </span>
+        )}
 
         {loading && songs.length === 0 ? (
           <div className="loader-shell loader-shell--tall">
