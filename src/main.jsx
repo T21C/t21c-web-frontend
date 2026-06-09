@@ -24,6 +24,10 @@ import { ProfileContextProvider } from '@/contexts/ProfileContext';
 import { LinkConfirmProvider } from '@/components/common/LinkConfirm';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+
 // Create a client
 const queryClient = new QueryClient({
   defaultOptions: {

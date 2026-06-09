@@ -1,5 +1,12 @@
-import { forwardRef, useCallback, useMemo } from 'react';
+import { forwardRef, useCallback, useEffect, useMemo, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Virtuoso, VirtuosoGrid } from 'react-virtuoso';
+import {
+  buildVirtualListFingerprint,
+  buildVirtualListStoreKey,
+  getVirtualListScrollState,
+  setVirtualListScrollState,
+} from './virtualListScrollStore';
 import './virtuallist.css';
 
 const defaultComputeItemKey = (index, item) => item?.id ?? index;
@@ -35,9 +42,87 @@ const VirtualList = ({
   defaultItemHeight,
   style,
   className = '',
+  stateKey = 'main',
+  restoreScroll = true,
 }) => {
+  const { pathname, search } = useLocation();
   const safeItems = items ?? [];
   const waitingForScrollParent = customScrollParent === null;
+
+  const virtuosoRef = useRef(null);
+  const gridSnapshotRef = useRef(null);
+  const gridSaveTimerRef = useRef(null);
+  const storeKeyRef = useRef('');
+  const fingerprintRef = useRef('0');
+
+  const containerScroll = Boolean(customScrollParent);
+  const storeKey = useMemo(
+    () => buildVirtualListStoreKey(pathname, search, stateKey, grid, containerScroll),
+    [pathname, search, stateKey, grid, containerScroll],
+  );
+
+  const fingerprint = useMemo(
+    () => buildVirtualListFingerprint(safeItems, computeItemKey),
+    [safeItems, computeItemKey],
+  );
+
+  const restoredSnapshot = useMemo(() => {
+    if (!restoreScroll || safeItems.length === 0) return undefined;
+    return getVirtualListScrollState(storeKey, fingerprint) ?? undefined;
+  }, [restoreScroll, storeKey, fingerprint, safeItems.length]);
+
+  storeKeyRef.current = storeKey;
+  fingerprintRef.current = fingerprint;
+
+  const persistListSnapshot = useCallback(() => {
+    if (!restoreScroll || safeItems.length === 0) return;
+    virtuosoRef.current?.getState((snapshot) => {
+      setVirtualListScrollState(storeKeyRef.current, fingerprintRef.current, snapshot);
+    });
+  }, [restoreScroll, safeItems.length]);
+
+  const persistGridSnapshot = useCallback((snapshot) => {
+    if (!restoreScroll || safeItems.length === 0 || !snapshot) return;
+    gridSnapshotRef.current = snapshot;
+    setVirtualListScrollState(storeKeyRef.current, fingerprintRef.current, snapshot);
+  }, [restoreScroll, safeItems.length]);
+
+  const handleGridStateChanged = useCallback(
+    (snapshot) => {
+      if (!restoreScroll || safeItems.length === 0) return;
+      gridSnapshotRef.current = snapshot;
+      if (gridSaveTimerRef.current) {
+        clearTimeout(gridSaveTimerRef.current);
+      }
+      gridSaveTimerRef.current = setTimeout(() => {
+        persistGridSnapshot(gridSnapshotRef.current);
+      }, 100);
+    },
+    [restoreScroll, safeItems.length, persistGridSnapshot],
+  );
+
+  const handleIsScrolling = useCallback(
+    (isScrolling) => {
+      if (!isScrolling) {
+        persistListSnapshot();
+      }
+    },
+    [persistListSnapshot],
+  );
+
+  useEffect(() => {
+    return () => {
+      if (gridSaveTimerRef.current) {
+        clearTimeout(gridSaveTimerRef.current);
+      }
+      if (!restoreScroll || safeItems.length === 0) return;
+      if (grid) {
+        persistGridSnapshot(gridSnapshotRef.current);
+      } else {
+        persistListSnapshot();
+      }
+    };
+  }, [grid, restoreScroll, safeItems.length, persistGridSnapshot, persistListSnapshot]);
 
   const scrollProps = useMemo(() => {
     if (customScrollParent) {
@@ -125,8 +210,11 @@ const VirtualList = ({
     return null;
   }
 
+  const restoreProps = restoredSnapshot ? { restoreStateFrom: restoredSnapshot } : {};
+
   const sharedProps = {
     ...scrollProps,
+    ...restoreProps,
     data: safeItems,
     endReached: handleEndReached,
     increaseViewportBy: { top: overscan, bottom: overscan },
@@ -141,6 +229,7 @@ const VirtualList = ({
           {...sharedProps}
           components={gridComponents}
           itemContent={itemContent}
+          stateChanged={handleGridStateChanged}
         />
       </div>
     );
@@ -151,8 +240,10 @@ const VirtualList = ({
       <Virtuoso
         {...sharedProps}
         {...(defaultItemHeight ? { defaultItemHeight } : {})}
+        ref={virtuosoRef}
         components={listComponents}
         itemContent={itemContent}
+        isScrolling={handleIsScrolling}
       />
     </div>
   );
