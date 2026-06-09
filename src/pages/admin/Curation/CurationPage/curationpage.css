@@ -453,7 +453,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--btn-neutral-disabled-fill);
+  background-color: var(--color-black);
   border-radius: 8px;
   padding: 0.5rem 2rem;
 }
