@@ -5,7 +5,7 @@
   justify-content: space-between;
   gap: 1rem;
   min-height: 5rem;
-  padding: 0.5rem;
+  padding: 0.5rem 0.5rem 1rem;
   border-radius: 0px;
   cursor: pointer;
   align-items: center;
@@ -156,7 +156,10 @@
   width: 2.75rem;
 }
 
-@media (max-width: 795px) {
+@media (max-width: 768px) {
+  .pass-card {
+    padding-bottom: 1.75rem;
+  }
   .pass-card .stats-wrapper {
     min-width: 150px;
     gap: 1rem;
