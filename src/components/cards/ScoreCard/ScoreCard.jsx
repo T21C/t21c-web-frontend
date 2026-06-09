@@ -89,18 +89,22 @@ const ScoreCard = ({scoreData, topScores, potentialTopScores}) => {
           <div className="score-desc">{clampFloat(scoreData.speed, 2)}×</div>
       </div>
 
-      <div className="vid-logo-wrapper">
-        {scoreData.videoLink && !isHiddenLevel && (
-           <a className="svg-fill" href={scoreData.videoLink} target="_blank" title={t('score.card.tooltips.watchVideo')}>
-             <VideoLinkIcon size="32px" url={scoreData.videoLink} />
-           </a>
-         )}
-      </div>
+      {(formattedDate || (scoreData.videoLink && !isHiddenLevel)) && (
+        <div className="score-card__trailing">
+          {formattedDate && (
+            <time className="score-card__date" dateTime={scoreData.vidUploadTime}>
+              {formattedDate}
+            </time>
+          )}
 
-      {formattedDate && (
-        <time className="score-card__date" dateTime={scoreData.vidUploadTime}>
-          {formattedDate}
-        </time>
+          <div className="vid-logo-wrapper">
+            {scoreData.videoLink && !isHiddenLevel && (
+              <a className="svg-fill" href={scoreData.videoLink} target="_blank" title={t('score.card.tooltips.watchVideo')}>
+                <VideoLinkIcon size="32px" url={scoreData.videoLink} />
+              </a>
+            )}
+          </div>
+        </div>
       )}
     </div>
   );

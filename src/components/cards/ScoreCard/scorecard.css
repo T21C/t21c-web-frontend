@@ -1,6 +1,7 @@
 /* tuf-search: #ScoreCard #scoreCard #cards */
 .score-card {
   position: relative;
+  container-type: inline-size;
   display: flex;
   justify-content: left;
   gap: 1rem;
@@ -172,8 +173,28 @@
 }
 
 .score-card .vid-logo-wrapper {
-  min-width: 50px; /* Smooth scaling */
+  min-width: 50px;
 }
+
+.score-card .score-card__trailing {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.score-card .score-card__date {
+  position: absolute;
+  bottom: 0.2rem;
+  right: 0.4rem;
+  font-size: 0.65rem;
+  line-height: 1;
+  color: var(--color-white-t60);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+
 
 .score-card .wf-badge {
   font-size: 0.85rem;
@@ -194,16 +215,6 @@
   opacity: 0.7;
   background-color: #ff03;
   color: #ff0;
-}
-
-.score-card .score-card__date {
-  position: absolute;
-  bottom: 0.2rem;
-  right: 0.6rem;
-  font-size: 0.65rem;
-  line-height: 1;
-  color: var(--color-white-t60);
-  pointer-events: none;
 }
 
 @media (max-width: 400px) {
