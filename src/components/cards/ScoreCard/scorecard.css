@@ -196,6 +196,16 @@
   color: #ff0;
 }
 
+.score-card .score-card__date {
+  position: absolute;
+  bottom: 0.2rem;
+  right: 0.6rem;
+  font-size: 0.65rem;
+  line-height: 1;
+  color: var(--color-white-t60);
+  pointer-events: none;
+}
+
 @media (max-width: 400px) {
   .score-card .score-exp {
     font-size: 0.8rem;

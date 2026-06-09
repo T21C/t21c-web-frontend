@@ -7,8 +7,10 @@ import { UserAvatar } from "@/components/layout";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import PassAdofaiV2Flag from "../PassAdofaiV2Flag";
 import WorldsFirstFlag from "../WorldsFirstFlag/WorldsFirstFlag";
-import { normalizeKeyCount } from "@/utils/Utility";
+import { normalizeKeyCount, formatPassDate } from "@/utils/Utility";
 import { VideoLinkIcon } from "@/components/common/icons";
+import MarqueeText from "@/components/common/display/MarqueeText/MarqueeText";
+import i18next from "i18next";
 
 const PassCard = ({ pass }) => {
   const { t } = useTranslation('components');
@@ -25,6 +27,7 @@ const PassCard = ({ pass }) => {
 
   // Format accuracy to percentage with 2 decimal places
   const formattedAccuracy = (pass.accuracy * 100).toFixed(2) + '%';
+  const formattedDate = formatPassDate(pass.vidUploadTime, i18next?.language);
 
   return (
     <div className='pass-card' style={{ backgroundColor: pass.isDeleted ? "#f0000099" : "none" }}>
@@ -36,7 +39,10 @@ const PassCard = ({ pass }) => {
         />
       <div className="pass-info-wrapper">
         <div className="group">
-          <p className="pass-exp">#{pass.id} - {pass.player.name}<UserAvatar {...userAvatarUrls(pass.player)} className="user-avatar" /> </p>
+          <MarqueeText className="pass-exp" as="p" title={`#${pass.id} - ${pass.player.name}`}>
+            #{pass.id} - {pass.player.name}
+          </MarqueeText>
+          <UserAvatar {...userAvatarUrls(pass.player)} className="user-avatar" />
           {pass.isWorldsFirst && (
             <WorldsFirstFlag variant="clear" tooltipIndex={`${pass.id}-clear`} className="wf-badge" />
           )}
@@ -44,7 +50,9 @@ const PassCard = ({ pass }) => {
             <WorldsFirstFlag variant="pp" tooltipIndex={`${pass.id}-pp`} className="wf-badge" />
           )}
         </div>
-        <p className='pass-desc'>{pass.level.song}</p>
+        <MarqueeText className="pass-desc" as="p" title={pass.level.song}>
+          {pass.level.song}
+        </MarqueeText>
       </div>
 
       <div className="stats-wrapper">
@@ -80,6 +88,12 @@ const PassCard = ({ pass }) => {
       </div>
       </Link>
 
+      {formattedDate && (
+        <time className="pass-card__date" dateTime={pass.vidUploadTime}>
+          {formattedDate}
+        </time>
+      )}
+
       <div className="video-wrapper">
         {pass.videoLink && (
           <a 
@@ -89,7 +103,7 @@ const PassCard = ({ pass }) => {
             rel="noreferrer"
             title={t('cards.pass.links.video')}
           >
-            <VideoLinkIcon url={pass.videoLink.trim()} />
+            <VideoLinkIcon size="2.5rem" url={pass.videoLink.trim()} />
           </a>
         )}
       </div>

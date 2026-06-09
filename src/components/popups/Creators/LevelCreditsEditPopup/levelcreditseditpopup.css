@@ -306,22 +306,10 @@
 }
 
 .level-credits-edit-popup-container .level-credits-edit-popup__creator-item:hover .marquee-text--overflows .marquee-text__inner {
-  animation: level-credits-edit-marquee var(--marquee-duration, 6s) var(--ease-in-out-sine) infinite;
-}
-
-@keyframes level-credits-edit-marquee {
-  0%,
-  15% {
-    transform: translateX(0);
-  }
-  45%,
-  55% {
-    transform: translateX(calc(-1 * var(--marquee-distance, 0px)));
-  }
-  85%,
-  100% {
-    transform: translateX(0);
-  }
+  animation-name: var(--marquee-animation-name);
+  animation-duration: var(--marquee-cycle-duration, 6s);
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
 }
 
 .level-credits-edit-popup-container .level-credits-edit-popup__creator-controls {

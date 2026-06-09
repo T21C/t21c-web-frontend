@@ -4,15 +4,14 @@
   display: flex;
   justify-content: space-between;
   gap: 1rem;
-  min-height: 4rem;
+  min-height: 5rem;
   padding: 0.5rem;
   border-radius: 0px;
-  margin-top: 1rem;
   cursor: pointer;
   align-items: center;
   flex-wrap: wrap;
   border-bottom: 1px solid;
-  border-color: var(--color-gray-3);
+  border-color: #aaa6;
   transition: all 0.1s ease-in-out;
 }
 
@@ -36,10 +35,6 @@
 }
 
 .pass-card .pass-exp {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  width: fit-content;
   font-size: 0.9rem;
   color: var(--color-white-t80);
 }
@@ -48,10 +43,24 @@
   font-size: 1.2rem;
 }
 
-.pass-card .pass-exp,
-.pass-card .pass-desc {
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.pass-card .marquee-text.pass-exp,
+.pass-card .marquee-text.pass-desc {
+  width: fit-content;
+}
+
+.pass-card .pass-info-wrapper .group .marquee-text.pass-exp {
+  min-width: 0;
+}
+
+.pass-card:hover .marquee-text--overflows {
+  text-overflow: clip;
+}
+
+.pass-card:hover .marquee-text--overflows .marquee-text__inner {
+  animation-name: var(--marquee-animation-name);
+  animation-duration: var(--marquee-cycle-duration, 6s);
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
 }
 
 .pass-card .pass-info-wrapper {
@@ -66,6 +75,11 @@
   align-items: center;
   display: flex;
   gap: 0.3rem;
+  min-width: 0;
+}
+
+.pass-card .pass-info-wrapper .group .user-avatar {
+  flex-shrink: 0;
 }
 
 .pass-card .stats-wrapper {
@@ -116,25 +130,25 @@
 .pass-card .video-wrapper {
   display: flex;
   align-items: center;
-  min-width: 50px;
-}
-
-.pass-card .video-wrapper a {
-  display: block;
-  height: 2.5rem;
-  width: 2.5rem;
-}
-
-.pass-card .video-wrapper svg {
-  height: 100%;
-  width: 100%;
+  transition: transform 0.2s;
   border-radius: 4px;
   cursor: pointer;
-  transition: all 0.2s;
 }
 
-.pass-card .video-wrapper svg:hover {
-  transform: scale(1.3);
+.pass-card .video-wrapper:hover {
+  transform: scale(1.12);
+}
+
+.pass-card .pass-card__date {
+  position: absolute;
+  bottom: 0.2rem;
+  right: 0.4rem;
+  font-size: 0.65rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  background-color: var(--color-black-t20);
+  color: var(--color-white-t75);
+  pointer-events: none;
 }
 
 .pass-card .lv-icon {

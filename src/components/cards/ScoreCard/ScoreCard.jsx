@@ -3,13 +3,14 @@ import { Link } from "react-router-dom";
 import "./scorecard.css"
 import "@/index.css"
 import { useTranslation } from "react-i18next";
-import { clampFloat, formatScore } from "@/utils/Utility"
+import { clampFloat, formatScore, formatPassDate } from "@/utils/Utility"
 import { formatNumber } from "@/utils";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { Tooltip } from "react-tooltip";
 import { formatCreatorDisplay } from "@/utils/Utility";
 import WorldsFirstFlag from "../WorldsFirstFlag/WorldsFirstFlag";
-import { VideoLinkIcon } from "@/components/common/icons";
+import { VideoLinkIcon } from "@/components/common/icons";  
+import i18next from "i18next";
 
 const Judgements = ({judgements}) => {
   return (
@@ -34,6 +35,7 @@ const ScoreCard = ({scoreData, topScores, potentialTopScores}) => {
   const isHiddenLevel = scoreData.level?.isHidden || false;
   const isHiddenPass = scoreData.isHidden || false;
   const { difficultyDict } = useDifficultyContext();
+  const formattedDate = formatPassDate(scoreData.vidUploadTime, i18next?.language);
 
   return (
     <div className={`score-card ${isHiddenPass ? 'hidden-pass' : ''}`} style={{pointerEvents: isHiddenLevel ? 'none' : 'auto'}}>
@@ -90,10 +92,16 @@ const ScoreCard = ({scoreData, topScores, potentialTopScores}) => {
       <div className="vid-logo-wrapper">
         {scoreData.videoLink && !isHiddenLevel && (
            <a className="svg-fill" href={scoreData.videoLink} target="_blank" title={t('score.card.tooltips.watchVideo')}>
-             <VideoLinkIcon url={scoreData.videoLink} />
+             <VideoLinkIcon size="32px" url={scoreData.videoLink} />
            </a>
          )}
       </div>
+
+      {formattedDate && (
+        <time className="score-card__date" dateTime={scoreData.vidUploadTime}>
+          {formattedDate}
+        </time>
+      )}
     </div>
   );
 };

@@ -1115,6 +1115,12 @@ const PackDetailPage = () => {
   const isDownloadPopupOpen = Boolean(downloadContext);
   const popupContextName = downloadContext?.name || pack?.name;
   const popupSizeSummary = downloadContext?.sizeSummary || packSizeSummary;
+  const packOwner = pack.packOwner;
+  const ownerProfileTo = packOwner?.creatorId
+    ? `/creator/${packOwner.creatorId}`
+    : packOwner?.playerId
+      ? `/profile/${packOwner.playerId}`
+      : null;
 
   return (
     <div className="pack-detail-page">
@@ -1177,13 +1183,27 @@ const PackDetailPage = () => {
               
               <div className="meta">
                 <div className="owner">
-                  <UserAvatar 
-                    {...userAvatarUrls(pack.packOwner)} 
-                    className="owner-avatar"
-                  />
-                  <span className="owner-name">
-                    {t('packDetail.by')} {pack.packOwner?.username || 'Unknown'}
-                  </span>
+                  {ownerProfileTo ? (
+                    <Link className="owner-link" to={ownerProfileTo}>
+                      <UserAvatar 
+                        {...userAvatarUrls(packOwner)} 
+                        className="owner-avatar"
+                      />
+                      <span className="owner-name">
+                        {t('packDetail.by')} {packOwner?.username || 'Unknown'}
+                      </span>
+                    </Link>
+                  ) : (
+                    <>
+                      <UserAvatar 
+                        {...userAvatarUrls(packOwner)} 
+                        className="owner-avatar"
+                      />
+                      <span className="owner-name">
+                        {t('packDetail.by')} {packOwner?.username || 'Unknown'}
+                      </span>
+                    </>
+                  )}
                 </div>
                 
                 <div className="view-mode">

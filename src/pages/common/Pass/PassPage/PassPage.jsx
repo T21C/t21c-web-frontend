@@ -275,7 +275,7 @@ const PassPage = () => {
     // Data loaded (passesData is an array)
     return (
       <VirtualList
-        style={{paddingBottom: "6rem", minHeight: "90vh", overflow: "visible", marginTop: "-1rem" }}
+        style={{paddingBottom: "6rem", minHeight: "90vh", overflow: "visible" }}
         items={passesData}
         loadMore={() => setPageNumber(pageNumber + 1)}
         hasMore={hasMore && !loading}

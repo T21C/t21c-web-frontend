@@ -27,6 +27,14 @@ import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 
 const RATINGS_BATCH = 30;
 
+const parseCommaSeparatedIds = (query) => {
+  if (!query.includes(',')) return null;
+  const parts = query.split(',').map((part) => part.trim());
+  if (!parts.some((part) => part !== '')) return null;
+  if (!parts.every((part) => part === '' || /^\d+$/.test(part))) return null;
+  return parts.filter((part) => part !== '').map((part) => parseInt(part, 10));
+};
+
 const RatingPage = () => {
   const { t } = useTranslation('pages');
   const location = useLocation();
@@ -308,7 +316,12 @@ const RatingPage = () => {
 
       // Search functionality
       if (searchQuery) {
-        const query = searchQuery.toLowerCase().split("-vote")[0];
+        const query = searchQuery.toLowerCase().split("-vote")[0].trim();
+        const idList = parseCommaSeparatedIds(query);
+        if (idList) {
+          return idList.includes(rating.level.id);
+        }
+
         const matches = (text) => text?.toLowerCase().includes(query);
 
         // Basic level info search

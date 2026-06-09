@@ -108,23 +108,12 @@
 }
 
 .level-card:hover .marquee-text--overflows .marquee-text__inner {
-  animation: level-card-marquee var(--marquee-duration, 6s) var(--ease-in-out-sine) infinite;
+  animation-name: var(--marquee-animation-name);
+  animation-duration: var(--marquee-cycle-duration, 6s);
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
 }
 
-@keyframes level-card-marquee {
-  0%,
-  15% {
-    transform: translateX(0);
-  }
-  45%,
-  55% {
-    transform: translateX(calc(-1 * var(--marquee-distance, 0px)));
-  }
-  85%,
-  100% {
-    transform: translateX(0);
-  }
-}
 .level-card .img-wrapper {
   width: 3rem;
   display: flex;
@@ -1041,10 +1030,6 @@
   .level-card.legendary::after {
     background: rgba(0, 255, 255, 0.1);
     opacity: 0.3;
-  }
-
-  .level-card:hover .marquee-text--overflows .marquee-text__inner {
-    animation: none;
   }
 }
 

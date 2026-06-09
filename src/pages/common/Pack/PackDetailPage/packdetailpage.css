@@ -178,6 +178,19 @@
   gap: 0.5rem;
 }
 
+.pack-detail-page .owner-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.pack-detail-page .owner-link:hover .owner-name {
+  text-decoration: underline;
+  text-decoration-color: var(--color-white-t70);
+}
+
 .pack-detail-page .owner-name {
   color: var(--color-white-t70);
   font-weight: 500;

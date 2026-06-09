@@ -436,6 +436,11 @@ export function formatDateShort(date, language = 'en') {
   return d.toLocaleString(localeMap[language] || 'en-GB', options);
 }
 
+export function formatPassDate(date, language = 'en') {
+  if (!date) return '';
+  return new Date(date).toLocaleString(localeMap[language] || 'en-GB', { year: 'numeric', month: 'long', day: 'numeric' })
+}
+
 export function isCdnUrl(url) {
   return url?.startsWith(import.meta.env.VITE_CDN_URL);
 }
