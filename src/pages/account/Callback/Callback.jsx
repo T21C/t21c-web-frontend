@@ -13,8 +13,19 @@ const BILLING_POLL_TIMEOUT_MS = 25000;
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-/** Survives React 18 Strict Mode: skip duplicate billing return handler runs for the same URL. */
-const billingCallbackLocks = new Map();
+/**
+ * Single module-level lock shared by every callback flow (billing, oauth, and any
+ * future type). Keyed by a namespaced string so a remount / Strict Mode
+ * double-invoke / browser refresh cannot replay a one-shot side effect — e.g. a
+ * single-use Discord `code` or a billing fulfillment poll. Survives SPA remounts
+ * because it lives outside the component. Extend by adding a key builder below.
+ */
+const callbackLocks = new Map();
+
+const callbackLockKeys = {
+  billing: (sessionId) => `billing|${sessionId || ''}`,
+  oauth: (provider, linking, code) => `oauth|${provider}|${linking}|${code || ''}`,
+};
 
 function readBillingReturnParams(search) {
   const urlParams = new URLSearchParams(search);
@@ -22,7 +33,7 @@ function readBillingReturnParams(search) {
   return {
     sessionId,
     isBillingReturn: Boolean(sessionId && String(sessionId).trim().length > 0),
-    lockKey: `stripe|${sessionId || ''}`,
+    lockKey: callbackLockKeys.billing(sessionId),
   };
 }
 
@@ -87,8 +98,8 @@ const CallbackPage = () => {
         setMode('billing');
         setBillingState({ sessionId: sessionId || null });
 
-        const lockKey = `stripe|${sessionId || ''}`;
-        if (billingCallbackLocks.get(lockKey)) {
+        const lockKey = callbackLockKeys.billing(sessionId);
+        if (callbackLocks.get(lockKey)) {
           setLoading(false);
           setRedirecting(true);
           navigateTimerId = window.setTimeout(() => {
@@ -96,7 +107,7 @@ const CallbackPage = () => {
           }, 400);
           return;
         }
-        billingCallbackLocks.set(lockKey, true);
+        callbackLocks.set(lockKey, true);
 
         try {
           if (!cancelled) await fetchUser(true, { silent: true });
@@ -200,11 +211,36 @@ const CallbackPage = () => {
         return;
       }
 
+      const oauthLockKey = callbackLockKeys.oauth(provider, linking, code);
+
+      // Single-use code already being (or having been) exchanged by an earlier
+      // run of this effect. Do not replay it; instead verify the session that the
+      // first exchange may have established and route accordingly.
+      if (callbackLocks.get(oauthLockKey)) {
+        const existingUser = await fetchUser(true, { silent: true });
+        if (cancelled) return;
+        if (existingUser) {
+          handleSuccessfulAuth();
+        } else {
+          oauthErrorRef.current = 'Authentication failed';
+          setError('Authentication failed');
+          setLoading(false);
+        }
+        return;
+      }
+      callbackLocks.set(oauthLockKey, true);
+
       try {
         const link = linking ? routes.auth.oauthLink(provider) : routes.auth.oauthCallback(provider);
         const response = await api.post(link, { code, linking });
 
         if (cancelled) return;
+
+        // Strip the consumed code from the URL so a full browser refresh (which
+        // resets the in-memory lock above) cannot replay this single-use code.
+        if (typeof window !== 'undefined') {
+          window.history.replaceState({}, '', window.location.pathname);
+        }
 
         if (linking) {
           if (response.status === 200) {
@@ -223,6 +259,24 @@ const CallbackPage = () => {
           }
         }
       } catch (err) {
+        // A full reload (or race) can land here after a duplicate request already
+        // consumed the code and established the session. For the login flow, trust
+        // an existing session over the failed exchange so we never show a false
+        // error to an already-authenticated user. Linking always runs while
+        // authenticated, so its real errors must surface instead.
+        if (!linking) {
+          let recoveredUser = null;
+          try {
+            recoveredUser = await fetchUser(true, { silent: true });
+          } catch {
+            /* ignore */
+          }
+          if (!cancelled && recoveredUser) {
+            handleSuccessfulAuth();
+            return;
+          }
+        }
+
         console.error('OAuth callback error:', err);
 
         let errorMessage = 'Authentication failed';
@@ -260,8 +314,7 @@ const CallbackPage = () => {
       if (navigateTimerId != null) window.clearTimeout(navigateTimerId);
       const urlParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
       const sid = urlParams.get('session_id');
-      const lk = `stripe|${sid || ''}`;
-      if (lk !== 'stripe|') billingCallbackLocks.delete(lk);
+      if (sid) callbackLocks.delete(callbackLockKeys.billing(sid));
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
