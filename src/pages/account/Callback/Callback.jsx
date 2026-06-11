@@ -13,14 +13,54 @@ const BILLING_POLL_TIMEOUT_MS = 25000;
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+const CALLBACK_LOCK_STORAGE_PREFIX = 'callbackLock:';
+
 /**
  * Single module-level lock shared by every callback flow (billing, oauth, and any
  * future type). Keyed by a namespaced string so a remount / Strict Mode
- * double-invoke / browser refresh cannot replay a one-shot side effect — e.g. a
- * single-use Discord `code` or a billing fulfillment poll. Survives SPA remounts
- * because it lives outside the component. Extend by adding a key builder below.
+ * double-invoke cannot replay a one-shot side effect — e.g. a single-use Discord
+ * `code` or a billing fulfillment poll.
+ *
+ * The in-memory Map guards synchronous remounts within one page load. Flows that
+ * must also survive a full browser refresh (OAuth's single-use code) pass
+ * `{ persist: true }`, which mirrors the lock into sessionStorage under the same
+ * namespaced key — so a refresh mid/post-flow recovers instead of replaying or
+ * erroring. Extend by adding a key builder below.
  */
 const callbackLocks = new Map();
+
+const callbackLockStore = {
+  get(key, { persist = false } = {}) {
+    const mem = callbackLocks.get(key);
+    if (mem) return mem;
+    if (persist) {
+      try {
+        return sessionStorage.getItem(CALLBACK_LOCK_STORAGE_PREFIX + key) || undefined;
+      } catch {
+        return undefined;
+      }
+    }
+    return undefined;
+  },
+  set(key, value = true, { persist = false } = {}) {
+    callbackLocks.set(key, value);
+    if (persist) {
+      try {
+        sessionStorage.setItem(CALLBACK_LOCK_STORAGE_PREFIX + key, String(value));
+      } catch {
+        /* storage unavailable; in-memory lock + session-recovery fallback still apply */
+      }
+    }
+  },
+  delete(key) {
+    callbackLocks.delete(key);
+    try {
+      sessionStorage.removeItem(CALLBACK_LOCK_STORAGE_PREFIX + key);
+    } catch {
+      /* ignore */
+    }
+  },
+};
 
 const callbackLockKeys = {
   billing: (sessionId) => `billing|${sessionId || ''}`,
@@ -99,7 +139,7 @@ const CallbackPage = () => {
         setBillingState({ sessionId: sessionId || null });
 
         const lockKey = callbackLockKeys.billing(sessionId);
-        if (callbackLocks.get(lockKey)) {
+        if (callbackLockStore.get(lockKey)) {
           setLoading(false);
           setRedirecting(true);
           navigateTimerId = window.setTimeout(() => {
@@ -107,7 +147,7 @@ const CallbackPage = () => {
           }, 400);
           return;
         }
-        callbackLocks.set(lockKey, true);
+        callbackLockStore.set(lockKey, true);
 
         try {
           if (!cancelled) await fetchUser(true, { silent: true });
@@ -213,10 +253,12 @@ const CallbackPage = () => {
 
       const oauthLockKey = callbackLockKeys.oauth(provider, linking, code);
 
-      // Single-use code already being (or having been) exchanged by an earlier
-      // run of this effect. Do not replay it; instead verify the session that the
-      // first exchange may have established and route accordingly.
-      if (callbackLocks.get(oauthLockKey)) {
+      // This exact single-use code was already handled — either by a synchronous
+      // remount in this page load (in-memory lock) or by a previous page load that
+      // completed the exchange (persisted 'done', survives a full refresh). Never
+      // replay it; verify the session the first exchange established and route from
+      // there so a refresh at any point recovers instead of breaking.
+      if (callbackLockStore.get(oauthLockKey, { persist: true })) {
         const existingUser = await fetchUser(true, { silent: true });
         if (cancelled) return;
         if (existingUser) {
@@ -228,7 +270,10 @@ const CallbackPage = () => {
         }
         return;
       }
-      callbackLocks.set(oauthLockKey, true);
+      // In-memory only: guards this page load's remounts. A refresh mid-exchange
+      // (before the success marker below) intentionally has no persisted entry, so
+      // the as-yet-unconsumed code can still be exchanged on the fresh load.
+      callbackLockStore.set(oauthLockKey, true);
 
       try {
         const link = linking ? routes.auth.oauthLink(provider) : routes.auth.oauthCallback(provider);
@@ -236,11 +281,9 @@ const CallbackPage = () => {
 
         if (cancelled) return;
 
-        // Strip the consumed code from the URL so a full browser refresh (which
-        // resets the in-memory lock above) cannot replay this single-use code.
-        if (typeof window !== 'undefined') {
-          window.history.replaceState({}, '', window.location.pathname);
-        }
+        // Persist success so a later refresh of this URL recovers via the lock
+        // check above (route to profile) instead of replaying the consumed code.
+        callbackLockStore.set(oauthLockKey, 'done', { persist: true });
 
         if (linking) {
           if (response.status === 200) {
@@ -314,7 +357,7 @@ const CallbackPage = () => {
       if (navigateTimerId != null) window.clearTimeout(navigateTimerId);
       const urlParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
       const sid = urlParams.get('session_id');
-      if (sid) callbackLocks.delete(callbackLockKeys.billing(sid));
+      if (sid) callbackLockStore.delete(callbackLockKeys.billing(sid));
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
