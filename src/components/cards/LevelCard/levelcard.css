@@ -511,7 +511,6 @@
 }
 
 .level-card .edit-button {
-  margin-left: auto;
   background-color: var(--color-primary);
   color: white;
   border: none;
@@ -1111,11 +1110,6 @@
   opacity: 1;
 }
 
-/* Edit button */
-.level-card .edit-button {
-  margin-left: var(--edit-button-margin, auto);
-}
-
 .level-card .edit-button[data-margin-zero="true"] {
   margin-left: 0;
 }
@@ -1125,6 +1119,7 @@
   flex-direction: row;
   gap: 0.25rem;
   flex: 1;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: flex-end;
   padding-right: 1rem;

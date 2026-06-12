@@ -3236,10 +3236,6 @@
 /* Touch-friendly rerate control in difficulty container */
 @media (hover: none) and (pointer: coarse) {
   .level-detail .rerate-arrow {
-    min-width: 2.75rem;
-    min-height: 2.75rem;
-    width: 2.75rem;
-    height: 2.75rem;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
   }
@@ -3465,11 +3461,6 @@
 }
 
 @media (hover: none) and (pointer: coarse) {
-  .level-detail .level-detail__curation-icon-cell {
-    min-width: 2.75rem;
-    min-height: 2.75rem;
-  }
-
   .level-detail .level-detail__curation-icon-cell:hover {
     transform: none;
   }
