@@ -1,11 +1,13 @@
 import { routes } from '@/api/routes';
 // tuf-search: #LevelUploadManagementPopup #levelUploadManagementPopup #popups #levels #levelUploadManagement
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useLayoutEffect, useCallback } from 'react';
 import api from '@/utils/api';
 import './leveluploadmanagementpopup.css';
 import { useTranslation } from 'react-i18next';
 import { ChunkedUploadClient } from '@/utils/upload/ChunkedUploadClient';
 import { waitForJobCompletion } from '@/utils/jobs/waitForJobCompletion';
+import { formatJobFailureMessage } from '@/utils/jobs/formatJobFailureMessage';
+import { toastError, toastSuccess } from '@/utils/toastMessage';
 import { isCdnUrl } from '@/utils/Utility';
 import { CrossIcon } from '@/components/common/icons';
 import { CloseButton } from '@/components/common/buttons';
@@ -26,7 +28,6 @@ const LevelUploadManagementPopup = ({
   const [cdnJobId, setCdnJobId] = useState(null);
   const [urlImportPanelOpen, setUrlImportPanelOpen] = useState(false);
   const [importUrl, setImportUrl] = useState('');
-  const [error, setError] = useState(null);
   const [levelFiles, setLevelFiles] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState(null);
   const [isSelecting, setIsSelecting] = useState(false);
@@ -35,11 +36,10 @@ const LevelUploadManagementPopup = ({
   const [songFiles, setSongFiles] = useState({});
   const fileInputRef = useRef(null);
   const abortControllerRef = useRef(null);
+  const uploadFailureHandledRef = useRef(false);
   const dragCounterRef = useRef(0);
   const [isDragOver, setIsDragOver] = useState(false);
   const { t } = useTranslation(['components', 'common']);
-
-  const { job: cdnJob } = useJobProgressStream(cdnJobId, Boolean(isUploading && cdnJobId));
 
   /** Prefer API `error` + `code`; append HTTP code when helpful for admins. */
   const formatAxiosLevelError = (err, fallbackMessage) => {
@@ -59,6 +59,49 @@ const LevelUploadManagementPopup = ({
     }
     return fallbackMessage;
   };
+
+  /** Job failures (CDN ingest etc.) expose `message`; HTTP errors use API `error` fields. */
+  const resolveUserMessage = (err, fallbackMessage) => {
+    if (err?.job) {
+      return formatJobFailureMessage(err, fallbackMessage);
+    }
+    return formatAxiosLevelError(err, fallbackMessage);
+  };
+
+  const notifyError = (message) => {
+    toastError(message);
+  };
+
+  const resetUploadUi = useCallback(() => {
+    setIsUploading(false);
+    setCdnJobId(null);
+    setUploadProgress(0);
+    abortControllerRef.current = null;
+  }, []);
+
+  const { job: cdnJob } = useJobProgressStream(cdnJobId, Boolean(isUploading && cdnJobId));
+
+  /** SSE delivers `failed` before poll-based wait returns — toast and reset immediately. */
+  useLayoutEffect(() => {
+    if (!isUploading || !cdnJob || cdnJob.phase !== 'failed') {
+      return;
+    }
+    if (uploadFailureHandledRef.current) {
+      return;
+    }
+    uploadFailureHandledRef.current = true;
+
+    const fallbackKey =
+      cdnJob?.meta?.source === 'upload_from_url'
+        ? 'levelUploadManagement.errors.importFailed'
+        : 'levelUploadManagement.errors.uploadFailed';
+    notifyError(formatJobFailureMessage({ job: cdnJob }, t(fallbackKey)));
+
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    resetUploadUi();
+  }, [isUploading, cdnJob, t, resetUploadUi]);
 
   /** Orphan assembled session or zip missing on server — safe to retry once with `forceNew` on /init. */
   const isRecoverableStaleAssembledUpload = (err) => {
@@ -123,7 +166,7 @@ const LevelUploadManagementPopup = ({
         }
       } catch (error) {
         console.error('Error fetching level files:', error);
-        setError(t('levelUploadManagement.errors.fetchFailed'));
+        notifyError(t('levelUploadManagement.errors.fetchFailed'));
       }
     }
   }, [formData.dlLink, t]);
@@ -185,7 +228,6 @@ const LevelUploadManagementPopup = ({
       return;
     }
     setUrlImportPanelOpen(false);
-    setError(null);
   };
 
   // Cleanup: Cancel any ongoing requests when component unmounts
@@ -253,7 +295,7 @@ const LevelUploadManagementPopup = ({
     const file = e.dataTransfer?.files?.[0];
     if (!file) return;
     if (!isAcceptedArchiveFile(file)) {
-      setError(t('levelUploadManagement.errors.invalidZip'));
+      notifyError(t('levelUploadManagement.errors.invalidZip'));
       return;
     }
     void processZipUpload(file);
@@ -267,10 +309,10 @@ const LevelUploadManagementPopup = ({
     const signal = abortControllerRef.current.signal;
 
     try {
+      uploadFailureHandledRef.current = false;
       dragCounterRef.current = 0;
       setIsDragOver(false);
       setIsUploading(true);
-      setError(null);
       setUploadProgress(0);
 
       const maxAttempts = 2;
@@ -321,6 +363,7 @@ const LevelUploadManagementPopup = ({
             const base = String(import.meta.env.VITE_CDN_URL || '').replace(/\/$/, '');
             const newDlLink = `${base}/${newId}`;
             applySuccessfulLevelUpload({}, newDlLink, { closeUrlPanel: false });
+            toastSuccess(t('levelUploadManagement.upload.success'));
             return;
           }
 
@@ -328,6 +371,7 @@ const LevelUploadManagementPopup = ({
             const updatedLevel = response.data.level || {};
             const newDlLink = updatedLevel.dlLink || response.data.dlLink;
             applySuccessfulLevelUpload(updatedLevel, newDlLink, { closeUrlPanel: false });
+            toastSuccess(t('levelUploadManagement.upload.success'));
             return;
           }
 
@@ -357,12 +401,15 @@ const LevelUploadManagementPopup = ({
       if (error.name === 'AbortError' || error.name === 'CanceledError') {
         return;
       }
-      setError(formatAxiosLevelError(error, t('levelUploadManagement.errors.uploadFailed')));
+      if (!uploadFailureHandledRef.current) {
+        notifyError(resolveUserMessage(error, t('levelUploadManagement.errors.uploadFailed')));
+      }
       console.error('Error uploading level:', error);
     } finally {
-      setIsUploading(false);
-      setCdnJobId(null);
-      abortControllerRef.current = null;
+      if (!uploadFailureHandledRef.current) {
+        resetUploadUi();
+      }
+      uploadFailureHandledRef.current = false;
     }
   };
 
@@ -378,11 +425,11 @@ const LevelUploadManagementPopup = ({
   const handleUploadFromUrl = async () => {
     const trimmed = importUrl.trim();
     if (!trimmed) {
-      setError(t('levelUploadManagement.errors.missingUrl'));
+      notifyError(t('levelUploadManagement.errors.missingUrl'));
       return;
     }
     if (isCdnUrl(trimmed)) {
-      setError(t('levelUploadManagement.errors.cdnNotAllowed'));
+      notifyError(t('levelUploadManagement.errors.cdnNotAllowed'));
       return;
     }
 
@@ -390,8 +437,8 @@ const LevelUploadManagementPopup = ({
     const signal = abortControllerRef.current.signal;
 
     try {
+      uploadFailureHandledRef.current = false;
       setIsUploading(true);
-      setError(null);
       setUploadProgress(0);
       const jobId = crypto.randomUUID();
       setCdnJobId(jobId);
@@ -418,6 +465,7 @@ const LevelUploadManagementPopup = ({
         const base = String(import.meta.env.VITE_CDN_URL || '').replace(/\/$/, '');
         const newDlLink = `${base}/${newId}`;
         applySuccessfulLevelUpload({}, newDlLink, { closeUrlPanel: true });
+        toastSuccess(t('levelUploadManagement.upload.importSuccess'));
         return;
       }
 
@@ -425,6 +473,7 @@ const LevelUploadManagementPopup = ({
         const updatedLevel = response.data.level || {};
         const newDlLink = updatedLevel.dlLink || response.data.dlLink;
         applySuccessfulLevelUpload(updatedLevel, newDlLink, { closeUrlPanel: true });
+        toastSuccess(t('levelUploadManagement.upload.importSuccess'));
       }
     } catch (err) {
       if (api.isCancel && api.isCancel(err)) {
@@ -433,12 +482,15 @@ const LevelUploadManagementPopup = ({
       if (err.name === 'AbortError' || err.name === 'CanceledError') {
         return;
       }
-      setError(formatAxiosLevelError(err, t('levelUploadManagement.errors.importFailed')));
+      if (!uploadFailureHandledRef.current) {
+        notifyError(resolveUserMessage(err, t('levelUploadManagement.errors.importFailed')));
+      }
       console.error('Error importing level from URL:', err);
     } finally {
-      setIsUploading(false);
-      setCdnJobId(null);
-      abortControllerRef.current = null;
+      if (!uploadFailureHandledRef.current) {
+        resetUploadUi();
+      }
+      uploadFailureHandledRef.current = false;
     }
   };
 
@@ -447,22 +499,20 @@ const LevelUploadManagementPopup = ({
 
     try {
       setIsSelecting(true);
-      setError(null);
       const result = await api.post(routes.levelsV3.selectLevel(level.id), {
         selectedLevel,
       });
 
       if (result.data.success) {
         setTargetLevel(selectedLevel);
-        // Fetch updated files to reflect any changes
         fetchLevelFiles();
-        // Also refresh the level record so tilecount / metadata updates immediately.
         void refreshLevelMetadata();
+        toastSuccess(t('levelUploadManagement.select.success'));
       } else {
-        setError(result.data.error || t('levelUploadManagement.errors.selectFailed'));
+        notifyError(result.data.error || t('levelUploadManagement.errors.selectFailed'));
       }
     } catch (error) {
-      setError(formatAxiosLevelError(error, t('levelUploadManagement.errors.selectFailed')));
+      notifyError(resolveUserMessage(error, t('levelUploadManagement.errors.selectFailed')));
     } finally {
       setIsSelecting(false);
     }
@@ -495,7 +545,7 @@ const LevelUploadManagementPopup = ({
         onClose();
       }
     } catch (error) {
-      setError(formatAxiosLevelError(error, t('levelUploadManagement.errors.deleteFailed')));
+      notifyError(resolveUserMessage(error, t('levelUploadManagement.errors.deleteFailed')));
     }
   };
 
@@ -527,14 +577,16 @@ const LevelUploadManagementPopup = ({
 
   const streamPct = typeof cdnJob?.percent === 'number' ? cdnJob.percent : 0;
   const fillPct = Math.min(100, Math.max(uploadProgress, streamPct));
-  const isUrlImportProgress = cdnJob?.meta?.source === 'upload_from_url';
+  const showUploadProgress = isUploading && cdnJob?.phase !== 'failed';
+  const progressJob = showUploadProgress ? cdnJob : null;
+  const isUrlImportProgress = progressJob?.meta?.source === 'upload_from_url';
   const progressLine =
-    isUrlImportProgress && cdnJob?.phase === 'downloading_remote'
-      ? `${t('levelUploadManagement.upload.urlStageDownload')}: ${cdnJob.message || '…'} · ${streamPct.toFixed(0)}%`
-      : isUrlImportProgress && cdnJob?.phase && cdnJob.phase !== 'downloading_remote'
-        ? `${t('levelUploadManagement.upload.urlStageCdn')}: ${cdnJob.message || '…'} · ${streamPct.toFixed(0)}%`
-        : cdnJob?.message
-          ? `${cdnJob.message} · ${fillPct.toFixed(0)}%`
+    isUrlImportProgress && progressJob?.phase === 'downloading_remote'
+      ? `${t('levelUploadManagement.upload.urlStageDownload')}: ${progressJob.message || '…'} · ${streamPct.toFixed(0)}%`
+      : isUrlImportProgress && progressJob?.phase && progressJob.phase !== 'downloading_remote'
+        ? `${t('levelUploadManagement.upload.urlStageCdn')}: ${progressJob.message || '…'} · ${streamPct.toFixed(0)}%`
+        : progressJob?.message
+          ? `${progressJob.message} · ${fillPct.toFixed(0)}%`
           : t('levelUploadManagement.upload.progress', { progress: uploadProgress.toFixed(2) });
 
   const showDropOverlay = isDragOver && !isUploading;
@@ -571,14 +623,12 @@ const LevelUploadManagementPopup = ({
               e.stopPropagation();
               handleClose();
             }}
-            disabled={isUploading}
+            disabled={showUploadProgress}
             aria-label={t('buttons.close', { ns: 'common' })}
           />
         </div>
 
-        {error && <div className="error-message">{error}</div>}
-
-        {isUploading ? (
+        {showUploadProgress ? (
           <div className="upload-progress">
             <div className="progress-bar">
               <div
@@ -593,9 +643,7 @@ const LevelUploadManagementPopup = ({
                 if (abortControllerRef.current) {
                   abortControllerRef.current.abort();
                 }
-                setIsUploading(false);
-                setUploadProgress(0);
-                setError(null);
+                resetUploadUi();
               }}
             >
               {t('buttons.cancel', { ns: 'common' })}
@@ -631,7 +679,6 @@ const LevelUploadManagementPopup = ({
               selectedKey={selectedLevel}
               onSelectKey={(key) => {
                 setSelectedLevel(key);
-                setError(null);
               }}
               targetKey={targetLevel}
             />
@@ -686,7 +733,6 @@ const LevelUploadManagementPopup = ({
                         value={importUrl}
                         onChange={(e) => {
                           setImportUrl(e.target.value);
-                          setError(null);
                         }}
                         placeholder={t('levelUploadManagement.uploadFromUrl.placeholder')}
                         disabled={isUploading}
@@ -716,7 +762,6 @@ const LevelUploadManagementPopup = ({
                       type="button"
                       className="upload-import-button"
                       onClick={() => {
-                        setError(null);
                         const ws =
                           typeof level?.workshopLink === 'string' ? level.workshopLink.trim() : '';
                         if (ws) {
