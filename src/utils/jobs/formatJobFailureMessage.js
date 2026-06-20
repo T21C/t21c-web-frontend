@@ -11,8 +11,8 @@ export function formatJobFailureMessage(err, fallback = 'Something went wrong') 
   if (job && typeof job === 'object') {
     const message = typeof job.message === 'string' ? job.message.trim() : '';
     const error = typeof job.error === 'string' ? job.error.trim() : '';
-    if (message) return message;
     if (error) return error;
+    if (message) return message;
   }
 
   if (err instanceof Error) {
