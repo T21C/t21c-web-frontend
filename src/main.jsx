@@ -1,4 +1,5 @@
 // tuf-search: #main #entry — Vite entry
+import '@/assets/important/dark/background-blurred.jpg';
 import ReactDOM from 'react-dom/client';
 import App from '@/App';
 import '@/index.css';
