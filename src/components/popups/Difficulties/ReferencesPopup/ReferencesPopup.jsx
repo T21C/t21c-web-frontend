@@ -9,12 +9,12 @@ import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { useTranslation } from 'react-i18next';
 import { CloseButton } from '@/components/common/buttons';
 import { toast } from 'react-hot-toast';
-import rollingIcon from '@/assets/icons/Rolling RITK.png';
-import indexingIcon from '@/assets/icons/Indexing RITK.png';
-import techIcon from '@/assets/icons/Tech RITK.png';
-import keycountIcon from '@/assets/icons/Keycount RITK.png';
-import pseudoIcon from '@/assets/icons/Pseudo.png';
-import keycountPlusIcon from '@/assets/icons/Kplus RITK.png';
+import rollingIcon from '@/assets/icons/Rolling RITKnew.png';
+import indexingIcon from '@/assets/icons/Indexing RITKnew.png';
+import techIcon from '@/assets/icons/Tech RITKnew.png';
+import keycountIcon from '@/assets/icons/Keycount RITKnew.png';
+import pseudoIcon from '@/assets/icons/Pseudo RITKnew.png';
+import keycountPlusIcon from '@/assets/icons/Kplus RITKnew.png';
 import hideIcons from '@/assets/icons/RITK hidden.png'
 import showIcons from '@/assets/icons/RITK visible.png'
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
