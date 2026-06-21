@@ -8,7 +8,8 @@
     "speed": "飙速",
     "judgements": {
       "label": "判定：",
-      "tilecountMismatchTooltip": "判定总和 <b>{{hitSum}}</b> 与关卡 tile 数 <b>{{tilecount}}</b> 不一致。",
+      "tilecountMismatchTooltip": "判定总和 <b>{{hitSum}}</b> 与可达成 tile 数 <b>{{tilecount}}</b> 不一致。",
+      "tilecountMismatchTooltipWithAuto": "判定总和 <b>{{hitSum}}</b> 与可达成 tile 数 <b>{{tilecount}}</b> 不一致（共 {{rawTilecount}}，自动 {{autoTileCount}}）。",
       "fields": {
         "earlyDouble": "太快！！",
         "earlySingle": "太快！",

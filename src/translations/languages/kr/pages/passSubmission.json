@@ -81,8 +81,9 @@
     "keyMode": "12키/16키"
   },
   "tilecountMismatch": {
-    "title": "판정 합계가 레벨 타일 수와 일치하지 않습니다",
-    "body": "이 레벨 차트는 <b>{{tilecount}}</b>타일입니다. 판정 합계는 <b>{{hitSum}}</b>입니다. 입력이 잘못되었을 수 있습니다.",
+    "title": "판정 합계가 달성 가능한 타일 수와 일치하지 않습니다",
+    "body": "이 레벨 차트의 달성 가능한 타일 수는 <b>{{tilecount}}</b>입니다. 판정 합계는 <b>{{hitSum}}</b>입니다. 입력이 잘못되었을 수 있습니다.",
+    "bodyWithAuto": "이 레벨 차트는 <b>{{rawTilecount}}</b>타일(<b>{{autoTileCount}}</b> 자동)이므로 <b>{{tilecount}}</b>판정이 예상됩니다. 판정 합계는 <b>{{hitSum}}</b>입니다. 입력이 잘못되었을 수 있습니다.",
     "reviewInputs": "취소",
     "submitAnyway": "그래도 제출"
   }

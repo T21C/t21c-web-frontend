@@ -24,6 +24,7 @@ import { usePassCoreForm } from "@/components/common/cores/PassCoreForm/usePassC
 import { truncateString } from "@/utils/Utility";
 import {
   getPassJudgementHitCountFromForm,
+  getEffectiveTilecount,
   isTilecountJudgementMismatch,
 } from "@/utils/passJudgementHitCount";
 import { normalizeLevelSearchQuery } from '@/utils/normalizeEntitySearchQuery';
@@ -318,7 +319,7 @@ const PassSubmissionPage = () => {
     }
 
     const hitSum = getPassJudgementHitCountFromForm(form);
-    if (isTilecountJudgementMismatch(level?.tilecount, hitSum)) {
+    if (isTilecountJudgementMismatch(level?.tilecount, hitSum, level?.autoTileCount)) {
       setShowTilecountMismatchModal(true);
       return;
     }
@@ -611,10 +612,16 @@ const PassSubmissionPage = () => {
             <h2 id="tilecount-mismatch-title">{t('passSubmission.tilecountMismatch.title')}</h2>
             <p className="tilecount-mismatch-modal-body">
               <Trans
-                i18nKey="passSubmission.tilecountMismatch.body"
+                i18nKey={
+                  (level?.autoTileCount ?? 0) > 0
+                    ? 'passSubmission.tilecountMismatch.bodyWithAuto'
+                    : 'passSubmission.tilecountMismatch.body'
+                }
                 ns="pages"
                 values={{
-                  tilecount: level?.tilecount,
+                  tilecount: getEffectiveTilecount(level?.tilecount, level?.autoTileCount),
+                  rawTilecount: level?.tilecount,
+                  autoTileCount: level?.autoTileCount ?? 0,
                   hitSum: getPassJudgementHitCountFromForm(form),
                 }}
                 components={{ b: <b /> }}

@@ -9,7 +9,8 @@
     "speed": "Vitesse",
     "judgements": {
       "label": "Jugements:",
-      "tilecountMismatchTooltip": "La somme des jugements <b>{{hitSum}}</b> ne correspond pas au nombre de tuiles du niveau <b>{{tilecount}}</b>.",
+      "tilecountMismatchTooltip": "La somme des jugements <b>{{hitSum}}</b> ne correspond pas au nombre de tuiles réalisables <b>{{tilecount}}</b>.",
+      "tilecountMismatchTooltipWithAuto": "La somme des jugements <b>{{hitSum}}</b> ne correspond pas au nombre de tuiles réalisables <b>{{tilecount}}</b> ({{rawTilecount}} au total, {{autoTileCount}} auto).",
       "types": {
         "earlyDouble": "Double Tôt",
         "earlySingle": "Simple Tôt",

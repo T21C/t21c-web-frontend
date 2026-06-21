@@ -8,6 +8,7 @@ import api from '@/utils/api';
 import { formatCreatorDisplay, normalizeKeyCount } from '@/utils/Utility';
 import {
   getPassJudgementHitCountFromSubmissionJudgements,
+  getEffectiveTilecount,
   isTilecountJudgementMismatch,
 } from '@/utils/passJudgementHitCount';
 import { normalizeLevelSearchQuery } from '@/utils/normalizeEntitySearchQuery';
@@ -133,15 +134,26 @@ export default function PassSubmissionEditableMeta({
 
   const hasTilecountMismatch = useMemo(
     () =>
-      isTilecountJudgementMismatch(submission.level?.tilecount, judgementHitSum),
-    [submission.level?.tilecount, judgementHitSum],
+      isTilecountJudgementMismatch(
+        submission.level?.tilecount,
+        judgementHitSum,
+        submission.level?.autoTileCount,
+      ),
+    [submission.level?.tilecount, submission.level?.autoTileCount, judgementHitSum],
   );
 
   const levelTilecountForTooltip = useMemo(() => {
-    const tc = submission.level?.tilecount;
-    if (tc == null || !Number.isFinite(Number(tc))) return null;
-    return Math.floor(Number(tc));
-  }, [submission.level?.tilecount]);
+    return getEffectiveTilecount(
+      submission.level?.tilecount,
+      submission.level?.autoTileCount,
+    );
+  }, [submission.level?.tilecount, submission.level?.autoTileCount]);
+
+  const levelAutoTileCountForTooltip = useMemo(() => {
+    const raw = submission.level?.autoTileCount;
+    if (raw == null || !Number.isFinite(Number(raw))) return 0;
+    return Math.floor(Number(raw));
+  }, [submission.level?.autoTileCount]);
 
   const tilecountTooltipId = `pass-submission-tilecount-${submission.id}`;
 
@@ -619,11 +631,17 @@ export default function PassSubmissionEditableMeta({
           className="pass-submission-tilecount-tooltip"
         >
           <Trans
-            i18nKey="passSubmissions.details.judgements.tilecountMismatchTooltip"
+            i18nKey={
+              levelAutoTileCountForTooltip > 0
+                ? 'passSubmissions.details.judgements.tilecountMismatchTooltipWithAuto'
+                : 'passSubmissions.details.judgements.tilecountMismatchTooltip'
+            }
             ns="components"
             values={{
               hitSum: judgementHitSum,
               tilecount: levelTilecountForTooltip,
+              rawTilecount: submission.level?.tilecount,
+              autoTileCount: levelAutoTileCountForTooltip,
             }}
             components={{ b: <b /> }}
           />

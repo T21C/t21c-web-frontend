@@ -37,14 +37,23 @@ export function getPassJudgementHitCountFromSubmissionJudgements(j) {
 }
 
 /**
- * When to warn: level has a positive integer tilecount from chart metadata and it does not equal hit sum.
+ * Achievable manual judgements: chart tilecount minus auto-play tiles.
  */
-export function isTilecountJudgementMismatch(levelTilecount, hitCount) {
-  if (levelTilecount == null) return false;
+export function getEffectiveTilecount(levelTilecount, autoTileCount = 0) {
+  if (levelTilecount == null) return null;
   const tc = typeof levelTilecount === 'number' ? levelTilecount : Number(levelTilecount);
-  if (!Number.isFinite(tc)) return false;
+  if (!Number.isFinite(tc)) return null;
   const tileInt = Math.floor(tc);
-  if (tileInt <= 0) return false;
+  const autoInt = Math.floor(num(autoTileCount));
+  return Math.max(tileInt - autoInt, 0);
+}
+
+/**
+ * When to warn: level has a positive achievable tilecount and it does not equal hit sum.
+ */
+export function isTilecountJudgementMismatch(levelTilecount, hitCount, autoTileCount = 0) {
+  const effective = getEffectiveTilecount(levelTilecount, autoTileCount);
+  if (effective == null || effective <= 0) return false;
   const hits = typeof hitCount === 'number' && Number.isFinite(hitCount) ? Math.floor(hitCount) : 0;
-  return hits !== tileInt;
+  return hits !== effective;
 }

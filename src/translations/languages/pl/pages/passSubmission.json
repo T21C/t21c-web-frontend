@@ -74,8 +74,9 @@
     "noInfo": "Brak dostępnych informacji"
   },
   "tilecountMismatch": {
-    "title": "Suma judgmentów nie zgadza się z liczbą kafli poziomu",
-    "body": "Ten poziom ma <b>{{tilecount}}</b> kafli. Suma twoich judgmentów to <b>{{hitSum}}</b>. Te wartości mogą być błędne.",
+    "title": "Suma judgmentów nie zgadza się z osiągalną liczbą kafli",
+    "body": "Ten poziom ma <b>{{tilecount}}</b> osiągalnych kafli. Suma twoich judgmentów to <b>{{hitSum}}</b>. Te wartości mogą być błędne.",
+    "bodyWithAuto": "Ten poziom ma <b>{{rawTilecount}}</b> kafli (<b>{{autoTileCount}}</b> auto), więc oczekiwane jest <b>{{tilecount}}</b> judgmentów. Suma twoich judgmentów to <b>{{hitSum}}</b>. Te wartości mogą być błędne.",
     "reviewInputs": "Anuluj",
     "submitAnyway": "Wyślij mimo to"
   }

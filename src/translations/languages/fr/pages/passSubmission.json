@@ -74,8 +74,9 @@
     "noInfo": "Aucune information disponible"
   },
   "tilecountMismatch": {
-    "title": "Le total des jugements ne correspond pas au nombre de tuiles du niveau",
-    "body": "Ce niveau comporte <b>{{tilecount}}</b> tuiles. Le total de tes jugements est <b>{{hitSum}}</b>. Ces valeurs peuvent être incorrectes.",
+    "title": "Le total des jugements ne correspond pas au nombre de tuiles réalisables",
+    "body": "Ce niveau comporte <b>{{tilecount}}</b> tuiles réalisables. Le total de tes jugements est <b>{{hitSum}}</b>. Ces valeurs peuvent être incorrectes.",
+    "bodyWithAuto": "Ce niveau comporte <b>{{rawTilecount}}</b> tuiles (<b>{{autoTileCount}}</b> auto), donc <b>{{tilecount}}</b> jugements sont attendus. Le total de tes jugements est <b>{{hitSum}}</b>. Ces valeurs peuvent être incorrectes.",
     "reviewInputs": "Annuler",
     "submitAnyway": "Soumettre quand même"
   }
