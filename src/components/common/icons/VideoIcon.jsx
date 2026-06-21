@@ -1,5 +1,5 @@
 // tuf-search: #VideoIcon #videoIcon #icons
-const VideoIcon = ({size = "", className = "", color = "#ffffff", ...props}) => {
+const VideoIcon = ({size = "1em", className = "", color = "#ffffff", ...props}) => {
     return(
       <svg width={size} height={size} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke={color} {...props}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />

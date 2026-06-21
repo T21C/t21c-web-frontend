@@ -127,16 +127,29 @@
   flex-shrink: 0;
 }
 
-.pass-card .video-wrapper {
+.pass-card .pass-card__video {
   display: flex;
   align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
   transition: transform 0.2s;
-  border-radius: 4px;
   cursor: pointer;
 }
 
-.pass-card .video-wrapper:hover {
+.pass-card .pass-card__video:hover {
   transform: scale(1.12);
+}
+
+.pass-card .pass-card__video a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+}
+
+.pass-card .pass-card__video svg {
+  width: 1em;
+  height: 1em;
 }
 
 .pass-card .pass-card__date {
@@ -186,9 +199,8 @@
     min-width: 100px;
     gap: 0.5rem;
   }
-  .pass-card .video-wrapper a {
-    height: 2rem;
-    width: 2rem;
+  .pass-card .pass-card__video {
+    font-size: 2rem;
   }
 }
 

@@ -1,7 +1,7 @@
 // tuf-search: #BilibiliIcon #bilibiliIcon #icons
 import React from 'react';
 
-const BilibiliIcon = ({ className = '', size = '24px', color = 'currentColor', ...props }) => {
+const BilibiliIcon = ({ className = '', size = '1em', color = 'currentColor', ...props }) => {
   return (
     <svg
       {...props}

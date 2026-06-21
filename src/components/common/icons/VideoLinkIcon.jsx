@@ -8,7 +8,7 @@ import BilibiliIcon from './BilibiliIcon';
 const VideoLinkIcon = ({
   url,
   className = '',
-  size = '24px',
+  size = '1em',
   color = '#ffffff',
   ...props
 }) => {

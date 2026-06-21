@@ -1,7 +1,7 @@
 // tuf-search: #YoutubeIcon #youtubeIcon #icons
 import React from 'react';
 
-const YoutubeIcon = ({ className = '', size = "24px", ...props}) => {
+const YoutubeIcon = ({ className = '', size = "1em", ...props}) => {
   return (
     <svg 
     {...props}

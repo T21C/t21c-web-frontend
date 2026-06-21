@@ -94,7 +94,7 @@ const PassCard = ({ pass }) => {
         </time>
       )}
 
-      <div className="video-wrapper">
+      <div className="pass-card__video">
         {pass.videoLink && (
           <a 
             href={pass.videoLink.trim()} 
@@ -103,7 +103,7 @@ const PassCard = ({ pass }) => {
             rel="noreferrer"
             title={t('cards.pass.links.video')}
           >
-            <VideoLinkIcon size="2.5rem" url={pass.videoLink.trim()} />
+            <VideoLinkIcon url={pass.videoLink.trim()} />
           </a>
         )}
       </div>
