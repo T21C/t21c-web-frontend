@@ -35,6 +35,8 @@ const LevelCard = ({
   showTags = true,
   /** When true, show C0/V0 on the difficulty-arc curation icons (level list filter). */
   showC0V0CurationIcons = false,
+  /** When true, show community estimated difficulty overlay on Q charts. */
+  showEstimatedDifficulty = false,
   // Pack mode specific props
   canEdit = false,
   onDeleteItem,
@@ -148,7 +150,7 @@ const LevelCard = ({
   // REUSABLE RENDER FUNCTIONS
   // ============================================
 
-  const renderDifficultyIcon = ({ showRating = true, showCuration = true, showBaseScore = true } = {}) => (
+  const renderDifficultyIcon = ({ showRating = showEstimatedDifficulty, showCuration = true, showBaseScore = true } = {}) => (
     <div className="img-wrapper">
       <img src={difficultyDict[difficultyInfo?.id]?.icon} alt={difficultyInfo?.name || 'Difficulty icon'} className="difficulty-icon" />
       
@@ -533,36 +535,7 @@ const LevelCard = ({
     <>
       <Link className="level-card__link-wrap" to={levelDetailTo} aria-label={getSongDisplayName(level)}>
         <div className="level-details-wrapper">
-          <div className="img-wrapper">
-            <img src={difficultyDict[difficultyInfo?.id]?.icon} alt={difficultyInfo?.name || 'Difficulty icon'} className="difficulty-icon" />
-            
-            {level.rating?.averageDifficultyId && 
-             difficultyDict[level.rating.averageDifficultyId]?.icon &&
-             difficultyDict[level.rating.averageDifficultyId]?.type === "PGU" &&
-             difficultyDict[level.diffId]?.name.includes("Q") && (
-              <img 
-                className="rating-icon"
-                src={difficultyDict[level.rating.averageDifficultyId]?.icon}
-                alt="Rating icon" 
-              />
-            )}
-            
-            {curationTypeIconSlots.map((slot, idx) => (
-                <img
-                  key={slot.key ?? `${slot.typeId}-${idx}`}
-                  className={`curation-icon`}
-                  style={{ '--idx': idx, '--curation-count': curationTypeIconSlots.length }}
-                  src={slot.icon}
-                  alt="Curation icon"
-                />
-            ))}
-            
-            {customBaseScore && (
-              <div className="base-score-wrapper">
-                <p className="base-score-value">{customBaseScore} PP</p>
-              </div>
-            )}
-          </div>
+          {renderDifficultyIcon()}
         </div>
         
         {renderSongInfo()}

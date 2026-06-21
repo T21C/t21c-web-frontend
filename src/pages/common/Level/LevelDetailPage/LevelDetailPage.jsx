@@ -2330,7 +2330,8 @@ const LevelDetailPage = ({ mockData = null }) => {
                     />
                   </div>
                 ) : null}
-                {res.ratings?.averageDifficultyId &&
+                {/* Removed by request
+                res.ratings?.averageDifficultyId &&
                  difficultyDict[res.ratings?.averageDifficultyId]?.icon &&
                  difficultyDict[res.ratings?.averageDifficultyId]?.type == "PGU" &&
                  difficulty?.name?.includes("Q") ? (
@@ -2339,7 +2340,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                     src={difficultyDict[res.ratings?.averageDifficultyId]?.icon}
                     alt="Rating icon"
                   />
-                ) : null}
+                ) : null*/}
                 <div className="pp-display">
                   {formatBaseScore(res.level.baseScore || difficulty?.baseScore || 0)}PP
                 </div>

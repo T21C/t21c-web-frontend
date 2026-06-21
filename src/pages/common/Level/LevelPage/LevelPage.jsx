@@ -878,6 +878,7 @@ const LevelPage = ({
               displayMode={viewMode}
               showTags={showTagsInCards}
               showC0V0CurationIcons={showC0V0CurationIcons}
+              showEstimatedDifficulty={sort === 'DIFF'}
             />
           )}
           computeItemKey={(index, l) => l?.id ?? index}
