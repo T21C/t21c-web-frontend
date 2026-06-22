@@ -84,6 +84,11 @@
       }
     }
   },
+  "download": {
+    "step2": {
+      "downloadV2": "Télécharger v2"
+    }
+  },
   "creditsEdit": {
     "searchPlaceholder": "Rechercher des créateurs…",
     "noResults": "Aucun créateur correspondant"

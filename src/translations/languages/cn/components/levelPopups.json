@@ -180,7 +180,8 @@
       "dropFilters": "移除滤镜：",
       "dropFiltersPlaceholder": "选择要移除的滤镜",
       "back": "返回",
-      "downloadConverted": "下载已转换关卡"
+      "downloadConverted": "下载已转换关卡",
+      "downloadV2": "下载 v2 版本"
     },
     "errors": {
       "corrupted": "下载已损坏",

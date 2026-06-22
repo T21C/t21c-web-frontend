@@ -1929,9 +1929,15 @@
 
 .level-detail-popup .popup-content .popup-body .team-info .each-info {
   display: grid;
-  gap: var(--spacing-md);
-  grid-template-columns: 1fr 5fr;
+  grid-template-columns: 1fr 3fr;
   align-items: center;
+}
+
+@media (max-width: 600px) {
+  .level-detail-popup .popup-content .popup-body .team-info .each-info {
+    gap: var(--spacing-xs);
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 .level-detail-popup .popup-content .popup-body .team-info .team-name {

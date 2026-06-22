@@ -87,6 +87,11 @@
       }
     }
   },
+  "download": {
+    "step2": {
+      "downloadV2": "v2 다운로드"
+    }
+  },
   "creditsEdit": {
     "searchPlaceholder": "크리에이터 검색…",
     "noResults": "일치하는 크리에이터가 없습니다"

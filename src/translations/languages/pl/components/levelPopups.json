@@ -85,6 +85,11 @@
       }
     }
   },
+  "download": {
+    "step2": {
+      "downloadV2": "Pobierz v2"
+    }
+  },
   "creditsEdit": {
     "searchPlaceholder": "Szukaj twórców…",
     "noResults": "Brak pasujących twórców"

@@ -20,7 +20,7 @@ import {
   sortCurationsForDisplay,
   sortCurationTypesForDisplay,
 } from "@/utils/curationTypeUtils";
-import { formatDuration } from "@/utils/levelHelpers";
+import { formatAutoTilecountTooltip, formatDuration } from "@/utils/levelHelpers";
 import { Tooltip } from "react-tooltip";
 import MarqueeText from "@/components/common/display/MarqueeText/MarqueeText";
 
@@ -322,12 +322,30 @@ const LevelCard = ({
               <span className="metadata-value">{formatDuration(level.levelLengthInMs)}</span>
             </div>
           )}
-          {level.tilecount !== null && (
-          <div className="metadata-item">
-            <ChartIcon size={18}  />
-            <span className="metadata-value">{level.tilecount}</span>
-          </div>
-          )}
+          {level.tilecount !== null && (() => {
+            const autoTilecountTooltip = formatAutoTilecountTooltip(
+              level.tilecount,
+              level.autoTileCount,
+            );
+            const tilecountTooltipId = `tilecount-auto-tooltip-${level.id}`;
+            return (
+              <div
+                className="metadata-item"
+                {...(autoTilecountTooltip
+                  ? {
+                      'data-tooltip-id': tilecountTooltipId,
+                      'data-tooltip-content': autoTilecountTooltip,
+                    }
+                  : {})}
+              >
+                <ChartIcon size={18} />
+                <span className="metadata-value">{level.tilecount}</span>
+                {autoTilecountTooltip && (
+                  <Tooltip style={{ zIndex: 10, fontSize: '0.85rem', fontWeight: 500 }} id={tilecountTooltipId} place="bottom" />
+                )}
+              </div>
+            );
+          })()}
           {level.bpm !== null && (
           <div className="metadata-item">
             <MetronomeIcon size={18} />

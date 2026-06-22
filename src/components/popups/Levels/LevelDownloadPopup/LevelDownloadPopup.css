@@ -162,6 +162,10 @@
     background-color: var(--btn-neutral-elevated);
 }
 
+.transform-buttons .level-download-popup__v2-btn {
+    margin-right: auto;
+}
+
 /* Scrollbar styles */
 .level-download-content::-webkit-scrollbar {
     width: 8px;

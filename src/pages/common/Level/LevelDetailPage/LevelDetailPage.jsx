@@ -51,7 +51,12 @@ import {
   ArrowIcon
 } from "@/components/common/icons";
 import { createEventSystem, formatBaseScore, formatCreatorDisplay, formatDate, isCdnUrl, selectIconSize } from "@/utils/Utility";
-import { getSongDisplayName, getArtistDisplayName, formatDuration } from "@/utils/levelHelpers";
+import {
+  formatAutoTilecountTooltip,
+  getSongDisplayName,
+  getArtistDisplayName,
+  formatDuration,
+} from "@/utils/levelHelpers";
 import { RouletteWheel, SlotMachine, StateDisplay } from '@/components/common/selectors';
 import { CloseButton } from '@/components/common/buttons';
 import { toast } from 'react-hot-toast';
@@ -411,29 +416,29 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty, onArtistClick 
           <div className="popup-body">
             <div className="team-info">
               {level.teamObject && (
-                <div className="each-info team-name">
+                <div id="team" className="each-info team-name">
                   <span>{t('levelDetail.info.team')}:</span>
                   <span>{level.teamObject.name}</span>
                 </div>
               )}
-              <div className="each-info">
+              <div id="difficulty" className="each-info">
                 <span>{t('levelDetail.info.difficulty')}:</span>
                 <span>{difficulty?.name ?? '—'}</span>
               </div>
-              {(level.baseScore || difficulty?.baseScore) && (
-                <div className="each-info">
+              {(level.baseScore || difficulty?.baseScore) != null ? (
+                <div id="base-score" className="each-info">
                   <span>{t('levelDetail.info.baseScore')}:</span>
                   <span>{level.baseScore || difficulty?.baseScore}PP</span>
                 </div>
-              )}
-              {(level.ppBaseScore || difficulty?.ppBaseScore) && (
-                <div className="each-info">
+              ) : null}
+              {(level.ppBaseScore || difficulty?.ppBaseScore) != null ? (
+                <div id="pp-base-score" className="each-info">
                   <span>{t('levelDetail.info.ppBaseScore')}:</span>
                   <span>{level.ppBaseScore || difficulty?.ppBaseScore}PP</span>
                 </div>
-              )}
+              ) : null}
               {level.aliases && level.aliases.length > 0 && (
-                <div className="each-info">
+                <div id="aliases" className="each-info">
                   <span>{t('levelDetail.info.aliases')}:</span>
                   <span>
                     {level.aliases.map(alias => 
@@ -443,7 +448,7 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty, onArtistClick 
                 </div>
               )}
               {level.publicComments && (
-                <div className="each-info">
+                <div id="comments" className="each-info">
                   <span>{t('levelDetail.info.comments')}:</span>
                   <span>{level.publicComments}</span>
                 </div>
@@ -2368,13 +2373,30 @@ const LevelDetailPage = ({ mockData = null }) => {
                       <span className="metadata-value">{formatDuration(res.level.levelLengthInMs)}</span>
                     </div>
                   )}
-                  {!!res.level?.tilecount && (
-                    <div className="metadata-item">
-                      <ChartIcon size={22} />
-                      {/* <span className="metadata-label">Tilecount</span> */}
-                      <span className="metadata-value">{res.level.tilecount}</span>
-                    </div>
-                  )}
+                  {!!res.level?.tilecount && (() => {
+                    const autoTilecountTooltip = formatAutoTilecountTooltip(
+                      res.level.tilecount,
+                      res.level.autoTileCount,
+                    );
+                    const tilecountTooltipId = `tilecount-auto-tooltip-${res.level.id}`;
+                    return (
+                      <div
+                        className="metadata-item"
+                        {...(autoTilecountTooltip
+                          ? {
+                              'data-tooltip-id': tilecountTooltipId,
+                              'data-tooltip-content': autoTilecountTooltip,
+                            }
+                          : {})}
+                      >
+                        <ChartIcon size={22} />
+                        <span className="metadata-value">{res.level.tilecount}</span>
+                        {autoTilecountTooltip && (
+                          <Tooltip style={{ zIndex: 10, fontSize: '0.85rem' }} id={tilecountTooltipId} place="bottom" />
+                        )}
+                      </div>
+                    );
+                  })()}
                   {!!res.level?.bpm && (
                     <div className="metadata-item">
                       {/* <span className="metadata-icon">ICON</span> */}

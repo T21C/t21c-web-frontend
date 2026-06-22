@@ -1,4 +1,6 @@
 // tuf-search: #levelHelpers
+import { getEffectiveTilecount } from '@/utils/passJudgementHitCount';
+
 /**
  * Level dependency pipeline utilities
  * Provides backward compatibility for levels that haven't been migrated yet
@@ -73,6 +75,18 @@ export const getSongDisplayName = (level) => {
   }
 };
 
+
+/**
+ * Tooltip label for tilecount chips when the chart has auto tiles: "{T-AT} ({AT})".
+ * @returns {string|null} e.g. "75 (25)", or null when no auto tiles
+ */
+export function formatAutoTilecountTooltip(tilecount, autoTileCount) {
+  const auto = Math.floor(Number(autoTileCount) || 0);
+  if (auto <= 0) return null;
+  const manual = getEffectiveTilecount(tilecount, auto);
+  if (manual == null) return null;
+  return `${manual} (${auto})`;
+}
 
 export const formatDuration = (duration) => {
   if (!duration) return '';

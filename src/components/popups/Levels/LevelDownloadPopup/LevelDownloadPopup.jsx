@@ -62,6 +62,8 @@ const LevelDownloadPopup = ({
         );
     }, [availableOptions]);
 
+    const canConvertV2 = Number(availableOptions?.version) >= 18;
+
     useBodyScrollLock(true);
 
     useEffect(() => {
@@ -127,6 +129,12 @@ const LevelDownloadPopup = ({
         
         if (format === 'original') {
             window.location.href = dlLink;
+            onClose();
+            return;
+        }
+
+        if (format === 'v2') {
+            window.location.href = `${import.meta.env.VITE_CDN_URL}/levels/${fileId}/level-v2.adofai`;
             onClose();
             return;
         }
@@ -362,6 +370,15 @@ const LevelDownloadPopup = ({
                         )}
 
                         <div className="transform-buttons">
+                            {canConvertV2 && (
+                                <button
+                                    type="button"
+                                    className="level-download-popup__v2-btn"
+                                    onClick={() => handleDownload('v2')}
+                                >
+                                    {t('levelPopups.download.step2.downloadV2')}
+                                </button>
+                            )}
                             <button onClick={() => setStep(1)}>{t('levelPopups.download.step2.back')}</button>
                             <button onClick={() => handleDownload('transformed')}>
                                 {t('levelPopups.download.step2.downloadConverted')}

@@ -180,7 +180,8 @@
       "dropFilters": "Drop Filters:",
       "dropFiltersPlaceholder": "Select filters to drop",
       "back": "Back",
-      "downloadConverted": "Download Converted"
+      "downloadConverted": "Download Converted",
+      "downloadV2": "Download v2"
     },
     "errors": {
       "corrupted": "Download Corrupted",
