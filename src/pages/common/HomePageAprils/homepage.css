@@ -140,7 +140,7 @@
 
 .home-aprils .action-button:hover {
   background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
+  transform: scale(1.025);
   border-color: var(--color-white);
 }
 
@@ -766,7 +766,7 @@
 }
 
 .level-wheel-popup .level-spin-button:hover:not(:disabled) {
-  transform: translateY(-2px);
+  transform: scale(1.025);
   box-shadow: 0 5px 15px rgba(255, 42, 209, 0.3);
 }
 
@@ -855,7 +855,7 @@
 }
 
 .level-wheel-popup .level-difficulty-roulette-button:hover {
-  transform: translateY(-2px);
+  transform: scale(1.025);
   box-shadow: 0 0 30px rgba(100, 65, 165, 0.5);
   background: linear-gradient(45deg, #6441A5, #2a0845);
 }
@@ -928,7 +928,7 @@
 }
 
 .level-wheel-popup .level-submit-button:hover:not(:disabled) {
-  transform: translateY(-2px);
+  transform: scale(1.025);
   box-shadow: 0 0 30px rgba(100, 65, 165, 0.5);
   background: linear-gradient(45deg, #6441A5, #2a0845);
 }

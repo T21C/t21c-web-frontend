@@ -42,7 +42,6 @@
 }
 
 .admin-page .admin-card:hover {
-    transform: translateY(-5px);
     background: #0008;
 }
 

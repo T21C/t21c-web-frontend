@@ -334,7 +334,7 @@
 .roulette-wheel-popup .spin-button:hover:not(:disabled),
 .roulette-wheel-popup .confirm-button:hover {
   background: var(--btn-success-hover);
-  transform: translateY(-2px);
+  transform: scale(1.05);
 }
 
 @keyframes roulette-wheel_fadeIn {

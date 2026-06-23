@@ -2848,7 +2848,7 @@
   .level-detail .wrapper-level button:hover,
   .level-detail .left .like-button.available:hover,
   .level-detail .title-container .tag-list-arrow:hover {
-    transform: translateY(-2px);
+    transform: scale(1.025);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   }
 
@@ -2863,7 +2863,7 @@
   }
 
   .level-detail .level-detail__curation-icon-cell:hover {
-    transform: scale(1.05);
+    transform: scale(1.025);
   }
 }
 

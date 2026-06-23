@@ -162,7 +162,7 @@
 
 .home .action-button:hover {
   background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
+  transform: scale(1.025);
   border-color: var(--color-white);
 }
 

@@ -115,7 +115,6 @@ const CustomSelect = ({
       transition: "all 0.2s ease-in-out",
       "&:hover": {
         backgroundColor: "rgba(255, 255, 255, 0.3)",
-        transform: "translateY(-1px)",
         boxShadow: "0 2px 8px rgba(0, 0, 0, 0.2)"
       }
     }),

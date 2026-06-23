@@ -133,7 +133,7 @@
   }
   
   .slot-machine-container .spin-button:hover:not(:disabled) {
-    transform: translateY(-2px);
+    transform: scale(1.05);
     box-shadow: 0 5px 15px rgba(255, 42, 209, 0.3);
   }
   

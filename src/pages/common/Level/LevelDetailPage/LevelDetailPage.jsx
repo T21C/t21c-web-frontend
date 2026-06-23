@@ -2926,6 +2926,7 @@ const LevelDetailPage = ({ mockData = null }) => {
       )}
 
       {showRatingPopup && res.ratings && (
+        <Portal>
           <RatingDetailPopup
             selectedRating={{
               ...res.ratings,
@@ -2935,6 +2936,7 @@ const LevelDetailPage = ({ mockData = null }) => {
             setSelectedRating={() => setShowRatingPopup(false)}
             enableReferences={false}
           />
+        </Portal>
       )}
 
       {showAddToPackPopup && res.level && (
