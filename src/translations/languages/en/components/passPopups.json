@@ -30,7 +30,9 @@
         "title": "Title",
         "channel": "Channel",
         "timestamp": "Upload Date",
-        "nolink": "No video link provided"
+        "nolink": "No video link provided",
+        "resolving": "Resolving video link…",
+        "linkResolved": "Short link resolved to Bilibili URL"
       },
       "judgements": {
         "ePerfect": "Early Perfect",

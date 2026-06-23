@@ -23,11 +23,13 @@
     "notfound": "Aucun résultat"
   },
   "videoInfo": {
-    "videoLink": "Lien youtube",
+    "videoLink": "Lien YouTube ou Bilibili",
     "title": "Titre",
     "channel": "Chaîne",
     "timestamp": "Upload Time",
-    "nolink": "Veuillez entrer un lien valide"
+    "nolink": "Veuillez entrer un lien YouTube ou Bilibili valide",
+    "resolving": "Résolution du lien vidéo…",
+    "linkResolved": "Lien court résolu en URL Bilibili"
   },
   "judgements": {
     "ePerfect": "Parfait tôt",

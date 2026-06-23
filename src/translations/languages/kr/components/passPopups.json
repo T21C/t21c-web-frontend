@@ -30,7 +30,9 @@
         "title": "제목",
         "channel": "채널",
         "timestamp": "업로드 날짜",
-        "nolink": "영상 링크가 제공되지 않음"
+        "nolink": "영상 링크가 제공되지 않음",
+        "resolving": "영상 링크 확인 중…",
+        "linkResolved": "짧은 링크가 빌리빌리 URL로 변환되었습니다"
       },
       "judgements": {
         "ePerfect": "빠름",

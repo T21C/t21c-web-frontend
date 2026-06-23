@@ -6,6 +6,8 @@ import placeholder from "@/assets/placeholder/3.png";
 import { useEffect, useRef, useState, useMemo } from "react";
 import { useLocation } from 'react-router-dom';
 import { getVideoDetails } from "@/utils";
+import { resolveSubmissionVideoUrl } from "@/utils/resolveVideoUrl";
+import { useDebouncedRequest } from "@/hooks/useDebouncedRequest";
 import { useAuth } from "@/contexts/AuthContext";
 import { validateFeelingRating } from "@/utils/Utility";
 import { Trans, useTranslation } from "react-i18next";
@@ -145,6 +147,7 @@ const LevelSubmissionPage = () => {
   const [submission, setSubmission] = useState(false);
 
   const [videoDetail, setVideoDetail] = useState(null);
+  const [videoLinkResolving, setVideoLinkResolving] = useState(false);
   const [pendingProfiles, setPendingProfiles] = useState([]);
 
   // State for multiple creators
@@ -175,38 +178,7 @@ const LevelSubmissionPage = () => {
 
   const { job: cdnJob } = useJobProgressStream(cdnJobId, Boolean(submission && cdnJobId));
 
-  // Helper function to clean video URLs
-  const cleanVideoUrl = (url) => {
-    // Match various video URL formats
-    const patterns = [
-      // YouTube patterns
-      /https?:\/\/(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/,
-      /https?:\/\/(?:www\.)?youtu\.be\/([a-zA-Z0-9_-]+)/,
-      /https?:\/\/(?:www\.)?youtube\.com\/live\/([a-zA-Z0-9_-]+)/,
-      // Bilibili patterns
-      /https?:\/\/(?:www\.)?bilibili\.com\/video\/(BV[a-zA-Z0-9]+)/,
-      /https?:\/\/(?:www\.)?b23\.tv\/(BV[a-zA-Z0-9]+)/,
-      /https?:\/\/(?:www\.)?bilibili\.com\/.*?(BV[a-zA-Z0-9]+)/
-    ];
-
-    // Try each pattern
-    for (const pattern of patterns) {
-      const match = url.match(pattern);
-      if (match) {
-        // For Bilibili links, construct the standard URL format
-        if (match[1] && match[1].startsWith('BV')) {
-          return `https://www.bilibili.com/video/${match[1]}`;
-        }
-        // For YouTube links, construct based on the first pattern
-        if (match[1]) {
-          return `https://www.youtube.com/watch?v=${match[1]}`;
-        }
-      }
-    }
-
-    // If no pattern matches, return the original URL
-    return url;
-  };
+  const resolveVideoLinkRequest = useDebouncedRequest(500);
 
   const validateForm = () => {
     // Use selected song/artist or fallback to form text fields
@@ -279,28 +251,52 @@ const LevelSubmissionPage = () => {
   }, [form, submitAttempt, charters, vfxers, team, selectedSong, artists]);
 
   useEffect(() => {
-    const { videoLink } = form;
-  
-    const fetchData = async () => {
-      try {
-        // Clean the video URL before fetching details
-        const cleanedVideoLink = cleanVideoUrl(videoLink);
-        const videoDetails = await getVideoDetails(cleanedVideoLink);
-        setVideoDetail(videoDetails ? videoDetails : null);
-  
-        if (videoDetails?.downloadLink && !form.levelZip) {
-          setForm((prevForm) => ({
-            ...prevForm,
-            dlLink: videoDetails.downloadLink ? videoDetails.downloadLink : "",
-          }));
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
+    const videoLink = form.videoLink?.trim?.() ?? "";
+    if (!videoLink) {
+      setVideoDetail(null);
+      setVideoLinkResolving(false);
+      return;
+    }
+
+    setVideoLinkResolving(true);
+
+    resolveVideoLinkRequest(({ signal }) =>
+      resolveSubmissionVideoUrl(videoLink, { signal })
+        .then(async ({ url: resolvedUrl, resolved }) => {
+          if (resolved && resolvedUrl && resolvedUrl !== videoLink) {
+            setForm((prevForm) => ({ ...prevForm, videoLink: resolvedUrl }));
+            toast.success(t('levelSubmission.videoInfo.linkResolved', {
+              defaultValue: 'Short link resolved to Bilibili URL',
+            }));
+          }
+
+          const videoDetails = await getVideoDetails(resolvedUrl);
+          setVideoDetail(videoDetails ? videoDetails : null);
+
+          if (videoDetails?.downloadLink) {
+            setForm((prevForm) => {
+              if (prevForm.levelZip) return prevForm;
+              return {
+                ...prevForm,
+                dlLink: videoDetails.downloadLink ? videoDetails.downloadLink : "",
+              };
+            });
+          }
+        })
+        .catch((error) => {
+          if (api.isCancel(error)) return;
+          console.error("Error fetching data:", error);
+          setVideoDetail(null);
+        })
+        .finally(() => {
+          setVideoLinkResolving(false);
+        }),
+    );
+
+    return () => {
+      resolveVideoLinkRequest.cancel();
     };
-  
-    fetchData();
-  }, [form.videoLink]);
+  }, [form.videoLink, resolveVideoLinkRequest, t]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -388,7 +384,7 @@ const LevelSubmissionPage = () => {
     uploadAbortRef.current = abortController;
 
     try {
-      const cleanedVideoUrl = cleanVideoUrl(form.videoLink);
+      const { url: cleanedVideoUrl } = await resolveSubmissionVideoUrl(form.videoLink);
 
       const creatorRequests = [
         ...charters
@@ -1116,7 +1112,11 @@ const LevelSubmissionPage = () => {
                 </div>
               </div>) : 
               (<div className="yt-info">
-                <p style={{color: "#aaa"}}>{t('levelSubmission.videoInfo.nolink')}</p>
+                <p style={{color: "#aaa"}}>
+                  {videoLinkResolving
+                    ? t('levelSubmission.videoInfo.resolving', { defaultValue: 'Resolving video link…' })
+                    : t('levelSubmission.videoInfo.nolink')}
+                </p>
                 <br />
               </div>)}
             </div>

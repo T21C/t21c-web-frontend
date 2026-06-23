@@ -23,11 +23,13 @@
     "notfound": "Nie znaleziono"
   },
   "videoInfo": {
-    "videoLink": "Link do wideo na YouTube",
+    "videoLink": "Link do wideo YouTube lub Bilibili",
     "title": "Tytuł",
     "channel": "Kanał",
     "timestamp": "Czas przesłania",
-    "nolink": "Wpisz poprawny link do wideo na YouTube"
+    "nolink": "Wpisz poprawny link do wideo na YouTube lub Bilibili",
+    "resolving": "Rozwiązywanie linku do wideo…",
+    "linkResolved": "Skrócony link zamieniono na adres Bilibili"
   },
   "judgements": {
     "ePerfect": "WPerfekcyjnie",

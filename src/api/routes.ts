@@ -337,6 +337,7 @@ export const routes = {
 
   media: {
     videoDetails: (url: string) => `/v2/media/video-details/${enc(url)}`,
+    resolveVideoUrl: (url: string) => `/v2/media/resolve-video-url?url=${enc(url)}`,
     wheelImage: (seed: string | number) => `/v2/media/wheel-image/${seed}`,
   },
 

@@ -21,6 +21,8 @@ export const PASS_CORE_COPY = {
     videoChannelLabel: 'passSubmission.videoInfo.channel',
     videoTimestampLabel: 'passSubmission.videoInfo.timestamp',
     videoNoLink: 'passSubmission.videoInfo.nolink',
+    videoLinkResolving: 'passSubmission.videoInfo.resolving',
+    videoLinkResolved: 'passSubmission.videoInfo.linkResolved',
     speedPlaceholder: 'passSubmission.submInfo.speed',
     keyCountPlaceholder: 'passSubmission.submInfo.keyCount',
     keyCountTooltip: 'passSubmission.keyCountTooltip',
@@ -62,6 +64,8 @@ export const PASS_CORE_COPY = {
     videoChannelLabel: 'passPopups.edit.form.videoInfo.channel',
     videoTimestampLabel: 'passPopups.edit.form.videoInfo.timestamp',
     videoNoLink: 'passPopups.edit.form.videoInfo.nolink',
+    videoLinkResolving: 'passPopups.edit.form.videoInfo.resolving',
+    videoLinkResolved: 'passPopups.edit.form.videoInfo.linkResolved',
     speedPlaceholder: 'passPopups.edit.form.submInfo.speed',
     keyCountPlaceholder: 'passPopups.edit.form.submInfo.keyCount',
     keyCountTooltip: 'passPopups.edit.keyCountTooltip',
@@ -108,6 +112,7 @@ export function PassCoreForm({
   level,
   levelLoading,
   videoDetail,
+  videoLinkResolving = false,
   accuracy,
   score,
   onInputChange,
@@ -332,7 +337,11 @@ export function PassCoreForm({
             </div>
           ) : (
             <div className="yt-info">
-              <p style={{ color: '#aaa' }}>{t(copy.videoNoLink, { ns: copy.ns })}</p>
+              <p style={{ color: '#aaa' }}>
+                {videoLinkResolving
+                  ? t(copy.videoLinkResolving, { ns: copy.ns, defaultValue: 'Resolving video link…' })
+                  : t(copy.videoNoLink, { ns: copy.ns })}
+              </p>
               <br />
             </div>
           )}

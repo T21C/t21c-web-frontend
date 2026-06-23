@@ -25,7 +25,9 @@
     "title": "영상 제목",
     "channel": "채널 이름",
     "timestamp": "업로드 시간",
-    "nolink": "링크가 제공되지 않음"
+    "nolink": "링크가 제공되지 않음",
+    "resolving": "영상 링크 확인 중…",
+    "linkResolved": "짧은 링크가 빌리빌리 URL로 변환되었습니다"
   },
   "tooltip": "알 수 없는 난이도입니다. 제출은 가능하지만 관리자들이 읽을 수 있도록 정확히 입력해 주세요. 예시: G13; P7~P13; 21.1+; 19~20.0+",
   "suffixTooltip": "곡 이름 뒤에 붙는 부분입니다! 예시) \"<bold>Nerfed</bold>\" 작성 시, \"곡 이름 <bold>Nerfed</bold>\"로 표시됩니다",

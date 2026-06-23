@@ -30,7 +30,9 @@
         "title": "Titre",
         "channel": "Chaine",
         "timestamp": "Date de publication",
-        "nolink": "Pas de lien vidéo fourni"
+        "nolink": "Pas de lien vidéo fourni",
+        "resolving": "Résolution du lien vidéo…",
+        "linkResolved": "Lien court résolu en URL Bilibili"
       },
       "judgements": {
         "ePerfect": "Parfait-Tôt",

@@ -18,7 +18,9 @@
     "title": "Tytuł wideo",
     "channel": "Nazwa kanału",
     "timestamp": "Czas przesłania",
-    "nolink": "Nie podano linku"
+    "nolink": "Nie podano linku",
+    "resolving": "Rozwiązywanie linku do wideo…",
+    "linkResolved": "Skrócony link zamieniono na adres Bilibili"
   },
   "tooltip": "Nieznany poziom trudności, upewnij się, że będzie on czytelny dla manager'ów. Przykłady poprawnego zapisu: G13; P7~P13; 21.1+; 19~20.0+",
   "submit": "Prześlij",

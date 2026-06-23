@@ -21,7 +21,9 @@
     "title": "Titre de la vidéo",
     "channel": "Nom de la chaîne",
     "timestamp": "Upload Time",
-    "nolink": "Aucun lien fourni"
+    "nolink": "Aucun lien fourni",
+    "resolving": "Résolution du lien vidéo…",
+    "linkResolved": "Lien court résolu en URL Bilibili"
   },
   "tooltip": "Difficulté innconue, le formulaire va être envoyé mais faites en sorte que les évaluateurs puisse le lire. Exemple de difficultés correctes.: G13; P7~P13; 21.1+; 19~20.0+",
   "buttons": {

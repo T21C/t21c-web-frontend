@@ -23,11 +23,13 @@
     "notfound": "찾을 수 없음"
   },
   "videoInfo": {
-    "videoLink": "유튜브 영상 링크",
+    "videoLink": "YouTube 또는 빌리빌리 영상 링크",
     "title": "제목",
     "channel": "채널",
     "timestamp": "업로드 시간",
-    "nolink": "유효한 유튜브 영상 링크를 입력하세요"
+    "nolink": "유효한 YouTube 또는 빌리빌리 영상 링크를 입력하세요",
+    "resolving": "영상 링크 확인 중…",
+    "linkResolved": "짧은 링크가 빌리빌리 URL로 변환되었습니다"
   },
   "judgements": {
     "ePerfect": "빠름",

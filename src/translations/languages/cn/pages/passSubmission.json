@@ -23,11 +23,13 @@
     "notfound": "未找到关卡"
   },
   "videoInfo": {
-    "videoLink": "视频链接",
+    "videoLink": "YouTube 或哔哩哔哩视频链接",
     "title": "视频标题",
     "channel": "UP主名称",
     "timestamp": "上传时间",
-    "nolink": "请输入正确的视频链接。"
+    "nolink": "请输入有效的 YouTube 或哔哩哔哩视频链接",
+    "resolving": "正在解析视频链接…",
+    "linkResolved": "短链接已解析为哔哩哔哩链接"
   },
   "judgements": {
     "ePerfect": "稍快！",

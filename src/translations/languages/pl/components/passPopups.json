@@ -30,7 +30,9 @@
         "title": "Tytuł",
         "channel": "Kanał",
         "timestamp": "Data upublicznienia",
-        "nolink": "Nie podano linku do wideo"
+        "nolink": "Nie podano linku do wideo",
+        "resolving": "Rozwiązywanie linku do wideo…",
+        "linkResolved": "Skrócony link zamieniono na adres Bilibili"
       },
       "judgements": {
         "ePerfect": "WPerfekcyjnie",

@@ -30,7 +30,9 @@
         "title": "标题",
         "channel": "频道",
         "timestamp": "上传日期",
-        "nolink": "未提供视频链接"
+        "nolink": "未提供视频链接",
+        "resolving": "正在解析视频链接…",
+        "linkResolved": "短链接已解析为哔哩哔哩链接"
       },
       "judgements": {
         "ePerfect": "稍快！",

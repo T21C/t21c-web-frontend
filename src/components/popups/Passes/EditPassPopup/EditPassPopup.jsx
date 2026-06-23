@@ -61,6 +61,7 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
     level,
     levelLoading,
     videoDetail,
+    videoLinkResolving,
     accuracy,
     score,
     handleInputChange,
@@ -230,6 +231,7 @@ const handleSubmit = async (e) => {
           level={level}
           levelLoading={levelLoading}
           videoDetail={videoDetail}
+          videoLinkResolving={videoLinkResolving}
           accuracy={accuracy}
           score={score}
           onInputChange={handleInputChange}
