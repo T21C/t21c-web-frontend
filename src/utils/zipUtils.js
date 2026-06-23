@@ -3,7 +3,7 @@
  * Utility functions for handling archive uploads.
  *
  * Supports the same archive formats accepted by the server's archiveService
- * (.zip / .rar / .7z / .tar / .gz / .tgz). Browsers report archive MIME types
+ * (.zip / .adozip / .rar / .7z / .tar / .gz / .tgz). Browsers report archive MIME types
  * inconsistently — especially for RAR / 7z / tar — so we accept either an
  * approved MIME type *or* an approved file extension.
  *
@@ -29,6 +29,7 @@ export const ACCEPTED_ARCHIVE_MIMES = new Set([
 /** File extensions we accept (lowercased, leading dot). Includes compound `.tar.gz`. */
 export const ACCEPTED_ARCHIVE_EXTENSIONS = [
   '.zip',
+  '.adozip',
   '.rar',
   '.7z',
   '.tar',
@@ -73,7 +74,7 @@ export const isAcceptedArchiveFile = (file) => {
 export const prepareArchiveForUpload = (file) => {
   if (!file) return null;
   if (!isAcceptedArchiveFile(file)) {
-    throw new Error('Invalid file type. Supported formats: .zip, .rar, .7z, .tar, .tar.gz, .tgz.');
+    throw new Error('Invalid file type. Supported formats: .zip, .adozip, .rar, .7z, .tar, .tar.gz, .tgz.');
   }
   return {
     file,
