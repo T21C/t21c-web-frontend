@@ -210,7 +210,7 @@ const SongListPage = () => {
           </div>
         ) : songs.length > 0 ? (
           <VirtualList
-            style={{ paddingBottom: "7rem", minHeight: "50vh", overflow: "visible" }}
+            style={{ paddingBottom: "7rem", minHeight: "50vh" }}
             items={songs}
             loadMore={handleLoadMore}
             hasMore={hasMore}

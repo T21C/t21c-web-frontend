@@ -174,29 +174,10 @@
   padding-right: 8px;
 }
 
-.pack-page__grid {
-  display: grid;
+/* Grid layout (rows of cards) is owned by VirtualList. Only list-mode row
+   spacing is page-specific — in list mode the class lands on the flex list. */
+.virtual-list__list.pack-page__grid {
   gap: 20px;
-}
-
-.pack-page__grid--list {
-  grid-template-columns: minmax(0, 1fr);
-}
-
-.pack-page__grid:not(.pack-page__grid--list) {
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-}
-
-.pack-page .pack-page__grid:not(.pack-page__grid--list) .virtual-list__grid-item {
-  width: 100%;
-  min-width: 0;
-}
-
-.pack-page .pack-page__grid:not(.pack-page__grid--list) .virtual-list__grid-item > .pack-card {
-  display: flex;
-  width: 100%;
-  min-width: 0;
-  box-sizing: border-box;
 }
 
 .pack-page__loading {

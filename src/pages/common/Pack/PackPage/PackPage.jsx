@@ -401,12 +401,14 @@ const PackPageContent = () => {
           ) : (
             <>
             <VirtualList
-              style={{ paddingBottom: "7rem", minHeight: "50vh", overflow: "visible" }}
+              style={{ paddingBottom: "7rem", minHeight: "50vh" }}
               items={packs ?? []}
               loadMore={loadMore}
               hasMore={hasMore}
               overscan={800}
               grid={displayMode === 'grid'}
+              minColumnWidth={300}
+              gap={20}
               listClassName={`pack-page__grid pack-page__grid--${displayMode}`}
               loader={
                 <div className="pack-page__loading">

@@ -1,6 +1,14 @@
-import { forwardRef, useCallback, useEffect, useMemo, useRef } from 'react';
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useLocation } from 'react-router-dom';
-import { Virtuoso, VirtuosoGrid } from 'react-virtuoso';
+import { Virtuoso } from 'react-virtuoso';
 import {
   buildVirtualListFingerprint,
   buildVirtualListStoreKey,
@@ -21,9 +29,22 @@ function VirtualListFooter({ hasMore, loader, endMessage, itemCount }) {
   return null;
 }
 
+function chunkRows(items, columns) {
+  if (columns <= 1) return items.map((item) => [item]);
+  const rows = [];
+  for (let i = 0; i < items.length; i += columns) {
+    rows.push(items.slice(i, i + columns));
+  }
+  return rows;
+}
+
 /**
  * Windowed list/grid wrapper around react-virtuoso.
- * Drop-in replacement for react-infinite-scroll-component + .map().
+ *
+ * Both list and grid modes use the standard `Virtuoso` component. Grid mode
+ * packs `columns` items into each virtual row so rows size to their tallest
+ * card — this avoids VirtuosoGrid's uniform-height requirement, which causes
+ * scroll jitter/oscillation with variable-height cards.
  */
 const VirtualList = ({
   items = [],
@@ -44,16 +65,41 @@ const VirtualList = ({
   className = '',
   stateKey = 'main',
   restoreScroll = true,
+  minColumnWidth = 280,
+  gap = 24,
 }) => {
   const { pathname, search } = useLocation();
   const safeItems = items ?? [];
   const waitingForScrollParent = customScrollParent === null;
 
   const virtuosoRef = useRef(null);
-  const gridSnapshotRef = useRef(null);
-  const gridSaveTimerRef = useRef(null);
+  const containerRef = useRef(null);
   const storeKeyRef = useRef('');
   const fingerprintRef = useRef('0');
+
+  const [columns, setColumns] = useState(1);
+
+  // Measure available width and derive a responsive column count for grid mode.
+  useLayoutEffect(() => {
+    if (!grid) {
+      setColumns(1);
+      return undefined;
+    }
+    const el = containerRef.current;
+    if (!el) return undefined;
+
+    const measure = () => {
+      const width = el.clientWidth;
+      if (!width) return;
+      const next = Math.max(1, Math.floor((width + gap) / (minColumnWidth + gap)));
+      setColumns((prev) => (prev === next ? prev : next));
+    };
+
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [grid, gap, minColumnWidth]);
 
   const containerScroll = Boolean(customScrollParent);
   const storeKey = useMemo(
@@ -74,55 +120,25 @@ const VirtualList = ({
   storeKeyRef.current = storeKey;
   fingerprintRef.current = fingerprint;
 
-  const persistListSnapshot = useCallback(() => {
+  const persistSnapshot = useCallback(() => {
     if (!restoreScroll || safeItems.length === 0) return;
     virtuosoRef.current?.getState((snapshot) => {
       setVirtualListScrollState(storeKeyRef.current, fingerprintRef.current, snapshot);
     });
   }, [restoreScroll, safeItems.length]);
 
-  const persistGridSnapshot = useCallback((snapshot) => {
-    if (!restoreScroll || safeItems.length === 0 || !snapshot) return;
-    gridSnapshotRef.current = snapshot;
-    setVirtualListScrollState(storeKeyRef.current, fingerprintRef.current, snapshot);
-  }, [restoreScroll, safeItems.length]);
-
-  const handleGridStateChanged = useCallback(
-    (snapshot) => {
-      if (!restoreScroll || safeItems.length === 0) return;
-      gridSnapshotRef.current = snapshot;
-      if (gridSaveTimerRef.current) {
-        clearTimeout(gridSaveTimerRef.current);
-      }
-      gridSaveTimerRef.current = setTimeout(() => {
-        persistGridSnapshot(gridSnapshotRef.current);
-      }, 100);
-    },
-    [restoreScroll, safeItems.length, persistGridSnapshot],
-  );
-
   const handleIsScrolling = useCallback(
     (isScrolling) => {
-      if (!isScrolling) {
-        persistListSnapshot();
-      }
+      if (!isScrolling) persistSnapshot();
     },
-    [persistListSnapshot],
+    [persistSnapshot],
   );
 
   useEffect(() => {
     return () => {
-      if (gridSaveTimerRef.current) {
-        clearTimeout(gridSaveTimerRef.current);
-      }
-      if (!restoreScroll || safeItems.length === 0) return;
-      if (grid) {
-        persistGridSnapshot(gridSnapshotRef.current);
-      } else {
-        persistListSnapshot();
-      }
+      persistSnapshot();
     };
-  }, [grid, restoreScroll, safeItems.length, persistGridSnapshot, persistListSnapshot]);
+  }, [persistSnapshot]);
 
   const scrollProps = useMemo(() => {
     if (customScrollParent) {
@@ -149,51 +165,103 @@ const VirtualList = ({
     [hasMore, loader, endMessage, safeItems.length],
   );
 
-  const listComponents = useMemo(() => {
-    const listClass = ['virtual-list__list', listClassName].filter(Boolean).join(' ');
-    const listItemClass = ['virtual-list__list-item', itemClassName].filter(Boolean).join(' ');
+  const rows = useMemo(
+    () => (grid ? chunkRows(safeItems, columns) : null),
+    [grid, safeItems, columns],
+  );
 
-    return {
-      List: forwardRef(function VirtualListList({ style: listStyle, children, ...props }, ref) {
+  // List/Item refs must stay stable across data changes (e.g. loadMore),
+  // otherwise Virtuoso remounts every item and the scroll position jumps.
+  const listClass = useMemo(
+    () => ['virtual-list__list', listClassName].filter(Boolean).join(' '),
+    [listClassName],
+  );
+  const listItemClass = useMemo(
+    () => ['virtual-list__list-item', itemClassName].filter(Boolean).join(' '),
+    [itemClassName],
+  );
+
+  const ListComponent = useMemo(
+    () =>
+      forwardRef(function VirtualListContainer({ style: listStyle, children, ...props }, ref) {
         return (
-          <div ref={ref} {...props} style={listStyle} className={listClass}>
+          <div
+            ref={ref}
+            {...props}
+            style={listStyle}
+            className={grid ? 'virtual-list__rows' : listClass}
+          >
             {children}
           </div>
         );
       }),
-      Item: ({ children, className, item: _item, ...props }) => (
-        <div {...props} className={[listItemClass, className].filter(Boolean).join(' ')}>
+    [grid, listClass],
+  );
+
+  const ItemComponent = useMemo(() => {
+    if (grid) {
+      return ({ children, className: itemCls, item: _item, ...props }) => (
+        <div {...props} className={['virtual-list__row-item', itemCls].filter(Boolean).join(' ')}>
           {children}
         </div>
-      ),
-      Footer: footerComponent,
-    };
-  }, [listClassName, itemClassName, footerComponent]);
+      );
+    }
+    return ({ children, className: itemCls, item: _item, ...props }) => (
+      <div {...props} className={[listItemClass, itemCls].filter(Boolean).join(' ')}>
+        {children}
+      </div>
+    );
+  }, [grid, listItemClass]);
 
-  const gridComponents = useMemo(() => {
-    const gridListClass = ['virtual-list__grid-list', listClassName].filter(Boolean).join(' ');
-    const gridItemClass = ['virtual-list__grid-item', itemClassName].filter(Boolean).join(' ');
+  const components = useMemo(
+    () => ({ List: ListComponent, Item: ItemComponent, Footer: footerComponent }),
+    [ListComponent, ItemComponent, footerComponent],
+  );
 
-    return {
-      List: forwardRef(function VirtualGridList({ style: listStyle, children, ...props }, ref) {
-        return (
-          <div ref={ref} {...props} style={listStyle} className={gridListClass}>
-            {children}
-          </div>
-        );
-      }),
-      Item: ({ children, className, item: _item, ...props }) => (
-        <div {...props} className={[gridItemClass, className].filter(Boolean).join(' ')}>
-          {children}
-        </div>
-      ),
-      Footer: footerComponent,
-    };
-  }, [listClassName, itemClassName, footerComponent]);
+  const rowStyle = useMemo(
+    () => ({
+      display: 'grid',
+      gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
+      gap: `${gap}px`,
+      paddingBottom: `${gap}px`,
+      alignItems: 'stretch',
+    }),
+    [columns, gap],
+  );
 
   const itemContent = useCallback(
-    (index, item) => renderItem(item, index),
-    [renderItem],
+    (index, item) => {
+      if (grid) {
+        const rowItems = item ?? [];
+        const rowClass = ['virtual-list__row', listClassName].filter(Boolean).join(' ');
+        return (
+          <div className={rowClass} style={rowStyle}>
+            {rowItems.map((rowItem, columnIndex) => {
+              const realIndex = index * columns + columnIndex;
+              const cellClass = ['virtual-list__cell', itemClassName].filter(Boolean).join(' ');
+              return (
+                <div key={computeItemKey(realIndex, rowItem)} className={cellClass}>
+                  {renderItem(rowItem, realIndex)}
+                </div>
+              );
+            })}
+          </div>
+        );
+      }
+      return renderItem(item, index);
+    },
+    [grid, columns, listClassName, itemClassName, rowStyle, computeItemKey, renderItem],
+  );
+
+  const itemKey = useCallback(
+    (index) => {
+      if (grid) {
+        const firstItem = rows?.[index]?.[0];
+        return firstItem ? computeItemKey(index * columns, firstItem) : index;
+      }
+      return computeItemKey(index, safeItems[index]);
+    },
+    [grid, rows, columns, computeItemKey, safeItems],
   );
 
   const rootClassName = [
@@ -212,36 +280,18 @@ const VirtualList = ({
 
   const restoreProps = restoredSnapshot ? { restoreStateFrom: restoredSnapshot } : {};
 
-  const sharedProps = {
-    ...scrollProps,
-    ...restoreProps,
-    data: safeItems,
-    endReached: handleEndReached,
-    increaseViewportBy: { top: overscan, bottom: overscan },
-    computeItemKey: (index) => computeItemKey(index, safeItems[index]),
-    style,
-  };
-
-  if (grid) {
-    return (
-      <div className={rootClassName} style={style}>
-        <VirtuosoGrid
-          {...sharedProps}
-          components={gridComponents}
-          itemContent={itemContent}
-          stateChanged={handleGridStateChanged}
-        />
-      </div>
-    );
-  }
-
   return (
-    <div className={rootClassName} style={style}>
+    <div className={rootClassName} style={style} ref={containerRef}>
       <Virtuoso
-        {...sharedProps}
+        {...scrollProps}
+        {...restoreProps}
         {...(defaultItemHeight ? { defaultItemHeight } : {})}
         ref={virtuosoRef}
-        components={listComponents}
+        data={grid ? rows : safeItems}
+        endReached={handleEndReached}
+        increaseViewportBy={{ top: overscan, bottom: overscan }}
+        computeItemKey={itemKey}
+        components={components}
         itemContent={itemContent}
         isScrolling={handleIsScrolling}
       />

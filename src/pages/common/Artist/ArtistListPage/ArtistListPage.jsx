@@ -189,7 +189,7 @@ const ArtistListPage = () => {
           </div>
         ) : (
           <VirtualList
-            style={{ paddingBottom: "7rem", minHeight: "50vh", overflow: "visible" }}
+            style={{ paddingBottom: "7rem", minHeight: "50vh" }}
             items={artists}
             loadMore={handleLoadMore}
             hasMore={hasMore}
