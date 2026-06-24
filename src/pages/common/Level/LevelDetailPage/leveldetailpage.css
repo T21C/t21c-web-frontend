@@ -116,7 +116,7 @@
   padding-left: 1.5em;
   border-radius: var(--border-radius);
   margin-right: var(--spacing-sm);
-  flex: 15;
+  width: 100%;
   align-items: center;
   gap: var(--spacing-lg);
   background-image: var(--header-bg-image);
@@ -228,6 +228,7 @@
   justify-content: center;
   font-size: var(--font-size-3xl);
   font-weight: bold;
+  margin: var(--spacing-md) 0;
   line-height: 1.2;
   position: relative;
   gap: var(--spacing-xs);
