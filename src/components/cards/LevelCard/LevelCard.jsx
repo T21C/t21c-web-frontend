@@ -2,7 +2,7 @@
 import { Link } from "react-router-dom";
 import "./levelcard.css"
 import { useTranslation } from "react-i18next";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { EditLevelPopup } from "@/components/popups/Levels";
 import { AddToPackPopup } from "@/components/popups/Packs";
@@ -43,17 +43,6 @@ const LevelCard = ({
   dragHandleProps = null,
   onRequestMove = null,
 }) => {
-  const [isTwoLineLayout, setIsTwoLineLayout] = useState(false);
-  
-  useEffect(() => {
-    const checkLayout = () => {
-      setIsTwoLineLayout(window.innerWidth <= 650);
-    };
-    checkLayout();
-    window.addEventListener('resize', checkLayout);
-    return () => window.removeEventListener('resize', checkLayout);
-  }, []);
-
   const { t } = useTranslation('components');
   
   if (packItem) {
@@ -453,43 +442,6 @@ const LevelCard = ({
         </div>
       );
     }
-    const renderPackTwoLineLayout = () => (
-      <>
-        <Link className="level-card__link-wrap" to={levelDetailTo} aria-label={getSongDisplayName(level)}>
-          <div className="info-line">
-            {renderDifficultyIcon()}
-            {renderSongInfo()}
-            {renderCreatorInfo()}
-          </div>
-        </Link>
-        <div className="stats-line">
-          <Link className="level-card__link-wrap" to={levelDetailTo} aria-label={getSongDisplayName(level)}>
-            {renderStatsIcons({ showLikes: false })}
-          </Link>
-          {renderDownloadLinks({ 
-            showAddToPack: false, 
-            editMarginZero: true 
-          })}
-        </div>
-      </>
-    );
-
-    const renderPackSingleLineLayout = () => (
-      <>
-        <Link className="level-card__link-wrap" to={levelDetailTo} aria-label={getSongDisplayName(level)}>
-          {renderDifficultyIcon()}
-          {renderSongInfo()}
-          {renderCreatorInfo()}
-          {renderStatsIcons({ showLikes: false })}
-        </Link>
-        {renderDownloadLinks({ 
-          showAddToPack: false, 
-          editMarginZero: true 
-        })}
-        {renderDeleteButton({ mobile: true })}
-      </>
-    );
-
     return (
       <div 
         className={`level-card pack ${getGlowClass()}`} 
@@ -517,9 +469,17 @@ const LevelCard = ({
         
         {renderClearedCheckmark({ noHover: !canEdit })}
 
-        <div className={`level-card-wrapper ${isTwoLineLayout ? 'two-line' : ''}`}>
-          {isTwoLineLayout ? renderPackTwoLineLayout() : renderPackSingleLineLayout()}
-          
+        <div className="level-card-wrapper">
+          <Link className="level-card__link-wrap" to={levelDetailTo} aria-label={getSongDisplayName(level)}>
+            {renderDifficultyIcon()}
+            {renderSongInfo()}
+            {renderCreatorInfo()}
+            <div className="level-card__stats">
+              {renderStatsIcons({ showLikes: false })}
+            </div>
+          </Link>
+          {renderDownloadLinks({ showAddToPack: false, editMarginZero: true })}
+          {renderDeleteButton({ mobile: true })}
           {canEdit && renderDeleteButton()}
         </div>
 
@@ -531,47 +491,22 @@ const LevelCard = ({
   // ============================================
   // NORMAL MODE (default)
   // ============================================
-  const renderNormalTwoLineLayout = () => (
-    <>
-      <Link className="level-card__link-wrap" to={levelDetailTo} aria-label={getSongDisplayName(level)}>
-        <div className="info-line">
-          {renderDifficultyIcon()}
-          {renderSongInfo()}
-          {renderCreatorInfo()}
-        </div>
-      </Link>
-      <div className="stats-line">
-        <Link className="level-card__link-wrap" to={levelDetailTo} aria-label={getSongDisplayName(level)}>
-          {renderStatsIcons()}
-        </Link>
-        {renderDownloadLinks({ showAddToPack: true })}
-      </div>
-    </>
-  );
-
-  const renderNormalSingleLineLayout = () => (
-    <>
-      <Link className="level-card__link-wrap" to={levelDetailTo} aria-label={getSongDisplayName(level)}>
-        <div className="level-details-wrapper">
-          {renderDifficultyIcon()}
-        </div>
-        
-        {renderSongInfo()}
-        {renderCreatorInfo()}
-        {renderStatsIcons()}
-      </Link>
-      {renderDownloadLinks({ showAddToPack: true })}
-    </>
-  );
-
   return (
     <div 
       className={`level-card ${displayMode} ${getGlowClass()}`} 
       data-deleted={level.isDeleted}
       data-hidden={level.isHidden && !level.isDeleted}
     >
-      <div className={`level-card-wrapper ${isTwoLineLayout ? 'two-line' : ''}`}>
-        {isTwoLineLayout ? renderNormalTwoLineLayout() : renderNormalSingleLineLayout()}
+      <div className="level-card-wrapper">
+        <Link className="level-card__link-wrap" to={levelDetailTo} aria-label={getSongDisplayName(level)}>
+          {renderDifficultyIcon()}
+          {renderSongInfo()}
+          {renderCreatorInfo()}
+          <div className="level-card__stats">
+            {renderStatsIcons()}
+          </div>
+        </Link>
+        {renderDownloadLinks({ showAddToPack: true })}
       </div>
 
       {renderPopups()}

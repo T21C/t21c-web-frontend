@@ -11,22 +11,24 @@
   overflow: hidden;
 }
 
+/* CSS-grid layout (no JS / no flex-wrap → deterministic height for virtuoso).
+   Wide: single row. Narrow: two rows via the 650px media query below.
+   Layout is purely media-breakpoint driven; never measured in JS. */
 .level-card-wrapper {
   position: relative;
-  display: flex;
-  justify-content: left;
-  gap: 0.5rem;
+  display: grid;
+  grid-template-columns: auto minmax(0, 2fr) minmax(0, 1.5fr) auto auto;
+  grid-template-areas: "icon song creator stats actions";
+  align-items: center;
+  gap: 1rem;
+  flex: 1; /* fill the parent .level-card (a flex row) */
   min-height: 4rem;
   padding: 0.75rem 0.75rem 0.75rem 0.5rem;
   border-radius: 0px;
   cursor: pointer;
-  align-items: center;
-  flex-wrap: wrap;
   border-bottom: 1px solid;
   border-color: #aaa6;
   transition: background-color 0.1s ease-in-out, border-color 0.1s ease-in-out;
-  justify-items: space-between;
-  flex-grow: 1;
   max-width: 100%;
   overflow: hidden;
 }
@@ -35,31 +37,19 @@
   display: contents;
 }
 
-/* Two-line layout container */
-.level-card-wrapper.two-line {
-  flex-direction: column;
-  align-items: stretch;
+.level-card .img-wrapper { grid-area: icon; }
+.level-card .song-wrapper { grid-area: song; }
+.level-card .creator-wrapper { grid-area: creator; }
+.level-card .level-card__stats { grid-area: stats; }
+.level-card .downloads-wrapper { grid-area: actions; }
+
+.level-card .level-card__stats {
+  display: flex;
+  align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem 0.5rem;
+  min-width: 0;
 }
 
-.level-card-wrapper.two-line .info-line {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  width: 100%;
-  min-height: 2.5rem;
-}
-
-.level-card-wrapper.two-line .stats-line {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  width: 100%;
-  min-height: 2rem;
-  padding-left: 4rem; /* Align with content after icon */
-}
 .level-card:hover {
   background-color: var(--color-white-t20);
 }
@@ -130,14 +120,7 @@
 }
 .level-card .creator-wrapper {
   overflow: hidden;
-  width: 200px;
-  flex: 1.1;
   min-width: 0;
-  flex-shrink: 1;
-}
-
-.level-card .icon-wrapper {
-  margin-left: auto;
 }
 
 .level-card .icon-wrapper,
@@ -145,7 +128,6 @@
   position: relative;
   display: flex;
   align-items: center;
-  flex: 0.25;
   gap: 0.25rem;
   font-size: 1.15em;
   font-weight: 600;
@@ -168,14 +150,11 @@
 
 
 .level-card .song-wrapper {
-  margin-left: 0.5rem;
-  flex: 2;
   overflow: hidden;
-  width: 200px;
   min-width: 0;
-  flex-shrink: 1;
   display: flex;
   flex-direction: column;
+  margin-left: 0.5rem;
   align-items: flex-start;
 }
 .level-card .song-wrapper .group {
@@ -185,14 +164,11 @@
   gap: 0.3rem;
 }
 .level-card .downloads-wrapper {
-  flex: 0.85;
   display: flex;
   gap: 0.5rem;
   align-items: center;
-  margin-left: 0.5rem;
   cursor: pointer;
   justify-content: flex-end;
-  flex-shrink: 0;
 }
 .level-card .downloads-wrapper > * {
   display: block;
@@ -309,43 +285,23 @@
   }
 }
 
+/* Narrow: two grid rows (icon+song+creator, then stats+actions). Deterministic
+   height, switched purely by this breakpoint — no JS, no flex-wrap. */
 @media (max-width: 650px) {
   .level-card .level-card-wrapper {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.5rem;
+    grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+      "icon song creator"
+      "stats stats actions";
+    row-gap: 0.5rem;
   }
-  
-  .level-card .level-card-wrapper .info-line {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    width: 100%;
-    min-height: 2.5rem;
+
+  .level-card .level-card__stats {
+    padding-left: 4rem; /* align stats under the song, past the difficulty icon */
   }
-  
-  .level-card .level-card-wrapper .stats-line {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    width: 100%;
-    min-height: 2rem;
-    padding-left: 4rem;
-  }
-  
-  .level-card .song-wrapper {
-    flex: 1;
-  }
-  
-  .level-card .creator-wrapper {
-    flex: 1;
-  }
-  
+
   .level-card .downloads-wrapper {
     min-width: auto;
-    display: flex;
-    flex-shrink: 0;
   }
 
   .level-card .img-wrapper {
@@ -356,23 +312,13 @@
   .level-card .downloads-wrapper {
     min-width: 100px;
   }
-  .level-card .creator-wrapper {
-    overflow: hidden;
-    width: 150px;
-  }
-  
-  .level-card .song-wrapper {
-    padding-right: 0;
-    width: auto;
-    flex: 1;
-  }
-  
+
   .level-card .level-card-wrapper {
     gap: 0.5rem;
     padding: 0.8rem 0.25rem 0.8rem 0.5rem;
   }
   
-  .level-card .level-card-wrapper .stats-line {
+  .level-card .level-card__stats {
     padding-left: 3.5rem;
   }
   
@@ -393,10 +339,6 @@
   .level-card .downloads-wrapper {
     min-width: 70px;
   }
-  .level-card .creator-wrapper {
-    overflow: hidden;
-    width: 120px;
-  }
   .level-card .img-wrapper {
     width: 2.75rem;
     margin: 0 0.5rem;
@@ -414,11 +356,6 @@
     width: 2rem;
   }
   
-  .level-card .song-wrapper {
-    width: auto;
-    flex: 1;
-  }
-  
   .level-card .level-card-wrapper {
     gap: 0.5rem;
     padding: 0.6rem 0.2rem;
@@ -428,7 +365,7 @@
     margin: 0 0.5rem;
   }
   
-  .level-card .level-card-wrapper .stats-line {
+  .level-card .level-card__stats {
     padding-left: 0;
   }
   
@@ -449,16 +386,8 @@
   .level-card .downloads-wrapper {
     min-width: 60px;
   }
-  .level-card .creator-wrapper {
-    overflow: hidden;
-    width: 110px;
-  }
   .level-card .img-wrapper {
     width: 2.5rem;
-  }
-  .level-card .song-wrapper {
-    width: auto;
-    flex: 1;
   }
   .level-card .downloads-wrapper > * {
     height: 2rem;
@@ -483,16 +412,8 @@
   .level-card .downloads-wrapper {
     min-width: 50px;
   }
-  .level-card .creator-wrapper {
-    overflow: hidden;
-    width: 90px;
-  }
   .level-card .img-wrapper {
     width: 2.5rem;
-  }
-  .level-card .song-wrapper {
-    width: auto;
-    flex: 1;
   }
   
   .level-card .level-card-wrapper {
@@ -868,6 +789,12 @@
   border-bottom: 1px solid var(--color-border);
   padding: 0.75rem 0.5rem;
   min-height: 4rem;
+  grid-template-columns: auto minmax(0, 2fr) minmax(0, 1.1fr) auto auto auto;
+  grid-template-areas: "icon song creator stats actions del";
+}
+
+.level-card.pack .level-card__delete-btn {
+  grid-area: del;
 }
 
 .level-card.pack .downloads-wrapper {
@@ -918,51 +845,24 @@
   }
 
 
-  /* Card wrapper with proper spacing for mobile */
+  /* Card wrapper: two grid rows on mobile */
   .level-card.pack .level-card-wrapper {
-    flex: 1;
     margin: 0;
     min-height: 4rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+    grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+      "icon song creator"
+      "stats actions del";
+    row-gap: 0.5rem;
   }
 
-  /* Info line layout for mobile */
-  .level-card.pack .level-card-wrapper .info-line {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    width: 100%;
-    min-height: 2.5rem;
-  }
-
-  /* Stats line layout for mobile */
-  .level-card.pack .level-card-wrapper .stats-line {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    width: 100%;
-    min-height: 2rem;
-    padding-left: 4rem; /* Align with content after icon */
-  }
-
-  /* Song wrapper adjustments for mobile */
-  .level-card.pack .song-wrapper {
-    flex: 1;
-    padding-right: 0;
-  }
-
-  /* Creator wrapper adjustments for mobile */
-  .level-card.pack .creator-wrapper {
-    flex: 1;
+  .level-card.pack .level-card__stats {
+    padding-left: 4rem; /* align stats under the song, past the difficulty icon */
   }
 
   /* Downloads wrapper adjustments for mobile */
   .level-card.pack .downloads-wrapper {
     min-width: auto;
-    flex-shrink: 0;
     margin-right: 0;
   }
 
@@ -1049,14 +949,20 @@
   background-color: #88888899;
 }
 
-/* Level tags under song title (normal/compact list modes) */
+/* Level tags + metadata under the song title (normal/compact list modes).
+   Kept to a single, non-wrapping row on purpose: wrapping here made the card's
+   measured height bistable, so react-virtuoso re-measured a different height
+   when scrolling back up to a rendered card and corrected the scroll offset,
+   producing the swap-each-frame jitter. Overflow is clipped instead. */
 .level-card .song-wrapper .level-underline-wrapper {
   display: flex;
   margin-top: 0.2rem;
   flex-wrap: wrap;
   align-items: center;
+  gap: 0.5rem;
   min-width: 0;
   width: 100%;
+  overflow: hidden;
 }
 
 .level-card .song-wrapper .level-tags-wrapper {
@@ -1065,6 +971,8 @@
   align-items: center;
   gap: 0.2rem;
   min-width: 0;
+  flex: 0 1 auto;
+  overflow: hidden;
 }
 
 /* Level tag badge - normal/compact list modes (under song) */
@@ -1118,16 +1026,14 @@
   display: flex;
   flex-direction: row;
   gap: 0.25rem;
-  flex: 1;
   flex-wrap: wrap;
   align-items: center;
   justify-content: flex-end;
   padding-right: 1rem;
-  margin-left: 0.5rem;
+  margin-left: auto;
 }
 
 .level-card .metadata-block.no-tags {
-  flex: unset;
   margin-left: auto;
 }
 
