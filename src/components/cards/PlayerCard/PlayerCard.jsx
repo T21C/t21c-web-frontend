@@ -6,6 +6,7 @@ import { useCallback, useContext, useLayoutEffect, useRef, useState } from "reac
 import { Tooltip } from "react-tooltip";
 import { PlayerContext } from "@/contexts/PlayerContext";
 import { formatNumber } from "@/utils";
+import { formatAccuracyRatio } from "@/utils/statFormatters";
 import { UserAvatar } from "@/components/layout";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import { useAuth } from "@/contexts/AuthContext";
@@ -104,7 +105,7 @@ const PlayerCard = ({ player, onCreatorAssignmentClick }) => {
     },
     averageXacc: {
       label: sortLabels.averageXacc,
-      value: `${(player.averageXacc * 100).toFixed(2)}%`,
+      value: formatAccuracyRatio(player.averageXacc),
     },
   };
     
@@ -132,7 +133,7 @@ const PlayerCard = ({ player, onCreatorAssignmentClick }) => {
   if (!diffFields.includes(sortBy)) {
     if (!passes.includes(sortBy)) {
       if (sortBy === "averageXacc") {
-        primaryField.value = (parseFloat(primaryField.value)*100).toFixed(2).toString()+"%";
+        primaryField.value = formatAccuracyRatio(parseFloat(primaryField.value));
       } else {
         primaryField.value = formatNumber(parseFloat(primaryField.value));
       }

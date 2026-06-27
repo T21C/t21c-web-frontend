@@ -22,6 +22,45 @@ export function formatPercentRatio(r) {
   return `${(x * 100).toFixed(2)}%`;
 }
 
+/**
+ * Accuracy ratio (0..1) ➔ percent string that surfaces closeness to 100%.
+ *
+ * Plain rounding hides near-perfect runs (e.g. 0.999962 ➔ "100.00%"). Instead
+ * the integer part is kept in full and the fractional part shows every leading
+ * 9 up to and including the first non-nine digit, so the value reads as
+ * "99.9996" rather than rounding up to 100. The fractional part is truncated
+ * (never rounded up) so accuracy is never overstated.
+ *
+ * @param {number} ratio accuracy fraction in [0, 1]
+ * @param {{ minDecimals?: number, withPercent?: boolean }} [opts]
+ *   minDecimals: minimum fractional digits always shown (default 2)
+ *   withPercent: append a trailing "%" (default true)
+ */
+export function formatAccuracyRatio(ratio, { minDecimals = 2, withPercent = true } = {}) {
+  const suffix = withPercent ? "%" : "";
+  const x = Number(ratio);
+  if (!Number.isFinite(x)) return `0${suffix}`;
+  if (x >= 1) return `100${suffix}`;
+  if (x <= 0) return `${(0).toFixed(minDecimals)}${suffix}`;
+
+  // Inspect at high precision so float noise (e.g. 99.99 stored as 99.9899…)
+  // is rounded away before we truncate.
+  const INSPECT_DECIMALS = 12;
+  const fixed = (x * 100).toFixed(INSPECT_DECIMALS);
+  const [intPart, decRaw = ""] = fixed.split(".");
+
+  // Rounding at INSPECT_DECIMALS may carry into 100 (e.g. 0.9999999999999).
+  if (Number(intPart) >= 100) return `100${suffix}`;
+
+  let leadingNines = 0;
+  while (leadingNines < decRaw.length && decRaw[leadingNines] === "9") {
+    leadingNines += 1;
+  }
+  const keep = Math.min(INSPECT_DECIMALS, Math.max(minDecimals, leadingNines + 1));
+  const decPart = decRaw.slice(0, keep).padEnd(keep, "0");
+  return `${intPart}.${decPart}${suffix}`;
+}
+
 export function formatDateIso(iso) {
   if (iso == null || iso === "") return "—";
   const d = new Date(iso);

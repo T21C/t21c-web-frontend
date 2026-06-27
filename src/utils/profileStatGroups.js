@@ -3,7 +3,7 @@ import {
   formatCount,
   formatDurationMs,
   formatFloat,
-  formatPercentRatio,
+  formatAccuracyRatio,
   formatDateIso,
 } from "@/utils/statFormatters";
 import { formatNumber } from "@/utils";
@@ -140,7 +140,7 @@ export function buildPlayerStatGroups(ff, t, difficultyDict = {}, playerScores =
       if (raw == null && !def.isXacc) continue;
       let value;
       if (def.isXacc) {
-        value = formatPercentRatio(Number(raw) || 0);
+        value = formatAccuracyRatio(Number(raw) || 0);
       } else {
         value = formatNumber(Number(raw) || 0);
       }
@@ -220,7 +220,7 @@ export function buildPlayerStatGroups(ff, t, difficultyDict = {}, playerScores =
           label: t("profile.funFacts.judgements.totalXacc"),
           value: (() => {
             const r = xaccFromJudgementTotals(j);
-            return r != null ? formatPercentRatio(r) : "—";
+            return r != null ? formatAccuracyRatio(r) : "—";
           })(),
         },
         {
@@ -278,13 +278,13 @@ export function buildPlayerStatGroups(ff, t, difficultyDict = {}, playerScores =
         {
           key: "bestAccuracy",
           label: t("profile.funFacts.extremes.bestAccuracy"),
-          value: x.bestAccuracy != null ? formatPercentRatio(x.bestAccuracy) : "—",
+          value: x.bestAccuracy != null ? formatAccuracyRatio(x.bestAccuracy) : "—",
           ...passLinkMeta(x.bestAccuracyPassId),
         },
         {
           key: "worstAccuracy",
           label: t("profile.funFacts.extremes.worstAccuracy"),
-          value: x.worstAccuracy != null ? formatPercentRatio(x.worstAccuracy) : "—",
+          value: x.worstAccuracy != null ? formatAccuracyRatio(x.worstAccuracy) : "—",
           ...passLinkMeta(x.worstAccuracyPassId),
         },
         {

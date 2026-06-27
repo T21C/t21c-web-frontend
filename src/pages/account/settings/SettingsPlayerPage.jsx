@@ -8,6 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import api from "@/utils/api";
 import { formatNumber } from "@/utils";
+import { formatAccuracyRatio } from "@/utils/statFormatters";
 import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
 import ProfileBannerEditor from "@/components/account/ProfileBannerEditor/ProfileBannerEditor";
 import ProfileHeaderSurfaceEditor from "@/components/account/ProfileHeaderSurfaceEditor/ProfileHeaderSurfaceEditor";
@@ -414,7 +415,7 @@ const SettingsPlayerPage = () => {
             {
               key: "averageXacc",
               label: valueLabels.averageXacc,
-              value: `${((playerData?.averageXacc || 0) * 100).toFixed(2)}%`,
+              value: formatAccuracyRatio(playerData?.averageXacc || 0),
             },
             {
               key: "generalScore",
@@ -496,7 +497,7 @@ const SettingsPlayerPage = () => {
               {
                 key: "averageXacc",
                 label: valueLabels.averageXacc,
-                value: `${((playerData?.averageXacc || 0) * 100).toFixed(2)}%`,
+                value: formatAccuracyRatio(playerData?.averageXacc || 0),
               },
               {
                 key: "generalScore",

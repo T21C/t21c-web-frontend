@@ -8,6 +8,7 @@ import { PassIcon, VideoLinkIcon } from "@/components/common/icons";
 import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
 import { UserAvatar } from "@/components/layout";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
+import { formatAccuracyRatio } from "@/utils/statFormatters";
 const ClearCard = ({scoreData, index}) => {
   const { t } = useTranslation('pages');
   const [isExpanded, setIsExpanded] = useState(false);
@@ -74,7 +75,7 @@ const ClearCard = ({scoreData, index}) => {
         <div className="collapsible-fields">
           <div className="score-info">
             <div className="score-value">{scoreData.scoreV2.toFixed(2)}</div>
-            <div className="score-accuracy">{(scoreData.accuracy * 100).toFixed(2)}%</div>
+            <div className="score-accuracy">{formatAccuracyRatio(scoreData.accuracy)}</div>
             <div className="score-speed">{scoreData.speed ? scoreData.speed : "1.0"}×</div>
             <div className="judgements">
               <span className="early-double">{scoreData.judgements.earlyDouble}</span>

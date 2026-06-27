@@ -6,6 +6,7 @@ import { getVideoDetails } from "@/utils";
 import { resolveSubmissionVideoUrl } from "@/utils/resolveVideoUrl";
 import { useDebouncedRequest } from "@/hooks/useDebouncedRequest";
 import calcAcc from "@/utils/CalcAcc";
+import { formatAccuracyRatio } from "@/utils/statFormatters";
 import { getScoreV2 } from "@/utils/CalcScore";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { parseJudgements } from "@/utils/ParseJudgements";
@@ -182,7 +183,7 @@ export function usePassCoreForm({
     const newJudgements = parseJudgements(nextForm);
 
     if (newJudgements.every(Number.isInteger)) {
-      setAccuracy(`${(calcAcc(newJudgements, false) * 100).toString().slice(0, 7)}%`);
+      setAccuracy(formatAccuracyRatio(calcAcc(newJudgements)));
     } else {
       setAccuracy(null);
     }

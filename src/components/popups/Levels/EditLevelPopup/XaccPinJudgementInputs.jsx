@@ -4,11 +4,12 @@ import {
     JUDGEMENT_INPUT_FIELDS,
     accuracyFromJudgementForm,
 } from '@/utils/xaccPinJudgements.js'
+import { formatAccuracyRatio } from '@/utils/statFormatters'
 
 export function XaccPinJudgementInputs({ form, onChange, computedAccuracyLabel }) {
     const acc = accuracyFromJudgementForm(form)
     const accPct =
-        acc != null && Number.isFinite(acc) ? `${(acc * 100).toFixed(2)}%` : '—'
+        acc != null && Number.isFinite(acc) ? formatAccuracyRatio(acc) : '—'
 
     return (
         <div className="admin-level-xacc-curve-popup__judgements">

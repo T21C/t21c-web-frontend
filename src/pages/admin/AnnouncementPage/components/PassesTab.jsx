@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { TrashIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
+import { formatAccuracyRatio } from '@/utils/statFormatters';
   
 const PassesTab = ({ passes, selectedPasses, onCheckboxChange, isLoading, onRemove }) => {
   const { t } = useTranslation('components');
@@ -74,7 +75,7 @@ const PassesTab = ({ passes, selectedPasses, onCheckboxChange, isLoading, onRemo
                         t('passesTab.card.stats.score', { score: pass.scoreV2.toFixed(2) }) :
                         t('passesTab.card.stats.scoreNA')
                       } | {t('passesTab.card.stats.accuracy', { 
-                        accuracy: ((pass.accuracy || 0) * 100).toFixed(2)
+                        accuracy: formatAccuracyRatio(pass.accuracy || 0, { withPercent: false })
                       })}
                       {difficultyDict[pass.level?.diffId]?.name && t('passesTab.card.stats.difficulty', { 
                         difficultyName: difficultyDict[pass.level.diffId].name 

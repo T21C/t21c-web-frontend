@@ -5,6 +5,7 @@ import "@/index.css"
 import { useTranslation } from "react-i18next";
 import { clampFloat, formatScore, formatPassDate } from "@/utils/Utility"
 import { formatNumber } from "@/utils";
+import { formatAccuracyRatio } from "@/utils/statFormatters";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { Tooltip } from "react-tooltip";
 import { formatCreatorDisplay } from "@/utils/Utility";
@@ -79,7 +80,7 @@ const ScoreCard = ({scoreData, topScores, potentialTopScores}) => {
       <div className="acc-wrapper">
         <div className="acc-wrapper-inner">
           <p className="score-exp">{t('score.card.labels.accuracy')}</p>
-          <div className={`score-desc ${scoreData.accuracy == 1 ? 'pure-perfect' : ''}`}>{(scoreData.accuracy*100).toFixed(2)}%</div>
+          <div className={`score-desc ${scoreData.accuracy == 1 ? 'pure-perfect' : ''}`}>{formatAccuracyRatio(scoreData.accuracy)}</div>
           </div>
           <Judgements judgements={scoreData.judgements} />
       </div>

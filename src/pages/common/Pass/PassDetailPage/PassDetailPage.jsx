@@ -15,6 +15,7 @@ import { buildPassMeta } from "@/utils/meta";
 import { StatusBanner } from "@/components/common/display/StatusBanner/StatusBanner";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { formatDate, normalizeKeyCount, validateFeelingRating } from "@/utils/Utility";
+import { formatAccuracyRatio } from "@/utils/statFormatters";
 import i18next from "i18next";
 import { EyeIcon, EyeOffIcon, TrashIcon } from "@/components/common/icons";
 import PassAdofaiV2Flag from "@/components/cards/PassAdofaiV2Flag";
@@ -287,7 +288,7 @@ const PassDetailPage = () => {
                 <div className="info-item">
                   <p>{t('passDetail.stats.accuracy.label')}</p>
                   <span className={`info-desc ${accuracy === 1 ? 'perfect-shine' : ''}`}>
-                    {t('passDetail.stats.accuracy.value', { accuracy: (100*accuracy).toFixed(2) })}
+                    {t('passDetail.stats.accuracy.value', { accuracy: formatAccuracyRatio(accuracy, { withPercent: false }) })}
                   </span>
                 </div>
                 <div className="info-item">

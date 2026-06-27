@@ -8,6 +8,7 @@ import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import PassAdofaiV2Flag from "../PassAdofaiV2Flag";
 import WorldsFirstFlag from "../WorldsFirstFlag/WorldsFirstFlag";
 import { normalizeKeyCount, formatPassDate } from "@/utils/Utility";
+import { formatAccuracyRatio } from "@/utils/statFormatters";
 import { VideoLinkIcon } from "@/components/common/icons";
 import MarqueeText from "@/components/common/display/MarqueeText/MarqueeText";
 import i18next from "i18next";
@@ -25,8 +26,7 @@ const PassCard = ({ pass }) => {
     window.open(pass.videoLink.trim(), "_blank", "noopener,noreferrer");
   };
 
-  // Format accuracy to percentage with 2 decimal places
-  const formattedAccuracy = (pass.accuracy * 100).toFixed(2) + '%';
+  const formattedAccuracy = formatAccuracyRatio(pass.accuracy);
   const formattedDate = formatPassDate(pass.vidUploadTime, i18next?.language);
 
   return (

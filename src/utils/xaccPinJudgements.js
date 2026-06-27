@@ -1,6 +1,7 @@
 // tuf-search: #xaccPinJudgements #judgements #xaccCurve
 import calcAcc from './CalcAcc.js'
 import { getScoreV2, scoreV2MtpFromMisses } from './CalcScore.js'
+import { formatAccuracyRatio } from './statFormatters.js'
 
 /** Pass / submission judgement fields (string counts for inputs). */
 export const EMPTY_JUDGEMENT_FORM = {
@@ -140,7 +141,7 @@ export function resolvePassPickerName(pass) {
 export function formatPassPickerStats(pass) {
     if (!pass) return ''
     const acc = resolvePassDisplayAccuracy(pass)
-    const accStr = Number.isFinite(acc) ? `${(acc * 100).toFixed(2)}%` : '—'
+    const accStr = Number.isFinite(acc) ? formatAccuracyRatio(acc) : '—'
     const score = resolvePassDisplayScore(pass)
     return `${accStr} · ${Math.round(score)}`
 }

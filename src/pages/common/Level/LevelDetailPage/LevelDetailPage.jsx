@@ -51,6 +51,7 @@ import {
   ArrowIcon
 } from "@/components/common/icons";
 import { createEventSystem, formatBaseScore, formatCreatorDisplay, formatDate, isCdnUrl, selectIconSize } from "@/utils/Utility";
+import { formatAccuracyRatio } from "@/utils/statFormatters";
 import {
   formatAutoTilecountTooltip,
   getSongDisplayName,
@@ -2723,7 +2724,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                   <StatClearLink pass={highScores.highestAcc}>
                     {t('levelDetail.stats.highestAccuracy.value', {
                       player: highScores.highestAcc.player.name,
-                      accuracy: (highScores.highestAcc.accuracy * 100).toFixed(2),
+                      accuracy: formatAccuracyRatio(highScores.highestAcc.accuracy, { withPercent: false }),
                     })}
                   </StatClearLink>
                 ) : (

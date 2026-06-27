@@ -7,6 +7,7 @@ import axios from "axios";
 import { useEffect, useState, useMemo, useRef } from "react";
 import { Link, useParams, useLocation, useNavigate } from "react-router-dom"
 import { formatNumber } from "@/utils";
+import { formatAccuracyRatio } from "@/utils/statFormatters";
 import { DifficultyGraph, MetaTags } from "@/components/common/display";
 import { buildPlayerMeta } from '@/utils/meta';
 import { ScoreCard } from "@/components/cards";
@@ -401,7 +402,7 @@ const ProfilePage = () => {
           const raw = playerData[field.key];
           let value;
           if (field.isXacc) {
-            value = `${((Number(raw) || 0) * 100).toFixed(2)}%`;
+            value = formatAccuracyRatio(Number(raw) || 0);
           } else {
             value = formatNumber(Number(raw) || 0);
           }
@@ -738,7 +739,7 @@ const ProfilePage = () => {
                       {
                         key: "averageXacc",
                         label: valueLabels.averageXacc,
-                        value: `${((playerData?.averageXacc || 0) * 100).toFixed(2)}%`,
+                        value: formatAccuracyRatio(playerData?.averageXacc || 0),
                       },
                       {
                         key: "totalScoreV2",
