@@ -1,7 +1,7 @@
 // tuf-search: #PackDetailPage #packDetailPage #pack #packDetail
 import "./packdetailpage.css";
-import React, { useEffect, useState, useRef, useMemo, useCallback } from "react";
-import { Link, useParams, useNavigate, useLocation } from "react-router-dom";
+import React, { useEffect, useLayoutEffect, useState, useRef, useMemo, useCallback } from "react";
+import { Link, useParams, useNavigate, useLocation, useNavigationType } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import PackItem, { PackLevelItem } from "@/components/cards/PackItem/PackItem";
 import { MetaTags } from "@/components/common/display";
@@ -31,6 +31,11 @@ import { formatDate } from '@/utils/Utility';
 import { validatePackLevelInsert, executePackLevelInsert } from '@/utils/packLevelInsert';
 
 const ROOT_DROPPABLE_ID = 'folder-root';
+
+// Remembers window scroll position per pack id (in-memory, survives SPA route
+// changes) so returning from a level detail page via back/forward restores the
+// user to where they left off instead of jumping to the top.
+const packScrollPositions = new Map();
 
 // Render clone for dragging items - this renders in a portal to prevent layout shifts
 // from affecting hit detection on Droppables above the source
@@ -140,6 +145,7 @@ const PackDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const navigationType = useNavigationType();
   const { user } = useAuth();
   const { toggleFavorite } = usePackContext();
   
@@ -165,6 +171,8 @@ const PackDetailPage = () => {
   const [cdnMetadataByLevelId, setCdnMetadataByLevelId] = useState(() => new Map());
   const scrollRef = useRef(null);
   const lastMousePosRef = useRef({ x: 0, y: 0 });
+  const hasRestoredScrollRef = useRef(false);
+  const lastScrollYRef = useRef(0);
 
   const fetchPackCdnData = useCallback(async () => {
     if (!id) return;
@@ -232,6 +240,8 @@ const PackDetailPage = () => {
 
   useEffect(() => {
     if (id) {
+      hasRestoredScrollRef.current = false;
+      lastScrollYRef.current = 0;
       setCdnMetadataByLevelId(new Map());
       // Load expanded folders from cookies for this pack
       const savedExpandedFolders = getPackExpandedFolders(id);
@@ -239,6 +249,40 @@ const PackDetailPage = () => {
       fetchPack();
     }
   }, [id, fetchPack]);
+
+  // Persist the window scroll position while viewing this pack so it can be
+  // restored when the user returns from a level detail page (back/forward).
+  // We track the latest position in a ref synchronously on every scroll event,
+  // because the unmount cleanup runs as a passive effect AFTER
+  // ScrollToTopOnNavigate has already reset window.scrollY to 0 — reading
+  // window.scrollY at cleanup time would clobber the real value with 0.
+  useEffect(() => {
+    if (!id) return;
+    const handleScroll = () => {
+      lastScrollYRef.current = window.scrollY;
+      packScrollPositions.set(id, window.scrollY);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      packScrollPositions.set(id, lastScrollYRef.current);
+    };
+  }, [id]);
+
+  // Restore the remembered scroll position once the pack content is fully
+  // loaded, but only on back/forward (POP) navigation. ScrollToTopOnNavigate
+  // handles resetting to the top for fresh (PUSH) navigations.
+  useLayoutEffect(() => {
+    if (loading || error || !pack) return;
+    if (hasRestoredScrollRef.current) return;
+    hasRestoredScrollRef.current = true;
+
+    if (navigationType !== 'POP') return;
+    const saved = packScrollPositions.get(id);
+    if (!saved) return;
+
+    window.scrollTo(0, saved);
+  }, [loading, error, pack, navigationType, id, sortedRootItems.length]);
 
   // Listen for pack updates from external sources (e.g., AddToPackPopup)
   useEffect(() => {

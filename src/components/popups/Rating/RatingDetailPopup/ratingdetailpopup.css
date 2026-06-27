@@ -459,7 +459,7 @@
     font-family: inherit;
     line-height: 1.5;
     flex-grow: 1;
-    resize: none; /* Disable resize */
+    resize: vertical;
 }
 
 .rating-popup .rating-field textarea::placeholder {

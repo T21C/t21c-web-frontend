@@ -479,7 +479,7 @@ const LevelCard = ({
             </div>
           </Link>
           {renderDownloadLinks({ showAddToPack: false, editMarginZero: true })}
-          {renderDeleteButton({ mobile: true })}
+          {canEdit && renderDeleteButton({ mobile: true })}
           {canEdit && renderDeleteButton()}
         </div>
 
