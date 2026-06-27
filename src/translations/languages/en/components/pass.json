@@ -46,9 +46,9 @@
           "title": "Judgement counts",
           "intro": "Filter by individual judgement counts on the pass. Each token matches the stored count for that judgement type.",
           "examples": {
-            "exactCount": "<b><code>perfect:500</code></b> or <b><code>latedouble=0</code></b> for an exact judgement count.",
-            "nearPerfect": "<b><code>xacc:>99.9, latedouble:0</code></b> finds near-perfect clears with no late doubles.",
-            "combine": "<b><code>level.song:hello, eperfect:>100, latesingle:0</code></b><br/>Combine judgement filters with level or xacc filters."
+            "exactCount": "<b><code>perfect:500</code></b> or <b><code>toolate=0</code></b> for an exact judgement count.",
+            "nearPerfect": "<b><code>xacc:>99.9, toolate:0</code></b> finds near-perfect clears with no late doubles.",
+            "combine": "<b><code>level.song:hello, eperfect:>100, late:0</code></b><br/>Combine judgement filters with level or xacc filters."
           }
         },
         "idsAndShortcuts": {
@@ -148,21 +148,21 @@
           "title": "Late perfect count",
           "desc": "Filter by the number of late-perfect judgements."
         },
-        "earlysingle": {
-          "title": "Early single count",
+        "early": {
+          "title": "Early count",
           "desc": "Filter by the number of early-single judgements."
         },
-        "earlydouble": {
-          "title": "Early double count",
-          "desc": "Filter by the number of early-double judgements."
+        "miss": {
+          "title": "Miss count",
+          "desc": "Filter by the number of miss (early-double) judgements."
         },
-        "latesingle": {
-          "title": "Late single count",
+        "late": {
+          "title": "Late count",
           "desc": "Filter by the number of late-single judgements."
         },
-        "latedouble": {
-          "title": "Late double count",
-          "desc": "Filter by the number of late-double judgements."
+        "toolate": {
+          "title": "Too late count",
+          "desc": "Filter by the number of too-late (late-double) judgements."
         },
         "hashtag": {
           "title": "Pass id (shortcut)",
