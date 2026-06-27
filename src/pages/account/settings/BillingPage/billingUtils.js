@@ -259,9 +259,39 @@ export function processingStatusLabel(status, t) {
   return t(`billing.history.processingStatus.${status}`, { defaultValue: status });
 }
 
+/**
+ * Stripe zero-decimal currencies have no sub-unit, so the stored "minor" amount already equals
+ * the major unit and must not be divided by 100.
+ * Mirrors https://docs.stripe.com/currencies#zero-decimal
+ */
+export const STRIPE_ZERO_DECIMAL_CURRENCIES = new Set([
+  "BIF",
+  "CLP",
+  "DJF",
+  "GNF",
+  "JPY",
+  "KMF",
+  "KRW",
+  "MGA",
+  "PYG",
+  "RWF",
+  "UGX",
+  "VND",
+  "VUV",
+  "XAF",
+  "XOF",
+  "XPF",
+]);
+
+export function isZeroDecimalCurrency(currency) {
+  if (!currency) return false;
+  return STRIPE_ZERO_DECIMAL_CURRENCIES.has(String(currency).trim().toUpperCase());
+}
+
 export function formatMinorCurrency(cents, currency, locale) {
   if (cents == null || !Number.isFinite(Number(cents))) return null;
-  return formatAmount(Number(cents) / 100, currency, locale);
+  const factor = isZeroDecimalCurrency(currency) ? 1 : 100;
+  return formatAmount(Number(cents) / factor, currency, locale);
 }
 
 /** Heuristic only — server validates on preview and refund. */

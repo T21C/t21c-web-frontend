@@ -65,7 +65,7 @@ export function scoreV2MtpFromMisses(misses, hitTiles) {
 }
 
 const getXaccMtp = (inp, baseScore, curveOverrides) => {
-    const xacc = calcAcc(inp, true)
+    const xacc = calcAcc(inp)
     return xaccCurveMultiplier(xacc, baseScore, curveOverrides)
 }
     

@@ -8,7 +8,7 @@ function add(accumulator, a) {
   return accumulator + a;
 }
 
-export default function calcAcc (inp, raw=false)
+export default function calcAcc (inp, raw=true)
     {
         
         const result = (inp[3] +

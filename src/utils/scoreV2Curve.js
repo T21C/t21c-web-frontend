@@ -225,7 +225,7 @@ function approximateEarlySubstitution(misses, hitTiles, eDegraded) {
     return { eCount: eDegraded, earlyCount: 0 };
   }
 
-  const targetAcc = calcAcc(buildJudgements(misses, hitTiles, eDegraded, 0), true);
+  const targetAcc = calcAcc(buildJudgements(misses, hitTiles, eDegraded, 0));
   const idealEarly = Math.max(
     1,
     Math.min(eDegraded - 1, Math.round(eDegraded * EARLY_TO_EPERFECT_RATIO)),
@@ -235,7 +235,7 @@ function approximateEarlySubstitution(misses, hitTiles, eDegraded) {
     const eCount = eDegraded - earlyCount;
     if (eCount < 0) return Infinity;
     return Math.abs(
-      calcAcc(buildJudgements(misses, hitTiles, eCount, earlyCount), true) - targetAcc,
+      calcAcc(buildJudgements(misses, hitTiles, eCount, earlyCount)) - targetAcc,
     );
   };
 
@@ -276,7 +276,7 @@ function computePoint(
   isNoHoldTap,
 ) {
   const calcJudgements = buildJudgements(misses, hitTiles, eDegraded, 0);
-  const accuracy = calcAcc(calcJudgements, true);
+  const accuracy = calcAcc(calcJudgements);
   const score = getScoreV2(
     { speed, judgements: calcJudgements, isNoHoldTap },
     levelData,

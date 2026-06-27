@@ -182,7 +182,7 @@ export function usePassCoreForm({
     const newJudgements = parseJudgements(nextForm);
 
     if (newJudgements.every(Number.isInteger)) {
-      setAccuracy(`${(calcAcc(newJudgements) * 100).toString().slice(0, 7)}%`);
+      setAccuracy(`${(calcAcc(newJudgements, false) * 100).toString().slice(0, 7)}%`);
     } else {
       setAccuracy(null);
     }

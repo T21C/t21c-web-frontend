@@ -62,7 +62,7 @@ export function accuracyFromJudgementForm(form) {
     const arr = judgementFormToCalcArray(form)
     const sum = arr.reduce((a, b) => a + b, 0)
     if (sum <= 0) return null
-    const acc = calcAcc(arr, true)
+    const acc = calcAcc(arr)
     return Number.isFinite(acc) ? acc : null
 }
 

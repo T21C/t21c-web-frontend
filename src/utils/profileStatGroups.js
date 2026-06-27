@@ -89,7 +89,7 @@ function xaccFromJudgementTotals(j) {
   ];
   const total = inp.reduce((a, b) => a + b, 0);
   if (total <= 0) return null;
-  return calcAcc(inp, true);
+  return calcAcc(inp);
 }
 
 /**
