@@ -6,6 +6,7 @@ import { useParams, Link, useLocation } from 'react-router-dom';
 import { UserAvatar } from "@/components/layout";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import { formatNumber, getVideoDetails, isoToEmoji } from "@/utils";
+import { getPrimaryVideoLink } from "@/utils/videoLink";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
 import api from "@/utils/api";
@@ -418,7 +419,7 @@ const PassDetailPage = () => {
                   <div className="thumbnail-text">
                     <p>{t('passDetail.video.notAvailable.text')}</p>
                     {pass.videoLink && (
-                      <a href={pass.videoLink} target="_blank" rel="noopener noreferrer">
+                      <a href={getPrimaryVideoLink(pass.videoLink)} target="_blank" rel="noopener noreferrer">
                         {t('passDetail.video.notAvailable.watchOnYoutube')}
                       </a>
                     )}

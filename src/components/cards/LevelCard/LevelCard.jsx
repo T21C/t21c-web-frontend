@@ -11,6 +11,7 @@ import { ArtistPopup } from "@/components/popups/Artists";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { EditIcon, SteamIcon, DownloadIcon, VideoLinkIcon, PassIcon, LikeIcon, PackIcon, DragHandleIcon, MetronomeIcon, ChartIcon, TimeIcon } from "@/components/common/icons";
 import { clampFloat, formatCreatorDisplay } from "@/utils/Utility";
+import { getPrimaryVideoLink } from "@/utils/videoLink";
 import { ABILITIES, hasBit } from "@/utils/Abilities";
 import { permissionFlags } from "@/utils/UserPermissions";
 import { hasFlag } from "@/utils/UserPermissions";
@@ -241,7 +242,7 @@ const LevelCard = ({
   } = {}) => (
     <div className="downloads-wrapper">
       {showVideo && level.videoLink && (
-        <a href={level.videoLink} target="_blank" rel="noopener noreferrer" onClick={onAnchorClick}>
+        <a href={getPrimaryVideoLink(level.videoLink)} target="_blank" rel="noopener noreferrer" onClick={onAnchorClick}>
           <VideoLinkIcon url={level.videoLink} color="#ffffff" size="24px" />
         </a>
       )}

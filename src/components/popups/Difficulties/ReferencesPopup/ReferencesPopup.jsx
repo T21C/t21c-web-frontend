@@ -18,6 +18,7 @@ import keycountPlusIcon from '@/assets/icons/Kplus RITKnew.png';
 import hideIcons from '@/assets/icons/RITK hidden.png'
 import showIcons from '@/assets/icons/RITK visible.png'
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { getPrimaryVideoLink } from '@/utils/videoLink';
 import { formatCreatorDisplay } from '@/utils/Utility';
 import { VideoLinkIcon } from '@/components/common/icons';
 
@@ -513,7 +514,7 @@ const ReferencesPopup = ({ onClose }) => {
       <span className="level-creator">{formatCreatorDisplay(level)}</span>
       {level.videoLink && (
         <a 
-          href={level.videoLink} 
+          href={getPrimaryVideoLink(level.videoLink)} 
           target="_blank" 
           rel="noopener noreferrer"
           className="video-link"

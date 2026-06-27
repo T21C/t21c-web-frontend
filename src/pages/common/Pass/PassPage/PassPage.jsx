@@ -8,7 +8,7 @@ import { useLocation } from 'react-router-dom';
 
 import { MetaTags } from "@/components/common/display";
 import { buildStaticPageMeta } from '@/utils/meta';
-import { PassCard } from "@/components/cards";
+import { ScoreCard } from "@/components/cards";
 import { StateDisplay, CustomSelect } from "@/components/common/selectors";
 import { Tooltip } from "react-tooltip";
 import { VirtualList } from "@/components/common/VirtualList";
@@ -276,6 +276,7 @@ const PassPage = () => {
     return (
       <VirtualList
         style={{paddingBottom: "6rem", minHeight: "90vh", overflow: "visible" }}
+        listClassName="passes-list"
         items={passesData}
         loadMore={() => setPageNumber(pageNumber + 1)}
         hasMore={hasMore && !loading}
@@ -287,10 +288,15 @@ const PassPage = () => {
             </p>
           )
         }
-        renderItem={(pass, index) => (
-          <PassCard pass={pass} />
+        renderItem={(pass) => (
+          <ScoreCard
+            scoreData={pass}
+            mode="passcard"
+            topScores={[]}
+            potentialTopScores={[]}
+          />
         )}
-        computeItemKey={(index, pass) => pass?.passId ?? index}
+        computeItemKey={(index, pass) => pass?.id ?? index}
       />
     );
   };

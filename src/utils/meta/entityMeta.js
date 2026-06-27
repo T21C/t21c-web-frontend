@@ -1,6 +1,7 @@
 // tuf-search: #entityMeta #meta
 import { formatCreatorDisplay } from '@/utils/Utility';
 import { getArtistDisplayName, getSongDisplayName } from '@/utils/levelHelpers';
+import { getPrimaryVideoLink } from '@/utils/videoLink';
 import {
   buildCanonicalUrl,
   buildStaticPageMeta,
@@ -54,11 +55,12 @@ export const buildLevelMeta = (level, t, options = {}) => {
   ];
 
   if (level?.videoLink) {
+    const primaryVideoLink = getPrimaryVideoLink(level.videoLink);
     jsonLd.unshift(
       videoObjectJsonLd({
         name: joinTitleParts(song, artist),
         description,
-        url: level.videoLink,
+        url: primaryVideoLink,
         thumbnailUrl: image,
         uploadDate: level?.createdAt,
       }),
@@ -104,7 +106,7 @@ export const buildPassMeta = (pass, t, options = {}) => {
     videoObjectJsonLd({
       name: title,
       description,
-      url: pass?.videoLink || url,
+      url: getPrimaryVideoLink(pass?.videoLink) || url,
       thumbnailUrl: image,
       uploadDate: pass?.vidUploadTime || pass?.createdAt,
     }),

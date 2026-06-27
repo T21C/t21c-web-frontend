@@ -7,6 +7,7 @@ import { formatCreatorDisplay } from '@/utils/Utility';
 import { NavLink } from 'react-router-dom';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { getVideoDetails } from '@/utils';
+import { getPrimaryVideoLink } from '@/utils/videoLink';
 
 const WeeklyGallery = ({ 
   curations = [], 
@@ -29,8 +30,9 @@ const WeeklyGallery = ({
   const [thumbnailUrls, setThumbnailUrls] = useState({});
 
   const getYoutubeMqFromVideoLink = useCallback((videoLink) => {
-    if (!videoLink) return null;
-    const videoId = videoLink.match(
+    const primary = getPrimaryVideoLink(videoLink);
+    if (!primary) return null;
+    const videoId = primary.match(
       /(?:youtu\.be\/|youtube\.com\/(?:.*v=|.*\/videos\/)|youtube-nocookie\.com\/(?:embed\/|v\/)|youtube\.com\/(?:v\/|e\/|embed\/|user\/[^/]+\/u\/[0-9]+\/)|watch\?v=)([^#\&\?]*)/,
     )?.[1];
     return videoId ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg` : null;

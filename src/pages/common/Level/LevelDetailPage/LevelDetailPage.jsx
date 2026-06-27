@@ -12,6 +12,7 @@ import { PORTALED_PANEL_CLASS, usePortaledPanelAnchor } from "@/hooks/usePortale
 import {
   getVideoDetails
 } from "@/utils";
+import { getPrimaryVideoLink } from "@/utils/videoLink";
 
 import { Tooltip } from "react-tooltip";
 import { useTranslation } from "react-i18next";
@@ -458,7 +459,7 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty, onArtistClick 
             {formatCredits()}
             <div className="links">
               {level.videoLink && (
-                <a href={level.videoLink} target="_blank" rel="noopener noreferrer" title={t('levelDetail.links.thumbnailNotFound.goToVideo')}>
+                <a href={getPrimaryVideoLink(level.videoLink)} target="_blank" rel="noopener noreferrer" title={t('levelDetail.links.thumbnailNotFound.goToVideo')}>
                   <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke="#ffffff" strokeWidth="1.5"/>
                     <path d="M15.91 11.672a.375.375 0 010 .656l-5.603 3.113a.375.375 0 01-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112z" stroke="#ffffff" strokeWidth="1.5"/>
@@ -2785,7 +2786,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                   <div className="thumbnail-text">
                     <p>{t('levelDetail.links.thumbnailNotFound.text')}</p>
                     {res.level.videoLink && 
-                      <a href={res.level.videoLink}>{t('levelDetail.links.thumbnailNotFound.goToVideo')}</a>
+                      <a href={getPrimaryVideoLink(res.level.videoLink)}>{t('levelDetail.links.thumbnailNotFound.goToVideo')}</a>
                     }
                   </div>
                 </div>

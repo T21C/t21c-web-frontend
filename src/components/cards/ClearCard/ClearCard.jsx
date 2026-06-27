@@ -9,6 +9,7 @@ import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible
 import { UserAvatar } from "@/components/layout";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import { formatAccuracyRatio } from "@/utils/statFormatters";
+import { getPrimaryVideoLink } from "@/utils/videoLink";
 const ClearCard = ({scoreData, index}) => {
   const { t } = useTranslation('pages');
   const [isExpanded, setIsExpanded] = useState(false);
@@ -91,7 +92,7 @@ const ClearCard = ({scoreData, index}) => {
               <PassIcon size={32} />
             </Link>
             {scoreData.videoLink && (
-              <a className="video-link" href={scoreData.videoLink} target="_blank" rel="noopener noreferrer">
+              <a className="video-link" href={getPrimaryVideoLink(scoreData.videoLink)} target="_blank" rel="noopener noreferrer">
                 <VideoLinkIcon url={scoreData.videoLink} size="32px" />
               </a>
             )}
