@@ -3,7 +3,7 @@
   position: relative;
   container-type: inline-size;
   display: flex;
-  justify-content: left;
+  justify-content: right;
   gap: 1rem;
   min-height: 4rem;
   padding: 0.5rem 0.5rem 1rem;
@@ -152,6 +152,25 @@
   min-width: 100px;
   padding-right: 10px;
 }
+
+.score-card .marquee-text.score-desc-song,
+.score-card .marquee-text.score-exp-artist,
+.score-card .marquee-text.score-desc-player {
+  overflow: hidden;
+  min-width: 0;
+  width: 100%;
+}
+
+.score-card:hover .marquee-text--overflows {
+  text-overflow: clip;
+}
+
+.score-card:hover .marquee-text--overflows .marquee-text__inner {
+  animation-name: var(--marquee-animation-name);
+  animation-duration: var(--marquee-cycle-duration, 6s);
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
 .score-card .score-wrapper {
   overflow: hidden;
   min-width: 120px;
@@ -180,7 +199,6 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-left: auto;
 }
 
 .score-card .score-card__date {
@@ -233,7 +251,7 @@
   gap: 0.25rem;
   min-width: 0;
   max-width: 100%;
-  width: fit-content;
+  width: 100%;
   text-decoration: none;
   color: inherit;
 }
@@ -244,15 +262,14 @@
 
 .score-card--passcard .score-card__player-avatar {
   flex-shrink: 0;
-  height: 1.4rem;
-  width: 1.4rem;
+  height: 1.3rem;
+  width: 1.3rem;
 }
 
 .score-card--passcard .score-desc-player {
-  font-size: 0.95rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  flex: 1;
+  opacity: 0.7;
+  font-size: 0.875rem;
 }
 
 .score-card--passcard .flags-wrapper {

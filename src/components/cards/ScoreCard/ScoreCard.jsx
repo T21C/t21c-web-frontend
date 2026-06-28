@@ -14,6 +14,7 @@ import { VideoLinkIcon } from "@/components/common/icons";
 import { getPrimaryVideoLink } from "@/utils/videoLink";
 import { UserAvatar } from "@/components/layout";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
+import MarqueeText from "@/components/common/display/MarqueeText/MarqueeText";
 import i18next from "i18next";
 
 const Judgements = ({judgements}) => {
@@ -80,19 +81,29 @@ const ScoreCard = ({ scoreData, topScores = [], potentialTopScores = [], mode = 
           {scoreData.player?.id && (
             <Link className="score-card__player-row" to={`/profile/${scoreData.player.id}`}>
               <UserAvatar {...userAvatarUrls(scoreData.player)} className="score-card__player-avatar" />
-              <span className="score-desc-player">{scoreData.player.name}</span>
+              <MarqueeText className="score-desc-player" as="span">
+                {scoreData.player.name}
+              </MarqueeText>
             </Link>
           )}
           <Link className="name-wrapper" to={`/passes/${scoreData.id}`}>
-            <p className="score-desc score-desc-song">{scoreData.level.song}</p>
-            <p className="score-exp score-exp-artist">{scoreData.level.artist ?? 'Hidden level'}</p>
+            <MarqueeText className="score-desc score-desc-song" as="p">
+              {scoreData.level.song}
+            </MarqueeText>
+            <MarqueeText className="score-exp score-exp-artist" as="p">
+              {scoreData.level.artist ?? 'Hidden level'}
+            </MarqueeText>
           </Link>
         </div>
       ) : (
       <Link className="name-wrapper" to={`/passes/${scoreData.id}`}>
         <p className="score-desc-creator">{formatCreatorDisplay(scoreData.level)}</p>
-        <p className="score-desc score-desc-song">{scoreData.level.song}</p>
-        <p className="score-exp score-exp-artist">{scoreData.level.artist ?? 'Hidden level'}</p>
+        <MarqueeText className="score-desc score-desc-song" as="p">
+          {scoreData.level.song}
+        </MarqueeText>
+        <MarqueeText className="score-exp score-exp-artist" as="p">
+          {scoreData.level.artist ?? 'Hidden level'}
+        </MarqueeText>
       </Link>
       )}
       {scoreData.isWorldsFirst && (
