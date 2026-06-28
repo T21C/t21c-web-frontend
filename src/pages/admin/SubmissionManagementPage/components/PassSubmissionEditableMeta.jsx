@@ -494,7 +494,7 @@ export default function PassSubmissionEditableMeta({
                 </div>
                 <div className="information">
                   {levelPreview && levelInput && /^\d+$/.test(levelInput.trim()) ? (
-                    <>
+                    <a href={`/levels/${levelPreview.id}`} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} target="_blank" rel="noopener noreferrer">
                       <img
                         src={difficultyDict[levelPreview.diffId]?.icon}
                         alt={difficultyDict[levelPreview.diffId]?.name}
@@ -507,7 +507,7 @@ export default function PassSubmissionEditableMeta({
                           <span>{formatCreatorDisplay(levelPreview)}</span>
                         </div>
                       </div>
-                    </>
+                    </a>
                   ) : (
                     <div className="level-info">
                       <h2 className="level-info-sub" style={{ color: '#aaa' }}>
