@@ -29,12 +29,11 @@
       "sortBy": "Sort by"
     }
   },
-  "bannedPlayers": {
-    "label": "Banned Players",
-    "options": {
-      "show": "Show",
-      "hide": "Hide",
-      "only": "Only"
+  "playerFlagFilter": {
+    "fields": {
+      "isBanned": "Banned Players",
+      "isSubmissionsPaused": "Submission Paused",
+      "isRatingBanned": "Rating Banned"
     }
   },
   "sortOptions": {

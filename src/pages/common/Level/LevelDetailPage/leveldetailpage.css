@@ -999,16 +999,23 @@
   color: var(--secondary-text);
 }
 
+.level-detail .level-detail-body .video-embed-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  flex: 4;
+  min-width: 0;
+}
+
 .level-detail .level-detail-body .youtube {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex: 4;
+  z-index: 2;
   aspect-ratio: 16/9;
   overflow: hidden;
   border-radius: var(--border-radius);
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
+  background: var(--color-black);
 }
 
 .level-detail .level-detail-body .youtube iframe {
@@ -1044,6 +1051,46 @@
 
 .level-detail .level-detail-body .youtube .thumbnail-text a:hover {
   text-decoration: underline;
+}
+
+.level-detail .level-detail-body .video-link-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--spacing-xs);
+  margin-top: calc(var(--spacing-xs) * -1);
+  padding-left: var(--spacing-xs);
+  z-index: 1;
+}
+
+.level-detail .level-detail-body .video-link-tab {
+  display: flex;
+  align-items: end;
+  min-width: 2.75rem;
+  min-height: 1.75rem;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: none;
+  border-radius: 0;
+  background: var(--glass-bg);
+  clip-path: polygon(0 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+  position: relative;
+  margin-right: calc(var(--spacing-sm) * -1);
+  transform: translateY(-4px);
+  z-index: 1;
+}
+
+.level-detail .level-detail-body .video-link-tab--active {
+  transform: translateY(0);
+  z-index: 2;
+  background: color-mix(in srgb, var(--glass-bg) 55%, var(--color-white));
+}
+
+.level-detail .level-detail-body .video-link-tab__icon {
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
 }
 
 /* ============================================
@@ -1457,6 +1504,10 @@
     width: 100%;
   }
   
+  .level-detail .level-detail-body .video-embed-section {
+    width: 100%;
+  }
+
   .level-detail .level-detail-body .youtube {
     aspect-ratio: 16/9;
     width: 100%;

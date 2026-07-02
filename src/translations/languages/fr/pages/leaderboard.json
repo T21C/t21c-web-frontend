@@ -23,12 +23,11 @@
       "sortBy": "Trier par"
     }
   },
-  "bannedPlayers": {
-    "label": "Joueurs bannis",
-    "options": {
-      "show": "Montrer",
-      "hide": "Cacher",
-      "only": "Seulement"
+  "playerFlagFilter": {
+    "fields": {
+      "isBanned": "Joueurs bannis",
+      "isSubmissionsPaused": "Soumissions suspendues",
+      "isRatingBanned": "Bannis du classement"
     }
   },
   "sortOptions": {

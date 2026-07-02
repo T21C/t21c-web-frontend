@@ -12,7 +12,7 @@ import { PORTALED_PANEL_CLASS, usePortaledPanelAnchor } from "@/hooks/usePortale
 import {
   getVideoDetails
 } from "@/utils";
-import { getPrimaryVideoLink } from "@/utils/videoLink";
+import { getPrimaryVideoLink, getVideoProvider, splitVideoLinks } from "@/utils/videoLink";
 
 import { Tooltip } from "react-tooltip";
 import { useTranslation } from "react-i18next";
@@ -49,7 +49,8 @@ import {
   ScoreIcon,
   RefreshIcon,
   TimeIcon,
-  ArrowIcon
+  ArrowIcon,
+  VideoLinkIcon,
 } from "@/components/common/icons";
 import { createEventSystem, formatBaseScore, formatCreatorDisplay, formatDate, isCdnUrl, selectIconSize } from "@/utils/Utility";
 import { formatAccuracyRatio } from "@/utils/statFormatters";
@@ -787,7 +788,16 @@ const LevelDetailPage = ({ mockData = null }) => {
   const { scrollRef: rankListScrollRef, scrollParent: rankListScrollParent } = useScrollParent();
   const [clearCount, setClearCount] = useState(0);
   const [hasRepeatedClears, setHasRepeatedClears] = useState(false);
-  const [videoDetail, setVideoDetail] = useState(null);
+  const [activeVideoIndex, setActiveVideoIndex] = useState(0);
+  const [videoDetailsByUrl, setVideoDetailsByUrl] = useState({});
+
+  const videoLinks = useMemo(
+    () => splitVideoLinks(res?.level?.videoLink),
+    [res?.level?.videoLink],
+  );
+  const primaryVideoDetail = videoDetailsByUrl[videoLinks[0]] ?? null;
+  const activeVideoDetail = videoDetailsByUrl[videoLinks[activeVideoIndex]] ?? null;
+  const activeVideoLink = videoLinks[activeVideoIndex] ?? '';
 
   // Custom styling state for curations
   const [curationStyles, setCurationStyles] = useState(null);
@@ -1598,10 +1608,31 @@ const LevelDetailPage = ({ mockData = null }) => {
   }, [effectiveId, mockData]);
 
   useEffect(() => {
-    if (res?.level?.videoLink) {
-      getVideoDetails(res.level.videoLink).then(setVideoDetail);
+    setActiveVideoIndex(0);
+  }, [effectiveId, res?.level?.videoLink]);
+
+  useEffect(() => {
+    if (videoLinks.length === 0) {
+      setVideoDetailsByUrl({});
+      return undefined;
     }
-  }, [res?.level?.videoLink]);
+
+    let cancelled = false;
+
+    Promise.all(
+      videoLinks.map(async (url) => {
+        const detail = await getVideoDetails(url);
+        return [url, detail];
+      }),
+    ).then((entries) => {
+      if (cancelled) return;
+      setVideoDetailsByUrl(Object.fromEntries(entries));
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [videoLinks]);
 
   // Apply curation styles when level data changes
   useEffect(() => {
@@ -2170,7 +2201,7 @@ const LevelDetailPage = ({ mockData = null }) => {
           })()
         }
         style={{
-          '--header-bg-image': videoDetail?.image ? `url(${videoDetail.image})` : 'none'
+          '--header-bg-image': primaryVideoDetail?.image ? `url(${primaryVideoDetail.image})` : 'none'
         }}
       >
         
@@ -2766,31 +2797,61 @@ const LevelDetailPage = ({ mockData = null }) => {
               </button>
             </div>
 
-            <div className="youtube">
-              {videoDetail ? 
-                <iframe
-                  src={videoDetail.embed}
-                  title="Video player"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  referrerPolicy="strict-origin-when-cross-origin"
-                  allowFullScreen
-                ></iframe>
-              :
-                <div
-                  className="thumbnail-container"
-                  style={{
-                    '--thumbnail-bg-image': `url(${videoDetail? videoDetail.image: placeholder})`,
-                  }}
-                >
-                  <div className="thumbnail-text">
-                    <p>{t('levelDetail.links.thumbnailNotFound.text')}</p>
-                    {res.level.videoLink && 
-                      <a href={getPrimaryVideoLink(res.level.videoLink)}>{t('levelDetail.links.thumbnailNotFound.goToVideo')}</a>
-                    }
+            <div className="video-embed-section">
+              <div className="youtube">
+                {activeVideoDetail ? 
+                  <iframe
+                    key={activeVideoLink}
+                    src={activeVideoDetail.embed}
+                    title="Video player"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerPolicy="strict-origin-when-cross-origin"
+                    allowFullScreen
+                  ></iframe>
+                :
+                  <div
+                    className="thumbnail-container"
+                    style={{
+                      '--thumbnail-bg-image': `url(${activeVideoDetail?.image ?? placeholder})`,
+                    }}
+                  >
+                    <div className="thumbnail-text">
+                      <p>{t('levelDetail.links.thumbnailNotFound.text')}</p>
+                      {activeVideoLink && 
+                        <a href={activeVideoLink}>{t('levelDetail.links.thumbnailNotFound.goToVideo')}</a>
+                      }
+                    </div>
                   </div>
+                }
+              </div>
+
+              {videoLinks.length > 1 && (
+                <div className="video-link-tabs" role="tablist">
+                  {videoLinks.map((url, index) => {
+                    const provider = getVideoProvider(url);
+                    const providerLabel = provider === 'youtube'
+                      ? 'YouTube'
+                      : provider === 'bilibili'
+                        ? 'Bilibili'
+                        : 'Video';
+
+                    return (
+                      <button
+                        key={`${url}-${index}`}
+                        type="button"
+                        role="tab"
+                        aria-selected={index === activeVideoIndex}
+                        aria-label={providerLabel}
+                        className={`video-link-tab${index === activeVideoIndex ? ' video-link-tab--active' : ''}`}
+                        onClick={() => setActiveVideoIndex(index)}
+                      >
+                        <VideoLinkIcon url={url} size="20px" className="video-link-tab__icon" />
+                      </button>
+                    );
+                  })}
                 </div>
-              }
+              )}
             </div>
           </div>
 
@@ -2955,7 +3016,7 @@ const LevelDetailPage = ({ mockData = null }) => {
         <FullInfoPopup
           level={res.level}
           onClose={changeDialogState}
-          videoDetail={videoDetail}
+          videoDetail={primaryVideoDetail}
           difficulty={difficulty}
           onArtistClick={handleArtistClick}
         />

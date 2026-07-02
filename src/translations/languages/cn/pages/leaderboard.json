@@ -29,12 +29,11 @@
       "sortBy": "排序依据"
     }
   },
-  "bannedPlayers": {
-    "label": "已封禁玩家",
-    "options": {
-      "show": "显示",
-      "hide": "隐藏",
-      "only": "仅"
+  "playerFlagFilter": {
+    "fields": {
+      "isBanned": "已封禁玩家",
+      "isSubmissionsPaused": "提交已暂停",
+      "isRatingBanned": "评分已封禁"
     }
   },
   "sortOptions": {

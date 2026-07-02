@@ -138,14 +138,28 @@
   margin-bottom: 0.5rem;
 }
 
-.leaderboard-page .leaderboard-body .sort .sort-option .banned-toggle {
+.leaderboard-page .leaderboard-body .filter-section .player-flag-filter {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-.leaderboard-page .leaderboard-body .sort .sort-option .banned-toggle p {
-  margin-bottom: 0.5rem;
+.leaderboard-page .leaderboard-body .filter-section .player-flag-filter__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+.leaderboard-page .leaderboard-body .filter-section .player-flag-filter__controls .custom-select-container {
+  flex: 0.1 1 12rem;
+  min-width: 12rem;
+}
+
+@media (max-width: 768px) {
+  .leaderboard-page .leaderboard-body .filter-section .player-flag-filter__controls .custom-select-container {
+    flex: 1 1 100%;
+  }
 }
 
 .leaderboard-page .leaderboard-body .sort .sort-option .recent {

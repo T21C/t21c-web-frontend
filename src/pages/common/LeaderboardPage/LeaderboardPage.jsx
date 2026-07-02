@@ -25,6 +25,9 @@ import { normalizePlayerSearchQuery } from '@/utils/normalizeEntitySearchQuery';
 
 const limit = 30;
 
+const DEFAULT_PLAYER_FLAG_FILTER = { field: 'isBanned', mode: 'hide' };
+const PLAYER_FLAG_FIELDS = ['isBanned', 'isSubmissionsPaused', 'isRatingBanned'];
+
 const LeaderboardPage = () => {
   const { t } = useTranslation('pages');
   const location = useLocation();
@@ -61,8 +64,8 @@ const LeaderboardPage = () => {
     setSort,
     sortBy,
     setSortBy,
-    showBanned,
-    setShowBanned,
+    playerFlagFilter,
+    setPlayerFlagFilter,
     forceUpdate,
     setForceUpdate
   } = useContext(PlayerContext);
@@ -95,6 +98,23 @@ const LeaderboardPage = () => {
     { value: 'top12kDiff', label: t('leaderboard.sortOptions.top12kDiff') }
   ];
 
+  const flagFieldOptions = useMemo(
+    () =>
+      PLAYER_FLAG_FIELDS.map((field) => ({
+        value: field,
+        label: t(`leaderboard.playerFlagFilter.fields.${field}`),
+      })),
+    [t],
+  );
+
+  const handlePlayerFlagFilterChange = (nextFilter) => {
+    setPlayerFlagFilter(nextFilter);
+    setDisplayedPlayers(null);
+    setPlayerData(null);
+    setLeaderboardListTotal(null);
+    setForceUpdate((prev) => !prev);
+  };
+
   const filterableFields = [
     { key: 'rankedScore', label: t('leaderboard.sortOptions.rankedScore'), maxKey: 'maxRankedScore', step: 1 },
     { key: 'totalScoreV2', label: t('leaderboard.sortOptions.totalScoreV2'), maxKey: 'maxTotalScoreV2', step: 1 },
@@ -113,13 +133,18 @@ const LeaderboardPage = () => {
   const fetchPlayers = async (offset = 0, { immediate = false } = {}) => {
     const runner = immediate ? runRequest.flush : runRequest;
 
+    const effectiveFlagFilter = hasFlag(user, permissionFlags.SUPER_ADMIN)
+      ? playerFlagFilter
+      : DEFAULT_PLAYER_FLAG_FILTER;
+
     const params = new URLSearchParams({
       query: query,
       sortBy: sortBy,
       order: sort.toLowerCase(),
       offset: offset,
       limit: limit,
-      showBanned: showBanned
+      flagField: effectiveFlagFilter.field,
+      flagMode: effectiveFlagFilter.mode,
     });
 
     // Add filters if they exist
@@ -191,7 +216,7 @@ const LeaderboardPage = () => {
     setPlayerData(null);
     setDisplayedPlayers(null);
     fetchPlayers(0);
-  }, [forceUpdate, query, sort, sortBy, showBanned, country, filters]);
+  }, [forceUpdate, query, sort, sortBy, playerFlagFilter, country, filters]);
 
   function handleQueryChange(e) {
     setQuery(normalizePlayerSearchQuery(e.target.value));
@@ -264,7 +289,7 @@ const LeaderboardPage = () => {
     setSortBy(sortOptions[0].value);
     setSort("DESC");
     setQuery("");
-    setShowBanned('hide');
+    setPlayerFlagFilter(DEFAULT_PLAYER_FLAG_FILTER);
     setCountry('');
     setActiveFilters({});
     setFilters({});
@@ -491,6 +516,39 @@ const LeaderboardPage = () => {
                   </div>
                 )}
               </div>
+
+              {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
+                <div className="player-flag-filter">
+                  <div className="player-flag-filter__controls">
+                    <CustomSelect
+                      value={flagFieldOptions.find((option) => option.value === playerFlagFilter.field)}
+                      onChange={(option) => {
+                        if (!option?.value) return;
+                        handlePlayerFlagFilterChange({
+                          ...playerFlagFilter,
+                          field: option.value,
+                        });
+                      }}
+                      options={flagFieldOptions}
+                      width="100%"
+                    />
+                    <StateDisplay
+                      showLabel={false}
+                      currentState={playerFlagFilter.mode}
+                      onChange={(mode) => {
+                        handlePlayerFlagFilterChange({
+                          ...playerFlagFilter,
+                          mode,
+                        });
+                      }}
+                      states={['show', 'hide', 'only']}
+                      width={60}
+                      height={24}
+                      padding={3}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
             </CollapsibleContent>
@@ -545,25 +603,6 @@ const LeaderboardPage = () => {
                   width="11rem"
                 />
               </div>
-              {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
-                <div className="recent" style={{ display: "grid", alignItems: "end" }}>
-                  <StateDisplay
-                    label={t('leaderboard.bannedPlayers.label')}
-                  currentState={showBanned}
-                  onChange={(newState) => {
-                    setShowBanned(newState);
-                    setDisplayedPlayers(null);
-                    setPlayerData(null);
-                    setLeaderboardListTotal(null);
-                    setForceUpdate(prev => !prev);
-                  }}
-                  states={['show', 'hide', 'only']}
-                  width={60}
-                  height={24}
-                  padding={3}
-                />
-              </div>
-              )}
             </div>
           </div>
             </CollapsibleContent>

@@ -29,12 +29,11 @@
       "sortBy": "정렬 기준"
     }
   },
-  "bannedPlayers": {
-    "label": "제재된 플레이어",
-    "options": {
-      "show": "표시",
-      "hide": "숨기기",
-      "only": "제재된 플레이어만"
+  "playerFlagFilter": {
+    "fields": {
+      "isBanned": "제재된 플레이어",
+      "isSubmissionsPaused": "제출 일시정지",
+      "isRatingBanned": "평가 제재"
     }
   },
   "sortOptions": {

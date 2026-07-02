@@ -8,9 +8,37 @@ const STORAGE_KEYS = {
   SORT: 'player_sort',
   SORT_BY: 'player_sort_by',
   SHOW_BANNED: 'player_show_banned',
+  FLAG_FILTER: 'player_flag_filter',
   FILTERS: 'player_filters',
   COUNTRY: 'player_country',
 };
+
+const VALID_FLAG_FIELDS = new Set(['isBanned', 'isSubmissionsPaused', 'isRatingBanned']);
+const VALID_FLAG_MODES = new Set(['show', 'hide', 'only']);
+
+function loadPlayerFlagFilter() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEYS.FLAG_FILTER);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (
+        parsed &&
+        VALID_FLAG_FIELDS.has(parsed.field) &&
+        VALID_FLAG_MODES.has(parsed.mode)
+      ) {
+        return parsed;
+      }
+    }
+  } catch (e) {
+    // fall through to legacy migration
+  }
+
+  const legacyMode = localStorage.getItem(STORAGE_KEYS.SHOW_BANNED);
+  return {
+    field: 'isBanned',
+    mode: VALID_FLAG_MODES.has(legacyMode) ? legacyMode : 'hide',
+  };
+}
 
 export const PlayerContext = createContext();
 
@@ -34,7 +62,7 @@ export const PlayerContextProvider = ({ children }) => {
   const [query, setQuery] = useState(() => localStorage.getItem(STORAGE_KEYS.QUERY) || '');
   const [sort, setSort] = useState(() => localStorage.getItem(STORAGE_KEYS.SORT) || 'DESC');
   const [sortBy, setSortBy] = useState(() => localStorage.getItem(STORAGE_KEYS.SORT_BY) || 'rankedScore');
-  const [showBanned, setShowBanned] = useState(() => localStorage.getItem(STORAGE_KEYS.SHOW_BANNED) || 'hide');
+  const [playerFlagFilter, setPlayerFlagFilter] = useState(loadPlayerFlagFilter);
   const [loading, setLoading] = useState(true);
   const [initialLoading, setInitialLoading] = useState(true);
   const [forceUpdate, setForceUpdate] = useState(false);
@@ -61,8 +89,8 @@ export const PlayerContextProvider = ({ children }) => {
   }, [sortBy]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.SHOW_BANNED, showBanned);
-  }, [showBanned]);
+    localStorage.setItem(STORAGE_KEYS.FLAG_FILTER, JSON.stringify(playerFlagFilter));
+  }, [playerFlagFilter]);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.FILTERS, JSON.stringify(filters));
@@ -91,8 +119,8 @@ export const PlayerContextProvider = ({ children }) => {
         setSort,
         sortBy,
         setSortBy,
-        showBanned,
-        setShowBanned,
+        playerFlagFilter,
+        setPlayerFlagFilter,
         loading,
         setLoading,
         initialLoading,
