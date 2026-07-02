@@ -303,6 +303,11 @@ export const routes = {
     me: () => '/v3/billing/me',
     meEvents: () => '/v3/billing/me/events',
     recipientSearch: () => '/v3/billing/recipient-search',
+    adminGrants: {
+      root: () => '/v3/billing/admin/grants',
+      recipientSearch: () => '/v3/billing/admin/grants/recipient-search',
+      retract: (grantId) => `/v3/billing/admin/grants/${enc(grantId)}/retract`,
+    },
     stripe: {
       checkout: () => '/v3/billing/stripe/checkout',
       checkoutStatus: () => '/v3/billing/stripe/checkout-status',

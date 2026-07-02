@@ -170,13 +170,17 @@ export function referenceKindLabel(kind, t) {
 
 export function billingHistoryProductDetail(product, t) {
   if (!product || typeof product !== "object") return "";
-  const { kind, months, sku, itemId } = product;
+  const { kind, months, days, sku, itemId } = product;
   const parts = [];
 
-  if (months != null && Number.isFinite(Number(months))) {
+  if (days != null && Number.isFinite(Number(days)) && kind === "admin_grant") {
+    parts.push(t("billing.history.product.grantDays", { count: Number(days) }));
+  } else if (months != null && Number.isFinite(Number(months))) {
     const c = Number(months);
     if (kind === "purchase") {
       parts.push(t("billing.history.product.purchaseMonths", { count: c }));
+    } else if (kind === "admin_grant") {
+      parts.push(t("billing.history.product.grantMonths", { count: c }));
     } else {
       parts.push(t("billing.history.product.termMonths", { count: c }));
     }
@@ -215,6 +219,25 @@ export function historyEventLabel(ev, t) {
         ? ` (${ev.counterpartyNickname})`
         : "";
     return t("billing.history.activity.giftSent", { name: `${u}${nick}` });
+  }
+  if (kind === "admin_grant_received") {
+    const u = ev.counterpartyUsername || t("billing.history.unknownUser");
+    const nick =
+      ev.counterpartyNickname && ev.counterpartyNickname !== ev.counterpartyUsername
+        ? ` (${ev.counterpartyNickname})`
+        : "";
+    if (!ev.counterpartyUsername && !ev.counterpartyNickname) {
+      return t("billing.history.activity.grantReceivedSelf");
+    }
+    return t("billing.history.activity.grantReceived", { name: `${u}${nick}` });
+  }
+  if (kind === "admin_grant_sent") {
+    const u = ev.counterpartyUsername || t("billing.history.unknownUser");
+    const nick =
+      ev.counterpartyNickname && ev.counterpartyNickname !== ev.counterpartyUsername
+        ? ` (${ev.counterpartyNickname})`
+        : "";
+    return t("billing.history.activity.grantSent", { name: `${u}${nick}` });
   }
   if (kind === "one_time_self") {
     return eventTypeLabel(ev.eventType, t);

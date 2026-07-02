@@ -16,7 +16,9 @@ export const ProfileSelector = ({
   required,
   placeholder,
   className,
-  disabled
+  disabled,
+  /** When true with `type="user"`, uses admin grant recipient search (includes your account). */
+  userSearchIncludeSelf = false,
 }) => {
   const { t } = useTranslation('components');
   const { user } = useAuth();
@@ -75,7 +77,7 @@ export const ProfileSelector = ({
     const searchProfiles = async () => {
       const trimmed = searchTerm.trim();
       if (type === 'user') {
-        if (!isTufStellarEnabledForUser(user)) {
+        if (!userSearchIncludeSelf && !isTufStellarEnabledForUser(user)) {
           setProfiles([]);
           setLoading(false);
           return;
@@ -92,7 +94,10 @@ export const ProfileSelector = ({
       setLoading(true);
       try {
         if (type === 'user') {
-          const response = await api.get(routes.billingV3.recipientSearch(), {
+          const searchRoute = userSearchIncludeSelf
+            ? routes.billingV3.adminGrants.recipientSearch()
+            : routes.billingV3.recipientSearch();
+          const response = await api.get(searchRoute, {
             params: { q: trimmed },
           });
           const rows = Array.isArray(response.data?.users) ? response.data.users : [];
@@ -128,7 +133,7 @@ export const ProfileSelector = ({
 
     const timeoutId = setTimeout(searchProfiles, 300);
     return () => clearTimeout(timeoutId);
-  }, [searchTerm, type, user]);
+  }, [searchTerm, type, user, userSearchIncludeSelf]);
 
   // Handle profile selection
   const handleSelect = (profile) => {
@@ -289,5 +294,6 @@ ProfileSelector.propTypes = {
   required: PropTypes.bool,
   placeholder: PropTypes.string,
   className: PropTypes.string,
-  disabled: PropTypes.bool
+  disabled: PropTypes.bool,
+  userSearchIncludeSelf: PropTypes.bool,
 };

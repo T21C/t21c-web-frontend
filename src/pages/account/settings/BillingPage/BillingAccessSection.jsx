@@ -51,7 +51,11 @@ export function BillingAccessSection({
               Number.isFinite(remMs) && remMs > 0 ? approxDaysRemainingLabel(remMs, t) : "";
             const source = String(seg.source ?? "unknown");
             const giftFrom = seg.giftFrom && typeof seg.giftFrom === "object" ? seg.giftFrom : null;
+            const grantFrom = seg.grantFrom && typeof seg.grantFrom === "object" ? seg.grantFrom : null;
             const giverName = giftFrom?.username || giftFrom?.userId || "";
+            const granterName = grantFrom?.username || grantFrom?.userId || "";
+            const durationKind = seg.durationKind != null ? String(seg.durationKind) : null;
+            const durationValue = Number(seg.durationValue);
 
             let sourceLabel = t("billing.access.segmentSourceUnknown");
             if (source === "self_purchase") sourceLabel = t("billing.access.segmentSourceSelf");
@@ -59,14 +63,23 @@ export function BillingAccessSection({
               sourceLabel = giverName
                 ? t("billing.access.segmentSourceGiftFrom", { name: giverName })
                 : t("billing.access.segmentSourceGift");
+            else if (source === "admin_grant")
+              sourceLabel = granterName
+                ? t("billing.access.segmentSourceGrantFrom", { name: granterName })
+                : t("billing.access.segmentSourceGrantSelf");
+
+            let termLabel = t("billing.checkout.durationMonths", { count: Number.isFinite(months) ? months : 0 });
+            if (source === "admin_grant" && durationKind === "days" && Number.isFinite(durationValue) && durationValue > 0) {
+              termLabel = t("billing.adminGrants.durationDays", { count: durationValue });
+            } else if (source === "admin_grant" && durationKind === "months" && Number.isFinite(durationValue) && durationValue > 0) {
+              termLabel = t("billing.checkout.durationMonths", { count: durationValue });
+            }
 
             return (
               <li key={String(id)} className="billing-page__access-segment">
                 <div className="billing-page__access-segment-main">
                   <span className="billing-page__access-segment-source">{sourceLabel}</span>
-                  <span className="billing-page__access-segment-term">
-                    {t("billing.checkout.durationMonths", { count: Number.isFinite(months) ? months : 0 })}
-                  </span>
+                  <span className="billing-page__access-segment-term">{termLabel}</span>
                 </div>
                 <div className="billing-page__access-segment-dates">
                   {startsAt && endsAt ? (
