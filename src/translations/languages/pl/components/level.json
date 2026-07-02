@@ -66,6 +66,7 @@
         "charter": { "title": "Charter", "desc": "Filtruj po nazwie charter-a." },
         "vfxer": { "title": "VFXer", "desc": "Filtruj po nazwie VFXer-a." },
         "team": { "title": "Team", "desc": "Filtruj po nazwie teamu (wspiera aliasy)." },
+        "comment": { "title": "Komentarze publiczne", "desc": "Filtruj po tekście publicznych komentarzy (np. notatki rerate lub gimmick)." },
         "bpm": { "title": "BPM", "desc": "Filtruj po BPM (dokładnie lub zakres)." },
         "tilecount": { "title": "Liczba kafelków", "desc": "Filtruj po liczbie kafelków (dokładnie lub zakres)." },
         "time": { "title": "Długość chartu", "desc": "Filtruj po długości chartu (h/m/s/ms lub milisekundy)." },

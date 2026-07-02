@@ -66,6 +66,7 @@
         "charter": { "title": "采音师", "desc": "按采音师名称搜索。" },
         "vfxer": { "title": "特效师", "desc": "按特效师名称搜索。" },
         "team": { "title": "团队", "desc": "按团队名称搜索（含别名）。" },
+        "comment": { "title": "公开注释", "desc": "按公开注释文本搜索（如重评或 gimmick 说明）。" },
         "bpm": { "title": "BPM", "desc": "按 BPM 搜索（精确/范围）。" },
         "tilecount": { "title": "物量数", "desc": "按物量数搜索（精确/范围）。" },
         "time": { "title": "谱面时长", "desc": "按谱面时长搜索（时、分、秒或毫秒）。" },

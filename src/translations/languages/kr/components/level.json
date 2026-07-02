@@ -66,6 +66,7 @@
         "charter": { "title": "채보자", "desc": "채보자 이름으로 필터." },
         "vfxer": { "title": "VFX 담당", "desc": "VFX 담당자 이름으로 필터." },
         "team": { "title": "팀", "desc": "팀 이름으로 필터(별칭 포함)." },
+        "comment": { "title": "공개 코멘트", "desc": "공개 코멘트 텍스트로 필터(예: 리레이트 또는 기믹 메모)." },
         "bpm": { "title": "BPM", "desc": "BPM으로 필터(정확/범위)." },
         "tilecount": { "title": "타일 수", "desc": "타일 수로 필터(정확/범위)." },
         "time": { "title": "채보 길이", "desc": "채보 길이로 필터(h/m/s/ms 또는 밀리초)." },

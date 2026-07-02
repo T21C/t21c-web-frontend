@@ -28,6 +28,7 @@ export const LEVEL_SEARCH_HELP_SECTIONS = [
       { token: 'charter', titleKey: 'level.helpPopup.v2.fields.charter.title', descKey: 'level.helpPopup.v2.fields.charter.desc' },
       { token: 'vfxer', titleKey: 'level.helpPopup.v2.fields.vfxer.title', descKey: 'level.helpPopup.v2.fields.vfxer.desc' },
       { token: 'team', titleKey: 'level.helpPopup.v2.fields.team.title', descKey: 'level.helpPopup.v2.fields.team.desc' },
+      { token: 'comment', titleKey: 'level.helpPopup.v2.fields.comment.title', descKey: 'level.helpPopup.v2.fields.comment.desc' },
     ],
     examples: [
       'level.helpPopup.v2.groups.text.examples.partialVsExact',

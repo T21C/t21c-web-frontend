@@ -99,6 +99,10 @@
           "title": "Team",
           "desc": "Filter by team name (supports aliases)."
         },
+        "comment": {
+          "title": "Public comments",
+          "desc": "Filter by public comment text (e.g. rerate or gimmick notes)."
+        },
         "bpm": {
           "title": "BPM",
           "desc": "Filter by BPM. Supports exact values and ranges."
