@@ -4,11 +4,30 @@ import './marqueetext.css';
 const MARQUEE_SPEED_PX_PER_SECOND = 25;
 const MARQUEE_START_DELAY_SECONDS = 0.8;
 const MARQUEE_END_PAUSE_SECONDS = 2;
+const FADE_WIDTH = '1.5rem';
+const EDGE_THRESHOLD = 1;
 const MARQUEE_STYLE_PROPS = [
   '--marquee-distance',
   '--marquee-cycle-duration',
   '--marquee-animation-name',
 ];
+const MARQUEE_FADE_PROPS = [
+  '--marquee-fade-left',
+  '--marquee-fade-right',
+];
+
+const updateFadeMask = (container, translateX, distance) => {
+  const atStart = translateX > -EDGE_THRESHOLD;
+  const atEnd = translateX < -distance + EDGE_THRESHOLD;
+  container.style.setProperty('--marquee-fade-left', atStart ? '0px' : FADE_WIDTH);
+  container.style.setProperty('--marquee-fade-right', atEnd ? '0px' : FADE_WIDTH);
+};
+
+const getTranslateX = (element) => {
+  const transform = getComputedStyle(element).transform;
+  if (!transform || transform === 'none') return 0;
+  return new DOMMatrixReadOnly(transform).m41;
+};
 
 const buildKeyframeRule = (animationName, cycleDuration) => {
   const scrollDuration = (cycleDuration - MARQUEE_START_DELAY_SECONDS * 2 - MARQUEE_END_PAUSE_SECONDS) / 2;
@@ -50,6 +69,8 @@ const MarqueeText = ({
   const containerRef = useRef(null);
   const contentRef = useRef(null);
   const styleRef = useRef(null);
+  const distanceRef = useRef(0);
+  const rafRef = useRef(null);
   const [overflows, setOverflows] = useState(false);
   const reactId = useId().replace(/:/g, '');
   const animationName = `marquee-text-${reactId}`;
@@ -59,9 +80,43 @@ const MarqueeText = ({
     const content = contentRef.current;
     if (!container || !content) return;
 
+    const stopFadeTracking = () => {
+      if (rafRef.current !== null) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+      }
+    };
+
+    const trackFade = () => {
+      const translateX = getTranslateX(content);
+      updateFadeMask(container, translateX, distanceRef.current);
+
+      if (getComputedStyle(content).animationName !== 'none') {
+        rafRef.current = requestAnimationFrame(trackFade);
+      } else {
+        rafRef.current = null;
+        updateFadeMask(container, 0, distanceRef.current);
+      }
+    };
+
+    const startFadeTracking = () => {
+      stopFadeTracking();
+      rafRef.current = requestAnimationFrame(trackFade);
+    };
+
+    const handleAnimationStart = () => {
+      startFadeTracking();
+    };
+
+    const handleAnimationCancel = () => {
+      stopFadeTracking();
+      updateFadeMask(container, 0, distanceRef.current);
+    };
+
     const updateOverflow = () => {
       const distance = Math.max(0, content.scrollWidth - container.clientWidth);
       const overflowsNow = distance > 1;
+      distanceRef.current = distance;
 
       setOverflows(overflowsNow);
 
@@ -85,8 +140,10 @@ const MarqueeText = ({
         container.style.setProperty('--marquee-distance', `${distance}px`);
         container.style.setProperty('--marquee-cycle-duration', `${cycleDuration}s`);
         container.style.setProperty('--marquee-animation-name', animationName);
+        updateFadeMask(container, getTranslateX(content), distance);
       } else {
         MARQUEE_STYLE_PROPS.forEach((prop) => container.style.removeProperty(prop));
+        MARQUEE_FADE_PROPS.forEach((prop) => container.style.removeProperty(prop));
 
         if (styleRef.current) {
           styleRef.current.remove();
@@ -101,8 +158,14 @@ const MarqueeText = ({
     resizeObserver.observe(container);
     resizeObserver.observe(content);
 
+    content.addEventListener('animationstart', handleAnimationStart);
+    content.addEventListener('animationcancel', handleAnimationCancel);
+
     return () => {
       resizeObserver.disconnect();
+      content.removeEventListener('animationstart', handleAnimationStart);
+      content.removeEventListener('animationcancel', handleAnimationCancel);
+      stopFadeTracking();
       if (styleRef.current) {
         styleRef.current.remove();
         styleRef.current = null;

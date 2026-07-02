@@ -13,6 +13,23 @@
   max-width: none;
 }
 
+.marquee-text--overflows {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    black var(--marquee-fade-left, 0px),
+    black calc(100% - var(--marquee-fade-right, 0px)),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    black var(--marquee-fade-left, 0px),
+    black calc(100% - var(--marquee-fade-right, 0px)),
+    transparent 100%
+  );
+}
+
 .marquee-text--overflows:hover {
   text-overflow: clip;
 }
