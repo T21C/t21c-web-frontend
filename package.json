@@ -34,6 +34,7 @@
     "googleapis": "^144.0.0",
     "hash-wasm": "^4.12.0",
     "i18next": "^23.16.8",
+    "jszip": "^3.10.1",
     "lodash": "^4.17.21",
     "react": "^18.3.1",
     "react-beautiful-dnd": "^13.1.1",

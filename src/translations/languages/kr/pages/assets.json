@@ -27,6 +27,12 @@
   "actions": {
     "open": "열기",
     "download": "다운로드",
+    "downloadAll": "전체 다운로드",
+    "downloadAllBusy": "압축 중…",
+    "downloadAllEmpty": "다운로드할 이미지가 없습니다",
+    "downloadAllSuccess": "이미지 {{count}}개 다운로드됨",
+    "downloadAllPartial": "이미지 {{ok}}개 다운로드됨 ({{failed}}개 실패)",
+    "downloadAllFailed": "이미지를 다운로드할 수 없습니다",
     "groupAria": "에셋 파일 작업",
     "copyColorHex": "색상 복사 {{color}}",
     "colorCopied": "{{color}} 복사됨",

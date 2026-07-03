@@ -27,6 +27,12 @@
   "actions": {
     "open": "打开",
     "download": "下载",
+    "downloadAll": "全部下载",
+    "downloadAllBusy": "打包中…",
+    "downloadAllEmpty": "没有可下载的图片",
+    "downloadAllSuccess": "已下载 {{count}} 张图片",
+    "downloadAllPartial": "已下载 {{ok}} 张图片（{{failed}} 张失败）",
+    "downloadAllFailed": "无法下载图片",
     "groupAria": "资源文件操作",
     "copyColorHex": "复制颜色 {{color}}",
     "colorCopied": "已复制 {{color}}",

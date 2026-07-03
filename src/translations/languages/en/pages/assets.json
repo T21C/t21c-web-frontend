@@ -51,6 +51,12 @@
   "actions": {
     "open": "Open",
     "download": "Download",
+    "downloadAll": "Download all",
+    "downloadAllBusy": "Packing…",
+    "downloadAllEmpty": "No images to download",
+    "downloadAllSuccess": "Downloaded {{count}} images",
+    "downloadAllPartial": "Downloaded {{ok}} images ({{failed}} failed)",
+    "downloadAllFailed": "Could not download images",
     "groupAria": "Asset file actions",
     "copyColorHex": "Copy color {{color}}",
     "colorCopied": "Copied {{color}}",
