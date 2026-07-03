@@ -20,6 +20,7 @@ import { CDN_IMAGE_ACCEPT, isCdnSupportedImageMimeType } from '@/config/constant
 import { userAvatarDisplayUrl } from '@/utils/playerAvatarDisplay';
 import {
   getUsernameFormatError,
+  isUsernameChanging,
   sanitizeUsernameInput,
   USERNAME_MAX_LEN,
 } from '@/utils/usernameValidation';
@@ -392,13 +393,23 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
     }
 
     try {
-      const profilePayload = {
-        username: formData.username,
-        country: formData.country,
-      };
-      if (!user?.playerId) {
+      const profilePayload = {};
+
+      if (
+        isUsernameEditing ||
+        isUsernameChanging(formData.username, originalUsername)
+      ) {
+        profilePayload.username = formData.username;
+      }
+
+      if (formData.country !== (user?.player?.country || '')) {
+        profilePayload.country = formData.country;
+      }
+
+      if (!user?.playerId && formData.nickname !== (user?.nickname || '')) {
         profilePayload.nickname = formData.nickname;
       }
+
       await api.put(`${routes.auth.profile.root()}/me`, profilePayload);
 
       // Clear rate limit state on successful update

@@ -9,6 +9,21 @@ export function usernameHasConsecutivePeriods(username) {
   return username.includes('..');
 }
 
+/** Lowercase for Discord-style case-insensitive matching — keep in sync with server. */
+export function normalizeUsername(raw) {
+  return raw.trim().toLowerCase();
+}
+
+/** True when incoming username (after normalization) differs from the stored value. */
+export function isUsernameChanging(incomingRaw, currentStored) {
+  const incoming =
+    typeof incomingRaw === 'string' && incomingRaw.length
+      ? normalizeUsername(incomingRaw)
+      : undefined;
+  if (!incoming) return false;
+  return incoming !== normalizeUsername(currentStored);
+}
+
 export function getUsernameFormatError(username) {
   if (username.length < USERNAME_MIN_LEN || username.length > USERNAME_MAX_LEN) {
     return { type: 'length' };
