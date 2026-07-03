@@ -7,7 +7,7 @@ import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { CloseButton } from '@/components/common/buttons';
 import { CountrySelect } from '@/components/common/selectors';
 import { useAuth } from '@/contexts/AuthContext';
-import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { hasFlag, permissionFlags, setUserPermission } from '@/utils/UserPermissions';
 import api from '@/utils/api';
 import { CreatorAssignmentPanel } from '@/components/popups/Creators/CreatorAssignmentPopup/CreatorAssignmentPanel';
 import AliasListEditor from './AliasListEditor';
@@ -35,10 +35,10 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
     hasFlag(player?.user, permissionFlags.BANNED) || player?.isBanned || false,
   );
   const [isSubmissionsPaused, setIsSubmissionsPaused] = useState(
-    hasFlag(player?.user, permissionFlags.SUBMISSIONS_PAUSED) || false,
+    hasFlag(player?.user, permissionFlags.SUBMISSIONS_PAUSED) || player?.isSubmissionsPaused || false,
   );
   const [isRatingBanned, setIsRatingBanned] = useState(
-    hasFlag(player?.user, permissionFlags.RATING_BANNED) || false,
+    hasFlag(player?.user, permissionFlags.RATING_BANNED) || player?.user?.isRatingBanned || false,
   );
   const [showBanConfirm, setShowBanConfirm] = useState(false);
   const [showPauseConfirm, setShowPauseConfirm] = useState(false);
@@ -217,11 +217,20 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
     setIsLoading(true);
     clearMessages();
     try {
-      await api.patch(`${routes.database.players.root()}/${player.id}/ban`, {
+      const response = await api.patch(`${routes.database.players.root()}/${player.id}/ban`, {
         isBanned: pendingBanState,
       });
-      setIsBanned(pendingBanState);
-      onUpdate?.({ ...player, isBanned: pendingBanState });
+      const updatedPlayer = response.data?.player;
+      const isBannedValue = updatedPlayer?.isBanned ?? pendingBanState;
+      setIsBanned(isBannedValue);
+      onUpdate?.({
+        ...player,
+        ...updatedPlayer,
+        isBanned: isBannedValue,
+        user: player.user
+          ? setUserPermission(player.user, permissionFlags.BANNED, isBannedValue)
+          : player.user,
+      });
       toast.success(tt('player.success.moderation'));
     } catch (err) {
       setError(err.response?.data?.details || tt('player.errors.banUpdate'));
@@ -240,11 +249,20 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
     setIsLoading(true);
     clearMessages();
     try {
-      await api.patch(`${routes.database.players.root()}/${player.id}/pause-submissions`, {
+      const response = await api.patch(`${routes.database.players.root()}/${player.id}/pause-submissions`, {
         isSubmissionsPaused: pendingPauseState,
       });
-      setIsSubmissionsPaused(pendingPauseState);
-      onUpdate?.({ ...player, isSubmissionsPaused: pendingPauseState });
+      const updatedPlayer = response.data?.player;
+      const isPausedValue = updatedPlayer?.isSubmissionsPaused ?? pendingPauseState;
+      setIsSubmissionsPaused(isPausedValue);
+      onUpdate?.({
+        ...player,
+        ...updatedPlayer,
+        isSubmissionsPaused: isPausedValue,
+        user: player.user
+          ? setUserPermission(player.user, permissionFlags.SUBMISSIONS_PAUSED, isPausedValue)
+          : player.user,
+      });
       toast.success(tt('player.success.moderation'));
     } catch (err) {
       setError(err.response?.data?.details || tt('player.errors.pauseUpdate'));
@@ -263,11 +281,19 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
     setIsLoading(true);
     clearMessages();
     try {
-      await api.patch(routes.admin.users.ratingBan(player.id), {
+      const response = await api.patch(routes.admin.users.ratingBan(player.id), {
         isRatingBanned: pendingRatingBanState,
       });
-      setIsRatingBanned(pendingRatingBanState);
-      onUpdate?.({ ...player, isRatingBanned: pendingRatingBanState });
+      const isRatingBannedValue =
+        response.data?.user?.isRatingBanned ?? pendingRatingBanState;
+      setIsRatingBanned(isRatingBannedValue);
+      onUpdate?.({
+        ...player,
+        isRatingBanned: isRatingBannedValue,
+        user: player.user
+          ? setUserPermission(player.user, permissionFlags.RATING_BANNED, isRatingBannedValue)
+          : player.user,
+      });
       toast.success(tt('player.success.moderation'));
     } catch (err) {
       setError(err.response?.data?.details || tt('player.errors.ratingBanUpdate'));

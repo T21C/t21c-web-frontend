@@ -19,3 +19,14 @@ export const hasAnyFlag = (user, permissions) => {
   if (!user) return false;
   return permissions.some(permission => hasFlag(user, permission));
 };
+
+export const setUserPermission = (user, permission, value) => {
+  if (!user) return user;
+  const current = BigInt(user.permissionFlags || 0);
+  const perm = BigInt(permission);
+  const newFlags = value ? current | perm : current & ~perm;
+  return {
+    ...user,
+    permissionFlags: newFlags.toString(),
+  };
+};

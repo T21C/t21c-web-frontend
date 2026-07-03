@@ -299,8 +299,8 @@ const AuditLogPage = () => {
             </div>
             <p className="auditlog-mode-hint">
               {heavyLidOpen
-                ? "Heavy mode: only Search loads data. Click the lid tab on the right to close. Quick filters apply on Search and on page changes after that."
-                : "Quick mode: filters above debounce (500ms) and never scan payload/result."}
+                ? "Heavy mode: includes the query above to search through all existing text in logs."
+                : "Quick mode: only search by filters."}
             </p>
             </div>
           </div>
