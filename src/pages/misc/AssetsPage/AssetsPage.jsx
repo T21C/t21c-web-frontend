@@ -65,17 +65,36 @@ function suggestFilenameFromUrl(url, fallbackStem) {
   return fallbackStem;
 }
 
+/** Sanitize a zip entry path; keeps `/` for folders and spaces in names. */
+function sanitizeZipPath(stem) {
+  const cleaned = String(stem || "file")
+    .replace(/\\/g, "/")
+    .replace(/[:*?"<>|]/g, "-")
+    .replace(/\/+/g, "/")
+    .replace(/^\/+|\/+$/g, "")
+    .trim();
+  return cleaned || "file";
+}
+
 function uniqueZipFilename(stem, url, blob, usedNames) {
-  const baseStem = String(stem || "file").replace(/[\\/:*?"<>|]/g, "-").trim() || "file";
-  const ext = extensionFromUrl(url) || extensionFromMime(blob?.type) || "";
-  let candidate = `${baseStem}${ext}`;
+  const basePath = sanitizeZipPath(stem);
+  const slash = basePath.lastIndexOf("/");
+  const dir = slash >= 0 ? basePath.slice(0, slash + 1) : "";
+  const leaf = slash >= 0 ? basePath.slice(slash + 1) : basePath;
+  const dot = leaf.lastIndexOf(".");
+  const hasExt = dot > 0;
+  const leafBase = hasExt ? leaf.slice(0, dot) : leaf;
+  const leafExt = hasExt
+    ? leaf.slice(dot)
+    : extensionFromUrl(url) || extensionFromMime(blob?.type) || "";
+  let candidate = `${dir}${leafBase}${leafExt}`;
   if (!usedNames.has(candidate)) {
     usedNames.add(candidate);
     return candidate;
   }
   let n = 2;
-  while (usedNames.has(`${baseStem}-${n}${ext}`)) n += 1;
-  candidate = `${baseStem}-${n}${ext}`;
+  while (usedNames.has(`${dir}${leafBase}-${n}${leafExt}`)) n += 1;
+  candidate = `${dir}${leafBase}-${n}${leafExt}`;
   usedNames.add(candidate);
   return candidate;
 }
@@ -121,7 +140,7 @@ async function downloadAssetsAsZip(entries, zipFilename) {
   await Promise.all(
     list.map(async ({ url, stem }) => {
       try {
-        const res = await fetch(url, { mode: "cors", origin: "same-origin" });
+        const res = await fetch(url, { mode: "cors" });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const blob = await res.blob();
         const name = uniqueZipFilename(stem, url, blob, usedNames);
@@ -345,12 +364,14 @@ export default function AssetsPage() {
 
   const tagDownloadEntries = useMemo(() => {
     const entries = [];
-    for (const [, groupTags] of tagGroupsFiltered) {
+    for (const [groupName, groupTags] of tagGroupsFiltered) {
+      const group = String(groupName || "").trim();
       for (const tag of groupTags) {
         if (!tag.icon) continue;
+        const name = String(tag.name || tag.id).trim() || String(tag.id);
         entries.push({
           url: selectIconSize(tag.icon, "original"),
-          stem: `tag-${tag.id}`,
+          stem: group ? `${group}-${name}` : name,
         });
       }
     }
@@ -362,7 +383,7 @@ export default function AssetsPage() {
       .filter((d) => d.icon)
       .map((d) => ({
         url: selectIconSize(d.icon, "original"),
-        stem: `difficulty-${d.id}`,
+        stem: String(d.name || d.id).trim() || String(d.id),
       }));
   }, [difficultiesFiltered]);
 
@@ -371,7 +392,7 @@ export default function AssetsPage() {
       .filter((ct) => ct.icon)
       .map((ct) => ({
         url: selectIconSize(ct.icon, "original"),
-        stem: `curation-type-${ct.id}`,
+        stem: String(ct.name || ct.id).trim() || String(ct.id),
       }));
   }, [curationSorted]);
 
@@ -380,7 +401,7 @@ export default function AssetsPage() {
       .filter((entry) => !STATIC_FONT_EXT_RE.test(entry.id))
       .map((entry) => ({
         url: entry.url,
-        stem: entry.id.replace(/\//g, "-"),
+        stem: entry.id,
       }));
   }, [staticAssetEntries]);
 
