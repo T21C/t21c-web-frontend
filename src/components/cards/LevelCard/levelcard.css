@@ -37,6 +37,11 @@
   display: contents;
 }
 
+.level-card .level-card__row--top,
+.level-card .level-card__row--bottom {
+  display: contents;
+}
+
 .level-card .img-wrapper { grid-area: icon; }
 .level-card .song-wrapper { grid-area: song; }
 .level-card .creator-wrapper { grid-area: creator; }
@@ -150,7 +155,6 @@
 
 
 .level-card .song-wrapper {
-  overflow: hidden;
   min-width: 0;
   display: flex;
   flex-direction: column;
@@ -269,166 +273,6 @@
   font-size: 10px;
   white-space: nowrap;
   text-shadow: 0 0 10px rgba(0, 0, 0, 1);
-}
-
-@media (max-width: 795px) {
-  .level-card .downloads-wrapper {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-  }
-  
-  .level-card .level-card-wrapper {
-    gap: 0.75rem;
-  }
-  .level-card .img-wrapper {
-    margin-right: 1rem;
-  }
-}
-
-/* Narrow: two grid rows (icon+song+creator, then stats+actions). Deterministic
-   height, switched purely by this breakpoint — no JS, no flex-wrap. */
-@media (max-width: 650px) {
-  .level-card .level-card-wrapper {
-    grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr);
-    grid-template-areas:
-      "icon song creator"
-      "stats stats actions";
-    row-gap: 0.5rem;
-  }
-
-  .level-card .level-card__stats {
-    padding-left: 4rem; /* align stats under the song, past the difficulty icon */
-  }
-
-  .level-card .downloads-wrapper {
-    min-width: auto;
-  }
-
-  .level-card .img-wrapper {
-    margin-right: 0;
-  }
-}
-@media (max-width: 545px) {
-  .level-card .downloads-wrapper {
-    min-width: 100px;
-  }
-
-  .level-card .level-card-wrapper {
-    gap: 0.5rem;
-    padding: 0.8rem 0.25rem 0.8rem 0.5rem;
-  }
-  
-  .level-card .level-card__stats {
-    padding-left: 3.5rem;
-  }
-  
-  .level-card .level-desc {
-    font-size: 1.1rem;
-  }
-}
-@media (max-width: 400px) {
-  .level-card .level-exp {
-    font-size: 0.8rem;
-  }
-  .level-card .level-desc {
-    font-size: 1rem;
-  }
-  .level-card .level-id {
-    font-size: 0.6rem;
-  }
-  .level-card .downloads-wrapper {
-    min-width: 70px;
-  }
-  .level-card .img-wrapper {
-    width: 2.75rem;
-    margin: 0 0.5rem;
-  }
-  .level-card .curation-icon {
-    width: 1.15rem;
-    height: 1.15rem;
-    --radius: 1.45rem;
-  }
-  .level-card.compact .curation-icon {
-    --radius: calc(1.45rem * 0.7);
-  }
-  .level-card .downloads-wrapper > *{
-    height: 2rem;
-    width: 2rem;
-  }
-  
-  .level-card .level-card-wrapper {
-    gap: 0.5rem;
-    padding: 0.6rem 0.2rem;
-    min-height: 3.5rem;
-  }
-  .level-card .img-wrapper {
-    margin: 0 0.5rem;
-  }
-  
-  .level-card .level-card__stats {
-    padding-left: 0;
-  }
-  
-  .level-card .downloads-wrapper {
-    gap: 0.3rem;
-  }
-}
-@media (max-width: 380px) {
-  .level-card .level-exp {
-    font-size: 0.7rem;
-  }
-  .level-card .level-desc {
-    font-size: 0.9rem;
-  }
-  .level-card .level-id {
-    font-size: 0.5rem;
-  }
-  .level-card .downloads-wrapper {
-    min-width: 60px;
-  }
-  .level-card .img-wrapper {
-    width: 2.5rem;
-  }
-  .level-card .downloads-wrapper > * {
-    height: 2rem;
-    width: 2rem;
-  }
-  
-  .level-card .level-card-wrapper {
-    gap: 0.3rem;
-    padding: 0.6rem 0.15rem;
-    min-height: 3rem;
-  }
-  
-  .level-card .downloads-wrapper {
-    gap: 0.25rem;
-  }
-}
-
-@media (max-width: 320px) {
-  .level-card .level-exp {
-    font-size: 0.7rem;
-  }
-  .level-card .downloads-wrapper {
-    min-width: 50px;
-  }
-  .level-card .img-wrapper {
-    width: 2.5rem;
-  }
-  
-  .level-card .level-card-wrapper {
-    gap: 0.2rem;
-    padding: 0.5rem 0.1rem;
-    min-height: 2.5rem;
-  }
-  
-  .level-card .downloads-wrapper {
-    gap: 0.2rem;
-  }
-  
-  .level-card .icon-wrapper {
-    font-size: 1rem;
-  }
 }
 
 .level-card .edit-button {
@@ -762,39 +606,35 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
   border: none;
   background: none;
+  padding: 0;
   cursor: pointer;
-  border-radius: 4px;
   transition: all 0.2s ease;
-  flex-shrink: 0;
   color: var(--color-text-secondary);
-  margin-left: auto;
 }
 
-.level-card.pack .level-card__delete-btn.mobile {
-  display: none;
+.level-card.pack .level-card__delete-btn svg {
+  height: 100%;
+  width: 100%;
+  border-radius: 4px;
+  transition: all 0.2s;
 }
 
 .level-card.pack .level-card__delete-btn:hover {
-  background: var(--danger-color-tint);
   color: var(--danger-color);
+}
+
+.level-card.pack .level-card__delete-btn:hover svg {
+  transform: scale(1.1);
 }
 
 .level-card.pack .level-card-wrapper {
   flex: 1;
   margin: 0;
-  border-bottom: 1px solid var(--color-border);
+  border: none;
   padding: 0.75rem 0.5rem;
   min-height: 4rem;
-  grid-template-columns: auto minmax(0, 2fr) minmax(0, 1.1fr) auto auto auto;
-  grid-template-areas: "icon song creator stats actions del";
-}
-
-.level-card.pack .level-card__delete-btn {
-  grid-area: del;
 }
 
 .level-card.pack .downloads-wrapper {
@@ -845,46 +685,59 @@
   }
 
 
-  /* Card wrapper: two grid rows on mobile */
+  /* Card wrapper: independent top/bottom row grids on mobile */
   .level-card.pack .level-card-wrapper {
+    --level-card-icon-offset: calc(3rem + 0.75rem + 0.5rem);
     margin: 0;
     min-height: 4rem;
-    grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas:
-      "icon song creator"
-      "stats actions del";
-    row-gap: 0.5rem;
+      "top top"
+      "creator actions";
+    gap: 0.5rem 0.75rem;
+    align-items: center;
   }
 
-  .level-card.pack .level-card__stats {
-    padding-left: 4rem; /* align stats under the song, past the difficulty icon */
+  .level-card.pack .level-card__link-wrap {
+    display: contents;
   }
 
-  /* Downloads wrapper adjustments for mobile */
+  .level-card.pack .level-card__row--top {
+    grid-area: top;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 0.75rem;
+    align-items: start;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .level-card.pack .level-card__row--bottom {
+    display: contents;
+  }
+
+  .level-card.pack .level-card__row--top .img-wrapper,
+  .level-card.pack .level-card__row--top .song-wrapper,
+  .level-card.pack .level-card__row--top .level-card__stats {
+    grid-area: unset;
+  }
+
+  .level-card.pack .creator-wrapper {
+    grid-area: creator;
+    padding-left: var(--level-card-icon-offset);
+  }
+
   .level-card.pack .downloads-wrapper {
+    grid-area: actions;
     min-width: auto;
     margin-right: 0;
   }
 
-  /* Delete button positioned at bottom right on mobile */
-  .level-card.pack .level-card__delete-btn {
-    position: relative;
-    width: 30px;
-    height: 30px;
-    background: var(--danger-color-alpha-80);
-    color: #ffffff;
-    z-index: 20;
-    margin-left: 0;
-    display: none;
-  }
-
-  .level-card.pack .level-card__delete-btn.mobile {
-    display: flex;
-  }
-
-
-  .level-card.pack .level-card__delete-btn:hover {
-    background: var(--danger-color);
+  .level-card.pack .level-card__stats {
+    padding-left: 0;
+    justify-self: end;
+    align-self: start;
   }
 }
 
@@ -960,7 +813,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem;
-  min-width: 0;
+  min-width: 20rem;
   width: 100%;
   overflow: hidden;
 }
@@ -1052,4 +905,220 @@
   align-items: center;
   font-size: 0.75rem;
   font-weight: 500;
+}
+
+@media (max-width: 795px) {
+  .level-card .level-card-wrapper {
+    --level-card-icon-offset: calc(3rem + 1rem + 0.75rem + 0.5rem);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "top top"
+      "creator actions";
+    gap: 0.5rem 0.75rem;
+    align-items: center;
+  }
+
+  .level-card .level-card__link-wrap {
+    display: contents;
+  }
+
+  .level-card .level-card__row--top {
+    grid-area: top;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 0.75rem;
+    align-items: start;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .level-card .level-card__row--bottom {
+    display: contents;
+  }
+
+  .level-card .level-card__row--top .img-wrapper,
+  .level-card .level-card__row--top .song-wrapper,
+  .level-card .level-card__row--top .level-card__stats {
+    grid-area: unset;
+  }
+
+  .level-card .creator-wrapper {
+    grid-area: creator;
+    padding-left: var(--level-card-icon-offset);
+  }
+
+  .level-card .downloads-wrapper {
+    grid-area: actions;
+  }
+
+  .level-card .level-card__stats {
+    padding-left: 0;
+    justify-self: end;
+    align-self: start;
+  }
+
+  .level-card .metadata-block {
+    margin-left: 0;
+    justify-content: flex-start;
+  }
+
+  .level-card .song-wrapper .level-underline-wrapper {
+    flex-wrap: nowrap;
+  }
+
+  .level-card .img-wrapper {
+    margin-right: 1rem;
+  }
+}
+
+/* Narrow: two grid rows (icon+song+stats, then creator+actions). Deterministic
+   height, switched purely by this breakpoint — no JS, no flex-wrap. */
+@media (max-width: 650px) {
+
+  .level-card .level-card-wrapper {
+    --level-card-icon-offset: calc(3rem + 0.75rem + 0.5rem);
+  }
+
+  .level-card .downloads-wrapper {
+    min-width: auto;
+  }
+
+  .level-card .img-wrapper {
+    margin-right: 0;
+  }
+}
+@media (max-width: 545px) {
+  .level-card .level-card-wrapper {
+    grid-template-rows: 1fr auto auto;
+  }
+  .level-card .creator-wrapper {
+    grid-row: 2;
+    grid-column: 1 / 3;
+  }
+  .level-card .downloads-wrapper {
+    min-width: 100px;
+    grid-row: 3;
+  }
+  .level-card .level-card-wrapper {
+    gap: 0.5rem;
+    padding: 0.8rem 0.25rem 0.8rem 0.5rem;
+  }
+  
+  .level-card .level-desc {
+    font-size: 1.1rem;
+  }
+
+
+}
+
+@media (max-width: 450px) {
+  .level-card .song-wrapper .level-underline-wrapper {
+    min-width: 15rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .level-card .level-exp {
+    font-size: 0.8rem;
+  }
+  .level-card .level-desc {
+    font-size: 1rem;
+  }
+  .level-card .level-id {
+    font-size: 0.6rem;
+  }
+  .level-card .downloads-wrapper {
+    min-width: 70px;
+  }
+  .level-card .img-wrapper {
+    width: 2.75rem;
+    margin: 0 0.5rem;
+  }
+  .level-card .curation-icon {
+    width: 1.15rem;
+    height: 1.15rem;
+    --radius: 1.45rem;
+  }
+  .level-card.compact .curation-icon {
+    --radius: calc(1.45rem * 0.7);
+  }
+  .level-card .downloads-wrapper > *{
+    height: 2rem;
+    width: 2rem;
+  }
+  
+  .level-card .level-card-wrapper {
+    gap: 0.5rem;
+    padding: 0.6rem 0.2rem;
+    min-height: 3.5rem;
+    --level-card-icon-offset: calc(2.75rem + 1rem + 0.75rem + 0.5rem);
+  }
+  .level-card .img-wrapper {
+    margin: 0 0.5rem;
+  }
+  
+  .level-card .downloads-wrapper {
+    gap: 0.3rem;
+  }
+}
+@media (max-width: 380px) {
+  .level-card .level-exp {
+    font-size: 0.7rem;
+  }
+  .level-card .level-desc {
+    font-size: 0.9rem;
+  }
+  .level-card .level-id {
+    font-size: 0.5rem;
+  }
+  .level-card .downloads-wrapper {
+    min-width: 60px;
+  }
+  .level-card .img-wrapper {
+    width: 2.5rem;
+  }
+  .level-card .downloads-wrapper > * {
+    height: 2rem;
+    width: 2rem;
+  }
+  
+  .level-card .level-card-wrapper {
+    gap: 0.3rem;
+    padding: 0.6rem 0.15rem;
+    min-height: 3rem;
+  }
+  
+  .level-card .downloads-wrapper {
+    gap: 0.25rem;
+  }
+  .level-card .song-wrapper .level-underline-wrapper {
+    min-width: 10rem;
+  }
+}
+
+@media (max-width: 320px) {
+  .level-card .level-exp {
+    font-size: 0.7rem;
+  }
+  .level-card .downloads-wrapper {
+    min-width: 50px;
+  }
+  .level-card .img-wrapper {
+    width: 2.5rem;
+  }
+  
+  .level-card .level-card-wrapper {
+    gap: 0.2rem;
+    padding: 0.5rem 0.1rem;
+    min-height: 2.5rem;
+  }
+  
+  .level-card .downloads-wrapper {
+    gap: 0.2rem;
+  }
+  
+  .level-card .icon-wrapper {
+    font-size: 1rem;
+  }
 }

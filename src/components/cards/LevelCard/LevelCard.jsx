@@ -238,6 +238,7 @@ const LevelCard = ({
     showDownload = true, 
     showSteam = true, 
     showAddToPack = false,
+    showDelete = false,
     editMarginZero = false
   } = {}) => (
     <div className="downloads-wrapper">
@@ -269,6 +270,17 @@ const LevelCard = ({
       {user && hasFlag(user, permissionFlags.SUPER_ADMIN) && (
         <button className="edit-button" data-margin-zero={editMarginZero} onClick={handleEditClick}>
           <EditIcon color="#ffffff" size={"32px"} />
+        </button>
+      )}
+      {showDelete && canEdit && onDeleteItem && packItem && (
+        <button
+          className="level-card__delete-btn"
+          onClick={handleDeleteClick}
+          title="Remove from pack"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+          </svg>
         </button>
       )}
     </div>
@@ -356,18 +368,6 @@ const LevelCard = ({
     )
   );
 
-  const renderDeleteButton = ({ mobile = false } = {}) => (
-    <button
-      className={`level-card__delete-btn${mobile ? ' mobile' : ''}`}
-      onClick={handleDeleteClick}
-      title="Remove from pack"
-    >
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-      </svg>
-    </button>
-  );
-
   const renderPopups = () => (
     <>
       {showEditPopup && (
@@ -396,6 +396,21 @@ const LevelCard = ({
           onClose={() => setShowArtistPopup(false)}
         />
       )}
+    </>
+  );
+
+  const renderLinkContent = ({ showLikes = true } = {}) => (
+    <>
+      <div className="level-card__row level-card__row--top">
+        {renderDifficultyIcon()}
+        {renderSongInfo()}
+        <div className="level-card__stats">
+          {renderStatsIcons({ showLikes })}
+        </div>
+      </div>
+      <div className="level-card__row level-card__row--bottom">
+        {renderCreatorInfo()}
+      </div>
     </>
   );
 
@@ -472,16 +487,9 @@ const LevelCard = ({
 
         <div className="level-card-wrapper">
           <Link className="level-card__link-wrap" to={levelDetailTo} aria-label={getSongDisplayName(level)}>
-            {renderDifficultyIcon()}
-            {renderSongInfo()}
-            {renderCreatorInfo()}
-            <div className="level-card__stats">
-              {renderStatsIcons({ showLikes: false })}
-            </div>
+            {renderLinkContent({ showLikes: false })}
           </Link>
-          {renderDownloadLinks({ showAddToPack: false, editMarginZero: true })}
-          {canEdit && renderDeleteButton({ mobile: true })}
-          {canEdit && renderDeleteButton()}
+          {renderDownloadLinks({ showAddToPack: false, editMarginZero: true, showDelete: canEdit })}
         </div>
 
         {renderPopups()}
@@ -500,12 +508,7 @@ const LevelCard = ({
     >
       <div className="level-card-wrapper">
         <Link className="level-card__link-wrap" to={levelDetailTo} aria-label={getSongDisplayName(level)}>
-          {renderDifficultyIcon()}
-          {renderSongInfo()}
-          {renderCreatorInfo()}
-          <div className="level-card__stats">
-            {renderStatsIcons()}
-          </div>
+          {renderLinkContent()}
         </Link>
         {renderDownloadLinks({ showAddToPack: true })}
       </div>
