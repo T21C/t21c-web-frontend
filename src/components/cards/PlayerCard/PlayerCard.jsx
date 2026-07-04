@@ -18,7 +18,7 @@ import { TUFStellarIcon } from "@/components/common/icons";
 const diffFields = ["topDiff", "top12kDiff"];
 const passes = ["totalPasses", "universalPassCount", "worldsFirstCount", "worldsFirstPPCount"];
 
-const PlayerCard = ({ player, onCreatorAssignmentClick }) => {
+const PlayerCard = ({ player, onCreatorAssignmentClick, historical = false }) => {
   const { sortBy } = useContext(PlayerContext);
   const { t } = useTranslation("components");
   const { user } = useAuth();
@@ -92,62 +92,72 @@ const PlayerCard = ({ player, onCreatorAssignmentClick }) => {
     }
   };
     
-  const prioritizedField = sortBy || 'rankedScore';
-
-  const scoreFields = {
-    rankedScore: {
-      label: sortLabels.rankedScore,
-      value: formatNumber(player.rankedScore),
-    },
-    totalScoreV2: {
-      label: sortLabels.totalScoreV2,
-      value: formatNumber(player.totalScoreV2),
-    },
-    averageXacc: {
-      label: sortLabels.averageXacc,
-      value: formatAccuracyRatio(player.averageXacc),
-    },
-  };
-    
-  const primaryValue = player[sortBy];
-  const primaryField = {
-    label: sortLabels[sortBy],
-    value: diffFields.includes(sortBy)
-      ? (primaryValue?.name ?? '-')
-      : (primaryValue ?? player.totalScoreV2 ?? player.generalScore ?? 0),
-  };
-
-  const excludeKeys = Object.keys(scoreFields).filter(key => key === prioritizedField);
-
-  // Filter out the excluded keys from secondary fields
-  var secondaryFields = Object.keys(scoreFields)
-    .filter(key => !excludeKeys.includes(key))
-    .map(key => scoreFields[key]);
-
-  if (secondaryFields.length > 2) {
-    secondaryFields = secondaryFields.filter(
-      field => field.label !== sortLabels.totalScoreV2,
-    );
-  }
-
-  if (!diffFields.includes(sortBy)) {
-    if (!passes.includes(sortBy)) {
-      if (sortBy === "averageXacc") {
-        primaryField.value = formatAccuracyRatio(parseFloat(primaryField.value));
-      } else {
-        primaryField.value = formatNumber(parseFloat(primaryField.value));
-      }
-    } else {
-      primaryField.value = Math.round(parseFloat(primaryField.value));
-    }
-  }
-
-  // Add difficulty icons if the sort field is a difficulty type
-  const difficultyIcon = diffFields.includes(sortBy) ? player[sortBy]?.icon ?? null : null;
+  const rankValue = player.rank ?? player.rankedScoreRank ?? 0;
+  const rankStr = String(rankValue);
   const profileTo = `/profile/${player.id}`;
 
+  let primaryField = null;
+  let secondaryFields = [];
+  let difficultyIcon = null;
+
+  if (!historical) {
+    const prioritizedField = sortBy || 'rankedScore';
+
+    const scoreFields = {
+      rankedScore: {
+        label: sortLabels.rankedScore,
+        value: formatNumber(player.rankedScore),
+      },
+      totalScoreV2: {
+        label: sortLabels.totalScoreV2,
+        value: formatNumber(player.totalScoreV2),
+      },
+      averageXacc: {
+        label: sortLabels.averageXacc,
+        value: formatAccuracyRatio(player.averageXacc),
+      },
+    };
+
+    const primaryValue = player[sortBy];
+    primaryField = {
+      label: sortLabels[sortBy],
+      value: diffFields.includes(sortBy)
+        ? (primaryValue?.name ?? '-')
+        : (primaryValue ?? player.totalScoreV2 ?? player.generalScore ?? 0),
+    };
+
+    const excludeKeys = Object.keys(scoreFields).filter(key => key === prioritizedField);
+
+    secondaryFields = Object.keys(scoreFields)
+      .filter(key => !excludeKeys.includes(key))
+      .map(key => scoreFields[key]);
+
+    if (secondaryFields.length > 2) {
+      secondaryFields = secondaryFields.filter(
+        field => field.label !== sortLabels.totalScoreV2,
+      );
+    }
+
+    if (!diffFields.includes(sortBy)) {
+      if (!passes.includes(sortBy)) {
+        if (sortBy === "averageXacc") {
+          primaryField.value = formatAccuracyRatio(parseFloat(primaryField.value));
+        } else {
+          primaryField.value = formatNumber(parseFloat(primaryField.value));
+        }
+      } else {
+        primaryField.value = Math.round(parseFloat(primaryField.value));
+      }
+    }
+
+    difficultyIcon = diffFields.includes(sortBy) ? player[sortBy]?.icon ?? null : null;
+  }
+
   return (
-    <div className='player-card' style={{backgroundColor: player.rankedScoreRank === -1 ? "#ff000099" : ""}}>
+    <div
+      className={`player-card${historical ? ' player-card--historical' : ''}`}
+      style={{ backgroundColor: player.rankedScoreRank === -1 ? "#ff000099" : "" }}
+    >
       <Link className="player-card__link-wrap" to={profileTo} aria-label={player.name}>
         <div className="img-wrapper">
           <div className="image-container">
@@ -156,11 +166,11 @@ const PlayerCard = ({ player, onCreatorAssignmentClick }) => {
             />
           </div>
           
-          <div style={{fontSize: `${Math.max(0.8, 1.3 - (player.rank.toString().length * 0.15))}rem`}} className={`rank-display ${player.rank <= 3 ? `rank-${player.rank}` : ''}`}>
-            <span style={{fontSize: `${Math.max(0.8, 1.3 - (player.rank.toString().length * 0.15))*0.7}rem`}}>
+          <div style={{fontSize: `${Math.max(0.8, 1.3 - (rankStr.length * 0.15))}rem`}} className={`rank-display ${rankValue <= 3 ? `rank-${rankValue}` : ''}`}>
+            <span style={{fontSize: `${Math.max(0.8, 1.3 - (rankStr.length * 0.15))*0.7}rem`}}>
               #
             </span>
-            {player.rank}
+            {rankValue}
           </div>
         </div>
 
@@ -186,7 +196,7 @@ const PlayerCard = ({ player, onCreatorAssignmentClick }) => {
                   style={{ marginLeft: "0rem" }}
                 />
               )}
-              {user && player.user && hasFlag(user, permissionFlags.SUPER_ADMIN) && (
+              {!historical && user && player.user && hasFlag(user, permissionFlags.SUPER_ADMIN) && (
                 <button
                   className="creator-assignment-btn"
                   onClick={handleCreatorAssignmentClick}
@@ -202,6 +212,7 @@ const PlayerCard = ({ player, onCreatorAssignmentClick }) => {
           </div>
         </div>
 
+        {!historical && primaryField && (
         <div className="info-wrapper">
           <div className="score-wrapper">
             <p className="player-exp">{primaryField.label}</p>
@@ -224,6 +235,7 @@ const PlayerCard = ({ player, onCreatorAssignmentClick }) => {
             </div>
           ))}
         </div>
+        )}
       </Link>
       {nameNeedsTooltip ? (
         <Tooltip

@@ -287,6 +287,7 @@ export const routes = {
     passes: (playerId: string | number) => `/v3/players/${enc(playerId)}/passes`,
     rankHistory: (playerId: string | number) => `/v3/players/${enc(playerId)}/rank-history`,
     leaderboard: () => '/v3/players/leaderboard',
+    leaderboardHistory: () => '/v3/players/leaderboard-history',
     meBio: () => '/v3/players/me/bio',
     meBioCanvas: () => '/v3/players/me/bio-canvas',
     meBioCanvasImage: () => '/v3/players/me/bio-canvas/image',

@@ -63,6 +63,7 @@ import { TUFStellarIcon } from './TUFStellarIcon';
 import { HeartIcon } from './HeartIcon';
 import { CopyIcon } from './CopyIcon';
 import GraphIcon from './GraphIcon';
+import { RewindIcon } from './RewindIcon';
 export {
     DefaultAvatar,
     DiscordIcon,
@@ -128,4 +129,5 @@ export {
     HeartIcon,
     CopyIcon,
     GraphIcon,
+    RewindIcon,
 }

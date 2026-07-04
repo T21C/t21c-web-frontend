@@ -2,7 +2,7 @@ import { routes } from '@/api/routes';
 // tuf-search: #LeaderboardPage #leaderboardPage #leaderboard — Leaderboard
 import "./leaderboardpage.css";
 import "@/pages/common/search-section.css";
-import { useContext, useEffect, useRef, useState, useMemo } from "react";
+import { useContext, useEffect, useRef, useState, useMemo, useCallback } from "react";
 import { useLocation } from 'react-router-dom';
 import axios from "axios";
 import { PlayerCard } from "@/components/cards";
@@ -17,11 +17,12 @@ import { ScrollButton } from "@/components/common/buttons";
 import { MetaTags } from "@/components/common/display";
 import { buildLeaderboardMeta } from '@/utils/meta';
 import { useAuth } from "@/contexts/AuthContext";
-import { SortDescIcon, SortAscIcon, SortIcon, FilterIcon, ResetIcon } from "@/components/common/icons";
+import { SortDescIcon, SortAscIcon, SortIcon, FilterIcon, ResetIcon, RewindIcon } from "@/components/common/icons";
 import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
 import { CreatorAssignmentPopup } from "@/components/popups/Creators";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { normalizePlayerSearchQuery } from '@/utils/normalizeEntitySearchQuery';
+import HistoryTimeline from './HistoryTimeline';
 
 const limit = 30;
 
@@ -39,7 +40,20 @@ const LeaderboardPage = () => {
   const [activeFilters, setActiveFilters] = useState({});
   const [selectedFilterKey, setSelectedFilterKey] = useState(null);
   const runRequest = useDebouncedRequest(500);
+  const historyRequest = useDebouncedRequest(500);
   const isFirstListEffectRef = useRef(true);
+
+  const [pastMode, setPastMode] = useState(false);
+  const [historyDate, setHistoryDate] = useState(null);
+  const [historyMetric, setHistoryMetric] = useState('rankedScore');
+  const [historySort, setHistorySort] = useState('ASC');
+  const [historyQuery, setHistoryQuery] = useState('');
+  const [historyPlayers, setHistoryPlayers] = useState(null);
+  const [historyTotal, setHistoryTotal] = useState(null);
+  const [historyHasMore, setHistoryHasMore] = useState(true);
+  const [historyMinDate, setHistoryMinDate] = useState(null);
+  const [historyMaxDate, setHistoryMaxDate] = useState(null);
+  const [historySortOpen, setHistorySortOpen] = useState(false);
 
   const {
     playerData,
@@ -73,12 +87,16 @@ const LeaderboardPage = () => {
   const pageMeta = useMemo(
     () =>
       buildLeaderboardMeta({
-        title: t('leaderboard.meta.title'),
-        description: t('leaderboard.meta.description'),
+        title: pastMode
+          ? t('leaderboard.past.metaTitle', { date: historyDate || '' })
+          : t('leaderboard.meta.title'),
+        description: pastMode
+          ? t('leaderboard.past.metaDescription', { date: historyDate || '' })
+          : t('leaderboard.meta.description'),
         pathname: location.pathname,
-        players: displayedPlayers,
+        players: pastMode ? historyPlayers : displayedPlayers,
       }),
-    [t, location.pathname, displayedPlayers],
+    [t, location.pathname, displayedPlayers, pastMode, historyDate, historyPlayers],
   );
 
   const sortOptions = [
@@ -97,6 +115,14 @@ const LeaderboardPage = () => {
     { value: 'topDiff', label: t('leaderboard.sortOptions.topDiff') },
     { value: 'top12kDiff', label: t('leaderboard.sortOptions.top12kDiff') }
   ];
+
+  const historyMetricOptions = useMemo(
+    () => [
+      { value: 'rankedScore', label: t('leaderboard.past.metricRanked') },
+      { value: 'generalScore', label: t('leaderboard.past.metricGeneral') },
+    ],
+    [t],
+  );
 
   const flagFieldOptions = useMemo(
     () =>
@@ -147,9 +173,7 @@ const LeaderboardPage = () => {
       flagMode: effectiveFlagFilter.mode,
     });
 
-    // Add filters if they exist
     if (filters && Object.keys(filters).length > 0 || country) {
-      // Convert percentage filters back to decimal values for API
       const apiFilters = { ...filters };
       if (apiFilters.averageXacc) {
         apiFilters.averageXacc = [
@@ -164,9 +188,6 @@ const LeaderboardPage = () => {
     try {
       const response = await runner(({ signal }) => api.get(endpoint, { signal }));
 
-      // v3 returns flat ES documents with `rankedScoreRank` / `rank` already attached
-      // by the server, regardless of the active sort (rankedScore is the canonical
-      // rank metric; banned players get -1).
       const results = Array.isArray(response.data.results) ? response.data.results : [];
 
       const priorLen = offset === 0 ? 0 : (displayedPlayers?.length ?? 0);
@@ -193,7 +214,55 @@ const LeaderboardPage = () => {
     }
   };
 
-  // Sync activeFilters with filters from context
+  const fetchHistoryPlayers = useCallback(async (offset = 0, { immediate = false, dateOverride } = {}) => {
+    const date = dateOverride ?? historyDate;
+    if (!date) return;
+
+    const runner = immediate ? historyRequest.flush : historyRequest;
+
+    const params = new URLSearchParams({
+      date,
+      metric: historyMetric,
+      order: historySort.toLowerCase(),
+      offset: String(offset),
+      limit: String(limit),
+    });
+    if (historyQuery) {
+      params.set('query', historyQuery);
+    }
+
+    const endpoint = `${routes.playersV3.leaderboardHistory()}?${params.toString()}`;
+    try {
+      const response = await runner(({ signal }) => api.get(endpoint, { signal }));
+      const results = Array.isArray(response.data.results) ? response.data.results : [];
+
+      if (response.data.minDate) setHistoryMinDate(response.data.minDate);
+      if (response.data.maxDate) setHistoryMaxDate(response.data.maxDate);
+
+      const total = response.data.count ?? results.length;
+
+      if (offset === 0) {
+        setHistoryPlayers(results);
+        setHistoryTotal(total);
+        setHistoryHasMore(results.length < total);
+      } else {
+        setHistoryPlayers((prev) => {
+          const next = [...(prev ?? []), ...results];
+          setHistoryHasMore(next.length < total);
+          return next;
+        });
+      }
+    } catch (error) {
+      if (axios.isCancel(error)) return;
+      console.error('Error fetching historical leaderboard:', error);
+      if (offset === 0) {
+        setHistoryPlayers([]);
+        setHistoryTotal(0);
+        setHistoryHasMore(false);
+      }
+    }
+  }, [historyDate, historyMetric, historySort, historyQuery, historyRequest]);
+
   useEffect(() => {
     if (filters && Object.keys(filters).length > 0) {
       setActiveFilters(filters);
@@ -201,6 +270,7 @@ const LeaderboardPage = () => {
   }, []);
 
   useEffect(() => {
+    if (pastMode) return;
     if (isFirstListEffectRef.current) {
       isFirstListEffectRef.current = false;
       const hasCached =
@@ -216,9 +286,74 @@ const LeaderboardPage = () => {
     setPlayerData(null);
     setDisplayedPlayers(null);
     fetchPlayers(0);
-  }, [forceUpdate, query, sort, sortBy, playerFlagFilter, country, filters]);
+  }, [forceUpdate, query, sort, sortBy, playerFlagFilter, country, filters, pastMode]);
+
+  useEffect(() => {
+    if (!pastMode || !historyDate) return;
+    setHistoryPlayers(null);
+    setHistoryTotal(null);
+    // Debounced so name search doesn't hammer the API; timeline already debounces date.
+    fetchHistoryPlayers(0);
+  }, [pastMode, historyDate, historyMetric, historySort, historyQuery]);
+
+  const enterPastMode = async () => {
+    setPastMode(true);
+    setHistoryPlayers(null);
+    setHistoryTotal(null);
+    setHistorySortOpen(false);
+    setFilterOpen(false);
+    setSortOpen(false);
+
+    // Already have a valid date from a previous visit — useEffect will fetch.
+    if (historyDate && historyMinDate && historyMaxDate) {
+      return;
+    }
+
+    try {
+      // Bootstrap bounds only; server clamps an out-of-range date.
+      const params = new URLSearchParams({
+        date: '2099-01-01',
+        metric: historyMetric,
+        order: historySort.toLowerCase(),
+        offset: '0',
+        limit: '1',
+      });
+      const response = await api.get(
+        `${routes.playersV3.leaderboardHistory()}?${params.toString()}`,
+      );
+      const minDate = response.data.minDate ?? null;
+      const maxDate = response.data.maxDate ?? null;
+      setHistoryMinDate(minDate);
+      setHistoryMaxDate(maxDate);
+
+      if (!maxDate) {
+        setHistoryPlayers([]);
+        setHistoryTotal(0);
+        setHistoryHasMore(false);
+        return;
+      }
+
+      setHistoryDate(maxDate);
+    } catch (error) {
+      console.error('Error entering past mode:', error);
+      setHistoryPlayers([]);
+      setHistoryTotal(0);
+      setHistoryHasMore(false);
+    }
+  };
+
+  const exitPastMode = () => {
+    historyRequest.cancel();
+    setPastMode(false);
+    setHistoryPlayers(null);
+    setHistoryTotal(null);
+  };
 
   function handleQueryChange(e) {
+    if (pastMode) {
+      setHistoryQuery(normalizePlayerSearchQuery(e.target.value));
+      return;
+    }
     setQuery(normalizePlayerSearchQuery(e.target.value));
     setForceUpdate(prev => !prev);
   }
@@ -228,6 +363,10 @@ const LeaderboardPage = () => {
   }
 
   function handleSortOpen() {
+    if (pastMode) {
+      setHistorySortOpen(!historySortOpen);
+      return;
+    }
     setSortOpen(!sortOpen);
   }
 
@@ -243,7 +382,6 @@ const LeaderboardPage = () => {
     if (selectedFilterField && !activeFilters[selectedFilterField.key]) {
       let maxValue = maxFields[selectedFilterField.maxKey] || 1000;
       
-      // Convert to percentage if needed
       if (selectedFilterField.isPercentage) {
         maxValue = maxValue * 100;
       }
@@ -285,6 +423,16 @@ const LeaderboardPage = () => {
   };
 
   function resetAll() {
+    if (pastMode) {
+      historyRequest.cancel();
+      setHistoryMetric('rankedScore');
+      setHistorySort('ASC');
+      setHistoryQuery('');
+      if (historyMaxDate) {
+        setHistoryDate(historyMaxDate);
+      }
+      return;
+    }
     runRequest.cancel();
     setSortBy(sortOptions[0].value);
     setSort("DESC");
@@ -309,24 +457,64 @@ const LeaderboardPage = () => {
   };
 
   const handleCreatorAssignmentUpdate = () => {
-    // Refresh the leaderboard data to reflect any changes
     setForceUpdate(prev => !prev);
     setShowCreatorAssignment(false);
     setSelectedPlayerUser(null);
   };
 
+  const listPlayers = pastMode ? historyPlayers : playerData;
+  const listDisplayed = pastMode ? historyPlayers : displayedPlayers;
+  const listTotal = pastMode ? historyTotal : leaderboardListTotal;
+  const listHasMore = pastMode ? historyHasMore : hasMore;
+  const activeQuery = pastMode ? historyQuery : query;
+  const activeSortOpen = pastMode ? historySortOpen : sortOpen;
+
   return (
-    <div className="leaderboard-page">
+    <div className={`leaderboard-page${pastMode ? ' leaderboard-page--past' : ''}`}>
       <MetaTags {...pageMeta} />
       
 
       <div className="leaderboard-body page-content-70rem">
-        <ScrollButton />  
+        <ScrollButton />
+
+        <div className="leaderboard-past-toggle-row">
+          {pastMode ? (
+            <button
+              type="button"
+              className="leaderboard-past-toggle leaderboard-past-toggle--active"
+              onClick={exitPastMode}
+            >
+              <RewindIcon color="#fff" size={18} />
+              <span>{t('leaderboard.past.backToPresent')}</span>
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="leaderboard-past-toggle"
+              onClick={enterPastMode}
+            >
+              <RewindIcon color="#fff" size={18} />
+              <span>{t('leaderboard.past.button')}</span>
+            </button>
+          )}
+        </div>
+
+        {pastMode && (
+          <div className="leaderboard-past-banner">
+            <h2 className="leaderboard-past-banner__title">{t('leaderboard.past.title')}</h2>
+            <HistoryTimeline
+              value={historyDate}
+              min={historyMinDate}
+              max={historyMaxDate}
+              onChangeComplete={(iso) => setHistoryDate(iso)}
+            />
+          </div>
+        )}
         
         <div className="leaderboard-input-option">
           <div className="search-container">
             <input
-              value={query}
+              value={activeQuery}
               autoComplete='off'
               type="text"
               placeholder={t('leaderboard.input.placeholder')}
@@ -335,9 +523,11 @@ const LeaderboardPage = () => {
           </div>
 
           <div className="button-container">
-            <Tooltip id="filter" place="bottom" noArrow>
-              {t('leaderboard.tooltips.filter')}
-            </Tooltip>
+            {!pastMode && (
+              <Tooltip id="filter" place="bottom" noArrow>
+                {t('leaderboard.tooltips.filter')}
+              </Tooltip>
+            )}
             <Tooltip id="sort" place="bottom" noArrow>
               {t('leaderboard.tooltips.sort')}
             </Tooltip>
@@ -345,20 +535,22 @@ const LeaderboardPage = () => {
               {t('leaderboard.tooltips.reset')}
             </Tooltip>
 
-            <FilterIcon
-              data-tooltip-id="filter"
-              color="#ffffff"
-              style={{
-                backgroundColor: filterOpen ? "rgba(255, 255, 255, 0.7)" : "",
-              }}
-              onClick={handleFilterOpen}
-            />
+            {!pastMode && (
+              <FilterIcon
+                data-tooltip-id="filter"
+                color="#ffffff"
+                style={{
+                  backgroundColor: filterOpen ? "rgba(255, 255, 255, 0.7)" : "",
+                }}
+                onClick={handleFilterOpen}
+              />
+            )}
 
             <SortIcon
               data-tooltip-id="sort"
               color="#ffffff"
               style={{
-                backgroundColor: sortOpen ? "rgba(255, 255, 255, 0.7)" : "",
+                backgroundColor: activeSortOpen ? "rgba(255, 255, 255, 0.7)" : "",
               }}
               onClick={handleSortOpen}
             />
@@ -372,6 +564,7 @@ const LeaderboardPage = () => {
         </div>
 
         <div className="input-setting">
+          {!pastMode && (
           <Collapsible
             open={filterOpen}
             onOpenChange={setFilterOpen}
@@ -408,7 +601,6 @@ const LeaderboardPage = () => {
                 </div>
               </div>
 
-              {/* Filter Builder */}
               <div className="filter-builder" >
                 <p className="setting-description">{t('leaderboard.settings.filter.addStatFilters')}</p>
                 <div className="filter-selector-row">
@@ -432,7 +624,6 @@ const LeaderboardPage = () => {
                   </button>
                 </div>
 
-                {/* Active Filter Chips */}
                 {Object.keys(activeFilters).length > 0 && (
                   <div className="filter-chips" style={{ marginTop: '1rem' }}>
                     {Object.entries(activeFilters).map(([key, values]) => {
@@ -467,7 +658,6 @@ const LeaderboardPage = () => {
                   </div>
                 )}
 
-                {/* Single Range Selector for Selected Filter */}
                 {selectedFilterKey && activeFilters[selectedFilterKey] && (
                   <div className="filter-range-editor" style={{ marginTop: '1rem' }}>
                     {(() => {
@@ -476,7 +666,6 @@ const LeaderboardPage = () => {
                       
                       let maxValue = maxFields[field.maxKey] || 1000;
                       
-                      // Convert to percentage if needed
                       if (field.isPercentage) {
                         maxValue = maxValue * 100;
                       }
@@ -494,11 +683,9 @@ const LeaderboardPage = () => {
                           <RangeSelector
                             values={currentValues}
                             onChange={(newValues) => {
-                              // Update activeFilters for immediate visual feedback during drag
                               setActiveFilters(prev => ({ ...prev, [selectedFilterKey]: newValues }));
                             }}
                             onChangeComplete={(newValues) => {
-                              // Update both activeFilters and filters to trigger API refresh
                               setActiveFilters(prev => ({ ...prev, [selectedFilterKey]: newValues }));
                               setFilters(prev => ({ ...prev, [selectedFilterKey]: newValues }));
                             }}
@@ -553,10 +740,11 @@ const LeaderboardPage = () => {
           </div>
             </CollapsibleContent>
           </Collapsible>
+          )}
 
           <Collapsible
-            open={sortOpen}
-            onOpenChange={setSortOpen}
+            open={activeSortOpen}
+            onOpenChange={pastMode ? setHistorySortOpen : setSortOpen}
             revealOverflow
             duration="0.6s"
           >
@@ -580,28 +768,39 @@ const LeaderboardPage = () => {
                   <SortAscIcon 
                     data-tooltip-id="ra"
                     style={{
-                      backgroundColor: sort === "ASC" ? "rgba(255, 255, 255, 0.7)" : "",
+                      backgroundColor: (pastMode ? historySort : sort) === "ASC" ? "rgba(255, 255, 255, 0.7)" : "",
                     }}
-                    onClick={() => handleSort("ASC")}
+                    onClick={() => pastMode ? setHistorySort("ASC") : handleSort("ASC")}
                   />
 
                   <SortDescIcon
                     data-tooltip-id="rd"
                     style={{
-                      backgroundColor: sort === "DESC" ? "rgba(255, 255, 255, 0.7)" : "",
+                      backgroundColor: (pastMode ? historySort : sort) === "DESC" ? "rgba(255, 255, 255, 0.7)" : "",
                     }}
-                    onClick={() => handleSort("DESC")}
+                    onClick={() => pastMode ? setHistorySort("DESC") : handleSort("DESC")}
                   />
                 </div>
               </div>
               <div className="recent">
                 <p>{t('leaderboard.settings.sort.sortBy')}</p>
-                <CustomSelect
-                  value={sortOptions.find(option => option.value === sortBy)}
-                  onChange={handleSortBy}
-                  options={sortOptions}
-                  width="11rem"
-                />
+                {pastMode ? (
+                  <CustomSelect
+                    value={historyMetricOptions.find((option) => option.value === historyMetric)}
+                    onChange={(option) => {
+                      if (option?.value) setHistoryMetric(option.value);
+                    }}
+                    options={historyMetricOptions}
+                    width="11rem"
+                  />
+                ) : (
+                  <CustomSelect
+                    value={sortOptions.find(option => option.value === sortBy)}
+                    onChange={handleSortBy}
+                    options={sortOptions}
+                    width="11rem"
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -609,26 +808,36 @@ const LeaderboardPage = () => {
           </Collapsible>
         </div>
 
-        {leaderboardListTotal != null && (
+        {listTotal != null && (
           <span className="total-search-results">
-            {t('totalResults', { ns: 'common', count: leaderboardListTotal })}
+            {t('totalResults', { ns: 'common', count: listTotal })}
           </span>
         )}
 
         <div className="leaderboard-page__list" style={{ minHeight: "500px" }}>
-          {playerData === null ? (
+          {listPlayers === null ? (
             <div className="loader-shell loader-shell--tall">
               <div className="loader loader-relative" />
             </div>
+          ) : listDisplayed?.length === 0 ? (
+            <p className="leaderboard-empty-msg">
+              {pastMode ? t('leaderboard.past.noData') : t('leaderboard.infiniteScroll.end')}
+            </p>
           ) : (
             <VirtualList
               style={{ paddingBottom: "4rem", overflow: "visible" }}
-              items={displayedPlayers}
-              loadMore={() => fetchPlayers(displayedPlayers?.length ?? 0, { immediate: true })}
-              hasMore={hasMore}
+              items={listDisplayed}
+              loadMore={() => {
+                if (pastMode) {
+                  fetchHistoryPlayers(listDisplayed?.length ?? 0, { immediate: true });
+                } else {
+                  fetchPlayers(listDisplayed?.length ?? 0, { immediate: true });
+                }
+              }}
+              hasMore={listHasMore}
               loader={<div className="loader loader-relative" />}
               endMessage={
-                displayedPlayers.length > 0 && (
+                listDisplayed.length > 0 && (
                   <p style={{ textAlign: "center" }}>
                     <b>{t('leaderboard.infiniteScroll.end')}</b>
                   </p>
@@ -636,9 +845,10 @@ const LeaderboardPage = () => {
               }
               renderItem={(playerStat) => (
                 <PlayerCard
-                  currSort={sortBy}
+                  currSort={pastMode ? historyMetric : sortBy}
                   player={playerStat}
-                  onCreatorAssignmentClick={handleCreatorAssignmentClick}
+                  historical={pastMode}
+                  onCreatorAssignmentClick={pastMode ? undefined : handleCreatorAssignmentClick}
                 />
               )}
               computeItemKey={(index, playerStat) => playerStat?.id ?? index}
@@ -647,7 +857,7 @@ const LeaderboardPage = () => {
         </div>
       </div>
 
-      {showCreatorAssignment && selectedPlayerUser && (
+      {!pastMode && showCreatorAssignment && selectedPlayerUser && (
         <CreatorAssignmentPopup
           user={selectedPlayerUser}
           onClose={handleCreatorAssignmentClose}

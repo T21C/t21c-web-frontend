@@ -1,0 +1,206 @@
+/* tuf-search: #HistoryTimeline #historyTimeline #leaderboard */
+.history-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background-color: var(--color-black-t40);
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-white-t10);
+}
+
+.history-timeline--empty {
+  align-items: center;
+}
+
+.history-timeline__empty-msg {
+  margin: 0;
+  color: var(--color-gray-2);
+  font-size: 0.9rem;
+}
+
+.history-timeline__selects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-end;
+}
+
+.history-timeline__select {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.history-timeline__select-label {
+  font-size: 0.75rem;
+  color: var(--color-gray-2);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.history-timeline__ruler-wrap {
+  position: relative;
+  width: 100%;
+  height: 3.25rem;
+}
+
+.history-timeline__indicator {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  background-color: var(--color-purple-1);
+  border-radius: 1px;
+  pointer-events: none;
+  z-index: 2;
+  box-shadow: 0 0 8px rgba(var(--color-purple-1-rgb), 0.55);
+}
+
+.history-timeline__indicator::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid var(--color-purple-1);
+}
+
+.history-timeline__track {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-white-t30) transparent;
+  cursor: grab;
+  outline: none;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.history-timeline__track--dragging,
+.history-timeline__track:active {
+  cursor: grabbing;
+}
+
+.history-timeline__track--dragging {
+  scroll-snap-type: none;
+}
+
+.history-timeline__track--dragging .history-timeline__tick {
+  cursor: grabbing;
+  pointer-events: none;
+}
+
+.history-timeline__track--dragging .history-timeline__tick:hover {
+  transform: none;
+}
+
+.history-timeline__track:focus-visible {
+  box-shadow: inset 0 0 0 1px var(--color-purple-1);
+  border-radius: 0.25rem;
+}
+
+.history-timeline__track::-webkit-scrollbar {
+  height: 6px;
+}
+
+.history-timeline__track::-webkit-scrollbar-track {
+  background: var(--color-white-t5);
+  border-radius: 3px;
+}
+
+.history-timeline__track::-webkit-scrollbar-thumb {
+  background: var(--color-white-t30);
+  border-radius: 3px;
+}
+
+.history-timeline__track::-webkit-scrollbar-thumb:hover {
+  background: var(--color-white-t45);
+}
+
+.history-timeline__spacer {
+  flex-shrink: 0;
+  height: 1px;
+}
+
+.history-timeline__ticks {
+  display: flex;
+  align-items: flex-end;
+  flex-shrink: 0;
+  height: 100%;
+}
+
+.history-timeline__tick {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.15rem;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  cursor: grab;
+  flex-shrink: 0;
+  color: var(--color-white);
+  transition: transform 0.15s ease;
+  touch-action: none;
+}
+
+.history-timeline__tick:hover {
+  transform: scale(1.08);
+}
+
+.history-timeline__tick-mark {
+  display: block;
+  width: 2px;
+  height: 0.55rem;
+  border-radius: 1px;
+  background-color: var(--color-white-t30);
+  transition: height 0.15s ease, background-color 0.15s ease;
+}
+
+.history-timeline__tick--month .history-timeline__tick-mark {
+  height: 1.1rem;
+  background-color: var(--color-white-t55);
+}
+
+.history-timeline__tick--selected .history-timeline__tick-mark {
+  height: 1.35rem;
+  background-color: var(--color-purple-1);
+}
+
+.history-timeline__tick-label {
+  font-size: 0.6rem;
+  line-height: 1;
+  color: var(--color-gray-2);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.history-timeline__tick--selected .history-timeline__tick-label {
+  color: var(--color-purple-1);
+}
+
+.history-timeline__current {
+  margin: 0;
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-white);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}

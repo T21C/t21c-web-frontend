@@ -522,3 +522,8 @@
   height: 24px;
   object-fit: contain;
 }
+
+.player-card.player-card--historical .name-wrapper {
+  flex: 1;
+  max-width: none;
+}
