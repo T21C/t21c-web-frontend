@@ -14,4 +14,5 @@ export * from "./Difficulties";
 export * from "./Curations";
 export * from "./Creators";
 export * from "./DiscordRoles";
+export * from "./Tournaments";
 export { default as ImageSelectorPopup } from "../common/selectors/ImageSelectorPopup/ImageSelectorPopup";

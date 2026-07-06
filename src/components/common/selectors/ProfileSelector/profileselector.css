@@ -12,7 +12,8 @@
 .profile-selector-input {
   width: 100%;
   padding: 8px 12px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-white-t15, #444);
+  background-color: var(--color-black-t90, #001);
   border-radius: 4px;
   font-size: 14px;
   transition: border-color 0.2s ease;
@@ -54,6 +55,18 @@
   border-radius: 0 0 4px 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   z-index: 1000;
+}
+
+.profile-selector-dropdown--portal {
+  position: fixed;
+  top: auto;
+  left: auto;
+  right: auto;
+  max-height: none;
+  overflow-y: auto;
+  border-top: 1px solid #333;
+  border-radius: 4px;
+  box-shadow: 0 8px 24px var(--color-black-t50);
 }
 
 .profile-selector-option {

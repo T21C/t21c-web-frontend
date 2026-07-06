@@ -8,6 +8,8 @@ import { useTranslation } from 'react-i18next';
 import { userAvatarDisplayUrl } from '@/utils/playerAvatarDisplay';
 import { useAuth } from '@/contexts/AuthContext';
 import { isTufStellarEnabledForUser } from '@/utils/tufStellarFeature';
+import { Portal } from '@/components/common/Portal';
+import { PORTALED_PANEL_CLASS, usePortaledPanelAnchor } from '@/hooks/usePortaledPanelAnchor';
 
 export const ProfileSelector = ({
   type, // 'player', 'charter', 'vfx', 'team', 'user'
@@ -19,10 +21,14 @@ export const ProfileSelector = ({
   disabled,
   /** When true with `type="user"`, uses admin grant recipient search (includes your account). */
   userSearchIncludeSelf = false,
+  /** Render the suggestion dropdown in a portal (avoids overflow clipping in modals). */
+  portalDropdown = false,
 }) => {
   const { t } = useTranslation('components');
   const { user } = useAuth();
   const selectorRef = useRef(null);
+  const anchorRef = useRef(null);
+  const dropdownRef = useRef(null);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [profiles, setProfiles] = useState([]);
@@ -30,28 +36,43 @@ export const ProfileSelector = ({
   const [showDropdown, setShowDropdown] = useState(false);
   const [isRequestingNew, setIsRequestingNew] = useState(false);
 
+  const dropdownOpen =
+    showDropdown &&
+    !disabled &&
+    (type === 'user' ? searchTerm.trim().length >= 2 : searchTerm.length >= 1);
+
+  const { panelStyle, portalRoot } = usePortaledPanelAnchor({
+    open: portalDropdown && dropdownOpen,
+    anchorRef,
+    panelRef: dropdownRef,
+    reanchorDeps: [loading, profiles.length, searchTerm, type],
+    maxHeightCap: 240,
+    minHeight: 80,
+  });
+
   // Add click outside handler
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (selectorRef.current && !selectorRef.current.contains(event.target)) {
-        setShowDropdown(false);
-      }
+      const target = event.target;
+      if (selectorRef.current?.contains(target)) return;
+      if (portalDropdown && dropdownRef.current?.contains(target)) return;
+      setShowDropdown(false);
     };
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  }, [portalDropdown]);
 
   // Sync searchTerm with external value changes
   useEffect(() => {
     if (value?.name != null && String(value.name).trim() !== '') {
       setSearchTerm(value.name);
       setIsRequestingNew(Boolean(value.isNewRequest));
-    } else {
+    } else if (value?.id == null) {
       setSearchTerm('');
       setIsRequestingNew(false);
     }
-  }, [value]);
+  }, [value?.id, value?.name, value?.isNewRequest]);
 
   // Get API endpoint based on type
   // Players use the v3 Elasticsearch-backed endpoint; other profile types keep their v2 paths.
@@ -178,9 +199,102 @@ export const ProfileSelector = ({
     });
   };
 
+  const dropdownContent = (
+    <>
+      {loading ? (
+        <div className="profile-selector-loading">
+          {t('profileSelector.loading')}
+        </div>
+      ) : (
+        <>
+          {type === 'user'
+            ? profiles.map((profile) => {
+                const avatarSrc = userAvatarDisplayUrl(profile);
+                const primary = profile.username || profile.nickname || profile.id;
+                const showSecondary = profile.nickname && profile.username && profile.nickname !== profile.username;
+                return (
+                  <button
+                    key={profile.id}
+                    type="button"
+                    className="profile-selector-option profile-selector-option--user"
+                    onClick={() => handleSelect(profile)}
+                  >
+                    <span className="profile-selector-user-row">
+                      {avatarSrc ? (
+                        <img
+                          className="profile-selector-user-avatar"
+                          src={avatarSrc}
+                          alt=""
+                        />
+                      ) : (
+                        <span className="profile-selector-user-avatar profile-selector-user-avatar--placeholder" aria-hidden />
+                      )}
+                      <span className="profile-selector-user-text">
+                        <span className="profile-selector-user-primary">{primary}</span>
+                        {showSecondary ? (
+                          <span className="profile-selector-user-secondary">{profile.nickname}</span>
+                        ) : null}
+                      </span>
+                    </span>
+                  </button>
+                );
+              })
+            : profiles.map((profile) => (
+                <div
+                  key={profile.id}
+                  className="profile-selector-option"
+                  onClick={() => handleSelect(profile)}
+                >
+                  {profile.name}
+                  {profile.type && <span className="profile-type">{profile.type}</span>}
+                </div>
+              ))}
+          {type !== 'user' && searchTerm.length >= 1 ? (
+            <div className="profile-selector-request">
+              {profiles.length === 0 && (
+                <div className="profile-selector-no-results">
+                  {type === 'team' ? t('profileSelector.noTeamsResults') : t('profileSelector.noResults')}
+                </div>
+              )}
+              <button
+                type="button"
+                className="profile-selector-request-new"
+                onClick={handleRequestNew}
+              >
+                {type === 'team' ? t('profileSelector.requestNewTeam') : t('profileSelector.requestNew')}
+              </button>
+            </div>
+          ) : null}
+          {type === 'user' && !loading && profiles.length === 0 && searchTerm.trim().length >= 2 ? (
+            <div className="profile-selector-no-results profile-selector-no-results--standalone">
+              {t('profileSelector.noResults')}
+            </div>
+          ) : null}
+        </>
+      )}
+    </>
+  );
+
+  const dropdownPanel = (
+    <div
+      ref={dropdownRef}
+      className={[
+        'profile-selector-dropdown',
+        portalDropdown ? 'profile-selector-dropdown--portal' : '',
+        portalDropdown ? PORTALED_PANEL_CLASS : '',
+        portalDropdown ? 'portaled-panel--z-popover' : '',
+      ]
+        .filter(Boolean)
+        .join(' ')}
+      style={portalDropdown ? panelStyle : undefined}
+    >
+      {dropdownContent}
+    </div>
+  );
+
   return (
     <div className={`profile-selector ${className || ''}`} ref={selectorRef}>
-      <div className="profile-selector-input-container">
+      <div className="profile-selector-input-container" ref={anchorRef}>
         <input
           type="text"
           autoComplete='profile-selector'
@@ -203,80 +317,14 @@ export const ProfileSelector = ({
         )}
       </div>
 
-      {showDropdown && !disabled && (type === 'user' ? searchTerm.trim().length >= 2 : searchTerm.length >= 1) ? (
-        <div className="profile-selector-dropdown">
-          {loading ? (
-            <div className="profile-selector-loading">
-              {t('profileSelector.loading')}
-            </div>
-          ) : (
-            <>
-              {type === 'user'
-                ? profiles.map((profile) => {
-                    const avatarSrc = userAvatarDisplayUrl(profile);
-                    const primary = profile.username || profile.nickname || profile.id;
-                    const showSecondary = profile.nickname && profile.username && profile.nickname !== profile.username;
-                    return (
-                      <button
-                        key={profile.id}
-                        type="button"
-                        className="profile-selector-option profile-selector-option--user"
-                        onClick={() => handleSelect(profile)}
-                      >
-                        <span className="profile-selector-user-row">
-                          {avatarSrc ? (
-                            <img
-                              className="profile-selector-user-avatar"
-                              src={avatarSrc}
-                              alt=""
-                            />
-                          ) : (
-                            <span className="profile-selector-user-avatar profile-selector-user-avatar--placeholder" aria-hidden />
-                          )}
-                          <span className="profile-selector-user-text">
-                            <span className="profile-selector-user-primary">{primary}</span>
-                            {showSecondary ? (
-                              <span className="profile-selector-user-secondary">{profile.nickname}</span>
-                            ) : null}
-                          </span>
-                        </span>
-                      </button>
-                    );
-                  })
-                : profiles.map((profile) => (
-                    <div
-                      key={profile.id}
-                      className="profile-selector-option"
-                      onClick={() => handleSelect(profile)}
-                    >
-                      {profile.name}
-                      {profile.type && <span className="profile-type">{profile.type}</span>}
-                    </div>
-                  ))}
-              {type !== 'user' && searchTerm.length >= 1 ? (
-                <div className="profile-selector-request">
-                  {profiles.length === 0 && (
-                    <div className="profile-selector-no-results">
-                      {type === 'team' ? t('profileSelector.noTeamsResults') : t('profileSelector.noResults')}
-                    </div>
-                  )}
-                  <button
-                    type="button"
-                    className="profile-selector-request-new"
-                    onClick={handleRequestNew}
-                  >
-                    {type === 'team' ? t('profileSelector.requestNewTeam') : t('profileSelector.requestNew')}
-                  </button>
-                </div>
-              ) : null}
-              {type === 'user' && !loading && profiles.length === 0 && searchTerm.trim().length >= 2 ? (
-                <div className="profile-selector-no-results profile-selector-no-results--standalone">
-                  {t('profileSelector.noResults')}
-                </div>
-              ) : null}
-            </>
-          )}
-        </div>
+      {dropdownOpen ? (
+        portalDropdown ? (
+          <Portal when={dropdownOpen} root={portalRoot}>
+            {dropdownPanel}
+          </Portal>
+        ) : (
+          dropdownPanel
+        )
       ) : null}
     </div>
   );
@@ -296,4 +344,5 @@ ProfileSelector.propTypes = {
   className: PropTypes.string,
   disabled: PropTypes.bool,
   userSearchIncludeSelf: PropTypes.bool,
+  portalDropdown: PropTypes.bool,
 };

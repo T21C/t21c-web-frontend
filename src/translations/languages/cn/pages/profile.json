@@ -7,6 +7,7 @@
   "notFound": "未找到玩家",
   "notLoggedIn": "未登录",
   "emailVerification": "请验证邮箱地址以访问所有功能",
+  "emailMissing": "请添加邮箱地址以访问所有功能",
   "banned": "你的账号已被封禁",
   "accountScheduledDeletion": "你的账号已安排在 {{date}} 注销。在此之前可在“编辑个人资料”中取消。",
   "accountScheduledDeletionWithCreator": "你的账号已安排在 {{date}} 注销，并将移除创作者资料（剥离署名、单人谱面软删除）。在此之前可在“编辑个人资料”中取消。",
@@ -46,11 +47,19 @@
     "collapse": "收起"
   },
   "sections": {
+    "tournaments": {
+      "title": "锦标赛",
+      "expand": "展开锦标赛",
+      "collapse": "收起锦标赛",
+      "withdrew": "退赛",
+      "featured": "精选"
+    },
     "scores": {
       "title": "通关记录列表",
       "expand": "展开",
       "collapse": "收起",
       "hideReclears": "隐藏重复通关",
+
       "lowestImpactScore": "排位分加分下限：<pp>{{score}}</pp>"
     },
     "scoreBreakdown": {

@@ -44,6 +44,8 @@ const AnnouncementPage = lazy(() => import('./admin/AnnouncementPage/Announcemen
 const BackupPage = lazy(() => import('./admin/BackupPage/BackupPage'));
 const DifficultyPage = lazy(() => import('./admin/DifficultyPage/DifficultyPage'));
 const CreatorManagementPage = lazy(() => import('./admin/CreatorManagementPage/CreatorManagementPage'));
+const TournamentManagementPage = lazy(() => import('./admin/TournamentManagementPage/TournamentManagementPage'));
+
 const ArtistManagementPage = lazy(() => import('./admin/ArtistManagementPage/ArtistManagementPage'));
 const SongManagementPage = lazy(() => import('./admin/SongManagementPage/SongManagementPage'));
 const SubmissionManagementPage = lazy(() => import('./admin/SubmissionManagementPage/SubmissionManagementPage'));
@@ -106,6 +108,7 @@ export {
     BackupPage,
     DifficultyPage,
     CreatorManagementPage,
+    TournamentManagementPage,
     ArtistManagementPage,
     SongManagementPage,
     SubmissionManagementPage,

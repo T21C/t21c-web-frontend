@@ -42,6 +42,9 @@
       "message": "You need to verify your email",
       "arrow": "➔"
     },
+    "emailMissing": {
+      "message": "Add an email to verify your account"
+    },
     "buttons": {
       "saveChanges": "Save Changes",
       "saving": "Saving..."
@@ -49,13 +52,18 @@
   },
   "emailChange": {
     "title": "Change email",
+    "setTitle": "Set email",
     "editTitle": "Change email",
+    "setEditTitle": "Set email",
     "current": "Current email",
+    "noEmailOnFile": "No email on file",
     "new": "New email",
     "confirm": "Confirm new email",
     "submit": "Update email",
+    "setSubmit": "Add email",
     "updating": "Updating...",
     "success": "Email updated. Check your inbox to verify your new address.",
+    "setSuccess": "Email added. Check your inbox to verify your address.",
     "empty": "Enter a new email address.",
     "invalidFormat": "Please enter a valid email address.",
     "mismatch": "New email addresses do not match.",

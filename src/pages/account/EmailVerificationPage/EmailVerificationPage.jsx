@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { hasAccountEmail } from '@/utils/accountEmail';
 import './emailVerificationPage.css';
 
 const EmailVerificationPage = () => {
@@ -19,6 +20,11 @@ const EmailVerificationPage = () => {
   useEffect(() => {
     if (user?.isEmailVerified) {
       setStatus('already-verified');
+      return;
+    }
+
+    if (user && !hasAccountEmail(user)) {
+      setStatus('needs-email');
       return;
     }
 
@@ -191,6 +197,22 @@ const EmailVerificationPage = () => {
               </button>
               {error && <p className="error-message">{error}</p>}
             </div>
+            <Link className="action-button secondary" to="/profile">
+              Back to Profile
+            </Link>
+          </>
+        );
+      case 'needs-email':
+        return (
+          <>
+            <div className="info-icon"></div>
+            <h1>Email Required</h1>
+            <p className="status-message">
+              Your account does not have an email address. Add one in account settings, then verify it from your inbox.
+            </p>
+            <Link className="action-button" to="/settings/account">
+              Add email in account settings
+            </Link>
             <Link className="action-button secondary" to="/profile">
               Back to Profile
             </Link>

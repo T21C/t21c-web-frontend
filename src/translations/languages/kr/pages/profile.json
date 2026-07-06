@@ -7,6 +7,7 @@
   "notFound": "플레이어를 찾을 수 없습니다",
   "notLoggedIn": "로그인되어 있지 않습니다",
   "emailVerification": "모든 기능에 접근하기 위해서는 이메일을 인증해 주세요",
+  "emailMissing": "모든 기능에 접근하려면 이메일 주소를 추가하세요",
   "banned": "계정이 제재된 상태입니다",
   "accountScheduledDeletion": "계정이 {{date}}에 삭제 예정입니다. 그 전까지 프로필 편집에서 취소할 수 있습니다.",
   "accountScheduledDeletionWithCreator": "계정이 {{date}}에 삭제 예정이며, 크리에이터 프로필 정리(크레딧 해제, 솔로 레벨 소프트 삭제)가 포함됩니다. 그 전까지 프로필 편집에서 취소할 수 있습니다.",
@@ -46,11 +47,19 @@
     "collapse": "내 소개 축소"
   },
   "sections": {
+    "tournaments": {
+      "title": "토너먼트",
+      "expand": "토너먼트 펼치기",
+      "collapse": "토너먼트 접기",
+      "withdrew": "기권",
+      "featured": "대표"
+    },
     "scores": {
       "title": "점수",
       "expand": "점수 확장",
       "collapse": "점수 축소",
       "hideReclears": "재클리어 숨기기",
+
       "lowestImpactScore": "최소 <pp>{{score}}</pp>를 얻어 랭크 점수를 얻으세요"
     },
     "scoreBreakdown": {

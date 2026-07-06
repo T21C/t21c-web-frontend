@@ -1,6 +1,7 @@
 // tuf-search: #AccountStatusBanners #accountStatusBanners #account
 import { useTranslation } from 'react-i18next';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { hasAccountEmail } from '@/utils/accountEmail';
 import { StatusBanner } from '@/components/common/display/StatusBanner/StatusBanner';
 
 const formatDeletionInstant = (value) => {
@@ -46,6 +47,23 @@ export function AccountStatusBanners({ variant = 'edit', user, navigate }) {
     return (
       <StatusBanner dismissible tone="caution" placement="dock" role="status">
         {t('profile.submissionSuspended')}
+      </StatusBanner>
+    );
+  }
+
+  if (!hasAccountEmail(user)) {
+    return (
+      <StatusBanner
+        tone="accent"
+        placement="dock"
+        interactive
+        onClick={() => navigate?.('/settings/account')}
+        role="button"
+      >
+        {t('profile.emailMissing')}
+        <span className="status-banner__arrow" aria-hidden>
+          ➔
+        </span>
       </StatusBanner>
     );
   }

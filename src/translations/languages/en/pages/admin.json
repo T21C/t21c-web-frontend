@@ -24,6 +24,9 @@
     "songs": "Songs",
     "songsDesc": "Manage songs and related entities",
     "artists": "Artists",
-    "artistsDesc": "Manage artists and their info"
+    "artistsDesc": "Manage artists and their info",
+    "tournaments": "Tournaments",
+    "tournamentsDesc": "Manage tournament placements, name links, and reward frames"
   }
-} 
+}
+ 

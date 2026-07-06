@@ -84,7 +84,10 @@ api.interceptors.response.use(
       try {
         await api.post(routes.auth.refresh());
         processQueue(null);
-        return api(originalRequest);
+        return api({
+          ...originalRequest,
+          withCredentials: true,
+        });
       } catch (refreshError) {
         processQueue(refreshError, null);
         window.dispatchEvent(new Event('auth:logout'));

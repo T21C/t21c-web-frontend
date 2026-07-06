@@ -53,6 +53,8 @@
 .billing-page .billing-page__cross-links {
   display: flex;
   flex-wrap: wrap;
+  width: 100%;
+  justify-content: end;
   gap: 0.5rem;
 }
 
@@ -136,6 +138,7 @@
   border-radius: 10px;
   background: var(--color-black-t30);
   width: 100%;
+  z-index: 1;
 }
 
 .billing-page .billing-page__card--error {

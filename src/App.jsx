@@ -137,6 +137,8 @@ function App() {
           <Route path='admin/backups' element={<PrivateRoute><Pages.BackupPage /></PrivateRoute>} />
           <Route path='admin/difficulties' element={<PrivateRoute><Pages.DifficultyPage /></PrivateRoute>} />
           <Route path="admin/creators" element={<PrivateRoute><Pages.CreatorManagementPage /></PrivateRoute>} />
+          <Route path="admin/tournaments" element={<PrivateRoute><Pages.TournamentManagementPage /></PrivateRoute>} />
+
           <Route path="admin/artists" element={<PrivateRoute><Pages.ArtistManagementPage /></PrivateRoute>} />
           <Route path="admin/songs" element={<PrivateRoute><Pages.SongManagementPage /></PrivateRoute>} />
           <Route path="admin/audit-log" element={<PrivateRoute><Pages.AuditLogPage /></PrivateRoute>} />

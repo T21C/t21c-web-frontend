@@ -1,0 +1,252 @@
+/* tuf-search: #TournamentManagementPage #tournamentManagement #admin */
+.tournament-mgmt-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem 1.25rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  color: var(--text-color);
+}
+
+.tournament-mgmt-page__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.tournament-mgmt-page__title {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.tournament-mgmt-page__subtitle {
+  margin: 0;
+  color: var(--color-gray-2);
+  font-size: 0.95rem;
+}
+
+.tournament-mgmt-page__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tournament-mgmt-page__tab-wrap {
+  display: inline-flex;
+}
+
+.tournament-mgmt-page__tab {
+  border: 1px solid color-mix(in srgb, var(--color-white) 18%, transparent);
+  background: color-mix(in srgb, var(--color-black) 55%, transparent);
+  color: var(--text-color);
+  border-radius: 0.5rem;
+  padding: 0.45rem 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.tournament-mgmt-page__tab:hover:not(.is-active):not(:disabled) {
+  background: color-mix(in srgb, var(--color-purple-1) 18%, var(--color-black));
+  border-color: color-mix(in srgb, var(--color-purple-1) 55%, transparent);
+}
+
+.tournament-mgmt-page__tab:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.tournament-mgmt-page__tab.is-active {
+  background: color-mix(in srgb, var(--color-purple-1) 35%, var(--color-black));
+  border-color: var(--color-purple-1);
+}
+
+.tournament-mgmt-page__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.tournament-mgmt-page__toolbar input,
+.tournament-mgmt-page__field input,
+.tournament-mgmt-page__field textarea,
+.tournament-mgmt-page__placements-table input {
+  background: color-mix(in srgb, var(--color-black) 70%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-white) 16%, transparent);
+  color: var(--text-color);
+  border-radius: 0.4rem;
+  padding: 0.4rem 0.55rem;
+}
+
+.tournament-mgmt-page__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tournament-mgmt-page__card {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.6rem;
+  background: color-mix(in srgb, var(--color-black) 60%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-white) 12%, transparent);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.tournament-mgmt-page__card:hover:not(.is-selected):not(.tournament-mgmt-page__card--static) {
+  border-color: var(--color-purple-1);
+  background: color-mix(in srgb, var(--color-purple-1) 10%, var(--color-black));
+}
+
+.tournament-mgmt-page__card.is-selected {
+  border-color: var(--color-purple-1);
+  background: color-mix(in srgb, var(--color-purple-1) 18%, var(--color-black));
+}
+
+.tournament-mgmt-page__card--static {
+  cursor: default;
+}
+
+.tournament-mgmt-page__card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  color: var(--color-gray-2);
+  font-size: 0.85rem;
+}
+
+.tournament-mgmt-page__badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-purple-1) 25%, transparent);
+  font-size: 0.75rem;
+}
+
+.tournament-mgmt-page__panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 1rem;
+  border-radius: 0.7rem;
+  background: color-mix(in srgb, var(--color-black) 55%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-white) 12%, transparent);
+}
+
+.tournament-mgmt-page__fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.65rem;
+}
+
+.tournament-mgmt-page__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.tournament-mgmt-page__field label {
+  font-size: 0.8rem;
+  color: var(--color-gray-2);
+}
+
+.tournament-mgmt-page__field--wide {
+  grid-column: 1 / -1;
+}
+
+.tournament-mgmt-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.tournament-mgmt-page .btn-fill-primary,
+.tournament-mgmt-page .btn-fill-secondary,
+.tournament-mgmt-page .btn-fill-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 0.4rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.2;
+  cursor: pointer;
+  border: none;
+}
+
+.tournament-mgmt-page label.btn-fill-primary,
+.tournament-mgmt-page label.btn-fill-secondary {
+  cursor: pointer;
+}
+
+.tournament-mgmt-page__placements-table .btn-fill-danger {
+  padding: 0.25rem 0.55rem;
+  min-width: 2rem;
+}
+
+.tournament-mgmt-page__field .custom-select-container {
+  width: 100%;
+}
+
+.tournament-mgmt-page__toolbar .custom-select-container {
+  flex-shrink: 0;
+}
+
+.tournament-mgmt-page__placements-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.tournament-mgmt-page__placements-table th,
+.tournament-mgmt-page__placements-table td {
+  border-bottom: 1px solid color-mix(in srgb, var(--color-white) 10%, transparent);
+  padding: 0.35rem 0.4rem;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.tournament-mgmt-page__placements-table input {
+  width: 100%;
+  min-width: 4rem;
+}
+
+.tournament-mgmt-page__empty {
+  color: var(--color-gray-2);
+  margin: 0;
+}
+
+.tournament-mgmt-page__report {
+  white-space: pre-wrap;
+  font-family: ui-monospace, monospace;
+  font-size: 0.85rem;
+  background: color-mix(in srgb, var(--color-black) 70%, transparent);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+}
+
+.tournament-mgmt-page__unresolved-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.55rem 0.7rem;
+  border-radius: 0.5rem;
+  background: color-mix(in srgb, var(--color-black) 50%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-white) 10%, transparent);
+}
+
+.tournament-mgmt-page__unresolved-link {
+  min-width: 14rem;
+}

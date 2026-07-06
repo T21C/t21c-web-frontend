@@ -33,6 +33,7 @@ export const routes = {
       player: {
         bannerPreset: () => '/v2/auth/profile/player/banner-preset',
         bannerCustom: () => '/v2/auth/profile/player/banner-custom',
+        bio: () => '/v2/auth/profile/player/bio',
         headerSurfaceStyle: () => '/v2/auth/profile/player/header-surface-style',
         headerSurfaceImage: () => '/v2/auth/profile/player/header-surface-image',
       },
@@ -46,6 +47,35 @@ export const routes = {
     creators: {
       byId: (id: string | number) => `/v2/admin/creators/${enc(id)}`,
     },
+    tournaments: {
+      root: () => '/v2/admin/tournaments',
+      byId: (id: string | number) => `/v2/admin/tournaments/${enc(id)}`,
+      tiers: (id: string | number) => `/v2/admin/tournaments/${enc(id)}/tiers`,
+      placements: (id: string | number) => `/v2/admin/tournaments/${enc(id)}/placements`,
+      rewards: (id: string | number) => `/v2/admin/tournaments/${enc(id)}/rewards`,
+      syncEntitlements: (id: string | number) =>
+        `/v2/admin/tournaments/${enc(id)}/sync-entitlements`,
+      placement: (placementId: string | number) =>
+        `/v2/admin/tournaments/placements/${enc(placementId)}`,
+      reward: (rewardId: string | number) =>
+        `/v2/admin/tournaments/rewards/${enc(rewardId)}`,
+      rewardAsset: (rewardId: string | number) =>
+        `/v2/admin/tournaments/rewards/${enc(rewardId)}/asset`,
+      unresolved: () => '/v2/admin/tournaments/unresolved',
+      resolveNames: () => '/v2/admin/tournaments/resolve-names',
+      import: () => '/v2/admin/tournaments/import',
+      series: () => '/v2/admin/tournaments/series',
+      seriesById: (id: string | number) => `/v2/admin/tournaments/series/${enc(id)}`,
+      tierTemplates: () => '/v2/admin/tournaments/tier-templates',
+      icon: (id: string | number) => `/v2/admin/tournaments/${enc(id)}/icon`,
+      cardBackground: (id: string | number) =>
+        `/v2/admin/tournaments/${enc(id)}/card-background`,
+      tierIcon: (tournamentId: string | number, tierId: string | number) =>
+        `/v2/admin/tournaments/${enc(tournamentId)}/tiers/${enc(tierId)}/icon`,
+      tierCardBackground: (tournamentId: string | number, tierId: string | number) =>
+        `/v2/admin/tournaments/${enc(tournamentId)}/tiers/${enc(tierId)}/card-background`,
+    },
+
     backup: {
       root: () => '/v2/admin/backup',
       list: () => '/v2/admin/backup/list',
@@ -292,7 +322,12 @@ export const routes = {
     meBioCanvas: () => '/v3/players/me/bio-canvas',
     meBioCanvasImage: () => '/v3/players/me/bio-canvas/image',
     meTufStellarIconVariant: () => '/v3/players/me/tuf-stellar-icon-variant',
+    meFeaturedPlacements: () => '/v3/players/me/featured-placements',
+    mePlacementDisplay: () => '/v3/players/me/placement-display',
+    meEquippedCosmetic: () => '/v3/players/me/equipped-cosmetic',
+    mePlacementEntitlements: () => '/v3/players/me/placement-entitlements',
   },
+
 
   levelsV3: {
     upload: (levelId: string | number) => `/v3/levels/${enc(levelId)}/upload`,
@@ -339,7 +374,12 @@ export const routes = {
       `/v3/creators/${enc(creatorId)}/header-surface-style`,
     headerSurfaceImage: (creatorId: string | number) =>
       `/v3/creators/${enc(creatorId)}/header-surface-image`,
+    meFeaturedPlacements: () => '/v3/creators/me/featured-placements',
+    mePlacementDisplay: () => '/v3/creators/me/placement-display',
+    meEquippedCosmetic: () => '/v3/creators/me/equipped-cosmetic',
+    mePlacementEntitlements: () => '/v3/creators/me/placement-entitlements',
   },
+
 
   media: {
     videoDetails: (url: string) => `/v2/media/video-details/${enc(url)}`,

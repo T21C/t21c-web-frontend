@@ -132,6 +132,8 @@ const ProfileHeader = ({
   playerDifficultyPanelClearsByDifficulty = null,
   /** Shown only when `avatarSubject.user` has active TUFStellar; normalized to `1`|`2`|`3`. */
   stellarIconVariant = "1",
+  /** Optional avatar frame from tournament placement rewards: `{ url, config }`. */
+  avatarFrame = null,
 }) => {
   const { t } = useTranslation("pages");
   const internalNameTooltipId = useId().replace(/:/g, "");
@@ -614,7 +616,9 @@ const ProfileHeader = ({
                     primaryUrl={resolvedPrimaryAvatarUrl || ""}
                     fallbackUrl={resolvedFallbackAvatarUrl || ""}
                     className="profile-header__avatar"
+                    frame={avatarFrame}
                   />
+
                 </div>
               </div>
               {(mode === "player" || resolvedProfileId != null) ? (

@@ -8,10 +8,14 @@ import { Tooltip } from "react-tooltip";
 import { useAuth } from "@/contexts/AuthContext";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import api from "@/utils/api";
+import { ensureAuthSession, isNoTokenAuthError } from "@/utils/ensureAuthSession";
 import CurationTypeSelector from "@/components/account/CurationTypeSelector/CurationTypeSelector";
 import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
 import ProfileBannerEditor from "@/components/account/ProfileBannerEditor/ProfileBannerEditor";
 import ProfileHeaderSurfaceEditor from "@/components/account/ProfileHeaderSurfaceEditor/ProfileHeaderSurfaceEditor";
+import { TournamentCosmeticsEditorLauncher } from "@/components/account/TournamentCosmeticsEditor";
+import { listEditablePlacements } from "@/utils/tournamentPlacements";
+
 import { BioCanvasEditorLauncher } from "@/components/account/BioCanvasEditor";
 import {
   SettingsPreviewSection,
@@ -423,7 +427,8 @@ const SettingsCreatorPage = () => {
     setBioSaving(true);
     const toastId = toast.loading(t("loading.saving", { ns: "common" }));
     try {
-      const { data } = await api.patch(`${routes.creatorsV3.root()}/me/bio`, {
+      await ensureAuthSession();
+      const { data } = await api.patch(routes.creatorsV3.meBio(), {
         bio: trimmed.length ? trimmed : null,
       });
       const nextBio = typeof data?.bio === "string" ? data.bio : "";
@@ -431,7 +436,9 @@ const SettingsCreatorPage = () => {
       setProfile((p) => (p && typeof p === "object" ? { ...p, bio: trimmed.length ? trimmed : null } : p));
       toast.success(t("settings.creator.bioSuccess"), { id: toastId });
     } catch (err) {
-      const msg = err?.response?.data?.error || t("settings.creator.bioError");
+      const msg = isNoTokenAuthError(err)
+        ? t("settings.creator.bioSessionExpired", { defaultValue: "Your session expired. Please sign in again and retry." })
+        : err?.response?.data?.error || t("settings.creator.bioError");
       setBioFieldError(msg);
       toast.error(msg, { id: toastId });
     } finally {
@@ -592,8 +599,10 @@ const SettingsCreatorPage = () => {
           iconSlots={iconSlots}
           creatorCurationPanelItems={creatorCurationPanelItems}
           avatarSubject={creatorDoc}
+          avatarFrame={profile?.equippedAvatarFrame?.frame ?? null}
           stellarIconVariant={previewStellarVariant}
           aliasNames={previewAliasNames}
+
           name={previewDisplayName}
           handle={creatorDoc.user?.username}
           country={creatorDoc.user?.country || creatorDoc.country}
@@ -643,6 +652,44 @@ const SettingsCreatorPage = () => {
         />
       </div>
 
+      {(listEditablePlacements(profile?.tournamentPlacements).length ?? 0) > 0 ? (
+        <SettingsPreviewSection
+          sectionId="tournamentCosmetics"
+          className="settings-sub-page__banner-section"
+          aria-labelledby="settings-creator-tournaments-heading"
+        >
+          <div className="settings-sub-page__header-surface-section-head">
+            <h2
+              id="settings-creator-tournaments-heading"
+              className="settings-sub-page__banner-section-title"
+            >
+              {t("settings.tournaments.sectionTitle")}
+            </h2>
+            <SettingsSectionPreviewControls
+              sectionId="tournamentCosmetics"
+              headingId="settings-creator-tournaments-heading"
+              title={t("settings.tournaments.sectionTitle")}
+            />
+          </div>
+          <TournamentCosmeticsEditorLauncher
+            mode="creator"
+            placements={profile?.tournamentPlacements || []}
+            initialEquipped={profile?.equippedAvatarFrame}
+            initialEntitlements={profile?.placementEntitlements || []}
+            initialCardLayout={profile?.placementCardLayout}
+            initialOrderIds={profile?.placementOrderIds || []}
+            initialHiddenIds={profile?.hiddenPlacementIds || []}
+            onSaved={() => {
+              if (creatorId == null || !Number.isFinite(creatorId)) return;
+              api
+                .get(`${routes.creatorsV3.root()}/${creatorId}/profile`)
+                .then((res) => setProfile(res.data))
+                .catch(() => {});
+            }}
+          />
+        </SettingsPreviewSection>
+      ) : null}
+
       <SettingsPreviewSection
         sectionId="headerSurface"
         className="settings-sub-page__banner-section"
@@ -655,6 +702,7 @@ const SettingsCreatorPage = () => {
           >
             {t("settings.headerSurface.sectionTitle")}
           </h2>
+
           <SettingsSectionPreviewControls
             sectionId="headerSurface"
             headingId="settings-creator-header-surface-heading"
@@ -683,6 +731,7 @@ const SettingsCreatorPage = () => {
             iconSlots,
             creatorCurationPanelItems,
             avatarSubject: creatorDoc,
+            avatarFrame: profile?.equippedAvatarFrame?.frame ?? null,
             stellarIconVariant: previewStellarVariant,
             aliasNames: previewAliasNames,
             name: previewDisplayName,
@@ -695,6 +744,7 @@ const SettingsCreatorPage = () => {
             statGroups,
             statRows: collapsedCreatorStatRows,
           }}
+
         />
       </SettingsPreviewSection>
 

@@ -1,0 +1,1 @@
+export { default as TournamentPlacementsSection } from "./TournamentPlacementsSection";

@@ -14,6 +14,8 @@ import { DifficultyGraph, MetaTags, CreatorStatusBadge } from "@/components/comm
 import { buildCreatorMeta } from '@/utils/meta';
 import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
 import BioCanvasRenderer from "@/components/account/BioCanvasRenderer/BioCanvasRenderer";
+import { TournamentPlacementsSection } from "@/components/account/TournamentPlacements";
+
 import { ScrollButton } from "@/components/common/buttons";
 import { ChevronIcon, AdofaiIcon, EditIcon, ShieldIcon, InfoIcon } from "@/components/common/icons";
 import { CreatorManagementPopup } from "@/components/popups/Creators";
@@ -212,7 +214,9 @@ const CreatorProfilePage = () => {
           iconSlots={iconSlots}
           creatorCurationPanelItems={creatorCurationPanelItems}
           avatarSubject={creatorDoc}
+          avatarFrame={profile?.equippedAvatarFrame?.frame ?? null}
           stellarIconVariant={normalizeTufStellarIconVariant(creatorDoc?.tufStellarIconVariant)}
+
           name={creatorDoc.name}
           aliasNames={creatorAliasNames}
           handle={creatorDoc.user?.username}
@@ -338,12 +342,18 @@ const CreatorProfilePage = () => {
           </Collapsible>
         </section>
 
+        <TournamentPlacementsSection
+          placements={profile?.tournamentPlacements}
+          cardLayout={profile?.placementCardLayout}
+        />
+
         {difficultyGraphData.length > 0 ? (
           <section className="creator-profile-page__section creator-profile-page__section--difficulty">
             <div className="account-profile-page__section-title-row">
               <h2 className="account-profile-page__section-title">
                 {t("creators.profile.sections.difficultyBreakdown.title")}
               </h2>
+
               <button
                 type="button"
                 className="account-profile-page__chevron-btn"

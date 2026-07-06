@@ -42,6 +42,9 @@
       "message": "你需要验证你的电子邮箱",
       "arrow": "点此开始"
     },
+    "emailMissing": {
+      "message": "请添加邮箱以验证你的账户"
+    },
     "buttons": {
       "saveChanges": "保存更改",
       "saving": "正在保存……"
@@ -49,13 +52,18 @@
   },
   "emailChange": {
     "title": "更改邮箱",
+    "setTitle": "设置邮箱",
     "editTitle": "更改邮箱",
+    "setEditTitle": "设置邮箱",
     "current": "当前邮箱",
+    "noEmailOnFile": "未设置邮箱",
     "new": "新邮箱",
     "confirm": "确认新邮箱",
     "submit": "更新邮箱",
+    "setSubmit": "添加邮箱",
     "updating": "更新中……",
     "success": "邮箱已更新，请查收邮件验证新地址。",
+    "setSuccess": "邮箱已添加，请查收邮件完成验证。",
     "empty": "请输入新邮箱地址。",
     "invalidFormat": "请输入有效的邮箱地址。",
     "mismatch": "两次输入的新邮箱不一致。",

@@ -16,6 +16,9 @@
     "creators": "제작자",
     "creatorsDesc": "레벨에 제작자 및 팀 할당",
     "backups": "백업",
-    "backupsDesc": "데이터베이스 백업 및 시스템 유지 관리"
+    "backupsDesc": "데이터베이스 백업 및 시스템 유지 관리",
+    "tournaments": "토너먼트",
+    "tournamentsDesc": "토너먼트 순위, 이름 연결, 보상 프레임 관리"
   }
 }
+

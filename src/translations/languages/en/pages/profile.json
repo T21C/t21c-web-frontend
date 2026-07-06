@@ -7,6 +7,7 @@
   "notFound": "Player not found",
   "notLoggedIn": "You are not logged in",
   "emailVerification": "Please verify your email address to access all features",
+  "emailMissing": "Add an email address to access all features",
   "banned": "Your account has been banned",
   "accountScheduledDeletion": "Your account is scheduled for deletion on {{date}}. You can cancel from Edit profile until then.",
   "accountScheduledDeletionWithCreator": "Your account is scheduled for deletion on {{date}}, including your creator profile (credits removed, solo charts soft-deleted). You can cancel from Edit profile until then.",
@@ -53,10 +54,18 @@
       "hideReclears": "Hide reclears",
       "lowestImpactScore": "Get at least <pp>{{score}}</pp> to gain Ranked Score"
     },
+    "tournaments": {
+      "title": "Tournaments",
+      "expand": "Expand tournaments",
+      "collapse": "Collapse tournaments",
+      "withdrew": "Withdrew",
+      "featured": "Featured"
+    },
     "scoreBreakdown": {
       "title": "Score breakdown",
       "expand": "Expand score breakdown",
       "collapse": "Collapse score breakdown",
+
       "tooltips": {
         "rankedScore": {
           "aria": "Explain Ranked Score",

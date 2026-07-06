@@ -5,6 +5,7 @@ import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { CloseButton } from '@/components/common/buttons';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { hasAccountEmail } from '@/utils/accountEmail';
 import './changeEmailPopup.css';
 
 /** Align with server registration / auth email validation */
@@ -40,6 +41,8 @@ const ChangeEmailPopup = ({ isOpen, onClose, currentEmail, changeEmail }) => {
 
   if (!isOpen) return null;
 
+  const isSettingEmail = !hasAccountEmail({ email: currentEmail });
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const next = newEmail.trim().toLowerCase();
@@ -58,7 +61,7 @@ const ChangeEmailPopup = ({ isOpen, onClose, currentEmail, changeEmail }) => {
       toast.error(t('editProfile.emailChange.mismatch'));
       return;
     }
-    if (next === current) {
+    if (!isSettingEmail && next === current) {
       toast.error(t('editProfile.emailChange.unchanged'));
       return;
     }
@@ -66,7 +69,11 @@ const ChangeEmailPopup = ({ isOpen, onClose, currentEmail, changeEmail }) => {
     setIsSaving(true);
     try {
       await changeEmail(next);
-      toast.success(t('editProfile.emailChange.success'));
+      toast.success(
+        isSettingEmail
+          ? t('editProfile.emailChange.setSuccess')
+          : t('editProfile.emailChange.success')
+      );
       onClose();
     } catch (error) {
       const status = error.response?.status;
@@ -96,7 +103,11 @@ const ChangeEmailPopup = ({ isOpen, onClose, currentEmail, changeEmail }) => {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="change-email-popup-header">
-          <h2 id="change-email-popup-title">{t('editProfile.emailChange.title')}</h2>
+          <h2 id="change-email-popup-title">
+            {isSettingEmail
+              ? t('editProfile.emailChange.setTitle')
+              : t('editProfile.emailChange.title')}
+          </h2>
           <CloseButton
             variant="inline"
             className="change-email-popup-close"
@@ -108,7 +119,9 @@ const ChangeEmailPopup = ({ isOpen, onClose, currentEmail, changeEmail }) => {
 
         <p className="change-email-popup-current">
           <span className="change-email-popup-current-label">{t('editProfile.emailChange.current')}</span>
-          <span className="change-email-popup-current-value">{currentEmail || '—'}</span>
+          <span className="change-email-popup-current-value">
+            {isSettingEmail ? t('editProfile.emailChange.noEmailOnFile') : currentEmail}
+          </span>
         </p>
 
         <form className="change-email-popup-form" onSubmit={handleSubmit}>
@@ -146,7 +159,11 @@ const ChangeEmailPopup = ({ isOpen, onClose, currentEmail, changeEmail }) => {
               {t('buttons.cancel', { ns: 'common' })}
             </button>
             <button type="submit" className="change-email-popup-btn change-email-popup-btn-primary" disabled={isSaving}>
-              {isSaving ? t('editProfile.emailChange.updating') : t('editProfile.emailChange.submit')}
+              {isSaving
+                ? t('editProfile.emailChange.updating')
+                : isSettingEmail
+                  ? t('editProfile.emailChange.setSubmit')
+                  : t('editProfile.emailChange.submit')}
             </button>
           </div>
         </form>

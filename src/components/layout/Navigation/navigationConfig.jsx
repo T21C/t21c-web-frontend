@@ -175,6 +175,7 @@ export const createNavigationConfig = (context = {}) => {
           { to: "/admin/songs", translationKey: "navigation.main.dropdowns.admin.songs" },
           { to: "/admin/artists", translationKey: "navigation.main.dropdowns.admin.artists" },
           { to: "/admin/creators", translationKey: "navigation.main.dropdowns.admin.creators" },
+          { to: "/admin/tournaments", translationKey: "navigation.main.dropdowns.admin.tournaments" },
           { divider: true },
           { to: "/admin/difficulties", translationKey: "navigation.main.dropdowns.admin.difficulties" },
           { to: "/admin/backups", translationKey: "navigation.main.dropdowns.admin.backups" },

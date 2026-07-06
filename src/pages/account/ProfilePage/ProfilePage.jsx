@@ -28,6 +28,8 @@ import { CreatorIcon } from "@/components/common/icons/CreatorIcon";
 import { AccountStatusBanners } from "@/components/account/AccountStatusBanners/AccountStatusBanners";
 import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
 import BioCanvasRenderer from "@/components/account/BioCanvasRenderer";
+import { TournamentPlacementsSection } from "@/components/account/TournamentPlacements";
+
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { buildPlayerStatGroups } from "@/utils/profileStatGroups";
 import { normalizePassSearchQuery } from '@/utils/normalizeEntitySearchQuery';
@@ -720,7 +722,9 @@ const ProfilePage = () => {
                     playerDifficultyPanelDifficulties={difficulties}
                     playerDifficultyPanelClearsByDifficulty={difficultyPanelClearsByDifficulty}
                     avatarSubject={playerData}
+                    avatarFrame={playerData?.equippedAvatarFrame?.frame ?? null}
                     stellarIconVariant={normalizeTufStellarIconVariant(playerData?.tufStellarIconVariant)}
+
                     name={playerData?.name || t("profile.meta.defaultTitle")}
                     handle={playerData?.user?.username}
                     country={playerData?.country}
@@ -857,12 +861,18 @@ const ProfilePage = () => {
                 </Collapsible>
               </section>
 
+              <TournamentPlacementsSection
+                placements={playerData?.tournamentPlacements}
+                cardLayout={playerData?.placementCardLayout}
+              />
+
               {scoreBreakdownTiles.length > 0 ? (
                 <section className="player-page__section player-page__score-breakdown">
                   <div className="account-profile-page__section-title-row">
                     <h2 className="account-profile-page__section-title">
                       {t("profile.sections.scoreBreakdown.title")}
                     </h2>
+
                     <button
                       type="button"
                       className="account-profile-page__chevron-btn"

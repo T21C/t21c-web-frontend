@@ -1,0 +1,44 @@
+.tournament-cosmetics-editor-launcher {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.tournament-cosmetics-editor-launcher__summary {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-white-t60);
+}
+
+.tournament-cosmetics-editor-launcher__preview-strip {
+  display: flex;
+  gap: 0.65rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+
+.tournament-cosmetics-editor-launcher__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  min-height: 2.75rem;
+  padding: 0 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: inherit;
+  line-height: 1.2;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease;
+}
+
+.tournament-cosmetics-editor-launcher__btn:hover:not(:disabled) {
+  background: var(--btn-primary-light-hover);
+}
+
+.tournament-cosmetics-editor-launcher__btn:focus-visible {
+  outline: 2px solid var(--btn-primary-light-hover);
+  outline-offset: 2px;
+}

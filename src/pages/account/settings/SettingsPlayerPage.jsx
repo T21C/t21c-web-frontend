@@ -7,11 +7,15 @@ import { toast } from "react-hot-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import api from "@/utils/api";
+import { ensureAuthSession, isNoTokenAuthError } from "@/utils/ensureAuthSession";
 import { formatNumber } from "@/utils";
 import { formatAccuracyRatio } from "@/utils/statFormatters";
 import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
 import ProfileBannerEditor from "@/components/account/ProfileBannerEditor/ProfileBannerEditor";
 import ProfileHeaderSurfaceEditor from "@/components/account/ProfileHeaderSurfaceEditor/ProfileHeaderSurfaceEditor";
+import { TournamentCosmeticsEditorLauncher } from "@/components/account/TournamentCosmeticsEditor";
+import { listEditablePlacements } from "@/utils/tournamentPlacements";
+
 import { BioCanvasEditorLauncher } from "@/components/account/BioCanvasEditor";
 import {
   SettingsPreviewSection,
@@ -326,7 +330,8 @@ const SettingsPlayerPage = () => {
     setBioSaving(true);
     const toastId = toast.loading(t("loading.saving", { ns: "common" }));
     try {
-      const { data } = await api.patch(`${routes.playersV3.root()}/me/bio`, {
+      await ensureAuthSession();
+      const { data } = await api.patch(routes.auth.profile.player.bio(), {
         bio: trimmed.length ? trimmed : null,
       });
       const nextBio = typeof data?.bio === "string" ? data.bio : "";
@@ -334,7 +339,9 @@ const SettingsPlayerPage = () => {
       setPlayerData((p) => (p && typeof p === "object" ? { ...p, bio: trimmed.length ? trimmed : null } : p));
       toast.success(t("settings.player.bioSuccess"), { id: toastId });
     } catch (e) {
-      const msg = e?.response?.data?.error || t("settings.player.bioError");
+      const msg = isNoTokenAuthError(e)
+        ? t("settings.player.bioSessionExpired", { defaultValue: "Your session expired. Please sign in again and retry." })
+        : e?.response?.data?.error || t("settings.player.bioError");
       setBioFieldError(msg);
       toast.error(msg, { id: toastId });
     } finally {
@@ -397,6 +404,7 @@ const SettingsPlayerPage = () => {
           playerDifficultyPanelDifficulties={difficulties}
           playerDifficultyPanelClearsByDifficulty={clearsByDifficultyForHeader}
           avatarSubject={playerData}
+          avatarFrame={playerData?.equippedAvatarFrame?.frame ?? null}
           stellarIconVariant={previewStellarVariant}
           name={previewDisplayName}
           handle={playerData?.user?.username}
@@ -437,6 +445,38 @@ const SettingsPlayerPage = () => {
           }
         />
       </div>
+
+      {(listEditablePlacements(playerData?.tournamentPlacements).length ?? 0) > 0 ? (
+        <SettingsPreviewSection
+          sectionId="tournamentCosmetics"
+          className="settings-sub-page__banner-section"
+          aria-labelledby="settings-player-tournaments-heading"
+        >
+          <div className="settings-sub-page__header-surface-section-head">
+            <h2
+              id="settings-player-tournaments-heading"
+              className="settings-sub-page__banner-section-title"
+            >
+              {t("settings.tournaments.sectionTitle")}
+            </h2>
+            <SettingsSectionPreviewControls
+              sectionId="tournamentCosmetics"
+              headingId="settings-player-tournaments-heading"
+              title={t("settings.tournaments.sectionTitle")}
+            />
+          </div>
+          <TournamentCosmeticsEditorLauncher
+            mode="player"
+            placements={playerData?.tournamentPlacements || []}
+            initialEquipped={playerData?.equippedAvatarFrame}
+            initialEntitlements={playerData?.placementEntitlements || []}
+            initialCardLayout={playerData?.placementCardLayout}
+            initialOrderIds={playerData?.placementOrderIds || []}
+            initialHiddenIds={playerData?.hiddenPlacementIds || []}
+            onSaved={() => fetchProfile({ background: true })}
+          />
+        </SettingsPreviewSection>
+      ) : null}
 
       <SettingsPreviewSection
         sectionId="headerSurface"
@@ -479,6 +519,7 @@ const SettingsPlayerPage = () => {
             playerDifficultyPanelDifficulties: difficulties,
             playerDifficultyPanelClearsByDifficulty: clearsByDifficultyForHeader,
             avatarSubject: playerData,
+            avatarFrame: playerData?.equippedAvatarFrame?.frame ?? null,
             stellarIconVariant: previewStellarVariant,
             name: previewDisplayName,
             handle: playerData?.user?.username,
@@ -494,6 +535,7 @@ const SettingsPlayerPage = () => {
                 label: valueLabels.rankedScore,
                 value: formatNumber(playerData?.rankedScore || 0),
               },
+
               {
                 key: "averageXacc",
                 label: valueLabels.averageXacc,

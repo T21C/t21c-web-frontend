@@ -15,6 +15,7 @@ import { CountrySelect } from '@/components/common/selectors';
 import { useTranslation } from 'react-i18next';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { hasAccountEmail } from '@/utils/accountEmail';
 import { AccountStatusBanners } from '@/components/account/AccountStatusBanners/AccountStatusBanners';
 import { CDN_IMAGE_ACCEPT, isCdnSupportedImageMimeType } from '@/config/constants/cdnImageAccept';
 import { userAvatarDisplayUrl } from '@/utils/playerAvatarDisplay';
@@ -592,14 +593,35 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
                 className="username-action-btn edit btn-fill-secondary"
                 onClick={() => setIsEmailChangePopupOpen(true)}
                 disabled={isSavingProfile}
-                title={t('editProfile.emailChange.editTitle')}
+                title={
+                  hasAccountEmail(user)
+                    ? t('editProfile.emailChange.editTitle')
+                    : t('editProfile.emailChange.setEditTitle')
+                }
               >
                 <span className="username-action-icon">
                   <EditIcon color="#fff" size="24px" />
                 </span>
               </button>
             </div>
-            {!hasFlag(user, permissionFlags.EMAIL_VERIFIED) && (
+            {!hasAccountEmail(user) && (
+              <div
+                className="email-verification-message email-verification-message--compact"
+                role="button"
+                tabIndex={0}
+                onClick={() => setIsEmailChangePopupOpen(true)}
+                onKeyDown={(ev) => {
+                  if (ev.key === 'Enter' || ev.key === ' ') {
+                    ev.preventDefault();
+                    setIsEmailChangePopupOpen(true);
+                  }
+                }}
+              >
+                <span className="profile-banner-text">{t('editProfile.form.emailMissing.message')}</span>
+                <span className="email-verification-arrow">{t('editProfile.form.emailVerification.arrow')}</span>
+              </div>
+            )}
+            {hasAccountEmail(user) && !hasFlag(user, permissionFlags.EMAIL_VERIFIED) && (
               <div
                 className="email-verification-message email-verification-message--compact"
                 role="button"

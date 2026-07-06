@@ -1,0 +1,85 @@
+{
+  "meta": {
+    "title": "Tournament Management",
+    "description": "Manage tournament placements, name links, and reward frames"
+  },
+  "title": "Tournament Management",
+  "subtitle": "Create events, enter placements, resolve names, and attach avatar frame rewards.",
+  "tabs": {
+    "events": "Events",
+    "unresolved": "Unresolved names",
+    "import": "CSV import",
+    "series": "Series"
+  },
+  "subTabs": {
+    "details": "Details",
+    "tiers": "Tiers",
+    "placements": "Placements",
+    "rewards": "Rewards"
+  },
+  "searchPlaceholder": "Search tournaments…",
+  "allTracks": "All tracks",
+  "refresh": "Refresh",
+  "newTournament": "New tournament",
+  "editTournament": "Edit tournament",
+  "emptyList": "No tournaments yet. Create one or import a CSV.",
+  "save": "Save",
+  "delete": "Delete",
+  "selectTournamentFirst": "Select a tournament from the Events tab first.",
+  "addRow": "Add row",
+  "savePlacements": "Save placements",
+  "withdrew": "WD",
+  "autoLinkExact": "Auto-link exact matches",
+  "noUnresolved": "All placement names are linked.",
+  "addReward": "Add reward",
+  "syncEntitlements": "Sync entitlements",
+  "createSeries": "Create series",
+  "popup": {
+    "title": "Manage tournament",
+    "loadFailed": "Failed to load tournament",
+    "deleteConfirm": "Delete this tournament and all placements?",
+    "deleted": "Tournament deleted",
+    "deleteFailed": "Delete failed",
+    "placementsFailed": "Failed to save placements",
+    "rewardCreated": "Reward created",
+    "rewardFailed": "Failed to create reward",
+    "rewardDeleted": "Reward deleted",
+    "rewardDeleteFailed": "Failed to delete reward",
+    "syncSuccess": "Synced (+{{granted}} / -{{revoked}})",
+    "syncFailed": "Sync failed",
+    "unsavedConfirm": "You have unsaved changes. Discard them and leave?"
+  },
+  "visuals": {
+    "tournamentTitle": "Event visuals",
+    "eventIcon": "Event icon",
+    "defaultCardBg": "Default card background",
+    "tierIcon": "Tier icon",
+    "tierCardBg": "Tier card bg",
+    "noImage": "No Image",
+    "upload": "Upload",
+    "remove": "Remove",
+    "uploadSuccess": "Image uploaded",
+    "uploadFailed": "Upload failed",
+    "removed": "Image removed",
+    "removeFailed": "Failed to remove image"
+  },
+  "tiers": {
+    "code": "Code",
+    "label": "Label",
+    "kind": "Kind",
+    "rankWeight": "Rank weight",
+    "color": "Color",
+    "podium": "Podium",
+    "addTier": "Add tier",
+    "save": "Save tiers",
+    "saved": "Tiers saved",
+    "saveFailed": "Failed to save tiers",
+    "saveFirst": "Save tier first"
+  },
+  "form": {
+    "errors": {
+      "shortNameRequired": "Short name is required.",
+      "saveFailed": "Save failed"
+    }
+  }
+}

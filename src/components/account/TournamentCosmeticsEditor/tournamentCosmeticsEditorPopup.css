@@ -1,0 +1,384 @@
+.tournament-cosmetics-editor-popup-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  padding-top: calc(var(--navbar-height) + 1rem);
+  background: var(--color-black-t75);
+}
+
+.tournament-cosmetics-editor-popup {
+  display: flex;
+  flex-direction: column;
+  width: min(52rem, 100%);
+  max-height: calc(100vh - var(--navbar-height) - 2rem);
+  border-radius: 10px;
+  background: var(--color-bg-secondary, #1a1a1a);
+  border: 1px solid var(--color-white-t10);
+  box-shadow: 0 8px 32px var(--color-black-t50);
+  overflow: hidden;
+}
+
+.tournament-cosmetics-editor-popup__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--color-white-t10);
+  flex-shrink: 0;
+}
+
+.tournament-cosmetics-editor-popup__title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-white);
+}
+
+.tournament-cosmetics-editor-popup__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 1rem 1.25rem;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.tournament-cosmetics-editor-popup__panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 0.75rem;
+  border-radius: 0.55rem;
+  border: 1px solid var(--color-white-t10);
+  background: var(--color-black-t30);
+}
+
+.tournament-cosmetics-editor-popup__display-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 0.85rem;
+}
+
+.tournament-cosmetics-editor-popup__display-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.tournament-cosmetics-editor-popup__placements-panel {
+  flex: 1;
+  min-height: 0;
+}
+
+.tournament-cosmetics-editor-popup__placements-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.tournament-cosmetics-editor-popup__section-title {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-white);
+}
+
+.tournament-cosmetics-editor-popup__hint {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--color-white-t60);
+}
+
+.tournament-cosmetics-editor-popup__layout-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.tournament-cosmetics-editor-popup__layout-option,
+.tournament-cosmetics-editor-popup__frame-option {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  justify-content: center;
+  align-items: center;
+  padding: 0.55rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-white-t10);
+  background: var(--color-black-t70);
+  color: var(--color-white);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.tournament-cosmetics-editor-popup__layout-option:hover:not(:disabled),
+.tournament-cosmetics-editor-popup__frame-option:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--color-purple-1) 45%, transparent);
+  background: color-mix(in srgb, var(--color-purple-1) 12%, var(--color-black-t70));
+}
+
+.tournament-cosmetics-editor-popup__layout-option.is-selected,
+.tournament-cosmetics-editor-popup__frame-option.is-selected {
+  border-color: var(--color-purple-1);
+  background: color-mix(in srgb, var(--color-purple-1) 16%, var(--color-black-t70));
+}
+
+.tournament-cosmetics-editor-popup__option-label {
+  font-size: 0.8125rem;
+  text-align: center;
+  color: var(--color-white-t70);
+}
+
+.tournament-cosmetics-editor-popup__frames-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr));
+  gap: 0.6rem;
+}
+
+.tournament-cosmetics-editor-popup__frame-thumb {
+  width: 3.5rem;
+  height: 3.5rem;
+  margin: 0 auto;
+  border-radius: 50%;
+  object-fit: contain;
+  background: var(--color-black);
+}
+
+.tournament-cosmetics-editor-popup__placement-lists {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.tournament-cosmetics-editor-popup__placement-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.tournament-cosmetics-editor-popup__placement-row {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.45rem 0.55rem;
+  border-radius: 0.45rem;
+  border: 1px solid var(--color-white-t10);
+  background: var(--color-black-t70);
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.tournament-cosmetics-editor-popup__placement-row.is-pinned {
+  border-color: color-mix(in srgb, var(--color-purple-1) 45%, transparent);
+}
+
+.tournament-cosmetics-editor-popup__placement-row.is-selected {
+  border-color: var(--color-purple-1);
+  background: color-mix(in srgb, var(--color-purple-1) 12%, var(--color-black-t70));
+}
+
+.tournament-cosmetics-editor-popup__placement-row.is-hidden {
+  opacity: 0.72;
+}
+
+.tournament-cosmetics-editor-popup__placement-row.is-dragging {
+  border-color: var(--color-purple-1);
+  background: color-mix(in srgb, var(--color-purple-1) 14%, var(--color-black-t70));
+}
+
+.tournament-cosmetics-editor-popup [data-rbd-drag-handle-context-id] {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tournament-cosmetics-editor-popup__drag-handle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-white-t50);
+  cursor: grab;
+  touch-action: none;
+  border-radius: 0.25rem;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.tournament-cosmetics-editor-popup__drag-handle-grip {
+  font-size: 0.75rem;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.tournament-cosmetics-editor-popup__placement-row.is-dragging .tournament-cosmetics-editor-popup__drag-handle,
+.tournament-cosmetics-editor-popup__drag-handle:active {
+  cursor: grabbing;
+}
+
+.tournament-cosmetics-editor-popup__drag-handle:hover {
+  background: var(--color-white-t10);
+  color: var(--color-white-t80);
+}
+
+.tournament-cosmetics-editor-popup__drag-handle:focus-visible {
+  outline: 2px solid var(--btn-primary-light-hover);
+  outline-offset: 2px;
+}
+
+.tournament-cosmetics-editor-popup__drag-handle--spacer {
+  cursor: default;
+  touch-action: auto;
+}
+
+.tournament-cosmetics-editor-popup__placement-select {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex: 1;
+  min-width: 0;
+  padding: 0.15rem 0.25rem;
+  margin: -0.15rem 0;
+  border: none;
+  border-radius: 0.25rem;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.tournament-cosmetics-editor-popup__placement-select:hover {
+  background: var(--color-white-t10);
+}
+
+.tournament-cosmetics-editor-popup__placement-select:focus-visible {
+  outline: 2px solid var(--btn-primary-light-hover);
+  outline-offset: 2px;
+}
+
+.tournament-cosmetics-editor-popup__placement-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+  object-fit: contain;
+  border-radius: 0.25rem;
+}
+
+.tournament-cosmetics-editor-popup__placement-icon--placeholder {
+  background: var(--color-black);
+  border: 1px solid var(--color-white-t10);
+}
+
+.tournament-cosmetics-editor-popup__placement-label {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.875rem;
+  color: var(--color-white);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tournament-cosmetics-editor-popup__placement-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.tournament-cosmetics-editor-popup__icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border-radius: 0.35rem;
+  border: 1px solid var(--color-white-t10);
+  background: var(--color-black-t70);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.tournament-cosmetics-editor-popup__icon-btn:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--color-purple-1) 45%, transparent);
+  background: color-mix(in srgb, var(--color-purple-1) 12%, var(--color-black-t70));
+}
+
+.tournament-cosmetics-editor-popup__icon-btn.is-active {
+  border-color: var(--color-purple-1);
+  background: color-mix(in srgb, var(--color-purple-1) 16%, var(--color-black-t70));
+}
+
+.tournament-cosmetics-editor-popup__icon-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.tournament-cosmetics-editor-popup__hidden-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.tournament-cosmetics-editor-popup__hidden-title {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-white-t60);
+}
+
+.tournament-cosmetics-editor-popup__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.85rem 1.25rem;
+  border-top: 1px solid var(--color-white-t10);
+  flex-shrink: 0;
+}
+
+.tournament-cosmetics-editor-popup__footer-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.tournament-cosmetics-editor-popup__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.5rem;
+  padding: 0 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: inherit;
+  line-height: 1.2;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.tournament-cosmetics-editor-popup__btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.tournament-cosmetics-editor-popup__btn:focus-visible {
+  outline: 2px solid var(--btn-primary-light-hover);
+  outline-offset: 2px;
+}
+
+.tournament-cosmetics-editor-popup .tournament-placements__card.is-preview {
+  pointer-events: none;
+}

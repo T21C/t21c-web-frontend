@@ -52,6 +52,8 @@ const ROUTE_DOCUMENT_META = [
   { path: '/admin/backup', titleKey: 'backup.meta.title', descriptionKey: 'backup.meta.description', noindex: true },
   { path: '/admin/difficulties', titleKey: 'difficulty.meta.title', descriptionKey: 'difficulty.meta.description', noindex: true },
   { path: '/admin/creators', titleKey: 'creatorManagement.meta.title', descriptionKey: 'creatorManagement.meta.description', noindex: true },
+  { path: '/admin/tournaments', titleKey: 'tournamentManagement.meta.title', descriptionKey: 'tournamentManagement.meta.description', noindex: true },
+
   { path: '/admin/artists', titleKey: 'artistManagement.meta.title', descriptionKey: 'artistManagement.meta.description', noindex: true },
   { path: '/admin/songs', titleKey: 'songManagement.meta.title', descriptionKey: 'songManagement.meta.description', noindex: true },
   { path: '/admin/audit-log', titleKey: 'admin.meta.title', descriptionKey: 'admin.meta.description', noindex: true },

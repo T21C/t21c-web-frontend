@@ -59,6 +59,14 @@ const AdminPage = () => {
       icon: "🛠"
     },
     {
+      id: 'tournaments',
+      path: '/admin/tournaments',
+      title: t("admin.links.tournaments"),
+      description: t("admin.links.tournamentsDesc"),
+      icon: "🏅"
+    },
+
+    {
       id: 'backups',
       path: '/admin/backups',
       title: t("admin.links.backups"),

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";
 import api from "@/utils/api";
+import { ensureAuthSession, isNoTokenAuthError } from "@/utils/ensureAuthSession";
 import { getBioCanvasApiRoutes } from "@/utils/bioCanvasApi";
 import { getCdnErrorMessage } from "@/utils/uploadErrors";
 import { validateCdnBannerImageFile } from "@/utils/validateCdnBannerImage.js";
@@ -361,6 +362,8 @@ export function useBioCanvasEditor({
         return;
       }
 
+      await ensureAuthSession();
+
       const { data } = await api.patch(bioCanvasRoutes.patchCanvas(), { canvas: parsed });
       let nextAssets = data?.bioCanvasImageAssets ?? imageAssets;
 
@@ -388,10 +391,13 @@ export function useBioCanvasEditor({
       onCanvasDraftChange?.(undefined);
       toast.success(t(saveSuccessKey, { defaultValue: "Bio canvas saved" }), { id: toastId });
     } catch (err) {
-      const msg =
-        err?.response?.data?.error ||
-        getCdnErrorMessage(err) ||
-        t(saveErrorKey, { defaultValue: "Failed to save bio canvas" });
+      const msg = isNoTokenAuthError(err)
+        ? t("settings.bioCanvas.sessionExpired", {
+            defaultValue: "Your session expired. Please sign in again and retry.",
+          })
+        : err?.response?.data?.error ||
+          getCdnErrorMessage(err) ||
+          t(saveErrorKey, { defaultValue: "Failed to save bio canvas" });
       toast.error(msg, { id: toastId });
     } finally {
       setSaveBusy(false);

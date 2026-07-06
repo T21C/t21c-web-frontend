@@ -16,7 +16,9 @@
     "submissionSuspended": "제출 정지된 상태입니다",
     "banned": "계정이 제재된 상태입니다",
     "emailVerification": "이메일을 인증해야 제출할 수 있습니다. 아래 버튼을 눌러 인증 페이지로 이동하세요",
+    "addEmail": "제출하려면 먼저 이메일 주소를 추가해야 합니다. 아래 버튼을 눌러 계정 설정에서 추가하세요.",
     "contact": "이것이 오류로 여겨진다면 Discord로 문의하세요",
-    "verifyEmail": "이메일 인증"
+    "verifyEmail": "이메일 인증",
+    "addEmailButton": "이메일 추가"
   }
 }

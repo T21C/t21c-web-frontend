@@ -9,6 +9,7 @@ import { buildStaticPageMeta } from '@/utils/meta';
 import { useMemo } from 'react';
 import { useAuth } from "@/contexts/AuthContext";
 import { hasAnyFlag, hasFlag, permissionFlags } from "@/utils/UserPermissions";
+import { hasAccountEmail } from "@/utils/accountEmail";
 
 const SubmissionPage = () => {
   const { t } = useTranslation('pages');
@@ -64,9 +65,22 @@ const SubmissionPage = () => {
         </div>
       ) : !hasFlag(user, permissionFlags.EMAIL_VERIFIED) ? (
         <div className="email-not-verified banner">
-          <span className="banner-text verify-email">{t('submission.banner.emailVerification')}</span>
+          <span className="banner-text verify-email">
+            {hasAccountEmail(user)
+              ? t('submission.banner.emailVerification')
+              : t('submission.banner.addEmail')}
+          </span>
           <span className="verify-email">
-            <button className="button btn-fill-primary" onClick={() => navigate('/profile/verify-email')}>{t('submission.banner.verifyEmail')}</button>
+            <button
+              className="button btn-fill-primary"
+              onClick={() =>
+                navigate(hasAccountEmail(user) ? '/profile/verify-email' : '/settings/account')
+              }
+            >
+              {hasAccountEmail(user)
+                ? t('submission.banner.verifyEmail')
+                : t('submission.banner.addEmailButton')}
+            </button>
           </span>
         </div>
       ) : (
