@@ -165,5 +165,8 @@
     "levels": "个关卡",
     "loading": "加载中…",
     "unknownOwner": "未知"
+  },
+  "tournamentAppearance": {
+    "header": "赛事收录"
   }
 } 

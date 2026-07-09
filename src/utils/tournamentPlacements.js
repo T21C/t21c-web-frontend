@@ -237,6 +237,32 @@ export function resolvePackHref(packRef) {
 }
 
 /**
+ * @param {any} appearance
+ * @returns {{ href: string | null, external: boolean }}
+ */
+export function resolveTournamentAppearanceHref(appearance) {
+  const tournament = appearance?.tournament;
+  if (!tournament) return { href: null, external: false };
+
+  const packHref = resolvePackHref(tournament.packRef);
+  if (packHref) return { href: packHref, external: false };
+
+  const externalUrl =
+    typeof tournament.externalUrl === "string" && tournament.externalUrl.trim()
+      ? tournament.externalUrl.trim()
+      : null;
+  if (externalUrl) return { href: externalUrl, external: true };
+
+  const youtubeUrl =
+    typeof tournament.youtubeUrl === "string" && tournament.youtubeUrl.trim()
+      ? tournament.youtubeUrl.trim()
+      : null;
+  if (youtubeUrl) return { href: youtubeUrl, external: true };
+
+  return { href: null, external: false };
+}
+
+/**
  * @param {number | null | undefined} levelId
  * @returns {string | null}
  */

@@ -208,6 +208,8 @@ export const routes = {
       byId: (id: string | number) => `/v2/database/levels/${enc(id)}`,
       byIdQuery: (id: string | number) => `/v2/database/levels/byId/${enc(id)}`,
       own: (id: string | number) => `/v2/database/levels/own/${enc(id)}`,
+      tournamentAppearances: (id: string | number) =>
+        `/v2/database/levels/${enc(id)}/tournament-appearances`,
       packs: {
         root: () => '/v2/database/levels/packs',
         favorites: () => '/v2/database/levels/packs/favorites',

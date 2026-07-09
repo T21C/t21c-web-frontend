@@ -165,5 +165,8 @@
     "levels": "levels",
     "loading": "Loading packs…",
     "unknownOwner": "Unknown"
+  },
+  "tournamentAppearance": {
+    "header": "Tournament Appearances"
   }
 } 

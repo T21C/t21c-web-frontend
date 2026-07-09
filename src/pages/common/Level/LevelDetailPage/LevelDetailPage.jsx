@@ -40,6 +40,7 @@ import {
   LikeIcon, 
   SteamIcon, 
   PackIcon, 
+  TournamentAppearanceIcon,
   ChartIcon, 
   MetronomeIcon, 
   SpeedIcon, 
@@ -66,6 +67,7 @@ import { toast } from 'react-hot-toast';
 import { ABILITIES, hasBit } from '@/utils/Abilities';
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { LevelPackViewModes } from "@/utils/constants";
+import { resolveTournamentAppearanceHref } from "@/utils/tournamentPlacements";
 import {
   getCurationTypesResolved,
   hasAbility,
@@ -676,6 +678,132 @@ const PackAppearanceDropdown = ({ packs, show, onClose, containerRef }) => {
   );
 };
 
+const TournamentAppearanceDropdown = ({ appearances, show, onClose, containerRef }) => {
+  const { t } = useTranslation(['pages', 'common']);
+  const panelRef = useRef(null);
+
+  const { panelStyle, placement, portalRoot } = usePortaledPanelAnchor({
+    open: show,
+    anchorRef: containerRef,
+    panelRef,
+    horizontalAlign: 'end',
+    reanchorDeps: [appearances?.length],
+    maxHeightCap: typeof window !== 'undefined' ? window.innerHeight * 0.7 : 640,
+  });
+
+  useEffect(() => {
+    if (!show) return;
+    const handlePointerDownCapture = (event) => {
+      if (containerRef?.current?.contains(event.target)) return;
+      if (panelRef?.current?.contains(event.target)) return;
+      onClose();
+    };
+    document.addEventListener('mousedown', handlePointerDownCapture, true);
+    return () => document.removeEventListener('mousedown', handlePointerDownCapture, true);
+  }, [show, onClose, containerRef]);
+
+  useEffect(() => {
+    if (!show) return;
+    const onKey = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [show, onClose]);
+
+  if (!show || !portalRoot) return null;
+  if (!appearances?.length) return null;
+
+  const renderRowContent = (appearance) => {
+    const tournament = appearance.tournament ?? {};
+    const tierLabel = appearance.tier?.label || appearance.tier?.code || '';
+    const tournamentName = tournament.fullName || tournament.shortName || '';
+    const iconUrl = tournament.iconUrl || appearance.tier?.iconUrl || null;
+
+    const metaParts = [tierLabel];
+    if (tournament.sortYear) {
+      metaParts.push(String(tournament.sortYear));
+    } else if (tournament.series?.name) {
+      metaParts.push(tournament.series.name);
+    }
+
+    return (
+      <>
+        <div className="tournament-appearance-icon">
+          {iconUrl ? (
+            <img src={iconUrl} alt="" className="tournament-appearance-icon-image" />
+          ) : (
+            <TournamentAppearanceIcon
+              color="var(--color-white)"
+              size="18px"
+              className="tournament-appearance-icon-placeholder"
+            />
+          )}
+        </div>
+        <div className="tournament-appearance-info">
+          <span className="tournament-appearance-name">{tournamentName}</span>
+          <span className="tournament-appearance-meta">{metaParts.filter(Boolean).join(' · ')}</span>
+        </div>
+      </>
+    );
+  };
+
+  return (
+    <Portal root={portalRoot}>
+    <div
+      ref={panelRef}
+      className={`tournament-appearance-dropdown ${PORTALED_PANEL_CLASS} portaled-panel--z-dropdown`}
+      data-placement={placement}
+      style={panelStyle}
+      role="dialog"
+      aria-label={t('levelDetail.tournamentAppearance.header')}
+    >
+      <div className="tournament-appearance-header">{t('levelDetail.tournamentAppearance.header')}</div>
+      <div className="tournament-appearance-list">
+        {appearances.map((appearance) => {
+          const { href, external } = resolveTournamentAppearanceHref(appearance);
+          const key = appearance.placementId ?? `${appearance.tournament?.id}-${appearance.tier?.code}`;
+
+          if (href && external) {
+            return (
+              <a
+                key={key}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="tournament-appearance-item"
+                onClick={onClose}
+              >
+                {renderRowContent(appearance)}
+              </a>
+            );
+          }
+
+          if (href) {
+            return (
+              <Link
+                key={key}
+                to={href}
+                className="tournament-appearance-item"
+                onClick={onClose}
+              >
+                {renderRowContent(appearance)}
+              </Link>
+            );
+          }
+
+          return (
+            <div key={key} className="tournament-appearance-item tournament-appearance-item--static">
+              {renderRowContent(appearance)}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+    </Portal>
+  );
+};
+
 const RerateHistoryDropdown = ({ show, onClose, rerateHistory, difficultyDict, containerRef, boundaryRef }) => {
   const { t } = useTranslation(['pages', 'common']);
   const panelRef = useRef(null);
@@ -858,10 +986,13 @@ const LevelDetailPage = ({ mockData = null }) => {
   const [isRefreshingLeaderboard, setIsRefreshingLeaderboard] = useState(false);
   const [showWeeklyAppearanceDropdown, setShowWeeklyAppearanceDropdown] = useState(false);
   const [showPackAppearanceDropdown, setShowPackAppearanceDropdown] = useState(false);
+  const [showTournamentAppearanceDropdown, setShowTournamentAppearanceDropdown] = useState(false);
   const [showToRatePendingDropdown, setShowToRatePendingDropdown] = useState(false);
   const [publicPackAppearances, setPublicPackAppearances] = useState([]);
+  const [publicTournamentAppearances, setPublicTournamentAppearances] = useState([]);
   const weeklyHeaderCornerSlotRef = useRef(null);
   const packHeaderCornerSlotRef = useRef(null);
+  const tournamentHeaderCornerSlotRef = useRef(null);
   const toRateHeaderCornerSlotRef = useRef(null);
   const rerateHistoryAnchorRef = useRef(null);
   const wrapperLevelRef = useRef(null);
@@ -872,6 +1003,10 @@ const LevelDetailPage = ({ mockData = null }) => {
 
   const closeWeeklyAppearanceDropdown = useCallback(() => setShowWeeklyAppearanceDropdown(false), []);
   const closePackAppearanceDropdown = useCallback(() => setShowPackAppearanceDropdown(false), []);
+  const closeTournamentAppearanceDropdown = useCallback(
+    () => setShowTournamentAppearanceDropdown(false),
+    [],
+  );
   const closeToRatePendingDropdown = useCallback(() => setShowToRatePendingDropdown(false), []);
 
   const sortArrowDirection = useMemo(() => {
@@ -1608,6 +1743,32 @@ const LevelDetailPage = ({ mockData = null }) => {
   }, [effectiveId, mockData]);
 
   useEffect(() => {
+    if (!effectiveId || mockData) {
+      setPublicTournamentAppearances([]);
+      return undefined;
+    }
+
+    let cancelled = false;
+
+    api
+      .get(routes.database.levels.tournamentAppearances(effectiveId))
+      .then((response) => {
+        if (cancelled) return;
+        const appearances = Array.isArray(response.data?.appearances)
+          ? response.data.appearances
+          : [];
+        setPublicTournamentAppearances(appearances);
+      })
+      .catch(() => {
+        if (!cancelled) setPublicTournamentAppearances([]);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [effectiveId, mockData]);
+
+  useEffect(() => {
     setActiveVideoIndex(0);
   }, [effectiveId, res?.level?.videoLink]);
 
@@ -2222,7 +2383,7 @@ const LevelDetailPage = ({ mockData = null }) => {
 
               <div className="level-detail-header-mobile-bar">
                 <div className="level-id mobile">#{effectiveId}</div>
-                {(res?.level?.curationSchedules?.length > 0 || res?.level?.toRate || publicPackAppearances.length > 0) && (
+                {(res?.level?.curationSchedules?.length > 0 || res?.level?.toRate || publicPackAppearances.length > 0 || publicTournamentAppearances.length > 0) && (
                   <div className="level-detail-header-corner-icons">
                     {res?.level?.curationSchedules?.length > 0 && (
                       <div ref={weeklyHeaderCornerSlotRef} className="header-corner-icon-slot">
@@ -2287,6 +2448,41 @@ const LevelDetailPage = ({ mockData = null }) => {
                           show={showPackAppearanceDropdown}
                           onClose={closePackAppearanceDropdown}
                           containerRef={packHeaderCornerSlotRef}
+                        />
+                      </div>
+                    )}
+                    {publicTournamentAppearances.length > 0 && (
+                      <div ref={tournamentHeaderCornerSlotRef} className="header-corner-icon-slot">
+                        <div
+                          className="header-corner-icon"
+                          role="button"
+                          tabIndex={0}
+                          aria-expanded={showTournamentAppearanceDropdown}
+                          aria-haspopup="dialog"
+                          aria-label={t('levelDetail.tournamentAppearance.header')}
+                          title={t('levelDetail.tournamentAppearance.header')}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowTournamentAppearanceDropdown((open) => !open);
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              setShowTournamentAppearanceDropdown((open) => !open);
+                            }
+                          }}
+                        >
+                          <TournamentAppearanceIcon
+                            color="#fff"
+                            size="20px"
+                            className="tournament-appearance-icon-icon"
+                          />
+                        </div>
+                        <TournamentAppearanceDropdown
+                          appearances={publicTournamentAppearances}
+                          show={showTournamentAppearanceDropdown}
+                          onClose={closeTournamentAppearanceDropdown}
+                          containerRef={tournamentHeaderCornerSlotRef}
                         />
                       </div>
                     )}

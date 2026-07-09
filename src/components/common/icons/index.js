@@ -39,6 +39,7 @@ import BilibiliIcon from './BilibiliIcon';
 import VideoLinkIcon from './VideoLinkIcon';
 import { DragHandleIcon } from './DragHandleIcon';
 import PackIcon from './PackIcon';
+import TournamentAppearanceIcon from './TournamentAppearanceIcon';
 import PinIcon from './PinIcon';
 import LockIcon from './LockIcon';
 import EyeIcon from './EyeIcon';
@@ -105,6 +106,7 @@ export {
     VideoLinkIcon,
     DragHandleIcon,
     PackIcon,
+    TournamentAppearanceIcon,
     PinIcon,
     LockIcon,
     EyeIcon,
