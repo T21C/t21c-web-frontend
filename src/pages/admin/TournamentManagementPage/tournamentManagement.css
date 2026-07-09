@@ -113,6 +113,13 @@
   cursor: default;
 }
 
+.tournament-mgmt-page__card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
 .tournament-mgmt-page__card-meta {
   display: flex;
   flex-wrap: wrap;

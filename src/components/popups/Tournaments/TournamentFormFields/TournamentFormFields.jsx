@@ -1,10 +1,12 @@
+import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { CustomSelect } from "@/components/common/selectors";
 import "../TournamentFormPopup/tournamentFormPopup.css";
 import {
+  buildStatusOptions,
+  buildTrackOptions,
   findOption,
-  STATUS_OPTIONS,
-  TEXT_FIELDS,
-  TRACK_OPTIONS,
+  TEXT_FIELD_KEYS,
 } from "../tournamentFormUtils";
 
 const TournamentFormFields = ({
@@ -16,14 +18,18 @@ const TournamentFormFields = ({
   idPrefix = "tm",
   classPrefix = "tournament-form-fields",
 }) => {
+  const { t } = useTranslation(["pages", "common"]);
+  const trackOptions = useMemo(() => buildTrackOptions(t), [t]);
+  const statusOptions = useMemo(() => buildStatusOptions(t), [t]);
+
   const updateField = (key, value) => onChange(key, value);
 
   return (
     <div className={`${classPrefix}__grid`}>
-      {TEXT_FIELDS.map(([key, label]) => (
+      {TEXT_FIELD_KEYS.map((key) => (
         <div className={`${classPrefix}__field`} key={key}>
           <label className={`${classPrefix}__label`} htmlFor={`${idPrefix}-${key}`}>
-            {label}
+            {t(`tournamentManagement.form.fields.${key}`)}
           </label>
           <input
             id={`${idPrefix}-${key}`}
@@ -35,9 +41,9 @@ const TournamentFormFields = ({
       ))}
       <div className={`${classPrefix}__field`}>
         <CustomSelect
-          label="Track"
-          options={TRACK_OPTIONS}
-          value={findOption(TRACK_OPTIONS, form.track)}
+          label={t("tournamentManagement.form.fields.track")}
+          options={trackOptions}
+          value={findOption(trackOptions, form.track)}
           onChange={(option) => updateField("track", option?.value ?? "player")}
           width="100%"
           isSearchable={false}
@@ -46,9 +52,9 @@ const TournamentFormFields = ({
       </div>
       <div className={`${classPrefix}__field`}>
         <CustomSelect
-          label="Status"
-          options={STATUS_OPTIONS}
-          value={findOption(STATUS_OPTIONS, form.status)}
+          label={t("tournamentManagement.form.fields.status")}
+          options={statusOptions}
+          value={findOption(statusOptions, form.status)}
           onChange={(option) => updateField("status", option?.value ?? "draft")}
           width="100%"
           isSearchable={false}
@@ -56,7 +62,7 @@ const TournamentFormFields = ({
       </div>
       <div className={`${classPrefix}__field`}>
         <CustomSelect
-          label="Series"
+          label={t("tournamentManagement.form.fields.series")}
           options={seriesOptions}
           value={findOption(seriesOptions, form.seriesId)}
           onChange={(option) => updateField("seriesId", option?.value ?? "")}
@@ -65,7 +71,7 @@ const TournamentFormFields = ({
       </div>
       <div className={`${classPrefix}__field`}>
         <CustomSelect
-          label="Tier template"
+          label={t("tournamentManagement.form.fields.tierTemplate")}
           options={tierTemplateOptions}
           value={findOption(tierTemplateOptions, form.tierTemplateId)}
           onChange={(option) => updateField("tierTemplateId", option?.value ?? "")}
@@ -81,7 +87,7 @@ const TournamentFormFields = ({
             checked={form.isHidden}
             onChange={(e) => updateField("isHidden", e.target.checked)}
           />
-          <span>Hidden</span>
+          <span>{t("tournamentManagement.form.fields.hidden")}</span>
         </label>
       </div>
       <div className={`${classPrefix}__field`}>
@@ -92,12 +98,12 @@ const TournamentFormFields = ({
             checked={form.isResultsFinal}
             onChange={(e) => updateField("isResultsFinal", e.target.checked)}
           />
-          <span>Results final</span>
+          <span>{t("tournamentManagement.form.fields.resultsFinal")}</span>
         </label>
       </div>
       <div className={`${classPrefix}__field ${classPrefix}__field--wide`}>
         <label className={`${classPrefix}__label`} htmlFor={`${idPrefix}-notes`}>
-          Notes
+          {t("tournamentManagement.form.fields.notes")}
         </label>
         <textarea
           id={`${idPrefix}-notes`}

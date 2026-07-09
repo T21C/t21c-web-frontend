@@ -96,7 +96,7 @@ const TournamentManagementPopup = ({
       const { data } = await api.get(routes.admin.tournaments.byId(tournamentId));
       applyDetailToState(data);
     } catch {
-      toast.error(t("tournamentManagement.popup.loadFailed"));
+      toast.error(t("tournamentManagement.popup.errors.loadFailed"));
       onClose();
     } finally {
       setLoading(false);
@@ -111,13 +111,13 @@ const TournamentManagementPopup = ({
 
   const rewardTierOptions = useMemo(
     () => [
-      { value: "", label: "Any (use max weight)" },
+      { value: "", label: t("tournamentManagement.popup.rewards.tierAny") },
       ...tierOptions.map((tier) => ({
         value: String(tier.id),
         label: `${tier.code} — ${tier.label}`,
       })),
     ],
-    [tierOptions],
+    [tierOptions, t],
   );
 
   const detailsDirty = useMemo(
@@ -186,7 +186,7 @@ const TournamentManagementPopup = ({
     const payload = buildTournamentPayload(form);
     try {
       await api.patch(routes.admin.tournaments.byId(tournamentId), payload);
-      toast.success(t("tournamentManagement.save"));
+      toast.success(t("tournamentManagement.popup.messages.saved"));
       await refreshDetail();
     } catch (e) {
       toast.error(e?.response?.data?.error || t("tournamentManagement.form.errors.saveFailed"));
@@ -197,11 +197,11 @@ const TournamentManagementPopup = ({
     if (!window.confirm(t("tournamentManagement.popup.deleteConfirm"))) return;
     try {
       await api.delete(routes.admin.tournaments.byId(tournamentId));
-      toast.success(t("tournamentManagement.popup.deleted"));
+      toast.success(t("tournamentManagement.popup.messages.deleted"));
       onUpdated?.();
       onClose();
     } catch {
-      toast.error(t("tournamentManagement.popup.deleteFailed"));
+      toast.error(t("tournamentManagement.popup.errors.deleteFailed"));
     }
   };
 
@@ -254,7 +254,7 @@ const TournamentManagementPopup = ({
           autoLink: true,
         },
       );
-      toast.success(t("tournamentManagement.savePlacements"));
+      toast.success(t("tournamentManagement.popup.messages.placementsSaved"));
       setDetail((prev) => {
         if (!prev) return prev;
         const next = { ...prev, placements: savedPlacements };
@@ -263,7 +263,7 @@ const TournamentManagementPopup = ({
       });
       onUpdated?.();
     } catch (e) {
-      toast.error(e?.response?.data?.error || t("tournamentManagement.popup.placementsFailed"));
+      toast.error(e?.response?.data?.error || t("tournamentManagement.popup.errors.placementsFailed"));
     }
   };
 
@@ -277,11 +277,11 @@ const TournamentManagementPopup = ({
         priority: Number(rewardForm.priority) || 0,
         rewardType: "avatar_frame",
       });
-      toast.success(t("tournamentManagement.popup.rewardCreated"));
+      toast.success(t("tournamentManagement.popup.messages.rewardCreated"));
       setRewardForm(EMPTY_REWARD_FORM);
       await loadDetail();
     } catch (e) {
-      toast.error(e?.response?.data?.error || t("tournamentManagement.popup.rewardFailed"));
+      toast.error(e?.response?.data?.error || t("tournamentManagement.popup.errors.rewardFailed"));
     }
   };
 
@@ -293,20 +293,20 @@ const TournamentManagementPopup = ({
       await api.post(routes.admin.tournaments.rewardAsset(rewardId), body, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      toast.success(t("tournamentManagement.visuals.uploadSuccess"));
+      toast.success(t("tournamentManagement.visuals.messages.uploadSuccess"));
       await loadDetail();
     } catch {
-      toast.error(t("tournamentManagement.visuals.uploadFailed"));
+      toast.error(t("tournamentManagement.visuals.errors.uploadFailed"));
     }
   };
 
   const deleteReward = async (rewardId) => {
     try {
       await api.delete(routes.admin.tournaments.reward(rewardId));
-      toast.success(t("tournamentManagement.popup.rewardDeleted"));
+      toast.success(t("tournamentManagement.popup.messages.rewardDeleted"));
       await loadDetail();
     } catch {
-      toast.error(t("tournamentManagement.popup.rewardDeleteFailed"));
+      toast.error(t("tournamentManagement.popup.errors.rewardDeleteFailed"));
     }
   };
 
@@ -316,13 +316,13 @@ const TournamentManagementPopup = ({
         routes.admin.tournaments.syncEntitlements(tournamentId),
       );
       toast.success(
-        t("tournamentManagement.popup.syncSuccess", {
+        t("tournamentManagement.popup.messages.syncSuccess", {
           granted: data.granted,
           revoked: data.revoked,
         }),
       );
     } catch {
-      toast.error(t("tournamentManagement.popup.syncFailed"));
+      toast.error(t("tournamentManagement.popup.errors.syncFailed"));
     }
   };
 
@@ -353,7 +353,9 @@ const TournamentManagementPopup = ({
                   <span className="tournament-management-popup__badge">{detail.track}</span>
                   <span className="tournament-management-popup__badge">{detail.status}</span>
                   {detail.isHidden ? (
-                    <span className="tournament-management-popup__badge">hidden</span>
+                    <span className="tournament-management-popup__badge">
+                      {t("tournamentManagement.hiddenBadge")}
+                    </span>
                   ) : null}
                 </div>
               ) : null}
@@ -381,7 +383,7 @@ const TournamentManagementPopup = ({
         <div className="tournament-management-popup__body">
           {loading ? (
             <p className="tournament-management-popup__loading">
-              {t("loading.default", { ns: "common", defaultValue: "Loading…" })}
+              {t("loading.generic", { ns: "common" })}
             </p>
           ) : null}
 
@@ -430,11 +432,11 @@ const TournamentManagementPopup = ({
               <table className="tournament-management-popup__placements-table">
                 <thead>
                   <tr>
-                    <th>Tier</th>
-                    <th>Name</th>
-                    <th>Link</th>
+                    <th>{t("tournamentManagement.popup.placements.tier")}</th>
+                    <th>{t("tournamentManagement.popup.placements.name")}</th>
+                    <th>{t("tournamentManagement.popup.placements.link")}</th>
                     <th>{t("tournamentManagement.withdrew")}</th>
-                    <th>Team</th>
+                    <th>{t("tournamentManagement.popup.placements.team")}</th>
                     <th />
                   </tr>
                 </thead>
@@ -539,7 +541,9 @@ const TournamentManagementPopup = ({
             <>
               <div className="tournament-management-popup__fields">
                 <div className="tournament-management-popup__field">
-                  <label htmlFor="tm-popup-rw-label">Label</label>
+                  <label htmlFor="tm-popup-rw-label">
+                    {t("tournamentManagement.popup.rewards.label")}
+                  </label>
                   <input
                     id="tm-popup-rw-label"
                     value={rewardForm.label}
@@ -550,7 +554,7 @@ const TournamentManagementPopup = ({
                 </div>
                 <div className="tournament-management-popup__field">
                   <CustomSelect
-                    label="Tier"
+                    label={t("tournamentManagement.popup.rewards.tier")}
                     options={rewardTierOptions}
                     value={findOption(rewardTierOptions, rewardForm.tierId)}
                     onChange={(option) =>
@@ -560,7 +564,9 @@ const TournamentManagementPopup = ({
                   />
                 </div>
                 <div className="tournament-management-popup__field">
-                  <label htmlFor="tm-popup-rw-max">Max rank weight</label>
+                  <label htmlFor="tm-popup-rw-max">
+                    {t("tournamentManagement.popup.rewards.maxRankWeight")}
+                  </label>
                   <input
                     id="tm-popup-rw-max"
                     value={rewardForm.maxRankWeight}
@@ -570,11 +576,13 @@ const TournamentManagementPopup = ({
                         maxRankWeight: e.target.value,
                       }))
                     }
-                    placeholder="e.g. 3 for podium"
+                    placeholder={t("tournamentManagement.popup.rewards.maxRankWeightPlaceholder")}
                   />
                 </div>
                 <div className="tournament-management-popup__field">
-                  <label htmlFor="tm-popup-rw-pri">Priority</label>
+                  <label htmlFor="tm-popup-rw-pri">
+                    {t("tournamentManagement.popup.rewards.priority")}
+                  </label>
                   <input
                     id="tm-popup-rw-pri"
                     value={rewardForm.priority}
@@ -605,7 +613,13 @@ const TournamentManagementPopup = ({
                       <strong>{reward.label}</strong>
                       <div className="tournament-management-popup__reward-meta">
                         <span>{reward.rewardType}</span>
-                        {reward.tierId ? <span>tier #{reward.tierId}</span> : null}
+                        {reward.tierId ? (
+                          <span>
+                            {t("tournamentManagement.popup.rewards.tierRef", {
+                              id: reward.tierId,
+                            })}
+                          </span>
+                        ) : null}
                         {reward.maxRankWeight != null ? (
                           <span>≤ {reward.maxRankWeight}</span>
                         ) : null}
@@ -616,7 +630,7 @@ const TournamentManagementPopup = ({
                       className="btn-fill-danger"
                       onClick={() => deleteReward(reward.id)}
                     >
-                      Delete
+                      {t("tournamentManagement.delete")}
                     </button>
                   </div>
                 ))}

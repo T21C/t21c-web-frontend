@@ -14,8 +14,9 @@ import {
   TournamentFormPopup,
   TournamentManagementPopup,
   buildTournamentPayload,
+  buildAllTracksOptions,
+  buildTrackOptions,
   findOption,
-  TRACK_OPTIONS,
 } from "@/components/popups/Tournaments";
 import "./tournamentManagement.css";
 
@@ -23,7 +24,7 @@ const GLOBAL_TABS = ["events", "unresolved", "import", "series"];
 
 const TournamentManagementPage = () => {
   const { user } = useAuth();
-  const { t } = useTranslation("pages");
+  const { t } = useTranslation(["pages", "common"]);
   const location = useLocation();
   const pageMeta = useMemo(
     () =>
@@ -48,6 +49,7 @@ const TournamentManagementPage = () => {
   const [importTrack, setImportTrack] = useState("player");
   const [importReport, setImportReport] = useState(null);
   const [seriesForm, setSeriesForm] = useState({ slug: "", name: "" });
+  const [editingSeriesId, setEditingSeriesId] = useState(null);
   const [showCreatePopup, setShowCreatePopup] = useState(false);
 
   const isAdmin = hasFlag(user, permissionFlags.SUPER_ADMIN);
@@ -78,38 +80,38 @@ const TournamentManagementPage = () => {
 
   useEffect(() => {
     if (!isAdmin) return;
-    loadTournaments().catch(() => toast.error("Failed to load tournaments"));
+    loadTournaments().catch(() =>
+      toast.error(t("tournamentManagement.errors.loadTournamentsFailed")),
+    );
     loadSeries().catch(() => {});
     loadTemplates().catch(() => {});
   }, [isAdmin, loadTournaments, loadSeries, loadTemplates]);
 
   useEffect(() => {
     if (!isAdmin || globalTab !== "unresolved") return;
-    loadUnresolved().catch(() => toast.error("Failed to load unresolved names"));
+    loadUnresolved().catch(() =>
+      toast.error(t("tournamentManagement.errors.loadUnresolvedFailed")),
+    );
   }, [isAdmin, globalTab, loadUnresolved]);
 
-  const trackFilterOptions = useMemo(
-    () => [
-      { value: "", label: t("tournamentManagement.allTracks") },
-      ...TRACK_OPTIONS,
-    ],
-    [t],
-  );
+  const trackFilterOptions = useMemo(() => buildAllTracksOptions(t), [t]);
+
+  const importTrackOptions = useMemo(() => buildTrackOptions(t), [t]);
 
   const seriesOptions = useMemo(
     () => [
-      { value: "", label: "None" },
+      { value: "", label: t("tournamentManagement.form.seriesNone") },
       ...seriesList.map((s) => ({ value: String(s.id), label: s.name })),
     ],
-    [seriesList],
+    [seriesList, t],
   );
 
   const tierTemplateOptions = useMemo(
     () => [
-      { value: "", label: "—" },
+      { value: "", label: t("tournamentManagement.form.tierTemplateNone") },
       ...templates.map((tpl) => ({ value: tpl.id, label: tpl.name })),
     ],
-    [templates],
+    [templates, t],
   );
 
   if (!isAdmin) {
@@ -133,7 +135,7 @@ const TournamentManagementPage = () => {
     const { data } = await api.post(routes.admin.tournaments.root(), {
       ...buildTournamentPayload(createForm, { forCreate: true }),
     });
-    toast.success("Tournament created");
+    toast.success(t("tournamentManagement.messages.tournamentCreated"));
     setShowCreatePopup(false);
     await loadTournaments();
     openManagePopup(data.id, "placements");
@@ -144,11 +146,13 @@ const TournamentManagementPage = () => {
       const { data } = await api.post(routes.admin.tournaments.resolveNames(), {
         track: trackFilter || undefined,
       });
-      toast.success(`Linked ${data.linked} names`);
+      toast.success(
+        t("tournamentManagement.messages.namesLinked", { count: data.linked }),
+      );
       await loadUnresolved();
       await loadTournaments();
     } catch {
-      toast.error("Resolve failed");
+      toast.error(t("tournamentManagement.errors.resolveFailed"));
     }
   };
 
@@ -161,10 +165,10 @@ const TournamentManagementPage = () => {
         playerId: track === "player" ? profile.id : null,
         creatorId: track === "creator" ? profile.id : null,
       });
-      toast.success("Linked");
+      toast.success(t("tournamentManagement.messages.placementLinked"));
       await loadUnresolved();
     } catch {
-      toast.error("Link failed");
+      toast.error(t("tournamentManagement.errors.linkFailed"));
     }
   };
 
@@ -179,21 +183,70 @@ const TournamentManagementPage = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setImportReport(data);
-      toast.success(dryRun ? "Dry run complete" : "Import complete");
+      toast.success(
+        dryRun
+          ? t("tournamentManagement.import.messages.dryRunComplete")
+          : t("tournamentManagement.import.messages.importComplete"),
+      );
       if (!dryRun) await loadTournaments();
     } catch (e) {
-      toast.error(e?.response?.data?.error || "Import failed");
+      toast.error(e?.response?.data?.error || t("tournamentManagement.import.errors.failed"));
     }
   };
 
-  const createSeries = async () => {
+  const resetSeriesForm = () => {
+    setSeriesForm({ slug: "", name: "" });
+    setEditingSeriesId(null);
+  };
+
+  const startEditSeries = (series) => {
+    setEditingSeriesId(series.id);
+    setSeriesForm({ slug: series.slug ?? "", name: series.name ?? "" });
+  };
+
+  const saveSeries = async () => {
+    const slug = seriesForm.slug.trim();
+    const name = seriesForm.name.trim();
+    if (!slug || !name) {
+      toast.error(t("tournamentManagement.series.errors.required"));
+      return;
+    }
+
     try {
-      await api.post(routes.admin.tournaments.series(), seriesForm);
-      toast.success("Series created");
-      setSeriesForm({ slug: "", name: "" });
+      if (editingSeriesId != null) {
+        await api.patch(routes.admin.tournaments.seriesById(editingSeriesId), {
+          slug,
+          name,
+        });
+        toast.success(t("tournamentManagement.series.messages.updated"));
+      } else {
+        await api.post(routes.admin.tournaments.series(), { slug, name });
+        toast.success(t("tournamentManagement.series.messages.created"));
+      }
+      resetSeriesForm();
       await loadSeries();
     } catch (e) {
-      toast.error(e?.response?.data?.error || "Failed to create series");
+      toast.error(
+        e?.response?.data?.error ||
+          (editingSeriesId != null
+            ? t("tournamentManagement.series.errors.updateFailed")
+            : t("tournamentManagement.series.errors.createFailed")),
+      );
+    }
+  };
+
+  const deleteSeries = async (series) => {
+    if (!window.confirm(t("tournamentManagement.series.deleteConfirm", { name: series.name }))) {
+      return;
+    }
+
+    try {
+      await api.delete(routes.admin.tournaments.seriesById(series.id));
+      toast.success(t("tournamentManagement.series.messages.deleted"));
+      if (editingSeriesId === series.id) resetSeriesForm();
+      await loadSeries();
+    } catch (e) {
+      toast.error(e?.response?.data?.error || t("tournamentManagement.series.errors.deleteFailed"));
     }
   };
 
@@ -273,7 +326,9 @@ const TournamentManagementPage = () => {
                     <span className="tournament-mgmt-page__badge">{item.track}</span>
                     <span className="tournament-mgmt-page__badge">{item.status}</span>
                     {item.isHidden ? (
-                      <span className="tournament-mgmt-page__badge">hidden</span>
+                      <span className="tournament-mgmt-page__badge">
+                        {t("tournamentManagement.hiddenBadge")}
+                      </span>
                     ) : null}
                     <span>{item.placementCount ?? 0} placements</span>
                   </div>
@@ -359,9 +414,9 @@ const TournamentManagementPage = () => {
           <div className="tournament-mgmt-page__fields">
             <div className="tournament-mgmt-page__field">
               <CustomSelect
-                label="Track"
-                options={TRACK_OPTIONS}
-                value={findOption(TRACK_OPTIONS, importTrack)}
+                label={t("tournamentManagement.import.track")}
+                options={importTrackOptions}
+                value={findOption(importTrackOptions, importTrack)}
                 onChange={(option) => setImportTrack(option?.value ?? "player")}
                 width="100%"
                 isSearchable={false}
@@ -370,7 +425,7 @@ const TournamentManagementPage = () => {
           </div>
           <div className="tournament-mgmt-page__actions">
             <label className="btn-fill-secondary">
-              Dry run CSV
+              {t("tournamentManagement.import.dryRun")}
               <input
                 type="file"
                 accept=".csv,text/csv"
@@ -379,7 +434,7 @@ const TournamentManagementPage = () => {
               />
             </label>
             <label className="btn-fill-primary">
-              Import CSV
+              {t("tournamentManagement.import.importCsv")}
               <input
                 type="file"
                 accept=".csv,text/csv"
@@ -400,7 +455,7 @@ const TournamentManagementPage = () => {
         <div className="tournament-mgmt-page__panel">
           <div className="tournament-mgmt-page__fields">
             <div className="tournament-mgmt-page__field">
-              <label htmlFor="series-slug">Slug</label>
+              <label htmlFor="series-slug">{t("tournamentManagement.series.slug")}</label>
               <input
                 id="series-slug"
                 value={seriesForm.slug}
@@ -410,7 +465,7 @@ const TournamentManagementPage = () => {
               />
             </div>
             <div className="tournament-mgmt-page__field">
-              <label htmlFor="series-name">Name</label>
+              <label htmlFor="series-name">{t("tournamentManagement.series.name")}</label>
               <input
                 id="series-name"
                 value={seriesForm.name}
@@ -421,21 +476,54 @@ const TournamentManagementPage = () => {
             </div>
           </div>
           <div className="tournament-mgmt-page__actions">
-            <button type="button" className="btn-fill-primary" onClick={createSeries}>
-              {t("tournamentManagement.createSeries")}
+            <button type="button" className="btn-fill-primary" onClick={saveSeries}>
+              {editingSeriesId != null
+                ? t("tournamentManagement.save")
+                : t("tournamentManagement.createSeries")}
             </button>
+            {editingSeriesId != null ? (
+              <button type="button" className="btn-fill-secondary" onClick={resetSeriesForm}>
+                {t("buttons.cancel", { ns: "common" })}
+              </button>
+            ) : null}
           </div>
           <div className="tournament-mgmt-page__list">
             {seriesList.map((s) => (
-              <div key={s.id} className="tournament-mgmt-page__card tournament-mgmt-page__card--static">
+              <div
+                key={s.id}
+                className={`tournament-mgmt-page__card tournament-mgmt-page__card--static${
+                  editingSeriesId === s.id ? " is-selected" : ""
+                }`}
+              >
                 <div>
                   <strong>{s.name}</strong>
                   <div className="tournament-mgmt-page__card-meta">
                     <span>{s.slug}</span>
                   </div>
                 </div>
+                <div className="tournament-mgmt-page__card-actions">
+                  <button
+                    type="button"
+                    className="btn-fill-secondary"
+                    onClick={() => startEditSeries(s)}
+                  >
+                    {t("buttons.edit", { ns: "common" })}
+                  </button>
+                  <button
+                    type="button"
+                    className="btn-fill-danger"
+                    onClick={() => deleteSeries(s)}
+                  >
+                    {t("tournamentManagement.delete")}
+                  </button>
+                </div>
               </div>
             ))}
+            {!seriesList.length ? (
+              <p className="tournament-mgmt-page__empty">
+                {t("tournamentManagement.series.empty")}
+              </p>
+            ) : null}
           </div>
         </div>
       )}

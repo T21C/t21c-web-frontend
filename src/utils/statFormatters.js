@@ -52,11 +52,14 @@ export function formatAccuracyRatio(ratio, { minDecimals = 2, withPercent = true
   // Rounding at INSPECT_DECIMALS may carry into 100 (e.g. 0.9999999999999).
   if (Number(intPart) >= 100) return `100${suffix}`;
 
-  let leadingNines = 0;
-  while (leadingNines < decRaw.length && decRaw[leadingNines] === "9") {
-    leadingNines += 1;
+  let keep = minDecimals;
+  if (intPart === "99") {
+    let leadingNines = 0;
+    while (leadingNines < decRaw.length && decRaw[leadingNines] === "9") {
+      leadingNines += 1;
+    }
+    keep = Math.min(INSPECT_DECIMALS, Math.max(minDecimals, leadingNines + 1));
   }
-  const keep = Math.min(INSPECT_DECIMALS, Math.max(minDecimals, leadingNines + 1));
   const decPart = decRaw.slice(0, keep).padEnd(keep, "0");
   return `${intPart}.${decPart}${suffix}`;
 }

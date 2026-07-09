@@ -8,12 +8,13 @@ import TournamentPlacementCard from "./TournamentPlacementCard";
 import "./tournamentPlacements.css";
 
 /**
- * @param {{ placements?: Array<any>, cardLayout?: string, defaultCollapsed?: boolean }} props
+ * @param {{ placements?: Array<any>, cardLayout?: string, defaultCollapsed?: boolean, sectionClassName?: string }} props
  */
 const TournamentPlacementsSection = ({
   placements = [],
   cardLayout = "default",
   defaultCollapsed = false,
+  sectionClassName = "player-page__section",
 }) => {
   const { t } = useTranslation("pages");
   const [collapsed, setCollapsed] = useState(defaultCollapsed);
@@ -25,7 +26,7 @@ const TournamentPlacementsSection = ({
   if (!list.length) return null;
 
   return (
-    <section className="player-page__section tournament-placements">
+    <section className={`${sectionClassName} tournament-placements`}>
       <div className="account-profile-page__section-title-row">
         <h2 className="account-profile-page__section-title">
           {t("profile.sections.tournaments.title")}

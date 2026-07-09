@@ -1,14 +1,63 @@
+export const TRACK_VALUES = ["player", "creator"];
+
+export const STATUS_VALUES = ["draft", "ongoing", "completed", "cancelled"];
+
+export const TIER_KIND_VALUES = [
+  "ordinal",
+  "bracket",
+  "round",
+  "stage",
+  "qualifier",
+  "custom",
+];
+
+export const TEXT_FIELD_KEYS = [
+  "shortName",
+  "fullName",
+  "aka",
+  "youtubeUrl",
+  "packRef",
+  "externalUrl",
+  "sortYear",
+  "organizers",
+];
+
+/** @deprecated Use buildTrackOptions(t) */
 export const TRACK_OPTIONS = [
   { value: "player", label: "Player" },
   { value: "creator", label: "Creator" },
 ];
 
+/** @deprecated Use buildStatusOptions(t) */
 export const STATUS_OPTIONS = [
   { value: "draft", label: "Draft" },
   { value: "ongoing", label: "Ongoing" },
   { value: "completed", label: "Completed" },
   { value: "cancelled", label: "Cancelled" },
 ];
+
+export const buildTrackOptions = (t) =>
+  TRACK_VALUES.map((value) => ({
+    value,
+    label: t(`tournamentManagement.form.tracks.${value}`),
+  }));
+
+export const buildStatusOptions = (t) =>
+  STATUS_VALUES.map((value) => ({
+    value,
+    label: t(`tournamentManagement.form.statuses.${value}`),
+  }));
+
+export const buildAllTracksOptions = (t) => [
+  { value: "", label: t("tournamentManagement.allTracks") },
+  ...buildTrackOptions(t),
+];
+
+export const buildTierKindOptions = (t) =>
+  TIER_KIND_VALUES.map((value) => ({
+    value,
+    label: t(`tournamentManagement.tiers.kindOptions.${value}`),
+  }));
 
 export const findOption = (options, value) =>
   options.find((opt) => opt.value === String(value ?? "")) ?? options[0];
@@ -60,14 +109,3 @@ export const buildTournamentPayload = (form, { forCreate = false } = {}) => {
 
   return payload;
 };
-
-export const TEXT_FIELDS = [
-  ["shortName", "Short name"],
-  ["fullName", "Full name"],
-  ["aka", "AKA"],
-  ["youtubeUrl", "YouTube"],
-  ["packRef", "Pack ref"],
-  ["externalUrl", "External URL"],
-  ["sortYear", "Sort year"],
-  ["organizers", "Organizers (comma-separated)"],
-];

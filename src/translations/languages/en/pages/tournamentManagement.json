@@ -34,34 +34,98 @@
   "addReward": "Add reward",
   "syncEntitlements": "Sync entitlements",
   "createSeries": "Create series",
+  "hiddenBadge": "Hidden",
+  "import": {
+    "track": "Track",
+    "dryRun": "Dry run CSV",
+    "importCsv": "Import CSV",
+    "messages": {
+      "dryRunComplete": "Dry run complete",
+      "importComplete": "Import complete"
+    },
+    "errors": {
+      "failed": "Import failed"
+    }
+  },
+  "series": {
+    "slug": "Slug",
+    "name": "Name",
+    "empty": "No series yet. Use the form above to add one.",
+    "deleteConfirm": "Delete \"{{name}}\"? Linked events will be unlinked and series-only rewards will be removed.",
+    "messages": {
+      "created": "Series created",
+      "updated": "Series updated",
+      "deleted": "Series deleted"
+    },
+    "errors": {
+      "required": "Slug and name are required.",
+      "createFailed": "Failed to create series",
+      "updateFailed": "Failed to update series",
+      "deleteFailed": "Failed to delete series"
+    }
+  },
+  "messages": {
+    "tournamentCreated": "Tournament created",
+    "namesLinked": "Linked {{count}} names",
+    "placementLinked": "Linked"
+  },
+  "errors": {
+    "loadTournamentsFailed": "Failed to load tournaments",
+    "loadUnresolvedFailed": "Failed to load unresolved names",
+    "resolveFailed": "Resolve failed",
+    "linkFailed": "Link failed"
+  },
   "popup": {
     "title": "Manage tournament",
-    "loadFailed": "Failed to load tournament",
     "deleteConfirm": "Delete this tournament and all placements?",
-    "deleted": "Tournament deleted",
-    "deleteFailed": "Delete failed",
-    "placementsFailed": "Failed to save placements",
-    "rewardCreated": "Reward created",
-    "rewardFailed": "Failed to create reward",
-    "rewardDeleted": "Reward deleted",
-    "rewardDeleteFailed": "Failed to delete reward",
-    "syncSuccess": "Synced (+{{granted}} / -{{revoked}})",
-    "syncFailed": "Sync failed",
-    "unsavedConfirm": "You have unsaved changes. Discard them and leave?"
+    "unsavedConfirm": "You have unsaved changes. Discard them and leave?",
+    "placements": {
+      "tier": "Tier",
+      "name": "Name",
+      "link": "Link",
+      "team": "Team"
+    },
+    "rewards": {
+      "label": "Label",
+      "tier": "Tier",
+      "tierAny": "Any (use max weight)",
+      "maxRankWeight": "Max rank weight",
+      "maxRankWeightPlaceholder": "e.g. 3 for podium",
+      "priority": "Priority",
+      "tierRef": "tier #{{id}}"
+    },
+    "messages": {
+      "saved": "Tournament saved",
+      "deleted": "Tournament deleted",
+      "placementsSaved": "Placements saved",
+      "rewardCreated": "Reward created",
+      "rewardDeleted": "Reward deleted",
+      "syncSuccess": "Synced (+{{granted}} / -{{revoked}})"
+    },
+    "errors": {
+      "loadFailed": "Failed to load tournament",
+      "deleteFailed": "Delete failed",
+      "placementsFailed": "Failed to save placements",
+      "rewardFailed": "Failed to create reward",
+      "rewardDeleteFailed": "Failed to delete reward",
+      "syncFailed": "Sync failed"
+    }
   },
   "visuals": {
     "tournamentTitle": "Event visuals",
     "eventIcon": "Event icon",
     "defaultCardBg": "Default card background",
     "tierIcon": "Tier icon",
-    "tierCardBg": "Tier card bg",
-    "noImage": "No Image",
-    "upload": "Upload",
-    "remove": "Remove",
-    "uploadSuccess": "Image uploaded",
-    "uploadFailed": "Upload failed",
-    "removed": "Image removed",
-    "removeFailed": "Failed to remove image"
+    "tierCardBg": "Tier card background",
+    "noImage": "No image",
+    "messages": {
+      "uploadSuccess": "Image uploaded",
+      "removed": "Image removed"
+    },
+    "errors": {
+      "uploadFailed": "Upload failed",
+      "removeFailed": "Failed to remove image"
+    }
   },
   "tiers": {
     "code": "Code",
@@ -72,11 +136,52 @@
     "podium": "Podium",
     "addTier": "Add tier",
     "save": "Save tiers",
-    "saved": "Tiers saved",
-    "saveFailed": "Failed to save tiers",
-    "saveFirst": "Save tier first"
+    "saveFirst": "Save tiers before uploading tier images",
+    "kindOptions": {
+      "ordinal": "Ordinal",
+      "bracket": "Bracket",
+      "round": "Round",
+      "stage": "Stage",
+      "qualifier": "Qualifier",
+      "custom": "Custom"
+    },
+    "messages": {
+      "saved": "Tiers saved"
+    },
+    "errors": {
+      "saveFailed": "Failed to save tiers"
+    }
   },
   "form": {
+    "fields": {
+      "shortName": "Short name",
+      "fullName": "Full name",
+      "aka": "AKA",
+      "youtubeUrl": "YouTube",
+      "packRef": "Pack ref",
+      "externalUrl": "External URL",
+      "sortYear": "Sort year",
+      "organizers": "Organizers (comma-separated)",
+      "track": "Track",
+      "status": "Status",
+      "series": "Series",
+      "tierTemplate": "Tier template",
+      "hidden": "Hidden",
+      "resultsFinal": "Results final",
+      "notes": "Notes"
+    },
+    "tracks": {
+      "player": "Player",
+      "creator": "Creator"
+    },
+    "statuses": {
+      "draft": "Draft",
+      "ongoing": "Ongoing",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "seriesNone": "None",
+    "tierTemplateNone": "—",
     "errors": {
       "shortNameRequired": "Short name is required.",
       "saveFailed": "Save failed"

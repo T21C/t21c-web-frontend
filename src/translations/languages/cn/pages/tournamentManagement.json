@@ -1,85 +1,190 @@
 {
   "meta": {
-    "title": "Tournament Management",
-    "description": "Manage tournament placements, name links, and reward frames"
+    "title": "赛事管理",
+    "description": "管理赛事名次、名称关联与头像框奖励"
   },
-  "title": "Tournament Management",
-  "subtitle": "Create events, enter placements, resolve names, and attach avatar frame rewards.",
+  "title": "赛事管理",
+  "subtitle": "创建赛事、录入名次、解析选手名称，并绑定头像框奖励。",
   "tabs": {
-    "events": "Events",
-    "unresolved": "Unresolved names",
-    "import": "CSV import",
-    "series": "Series"
+    "events": "赛事",
+    "unresolved": "未关联名称",
+    "import": "CSV 导入",
+    "series": "系列赛"
   },
   "subTabs": {
-    "details": "Details",
-    "tiers": "Tiers",
-    "placements": "Placements",
-    "rewards": "Rewards"
+    "details": "详情",
+    "tiers": "档位",
+    "placements": "名次",
+    "rewards": "奖励"
   },
-  "searchPlaceholder": "Search tournaments…",
-  "allTracks": "All tracks",
-  "refresh": "Refresh",
-  "newTournament": "New tournament",
-  "editTournament": "Edit tournament",
-  "emptyList": "No tournaments yet. Create one or import a CSV.",
-  "save": "Save",
-  "delete": "Delete",
-  "selectTournamentFirst": "Select a tournament from the Events tab first.",
-  "addRow": "Add row",
-  "savePlacements": "Save placements",
-  "withdrew": "WD",
-  "autoLinkExact": "Auto-link exact matches",
-  "noUnresolved": "All placement names are linked.",
-  "addReward": "Add reward",
-  "syncEntitlements": "Sync entitlements",
-  "createSeries": "Create series",
+  "searchPlaceholder": "搜索赛事……",
+  "allTracks": "全部赛道",
+  "refresh": "刷新",
+  "newTournament": "新建赛事",
+  "editTournament": "编辑赛事",
+  "emptyList": "暂无赛事。请新建或导入 CSV。",
+  "save": "保存",
+  "delete": "删除",
+  "selectTournamentFirst": "请先在「赛事」标签页中选择一个赛事。",
+  "addRow": "添加行",
+  "savePlacements": "保存名次",
+  "withdrew": "退赛",
+  "autoLinkExact": "自动关联完全匹配",
+  "noUnresolved": "所有名次名称均已关联。",
+  "addReward": "添加奖励",
+  "syncEntitlements": "同步权益",
+  "createSeries": "创建系列赛",
+  "hiddenBadge": "隐藏",
+  "import": {
+    "track": "赛道",
+    "dryRun": "试运行 CSV",
+    "importCsv": "导入 CSV",
+    "messages": {
+      "dryRunComplete": "试运行完成",
+      "importComplete": "导入完成"
+    },
+    "errors": {
+      "failed": "导入失败"
+    }
+  },
+  "series": {
+    "slug": "标识符",
+    "name": "名称",
+    "empty": "暂无系列赛。请使用上方表单添加。",
+    "deleteConfirm": "确定删除「{{name}}」？关联的赛事将解除关联系列，仅绑定该系列的奖励将被移除。",
+    "messages": {
+      "created": "系列赛创建成功",
+      "updated": "系列赛更新成功",
+      "deleted": "系列赛删除成功"
+    },
+    "errors": {
+      "required": "标识符和名称为必填项。",
+      "createFailed": "系列赛创建失败",
+      "updateFailed": "系列赛更新失败",
+      "deleteFailed": "系列赛删除失败"
+    }
+  },
+  "messages": {
+    "tournamentCreated": "赛事创建成功",
+    "namesLinked": "已关联 {{count}} 个名称",
+    "placementLinked": "已关联"
+  },
+  "errors": {
+    "loadTournamentsFailed": "赛事加载失败",
+    "loadUnresolvedFailed": "未关联名称加载失败",
+    "resolveFailed": "自动关联失败",
+    "linkFailed": "关联失败"
+  },
   "popup": {
-    "title": "Manage tournament",
-    "loadFailed": "Failed to load tournament",
-    "deleteConfirm": "Delete this tournament and all placements?",
-    "deleted": "Tournament deleted",
-    "deleteFailed": "Delete failed",
-    "placementsFailed": "Failed to save placements",
-    "rewardCreated": "Reward created",
-    "rewardFailed": "Failed to create reward",
-    "rewardDeleted": "Reward deleted",
-    "rewardDeleteFailed": "Failed to delete reward",
-    "syncSuccess": "Synced (+{{granted}} / -{{revoked}})",
-    "syncFailed": "Sync failed",
-    "unsavedConfirm": "You have unsaved changes. Discard them and leave?"
+    "title": "管理赛事",
+    "deleteConfirm": "确定删除此赛事及全部名次？",
+    "unsavedConfirm": "你有未保存的更改。确定放弃并离开？",
+    "placements": {
+      "tier": "档位",
+      "name": "名称",
+      "link": "关联",
+      "team": "队伍"
+    },
+    "rewards": {
+      "label": "标签",
+      "tier": "档位",
+      "tierAny": "任意（使用最大权重）",
+      "maxRankWeight": "最大排名权重",
+      "maxRankWeightPlaceholder": "例如：3 表示前三",
+      "priority": "优先级",
+      "tierRef": "档位 #{{id}}"
+    },
+    "messages": {
+      "saved": "赛事已保存",
+      "deleted": "赛事已删除",
+      "placementsSaved": "名次已保存",
+      "rewardCreated": "奖励已创建",
+      "rewardDeleted": "奖励已删除",
+      "syncSuccess": "已同步（+{{granted}} / -{{revoked}}）"
+    },
+    "errors": {
+      "loadFailed": "赛事加载失败",
+      "deleteFailed": "删除失败",
+      "placementsFailed": "名次保存失败",
+      "rewardFailed": "奖励创建失败",
+      "rewardDeleteFailed": "奖励删除失败",
+      "syncFailed": "同步失败"
+    }
   },
   "visuals": {
-    "tournamentTitle": "Event visuals",
-    "eventIcon": "Event icon",
-    "defaultCardBg": "Default card background",
-    "tierIcon": "Tier icon",
-    "tierCardBg": "Tier card bg",
-    "noImage": "No Image",
-    "upload": "Upload",
-    "remove": "Remove",
-    "uploadSuccess": "Image uploaded",
-    "uploadFailed": "Upload failed",
-    "removed": "Image removed",
-    "removeFailed": "Failed to remove image"
+    "tournamentTitle": "赛事视觉",
+    "eventIcon": "赛事图标",
+    "defaultCardBg": "默认卡片背景",
+    "tierIcon": "档位图标",
+    "tierCardBg": "档位卡片背景",
+    "noImage": "无图片",
+    "messages": {
+      "uploadSuccess": "图片上传成功",
+      "removed": "图片已移除"
+    },
+    "errors": {
+      "uploadFailed": "图片上传失败",
+      "removeFailed": "图片移除失败"
+    }
   },
   "tiers": {
-    "code": "Code",
-    "label": "Label",
-    "kind": "Kind",
-    "rankWeight": "Rank weight",
-    "color": "Color",
-    "podium": "Podium",
-    "addTier": "Add tier",
-    "save": "Save tiers",
-    "saved": "Tiers saved",
-    "saveFailed": "Failed to save tiers",
-    "saveFirst": "Save tier first"
+    "code": "代码",
+    "label": "标签",
+    "kind": "类型",
+    "rankWeight": "排名权重",
+    "color": "颜色",
+    "podium": "领奖台",
+    "addTier": "添加档位",
+    "save": "保存档位",
+    "saveFirst": "请先保存档位再上传图片",
+    "kindOptions": {
+      "ordinal": "名次",
+      "bracket": "Bracket",
+      "round": "轮次",
+      "stage": "阶段",
+      "qualifier": "预选赛",
+      "custom": "自定义"
+    },
+    "messages": {
+      "saved": "档位已保存"
+    },
+    "errors": {
+      "saveFailed": "档位保存失败"
+    }
   },
   "form": {
+    "fields": {
+      "shortName": "简称",
+      "fullName": "全称",
+      "aka": "别名",
+      "youtubeUrl": "YouTube",
+      "packRef": "谱面包引用",
+      "externalUrl": "外部链接",
+      "sortYear": "排序年份",
+      "organizers": "主办方（逗号分隔）",
+      "track": "赛道",
+      "status": "状态",
+      "series": "系列赛",
+      "tierTemplate": "档位模板",
+      "hidden": "隐藏",
+      "resultsFinal": "结果已定",
+      "notes": "备注"
+    },
+    "tracks": {
+      "player": "玩家",
+      "creator": "创作者"
+    },
+    "statuses": {
+      "draft": "草稿",
+      "ongoing": "进行中",
+      "completed": "已结束",
+      "cancelled": "已取消"
+    },
+    "seriesNone": "无",
+    "tierTemplateNone": "—",
     "errors": {
-      "shortNameRequired": "Short name is required.",
-      "saveFailed": "Save failed"
+      "shortNameRequired": "简称为必填项。",
+      "saveFailed": "保存失败"
     }
   }
 }

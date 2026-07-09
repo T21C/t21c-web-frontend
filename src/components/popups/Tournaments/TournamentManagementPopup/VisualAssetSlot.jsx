@@ -19,7 +19,7 @@ const VisualAssetSlot = ({
   onUpload,
   onRemove,
 }) => {
-  const { t } = useTranslation("pages");
+  const { t } = useTranslation(["pages", "common"]);
   const inputRef = useRef(null);
 
   const handleChange = (e) => {
@@ -69,7 +69,7 @@ const VisualAssetSlot = ({
       )}
       {url && onRemove && !disabled ? (
         <button type="button" className="btn-fill-danger" onClick={onRemove}>
-          {t("tournamentManagement.visuals.remove")}
+          {t("buttons.remove", { ns: "common" })}
         </button>
       ) : null}
     </div>

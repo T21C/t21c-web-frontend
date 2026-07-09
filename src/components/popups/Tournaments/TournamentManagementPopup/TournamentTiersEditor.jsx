@@ -8,14 +8,7 @@ import { CustomSelect } from "@/components/common/selectors";
 import VisualAssetSlot from "./VisualAssetSlot";
 import { serializeTierRows } from "./popupDirtyUtils";
 
-const KIND_OPTIONS = [
-  { value: "ordinal", label: "Ordinal" },
-  { value: "bracket", label: "Bracket" },
-  { value: "round", label: "Round" },
-  { value: "stage", label: "Stage" },
-  { value: "qualifier", label: "Qualifier" },
-  { value: "custom", label: "Custom" },
-];
+import { buildTierKindOptions } from "../tournamentFormUtils";
 
 const emptyTierRow = () => ({
   key: `new-${Date.now()}-${Math.random()}`,
@@ -48,7 +41,8 @@ const mapTierToRow = (tier) => ({
 });
 
 const TournamentTiersEditor = ({ tournamentId, detail, onRefresh, onDirtyChange }) => {
-  const { t } = useTranslation("pages");
+  const { t } = useTranslation(["pages", "common"]);
+  const kindOptions = useMemo(() => buildTierKindOptions(t), [t]);
   const [rows, setRows] = useState([]);
   const [saving, setSaving] = useState(false);
   const baselineRef = useRef("");
@@ -97,10 +91,10 @@ const TournamentTiersEditor = ({ tournamentId, detail, onRefresh, onDirtyChange 
           ? routes.admin.tournaments.icon(tournamentId)
           : routes.admin.tournaments.cardBackground(tournamentId);
       await postAsset(url, file);
-      toast.success(t("tournamentManagement.visuals.uploadSuccess"));
+      toast.success(t("tournamentManagement.visuals.messages.uploadSuccess"));
       await onRefresh?.();
     } catch (e) {
-      toast.error(e?.response?.data?.error || t("tournamentManagement.visuals.uploadFailed"));
+      toast.error(e?.response?.data?.error || t("tournamentManagement.visuals.errors.uploadFailed"));
     }
   };
 
@@ -112,10 +106,10 @@ const TournamentTiersEditor = ({ tournamentId, detail, onRefresh, onDirtyChange 
           ? routes.admin.tournaments.icon(tournamentId)
           : routes.admin.tournaments.cardBackground(tournamentId);
       await api.delete(url);
-      toast.success(t("tournamentManagement.visuals.removed"));
+      toast.success(t("tournamentManagement.visuals.messages.removed"));
       await onRefresh?.();
     } catch {
-      toast.error(t("tournamentManagement.visuals.removeFailed"));
+      toast.error(t("tournamentManagement.visuals.errors.removeFailed"));
     }
   };
 
@@ -127,10 +121,10 @@ const TournamentTiersEditor = ({ tournamentId, detail, onRefresh, onDirtyChange 
           ? routes.admin.tournaments.tierIcon(tournamentId, tierId)
           : routes.admin.tournaments.tierCardBackground(tournamentId, tierId);
       await postAsset(url, file);
-      toast.success(t("tournamentManagement.visuals.uploadSuccess"));
+      toast.success(t("tournamentManagement.visuals.messages.uploadSuccess"));
       await onRefresh?.();
     } catch (e) {
-      toast.error(e?.response?.data?.error || t("tournamentManagement.visuals.uploadFailed"));
+      toast.error(e?.response?.data?.error || t("tournamentManagement.visuals.errors.uploadFailed"));
     }
   };
 
@@ -154,10 +148,10 @@ const TournamentTiersEditor = ({ tournamentId, detail, onRefresh, onDirtyChange 
           cardBackgroundUrl: r.cardBackgroundUrl,
         }));
       await api.put(routes.admin.tournaments.tiers(tournamentId), { tiers });
-      toast.success(t("tournamentManagement.tiers.saved"));
+      toast.success(t("tournamentManagement.tiers.messages.saved"));
       await onRefresh?.();
     } catch (e) {
-      toast.error(e?.response?.data?.error || t("tournamentManagement.tiers.saveFailed"));
+      toast.error(e?.response?.data?.error || t("tournamentManagement.tiers.errors.saveFailed"));
     } finally {
       setSaving(false);
     }
@@ -238,8 +232,8 @@ const TournamentTiersEditor = ({ tournamentId, detail, onRefresh, onDirtyChange 
                 </td>
                 <td>
                   <CustomSelect
-                    options={KIND_OPTIONS}
-                    value={KIND_OPTIONS.find((o) => o.value === row.kind) ?? KIND_OPTIONS[5]}
+                    options={kindOptions}
+                    value={kindOptions.find((o) => o.value === row.kind) ?? kindOptions[5]}
                     onChange={(opt) => updateRow(row.key, { kind: opt?.value ?? "custom" })}
                     width="100%"
                     isSearchable={false}

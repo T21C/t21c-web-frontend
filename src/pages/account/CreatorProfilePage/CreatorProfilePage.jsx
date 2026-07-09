@@ -345,6 +345,7 @@ const CreatorProfilePage = () => {
         <TournamentPlacementsSection
           placements={profile?.tournamentPlacements}
           cardLayout={profile?.placementCardLayout}
+          sectionClassName="creator-profile-page__section"
         />
 
         {difficultyGraphData.length > 0 ? (

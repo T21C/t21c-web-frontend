@@ -1,85 +1,190 @@
 {
   "meta": {
-    "title": "Tournament Management",
-    "description": "Manage tournament placements, name links, and reward frames"
+    "title": "토너먼트 관리",
+    "description": "토너먼트 순위, 이름 연결, 아바타 프레임 보상을 관리합니다"
   },
-  "title": "Tournament Management",
-  "subtitle": "Create events, enter placements, resolve names, and attach avatar frame rewards.",
+  "title": "토너먼트 관리",
+  "subtitle": "이벤트를 만들고, 순위를 입력하고, 이름을 연결하고, 아바타 프레임 보상을 설정합니다.",
   "tabs": {
-    "events": "Events",
-    "unresolved": "Unresolved names",
-    "import": "CSV import",
-    "series": "Series"
+    "events": "이벤트",
+    "unresolved": "미연결 이름",
+    "import": "CSV 가져오기",
+    "series": "시리즈"
   },
   "subTabs": {
-    "details": "Details",
-    "tiers": "Tiers",
-    "placements": "Placements",
-    "rewards": "Rewards"
+    "details": "상세",
+    "tiers": "티어",
+    "placements": "순위",
+    "rewards": "보상"
   },
-  "searchPlaceholder": "Search tournaments…",
-  "allTracks": "All tracks",
-  "refresh": "Refresh",
-  "newTournament": "New tournament",
-  "editTournament": "Edit tournament",
-  "emptyList": "No tournaments yet. Create one or import a CSV.",
-  "save": "Save",
-  "delete": "Delete",
-  "selectTournamentFirst": "Select a tournament from the Events tab first.",
-  "addRow": "Add row",
-  "savePlacements": "Save placements",
-  "withdrew": "WD",
-  "autoLinkExact": "Auto-link exact matches",
-  "noUnresolved": "All placement names are linked.",
-  "addReward": "Add reward",
-  "syncEntitlements": "Sync entitlements",
-  "createSeries": "Create series",
+  "searchPlaceholder": "토너먼트 검색…",
+  "allTracks": "모든 트랙",
+  "refresh": "새로고침",
+  "newTournament": "새 토너먼트",
+  "editTournament": "토너먼트 편집",
+  "emptyList": "등록된 토너먼트가 없습니다. 새로 만들거나 CSV를 가져오세요.",
+  "save": "저장",
+  "delete": "삭제",
+  "selectTournamentFirst": "먼저 이벤트 탭에서 토너먼트를 선택하세요.",
+  "addRow": "행 추가",
+  "savePlacements": "순위 저장",
+  "withdrew": "기권",
+  "autoLinkExact": "정확히 일치하는 이름 자동 연결",
+  "noUnresolved": "모든 순위 이름이 연결되었습니다.",
+  "addReward": "보상 추가",
+  "syncEntitlements": "권한 동기화",
+  "createSeries": "시리즈 만들기",
+  "hiddenBadge": "숨김",
+  "import": {
+    "track": "트랙",
+    "dryRun": "CSV 시험 실행",
+    "importCsv": "CSV 가져오기",
+    "messages": {
+      "dryRunComplete": "시험 실행 완료",
+      "importComplete": "가져오기 완료"
+    },
+    "errors": {
+      "failed": "가져오기 실패"
+    }
+  },
+  "series": {
+    "slug": "슬러그",
+    "name": "이름",
+    "empty": "등록된 시리즈가 없습니다. 위 양식에서 추가하세요.",
+    "deleteConfirm": "\"{{name}}\" 시리즈를 삭제하시겠습니까? 연결된 이벤트의 시리즈 연결이 해제되고, 해당 시리즈 전용 보상은 제거됩니다.",
+    "messages": {
+      "created": "시리즈가 생성되었습니다",
+      "updated": "시리즈가 수정되었습니다",
+      "deleted": "시리즈가 삭제되었습니다"
+    },
+    "errors": {
+      "required": "슬러그와 이름은 필수입니다.",
+      "createFailed": "시리즈 생성에 실패했습니다",
+      "updateFailed": "시리즈 수정에 실패했습니다",
+      "deleteFailed": "시리즈 삭제에 실패했습니다"
+    }
+  },
+  "messages": {
+    "tournamentCreated": "토너먼트가 생성되었습니다",
+    "namesLinked": "{{count}}개의 이름이 연결되었습니다",
+    "placementLinked": "연결됨"
+  },
+  "errors": {
+    "loadTournamentsFailed": "토너먼트를 불러오지 못했습니다",
+    "loadUnresolvedFailed": "미연결 이름을 불러오지 못했습니다",
+    "resolveFailed": "자동 연결에 실패했습니다",
+    "linkFailed": "연결에 실패했습니다"
+  },
   "popup": {
-    "title": "Manage tournament",
-    "loadFailed": "Failed to load tournament",
-    "deleteConfirm": "Delete this tournament and all placements?",
-    "deleted": "Tournament deleted",
-    "deleteFailed": "Delete failed",
-    "placementsFailed": "Failed to save placements",
-    "rewardCreated": "Reward created",
-    "rewardFailed": "Failed to create reward",
-    "rewardDeleted": "Reward deleted",
-    "rewardDeleteFailed": "Failed to delete reward",
-    "syncSuccess": "Synced (+{{granted}} / -{{revoked}})",
-    "syncFailed": "Sync failed",
-    "unsavedConfirm": "You have unsaved changes. Discard them and leave?"
+    "title": "토너먼트 관리",
+    "deleteConfirm": "이 토너먼트와 모든 순위를 삭제하시겠습니까?",
+    "unsavedConfirm": "저장하지 않은 변경 사항이 있습니다. 버리고 나가시겠습니까?",
+    "placements": {
+      "tier": "티어",
+      "name": "이름",
+      "link": "연결",
+      "team": "팀"
+    },
+    "rewards": {
+      "label": "라벨",
+      "tier": "티어",
+      "tierAny": "전체 (최대 가중치 사용)",
+      "maxRankWeight": "최대 순위 가중치",
+      "maxRankWeightPlaceholder": "예: 시상대는 3",
+      "priority": "우선순위",
+      "tierRef": "티어 #{{id}}"
+    },
+    "messages": {
+      "saved": "토너먼트가 저장되었습니다",
+      "deleted": "토너먼트가 삭제되었습니다",
+      "placementsSaved": "순위가 저장되었습니다",
+      "rewardCreated": "보상이 생성되었습니다",
+      "rewardDeleted": "보상이 삭제되었습니다",
+      "syncSuccess": "동기화됨 (+{{granted}} / -{{revoked}})"
+    },
+    "errors": {
+      "loadFailed": "토너먼트를 불러오지 못했습니다",
+      "deleteFailed": "삭제 실패",
+      "placementsFailed": "순위 저장에 실패했습니다",
+      "rewardFailed": "보상 생성에 실패했습니다",
+      "rewardDeleteFailed": "보상 삭제에 실패했습니다",
+      "syncFailed": "동기화 실패"
+    }
   },
   "visuals": {
-    "tournamentTitle": "Event visuals",
-    "eventIcon": "Event icon",
-    "defaultCardBg": "Default card background",
-    "tierIcon": "Tier icon",
-    "tierCardBg": "Tier card bg",
-    "noImage": "No Image",
-    "upload": "Upload",
-    "remove": "Remove",
-    "uploadSuccess": "Image uploaded",
-    "uploadFailed": "Upload failed",
-    "removed": "Image removed",
-    "removeFailed": "Failed to remove image"
+    "tournamentTitle": "이벤트 비주얼",
+    "eventIcon": "이벤트 아이콘",
+    "defaultCardBg": "기본 카드 배경",
+    "tierIcon": "티어 아이콘",
+    "tierCardBg": "티어 카드 배경",
+    "noImage": "이미지 없음",
+    "messages": {
+      "uploadSuccess": "이미지가 업로드되었습니다",
+      "removed": "이미지가 제거되었습니다"
+    },
+    "errors": {
+      "uploadFailed": "업로드 실패",
+      "removeFailed": "이미지 제거 실패"
+    }
   },
   "tiers": {
-    "code": "Code",
-    "label": "Label",
-    "kind": "Kind",
-    "rankWeight": "Rank weight",
-    "color": "Color",
-    "podium": "Podium",
-    "addTier": "Add tier",
-    "save": "Save tiers",
-    "saved": "Tiers saved",
-    "saveFailed": "Failed to save tiers",
-    "saveFirst": "Save tier first"
+    "code": "코드",
+    "label": "라벨",
+    "kind": "종류",
+    "rankWeight": "순위 가중치",
+    "color": "색상",
+    "podium": "시상대",
+    "addTier": "티어 추가",
+    "save": "티어 저장",
+    "saveFirst": "티어 이미지를 업로드하기 전에 티어를 저장하세요",
+    "kindOptions": {
+      "ordinal": "순위",
+      "bracket": "브래킷",
+      "round": "라운드",
+      "stage": "스테이지",
+      "qualifier": "예선",
+      "custom": "사용자 지정"
+    },
+    "messages": {
+      "saved": "티어가 저장되었습니다"
+    },
+    "errors": {
+      "saveFailed": "티어 저장에 실패했습니다"
+    }
   },
   "form": {
+    "fields": {
+      "shortName": "짧은 이름",
+      "fullName": "전체 이름",
+      "aka": "별칭",
+      "youtubeUrl": "YouTube",
+      "packRef": "팩 참조",
+      "externalUrl": "외부 URL",
+      "sortYear": "정렬 연도",
+      "organizers": "주최 (쉼표로 구분)",
+      "track": "트랙",
+      "status": "상태",
+      "series": "시리즈",
+      "tierTemplate": "티어 템플릿",
+      "hidden": "숨김",
+      "resultsFinal": "결과 확정",
+      "notes": "메모"
+    },
+    "tracks": {
+      "player": "플레이어",
+      "creator": "크리에이터"
+    },
+    "statuses": {
+      "draft": "초안",
+      "ongoing": "진행 중",
+      "completed": "완료",
+      "cancelled": "취소됨"
+    },
+    "seriesNone": "없음",
+    "tierTemplateNone": "—",
     "errors": {
-      "shortNameRequired": "Short name is required.",
-      "saveFailed": "Save failed"
+      "shortNameRequired": "짧은 이름은 필수입니다.",
+      "saveFailed": "저장 실패"
     }
   }
 }
