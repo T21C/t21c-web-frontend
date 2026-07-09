@@ -7,7 +7,7 @@ import { resolveSubmissionVideoUrl } from "@/utils/resolveVideoUrl";
 import { useDebouncedRequest } from "@/hooks/useDebouncedRequest";
 import calcAcc from "@/utils/CalcAcc";
 import { formatAccuracyRatio } from "@/utils/statFormatters";
-import { getScoreV2 } from "@/utils/CalcScore";
+import { computePassScoreV2 } from "@/utils/scoreService";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { parseJudgements } from "@/utils/ParseJudgements";
 import { normalizeKeyCount, validateFeelingRating, validateNumber, validateSpeed } from "@/utils/Utility";
@@ -201,7 +201,7 @@ export function usePassCoreForm({
     } else if (!Object.values(passData).every((value) => value !== null)) {
       setScore(t(copy.scoreNeedInfo, { ns: copy.ns }));
     } else if (passData && lvl) {
-      setScore(getScoreV2(passData, lvl, difficultyDict).toFixed(2));
+      setScore(computePassScoreV2(passData, lvl, {}, difficultyDict).scoreV2.toFixed(2));
     } else {
       setScore(t(copy.scoreNoInfo, { ns: copy.ns }));
     }

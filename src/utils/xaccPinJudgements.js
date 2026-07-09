@@ -1,6 +1,7 @@
 // tuf-search: #xaccPinJudgements #judgements #xaccCurve
 import calcAcc from './CalcAcc.js'
-import { getScoreV2, scoreV2MtpFromMisses } from './CalcScore.js'
+import { computePassScoreV2 } from './scoreService.js'
+import { scoreV2MtpFromMisses } from './CalcScore.js'
 import { formatAccuracyRatio } from './statFormatters.js'
 
 /** Pass / submission judgement fields (string counts for inputs). */
@@ -114,9 +115,10 @@ export function scoreV2FromJudgementForm(
     isNoHoldTap = false,
 ) {
     const judgements = judgementFormToCalcArray(form)
-    const score = getScoreV2(
+    const { scoreV2: score } = computePassScoreV2(
         { speed, judgements, isNoHoldTap },
         levelData ?? {},
+        {},
         difficultyDict ?? {},
     )
     return Number.isFinite(score) && score > 0 ? score : 0

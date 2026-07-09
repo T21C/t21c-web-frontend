@@ -1,6 +1,6 @@
 // tuf-search: #scoreV2Curve #ScoreV2Curve
 import calcAcc from "./CalcAcc";
-import { getScoreV2 } from "./CalcScore";
+import { computePassScoreV2 } from "./scoreService.js";
 import {
   XACC_CURVE_DEFAULTS,
   resolveXaccCurveForLevelData,
@@ -277,9 +277,10 @@ function computePoint(
 ) {
   const calcJudgements = buildJudgements(misses, hitTiles, eDegraded, 0);
   const accuracy = calcAcc(calcJudgements);
-  const score = getScoreV2(
+  const { scoreV2: score } = computePassScoreV2(
     { speed, judgements: calcJudgements, isNoHoldTap },
     levelData,
+    {},
     difficultyDict,
   );
   if (!Number.isFinite(accuracy) || !Number.isFinite(score)) {
