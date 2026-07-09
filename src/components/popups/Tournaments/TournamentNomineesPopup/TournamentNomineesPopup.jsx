@@ -2,61 +2,45 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
-import api from "@/utils/api";
-import { routes } from "@/api/routes";
 import { CloseButton } from "@/components/common/buttons";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
+import {
+  getNomineeDisplayName,
+  invalidateNomineeCandidates,
+  useNomineeCandidates,
+} from "../useNomineeCandidates";
+import NomineeAvatar from "../TournamentManagementPopup/NomineeAvatar";
 import "./tournamentnomineespopup.css";
+
+const formatRoleLabel = (role) => {
+  if (!role) return "";
+  const normalized = String(role).toLowerCase();
+  if (normalized === "charter") return "Charter";
+  if (normalized === "vfxer") return "VFX";
+  return role;
+};
 
 const TournamentNomineesPopup = ({
   levelId,
-  placementId,
   creditedCreatorIds = null,
   onClose,
   onSave,
 }) => {
   const { t } = useTranslation(["pages", "common"]);
-  const [candidates, setCandidates] = useState([]);
+  const { candidates, loading, reload } = useNomineeCandidates(levelId);
   const [selectedIds, setSelectedIds] = useState(new Set());
-  const [loading, setLoading] = useState(true);
 
   useBodyScrollLock(true);
 
-  const loadCandidates = useCallback(async () => {
-    if (!levelId) {
-      setCandidates([]);
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const url = placementId
-        ? routes.admin.tournaments.placementNominees(placementId)
-        : routes.admin.tournaments.nomineeCandidates(levelId);
-      const { data } = await api.get(url);
-      const list = Array.isArray(data?.candidates)
-        ? data.candidates
-        : Array.isArray(data)
-          ? data
-          : [];
-      setCandidates(list);
-      const initialIds =
-        creditedCreatorIds === null
-          ? list.map((c) => c.creatorId ?? c.id)
-          : creditedCreatorIds;
-      setSelectedIds(new Set(initialIds.filter((id) => id != null)));
-    } catch {
-      toast.error(t("tournamentManagement.nominees.errors.loadFailed"));
-      setCandidates([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [levelId, placementId, creditedCreatorIds, t]);
-
   useEffect(() => {
-    loadCandidates();
-  }, [loadCandidates]);
+    if (!levelId || loading) return;
+
+    const initialIds =
+      creditedCreatorIds === null
+        ? candidates.map((c) => c.creatorId ?? c.id)
+        : creditedCreatorIds;
+    setSelectedIds(new Set(initialIds.filter((id) => id != null)));
+  }, [levelId, loading, candidates, creditedCreatorIds]);
 
   const selectedCount = selectedIds.size;
 
@@ -79,9 +63,9 @@ const TournamentNomineesPopup = ({
     });
   };
 
-  const selectAll = () => {
+  const selectAll = useCallback(() => {
     setSelectedIds(new Set(candidates.map((c) => c.creatorId ?? c.id)));
-  };
+  }, [candidates]);
 
   const clearAll = () => {
     setSelectedIds(new Set());
@@ -95,6 +79,7 @@ const TournamentNomineesPopup = ({
         : ids.length
           ? ids
           : [];
+    invalidateNomineeCandidates(levelId);
     onSave?.(filterValue);
     onClose();
   };
@@ -103,6 +88,13 @@ const TournamentNomineesPopup = ({
     if (e.target.classList.contains("tournament-nominees-popup")) {
       onClose();
     }
+  };
+
+  const handleReload = () => {
+    invalidateNomineeCandidates(levelId);
+    reload().catch(() => {
+      toast.error(t("tournamentManagement.nominees.errors.loadFailed"));
+    });
   };
 
   return (
@@ -141,24 +133,31 @@ const TournamentNomineesPopup = ({
           ) : null}
 
           {!loading && candidates.length ? (
-            <div className="tournament-nominees-popup__list">
+            <div className="tournament-nominees-popup__grid">
               {candidates.map((candidate) => {
                 const creatorId = candidate.creatorId ?? candidate.id;
                 const checked = selectedIds.has(creatorId);
+                const displayName = getNomineeDisplayName(candidate);
                 return (
-                  <label key={creatorId} className="tournament-nominees-popup__row">
+                  <label
+                    key={creatorId}
+                    className={`tournament-nominees-popup__card${checked ? " is-selected" : ""}`}
+                  >
                     <input
                       type="checkbox"
+                      className="tournament-nominees-popup__card-checkbox"
                       checked={checked}
                       onChange={() => toggleId(creatorId)}
                     />
-                    <span className="tournament-nominees-popup__row-label">
-                      <span className="tournament-nominees-popup__row-name">
-                        {candidate.name || candidate.creator?.name || `#${creatorId}`}
-                      </span>
+                    <NomineeAvatar
+                      candidate={candidate}
+                      className="tournament-nominees-popup__avatar"
+                    />
+                    <span className="tournament-nominees-popup__card-body">
+                      <span className="tournament-nominees-popup__card-name">{displayName}</span>
                       {candidate.role ? (
-                        <span className="tournament-nominees-popup__row-role">
-                          {candidate.role}
+                        <span className="tournament-nominees-popup__card-role">
+                          {formatRoleLabel(candidate.role)}
                         </span>
                       ) : null}
                     </span>
@@ -181,6 +180,11 @@ const TournamentNomineesPopup = ({
           <button type="button" className="btn-fill-secondary" onClick={clearAll}>
             {t("tournamentManagement.nominees.clearAll")}
           </button>
+          {!loading ? (
+            <button type="button" className="btn-fill-secondary" onClick={handleReload}>
+              {t("tournamentManagement.refresh")}
+            </button>
+          ) : null}
           <button type="button" className="btn-fill-primary" onClick={handleSave}>
             {t("tournamentManagement.nominees.save")}
           </button>

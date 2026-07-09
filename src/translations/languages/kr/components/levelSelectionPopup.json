@@ -1,18 +1,30 @@
 {
-  "title": "Add Level to Curation",
-  "titleAdd": "Select Level to Add",
-  "description": "Select a level to add to the curation list",
-  "descriptionAdd": "Select a level to add to curation with default settings",
+  "title": "큐레이션에 레벨 추가",
+  "titleAdd": "추가할 레벨 선택",
+  "description": "큐레이션 목록에 추가할 레벨을 선택하세요",
+  "descriptionAdd": "기본 설정으로 큐레이션에 추가할 레벨을 선택하세요",
   "filters": {
-    "search": "Search Levels",
-    "searchPlaceholder": "Search by song, artist, or creator..."
+    "search": "레벨 검색",
+    "searchPlaceholder": "곡, 아티스트 또는 크리에이터로 검색..."
   },
-  "loading": "Loading levels...",
-  "empty": "No levels found",
-  "create": "Create",
-  "selectLevel": "Select this level",
-  "createLevel": "Create curation for this level",
-  "creator": "Creator",
+  "loading": "레벨 불러오는 중...",
+  "empty": "레벨을 찾을 수 없습니다",
+  "create": "추가",
+  "selectLevel": "이 레벨 선택",
+  "createLevel": "이 레벨에 대한 큐레이션 만들기",
+  "creator": "크리에이터",
+  "pick": {
+    "title": "레벨 선택",
+    "description": "이 배치에 사용할 레벨을 검색하고 선택하세요.",
+    "select": "선택",
+    "selectTitle": "이 레벨 선택"
+  },
+  "pagination": {
+    "previous": "이전",
+    "next": "다음",
+    "page": "페이지",
+    "of": "/ {{total}}"
+  },
   "zipPicker": {
     "title": "이 제출에 사용할 채보 선택",
     "description": "압축 파일에 .adofai 채보가 여러 개 있습니다. 이 제출에 해당하는 채보를 선택하세요.",

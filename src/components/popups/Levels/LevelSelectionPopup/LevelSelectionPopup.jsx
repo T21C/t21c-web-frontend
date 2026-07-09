@@ -20,9 +20,21 @@ const LevelSelectionPopup = ({
   onSelect,
   levelFiles,
   curationTypes: _curationTypes,
+  variant = 'curation',
+  curatedTypesFilter = variant === 'pick' ? 'show' : 'hide',
 }) => {
   const { t } = useTranslation(['components', 'common']);
   const { difficultyDict } = useDifficultyContext();
+
+  const isPickVariant = variant === 'pick';
+  const titleKey = isPickVariant ? 'levelSelectionPopup.pick.title' : 'levelSelectionPopup.titleAdd';
+  const descriptionKey = isPickVariant
+    ? 'levelSelectionPopup.pick.description'
+    : 'levelSelectionPopup.descriptionAdd';
+  const selectLabelKey = isPickVariant ? 'levelSelectionPopup.pick.select' : 'levelSelectionPopup.create';
+  const selectTitleKey = isPickVariant
+    ? 'levelSelectionPopup.pick.selectTitle'
+    : 'levelSelectionPopup.createLevel';
 
   const zipPickerMode =
     Boolean(isOpen) &&
@@ -61,7 +73,7 @@ const LevelSelectionPopup = ({
         offset: (currentPage - 1) * LIMIT,
         limit: LIMIT,
         query: searchTerm,
-        curatedTypesFilter: 'hide',
+        curatedTypesFilter,
       });
 
       const response = await api.get(`${routes.database.levels.root()}?${params}`);
@@ -244,8 +256,8 @@ const LevelSelectionPopup = ({
         />
 
         <div className="level-selection-modal__header">
-          <h2>{t('levelSelectionPopup.titleAdd')}</h2>
-          <p>{t('levelSelectionPopup.descriptionAdd')}</p>
+          <h2>{t(titleKey)}</h2>
+          <p>{t(descriptionKey)}</p>
         </div>
 
         <div className="level-selection-modal__filters">
@@ -299,9 +311,9 @@ const LevelSelectionPopup = ({
                   <button
                     className="level-selection-modal__select-btn"
                     onClick={() => handleLevelSelect(level)}
-                    title={t('levelSelectionPopup.createLevel')}
+                    title={t(selectTitleKey)}
                   >
-                    {t('levelSelectionPopup.create')}
+                    {t(selectLabelKey)}
                   </button>
                 </div>
               </div>
@@ -317,10 +329,10 @@ const LevelSelectionPopup = ({
               className="level-selection-modal__pagination-btn"
               type="button"
             >
-              Previous
+              {t('levelSelectionPopup.pagination.previous')}
             </button>
             <div className="level-selection-modal__page-controls">
-              <span>Page </span>
+              <span>{t('levelSelectionPopup.pagination.page')} </span>
               <input
                 type="number"
                 max={totalPages}
@@ -329,7 +341,7 @@ const LevelSelectionPopup = ({
                 onBlur={handlePageInputBlur}
                 className="level-selection-modal__page-input"
               />
-              <span> of {totalPages}</span>
+              <span> {t('levelSelectionPopup.pagination.of', { total: totalPages })}</span>
             </div>
             <button
               onClick={handleNextPage}
@@ -337,7 +349,7 @@ const LevelSelectionPopup = ({
               className="level-selection-modal__pagination-btn"
               type="button"
             >
-              Next
+              {t('levelSelectionPopup.pagination.next')}
             </button>
           </div>
         )}

@@ -232,7 +232,7 @@
 .tournament-management-popup__placements-table td {
   border-bottom: 1px solid color-mix(in srgb, var(--color-white) 10%, transparent);
   padding: 0.35rem 0.4rem;
-  text-align: left;
+  text-align: center;
   vertical-align: middle;
 }
 
@@ -241,27 +241,200 @@
   min-width: 4rem;
 }
 
+.tournament-management-popup__placements-table .tournament-management-popup__col-tier {
+  width: 5.25rem;
+}
+
+.tournament-management-popup__placements-table .tournament-management-popup__col-mode {
+  width: 7.5rem;
+}
+
+.tournament-management-popup__placements-table .tournament-management-popup__col-withdrew {
+  width: 6.5rem;
+}
+
+.tournament-management-popup__placements-table .tournament-management-popup__col-name-level {
+  min-width: 14rem;
+}
+
+.tournament-management-popup__tier-code-input {
+  width: 3rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.tournament-management-popup__col-mode .custom-select-container {
+  width: 7rem;
+  min-width: 7rem;
+}
+
+.tournament-management-popup__col-withdrew input {
+  width: auto;
+  min-width: 0;
+}
+
+.tournament-management-popup__level-preview {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1.4fr) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.tournament-management-popup__level-preview--empty {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.tournament-management-popup__level-preview-placeholder {
+  font-size: 0.85rem;
+  color: var(--color-gray-2);
+}
+
+.tournament-management-popup__level-preview-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tournament-management-popup__level-preview-icon img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+
+.tournament-management-popup__level-preview-song,
+.tournament-management-popup__level-preview-creator {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.tournament-management-popup__level-exp {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--color-white-t80);
+}
+
+.tournament-management-popup__level-desc {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.25;
+}
+
+.tournament-management-popup__level-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid var(--color-white-t20);
+  border-radius: 0.4rem;
+  background: var(--color-black-t70);
+  color: var(--color-white);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.tournament-management-popup__level-edit-btn:hover {
+  background: color-mix(in srgb, var(--color-purple-1) 22%, var(--color-black));
+  border-color: color-mix(in srgb, var(--color-purple-1) 55%, transparent);
+}
+
+.tournament-management-popup__col-linked {
+  min-width: 8rem;
+}
+
+.tournament-management-popup__nominees-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.tournament-management-popup__nominees-avatar-stack {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  min-height: 2rem;
+  flex: 1;
+}
+
+.tournament-management-popup__nominees-loading {
+  font-size: 0.78rem;
+  color: var(--color-gray-2);
+}
+
+.tournament-management-popup__nominee-avatar-item {
+  position: relative;
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  z-index: calc(100 - var(--stack-index, 0));
+}
+
+.tournament-management-popup__nominees-avatar-stack > :not(:first-child):not(:last-child) {
+  margin-left: -0.7rem;
+}
+
+.tournament-management-popup__nominee-avatar {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--color-black-t70);
+  box-sizing: border-box;
+}
+
+.tournament-management-popup__nominee-avatar-more {
+  position: relative;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.4rem;
+  z-index: calc(100 - var(--stack-index, 0));
+  color: var(--color-gray-2);
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.tournament-management-popup__nominees-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid var(--color-white-t20);
+  border-radius: 0.4rem;
+  background: var(--color-black-t70);
+  color: var(--color-white);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.tournament-management-popup__nominees-edit-btn:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-purple-1) 22%, var(--color-black));
+  border-color: color-mix(in srgb, var(--color-purple-1) 55%, transparent);
+}
+
+.tournament-management-popup__nominees-edit-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
 .tournament-management-popup__placements-table .btn-fill-danger,
 .tournament-management-popup__placements-table .btn-fill-secondary {
   padding: 0.25rem 0.55rem;
   min-width: 2rem;
   font-size: 0.8rem;
-}
-
-.tournament-management-popup__level-cell {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  min-width: 8rem;
-}
-
-.tournament-management-popup__level-label {
-  font-size: 0.82rem;
-  color: var(--color-gray-2);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 10rem;
 }
 
 .tournament-management-popup__muted {

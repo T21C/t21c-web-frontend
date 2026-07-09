@@ -1,5 +1,3 @@
-export const TRACK_VALUES = ["player", "creator"];
-
 export const STATUS_VALUES = ["draft", "ongoing", "completed", "cancelled"];
 
 export const PLACEMENT_MODE_VALUES = ["profile", "level"];
@@ -25,12 +23,6 @@ export const TEXT_FIELD_KEYS = [
   "organizers",
 ];
 
-/** @deprecated Use buildTrackOptions(t) */
-export const TRACK_OPTIONS = [
-  { value: "player", label: "Player" },
-  { value: "creator", label: "Creator" },
-];
-
 /** @deprecated Use buildStatusOptions(t) */
 export const STATUS_OPTIONS = [
   { value: "draft", label: "Draft" },
@@ -39,22 +31,11 @@ export const STATUS_OPTIONS = [
   { value: "cancelled", label: "Cancelled" },
 ];
 
-export const buildTrackOptions = (t) =>
-  TRACK_VALUES.map((value) => ({
-    value,
-    label: t(`tournamentManagement.form.tracks.${value}`),
-  }));
-
 export const buildStatusOptions = (t) =>
   STATUS_VALUES.map((value) => ({
     value,
     label: t(`tournamentManagement.form.statuses.${value}`),
   }));
-
-export const buildAllTracksOptions = (t) => [
-  { value: "", label: t("tournamentManagement.allTracks") },
-  ...buildTrackOptions(t),
-];
 
 export const buildTierKindOptions = (t) =>
   TIER_KIND_VALUES.map((value) => ({
@@ -81,7 +62,6 @@ export const emptyTournamentForm = () => ({
   shortName: "",
   fullName: "",
   aka: "",
-  track: "player",
   seriesId: "",
   status: "draft",
   isHidden: false,
@@ -100,7 +80,6 @@ export const buildTournamentPayload = (form, { forCreate = false } = {}) => {
     shortName: form.shortName.trim(),
     fullName: form.fullName.trim() || null,
     aka: form.aka.trim() || null,
-    track: form.track,
     seriesId: form.seriesId === "" ? null : Number(form.seriesId),
     status: form.status,
     isHidden: form.isHidden,

@@ -13,6 +13,18 @@
   "selectLevel": "Select this level",
   "createLevel": "Create curation for this level",
   "creator": "Creator",
+  "pick": {
+    "title": "Select level",
+    "description": "Search and choose a level for this placement.",
+    "select": "Select",
+    "selectTitle": "Select this level"
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page",
+    "of": "of {{total}}"
+  },
   "zipPicker": {
     "title": "Choose the chart for this submission",
     "description": "Your zip contains multiple .adofai charts. Select the one that matches this submission.",

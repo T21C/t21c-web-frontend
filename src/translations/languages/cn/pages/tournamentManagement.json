@@ -8,7 +8,7 @@
   "tabs": {
     "events": "赛事",
     "unresolved": "未关联名称",
-    "import": "CSV 导入",
+    "import": "导入",
     "series": "系列赛"
   },
   "subTabs": {
@@ -18,7 +18,6 @@
     "cosmetics": "装饰"
   },
   "searchPlaceholder": "搜索赛事……",
-  "allTracks": "全部赛道",
   "refresh": "刷新",
   "newTournament": "新建赛事",
   "editTournament": "编辑赛事",
@@ -42,7 +41,6 @@
     "dragHandle": "拖动以排序"
   },
   "import": {
-    "track": "赛道",
     "dryRun": "试运行 CSV",
     "importCsv": "导入 CSV",
     "messages": {
@@ -76,6 +74,20 @@
       "importFailed": "谱面包导入失败"
     }
   },
+  "packCreate": {
+    "open": "从谱面包导入",
+    "title": "从谱面包创建赛事",
+    "subtitle": "从谱面包创建关卡模式赛事并打开编辑。",
+    "packRef": "谱面包引用",
+    "create": "创建赛事",
+    "messages": {
+      "created": "已从谱面包创建赛事"
+    },
+    "errors": {
+      "packRefRequired": "谱面包引用为必填项。",
+      "createFailed": "从谱面包创建赛事失败"
+    }
+  },
   "nominees": {
     "title": "选择提名",
     "allSelected": "已选全部符合条件的创作者（空筛选 = 同步时全员）",
@@ -100,7 +112,7 @@
         "title": "名次模式",
         "intro": "每行可继承赛事默认或单独覆盖。",
         "bullets": {
-          "profile": "<b>档案</b> — 关联玩家/创作者；关卡仅作佐证。",
+          "profile": "<b>档案</b> — 关联玩家；关卡仅作佐证。",
           "level": "<b>关卡</b> — 同步后扩展为关卡上的创作者。",
           "inherit": "<b>继承</b> — 使用详情中的赛事放置模式。"
         }
@@ -207,7 +219,9 @@
       "pickLevel": "选择关卡",
       "changeLevel": "更换",
       "pickNominees": "选择提名",
+      "editNominees": "编辑提名",
       "nomineeCount": "{{count}} 名提名",
+      "nomineeOverflow": "另有 {{count}} 位",
       "empty": "暂无放置",
       "rowModes": {
         "inherit": "继承",
@@ -307,7 +321,6 @@
       "externalUrl": "外部链接",
       "sortYear": "排序年份",
       "organizers": "主办方（逗号分隔）",
-      "track": "赛道",
       "status": "状态",
       "placementMode": "放置模式",
       "series": "系列赛",
@@ -321,13 +334,10 @@
     "packRefTypeToSearch": "输入以搜索谱面包…",
     "packRefLoading": "正在搜索谱面包…",
     "packRefSearchFailed": "谱面包搜索失败",
+    "packRefNotFound": "未找到",
     "placementModes": {
-      "profile": "档案（玩家/创作者）",
+      "profile": "档案（关联玩家）",
       "level": "关卡（扩展至创作者）"
-    },
-    "tracks": {
-      "player": "玩家",
-      "creator": "创作者"
     },
     "statuses": {
       "draft": "草稿",

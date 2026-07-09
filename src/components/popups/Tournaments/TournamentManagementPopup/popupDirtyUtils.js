@@ -3,24 +3,13 @@ export function serializeForm(form) {
   return JSON.stringify(form);
 }
 
-/**
- * @param {any} placement
- * @param {'player' | 'creator'} track
- */
-export function resolvePlacementLinkedProfile(placement, track) {
-  if (track === "player" && placement?.playerId != null) {
+/** @param {any} placement */
+export function resolvePlacementLinkedProfile(placement) {
+  if (placement?.playerId != null) {
     return {
       id: placement.playerId,
       name: placement.player?.name || placement.displayName || "",
       type: "player",
-      isNewRequest: false,
-    };
-  }
-  if (track === "creator" && placement?.creatorId != null) {
-    return {
-      id: placement.creatorId,
-      name: placement.creator?.name || placement.displayName || "",
-      type: "charter",
       isNewRequest: false,
     };
   }
@@ -35,11 +24,14 @@ export function resolvePlacementLinkedLevel(placement) {
     id: placement.levelId,
     song: level?.song || placement.displayName || `Level #${placement.levelId}`,
     artist: level?.artist || "",
+    diffId: level?.diffId ?? null,
+    team: level?.team ?? null,
+    levelCredits: level?.levelCredits ?? null,
   };
 }
 
-/** @param {any} placement @param {'player' | 'creator'} track */
-export function mapPlacementToRow(placement, track) {
+/** @param {any} placement */
+export function mapPlacementToRow(placement) {
   return {
     key: `p-${placement.id}`,
     id: placement.id,
@@ -55,7 +47,7 @@ export function mapPlacementToRow(placement, track) {
     creditedCreatorIds: Array.isArray(placement.creditedCreatorIds)
       ? [...placement.creditedCreatorIds]
       : null,
-    linkedProfile: resolvePlacementLinkedProfile(placement, track),
+    linkedProfile: resolvePlacementLinkedProfile(placement),
     linkedLevel: resolvePlacementLinkedLevel(placement),
   };
 }
@@ -66,8 +58,8 @@ export function resolveEffectiveRowMode(row, tournamentPlacementMode = "profile"
   return tournamentPlacementMode === "level" ? "level" : "profile";
 }
 
-/** @param {Array<any>} rows @param {string} track @param {string} placementMode */
-export function serializePlacements(rows, track, placementMode = "profile") {
+/** @param {Array<any>} rows @param {string} placementMode */
+export function serializePlacements(rows, placementMode = "profile") {
   const normalized = rows
     .filter((r) => r.displayName?.trim() || resolveEffectiveRowMode(r, placementMode) === "level")
     .map((r) => {
@@ -84,13 +76,10 @@ export function serializePlacements(rows, track, placementMode = "profile") {
           ? r.creditedCreatorIds
           : null,
         playerId:
-          effectiveMode === "profile" && track === "player"
+          effectiveMode === "profile"
             ? r.linkedProfile?.id ?? r.playerId ?? null
             : null,
-        creatorId:
-          effectiveMode === "profile" && track === "creator"
-            ? r.linkedProfile?.id ?? r.creatorId ?? null
-            : null,
+        creatorId: null,
       };
     });
   return JSON.stringify(normalized);

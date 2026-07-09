@@ -12,6 +12,8 @@ import {
 } from '@/utils/packRefUtils';
 import './packRefSelect.css';
 
+/** @typedef {'idle' | 'loading' | 'found' | 'notFound'} PackResolveState */
+
 const PackRefSelect = ({
   value = '',
   onChange,
@@ -24,6 +26,7 @@ const PackRefSelect = ({
   const { t } = useTranslation('pages');
   const [searchQuery, setSearchQuery] = useState('');
   const [resolvedPack, setResolvedPack] = useState(null);
+  const [resolveState, setResolveState] = useState('idle');
   const hydratedRef = useRef('');
   const { packs, loading, error } = usePackSearch(searchQuery);
 
@@ -33,6 +36,7 @@ const PackRefSelect = ({
     if (!trimmedValue) {
       hydratedRef.current = '';
       setResolvedPack(null);
+      setResolveState('idle');
       return undefined;
     }
 
@@ -40,6 +44,7 @@ const PackRefSelect = ({
     if (matchInResults) {
       hydratedRef.current = trimmedValue;
       setResolvedPack(matchInResults);
+      setResolveState('found');
       return undefined;
     }
 
@@ -48,18 +53,26 @@ const PackRefSelect = ({
     }
 
     let cancelled = false;
+    setResolveState('loading');
+
     api
       .get(routes.database.levels.packs.byId(trimmedValue))
       .then((response) => {
-        if (!cancelled && response.data) {
-          hydratedRef.current = trimmedValue;
+        if (cancelled) return;
+        hydratedRef.current = trimmedValue;
+        if (response.data) {
           setResolvedPack(response.data);
+          setResolveState('found');
+          return;
         }
+        setResolvedPack(null);
+        setResolveState('notFound');
       })
       .catch((err) => {
         if (axios.isCancel(err) || cancelled) return;
         hydratedRef.current = trimmedValue;
-        setResolvedPack({ id: trimmedValue, linkCode: trimmedValue, name: trimmedValue });
+        setResolvedPack(null);
+        setResolveState('notFound');
       });
 
     return () => {
@@ -93,8 +106,15 @@ const PackRefSelect = ({
     return t('tournamentManagement.form.packRefNoResults');
   };
 
+  const showNotFound = Boolean(trimmedValue) && resolveState === 'notFound';
+
   return (
     <div className={`pack-ref-select ${className}`.trim()}>
+      {showNotFound ? (
+        <span className="pack-ref-select__not-found" role="status">
+          {t('tournamentManagement.form.packRefNotFound')}
+        </span>
+      ) : null}
       <CustomSelect
         inputId={id}
         label={label}

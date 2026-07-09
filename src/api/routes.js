@@ -66,6 +66,7 @@ export const routes = {
       packImport: (id) => `/v2/admin/tournaments/${enc(id)}/pack-import`,
       packImportDiff: (id) =>
         `/v2/admin/tournaments/${enc(id)}/pack-import/diff`,
+      packCreate: () => '/v2/admin/tournaments/pack-create',
       seriesReorder: () => '/v2/admin/tournaments/series/reorder',
       tournamentsReorder: () => '/v2/admin/tournaments/reorder',
       placement: (placementId) =>

@@ -1,8 +1,21 @@
 .pack-ref-select {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
   width: 100%;
+}
+
+.pack-ref-select__not-found {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  color: var(--danger-color);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+  pointer-events: none;
 }
 
 .pack-ref-select__control {

@@ -8,7 +8,7 @@
   "tabs": {
     "events": "이벤트",
     "unresolved": "미연결 이름",
-    "import": "CSV 가져오기",
+    "import": "가져오기",
     "series": "시리즈"
   },
   "subTabs": {
@@ -18,7 +18,6 @@
     "cosmetics": "코스메틱"
   },
   "searchPlaceholder": "토너먼트 검색…",
-  "allTracks": "모든 트랙",
   "refresh": "새로고침",
   "newTournament": "새 토너먼트",
   "editTournament": "토너먼트 편집",
@@ -42,7 +41,6 @@
     "dragHandle": "드래그하여 순서 변경"
   },
   "import": {
-    "track": "트랙",
     "dryRun": "CSV 시험 실행",
     "importCsv": "CSV 가져오기",
     "messages": {
@@ -76,6 +74,20 @@
       "importFailed": "팩 가져오기 실패"
     }
   },
+  "packCreate": {
+    "open": "팩에서 가져오기",
+    "title": "팩에서 토너먼트 만들기",
+    "subtitle": "팩에서 레벨 모드 토너먼트를 만들고 편집 화면을 엽니다.",
+    "packRef": "팩 참조",
+    "create": "토너먼트 만들기",
+    "messages": {
+      "created": "팩에서 토너먼트가 생성되었습니다"
+    },
+    "errors": {
+      "packRefRequired": "팩 참조는 필수입니다.",
+      "createFailed": "팩에서 토너먼트 생성 실패"
+    }
+  },
   "nominees": {
     "title": "후보 선택",
     "allSelected": "모든 적격 크리에이터 선택됨 (빈 필터 = 동기화 시 전원)",
@@ -100,7 +112,7 @@
         "title": "순위 모드",
         "intro": "각 행은 토너먼트 기본값을 상속하거나 재정의할 수 있습니다.",
         "bullets": {
-          "profile": "<b>프로필</b> — 플레이어/크리에이터 연결; 레벨은 증거용.",
+          "profile": "<b>프로필</b> — 플레이어 연결; 레벨은 증거용.",
           "level": "<b>레벨</b> — 동기화 후 레벨 크리에이터로 확장.",
           "inherit": "<b>상속</b> — 상세 탭의 토너먼트 배치 모드 사용."
         }
@@ -207,7 +219,9 @@
       "pickLevel": "레벨 선택",
       "changeLevel": "변경",
       "pickNominees": "후보 선택",
+      "editNominees": "후보 편집",
       "nomineeCount": "후보 {{count}}명",
+      "nomineeOverflow": "+{{count}}명 더",
       "empty": "아직 순위가 없습니다",
       "rowModes": {
         "inherit": "상속",
@@ -307,7 +321,6 @@
       "externalUrl": "외부 URL",
       "sortYear": "정렬 연도",
       "organizers": "주최 (쉼표로 구분)",
-      "track": "트랙",
       "status": "상태",
       "placementMode": "배치 모드",
       "series": "시리즈",
@@ -321,13 +334,10 @@
     "packRefTypeToSearch": "팩을 검색하려면 입력하세요…",
     "packRefLoading": "팩 검색 중…",
     "packRefSearchFailed": "팩 검색 실패",
+    "packRefNotFound": "찾을 수 없음",
     "placementModes": {
-      "profile": "프로필 (플레이어/크리에이터)",
+      "profile": "프로필 (플레이어 연결)",
       "level": "레벨 (크리에이터로 확장)"
-    },
-    "tracks": {
-      "player": "플레이어",
-      "creator": "크리에이터"
     },
     "statuses": {
       "draft": "초안",

@@ -10,15 +10,14 @@ import { useAuth } from "@/contexts/AuthContext";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { AccessDenied, MetaTags } from "@/components/common/display";
 import { buildStaticPageMeta } from "@/utils/meta";
-import { ProfileSelector, CustomSelect } from "@/components/common/selectors";
+import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
+import { ProfileSelector } from "@/components/common/selectors";
 import {
   TournamentFormPopup,
   TournamentManagementPopup,
   buildTournamentPayload,
-  buildAllTracksOptions,
-  buildTrackOptions,
-  findOption,
 } from "@/components/popups/Tournaments";
+import TournamentPackCreatePopup from "@/components/popups/Tournaments/TournamentPackCreatePopup/TournamentPackCreatePopup";
 import "./tournamentManagement.css";
 
 const GLOBAL_TABS = ["events", "unresolved", "import", "series"];
@@ -46,25 +45,25 @@ const TournamentManagementPage = () => {
   const [managePopup, setManagePopup] = useState(null);
   const [unresolved, setUnresolved] = useState([]);
   const [search, setSearch] = useState("");
-  const [trackFilter, setTrackFilter] = useState("");
-  const [importTrack, setImportTrack] = useState("player");
   const [importReport, setImportReport] = useState(null);
   const [seriesForm, setSeriesForm] = useState({ slug: "", name: "" });
   const [editingSeriesId, setEditingSeriesId] = useState(null);
   const seriesFormBaselineRef = useRef({ slug: "", name: "" });
   const [showCreatePopup, setShowCreatePopup] = useState(false);
+  const [showPackCreatePopup, setShowPackCreatePopup] = useState(false);
   const [isReorderingTournaments, setIsReorderingTournaments] = useState(false);
   const [isReorderingSeries, setIsReorderingSeries] = useState(false);
 
   const isAdmin = hasFlag(user, permissionFlags.SUPER_ADMIN);
 
+  useBodyScrollLock(Boolean(showCreatePopup || showPackCreatePopup || managePopup));
+
   const loadTournaments = useCallback(async () => {
     const params = {};
     if (search.trim()) params.search = search.trim();
-    if (trackFilter) params.track = trackFilter;
     const { data } = await api.get(routes.admin.tournaments.root(), { params });
     setTournaments(Array.isArray(data) ? data : []);
-  }, [search, trackFilter]);
+  }, [search]);
 
   const loadSeries = useCallback(async () => {
     const { data } = await api.get(routes.admin.tournaments.series());
@@ -77,10 +76,9 @@ const TournamentManagementPage = () => {
   }, []);
 
   const loadUnresolved = useCallback(async () => {
-    const params = trackFilter ? { track: trackFilter } : {};
-    const { data } = await api.get(routes.admin.tournaments.unresolved(), { params });
+    const { data } = await api.get(routes.admin.tournaments.unresolved());
     setUnresolved(Array.isArray(data) ? data : []);
-  }, [trackFilter]);
+  }, []);
 
   useEffect(() => {
     if (!isAdmin) return;
@@ -97,10 +95,6 @@ const TournamentManagementPage = () => {
       toast.error(t("tournamentManagement.errors.loadUnresolvedFailed")),
     );
   }, [isAdmin, globalTab, loadUnresolved]);
-
-  const trackFilterOptions = useMemo(() => buildAllTracksOptions(t), [t]);
-
-  const importTrackOptions = useMemo(() => buildTrackOptions(t), [t]);
 
   const seriesOptions = useMemo(
     () => [
@@ -328,9 +322,7 @@ const TournamentManagementPage = () => {
 
   const resolveAllNames = async () => {
     try {
-      const { data } = await api.post(routes.admin.tournaments.resolveNames(), {
-        track: trackFilter || undefined,
-      });
+      const { data } = await api.post(routes.admin.tournaments.resolveNames(), {});
       toast.success(
         t("tournamentManagement.messages.namesLinked", { count: data.linked }),
       );
@@ -343,12 +335,10 @@ const TournamentManagementPage = () => {
 
   const linkUnresolved = async (placementId, profile) => {
     if (!profile?.id) return;
-    const row = unresolved.find((u) => u.id === placementId);
-    const track = row?.tournament?.track || "player";
     try {
       await api.patch(routes.admin.tournaments.placement(placementId), {
-        playerId: track === "player" ? profile.id : null,
-        creatorId: track === "creator" ? profile.id : null,
+        playerId: profile.id,
+        creatorId: null,
       });
       toast.success(t("tournamentManagement.messages.placementLinked"));
       await loadUnresolved();
@@ -361,7 +351,6 @@ const TournamentManagementPage = () => {
     if (!file) return;
     const body = new FormData();
     body.append("file", file);
-    body.append("track", importTrack);
     body.append("dryRun", dryRun ? "true" : "false");
     try {
       const { data } = await api.post(routes.admin.tournaments.import(), body, {
@@ -491,13 +480,6 @@ const TournamentManagementPage = () => {
               onChange={(e) => setSearch(e.target.value)}
               placeholder={t("tournamentManagement.searchPlaceholder")}
             />
-            <CustomSelect
-              options={trackFilterOptions}
-              value={findOption(trackFilterOptions, trackFilter)}
-              onChange={(option) => setTrackFilter(option?.value ?? "")}
-              width="10rem"
-              isSearchable={false}
-            />
             <button
               type="button"
               className="btn-fill-primary"
@@ -569,7 +551,6 @@ const TournamentManagementPage = () => {
                                   <strong>{item.shortName}</strong>
                                   <div className="tournament-mgmt-page__card-meta">
                                     <span>{item.fullName}</span>
-                                    <span className="tournament-mgmt-page__badge">{item.track}</span>
                                     <span className="tournament-mgmt-page__badge">{item.status}</span>
                                     {item.isHidden ? (
                                       <span className="tournament-mgmt-page__badge">
@@ -616,6 +597,16 @@ const TournamentManagementPage = () => {
         />
       ) : null}
 
+      {showPackCreatePopup ? (
+        <TournamentPackCreatePopup
+          onClose={() => setShowPackCreatePopup(false)}
+          onCreated={async (tournament) => {
+            await loadTournaments();
+            openManagePopup(tournament.id, "placements");
+          }}
+        />
+      ) : null}
+
       {managePopup ? (
         <TournamentManagementPopup
           tournamentId={managePopup.id}
@@ -647,16 +638,11 @@ const TournamentManagementPage = () => {
                     <span className="tournament-mgmt-page__badge">
                       {row.tier?.code}
                     </span>
-                    <span className="tournament-mgmt-page__badge">
-                      {row.tournament?.track}
-                    </span>
                   </div>
                 </div>
                 <div className="tournament-mgmt-page__unresolved-link">
                   <ProfileSelector
-                    type={
-                      row.tournament?.track === "creator" ? "charter" : "player"
-                    }
+                    type="player"
                     value={null}
                     onChange={(profile) => linkUnresolved(row.id, profile)}
                   />
@@ -674,19 +660,14 @@ const TournamentManagementPage = () => {
 
       {globalTab === "import" && (
         <div className="tournament-mgmt-page__panel">
-          <div className="tournament-mgmt-page__fields">
-            <div className="tournament-mgmt-page__field">
-              <CustomSelect
-                label={t("tournamentManagement.import.track")}
-                options={importTrackOptions}
-                value={findOption(importTrackOptions, importTrack)}
-                onChange={(option) => setImportTrack(option?.value ?? "player")}
-                width="100%"
-                isSearchable={false}
-              />
-            </div>
-          </div>
           <div className="tournament-mgmt-page__actions">
+            <button
+              type="button"
+              className="btn-fill-primary"
+              onClick={() => setShowPackCreatePopup(true)}
+            >
+              {t("tournamentManagement.packCreate.open")}
+            </button>
             <label className="btn-fill-secondary">
               {t("tournamentManagement.import.dryRun")}
               <input
