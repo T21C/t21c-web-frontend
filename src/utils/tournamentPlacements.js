@@ -1,8 +1,20 @@
 // tuf-search: #tournamentPlacements
 /**
- * Client helpers for consuming tournament placement data and cosmetics
- * from profile payloads or dedicated endpoints.
+ * Client helpers for consuming tournament placement credit DTOs
+ * and profile display preferences.
  */
+import { getSongDisplayName } from "@/utils/levelHelpers";
+
+export const UNSERIESED_SORT_WEIGHT = 100;
+
+/**
+ * @param {any} credit
+ * @returns {number | null}
+ */
+export function getCreditId(credit) {
+  const id = credit?.creditId ?? credit?.id;
+  return Number.isFinite(Number(id)) ? Number(id) : null;
+}
 
 /**
  * @param {{ frame?: { url?: string | null, config?: Record<string, unknown> | null } | null } | null | undefined} equipped
@@ -18,16 +30,35 @@ export function resolveAvatarFrame(equipped) {
 }
 
 /**
+ * @param {unknown} value
+ * @returns {'classic' | 'evidence' | 'levelStyle'}
+ */
+export function normalizePlacementCardLayout(value) {
+  if (value === "evidence" || value === "levelStyle") return value;
+  if (value === "iconRail" || value === "default") return "classic";
+  return "classic";
+}
+
+/**
+ * @param {any} credit
+ * @param {string} [fallback]
+ * @returns {'classic' | 'evidence' | 'levelStyle'}
+ */
+export function resolveEffectiveCardLayout(credit, fallback = "classic") {
+  return normalizePlacementCardLayout(credit?.cardLayout ?? fallback);
+}
+
+/**
  * @param {Array<any> | null | undefined} placements
  * @returns {Array<any>}
  */
 export function listPublicPlacements(placements) {
   if (!Array.isArray(placements)) return [];
-  return placements.filter((p) => p && !p.isPending);
+  return placements.filter((p) => p && !p.isPending && !p.withdrew);
 }
 
 /**
- * All non-pending placements for editor management (includes profile-hidden).
+ * All non-pending, non-withdrew credits for editor management (includes profile-hidden).
  * @param {Array<any> | null | undefined} placements
  * @returns {Array<any>}
  */
@@ -36,7 +67,7 @@ export function listEditablePlacements(placements) {
 }
 
 /**
- * Placements shown on public profile (excludes user-hidden).
+ * Credits shown on public profile (excludes user-hidden).
  * @param {Array<any> | null | undefined} placements
  * @returns {Array<any>}
  */
@@ -45,47 +76,79 @@ export function listVisiblePlacements(placements) {
 }
 
 /**
- * @param {any} placement
+ * @param {any} credit
  * @returns {string}
  */
-export function resolvePlacementListLabel(placement) {
-  const tier = placement?.tier?.label || placement?.tier?.code || "";
-  const event =
-    placement?.tournament?.shortName || placement?.tournament?.fullName || "";
-  if (tier && event) return `${tier} — ${event}`;
-  return tier || event || "";
+export function resolveLevelDisplayName(credit) {
+  if (!credit?.level) return "";
+  return getSongDisplayName(credit.level) || credit.level?.name || "";
 }
 
-function sortPlacementsDefault(a, b) {
-  if (a.isFeatured !== b.isFeatured) return a.isFeatured ? -1 : 1;
+/**
+ * @param {any} credit
+ * @returns {string}
+ */
+export function resolvePlacementListLabel(credit) {
+  const layout = resolveEffectiveCardLayout(credit);
+  if (layout === "levelStyle" || layout === "evidence") {
+    const levelName = resolveLevelDisplayName(credit);
+    if (levelName) return levelName;
+  }
+  const tier = credit?.tier?.label || credit?.tier?.code || "";
+  const event = credit?.tournament?.shortName || credit?.tournament?.fullName || "";
+  if (tier && event) return `${tier} — ${event}`;
+  return tier || event || credit?.displayName || "";
+}
+
+function seriesSortWeight(credit) {
+  return credit?.tournament?.series?.sortWeight ?? UNSERIESED_SORT_WEIGHT;
+}
+
+function tournamentSortWeight(credit) {
+  return credit?.tournament?.sortWeight ?? 0;
+}
+
+function sortCreditsDefault(a, b) {
+  const seriesA = seriesSortWeight(a);
+  const seriesB = seriesSortWeight(b);
+  if (seriesA !== seriesB) return seriesA - seriesB;
+
+  const tournamentA = tournamentSortWeight(a);
+  const tournamentB = tournamentSortWeight(b);
+  if (tournamentA !== tournamentB) return tournamentA - tournamentB;
+
   if ((a.tier?.rankWeight ?? 0) !== (b.tier?.rankWeight ?? 0)) {
     return (a.tier?.rankWeight ?? 0) - (b.tier?.rankWeight ?? 0);
   }
+
   const yearA = a.tournament?.sortYear ?? 0;
   const yearB = b.tournament?.sortYear ?? 0;
   if (yearA !== yearB) return yearB - yearA;
-  return (b.id ?? 0) - (a.id ?? 0);
+
+  return (getCreditId(b) ?? 0) - (getCreditId(a) ?? 0);
 }
 
 /**
  * @param {Array<any>} placements
- * @param {number[]} orderIds
+ * @param {number[]} orderIds credit ids
  * @returns {Array<any>}
  */
 export function sortPlacementsByOrder(placements, orderIds = []) {
   const list = [...placements];
   if (!orderIds.length) {
-    list.sort(sortPlacementsDefault);
+    list.sort(sortCreditsDefault);
     return list;
   }
   const orderMap = new Map(orderIds.map((id, index) => [id, index]));
   list.sort((a, b) => {
-    const aOrder = orderMap.get(a.id);
-    const bOrder = orderMap.get(b.id);
+    const aId = getCreditId(a);
+    const bId = getCreditId(b);
+    const aOrder = aId != null ? orderMap.get(aId) : undefined;
+    const bOrder = bId != null ? orderMap.get(bId) : undefined;
     if (aOrder != null && bOrder != null) return aOrder - bOrder;
     if (aOrder != null) return -1;
     if (bOrder != null) return 1;
-    return sortPlacementsDefault(a, b);
+    return sortCreditsDefault(a, b);
   });
   return list;
 }
@@ -123,48 +186,140 @@ export function hasPlacement(placements, options = {}) {
 
 /**
  * Card background: tier override, then tournament default.
- * @param {any} placement
+ * @param {any} credit
  * @returns {string | null}
  */
-export function resolvePlacementCardBackground(placement) {
-  if (!placement) return null;
-  if (placement.resolvedCardBackgroundUrl) return placement.resolvedCardBackgroundUrl;
+export function resolvePlacementCardBackground(credit) {
+  if (!credit) return null;
+  if (credit.resolvedCardBackgroundUrl) return credit.resolvedCardBackgroundUrl;
   return (
-    placement.tier?.cardBackgroundUrl ??
-    placement.tournament?.cardBackgroundUrl ??
+    credit.tier?.cardBackgroundUrl ??
+    credit.tournament?.cardBackgroundUrl ??
     null
   );
 }
 
 /**
- * @param {any} placement
+ * @param {any} credit
  * @returns {string | null}
  */
-export function resolveTierIcon(placement) {
-  return placement?.tier?.iconUrl ?? null;
+export function resolveTierIcon(credit) {
+  return credit?.tier?.iconUrl ?? null;
 }
 
 /**
  * Tournament branding icon with series logo fallback.
- * @param {any} placement
+ * @param {any} credit
  * @returns {string | null}
  */
-export function resolveTournamentIcon(placement) {
-  if (!placement) return null;
-  if (placement.resolvedTournamentIconUrl) return placement.resolvedTournamentIconUrl;
+export function resolveTournamentIcon(credit) {
+  if (!credit) return null;
+  if (credit.resolvedTournamentIconUrl) return credit.resolvedTournamentIconUrl;
   return (
-    placement.tournament?.iconUrl ??
-    placement.tournament?.series?.logoUrl ??
+    credit.tournament?.iconUrl ??
+    credit.tournament?.series?.logoUrl ??
     null
   );
 }
 
-/** @param {unknown} value @returns {'default' | 'iconRail'} */
-export function normalizePlacementCardLayout(value) {
-  return value === "iconRail" ? "iconRail" : "default";
+/** Primary visual for compact lists: tier icon, then tournament icon. */
+export function resolvePlacementRailIcon(credit) {
+  return resolveTierIcon(credit) ?? resolveTournamentIcon(credit);
 }
 
-/** Primary visual for icon-rail layout: tier icon, then tournament icon. */
-export function resolvePlacementRailIcon(placement) {
-  return resolveTierIcon(placement) ?? resolveTournamentIcon(placement);
+/**
+ * @param {string | null | undefined} packRef
+ * @returns {string | null}
+ */
+export function resolvePackHref(packRef) {
+  if (!packRef) return null;
+  return `/packs/${encodeURIComponent(String(packRef))}`;
+}
+
+/**
+ * @param {number | null | undefined} levelId
+ * @returns {string | null}
+ */
+export function resolveLevelHref(levelId) {
+  if (levelId == null || !Number.isFinite(Number(levelId))) return null;
+  return `/levels/${levelId}`;
+}
+
+/**
+ * @param {any} credit
+ * @returns {string | null}
+ */
+export function resolveCreditPackRef(credit) {
+  return credit?.packRef ?? credit?.tournament?.packRef ?? null;
+}
+
+/**
+ * @param {any} credit
+ * @returns {number}
+ */
+export function resolveCoCreditCount(credit) {
+  const count = Number(credit?.coCreditCount ?? 0);
+  return Number.isFinite(count) && count > 0 ? count : 0;
+}
+
+/**
+ * Group visible credits into series → tournament hierarchy.
+ * @param {Array<any>} placements sorted credits
+ * @returns {Array<{
+ *   key: string,
+ *   series: any | null,
+ *   sortWeight: number,
+ *   tournaments: Array<{ key: string, tournament: any, packRef: string | null, credits: any[] }>
+ * }>}
+ */
+export function groupPlacementsByHierarchy(placements) {
+  const seriesMap = new Map();
+
+  for (const credit of placements) {
+    const series = credit?.tournament?.series ?? null;
+    const seriesKey = series?.id != null ? `series-${series.id}` : "unseriesed";
+    const tournament = credit?.tournament;
+    const tournamentKey =
+      tournament?.id != null ? `tournament-${tournament.id}` : `tournament-unknown`;
+
+    if (!seriesMap.has(seriesKey)) {
+      seriesMap.set(seriesKey, {
+        key: seriesKey,
+        series,
+        sortWeight: series?.sortWeight ?? UNSERIESED_SORT_WEIGHT,
+        tournaments: new Map(),
+      });
+    }
+
+    const seriesGroup = seriesMap.get(seriesKey);
+    if (!seriesGroup.tournaments.has(tournamentKey)) {
+      seriesGroup.tournaments.set(tournamentKey, {
+        key: tournamentKey,
+        tournament,
+        packRef: resolveCreditPackRef(credit),
+        credits: [],
+      });
+    }
+
+    seriesGroup.tournaments.get(tournamentKey).credits.push(credit);
+  }
+
+  return [...seriesMap.values()]
+    .sort((a, b) => a.sortWeight - b.sortWeight)
+    .map((seriesGroup) => ({
+      key: seriesGroup.key,
+      series: seriesGroup.series,
+      sortWeight: seriesGroup.sortWeight,
+      tournaments: [...seriesGroup.tournaments.values()].sort(
+        (a, b) => (a.tournament?.sortWeight ?? 0) - (b.tournament?.sortWeight ?? 0),
+      ),
+    }));
+}
+
+/**
+ * @param {unknown} value
+ * @returns {'defaultHierarchy' | 'customLayers'}
+ */
+export function normalizePlacementDisplayMode(value) {
+  return value === "customLayers" ? "customLayers" : "defaultHierarchy";
 }

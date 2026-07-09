@@ -1,10 +1,11 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { CustomSelect } from "@/components/common/selectors";
+import { CustomSelect, PackRefSelect } from "@/components/common/selectors";
 import "../TournamentFormPopup/tournamentFormPopup.css";
 import {
   buildStatusOptions,
   buildTrackOptions,
+  buildPlacementModeOptions,
   findOption,
   TEXT_FIELD_KEYS,
 } from "../tournamentFormUtils";
@@ -13,7 +14,6 @@ const TournamentFormFields = ({
   form,
   onChange,
   seriesOptions,
-  tierTemplateOptions,
   trackDisabled = false,
   idPrefix = "tm",
   classPrefix = "tournament-form-fields",
@@ -21,6 +21,7 @@ const TournamentFormFields = ({
   const { t } = useTranslation(["pages", "common"]);
   const trackOptions = useMemo(() => buildTrackOptions(t), [t]);
   const statusOptions = useMemo(() => buildStatusOptions(t), [t]);
+  const placementModeOptions = useMemo(() => buildPlacementModeOptions(t), [t]);
 
   const updateField = (key, value) => onChange(key, value);
 
@@ -39,6 +40,14 @@ const TournamentFormFields = ({
           />
         </div>
       ))}
+      <div className={`${classPrefix}__field`}>
+        <PackRefSelect
+          id={`${idPrefix}-packRef`}
+          label={t("tournamentManagement.form.fields.packRef")}
+          value={form.packRef}
+          onChange={(linkCode) => updateField("packRef", linkCode)}
+        />
+      </div>
       <div className={`${classPrefix}__field`}>
         <CustomSelect
           label={t("tournamentManagement.form.fields.track")}
@@ -62,21 +71,21 @@ const TournamentFormFields = ({
       </div>
       <div className={`${classPrefix}__field`}>
         <CustomSelect
+          label={t("tournamentManagement.form.fields.placementMode")}
+          options={placementModeOptions}
+          value={findOption(placementModeOptions, form.placementMode)}
+          onChange={(option) => updateField("placementMode", option?.value ?? "profile")}
+          width="100%"
+          isSearchable={false}
+        />
+      </div>
+      <div className={`${classPrefix}__field`}>
+        <CustomSelect
           label={t("tournamentManagement.form.fields.series")}
           options={seriesOptions}
           value={findOption(seriesOptions, form.seriesId)}
           onChange={(option) => updateField("seriesId", option?.value ?? "")}
           width="100%"
-        />
-      </div>
-      <div className={`${classPrefix}__field`}>
-        <CustomSelect
-          label={t("tournamentManagement.form.fields.tierTemplate")}
-          options={tierTemplateOptions}
-          value={findOption(tierTemplateOptions, form.tierTemplateId)}
-          onChange={(option) => updateField("tierTemplateId", option?.value ?? "")}
-          width="100%"
-          isSearchable={false}
         />
       </div>
       <div className={`${classPrefix}__field`}>

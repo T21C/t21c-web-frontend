@@ -8,7 +8,7 @@ import { CustomSelect } from "@/components/common/selectors";
 import VisualAssetSlot from "./VisualAssetSlot";
 import { serializeTierRows } from "./popupDirtyUtils";
 
-import { buildTierKindOptions } from "../tournamentFormUtils";
+import { buildTierKindOptions, findOption } from "../tournamentFormUtils";
 
 const emptyTierRow = () => ({
   key: `new-${Date.now()}-${Math.random()}`,
@@ -17,8 +17,6 @@ const emptyTierRow = () => ({
   label: "",
   kind: "custom",
   rankWeight: "100",
-  isPodium: false,
-  isShowcaseEligible: true,
   color: "",
   sortOrder: "0",
   iconUrl: null,
@@ -32,26 +30,43 @@ const mapTierToRow = (tier) => ({
   label: tier.label || "",
   kind: tier.kind || "custom",
   rankWeight: String(tier.rankWeight ?? 100),
-  isPodium: Boolean(tier.isPodium),
-  isShowcaseEligible: tier.isShowcaseEligible !== false,
   color: tier.color || "",
   sortOrder: String(tier.sortOrder ?? 0),
   iconUrl: tier.iconUrl ?? null,
   cardBackgroundUrl: tier.cardBackgroundUrl ?? null,
 });
 
-const TournamentTiersEditor = ({ tournamentId, detail, onRefresh, onDirtyChange }) => {
+const TournamentTiersEditor = ({
+  tournamentId,
+  detail,
+  tierTemplates = [],
+  onRefresh,
+  onDirtyChange,
+}) => {
   const { t } = useTranslation(["pages", "common"]);
   const kindOptions = useMemo(() => buildTierKindOptions(t), [t]);
   const [rows, setRows] = useState([]);
   const [saving, setSaving] = useState(false);
+  const [selectedPresetId, setSelectedPresetId] = useState("");
+  const [showPresetSection, setShowPresetSection] = useState(false);
   const baselineRef = useRef("");
+
+  const presetOptions = useMemo(
+    () =>
+      tierTemplates.map((template) => ({
+        value: template.id,
+        label: template.name,
+      })),
+    [tierTemplates],
+  );
 
   useEffect(() => {
     const tiers = detail?.tiers || [];
-    const nextRows = tiers.length ? tiers.map(mapTierToRow) : [emptyTierRow()];
+    const nextRows = tiers.length ? tiers.map(mapTierToRow) : [];
     setRows(nextRows);
     baselineRef.current = serializeTierRows(nextRows);
+    setShowPresetSection(false);
+    setSelectedPresetId("");
   }, [detail?.tiers, tournamentId]);
 
   const isDirty = useMemo(
@@ -72,7 +87,43 @@ const TournamentTiersEditor = ({ tournamentId, detail, onRefresh, onDirtyChange 
   };
 
   const removeRow = (key) => {
-    setRows((prev) => (prev.length <= 1 ? prev : prev.filter((row) => row.key !== key)));
+    setRows((prev) => prev.filter((row) => row.key !== key));
+  };
+
+  const applyPreset = () => {
+    const template = tierTemplates.find((entry) => entry.id === selectedPresetId);
+    if (!template?.tiers?.length) return;
+
+    const existingCodes = new Set(
+      rows.map((row) => row.code.trim().toUpperCase()).filter(Boolean),
+    );
+    const additions = template.tiers
+      .filter((tier) => !existingCodes.has(tier.code.toUpperCase()))
+      .map((tier) => ({
+        key: `preset-${tier.code}-${Date.now()}-${Math.random()}`,
+        id: null,
+        code: tier.code,
+        label: tier.label,
+        kind: tier.kind || "custom",
+        rankWeight: String(tier.rankWeight ?? 100),
+        color: "",
+        sortOrder: String(tier.sortOrder ?? 0),
+        iconUrl: null,
+        cardBackgroundUrl: null,
+      }));
+
+    if (!additions.length) {
+      toast.error(t("tournamentManagement.tiers.preset.allExist"));
+      return;
+    }
+
+    setRows((prev) => {
+      const substantive = prev.filter((row) => row.code.trim() || row.label.trim());
+      return substantive.length ? [...substantive, ...additions] : additions;
+    });
+    toast.success(
+      t("tournamentManagement.tiers.preset.applied", { count: additions.length }),
+    );
   };
 
   const postAsset = useCallback(async (url, file) => {
@@ -82,36 +133,6 @@ const TournamentTiersEditor = ({ tournamentId, detail, onRefresh, onDirtyChange 
       headers: { "Content-Type": "multipart/form-data" },
     });
   }, []);
-
-  const uploadTournamentAsset = async (kind, file) => {
-    if (!file || !tournamentId) return;
-    try {
-      const url =
-        kind === "icon"
-          ? routes.admin.tournaments.icon(tournamentId)
-          : routes.admin.tournaments.cardBackground(tournamentId);
-      await postAsset(url, file);
-      toast.success(t("tournamentManagement.visuals.messages.uploadSuccess"));
-      await onRefresh?.();
-    } catch (e) {
-      toast.error(e?.response?.data?.error || t("tournamentManagement.visuals.errors.uploadFailed"));
-    }
-  };
-
-  const removeTournamentAsset = async (kind) => {
-    if (!tournamentId) return;
-    try {
-      const url =
-        kind === "icon"
-          ? routes.admin.tournaments.icon(tournamentId)
-          : routes.admin.tournaments.cardBackground(tournamentId);
-      await api.delete(url);
-      toast.success(t("tournamentManagement.visuals.messages.removed"));
-      await onRefresh?.();
-    } catch {
-      toast.error(t("tournamentManagement.visuals.errors.removeFailed"));
-    }
-  };
 
   const uploadTierAsset = async (tierId, kind, file) => {
     if (!file || !tournamentId || !tierId) return;
@@ -129,7 +150,7 @@ const TournamentTiersEditor = ({ tournamentId, detail, onRefresh, onDirtyChange 
   };
 
   const saveTiers = async () => {
-    if (!tournamentId) return;
+    if (!tournamentId || !isDirty) return;
     setSaving(true);
     try {
       const tiers = rows
@@ -140,8 +161,6 @@ const TournamentTiersEditor = ({ tournamentId, detail, onRefresh, onDirtyChange 
           label: r.label.trim() || r.code.trim().toUpperCase(),
           kind: r.kind,
           rankWeight: Number(r.rankWeight) || 100,
-          isPodium: r.isPodium,
-          isShowcaseEligible: r.isShowcaseEligible,
           color: r.color.trim() || null,
           sortOrder: Number(r.sortOrder) || index,
           iconUrl: r.iconUrl,
@@ -159,46 +178,66 @@ const TournamentTiersEditor = ({ tournamentId, detail, onRefresh, onDirtyChange 
 
   return (
     <div className="tournament-management-popup__tiers-editor">
-      <section className="tournament-management-popup__visuals-section">
-        <h3>{t("tournamentManagement.visuals.tournamentTitle")}</h3>
-        <div className="tournament-management-popup__visuals-row">
-          <div className="tournament-management-popup__visual-slot">
-            <span className="tournament-management-popup__visual-label">
-              {t("tournamentManagement.visuals.eventIcon")}
-            </span>
-            <VisualAssetSlot
-              url={detail?.iconUrl}
-              variant="icon"
-              accept={CDN_IMAGE_ACCEPT}
-              onUpload={(file) => uploadTournamentAsset("icon", file)}
-              onRemove={() => removeTournamentAsset("icon")}
-            />
-          </div>
-          <div className="tournament-management-popup__visual-slot">
-            <span className="tournament-management-popup__visual-label">
-              {t("tournamentManagement.visuals.defaultCardBg")}
-            </span>
-            <VisualAssetSlot
-              url={detail?.cardBackgroundUrl}
-              variant="card"
-              accept={CDN_IMAGE_ACCEPT}
-              onUpload={(file) => uploadTournamentAsset("card", file)}
-              onRemove={() => removeTournamentAsset("card")}
-            />
-          </div>
+      <div className="tournament-management-popup__actions tournament-management-popup__actions--tiers">
+        <div className="tournament-management-popup__actions-group">
+          <button type="button" className="btn-fill-secondary" onClick={addRow} disabled={saving}>
+            {t("tournamentManagement.tiers.addTier")}
+          </button>
+          <button
+            type="button"
+            className="btn-fill-primary"
+            onClick={saveTiers}
+            disabled={saving || !isDirty}
+          >
+            {t("tournamentManagement.tiers.save")}
+          </button>
         </div>
-      </section>
-
-      <div className="tournament-management-popup__actions">
-        <button type="button" className="btn-fill-secondary" onClick={addRow} disabled={saving}>
-          {t("tournamentManagement.tiers.addTier")}
-        </button>
-        <button type="button" className="btn-fill-primary" onClick={saveTiers} disabled={saving}>
-          {t("tournamentManagement.tiers.save")}
+        <button
+          type="button"
+          className="btn-fill-secondary tournament-management-popup__preset-toggle"
+          onClick={() => setShowPresetSection((visible) => !visible)}
+          disabled={!presetOptions.length || saving}
+        >
+          {showPresetSection
+            ? t("tournamentManagement.tiers.preset.hide")
+            : t("tournamentManagement.tiers.preset.show")}
         </button>
       </div>
 
+      {showPresetSection ? (
+        <section className="tournament-management-popup__tier-preset">
+          <h3>{t("tournamentManagement.tiers.preset.label")}</h3>
+          <p className="tournament-management-popup__tier-preset-hint">
+            {t("tournamentManagement.tiers.preset.hint")}
+          </p>
+          <div className="tournament-management-popup__tier-preset-row">
+            <CustomSelect
+              options={presetOptions}
+              value={findOption(presetOptions, selectedPresetId)}
+              onChange={(option) => setSelectedPresetId(option?.value ?? "")}
+              placeholder={t("tournamentManagement.tiers.preset.placeholder")}
+              width="100%"
+              isSearchable={false}
+              isDisabled={!presetOptions.length || saving}
+            />
+            <button
+              type="button"
+              className="btn-fill-secondary"
+              onClick={applyPreset}
+              disabled={!selectedPresetId || saving}
+            >
+              {t("tournamentManagement.tiers.preset.apply")}
+            </button>
+          </div>
+        </section>
+      ) : null}
+
       <div className="tournament-management-popup__tiers-table-wrap">
+        {rows.length === 0 ? (
+          <p className="tournament-management-popup__empty-state">
+            {t("tournamentManagement.tiers.empty")}
+          </p>
+        ) : (
         <table className="tournament-management-popup__tiers-table">
           <thead>
             <tr>
@@ -207,7 +246,6 @@ const TournamentTiersEditor = ({ tournamentId, detail, onRefresh, onDirtyChange 
               <th>{t("tournamentManagement.tiers.kind")}</th>
               <th>{t("tournamentManagement.tiers.rankWeight")}</th>
               <th>{t("tournamentManagement.tiers.color")}</th>
-              <th>{t("tournamentManagement.tiers.podium")}</th>
               <th>{t("tournamentManagement.visuals.tierIcon")}</th>
               <th>{t("tournamentManagement.visuals.tierCardBg")}</th>
               <th />
@@ -253,13 +291,6 @@ const TournamentTiersEditor = ({ tournamentId, detail, onRefresh, onDirtyChange 
                   />
                 </td>
                 <td>
-                  <input
-                    type="checkbox"
-                    checked={row.isPodium}
-                    onChange={(e) => updateRow(row.key, { isPodium: e.target.checked })}
-                  />
-                </td>
-                <td>
                   <div className="tournament-management-popup__tier-visual-cell">
                     <VisualAssetSlot
                       url={row.iconUrl}
@@ -299,6 +330,7 @@ const TournamentTiersEditor = ({ tournamentId, detail, onRefresh, onDirtyChange 
             ))}
           </tbody>
         </table>
+        )}
       </div>
     </div>
   );

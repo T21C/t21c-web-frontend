@@ -174,10 +174,6 @@
   transition: border-color 0.15s ease, background 0.15s ease;
 }
 
-.tournament-cosmetics-editor-popup__placement-row.is-pinned {
-  border-color: color-mix(in srgb, var(--color-purple-1) 45%, transparent);
-}
-
 .tournament-cosmetics-editor-popup__placement-row.is-selected {
   border-color: var(--color-purple-1);
   background: color-mix(in srgb, var(--color-purple-1) 12%, var(--color-black-t70));

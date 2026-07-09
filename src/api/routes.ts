@@ -55,6 +55,19 @@ export const routes = {
       rewards: (id: string | number) => `/v2/admin/tournaments/${enc(id)}/rewards`,
       syncEntitlements: (id: string | number) =>
         `/v2/admin/tournaments/${enc(id)}/sync-entitlements`,
+      syncCredits: (id: string | number) =>
+        `/v2/admin/tournaments/${enc(id)}/sync-credits`,
+      placementSyncCredits: (placementId: string | number) =>
+        `/v2/admin/tournaments/placements/${enc(placementId)}/sync-credits`,
+      nomineeCandidates: (levelId: string | number) =>
+        `/v2/admin/tournaments/nominee-candidates/${enc(levelId)}`,
+      placementNominees: (placementId: string | number) =>
+        `/v2/admin/tournaments/placements/${enc(placementId)}/nominees`,
+      packImport: (id: string | number) => `/v2/admin/tournaments/${enc(id)}/pack-import`,
+      packImportDiff: (id: string | number) =>
+        `/v2/admin/tournaments/${enc(id)}/pack-import/diff`,
+      seriesReorder: () => '/v2/admin/tournaments/series/reorder',
+      tournamentsReorder: () => '/v2/admin/tournaments/reorder',
       placement: (placementId: string | number) =>
         `/v2/admin/tournaments/placements/${enc(placementId)}`,
       reward: (rewardId: string | number) =>

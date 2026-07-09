@@ -1,8 +1,9 @@
 // tuf-search: #TournamentPlacementManageList
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { useTranslation } from "react-i18next";
-import { PinIcon, EyeIcon, EyeOffIcon } from "@/components/common/icons";
+import { EyeIcon, EyeOffIcon } from "@/components/common/icons";
 import {
+  getCreditId,
   resolvePlacementListLabel,
   resolvePlacementRailIcon,
 } from "@/utils/tournamentPlacements";
@@ -11,12 +12,9 @@ const VISIBLE_DROPPABLE_ID = "tournament-placement-visible";
 
 function PlacementManageRow({
   placement,
-  isPinned,
   isHidden,
   isSelected = false,
-  canPin,
   onSelect,
-  onTogglePin,
   onToggleHidden,
   innerRef = null,
   draggableProps = null,
@@ -34,7 +32,6 @@ function PlacementManageRow({
       style={draggableProps?.style}
       className={[
         "tournament-cosmetics-editor-popup__placement-row",
-        isPinned ? "is-pinned" : "",
         isHidden ? "is-hidden" : "",
         isSelected ? "is-selected" : "",
         isDragging ? "is-dragging" : "",
@@ -61,7 +58,7 @@ function PlacementManageRow({
       <button
         type="button"
         className="tournament-cosmetics-editor-popup__placement-select"
-        onClick={() => onSelect?.(placement.id)}
+        onClick={() => onSelect?.(getCreditId(placement))}
         aria-pressed={isSelected}
         aria-label={t("settings.tournaments.selectPlacementForPreview", { name: label })}
       >
@@ -81,31 +78,8 @@ function PlacementManageRow({
       <div className="tournament-cosmetics-editor-popup__placement-actions">
         <button
           type="button"
-          className={[
-            "tournament-cosmetics-editor-popup__icon-btn",
-            isPinned ? "is-active" : "",
-          ]
-            .filter(Boolean)
-            .join(" ")}
-          disabled={isHidden || (!isPinned && !canPin)}
-          onClick={() => onTogglePin(placement.id)}
-          aria-pressed={isPinned}
-          title={
-            isPinned
-              ? t("settings.tournaments.featuredUnpin")
-              : t("settings.tournaments.featuredPinToggle")
-          }
-        >
-          <PinIcon
-            size="16px"
-            color={isPinned ? "var(--color-purple-1)" : "var(--color-white-t60)"}
-          />
-        </button>
-
-        <button
-          type="button"
           className="tournament-cosmetics-editor-popup__icon-btn"
-          onClick={() => onToggleHidden(placement.id)}
+          onClick={() => onToggleHidden(getCreditId(placement))}
           aria-pressed={isHidden}
           title={
             isHidden
@@ -128,11 +102,8 @@ function PlacementManageRow({
  * @param {{
  *   visiblePlacements: Array<any>,
  *   hiddenPlacements: Array<any>,
- *   featuredIds: number[],
- *   maxFeaturedPlacements: number,
  *   selectedPlacementId?: number | null,
  *   onSelectPlacement?: (id: number) => void,
- *   onToggleFeatured: (id: number) => void,
  *   onToggleHidden: (id: number) => void,
  *   onReorderPlacements: (fromIndex: number, toIndex: number) => void,
  * }} props
@@ -140,16 +111,12 @@ function PlacementManageRow({
 export default function TournamentPlacementManageList({
   visiblePlacements,
   hiddenPlacements,
-  featuredIds,
-  maxFeaturedPlacements,
   selectedPlacementId = null,
   onSelectPlacement,
-  onToggleFeatured,
   onToggleHidden,
   onReorderPlacements,
 }) {
   const { t } = useTranslation("pages");
-  const featuredAtMax = featuredIds.length >= maxFeaturedPlacements;
 
   const handleDragEnd = (result) => {
     const { destination, source } = result;
@@ -169,22 +136,19 @@ export default function TournamentPlacementManageList({
               className="tournament-cosmetics-editor-popup__placement-list"
             >
               {visiblePlacements.map((placement, index) => {
-                const isPinned = featuredIds.includes(placement.id);
+                const creditId = getCreditId(placement);
                 return (
                   <Draggable
-                    key={placement.id}
-                    draggableId={String(placement.id)}
+                    key={creditId}
+                    draggableId={String(creditId)}
                     index={index}
                   >
                     {(dragProvided, snapshot) => (
                       <PlacementManageRow
                         placement={placement}
-                        isPinned={isPinned}
                         isHidden={false}
-                        isSelected={selectedPlacementId === placement.id}
-                        canPin={!featuredAtMax}
+                        isSelected={selectedPlacementId === creditId}
                         onSelect={onSelectPlacement}
-                        onTogglePin={onToggleFeatured}
                         onToggleHidden={onToggleHidden}
                         innerRef={dragProvided.innerRef}
                         draggableProps={dragProvided.draggableProps}
@@ -209,14 +173,11 @@ export default function TournamentPlacementManageList({
           <div className="tournament-cosmetics-editor-popup__placement-list">
             {hiddenPlacements.map((placement) => (
               <PlacementManageRow
-                key={placement.id}
+                key={getCreditId(placement)}
                 placement={placement}
-                isPinned={false}
                 isHidden
-                isSelected={selectedPlacementId === placement.id}
-                canPin={false}
+                isSelected={selectedPlacementId === getCreditId(placement)}
                 onSelect={onSelectPlacement}
-                onTogglePin={onToggleFeatured}
                 onToggleHidden={onToggleHidden}
               />
             ))}

@@ -4,6 +4,7 @@ import DifficultySlider from "./DifficultySlider/DifficultySlider";
 import { PlayerInput } from "./PlayerInput/PlayerInput";
 import { ProfileSelector } from "./ProfileSelector/ProfileSelector";
 import CustomSelect from "./Select/Select";
+import PackRefSelect from "./PackRefSelect/PackRefSelect";
 import TagSelector from "./TagSelector/TagSelector";
 import FacetQueryBuilder from "./TagSelector/FacetQueryBuilder";
 import StateDisplay from "./StateDisplay/StateDisplay";
@@ -21,6 +22,7 @@ export {
     PlayerInput,
     ProfileSelector,
     CustomSelect,
+    PackRefSelect,
     TagSelector,
     FacetQueryBuilder,
     StateDisplay,

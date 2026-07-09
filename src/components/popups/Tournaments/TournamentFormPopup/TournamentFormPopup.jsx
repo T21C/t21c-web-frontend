@@ -10,7 +10,6 @@ const TournamentFormPopup = ({
   onClose,
   onSubmit,
   seriesOptions,
-  tierTemplateOptions,
 }) => {
   const { t } = useTranslation(["pages", "common"]);
   const [form, setForm] = useState(emptyTournamentForm);
@@ -74,7 +73,6 @@ const TournamentFormPopup = ({
               form={form}
               onChange={updateField}
               seriesOptions={seriesOptions}
-              tierTemplateOptions={tierTemplateOptions}
               idPrefix="tm-create"
               classPrefix="tournament-form-fields"
             />

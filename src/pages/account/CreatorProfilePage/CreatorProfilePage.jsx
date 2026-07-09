@@ -344,7 +344,7 @@ const CreatorProfilePage = () => {
 
         <TournamentPlacementsSection
           placements={profile?.tournamentPlacements}
-          cardLayout={profile?.placementCardLayout}
+          orderIds={profile?.placementOrderIds}
           sectionClassName="creator-profile-page__section"
         />
 

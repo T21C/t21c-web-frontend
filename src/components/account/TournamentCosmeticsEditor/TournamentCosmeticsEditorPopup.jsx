@@ -5,9 +5,11 @@ import { Portal } from "@/components/common/Portal";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 import { CloseButton } from "@/components/common/buttons";
 import TournamentPlacementCard from "@/components/account/TournamentPlacements/TournamentPlacementCard";
+import TournamentDisplayTreeEditor from "@/components/account/TournamentPlacements/TournamentDisplayTreeEditor";
 import "@/components/account/TournamentPlacements/tournamentPlacements.css";
 import TournamentPlacementManageList from "./TournamentPlacementManageList";
 import { useTournamentCosmeticsEditor } from "./useTournamentCosmeticsEditor";
+import { getCreditId } from "@/utils/tournamentPlacements";
 import "./tournamentCosmeticsEditorPopup.css";
 
 /**
@@ -18,9 +20,10 @@ import "./tournamentCosmeticsEditorPopup.css";
  *   placements?: Array<any>,
  *   initialEquipped?: any,
  *   initialEntitlements?: Array<any>,
- *   initialCardLayout?: string,
  *   initialOrderIds?: number[],
  *   initialHiddenIds?: number[],
+ *   initialDisplayMode?: string,
+ *   initialDisplayNodes?: Array<any>,
  *   onSaved?: () => void,
  * }} props
  */
@@ -31,9 +34,10 @@ export default function TournamentCosmeticsEditorPopup({
   placements = [],
   initialEquipped = null,
   initialEntitlements = [],
-  initialCardLayout = "default",
   initialOrderIds = [],
   initialHiddenIds = [],
+  initialDisplayMode = "defaultHierarchy",
+  initialDisplayNodes = [],
   onSaved,
 }) {
   const { t } = useTranslation("pages");
@@ -46,9 +50,10 @@ export default function TournamentCosmeticsEditorPopup({
     placements,
     initialEquipped,
     initialEntitlements,
-    initialCardLayout,
     initialOrderIds,
     initialHiddenIds,
+    initialDisplayMode,
+    initialDisplayNodes,
     onSaved,
   });
 
@@ -60,14 +65,13 @@ export default function TournamentCosmeticsEditorPopup({
     draft,
     isDirty,
     saveBusy,
-    setCardLayout,
     selectFrame,
-    toggleFeatured,
+    setDisplayMode,
+    setDisplayNodes,
     toggleHidden,
     reorderPlacements,
     revertDraft,
     saveAll,
-    maxFeaturedPlacements,
   } = editor;
 
   useBodyScrollLock(isOpen);
@@ -77,21 +81,25 @@ export default function TournamentCosmeticsEditorPopup({
       setPreviewPlacementId(null);
       return;
     }
-    const firstId = visiblePlacements[0]?.id ?? editablePlacements[0]?.id ?? null;
+    const firstId = getCreditId(visiblePlacements[0]) ?? getCreditId(editablePlacements[0]) ?? null;
     setPreviewPlacementId(firstId);
   }, [isOpen]);
 
   useEffect(() => {
     if (!isOpen || previewPlacementId == null) return;
-    const stillVisible = visiblePlacements.some((p) => p.id === previewPlacementId);
+    const stillVisible = visiblePlacements.some(
+      (placement) => getCreditId(placement) === previewPlacementId,
+    );
     if (!stillVisible && visiblePlacements[0]) {
-      setPreviewPlacementId(visiblePlacements[0].id);
+      setPreviewPlacementId(getCreditId(visiblePlacements[0]));
     }
   }, [isOpen, previewPlacementId, visiblePlacements]);
 
   const layoutSamplePlacement = useMemo(() => {
     if (previewPlacementId != null) {
-      const selected = editablePlacements.find((p) => p.id === previewPlacementId);
+      const selected = editablePlacements.find(
+        (placement) => getCreditId(placement) === previewPlacementId,
+      );
       if (selected) return selected;
     }
     return editablePlacements[0] ?? null;
@@ -160,35 +168,27 @@ export default function TournamentCosmeticsEditorPopup({
               {editablePlacements.length ? (
                 <div className="tournament-cosmetics-editor-popup__display-block">
                   <h3 className="tournament-cosmetics-editor-popup__section-title">
+                    {t("settings.tournaments.displayModeTitle")}
+                  </h3>
+                  <TournamentDisplayTreeEditor
+                    credits={editablePlacements}
+                    displayMode={draft.displayMode}
+                    displayNodes={draft.displayNodes}
+                    onDisplayModeChange={setDisplayMode}
+                    onDisplayNodesChange={setDisplayNodes}
+                  />
+                </div>
+              ) : null}
+
+              {layoutSamplePlacement ? (
+                <div className="tournament-cosmetics-editor-popup__display-block">
+                  <h3 className="tournament-cosmetics-editor-popup__section-title">
                     {t("settings.tournaments.layoutTitle")}
                   </h3>
-                  <div className="tournament-cosmetics-editor-popup__layout-options">
-                    {["default", "iconRail"].map((layoutId) => (
-                      <button
-                        key={layoutId}
-                        type="button"
-                        className={[
-                          "tournament-cosmetics-editor-popup__layout-option",
-                          draft.cardLayout === layoutId ? "is-selected" : "",
-                        ]
-                          .filter(Boolean)
-                          .join(" ")}
-                        onClick={() => setCardLayout(layoutId)}
-                      >
-                        {layoutSamplePlacement ? (
-                          <TournamentPlacementCard
-                            placement={layoutSamplePlacement}
-                            cardLayout={layoutId}
-                            isFeaturedOverride={draft.featuredIds.includes(layoutSamplePlacement.id)}
-                            previewMode
-                          />
-                        ) : null}
-                        <span className="tournament-cosmetics-editor-popup__option-label">
-                          {t(`settings.tournaments.cardLayout.${layoutId}`)}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
+                  <p className="tournament-cosmetics-editor-popup__hint">
+                    {t("settings.tournaments.layoutPreviewHint")}
+                  </p>
+                  <TournamentPlacementCard placement={layoutSamplePlacement} previewMode />
                 </div>
               ) : null}
 
@@ -244,32 +244,21 @@ export default function TournamentCosmeticsEditorPopup({
               ) : null}
             </section>
 
-            {editablePlacements.length ? (
+            {editablePlacements.length && draft.displayMode === "defaultHierarchy" ? (
               <section className="tournament-cosmetics-editor-popup__panel tournament-cosmetics-editor-popup__placements-panel">
                 <div className="tournament-cosmetics-editor-popup__placements-head">
                   <h3 className="tournament-cosmetics-editor-popup__section-title">
                     {t("settings.tournaments.placementsTitle")}
                   </h3>
                   <p className="tournament-cosmetics-editor-popup__hint">
-                    {t("settings.tournaments.layoutPreviewHint")}
-                  </p>
-                  <p className="tournament-cosmetics-editor-popup__hint">
                     {t("settings.tournaments.placementsReorderHint")}
-                  </p>
-                  <p className="tournament-cosmetics-editor-popup__hint">
-                    {t("settings.tournaments.featuredMaxHint", {
-                      max: maxFeaturedPlacements,
-                    })}
                   </p>
                 </div>
                 <TournamentPlacementManageList
                   visiblePlacements={visiblePlacements}
                   hiddenPlacements={hiddenPlacements}
-                  featuredIds={draft.featuredIds}
-                  maxFeaturedPlacements={maxFeaturedPlacements}
                   selectedPlacementId={previewPlacementId}
                   onSelectPlacement={setPreviewPlacementId}
-                  onToggleFeatured={toggleFeatured}
                   onToggleHidden={toggleHidden}
                   onReorderPlacements={reorderPlacements}
                 />

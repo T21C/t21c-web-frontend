@@ -133,6 +133,16 @@
   color: var(--color-white);
 }
 
+.settings-sub-page .settings-sub-page__curation-badges .curation-type-selector.curation-type-selector--embedded {
+  width: 100%;
+  max-width: 100%;
+  justify-self: stretch;
+}
+
+.settings-sub-page .settings-sub-page__curation-badges .curation-type-selector__panel {
+  max-width: none;
+}
+
 .settings-sub-page .settings-sub-page__field {
   display: flex;
   padding: 0.75rem;
@@ -285,7 +295,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
-  width: min(100%, 46rem);
+  width: 100%;
   margin-inline: auto;
 }
 

@@ -1,10 +1,14 @@
 // tuf-search: #TournamentPlacementCard #tournamentPlacements
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { PinIcon } from "@/components/common/icons";
 import {
-  normalizePlacementCardLayout,
+  resolveCoCreditCount,
+  resolveCreditPackRef,
+  resolveEffectiveCardLayout,
+  resolveLevelDisplayName,
+  resolveLevelHref,
+  resolvePackHref,
   resolvePlacementCardBackground,
-  resolvePlacementRailIcon,
   resolveTierIcon,
   resolveTournamentIcon,
 } from "@/utils/tournamentPlacements";
@@ -13,40 +17,44 @@ import {
  * @param {{
  *   placement: any,
  *   cardLayout?: string,
- *   isFeaturedOverride?: boolean,
  *   previewMode?: boolean,
  * }} props
  */
 const TournamentPlacementCard = ({
   placement,
-  cardLayout = "default",
-  isFeaturedOverride,
+  cardLayout,
   previewMode = false,
 }) => {
   const { t } = useTranslation("pages");
-  const layout = normalizePlacementCardLayout(cardLayout);
-  const isIconRail = layout === "iconRail";
-  const isFeatured =
-    typeof isFeaturedOverride === "boolean" ? isFeaturedOverride : Boolean(placement.isFeatured);
-
+  const layout = resolveEffectiveCardLayout(placement, cardLayout);
   const cardBg = resolvePlacementCardBackground(placement);
   const tierIcon = resolveTierIcon(placement);
   const tournamentIcon = resolveTournamentIcon(placement);
-  const railIcon = resolvePlacementRailIcon(placement);
   const cardStyle = cardBg ? { backgroundImage: `url(${cardBg})` } : undefined;
+
+  const tierLabel = placement.tier?.label || placement.tier?.code || "";
+  const tournamentLabel =
+    placement.tournament?.fullName || placement.tournament?.shortName || "";
+  const levelName = resolveLevelDisplayName(placement);
+  const levelId = placement.levelId ?? placement.level?.id ?? null;
+  const levelHref = resolveLevelHref(levelId);
+  const packRef = resolveCreditPackRef(placement);
+  const packHref = resolvePackHref(packRef);
+  const coCreditCount = resolveCoCreditCount(placement);
+
+  const tierLine = (
+    <div className="tournament-placements__tier">
+      {layout === "classic" && tierIcon ? (
+        <img className="tournament-placements__tier-icon" src={tierIcon} alt="" />
+      ) : null}
+      <span>{tierLabel}</span>
+    </div>
+  );
 
   const metaBadges = (
     <>
       {placement.tournament?.sortYear ? (
         <span className="tournament-placements__badge">{placement.tournament.sortYear}</span>
-      ) : null}
-      {placement.tournament?.series?.name ? (
-        <span className="tournament-placements__badge">{placement.tournament.series.name}</span>
-      ) : null}
-      {placement.withdrew ? (
-        <span className="tournament-placements__badge is-wd">
-          {t("profile.sections.tournaments.withdrew")}
-        </span>
       ) : null}
       {placement.teamName ? (
         <span className="tournament-placements__badge">{placement.teamName}</span>
@@ -54,71 +62,105 @@ const TournamentPlacementCard = ({
     </>
   );
 
+  const othersLink =
+    coCreditCount > 0 && levelHref ? (
+      <Link className="tournament-placements__link" to={levelHref}>
+        {t("profile.sections.tournaments.othersCount", { count: coCreditCount })}
+      </Link>
+    ) : null;
+
+  let bodyContent = null;
+
+  if (layout === "evidence") {
+    bodyContent = (
+      <>
+        <div className="tournament-placements__primary">
+          {levelHref && levelName ? (
+            <Link className="tournament-placements__link" to={levelHref}>
+              {levelName}
+            </Link>
+          ) : (
+            <span>{levelName || placement.displayName}</span>
+          )}
+        </div>
+        <div className="tournament-placements__context">
+          <span>{tournamentLabel}</span>
+          {tierLabel ? <span className="tournament-placements__context-sep">·</span> : null}
+          {tierLabel ? <span>{tierLabel}</span> : null}
+        </div>
+        <div className="tournament-placements__meta">{metaBadges}</div>
+        {othersLink}
+      </>
+    );
+  } else if (layout === "levelStyle") {
+    const primaryHref = packHref || levelHref;
+    const primaryLabel = tournamentLabel || tierLabel;
+    bodyContent = (
+      <>
+        <div className="tournament-placements__primary">
+          {primaryHref && primaryLabel ? (
+            <Link className="tournament-placements__link" to={primaryHref}>
+              {primaryLabel}
+              {tierLabel && tournamentLabel ? (
+                <span className="tournament-placements__primary-tier"> · {tierLabel}</span>
+              ) : null}
+            </Link>
+          ) : (
+            <span>
+              {primaryLabel}
+              {tierLabel && tournamentLabel ? (
+                <span className="tournament-placements__primary-tier"> · {tierLabel}</span>
+              ) : null}
+            </span>
+          )}
+        </div>
+        {levelName ? (
+          <div className="tournament-placements__subtitle">
+            {levelHref ? (
+              <Link className="tournament-placements__link" to={levelHref}>
+                {levelName}
+              </Link>
+            ) : (
+              <span>{levelName}</span>
+            )}
+          </div>
+        ) : null}
+        <div className="tournament-placements__meta">{metaBadges}</div>
+        {othersLink}
+      </>
+    );
+  } else {
+    bodyContent = (
+      <>
+        {tierLine}
+        <div className="tournament-placements__event">
+          {tournamentIcon ? (
+            <img className="tournament-placements__event-icon" src={tournamentIcon} alt="" />
+          ) : null}
+          <span>{tournamentLabel}</span>
+        </div>
+        {placement.displayName ? (
+          <div className="tournament-placements__display-name">{placement.displayName}</div>
+        ) : null}
+        <div className="tournament-placements__meta">{metaBadges}</div>
+      </>
+    );
+  }
+
   return (
     <article
       className={[
         "tournament-placements__card",
         previewMode ? "is-preview" : "",
-        placement.tier?.isPodium ? "is-podium" : "",
-        isFeatured ? "is-featured" : "",
+        `is-layout-${layout}`,
         cardBg ? "has-background" : "",
-        isIconRail ? "is-icon-rail" : "",
       ]
         .filter(Boolean)
         .join(" ")}
       style={cardStyle}
     >
       {cardBg ? <div className="tournament-placements__card-overlay" /> : null}
-      {isFeatured ? (
-        <span
-          className="tournament-placements__pin"
-          title={t("profile.sections.tournaments.featured")}
-          aria-label={t("profile.sections.tournaments.featured")}
-        >
-          <PinIcon size="14px" color="var(--color-purple-1)" />
-        </span>
-      ) : null}
-
-      {isIconRail ? (
-        <>
-          <div className="tournament-placements__card-rail">
-            {railIcon ? (
-              <img className="tournament-placements__rail-icon" src={railIcon} alt="" />
-            ) : (
-              <div className="tournament-placements__rail-placeholder" />
-            )}
-          </div>
-          <div className="tournament-placements__card-body">
-            <div className="tournament-placements__tier">
-              <span>{placement.tier?.label || placement.tier?.code}</span>
-            </div>
-            <div className="tournament-placements__event">
-              <span>
-                {placement.tournament?.fullName || placement.tournament?.shortName}
-              </span>
-            </div>
-            <div className="tournament-placements__meta">{metaBadges}</div>
-          </div>
-        </>
-      ) : (
-        <div className="tournament-placements__card-body">
-          <div className="tournament-placements__tier">
-            {tierIcon ? (
-              <img className="tournament-placements__tier-icon" src={tierIcon} alt="" />
-            ) : null}
-            <span>{placement.tier?.label || placement.tier?.code}</span>
-          </div>
-          <div className="tournament-placements__event">
-            {tournamentIcon ? (
-              <img className="tournament-placements__event-icon" src={tournamentIcon} alt="" />
-            ) : null}
-            <span>
-              {placement.tournament?.fullName || placement.tournament?.shortName}
-            </span>
-          </div>
-          <div className="tournament-placements__meta">{metaBadges}</div>
-        </div>
-      )}
+      <div className="tournament-placements__card-body">{bodyContent}</div>
     </article>
   );
 };

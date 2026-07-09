@@ -470,9 +470,10 @@ const SettingsPlayerPage = () => {
             placements={playerData?.tournamentPlacements || []}
             initialEquipped={playerData?.equippedAvatarFrame}
             initialEntitlements={playerData?.placementEntitlements || []}
-            initialCardLayout={playerData?.placementCardLayout}
             initialOrderIds={playerData?.placementOrderIds || []}
             initialHiddenIds={playerData?.hiddenPlacementIds || []}
+            initialDisplayMode={playerData?.placementDisplayMode}
+            initialDisplayNodes={playerData?.placementDisplayNodes || []}
             onSaved={() => fetchProfile({ background: true })}
           />
         </SettingsPreviewSection>

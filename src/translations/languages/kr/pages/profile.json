@@ -52,7 +52,10 @@
       "expand": "토너먼트 펼치기",
       "collapse": "토너먼트 접기",
       "withdrew": "기권",
-      "featured": "대표"
+      "unseriesed": "기타 토너먼트",
+      "unknownTournament": "토너먼트",
+      "openPack": "팩 열기",
+      "othersCount": "+{{count}}명"
     },
     "scores": {
       "title": "점수",

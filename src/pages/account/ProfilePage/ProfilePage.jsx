@@ -863,7 +863,7 @@ const ProfilePage = () => {
 
               <TournamentPlacementsSection
                 placements={playerData?.tournamentPlacements}
-                cardLayout={playerData?.placementCardLayout}
+                orderIds={playerData?.placementOrderIds}
               />
 
               {scoreBreakdownTiles.length > 0 ? (

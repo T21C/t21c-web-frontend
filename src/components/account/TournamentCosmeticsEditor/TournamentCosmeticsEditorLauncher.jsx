@@ -2,9 +2,10 @@
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
+  getCreditId,
   listEditablePlacements,
   listVisiblePlacements,
-  normalizePlacementCardLayout,
+  normalizePlacementDisplayMode,
 } from "@/utils/tournamentPlacements";
 import TournamentPlacementCard from "@/components/account/TournamentPlacements/TournamentPlacementCard";
 import "@/components/account/TournamentPlacements/tournamentPlacements.css";
@@ -17,9 +18,10 @@ import "./tournamentCosmeticsEditorLauncher.css";
  *   placements?: Array<any>,
  *   initialEquipped?: any,
  *   initialEntitlements?: Array<any>,
- *   initialCardLayout?: string,
  *   initialOrderIds?: number[],
  *   initialHiddenIds?: number[],
+ *   initialDisplayMode?: string,
+ *   initialDisplayNodes?: Array<any>,
  *   onSaved?: () => void,
  * }} props
  */
@@ -28,9 +30,10 @@ export default function TournamentCosmeticsEditorLauncher({
   placements = [],
   initialEquipped = null,
   initialEntitlements = [],
-  initialCardLayout = "default",
   initialOrderIds = [],
   initialHiddenIds = [],
+  initialDisplayMode = "defaultHierarchy",
+  initialDisplayNodes = [],
   onSaved,
 }) {
   const { t } = useTranslation("pages");
@@ -46,9 +49,8 @@ export default function TournamentCosmeticsEditorLauncher({
     [placements],
   );
 
-  const cardLayout = normalizePlacementCardLayout(initialCardLayout);
+  const displayMode = normalizePlacementDisplayMode(initialDisplayMode);
   const equippedFrameId = initialEquipped?.entitlementId ?? null;
-  const featuredCount = visiblePlacements.filter((p) => p.isFeatured).length;
 
   const frames = useMemo(
     () => (initialEntitlements || []).filter((e) => e.rewardType === "avatar_frame"),
@@ -63,15 +65,12 @@ export default function TournamentCosmeticsEditorLauncher({
 
   const summaryText = useMemo(() => {
     const parts = [
-      t(`settings.tournaments.cardLayout.${cardLayout}`),
+      t(`settings.tournaments.displayMode.${displayMode}`),
       equippedFrameLabel,
       t("settings.tournaments.summaryVisible", { count: visiblePlacements.length }),
     ];
-    if (featuredCount > 0) {
-      parts.push(t("settings.tournaments.summaryPinned", { count: featuredCount }));
-    }
     return parts.join(" · ");
-  }, [cardLayout, equippedFrameLabel, featuredCount, t, visiblePlacements.length]);
+  }, [displayMode, equippedFrameLabel, t, visiblePlacements.length]);
 
   const previewPlacements = useMemo(
     () => visiblePlacements.slice(0, 4),
@@ -96,9 +95,8 @@ export default function TournamentCosmeticsEditorLauncher({
         <div className="tournament-cosmetics-editor-launcher__preview-strip">
           {previewPlacements.map((placement) => (
             <TournamentPlacementCard
-              key={placement.id}
+              key={getCreditId(placement)}
               placement={placement}
-              cardLayout={cardLayout}
               previewMode
             />
           ))}
@@ -120,9 +118,10 @@ export default function TournamentCosmeticsEditorLauncher({
         placements={placements}
         initialEquipped={initialEquipped}
         initialEntitlements={initialEntitlements}
-        initialCardLayout={initialCardLayout}
         initialOrderIds={initialOrderIds}
         initialHiddenIds={initialHiddenIds}
+        initialDisplayMode={initialDisplayMode}
+        initialDisplayNodes={initialDisplayNodes}
         onSaved={onSaved}
       />
     </div>

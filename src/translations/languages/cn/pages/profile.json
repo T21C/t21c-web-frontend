@@ -52,7 +52,10 @@
       "expand": "展开锦标赛",
       "collapse": "收起锦标赛",
       "withdrew": "退赛",
-      "featured": "精选"
+      "unseriesed": "其他锦标赛",
+      "unknownTournament": "锦标赛",
+      "openPack": "打开谱面包",
+      "othersCount": "+{{count}} 其他人"
     },
     "scores": {
       "title": "通关记录列表",

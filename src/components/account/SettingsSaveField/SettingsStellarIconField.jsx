@@ -29,7 +29,7 @@ export function SettingsStellarIconField({
   return (
     <SettingsPreviewSection
       sectionId={sectionId}
-      className="settings-sub-page__stellar-variant"
+      className="settings-sub-page__field settings-sub-page__stellar-variant"
       aria-labelledby={resolvedHeadingId}
     >
       <div className="settings-sub-page__stellar-variant-head">

@@ -2,6 +2,10 @@ export const TRACK_VALUES = ["player", "creator"];
 
 export const STATUS_VALUES = ["draft", "ongoing", "completed", "cancelled"];
 
+export const PLACEMENT_MODE_VALUES = ["profile", "level"];
+
+export const ROW_MODE_VALUES = ["inherit", "profile", "level"];
+
 export const TIER_KIND_VALUES = [
   "ordinal",
   "bracket",
@@ -16,7 +20,6 @@ export const TEXT_FIELD_KEYS = [
   "fullName",
   "aka",
   "youtubeUrl",
-  "packRef",
   "externalUrl",
   "sortYear",
   "organizers",
@@ -59,6 +62,18 @@ export const buildTierKindOptions = (t) =>
     label: t(`tournamentManagement.tiers.kindOptions.${value}`),
   }));
 
+export const buildPlacementModeOptions = (t) =>
+  PLACEMENT_MODE_VALUES.map((value) => ({
+    value,
+    label: t(`tournamentManagement.form.placementModes.${value}`),
+  }));
+
+export const buildRowModeOptions = (t) =>
+  ROW_MODE_VALUES.map((value) => ({
+    value,
+    label: t(`tournamentManagement.popup.placements.rowModes.${value}`),
+  }));
+
 export const findOption = (options, value) =>
   options.find((opt) => opt.value === String(value ?? "")) ?? options[0];
 
@@ -77,7 +92,7 @@ export const emptyTournamentForm = () => ({
   externalUrl: "",
   organizers: "",
   sortYear: "",
-  tierTemplateId: "podium4",
+  placementMode: "profile",
 });
 
 export const buildTournamentPayload = (form, { forCreate = false } = {}) => {
@@ -99,12 +114,11 @@ export const buildTournamentPayload = (form, { forCreate = false } = {}) => {
       .map((s) => s.trim())
       .filter(Boolean),
     sortYear: form.sortYear === "" ? null : Number(form.sortYear),
+    placementMode: form.placementMode || "profile",
   };
 
   if (forCreate) {
-    payload.tierTemplateId = form.tierTemplateId || "podium4";
-  } else if (form.tierTemplateId) {
-    payload.tierTemplateId = form.tierTemplateId;
+    payload.tierTemplateId = "podium4";
   }
 
   return payload;

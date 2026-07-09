@@ -1,8 +1,9 @@
 // tuf-search: #TournamentManagementPage #tournamentManagementPage #admin #tournaments
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import api from "@/utils/api";
 import { routes } from "@/api/routes";
 import { useAuth } from "@/contexts/AuthContext";
@@ -50,7 +51,10 @@ const TournamentManagementPage = () => {
   const [importReport, setImportReport] = useState(null);
   const [seriesForm, setSeriesForm] = useState({ slug: "", name: "" });
   const [editingSeriesId, setEditingSeriesId] = useState(null);
+  const seriesFormBaselineRef = useRef({ slug: "", name: "" });
   const [showCreatePopup, setShowCreatePopup] = useState(false);
+  const [isReorderingTournaments, setIsReorderingTournaments] = useState(false);
+  const [isReorderingSeries, setIsReorderingSeries] = useState(false);
 
   const isAdmin = hasFlag(user, permissionFlags.SUPER_ADMIN);
 
@@ -101,18 +105,170 @@ const TournamentManagementPage = () => {
   const seriesOptions = useMemo(
     () => [
       { value: "", label: t("tournamentManagement.form.seriesNone") },
-      ...seriesList.map((s) => ({ value: String(s.id), label: s.name })),
+      ...[...seriesList]
+        .sort((a, b) => (a.sortWeight ?? 0) - (b.sortWeight ?? 0))
+        .map((s) => ({ value: String(s.id), label: s.name })),
     ],
     [seriesList, t],
   );
 
-  const tierTemplateOptions = useMemo(
-    () => [
-      { value: "", label: t("tournamentManagement.form.tierTemplateNone") },
-      ...templates.map((tpl) => ({ value: tpl.id, label: tpl.name })),
-    ],
-    [templates, t],
+  const sortedTournaments = useMemo(
+    () =>
+      [...tournaments].sort((a, b) => {
+        const seriesWeightA = a.series?.sortWeight ?? 100;
+        const seriesWeightB = b.series?.sortWeight ?? 100;
+        if (seriesWeightA !== seriesWeightB) return seriesWeightA - seriesWeightB;
+        return (a.sortWeight ?? 0) - (b.sortWeight ?? 0);
+      }),
+    [tournaments],
   );
+
+  const sortedSeriesList = useMemo(
+    () => [...seriesList].sort((a, b) => (a.sortWeight ?? 0) - (b.sortWeight ?? 0)),
+    [seriesList],
+  );
+
+  const tournamentGroups = useMemo(() => {
+    const bySeriesKey = new Map();
+
+    for (const item of tournaments) {
+      const key = item.seriesId != null ? `series-${item.seriesId}` : "series-none";
+      if (!bySeriesKey.has(key)) {
+        bySeriesKey.set(key, []);
+      }
+      bySeriesKey.get(key).push(item);
+    }
+
+    const sortItems = (items) =>
+      [...items].sort((a, b) => (a.sortWeight ?? 0) - (b.sortWeight ?? 0));
+
+    const groups = [];
+
+    for (const series of sortedSeriesList) {
+      const key = `series-${series.id}`;
+      const items = bySeriesKey.get(key);
+      if (!items?.length) continue;
+      groups.push({
+        key,
+        label: series.name,
+        items: sortItems(items),
+      });
+      bySeriesKey.delete(key);
+    }
+
+    const unseriesed = bySeriesKey.get("series-none");
+    if (unseriesed?.length) {
+      groups.push({
+        key: "series-none",
+        label: t("tournamentManagement.form.seriesNone"),
+        items: sortItems(unseriesed),
+      });
+      bySeriesKey.delete("series-none");
+    }
+
+    for (const [key, items] of bySeriesKey) {
+      if (!items.length) continue;
+      groups.push({
+        key,
+        label: items[0]?.series?.name ?? key,
+        items: sortItems(items),
+      });
+    }
+
+    return groups;
+  }, [tournaments, sortedSeriesList, t]);
+
+  const persistReorder = async (orderedIds, route, onRollback, onSuccess) => {
+    try {
+      await api.put(route, { orderedIds });
+      toast.success(t("tournamentManagement.messages.reordered"));
+      await onSuccess?.();
+      return true;
+    } catch (e) {
+      await onRollback?.();
+      toast.error(e?.response?.data?.error || t("tournamentManagement.errors.reorderFailed"));
+      return false;
+    }
+  };
+
+  const handleSeriesDragEnd = async (result) => {
+    if (!result.destination) return;
+
+    setIsReorderingSeries(true);
+    const previousSeries = seriesList;
+
+    try {
+      const items = Array.from(sortedSeriesList);
+      const [moved] = items.splice(result.source.index, 1);
+      items.splice(result.destination.index, 0, moved);
+
+      const orderedIds = items.map((item) => item.id);
+      const weightById = new Map(orderedIds.map((id, index) => [id, index + 1]));
+
+      setSeriesList((prev) =>
+        [...prev]
+          .map((item) => {
+            const nextWeight = weightById.get(item.id);
+            return nextWeight != null ? { ...item, sortWeight: nextWeight } : item;
+          })
+          .sort((a, b) => (a.sortWeight ?? 0) - (b.sortWeight ?? 0)),
+      );
+
+      await persistReorder(
+        orderedIds,
+        routes.admin.tournaments.seriesReorder(),
+        async () => {
+          setSeriesList(previousSeries);
+          await loadSeries();
+        },
+        async () => {
+          await loadSeries();
+          await loadTournaments();
+        },
+      );
+    } finally {
+      setIsReorderingSeries(false);
+    }
+  };
+
+  const handleTournamentDragEnd = async (result) => {
+    if (!result.destination) return;
+    if (result.source.droppableId !== result.destination.droppableId) return;
+
+    const group = tournamentGroups.find((entry) => entry.key === result.source.droppableId);
+    if (!group) return;
+
+    setIsReorderingTournaments(true);
+    const previousTournaments = tournaments;
+
+    try {
+      const items = Array.from(group.items);
+      const [moved] = items.splice(result.source.index, 1);
+      items.splice(result.destination.index, 0, moved);
+
+      const orderedIds = items.map((item) => item.id);
+      const weightById = new Map(orderedIds.map((id, index) => [id, index + 1]));
+
+      setTournaments((prev) =>
+        prev.map((item) => {
+          const nextWeight = weightById.get(item.id);
+          return nextWeight != null ? { ...item, sortWeight: nextWeight } : item;
+        }),
+      );
+
+      await persistReorder(
+        orderedIds,
+        routes.admin.tournaments.tournamentsReorder(),
+        async () => {
+          setTournaments(previousTournaments);
+          await loadTournaments();
+        },
+        loadTournaments,
+      );
+    } finally {
+      setIsReorderingTournaments(false);
+    }
+  };
 
   if (!isAdmin) {
     return (
@@ -123,7 +279,7 @@ const TournamentManagementPage = () => {
     );
   }
 
-  const openManagePopup = (id, initialTab = "placements") => {
+  const openManagePopup = (id, initialTab = "details") => {
     setManagePopup({ id, initialTab });
   };
 
@@ -132,13 +288,42 @@ const TournamentManagementPage = () => {
   };
 
   const createTournament = async (createForm) => {
-    const { data } = await api.post(routes.admin.tournaments.root(), {
-      ...buildTournamentPayload(createForm, { forCreate: true }),
-    });
-    toast.success(t("tournamentManagement.messages.tournamentCreated"));
-    setShowCreatePopup(false);
-    await loadTournaments();
-    openManagePopup(data.id, "placements");
+    try {
+      const { data } = await api.post(routes.admin.tournaments.root(), {
+        ...buildTournamentPayload(createForm, { forCreate: true }),
+      });
+      toast.success(t("tournamentManagement.messages.tournamentCreated"));
+      setShowCreatePopup(false);
+      await loadTournaments();
+      openManagePopup(data.id, "details");
+    } catch (e) {
+      toast.error(
+        e?.response?.data?.error || t("tournamentManagement.form.errors.saveFailed"),
+      );
+    }
+  };
+
+  const deleteTournament = async (item) => {
+    if (
+      !window.confirm(
+        t("tournamentManagement.deleteConfirm", { name: item.shortName }),
+      )
+    ) {
+      return;
+    }
+
+    try {
+      await api.delete(routes.admin.tournaments.byId(item.id));
+      toast.success(t("tournamentManagement.messages.deleted"));
+      if (managePopup?.id === item.id) {
+        closeManagePopup();
+      }
+      await loadTournaments();
+    } catch (e) {
+      toast.error(
+        e?.response?.data?.error || t("tournamentManagement.errors.deleteFailed"),
+      );
+    }
   };
 
   const resolveAllNames = async () => {
@@ -196,15 +381,37 @@ const TournamentManagementPage = () => {
 
   const resetSeriesForm = () => {
     setSeriesForm({ slug: "", name: "" });
+    seriesFormBaselineRef.current = { slug: "", name: "" };
     setEditingSeriesId(null);
   };
 
   const startEditSeries = (series) => {
+    const nextForm = { slug: series.slug ?? "", name: series.name ?? "" };
     setEditingSeriesId(series.id);
-    setSeriesForm({ slug: series.slug ?? "", name: series.name ?? "" });
+    setSeriesForm(nextForm);
+    seriesFormBaselineRef.current = nextForm;
   };
 
+  const seriesFormDirty = useMemo(() => {
+    const slug = seriesForm.slug.trim();
+    const name = seriesForm.name.trim();
+    if (editingSeriesId != null) {
+      const baseline = seriesFormBaselineRef.current;
+      return slug !== baseline.slug.trim() || name !== baseline.name.trim();
+    }
+    return Boolean(slug || name);
+  }, [seriesForm, editingSeriesId]);
+
+  const canSaveSeries = useMemo(() => {
+    const slug = seriesForm.slug.trim();
+    const name = seriesForm.name.trim();
+    if (!slug || !name) return false;
+    if (editingSeriesId != null) return seriesFormDirty;
+    return true;
+  }, [seriesForm, editingSeriesId, seriesFormDirty]);
+
   const saveSeries = async () => {
+    if (!canSaveSeries) return;
     const slug = seriesForm.slug.trim();
     const name = seriesForm.name.trim();
     if (!slug || !name) {
@@ -307,40 +514,97 @@ const TournamentManagementPage = () => {
             </button>
           </div>
 
-          <div className="tournament-mgmt-page__list">
-            {tournaments.map((item) => (
-              <div
-                key={item.id}
-                className={`tournament-mgmt-page__card${managePopup?.id === item.id ? " is-selected" : ""}`}
-                onClick={() => openManagePopup(item.id)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") openManagePopup(item.id);
-                }}
-                role="button"
-                tabIndex={0}
-              >
-                <div>
-                  <strong>{item.shortName}</strong>
-                  <div className="tournament-mgmt-page__card-meta">
-                    <span>{item.fullName}</span>
-                    <span className="tournament-mgmt-page__badge">{item.track}</span>
-                    <span className="tournament-mgmt-page__badge">{item.status}</span>
-                    {item.isHidden ? (
-                      <span className="tournament-mgmt-page__badge">
-                        {t("tournamentManagement.hiddenBadge")}
-                      </span>
-                    ) : null}
-                    <span>{item.placementCount ?? 0} placements</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-            {!tournaments.length ? (
-              <p className="tournament-mgmt-page__empty">
-                {t("tournamentManagement.emptyList")}
-              </p>
-            ) : null}
-          </div>
+          <DragDropContext onDragEnd={handleTournamentDragEnd}>
+            <div className="tournament-mgmt-page__grouped-list">
+              {tournamentGroups.map((group) => (
+                <section key={group.key} className="tournament-mgmt-page__series-group">
+                  <h2 className="tournament-mgmt-page__series-group-title">{group.label}</h2>
+                  <Droppable droppableId={group.key}>
+                    {(provided) => (
+                      <div
+                        className="tournament-mgmt-page__list"
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                      >
+                        {group.items.map((item, index) => (
+                          <Draggable
+                            key={item.id}
+                            draggableId={String(item.id)}
+                            index={index}
+                            isDragDisabled={isReorderingTournaments}
+                          >
+                            {(dragProvided, snapshot) => (
+                              <div
+                                ref={dragProvided.innerRef}
+                                {...dragProvided.draggableProps}
+                                className={[
+                                  "tournament-mgmt-page__card",
+                                  managePopup?.id === item.id ? "is-selected" : "",
+                                  snapshot.isDragging ? "is-dragging" : "",
+                                ]
+                                  .filter(Boolean)
+                                  .join(" ")}
+                              >
+                                <div
+                                  className="tournament-mgmt-page__drag-handle"
+                                  aria-label={t("tournamentManagement.reorder.dragHandle")}
+                                  {...dragProvided.dragHandleProps}
+                                >
+                                  <span
+                                    className="tournament-mgmt-page__drag-handle-grip"
+                                    aria-hidden="true"
+                                  >
+                                    ⋮⋮
+                                  </span>
+                                </div>
+                                <div
+                                  className="tournament-mgmt-page__card-body"
+                                  onClick={() => openManagePopup(item.id)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter") openManagePopup(item.id);
+                                  }}
+                                  role="button"
+                                  tabIndex={0}
+                                >
+                                  <strong>{item.shortName}</strong>
+                                  <div className="tournament-mgmt-page__card-meta">
+                                    <span>{item.fullName}</span>
+                                    <span className="tournament-mgmt-page__badge">{item.track}</span>
+                                    <span className="tournament-mgmt-page__badge">{item.status}</span>
+                                    {item.isHidden ? (
+                                      <span className="tournament-mgmt-page__badge">
+                                        {t("tournamentManagement.hiddenBadge")}
+                                      </span>
+                                    ) : null}
+                                    <span>{item.placementCount ?? 0} placements</span>
+                                  </div>
+                                </div>
+                                <div className="tournament-mgmt-page__card-actions">
+                                  <button
+                                    type="button"
+                                    className="btn-fill-danger"
+                                    onClick={() => deleteTournament(item)}
+                                  >
+                                    {t("tournamentManagement.delete")}
+                                  </button>
+                                </div>
+                              </div>
+                            )}
+                          </Draggable>
+                        ))}
+                        {provided.placeholder}
+                      </div>
+                    )}
+                  </Droppable>
+                </section>
+              ))}
+              {!sortedTournaments.length ? (
+                <p className="tournament-mgmt-page__empty">
+                  {t("tournamentManagement.emptyList")}
+                </p>
+              ) : null}
+            </div>
+          </DragDropContext>
         </>
       )}
 
@@ -349,7 +613,6 @@ const TournamentManagementPage = () => {
           onClose={() => setShowCreatePopup(false)}
           onSubmit={createTournament}
           seriesOptions={seriesOptions}
-          tierTemplateOptions={tierTemplateOptions}
         />
       ) : null}
 
@@ -360,7 +623,7 @@ const TournamentManagementPage = () => {
           onClose={closeManagePopup}
           onUpdated={loadTournaments}
           seriesOptions={seriesOptions}
-          tierTemplateOptions={tierTemplateOptions}
+          tierTemplates={templates}
         />
       ) : null}
 
@@ -476,7 +739,12 @@ const TournamentManagementPage = () => {
             </div>
           </div>
           <div className="tournament-mgmt-page__actions">
-            <button type="button" className="btn-fill-primary" onClick={saveSeries}>
+            <button
+              type="button"
+              className="btn-fill-primary"
+              onClick={saveSeries}
+              disabled={!canSaveSeries}
+            >
               {editingSeriesId != null
                 ? t("tournamentManagement.save")
                 : t("tournamentManagement.createSeries")}
@@ -487,44 +755,82 @@ const TournamentManagementPage = () => {
               </button>
             ) : null}
           </div>
-          <div className="tournament-mgmt-page__list">
-            {seriesList.map((s) => (
-              <div
-                key={s.id}
-                className={`tournament-mgmt-page__card tournament-mgmt-page__card--static${
-                  editingSeriesId === s.id ? " is-selected" : ""
-                }`}
-              >
-                <div>
-                  <strong>{s.name}</strong>
-                  <div className="tournament-mgmt-page__card-meta">
-                    <span>{s.slug}</span>
-                  </div>
+          <DragDropContext onDragEnd={handleSeriesDragEnd}>
+            <Droppable droppableId="tournament-series">
+              {(provided) => (
+                <div
+                  className="tournament-mgmt-page__list"
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                >
+                  {sortedSeriesList.map((s, index) => (
+                    <Draggable
+                      key={s.id}
+                      draggableId={String(s.id)}
+                      index={index}
+                      isDragDisabled={isReorderingSeries}
+                    >
+                      {(dragProvided, snapshot) => (
+                        <div
+                          ref={dragProvided.innerRef}
+                          {...dragProvided.draggableProps}
+                          className={[
+                            "tournament-mgmt-page__card",
+                            "tournament-mgmt-page__card--static",
+                            editingSeriesId === s.id ? "is-selected" : "",
+                            snapshot.isDragging ? "is-dragging" : "",
+                          ]
+                            .filter(Boolean)
+                            .join(" ")}
+                        >
+                          <div
+                            className="tournament-mgmt-page__drag-handle"
+                            aria-label={t("tournamentManagement.reorder.dragHandle")}
+                            {...dragProvided.dragHandleProps}
+                          >
+                            <span
+                              className="tournament-mgmt-page__drag-handle-grip"
+                              aria-hidden="true"
+                            >
+                              ⋮⋮
+                            </span>
+                          </div>
+                          <div className="tournament-mgmt-page__card-body">
+                            <strong>{s.name}</strong>
+                            <div className="tournament-mgmt-page__card-meta">
+                              <span>{s.slug}</span>
+                            </div>
+                          </div>
+                          <div className="tournament-mgmt-page__card-actions">
+                            <button
+                              type="button"
+                              className="btn-fill-secondary"
+                              onClick={() => startEditSeries(s)}
+                            >
+                              {t("buttons.edit", { ns: "common" })}
+                            </button>
+                            <button
+                              type="button"
+                              className="btn-fill-danger"
+                              onClick={() => deleteSeries(s)}
+                            >
+                              {t("tournamentManagement.delete")}
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                  {!sortedSeriesList.length ? (
+                    <p className="tournament-mgmt-page__empty">
+                      {t("tournamentManagement.series.empty")}
+                    </p>
+                  ) : null}
                 </div>
-                <div className="tournament-mgmt-page__card-actions">
-                  <button
-                    type="button"
-                    className="btn-fill-secondary"
-                    onClick={() => startEditSeries(s)}
-                  >
-                    {t("buttons.edit", { ns: "common" })}
-                  </button>
-                  <button
-                    type="button"
-                    className="btn-fill-danger"
-                    onClick={() => deleteSeries(s)}
-                  >
-                    {t("tournamentManagement.delete")}
-                  </button>
-                </div>
-              </div>
-            ))}
-            {!seriesList.length ? (
-              <p className="tournament-mgmt-page__empty">
-                {t("tournamentManagement.series.empty")}
-              </p>
-            ) : null}
-          </div>
+              )}
+            </Droppable>
+          </DragDropContext>
         </div>
       )}
     </div>

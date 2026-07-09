@@ -5,12 +5,12 @@ import toast from "react-hot-toast";
 import api from "@/utils/api";
 import { routes } from "@/api/routes";
 import {
+  getCreditId,
   listEditablePlacements,
-  normalizePlacementCardLayout,
+  normalizePlacementDisplayMode,
   sortPlacementsByOrder,
 } from "@/utils/tournamentPlacements";
-
-export const MAX_FEATURED_PLACEMENTS = 5;
+import { buildDefaultDisplayTreeFromCredits } from "@/components/account/TournamentPlacements/useTournamentDisplayTree";
 
 function normalizeIdList(value) {
   if (!Array.isArray(value)) return [];
@@ -18,18 +18,18 @@ function normalizeIdList(value) {
 }
 
 function buildSnapshot({
-  cardLayout,
   equippedFrameId,
-  featuredIds,
   orderIds,
   hiddenIds,
+  displayMode,
+  displayNodes,
 }) {
   return {
-    cardLayout: normalizePlacementCardLayout(cardLayout),
     equippedFrameId: equippedFrameId ?? null,
-    featuredIds: normalizeIdList(featuredIds).sort((a, b) => a - b),
     orderIds: normalizeIdList(orderIds),
     hiddenIds: normalizeIdList(hiddenIds).sort((a, b) => a - b),
+    displayMode: normalizePlacementDisplayMode(displayMode),
+    displayNodes: Array.isArray(displayNodes) ? displayNodes.map((node) => ({ ...node })) : [],
   };
 }
 
@@ -45,13 +45,30 @@ function orderArraysEqual(a, b) {
   return a.every((id, i) => id === b[i]);
 }
 
+function displayNodesEqual(a, b) {
+  if (!Array.isArray(a) || !Array.isArray(b)) return false;
+  if (a.length !== b.length) return false;
+  return a.every((node, index) => {
+    const other = b[index];
+    return (
+      node.id === other.id &&
+      node.parentId === other.parentId &&
+      node.sortOrder === other.sortOrder &&
+      node.visible === other.visible &&
+      node.nodeType === other.nodeType &&
+      node.refId === other.refId &&
+      node.label === other.label
+    );
+  });
+}
+
 function snapshotsEqual(a, b) {
   if (!a || !b) return false;
-  if (a.cardLayout !== b.cardLayout) return false;
   if (a.equippedFrameId !== b.equippedFrameId) return false;
-  if (!sortedArraysEqual(a.featuredIds, b.featuredIds)) return false;
   if (!sortedArraysEqual(a.hiddenIds, b.hiddenIds)) return false;
   if (!orderArraysEqual(a.orderIds, b.orderIds)) return false;
+  if (a.displayMode !== b.displayMode) return false;
+  if (!displayNodesEqual(a.displayNodes, b.displayNodes)) return false;
   return true;
 }
 
@@ -60,12 +77,14 @@ function deriveInitialOrderIds(placements, initialOrderIds) {
   const visible = editable.filter((p) => !p.isProfileHidden);
   const normalized = normalizeIdList(initialOrderIds);
   if (normalized.length) {
-    const visibleIds = new Set(visible.map((p) => p.id));
+    const visibleIds = new Set(visible.map((p) => getCreditId(p)).filter((id) => id != null));
     const ordered = normalized.filter((id) => visibleIds.has(id));
-    const missing = visible.map((p) => p.id).filter((id) => !ordered.includes(id));
+    const missing = visible
+      .map((p) => getCreditId(p))
+      .filter((id) => id != null && !ordered.includes(id));
     return [...ordered, ...missing];
   }
-  return sortPlacementsByOrder(visible).map((p) => p.id);
+  return sortPlacementsByOrder(visible).map((p) => getCreditId(p)).filter((id) => id != null);
 }
 
 /**
@@ -75,9 +94,10 @@ function deriveInitialOrderIds(placements, initialOrderIds) {
  *   placements?: Array<any>,
  *   initialEquipped?: any,
  *   initialEntitlements?: Array<any>,
- *   initialCardLayout?: string,
  *   initialOrderIds?: number[],
  *   initialHiddenIds?: number[],
+ *   initialDisplayMode?: string,
+ *   initialDisplayNodes?: Array<any>,
  *   onSaved?: () => void,
  * }} props
  */
@@ -87,9 +107,10 @@ export function useTournamentCosmeticsEditor({
   placements = [],
   initialEquipped = null,
   initialEntitlements = [],
-  initialCardLayout = "default",
   initialOrderIds = [],
   initialHiddenIds = [],
+  initialDisplayMode = "defaultHierarchy",
+  initialDisplayNodes = [],
   onSaved,
 }) {
   const { t } = useTranslation("pages");
@@ -101,15 +122,11 @@ export function useTournamentCosmeticsEditor({
     [placements],
   );
 
-  const savedFeaturedIds = useMemo(
-    () => editablePlacements.filter((p) => p.isFeatured).map((p) => p.id),
-    [editablePlacements],
-  );
-
   const savedHiddenIds = useMemo(() => {
     const fromPlacements = editablePlacements
       .filter((p) => p.isProfileHidden)
-      .map((p) => p.id);
+      .map((p) => getCreditId(p))
+      .filter((id) => id != null);
     if (fromPlacements.length) return fromPlacements;
     return normalizeIdList(initialHiddenIds);
   }, [editablePlacements, initialHiddenIds]);
@@ -119,14 +136,19 @@ export function useTournamentCosmeticsEditor({
     [placements, initialOrderIds],
   );
 
+  const savedDisplayNodes = useMemo(() => {
+    if (initialDisplayNodes.length) return initialDisplayNodes;
+    return buildDefaultDisplayTreeFromCredits(editablePlacements);
+  }, [initialDisplayNodes, editablePlacements]);
+
   const [entitlements, setEntitlements] = useState(initialEntitlements);
   const [draft, setDraft] = useState(() =>
     buildSnapshot({
-      cardLayout: initialCardLayout,
       equippedFrameId: initialEquipped?.entitlementId ?? null,
-      featuredIds: savedFeaturedIds,
       orderIds: savedOrderIds,
       hiddenIds: savedHiddenIds,
+      displayMode: initialDisplayMode,
+      displayNodes: savedDisplayNodes,
     }),
   );
   const [saveBusy, setSaveBusy] = useState(false);
@@ -139,21 +161,21 @@ export function useTournamentCosmeticsEditor({
   useEffect(() => {
     if (!isOpen) return;
     const snapshot = buildSnapshot({
-      cardLayout: initialCardLayout,
       equippedFrameId: initialEquipped?.entitlementId ?? null,
-      featuredIds: savedFeaturedIds,
       orderIds: savedOrderIds,
       hiddenIds: savedHiddenIds,
+      displayMode: initialDisplayMode,
+      displayNodes: savedDisplayNodes,
     });
     snapshotAtOpenRef.current = snapshot;
     setDraft(snapshot);
   }, [
     isOpen,
-    initialCardLayout,
     initialEquipped?.entitlementId,
-    savedFeaturedIds,
     savedOrderIds,
     savedHiddenIds,
+    initialDisplayMode,
+    savedDisplayNodes,
   ]);
 
   useEffect(() => {
@@ -177,22 +199,26 @@ export function useTournamentCosmeticsEditor({
     [draft],
   );
 
-  const placementById = useMemo(
-    () => new Map(editablePlacements.map((p) => [p.id, p])),
-    [editablePlacements],
-  );
+  const placementById = useMemo(() => {
+    const map = new Map();
+    editablePlacements.forEach((placement) => {
+      const id = getCreditId(placement);
+      if (id != null) map.set(id, placement);
+    });
+    return map;
+  }, [editablePlacements]);
 
-  const visiblePlacementIds = useMemo(
+  const visibleCreditIds = useMemo(
     () => draft.orderIds.filter((id) => !draft.hiddenIds.includes(id)),
     [draft.orderIds, draft.hiddenIds],
   );
 
   const visiblePlacements = useMemo(
     () =>
-      visiblePlacementIds
+      visibleCreditIds
         .map((id) => placementById.get(id))
         .filter(Boolean),
-    [visiblePlacementIds, placementById],
+    [visibleCreditIds, placementById],
   );
 
   const hiddenPlacements = useMemo(
@@ -203,13 +229,6 @@ export function useTournamentCosmeticsEditor({
     [draft.hiddenIds, placementById],
   );
 
-  const setCardLayout = useCallback((nextLayout) => {
-    setDraft((prev) => ({
-      ...prev,
-      cardLayout: normalizePlacementCardLayout(nextLayout),
-    }));
-  }, []);
-
   const selectFrame = useCallback((entitlementId) => {
     setDraft((prev) => ({
       ...prev,
@@ -217,30 +236,29 @@ export function useTournamentCosmeticsEditor({
     }));
   }, []);
 
-  const toggleFeatured = useCallback((placementId) => {
-    setDraft((prev) => {
-      if (prev.hiddenIds.includes(placementId)) return prev;
-      if (prev.featuredIds.includes(placementId)) {
-        return {
-          ...prev,
-          featuredIds: prev.featuredIds.filter((id) => id !== placementId),
-        };
-      }
-      if (prev.featuredIds.length >= MAX_FEATURED_PLACEMENTS) return prev;
-      return {
-        ...prev,
-        featuredIds: [...prev.featuredIds, placementId],
-      };
-    });
+  const setDisplayMode = useCallback((displayMode) => {
+    setDraft((prev) => ({
+      ...prev,
+      displayMode: normalizePlacementDisplayMode(displayMode),
+    }));
   }, []);
 
-  const toggleHidden = useCallback((placementId) => {
+  const setDisplayNodes = useCallback((displayNodes) => {
+    setDraft((prev) => ({
+      ...prev,
+      displayNodes: Array.isArray(displayNodes)
+        ? displayNodes.map((node) => ({ ...node }))
+        : [],
+    }));
+  }, []);
+
+  const toggleHidden = useCallback((creditId) => {
     setDraft((prev) => {
-      if (prev.hiddenIds.includes(placementId)) {
-        const nextHidden = prev.hiddenIds.filter((id) => id !== placementId);
-        const nextOrder = prev.orderIds.includes(placementId)
+      if (prev.hiddenIds.includes(creditId)) {
+        const nextHidden = prev.hiddenIds.filter((id) => id !== creditId);
+        const nextOrder = prev.orderIds.includes(creditId)
           ? prev.orderIds
-          : [...prev.orderIds, placementId];
+          : [...prev.orderIds, creditId];
         return {
           ...prev,
           hiddenIds: nextHidden,
@@ -249,9 +267,8 @@ export function useTournamentCosmeticsEditor({
       }
       return {
         ...prev,
-        hiddenIds: [...prev.hiddenIds, placementId],
-        featuredIds: prev.featuredIds.filter((id) => id !== placementId),
-        orderIds: prev.orderIds.filter((id) => id !== placementId),
+        hiddenIds: [...prev.hiddenIds, creditId],
+        orderIds: prev.orderIds.filter((id) => id !== creditId),
       };
     });
   }, []);
@@ -280,9 +297,9 @@ export function useTournamentCosmeticsEditor({
       const snap = snapshotAtOpenRef.current;
       setDraft({
         ...snap,
-        featuredIds: [...snap.featuredIds],
         orderIds: [...snap.orderIds],
         hiddenIds: [...snap.hiddenIds],
+        displayNodes: snap.displayNodes.map((node) => ({ ...node })),
       });
     }
   }, []);
@@ -291,27 +308,28 @@ export function useTournamentCosmeticsEditor({
     const baseline = snapshotAtOpenRef.current;
     if (!baseline) return false;
 
-    const layoutChanged = draft.cardLayout !== baseline.cardLayout;
     const frameChanged = draft.equippedFrameId !== baseline.equippedFrameId;
-    const featuredChanged = !sortedArraysEqual(draft.featuredIds, baseline.featuredIds);
     const hiddenChanged = !sortedArraysEqual(draft.hiddenIds, baseline.hiddenIds);
     const orderChanged = !orderArraysEqual(draft.orderIds, baseline.orderIds);
+    const displayModeChanged = draft.displayMode !== baseline.displayMode;
+    const displayNodesChanged = !displayNodesEqual(draft.displayNodes, baseline.displayNodes);
     const displayChanged =
-      layoutChanged || hiddenChanged || orderChanged;
+      hiddenChanged || orderChanged || displayModeChanged || displayNodesChanged;
 
-    if (!displayChanged && !frameChanged && !featuredChanged) return true;
+    if (!displayChanged && !frameChanged) return true;
 
     setSaveBusy(true);
     try {
       if (displayChanged) {
         const payload = {};
-        if (layoutChanged) payload.cardLayout = draft.cardLayout;
         if (hiddenChanged) payload.hiddenPlacementIds = draft.hiddenIds;
         if (orderChanged) {
           payload.placementOrderIds = draft.orderIds.filter(
             (id) => !draft.hiddenIds.includes(id),
           );
         }
+        if (displayModeChanged) payload.placementDisplayMode = draft.displayMode;
+        if (displayNodesChanged) payload.placementDisplayNodes = draft.displayNodes;
         await api.patch(routesRoot.mePlacementDisplay(), payload);
       }
       if (frameChanged) {
@@ -320,18 +338,13 @@ export function useTournamentCosmeticsEditor({
           entitlementId: draft.equippedFrameId,
         });
       }
-      if (featuredChanged) {
-        await api.patch(routesRoot.meFeaturedPlacements(), {
-          placementIds: draft.featuredIds,
-        });
-      }
 
       snapshotAtOpenRef.current = buildSnapshot({
-        cardLayout: draft.cardLayout,
         equippedFrameId: draft.equippedFrameId,
-        featuredIds: draft.featuredIds,
         orderIds: draft.orderIds,
         hiddenIds: draft.hiddenIds,
+        displayMode: draft.displayMode,
+        displayNodes: draft.displayNodes,
       });
       toast.success(t("settings.tournaments.saveSuccess"));
       onSaved?.();
@@ -352,13 +365,12 @@ export function useTournamentCosmeticsEditor({
     draft,
     isDirty,
     saveBusy,
-    setCardLayout,
     selectFrame,
-    toggleFeatured,
+    setDisplayMode,
+    setDisplayNodes,
     toggleHidden,
     reorderPlacements,
     revertDraft,
     saveAll,
-    maxFeaturedPlacements: MAX_FEATURED_PLACEMENTS,
   };
 }

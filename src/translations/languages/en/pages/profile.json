@@ -59,7 +59,10 @@
       "expand": "Expand tournaments",
       "collapse": "Collapse tournaments",
       "withdrew": "Withdrew",
-      "featured": "Featured"
+      "unseriesed": "Other tournaments",
+      "unknownTournament": "Tournament",
+      "openPack": "Open pack",
+      "othersCount": "+{{count}} others"
     },
     "scoreBreakdown": {
       "title": "Score breakdown",

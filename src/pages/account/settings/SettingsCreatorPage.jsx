@@ -676,9 +676,10 @@ const SettingsCreatorPage = () => {
             placements={profile?.tournamentPlacements || []}
             initialEquipped={profile?.equippedAvatarFrame}
             initialEntitlements={profile?.placementEntitlements || []}
-            initialCardLayout={profile?.placementCardLayout}
             initialOrderIds={profile?.placementOrderIds || []}
             initialHiddenIds={profile?.hiddenPlacementIds || []}
+            initialDisplayMode={profile?.placementDisplayMode}
+            initialDisplayNodes={profile?.placementDisplayNodes || []}
             onSaved={() => {
               if (creatorId == null || !Number.isFinite(creatorId)) return;
               api
@@ -849,18 +850,33 @@ const SettingsCreatorPage = () => {
         </SettingsSaveField>
       ) : null}
 
-      <SettingsPreviewSection sectionId="curation" className="settings-sub-page__block">
-        <CurationTypeSelector
-          creatorId={creatorId}
-          curationTypeCounts={profile?.curationTypeCounts}
-          displayCurationTypeIds={profile?.displayCurationTypeIds}
-          curationTypesDict={curationTypesDict || {}}
-          canEdit={canEditHeaderCurationSlots}
-          onSaved={handleDisplayCurationsSaved}
-          onDraftChange={handleDraftChange}
-          embeddedSectionLabel={t("settings.creator.curationBadges.sectionLabel")}
-        />
-      </SettingsPreviewSection>
+      {canEditHeaderCurationSlots ? (
+        <SettingsPreviewSection
+          sectionId="curation"
+          className="settings-sub-page__field settings-sub-page__curation-badges"
+          aria-labelledby="settings-creator-curation-heading"
+        >
+          <div className="settings-sub-page__field-head">
+            <h2 id="settings-creator-curation-heading" className="settings-sub-page__stellar-variant-title">
+              {t("settings.creator.curationBadges.sectionLabel")}
+            </h2>
+            <SettingsSectionPreviewControls
+              sectionId="curation"
+              headingId="settings-creator-curation-heading"
+              title={t("settings.creator.curationBadges.sectionLabel")}
+            />
+          </div>
+          <CurationTypeSelector
+            creatorId={creatorId}
+            curationTypeCounts={profile?.curationTypeCounts}
+            displayCurationTypeIds={profile?.displayCurationTypeIds}
+            curationTypesDict={curationTypesDict || {}}
+            canEdit={canEditHeaderCurationSlots}
+            onSaved={handleDisplayCurationsSaved}
+            onDraftChange={handleDraftChange}
+          />
+        </SettingsPreviewSection>
+      ) : null}
 
       {canEditHeaderCurationSlots ? (
         <SettingsSaveField
@@ -972,7 +988,7 @@ const SettingsCreatorPage = () => {
       ) : null}
 
       {canEditHeaderCurationSlots ? (
-        <SettingsPreviewSection sectionId="aliases" className="settings-sub-page__block settings-sub-page__aliases">
+        <SettingsPreviewSection sectionId="aliases" className="settings-sub-page__field settings-sub-page__aliases">
           <div className="settings-sub-page__field-head">
             <p className="settings-sub-page__aliases-section-label">{t("settings.creator.aliasesLabel")}</p>
             <SettingsSectionPreviewControls

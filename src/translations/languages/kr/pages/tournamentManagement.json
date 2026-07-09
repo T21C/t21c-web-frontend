@@ -1,10 +1,10 @@
 {
   "meta": {
     "title": "토너먼트 관리",
-    "description": "토너먼트 순위, 이름 연결, 아바타 프레임 보상을 관리합니다"
+    "description": "토너먼트 순위, 레벨 크레딧, 아바타 프레임 코스메틱을 관리합니다"
   },
   "title": "토너먼트 관리",
-  "subtitle": "이벤트를 만들고, 순위를 입력하고, 이름을 연결하고, 아바타 프레임 보상을 설정합니다.",
+  "subtitle": "이벤트를 만들고, 순위를 입력하고, 레벨 크레딧을 동기화하고, 아바타 프레임 코스메틱을 설정합니다.",
   "tabs": {
     "events": "이벤트",
     "unresolved": "미연결 이름",
@@ -15,7 +15,7 @@
     "details": "상세",
     "tiers": "티어",
     "placements": "순위",
-    "rewards": "보상"
+    "cosmetics": "코스메틱"
   },
   "searchPlaceholder": "토너먼트 검색…",
   "allTracks": "모든 트랙",
@@ -28,13 +28,19 @@
   "selectTournamentFirst": "먼저 이벤트 탭에서 토너먼트를 선택하세요.",
   "addRow": "행 추가",
   "savePlacements": "순위 저장",
+  "syncCredits": "크레딧 동기화",
   "withdrew": "기권",
   "autoLinkExact": "정확히 일치하는 이름 자동 연결",
   "noUnresolved": "모든 순위 이름이 연결되었습니다.",
-  "addReward": "보상 추가",
+  "addReward": "코스메틱 추가",
   "syncEntitlements": "권한 동기화",
   "createSeries": "시리즈 만들기",
   "hiddenBadge": "숨김",
+  "reorder": {
+    "moveUp": "위로",
+    "moveDown": "아래로",
+    "dragHandle": "드래그하여 순서 변경"
+  },
   "import": {
     "track": "트랙",
     "dryRun": "CSV 시험 실행",
@@ -45,6 +51,109 @@
     },
     "errors": {
       "failed": "가져오기 실패"
+    }
+  },
+  "packImport": {
+    "open": "팩 가져오기",
+    "title": "팩에서 가져오기",
+    "subtitle": "팩 참조에서 후보 순위를 가져온 뒤 diff를 검토하고 적용합니다.",
+    "packRef": "팩 참조",
+    "packRefPlaceholder": "예: my-pack-slug",
+    "previewDiff": "Diff 미리보기",
+    "apply": "가져오기 적용",
+    "adds": "추가 제안",
+    "removes": "삭제 제안",
+    "diverged": "불일치 (수동 검토)",
+    "noAdds": "추가 제안 없음.",
+    "noRemoves": "삭제 제안 없음.",
+    "noDiverged": "불일치 행 없음.",
+    "messages": {
+      "imported": "팩 가져오기가 적용되었습니다"
+    },
+    "errors": {
+      "packRefRequired": "팩 참조는 필수입니다.",
+      "diffFailed": "Diff 미리보기 실패",
+      "importFailed": "팩 가져오기 실패"
+    }
+  },
+  "nominees": {
+    "title": "후보 선택",
+    "allSelected": "모든 적격 크리에이터 선택됨 (빈 필터 = 동기화 시 전원)",
+    "noneSelected": "선택된 후보 없음",
+    "selectedCount": "{{count}}명 선택됨",
+    "empty": "이 레벨에 적격 크리에이터가 없습니다.",
+    "guestBadge": "게스트",
+    "selectAll": "전체 선택",
+    "clearAll": "전체 해제",
+    "save": "필터 저장",
+    "errors": {
+      "loadFailed": "후보 목록을 불러오지 못했습니다"
+    }
+  },
+  "help": {
+    "open": "도움말",
+    "title": "토너먼트 순위 도움말",
+    "subtitle": "모드, 확장, 크레딧, 가중치, 팩 가져오기.",
+    "close": "도움말 닫기",
+    "sections": {
+      "modes": {
+        "title": "순위 모드",
+        "intro": "각 행은 토너먼트 기본값을 상속하거나 재정의할 수 있습니다.",
+        "bullets": {
+          "profile": "<b>프로필</b> — 플레이어/크리에이터 연결; 레벨은 증거용.",
+          "level": "<b>레벨</b> — 동기화 후 레벨 크리에이터로 확장.",
+          "inherit": "<b>상속</b> — 상세 탭의 토너먼트 배치 모드 사용."
+        }
+      },
+      "evidence": {
+        "title": "증거 vs 확장",
+        "intro": "프로필 행에 레벨을 붙여도 추가 크레딧이 생기지 않습니다.",
+        "bullets": {
+          "profileLevel": "프로필 + levelId는 카드에 레벨 맥락만 표시합니다.",
+          "noExpand": "레벨 모드 행만 여러 프로필 크레딧으로 확장됩니다."
+        }
+      },
+      "nominees": {
+        "title": "후보 필터",
+        "intro": "레벨 행은 동기화 전 선택적 수신자 필터를 저장합니다.",
+        "bullets": {
+          "prefill": "후보 선택은 레벨 크레딧으로 미리 채워집니다 (기본: charter/vfxer).",
+          "emptyFilter": "동기화 시 빈 필터는 레벨의 모든 적격자를 의미합니다.",
+          "guests": "게스트 포함 가능; 선택기에 경고 배지가 표시됩니다."
+        }
+      },
+      "sync": {
+        "title": "크레딧 동기화",
+        "intro": "순위 저장만으로는 레벨 크레딧이 생성되지 않습니다.",
+        "bullets": {
+          "dryRun": "동기화는 확인 전 추가/삭제 dry-run 미리보기를 실행합니다.",
+          "saveVsSync": "저장은 행 메타데이터; 동기화는 tournament_placement_credits를 기록합니다."
+        }
+      },
+      "weights": {
+        "title": "정렬 가중치",
+        "intro": "시리즈와 토너먼트 목록은 1..n 밀집 가중치를 사용합니다.",
+        "bullets": {
+          "series": "시리즈 탭에서 위/아래로 시리즈 순서를 변경합니다.",
+          "tier": "편집기에서 순위는 티어 순위 가중치로 정렬됩니다."
+        }
+      },
+      "pack": {
+        "title": "팩 가져오기",
+        "intro": "팩 도구에서 후보 순위를 가져온 뒤 diff 동기화합니다.",
+        "bullets": {
+          "import": "새 팩 항목은 NOM(후보) 순위로 가져옵니다.",
+          "diff": "Diff 동기화는 추가/삭제를 제안; 불일치 행은 수동 검토가 필요합니다."
+        }
+      },
+      "cosmetics": {
+        "title": "코스메틱 / 아바타 프레임",
+        "intro": "보상은 일치하는 크레딧당 하나의 권한을 부여합니다.",
+        "bullets": {
+          "perCredit": "권한은 순위 ID가 아닌 크레딧 ID를 기준으로 합니다.",
+          "entitlements": "보상 규칙이나 크레딧 변경 후 권한 동기화를 실행하세요."
+        }
+      }
     }
   },
   "series": {
@@ -67,30 +176,54 @@
   "messages": {
     "tournamentCreated": "토너먼트가 생성되었습니다",
     "namesLinked": "{{count}}개의 이름이 연결되었습니다",
-    "placementLinked": "연결됨"
+    "placementLinked": "연결됨",
+    "reordered": "순서가 업데이트되었습니다",
+    "deleted": "토너먼트가 삭제되었습니다"
   },
+  "deleteConfirm": "\"{{name}}\" 토너먼트와 모든 순위, 크레딧, 보상을 삭제하시겠습니까?",
   "errors": {
     "loadTournamentsFailed": "토너먼트를 불러오지 못했습니다",
     "loadUnresolvedFailed": "미연결 이름을 불러오지 못했습니다",
     "resolveFailed": "자동 연결에 실패했습니다",
-    "linkFailed": "연결에 실패했습니다"
+    "linkFailed": "연결에 실패했습니다",
+    "reorderFailed": "순서 변경에 실패했습니다",
+    "deleteFailed": "토너먼트 삭제에 실패했습니다"
   },
   "popup": {
     "title": "토너먼트 관리",
-    "deleteConfirm": "이 토너먼트와 모든 순위를 삭제하시겠습니까?",
+    "deleteConfirm": "\"{{name}}\" 토너먼트와 모든 순위, 크레딧, 보상을 삭제하시겠습니까?",
     "unsavedConfirm": "저장하지 않은 변경 사항이 있습니다. 버리고 나가시겠습니까?",
     "placements": {
       "tier": "티어",
+      "rowMode": "모드",
+      "nameLevel": "이름 / 레벨",
+      "linkedUsers": "연결된 사용자",
       "name": "이름",
+      "level": "레벨",
       "link": "연결",
-      "team": "팀"
+      "nominees": "후보",
+      "team": "팀",
+      "noLevel": "레벨 없음",
+      "pickLevel": "레벨 선택",
+      "changeLevel": "변경",
+      "pickNominees": "후보 선택",
+      "nomineeCount": "후보 {{count}}명",
+      "empty": "아직 순위가 없습니다",
+      "rowModes": {
+        "inherit": "상속",
+        "profile": "프로필",
+        "level": "레벨"
+      }
+    },
+    "credits": {
+      "syncConfirm": "크레딧을 동기화하시겠습니까? +{{add}} / -{{remove}}"
     },
     "rewards": {
       "label": "라벨",
       "tier": "티어",
       "tierAny": "전체 (최대 가중치 사용)",
       "maxRankWeight": "최대 순위 가중치",
-      "maxRankWeightPlaceholder": "예: 시상대는 3",
+      "maxRankWeightPlaceholder": "예: 상위 순위는 3",
       "priority": "우선순위",
       "tierRef": "티어 #{{id}}"
     },
@@ -98,17 +231,19 @@
       "saved": "토너먼트가 저장되었습니다",
       "deleted": "토너먼트가 삭제되었습니다",
       "placementsSaved": "순위가 저장되었습니다",
-      "rewardCreated": "보상이 생성되었습니다",
-      "rewardDeleted": "보상이 삭제되었습니다",
-      "syncSuccess": "동기화됨 (+{{granted}} / -{{revoked}})"
+      "rewardCreated": "코스메틱이 생성되었습니다",
+      "rewardDeleted": "코스메틱이 삭제되었습니다",
+      "syncSuccess": "동기화됨 (+{{granted}} / -{{revoked}})",
+      "creditsSynced": "크레딧 동기화됨 (+{{add}} / -{{remove}})"
     },
     "errors": {
       "loadFailed": "토너먼트를 불러오지 못했습니다",
       "deleteFailed": "삭제 실패",
       "placementsFailed": "순위 저장에 실패했습니다",
-      "rewardFailed": "보상 생성에 실패했습니다",
-      "rewardDeleteFailed": "보상 삭제에 실패했습니다",
-      "syncFailed": "동기화 실패"
+      "rewardFailed": "코스메틱 생성에 실패했습니다",
+      "rewardDeleteFailed": "코스메틱 삭제에 실패했습니다",
+      "syncFailed": "동기화 실패",
+      "creditsSyncFailed": "크레딧 동기화 실패"
     }
   },
   "visuals": {
@@ -133,10 +268,20 @@
     "kind": "종류",
     "rankWeight": "순위 가중치",
     "color": "색상",
-    "podium": "시상대",
     "addTier": "티어 추가",
     "save": "티어 저장",
     "saveFirst": "티어 이미지를 업로드하기 전에 티어를 저장하세요",
+    "empty": "아직 티어가 없습니다",
+    "preset": {
+      "label": "프리셋으로 추가",
+      "show": "프리셋으로 추가",
+      "hide": "프리셋 숨기기",
+      "hint": "프리셋에서 티어를 추가합니다. 이미 있는 코드는 건너뜁니다. 완료 후 티어를 저장하세요.",
+      "placeholder": "프리셋 선택…",
+      "apply": "티어 추가",
+      "applied": "프리셋에서 {{count}}개 티어를 추가했습니다",
+      "allExist": "이 프리셋의 티어가 이미 모두 있습니다"
+    },
     "kindOptions": {
       "ordinal": "순위",
       "bracket": "브래킷",
@@ -164,11 +309,21 @@
       "organizers": "주최 (쉼표로 구분)",
       "track": "트랙",
       "status": "상태",
+      "placementMode": "배치 모드",
       "series": "시리즈",
       "tierTemplate": "티어 템플릿",
       "hidden": "숨김",
       "resultsFinal": "결과 확정",
       "notes": "메모"
+    },
+    "packRefSearchPlaceholder": "팩 검색",
+    "packRefNoResults": "팩을 찾을 수 없습니다.",
+    "packRefTypeToSearch": "팩을 검색하려면 입력하세요…",
+    "packRefLoading": "팩 검색 중…",
+    "packRefSearchFailed": "팩 검색 실패",
+    "placementModes": {
+      "profile": "프로필 (플레이어/크리에이터)",
+      "level": "레벨 (크리에이터로 확장)"
     },
     "tracks": {
       "player": "플레이어",
@@ -184,6 +339,7 @@
     "tierTemplateNone": "—",
     "errors": {
       "shortNameRequired": "짧은 이름은 필수입니다.",
+      "shortNameExists": "이미 같은 짧은 이름의 토너먼트가 있습니다.",
       "saveFailed": "저장 실패"
     }
   }

@@ -17,4 +17,6 @@ export {
   buildStatusOptions,
   buildAllTracksOptions,
   buildTierKindOptions,
+  buildPlacementModeOptions,
+  buildRowModeOptions,
 } from "./tournamentFormUtils";

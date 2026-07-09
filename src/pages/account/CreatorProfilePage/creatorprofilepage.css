@@ -54,10 +54,6 @@
   overflow: hidden;
 }
 
-.creator-profile-page .creator-profile-page__section--levels .account-profile-page__section-title-row {
-  margin-right: 1rem; 
-}
-
 .creator-profile-page .creator-profile-page__section--levels {
   display: flex;
   flex-direction: column;
