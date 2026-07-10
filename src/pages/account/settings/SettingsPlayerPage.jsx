@@ -40,6 +40,7 @@ import {
   normalizeProfileAliasNames,
 } from "@/utils/profileAliasNames";
 import { isTufStellarEnabledForUser } from "@/utils/tufStellarFeature";
+import { ProfileCustomizationSyncControl } from "@/components/account/ProfileCustomizationSyncControl/ProfileCustomizationSyncControl";
 import "./settingsSubPage.css";
 
 const SettingsPlayerPage = () => {
@@ -71,6 +72,9 @@ const SettingsPlayerPage = () => {
   const [headerSurfaceStyleDraft, setHeaderSurfaceStyleDraft] = useState(undefined);
   const [stellarVariantDraft, setStellarVariantDraft] = useState(null);
   const [stellarVariantSaving, setStellarVariantSaving] = useState(false);
+
+  const canProfileSync = Boolean(user?.playerId && user?.creatorId);
+  const presentationSync = playerData?.presentationSync;
 
   const fetchProfile = useCallback(async (options = {}) => {
     const background = Boolean(options.background);
@@ -449,7 +453,7 @@ const SettingsPlayerPage = () => {
       {(listEditablePlacements(playerData?.tournamentPlacements).length ?? 0) > 0 ? (
         <SettingsPreviewSection
           sectionId="tournamentCosmetics"
-          className="settings-sub-page__banner-section"
+          className="settings-sub-page__banner-section settings-sub-page__panel"
           aria-labelledby="settings-player-tournaments-heading"
         >
           <div className="settings-sub-page__header-surface-section-head">
@@ -479,9 +483,17 @@ const SettingsPlayerPage = () => {
         </SettingsPreviewSection>
       ) : null}
 
+      <div className="profile-customization-sync-host">
+        <ProfileCustomizationSyncControl
+          unit="header_surface"
+          presentationSync={presentationSync}
+          profileSide="player"
+          canSync={canProfileSync}
+          onSyncChange={() => fetchProfile({ background: true })}
+        />
       <SettingsPreviewSection
         sectionId="headerSurface"
-        className="settings-sub-page__banner-section"
+        className="settings-sub-page__banner-section settings-sub-page__panel"
         aria-labelledby="settings-player-header-surface-heading"
       >
         <div className="settings-sub-page__header-surface-section-head">
@@ -551,10 +563,19 @@ const SettingsPlayerPage = () => {
           }}
         />
       </SettingsPreviewSection>
+      </div>
 
+      <div className="profile-customization-sync-host">
+        <ProfileCustomizationSyncControl
+          unit="banner"
+          presentationSync={presentationSync}
+          profileSide="player"
+          canSync={canProfileSync}
+          onSyncChange={() => fetchProfile({ background: true })}
+        />
       <SettingsPreviewSection
         sectionId="banner"
-        className="settings-sub-page__banner-section"
+        className="settings-sub-page__banner-section settings-sub-page__panel"
         aria-labelledby="settings-player-banner-heading"
       >
         <div className="settings-sub-page__banner-section-head">
@@ -610,8 +631,17 @@ const SettingsPlayerPage = () => {
           </CollapsibleContent>
         </Collapsible>
       </SettingsPreviewSection>
+      </div>
 
       {isTufStellarAccessActive(stellarEntitlementSubject) ? (
+        <div className="profile-customization-sync-host">
+          <ProfileCustomizationSyncControl
+            unit="stellar_icon"
+            presentationSync={presentationSync}
+            profileSide="player"
+            canSync={canProfileSync}
+            onSyncChange={() => fetchProfile({ background: true })}
+          />
         <SettingsStellarIconField
           sectionId="stellar"
           headingId="settings-player-stellar-heading"
@@ -625,6 +655,7 @@ const SettingsPlayerPage = () => {
           matchesSaved={stellarVariantMatchesSaved}
           getOptionAriaLabel={(id) => t(`settings.player.stellarIconOption${id}`)}
         />
+        </div>
       ) : null}
 
       <SettingsSaveField
@@ -652,6 +683,14 @@ const SettingsPlayerPage = () => {
         />
       </SettingsSaveField>
 
+      <div className="profile-customization-sync-host">
+        <ProfileCustomizationSyncControl
+          unit="bio"
+          presentationSync={presentationSync}
+          profileSide="player"
+          canSync={canProfileSync}
+          onSyncChange={() => fetchProfile({ background: true })}
+        />
       <SettingsSaveField
         sectionId="bio"
         label={t("settings.player.bioLabel")}
@@ -702,6 +741,7 @@ const SettingsPlayerPage = () => {
           />
         )}
       </SettingsSaveField>
+      </div>
 
     </div>
   );

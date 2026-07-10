@@ -46,6 +46,7 @@ import {
   normalizeProfileAliasNames,
   readProfileAliasNamesChronological,
 } from "@/utils/profileAliasNames";
+import { ProfileCustomizationSyncControl } from "@/components/account/ProfileCustomizationSyncControl/ProfileCustomizationSyncControl";
 import "./settingsSubPage.css";
 
 const MAX_CREATOR_ALIASES = 20;
@@ -90,6 +91,19 @@ const SettingsCreatorPage = () => {
   const [headerSurfaceStyleDraft, setHeaderSurfaceStyleDraft] = useState(undefined);
   const [stellarVariantDraft, setStellarVariantDraft] = useState(null);
   const [stellarVariantSaving, setStellarVariantSaving] = useState(false);
+
+  const canProfileSync = Boolean(user?.playerId && user?.creatorId);
+  const presentationSync = profile?.presentationSync;
+
+  const reloadProfile = useCallback(async () => {
+    if (creatorId == null || !Number.isFinite(creatorId)) return;
+    try {
+      const res = await api.get(`${routes.creatorsV3.root()}/${creatorId}/profile`);
+      setProfile(res.data);
+    } catch {
+      /* ignore background refresh errors */
+    }
+  }, [creatorId]);
 
   useEffect(() => {
     if (creatorId == null || !Number.isFinite(creatorId)) {
@@ -655,7 +669,7 @@ const SettingsCreatorPage = () => {
       {(listEditablePlacements(profile?.tournamentPlacements).length ?? 0) > 0 ? (
         <SettingsPreviewSection
           sectionId="tournamentCosmetics"
-          className="settings-sub-page__banner-section"
+          className="settings-sub-page__banner-section settings-sub-page__panel"
           aria-labelledby="settings-creator-tournaments-heading"
         >
           <div className="settings-sub-page__header-surface-section-head">
@@ -691,9 +705,17 @@ const SettingsCreatorPage = () => {
         </SettingsPreviewSection>
       ) : null}
 
+      <div className="profile-customization-sync-host">
+        <ProfileCustomizationSyncControl
+          unit="header_surface"
+          presentationSync={presentationSync}
+          profileSide="creator"
+          canSync={canProfileSync}
+          onSyncChange={reloadProfile}
+        />
       <SettingsPreviewSection
         sectionId="headerSurface"
-        className="settings-sub-page__banner-section"
+        className="settings-sub-page__banner-section settings-sub-page__panel"
         aria-labelledby="settings-creator-header-surface-heading"
       >
         <div className="settings-sub-page__header-surface-section-head">
@@ -748,10 +770,19 @@ const SettingsCreatorPage = () => {
 
         />
       </SettingsPreviewSection>
+      </div>
 
+      <div className="profile-customization-sync-host">
+        <ProfileCustomizationSyncControl
+          unit="banner"
+          presentationSync={presentationSync}
+          profileSide="creator"
+          canSync={canProfileSync}
+          onSyncChange={reloadProfile}
+        />
       <SettingsPreviewSection
         sectionId="banner"
-        className="settings-sub-page__banner-section"
+        className="settings-sub-page__banner-section settings-sub-page__panel"
         aria-labelledby="settings-creator-banner-heading"
       >
         <div className="settings-sub-page__banner-section-head">
@@ -806,8 +837,17 @@ const SettingsCreatorPage = () => {
           </CollapsibleContent>
         </Collapsible>
       </SettingsPreviewSection>
+      </div>
 
       {isTufStellarAccessActive(stellarEntitlementSubject) ? (
+        <div className="profile-customization-sync-host">
+          <ProfileCustomizationSyncControl
+            unit="stellar_icon"
+            presentationSync={presentationSync}
+            profileSide="creator"
+            canSync={canProfileSync}
+            onSyncChange={reloadProfile}
+          />
         <SettingsStellarIconField
           sectionId="stellar"
           headingId="settings-creator-stellar-heading"
@@ -821,6 +861,7 @@ const SettingsCreatorPage = () => {
           matchesSaved={stellarVariantMatchesSaved}
           getOptionAriaLabel={(id) => t(`settings.creator.stellarIconOption${id}`)}
         />
+        </div>
       ) : null}
 
       {canEditHeaderCurationSlots ? (
@@ -879,6 +920,14 @@ const SettingsCreatorPage = () => {
       ) : null}
 
       {canEditHeaderCurationSlots ? (
+        <div className="profile-customization-sync-host">
+        <ProfileCustomizationSyncControl
+          unit="bio"
+          presentationSync={presentationSync}
+          profileSide="creator"
+          canSync={canProfileSync}
+          onSyncChange={reloadProfile}
+        />
         <SettingsSaveField
           sectionId="bio"
           label={t("settings.creator.bioLabel")}
@@ -930,6 +979,7 @@ const SettingsCreatorPage = () => {
             />
           )}
         </SettingsSaveField>
+        </div>
       ) : null}
 
       {canEditHeaderCurationSlots ? (

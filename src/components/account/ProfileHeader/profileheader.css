@@ -634,9 +634,6 @@
 }
 
 @container profile-header (width <= 768px) {
-  .profile-header__body {
-    justify-content: center;
-  }
   .profile-header__stats {
     flex: unset;
     width: 100%;
@@ -644,7 +641,7 @@
   }
 
   .profile-header__left {
-    height: 7.5rem;
+    height: 8rem;
   }
   .profile-header__icon-slots-block {
     align-self: center;

@@ -134,6 +134,29 @@
     "manifestLoading": "正在加载横幅列表……",
     "manifestLoadError": "无法加载横幅列表。在该问题修复之前仅默认预设横幅可用。"
   },
+  "profileSync": {
+    "linkedIndicator": "已与另一资料关联",
+    "linkedHint": "此部分与您的另一资料共享。取消关联前，编辑会同时生效。",
+    "link": "关联",
+    "unlink": "取消关联",
+    "linkSuccess": "已关联此部分",
+    "linkError": "无法关联资料",
+    "unlinkSuccess": "已取消关联此部分",
+    "unlinkError": "无法取消关联",
+    "unlinkConfirm": "取消与此资料的关联？两个资料将各自保留一份副本。",
+    "linkDescription": "选择保留哪个资料的当前版本。取消关联前，两个资料将显示相同内容。",
+    "linkTitle": {
+      "banner": "关联横幅",
+      "headerSurface": "关联页眉背景",
+      "bio": "关联简介",
+      "stellarIcon": "关联 TUFStellar 图标"
+    },
+    "useThisVersion": "使用此版本",
+    "useVersion": {
+      "player": "使用玩家资料版本",
+      "creator": "使用创作者资料版本"
+    }
+  },
   "creator": {
     "title": "创作者信息",
     "displayNameLabel": "显示名称",

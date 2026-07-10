@@ -258,6 +258,29 @@
     "manifestLoading": "Loading banner list…",
     "manifestLoadError": "Could not load the banner list; only the default preset is available until this is fixed."
   },
+  "profileSync": {
+    "linkedIndicator": "Linked",
+    "linkedHint": "This section is shared with your other profile. Edits apply to both until you unlink.",
+    "link": "Link",
+    "unlink": "Unlink",
+    "linkSuccess": "Profiles linked for this section",
+    "linkError": "Could not link profiles",
+    "unlinkSuccess": "Profiles unlinked for this section",
+    "unlinkError": "Could not unlink profiles",
+    "unlinkConfirm": "Unlink this section from your other profile? Each profile will keep its own copy.",
+    "linkDescription": "Choose which profile’s current version to keep. Both profiles will show the same content until you unlink.",
+    "linkTitle": {
+      "banner": "Link banner",
+      "headerSurface": "Link header surface",
+      "bio": "Link bio",
+      "stellarIcon": "Link TUFStellar icon"
+    },
+    "useThisVersion": "Use this version",
+    "useVersion": {
+      "player": "Use player profile version",
+      "creator": "Use creator profile version"
+    }
+  },
   "creator": {
     "title": "Creator profile",
     "displayNameLabel": "Display name",

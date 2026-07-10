@@ -154,6 +154,16 @@
   margin-inline: auto;
 }
 
+.settings-sub-page .settings-sub-page__panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 8px;
+  background-color: var(--color-black-t30);
+}
+
 .settings-sub-page .settings-sub-page__field label {
   font-weight: 500;
   color: var(--color-white);
@@ -523,8 +533,6 @@
 .settings-sub-page .settings-sub-page__stellar-variant {
   display: flex;
   flex-direction: column;
-  margin-top: 1.25rem;
-  margin-bottom: 0.5rem;
 }
 
 .settings-sub-page .settings-sub-page__stellar-variant-head {

@@ -368,6 +368,12 @@ export const routes = {
     },
   },
 
+  profileCustomizationV3: {
+    root: () => '/v3/profile-customization',
+    link: (unit: string) => `/v3/profile-customization/${encodeURIComponent(String(unit))}/link`,
+    unlink: (unit: string) => `/v3/profile-customization/${encodeURIComponent(String(unit))}/unlink`,
+  },
+
   creatorsV3: {
     root: () => '/v3/creators',
     profile: (creatorId: string | number) => `/v3/creators/${enc(creatorId)}/profile`,

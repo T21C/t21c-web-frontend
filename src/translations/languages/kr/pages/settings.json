@@ -140,6 +140,29 @@
     "manifestLoading": "배너 목록 불러오는 중…",
     "manifestLoadError": "배너 목록을 불러오지 못했습니다. 해결될 때까지 기본 프리셋만 사용할 수 있습니다."
   },
+  "profileSync": {
+    "linkedIndicator": "다른 프로필과 연동됨",
+    "linkedHint": "이 섹션은 다른 프로필과 공유됩니다. 연동 해제 전까지 편집은 양쪽에 적용됩니다.",
+    "link": "연동",
+    "unlink": "연동 해제",
+    "linkSuccess": "이 섹션이 연동되었습니다",
+    "linkError": "프로필을 연동할 수 없습니다",
+    "unlinkSuccess": "이 섹션 연동이 해제되었습니다",
+    "unlinkError": "연동을 해제할 수 없습니다",
+    "unlinkConfirm": "다른 프로필과의 연동을 해제할까요? 각 프로필은 자체 복사본을 유지합니다.",
+    "linkDescription": "유지할 프로필 버전을 선택하세요. 연동 해제 전까지 두 프로필에 동일한 내용이 표시됩니다.",
+    "linkTitle": {
+      "banner": "배너 연동",
+      "headerSurface": "헤더 배경 연동",
+      "bio": "소개 연동",
+      "stellarIcon": "TUFStellar 아이콘 연동"
+    },
+    "useThisVersion": "이 버전 사용",
+    "useVersion": {
+      "player": "플레이어 프로필 버전 사용",
+      "creator": "크리에이터 프로필 버전 사용"
+    }
+  },
   "creator": {
     "title": "크리에이터 프로필",
     "displayNameLabel": "표시 이름",

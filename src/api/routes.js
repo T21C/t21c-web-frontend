@@ -366,6 +366,12 @@ export const routes = {
     },
   },
 
+  profileCustomizationV3: {
+    root: () => '/v3/profile-customization',
+    link: (unit) => `/v3/profile-customization/${enc(unit)}/link`,
+    unlink: (unit) => `/v3/profile-customization/${enc(unit)}/unlink`,
+  },
+
   creatorsV3: {
     root: () => '/v3/creators',
     profile: (creatorId) => `/v3/creators/${enc(creatorId)}/profile`,

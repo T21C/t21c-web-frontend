@@ -204,7 +204,7 @@ const ProfileHeader = ({
   const config = useMemo(() => {
     const defaultConfig = {
       nameXPosition: "10.85rem", 
-      nameYPosition: "7.65rem", 
+      nameYPosition: "7.6rem", 
       dxPos: "0", 
       textAlign: "left",
       circleCx: "80.5",
@@ -222,7 +222,8 @@ const ProfileHeader = ({
         circleOffset: "0.5"
       };
     }
-    else if (layoutWidth <= 768) {
+    // disable for now
+    else if (layoutWidth <= 768 && false) {
       return {
         ...defaultConfig,
         nameXPosition: "50%", 
