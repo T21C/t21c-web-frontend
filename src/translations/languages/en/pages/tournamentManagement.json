@@ -112,7 +112,7 @@
         "title": "Placement modes",
         "intro": "Each row can inherit the tournament default or override it.",
         "bullets": {
-          "profile": "<b>Profile</b> — links a player; optional level is evidence only.",
+          "profile": "<b>Profile</b> — links a player or creator; optional level is evidence only.",
           "level": "<b>Level</b> — expands to creators on the level after Sync.",
           "inherit": "<b>Inherit</b> — uses the tournament placement mode from Details."
         }
@@ -210,6 +210,10 @@
       "rowMode": "Mode",
       "nameLevel": "Name / Level",
       "linkedUsers": "Linked user(s)",
+      "linkTypes": {
+        "player": "Player",
+        "creator": "Creator"
+      },
       "name": "Name",
       "level": "Level",
       "link": "Link",
@@ -322,8 +326,14 @@
       "externalUrl": "External URL",
       "sortYear": "Sort year",
       "organizers": "Organizers (comma-separated)",
+      "owners": "Visual editors (owners)",
+      "ownersHint": "Users who can upload tournament and tier visuals. Display organizers above stay as free-text credits.",
+      "ownersPlaceholder": "Search users to add as owners…",
+      "ownersRemove": "Remove",
       "status": "Status",
+      "track": "Tournament track",
       "placementMode": "Placement mode",
+      "showBestTiersOnly": "Show best tier only on profiles",
       "series": "Series",
       "tierTemplate": "Tier template",
       "hidden": "Hidden",
@@ -337,8 +347,12 @@
     "packRefSearchFailed": "Pack search failed",
     "packRefNotFound": "Not found",
     "placementModes": {
-      "profile": "Profile (link players)",
+      "profile": "Profile (link players/creators)",
       "level": "Level (expand to creators)"
+    },
+    "tracks": {
+      "player": "Player tournament",
+      "creator": "Creator tournament"
     },
     "statuses": {
       "draft": "Draft",

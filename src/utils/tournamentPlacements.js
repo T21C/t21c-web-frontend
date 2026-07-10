@@ -68,11 +68,57 @@ export function listEditablePlacements(placements) {
 
 /**
  * Credits shown on public profile (excludes user-hidden).
+ * Also collapses same-tournament multi-tier credits to the best rankWeight
+ * when the tournament has showBestTiersOnly enabled (default).
  * @param {Array<any> | null | undefined} placements
  * @returns {Array<any>}
  */
 export function listVisiblePlacements(placements) {
-  return listPublicPlacements(placements).filter((p) => !p.isProfileHidden);
+  return dedupeCreditsToBestTierPerTournament(
+    listPublicPlacements(placements).filter((p) => !p.isProfileHidden),
+  );
+}
+
+/**
+ * Within each tournament, keep only credits at the lowest rankWeight.
+ * Honors tournament.showBestTiersOnly (default true when unset).
+ * @param {Array<any>} credits
+ * @returns {Array<any>}
+ */
+export function dedupeCreditsToBestTierPerTournament(credits) {
+  if (!Array.isArray(credits) || credits.length <= 1) return credits || [];
+
+  const groups = new Map();
+  const passthrough = [];
+
+  for (const credit of credits) {
+    if (credit?.tournament?.showBestTiersOnly === false) {
+      passthrough.push(credit);
+      continue;
+    }
+    const tournamentId = credit?.tournament?.id;
+    if (tournamentId == null) {
+      passthrough.push(credit);
+      continue;
+    }
+    if (!groups.has(tournamentId)) groups.set(tournamentId, []);
+    groups.get(tournamentId).push(credit);
+  }
+
+  const deduped = [...passthrough];
+  for (const group of groups.values()) {
+    let bestWeight = Infinity;
+    for (const item of group) {
+      const weight = item?.tier?.rankWeight ?? Infinity;
+      if (weight < bestWeight) bestWeight = weight;
+    }
+    for (const item of group) {
+      if ((item?.tier?.rankWeight ?? Infinity) === bestWeight) {
+        deduped.push(item);
+      }
+    }
+  }
+  return deduped;
 }
 
 /**
@@ -86,15 +132,20 @@ export function resolveLevelDisplayName(credit) {
 
 /**
  * @param {any} credit
+ * @param {{ includeTournament?: boolean }} [options]
  * @returns {string}
  */
-export function resolvePlacementListLabel(credit) {
+export function resolvePlacementListLabel(credit, options = {}) {
+  const includeTournament = options.includeTournament === true;
   const layout = resolveEffectiveCardLayout(credit);
   if (layout === "levelStyle" || layout === "evidence") {
     const levelName = resolveLevelDisplayName(credit);
     if (levelName) return levelName;
   }
   const tier = credit?.tier?.label || credit?.tier?.code || "";
+  if (!includeTournament) {
+    return tier || credit?.displayName || "";
+  }
   const event = credit?.tournament?.shortName || credit?.tournament?.fullName || "";
   if (tier && event) return `${tier} — ${event}`;
   return tier || event || credit?.displayName || "";

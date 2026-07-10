@@ -18,12 +18,14 @@ import {
  *   placement: any,
  *   cardLayout?: string,
  *   previewMode?: boolean,
+ *   hideTournamentLabel?: boolean,
  * }} props
  */
 const TournamentPlacementCard = ({
   placement,
   cardLayout,
   previewMode = false,
+  hideTournamentLabel = false,
 }) => {
   const { t } = useTranslation("pages");
   const layout = resolveEffectiveCardLayout(placement, cardLayout);
@@ -41,6 +43,16 @@ const TournamentPlacementCard = ({
   const packRef = resolveCreditPackRef(placement);
   const packHref = resolvePackHref(packRef);
   const coCreditCount = resolveCoCreditCount(placement);
+  const showTournament = !hideTournamentLabel && Boolean(tournamentLabel);
+
+  const wrapWithLevelLink = (node) => {
+    if (!levelHref || previewMode) return node;
+    return (
+      <Link className="tournament-placements__link" to={levelHref}>
+        {node}
+      </Link>
+    );
+  };
 
   const tierLine = (
     <div className="tournament-placements__tier">
@@ -83,38 +95,60 @@ const TournamentPlacementCard = ({
             <span>{levelName || placement.displayName}</span>
           )}
         </div>
-        <div className="tournament-placements__context">
-          <span>{tournamentLabel}</span>
-          {tierLabel ? <span className="tournament-placements__context-sep">·</span> : null}
-          {tierLabel ? <span>{tierLabel}</span> : null}
-        </div>
+        {showTournament || tierLabel ? (
+          <div className="tournament-placements__context">
+            {showTournament && tournamentIcon ? (
+              <img className="tournament-placements__event-icon" src={tournamentIcon} alt="" />
+            ) : null}
+            {showTournament ? <span>{tournamentLabel}</span> : null}
+            {showTournament && tierLabel ? (
+              <span className="tournament-placements__context-sep">·</span>
+            ) : null}
+            {tierLabel ? <span>{tierLabel}</span> : null}
+          </div>
+        ) : null}
         <div className="tournament-placements__meta">{metaBadges}</div>
         {othersLink}
       </>
     );
   } else if (layout === "levelStyle") {
-    const primaryHref = packHref || levelHref;
-    const primaryLabel = tournamentLabel || tierLabel;
+    const primaryHref = levelHref || packHref;
+    const primaryLabel = hideTournamentLabel
+      ? tierLabel || tournamentLabel
+      : tournamentLabel || tierLabel;
     bodyContent = (
       <>
         <div className="tournament-placements__primary">
+          {!hideTournamentLabel && tournamentIcon ? (
+            <img className="tournament-placements__event-icon" src={tournamentIcon} alt="" />
+          ) : null}
           {primaryHref && primaryLabel ? (
             <Link className="tournament-placements__link" to={primaryHref}>
               {primaryLabel}
-              {tierLabel && tournamentLabel ? (
+              {!hideTournamentLabel && tierLabel && tournamentLabel ? (
                 <span className="tournament-placements__primary-tier"> · {tierLabel}</span>
               ) : null}
             </Link>
           ) : (
             <span>
               {primaryLabel}
-              {tierLabel && tournamentLabel ? (
+              {!hideTournamentLabel && tierLabel && tournamentLabel ? (
                 <span className="tournament-placements__primary-tier"> · {tierLabel}</span>
               ) : null}
             </span>
           )}
         </div>
-        {levelName ? (
+        {levelName && !hideTournamentLabel ? (
+          <div className="tournament-placements__subtitle">
+            {levelHref ? (
+              <Link className="tournament-placements__link" to={levelHref}>
+                {levelName}
+              </Link>
+            ) : (
+              <span>{levelName}</span>
+            )}
+          </div>
+        ) : levelName && hideTournamentLabel ? (
           <div className="tournament-placements__subtitle">
             {levelHref ? (
               <Link className="tournament-placements__link" to={levelHref}>
@@ -132,14 +166,26 @@ const TournamentPlacementCard = ({
   } else {
     bodyContent = (
       <>
-        {tierLine}
-        <div className="tournament-placements__event">
-          {tournamentIcon ? (
-            <img className="tournament-placements__event-icon" src={tournamentIcon} alt="" />
-          ) : null}
-          <span>{tournamentLabel}</span>
-        </div>
-        {placement.displayName ? (
+        {wrapWithLevelLink(tierLine)}
+        {showTournament ? (
+          <div className="tournament-placements__event">
+            {tournamentIcon ? (
+              <img className="tournament-placements__event-icon" src={tournamentIcon} alt="" />
+            ) : null}
+            <span>{tournamentLabel}</span>
+          </div>
+        ) : null}
+        {levelName ? (
+          <div className="tournament-placements__subtitle">
+            {levelHref && !previewMode ? (
+              <Link className="tournament-placements__link" to={levelHref}>
+                {levelName}
+              </Link>
+            ) : (
+              <span>{levelName}</span>
+            )}
+          </div>
+        ) : placement.displayName && !hideTournamentLabel ? (
           <div className="tournament-placements__display-name">{placement.displayName}</div>
         ) : null}
         <div className="tournament-placements__meta">{metaBadges}</div>

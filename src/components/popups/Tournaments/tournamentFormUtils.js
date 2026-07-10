@@ -2,6 +2,8 @@ export const STATUS_VALUES = ["draft", "ongoing", "completed", "cancelled"];
 
 export const PLACEMENT_MODE_VALUES = ["profile", "level"];
 
+export const TRACK_VALUES = ["player", "creator"];
+
 export const ROW_MODE_VALUES = ["inherit", "profile", "level"];
 
 export const TIER_KIND_VALUES = [
@@ -49,6 +51,12 @@ export const buildPlacementModeOptions = (t) =>
     label: t(`tournamentManagement.form.placementModes.${value}`),
   }));
 
+export const buildTrackOptions = (t) =>
+  TRACK_VALUES.map((value) => ({
+    value,
+    label: t(`tournamentManagement.form.tracks.${value}`),
+  }));
+
 export const buildRowModeOptions = (t) =>
   ROW_MODE_VALUES.map((value) => ({
     value,
@@ -71,8 +79,11 @@ export const emptyTournamentForm = () => ({
   notes: "",
   externalUrl: "",
   organizers: "",
+  ownerUsers: [],
   sortYear: "",
+  track: "player",
   placementMode: "profile",
+  showBestTiersOnly: true,
 });
 
 export const buildTournamentPayload = (form, { forCreate = false } = {}) => {
@@ -92,8 +103,13 @@ export const buildTournamentPayload = (form, { forCreate = false } = {}) => {
       .split(",")
       .map((s) => s.trim())
       .filter(Boolean),
+    ownerUserIds: Array.isArray(form.ownerUsers)
+      ? form.ownerUsers.map((u) => String(u.id)).filter(Boolean)
+      : [],
     sortYear: form.sortYear === "" ? null : Number(form.sortYear),
+    track: form.track === "creator" ? "creator" : "player",
     placementMode: form.placementMode || "profile",
+    showBestTiersOnly: form.showBestTiersOnly !== false,
   };
 
   if (forCreate) {

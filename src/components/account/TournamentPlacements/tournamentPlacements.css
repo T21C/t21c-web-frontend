@@ -176,6 +176,10 @@
 }
 
 .tournament-placements__primary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
   font-weight: 700;
   font-size: 0.95rem;
 }

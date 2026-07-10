@@ -26,12 +26,14 @@ import PlacementLevelPreview from "./PlacementLevelPreview";
 import PlacementNomineesCell from "./PlacementNomineesCell";
 import {
   EMPTY_REWARD_FORM,
-  countPlacementsByTier,
+  countPlacementsByRankWeight,
   isRewardFormDirty,
   mapPlacementToRow,
   reorderPlacementSegment,
-  segmentPlacementRowsByContiguousTier,
+  segmentPlacementRowsByContiguousRankWeight,
   resolveEffectiveRowMode,
+  isCreatorLinkedProfile,
+  rankWeightForTierCode,
   serializeForm,
   serializePlacements,
   sortPlacementRowsByTier,
@@ -54,8 +56,8 @@ const PLACEMENT_TABLE_COLUMNS = [
   },
   {
     id: "linkedUsers",
-    defaultWidth: 160,
-    minWidth: 100,
+    defaultWidth: 200,
+    minWidth: 140,
     resizable: true,
     labelKey: "linkedUsers",
   },
@@ -93,7 +95,7 @@ const TournamentManagementPopup = ({
   const [nomineesRowKey, setNomineesRowKey] = useState(null);
   const [showHelp, setShowHelp] = useState(false);
   const [showPackImport, setShowPackImport] = useState(false);
-  const [draggingPlacementTierCode, setDraggingPlacementTierCode] = useState(null);
+  const [draggingPlacementRankWeight, setDraggingPlacementRankWeight] = useState(null);
 
   const savedFormRef = useRef(serializeForm(emptyTournamentForm()));
   const savedFormObjectRef = useRef(emptyTournamentForm());
@@ -121,8 +123,28 @@ const TournamentManagementPopup = ({
       notes: data.notes || "",
       externalUrl: data.externalUrl || "",
       organizers: Array.isArray(data.organizers) ? data.organizers.join(", ") : "",
+      ownerUsers: Array.isArray(data.owners)
+        ? data.owners.map((u) => ({
+            id: u.id,
+            name: u.username || u.nickname || u.id,
+            type: "user",
+            isNewRequest: false,
+            username: u.username ?? null,
+            nickname: u.nickname ?? null,
+            avatarUrl: u.avatarUrl ?? null,
+          }))
+        : Array.isArray(data.ownerUserIds)
+          ? data.ownerUserIds.map((id) => ({
+              id: String(id),
+              name: String(id),
+              type: "user",
+              isNewRequest: false,
+            }))
+          : [],
       sortYear: data.sortYear ?? "",
+      track: data.track === "creator" ? "creator" : "player",
       placementMode: data.placementMode || "profile",
+      showBestTiersOnly: data.showBestTiersOnly !== false,
     };
     const rows = sortPlacementRowsByTier(
       (data.placements || []).map((p) => mapPlacementToRow(p)),
@@ -163,12 +185,12 @@ const TournamentManagementPopup = ({
   const tierOptions = detail?.tiers || [];
   const rowModeOptions = useMemo(() => buildRowModeOptions(t), [t]);
   const tierPlacementCounts = useMemo(
-    () => countPlacementsByTier(placementRows),
-    [placementRows],
+    () => countPlacementsByRankWeight(placementRows, tierOptions),
+    [placementRows, tierOptions],
   );
   const placementRowSegments = useMemo(
-    () => segmentPlacementRowsByContiguousTier(placementRows),
-    [placementRows],
+    () => segmentPlacementRowsByContiguousRankWeight(placementRows, tierOptions),
+    [placementRows, tierOptions],
   );
   const {
     columnWidths: placementColumnWidths,
@@ -301,6 +323,7 @@ const TournamentManagementPopup = ({
   };
 
   const addPlacementRow = () => {
+    const defaultLinkType = form.track === "creator" ? "creator" : "player";
     setPlacementRows((prev) => [
       ...prev,
       {
@@ -317,7 +340,12 @@ const TournamentManagementPopup = ({
         levelId: null,
         creditedCreatorIds: null,
         positionInTier: null,
-        linkedProfile: null,
+        linkedProfile: {
+          id: null,
+          name: "",
+          type: defaultLinkType,
+          isNewRequest: false,
+        },
         linkedLevel: null,
       },
     ]);
@@ -328,11 +356,11 @@ const TournamentManagementPopup = ({
       (entry) => entry.segmentId === start.source.droppableId,
     );
     if (!segment) return;
-    setDraggingPlacementTierCode(segment.tierCode);
+    setDraggingPlacementRankWeight(segment.rankWeight);
   };
 
   const handlePlacementDragEnd = (result) => {
-    setDraggingPlacementTierCode(null);
+    setDraggingPlacementRankWeight(null);
     if (!result.destination) return;
     if (result.source.droppableId !== result.destination.droppableId) return;
 
@@ -341,7 +369,13 @@ const TournamentManagementPopup = ({
     if (from === to) return;
 
     setPlacementRows((prev) =>
-      reorderPlacementSegment(prev, result.source.droppableId, from, to),
+      reorderPlacementSegment(
+        prev,
+        result.source.droppableId,
+        from,
+        to,
+        tierOptions,
+      ),
     );
   };
 
@@ -372,9 +406,9 @@ const TournamentManagementPopup = ({
       })
       .map((r) => {
         const effectiveMode = resolveEffectiveRowMode(r, form.placementMode);
-        const code = String(r.tierCode || "").trim().toUpperCase();
-        const positionInTier = (positionCounters.get(code) ?? 0) + 1;
-        positionCounters.set(code, positionInTier);
+        const weight = rankWeightForTierCode(r.tierCode, tierOptions);
+        const positionInTier = (positionCounters.get(weight) ?? 0) + 1;
+        positionCounters.set(weight, positionInTier);
         return {
           id: r.id ?? undefined,
           tierCode: r.tierCode,
@@ -389,10 +423,13 @@ const TournamentManagementPopup = ({
             ? r.creditedCreatorIds
             : null,
           playerId:
-            effectiveMode === "profile"
+            effectiveMode === "profile" && !isCreatorLinkedProfile(r.linkedProfile)
               ? r.linkedProfile?.id ?? r.playerId ?? null
               : null,
-          creatorId: null,
+          creatorId:
+            effectiveMode === "profile" && isCreatorLinkedProfile(r.linkedProfile)
+              ? r.linkedProfile?.id ?? r.creatorId ?? null
+              : null,
         };
       });
 
@@ -585,19 +622,95 @@ const TournamentManagementPopup = ({
               onEdit={() => setNomineesRowKey(row.key)}
             />
           ) : (
-            <ProfileSelector
-              key={`${row.key}-${row.linkedProfile?.id ?? "none"}`}
-              portalDropdown
-              type="player"
-              value={row.linkedProfile}
-              onChange={(profile) =>
-                updatePlacementRow(row.key, {
-                  linkedProfile: profile,
-                  playerId: profile?.id ?? null,
-                  creatorId: null,
-                })
-              }
-            />
+            <div className="tournament-management-popup__linked-profile">
+              <CustomSelect
+                options={[
+                  {
+                    value: "player",
+                    label: t("tournamentManagement.popup.placements.linkTypes.player"),
+                  },
+                  {
+                    value: "creator",
+                    label: t("tournamentManagement.popup.placements.linkTypes.creator"),
+                  },
+                ]}
+                value={{
+                  value: isCreatorLinkedProfile(row.linkedProfile)
+                    ? "creator"
+                    : row.linkedProfile?.type === "player"
+                      ? "player"
+                      : form.track === "creator"
+                        ? "creator"
+                        : "player",
+                  label: t(
+                    `tournamentManagement.popup.placements.linkTypes.${
+                      isCreatorLinkedProfile(row.linkedProfile) ||
+                      (row.linkedProfile == null && form.track === "creator")
+                        ? "creator"
+                        : "player"
+                    }`,
+                  ),
+                }}
+                onChange={(option) => {
+                  const nextType = option?.value === "creator" ? "creator" : "player";
+                  updatePlacementRow(row.key, {
+                    linkedProfile: {
+                      id: null,
+                      name: "",
+                      type: nextType,
+                      isNewRequest: false,
+                    },
+                    playerId: null,
+                    creatorId: null,
+                  });
+                }}
+                width="100%"
+                isSearchable={false}
+              />
+              <ProfileSelector
+                key={`${row.key}-${
+                  isCreatorLinkedProfile(row.linkedProfile) ||
+                  (row.linkedProfile == null && form.track === "creator")
+                    ? "creator"
+                    : "player"
+                }-${row.linkedProfile?.id ?? "none"}`}
+                portalDropdown
+                type={
+                  isCreatorLinkedProfile(row.linkedProfile) ||
+                  (row.linkedProfile == null && form.track === "creator")
+                    ? "charter"
+                    : "player"
+                }
+                value={
+                  row.linkedProfile?.id
+                    ? {
+                        ...row.linkedProfile,
+                        type: isCreatorLinkedProfile(row.linkedProfile)
+                          ? "charter"
+                          : "player",
+                      }
+                    : null
+                }
+                onChange={(profile) => {
+                  const linkAsCreator =
+                    isCreatorLinkedProfile(row.linkedProfile) ||
+                    (row.linkedProfile == null && form.track === "creator");
+                  const linkType = linkAsCreator ? "creator" : "player";
+                  updatePlacementRow(row.key, {
+                    linkedProfile: profile
+                      ? { ...profile, type: linkType }
+                      : {
+                          id: null,
+                          name: "",
+                          type: linkType,
+                          isNewRequest: false,
+                        },
+                    playerId: linkType === "player" ? profile?.id ?? null : null,
+                    creatorId: linkType === "creator" ? profile?.id ?? null : null,
+                  });
+                }}
+              />
+            </div>
           )}
         </td>
         <td className="tournament-management-popup__col-withdrew">
@@ -737,6 +850,9 @@ const TournamentManagementPopup = ({
                 {detail ? (
                   <div className="tournament-management-popup__meta">
                     <span className="tournament-management-popup__badge">{detail.status}</span>
+                    <span className="tournament-management-popup__badge">
+                      {t(`tournamentManagement.form.tracks.${form.track || "player"}`)}
+                    </span>
                     <span className="tournament-management-popup__badge">
                       {t(`tournamentManagement.form.placementModes.${form.placementMode}`)}
                     </span>
@@ -926,11 +1042,11 @@ const TournamentManagementPopup = ({
                       </tr>
                     </thead>
                     {placementRowSegments.map((segment) => {
-                      const rowTierCode = segment.tierCode;
-                      const canDragTier = (tierPlacementCounts.get(rowTierCode) ?? 0) > 1;
+                      const segmentWeight = segment.rankWeight;
+                      const canDragTier = (tierPlacementCounts.get(segmentWeight) ?? 0) > 1;
                       const isInactiveDragTier =
-                        draggingPlacementTierCode != null &&
-                        rowTierCode !== draggingPlacementTierCode;
+                        draggingPlacementRankWeight != null &&
+                        segmentWeight !== draggingPlacementRankWeight;
                       const useStaticSegment = isInactiveDragTier || !canDragTier;
 
                       if (useStaticSegment) {

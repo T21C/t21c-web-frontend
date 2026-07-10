@@ -190,6 +190,7 @@ const TournamentPlacementsSection = ({
                                     <TournamentPlacementCard
                                       key={getCreditId(credit)}
                                       placement={credit}
+                                      hideTournamentLabel
                                     />
                                   ))}
                                 </div>

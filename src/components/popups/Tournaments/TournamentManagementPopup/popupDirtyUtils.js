@@ -13,6 +13,14 @@ export function resolvePlacementLinkedProfile(placement) {
       isNewRequest: false,
     };
   }
+  if (placement?.creatorId != null) {
+    return {
+      id: placement.creatorId,
+      name: placement.creator?.name || placement.displayName || "",
+      type: "creator",
+      isNewRequest: false,
+    };
+  }
   return null;
 }
 
@@ -59,12 +67,21 @@ export function resolveEffectiveRowMode(row, tournamentPlacementMode = "profile"
   return tournamentPlacementMode === "level" ? "level" : "profile";
 }
 
+/** @param {any} linkedProfile */
+export function isCreatorLinkedProfile(linkedProfile) {
+  const type = linkedProfile?.type;
+  return type === "creator" || type === "charter" || type === "vfx";
+}
+
 /** @param {Array<any>} rows @param {string} placementMode */
 export function serializePlacements(rows, placementMode = "profile") {
   const normalized = rows
     .filter((r) => r.displayName?.trim() || resolveEffectiveRowMode(r, placementMode) === "level")
     .map((r, index) => {
       const effectiveMode = resolveEffectiveRowMode(r, placementMode);
+      const linked = r.linkedProfile;
+      const linkedId = linked?.id ?? null;
+      const linkAsCreator = isCreatorLinkedProfile(linked);
       return {
         id: r.id ?? null,
         tierCode: r.tierCode,
@@ -78,10 +95,13 @@ export function serializePlacements(rows, placementMode = "profile") {
           ? r.creditedCreatorIds
           : null,
         playerId:
-          effectiveMode === "profile"
-            ? r.linkedProfile?.id ?? r.playerId ?? null
+          effectiveMode === "profile" && !linkAsCreator
+            ? linkedId ?? r.playerId ?? null
             : null,
-        creatorId: null,
+        creatorId:
+          effectiveMode === "profile" && linkAsCreator
+            ? linkedId ?? r.creatorId ?? null
+            : null,
       };
     });
   return JSON.stringify(normalized);
@@ -122,15 +142,10 @@ export const EMPTY_REWARD_FORM = {
 
 /** Sort placement rows by tier rank weight, then position within tier, then id. */
 export function sortPlacementRowsByTier(rows, tierOptions) {
-  const weightForCode = (code) => {
-    const tier = tierOptions.find(
-      (t) => t.code?.toUpperCase() === String(code || "").toUpperCase(),
-    );
-    return tier?.rankWeight ?? 9999;
-  };
-
   return [...rows].sort((a, b) => {
-    const weightDiff = weightForCode(a.tierCode) - weightForCode(b.tierCode);
+    const weightDiff =
+      rankWeightForTierCode(a.tierCode, tierOptions) -
+      rankWeightForTierCode(b.tierCode, tierOptions);
     if (weightDiff !== 0) return weightDiff;
     const posDiff = (a.positionInTier ?? 0) - (b.positionInTier ?? 0);
     if (posDiff !== 0) return posDiff;
@@ -138,15 +153,11 @@ export function sortPlacementRowsByTier(rows, tierOptions) {
   });
 }
 
-/** Assign positionInTier from row order, grouped by tier code. */
-export function assignPlacementPositions(rows) {
-  const positionCounters = new Map();
-  return rows.map((row) => {
-    const code = String(row.tierCode || "").trim().toUpperCase();
-    const positionInTier = (positionCounters.get(code) ?? 0) + 1;
-    positionCounters.set(code, positionInTier);
-    return {...row, positionInTier};
-  });
+/** @param {string} tierCode @param {Array<any>} tierOptions */
+export function rankWeightForTierCode(tierCode, tierOptions = []) {
+  const code = normalizePlacementTierCode(tierCode);
+  const tier = tierOptions.find((t) => t.code?.toUpperCase() === code);
+  return Number.isFinite(Number(tier?.rankWeight)) ? Number(tier.rankWeight) : 9999;
 }
 
 /** @param {string} tierCode */
@@ -154,23 +165,47 @@ export function normalizePlacementTierCode(tierCode) {
   return String(tierCode || "").trim().toUpperCase();
 }
 
-/** @param {Array<any>} rows */
-export function countPlacementsByTier(rows) {
-  /** @type {Map<string, number>} */
+/**
+ * Assign positionInTier from row order within each rankWeight group.
+ * Equal-weight tiers share one position sequence so cross-tier order persists.
+ */
+export function assignPlacementPositions(rows, tierOptions = []) {
+  const positionCounters = new Map();
+  return rows.map((row) => {
+    const weight = rankWeightForTierCode(row.tierCode, tierOptions);
+    const positionInTier = (positionCounters.get(weight) ?? 0) + 1;
+    positionCounters.set(weight, positionInTier);
+    return { ...row, positionInTier };
+  });
+}
+
+/** @param {Array<any>} rows @param {Array<any>} tierOptions */
+export function countPlacementsByRankWeight(rows, tierOptions = []) {
+  /** @type {Map<number, number>} */
   const counts = new Map();
   for (const row of rows) {
-    const code = normalizePlacementTierCode(row.tierCode);
-    if (!code) continue;
-    counts.set(code, (counts.get(code) ?? 0) + 1);
+    const weight = rankWeightForTierCode(row.tierCode, tierOptions);
+    counts.set(weight, (counts.get(weight) ?? 0) + 1);
   }
   return counts;
 }
 
-/** Reorder rows inside a contiguous tier segment. */
-export function reorderPlacementSegment(rows, segmentId, fromIndex, toIndex) {
+/** @deprecated use countPlacementsByRankWeight */
+export function countPlacementsByTier(rows, tierOptions = []) {
+  return countPlacementsByRankWeight(rows, tierOptions);
+}
+
+/** Reorder rows inside a contiguous equal-rankWeight segment. */
+export function reorderPlacementSegment(
+  rows,
+  segmentId,
+  fromIndex,
+  toIndex,
+  tierOptions = [],
+) {
   if (fromIndex === toIndex) return rows;
 
-  const segments = segmentPlacementRowsByContiguousTier(rows);
+  const segments = segmentPlacementRowsByContiguousRankWeight(rows, tierOptions);
   const segment = segments.find((entry) => entry.segmentId === segmentId);
   if (!segment) return rows;
 
@@ -183,24 +218,24 @@ export function reorderPlacementSegment(rows, segmentId, fromIndex, toIndex) {
     next[item.globalIndex] = nextSegmentRows[index];
   });
 
-  return assignPlacementPositions(next);
+  return assignPlacementPositions(next, tierOptions);
 }
 
-/** Group rows into contiguous same-tier segments for scoped drag zones. */
-export function segmentPlacementRowsByContiguousTier(rows) {
-  /** @type {Array<{ segmentId: string, tierCode: string, items: Array<{ row: any, globalIndex: number }> }>} */
+/** Group rows into contiguous same-rankWeight segments for scoped drag zones. */
+export function segmentPlacementRowsByContiguousRankWeight(rows, tierOptions = []) {
+  /** @type {Array<{ segmentId: string, rankWeight: number, items: Array<{ row: any, globalIndex: number }> }>} */
   const segments = [];
   let segmentCounter = 0;
 
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i];
-    const tierCode = normalizePlacementTierCode(row.tierCode) || "__EMPTY__";
+    const rankWeight = rankWeightForTierCode(row.tierCode, tierOptions);
     const last = segments[segments.length - 1];
 
-    if (!last || last.tierCode !== tierCode) {
+    if (!last || last.rankWeight !== rankWeight) {
       segments.push({
         segmentId: `placement-seg-${segmentCounter++}`,
-        tierCode,
+        rankWeight,
         items: [{ row, globalIndex: i }],
       });
       continue;
@@ -210,4 +245,9 @@ export function segmentPlacementRowsByContiguousTier(rows) {
   }
 
   return segments;
+}
+
+/** @deprecated use segmentPlacementRowsByContiguousRankWeight */
+export function segmentPlacementRowsByContiguousTier(rows, tierOptions = []) {
+  return segmentPlacementRowsByContiguousRankWeight(rows, tierOptions);
 }

@@ -14,6 +14,7 @@
   padding: 8px 12px;
   border: 1px solid var(--color-white-t15, #444);
   background-color: var(--color-black-t90, #001);
+  color: var(--text-color, #fff);
   border-radius: 4px;
   font-size: 14px;
   transition: border-color 0.2s ease;
@@ -75,13 +76,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  color: var(--color-white, #fff);
 }
 
 .profile-selector-option:hover {
   background-color: #222;
 }
 
-.profile-selector button.profile-selector-option--user {
+/* Scoped to the dropdown (not .profile-selector) so portaled menus still style. */
+.profile-selector-dropdown button.profile-selector-option--user {
   display: block;
   width: 100%;
   margin: 0;
@@ -92,13 +95,14 @@
   cursor: pointer;
   font-family: inherit;
   text-align: left;
+  color: inherit;
 }
 
-.profile-selector button.profile-selector-option--user:hover {
+.profile-selector-dropdown button.profile-selector-option--user:hover {
   background-color: var(--color-white-t10, #222);
 }
 
-.profile-selector .profile-selector-user-row {
+.profile-selector-dropdown .profile-selector-user-row {
   display: flex;
   align-items: center;
   gap: 0.65rem;
@@ -106,7 +110,7 @@
   min-width: 0;
 }
 
-.profile-selector .profile-selector-user-avatar {
+.profile-selector-dropdown .profile-selector-user-avatar {
   width: 2.25rem;
   height: 2.25rem;
   border-radius: 50%;
@@ -115,20 +119,20 @@
   border: 1px solid var(--color-white-t15, #444);
 }
 
-.profile-selector .profile-selector-user-avatar--placeholder {
+.profile-selector-dropdown .profile-selector-user-avatar--placeholder {
   display: inline-block;
   box-sizing: border-box;
   background: var(--color-white-t10, #333);
 }
 
-.profile-selector .profile-selector-user-text {
+.profile-selector-dropdown .profile-selector-user-text {
   display: flex;
   flex-direction: column;
   gap: 0.12rem;
   min-width: 0;
 }
 
-.profile-selector .profile-selector-user-primary {
+.profile-selector-dropdown .profile-selector-user-primary {
   font-size: 0.92rem;
   font-weight: 600;
   color: var(--color-white, #fff);
@@ -137,7 +141,7 @@
   white-space: nowrap;
 }
 
-.profile-selector .profile-selector-user-secondary {
+.profile-selector-dropdown .profile-selector-user-secondary {
   font-size: 0.78rem;
   color: var(--color-gray-2, #888);
   overflow: hidden;
@@ -145,7 +149,7 @@
   white-space: nowrap;
 }
 
-.profile-selector .profile-selector-no-results--standalone {
+.profile-selector-dropdown .profile-selector-no-results--standalone {
   padding: 0.65rem 0.75rem;
   margin: 0;
   border-top: none;
@@ -194,4 +198,4 @@
 .profile-selector-request-new:focus {
   outline: none;
   box-shadow: 0 0 0 2px rgba(109, 35, 206, 0.3);
-} 
+}

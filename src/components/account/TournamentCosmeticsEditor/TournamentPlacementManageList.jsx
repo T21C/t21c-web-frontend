@@ -23,7 +23,7 @@ function PlacementManageRow({
 }) {
   const { t } = useTranslation("pages");
   const iconUrl = resolvePlacementRailIcon(placement);
-  const label = resolvePlacementListLabel(placement);
+  const label = resolvePlacementListLabel(placement, { includeTournament: true });
 
   return (
     <div

@@ -112,7 +112,7 @@
         "title": "名次模式",
         "intro": "每行可继承赛事默认或单独覆盖。",
         "bullets": {
-          "profile": "<b>档案</b> — 关联玩家；关卡仅作佐证。",
+          "profile": "<b>档案</b> — 关联玩家或创作者；关卡仅作佐证。",
           "level": "<b>关卡</b> — 同步后扩展为关卡上的创作者。",
           "inherit": "<b>继承</b> — 使用详情中的赛事放置模式。"
         }
@@ -210,6 +210,10 @@
       "rowMode": "模式",
       "nameLevel": "名称 / 关卡",
       "linkedUsers": "关联用户",
+      "linkTypes": {
+        "player": "玩家",
+        "creator": "创作者"
+      },
       "name": "名称",
       "level": "关卡",
       "link": "关联",
@@ -322,8 +326,14 @@
       "externalUrl": "外部链接",
       "sortYear": "排序年份",
       "organizers": "主办方（逗号分隔）",
+      "owners": "视觉编辑者（所有者）",
+      "ownersHint": "可上传赛事与档位视觉资源的用户。上方主办方仍为展示用自由文本。",
+      "ownersPlaceholder": "搜索用户并添加为所有者…",
+      "ownersRemove": "移除",
       "status": "状态",
+      "track": "赛事赛道",
       "placementMode": "放置模式",
+      "showBestTiersOnly": "档案仅显示最佳档位",
       "series": "系列赛",
       "tierTemplate": "档位模板",
       "hidden": "隐藏",
@@ -337,8 +347,12 @@
     "packRefSearchFailed": "谱面包搜索失败",
     "packRefNotFound": "未找到",
     "placementModes": {
-      "profile": "档案（关联玩家）",
+      "profile": "档案（关联玩家/创作者）",
       "level": "关卡（扩展至创作者）"
+    },
+    "tracks": {
+      "player": "玩家赛事",
+      "creator": "创作者赛事"
     },
     "statuses": {
       "draft": "草稿",

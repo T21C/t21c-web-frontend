@@ -112,7 +112,7 @@
         "title": "순위 모드",
         "intro": "각 행은 토너먼트 기본값을 상속하거나 재정의할 수 있습니다.",
         "bullets": {
-          "profile": "<b>프로필</b> — 플레이어 연결; 레벨은 증거용.",
+          "profile": "<b>프로필</b> — 플레이어 또는 크리에이터 연결; 레벨은 증거용.",
           "level": "<b>레벨</b> — 동기화 후 레벨 크리에이터로 확장.",
           "inherit": "<b>상속</b> — 상세 탭의 토너먼트 배치 모드 사용."
         }
@@ -210,6 +210,10 @@
       "rowMode": "모드",
       "nameLevel": "이름 / 레벨",
       "linkedUsers": "연결된 사용자",
+      "linkTypes": {
+        "player": "플레이어",
+        "creator": "크리에이터"
+      },
       "name": "이름",
       "level": "레벨",
       "link": "연결",
@@ -322,8 +326,14 @@
       "externalUrl": "외부 URL",
       "sortYear": "정렬 연도",
       "organizers": "주최 (쉼표로 구분)",
+      "owners": "비주얼 편집자 (소유자)",
+      "ownersHint": "토너먼트·티어 비주얼을 업로드할 수 있는 사용자입니다. 위 주최는 표시용 자유 텍스트입니다.",
+      "ownersPlaceholder": "소유자로 추가할 사용자 검색…",
+      "ownersRemove": "제거",
       "status": "상태",
+      "track": "토너먼트 트랙",
       "placementMode": "배치 모드",
+      "showBestTiersOnly": "프로필에 최고 티어만 표시",
       "series": "시리즈",
       "tierTemplate": "티어 템플릿",
       "hidden": "숨김",
@@ -337,8 +347,12 @@
     "packRefSearchFailed": "팩 검색 실패",
     "packRefNotFound": "찾을 수 없음",
     "placementModes": {
-      "profile": "프로필 (플레이어 연결)",
+      "profile": "프로필 (플레이어/크리에이터 연결)",
       "level": "레벨 (크리에이터로 확장)"
+    },
+    "tracks": {
+      "player": "플레이어 토너먼트",
+      "creator": "크리에이터 토너먼트"
     },
     "statuses": {
       "draft": "초안",

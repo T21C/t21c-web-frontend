@@ -346,6 +346,25 @@
   color: var(--color-white-t50);
 }
 
+.tournament-management-popup__linked-profile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.tournament-management-popup__linked-profile .custom-select-container,
+.tournament-management-popup__linked-profile .custom-select-wrapper {
+  width: 100%;
+  min-width: 0;
+}
+
+.tournament-management-popup__linked-profile .custom-select__control {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100%;
+}
+
 .tournament-management-popup__col-mode .custom-select-container,
 .tournament-management-popup__col-mode .custom-select-wrapper {
   width: 100%;
@@ -454,6 +473,8 @@
   align-items: center;
   min-width: 0;
   min-height: 2rem;
+  max-width: 80%;
+  overflow: hidden;
   flex: 1;
 }
 

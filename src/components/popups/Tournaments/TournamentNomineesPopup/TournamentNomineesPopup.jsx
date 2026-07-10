@@ -38,7 +38,9 @@ const TournamentNomineesPopup = ({
     const initialIds =
       creditedCreatorIds === null
         ? candidates.map((c) => c.creatorId ?? c.id)
-        : creditedCreatorIds;
+        : creditedCreatorIds.filter((id) =>
+            candidates.some((c) => (c.creatorId ?? c.id) === id),
+          );
     setSelectedIds(new Set(initialIds.filter((id) => id != null)));
   }, [levelId, loading, candidates, creditedCreatorIds]);
 

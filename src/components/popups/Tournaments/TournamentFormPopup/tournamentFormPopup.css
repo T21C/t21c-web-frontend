@@ -125,12 +125,57 @@
   cursor: pointer;
 }
 
+.tournament-form-fields__hint {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--color-gray-2);
+}
+
+.tournament-form-fields__owner-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tournament-form-fields__owner-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--color-white-t15);
+  border-radius: 0.4rem;
+  background: var(--color-black-t70);
+  font-size: 0.85rem;
+}
+
 .tournament-form-fields__checkbox {
   accent-color: var(--btn-primary);
 }
 
 .tournament-form-fields__field .custom-select-container {
   width: 100%;
+}
+
+.tournament-form-fields__field .profile-selector {
+  width: 100%;
+}
+
+.tournament-form-fields__field .profile-selector-input {
+  background: var(--color-black-t70);
+  border: 1px solid var(--color-white-t15);
+  color: var(--text-color);
+  border-radius: 0.4rem;
+  padding: 0.45rem 0.55rem;
+  font-size: 0.875rem;
+}
+
+.tournament-form-fields__field .profile-selector-input:focus {
+  outline: none;
+  border-color: var(--btn-primary);
 }
 
 @media (max-width: 768px) {

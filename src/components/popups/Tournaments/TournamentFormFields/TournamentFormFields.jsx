@@ -1,10 +1,11 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { CustomSelect, PackRefSelect } from "@/components/common/selectors";
+import { CustomSelect, PackRefSelect, ProfileSelector } from "@/components/common/selectors";
 import "../TournamentFormPopup/tournamentFormPopup.css";
 import {
   buildStatusOptions,
   buildPlacementModeOptions,
+  buildTrackOptions,
   findOption,
   TEXT_FIELD_KEYS,
 } from "../tournamentFormUtils";
@@ -21,10 +22,26 @@ const TournamentFormFields = ({
   const { t } = useTranslation(["pages", "common"]);
   const statusOptions = useMemo(() => buildStatusOptions(t), [t]);
   const placementModeOptions = useMemo(() => buildPlacementModeOptions(t), [t]);
+  const trackOptions = useMemo(() => buildTrackOptions(t), [t]);
 
   const updateField = (key, value) => onChange(key, value);
   const isReadOnly = (key) => readOnlyFields.includes(key);
   const isHidden = (key) => hiddenFields.includes(key);
+
+  const addOwner = (user) => {
+    if (!user?.id) return;
+    const existing = Array.isArray(form.ownerUsers) ? form.ownerUsers : [];
+    if (existing.some((u) => String(u.id) === String(user.id))) return;
+    updateField("ownerUsers", [...existing, user]);
+  };
+
+  const removeOwner = (userId) => {
+    const existing = Array.isArray(form.ownerUsers) ? form.ownerUsers : [];
+    updateField(
+      "ownerUsers",
+      existing.filter((u) => String(u.id) !== String(userId)),
+    );
+  };
 
   return (
     <div className={`${classPrefix}__grid`}>
@@ -45,6 +62,40 @@ const TournamentFormFields = ({
         </div>
         );
       })}
+      {!isHidden("owners") ? (
+        <div className={`${classPrefix}__field ${classPrefix}__field--wide`}>
+          <label className={`${classPrefix}__label`}>
+            {t("tournamentManagement.form.fields.owners")}
+          </label>
+          <p className={`${classPrefix}__hint`}>
+            {t("tournamentManagement.form.fields.ownersHint")}
+          </p>
+          <ProfileSelector
+            type="user"
+            userSearchIncludeSelf
+            portalDropdown
+            value={null}
+            onChange={addOwner}
+            placeholder={t("tournamentManagement.form.fields.ownersPlaceholder")}
+          />
+          {Array.isArray(form.ownerUsers) && form.ownerUsers.length ? (
+            <ul className={`${classPrefix}__owner-list`}>
+              {form.ownerUsers.map((owner) => (
+                <li key={owner.id} className={`${classPrefix}__owner-item`}>
+                  <span>{owner.name || owner.username || owner.id}</span>
+                  <button
+                    type="button"
+                    className="btn-fill-secondary"
+                    onClick={() => removeOwner(owner.id)}
+                  >
+                    {t("tournamentManagement.form.fields.ownersRemove")}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+        </div>
+      ) : null}
       {!isHidden("packRef") ? (
       <div className={`${classPrefix}__field`}>
         {isReadOnly("packRef") ? (
@@ -76,6 +127,18 @@ const TournamentFormFields = ({
           options={statusOptions}
           value={findOption(statusOptions, form.status)}
           onChange={(option) => updateField("status", option?.value ?? "draft")}
+          width="100%"
+          isSearchable={false}
+        />
+      </div>
+      ) : null}
+      {!isHidden("track") ? (
+      <div className={`${classPrefix}__field`}>
+        <CustomSelect
+          label={t("tournamentManagement.form.fields.track")}
+          options={trackOptions}
+          value={findOption(trackOptions, form.track)}
+          onChange={(option) => updateField("track", option?.value ?? "player")}
           width="100%"
           isSearchable={false}
         />
@@ -122,6 +185,17 @@ const TournamentFormFields = ({
             onChange={(e) => updateField("isResultsFinal", e.target.checked)}
           />
           <span>{t("tournamentManagement.form.fields.resultsFinal")}</span>
+        </label>
+      </div>
+      <div className={`${classPrefix}__field`}>
+        <label className={`${classPrefix}__checkbox-label`}>
+          <input
+            type="checkbox"
+            className={`${classPrefix}__checkbox`}
+            checked={form.showBestTiersOnly !== false}
+            onChange={(e) => updateField("showBestTiersOnly", e.target.checked)}
+          />
+          <span>{t("tournamentManagement.form.fields.showBestTiersOnly")}</span>
         </label>
       </div>
       <div className={`${classPrefix}__field ${classPrefix}__field--wide`}>
