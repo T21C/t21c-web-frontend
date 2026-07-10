@@ -58,6 +58,7 @@ import ScoreIcon from './ScoreIcon';
 import ChartIcon from './ChartIcon';
 import TimeIcon from './TimeIcon';
 import AdofaiIcon from './AdofaiIcon';
+import TUFHelperLiteIcon from './TUFHelperLiteIcon';
 import { SettingsIcon } from './SettingsIcon';
 import { TUFStellarIcon } from './TUFStellarIcon';
 import { HeartIcon } from './HeartIcon';
@@ -124,6 +125,7 @@ export {
     ChartIcon,
     TimeIcon,
     AdofaiIcon,
+    TUFHelperLiteIcon,
     SettingsIcon,
     TUFStellarIcon,
     HeartIcon,
