@@ -223,6 +223,7 @@
       "nomineeCount": "{{count}} 名提名",
       "nomineeOverflow": "另有 {{count}} 位",
       "empty": "暂无放置",
+      "resizeColumn": "调整列宽",
       "rowModes": {
         "inherit": "继承",
         "profile": "档案",

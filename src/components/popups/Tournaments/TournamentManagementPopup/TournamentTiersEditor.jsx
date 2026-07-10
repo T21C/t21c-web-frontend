@@ -4,11 +4,43 @@ import toast from "react-hot-toast";
 import api from "@/utils/api";
 import { routes } from "@/api/routes";
 import { CDN_IMAGE_ACCEPT } from "@/config/constants/cdnImageAccept";
+import { useResizableTableColumns } from "@/hooks/useResizableTableColumns";
 import { CustomSelect } from "@/components/common/selectors";
 import VisualAssetSlot from "./VisualAssetSlot";
 import { serializeTierRows } from "./popupDirtyUtils";
 
 import { buildTierKindOptions, findOption } from "../tournamentFormUtils";
+
+const TIER_TABLE_COLUMNS = [
+  { id: "code", defaultWidth: 72, minWidth: 56, resizable: true, labelKey: "code" },
+  { id: "label", defaultWidth: 140, minWidth: 80, resizable: true, labelKey: "label" },
+  { id: "kind", defaultWidth: 120, minWidth: 88, resizable: true, labelKey: "kind" },
+  {
+    id: "rankWeight",
+    defaultWidth: 88,
+    minWidth: 64,
+    resizable: true,
+    labelKey: "rankWeight",
+  },
+  { id: "color", defaultWidth: 88, minWidth: 64, resizable: true, labelKey: "color" },
+  {
+    id: "tierIcon",
+    defaultWidth: 132,
+    minWidth: 100,
+    resizable: true,
+    labelKey: "tierIcon",
+    labelScope: "visuals",
+  },
+  {
+    id: "tierCardBg",
+    defaultWidth: 132,
+    minWidth: 100,
+    resizable: true,
+    labelKey: "tierCardBg",
+    labelScope: "visuals",
+  },
+  { id: "actions", defaultWidth: 56, minWidth: 56, resizable: false },
+];
 
 const emptyTierRow = () => ({
   key: `new-${Date.now()}-${Math.random()}`,
@@ -73,6 +105,20 @@ const TournamentTiersEditor = ({
     () => serializeTierRows(rows) !== baselineRef.current,
     [rows],
   );
+
+  const {
+    columnWidths: tierColumnWidths,
+    isResizing: isResizingTierColumns,
+    startResize: startTierColumnResize,
+  } = useResizableTableColumns(TIER_TABLE_COLUMNS, "tournament-mgmt-tiers-columns");
+
+  const tierHeaderLabel = (column) => {
+    if (!column.labelKey) return null;
+    if (column.labelScope === "visuals") {
+      return t(`tournamentManagement.visuals.${column.labelKey}`);
+    }
+    return t(`tournamentManagement.tiers.${column.labelKey}`);
+  };
 
   useEffect(() => {
     onDirtyChange?.(isDirty);
@@ -238,23 +284,61 @@ const TournamentTiersEditor = ({
             {t("tournamentManagement.tiers.empty")}
           </p>
         ) : (
-        <table className="tournament-management-popup__tiers-table">
+        <table
+          className={[
+            "tournament-management-popup__tiers-table",
+            isResizingTierColumns ? "is-resizing-columns" : "",
+          ]
+            .filter(Boolean)
+            .join(" ")}
+        >
+          <colgroup>
+            {tierColumnWidths.map((width, index) => (
+              <col
+                key={TIER_TABLE_COLUMNS[index].id}
+                style={{ width: `${width}px` }}
+              />
+            ))}
+          </colgroup>
           <thead>
             <tr>
-              <th>{t("tournamentManagement.tiers.code")}</th>
-              <th>{t("tournamentManagement.tiers.label")}</th>
-              <th>{t("tournamentManagement.tiers.kind")}</th>
-              <th>{t("tournamentManagement.tiers.rankWeight")}</th>
-              <th>{t("tournamentManagement.tiers.color")}</th>
-              <th>{t("tournamentManagement.visuals.tierIcon")}</th>
-              <th>{t("tournamentManagement.visuals.tierCardBg")}</th>
-              <th />
+              {TIER_TABLE_COLUMNS.map((column, columnIndex) => {
+                const headerLabel = tierHeaderLabel(column);
+
+                return (
+                  <th
+                    key={column.id}
+                    className={`tournament-management-popup__col-${column.id}`}
+                  >
+                    {headerLabel ? (
+                      <span className="tournament-management-popup__col-header-label">
+                        {headerLabel}
+                      </span>
+                    ) : null}
+                    {column.resizable ? (
+                      <button
+                        type="button"
+                        className="tournament-management-popup__col-resize-handle"
+                        aria-label={t(
+                          "tournamentManagement.popup.placements.resizeColumn",
+                        )}
+                        onMouseDown={(event) =>
+                          startTierColumnResize(columnIndex, event)
+                        }
+                        onTouchStart={(event) =>
+                          startTierColumnResize(columnIndex, event)
+                        }
+                      />
+                    ) : null}
+                  </th>
+                );
+              })}
             </tr>
           </thead>
           <tbody>
             {rows.map((row) => (
               <tr key={row.key}>
-                <td>
+                <td className="tournament-management-popup__col-code">
                   <input
                     value={row.code}
                     onChange={(e) =>
@@ -262,13 +346,13 @@ const TournamentTiersEditor = ({
                     }
                   />
                 </td>
-                <td>
+                <td className="tournament-management-popup__col-label">
                   <input
                     value={row.label}
                     onChange={(e) => updateRow(row.key, { label: e.target.value })}
                   />
                 </td>
-                <td>
+                <td className="tournament-management-popup__col-kind">
                   <CustomSelect
                     options={kindOptions}
                     value={kindOptions.find((o) => o.value === row.kind) ?? kindOptions[5]}
@@ -277,20 +361,20 @@ const TournamentTiersEditor = ({
                     isSearchable={false}
                   />
                 </td>
-                <td>
+                <td className="tournament-management-popup__col-rankWeight">
                   <input
                     value={row.rankWeight}
                     onChange={(e) => updateRow(row.key, { rankWeight: e.target.value })}
                   />
                 </td>
-                <td>
+                <td className="tournament-management-popup__col-color">
                   <input
                     value={row.color}
                     onChange={(e) => updateRow(row.key, { color: e.target.value })}
                     placeholder="#hex"
                   />
                 </td>
-                <td>
+                <td className="tournament-management-popup__col-tierIcon">
                   <div className="tournament-management-popup__tier-visual-cell">
                     <VisualAssetSlot
                       url={row.iconUrl}
@@ -306,7 +390,7 @@ const TournamentTiersEditor = ({
                     ) : null}
                   </div>
                 </td>
-                <td>
+                <td className="tournament-management-popup__col-tierCardBg">
                   <div className="tournament-management-popup__tier-visual-cell">
                     <VisualAssetSlot
                       url={row.cardBackgroundUrl}
@@ -317,7 +401,7 @@ const TournamentTiersEditor = ({
                     />
                   </div>
                 </td>
-                <td>
+                <td className="tournament-management-popup__col-actions">
                   <button
                     type="button"
                     className="btn-fill-danger"

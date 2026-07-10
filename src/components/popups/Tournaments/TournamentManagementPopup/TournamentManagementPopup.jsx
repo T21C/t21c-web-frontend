@@ -5,6 +5,7 @@ import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import api from "@/utils/api";
 import { routes } from "@/api/routes";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
+import { useResizableTableColumns } from "@/hooks/useResizableTableColumns";
 import { CloseButton } from "@/components/common/buttons";
 import { ProfileSelector, CustomSelect } from "@/components/common/selectors";
 import LevelSelectionPopup from "@/components/popups/Levels/LevelSelectionPopup/LevelSelectionPopup";
@@ -39,6 +40,36 @@ import "./tournamentManagementPopup.css";
 import "../TournamentFormPopup/tournamentFormPopup.css";
 
 const SUB_TABS = ["details", "tiers", "placements", "cosmetics"];
+
+const PLACEMENT_TABLE_COLUMNS = [
+  { id: "drag", defaultWidth: 28, minWidth: 28, resizable: false },
+  { id: "tier", defaultWidth: 84, minWidth: 56, resizable: true, labelKey: "tier" },
+  { id: "mode", defaultWidth: 120, minWidth: 88, resizable: true, labelKey: "rowMode" },
+  {
+    id: "nameLevel",
+    defaultWidth: 224,
+    minWidth: 120,
+    resizable: true,
+    labelKey: "nameLevel",
+  },
+  {
+    id: "linkedUsers",
+    defaultWidth: 160,
+    minWidth: 100,
+    resizable: true,
+    labelKey: "linkedUsers",
+  },
+  {
+    id: "withdrew",
+    defaultWidth: 104,
+    minWidth: 72,
+    resizable: true,
+    labelKey: null,
+    labelNsKey: "withdrew",
+  },
+  { id: "team", defaultWidth: 120, minWidth: 72, resizable: true, labelKey: "team" },
+  { id: "actions", defaultWidth: 80, minWidth: 80, resizable: false },
+];
 
 const normalizeSubTab = (tab) => (tab === "rewards" ? "cosmetics" : tab);
 
@@ -138,6 +169,14 @@ const TournamentManagementPopup = ({
   const placementRowSegments = useMemo(
     () => segmentPlacementRowsByContiguousTier(placementRows),
     [placementRows],
+  );
+  const {
+    columnWidths: placementColumnWidths,
+    isResizing: isResizingPlacementColumns,
+    startResize: startPlacementColumnResize,
+  } = useResizableTableColumns(
+    PLACEMENT_TABLE_COLUMNS,
+    "tournament-mgmt-placements-columns",
   );
 
   const rewardTierOptions = useMemo(
@@ -510,11 +549,11 @@ const TournamentManagementPopup = ({
                   option?.value === "inherit" ? null : option?.value ?? null,
               })
             }
-            width="7rem"
+            width="100%"
             isSearchable={false}
           />
         </td>
-        <td className="tournament-management-popup__col-name-level">
+        <td className="tournament-management-popup__col-nameLevel">
           {isLevelMode ? (
             <PlacementLevelPreview
               linkedLevel={row.linkedLevel}
@@ -537,7 +576,7 @@ const TournamentManagementPopup = ({
             />
           )}
         </td>
-        <td className="tournament-management-popup__col-linked">
+        <td className="tournament-management-popup__col-linkedUsers">
           {isLevelMode ? (
             <PlacementNomineesCell
               levelId={row.levelId}
@@ -573,7 +612,7 @@ const TournamentManagementPopup = ({
             aria-label={t("tournamentManagement.withdrew")}
           />
         </td>
-        <td>
+        <td className="tournament-management-popup__col-team">
           <input
             value={row.teamName}
             onChange={(e) =>
@@ -583,7 +622,7 @@ const TournamentManagementPopup = ({
             }
           />
         </td>
-        <td>
+        <td className="tournament-management-popup__col-actions">
           <div className="tournament-management-popup__row-actions">
             {isLevelMode && row.id ? (
               <button
@@ -828,25 +867,62 @@ const TournamentManagementPopup = ({
                     onDragStart={handlePlacementDragStart}
                     onDragEnd={handlePlacementDragEnd}
                   >
-                  <table className="tournament-management-popup__placements-table">
+                  <table
+                    className={[
+                      "tournament-management-popup__placements-table",
+                      isResizingPlacementColumns ? "is-resizing-columns" : "",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                  >
+                    <colgroup>
+                      {placementColumnWidths.map((width, index) => (
+                        <col
+                          key={PLACEMENT_TABLE_COLUMNS[index].id}
+                          style={{ width: `${width}px` }}
+                        />
+                      ))}
+                    </colgroup>
                     <thead>
                       <tr>
-                        <th className="tournament-management-popup__col-drag" aria-hidden="true" />
-                        <th className="tournament-management-popup__col-tier">
-                          {t("tournamentManagement.popup.placements.tier")}
-                        </th>
-                        <th className="tournament-management-popup__col-mode">
-                          {t("tournamentManagement.popup.placements.rowMode")}
-                        </th>
-                        <th className="tournament-management-popup__col-name-level">
-                          {t("tournamentManagement.popup.placements.nameLevel")}
-                        </th>
-                        <th>{t("tournamentManagement.popup.placements.linkedUsers")}</th>
-                        <th className="tournament-management-popup__col-withdrew">
-                          {t("tournamentManagement.withdrew")}
-                        </th>
-                        <th>{t("tournamentManagement.popup.placements.team")}</th>
-                        <th />
+                        {PLACEMENT_TABLE_COLUMNS.map((column, columnIndex) => {
+                          const headerLabel = column.labelKey
+                            ? t(
+                                `tournamentManagement.popup.placements.${column.labelKey}`,
+                              )
+                            : column.labelNsKey
+                              ? t(`tournamentManagement.${column.labelNsKey}`)
+                              : null;
+
+                          return (
+                            <th
+                              key={column.id}
+                              className={`tournament-management-popup__col-${column.id}`}
+                              aria-hidden={column.id === "drag" ? true : undefined}
+                            >
+                              {headerLabel ? (
+                                <span className="tournament-management-popup__col-header-label">
+                                  {headerLabel}
+                                </span>
+                              ) : null}
+                              {column.resizable ? (
+                                <button
+                                  type="button"
+                                  className="tournament-management-popup__col-resize-handle"
+                                  aria-label={t(
+                                    "tournamentManagement.popup.placements.resizeColumn",
+                                  )}
+                                  onMouseDown={(event) =>
+                                    startPlacementColumnResize(columnIndex, event)
+                                  }
+                                  onTouchStart={(event) =>
+                                    startPlacementColumnResize(columnIndex, event)
+                                  }
+                                />
+                              ) : null}
+                            </th>
+                          );
+                        })}
                       </tr>
                     </thead>
                     {placementRowSegments.map((segment) => {

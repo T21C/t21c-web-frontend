@@ -224,6 +224,7 @@
 
 .tournament-management-popup__placements-table {
   width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
   font-size: 0.9rem;
 }
@@ -234,19 +235,52 @@
   padding: 0.35rem 0.4rem;
   text-align: center;
   vertical-align: middle;
+  overflow: hidden;
+}
+
+.tournament-management-popup__placements-table th {
+  position: relative;
+}
+
+.tournament-management-popup__col-header-label {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tournament-management-popup__col-resize-handle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0.4rem;
+  height: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: col-resize;
+  touch-action: none;
+}
+
+.tournament-management-popup__col-resize-handle:hover,
+.tournament-management-popup__placements-table.is-resizing-columns
+  .tournament-management-popup__col-resize-handle,
+.tournament-management-popup__tiers-table.is-resizing-columns
+  .tournament-management-popup__col-resize-handle {
+  background: var(--color-white-t20);
+}
+
+.tournament-management-popup__col-resize-handle:focus-visible {
+  outline: 2px solid var(--btn-primary-light-hover);
+  outline-offset: -2px;
 }
 
 .tournament-management-popup__placements-table input {
   width: 100%;
-  min-width: 4rem;
-}
-
-.tournament-management-popup__placements-table .tournament-management-popup__col-tier {
-  width: 5.25rem;
+  min-width: 0;
 }
 
 .tournament-management-popup__placements-table .tournament-management-popup__col-drag {
-  width: 1.75rem;
   padding-left: 0.25rem;
   padding-right: 0.25rem;
 }
@@ -312,27 +346,22 @@
   color: var(--color-white-t50);
 }
 
-.tournament-management-popup__placements-table .tournament-management-popup__col-mode {
-  width: 7.5rem;
+.tournament-management-popup__col-mode .custom-select-container,
+.tournament-management-popup__col-mode .custom-select-wrapper {
+  width: 100%;
+  min-width: 0;
 }
 
-.tournament-management-popup__placements-table .tournament-management-popup__col-withdrew {
-  width: 6.5rem;
-}
-
-.tournament-management-popup__placements-table .tournament-management-popup__col-name-level {
-  min-width: 14rem;
+.tournament-management-popup__col-mode .custom-select__control {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100%;
 }
 
 .tournament-management-popup__tier-code-input {
   width: 3rem;
   min-width: 0;
   flex: 1;
-}
-
-.tournament-management-popup__col-mode .custom-select-container {
-  width: 7rem;
-  min-width: 7rem;
 }
 
 .tournament-management-popup__col-withdrew input {
@@ -409,8 +438,8 @@
   border-color: color-mix(in srgb, var(--color-purple-1) 55%, transparent);
 }
 
-.tournament-management-popup__col-linked {
-  min-width: 8rem;
+.tournament-management-popup__col-linkedUsers {
+  min-width: 0;
 }
 
 .tournament-management-popup__nominees-cell {
@@ -705,10 +734,13 @@
 
 .tournament-management-popup__tiers-table-wrap {
   overflow-x: auto;
+  flex: 1;
+  min-height: 0;
 }
 
 .tournament-management-popup__tiers-table {
   width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
   font-size: 0.88rem;
 }
@@ -719,11 +751,28 @@
   padding: 0.4rem 0.45rem;
   text-align: left;
   vertical-align: middle;
+  overflow: hidden;
+}
+
+.tournament-management-popup__tiers-table th {
+  position: relative;
 }
 
 .tournament-management-popup__tiers-table input {
   width: 100%;
-  min-width: 3.5rem;
+  min-width: 0;
+}
+
+.tournament-management-popup__tiers-table .tournament-management-popup__col-kind .custom-select-container,
+.tournament-management-popup__tiers-table .tournament-management-popup__col-kind .custom-select-wrapper {
+  width: 100%;
+  min-width: 0;
+}
+
+.tournament-management-popup__tiers-table .tournament-management-popup__col-kind .custom-select__control {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100%;
 }
 
 .tournament-management-popup__tier-visual-cell {

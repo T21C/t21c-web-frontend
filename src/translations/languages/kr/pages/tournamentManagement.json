@@ -223,6 +223,7 @@
       "nomineeCount": "후보 {{count}}명",
       "nomineeOverflow": "+{{count}}명 더",
       "empty": "아직 순위가 없습니다",
+      "resizeColumn": "열 너비 조절",
       "rowModes": {
         "inherit": "상속",
         "profile": "프로필",

@@ -223,6 +223,7 @@
       "nomineeCount": "{{count}} nominees",
       "nomineeOverflow": "+{{count}} more",
       "empty": "No placements yet",
+      "resizeColumn": "Resize column",
       "rowModes": {
         "inherit": "Inherit",
         "profile": "Profile",
