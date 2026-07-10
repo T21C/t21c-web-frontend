@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import api from "@/utils/api";
 import { routes } from "@/api/routes";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
@@ -24,8 +25,11 @@ import PlacementLevelPreview from "./PlacementLevelPreview";
 import PlacementNomineesCell from "./PlacementNomineesCell";
 import {
   EMPTY_REWARD_FORM,
+  countPlacementsByTier,
   isRewardFormDirty,
   mapPlacementToRow,
+  reorderPlacementSegment,
+  segmentPlacementRowsByContiguousTier,
   resolveEffectiveRowMode,
   serializeForm,
   serializePlacements,
@@ -58,6 +62,7 @@ const TournamentManagementPopup = ({
   const [nomineesRowKey, setNomineesRowKey] = useState(null);
   const [showHelp, setShowHelp] = useState(false);
   const [showPackImport, setShowPackImport] = useState(false);
+  const [draggingPlacementTierCode, setDraggingPlacementTierCode] = useState(null);
 
   const savedFormRef = useRef(serializeForm(emptyTournamentForm()));
   const savedFormObjectRef = useRef(emptyTournamentForm());
@@ -88,7 +93,10 @@ const TournamentManagementPopup = ({
       sortYear: data.sortYear ?? "",
       placementMode: data.placementMode || "profile",
     };
-    const rows = (data.placements || []).map((p) => mapPlacementToRow(p));
+    const rows = sortPlacementRowsByTier(
+      (data.placements || []).map((p) => mapPlacementToRow(p)),
+      data.tiers || [],
+    );
 
     setDetail(data);
     setForm(nextForm);
@@ -123,10 +131,13 @@ const TournamentManagementPopup = ({
 
   const tierOptions = detail?.tiers || [];
   const rowModeOptions = useMemo(() => buildRowModeOptions(t), [t]);
-
-  const sortedPlacementRows = useMemo(
-    () => sortPlacementRowsByTier(placementRows, tierOptions),
-    [placementRows, tierOptions],
+  const tierPlacementCounts = useMemo(
+    () => countPlacementsByTier(placementRows),
+    [placementRows],
+  );
+  const placementRowSegments = useMemo(
+    () => segmentPlacementRowsByContiguousTier(placementRows),
+    [placementRows],
   );
 
   const rewardTierOptions = useMemo(
@@ -266,10 +277,33 @@ const TournamentManagementPopup = ({
         rowMode: null,
         levelId: null,
         creditedCreatorIds: null,
+        positionInTier: null,
         linkedProfile: null,
         linkedLevel: null,
       },
     ]);
+  };
+
+  const handlePlacementDragStart = (start) => {
+    const segment = placementRowSegments.find(
+      (entry) => entry.segmentId === start.source.droppableId,
+    );
+    if (!segment) return;
+    setDraggingPlacementTierCode(segment.tierCode);
+  };
+
+  const handlePlacementDragEnd = (result) => {
+    setDraggingPlacementTierCode(null);
+    if (!result.destination) return;
+    if (result.source.droppableId !== result.destination.droppableId) return;
+
+    const from = result.source.index;
+    const to = result.destination.index;
+    if (from === to) return;
+
+    setPlacementRows((prev) =>
+      reorderPlacementSegment(prev, result.source.droppableId, from, to),
+    );
   };
 
   const updatePlacementRow = (key, patch) => {
@@ -291,6 +325,7 @@ const TournamentManagementPopup = ({
       .filter((r) => r.id != null && !currentIds.has(r.id))
       .map((r) => r.id);
 
+    const positionCounters = new Map();
     const placementPayload = placementRows
       .filter((r) => {
         const mode = resolveEffectiveRowMode(r, form.placementMode);
@@ -298,6 +333,9 @@ const TournamentManagementPopup = ({
       })
       .map((r) => {
         const effectiveMode = resolveEffectiveRowMode(r, form.placementMode);
+        const code = String(r.tierCode || "").trim().toUpperCase();
+        const positionInTier = (positionCounters.get(code) ?? 0) + 1;
+        positionCounters.set(code, positionInTier);
         return {
           id: r.id ?? undefined,
           tierCode: r.tierCode,
@@ -307,6 +345,7 @@ const TournamentManagementPopup = ({
           teamName: r.teamName || null,
           rowMode: r.rowMode ?? null,
           levelId: r.levelId ?? null,
+          positionInTier,
           creditedCreatorIds: Array.isArray(r.creditedCreatorIds)
             ? r.creditedCreatorIds
             : null,
@@ -389,6 +428,184 @@ const TournamentManagementPopup = ({
       creditedCreatorIds: null,
     });
     setLevelPickerRowKey(null);
+  };
+
+  const renderPlacementRowTr = (row, options = {}) => {
+    const {
+      dragProvided = null,
+      snapshot = null,
+      canDragTier = false,
+      rowClassName = "",
+    } = options;
+
+    const tierMeta = tierOptions.find(
+      (tier) => tier.code?.toUpperCase() === row.tierCode?.toUpperCase(),
+    );
+    const effectiveMode = resolveEffectiveRowMode(row, form.placementMode);
+    const isLevelMode = effectiveMode === "level";
+    const trProps = dragProvided
+      ? {
+          ref: dragProvided.innerRef,
+          ...dragProvided.draggableProps,
+        }
+      : {};
+
+    return (
+      <tr
+        {...trProps}
+        className={[snapshot?.isDragging ? "is-dragging" : "", rowClassName]
+          .filter(Boolean)
+          .join(" ")}
+      >
+        <td className="tournament-management-popup__col-drag">
+          <div
+            className={[
+              "tournament-management-popup__drag-handle",
+              !canDragTier ? "is-disabled" : "",
+            ]
+              .filter(Boolean)
+              .join(" ")}
+            aria-label={t("tournamentManagement.reorder.dragHandle")}
+            aria-disabled={!canDragTier}
+            {...(canDragTier && dragProvided?.dragHandleProps
+              ? dragProvided.dragHandleProps
+              : {})}
+          >
+            <span
+              className="tournament-management-popup__drag-handle-grip"
+              aria-hidden="true"
+            >
+              ⋮⋮
+            </span>
+          </div>
+        </td>
+        <td className="tournament-management-popup__col-tier">
+          <div className="tournament-management-popup__tier-code-cell">
+            {tierMeta?.iconUrl ? (
+              <img
+                className="tournament-management-popup__tier-thumb"
+                src={tierMeta.iconUrl}
+                alt=""
+              />
+            ) : null}
+            <input
+              className="tournament-management-popup__tier-code-input"
+              value={row.tierCode}
+              onChange={(e) =>
+                updatePlacementRow(row.key, {
+                  tierCode: e.target.value.toUpperCase(),
+                })
+              }
+              list="tm-popup-tier-codes"
+            />
+          </div>
+        </td>
+        <td className="tournament-management-popup__col-mode">
+          <CustomSelect
+            options={rowModeOptions}
+            value={findOption(rowModeOptions, row.rowMode ?? "inherit")}
+            onChange={(option) =>
+              updatePlacementRow(row.key, {
+                rowMode:
+                  option?.value === "inherit" ? null : option?.value ?? null,
+              })
+            }
+            width="7rem"
+            isSearchable={false}
+          />
+        </td>
+        <td className="tournament-management-popup__col-name-level">
+          {isLevelMode ? (
+            <PlacementLevelPreview
+              linkedLevel={row.linkedLevel}
+              emptyLabel={t("tournamentManagement.popup.placements.noLevel")}
+              editLabel={
+                row.levelId
+                  ? t("tournamentManagement.popup.placements.changeLevel")
+                  : t("tournamentManagement.popup.placements.pickLevel")
+              }
+              onEdit={() => setLevelPickerRowKey(row.key)}
+            />
+          ) : (
+            <input
+              value={row.displayName}
+              onChange={(e) =>
+                updatePlacementRow(row.key, {
+                  displayName: e.target.value,
+                })
+              }
+            />
+          )}
+        </td>
+        <td className="tournament-management-popup__col-linked">
+          {isLevelMode ? (
+            <PlacementNomineesCell
+              levelId={row.levelId}
+              creditedCreatorIds={row.creditedCreatorIds}
+              disabled={!row.levelId}
+              onEdit={() => setNomineesRowKey(row.key)}
+            />
+          ) : (
+            <ProfileSelector
+              key={`${row.key}-${row.linkedProfile?.id ?? "none"}`}
+              portalDropdown
+              type="player"
+              value={row.linkedProfile}
+              onChange={(profile) =>
+                updatePlacementRow(row.key, {
+                  linkedProfile: profile,
+                  playerId: profile?.id ?? null,
+                  creatorId: null,
+                })
+              }
+            />
+          )}
+        </td>
+        <td className="tournament-management-popup__col-withdrew">
+          <input
+            type="checkbox"
+            checked={row.withdrew}
+            onChange={(e) =>
+              updatePlacementRow(row.key, {
+                withdrew: e.target.checked,
+              })
+            }
+            aria-label={t("tournamentManagement.withdrew")}
+          />
+        </td>
+        <td>
+          <input
+            value={row.teamName}
+            onChange={(e) =>
+              updatePlacementRow(row.key, {
+                teamName: e.target.value,
+              })
+            }
+          />
+        </td>
+        <td>
+          <div className="tournament-management-popup__row-actions">
+            {isLevelMode && row.id ? (
+              <button
+                type="button"
+                className="btn-fill-secondary"
+                title={t("tournamentManagement.syncCredits")}
+                onClick={() => syncCredits(row.id)}
+              >
+                ↻
+              </button>
+            ) : null}
+            <button
+              type="button"
+              className="btn-fill-danger"
+              onClick={() => removePlacementRow(row.key)}
+            >
+              ×
+            </button>
+          </div>
+        </td>
+      </tr>
+    );
   };
 
   const nomineesRow = nomineesRowKey
@@ -602,14 +819,19 @@ const TournamentManagementPopup = ({
                   </button>
                 </div>
                 <div className="tournament-management-popup__placements-wrap">
-                  {sortedPlacementRows.length === 0 ? (
+                  {placementRows.length === 0 ? (
                     <p className="tournament-management-popup__empty-state">
                       {t("tournamentManagement.popup.placements.empty")}
                     </p>
                   ) : (
+                  <DragDropContext
+                    onDragStart={handlePlacementDragStart}
+                    onDragEnd={handlePlacementDragEnd}
+                  >
                   <table className="tournament-management-popup__placements-table">
                     <thead>
                       <tr>
+                        <th className="tournament-management-popup__col-drag" aria-hidden="true" />
                         <th className="tournament-management-popup__col-tier">
                           {t("tournamentManagement.popup.placements.tier")}
                         </th>
@@ -627,157 +849,64 @@ const TournamentManagementPopup = ({
                         <th />
                       </tr>
                     </thead>
-                    <tbody>
-                      {sortedPlacementRows.map((row) => {
-                        const tierMeta = tierOptions.find(
-                          (tier) => tier.code?.toUpperCase() === row.tierCode?.toUpperCase(),
-                        );
-                        const effectiveMode = resolveEffectiveRowMode(row, form.placementMode);
-                        const isLevelMode = effectiveMode === "level";
+                    {placementRowSegments.map((segment) => {
+                      const rowTierCode = segment.tierCode;
+                      const canDragTier = (tierPlacementCounts.get(rowTierCode) ?? 0) > 1;
+                      const isInactiveDragTier =
+                        draggingPlacementTierCode != null &&
+                        rowTierCode !== draggingPlacementTierCode;
+                      const useStaticSegment = isInactiveDragTier || !canDragTier;
 
+                      if (useStaticSegment) {
                         return (
-                          <tr key={row.key}>
-                            <td className="tournament-management-popup__col-tier">
-                              <div className="tournament-management-popup__tier-code-cell">
-                                {tierMeta?.iconUrl ? (
-                                  <img
-                                    className="tournament-management-popup__tier-thumb"
-                                    src={tierMeta.iconUrl}
-                                    alt=""
-                                  />
-                                ) : null}
-                                <input
-                                  className="tournament-management-popup__tier-code-input"
-                                  value={row.tierCode}
-                                  onChange={(e) =>
-                                    updatePlacementRow(row.key, {
-                                      tierCode: e.target.value.toUpperCase(),
-                                    })
-                                  }
-                                  list="tm-popup-tier-codes"
-                                />
-                              </div>
-                            </td>
-                            <td className="tournament-management-popup__col-mode">
-                              <CustomSelect
-                                options={rowModeOptions}
-                                value={findOption(
-                                  rowModeOptions,
-                                  row.rowMode ?? "inherit",
-                                )}
-                                onChange={(option) =>
-                                  updatePlacementRow(row.key, {
-                                    rowMode:
-                                      option?.value === "inherit"
-                                        ? null
-                                        : option?.value ?? null,
-                                  })
-                                }
-                                width="7rem"
-                                isSearchable={false}
-                              />
-                            </td>
-                            <td className="tournament-management-popup__col-name-level">
-                              {isLevelMode ? (
-                                <PlacementLevelPreview
-                                  linkedLevel={row.linkedLevel}
-                                  emptyLabel={t(
-                                    "tournamentManagement.popup.placements.noLevel",
-                                  )}
-                                  editLabel={
-                                    row.levelId
-                                      ? t(
-                                          "tournamentManagement.popup.placements.changeLevel",
-                                        )
-                                      : t(
-                                          "tournamentManagement.popup.placements.pickLevel",
-                                        )
-                                  }
-                                  onEdit={() => setLevelPickerRowKey(row.key)}
-                                />
-                              ) : (
-                                <input
-                                  value={row.displayName}
-                                  onChange={(e) =>
-                                    updatePlacementRow(row.key, {
-                                      displayName: e.target.value,
-                                    })
-                                  }
-                                />
-                              )}
-                            </td>
-                            <td className="tournament-management-popup__col-linked">
-                              {isLevelMode ? (
-                                <PlacementNomineesCell
-                                  levelId={row.levelId}
-                                  creditedCreatorIds={row.creditedCreatorIds}
-                                  disabled={!row.levelId}
-                                  onEdit={() => setNomineesRowKey(row.key)}
-                                />
-                              ) : (
-                                <ProfileSelector
-                                  key={`${row.key}-${row.linkedProfile?.id ?? "none"}`}
-                                  portalDropdown
-                                  type="player"
-                                  value={row.linkedProfile}
-                                  onChange={(profile) =>
-                                    updatePlacementRow(row.key, {
-                                      linkedProfile: profile,
-                                      playerId: profile?.id ?? null,
-                                      creatorId: null,
-                                    })
-                                  }
-                                />
-                              )}
-                            </td>
-                            <td className="tournament-management-popup__col-withdrew">
-                              <input
-                                type="checkbox"
-                                checked={row.withdrew}
-                                onChange={(e) =>
-                                  updatePlacementRow(row.key, {
-                                    withdrew: e.target.checked,
-                                  })
-                                }
-                                aria-label={t("tournamentManagement.withdrew")}
-                              />
-                            </td>
-                            <td>
-                              <input
-                                value={row.teamName}
-                                onChange={(e) =>
-                                  updatePlacementRow(row.key, {
-                                    teamName: e.target.value,
-                                  })
-                                }
-                              />
-                            </td>
-                            <td>
-                              <div className="tournament-management-popup__row-actions">
-                                {isLevelMode && row.id ? (
-                                  <button
-                                    type="button"
-                                    className="btn-fill-secondary"
-                                    title={t("tournamentManagement.syncCredits")}
-                                    onClick={() => syncCredits(row.id)}
-                                  >
-                                    ↻
-                                  </button>
-                                ) : null}
-                                <button
-                                  type="button"
-                                  className="btn-fill-danger"
-                                  onClick={() => removePlacementRow(row.key)}
-                                >
-                                  ×
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
+                          <tbody
+                            key={segment.segmentId}
+                            className={
+                              isInactiveDragTier ? "is-drag-tier-inactive" : ""
+                            }
+                          >
+                            {segment.items.map(({ row }) =>
+                              renderPlacementRowTr(row, {
+                                canDragTier,
+                              }),
+                            )}
+                          </tbody>
                         );
-                      })}
-                    </tbody>
+                      }
+
+                      return (
+                        <Droppable
+                          key={segment.segmentId}
+                          droppableId={segment.segmentId}
+                        >
+                          {(provided) => (
+                            <tbody
+                              ref={provided.innerRef}
+                              {...provided.droppableProps}
+                            >
+                              {segment.items.map(({ row }, index) => (
+                                <Draggable
+                                  key={row.key}
+                                  draggableId={row.key}
+                                  index={index}
+                                >
+                                  {(dragProvided, snapshot) =>
+                                    renderPlacementRowTr(row, {
+                                      dragProvided,
+                                      snapshot,
+                                      canDragTier,
+                                    })
+                                  }
+                                </Draggable>
+                              ))}
+                              {provided.placeholder}
+                            </tbody>
+                          )}
+                        </Droppable>
+                      );
+                    })}
                   </table>
+                  </DragDropContext>
                   )}
                 </div>
                 <datalist id="tm-popup-tier-codes">
