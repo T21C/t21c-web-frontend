@@ -556,7 +556,7 @@ const LevelCard = ({
           <Link className="level-card__link-wrap" to={levelDetailTo} aria-label={getSongDisplayName(level)}>
             {renderLinkContent({ showLikes: false })}
           </Link>
-          {renderDownloadLinks({ showAddToPack: false, editMarginZero: true, showDelete: canEdit, showTufHelperLite: false })}
+          {renderDownloadLinks({ showAddToPack: false, editMarginZero: true, showDelete: canEdit, showTufHelperLite: true })}
         </div>
 
         {renderPopups()}

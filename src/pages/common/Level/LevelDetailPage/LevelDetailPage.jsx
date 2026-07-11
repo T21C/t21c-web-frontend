@@ -51,6 +51,7 @@ import {
   TimeIcon,
   ArrowIcon,
   VideoLinkIcon,
+  TUFHelperLiteIcon,
 } from "@/components/common/icons";
 import { createEventSystem, formatBaseScore, formatCreatorDisplay, formatDate, isCdnUrl, selectIconSize } from "@/utils/Utility";
 import { formatAccuracyRatio } from "@/utils/statFormatters";
@@ -74,6 +75,7 @@ import {
 } from "@/utils/curationTypeUtils";
 import i18next from "i18next";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
+import { checkTufHelperLiteDownloadedIds, checkTufHelperLiteHealth, checkTufHelperLiteJobs, getTufHelperLiteDownloadState, invokeTufHelperLiteIpc, useTufHelperLiteDownloadedIds, useTufHelperLiteHealth, useTufHelperLiteJobs } from '@/hooks/useTufHelperLiteIpc';
 
 const minus2Reasons = []
 const gimmickReasons = []
@@ -869,6 +871,17 @@ const LevelDetailPage = ({ mockData = null }) => {
   const tagsAnchorRef = useRef(null);
   /** Tracks last seen CDN zip identity so we can refetch `/cdnData` after upload/import (`dlLink` / `fileId` change). */
   const cdnZipIdentityRef = useRef(null);
+
+  const tufHelperLiteHealth = useTufHelperLiteHealth();
+  const tufHelperLiteJobs = useTufHelperLiteJobs();
+  const tufHelperLiteDownloadedIds = useTufHelperLiteDownloadedIds();
+  const tufHelperLiteDownload = getTufHelperLiteDownloadState(
+    tufHelperLiteHealth,
+    tufHelperLiteJobs.jobs,
+    tufHelperLiteDownloadedIds.levelIdSet,
+    res?.level,
+    res?.level?.dlLink,
+  );
 
   const closeWeeklyAppearanceDropdown = useCallback(() => setShowWeeklyAppearanceDropdown(false), []);
   const closePackAppearanceDropdown = useCallback(() => setShowPackAppearanceDropdown(false), []);
@@ -2110,6 +2123,38 @@ const LevelDetailPage = ({ mockData = null }) => {
     }
   };
 
+  const handleTufHelperLiteClick = async (e) => {
+    e.stopPropagation();
+
+    const level = res?.level;
+    const dlLink = level?.dlLink;
+
+    if (!tufHelperLiteHealth.isAvailable || !dlLink?.match(/http[s]?:\/\//) || tufHelperLiteDownload.state === 'downloading') {
+      return;
+    }
+
+    try {
+      if (level?.id != null) {
+        await invokeTufHelperLiteIpc('level.open-from-id', {
+          id: String(level.id),
+          source: 'tuforums-levels',
+          openAfterDownload: true,
+        });
+      } else {
+        await invokeTufHelperLiteIpc('level.open-from-url', {
+          url: dlLink,
+          source: 'tuforums-levels',
+          openAfterDownload: true,
+        });
+      }
+
+      void checkTufHelperLiteJobs();
+      void checkTufHelperLiteDownloadedIds();
+    } catch {
+      void checkTufHelperLiteHealth();
+    }
+  };
+
   if (notFound) {
     return (
       <div className="level-detail">
@@ -2667,6 +2712,24 @@ const LevelDetailPage = ({ mockData = null }) => {
                 <button className="svg-stroke" href={res.level.dlLink} target="_blank" title={t('levelDetail.links.download')} onClick={handleDownloadClick}>
                   <DownloadIcon size={"36px"}/>
                   {res.level.downloadCount !== undefined && <span className="access-count">{res.level.downloadCount || 0}</span>}
+                </button>
+              )}
+              {tufHelperLiteHealth.isAvailable && (
+                <button
+                  type="button"
+                  className="svg-stroke tufhelperlite-button"
+                  onClick={handleTufHelperLiteClick}
+                  title="Open with TUFHelperLite"
+                  aria-label="Open with TUFHelperLite"
+                  disabled={tufHelperLiteDownload.state === 'downloading'}
+                  data-available="true"
+                  data-state={tufHelperLiteDownload.state}
+                  style={{ '--tufhelperlite-progress': `${Math.round(tufHelperLiteDownload.progress * 100)}%` }}
+                >
+                  <span className="tufhelperlite-button__icon-stack" aria-hidden="true">
+                    <TUFHelperLiteIcon className="tufhelperlite-button__icon tufhelperlite-button__icon--base" size="100%" />
+                    <TUFHelperLiteIcon className="tufhelperlite-button__icon tufhelperlite-button__icon--color" size="100%" />
+                  </span>
                 </button>
               )}
               {res.level.workshopLink && (

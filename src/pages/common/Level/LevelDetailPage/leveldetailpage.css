@@ -862,6 +862,59 @@
   justify-content: center;
 }
 
+.level-detail .tufhelperlite-button {
+  display: block;
+  height: 2.5rem;
+  width: 2.5rem;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.level-detail .tufhelperlite-button:disabled {
+  cursor: not-allowed;
+}
+
+.level-detail .tufhelperlite-button[data-state="downloading"] {
+  transition: --tufhelperlite-progress 0.45s ease-out;
+}
+
+.level-detail .tufhelperlite-button__icon-stack {
+  position: relative;
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.level-detail .tufhelperlite-button__icon {
+  position: absolute;
+  inset: 0;
+}
+
+.level-detail .tufhelperlite-button__icon--base {
+  opacity: 0;
+}
+
+.level-detail .tufhelperlite-button__icon--color {
+  opacity: 1;
+}
+
+.level-detail .tufhelperlite-button[data-state="downloading"] .tufhelperlite-button__icon--base {
+  filter: grayscale(1) brightness(0.8) contrast(1.1);
+  opacity: 0.42;
+}
+
+.level-detail .tufhelperlite-button[data-state="downloading"] .tufhelperlite-button__icon--color {
+  -webkit-mask-image: conic-gradient(from 0deg at 50% 50%, #000 0 var(--tufhelperlite-progress, 0%), transparent var(--tufhelperlite-progress, 0%) 100%);
+          mask-image: conic-gradient(from 0deg at 50% 50%, #000 0 var(--tufhelperlite-progress, 0%), transparent var(--tufhelperlite-progress, 0%) 100%);
+}
+
+.level-detail.compact .tufhelperlite-button {
+  height: 1.65rem;
+  width: 1.65rem;
+}
+
 
 .level-detail .wrapper-level .toggle-details-btn  {
   padding: var(--spacing-sm);
