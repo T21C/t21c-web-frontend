@@ -10,6 +10,7 @@ import { DEPRECATED_ROUTES } from "@/config/deprecatedRoutes";
 import * as Pages from '@/pages/index';
 import { Toaster } from "react-hot-toast";
 import { TufStellarRoute } from "@/components/routing/TufStellarRoute";
+import { TufHelperLiteConnectBanner } from "@/components/common/TufHelperLiteConnectBanner";
 
 function App() {
   const [searchParams] = useSearchParams();
@@ -42,6 +43,7 @@ function App() {
           }}
         />
       </div>
+      {!isEmbedded && <TufHelperLiteConnectBanner />}
       <div className="body">
       {!isEmbedded && <div className="nav-spacer" />}
       <Suspense

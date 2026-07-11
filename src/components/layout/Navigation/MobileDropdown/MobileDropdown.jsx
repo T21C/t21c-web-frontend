@@ -186,9 +186,12 @@ const MobileDropdown = ({
                   key={item.to || item.translationKey || index}
                   to={item.to}
                   className={({ isActive }) =>
-                    `nav-mobile-dropdown-item ${isActive ? "active" : ""}`
+                    `nav-mobile-dropdown-item ${isActive && !item.suppressActive ? "active" : ""}`
                   }
-                  onClick={handleItemClick}
+                  onClick={() => {
+                    item.onClick?.();
+                    handleItemClick();
+                  }}
                 >
                   {item.translationKey
                     ? t(item.translationKey)

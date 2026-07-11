@@ -38,6 +38,7 @@
         "passes": "클리어",
         "rating": "책정",
         "tufHelper": "TUFHelper",
+        "tufHelperLite": "TUFHelperLite",
         "tufExtension": "TUFExtension",
         "tos": "ToS",
         "privacyPolicy": "개인정보 처리방침",

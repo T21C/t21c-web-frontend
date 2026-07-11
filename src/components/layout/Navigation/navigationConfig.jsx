@@ -1,7 +1,8 @@
 // tuf-search: #navigationConfig #layout #navigation
-import { ExternalLinkIcon } from "@/components/common/icons";
+import { ExternalLinkIcon, TUFHelperLiteIcon } from "@/components/common/icons";
 import { ChromeIcon } from "@/components/common/icons/ChromeIcon";
 import { FirefoxIcon } from "@/components/common/icons/FirefoxIcon";
+import { showTufHelperLiteIntegrationBanner } from "@/hooks/useTufHelperLiteIpc";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 
 /**
@@ -136,6 +137,11 @@ export const createNavigationConfig = (context = {}) => {
           { to: "https://github.com/coyami-ke/TUFHelper/releases", 
             translationKey: "navigation.main.dropdowns.more.tufHelper", 
             attachIcon: <ExternalLinkIcon size={16} color="var(--color-white-t80)"/>},
+          { to: "/levels",
+            translationKey: "navigation.main.dropdowns.more.tufHelperLite",
+            onClick: showTufHelperLiteIntegrationBanner,
+            suppressActive: true,
+            icon: <TUFHelperLiteIcon size={24} /> },
           { ...getTufExtensionVer() },
           { divider: true },
           { to: "/songs", translationKey: "navigation.main.dropdowns.creators.songs" },

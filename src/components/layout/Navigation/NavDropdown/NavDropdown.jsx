@@ -107,9 +107,12 @@ const NavDropdown = ({
                 key={item.to || item.translationKey || index}
                 to={item.to}
                 className={({ isActive }) =>
-                  `nav-dropdown-item ${isActive ? "active" : ""}`
+                  `nav-dropdown-item ${isActive && !item.suppressActive ? "active" : ""}`
                 }
-                onClick={() => setIsOpen(false)}
+                onClick={() => {
+                  item.onClick?.();
+                  setIsOpen(false);
+                }}
               >
                 <span className="nav-dropdown-item-label">{item.translationKey
                   ? t(item.translationKey)

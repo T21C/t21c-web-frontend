@@ -192,5 +192,17 @@
         }
       }
     }
+  },
+  "tufHelperLiteBanner": {
+    "title": "Open TUF levels directly in ADOFAI",
+    "description": "Use the TUFHelperLite mod to open TUF levels directly in ADOFAI with a single click. Your browser may ask for local device access.",
+    "connect": "Connect",
+    "connecting": "Connecting...",
+    "learnMore": "Download mod",
+    "neverShow": "Don't show again",
+    "dismiss": "Dismiss TUFHelperLite for this session",
+    "unavailableTitle": "TUFHelperLite wasn't found",
+    "unavailableDescription": "Make sure AdofaiIpc and TUFHelperLite are installed and ADOFAI is running, then try again.",
+    "retry": "Retry"
   }
-} 
+}

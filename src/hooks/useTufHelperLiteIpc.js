@@ -10,9 +10,49 @@ const IPC_JOBS_POLL_MS = 1000;
 const IPC_DOWNLOADED_IDS_POLL_MS = 2500;
 const IPC_HEALTH_TIMEOUT_MS = 800;
 const IPC_HEALTH_MISSES_BEFORE_OFFLINE = 3;
+const IPC_INTEGRATION_STORAGE_KEY = 'tufhelperlite-integration';
+const IPC_BANNER_DISMISSED_SESSION_KEY = 'tufhelperlite-banner-dismissed';
+const IPC_INTEGRATION_ENABLED = 'enabled';
+const IPC_INTEGRATION_HIDDEN = 'hidden';
+
+const readStorage = (storage, key) => {
+  try {
+    return storage?.getItem(key) ?? null;
+  } catch {
+    return null;
+  }
+};
+
+const writeStorage = (storage, key, value) => {
+  try {
+    if (value == null) storage?.removeItem(key);
+    else storage?.setItem(key, value);
+  } catch {
+    // Storage can be unavailable in restricted browsing contexts.
+  }
+};
+
+const storedIntegrationPreference = typeof window === 'undefined'
+  ? null
+  : readStorage(window.localStorage, IPC_INTEGRATION_STORAGE_KEY);
+const initialIntegrationState = storedIntegrationPreference === IPC_INTEGRATION_HIDDEN
+  ? 'hidden'
+  : 'checking-permission';
+const initialSessionDismissed = typeof window !== 'undefined' &&
+  readStorage(window.sessionStorage, IPC_BANNER_DISMISSED_SESSION_KEY) === '1';
+
+const tufHelperLiteIntegrationListeners = new Set();
+let tufHelperLiteIntegrationSnapshot = {
+  state: initialIntegrationState,
+  isSessionDismissed: initialSessionDismissed,
+};
 
 const tufHelperLiteHealthListeners = new Set();
-let tufHelperLiteHealthSnapshot = { isAvailable: false, isChecking: true, port: null };
+let tufHelperLiteHealthSnapshot = {
+  isAvailable: false,
+  isChecking: false,
+  port: null,
+};
 let tufHelperLiteHealthPollId = null;
 let tufHelperLiteClient = null;
 let tufHelperLiteNamespaceClient = null;
@@ -32,6 +72,19 @@ let isTufHelperLiteDownloadedIdsChecking = false;
 const getTufHelperLiteHealthSnapshot = () => tufHelperLiteHealthSnapshot;
 const getTufHelperLiteJobsSnapshot = () => tufHelperLiteJobsSnapshot;
 const getTufHelperLiteDownloadedIdsSnapshot = () => tufHelperLiteDownloadedIdsSnapshot;
+const getTufHelperLiteIntegrationSnapshot = () => tufHelperLiteIntegrationSnapshot;
+
+const setTufHelperLiteIntegrationSnapshot = (nextSnapshot) => {
+  if (
+    tufHelperLiteIntegrationSnapshot.state === nextSnapshot.state &&
+    tufHelperLiteIntegrationSnapshot.isSessionDismissed === nextSnapshot.isSessionDismissed
+  ) {
+    return;
+  }
+
+  tufHelperLiteIntegrationSnapshot = nextSnapshot;
+  tufHelperLiteIntegrationListeners.forEach((listener) => listener());
+};
 
 const setTufHelperLiteHealthSnapshot = (nextSnapshot) => {
   if (
@@ -117,7 +170,123 @@ const clearTufHelperLiteClient = () => {
   tufHelperLiteNamespaceClient = null;
 };
 
+const resetTufHelperLiteConnectionData = () => {
+  clearTufHelperLiteClient();
+  tufHelperLiteConsecutiveHealthMisses = 0;
+  setTufHelperLiteHealthSnapshot({ isAvailable: false, isChecking: false, port: null });
+  setTufHelperLiteJobsSnapshot({ jobs: [] });
+  setTufHelperLiteDownloadedIdsSnapshot({ levelIds: [], levelIdSet: new Set() });
+};
+
+const isTufHelperLiteIntegrationEnabled = () =>
+  tufHelperLiteIntegrationSnapshot.state === 'enabled';
+
+const queryTufHelperLitePermission = async () => {
+  if (typeof navigator === 'undefined' || !navigator.permissions?.query) return null;
+
+  for (const name of ['loopback-network', 'local-network-access']) {
+    try {
+      const permission = await navigator.permissions.query({ name });
+      return permission.state;
+    } catch {
+      // Try the compatibility permission name when the granular name is unsupported.
+    }
+  }
+
+  return null;
+};
+
+let isTufHelperLiteIntegrationInitialized = initialIntegrationState === 'hidden';
+
+export const initializeTufHelperLiteIntegration = async () => {
+  if (isTufHelperLiteIntegrationInitialized) return;
+  isTufHelperLiteIntegrationInitialized = true;
+
+  const permissionState = await queryTufHelperLitePermission();
+  // Some Chrome builds keep reporting `prompt` after a successful loopback request.
+  // A completed IPC handshake is the more reliable signal that the user opted in.
+  const shouldEnable = permissionState === 'granted' ||
+    storedIntegrationPreference === IPC_INTEGRATION_ENABLED;
+
+  if (shouldEnable) {
+    writeStorage(window.localStorage, IPC_INTEGRATION_STORAGE_KEY, IPC_INTEGRATION_ENABLED);
+    setTufHelperLiteIntegrationSnapshot({ state: 'enabled', isSessionDismissed: false });
+    setTufHelperLiteHealthSnapshot({ isAvailable: false, isChecking: true, port: null });
+    void checkTufHelperLiteHealth();
+    return;
+  }
+
+  writeStorage(window.localStorage, IPC_INTEGRATION_STORAGE_KEY, null);
+  setTufHelperLiteIntegrationSnapshot({
+    state: 'prompt',
+    isSessionDismissed: tufHelperLiteIntegrationSnapshot.isSessionDismissed,
+  });
+};
+
+export const showTufHelperLiteIntegrationBanner = () => {
+  isTufHelperLiteIntegrationInitialized = true;
+  writeStorage(window.localStorage, IPC_INTEGRATION_STORAGE_KEY, null);
+  writeStorage(window.sessionStorage, IPC_BANNER_DISMISSED_SESSION_KEY, null);
+  resetTufHelperLiteConnectionData();
+  setTufHelperLiteIntegrationSnapshot({ state: 'prompt', isSessionDismissed: false });
+};
+
+export const connectTufHelperLiteIntegration = async () => {
+  if (tufHelperLiteIntegrationSnapshot.state === 'connecting') return false;
+
+  setTufHelperLiteIntegrationSnapshot({ state: 'connecting', isSessionDismissed: false });
+  setTufHelperLiteHealthSnapshot({ isAvailable: false, isChecking: true, port: null });
+
+  try {
+    const client = await connectTufHelperLiteIpc();
+    const workingPort = getTufHelperLitePort(client);
+    if (workingPort == null) throw new Error('TUFHelperLite IPC port is not available.');
+
+    await client.namespace(TUFHELPER_LITE_NAMESPACE).call(TUFHELPER_LITE_HEALTH_METHOD);
+
+    tufHelperLiteConsecutiveHealthMisses = 0;
+    writeStorage(window.localStorage, IPC_INTEGRATION_STORAGE_KEY, IPC_INTEGRATION_ENABLED);
+    writeStorage(window.sessionStorage, IPC_BANNER_DISMISSED_SESSION_KEY, null);
+    setTufHelperLiteHealthSnapshot({ isAvailable: true, isChecking: false, port: workingPort });
+    setTufHelperLiteIntegrationSnapshot({ state: 'enabled', isSessionDismissed: false });
+    await Promise.all([checkTufHelperLiteJobs(), checkTufHelperLiteDownloadedIds()]);
+    return true;
+  } catch {
+    const permissionState = await queryTufHelperLitePermission();
+    resetTufHelperLiteConnectionData();
+
+    if (permissionState === 'granted') {
+      writeStorage(window.localStorage, IPC_INTEGRATION_STORAGE_KEY, IPC_INTEGRATION_ENABLED);
+      setTufHelperLiteIntegrationSnapshot({ state: 'enabled', isSessionDismissed: false });
+      return false;
+    }
+
+    writeStorage(window.localStorage, IPC_INTEGRATION_STORAGE_KEY, null);
+    setTufHelperLiteIntegrationSnapshot({ state: 'unavailable', isSessionDismissed: false });
+    return false;
+  }
+};
+
+export const dismissTufHelperLiteBannerForSession = () => {
+  writeStorage(window.sessionStorage, IPC_BANNER_DISMISSED_SESSION_KEY, '1');
+  setTufHelperLiteIntegrationSnapshot({
+    ...tufHelperLiteIntegrationSnapshot,
+    isSessionDismissed: true,
+  });
+};
+
+export const hideTufHelperLiteIntegration = () => {
+  writeStorage(window.localStorage, IPC_INTEGRATION_STORAGE_KEY, IPC_INTEGRATION_HIDDEN);
+  writeStorage(window.sessionStorage, IPC_BANNER_DISMISSED_SESSION_KEY, null);
+  resetTufHelperLiteConnectionData();
+  setTufHelperLiteIntegrationSnapshot({ state: 'hidden', isSessionDismissed: false });
+};
+
 export const invokeTufHelperLiteIpc = async (method, params = {}) => {
+  if (!isTufHelperLiteIntegrationEnabled()) {
+    throw new Error('TUFHelperLite integration is not enabled.');
+  }
+
   if (!tufHelperLiteNamespaceClient) {
     await connectTufHelperLiteIpc();
   }
@@ -135,6 +304,13 @@ export const invokeTufHelperLiteIpc = async (method, params = {}) => {
 };
 
 export const checkTufHelperLiteHealth = async () => {
+  if (!isTufHelperLiteIntegrationEnabled()) {
+    if (tufHelperLiteHealthSnapshot.isChecking) {
+      setTufHelperLiteHealthSnapshot({ isAvailable: false, isChecking: false, port: null });
+    }
+    return;
+  }
+
   if (isTufHelperLiteHealthChecking) return;
   isTufHelperLiteHealthChecking = true;
 
@@ -238,6 +414,11 @@ const subscribeTufHelperLiteHealth = (listener) => {
   };
 };
 
+const subscribeTufHelperLiteIntegration = (listener) => {
+  tufHelperLiteIntegrationListeners.add(listener);
+  return () => tufHelperLiteIntegrationListeners.delete(listener);
+};
+
 const subscribeTufHelperLiteJobs = (listener) => {
   tufHelperLiteJobsListeners.add(listener);
 
@@ -332,4 +513,10 @@ export const useTufHelperLiteDownloadedIds = () => useSyncExternalStore(
   subscribeTufHelperLiteDownloadedIds,
   getTufHelperLiteDownloadedIdsSnapshot,
   getTufHelperLiteDownloadedIdsSnapshot,
+);
+
+export const useTufHelperLiteIntegration = () => useSyncExternalStore(
+  subscribeTufHelperLiteIntegration,
+  getTufHelperLiteIntegrationSnapshot,
+  getTufHelperLiteIntegrationSnapshot,
 );

@@ -125,5 +125,17 @@
         }
       }
     }
+  },
+  "tufHelperLiteBanner": {
+    "title": "Otwieraj poziomy TUF bezpośrednio w ADOFAI",
+    "description": "Użyj moda TUFHelperLite, aby jednym kliknięciem otwierać poziomy TUF bezpośrednio w ADOFAI. Przeglądarka może poprosić o dostęp do urządzenia lokalnego.",
+    "connect": "Połącz",
+    "connecting": "Łączenie...",
+    "learnMore": "Pobierz mod",
+    "neverShow": "Nie pokazuj więcej",
+    "dismiss": "Ukryj TUFHelperLite w tej sesji",
+    "unavailableTitle": "Nie znaleziono TUFHelperLite",
+    "unavailableDescription": "Upewnij się, że AdofaiIpc i TUFHelperLite są zainstalowane, a ADOFAI jest uruchomione, i spróbuj ponownie.",
+    "retry": "Spróbuj ponownie"
   }
-} 
+}
