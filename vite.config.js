@@ -92,7 +92,6 @@ export default defineConfig(({ command, mode }) => {
       devSourcemap: mode === 'development',
     },
     server: {
-      allowedHosts: ["guhyeons-macbook-pro.tail234c02.ts.net"],
       host: '127.0.0.1',
       port: port,
       strictPort: true,

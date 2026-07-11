@@ -774,7 +774,7 @@ const LevelBannerWarningIcon = () => (
 );
 
 const LevelDetailPage = ({ mockData = null }) => {
-  const { t } = useTranslation(['pages', 'common']);
+  const { t } = useTranslation(['pages', 'common', 'components']);
   const { id } = useParams();
   const detailPage = useLocation();
   const navigate = useNavigate();
@@ -2714,13 +2714,13 @@ const LevelDetailPage = ({ mockData = null }) => {
                   {res.level.downloadCount !== undefined && <span className="access-count">{res.level.downloadCount || 0}</span>}
                 </button>
               )}
-              {tufHelperLiteHealth.isAvailable && (
+              {tufHelperLiteHealth.isAvailable && res.level.dlLink?.match(/http[s]?:\/\//) && (
                 <button
                   type="button"
                   className="svg-stroke tufhelperlite-button"
                   onClick={handleTufHelperLiteClick}
-                  title="Open with TUFHelperLite"
-                  aria-label="Open with TUFHelperLite"
+                  title={t('components:level.tufHelperLiteBanner.openWith')}
+                  aria-label={t('components:level.tufHelperLiteBanner.openWith')}
                   disabled={tufHelperLiteDownload.state === 'downloading'}
                   data-available="true"
                   data-state={tufHelperLiteDownload.state}

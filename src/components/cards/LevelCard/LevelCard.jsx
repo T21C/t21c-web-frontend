@@ -337,8 +337,8 @@ const LevelCard = ({
           type="button"
           className="tufhelperlite-button"
           onClick={handleTufHelperLiteClick}
-          title="Open with TUFHelperLite"
-          aria-label="Open with TUFHelperLite"
+          title={t('level.tufHelperLiteBanner.openWith')}
+          aria-label={t('level.tufHelperLiteBanner.openWith')}
           disabled={tufHelperLiteDownload.state === 'downloading'}
           data-available="true"
           data-state={tufHelperLiteDownload.state}

@@ -198,6 +198,7 @@
     "description": "Use the TUFHelperLite mod to open TUF levels directly in ADOFAI with a single click. Your browser may ask for local device access.",
     "connect": "Connect",
     "connecting": "Connecting...",
+    "openWith": "Open with TUFHelperLite",
     "learnMore": "Download mod",
     "neverShow": "Don't show again",
     "dismiss": "Dismiss TUFHelperLite for this session",

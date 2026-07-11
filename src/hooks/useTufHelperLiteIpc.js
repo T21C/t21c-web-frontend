@@ -252,15 +252,7 @@ export const connectTufHelperLiteIntegration = async () => {
     await Promise.all([checkTufHelperLiteJobs(), checkTufHelperLiteDownloadedIds()]);
     return true;
   } catch {
-    const permissionState = await queryTufHelperLitePermission();
     resetTufHelperLiteConnectionData();
-
-    if (permissionState === 'granted') {
-      writeStorage(window.localStorage, IPC_INTEGRATION_STORAGE_KEY, IPC_INTEGRATION_ENABLED);
-      setTufHelperLiteIntegrationSnapshot({ state: 'enabled', isSessionDismissed: false });
-      return false;
-    }
-
     writeStorage(window.localStorage, IPC_INTEGRATION_STORAGE_KEY, null);
     setTufHelperLiteIntegrationSnapshot({ state: 'unavailable', isSessionDismissed: false });
     return false;

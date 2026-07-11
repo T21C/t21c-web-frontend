@@ -135,6 +135,7 @@
     "description": "使用 TUFHelperLite 模组，只需点击一下即可在 ADOFAI 中直接打开 TUF 关卡。浏览器可能会请求访问本地设备。",
     "connect": "连接",
     "connecting": "正在连接...",
+    "openWith": "使用 TUFHelperLite 打开",
     "learnMore": "下载模组",
     "neverShow": "不再显示此提示",
     "dismiss": "本次会话中关闭 TUFHelperLite 提示",
