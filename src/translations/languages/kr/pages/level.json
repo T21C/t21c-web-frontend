@@ -50,7 +50,8 @@
     "specialDifficulties": "특수 난이도",
     "curationTypes": "큐레이션 유형",
     "tags": "태그",
-    "myLikes": "내가 좋아요한 레벨"
+    "myLikes": "내가 좋아요한 레벨",
+    "showDownloadedOnly": "다운로드한 레벨만 보기"
   },
   "totalResults": "총 {{count}}개",
   "infScroll": {

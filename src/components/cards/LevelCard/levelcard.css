@@ -1,4 +1,10 @@
 /* tuf-search: #LevelCard #levelCard #cards */
+@property --tufhelperlite-progress {
+  syntax: '<percentage>';
+  inherits: true;
+  initial-value: 0%;
+}
+
 .level-card {
   position: relative;
   display: flex;
@@ -180,6 +186,7 @@
   width: 2.5rem;
 }
 .level-card .downloads-wrapper a svg,
+.level-card .tufhelperlite-button svg,
 .level-card .edit-button svg {
   height: 100%;
   width: 100%;
@@ -192,6 +199,7 @@
 }
 
 .level-card .downloads-wrapper a svg:hover,
+.level-card .tufhelperlite-button:not(:disabled) svg:hover,
 .level-card .edit-button svg:hover {
   transform: scale(1.1);
 }
@@ -205,6 +213,59 @@
   padding: 0;
   cursor: pointer;
   transition: all 0.2s;
+}
+
+.level-card .tufhelperlite-button {
+  display: block;
+  height: 2.5rem;
+  width: 2.5rem;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.level-card .tufhelperlite-button:disabled {
+  cursor: not-allowed;
+}
+
+.level-card .tufhelperlite-button[data-state="downloading"] {
+  transition: --tufhelperlite-progress 0.45s ease-out;
+}
+
+.level-card .tufhelperlite-button__icon-stack {
+  position: relative;
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.level-card .tufhelperlite-button__icon {
+  position: absolute;
+  inset: 0;
+}
+
+.level-card .tufhelperlite-button__icon--base {
+  opacity: 0;
+}
+
+.level-card .tufhelperlite-button__icon--color {
+  opacity: 1;
+}
+
+.level-card .tufhelperlite-button[data-state="downloading"] .tufhelperlite-button__icon--base {
+  filter: grayscale(1) brightness(0.8) contrast(1.1);
+  opacity: 0.42;
+}
+
+.level-card .tufhelperlite-button[data-state="downloading"] .tufhelperlite-button__icon--color {
+  -webkit-mask-image: conic-gradient(from 0deg at 50% 50%, #000 0 var(--tufhelperlite-progress, 0%), transparent var(--tufhelperlite-progress, 0%) 100%);
+          mask-image: conic-gradient(from 0deg at 50% 50%, #000 0 var(--tufhelperlite-progress, 0%), transparent var(--tufhelperlite-progress, 0%) 100%);
+}
+
+.level-card.compact .tufhelperlite-button {
+  height: 1.65rem;
+  width: 1.65rem;
 }
 
 .level-card.compact .add-to-pack-button {

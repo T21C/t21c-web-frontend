@@ -16,9 +16,14 @@
         "back": "Wstecz",
         "admin": "Zarządzaj"
       }
+    },
+    "dropdowns": {
+      "more": {
+        "tufHelperLite": "TUFHelperLite"
+      }
     }
   },
   "languages": {
     "comingSoon": "(wkrótce)"
   }
-} 
+}

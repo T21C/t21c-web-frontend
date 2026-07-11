@@ -128,5 +128,18 @@
         }
       }
     }
+  },
+  "tufHelperLiteBanner": {
+    "title": "TUF 레벨을 ADOFAI에서 바로 열기",
+    "description": "TUFHelperLite 모드를 사용하면 버튼 한 번으로 TUF 레벨을 ADOFAI에서 바로 열 수 있습니다. 브라우저가 로컬 기기 접근 권한을 요청할 수 있습니다.",
+    "connect": "연결",
+    "connecting": "연결 중...",
+    "openWith": "TUFHelperLite로 열기",
+    "learnMore": "모드 다운로드",
+    "neverShow": "다시 보지 않기",
+    "dismiss": "이번 세션에서 TUFHelperLite 안내 닫기",
+    "unavailableTitle": "TUFHelperLite를 찾지 못했습니다",
+    "unavailableDescription": "AdofaiIpc와 TUFHelperLite가 설치되어 있고 ADOFAI가 실행 중인지 확인한 뒤 다시 시도하세요.",
+    "retry": "다시 시도"
   }
 }

@@ -8,7 +8,7 @@ function joinUrl(base, path) {
   return new URL(p.replace(/^\//, ''), `${b}/`).toString();
 }
 
-/** Absolute URL for an API path (SSE, window.location, etc.). */
+/** API URL for fetch/SSE: same-origin in development, absolute in deployed builds. */
 export function apiUrl(path) {
   return joinUrl(API_BASE, path);
 }

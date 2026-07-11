@@ -29,6 +29,7 @@ import toast from 'react-hot-toast';
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { normalizeLevelSearchQuery } from '@/utils/normalizeEntitySearchQuery';
 import { getDefaultQSliderRange } from '@/utils/getDefaultQSliderRange';
+import { useTufHelperLiteDownloadedIds, useTufHelperLiteHealth } from '@/hooks/useTufHelperLiteIpc';
 
 const limit = 50;
 
@@ -129,6 +130,9 @@ const LevelPage = ({
   const [searchInput, setSearchInput] = useState(query);
   const [showTagsInCards, setShowTagsInCards] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [showDownloadedOnly, setShowDownloadedOnly] = useState(false);
+  const tufHelperLiteHealth = useTufHelperLiteHealth();
+  const tufHelperLiteDownloadedIds = useTufHelperLiteDownloadedIds();
 
   const showC0V0CurationIcons = useMemo(() => {
     const includedIds = collectFacetDomainIncludedIds(levelFacetFilters.curationTypes);
@@ -139,6 +143,23 @@ const LevelPage = ({
       return hiddenNames.has(name);
     });
   }, [levelFacetFilters.curationTypes, curationTypes]);
+
+  const visibleLevelsData = useMemo(() => {
+    if (!showDownloadedOnly || !levelsData) return levelsData;
+
+    return levelsData.filter((level) => {
+      const levelId = level?.id == null ? '' : String(level.id);
+      return levelId && tufHelperLiteDownloadedIds.levelIdSet.has(levelId);
+    });
+  }, [levelsData, showDownloadedOnly, tufHelperLiteDownloadedIds.levelIdSet]);
+
+  const visibleTotalLevels = showDownloadedOnly ? (visibleLevelsData?.length ?? 0) : totalLevels;
+  const downloadedOnlyCanFindMore =
+    showDownloadedOnly &&
+    tufHelperLiteHealth.isAvailable &&
+    (visibleLevelsData?.length ?? 0) < tufHelperLiteDownloadedIds.levelIds.length;
+  const listHasMore = showDownloadedOnly ? hasMore && downloadedOnlyCanFindMore : hasMore;
+  const listLoader = showDownloadedOnly && !loadingMore ? null : <div className="loader loader-relative" />;
 
   // Debounced request runner: filter/query changes wait 500ms before firing
   // and reset the timer + abort any in-flight request when called again.
@@ -424,6 +445,34 @@ const LevelPage = ({
       cancelled = true;
     };
   }, [pageNumber]);
+
+  useEffect(() => {
+    if (!tufHelperLiteHealth.isAvailable && showDownloadedOnly) {
+      setShowDownloadedOnly(false);
+    }
+  }, [tufHelperLiteHealth.isAvailable, showDownloadedOnly]);
+
+  useEffect(() => {
+    if (
+      showDownloadedOnly &&
+      tufHelperLiteHealth.isAvailable &&
+      tufHelperLiteDownloadedIds.levelIds.length > 0 &&
+      levelsData?.length > 0 &&
+      visibleLevelsData?.length === 0 &&
+      listHasMore &&
+      !loadingMore
+    ) {
+      setPageNumber((prevPageNumber) => prevPageNumber + 1);
+    }
+  }, [
+    showDownloadedOnly,
+    tufHelperLiteHealth.isAvailable,
+    tufHelperLiteDownloadedIds.levelIds.length,
+    levelsData?.length,
+    visibleLevelsData?.length,
+    listHasMore,
+    loadingMore,
+  ]);
 
   function handleFilterOpen() {
     setFilterOpen(!filterOpen);
@@ -763,6 +812,19 @@ const LevelPage = ({
               </div>
               )}
             </div>
+            {tufHelperLiteHealth.isAvailable && (
+              <label className="tufhelperlite-downloaded-filter">
+                <input
+                  type="checkbox"
+                  checked={showDownloadedOnly}
+                  onChange={(event) => setShowDownloadedOnly(event.target.checked)}
+                />
+                <span className="tufhelperlite-downloaded-filter__switch" aria-hidden="true" />
+                <span className="tufhelperlite-downloaded-filter__label">
+                  {t('level.settingExp.showDownloadedOnly')}
+                </span>
+              </label>
+            )}
           </div>
             </CollapsibleContent>
           </Collapsible>
@@ -817,7 +879,7 @@ const LevelPage = ({
             </CollapsibleContent>
           </Collapsible>
         </div>
-        <span className="total-search-results">{t('level.totalResults', { count: totalLevels })}</span>
+        <span className="total-search-results">{t('level.totalResults', { count: visibleTotalLevels })}</span>
         <div className="view-mode-section">
           <p>{t('level.settingExp.viewMode')}</p>
           <div className="view-mode-buttons">
@@ -855,17 +917,17 @@ const LevelPage = ({
         {levelsData ? (
         <VirtualList
           style={{ paddingBottom: "7rem", overflow: "visible", position: "relative", zIndex: 5 }}
-          items={levelsData}
+          items={visibleLevelsData}
           defaultItemHeight={viewMode === 'compact' ? 64 : 90}
           customScrollParent={customScrollParent}
           loadingMore={loadingMore}
           loadMore={() => {
-            if (!loadingMore && hasMore && levelsData?.length > 0) {
+            if (!loadingMore && listHasMore && levelsData?.length > 0) {
               setPageNumber((prevPageNumber) => prevPageNumber + 1);
             }
           }}
-          hasMore={hasMore && levelsData.length > 0}
-          loader={<div className="loader loader-relative" />}
+          hasMore={listHasMore && levelsData.length > 0}
+          loader={listLoader}
           endMessage={
             <p className="end-message">
               <b>{t('level.infScroll.end')}</b>
@@ -882,6 +944,7 @@ const LevelPage = ({
             />
           )}
           computeItemKey={(index, l) => l?.id ?? index}
+          stateKey={showDownloadedOnly ? 'levels-downloaded-only' : 'levels-all'}
         />
         ) : (
           <div className="loader-shell loader-shell--tall">

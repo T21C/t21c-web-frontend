@@ -38,6 +38,7 @@
         "passes": "Passes",
         "rating": "Rating",
         "tufHelper": "TUFHelper",
+        "tufHelperLite": "TUFHelperLite",
         "tufExtension": "TUFExtension",
         "tos": "ToS",
         "privacyPolicy": "Privacy Policy",
@@ -75,4 +76,4 @@
   "languages": {
     "comingSoon": "(Coming Soon)"
   }
-} 
+}

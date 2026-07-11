@@ -7,8 +7,10 @@ function normalizeOrigin(input) {
   return raw.replace(/\/+$/, '');
 }
 
-/** API host from env (e.g. https://api.tuforums.com). Path-only routes live in `src/api/routes.ts`. */
-export const API_BASE = normalizeOrigin(import.meta.env.VITE_API_URL);
+/** Development uses Vite's same-origin /v2 proxy; deployed builds call the configured API host directly. */
+export const API_BASE = import.meta.env.DEV
+  ? ''
+  : normalizeOrigin(import.meta.env.VITE_API_URL);
 export const OWN_BASE = normalizeOrigin(import.meta.env.VITE_OWN_URL);
 export const CDN_BASE = normalizeOrigin(import.meta.env.VITE_CDN_URL);
 
@@ -34,7 +36,7 @@ export const CUSTOM_PROFILE_BANNERS_ENABLED = envBool(
 
 export const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY || '';
 
-if (import.meta.env.DEV && !API_BASE) {
+if (import.meta.env.DEV && !import.meta.env.VITE_DEV_API_URL) {
   // eslint-disable-next-line no-console
-  console.error('[env] Missing VITE_API_URL (API_BASE)');
+  console.error('[env] Missing VITE_DEV_API_URL (Vite proxy target)');
 }

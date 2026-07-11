@@ -50,7 +50,8 @@
     "specialDifficulties": "Special Difficulties",
     "curationTypes": "Curation Types",
     "tags": "Tags",
-    "myLikes": "My Likes"
+    "myLikes": "My Likes",
+    "showDownloadedOnly": "Show Downloaded Only"
   },
   "totalResults": "{{count}} Total Results",
   "infScroll": {
@@ -59,4 +60,4 @@
   "loading": {
     "difficulties": "Loading difficulties..."
   }
-} 
+}

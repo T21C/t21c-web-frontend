@@ -9,7 +9,7 @@ import { AddToPackPopup } from "@/components/popups/Packs";
 import { SongPopup } from "@/components/popups/Songs";
 import { ArtistPopup } from "@/components/popups/Artists";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
-import { EditIcon, SteamIcon, DownloadIcon, VideoLinkIcon, PassIcon, LikeIcon, PackIcon, DragHandleIcon, MetronomeIcon, ChartIcon, TimeIcon } from "@/components/common/icons";
+import { EditIcon, SteamIcon, DownloadIcon, VideoLinkIcon, PassIcon, LikeIcon, PackIcon, DragHandleIcon, MetronomeIcon, ChartIcon, TimeIcon, TUFHelperLiteIcon } from "@/components/common/icons";
 import { clampFloat, formatCreatorDisplay } from "@/utils/Utility";
 import { getPrimaryVideoLink } from "@/utils/videoLink";
 import { ABILITIES, hasBit } from "@/utils/Abilities";
@@ -24,6 +24,16 @@ import {
 import { formatAutoTilecountTooltip, formatDuration } from "@/utils/levelHelpers";
 import { Tooltip } from "react-tooltip";
 import MarqueeText from "@/components/common/display/MarqueeText/MarqueeText";
+import {
+  checkTufHelperLiteDownloadedIds,
+  checkTufHelperLiteHealth,
+  checkTufHelperLiteJobs,
+  getTufHelperLiteDownloadState,
+  invokeTufHelperLiteIpc,
+  useTufHelperLiteDownloadedIds,
+  useTufHelperLiteHealth,
+  useTufHelperLiteJobs,
+} from "@/hooks/useTufHelperLiteIpc";
 
 /** Curation type names hidden from the difficulty-arc curation icons */
 const HIDDEN_CURATION_ARC_TYPE_NAMES = new Set(['C0', 'V0']);
@@ -102,6 +112,16 @@ const LevelCard = ({
   const hasSongPopup = (level?.songs && level.songs.length > 0) ? true : false;
   const hasArtistPopup = (level?.artists && level.artists.length > 0) ? true : false;
   const levelDetailTo = level?.id != null ? `/levels/${level.id}` : '#';
+  const tufHelperLiteHealth = useTufHelperLiteHealth();
+  const tufHelperLiteJobs = useTufHelperLiteJobs();
+  const tufHelperLiteDownloadedIds = useTufHelperLiteDownloadedIds();
+  const tufHelperLiteDownload = getTufHelperLiteDownloadState(
+    tufHelperLiteHealth,
+    tufHelperLiteJobs.jobs,
+    tufHelperLiteDownloadedIds.levelIdSet,
+    level,
+    dlLink,
+  );
 
   useBodyScrollLock(showEditPopup || showAddToPackPopup || showSongPopup || showArtistPopup);
 
@@ -121,6 +141,34 @@ const LevelCard = ({
   const handleEditClick = (e) => { e.stopPropagation(); setShowEditPopup(true); };
   const handleAddToPackClick = (e) => { e.stopPropagation(); setShowAddToPackPopup(true); };
   const handleDeleteClick = (e) => { e.stopPropagation(); onDeleteItem?.(packItem); };
+  const handleTufHelperLiteClick = async (e) => {
+    e.stopPropagation();
+
+    if (!tufHelperLiteHealth.isAvailable || !dlLinkValid || tufHelperLiteDownload.state === 'downloading') {
+      return;
+    }
+
+    try {
+      if (level?.id != null) {
+        await invokeTufHelperLiteIpc('level.open-from-id', {
+          id: String(level.id),
+          source: 'tuforums-levels',
+          openAfterDownload: true,
+        });
+      } else {
+        await invokeTufHelperLiteIpc('level.open-from-url', {
+          url: dlLink,
+          source: 'tuforums-levels',
+          openAfterDownload: true,
+        });
+      }
+
+      void checkTufHelperLiteJobs();
+      void checkTufHelperLiteDownloadedIds();
+    } catch {
+      void checkTufHelperLiteHealth();
+    }
+  };
 
   // Determine glow class based on abilities
   const getGlowClass = () => {
@@ -237,6 +285,7 @@ const LevelCard = ({
     showVideo = true, 
     showDownload = true, 
     showSteam = true, 
+    showTufHelperLite = true,
     showAddToPack = false,
     showDelete = false,
     editMarginZero = false
@@ -281,6 +330,24 @@ const LevelCard = ({
           <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
             <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
           </svg>
+        </button>
+      )}
+      {showTufHelperLite && showDownload && dlLinkValid && tufHelperLiteHealth.isAvailable && (
+        <button
+          type="button"
+          className="tufhelperlite-button"
+          onClick={handleTufHelperLiteClick}
+          title={t('level.tufHelperLiteBanner.openWith')}
+          aria-label={t('level.tufHelperLiteBanner.openWith')}
+          disabled={tufHelperLiteDownload.state === 'downloading'}
+          data-available="true"
+          data-state={tufHelperLiteDownload.state}
+          style={{ '--tufhelperlite-progress': `${Math.round(tufHelperLiteDownload.progress * 100)}%` }}
+        >
+          <span className="tufhelperlite-button__icon-stack" aria-hidden="true">
+            <TUFHelperLiteIcon className="tufhelperlite-button__icon tufhelperlite-button__icon--base" size="100%" />
+            <TUFHelperLiteIcon className="tufhelperlite-button__icon tufhelperlite-button__icon--color" size="100%" />
+          </span>
         </button>
       )}
     </div>
@@ -489,7 +556,7 @@ const LevelCard = ({
           <Link className="level-card__link-wrap" to={levelDetailTo} aria-label={getSongDisplayName(level)}>
             {renderLinkContent({ showLikes: false })}
           </Link>
-          {renderDownloadLinks({ showAddToPack: false, editMarginZero: true, showDelete: canEdit })}
+          {renderDownloadLinks({ showAddToPack: false, editMarginZero: true, showDelete: canEdit, showTufHelperLite: true })}
         </div>
 
         {renderPopups()}

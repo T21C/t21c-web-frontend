@@ -1,0 +1,15 @@
+{
+  "tufHelperLiteBanner": {
+    "title": "Ouvrir les niveaux TUF directement dans ADOFAI",
+    "description": "Utilisez le mod TUFHelperLite pour ouvrir les niveaux TUF directement dans ADOFAI en un seul clic. Votre navigateur peut demander l'accès à l'appareil local.",
+    "connect": "Connecter",
+    "connecting": "Connexion...",
+    "openWith": "Ouvrir avec TUFHelperLite",
+    "learnMore": "Télécharger le mod",
+    "neverShow": "Ne plus afficher",
+    "dismiss": "Masquer TUFHelperLite pour cette session",
+    "unavailableTitle": "TUFHelperLite est introuvable",
+    "unavailableDescription": "Vérifiez qu'AdofaiIpc et TUFHelperLite sont installés et qu'ADOFAI est lancé, puis réessayez.",
+    "retry": "Réessayer"
+  }
+}

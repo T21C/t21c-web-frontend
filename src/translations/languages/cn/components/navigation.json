@@ -38,6 +38,7 @@
         "passes": "通关列表",
         "rating": "待评级列表",
         "tufHelper": "TUF Helper",
+        "tufHelperLite": "TUFHelperLite",
         "tos": "服务条款",
         "privacyPolicy": "隐私政策",
         "aboutUs": "关于我们",
@@ -74,4 +75,4 @@
   "languages": {
     "comingSoon": "（即将到来）"
   }
-} 
+}
