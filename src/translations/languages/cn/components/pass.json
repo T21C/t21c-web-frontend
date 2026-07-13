@@ -33,49 +33,141 @@
           }
         },
         "numeric": {
-          "title": "键数（范围）",
-          "intro": "用精确值或比较筛选键数。使用 >、<、>=、<= 指定范围。",
+          "title": "通关数据（范围）",
+          "intro": "可按键数、分数、X-acc（百分比）或倍速筛选。支持精确值和比较运算。使用 >、<、>=、<= 表示范围；多个条件可用逗号（AND）组合。",
           "examples": {
-            "exact": "<b><code>keycount:12</code></b> 或 <b><code>keycount=12</code></b> 精确键数。",
-            "range": "<b><code>keycount:>8, keycount:<12</code></b> 键数在 8 到 12 之间。",
-            "combine": "<b><code>player:Name, keycount:>=13</code></b><br/>与玩家或关卡筛选组合使用。"
+            "exact": "<b><code>keycount:12</code></b> 或 <b><code>score=2500</code></b> 表示精确值。",
+            "range": "<b><code>keycount:>8, keycount:<12</code></b> 筛选键数介于 8 到 12 之间。",
+            "xaccNearPerfect": "<b><code>xacc:>99.9, xacc:<100</code></b> 查找接近 100% 的通关（X-acc 使用百分比，例如 99.95）。",
+            "combine": "<b><code>player:Name, score:>=2000, speed:>1</code></b><br/>可将通关数据与玩家或关卡条件组合使用。"
+          }
+        },
+        "judgements": {
+          "title": "判定数量",
+          "intro": "按各类判定数量筛选通关记录。每个字段对应一种判定类型的数量。",
+          "examples": {
+            "exactCount": "<b><code>perfect:500</code></b> 或 <b><code>toolate=0</code></b> 表示精确判定数量。",
+            "nearPerfect": "<b><code>xacc:>99.9, toolate:0</code></b> 查找接近 100% 精准且没有“太慢！！”判定的通关。",
+            "combine": "<b><code>level.song:hello, eperfect:>100, late:0</code></b><br/>可将判定条件与关卡或 X-acc 条件组合使用。"
           }
         },
         "idsAndShortcuts": {
           "title": "ID 与快捷方式",
           "intro": "跳转到指定通关或按数字玩家 ID 筛选。",
           "examples": {
-            "hashtag": "<b><code>#123</code></b> 在搜索栏输入可直接加载通关 id 123。",
-            "playerId": "<b><code>player.id=456</code></b> 按精确玩家 id 筛选。"
+            "hashtag": "<b><code>#123</code></b> 在搜索栏输入可直接打开通关 ID 123。",
+            "playerId": "<b><code>player.id=456</code></b> 按精确玩家 ID 筛选。"
           }
         },
         "tips": {
           "title": "提示",
-          "intro": "一些有助于避免意外的细节。",
+          "intro": "以下细节可帮助你获得更准确的搜索结果。",
           "bullets": {
             "caseInsensitive": "搜索不区分大小写：“PLAYER”和“player”效果相同。",
-            "spacesAllowed": "值中允许空格：player:Epic player 有效。",
-            "orderDoesNotMatter": "组内条件顺序无关紧要。",
+            "spacesAllowed": "字段值中允许空格，例如：player:Epic player。",
+            "orderDoesNotMatter": "组内条件顺序无关紧要：player:foo, video:bar 与 video:bar, player:foo 等价。",
             "groupingMentalModel": "可理解为 (A AND B) OR (C AND D)：逗号构建 AND 组，| 分割 OR 组。",
-            "plainSearch": "无字段前缀时，纯文本会搜索玩家名、关卡歌曲/艺术家、视频链接等。"
+            "plainSearch": "没有字段前缀时，会搜索玩家名称、关卡歌曲、艺术家、视频链接等内容。"
           }
         }
       },
       "fields": {
-        "operatorColon": { "title": "部分匹配", "desc": "使用 : 进行部分匹配（例：player:yo）。" },
-        "operatorEquals": { "title": "完全匹配", "desc": "使用 = 进行完全匹配（例：player=yoon）。" },
-        "operatorComma": { "title": "组内 AND", "desc": "用逗号分隔的条件在同一组内必须全部满足。" },
-        "operatorPipe": { "title": "组间 OR", "desc": "使用 | 分割 OR 组，任一组匹配即包含。" },
-        "operatorNot": { "title": "NOT（排除）", "desc": "以 \\! 为前缀可排除包含该词的结果。" },
-        "player": { "title": "玩家名称", "desc": "按玩家显示名或用户名筛选。" },
-        "playerId": { "title": "玩家 ID", "desc": "按数字玩家 id 筛选（完全匹配）。" },
-        "video": { "title": "视频链接", "desc": "按视频 URL 文本筛选。" },
-        "vidtitle": { "title": "视频标题", "desc": "按通关视频标题筛选。" },
-        "levelSong": { "title": "关卡歌曲", "desc": "按关联关卡歌曲名筛选。" },
-        "levelArtist": { "title": "关卡艺术家", "desc": "按关联关卡艺术家名筛选。" },
-        "levelDlLink": { "title": "关卡下载链接", "desc": "按关联关卡下载链接文本筛选。" },
-        "keycount": { "title": "键数", "desc": "按键数筛选，支持精确值和范围。" },
-        "hashtag": { "title": "通关 ID（快捷）", "desc": "在搜索栏输入 <code>#123</code> 可直接加载通关 id 123。" }
+        "operatorColon": {
+          "title": "部分匹配",
+          "desc": "使用 : 进行部分匹配（例如：player:yo）。"
+        },
+        "operatorEquals": {
+          "title": "完全匹配",
+          "desc": "使用 = 进行完全匹配（例如：player=yoon）。"
+        },
+        "operatorComma": {
+          "title": "组内 AND",
+          "desc": "使用逗号分隔多个条件，要求同一组内所有条件都满足。"
+        },
+        "operatorPipe": {
+          "title": "组间 OR",
+          "desc": "使用 | 将查询拆分为多个 OR 组，只要任一组匹配即可。"
+        },
+        "operatorNot": {
+          "title": "NOT（排除）",
+          "desc": "在条件前加上 \\! 可排除包含该内容的结果。"
+        },
+        "player": {
+          "title": "玩家名称",
+          "desc": "按玩家显示名称或用户名筛选。"
+        },
+        "playerId": {
+          "title": "玩家 ID",
+          "desc": "按数字玩家 ID 筛选（完全匹配）。"
+        },
+        "video": {
+          "title": "视频链接",
+          "desc": "按视频 URL 文本筛选。"
+        },
+        "vidtitle": {
+          "title": "视频标题",
+          "desc": "按通关视频标题筛选。"
+        },
+        "levelSong": {
+          "title": "关卡歌曲",
+          "desc": "按关联关卡歌曲名称筛选。"
+        },
+        "levelArtist": {
+          "title": "关卡艺术家",
+          "desc": "按关联关卡艺术家名称筛选。"
+        },
+        "levelDlLink": {
+          "title": "关卡下载链接",
+          "desc": "按关联关卡下载链接文本筛选。"
+        },
+        "keycount": {
+          "title": "键数",
+          "desc": "按键数筛选，支持精确值和范围。"
+        },
+        "score": {
+          "title": "分数",
+          "desc": "按通关分数（scoreV2）筛选，支持精确值和范围。"
+        },
+        "xacc": {
+          "title": "X-acc（准确率 %）",
+          "desc": "按扩展准确率（百分比）筛选（例如 99.95，而不是 0.9995），支持精确值和范围。"
+        },
+        "speed": {
+          "title": "倍速",
+          "desc": "按游戏倍速筛选，支持精确值和范围。"
+        },
+        "eperfect": {
+          "title": "稍快！",
+          "desc": "按“稍快！”判定数量筛选。"
+        },
+        "perfect": {
+          "title": "完美！",
+          "desc": "按“完美！”判定数量筛选。"
+        },
+        "lperfect": {
+          "title": "稍慢！",
+          "desc": "按“稍慢！”判定数量筛选。"
+        },
+        "early": {
+          "title": "太快！",
+          "desc": "按“太快！”判定数量筛选。"
+        },
+        "miss": {
+          "title": "太快！！",
+          "desc": "按“太快！！”判定数量筛选。"
+        },
+        "late": {
+          "title": "太慢！",
+          "desc": "按“太慢！”判定数量筛选。"
+        },
+        "toolate": {
+          "title": "太慢！！",
+          "desc": "按“太慢！！”判定数量筛选。"
+        },
+        "hashtag": {
+          "title": "通关 ID（快捷方式）",
+          "desc": "在搜索栏输入 <code>#123</code> 可直接打开通关 ID 123。"
+        }
       }
     },
     "sections": {
@@ -84,8 +176,8 @@
         "description": "你可以使用两个不同的运算符搜索特定字段：冒号（:）表示部分匹配，等号（=）表示完全匹配。",
         "examples": {
           "title": "字段示例",
-          "playerField": "使用“player:Name”进行部分匹配或使用“player=Name”进行完全匹配",
-          "videoField": "使用“video:Link”进行部分匹配或使用“video=Link”进行完全匹配"
+          "playerField": "使用“player:Name”进行部分匹配，或使用“player=Name”进行完全匹配。",
+          "videoField": "使用“video:Link”进行部分匹配，或使用“video=Link”进行完全匹配。"
         }
       },
       "operators": {
@@ -93,19 +185,33 @@
         "description": "你可以使用运算符组合多个搜索条件。",
         "examples": {
           "title": "运算符示例",
-          "and": "搜索同时符合两个条件（和）的通关记录",
-          "or": "搜索符合任一条件（或）的通关记录",
-          "complex": "结合“与”和“或”条件的复杂搜索"
+          "and": "搜索同时满足两个条件（AND）的通关记录。",
+          "or": "搜索满足任一条件（OR）的通关记录。",
+          "complex": "组合使用 AND 与 OR 的复杂搜索。"
+        }
+      },
+      "numeric": {
+        "title": "键数筛选",
+        "description": "使用 keycount: 按键数筛选通关记录。可使用 >、<、>= 或 <= 表示范围。同一搜索组内可使用逗号组合多个条件（AND）。",
+        "examples": {
+          "title": "键数示例",
+          "exact": "精确键数（也支持 keycount=12）",
+          "range": "键数严格介于 8 和 12 之间（使用 >= 或 <= 表示包含边界）",
+          "min": "键数至少为 13",
+          "combine": "与玩家/歌曲筛选组合，例如：player:Name, keycount:>=13"
+        },
+        "fields": {
+          "keycount": "本次通关使用的键数"
         }
       },
       "tips": {
         "title": "搜索技巧",
         "points": {
-          "caseSensitive": "搜索不区分大小写 - “PLAYER”和“player”将给出相同的结果",
-          "partial": "冒号（:）允许部分匹配 - “player:yo”将匹配“yoonsu”和“yoon”",
-          "exact": "等号（=）要求完全匹配 - “player=yoon” 只会匹配 “yoon”",
-          "spaces": "搜索词中允许使用空格 - “player:Epic player” 有效",
-          "order": "每个组中的条件顺序并不重要"
+          "caseSensitive": "搜索不区分大小写——“PLAYER”和“player”得到的结果相同。",
+          "partial": "冒号（:）支持部分匹配——“player:yo”可匹配“yoonsu”和“yoon”。",
+          "exact": "等号（=）要求完全匹配——“player=yoon”只会匹配“yoon”。",
+          "spaces": "搜索词中允许空格——“player:Epic player”有效。",
+          "order": "每个组内条件的顺序不会影响搜索结果。"
         }
       }
     }

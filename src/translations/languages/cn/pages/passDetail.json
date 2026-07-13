@@ -43,16 +43,22 @@
       "label": "体感难度",
       "value": "{{rating}}",
       "none": "无"
+    },
+    "expectedRating": {
+      "label": "预期难度",
+      "value": "{{rating}}",
+      "none": "无"
     }
   },
   "flags": {
     "worldsFirst": "WF",
     "worldsFirstPP": "WF PP",
+    "keyCount": "{{count}}键",
     "12k": "12键",
     "16k": "16键",
     "noHoldTap": "非默认长按设置",
     "adofaiV2": "<adofaiicon></adofaiicon> v2",
-    "adofaiV2Note": "Recorded on ADOFAI v2"
+    "adofaiV2Note": "录制于 ADOFAI v2"
   },
   "judgements": {
     "title": "判定",
@@ -90,7 +96,7 @@
   "video": {
     "notAvailable": {
       "text": "无视频",
-      "watchOnYoutube": "在 Youtube 或 Bilibili 上观看"
+      "watchOnYoutube": "在 YouTube 或 Bilibili 上观看"
     }
   },
   "buttons": {
@@ -124,4 +130,4 @@
     "updateFeelingRating": "体感难度更新失败",
     "feelingRatingRequired": "体感难度不能为空"
   }
-} 
+}

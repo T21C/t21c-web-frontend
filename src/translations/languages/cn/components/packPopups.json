@@ -49,7 +49,7 @@
     "icon": {
       "label": "地图包图标",
       "placeholder": "https://example.com/icon.png",
-      "help": "可选：为你的地图包选择一个图标",
+      "help": "可选：上传一张图片作为地图包图标",
       "upload": "上传图标",
       "remove": "删除",
       "removing": "删除中……"
@@ -135,7 +135,7 @@
     "transferOwnership": {
       "label": "更改所有者",
       "currentOwner": "当前所有者",
-      "placeholder": "按名称或昵称搜索……",
+      "placeholder": "按用户名或昵称搜索……",
       "searching": "搜索中……",
       "noResults": "未找到用户",
       "selected": "已选中",
@@ -168,7 +168,7 @@
     "estimatedSize": "预计大小：",
     "estimatedSuffix": "（预计：缺少 {{count}} 个大小元数据）",
     "estimatedMayBeLarger": "部分关卡缺少大小元数据，最终下载可能会比预计更大。",
-    "processing": "正在处理……在我们正在准备下载时请稍等。",
+    "processing": "正在处理……请稍候，我们正在准备下载。",
     "processingSubtext": "这可能需要一些时间，具体取决于地图包的总大小。",
     "ready": "下载准备就绪！点击下方按钮以下载。",
     "readySubtext": "链接失效于{{expiresAt}}。",

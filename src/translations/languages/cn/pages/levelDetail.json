@@ -24,8 +24,8 @@
   },
   "tooltips": {
     "loginRequired": "登录以收藏此关卡",
-    "editDisabled": "此关卡有超过两个采音师。如果你认为自己应该是​所有者，请联系管理员。"
-    },
+    "editDisabled": "此关卡有超过两个采音师。如果你认为自己应该是所有者，请联系管理员。"
+  },
   "links": {
     "download": "下载关卡",
     "workshop": "在创意工坊上查看",
@@ -34,7 +34,7 @@
       "goToVideo": "跳转到视频"
     }
   },
-    "aliases": {
+  "aliases": {
     "header": "别名"
   },
   "artists": {
@@ -60,7 +60,7 @@
     "totalClears": {
       "label": "总通关次数",
       "value": "{{count}}",
-      "tooltip": " 共 {{total}} 次，共 {{unique}} 人"
+      "tooltip": "共 {{total}} 次，共 {{unique}} 人"
     },
     "waiting": "加载中……"
   },
@@ -90,7 +90,7 @@
       "time": "按通过日期排序",
       "accuracy": "按精准度排序",
       "score": "按分数排序",
-      "speed": "按飙速速度排序"
+      "speed": "按飙速排序"
     },
     "dedupe": {
       "label": "隐藏重复通关"
@@ -110,7 +110,7 @@
   },
   "messages": {
     "liked": "已收藏！",
-    "unliked": "取消收藏"
+    "unliked": "已取消收藏"
   },
   "rerateHistory": {
     "header": "重评历史",
@@ -169,4 +169,4 @@
   "tournamentAppearance": {
     "header": "赛事收录"
   }
-} 
+}

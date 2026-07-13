@@ -40,6 +40,7 @@
         "accuracy": "精准度",
         "difficulty": "难度",
         "speed": "飙速速度",
+        "keyCount": "键数",
         "random": "随机"
       }
     },

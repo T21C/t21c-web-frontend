@@ -2,13 +2,13 @@
   "title": "提交通关记录",
   "thumbnailInfo": "视频信息会显示在此处",
   "submInfo": {
-    "levelId": "关卡 ID",
-    "altname": "排行榜名称（选填）",
+    "levelId": "搜索关卡或输入 ID",
+    "altname": "排行榜名称",
     "nohold": "非默认长按设置",
-    "speed": "飙速（选填；需≥1.0）",
+    "speed": "飙速（选填，≥1.0）",
+    "keyCount": "键数（选填）",
     "feelDiff": "体感难度",
-    "is12K": "12键",
-    "is16K": "16键",
+    "expectedDiff": "预期难度（选填）",
     "isAdofaiV2": "ADOFAI v2"
   },
   "levelInfo": {
@@ -19,16 +19,16 @@
   "levelFetching": {
     "input": "输入 ID",
     "fetching": "获取中……",
-    "goto": "跳转到关卡",
+    "goto": "前往关卡",
     "notfound": "未找到关卡"
   },
   "videoInfo": {
     "videoLink": "YouTube 或哔哩哔哩视频链接",
-    "title": "视频标题",
-    "channel": "UP主名称",
+    "title": "标题",
+    "channel": "频道",
     "timestamp": "上传时间",
     "nolink": "请输入有效的 YouTube 或哔哩哔哩视频链接",
-    "resolving": "正在解析视频链接…",
+    "resolving": "正在解析视频链接……",
     "linkResolved": "短链接已解析为哔哩哔哩链接"
   },
   "judgements": {
@@ -41,15 +41,15 @@
   },
   "acc": "精准度：",
   "scoreCalc": "分数：",
-  "holdTooltip": "如果你没有使用“标准”长按设置，请勾选此项",
-  "12kTooltip": "如果你使用了12键及以下通过本关卡，请勾选此项",
-  "16kTooltip": "如果你使用了16键及以上通过本关卡，请勾选此项",
-  "adofaiV2Tooltip": "Check this if the clear was recorded on ADOFAI v2",
-  "tooltip": "输入1到10之间的任意整数",
+  "holdTooltip": "如果本次通关使用了不同的长按判定方式（例如无需长按），请勾选此项。",
+  "keyCountTooltip": "本次通关使用的键数。U 和 UQ 难度为必填项。",
+  "feelingTooltip": "填写你个人感受到的难度，例如 G1-G5、17~18+、U1 等。",
+  "expectedTooltip": "填写你认为本关卡应评级的难度（选填），格式与体感难度相同。",
+  "adofaiV2Tooltip": "如果本次通关录制于 ADOFAI v2，请勾选此项。",
   "alert": {
     "success": "通关记录提交成功！",
     "error": "错误：",
-    "login": "上传通关记录前请先登录",
+    "login": "请先登录后再提交通关记录",
     "form": "请正确填写所有必填项",
     "more": "另有 {{count}} 项"
   },
@@ -59,33 +59,34 @@
     "player": "玩家",
     "speed": "飙速",
     "feelingRating": "体感难度",
+    "expectedRating": "预期难度",
+    "keyCount": "键数",
     "ePerfect": "稍快！",
     "perfect": "完美！",
     "lPerfect": "稍慢！",
     "tooEarly": "太快！！",
     "early": "太快！",
     "late": "太慢！",
-    "rulesAccepted": "已阅读规则",
-    "keyMode": "12键/16键"
+    "rulesAccepted": "已接受规则"
   },
   "score": {
     "needId": "输入关卡 ID",
     "needJudg": "输入判定",
-    "needInfo": "输入所有必填项",
+    "needInfo": "输入所有必填信息",
     "noInfo": "无可用信息"
   },
   "warnings": {
-    "pendingProfiles": "将请求创建此个人资料："
+    "pendingProfiles": "将请求创建以下个人资料："
   },
   "rules": {
-    "checkbox": "我已阅读并确认已遵守",
-    "rulesLink": "提交规则和指南"
+    "checkbox": "我已阅读并确认遵守",
+    "rulesLink": "规则与指南"
   },
   "tilecountMismatch": {
-    "title": "判定总和与可达成 tile 数量不一致",
-    "body": "该关卡谱面有 <b>{{tilecount}}</b> 个可达成 tile。你的判定总和为 <b>{{hitSum}}</b>。这些数值可能有误。",
-    "bodyWithAuto": "该关卡谱面共有 <b>{{rawTilecount}}</b> 个 tile（<b>{{autoTileCount}}</b> 个自动），因此预期 <b>{{tilecount}}</b> 个判定。你的判定总和为 <b>{{hitSum}}</b>。这些数值可能有误。",
+    "title": "判定总数与可达成 Tile 数量不一致",
+    "body": "该关卡谱面共有 <b>{{tilecount}}</b> 个可达成 Tile，而你的判定总数为 <b>{{hitSum}}</b>。这些数值可能有误。",
+    "bodyWithAuto": "该关卡谱面共有 <b>{{rawTilecount}}</b> 个 Tile（其中 <b>{{autoTileCount}}</b> 个为自动 Tile），因此预期应有 <b>{{tilecount}}</b> 个判定。你的判定总数为 <b>{{hitSum}}</b>，这些数值可能有误。",
     "reviewInputs": "取消",
-    "submitAnyway": "仍要提交"
+    "submitAnyway": "仍然提交"
   }
-} 
+}

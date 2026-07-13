@@ -1,7 +1,7 @@
 {
   "close": "关闭",
   "modes": {
-    "update": "基本",
+    "update": "更新",
     "profile": "资料",
     "user": "用户",
     "merge": "合并",
@@ -15,48 +15,49 @@
     },
     "verificationStatus": {
       "label": "认证状态",
-      "placeholder": "选择"
+      "placeholder": "选择状态"
     },
     "uploadConditions": {
       "label": "谱面上传条件",
-      "placeholder": "可选的条件说明（例如，何时允许上传）。最多 2000 字符。"
+      "placeholder": "给谱面制作者的可选说明（例如你接受上传的条件）。最多 2000 个字符。"
     },
     "aliases": {
       "label": "别名",
-      "placeholder": "输入要添加的别名",
+      "placeholder": "添加别名",
       "add": "添加"
     },
-    "updateButton": "保存并更新"
+    "updateButton": "更新创作者"
   },
   "profile": {
-    "intro": "管理该创作者在公开资料页头部的展示方式。",
+    "intro": "管理该创作者在公开资料页顶部的显示方式。",
     "headerBadges": {
-      "title": "头部勋章",
-      "hint": "选择要在资料页头部显示的谱面类型（最多 5 个）。更改会立即保存。",
-      "selectorLabel": "显示的勋章类型",
-      "loading": "正在加载勋章数据……",
-      "noPermission": "您没有权限编辑该创作者的资料页头部勋章。"
+      "title": "顶部徽章",
+      "hint": "选择显示在资料页顶部的精选类型（最多五个位置）。更改会立即保存。",
+      "selectorLabel": "显示的徽章类型",
+      "loading": "正在加载徽章数据……",
+      "noPermission": "你没有权限编辑该创作者资料页顶部徽章。"
     }
   },
   "user": {
     "linked": {
-      "label": "当前已绑定用户",
+      "label": "当前绑定用户",
       "idLabel": "ID：",
-      "unassignButton": "解绑",
-      "unassignConfirm": "确定解除用户和创作者的绑定关系？",
-      "unassignYes": "解绑",
+      "unknownUser": "已绑定用户账号",
+      "unassignButton": "解除用户绑定",
+      "unassignConfirm": "确定解除该用户与创作者之间的绑定？",
+      "unassignYes": "确定解除绑定",
       "unassignCancel": "取消"
     },
     "search": {
       "label": "搜索玩家",
       "placeholder": "输入玩家名称或昵称……",
-      "hint": "键入以搜索要与该创作者绑定的玩家。",
-      "noResults": "无匹配结果。",
-      "alreadyLinked": "已于另一创作者绑定",
-      "assignButton": "绑定"
+      "hint": "开始输入以搜索要分配给该创作者的玩家。",
+      "noResults": "没有符合搜索条件的玩家。",
+      "alreadyLinked": "已绑定到其他创作者",
+      "assignButton": "分配"
     },
     "discordFallback": {
-      "label": "或通过 Discord 用户 ID 绑定",
+      "label": "或通过 Discord ID 分配",
       "placeholder": "输入 Discord 用户 ID",
       "lookupButton": "查询"
     }
@@ -65,12 +66,12 @@
     "currentUser": {
       "label": "当前用户",
       "avatarAlt": "用户头像",
-      "idLabel": "ID:",
-      "unlinkButton": "解绑用户"
+      "idLabel": "ID：",
+      "unlinkButton": "解除用户绑定"
     },
     "discordId": {
       "label": "Discord ID",
-      "placeholder": "输入 Discord 用户 ID",
+      "placeholder": "输入 Discord ID",
       "validateButton": "验证"
     },
     "confirm": {
@@ -80,57 +81,57 @@
       "cancelButton": "取消"
     },
     "unlinkConfirm": {
-      "message": "你确定解绑此用户吗？",
-      "yesButton": "解绑",
+      "message": "确定解除该用户绑定？",
+      "yesButton": "确定解除绑定",
       "cancelButton": "取消"
     }
   },
   "merge": {
     "warning": {
       "title": "警告：",
-      "message": "这将删除 {{creatorName}} 并重新绑定所有谱面至此创作者。此操作不可撤销。"
+      "message": "这将删除 {{creatorName}}，并将所有署名贡献重新分配给选中的创作者。此操作无法撤销。"
     },
     "selectTarget": {
       "label": "选择目标创作者",
-      "placeholder": "搜索目标创作者……",
-      "noOptions": "无匹配结果"
+      "placeholder": "搜索并选择目标创作者……",
+      "noOptions": "没有匹配的创作者"
     },
     "mergeButton": "合并创作者",
-    "creatorLabel": "{{name}} （ID：{{id}}，{{count}}个关卡）{{aliases}}"
+    "creatorLabel": "{{name}}（ID：{{id}}，关卡数：{{count}}）{{aliases}}"
   },
   "split": {
     "newNamesAndRoles": {
-      "label": "新创作者名称和身份",
+      "label": "新的创作者名称和角色",
       "namePlaceholder": "输入创作者名称 {{index}}",
-      "rolePlaceholder": "选择身份",
-      "addAnother": "+ 添加更多名称"
+      "rolePlaceholder": "选择角色",
+      "addAnother": "+ 添加其他名称"
     },
     "splitButton": "拆分创作者"
   },
   "superAdminDanger": {
-    "title": "危险操作（超级管理员）",
-    "hint": "以下操作需要超级管理员密码。",
+    "title": "危险区域（超级管理员）",
+    "hint": "这些操作需要超级管理员密码。",
     "passwordPlaceholder": "超级管理员密码",
     "passwordRequired": "请输入超级管理员密码。",
     "purgeButton": "彻底清理创作者资料",
-    "unlinkButton": "仅解除与用户关联",
-    "confirmPurge": "确定彻底清理该创作者？仅由其署名的关卡将被删除；合作谱面将移除其署名。此操作不可撤销。",
-    "confirmUnlink": "仅解除该创作者与其用户账号的关联？创作者行与谱面署名将保留。",
-    "successPurge": "创作者资料已清理。",
-    "successUnlink": "已解除与用户关联。",
-    "purgeFailed": "无法清理创作者。",
-    "unlinkFailed": "无法解除关联。"
+    "unlinkButton": "仅解除用户绑定",
+    "confirmPurge": "确定永久彻底清理该创作者？仅由该创作者单独署名的关卡将被移除，合作署名中的该创作者贡献也会被移除。此操作无法撤销。",
+    "confirmUnlink": "确定只解除该创作者与用户账号的绑定？创作者记录和关卡署名仍会保留。",
+    "successPurge": "创作者资料已彻底清理。",
+    "successUnlink": "创作者已解除用户绑定。",
+    "purgeFailed": "彻底清理创作者资料失败。",
+    "unlinkFailed": "解除创作者绑定失败。"
   },
   "errors": {
-    "loadCreatorsFailed": "创作者加载失败",
-    "updateFailed": "创作者更新失败",
-    "assignFailed": "用户绑定失败",
-    "unassignFailed": "用户解绑失败",
-    "fetchDiscordFailed": "Discord 用户获取失败",
-    "updateDiscordFailed": "Discord 信息获取失败",
-    "unlinkFailed": "用户解绑失败",
-    "mergeFailed": "创作者合并失败",
-    "splitFailed": "创作者拆分失败"
+    "loadCreatorsFailed": "加载创作者失败",
+    "updateFailed": "更新创作者失败",
+    "assignFailed": "分配用户失败",
+    "unassignFailed": "解除用户绑定失败",
+    "fetchDiscordFailed": "获取 Discord 用户失败",
+    "updateDiscordFailed": "更新 Discord 信息失败",
+    "unlinkFailed": "解除用户绑定失败",
+    "mergeFailed": "合并创作者失败",
+    "splitFailed": "拆分创作者失败"
   },
   "player": {
     "titleFallback": "玩家",
@@ -142,50 +143,60 @@
       "merge": "合并"
     },
     "update": {
-      "name": { "label": "显示名称", "placeholder": "输入玩家名称" },
-      "country": { "label": "国家或地区" },
+      "name": {
+        "label": "显示名称",
+        "placeholder": "输入玩家名称"
+      },
+      "country": {
+        "label": "国家或地区"
+      },
       "saveButton": "保存更改"
     },
     "moderation": {
       "ban": "封禁玩家",
       "pause": "暂停提交",
       "ratingBan": "禁止评分",
-      "banConfirm": "确认封禁该玩家？",
-      "unbanConfirm": "确认解封该玩家？",
-      "pauseConfirm": "确认暂停该玩家的提交？",
-      "resumeConfirm": "确认恢复该玩家的提交？",
-      "ratingBanConfirm": "确认禁止该玩家评分？",
-      "ratingUnbanConfirm": "确认允许该玩家再次评分？"
+      "banConfirm": "确定封禁该玩家？",
+      "unbanConfirm": "确定解除该玩家封禁？",
+      "pauseConfirm": "确定暂停该玩家提交？",
+      "resumeConfirm": "确定恢复该玩家提交？",
+      "ratingBanConfirm": "确定禁止该玩家评分？",
+      "ratingUnbanConfirm": "确定允许该玩家再次评分？"
     },
-    "link": { "hint": "为此账号分配或移除关联的创作者资料。" },
+    "link": {
+      "hint": "为该用户账号分配或移除关联的创作者资料。"
+    },
     "merge": {
       "warning": {
         "title": "警告：",
-        "message": "所有通关将转移到目标玩家，{{name}} 将被删除。此操作无法撤销。"
+        "message": "所有通关记录将转移至目标玩家，{{name}} 将被删除。此操作无法撤销。"
       },
-      "understandButton": "我已了解 — 继续",
-      "targetId": { "label": "目标玩家 ID", "placeholder": "输入目标玩家 ID" },
+      "understandButton": "我了解 — 继续",
+      "targetId": {
+        "label": "目标玩家 ID",
+        "placeholder": "输入目标玩家 ID"
+      },
       "mergeButton": "合并玩家"
     },
     "errors": {
-      "updateFailed": "玩家更新失败",
-      "banUpdate": "封禁状态更新失败",
-      "pauseUpdate": "暂停提交更新失败",
-      "ratingBanUpdate": "评分封禁更新失败",
-      "mergeFailed": "玩家合并失败"
+      "updateFailed": "更新玩家失败",
+      "banUpdate": "更新封禁状态失败",
+      "pauseUpdate": "更新暂停提交状态失败",
+      "ratingBanUpdate": "更新评分封禁状态失败",
+      "mergeFailed": "合并玩家失败"
     },
     "success": {
-      "updated": "玩家已更新",
-      "moderation": "管理设置已更新",
+      "updated": "玩家更新成功",
+      "moderation": "管理设置更新成功",
       "merge": "玩家合并成功"
     }
   },
   "success": {
     "updated": "创作者更新成功",
-    "userAssigned": "创作者绑定用户成功",
-    "userUnassigned": "创作者解绑用户成功",
+    "userAssigned": "用户已分配给创作者",
+    "userUnassigned": "用户已解除与创作者的绑定",
     "discordUpdated": "Discord 信息更新成功",
-    "discordUnlinked": "Discord 用户解绑成功",
+    "discordUnlinked": "Discord 用户解除绑定成功",
     "merged": "创作者合并成功",
     "split": "创作者拆分成功"
   }
