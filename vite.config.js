@@ -103,7 +103,7 @@ export default defineConfig(({ command, mode }) => {
         usePolling: true
       },
       proxy: {
-        '^/v2': {
+        '^/v[23]': {
           target: apiUrl || 'http://localhost:3002',
           changeOrigin: true,
           secure: false,

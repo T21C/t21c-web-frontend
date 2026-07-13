@@ -46,7 +46,11 @@ const TournamentPlacementsSection = ({
   useEffect(() => {
     if (collapseInitializedRef.current || !hierarchy.length) return;
     collapseInitializedRef.current = true;
-    setCollapsedSeriesKeys(new Set(hierarchy.map((group) => group.key)));
+    setCollapsedSeriesKeys(
+      new Set(
+        hierarchy.filter((group) => group.series).map((group) => group.key),
+      ),
+    );
     setCollapsedTournamentKeys(
       new Set(hierarchy.flatMap((group) => group.tournaments.map((tournament) => tournament.key))),
     );
@@ -72,15 +76,73 @@ const TournamentPlacementsSection = ({
     });
   };
 
-  const resolveSeriesLabel = (seriesGroup) => {
-    if (seriesGroup.series?.name) return seriesGroup.series.name;
-    return t("profile.sections.tournaments.unseriesed");
-  };
+  const resolveSeriesLabel = (seriesGroup) =>
+    seriesGroup.series?.name || t("profile.sections.tournaments.unseriesed");
 
   const resolveTournamentLabel = (tournamentGroup) =>
     tournamentGroup.tournament?.fullName ||
     tournamentGroup.tournament?.shortName ||
     t("profile.sections.tournaments.unknownTournament");
+
+  const renderTournamentGroup = (tournamentGroup, { topLevel = false } = {}) => {
+    const tournamentCollapsed = collapsedTournamentKeys.has(tournamentGroup.key);
+    const tournamentExpanded = !tournamentCollapsed;
+    const packHref = resolvePackHref(tournamentGroup.packRef);
+
+    return (
+      <section
+        key={tournamentGroup.key}
+        className={[
+          "tournament-placements__tournament-group",
+          topLevel ? "is-top-level" : "",
+        ]
+          .filter(Boolean)
+          .join(" ")}
+      >
+        <div className="tournament-placements__group-header tournament-placements__tournament-header">
+          <button
+            type="button"
+            className="tournament-placements__tournament-toggle"
+            aria-expanded={tournamentExpanded}
+            onClick={() => toggleTournament(tournamentGroup.key)}
+          >
+            <ChevronIcon
+              direction={tournamentExpanded ? "down" : "right"}
+              className="tournament-placements__group-chevron"
+            />
+            <span className="tournament-placements__group-title">
+              {resolveTournamentLabel(tournamentGroup)}
+            </span>
+            <span className="tournament-placements__group-count">
+              {tournamentGroup.credits.length}
+            </span>
+          </button>
+          {packHref ? (
+            <Link
+              className="tournament-placements__pack-link"
+              to={packHref}
+              title={t("profile.sections.tournaments.openPack")}
+              aria-label={t("profile.sections.tournaments.openPack")}
+            >
+              <PackIcon size="16px" color="var(--color-gray-2)" />
+            </Link>
+          ) : null}
+        </div>
+
+        {tournamentExpanded ? (
+          <div className="tournament-placements__grid">
+            {tournamentGroup.credits.map((credit) => (
+              <TournamentPlacementCard
+                key={getCreditId(credit)}
+                placement={credit}
+                hideTournamentLabel
+              />
+            ))}
+          </div>
+        ) : null}
+      </section>
+    );
+  };
 
   return (
     <section className={`${sectionClassName} tournament-placements`}>
@@ -113,6 +175,13 @@ const TournamentPlacementsSection = ({
           <div className="account-profile-page__collapsible tournament-placements">
             <div className="tournament-placements__hierarchy">
               {hierarchy.map((seriesGroup) => {
+                // Unseriesed tournaments: no "Other tournaments" folder — show as top-level
+                if (!seriesGroup.series) {
+                  return seriesGroup.tournaments.map((tournamentGroup) =>
+                    renderTournamentGroup(tournamentGroup, { topLevel: true }),
+                  );
+                }
+
                 const seriesCollapsed = collapsedSeriesKeys.has(seriesGroup.key);
                 const seriesCreditCount = seriesGroup.tournaments.reduce(
                   (sum, tg) => sum + tg.credits.length,
@@ -142,62 +211,9 @@ const TournamentPlacementsSection = ({
 
                     {seriesExpanded ? (
                       <div className="tournament-placements__series-body">
-                        {seriesGroup.tournaments.map((tournamentGroup) => {
-                          const tournamentCollapsed = collapsedTournamentKeys.has(
-                            tournamentGroup.key,
-                          );
-                          const tournamentExpanded = !tournamentCollapsed;
-                          const packHref = resolvePackHref(tournamentGroup.packRef);
-
-                          return (
-                            <section
-                              key={tournamentGroup.key}
-                              className="tournament-placements__tournament-group"
-                            >
-                              <div className="tournament-placements__group-header tournament-placements__tournament-header">
-                                <button
-                                  type="button"
-                                  className="tournament-placements__tournament-toggle"
-                                  aria-expanded={tournamentExpanded}
-                                  onClick={() => toggleTournament(tournamentGroup.key)}
-                                >
-                                  <ChevronIcon
-                                    direction={tournamentExpanded ? "down" : "right"}
-                                    className="tournament-placements__group-chevron"
-                                  />
-                                  <span className="tournament-placements__group-title">
-                                    {resolveTournamentLabel(tournamentGroup)}
-                                  </span>
-                                  <span className="tournament-placements__group-count">
-                                    {tournamentGroup.credits.length}
-                                  </span>
-                                </button>
-                                {packHref ? (
-                                  <Link
-                                    className="tournament-placements__pack-link"
-                                    to={packHref}
-                                    title={t("profile.sections.tournaments.openPack")}
-                                    aria-label={t("profile.sections.tournaments.openPack")}
-                                  >
-                                    <PackIcon size="16px" color="var(--color-gray-2)" />
-                                  </Link>
-                                ) : null}
-                              </div>
-
-                              {tournamentExpanded ? (
-                                <div className="tournament-placements__grid">
-                                  {tournamentGroup.credits.map((credit) => (
-                                    <TournamentPlacementCard
-                                      key={getCreditId(credit)}
-                                      placement={credit}
-                                      hideTournamentLabel
-                                    />
-                                  ))}
-                                </div>
-                              ) : null}
-                            </section>
-                          );
-                        })}
+                        {seriesGroup.tournaments.map((tournamentGroup) =>
+                          renderTournamentGroup(tournamentGroup),
+                        )}
                       </div>
                     ) : null}
                   </section>

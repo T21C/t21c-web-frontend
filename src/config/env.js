@@ -7,7 +7,7 @@ function normalizeOrigin(input) {
   return raw.replace(/\/+$/, '');
 }
 
-/** Development uses Vite's same-origin /v2 proxy; deployed builds call the configured API host directly. */
+/** Development uses Vite's same-origin /v2|/v3 proxy; deployed builds call the configured API host directly. */
 export const API_BASE = import.meta.env.DEV
   ? ''
   : normalizeOrigin(import.meta.env.VITE_API_URL);

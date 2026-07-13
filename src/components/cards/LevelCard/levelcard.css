@@ -874,7 +874,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem;
-  min-width: 20rem;
+  min-width: 15rem;
   width: 100%;
   overflow: hidden;
 }

@@ -601,8 +601,8 @@
 }
 
 .tournament-management-popup__tier-thumb {
-  width: 24px;
-  height: 24px;
+  width: 4rem;
+  height: 4rem;
   object-fit: contain;
   border-radius: 0.25rem;
   flex-shrink: 0;
@@ -684,6 +684,8 @@
 .tournament-management-popup__asset-slot-wrap {
   display: flex;
   flex-direction: column;
+  width: 100%;
+  height: 100%;
   gap: 0.35rem;
   align-items: flex-start;
 }
@@ -726,8 +728,8 @@
 }
 
 .tournament-management-popup__asset-slot--card {
-  width: 160px;
-  height: 54px;
+  width: 100%;
+  height: 4rem;
 }
 
 .tournament-management-popup__asset-slot--reward {
