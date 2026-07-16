@@ -24,6 +24,9 @@ function add(accumulator, a) {
 export const SCORE_V2_ZERO_MISS_MULTIPLIER = 1.1
 
 export const getScoreV2Mtp = (inputs) => {
+    if (!inputs || !Array.isArray(inputs)) {
+        return SCORE_V2_ZERO_MISS_MULTIPLIER
+    }
     const misses = inputs[0]
     const tiles = arraySum(inputs.slice(1))
     if (!misses){
@@ -70,14 +73,8 @@ const getXaccMtp = (inp, baseScore, curveOverrides) => {
 }
     
 
-const getSpeedMtp = (SPEED, isDesBus=false)=>{
-    if (isDesBus){
-        if (!SPEED || SPEED == 1)
-            return 1
-        else if (SPEED > 1){
-            return Math.max(2 - SPEED, 0)}
-    }
-
+/** Standard speed multiplier (Marathon / desync-bus branch removed). */
+export const getSpeedMtp = (SPEED) => {
     if (!SPEED || SPEED == 1){
         return 1}
     if (SPEED < 1){
@@ -91,27 +88,37 @@ const getSpeedMtp = (SPEED, isDesBus=false)=>{
     return 1
 }
 
+/** Prefer level override, else difficulty baseScore; PP uses ppBaseScore at 100% xacc. */
+export function resolveScoreBase(levelData, accuracy, difficultyDict = {}) {
+    if (
+        accuracy === 1 &&
+        levelData?.ppBaseScore != null &&
+        Number.isFinite(levelData.ppBaseScore)
+    ) {
+        return levelData.ppBaseScore
+    }
+    if (levelData?.baseScore != null && Number.isFinite(levelData.baseScore)) {
+        return levelData.baseScore
+    }
+    const fromLevelDiff = levelData?.difficulty?.baseScore
+    if (fromLevelDiff != null && Number.isFinite(fromLevelDiff)) {
+        return fromLevelDiff
+    }
+    const fromDict = difficultyDict?.[levelData?.diffId]?.baseScore
+    if (fromDict != null && Number.isFinite(fromDict)) {
+        return fromDict
+    }
+    return 0
+}
+
 const getScore = (passData, levelData, difficultyDict = {}) => {
-    const speed = passData['speed']
-    const inputs = passData['judgements']
+    const speed = Number.isFinite(passData?.speed) ? passData.speed : 1
+    const inputs = passData?.judgements
     const accuracy = calcAcc(inputs)
-    const diff = difficultyDict[levelData?.diffId]
-    const base = 
-    accuracy === 1 && levelData.ppBaseScore ? levelData.ppBaseScore :
-    levelData.baseScore ? levelData.baseScore
-    : diff?.baseScore || 0;
+    const base = resolveScoreBase(levelData, accuracy, difficultyDict)
     const xaccMtp = getXaccMtp(inputs, base, resolveXaccCurveForLevelData(levelData))
-    var speedMtp = 0
-    var score = 0
-    if (diff?.name == "Marathon"){
-        speedMtp = getSpeedMtp(speed, true)
-        score = Math.max(base * xaccMtp * speedMtp, 0)
-    }
-    else {
-        speedMtp = getSpeedMtp(speed)
-        score = base * xaccMtp * speedMtp
-    }
-    return score
+    const speedMtp = getSpeedMtp(speed)
+    return base * xaccMtp * speedMtp
 }
 
 

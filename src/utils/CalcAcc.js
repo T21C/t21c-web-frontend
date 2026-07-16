@@ -10,12 +10,18 @@ function add(accumulator, a) {
 
 export default function calcAcc (inp, raw=true)
     {
-        
+        if (!inp || !Array.isArray(inp) || inp.length === 0) {
+            return 0
+        }
+        const total = arraySum(inp)
+        if (!total) {
+            return 0
+        }
         const result = (inp[3] +
             (inp[2] + inp[4]) * 0.75 +
             (inp[1] + inp[5]) * 0.4 +
             (inp[0]) * 0.2)
-           / arraySum(inp)
+           / total
         if (raw){
             return result
         }
