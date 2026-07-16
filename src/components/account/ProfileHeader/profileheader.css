@@ -56,7 +56,7 @@
 .profile-header__banner-wrap {
   position: relative;
   z-index: 0;
-  width: 100%;
+  width: 100.1%;
   height: var(--profile-header-banner-height);
   overflow: hidden;
   border-radius: 10px 10px 0 0;
