@@ -3,14 +3,27 @@
  * server/src/misc/utils/pass/scoreService.ts
  */
 import calcAcc from './CalcAcc.js'
-import { getScoreV2, resolveScoreBase } from './CalcScore.js'
+import { getScoreV2 } from './CalcScore.js'
+
+/**
+ * @param {unknown} value
+ * @returns {number | null}
+ */
+function finiteBaseScoreOrNull(value) {
+    return value != null && Number.isFinite(value) ? value : null
+}
 
 /**
  * @param {object | null | undefined} level
  * @param {object} [overrides]
+ * @param {object} [difficultyDict]
  * @returns {object}
  */
-export function buildLevelScoreContext(level = {}, overrides = {}) {
+export function buildLevelScoreContext(
+    level = {},
+    overrides = {},
+    difficultyDict = {},
+) {
     const xaccCurveMeta = Object.prototype.hasOwnProperty.call(
         overrides,
         'xaccCurveMeta',
@@ -18,7 +31,12 @@ export function buildLevelScoreContext(level = {}, overrides = {}) {
         ? overrides.xaccCurveMeta
         : (level?.xaccCurveMeta ?? null)
 
+    const diffId = level?.diffId ?? overrides.diffId
     const difficulty = overrides.difficulty ?? level?.difficulty ?? null
+    const fromDict = difficultyDict?.[diffId] ?? null
+    const difficultyBaseScore =
+        finiteBaseScoreOrNull(difficulty?.baseScore) ??
+        finiteBaseScoreOrNull(fromDict?.baseScore)
 
     return {
         ...level,
@@ -31,18 +49,13 @@ export function buildLevelScoreContext(level = {}, overrides = {}) {
             overrides.ppBaseScore !== undefined
                 ? overrides.ppBaseScore
                 : (level?.ppBaseScore ?? null),
-        difficulty: difficulty
-            ? {
-                  name: difficulty.name,
-                  baseScore:
-                      difficulty.baseScore != null &&
-                      Number.isFinite(difficulty.baseScore)
-                          ? difficulty.baseScore
-                          : 0,
-              }
-            : { baseScore: 0 },
+        difficulty: {
+            name: difficulty?.name ?? fromDict?.name,
+            // null when missing/non-numeric — last-resort source; 0 is allowed
+            baseScore: difficultyBaseScore,
+        },
         xaccCurveMeta,
-        diffId: level?.diffId ?? overrides.diffId,
+        diffId,
     }
 }
 
@@ -89,13 +102,13 @@ export function computePassScoreV2(
     overrides = {},
     difficultyDict = {},
 ) {
-    const lvl = buildLevelScoreContext(level, overrides)
+    const lvl = buildLevelScoreContext(level, overrides, difficultyDict)
     const normalized = normalizePassScoreInput(pass)
     const accuracy = calcAcc(normalized.judgements)
-    const resolvedBase = resolveScoreBase(lvl, accuracy, difficultyDict)
-    if (resolvedBase === 0) {
+    // Difficulty is the last baseScore source; 0 is valid — only warn on non-numbers.
+    if (!Number.isFinite(lvl.difficulty?.baseScore)) {
         normalized.warnings.push(
-            'baseScore resolved to 0 (level/difficulty baseScore missing)',
+            'difficulty.baseScore missing/invalid (last baseScore source)',
         )
     }
     if (normalized.warnings.length) {

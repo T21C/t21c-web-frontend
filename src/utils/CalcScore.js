@@ -90,7 +90,7 @@ export const getSpeedMtp = (SPEED) => {
 
 /**
  * Prefer level override, else difficulty baseScore; PP uses ppBaseScore at 100% xacc.
- * `0` is treated as unset (same as SQL NULLIF / `level.baseScore || difficulty.baseScore`).
+ * Level/pp `0` is unset (NULLIF); difficulty `0` is a valid last-resort base.
  */
 export function resolveScoreBase(levelData, accuracy, difficultyDict = {}) {
     if (
@@ -109,15 +109,11 @@ export function resolveScoreBase(levelData, accuracy, difficultyDict = {}) {
         return levelData.baseScore
     }
     const fromLevelDiff = levelData?.difficulty?.baseScore
-    if (
-        fromLevelDiff != null &&
-        Number.isFinite(fromLevelDiff) &&
-        fromLevelDiff > 0
-    ) {
+    if (fromLevelDiff != null && Number.isFinite(fromLevelDiff)) {
         return fromLevelDiff
     }
     const fromDict = difficultyDict?.[levelData?.diffId]?.baseScore
-    if (fromDict != null && Number.isFinite(fromDict) && fromDict > 0) {
+    if (fromDict != null && Number.isFinite(fromDict)) {
         return fromDict
     }
     return 0
