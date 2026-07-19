@@ -16,15 +16,15 @@
   "valueLabels": {
     "rankedScore": "排位分数",
     "generalScore": "全局分数",
-    "ppScore": "PP 分数",
+    "ppScore": "完美无瑕分数",
     "wfScore": "世界首通分数",
-    "wfPPScore": "世界首通 PP 分数",
+    "wfPPScore": "世界首通杀分数",
     "score12K": "12键分数",
     "averageXacc": "平均X精准度",
     "totalPasses": "总击破数",
     "universalPassCount": "U通关数",
     "worldsFirstCount": "世界首通数",
-    "worldsFirstPPCount": "世界首通 PP 数",
+    "worldsFirstPPCount": "世界首杀数",
     "topDiff": "最高通关难度",
     "top12kDiff": "最高12键通关难度",
     "totalScoreV2": "总分",
@@ -48,13 +48,13 @@
   },
   "sections": {
     "tournaments": {
-      "title": "锦标赛",
-      "expand": "展开锦标赛",
-      "collapse": "收起锦标赛",
+      "title": "赛事",
+      "expand": "展开赛事",
+      "collapse": "收起赛事",
       "withdrew": "退赛",
-      "unseriesed": "其他锦标赛",
-      "unknownTournament": "锦标赛",
-      "openPack": "打开谱面包",
+      "unseriesed": "其他赛事",
+      "unknownTournament": "赛事",
+      "openPack": "打开地图包",
       "othersCount": "+{{count}} 其他人"
     },
     "scores": {
@@ -62,44 +62,44 @@
       "expand": "展开",
       "collapse": "收起",
       "hideReclears": "隐藏重复通关",
-
-      "lowestImpactScore": "排位分加分下限：<pp>{{score}}</pp>"
+      "lowestImpactScore": "排位分加分下限：<pp>{{score}}</pp>",
+      "tl_comment": "别动这个 ↑"
     },
     "scoreBreakdown": {
-      "title": "分数明细",
-      "expand": "展开分数明细",
-      "collapse": "收起分数明细",
+      "title": "分数信息",
+      "expand": "展开",
+      "collapse": "收起",
       "tooltips": {
         "rankedScore": {
-          "aria": "说明排位分数",
-          "description": "前 20 个最高通关记录的衰减总和（不含重击破）"
+          "aria": "排位分数",
+          "description": "前 20 个通关记录的衰减总和（不含重击破）"
         },
         "totalScoreV2": {
-          "aria": "说明总分",
+          "aria": "总分",
           "description": "所有通关记录分数之和（不含重击破）"
         },
         "generalScore": {
-          "aria": "说明全局分数",
+          "aria": "全局分数",
           "description": "所有通关记录分数之和（含重击破）"
         },
         "ppScore": {
-          "aria": "说明 PP 分数",
-          "description": "与排位分相同，但所有通关必须为纯完美"
+          "aria": "完美无瑕分数",
+          "description": "与排位分相同，但仅计算所有完美无瑕的分数"
         },
         "wfScore": {
-          "aria": "说明世界首通分数",
+          "aria": "世界首通分数",
           "description": "世界首通通关对应关卡基础分之和"
         },
         "wfPPScore": {
-          "aria": "说明世界首通 PP 分数",
-          "description": "世界首通纯完美通关对应关卡基础分之和"
+          "aria": "世界首杀分数",
+          "description": "世界首杀通关记录对应关卡基础分之和"
         },
         "score12K": {
-          "aria": "说明 12 键分数",
-          "description": "与排位分相同，但所有通关必须为 12 键"
+          "aria": "12键分数",
+          "description": "与排位分相同，但仅计算所有12键的通关记录的分数"
         },
         "averageXacc": {
-          "aria": "说明平均 X 精准度",
+          "aria": "平均X精准度",
           "description": "前 20 个通关记录的平均精准度"
         }
       }
@@ -112,12 +112,12 @@
     },
     "rankHistory": {
       "title": "名次变化",
-      "expand": "展开名次历史",
-      "collapse": "收起名次历史",
+      "expand": "展开",
+      "collapse": "收起",
       "metricLabel": "名次类型",
       "rangeLabel": "时间范围",
       "loading": "正在加载名次历史…",
-      "empty": "暂无已存储的名次历史。",
+      "empty": "暂无名次历史。",
       "error": "无法加载名次历史。",
       "range30": "最近30天",
       "range90": "最近90天",
@@ -154,8 +154,8 @@
     "expandAria": "显示所有统计数据",
     "collapseAria": "收起统计数据",
     "difficultyHeaderGridCellTooltip": "{{name}} · {{count}} 个通关记录",
-    "clearsByTypeTooltip": "通关的独立关卡数：{{count}}",
-    "clearsByTypeTooltipWithReclears": "独立关卡 {{unique}} 个（共 {{total}} 次通关）",
+    "clearsByTypeTooltip": "通过的关卡数：{{count}}",
+    "clearsByTypeTooltipWithReclears": "共{{unique}}个关卡，{{total}}个通关记录",
     "groups": {
       "scores": "分数",
       "counts": "通关记录",
@@ -169,11 +169,11 @@
       "totalPasses": "总通关记录数",
       "uniqueLevelsCleared": "击破关卡数",
       "worldsFirstCount": "世界首通数",
-      "worldsFirstPPCount": "世界首通 PP 数",
+      "worldsFirstPPCount": "世界首杀数",
       "clears12K": "12键通关记录数",
       "clears16K": "16键通关记录数",
       "clearsNoHoldTap": "非默认长按设置通关数",
-      "totalPurePerfectClears": "纯完美通关总数",
+      "totalPurePerfectClears": "完美无瑕通关总数",
       "duplicatePasses": "重击破数",
       "hiddenPasses": "已隐藏通关记录（仅对你可见）"
     },
@@ -186,7 +186,8 @@
       "lPerfect": "“稍慢！”数",
       "lateSingle": "“太慢！”数",
       "totalXacc": "总体精准度",
-      "earlyVsLateBias": "快慢比例"
+      "earlyVsLateBias": "快慢比例",
+      "tl_comment": "“快慢比例”的含义目前还没得到v0的正式回复"
     },
     "levelsCleared": {
       "totalTilecountCleared": "总经过砖块数",
@@ -198,13 +199,13 @@
       "rankedScore": "排位分数",
       "generalScore": "全局分数",
       "totalScoreV2": "总分",
-      "ppScore": "PP 分数",
+      "ppScore": "完美无瑕分数",
       "wfScore": "世界首通分数",
-      "wfPPScore": "世界首通 PP 分数",
+      "wfPPScore": "世界首杀分数",
       "score12K": "12键分数",
       "averageXacc": "平均X精准度",
       "worldsFirstCount": "世界首通数",
-      "worldsFirstPPCount": "世界首通 PP 数"
+      "worldsFirstPPCount": "世界首杀数"
     },
     "extremes": {
       "firstPassAt": "第一个通关记录",
@@ -225,9 +226,9 @@
       "packsFavorited": "收藏的地图包"
     },
     "difficultyType": {
-      "PLANETARY": "行星",
-      "GALACTIC": "银河",
-      "UNIVERSAL": "宇宙",
+      "PLANETARY": "P级谱面",
+      "GALACTIC": "G级谱面",
+      "UNIVERSAL": "U级谱面",
       "SPECIAL": "特殊"
     }
   },

@@ -178,9 +178,9 @@
   "imageUnreadable": "无法读取此图片文件。"
 },
   "tournaments": {
-    "sectionTitle": "锦标赛外观",
+    "sectionTitle": "赛事外观",
     "openEditor": "打开编辑器",
-    "editorTitle": "锦标赛外观编辑器",
+    "editorTitle": "赛事外观编辑器",
     "layoutTitle": "卡片预览",
     "layoutPreviewHint": "点击下方名次可预览其卡片布局。",
     "selectPlacementForPreview": "选择 {{name}} 用于布局预览",
@@ -199,7 +199,7 @@
     },
     "displayTree": {
       "hint": "将名次组织到自定义分组中。隐藏的节点在编辑器中仍可见，但不会显示在公开资料上。",
-      "defaultHint": "名次会按系列赛和锦标赛分组显示在您的资料上。",
+      "defaultHint": "名次会按赛事系列和赛事分组显示在您的资料上。",
       "addGroup": "添加分组",
       "addGroupTitle": "添加分组",
       "groupName": "分组名称",
@@ -214,8 +214,8 @@
     "cancel": "取消",
     "revertDraft": "撤销更改",
     "unsavedConfirm": "有未保存的更改。确定要关闭吗？",
-    "saveSuccess": "锦标赛外观已更新",
-    "saveError": "无法更新锦标赛外观",
+    "saveSuccess": "赛事外观已更新",
+    "saveError": "无法更新赛事外观",
     "summaryFrameEquipped": "已装备头像框",
     "equipSuccess": "头像框已更新",
     "equipError": "无法更新头像框",

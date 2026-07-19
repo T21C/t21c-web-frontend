@@ -64,7 +64,7 @@
     "title": "Judgements",
     "types": {
       "earlyPerfect": {
-        "label": "Early Perfect",
+        "label": "EPerfect",
         "value": "{{count}}"
       },
       "perfect": {
@@ -72,7 +72,7 @@
         "value": "{{count}}"
       },
       "latePerfect": {
-        "label": "Late Perfect",
+        "label": "LPerfect",
         "value": "{{count}}"
       },
       "tooEarly": {

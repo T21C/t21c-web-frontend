@@ -40,6 +40,7 @@
         "accuracy": "정확도",
         "difficulty": "난이도",
         "speed": "속도",
+        "keyCount": "키 개수",
         "random": "무작위"
       }
     },

@@ -25,8 +25,8 @@
     "songsDesc": "管理歌曲及相关信息",
     "artists": "艺术家",
     "artistsDesc": "管理艺术家和他们的信息",
-    "tournaments": "锦标赛",
-    "tournamentsDesc": "管理锦标赛名次、名称关联与头像框奖励"
+    "tournaments": "赛事",
+    "tournamentsDesc": "管理各类赛事名次、名称关联与头像框奖励"
   }
 }
  

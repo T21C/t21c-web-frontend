@@ -9,12 +9,12 @@
     "events": "赛事",
     "unresolved": "未关联名称",
     "import": "导入",
-    "series": "系列赛"
+    "series": "赛事系列"
   },
   "subTabs": {
     "details": "详情",
     "tiers": "档位",
-    "placements": "名次",
+    "placements": "获奖情况",
     "cosmetics": "装饰"
   },
   "searchPlaceholder": "搜索赛事……",
@@ -33,7 +33,7 @@
   "noUnresolved": "所有名次名称均已关联。",
   "addReward": "添加装饰",
   "syncEntitlements": "同步权益",
-  "createSeries": "创建系列赛",
+  "createSeries": "创建赛事系列",
   "hiddenBadge": "隐藏",
   "reorder": {
     "moveUp": "上移",
@@ -52,10 +52,10 @@
     }
   },
   "packImport": {
-    "open": "谱面包导入",
-    "title": "从谱面包导入",
-    "subtitle": "从谱面包引用导入提名名次，审阅差异后再应用。",
-    "packRef": "谱面包引用",
+    "open": "地图包导入",
+    "title": "从地图包导入",
+    "subtitle": "从地图包引用导入提名名次，审阅差异后再应用。",
+    "packRef": "地图包引用",
     "packRefPlaceholder": "例如 my-pack-slug",
     "previewDiff": "预览差异",
     "apply": "应用导入",
@@ -66,26 +66,26 @@
     "noRemoves": "无删除建议。",
     "noDiverged": "无不一致行。",
     "messages": {
-      "imported": "谱面包导入已应用"
+      "imported": "地图包导入已应用"
     },
     "errors": {
-      "packRefRequired": "谱面包引用为必填项。",
+      "packRefRequired": "地图包引用为必填项。",
       "diffFailed": "差异预览失败",
-      "importFailed": "谱面包导入失败"
+      "importFailed": "地图包导入失败"
     }
   },
   "packCreate": {
-    "open": "从谱面包导入",
-    "title": "从谱面包创建赛事",
-    "subtitle": "从谱面包创建关卡模式赛事并打开编辑。",
-    "packRef": "谱面包引用",
+    "open": "从地图包导入",
+    "title": "从地图包创建赛事",
+    "subtitle": "从地图包创建关卡模式赛事并打开编辑。",
+    "packRef": "使用地图包",
     "create": "创建赛事",
     "messages": {
-      "created": "已从谱面包创建赛事"
+      "created": "已从地图包创建赛事"
     },
     "errors": {
-      "packRefRequired": "谱面包引用为必填项。",
-      "createFailed": "从谱面包创建赛事失败"
+      "packRefRequired": "地图包引用为必填项。",
+      "createFailed": "从地图包创建赛事失败"
     }
   },
   "nominees": {
@@ -105,7 +105,7 @@
   "help": {
     "open": "帮助",
     "title": "赛事名次帮助",
-    "subtitle": "模式、扩展、积分、权重与谱面包导入。",
+    "subtitle": "模式、扩展、积分、权重与地图包导入。",
     "close": "关闭帮助",
     "sections": {
       "modes": {
@@ -138,23 +138,23 @@
         "title": "同步积分",
         "intro": "保存名次不会物化关卡积分。",
         "bullets": {
-          "dryRun": "同步会先 dry-run 预览新增/删除，再确认。",
+          "dryRun": "同步会先试运行预览新增/删除，再确认。",
           "saveVsSync": "保存行元数据；同步写入 tournament_placement_credits。"
         }
       },
       "weights": {
         "title": "排序权重",
-        "intro": "系列赛与赛事列表使用稠密 1..n 权重。",
+        "intro": "赛事系列与赛事列表使用稠密 1..n 权重。",
         "bullets": {
-          "series": "在系列赛标签用上下按钮调整顺序。",
+          "series": "在赛事系列标签用上下按钮调整顺序。",
           "tier": "编辑器中名次按档位排名权重排序。"
         }
       },
       "pack": {
-        "title": "谱面包导入",
-        "intro": "从谱面包工具导入提名名次，再差异同步。",
+        "title": "地图包导入",
+        "intro": "从地图包工具导入提名名次，再差异同步。",
         "bullets": {
-          "import": "新谱面包条目以 NOM（提名）名次导入。",
+          "import": "新地图包条目以 NOM（提名）名次导入。",
           "diff": "差异同步建议增删；不一致行需人工处理。"
         }
       },
@@ -171,18 +171,18 @@
   "series": {
     "slug": "标识符",
     "name": "名称",
-    "empty": "暂无系列赛。请使用上方表单添加。",
+    "empty": "暂无赛事系列。请使用上方表单添加。",
     "deleteConfirm": "确定删除「{{name}}」？关联的赛事将解除关联系列，仅绑定该系列的奖励将被移除。",
     "messages": {
-      "created": "系列赛创建成功",
-      "updated": "系列赛更新成功",
-      "deleted": "系列赛删除成功"
+      "created": "赛事系列创建成功",
+      "updated": "赛事系列更新成功",
+      "deleted": "赛事系列删除成功"
     },
     "errors": {
       "required": "标识符和名称为必填项。",
-      "createFailed": "系列赛创建失败",
-      "updateFailed": "系列赛更新失败",
-      "deleteFailed": "系列赛删除失败"
+      "createFailed": "赛事系列创建失败",
+      "updateFailed": "赛事系列更新失败",
+      "deleteFailed": "赛事系列删除失败"
     }
   },
   "messages": {
@@ -303,7 +303,7 @@
     },
     "kindOptions": {
       "ordinal": "名次",
-      "bracket": "Bracket",
+      "bracket": "小组",
       "round": "轮次",
       "stage": "阶段",
       "qualifier": "预选赛",
@@ -321,8 +321,8 @@
       "shortName": "简称",
       "fullName": "全称",
       "aka": "别名",
-      "youtubeUrl": "YouTube",
-      "packRef": "谱面包引用",
+      "youtubeUrl": "YouTube链接",
+      "packRef": "使用地图包",
       "externalUrl": "外部链接",
       "sortYear": "排序年份",
       "organizers": "主办方（逗号分隔）",
@@ -334,17 +334,17 @@
       "track": "赛事赛道",
       "placementMode": "放置模式",
       "showBestTiersOnly": "档案仅显示最佳档位",
-      "series": "系列赛",
+      "series": "赛事系列",
       "tierTemplate": "档位模板",
       "hidden": "隐藏",
       "resultsFinal": "结果已定",
       "notes": "备注"
     },
-    "packRefSearchPlaceholder": "搜索谱面包",
-    "packRefNoResults": "未找到谱面包。",
-    "packRefTypeToSearch": "输入以搜索谱面包…",
-    "packRefLoading": "正在搜索谱面包…",
-    "packRefSearchFailed": "谱面包搜索失败",
+    "packRefSearchPlaceholder": "搜索地图包",
+    "packRefNoResults": "未找到地图包。",
+    "packRefTypeToSearch": "输入以搜索地图包…",
+    "packRefLoading": "正在搜索地图包…",
+    "packRefSearchFailed": "地图包搜索失败",
     "packRefNotFound": "未找到",
     "placementModes": {
       "profile": "档案（关联玩家/创作者）",

@@ -35,9 +35,9 @@
         "linkResolved": "Short link resolved to Bilibili URL"
       },
       "judgements": {
-        "ePerfect": "Early Perfect",
+        "ePerfect": "EPerfect",
         "perfect": "Perfect",
-        "lPerfect": "Late Perfect",
+        "lPerfect": "LPerfect",
         "tooearly": "Too Early",
         "early": "Early",
         "late": "Late"

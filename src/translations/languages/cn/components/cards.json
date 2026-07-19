@@ -27,7 +27,7 @@
       "worldsFirst": "WF",
       "worldsFirstPP": "WF PP",
       "worldsFirstClearTooltip": "世界首通！",
-      "worldsFirstPurePerfectTooltip": "世界首通完美无暇！",
+      "worldsFirstPurePerfectTooltip": "世界首杀！",
       "keyCount": "{{count}}K",
       "twelveKey": "12键",
       "sixteenKey": "16键",
@@ -44,15 +44,15 @@
       "rankedScore": "排位分数",
       "totalScoreV2": "总分",
       "generalScore": "全局分数",
-      "ppScore": "PP 分数",
+      "ppScore": "完美无瑕分数",
       "wfScore": "世界首通分数",
-      "wfPPScore": "世界首通 PP 分数",
+      "wfPPScore": "世界首杀分数",
       "score12K": "12键分数",
       "averageXacc": "平均X-精准度",
       "totalPasses": "总通关数",
       "universalPassCount": "U级通关数",
       "worldsFirstCount": "世界首通数",
-      "worldsFirstPPCount": "世界首通 PP 数",
+      "worldsFirstPPCount": "世界首杀数",
       "topDiff": "最高通关难度",
       "top12kDiff": "最高12键通关难度"
     }
@@ -61,7 +61,7 @@
     "score": {
       "ranked": "排位分数",
       "general": "全局分数",
-      "pp": "PP 分数",
+      "pp": "完美无瑕分数",
       "wf": "世界首通分数",
       "12k": "12键分数"
     },

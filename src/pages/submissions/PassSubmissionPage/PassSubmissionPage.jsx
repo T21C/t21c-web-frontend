@@ -236,8 +236,13 @@ const PassSubmissionPage = () => {
 
     } catch (err) {
       console.error("Submission error:", err);
-      const errMsg = err.details || err.message || "Unknown error occurred";
-      toast.error(`${t('passSubmission.alert.error')} ${truncateString(errMsg?.message || errMsg?.toString?.() || errMsg, 120)}`);
+      // Prefer message: API `details` is structured metadata (object), not display text.
+      const errMsg =
+        (typeof err?.message === 'string' && err.message) ||
+        (typeof err?.details === 'string' && err.details) ||
+        (typeof err?.details?.message === 'string' && err.details.message) ||
+        'Unknown error occurred';
+      toast.error(`${t('passSubmission.alert.error')} ${truncateString(errMsg, 120)}`);
     } finally {
       setSubmission(false);
       setSubmitAttempt(false);
@@ -270,9 +275,9 @@ const PassSubmissionPage = () => {
           feelingRating: 'Feeling difficulty',
           expectedRating: 'Expected difficulty',
           keyCount: 'Key count',
-          ePerfect: 'Early Perfect',
+          ePerfect: 'EPerfect',
           perfect: 'Perfect',
-          lPerfect: 'Late Perfect',
+          lPerfect: 'LPerfect',
           tooEarly: 'Too Early',
           early: 'Early',
           late: 'Late',

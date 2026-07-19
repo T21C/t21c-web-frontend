@@ -137,7 +137,7 @@
           "desc": "Filter by gameplay speed multiplier. Supports exact values and ranges."
         },
         "eperfect": {
-          "title": "Early perfect count",
+          "title": "EPerfect count",
           "desc": "Filter by the number of early-perfect judgements."
         },
         "perfect": {
@@ -145,7 +145,7 @@
           "desc": "Filter by the number of perfect judgements."
         },
         "lperfect": {
-          "title": "Late perfect count",
+          "title": "LPerfect count",
           "desc": "Filter by the number of late-perfect judgements."
         },
         "early": {

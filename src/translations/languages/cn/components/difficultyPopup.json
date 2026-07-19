@@ -161,7 +161,7 @@
         "options": {
           "ACCURACY": "精准度",
           "WORLDS_FIRST": "世界首通",
-          "WORLDS_FIRST_PP": "世界首通 PP",
+          "WORLDS_FIRST_PP": "世界首杀",
           "BASE_SCORE": "基础分数",
           "CUSTOM": "自定义"
         }

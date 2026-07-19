@@ -181,9 +181,9 @@
       "totalTilesHit": "Total tiles hit",
       "earlyDouble": "Early double",
       "earlySingle": "Early single",
-      "ePerfect": "Early perfect",
+      "ePerfect": "EPerfect",
       "perfect": "Perfect",
-      "lPerfect": "Late perfect",
+      "lPerfect": "LPerfect",
       "lateSingle": "Late single",
       "totalXacc": "General accuracy",
       "earlyVsLateBias": "Early vs late bias"

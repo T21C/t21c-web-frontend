@@ -43,16 +43,22 @@
       "label": "체감 난이도",
       "value": "{{rating}}",
       "none": "없음"
+    },
+    "expectedRating": {
+      "label": "예상 난이도",
+      "value": "{{rating}}",
+      "none": "없음"
     }
   },
   "flags": {
-    "worldsFirst": "WF",
-    "worldsFirstPP": "WF PP",
+    "worldsFirst": "촤초",
+    "worldsFirstPP": "최초 완플",
+    "keyCount": "{{count}}키",
     "12k": "12키",
     "16k": "16키",
     "noHoldTap": "기본 외 홀드 타일 동작",
     "adofaiV2": "<adofaiicon></adofaiicon> v2",
-    "adofaiV2Note": "Recorded on ADOFAI v2"
+    "adofaiV2Note": "얼불춤v2 기록"
   },
   "judgements": {
     "title": "판정",
@@ -103,15 +109,15 @@
   "confirm": {
     "hide": {
       "title": "클리어 숨기기",
-      "message": "Are you sure you want to hide this pass from the leaderboard? It will only be visible to you.",
-      "confirm": "Hide Pass",
-      "processing": "Hiding..."
+      "message": "정말로 이 클리어를 리더보드에서 숨기시겠습니까? 당신에게만 보이게 됩니다.",
+      "confirm": "클리어 숨기기",
+      "processing": "숨기는 중..."
     },
     "unhide": {
-      "title": "Show Pass",
-      "message": "Are you sure you want to show this pass on the leaderboard? It will be visible to everyone.",
-      "confirm": "Show Pass",
-      "processing": "Showing..."
+      "title": "클리어 표시하기",
+      "message": "정말로 이 클리어를 리더보드에 표시하시겠습니까? 모든 사람이 볼 수 있게 됩니다.",
+      "confirm": "클리어 표시하기",
+      "processing": "표시하는 중..."
     }
   },
   "feelingRating": {

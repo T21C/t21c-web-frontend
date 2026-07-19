@@ -3,7 +3,7 @@
 "facets": {
 "diff": "难度",
 "baseScore": "基础分",
-"ppBaseScore": "PP 基础分",
+"ppBaseScore": "完美无瑕基础分",
 "curve": "分数曲线"
 },
 "errors": {
@@ -13,8 +13,8 @@
 "title": "{{song}} - {{artist}}",
 "subtitle": {
 "difficulty": "{{oldDifficulty}} ➔ {{newDifficulty}}",
-"baseScore": "{{oldBaseScore}}PP ➔ {{newBaseScore}}PP",
-"ppBaseScore": "{{oldPpBaseScore}}PP ➔ {{newPpBaseScore}}PP",
+"baseScore": "{{oldBaseScore}}分 ➔ {{newBaseScore}}分",
+"ppBaseScore": "{{oldPpBaseScore}}分 ➔ {{newPpBaseScore}}分",
 "team": " • {{team}}"
 }
 },

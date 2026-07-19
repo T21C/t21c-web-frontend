@@ -3,7 +3,7 @@
   "form": {
     "email": {
       "label": "Email",
-      "error": "유효하지 않은 email 형식"
+      "error": "유효하지 않은 Email 형식"
     },
     "username": {
       "label": "사용자명",
@@ -54,7 +54,7 @@
   },
   "divider": "or",
   "discord": {
-    "register": "Register with Discord"
+    "register": "Discord로 가입"
   },
   "login": {
     "link": "이미 계정이 있으신가요? 로그인"

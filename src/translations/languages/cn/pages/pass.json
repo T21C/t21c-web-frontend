@@ -27,7 +27,7 @@
       "options": {
         "only12k": "仅12键以下",
         "deletedPasses": "已删除通关记录",
-        "keyFlags": "键数"
+        "keyFlags": "按键数目"
       }
     },
     "sort": {
@@ -40,7 +40,7 @@
         "accuracy": "精准度",
         "difficulty": "难度",
         "speed": "飙速速度",
-        "keyCount": "键数",
+        "keyCount": "按键数目",
         "random": "随机"
       }
     },

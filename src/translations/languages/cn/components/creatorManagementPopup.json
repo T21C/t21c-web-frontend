@@ -19,7 +19,7 @@
     },
     "uploadConditions": {
       "label": "谱面上传条件",
-      "placeholder": "给谱面制作者的可选说明（例如你接受上传的条件）。最多 2000 个字符。"
+      "placeholder": "可选的条件说明（例如，何时允许上传）。最多 2000 字符。"
     },
     "aliases": {
       "label": "别名",
@@ -31,11 +31,11 @@
   "profile": {
     "intro": "管理该创作者在公开资料页顶部的显示方式。",
     "headerBadges": {
-      "title": "顶部徽章",
-      "hint": "选择显示在资料页顶部的精选类型（最多五个位置）。更改会立即保存。",
+      "title": "资料卡片徽章",
+      "hint": "选择显示在资料卡片上的精选类型（最多五个）。更改会立即保存。",
       "selectorLabel": "显示的徽章类型",
       "loading": "正在加载徽章数据……",
-      "noPermission": "你没有权限编辑该创作者资料页顶部徽章。"
+      "noPermission": "你无权编辑该创作者资料卡片徽章徽章。"
     }
   },
   "user": {
@@ -43,15 +43,15 @@
       "label": "当前绑定用户",
       "idLabel": "ID：",
       "unknownUser": "已绑定用户账号",
-      "unassignButton": "解除用户绑定",
+      "unassignButton": "解绑",
       "unassignConfirm": "确定解除该用户与创作者之间的绑定？",
-      "unassignYes": "确定解除绑定",
+      "unassignYes": "确认，解绑",
       "unassignCancel": "取消"
     },
     "search": {
       "label": "搜索玩家",
       "placeholder": "输入玩家名称或昵称……",
-      "hint": "开始输入以搜索要分配给该创作者的玩家。",
+      "hint": "输入以搜索要分配给该创作者的玩家。",
       "noResults": "没有符合搜索条件的玩家。",
       "alreadyLinked": "已绑定到其他创作者",
       "assignButton": "分配"
@@ -94,32 +94,32 @@
     "selectTarget": {
       "label": "选择目标创作者",
       "placeholder": "搜索并选择目标创作者……",
-      "noOptions": "没有匹配的创作者"
+      "noOptions": "无搜索结果"
     },
     "mergeButton": "合并创作者",
     "creatorLabel": "{{name}}（ID：{{id}}，关卡数：{{count}}）{{aliases}}"
   },
   "split": {
     "newNamesAndRoles": {
-      "label": "新的创作者名称和角色",
+      "label": "新的创作者名称和身份",
       "namePlaceholder": "输入创作者名称 {{index}}",
-      "rolePlaceholder": "选择角色",
-      "addAnother": "+ 添加其他名称"
+      "rolePlaceholder": "选择身份",
+      "addAnother": "添加其他名称"
     },
     "splitButton": "拆分创作者"
   },
   "superAdminDanger": {
-    "title": "危险区域（超级管理员）",
-    "hint": "这些操作需要超级管理员密码。",
-    "passwordPlaceholder": "超级管理员密码",
-    "passwordRequired": "请输入超级管理员密码。",
-    "purgeButton": "彻底清理创作者资料",
+    "title": "危险区域（超管）",
+    "hint": "这些操作需要超管密码。",
+    "passwordPlaceholder": "超管密码",
+    "passwordRequired": "请输入超管密码。",
+    "purgeButton": "彻底删除创作者资料",
     "unlinkButton": "仅解除用户绑定",
-    "confirmPurge": "确定永久彻底清理该创作者？仅由该创作者单独署名的关卡将被移除，合作署名中的该创作者贡献也会被移除。此操作无法撤销。",
+    "confirmPurge": "确定永久删除该创作者？仅由该创作者单独署名的关卡将被删除，合作署名中的该创作者贡献也会被删除。此操作无法撤销。",
     "confirmUnlink": "确定只解除该创作者与用户账号的绑定？创作者记录和关卡署名仍会保留。",
-    "successPurge": "创作者资料已彻底清理。",
+    "successPurge": "创作者资料已彻底删除。",
     "successUnlink": "创作者已解除用户绑定。",
-    "purgeFailed": "彻底清理创作者资料失败。",
+    "purgeFailed": "删除创作者资料失败。",
     "unlinkFailed": "解除创作者绑定失败。"
   },
   "errors": {
@@ -155,13 +155,13 @@
     "moderation": {
       "ban": "封禁玩家",
       "pause": "暂停提交",
-      "ratingBan": "禁止评分",
+      "ratingBan": "禁止评级",
       "banConfirm": "确定封禁该玩家？",
-      "unbanConfirm": "确定解除该玩家封禁？",
-      "pauseConfirm": "确定暂停该玩家提交？",
-      "resumeConfirm": "确定恢复该玩家提交？",
-      "ratingBanConfirm": "确定禁止该玩家评分？",
-      "ratingUnbanConfirm": "确定允许该玩家再次评分？"
+      "unbanConfirm": "确定解封该玩家？",
+      "pauseConfirm": "确定暂停该玩家的提交申请？",
+      "resumeConfirm": "确定恢复该玩家的提交申请？",
+      "ratingBanConfirm": "确定禁止该玩家评级？",
+      "ratingUnbanConfirm": "确定允许该玩家评级？"
     },
     "link": {
       "hint": "为该用户账号分配或移除关联的创作者资料。"
@@ -182,7 +182,7 @@
       "updateFailed": "更新玩家失败",
       "banUpdate": "更新封禁状态失败",
       "pauseUpdate": "更新暂停提交状态失败",
-      "ratingBanUpdate": "更新评分封禁状态失败",
+      "ratingBanUpdate": "更新禁止评级状态失败",
       "mergeFailed": "合并玩家失败"
     },
     "success": {

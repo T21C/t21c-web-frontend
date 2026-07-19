@@ -8,7 +8,7 @@
     "hidden": "该通关记录已从通关记录列表中隐藏"
   },
   "level": {
-    "baseScore": "{{score}}PP",
+    "baseScore": "{{score}}分",
     "credits": {
       "team": "{{team}}",
       "charter": "由 {{charter}} 制作谱面",
@@ -61,7 +61,7 @@
     "adofaiV2Note": "录制于 ADOFAI v2"
   },
   "judgements": {
-    "title": "判定",
+    "title": "判定结果",
     "types": {
       "earlyPerfect": {
         "label": "稍快！",
