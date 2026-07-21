@@ -10,6 +10,8 @@ import { UserAvatar } from "@/components/layout";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import { formatAccuracyRatio } from "@/utils/statFormatters";
 import { getPrimaryVideoLink } from "@/utils/videoLink";
+import { formatPassDate } from "@/utils/Utility";
+import i18next from "i18next";
 const ClearCard = ({scoreData, index}) => {
   const { t } = useTranslation('pages');
   const [isExpanded, setIsExpanded] = useState(false);
@@ -107,7 +109,7 @@ const ClearCard = ({scoreData, index}) => {
             <span className="feeling-label">{t('levelDetail.components.clearCard.feeling')}</span>
             {renderFeeling()}
           </div>
-          <div className="time-info">{scoreData.vidUploadTime.slice(0, 10)}</div>
+          <div className="time-info">{formatPassDate(scoreData.vidUploadTime, i18next?.language)}</div>
         </div>
       </div>
     </div>

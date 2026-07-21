@@ -2,6 +2,9 @@
   "title": "评级员排行榜",
   "loading": "正在加载评级员排行榜……",
   "noRaters": "未找到所选时间的评级员",
+  "filters": {
+    "title": "筛选与统计"
+  },
   "dateSelector": {
     "startDate": "起始日期",
     "endDate": "截止日期"

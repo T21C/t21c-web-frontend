@@ -9,8 +9,9 @@ import { getVideoDetails } from "@/utils";
 import { resolveSubmissionVideoUrl } from "@/utils/resolveVideoUrl";
 import { useDebouncedRequest } from "@/hooks/useDebouncedRequest";
 import { useAuth } from "@/contexts/AuthContext";
-import { validateFeelingRating } from "@/utils/Utility";
+import { validateFeelingRating, formatDate } from "@/utils/Utility";
 import { Trans, useTranslation } from "react-i18next";
+import i18next from "i18next";
 import { StagingModeWarning, MetaTags } from "@/components/common/display";
 import { buildStaticPageMeta } from '@/utils/meta';
 import { ProfileSelector } from "@/components/common/selectors";
@@ -1108,7 +1109,7 @@ const LevelSubmissionPage = () => {
                 </div>
                 <div className="yt-info">
                   <h4>{t('levelSubmission.videoInfo.timestamp')}</h4>
-                  <p>{videoDetail.timestamp.replace("T", " ").replace("Z", "")}</p>
+                  <p>{formatDate(videoDetail.timestamp, i18next?.language)}</p>
                 </div>
               </div>) : 
               (<div className="yt-info">

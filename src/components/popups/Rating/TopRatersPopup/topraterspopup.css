@@ -48,15 +48,57 @@
   padding: 0;
 }
 
+.top-raters-overlay .filters-collapsible {
+  position: relative;
+  margin-top: 1rem;
+  margin-bottom: 16px;
+  flex-shrink: 0;
+}
+
+.top-raters-overlay .filters-collapsible-header {
+  position: absolute;
+  top: -2rem;
+  right: 0;
+  z-index: 1;
+}
+
+.top-raters-overlay .filters-collapsible-trigger.tuf-collapsible__trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-white-t70);
+  cursor: pointer;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.top-raters-overlay .filters-collapsible-trigger.tuf-collapsible__trigger:hover:not(:disabled) {
+  background: var(--color-white-t10);
+  color: var(--color-white);
+  border-color: transparent;
+}
+
+.top-raters-overlay .filters-collapsible-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
 .top-raters-overlay .date-selection {
-  margin-bottom: 20px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid var(--color-white-t20);
+  padding-bottom: 0;
+  border-bottom: none;
+  margin-bottom: 0;
 }
 
 .top-raters-overlay .date-inputs {
   display: flex;
   gap: 15px;
+  flex-wrap: wrap;
   align-items: flex-end;
 }
 
@@ -112,7 +154,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 15px;
-  margin-bottom: 20px;
+  margin-bottom: 0;
   border-radius: 6px;
   position: relative;
 }
@@ -254,6 +296,7 @@
 .top-raters-overlay .rater-stats {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   gap: 8px;
   min-width: 240px;
 }
@@ -375,8 +418,9 @@
 .top-raters-overlay .legend {
   display: flex;
   justify-content: center;
-  gap: 30px;
+  gap: 10px;
   padding-top: 15px;
+  flex-wrap: wrap;
   border-top: 1px solid var(--color-white-t20);
 }
 
@@ -450,32 +494,20 @@
 
 /* Responsive design */
 @media (max-width: 768px) {
+
   .top-raters-overlay .top-raters-popup {
     width: 95%;
     padding: 15px;
   }
   
-  .top-raters-overlay .date-inputs {
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .top-raters-overlay .overall-stats {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
-  
   .top-raters-overlay .top-rater-entry {
-    flex-direction: column;
-    text-align: center;
     gap: 10px;
   }
   
   .top-raters-overlay .rater-stats {
-    flex-direction: column;
-    justify-content: center;
+    justify-content: end;
     gap: 10px;
-    min-width: 120px;
+    min-width: 0;
   }
   
   .top-raters-overlay .total-ratings,
@@ -483,11 +515,35 @@
     flex: none;
     min-width: auto;
   }
-  
-  .top-raters-overlay .legend {
-    flex-direction: column;
-    gap: 15px;
-    align-items: center;
+}
+
+@media (max-width: 480px) {
+  .top-raters-overlay .top-rater-entry {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .top-raters-overlay .rater-rank {
+    min-width: 32px;
+  }
+
+  .top-raters-overlay .rater-info {
+    flex: 1;
+    min-width: 0;
+    gap: 10px;
+  }
+
+  .top-raters-overlay .rater-stats {
+    flex-basis: 100%;
+    width: 100%;
+    min-width: 0;
+    justify-content: stretch;
+  }
+
+  .top-raters-overlay .total-ratings,
+  .top-raters-overlay .average-per-day {
+    flex: 1;
+    min-width: 0;
   }
 }
 
@@ -495,6 +551,7 @@
 .top-raters-overlay .pagination {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   align-items: center;
   gap: 20px;
   padding: 15px 0;

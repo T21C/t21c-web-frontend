@@ -10,6 +10,7 @@ import { UserAvatar } from '@/components/layout';
 import { userAvatarUrls } from '@/utils/playerAvatarDisplay';
 import { CrownIcon } from '@/components/common/icons';
 import { CloseButton } from '@/components/common/buttons';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/common/Collapsible';
 
 // Format numbers for better readability
 const formatNumber = (num) => {
@@ -205,45 +206,62 @@ const TopRatersPopup = ({ onClose }) => {
           />
         </div>
 
-        <div className="date-selection">
-          <div className="date-inputs">
-            <div className="date-input-group">
-              <label htmlFor="start-date-selector">{t('topRaters.dateSelector.startDate')}</label>
-              <input
-                id="start-date-selector"
-                type="date"
-                value={selectedStartDate}
-                onChange={handleStartDateChange}
-                className="date-input"
-              />
-            </div>
-            <div className="date-input-group">
-              <label htmlFor="end-date-selector">{t('topRaters.dateSelector.endDate')}</label>
-              <input
-                id="end-date-selector"
-                type="date"
-                value={selectedEndDate}
-                onChange={handleEndDateChange}
-                className="date-input"
-              />
-            </div>
+        <Collapsible
+          defaultOpen
+          duration="0.3s"
+          className="filters-collapsible"
+        >
+          <div className="filters-collapsible-header">
+            <CollapsibleTrigger
+              preset="chevron"
+              className="filters-collapsible-trigger"
+              aria-label={t('topRaters.filters.title')}
+            />
           </div>
-        </div>
+          <CollapsibleContent>
+            <div className="filters-collapsible-body">
+              <div className="date-selection">
+                <div className="date-inputs">
+                  <div className="date-input-group">
+                    <label htmlFor="start-date-selector">{t('topRaters.dateSelector.startDate')}</label>
+                    <input
+                      id="start-date-selector"
+                      type="date"
+                      value={selectedStartDate}
+                      onChange={handleStartDateChange}
+                      className="date-input"
+                    />
+                  </div>
+                  <div className="date-input-group">
+                    <label htmlFor="end-date-selector">{t('topRaters.dateSelector.endDate')}</label>
+                    <input
+                      id="end-date-selector"
+                      type="date"
+                      value={selectedEndDate}
+                      onChange={handleEndDateChange}
+                      className="date-input"
+                    />
+                  </div>
+                </div>
+              </div>
 
-        <div className="overall-stats">
-          <div className="stat-item">
-            <span className="stat-label">{t('topRaters.stats.totalUsers')}</span>
-            <span className="stat-value">{formatNumber(overallStats.totalUsers)}</span>
-          </div>
-          <div className="stat-item">
-            <span className="stat-label">{t('topRaters.stats.averageRatingsPerDay')}</span>
-            <span className="stat-value">{formatAverage(overallStats.averageRatingsPerDay)}</span>
-          </div>
-          <div className="stat-item">
-            <span className="stat-label">{t('topRaters.stats.totalRatings')}</span>
-            <span className="stat-value">{formatNumber(overallStats.totalRatings)}</span>
-          </div>
-        </div>
+              <div className="overall-stats">
+                <div className="stat-item">
+                  <span className="stat-label">{t('topRaters.stats.totalUsers')}</span>
+                  <span className="stat-value">{formatNumber(overallStats.totalUsers)}</span>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-label">{t('topRaters.stats.averageRatingsPerDay')}</span>
+                  <span className="stat-value">{formatAverage(overallStats.averageRatingsPerDay)}</span>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-label">{t('topRaters.stats.totalRatings')}</span>
+                  <span className="stat-value">{formatNumber(overallStats.totalRatings)}</span>
+                </div>
+              </div>
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
 
         <div className="raters-list">
           {isLoading ? (
@@ -288,7 +306,7 @@ const TopRatersPopup = ({ onClose }) => {
         )}
 
         <div className="legend">
-          <div className="legend-item ">
+          <div className="legend-item" style={{ paddingLeft: '24px'}}>
             <div className="legend-icon circle-ornament"></div>
             <span>{t('topRaters.legend.circleOrnament')}</span>
           </div>

@@ -54,7 +54,7 @@ import {
   VideoLinkIcon,
   TUFHelperLiteIcon,
 } from "@/components/common/icons";
-import { createEventSystem, formatBaseScore, formatCreatorDisplay, formatDate, isCdnUrl, selectIconSize } from "@/utils/Utility";
+import { createEventSystem, formatBaseScore, formatCreatorDisplay, formatDate, formatPassDate, isCdnUrl, selectIconSize } from "@/utils/Utility";
 import { formatAccuracyRatio } from "@/utils/statFormatters";
 import {
   formatAutoTilecountTooltip,
@@ -2967,7 +2967,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                   <StatClearLink pass={highScores.firstClear}>
                     {t('levelDetail.stats.firstClear.value', {
                       player: highScores.firstClear.player.name,
-                      date: highScores.firstClear.vidUploadTime.slice(0, 10),
+                      date: formatPassDate(highScores.firstClear.vidUploadTime, i18next?.language),
                     })}
                   </StatClearLink>
                 ) : (

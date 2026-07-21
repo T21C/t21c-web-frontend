@@ -1,6 +1,8 @@
 // tuf-search: #PassCoreForm #passCoreForm #cores
 import { useTranslation } from 'react-i18next';
 import { Tooltip } from 'react-tooltip';
+import i18next from 'i18next';
+import { formatDate } from '@/utils/Utility';
 import './PassCoreForm.css';
 
 export const PASS_CORE_COPY = {
@@ -314,7 +316,7 @@ export function PassCoreForm({
                     style={{ borderColor: isFormValidDisplay.vidUploadTime ? '' : 'red' }}
                   />
                 ) : (
-                  <p>{videoDetail.timestamp?.replace?.('T', ' ')?.replace?.('Z', '')}</p>
+                  <p>{formatDate(videoDetail.timestamp, i18next?.language)}</p>
                 )}
               </div>
             </div>
