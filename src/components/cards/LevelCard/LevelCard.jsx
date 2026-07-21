@@ -2,7 +2,10 @@
 import { Link } from "react-router-dom";
 import "./levelcard.css"
 import { useTranslation } from "react-i18next";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import toast from "react-hot-toast";
+import api from "@/utils/api";
+import { routes } from "@/api/routes";
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { EditLevelPopup } from "@/components/popups/Levels";
 import { AddToPackPopup } from "@/components/popups/Packs";
@@ -65,6 +68,11 @@ const LevelCard = ({
   const [showAddToPackPopup, setShowAddToPackPopup] = useState(false);
   const [showSongPopup, setShowSongPopup] = useState(false);
   const [showArtistPopup, setShowArtistPopup] = useState(false);
+  const [isLiked, setIsLiked] = useState(
+    typeof initialLevel?.isLiked === 'boolean' ? initialLevel.isLiked : false
+  );
+  const [likeCount, setLikeCount] = useState(initialLevel?.likes ?? 0);
+  const [isLiking, setIsLiking] = useState(false);
   const { difficultyDict, curationTypesDict, tagsDict } = useDifficultyContext();
   const revealHiddenCurationArcTypes =
     showC0V0CurationIcons || !!packItem || displayMode === 'pack';
@@ -125,7 +133,74 @@ const LevelCard = ({
 
   useBodyScrollLock(showEditPopup || showAddToPackPopup || showSongPopup || showArtistPopup);
 
+  // Keep local like state in sync with the level data (search annotation or edits).
+  useEffect(() => {
+    setLikeCount(level?.likes ?? 0);
+    if (typeof level?.isLiked === 'boolean') {
+      setIsLiked(level.isLiked);
+    }
+  }, [level?.id, level?.likes, level?.isLiked]);
+
+  // Bootstrap like state for surfaces that don't annotate isLiked (song detail,
+  // packs, byId path). Skipped for guests and when already annotated.
+  useEffect(() => {
+    if (!user?.id || level?.id == null) return undefined;
+    if (typeof level?.isLiked === 'boolean') return undefined;
+    let cancelled = false;
+    api
+      .get(routes.database.levels.isLiked(level.id))
+      .then((res) => {
+        if (cancelled) return;
+        setIsLiked(!!res.data?.isLiked);
+        if (res.data?.likes !== undefined) setLikeCount(res.data.likes);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [user?.id, level?.id, level?.isLiked]);
+
   // Handlers
+  const handleLikeToggle = async (e) => {
+    e?.preventDefault?.();
+    e?.stopPropagation?.();
+    if (!user) {
+      toast.error(t('cards.level.like.loginRequired', { defaultValue: 'You must be logged in to like levels' }));
+      return;
+    }
+    if (isLiking || level?.id == null) return;
+
+    const action = isLiked ? 'unlike' : 'like';
+    const prevLiked = isLiked;
+    const prevCount = likeCount;
+
+    // Optimistic update
+    setIsLiked(!prevLiked);
+    setLikeCount((c) => Math.max(0, (c ?? 0) + (action === 'like' ? 1 : -1)));
+    setIsLiking(true);
+
+    try {
+      const response = await api.put(routes.database.levels.like(level.id), { action });
+      if (response.data?.success) {
+        if (response.data.likes !== undefined) setLikeCount(response.data.likes);
+        toast.success(
+          action === 'like'
+            ? t('cards.level.like.liked', { defaultValue: 'Level liked' })
+            : t('cards.level.like.unliked', { defaultValue: 'Level unliked' })
+        );
+      } else {
+        setIsLiked(prevLiked);
+        setLikeCount(prevCount);
+      }
+    } catch (error) {
+      setIsLiked(prevLiked);
+      setLikeCount(prevCount);
+      toast.error(t('cards.level.like.failed', { defaultValue: 'Failed to update like' }));
+    } finally {
+      setIsLiking(false);
+    }
+  };
+
   const handleLevelUpdate = (updatedData) => {
     if (updatedData?.permanentDelete) {
       return;
@@ -273,10 +348,29 @@ const LevelCard = ({
 
       </div>
       {showLikes && (
-        <div className="icon-wrapper" data-opacity={level.likes ? 1 : 0}>
-          <div className="icon-value">{level.likes || 0}</div>
-          <LikeIcon color={"none"} size={"22px"}/>
-        </div>
+        user ? (
+          <button
+            type="button"
+            className={`icon-wrapper level-card__like ${isLiked ? 'liked' : ''}`}
+            data-opacity={1}
+            onClick={handleLikeToggle}
+            disabled={isLiking}
+            aria-pressed={isLiked}
+            aria-label={
+              isLiked
+                ? t('cards.level.like.unlike', { defaultValue: 'Unlike' })
+                : t('cards.level.like.like', { defaultValue: 'Like' })
+            }
+          >
+            <div className="icon-value">{likeCount || 0}</div>
+            <LikeIcon color={isLiked ? "#ff2222" : "#ffffff00"} size={"22px"}/>
+          </button>
+        ) : (
+          <div className="icon-wrapper" data-opacity={likeCount ? 1 : 0}>
+            <div className="icon-value">{likeCount || 0}</div>
+            <LikeIcon color={"#ffffff00"} size={"22px"}/>
+          </div>
+        )
       )}
     </>
   );
@@ -466,14 +560,16 @@ const LevelCard = ({
     </>
   );
 
-  const renderLinkContent = ({ showLikes = true } = {}) => (
+  const renderLinkContent = ({ showLikes = true, showStats = true } = {}) => (
     <>
       <div className="level-card__row level-card__row--top">
         {renderDifficultyIcon()}
         {renderSongInfo()}
-        <div className="level-card__stats">
-          {renderStatsIcons({ showLikes })}
-        </div>
+        {showStats && (
+          <div className="level-card__stats">
+            {renderStatsIcons({ showLikes })}
+          </div>
+        )}
       </div>
       <div className="level-card__row level-card__row--bottom">
         {renderCreatorInfo()}
@@ -575,8 +671,11 @@ const LevelCard = ({
     >
       <div className="level-card-wrapper">
         <Link className="level-card__link-wrap" to={levelDetailTo} aria-label={getSongDisplayName(level)}>
-          {renderLinkContent()}
+          {renderLinkContent({ showStats: false })}
         </Link>
+        <div className="level-card__stats">
+          {renderStatsIcons({ showLikes: true })}
+        </div>
         {renderDownloadLinks({ showAddToPack: true })}
       </div>
 

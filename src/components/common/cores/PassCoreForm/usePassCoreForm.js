@@ -2,9 +2,7 @@ import { routes } from '@/api/routes';
 // tuf-search: #usePassCoreForm #cores #passCoreForm
 import { useEffect, useMemo, useRef, useState } from "react";
 import api from "@/utils/api";
-import { getVideoDetails } from "@/utils";
-import { resolveSubmissionVideoUrl } from "@/utils/resolveVideoUrl";
-import { useDebouncedRequest } from "@/hooks/useDebouncedRequest";
+import { useVideoLinkResolver } from "@/components/common/cores/VideoLinkResolver";
 import calcAcc from "@/utils/CalcAcc";
 import { formatAccuracyRatio } from "@/utils/statFormatters";
 import { computePassScoreV2 } from "@/utils/scoreService";
@@ -12,7 +10,6 @@ import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { parseJudgements } from "@/utils/ParseJudgements";
 import { normalizeKeyCount, validateFeelingRating, validateNumber, validateSpeed } from "@/utils/Utility";
 import { useTranslation } from "react-i18next";
-import toast from "react-hot-toast";
 import { getPassCoreCopy } from "./PassCoreForm";
 
 const BASE_REQUIRED_FIELDS = [
@@ -68,9 +65,22 @@ export function usePassCoreForm({
   const [level, setLevel] = useState(null);
   const [levelLoading, setLevelLoading] = useState(true);
   const [videoDetail, setVideoDetail] = useState(null);
-  const [videoLinkResolving, setVideoLinkResolving] = useState(false);
 
-  const resolveVideoLinkRequest = useDebouncedRequest(500);
+  const { resolving: videoLinkResolving } = useVideoLinkResolver({
+    value: form.videoLink,
+    onResolve: (url) => setForm((prev) => ({ ...prev, videoLink: url })),
+    onVideoDetail: (details) => {
+      setVideoDetail(details || null);
+      if (mode === "submit") {
+        const isAdofaiV2 = isAdofaiV2EraVideoTimestamp(details?.timestamp);
+        setForm((prev) => (prev.isAdofaiV2 === isAdofaiV2 ? prev : { ...prev, isAdofaiV2 }));
+      }
+    },
+    toastMessage: t(copy.videoLinkResolved, {
+      ns: copy.ns,
+      defaultValue: "Short link resolved to Bilibili URL",
+    }),
+  });
 
   const isUDiff = useMemo(() => Boolean(level && isUDiffLevel(level)), [level, isUDiffLevel]);
   const keyCountRequired = useMemo(
@@ -131,52 +141,6 @@ export function usePassCoreForm({
       }
     };
   }, [form.levelId, rejectDeletedLevel]);
-
-  useEffect(() => {
-    const videoLink = form?.videoLink?.trim?.() ?? "";
-    if (!videoLink) {
-      setVideoDetail(null);
-      setVideoLinkResolving(false);
-      if (mode === "submit") {
-        setForm((prev) => (prev.isAdofaiV2 ? { ...prev, isAdofaiV2: false } : prev));
-      }
-      return;
-    }
-
-    setVideoLinkResolving(true);
-
-    resolveVideoLinkRequest(({ signal }) =>
-      resolveSubmissionVideoUrl(videoLink, { signal })
-        .then(async ({ url: resolvedUrl, resolved }) => {
-          if (resolved && resolvedUrl && resolvedUrl !== videoLink) {
-            setForm((prev) => ({ ...prev, videoLink: resolvedUrl }));
-            toast.success(t(copy.videoLinkResolved, { ns: copy.ns, defaultValue: "Short link resolved to Bilibili URL" }));
-          }
-
-          const details = await getVideoDetails(resolvedUrl);
-          setVideoDetail(details || null);
-
-          if (mode === "submit") {
-            const isAdofaiV2 = isAdofaiV2EraVideoTimestamp(details?.timestamp);
-            setForm((prev) => (prev.isAdofaiV2 === isAdofaiV2 ? prev : { ...prev, isAdofaiV2 }));
-          }
-        })
-        .catch((error) => {
-          if (api.isCancel(error)) return;
-          setVideoDetail(null);
-          if (mode === "submit") {
-            setForm((prev) => (prev.isAdofaiV2 ? { ...prev, isAdofaiV2: false } : prev));
-          }
-        })
-        .finally(() => {
-          setVideoLinkResolving(false);
-        }),
-    );
-
-    return () => {
-      resolveVideoLinkRequest.cancel();
-    };
-  }, [form.videoLink, mode, copy, resolveVideoLinkRequest, t]);
 
   const updateAccuracyAndScore = (nextForm, nextLevel) => {
     const lvl = nextLevel ?? level;

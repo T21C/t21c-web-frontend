@@ -32,7 +32,8 @@
             "tilesMin": "<b><code>tilecount:>=1000</code></b> filters levels with at least 1000 tiles.",
             "timeUnits": "<b><code>time:>10m15s</code></b> or <b><code>time:<50s</code></b><br/>Use h/m/s/ms units for chart length.",
             "timeMsPlain": "<b><code>time:>130000</code></b><br/>Plain numbers are interpreted as milliseconds.",
-            "likesRange": "<b><code>likes:>10</code></b> filters levels with more than 10 likes (supports exact values and ranges)."
+            "likesRange": "<b><code>likes:>10</code></b> filters levels with more than 10 likes (supports exact values and ranges).",
+            "clearsRange": "<b><code>clears:>=100</code></b> filters levels with at least 100 clears (supports exact values and ranges)."
           }
         },
         "idsAndLinks": {
@@ -120,6 +121,10 @@
         "likes": {
           "title": "Likes",
           "desc": "Filter by like count. Supports exact values and ranges."
+        },
+        "clears": {
+          "title": "Clears",
+          "desc": "Filter by clear count. Supports exact values and ranges."
         },
         "id": {
           "title": "Level id",

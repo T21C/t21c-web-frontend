@@ -19,6 +19,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { SongSelectorPopup } from '@/components/popups/Songs';
 import { CloseButton } from '@/components/common/buttons';
+import { VideoLinkResolver } from '@/components/common/cores/VideoLinkResolver';
 import { ChartIcon, GraphIcon } from '@/components/common/icons';
 import { AdminLevelChartStatsPopup } from './AdminLevelChartStatsPopup';
 import { AdminLevelXaccCurvePopup } from './AdminLevelXaccCurvePopup';
@@ -838,6 +839,11 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                 value={formData.videoLink}
                 onChange={handleInputChange}
                 disabled={!isFieldAllowed('videoLink')}
+              />
+              <VideoLinkResolver
+                value={formData.videoLink}
+                onResolve={(url) => setFormData((prev) => ({ ...prev, videoLink: url }))}
+                enabled={isFieldAllowed('videoLink')}
               />
             </div>
 

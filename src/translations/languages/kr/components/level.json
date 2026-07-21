@@ -32,7 +32,8 @@
             "tilesMin": "<b><code>tilecount:>=1000</code></b> 타일 1000개 이상.",
             "timeUnits": "<b><code>time:>10m15s</code></b> 또는 <b><code>time:<50s</code></b><br/>h/m/s/ms 단위 사용(채보 길이).",
             "timeMsPlain": "<b><code>time:>130000</code></b><br/>단위 없는 숫자는 밀리초(ms)로 해석됩니다.",
-            "likesRange": "<b><code>likes:>10</code></b> 좋아요 10개 초과 레벨 필터(정확한 값과 범위 지원)."
+            "likesRange": "<b><code>likes:>10</code></b> 좋아요 10개 초과 레벨 필터(정확한 값과 범위 지원).",
+            "clearsRange": "<b><code>clears:>=100</code></b> 클리어 100회 이상 레벨 필터(정확한 값과 범위 지원)."
           }
         },
         "idsAndLinks": {
@@ -73,6 +74,7 @@
         "tilecount": { "title": "타일 수", "desc": "타일 수로 필터(정확/범위)." },
         "time": { "title": "채보 길이", "desc": "채보 길이로 필터(h/m/s/ms 또는 밀리초)." },
         "likes": { "title": "좋아요", "desc": "좋아요 수로 필터(정확/범위)." },
+        "clears": { "title": "클리어", "desc": "클리어 수로 필터(정확/범위)." },
         "id": { "title": "레벨 ID", "desc": "숫자 레벨 ID로 필터(정확/범위)." },
         "hashtag": { "title": "레벨 ID (대체)", "desc": "<code>#123</code> 은 <code>id=123</code> 과 동일합니다." },
         "dlLink": { "title": "다운로드 링크", "desc": "다운로드 링크 문자열로 필터." },

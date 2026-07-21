@@ -213,6 +213,7 @@ const LevelPage = ({
         pguRange: `${selectedLowFilterDiff},${selectedHighFilterDiff}`,
         specialDifficulties: uniqueSpecialDiffs.length > 0 ? uniqueSpecialDiffs.join(',') : undefined,
         onlyMyLikes: user ? onlyMyLikes : undefined,
+        withLikeState: user ? true : undefined,
         availableDlFilter: availableDlFilter || 'show',
         ...(facetQuery ? { facetQuery } : {}),
         ...(hiddenFilters || {}),

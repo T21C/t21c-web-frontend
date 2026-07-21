@@ -1,0 +1,29 @@
+/* tuf-search: #VideoLinkResolver #videoLinkResolver */
+.video-link-resolver {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--color-gray-2);
+}
+
+.video-link-resolver__spinner {
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 50%;
+  border: 2px solid var(--btn-primary-tint);
+  border-top-color: var(--btn-primary);
+  animation: video-link-resolver-spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+.video-link-resolver__label {
+  line-height: 1.2;
+}
+
+@keyframes video-link-resolver-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

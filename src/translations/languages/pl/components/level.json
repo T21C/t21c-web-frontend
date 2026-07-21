@@ -32,7 +32,8 @@
             "tilesMin": "<b><code>tilecount:>=1000</code></b> filtruje poziomy z co najmniej 1000 kafelków.",
             "timeUnits": "<b><code>time:>10m15s</code></b> lub <b><code>time:<50s</code></b><br/>Użyj jednostek h/m/s/ms dla długości chartu.",
             "timeMsPlain": "<b><code>time:>130000</code></b><br/>Gołe liczby są interpretowane jako milisekundy.",
-            "likesRange": "<b><code>likes:>10</code></b> filtruje poziomy z więcej niż 10 polubieniami (wspiera wartości dokładne i zakresy)."
+            "likesRange": "<b><code>likes:>10</code></b> filtruje poziomy z więcej niż 10 polubieniami (wspiera wartości dokładne i zakresy).",
+            "clearsRange": "<b><code>clears:>=100</code></b> filtruje poziomy z co najmniej 100 ukończeniami (wspiera wartości dokładne i zakresy)."
           }
         },
         "idsAndLinks": {
@@ -73,6 +74,7 @@
         "tilecount": { "title": "Liczba kafelków", "desc": "Filtruj po liczbie kafelków (dokładnie lub zakres)." },
         "time": { "title": "Długość chartu", "desc": "Filtruj po długości chartu (h/m/s/ms lub milisekundy)." },
         "likes": { "title": "Polubienia", "desc": "Filtruj po liczbie polubień (dokładnie lub zakres)." },
+        "clears": { "title": "Ukończenia", "desc": "Filtruj po liczbie ukończeń (dokładnie lub zakres)." },
         "id": { "title": "ID poziomu", "desc": "Filtruj po liczbowym id poziomu (dokładnie lub zakres)." },
         "hashtag": { "title": "ID poziomu (alt)", "desc": "Użycie <code>#123</code> jest tym samym co <code>id=123</code>." },
         "dlLink": { "title": "Link do pobrania", "desc": "Filtruj po tekście linku do pobrania." },

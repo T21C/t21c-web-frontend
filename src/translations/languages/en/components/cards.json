@@ -11,6 +11,14 @@
     "buttons": {
       "addToPack": "Add to Pack"
     },
+    "like": {
+      "like": "Like",
+      "unlike": "Unlike",
+      "liked": "Level liked",
+      "unliked": "Level unliked",
+      "failed": "Failed to update like",
+      "loginRequired": "You must be logged in to like levels"
+    },
     "links": {
       "workshop": "Workshop Link",
       "download": "Download Link",
