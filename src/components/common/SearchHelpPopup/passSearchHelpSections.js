@@ -89,10 +89,12 @@ export const PASS_SEARCH_HELP_SECTIONS = [
     introKey: 'pass.helpPopup.v2.groups.idsAndShortcuts.intro',
     fields: [
       { token: '#', titleKey: 'pass.helpPopup.v2.fields.hashtag.title', descKey: 'pass.helpPopup.v2.fields.hashtag.desc' },
+      { token: 'id', titleKey: 'pass.helpPopup.v2.fields.id.title', descKey: 'pass.helpPopup.v2.fields.id.desc' },
       { token: 'player.id', titleKey: 'pass.helpPopup.v2.fields.playerId.title', descKey: 'pass.helpPopup.v2.fields.playerId.desc' },
     ],
     examples: [
       'pass.helpPopup.v2.groups.idsAndShortcuts.examples.hashtag',
+      'pass.helpPopup.v2.groups.idsAndShortcuts.examples.idRange',
       'pass.helpPopup.v2.groups.idsAndShortcuts.examples.playerId',
     ],
   },

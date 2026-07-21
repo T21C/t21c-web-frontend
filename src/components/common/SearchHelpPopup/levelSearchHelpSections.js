@@ -44,12 +44,14 @@ export const LEVEL_SEARCH_HELP_SECTIONS = [
       { token: 'bpm', titleKey: 'level.helpPopup.v2.fields.bpm.title', descKey: 'level.helpPopup.v2.fields.bpm.desc' },
       { token: 'tilecount', titleKey: 'level.helpPopup.v2.fields.tilecount.title', descKey: 'level.helpPopup.v2.fields.tilecount.desc' },
       { token: 'time', titleKey: 'level.helpPopup.v2.fields.time.title', descKey: 'level.helpPopup.v2.fields.time.desc' },
+      { token: 'likes', titleKey: 'level.helpPopup.v2.fields.likes.title', descKey: 'level.helpPopup.v2.fields.likes.desc' },
     ],
     examples: [
       'level.helpPopup.v2.groups.numeric.examples.bpmRange',
       'level.helpPopup.v2.groups.numeric.examples.tilesMin',
       'level.helpPopup.v2.groups.numeric.examples.timeUnits',
       'level.helpPopup.v2.groups.numeric.examples.timeMsPlain',
+      'level.helpPopup.v2.groups.numeric.examples.likesRange',
     ],
   },
   {
@@ -66,6 +68,7 @@ export const LEVEL_SEARCH_HELP_SECTIONS = [
     ],
     examples: [
       'level.helpPopup.v2.groups.idsAndLinks.examples.idExact',
+      'level.helpPopup.v2.groups.idsAndLinks.examples.idRange',
       'level.helpPopup.v2.groups.idsAndLinks.examples.linkMatch',
     ],
   },

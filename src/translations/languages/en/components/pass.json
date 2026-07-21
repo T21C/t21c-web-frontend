@@ -56,6 +56,7 @@
           "intro": "Jump to a specific pass or filter by numeric player id.",
           "examples": {
             "hashtag": "<b><code>#123</code></b> opens pass id 123 directly (search bar shortcut).",
+            "idRange": "<b><code>id:>1000</code></b> filters passes with an id above 1000 (supports exact values and ranges).",
             "playerId": "<b><code>player.id=456</code></b> filters passes by exact player id."
           }
         },
@@ -95,6 +96,10 @@
         "player": {
           "title": "Player name",
           "desc": "Filter by player display name or username."
+        },
+        "id": {
+          "title": "Pass id",
+          "desc": "Filter by numeric pass id. Supports exact values and ranges."
         },
         "playerId": {
           "title": "Player id",

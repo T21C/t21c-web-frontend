@@ -31,14 +31,16 @@
             "bpmRange": "<b><code>bpm:>100, bpm:<200</code></b> filters BPM between 100 and 200.",
             "tilesMin": "<b><code>tilecount:>=1000</code></b> filters levels with at least 1000 tiles.",
             "timeUnits": "<b><code>time:>10m15s</code></b> or <b><code>time:<50s</code></b><br/>Use h/m/s/ms units for chart length.",
-            "timeMsPlain": "<b><code>time:>130000</code></b><br/>Plain numbers are interpreted as milliseconds."
+            "timeMsPlain": "<b><code>time:>130000</code></b><br/>Plain numbers are interpreted as milliseconds.",
+            "likesRange": "<b><code>likes:>10</code></b> filters levels with more than 10 likes (supports exact values and ranges)."
           }
         },
         "idsAndLinks": {
-          "title": "IDs & links (exact filters)",
-          "intro": "Some fields are best used for exact matches or internal identifiers.",
+          "title": "IDs & links",
+          "intro": "Filter by internal identifiers or link text.",
           "examples": {
             "idExact": "<b><code>id=1234</code></b> filters a specific level by numeric id.",
+            "idRange": "<b><code>id:>1000</code></b> filters levels with an id above 1000 (supports ranges).",
             "linkMatch": "<b><code>dlLink:drive.google</code></b> matches download links by partial text. <b><code>workshopLink:steamcommunity</code></b> matches Steam Workshop URLs the same way."
           }
         },
@@ -115,9 +117,13 @@
           "title": "Chart length",
           "desc": "Filter by chart length. Use h/m/s/ms units or plain milliseconds."
         },
+        "likes": {
+          "title": "Likes",
+          "desc": "Filter by like count. Supports exact values and ranges."
+        },
         "id": {
           "title": "Level id",
-          "desc": "Filter by numeric level id."
+          "desc": "Filter by numeric level id. Supports exact values and ranges."
         },
         "hashtag": {
           "title": "Level id (alt)",

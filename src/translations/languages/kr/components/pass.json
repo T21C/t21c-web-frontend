@@ -46,6 +46,7 @@
           "intro": "특정 클리어로 이동하거나 숫자 플레이어 ID로 필터합니다.",
           "examples": {
             "hashtag": "<b><code>#123</code></b> 검색창에 입력하면 클리어 id 123을 바로 불러옵니다.",
+            "idRange": "<b><code>id:>1000</code></b> id가 1000보다 큰 클리어 필터(정확한 값과 범위 지원).",
             "playerId": "<b><code>player.id=456</code></b> 정확한 플레이어 id로 필터."
           }
         },
@@ -68,6 +69,7 @@
         "operatorPipe": { "title": "그룹 간 OR", "desc": "| 로 OR 그룹을 만듭니다. 어느 한 그룹이 만족하면 포함됩니다." },
         "operatorNot": { "title": "NOT (제외)", "desc": "\\! 로 시작하면 해당 단어를 포함한 결과를 제외합니다." },
         "player": { "title": "플레이어 이름", "desc": "플레이어 표시 이름 또는 사용자명으로 필터." },
+        "id": { "title": "클리어 ID", "desc": "숫자 클리어 id로 필터(정확/범위)." },
         "playerId": { "title": "플레이어 ID", "desc": "숫자 플레이어 id로 필터(정확히 일치)." },
         "video": { "title": "영상 링크", "desc": "영상 URL 문자열로 필터." },
         "vidtitle": { "title": "영상 제목", "desc": "클리어 영상 제목으로 필터." },

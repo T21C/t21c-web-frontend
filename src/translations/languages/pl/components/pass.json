@@ -46,6 +46,7 @@
           "intro": "Przejdź do konkretnego przejścia lub filtruj po numerycznym id gracza.",
           "examples": {
             "hashtag": "<b><code>#123</code></b> w pasku wyszukiwania ładuje przejście o id 123.",
+            "idRange": "<b><code>id:>1000</code></b> filtruje przejścia z id powyżej 1000 (wspiera wartości dokładne i zakresy).",
             "playerId": "<b><code>player.id=456</code></b> filtruje przejścia po dokładnym id gracza."
           }
         },
@@ -68,6 +69,7 @@
         "operatorPipe": { "title": "OR między grupami", "desc": "Użyj | aby podzielić zapytanie na grupy OR." },
         "operatorNot": { "title": "NOT (wykluczenie)", "desc": "Prefiks \\! wyklucza wyniki zawierające dany termin." },
         "player": { "title": "Nazwa gracza", "desc": "Filtruj po wyświetlanej nazwie lub nazwie użytkownika." },
+        "id": { "title": "Id przejścia", "desc": "Filtruj po numerycznym id przejścia (dokładnie lub zakres)." },
         "playerId": { "title": "Id gracza", "desc": "Filtruj po numerycznym id gracza (dokładne dopasowanie)." },
         "video": { "title": "Link wideo", "desc": "Filtruj po tekście URL wideo." },
         "vidtitle": { "title": "Tytuł wideo", "desc": "Filtruj po tytule wideo przejścia." },

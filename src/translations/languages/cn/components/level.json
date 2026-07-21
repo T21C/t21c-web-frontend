@@ -31,14 +31,16 @@
             "bpmRange": "<b><code>bpm:>100, bpm:<200</code></b> 搜索 100 到 200 BPM的谱面。",
             "tilesMin": "<b><code>tilecount:>=1000</code></b> 搜索至少有 1000 物量的谱面。",
             "timeUnits": "<b><code>time:>10m15s</code></b> 或 <b><code>time:<50s</code></b><br/>时长支持单位有h（时）、m（分）、s（秒）、ms（毫秒）。",
-            "timeMsPlain": "<b><code>time:>130000</code></b><br/>未加单位时按毫秒计算。"
+            "timeMsPlain": "<b><code>time:>130000</code></b><br/>未加单位时按毫秒计算。",
+            "likesRange": "<b><code>likes:>10</code></b> 搜索点赞数超过 10 的关卡（支持精确值与范围）。"
           }
         },
         "idsAndLinks": {
-          "title": "ID 与链接（精确/内部）",
-          "intro": "部分字段用于精确匹配或内部标识。",
+          "title": "ID 与链接",
+          "intro": "按内部标识或链接文本搜索。",
           "examples": {
             "idExact": "<b><code>id=1234</code></b> 按关卡ID搜索。",
+            "idRange": "<b><code>id:>1000</code></b> 搜索 ID 大于 1000 的关卡（支持范围）。",
             "linkMatch": "<b><code>dlLink:drive.google</code></b> 按下载链接部分文本搜索。<b><code>workshopLink:steamcommunity</code></b> 以同样方式匹配 Steam 创意工坊链接。"
           }
         },
@@ -70,7 +72,8 @@
         "bpm": { "title": "BPM", "desc": "按 BPM 搜索（精确/范围）。" },
         "tilecount": { "title": "物量数", "desc": "按物量数搜索（精确/范围）。" },
         "time": { "title": "谱面时长", "desc": "按谱面时长搜索（时、分、秒或毫秒）。" },
-        "id": { "title": "关卡 ID", "desc": "按关卡 ID 搜索。" },
+        "likes": { "title": "点赞数", "desc": "按点赞数搜索（精确/范围）。" },
+        "id": { "title": "关卡 ID", "desc": "按关卡 ID 搜索（精确/范围）。" },
         "hashtag": { "title": "关卡 ID（简写）", "desc": "<code>#123</code> 和 <code>id=123</code>效果相同。" },
         "dlLink": { "title": "下载链接", "desc": "按下载链接搜索。" },
         "workshopLink": { "title": "创意工坊链接", "desc": "按 Steam 创意工坊（或其他 workshop）URL 搜索，通配规则与 dlLink 相同。" },

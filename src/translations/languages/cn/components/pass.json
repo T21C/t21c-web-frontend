@@ -56,6 +56,7 @@
           "intro": "跳转到指定通关或按数字玩家 ID 筛选。",
           "examples": {
             "hashtag": "<b><code>#123</code></b> 在搜索栏输入可直接打开通关 ID 123。",
+            "idRange": "<b><code>id:>1000</code></b> 筛选 ID 大于 1000 的通关（支持精确值与范围）。",
             "playerId": "<b><code>player.id=456</code></b> 按精确玩家 ID 筛选。"
           }
         },
@@ -95,6 +96,10 @@
         "player": {
           "title": "玩家名称",
           "desc": "按玩家显示名称或用户名筛选。"
+        },
+        "id": {
+          "title": "通关 ID",
+          "desc": "按数字通关 ID 筛选（精确/范围）。"
         },
         "playerId": {
           "title": "玩家 ID",

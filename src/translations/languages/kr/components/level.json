@@ -31,14 +31,16 @@
             "bpmRange": "<b><code>bpm:>100, bpm:<200</code></b> BPM 100~200 범위.",
             "tilesMin": "<b><code>tilecount:>=1000</code></b> 타일 1000개 이상.",
             "timeUnits": "<b><code>time:>10m15s</code></b> 또는 <b><code>time:<50s</code></b><br/>h/m/s/ms 단위 사용(채보 길이).",
-            "timeMsPlain": "<b><code>time:>130000</code></b><br/>단위 없는 숫자는 밀리초(ms)로 해석됩니다."
+            "timeMsPlain": "<b><code>time:>130000</code></b><br/>단위 없는 숫자는 밀리초(ms)로 해석됩니다.",
+            "likesRange": "<b><code>likes:>10</code></b> 좋아요 10개 초과 레벨 필터(정확한 값과 범위 지원)."
           }
         },
         "idsAndLinks": {
-          "title": "ID & 링크 (정확/내부 필터)",
-          "intro": "일부 필드는 정확히 일치하거나 내부 식별자를 대상으로 합니다.",
+          "title": "ID & 링크",
+          "intro": "내부 식별자 또는 링크 문자열로 필터합니다.",
           "examples": {
             "idExact": "<b><code>id=1234</code></b> 특정 레벨 ID로 필터.",
+            "idRange": "<b><code>id:>1000</code></b> ID가 1000보다 큰 레벨 필터(범위 지원).",
             "linkMatch": "<b><code>dlLink:drive.google</code></b> 다운로드 링크 일부 문자열로 필터."
           }
         },
@@ -70,7 +72,8 @@
         "bpm": { "title": "BPM", "desc": "BPM으로 필터(정확/범위)." },
         "tilecount": { "title": "타일 수", "desc": "타일 수로 필터(정확/범위)." },
         "time": { "title": "채보 길이", "desc": "채보 길이로 필터(h/m/s/ms 또는 밀리초)." },
-        "id": { "title": "레벨 ID", "desc": "숫자 레벨 ID로 필터." },
+        "likes": { "title": "좋아요", "desc": "좋아요 수로 필터(정확/범위)." },
+        "id": { "title": "레벨 ID", "desc": "숫자 레벨 ID로 필터(정확/범위)." },
         "hashtag": { "title": "레벨 ID (대체)", "desc": "<code>#123</code> 은 <code>id=123</code> 과 동일합니다." },
         "dlLink": { "title": "다운로드 링크", "desc": "다운로드 링크 문자열로 필터." },
         "legacyDllink": { "title": "레거시 다운로드 링크", "desc": "구형 항목의 레거시 다운로드 링크 문자열로 필터." },
