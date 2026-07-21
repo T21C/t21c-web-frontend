@@ -21,6 +21,10 @@
   "loading": "Loading curations...",
   "empty": "No curations found",
   "creator": "Creator",
+  "appearances": {
+    "featured": "Featured {{times}}× in weeklies",
+    "never": "Not featured yet"
+  },
   "actions": {
     "select": "Select",
     "applySelected": "Apply {{count}} selected"

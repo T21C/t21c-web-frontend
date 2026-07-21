@@ -380,6 +380,17 @@
   height: 20px;
 }
 
+.curation-selection-modal__appearances {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #8a8a8a;
+  text-align: right;
+}
+
+.curation-selection-modal__appearances--featured {
+  color: var(--btn-primary);
+}
+
 .curation-selection-modal__select-btn {
   padding: 0.75rem 1.5rem;
   background-color: var(--btn-primary);

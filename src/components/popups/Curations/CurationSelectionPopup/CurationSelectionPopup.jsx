@@ -198,9 +198,6 @@ const CurationSelectionPopup = ({
           </div>
 
           <div className="curation-selection-modal__type-filters">
-            <p className="curation-selection-modal__type-filter-hint">
-              {t('curationSelectionPopup.filters.mustIncludeHint')}
-            </p>
             <FacetQueryBuilder
               items={curationTypes}
               value={curationFacetFilter}
@@ -314,6 +311,19 @@ const CurationSelectionPopup = ({
                             <span>{difficultyDict[curation.level.diffId].name}</span>
                           </div>
                         )}
+                        <div
+                          className={`curation-selection-modal__appearances ${
+                            curation.weeklyAppearances > 0
+                              ? 'curation-selection-modal__appearances--featured'
+                              : ''
+                          }`}
+                        >
+                          {curation.weeklyAppearances > 0
+                            ? t('curationSelectionPopup.appearances.featured', {
+                                times: curation.weeklyAppearances,
+                              })
+                            : t('curationSelectionPopup.appearances.never')}
+                        </div>
                       </div>
                     </div>
 
