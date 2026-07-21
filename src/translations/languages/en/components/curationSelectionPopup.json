@@ -3,7 +3,7 @@
   "description": "Choose a curation to add to the weekly schedule",
   "descriptionMulti": "Filter by level curation types, then pick one or more curations",
   "filters": {
-    "facetBuilderTitle": "Filter by curation types (simple or advanced)",
+    "facetBuilderTitle": "Filter by curation types",
     "search": "Search",
     "searchPlaceholder": "Search by song, artist, or creator...",
     "type": "Curation Type",

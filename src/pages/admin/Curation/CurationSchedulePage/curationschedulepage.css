@@ -101,6 +101,82 @@
   text-align: center;
 }
 
+.curation-schedule-page__fill-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1rem 1.25rem;
+  flex-wrap: wrap;
+}
+
+.curation-schedule-page__fill-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.curation-schedule-page__fill-text h3 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.15rem;
+}
+
+.curation-schedule-page__fill-text p {
+  margin: 0;
+  color: #a0a0a0;
+  font-size: 0.9rem;
+  max-width: 620px;
+}
+
+.curation-schedule-page__fill-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.curation-schedule-page__fill-btn {
+  padding: 0.6rem 1.1rem;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  color: #ffffff;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.curation-schedule-page__fill-btn--primary {
+  background: var(--btn-primary-alt);
+}
+
+.curation-schedule-page__fill-btn--primary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--btn-primary-alt) 80%, #fff);
+}
+
+.curation-schedule-page__fill-btn--secondary {
+  background: var(--btn-primary);
+}
+
+.curation-schedule-page__fill-btn--secondary:hover:not(:disabled) {
+  background: var(--btn-primary-light-hover);
+}
+
+.curation-schedule-page__fill-btn--both {
+  background: transparent;
+  border-color: var(--btn-primary);
+  color: var(--btn-primary);
+}
+
+.curation-schedule-page__fill-btn--both:hover:not(:disabled) {
+  background: var(--btn-primary-tint);
+}
+
+.curation-schedule-page__fill-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .curation-schedule-page__loading {
   text-align: center;
   padding: 1.5rem;
@@ -425,6 +501,21 @@
   .curation-schedule-page__week-title {
     font-size: 1.25rem;
     order: -1;
+  }
+
+  .curation-schedule-page__fill-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .curation-schedule-page__fill-actions {
+    justify-content: stretch;
+  }
+
+  .curation-schedule-page__fill-btn {
+    flex: 1;
+    min-height: 44px;
   }
 
   .curation-schedule-page__hall-section {

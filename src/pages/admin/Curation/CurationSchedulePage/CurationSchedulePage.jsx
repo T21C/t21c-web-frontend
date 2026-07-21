@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
 import { NavLink, useLocation } from 'react-router-dom';
 import { CurationSelectionPopup } from '@/components/popups/Curations';
-import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { hasAnyFlag, permissionFlags } from '@/utils/UserPermissions';
 import { canAssignCurationType } from '@/utils/curationTypeUtils';
 import { formatDate } from '@/utils/Utility';
 import i18next from 'i18next';
@@ -35,6 +35,7 @@ const CurationSchedulePage = () => {
   );
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isFilling, setIsFilling] = useState(false);
   const [schedules, setSchedules] = useState([]);
   const [currentMonday, setCurrentMonday] = useState(getCurrentMonday(new Date()));
   const [showCurationSelection, setShowCurationSelection] = useState(false);
@@ -68,9 +69,7 @@ const CurationSchedulePage = () => {
   };
 
   useEffect(() => {
-    if (hasFlag(user, permissionFlags.SUPER_ADMIN)) {
-      fetchSchedules();
-    }
+    fetchSchedules();
   }, [user, currentMonday]);
 
   const fetchSchedules = async () => {
@@ -127,6 +126,27 @@ const CurationSchedulePage = () => {
       fetchSchedules();
     } catch (error) {
       toast.error(error.response?.data?.error || 'Failed to remove curation');
+    }
+  };
+
+  const handleFill = async (halls) => {
+    try {
+      setIsFilling(true);
+      const response = await api.post(`${routes.admin.curations.schedules()}/fill`, {
+        weekStart: currentMonday.toISOString().split('T')[0],
+        halls,
+      });
+      const created = response.data?.created ?? 0;
+      if (created > 0) {
+        toast.success(t('curationSchedule.fill.notifications.filled', { added: created }));
+      } else {
+        toast(t('curationSchedule.fill.notifications.none'));
+      }
+      fetchSchedules();
+    } catch (error) {
+      toast.error(error.response?.data?.error || t('curationSchedule.fill.notifications.failed'));
+    } finally {
+      setIsFilling(false);
     }
   };
 
@@ -210,6 +230,39 @@ const CurationSchedulePage = () => {
             {t('curationSchedule.nextWeek')} <ChevronIcon direction="right" />
           </button>
         </div>
+
+        {/* Auto-fill actions */}
+        {hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.HEAD_CURATOR]) && (
+          <div className="curation-schedule-page__fill-bar curation-schedule-page__panel">
+            <div className="curation-schedule-page__fill-text">
+              <h3>{t('curationSchedule.fill.title')}</h3>
+              <p>{t('curationSchedule.fill.description')}</p>
+            </div>
+            <div className="curation-schedule-page__fill-actions">
+              <button
+                className="curation-schedule-page__fill-btn curation-schedule-page__fill-btn--primary"
+                onClick={() => handleFill('primary')}
+                disabled={isFilling}
+              >
+                {t('curationSchedule.fill.legendary')}
+              </button>
+              <button
+                className="curation-schedule-page__fill-btn curation-schedule-page__fill-btn--secondary"
+                onClick={() => handleFill('secondary')}
+                disabled={isFilling}
+              >
+                {t('curationSchedule.fill.loved')}
+              </button>
+              <button
+                className="curation-schedule-page__fill-btn curation-schedule-page__fill-btn--both"
+                onClick={() => handleFill('both')}
+                disabled={isFilling}
+              >
+                {t('curationSchedule.fill.both')}
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Primary Hall of Fame */}
         <div className="curation-schedule-page__hall-section curation-schedule-page__panel">
