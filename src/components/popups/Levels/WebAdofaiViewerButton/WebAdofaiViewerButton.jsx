@@ -1,13 +1,16 @@
 // tuf-search: #WebAdofaiViewerButton #webAdofai #levelDetail
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Portal } from "@/components/common/Portal";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 import "./webadofaiviewerbutton.css";
 
 const WEB_ADOFAI_LEVEL_URL = "https://web-adofai.impl1113.dev/levels";
+const WEB_ADOFAI_ORIGIN = new URL(WEB_ADOFAI_LEVEL_URL).origin;
+const WEB_ADOFAI_CLOSE_REQUEST_TYPE = "web-adofai:close-request";
 
 const WebAdofaiViewerButton = ({ levelId }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const iframeRef = useRef(null);
   const iframeSrc = useMemo(() => {
     if (!levelId) return null;
     return `${WEB_ADOFAI_LEVEL_URL}/${encodeURIComponent(levelId)}?embed=true`;
@@ -32,6 +35,23 @@ const WebAdofaiViewerButton = ({ levelId }) => {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isOpen]);
 
+  useEffect(() => {
+    if (!isOpen) return undefined;
+
+    const handleMessage = (event) => {
+      if (
+        event.origin === WEB_ADOFAI_ORIGIN &&
+        event.source === iframeRef.current?.contentWindow &&
+        event.data?.type === WEB_ADOFAI_CLOSE_REQUEST_TYPE
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, [isOpen]);
+
   if (!iframeSrc) return null;
 
   const modal = isOpen ? (
@@ -50,15 +70,8 @@ const WebAdofaiViewerButton = ({ levelId }) => {
         aria-modal="true"
         aria-label="Web ADOFAI level viewer"
       >
-        <button
-          type="button"
-          className="web-adofai-viewer-close"
-          aria-label="Close Web ADOFAI viewer"
-          onClick={() => setIsOpen(false)}
-        >
-          x
-        </button>
         <iframe
+          ref={iframeRef}
           className="web-adofai-viewer-frame"
           title="Web ADOFAI level viewer"
           src={iframeSrc}
