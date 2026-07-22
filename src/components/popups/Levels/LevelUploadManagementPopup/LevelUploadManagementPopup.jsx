@@ -15,6 +15,22 @@ import { useJobProgressStream } from '@/hooks/useJobProgressStream';
 import ZipLevelFilesList from '@/components/popups/Levels/ZipLevelFilesList/ZipLevelFilesList';
 import { ARCHIVE_ACCEPT_ATTR, isAcceptedArchiveFile } from '@/utils/zipUtils';
 
+/** Pseudo UUID v4-shaped id (hex from Date.now + Math.random; non-crypto). */
+function createUploadJobId() {
+  const timeHex = Date.now().toString(16).padStart(12, '0').slice(-12);
+  let randHex = '';
+  while (randHex.length < 20) {
+    randHex += Math.floor(Math.random() * 0x100000000)
+      .toString(16)
+      .padStart(8, '0');
+  }
+  const chars = (timeHex + randHex.slice(0, 20)).split('');
+  chars[12] = '4';
+  chars[16] = ((parseInt(chars[16], 16) & 0x3) | 0x8).toString(16);
+  const h = chars.join('');
+  return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`;
+}
+
 const LevelUploadManagementPopup = ({
   level,
   formData,
@@ -318,7 +334,7 @@ const LevelUploadManagementPopup = ({
       const maxAttempts = 2;
       let lastError = null;
       for (let attempt = 0; attempt < maxAttempts; attempt++) {
-        const jobId = crypto.randomUUID();
+        const jobId = createUploadJobId();
         setCdnJobId(jobId);
         const forceNew = attempt > 0;
 
@@ -440,7 +456,7 @@ const LevelUploadManagementPopup = ({
       uploadFailureHandledRef.current = false;
       setIsUploading(true);
       setUploadProgress(0);
-      const jobId = crypto.randomUUID();
+      const jobId = createUploadJobId();
       setCdnJobId(jobId);
 
       const response = await api.post(
