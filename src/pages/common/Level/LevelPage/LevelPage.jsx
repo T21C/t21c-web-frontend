@@ -212,7 +212,7 @@ const LevelPage = ({
         clearedFilter: clearedFilter || 'show',
         pguRange: `${selectedLowFilterDiff},${selectedHighFilterDiff}`,
         specialDifficulties: uniqueSpecialDiffs.length > 0 ? uniqueSpecialDiffs.join(',') : undefined,
-        onlyMyLikes: user ? onlyMyLikes : undefined,
+        onlyMyLikes: user && onlyMyLikes ? true : undefined,
         withLikeState: user ? true : undefined,
         availableDlFilter: availableDlFilter || 'show',
         ...(facetQuery ? { facetQuery } : {}),
@@ -258,7 +258,21 @@ const LevelPage = ({
           api.get(`${routes.database.levels.root()}/byId/${query.slice(1)}`, { signal })
         );
         if (response.data) {
-          setLevelsData([response.data]);
+          let level = response.data;
+          // byId is role-cached (not per-user); merge like state with one call for this single row.
+          if (user?.id && level?.id != null) {
+            try {
+              const likedRes = await api.get(routes.database.levels.isLiked(level.id));
+              level = {
+                ...level,
+                isLiked: !!likedRes.data?.isLiked,
+                likes: likedRes.data?.likes !== undefined ? likedRes.data.likes : level.likes,
+              };
+            } catch {
+              // Leave unannotated; card treats missing isLiked as false.
+            }
+          }
+          setLevelsData([level]);
           setTotalLevels(1);
           setHasMore(false);
         } else {

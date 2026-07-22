@@ -504,6 +504,7 @@ export default function PassSubmissionEditableMeta({
                         <h2 className="level-info-sub">{truncateString(levelPreview.song, 30)}</h2>
                         <div className="level-info-sub">
                           <span>{truncateString(levelPreview.artist, 15)}</span>
+                          {" | "}
                           <span>{formatCreatorDisplay(levelPreview)}</span>
                         </div>
                       </div>

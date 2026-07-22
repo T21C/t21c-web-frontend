@@ -138,27 +138,10 @@ const LevelCard = ({
     setLikeCount(level?.likes ?? 0);
     if (typeof level?.isLiked === 'boolean') {
       setIsLiked(level.isLiked);
+    } else {
+      setIsLiked(false);
     }
   }, [level?.id, level?.likes, level?.isLiked]);
-
-  // Bootstrap like state for surfaces that don't annotate isLiked (song detail,
-  // packs, byId path). Skipped for guests and when already annotated.
-  useEffect(() => {
-    if (!user?.id || level?.id == null) return undefined;
-    if (typeof level?.isLiked === 'boolean') return undefined;
-    let cancelled = false;
-    api
-      .get(routes.database.levels.isLiked(level.id))
-      .then((res) => {
-        if (cancelled) return;
-        setIsLiked(!!res.data?.isLiked);
-        if (res.data?.likes !== undefined) setLikeCount(res.data.likes);
-      })
-      .catch(() => {});
-    return () => {
-      cancelled = true;
-    };
-  }, [user?.id, level?.id, level?.isLiked]);
 
   // Handlers
   const handleLikeToggle = async (e) => {
@@ -363,7 +346,7 @@ const LevelCard = ({
             }
           >
             <div className="icon-value">{likeCount || 0}</div>
-            <LikeIcon color={isLiked ? "#ff2222" : "#ffffff00"} size={"22px"}/>
+            <LikeIcon size={"22px"}/>
           </button>
         ) : (
           <div className="icon-wrapper" data-opacity={likeCount ? 1 : 0}>
@@ -650,8 +633,11 @@ const LevelCard = ({
 
         <div className="level-card-wrapper">
           <Link className="level-card__link-wrap" to={levelDetailTo} aria-label={getSongDisplayName(level)}>
-            {renderLinkContent({ showLikes: false })}
+            {renderLinkContent({ showStats: false })}
           </Link>
+          <div className="level-card__stats">
+            {renderStatsIcons({ showLikes: true })}
+          </div>
           {renderDownloadLinks({ showAddToPack: false, editMarginZero: true, showDelete: canEdit, showTufHelperLite: true })}
         </div>
 
