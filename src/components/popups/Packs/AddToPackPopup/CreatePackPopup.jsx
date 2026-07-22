@@ -11,10 +11,12 @@ import { getCdnErrorMessage } from '@/utils/uploadErrors';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { useAuth } from '@/contexts/AuthContext';
 import { LevelPackViewModes } from '@/utils/constants';
+import { usePackContext } from '@/contexts/PackContext';
 
 const CreatePackPopup = ({ onClose, onCreate }) => {
   const { t } = useTranslation('components');
   const { user } = useAuth();
+  const { triggerRefresh } = usePackContext();
   
   const [formData, setFormData] = useState({
     name: '',
@@ -100,15 +102,18 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
 
     setLoading(true);
     try {
-      // Create pack without icon first
-      const packData = { ...formData };
-      delete packData.iconFile; // Remove the file from pack data
-      delete packData.iconUrl; // Remove the preview URL
+      // Create pack without icon first (icon is uploaded to CDN after we have a pack id)
+      const packData = {
+        name: formData.name,
+        cssFlags: formData.cssFlags,
+        viewMode: formData.viewMode,
+        isPinned: formData.isPinned,
+      };
       
       const newPack = await onCreate(packData);
       
-      // Upload icon if one was selected
-      if (formData.iconFile && newPack) {
+      // Upload icon if one was selected — must happen before closing so the file is still available
+      if (formData.iconFile && newPack?.id) {
         try {
           const iconFormData = new FormData();
           iconFormData.append('icon', formData.iconFile);
@@ -140,6 +145,11 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
           });
         }
       }
+
+      toast.success(t('packPopups.createPack.success.created'));
+      // Refresh after icon upload so the list shows the new iconUrl
+      triggerRefresh();
+      onClose();
     } catch (error) {
       console.error('Error creating pack:', error);
       toast.error(t('packPopups.createPack.errors.createFailed'));
@@ -215,7 +225,11 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
                     <button
                       type="button"
                       className="create-pack-popup__icon-remove-btn"
-                      onClick={() => handleInputChange('iconUrl', '')}
+                      onClick={() => setFormData((prev) => ({
+                        ...prev,
+                        iconUrl: '',
+                        iconFile: undefined,
+                      }))}
                     >
                       {t('packPopups.createPack.icon.remove')}
                     </button>

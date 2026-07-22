@@ -551,6 +551,7 @@
     font-size: 1.1rem;
     word-break: break-word;
     max-width: 250px;
+    transition: color 0.2s ease;
   }
 
 
@@ -1611,6 +1612,17 @@
     flex-direction: column;
     gap: 4px;
   }
+
+  .submission-admin-page .submitter-link {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .submission-admin-page .submitter-link:hover .detail-value {
+    color: var(--btn-admin-purple);
+  }
+
 
   .submission-admin-page .detail-subvalue {
     font-size: 0.8rem;

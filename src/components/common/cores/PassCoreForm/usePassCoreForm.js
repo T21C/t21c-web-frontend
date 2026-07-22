@@ -261,7 +261,7 @@ export function usePassCoreForm({
   useEffect(() => {
     validate(form);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [form, level, videoDetail, submitAttempt, isUDiff, keyCountRequired]);
+  }, [form, level, videoDetail, submitAttempt, isUDiff, keyCountRequired, extraValidation]);
 
   const handleInputChange = (e) => {
     const { name, type, value, checked } = e.target;

@@ -4,6 +4,7 @@ import { getVideoDetails } from "@/utils";
 import placeholder from "@/assets/placeholder/1.png"
 import "../adminsubmissionpage.css";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { VirtualList } from '@/components/common/VirtualList';
 import { useTranslation } from "react-i18next";
 import { isImageUrl } from "@/utils/Utility";
@@ -1161,10 +1162,22 @@ const LevelSubmissions = () => {
 
                   <div className="detail-row">
                     <span className="detail-label">{t('levelSubmissions.details.submitter')}</span>
-                    <div className="submitter-details">
-                      <span className="detail-value">{submission.submitterDiscordUsername? `@${submission.submitterDiscordUsername}` : submission.levelSubmitter?.username || "Null"}</span>
-                      <span className="detail-subvalue">#{submission.levelSubmitter?.playerId || "Null"}</span>
-                    </div>
+                    {submission.levelSubmitter?.playerId != null ? (
+                      <Link
+                        to={`/profile/${submission.levelSubmitter.playerId}`}
+                        className="submitter-details submitter-link"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <span className="detail-value">{submission.submitterDiscordUsername? `@${submission.submitterDiscordUsername}` : submission.levelSubmitter?.username || "Null"}</span>
+                        <span className="detail-subvalue">#{submission.levelSubmitter.playerId}</span>
+                      </Link>
+                    ) : (
+                      <div className="submitter-details">
+                        <span className="detail-value">{submission.submitterDiscordUsername? `@${submission.submitterDiscordUsername}` : submission.levelSubmitter?.username || "Null"}</span>
+                        <span className="detail-subvalue">#{submission.levelSubmitter?.playerId || "Null"}</span>
+                      </div>
+                    )}
                     {submission.levelSubmitter && (
                       <CreatorIcon
                         className={`creator-assignment-button ${submission.levelSubmitter?.creator ? 'has-creator' : 'no-creator'}`}

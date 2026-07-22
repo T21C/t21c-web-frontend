@@ -4,7 +4,7 @@ import { routes } from '@/api/routes';
 import "./passsubmission.css";
 import placeholder from "@/assets/placeholder/3.png";
 import { submitPass } from "@/utils/submissions/passSubmission";
-import { useEffect, useState, useRef, useMemo } from "react";
+import { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { FetchIcon } from "@/components/common/icons";
@@ -105,6 +105,15 @@ const PassSubmissionPage = () => {
     return "#28a745";
   };
 
+  // Keep stable so usePassCoreForm re-validates when checkbox (or other extras) change
+  const extraValidation = useCallback(
+    ({ form: nextForm }) => ({
+      playerId: Boolean(nextForm.playerId),
+      rulesAccepted: hasReadPassRules,
+    }),
+    [hasReadPassRules],
+  );
+
   const {
     form,
     setForm,
@@ -132,10 +141,7 @@ const PassSubmissionPage = () => {
       difficultyDict[lvl?.diffId]?.name?.[0] === "U" || difficultyDict[lvl?.diffId]?.name?.[0] === "Q",
     isKeyCountRequiredLevel: (lvl) =>
       difficultyRequiresPassKeyCount(difficultyDict[lvl?.diffId]?.name),
-    extraValidation: ({ form: nextForm }) => ({
-      playerId: Boolean(nextForm.playerId),
-      rulesAccepted: hasReadPassRules,
-    }),
+    extraValidation,
   });
 
   // Save hasReadPassRules state to cookie whenever it changes
@@ -258,9 +264,17 @@ const PassSubmissionPage = () => {
       return;
     }
 
-    
-    const validityEntries =
-      isFormValid && typeof isFormValid === 'object' ? Object.entries(isFormValid) : [];
+    // Merge live extras so submit does not rely on a stale validation effect tick
+    // (e.g. rules checkbox toggled last, or restored from cookie without a form change).
+    const validity =
+      isFormValid && typeof isFormValid === 'object'
+        ? {
+            ...isFormValid,
+            playerId: Boolean(form.playerId),
+            rulesAccepted: hasReadPassRules,
+          }
+        : { playerId: Boolean(form.playerId), rulesAccepted: hasReadPassRules };
+    const validityEntries = Object.entries(validity);
     const invalidKeys = validityEntries.filter(([, ok]) => !ok).map(([k]) => k);
 
     if (invalidKeys.length > 0) {

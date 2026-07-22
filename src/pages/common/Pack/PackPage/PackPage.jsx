@@ -18,7 +18,6 @@ import { buildStaticPageMeta } from '@/utils/meta';
 import { SortAscIcon, SortDescIcon, ResetIcon, SortIcon, FilterIcon, SwitchIcon, LikeIcon } from "@/components/common/icons";
 import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
 import { CreatePackPopup, PackHelpPopup } from "@/components/popups/Packs";
-import toast from 'react-hot-toast';
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { LevelPackViewModes } from "@/utils/constants";
 import { normalizePackSearchQuery } from '@/utils/normalizeEntitySearchQuery';
@@ -108,14 +107,8 @@ const PackPageContent = () => {
 
   // Handle create pack
   const handleCreatePack = async (packData) => {
-    try {
-      await createPack(packData);
-      setShowCreatePopup(false);
-      toast.success(t('pack.create.success'));
-    } catch (error) {
-      console.error('Error creating pack:', error);
-      toast.error(t('pack.create.error'));
-    }
+    // Return the created pack so CreatePackPopup can upload the icon before closing.
+    return await createPack(packData);
   };
 
   const canCreatePack = user && (

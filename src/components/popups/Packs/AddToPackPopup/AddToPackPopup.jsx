@@ -165,18 +165,10 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
 
   // Handle creating new pack
   const handleCreatePack = async (packData) => {
-    try {
-      const newPack = await createPack(packData);
-      setShowCreatePopup(false);
-      toast.success(t('packPopups.addToPack.success.packCreated'));
-      // Auto-select the newly created pack
-      setSelectedPackId(newPack.id);
-      // Refresh user packs to include the new pack
-      fetchUserPacks();
-    } catch (error) {
-      console.error('Error creating pack:', error);
-      toast.error(t('packPopups.addToPack.errors.createFailed'));
-    }
+    // Return the created pack so CreatePackPopup can upload the icon before closing.
+    const newPack = await createPack(packData);
+    setSelectedPackId(newPack.id);
+    return newPack;
   };
 
   // Handle looking up level in packs
@@ -408,7 +400,10 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
 
       {showCreatePopup && (
         <CreatePackPopup
-          onClose={() => setShowCreatePopup(false)}
+          onClose={() => {
+            setShowCreatePopup(false);
+            fetchUserPacks();
+          }}
           onCreate={handleCreatePack}
         />
       )}
