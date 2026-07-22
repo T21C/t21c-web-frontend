@@ -351,7 +351,7 @@ const LevelCard = ({
         ) : (
           <div className="icon-wrapper" data-opacity={likeCount ? 1 : 0}>
             <div className="icon-value">{likeCount || 0}</div>
-            <LikeIcon color={"#ffffff00"} size={"22px"}/>
+            <LikeIcon color={"#ffffff"} size={"22px"}/>
           </div>
         )
       )}
