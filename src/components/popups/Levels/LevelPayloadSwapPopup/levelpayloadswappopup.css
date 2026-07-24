@@ -1,0 +1,109 @@
+.level-payload-swap-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.65);
+}
+
+.level-payload-swap-popup button {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+}
+
+
+.level-payload-swap-popup__dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: min(520px, 100%);
+  max-height: min(90vh, 640px);
+  padding: 1.25rem 1.5rem;
+  border-radius: 8px;
+  background: var(--color-black, #090909);
+  color: var(--text-color, #f9fafb);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  overflow: auto;
+}
+
+.level-payload-swap-popup__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.level-payload-swap-popup__header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.level-payload-swap-popup__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.level-payload-swap-popup__explanation {
+  margin: 0;
+  line-height: 1.45;
+  color: var(--color-gray-2, #cacaca);
+}
+
+.level-payload-swap-popup__note {
+  margin: 0;
+  line-height: 1.4;
+  color: var(--color-gray-2, #cacaca);
+  font-size: 0.9rem;
+}
+
+.level-payload-swap-popup__pair {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.level-payload-swap-popup__slot {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.75rem 0.875rem;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.level-payload-swap-popup__slot-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-gray-3, #838383);
+}
+
+.level-payload-swap-popup__slot-value {
+  font-weight: 500;
+  word-break: break-word;
+}
+
+.level-payload-swap-popup__slot-placeholder {
+  color: var(--color-gray-3, #838383);
+  font-style: italic;
+}
+
+.level-payload-swap-popup__pick-btn {
+  align-self: flex-start;
+  margin-top: 0.25rem;
+  padding: 0.5rem 1rem;
+}
+
+.level-payload-swap-popup__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  align-items: center;
+}
+

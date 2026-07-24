@@ -48,22 +48,38 @@ const LevelSelectionPopup = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [inputValue, setInputValue] = useState('1');
-  const [mouseDownOutside, setMouseDownOutside] = useState(false);
   const [selectedZipKey, setSelectedZipKey] = useState(null);
   const [isConfirmingZip, setIsConfirmingZip] = useState(false);
   const modalRef = useRef(null);
 
-  const handleMouseDown = (e) => {
-    if (modalRef.current && !modalRef.current.contains(e.target)) {
-      setMouseDownOutside(true);
+  useEffect(() => {
+    if (!isOpen) {
+      return undefined;
     }
+    const handleEscape = (event) => {
+      if (event.key !== 'Escape') {
+        return;
+      }
+      event.preventDefault();
+      event.stopPropagation();
+      onClose();
+    };
+    document.addEventListener('keydown', handleEscape, true);
+    return () => {
+      document.removeEventListener('keydown', handleEscape, true);
+    };
+  }, [isOpen, onClose]);
+
+  const handleBackdropClick = (e) => {
+    if (e.target !== e.currentTarget) {
+      return;
+    }
+    e.stopPropagation();
+    onClose();
   };
 
-  const handleMouseUp = (e) => {
-    if (mouseDownOutside && modalRef.current && !modalRef.current.contains(e.target)) {
-      onClose();
-    }
-    setMouseDownOutside(false);
+  const handleContentClick = (e) => {
+    e.stopPropagation();
   };
 
   async function fetchLevels() {
@@ -91,16 +107,11 @@ const LevelSelectionPopup = ({
     if (!isOpen) {
       return undefined;
     }
-    document.addEventListener('mousedown', handleMouseDown);
-    document.addEventListener('mouseup', handleMouseUp);
     if (!zipPickerMode) {
       void fetchLevels();
     }
-    return () => {
-      document.removeEventListener('mousedown', handleMouseDown);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isOpen, zipPickerMode, mouseDownOutside]);
+    return undefined;
+  }, [isOpen, zipPickerMode]);
 
   useEffect(() => {
     if (!isOpen || zipPickerMode) {
@@ -200,10 +211,11 @@ const LevelSelectionPopup = ({
 
   if (zipPickerMode) {
     return (
-      <div className="level-selection-modal">
+      <div className="level-selection-modal" onClick={handleBackdropClick}>
         <div
           className="level-selection-modal__content submission-zip-level-modal"
           ref={modalRef}
+          onClick={handleContentClick}
         >
           <CloseButton
             variant="floating"
@@ -245,8 +257,12 @@ const LevelSelectionPopup = ({
   }
 
   return (
-    <div className="level-selection-modal">
-      <div className="level-selection-modal__content" ref={modalRef}>
+    <div className="level-selection-modal" onClick={handleBackdropClick}>
+      <div
+        className="level-selection-modal__content"
+        ref={modalRef}
+        onClick={handleContentClick}
+      >
         <CloseButton
           variant="floating"
           className="level-selection-modal__close-button"

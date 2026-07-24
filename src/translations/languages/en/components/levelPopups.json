@@ -151,6 +151,27 @@
       }
     }
   },
+  "payloadSwap": {
+    "openButton": "Swap",
+    "openButtonTitle": "Swap chart details with another level",
+    "title": "Swap level details",
+    "close": "Close",
+    "explanation": "This exchanges chart details between two level ids.",
+    "note": "Passes, ratings, creators, packs, and other linked data move with the chart. Likes stay on each level number.",
+    "thisLevel": "This level",
+    "otherLevel": "Other level",
+    "noTarget": "No level selected",
+    "chooseTarget": "Choose other level",
+    "changeTarget": "Change level",
+    "cancel": "Cancel",
+    "confirm": "Swap details",
+    "swapping": "Swapping…",
+    "toastSuccess": "Level details swapped",
+    "errors": {
+      "sameLevel": "Pick a different level",
+      "swap": "Failed to swap level details"
+    }
+  },
   "download": {
     "title": "Download Options",
     "close": "Close",

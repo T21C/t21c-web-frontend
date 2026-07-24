@@ -9,6 +9,7 @@ import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { useTranslation } from 'react-i18next';
 import AliasManagementPopup from './AliasManagementPopup';
 import LevelUploadManagementPopup from '../LevelUploadManagementPopup/LevelUploadManagementPopup';
+import LevelPayloadSwapPopup from '../LevelPayloadSwapPopup/LevelPayloadSwapPopup';
 import { UploadIcon, RefreshIcon } from '@/components/common/icons';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -114,6 +115,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     };
   }, [level, formData.baseScore, formData.diffId, difficulties]);
   const [showAliasManagement, setShowAliasManagement] = useState(false);
+  const [showPayloadSwap, setShowPayloadSwap] = useState(false);
   const [showUploadManagement, setShowUploadManagement] = useState(false);
   const [showTagManagement, setShowTagManagement] = useState(false);
   const [levelTags, setLevelTags] = useState([]);
@@ -126,13 +128,6 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
   const navigate = useNavigate();
   useEffect(() => {
     let cancelled = false;
-
-    const handleEsc = (e) => {
-      if (e.key === 'Escape') {
-        handleClose();
-      }
-    };
-    window.addEventListener('keydown', handleEsc);
 
     const run = async () => {
       if (!level) {
@@ -205,9 +200,33 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
 
     return () => {
       cancelled = true;
-      window.removeEventListener('keydown', handleEsc);
     };
   }, [level, isSuperAdmin]);
+
+  const hasNestedPopupOpen =
+    showPayloadSwap ||
+    showSongSelector ||
+    showUploadManagement ||
+    showTagManagement ||
+    showAliasManagement ||
+    showChartStatsPopup ||
+    showXaccCurvePopup;
+
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key !== 'Escape') {
+        return;
+      }
+      if (hasNestedPopupOpen) {
+        return;
+      }
+      handleClose();
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => {
+      window.removeEventListener('keydown', handleEsc);
+    };
+  }, [hasNestedPopupOpen, hasUnsavedChanges]);
 
   useBodyScrollLock(true);
 
@@ -554,6 +573,9 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
   };
 
   const handleOverlayClick = (e) => {
+    if (hasNestedPopupOpen) {
+      return;
+    }
     if (e.target === e.currentTarget) {
       handleClose();
     }
@@ -569,19 +591,19 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
         <div className="popup-header">
           <h2>{t('levelPopups.edit.title')}</h2>
           <div className="popup-actions">
-            {/* deprecated 
-            <button 
-              className="manage-aliases-btn"
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowAliasManagement(true);
-              }}
-              title={t('levelPopups.edit.manageAliases')}
-              disabled={!isSuperAdmin}
-            >
-              {t('levelPopups.edit.manageAliases')}
-            </button>
-            */}
+            {isSuperAdmin && (
+              <button
+                type="button"
+                className="swap-payload-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowPayloadSwap(true);
+                }}
+                title={t('levelPopups.payloadSwap.openButtonTitle')}
+              >
+                {t('levelPopups.payloadSwap.openButton')}
+              </button>
+            )}
             <CloseButton
               className="edit-level-popup-header-close"
               variant="floating"
@@ -1040,6 +1062,19 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
             if (onUpdate) {
               onUpdate(updatedLevel);
             }
+          }}
+        />
+      )}
+
+      {showPayloadSwap && (
+        <LevelPayloadSwapPopup
+          sourceLevel={level}
+          onClose={() => setShowPayloadSwap(false)}
+          onSuccess={(swappedLevel) => {
+            if (onUpdate) {
+              onUpdate({ level: swappedLevel });
+            }
+            setHasUnsavedChanges(false);
           }}
         />
       )}

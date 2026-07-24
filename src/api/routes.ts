@@ -208,6 +208,8 @@ export const routes = {
       byId: (id: string | number) => `/v2/database/levels/${enc(id)}`,
       byIdQuery: (id: string | number) => `/v2/database/levels/byId/${enc(id)}`,
       own: (id: string | number) => `/v2/database/levels/own/${enc(id)}`,
+      swapPayload: (id: string | number) =>
+        `/v2/database/levels/${enc(id)}/swap-payload`,
       tournamentAppearances: (id: string | number) =>
         `/v2/database/levels/${enc(id)}/tournament-appearances`,
       packs: {

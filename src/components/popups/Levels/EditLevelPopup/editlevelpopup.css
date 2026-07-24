@@ -784,6 +784,27 @@
   align-items: center;
 }
 
+.edit-level-popup .swap-payload-btn {
+  background-color: var(--btn-primary);
+  color: var(--color-white);
+  margin-right: 2rem;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.edit-level-popup .swap-payload-btn:hover:not(:disabled) {
+  background-color: var(--btn-primary-hover);
+}
+
+.edit-level-popup .swap-payload-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  user-select: none;
+}
+
 .edit-level-popup .manage-aliases-btn {
   background-color: #4a90e2;
   color: #ffffff;
