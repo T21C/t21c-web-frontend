@@ -2,9 +2,6 @@
   "title": "Top Raters",
   "loading": "Loading top raters...",
   "noRaters": "No raters found for the selected period",
-  "filters": {
-    "title": "Filters & Stats"
-  },
   "dateSelector": {
     "startDate": "Start Date",
     "endDate": "End Date"

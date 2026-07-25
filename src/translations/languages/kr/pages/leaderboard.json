@@ -42,17 +42,61 @@
     "generalScore": "일반 점수",
     "ppScore": "완벽한 플레이 점수",
     "wfScore": "최초 점수",
-    "wfPPScore": "최초 PP 점수",
+    "wfPPScore": "최초 완플 점수",
     "score12K": "12키 점수",
     "averageXacc": "평균 절대정확도",
     "totalPasses": "총 클리어 수",
     "universalPassCount": "전체 클리어 수",
     "worldsFirstCount": "최초 클리어 수",
-    "worldsFirstPPCount": "최초 PP 클리어 수",
+    "worldsFirstPPCount": "최초 완플 클리어 수",
     "topDiff": "최고 난이도",
     "top12kDiff": "12키 최고 난이도"
   },
   "infiniteScroll": {
     "end": "마지막까지 도달했습니다!"
+  },
+  "past": {
+    "button": "과거 보기",
+    "backToPresent": "현재로 돌아가기",
+    "title": "리더보드 기록",
+    "metricRanked": "랭크 점수 순위",
+    "metricGeneral": "일반 점수 순위",
+    "timelineLabel": "기록 타임라인",
+    "noData": "이 날짜에 대한 역사적 리더보드 데이터가 없습니다.",
+    "metaTitle": "리더보드 — {{date}}",
+    "metaDescription": "{{date}} 기준 리더보드 순위",
+    "date": {
+      "year": "년",
+      "month": "월",
+      "day": "일"
+    },
+    "months": {
+      "1": "1월",
+      "2": "2월",
+      "3": "3월",
+      "4": "4월",
+      "5": "5월",
+      "6": "6월",
+      "7": "7월",
+      "8": "8월",
+      "9": "9월",
+      "10": "10월",
+      "11": "11월",
+      "12": "12월"
+    },
+    "monthsShort": {
+      "1": "1월",
+      "2": "2월",
+      "3": "3월",
+      "4": "4월",
+      "5": "5월",
+      "6": "6월",
+      "7": "7월",
+      "8": "8월",
+      "9": "9월",
+      "10": "10월",
+      "11": "11월",
+      "12": "12월"
+    }
   }
 }

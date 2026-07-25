@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "{{playerName}}'s clear of {{song}} - {{artist}}",
-    "description": "{{playerName}} cleared {{song}} by {{artist}} — {{difficulty}} · Score {{score}}"
+    "title": "{{playerName}}의 {{song}} - {{artist}} 클리어",
+    "description": "{{playerName}}가 {{song}} - {{artist}} 클리어 — {{difficulty}} · 점수 {{score}}"
   },
   "banners": {
     "deleted": "이 클리어 기록은 삭제되었습니다",
@@ -51,7 +51,7 @@
     }
   },
   "flags": {
-    "worldsFirst": "촤초",
+    "worldsFirst": "최초",
     "worldsFirstPP": "최초 완플",
     "keyCount": "{{count}}키",
     "12k": "12키",

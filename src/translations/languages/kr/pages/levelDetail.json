@@ -123,6 +123,27 @@
     "date": "날짜",
     "user": "사용자"
   },
+  "scoreGraph": {
+    "header": "점수 vs 정확도",
+    "open": "점수 vs 정확도 표 보기",
+    "close": "점수 표 닫기",
+    "missesLabel": "너무 빠름",
+    "missesAria": "너무 빠름 수",
+    "noTilecount": "Tilecount is required to plot this chart.",
+    "emptyCurve": "No score curve data for this level.",
+    "tooltipScore": "점수",
+    "tooltipMisses": "너무 빠름",
+    "tooltipEPerfect": "빠름/느림",
+    "tooltipEarly": "빠름!/느림!",
+    "disablePP": "완플 비활성화",
+    "judgementsAria": "Judgement breakdown",
+    "judgementMiss": "너무 빠름",
+    "judgementEarly": "빠름!",
+    "judgementEPerfect": "빠름",
+    "judgementPerfect": "정확",
+    "judgementLPerfect": "느림",
+    "judgementLate": "느림!"
+  },
   "toRatePending": {
     "header": "재책정 대기",
     "rerateNumber": "요청 난이도",

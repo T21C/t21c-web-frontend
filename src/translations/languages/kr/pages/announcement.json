@@ -19,36 +19,9 @@
     "announce": "선택 공지",
     "announcing": "공지 중..."
   },
-  "success": {
-    "queued": "공지가 대기열에 추가되었습니다. 사이드 패널에서 진행 상황을 확인하세요."
-  },
   "errors": {
     "fetchFailed": "항목을 불러오지 못했습니다. 다시 시도해 주세요.",
     "announceFailed": "공지에 실패했습니다. 다시 시도해 주세요.",
-    "invalidIds": "선택한 항목 중 일부에 잘못된 ID가 있습니다",
-    "discordBlocked": "Discord 웹훅이 일시적으로 차단되었습니다. {{time}} 후 다시 시도해 주세요."
-  },
-  "gate": {
-    "banner": "Discord 전송이 차단되었습니다. {{time}} 후 다시 시도하세요."
-  },
-  "panel": {
-    "title": "전송 진행",
-    "inProgress": "진행 중",
-    "recent": "최근",
-    "emptyInProgress": "진행 중인 공지 없음",
-    "emptyRecent": "최근 공지 없음",
-    "noAnnouncements": "공지 없음",
-    "mergedNote": "이미 전송 중인 항목이 포함됨",
-    "status": {
-      "queued": "대기",
-      "sending": "전송 중",
-      "blocked": "차단됨",
-      "completed": "완료",
-      "failed": "실패",
-      "pending": "대기 중",
-      "delivered": "전달됨",
-      "skipped": "건너뜀",
-      "sent": "전송됨"
-    }
+    "invalidIds": "선택한 항목 중 일부에 잘못된 ID가 있습니다"
   }
 }

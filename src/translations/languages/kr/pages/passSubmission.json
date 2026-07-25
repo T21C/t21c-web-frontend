@@ -6,9 +6,9 @@
     "altname": "리더보드 이름",
     "nohold": "기본 홀드 동작 미사용",
     "speed": "배속 (선택, 1.0 이상)",
+    "keyCount": "키 개수 (선택)",
     "feelDiff": "체감 난이도",
-    "is12K": "12키",
-    "is16K": "16키",
+    "expectedDiff": "예상 난이도 (선택)",
     "isAdofaiV2": "ADOFAI v2"
   },
   "levelInfo": {
@@ -44,7 +44,7 @@
   "holdTooltip": "홀드 타일 동작을 기본 외의 설정으로 클리어 한 경우 선택해주세요.",
   "keyCountTooltip": "클리어에 사용된 키 개수를 적어주세요. (U/UQ 클리어일 경우)",
   "feelingTooltip": "개인적으로 얼마나 어려웠는지 작성해주세요. 예: G1-G5, 17~18+, U1 등",
-  "expectedTooltip": "(선택) 이 레벨이 어떤 난이도여야 하는지 작성해주세요. (체감 난이도와 같은 형식)",
+  "expectedTooltip": "이 레벨이 어떤 난이도여야 하는지 작성해주세요. (선택, 체감 난이도와 같은 형식)",
   "adofaiV2Tooltip": "ADOFAI v2에서 기록된 클리어인 경우 선택해주세요.",
   "alert": {
     "success": "클리어가 성공적으로 제출되었습니다!",

@@ -18,13 +18,13 @@
     "generalScore": "일반 점수",
     "ppScore": "완벽한 플레이 점수",
     "wfScore": "세계 최초 점수",
-    "wfPPScore": "세계 최초 PP 점수",
+    "wfPPScore": "세계 최초 완플 점수",
     "score12K": "12키 점수",
     "averageXacc": "평균 절대정확도",
     "totalPasses": "총 클리어 횟수",
     "universalPassCount": "U 클리어",
     "worldsFirstCount": "세계 최초 클리어",
-    "worldsFirstPPCount": "세계 최초 PP 클리어",
+    "worldsFirstPPCount": "세계 최초 완플 클리어",
     "topDiff": "최고 난이도",
     "top12kDiff": "최고 12키 난이도",
     "totalScoreV2": "총 점수",
@@ -47,6 +47,13 @@
     "collapse": "내 소개 축소"
   },
   "sections": {
+    "scores": {
+      "title": "점수",
+      "expand": "점수 확장",
+      "collapse": "점수 축소",
+      "hideReclears": "재클리어 숨기기",
+      "lowestImpactScore": "최소 <pp>{{score}}</pp>를 얻어 랭크 점수를 얻으세요"
+    },
     "tournaments": {
       "title": "토너먼트",
       "expand": "토너먼트 펼치기",
@@ -57,18 +64,11 @@
       "openPack": "팩 열기",
       "othersCount": "+{{count}}명"
     },
-    "scores": {
-      "title": "점수",
-      "expand": "점수 확장",
-      "collapse": "점수 축소",
-      "hideReclears": "재클리어 숨기기",
-
-      "lowestImpactScore": "최소 <pp>{{score}}</pp>를 얻어 랭크 점수를 얻으세요"
-    },
     "scoreBreakdown": {
       "title": "점수 상세",
       "expand": "점수 상세 확장",
       "collapse": "점수 상세 축소",
+
       "tooltips": {
         "rankedScore": {
           "aria": "랭크 점수 설명",
@@ -91,12 +91,12 @@
           "description": "세계 최초 클리어한 레벨 기본 점수 합산"
         },
         "wfPPScore": {
-          "aria": "세계 최초 PP 점수 설명",
+          "aria": "세계 최초 완플 점수 설명",
           "description": "세계 최초 완벽한 플레이 클리어한 레벨 기본 점수 합산"
         },
         "score12K": {
           "aria": "12키 점수 설명",
-          "description": "랭크 점수와 같지만, 모든 클리어가 12키"
+          "description": "랭크 점수와 같지만, 12키 클리어 한정"
         },
         "averageXacc": {
           "aria": "평균 절대정확도 설명",
@@ -169,13 +169,13 @@
       "totalPasses": "총 클리어 횟수",
       "uniqueLevelsCleared": "난이도별 클리어",
       "worldsFirstCount": "세계 최초 클리어",
-      "worldsFirstPPCount": "세계 최초 PP 클리어",
+      "worldsFirstPPCount": "세계 최초 완플 클리어",
       "clears12K": "12키 클리어",
       "clears16K": "16키 클리어",
       "clearsNoHoldTap": "No-hold tap clears",
       "totalPurePerfectClears": "완벽한 클리어 합계",
       "duplicatePasses": "중복 클리어",
-      "hiddenPasses": "숨긴 클리어 (나에게만 보여짐)"
+      "hiddenPasses": "숨긴 클리어 (나에게만 보임)"
     },
     "judgements": {
       "totalTilesHit": "총 누른 타일",
