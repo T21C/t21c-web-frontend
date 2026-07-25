@@ -49,7 +49,7 @@ import {
 import { ProfileCustomizationSyncControl } from "@/components/account/ProfileCustomizationSyncControl/ProfileCustomizationSyncControl";
 import "./settingsSubPage.css";
 
-const MAX_CREATOR_ALIASES = 20;
+const MAX_CREATOR_ALIASES = 100;
 const CREATOR_SELF_VERIFICATION = ["declined", "conditional", "allowed"];
 
 function readAliasNamesFromProfile(profile) {

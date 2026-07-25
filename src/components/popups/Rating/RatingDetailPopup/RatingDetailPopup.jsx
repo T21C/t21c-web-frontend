@@ -16,6 +16,7 @@ import { hasAnyFlag, hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import toast from 'react-hot-toast';
 import autoratercato from "@/assets/icons/autorater cato.png";
 import { Tooltip } from "react-tooltip";
+import { CommentFormatter } from '@/components/misc';
 // Cache for video data
 const videoCache = new Map();
 
@@ -506,7 +507,9 @@ export const RatingDetailPopup = ({
             className={`detail-field comment-field ${isCommentFieldOpen ? 'open' : ''}`}
             >
               <span className="detail-label">{t('rating.detailPopup.labels.rerateReason')}</span>
-              <div className="detail-value">{selectedRating.level.rerateReason}</div>
+              <div className="detail-value">
+                <CommentFormatter>{selectedRating.level.rerateReason}</CommentFormatter>
+              </div>
             </div>
           )}
           <div className="popup-main-content-container">

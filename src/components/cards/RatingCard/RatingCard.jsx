@@ -8,6 +8,7 @@ import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import i18next from 'i18next';
 import { getSongDisplayName } from '@/utils/levelHelpers';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
+import { CommentFormatter } from '@/components/misc';
 
 const trimString = (str, maxLength = 40) => {
   if (!str || typeof str !== 'string') return '';
@@ -165,7 +166,7 @@ export const RatingCard = ({
                     title={t('rating.ratingCard.tooltips.expandReason')}
                   > 
                     <div className="reason-content">
-                      {rerateReason}
+                      <CommentFormatter>{rerateReason}</CommentFormatter>
                     </div>  
                     <div className="expand-indicator"></div>
                   </div>

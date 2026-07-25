@@ -27,6 +27,7 @@ export const CommentFormatter = ({ prefix = "#", children }) => {
           target="_blank"
           rel="noopener noreferrer"
           className="level-link"
+          onClick={(e) => e.stopPropagation()}
         >
           Level {levelId}
         </a>

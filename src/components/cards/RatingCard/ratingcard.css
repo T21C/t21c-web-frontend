@@ -242,6 +242,15 @@
   -ms-overflow-style: none;  /* IE and Edge */
 }
 
+.rating-card .rerate-reason .reason-content .formatted-comment {
+  display: contents;
+}
+
+.rating-card .rerate-reason.expanded .reason-content .formatted-comment {
+  display: block;
+  white-space: pre-wrap;
+}
+
 /* Hide scrollbar for Chrome, Safari and Opera */
 .rating-card .rerate-reason .reason-content::-webkit-scrollbar {
   display: none;

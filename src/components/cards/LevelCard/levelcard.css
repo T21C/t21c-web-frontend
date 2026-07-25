@@ -633,7 +633,7 @@
 .level-card.pack .level-card__cleared {
   position: absolute;
   overflow: visible;
-  z-index: 1;
+  z-index: 3;
   left: 0rem;
   display: flex;
   align-items: center;

@@ -64,6 +64,7 @@ import {
 } from "@/utils/levelHelpers";
 import { RouletteWheel, SlotMachine, StateDisplay } from '@/components/common/selectors';
 import { CloseButton } from '@/components/common/buttons';
+import { CommentFormatter } from '@/components/misc';
 import { toast } from 'react-hot-toast';
 import { ABILITIES, hasBit } from '@/utils/Abilities';
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
@@ -534,7 +535,7 @@ const ToRatePendingDropdown = ({ show, onClose, level, containerRef }) => {
         {rerateReason ? (
           <p className="to-rate-pending-reason">
             <b>{t('levelDetail.toRatePending.rerateMessage')}</b>
-            <span>{rerateReason}</span>
+            <CommentFormatter>{rerateReason}</CommentFormatter>
           </p>
         ) : null}
         {!rerateNum && !rerateReason ? (

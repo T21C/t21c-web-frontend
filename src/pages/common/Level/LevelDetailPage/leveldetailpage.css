@@ -622,7 +622,7 @@
   font-weight: 600;
 }
 
-.level-detail .to-rate-pending-dropdown .to-rate-pending-reason span {
+.level-detail .to-rate-pending-dropdown .to-rate-pending-reason .formatted-comment {
   white-space: pre-wrap;
   word-break: break-word;
   line-height: 1.4;
