@@ -373,3 +373,289 @@
 .announcement-page .rerate-curve-preview-line {
   display: block;
 }
+
+.announcement-page .announcement-layout {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.announcement-page .announcement-main {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+}
+
+.announcement-page .announcement-gate-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  color: var(--color-white);
+  background-color: var(--color-white-t15);
+  border: 1px solid var(--color-white-t30);
+  border-radius: 4px;
+  text-align: center;
+}
+
+.announcement-page .announcement-gate-banner--panel {
+  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+}
+
+.announcement-page .announcement-jobs-panel {
+  flex: 0 0 320px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  background-color: var(--color-white-t10);
+  border-radius: 8px;
+  max-height: calc(100vh - 12rem);
+  overflow: hidden;
+  position: sticky;
+  top: 1rem;
+}
+
+.announcement-page .announcement-jobs-panel-title {
+  margin: 0;
+  font-size: 1.15rem;
+  color: var(--color-white);
+  flex-shrink: 0;
+}
+
+.announcement-page .announcement-jobs-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+.announcement-page .announcement-jobs-section-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100%;
+  padding: 0.35rem 0.4rem;
+  border: none;
+  border-radius: 4px;
+  background-color: var(--color-white-t10);
+  color: var(--color-white);
+  cursor: pointer;
+  text-align: left;
+  flex-shrink: 0;
+}
+
+.announcement-page .announcement-jobs-section-toggle:hover {
+  background-color: var(--color-white-t20);
+}
+
+.announcement-page .announcement-jobs-section-chevron {
+  width: 0.85rem;
+  font-size: 0.75rem;
+  color: var(--color-white-t60);
+  flex-shrink: 0;
+}
+
+.announcement-page .announcement-jobs-section-title {
+  flex: 1;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-white-t80);
+}
+
+.announcement-page .announcement-jobs-section-count {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-white-t60);
+  background-color: var(--color-white-t10);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+}
+
+.announcement-page .announcement-jobs-section-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 14rem;
+  overflow-y: auto;
+  min-height: 0;
+  padding-right: 0.15rem;
+}
+
+.announcement-page .announcement-jobs-empty {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-white-t60);
+  padding: 0.35rem 0.25rem;
+}
+
+.announcement-page .announcement-jobs-empty--nested {
+  font-size: 0.8rem;
+  padding: 0.15rem 0;
+}
+
+.announcement-page .announcement-jobs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.announcement-page .announcement-job-request {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.5rem;
+  background-color: var(--color-white-t10);
+  border-radius: 4px;
+  border: 1px solid transparent;
+}
+
+.announcement-page .announcement-job-request--focused {
+  border-color: var(--color-white-t40);
+  background-color: var(--color-white-t15);
+}
+
+.announcement-page .announcement-job-request-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-white);
+  cursor: pointer;
+  text-align: left;
+}
+
+.announcement-page .announcement-job-request-header:hover {
+  color: var(--color-white);
+  background-color: var(--color-white-t10);
+  border-radius: 4px;
+}
+
+.announcement-page .announcement-job-request-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.announcement-page .announcement-job-request-user {
+  font-weight: 600;
+  font-size: 0.9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.announcement-page .announcement-job-request-time {
+  font-size: 0.75rem;
+  color: var(--color-white-t60);
+}
+
+.announcement-page .announcement-job-request-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding-left: 0.25rem;
+}
+
+.announcement-page .announcement-job-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.announcement-page .announcement-job-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.announcement-page .announcement-job-item-label {
+  font-size: 0.85rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.announcement-page .announcement-job-batches {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin: 0;
+  padding: 0 0 0 0.75rem;
+  list-style: none;
+}
+
+.announcement-page .announcement-job-batch {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  color: var(--color-white-t80);
+}
+
+.announcement-page .announcement-job-batch-progress {
+  color: var(--color-white-t60);
+}
+
+.announcement-page .announcement-job-error {
+  font-size: 0.8rem;
+  color: var(--color-white);
+  opacity: 0.85;
+}
+
+.announcement-page .announcement-status-chip {
+  flex-shrink: 0;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border-radius: 4px;
+  background-color: var(--color-white-t20);
+  color: var(--color-white);
+  text-transform: lowercase;
+}
+
+.announcement-page .announcement-status-chip--sending,
+.announcement-page .announcement-status-chip--queued {
+  background-color: var(--color-white-t25);
+}
+
+.announcement-page .announcement-status-chip--delivered,
+.announcement-page .announcement-status-chip--completed,
+.announcement-page .announcement-status-chip--sent {
+  background-color: var(--color-white-t35);
+}
+
+.announcement-page .announcement-status-chip--failed,
+.announcement-page .announcement-status-chip--blocked {
+  background-color: var(--color-black-t40);
+  border: 1px solid var(--color-white-t30);
+}
+
+@media (max-width: 960px) {
+  .announcement-page .announcement-layout {
+    flex-direction: column;
+  }
+
+  .announcement-page .announcement-jobs-panel {
+    flex: 1 1 auto;
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .announcement-page .announcement-jobs-section-body {
+    max-height: 12rem;
+  }
+}

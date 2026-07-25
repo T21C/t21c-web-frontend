@@ -20,12 +20,35 @@
     "announcing": "Announcing..."
   },
   "success": {
-    "queued": "Announcement queued for Discord delivery. Refresh after it posts to clear the list."
+    "queued": "Announcement queued. Track progress in the side panel."
   },
   "errors": {
     "fetchFailed": "Failed to fetch items. Please try again.",
     "announceFailed": "Failed to announce items. Please try again.",
     "invalidIds": "Some selected items have invalid IDs",
     "discordBlocked": "Discord webhooks are temporarily blocked. Try again in {{time}}."
+  },
+  "gate": {
+    "banner": "Discord delivery is blocked. Retry in {{time}}."
+  },
+  "panel": {
+    "title": "Delivery progress",
+    "inProgress": "In progress",
+    "recent": "Recent",
+    "emptyInProgress": "No active announcements",
+    "emptyRecent": "No recent announcements",
+    "noAnnouncements": "No announcements",
+    "mergedNote": "Includes items already in flight",
+    "status": {
+      "queued": "queued",
+      "sending": "sending",
+      "blocked": "blocked",
+      "completed": "completed",
+      "failed": "failed",
+      "pending": "pending",
+      "delivered": "delivered",
+      "skipped": "skipped",
+      "sent": "sent"
+    }
   }
 }

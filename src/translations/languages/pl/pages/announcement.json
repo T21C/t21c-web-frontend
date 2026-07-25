@@ -20,12 +20,35 @@
     "announcing": "Ogłaszanie..."
   },
   "success": {
-    "queued": "Ogłoszenie dodane do kolejki Discord. Odśwież po wysłaniu, aby wyczyścić listę."
+    "queued": "Ogłoszenie w kolejce. Śledź postęp w panelu bocznym."
   },
   "errors": {
     "fetchFailed": "Nie udało się pozyskać przedmiotów. Spróbuj ponownie.",
     "announceFailed": "Nie udało się ogłosić przedmiotów. Spróbuj ponownie.",
     "invalidIds": "Niektóre z zaznaczonych przedmiotów mają niewłaściwe ID",
     "discordBlocked": "Webhooki Discord są tymczasowo zablokowane. Spróbuj ponownie za {{time}}."
+  },
+  "gate": {
+    "banner": "Dostarczanie Discord jest zablokowane. Ponów za {{time}}."
+  },
+  "panel": {
+    "title": "Postęp wysyłki",
+    "inProgress": "W toku",
+    "recent": "Ostatnie",
+    "emptyInProgress": "Brak aktywnych ogłoszeń",
+    "emptyRecent": "Brak ostatnich ogłoszeń",
+    "noAnnouncements": "Brak ogłoszeń",
+    "mergedNote": "Zawiera elementy już w trakcie wysyłki",
+    "status": {
+      "queued": "w kolejce",
+      "sending": "wysyłanie",
+      "blocked": "zablokowane",
+      "completed": "ukończone",
+      "failed": "błąd",
+      "pending": "oczekuje",
+      "delivered": "dostarczono",
+      "skipped": "pominięto",
+      "sent": "wysłano"
+    }
   }
-} 
+}

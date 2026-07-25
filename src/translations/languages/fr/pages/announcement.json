@@ -20,12 +20,35 @@
     "announcing": "Annonce en cours..."
   },
   "success": {
-    "queued": "Annonce mise en file pour Discord. Actualisez après l'envoi pour vider la liste."
+    "queued": "Annonce mise en file. Suivez la progression dans le panneau latéral."
   },
   "errors": {
     "fetchFailed": "Echec de la récupération des éléments séléctionnés. Veuillez rééssayer.",
     "announceFailed": "Echec de l'annonce des éléments séléctionnés. Veuillez rééssayer.",
     "invalidIds": "Un ou plusieurs éléments ont un identifiant invalide",
     "discordBlocked": "Les webhooks Discord sont temporairement bloqués. Réessayez dans {{time}}."
+  },
+  "gate": {
+    "banner": "L'envoi Discord est bloqué. Réessayez dans {{time}}."
+  },
+  "panel": {
+    "title": "Progression d'envoi",
+    "inProgress": "En cours",
+    "recent": "Récents",
+    "emptyInProgress": "Aucune annonce active",
+    "emptyRecent": "Aucune annonce récente",
+    "noAnnouncements": "Aucune annonce",
+    "mergedNote": "Inclut des éléments déjà en cours d'envoi",
+    "status": {
+      "queued": "en file",
+      "sending": "envoi",
+      "blocked": "bloqué",
+      "completed": "terminé",
+      "failed": "échec",
+      "pending": "en attente",
+      "delivered": "livré",
+      "skipped": "ignoré",
+      "sent": "envoyé"
+    }
   }
 }

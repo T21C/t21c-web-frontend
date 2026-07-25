@@ -20,12 +20,35 @@
     "announcing": "公告发布中……"
   },
   "success": {
-    "queued": "公告已加入 Discord 发送队列。发送完成后请刷新以清空列表。"
+    "queued": "公告已加入队列。请在侧栏查看发送进度。"
   },
   "errors": {
     "fetchFailed": "获取项目失败，请重试。",
     "announceFailed": "公告发布失败，请重试。",
     "invalidIds": "部分选中项目的 ID 无效。",
     "discordBlocked": "Discord webhook 暂时被限制，请在 {{time}} 后重试。"
+  },
+  "gate": {
+    "banner": "Discord 发送已暂停，请在 {{time}} 后重试。"
+  },
+  "panel": {
+    "title": "发送进度",
+    "inProgress": "进行中",
+    "recent": "最近",
+    "emptyInProgress": "暂无进行中的公告",
+    "emptyRecent": "暂无最近公告",
+    "noAnnouncements": "暂无公告",
+    "mergedNote": "包含已在发送中的项目",
+    "status": {
+      "queued": "排队中",
+      "sending": "发送中",
+      "blocked": "已暂停",
+      "completed": "已完成",
+      "failed": "失败",
+      "pending": "等待中",
+      "delivered": "已送达",
+      "skipped": "已跳过",
+      "sent": "已发送"
+    }
   }
-} 
+}

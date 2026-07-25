@@ -1,6 +1,6 @@
 import { routes } from '@/api/routes';
 // tuf-search: #AnnouncementPage #announcementPage #admin #announcement — Announcements
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -11,18 +11,49 @@ import './announcementpage.css';
 import NewLevelsTab from './components/NewLevelsTab';
 import ReratesTab from './components/ReratesTab';
 import PassesTab from './components/PassesTab';
+import AnnouncementJobsPanel from './components/AnnouncementJobsPanel';
 import { RefreshIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
 import { AccessDenied, MetaTags } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { toastError, toastSuccess } from '@/utils/toastMessage';
+import { useAnnouncementEvents } from '@/hooks/useAnnouncementEvents';
 
 function formatRetryAfter(ms) {
   const totalSeconds = Math.max(1, Math.ceil(Number(ms) / 1000));
   if (totalSeconds < 60) return `${totalSeconds}s`;
   const minutes = Math.ceil(totalSeconds / 60);
   return `${minutes}m`;
+}
+
+const TAB_TO_KIND = {
+  newLevels: 'level',
+  rerates: 'rerate',
+  passes: 'pass',
+};
+
+function upsertRequestTree(list, request) {
+  if (!request?.requestId) return list;
+  const idx = list.findIndex(r => r.requestId === request.requestId);
+  if (idx < 0) return [request, ...list];
+  const next = [...list];
+  next[idx] = { ...next[idx], ...request, items: request.items ?? next[idx].items };
+  return next;
+}
+
+function patchItemInTrees(list, item) {
+  if (!item) return list;
+  return list.map(req => {
+    if (!req.itemIds?.includes(item.itemId) && !req.items?.some(i => i.itemId === item.itemId)) {
+      return req;
+    }
+    const items = [...(req.items || [])];
+    const idx = items.findIndex(i => i.itemId === item.itemId);
+    if (idx >= 0) items[idx] = { ...items[idx], ...item };
+    else items.push(item);
+    return { ...req, items };
+  });
 }
 
 const AnnouncementPage = () => {
@@ -52,9 +83,114 @@ const AnnouncementPage = () => {
   const [error, setError] = useState(null);
   const [editingLevel, setEditingLevel] = useState(null);
 
+  const [openJobs, setOpenJobs] = useState([]);
+  const [recentJobs, setRecentJobs] = useState([]);
+  const [gate, setGate] = useState(null);
+  const [focusedRequestId, setFocusedRequestId] = useState(null);
+
+  const kind = TAB_TO_KIND[activeTab];
+
   useEffect(() => {
     fetchItems();
   }, []);
+
+  const fetchSnapshot = useCallback(async (snapshotKind = kind) => {
+    try {
+      const { data } = await api.get(routes.webhook.announcementJobs(snapshotKind));
+      setOpenJobs(data.open || []);
+      setRecentJobs(data.recent || []);
+      if (data.gate) setGate(data.gate);
+    } catch (err) {
+      console.error('Error fetching announcement jobs:', err);
+    }
+  }, [kind]);
+
+  useEffect(() => {
+    fetchSnapshot(kind);
+  }, [kind, fetchSnapshot]);
+
+  const handleSseEvent = useCallback((event) => {
+    const { type, data } = event || {};
+    if (!type) return;
+
+    if (type === 'discord.gate.changed') {
+      setGate({
+        blocked: !!data?.blocked,
+        retryAfterMs: data?.retryAfterMs || 0,
+        blockedUntil: data?.blockedUntil || null,
+      });
+      if (data?.blocked) {
+        toastError(
+          t('announcement.errors.discordBlocked', {
+            time: formatRetryAfter(data.retryAfterMs || 60_000),
+          }),
+        );
+      }
+      return;
+    }
+
+    if (!type.startsWith('announcement.')) return;
+
+    const request = data?.request;
+    const item = data?.item;
+
+    if (request && request.kind && request.kind !== kind) return;
+    if (item && item.kind && item.kind !== kind) return;
+
+    if (type === 'announcement.request.created' || type === 'announcement.request.merged') {
+      if (request) {
+        setOpenJobs(prev => upsertRequestTree(prev, { ...request, items: request.items || [] }));
+        if (type === 'announcement.request.merged') {
+          toastSuccess(t('announcement.panel.mergedNote'));
+        }
+      }
+      return;
+    }
+
+    if (type === 'announcement.request.updated' && request) {
+      if (request.status === 'completed' || request.status === 'failed') {
+        setOpenJobs(prev => prev.filter(r => r.requestId !== request.requestId));
+        setRecentJobs(prev => upsertRequestTree(prev, request).slice(0, 25));
+        if (request.status === 'failed') {
+          toastError(request.error || t('announcement.errors.announceFailed'));
+        }
+      } else {
+        setOpenJobs(prev => upsertRequestTree(prev, request));
+      }
+      return;
+    }
+
+    if (type === 'announcement.item.progress' || type === 'announcement.batch.updated') {
+      if (item) {
+        setOpenJobs(prev => patchItemInTrees(prev, item));
+        setRecentJobs(prev => patchItemInTrees(prev, item));
+      }
+      return;
+    }
+
+    if (type === 'announcement.item.completed' && item) {
+      setOpenJobs(prev => patchItemInTrees(prev, item));
+      setRecentJobs(prev => patchItemInTrees(prev, item));
+      const completedId = item.itemId;
+      if (kind === 'pass') {
+        setPasses(prev => prev.filter(p => p.id !== completedId));
+        setSelectedPasses(prev => prev.filter(id => id !== completedId));
+      } else if (kind === 'level') {
+        setNewLevelEntries(prev => prev.filter(e => e.queueRowId !== completedId));
+        setSelectedQueueRowIds(prev => prev.filter(id => id !== completedId));
+      } else if (kind === 'rerate') {
+        setRerateEntries(prev => prev.filter(e => e.queueRowId !== completedId));
+        setSelectedQueueRowIds(prev => prev.filter(id => id !== completedId));
+      }
+    }
+  }, [kind, t]);
+
+  useAnnouncementEvents({
+    enabled: !!user?.id && user.permissionFlags !== undefined && hasFlag(user, permissionFlags.SUPER_ADMIN),
+    userId: user?.id,
+    onEvent: handleSseEvent,
+    onReconnect: () => fetchSnapshot(kind),
+  });
 
   const fetchItems = async () => {
     setIsLoading(true);
@@ -142,30 +278,39 @@ const AnnouncementPage = () => {
 
     setIsAnnouncing(true);
     try {
+      let requestId = null;
+
       if (validQueueRowIds.length > 0) {
-        await api.post(
+        const { data } = await api.post(
           `${routes.webhook.root()}/${activeTab === 'newLevels' ? 'levels' : 'rerates'}`,
           { queueRowIds: validQueueRowIds },
         );
+        requestId = data?.requestId || requestId;
       }
 
       if (validPassIds.length > 0) {
-        await api.post(`${routes.webhook.root()}/passes`, {
+        const { data } = await api.post(`${routes.webhook.root()}/passes`, {
           passIds: validPassIds,
         });
+        requestId = data?.requestId || requestId;
       }
 
-      // Keep items visible until Discord delivery marks them announced (refresh).
-      // Clearing selection only — avoids UI limbo if the outbox job fails later.
       setSelectedQueueRowIds([]);
       setSelectedPasses([]);
+      if (requestId) setFocusedRequestId(requestId);
       toastSuccess(t('announcement.success.queued'));
+      await fetchSnapshot(kind);
     } catch (err) {
       console.error('Error announcing items:', err);
       const status = err?.response?.status;
       const data = err?.response?.data;
       if (status === 429 || data?.code === 'DISCORD_WEBHOOK_BLOCKED') {
         const retryAfterMs = data?.retryAfterMs;
+        setGate({
+          blocked: true,
+          retryAfterMs: retryAfterMs || 60_000,
+          blockedUntil: data?.blockedUntil || null,
+        });
         toastError(
           t('announcement.errors.discordBlocked', {
             time: formatRetryAfter(retryAfterMs || 60_000),
@@ -279,7 +424,10 @@ const AnnouncementPage = () => {
             <h1>{t('announcement.header.title')}</h1>
             <button
               className="refresh-button"
-              onClick={fetchItems}
+              onClick={() => {
+                fetchItems();
+                fetchSnapshot(kind);
+              }}
               disabled={isLoading}
               aria-label={t('announcement.buttons.refresh')}
             >
@@ -295,6 +443,7 @@ const AnnouncementPage = () => {
                   setActiveTab('newLevels');
                   setSelectedQueueRowIds([]);
                   setSelectedPasses([]);
+                  setFocusedRequestId(null);
                 }}
               >
                 {t('announcement.tabs.newLevels')}
@@ -305,6 +454,7 @@ const AnnouncementPage = () => {
                   setActiveTab('rerates');
                   setSelectedQueueRowIds([]);
                   setSelectedPasses([]);
+                  setFocusedRequestId(null);
                 }}
               >
                 {t('announcement.tabs.rerates')}
@@ -315,6 +465,7 @@ const AnnouncementPage = () => {
                   setActiveTab('passes');
                   setSelectedQueueRowIds([]);
                   setSelectedPasses([]);
+                  setFocusedRequestId(null);
                 }}
               >
                 {t('announcement.tabs.passes')}
@@ -322,79 +473,99 @@ const AnnouncementPage = () => {
             </div>
           </div>
 
-          <button
-            className="select-all-button"
-            onClick={handleSelectAll}
-            disabled={
-              isLoading ||
-              (activeTab === 'passes'
-                ? passes.length === 0
-                : activeTab === 'newLevels'
-                  ? newLevelEntries.length === 0
-                  : rerateEntries.length === 0)
-            }
-          >
-            {activeTab === 'passes'
-              ? selectedPasses.length === passes.length
-                ? t('announcement.buttons.deselectAll')
-                : t('announcement.buttons.selectAll')
-              : selectedQueueRowIds.length ===
-                  (activeTab === 'newLevels'
-                    ? newLevelEntries
-                    : rerateEntries).length
-                ? t('announcement.buttons.deselectAll')
-                : t('announcement.buttons.selectAll')}
-          </button>
-          {error && <div className="error-message">{error}</div>}
-
-          {activeTab === 'newLevels' && (
-            <NewLevelsTab
-              entries={newLevelEntries}
-              selectedQueueRowIds={selectedQueueRowIds}
-              onCheckboxChange={handleQueueRowCheckboxChange}
-              onRemove={handleRemoveQueueRow}
-              onEdit={handleEditLevel}
-              isLoading={isLoading}
-            />
+          {gate?.blocked && (
+            <div className="announcement-gate-banner" role="status">
+              {t('announcement.gate.banner', {
+                time: formatRetryAfter(gate.retryAfterMs || 60_000),
+              })}
+            </div>
           )}
 
-          {activeTab === 'rerates' && (
-            <ReratesTab
-              entries={rerateEntries}
-              selectedQueueRowIds={selectedQueueRowIds}
-              onCheckboxChange={handleQueueRowCheckboxChange}
-              onRemove={handleRemoveQueueRow}
-              onEdit={handleEditLevel}
-              isLoading={isLoading}
-            />
-          )}
+          <div className="announcement-layout">
+            <div className="announcement-main">
+              <button
+                className="select-all-button"
+                onClick={handleSelectAll}
+                disabled={
+                  isLoading ||
+                  (activeTab === 'passes'
+                    ? passes.length === 0
+                    : activeTab === 'newLevels'
+                      ? newLevelEntries.length === 0
+                      : rerateEntries.length === 0)
+                }
+              >
+                {activeTab === 'passes'
+                  ? selectedPasses.length === passes.length
+                    ? t('announcement.buttons.deselectAll')
+                    : t('announcement.buttons.selectAll')
+                  : selectedQueueRowIds.length ===
+                      (activeTab === 'newLevels'
+                        ? newLevelEntries
+                        : rerateEntries).length
+                    ? t('announcement.buttons.deselectAll')
+                    : t('announcement.buttons.selectAll')}
+              </button>
+              {error && <div className="error-message">{error}</div>}
 
-          {activeTab === 'passes' && (
-            <PassesTab
-              passes={passes}
-              selectedPasses={selectedPasses}
-              onCheckboxChange={handlePassCheckboxChange}
-              onRemove={handleRemovePass}
-              isLoading={isLoading}
-            />
-          )}
+              {activeTab === 'newLevels' && (
+                <NewLevelsTab
+                  entries={newLevelEntries}
+                  selectedQueueRowIds={selectedQueueRowIds}
+                  onCheckboxChange={handleQueueRowCheckboxChange}
+                  onRemove={handleRemoveQueueRow}
+                  onEdit={handleEditLevel}
+                  isLoading={isLoading}
+                />
+              )}
 
-          <div className="announcement-actions">
-            <button
-              className="announce-button"
-              onClick={handleAnnounce}
-              disabled={
-                isLoading ||
-                isAnnouncing ||
-                (activeTab === 'passes'
-                  ? selectedPasses.length === 0
-                  : selectedQueueRowIds.length === 0)
-              }
-            >
-              {isAnnouncing
-                ? t('announcement.buttons.announcing')
-                : t('announcement.buttons.announce')}
-            </button>
+              {activeTab === 'rerates' && (
+                <ReratesTab
+                  entries={rerateEntries}
+                  selectedQueueRowIds={selectedQueueRowIds}
+                  onCheckboxChange={handleQueueRowCheckboxChange}
+                  onRemove={handleRemoveQueueRow}
+                  onEdit={handleEditLevel}
+                  isLoading={isLoading}
+                />
+              )}
+
+              {activeTab === 'passes' && (
+                <PassesTab
+                  passes={passes}
+                  selectedPasses={selectedPasses}
+                  onCheckboxChange={handlePassCheckboxChange}
+                  onRemove={handleRemovePass}
+                  isLoading={isLoading}
+                />
+              )}
+
+              <div className="announcement-actions">
+                <button
+                  className="announce-button"
+                  onClick={handleAnnounce}
+                  disabled={
+                    isLoading ||
+                    isAnnouncing ||
+                    gate?.blocked ||
+                    (activeTab === 'passes'
+                      ? selectedPasses.length === 0
+                      : selectedQueueRowIds.length === 0)
+                  }
+                >
+                  {isAnnouncing
+                    ? t('announcement.buttons.announcing')
+                    : t('announcement.buttons.announce')}
+                </button>
+              </div>
+            </div>
+
+            <AnnouncementJobsPanel
+              open={openJobs}
+              recent={recentJobs}
+              focusedRequestId={focusedRequestId}
+              gate={gate}
+            />
           </div>
         </div>
 
