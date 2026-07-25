@@ -19,9 +19,13 @@
     "announce": "선택 공지",
     "announcing": "공지 중..."
   },
+  "success": {
+    "queued": "공지가 Discord 전송 대기열에 추가되었습니다. 전송 후 새로고침하면 목록에서 사라집니다."
+  },
   "errors": {
     "fetchFailed": "항목을 불러오지 못했습니다. 다시 시도해 주세요.",
     "announceFailed": "공지에 실패했습니다. 다시 시도해 주세요.",
-    "invalidIds": "선택한 항목 중 일부에 잘못된 ID가 있습니다"
+    "invalidIds": "선택한 항목 중 일부에 잘못된 ID가 있습니다",
+    "discordBlocked": "Discord 웹훅이 일시적으로 차단되었습니다. {{time}} 후 다시 시도해 주세요."
   }
 }

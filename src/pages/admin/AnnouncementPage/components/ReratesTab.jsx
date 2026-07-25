@@ -7,6 +7,7 @@ import { EditIcon, TrashIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import AnnouncementFacetChips from './AnnouncementFacetChips';
+import { toastError } from '@/utils/toastMessage';
 
 const ReratesTab = ({
   entries,
@@ -20,21 +21,18 @@ const ReratesTab = ({
   const { difficultyDict } = useDifficultyContext();
 
   const [removingIds, setRemovingIds] = useState(new Set());
-  const [error, setError] = useState('');
 
   const handleSilentRemove = async (entry) => {
     const level = entry.level;
     try {
       setRemovingIds(prev => new Set([...prev, entry.queueRowId]));
-      setError('');
       onRemove(entry.queueRowId);
       await api.post(`${routes.webhook.root()}/silent-remove/rerates`, {
         queueRowIds: [entry.queueRowId],
       });
     } catch (err) {
       console.error('Error silently removing rerate:', err);
-      setError(t('reratesTab.errors.removeLevel', { song: level?.song }));
-      window.location.reload();
+      toastError(t('reratesTab.errors.removeLevel', { song: level?.song }));
     } finally {
       setRemovingIds(prev => {
         const next = new Set(prev);
@@ -103,7 +101,6 @@ const ReratesTab = ({
 
   return (
     <div className="announcement-section">
-      {error && <div className="error-message">{error}</div>}
       <div className="items-list">
         {entries.length > 0 ? (
           entries.map(entry => {

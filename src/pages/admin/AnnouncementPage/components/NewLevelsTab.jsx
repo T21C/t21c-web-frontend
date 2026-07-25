@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { EditIcon, TrashIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
+import { toastError } from '@/utils/toastMessage';
 
 const NewLevelsTab = ({
   entries,
@@ -19,21 +20,18 @@ const NewLevelsTab = ({
   const { difficultyDict } = useDifficultyContext();
 
   const [removingIds, setRemovingIds] = useState(new Set());
-  const [error, setError] = useState('');
 
   const handleSilentRemove = async (entry) => {
     const level = entry.level;
     try {
       setRemovingIds(prev => new Set([...prev, entry.queueRowId]));
-      setError('');
       onRemove(entry.queueRowId);
       await api.post(`${routes.webhook.root()}/silent-remove/levels`, {
         queueRowIds: [entry.queueRowId],
       });
     } catch (err) {
       console.error('Error silently removing level:', err);
-      setError(t('newLevelsTab.errors.removeLevel', { song: level?.song }));
-      window.location.reload();
+      toastError(t('newLevelsTab.errors.removeLevel', { song: level?.song }));
     } finally {
       setRemovingIds(prev => {
         const next = new Set(prev);
@@ -45,7 +43,6 @@ const NewLevelsTab = ({
 
   return (
     <div className="announcement-section">
-      {error && <div className="error-message">{error}</div>}
       <div className="items-list">
         {entries.length > 0 ? (
           entries.map(entry => {

@@ -19,9 +19,13 @@
     "announce": "Announce Selected",
     "announcing": "Announcing..."
   },
+  "success": {
+    "queued": "Announcement queued for Discord delivery. Refresh after it posts to clear the list."
+  },
   "errors": {
     "fetchFailed": "Failed to fetch items. Please try again.",
     "announceFailed": "Failed to announce items. Please try again.",
-    "invalidIds": "Some selected items have invalid IDs"
+    "invalidIds": "Some selected items have invalid IDs",
+    "discordBlocked": "Discord webhooks are temporarily blocked. Try again in {{time}}."
   }
-} 
+}

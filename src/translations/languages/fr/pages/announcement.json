@@ -19,9 +19,13 @@
     "announce": "Annoncer les séléctionnés",
     "announcing": "Annonce en cours..."
   },
+  "success": {
+    "queued": "Annonce mise en file pour Discord. Actualisez après l'envoi pour vider la liste."
+  },
   "errors": {
     "fetchFailed": "Echec de la récupération des éléments séléctionnés. Veuillez rééssayer.",
     "announceFailed": "Echec de l'annonce des éléments séléctionnés. Veuillez rééssayer.",
-    "invalidIds": "Un ou plusieurs éléments ont un identifiant invalide"
+    "invalidIds": "Un ou plusieurs éléments ont un identifiant invalide",
+    "discordBlocked": "Les webhooks Discord sont temporairement bloqués. Réessayez dans {{time}}."
   }
-} 
+}

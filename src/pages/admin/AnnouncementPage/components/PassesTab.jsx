@@ -7,18 +7,17 @@ import { TrashIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { formatAccuracyRatio } from '@/utils/statFormatters';
+import { toastError } from '@/utils/toastMessage';
   
 const PassesTab = ({ passes, selectedPasses, onCheckboxChange, isLoading, onRemove }) => {
   const { t } = useTranslation('components');
   const { difficultyDict } = useDifficultyContext();
 
   const [removingIds, setRemovingIds] = useState(new Set());
-  const [error, setError] = useState('');
 
   const handleSilentRemove = async (pass) => {
     try {
       setRemovingIds(prev => new Set([...prev, pass.id]));
-      setError('');
       
       // Optimistically remove from UI
       onRemove(pass.id);
@@ -29,9 +28,7 @@ const PassesTab = ({ passes, selectedPasses, onCheckboxChange, isLoading, onRemo
       });
     } catch (err) {
       console.error('Error silently removing pass:', err);
-      setError(t('passesTab.errors.silentRemovePass', { playerName: pass.player?.name }));
-      // Refetch the data to ensure UI is in sync
-      window.location.reload();
+      toastError(t('passesTab.errors.removePass', { playerName: pass.player?.name }));
     } finally {
       setRemovingIds(prev => {
         const next = new Set(prev);
@@ -43,7 +40,6 @@ const PassesTab = ({ passes, selectedPasses, onCheckboxChange, isLoading, onRemo
 
   return (
     <div className="announcement-section">
-      {error && <div className="error-message">{error}</div>}
       <div className="items-list">
         {Array.isArray(passes) && passes.length > 0 ? (
           passes.map(pass => {

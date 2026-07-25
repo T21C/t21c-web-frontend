@@ -16,6 +16,14 @@ import { useTranslation } from 'react-i18next';
 import { AccessDenied, MetaTags } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { toastError, toastSuccess } from '@/utils/toastMessage';
+
+function formatRetryAfter(ms) {
+  const totalSeconds = Math.max(1, Math.ceil(Number(ms) / 1000));
+  if (totalSeconds < 60) return `${totalSeconds}s`;
+  const minutes = Math.ceil(totalSeconds / 60);
+  return `${minutes}m`;
+}
 
 const AnnouncementPage = () => {
   const { user } = useAuth();
@@ -78,7 +86,7 @@ const AnnouncementPage = () => {
         prev.filter(id => passesResponse.data.some(pass => pass.id === id)),
       );
     } catch (err) {
-      setError(t('announcement.errors.fetchFailed'));
+      toastError(t('announcement.errors.fetchFailed'));
       console.error('Error fetching items:', err);
     } finally {
       setIsLoading(false);
@@ -128,24 +136,16 @@ const AnnouncementPage = () => {
       validPassIds.length !== selectedPasses.length ||
       validQueueRowIds.length !== selectedQueueRowIds.length
     ) {
-      setError(t('announcement.errors.invalidIds'));
+      toastError(t('announcement.errors.invalidIds'));
       return;
     }
 
     setIsAnnouncing(true);
-    setError(null);
     try {
       if (validQueueRowIds.length > 0) {
         await api.post(
           `${routes.webhook.root()}/${activeTab === 'newLevels' ? 'levels' : 'rerates'}`,
           { queueRowIds: validQueueRowIds },
-        );
-
-        setNewLevelEntries(prev =>
-          prev.filter(e => !validQueueRowIds.includes(e.queueRowId)),
-        );
-        setRerateEntries(prev =>
-          prev.filter(e => !validQueueRowIds.includes(e.queueRowId)),
         );
       }
 
@@ -153,16 +153,29 @@ const AnnouncementPage = () => {
         await api.post(`${routes.webhook.root()}/passes`, {
           passIds: validPassIds,
         });
-
-        setPasses(prev => prev.filter(pass => !validPassIds.includes(pass.id)));
       }
 
+      // Keep items visible until Discord delivery marks them announced (refresh).
+      // Clearing selection only — avoids UI limbo if the outbox job fails later.
       setSelectedQueueRowIds([]);
       setSelectedPasses([]);
+      toastSuccess(t('announcement.success.queued'));
     } catch (err) {
-      setError(t('announcement.errors.announceFailed'));
       console.error('Error announcing items:', err);
-      await fetchItems();
+      const status = err?.response?.status;
+      const data = err?.response?.data;
+      if (status === 429 || data?.code === 'DISCORD_WEBHOOK_BLOCKED') {
+        const retryAfterMs = data?.retryAfterMs;
+        toastError(
+          t('announcement.errors.discordBlocked', {
+            time: formatRetryAfter(retryAfterMs || 60_000),
+          }),
+        );
+      } else {
+        toastError(
+          data?.details || data?.error || t('announcement.errors.announceFailed'),
+        );
+      }
     } finally {
       setIsAnnouncing(false);
     }

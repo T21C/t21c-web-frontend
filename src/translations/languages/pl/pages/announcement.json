@@ -19,9 +19,13 @@
     "announce": "Ogłoś zaznaczone",
     "announcing": "Ogłaszanie..."
   },
+  "success": {
+    "queued": "Ogłoszenie dodane do kolejki Discord. Odśwież po wysłaniu, aby wyczyścić listę."
+  },
   "errors": {
     "fetchFailed": "Nie udało się pozyskać przedmiotów. Spróbuj ponownie.",
     "announceFailed": "Nie udało się ogłosić przedmiotów. Spróbuj ponownie.",
-    "invalidIds": "Niektóre z zaznaczonych przedmiotów mają niewłaściwe ID"
+    "invalidIds": "Niektóre z zaznaczonych przedmiotów mają niewłaściwe ID",
+    "discordBlocked": "Webhooki Discord są tymczasowo zablokowane. Spróbuj ponownie za {{time}}."
   }
 } 
