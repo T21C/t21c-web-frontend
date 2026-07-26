@@ -20,6 +20,7 @@ export const routes = {
       changeEmail: () => '/v2/auth/verify/change-email',
       pendingEmail: () => '/v2/auth/verify/pending-email',
     },
+    csrf: () => '/v2/auth/csrf',
     stepUp: () => '/v2/auth/step-up',
     oauthReauth: (provider) => `/v2/auth/oauth/reauth/${enc(provider)}`,
     sessions: {

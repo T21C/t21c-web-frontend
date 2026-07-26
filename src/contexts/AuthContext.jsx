@@ -1,6 +1,7 @@
 // tuf-search: #AuthContext #authContext
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import api from '@/utils/api';
+import api, { ensureCsrfToken } from '@/utils/api';
+import { clearCsrfToken } from '@/utils/csrf';
 import { routes } from '@/api/routes';
 import { useNotification } from './NotificationContext';
 import { useNavigate } from 'react-router-dom';
@@ -74,6 +75,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const bootAuth = async () => {
       try {
+        await ensureCsrfToken();
         const response = await api.get(routes.auth.profile.me());
         setUser(response.data.user);
         if (hasAnyFlag(response.data.user, [permissionFlags.SUPER_ADMIN, permissionFlags.RATER])) {
@@ -83,6 +85,7 @@ export const AuthProvider = ({ children }) => {
         if (err.response?.status === 401) {
           try {
             await api.post(routes.auth.refresh());
+            await ensureCsrfToken({ force: true });
             const retry = await api.get(routes.auth.profile.me());
             setUser(retry.data.user);
             if (hasAnyFlag(retry.data.user, [permissionFlags.SUPER_ADMIN, permissionFlags.RATER])) {
@@ -220,6 +223,7 @@ export const AuthProvider = ({ children }) => {
     } catch (e) {
       // ignore
     }
+    clearCsrfToken();
     cleanup();
     resetNotifications();
     setUser(null);

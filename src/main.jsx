@@ -30,7 +30,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
   environment: import.meta.env.MODE,
-  enabled: Boolean(import.meta.env.VITE_SENTRY_DSN),
+  enabled: Boolean(import.meta.env.VITE_SENTRY_DSN) && !import.meta.env.DEV,
   sendDefaultPii: true,
 });
 
