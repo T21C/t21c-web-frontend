@@ -6,6 +6,7 @@ import { PrivateRoute } from "@/components/auth";
 import { DeprecatedRedirect } from "@/components/routing/DeprecatedRedirect";
 import { ScrollToTopOnNavigate } from "@/components/routing/ScrollToTopOnNavigate";
 import { RouteDocumentHead } from "@/components/routing/RouteDocumentHead";
+import { ChunkLoadErrorBoundary } from "@/components/routing/ChunkLoadErrorBoundary";
 import { DEPRECATED_ROUTES } from "@/config/deprecatedRoutes";
 import * as Pages from '@/pages/index';
 import { Toaster } from "react-hot-toast";
@@ -46,6 +47,7 @@ function App() {
       {!isEmbedded && <TufHelperLiteConnectBanner />}
       <div className="body">
       {!isEmbedded && <div className="nav-spacer" />}
+      <ChunkLoadErrorBoundary>
       <Suspense
         fallback={
           <div className="loader-shell loader-shell--fill">
@@ -158,6 +160,7 @@ function App() {
           <Route path='admin/curations/schedules' element={<PrivateRoute><Pages.CurationSchedulePage /></PrivateRoute>} />
         </Routes>
       </Suspense>
+      </ChunkLoadErrorBoundary>
       </div>
     </>
   );
