@@ -1,105 +1,39 @@
 // tuf-search: #TUFHelperLiteIcon #tufhelperliteIcon #icons
 import React from 'react';
 
+const GRADIENT_COLORS = 'FF0000FE0001FE0103FE0205FE0307FE0409FE050BFE060CFE070EFE0810FE0912FE0A14FE0A16FE0B17FD0C19FD0D1BFD0E1DFD0F1EFD1020FD1122FC1224FC1225FC1327FC1429FB152BFB162CFB172EFB1830FA1831FA1933FA1A35FA1B37F91C38F91D3AF91D3CF81E3DF81F3FF82040F72142F72144F72245F62347F62449F5254AF5254CF5264DF4274FF42850F32952F32954F22A55F22B57F22C58F12C5AF12D5BF02E5DF02F5EEF2F60EF3061EE3163EE3264ED3266ED3367EC3469EB356AEB356CEA366DEA376FE93870E93871E83973E73A74E73A76E63B77E53C78E53C7AE43D7BE33E7DE33E7EE23F7FE14081E14082E04183DF4285DF4286DE4387DD4489DD448ADC458BDB468CDA468EDA478FD94890D84892D74993D64A94D64A95D54B97D44B98D34C99D24D9AD24D9BD14E9DD04E9ECF4F9FCE50A0CD50A1CC51A3CC51A4CB52A5CA52A6C953A7C854A8C754A9C655ABC555ACC456ADC356AEC257AFC157B0C058B1BF58B2BE59B3BE5AB4BD5AB5BC5BB6BB5BB7B95CB8B85CB9B75DBBB65DBCB55EBDB45EBEB35FBEB25FBFB160C0B060C1AF61C2AE61C3AD61C4AC62C5AB62C6A963C7A863C8A764C9A664CAA565CBA465CCA366CCA166CDA066CE9F67CF9E67D09D68D19B68D29A69D29969D39869D4976AD5956AD6946BD6936BD7926BD8906CD98F6CDA8E6CDA8C6DDB8B6DDC8A6EDD896EDD876EDE866FDF856FDF836FE08270E18170E17F70E27E71E37D71E37B71E47A72E57872E57772E67673E77473E77373E87174E97074E96F74EA6D74EA6C75EB6A75EB6975EC6776ED6676ED6476EE6376EE6177EF6077EF5E77F05D77F05B78F15A78F15878F25778F25579F25479F35279F35079F44F79F44D7AF54C7AF54A7AF5497AF6477AF6457BF7447BF7427BF7407BF83F7BF83D7BF83C7CF93A7CF9387CF9377CFA357CFA337CFA317CFA307DFB2E7DFB2C7DFB2B7DFB297DFC277DFC257DFC247DFC227EFD207EFD1E7EFD1D7EFD1B7EFD197EFD177EFE167EFE147EFE127EFE107EFE0E7EFE0C7EFE0B7EFE097EFE077EFE057EFE037EFE017EFE007FFF'.match(/.{6}/g);
+
+export const TUFHelperLiteGradient = ({ id }) => (
+  <linearGradient id={id} x1="145" y1="145" x2="815" y2="815" gradientUnits="userSpaceOnUse" spreadMethod="reflect">
+    {GRADIENT_COLORS.map((color, index) => (
+      <stop key={color} offset={index / (GRADIENT_COLORS.length - 1)} stopColor={`#${color}`} />
+    ))}
+  </linearGradient>
+);
+
 export const TUFHelperLiteIcon = ({ size = 24, className = '', ...props }) => {
-  const id = React.useId().replace(/:/g, '');
-  const bgId = `tufhelperlite-bg-${id}`;
-  const redId = `tufhelperlite-red-${id}`;
-  const blueId = `tufhelperlite-blue-${id}`;
-  const softId = `tufhelperlite-soft-${id}`;
+  const gradientId = `tufhelperlite-${React.useId().replace(/:/g, '')}`;
 
   return (
     <svg
-      width={size || '100%'}
-      height={size || '100%'}
-      viewBox="0 0 64 64"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 772 772"
       className={className}
-      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+      focusable="false"
       {...props}
     >
       <defs>
-        <radialGradient id={bgId} cx="50%" cy="45%" r="70%">
-          <stop offset="0%" stopColor="#102b6f" />
-          <stop offset="55%" stopColor="#071a48" />
-          <stop offset="100%" stopColor="#020817" />
-        </radialGradient>
-        <radialGradient id={redId} cx="38%" cy="36%" r="58%">
-          <stop offset="0%" stopColor="#ffe37a" />
-          <stop offset="48%" stopColor="#ff553d" />
-          <stop offset="100%" stopColor="#b8152e" stopOpacity="0" />
-        </radialGradient>
-        <radialGradient id={blueId} cx="64%" cy="64%" r="62%">
-          <stop offset="0%" stopColor="#82fff5" />
-          <stop offset="45%" stopColor="#4a75ff" />
-          <stop offset="100%" stopColor="#2a58ff" stopOpacity="0" />
-        </radialGradient>
-        <filter id={softId} x="-40%" y="-40%" width="180%" height="180%">
-          <feGaussianBlur stdDeviation="1.25" />
-        </filter>
+        <TUFHelperLiteGradient id={gradientId} />
       </defs>
-
-      <g className="tufhelperlite-icon__background tufhelperlite-icon__background--mono">
-        <rect x="4" y="4" width="56" height="56" rx="14" fill={`url(#${bgId})`} />
-        <g fill="#ffffff">
-          <circle cx="15" cy="15" r="1" opacity="0.85" />
-          <circle cx="25" cy="12" r="0.75" opacity="0.65" />
-          <circle cx="39" cy="14" r="0.85" opacity="0.75" />
-          <circle cx="50" cy="26" r="0.8" opacity="0.7" />
-          <circle cx="13" cy="40" r="0.7" opacity="0.55" />
-          <circle cx="32" cy="54" r="0.85" opacity="0.75" />
-          <circle cx="50" cy="48" r="1" opacity="0.8" />
-        </g>
-        <rect x="4.75" y="4.75" width="54.5" height="54.5" rx="13.25" stroke="#ffffff" strokeOpacity="0.16" strokeWidth="1.5" />
-      </g>
-
-      <g className="tufhelperlite-icon__background tufhelperlite-icon__background--color">
-        <rect x="4" y="4" width="56" height="56" rx="14" fill={`url(#${bgId})`} />
-        <g fill="#ffffff">
-          <circle cx="15" cy="15" r="1" opacity="0.85" />
-          <circle cx="25" cy="12" r="0.75" opacity="0.65" />
-          <circle cx="39" cy="14" r="0.85" opacity="0.75" />
-          <circle cx="50" cy="26" r="0.8" opacity="0.7" />
-          <circle cx="13" cy="40" r="0.7" opacity="0.55" />
-          <circle cx="32" cy="54" r="0.85" opacity="0.75" />
-          <circle cx="50" cy="48" r="1" opacity="0.8" />
-        </g>
-        <rect x="4.75" y="4.75" width="54.5" height="54.5" rx="13.25" stroke="#ffffff" strokeOpacity="0.16" strokeWidth="1.5" />
-      </g>
-
-      <g className="tufhelperlite-icon__foreground">
-        <path
-          d="M18 29C20.5 16.5 36.5 11 48 19"
-          stroke="#ff463b"
-          strokeWidth="8"
-          strokeLinecap="round"
-          filter={`url(#${softId})`}
-        />
-        <path
-          d="M46 35C43.5 48 27.5 53 16 45"
-          stroke="#3388ff"
-          strokeWidth="8"
-          strokeLinecap="round"
-          filter={`url(#${softId})`}
-        />
-        <circle cx="20" cy="29" r="8.5" fill={`url(#${redId})`} />
-        <circle cx="45" cy="35" r="8.5" fill={`url(#${blueId})`} />
-
-        <path
-          d="M21 44C26 47.5 34 48 40 44"
-          stroke="#54b7ff"
-          strokeWidth="3"
-          strokeLinecap="round"
-          opacity="0.65"
-        />
-        <path
-          d="M43 20C38 16.5 30 16 24 20"
-          stroke="#ff795e"
-          strokeWidth="3"
-          strokeLinecap="round"
-          opacity="0.65"
-        />
+      <g transform="translate(-94 -94)">
+        <path d="M145 480C145 294.985 294.985 145 480 145 665.015 145 815 294.985 815 480 815 665.015 665.015 815 480 815 294.985 815 145 665.015 145 480ZM336.466 480C336.466 559.272 400.728 623.534 480 623.534 559.272 623.534 623.534 559.272 623.534 480 623.534 400.728 559.272 336.466 480 336.466 400.728 336.466 336.466 400.728 336.466 480Z" fill={`url(#${gradientId})`} fillRule="evenodd" />
+        <path d="M229.107 117.647C167.549 117.647 117.647 167.549 117.647 229.107L117.647 730.893C117.647 792.451 167.549 842.353 229.107 842.353L730.893 842.353C792.451 842.353 842.353 792.451 842.353 730.893L842.353 229.107C842.353 167.549 792.451 117.647 730.893 117.647ZM223.336 95 736.664 95C807.542 95 865 152.458 865 223.336L865 736.664C865 807.542 807.542 865 736.664 865L223.336 865C152.458 865 95 807.542 95 736.664L95 223.336C95 152.458 152.458 95 223.336 95Z" fill="#FFFFFF" fillRule="evenodd" />
+        <path d="M214.103 332.07 215.523 337.886C220.026 353.101 228.282 367.441 240.291 379.45 259.504 398.664 284.687 408.271 309.87 408.271L317.297 407.559 312.397 415.851C263.612 508.684 278.247 626.144 356.303 704.2 368.312 716.209 381.253 726.717 394.894 735.723L414.32 747.202 411.756 746.832C357.724 736.371 306.13 710.218 264.285 668.374 173.622 577.71 156.622 441.278 213.287 333.451L214.103 332.07Z" fill="#FFFFFF" fillRule="evenodd" />
+        <path d="M229 310C229 265.265 265.265 229 310 229 354.735 229 391 265.265 391 310 391 354.735 354.735 391 310 391 265.265 391 229 354.735 229 310Z" fill="#FFFFFF" fillRule="evenodd" />
+        <path d="M745.897 627.93 744.477 622.114C739.974 606.899 731.718 592.559 719.709 580.55 700.496 561.336 675.313 551.729 650.13 551.729L642.703 552.441 647.603 544.149C696.388 451.316 681.753 333.856 603.697 255.8 591.688 243.791 578.747 233.283 565.106 224.277L545.68 212.798 548.244 213.168C602.276 223.629 653.87 249.782 695.715 291.626 786.378 382.29 803.378 518.722 746.713 626.549L745.897 627.93Z" fill="#FFFFFF" fillRule="evenodd" />
+        <path d="M731 650C731 694.735 694.735 731 650 731 605.265 731 569 694.735 569 650 569 605.265 605.265 569 650 569 694.735 569 731 605.265 731 650Z" fill="#FFFFFF" fillRule="evenodd" />
       </g>
     </svg>
   );

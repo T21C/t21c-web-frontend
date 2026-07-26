@@ -52,7 +52,7 @@ import {
   TimeIcon,
   ArrowIcon,
   VideoLinkIcon,
-  TUFHelperLiteIcon,
+  TUFHelperLiteOpenIcon,
 } from "@/components/common/icons";
 import { createEventSystem, formatBaseScore, formatCreatorDisplay, formatDate, formatPassDate, isCdnUrl, selectIconSize } from "@/utils/Utility";
 import { formatAccuracyRatio } from "@/utils/statFormatters";
@@ -2924,8 +2924,8 @@ const LevelDetailPage = ({ mockData = null }) => {
                   style={{ '--tufhelperlite-progress': `${Math.round(tufHelperLiteDownload.progress * 100)}%` }}
                 >
                   <span className="tufhelperlite-button__icon-stack" aria-hidden="true">
-                    <TUFHelperLiteIcon className="tufhelperlite-button__icon tufhelperlite-button__icon--base" size="100%" />
-                    <TUFHelperLiteIcon className="tufhelperlite-button__icon tufhelperlite-button__icon--color" size="100%" />
+                    <TUFHelperLiteOpenIcon className="tufhelperlite-button__icon tufhelperlite-button__icon--base" size="100%" />
+                    <TUFHelperLiteOpenIcon className="tufhelperlite-button__icon tufhelperlite-button__icon--color" size="100%" />
                   </span>
                 </button>
               )}
