@@ -15,7 +15,7 @@ const api = axios.create({
   }
 });
 
-// Request interceptor: do not set Authorization; cookies (accessToken) are sent automatically
+// Request interceptor: cookies + CSRF double-submit header for mutating calls
 api.interceptors.request.use(
   (config) => {
     config.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
@@ -23,6 +23,18 @@ api.interceptors.request.use(
     config.headers['Expires'] = '0';
     if (config.headers['Content-Type']?.includes('multipart/form-data')) {
       delete config.headers['Content-Type'];
+    }
+    const method = (config.method || 'get').toLowerCase();
+    if (method !== 'get' && method !== 'head' && method !== 'options') {
+      const csrf = document.cookie
+        .split('; ')
+        .find((row) => row.startsWith('csrfToken='))
+        ?.split('=')
+        .slice(1)
+        .join('=');
+      if (csrf) {
+        config.headers['X-CSRF-Token'] = decodeURIComponent(csrf);
+      }
     }
     return config;
   },

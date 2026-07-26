@@ -38,6 +38,7 @@
     "emptyInProgress": "No active announcements",
     "emptyRecent": "No recent announcements",
     "noAnnouncements": "No announcements",
+    "loading": "Loading delivery progress…",
     "mergedNote": "Includes items already in flight",
     "status": {
       "queued": "queued",

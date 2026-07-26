@@ -38,6 +38,7 @@
     "emptyInProgress": "Brak aktywnych ogłoszeń",
     "emptyRecent": "Brak ostatnich ogłoszeń",
     "noAnnouncements": "Brak ogłoszeń",
+    "loading": "Ładowanie postępu wysyłki…",
     "mergedNote": "Zawiera elementy już w trakcie wysyłki",
     "status": {
       "queued": "w kolejce",

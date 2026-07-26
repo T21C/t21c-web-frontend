@@ -119,8 +119,12 @@ export default function AnnouncementJobsPanel({
   recent = [],
   focusedRequestId = null,
   gate = null,
+  loading = false,
 }) {
   const { t } = useTranslation('pages');
+  // Keep Recent expanded by default so completed jobs are visible after refresh
+  // (In progress is often empty once delivery finishes).
+  const recentDefaultOpen = recent.length > 0 || open.length === 0;
 
   return (
     <aside className="announcement-jobs-panel">
@@ -134,47 +138,56 @@ export default function AnnouncementJobsPanel({
         </div>
       )}
 
-      <CollapsibleSection
-        title={t('announcement.panel.inProgress')}
-        count={open.length}
-        defaultOpen
-      >
-        {open.length === 0 ? (
-          <p className="announcement-jobs-empty">{t('announcement.panel.emptyInProgress')}</p>
-        ) : (
-          <div className="announcement-jobs-list">
-            {open.map(req => (
-              <RequestTree
-                key={req.requestId}
-                request={req}
-                focusedRequestId={focusedRequestId}
-                t={t}
-              />
-            ))}
-          </div>
-        )}
-      </CollapsibleSection>
+      {loading ? (
+        <div className="announcement-jobs-loading" aria-busy="true">
+          <div className="loader loader-relative" />
+          <p className="announcement-jobs-empty">{t('announcement.panel.loading')}</p>
+        </div>
+      ) : (
+        <>
+          <CollapsibleSection
+            title={t('announcement.panel.inProgress')}
+            count={open.length}
+            defaultOpen
+          >
+            {open.length === 0 ? (
+              <p className="announcement-jobs-empty">{t('announcement.panel.emptyInProgress')}</p>
+            ) : (
+              <div className="announcement-jobs-list">
+                {open.map(req => (
+                  <RequestTree
+                    key={req.requestId}
+                    request={req}
+                    focusedRequestId={focusedRequestId}
+                    t={t}
+                  />
+                ))}
+              </div>
+            )}
+          </CollapsibleSection>
 
-      <CollapsibleSection
-        title={t('announcement.panel.recent')}
-        count={recent.length}
-        defaultOpen={false}
-      >
-        {recent.length === 0 ? (
-          <p className="announcement-jobs-empty">{t('announcement.panel.emptyRecent')}</p>
-        ) : (
-          <div className="announcement-jobs-list">
-            {recent.map(req => (
-              <RequestTree
-                key={req.requestId}
-                request={req}
-                focusedRequestId={focusedRequestId}
-                t={t}
-              />
-            ))}
-          </div>
-        )}
-      </CollapsibleSection>
+          <CollapsibleSection
+            title={t('announcement.panel.recent')}
+            count={recent.length}
+            defaultOpen={recentDefaultOpen}
+          >
+            {recent.length === 0 ? (
+              <p className="announcement-jobs-empty">{t('announcement.panel.emptyRecent')}</p>
+            ) : (
+              <div className="announcement-jobs-list">
+                {recent.map(req => (
+                  <RequestTree
+                    key={req.requestId}
+                    request={req}
+                    focusedRequestId={focusedRequestId}
+                    t={t}
+                  />
+                ))}
+              </div>
+            )}
+          </CollapsibleSection>
+        </>
+      )}
     </aside>
   );
 }

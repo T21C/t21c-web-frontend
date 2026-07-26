@@ -17,7 +17,7 @@ const LoginPage = () => {
   const [requireCaptcha, setRequireCaptcha] = useState(false);
   const [retryAfter, setRetryAfter] = useState(null);
   const [captchaToken, setCaptchaToken] = useState(null);
-  const [captchaKey, setCaptchaKey] = useState(0); // Key to force re-render of ReCaptcha
+  const captchaRef = useRef(null);
   const timerRef = useRef(null);
   const navigate = useNavigate();
   const { user, login, loginWithDiscord, getOriginUrl } = useAuth();
@@ -96,18 +96,6 @@ const LoginPage = () => {
     
     return result;
   };
-
-  const handleCaptchaVerify = (token) => {
-    setCaptchaToken(token);
-  };
-
-  // Only reset captcha when it's first required
-  useEffect(() => {
-    if (requireCaptcha && captchaToken === null) {
-      // Force re-render of ReCaptcha component by changing its key
-      setCaptchaKey(prev => prev + 1);
-    }
-  }, [requireCaptcha]);
 
   const handleEmailLogin = async (e) => {
     e.preventDefault();
@@ -189,12 +177,8 @@ const LoginPage = () => {
       if (captchaRequired) {
         setRequireCaptcha(true);
       }
-      // Always reset captcha on failed login so we never reuse an old token (e.g. after interceptor returned "Refresh token required")
-      setCaptchaToken(null);
-      setCaptchaKey(prev => prev + 1);
-      if (captchaRequired && !requireCaptcha) {
-        await new Promise(resolve => setTimeout(resolve, 500));
-      }
+      // Always reset captcha on failed login so we never reuse an old token
+      captchaRef.current?.reset();
     } finally {
       setLoading(false);
     }
@@ -262,7 +246,7 @@ const LoginPage = () => {
 
             {requireCaptcha && (
               <div className="captcha-container">
-                <ReCAPTCHA key={captchaKey} onVerify={handleCaptchaVerify} />
+                <ReCAPTCHA ref={captchaRef} onChange={setCaptchaToken} />
               </div>
             )}
 
@@ -300,4 +284,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage; 
+export default LoginPage;

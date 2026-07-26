@@ -38,6 +38,7 @@
     "emptyInProgress": "Aucune annonce active",
     "emptyRecent": "Aucune annonce récente",
     "noAnnouncements": "Aucune annonce",
+    "loading": "Chargement de la progression…",
     "mergedNote": "Inclut des éléments déjà en cours d'envoi",
     "status": {
       "queued": "en file",

@@ -5,13 +5,14 @@ import { useEffect, useRef } from 'react';
 
 /**
  * Subscribe to GET /v2/events?source=announcement (SSE).
- * Calls onEvent for each message; onReconnect after reconnect opens.
+ * Calls onEvent for each message; onConnected on every successful open
+ * (including the first — so the panel can hydrate immediately after refresh).
  */
-export function useAnnouncementEvents({ onEvent, onReconnect, enabled = true, userId }) {
+export function useAnnouncementEvents({ onEvent, onConnected, enabled = true, userId }) {
   const onEventRef = useRef(onEvent);
-  const onReconnectRef = useRef(onReconnect);
+  const onConnectedRef = useRef(onConnected);
   onEventRef.current = onEvent;
-  onReconnectRef.current = onReconnect;
+  onConnectedRef.current = onConnected;
 
   useEffect(() => {
     if (!enabled) return undefined;
@@ -19,7 +20,6 @@ export function useAnnouncementEvents({ onEvent, onReconnect, enabled = true, us
     let eventSource = null;
     let reconnectTimeout = null;
     let closed = false;
-    let hadConnection = false;
 
     const connect = () => {
       if (closed) return;
@@ -31,10 +31,7 @@ export function useAnnouncementEvents({ onEvent, onReconnect, enabled = true, us
       eventSource = new EventSource(url, { withCredentials: true });
 
       eventSource.onopen = () => {
-        if (hadConnection && onReconnectRef.current) {
-          onReconnectRef.current();
-        }
-        hadConnection = true;
+        onConnectedRef.current?.();
         if (reconnectTimeout) {
           clearTimeout(reconnectTimeout);
           reconnectTimeout = null;
@@ -44,7 +41,9 @@ export function useAnnouncementEvents({ onEvent, onReconnect, enabled = true, us
       eventSource.onmessage = (e) => {
         try {
           const data = JSON.parse(e.data);
-          if (data?.type === 'ping' || data?.type === 'connected') return;
+          if (data?.type === 'ping' || data?.type === 'connected' || data?.type === 'userCount') {
+            return;
+          }
           onEventRef.current?.(data);
         } catch (err) {
           console.error('[useAnnouncementEvents] parse error', err);

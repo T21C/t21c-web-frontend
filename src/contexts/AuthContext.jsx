@@ -287,10 +287,14 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const verifyEmail = async (token) => {
+  const verifyEmail = async (code) => {
     try {
-      const response = await api.post(routes.auth.verify.email(), { token });
-      // Force refresh: default fetchUser throttles within 1s and would leave stale isEmailVerified
+      const response = await api.post(routes.auth.verify.email(), { code });
+      if (response.data?.requireLogin) {
+        setUser(null);
+        window.dispatchEvent(new Event('auth:logout'));
+        return response.data;
+      }
       const profileUser = await fetchUser(true, { silent: true });
       window.dispatchEvent(new Event('auth:permission-changed'));
       return {
@@ -305,10 +309,47 @@ export const AuthProvider = ({ children }) => {
   const resendVerification = async () => {
     try {
       const response = await api.post(routes.auth.verify.resend());
+      if (response.data?.emailResendAvailableAt || response.data?.pendingEmail) {
+        setUser((prev) =>
+          prev
+            ? {
+                ...prev,
+                pendingEmail: response.data.pendingEmail ?? prev.pendingEmail,
+                emailResendAvailableAt:
+                  response.data.emailResendAvailableAt ?? prev.emailResendAvailableAt,
+              }
+            : prev,
+        );
+      }
       return response.data;
     } catch (error) {
-      throw new Error(error.response?.data?.message || 'Failed to resend verification email');
+      const retryAfter = error.response?.data?.retryAfter;
+      if (retryAfter != null && Number.isFinite(Number(retryAfter))) {
+        const availableAt = new Date(Date.now() + Number(retryAfter)).toISOString();
+        setUser((prev) =>
+          prev ? { ...prev, emailResendAvailableAt: availableAt } : prev,
+        );
+      }
+      const err = new Error(
+        error.response?.data?.message || 'Failed to resend verification email',
+      );
+      err.retryAfter = retryAfter;
+      err.code = error.response?.data?.code;
+      throw err;
     }
+  };
+
+  const stepUp = async (password) => {
+    const response = await api.post(routes.auth.stepUp(), { password });
+    return response.data;
+  };
+
+  const startOAuthReauth = async (provider = 'discord') => {
+    const response = await api.get(routes.auth.oauthReauth(provider));
+    if (response.data?.url) {
+      window.location.href = response.data.url;
+    }
+    return response.data;
   };
 
   const changeEmail = async (email) => {
@@ -320,10 +361,26 @@ export const AuthProvider = ({ children }) => {
             ? {
                 ...prev,
                 email: response.data.user.email,
+                pendingEmail: response.data.user.pendingEmail ?? response.data.pendingEmail,
+                emailResendAvailableAt:
+                  response.data.user.emailResendAvailableAt ??
+                  response.data.emailResendAvailableAt ??
+                  prev.emailResendAvailableAt,
                 isEmailVerified: response.data.user.isEmailVerified,
                 permissionFlags: response.data.user.permissionFlags,
               }
             : response.data.user
+        );
+      } else if (response.data?.pendingEmail) {
+        setUser((prev) =>
+          prev
+            ? {
+                ...prev,
+                pendingEmail: response.data.pendingEmail,
+                emailResendAvailableAt:
+                  response.data.emailResendAvailableAt ?? prev.emailResendAvailableAt,
+              }
+            : prev
         );
       }
       await fetchUser(true, { silent: true });
@@ -332,6 +389,12 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       throw error;
     }
+  };
+
+  const cancelPendingEmail = async () => {
+    const response = await api.delete(routes.auth.verify.pendingEmail());
+    await fetchUser(true, { silent: true });
+    return response.data;
   };
 
   const requestPasswordReset = async (email, captchaToken = null) => {
@@ -346,12 +409,17 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const resetPassword = async (token, password) => {
+  const resetPassword = async (email, code, password) => {
     try {
       const response = await api.post(routes.auth.forgotPassword.reset(), {
-        token,
+        email,
+        code,
         password
       });
+      if (response.data?.requireLogin) {
+        setUser(null);
+        window.dispatchEvent(new Event('auth:logout'));
+      }
       return response.data;
     } catch (error) {
       throw error;
@@ -374,7 +442,10 @@ export const AuthProvider = ({ children }) => {
     updateToken,
     verifyEmail,
     resendVerification,
+    stepUp,
+    startOAuthReauth,
     changeEmail,
+    cancelPendingEmail,
     requestPasswordReset,
     resetPassword,
     setUser,
@@ -382,7 +453,7 @@ export const AuthProvider = ({ children }) => {
     setOriginUrl,
     clearOriginUrl,
     initiateLogin,
-    checkVerificationState // Expose this for manual checks
+    checkVerificationState
   };
 
   return (

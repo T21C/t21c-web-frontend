@@ -11,15 +11,41 @@
       "personal": "Personal"
     },
     "account": "Account",
+    "sessions": "Sessions",
     "player": "Player profile",
     "creator": "Creator profile",
     "billing": "Billing",
     "short": {
       "account": "Account",
+      "sessions": "Sessions",
       "player": "Player",
       "creator": "Creator",
       "billing": "Billing"
     }
+  },
+  "sessions": {
+    "title": "Active sessions",
+    "subtitle": "Devices currently signed in to your account. Sign out anything you do not recognize.",
+    "loading": "Loading sessions…",
+    "empty": "No active sessions found.",
+    "loadErrorTitle": "Could not load sessions",
+    "loadErrorBody": "Try again in a moment.",
+    "retry": "Retry",
+    "thisDevice": "This device",
+    "unknownDevice": "Unknown device",
+    "unknownIp": "Unknown",
+    "ip": "IP",
+    "created": "Signed in",
+    "expires": "Expires",
+    "revealIp": "Click to reveal",
+    "hideIp": "Click to hide",
+    "signOut": "Sign out",
+    "revokeSuccess": "Session signed out",
+    "revokeError": "Could not sign out that session",
+    "revokeOthers": "Sign out other devices",
+    "revokeOthersConfirm": "Sign out all other devices? This device will stay signed in.",
+    "revokeOthersSuccess": "Other devices signed out",
+    "revokeOthersError": "Could not sign out other devices"
   },
   "player": {
     "title": "Player profile",

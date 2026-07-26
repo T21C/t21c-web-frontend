@@ -235,6 +235,7 @@ const CallbackPage = () => {
       const code = urlParams.get('code');
       const errorParam = urlParams.get('error');
       const linking = urlParams.get('linking') === 'true';
+      const reauth = urlParams.get('reauth') === 'true';
       setIsLinking(linking);
       const provider = urlParams.get('provider') || 'discord';
       oauthErrorRef.current = '';
@@ -251,7 +252,8 @@ const CallbackPage = () => {
         return;
       }
 
-      const oauthLockKey = callbackLockKeys.oauth(provider, linking, code);
+      const oauthMode = linking ? 'linking' : reauth ? 'reauth' : 'login';
+      const oauthLockKey = callbackLockKeys.oauth(provider, oauthMode, code);
 
       // This exact single-use code was already handled — either by a synchronous
       // remount in this page load (in-memory lock) or by a previous page load that
@@ -259,6 +261,10 @@ const CallbackPage = () => {
       // replay it; verify the session the first exchange established and route from
       // there so a refresh at any point recovers instead of breaking.
       if (callbackLockStore.get(oauthLockKey, { persist: true })) {
+        if (reauth) {
+          if (!cancelled) navigate('/settings/account', { replace: true });
+          return;
+        }
         const existingUser = await fetchUser(true, { silent: true });
         if (cancelled) return;
         if (existingUser) {
@@ -276,14 +282,28 @@ const CallbackPage = () => {
       callbackLockStore.set(oauthLockKey, true);
 
       try {
-        const link = linking ? routes.auth.oauthLink(provider) : routes.auth.oauthCallback(provider);
-        const response = await api.post(link, { code, linking });
+        const response = await api.post(
+          routes.auth.oauthCallback(provider),
+          { code },
+          { params: linking ? { linking: true } : reauth ? { reauth: true } : undefined },
+        );
 
         if (cancelled) return;
 
         // Persist success so a later refresh of this URL recovers via the lock
         // check above (route to profile) instead of replaying the consumed code.
         callbackLockStore.set(oauthLockKey, 'done', { persist: true });
+
+        if (reauth) {
+          try {
+            sessionStorage.setItem('stepUpGranted', '1');
+          } catch {
+            /* ignore */
+          }
+          toast.success('Identity confirmed. You can continue changing your email.');
+          navigate('/settings/account', { replace: true });
+          return;
+        }
 
         if (linking) {
           if (response.status === 200) {
@@ -307,7 +327,7 @@ const CallbackPage = () => {
         // an existing session over the failed exchange so we never show a false
         // error to an already-authenticated user. Linking always runs while
         // authenticated, so its real errors must surface instead.
-        if (!linking) {
+        if (!linking && !reauth) {
           let recoveredUser = null;
           try {
             recoveredUser = await fetchUser(true, { silent: true });

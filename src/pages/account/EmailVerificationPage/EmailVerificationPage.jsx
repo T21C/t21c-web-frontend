@@ -1,160 +1,213 @@
 // tuf-search: #EmailVerificationPage #emailVerificationPage #account #emailVerification
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { hasAccountEmail } from '@/utils/accountEmail';
+import CodeInput from '@/components/account/CodeInput/CodeInput';
 import './emailVerificationPage.css';
 
-const EmailVerificationPage = () => {
-  const [searchParams] = useSearchParams();
-  const [status, setStatus] = useState('verifying');
-  const [error, setError] = useState('');
-  const [resending, setResending] = useState(false);
-  const [verificationEmail, setVerificationEmail] = useState('');
-  const { user, verifyEmail, resendVerification, initiateLogin } = useAuth();
-  const navigate = useNavigate();
-  const verificationAttempted = useRef(false);
+function parseAvailableAtMs(value) {
+  if (!value) return 0;
+  const ms = new Date(value).getTime();
+  return Number.isFinite(ms) ? ms : 0;
+}
 
-  const token = searchParams.get('token');
+const EmailVerificationPage = () => {
+  const [status, setStatus] = useState('idle');
+  const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
+  const [code, setCode] = useState('');
+  const [resending, setResending] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [cooldownUntil, setCooldownUntil] = useState(0);
+  const [nowMs, setNowMs] = useState(() => Date.now());
+  const noticeTimerRef = useRef(null);
+  const {
+    user,
+    verifyEmail,
+    resendVerification,
+    cancelPendingEmail,
+    initiateLogin,
+    fetchUser,
+  } = useAuth();
+  const navigate = useNavigate();
+
+  const pendingEmail = user?.pendingEmail;
+  const verifiedEmail = user?.email;
+  const cooldownSec = Math.max(0, Math.ceil((cooldownUntil - nowMs) / 1000));
 
   useEffect(() => {
-    if (user?.isEmailVerified) {
+    if (!user) {
+      setStatus('login-required');
+      return;
+    }
+    if (user.isEmailVerified && !pendingEmail) {
       setStatus('already-verified');
       return;
     }
-
-    if (user && !hasAccountEmail(user)) {
+    if (!pendingEmail && !hasAccountEmail(user)) {
       setStatus('needs-email');
       return;
     }
-
-    if (!token) {
+    if (!pendingEmail) {
       setStatus('needs-verification');
       return;
     }
+    setStatus('enter-code');
+  }, [user, pendingEmail, user?.isEmailVerified]);
 
-    // One-time token is cleared server-side; remounts (e.g. React Strict Mode or a full-tree loading flash) must not POST again.
-    const tokenDoneKey = `emailVerifyOk:${token}`;
+  // Server is source of truth for resend availability (survives reload / new tabs).
+  useEffect(() => {
+    setCooldownUntil(parseAvailableAtMs(user?.emailResendAvailableAt));
+    setNowMs(Date.now());
+  }, [user?.emailResendAvailableAt]);
+
+  // Wall-clock based tick so background tab throttling can't freeze remaining time.
+  useEffect(() => {
+    if (cooldownUntil <= Date.now()) return undefined;
+
+    const sync = () => setNowMs(Date.now());
+    const id = window.setInterval(sync, 250);
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') sync();
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    window.addEventListener('focus', sync);
+
+    return () => {
+      window.clearInterval(id);
+      document.removeEventListener('visibilitychange', onVisible);
+      window.removeEventListener('focus', sync);
+    };
+  }, [cooldownUntil]);
+
+  useEffect(() => {
+    return () => {
+      if (noticeTimerRef.current) {
+        window.clearTimeout(noticeTimerRef.current);
+      }
+    };
+  }, []);
+
+  const showNotice = (message) => {
+    setNotice(message);
+    if (noticeTimerRef.current) {
+      window.clearTimeout(noticeTimerRef.current);
+    }
+    noticeTimerRef.current = window.setTimeout(() => {
+      setNotice('');
+      noticeTimerRef.current = null;
+    }, 4000);
+  };
+
+  const handleVerify = async (e) => {
+    e.preventDefault();
+    if (!code.trim()) {
+      setError('Enter the verification code from your email');
+      return;
+    }
+    setSubmitting(true);
+    setError('');
+    setNotice('');
     try {
-      if (sessionStorage.getItem(tokenDoneKey)) {
-        setStatus(user ? 'success' : 'verify-success-login-required');
-        verificationAttempted.current = true;
+      const data = await verifyEmail(code.trim());
+      if (data?.requireLogin) {
+        setStatus('verify-success-login-required');
         return;
       }
-    } catch {
-      // sessionStorage unavailable
+      setStatus('success');
+      await fetchUser(true, { silent: true });
+    } catch (err) {
+      setError(err.message || 'Verification failed');
+    } finally {
+      setSubmitting(false);
     }
+  };
 
-    if (verificationAttempted.current) {
-      return;
-    }
-    verificationAttempted.current = true;
-
-    (async () => {
-      try {
-        setStatus('verifying');
-        const data = await verifyEmail(token);
-        if (data?.email) {
-          setVerificationEmail(data.email);
-        }
-        try {
-          sessionStorage.setItem(tokenDoneKey, '1');
-        } catch {
-          // ignore
-        }
-        // Use /me result from verifyEmail (avoids stale closure on `user` after await)
-        if (data?.user) {
-          setStatus('success');
-        } else {
-          setStatus('verify-success-login-required');
-        }
-      } catch (err) {
-        setStatus('error');
-        setError(err.message || 'Verification failed');
-      }
-    })();
-  }, [token, verifyEmail, user?.isEmailVerified]);
-
-  const handleResendVerification = async () => {
-    const emailToUse = user?.email || verificationEmail;
-    
-    if (!emailToUse) {
-      setError('Unable to determine your email address');
-      return;
-    }
-
+  const handleResend = async () => {
+    if (resending || cooldownSec > 0 || !pendingEmail) return;
     try {
       setResending(true);
-      setError(''); // Clear any existing errors before attempting
-      await resendVerification();
-      setStatus('resent');
-    } catch (err) {
-      // Handle specific error cases
-      if (err.response?.status === 500 && err.response?.data?.message === "Failed to send verification email") {
-        setError("Unable to send verification email. Please try again later.");
-      } else {
-        setError(err.message || "An unexpected error occurred");
+      setError('');
+      const data = await resendVerification();
+      setCode('');
+      const nextUntil = parseAvailableAtMs(data?.emailResendAvailableAt);
+      if (nextUntil > 0) {
+        setCooldownUntil(nextUntil);
+        setNowMs(Date.now());
       }
-      setStatus('error');
+      showNotice('New code sent');
+    } catch (err) {
+      setError(err.message || 'Failed to resend');
+      if (err.retryAfter != null && Number.isFinite(Number(err.retryAfter))) {
+        setCooldownUntil(Date.now() + Number(err.retryAfter));
+        setNowMs(Date.now());
+      }
     } finally {
       setResending(false);
     }
   };
 
-  const renderContent = () => {
-    // For non-logged in users with a token, show simplified content
-    if (!user && token) {
-      switch (status) {
-        case 'verifying':
-          return (
-            <>
-              <h1>Verifying Email</h1>
-              <div className="loader"></div>
-              <p className="status-message">Please wait while we verify your email address...</p>
-            </>
-          );
-        case 'verify-success-login-required':
-          return (
-            <>
-              <div className="success-icon">✓</div>
-              <h1>Email Verified!</h1>
-              <p className="status-message">Your email has been successfully verified.</p>
-              <p className="login-required-message">Please log in to access your account.</p>
-              <button
-                className="action-button"
-                onClick={() => initiateLogin()}
-              >
-                Log In
-              </button>
-            </>
-          );
-        case 'error':
-          return (
-            <>
-              <div className="error-icon">✕</div>
-              <h1>Verification Failed</h1>
-              {error && <p className="error-message">{error}</p>}
-              <button
-                className="action-button"
-                onClick={() => initiateLogin()}
-              >
-                Go to Login
-              </button>
-            </>
-          );
-        default:
-          return null;
-      }
+  const handleCancelPending = async () => {
+    try {
+      setSubmitting(true);
+      setError('');
+      await cancelPendingEmail();
+      navigate('/settings/account');
+    } catch (err) {
+      setError(err.response?.data?.message || err.message || 'Failed to cancel');
+    } finally {
+      setSubmitting(false);
     }
+  };
 
-    // For logged-in users or manual visits, show full content
+  const formatCooldown = (sec) => {
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return `${m}:${String(s).padStart(2, '0')}`;
+  };
+
+  const destinationMessage = (() => {
+    if (pendingEmail && verifiedEmail) {
+      return (
+        <>
+          Code sent to <strong>{pendingEmail}</strong>
+        </>
+      );
+    }
+    if (pendingEmail) {
+      return (
+        <>
+          Code sent to <strong>{pendingEmail}</strong>
+        </>
+      );
+    }
+    return <>Request a verification code to continue.</>;
+  })();
+
+  const renderContent = () => {
     switch (status) {
-      case 'verifying':
+      case 'login-required':
         return (
           <>
-            <h1>Verifying Email</h1>
-            <div className="loader"></div>
-            <p className="status-message">Please wait while we verify your email address...</p>
+            <h1>Sign in required</h1>
+            <p className="status-message">Log in to verify or change your email.</p>
+            <button type="button" className="action-button" onClick={() => initiateLogin()}>
+              Log In
+            </button>
+          </>
+        );
+      case 'verify-success-login-required':
+        return (
+          <>
+            <div className="success-icon">✓</div>
+            <h1>Email Verified!</h1>
+            <p className="status-message">
+              Your email was confirmed. Please log in again to continue.
+            </p>
+            <button type="button" className="action-button" onClick={() => initiateLogin()}>
+              Log In
+            </button>
           </>
         );
       case 'success':
@@ -179,77 +232,66 @@ const EmailVerificationPage = () => {
             </Link>
           </>
         );
-      case 'needs-verification':
-        return (
-          <>
-            <div className="info-icon"></div>
-            <h1>Email Verification Required</h1>
-            <p className="status-message">Please check your email for a verification link.</p>
-            <div className="resend-section">
-              <p className="resend-info">Need a new verification email?</p>
-              <p className="email-display">{user?.email || 'your email address'}</p>
-              <button
-                className="action-button"
-                onClick={handleResendVerification}
-                disabled={resending}
-              >
-                {resending ? 'Sending...' : 'Resend Verification Email'}
-              </button>
-              {error && <p className="error-message">{error}</p>}
-            </div>
-            <Link className="action-button secondary" to="/profile">
-              Back to Profile
-            </Link>
-          </>
-        );
       case 'needs-email':
         return (
           <>
-            <div className="info-icon"></div>
             <h1>Email Required</h1>
             <p className="status-message">
-              Your account does not have an email address. Add one in account settings, then verify it from your inbox.
+              Your account does not have an email address. Add one in account settings.
             </p>
             <Link className="action-button" to="/settings/account">
               Add email in account settings
             </Link>
-            <Link className="action-button secondary" to="/profile">
-              Back to Profile
-            </Link>
           </>
         );
-      case 'error':
+      case 'enter-code':
+      case 'needs-verification':
+      case 'idle':
         return (
           <>
-            <div className="error-icon">✕</div>
-            <h1>Verification Failed</h1>
-            {error && <p className="error-message">{error}</p>}
-            <div className="resend-section">
-              <p className="resend-info">We&apos;ll send a new verification email to:</p>
-              <p className="email-display">{user?.email || verificationEmail || 'your email address'}</p>
+            <h1>Verify Email</h1>
+            <p className="status-message">{destinationMessage}</p>
+
+            <form className="verify-form" onSubmit={handleVerify}>
+              <CodeInput value={code} onChange={setCode} disabled={submitting} />
+              {error ? <p className="error-message">{error}</p> : null}
+              {notice && !error ? <p className="notice-message">{notice}</p> : null}
               <button
                 className="action-button"
-                onClick={handleResendVerification}
-                disabled={resending}
+                type="submit"
+                disabled={submitting || !code}
               >
-                {resending ? 'Sending...' : 'Resend Verification Email'}
+                {submitting ? 'Verifying...' : 'Verify code'}
               </button>
+            </form>
+
+            <div className="verify-actions">
+              <button
+                className="action-button secondary"
+                type="button"
+                onClick={handleResend}
+                disabled={resending || !pendingEmail || cooldownSec > 0}
+              >
+                {resending
+                  ? 'Sending...'
+                  : cooldownSec > 0
+                    ? `Resend in ${formatCooldown(cooldownSec)}`
+                    : 'Resend code'}
+              </button>
+              {pendingEmail && verifiedEmail ? (
+                <button
+                  className="action-button secondary"
+                  type="button"
+                  onClick={handleCancelPending}
+                  disabled={submitting}
+                >
+                  Cancel pending change
+                </button>
+              ) : null}
+              <Link className="action-button secondary" to="/profile">
+                Back to Profile
+              </Link>
             </div>
-            <Link className="action-button secondary" to="/profile">
-              Back to Profile
-            </Link>
-          </>
-        );
-      case 'resent':
-        return (
-          <>
-            <div className="success-icon">✓</div>
-            <h1>Verification Email Sent</h1>
-            <p className="status-message">A new verification email has been sent to your inbox.</p>
-            <p className="email-display">{user?.email || verificationEmail}</p>
-            <Link className="action-button" to="/profile">
-              Back to Profile
-            </Link>
           </>
         );
       default:
@@ -259,11 +301,9 @@ const EmailVerificationPage = () => {
 
   return (
     <div className="email-verification-page">
-      <div className="verification-container">
-        {renderContent()}
-      </div>
+      <div className="verification-container">{renderContent()}</div>
     </div>
   );
 };
 
-export default EmailVerificationPage; 
+export default EmailVerificationPage;

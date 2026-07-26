@@ -1,6 +1,6 @@
 import { routes } from '@/api/routes';
 // tuf-search: #AnnouncementPage #announcementPage #admin #announcement — Announcements
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -33,12 +33,18 @@ const TAB_TO_KIND = {
   passes: 'pass',
 };
 
-function upsertRequestTree(list, request) {
+function upsertRequestTree(list, request, fallbackItems) {
   if (!request?.requestId) return list;
   const idx = list.findIndex(r => r.requestId === request.requestId);
-  if (idx < 0) return [request, ...list];
+  const prev = idx >= 0 ? list[idx] : null;
+  const items =
+    Array.isArray(request.items) && request.items.length > 0
+      ? request.items
+      : (prev?.items?.length ? prev.items : fallbackItems) || request.items || [];
+  const merged = { ...prev, ...request, items };
+  if (idx < 0) return [merged, ...list];
   const next = [...list];
-  next[idx] = { ...next[idx], ...request, items: request.items ?? next[idx].items };
+  next[idx] = merged;
   return next;
 }
 
@@ -87,27 +93,43 @@ const AnnouncementPage = () => {
   const [recentJobs, setRecentJobs] = useState([]);
   const [gate, setGate] = useState(null);
   const [focusedRequestId, setFocusedRequestId] = useState(null);
+  const [panelReady, setPanelReady] = useState(false);
 
   const kind = TAB_TO_KIND[activeTab];
+  const canUsePanel =
+    !!user?.id &&
+    user.permissionFlags !== undefined &&
+    hasFlag(user, permissionFlags.SUPER_ADMIN);
 
   useEffect(() => {
     fetchItems();
   }, []);
 
+  const snapshotReqIdRef = useRef(0);
+
   const fetchSnapshot = useCallback(async (snapshotKind = kind) => {
+    if (!canUsePanel) return;
+    const reqId = ++snapshotReqIdRef.current;
     try {
       const { data } = await api.get(routes.webhook.announcementJobs(snapshotKind));
+      // Ignore stale responses (tab switch / overlapping reconnect fetches).
+      if (reqId !== snapshotReqIdRef.current) return;
       setOpenJobs(data.open || []);
       setRecentJobs(data.recent || []);
       if (data.gate) setGate(data.gate);
+      setPanelReady(true);
     } catch (err) {
+      if (reqId !== snapshotReqIdRef.current) return;
       console.error('Error fetching announcement jobs:', err);
+      setPanelReady(true);
     }
-  }, [kind]);
+  }, [kind, canUsePanel]);
 
   useEffect(() => {
+    if (!canUsePanel) return;
+    setPanelReady(false);
     fetchSnapshot(kind);
-  }, [kind, fetchSnapshot]);
+  }, [kind, canUsePanel, fetchSnapshot]);
 
   const handleSseEvent = useCallback((event) => {
     const { type, data } = event || {};
@@ -149,8 +171,13 @@ const AnnouncementPage = () => {
 
     if (type === 'announcement.request.updated' && request) {
       if (request.status === 'completed' || request.status === 'failed') {
-        setOpenJobs(prev => prev.filter(r => r.requestId !== request.requestId));
-        setRecentJobs(prev => upsertRequestTree(prev, request).slice(0, 25));
+        setOpenJobs(prev => {
+          const existing = prev.find(r => r.requestId === request.requestId);
+          setRecentJobs(recent =>
+            upsertRequestTree(recent, request, existing?.items).slice(0, 25),
+          );
+          return prev.filter(r => r.requestId !== request.requestId);
+        });
         if (request.status === 'failed') {
           toastError(request.error || t('announcement.errors.announceFailed'));
         }
@@ -186,10 +213,10 @@ const AnnouncementPage = () => {
   }, [kind, t]);
 
   useAnnouncementEvents({
-    enabled: !!user?.id && user.permissionFlags !== undefined && hasFlag(user, permissionFlags.SUPER_ADMIN),
+    enabled: canUsePanel,
     userId: user?.id,
     onEvent: handleSseEvent,
-    onReconnect: () => fetchSnapshot(kind),
+    onConnected: () => fetchSnapshot(kind),
   });
 
   const fetchItems = async () => {
@@ -565,6 +592,7 @@ const AnnouncementPage = () => {
               recent={recentJobs}
               focusedRequestId={focusedRequestId}
               gate={gate}
+              loading={!panelReady}
             />
           </div>
         </div>

@@ -18,6 +18,14 @@ export const routes = {
       email: () => '/v2/auth/verify/email',
       resend: () => '/v2/auth/verify/resend',
       changeEmail: () => '/v2/auth/verify/change-email',
+      pendingEmail: () => '/v2/auth/verify/pending-email',
+    },
+    stepUp: () => '/v2/auth/step-up',
+    oauthReauth: (provider) => `/v2/auth/oauth/reauth/${enc(provider)}`,
+    sessions: {
+      list: () => '/v2/auth/sessions',
+      revoke: (id) => `/v2/auth/sessions/${enc(id)}`,
+      revokeOthers: () => '/v2/auth/sessions',
     },
     forgotPassword: {
       request: () => '/v2/auth/forgot-password/request',

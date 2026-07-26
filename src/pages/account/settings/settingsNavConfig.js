@@ -34,6 +34,12 @@ export const SETTINGS_NAV_GROUPS = [
         visible: alwaysVisible,
       },
       {
+        path: "sessions",
+        labelKey: "settings.nav.sessions",
+        shortLabelKey: "settings.nav.short.sessions",
+        visible: alwaysVisible,
+      },
+      {
         path: "player",
         labelKey: "settings.nav.player",
         shortLabelKey: "settings.nav.short.player",

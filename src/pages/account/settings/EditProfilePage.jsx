@@ -43,6 +43,9 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
     user,
     changePassword,
     changeEmail,
+    stepUp,
+    startOAuthReauth,
+    cancelPendingEmail,
     linkProvider,
     unlinkProvider,
     setUser,
@@ -604,7 +607,38 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
                 </span>
               </button>
             </div>
-            {!hasAccountEmail(user) && (
+            {user?.pendingEmail && (
+              <div
+                className="email-verification-message email-verification-message--compact"
+                role="status"
+              >
+                <span className="profile-banner-text">
+                  Pending verification: {user.pendingEmail}
+                </span>
+                <button
+                  type="button"
+                  className="username-action-btn edit btn-fill-secondary"
+                  onClick={() => navigate('/profile/verify-email')}
+                >
+                  Verify
+                </button>
+                <button
+                  type="button"
+                  className="username-action-btn edit btn-fill-secondary"
+                  onClick={async () => {
+                    try {
+                      await cancelPendingEmail();
+                      setSuccess('Pending email change cancelled');
+                    } catch (err) {
+                      setError(err.response?.data?.message || 'Failed to cancel');
+                    }
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
+            {!hasAccountEmail(user) && !user?.pendingEmail && (
               <div
                 className="email-verification-message email-verification-message--compact"
                 role="button"
@@ -621,7 +655,7 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
                 <span className="email-verification-arrow">{t('editProfile.form.emailVerification.arrow')}</span>
               </div>
             )}
-            {hasAccountEmail(user) && !hasFlag(user, permissionFlags.EMAIL_VERIFIED) && (
+            {hasAccountEmail(user) && !hasFlag(user, permissionFlags.EMAIL_VERIFIED) && !user?.pendingEmail && (
               <div
                 className="email-verification-message email-verification-message--compact"
                 role="button"
@@ -964,7 +998,10 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
       isOpen={isEmailChangePopupOpen}
       onClose={() => setIsEmailChangePopupOpen(false)}
       currentEmail={user?.email}
+      hasPassword={Boolean(user?.password)}
       changeEmail={changeEmail}
+      stepUp={stepUp}
+      startOAuthReauth={startOAuthReauth}
     />
     </>
   );

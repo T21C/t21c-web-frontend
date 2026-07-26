@@ -12,6 +12,7 @@ import './forgotPasswordPage.css';
 const ForgotPasswordPage = () => {
   const [searchParams] = useSearchParams();
   const [email, setEmail] = useState('');
+  const [code, setCode] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [status, setStatus] = useState('request'); // request, sent, reset, error, success
@@ -19,7 +20,7 @@ const ForgotPasswordPage = () => {
   const [loading, setLoading] = useState(false);
   const [requireCaptcha, setRequireCaptcha] = useState(false);
   const [captchaToken, setCaptchaToken] = useState(null);
-  const [captchaKey, setCaptchaKey] = useState(0);
+  const captchaRef = useRef(null);
   const [retryAfter, setRetryAfter] = useState(null);
   const timerRef = useRef(null);
   const { requestPasswordReset, resetPassword, initiateLogin } = useAuth();
@@ -90,24 +91,7 @@ const ForgotPasswordPage = () => {
     return result;
   };
 
-  const handleCaptchaVerify = (token) => {
-    setCaptchaToken(token);
-  };
-
   useEffect(() => {
-    if (requireCaptcha && captchaToken === null) {
-      setCaptchaKey(prev => prev + 1);
-    }
-  }, [requireCaptcha]);
-
-  useEffect(() => {
-    const token = searchParams.get('token');
-    
-    if (token) {
-      setStatus('reset');
-      return;
-    }
-    
     setStatus('request');
   }, [searchParams]);
 
@@ -125,7 +109,7 @@ const ForgotPasswordPage = () => {
       }
 
       await requestPasswordReset(email, captchaToken);
-      setStatus('sent');
+      setStatus('reset');
     } catch (err) {
       console.error('Password reset request error:', err);
       
@@ -167,12 +151,8 @@ const ForgotPasswordPage = () => {
       }
       if (captchaRequired) {
         setRequireCaptcha(true);
-        setCaptchaKey(prev => prev + 1);
-        if (!requireCaptcha) {
-          await new Promise(resolve => setTimeout(resolve, 500));
-        }
-        setCaptchaToken(null);
       }
+      captchaRef.current?.reset();
     } finally {
       setLoading(false);
     }
@@ -196,8 +176,13 @@ const ForgotPasswordPage = () => {
         return;
       }
 
-      const token = searchParams.get('token');
-      await resetPassword(token, password);
+      if (!code.trim()) {
+        setError('Enter the reset code from your email');
+        setLoading(false);
+        return;
+      }
+
+      await resetPassword(email, code.trim(), password);
       setStatus('success');
     } catch (err) {
       console.error('Password reset error:', err);
@@ -264,7 +249,7 @@ const ForgotPasswordPage = () => {
 
               {requireCaptcha && (
                 <div className="captcha-container">
-                  <ReCAPTCHA key={captchaKey} onVerify={handleCaptchaVerify} />
+                  <ReCAPTCHA ref={captchaRef} onChange={setCaptchaToken} />
                 </div>
               )}
 
@@ -323,10 +308,40 @@ const ForgotPasswordPage = () => {
 
             <form onSubmit={handleResetPassword} className="reset-form">
               <div className="form-group">
+                <label htmlFor="reset-email">Email</label>
+                <input
+                  type="email"
+                  id="reset-email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  disabled={loading}
+                  className="reset-input"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="reset-code">Reset code</label>
+                <input
+                  type="text"
+                  id="reset-code"
+                  value={code}
+                  onChange={(e) =>
+                    setCode(e.target.value.toUpperCase().replace(/[^0-9A-Z]/g, '').slice(0, 8))
+                  }
+                  required
+                  disabled={loading}
+                  className="reset-input"
+                  maxLength={8}
+                  autoComplete="one-time-code"
+                />
+              </div>
+
+              <div className="form-group">
                 <label htmlFor="password">{t('forgotPassword.reset.form.labels.password')}</label>
                 <input
                   type="password"
-                  autnComplete='off'
+                  autoComplete="off"
                   id="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -342,7 +357,7 @@ const ForgotPasswordPage = () => {
                 <label htmlFor="confirmPassword">{t('forgotPassword.reset.form.labels.confirmPassword')}</label>
                 <input
                   type="password"
-                  autoComplete='off'
+                  autoComplete="off"
                   id="confirmPassword"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}

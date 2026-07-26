@@ -1,0 +1,98 @@
+/* tuf-search: #settingsSessionsPage #account #settings */
+.settings-sessions-page {
+  align-items: stretch;
+}
+
+.settings-sessions-page .settings-sessions-page__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+}
+
+.settings-sessions-page .settings-sessions-page__intro {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1 1 16rem;
+  min-width: 0;
+}
+
+.settings-sessions-page .settings-sessions-page__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.settings-sessions-page .settings-sessions-page__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 8px;
+  background-color: var(--color-black-t30);
+}
+
+.settings-sessions-page .settings-sessions-page__row-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1 1 14rem;
+  min-width: 0;
+}
+
+.settings-sessions-page .settings-sessions-page__row-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.settings-sessions-page .settings-sessions-page__device {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-white);
+}
+
+.settings-sessions-page .settings-sessions-page__badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.45rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-white);
+  background: var(--btn-primary-tint);
+  border: 1px solid color-mix(in srgb, var(--btn-primary) 45%, transparent);
+}
+
+.settings-sessions-page .settings-sessions-page__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 1rem;
+  font-size: 0.85rem;
+  line-height: 1.35;
+  color: var(--color-gray-2);
+}
+
+.settings-sessions-page .settings-sessions-page__ip {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.settings-sessions-page .settings-sessions-page__row .settings-sub-page__btn {
+  align-self: center;
+  flex: 0 0 auto;
+}

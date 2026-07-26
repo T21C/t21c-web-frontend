@@ -39,8 +39,8 @@ const RegisterPage = () => {
     invalidCharIndex: -1,
     errorType: '' // 'length', 'characters', or ''
   });
-  const [captchaKey, setCaptchaKey] = useState(null);
   const [captchaToken, setCaptchaToken] = useState(null);
+  const captchaRef = useRef(null);
   const navigate = useNavigate();
   const { user, loginWithDiscord, register } = useAuth();
   const { t } = useTranslation('pages');
@@ -54,16 +54,6 @@ const RegisterPage = () => {
       }),
     [t, location.pathname],
   );
-
-  const handleCaptchaVerify = (token) => {
-    setCaptchaToken(token);
-  };
-
-  useEffect(() => {
-    if (captchaToken === null) {
-      setCaptchaKey(prev => prev + 1);
-    }
-  }, []);
 
   const validateEmail = (email) => {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -192,6 +182,12 @@ const RegisterPage = () => {
   };
 
   useEffect(() => {
+    if (user) {
+      navigate('/profile');
+    }
+  }, [user, navigate]);
+
+  useEffect(() => {
     return () => {
       if (timerRef.current) {
         clearInterval(timerRef.current);
@@ -283,6 +279,7 @@ const RegisterPage = () => {
       } else {
         setError(err.message || t('register.errors.generic'));
       }
+      captchaRef.current?.reset();
     } finally {
       setIsSubmitting(false);
     }
@@ -295,10 +292,6 @@ const RegisterPage = () => {
       setError(t('register.errors.discordFailed'));
     }
   };
-
-  if (user) {
-    navigate('/profile');
-  }
 
   const handleGoToProfile = () => {
     navigate('/profile');
@@ -461,7 +454,7 @@ const RegisterPage = () => {
               </span>
             </label>
             <div className="captcha-container">
-              <ReCAPTCHA key={captchaKey} onVerify={handleCaptchaVerify} />
+              <ReCAPTCHA ref={captchaRef} onChange={setCaptchaToken} />
             </div>
 
             <button 
