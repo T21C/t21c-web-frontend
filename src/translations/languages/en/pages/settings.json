@@ -34,6 +34,8 @@
     "thisDevice": "This device",
     "unknownDevice": "Unknown device",
     "unknownIp": "Unknown",
+    "unknownLocation": "Unknown",
+    "location": "Location",
     "ip": "IP",
     "created": "Signed in",
     "expires": "Expires",

@@ -34,6 +34,8 @@
     "thisDevice": "이 기기",
     "unknownDevice": "알 수 없는 기기",
     "unknownIp": "알 수 없음",
+    "unknownLocation": "알 수 없음",
+    "location": "위치",
     "ip": "IP",
     "created": "로그인",
     "expires": "만료",

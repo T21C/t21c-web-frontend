@@ -34,6 +34,8 @@
     "thisDevice": "此设备",
     "unknownDevice": "未知设备",
     "unknownIp": "未知",
+    "unknownLocation": "未知",
+    "location": "位置",
     "ip": "IP",
     "created": "登录时间",
     "expires": "过期时间",

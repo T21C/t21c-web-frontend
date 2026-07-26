@@ -195,6 +195,10 @@ const SettingsSessionsPage = () => {
                     ) : null}
                   </div>
                   <div className="settings-sessions-page__meta">
+                    <span>
+                      {t("settings.sessions.location")}:{" "}
+                      {session.location?.label || t("settings.sessions.unknownLocation")}
+                    </span>
                     <span className="settings-sessions-page__ip">
                       {t("settings.sessions.ip")}:{" "}
                       {session.ip ? (
