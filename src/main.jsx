@@ -1,7 +1,9 @@
 // tuf-search: #main #entry — Vite entry
 import '@/assets/important/dark/background-blurred.jpg';
 import ReactDOM from 'react-dom/client';
+import * as Sentry from '@sentry/react';
 import App from '@/App';
+import ErrorPage from '@/pages/misc/ErrorPage/ErrorPage';
 import '@/index.css';
 
 import { BrowserRouter } from 'react-router-dom';
@@ -25,6 +27,13 @@ import { ProfileContextProvider } from '@/contexts/ProfileContext';
 import { LinkConfirmProvider } from '@/components/common/LinkConfirm';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+Sentry.init({
+  dsn: import.meta.env.VITE_SENTRY_DSN,
+  environment: import.meta.env.MODE,
+  enabled: Boolean(import.meta.env.VITE_SENTRY_DSN),
+  sendDefaultPii: true,
+});
+
 if ('scrollRestoration' in history) {
   history.scrollRestoration = 'manual';
 }
@@ -42,43 +51,45 @@ const queryClient = new QueryClient({
 
 // i love my little chud pyramid of doom
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <HelmetProvider>
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <GoogleOAuthProvider clientId='886035995245-8735p49ljpm17btvst50pp8qbg73t7s4.apps.googleusercontent.com'>
-          <AuthProvider>
-            <DifficultyContextProvider>
-              <LevelContextProvider>
-                <NotificationProvider>
-                  <I18nextProvider i18n={i18next}>
-                    <PlayerContextProvider>
-                      <ProfileContextProvider>
-                        <LinkConfirmProvider>
-                        <RatingFilterProvider>
-                          <PassContextProvider>
-                            <PackContextProvider>
-                              <ArtistContextProvider>
-                                <SongContextProvider>
-                                  <CreatorListContextProvider>
-                                    <CreatorProfileContextProvider>
-                                      <App />
-                                    </CreatorProfileContextProvider>
-                                  </CreatorListContextProvider>
-                                </SongContextProvider>
-                              </ArtistContextProvider>
-                            </PackContextProvider>
-                          </PassContextProvider>
-                        </RatingFilterProvider>
-                        </LinkConfirmProvider>
-                      </ProfileContextProvider>
-                    </PlayerContextProvider>
-                  </I18nextProvider>
-                </NotificationProvider>
-              </LevelContextProvider>
-            </DifficultyContextProvider>  
-          </AuthProvider>
-        </GoogleOAuthProvider>
-      </BrowserRouter>
-    </QueryClientProvider>
-  </HelmetProvider>
+  <Sentry.ErrorBoundary fallback={(errorData) => <ErrorPage {...errorData} />}>
+    <HelmetProvider>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <GoogleOAuthProvider clientId='886035995245-8735p49ljpm17btvst50pp8qbg73t7s4.apps.googleusercontent.com'>
+            <AuthProvider>
+              <DifficultyContextProvider>
+                <LevelContextProvider>
+                  <NotificationProvider>
+                    <I18nextProvider i18n={i18next}>
+                      <PlayerContextProvider>
+                        <ProfileContextProvider>
+                          <LinkConfirmProvider>
+                          <RatingFilterProvider>
+                            <PassContextProvider>
+                              <PackContextProvider>
+                                <ArtistContextProvider>
+                                  <SongContextProvider>
+                                    <CreatorListContextProvider>
+                                      <CreatorProfileContextProvider>
+                                        <App />
+                                      </CreatorProfileContextProvider>
+                                    </CreatorListContextProvider>
+                                  </SongContextProvider>
+                                </ArtistContextProvider>
+                              </PackContextProvider>
+                            </PassContextProvider>
+                          </RatingFilterProvider>
+                          </LinkConfirmProvider>
+                        </ProfileContextProvider>
+                      </PlayerContextProvider>
+                    </I18nextProvider>
+                  </NotificationProvider>
+                </LevelContextProvider>
+              </DifficultyContextProvider>  
+            </AuthProvider>
+          </GoogleOAuthProvider>
+        </BrowserRouter>
+      </QueryClientProvider>
+    </HelmetProvider>
+  </Sentry.ErrorBoundary>
 );

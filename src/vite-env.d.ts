@@ -21,6 +21,7 @@ interface ImportMetaEnv {
   readonly VITE_APRIL_FOOLS: string;
   readonly VITE_CUSTOM_PROFILE_BANNERS_ENABLED: string;
   readonly VITE_RECAPTCHA_SITE_KEY: string;
+  readonly VITE_SENTRY_DSN: string;
 }
 
 interface ImportMeta {
