@@ -360,7 +360,7 @@
       "completed": "已结束",
       "cancelled": "已取消"
     },
-    "seriesNone": "无",
+    "seriesNone": "未分类",
     "tierTemplateNone": "—",
     "errors": {
       "shortNameRequired": "简称为必填项。",

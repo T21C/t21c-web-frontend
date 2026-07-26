@@ -11,43 +11,15 @@
       "personal": "个人"
     },
     "account": "账户",
-    "sessions": "会话",
     "player": "玩家信息",
     "creator": "创作者信息",
     "billing": "订阅与账单",
     "short": {
       "account": "账户",
-      "sessions": "会话",
       "player": "玩家",
       "creator": "创作者",
       "billing": "账单"
     }
-  },
-  "sessions": {
-    "title": "活跃会话",
-    "subtitle": "当前已登录你账户的设备。如有不认识的设备，请将其退出。",
-    "loading": "正在加载会话…",
-    "empty": "没有活跃会话。",
-    "loadErrorTitle": "无法加载会话",
-    "loadErrorBody": "请稍后再试。",
-    "retry": "重试",
-    "thisDevice": "此设备",
-    "unknownDevice": "未知设备",
-    "unknownIp": "未知",
-    "unknownLocation": "未知",
-    "location": "位置",
-    "ip": "IP",
-    "created": "登录时间",
-    "expires": "过期时间",
-    "revealIp": "点击显示",
-    "hideIp": "点击隐藏",
-    "signOut": "退出登录",
-    "revokeSuccess": "已退出该会话",
-    "revokeError": "无法退出该会话",
-    "revokeOthers": "退出其他设备",
-    "revokeOthersConfirm": "退出所有其他设备？此设备将保持登录。",
-    "revokeOthersSuccess": "已退出其他设备",
-    "revokeOthersError": "无法退出其他设备"
   },
   "player": {
     "title": "玩家信息",

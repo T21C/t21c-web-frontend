@@ -1,11 +1,11 @@
 {
   "meta": {
-    "title": "资源",
-    "description": "The Universal Forums 上所有资源的目录视图，包括标签、难度、精选类型、SVG 图标，以及来自 components/common/icons 和 src/assets 的静态文件。"
+    "title": "资源文件",
+    "description": "The Universal Forums 上所有资源的目录视图，包括标签、难度、精选类型、SVG 图标，以及位于 components/common/icons 和 src/assets 目录下的静态文件。"
   },
   "header": {
-    "title": "资源",
-    "lede": "本页汇总展示全部资产（标签、难度、精选类型），以及 <code>components/common/icons</code> 与 <code>src/assets</code> 下的 SVG 图标与静态文件。"
+    "title": "资源文件",
+    "lede": "本页汇总展示全部资源文件（标签、难度、精选类型），以及位于 <code>components/common/icons</code> 与 <code>src/assets</code> 目录下的 SVG 图标与静态文件。"
   },
   "sections": {
     "tags": {
@@ -22,7 +22,7 @@
     },
     "jsxIcons": {
       "title": "JSX 图标",
-      "hint": "<code>src/components/common/icons</code> 下的每个 <code>*.jsx</code> 图标文件。"
+      "hint": "<code>src/components/common/icons</code> 目录下的每个 <code>*.jsx</code> 图标文件。"
     },
     "staticAssets": {
       "title": "静态资源（`src/assets`）",
@@ -32,14 +32,14 @@
   "filter": {
     "label": "筛选",
     "labelDifficultyName": "难度名称",
-    "placeholderJsx": "按路径或文件名筛选…",
-    "placeholderStatic": "按路径筛选…",
-    "placeholderTags": "按分组或标签名称搜索…",
-    "placeholderDifficultyName": "按难度名称筛选…",
+    "placeholderJsx": "按路径或文件名筛选……",
+    "placeholderStatic": "按路径筛选……",
+    "placeholderTags": "按分组或标签名称搜索……",
+    "placeholderDifficultyName": "按难度名称筛选……",
     "noMatches": "没有符合当前筛选条件的项。"
   },
   "status": {
-    "loading": "加载中…",
+    "loading": "加载中……",
     "empty": "没有数据。"
   },
   "jsx": {
@@ -52,7 +52,7 @@
     "open": "打开",
     "download": "下载",
     "downloadAll": "全部下载",
-    "downloadAllBusy": "打包中…",
+    "downloadAllBusy": "压缩中……",
     "downloadAllEmpty": "没有可下载的图片",
     "downloadAllSuccess": "已下载 {{count}} 张图片",
     "downloadAllPartial": "已下载 {{ok}} 张图片（{{failed}} 张失败）",
@@ -63,6 +63,6 @@
     "colorCopyFailed": "无法复制到剪贴板"
   },
   "difficultiesFilter": {
-    "legacyToggleLabel": "LEGACY 类型难度"
+    "legacyToggleLabel": "LEGACY 难度图标"
   }
 }

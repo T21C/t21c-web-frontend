@@ -27,8 +27,8 @@
   },
   "zipPicker": {
     "title": "选择用于本投稿的谱面",
-    "description": "压缩包内包含多个 .adofai 谱面，请选择与本投稿对应的那一个。",
+    "description": "压缩包内包含多个谱面文件，请选择与本次提交对应的那一个。",
     "confirm": "使用所选谱面",
-    "confirmLoading": "正在应用…"
+    "confirmLoading": "正在应用……"
   }
 }

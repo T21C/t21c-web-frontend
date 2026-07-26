@@ -1,6 +1,6 @@
 {
-  "title": "管理策展人",
-  "loading": "加载策展人中……",
+  "title": "管理精选委员",
+  "loading": "加载精选委员中……",
   "search": {
     "placeholder": "按用户名或 ID 搜索"
   },
@@ -20,20 +20,20 @@
     }
   },
   "roles": {
-    "curator": "策展人",
-    "headCurator": "首席策展人"
+    "curator": "精选委员",
+    "headCurator": "精选委员长"
   },
   "errors": {
     "passwordRequired": "需要密码",
     "invalidPassword": "超管密码无效",
-    "deleteConfirm": "确认删除策展人？",
+    "deleteConfirm": "确认删除精选委员？",
     "updateRoleFailed": "更新角色失败",
-    "deleteFailed": "删除策展人失败",
-    "loadFailed": "加载策展人失败",
-    "addFailed": "添加策展人失败",
+    "deleteFailed": "删除精选委员失败",
+    "loadFailed": "加载精选委员失败",
+    "addFailed": "添加精选委员失败",
     "userNotFound": "未找到用户",
-    "alreadyHighestRole": "用户已拥有最高角色",
-    "alreadyLowestRole": "用户已拥有最低角色",
-    "noRoleToRemove": "用户没有可移除的角色"
+    "alreadyHighestRole": "用户已拥有最高身份",
+    "alreadyLowestRole": "用户已拥有最低身份",
+    "noRoleToRemove": "用户没有可移除的身份"
   }
 }

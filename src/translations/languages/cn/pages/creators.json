@@ -100,9 +100,9 @@
     },
     "sections": {
       "difficultyBreakdown": {
-        "title": "按难度分类的关卡",
-        "expand": "展开难度分类",
-        "collapse": "收起难度分类"
+        "title": "关卡数统计",
+        "expand": "展开",
+        "collapse": "收起"
       }
     },
     "funFacts": {
@@ -115,7 +115,7 @@
         "audience": "受众",
         "curation": "精选与重评",
         "timeline": "时间线",
-        "breakdownByType": "按难度类型分类的关卡"
+        "breakdownByType": "关卡难度"
       },
       "identity": {
         "aliasCount": "别名数量",
