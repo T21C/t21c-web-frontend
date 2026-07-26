@@ -60,6 +60,7 @@ import ChartIcon from './ChartIcon';
 import TimeIcon from './TimeIcon';
 import AdofaiIcon from './AdofaiIcon';
 import TUFHelperLiteIcon from './TUFHelperLiteIcon';
+import TUFHelperLiteOpenIcon from './TUFHelperLiteOpenIcon';
 import { SettingsIcon } from './SettingsIcon';
 import { TUFStellarIcon } from './TUFStellarIcon';
 import { HeartIcon } from './HeartIcon';
@@ -128,6 +129,7 @@ export {
     TimeIcon,
     AdofaiIcon,
     TUFHelperLiteIcon,
+    TUFHelperLiteOpenIcon,
     SettingsIcon,
     TUFStellarIcon,
     HeartIcon,

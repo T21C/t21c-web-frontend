@@ -12,7 +12,7 @@ import { AddToPackPopup } from "@/components/popups/Packs";
 import { SongPopup } from "@/components/popups/Songs";
 import { ArtistPopup } from "@/components/popups/Artists";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
-import { EditIcon, SteamIcon, DownloadIcon, VideoLinkIcon, PassIcon, LikeIcon, PackIcon, DragHandleIcon, MetronomeIcon, ChartIcon, TimeIcon, TUFHelperLiteIcon } from "@/components/common/icons";
+import { EditIcon, SteamIcon, DownloadIcon, VideoLinkIcon, PassIcon, LikeIcon, PackIcon, DragHandleIcon, MetronomeIcon, ChartIcon, TimeIcon, TUFHelperLiteOpenIcon } from "@/components/common/icons";
 import { clampFloat, formatCreatorDisplay } from "@/utils/Utility";
 import { getPrimaryVideoLink } from "@/utils/videoLink";
 import { ABILITIES, hasBit } from "@/utils/Abilities";
@@ -422,8 +422,8 @@ const LevelCard = ({
           style={{ '--tufhelperlite-progress': `${Math.round(tufHelperLiteDownload.progress * 100)}%` }}
         >
           <span className="tufhelperlite-button__icon-stack" aria-hidden="true">
-            <TUFHelperLiteIcon className="tufhelperlite-button__icon tufhelperlite-button__icon--base" size="100%" />
-            <TUFHelperLiteIcon className="tufhelperlite-button__icon tufhelperlite-button__icon--color" size="100%" />
+            <TUFHelperLiteOpenIcon className="tufhelperlite-button__icon tufhelperlite-button__icon--base" size="100%" />
+            <TUFHelperLiteOpenIcon className="tufhelperlite-button__icon tufhelperlite-button__icon--color" size="100%" />
           </span>
         </button>
       )}
