@@ -83,6 +83,8 @@ export const EntityPopup = ({ artist, song, onClose, type = 'artist' }) => {
     if (!isOpen) return undefined;
 
     const root = getPortalRoot();
+    if (!root) return undefined;
+
     const prevOverflow = root.style.overflow;
     root.style.overflow = 'hidden';
     return () => {

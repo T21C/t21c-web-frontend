@@ -27,6 +27,7 @@ export function Portal({ children, when = true, mount = "body", root: rootProp }
     }
   }
 
+  // document.body can be null during teardown / unusual browsing contexts
   if (!container) return null;
 
   return createPortal(children, container);
