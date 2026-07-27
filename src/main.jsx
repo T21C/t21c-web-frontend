@@ -27,11 +27,56 @@ import { ProfileContextProvider } from '@/contexts/ProfileContext';
 import { LinkConfirmProvider } from '@/components/common/LinkConfirm';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+const isBrowserExtensionUrl = (url) =>
+  typeof url === 'string' &&
+  /^(chrome|moz|safari|safari-web|ms-browser)-extension:\/\//i.test(url);
+
+const isExtensionOriginatedEvent = (event) => {
+  const frames = event.exception?.values?.flatMap(
+    (value) => value.stacktrace?.frames ?? [],
+  ) ?? [];
+
+  if (frames.length === 0) return false;
+
+  // Drop only when every frame is extension-hosted (no first-party app frames).
+  return frames.every((frame) => isBrowserExtensionUrl(frame.filename));
+};
+
+const isExternalDomMutationNoise = (event) => {
+  const values = event.exception?.values ?? [];
+  return values.some((value) => {
+    const type = value.type || '';
+    const message = value.value || '';
+    return (
+      (type === 'NotFoundError' || type === 'DOMException') &&
+      /Failed to execute 'removeChild' on 'Node'/i.test(message)
+    );
+  });
+};
+
 Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
   environment: import.meta.env.MODE,
   enabled: Boolean(import.meta.env.VITE_SENTRY_DSN) && !import.meta.env.DEV,
   sendDefaultPii: true,
+  // Browser extensions / page translators mutate React-owned DOM; React then
+  // throws NotFoundError on removeChild during commit. Unfixable from app code.
+  ignoreErrors: [
+    /Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node/i,
+  ],
+  denyUrls: [
+    /^chrome-extension:\/\//i,
+    /^moz-extension:\/\//i,
+    /^safari-extension:\/\//i,
+    /^safari-web-extension:\/\//i,
+    /^ms-browser-extension:\/\//i,
+  ],
+  beforeSend(event) {
+    if (isExtensionOriginatedEvent(event) || isExternalDomMutationNoise(event)) {
+      return null;
+    }
+    return event;
+  },
 });
 
 if ('scrollRestoration' in history) {
