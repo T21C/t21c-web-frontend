@@ -156,12 +156,11 @@ export const RatingDetailPopup = ({
       }
 
       // If not cached, fetch and cache the data
-      getVideoDetails(selectedRating.level.videoLink)
-        .then(data => {
-          videoCache.set(selectedRating.level.videoLink, data);
+      void getVideoDetails(selectedRating.level.videoLink)
+        .then((data) => {
+          if (data) videoCache.set(selectedRating.level.videoLink, data);
           setVideoData(data);
         })
-        .catch(error => console.error('Error fetching video details:', error))
         .finally(() => {
           setIsVideoLoading(false);
         });

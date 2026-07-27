@@ -155,7 +155,7 @@ const PassDetailPage = () => {
 
   useEffect(() => {
     if (res?.pass?.videoLink) {
-      getVideoDetails(res.pass.videoLink).then(setVideoDetail);
+      void getVideoDetails(res.pass.videoLink).then(setVideoDetail);
     }
   }, [res?.pass?.videoLink]);
 

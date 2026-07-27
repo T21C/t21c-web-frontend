@@ -12,9 +12,19 @@ export function formatNumber(num, digits = 2) {
 }
 
 
+/**
+ * Fetch cached video metadata for a URL.
+ * Never rejects — network / abort failures resolve to `null` so callers can
+ * safely use `.then()` / `await` without local try/catch.
+ */
 async function getVideoDetails(url) {
   if (!url) return null;
-  return await api.get(routes.media.videoDetails(url)).then(res => res.data);
+  try {
+    const res = await api.get(routes.media.videoDetails(url));
+    return res.data ?? null;
+  } catch {
+    return null;
+  }
 }
 
 

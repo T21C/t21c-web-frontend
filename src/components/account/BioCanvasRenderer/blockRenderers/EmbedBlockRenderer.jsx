@@ -35,9 +35,6 @@ export default function EmbedBlockRenderer({ block }) {
     getVideoDetails(url)
       .then((detail) => {
         if (active) setVideoDetail(detail);
-      })
-      .catch(() => {
-        if (active) setVideoDetail(null);
       });
 
     return () => {

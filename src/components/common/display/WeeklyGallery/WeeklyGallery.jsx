@@ -63,8 +63,7 @@ const WeeklyGallery = ({
           if (thumb) {
             setThumbnailUrls((prev) => ({ ...prev, [key]: thumb }));
           }
-        })
-        .catch(() => {});
+        });
     }
 
     return () => {

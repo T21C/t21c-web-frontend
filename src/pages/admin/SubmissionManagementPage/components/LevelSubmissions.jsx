@@ -82,15 +82,12 @@ const LevelSubmissions = () => {
     // Load video embeds when submissions change
     submissions.forEach(async (submission) => {
       if (submission.videoLink && !videoEmbeds[submission.id]) {
-        try {
-          const videoDetails = await getVideoDetails(submission.videoLink);
-          setVideoEmbeds(prev => ({
-            ...prev,
-            [submission.id]: videoDetails
-          }));
-        } catch (error) {
-          console.error('Error fetching video details:', error);
-        }
+        const videoDetails = await getVideoDetails(submission.videoLink);
+        if (!videoDetails) return;
+        setVideoEmbeds((prev) => ({
+          ...prev,
+          [submission.id]: videoDetails,
+        }));
       }
     });
   }, [submissions]);
