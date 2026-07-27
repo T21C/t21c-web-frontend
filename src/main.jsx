@@ -54,6 +54,14 @@ const isExternalDomMutationNoise = (event) => {
   });
 };
 
+/** OEM / in-app browsers inject WebView bridges and ad SDKs that throw into page JS. */
+const isThirdPartyNativeBridgeNoise = (event) => {
+  const values = event.exception?.values ?? [];
+  return values.some((value) =>
+    /nativeBridge\.\w+ is not a function/i.test(value.value || ''),
+  );
+};
+
 Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
   environment: import.meta.env.MODE,
@@ -63,6 +71,7 @@ Sentry.init({
   // throws NotFoundError on removeChild during commit. Unfixable from app code.
   ignoreErrors: [
     /Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node/i,
+    /nativeBridge\.\w+ is not a function/i,
   ],
   denyUrls: [
     /^chrome-extension:\/\//i,
@@ -72,7 +81,11 @@ Sentry.init({
     /^ms-browser-extension:\/\//i,
   ],
   beforeSend(event) {
-    if (isExtensionOriginatedEvent(event) || isExternalDomMutationNoise(event)) {
+    if (
+      isExtensionOriginatedEvent(event) ||
+      isExternalDomMutationNoise(event) ||
+      isThirdPartyNativeBridgeNoise(event)
+    ) {
       return null;
     }
     return event;
