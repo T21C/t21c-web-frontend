@@ -24,7 +24,7 @@ import {
   scoreV2GraphHoverAccuracyMax,
 } from "@/utils/scoreV2Curve";
 import { formatScore } from "@/utils/Utility";
-import { pickLevelXaccCurve } from "@/utils/scoreV2XaccCurve.js";
+import { pickLevelXaccCurve } from "@/utils/scoreV2XaccCurve";
 import { ScoreV2GraphTooltip } from "./ScoreV2GraphTooltip";
 import { ScoreV2GraphCustomLayer } from "./ScoreV2GraphCustomLayer";
 import "./ScoreV2Graph.css";

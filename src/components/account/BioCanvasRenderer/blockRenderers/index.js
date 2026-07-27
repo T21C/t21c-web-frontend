@@ -1,12 +1,12 @@
-import TextBlockRenderer from "./TextBlockRenderer.jsx";
-import LinkBlockRenderer from "./LinkBlockRenderer.jsx";
-import SocialBlockRenderer from "./SocialBlockRenderer.jsx";
-import ImageBlockRenderer from "./ImageBlockRenderer.jsx";
-import EmbedBlockRenderer from "./EmbedBlockRenderer.jsx";
-import FeaturedLevelsBlockRenderer from "./FeaturedLevelsBlockRenderer.jsx";
+import TextBlockRenderer from "./TextBlockRenderer";
+import LinkBlockRenderer from "./LinkBlockRenderer";
+import SocialBlockRenderer from "./SocialBlockRenderer";
+import ImageBlockRenderer from "./ImageBlockRenderer";
+import EmbedBlockRenderer from "./EmbedBlockRenderer";
+import FeaturedLevelsBlockRenderer from "./FeaturedLevelsBlockRenderer";
 import "../bioCanvasRenderer.css";
 
-export { SOCIAL_ICON_MAP } from "./socialIcons.js";
+export { SOCIAL_ICON_MAP } from "./socialIcons";
 
 export const BLOCK_RENDERERS = {
   text: TextBlockRenderer,

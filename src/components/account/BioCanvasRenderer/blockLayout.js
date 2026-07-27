@@ -1,1 +1,1 @@
-export { getBlockPositionStyle, getAspectRatio, computeStageContentHeight } from "@/utils/bioCanvas/layout.js";
+export { getBlockPositionStyle, getAspectRatio, computeStageContentHeight } from "@/utils/bioCanvas/layout";

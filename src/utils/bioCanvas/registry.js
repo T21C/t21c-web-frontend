@@ -1,9 +1,9 @@
-import { textBlockDescriptor } from "./blocks/text.js";
-import { linkBlockDescriptor } from "./blocks/link.js";
-import { socialBlockDescriptor } from "./blocks/social.js";
-import { imageBlockDescriptor } from "./blocks/image.js";
-import { embedBlockDescriptor } from "./blocks/embed.js";
-import { featuredLevelsBlockDescriptor } from "./blocks/featuredLevels.js";
+import { textBlockDescriptor } from "./blocks/text";
+import { linkBlockDescriptor } from "./blocks/link";
+import { socialBlockDescriptor } from "./blocks/social";
+import { imageBlockDescriptor } from "./blocks/image";
+import { embedBlockDescriptor } from "./blocks/embed";
+import { featuredLevelsBlockDescriptor } from "./blocks/featuredLevels";
 
 export const BLOCK_DESCRIPTORS = [
   textBlockDescriptor,

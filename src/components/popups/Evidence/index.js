@@ -1,2 +1,2 @@
 // tuf-search: #EvidencePopups
-export { GalleryInspectPopup } from "../GalleryInspectPopup/GalleryInspectPopup.jsx";
+export { GalleryInspectPopup } from "../GalleryInspectPopup/GalleryInspectPopup";

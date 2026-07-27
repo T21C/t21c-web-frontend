@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { zSafeUrl } from "../urls.js";
+import { zSafeUrl } from "../urls";
 
 export const SOCIAL_BLOCK_TYPE = "social";
 export const MAX_SOCIAL_LINKS = 12;

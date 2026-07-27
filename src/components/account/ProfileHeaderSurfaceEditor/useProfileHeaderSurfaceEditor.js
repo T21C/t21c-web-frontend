@@ -9,7 +9,7 @@ import {
   customProfileBannersEnabled,
   subjectHasCustomBannerEntitlement,
 } from "@/utils/profileBanners";
-import { validateCdnBannerImageFile } from "@/utils/validateCdnBannerImage.js";
+import { validateCdnBannerImageFile } from "@/utils/validateCdnBannerImage";
 import {
   GRADIENT_LAYER_TYPES,
   SURFACE_STACK_KIND_GRADIENT,

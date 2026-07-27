@@ -1,10 +1,10 @@
 // tuf-search: #scoreV2Curve #ScoreV2Curve
 import calcAcc from "./CalcAcc";
-import { computePassScoreV2 } from "./scoreService.js";
+import { computePassScoreV2 } from "./scoreService";
 import {
   XACC_CURVE_DEFAULTS,
   resolveXaccCurveForLevelData,
-} from "./scoreV2XaccCurve.js";
+} from "./scoreV2XaccCurve";
 
 const MAX_CHART_POINTS = 180;
 /** Pure ePerfect ladder (PP … PP+NeP); no early substitution in tooltip below this. */

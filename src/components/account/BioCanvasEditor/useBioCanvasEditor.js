@@ -5,7 +5,7 @@ import api from "@/utils/api";
 import { ensureAuthSession, isNoTokenAuthError } from "@/utils/ensureAuthSession";
 import { getBioCanvasApiRoutes } from "@/utils/bioCanvasApi";
 import { getCdnErrorMessage } from "@/utils/uploadErrors";
-import { validateCdnBannerImageFile } from "@/utils/validateCdnBannerImage.js";
+import { validateCdnBannerImageFile } from "@/utils/validateCdnBannerImage";
 import {
   BIO_CANVAS_VERSION,
   MAX_BIO_CANVAS_BLOCKS,
@@ -18,8 +18,8 @@ import {
   parseBioCanvas,
   parseBioCanvasImageAssets,
 } from "@/utils/bioCanvas";
-import { readImageFileDimensions } from "@/utils/validateCdnBannerImage.js";
-import { DEFAULT_IMAGE_CROP, FIT_IMAGE_TO_FRAME_CROP } from "@/utils/bioCanvas/blocks/image.js";
+import { readImageFileDimensions } from "@/utils/validateCdnBannerImage";
+import { DEFAULT_IMAGE_CROP, FIT_IMAGE_TO_FRAME_CROP } from "@/utils/bioCanvas/blocks/image";
 
 function deepCloneCanvas(canvas) {
   return canvas ? JSON.parse(JSON.stringify(canvas)) : null;

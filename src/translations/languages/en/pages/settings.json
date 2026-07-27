@@ -85,7 +85,15 @@
   },
   "bioCanvas": {
     "sectionExpandAria": "Expand bio canvas preview",
-    "sectionCollapseAria": "Collapse bio canvas preview"
+    "sectionCollapseAria": "Collapse bio canvas preview",
+    "linkConfirm": {
+      "title": "Leaving TUF?",
+      "lead": "You are about to visit an external site. Only continue if you trust this destination.",
+      "trustDomain": "Trust {{host}} for this session",
+      "trustDomainAlways": "Always trust {{host}}",
+      "cancel": "Cancel",
+      "continue": "Continue"
+    }
   },
   "headerSurface": {
     "sectionTitle": "Header card background",

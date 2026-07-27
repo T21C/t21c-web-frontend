@@ -2,8 +2,8 @@
  * Client preview scoring facade — keep API in sync with
  * server/src/misc/utils/pass/scoreService.ts
  */
-import calcAcc from './CalcAcc.js'
-import { getScoreV2 } from './CalcScore.js'
+import calcAcc from './CalcAcc'
+import { getScoreV2 } from './CalcScore'
 
 /**
  * @param {unknown} value

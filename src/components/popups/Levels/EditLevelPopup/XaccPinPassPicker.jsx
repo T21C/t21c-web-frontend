@@ -8,8 +8,8 @@ import {
   formatPassPickerStats,
   resolvePassPickerName,
   resolvePassPlayerSubject,
-} from '@/utils/xaccPinJudgements.js';
-import { XaccPassPickerJudgementStrip } from './XaccPassPickerJudgementStrip.jsx';
+} from '@/utils/xaccPinJudgements';
+import { XaccPassPickerJudgementStrip } from './XaccPassPickerJudgementStrip';
 
 export function XaccPinPassPicker({
   passes,

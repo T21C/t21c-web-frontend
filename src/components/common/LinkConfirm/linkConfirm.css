@@ -60,9 +60,15 @@
   color: var(--color-gray-2);
 }
 
+.link-confirm__trust-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
 .link-confirm__trust {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.5rem;
   font-size: 0.875rem;
   color: var(--color-gray-2);

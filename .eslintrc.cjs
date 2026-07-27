@@ -40,8 +40,11 @@ module.exports = {
       version: 'detect'
     }
   },
-  plugins: ['import', 'react', 'react-hooks'],
+  plugins: ['import', 'react', 'react-hooks', 'tuf'],
   rules: {
+    // Gate external navigation through navigateExternal / LinkConfirm.
+    'tuf/no-ungated-external-navigation': 'error',
+
     // Enable import resolution and named exports validation
     'import/no-unresolved': 'error',
     'import/named': 'error',

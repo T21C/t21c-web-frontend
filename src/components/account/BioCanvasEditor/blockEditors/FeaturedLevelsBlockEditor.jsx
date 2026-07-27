@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { CustomSelect } from "@/components/common/selectors";
-import { MAX_FEATURED_LEVELS, FEATURED_MODES } from "@/utils/bioCanvas";
+import { MAX_FEATURED_LEVELS, FEATURED_MODES } from "@/utils/bioCanvas/blocks/featuredLevels";
 
 const MODE_OPTIONS = FEATURED_MODES.map((value) => ({
   value,

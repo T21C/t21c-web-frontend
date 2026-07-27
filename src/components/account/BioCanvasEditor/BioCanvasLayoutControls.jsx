@@ -9,7 +9,7 @@ import {
   clampBlockRotation,
   getAspectRatio,
   normalizeLayout,
-} from "@/utils/bioCanvas/layout.js";
+} from "@/utils/bioCanvas/layout";
 
 function layoutToDraft(layout, normalized) {
   return {

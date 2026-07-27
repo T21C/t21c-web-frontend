@@ -14,11 +14,12 @@ import { ScrollButton } from "@/components/common/buttons";
 import { PassIcon, ChartIcon, LeaderboardIcon, PackIcon, TUFStellarIcon } from "@/components/common/icons";
 import { useWeeklyCurations } from "@/hooks/useWeeklyCurations";
 import LogoFullOutlineSVG from "@/assets/tuf-logo/LogoFullOutlined/LogoFullOutlined";
+import { navigateExternal } from "@/utils/externalNavigationGate";
 
 const SupportButton = () => {
   const { t } = useTranslation('pages');
   return (
-    <button onClick={() => window.open('https://ko-fi.com/v0w4n', '_blank')} className="support-button rainbow-box">
+    <button onClick={() => void navigateExternal('https://ko-fi.com/v0w4n', { newTab: true })} className="support-button rainbow-box">
 
         <span className="support-text">{t('home.stats.donate')}</span>
         <img className="support-icon" src="https://cdn.prod.website-files.com/5c14e387dab576fe667689cf/670f5a01229bf8a18f97a3c1_favion.png" alt="Ko-fi" />

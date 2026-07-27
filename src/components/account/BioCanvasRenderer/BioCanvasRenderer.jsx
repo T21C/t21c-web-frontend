@@ -1,7 +1,7 @@
 import { coerceBioCanvasForRender, parseBioCanvasImageAssets, STAGE_WIDTH, getBlockDescriptor } from "@/utils/bioCanvas";
-import { computeStageContentHeight, getBlockPositionStyle } from "@/utils/bioCanvas/layout.js";
-import { getBlockRenderer } from "./blockRenderers/index.js";
-import { useStageScale } from "./useStageScale.js";
+import { computeStageContentHeight, getBlockPositionStyle } from "@/utils/bioCanvas/layout";
+import { getBlockRenderer } from "./blockRenderers/index";
+import { useStageScale } from "./useStageScale";
 
 export default function BioCanvasRenderer({ canvas, imageAssets, className = "" }) {
   const doc = coerceBioCanvasForRender(canvas);

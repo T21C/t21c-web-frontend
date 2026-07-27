@@ -8,10 +8,10 @@ import {
   getBlockDescriptor,
   normalizeLayout,
 } from "@/utils/bioCanvas";
-import { getAspectRatio } from "@/utils/bioCanvas/layout.js";
-import { getBlockRenderer } from "../BioCanvasRenderer/blockRenderers/index.js";
-import { useStageScale } from "../BioCanvasRenderer/useStageScale.js";
-import { BLOCK_TYPE_LABELS } from "./blockEditors/index.js";
+import { getAspectRatio } from "@/utils/bioCanvas/layout";
+import { getBlockRenderer } from "../BioCanvasRenderer/blockRenderers/index";
+import { useStageScale } from "../BioCanvasRenderer/useStageScale";
+import { BLOCK_TYPE_LABELS } from "./blockEditors/index";
 
 const DRAG_THRESHOLD_PX = 4;
 

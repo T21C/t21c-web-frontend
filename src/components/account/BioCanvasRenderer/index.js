@@ -1,1 +1,1 @@
-export { default } from "./BioCanvasRenderer.jsx";
+export { default } from "./BioCanvasRenderer";

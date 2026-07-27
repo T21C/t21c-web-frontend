@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { CloseButton } from '@/components/common/buttons';
 import { Portal } from '@/components/common/Portal';
 import { formatFileSize } from '@/utils/zipUtils';
+import { navigateExternal } from '@/utils/externalNavigationGate';
 
 const LevelDownloadPopup = ({
     isOpen,
@@ -120,7 +121,7 @@ const LevelDownloadPopup = ({
     const handleDownload = (format) => {
 
         if (format === 'legacy' && legacyDllink) {
-            window.location.href = legacyDllink;
+            void navigateExternal(legacyDllink);
             onClose();
             return;
         }
@@ -128,13 +129,13 @@ const LevelDownloadPopup = ({
         incrementAccessCount();
         
         if (format === 'original') {
-            window.location.href = dlLink;
+            void navigateExternal(dlLink);
             onClose();
             return;
         }
 
         if (format === 'v2') {
-            window.location.href = `${import.meta.env.VITE_CDN_URL}/levels/${fileId}/level-v2.adofai`;
+            void navigateExternal(`${import.meta.env.VITE_CDN_URL}/levels/${fileId}/level-v2.adofai`);
             onClose();
             return;
         }
@@ -166,7 +167,7 @@ const LevelDownloadPopup = ({
         queryParams.append('format', 'zip');
 
         // Download transformed level
-        window.location.href = `${import.meta.env.VITE_CDN_URL}/levels/${fileId}/transform?${queryParams.toString()}`;
+        void navigateExternal(`${import.meta.env.VITE_CDN_URL}/levels/${fileId}/transform?${queryParams.toString()}`);
         onClose();
     };
 
@@ -203,10 +204,13 @@ const LevelDownloadPopup = ({
                                 <button 
                                     className="legacy-download-btn"
                                     onClick={() => {
-                                        window.location.href = legacyDllink;
-                                        setTimeout(() => {
-                                            onClose();
-                                        }, 500);
+                                        void navigateExternal(legacyDllink).then((ok) => {
+                                            if (ok) {
+                                                setTimeout(() => {
+                                                    onClose();
+                                                }, 500);
+                                            }
+                                        });
                                     }}
                                 >
                                     {t('levelPopups.download.errors.downloadLegacy')}

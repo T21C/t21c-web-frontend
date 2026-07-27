@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef, useState } from "react";
-import { MIN_TEXT_FONT_SIZE } from "@/utils/bioCanvas/blocks/text.js";
+import { MIN_TEXT_FONT_SIZE } from "@/utils/bioCanvas/blocks/text";
 
 /**
  * Measure text at user font sizes, grow frame when content exceeds it,

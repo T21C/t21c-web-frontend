@@ -4,8 +4,8 @@ import {
   clampSocialIconSize,
   DEFAULT_SOCIAL_GAP,
   DEFAULT_SOCIAL_ICON_SIZE,
-} from "@/utils/bioCanvas";
-import { SOCIAL_ICON_MAP } from "./socialIcons.js";
+} from "@/utils/bioCanvas/blocks/social";
+import { SOCIAL_ICON_MAP } from "./socialIcons";
 
 const ALIGN_TO_JUSTIFY = {
   left: "flex-start",

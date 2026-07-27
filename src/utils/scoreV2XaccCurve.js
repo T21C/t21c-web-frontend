@@ -1,5 +1,5 @@
 // tuf-search: #scoreV2XaccCurve #xaccCurve
-import { SCORE_V2_ZERO_MISS_MULTIPLIER, scoreV2MtpFromMisses } from './CalcScore.js'
+import { SCORE_V2_ZERO_MISS_MULTIPLIER, scoreV2MtpFromMisses } from './CalcScore'
 /**
  * Normalized hyperbola xacc multiplier on [cutoff, 1):
  *   t = (xacc - cutoff) / (1 - cutoff)

@@ -7,6 +7,7 @@ import { isImageUrl } from '@/utils/Utility';
 import './galleryInspectPopup.css';
 import { ChevronIcon, ExternalLinkIcon } from '@/components/common/icons';
 import { CloseButton } from '@/components/common/buttons';
+import { navigateExternal } from '@/utils/externalNavigationGate';
 
 export const GalleryInspectPopup = ({
   evidence,
@@ -270,7 +271,7 @@ export const GalleryInspectPopup = ({
               <button
                 type="button"
                 className="gallery-inspect-popup__header-external"
-                onClick={() => window.open(currentEvidence.link, '_blank', 'noopener,noreferrer')}
+                onClick={() => void navigateExternal(currentEvidence.link, { newTab: true })}
                 aria-label={t('evidenceGallery.openInNewTab')}
               >
                 <ExternalLinkIcon />

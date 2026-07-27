@@ -1,12 +1,12 @@
 import { z } from "zod";
-import { parseSafeUrl, zSafeUrl } from "../urls.js";
+import { parseSafeUrl, zSafeUrl } from "../urls";
 
 export const EMBED_BLOCK_TYPE = "embed";
 export const MAX_EMBED_TITLE_LENGTH = 120;
 
 const DANGEROUS_TITLE = /url\s*\(|var\s*\(|expression\s*\(|@import|javascript:|\/\*|\*\/|<\/|<>/i;
 
-import { getVideoProvider } from "../../videoLink.js";
+import { getVideoProvider } from "../../videoLink";
 
 export { getVideoProvider, getVideoProvider as getEmbedProvider };
 

@@ -15,7 +15,7 @@ import {
   pickLevelXaccCurve,
   levelUsesSiteXaccDefaults,
   resolveXaccCurveConfig,
-} from '@/utils/scoreV2XaccCurve.js';
+} from '@/utils/scoreV2XaccCurve';
 import {
   defaultPinSliderValues,
   levelToPinSliderValues,
@@ -32,9 +32,9 @@ import {
   accuracyToSliderPin1,
   accuracyToSliderPin2,
   scoreV2AtAccuracy,
-} from '@/utils/scoreV2XaccCurvePins.js';
-import { XaccPinJudgementInputs } from './XaccPinJudgementInputs.jsx';
-import { XaccPinPassPicker } from './XaccPinPassPicker.jsx';
+} from '@/utils/scoreV2XaccCurvePins';
+import { XaccPinJudgementInputs } from './XaccPinJudgementInputs';
+import { XaccPinPassPicker } from './XaccPinPassPicker';
 import {
   EMPTY_JUDGEMENT_FORM,
   judgementFormFromPass,
@@ -43,13 +43,13 @@ import {
   accuracyFromJudgementForm,
   missCountFromJudgementForm,
   hitTilesFromJudgementForm,
-} from '@/utils/xaccPinJudgements.js';
+} from '@/utils/xaccPinJudgements';
 import {
   buildXaccEditorBaseline,
   serializeXaccCurveEditorState,
   xaccEditorBaselineMatches,
   xaccPinValuesMatch,
-} from '@/utils/xaccCurveEditorState.js';
+} from '@/utils/xaccCurveEditorState';
 
 /** Full precision for copying E/G into site defaults or level meta. */
 function formatPoleOffset(value) {

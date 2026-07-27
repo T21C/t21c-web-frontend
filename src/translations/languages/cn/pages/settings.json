@@ -57,7 +57,15 @@
 },
   "bioCanvas": {
     "sectionExpandAria": "展开个人简介画布预览",
-    "sectionCollapseAria": "收起个人简介画布预览"
+    "sectionCollapseAria": "收起个人简介画布预览",
+    "linkConfirm": {
+      "title": "离开 TUF？",
+      "lead": "即将前往外部网站。请确认你信任此地址后再继续。",
+      "trustDomain": "在此会话中信任 {{host}}",
+      "trustDomainAlways": "始终信任 {{host}}",
+      "cancel": "取消",
+      "continue": "继续"
+    }
   },
 "headerSurface": {
   "sectionTitle": "个人资料卡片背景",

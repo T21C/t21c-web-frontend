@@ -1,6 +1,6 @@
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
-import { BLOCK_TYPE_LABELS } from "./blockEditors/index.js";
-import { BlockListIcon } from "./blockListIcons.jsx";
+import { BLOCK_TYPE_LABELS } from "./blockEditors/index";
+import { BlockListIcon } from "./blockListIcons";
 
 const DROPPABLE_ID = "bio-canvas-blocks";
 

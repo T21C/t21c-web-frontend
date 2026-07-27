@@ -9,7 +9,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/common/Collapsible';
-import { SearchHelpCode } from './searchHelpTransUtils.jsx';
+import { SearchHelpCode } from './searchHelpTransUtils';
 
 const TRANS_COMPONENTS = { code: <SearchHelpCode />, b: <b />, br: <br /> };
 

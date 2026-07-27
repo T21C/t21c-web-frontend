@@ -1,10 +1,10 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import BioCanvasBlockList from "./BioCanvasBlockList.jsx";
-import BioCanvasLayoutControls from "./BioCanvasLayoutControls.jsx";
-import BioCanvasStage from "./BioCanvasStage.jsx";
+import BioCanvasBlockList from "./BioCanvasBlockList";
+import BioCanvasLayoutControls from "./BioCanvasLayoutControls";
+import BioCanvasStage from "./BioCanvasStage";
 import { getBlockDescriptor, collectBioCanvasBlockErrors } from "@/utils/bioCanvas";
-import { getBlockEditor, BLOCK_TYPE_LABELS } from "./blockEditors/index.js";
+import { getBlockEditor, BLOCK_TYPE_LABELS } from "./blockEditors/index";
 
 export default function BioCanvasEditor({
   editor,

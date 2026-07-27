@@ -3,7 +3,7 @@ import {
   SOCIAL_PLATFORMS,
   SOCIAL_SHAPES,
   SOCIAL_ALIGNMENTS,
-} from "@/utils/bioCanvas";
+} from "@/utils/bioCanvas/blocks/social";
 
 const PLATFORM_OPTIONS = SOCIAL_PLATFORMS.map((platform) => ({
   value: platform,

@@ -2,8 +2,8 @@
 import {
     EMPTY_JUDGEMENT_FORM,
     accuracyFromJudgementForm,
-} from './xaccPinJudgements.js'
-import { parseXaccCurveMeta } from './scoreV2XaccCurve.js'
+} from './xaccPinJudgements'
+import { parseXaccCurveMeta } from './scoreV2XaccCurve'
 
 /** Pin accuracy fraction — calcAcc vs stored pin may differ at ~1e-9. */
 const ACC_EPS = 1e-7

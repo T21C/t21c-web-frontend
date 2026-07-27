@@ -18,6 +18,7 @@ import { StateDisplay } from "@/components/common/selectors";
 import { CopyIcon, DownloadIcon, ExternalLinkIcon } from "@/components/common/icons";
 import "./assetsPage.css";
 import { Tooltip } from "react-tooltip";
+import { navigateExternal } from "@/utils/externalNavigationGate";
 
 const ASSET_ACTION_ICON_SIZE = 18;
 const DIFF_COLOR_COPY_ICON_SIZE = 14;
@@ -118,7 +119,7 @@ async function downloadAssetFromUrl(url, filename) {
     const blob = await res.blob();
     triggerBlobDownload(blob, safe);
   } catch {
-    window.open(url, "_blank", "noopener,noreferrer");
+    void navigateExternal(url, { newTab: true });
   }
 }
 

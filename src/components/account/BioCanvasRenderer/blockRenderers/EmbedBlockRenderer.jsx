@@ -5,7 +5,7 @@ import {
   getEmbedProvider,
   getYouTubeEmbedUrl,
   getYouTubeThumbnailUrl,
-} from "@/utils/bioCanvas/blocks/embed.js";
+} from "@/utils/bioCanvas/blocks/embed";
 
 export default function EmbedBlockRenderer({ block }) {
   const openExternal = useExternalLink();

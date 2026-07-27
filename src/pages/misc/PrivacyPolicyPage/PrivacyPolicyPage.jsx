@@ -5,6 +5,8 @@ import { MetaTags } from "@/components/common/display";
 import { useLocation } from 'react-router-dom';
 import { buildStaticPageMeta } from '@/utils/meta';
 import { useMemo } from 'react';
+import { ExternalLink } from "@/components/common/LinkConfirm";
+import { navigateExternal } from "@/utils/externalNavigationGate";
 
 const PrivacyPolicyPage = () => {
   const location = useLocation();
@@ -235,15 +237,15 @@ const PrivacyPolicyPage = () => {
               <ul>
                 <li>
                   Stripe Services Agreement:{" "}
-                  <a href="https://stripe.com/legal" className="privacy-inline-link" target="_blank" rel="noopener noreferrer">
+                  <ExternalLink href="https://stripe.com/legal" className="privacy-inline-link">
                     https://stripe.com/legal
-                  </a>
+                  </ExternalLink>
                 </li>
                 <li>
                   Stripe Privacy Policy:{" "}
-                  <a href="https://stripe.com/privacy" className="privacy-inline-link" target="_blank" rel="noopener noreferrer">
+                  <ExternalLink href="https://stripe.com/privacy" className="privacy-inline-link">
                     https://stripe.com/privacy
-                  </a>
+                  </ExternalLink>
                 </li>
               </ul>
               <p>
@@ -423,7 +425,7 @@ const PrivacyPolicyPage = () => {
               </p>
               <p>
                 Discord:{" "}
-                <button type="button" className="discord-button" onClick={() => window.open("https://discord.gg/MaW353r8xg", "_blank")}>
+                <button type="button" className="discord-button" onClick={() => void navigateExternal("https://discord.gg/MaW353r8xg", { newTab: true })}>
                   Join
                 </button>
               </p>

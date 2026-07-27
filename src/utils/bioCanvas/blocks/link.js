@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { zSafeUrl } from "../urls.js";
+import { zSafeUrl } from "../urls";
 
 export const LINK_BLOCK_TYPE = "link";
 export const MAX_LINK_LABEL_LENGTH = 80;

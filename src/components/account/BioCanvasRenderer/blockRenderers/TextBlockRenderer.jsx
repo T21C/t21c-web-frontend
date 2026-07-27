@@ -4,8 +4,8 @@ import {
   DEFAULT_TEXT_FONT_SIZE,
   DEFAULT_TEXT_HEADING_FONT_SIZE,
   parseTextBlockColor,
-} from "@/utils/bioCanvas/blocks/text.js";
-import { useTextBlockFit } from "./useTextBlockFit.js";
+} from "@/utils/bioCanvas/blocks/text";
+import { useTextBlockFit } from "./useTextBlockFit";
 
 function hasTextContent(value) {
   return typeof value === "string" && value.trim().length > 0;

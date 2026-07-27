@@ -1,10 +1,10 @@
-import TextBlockEditor from "./TextBlockEditor.jsx";
-import LinkBlockEditor from "./LinkBlockEditor.jsx";
-import SocialBlockEditor from "./SocialBlockEditor.jsx";
-import ImageBlockEditor from "./ImageBlockEditor.jsx";
-import EmbedBlockEditor from "./EmbedBlockEditor.jsx";
-import FeaturedLevelsBlockEditor from "./FeaturedLevelsBlockEditor.jsx";
-import { BLOCK_TYPE_LABELS } from "@/utils/bioCanvas/registry.js";
+import TextBlockEditor from "./TextBlockEditor";
+import LinkBlockEditor from "./LinkBlockEditor";
+import SocialBlockEditor from "./SocialBlockEditor";
+import ImageBlockEditor from "./ImageBlockEditor";
+import EmbedBlockEditor from "./EmbedBlockEditor";
+import FeaturedLevelsBlockEditor from "./FeaturedLevelsBlockEditor";
+import { BLOCK_TYPE_LABELS } from "@/utils/bioCanvas/registry";
 
 export { BLOCK_TYPE_LABELS };
 

@@ -3,7 +3,7 @@ import { CustomSelect } from "@/components/common/selectors";
 import {
   IMAGE_CROP_FITS,
   normalizeImageCrop,
-} from "@/utils/bioCanvas/blocks/image.js";
+} from "@/utils/bioCanvas/blocks/image";
 
 const FIT_OPTIONS = IMAGE_CROP_FITS.map((fit) => ({
   value: fit,

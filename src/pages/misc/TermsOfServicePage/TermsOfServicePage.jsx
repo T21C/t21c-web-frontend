@@ -6,6 +6,8 @@ import { Footer } from "@/components/layout";
 import { MetaTags } from "@/components/common/display";
 import { buildStaticPageMeta } from '@/utils/meta';
 import { ExternalLinkIcon } from "@/components/common/icons";
+import { ExternalLink } from "@/components/common/LinkConfirm";
+import { navigateExternal } from "@/utils/externalNavigationGate";
 
 const TermsOfServicePage = () => {
   const location = useLocation();
@@ -84,16 +86,16 @@ const TermsOfServicePage = () => {
               </p>
               <ul>
                 <li>
-                  <a href="https://stripe.com/legal" className="tos-link" target="_blank" rel="noopener noreferrer">
+                  <ExternalLink href="https://stripe.com/legal" className="tos-link">
                     Stripe legal
                     <ExternalLinkIcon size={16} color="currentColor" className="tos-link-icon" aria-hidden />
-                  </a>
+                  </ExternalLink>
                 </li>
                 <li>
-                  <a href="https://stripe.com/privacy" className="tos-link" target="_blank" rel="noopener noreferrer">
+                  <ExternalLink href="https://stripe.com/privacy" className="tos-link">
                     Stripe privacy
                     <ExternalLinkIcon size={16} color="currentColor" className="tos-link-icon" aria-hidden />
-                  </a>
+                  </ExternalLink>
                 </li>
               </ul>
               <p>
@@ -202,10 +204,10 @@ const TermsOfServicePage = () => {
                 The Services and their content (excluding User Content) are owned by TUF or its licensors and are
                 protected by intellectual property laws. The website source code is available under applicable open
                 source terms and can be found{" "}
-                <a href="https://github.com/orgs/T21C/repositories" className="tos-link" target="_blank" rel="noopener noreferrer">
+                <ExternalLink href="https://github.com/orgs/T21C/repositories" className="tos-link">
                   here
                   <ExternalLinkIcon size={16} color="#4a9eff" className="tos-link-icon" aria-hidden />
-                </a>
+                </ExternalLink>
                 .
               </p>
             </section>
@@ -269,7 +271,7 @@ const TermsOfServicePage = () => {
               <p>For questions about these Terms, contact managers on our Discord server:</p>
               <p>
                 Discord:{" "}
-                <button type="button" className="discord-button" onClick={() => window.open("https://discord.gg/MaW353r8xg", "_blank")}>
+                <button type="button" className="discord-button" onClick={() => void navigateExternal("https://discord.gg/MaW353r8xg", { newTab: true })}>
                   Join
                 </button>
               </p>

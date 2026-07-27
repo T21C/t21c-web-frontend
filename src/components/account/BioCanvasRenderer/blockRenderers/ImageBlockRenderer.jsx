@@ -1,4 +1,4 @@
-import { normalizeImageCrop } from "@/utils/bioCanvas/blocks/image.js";
+import { normalizeImageCrop } from "@/utils/bioCanvas/blocks/image";
 
 export default function ImageBlockRenderer({ block, imageAssets }) {
   const asset = imageAssets?.[block.id];

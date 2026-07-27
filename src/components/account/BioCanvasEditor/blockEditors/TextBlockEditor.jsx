@@ -3,7 +3,7 @@ import {
   DEFAULT_TEXT_COLOR_PICKER,
   TEXT_ALIGNMENTS,
   parseTextBlockColor,
-} from "@/utils/bioCanvas/blocks/text.js";
+} from "@/utils/bioCanvas/blocks/text";
 
 const ALIGN_OPTIONS = TEXT_ALIGNMENTS.map((value) => ({
   value,

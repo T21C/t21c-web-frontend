@@ -1,8 +1,8 @@
 // tuf-search: #xaccPinJudgements #judgements #xaccCurve
-import calcAcc from './CalcAcc.js'
-import { computePassScoreV2 } from './scoreService.js'
-import { scoreV2MtpFromMisses } from './CalcScore.js'
-import { formatAccuracyRatio } from './statFormatters.js'
+import calcAcc from './CalcAcc'
+import { computePassScoreV2 } from './scoreService'
+import { scoreV2MtpFromMisses } from './CalcScore'
+import { formatAccuracyRatio } from './statFormatters'
 
 /** Pass / submission judgement fields (string counts for inputs). */
 export const EMPTY_JUDGEMENT_FORM = {

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {
     JUDGEMENT_INPUT_FIELDS,
     accuracyFromJudgementForm,
-} from '@/utils/xaccPinJudgements.js'
+} from '@/utils/xaccPinJudgements'
 import { formatAccuracyRatio } from '@/utils/statFormatters'
 
 export function XaccPinJudgementInputs({ form, onChange, computedAccuracyLabel }) {

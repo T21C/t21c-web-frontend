@@ -85,7 +85,15 @@
   },
   "bioCanvas": {
     "sectionExpandAria": "바이오 캔버스 미리보기 펼치기",
-    "sectionCollapseAria": "바이오 캔버스 미리보기 접기"
+    "sectionCollapseAria": "바이오 캔버스 미리보기 접기",
+    "linkConfirm": {
+      "title": "TUF를 떠나시겠습니까?",
+      "lead": "외부 사이트로 이동합니다. 신뢰할 수 있는 주소인지 확인하세요.",
+      "trustDomain": "이 세션 동안 {{host}} 신뢰",
+      "trustDomainAlways": "{{host}} 항상 신뢰",
+      "cancel": "취소",
+      "continue": "계속"
+    }
   },
   "tournaments": {
     "sectionTitle": "토너먼트 코스메틱",

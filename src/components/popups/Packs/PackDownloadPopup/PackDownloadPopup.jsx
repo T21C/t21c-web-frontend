@@ -6,6 +6,7 @@ import { useJobProgressStream } from '@/hooks/useJobProgressStream';
 import './PackDownloadPopup.css';
 import { formatEstimatedSize } from '@/utils/packDownloadUtils';
 import { CloseButton } from '@/components/common/buttons';
+import { navigateExternal } from '@/utils/externalNavigationGate';
 
 const DEFAULT_SIZE_SUMMARY = { totalBytes: 0, missingCount: 0, levelCount: 0 };
 const MAX_DOWNLOAD_SIZE_BYTES = 15 * 1024 * 1024 * 1024; // 15GB
@@ -154,7 +155,7 @@ const PackDownloadPopup = ({
 
   const handleDownload = () => {
     if (!downloadData?.url) return;
-    window.open(downloadData.url, '_blank', 'noopener,noreferrer');
+    void navigateExternal(downloadData.url, { newTab: true });
   };
 
   const { sizeLabel, missingCount } = formatEstimatedSize(sizeSummary || DEFAULT_SIZE_SUMMARY);

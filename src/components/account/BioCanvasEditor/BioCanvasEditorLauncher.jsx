@@ -3,8 +3,8 @@ import { useTranslation } from "react-i18next";
 import { isTufStellarAccessActive } from "@/utils/profileBanners";
 import { isTufStellarEnabledForUser } from "@/utils/tufStellarFeature";
 import { parseBioCanvas, createDefaultBioCanvas } from "@/utils/bioCanvas";
-import BioCanvasEditorPopup, { ensureBioCanvasDocument } from "./BioCanvasEditorPopup.jsx";
-import BioCanvasRenderer from "../BioCanvasRenderer/BioCanvasRenderer.jsx";
+import BioCanvasEditorPopup, { ensureBioCanvasDocument } from "./BioCanvasEditorPopup";
+import BioCanvasRenderer from "../BioCanvasRenderer/BioCanvasRenderer";
 import "./bioCanvasEditorLauncher.css";
 
 export default function BioCanvasEditorLauncher({

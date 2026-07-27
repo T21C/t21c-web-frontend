@@ -5,6 +5,7 @@ import { toast } from "react-hot-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import api from "@/utils/api";
 import { routes } from '@/api/routes';
+import { navigateExternal } from "@/utils/externalNavigationGate";
 import { isTufStellarEnabledForUser } from "@/utils/tufStellarFeature";
 import {
   computePurchasePreviewProjectedExpiresIso,
@@ -252,7 +253,7 @@ export function useBillingData(options = {}) {
       const { data } = await api.post(routes.billingV3.stripe.checkout(), payload);
       const url = data?.url;
       if (!url) throw new Error("Missing checkout url");
-      window.open(url, "_blank", "noopener,noreferrer");
+      await navigateExternal(url, { newTab: true });
       toast.success(t("billing.toasts.checkoutOpened"), { id: toastId });
     } catch (e) {
       const code = e?.response?.data?.error?.code;

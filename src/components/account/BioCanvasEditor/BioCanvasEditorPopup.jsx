@@ -4,8 +4,8 @@ import { Portal } from "@/components/common/Portal";
 import { Tooltip } from "react-tooltip";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 import { CloseButton } from "@/components/common/buttons";
-import BioCanvasEditor from "./BioCanvasEditor.jsx";
-import { useBioCanvasEditor } from "./useBioCanvasEditor.js";
+import BioCanvasEditor from "./BioCanvasEditor";
+import { useBioCanvasEditor } from "./useBioCanvasEditor";
 import { createDefaultBioCanvas, parseBioCanvas } from "@/utils/bioCanvas";
 import "./bioCanvasEditor.css";
 

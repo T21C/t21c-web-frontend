@@ -3,7 +3,7 @@ import calcAcc from "./CalcAcc"
 import {
     resolveXaccCurveForLevelData,
     xaccMultiplier as xaccCurveMultiplier,
-} from "./scoreV2XaccCurve.js"
+} from "./scoreV2XaccCurve"
 
 const gmConst = 315
 const start = 1

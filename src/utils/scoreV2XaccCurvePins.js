@@ -1,14 +1,14 @@
 // tuf-search: #scoreV2XaccCurvePins
-import { getScoreV2, scoreV2MtpFromMisses } from './CalcScore.js'
+import { getScoreV2, scoreV2MtpFromMisses } from './CalcScore'
 import {
     enumerateScoreV2CurvePoints,
     interpolateCurveScoreAtAccuracy,
     buildJudgements,
-} from './scoreV2Curve.js'
+} from './scoreV2Curve'
 import {
     applyEditorStateToPinSliders,
     editorStateFromXaccCurveMeta,
-} from './xaccCurveEditorState.js'
+} from './xaccCurveEditorState'
 import {
     XACC_CURVE_DEFAULTS,
     XACC_SITE_DEFAULT_PIN1_ACC,
@@ -25,7 +25,7 @@ import {
     xaccMultiplier,
     displayScoreFromXaccMultiplier,
     resolveScoreV2RatingBase,
-} from './scoreV2XaccCurve.js'
+} from './scoreV2XaccCurve'
 
 const SLIDER_MIN = 1
 const SLIDER_MAX = 100

@@ -79,6 +79,7 @@ import {
 import i18next from "i18next";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 import { checkTufHelperLiteDownloadedIds, checkTufHelperLiteHealth, checkTufHelperLiteJobs, getTufHelperLiteDownloadState, invokeTufHelperLiteIpc, useTufHelperLiteDownloadedIds, useTufHelperLiteHealth, useTufHelperLiteJobs } from '@/hooks/useTufHelperLiteIpc';
+import { navigateExternal } from '@/utils/externalNavigationGate';
 
 const minus2Reasons = []
 const gimmickReasons = []
@@ -2281,7 +2282,7 @@ const LevelDetailPage = ({ mockData = null }) => {
     if (isCdnUrl(res.level.dlLink)) {
         setShowDownloadPopup(true);
     } else {
-        window.location.href = res.level.dlLink;
+        void navigateExternal(res.level.dlLink);
     }
   };
 
@@ -2930,7 +2931,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                 </button>
               )}
               {res.level.workshopLink && (
-                <button className="svg-stroke" onClick={() => window.open(res.level.workshopLink, '_blank')} target="_blank" title={t('levelDetail.links.workshop')}>
+                <button className="svg-stroke" onClick={() => void navigateExternal(res.level.workshopLink, { newTab: true })} target="_blank" title={t('levelDetail.links.workshop')}>
                   <SteamIcon color="#ffffff" size={"34px"} />
                 </button>
               )}

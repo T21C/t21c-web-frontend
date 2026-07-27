@@ -126,8 +126,8 @@ const SongDetailPage = () => {
                     rel="noopener noreferrer"
                     className="link-item"
                   >
-                    {link.link}
-                    <ExternalLinkIcon size={14} />
+                    <span className="link-url">{link.link}</span>
+                    <ExternalLinkIcon size={14} className="link-icon" />
                   </a>
                 ))}
               </div>

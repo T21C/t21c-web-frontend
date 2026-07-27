@@ -1,4 +1,4 @@
-import { getBlockDescriptor, BLOCK_DESCRIPTORS, getBlockTypeLabel } from "./registry.js";
+import { getBlockDescriptor, BLOCK_DESCRIPTORS, getBlockTypeLabel } from "./registry";
 import {
   STAGE_WIDTH,
   STAGE_MAX_HEIGHT,
@@ -6,24 +6,12 @@ import {
   computeNextStackY,
   createDefaultLayout,
   normalizeLayout,
-} from "./layout.js";
+} from "./layout";
 
 export const BIO_CANVAS_VERSION = 1;
 export const MAX_BIO_CANVAS_BLOCKS = 50;
 export const MAX_BIO_CANVAS_JSON_BYTES = 65_536;
 export const MAX_BIO_CANVAS_BLOCK_ID_LENGTH = 64;
-
-export {
-  STAGE_WIDTH,
-  STAGE_HEIGHT,
-  STAGE_MAX_HEIGHT,
-  STAGE_PADDING,
-  computeNextStackY,
-  createDefaultLayout,
-  normalizeLayout,
-} from "./layout.js";
-
-export { BLOCK_TYPE_LABELS, getBlockTypeLabel } from "./registry.js";
 
 const BLOCK_ID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -294,5 +282,3 @@ export function upsertBioCanvasImageAsset(existing, blockId, assetId, url) {
   const assets = parseBioCanvasImageAssets(existing);
   return { ...assets, [blockId]: { assetId, url } };
 }
-
-export { BLOCK_DESCRIPTORS };

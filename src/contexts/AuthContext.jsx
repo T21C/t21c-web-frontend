@@ -6,6 +6,7 @@ import { routes } from '@/api/routes';
 import { useNotification } from './NotificationContext';
 import { useNavigate } from 'react-router-dom';
 import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { navigateExternal } from '@/utils/externalNavigationGate';
 
 const AuthContext = createContext();
 
@@ -232,7 +233,7 @@ export const AuthProvider = ({ children }) => {
   const loginWithDiscord = async () => {
     try {
       const response = await api.get(routes.auth.loginDiscord());
-      window.location.href = response.data.url;
+      await navigateExternal(response.data.url);
     } catch (error) {
       console.error('Discord login error:', error);
       if (error.response) {
@@ -253,7 +254,7 @@ export const AuthProvider = ({ children }) => {
       const response = await api.get(routes.auth.oauthLink(provider));
 
       // Open Discord auth in a new window
-      window.location.href = response.data.url;
+      await navigateExternal(response.data.url);
       
     } catch (error) {
       console.error('Error linking provider:', error);
@@ -351,7 +352,7 @@ export const AuthProvider = ({ children }) => {
   const startOAuthReauth = async (provider = 'discord') => {
     const response = await api.get(routes.auth.oauthReauth(provider));
     if (response.data?.url) {
-      window.location.href = response.data.url;
+      await navigateExternal(response.data.url);
     }
     return response.data;
   };

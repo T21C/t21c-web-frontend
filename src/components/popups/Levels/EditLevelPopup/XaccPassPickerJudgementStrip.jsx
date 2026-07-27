@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {
     JUDGEMENT_INPUT_FIELDS,
     judgementFormFromPass,
-} from '@/utils/xaccPinJudgements.js'
+} from '@/utils/xaccPinJudgements'
 
 function parseDisplayCount(value) {
     const n = parseInt(String(value), 10)

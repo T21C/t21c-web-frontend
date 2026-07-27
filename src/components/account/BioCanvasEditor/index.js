@@ -1,2 +1,2 @@
-export { default as BioCanvasEditorLauncher } from "./BioCanvasEditorLauncher.jsx";
-export { default as BioCanvasEditorPopup } from "./BioCanvasEditorPopup.jsx";
+export { default as BioCanvasEditorLauncher } from "./BioCanvasEditorLauncher";
+export { default as BioCanvasEditorPopup } from "./BioCanvasEditorPopup";

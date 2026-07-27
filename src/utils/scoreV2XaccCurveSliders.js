@@ -5,7 +5,7 @@ import {
     XACC_POLE_OFFSET_MAX,
     XACC_TOP_MULTIPLIER_MIN,
     XACC_TOP_MULTIPLIER_MAX,
-} from './scoreV2XaccCurve.js'
+} from './scoreV2XaccCurve'
 
 const SLIDER_MIN = 1
 const SLIDER_MAX = 100
