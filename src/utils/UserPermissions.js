@@ -10,9 +10,26 @@ export const permissionFlags = {
   EMAIL_VERIFIED: 1n << 0n,
 };
 
+const toPermissionFlags = (userOrFlags) => {
+  if (userOrFlags == null) return 0n;
+
+  // Raw flag value (string | number | bigint)
+  if (typeof userOrFlags !== 'object') {
+    return BigInt(userOrFlags || 0);
+  }
+
+  // permissionFlags is the sole source of truth when present on a user-like object.
+  // Partial API payloads (e.g. assign-creator) may omit it — treat as 0, not throw.
+  if ('permissionFlags' in userOrFlags) {
+    return BigInt(userOrFlags.permissionFlags ?? 0);
+  }
+
+  return 0n;
+};
+
 export const hasFlag = (user, permission) => {
-  if (!user) return false;
-  return (BigInt(user.permissionFlags) & BigInt(permission)) === BigInt(permission);
+  if (!user || permission == null) return false;
+  return (toPermissionFlags(user) & BigInt(permission)) === BigInt(permission);
 };
 
 export const hasAnyFlag = (user, permissions) => {
@@ -22,7 +39,7 @@ export const hasAnyFlag = (user, permissions) => {
 
 export const setUserPermission = (user, permission, value) => {
   if (!user) return user;
-  const current = BigInt(user.permissionFlags || 0);
+  const current = toPermissionFlags(user);
   const perm = BigInt(permission);
   const newFlags = value ? current | perm : current & ~perm;
   return {

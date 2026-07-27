@@ -323,8 +323,18 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
   };
 
   const handleCreatorAssignmentUserUpdate = (updatedUser) => {
-    onUpdate?.({ ...player, user: updatedUser });
-    onCreatorUserLinkedUpdate?.(updatedUser);
+    // Assign/unassign APIs return a partial user (id/playerId/creatorId[/permissionFlags]).
+    // Merge onto the existing user so permissionFlags and profile fields are not wiped.
+    const mergedUser = updatedUser
+      ? {
+          ...player?.user,
+          ...updatedUser,
+          permissionFlags:
+            updatedUser.permissionFlags ?? player?.user?.permissionFlags ?? 0,
+        }
+      : player?.user;
+    onUpdate?.({ ...player, user: mergedUser });
+    onCreatorUserLinkedUpdate?.(mergedUser);
   };
 
   const headerSubtitle = player?.user?.username ? `@${player.user.username}` : null;
