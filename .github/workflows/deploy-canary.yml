@@ -36,7 +36,7 @@ jobs:
           tags: ghcr.io/t21c/t21c-web-frontend:${{ github.sha }}-canary
           labels: org.opencontainers.image.revision=${{ github.sha }}
           secrets: |
-            "frontend_env=${{ vars.FRONTEND_BUILD_ENV_CANARY }}"
+            "frontend_env=${{ secrets.FRONTEND_BUILD_ENV_CANARY }}"
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -51,7 +51,7 @@ jobs:
       - name: Configure deploy SSH identity
         env:
           DEPLOY_KEY: ${{ secrets.TUF_DEPLOY_SSH_KEY }}
-          KNOWN_HOSTS: ${{ vars.TUF_DEPLOY_KNOWN_HOSTS }}
+          KNOWN_HOSTS: ${{ secrets.TUF_DEPLOY_KNOWN_HOSTS }}
         run: |
           set -euo pipefail
           install -m 700 -d ~/.ssh
