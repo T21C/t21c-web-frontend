@@ -30,13 +30,15 @@ jobs:
 
       - name: Build and push immutable canary image
         uses: docker/build-push-action@v6
+        env:
+          FRONTEND_BUILD_ENV: ${{ secrets.FRONTEND_BUILD_ENV_CANARY }}
         with:
           context: .
           push: true
           tags: ghcr.io/t21c/t21c-web-frontend:${{ github.sha }}-canary
           labels: org.opencontainers.image.revision=${{ github.sha }}
-          secrets: |
-            "frontend_env=${{ secrets.FRONTEND_BUILD_ENV_CANARY }}"
+          secret-envs: |
+            frontend_env=FRONTEND_BUILD_ENV
           cache-from: type=gha
           cache-to: type=gha,mode=max
 

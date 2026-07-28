@@ -45,13 +45,15 @@ jobs:
 
       - name: Build and push immutable production image
         uses: docker/build-push-action@v6
+        env:
+          FRONTEND_BUILD_ENV: ${{ secrets.FRONTEND_BUILD_ENV_PRODUCTION }}
         with:
           context: .
           push: true
           tags: ghcr.io/t21c/t21c-web-frontend:${{ inputs.source_sha }}
           labels: org.opencontainers.image.revision=${{ inputs.source_sha }}
-          secrets: |
-            "frontend_env=${{ secrets.FRONTEND_BUILD_ENV_PRODUCTION }}"
+          secret-envs: |
+            frontend_env=FRONTEND_BUILD_ENV
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
