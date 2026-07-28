@@ -21,10 +21,30 @@
       "register": "계정이 없으신가요? 회원가입"
     }
   },
+  "mfa": {
+    "title": "이메일을 확인하세요",
+    "codePrompt": "{{email}}으로 보낸 코드를 입력하여 로그인을 완료하세요.",
+    "yourEmail": "이메일",
+    "codeLabel": "로그인 코드",
+    "codeRequired": "이메일의 8자리 코드를 입력하세요",
+    "invalidCode": "유효하지 않거나 만료된 코드입니다",
+    "confirm": "계속",
+    "verifying": "확인 중...",
+    "resend": "코드 재전송",
+    "resendIn": "{{seconds}}초 후 재전송",
+    "resendCooldown": "새 코드를 요청하기 전에 잠시 기다려 주세요",
+    "sendFailed": "로그인 코드 전송에 실패했습니다",
+    "expired": "로그인 확인이 만료되었습니다. 다시 로그인해 주세요.",
+    "rememberDevice": "이 기기를 30일 동안 기억",
+    "back": "로그인으로 돌아가기"
+  },
   "errors": {
     "generic": "알 수 없는 오류입니다. 나중에 다시 시도해 주세요.",
     "network": "네트워크 연결 오류입니다. 나중에 다시 시도해 주세요.",
     "discordFailed": "Discord 로그인 시작에 실패했습니다. 다시 시도해 보시고 문제가 계속되면 개발자에게 문의해 주세요.",
+    "invalidCredentials": "이메일/사용자명 또는 비밀번호가 올바르지 않습니다.",
+    "emailNotVerified": "로그인하기 전에 이메일을 인증해 주세요.",
+    "rateLimit": "시도 횟수가 너무 많습니다. 잠시 후 다시 시도해 주세요.",
     "captcha": {
       "notLoaded": "reCAPTCHA가 로드되지 않았습니다",
       "incomplete": "reCAPTCHA 인증을 완료해 주세요",

@@ -8,6 +8,7 @@ import './loginPage.css';
 import { MetaTags } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
 import ReCAPTCHA from '@/components/auth/ReCaptcha/ReCaptcha';
+import CodeInput from '@/components/account/CodeInput/CodeInput';
 import { useLoginFlow } from './useLoginFlow';
 
 const LoginPage = () => {
@@ -42,14 +43,23 @@ const LoginPage = () => {
     }
   };
 
-  // Future MFA step UI switches on flow.step === 'mfa'
+  const handleMfaSubmit = async (e) => {
+    const { completed } = await flow.submitMfa(e);
+    if (completed) {
+      const from = getOriginUrl() || '/profile';
+      navigate(from);
+    }
+  };
+
   return (
     <div className="login-page-wrapper">
       <MetaTags {...pageMeta} />
 
       <div className="login-page">
         <div className="login-container">
-          <h1>{t('login.header.title')}</h1>
+          <h1>
+            {flow.step === 'mfa' ? t('login.mfa.title') : t('login.header.title')}
+          </h1>
           {flow.error && (
             <div className="error-message">
               {flow.error}
@@ -136,6 +146,65 @@ const LoginPage = () => {
                 </Link>
               </div>
             </>
+          )}
+
+          {flow.step === 'mfa' && (
+            <form onSubmit={handleMfaSubmit} className="login-form login-mfa-form">
+              <p className="login-mfa-prompt">
+                {t('login.mfa.codePrompt', {
+                  email: flow.maskedEmail || t('login.mfa.yourEmail'),
+                })}
+              </p>
+
+              <CodeInput
+                id="login-mfa-code"
+                label={t('login.mfa.codeLabel')}
+                value={flow.mfaCode}
+                onChange={flow.setMfaCode}
+                disabled={flow.loading}
+              />
+
+              <label className="login-mfa-remember">
+                <input
+                  type="checkbox"
+                  checked={flow.rememberDevice}
+                  onChange={(e) => flow.setRememberDevice(e.target.checked)}
+                  disabled={flow.loading}
+                />
+                <span>{t('login.mfa.rememberDevice')}</span>
+              </label>
+
+              <button
+                type="submit"
+                className="login-button"
+                disabled={flow.loading || flow.mfaCode.length < 8}
+              >
+                {flow.loading
+                  ? t('login.mfa.verifying')
+                  : t('login.mfa.confirm')}
+              </button>
+
+              <div className="login-mfa-actions">
+                <button
+                  type="button"
+                  className="login-mfa-resend"
+                  onClick={() => flow.requestMfaCode()}
+                  disabled={flow.loading || flow.resendSeconds > 0}
+                >
+                  {flow.resendSeconds > 0
+                    ? t('login.mfa.resendIn', { seconds: flow.resendSeconds })
+                    : t('login.mfa.resend')}
+                </button>
+                <button
+                  type="button"
+                  className="login-mfa-back"
+                  onClick={flow.backToCredentials}
+                  disabled={flow.loading}
+                >
+                  {t('login.mfa.back')}
+                </button>
+              </div>
+            </form>
           )}
         </div>
       </div>

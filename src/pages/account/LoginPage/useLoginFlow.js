@@ -1,11 +1,11 @@
 // tuf-search: #useLoginFlow #loginFlow
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 import { parseAuthError } from '@/utils/authErrors';
 
 /**
- * Explicit login step machine. Today only `credentials`; `mfa` reserved for 2FA.
+ * Explicit login step machine: credentials → optional MFA.
  * @returns {{
  *   step: 'credentials' | 'mfa',
  *   email: string,
@@ -22,6 +22,15 @@ import { parseAuthError } from '@/utils/authErrors';
  *   formatTime: (ms: number | null) => string,
  *   submitCredentials: (e: React.FormEvent) => Promise<{ completed: boolean }>,
  *   submitDiscord: () => Promise<void>,
+ *   mfaCode: string,
+ *   setMfaCode: (v: string) => void,
+ *   maskedEmail: string,
+ *   rememberDevice: boolean,
+ *   setRememberDevice: (v: boolean) => void,
+ *   resendSeconds: number,
+ *   requestMfaCode: () => Promise<void>,
+ *   submitMfa: (e: React.FormEvent) => Promise<{ completed: boolean }>,
+ *   backToCredentials: () => void,
  * }}
  */
 export function useLoginFlow() {
@@ -35,7 +44,15 @@ export function useLoginFlow() {
   const [captchaToken, setCaptchaToken] = useState(null);
   const captchaRef = useRef(null);
   const timerRef = useRef(null);
-  const { login, loginWithDiscord } = useAuth();
+
+  const [mfaCode, setMfaCode] = useState('');
+  const [maskedEmail, setMaskedEmail] = useState('');
+  const [rememberDevice, setRememberDevice] = useState(true);
+  const [resendAvailableAt, setResendAvailableAt] = useState(null);
+  const [resendSeconds, setResendSeconds] = useState(0);
+  const [mfaCodeRequested, setMfaCodeRequested] = useState(false);
+
+  const { login, loginWithDiscord, requestLoginMfaEmail, verifyLoginMfa } = useAuth();
   const { t } = useTranslation('pages');
 
   useEffect(() => {
@@ -71,6 +88,20 @@ export function useLoginFlow() {
     };
   }, [retryAfter]);
 
+  useEffect(() => {
+    if (!resendAvailableAt) {
+      setResendSeconds(0);
+      return undefined;
+    }
+    const tick = () => {
+      const ms = new Date(resendAvailableAt).getTime() - Date.now();
+      setResendSeconds(Math.max(0, Math.ceil(ms / 1000)));
+    };
+    tick();
+    const id = setInterval(tick, 500);
+    return () => clearInterval(id);
+  }, [resendAvailableAt]);
+
   const formatTime = (ms) => {
     if (!ms) return '0s';
 
@@ -87,6 +118,47 @@ export function useLoginFlow() {
 
     return result;
   };
+
+  const requestMfaCode = useCallback(async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const data = await requestLoginMfaEmail();
+      setMaskedEmail(data?.maskedEmail || '');
+      setResendAvailableAt(data?.emailResendAvailableAt || null);
+      setMfaCodeRequested(true);
+    } catch (err) {
+      setMfaCodeRequested(true);
+      const codeName = err?.response?.data?.code || err?.code;
+      const msg = err?.response?.data?.message || err?.message;
+      if (codeName === 'MFA_PENDING_REQUIRED') {
+        setStep('credentials');
+        setError(msg || t('login.mfa.expired'));
+        return;
+      }
+      if (codeName === 'RESEND_COOLDOWN') {
+        // Not an error: the previously sent code is still valid. Sync the
+        // server-side cooldown so the resend button shows the countdown.
+        const retry = err?.response?.data?.retryAfter;
+        if (typeof retry === 'number') {
+          setResendAvailableAt(new Date(Date.now() + retry).toISOString());
+        }
+        if (err?.response?.data?.maskedEmail) {
+          setMaskedEmail(err.response.data.maskedEmail);
+        }
+        return;
+      }
+      setError(msg || t('login.mfa.sendFailed'));
+    } finally {
+      setLoading(false);
+    }
+  }, [requestLoginMfaEmail, t]);
+
+  useEffect(() => {
+    if (step === 'mfa' && !mfaCodeRequested) {
+      void requestMfaCode();
+    }
+  }, [step, mfaCodeRequested, requestMfaCode]);
 
   /**
    * @param {React.FormEvent} e
@@ -107,7 +179,22 @@ export function useLoginFlow() {
 
       const data = await login(email, password, captchaToken);
 
-      // Future: if (data?.mfaRequired) { setStep('mfa'); return { completed: false }; }
+      if (data?.status === 'mfa_required') {
+        setMaskedEmail(data.maskedEmail || '');
+        setMfaCode('');
+        setRememberDevice(true);
+        // Server-side cooldown (from a still-outstanding code) is the source of
+        // truth: when active, skip the auto-request — the earlier code still works.
+        const availableAtMs = data.emailResendAvailableAt
+          ? new Date(data.emailResendAvailableAt).getTime()
+          : 0;
+        const cooldownActive = availableAtMs > Date.now();
+        setResendAvailableAt(cooldownActive ? data.emailResendAvailableAt : null);
+        setMfaCodeRequested(cooldownActive);
+        setStep('mfa');
+        return { completed: false };
+      }
+
       if (data?.user) {
         setStep('credentials');
         return { completed: true };
@@ -145,6 +232,50 @@ export function useLoginFlow() {
     }
   };
 
+  /**
+   * @param {React.FormEvent} e
+   * @returns {Promise<{ completed: boolean }>}
+   */
+  const submitMfa = async (e) => {
+    e.preventDefault();
+    setError('');
+    if (!mfaCode || mfaCode.length < 8) {
+      setError(t('login.mfa.codeRequired'));
+      return { completed: false };
+    }
+    setLoading(true);
+    try {
+      const data = await verifyLoginMfa({
+        code: mfaCode,
+        rememberDevice,
+      });
+      if (data?.user) {
+        return { completed: true };
+      }
+      return { completed: false };
+    } catch (err) {
+      const codeName = err?.response?.data?.code || err?.code;
+      const msg = err?.response?.data?.message || err?.message;
+      if (codeName === 'MFA_PENDING_REQUIRED') {
+        setStep('credentials');
+        setError(msg || t('login.mfa.expired'));
+        return { completed: false };
+      }
+      setError(msg || t('login.mfa.invalidCode'));
+      return { completed: false };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const backToCredentials = () => {
+    setStep('credentials');
+    setMfaCode('');
+    setMfaCodeRequested(false);
+    setResendAvailableAt(null);
+    setError('');
+  };
+
   const submitDiscord = async () => {
     try {
       setError('');
@@ -170,5 +301,14 @@ export function useLoginFlow() {
     formatTime,
     submitCredentials,
     submitDiscord,
+    mfaCode,
+    setMfaCode,
+    maskedEmail,
+    rememberDevice,
+    setRememberDevice,
+    resendSeconds,
+    requestMfaCode,
+    submitMfa,
+    backToCredentials,
   };
 }

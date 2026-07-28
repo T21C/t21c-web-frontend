@@ -16,15 +16,39 @@
       "loggingIn": "Logowanie...",
       "discordLogin": "Zaloguj się z Discord"
     },
-    "divider": "lub"
+    "divider": "lub",
+    "links": {
+      "register": "Nie masz konta? Zarejestruj się"
+    }
+  },
+  "mfa": {
+    "title": "Sprawdź e-mail",
+    "codePrompt": "Wpisz kod wysłany na {{email}}, aby dokończyć logowanie.",
+    "yourEmail": "Twój e-mail",
+    "codeLabel": "Kod logowania",
+    "codeRequired": "Wpisz 8-znakowy kod z e-maila",
+    "invalidCode": "Nieprawidłowy lub wygasły kod",
+    "confirm": "Kontynuuj",
+    "verifying": "Weryfikacja...",
+    "resend": "Wyślij ponownie",
+    "resendIn": "Ponownie za {{seconds}} s",
+    "resendCooldown": "Poczekaj przed ponownym żądaniem kodu",
+    "sendFailed": "Nie udało się wysłać kodu logowania",
+    "expired": "Wyzwanie logowania wygasło. Zaloguj się ponownie.",
+    "rememberDevice": "Zapamiętaj to urządzenie na 30 dni",
+    "back": "Wróć do logowania"
   },
   "errors": {
     "generic": "Nie udało się zalogować. Spróbuj ponownie",
+    "network": "Błąd połączenia sieciowego. Spróbuj ponownie później.",
     "discordFailed": "Nie udało się zainicjować logowania z Discord. Spróbuj ponownie; w razie dalszych problemów skontaktuj się z deweloperem.",
+    "invalidCredentials": "Nieprawidłowy e-mail/nazwa użytkownika lub hasło.",
+    "emailNotVerified": "Zweryfikuj e-mail przed zalogowaniem.",
+    "rateLimit": "Zbyt wiele prób. Poczekaj i spróbuj ponownie.",
     "captcha": {
       "notLoaded": "reCAPTCHA nie została załadowana",
       "incomplete": "Dokończ weryfikację reCAPTCHA",
       "failed": "Nie udało się zweryfikować reCAPTCHA. Spróbuj ponownie."
     }
   }
-} 
+}

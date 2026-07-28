@@ -187,7 +187,7 @@ export const AuthProvider = ({ children }) => {
         captchaToken
       });
       // Only load profile when the server issued a session (has user).
-      // Future MFA: response may be { mfaRequired: true } with no user — leave AuthContext logged out.
+      // MFA challenge returns { status: 'mfa_required' } with no user.
       if (response.data?.user) {
         await fetchUser(true);
       }
@@ -196,6 +196,22 @@ export const AuthProvider = ({ children }) => {
       console.error('[Auth] Login failed:', error);
       throw error;
     }
+  };
+
+  const requestLoginMfaEmail = async () => {
+    const response = await api.post(routes.auth.mfa.email());
+    return response.data;
+  };
+
+  const verifyLoginMfa = async ({ code, rememberDevice = true } = {}) => {
+    const response = await api.post(routes.auth.mfa.verify(), {
+      code,
+      rememberDevice: Boolean(rememberDevice),
+    });
+    if (response.data?.user) {
+      await fetchUser(true);
+    }
+    return response.data;
   };
 
   const register = async (userData) => {
@@ -463,6 +479,8 @@ export const AuthProvider = ({ children }) => {
     register,
     logout,
     loginWithDiscord,
+    requestLoginMfaEmail,
+    verifyLoginMfa,
     linkProvider,
     unlinkProvider,
     fetchUser,

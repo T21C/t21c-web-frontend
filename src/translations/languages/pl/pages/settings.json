@@ -1,0 +1,22 @@
+{
+  "sessions": {
+    "tabs": {
+      "sessions": "Aktywne sesje",
+      "devices": "Zaufane urządzenia"
+    }
+  },
+  "trustedDevices": {
+    "title": "Zaufane urządzenia",
+    "subtitle": "Urządzenia pomijające uwierzytelnianie dwuskładnikowe (2FA). Usuń te, których nie rozpoznajesz.",
+    "empty": "Brak zaufanych urządzeń.",
+    "thisDevice": "To urządzenie",
+    "unknownDevice": "Nieznane urządzenie",
+    "unknownLocation": "Nieznana",
+    "location": "Lokalizacja",
+    "lastUsed": "Ostatnio użyte",
+    "expires": "Wygasa",
+    "revoke": "Zapomnij",
+    "revokeSuccess": "Usunięto zaufane urządzenie",
+    "revokeError": "Nie udało się usunąć tego urządzenia"
+  }
+}

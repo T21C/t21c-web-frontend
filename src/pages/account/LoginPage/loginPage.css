@@ -197,3 +197,61 @@
     transform: scale(0.8);
   }
 }
+
+.login-page-wrapper .login-mfa-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 0;
+}
+
+.login-page-wrapper .login-mfa-prompt {
+  margin: 0;
+  color: var(--color-gray-2);
+  font-size: 0.95rem;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.login-page-wrapper .login-mfa-remember {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-white);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.login-page-wrapper .login-mfa-remember input {
+  width: auto;
+  margin: 0;
+  accent-color: var(--btn-primary);
+}
+
+.login-page-wrapper .login-mfa-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.login-page-wrapper .login-mfa-resend,
+.login-page-wrapper .login-mfa-back {
+  background: transparent;
+  border: none;
+  color: var(--btn-primary);
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0.25rem 0;
+}
+
+.login-page-wrapper .login-mfa-resend:hover:not(:disabled),
+.login-page-wrapper .login-mfa-back:hover:not(:disabled) {
+  color: var(--btn-primary-hover);
+}
+
+.login-page-wrapper .login-mfa-resend:disabled,
+.login-page-wrapper .login-mfa-back:disabled {
+  color: var(--btn-disabled-fill);
+  cursor: not-allowed;
+}

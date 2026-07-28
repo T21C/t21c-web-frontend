@@ -60,22 +60,30 @@ const SettingsSessionsPage = () => {
   const { requireElevation } = useElevation();
   const navigate = useNavigate();
 
+  const [activeTab, setActiveTab] = useState("sessions");
   const [sessions, setSessions] = useState([]);
+  const [devices, setDevices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [busyId, setBusyId] = useState(null);
+  const [busyDeviceId, setBusyDeviceId] = useState(null);
   const [revokingOthers, setRevokingOthers] = useState(false);
 
   const loadSessions = useCallback(async () => {
     setLoading(true);
     setError(false);
     try {
-      const response = await api.get(routes.auth.sessions.list());
-      setSessions(Array.isArray(response.data?.sessions) ? response.data.sessions : []);
+      const [sessionsRes, devicesRes] = await Promise.all([
+        api.get(routes.auth.sessions.list()),
+        api.get(routes.auth.trustedDevices.list()).catch(() => ({ data: { devices: [] } })),
+      ]);
+      setSessions(Array.isArray(sessionsRes.data?.sessions) ? sessionsRes.data.sessions : []);
+      setDevices(Array.isArray(devicesRes.data?.devices) ? devicesRes.data.devices : []);
     } catch (e) {
       console.error("Settings sessions fetch failed:", e);
       setError(true);
       setSessions([]);
+      setDevices([]);
     } finally {
       setLoading(false);
     }
@@ -134,6 +142,21 @@ const SettingsSessionsPage = () => {
     }
   };
 
+  const handleRevokeDevice = async (device) => {
+    if (!device?.id) return;
+    setBusyDeviceId(device.id);
+    try {
+      await api.delete(routes.auth.trustedDevices.revoke(device.id));
+      toast.success(t("settings.trustedDevices.revokeSuccess"));
+      await loadSessions();
+    } catch (e) {
+      console.error("Revoke trusted device failed:", e);
+      toast.error(t("settings.trustedDevices.revokeError"));
+    } finally {
+      setBusyDeviceId(null);
+    }
+  };
+
   const otherCount = sessions.filter((s) => !s.isCurrent).length;
   const locale = i18n.language;
 
@@ -163,84 +186,167 @@ const SettingsSessionsPage = () => {
 
   return (
     <div className="settings-sub-page settings-sessions-page">
-      <header className="settings-sessions-page__header">
-        <div className="settings-sessions-page__intro">
-          <h2 className="settings-sub-page__title">{t("settings.sessions.title")}</h2>
-          <p className="settings-sub-page__text">{t("settings.sessions.subtitle")}</p>
+      <div className="tab-header">
+        <div className="submission-tabs">
+          <button
+            type="button"
+            className={`tab-button ${activeTab === "sessions" ? "active" : ""}`}
+            onClick={() => setActiveTab("sessions")}
+          >
+            {t("settings.sessions.tabs.sessions")}
+          </button>
+          <button
+            type="button"
+            className={`tab-button ${activeTab === "devices" ? "active" : ""}`}
+            onClick={() => setActiveTab("devices")}
+          >
+            {t("settings.sessions.tabs.devices")}
+          </button>
         </div>
-        <button
-          type="button"
-          className="settings-sub-page__btn btn-fill-secondary"
-          onClick={handleRevokeOthers}
-          disabled={revokingOthers || otherCount === 0}
-        >
-          {t("settings.sessions.revokeOthers")}
-        </button>
-      </header>
+      </div>
 
-      {sessions.length === 0 ? (
-        <div className="settings-sub-page__panel">
-          <p className="settings-sub-page__text">{t("settings.sessions.empty")}</p>
-        </div>
-      ) : (
-        <ul className="settings-sessions-page__list">
-          {sessions.map((session) => {
-            const device =
-              session.label?.trim() ||
-              summarizeUserAgent(session.userAgent) ||
-              t("settings.sessions.unknownDevice");
-            const isBusy = busyId === session.id;
-            return (
-              <li key={session.id} className="settings-sessions-page__row">
-                <div className="settings-sessions-page__row-main">
-                  <div className="settings-sessions-page__row-title">
-                    <span className="settings-sessions-page__device">{device}</span>
-                    {session.isCurrent ? (
-                      <span className="settings-sessions-page__badge">
-                        {t("settings.sessions.thisDevice")}
-                      </span>
-                    ) : null}
-                  </div>
-                  <div className="settings-sessions-page__meta">
-                    <span>
-                      {t("settings.sessions.location")}:{" "}
-                      {session.location?.label || t("settings.sessions.unknownLocation")}
-                    </span>
-                    <span className="settings-sessions-page__ip">
-                      {t("settings.sessions.ip")}:{" "}
-                      {session.ip ? (
-                        <Spoiler
-                          label={t("settings.sessions.revealIp")}
-                          hideLabel={t("settings.sessions.hideIp")}
-                        >
-                          {session.ip}
-                        </Spoiler>
-                      ) : (
-                        t("settings.sessions.unknownIp")
-                      )}
-                    </span>
-                    <span>
-                      {t("settings.sessions.created")}:{" "}
-                      {formatSessionDate(session.createdAt, locale)}
-                    </span>
-                    <span>
-                      {t("settings.sessions.expires")}:{" "}
-                      {formatSessionDate(session.expiresAt, locale)}
-                    </span>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  className="settings-sub-page__btn btn-fill-danger"
-                  onClick={() => handleRevoke(session)}
-                  disabled={isBusy || revokingOthers}
-                >
-                  {t("settings.sessions.signOut")}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
+      {activeTab === "sessions" && (
+        <>
+          <header className="settings-sessions-page__header">
+            <div className="settings-sessions-page__intro">
+              <h2 className="settings-sub-page__title">{t("settings.sessions.title")}</h2>
+              <p className="settings-sub-page__text">{t("settings.sessions.subtitle")}</p>
+            </div>
+            <button
+              type="button"
+              className="settings-sub-page__btn btn-fill-secondary"
+              onClick={handleRevokeOthers}
+              disabled={revokingOthers || otherCount === 0}
+            >
+              {t("settings.sessions.revokeOthers")}
+            </button>
+          </header>
+
+          {sessions.length === 0 ? (
+            <div className="settings-sub-page__panel">
+              <p className="settings-sub-page__text">{t("settings.sessions.empty")}</p>
+            </div>
+          ) : (
+            <ul className="settings-sessions-page__list">
+              {sessions.map((session) => {
+                const device =
+                  session.label?.trim() ||
+                  summarizeUserAgent(session.userAgent) ||
+                  t("settings.sessions.unknownDevice");
+                const isBusy = busyId === session.id;
+                return (
+                  <li key={session.id} className="settings-sessions-page__row">
+                    <div className="settings-sessions-page__row-main">
+                      <div className="settings-sessions-page__row-title">
+                        <span className="settings-sessions-page__device">{device}</span>
+                        {session.isCurrent ? (
+                          <span className="settings-sessions-page__badge">
+                            {t("settings.sessions.thisDevice")}
+                          </span>
+                        ) : null}
+                      </div>
+                      <div className="settings-sessions-page__meta">
+                        <span>
+                          {t("settings.sessions.location")}:{" "}
+                          {session.location?.label || t("settings.sessions.unknownLocation")}
+                        </span>
+                        <span className="settings-sessions-page__ip">
+                          {t("settings.sessions.ip")}:{" "}
+                          {session.ip ? (
+                            <Spoiler
+                              label={t("settings.sessions.revealIp")}
+                              hideLabel={t("settings.sessions.hideIp")}
+                            >
+                              {session.ip}
+                            </Spoiler>
+                          ) : (
+                            t("settings.sessions.unknownIp")
+                          )}
+                        </span>
+                        <span>
+                          {t("settings.sessions.created")}:{" "}
+                          {formatSessionDate(session.createdAt, locale)}
+                        </span>
+                        <span>
+                          {t("settings.sessions.expires")}:{" "}
+                          {formatSessionDate(session.expiresAt, locale)}
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      className="settings-sub-page__btn btn-fill-danger"
+                      onClick={() => handleRevoke(session)}
+                      disabled={isBusy || revokingOthers}
+                    >
+                      {t("settings.sessions.signOut")}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </>
+      )}
+
+      {activeTab === "devices" && (
+        <section className="settings-sessions-page__trusted">
+          <div className="settings-sessions-page__intro">
+            <h2 className="settings-sub-page__title">{t("settings.trustedDevices.title")}</h2>
+            <p className="settings-sub-page__text">{t("settings.trustedDevices.subtitle")}</p>
+          </div>
+
+          {devices.length === 0 ? (
+            <div className="settings-sub-page__panel">
+              <p className="settings-sub-page__text">{t("settings.trustedDevices.empty")}</p>
+            </div>
+          ) : (
+            <ul className="settings-sessions-page__list">
+              {devices.map((device) => {
+                const label =
+                  summarizeUserAgent(device.userAgent) ||
+                  t("settings.trustedDevices.unknownDevice");
+                const isBusy = busyDeviceId === device.id;
+                return (
+                  <li key={device.id} className="settings-sessions-page__row">
+                    <div className="settings-sessions-page__row-main">
+                      <div className="settings-sessions-page__row-title">
+                        <span className="settings-sessions-page__device">{label}</span>
+                        {device.isCurrent ? (
+                          <span className="settings-sessions-page__badge">
+                            {t("settings.trustedDevices.thisDevice")}
+                          </span>
+                        ) : null}
+                      </div>
+                      <div className="settings-sessions-page__meta">
+                        <span>
+                          {t("settings.trustedDevices.location")}:{" "}
+                          {device.location?.label || t("settings.trustedDevices.unknownLocation")}
+                        </span>
+                        <span>
+                          {t("settings.trustedDevices.lastUsed")}:{" "}
+                          {formatSessionDate(device.lastUsedAt, locale)}
+                        </span>
+                        <span>
+                          {t("settings.trustedDevices.expires")}:{" "}
+                          {formatSessionDate(device.expiresAt, locale)}
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      className="settings-sub-page__btn btn-fill-danger"
+                      onClick={() => handleRevokeDevice(device)}
+                      disabled={isBusy}
+                    >
+                      {t("settings.trustedDevices.revoke")}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </section>
       )}
     </div>
   );

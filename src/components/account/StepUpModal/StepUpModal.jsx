@@ -67,11 +67,15 @@ const StepUpModal = ({ scope, user, onElevated, onCancel }) => {
       if (codeName === 'EMAIL_REQUIRED') {
         setError(msg || t('stepUp.emailRequired'));
       } else if (codeName === 'RESEND_COOLDOWN') {
+        // Not an error: a still-valid code was sent moments ago (possibly in a
+        // previous session) — surface the countdown, keep the prompt intact.
         const retry = err.response?.data?.retryAfter;
         if (typeof retry === 'number') {
           setResendAvailableAt(new Date(Date.now() + retry).toISOString());
         }
-        setError(msg || t('stepUp.resendCooldown'));
+        if (err.response?.data?.maskedEmail) {
+          setMaskedEmail(err.response.data.maskedEmail);
+        }
       } else {
         setError(msg || t('stepUp.sendFailed'));
       }

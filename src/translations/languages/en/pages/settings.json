@@ -24,6 +24,10 @@
     }
   },
   "sessions": {
+    "tabs": {
+      "sessions": "Active sessions",
+      "devices": "Trusted devices"
+    },
     "title": "Active sessions",
     "subtitle": "Devices currently signed in to your account. Sign out anything you do not recognize.",
     "loading": "Loading sessions…",
@@ -48,6 +52,20 @@
     "revokeOthersConfirm": "Sign out all other devices? This device will stay signed in.",
     "revokeOthersSuccess": "Other devices signed out",
     "revokeOthersError": "Could not sign out other devices"
+  },
+  "trustedDevices": {
+    "title": "Trusted devices",
+    "subtitle": "Devices that skip 2 factor authentication (2FA). Revoke any you do not recognize.",
+    "empty": "No trusted devices.",
+    "thisDevice": "This device",
+    "unknownDevice": "Unknown device",
+    "unknownLocation": "Unknown",
+    "location": "Location",
+    "lastUsed": "Last used",
+    "expires": "Expires",
+    "revoke": "Forget",
+    "revokeSuccess": "Trusted device removed",
+    "revokeError": "Could not remove that trusted device"
   },
   "player": {
     "title": "Player profile",

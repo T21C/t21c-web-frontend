@@ -1,0 +1,54 @@
+{
+  "meta": {
+    "title": "Connexion",
+    "description": "Connectez-vous à The Universal Forums (TUF)"
+  },
+  "header": {
+    "title": "Connexion"
+  },
+  "form": {
+    "labels": {
+      "emailOrUsername": "E-mail ou nom d'utilisateur",
+      "password": "Mot de passe"
+    },
+    "buttons": {
+      "login": "Se connecter",
+      "loggingIn": "Connexion...",
+      "discordLogin": "Se connecter avec Discord"
+    },
+    "divider": "ou",
+    "links": {
+      "register": "Pas de compte ? S'inscrire"
+    }
+  },
+  "mfa": {
+    "title": "Vérifiez votre e-mail",
+    "codePrompt": "Entrez le code envoyé à {{email}} pour terminer la connexion.",
+    "yourEmail": "votre e-mail",
+    "codeLabel": "Code de connexion",
+    "codeRequired": "Entrez le code à 8 caractères reçu par e-mail",
+    "invalidCode": "Code invalide ou expiré",
+    "confirm": "Continuer",
+    "verifying": "Vérification...",
+    "resend": "Renvoyer le code",
+    "resendIn": "Renvoyer dans {{seconds}} s",
+    "resendCooldown": "Veuillez patienter avant de demander un nouveau code",
+    "sendFailed": "Échec de l'envoi du code de connexion",
+    "expired": "Le défi de connexion a expiré. Veuillez vous reconnecter.",
+    "rememberDevice": "Se souvenir de cet appareil pendant 30 jours",
+    "back": "Retour à la connexion"
+  },
+  "errors": {
+    "generic": "Erreur inattendue. Réessayez plus tard.",
+    "network": "Erreur de connexion réseau. Réessayez plus tard.",
+    "discordFailed": "Impossible de démarrer la connexion Discord. Réessayez ; contactez le développeur si le problème persiste.",
+    "invalidCredentials": "E-mail/nom d'utilisateur ou mot de passe incorrect.",
+    "emailNotVerified": "Vérifiez votre e-mail avant de vous connecter.",
+    "rateLimit": "Trop de tentatives. Attendez et réessayez.",
+    "captcha": {
+      "notLoaded": "reCAPTCHA non chargé",
+      "incomplete": "Veuillez terminer la vérification reCAPTCHA",
+      "failed": "Échec de la vérification reCAPTCHA. Réessayez."
+    }
+  }
+}

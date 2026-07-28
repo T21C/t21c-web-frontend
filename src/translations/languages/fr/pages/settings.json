@@ -1,0 +1,22 @@
+{
+  "sessions": {
+    "tabs": {
+      "sessions": "Sessions actives",
+      "devices": "Appareils de confiance"
+    }
+  },
+  "trustedDevices": {
+    "title": "Appareils de confiance",
+    "subtitle": "Appareils qui ignorent l'authentification à deux facteurs (2FA). Révoquez ceux que vous ne reconnaissez pas.",
+    "empty": "Aucun appareil de confiance.",
+    "thisDevice": "Cet appareil",
+    "unknownDevice": "Appareil inconnu",
+    "unknownLocation": "Inconnu",
+    "location": "Emplacement",
+    "lastUsed": "Dernière utilisation",
+    "expires": "Expire",
+    "revoke": "Oublier",
+    "revokeSuccess": "Appareil de confiance retiré",
+    "revokeError": "Impossible de retirer cet appareil"
+  }
+}

@@ -21,6 +21,26 @@
       "billing": "账单"
     }
   },
+  "sessions": {
+    "tabs": {
+      "sessions": "活跃会话",
+      "devices": "受信任的设备"
+    }
+  },
+  "trustedDevices": {
+    "title": "受信任的设备",
+    "subtitle": "可跳过双重验证（2FA）的设备。如有不认识的设备请移除。",
+    "empty": "暂无受信任的设备。",
+    "thisDevice": "此设备",
+    "unknownDevice": "未知设备",
+    "unknownLocation": "未知",
+    "location": "位置",
+    "lastUsed": "最近使用",
+    "expires": "过期时间",
+    "revoke": "移除",
+    "revokeSuccess": "已移除受信任的设备",
+    "revokeError": "无法移除该设备"
+  },
   "player": {
     "title": "玩家信息",
     "nicknameLabel": "昵称",

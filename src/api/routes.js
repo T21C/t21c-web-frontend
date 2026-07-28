@@ -23,6 +23,14 @@ export const routes = {
     csrf: () => '/v2/auth/csrf',
     stepUp: () => '/v2/auth/step-up',
     stepUpEmail: () => '/v2/auth/step-up/email',
+    mfa: {
+      email: () => '/v2/auth/mfa/email',
+      verify: () => '/v2/auth/mfa/verify',
+    },
+    trustedDevices: {
+      list: () => '/v2/auth/trusted-devices',
+      revoke: (id) => `/v2/auth/trusted-devices/${enc(id)}`,
+    },
     oauthReauth: (provider) => `/v2/auth/oauth/reauth/${enc(provider)}`,
     sessions: {
       list: () => '/v2/auth/sessions',
