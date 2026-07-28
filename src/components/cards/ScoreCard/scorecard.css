@@ -12,6 +12,23 @@
   flex-wrap: wrap;
   transition: all 0.1s ease-in-out;
 }
+
+.score-card .score-card__row {
+  display: flex;
+  align-items: center;
+  gap: inherit;
+  min-width: 0;
+}
+
+.score-card .score-card__row--primary {
+  flex: 2;
+  min-width: 0;
+}
+
+.score-card .score-card__row--secondary {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
 .score-card:hover {
   background-color: var(--color-white-t30);
 }
@@ -173,7 +190,7 @@
 }
 .score-card .score-wrapper {
   overflow: hidden;
-  min-width: 120px;
+  min-width: 100px;
 }
 .score-card .acc-wrapper {
   overflow: visible;
@@ -317,6 +334,45 @@
   opacity: 0.7;
   background-color: #ff03;
   color: #ff0;
+}
+
+@media (max-width: 768px) {
+  .score-card .score-wrapper {
+    min-width: 80px;
+  }
+  .score-card {
+    gap: 0.25rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .score-card {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 0.5rem;
+  }
+
+  .score-card .score-card__row--primary {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+
+  .score-card .score-card__row--primary .score-card__info-column,
+  .score-card .score-card__row--primary .name-wrapper {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .score-card .score-card__row--secondary {
+    flex: 1 1 auto;
+    width: 100%;
+    gap: 0.75rem;
+  }
+
+  .score-card .score-wrapper {
+    min-width: 60px;
+  }
 }
 
 @media (max-width: 400px) {
