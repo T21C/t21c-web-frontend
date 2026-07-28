@@ -1,0 +1,29 @@
+{
+  "title": "Potwierdź tożsamość",
+  "actions": {
+    "emailChange": "zmienić adres e-mail",
+    "security": "kontynuować tę czynność bezpieczeństwa"
+  },
+  "codePrompt": "Wpisz kod wysłany na {{email}}, aby {{action}}.",
+  "yourEmail": "Twój e-mail",
+  "codeLabel": "Kod potwierdzenia",
+  "codeRequired": "Wpisz 8-znakowy kod z e-maila",
+  "invalidCode": "Nieprawidłowy lub wygasły kod",
+  "confirm": "Potwierdź",
+  "confirmed": "Tożsamość potwierdzona",
+  "resend": "Wyślij ponownie",
+  "resendIn": "Wyślij ponownie za {{seconds}} s",
+  "resendCooldown": "Poczekaj przed ponownym żądaniem kodu",
+  "sendFailed": "Nie udało się wysłać kodu",
+  "emailRequired": "Wymagany jest zweryfikowany e-mail",
+  "emailRequiredBody": "Dodaj i zweryfikuj adres e-mail, zanim będziesz mógł wykonać tę czynność.",
+  "addEmail": "Dodaj e-mail",
+  "firstEmailPrompt": "Potwierdź tożsamość, aby {{action}}.",
+  "currentPassword": "Obecne hasło",
+  "passwordRequired": "Hasło jest wymagane",
+  "passwordFailed": "Nieprawidłowe hasło",
+  "discordPrompt": "To konto używa Discorda. Zaloguj się ponownie przez Discord, aby kontynuować.",
+  "oauthFailed": "Nie udało się rozpocząć ponownego logowania Discord",
+  "continue": "Kontynuuj",
+  "continueDiscord": "Kontynuuj z Discord"
+}

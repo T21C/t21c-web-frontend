@@ -1,0 +1,29 @@
+{
+  "title": "确认是你本人",
+  "actions": {
+    "emailChange": "更改邮箱",
+    "security": "继续此安全操作"
+  },
+  "codePrompt": "请输入我们发送到 {{email}} 的验证码以{{action}}。",
+  "yourEmail": "你的邮箱",
+  "codeLabel": "确认码",
+  "codeRequired": "请输入邮件中的 8 位验证码",
+  "invalidCode": "验证码无效或已过期",
+  "confirm": "确认",
+  "confirmed": "身份已确认",
+  "resend": "重新发送",
+  "resendIn": "{{seconds}} 秒后可重新发送",
+  "resendCooldown": "请稍后再请求新的验证码",
+  "sendFailed": "发送确认码失败",
+  "emailRequired": "需要已验证的邮箱",
+  "emailRequiredBody": "请先添加并验证邮箱，然后才能执行此操作。",
+  "addEmail": "添加邮箱",
+  "firstEmailPrompt": "请确认身份以{{action}}。",
+  "currentPassword": "当前密码",
+  "passwordRequired": "需要输入密码",
+  "passwordFailed": "密码不正确",
+  "discordPrompt": "此账户使用 Discord。请通过 Discord 重新验证以继续。",
+  "oauthFailed": "无法开始 Discord 重新验证",
+  "continue": "继续",
+  "continueDiscord": "使用 Discord 继续"
+}

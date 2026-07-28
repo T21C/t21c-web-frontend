@@ -10,7 +10,7 @@ module.exports = {
     'plugin:import/typescript',
     'plugin:react/recommended'
   ],
-  ignorePatterns: ['dist', '.eslintrc.cjs', 'vite.config.js'],
+  ignorePatterns: ['dist', 'dist.tmp', '.eslintrc.cjs', 'vite.config.js'],
   parser: '@babel/eslint-parser',
   parserOptions: { 
     ecmaVersion: 'latest', 

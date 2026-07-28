@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";
 import { routes } from "@/api/routes";
 import { useAuth } from "@/contexts/AuthContext";
+import { useElevation } from "@/contexts/ElevationContext";
 import Spoiler from "@/components/common/Spoiler/Spoiler";
 import api from "@/utils/api";
 import "./settingsSubPage.css";
@@ -56,6 +57,7 @@ function formatSessionDate(value, locale) {
 const SettingsSessionsPage = () => {
   const { t, i18n } = useTranslation("pages");
   const { logout } = useAuth();
+  const { requireElevation } = useElevation();
   const navigate = useNavigate();
 
   const [sessions, setSessions] = useState([]);
@@ -116,12 +118,17 @@ const SettingsSessionsPage = () => {
     if (!window.confirm(t("settings.sessions.revokeOthersConfirm"))) return;
     setRevokingOthers(true);
     try {
-      await api.delete(routes.auth.sessions.revokeOthers());
+      await requireElevation("security", () =>
+        api.delete(routes.auth.sessions.revokeOthers()),
+      );
       toast.success(t("settings.sessions.revokeOthersSuccess"));
       await loadSessions();
     } catch (e) {
+      if (e?.code === "ELEVATION_CANCELLED") return;
       console.error("Revoke other sessions failed:", e);
-      toast.error(t("settings.sessions.revokeOthersError"));
+      toast.error(
+        e.response?.data?.message || t("settings.sessions.revokeOthersError"),
+      );
     } finally {
       setRevokingOthers(false);
     }

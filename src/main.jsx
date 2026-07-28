@@ -11,6 +11,7 @@ import { LevelContextProvider } from '@/contexts/LevelContext';
 import { I18nextProvider } from "react-i18next";
 import { GoogleOAuthProvider } from "@react-oauth/google"
 import { AuthProvider } from '@/contexts/AuthContext';
+import { ElevationProvider } from '@/contexts/ElevationContext';
 import { PlayerContextProvider } from '@/contexts/PlayerContext';
 import { PassContextProvider } from '@/contexts/PassContext';  
 import { DifficultyContextProvider } from '@/contexts/DifficultyContext';
@@ -115,6 +116,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <BrowserRouter>
           <GoogleOAuthProvider clientId='886035995245-8735p49ljpm17btvst50pp8qbg73t7s4.apps.googleusercontent.com'>
             <AuthProvider>
+              <ElevationProvider>
               <DifficultyContextProvider>
                 <LevelContextProvider>
                   <NotificationProvider>
@@ -143,7 +145,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                     </I18nextProvider>
                   </NotificationProvider>
                 </LevelContextProvider>
-              </DifficultyContextProvider>  
+              </DifficultyContextProvider>
+              </ElevationProvider>
             </AuthProvider>
           </GoogleOAuthProvider>
         </BrowserRouter>

@@ -4,8 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
 import { useAuth } from "@/contexts/AuthContext";
+import { useElevation } from '@/contexts/ElevationContext';
 import api from '@/utils/api';
 import { routes } from '@/api/routes';
+import { parseAuthError } from '@/utils/authErrors';
 import './callback.css';
 
 const BILLING_POLL_INTERVAL_MS = 1500;
@@ -97,6 +99,7 @@ const CallbackPage = () => {
   const [mode, setMode] = useState(() => (billingFromUrl.isBillingReturn ? 'billing' : 'oauth'));
   const [billingState, setBillingState] = useState(() => initialBillingState(search));
   const { fetchUser, getOriginUrl } = useAuth();
+  const { markElevated } = useElevation();
 
   /** OAuth branch only: stable empty-string ref so finally doesn't read stale state `error`. */
   const oauthErrorRef = useRef('');
@@ -236,6 +239,15 @@ const CallbackPage = () => {
       const errorParam = urlParams.get('error');
       const linking = urlParams.get('linking') === 'true';
       const reauth = urlParams.get('reauth') === 'true';
+      let stepUpScope = urlParams.get('scope');
+      if (!stepUpScope) {
+        try {
+          stepUpScope = sessionStorage.getItem('stepUpScope');
+          if (stepUpScope) sessionStorage.removeItem('stepUpScope');
+        } catch {
+          /* ignore */
+        }
+      }
       setIsLinking(linking);
       const provider = urlParams.get('provider') || 'discord';
       oauthErrorRef.current = '';
@@ -282,10 +294,15 @@ const CallbackPage = () => {
       callbackLockStore.set(oauthLockKey, true);
 
       try {
+        const oauthParams = linking
+          ? { linking: true }
+          : reauth
+            ? { reauth: true, ...(stepUpScope ? { scope: stepUpScope } : {}) }
+            : undefined;
         const response = await api.post(
           routes.auth.oauthCallback(provider),
           { code },
-          { params: linking ? { linking: true } : reauth ? { reauth: true } : undefined },
+          { params: oauthParams },
         );
 
         if (cancelled) return;
@@ -296,11 +313,13 @@ const CallbackPage = () => {
 
         if (reauth) {
           try {
-            sessionStorage.setItem('stepUpGranted', '1');
+            const scope = sessionStorage.getItem('stepUpScope') || 'email-change';
+            sessionStorage.removeItem('stepUpScope');
+            markElevated(scope, 600);
           } catch {
             /* ignore */
           }
-          toast.success('Identity confirmed. You can continue changing your email.');
+          toast.success('Identity confirmed. You can continue.');
           navigate('/settings/account', { replace: true });
           return;
         }
@@ -313,6 +332,11 @@ const CallbackPage = () => {
             throw new Error('Linking failed');
           }
         } else {
+          // Same contract as password login: only treat as logged-in when server issued a session.
+          // Future MFA: response may be { mfaRequired: true } with no user.
+          if (!response.data?.user) {
+            throw new Error('No user received from server');
+          }
           const newUser = await fetchUser(true);
           if (cancelled) return;
           if (newUser) {
@@ -342,23 +366,10 @@ const CallbackPage = () => {
 
         console.error('OAuth callback error:', err);
 
-        let errorMessage = 'Authentication failed';
-
-        if (err.response) {
-          if (err.response.data) {
-            if (err.response.data.error) {
-              errorMessage = err.response.data.error;
-            } else if (err.response.data.message) {
-              errorMessage = err.response.data.message;
-            } else if (err.response.data.data && err.response.data.data.error) {
-              errorMessage = err.response.data.data.error;
-            }
-          }
-        } else if (err.request) {
-          errorMessage = 'No response from server';
-        } else {
-          errorMessage = err.message || 'Authentication failed';
-        }
+        const { message: errorMessage } = parseAuthError(err, {
+          generic: 'Authentication failed',
+          network: 'No response from server',
+        });
 
         oauthErrorRef.current = errorMessage;
         setError(errorMessage);

@@ -8,7 +8,7 @@
 
 .code-input__label {
   font-size: 0.9rem;
-  opacity: 0.9;
+  color: var(--color-gray-2);
 }
 
 .code-input__field {
@@ -18,13 +18,13 @@
   text-align: center;
   padding: 0.75rem 1rem;
   border-radius: 6px;
-  border: 1px solid var(--color-border, #444);
-  background: var(--color-surface, #1a1a1a);
-  color: var(--color-text, #fff);
+  border: 1px solid var(--color-white-t20);
+  background: var(--color-black);
+  color: var(--color-white);
 }
 
 .code-input__field:focus {
-  outline: 2px solid var(--color-accent, #4caf50);
+  outline: 2px solid var(--color-purple-1);
   outline-offset: 1px;
 }
 

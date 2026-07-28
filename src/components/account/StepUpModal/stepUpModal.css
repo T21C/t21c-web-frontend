@@ -1,0 +1,143 @@
+/* tuf-search: #StepUpModal #stepUpModal #account #stepUp */
+.step-up-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background-color: var(--color-black-t75);
+}
+
+.step-up-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  max-width: 420px;
+  padding: 1.25rem 1.5rem;
+  border-radius: 8px;
+  background: var(--color-black);
+  border: 1px solid var(--color-white-t15);
+  box-shadow: 0 8px 32px var(--color-black-t45);
+  color: var(--color-white);
+}
+
+.step-up-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.step-up-modal__header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--color-white);
+}
+
+.step-up-modal__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-white);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.step-up-modal__close:hover:not(:disabled) {
+  background: var(--color-white-t10);
+}
+
+.step-up-modal__close:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.step-up-modal__body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.step-up-modal__text {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--color-gray-2);
+  line-height: 1.45;
+}
+
+.step-up-modal__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.step-up-modal__field label {
+  font-size: 0.85rem;
+  color: var(--color-gray-2);
+}
+
+.step-up-modal__input {
+  padding: 0.65rem 0.85rem;
+  border-radius: 6px;
+  border: 1px solid var(--color-white-t20);
+  background: var(--color-black);
+  color: var(--color-white);
+  font-size: 1rem;
+}
+
+.step-up-modal__input:focus {
+  outline: 2px solid var(--color-purple-1);
+  outline-offset: 1px;
+}
+
+.step-up-modal__error {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #ff8a8a;
+}
+
+.step-up-modal__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.step-up-modal__btn {
+  padding: 0.55rem 1rem;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.step-up-modal__btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.step-up-modal__btn--secondary {
+  background: transparent;
+  border-color: var(--color-white-t25);
+  color: var(--color-white);
+}
+
+.step-up-modal__btn--secondary:hover:not(:disabled) {
+  background: var(--color-white-t10);
+}
+
+.step-up-modal__btn--primary {
+  background: var(--color-purple-1);
+  color: var(--color-white);
+}
+
+.step-up-modal__btn--primary:hover:not(:disabled) {
+  background: var(--color-purple-2);
+}

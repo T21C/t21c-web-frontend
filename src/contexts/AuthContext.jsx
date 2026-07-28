@@ -186,7 +186,11 @@ export const AuthProvider = ({ children }) => {
         password,
         captchaToken
       });
-      await fetchUser(true);
+      // Only load profile when the server issued a session (has user).
+      // Future MFA: response may be { mfaRequired: true } with no user — leave AuthContext logged out.
+      if (response.data?.user) {
+        await fetchUser(true);
+      }
       return response.data;
     } catch (error) {
       console.error('[Auth] Login failed:', error);
@@ -344,13 +348,33 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const stepUp = async (password) => {
-    const response = await api.post(routes.auth.stepUp(), { password });
+  const stepUp = async (passwordOrOpts, scopeArg = 'email-change') => {
+    const body =
+      passwordOrOpts && typeof passwordOrOpts === 'object'
+        ? {
+            code: passwordOrOpts.code,
+            password: passwordOrOpts.password,
+            scope: passwordOrOpts.scope ?? scopeArg,
+          }
+        : { password: passwordOrOpts, scope: scopeArg };
+    const response = await api.post(routes.auth.stepUp(), body);
     return response.data;
   };
 
-  const startOAuthReauth = async (provider = 'discord') => {
-    const response = await api.get(routes.auth.oauthReauth(provider));
+  const requestStepUpEmail = async (scope = 'security') => {
+    const response = await api.post(routes.auth.stepUpEmail(), { scope });
+    return response.data;
+  };
+
+  const startOAuthReauth = async (provider = 'discord', scope = 'email-change') => {
+    try {
+      sessionStorage.setItem('stepUpScope', scope);
+    } catch {
+      /* ignore */
+    }
+    const response = await api.get(routes.auth.oauthReauth(provider), {
+      params: { scope },
+    });
     if (response.data?.url) {
       await navigateExternal(response.data.url);
     }
@@ -448,6 +472,7 @@ export const AuthProvider = ({ children }) => {
     verifyEmail,
     resendVerification,
     stepUp,
+    requestStepUpEmail,
     startOAuthReauth,
     changeEmail,
     cancelPendingEmail,

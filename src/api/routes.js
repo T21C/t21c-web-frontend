@@ -22,6 +22,7 @@ export const routes = {
     },
     csrf: () => '/v2/auth/csrf',
     stepUp: () => '/v2/auth/step-up',
+    stepUpEmail: () => '/v2/auth/step-up/email',
     oauthReauth: (provider) => `/v2/auth/oauth/reauth/${enc(provider)}`,
     sessions: {
       list: () => '/v2/auth/sessions',
@@ -91,10 +92,11 @@ export const routes = {
       seriesById: (id) => `/v2/admin/tournaments/series/${enc(id)}`,
       tierTemplates: () => '/v2/admin/tournaments/tier-templates',
       icon: (id) => `/v2/admin/tournaments/${enc(id)}/icon`,
-      cardBackground: (id) => `/v2/admin/tournaments/${enc(id)}/card-background`,
-      tierIcon: (tournamentId, tierId) =>
+      cardBackground: (id) =>
+        `/v2/admin/tournaments/${enc(id)}/card-background`,
+      tierIcon: (tournamentId) =>
         `/v2/admin/tournaments/${enc(tournamentId)}/tiers/${enc(tierId)}/icon`,
-      tierCardBackground: (tournamentId, tierId) =>
+      tierCardBackground: (tournamentId) =>
         `/v2/admin/tournaments/${enc(tournamentId)}/tiers/${enc(tierId)}/card-background`,
     },
 
@@ -127,13 +129,13 @@ export const routes = {
       passesPending: () => '/v2/admin/submissions/passes/pending',
       autoApprovePasses: () => '/v2/admin/submissions/auto-approve/passes',
       level: (submissionId) => `/v2/admin/submissions/levels/${enc(submissionId)}`,
-      levelAction: (submissionId, action) =>
+      levelAction: (submissionId) =>
         `/v2/admin/submissions/levels/${enc(submissionId)}/${action}`,
       levelProfiles: (submissionId) =>
         `/v2/admin/submissions/levels/${enc(submissionId)}/profiles`,
       levelCreatorRequests: (submissionId) =>
         `/v2/admin/submissions/levels/${enc(submissionId)}/creator-requests`,
-      levelCreatorRequest: (submissionId, requestId) =>
+      levelCreatorRequest: (submissionId) =>
         `/v2/admin/submissions/levels/${enc(submissionId)}/creator-requests/${enc(requestId)}`,
       levelSong: (submissionId) =>
         `/v2/admin/submissions/levels/${enc(submissionId)}/song`,
@@ -148,7 +150,7 @@ export const routes = {
       levelCreators: (submissionId) =>
         `/v2/admin/submissions/levels/${enc(submissionId)}/creators`,
       pass: (submissionId) => `/v2/admin/submissions/passes/${enc(submissionId)}`,
-      passAction: (submissionId, action) =>
+      passAction: (submissionId) =>
         `/v2/admin/submissions/passes/${enc(submissionId)}/${action}`,
       passAssignPlayer: (submissionId) =>
         `/v2/admin/submissions/passes/${enc(submissionId)}/assign-player`,
@@ -169,7 +171,7 @@ export const routes = {
       guilds: () => '/v2/admin/discord/guilds',
       guild: (guildId) => `/v2/admin/discord/guilds/${enc(guildId)}`,
       guildRoles: (guildId) => `/v2/admin/discord/guilds/${enc(guildId)}/roles`,
-      guildRole: (guildId, roleId) =>
+      guildRole: (guildId) =>
         `/v2/admin/discord/guilds/${enc(guildId)}/roles/${enc(roleId)}`,
       guildRolesReorder: (guildId) =>
         `/v2/admin/discord/guilds/${enc(guildId)}/roles/reorder`,
@@ -188,10 +190,10 @@ export const routes = {
       merge: (id) => `/v2/database/songs/${enc(id)}/merge`,
       split: (id) => `/v2/database/songs/${enc(id)}/split`,
       credits: (id) => `/v2/database/songs/${enc(id)}/credits`,
-      credit: (id, creditId) =>
+      credit: (id) =>
         `/v2/database/songs/${enc(id)}/credits/${enc(creditId)}`,
       evidences: (id) => `/v2/database/songs/${enc(id)}/evidences`,
-      evidence: (id, evidenceId) =>
+      evidence: (id) =>
         `/v2/database/songs/${enc(id)}/evidences/${enc(evidenceId)}`,
       evidencesUpload: (id) => `/v2/database/songs/${enc(id)}/evidences/upload`,
       levelsInfo: (id) => `/v2/database/songs/${enc(id)}/levels/info`,
@@ -203,11 +205,11 @@ export const routes = {
       merge: (id) => `/v2/database/artists/${enc(id)}/merge`,
       split: (id) => `/v2/database/artists/${enc(id)}/split`,
       relations: (id) => `/v2/database/artists/${enc(id)}/relations`,
-      relation: (id, relatedArtistId) =>
+      relation: (id) =>
         `/v2/database/artists/${enc(id)}/relations/${enc(relatedArtistId)}`,
       avatar: (id) => `/v2/database/artists/${enc(id)}/avatar`,
       evidences: (id) => `/v2/database/artists/${enc(id)}/evidences`,
-      evidence: (id, evidenceId) =>
+      evidence: (id) =>
         `/v2/database/artists/${enc(id)}/evidences/${enc(evidenceId)}`,
       evidencesUpload: (id) => `/v2/database/artists/${enc(id)}/evidences/upload`,
     },
@@ -216,8 +218,10 @@ export const routes = {
       byId: (id) => `/v2/database/levels/${enc(id)}`,
       byIdQuery: (id) => `/v2/database/levels/byId/${enc(id)}`,
       own: (id) => `/v2/database/levels/own/${enc(id)}`,
-      swapPayload: (id) => `/v2/database/levels/${enc(id)}/swap-payload`,
-      tournamentAppearances: (id) => `/v2/database/levels/${enc(id)}/tournament-appearances`,
+      swapPayload: (id) =>
+        `/v2/database/levels/${enc(id)}/swap-payload`,
+      tournamentAppearances: (id) =>
+        `/v2/database/levels/${enc(id)}/tournament-appearances`,
       packs: {
         root: () => '/v2/database/levels/packs',
         favorites: () => '/v2/database/levels/packs/favorites',
@@ -232,12 +236,12 @@ export const routes = {
         items: (packId) => `/v2/database/levels/packs/${enc(packId)}/items`,
         validateItems: (packId) =>
           `/v2/database/levels/packs/${enc(packId)}/items/validate-levels`,
-        item: (packId, itemId) =>
+        item: (packId) =>
           `/v2/database/levels/packs/${enc(packId)}/items/${enc(itemId)}`,
         downloadLink: (packId) =>
           `/v2/database/levels/packs/${enc(packId)}/download-link`,
         levels: (packId) => `/v2/database/levels/packs/${enc(packId)}/levels`,
-        level: (packId, levelId) =>
+        level: (packId) =>
           `/v2/database/levels/packs/${enc(packId)}/levels/${enc(levelId)}`,
         levelsReorder: (packId) =>
           `/v2/database/levels/packs/${enc(packId)}/levels/reorder`,
@@ -251,7 +255,7 @@ export const routes = {
       unannouncedNew: () => '/v2/database/levels/unannounced/new',
       unannouncedRerates: () => '/v2/database/levels/unannounced/rerates',
       aliases: (levelId) => `/v2/database/levels/${enc(levelId)}/aliases`,
-      alias: (levelId, aliasId) =>
+      alias: (levelId) =>
         `/v2/database/levels/${enc(levelId)}/aliases/${enc(aliasId)}`,
       aliasPropagationCount: (levelId) =>
         `/v2/database/levels/alias-propagation-count/${enc(levelId)}`,
@@ -301,11 +305,11 @@ export const routes = {
       merge: () => '/v2/database/creators/merge',
       split: () => '/v2/database/creators/split',
       levelsAudit: () => '/v2/database/creators/levels-audit',
-      assignCreatorToUser: (userOrPlayerId, creatorId) =>
+      assignCreatorToUser: (userOrPlayerId) =>
         `/v2/database/creators/assign-creator-to-user/${enc(userOrPlayerId)}/${enc(creatorId)}`,
       removeCreatorFromUser: (userId) =>
         `/v2/database/creators/remove-creator-from-user/${enc(userId)}`,
-      discord: (creatorId, discordId) =>
+      discord: (creatorId) =>
         `/v2/database/creators/${enc(creatorId)}/discord/${enc(discordId)}`,
       level: (levelId) => `/v2/database/creators/level/${enc(levelId)}`,
       levelTeam: (levelId) => `/v2/database/creators/level/${enc(levelId)}/team`,
@@ -378,8 +382,8 @@ export const routes = {
 
   profileCustomizationV3: {
     root: () => '/v3/profile-customization',
-    link: (unit) => `/v3/profile-customization/${enc(unit)}/link`,
-    unlink: (unit) => `/v3/profile-customization/${enc(unit)}/unlink`,
+    link: (unit) => `/v3/profile-customization/${encodeURIComponent(String(unit))}/link`,
+    unlink: (unit) => `/v3/profile-customization/${encodeURIComponent(String(unit))}/unlink`,
   },
 
   creatorsV3: {
@@ -422,6 +426,8 @@ export const routes = {
     levels: () => '/v2/webhook/levels',
     rerates: () => '/v2/webhook/rerates',
     passes: () => '/v2/webhook/passes',
+    announcementJobs: (kind) =>
+      `/v2/webhook/announcement-jobs?kind=${encodeURIComponent(kind)}`,
     silentRemoveLevels: () => '/v2/webhook/silent-remove/levels',
     silentRemoveRerates: () => '/v2/webhook/silent-remove/rerates',
     silentRemovePasses: () => '/v2/webhook/silent-remove/passes',
@@ -436,7 +442,7 @@ export const routes = {
     init: () => '/v2/upload/init',
     session: (sessionId) => `/v2/upload/sessions/${enc(sessionId)}`,
     sessionComplete: (sessionId) => `/v2/upload/sessions/${enc(sessionId)}/complete`,
-    sessionChunk: (sessionId, index) =>
+    sessionChunk: (sessionId) =>
       `/v2/upload/sessions/${enc(sessionId)}/chunks/${index}`,
   },
   jobs: {

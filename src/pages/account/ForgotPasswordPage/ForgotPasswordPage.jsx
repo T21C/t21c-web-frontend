@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { MetaTags } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
 import ReCAPTCHA from '@/components/auth/ReCaptcha/ReCaptcha';
+import CodeInput from '@/components/account/CodeInput/CodeInput';
 import { useTranslation } from 'react-i18next';
 import './forgotPasswordPage.css';
 
@@ -320,22 +321,13 @@ const ForgotPasswordPage = () => {
                 />
               </div>
 
-              <div className="form-group">
-                <label htmlFor="reset-code">Reset code</label>
-                <input
-                  type="text"
-                  id="reset-code"
-                  value={code}
-                  onChange={(e) =>
-                    setCode(e.target.value.toUpperCase().replace(/[^0-9A-Z]/g, '').slice(0, 8))
-                  }
-                  required
-                  disabled={loading}
-                  className="reset-input"
-                  maxLength={8}
-                  autoComplete="one-time-code"
-                />
-              </div>
+              <CodeInput
+                id="reset-code"
+                label={t('forgotPassword.reset.codeLabel', { defaultValue: 'Reset code' })}
+                value={code}
+                onChange={setCode}
+                disabled={loading}
+              />
 
               <div className="form-group">
                 <label htmlFor="password">{t('forgotPassword.reset.form.labels.password')}</label>

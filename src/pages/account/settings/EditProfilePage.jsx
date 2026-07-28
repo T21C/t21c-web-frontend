@@ -11,6 +11,7 @@ import api from '@/utils/api';
 import { getCdnErrorMessage } from '@/utils/uploadErrors';
 import ImageSelectorPopup from '@/components/common/selectors/ImageSelectorPopup/ImageSelectorPopup';
 import { ChangeEmailPopup } from '@/components/popups/Users';
+import { useElevation } from '@/contexts/ElevationContext';
 import { CountrySelect } from '@/components/common/selectors';
 import { useTranslation } from 'react-i18next';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
@@ -43,14 +44,13 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
     user,
     changePassword,
     changeEmail,
-    stepUp,
-    startOAuthReauth,
     cancelPendingEmail,
     linkProvider,
     unlinkProvider,
     setUser,
     fetchUser,
   } = useAuth();
+  const { requireElevation } = useElevation();
   const [formData, setFormData] = useState({
     username: user?.username || '',
     nickname: user?.nickname || '',
@@ -196,10 +196,12 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
     }
 
     try {
-      await changePassword({
-        currentPassword: formData.currentPassword,
-        newPassword: formData.newPassword,
-      });
+      await requireElevation('security', () =>
+        changePassword({
+          currentPassword: formData.currentPassword,
+          newPassword: formData.newPassword,
+        }),
+      );
       setSuccess(t('editProfile.success.passwordChanged'));
       setFormData((prev) => ({
         ...prev,
@@ -209,7 +211,17 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
       }));
       setIsChangingPassword(false);
     } catch (err) {
-      setError(err.message || t('editProfile.error.failedToChangePassword'));
+      if (err?.code === 'ELEVATION_CANCELLED') return;
+      const msg =
+        err.response?.data?.error ||
+        err.response?.data?.message ||
+        err.message ||
+        t('editProfile.error.failedToChangePassword');
+      if (err.response?.data?.code === 'EMAIL_REQUIRED') {
+        setError(msg);
+        return;
+      }
+      setError(msg);
     }
   };
 
@@ -226,10 +238,16 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
 
   const handleProviderUnlink = async (provider) => {
     try {
-      await unlinkProvider(provider);
+      await requireElevation('security', () => unlinkProvider(provider));
       setSuccess(t('editProfile.success.accountUnlinked', { provider }));
     } catch (err) {
-      setError(err.message || t('editProfile.error.failedToUnlinkAccount', { provider }));
+      if (err?.code === 'ELEVATION_CANCELLED') return;
+      setError(
+        err.response?.data?.error ||
+          err.response?.data?.message ||
+          err.message ||
+          t('editProfile.error.failedToUnlinkAccount', { provider }),
+      );
     }
   };
 
@@ -466,16 +484,21 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
     if (!window.confirm(t('editProfile.dangerZone.confirmDelete'))) return;
     setIsDeletionBusy(true);
     try {
-      await api.post(`${routes.auth.profile.root()}/me/delete`, {
-        deletionIncludeCreator:
-          Boolean(user?.creatorId) && Boolean(deletionIncludeCreator),
-      });
+      await requireElevation('security', () =>
+        api.post(`${routes.auth.profile.root()}/me/delete`, {
+          deletionIncludeCreator:
+            Boolean(user?.creatorId) && Boolean(deletionIncludeCreator),
+        }),
+      );
       await fetchUser(true);
       setDeletionIncludeCreator(false);
       toast.success(t('editProfile.dangerZone.successScheduled'));
     } catch (err) {
+      if (err?.code === 'ELEVATION_CANCELLED') return;
       toast.error(
-        err.response?.data?.error || t('editProfile.dangerZone.errorSchedule'),
+        err.response?.data?.error ||
+          err.response?.data?.message ||
+          t('editProfile.dangerZone.errorSchedule'),
       );
     } finally {
       setIsDeletionBusy(false);
@@ -998,10 +1021,7 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
       isOpen={isEmailChangePopupOpen}
       onClose={() => setIsEmailChangePopupOpen(false)}
       currentEmail={user?.email}
-      hasPassword={Boolean(user?.password)}
       changeEmail={changeEmail}
-      stepUp={stepUp}
-      startOAuthReauth={startOAuthReauth}
     />
     </>
   );

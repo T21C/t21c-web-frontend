@@ -1,0 +1,29 @@
+{
+  "title": "Confirmez votre identité",
+  "actions": {
+    "emailChange": "changer votre e-mail",
+    "security": "poursuivre cette action de sécurité"
+  },
+  "codePrompt": "Entrez le code envoyé à {{email}} pour {{action}}.",
+  "yourEmail": "votre e-mail",
+  "codeLabel": "Code de confirmation",
+  "codeRequired": "Entrez le code à 8 caractères de votre e-mail",
+  "invalidCode": "Code invalide ou expiré",
+  "confirm": "Confirmer",
+  "confirmed": "Identité confirmée",
+  "resend": "Renvoyer le code",
+  "resendIn": "Renvoyer dans {{seconds}} s",
+  "resendCooldown": "Veuillez patienter avant de demander un nouveau code",
+  "sendFailed": "Échec de l'envoi du code",
+  "emailRequired": "Un e-mail vérifié est requis",
+  "emailRequiredBody": "Ajoutez et vérifiez une adresse e-mail avant de pouvoir effectuer cette action.",
+  "addEmail": "Ajouter un e-mail",
+  "firstEmailPrompt": "Confirmez votre identité pour {{action}}.",
+  "currentPassword": "Mot de passe actuel",
+  "passwordRequired": "Le mot de passe est requis",
+  "passwordFailed": "Mot de passe incorrect",
+  "discordPrompt": "Ce compte utilise Discord. Réauthentifiez-vous avec Discord pour continuer.",
+  "oauthFailed": "Impossible de démarrer la réauthentification Discord",
+  "continue": "Continuer",
+  "continueDiscord": "Continuer avec Discord"
+}
