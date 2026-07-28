@@ -1,6 +1,45 @@
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
+import fs from 'node:fs/promises'
+
+async function findJsonFiles(root, current = root) {
+  const entries = await fs.readdir(current, { withFileTypes: true })
+  const files = await Promise.all(entries.map(async (entry) => {
+    const absolutePath = path.join(current, entry.name)
+    if (entry.isDirectory()) return findJsonFiles(root, absolutePath)
+    if (!entry.isFile() || !entry.name.endsWith('.json')) return []
+    return [path.relative(root, absolutePath).split(path.sep).join('/')]
+  }))
+  return files.flat().sort()
+}
+
+function translationAssetsPlugin() {
+  const languagesRoot = path.resolve(__dirname, 'src/translations/languages')
+
+  return {
+    name: 'tuf-translation-assets',
+    apply: 'build',
+    async buildStart() {
+      const files = await findJsonFiles(languagesRoot)
+      for (const relativePath of files) {
+        this.emitFile({
+          type: 'asset',
+          fileName: `translations/languages/${relativePath}`,
+          source: await fs.readFile(path.join(languagesRoot, relativePath)),
+        })
+      }
+      this.emitFile({
+        type: 'asset',
+        fileName: 'translations/manifest.json',
+        source: JSON.stringify({
+          version: 1,
+          files: files.map((file) => `languages/${file}`),
+        }),
+      })
+    },
+  }
+}
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
@@ -45,7 +84,8 @@ export default defineConfig(({ command, mode }) => {
 
   return {
     plugins: [
-      react()
+      react(),
+      translationAssetsPlugin()
     ],
     define: {
       'process.env.DRAGGABLE_DEBUG': JSON.stringify(''),

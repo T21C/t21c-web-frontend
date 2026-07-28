@@ -12,7 +12,6 @@ dist
 dist.tmp
 dist-ssr
 *.local
-package-lock.json
 manifest.json
 
 # Editor directories and files

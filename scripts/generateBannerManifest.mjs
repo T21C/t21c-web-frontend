@@ -1,7 +1,10 @@
 /**
  * Scans client/public/banners (recursively) and writes:
  * - client/public/banners/manifest.json (served at /banners/manifest.json for the UI)
- * - server/src/config/bannerPresetManifest.json (authoritative allowlist for API validation)
+ * - BUILD_OUT_DIR/banners/manifest.json when building production assets
+ *
+ * Set BACKEND_BANNER_MANIFEST_PATH explicitly when a local backend checkout also
+ * needs the authoritative allowlist. Container and CI builds stay independent.
  */
 import fs from "fs";
 import path from "path";
@@ -10,7 +13,7 @@ import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const clientRoot = path.join(__dirname, "..");
 const bannersDir = path.join(clientRoot, "public", "banners");
-const serverManifestPath = path.join(clientRoot, "..", "server", "src", "config", "bannerPresetManifest.json");
+const backendManifestPath = process.env.BACKEND_BANNER_MANIFEST_PATH?.trim();
 
 const IMAGE_EXT = /\.(webp|jpg|jpeg|png|gif|svg)$/i;
 const SKIP_NAMES = new Set(["manifest.json", ".gitkeep"]);
@@ -55,8 +58,12 @@ function main() {
   const json = JSON.stringify(payload, null, 2);
   fs.writeFileSync(publicOut, json, "utf8");
 
-  fs.mkdirSync(path.dirname(serverManifestPath), { recursive: true });
-  fs.writeFileSync(serverManifestPath, json, "utf8");
+  if (backendManifestPath) {
+    const absoluteBackendManifestPath = path.resolve(clientRoot, backendManifestPath);
+    fs.mkdirSync(path.dirname(absoluteBackendManifestPath), { recursive: true });
+    fs.writeFileSync(absoluteBackendManifestPath, json, "utf8");
+    console.log(`[generateBannerManifest] copied allowlist ➔ ${absoluteBackendManifestPath}`);
+  }
 
   const buildOutDir = process.env.BUILD_OUT_DIR;
   if (buildOutDir && fs.existsSync(buildOutDir)) {
@@ -68,7 +75,6 @@ function main() {
   }
 
   console.log(`[generateBannerManifest] ${presets.length} preset(s) ➔ ${path.relative(clientRoot, publicOut)}`);
-  console.log(`[generateBannerManifest] copied allowlist ➔ ${serverManifestPath}`);
 }
 
 main();
