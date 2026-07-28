@@ -42,10 +42,14 @@
     "typeCreated": "精选关卡类型创建成功",
     "typeUpdated": "精选关卡类型更新成功",
     "levelAdded": "成功将关卡加入精选关卡",
-    "levelUpdated": "更新精选关卡成功"
+    "levelUpdated": "更新精选关卡成功",
+    "bulkSuccess": "Bulk curation complete: {{created}} created, {{updated}} updated",
+    "bulkPartialSuccess": "Bulk curation complete for {{affected}} level(s); {{skipped}} skipped",
+    "bulkFailed": "Failed to bulk-create curations"
   },
   "actions": {
     "addLevel": "添加关卡",
+    "bulkCreate": "Bulk-Create Curations",
     "manageTypes": "管理类型",
     "manageCurators": "管理精选委员",
     "manageSchedule": "管理每周精选",

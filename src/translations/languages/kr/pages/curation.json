@@ -42,10 +42,14 @@
     "typeCreated": "큐레이션 유형이 성공적으로 생성되었습니다",
     "typeUpdated": "큐레이션 유형이 성공적으로 업데이트되었습니다",
     "levelAdded": "레벨이 큐레이션에 성공적으로 추가되었습니다",
-    "levelUpdated": "큐레이션이 성공적으로 업데이트되었습니다"
+    "levelUpdated": "큐레이션이 성공적으로 업데이트되었습니다",
+    "bulkSuccess": "Bulk curation complete: {{created}} created, {{updated}} updated",
+    "bulkPartialSuccess": "Bulk curation complete for {{affected}} level(s); {{skipped}} skipped",
+    "bulkFailed": "Failed to bulk-create curations"
   },
   "actions": {
     "addLevel": "레벨 추가",
+    "bulkCreate": "Bulk-Create Curations",
     "manageTypes": "유형 관리",
     "manageCurators": "큐레이터 관리",
     "manageSchedule": "일정 관리",

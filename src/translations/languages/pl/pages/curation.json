@@ -43,10 +43,14 @@
     "typeCreated": "Typ kuratora utworzony pomyślnie",
     "typeUpdated": "Typ kuratora zaktualizowany pomyślnie",
     "levelAdded": "Poziom dodany do kuratora pomyślnie",
-    "levelUpdated": "Kurator zaktualizowany pomyślnie"
+    "levelUpdated": "Kurator zaktualizowany pomyślnie",
+    "bulkSuccess": "Bulk curation complete: {{created}} created, {{updated}} updated",
+    "bulkPartialSuccess": "Bulk curation complete for {{affected}} level(s); {{skipped}} skipped",
+    "bulkFailed": "Failed to bulk-create curations"
   },
   "actions": {
     "addLevel": "Dodaj poziom",
+    "bulkCreate": "Bulk-Create Curations",
     "manageTypes": "Zarządzaj typami",
     "manageCurators": "Zarządzaj kuratorami",
     "manageSchedule": "Zarządzaj harmonogramem",

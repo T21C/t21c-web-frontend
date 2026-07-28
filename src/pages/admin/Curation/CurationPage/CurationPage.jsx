@@ -13,7 +13,7 @@ import './curationpage.css';
 import { EditIcon, TrashIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
 import { LevelSelectionPopup } from '@/components/popups/Levels';
-import { TypeManagementPopup, CurationEditPopup } from '@/components/popups/Curations';
+import { TypeManagementPopup, CurationEditPopup, BulkCreateCurationsPopup, BulkCreateCurationsConfirmPopup } from '@/components/popups/Curations';
 import { UserManagementPopup } from '@/components/popups/Users';
 import { DiscordRolesPopup } from '@/components/popups/DiscordRoles';
 import { toast } from 'react-hot-toast';
@@ -60,6 +60,15 @@ const CurationPage = () => {
   const [showCurationEditPopup, setShowCurationEditPopup] = useState(false);
   const [showCuratorManagementPopup, setShowCuratorManagementPopup] = useState(false);
   const [showDiscordRolesPopup, setShowDiscordRolesPopup] = useState(false);
+  const [showBulkCreatePopup, setShowBulkCreatePopup] = useState(false);
+  const [bulkCreateSubmitting, setBulkCreateSubmitting] = useState(false);
+  const [bulkCreateConfirm, setBulkCreateConfirm] = useState({
+    open: false,
+    validLevelIds: [],
+    invalid: [],
+    typeIds: [],
+    skippedCount: 0,
+  });
   const [editingLevel, setEditingLevel] = useState(null);
 
   // Cancel token refs for request cancellation
@@ -75,7 +84,9 @@ const CurationPage = () => {
     showTypeManagementPopup ||
     showCurationEditPopup ||
     showCuratorManagementPopup ||
-    showDiscordRolesPopup;
+    showDiscordRolesPopup ||
+    showBulkCreatePopup ||
+    bulkCreateConfirm.open;
 
   useBodyScrollLock(curationScrollLockActive);
 
@@ -140,6 +151,10 @@ const CurationPage = () => {
   const handleAddNewLevel = () => {
     setEditingLevel(null);
     setShowLevelSelectionPopup(true);
+  };
+
+  const handleOpenBulkCreate = () => {
+    setShowBulkCreatePopup(true);
   };
 
   const handleEditLevel = (row) => {
@@ -310,6 +325,102 @@ const CurationPage = () => {
     }
   };
 
+  const closeBulkCreateConfirm = () => {
+    setBulkCreateConfirm({
+      open: false,
+      validLevelIds: [],
+      invalid: [],
+      typeIds: [],
+      skippedCount: 0,
+    });
+  };
+
+  const showBulkCreateSuccessToast = (created, updated, skippedCount) => {
+    const affected = (created || 0) + (updated || 0);
+    if (skippedCount > 0) {
+      toast.success(
+        t('curation.notifications.bulkPartialSuccess', {
+          affected,
+          skipped: skippedCount,
+        })
+      );
+      return;
+    }
+    toast.success(
+      t('curation.notifications.bulkSuccess', {
+        created: created || 0,
+        updated: updated || 0,
+      })
+    );
+  };
+
+  const executeBulkCreate = async ({ levelIds, typeIds, skippedCount = 0 }) => {
+    if (!levelIds?.length || !typeIds?.length) return;
+
+    setBulkCreateSubmitting(true);
+    try {
+      const response = await api.post(`${routes.admin.curations.root()}`, {
+        levelIds,
+        typeIds,
+      });
+      const { created = 0, updated = 0 } = response.data || {};
+      showBulkCreateSuccessToast(created, updated, skippedCount);
+      setShowBulkCreatePopup(false);
+      closeBulkCreateConfirm();
+      await fetchCurations();
+    } catch (error) {
+      toast.error(
+        error.response?.data?.error || t('curation.notifications.bulkFailed')
+      );
+    } finally {
+      setBulkCreateSubmitting(false);
+    }
+  };
+
+  const handleBulkCreateSubmit = async ({ levelIds, typeIds }) => {
+    if (!levelIds?.length || !typeIds?.length) return;
+
+    setBulkCreateSubmitting(true);
+    try {
+      const response = await api.post(`${routes.admin.curations.root()}`, {
+        levelIds,
+        typeIds,
+        validateOnly: true,
+      });
+      const { validLevelIds = [], invalid = [] } = response.data || {};
+
+      if (invalid.length === 0) {
+        setBulkCreateSubmitting(false);
+        await executeBulkCreate({ levelIds: validLevelIds, typeIds, skippedCount: 0 });
+        return;
+      }
+
+      setBulkCreateConfirm({
+        open: true,
+        validLevelIds,
+        invalid,
+        typeIds,
+        skippedCount: invalid.length,
+      });
+    } catch (error) {
+      toast.error(
+        error.response?.data?.error || t('curation.notifications.bulkFailed')
+      );
+    } finally {
+      setBulkCreateSubmitting(false);
+    }
+  };
+
+  const handleBulkCreateConfirm = async () => {
+    const { validLevelIds, typeIds, skippedCount } = bulkCreateConfirm;
+    if (!validLevelIds.length) return;
+    await executeBulkCreate({
+      levelIds: validLevelIds,
+      typeIds,
+      skippedCount,
+    });
+  };
+
   useEffect(() => {
     fetchCurations();
   }, [currentPage, filters]);
@@ -474,21 +585,9 @@ const CurationPage = () => {
 
         {/* Filters */}
         <div className="curation-filters">
-          <div className="curation-filter-group curation-filter-group--types">
-            <label>{t('curation.filters.types')}</label>
-            <p className="curation-type-filter-hint">{t('curation.filters.typesHint')}</p>
-            <FacetQueryBuilder
-              items={curationTypes}
-              value={filters.curationFacet}
-              onChange={(v) =>
-                setFilters((prev) => ({ ...prev, curationFacet: v }))
-              }
-              title={t('curation.filters.selectedTypes')}
-            />
-          </div>
-
           <div className="curation-filter-group">
             <label>{t('curation.filters.search')}</label>
+            <div className="curation-filter-group-content">
             <input
               name='curation-search'
               className="input-search"
@@ -499,16 +598,37 @@ const CurationPage = () => {
               onChange={(e) => handleFilterChange('search', normalizeLevelSearchQuery(e.target.value))}
               placeholder={t('curation.filters.searchPlaceholder')}
             />
+            <FacetQueryBuilder
+              items={curationTypes}
+              value={filters.curationFacet}
+              onChange={(v) =>
+                setFilters((prev) => ({ ...prev, curationFacet: v }))
+              }
+              title={t('curation.filters.selectedTypes')}
+            />
+            </div>
           </div>
           { hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.HEAD_CURATOR, permissionFlags.RATER, permissionFlags.CURATOR]) && (
-          <button
-            className="curation-add-level-btn"
-            onClick={handleAddNewLevel}
-            title={t('curation.actions.addLevel')}
-          >
-            🎵
-            {t('curation.actions.addLevel')}
-          </button>
+          <div className="curation-add-buttons__group">
+            <button
+              type="button"
+              className="curation-add-level-btn"
+              onClick={handleAddNewLevel}
+              title={t('curation.actions.addLevel')}
+            >
+              🎵&nbsp;
+              { t('curation.actions.addLevel')}
+            </button>
+            <button
+              type="button"
+              className="curation-bulk-add-btn"
+              onClick={handleOpenBulkCreate}
+              title={t('curation.actions.bulkCreate')}
+              aria-label={t('curation.actions.bulkCreate')}
+            >
+              ➔📋
+            </button>
+          </div>
           )}
 
           { hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.HEAD_CURATOR]) && (
@@ -732,6 +852,31 @@ const CurationPage = () => {
           onClose={handleClosePopup}
           onLevelSelect={handleLevelSelect}
           curationTypes={curationTypes}
+        />
+
+        <BulkCreateCurationsPopup
+          isOpen={showBulkCreatePopup}
+          onClose={() => {
+            if (!bulkCreateSubmitting && !bulkCreateConfirm.open) {
+              setShowBulkCreatePopup(false);
+            }
+          }}
+          curationTypes={curationTypes}
+          onSubmit={handleBulkCreateSubmit}
+          submitting={bulkCreateSubmitting && !bulkCreateConfirm.open}
+          suppressDismiss={bulkCreateConfirm.open}
+        />
+
+        <BulkCreateCurationsConfirmPopup
+          isOpen={bulkCreateConfirm.open}
+          invalid={bulkCreateConfirm.invalid}
+          validCount={bulkCreateConfirm.validLevelIds.length}
+          allInvalid={bulkCreateConfirm.validLevelIds.length === 0}
+          onConfirm={handleBulkCreateConfirm}
+          onCancel={() => {
+            if (!bulkCreateSubmitting) closeBulkCreateConfirm();
+          }}
+          submitting={bulkCreateSubmitting}
         />
 
         {/* Type Management Popup */}

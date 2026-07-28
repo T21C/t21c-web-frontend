@@ -42,10 +42,14 @@
     "typeCreated": "Curation type created successfully",
     "typeUpdated": "Curation type updated successfully",
     "levelAdded": "Level added to curation successfully",
-    "levelUpdated": "Curation updated successfully"
+    "levelUpdated": "Curation updated successfully",
+    "bulkSuccess": "Bulk curation complete: {{created}} created, {{updated}} updated",
+    "bulkPartialSuccess": "Bulk curation complete for {{affected}} level(s); {{skipped}} skipped",
+    "bulkFailed": "Failed to bulk-create curations"
   },
   "actions": {
     "addLevel": "Add Level",
+    "bulkCreate": "Bulk-Create Curations",
     "manageTypes": "Manage Types",
     "manageCurators": "Manage Curators",
     "manageSchedule": "Manage Schedule",
