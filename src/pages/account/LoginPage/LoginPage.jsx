@@ -1,5 +1,5 @@
 // tuf-search: #LoginPage #loginPage #account #login — Login
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
@@ -13,7 +13,7 @@ import { useLoginFlow } from './useLoginFlow';
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { user, getOriginUrl } = useAuth();
+  const { user, getOriginUrl, clearOriginUrl } = useAuth();
   const { t } = useTranslation('pages');
   const location = useLocation();
   const flow = useLoginFlow();
@@ -29,25 +29,35 @@ const LoginPage = () => {
     [t, location.pathname],
   );
 
+  // Only bounce visitors who were already signed in on arrival; signing in
+  // during this page's life is redirected by the submit handlers instead.
+  const arrivedSignedIn = useRef(Boolean(user));
+
   useEffect(() => {
-    if (user) {
-      navigate('/profile');
+    if (user && arrivedSignedIn.current) {
+      navigate('/profile', { replace: true });
     }
   }, [user, navigate]);
+
+  // Replace so /login leaves history: a pushed entry sends Back to this page,
+  // which then redirects the now signed-in user straight back out.
+  const redirectAfterLogin = () => {
+    const from = getOriginUrl() || '/profile';
+    clearOriginUrl();
+    navigate(from, { replace: true });
+  };
 
   const handleEmailLogin = async (e) => {
     const { completed } = await flow.submitCredentials(e);
     if (completed) {
-      const from = getOriginUrl() || '/profile';
-      navigate(from);
+      redirectAfterLogin();
     }
   };
 
   const handleMfaSubmit = async (e) => {
     const { completed } = await flow.submitMfa(e);
     if (completed) {
-      const from = getOriginUrl() || '/profile';
-      navigate(from);
+      redirectAfterLogin();
     }
   };
 

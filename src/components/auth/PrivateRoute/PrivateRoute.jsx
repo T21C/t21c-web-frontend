@@ -4,7 +4,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 
 const PrivateRoute = ({ children }) => {
-  const { isAuthenticated, loading, initiateLogin } = useAuth();
+  const { isAuthenticated, loading, setOriginUrl } = useAuth();
   const location = useLocation();
 
   if (loading) {
@@ -17,7 +17,10 @@ const PrivateRoute = ({ children }) => {
 
   if (!isAuthenticated) {
     // Save the attempted URL for redirecting after login
-    initiateLogin(location.pathname);
+    setOriginUrl(`${location.pathname}${location.search}${location.hash}`);
+    // Replace rather than push: a pushed entry leaves this guarded route in
+    // history, so Back re-enters it and bounces to /login again.
+    return <Navigate to="/login" replace />;
   }
 
   return children;
