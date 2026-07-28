@@ -414,6 +414,7 @@ export function PassCoreForm({
             tooltipId: 'expected-rating-tooltip',
             isValid: isValidExpectedRating,
             autocomplete: 'off',
+            useDarkInvalidHighlight: true,
           })}
         </div>
 

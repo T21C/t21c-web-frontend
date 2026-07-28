@@ -238,11 +238,12 @@ export function usePassCoreForm({
 
       const frValid = validateFeelingRating(nextForm.feelingRating);
       const erTrimmed = nextForm.expectedRating?.trim?.() ?? "";
-      const erValid = !erTrimmed || validateFeelingRating(nextForm.expectedRating);
+      // Same as feelingRating: free-form string; format check is a suggestion only (does not block submit).
+      const erFormatOk = !erTrimmed || validateFeelingRating(nextForm.expectedRating);
       const speedValid = validateSpeed(nextForm.speed);
       setIsValidFeelingRating(frValid);
-      setIsValidExpectedRating(erValid);
-      validationResult.expectedRating = erValid;
+      setIsValidExpectedRating(erFormatOk);
+      validationResult.expectedRating = true;
       validationResult.speed = speedValid;
       setIsValidTimestamp(true);
     }
