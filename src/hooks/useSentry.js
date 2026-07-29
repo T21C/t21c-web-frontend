@@ -54,16 +54,49 @@ const isThirdPartyNativeBridgeNoise = (event) => {
   );
 };
 
+/**
+ * OEM browsers (Vivo, Oppo, adware SDKs) eval scripts that reference globals
+ * they forgot to inject (downProgCallback, LIDNotifyId, etc.).
+ * These fire as ReferenceError: X is not defined with no first-party stack frames.
+ */
+const isAnonymousInjectedGlobalNoise = (event) => {
+  const values = event.exception?.values ?? [];
+  const isUndefinedGlobal = values.some(
+    (v) => v.type === 'ReferenceError' && /\w+ is not defined/i.test(v.value || ''),
+  );
+  if (!isUndefinedGlobal) return false;
+
+  const frames = eventStackFrames(event);
+  // Keep events that contain at least one app frame (/assets/ path).
+  const hasAppFrame = frames.some(
+    (f) => typeof f.filename === 'string' && f.filename.includes('/assets/'),
+  );
+  return !hasAppFrame;
+};
+
+const sentryRelease = import.meta.env.VITE_SENTRY_RELEASE;
+
 Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
   environment: import.meta.env.MODE,
   enabled: Boolean(import.meta.env.VITE_SENTRY_DSN) && !import.meta.env.DEV,
   sendDefaultPii: true,
+  ...(sentryRelease ? { release: sentryRelease } : {}),
+  // applicationKey "tuf-website" is stamped by @sentry/vite-plugin at build time.
+  integrations: [
+    Sentry.thirdPartyErrorFilterIntegration({
+      filterKeys: ['tuf-website'],
+      behaviour: 'drop-error-if-exclusively-contains-third-party-frames',
+    }),
+  ],
   // Browser extensions / page translators mutate React-owned DOM; React then
   // throws NotFoundError on removeChild during commit. Unfixable from app code.
   ignoreErrors: [
     /Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node/i,
     /nativeBridge\.\w+ is not a function/i,
+    // Known OEM-injected globals that will never exist in our app.
+    /downProgCallback is not defined/i,
+    /LIDNotifyId is not defined/i,
   ],
   denyUrls: [
     /^chrome-extension:\/\//i,
@@ -79,7 +112,8 @@ Sentry.init({
       isExtensionOriginatedEvent(event) ||
       isCloudflareBeaconNoise(event) ||
       isExternalDomMutationNoise(event) ||
-      isThirdPartyNativeBridgeNoise(event)
+      isThirdPartyNativeBridgeNoise(event) ||
+      isAnonymousInjectedGlobalNoise(event)
     ) {
       return null;
     }

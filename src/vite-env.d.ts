@@ -22,6 +22,8 @@ interface ImportMetaEnv {
   readonly VITE_CUSTOM_PROFILE_BANNERS_ENABLED: string;
   readonly VITE_RECAPTCHA_SITE_KEY: string;
   readonly VITE_SENTRY_DSN: string;
+  /** Injected at build time from SENTRY_RELEASE / GITHUB_SHA (see vite.config.js). */
+  readonly VITE_SENTRY_RELEASE: string;
 }
 
 interface ImportMeta {
