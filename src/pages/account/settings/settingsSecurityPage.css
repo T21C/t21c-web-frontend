@@ -1,0 +1,358 @@
+/* tuf-search: #SettingsSecurityPage #settingsSecurityPage #account #settings */
+.settings-security-page {
+  align-items: stretch;
+  gap: 0;
+}
+
+.settings-security-page .settings-sub-page__title {
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.settings-security-page .settings-security-page__section {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  border-radius: 8px;
+  background: var(--color-black-t30);
+}
+
+.settings-security-page .settings-security-page__section:last-child {
+  margin-bottom: 0;
+}
+
+.settings-security-page .settings-security-page__section-title {
+  margin: 0 0 1rem;
+  color: var(--color-purple-1, #9d4edd);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.settings-security-page .error-message {
+  background-color: rgba(255, 0, 0, 0.1);
+  color: #ff6b6b;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.settings-security-page .success-message {
+  background-color: rgba(0, 255, 0, 0.1);
+  color: #51cf66;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.settings-security-page .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.settings-security-page .form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--color-white);
+}
+
+.settings-security-page .form-group .input-field {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--btn-neutral-disabled-fill);
+  border-radius: 4px;
+  background: var(--color-black-t30, #333333);
+  font-size: 1rem;
+  color: var(--color-white);
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+}
+
+.settings-security-page .form-group .input-field:focus {
+  outline: none;
+  border-color: var(--color-purple-1, #9d4edd);
+}
+
+.settings-security-page .save-button,
+.settings-security-page .change-password-button,
+.settings-security-page .link-button,
+.settings-security-page .unlink-button,
+.settings-security-page .danger-zone__button,
+.settings-security-page .passkeys-row-actions .settings-sub-page__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0.75rem 1.25rem;
+  border: none;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--color-white);
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.settings-security-page .save-button,
+.settings-security-page .change-password-button,
+.settings-security-page .link-button {
+  width: 100%;
+}
+
+.settings-security-page .change-password-button + .change-password-button,
+.settings-security-page .save-button + .change-password-button {
+  margin-top: 1rem;
+}
+
+.settings-security-page .unlink-button {
+  width: auto;
+  padding: 0.5rem 1rem;
+  min-height: 2.5rem;
+}
+
+.settings-security-page .passkeys-row-actions .settings-sub-page__btn {
+  width: auto;
+  flex: 0 0 auto;
+  align-self: center;
+  min-height: 2.5rem;
+  padding: 0 1rem;
+}
+
+.settings-security-page .linked-accounts {
+  margin-top: 1rem;
+}
+
+.settings-security-page .passkeys-subtitle {
+  margin: 0.35rem 0 1rem;
+  color: var(--color-gray-2, #a0a0a0);
+  font-size: 0.95rem;
+}
+
+.settings-security-page .passkeys-empty {
+  margin: 0.5rem 0;
+  color: var(--color-gray-2, #a0a0a0);
+}
+
+.settings-security-page .passkeys-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 0 0 1rem;
+  padding: 0;
+  list-style: none;
+}
+
+.settings-security-page .passkeys-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  padding: 0.75rem;
+  border-radius: 8px;
+  background-color: var(--color-black-t30, #333333);
+}
+
+.settings-security-page .passkeys-row-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1 1 14rem;
+  min-width: 0;
+}
+
+.settings-security-page .passkeys-row-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.settings-security-page .passkeys-name {
+  font-weight: 600;
+  color: var(--color-white, #fff);
+}
+
+.settings-security-page .passkeys-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.45rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-white, #fff);
+  background: var(--btn-primary-tint, rgba(59, 127, 214, 0.25));
+  border: 1px solid color-mix(in srgb, var(--btn-primary, #3b7fd6) 45%, transparent);
+}
+
+.settings-security-page .passkeys-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+  font-size: 0.85rem;
+  color: var(--color-gray-2, #a0a0a0);
+}
+
+.settings-security-page .passkeys-row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.settings-security-page .provider-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: var(--btn-neutral-dark);
+  border-radius: 8px;
+  margin-top: 1rem;
+}
+
+.settings-security-page .provider-info span {
+  color: var(--color-gray-2, #a0a0a0);
+  font-weight: 500;
+}
+
+.settings-security-page .provider-details-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.settings-security-page .provider-details {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.settings-security-page .provider-id-line {
+  font-family: ui-monospace, system-ui, monospace;
+  font-size: 0.8125rem;
+  color: var(--btn-neutral-muted);
+  word-break: break-all;
+  line-height: 1.35;
+}
+
+.settings-security-page .link-button > svg {
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
+}
+
+.settings-security-page .unlink-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.settings-security-page .unlink-button.disabled::before,
+.settings-security-page .unlink-button:disabled::before {
+  filter: none;
+  background-color: var(--btn-disabled-fill);
+}
+
+.settings-security-page .unlink-button.disabled,
+.settings-security-page .unlink-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.settings-security-page .unlink-button.disabled:hover::before,
+.settings-security-page .unlink-button:disabled:hover::before {
+  filter: none;
+  background-color: var(--btn-disabled-fill);
+}
+
+.settings-security-page .danger-zone {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  padding: 1.25rem;
+  border: 1px solid var(--danger-color-tint-45);
+  border-radius: 8px;
+  background: var(--danger-color-tint-08);
+}
+
+.settings-security-page .danger-zone h3 {
+  margin: 0;
+  color: #ff6b6b;
+  font-size: 1.25rem;
+}
+
+.settings-security-page .danger-zone__description {
+  margin: 0;
+  color: var(--text-color, #ccc);
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+.settings-security-page .danger-zone__pending {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.settings-security-page .danger-zone__pending-title {
+  font-weight: 600;
+  color: var(--text-color, #eee);
+}
+
+.settings-security-page .danger-zone__dates {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  color: var(--text-color, #ccc);
+  font-size: 0.9rem;
+}
+
+.settings-security-page .danger-zone__dates-note {
+  list-style: none;
+  margin-left: -1.25rem;
+  color: var(--text-color-muted, #aaa);
+  font-size: 0.85rem;
+}
+
+.settings-security-page .danger-zone__schedule-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.settings-security-page .danger-zone__include-creator {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  cursor: pointer;
+  color: var(--text-color, #ccc);
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.settings-security-page .danger-zone__include-creator input {
+  margin-top: 0.15rem;
+}
+
+.settings-security-page .danger-zone__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.settings-security-page .danger-zone__button:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.45);
+  outline-offset: 2px;
+}
+
+.settings-security-page .danger-zone__button:disabled,
+.settings-security-page .save-button:disabled,
+.settings-security-page .change-password-button:disabled,
+.settings-security-page .passkeys-row-actions .settings-sub-page__btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}

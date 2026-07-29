@@ -26,6 +26,16 @@ export const routes = {
     mfa: {
       email: () => '/v2/auth/mfa/email',
       verify: () => '/v2/auth/mfa/verify',
+      passkeyOptions: () => '/v2/auth/mfa/passkey/options',
+      passkeyVerify: () => '/v2/auth/mfa/passkey/verify',
+    },
+    passkeys: {
+      list: () => '/v2/auth/passkeys',
+      byId: (id) => `/v2/auth/passkeys/${enc(id)}`,
+      registerOptions: () => '/v2/auth/passkeys/register/options',
+      registerVerify: () => '/v2/auth/passkeys/register/verify',
+      loginOptions: () => '/v2/auth/passkeys/login/options',
+      loginVerify: () => '/v2/auth/passkeys/login/verify',
     },
     trustedDevices: {
       list: () => '/v2/auth/trusted-devices',
@@ -369,6 +379,13 @@ export const routes = {
     upload: (levelId) => `/v3/levels/${enc(levelId)}/upload`,
     uploadFromUrl: (levelId) => `/v3/levels/${enc(levelId)}/upload-from-url`,
     selectLevel: (levelId) => `/v3/levels/${enc(levelId)}/select-level`,
+    team: (levelId) => `/v3/levels/${enc(levelId)}/team`,
+  },
+
+  teamsV3: {
+    root: () => '/v3/teams',
+    search: () => '/v3/teams/search',
+    byId: (id) => `/v3/teams/${enc(id)}`,
   },
 
   billingV3: {

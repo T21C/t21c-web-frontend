@@ -6,6 +6,7 @@ import { toast } from "react-hot-toast";
 import { routes } from "@/api/routes";
 import { API_BASE } from "@/config/env";
 import api from "@/utils/api";
+import { toastIfRateLimited, getRateLimitMessage } from "@/utils/rateLimitError";
 import { CustomSelect, ProfileSelector } from "@/components/common/selectors";
 import { BillingGiftRecipientPreview } from "./BillingGiftRecipientPreview";
 import { formatDate } from "./billingUtils";
@@ -50,22 +51,31 @@ export function AdminGrantPasswordModal({ open, onClose, onVerified }) {
       await api.head(`${API_BASE}${routes.admin.verifyPassword()}?origin=tufstellar-grants`, {
         headers: { "X-Super-Admin-Password": password },
       });
-      return true;
-    } catch {
-      return false;
+      return { ok: true };
+    } catch (error) {
+      const rateLimitMessage = getRateLimitMessage(error);
+      if (rateLimitMessage) {
+        toast.error(rateLimitMessage);
+        return { ok: false, rateLimited: true, message: rateLimitMessage };
+      }
+      return { ok: false, rateLimited: false };
     } finally {
       setVerifying(false);
     }
   };
 
   const handlePasswordSubmit = async () => {
-    const ok = await validatePassword(initialPassword);
-    if (ok) {
+    const result = await validatePassword(initialPassword);
+    if (result.ok) {
       onVerified(initialPassword);
       setInitialPassword("");
       setPasswordError("");
     } else {
-      setPasswordError(t("billing.adminGrants.passwordInvalid"));
+      setPasswordError(
+        result.rateLimited
+          ? result.message
+          : t("billing.adminGrants.passwordInvalid"),
+      );
     }
   };
 
@@ -226,11 +236,13 @@ export function AdminGrantPanel({ storedPassword, onGrantChange }) {
       await loadGrants();
       if (typeof onGrantChange === "function") onGrantChange();
     } catch (e) {
-      const msg =
-        e?.response?.status === 403
-          ? t("billing.adminGrants.passwordInvalid")
-          : e?.response?.data?.error?.message || t("billing.adminGrants.grantError");
-      toast.error(msg);
+      if (!toastIfRateLimited(e)) {
+        const msg =
+          e?.response?.status === 403
+            ? t("billing.adminGrants.passwordInvalid")
+            : e?.response?.data?.error?.message || t("billing.adminGrants.grantError");
+        toast.error(msg);
+      }
     } finally {
       setSubmitting(false);
     }
@@ -251,11 +263,13 @@ export function AdminGrantPanel({ storedPassword, onGrantChange }) {
       await loadGrants();
       if (typeof onGrantChange === "function") onGrantChange();
     } catch (e) {
-      const msg =
-        e?.response?.status === 403
-          ? t("billing.adminGrants.passwordInvalid")
-          : e?.response?.data?.error?.message || t("billing.adminGrants.retractError");
-      toast.error(msg);
+      if (!toastIfRateLimited(e)) {
+        const msg =
+          e?.response?.status === 403
+            ? t("billing.adminGrants.passwordInvalid")
+            : e?.response?.data?.error?.message || t("billing.adminGrants.retractError");
+        toast.error(msg);
+      }
     } finally {
       setRetractingId(null);
     }

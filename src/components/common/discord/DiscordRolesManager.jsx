@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
 import { routes } from '@/api/routes';
 import toast from 'react-hot-toast';
+import { toastIfRateLimited } from '@/utils/rateLimitError';
 import { TrashIcon, EditIcon } from '@/components/common/icons';
 import { RatingInput, CustomSelect } from '@/components/common/selectors';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -203,7 +204,9 @@ const DiscordRolesManager = ({
       setInitialGuildForm(null);
       toast.success(t('discordRoles.success.guildCreated'));
     } catch (err) {
-      toast.error(err.response?.data?.error || t('discordRoles.errors.createGuild'));
+      if (!toastIfRateLimited(err)) {
+        toast.error(err.response?.data?.error || err.response?.data?.message || t('discordRoles.errors.createGuild'));
+      }
     }
   };
 
@@ -228,7 +231,9 @@ const DiscordRolesManager = ({
       setInitialGuildForm(null);
       toast.success(t('discordRoles.success.guildUpdated'));
     } catch (err) {
-      toast.error(err.response?.data?.error || t('discordRoles.errors.updateGuild'));
+      if (!toastIfRateLimited(err)) {
+        toast.error(err.response?.data?.error || err.response?.data?.message || t('discordRoles.errors.updateGuild'));
+      }
     }
   };
 
@@ -242,7 +247,9 @@ const DiscordRolesManager = ({
       setGuilds(guilds.filter(g => g.id !== guildId));
       toast.success(t('discordRoles.success.guildDeleted'));
     } catch (err) {
-      toast.error(err.response?.data?.error || t('discordRoles.errors.deleteGuild'));
+      if (!toastIfRateLimited(err)) {
+        toast.error(err.response?.data?.error || err.response?.data?.message || t('discordRoles.errors.deleteGuild'));
+      }
     }
   };
 
@@ -310,7 +317,9 @@ const DiscordRolesManager = ({
       resetRoleForm();
       toast.success('Role created successfully');
     } catch (err) {
-      toast.error(err.response?.data?.error || 'Failed to create role');
+      if (!toastIfRateLimited(err)) {
+        toast.error(err.response?.data?.error || err.response?.data?.message || 'Failed to create role');
+      }
     }
   };
 
@@ -342,7 +351,9 @@ const DiscordRolesManager = ({
       setInitialRoleForm(null);
       toast.success(t('discordRoles.success.roleUpdated'));
     } catch (err) {
-      toast.error(err.response?.data?.error || t('discordRoles.errors.updateRole'));
+      if (!toastIfRateLimited(err)) {
+        toast.error(err.response?.data?.error || err.response?.data?.message || t('discordRoles.errors.updateRole'));
+      }
     }
   };
 
@@ -369,7 +380,9 @@ const DiscordRolesManager = ({
       resetRoleForm();
       toast.success(t('discordRoles.success.roleDeleted'));
     } catch (err) {
-      toast.error(err.response?.data?.error || t('discordRoles.errors.deleteRole'));
+      if (!toastIfRateLimited(err)) {
+        toast.error(err.response?.data?.error || err.response?.data?.message || t('discordRoles.errors.deleteRole'));
+      }
     }
   };
 
@@ -476,7 +489,9 @@ const DiscordRolesManager = ({
       
       toast.success(t('discordRoles.success.rolesReordered'));
     } catch (err) {
-      toast.error(err.response?.data?.error || t('discordRoles.errors.reorderRoles'));
+      if (!toastIfRateLimited(err)) {
+        toast.error(err.response?.data?.error || err.response?.data?.message || t('discordRoles.errors.reorderRoles'));
+      }
       // Reload guilds on error to restore original order
       loadGuilds();
     } finally {

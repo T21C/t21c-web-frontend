@@ -11,6 +11,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import api from '@/utils/api';
+import { toastIfRateLimited } from '@/utils/rateLimitError';
 import './creatormanagementpopup.css';
 import { userAvatarDisplayUrl } from '@/utils/playerAvatarDisplay';
 import AliasListEditor from './AliasListEditor';
@@ -505,8 +506,10 @@ export const CreatorManagementPopup = ({
       onUpdate?.();
       onClose();
     } catch (err) {
-      const m = err.response?.data?.message || err.response?.data?.error;
-      toast.error(m || tt('superAdminDanger.purgeFailed'));
+      if (!toastIfRateLimited(err)) {
+        const m = err.response?.data?.message || err.response?.data?.error;
+        toast.error(m || tt('superAdminDanger.purgeFailed'));
+      }
     } finally {
       setIsLoading(false);
     }
@@ -529,8 +532,10 @@ export const CreatorManagementPopup = ({
       onUpdate?.();
       onClose();
     } catch (err) {
-      const m = err.response?.data?.message || err.response?.data?.error;
-      toast.error(m || tt('superAdminDanger.unlinkFailed'));
+      if (!toastIfRateLimited(err)) {
+        const m = err.response?.data?.message || err.response?.data?.error;
+        toast.error(m || tt('superAdminDanger.unlinkFailed'));
+      }
     } finally {
       setIsLoading(false);
     }

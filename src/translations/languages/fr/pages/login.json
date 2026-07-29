@@ -36,7 +36,9 @@
     "sendFailed": "Échec de l'envoi du code de connexion",
     "expired": "Le défi de connexion a expiré. Veuillez vous reconnecter.",
     "rememberDevice": "Se souvenir de cet appareil pendant 30 jours",
-    "back": "Retour à la connexion"
+    "back": "Retour à la connexion",
+    "usePasskey": "Utiliser une clé d’accès",
+    "passkeyFailed": "Échec de la vérification de la clé d’accès. Réessayez."
   },
   "errors": {
     "generic": "Erreur inattendue. Réessayez plus tard.",
@@ -50,5 +52,9 @@
       "incomplete": "Veuillez terminer la vérification reCAPTCHA",
       "failed": "Échec de la vérification reCAPTCHA. Réessayez."
     }
+  },
+  "passkey": {
+    "button": "Se connecter avec une clé d’accès",
+    "failed": "Échec de la connexion avec une clé d’accès. Réessayez."
   }
 }

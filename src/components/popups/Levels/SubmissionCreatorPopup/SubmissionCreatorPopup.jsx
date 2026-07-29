@@ -111,11 +111,14 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
       try {
         let response;
         if (isTeamMode) {
-          response = await api.get(`${routes.database.creators.teams.root()}/search/${encodeURIComponent(searchQuery)}`);
+          response = await api.get(routes.teamsV3.search(), {
+            params: { query: searchQuery },
+          });
         } else {
           response = await api.get(`${routes.database.creators.root()}/search/${encodeURIComponent(searchQuery)}`);
         }
-        setSearchResults(Array.isArray(response.data) ? response.data : []);
+        const body = response.data;
+        setSearchResults(Array.isArray(body) ? body : (body?.results ?? []));
       } catch (error) {
         console.error('Error searching:', error);
         setError(t('submissionCreator.messages.error.searchFailed'));
@@ -154,7 +157,7 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
     if (!teamId) return;
 
     try {
-      const response = await api.get(`${routes.database.creators.teams.root()}/byId/${teamId}`);
+      const response = await api.get(routes.teamsV3.byId(teamId));
       const team = response.data;
       
       if (!team) {

@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
 import { getCdnErrorMessage } from '@/utils/uploadErrors';
+import { toastIfRateLimited } from '@/utils/rateLimitError';
 import './typemanagementpopup.css';
 import toast from 'react-hot-toast';
 import { EditIcon, TrashIcon } from '@/components/common/icons';
@@ -177,8 +178,10 @@ const TypeManagementPopup = ({
       toast.success(t('typeManagementPopup.notifications.deleted'));
       await syncTypesWithContext();
     } catch (error) {
-      const errorMessage = error.response?.data?.error || 'Failed to delete curation type';
-      toast.error(errorMessage);
+      if (!toastIfRateLimited(error)) {
+        const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Failed to delete curation type';
+        toast.error(errorMessage);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -298,11 +301,13 @@ const TypeManagementPopup = ({
       await syncTypesWithContext();
       handleBackToList();
     } catch (error) {
-      const errorMessage = getCdnErrorMessage(
-        error,
-        `Failed to ${mode === POPUP_MODES.CREATE ? 'create' : 'update'} curation type`,
-      );
-      toast.error(errorMessage);
+      if (!toastIfRateLimited(error)) {
+        const errorMessage = getCdnErrorMessage(
+          error,
+          `Failed to ${mode === POPUP_MODES.CREATE ? 'create' : 'update'} curation type`,
+        );
+        toast.error(errorMessage);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -352,7 +357,9 @@ const TypeManagementPopup = ({
       await syncTypesWithContext();
     } catch (err) {
       console.error('Error updating sort orders:', err);
-      toast.error(t('typeManagementPopup.notifications.reorderFailed'));
+      if (!toastIfRateLimited(err)) {
+        toast.error(t('typeManagementPopup.notifications.reorderFailed'));
+      }
       if (curationTypes) {
         setLocalCurationTypes(
           [...curationTypes].sort((a, b) => {
@@ -407,7 +414,9 @@ const TypeManagementPopup = ({
       await syncTypesWithContext();
     } catch (err) {
       console.error('Error updating group sort orders:', err);
-      toast.error(t('typeManagementPopup.notifications.groupReorderFailed'));
+      if (!toastIfRateLimited(err)) {
+        toast.error(t('typeManagementPopup.notifications.groupReorderFailed'));
+      }
       if (curationTypes) {
         setLocalCurationTypes(
           [...curationTypes].sort((a, b) => {

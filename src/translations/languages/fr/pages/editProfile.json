@@ -1,0 +1,21 @@
+{
+  "passkeys": {
+    "title": "Clés d’accès",
+    "subtitle": "Connectez-vous avec l’empreinte, Face ID ou une clé de sécurité.",
+    "add": "Ajouter une clé d’accès",
+    "empty": "Aucune clé d’accès pour le moment.",
+    "added": "Ajoutée",
+    "lastUsed": "Dernière utilisation",
+    "never": "Jamais",
+    "synced": "Synchronisée",
+    "rename": "Renommer",
+    "renamePrompt": "Nom de la clé d’accès",
+    "delete": "Supprimer",
+    "deleteConfirm": "Supprimer la clé d’accès « {{name}} » ?",
+    "addSuccess": "Clé d’accès ajoutée",
+    "addError": "Impossible d’ajouter la clé d’accès",
+    "deleteSuccess": "Clé d’accès supprimée",
+    "deleteError": "Impossible de supprimer la clé d’accès",
+    "unsupported": "Les clés d’accès ne sont pas prises en charge dans ce navigateur."
+  }
+}

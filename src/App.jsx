@@ -80,6 +80,7 @@ function App() {
           >
             <Route index element={<Pages.SettingsIndexRedirect />} />
             <Route path="account" element={<Pages.SettingsAccountPage />} />
+            <Route path="security" element={<Pages.SettingsSecurityPage />} />
             <Route path="sessions" element={<Pages.SettingsSessionsPage />} />
             <Route path="player" element={<Pages.SettingsPlayerPage />} />
             <Route path="creator" element={<Pages.SettingsCreatorPage />} />

@@ -3,15 +3,13 @@ import { routes } from '@/api/routes';
 import React, { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import './editProfilePage.css';
-import { CrossIcon, DiscordIcon, EditIcon, UnlinkIcon } from '@/components/common/icons';
-import { Tooltip } from 'react-tooltip';
+import { CrossIcon, EditIcon } from '@/components/common/icons';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import api from '@/utils/api';
 import { getCdnErrorMessage } from '@/utils/uploadErrors';
 import ImageSelectorPopup from '@/components/common/selectors/ImageSelectorPopup/ImageSelectorPopup';
 import { ChangeEmailPopup } from '@/components/popups/Users';
-import { useElevation } from '@/contexts/ElevationContext';
 import { CountrySelect } from '@/components/common/selectors';
 import { useTranslation } from 'react-i18next';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
@@ -29,40 +27,22 @@ import {
 
 const usernameChangeCooldown = 1 * 24 * 60 * 60 * 1000; // 1 day
 
-const ProviderIcon = ({ provider, size, color="#fff" }) => {
-  switch(provider) {
-    case 'discord':
-      return <DiscordIcon size={size} color={color} />;
-    default:
-      return null;
-  }
-};
-
 const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
   const { t } = useTranslation(['pages', 'common']);
   const {
     user,
-    changePassword,
     changeEmail,
     cancelPendingEmail,
-    linkProvider,
-    unlinkProvider,
     setUser,
     fetchUser,
   } = useAuth();
-  const { requireElevation } = useElevation();
   const [formData, setFormData] = useState({
     username: user?.username || '',
     nickname: user?.nickname || '',
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: '',
     country: user?.player?.country || '',
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [isChangingPassword, setIsChangingPassword] = useState(false);
-  const hasNoPassword = user?.password === null;
   const navigate = useNavigate();
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
@@ -78,8 +58,6 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
   const timerIntervalRef = useRef(null);
   const [isUsernameEditing, setIsUsernameEditing] = useState(false);
   const [originalUsername, setOriginalUsername] = useState(user?.username || '');
-  const [isDeletionBusy, setIsDeletionBusy] = useState(false);
-  const [deletionIncludeCreator, setDeletionIncludeCreator] = useState(false);
 
   useBodyScrollLock(isAvatarPopupOpen || isEmailChangePopupOpen);
 
@@ -184,73 +162,6 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
       [name]: value,
     }));
   };
-
-  const handlePasswordChange = async (e) => {
-    e.preventDefault();
-    setError('');
-    setSuccess('');
-
-    if (formData.newPassword !== formData.confirmPassword) {
-      setError(t('editProfile.error.newPasswordsDoNotMatch'));
-      return;
-    }
-
-    try {
-      await requireElevation('security', () =>
-        changePassword({
-          currentPassword: formData.currentPassword,
-          newPassword: formData.newPassword,
-        }),
-      );
-      setSuccess(t('editProfile.success.passwordChanged'));
-      setFormData((prev) => ({
-        ...prev,
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: '',
-      }));
-      setIsChangingPassword(false);
-    } catch (err) {
-      if (err?.code === 'ELEVATION_CANCELLED') return;
-      const msg =
-        err.response?.data?.error ||
-        err.response?.data?.message ||
-        err.message ||
-        t('editProfile.error.failedToChangePassword');
-      if (err.response?.data?.code === 'EMAIL_REQUIRED') {
-        setError(msg);
-        return;
-      }
-      setError(msg);
-    }
-  };
-
-  const handleProviderLink = async (provider) => {
-    try {
-      setError('');
-      setSuccess('');
-      await linkProvider(provider);
-      setSuccess(t('editProfile.success.accountLinked', { provider }));
-    } catch (err) {
-      setError(err.response?.data?.error || t('editProfile.error.failedToLinkAccount', { provider }));
-    }
-  };
-
-  const handleProviderUnlink = async (provider) => {
-    try {
-      await requireElevation('security', () => unlinkProvider(provider));
-      setSuccess(t('editProfile.success.accountUnlinked', { provider }));
-    } catch (err) {
-      if (err?.code === 'ELEVATION_CANCELLED') return;
-      setError(
-        err.response?.data?.error ||
-          err.response?.data?.message ||
-          err.message ||
-          t('editProfile.error.failedToUnlinkAccount', { provider }),
-      );
-    }
-  };
-
 
   const performAvatarUpload = useCallback(
     async (file) => {
@@ -469,58 +380,6 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
     }
   };
 
-  const isLastProvider = user?.password === null && user?.providers?.length === 1;
-  const discordProvider = user?.providers?.find(p => p.name === 'discord');
-
-  const hasPendingDeletion = Boolean(user?.deletionExecuteAt && user?.deletionScheduledAt);
-
-  const formatDeletionInstant = (value) => {
-    if (!value) return '';
-    const d = value instanceof Date ? value : new Date(value);
-    return Number.isNaN(d.getTime()) ? '' : d.toLocaleString();
-  };
-
-  const handleScheduleAccountDeletion = async () => {
-    if (!window.confirm(t('editProfile.dangerZone.confirmDelete'))) return;
-    setIsDeletionBusy(true);
-    try {
-      await requireElevation('security', () =>
-        api.post(`${routes.auth.profile.root()}/me/delete`, {
-          deletionIncludeCreator:
-            Boolean(user?.creatorId) && Boolean(deletionIncludeCreator),
-        }),
-      );
-      await fetchUser(true);
-      setDeletionIncludeCreator(false);
-      toast.success(t('editProfile.dangerZone.successScheduled'));
-    } catch (err) {
-      if (err?.code === 'ELEVATION_CANCELLED') return;
-      toast.error(
-        err.response?.data?.error ||
-          err.response?.data?.message ||
-          t('editProfile.dangerZone.errorSchedule'),
-      );
-    } finally {
-      setIsDeletionBusy(false);
-    }
-  };
-
-  const handleCancelAccountDeletion = async () => {
-    if (!window.confirm(t('editProfile.dangerZone.confirmCancel'))) return;
-    setIsDeletionBusy(true);
-    try {
-      await api.post(`${routes.auth.profile.root()}/me/delete/cancel`);
-      await fetchUser(true);
-      toast.success(t('editProfile.dangerZone.successCanceled'));
-    } catch (err) {
-      toast.error(
-        err.response?.data?.error || t('editProfile.dangerZone.errorCancel'),
-      );
-    } finally {
-      setIsDeletionBusy(false);
-    }
-  };
-
   const isProfileFormUnchanged = useMemo(() => {
     if (!user) return true;
     const uName = user.username || '';
@@ -531,21 +390,6 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
     const nickMatch = user.playerId ? true : (formData.nickname || '') === (uNick || '');
     return nameMatch && countryMatch && nickMatch;
   }, [user, formData.username, formData.country, formData.nickname]);
-
-  const addPasswordUnchanged = useMemo(
-    () =>
-      !formData.newPassword.trim() &&
-      !formData.confirmPassword.trim(),
-    [formData.newPassword, formData.confirmPassword],
-  );
-
-  const changePasswordUnchanged = useMemo(
-    () =>
-      !formData.currentPassword.trim() &&
-      !formData.newPassword.trim() &&
-      !formData.confirmPassword.trim(),
-    [formData.currentPassword, formData.newPassword, formData.confirmPassword],
-  );
 
   return (
     <>
@@ -788,225 +632,6 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
             </button>
           </div>
         </form>
-
-        <div className="section-divider" />
-
-        <h2>{hasNoPassword ? t('editProfile.password.addPassword') : t('editProfile.password.title')}</h2>
-        {hasNoPassword ? (
-          <form onSubmit={handlePasswordChange}>
-            <div className="form-group">
-              <label htmlFor="newPassword">{t('editProfile.password.newPassword')}</label>
-              <input
-                className="input-field"
-                type="password"
-                id="newPassword"
-                name="newPassword"
-                value={formData.newPassword}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="confirmPassword">{t('editProfile.password.confirmPassword')}</label>
-              <input
-                className="input-field"
-                type="password"
-                id="confirmPassword"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="save-button btn-fill-primary"
-              disabled={addPasswordUnchanged}
-            >
-              {t('editProfile.password.createPassword')}
-            </button>
-          </form>
-        ) : !isChangingPassword ? (
-          <button
-            className="change-password-button btn-fill-secondary"
-            onClick={() => setIsChangingPassword(true)}
-          >
-            {t('editProfile.password.changePassword')}
-          </button>
-        ) : (
-          <form onSubmit={handlePasswordChange}>
-            <div className="form-group">
-              <label htmlFor="currentPassword">{t('editProfile.password.currentPassword')}</label>
-              <input
-                className="input-field"
-                type="password"
-                id="currentPassword"
-                name="currentPassword"
-                value={formData.currentPassword}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="newPassword">{t('editProfile.password.newPassword')}</label>
-              <input
-                className="input-field"
-                type="password"
-                id="newPassword"
-                name="newPassword"
-                value={formData.newPassword}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="confirmPassword">{t('editProfile.password.confirmNewPassword')}</label>
-              <input
-                className="input-field"
-                type="password"
-                id="confirmPassword"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="save-button btn-fill-primary"
-              disabled={changePasswordUnchanged}
-            >
-              {t('editProfile.password.updatePassword')}
-            </button>
-            <button
-              type="button"
-              className="change-password-button btn-fill-secondary"
-              onClick={() => setIsChangingPassword(false)}
-              style={{ marginTop: '1rem' }}
-            >
-              {t('buttons.cancel', { ns: 'common' })}
-            </button>
-          </form>
-        )}
-
-        <div className="section-divider" />
-
-        <h2>{t('editProfile.linkedAccounts.title')}</h2>
-        <div className="linked-accounts">
-          {discordProvider ? (
-            <div className="provider-info">
-              <div className="provider-details-column">
-                <div className="provider-details">
-                  <ProviderIcon provider="discord" size={32}/>
-                  <span>{t('editProfile.linkedAccounts.discord')}</span>
-                </div>
-                {discordProvider.providerId != null && discordProvider.providerId !== '' && (
-                  <span
-                    className="provider-id-line"
-                    title={t('editProfile.linkedAccounts.providerIdHint')}
-                  >
-                    {t('editProfile.linkedAccounts.providerId', {
-                      id: String(discordProvider.providerId),
-                    })}
-                  </span>
-                )}
-              </div>
-              <div className="unlink-container">
-                <button
-                  className={`unlink-button btn-fill-danger ${isLastProvider ? 'disabled' : ''}`}
-                  onClick={() => handleProviderUnlink('discord')}
-                  disabled={isLastProvider}
-                  data-tooltip-id="unlink-tooltip"
-                  data-tooltip-content={isLastProvider ? t('editProfile.linkedAccounts.cannotUnlinkLastProvider') : undefined}
-                >
-                  {t('editProfile.linkedAccounts.unlink')}
-                  <UnlinkIcon color="#fff" size={"24px"} />
-                </button>
-                <Tooltip id="unlink-tooltip" />
-              </div>
-            </div>
-          ) : (
-            <button
-              className="link-button btn-fill-discord"
-              onClick={() => handleProviderLink('discord')}
-            >
-              <DiscordIcon size={16} />
-              {t('editProfile.linkedAccounts.linkDiscord')}
-            </button>
-          )}
-        </div>
-
-        <div className="section-divider" />
-
-        <div className="danger-zone">
-          <h2>{t('editProfile.dangerZone.title')}</h2>
-          <p className="danger-zone__description">{t('editProfile.dangerZone.description')}</p>
-          {hasPendingDeletion ? (
-            <div className="danger-zone__pending">
-              <p className="danger-zone__pending-title">{t('editProfile.dangerZone.pendingTitle')}</p>
-              <ul className="danger-zone__dates">
-                <li>
-                  {t('editProfile.dangerZone.scheduledAt', {
-                    date: formatDeletionInstant(user.deletionScheduledAt),
-                  })}
-                </li>
-                <li>
-                  {t('editProfile.dangerZone.executesAt', {
-                    date: formatDeletionInstant(user.deletionExecuteAt),
-                  })}
-                </li>
-                {user.deletionIncludeCreator ? (
-                  <li className="danger-zone__dates-note">
-                    {t('editProfile.dangerZone.pendingIncludesCreator')}
-                  </li>
-                ) : null}
-              </ul>
-              <div className="danger-zone__actions">
-                <button
-                  type="button"
-                  className="button danger-zone__button danger-zone__button--secondary btn-fill-neutral-heavy"
-                  onClick={handleCancelAccountDeletion}
-                  disabled={isDeletionBusy}
-                >
-                  {isDeletionBusy
-                    ? t('editProfile.dangerZone.canceling')
-                    : t('editProfile.dangerZone.cancelButton')}
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div className="danger-zone__schedule-block">
-              {user?.creatorId ? (
-                <label className="danger-zone__include-creator">
-                  <input
-                    type="checkbox"
-                    checked={deletionIncludeCreator}
-                    onChange={(e) => setDeletionIncludeCreator(e.target.checked)}
-                    disabled={isDeletionBusy}
-                  />
-                  <span>{t('editProfile.dangerZone.includeCreatorCheckbox')}</span>
-                </label>
-              ) : null}
-              <div className="danger-zone__actions">
-                <button
-                  type="button"
-                  className="button danger-zone__button danger-zone__button--destructive btn-fill-danger"
-                  onClick={handleScheduleAccountDeletion}
-                  disabled={isDeletionBusy}
-                >
-                  {isDeletionBusy
-                    ? t('editProfile.dangerZone.scheduling')
-                    : t('editProfile.dangerZone.deleteButton')}
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
       </div>
     </div>
 
@@ -1027,4 +652,4 @@ const EditProfilePage = ({ embeddedInSettings = false } = {}) => {
   );
 };
 
-export default EditProfilePage; 
+export default EditProfilePage;

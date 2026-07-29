@@ -54,8 +54,22 @@ const LoginPage = () => {
     }
   };
 
+  const handlePasskeyLogin = async () => {
+    const { completed } = await flow.submitPasskey();
+    if (completed) {
+      redirectAfterLogin();
+    }
+  };
+
   const handleMfaSubmit = async (e) => {
     const { completed } = await flow.submitMfa(e);
+    if (completed) {
+      redirectAfterLogin();
+    }
+  };
+
+  const handleMfaPasskey = async () => {
+    const { completed } = await flow.submitMfaPasskey();
     if (completed) {
       redirectAfterLogin();
     }
@@ -150,6 +164,17 @@ const LoginPage = () => {
                 {t('login.form.buttons.discordLogin')}
               </button>
 
+              {flow.passkeysSupported && (
+                <button
+                  type="button"
+                  className="passkey-button"
+                  onClick={handlePasskeyLogin}
+                  disabled={flow.loading || flow.retryAfter}
+                >
+                  {t('login.passkey.button')}
+                </button>
+              )}
+
               <div className="links">
                 <Link to="/register" className="register-link">
                   {t('login.form.links.register')}
@@ -160,19 +185,34 @@ const LoginPage = () => {
 
           {flow.step === 'mfa' && (
             <form onSubmit={handleMfaSubmit} className="login-form login-mfa-form">
-              <p className="login-mfa-prompt">
-                {t('login.mfa.codePrompt', {
-                  email: flow.maskedEmail || t('login.mfa.yourEmail'),
-                })}
-              </p>
+              {flow.mfaMethods.includes('passkey') && flow.passkeysSupported && (
+                <button
+                  type="button"
+                  className="login-mfa-passkey"
+                  onClick={handleMfaPasskey}
+                  disabled={flow.loading}
+                >
+                  {t('login.mfa.usePasskey')}
+                </button>
+              )}
 
-              <CodeInput
-                id="login-mfa-code"
-                label={t('login.mfa.codeLabel')}
-                value={flow.mfaCode}
-                onChange={flow.setMfaCode}
-                disabled={flow.loading}
-              />
+              {flow.mfaMethods.includes('email') && (
+                <>
+                  <p className="login-mfa-prompt">
+                    {t('login.mfa.codePrompt', {
+                      email: flow.maskedEmail || t('login.mfa.yourEmail'),
+                    })}
+                  </p>
+
+                  <CodeInput
+                    id="login-mfa-code"
+                    label={t('login.mfa.codeLabel')}
+                    value={flow.mfaCode}
+                    onChange={flow.setMfaCode}
+                    disabled={flow.loading}
+                  />
+                </>
+              )}
 
               <label className="login-mfa-remember">
                 <input
@@ -184,27 +224,31 @@ const LoginPage = () => {
                 <span>{t('login.mfa.rememberDevice')}</span>
               </label>
 
-              <button
-                type="submit"
-                className="login-button"
-                disabled={flow.loading || flow.mfaCode.length < 8}
-              >
-                {flow.loading
-                  ? t('login.mfa.verifying')
-                  : t('login.mfa.confirm')}
-              </button>
+              {flow.mfaMethods.includes('email') && (
+                <button
+                  type="submit"
+                  className="login-button"
+                  disabled={flow.loading || flow.mfaCode.length < 8}
+                >
+                  {flow.loading
+                    ? t('login.mfa.verifying')
+                    : t('login.mfa.confirm')}
+                </button>
+              )}
 
               <div className="login-mfa-actions">
-                <button
-                  type="button"
-                  className="login-mfa-resend"
-                  onClick={() => flow.requestMfaCode()}
-                  disabled={flow.loading || flow.resendSeconds > 0}
-                >
-                  {flow.resendSeconds > 0
-                    ? t('login.mfa.resendIn', { seconds: flow.resendSeconds })
-                    : t('login.mfa.resend')}
-                </button>
+                {flow.mfaMethods.includes('email') && (
+                  <button
+                    type="button"
+                    className="login-mfa-resend"
+                    onClick={() => flow.requestMfaCode()}
+                    disabled={flow.loading || flow.resendSeconds > 0}
+                  >
+                    {flow.resendSeconds > 0
+                      ? t('login.mfa.resendIn', { seconds: flow.resendSeconds })
+                      : t('login.mfa.resend')}
+                  </button>
+                )}
                 <button
                   type="button"
                   className="login-mfa-back"

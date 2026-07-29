@@ -18,5 +18,14 @@
     "revoke": "Zapomnij",
     "revokeSuccess": "Usunięto zaufane urządzenie",
     "revokeError": "Nie udało się usunąć tego urządzenia"
+  },
+  "nav": {
+    "security": "Bezpieczeństwo",
+    "short": {
+      "security": "Bezpieczeństwo"
+    }
+  },
+  "security": {
+    "title": "Bezpieczeństwo"
   }
 }

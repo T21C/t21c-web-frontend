@@ -28,6 +28,7 @@ const EditProfilePage = lazy(() => import('./account/settings/EditProfilePage'))
 const SettingsLayout = lazy(() => import('./account/settings/SettingsLayout'));
 const SettingsIndexRedirect = lazy(() => import('./account/settings/SettingsIndexRedirect'));
 const SettingsAccountPage = lazy(() => import('./account/settings/SettingsAccountPage'));
+const SettingsSecurityPage = lazy(() => import('./account/settings/SettingsSecurityPage'));
 const SettingsSessionsPage = lazy(() => import('./account/settings/SettingsSessionsPage'));
 const SettingsPlayerPage = lazy(() => import('./account/settings/SettingsPlayerPage'));
 const SettingsCreatorPage = lazy(() => import('./account/settings/SettingsCreatorPage'));
@@ -94,6 +95,7 @@ export {
     SettingsLayout,
     SettingsIndexRedirect,
     SettingsAccountPage,
+    SettingsSecurityPage,
     SettingsSessionsPage,
     SettingsPlayerPage,
     SettingsCreatorPage,

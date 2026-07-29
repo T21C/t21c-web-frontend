@@ -18,5 +18,14 @@
     "revoke": "Oublier",
     "revokeSuccess": "Appareil de confiance retiré",
     "revokeError": "Impossible de retirer cet appareil"
+  },
+  "nav": {
+    "security": "Sécurité",
+    "short": {
+      "security": "Sécurité"
+    }
+  },
+  "security": {
+    "title": "Sécurité"
   }
 }

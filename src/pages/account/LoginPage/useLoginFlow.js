@@ -3,35 +3,10 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 import { parseAuthError } from '@/utils/authErrors';
+import { supportsPasskeys } from '@/utils/supportsPasskeys';
 
 /**
  * Explicit login step machine: credentials → optional MFA.
- * @returns {{
- *   step: 'credentials' | 'mfa',
- *   email: string,
- *   setEmail: (v: string) => void,
- *   password: string,
- *   setPassword: (v: string) => void,
- *   error: string,
- *   loading: boolean,
- *   requireCaptcha: boolean,
- *   retryAfter: number | null,
- *   captchaToken: string | null,
- *   setCaptchaToken: (v: string | null) => void,
- *   captchaRef: React.MutableRefObject<any>,
- *   formatTime: (ms: number | null) => string,
- *   submitCredentials: (e: React.FormEvent) => Promise<{ completed: boolean }>,
- *   submitDiscord: () => Promise<void>,
- *   mfaCode: string,
- *   setMfaCode: (v: string) => void,
- *   maskedEmail: string,
- *   rememberDevice: boolean,
- *   setRememberDevice: (v: boolean) => void,
- *   resendSeconds: number,
- *   requestMfaCode: () => Promise<void>,
- *   submitMfa: (e: React.FormEvent) => Promise<{ completed: boolean }>,
- *   backToCredentials: () => void,
- * }}
  */
 export function useLoginFlow() {
   const [step, setStep] = useState(/** @type {'credentials' | 'mfa'} */ ('credentials'));
@@ -47,12 +22,21 @@ export function useLoginFlow() {
 
   const [mfaCode, setMfaCode] = useState('');
   const [maskedEmail, setMaskedEmail] = useState('');
+  const [mfaMethods, setMfaMethods] = useState(/** @type {string[]} */ ([]));
   const [rememberDevice, setRememberDevice] = useState(true);
   const [resendAvailableAt, setResendAvailableAt] = useState(null);
   const [resendSeconds, setResendSeconds] = useState(0);
   const [mfaCodeRequested, setMfaCodeRequested] = useState(false);
+  const [passkeysSupported] = useState(() => supportsPasskeys());
 
-  const { login, loginWithDiscord, requestLoginMfaEmail, verifyLoginMfa } = useAuth();
+  const {
+    login,
+    loginWithDiscord,
+    requestLoginMfaEmail,
+    verifyLoginMfa,
+    loginWithPasskey,
+    verifyLoginMfaPasskey,
+  } = useAuth();
   const { t } = useTranslation('pages');
 
   useEffect(() => {
@@ -137,8 +121,6 @@ export function useLoginFlow() {
         return;
       }
       if (codeName === 'RESEND_COOLDOWN') {
-        // Not an error: the previously sent code is still valid. Sync the
-        // server-side cooldown so the resend button shows the countdown.
         const retry = err?.response?.data?.retryAfter;
         if (typeof retry === 'number') {
           setResendAvailableAt(new Date(Date.now() + retry).toISOString());
@@ -155,14 +137,14 @@ export function useLoginFlow() {
   }, [requestLoginMfaEmail, t]);
 
   useEffect(() => {
-    if (step === 'mfa' && !mfaCodeRequested) {
+    if (step === 'mfa' && !mfaCodeRequested && mfaMethods.includes('email')) {
       void requestMfaCode();
     }
-  }, [step, mfaCodeRequested, requestMfaCode]);
+  }, [step, mfaCodeRequested, mfaMethods, requestMfaCode]);
 
   /**
    * @param {React.FormEvent} e
-   * @returns {Promise<{ completed: boolean }>} completed=true when a session was issued
+   * @returns {Promise<{ completed: boolean }>}
    */
   const submitCredentials = async (e) => {
     e.preventDefault();
@@ -180,17 +162,18 @@ export function useLoginFlow() {
       const data = await login(email, password, captchaToken);
 
       if (data?.status === 'mfa_required') {
+        const methods = Array.isArray(data.methods) ? data.methods : [];
+        setMfaMethods(methods);
         setMaskedEmail(data.maskedEmail || '');
         setMfaCode('');
         setRememberDevice(true);
-        // Server-side cooldown (from a still-outstanding code) is the source of
-        // truth: when active, skip the auto-request — the earlier code still works.
         const availableAtMs = data.emailResendAvailableAt
           ? new Date(data.emailResendAvailableAt).getTime()
           : 0;
         const cooldownActive = availableAtMs > Date.now();
         setResendAvailableAt(cooldownActive ? data.emailResendAvailableAt : null);
-        setMfaCodeRequested(cooldownActive);
+        // Skip auto-request when email MFA is unavailable, or cooldown is active.
+        setMfaCodeRequested(cooldownActive || !methods.includes('email'));
         setStep('mfa');
         return { completed: false };
       }
@@ -233,6 +216,30 @@ export function useLoginFlow() {
   };
 
   /**
+   * @returns {Promise<{ completed: boolean }>}
+   */
+  const submitPasskey = async () => {
+    setError('');
+    setLoading(true);
+    try {
+      const data = await loginWithPasskey();
+      if (data?.cancelled) {
+        return { completed: false };
+      }
+      if (data?.user) {
+        return { completed: true };
+      }
+      return { completed: false };
+    } catch (err) {
+      const msg = err?.response?.data?.message || err?.message;
+      setError(msg || t('login.passkey.failed'));
+      return { completed: false };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /**
    * @param {React.FormEvent} e
    * @returns {Promise<{ completed: boolean }>}
    */
@@ -268,9 +275,40 @@ export function useLoginFlow() {
     }
   };
 
+  /**
+   * @returns {Promise<{ completed: boolean }>}
+   */
+  const submitMfaPasskey = async () => {
+    setError('');
+    setLoading(true);
+    try {
+      const data = await verifyLoginMfaPasskey({ rememberDevice });
+      if (data?.cancelled) {
+        return { completed: false };
+      }
+      if (data?.user) {
+        return { completed: true };
+      }
+      return { completed: false };
+    } catch (err) {
+      const codeName = err?.response?.data?.code || err?.code;
+      const msg = err?.response?.data?.message || err?.message;
+      if (codeName === 'MFA_PENDING_REQUIRED') {
+        setStep('credentials');
+        setError(msg || t('login.mfa.expired'));
+        return { completed: false };
+      }
+      setError(msg || t('login.mfa.passkeyFailed'));
+      return { completed: false };
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const backToCredentials = () => {
     setStep('credentials');
     setMfaCode('');
+    setMfaMethods([]);
     setMfaCodeRequested(false);
     setResendAvailableAt(null);
     setError('');
@@ -301,14 +339,18 @@ export function useLoginFlow() {
     formatTime,
     submitCredentials,
     submitDiscord,
+    submitPasskey,
+    passkeysSupported,
     mfaCode,
     setMfaCode,
     maskedEmail,
+    mfaMethods,
     rememberDevice,
     setRememberDevice,
     resendSeconds,
     requestMfaCode,
     submitMfa,
+    submitMfaPasskey,
     backToCredentials,
   };
 }

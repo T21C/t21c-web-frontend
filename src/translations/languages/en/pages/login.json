@@ -36,7 +36,13 @@
     "sendFailed": "Failed to send login code",
     "expired": "Login challenge expired. Please sign in again.",
     "rememberDevice": "Remember this device for 30 days",
-    "back": "Back to login"
+    "back": "Back to login",
+    "usePasskey": "Use a passkey instead",
+    "passkeyFailed": "Passkey verification failed. Please try again."
+  },
+  "passkey": {
+    "button": "Sign in with a passkey",
+    "failed": "Passkey sign-in failed. Please try again."
   },
   "errors": {
     "generic": "Unspecified error. Please try again later.",

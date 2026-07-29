@@ -34,6 +34,12 @@ export const SETTINGS_NAV_GROUPS = [
         visible: alwaysVisible,
       },
       {
+        path: "security",
+        labelKey: "settings.nav.security",
+        shortLabelKey: "settings.nav.short.security",
+        visible: alwaysVisible,
+      },
+      {
         path: "sessions",
         labelKey: "settings.nav.sessions",
         shortLabelKey: "settings.nav.short.sessions",

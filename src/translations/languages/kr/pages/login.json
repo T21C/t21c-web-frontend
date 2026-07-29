@@ -36,7 +36,9 @@
     "sendFailed": "로그인 코드 전송에 실패했습니다",
     "expired": "로그인 확인이 만료되었습니다. 다시 로그인해 주세요.",
     "rememberDevice": "이 기기를 30일 동안 기억",
-    "back": "로그인으로 돌아가기"
+    "back": "로그인으로 돌아가기",
+    "usePasskey": "패스키로 로그인",
+    "passkeyFailed": "패스키 확인에 실패했습니다. 다시 시도해 주세요."
   },
   "errors": {
     "generic": "알 수 없는 오류입니다. 나중에 다시 시도해 주세요.",
@@ -50,5 +52,9 @@
       "incomplete": "reCAPTCHA 인증을 완료해 주세요",
       "failed": "reCAPTCHA 인증에 실패했습니다. 다시 시도해 주세요."
     }
+  },
+  "passkey": {
+    "button": "패스키로 로그인",
+    "failed": "패스키 로그인에 실패했습니다. 다시 시도해 주세요."
   }
 }

@@ -9,6 +9,7 @@ import { MetaTags, AccessDenied } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
 import { ScrollButton } from '@/components/common/buttons';
 import api from '@/utils/api';
+import { toastIfRateLimited } from '@/utils/rateLimitError';
 import './curationpage.css';
 import { EditIcon, TrashIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
@@ -114,7 +115,9 @@ const CurationPage = () => {
         // Request was cancelled, don't show error
         return false;
       }
-      toast.error('Invalid password');
+      if (!toastIfRateLimited(error)) {
+        toast.error('Invalid password');
+      }
       return false;
     }
   };

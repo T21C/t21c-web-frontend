@@ -29,7 +29,7 @@ export const ProfileCreationModal = ({ profiles, onComplete, onCancel }) => {
       case 'vfx':
         return routes.database.players.create();
       case 'team':
-        return routes.database.creators.teams.root();
+        return routes.teamsV3.root();
       default:
         return null;
     }

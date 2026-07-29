@@ -20,8 +20,10 @@
       "sessions": "Sessions",
       "player": "Player",
       "creator": "Creator",
-      "billing": "Billing"
-    }
+      "billing": "Billing",
+      "security": "Security"
+    },
+    "security": "Security"
   },
   "sessions": {
     "tabs": {
@@ -283,7 +285,6 @@
   },
   "banner": {
     "sectionTitle": "Profile banner",
-
     "sectionExpandAria": "Expand profile banner options",
     "sectionCollapseAria": "Collapse profile banner options",
     "presetHint": "Pick a free banner from the list",
@@ -393,5 +394,8 @@
     "noCreatorBody": "Your account is not linked to a creator profile yet.",
     "loadErrorTitle": "Could not load creator settings",
     "loadErrorBody": "Try again later or open your public profile."
+  },
+  "security": {
+    "title": "Security"
   }
 }

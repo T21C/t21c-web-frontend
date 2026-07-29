@@ -510,7 +510,12 @@ export const LevelCreditsEditPopup = ({
       return;
     }
     const matchingTeam = teamsList?.find(
-      (team) => team.name.toLowerCase() === input?.toLowerCase(),
+      (team) =>
+        team.name.toLowerCase() === input?.toLowerCase() ||
+        (Array.isArray(team.aliases) &&
+          team.aliases.some(
+            (alias) => String(alias).toLowerCase() === input?.toLowerCase(),
+          )),
     );
     const newPendingTeam = matchingTeam
       ? { id: matchingTeam.id, name: matchingTeam.name }
@@ -604,13 +609,13 @@ export const LevelCreditsEditPopup = ({
     setIsSaving(true);
     try {
       if (pendingTeam) {
-        await api.put(routes.database.creators.levelTeam(level.id), {
+        await api.put(routes.levelsV3.team(level.id), {
           teamId: pendingTeam.id,
           name: pendingTeam.name,
           members: pendingCreators.map((c) => c.id),
         });
       } else {
-        await api.delete(routes.database.creators.levelTeam(level.id));
+        await api.delete(routes.levelsV3.team(level.id));
       }
 
       const response = await api.put(routes.database.creators.level(level.id), {

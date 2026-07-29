@@ -85,7 +85,7 @@ export const ProfileSelector = ({
       case 'vfx':
         return routes.database.creators.root();
       case 'team':
-        return routes.database.creators.teams.root();
+        return routes.teamsV3.root();
       case 'user':
         return null;
       default:
@@ -130,15 +130,14 @@ export const ProfileSelector = ({
             return;
           }
           const encodedSearchTerm = encodeURIComponent(searchTerm);
-          // v3 player search uses `/search?query=`; other endpoints keep `/search/:name`.
-          const url = type === 'player'
+          // v3 player/team search uses `/search?query=`; other endpoints keep `/search/:name`.
+          const url = (type === 'player' || type === 'team')
             ? `${endpoint}/search?query=${encodedSearchTerm}`
             : `${endpoint}/search/${encodedSearchTerm}`;
           const response = await api.get(url);
-          if (type === 'player') {
+          if (type === 'player' || type === 'team') {
             const body = response.data;
             const rows = Array.isArray(body) ? body : (body?.results ?? []);
-            // v3 returns flat player docs directly — no `player` wrapper.
             setProfiles(rows);
           } else {
             setProfiles(response.data);

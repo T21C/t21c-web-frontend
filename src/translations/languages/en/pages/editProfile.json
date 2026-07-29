@@ -82,6 +82,25 @@
     "changePassword": "Change Password",
     "updatePassword": "Update Password"
   },
+  "passkeys": {
+    "title": "Passkeys",
+    "subtitle": "Sign in with your device fingerprint, face unlock, or a security key.",
+    "add": "Add a passkey",
+    "empty": "No passkeys yet.",
+    "added": "Added",
+    "lastUsed": "Last used",
+    "never": "Never",
+    "synced": "Synced",
+    "rename": "Rename",
+    "renamePrompt": "Passkey name",
+    "delete": "Remove",
+    "deleteConfirm": "Remove passkey \"{{name}}\"?",
+    "addSuccess": "Passkey added",
+    "addError": "Could not add passkey",
+    "deleteSuccess": "Passkey removed",
+    "deleteError": "Could not remove passkey",
+    "unsupported": "Passkeys are not supported in this browser."
+  },
   "linkedAccounts": {
     "title": "Linked Accounts",
     "discord": "Discord",

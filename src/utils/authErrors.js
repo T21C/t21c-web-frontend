@@ -21,9 +21,16 @@ export function parseAuthError(err, labels = {}) {
   if (error.response) {
     const data = error.response.data || {};
     const status = error.response.status;
+    const headers = error.response.headers || {};
 
     if (data.retryAfter != null && Number.isFinite(Number(data.retryAfter))) {
       retryAfter = Number(data.retryAfter);
+      message = data.message || generic;
+    } else if (headers['x-retry-after-ms'] != null && Number.isFinite(Number(headers['x-retry-after-ms']))) {
+      retryAfter = Number(headers['x-retry-after-ms']);
+      message = data.message || generic;
+    } else if (headers['retry-after'] != null && Number.isFinite(Number(headers['retry-after']))) {
+      retryAfter = Number(headers['retry-after']) * 1000;
       message = data.message || generic;
     } else if (data.requireCaptcha) {
       requireCaptcha = true;

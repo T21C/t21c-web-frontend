@@ -6,6 +6,7 @@ import { EditIcon, PencilIcon, QuestionmarkCircleIcon, TrashIcon, DragHandleIcon
 import { CustomSelect, StateDisplay } from '@/components/common/selectors';
 import api from '@/utils/api';
 import { getCdnErrorMessage } from '@/utils/uploadErrors';
+import { toastIfRateLimited, getRateLimitMessage } from '@/utils/rateLimitError';
 import './difficultypopup.css';
 import toast from 'react-hot-toast';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -362,7 +363,9 @@ const DifficultyPopup = ({
       showToast(t('difficultyPopup.announcements.notifications.saved'), 'success');
     } catch (err) {
       console.error('Failed to save directives:', err);
-      showToast(t('difficultyPopup.announcements.errors.saveFailed'), 'error');
+      if (!toastIfRateLimited(err)) {
+        showToast(t('difficultyPopup.announcements.errors.saveFailed'), 'error');
+      }
     } finally {
       setIsLoadingDirectives(false);
     }
@@ -388,7 +391,9 @@ const DifficultyPopup = ({
       setPendingDirectives(null);
       await loadDirectives();
     } catch (err) {
-      if (err.response?.status === 401) {
+      if (toastIfRateLimited(err)) {
+        setPasswordError(getRateLimitMessage(err));
+      } else if (err.response?.status === 401 || err.response?.status === 403) {
         setPasswordError(t('difficultyPopup.errors.invalidPassword'));
       } else {
         setShowPasswordModal(false);
@@ -519,8 +524,10 @@ const DifficultyPopup = ({
       setShowChannelModal(false);
     } catch (err) {
       console.error('Failed to save channel:', err);
-      setChannelError(t('difficultyPopup.announcements.channel.errors.saveFailed'));
-      showToast(t('difficultyPopup.announcements.channel.errors.saveFailed'), 'error');
+      if (!toastIfRateLimited(err)) {
+        setChannelError(t('difficultyPopup.announcements.channel.errors.saveFailed'));
+        showToast(t('difficultyPopup.announcements.channel.errors.saveFailed'), 'error');
+      }
     }
   };
 
@@ -577,8 +584,10 @@ const DifficultyPopup = ({
       setShowRoleModal(false);
     } catch (err) {
       console.error('Failed to save role:', err);
-      setRoleError(t('difficultyPopup.announcements.role.errors.saveFailed'));
-      showToast(t('difficultyPopup.announcements.role.errors.saveFailed'), 'error');
+      if (!toastIfRateLimited(err)) {
+        setRoleError(t('difficultyPopup.announcements.role.errors.saveFailed'));
+        showToast(t('difficultyPopup.announcements.role.errors.saveFailed'), 'error');
+      }
     }
   };
 
@@ -605,7 +614,9 @@ const DifficultyPopup = ({
       setShowChannelModal(false);
     } catch (err) {
       console.error('Failed to delete channel:', err);
-      showToast(t('difficultyPopup.announcements.channel.errors.deleteFailed'), 'error');
+      if (!toastIfRateLimited(err)) {
+        showToast(t('difficultyPopup.announcements.channel.errors.deleteFailed'), 'error');
+      }
     }
   };
 
@@ -632,7 +643,9 @@ const DifficultyPopup = ({
       setShowRoleModal(false);
     } catch (err) {
       console.error('Failed to delete role:', err);
-      showToast(t('difficultyPopup.announcements.role.errors.deleteFailed'), 'error');
+      if (!toastIfRateLimited(err)) {
+        showToast(t('difficultyPopup.announcements.role.errors.deleteFailed'), 'error');
+      }
     }
   };
 
@@ -948,11 +961,13 @@ const DifficultyPopup = ({
           refreshDifficulties(response.data);
           onClose();
         } catch (err) {
-          const errorMessage = getCdnErrorMessage(
-            err,
-            t(isCreating ? 'difficultyPopup.errors.createFailed' : 'difficultyPopup.errors.updateFailed'),
-          );
-          showToast(errorMessage, 'error');
+          if (!toastIfRateLimited(err)) {
+            const errorMessage = getCdnErrorMessage(
+              err,
+              t(isCreating ? 'difficultyPopup.errors.createFailed' : 'difficultyPopup.errors.updateFailed'),
+            );
+            showToast(errorMessage, 'error');
+          }
           console.error(err);
         }
       };

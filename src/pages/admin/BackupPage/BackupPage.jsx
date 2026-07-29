@@ -13,6 +13,7 @@ import api from "@/utils/api";
 import { EditIcon, RefreshIcon } from "@/components/common/icons";
 import { AccessDenied } from "@/components/common/display";
 import { toast } from "react-hot-toast";
+import { toastIfRateLimited, getRateLimitMessage } from "@/utils/rateLimitError";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { formatDate } from "@/utils/Utility";
 import i18next from "i18next";
@@ -73,6 +74,10 @@ const UploadZone = ({ onUploadComplete, storedPassword, isLoadingBackups }) => {
       }
     } catch (error) {
       console.error('Upload failed:', error);
+      if (toastIfRateLimited(error)) {
+        setUploadError(getRateLimitMessage(error));
+        return;
+      }
       setUploadError(error.response?.status === 403 
         ? t('backup.passwordModal.errors.invalid')
         : t('backup.notifications.uploadFailed')
@@ -234,7 +239,9 @@ const BackupList = ({ backups, isLoadingBackups, showConfirmation, storedPasswor
       }
     } catch (error) {
       console.error('Failed to rename backup:', error);
-      toast.error(t('backup.notifications.renameFailed'));
+      if (!toastIfRateLimited(error)) {
+        toast.error(t('backup.notifications.renameFailed'));
+      }
     } finally {
       setRenameLoading(false);
     }
@@ -497,6 +504,7 @@ const BackupPage = () => {
       );
       return true;
     } catch (error) {
+      toastIfRateLimited(error);
       return false;
     } finally {
       setIsVerifyingPassword(false);
@@ -513,10 +521,13 @@ const BackupPage = () => {
         setInitialPasswordError('');
         await loadBackups();
       } else {
+        // validatePassword already toasts 429; surface invalid otherwise
         setInitialPasswordError(t('backup.passwordModal.errors.invalid'));
       }
     } catch (error) {
-      setInitialPasswordError(t('backup.passwordModal.errors.generic'));
+      if (!toastIfRateLimited(error)) {
+        setInitialPasswordError(t('backup.passwordModal.errors.generic'));
+      }
     }
   };
 
@@ -561,7 +572,9 @@ const BackupPage = () => {
       }
     } catch (error) {
       console.error('Failed to create backup:', error);
-      toast.error(t('backup.notifications.createFailed'));
+      if (!toastIfRateLimited(error)) {
+        toast.error(t('backup.notifications.createFailed'));
+      }
     } finally {
       setIsCreatingBackup(false);
     }
@@ -584,7 +597,9 @@ const BackupPage = () => {
       }
     } catch (error) {
       console.error('Failed to delete backup:', error);
-      toast.error(t('backup.notifications.deleteFailed'));
+      if (!toastIfRateLimited(error)) {
+        toast.error(t('backup.notifications.deleteFailed'));
+      }
     } finally {
       setIsDeletingBackup(false);
     }
@@ -607,7 +622,9 @@ const BackupPage = () => {
       }
     } catch (error) {
       console.error('Failed to restore backup:', error);
-      toast.error(t('backup.notifications.restoreFailed'));
+      if (!toastIfRateLimited(error)) {
+        toast.error(t('backup.notifications.restoreFailed'));
+      }
     } finally {
       setIsRestoringBackup(false);
     }

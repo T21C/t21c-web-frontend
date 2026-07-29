@@ -6,6 +6,7 @@ import { routes } from '@/api/routes';
 import { useNotification } from './NotificationContext';
 import { useNavigate } from 'react-router-dom';
 import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { startAuthentication, startRegistration } from '@simplewebauthn/browser';
 import { navigateExternal } from '@/utils/externalNavigationGate';
 
 const AuthContext = createContext();
@@ -211,6 +212,75 @@ export const AuthProvider = ({ children }) => {
     if (response.data?.user) {
       await fetchUser(true);
     }
+    return response.data;
+  };
+
+  const loginWithPasskey = async () => {
+    try {
+      const optionsRes = await api.post(routes.auth.passkeys.loginOptions());
+      let assertion;
+      try {
+        assertion = await startAuthentication({ optionsJSON: optionsRes.data });
+      } catch (err) {
+        if (err?.name === 'NotAllowedError') {
+          return { cancelled: true };
+        }
+        throw err;
+      }
+      const response = await api.post(routes.auth.passkeys.loginVerify(), {
+        response: assertion,
+      });
+      if (response.data?.user) {
+        await fetchUser(true);
+      }
+      return response.data;
+    } catch (error) {
+      console.error('[Auth] Passkey login failed:', error);
+      throw error;
+    }
+  };
+
+  const verifyLoginMfaPasskey = async ({ rememberDevice = true } = {}) => {
+    try {
+      const optionsRes = await api.post(routes.auth.mfa.passkeyOptions());
+      let assertion;
+      try {
+        assertion = await startAuthentication({ optionsJSON: optionsRes.data });
+      } catch (err) {
+        if (err?.name === 'NotAllowedError') {
+          return { cancelled: true };
+        }
+        throw err;
+      }
+      const response = await api.post(routes.auth.mfa.passkeyVerify(), {
+        response: assertion,
+        rememberDevice: Boolean(rememberDevice),
+      });
+      if (response.data?.user) {
+        await fetchUser(true);
+      }
+      return response.data;
+    } catch (error) {
+      console.error('[Auth] Passkey MFA failed:', error);
+      throw error;
+    }
+  };
+
+  const registerPasskey = async (name) => {
+    const optionsRes = await api.post(routes.auth.passkeys.registerOptions());
+    let attestation;
+    try {
+      attestation = await startRegistration({ optionsJSON: optionsRes.data });
+    } catch (err) {
+      if (err?.name === 'NotAllowedError') {
+        return { cancelled: true };
+      }
+      throw err;
+    }
+    const response = await api.post(routes.auth.passkeys.registerVerify(), {
+      response: attestation,
+      name: typeof name === 'string' ? name : undefined,
+    });
     return response.data;
   };
 
@@ -481,6 +551,9 @@ export const AuthProvider = ({ children }) => {
     loginWithDiscord,
     requestLoginMfaEmail,
     verifyLoginMfa,
+    loginWithPasskey,
+    verifyLoginMfaPasskey,
+    registerPasskey,
     linkProvider,
     unlinkProvider,
     fetchUser,

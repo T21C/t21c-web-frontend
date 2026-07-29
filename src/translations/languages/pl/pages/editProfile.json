@@ -1,0 +1,21 @@
+{
+  "passkeys": {
+    "title": "Klucze dostępu",
+    "subtitle": "Loguj się odciskiem palca, Face ID lub kluczem sprzętowym.",
+    "add": "Dodaj klucz dostępu",
+    "empty": "Brak kluczy dostępu.",
+    "added": "Dodano",
+    "lastUsed": "Ostatnio użyty",
+    "never": "Nigdy",
+    "synced": "Zsynchronizowany",
+    "rename": "Zmień nazwę",
+    "renamePrompt": "Nazwa klucza dostępu",
+    "delete": "Usuń",
+    "deleteConfirm": "Usunąć klucz dostępu „{{name}}”?",
+    "addSuccess": "Dodano klucz dostępu",
+    "addError": "Nie udało się dodać klucza dostępu",
+    "deleteSuccess": "Usunięto klucz dostępu",
+    "deleteError": "Nie udało się usunąć klucza dostępu",
+    "unsupported": "Ta przeglądarka nie obsługuje kluczy dostępu."
+  }
+}

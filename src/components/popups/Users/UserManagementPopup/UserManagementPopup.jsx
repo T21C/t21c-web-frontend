@@ -10,6 +10,7 @@ import { userAvatarUrls } from '@/utils/playerAvatarDisplay';
 import { hasAnyFlag, permissionFlags } from '@/utils/UserPermissions';
 import { hasFlag } from '@/utils/UserPermissions';
 import { CloseButton } from '@/components/common/buttons';
+import { toastIfRateLimited, getRateLimitMessage } from '@/utils/rateLimitError';
 
 // Role configuration for different management types
 const ROLE_CONFIGS = {
@@ -177,7 +178,9 @@ const UserEntry = ({ user, onUpdate, onDelete, superAdminPassword, onError, role
       onUpdate();
     } catch (error) {
       console.error('Error updating role:', error);
-      if (error.response?.data?.message === 'Invalid super admin password') {
+      if (toastIfRateLimited(error)) {
+        onError(getRateLimitMessage(error));
+      } else if (error.response?.data?.message === 'Invalid super admin password') {
         onError(t('userManagement.errors.invalidPassword'));
       } else {
         onError(error.response?.data?.error || t('userManagement.errors.updateRoleFailed'));
@@ -224,7 +227,9 @@ const UserEntry = ({ user, onUpdate, onDelete, superAdminPassword, onError, role
       onDelete();
     } catch (error) {
       console.error('Error removing user:', error);
-      if (error.response?.data?.error === 'Invalid super admin password') {
+      if (toastIfRateLimited(error)) {
+        onError(getRateLimitMessage(error));
+      } else if (error.response?.data?.error === 'Invalid super admin password' || error.response?.data?.message === 'Invalid super admin password') {
         onError(t('userManagement.errors.invalidPassword'));
       } else {
         onError(error.response?.data?.error || t('userManagement.errors.deleteFailed'));
@@ -267,7 +272,9 @@ const UserEntry = ({ user, onUpdate, onDelete, superAdminPassword, onError, role
     } catch (error) {
       console.error('Schedule account deletion (admin):', error);
       const data = error.response?.data;
-      if (data?.message === 'Invalid super admin password') {
+      if (toastIfRateLimited(error)) {
+        onError(getRateLimitMessage(error));
+      } else if (data?.message === 'Invalid super admin password') {
         onError(t('userManagement.errors.invalidPassword'));
       } else {
         onError(data?.error || data?.message || t('userManagement.errors.scheduleDeletionFailed'));
@@ -526,7 +533,11 @@ const UserManagementPopup = ({ onClose, currentUser, initialMode = 'rater' }) =>
       setNewUserUsername('');
     } catch (error) {
       console.error('Error adding user:', error);
-      setErrorMessage(error.response?.data?.error || t('userManagement.errors.addFailed'));
+      if (toastIfRateLimited(error)) {
+        setErrorMessage(getRateLimitMessage(error));
+      } else {
+        setErrorMessage(error.response?.data?.error || error.response?.data?.message || t('userManagement.errors.addFailed'));
+      }
     }
   };
 

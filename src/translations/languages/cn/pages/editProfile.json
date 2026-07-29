@@ -109,6 +109,24 @@
     "errorCancel": "无法取消注销账户。",
     "includeCreatorCheckbox": "同时移除我的创作者资料与谱面署名。仅由我署名的关卡将隐藏（软删除）且不再显示创作者；合作谱面仅移除我的署名。",
     "pendingIncludesCreator": "删除执行时将移除创作者资料、剥离您的署名（创作者显示为未知），单人关卡软删除以保留谱面文件。"
+  },
+  "passkeys": {
+    "title": "通行密钥",
+    "subtitle": "使用设备指纹、面容解锁或安全密钥登录。",
+    "add": "添加通行密钥",
+    "empty": "暂无通行密钥。",
+    "added": "添加于",
+    "lastUsed": "最近使用",
+    "never": "从未",
+    "synced": "已同步",
+    "rename": "重命名",
+    "renamePrompt": "通行密钥名称",
+    "delete": "移除",
+    "deleteConfirm": "移除通行密钥“{{name}}”？",
+    "addSuccess": "已添加通行密钥",
+    "addError": "无法添加通行密钥",
+    "deleteSuccess": "已移除通行密钥",
+    "deleteError": "无法移除通行密钥",
+    "unsupported": "当前浏览器不支持通行密钥。"
   }
 }
-

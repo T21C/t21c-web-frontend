@@ -14,6 +14,7 @@ import { DifficultyPopup } from '@/components/popups/Difficulties';
 import { DiscordRolesPopup } from '@/components/popups/DiscordRoles';
 import api from '@/utils/api';
 import { getCdnErrorMessage } from '@/utils/uploadErrors';
+import { getRateLimitMessage, toastIfRateLimited } from '@/utils/rateLimitError';
 import './difficultypage.css';
 import { EditIcon, RefreshIcon, TrashIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
@@ -145,7 +146,9 @@ const DifficultyPage = () => {
         {
           loading: t('difficulty.loading.savingTag'),
           success: t('difficulty.tags.notifications.created'),
-          error: (err) => getCdnErrorMessage(err, t('difficulty.tags.notifications.createFailed')),
+          error: (err) =>
+            getRateLimitMessage(err) ||
+            getCdnErrorMessage(err, t('difficulty.tags.notifications.createFailed')),
         },
       );
     } catch (error) {
@@ -191,7 +194,9 @@ const DifficultyPage = () => {
         {
           loading: t('difficulty.loading.updatingTag'),
           success: t('difficulty.tags.notifications.updated'),
-          error: (err) => getCdnErrorMessage(err, t('difficulty.tags.notifications.updateFailed')),
+          error: (err) =>
+            getRateLimitMessage(err) ||
+            getCdnErrorMessage(err, t('difficulty.tags.notifications.updateFailed')),
         },
       );
     } catch (error) {
@@ -259,7 +264,9 @@ const DifficultyPage = () => {
         {
           loading: t('difficulty.loading.deletingTag'),
           success: t('difficulty.tags.notifications.deleted'),
-          error: (err) => getCdnErrorMessage(err, t('difficulty.tags.notifications.deleteFailed')),
+          error: (err) =>
+            getRateLimitMessage(err) ||
+            getCdnErrorMessage(err, t('difficulty.tags.notifications.deleteFailed')),
         },
       );
     } catch (error) {
@@ -384,6 +391,10 @@ const DifficultyPage = () => {
         legacyEmoji: '',
       });
     } catch (err) {
+      if (toastIfRateLimited(err)) {
+        setError(getRateLimitMessage(err) || t('difficulty.passwordModal.errors.generic'));
+        return;
+      }
       const errorMessage =
         err?.response?.status === 403
           ? t('difficulty.passwordModal.errors.invalid')
@@ -457,6 +468,10 @@ const DifficultyPage = () => {
       setShowInitialPasswordPrompt(false);
       return true;
     } catch (error) {
+      if (toastIfRateLimited(error)) {
+        setError(getRateLimitMessage(error) || t('difficulty.passwordModal.errors.generic'));
+        return false;
+      }
       setError(t('difficulty.passwordModal.errors.invalid'));
       toast.error(t('difficulty.passwordModal.errors.invalid'));
       return false;
@@ -539,7 +554,8 @@ const DifficultyPage = () => {
         {
           loading: t('difficulty.loading.reorderingDifficulties'),
           success: t('difficulty.notifications.reordered'),
-          error: t('difficulty.notifications.reorderFailed'),
+          error: (err) =>
+            getRateLimitMessage(err) || t('difficulty.notifications.reorderFailed'),
         },
       );
     } catch (err) {
@@ -610,7 +626,8 @@ const DifficultyPage = () => {
         {
           loading: t('difficulty.loading.reorderingTags'),
           success: t('difficulty.tags.notifications.reordered'),
-          error: t('difficulty.tags.notifications.reorderFailed'),
+          error: (err) =>
+            getRateLimitMessage(err) || t('difficulty.tags.notifications.reorderFailed'),
         },
       );
     } catch (err) {
@@ -660,7 +677,8 @@ const DifficultyPage = () => {
         {
           loading: t('difficulty.loading.reorderingGroups'),
           success: t('difficulty.groups.notifications.reordered'),
-          error: t('difficulty.groups.notifications.reorderFailed'),
+          error: (err) =>
+            getRateLimitMessage(err) || t('difficulty.groups.notifications.reorderFailed'),
         },
       );
     } catch (err) {
@@ -717,13 +735,18 @@ const DifficultyPage = () => {
           loading: t('difficulty.loading.deleting'),
           success: t('difficulty.notifications.deleted'),
           error: (err) =>
-            err.response?.status === 403
+            getRateLimitMessage(err) ||
+            (err.response?.status === 403
               ? t('difficulty.passwordModal.errors.invalid')
-              : t('difficulty.passwordModal.errors.generic'),
+              : t('difficulty.passwordModal.errors.generic')),
         },
       );
     } catch (err) {
-      setError(t('difficulty.passwordModal.errors.generic'));
+      if (toastIfRateLimited(err)) {
+        setError(getRateLimitMessage(err) || t('difficulty.passwordModal.errors.generic'));
+      } else {
+        setError(t('difficulty.passwordModal.errors.generic'));
+      }
     } finally {
       setIsLoading(false);
     }

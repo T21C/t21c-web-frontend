@@ -224,11 +224,13 @@ const CreatorManagementPage = () => {
     try {
       setLoadingTeams(true);
       teamsCancelTokenRef.current = api.CancelToken.source();
-      const response = await api.get(`${routes.database.creators.teams.root()}${search ? `?search=${search}` : ''}`, {
+      const response = await api.get(routes.teamsV3.root(), {
+        params: search ? { search } : undefined,
         cancelToken: teamsCancelTokenRef.current.token
       });
       if (response.status === 200) {
-        setTeamsList(response.data);
+        const body = response.data;
+        setTeamsList(Array.isArray(body) ? body : (body?.results ?? []));
       }
     } catch (error) {
       if (!api.isCancel(error)) {
@@ -260,7 +262,7 @@ const CreatorManagementPage = () => {
     
     setIsCreatingTeam(true);
     try {
-      await api.post(routes.database.creators.teams.root(), newTeamData);
+      await api.post(routes.teamsV3.root(), newTeamData);
       await fetchTeams(teamSearchQuery);
       setShowAddTeamForm(false);
       setNewTeamData({ name: '', description: '', aliases: [] });
@@ -281,7 +283,7 @@ const CreatorManagementPage = () => {
     
     setIsUpdatingTeam(true);
     try {
-      await api.put(routes.database.creators.teams.pathById(selectedTeam.id), newTeamData);
+      await api.patch(routes.teamsV3.byId(selectedTeam.id), newTeamData);
       await fetchTeams(teamSearchQuery);
       setSelectedTeam(null);
       setNewTeamData({ name: '', description: '', aliases: [] });
@@ -300,7 +302,7 @@ const CreatorManagementPage = () => {
     }
     
     try {
-      await api.delete(routes.database.creators.teams.pathById(teamId));
+      await api.delete(routes.teamsV3.byId(teamId));
       await fetchTeams(teamSearchQuery);
       toast.success('Team deleted successfully');
     } catch (error) {
@@ -921,25 +923,29 @@ const CreatorManagementPage = () => {
                   onKeyPress={(e) => {
                     if (e.key === 'Enter') {
                       e.preventDefault();
-                      if (newTeamAlias.trim()) {
-                        setNewTeamData(prev => ({
-                          ...prev,
-                          aliases: [...prev.aliases, newTeamAlias.trim()]
-                        }));
-                        setNewTeamAlias('');
-                      }
+                      const alias = newTeamAlias.trim();
+                      if (!alias) return;
+                      setNewTeamData(prev => {
+                        if (prev.aliases.some(a => a.toLowerCase() === alias.toLowerCase())) {
+                          return prev;
+                        }
+                        return {...prev, aliases: [...prev.aliases, alias]};
+                      });
+                      setNewTeamAlias('');
                     }
                   }}
                 />
                 <button 
                   onClick={() => {
-                    if (newTeamAlias.trim()) {
-                      setNewTeamData(prev => ({
-                        ...prev,
-                        aliases: [...prev.aliases, newTeamAlias.trim()]
-                      }));
-                      setNewTeamAlias('');
-                    }
+                    const alias = newTeamAlias.trim();
+                    if (!alias) return;
+                    setNewTeamData(prev => {
+                      if (prev.aliases.some(a => a.toLowerCase() === alias.toLowerCase())) {
+                        return prev;
+                      }
+                      return {...prev, aliases: [...prev.aliases, alias]};
+                    });
+                    setNewTeamAlias('');
                   }}
                 >
                   Add Alias

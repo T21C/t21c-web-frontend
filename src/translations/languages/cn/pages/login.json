@@ -36,7 +36,9 @@
     "sendFailed": "发送登录验证码失败",
     "expired": "登录验证已过期，请重新登录。",
     "rememberDevice": "在此设备上记住 30 天",
-    "back": "返回登录"
+    "back": "返回登录",
+    "usePasskey": "改用通行密钥",
+    "passkeyFailed": "通行密钥验证失败，请重试。"
   },
   "errors": {
     "generic": "未知错误。请稍后再试。",
@@ -50,5 +52,9 @@
       "incomplete": "请完成 reCAPTCHA 验证",
       "failed": "reCAPTCHA 验证失败。请重试。"
     }
+  },
+  "passkey": {
+    "button": "使用通行密钥登录",
+    "failed": "通行密钥登录失败，请重试。"
   }
 }

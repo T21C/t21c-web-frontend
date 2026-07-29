@@ -106,6 +106,46 @@
   background-color: #4752C4;
 }
 
+.login-page-wrapper .passkey-button {
+  width: 100%;
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid var(--color-white-t20);
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  background-color: var(--color-white-t10);
+  color: var(--color-white);
+  transition: background-color 0.2s;
+}
+
+.login-page-wrapper .passkey-button:hover {
+  background-color: var(--color-white-t20);
+}
+
+.login-page-wrapper .passkey-button:disabled,
+.login-page-wrapper .login-mfa-passkey:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.login-page-wrapper .login-mfa-passkey {
+  width: 100%;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  border: 1px solid var(--color-white-t20);
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  background-color: var(--color-white-t10);
+  color: var(--color-white);
+  transition: background-color 0.2s;
+}
+
+.login-page-wrapper .login-mfa-passkey:hover {
+  background-color: var(--color-white-t20);
+}
+
 .login-page-wrapper .divider {
   text-align: center;
   margin: 1.5rem 0;

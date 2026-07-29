@@ -36,7 +36,9 @@
     "sendFailed": "Nie udało się wysłać kodu logowania",
     "expired": "Wyzwanie logowania wygasło. Zaloguj się ponownie.",
     "rememberDevice": "Zapamiętaj to urządzenie na 30 dni",
-    "back": "Wróć do logowania"
+    "back": "Wróć do logowania",
+    "usePasskey": "Użyj klucza dostępu",
+    "passkeyFailed": "Weryfikacja klucza dostępu nie powiodła się. Spróbuj ponownie."
   },
   "errors": {
     "generic": "Nie udało się zalogować. Spróbuj ponownie",
@@ -50,5 +52,9 @@
       "incomplete": "Dokończ weryfikację reCAPTCHA",
       "failed": "Nie udało się zweryfikować reCAPTCHA. Spróbuj ponownie."
     }
+  },
+  "passkey": {
+    "button": "Zaloguj się kluczem dostępu",
+    "failed": "Logowanie kluczem dostępu nie powiodło się. Spróbuj ponownie."
   }
 }
