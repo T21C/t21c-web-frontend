@@ -1,5 +1,14 @@
 // tuf-search: #sentry #errorReporting
+import { useEffect } from 'react';
 import * as Sentry from '@sentry/react';
+import {
+  createRoutesFromChildren,
+  matchRoutes,
+  Routes,
+  useLocation,
+  useNavigationType,
+} from 'react-router-dom';
+import { API_BASE, HEALTH_BASE, OWN_BASE } from '@/config/env';
 
 const isBrowserExtensionUrl = (url) =>
   typeof url === 'string' &&
@@ -76,6 +85,15 @@ const isAnonymousInjectedGlobalNoise = (event) => {
 
 const sentryRelease = import.meta.env.VITE_SENTRY_RELEASE;
 
+const tracePropagationTargets = [
+  'localhost',
+  /^\//, // same-origin (Vite /v2|/v3 proxy in dev)
+  /^https:\/\/([a-z0-9-]+\.)?tuforums\.com/i,
+  ...(API_BASE ? [API_BASE] : []),
+  ...(HEALTH_BASE ? [HEALTH_BASE] : []),
+  ...(OWN_BASE ? [OWN_BASE] : []),
+];
+
 Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
   environment: import.meta.env.MODE,
@@ -88,7 +106,16 @@ Sentry.init({
       filterKeys: ['tuf-website'],
       behaviour: 'drop-error-if-exclusively-contains-third-party-frames',
     }),
+    Sentry.reactRouterBrowserTracingIntegration({
+      useEffect,
+      useLocation,
+      useNavigationType,
+      createRoutesFromChildren,
+      matchRoutes,
+    }),
   ],
+  tracesSampleRate: 1.0,
+  tracePropagationTargets,
   // Browser extensions / page translators mutate React-owned DOM; React then
   // throws NotFoundError on removeChild during commit. Unfixable from app code.
   ignoreErrors: [
@@ -120,5 +147,8 @@ Sentry.init({
     return event;
   },
 });
+
+/** Top-level Routes wrapper for parameterized pageload/navigation transactions. */
+export const SentryRoutes = Sentry.wrapReactRouterRouting(Routes);
 
 export { Sentry };

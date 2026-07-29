@@ -1,5 +1,5 @@
 // tuf-search: #App #root — application shell
-import { Navigate, Route, Routes, useSearchParams } from "react-router-dom";
+import { Navigate, Route, useSearchParams } from "react-router-dom";
 import { Suspense, useEffect } from "react";
 import { Navigation } from "@/components/layout";
 import { PrivateRoute } from "@/components/auth";
@@ -12,6 +12,7 @@ import * as Pages from '@/pages/index';
 import { Toaster } from "react-hot-toast";
 import { TufStellarRoute } from "@/components/routing/TufStellarRoute";
 import { TufHelperLiteConnectBanner } from "@/components/common/TufHelperLiteConnectBanner";
+import { SentryRoutes } from "@/hooks/useSentry";
 
 function App() {
   const [searchParams] = useSearchParams();
@@ -55,7 +56,7 @@ function App() {
           </div>
         }
       >
-        <Routes>
+        <SentryRoutes>
           {/* Deprecated routes – redirect to current URLs */}
           {DEPRECATED_ROUTES.map(({ path, redirect }) => (
             <Route
@@ -159,7 +160,7 @@ function App() {
           <Route path='admin/curations/preview' element={<PrivateRoute><Pages.CurationPreviewPage /></PrivateRoute>} />
           <Route path='admin/curations/preview/:levelId' element={<PrivateRoute><Pages.CurationCssPreviewPage /></PrivateRoute>} />
           <Route path='admin/curations/schedules' element={<PrivateRoute><Pages.CurationSchedulePage /></PrivateRoute>} />
-        </Routes>
+        </SentryRoutes>
       </Suspense>
       </ChunkLoadErrorBoundary>
       </div>
