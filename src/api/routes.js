@@ -112,9 +112,9 @@ export const routes = {
       icon: (id) => `/v2/admin/tournaments/${enc(id)}/icon`,
       cardBackground: (id) =>
         `/v2/admin/tournaments/${enc(id)}/card-background`,
-      tierIcon: (tournamentId) =>
+      tierIcon: (tournamentId, tierId) =>
         `/v2/admin/tournaments/${enc(tournamentId)}/tiers/${enc(tierId)}/icon`,
-      tierCardBackground: (tournamentId) =>
+      tierCardBackground: (tournamentId, tierId) =>
         `/v2/admin/tournaments/${enc(tournamentId)}/tiers/${enc(tierId)}/card-background`,
     },
 
@@ -147,13 +147,13 @@ export const routes = {
       passesPending: () => '/v2/admin/submissions/passes/pending',
       autoApprovePasses: () => '/v2/admin/submissions/auto-approve/passes',
       level: (submissionId) => `/v2/admin/submissions/levels/${enc(submissionId)}`,
-      levelAction: (submissionId) =>
-        `/v2/admin/submissions/levels/${enc(submissionId)}/${action}`,
+      levelAction: (submissionId, action) =>
+        `/v2/admin/submissions/levels/${enc(submissionId)}/${enc(action)}`,
       levelProfiles: (submissionId) =>
         `/v2/admin/submissions/levels/${enc(submissionId)}/profiles`,
       levelCreatorRequests: (submissionId) =>
         `/v2/admin/submissions/levels/${enc(submissionId)}/creator-requests`,
-      levelCreatorRequest: (submissionId) =>
+      levelCreatorRequest: (submissionId, requestId) =>
         `/v2/admin/submissions/levels/${enc(submissionId)}/creator-requests/${enc(requestId)}`,
       levelSong: (submissionId) =>
         `/v2/admin/submissions/levels/${enc(submissionId)}/song`,
@@ -168,8 +168,8 @@ export const routes = {
       levelCreators: (submissionId) =>
         `/v2/admin/submissions/levels/${enc(submissionId)}/creators`,
       pass: (submissionId) => `/v2/admin/submissions/passes/${enc(submissionId)}`,
-      passAction: (submissionId) =>
-        `/v2/admin/submissions/passes/${enc(submissionId)}/${action}`,
+      passAction: (submissionId, action) =>
+        `/v2/admin/submissions/passes/${enc(submissionId)}/${enc(action)}`,
       passAssignPlayer: (submissionId) =>
         `/v2/admin/submissions/passes/${enc(submissionId)}/assign-player`,
     },
@@ -189,7 +189,7 @@ export const routes = {
       guilds: () => '/v2/admin/discord/guilds',
       guild: (guildId) => `/v2/admin/discord/guilds/${enc(guildId)}`,
       guildRoles: (guildId) => `/v2/admin/discord/guilds/${enc(guildId)}/roles`,
-      guildRole: (guildId) =>
+      guildRole: (guildId, roleId) =>
         `/v2/admin/discord/guilds/${enc(guildId)}/roles/${enc(roleId)}`,
       guildRolesReorder: (guildId) =>
         `/v2/admin/discord/guilds/${enc(guildId)}/roles/reorder`,
@@ -208,10 +208,10 @@ export const routes = {
       merge: (id) => `/v2/database/songs/${enc(id)}/merge`,
       split: (id) => `/v2/database/songs/${enc(id)}/split`,
       credits: (id) => `/v2/database/songs/${enc(id)}/credits`,
-      credit: (id) =>
+      credit: (id, creditId) =>
         `/v2/database/songs/${enc(id)}/credits/${enc(creditId)}`,
       evidences: (id) => `/v2/database/songs/${enc(id)}/evidences`,
-      evidence: (id) =>
+      evidence: (id, evidenceId) =>
         `/v2/database/songs/${enc(id)}/evidences/${enc(evidenceId)}`,
       evidencesUpload: (id) => `/v2/database/songs/${enc(id)}/evidences/upload`,
       levelsInfo: (id) => `/v2/database/songs/${enc(id)}/levels/info`,
@@ -223,11 +223,11 @@ export const routes = {
       merge: (id) => `/v2/database/artists/${enc(id)}/merge`,
       split: (id) => `/v2/database/artists/${enc(id)}/split`,
       relations: (id) => `/v2/database/artists/${enc(id)}/relations`,
-      relation: (id) =>
+      relation: (id, relatedArtistId) =>
         `/v2/database/artists/${enc(id)}/relations/${enc(relatedArtistId)}`,
       avatar: (id) => `/v2/database/artists/${enc(id)}/avatar`,
       evidences: (id) => `/v2/database/artists/${enc(id)}/evidences`,
-      evidence: (id) =>
+      evidence: (id, evidenceId) =>
         `/v2/database/artists/${enc(id)}/evidences/${enc(evidenceId)}`,
       evidencesUpload: (id) => `/v2/database/artists/${enc(id)}/evidences/upload`,
     },
@@ -254,12 +254,12 @@ export const routes = {
         items: (packId) => `/v2/database/levels/packs/${enc(packId)}/items`,
         validateItems: (packId) =>
           `/v2/database/levels/packs/${enc(packId)}/items/validate-levels`,
-        item: (packId) =>
+        item: (packId, itemId) =>
           `/v2/database/levels/packs/${enc(packId)}/items/${enc(itemId)}`,
         downloadLink: (packId) =>
           `/v2/database/levels/packs/${enc(packId)}/download-link`,
         levels: (packId) => `/v2/database/levels/packs/${enc(packId)}/levels`,
-        level: (packId) =>
+        level: (packId, levelId) =>
           `/v2/database/levels/packs/${enc(packId)}/levels/${enc(levelId)}`,
         levelsReorder: (packId) =>
           `/v2/database/levels/packs/${enc(packId)}/levels/reorder`,
@@ -273,7 +273,7 @@ export const routes = {
       unannouncedNew: () => '/v2/database/levels/unannounced/new',
       unannouncedRerates: () => '/v2/database/levels/unannounced/rerates',
       aliases: (levelId) => `/v2/database/levels/${enc(levelId)}/aliases`,
-      alias: (levelId) =>
+      alias: (levelId, aliasId) =>
         `/v2/database/levels/${enc(levelId)}/aliases/${enc(aliasId)}`,
       aliasPropagationCount: (levelId) =>
         `/v2/database/levels/alias-propagation-count/${enc(levelId)}`,
@@ -323,11 +323,11 @@ export const routes = {
       merge: () => '/v2/database/creators/merge',
       split: () => '/v2/database/creators/split',
       levelsAudit: () => '/v2/database/creators/levels-audit',
-      assignCreatorToUser: (userOrPlayerId) =>
+      assignCreatorToUser: (userOrPlayerId, creatorId) =>
         `/v2/database/creators/assign-creator-to-user/${enc(userOrPlayerId)}/${enc(creatorId)}`,
       removeCreatorFromUser: (userId) =>
         `/v2/database/creators/remove-creator-from-user/${enc(userId)}`,
-      discord: (creatorId) =>
+      discord: (creatorId, discordId) =>
         `/v2/database/creators/${enc(creatorId)}/discord/${enc(discordId)}`,
       level: (levelId) => `/v2/database/creators/level/${enc(levelId)}`,
       levelTeam: (levelId) => `/v2/database/creators/level/${enc(levelId)}/team`,
