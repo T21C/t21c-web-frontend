@@ -467,8 +467,8 @@ export const routes = {
     init: () => '/v2/upload/init',
     session: (sessionId) => `/v2/upload/sessions/${enc(sessionId)}`,
     sessionComplete: (sessionId) => `/v2/upload/sessions/${enc(sessionId)}/complete`,
-    sessionChunk: (sessionId) =>
-      `/v2/upload/sessions/${enc(sessionId)}/chunks/${index}`,
+    sessionChunk: (sessionId, index) =>
+      `/v2/upload/sessions/${enc(sessionId)}/chunks/${enc(String(index))}`,
   },
   jobs: {
     byId: (jobId) => `/v2/jobs/${enc(jobId)}`,
