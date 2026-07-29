@@ -29,3 +29,5 @@ manifest.json
 #enc
 .env
 .env.*
+# Sentry Vite plugin auth file (auto-loaded; never commit)
+.env.sentry-build-plugin

@@ -1,5 +1,6 @@
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
+import { sentryVitePlugin } from '@sentry/vite-plugin'
 import path from 'path'
 import fs from 'node:fs/promises'
 
@@ -41,6 +42,9 @@ function translationAssetsPlugin() {
   }
 }
 
+/** First-party stamp for thirdPartyErrorFilterIntegration — keep in sync with useSentry.js */
+const SENTRY_APPLICATION_KEY = 'tuf-website'
+
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
   // Load env file based on mode
@@ -79,16 +83,78 @@ export default defineConfig(({ command, mode }) => {
 
   const port = mode === 'production' ? 5000 : 5173
 
+  /*
+   * Sentry build secrets (NOT VITE_* — must not enter the browser bundle):
+   *   SENTRY_AUTH_TOKEN  — org token with Project:Read/Write + Release:Admin
+   *   SENTRY_ORG         — default the-universal-forums
+   *   SENTRY_PROJECT     — default javascript-react
+   *   SENTRY_URL         — default https://de.sentry.io (EU)
+   *   SENTRY_RELEASE     — optional; else GITHUB_SHA / git auto-detect
+   * Put these in the Docker frontend_env → .env.production secret, or
+   * .env.sentry-build-plugin (gitignored). Without SENTRY_AUTH_TOKEN the
+   * plugin still stamps applicationKey; sourcemap upload is skipped.
+   */
+  const sentryAuthToken = getEnv('SENTRY_AUTH_TOKEN')
+  const hasSentryUpload = Boolean(sentryAuthToken)
+  const sentryRelease =
+    getEnv('SENTRY_RELEASE') || getEnv('GITHUB_SHA') || ''
+
+  // Hidden maps only when we can upload+delete them; otherwise don't ship .map files.
+  const buildSourcemap =
+    mode === 'development' ? true : hasSentryUpload ? 'hidden' : false
+
   console.log('apiUrl', apiUrl);
   console.log('port', port);
+  if (command === 'build') {
+    console.log(
+      `[sentry] applicationKey=${SENTRY_APPLICATION_KEY}; upload=${hasSentryUpload ? 'on' : 'off (stamp only)'}`,
+    )
+  }
 
   return {
     plugins: [
       react(),
-      translationAssetsPlugin()
+      translationAssetsPlugin(),
+      // Must be last so maps/instrumentation survive other plugins.
+      sentryVitePlugin({
+        applicationKey: SENTRY_APPLICATION_KEY,
+        org: getEnv('SENTRY_ORG') || 'the-universal-forums',
+        project: getEnv('SENTRY_PROJECT') || 'javascript-react',
+        // EU ingest (matches VITE_SENTRY_DSN host).
+        url: getEnv('SENTRY_URL') || 'https://de.sentry.io',
+        authToken: sentryAuthToken || undefined,
+        telemetry: false,
+        errorHandler: (err) => {
+          // Never fail the app build solely because Sentry upload flaked.
+          console.warn('[sentry-vite-plugin]', err?.message || err)
+        },
+        sourcemaps: hasSentryUpload
+          ? {
+              // Vite writes to BUILD_OUT_DIR=dist.tmp before swap-dist.mjs.
+              assets: ['./dist.tmp/**', './dist/**'],
+              filesToDeleteAfterUpload: [
+                './dist.tmp/**/*.map',
+                './dist/**/*.map',
+              ],
+            }
+          : {
+              disable: true,
+            },
+        release: {
+          ...(sentryRelease ? { name: sentryRelease } : {}),
+          inject: true,
+          create: hasSentryUpload,
+          finalize: hasSentryUpload,
+          setCommits: hasSentryUpload
+            ? { auto: true, ignoreMissing: true }
+            : false,
+        },
+      }),
     ],
     define: {
       'process.env.DRAGGABLE_DEBUG': JSON.stringify(''),
+      // Align SDK release with uploaded artifacts when set at build time.
+      'import.meta.env.VITE_SENTRY_RELEASE': JSON.stringify(sentryRelease),
     },
     logLevel: 'info',
     resolve: {
@@ -105,7 +171,7 @@ export default defineConfig(({ command, mode }) => {
       },
     },
     build: {
-      sourcemap: mode === 'development',
+      sourcemap: buildSourcemap,
       minify: mode !== 'development',
       outDir: process.env.BUILD_OUT_DIR || 'dist.tmp',
       emptyOutDir: true,
