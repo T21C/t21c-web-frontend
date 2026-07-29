@@ -4,9 +4,9 @@ FROM node:22-bookworm-slim AS build
 
 ENV PUPPETEER_SKIP_DOWNLOAD=true
 WORKDIR /app
-COPY package.json package-lock.json ./
+COPY package.json ./
 COPY eslint-plugin-tuf ./eslint-plugin-tuf
-RUN --mount=type=cache,target=/root/.npm npm ci
+RUN --mount=type=cache,target=/root/.npm npm install
 
 COPY . .
 RUN --mount=type=secret,id=frontend_env,target=/app/.env.production,required=true \
