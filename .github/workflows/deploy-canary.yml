@@ -31,7 +31,9 @@ jobs:
       - name: Build and push immutable canary image
         uses: docker/build-push-action@v6
         env:
-          FRONTEND_BUILD_ENV: ${{ secrets.FRONTEND_BUILD_ENV_CANARY }}
+          FRONTEND_BUILD_ENV: |
+            ${{ secrets.FRONTEND_BUILD_ENV_CANARY }}
+            VITE_HEALTH_URL=http://127.0.0.1:13883
         with:
           context: .
           push: true

@@ -1,5 +1,5 @@
 // tuf-search: #urlHelpers
-import { API_BASE, CDN_BASE, OWN_BASE } from '@/config/env';
+import { API_BASE, CDN_BASE, HEALTH_BASE, OWN_BASE } from '@/config/env';
 
 function joinUrl(base, path) {
   const b = String(base ?? '').trim();
@@ -11,6 +11,10 @@ function joinUrl(base, path) {
 /** API URL for fetch/SSE: same-origin in development, absolute in deployed builds. */
 export function apiUrl(path) {
   return joinUrl(API_BASE, path);
+}
+
+export function healthUrl(path) {
+  return joinUrl(HEALTH_BASE, path);
 }
 
 export function cdnUrl(path) {

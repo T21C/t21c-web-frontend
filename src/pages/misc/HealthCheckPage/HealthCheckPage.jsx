@@ -1,6 +1,6 @@
 import { routes } from '@/api/routes';
 import { API_BASE } from '@/config/env';
-import { apiUrl } from '@/config/urls';
+import { apiUrl, healthUrl } from '@/config/urls';
 // tuf-search: #HealthCheckPage #healthCheckPage #healthCheck
 import React, { useState, useEffect, useMemo } from 'react';
 
@@ -335,15 +335,12 @@ const HealthCheckPage = () => {
   const [lastUpdated, setLastUpdated] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const development = process.env.NODE_ENV === 'development';
   const fetchHealthData = async () => {
     setIsRefreshing(true);
     setError(null);
 
     try {
-      const response = await fetch(
-        development ? 'http://localhost:3883/health/api' : 'https://api.tuforums.com/health/api',
-      );
+      const response = await fetch(healthUrl('/health/api'));
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);

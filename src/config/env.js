@@ -11,6 +11,10 @@ function normalizeOrigin(input) {
 export const API_BASE = import.meta.env.DEV
   ? ''
   : normalizeOrigin(import.meta.env.VITE_API_URL);
+export const HEALTH_BASE = normalizeOrigin(
+  import.meta.env.VITE_HEALTH_URL ||
+    (import.meta.env.DEV ? 'http://localhost:3883' : 'https://api.tuforums.com'),
+);
 export const OWN_BASE = normalizeOrigin(import.meta.env.VITE_OWN_URL);
 export const CDN_BASE = normalizeOrigin(import.meta.env.VITE_CDN_URL);
 
