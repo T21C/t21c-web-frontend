@@ -4,7 +4,11 @@ import { Portal } from "@/components/common/Portal";
 import { useTranslation } from "react-i18next";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 import { formatUrlForDisplay, getUrlHost, parseSafeUrl } from "@/utils/bioCanvas/urls";
-import { getUnapprovedExternalUrl, isApprovedNavigationUrl } from "@/utils/externalNavigation";
+import {
+  getUnapprovedExternalUrl,
+  isApprovedNavigationUrl,
+  isDangerousHref,
+} from "@/utils/externalNavigation";
 import {
   isExternalNavigationBypassActive,
   nativeLocationAssign,
@@ -55,26 +59,6 @@ function readAlwaysTrustedDomains() {
 
 function writeAlwaysTrustedDomains(set) {
   writeTrustedDomainSet(localStorage, ALWAYS_TRUSTED_DOMAINS_KEY, set);
-}
-
-/**
- * Characters the URL parser discards, which a naive scheme test does not.
- *
- * Per the WHATWG URL spec the parser removes every ASCII tab/LF/CR from
- * anywhere in the input, and strips leading C0 controls and spaces, all before
- * it decides what the scheme is. `String.trim()` does neither of those things
- * to the interior of a string, so `getAttribute("href")` can hand back
- * `"java\tscript:..."` — which fails a `/^javascript:/` test while the browser
- * still resolves it to `javascript:` and runs it on click.
- */
-const URL_PARSER_IGNORED = /[\t\n\r]/g;
-const URL_LEADING_STRIPPED = /^[\u0000-\u0020]+/;
-
-function isDangerousHref(href) {
-  const normalized = String(href || "")
-    .replace(URL_PARSER_IGNORED, "")
-    .replace(URL_LEADING_STRIPPED, "");
-  return /^(javascript|data|vbscript):/i.test(normalized);
 }
 
 function LinkConfirmModal({ pending, onConfirm, onCancel }) {
@@ -234,8 +218,6 @@ export function LinkConfirmProvider({ children }) {
       if (!hrefAttr || hrefAttr.startsWith("#")) return;
       if (/^(mailto|tel|sms):/i.test(hrefAttr.trim())) return;
 
-      // Check the attribute and the browser-resolved href. They can disagree:
-      // the URL parser drops tabs/newlines that a raw-string test still sees.
       if (isDangerousHref(hrefAttr) || isDangerousHref(anchor.href)) {
         event.preventDefault();
         return;
@@ -243,12 +225,8 @@ export function LinkConfirmProvider({ children }) {
 
       const unapproved = getUnapprovedExternalUrl(anchor.href);
       if (!unapproved) {
-        // getUnapprovedExternalUrl returns null for two very different cases:
-        // an approved destination (same-origin, allowlisted host, blob:/about:),
-        // and anything that will not parse as an http(s) URL at all. Letting the
-        // second case fall through is what made a `javascript:` href that slipped
-        // past the scheme test navigate normally. Approved destinations proceed;
-        // everything else stops here.
+        // Approved same-origin / allowlisted hosts proceed; anything else
+        // (including non-http schemes that slipped past) is blocked.
         if (!isApprovedNavigationUrl(anchor.href)) {
           event.preventDefault();
         }
@@ -290,12 +268,13 @@ export function LinkConfirmProvider({ children }) {
       }
 
       const asString = String(url);
-      if (isDangerousHref(asString)) {
-        return null;
-      }
-
       const unapproved = getUnapprovedExternalUrl(asString);
       if (!unapproved) {
+        // Same fail-closed rule as anchors: approved destinations proceed,
+        // non-http(s) / unparseable URLs are blocked (covers javascript:/data:).
+        if (!isApprovedNavigationUrl(asString)) {
+          return null;
+        }
         return nativeWindowOpen(url, target, features);
       }
 
@@ -341,10 +320,9 @@ export function LinkConfirmProvider({ children }) {
         return;
       }
       const asString = String(url);
-      if (isDangerousHref(asString)) return;
-
       const unapproved = getUnapprovedExternalUrl(asString);
       if (!unapproved) {
+        if (!isApprovedNavigationUrl(asString)) return;
         navigate(url);
         return;
       }

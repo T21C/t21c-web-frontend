@@ -4,6 +4,7 @@ export {
   APPROVED_EXTERNAL_HOSTS,
   getUnapprovedExternalUrl,
   isApprovedNavigationUrl,
+  isDangerousHref,
   resolveNavigationUrl,
 } from "@/utils/externalNavigation";
 export { navigateExternal, confirmExternalNavigation } from "@/utils/externalNavigationGate";

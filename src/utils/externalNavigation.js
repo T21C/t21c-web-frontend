@@ -77,6 +77,21 @@ export function resolveNavigationUrl(rawUrl) {
 }
 
 /**
+ * True for schemes that execute code when navigated (javascript:/data:/vbscript:).
+ * Uses WHATWG URL parsing so tab/LF/CR and leading C0/space stripping match the browser.
+ */
+export function isDangerousHref(href) {
+  const absolute = resolveNavigationUrl(href);
+  if (!absolute) return true;
+  try {
+    const { protocol } = new URL(absolute);
+    return protocol === 'javascript:' || protocol === 'data:' || protocol === 'vbscript:';
+  } catch {
+    return true;
+  }
+}
+
+/**
  * True when navigation should skip the exit warning:
  * same origin, configured OWN/CDN/API hosts, or allowlisted partner domains.
  */
