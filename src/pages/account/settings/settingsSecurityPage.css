@@ -11,6 +11,7 @@
 
 .settings-security-page .settings-security-page__section {
   margin-bottom: 2rem;
+  width: 100%;
   padding: 1rem;
   border-radius: 8px;
   background: var(--color-black-t30);
