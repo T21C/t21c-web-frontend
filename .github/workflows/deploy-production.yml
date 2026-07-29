@@ -1,4 +1,4 @@
-name: Build and deploy canary
+name: Build and deploy production
 
 on:
   push:
@@ -10,7 +10,7 @@ permissions:
   packages: write
 
 concurrency:
-  group: tuf-frontend-canary
+  group: tuf-frontend-production
   cancel-in-progress: false
 
 jobs:
@@ -28,16 +28,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push immutable canary image
+      - name: Build and push immutable production image
         uses: docker/build-push-action@v6
         env:
-          FRONTEND_BUILD_ENV: |
-            ${{ secrets.FRONTEND_BUILD_ENV_CANARY }}
-            VITE_HEALTH_URL=http://127.0.0.1:13883
+          FRONTEND_BUILD_ENV: ${{ secrets.FRONTEND_BUILD_ENV_PRODUCTION }}
         with:
           context: .
           push: true
-          tags: ghcr.io/t21c/t21c-web-frontend:${{ github.sha }}-canary
+          tags: ghcr.io/t21c/t21c-web-frontend:${{ github.sha }}
           labels: org.opencontainers.image.revision=${{ github.sha }}
           secret-envs: |
             frontend_env=FRONTEND_BUILD_ENV
@@ -64,8 +62,8 @@ jobs:
           install -m 600 /dev/null ~/.ssh/known_hosts
           printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
 
-      - name: Deploy frontend canary
+      - name: Deploy frontend production
         run: |
           set -euo pipefail
           ssh -i ~/.ssh/id_ed25519 tuf-deploy@tuf-main-server \
-            "sudo /usr/local/sbin/tuf-deploy-canary frontend '${{ github.sha }}-canary'"
+            "sudo /usr/local/sbin/tuf-deploy-frontend '${{ github.sha }}'"
