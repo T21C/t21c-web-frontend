@@ -43,6 +43,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Connect to Tailscale
+        if: ${{ vars.PRODUCTION_DEPLOY_ENABLED == 'true' }}
         uses: tailscale/github-action@v4
         with:
           oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
@@ -51,6 +52,7 @@ jobs:
           ping: tuf-main-server
 
       - name: Configure deploy SSH identity
+        if: ${{ vars.PRODUCTION_DEPLOY_ENABLED == 'true' }}
         env:
           DEPLOY_KEY: ${{ secrets.TUF_DEPLOY_SSH_KEY }}
           KNOWN_HOSTS: ${{ secrets.TUF_DEPLOY_KNOWN_HOSTS }}
@@ -63,6 +65,7 @@ jobs:
           printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
 
       - name: Deploy frontend production
+        if: ${{ vars.PRODUCTION_DEPLOY_ENABLED == 'true' }}
         run: |
           set -euo pipefail
           ssh -i ~/.ssh/id_ed25519 tuf-deploy@tuf-main-server \
