@@ -95,6 +95,8 @@ export default defineConfig(({ command, mode }) => {
   )
   const sentryRelease =
     getEnv('SENTRY_RELEASE') || getEnv('GITHUB_SHA') || ''
+  // Prefer token-embedded host when unset; a wrong region (e.g. de vs us) breaks upload.
+  const sentryUrl = getEnv('SENTRY_URL') || undefined
 
   if (command === 'build' && requireSentryUpload && !hasSentryUpload) {
     throw new Error(
@@ -126,7 +128,7 @@ export default defineConfig(({ command, mode }) => {
         applicationKey: SENTRY_APPLICATION_KEY,
         org: getEnv('SENTRY_ORG') || 'the-universal-forums',
         project: getEnv('SENTRY_PROJECT') || 'javascript-react',
-        url: getEnv('SENTRY_URL') || 'https://de.sentry.io',
+        ...(sentryUrl ? { url: sentryUrl } : {}),
         authToken: sentryAuthToken || undefined,
         telemetry: false,
         errorHandler: (err) => {
