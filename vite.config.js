@@ -2,6 +2,7 @@ import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import { sentryVitePlugin } from '@sentry/vite-plugin'
 import path from 'path'
+import { existsSync } from 'node:fs'
 import fs from 'node:fs/promises'
 
 async function findJsonFiles(root, current = root) {
@@ -154,9 +155,10 @@ export default defineConfig(({ command, mode }) => {
           inject: true,
           create: hasSentryUpload,
           finalize: hasSentryUpload,
-          setCommits: hasSentryUpload
-            ? { auto: true, ignoreMissing: true }
-            : false,
+          setCommits:
+            hasSentryUpload && existsSync('.git')
+              ? { auto: true, ignoreMissing: true }
+              : false,
         },
       }),
     ],
