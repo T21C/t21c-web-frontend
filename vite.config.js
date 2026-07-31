@@ -84,8 +84,9 @@ export default defineConfig(({ command, mode }) => {
   const port = mode === 'production' ? 5000 : 5173
 
   /*
-   * Sentry build (NOT VITE_*): SENTRY_AUTH_TOKEN, SENTRY_ORG, SENTRY_PROJECT,
-   * SENTRY_URL, SENTRY_RELEASE/GITHUB_SHA. Deploy injects release SHA + SENTRY_REQUIRE_UPLOAD=1.
+   * Sentry build (NOT VITE_*): SENTRY_AUTH_TOKEN (+ org/project/url),
+   * SENTRY_RELEASE/GITHUB_SHA. Prod deploy merges discrete GH secrets into
+   * .env.production and sets SENTRY_REQUIRE_UPLOAD=1.
    */
   const sentryAuthToken = getEnv('SENTRY_AUTH_TOKEN')
   const hasSentryUpload = Boolean(sentryAuthToken)
