@@ -52,7 +52,9 @@ jobs:
             printf 'VITE_SENTRY_DSN=%s\n' "$VITE_SENTRY_DSN"
             printf 'SENTRY_ORG=%s\n' "${SENTRY_ORG:-the-universal-forums}"
             printf 'SENTRY_PROJECT=%s\n' "${SENTRY_PROJECT:-javascript-react}"
-            printf 'SENTRY_URL=%s\n' "${SENTRY_URL:-https://de.sentry.io}"
+            if [[ -n "${SENTRY_URL}" ]]; then
+              printf 'SENTRY_URL=%s\n' "$SENTRY_URL"
+            fi
             printf 'GITHUB_SHA=%s\n' "$RELEASE_SHA"
             printf 'SENTRY_RELEASE=%s\n' "$RELEASE_SHA"
           } >>"$out"
