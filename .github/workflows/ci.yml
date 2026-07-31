@@ -23,6 +23,41 @@ jobs:
         with:
           node-version: 22
 
+      - name: Check production build secrets
+        env:
+          FRONTEND_BUILD_ENV: ${{ secrets.FRONTEND_BUILD_ENV_PRODUCTION }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
+        run: |
+          set -euo pipefail
+          [[ -n "${FRONTEND_BUILD_ENV}" ]] || { echo "FRONTEND_BUILD_ENV_PRODUCTION is empty" >&2; exit 1; }
+          [[ -n "${SENTRY_AUTH_TOKEN}" ]] || { echo "secret SENTRY_AUTH_TOKEN is empty" >&2; exit 1; }
+          [[ -n "${VITE_SENTRY_DSN}" ]] || { echo "secret VITE_SENTRY_DSN is empty" >&2; exit 1; }
+
+      - name: Prepare frontend build env
+        id: frontend_env
+        env:
+          FRONTEND_BUILD_ENV: ${{ secrets.FRONTEND_BUILD_ENV_PRODUCTION }}
+          VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
+          SENTRY_ORG: ${{ vars.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
+          SENTRY_URL: ${{ vars.SENTRY_URL }}
+          RELEASE_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          out="${RUNNER_TEMP}/frontend.env.production"
+          # Same merge as deploy, but no SENTRY_AUTH_TOKEN / REQUIRE_UPLOAD (stamp-only).
+          printf '%s\n' "$FRONTEND_BUILD_ENV" | grep -vE '^(SENTRY_|VITE_SENTRY_DSN|GITHUB_SHA)=' >"$out" || true
+          {
+            printf 'VITE_SENTRY_DSN=%s\n' "$VITE_SENTRY_DSN"
+            printf 'SENTRY_ORG=%s\n' "${SENTRY_ORG:-the-universal-forums}"
+            printf 'SENTRY_PROJECT=%s\n' "${SENTRY_PROJECT:-javascript-react}"
+            printf 'SENTRY_URL=%s\n' "${SENTRY_URL:-https://de.sentry.io}"
+            printf 'GITHUB_SHA=%s\n' "$RELEASE_SHA"
+            printf 'SENTRY_RELEASE=%s\n' "$RELEASE_SHA"
+          } >>"$out"
+          echo "path=${out}" >>"$GITHUB_OUTPUT"
+
       - name: Install dependencies
         env:
           PUPPETEER_SKIP_DOWNLOAD: "true"
@@ -32,9 +67,9 @@ jobs:
         run: npm run lint
 
       - name: Build production assets
-        # CI only validates the build. Sourcemap upload runs on deploy/promote.
         env:
           VITE_PROD_API_URL: http://127.0.0.1:13000
+          VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
         run: npm run build:prod
 
       - uses: docker/setup-buildx-action@v3
@@ -45,7 +80,7 @@ jobs:
           context: .
           push: false
           tags: ghcr.io/t21c/t21c-web-frontend:ci
-          secrets: |
-            "frontend_env=VITE_PROD_API_URL=http://127.0.0.1:13000"
+          secret-files: |
+            frontend_env=${{ steps.frontend_env.outputs.path }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

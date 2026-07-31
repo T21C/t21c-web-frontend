@@ -32,21 +32,26 @@ jobs:
         id: frontend_env
         env:
           FRONTEND_BUILD_ENV: ${{ secrets.FRONTEND_BUILD_ENV_PRODUCTION }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
+          SENTRY_ORG: ${{ vars.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
+          SENTRY_URL: ${{ vars.SENTRY_URL }}
           RELEASE_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
           [[ -n "${FRONTEND_BUILD_ENV}" ]] || { echo "FRONTEND_BUILD_ENV_PRODUCTION is empty" >&2; exit 1; }
-          printf '%s\n' "$FRONTEND_BUILD_ENV" | grep -qE '^SENTRY_AUTH_TOKEN=.+' || {
-            echo "FRONTEND_BUILD_ENV_PRODUCTION missing SENTRY_AUTH_TOKEN" >&2
-            exit 1
-          }
-          printf '%s\n' "$FRONTEND_BUILD_ENV" | grep -qE '^VITE_SENTRY_DSN=.+' || {
-            echo "FRONTEND_BUILD_ENV_PRODUCTION missing VITE_SENTRY_DSN" >&2
-            exit 1
-          }
+          [[ -n "${SENTRY_AUTH_TOKEN}" ]] || { echo "secret SENTRY_AUTH_TOKEN is empty" >&2; exit 1; }
+          [[ -n "${VITE_SENTRY_DSN}" ]] || { echo "secret VITE_SENTRY_DSN is empty" >&2; exit 1; }
           out="${RUNNER_TEMP}/frontend.env.production"
-          printf '%s\n' "$FRONTEND_BUILD_ENV" | grep -vE '^(SENTRY_RELEASE|GITHUB_SHA|SENTRY_REQUIRE_UPLOAD)=' >"$out"
+          # Vite URLs/flags only; Sentry comes from discrete secrets/vars below.
+          printf '%s\n' "$FRONTEND_BUILD_ENV" | grep -vE '^(SENTRY_|VITE_SENTRY_DSN|GITHUB_SHA)=' >"$out" || true
           {
+            printf 'VITE_SENTRY_DSN=%s\n' "$VITE_SENTRY_DSN"
+            printf 'SENTRY_AUTH_TOKEN=%s\n' "$SENTRY_AUTH_TOKEN"
+            printf 'SENTRY_ORG=%s\n' "${SENTRY_ORG:-the-universal-forums}"
+            printf 'SENTRY_PROJECT=%s\n' "${SENTRY_PROJECT:-javascript-react}"
+            printf 'SENTRY_URL=%s\n' "${SENTRY_URL:-https://de.sentry.io}"
             printf 'GITHUB_SHA=%s\n' "$RELEASE_SHA"
             printf 'SENTRY_RELEASE=%s\n' "$RELEASE_SHA"
             printf 'SENTRY_REQUIRE_UPLOAD=1\n'
