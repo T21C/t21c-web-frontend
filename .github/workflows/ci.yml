@@ -32,8 +32,7 @@ jobs:
         run: npm run lint
 
       - name: Build production assets
-        # Without SENTRY_AUTH_TOKEN: stamp-only (applicationKey). Add org token +
-        # SENTRY_* to enable sourcemap upload (see vite.config.js header comment).
+        # CI only validates the build. Sourcemap upload runs on deploy/promote.
         env:
           VITE_PROD_API_URL: http://127.0.0.1:13000
         run: npm run build:prod

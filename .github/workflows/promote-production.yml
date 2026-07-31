@@ -43,17 +43,40 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push immutable production image
-        uses: docker/build-push-action@v6
+      - name: Prepare frontend build env
+        id: frontend_env
         env:
           FRONTEND_BUILD_ENV: ${{ secrets.FRONTEND_BUILD_ENV_PRODUCTION }}
+          RELEASE_SHA: ${{ inputs.source_sha }}
+        run: |
+          set -euo pipefail
+          [[ -n "${FRONTEND_BUILD_ENV}" ]] || { echo "FRONTEND_BUILD_ENV_PRODUCTION is empty" >&2; exit 1; }
+          printf '%s\n' "$FRONTEND_BUILD_ENV" | grep -qE '^SENTRY_AUTH_TOKEN=.+' || {
+            echo "FRONTEND_BUILD_ENV_PRODUCTION missing SENTRY_AUTH_TOKEN" >&2
+            exit 1
+          }
+          printf '%s\n' "$FRONTEND_BUILD_ENV" | grep -qE '^VITE_SENTRY_DSN=.+' || {
+            echo "FRONTEND_BUILD_ENV_PRODUCTION missing VITE_SENTRY_DSN" >&2
+            exit 1
+          }
+          out="${RUNNER_TEMP}/frontend.env.production"
+          printf '%s\n' "$FRONTEND_BUILD_ENV" | grep -vE '^(SENTRY_RELEASE|GITHUB_SHA|SENTRY_REQUIRE_UPLOAD)=' >"$out"
+          {
+            printf 'GITHUB_SHA=%s\n' "$RELEASE_SHA"
+            printf 'SENTRY_RELEASE=%s\n' "$RELEASE_SHA"
+            printf 'SENTRY_REQUIRE_UPLOAD=1\n'
+          } >>"$out"
+          echo "path=${out}" >>"$GITHUB_OUTPUT"
+
+      - name: Build and push immutable production image
+        uses: docker/build-push-action@v6
         with:
           context: .
           push: true
           tags: ghcr.io/t21c/t21c-web-frontend:${{ inputs.source_sha }}
           labels: org.opencontainers.image.revision=${{ inputs.source_sha }}
-          secret-envs: |
-            frontend_env=FRONTEND_BUILD_ENV
+          secret-files: |
+            frontend_env=${{ steps.frontend_env.outputs.path }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
