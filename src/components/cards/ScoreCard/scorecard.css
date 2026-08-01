@@ -313,6 +313,55 @@
   flex-shrink: 0;
 }
 
+/* Featured mode — bio canvas embeds: one link, no video/judgements/impact chrome */
+a.score-card.score-card--featured {
+  text-decoration: none;
+  color: inherit;
+  background: var(--color-black-t20);
+  min-height: 2.75rem;
+  padding: 0.45rem 0.5rem;
+  gap: 0.65rem;
+}
+
+.score-card--featured .score-card__clear-id {
+  display: none;
+}
+
+a.score-card.score-card--featured:hover {
+  border-color: var(--color-purple-2);
+  background: var(--btn-primary-tint);
+}
+
+.score-card--featured .img-wrapper {
+  width: 2.25rem;
+}
+
+.score-card--featured .score-desc-song {
+  font-size: 1.05rem;
+}
+
+.score-card--featured .score-exp-artist,
+.score-card--featured .score-desc-player {
+  font-size: 0.75rem;
+}
+
+.score-card--featured .score-exp {
+  font-size: 0.75rem;
+}
+
+.score-card--featured .score-desc {
+  font-size: 1rem;
+}
+
+.score-card--featured .score-card__player-avatar {
+  height: 1.1rem;
+  width: 1.1rem;
+}
+
+.score-card--featured:hover .acc-wrapper-inner {
+  transform: none;
+}
+
 
 
 .score-card .wf-badge {
