@@ -68,9 +68,10 @@ const PackItem = ({
 
   if (item.type === 'level') {
     return (
-      <Draggable 
-        draggableId={`item-${item.id}`} 
+      <Draggable
+        draggableId={`item-${item.id}`}
         index={index}
+        isDragDisabled={!canEdit}
       >
         {(provided, snapshot) => (
           <div
@@ -97,9 +98,10 @@ const PackItem = ({
   }
 
   return (
-    <Draggable 
-      draggableId={`item-${item.id}`} 
+    <Draggable
+      draggableId={`item-${item.id}`}
       index={index}
+      isDragDisabled={!canEdit}
     >
       {(provided, snapshot) => (
         <div
@@ -112,7 +114,7 @@ const PackItem = ({
           className={`pack-item pack-item--folder ${snapshot.isDragging ? 'dragging' : ''} ${isExpanded ? 'expanded' : ''}`}
         >
           <div className="pack-item__header">
-            {canEdit && (
+            {canEdit && provided.dragHandleProps && (
               <button
                 type="button"
                 className="pack-item__drag-handle"

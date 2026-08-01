@@ -87,7 +87,7 @@ export default defineConfig(({ command, mode }) => {
   /*
    * Sentry build (NOT VITE_*): SENTRY_AUTH_TOKEN (+ org/project/url),
    * SENTRY_RELEASE/GITHUB_SHA. Prod deploy merges discrete GH secrets into
-   * .env.production and sets SENTRY_REQUIRE_UPLOAD=1.
+   * .env.production and requires upload unless vars.SENTRY_SKIP_UPLOAD=true.
    */
   const sentryAuthToken = getEnv('SENTRY_AUTH_TOKEN')
   const hasSentryUpload = Boolean(sentryAuthToken)
