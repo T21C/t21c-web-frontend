@@ -55,18 +55,10 @@ const isExternalDomMutationNoise = (event) => {
   });
 };
 
-/** OEM / in-app browsers inject WebView bridges and ad SDKs that throw into page JS. */
-const isThirdPartyNativeBridgeNoise = (event) => {
-  const values = event.exception?.values ?? [];
-  return values.some((value) =>
-    /nativeBridge\.\w+ is not a function/i.test(value.value || ''),
-  );
-};
-
 /**
- * OEM browsers (Vivo, Oppo, adware SDKs) eval scripts that reference globals
- * they forgot to inject (downProgCallback, LIDNotifyId, etc.).
- * These fire as ReferenceError: X is not defined with no first-party stack frames.
+ * OEM / in-app browsers eval scripts that reference globals they never inject.
+ * These fire as ReferenceError with no usable frames — thirdPartyErrorFilterIntegration
+ * cannot classify them (no filenames / no module metadata).
  */
 const isAnonymousInjectedGlobalNoise = (event) => {
   const values = event.exception?.values ?? [];
@@ -94,6 +86,19 @@ const tracePropagationTargets = [
   ...(OWN_BASE ? [OWN_BASE] : []),
 ];
 
+/**
+ * allowUrls matches the topmost non-anonymous stack frame URL.
+ * Include absolute site hosts plus root-relative Vite asset paths (some WebViews
+ * report `/assets/...` without a host).
+ */
+const allowUrls = [
+  /tuforums\.com/i,
+  /\/assets\//i,
+  /localhost/i,
+  /127\.0\.0\.1/i,
+  ...(OWN_BASE ? [OWN_BASE] : []),
+];
+
 Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
   environment: import.meta.env.MODE,
@@ -106,6 +111,10 @@ Sentry.init({
     Sentry.thirdPartyErrorFilterIntegration({
       filterKeys: ['tuf-website'],
       behaviour: 'drop-error-if-exclusively-contains-third-party-frames',
+      // OEM / WebView bridges (AdSdk `_dsbridge`, Instagram `iabjs://`, …) throw inside
+      // setTimeout/addEventListener wrappers. Without this, the stamped sentryWrapped
+      // frame counts as first-party and exclusive-third-party drop never fires.
+      ignoreSentryInternalFrames: true,
     }),
     Sentry.reactRouterBrowserTracingIntegration({
       useEffect,
@@ -135,14 +144,12 @@ Sentry.init({
   // Full browser sampling in DEV for local repro; prod stays quota-friendly.
   tracesSampleRate: import.meta.env.DEV ? 1.0 : 0.1,
   tracePropagationTargets,
+  allowUrls,
   // Browser extensions / page translators mutate React-owned DOM; React then
   // throws NotFoundError on removeChild during commit. Unfixable from app code.
+  // (Has first-party React frames, so thirdPartyErrorFilterIntegration keeps it.)
   ignoreErrors: [
     /Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node/i,
-    /nativeBridge\.\w+ is not a function/i,
-    // Known OEM-injected globals that will never exist in our app.
-    /downProgCallback is not defined/i,
-    /LIDNotifyId is not defined/i,
   ],
   denyUrls: [
     /^chrome-extension:\/\//i,
@@ -158,7 +165,6 @@ Sentry.init({
       isExtensionOriginatedEvent(event) ||
       isCloudflareBeaconNoise(event) ||
       isExternalDomMutationNoise(event) ||
-      isThirdPartyNativeBridgeNoise(event) ||
       isAnonymousInjectedGlobalNoise(event)
     ) {
       return null;
