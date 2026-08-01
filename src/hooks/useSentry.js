@@ -97,7 +97,8 @@ const tracePropagationTargets = [
 Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
   environment: import.meta.env.MODE,
-  enabled: Boolean(import.meta.env.VITE_SENTRY_DSN) && !import.meta.env.DEV,
+  // DSN present → on in prod and local Vite DEV (needed to reproduce issues with full traces).
+  enabled: Boolean(import.meta.env.VITE_SENTRY_DSN),
   sendDefaultPii: true,
   ...(sentryRelease ? { release: sentryRelease } : {}),
   // applicationKey "tuf-website" is stamped by @sentry/vite-plugin at build time.
@@ -112,9 +113,27 @@ Sentry.init({
       useNavigationType,
       createRoutesFromChildren,
       matchRoutes,
+      // Navigation/pageload is the e2e root; fetches nest under it while idle-open.
+      // React Router starts a fresh Trace ID on each navigation (SDK default).
+      // Do not manually rewrite propagation context on spanEnd — that breaks sampling.
+      instrumentPageLoad: true,
+      instrumentNavigation: true,
+      traceFetch: true,
+      traceXHR: true,
+      enableHTTPTimings: true,
+      // INP click roots flatten server spans; leave Web Vitals without INP spans.
+      enableInp: false,
+      // Capture the post-navigation request burst, then end (default finalTimeout=30s).
+      idleTimeout: 2000,
+      finalTimeout: 15000,
+      childSpanTimeout: 8000,
+      // Link consecutive navigations in the UI without forcing one shared Trace ID.
+      linkPreviousTrace: 'in-memory',
+      consistentTraceSampling: false,
     }),
   ],
-  tracesSampleRate: 1.0,
+  // Full browser sampling in DEV for local repro; prod stays quota-friendly.
+  tracesSampleRate: import.meta.env.DEV ? 1.0 : 0.1,
   tracePropagationTargets,
   // Browser extensions / page translators mutate React-owned DOM; React then
   // throws NotFoundError on removeChild during commit. Unfixable from app code.
