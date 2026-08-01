@@ -75,6 +75,69 @@ const isAnonymousInjectedGlobalNoise = (event) => {
   return !hasAppFrame;
 };
 
+/** Vite (:5173) and local API (:3000–3009). Other loopback ports are helper/IPC noise. */
+const isAllowedLoopbackPort = (port) => {
+  const n = Number(port);
+  return n === 5173 || n === 5000 || (n >= 3000 && n <= 3009);
+};
+
+const LOOPBACK_URL_PORT_RE =
+  /https?:\/\/(?:localhost|127\.0\.0\.1|\[::1\])(?::(\d+))?/i;
+
+const collectEventUrls = (event) => {
+  const urls = [];
+  for (const crumb of event.breadcrumbs ?? []) {
+    if (crumb?.data?.url) urls.push(String(crumb.data.url));
+  }
+  if (event.request?.url) urls.push(String(event.request.url));
+  for (const frame of eventStackFrames(event)) {
+    if (frame.filename) urls.push(String(frame.filename));
+  }
+  return urls;
+};
+
+const isAbortErrorEvent = (event) => {
+  const values = event.exception?.values ?? [];
+  return values.some((value) => {
+    const type = value.type || '';
+    const message = value.value || '';
+    return (
+      type === 'AbortError' ||
+      /signal is aborted/i.test(message) ||
+      (type === 'DOMException' && /aborted/i.test(message))
+    );
+  });
+};
+
+/**
+ * Drop AbortErrors from loopback probes outside Vite/API ports — e.g. TUFHelperLite
+ * `@adofai-ipc/client` scanning :32145–32155 (see JAVASCRIPT-REACT-1P).
+ */
+const isNonAppLoopbackAbortNoise = (event) => {
+  if (!isAbortErrorEvent(event)) return false;
+
+  const frames = eventStackFrames(event);
+  if (
+    frames.some(
+      (frame) =>
+        typeof frame.filename === 'string' && /@adofai-ipc\//i.test(frame.filename),
+    )
+  ) {
+    return true;
+  }
+
+  const loopbackPorts = collectEventUrls(event)
+    .map((url) => {
+      const match = url.match(LOOPBACK_URL_PORT_RE);
+      if (!match) return null;
+      return match[1] ? Number(match[1]) : 80;
+    })
+    .filter((port) => port != null);
+
+  if (loopbackPorts.length === 0) return false;
+  return loopbackPorts.every((port) => !isAllowedLoopbackPort(port));
+};
+
 const sentryRelease = import.meta.env.VITE_SENTRY_RELEASE;
 
 const tracePropagationTargets = [
