@@ -125,22 +125,25 @@ const ScoreCard = ({ scoreData, topScores = [], potentialTopScores = [], mode = 
     </Link>
   );
 
+  const topScoreEntry = !isFeaturedMode
+    ? topScores.find(score => score.id === scoreData.id)
+    : undefined;
+  const potentialScoreEntry = !isFeaturedMode && !topScoreEntry
+    ? potentialTopScores.find(score => score.id === scoreData.id)
+    : undefined;
+
   const scoreBlock = (
     <div className="score-wrapper">
       <p className="score-exp">{t('score.card.labels.score')}</p>
       <p className="score-desc">{formatScore(scoreData.scoreV2)}</p>
-      {!isFeaturedMode && topScores.find(score => score.id === scoreData.id) ? (
-        <p className="score-impact">+{formatNumber(
-          topScores.find(score => score.id === scoreData.id).impact)
-        }</p>
+      {topScoreEntry ? (
+        <p className="score-impact">+{formatNumber(topScoreEntry.impact)}</p>
       ) : null}
-      {!isFeaturedMode && potentialTopScores.find(score => score.id === scoreData.id) ? (
+      {potentialScoreEntry ? (
         <p className="score-impact potential"
-          data-tooltip-id="potential-score-tooltip">+{formatNumber(
-          potentialTopScores.find(score => score.id === scoreData.id).impact)
-        }</p>
+          data-tooltip-id="potential-score-tooltip">+{formatNumber(potentialScoreEntry.impact)}</p>
       ) : null}
-      {!isFeaturedMode && (
+      {potentialScoreEntry && (
         <Tooltip id="potential-score-tooltip" place="bottom" style={{maxWidth: '400px'}}>
           {t('score.card.tooltips.potentialScore')}
         </Tooltip>
