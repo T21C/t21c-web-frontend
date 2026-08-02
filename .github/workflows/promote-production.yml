@@ -122,4 +122,4 @@ jobs:
           IMAGE_TAG: ${{ inputs.source_sha }}
         run: |
           ssh -i ~/.ssh/id_ed25519 tuf-deploy@tuf-main-server \
-            "sudo /usr/local/sbin/tuf-deploy-frontend '$IMAGE_TAG'"
+            "sudo /srv/tuf/infra/bin/tuf-deploy-frontend '$IMAGE_TAG'"
