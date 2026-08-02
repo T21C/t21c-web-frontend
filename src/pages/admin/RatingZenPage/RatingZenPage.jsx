@@ -25,6 +25,7 @@ import toast from 'react-hot-toast';
 const DECK_SIZES = [5, 10, 15, 20, 25, 30];
 const DECK_UNIT = 5;
 const DEFAULT_DECK_SIZE = 15;
+const DEFAULT_RANDOMNESS = 40;
 
 const videoCache = new Map();
 
@@ -128,6 +129,7 @@ const RatingZenPage = () => {
   const [deckSize, setDeckSize] = useState(DEFAULT_DECK_SIZE);
   const [onlyLowDiff, setOnlyLowDiff] = useState(false);
   const [sortPreset, setSortPreset] = useState('least'); // least | most | id | recent
+  const [randomness, setRandomness] = useState(DEFAULT_RANDOMNESS);
   const [isDealing, setIsDealing] = useState(false);
 
   const [cards, setCards] = useState([]);
@@ -224,6 +226,7 @@ const RatingZenPage = () => {
         params: {
           deckSize,
           onlyLowDiff: onlyLowDiff ? 'true' : 'false',
+          randomness,
           ...sortParams,
         },
       });
@@ -255,16 +258,17 @@ const RatingZenPage = () => {
     } finally {
       setIsDealing(false);
     }
-  }, [user, deckSize, onlyLowDiff, sortParams, navigate, t]);
+  }, [user, deckSize, onlyLowDiff, randomness, sortParams, navigate, t]);
 
   useEffect(() => {
-    if (!current?.level?.videoLink) {
+    const videoLink = current?.displayVideoLink || current?.level?.videoLink;
+    if (!videoLink) {
       setVideoData(null);
       setIsVideoLoading(false);
       return;
     }
     setIsVideoLoading(true);
-    const link = current.level.videoLink;
+    const link = videoLink;
     const cached = videoCache.get(link);
     if (cached) {
       setVideoData(cached);
@@ -277,7 +281,7 @@ const RatingZenPage = () => {
         setVideoData(data);
       })
       .finally(() => setIsVideoLoading(false));
-  }, [current?.level?.videoLink, current?.id]);
+  }, [current?.displayVideoLink, current?.level?.videoLink, current?.id]);
 
   useEffect(() => {
     const saved = cardAnswers[index];
@@ -575,6 +579,26 @@ const RatingZenPage = () => {
                 menuPlacement="bottom"
                 isSearchable={false}
               />
+            </div>
+
+            <div className="rating-zen-page__field">
+              <div className="rating-zen-page__field-row">
+                <span>{t('rating.zen.setup.randomness')}</span>
+                <span className="rating-zen-page__field-value">
+                  {t('rating.zen.setup.randomnessValue', { n: randomness })}
+                </span>
+              </div>
+              <input
+                type="range"
+                className="rating-zen-page__range"
+                min={0}
+                max={100}
+                step={1}
+                value={randomness}
+                onChange={(e) => setRandomness(Number(e.target.value))}
+                aria-label={t('rating.zen.setup.randomness')}
+              />
+              <small>{t('rating.zen.setup.randomnessHint')}</small>
             </div>
 
             <div className="rating-zen-page__setup-actions">

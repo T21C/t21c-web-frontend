@@ -79,6 +79,9 @@
       "sortMost": "Most rated first",
       "sortId": "By level id",
       "sortRecent": "Recently updated",
+      "randomness": "Mix",
+      "randomnessValue": "{{n}}",
+      "randomnessHint": "Low sticks to priority order; high mixes across the queue",
       "dealing": "Dealing…",
       "start": "Start session",
       "back": "Back to queue"
