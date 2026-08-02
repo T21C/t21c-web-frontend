@@ -6,7 +6,7 @@ import { buildStaticPageMeta } from '@/utils/meta';
 import { StateDisplay } from "@/components/common/selectors";
 import "./adminratingpage.css";
 import { useEffect, useState, useCallback, useMemo, useRef } from "react";
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { VirtualList } from "@/components/common/VirtualList";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRatingFilter } from "@/contexts/RatingFilterContext";
@@ -82,10 +82,25 @@ const RatingPage = () => {
   const [weeklyRaterActivity, setWeeklyRaterActivity] = useState([]);
   const fetchGenRef = useRef(0);
   const deepLinkHandledRef = useRef(false);
+  const selectedRatingIdRef = useRef(null);
+  const sseHandlersRef = useRef({});
 
   useEffect(() => {
+    selectedRatingIdRef.current = selectedRating?.id ?? null;
+  }, [selectedRating?.id]);
+
+  useEffect(() => {
+    // Clear immediately on keystroke; debounce only delays the request (LevelPage clears on query change too).
+    if (searchQuery !== debouncedQuery) {
+      setRatings(null);
+      setHasMore(false);
+      setOffset(0);
+      setIsLoading(true);
+      fetchGenRef.current += 1;
+    }
     const timer = setTimeout(() => setDebouncedQuery(searchQuery), SEARCH_DEBOUNCE_MS);
     return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only react to searchQuery; compare against latest debounced value
   }, [searchQuery]);
 
   const buildListParams = useCallback((nextOffset) => {
@@ -104,12 +119,31 @@ const RatingPage = () => {
     return params;
   }, [sortType, sortOrder, lowDiffFilter, fourVoteFilter, hideRated, debouncedQuery]);
 
+  const normalizePageResults = (data) => {
+    // New API: { results, total, hasMore }. Guard against accidental bare/non-array bodies.
+    if (Array.isArray(data)) {
+      return { results: data, total: data.length, hasMore: false };
+    }
+    if (data && typeof data === 'object' && Array.isArray(data.results)) {
+      return {
+        results: data.results,
+        total: typeof data.total === 'number' ? data.total : data.results.length,
+        hasMore: Boolean(data.hasMore),
+      };
+    }
+    return { results: [], total: 0, hasMore: false };
+  };
+
   const fetchRatingsPage = useCallback(async ({ append = false, nextOffset = 0 } = {}) => {
     const gen = ++fetchGenRef.current;
     if (append) {
       setIsLoadingMore(true);
     } else {
+      // null = loading sentinel (same pattern as LevelPage); clears stale cards
+      setRatings(null);
       setIsLoading(true);
+      setOffset(0);
+      setHasMore(false);
     }
     try {
       const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
@@ -121,16 +155,17 @@ const RatingPage = () => {
       const [ratingsResponse, weeklyActivityResponse] = await Promise.all([listPromise, weeklyPromise]);
       if (gen !== fetchGenRef.current) return;
 
-      const page = ratingsResponse.data;
-      const results = page?.results || [];
-      setTotalCount(page?.total ?? results.length);
-      setHasMore(Boolean(page?.hasMore));
+      const page = normalizePageResults(ratingsResponse.data);
+      const results = page.results;
+      setTotalCount(page.total);
+      setHasMore(page.hasMore);
       setOffset(nextOffset + results.length);
 
       if (append) {
         setRatings((prev) => {
-          const existing = new Set((prev || []).map((r) => r.id));
-          const merged = [...(prev || [])];
+          const base = Array.isArray(prev) ? prev : [];
+          const existing = new Set(base.map((r) => r.id));
+          const merged = [...base];
           for (const row of results) {
             if (!existing.has(row.id)) merged.push(row);
           }
@@ -158,20 +193,18 @@ const RatingPage = () => {
   }, [buildListParams]);
 
   const reloadFromStart = useCallback(() => {
-    setOffset(0);
-    setHasMore(false);
     return fetchRatingsPage({ append: false, nextOffset: 0 });
   }, [fetchRatingsPage]);
 
   const loadMoreRatings = useCallback(() => {
-    if (isLoading || isLoadingMore || !hasMore) return;
+    if (isLoading || isLoadingMore || !hasMore || ratings == null) return;
     fetchRatingsPage({ append: true, nextOffset: offset });
-  }, [fetchRatingsPage, hasMore, isLoading, isLoadingMore, offset]);
+  }, [fetchRatingsPage, hasMore, isLoading, isLoadingMore, offset, ratings]);
 
   const patchRatingRow = useCallback((listRow) => {
     if (!listRow?.id) return;
     setRatings((prev) => {
-      if (!prev) return prev;
+      if (!Array.isArray(prev)) return prev;
       const idx = prev.findIndex((r) => r.id === listRow.id);
       if (idx === -1) return prev;
       const next = [...prev];
@@ -182,13 +215,13 @@ const RatingPage = () => {
   }, []);
 
   const removeRatingById = useCallback((ratingId) => {
-    setRatings((prev) => (prev || []).filter((r) => r.id !== ratingId));
+    setRatings((prev) => (Array.isArray(prev) ? prev.filter((r) => r.id !== ratingId) : prev));
     setSelectedRating((sel) => (sel?.id === ratingId ? null : sel));
     setTotalCount((c) => Math.max(0, c - 1));
   }, []);
 
   const removeRatingByLevelId = useCallback((levelId) => {
-    setRatings((prev) => (prev || []).filter((r) => r.level?.id !== levelId));
+    setRatings((prev) => (Array.isArray(prev) ? prev.filter((r) => r.level?.id !== levelId) : prev));
     setSelectedRating((sel) => (sel?.level?.id === levelId ? null : sel));
   }, []);
 
@@ -198,6 +231,15 @@ const RatingPage = () => {
     setConnectedManagers(managers);
   }, []);
 
+  // Keep SSE handlers on a ref so the EventSource effect does not reconnect on every fetch/filter change
+  sseHandlersRef.current = {
+    logUserCountChange,
+    patchRatingRow,
+    removeRatingById,
+    removeRatingByLevelId,
+    reloadFromStart,
+  };
+
   useEffect(() => {
     reloadFromStart();
   }, [reloadFromStart]);
@@ -206,22 +248,23 @@ const RatingPage = () => {
     const handleMessage = (event) => {
       try {
         const data = JSON.parse(event.data);
+        const h = sseHandlersRef.current;
 
         switch (data.type) {
           case 'userCount':
-            logUserCountChange(data.data.total, data.data.managers);
+            h.logUserCountChange(data.data.total, data.data.managers);
             break;
           case 'ratingUpdate': {
             const payload = data.data || {};
             if (payload.action === 'remove') {
-              if (payload.ratingId) removeRatingById(payload.ratingId);
-              else if (payload.levelId) removeRatingByLevelId(payload.levelId);
+              if (payload.ratingId) h.removeRatingById(payload.ratingId);
+              else if (payload.levelId) h.removeRatingByLevelId(payload.levelId);
               break;
             }
             if (payload.listRow) {
-              patchRatingRow(payload.listRow);
+              h.patchRatingRow(payload.listRow);
             }
-            if (payload.complete && selectedRating?.id === payload.ratingId) {
+            if (payload.complete && selectedRatingIdRef.current === payload.ratingId) {
               setSelectedRating(payload.complete);
             }
             break;
@@ -230,15 +273,17 @@ const RatingPage = () => {
             const payload = data.data || {};
             if (!payload.levelId) break;
             if (payload.level == null || payload.level.toRate === false) {
-              removeRatingByLevelId(payload.levelId);
+              h.removeRatingByLevelId(payload.levelId);
               break;
             }
             setRatings((prev) =>
-              (prev || []).map((r) =>
-                r.level?.id === payload.levelId
-                  ? { ...r, level: { ...r.level, ...payload.level } }
-                  : r
-              )
+              Array.isArray(prev)
+                ? prev.map((r) =>
+                    r.level?.id === payload.levelId
+                      ? { ...r, level: { ...r.level, ...payload.level } }
+                      : r
+                  )
+                : prev
             );
             setSelectedRating((sel) =>
               sel?.level?.id === payload.levelId
@@ -248,8 +293,7 @@ const RatingPage = () => {
             break;
           }
           case 'submissionUpdate':
-            // Queue membership may change; soft reload first page only
-            reloadFromStart();
+            h.reloadFromStart();
             break;
           case 'ping':
             break;
@@ -263,10 +307,12 @@ const RatingPage = () => {
 
     let eventSource = null;
     let reconnectTimeout = null;
-    
+    let closed = false;
+
     const connect = () => {
+      if (closed) return;
       const params = new URLSearchParams({ source: 'rating' });
-      if (user) {
+      if (user?.id) {
         params.set('userId', user.id);
       }
       const url = `${apiUrl(routes.events())}?${params.toString()}`;
@@ -282,6 +328,9 @@ const RatingPage = () => {
         setIsConnected(false);
         if (eventSource) {
           eventSource.close();
+          eventSource = null;
+        }
+        if (!closed) {
           reconnectTimeout = setTimeout(connect, 5000);
         }
       };
@@ -291,23 +340,16 @@ const RatingPage = () => {
     connect();
 
     return () => {
+      closed = true;
       if (reconnectTimeout) clearTimeout(reconnectTimeout);
       if (eventSource) {
         eventSource.close();
-        setIsConnected(false);
-        setConnectedUsers(0);
-        setConnectedManagers(0);
       }
+      setIsConnected(false);
+      setConnectedUsers(0);
+      setConnectedManagers(0);
     };
-  }, [
-    logUserCountChange,
-    user,
-    patchRatingRow,
-    removeRatingById,
-    removeRatingByLevelId,
-    reloadFromStart,
-    selectedRating?.id,
-  ]);
+  }, [user?.id]);
 
   // Deep link #levelId → complete rating object
   useEffect(() => {
@@ -395,6 +437,12 @@ const RatingPage = () => {
         <ScrollButton />
         <ReferencesButton />
         <div className="admin-buttons">
+            <Link
+              to="/rating/zen"
+              className="admin-button"
+            >
+              {t('rating.buttons.zenMode', { defaultValue: 'Zen Mode' })}
+            </Link>
             {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
               <>
                 <button 
@@ -533,7 +581,7 @@ const RatingPage = () => {
               </div>
               </div>
             </div>
-          {ratings && ratings.length > 0 ? (
+          {Array.isArray(ratings) && ratings.length > 0 ? (
           <>
             <VirtualList
               style={{ paddingBottom: "4rem", overflow: "visible" }}
@@ -563,13 +611,23 @@ const RatingPage = () => {
               )}
               computeItemKey={(index, rating) => rating?.id ?? index}
             />
+          </>
+        ) : 
+        Array.isArray(ratings) && ratings.length === 0 && !isLoading ? (
+          <div className="all-rated-message">
+            <h2>{t('rating.messages.noRatings.title')}</h2>
+            <p>{t('rating.messages.noRatings.subtitle')}</p>
+          </div>
+        ) : (
+          <div className="loader loader-offset"/>
+        )}
 
             {selectedRating && (
               <RatingDetailPopup
                 selectedRating={selectedRating}
                 setSelectedRating={setSelectedRating}
                 setShowReferences={setShowReferences}
-                ratings={ratings}
+                ratings={Array.isArray(ratings) ? ratings : []}
                 setRatings={setRatings}
                 user={user}
                 isSuperAdmin={hasFlag(user, permissionFlags.SUPER_ADMIN)}
@@ -598,17 +656,21 @@ const RatingPage = () => {
                     if (shouldRemove) {
                       removeRatingByLevelId(updatedLevel.id);
                     } else {
-                      setRatings(prev => prev?.map(rating =>
-                        rating.level.id === updatedLevel.id
-                          ? {
-                              ...rating,
-                              level: {
-                                ...rating.level,
-                                ...updatedLevel
-                              }
-                            }
-                          : rating
-                      ) ?? prev);
+                      setRatings(prev =>
+                        Array.isArray(prev)
+                          ? prev.map(rating =>
+                              rating.level.id === updatedLevel.id
+                                ? {
+                                    ...rating,
+                                    level: {
+                                      ...rating.level,
+                                      ...updatedLevel
+                                    }
+                                  }
+                                : rating
+                            )
+                          : prev
+                      );
                     }
                   }
                   setOpenEditDialog(false);
@@ -616,16 +678,6 @@ const RatingPage = () => {
                 }}
               />
             )}
-          </>
-        ) : 
-        ratings && ratings.length === 0 && !isLoading ? (
-          <div className="all-rated-message">
-            <h2>{t('rating.messages.noRatings.title')}</h2>
-            <p>{t('rating.messages.noRatings.subtitle')}</p>
-          </div>
-        ) : (
-          <div className="loader loader-offset"/>
-        )}
 
         {showReferences && (
           <ReferencesPopup onClose={() => setShowReferences(false)} />

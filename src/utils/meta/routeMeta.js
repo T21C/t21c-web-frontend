@@ -40,6 +40,7 @@ const ROUTE_DOCUMENT_META = [
   { path: '/asset-list', titleKey: 'assets.meta.title', descriptionKey: 'assets.meta.description' },
   { path: '/health', titleKey: 'healthCheck.title', descriptionKey: 'healthCheck.metaDescription', noindex: true },
   { path: '/rating', titleKey: 'rating.meta.title', descriptionKey: 'rating.meta.description' },
+  { path: '/rating/zen', titleKey: 'rating.meta.title', descriptionKey: 'rating.meta.description' },
   { path: '/login', titleKey: 'login.meta.title', descriptionKey: 'login.meta.description', noindex: true },
   { path: '/register', titleKey: 'login.meta.title', descriptionKey: 'login.meta.description', noindex: true },
   { path: '/forgot-password', titleKey: 'forgotPassword.meta.title', descriptionKey: 'login.meta.description', noindex: true },

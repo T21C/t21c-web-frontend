@@ -352,6 +352,7 @@
     border-radius: 4px;
     cursor: pointer;
     font-weight: bold;
+    text-decoration: none;
     transition: all 0.2s ease;
   }
 
