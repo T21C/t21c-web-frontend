@@ -125,6 +125,9 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
   const [showChartStatsPopup, setShowChartStatsPopup] = useState(false);
   const [showXaccCurvePopup, setShowXaccCurvePopup] = useState(false);
   const [selectedSong, setSelectedSong] = useState(null);
+  const [isHydratingLevel, setIsHydratingLevel] = useState(
+    Boolean(level && (level._packViewMinimal || level._ratingListMinimal || (!level.song && !level.songObject && level.id)))
+  );
   const navigate = useNavigate();
   useEffect(() => {
     let cancelled = false;
@@ -134,8 +137,14 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
         return;
       }
 
+      const needsFetch =
+        level._packViewMinimal ||
+        level._ratingListMinimal ||
+        (!level.song && !level.songObject && level.id);
+
       let src = level;
-      if (level._packViewMinimal && isSuperAdmin) {
+      if (needsFetch) {
+        setIsHydratingLevel(true);
         try {
           const response = await api.get(`${routes.database.levels.root()}/${level.id}`);
           const full = response.data?.level ?? response.data;
@@ -179,6 +188,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
       setHasUnsavedChanges(false);
       setIsPermanentDeleteMode(false);
       setIsExternallyAvailable(src.isExternallyAvailable);
+      setIsHydratingLevel(false);
 
       const fetchTags = async () => {
         try {
@@ -584,6 +594,20 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
   const handleContentClick = (e) => {
     e.stopPropagation();
   };
+
+  if (isHydratingLevel) {
+    return (
+      <Portal>
+        <div className="edit-level-popup-overlay" onClick={handleOverlayClick}>
+          <div className="edit-level-popup" onClick={handleContentClick}>
+            <div className="loader-shell loader-shell--fill">
+              <div className="loader loader-relative" />
+            </div>
+          </div>
+        </div>
+      </Portal>
+    );
+  }
 
   const popupContent = (
     <div className="edit-level-popup-overlay" onClick={handleOverlayClick}>

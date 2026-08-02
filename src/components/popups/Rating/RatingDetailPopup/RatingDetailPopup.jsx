@@ -33,7 +33,7 @@ async function updateRating(id, rating, comment, isCommunityRating = false) {
       throw new Error(response.error || 'Failed to update rating');
     }
 
-    return response.data.rating;
+    return response.data;
   } catch (error) {
     console.error('Error updating rating:', error);
     throw error;
@@ -242,10 +242,29 @@ export const RatingDetailPopup = ({
     try {
       await api.post(routes.external.autorate(ratingId));
       toast.success(t('rating.detailPopup.messages.autorateSuccess'));
-      const { data } = await api.get(routes.admin.rating());
-      setRatings(data);
-      const updated = data?.find((r) => r.id === selectedRating?.id);
-      if (updated) setSelectedRating(updated);
+      const { data } = await api.get(routes.admin.ratingById(ratingId), {
+        params: { completeObject: true },
+      });
+      if (data) {
+        setSelectedRating(data);
+        setRatings((prev) =>
+          (prev || []).map((r) =>
+            r.id === data.id
+              ? {
+                  ...r,
+                  averageDifficultyId: data.averageDifficultyId,
+                  communityDifficultyId: data.communityDifficultyId,
+                  details: (data.details || []).map((d) => ({
+                    id: d.id,
+                    userId: d.userId,
+                    rating: d.rating,
+                    isCommunityRating: d.isCommunityRating,
+                  })),
+                }
+              : r
+          )
+        );
+      }
     } catch (error) {
       console.error('Error autorating rating:', error);
       toast.error(error.response?.data?.error || error.response?.data?.message || error.message || error.error || t('rating.detailPopup.errors.autorateFailed'));
@@ -326,19 +345,34 @@ export const RatingDetailPopup = ({
       }
 
       const isCommunityRating = !isAdminRater();
-      const updatedRating = await updateRating(selectedRating.id, pendingRating, pendingComment, isCommunityRating);
+      const updatePayload = await updateRating(selectedRating.id, pendingRating, pendingComment, isCommunityRating);
+      const updatedRating = updatePayload.complete || updatePayload.rating;
+      const listRow = updatePayload.listRow;
 
       // If rating is empty or whitespace, also clear the comment
       if (!pendingRating || pendingRating.trim() === '') {
         setPendingComment('');
       }
 
-      setRatings(prevRatings => prevRatings.map(rating => 
-        rating.id === updatedRating.id ? updatedRating : rating
-      ));
+      setRatings(prevRatings => prevRatings.map(rating => {
+        if (rating.id !== (listRow?.id || updatedRating?.id)) return rating;
+        if (listRow) return { ...rating, ...listRow };
+        return {
+          ...rating,
+          averageDifficultyId: updatedRating.averageDifficultyId,
+          communityDifficultyId: updatedRating.communityDifficultyId,
+          details: (updatedRating.details || []).map((d) => ({
+            id: d.id,
+            userId: d.userId,
+            rating: d.rating,
+            isCommunityRating: d.isCommunityRating,
+          })),
+        };
+      }));
 
       setSelectedRating(prev => ({
         ...prev,
+        ...updatedRating,
         details: updatedRating.details,
         averageDifficulty: updatedRating.averageDifficulty,
         communityDifficulty: updatedRating.communityDifficulty
@@ -400,20 +434,23 @@ export const RatingDetailPopup = ({
       const response = await api.delete(`${routes.admin.rating()}/${selectedRating.id}/detail/${userId}`);
       
       if (response.status === 200) {
-        // Update the local state
-        const updatedDetails = otherRatings.filter(detail => detail.userId !== userId);
+        const listRow = response.data?.listRow;
+        const complete = response.data?.complete || response.data?.rating;
+        const updatedDetails = (complete?.details || otherRatings).filter(detail => detail.userId !== userId);
         setOtherRatings(updatedDetails);
         
-        // Update the ratings context
         setRatings(prevRatings => prevRatings.map(rating => {
-          if (rating.id === selectedRating.id) {
-            return {
-              ...rating,
-              details: rating.details.filter(detail => detail.userId !== userId)
-            };
-          }
-          return rating;
+          if (rating.id !== selectedRating.id) return rating;
+          if (listRow) return { ...rating, ...listRow };
+          return {
+            ...rating,
+            details: (rating.details || []).filter(detail => detail.userId !== userId)
+          };
         }));
+
+        if (complete) {
+          setSelectedRating((prev) => ({ ...prev, ...complete, details: complete.details }));
+        }
       }
     } catch (error) {
       console.error('Error deleting rating:', error);
