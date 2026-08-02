@@ -144,28 +144,31 @@ export const RatingDetailPopup = ({
   }, [hasUnsavedChanges]);
 
   useEffect(() => {
-    if (selectedRating?.level?.videoLink) {
-      setIsVideoLoading(true);
-      
-      // Check if video data is already cached
-      const cachedData = videoCache.get(selectedRating.level.videoLink);
-      if (cachedData) {
-        setVideoData(cachedData);
-        setIsVideoLoading(false);
-        return;
-      }
-
-      // If not cached, fetch and cache the data
-      void getVideoDetails(selectedRating.level.videoLink)
-        .then((data) => {
-          if (data) videoCache.set(selectedRating.level.videoLink, data);
-          setVideoData(data);
-        })
-        .finally(() => {
-          setIsVideoLoading(false);
-        });
+    const videoLink = selectedRating?.displayVideoLink || selectedRating?.level?.videoLink;
+    if (!videoLink) {
+      setVideoData(null);
+      setIsVideoLoading(false);
+      return;
     }
-  }, [selectedRating?.level?.videoLink]);
+
+    setIsVideoLoading(true);
+
+    const cachedData = videoCache.get(videoLink);
+    if (cachedData) {
+      setVideoData(cachedData);
+      setIsVideoLoading(false);
+      return;
+    }
+
+    void getVideoDetails(videoLink)
+      .then((data) => {
+        if (data) videoCache.set(videoLink, data);
+        setVideoData(data);
+      })
+      .finally(() => {
+        setIsVideoLoading(false);
+      });
+  }, [selectedRating?.displayVideoLink, selectedRating?.level?.videoLink, selectedRating?.id]);
 
   useEffect(() => {
     const handleEscKey = (event) =>  {

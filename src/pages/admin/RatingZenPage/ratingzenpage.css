@@ -80,10 +80,29 @@ html.rating-zen-active .background::after {
   gap: 0.35rem;
 }
 
+.rating-zen-page__field-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.rating-zen-page__field-value {
+  color: var(--color-white) !important;
+  font-variant-numeric: tabular-nums;
+}
+
 .rating-zen-page__field span,
 .rating-zen-page__toggle span {
   font-size: 0.9rem;
   color: var(--color-gray-2);
+}
+
+.rating-zen-page__range {
+  width: 100%;
+  margin: 0;
+  accent-color: var(--color-purple-2);
+  cursor: pointer;
 }
 
 .rating-zen-page__form textarea {
