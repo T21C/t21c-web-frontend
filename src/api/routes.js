@@ -21,6 +21,7 @@ export const routes = {
       pendingEmail: () => '/v2/auth/verify/pending-email',
     },
     csrf: () => '/v2/auth/csrf',
+    session: () => '/v2/auth/session',
     stepUp: () => '/v2/auth/step-up',
     stepUpEmail: () => '/v2/auth/step-up/email',
     mfa: {

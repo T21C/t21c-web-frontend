@@ -1,7 +1,8 @@
 // tuf-search: #AuthContext #authContext
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import api, { ensureCsrfToken } from '@/utils/api';
-import { clearCsrfToken } from '@/utils/csrf';
+import api from '@/utils/api';
+import { clearCsrfToken, setCsrfToken } from '@/utils/csrf';
+import { ensureAuthBoot } from '@/utils/authBoot';
 import { routes } from '@/api/routes';
 import { useNotification } from './NotificationContext';
 import { useNavigate } from 'react-router-dom';
@@ -54,6 +55,12 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem(ORIGIN_URL_EXPIRY_KEY);
   };
 
+  // Started on first render, before child effects can fire their own requests, so
+  // everything shares one boot promise instead of racing refresh rotations.
+  const [sessionBoot] = useState(() =>
+    ensureAuthBoot(async () => (await api.get(routes.auth.session())).data),
+  );
+
   // Listen for auth events
   useEffect(() => {
     const handlePermissionChange = () => {
@@ -75,36 +82,32 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
+    const applySessionPayload = (data) => {
+      if (!data || typeof data !== 'object') {
+        setUser(null);
+        return;
+      }
+      if (typeof data.csrfToken === 'string' && data.csrfToken.length > 0) {
+        setCsrfToken(data.csrfToken);
+      }
+      const nextUser = data.user ?? null;
+      setUser(nextUser);
+      if (nextUser && hasAnyFlag(nextUser, [permissionFlags.SUPER_ADMIN, permissionFlags.RATER])) {
+        restartNotifications(true);
+      }
+    };
+
     const bootAuth = async () => {
       try {
-        await ensureCsrfToken();
-        const response = await api.get(routes.auth.profile.me());
-        setUser(response.data.user);
-        if (hasAnyFlag(response.data.user, [permissionFlags.SUPER_ADMIN, permissionFlags.RATER])) {
-          restartNotifications(true);
-        }
-      } catch (err) {
-        if (err.response?.status === 401) {
-          try {
-            await api.post(routes.auth.refresh());
-            await ensureCsrfToken({ force: true });
-            const retry = await api.get(routes.auth.profile.me());
-            setUser(retry.data.user);
-            if (hasAnyFlag(retry.data.user, [permissionFlags.SUPER_ADMIN, permissionFlags.RATER])) {
-              restartNotifications(true);
-            }
-          } catch (refreshErr) {
-            setUser(null);
-          }
-        } else {
-          setUser(null);
-        }
+        applySessionPayload(await sessionBoot);
+      } catch {
+        setUser(null);
       } finally {
         setLoading(false);
       }
     };
     bootAuth();
-  }, []);
+  }, [sessionBoot]);
 
   // Add verification state check
   const checkVerificationState = useCallback(async () => {
@@ -579,7 +582,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 };

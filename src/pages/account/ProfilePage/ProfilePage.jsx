@@ -99,7 +99,7 @@ const ProfilePage = () => {
     const [playerData, setPlayerData] = useState(null)
     const [showCaseOpen, setShowCaseOpen] = useState(false);
     const { t } = useTranslation('pages');
-    const { user } = useAuth();
+    const { user, loading: authLoading } = useAuth();
     const [showEditPopup, setShowEditPopup] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
@@ -664,8 +664,10 @@ const ProfilePage = () => {
         fetchPassesPage(displayedPasses.length, { immediate: true });
       };
 
-      // Conditional renders after all hooks
-      if (playerId && !playerData) {
+      // Conditional renders after all hooks.
+      // Own profile resolves its id from the session, so wait for boot instead of
+      // flashing the logged-out message while it is still in flight.
+      if ((playerId && !playerData) || (!playerId && authLoading)) {
         return (
           <div className="account-profile-page player-page">
             <div className="player-body" style={{height: "85vh"}}>

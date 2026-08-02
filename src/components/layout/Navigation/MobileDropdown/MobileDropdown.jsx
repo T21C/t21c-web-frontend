@@ -129,8 +129,8 @@ const MobileDropdown = ({
           size={16}
         />
       </button>
-      {isOpen && items.length > 0 && (
-        <div className="nav-mobile-dropdown-menu" ref={menuRef}>
+      {items.length > 0 && (
+        <div className={`nav-mobile-dropdown-menu${isOpen ? ' open' : ''}`} ref={menuRef}>
           {items.map((item, index) => {
             if (item.divider) {
               return (
