@@ -33,7 +33,7 @@ export const RatingCard = ({
     // Calculate averages
     const managerRatings = 
     trimString(
-      rating.details
+      (rating.details || [])
         .filter(detail => !detail.isCommunityRating)
         .map(({rating}) => calculateRatingValue(rating))
         .filter(rating => rating !== null && rating !== "")
@@ -42,7 +42,7 @@ export const RatingCard = ({
     
     const communityRatings = 
     trimString(
-        rating.details
+        (rating.details || [])
           .filter(detail => detail.isCommunityRating)
           .map(({rating}) => calculateRatingValue(rating, true))
           .filter(rating => rating !== null && rating !== "")
@@ -81,7 +81,7 @@ export const RatingCard = ({
     return (
       <div
         className={`rating-card ${
-          rating.details.filter(detail => !detail.isCommunityRating).length >= 4 || isVote ? 'four-rated' : 
+          (rating.details || []).filter(detail => !detail.isCommunityRating).length >= 4 || isVote ? 'four-rated' : 
           difficultyDict[rating.level.diffId]?.name.includes('GQ') && rating.level.clears >= 1 ? 'gq-cleared' :
           rating.lowDiff ? 'low-diff' : ''}`}
       >
