@@ -43,6 +43,22 @@ function translationAssetsPlugin() {
   }
 }
 
+/**
+ * The HTML auth prefetch must hit the same origin axios uses, otherwise dev sends
+ * SameSite=Lax cookies cross-host and boots logged-out. Mirrors API_BASE in env.js:
+ * empty on the dev server (Vite proxy), API origin in built output.
+ */
+function authPrefetchBasePlugin(apiBase) {
+  return {
+    name: 'tuf-auth-prefetch-base',
+    transformIndexHtml: {
+      order: 'pre',
+      handler: (html) =>
+        html.replaceAll('%TUF_AUTH_PREFETCH_BASE%', apiBase.replace(/\/+$/, '')),
+    },
+  }
+}
+
 /** First-party stamp for thirdPartyErrorFilterIntegration — keep in sync with useSentry.js */
 const SENTRY_APPLICATION_KEY = 'tuf-website'
 
@@ -125,6 +141,7 @@ export default defineConfig(({ command, mode }) => {
     plugins: [
       react(),
       translationAssetsPlugin(),
+      authPrefetchBasePlugin(command === 'serve' ? '' : (apiUrl || '')),
       sentryVitePlugin({
         applicationKey: SENTRY_APPLICATION_KEY,
         org: getEnv('SENTRY_ORG') || 'the-universal-forums',

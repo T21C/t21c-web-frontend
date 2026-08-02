@@ -59,6 +59,23 @@
   <body>
     <div class="background"></div>
     <div class="root" id="root"></div>
+    <!-- Race the auth session against module download/parse. Base is injected by
+         vite.config.js: empty on dev (same-origin proxy), API origin on build. -->
+    <script>
+      (function () {
+        window.__TUF_AUTH_BOOT__ = fetch('%TUF_AUTH_PREFETCH_BASE%/v2/auth/session', {
+          credentials: 'include',
+          cache: 'no-store',
+          headers: { Accept: 'application/json' },
+        })
+          .then(function (r) {
+            return r.ok ? r.json() : null;
+          })
+          .catch(function () {
+            return null;
+          });
+      })();
+    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

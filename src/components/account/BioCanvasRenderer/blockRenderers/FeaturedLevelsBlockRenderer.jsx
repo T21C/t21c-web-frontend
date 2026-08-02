@@ -1,7 +1,18 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import api from "@/utils/api";
 import { routes } from "@/api/routes";
+import LevelCard from "@/components/cards/LevelCard/LevelCard";
+import ScoreCard from "@/components/cards/ScoreCard/ScoreCard";
+
+/** Search language: `|` is OR, `,` is AND. Prefer `id:` over `#` (client-only single-ID shortcut). */
+function buildIdOrQuery(ids) {
+  return ids.map((id) => `id:${id}`).join(" | ");
+}
+
+function orderByIds(rows, ids) {
+  const byId = new Map(rows.map((row) => [row.id, row]));
+  return ids.map((id) => byId.get(id)).filter(Boolean);
+}
 
 function LevelList({ ids }) {
   const [levels, setLevels] = useState([]);
@@ -12,24 +23,29 @@ function LevelList({ ids }) {
       setLevels([]);
       return;
     }
-    let alive = true;
+    const controller = new AbortController();
     setLoading(true);
-    Promise.all(
-      ids.map(async (id) => {
-        try {
-          const { data } = await api.get(`${routes.database.levels.root()}/${id}`);
-          return data?.level ?? data ?? null;
-        } catch {
-          return null;
-        }
-      }),
-    ).then((rows) => {
-      if (!alive) return;
-      setLevels(rows.filter(Boolean));
-      setLoading(false);
-    });
+    api
+      .get(routes.database.levels.root(), {
+        params: {
+          query: buildIdOrQuery(ids),
+          limit: ids.length,
+          offset: 0,
+          deletedFilter: "hide",
+        },
+        signal: controller.signal,
+      })
+      .then(({ data }) => {
+        setLevels(orderByIds(data?.results ?? [], ids));
+        setLoading(false);
+      })
+      .catch((error) => {
+        if (api.isCancel(error)) return;
+        setLevels([]);
+        setLoading(false);
+      });
     return () => {
-      alive = false;
+      controller.abort();
     };
   }, [ids.join(",")]);
 
@@ -37,30 +53,14 @@ function LevelList({ ids }) {
     <>
       {loading ? <p className="bio-canvas-block__loading">Loading levels…</p> : null}
       <div className="bio-canvas-block__featured-list">
-        {levels.map((level) => {
-          const songName =
-            (typeof level.song === "object" && level.song?.name) ||
-            (typeof level.song === "string" && level.song) ||
-            level.name ||
-            `#${level.id}`;
-          const artistName =
-            (typeof level.artist === "object" && level.artist?.name) ||
-            (typeof level.artist === "string" && level.artist) ||
-            null;
-
-          return (
-            <Link
-              key={level.id}
-              to={`/levels/${level.id}`}
-              className="bio-canvas-block__featured-item"
-            >
-              <span className="bio-canvas-block__featured-name">{songName}</span>
-              {artistName ? (
-                <span className="bio-canvas-block__featured-artist">{artistName}</span>
-              ) : null}
-            </Link>
-          );
-        })}
+        {levels.map((level) => (
+          <LevelCard
+            key={level.id}
+            level={level}
+            displayMode="featured"
+            showTags={false}
+          />
+        ))}
       </div>
     </>
   );
@@ -75,24 +75,29 @@ function PassList({ ids }) {
       setPasses([]);
       return;
     }
-    let alive = true;
+    const controller = new AbortController();
     setLoading(true);
-    Promise.all(
-      ids.map(async (id) => {
-        try {
-          const { data } = await api.get(routes.database.passes.byIdPath(id));
-          return data?.pass ?? data ?? null;
-        } catch {
-          return null;
-        }
-      }),
-    ).then((rows) => {
-      if (!alive) return;
-      setPasses(rows.filter(Boolean));
-      setLoading(false);
-    });
+    api
+      .get(routes.database.passes.root(), {
+        params: {
+          query: buildIdOrQuery(ids),
+          limit: ids.length,
+          offset: 0,
+          deletedFilter: "hide",
+        },
+        signal: controller.signal,
+      })
+      .then(({ data }) => {
+        setPasses(orderByIds(data?.results ?? [], ids));
+        setLoading(false);
+      })
+      .catch((error) => {
+        if (api.isCancel(error)) return;
+        setPasses([]);
+        setLoading(false);
+      });
     return () => {
-      alive = false;
+      controller.abort();
     };
   }, [ids.join(",")]);
 
@@ -100,23 +105,13 @@ function PassList({ ids }) {
     <>
       {loading ? <p className="bio-canvas-block__loading">Loading passes…</p> : null}
       <div className="bio-canvas-block__featured-list">
-        {passes.map((pass) => {
-          const songName = pass.level?.song || `#${pass.id}`;
-          const playerName = pass.player?.name || null;
-
-          return (
-            <Link
-              key={pass.id}
-              to={`/passes/${pass.id}`}
-              className="bio-canvas-block__featured-item"
-            >
-              <span className="bio-canvas-block__featured-name">{songName}</span>
-              {playerName ? (
-                <span className="bio-canvas-block__featured-artist">{playerName}</span>
-              ) : null}
-            </Link>
-          );
-        })}
+        {passes.map((pass) => (
+          <ScoreCard
+            key={pass.id}
+            scoreData={pass}
+            mode="featured"
+          />
+        ))}
       </div>
     </>
   );

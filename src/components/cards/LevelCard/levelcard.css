@@ -374,6 +374,62 @@
   width: 100%;
 }
 
+/* Featured mode — compact sizing without stats/download chrome (bio canvas embeds). */
+.level-card.featured .level-card-wrapper {
+  grid-template-columns: auto minmax(0, 1.4fr) minmax(0, 1fr);
+  grid-template-areas: "icon song creator";
+  border-bottom: none;
+  background: var(--color-black-t20);
+  border: 1px solid var(--color-white-t10);
+}
+
+.level-card.featured .song-wrapper .level-underline-wrapper {
+  min-width: unset;
+}
+
+.level-card.featured .img-wrapper {
+  width: 3rem;
+  height: 3rem;
+}
+
+/* Keep a single-row layout even under list breakpoints that expect stats/actions. */
+@media (max-width: 795px) {
+  .level-card.featured .level-card-wrapper {
+    grid-template-columns: auto minmax(0, 1.4fr) minmax(0, 1fr);
+    grid-template-areas: "icon song creator";
+    gap: 0.5rem;
+  }
+
+  .level-card.featured .level-card__row--top {
+    display: contents;
+  }
+
+  .level-card.featured .img-wrapper {
+    grid-area: icon;
+    margin-right: 0;
+  }
+
+  .level-card.featured .song-wrapper {
+    grid-area: song;
+  }
+
+  .level-card.featured .creator-wrapper {
+    grid-area: creator;
+    padding-left: 0;
+  }
+}
+
+@media (max-width: 545px) {
+  .level-card.featured .level-card-wrapper {
+    grid-template-rows: none;
+  }
+
+  .level-card.featured .creator-wrapper {
+    grid-row: auto;
+    grid-column: auto;
+  }
+}
+
 /* Compact mode */
 .level-card.compact {
   font-size: 1rem;

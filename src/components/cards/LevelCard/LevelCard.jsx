@@ -647,6 +647,26 @@ const LevelCard = ({
   }
 
   // ============================================
+  // FEATURED MODE (bio canvas / embed — compact, no interactive chrome)
+  // ============================================
+  if (displayMode === 'featured') {
+    if (!level) return null;
+    return (
+      <div
+        className={`level-card featured ${getGlowClass()}`}
+        data-deleted={level.isDeleted}
+        data-hidden={level.isHidden && !level.isDeleted}
+      >
+        <div className="level-card-wrapper">
+          <Link className="level-card__link-wrap" to={levelDetailTo} aria-label={getSongDisplayName(level)}>
+            {renderLinkContent({ showStats: false })}
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // ============================================
   // NORMAL MODE (default)
   // ============================================
   return (

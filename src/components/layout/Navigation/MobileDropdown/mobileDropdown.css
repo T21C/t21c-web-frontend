@@ -57,6 +57,10 @@
   margin-left: 0.5rem;
 }
 
+.nav-mobile-dropdown-menu:not(.open) {
+  display: none;
+}
+
 .nav-mobile-dropdown-menu {
   position: absolute;
   left: 0;

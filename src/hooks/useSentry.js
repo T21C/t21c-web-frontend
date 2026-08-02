@@ -55,18 +55,10 @@ const isExternalDomMutationNoise = (event) => {
   });
 };
 
-/** OEM / in-app browsers inject WebView bridges and ad SDKs that throw into page JS. */
-const isThirdPartyNativeBridgeNoise = (event) => {
-  const values = event.exception?.values ?? [];
-  return values.some((value) =>
-    /nativeBridge\.\w+ is not a function/i.test(value.value || ''),
-  );
-};
-
 /**
- * OEM browsers (Vivo, Oppo, adware SDKs) eval scripts that reference globals
- * they forgot to inject (downProgCallback, LIDNotifyId, etc.).
- * These fire as ReferenceError: X is not defined with no first-party stack frames.
+ * OEM / in-app browsers eval scripts that reference globals they never inject.
+ * These fire as ReferenceError with no usable frames — thirdPartyErrorFilterIntegration
+ * cannot classify them (no filenames / no module metadata).
  */
 const isAnonymousInjectedGlobalNoise = (event) => {
   const values = event.exception?.values ?? [];
@@ -83,6 +75,69 @@ const isAnonymousInjectedGlobalNoise = (event) => {
   return !hasAppFrame;
 };
 
+/** Vite (:5173) and local API (:3000–3009). Other loopback ports are helper/IPC noise. */
+const isAllowedLoopbackPort = (port) => {
+  const n = Number(port);
+  return n === 5173 || n === 5000 || (n >= 3000 && n <= 3009);
+};
+
+const LOOPBACK_URL_PORT_RE =
+  /https?:\/\/(?:localhost|127\.0\.0\.1|\[::1\])(?::(\d+))?/i;
+
+const collectEventUrls = (event) => {
+  const urls = [];
+  for (const crumb of event.breadcrumbs ?? []) {
+    if (crumb?.data?.url) urls.push(String(crumb.data.url));
+  }
+  if (event.request?.url) urls.push(String(event.request.url));
+  for (const frame of eventStackFrames(event)) {
+    if (frame.filename) urls.push(String(frame.filename));
+  }
+  return urls;
+};
+
+const isAbortErrorEvent = (event) => {
+  const values = event.exception?.values ?? [];
+  return values.some((value) => {
+    const type = value.type || '';
+    const message = value.value || '';
+    return (
+      type === 'AbortError' ||
+      /signal is aborted/i.test(message) ||
+      (type === 'DOMException' && /aborted/i.test(message))
+    );
+  });
+};
+
+/**
+ * Drop AbortErrors from loopback probes outside Vite/API ports — e.g. TUFHelperLite
+ * `@adofai-ipc/client` scanning :32145–32155 (see JAVASCRIPT-REACT-1P).
+ */
+const isNonAppLoopbackAbortNoise = (event) => {
+  if (!isAbortErrorEvent(event)) return false;
+
+  const frames = eventStackFrames(event);
+  if (
+    frames.some(
+      (frame) =>
+        typeof frame.filename === 'string' && /@adofai-ipc\//i.test(frame.filename),
+    )
+  ) {
+    return true;
+  }
+
+  const loopbackPorts = collectEventUrls(event)
+    .map((url) => {
+      const match = url.match(LOOPBACK_URL_PORT_RE);
+      if (!match) return null;
+      return match[1] ? Number(match[1]) : 80;
+    })
+    .filter((port) => port != null);
+
+  if (loopbackPorts.length === 0) return false;
+  return loopbackPorts.every((port) => !isAllowedLoopbackPort(port));
+};
+
 const sentryRelease = import.meta.env.VITE_SENTRY_RELEASE;
 
 const tracePropagationTargets = [
@@ -91,6 +146,19 @@ const tracePropagationTargets = [
   /^https:\/\/([a-z0-9-]+\.)?tuforums\.com/i,
   ...(API_BASE ? [API_BASE] : []),
   ...(HEALTH_BASE ? [HEALTH_BASE] : []),
+  ...(OWN_BASE ? [OWN_BASE] : []),
+];
+
+/**
+ * allowUrls matches the topmost non-anonymous stack frame URL.
+ * Include absolute site hosts plus root-relative Vite asset paths (some WebViews
+ * report `/assets/...` without a host).
+ */
+const allowUrls = [
+  /tuforums\.com/i,
+  /\/assets\//i,
+  /localhost/i,
+  /127\.0\.0\.1/i,
   ...(OWN_BASE ? [OWN_BASE] : []),
 ];
 
@@ -106,6 +174,10 @@ Sentry.init({
     Sentry.thirdPartyErrorFilterIntegration({
       filterKeys: ['tuf-website'],
       behaviour: 'drop-error-if-exclusively-contains-third-party-frames',
+      // OEM / WebView bridges (AdSdk `_dsbridge`, Instagram `iabjs://`, …) throw inside
+      // setTimeout/addEventListener wrappers. Without this, the stamped sentryWrapped
+      // frame counts as first-party and exclusive-third-party drop never fires.
+      ignoreSentryInternalFrames: true,
     }),
     Sentry.reactRouterBrowserTracingIntegration({
       useEffect,
@@ -135,14 +207,12 @@ Sentry.init({
   // Full browser sampling in DEV for local repro; prod stays quota-friendly.
   tracesSampleRate: import.meta.env.DEV ? 1.0 : 0.1,
   tracePropagationTargets,
+  allowUrls,
   // Browser extensions / page translators mutate React-owned DOM; React then
   // throws NotFoundError on removeChild during commit. Unfixable from app code.
+  // (Has first-party React frames, so thirdPartyErrorFilterIntegration keeps it.)
   ignoreErrors: [
     /Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node/i,
-    /nativeBridge\.\w+ is not a function/i,
-    // Known OEM-injected globals that will never exist in our app.
-    /downProgCallback is not defined/i,
-    /LIDNotifyId is not defined/i,
   ],
   denyUrls: [
     /^chrome-extension:\/\//i,
@@ -158,7 +228,6 @@ Sentry.init({
       isExtensionOriginatedEvent(event) ||
       isCloudflareBeaconNoise(event) ||
       isExternalDomMutationNoise(event) ||
-      isThirdPartyNativeBridgeNoise(event) ||
       isAnonymousInjectedGlobalNoise(event)
     ) {
       return null;

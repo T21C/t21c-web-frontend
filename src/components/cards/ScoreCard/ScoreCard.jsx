@@ -52,120 +52,182 @@ const PassFlags = ({ pass, t }) => (
 // eslint-disable-next-line react/prop-types
 const ScoreCard = ({ scoreData, topScores = [], potentialTopScores = [], mode = 'profile' }) => {
   const {t} = useTranslation('components');
-  const isPassCardMode = mode === 'passcard';
+  const isFeaturedMode = mode === 'featured';
+  const isPassCardMode = mode === 'passcard' || isFeaturedMode;
   const isHiddenLevel = scoreData.level?.isHidden || false;
   const isHiddenPass = scoreData.isHidden || false;
   const { difficultyDict } = useDifficultyContext();
   const formattedDate = formatPassDate(scoreData.vidUploadTime, i18next?.language);
+  const passDetailTo = `/passes/${scoreData.id}`;
 
   const cardStyle = {
     pointerEvents: isHiddenLevel ? 'none' : 'auto',
-    ...(isPassCardMode && scoreData.isDeleted ? { backgroundColor: '#f0000099' } : {}),
+    ...(isPassCardMode && !isFeaturedMode && scoreData.isDeleted ? { backgroundColor: '#f0000099' } : {}),
   };
+
+  const cardClassName = [
+    'score-card',
+    isPassCardMode ? 'score-card--passcard' : '',
+    isFeaturedMode ? 'score-card--featured' : '',
+    isHiddenPass ? 'hidden-pass' : '',
+  ].filter(Boolean).join(' ');
+
+  const difficultyIcon = !isHiddenLevel ? (
+    <img src={difficultyDict[scoreData.level.diffId]?.icon} referrerPolicy="no-referrer" alt="" />
+  ) : (
+    <div className="hidden-level-icon">🔒</div>
+  );
+
+  const songArtistBlock = (
+    <>
+      <MarqueeText className="score-desc score-desc-song" as="p">
+        {scoreData.level.song}
+      </MarqueeText>
+      <MarqueeText className="score-exp score-exp-artist" as="p">
+        {scoreData.level.artist ?? 'Hidden level'}
+      </MarqueeText>
+    </>
+  );
+
+  const playerRow = scoreData.player?.id ? (
+    isFeaturedMode ? (
+      <div className="score-card__player-row">
+        <UserAvatar {...userAvatarUrls(scoreData.player)} className="score-card__player-avatar" />
+        <MarqueeText className="score-desc-player" as="span">
+          {scoreData.player.name}
+        </MarqueeText>
+      </div>
+    ) : (
+      <Link className="score-card__player-row" to={`/profile/${scoreData.player.id}`}>
+        <UserAvatar {...userAvatarUrls(scoreData.player)} className="score-card__player-avatar" />
+        <MarqueeText className="score-desc-player" as="span">
+          {scoreData.player.name}
+        </MarqueeText>
+      </Link>
+    )
+  ) : null;
+
+  const primaryInfo = isPassCardMode ? (
+    <div className="score-card__info-column">
+      {playerRow}
+      {isFeaturedMode ? (
+        <div className="name-wrapper">{songArtistBlock}</div>
+      ) : (
+        <Link className="name-wrapper" to={passDetailTo}>
+          {songArtistBlock}
+        </Link>
+      )}
+    </div>
+  ) : (
+    <Link className="name-wrapper" to={passDetailTo}>
+      <p className="score-desc-creator">{formatCreatorDisplay(scoreData.level)}</p>
+      {songArtistBlock}
+    </Link>
+  );
+
+  const scoreBlock = (
+    <div className="score-wrapper">
+      <p className="score-exp">{t('score.card.labels.score')}</p>
+      <p className="score-desc">{formatScore(scoreData.scoreV2)}</p>
+      {!isFeaturedMode && topScores.find(score => score.id === scoreData.id) ? (
+        <p className="score-impact">+{formatNumber(
+          topScores.find(score => score.id === scoreData.id).impact)
+        }</p>
+      ) : null}
+      {!isFeaturedMode && potentialTopScores.find(score => score.id === scoreData.id) ? (
+        <p className="score-impact potential"
+          data-tooltip-id="potential-score-tooltip">+{formatNumber(
+          potentialTopScores.find(score => score.id === scoreData.id).impact)
+        }</p>
+      ) : null}
+      {!isFeaturedMode && (
+        <Tooltip id="potential-score-tooltip" place="bottom" style={{maxWidth: '400px'}}>
+          {t('score.card.tooltips.potentialScore')}
+        </Tooltip>
+      )}
+    </div>
+  );
+
+  const accuracyBlock = (
+    <div className="acc-wrapper">
+      <div className="acc-wrapper-inner">
+        <p className="score-exp">{t('score.card.labels.accuracy')}</p>
+        <div className={`score-desc ${scoreData.accuracy == 1 ? 'pure-perfect' : ''}`}>{formatAccuracyRatio(scoreData.accuracy)}</div>
+      </div>
+      {!isFeaturedMode && scoreData.judgements ? <Judgements judgements={scoreData.judgements} /> : null}
+    </div>
+  );
+
+  const speedBlock = (
+    <div className="speed-wrapper">
+      <p className="score-exp">{t('score.card.labels.speed')}</p>
+      <div className="score-desc">{clampFloat(scoreData.speed, 2)}×</div>
+    </div>
+  );
+
+  const secondaryContent = (
+    <>
+      {!isFeaturedMode && scoreData.isWorldsFirst && (
+        <WorldsFirstFlag variant="clear" tooltipIndex={`${scoreData.id}-clear`} className="wf-badge" />
+      )}
+      {!isFeaturedMode && scoreData.isWorldsFirstPP && (
+        <WorldsFirstFlag variant="pp" tooltipIndex={`${scoreData.id}-pp`} className="wf-badge" />
+      )}
+      {scoreBlock}
+      {accuracyBlock}
+      {speedBlock}
+      {isPassCardMode && !isFeaturedMode && <PassFlags pass={scoreData} t={t} />}
+      {!isFeaturedMode && (formattedDate || (scoreData.videoLink && !isHiddenLevel)) && (
+        <div className="score-card__trailing">
+          {formattedDate && (
+            <time className="score-card__date" dateTime={scoreData.vidUploadTime}>
+              {formattedDate}
+            </time>
+          )}
+
+          <div className="vid-logo-wrapper">
+            {scoreData.videoLink && !isHiddenLevel && (
+              <a className="svg-fill" href={getPrimaryVideoLink(scoreData.videoLink)} target="_blank" rel="noreferrer" title={t('score.card.tooltips.watchVideo')}>
+                <VideoLinkIcon size="32px" url={scoreData.videoLink} />
+              </a>
+            )}
+          </div>
+        </div>
+      )}
+    </>
+  );
+
+  if (isFeaturedMode) {
+    return (
+      <Link
+        to={passDetailTo}
+        className={cardClassName}
+        style={cardStyle}
+      >
+        <div className="score-card__row score-card__row--primary">
+          <div className="img-wrapper">{difficultyIcon}</div>
+          {primaryInfo}
+        </div>
+        <div className="score-card__row score-card__row--secondary">
+          {secondaryContent}
+        </div>
+        <span className="score-card__clear-id">#{scoreData.id}</span>
+      </Link>
+    );
+  }
 
   return (
     <div
-      className={`score-card ${isPassCardMode ? 'score-card--passcard' : ''} ${isHiddenPass ? 'hidden-pass' : ''}`}
+      className={cardClassName}
       style={cardStyle}
     >
       <div className="score-card__row score-card__row--primary">
-        <div className="img-wrapper">
-          {!isHiddenLevel && (
-            <img src={difficultyDict[scoreData.level.diffId]?.icon} referrerPolicy="no-referrer" alt="" />
-          )}
-          {isHiddenLevel && (
-            <div className="hidden-level-icon">🔒</div>
-          )}
-        </div>
-        {isPassCardMode ? (
-          <div className="score-card__info-column">
-            {scoreData.player?.id && (
-              <Link className="score-card__player-row" to={`/profile/${scoreData.player.id}`}>
-                <UserAvatar {...userAvatarUrls(scoreData.player)} className="score-card__player-avatar" />
-                <MarqueeText className="score-desc-player" as="span">
-                  {scoreData.player.name}
-                </MarqueeText>
-              </Link>
-            )}
-            <Link className="name-wrapper" to={`/passes/${scoreData.id}`}>
-              <MarqueeText className="score-desc score-desc-song" as="p">
-                {scoreData.level.song}
-              </MarqueeText>
-              <MarqueeText className="score-exp score-exp-artist" as="p">
-                {scoreData.level.artist ?? 'Hidden level'}
-              </MarqueeText>
-            </Link>
-          </div>
-        ) : (
-          <Link className="name-wrapper" to={`/passes/${scoreData.id}`}>
-            <p className="score-desc-creator">{formatCreatorDisplay(scoreData.level)}</p>
-            <MarqueeText className="score-desc score-desc-song" as="p">
-              {scoreData.level.song}
-            </MarqueeText>
-            <MarqueeText className="score-exp score-exp-artist" as="p">
-              {scoreData.level.artist ?? 'Hidden level'}
-            </MarqueeText>
-          </Link>
-        )}
+        <div className="img-wrapper">{difficultyIcon}</div>
+        {primaryInfo}
       </div>
 
       <div className="score-card__row score-card__row--secondary">
-        {scoreData.isWorldsFirst && (
-          <WorldsFirstFlag variant="clear" tooltipIndex={`${scoreData.id}-clear`} className="wf-badge" />
-        )}
-        {scoreData.isWorldsFirstPP && (
-          <WorldsFirstFlag variant="pp" tooltipIndex={`${scoreData.id}-pp`} className="wf-badge" />
-        )}
-        <div className="score-wrapper">
-            <p className="score-exp">{t('score.card.labels.score')}</p>
-            <p className="score-desc">{formatScore(scoreData.scoreV2)}</p>
-            {
-            topScores.find(score => score.id === scoreData.id) ?
-            <p className="score-impact">+{formatNumber(
-              topScores.find(score => score.id === scoreData.id).impact)
-            }</p> :
-            potentialTopScores.find(score => score.id === scoreData.id) &&
-             <p className="score-impact potential"
-             data-tooltip-id="potential-score-tooltip">+{formatNumber(
-              potentialTopScores.find(score => score.id === scoreData.id).impact)
-            }</p>
-            }
-            <Tooltip id="potential-score-tooltip" place="bottom" style={{maxWidth: '400px'}}>
-              {t('score.card.tooltips.potentialScore')}
-            </Tooltip>
-        </div>
-        <div className="acc-wrapper">
-          <div className="acc-wrapper-inner">
-            <p className="score-exp">{t('score.card.labels.accuracy')}</p>
-            <div className={`score-desc ${scoreData.accuracy == 1 ? 'pure-perfect' : ''}`}>{formatAccuracyRatio(scoreData.accuracy)}</div>
-            </div>
-            {scoreData.judgements && <Judgements judgements={scoreData.judgements} />}
-        </div>
-
-        <div className="speed-wrapper">
-            <p className="score-exp">{t('score.card.labels.speed')}</p>
-            <div className="score-desc">{clampFloat(scoreData.speed, 2)}×</div>
-        </div>
-
-        {isPassCardMode && <PassFlags pass={scoreData} t={t} />}
-
-        {(formattedDate || (scoreData.videoLink && !isHiddenLevel)) && (
-          <div className="score-card__trailing">
-            {formattedDate && (
-              <time className="score-card__date" dateTime={scoreData.vidUploadTime}>
-                {formattedDate}
-              </time>
-            )}
-
-            <div className="vid-logo-wrapper">
-              {scoreData.videoLink && !isHiddenLevel && (
-                <a className="svg-fill" href={getPrimaryVideoLink(scoreData.videoLink)} target="_blank" rel="noreferrer" title={t('score.card.tooltips.watchVideo')}>
-                  <VideoLinkIcon size="32px" url={scoreData.videoLink} />
-                </a>
-              )}
-            </div>
-          </div>
-        )}
+        {secondaryContent}
       </div>
 
       <span className="score-card__clear-id">#{scoreData.id}</span>

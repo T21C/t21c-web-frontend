@@ -8,6 +8,7 @@ import {
   setCsrfToken,
   syncCsrfFromResponse,
 } from '@/utils/csrf';
+import { getPendingAuthBoot } from '@/utils/authBoot';
 
 const baseURL = API_BASE;
 
@@ -149,6 +150,26 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
+        // A boot still in flight may be rotating the refresh cookie already;
+        // racing it with /refresh would invalidate one of the two new tokens.
+        const pendingBoot = getPendingAuthBoot();
+        const boot = pendingBoot ? await pendingBoot.catch(() => null) : null;
+        if (boot && typeof boot === 'object' && 'csrfToken' in boot) {
+          if (typeof boot.csrfToken === 'string' && boot.csrfToken.length > 0) {
+            setCsrfToken(boot.csrfToken);
+          }
+          if (!boot.user) {
+            // Boot settled anonymous — refreshing can only 401 again.
+            processQueue(error, null);
+            return Promise.reject(error);
+          }
+          processQueue(null);
+          return api({
+            ...originalRequest,
+            withCredentials: true,
+          });
+        }
+
         await api.post(routes.auth.refresh());
         processQueue(null);
         return api({
