@@ -636,7 +636,9 @@ const RatingZenPage = () => {
             </div>
           </header>
 
-          <button
+          <div className="rating-zen-page__main">
+            <div className="rating-zen-page__video-wrap">
+            <button
             type="button"
             className="rating-zen-page__flag"
             onClick={() => void handleReport()}
@@ -648,9 +650,6 @@ const RatingZenPage = () => {
               <line x1="4" y1="22" x2="4" y2="15" />
             </svg>
           </button>
-
-          <div className="rating-zen-page__main">
-            <div className="rating-zen-page__video-wrap">
               <div className="rating-zen-page__video-aspect">
                 {isVideoLoading ? (
                   <div className="rating-zen-page__video-placeholder">
@@ -755,27 +754,41 @@ const RatingZenPage = () => {
               )}
 
               <div className="rating-zen-page__meta">
-                <h2>{getSongDisplayName(current.level)}</h2>
-                <p className="rating-zen-page__artist">{current.level?.artist}</p>
-                <p className="rating-zen-page__creator">{formatCreatorDisplay(current.level)}</p>
-                <div className="rating-zen-page__meta-row">
-                  <span>#{current.level?.id}</span>
-                  {difficultyDict[current.level?.diffId]?.icon && (
-                    <img
-                      src={difficultyDict[current.level.diffId].icon}
-                      alt={difficultyDict[current.level.diffId]?.name || ''}
-                      className="rating-zen-page__diff-icon"
-                    />
-                  )}
-                  <span>
+                <div className="rating-zen-page__meta-header">
+                  <div className="rating-zen-page__meta-header-left">
+                    {difficultyDict[current.level?.diffId]?.icon && (
+                      <img
+                        src={difficultyDict[current.level.diffId].icon}
+                        alt={difficultyDict[current.level.diffId]?.name || ''}
+                        className="rating-zen-page__diff-icon"
+                      />
+                    )}
+                  </div>
+                  
+                  <span className="rating-zen-page__meta-id">
+                    <span>
+                    #{current.level?.id}
+                    </span>
+                    <span>
                     {t('components:rating.detailPopup.labels.clearedCount', {
                       count: current.level?.clears || 0,
                     })}
                   </span>
+                  </span>
+                  <a
+                    href={`/levels/${current.level?.id}`}
+                    className="rating-zen-page__meta-header-right"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <h2>{getSongDisplayName(current.level)}</h2>
+                    <p className="rating-zen-page__artist">{current.level?.artist}</p>
+                    <p className="rating-zen-page__creator">{formatCreatorDisplay(current.level)}</p>
+                  </a>
                 </div>
                 {(current.level?.rerateNum || current.requesterFR) && (
                   <p className="rating-zen-page__rerate">
-                    {current.level?.rerateNum || current.requesterFR}
+                    Rerate: {current.level?.rerateNum || current.requesterFR}
                   </p>
                 )}
                 {current.level?.rerateReason && (
@@ -802,6 +815,7 @@ const RatingZenPage = () => {
                   <label>
                     {t('components:rating.detailPopup.labels.yourComment')}
                     <textarea
+                      name="rating-zen-page__comment"
                       value={pendingComment}
                       onChange={(e) => setPendingComment(e.target.value)}
                       rows={4}
