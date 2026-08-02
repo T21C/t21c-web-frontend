@@ -4,6 +4,7 @@ import React, { useEffect, useLayoutEffect, useState, useRef, useMemo, useCallba
 import { Link, useParams, useNavigate, useLocation, useNavigationType } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import PackItem, { PackLevelItem } from "@/components/cards/PackItem/PackItem";
+import PackDescription from "@/components/cards/PackCard/PackDescription";
 import { MetaTags } from "@/components/common/display";
 import { buildPackMeta } from '@/utils/meta';
 import { ScrollButton } from "@/components/common/buttons";
@@ -1221,43 +1222,6 @@ const PackDetailPage = () => {
                 )}
               </h1>
               </div>
-            
-            <div className="title-content">
-
-              
-              <div className="meta">
-                <div className="owner">
-                  {ownerProfileTo ? (
-                    <Link className="owner-link" to={ownerProfileTo}>
-                      <UserAvatar 
-                        {...userAvatarUrls(packOwner)} 
-                        className="owner-avatar"
-                      />
-                      <span className="owner-name">
-                        {t('packDetail.by')} {packOwner?.username || 'Unknown'}
-                      </span>
-                    </Link>
-                  ) : (
-                    <>
-                      <UserAvatar 
-                        {...userAvatarUrls(packOwner)} 
-                        className="owner-avatar"
-                      />
-                      <span className="owner-name">
-                        {t('packDetail.by')} {packOwner?.username || 'Unknown'}
-                      </span>
-                    </>
-                  )}
-                </div>
-                
-                <div className="view-mode">
-                  {getViewModeIcon()}
-                  <span className="view-mode-text">
-                    {getViewModeText()}
-                  </span>
-                </div>
-              </div>
-            </div>
           </div>
 <div className="actions-container">
           <div className="actions">
@@ -1311,35 +1275,63 @@ const PackDetailPage = () => {
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="stats">
-          <div className="stat">
-            <span className="stat-value">
-              {totalLevels}
-            </span>
-            <span className="stat-label">
-              {t('packDetail.stats.levels')}
-            </span>
-          </div>
-          
-          <div className="stat">
-            <span className="stat-value">
-              {pack.items?.length || 0}
-            </span>
-            <span className="stat-label">
-              {t('packDetail.stats.items')}
-            </span>
-          </div>
-          
-          <div className="stat">
-            <span className="stat-value">
-              {formatDate(pack?.createdAt, i18next?.language)}
-            </span>
-            <span className="stat-label">
-              {t('packDetail.stats.created')}
-            </span>
-          </div>
-        </div>
+        <PackDescription
+          description={pack.description}
+          variant="detail"
+          itemCount={totalRenderableItems}
+          footer={(
+            <>
+              <div className="pack-description__meta">
+                <div className="owner">
+                  {ownerProfileTo ? (
+                    <Link className="owner-link" to={ownerProfileTo}>
+                      <UserAvatar
+                        {...userAvatarUrls(packOwner)}
+                        className="owner-avatar"
+                      />
+                      <span className="owner-name">
+                        {t('packDetail.by')} {packOwner?.username || 'Unknown'}
+                      </span>
+                    </Link>
+                  ) : (
+                    <>
+                      <UserAvatar
+                        {...userAvatarUrls(packOwner)}
+                        className="owner-avatar"
+                      />
+                      <span className="owner-name">
+                        {t('packDetail.by')} {packOwner?.username || 'Unknown'}
+                      </span>
+                    </>
+                  )}
+                </div>
+
+                <div className="view-mode">
+                  {getViewModeIcon()}
+                  <span className="view-mode-text">
+                    {getViewModeText()}
+                  </span>
+                </div>
+              </div>
+
+              <div className="pack-description__stats">
+                <div className="pack-description__stat">
+                  <span className="pack-description__stat-value">{totalLevels}</span>
+                  <span className="pack-description__stat-label">{t('packDetail.stats.levels')}</span>
+                </div>
+                <div className="pack-description__stat">
+                  <span className="pack-description__stat-value">{pack.items?.length || 0}</span>
+                  <span className="pack-description__stat-label">{t('packDetail.stats.items')}</span>
+                </div>
+                <div className="pack-description__stat">
+                  <span className="pack-description__stat-value">{formatDate(pack?.createdAt, i18next?.language)}</span>
+                  <span className="pack-description__stat-label">{t('packDetail.stats.created')}</span>
+                </div>
+              </div>
+            </>
+          )}
+        />
+
         </div>
 
         {/* Content */}

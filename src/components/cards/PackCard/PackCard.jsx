@@ -15,6 +15,7 @@ import { hasFlag } from "@/utils/UserPermissions";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { LinkIcon } from "@/components/common/icons/LinkIcon";
 import { LevelPackViewModes } from "@/utils/constants";
+import PackDescription from "./PackDescription";
 
 const PackCard = ({
   index,
@@ -175,6 +176,12 @@ const PackCard = ({
             </button>
           </div>
         </div>
+
+        {pack.description ? (
+          <Link className="pack-card__link-wrap" to={packTo} aria-label={pack.name}>
+            <PackDescription description={pack.description} variant="card" />
+          </Link>
+        ) : null}
 
         <Link className="pack-card__link-wrap" to={packTo} aria-label={pack.name}>
           <div className="pack-card__footer">

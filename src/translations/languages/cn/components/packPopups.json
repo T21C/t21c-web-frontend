@@ -46,6 +46,11 @@
       "placeholder": "输入包名……",
       "help": "为你的包选择一个描述性名称"
     },
+    "description": {
+      "label": "描述",
+      "placeholder": "可选：简要介绍这个地图包……",
+      "help": "可选：告诉别人这个地图包是什么（最多 2000 个字符）"
+    },
     "icon": {
       "label": "地图包图标",
       "placeholder": "https://example.com/icon.png",
@@ -93,6 +98,11 @@
       "label": "包名",
       "placeholder": "输入包名……",
       "help": "为你的包选择一个描述性名称"
+    },
+    "description": {
+      "label": "描述",
+      "placeholder": "可选：简要介绍这个地图包……",
+      "help": "可选：告诉别人这个地图包是什么（最多 2000 个字符）"
     },
     "icon": {
       "label": "地图包图标",

@@ -5,6 +5,11 @@
   },
   "loading": "Loading pack details...",
   "by": "by",
+  "description": {
+    "label": "Description",
+    "readMore": "Read more",
+    "showLess": "Show less"
+  },
   "backToPacks": "Back to Packs",
   "viewMode": {
     "public": "Public",

@@ -90,7 +90,8 @@
 }
 
 .edit-pack-popup__input,
-.edit-pack-popup__select {
+.edit-pack-popup__select,
+.edit-pack-popup__textarea {
   width: 100%;
   padding: 12px;
   border: 1px solid #333333;
@@ -101,14 +102,23 @@
   transition: border-color 0.2s ease;
 }
 
+.edit-pack-popup__textarea {
+  resize: vertical;
+  min-height: 96px;
+  font-family: inherit;
+  line-height: 1.45;
+}
+
 .edit-pack-popup__input:focus,
-.edit-pack-popup__select:focus {
+.edit-pack-popup__select:focus,
+.edit-pack-popup__textarea:focus {
   outline: none;
   border-color: var(--btn-primary);
 }
 
 .edit-pack-popup__input:disabled,
-.edit-pack-popup__select:disabled {
+.edit-pack-popup__select:disabled,
+.edit-pack-popup__textarea:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   background: #1a1a1a;
