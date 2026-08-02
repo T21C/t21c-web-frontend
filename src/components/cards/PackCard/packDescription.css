@@ -1,0 +1,216 @@
+/* tuf-search: #PackDescription #packDescription #pack #description */
+.pack-description--card {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  margin: 0 0 12px;
+  padding: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: #aaaaaa;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.pack-description--detail {
+  --pack-description-trigger-h: 2rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: var(--pack-description-trigger-h);
+}
+
+.pack-description--detail .pack-description__collapsible {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  border-radius: 1rem;
+  background: transparent;
+  transition: background-color 0.25s ease;
+}
+
+.pack-description--detail .pack-description__collapsible.tuf-collapsible--open {
+  background: var(--color-white-t20);
+}
+
+.pack-description--detail .pack-description__trigger-spacer {
+  flex-shrink: 0;
+  width: 100%;
+  height: var(--pack-description-trigger-h);
+  transition: height 0.25s ease;
+}
+
+.pack-description--no-animation .pack-description__collapsible,
+.pack-description--no-animation .pack-description__trigger-spacer,
+.pack-description--no-animation .pack-description__trigger,
+.pack-description--no-animation .pack-description__label,
+.pack-description--no-animation .tuf-collapsible__trigger-indicator--chevron {
+  transition: none;
+}
+
+.pack-description--detail .pack-description__trigger {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  width: fit-content;
+  max-width: 100%;
+  min-height: var(--pack-description-trigger-h);
+  padding: 0.35rem 0.65rem;
+  margin: 0;
+  border: none;
+  border-radius: 6px 1rem 6px 6px;
+  background: transparent;
+  color: var(--color-white);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  overflow: hidden;
+  box-sizing: border-box;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    padding 0.25s ease,
+    gap 0.25s ease;
+}
+
+.pack-description--detail .pack-description__trigger:hover {
+  background: var(--color-white-t10);
+  color: var(--color-white);
+}
+
+.pack-description--detail .pack-description__label {
+  order: 1;
+  display: inline-block;
+  max-width: 10rem;
+  opacity: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  transition:
+    max-width 0.25s ease,
+    opacity 0.2s ease,
+    margin 0.25s ease;
+}
+
+.pack-description--detail .tuf-collapsible__trigger-indicator {
+  order: 2;
+}
+
+.pack-description__content-region {
+  width: 100%;
+}
+
+/* Open: chevron only; reveal full label on hover */
+.pack-description--detail .tuf-collapsible--open .pack-description__trigger {
+  gap: 0;
+  padding: 0.35rem;
+}
+
+.pack-description--detail .tuf-collapsible--open .pack-description__label {
+  max-width: 0;
+  opacity: 0;
+  margin: 0;
+}
+
+.pack-description--detail .tuf-collapsible--open .pack-description__trigger:hover,
+.pack-description--detail .tuf-collapsible--open .pack-description__trigger:focus-visible {
+  gap: 0.5rem;
+  padding: 0.35rem 0.65rem;
+}
+
+.pack-description--detail .tuf-collapsible--open .pack-description__trigger:hover .pack-description__label,
+.pack-description--detail .tuf-collapsible--open .pack-description__trigger:focus-visible .pack-description__label {
+  max-width: 10rem;
+  opacity: 1;
+}
+
+.pack-description--detail .pack-description__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  width: 100%;
+  padding: 0.25rem 1rem 1rem;
+}
+
+.pack-description--detail .pack-description__text {
+  margin: 0;
+  width: 100%;
+  color: var(--color-white-t85);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.pack-description--detail .pack-description__footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  width: 100%;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--color-white-t20);
+}
+
+/* Empty description: collapse spacer when open; no footer divider */
+.pack-description--meta-only .pack-description__trigger-spacer {
+  height: 1rem;
+}
+
+.pack-description--meta-only .pack-description__footer {
+  border-top: none;
+  padding-top: 0;
+}
+
+.pack-description--meta-only .pack-description__body {
+  padding-top: 0;
+}
+
+.pack-description--meta-only .tuf-collapsible--open .pack-description__body {
+  padding-right: calc(var(--pack-description-trigger-h) + 0.75rem);
+}
+
+.pack-description--detail .pack-description__meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.pack-description--detail .pack-description__stats {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.pack-description--detail .pack-description__stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.pack-description--detail .pack-description__stat-value {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-white);
+  line-height: 1.2;
+}
+
+.pack-description--detail .pack-description__stat-label {
+  font-size: 0.7rem;
+  color: var(--color-white-t70);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.pack-description--detail .owner-avatar {
+  width: 2rem;
+  height: 2rem;
+}

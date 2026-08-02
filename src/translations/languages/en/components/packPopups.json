@@ -46,6 +46,11 @@
       "placeholder": "Enter pack name...",
       "help": "Choose a descriptive name for your pack"
     },
+    "description": {
+      "label": "Description",
+      "placeholder": "Optional short description of this pack...",
+      "help": "Optional: Tell others what this pack is about (max 2000 characters)"
+    },
     "icon": {
       "label": "Pack Icon",
       "placeholder": "https://example.com/icon.png",
@@ -93,6 +98,11 @@
       "label": "Pack Name",
       "placeholder": "Enter pack name...",
       "help": "Choose a descriptive name for your pack"
+    },
+    "description": {
+      "label": "Description",
+      "placeholder": "Optional short description of this pack...",
+      "help": "Optional: Tell others what this pack is about (max 2000 characters)"
     },
     "icon": {
       "label": "Pack Icon",

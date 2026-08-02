@@ -5,6 +5,11 @@
   },
   "loading": "Loading pack details...",
   "by": "by",
+  "description": {
+    "label": "설명",
+    "readMore": "더보기",
+    "showLess": "간략히"
+  },
   "backToPacks": "팩으로 돌아가기",
   "viewMode": {
     "public": "공개",

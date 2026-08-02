@@ -46,6 +46,11 @@
       "placeholder": "Enter pack name...",
       "help": "Choose a descriptive name for your pack"
     },
+    "description": {
+      "label": "설명",
+      "placeholder": "이 팩에 대한 간단한 설명 (선택)...",
+      "help": "선택 사항: 이 팩이 무엇인지 알려주세요 (최대 2000자)"
+    },
     "icon": {
       "label": "Pack Icon",
       "placeholder": "https://example.com/icon.png",
@@ -93,6 +98,11 @@
       "label": "Pack Name",
       "placeholder": "Enter pack name...",
       "help": "Choose a descriptive name for your pack"
+    },
+    "description": {
+      "label": "설명",
+      "placeholder": "이 팩에 대한 간단한 설명 (선택)...",
+      "help": "선택 사항: 이 팩이 무엇인지 알려주세요 (최대 2000자)"
     },
     "icon": {
       "label": "Pack Icon",

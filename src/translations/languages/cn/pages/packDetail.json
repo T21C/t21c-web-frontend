@@ -5,6 +5,11 @@
   },
   "loading": "正在加载地图包详细信息……",
   "by": "创建者：",
+  "description": {
+    "label": "描述",
+    "readMore": "展开",
+    "showLess": "收起"
+  },
   "backToPacks": "返回主页",
   "viewMode": {
     "public": "公开",

@@ -145,7 +145,11 @@ export const buildPackMeta = (pack, t, options = {}) => {
   const image = buildThumbnailUrl('pack', linkCode);
 
   const title = t('packDetail.meta.title', { name: pack?.name || '' });
-  const description = t('packDetail.meta.description', {
+  const packDescription = typeof pack?.description === 'string' ? pack.description.trim() : '';
+  const truncatedPackDescription = packDescription.length > 200
+    ? `${packDescription.slice(0, 197)}...`
+    : packDescription;
+  const description = truncatedPackDescription || t('packDetail.meta.description', {
     name: pack?.name || '',
     owner: ownerName,
     count: totalLevels,

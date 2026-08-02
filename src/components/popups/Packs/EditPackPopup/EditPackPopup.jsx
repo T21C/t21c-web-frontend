@@ -22,6 +22,7 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
   
   const [formData, setFormData] = useState({
     name: pack.name || '',
+    description: pack.description || '',
     iconUrl: pack.iconUrl || '',
     cssFlags: pack.cssFlags || 0,
     viewMode: pack.viewMode || 3,
@@ -304,6 +305,24 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
               />
               <p className="edit-pack-popup__help">
                 {t('packPopups.editPack.name.help')}
+              </p>
+            </div>
+
+            <div className="edit-pack-popup__field">
+              <label className="edit-pack-popup__label">
+                {t('packPopups.editPack.description.label')}
+              </label>
+              <textarea
+                className="edit-pack-popup__textarea"
+                placeholder={t('packPopups.editPack.description.placeholder')}
+                value={formData.description}
+                onChange={(e) => handleInputChange('description', e.target.value)}
+                maxLength={2000}
+                rows={4}
+                disabled={!canEdit}
+              />
+              <p className="edit-pack-popup__help">
+                {t('packPopups.editPack.description.help')}
               </p>
             </div>
 

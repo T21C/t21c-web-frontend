@@ -20,6 +20,7 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
   
   const [formData, setFormData] = useState({
     name: '',
+    description: '',
     iconUrl: '',
     cssFlags: 0,
     viewMode: LevelPackViewModes.PRIVATE, // PRIVATE
@@ -105,6 +106,7 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
       // Create pack without icon first (icon is uploaded to CDN after we have a pack id)
       const packData = {
         name: formData.name,
+        description: formData.description,
         cssFlags: formData.cssFlags,
         viewMode: formData.viewMode,
         isPinned: formData.isPinned,
@@ -192,6 +194,23 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
               />
               <p className="create-pack-popup__help">
                 {t('packPopups.createPack.name.help')}
+              </p>
+            </div>
+
+            <div className="create-pack-popup__field">
+              <label className="create-pack-popup__label">
+                {t('packPopups.createPack.description.label')}
+              </label>
+              <textarea
+                className="create-pack-popup__textarea"
+                placeholder={t('packPopups.createPack.description.placeholder')}
+                value={formData.description}
+                onChange={(e) => handleInputChange('description', e.target.value)}
+                maxLength={2000}
+                rows={4}
+              />
+              <p className="create-pack-popup__help">
+                {t('packPopups.createPack.description.help')}
               </p>
             </div>
 
