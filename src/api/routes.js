@@ -75,6 +75,8 @@ export const routes = {
     rating: () => '/v2/admin/rating',
     ratingById: (id) => `/v2/admin/rating/${enc(id)}`,
     ratingByLevelId: (levelId) => `/v2/admin/rating/by-level/${enc(levelId)}`,
+    ratingZenDeal: () => '/v2/admin/rating/zen/deal',
+    ratingZenReport: () => '/v2/admin/rating/zen/report',
     creators: {
       byId: (id) => `/v2/admin/creators/${enc(id)}`,
     },

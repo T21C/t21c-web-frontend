@@ -48,6 +48,7 @@ import UsersIcon from './UsersIcon';
 import PlusIcon from './PlusIcon';
 import SearchIcon from './SearchIcon';
 import ImageIcon from './ImageIcon';
+import SkipIcon from './SkipIcon';
 import FolderIcon from './FolderIcon';
 import ChevronIcon from './ChevronIcon';
 import DeleteIcon from './TrashIcon';
@@ -117,6 +118,7 @@ export {
     PlusIcon,
     SearchIcon,
     ImageIcon,
+    SkipIcon,
     FolderIcon,
     ChevronIcon,
     DeleteIcon,

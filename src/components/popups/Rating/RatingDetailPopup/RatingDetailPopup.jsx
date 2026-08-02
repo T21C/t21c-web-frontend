@@ -248,21 +248,23 @@ export const RatingDetailPopup = ({
       if (data) {
         setSelectedRating(data);
         setRatings((prev) =>
-          (prev || []).map((r) =>
-            r.id === data.id
-              ? {
-                  ...r,
-                  averageDifficultyId: data.averageDifficultyId,
-                  communityDifficultyId: data.communityDifficultyId,
-                  details: (data.details || []).map((d) => ({
-                    id: d.id,
-                    userId: d.userId,
-                    rating: d.rating,
-                    isCommunityRating: d.isCommunityRating,
-                  })),
-                }
-              : r
-          )
+          Array.isArray(prev)
+            ? prev.map((r) =>
+                r.id === data.id
+                  ? {
+                      ...r,
+                      averageDifficultyId: data.averageDifficultyId,
+                      communityDifficultyId: data.communityDifficultyId,
+                      details: (data.details || []).map((d) => ({
+                        id: d.id,
+                        userId: d.userId,
+                        rating: d.rating,
+                        isCommunityRating: d.isCommunityRating,
+                      })),
+                    }
+                  : r
+              )
+            : prev
         );
       }
     } catch (error) {
@@ -354,7 +356,9 @@ export const RatingDetailPopup = ({
         setPendingComment('');
       }
 
-      setRatings(prevRatings => prevRatings.map(rating => {
+      setRatings(prevRatings => {
+        if (!Array.isArray(prevRatings)) return prevRatings;
+        return prevRatings.map(rating => {
         if (rating.id !== (listRow?.id || updatedRating?.id)) return rating;
         if (listRow) return { ...rating, ...listRow };
         return {
@@ -368,7 +372,8 @@ export const RatingDetailPopup = ({
             isCommunityRating: d.isCommunityRating,
           })),
         };
-      }));
+      });
+      });
 
       setSelectedRating(prev => ({
         ...prev,
@@ -439,14 +444,17 @@ export const RatingDetailPopup = ({
         const updatedDetails = (complete?.details || otherRatings).filter(detail => detail.userId !== userId);
         setOtherRatings(updatedDetails);
         
-        setRatings(prevRatings => prevRatings.map(rating => {
+        setRatings(prevRatings => {
+          if (!Array.isArray(prevRatings)) return prevRatings;
+          return prevRatings.map(rating => {
           if (rating.id !== selectedRating.id) return rating;
           if (listRow) return { ...rating, ...listRow };
           return {
             ...rating,
             details: (rating.details || []).filter(detail => detail.userId !== userId)
           };
-        }));
+        });
+        });
 
         if (complete) {
           setSelectedRating((prev) => ({ ...prev, ...complete, details: complete.details }));
