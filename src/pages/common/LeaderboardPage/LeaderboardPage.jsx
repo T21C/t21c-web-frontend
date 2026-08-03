@@ -254,6 +254,10 @@ const LeaderboardPage = () => {
       }
     } catch (error) {
       if (axios.isCancel(error)) return;
+      if (error?.response?.status === 429) {
+        console.warn('Historical leaderboard rate limited; try again shortly');
+        return;
+      }
       console.error('Error fetching historical leaderboard:', error);
       if (offset === 0) {
         setHistoryPlayers([]);
@@ -310,17 +314,7 @@ const LeaderboardPage = () => {
     }
 
     try {
-      // Bootstrap bounds only; server clamps an out-of-range date.
-      const params = new URLSearchParams({
-        date: '2099-01-01',
-        metric: historyMetric,
-        order: historySort.toLowerCase(),
-        offset: '0',
-        limit: '1',
-      });
-      const response = await api.get(
-        `${routes.playersV3.leaderboardHistory()}?${params.toString()}`,
-      );
+      const response = await api.get(routes.playersV3.leaderboardHistoryBounds());
       const minDate = response.data.minDate ?? null;
       const maxDate = response.data.maxDate ?? null;
       setHistoryMinDate(minDate);
