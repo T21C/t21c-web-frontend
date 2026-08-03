@@ -369,6 +369,7 @@ export const routes = {
     rankHistory: (playerId) => `/v3/players/${enc(playerId)}/rank-history`,
     leaderboard: () => '/v3/players/leaderboard',
     leaderboardHistory: () => '/v3/players/leaderboard-history',
+    leaderboardHistoryBounds: () => '/v3/players/leaderboard-history/bounds',
     meBio: () => '/v3/players/me/bio',
     meBioCanvas: () => '/v3/players/me/bio-canvas',
     meBioCanvasImage: () => '/v3/players/me/bio-canvas/image',
