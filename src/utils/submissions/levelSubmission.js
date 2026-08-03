@@ -2,6 +2,7 @@
 import api from '@/utils/api';
 import { routes } from '@/api/routes';
 import ChunkedUploadClient from '@/utils/upload/ChunkedUploadClient';
+import { throwFromError } from '@/utils/submissions/formErrors';
 
 /**
  * Level submission client: orchestrates the three-step flow introduced by the
@@ -16,16 +17,6 @@ import ChunkedUploadClient from '@/utils/upload/ChunkedUploadClient';
  * errors, upload progress, final submit spinner) without caring about the
  * orchestration.
  */
-
-function throwFromError(err, fallbackMessage) {
-  const data = err?.response?.data;
-  const message = data?.error || err?.message || fallbackMessage || 'Request failed';
-  const e = new Error(message);
-  e.status = err?.response?.status ?? null;
-  e.details = data?.details ?? null;
-  e.field = data?.field ?? null;
-  throw e;
-}
 
 /**
  * @param {object} payload normalised form fields (see LevelSubmissionPage)

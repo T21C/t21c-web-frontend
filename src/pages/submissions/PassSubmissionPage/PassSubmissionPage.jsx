@@ -22,6 +22,7 @@ import toast from "react-hot-toast";
 import { PassCoreForm } from "@/components/common/cores/PassCoreForm/PassCoreForm";
 import { usePassCoreForm } from "@/components/common/cores/PassCoreForm/usePassCoreForm";
 import { truncateString } from "@/utils/Utility";
+import { getSubmissionErrorMessage } from "@/utils/submissions/formErrors";
 import { resolveSubmissionVideoUrl } from "@/utils/resolveVideoUrl";
 import {
   getPassJudgementHitCountFromForm,
@@ -243,11 +244,7 @@ const PassSubmissionPage = () => {
     } catch (err) {
       console.error("Submission error:", err);
       // Prefer message: API `details` is structured metadata (object), not display text.
-      const errMsg =
-        (typeof err?.message === 'string' && err.message) ||
-        (typeof err?.details === 'string' && err.details) ||
-        (typeof err?.details?.message === 'string' && err.details.message) ||
-        'Unknown error occurred';
+      const errMsg = getSubmissionErrorMessage(err);
       toast.error(`${t('passSubmission.alert.error')} ${truncateString(errMsg, 120)}`);
     } finally {
       setSubmission(false);

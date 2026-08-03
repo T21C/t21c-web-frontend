@@ -9,7 +9,7 @@ import { getVideoDetails } from "@/utils";
 import { resolveSubmissionVideoUrl } from "@/utils/resolveVideoUrl";
 import { useDebouncedRequest } from "@/hooks/useDebouncedRequest";
 import { useAuth } from "@/contexts/AuthContext";
-import { validateFeelingRating, formatDate } from "@/utils/Utility";
+import { validateFeelingRating, formatDate, truncateString } from "@/utils/Utility";
 import { Trans, useTranslation } from "react-i18next";
 import i18next from "i18next";
 import { StagingModeWarning, MetaTags } from "@/components/common/display";
@@ -39,6 +39,7 @@ import {
   submitLevel,
   selectLevelChart,
 } from '@/utils/submissions/levelSubmission';
+import { getSubmissionErrorMessage } from '@/utils/submissions/formErrors';
 import { useJobProgressStream } from '@/hooks/useJobProgressStream';
 
 /** Keep in sync with server/src/server/submissions/submissionEvidenceRules.ts (display-only). */
@@ -503,8 +504,9 @@ const LevelSubmissionPage = () => {
         return;
       }
       console.error('Submission error:', error);
-      const errMsg = error.details || error.message || "Unknown error occurred";
-      toast.error(`${t('levelSubmission.alert.error')} ${typeof errMsg === 'string' ? errMsg : errMsg?.message || ''}`);
+      // Prefer message: API `details` is structured metadata (object), not display text.
+      const errMsg = getSubmissionErrorMessage(error);
+      toast.error(`${t('levelSubmission.alert.error')} ${truncateString(errMsg, 120)}`);
     } finally {
       uploadAbortRef.current = null;
       setSubmission(false);
