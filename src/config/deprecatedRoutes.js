@@ -17,11 +17,17 @@ export const DEPRECATED_ROUTES = [
 
   {
     path: "admin/rating",
-    redirect: (location) => `/rating${location.hash || ""}`,
+    redirect: (location) => {
+      const match = (location.hash || "").match(/^#(\d+)$/);
+      return match ? `/rating/${match[1]}` : "/rating";
+    },
   },
   {
     path: "admin/ratings",
-    redirect: (location) => `/rating${location.hash || ""}`,
+    redirect: (location) => {
+      const match = (location.hash || "").match(/^#(\d+)$/);
+      return match ? `/rating/${match[1]}` : "/rating";
+    },
   },
 
   {

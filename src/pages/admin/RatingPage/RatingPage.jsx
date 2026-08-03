@@ -6,7 +6,7 @@ import { buildStaticPageMeta } from '@/utils/meta';
 import { StateDisplay } from "@/components/common/selectors";
 import "./adminratingpage.css";
 import { useEffect, useState, useCallback, useMemo, useRef } from "react";
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useParams, useNavigate } from 'react-router-dom';
 import { VirtualList } from "@/components/common/VirtualList";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRatingFilter } from "@/contexts/RatingFilterContext";
@@ -30,16 +30,20 @@ const SEARCH_DEBOUNCE_MS = 300;
 const RatingPage = () => {
   const { t } = useTranslation('pages');
   const location = useLocation();
+  const navigate = useNavigate();
+  const { levelId: levelIdParam } = useParams();
   const pageMeta = useMemo(
     () =>
       buildStaticPageMeta({
         title: t('rating.meta.title'),
         description: t('rating.meta.description'),
         pathname: location.pathname,
-        image: '/og-image.jpg',
+        image: levelIdParam && /^\d+$/.test(levelIdParam)
+          ? `/v2/media/thumbnail/rating/${levelIdParam}`
+          : '/og-image.jpg',
         type: 'website',
       }),
-    [t, location.pathname],
+    [t, location.pathname, levelIdParam],
   );
   const { user } = useAuth();
   const { 
@@ -351,25 +355,30 @@ const RatingPage = () => {
     };
   }, [user?.id]);
 
-  // Deep link #levelId → complete rating object
+  // Deep link /rating/:levelId (or legacy #levelId → redirect to slash)
   useEffect(() => {
-    if (deepLinkHandledRef.current) return;
-    const hash = window.location.hash;
-    const match = hash.match(/#(\d+)/);
-    if (!match) return;
-    deepLinkHandledRef.current = true;
-    const levelId = parseInt(match[1], 10);
-    (async () => {
-      try {
-        const { data } = await api.get(routes.admin.ratingByLevelId(levelId), {
-          params: { completeObject: true },
-        });
-        if (data) setSelectedRating(data);
-      } catch (err) {
-        console.error('Error opening rating deep link:', err);
-      }
-    })();
-  }, []);
+    if (levelIdParam && /^\d+$/.test(levelIdParam)) {
+      const levelId = parseInt(levelIdParam, 10);
+      if (deepLinkHandledRef.current === levelId) return;
+      deepLinkHandledRef.current = levelId;
+
+      (async () => {
+        try {
+          const { data } = await api.get(routes.admin.ratingByLevelId(levelId), {
+            params: { completeObject: true },
+          });
+          if (data) setSelectedRating(data);
+        } catch (err) {
+          console.error('Error opening rating deep link:', err);
+        }
+      })();
+      return;
+    }
+
+    const hashMatch = window.location.hash.match(/^#(\d+)$/);
+    if (!hashMatch) return;
+    navigate(`/rating/${hashMatch[1]}`, { replace: true });
+  }, [levelIdParam, navigate]);
 
   const handleLocalSort = (order) => {
     setSortOrder(order);
@@ -381,6 +390,10 @@ const RatingPage = () => {
   };
 
   const openRatingDetails = useCallback(async (rating) => {
+    const levelId = rating?.level?.id;
+    if (levelId) {
+      deepLinkHandledRef.current = levelId;
+    }
     try {
       const { data } = await api.get(routes.admin.ratingById(rating.id), {
         params: { completeObject: true },
@@ -390,7 +403,18 @@ const RatingPage = () => {
       console.error('Error loading rating details:', err);
       setSelectedRating(rating);
     }
-  }, []);
+    if (levelId) {
+      navigate(`/rating/${levelId}`, { replace: true });
+    }
+  }, [navigate]);
+
+  const closeRatingDetails = useCallback(() => {
+    deepLinkHandledRef.current = null;
+    setSelectedRating(null);
+    if (levelIdParam && /^\d+$/.test(levelIdParam)) {
+      navigate('/rating', { replace: true });
+    }
+  }, [levelIdParam, navigate]);
 
   const sortOptions = useMemo(() => [
     { value: 'id', label: t('rating.sort.byId') },
@@ -625,7 +649,17 @@ const RatingPage = () => {
             {selectedRating && (
               <RatingDetailPopup
                 selectedRating={selectedRating}
-                setSelectedRating={setSelectedRating}
+                setSelectedRating={(value) => {
+                  if (typeof value === 'function') {
+                    setSelectedRating(value);
+                    return;
+                  }
+                  if (value == null) {
+                    closeRatingDetails();
+                    return;
+                  }
+                  setSelectedRating(value);
+                }}
                 setShowReferences={setShowReferences}
                 ratings={Array.isArray(ratings) ? ratings : []}
                 setRatings={setRatings}

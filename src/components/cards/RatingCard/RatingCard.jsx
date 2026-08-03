@@ -68,7 +68,7 @@ export const RatingCard = ({
     };
 
     const handleCopyLink = async () => {
-      const url = `${window.location.origin}${window.location.pathname}#${rating.level.id}`;
+      const url = `${window.location.origin}/rating/${rating.level.id}`;
       try {
         await navigator.clipboard.writeText(url);
         setCopySuccess(true);
