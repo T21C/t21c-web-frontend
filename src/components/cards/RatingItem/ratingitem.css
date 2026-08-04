@@ -61,6 +61,47 @@
     font-weight: 600;
   }
 
+  .zen-mode-chip {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    position: relative;
+    padding: 0.24rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 400;
+    background-image: linear-gradient(90deg, #5ee7ff, #d16bff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .zen-mode-chip::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(90deg, #5ee7ff, #d16bff);
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .zen-mode-chip-text {
+    display: flex;
+    align-items: flex-end;
+    justify-content: end;
+    height: 100%;
+  }
+
   .rating-comment {
     margin-top: 0.5rem;
     padding: 0.5rem;

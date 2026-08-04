@@ -34,6 +34,7 @@ async function submitZenRating(id, rating, comment, isCommunityRating) {
     rating,
     comment,
     isCommunityRating,
+    ratedInZen: true,
   });
   if (!response.data?.rating) {
     throw new Error(response.data?.error || 'Failed to update rating');
@@ -128,6 +129,7 @@ const RatingZenPage = () => {
 
   const [deckSize, setDeckSize] = useState(DEFAULT_DECK_SIZE);
   const [onlyLowDiff, setOnlyLowDiff] = useState(false);
+  const [excludeUniversals, setExcludeUniversals] = useState(false);
   const [sortPreset, setSortPreset] = useState('least'); // least | most | id | recent
   const [randomness, setRandomness] = useState(DEFAULT_RANDOMNESS);
   const [isDealing, setIsDealing] = useState(false);
@@ -226,6 +228,7 @@ const RatingZenPage = () => {
         params: {
           deckSize,
           onlyLowDiff: onlyLowDiff ? 'true' : 'false',
+          excludeUniversals: excludeUniversals ? 'true' : 'false',
           randomness,
           ...sortParams,
         },
@@ -258,7 +261,7 @@ const RatingZenPage = () => {
     } finally {
       setIsDealing(false);
     }
-  }, [user, deckSize, onlyLowDiff, randomness, sortParams, navigate, t]);
+  }, [user, deckSize, onlyLowDiff, excludeUniversals, randomness, sortParams, navigate, t]);
 
   useEffect(() => {
     const videoLink = current?.displayVideoLink || current?.level?.videoLink;
@@ -560,14 +563,25 @@ const RatingZenPage = () => {
               </small>
             </div>
 
-            <label className="rating-zen-page__toggle">
-              <input
-                type="checkbox"
-                checked={onlyLowDiff}
-                onChange={(e) => setOnlyLowDiff(e.target.checked)}
-              />
-              <span>{t('rating.zen.setup.onlyLowDiff')}</span>
-            </label>
+            <div className="rating-zen-page__field-row">
+              <label className="rating-zen-page__toggle">
+                <input
+                  type="checkbox"
+                  checked={onlyLowDiff}
+                  onChange={(e) => setOnlyLowDiff(e.target.checked)}
+                />
+                <span>{t('rating.zen.setup.onlyLowDiff')}</span>
+              </label>
+  
+              <label className="rating-zen-page__toggle">
+                <input
+                  type="checkbox"
+                  checked={excludeUniversals}
+                  onChange={(e) => setExcludeUniversals(e.target.checked)}
+                />
+                <span>{t('rating.zen.setup.excludeUniversals')}</span>
+              </label>
+            </div>
 
             <div className="rating-zen-page__field">
               <span>{t('rating.zen.setup.sort')}</span>
@@ -824,8 +838,8 @@ const RatingZenPage = () => {
 
               {!hasFlag(user, permissionFlags.RATING_BANNED) && (
                 <div className="rating-zen-page__form">
-                  <label>
-                    {t('components:rating.detailPopup.labels.yourRating')}
+                  <div className="rating-zen-page__field">
+                    <span>{t('components:rating.detailPopup.labels.yourRating')}</span>
                     <div className="rating-zen-page__rating-row">
                       <RatingInput
                         value={pendingRating}
@@ -835,9 +849,9 @@ const RatingZenPage = () => {
                         allowCustomInput={true}
                       />
                     </div>
-                  </label>
-                  <label>
-                    {t('components:rating.detailPopup.labels.yourComment')}
+                  </div>
+                  <label className="rating-zen-page__field">
+                    <span>{t('components:rating.detailPopup.labels.yourComment')}</span>
                     <textarea
                       name="rating-zen-page__comment"
                       value={pendingComment}

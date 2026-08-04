@@ -13,7 +13,7 @@ import i18next from 'i18next';
 
 export const RatingItem = ({ ratingDetail, isSuperAdmin, onDelete, weeklyRaterActivity = [] }) => {
     // Accept full rating detail object and extract fields from it
-    const { rating, comment, createdAt, user, userId, isCommunityRating } = ratingDetail || {};
+    const { rating, comment, createdAt, user, userId, isCommunityRating, ratedInZen } = ratingDetail || {};
     
     const [isExpanded, setIsExpanded] = useState(false);
     const { t } = useTranslation('components');
@@ -56,6 +56,13 @@ export const RatingItem = ({ ratingDetail, isSuperAdmin, onDelete, weeklyRaterAc
             </div>
             <span className="rater-name">{user?.username || user?.nickname}:</span>
             <span className="rater-rating">{rating || ''}</span>
+            {ratedInZen && (
+              <span className="zen-mode-chip">
+                <span className="zen-mode-chip-text">
+                  {t('rating.detailPopup.zenModeChip')}
+                </span>
+              </span>
+            )}
             {createdAt && (
               <span className="rating-date">{formatDate(createdAt, i18next?.language)}</span>
             )}

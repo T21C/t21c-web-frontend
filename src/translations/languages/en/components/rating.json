@@ -18,6 +18,7 @@
       "noAdminRatings": "No manager ratings yet",
       "noCommunityRatings": "No community ratings yet"
     },
+    "zenModeChip": "Zen Mode",
     "buttons": {
       "saveChanges": "Save Changes",
       "removeRating": "Remove Rating",

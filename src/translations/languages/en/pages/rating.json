@@ -73,7 +73,8 @@
       "subtitle": "Rate levels, one at a time.",
       "deckSize": "Deck size",
       "peekHint": "1 peek per 5 cards",
-      "onlyLowDiff": "Only lowDiff",
+      "onlyLowDiff": "Only P's",
+      "excludeUniversals": "Exclude U's",
       "sort": "Priority",
       "sortLeast": "Least rated first",
       "sortMost": "Most rated first",
@@ -81,7 +82,7 @@
       "sortRecent": "Recently updated",
       "randomness": "Mix",
       "randomnessValue": "{{n}}",
-      "randomnessHint": "Low sticks to priority order; high mixes across the queue",
+      "randomnessHint": "Low sticks to priority order; high picks more randomly",
       "dealing": "Dealing…",
       "start": "Start session",
       "back": "Back to queue"

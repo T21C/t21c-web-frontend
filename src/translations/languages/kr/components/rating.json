@@ -17,6 +17,7 @@
       "noAdminRatings": "아직 관리자 책정이 없습니다",
       "noCommunityRatings": "아직 커뮤니티 책정이 없습니다"
     },
+    "zenModeChip": "Zen Mode",
     "buttons": {
       "saveChanges": "변경 사항 저장",
       "removeRating": "책정 삭제",
