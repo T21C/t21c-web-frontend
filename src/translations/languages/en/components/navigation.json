@@ -74,6 +74,7 @@
     }
   },
   "languages": {
-    "comingSoon": "(Coming Soon)"
+    "comingSoon": "(Coming Soon)",
+    "helpTranslate": "Help translate"
   }
 }

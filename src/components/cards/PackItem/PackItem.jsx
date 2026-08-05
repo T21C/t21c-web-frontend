@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import { Draggable, Droppable } from '@hello-pangea/dnd';
 import { useTranslation } from 'react-i18next';
 import { ChevronIcon, FolderIcon, DragHandleIcon, DownloadIcon } from '@/components/common/icons';
-import { summarizeFolderSize, formatEstimatedSize } from '@/utils/packDownloadUtils';
+import { summarizeFolderSize, summarizeFolderClears, formatEstimatedSize } from '@/utils/packDownloadUtils';
 
 import LevelCard from '@/components/cards/LevelCard/LevelCard';
 import './PackItem.css';
@@ -59,6 +59,8 @@ const PackItem = ({
   const childCount = item.children?.length || 0;
   const folderSizeSummary = useMemo(() => summarizeFolderSize(item), [item]);
   const folderSizeLabel = useMemo(() => formatEstimatedSize(folderSizeSummary), [folderSizeSummary]);
+  const folderClears = useMemo(() => summarizeFolderClears(item), [item]);
+  const showFolderProgress = Boolean(user) && folderClears.total > 0;
   const folderDownloadDisabled = folderSizeSummary.levelCount === 0;
   const downloadFolderLabel = t('pages:packDetail.actions.downloadFolder', 'Download Folder');
   const sortedChildren = useMemo(() => {
@@ -145,6 +147,34 @@ const PackItem = ({
             </div>
 
             <div className="pack-item__info">
+              {showFolderProgress ? (
+                <div
+                  className="pack-item__progress"
+                  role="progressbar"
+                  aria-valuemin={0}
+                  aria-valuemax={folderClears.total}
+                  aria-valuenow={folderClears.cleared}
+                  aria-label={t('pages:packDetail.folderProgress.aria', {
+                    percent: folderClears.percent,
+                    cleared: folderClears.cleared,
+                    total: folderClears.total,
+                  })}
+                >
+                  <div className="pack-item__progress-track">
+                    <div
+                      className="pack-item__progress-fill"
+                      style={{ width: `${folderClears.percent}%` }}
+                    />
+                  </div>
+                  <span className="pack-item__progress-label">
+                    {t('pages:packDetail.folderProgress.label', {
+                      percent: folderClears.percent,
+                      cleared: folderClears.cleared,
+                      total: folderClears.total,
+                    })}
+                  </span>
+                </div>
+              ) : null}
               <div className="pack-item__name">{item.name}</div>
               <div className="pack-item__count">
                 {childCount} {childCount === 1 ? 'item' : 'items'}

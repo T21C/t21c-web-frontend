@@ -8,7 +8,8 @@
     "manageRaters": "Manage Raters",
     "help": "Rating Guide",
     "topRaters": "Top Raters",
-    "zenMode": "Zen Mode"
+    "zenMode": "Zen Mode",
+    "resumeZenMode": "Resume Zen Mode"
   },
   "toggles": {
     "detailedView": {
@@ -61,16 +62,18 @@
       "title": "Rating Zen Mode",
       "description": "Focused conveyor rating session"
     },
-    "confirmExit": "Leave this Zen session?",
     "confirmPeek": "Reveal other raters' ratings and comments? This uses 1 peek.",
     "reportPrompt": "Report note (optional) — describe the media issue:",
     "report": "Report media issue",
-    "exit": "Exit",
+    "exit": "Pause session",
     "noVideo": "No video available",
     "noPeers": "No ratings yet",
     "setup": {
       "title": "Rating Zen Mode",
       "subtitle": "Rate levels, one at a time.",
+      "resumeHint": "You have a paused Zen session in this tab.",
+      "continue": "Continue session",
+      "discard": "Discard & new",
       "deckSize": "Deck size",
       "peekHint": "1 peek per 5 cards",
       "onlyLowDiff": "Only P's",

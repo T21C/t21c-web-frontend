@@ -8,6 +8,11 @@ import { MetaTags } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import {
+  useZenMode,
+  DEFAULT_DECK_SIZE,
+  DEFAULT_RANDOMNESS,
+} from '@/contexts/ZenModeContext';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { CustomSelect, RatingInput } from '@/components/common/selectors';
 import { RatingItem } from '@/components/cards';
@@ -24,8 +29,6 @@ import toast from 'react-hot-toast';
 
 const DECK_SIZES = [5, 10, 15, 20, 25, 30];
 const DECK_UNIT = 5;
-const DEFAULT_DECK_SIZE = 15;
-const DEFAULT_RANDOMNESS = 40;
 
 const videoCache = new Map();
 
@@ -48,6 +51,36 @@ const RatingZenPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { difficulties, difficultyDict } = useDifficultyContext();
+  const {
+    session,
+    patchSession,
+    startSession,
+    clearSession,
+    resetToSetup,
+    hasResumableDeck,
+  } = useZenMode();
+
+  const {
+    phase,
+    deckSize,
+    onlyLowDiff,
+    excludeUniversals,
+    sortPreset,
+    randomness,
+    cards,
+    index,
+    cardOutcomes,
+    cardAnswers,
+    peeksLeft,
+    peeksAllowed,
+    peeksUsed,
+    cardPeeked,
+    submitted,
+    skipped,
+    streak,
+    pendingRating,
+    pendingComment,
+  } = session;
 
   useEffect(() => {
     document.documentElement.classList.add('rating-zen-active');
@@ -56,7 +89,6 @@ const RatingZenPage = () => {
     };
   }, []);
 
-  const [phase, setPhase] = useState('setup'); // setup | stage | done
   const hasUnfinishedSession = phase === 'stage';
 
   useEffect(() => {
@@ -69,51 +101,23 @@ const RatingZenPage = () => {
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [hasUnfinishedSession]);
 
-  const confirmLeaveSession = useCallback(() => {
-    if (!hasUnfinishedSession) return true;
-    return window.confirm(
-      t('rating.zen.confirmExit')
-    );
-  }, [hasUnfinishedSession, t]);
-
   const handleExit = useCallback(() => {
-    if (!confirmLeaveSession()) return;
+    // Pause into setup so return shows Continue / Discard; deck stays in sessionStorage.
+    patchSession((prev) => {
+      if (prev.phase !== 'stage') return {};
+      const nextAnswers = prev.cardAnswers.slice();
+      nextAnswers[prev.index] = {
+        rating: prev.pendingRating,
+        comment: prev.pendingComment,
+        peeked: prev.cardPeeked,
+      };
+      return {
+        cardAnswers: nextAnswers,
+        phase: 'setup',
+      };
+    });
     navigate('/rating');
-  }, [confirmLeaveSession, navigate]);
-
-  // Intercept in-app link clicks (navbar, etc.) — BrowserRouter has no useBlocker.
-  useEffect(() => {
-    if (!hasUnfinishedSession) return undefined;
-    const onClickCapture = (e) => {
-      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) {
-        return;
-      }
-      const anchor = e.target instanceof Element ? e.target.closest('a[href]') : null;
-      if (!anchor || anchor.getAttribute('target') === '_blank' || anchor.hasAttribute('download')) {
-        return;
-      }
-      const href = anchor.getAttribute('href');
-      if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:')) {
-        return;
-      }
-      let url;
-      try {
-        url = new URL(href, window.location.href);
-      } catch {
-        return;
-      }
-      if (url.origin !== window.location.origin) return;
-      if (url.pathname === window.location.pathname && url.search === window.location.search) {
-        return;
-      }
-      if (!confirmLeaveSession()) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-    };
-    document.addEventListener('click', onClickCapture, true);
-    return () => document.removeEventListener('click', onClickCapture, true);
-  }, [hasUnfinishedSession, confirmLeaveSession]);
+  }, [navigate, patchSession]);
 
   const pageMeta = useMemo(
     () =>
@@ -127,29 +131,7 @@ const RatingZenPage = () => {
     [t, location.pathname]
   );
 
-  const [deckSize, setDeckSize] = useState(DEFAULT_DECK_SIZE);
-  const [onlyLowDiff, setOnlyLowDiff] = useState(false);
-  const [excludeUniversals, setExcludeUniversals] = useState(false);
-  const [sortPreset, setSortPreset] = useState('least'); // least | most | id | recent
-  const [randomness, setRandomness] = useState(DEFAULT_RANDOMNESS);
   const [isDealing, setIsDealing] = useState(false);
-
-  const [cards, setCards] = useState([]);
-  const [index, setIndex] = useState(0);
-  /** Per-card outcome: null pending | 'rated' | 'peeked' | 'skipped' */
-  const [cardOutcomes, setCardOutcomes] = useState([]);
-  /** Draft/answer payload per card: { rating, comment, peeked } | null */
-  const [cardAnswers, setCardAnswers] = useState([]);
-  const [peeksLeft, setPeeksLeft] = useState(0);
-  const [peeksAllowed, setPeeksAllowed] = useState(0);
-  const [peeksUsed, setPeeksUsed] = useState(0);
-  const [cardPeeked, setCardPeeked] = useState(false);
-  const [submitted, setSubmitted] = useState(0);
-  const [skipped, setSkipped] = useState(0);
-  const [streak, setStreak] = useState(0);
-
-  const [pendingRating, setPendingRating] = useState('');
-  const [pendingComment, setPendingComment] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState(null);
   const [videoData, setVideoData] = useState(null);
@@ -171,7 +153,10 @@ const RatingZenPage = () => {
   );
 
   const selectedDeckSizeOption = useMemo(
-    () => deckSizeOptions.find((option) => option.value === deckSize) ?? deckSizeOptions[0],
+    () =>
+      deckSizeOptions.find((option) => option.value === deckSize) ??
+      deckSizeOptions.find((option) => option.value === DEFAULT_DECK_SIZE) ??
+      deckSizeOptions[0],
     [deckSize, deckSizeOptions]
   );
 
@@ -216,6 +201,14 @@ const RatingZenPage = () => {
     }
   }, [sortPreset]);
 
+  const handleContinueSession = useCallback(() => {
+    patchSession({ phase: 'stage' });
+  }, [patchSession]);
+
+  const handleDiscardSession = useCallback(() => {
+    clearSession();
+  }, [clearSession]);
+
   const startDeal = useCallback(async () => {
     if (!user) {
       toast.error(t('rating.zen.errors.loginRequired'));
@@ -234,21 +227,29 @@ const RatingZenPage = () => {
         },
       });
       const dealt = data?.cards || [];
-      setCards(dealt);
-      setCardOutcomes(dealt.map(() => null));
-      setCardAnswers(dealt.map(() => null));
-      setIndex(0);
-      setPeeksAllowed(data?.peeksAllowed ?? Math.floor(deckSize / DECK_UNIT));
-      setPeeksLeft(data?.peeksAllowed ?? Math.floor(deckSize / DECK_UNIT));
-      setPeeksUsed(0);
-      setCardPeeked(false);
-      setSubmitted(0);
-      setSkipped(0);
-      setStreak(0);
-      setPendingRating('');
-      setPendingComment('');
+      const peeks = data?.peeksAllowed ?? Math.floor(deckSize / DECK_UNIT);
+      startSession({
+        cards: dealt,
+        cardOutcomes: dealt.map(() => null),
+        cardAnswers: dealt.map(() => null),
+        index: 0,
+        peeksAllowed: peeks,
+        peeksLeft: peeks,
+        peeksUsed: 0,
+        cardPeeked: false,
+        submitted: 0,
+        skipped: 0,
+        streak: 0,
+        pendingRating: '',
+        pendingComment: '',
+        phase: dealt.length === 0 ? 'done' : 'stage',
+        deckSize,
+        onlyLowDiff,
+        excludeUniversals,
+        sortPreset,
+        randomness,
+      });
       setSaveError(null);
-      setPhase(dealt.length === 0 ? 'done' : 'stage');
       if (dealt.length === 0) {
         toast(t('rating.zen.messages.emptyDeck'));
       }
@@ -261,7 +262,18 @@ const RatingZenPage = () => {
     } finally {
       setIsDealing(false);
     }
-  }, [user, deckSize, onlyLowDiff, excludeUniversals, randomness, sortParams, navigate, t]);
+  }, [
+    user,
+    deckSize,
+    onlyLowDiff,
+    excludeUniversals,
+    randomness,
+    sortPreset,
+    sortParams,
+    navigate,
+    t,
+    startSession,
+  ]);
 
   useEffect(() => {
     const videoLink = current?.displayVideoLink || current?.level?.videoLink;
@@ -288,9 +300,11 @@ const RatingZenPage = () => {
 
   useEffect(() => {
     const saved = cardAnswers[index];
-    setPendingRating(saved?.rating ?? '');
-    setPendingComment(saved?.comment ?? '');
-    setCardPeeked(Boolean(saved?.peeked || cardOutcomes[index] === 'peeked'));
+    patchSession({
+      pendingRating: saved?.rating ?? '',
+      pendingComment: saved?.comment ?? '',
+      cardPeeked: Boolean(saved?.peeked || cardOutcomes[index] === 'peeked'),
+    });
     setSaveError(null);
     setShowCommunityPeers(false);
     // Rehydrate only when switching cards; ignore draft edits while typing.
@@ -305,94 +319,123 @@ const RatingZenPage = () => {
   const handleGoto = useCallback(
     (target) => {
       if (!canGoto(target) || (target === index && phase === 'stage')) return;
-      setCardAnswers((prev) => {
-        const next = prev.slice();
-        next[index] = {
-          rating: pendingRating,
-          comment: pendingComment,
-          peeked: cardPeeked,
+      patchSession((prev) => {
+        const nextAnswers = prev.cardAnswers.slice();
+        nextAnswers[prev.index] = {
+          rating: prev.pendingRating,
+          comment: prev.pendingComment,
+          peeked: prev.cardPeeked,
         };
-        return next;
+        return {
+          cardAnswers: nextAnswers,
+          phase: prev.phase === 'done' ? 'stage' : prev.phase,
+          index: target,
+        };
       });
-      if (phase === 'done') setPhase('stage');
-      setIndex(target);
     },
-    [canGoto, index, phase, pendingRating, pendingComment, cardPeeked]
+    [canGoto, index, phase, patchSession]
   );
+
   const applyOutcomeAndAdvance = useCallback(
-    (cardIndex, outcome, answer) => {
-      const previous = cardOutcomes[cardIndex];
-      const nextOutcomes = cardOutcomes.slice();
-      nextOutcomes[cardIndex] = outcome;
+    (cardIndex, outcome, answer, streakDelta = null) => {
+      patchSession((prev) => {
+        const previous = prev.cardOutcomes[cardIndex];
+        const nextOutcomes = prev.cardOutcomes.slice();
+        nextOutcomes[cardIndex] = outcome;
 
-      if (!previous) {
-        if (outcome === 'skipped') setSkipped((n) => n + 1);
-        else setSubmitted((n) => n + 1);
-      } else if (previous === 'skipped' && outcome !== 'skipped') {
-        setSkipped((n) => Math.max(0, n - 1));
-        setSubmitted((n) => n + 1);
-      } else if (previous !== 'skipped' && outcome === 'skipped') {
-        setSubmitted((n) => Math.max(0, n - 1));
-        setSkipped((n) => n + 1);
-      }
-
-      setCardOutcomes(nextOutcomes);
-      setCardAnswers((prev) => {
-        const next = prev.slice();
-        next[cardIndex] = answer;
-        return next;
-      });
-
-      let nextOpen = -1;
-      for (let i = cardIndex + 1; i < nextOutcomes.length; i++) {
-        if (nextOutcomes[i] == null) {
-          nextOpen = i;
-          break;
+        let nextSubmitted = prev.submitted;
+        let nextSkipped = prev.skipped;
+        if (!previous) {
+          if (outcome === 'skipped') nextSkipped += 1;
+          else nextSubmitted += 1;
+        } else if (previous === 'skipped' && outcome !== 'skipped') {
+          nextSkipped = Math.max(0, nextSkipped - 1);
+          nextSubmitted += 1;
+        } else if (previous !== 'skipped' && outcome === 'skipped') {
+          nextSubmitted = Math.max(0, nextSubmitted - 1);
+          nextSkipped += 1;
         }
-      }
-      if (nextOpen < 0) {
-        for (let i = 0; i < nextOutcomes.length; i++) {
+
+        const nextAnswers = prev.cardAnswers.slice();
+        nextAnswers[cardIndex] = answer;
+
+        let nextOpen = -1;
+        for (let i = cardIndex + 1; i < nextOutcomes.length; i++) {
           if (nextOutcomes[i] == null) {
             nextOpen = i;
             break;
           }
         }
-      }
+        if (nextOpen < 0) {
+          for (let i = 0; i < nextOutcomes.length; i++) {
+            if (nextOutcomes[i] == null) {
+              nextOpen = i;
+              break;
+            }
+          }
+        }
 
-      if (nextOpen < 0) {
-        setPhase('done');
-      } else {
-        setPhase('stage');
-        setIndex(nextOpen);
-      }
+        const streakPatch =
+          streakDelta === null
+            ? {}
+            : streakDelta === 0
+              ? { streak: 0 }
+              : { streak: prev.streak + streakDelta };
+
+        if (nextOpen < 0) {
+          return {
+            cardOutcomes: nextOutcomes,
+            cardAnswers: nextAnswers,
+            submitted: nextSubmitted,
+            skipped: nextSkipped,
+            phase: 'done',
+            ...streakPatch,
+          };
+        }
+        return {
+          cardOutcomes: nextOutcomes,
+          cardAnswers: nextAnswers,
+          submitted: nextSubmitted,
+          skipped: nextSkipped,
+          phase: 'stage',
+          index: nextOpen,
+          ...streakPatch,
+        };
+      });
     },
-    [cardOutcomes]
+    [patchSession]
   );
 
   const handleSkip = () => {
-    applyOutcomeAndAdvance(index, 'skipped', {
-      rating: '',
-      comment: '',
-      peeked: cardPeeked,
-    });
-    setStreak(0);
+    applyOutcomeAndAdvance(
+      index,
+      'skipped',
+      {
+        rating: '',
+        comment: '',
+        peeked: cardPeeked,
+      },
+      0
+    );
   };
 
   const handlePeek = () => {
     if (cardPeeked || peeksLeft <= 0 || !(current?.details || []).length) return;
     const ok = window.confirm(t('rating.zen.confirmPeek'));
     if (!ok) return;
-    setCardPeeked(true);
-    setPeeksLeft((n) => Math.max(0, n - 1));
-    setPeeksUsed((n) => n + 1);
-    setCardAnswers((prev) => {
-      const next = prev.slice();
-      next[index] = {
-        rating: pendingRating,
-        comment: pendingComment,
+    patchSession((prev) => {
+      const nextAnswers = prev.cardAnswers.slice();
+      nextAnswers[prev.index] = {
+        rating: prev.pendingRating,
+        comment: prev.pendingComment,
         peeked: true,
       };
-      return next;
+      return {
+        cardPeeked: true,
+        peeksLeft: Math.max(0, prev.peeksLeft - 1),
+        peeksUsed: prev.peeksUsed + 1,
+        cardAnswers: nextAnswers,
+      };
     });
   };
 
@@ -438,12 +481,16 @@ const RatingZenPage = () => {
         pendingComment.trim(),
         !isAdminRater
       );
-      applyOutcomeAndAdvance(index, outcome, {
-        rating: pendingRating.trim(),
-        comment: pendingComment.trim(),
-        peeked: cardPeeked,
-      });
-      setStreak((n) => n + 1);
+      applyOutcomeAndAdvance(
+        index,
+        outcome,
+        {
+          rating: pendingRating.trim(),
+          comment: pendingComment.trim(),
+          peeked: cardPeeked,
+        },
+        1
+      );
     } catch (err) {
       setSaveError(
         err.response?.data?.error ||
@@ -476,6 +523,7 @@ const RatingZenPage = () => {
   const communityRatings = peerDetails.filter((d) => d.isCommunityRating);
   const visiblePeers = showCommunityPeers ? communityRatings : adminRatings;
   const hasPeersToPeek = peerDetails.length > 0;
+  const showResumeActions = hasResumableDeck;
 
   const progressBar = cards.length > 0 && (
     <div
@@ -547,13 +595,35 @@ const RatingZenPage = () => {
             </p>
           </header>
 
+          {showResumeActions ? (
+            <div className="rating-zen-page__setup-resume">
+              <p>{t('rating.zen.setup.resumeHint')}</p>
+              <div className="rating-zen-page__setup-actions">
+                <button
+                  type="button"
+                  className="rating-zen-page__btn rating-zen-page__btn--primary"
+                  onClick={handleContinueSession}
+                >
+                  {t('rating.zen.setup.continue')}
+                </button>
+                <button
+                  type="button"
+                  className="rating-zen-page__btn rating-zen-page__btn--ghost"
+                  onClick={handleDiscardSession}
+                >
+                  {t('rating.zen.setup.discard')}
+                </button>
+              </div>
+            </div>
+          ) : null}
+
           <div className="rating-zen-page__setup-form">
             <div className="rating-zen-page__field">
               <span>{t('rating.zen.setup.deckSize')}</span>
               <CustomSelect
                 options={deckSizeOptions}
                 value={selectedDeckSizeOption}
-                onChange={(option) => setDeckSize(option.value)}
+                onChange={(option) => patchSession({ deckSize: option.value })}
                 width="100%"
                 menuPlacement="bottom"
                 isSearchable={false}
@@ -568,16 +638,18 @@ const RatingZenPage = () => {
                 <input
                   type="checkbox"
                   checked={onlyLowDiff}
-                  onChange={(e) => setOnlyLowDiff(e.target.checked)}
+                  onChange={(e) => patchSession({ onlyLowDiff: e.target.checked })}
                 />
                 <span>{t('rating.zen.setup.onlyLowDiff')}</span>
               </label>
-  
+
               <label className="rating-zen-page__toggle">
                 <input
                   type="checkbox"
                   checked={excludeUniversals}
-                  onChange={(e) => setExcludeUniversals(e.target.checked)}
+                  onChange={(e) =>
+                    patchSession({ excludeUniversals: e.target.checked })
+                  }
                 />
                 <span>{t('rating.zen.setup.excludeUniversals')}</span>
               </label>
@@ -588,7 +660,7 @@ const RatingZenPage = () => {
               <CustomSelect
                 options={sortOptions}
                 value={selectedSortOption}
-                onChange={(option) => setSortPreset(option.value)}
+                onChange={(option) => patchSession({ sortPreset: option.value })}
                 width="100%"
                 menuPlacement="bottom"
                 isSearchable={false}
@@ -599,7 +671,9 @@ const RatingZenPage = () => {
               <div className="rating-zen-page__field-row">
                 <span>{t('rating.zen.setup.randomness')}</span>
                 <span className="rating-zen-page__field-value">
-                  {t('rating.zen.setup.randomnessValue', { n: randomness })}
+                  {t('rating.zen.setup.randomnessValue', {
+                    n: randomness ?? DEFAULT_RANDOMNESS,
+                  })}
                 </span>
               </div>
               <input
@@ -609,7 +683,9 @@ const RatingZenPage = () => {
                 max={100}
                 step={1}
                 value={randomness}
-                onChange={(e) => setRandomness(Number(e.target.value))}
+                onChange={(e) =>
+                  patchSession({ randomness: Number(e.target.value) })
+                }
                 aria-label={t('rating.zen.setup.randomness')}
               />
               <small>{t('rating.zen.setup.randomnessHint')}</small>
@@ -620,7 +696,7 @@ const RatingZenPage = () => {
                 type="button"
                 className="rating-zen-page__btn rating-zen-page__btn--primary"
                 onClick={() => void startDeal()}
-                disabled={isDealing || !user}
+                disabled={isDealing || !user || showResumeActions}
               >
                 {isDealing
                   ? t('rating.zen.setup.dealing')
@@ -802,7 +878,7 @@ const RatingZenPage = () => {
                       />
                     )}
                   </div>
-                  
+
                   <span className="rating-zen-page__meta-id">
                     <span>
                     #{current.level?.id}
@@ -843,7 +919,7 @@ const RatingZenPage = () => {
                     <div className="rating-zen-page__rating-row">
                       <RatingInput
                         value={pendingRating}
-                        onChange={setPendingRating}
+                        onChange={(value) => patchSession({ pendingRating: value })}
                         showDiff={false}
                         difficulties={difficulties}
                         allowCustomInput={true}
@@ -855,7 +931,9 @@ const RatingZenPage = () => {
                     <textarea
                       name="rating-zen-page__comment"
                       value={pendingComment}
-                      onChange={(e) => setPendingComment(e.target.value)}
+                      onChange={(e) =>
+                        patchSession({ pendingComment: e.target.value })
+                      }
                       rows={4}
                       placeholder={t('components:rating.detailPopup.placeholders.communityComment')}
                     />
@@ -939,7 +1017,7 @@ const RatingZenPage = () => {
               type="button"
               className="rating-zen-page__btn rating-zen-page__btn--primary"
               onClick={() => {
-                setPhase('setup');
+                resetToSetup();
               }}
             >
               {t('rating.zen.done.again')}

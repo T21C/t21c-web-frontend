@@ -485,6 +485,8 @@ export const routes = {
   },
   utils: {
     languages: () => '/v2/utils/languages',
+    verifyTranslations: () => '/v2/utils/verify-translations',
+    downloadTranslations: (lang) => `/v2/utils/download-translations/${lang}`,
   },
   form: {
     pass: {

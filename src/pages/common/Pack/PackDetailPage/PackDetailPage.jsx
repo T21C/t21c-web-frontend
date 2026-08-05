@@ -25,7 +25,7 @@ import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import { Tooltip } from "react-tooltip";
 import { getPackExpandedFolders, setPackExpandedFolders } from "@/utils/folderState";
 import toast from 'react-hot-toast';
-import { summarizePackSize, summarizeFolderSize, formatEstimatedSize } from '@/utils/packDownloadUtils';
+import { summarizePackSize, summarizeFolderSize, summarizePackClears, formatEstimatedSize } from '@/utils/packDownloadUtils';
 import { DragDropContext, Droppable } from '@hello-pangea/dnd';
 import i18next from 'i18next';
 import { formatDate } from '@/utils/Utility';
@@ -197,6 +197,8 @@ const PackDetailPage = () => {
   const packSizeSummary = useMemo(() => summarizePackSize(packItems), [packItems]);
   const totalLevels = packSizeSummary.levelCount;
   const packSizeLabel = useMemo(() => formatEstimatedSize(packSizeSummary), [packSizeSummary]);
+  const packClears = useMemo(() => summarizePackClears(packItems), [packItems]);
+  const showPackProgress = Boolean(user) && packClears.total > 0;
   const packDownloadDisabled = totalLevels === 0;
   const packExportDisabled = totalLevels === 0;
   const sortedRootItems = useMemo(() => sortItemsByOrder(packItems), [packItems]);
@@ -842,6 +844,7 @@ const PackDetailPage = () => {
         map.set(item.id, {
           referencedLevel: item.referencedLevel ?? null,
           isCleared: !!item.isCleared,
+          isPurePerfect: !!item.isPurePerfect,
         });
       }
       if (item.children?.length) {
@@ -861,6 +864,7 @@ const PackDetailPage = () => {
             ...node,
             referencedLevel: meta?.referencedLevel ?? null,
             isCleared: meta?.isCleared ?? false,
+            isPurePerfect: meta?.isPurePerfect ?? false,
           };
         }
         if (node.type === 'folder') {
@@ -1199,6 +1203,34 @@ const PackDetailPage = () => {
           <div className="header-container">
         {/* Header */}
         <div className="header">
+          {showPackProgress ? (
+            <div
+              className="pack-clear-progress"
+              role="progressbar"
+              aria-valuemin={0}
+              aria-valuemax={packClears.total}
+              aria-valuenow={packClears.cleared}
+              aria-label={t('packDetail.folderProgress.aria', {
+                percent: packClears.percent,
+                cleared: packClears.cleared,
+                total: packClears.total,
+              })}
+            >
+              <div className="pack-clear-progress__track">
+                <div
+                  className="pack-clear-progress__fill"
+                  style={{ width: `${packClears.percent}%` }}
+                />
+              </div>
+              <span className="pack-clear-progress__label">
+                {t('packDetail.folderProgress.label', {
+                  percent: packClears.percent,
+                  cleared: packClears.cleared,
+                  total: packClears.total,
+                })}
+              </span>
+            </div>
+          ) : null}
 
           <div className="title-section">
             <div className="title-content">

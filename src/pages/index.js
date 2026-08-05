@@ -67,6 +67,7 @@ const PrivacyPolicyPage = lazy(() => import('./misc/PrivacyPolicyPage/PrivacyPol
 const TermsOfServicePage = lazy(() => import('./misc/TermsOfServicePage/TermsOfServicePage'));
 const HealthCheckPage = lazy(() => import('./misc/HealthCheckPage/HealthCheckPage'));
 const AssetsCatalogPage = lazy(() => import('./misc/AssetsPage/AssetsPage'));
+const TranslationsPage = lazy(() => import('./misc/TranslationsPage/TranslationsPage'));
 
 export {
     // Common pages
@@ -129,5 +130,6 @@ export {
     PrivacyPolicyPage,
     TermsOfServicePage,
     HealthCheckPage,
-    AssetsCatalogPage
+    AssetsCatalogPage,
+    TranslationsPage
 };

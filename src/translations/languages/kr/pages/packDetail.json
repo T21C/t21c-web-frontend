@@ -46,6 +46,10 @@
     "estimatedLong": "(estimated: {{count}} missing metadata)",
     "estimatedShort": "(est., {{count}} missing)"
   },
+  "folderProgress": {
+    "label": "{{percent}}% ({{cleared}}/{{total}})",
+    "aria": "{{percent}} percent cleared, {{cleared}} of {{total}} levels"
+  },
   "createFolder": {
     "prompt": "Enter a name for the new folder",
     "success": "Folder created successfully",

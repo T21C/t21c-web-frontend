@@ -46,6 +46,10 @@
     "estimatedLong": "（预计：缺少 {{count}} 个大小元数据）",
     "estimatedShort": "（预计，缺少 {{count}} 个）"
   },
+  "folderProgress": {
+    "label": "{{percent}}% ({{cleared}}/{{total}})",
+    "aria": "已通关 {{percent}}%，{{cleared}} / {{total}} 关"
+  },
   "createFolder": {
     "prompt": "输入新文件夹名称：",
     "success": "文件夹创建成功",
