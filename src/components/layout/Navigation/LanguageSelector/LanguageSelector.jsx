@@ -1,5 +1,6 @@
 // tuf-search: #LanguageSelector #languageSelector #layout #navigation
 import React, { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import { Portal } from "@/components/common/Portal";
 import { isoToEmoji } from "@/utils";
 import api from "@/utils/api";
@@ -134,6 +135,23 @@ const LanguageSelector = ({ variant = "desktop", asListItem = null }) => {
     setIsOpen(false);
   };
 
+  const helpTranslateItem = (
+    <li className="nav-language-select__option nav-language-select__option--action">
+      <Link
+        to="/translations"
+        className="nav-language-select__option-link"
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsOpen(false);
+        }}
+      >
+        <div className="nav-language-select__option-content">
+          <span>{t("navigation.languages.helpTranslate")}</span>
+        </div>
+      </Link>
+    </li>
+  );
+
   const isMobile = variant === "mobile";
   const currentLanguage = languages[language]?.display || "Language";
   // Default to true for mobile if not specified, false for desktop
@@ -180,6 +198,7 @@ const LanguageSelector = ({ variant = "desktop", asListItem = null }) => {
             </li>
           )
         )}
+        {helpTranslateItem}
       </ul>
     </div>
   ) : null;
@@ -291,6 +310,7 @@ const LanguageSelector = ({ variant = "desktop", asListItem = null }) => {
                 </li>
               )
             )}
+            {helpTranslateItem}
           </ul>
         </div>
       )}

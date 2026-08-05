@@ -1,0 +1,313 @@
+/* tuf-search: #TranslationsPage #translationsPage #translations */
+.translations-page {
+  width: 100%;
+  padding: 2rem 1.5rem 4rem;
+  display: flex;
+  justify-content: center;
+}
+
+.translations-page .translations-page__container {
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.translations-page .translations-page__title {
+  margin: 0;
+  text-align: center;
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--color-purple-1);
+}
+
+.translations-page .translations-page__section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.75rem;
+  border-radius: 12px;
+  background: var(--color-white-t10);
+}
+
+.translations-page .translations-page__section h2 {
+  margin: 0;
+  color: var(--color-purple-1);
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.translations-page .translations-page__section > p {
+  margin: 0;
+  color: var(--color-white-t80);
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.translations-page .translations-page__format-note {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem 1.25rem;
+  border-radius: 8px;
+  background: var(--color-black-t30);
+  border-left: 4px solid var(--color-purple-1);
+}
+
+.translations-page .translations-page__format-note p {
+  margin: 0;
+  color: var(--color-white-t80);
+}
+
+.translations-page .translations-page__login-gate {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.translations-page .translations-page__login-gate p {
+  margin: 0;
+  color: var(--color-white-t80);
+}
+
+.translations-page .translations-page__upload-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.translations-page .translations-page__upload-form input[type='file'] {
+  background: var(--color-black-t40);
+  padding: 0.75rem;
+  border-radius: 6px;
+  border: 2px solid var(--color-white-t15);
+  color: var(--color-white);
+  cursor: pointer;
+}
+
+.translations-page .translations-page__button-group {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.translations-page .translations-page__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-purple-1);
+  color: var(--color-white);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+}
+
+.translations-page .translations-page__button:hover {
+  background: var(--color-purple-2);
+}
+
+.translations-page .translations-page__button:disabled {
+  background: var(--btn-disabled-fill);
+  cursor: not-allowed;
+}
+
+.translations-page .translations-page__result {
+  white-space: pre-wrap;
+  background: var(--color-black-t40);
+  padding: 1.25rem;
+  border-radius: 8px;
+  margin: 0;
+  font-family: monospace;
+  line-height: 1.4;
+  color: var(--color-white);
+}
+
+.translations-page .translations-page__result.error {
+  color: var(--btn-danger);
+}
+
+.translations-page .translations-page__result.success {
+  color: var(--btn-success);
+}
+
+.translations-page .translations-page__guide {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-white-t10);
+}
+
+.translations-page .translations-page__guide h3 {
+  margin: 0;
+  color: var(--color-purple-1);
+  font-size: 1.3rem;
+}
+
+.translations-page .translations-page__guide-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.translations-page .translations-page__step {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.2rem 1.2rem 1.2rem 3.5rem;
+  border-radius: 8px;
+  background: var(--color-black-t20);
+}
+
+.translations-page .translations-page__step-number {
+  position: absolute;
+  left: -0.75rem;
+  top: 50%;
+  margin-top: -1.25rem;
+  background: var(--color-purple-1);
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: var(--color-white);
+}
+
+.translations-page .translations-page__step h4 {
+  margin: 0;
+  color: var(--color-purple-1);
+  font-size: 1.05rem;
+}
+
+.translations-page .translations-page__step > p {
+  margin: 0;
+  color: var(--color-white-t80);
+  line-height: 1.4;
+}
+
+.translations-page .translations-page__example {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  background: var(--color-black-t30);
+  padding: 0.8rem;
+  border-radius: 6px;
+  border-left: 3px solid var(--color-purple-1);
+}
+
+.translations-page .translations-page__example p {
+  margin: 0;
+  color: var(--color-purple-1);
+  font-weight: 500;
+}
+
+.translations-page .translations-page__example-note {
+  color: var(--btn-warning) !important;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.translations-page .translations-page__example pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--color-white);
+  font-family: monospace;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.translations-page .translations-page__languages {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.translations-page .translations-page__languages h3 {
+  margin: 0;
+  color: var(--color-purple-1);
+  font-size: 1.3rem;
+}
+
+.translations-page .translations-page__language-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.translations-page .translations-page__language-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding: 1rem 1.2rem;
+  border-radius: 8px;
+  background: var(--color-black-t30);
+}
+
+.translations-page .translations-page__language-header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.translations-page .translations-page__language-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-white);
+}
+
+.translations-page .translations-page__language-status {
+  font-size: 0.85rem;
+  padding: 0.3em 0.6em;
+  border-radius: 4px;
+  font-weight: 500;
+  color: var(--color-white-t70);
+  background: var(--color-white-t10);
+}
+
+.translations-page .translations-page__language-status.status-implemented {
+  background: var(--btn-success);
+  color: var(--color-white);
+}
+
+.translations-page .translations-page__language-status.status-pending {
+  background: var(--btn-warning);
+  color: var(--color-white);
+}
+
+.translations-page .translations-page__download-button {
+  width: 100%;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.8em;
+}
+
+@media (max-width: 640px) {
+  .translations-page {
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  .translations-page .translations-page__section {
+    padding: 1.25rem;
+  }
+
+  .translations-page .translations-page__title {
+    font-size: 1.8rem;
+  }
+}

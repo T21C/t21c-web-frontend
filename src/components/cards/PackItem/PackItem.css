@@ -110,12 +110,47 @@
 .pack-item__info {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.pack-item__progress {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  margin-bottom: 0.1rem;
+}
+
+.pack-item__progress-track {
+  flex: 1;
+  min-width: 2.5rem;
+  max-width: 7rem;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: var(--color-white-t15);
+  overflow: hidden;
+}
+
+.pack-item__progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--btn-success);
+  transition: width 0.2s ease;
+}
+
+.pack-item__progress-label {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--btn-success);
+  white-space: nowrap;
 }
 
 .pack-item__name {
   color: #f8fafc;
   font-weight: 600;
-  margin-bottom: 0.15rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

@@ -1,3 +1,26 @@
 /* tuf-search: #LanguageSelector #languageSelector #layout #navigation */
 /* LanguageSelector styles are inherited from navigation.css */
-/* This file can be used for language selector-specific overrides if needed */
+
+.nav-language-select__option--action {
+  border-top: 1px solid var(--color-white-t10);
+  padding: 0;
+}
+
+.nav-language-select__option--action .nav-language-select__option-link {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  color: var(--color-purple-1);
+  text-decoration: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.nav-language-select__option--action:hover {
+  background: var(--color-white-t10);
+}
+
+.nav-language-select__option--action .nav-language-select__option-link:hover {
+  color: var(--color-purple-2);
+}

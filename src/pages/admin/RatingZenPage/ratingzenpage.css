@@ -67,6 +67,27 @@ html.rating-zen-active .background::after {
   color: var(--color-gray-2);
 }
 
+.rating-zen-page__setup-resume {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: min(24rem, 100%);
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--color-white-t20);
+  border-radius: 0.4rem;
+  background: var(--color-black-t60);
+}
+
+.rating-zen-page__setup-resume p {
+  margin: 0;
+  color: var(--color-gray-2);
+  font-size: 0.9rem;
+}
+
+.rating-zen-page__setup-resume .rating-zen-page__setup-actions {
+  margin-top: 0;
+}
+
 .rating-zen-page__setup-form {
   display: flex;
   flex-direction: column;
@@ -82,9 +103,10 @@ html.rating-zen-active .background::after {
 
 .rating-zen-page__field-row {
   display: flex;
+  flex-direction: column;
   align-items: baseline;
   justify-content: space-between;
-  gap: 0.75rem;
+  gap: 0.25rem;
 }
 
 .rating-zen-page__field-value {
@@ -92,8 +114,8 @@ html.rating-zen-active .background::after {
   font-variant-numeric: tabular-nums;
 }
 
-.rating-zen-page__field span,
-.rating-zen-page__toggle span {
+.rating-zen-page__field,
+.rating-zen-page__toggle {
   font-size: 0.9rem;
   color: var(--color-gray-2);
 }
@@ -156,7 +178,7 @@ html.rating-zen-active .background::after {
 .rating-zen-page__toggle {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.25rem;
   cursor: pointer;
 }
 
@@ -534,13 +556,6 @@ html.rating-zen-active .background::after {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-}
-
-.rating-zen-page__form label {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  font-size: 0.9rem;
 }
 
 .rating-zen-page__rating-row {

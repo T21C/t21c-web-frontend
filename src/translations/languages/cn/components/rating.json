@@ -18,6 +18,7 @@
       "noAdminRatings": "没有评级员评级",
       "noCommunityRatings": "没有玩家评级"
     },
+    "zenModeChip": "Zen Mode",
     "buttons": {
       "saveChanges": "保存更改",
       "removeRating": "删除评级",

@@ -58,12 +58,50 @@
 /* Header */
 .pack-detail-page .header {
   display: flex;
+  position: relative;
   min-width: 100%;
   align-items: flex-start;
   flex-wrap: wrap;
   padding: 2rem;
   background: var(--color-white-t20);
   border-radius: 1rem;
+  gap: 0.75rem;
+}
+
+.pack-detail-page .pack-clear-progress {
+  display: flex;
+  position: absolute;
+  top: 0.5rem;
+  left: 2.25rem;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1 0 100%;
+  min-width: 0;
+}
+
+.pack-detail-page .pack-clear-progress__track {
+  flex: 0 0.5 16rem;
+  min-width: 4rem;
+  max-width: 12rem;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: var(--color-white-t15);
+  overflow: hidden;
+}
+
+.pack-detail-page .pack-clear-progress__fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--btn-success);
+  transition: width 0.2s ease;
+}
+
+.pack-detail-page .pack-clear-progress__label {
+  flex-shrink: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--btn-success);
+  white-space: nowrap;
 }
 
 .pack-detail-page .pack-top-bar {
@@ -327,6 +365,7 @@
 .pack-detail-page .actions-container {
   gap: 0.5rem;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   margin-top: auto;
   margin-left: auto;

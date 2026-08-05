@@ -51,6 +51,54 @@ export const summarizeFolderSize = (folder) => {
   return aggregateItems(folder.children || []);
 };
 
+const aggregateFolderClears = (items = []) => {
+  return items.reduce(
+    (acc, item) => {
+      if (!item) return acc;
+
+      if (item.type === LEVEL_TYPE) {
+        acc.total += 1;
+        if (item.isCleared) acc.cleared += 1;
+        return acc;
+      }
+
+      if (item.type === FOLDER_TYPE && Array.isArray(item.children)) {
+        const child = aggregateFolderClears(item.children);
+        acc.total += child.total;
+        acc.cleared += child.cleared;
+        return acc;
+      }
+
+      return acc;
+    },
+    { cleared: 0, total: 0 },
+  );
+};
+
+/**
+ * Nested clear progress for a list of pack tree items (folders + levels).
+ * @returns {{ cleared: number, total: number, percent: number }}
+ */
+export const summarizePackClears = (items = []) => {
+  const { cleared, total } = aggregateFolderClears(items);
+  return {
+    cleared,
+    total,
+    percent: total > 0 ? Math.round((cleared / total) * 100) : 0,
+  };
+};
+
+/**
+ * Nested clear progress for a pack folder (all descendant levels).
+ * @returns {{ cleared: number, total: number, percent: number }}
+ */
+export const summarizeFolderClears = (folder) => {
+  if (!folder || folder.type !== FOLDER_TYPE) {
+    return { cleared: 0, total: 0, percent: 0 };
+  }
+  return summarizePackClears(folder.children || []);
+};
+
 export const formatEstimatedSize = ({ totalBytes, missingCount } = {}) => {
   const sizeLabel =
     typeof totalBytes === 'number' && totalBytes > 0

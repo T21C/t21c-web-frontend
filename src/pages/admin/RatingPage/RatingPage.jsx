@@ -9,6 +9,7 @@ import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { Link, useLocation, useParams, useNavigate } from 'react-router-dom';
 import { VirtualList } from "@/components/common/VirtualList";
 import { useAuth } from "@/contexts/AuthContext";
+import { useZenMode } from "@/contexts/ZenModeContext";
 import { useRatingFilter } from "@/contexts/RatingFilterContext";
 import { useTranslation } from "react-i18next";
 import { RatingCard } from "@/components/cards";
@@ -46,6 +47,7 @@ const RatingPage = () => {
     [t, location.pathname, levelIdParam],
   );
   const { user } = useAuth();
+  const { hasActiveSession } = useZenMode();
   const { 
     sortOrder, 
     hideRated, 
@@ -465,7 +467,9 @@ const RatingPage = () => {
               to="/rating/zen"
               className="admin-button"
             >
-              {t('rating.buttons.zenMode', { defaultValue: 'Zen Mode' })}
+              {hasActiveSession
+                ? t('rating.buttons.resumeZenMode', { defaultValue: 'Resume Zen Mode' })
+                : t('rating.buttons.zenMode', { defaultValue: 'Zen Mode' })}
             </Link>
             {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
               <>

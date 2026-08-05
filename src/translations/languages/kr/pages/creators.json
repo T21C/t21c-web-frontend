@@ -96,7 +96,23 @@
     "levels": {
       "header": "Charts",
       "empty": "No charts found for this creator yet.",
-      "searchPlaceholder": "Search this creator's charts..."
+      "searchPlaceholder": "Search this creator's charts...",
+      "expand": "Expand levels",
+      "collapse": "Collapse levels",
+      "exportAs": "Export as",
+      "exportDisabled": "No charts match the current filters.",
+      "export": {
+        "title": "Export {{contextName}}",
+        "defaultContextName": "Charts",
+        "description": "Download a spreadsheet of all charts matching the current filters for {{contextName}}.",
+        "export": "Export",
+        "exporting": "Exporting…",
+        "unavailable": "Unavailable",
+        "progress": "Collected {{fetched}} of {{total}}…",
+        "errors": {
+          "exportFailed": "Failed to export charts. Please try again."
+        }
+      }
     },
     "sections": {
       "difficultyBreakdown": {

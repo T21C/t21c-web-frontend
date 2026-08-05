@@ -484,7 +484,6 @@
   margin: 0;
   list-style: none;
   max-height: 70vh;
-  overflow-y: auto;
 }
 
 /* Scrollbar styling */
