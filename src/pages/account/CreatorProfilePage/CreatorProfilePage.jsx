@@ -19,7 +19,6 @@ import { TournamentPlacementsSection } from "@/components/account/TournamentPlac
 import { ScrollButton } from "@/components/common/buttons";
 import { ChevronIcon, AdofaiIcon, EditIcon, ShieldIcon, InfoIcon } from "@/components/common/icons";
 import { CreatorManagementPopup } from "@/components/popups/Creators";
-import LevelPage from "@/pages/common/Level/LevelPage/LevelPage";
 import { useScrollParent } from "@/components/common/VirtualList";
 import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
@@ -33,6 +32,7 @@ import {
 } from "@/utils/profileBanners";
 import { normalizeProfileAliasNames } from "@/utils/profileAliasNames";
 import { Tooltip } from "react-tooltip";
+import CreatorChartsSection from "./CreatorChartsSection";
 
 const CreatorProfilePage = () => {
   const { creatorId } = useParams();
@@ -196,7 +196,6 @@ const CreatorProfilePage = () => {
   }
 
   const bioExpanded = !bioCollapsed;
-  const levelsExpanded = !levelsCollapsed;
   const difficultyExpanded = !difficultyCollapsed;
 
   return (
@@ -387,53 +386,19 @@ const CreatorProfilePage = () => {
         ) : null}
 
         <section className="creator-profile-page__section creator-profile-page__section--levels">
-          <div className="account-profile-page__section-title-row">
-            <h2 className="account-profile-page__section-title">
-              {t('creators.profile.levels.header')}
-            </h2>
-            <button
-              type="button"
-              className="account-profile-page__chevron-btn"
-              aria-expanded={levelsExpanded}
-              aria-label={
-                levelsCollapsed
-                  ? t('creators.profile.levels.expand', { defaultValue: 'Expand levels' })
-                  : t('creators.profile.levels.collapse', { defaultValue: 'Collapse levels' })
-              }
-              onClick={() => setLevelsCollapsed((v) => !v)}
-            >
-              <ChevronIcon direction={levelsExpanded ? 'down' : 'right'} />
-            </button>
-          </div>
-
-          {/*
-            Embed the full LevelPage rather than re-implementing search/sort/filter.
-            Each creator gets its own LevelContextProvider with a unique storage
-            prefix, so filters/sort/query persist independently per profile and
-            stay isolated from the global /levels page state. The byCreatorId
-            hidden filter scopes results to this creator without exposing it in
-            the UI.
-          */}
-          <Collapsible
-            open={!levelsCollapsed}
-            onOpenChange={(open) => setLevelsCollapsed(!open)}
-            revealOverflow
-            duration="0.3s"
-            easing="ease-in-out"
+          <LevelContextProvider
+            key={creatorId}
+            storagePrefix={`creator_${creatorId}_`}
           >
-            <CollapsibleContent>
-          <div ref={levelsScrollRef} className="creator-profile-page__levels-container">
-          <LevelContextProvider storagePrefix={`creator_${creatorId}_`}>
-            <LevelPage
-              embedded
-              customScrollParent={levelsScrollParent}
-              hiddenFilters={embeddedHiddenFilters}
-              disabledFeatures={['myLikes']}
+            <CreatorChartsSection
+              creatorName={creatorDoc?.name || profile?.creator?.name || 'creator'}
+              levelsCollapsed={levelsCollapsed}
+              setLevelsCollapsed={setLevelsCollapsed}
+              levelsScrollRef={levelsScrollRef}
+              levelsScrollParent={levelsScrollParent}
+              embeddedHiddenFilters={embeddedHiddenFilters}
             />
           </LevelContextProvider>
-          </div>
-            </CollapsibleContent>
-          </Collapsible>
         </section>
       </div>
 

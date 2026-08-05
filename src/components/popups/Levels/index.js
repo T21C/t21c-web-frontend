@@ -7,6 +7,7 @@ import LevelPayloadSwapPopup from "./LevelPayloadSwapPopup/LevelPayloadSwapPopup
 import CDNTosPopup from "./CDNTosPopup/CDNTosPopup";
 import SubmissionCreatorPopup from "./SubmissionCreatorPopup/SubmissionCreatorPopup";
 import LevelDownloadPopup from "./LevelDownloadPopup/LevelDownloadPopup";
+import LevelListExportPopup from "./LevelListExportPopup/LevelListExportPopup";
 import WebAdofaiViewerButton from "./WebAdofaiViewerButton/WebAdofaiViewerButton";
 
 export {
@@ -18,5 +19,6 @@ export {
   CDNTosPopup,
   SubmissionCreatorPopup,
   LevelDownloadPopup,
+  LevelListExportPopup,
   WebAdofaiViewerButton,
 };

@@ -96,7 +96,23 @@
     "levels": {
       "header": "谱面",
       "empty": "该创作者暂时没有关卡。",
-      "searchPlaceholder": "搜索该创作者的谱面……"
+      "searchPlaceholder": "搜索该创作者的谱面……",
+      "expand": "展开谱面列表",
+      "collapse": "收起谱面列表",
+      "exportAs": "导出为",
+      "exportDisabled": "当前筛选条件下没有谱面。",
+      "export": {
+        "title": "导出 {{contextName}}",
+        "defaultContextName": "谱面",
+        "description": "下载 {{contextName}} 在当前筛选条件下的全部谱面表格。",
+        "export": "导出",
+        "exporting": "导出中…",
+        "unavailable": "不可用",
+        "progress": "已收集 {{fetched}} / {{total}}…",
+        "errors": {
+          "exportFailed": "导出失败，请重试。"
+        }
+      }
     },
     "sections": {
       "difficultyBreakdown": {

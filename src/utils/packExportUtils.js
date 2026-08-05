@@ -21,6 +21,10 @@ export const PACK_EXPORT_HEADERS = [
   'VFXers',
 ];
 
+export const LEVEL_LIST_EXPORT_HEADERS = PACK_EXPORT_HEADERS.filter(
+  (header) => header !== 'Folder',
+);
+
 const sortItemsByOrder = (items = []) =>
   [...items].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
 
@@ -63,6 +67,49 @@ function emptyFolderRowCells(folderPath) {
   return [folderPath, '', '', '', '', '', '', '', '', '', '', ''];
 }
 
+function unavailableLevelCells(levelId, unavailableLabel) {
+  return [
+    levelId,
+    unavailableLabel,
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+  ];
+}
+
+/**
+ * Flat level columns matching pack export (without Folder).
+ * @returns {Array} cells for LEVEL_LIST_EXPORT_HEADERS
+ */
+export function buildLevelExportCells(
+  level,
+  { difficultyDict, curationTypesDict, unavailableLabel = 'Unavailable' } = {},
+) {
+  if (!level) {
+    return unavailableLevelCells('', unavailableLabel);
+  }
+
+  return [
+    level.id ?? '',
+    getSongDisplayName(level),
+    getArtistDisplayName(level),
+    formatCreatorDisplay(level),
+    difficultyDict?.[level.diffId]?.name ?? '',
+    formatCurationColumn(level, curationTypesDict),
+    level.videoLink ?? '',
+    level.dlLink || level.workshopLink || level.ws || '',
+    level.clears ?? '',
+    joinCreditNamesByRole(level, 'charter'),
+    joinCreditNamesByRole(level, 'vfxer'),
+  ];
+}
+
 function traversePackTree(items, includeFolders, folderPathSegments, onRow) {
   const sorted = sortItemsByOrder(items);
   for (const item of sorted) {
@@ -102,6 +149,7 @@ export function buildExportRows(
   { difficultyDict, curationTypesDict, unavailableLabel = 'Unavailable' },
 ) {
   const rows = [];
+  const dicts = { difficultyDict, curationTypesDict, unavailableLabel };
 
   traversePackTree(packItems, includeFolders, [], (entry) => {
     if (entry.kind === 'folder') {
@@ -120,44 +168,49 @@ export function buildExportRows(
     if (!level) {
       rows.push({
         kind: 'level',
-        cells: [
-          folderPath,
-          levelId,
-          unavailableLabel,
-          '',
-          '',
-          '',
-          '',
-          '',
-          '',
-          '',
-          '',
-          '',
-        ],
+        cells: [folderPath, ...unavailableLevelCells(levelId, unavailableLabel)],
       });
       return;
     }
 
     rows.push({
       kind: 'level',
-      cells: [
-        folderPath,
-        levelId,
-        getSongDisplayName(level),
-        getArtistDisplayName(level),
-        formatCreatorDisplay(level),
-        difficultyDict?.[level.diffId]?.name ?? '',
-        formatCurationColumn(level, curationTypesDict),
-        level.videoLink ?? '',
-        level.dlLink || level.workshopLink || level.ws || '',
-        level.clears ?? '',
-        joinCreditNamesByRole(level, 'charter'),
-        joinCreditNamesByRole(level, 'vfxer'),
-      ],
+      cells: [folderPath, ...buildLevelExportCells(level, dicts)],
     });
   });
 
   return { headers: PACK_EXPORT_HEADERS, rows };
+}
+
+/**
+ * Flat spreadsheet rows for a list of level search hits (no Folder column).
+ */
+export function buildLevelListExportRows(
+  levels,
+  { difficultyDict, curationTypesDict, unavailableLabel = 'Unavailable' } = {},
+) {
+  const dicts = { difficultyDict, curationTypesDict, unavailableLabel };
+  const rows = [];
+
+  for (const level of levels || []) {
+    const levelId = level?.id;
+    if (levelId == null && !level) continue;
+
+    if (!level || levelId == null) {
+      rows.push({
+        kind: 'level',
+        cells: unavailableLevelCells(levelId ?? '', unavailableLabel),
+      });
+      continue;
+    }
+
+    rows.push({
+      kind: 'level',
+      cells: buildLevelExportCells(level, dicts),
+    });
+  }
+
+  return { headers: LEVEL_LIST_EXPORT_HEADERS, rows };
 }
 
 function escapeCsvCell(value) {

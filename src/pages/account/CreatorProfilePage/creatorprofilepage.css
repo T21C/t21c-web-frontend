@@ -60,6 +60,50 @@
   transition: max-height 0.3s ease-in-out;
 }
 
+.creator-profile-page .creator-profile-page__levels-header-actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.creator-profile-page .creator-profile-page__levels-header-actions .account-profile-page__chevron-btn {
+  position: static;
+}
+
+.creator-profile-page .creator-profile-page__export-btn {
+  display: inline-flex;
+  position: absolute;
+  right: 125%;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+  height: 100%;
+  white-space: nowrap;
+  padding: 0.4rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.creator-profile-page .creator-profile-page__export-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.creator-profile-page .creator-profile-page__export-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  background: var(--btn-disabled-fill);
+}
+
 .creator-profile-page .creator-profile-page__levels-container {
   overflow-y: auto;
   overflow-x: visible;
