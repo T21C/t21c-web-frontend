@@ -278,6 +278,10 @@ const CurationPage = () => {
     if (hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.HEAD_CURATOR])) {
       return true;
     }
+    // Empty-type curations: only curator/rater (matches server requireCurationPermission).
+    if (!hasAnyFlag(user, [permissionFlags.CURATOR, permissionFlags.RATER])) {
+      return false;
+    }
     const types = curation.types || (curation.type ? [curation.type] : []);
     if (types.length === 0) return true;
     return types.every((t) => {
