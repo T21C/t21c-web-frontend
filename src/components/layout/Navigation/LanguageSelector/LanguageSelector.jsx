@@ -138,7 +138,7 @@ const LanguageSelector = ({ variant = "desktop", asListItem = null }) => {
   const helpTranslateItem = (
     <li className="nav-language-select__option nav-language-select__option--action">
       <Link
-        to="/translations"
+        to="/translation"
         className="nav-language-select__option-link"
         onClick={(e) => {
           e.stopPropagation();
