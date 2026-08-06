@@ -113,7 +113,7 @@
 .announcement-page .announcement-actions {
   display: flex;
   justify-content: center;
-  margin-top: 2rem;
+  margin-bottom: 1rem;
 }
 
 .announcement-page .announce-button {

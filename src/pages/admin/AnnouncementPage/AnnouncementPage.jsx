@@ -535,6 +535,25 @@ const AnnouncementPage = () => {
               </button>
               {error && <div className="error-message">{error}</div>}
 
+              <div className="announcement-actions">
+                <button
+                  className="announce-button"
+                  onClick={handleAnnounce}
+                  disabled={
+                    isLoading ||
+                    isAnnouncing ||
+                    gate?.blocked ||
+                    (activeTab === 'passes'
+                      ? selectedPasses.length === 0
+                      : selectedQueueRowIds.length === 0)
+                  }
+                >
+                  {isAnnouncing
+                    ? t('announcement.buttons.announcing')
+                    : t('announcement.buttons.announce')}
+                </button>
+              </div>
+
               {activeTab === 'newLevels' && (
                 <NewLevelsTab
                   entries={newLevelEntries}
@@ -566,25 +585,6 @@ const AnnouncementPage = () => {
                   isLoading={isLoading}
                 />
               )}
-
-              <div className="announcement-actions">
-                <button
-                  className="announce-button"
-                  onClick={handleAnnounce}
-                  disabled={
-                    isLoading ||
-                    isAnnouncing ||
-                    gate?.blocked ||
-                    (activeTab === 'passes'
-                      ? selectedPasses.length === 0
-                      : selectedQueueRowIds.length === 0)
-                  }
-                >
-                  {isAnnouncing
-                    ? t('announcement.buttons.announcing')
-                    : t('announcement.buttons.announce')}
-                </button>
-              </div>
             </div>
 
             <AnnouncementJobsPanel
