@@ -1,7 +1,7 @@
 // tuf-search: #RatingZenPage #ratingZen #zen #admin #rating
 import { routes } from '@/api/routes';
 import './ratingzenpage.css';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { MetaTags } from '@/components/common/display';
@@ -26,18 +26,20 @@ import { formatCreatorDisplay } from '@/utils/Utility';
 import { getSongDisplayName } from '@/utils/levelHelpers';
 import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import toast from 'react-hot-toast';
+import { createViewDurationTracker } from '@/utils/viewDurationTracker';
 
 const DECK_SIZES = [5, 10, 15, 20, 25, 30];
 const DECK_UNIT = 5;
 
 const videoCache = new Map();
 
-async function submitZenRating(id, rating, comment, isCommunityRating) {
+async function submitZenRating(id, rating, comment, isCommunityRating, viewDurationSeconds = 0) {
   const response = await api.put(`${routes.admin.rating()}/${id}`, {
     rating,
     comment,
     isCommunityRating,
     ratedInZen: true,
+    viewDurationSeconds,
   });
   if (!response.data?.rating) {
     throw new Error(response.data?.error || 'Failed to update rating');
@@ -105,11 +107,17 @@ const RatingZenPage = () => {
     // Pause into setup so return shows Continue / Discard; deck stays in sessionStorage.
     patchSession((prev) => {
       if (prev.phase !== 'stage') return {};
+      const ratingId = prev.cards[prev.index]?.id;
+      const viewDurationSeconds = readViewDurationSeconds(
+        ratingId,
+        prev.cardAnswers[prev.index]?.viewDurationSeconds
+      );
       const nextAnswers = prev.cardAnswers.slice();
       nextAnswers[prev.index] = {
         rating: prev.pendingRating,
         comment: prev.pendingComment,
         peeked: prev.cardPeeked,
+        viewDurationSeconds,
       };
       return {
         cardAnswers: nextAnswers,
@@ -117,7 +125,7 @@ const RatingZenPage = () => {
       };
     });
     navigate('/rating');
-  }, [navigate, patchSession]);
+  }, [navigate, patchSession, readViewDurationSeconds]);
 
   const pageMeta = useMemo(
     () =>
@@ -137,6 +145,65 @@ const RatingZenPage = () => {
   const [videoData, setVideoData] = useState(null);
   const [isVideoLoading, setIsVideoLoading] = useState(false);
   const [showCommunityPeers, setShowCommunityPeers] = useState(false);
+  const viewTrackersRef = useRef(new Map());
+
+  const disposeViewTrackers = useCallback(() => {
+    for (const tracker of viewTrackersRef.current.values()) {
+      tracker.dispose();
+    }
+    viewTrackersRef.current.clear();
+  }, []);
+
+  const getOrCreateViewTracker = useCallback((ratingId, seedSeconds = 0) => {
+    if (ratingId == null) return null;
+    let tracker = viewTrackersRef.current.get(ratingId);
+    if (!tracker) {
+      tracker = createViewDurationTracker(seedSeconds);
+      viewTrackersRef.current.set(ratingId, tracker);
+    }
+    return tracker;
+  }, []);
+
+  const readViewDurationSeconds = useCallback(
+    (ratingId, fallback = 0) => {
+      const tracker = ratingId != null ? viewTrackersRef.current.get(ratingId) : null;
+      if (!tracker) return Math.max(0, Math.floor(Number(fallback) || 0));
+      tracker.pause();
+      return tracker.peekSeconds();
+    },
+    []
+  );
+
+  const sessionRef = useRef(session);
+  sessionRef.current = session;
+  const patchSessionRef = useRef(patchSession);
+  patchSessionRef.current = patchSession;
+
+  useEffect(
+    () => () => {
+      const prev = sessionRef.current;
+      if (prev.phase === 'stage') {
+        const ratingId = prev.cards[prev.index]?.id;
+        const tracker = ratingId != null ? viewTrackersRef.current.get(ratingId) : null;
+        if (tracker) {
+          tracker.pause();
+          const viewDurationSeconds = tracker.peekSeconds();
+          patchSessionRef.current((s) => {
+            const nextAnswers = s.cardAnswers.slice();
+            nextAnswers[s.index] = {
+              rating: s.pendingRating,
+              comment: s.pendingComment,
+              peeked: s.cardPeeked,
+              viewDurationSeconds,
+            };
+            return { cardAnswers: nextAnswers };
+          });
+        }
+      }
+      disposeViewTrackers();
+    },
+    [disposeViewTrackers]
+  );
 
   const current = cards[index] || null;
   const isAdminRater = Boolean(
@@ -206,8 +273,9 @@ const RatingZenPage = () => {
   }, [patchSession]);
 
   const handleDiscardSession = useCallback(() => {
+    disposeViewTrackers();
     clearSession();
-  }, [clearSession]);
+  }, [clearSession, disposeViewTrackers]);
 
   const startDeal = useCallback(async () => {
     if (!user) {
@@ -228,6 +296,7 @@ const RatingZenPage = () => {
       });
       const dealt = data?.cards || [];
       const peeks = data?.peeksAllowed ?? Math.floor(deckSize / DECK_UNIT);
+      disposeViewTrackers();
       startSession({
         cards: dealt,
         cardOutcomes: dealt.map(() => null),
@@ -273,6 +342,7 @@ const RatingZenPage = () => {
     navigate,
     t,
     startSession,
+    disposeViewTrackers,
   ]);
 
   useEffect(() => {
@@ -311,6 +381,19 @@ const RatingZenPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- index/current.id
   }, [index, current?.id]);
 
+  // Per-card view duration: start/resume when card is current, pause on leave.
+  useEffect(() => {
+    if (phase !== 'stage' || !current?.id) return undefined;
+    const ratingId = current.id;
+    const seed = cardAnswers[index]?.viewDurationSeconds ?? 0;
+    const tracker = getOrCreateViewTracker(ratingId, seed);
+    tracker?.start();
+    return () => {
+      tracker?.pause();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- seed only on first create
+  }, [phase, index, current?.id, getOrCreateViewTracker]);
+
   const canGoto = useCallback(
     (target) => Number.isInteger(target) && target >= 0 && target < cards.length,
     [cards.length]
@@ -320,11 +403,17 @@ const RatingZenPage = () => {
     (target) => {
       if (!canGoto(target) || (target === index && phase === 'stage')) return;
       patchSession((prev) => {
+        const ratingId = prev.cards[prev.index]?.id;
+        const viewDurationSeconds = readViewDurationSeconds(
+          ratingId,
+          prev.cardAnswers[prev.index]?.viewDurationSeconds
+        );
         const nextAnswers = prev.cardAnswers.slice();
         nextAnswers[prev.index] = {
           rating: prev.pendingRating,
           comment: prev.pendingComment,
           peeked: prev.cardPeeked,
+          viewDurationSeconds,
         };
         return {
           cardAnswers: nextAnswers,
@@ -333,7 +422,7 @@ const RatingZenPage = () => {
         };
       });
     },
-    [canGoto, index, phase, patchSession]
+    [canGoto, index, phase, patchSession, readViewDurationSeconds]
   );
 
   const applyOutcomeAndAdvance = useCallback(
@@ -407,6 +496,10 @@ const RatingZenPage = () => {
   );
 
   const handleSkip = () => {
+    const viewDurationSeconds = readViewDurationSeconds(
+      current?.id,
+      cardAnswers[index]?.viewDurationSeconds
+    );
     applyOutcomeAndAdvance(
       index,
       'skipped',
@@ -414,6 +507,7 @@ const RatingZenPage = () => {
         rating: '',
         comment: '',
         peeked: cardPeeked,
+        viewDurationSeconds,
       },
       0
     );
@@ -424,11 +518,17 @@ const RatingZenPage = () => {
     const ok = window.confirm(t('rating.zen.confirmPeek'));
     if (!ok) return;
     patchSession((prev) => {
+      const ratingId = prev.cards[prev.index]?.id;
+      const viewDurationSeconds = readViewDurationSeconds(
+        ratingId,
+        prev.cardAnswers[prev.index]?.viewDurationSeconds
+      );
       const nextAnswers = prev.cardAnswers.slice();
       nextAnswers[prev.index] = {
         rating: prev.pendingRating,
         comment: prev.pendingComment,
         peeked: true,
+        viewDurationSeconds,
       };
       return {
         cardPeeked: true,
@@ -437,6 +537,8 @@ const RatingZenPage = () => {
         cardAnswers: nextAnswers,
       };
     });
+    // Resume timing after flush (peek stays on same card).
+    getOrCreateViewTracker(current?.id)?.start();
   };
 
   const handleReport = async () => {
@@ -474,12 +576,17 @@ const RatingZenPage = () => {
     setIsSaving(true);
     setSaveError(null);
     const outcome = cardPeeked ? 'peeked' : 'rated';
+    const viewDurationSeconds = readViewDurationSeconds(
+      current.id,
+      cardAnswers[index]?.viewDurationSeconds
+    );
     try {
       await submitZenRating(
         current.id,
         pendingRating.trim(),
         pendingComment.trim(),
-        !isAdminRater
+        !isAdminRater,
+        viewDurationSeconds
       );
       applyOutcomeAndAdvance(
         index,
@@ -488,6 +595,7 @@ const RatingZenPage = () => {
           rating: pendingRating.trim(),
           comment: pendingComment.trim(),
           peeked: cardPeeked,
+          viewDurationSeconds,
         },
         1
       );
@@ -497,6 +605,7 @@ const RatingZenPage = () => {
           err.message ||
           t('rating.zen.errors.submitFailed')
       );
+      getOrCreateViewTracker(current.id, viewDurationSeconds)?.start();
     } finally {
       setIsSaving(false);
     }
@@ -1017,6 +1126,7 @@ const RatingZenPage = () => {
               type="button"
               className="rating-zen-page__btn rating-zen-page__btn--primary"
               onClick={() => {
+                disposeViewTrackers();
                 resetToSetup();
               }}
             >

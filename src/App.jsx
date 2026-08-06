@@ -157,7 +157,7 @@ function App() {
           <Route path='privacy-policy' element={<Pages.PrivacyPolicyPage />} />
           <Route path='terms-of-service' element={<Pages.TermsOfServicePage />} />
           <Route path='health' element={<Pages.HealthCheckPage />} />
-          <Route path='translations' element={<Pages.TranslationsPage />} />
+          <Route path='translation' element={<Pages.TranslationsPage />} />
           <Route path='asset-list' element={<Pages.AssetsCatalogPage />} />
           <Route path='admin/curations' element={<Pages.CurationPage />} />
           <Route path='admin/curations/preview' element={<PrivateRoute><Pages.CurationPreviewPage /></PrivateRoute>} />

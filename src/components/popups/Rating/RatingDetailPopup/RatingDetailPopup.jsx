@@ -17,16 +17,18 @@ import toast from 'react-hot-toast';
 import autoratercato from "@/assets/icons/autorater cato.png";
 import { Tooltip } from "react-tooltip";
 import { CommentFormatter } from '@/components/misc';
+import { useViewDurationTracker } from '@/utils/viewDurationTracker';
 // Cache for video data
 const videoCache = new Map();
 
 
-async function updateRating(id, rating, comment, isCommunityRating = false) {
+async function updateRating(id, rating, comment, isCommunityRating = false, viewDurationSeconds = 0) {
   try {
     const response = await api.put(`${routes.admin.rating()}/${id}`, {
       rating,
       comment,
-      isCommunityRating
+      isCommunityRating,
+      viewDurationSeconds,
     });
 
     if (!response.data.rating) {
@@ -76,6 +78,9 @@ export const RatingDetailPopup = ({
   const [isCommentFieldOpen, setIsCommentFieldOpen] = useState(false);
 
   const popupRef = useRef(null);
+  const { snapshotSeconds: snapshotViewDurationSeconds } = useViewDurationTracker(
+    selectedRating?.id ?? null
+  );
 
   useBodyScrollLock(true);
 
@@ -350,7 +355,14 @@ export const RatingDetailPopup = ({
       }
 
       const isCommunityRating = !isAdminRater();
-      const updatePayload = await updateRating(selectedRating.id, pendingRating, pendingComment, isCommunityRating);
+      const viewDurationSeconds = snapshotViewDurationSeconds();
+      const updatePayload = await updateRating(
+        selectedRating.id,
+        pendingRating,
+        pendingComment,
+        isCommunityRating,
+        viewDurationSeconds
+      );
       const updatedRating = updatePayload.complete || updatePayload.rating;
       const listRow = updatePayload.listRow;
 

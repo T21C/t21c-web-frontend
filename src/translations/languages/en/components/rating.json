@@ -19,6 +19,9 @@
       "noCommunityRatings": "No community ratings yet"
     },
     "zenModeChip": "Zen Mode",
+    "viewedFor": "Viewed for {{duration}}",
+    "viewedForSeconds_one": "Viewed for {{count}} second",
+    "viewedForSeconds_other": "Viewed for {{count}} seconds",
     "buttons": {
       "saveChanges": "Save Changes",
       "removeRating": "Remove Rating",
