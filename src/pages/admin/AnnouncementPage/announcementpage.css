@@ -641,7 +641,8 @@
 
 .announcement-page .announcement-status-chip--delivered,
 .announcement-page .announcement-status-chip--completed,
-.announcement-page .announcement-status-chip--sent {
+.announcement-page .announcement-status-chip--sent,
+.announcement-page .announcement-status-chip--skipped {
   background-color: var(--color-white-t35);
 }
 
