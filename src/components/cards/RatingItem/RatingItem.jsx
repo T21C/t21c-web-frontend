@@ -9,11 +9,12 @@ import { userAvatarUrls } from '@/utils/playerAvatarDisplay';
 import { CrownIcon } from '@/components/common/icons';
 import { Collapsible, CollapsibleContent } from '@/components/common/Collapsible';
 import { formatDate } from '@/utils/Utility';
+import { formatViewDuration } from '@/utils/viewDurationTracker';
 import i18next from 'i18next';
 
 export const RatingItem = ({ ratingDetail, isSuperAdmin, onDelete, weeklyRaterActivity = [] }) => {
     // Accept full rating detail object and extract fields from it
-    const { rating, comment, createdAt, user, userId, isCommunityRating, ratedInZen } = ratingDetail || {};
+    const { rating, comment, createdAt, user, userId, isCommunityRating, ratedInZen, viewDurationSeconds } = ratingDetail || {};
     
     const [isExpanded, setIsExpanded] = useState(false);
     const { t } = useTranslation('components');
@@ -32,6 +33,21 @@ export const RatingItem = ({ ratingDetail, isSuperAdmin, onDelete, weeklyRaterAc
           onDelete(user?.id || userId);
       }
     };
+
+    const viewedSeconds = Math.max(0, Math.floor(Number(viewDurationSeconds) || 0));
+    const viewedFormatted = viewedSeconds > 0 ? formatViewDuration(viewedSeconds) : null;
+    const viewedForLabel =
+      viewedFormatted?.mode === 'seconds'
+        ? t('rating.detailPopup.viewedForSeconds', {
+            count: viewedFormatted.count,
+            defaultValue: 'Viewed for {{count}} seconds',
+          })
+        : viewedFormatted?.mode === 'clock'
+          ? t('rating.detailPopup.viewedFor', {
+              duration: viewedFormatted.duration,
+              defaultValue: 'Viewed for {{duration}}',
+            })
+          : null;
 
     return (
       <div className="rating-item-container">
@@ -63,8 +79,15 @@ export const RatingItem = ({ ratingDetail, isSuperAdmin, onDelete, weeklyRaterAc
                 </span>
               </span>
             )}
-            {createdAt && (
-              <span className="rating-date">{formatDate(createdAt, i18next?.language)}</span>
+            {(createdAt || viewedSeconds > 0) && (
+              <div className="rating-item-timestamps">
+                {createdAt && (
+                  <span className="rating-date">{formatDate(createdAt, i18next?.language)}</span>
+                )}
+                {viewedForLabel && (
+                  <span className="rating-viewed-for">{viewedForLabel}</span>
+                )}
+              </div>
             )}
             <div className="rating-item-icons">
               {comment && (
