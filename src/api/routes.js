@@ -48,6 +48,10 @@ export const routes = {
       revoke: (id) => `/v2/auth/sessions/${enc(id)}`,
       revokeOthers: () => '/v2/auth/sessions',
     },
+    oauthApps: {
+      list: () => '/v2/auth/oauth-apps',
+      revoke: (grantId) => `/v2/auth/oauth-apps/${enc(grantId)}`,
+    },
     forgotPassword: {
       request: () => '/v2/auth/forgot-password/request',
       reset: () => '/v2/auth/forgot-password/reset',
@@ -66,6 +70,26 @@ export const routes = {
         headerSurfaceStyle: () => '/v2/auth/profile/player/header-surface-style',
         headerSurfaceImage: () => '/v2/auth/profile/player/header-surface-image',
       },
+    },
+  },
+
+  oauth: {
+    // SPA page stays at /oauth/consent; JSON APIs are under /v2 so Vite/API never collide
+    consent: () => '/v2/oauth/consent',
+    consentApprove: () => '/v2/oauth/consent/approve',
+    consentDeny: () => '/v2/oauth/consent/deny',
+    wellKnown: () => '/.well-known/oauth-authorization-server',
+    authorize: () => '/oauth/authorize',
+    token: () => '/oauth/token',
+    revoke: () => '/oauth/revoke',
+    resourceUser: () => '/oauth/resource/user',
+  },
+
+  developers: {
+    apps: {
+      list: () => '/v2/developers/apps',
+      byId: (id) => `/v2/developers/apps/${enc(id)}`,
+      icon: (id) => `/v2/developers/apps/${enc(id)}/icon`,
     },
   },
 
@@ -199,6 +223,11 @@ export const routes = {
       guildRolesReorder: (guildId) =>
         `/v2/admin/discord/guilds/${enc(guildId)}/roles/reorder`,
       syncUser: (userId) => `/v2/admin/discord/sync/user/${enc(userId)}`,
+    },
+    oauthClients: {
+      list: () => '/v2/admin/oauth-clients',
+      byId: (id) => `/v2/admin/oauth-clients/${enc(id)}`,
+      action: (id, action) => `/v2/admin/oauth-clients/${enc(id)}/${enc(action)}`,
     },
   },
 

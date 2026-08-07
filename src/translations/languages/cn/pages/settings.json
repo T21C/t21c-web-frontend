@@ -26,7 +26,8 @@
   "sessions": {
     "tabs": {
       "sessions": "活跃会话",
-      "devices": "受信任的设备"
+      "devices": "受信任的设备",
+      "oauthApps": "Authorized apps"
     }
   },
   "trustedDevices": {
@@ -42,6 +43,15 @@
     "revoke": "移除",
     "revokeSuccess": "已移除受信任的设备",
     "revokeError": "无法移除该设备"
+  },
+  "oauthApps": {
+    "title": "Authorized apps",
+    "subtitle": "Third-party apps and mods that can access your TUF profile. Revoke access anytime.",
+    "empty": "No authorized apps.",
+    "connected": "Connected",
+    "revoke": "Revoke",
+    "revokeSuccess": "App access revoked",
+    "revokeError": "Could not revoke that app"
   },
   "player": {
     "title": "玩家信息",

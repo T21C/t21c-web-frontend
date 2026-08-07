@@ -26,7 +26,53 @@
     "artists": "Artists",
     "artistsDesc": "Manage artists and their info",
     "tournaments": "Tournaments",
-    "tournamentsDesc": "Manage tournament placements, name links, and reward frames"
+    "tournamentsDesc": "Manage tournament placements, name links, and reward frames",
+    "oauthClients": "OAuth apps",
+    "oauthClientsDesc": "Search, freeze, verify, or delete third-party OAuth apps"
+  },
+  "oauthClients": {
+    "meta": {
+      "title": "OAuth apps — Admin",
+      "description": "Manage third-party OAuth applications"
+    },
+    "title": "OAuth applications",
+    "subtitle": "Search by app name, client id, row id, or developer username. Freeze abusive apps or delete them permanently.",
+    "back": "Back",
+    "searchLabel": "Search",
+    "searchPlaceholder": "Name, username, client id, or UUID…",
+    "search": "Search",
+    "loading": "Loading…",
+    "resultCount": "Showing {{shown}} of {{total}}",
+    "empty": "No apps matched.",
+    "verified": "Verified",
+    "clientId": "Client ID",
+    "rowId": "ID",
+    "owner": "Developer",
+    "created": "Created",
+    "freeze": "Freeze",
+    "unfreeze": "Unfreeze",
+    "verify": "Verify",
+    "unverify": "Unverify",
+    "delete": "Delete",
+    "deleteConfirm": "Permanently delete \"{{name}}\"? Grants and tokens for this app will be removed.",
+    "deleted": "App deleted",
+    "deleteFail": "Could not delete app",
+    "loadError": "Failed to load OAuth clients",
+    "prev": "Previous",
+    "next": "Next",
+    "pageRange": "{{start}}–{{end}} of {{total}}",
+    "actionOk": {
+      "freeze": "App frozen",
+      "unfreeze": "App unfrozen",
+      "verify": "App verified",
+      "unverify": "Verification removed"
+    },
+    "actionFail": {
+      "freeze": "Freeze failed",
+      "unfreeze": "Unfreeze failed",
+      "verify": "Verify failed",
+      "unverify": "Unverify failed"
+    }
   }
 }
  

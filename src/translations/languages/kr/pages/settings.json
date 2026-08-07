@@ -28,7 +28,8 @@
   "sessions": {
     "tabs": {
       "sessions": "활성 세션",
-      "devices": "신뢰할 수 있는 기기"
+      "devices": "신뢰할 수 있는 기기",
+      "oauthApps": "Authorized apps"
     },
     "title": "활성 세션",
     "subtitle": "현재 계정에 로그인된 기기입니다. 모르는 기기는 로그아웃하세요.",
@@ -68,6 +69,15 @@
     "revoke": "제거",
     "revokeSuccess": "신뢰할 수 있는 기기가 제거되었습니다",
     "revokeError": "해당 기기를 제거할 수 없습니다"
+  },
+  "oauthApps": {
+    "title": "Authorized apps",
+    "subtitle": "Third-party apps and mods that can access your TUF profile. Revoke access anytime.",
+    "empty": "No authorized apps.",
+    "connected": "Connected",
+    "revoke": "Revoke",
+    "revokeSuccess": "App access revoked",
+    "revokeError": "Could not revoke that app"
   },
   "player": {
     "title": "플레이어 프로필",

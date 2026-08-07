@@ -1,5 +1,5 @@
 // tuf-search: #App #root — application shell
-import { Navigate, Route, useSearchParams } from "react-router-dom";
+import { Navigate, Route, useLocation, useSearchParams } from "react-router-dom";
 import { Suspense, useEffect } from "react";
 import { Navigation } from "@/components/layout";
 import { PrivateRoute } from "@/components/auth";
@@ -16,19 +16,22 @@ import { SentryRoutes } from "@/hooks/useSentry";
 
 function App() {
   const [searchParams] = useSearchParams();
+  const location = useLocation();
   const isEmbedded = searchParams.get("embed") === "true";
+  const isOauthConsent = location.pathname === "/oauth/consent";
+  const hideChrome = isEmbedded || isOauthConsent;
 
   useEffect(() => {
-    if (!isEmbedded) return;
+    if (!hideChrome) return;
 
     document.documentElement.style.setProperty("--navbar-height", "0px");
-  }, [isEmbedded]);
+  }, [hideChrome]);
 
   return (
     <>
       <ScrollToTopOnNavigate />
       <RouteDocumentHead />
-      {!isEmbedded && <Navigation />}
+      {!hideChrome && <Navigation />}
       <div className="app-notifications" aria-live="polite">
         <Toaster
           position="bottom-right"
@@ -45,9 +48,9 @@ function App() {
           }}
         />
       </div>
-      {!isEmbedded && <TufHelperLiteConnectBanner />}
-      <div className="body">
-      {!isEmbedded && <div className="nav-spacer" />}
+      {!hideChrome && <TufHelperLiteConnectBanner />}
+      <div className={`body${hideChrome ? " body--chrome-free" : ""}`}>
+      {!hideChrome && <div className="nav-spacer" />}
       <ChunkLoadErrorBoundary>
       <Suspense
         fallback={
@@ -121,6 +124,19 @@ function App() {
           <Route path="submission/level" element={<PrivateRoute><Pages.LevelSubmissionPage /></PrivateRoute>} />
           <Route path="submission/pass" element={<PrivateRoute><Pages.PassSubmissionPage /></PrivateRoute>} />
           <Route path="callback" element={<Pages.CallbackPage />} />
+          <Route path="oauth/consent" element={<PrivateRoute><Pages.OAuthConsentPage /></PrivateRoute>} />
+          <Route
+            path="developers"
+            element={(
+              <PrivateRoute>
+                <Pages.DevelopersLayout />
+              </PrivateRoute>
+            )}
+          >
+            <Route index element={<Pages.DevelopersHubPage />} />
+            <Route path="apps/new" element={<Pages.DevelopersCreatePage />} />
+            <Route path="apps/:appId" element={<Pages.DevelopersAppDetailPage />} />
+          </Route>
           <Route path="profile/:playerId" element={<Pages.ProfilePage />} />
           <Route path="profile" element={<Pages.ProfilePage />} />
 
@@ -151,6 +167,7 @@ function App() {
           <Route path="admin/artists" element={<PrivateRoute><Pages.ArtistManagementPage /></PrivateRoute>} />
           <Route path="admin/songs" element={<PrivateRoute><Pages.SongManagementPage /></PrivateRoute>} />
           <Route path="admin/audit-log" element={<PrivateRoute><Pages.AuditLogPage /></PrivateRoute>} />
+          <Route path="admin/oauth-clients" element={<PrivateRoute><Pages.AdminOAuthClientsPage /></PrivateRoute>} />
           <Route path="admin/backup" element={<PrivateRoute><Pages.BackupPage /></PrivateRoute>} />
           
           <Route path='about' element={<Pages.AboutUsPage />} />

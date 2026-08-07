@@ -39,6 +39,12 @@ const EmailVerificationPage = lazy(() => import('./account/EmailVerificationPage
 const ForgotPasswordPage = lazy(() => import('./account/ForgotPasswordPage/ForgotPasswordPage'));
 
 const CallbackPage = lazy(() => import('./account/Callback/Callback'));
+const OAuthConsentPage = lazy(() => import('./oauth/OAuthConsentPage/OAuthConsentPage'));
+const DevelopersLayout = lazy(() => import('./developers/DevelopersLayout'));
+const DevelopersHubPage = lazy(() => import('./developers/DevelopersHubPage'));
+const DevelopersCreatePage = lazy(() => import('./developers/DevelopersCreatePage'));
+const DevelopersAppDetailPage = lazy(() => import('./developers/DevelopersAppDetailPage'));
+const AdminOAuthClientsPage = lazy(() => import('./admin/AdminOAuthClientsPage/AdminOAuthClientsPage'));
 
 // Admin pages
 const AdminPage = lazy(() => import('./admin/AdminPage/AdminPage'));
@@ -107,6 +113,12 @@ export {
     EmailVerificationPage,
     ForgotPasswordPage,
     CallbackPage,
+    OAuthConsentPage,
+    DevelopersLayout,
+    DevelopersHubPage,
+    DevelopersCreatePage,
+    DevelopersAppDetailPage,
+    AdminOAuthClientsPage,
     
     // Admin pages
     AdminPage,

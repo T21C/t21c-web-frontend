@@ -44,7 +44,8 @@
         "privacyPolicy": "개인정보 처리방침",
         "aboutUs": "TUF 소개",
         "apiDocs": "API 문서",
-        "assets": "에셋"
+        "assets": "에셋",
+        "developers": "Developer Portal"
       },
       "user": {
         "myProfile": "내 프로필",

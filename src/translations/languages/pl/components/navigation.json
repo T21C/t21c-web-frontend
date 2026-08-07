@@ -19,7 +19,8 @@
     },
     "dropdowns": {
       "more": {
-        "tufHelperLite": "TUFHelperLite"
+        "tufHelperLite": "TUFHelperLite",
+        "developers": "Developer Portal"
       }
     }
   },
