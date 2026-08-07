@@ -63,27 +63,32 @@ const SettingsSessionsPage = () => {
   const [activeTab, setActiveTab] = useState("sessions");
   const [sessions, setSessions] = useState([]);
   const [devices, setDevices] = useState([]);
+  const [oauthApps, setOauthApps] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [busyId, setBusyId] = useState(null);
   const [busyDeviceId, setBusyDeviceId] = useState(null);
+  const [busyGrantId, setBusyGrantId] = useState(null);
   const [revokingOthers, setRevokingOthers] = useState(false);
 
   const loadSessions = useCallback(async () => {
     setLoading(true);
     setError(false);
     try {
-      const [sessionsRes, devicesRes] = await Promise.all([
+      const [sessionsRes, devicesRes, oauthRes] = await Promise.all([
         api.get(routes.auth.sessions.list()),
         api.get(routes.auth.trustedDevices.list()).catch(() => ({ data: { devices: [] } })),
+        api.get(routes.auth.oauthApps.list()).catch(() => ({ data: { apps: [] } })),
       ]);
       setSessions(Array.isArray(sessionsRes.data?.sessions) ? sessionsRes.data.sessions : []);
       setDevices(Array.isArray(devicesRes.data?.devices) ? devicesRes.data.devices : []);
+      setOauthApps(Array.isArray(oauthRes.data?.apps) ? oauthRes.data.apps : []);
     } catch (e) {
       console.error("Settings sessions fetch failed:", e);
       setError(true);
       setSessions([]);
       setDevices([]);
+      setOauthApps([]);
     } finally {
       setLoading(false);
     }
@@ -157,6 +162,21 @@ const SettingsSessionsPage = () => {
     }
   };
 
+  const handleRevokeOauthApp = async (grant) => {
+    if (!grant?.id) return;
+    setBusyGrantId(grant.id);
+    try {
+      await api.delete(routes.auth.oauthApps.revoke(grant.id));
+      toast.success(t("settings.oauthApps.revokeSuccess"));
+      await loadSessions();
+    } catch (e) {
+      console.error("Revoke oauth app failed:", e);
+      toast.error(t("settings.oauthApps.revokeError"));
+    } finally {
+      setBusyGrantId(null);
+    }
+  };
+
   const otherCount = sessions.filter((s) => !s.isCurrent).length;
   const locale = i18n.language;
 
@@ -201,6 +221,13 @@ const SettingsSessionsPage = () => {
             onClick={() => setActiveTab("devices")}
           >
             {t("settings.sessions.tabs.devices")}
+          </button>
+          <button
+            type="button"
+            className={`tab-button ${activeTab === "oauthApps" ? "active" : ""}`}
+            onClick={() => setActiveTab("oauthApps")}
+          >
+            {t("settings.sessions.tabs.oauthApps")}
           </button>
         </div>
       </div>
@@ -340,6 +367,55 @@ const SettingsSessionsPage = () => {
                       disabled={isBusy}
                     >
                       {t("settings.trustedDevices.revoke")}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </section>
+      )}
+
+      {activeTab === "oauthApps" && (
+        <section className="settings-sessions-page__trusted">
+          <div className="settings-sessions-page__intro">
+            <h2 className="settings-sub-page__title">{t("settings.oauthApps.title")}</h2>
+            <p className="settings-sub-page__text">{t("settings.oauthApps.subtitle")}</p>
+          </div>
+
+          {oauthApps.length === 0 ? (
+            <div className="settings-sub-page__panel">
+              <p className="settings-sub-page__text">{t("settings.oauthApps.empty")}</p>
+            </div>
+          ) : (
+            <ul className="settings-sessions-page__list">
+              {oauthApps.map((grant) => {
+                const isBusy = busyGrantId === grant.id;
+                const name = grant.client?.name || grant.clientId;
+                return (
+                  <li key={grant.id} className="settings-sessions-page__row">
+                    <div className="settings-sessions-page__row-main">
+                      <div className="settings-sessions-page__row-title">
+                        <span className="settings-sessions-page__device">
+                          {name}
+                          {grant.client?.verified ? " ✓" : ""}
+                        </span>
+                      </div>
+                      <div className="settings-sessions-page__meta">
+                        <span>{grant.scope}</span>
+                        <span>
+                          {t("settings.oauthApps.connected")}:{" "}
+                          {formatSessionDate(grant.createdAt, locale)}
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      className="settings-sub-page__btn btn-fill-danger"
+                      onClick={() => handleRevokeOauthApp(grant)}
+                      disabled={isBusy}
+                    >
+                      {t("settings.oauthApps.revoke")}
                     </button>
                   </li>
                 );

@@ -1,6 +1,6 @@
 // tuf-search: #LoginPage #loginPage #account #login — Login
 import React, { useEffect, useMemo, useRef } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 import './loginPage.css';
@@ -13,7 +13,8 @@ import { useLoginFlow } from './useLoginFlow';
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { user, getOriginUrl, clearOriginUrl } = useAuth();
+  const [searchParams] = useSearchParams();
+  const { user, getOriginUrl, clearOriginUrl, setOriginUrl } = useAuth();
   const { t } = useTranslation('pages');
   const location = useLocation();
   const flow = useLoginFlow();
@@ -29,21 +30,39 @@ const LoginPage = () => {
     [t, location.pathname],
   );
 
+  // OAuth AS / deep-link return: absolute URLs continue via full navigation after login.
+  useEffect(() => {
+    const returnTo = searchParams.get('returnTo');
+    if (returnTo && /^https?:\/\//i.test(returnTo)) {
+      setOriginUrl(returnTo);
+    }
+  }, [searchParams, setOriginUrl]);
+
   // Only bounce visitors who were already signed in on arrival; signing in
   // during this page's life is redirected by the submit handlers instead.
   const arrivedSignedIn = useRef(Boolean(user));
 
   useEffect(() => {
     if (user && arrivedSignedIn.current) {
+      const from = getOriginUrl();
+      if (from && /^https?:\/\//i.test(from)) {
+        clearOriginUrl();
+        window.location.replace(from);
+        return;
+      }
       navigate('/profile', { replace: true });
     }
-  }, [user, navigate]);
+  }, [user, navigate, getOriginUrl, clearOriginUrl]);
 
   // Replace so /login leaves history: a pushed entry sends Back to this page,
   // which then redirects the now signed-in user straight back out.
   const redirectAfterLogin = () => {
     const from = getOriginUrl() || '/profile';
     clearOriginUrl();
+    if (/^https?:\/\//i.test(from)) {
+      window.location.replace(from);
+      return;
+    }
     navigate(from, { replace: true });
   };
 

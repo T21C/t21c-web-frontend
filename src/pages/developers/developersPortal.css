@@ -1,0 +1,610 @@
+/* tuf-search: #developersPortal */
+.developers-portal {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: min(56rem, 100%);
+  margin: 0 auto;
+  padding: 1.5rem;
+  color: var(--color-white);
+}
+
+.developers-portal__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.developers-portal__top-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.developers-portal__title {
+  margin: 0;
+  font-size: 1.75rem;
+  color: var(--color-white);
+  font-weight: 700;
+  width: fit-content;
+}
+
+.developers-portal__subtitle {
+  margin: 0;
+  color: var(--color-gray-2);
+  max-width: 36rem;
+}
+
+.developers-portal__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.developers-portal__nav-link {
+  padding: 0.45rem 0.85rem;
+  border-radius: 4px;
+  color: var(--color-gray-2);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.developers-portal__nav-link:hover {
+  color: var(--color-white);
+  background: var(--color-white-t10);
+}
+
+.developers-portal__nav-link--primary {
+  color: var(--color-white);
+  background: var(--btn-primary);
+}
+
+.developers-portal__nav-link--primary:hover {
+  color: var(--color-white);
+  background: var(--btn-primary-hover);
+}
+
+.developers-portal__nav-link--active {
+  color: var(--color-white);
+  background: var(--color-white-t15);
+}
+
+.developers-portal__nav-link--primary.developers-portal__nav-link--active {
+  background: var(--btn-primary-hover);
+}
+
+.developers-portal__section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.developers-portal__section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.developers-portal__section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.developers-portal__lede {
+  margin: 0;
+  color: var(--color-gray-2);
+}
+
+.developers-portal__back {
+  color: var(--color-white);
+  background: var(--color-white-t10);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  text-decoration: none;
+  width: fit-content;
+}
+
+.developers-portal__back:hover {
+  color: var(--color-white);
+}
+
+.developers-portal__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 2rem 1.25rem;
+  border-radius: 8px;
+  background: var(--color-black-t30);
+}
+
+.developers-portal__empty h3 {
+  margin: 0;
+}
+
+.developers-portal__empty p {
+  margin: 0;
+  color: var(--color-gray-2);
+}
+
+.developers-portal__card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: 0.85rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.developers-portal__card {
+  display: flex;
+  gap: 0.85rem;
+  padding: 1rem;
+  border-radius: 8px;
+  background: var(--color-black-t30);
+  color: inherit;
+  text-decoration: none;
+  height: 100%;
+}
+
+.developers-portal__card:hover {
+  background: var(--color-black-t45);
+}
+
+.developers-portal__card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.developers-portal__card-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.developers-portal__card-name {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 600;
+  word-break: break-word;
+}
+
+.developers-portal__verified {
+  color: var(--btn-success);
+  font-size: 0.9rem;
+}
+
+.developers-portal__status {
+  flex-shrink: 0;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  background: var(--color-white-t10);
+  color: var(--color-gray-2);
+}
+
+.developers-portal__status--active {
+  background: var(--btn-success-tint);
+  color: var(--btn-success);
+}
+
+.developers-portal__status--frozen {
+  background: color-mix(in srgb, var(--btn-warning) 22%, transparent);
+  color: var(--btn-warning);
+}
+
+.developers-portal__client-id {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-gray-2);
+  font: inherit;
+  font-family: ui-monospace, monospace;
+  font-size: 0.75rem;
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.developers-portal__client-id:hover {
+  color: var(--btn-primary);
+}
+
+.developers-portal__card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  color: var(--color-gray-2);
+  font-size: 0.85rem;
+}
+
+.developers-portal__app-icon {
+  flex-shrink: 0;
+  object-fit: cover;
+  border-radius: 8px;
+  background: var(--color-black);
+}
+
+.developers-portal__app-icon--sm {
+  width: 2rem;
+  height: 2rem;
+}
+
+.developers-portal__app-icon--md {
+  width: 3rem;
+  height: 3rem;
+}
+
+.developers-portal__app-icon--lg {
+  width: 4.5rem;
+  height: 4.5rem;
+}
+
+.developers-portal__app-icon--fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: var(--color-white);
+  background: var(--btn-neutral);
+}
+
+.developers-portal__form,
+.developers-portal__panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.developers-portal__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.developers-portal__field-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 1rem;
+}
+
+.developers-portal__field input,
+.developers-portal__field textarea,
+.developers-portal__chip-add input,
+.developers-portal__copy-row input {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-white-t20);
+  border-radius: 4px;
+  background: var(--color-black);
+  color: var(--color-white);
+  font: inherit;
+}
+
+.developers-portal__field input:disabled,
+.developers-portal__field textarea:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.developers-portal__fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.developers-portal__fieldset legend {
+  padding: 0;
+  margin-bottom: 0.35rem;
+  font-weight: 600;
+}
+
+.developers-portal__hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-gray-2);
+}
+
+.developers-portal__field-error {
+  margin: 0;
+  color: var(--btn-danger);
+  font-size: 0.85rem;
+}
+
+.developers-portal__chips-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.developers-portal__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.developers-portal__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  max-width: 100%;
+  padding: 0.35rem 0.55rem;
+  border-radius: 4px;
+  background: var(--color-white-t10);
+  font-size: 0.85rem;
+}
+
+.developers-portal__chip-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: ui-monospace, monospace;
+}
+
+.developers-portal__chip-remove {
+  border: none;
+  background: transparent;
+  color: var(--color-gray-2);
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0;
+}
+
+.developers-portal__chip-remove:hover {
+  color: var(--btn-danger);
+}
+
+.developers-portal__chip-add {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.developers-portal__chip-add input {
+  flex: 1 1 14rem;
+  min-width: 0;
+}
+
+.developers-portal__scope-notice {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.85rem 1rem;
+  border-radius: 8px;
+  background: var(--color-black-t30);
+  border: 1px solid var(--color-white-t15);
+}
+
+.developers-portal__scope-notice-title {
+  margin: 0;
+  font-weight: 600;
+}
+
+.developers-portal__scope-notice a {
+  color: var(--btn-primary);
+  text-decoration: none;
+}
+
+.developers-portal__scope-notice a:hover {
+  color: var(--btn-primary-light-hover);
+}
+
+.developers-portal__toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+}
+
+.developers-portal__toggle span {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.developers-portal__toggle small {
+  color: var(--color-gray-2);
+}
+
+.developers-portal__muted {
+  margin: 0;
+  color: var(--color-gray-2);
+  font-size: 0.9rem;
+}
+
+.developers-portal__warn {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--btn-warning) 18%, transparent);
+  color: var(--btn-warning);
+}
+
+.developers-portal__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.developers-portal__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.6rem 1.1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+  color: var(--color-white);
+  text-decoration: none;
+}
+
+.developers-portal__btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.developers-portal__btn--primary {
+  background: var(--btn-primary);
+}
+
+.developers-portal__btn--primary:hover:not(:disabled) {
+  background: var(--btn-primary-hover);
+}
+
+.developers-portal__btn--secondary {
+  background: var(--btn-secondary);
+}
+
+.developers-portal__btn--secondary:hover:not(:disabled) {
+  background: var(--btn-secondary-hover);
+}
+
+.developers-portal__btn--ghost {
+  background: transparent;
+  color: var(--color-gray-2);
+}
+
+.developers-portal__btn--ghost:hover:not(:disabled) {
+  color: var(--color-white);
+  background: var(--color-white-t10);
+}
+
+.developers-portal__btn--danger {
+  background: var(--btn-danger);
+}
+
+.developers-portal__btn--danger:hover:not(:disabled) {
+  background: var(--btn-danger-intense);
+}
+
+.developers-portal__detail-head {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.developers-portal__detail-head-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.developers-portal__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  border-bottom: 1px solid var(--color-white-t15);
+  padding-bottom: 0.35rem;
+}
+
+.developers-portal__tab {
+  padding: 0.5rem 0.85rem;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-gray-2);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+}
+
+.developers-portal__tab:hover {
+  color: var(--color-white);
+  background: var(--color-white-t10);
+}
+
+.developers-portal__tab--active {
+  color: var(--color-white);
+  background: var(--color-white-t15);
+}
+
+.developers-portal__icon-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+}
+
+.developers-portal__icon-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.developers-portal__copy-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.developers-portal__copy-row input {
+  flex: 1 1 14rem;
+  min-width: 0;
+  font-family: ui-monospace, monospace;
+}
+
+.developers-portal__secret-soon {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.85rem 1rem;
+  border-radius: 8px;
+  background: var(--color-black-t30);
+}
+
+.developers-portal__secret-soon p {
+  margin: 0;
+  color: var(--color-gray-2);
+}
+
+.developers-portal__danger {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--btn-danger) 45%, transparent);
+  background: color-mix(in srgb, var(--btn-danger) 12%, transparent);
+}
+
+.developers-portal__danger h3 {
+  margin: 0;
+}
+
+.developers-portal__danger p {
+  margin: 0;
+  color: var(--color-gray-2);
+}
+
+@media (max-width: 560px) {
+  .developers-portal {
+    padding: 1rem;
+  }
+}

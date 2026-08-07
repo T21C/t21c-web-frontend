@@ -2,7 +2,8 @@
   "sessions": {
     "tabs": {
       "sessions": "Sessions actives",
-      "devices": "Appareils de confiance"
+      "devices": "Appareils de confiance",
+      "oauthApps": "Authorized apps"
     }
   },
   "trustedDevices": {
@@ -18,6 +19,15 @@
     "revoke": "Oublier",
     "revokeSuccess": "Appareil de confiance retiré",
     "revokeError": "Impossible de retirer cet appareil"
+  },
+  "oauthApps": {
+    "title": "Authorized apps",
+    "subtitle": "Third-party apps and mods that can access your TUF profile. Revoke access anytime.",
+    "empty": "No authorized apps.",
+    "connected": "Connected",
+    "revoke": "Revoke",
+    "revokeSuccess": "App access revoked",
+    "revokeError": "Could not revoke that app"
   },
   "nav": {
     "security": "Sécurité",

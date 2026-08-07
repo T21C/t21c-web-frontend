@@ -209,6 +209,11 @@ body {
   min-height: calc(90vh - 5rem);
 }
 
+.body--chrome-free {
+  padding: 0;
+  min-height: 100vh;
+}
+
 /* Shared content wrappers: max-width + margin: 0 auto */
 .page-content {
   max-width: 1200px;

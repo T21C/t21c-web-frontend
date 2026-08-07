@@ -256,7 +256,25 @@ export default defineConfig(({ command, mode }) => {
           },
           htmlAcceptHeaders: ['text/html', 'application/xhtml+xml'],
           rewrite: (path) => path
-        }
+        },
+        // OAuth protocol + discovery. SPA consent page is /oauth/consent — bypass proxy so
+        // browser navigations get the React shell; XHR uses /v2/oauth/consent instead.
+        '^/(oauth|\\.well-known)': {
+          target: apiUrl || 'http://localhost:3002',
+          changeOrigin: true,
+          secure: false,
+          ws: false,
+          bypass(req) {
+            const pathOnly = (req.url || '').split('?')[0];
+            if (
+              req.method === 'GET' &&
+              pathOnly === '/oauth/consent' &&
+              String(req.headers.accept || '').includes('text/html')
+            ) {
+              return '/index.html';
+            }
+          },
+        },
       }
     },
     preview: {

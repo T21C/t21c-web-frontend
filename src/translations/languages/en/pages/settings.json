@@ -28,7 +28,8 @@
   "sessions": {
     "tabs": {
       "sessions": "Active sessions",
-      "devices": "Trusted devices"
+      "devices": "Trusted devices",
+      "oauthApps": "Authorized apps"
     },
     "title": "Active sessions",
     "subtitle": "Devices currently signed in to your account. Sign out anything you do not recognize.",
@@ -68,6 +69,15 @@
     "revoke": "Forget",
     "revokeSuccess": "Trusted device removed",
     "revokeError": "Could not remove that trusted device"
+  },
+  "oauthApps": {
+    "title": "Authorized apps",
+    "subtitle": "Third-party apps and mods that can access your TUF profile. Revoke access anytime.",
+    "empty": "No authorized apps.",
+    "connected": "Connected",
+    "revoke": "Revoke",
+    "revokeSuccess": "App access revoked",
+    "revokeError": "Could not revoke that app"
   },
   "player": {
     "title": "Player profile",

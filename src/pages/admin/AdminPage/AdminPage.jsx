@@ -100,6 +100,13 @@ const AdminPage = () => {
       title: t("admin.links.artists"),
       description: t("admin.links.artistsDesc"),
       icon: "🎤"
+    },
+    {
+      id: 'oauth-clients',
+      path: '/admin/oauth-clients',
+      title: t('admin.links.oauthClients'),
+      description: t('admin.links.oauthClientsDesc'),
+      icon: "🔑"
     }
   ];
 

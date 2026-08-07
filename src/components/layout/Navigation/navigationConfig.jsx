@@ -156,6 +156,8 @@ export const createNavigationConfig = (context = {}) => {
             attachIcon: <ExternalLinkIcon size={16} color="var(--color-white-t80)"/>},
           { to: "/asset-list", 
             translationKey: "navigation.main.dropdowns.more.assets"},
+          { to: "/developers",
+            translationKey: "navigation.main.dropdowns.more.developers"},
         ],
         isActive: (pathname) =>
           pathname.startsWith("/passes") ||
@@ -164,7 +166,8 @@ export const createNavigationConfig = (context = {}) => {
           pathname.startsWith("/terms-of-service") ||
           pathname.startsWith("/privacy-policy") ||
           pathname === "/about" ||
-          pathname.startsWith("/asset-list"),
+          pathname.startsWith("/asset-list") ||
+          pathname.startsWith("/developers"),
       },
     ],
 

@@ -58,7 +58,8 @@
       "aboutUs": "소개",
       "privacyPolicy": "개인정보처리방침",
       "termsOfService": "서비스 이용약관",
-      "apiDocs": "API Docs"
+      "apiDocs": "API Docs",
+      "developers": "Developer Portal"
     },
     "community": {
       "title": "커뮤니티",
