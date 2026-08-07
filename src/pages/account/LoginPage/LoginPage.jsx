@@ -9,6 +9,7 @@ import { MetaTags } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
 import ReCAPTCHA from '@/components/auth/ReCaptcha/ReCaptcha';
 import CodeInput from '@/components/account/CodeInput/CodeInput';
+import { navigateExternal } from '@/utils/externalNavigationGate';
 import { useLoginFlow } from './useLoginFlow';
 
 const LoginPage = () => {
@@ -47,7 +48,7 @@ const LoginPage = () => {
       const from = getOriginUrl();
       if (from && /^https?:\/\//i.test(from)) {
         clearOriginUrl();
-        window.location.replace(from);
+        void navigateExternal(from);
         return;
       }
       navigate('/profile', { replace: true });
@@ -60,7 +61,7 @@ const LoginPage = () => {
     const from = getOriginUrl() || '/profile';
     clearOriginUrl();
     if (/^https?:\/\//i.test(from)) {
-      window.location.replace(from);
+      void navigateExternal(from);
       return;
     }
     navigate(from, { replace: true });

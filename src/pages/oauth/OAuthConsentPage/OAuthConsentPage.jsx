@@ -18,6 +18,7 @@ import {
 import LogoFullOutlineSVG from '@/assets/tuf-logo/LogoFullOutlined/LogoFullOutlined';
 import { describeGrantableScopes } from '@/pages/developers/scopeCatalog';
 import { userAvatarUrls } from '@/utils/playerAvatarDisplay';
+import { navigateExternal } from '@/utils/externalNavigationGate';
 import './oauthConsentPage.css';
 
 function redirectDisplayTarget(uri) {
@@ -67,7 +68,7 @@ const OAuthConsentPage = () => {
     try {
       const res = await api.post(routes.oauth.consentApprove());
       if (res.data?.redirectTo) {
-        window.location.href = res.data.redirectTo;
+        await navigateExternal(res.data.redirectTo);
         return;
       }
       setError(t('oauthConsent.approveError'));
@@ -87,7 +88,7 @@ const OAuthConsentPage = () => {
     try {
       const res = await api.post(routes.oauth.consentDeny());
       if (res.data?.redirectTo) {
-        window.location.href = res.data.redirectTo;
+        await navigateExternal(res.data.redirectTo);
         return;
       }
     } catch {
