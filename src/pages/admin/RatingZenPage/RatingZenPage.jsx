@@ -103,30 +103,6 @@ const RatingZenPage = () => {
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [hasUnfinishedSession]);
 
-  const handleExit = useCallback(() => {
-    // Pause into setup so return shows Continue / Discard; deck stays in sessionStorage.
-    patchSession((prev) => {
-      if (prev.phase !== 'stage') return {};
-      const ratingId = prev.cards[prev.index]?.id;
-      const viewDurationSeconds = readViewDurationSeconds(
-        ratingId,
-        prev.cardAnswers[prev.index]?.viewDurationSeconds
-      );
-      const nextAnswers = prev.cardAnswers.slice();
-      nextAnswers[prev.index] = {
-        rating: prev.pendingRating,
-        comment: prev.pendingComment,
-        peeked: prev.cardPeeked,
-        viewDurationSeconds,
-      };
-      return {
-        cardAnswers: nextAnswers,
-        phase: 'setup',
-      };
-    });
-    navigate('/rating');
-  }, [navigate, patchSession, readViewDurationSeconds]);
-
   const pageMeta = useMemo(
     () =>
       buildStaticPageMeta({
@@ -173,6 +149,30 @@ const RatingZenPage = () => {
     },
     []
   );
+
+  const handleExit = useCallback(() => {
+    // Pause into setup so return shows Continue / Discard; deck stays in sessionStorage.
+    patchSession((prev) => {
+      if (prev.phase !== 'stage') return {};
+      const ratingId = prev.cards[prev.index]?.id;
+      const viewDurationSeconds = readViewDurationSeconds(
+        ratingId,
+        prev.cardAnswers[prev.index]?.viewDurationSeconds
+      );
+      const nextAnswers = prev.cardAnswers.slice();
+      nextAnswers[prev.index] = {
+        rating: prev.pendingRating,
+        comment: prev.pendingComment,
+        peeked: prev.cardPeeked,
+        viewDurationSeconds,
+      };
+      return {
+        cardAnswers: nextAnswers,
+        phase: 'setup',
+      };
+    });
+    navigate('/rating');
+  }, [navigate, patchSession, readViewDurationSeconds]);
 
   const sessionRef = useRef(session);
   sessionRef.current = session;
