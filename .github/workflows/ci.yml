@@ -15,13 +15,15 @@ concurrency:
 
 jobs:
   validate:
-    runs-on: ubuntu-latest
+    runs-on: ${{ fromJSON(vars.CI_RUNS_ON || '["ubuntu-latest"]') }}
     steps:
       - uses: actions/checkout@v5
 
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
 
       - name: Check production build secrets
         env:
@@ -81,7 +83,7 @@ jobs:
       - name: Install dependencies
         env:
           PUPPETEER_SKIP_DOWNLOAD: "true"
-        run: npm install
+        run: npm ci
 
       - name: Lint
         run: npm run lint
