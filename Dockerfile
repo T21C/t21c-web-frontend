@@ -8,9 +8,9 @@ WORKDIR /app
 RUN apt-get update \
   && apt-get install -y --no-install-recommends ca-certificates \
   && rm -rf /var/lib/apt/lists/*
-COPY package.json ./
+COPY package.json package-lock.json ./
 COPY eslint-plugin-tuf ./eslint-plugin-tuf
-RUN --mount=type=cache,target=/root/.npm npm install
+RUN --mount=type=cache,target=/root/.npm npm ci
 
 COPY . .
 RUN --mount=type=secret,id=frontend_env,target=/app/.env.production,required=true \
