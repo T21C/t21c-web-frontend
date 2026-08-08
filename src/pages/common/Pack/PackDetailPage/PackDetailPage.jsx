@@ -1205,7 +1205,7 @@ const PackDetailPage = () => {
         <div className="header">
           {showPackProgress ? (
             <div
-              className="pack-clear-progress"
+              className={`pack-clear-progress${packClears.percent >= 100 ? ' is-complete' : ''}`}
               role="progressbar"
               aria-valuemin={0}
               aria-valuemax={packClears.total}

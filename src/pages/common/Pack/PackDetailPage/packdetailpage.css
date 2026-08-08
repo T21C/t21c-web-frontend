@@ -93,7 +93,7 @@
   height: 100%;
   border-radius: 999px;
   background: var(--btn-success);
-  transition: width 0.2s ease;
+  transition: width 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
 
 .pack-detail-page .pack-clear-progress__label {
@@ -102,6 +102,21 @@
   font-weight: 600;
   color: var(--btn-success);
   white-space: nowrap;
+  transition: color 0.2s ease, filter 0.2s ease;
+}
+
+.pack-detail-page .pack-clear-progress.is-complete .pack-clear-progress__track {
+  overflow: visible;
+}
+
+.pack-detail-page .pack-clear-progress.is-complete .pack-clear-progress__fill {
+  background: rgb(255, 233, 0);
+  box-shadow: 0 0 6px rgba(255, 255, 0, 0.5);
+}
+
+.pack-detail-page .pack-clear-progress.is-complete .pack-clear-progress__label {
+  color: rgb(255, 233, 0);
+  filter: drop-shadow(0 0 4px rgba(255, 255, 0, 0.45));
 }
 
 .pack-detail-page .pack-top-bar {

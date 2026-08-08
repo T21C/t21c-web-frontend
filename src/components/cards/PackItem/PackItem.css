@@ -137,7 +137,7 @@
   height: 100%;
   border-radius: 999px;
   background: var(--btn-success);
-  transition: width 0.2s ease;
+  transition: width 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
 
 .pack-item__progress-label {
@@ -146,6 +146,21 @@
   font-weight: 600;
   color: var(--btn-success);
   white-space: nowrap;
+  transition: color 0.2s ease, filter 0.2s ease;
+}
+
+.pack-item__progress.is-complete .pack-item__progress-track {
+  overflow: visible;
+}
+
+.pack-item__progress.is-complete .pack-item__progress-fill {
+  background: rgb(255, 233, 0);
+  box-shadow: 0 0 6px rgba(255, 255, 0, 0.5);
+}
+
+.pack-item__progress.is-complete .pack-item__progress-label {
+  color: rgb(255, 233, 0);
+  filter: drop-shadow(0 0 4px rgba(255, 255, 0, 0.45));
 }
 
 .pack-item__name {
