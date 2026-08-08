@@ -7,6 +7,8 @@
     "song": "Song:",
     "suffix": "Suffix:",
     "suffixPlaceholder": "Optional suffix (e.g., \"Nerfed\")",
+    "videoLink": "Video link:",
+    "videoLinkPlaceholder": "YouTube or Bilibili URL",
     "artist": "Artist:",
     "charter": "Charter:",
     "difficulty": "Difficulty:",
@@ -59,7 +61,8 @@
     "success": {
       "approved": "Submission approved successfully",
       "rejected": "Submission rejected successfully",
-      "suffixUpdated": "Suffix updated successfully"
+      "suffixUpdated": "Suffix updated successfully",
+      "videoLinkUpdated": "Video link updated successfully"
     },
     "error": {
       "generic": "An error occurred",
@@ -107,6 +110,8 @@
     "needArtistForSong": "Artist must be set before managing song",
     "artistLockedToSong": "Cannot modify artist: it is fixed to the selected song",
     "suffixUpdateFailed": "Failed to update suffix",
+    "videoLinkUpdateFailed": "Failed to update video link",
+    "videoLinkRequired": "Video link cannot be empty",
     "updateSongFailed": "Failed to update song",
     "updateArtistFailed": "Failed to update artist",
     "addSongRequestFailed": "Failed to add song request",
