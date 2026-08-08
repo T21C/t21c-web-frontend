@@ -406,7 +406,7 @@ const RatingPage = () => {
       setSelectedRating(rating);
     }
     if (levelId) {
-      navigate(`/rating/${levelId}`, { replace: true });
+      navigate(`/rating/${levelId}`, { replace: true, state: { preserveScroll: true } });
     }
   }, [navigate]);
 
@@ -414,7 +414,7 @@ const RatingPage = () => {
     deepLinkHandledRef.current = null;
     setSelectedRating(null);
     if (levelIdParam && /^\d+$/.test(levelIdParam)) {
-      navigate('/rating', { replace: true });
+      navigate('/rating', { replace: true, state: { preserveScroll: true } });
     }
   }, [levelIdParam, navigate]);
 
@@ -618,6 +618,8 @@ const RatingPage = () => {
               hasMore={hasMore && ratings.length > 0}
               loadingMore={isLoadingMore}
               listClassName="rating-cards"
+              scrollStorePath="/rating"
+              stateKey="admin-rating"
               loader={<div className="loader loader-relative" />}
               endMessage={
                 ratings.length > 0 && !hasMore && (

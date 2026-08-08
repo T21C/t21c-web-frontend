@@ -9,15 +9,19 @@ import { useLocation, useNavigationType } from "react-router-dom";
  *
  * Skips reset on POP (back/forward) so VirtualList can restore via Virtuoso
  * restoreStateFrom without fighting this or browser scroll restoration.
+ *
+ * Skips when the navigated location sets `state.preserveScroll` (soft overlays
+ * like /rating → /rating/:levelId that keep the same list mounted).
  */
 export function ScrollToTopOnNavigate() {
-  const { key } = useLocation();
+  const { key, state } = useLocation();
   const navigationType = useNavigationType();
 
   useLayoutEffect(() => {
     if (navigationType === "POP") return;
+    if (state && typeof state === "object" && state.preserveScroll) return;
     window.scrollTo(0, 0);
-  }, [key, navigationType]);
+  }, [key, navigationType, state]);
 
   return null;
 }
