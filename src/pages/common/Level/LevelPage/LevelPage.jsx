@@ -168,6 +168,19 @@ const LevelPage = ({
   const isFirstFilterEffectRef = useRef(true);
   // Latest fetcher for pagination effect (see assignment after `fetchLevelsData`).
   const fetchLevelsDataRef = useRef(null);
+  // Stable ES random_score seed for RANDOM sort across pagination/filter changes.
+  const randomSeedRef = useRef(null);
+
+  function createClientSeed() {
+    return Math.floor(Math.random() * 0x100000000) >>> 0;
+  }
+
+  function getOrCreateRandomSeed(forceNew = false) {
+    if (forceNew || randomSeedRef.current == null) {
+      randomSeedRef.current = createClientSeed();
+    }
+    return randomSeedRef.current;
+  }
 
   // Filter difficulties by type
   const pguDifficulties = difficulties.filter(d => d.type === 'PGU').sort((a, b) => a.sortOrder - b.sortOrder);
@@ -215,6 +228,7 @@ const LevelPage = ({
         onlyMyLikes: user && onlyMyLikes ? true : undefined,
         withLikeState: user ? true : undefined,
         availableDlFilter: availableDlFilter || 'show',
+        ...(sort === 'RANDOM' ? { seed: getOrCreateRandomSeed() } : {}),
         ...(facetQuery ? { facetQuery } : {}),
         ...(hiddenFilters || {}),
       };
@@ -225,6 +239,9 @@ const LevelPage = ({
         );
         const newLevels = response.data.results;
         setTotalLevels(response.data.total);
+        if (response.data.seed != null) {
+          randomSeedRef.current = response.data.seed;
+        }
 
         if (resetPage) {
           // Replace entire list for new search/filter
@@ -505,6 +522,12 @@ const LevelPage = ({
     setPageNumber(0);
     setHasMore(true);
     setLevelsData(null);
+    if (value === 'RANDOM') {
+      // Selecting or re-selecting RANDOM starts a new shuffle.
+      getOrCreateRandomSeed(true);
+    } else {
+      randomSeedRef.current = null;
+    }
     if (value === sort) {
       // Same value re-clicked — state won't change so the filter effect won't
       // re-fire; refetch immediately ourselves.
@@ -528,6 +551,7 @@ const LevelPage = ({
   function resetAll() {
     setSort("RECENT");
     setOrder("DESC");
+    randomSeedRef.current = null;
     setSearchInput("");
     setQuery("");
     // Reset to initial PGU range

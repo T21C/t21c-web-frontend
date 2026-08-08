@@ -3,7 +3,7 @@ import { routes } from '@/api/routes';
 import "./passpage.css";
 import "@/pages/common/sort.css";
 import "@/pages/common/search-section.css";
-import { useContext, useEffect, useState, useCallback, useMemo } from "react";
+import { useContext, useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { useLocation } from 'react-router-dom';
 
 import { MetaTags } from "@/components/common/display";
@@ -50,6 +50,19 @@ const PassPage = () => {
   const [selectedSpecialDiffs, setSelectedSpecialDiffs] = useState([]);
   const [stateDisplayOpen, setStateDisplayOpen] = useState(false);
   const runRequest = useDebouncedRequest(500);
+  // Stable ES random_score seed for RANDOM sort across pagination/filter changes.
+  const randomSeedRef = useRef(null);
+
+  function createClientSeed() {
+    return Math.floor(Math.random() * 0x100000000) >>> 0;
+  }
+
+  function getOrCreateRandomSeed(forceNew = false) {
+    if (forceNew || randomSeedRef.current == null) {
+      randomSeedRef.current = createClientSeed();
+    }
+    return randomSeedRef.current;
+  }
 
   // Filter difficulties by type
   const pguDifficulties = difficulties.filter(d => d.type === 'PGU');
@@ -142,7 +155,8 @@ const PassPage = () => {
           wfFilter,
           minDiff: selectedLowFilterDiff !== 0 ? selectedLowFilterDiff : undefined,
           maxDiff: selectedHighFilterDiff !== 0 ? selectedHighFilterDiff : undefined,
-          specialDifficulties: selectedSpecialDiffs
+          specialDifficulties: selectedSpecialDiffs,
+          ...(sort.startsWith('RANDOM') ? { seed: getOrCreateRandomSeed() } : {}),
         };
 
         const response = await runner(({ signal }) =>
@@ -150,6 +164,9 @@ const PassPage = () => {
         );
 
         const newPasses = response.data.results;
+        if (response.data.seed != null) {
+          randomSeedRef.current = response.data.seed;
+        }
 
         setPassesData((prev) => {
           if (pageNumber === 0) {
@@ -173,6 +190,7 @@ const PassPage = () => {
 
   function resetAll() {
     setSort("SCORE_DESC");
+    randomSeedRef.current = null;
     setQuery("");
     // Reset to initial PGU range
     setSelectedLowFilterDiff("P1");
@@ -197,6 +215,11 @@ const PassPage = () => {
   }
 
   function handleSortType(value) {
+    if (value === 'RANDOM') {
+      getOrCreateRandomSeed(true);
+    } else {
+      randomSeedRef.current = null;
+    }
     setSort(value + "_" +(sort.endsWith('ASC') ? 'ASC' : 'DESC'));
     setLoading(true);
     triggerRefresh();
