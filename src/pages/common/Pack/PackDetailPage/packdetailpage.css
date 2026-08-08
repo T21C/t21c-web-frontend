@@ -183,6 +183,15 @@
   align-items: flex-start;
   gap: 1rem;
   flex: 1;
+  min-width: 0;
+}
+
+.pack-detail-page .title-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+  flex: 1;
 }
 
 .pack-detail-page .title {
@@ -193,6 +202,13 @@
   font-size: 2rem;
   font-weight: 700;
   color: var(--color-white);
+}
+
+.pack-detail-page .title-text .pack-description__meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .pack-detail-page .pinned-icon {
