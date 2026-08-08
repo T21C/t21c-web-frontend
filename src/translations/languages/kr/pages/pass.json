@@ -27,7 +27,8 @@
       "options": {
         "only12k": "12키만",
         "deletedPasses": "삭제된 클리어",
-        "keyFlags": "키 개수"
+        "keyFlags": "키 개수",
+        "wfFilter": "WF 필터"
       }
     },
     "sort": {

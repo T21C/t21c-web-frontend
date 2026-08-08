@@ -85,7 +85,9 @@ const PassPage = () => {
     sliderRange,
     setSliderRange,
     keyFlag,
-    setKeyFlag
+    setKeyFlag,
+    wfFilter,
+    setWfFilter,
   } = useContext(PassContext);
 
   const sortOptions = [
@@ -137,6 +139,7 @@ const PassPage = () => {
           sort,
           deletedFilter,
           keyFlag,
+          wfFilter,
           minDiff: selectedLowFilterDiff !== 0 ? selectedLowFilterDiff : undefined,
           maxDiff: selectedHighFilterDiff !== 0 ? selectedHighFilterDiff : undefined,
           specialDifficulties: selectedSpecialDiffs
@@ -176,6 +179,7 @@ const PassPage = () => {
     setSelectedHighFilterDiff("U20");
     setSliderRange([1, difficulties.find(d => d.name === "U20")?.sortOrder || 61]);
     setKeyFlag("all");
+    setWfFilter("none");
     setDeletedFilter("hide");
 
     // Clear and reload data
@@ -424,6 +428,16 @@ const PassPage = () => {
                   selectedItems={selectedSpecialDiffs}
                   onToggle={toggleSpecialDifficulty}
                 />
+                                  <StateDisplay
+                    label={t('pass.settings.filter.options.wfFilter')}
+                    currentState={wfFilter}
+                    states={['none', 'wf', 'wfpp', 'either', 'both']}
+                    onChange={(s) => {
+                      setWfFilter(s);
+                      triggerRefresh();
+                    }}
+                    width={60}
+                  />
               </div>
             </div>
           </div>

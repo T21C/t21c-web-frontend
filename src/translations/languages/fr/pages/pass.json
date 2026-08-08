@@ -19,7 +19,8 @@
       "title": "Filtrer",
       "options": {
         "only12k": "12K seulement",
-        "deletedPasses": "Complétions supprimées"
+        "deletedPasses": "Complétions supprimées",
+        "wfFilter": "Filtre WF"
       }
     },
     "sort": {
