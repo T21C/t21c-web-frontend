@@ -1,8 +1,9 @@
 import { routes } from '@/api/routes';
 // tuf-search: #RatingDetailPopup #ratingDetailPopup #popups #rating #ratingDetail
 import "./ratingdetailpopup.css";
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { usePopupHistory } from '@/hooks/usePopupHistory';
 import { getVideoDetails } from "@/utils";
 import { RatingItem } from '@/components/cards';
 import { RatingInput } from '@/components/common/selectors';
@@ -84,29 +85,50 @@ export const RatingDetailPopup = ({
 
   useBodyScrollLock(true);
 
-  useEffect(() => {
-    if (selectedRating) {
+  const initiateClose = useCallback(() => {
+    setIsExiting(true);
+    // Wait for exit animation to complete
+    setTimeout(() => {
+      setSelectedRating(null);
+      setVideoData(null);
+      setPendingRating("");
+      setPendingComment("");
+      setInitialRating("");
+      setInitialComment("");
+      setHasUnsavedChanges(false);
+      setSaveError(null);
+      setCommentError(false);
+      setOtherRatings([]);
       setIsExiting(false);
-      setIsAnimating(true);
-      const timer = setTimeout(() => {
-        setIsAnimating(false);
-      }, 400); // Match the animation duration
+      setIsInitialLoad(true); // Reset initial load state when closing
+    }, 200); // Match the exit animation duration
+  }, [setSelectedRating]);
 
-      // Handle back button
-      const handlePopState = (event) => {
-        event.preventDefault();
-        handleClose();
-      };
+  const handleClose = useCallback(() => {
+    if (isAnimating) return; // Prevent closing during entry animation
 
-      window.history.pushState({ popup: true }, '');
-      window.addEventListener('popstate', handlePopState);
-
-      return () => {
-        clearTimeout(timer);
-        window.removeEventListener('popstate', handlePopState);
-      };
+    if (hasUnsavedChanges) {
+      if (window.confirm(t('rating.detailPopup.errors.unsavedChanges'))) {
+        initiateClose();
+      }
+    } else {
+      initiateClose();
     }
-  }, [selectedRating]);
+  }, [isAnimating, hasUnsavedChanges, t, initiateClose]);
+
+  // One history entry per open cycle; cleaned up on Back or programmatic close.
+  // Must not re-push when `selectedRating` object identity changes (SSE / parent re-renders).
+  usePopupHistory(Boolean(selectedRating), handleClose);
+
+  useEffect(() => {
+    if (!selectedRating) return undefined;
+    setIsExiting(false);
+    setIsAnimating(true);
+    const timer = setTimeout(() => {
+      setIsAnimating(false);
+    }, 400); // Match the animation duration
+    return () => clearTimeout(timer);
+  }, [selectedRating?.id]);
 
   useEffect(() => {
     const handleEscKey = (event) => {
@@ -117,7 +139,7 @@ export const RatingDetailPopup = ({
 
     document.addEventListener('keydown', handleEscKey);
     return () => document.removeEventListener('keydown', handleEscKey);
-  }, [hasUnsavedChanges, isAnimating]);
+  }, [handleClose, isAnimating]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -134,7 +156,7 @@ export const RatingDetailPopup = ({
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [hasUnsavedChanges, isAnimating]);
+  }, [handleClose, isAnimating]);
 
   useEffect(() => {
     const handleBeforeUnload = (e) => {
@@ -174,20 +196,6 @@ export const RatingDetailPopup = ({
         setIsVideoLoading(false);
       });
   }, [selectedRating?.displayVideoLink, selectedRating?.level?.videoLink, selectedRating?.id]);
-
-  useEffect(() => {
-    const handleEscKey = (event) =>  {
-      if (event.key === 'Escape' && !event.defaultPrevented) {
-        handleClose();
-      }
-    };
-
-    document.addEventListener('keydown', handleEscKey);
-
-    return () => {
-      document.removeEventListener('keydown', handleEscKey);
-    };
-  }, [hasUnsavedChanges]);
 
   useEffect(() => {
     if (selectedRating) {
@@ -409,37 +417,6 @@ export const RatingDetailPopup = ({
     } finally {
       setIsSaving(false);
     }
-  };
-
-  const handleClose = () => {
-    if (isAnimating) return; // Prevent closing during entry animation
-    
-    if (hasUnsavedChanges) {
-      if (window.confirm(t('rating.detailPopup.errors.unsavedChanges'))) {
-        initiateClose();
-      }
-    } else {
-      initiateClose();
-    }
-  };
-
-  const initiateClose = () => {
-    setIsExiting(true);
-    // Wait for exit animation to complete
-    setTimeout(() => {
-      setSelectedRating(null);
-      setVideoData(null);
-      setPendingRating("");
-      setPendingComment("");
-      setInitialRating("");
-      setInitialComment("");
-      setHasUnsavedChanges(false);
-      setSaveError(null);
-      setCommentError(false);
-      setOtherRatings([]);
-      setIsExiting(false);
-      setIsInitialLoad(true); // Reset initial load state when closing
-    }, 200); // Match the exit animation duration
   };
 
   const handleVideoLoad = () => {
