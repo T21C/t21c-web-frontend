@@ -118,20 +118,19 @@ export const createNavigationConfig = (context = {}) => {
       },
       {
         type: "link",
-        to: "/creators",
-        translationKey: "navigation.main.links.creators",
+        to: "/packs",
+        translationKey: "navigation.main.links.packs",
       },
       {
         type: "link",
-        to: "/packs",
-        translationKey: "navigation.main.links.packs",
+        to: "/rating",
+        translationKey: "navigation.main.links.rating",
       },
       {
         type: "dropdown",
         label: "navigation.main.links.more",
         items: [
           { to: "/passes", translationKey: "navigation.main.dropdowns.more.passes" },
-          { to: "/rating", translationKey: "navigation.main.dropdowns.more.rating" },
           { to: "/admin/curations", translationKey: "navigation.main.dropdowns.admin.curations" },
           { divider: true },
           { to: "https://github.com/coyami-ke/TUFHelper/releases", 
@@ -144,6 +143,7 @@ export const createNavigationConfig = (context = {}) => {
             icon: <TUFHelperLiteIcon size={24} /> },
           { ...getTufExtensionVer() },
           { divider: true },
+          { to: "/creators", translationKey: "navigation.main.links.creators" },
           { to: "/songs", translationKey: "navigation.main.dropdowns.creators.songs" },
           { to: "/artists", translationKey: "navigation.main.dropdowns.creators.artists" },
           { divider: true },
@@ -161,8 +161,8 @@ export const createNavigationConfig = (context = {}) => {
         ],
         isActive: (pathname) =>
           pathname.startsWith("/passes") ||
+          pathname.startsWith("/creators") ||
           pathname.startsWith("/admin/curations") ||
-          pathname.startsWith("/rating") ||
           pathname.startsWith("/terms-of-service") ||
           pathname.startsWith("/privacy-policy") ||
           pathname === "/about" ||
