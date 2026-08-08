@@ -356,10 +356,22 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
                     betweenSpeedAndJudgements={
                       <div className="detail-row">
                         <span className="detail-label">{t('passSubmissions.details.submitter')}</span>
-                        <div className="submitter-details">
-                          <span className="detail-value">{submission.submitterDiscordUsername? `@${submission.submitterDiscordUsername}` : submission.passSubmitter?.username || "Null"}</span>
-                          <span className="detail-subvalue">#{submission.passSubmitter?.playerId || "Null"}</span>
-                        </div>
+                        {submission.passSubmitter?.playerId != null ? (
+                          <Link
+                            to={`/profile/${submission.passSubmitter.playerId}`}
+                            className="submitter-details submitter-link"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <span className="detail-value">{submission.submitterDiscordUsername ? `@${submission.submitterDiscordUsername}` : submission.passSubmitter?.username || "Null"}</span>
+                            <span className="detail-subvalue">#{submission.passSubmitter.playerId}</span>
+                          </Link>
+                        ) : (
+                          <div className="submitter-details">
+                            <span className="detail-value">{submission.submitterDiscordUsername ? `@${submission.submitterDiscordUsername}` : submission.passSubmitter?.username || "Null"}</span>
+                            <span className="detail-subvalue">#{submission.passSubmitter?.playerId || "Null"}</span>
+                          </div>
+                        )}
                       </div>
                     }
                   />
