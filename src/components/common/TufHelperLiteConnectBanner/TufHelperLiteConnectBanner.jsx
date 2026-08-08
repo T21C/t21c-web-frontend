@@ -12,6 +12,7 @@ import {
 import './tufHelperLiteConnectBanner.css';
 
 const TUFHELPER_LITE_URL = 'https://github.com/KGH1113/TUFHelperLite/releases/latest';
+const ADOFAI_IPC_URL = 'https://github.com/KGH1113/adofai-ipc/releases/latest';
 const SUPPORTED_PATH = /^\/(levels|packs)(\/|$)/;
 
 export const TufHelperLiteConnectBanner = () => {
@@ -22,6 +23,10 @@ export const TufHelperLiteConnectBanner = () => {
   const isConnecting = integration.state === 'connecting';
   const isUnavailable = integration.state === 'unavailable';
   const showUnavailable = isUnavailable || isRetrying;
+  const errorCode = integration.errorCode;
+  const requiresIpcUpdate = errorCode === 'namespace_status_unavailable';
+  const namespaceInitializing = errorCode === 'namespace_initializing' || errorCode === 'TIMEOUT';
+  const namespaceFailed = errorCode === 'namespace_error';
   const canShow = integration.state === 'prompt' || integration.state === 'unavailable';
   const isVisible =
     SUPPORTED_PATH.test(location.pathname) &&
@@ -34,12 +39,25 @@ export const TufHelperLiteConnectBanner = () => {
 
   if (!isVisible) return null;
 
-  const title = showUnavailable
-    ? t('level.tufHelperLiteBanner.unavailableTitle')
-    : t('level.tufHelperLiteBanner.title');
-  const description = showUnavailable
-    ? t('level.tufHelperLiteBanner.unavailableDescription')
-    : t('level.tufHelperLiteBanner.description');
+  const title = requiresIpcUpdate
+    ? t('level.tufHelperLiteBanner.ipcUpdateTitle')
+    : namespaceInitializing
+      ? t('level.tufHelperLiteBanner.initializingTitle')
+      : namespaceFailed
+        ? t('level.tufHelperLiteBanner.initializationFailedTitle')
+        : showUnavailable
+          ? t('level.tufHelperLiteBanner.unavailableTitle')
+          : t('level.tufHelperLiteBanner.title');
+  const description = requiresIpcUpdate
+    ? t('level.tufHelperLiteBanner.ipcUpdateDescription')
+    : namespaceInitializing
+      ? t('level.tufHelperLiteBanner.initializingDescription')
+      : namespaceFailed
+        ? t('level.tufHelperLiteBanner.initializationFailedDescription')
+        : showUnavailable
+          ? t('level.tufHelperLiteBanner.unavailableDescription')
+          : t('level.tufHelperLiteBanner.description');
+  const helpUrl = requiresIpcUpdate ? ADOFAI_IPC_URL : TUFHELPER_LITE_URL;
 
   const handleConnect = async () => {
     const retrying = integration.state === 'unavailable';
@@ -76,11 +94,13 @@ export const TufHelperLiteConnectBanner = () => {
       <div className="tufhelperlite-connect-banner__actions">
         <a
           className="tufhelperlite-connect-banner__link"
-          href={TUFHELPER_LITE_URL}
+          href={helpUrl}
           target="_blank"
           rel="noreferrer"
         >
-          {t('level.tufHelperLiteBanner.learnMore')}
+          {requiresIpcUpdate
+            ? t('level.tufHelperLiteBanner.downloadIpc')
+            : t('level.tufHelperLiteBanner.learnMore')}
         </a>
         <button
           type="button"
