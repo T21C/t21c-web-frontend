@@ -8,22 +8,15 @@ const EASE = 'var(--ease-in-out-sine)';
 /**
  * Drives label bob/spin via discrete waypoints; CSS transitions interpolate between them.
  * JS only updates at waypoint boundaries (not every frame).
+ * Caller disables this hook under minimal / reduced motion (same path).
  */
-export function useSubmissionLabelWaypoints({
-  enabled,
-  stageRef,
-  motionRef,
-  reducedMotion: reducedMotionProp = false,
-}) {
+export function useSubmissionLabelWaypoints({ enabled, stageRef, motionRef }) {
   useEffect(() => {
     if (!enabled) return undefined;
 
     const stage = stageRef.current;
     if (!stage) return undefined;
 
-    const reducedMotion =
-      reducedMotionProp
-      || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const cleanups = [];
 
     const bindSide = (side) => {
@@ -46,7 +39,6 @@ export function useSubmissionLabelWaypoints({
           runWaypointLoop({
             element: bob,
             periodMs: config.bobMs,
-            reducedMotion,
             getIntensity: () => motionRef.current[side] ?? 0,
             buildWaypoint: (intensity, phase) => {
               const up = phase === 1;
@@ -64,7 +56,6 @@ export function useSubmissionLabelWaypoints({
           runWaypointLoop({
             element: spin,
             periodMs: config.spinMs,
-            reducedMotion,
             getIntensity: () => motionRef.current[side] ?? 0,
             buildWaypoint: (intensity, phase) => {
               // spinDeg = peak amplitude; oscillate CW/CCW (±amp).
@@ -87,13 +78,12 @@ export function useSubmissionLabelWaypoints({
     return () => {
       cleanups.forEach((stop) => stop());
     };
-  }, [enabled, stageRef, motionRef, reducedMotionProp]);
+  }, [enabled, stageRef, motionRef]);
 }
 
 function runWaypointLoop({
   element,
   periodMs,
-  reducedMotion,
   getIntensity,
   buildWaypoint,
 }) {
@@ -103,9 +93,8 @@ function runWaypointLoop({
   let phase = 0;
 
   const apply = (waypoint, durationMs) => {
-    element.style.transition = reducedMotion
-      ? 'none'
-      : `transform ${durationMs}ms ${EASE}, filter ${durationMs}ms ${EASE}`;
+    element.style.transition =
+      `transform ${durationMs}ms ${EASE}, filter ${durationMs}ms ${EASE}`;
     element.style.transform = waypoint.transform;
     if (waypoint.filter != null) {
       element.style.filter = waypoint.filter;
@@ -116,7 +105,7 @@ function runWaypointLoop({
 
   const goRest = () => {
     phase = 0;
-    apply(rest(), reducedMotion ? 0 : Math.min(periodMs, 480));
+    apply(rest(), Math.min(periodMs, 480));
   };
 
   const step = () => {
@@ -130,9 +119,8 @@ function runWaypointLoop({
     }
 
     phase = phase === 0 ? 1 : 0;
-    const duration = reducedMotion ? 0 : periodMs;
-    apply(buildWaypoint(intensity, phase), duration);
-    timeoutId = window.setTimeout(step, Math.max(duration, 32));
+    apply(buildWaypoint(intensity, phase), periodMs);
+    timeoutId = window.setTimeout(step, Math.max(periodMs, 32));
   };
 
   apply(rest(), 0);

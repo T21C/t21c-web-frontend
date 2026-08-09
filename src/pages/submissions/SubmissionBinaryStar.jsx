@@ -63,7 +63,6 @@ export function SubmissionBinaryStar({ enabled = true, scale = BINARY_SCALE }) {
     red.style.width = `${PLANET_SIZE}px`;
     red.style.height = `${PLANET_SIZE}px`;
 
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const particles = [];
     let rafId = 0;
     let lastSpawn = 0;
@@ -115,11 +114,9 @@ export function SubmissionBinaryStar({ enabled = true, scale = BINARY_SCALE }) {
       const dt = ts - prevTs;
       prevTs = ts;
 
-      if (!reducedMotion) {
-        const turn = TAU * (dt / 1000);
-        angle += ORBIT_SPEED * turn;
-        spinAngle += PLANET_SPIN_SPEED * turn;
-      }
+      const turn = TAU * (dt / 1000);
+      angle += ORBIT_SPEED * turn;
+      spinAngle += PLANET_SPIN_SPEED * turn;
 
       const bx = Math.cos(angle) * ORBIT_RADIUS;
       const by = Math.sin(angle) * ORBIT_RADIUS;
@@ -129,7 +126,7 @@ export function SubmissionBinaryStar({ enabled = true, scale = BINARY_SCALE }) {
       placePlanet(blue, bx, by, spinAngle);
       placePlanet(red, rx, ry, spinAngle * 0.9);
 
-      if (!reducedMotion && ts - lastSpawn >= SPAWN_INTERVAL_MS) {
+      if (ts - lastSpawn >= SPAWN_INTERVAL_MS) {
         lastSpawn = ts;
         spawnAt(bx, by, 'blue');
         spawnAt(rx, ry, 'red');

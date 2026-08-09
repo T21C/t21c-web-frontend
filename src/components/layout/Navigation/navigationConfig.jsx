@@ -118,6 +118,11 @@ export const createNavigationConfig = (context = {}) => {
       },
       {
         type: "link",
+        to: "/creators",
+        translationKey: "navigation.main.links.creators",
+      },
+      {
+        type: "link",
         to: "/packs",
         translationKey: "navigation.main.links.packs",
       },
@@ -143,7 +148,6 @@ export const createNavigationConfig = (context = {}) => {
             icon: <TUFHelperLiteIcon size={24} /> },
           { ...getTufExtensionVer() },
           { divider: true },
-          { to: "/creators", translationKey: "navigation.main.links.creators" },
           { to: "/songs", translationKey: "navigation.main.dropdowns.creators.songs" },
           { to: "/artists", translationKey: "navigation.main.dropdowns.creators.artists" },
           { divider: true },
