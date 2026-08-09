@@ -16,12 +16,12 @@
   flex-direction: column;
 }
 
-.submission-page :is(.submission-glow--pass, .submission-art--pass, .submission-label--pass) {
+.submission-page :is(.submission-glow--pass, .submission-art--pass, .submission-label--pass, .submission-mascot-icon--pass) {
   --side-color: var(--submission-glow-pass);
   --side-sign: 1;
 }
 
-.submission-page :is(.submission-glow--level, .submission-art--level, .submission-label--level) {
+.submission-page :is(.submission-glow--level, .submission-art--level, .submission-label--level, .submission-mascot-icon--level) {
   --side-color: var(--submission-glow-level);
   --side-sign: -1;
 }
@@ -684,6 +684,52 @@
   .submission-binary__particle
 ) {
   animation: none !important;
+}
+
+/* Disable mascots (Settings → Preferences → Display): swap art for side icons. */
+.submission-page .submission-mascot-icon {
+  position: absolute;
+  top: 47%;
+  width: min(11rem, 22vw);
+  height: min(11rem, 22vw);
+  z-index: 1;
+  pointer-events: none;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  transform: translate(-50%, -50%);
+  color: var(--side-color);
+  filter: drop-shadow(0 0 0.6rem color-mix(in srgb, var(--side-color) 40%, transparent));
+  transition: filter 0.35s var(--ease-out-sine);
+}
+
+.submission-page .submission-mascot-icon--pass {
+  left: 25%;
+}
+
+.submission-page .submission-mascot-icon--level {
+  left: 75%;
+}
+
+.submission-page .submission-mascot-icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.submission-page--no-mascots .submission-art {
+  display: none;
+}
+
+.submission-page--no-mascots .submission-mascot-icon {
+  display: flex;
+}
+
+.submission-page--no-mascots .submission-stage--pass-active .submission-mascot-icon--pass,
+.submission-page--no-mascots .submission-stage--level-active .submission-mascot-icon--level {
+  filter:
+    drop-shadow(0 0 1rem color-mix(in srgb, var(--side-color) 75%, transparent))
+    brightness(1.08);
 }
 
 .submission-page--minimal-motion .submission-art__layer-group-c2 {

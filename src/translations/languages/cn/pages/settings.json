@@ -34,6 +34,13 @@
         "label": "提交页减少动效",
         "description": "关闭提交落地页上的装饰性动画。角色悬停光晕会保留，以便仍能看出当前激活的一侧。"
       }
+    },
+    "display": {
+      "title": "显示",
+      "disableMascots": {
+        "label": "隐藏吉祥物",
+        "description": "隐藏提交落地页上的角色立绘。"
+      }
     }
   },
   "sessions": {

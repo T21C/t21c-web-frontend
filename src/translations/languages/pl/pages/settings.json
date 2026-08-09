@@ -49,6 +49,13 @@
         "label": "Minimalny ruch na stronie zgłoszeń",
         "description": "Wyłącza dekoracyjne animacje na stronie zgłoszeń. Podświetlenie postaci przy najechaniu pozostaje, aby widać było aktywną stronę."
       }
+    },
+    "display": {
+      "title": "Wyświetlanie",
+      "disableMascots": {
+        "label": "Wyłącz maskotki",
+        "description": "Ukrywa grafiki postaci na stronie zgłoszeń."
+      }
     }
   }
 }

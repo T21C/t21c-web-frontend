@@ -11,6 +11,7 @@ import { hasAnyFlag, hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { hasAccountEmail } from "@/utils/accountEmail";
 import { useSubmissionLabelWaypoints } from './useSubmissionLabelWaypoints';
 import { useSubmissionMinimalMotion } from '@/hooks/useMinimalMotionPreference';
+import { useDisableMascotsPreference } from '@/hooks/useDisableMascotsPreference';
 
 import ameliaChar from "@/assets/submission/amelia.png";
 import ameliaStars from "@/assets/submission/amelia_bgSTARS.png";
@@ -27,6 +28,8 @@ import tile90 from "@/assets/submission/tile 90.png";
 import tile135 from "@/assets/submission/tile 135.png";
 import tile180 from "@/assets/submission/tile 180.png";
 import tileEnd from "@/assets/submission/tile end.png";
+import { AdofaiIcon } from '@/components/common/icons';
+import { CreatorIcon } from '@/components/common/icons/CreatorIcon';
 import { SubmissionBinaryStar } from './SubmissionBinaryStar';
 
 const LEVEL_TILES = [
@@ -55,6 +58,7 @@ const SubmissionPage = () => {
   const motionRef = useRef({ pass: 0, level: 0 });
   const [activeSide, setActiveSide] = useState(null);
   const minimalMotion = useSubmissionMinimalMotion();
+  const [disableMascots] = useDisableMascotsPreference();
 
   const pageMeta = useMemo(
     () =>
@@ -148,8 +152,14 @@ const SubmissionPage = () => {
     activeSide === 'level' ? 'submission-stage--level-active' : '',
   ].filter(Boolean).join(' ');
 
+  const pageClassName = [
+    'submission-page',
+    minimalMotion ? 'submission-page--minimal-motion' : '',
+    disableMascots ? 'submission-page--no-mascots' : '',
+  ].filter(Boolean).join(' ');
+
   return (
-    <div className={`submission-page${minimalMotion ? ' submission-page--minimal-motion' : ''}`}>
+    <div className={pageClassName}>
       <MetaTags {...pageMeta} />
 
       <div className={`submission-container${noAccess ? " banner-container" : ""}`}>
@@ -201,6 +211,9 @@ const SubmissionPage = () => {
             <img className="submission-art__layer submission-art__layer--bg submission-art__layer--cam" src={ellieCam} alt="" />
             <img className="submission-art__layer submission-art__layer--char" src={ellieChar} alt="" />
           </div>
+          <div className="submission-mascot-icon submission-mascot-icon--pass" aria-hidden="true">
+            <AdofaiIcon color="var(--side-color)" size="100%" rotation={-20} />
+          </div>
 
           <div className="submission-prop submission-prop--keyboard" aria-hidden="true">
             <div className="submission-prop__keyboard-float">
@@ -218,6 +231,9 @@ const SubmissionPage = () => {
               <img className="submission-art__layer submission-art__layer--c2" src={ameliaC2} alt="" />
               <img className="submission-art__layer submission-art__layer--c2-glow" src={ameliaC2Glow} alt="" />
             </div>
+          </div>
+          <div className="submission-mascot-icon submission-mascot-icon--level" aria-hidden="true">
+            <CreatorIcon color="var(--side-color)" size="100%" />
           </div>
 
           <div className="submission-prop submission-prop--magic" aria-hidden="true">
