@@ -627,6 +627,45 @@
   cursor: default;
 }
 
+/* Minimal motion (Settings → Preferences → Motion): keep art/side glow only. */
+.submission-page--minimal-motion .submission-binary,
+.submission-page--minimal-motion .submission-prop--keyboard,
+.submission-page--minimal-motion .submission-prop--magic,
+.submission-page--minimal-motion .submission-prop--tiles {
+  display: none;
+}
+
+.submission-page--minimal-motion :is(
+  .submission-art__layer--stars,
+  .submission-art__layer--tiles,
+  .submission-art__layer--cam,
+  .submission-prop__spin,
+  .submission-prop__tile-float,
+  .submission-binary__particle
+) {
+  animation: none !important;
+}
+
+.submission-page--minimal-motion .submission-art__layer-group-c2 {
+  transition: none;
+  transform: none;
+}
+
+.submission-page--minimal-motion .submission-stage--level-active .submission-art__layer-group-c2 {
+  transform: none;
+}
+
+.submission-page--minimal-motion .submission-label {
+  transition: none;
+  transform: rotate(calc(var(--side-sign) * var(--label-angle)));
+}
+
+.submission-page--minimal-motion .submission-stage--pass-active .submission-label--pass,
+.submission-page--minimal-motion .submission-stage--level-active .submission-label--level {
+  transform: rotate(calc(var(--side-sign) * var(--label-angle)));
+  opacity: 1;
+}
+
 
 /* =============================================================================
    SUPPLEMENTARY — access banners / verify-email

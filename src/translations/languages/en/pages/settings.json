@@ -15,15 +15,28 @@
     "player": "Player profile",
     "creator": "Creator profile",
     "billing": "Billing",
+    "preferences": "Preferences",
     "short": {
       "account": "Account",
       "sessions": "Sessions",
       "player": "Player",
       "creator": "Creator",
       "billing": "Billing",
-      "security": "Security"
+      "security": "Security",
+      "preferences": "Preferences"
     },
     "security": "Security"
+  },
+  "preferences": {
+    "title": "Preferences",
+    "subtitle": "Site options that apply to your account on this device.",
+    "motion": {
+      "title": "Motion",
+      "submissionMinimalMotion": {
+        "label": "Minimal motion on submission page",
+        "description": "Turns off decorative animations on the submission landing page. Character hover glow stays so you can still tell which side is active."
+      }
+    }
   },
   "sessions": {
     "tabs": {

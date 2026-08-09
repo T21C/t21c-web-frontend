@@ -89,6 +89,7 @@ function App() {
             <Route path="player" element={<Pages.SettingsPlayerPage />} />
             <Route path="creator" element={<Pages.SettingsCreatorPage />} />
             <Route path="billing" element={<Pages.SettingsBillingPage />} />
+            <Route path="preferences" element={<Pages.SettingsPreferencesPage />} />
           </Route>
           <Route
             path="tuf-stellar/checkout"

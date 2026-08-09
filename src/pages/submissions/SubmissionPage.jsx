@@ -10,6 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { hasAnyFlag, hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { hasAccountEmail } from "@/utils/accountEmail";
 import { useSubmissionLabelWaypoints } from './useSubmissionLabelWaypoints';
+import { useMinimalMotionPreference } from '@/hooks/useMinimalMotionPreference';
 
 import ameliaChar from "@/assets/submission/amelia.png";
 import ameliaStars from "@/assets/submission/amelia_bgSTARS.png";
@@ -53,6 +54,7 @@ const SubmissionPage = () => {
   const activeSideRef = useRef(null);
   const motionRef = useRef({ pass: 0, level: 0 });
   const [activeSide, setActiveSide] = useState(null);
+  const [minimalMotion] = useMinimalMotionPreference();
 
   const pageMeta = useMemo(
     () =>
@@ -89,7 +91,9 @@ const SubmissionPage = () => {
     }
 
     let rafId = 0;
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const preferReduced =
+      minimalMotion
+      || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const tick = () => {
       const targets = {
@@ -100,7 +104,7 @@ const SubmissionPage = () => {
       for (const side of ['pass', 'level']) {
         const current = motionRef.current[side];
         const target = targets[side];
-        const next = reducedMotion
+        const next = preferReduced
           ? target
           : current + (target - current) * MOTION_EASE;
         const value = Math.abs(target - next) < 0.01 ? target : next;
@@ -114,7 +118,7 @@ const SubmissionPage = () => {
 
     rafId = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafId);
-  }, [user]);
+  }, [user, minimalMotion]);
 
   const labelsEnabled = Boolean(
     user
@@ -123,9 +127,10 @@ const SubmissionPage = () => {
   );
 
   useSubmissionLabelWaypoints({
-    enabled: labelsEnabled,
+    enabled: labelsEnabled && !minimalMotion,
     stageRef,
     motionRef,
+    reducedMotion: minimalMotion,
   });
 
   if (!user) {
@@ -148,7 +153,7 @@ const SubmissionPage = () => {
   ].filter(Boolean).join(' ');
 
   return (
-    <div className="submission-page">
+    <div className={`submission-page${minimalMotion ? ' submission-page--minimal-motion' : ''}`}>
       <MetaTags {...pageMeta} />
 
       <div className={`submission-container${noAccess ? " banner-container" : ""}`}>
@@ -190,7 +195,7 @@ const SubmissionPage = () => {
         </div>
       ) : (
         <div className={stageClassName} ref={stageRef}>
-          <SubmissionBinaryStar enabled={labelsEnabled} scale={4} />
+          <SubmissionBinaryStar enabled={labelsEnabled && !minimalMotion} scale={4} />
 
           <div className="submission-glow submission-glow--pass" aria-hidden="true" />
           <div className="submission-glow submission-glow--level" aria-hidden="true" />

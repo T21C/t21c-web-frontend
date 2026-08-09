@@ -9,14 +9,21 @@ const EASE = 'var(--ease-in-out-sine)';
  * Drives label bob/spin via discrete waypoints; CSS transitions interpolate between them.
  * JS only updates at waypoint boundaries (not every frame).
  */
-export function useSubmissionLabelWaypoints({ enabled, stageRef, motionRef }) {
+export function useSubmissionLabelWaypoints({
+  enabled,
+  stageRef,
+  motionRef,
+  reducedMotion: reducedMotionProp = false,
+}) {
   useEffect(() => {
     if (!enabled) return undefined;
 
     const stage = stageRef.current;
     if (!stage) return undefined;
 
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reducedMotion =
+      reducedMotionProp
+      || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const cleanups = [];
 
     const bindSide = (side) => {
@@ -80,7 +87,7 @@ export function useSubmissionLabelWaypoints({ enabled, stageRef, motionRef }) {
     return () => {
       cleanups.forEach((stop) => stop());
     };
-  }, [enabled, stageRef, motionRef]);
+  }, [enabled, stageRef, motionRef, reducedMotionProp]);
 }
 
 function runWaypointLoop({

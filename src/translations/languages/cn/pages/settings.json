@@ -14,14 +14,27 @@
     "player": "玩家信息",
     "creator": "创作者信息",
     "billing": "订阅与账单",
+    "preferences": "偏好设置",
     "short": {
       "account": "账户",
       "player": "玩家",
       "creator": "创作者",
       "billing": "账单",
-      "security": "安全"
+      "security": "安全",
+      "preferences": "偏好"
     },
     "security": "安全"
+  },
+  "preferences": {
+    "title": "偏好设置",
+    "subtitle": "适用于本设备上你账户的站点选项。",
+    "motion": {
+      "title": "动效",
+      "submissionMinimalMotion": {
+        "label": "提交页减少动效",
+        "description": "关闭提交落地页上的装饰性动画。角色悬停光晕会保留，以便仍能看出当前激活的一侧。"
+      }
+    }
   },
   "sessions": {
     "tabs": {

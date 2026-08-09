@@ -31,11 +31,24 @@
   },
   "nav": {
     "security": "Bezpieczeństwo",
+    "preferences": "Preferencje",
     "short": {
-      "security": "Bezpieczeństwo"
+      "security": "Bezpieczeństwo",
+      "preferences": "Preferencje"
     }
   },
   "security": {
     "title": "Bezpieczeństwo"
+  },
+  "preferences": {
+    "title": "Preferencje",
+    "subtitle": "Opcje witryny dla Twojego konta na tym urządzeniu.",
+    "motion": {
+      "title": "Ruch",
+      "submissionMinimalMotion": {
+        "label": "Minimalny ruch na stronie zgłoszeń",
+        "description": "Wyłącza dekoracyjne animacje na stronie zgłoszeń. Podświetlenie postaci przy najechaniu pozostaje, aby widać było aktywną stronę."
+      }
+    }
   }
 }
