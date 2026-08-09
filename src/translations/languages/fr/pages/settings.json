@@ -31,11 +31,24 @@
   },
   "nav": {
     "security": "Sécurité",
+    "preferences": "Préférences",
     "short": {
-      "security": "Sécurité"
+      "security": "Sécurité",
+      "preferences": "Préfs"
     }
   },
   "security": {
     "title": "Sécurité"
+  },
+  "preferences": {
+    "title": "Préférences",
+    "subtitle": "Options du site pour votre compte sur cet appareil.",
+    "motion": {
+      "title": "Mouvement",
+      "submissionMinimalMotion": {
+        "label": "Mouvement minimal sur la page de soumission",
+        "description": "Désactive les animations décoratives sur la page de soumission. La lueur au survol des personnages reste pour indiquer le côté actif."
+      }
+    }
   }
 }

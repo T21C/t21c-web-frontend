@@ -63,6 +63,12 @@ export const SETTINGS_NAV_GROUPS = [
         shortLabelKey: "settings.nav.short.billing",
         visible: alwaysVisible,
       },
+      {
+        path: "preferences",
+        labelKey: "settings.nav.preferences",
+        shortLabelKey: "settings.nav.short.preferences",
+        visible: alwaysVisible,
+      },
     ],
   },
 ];

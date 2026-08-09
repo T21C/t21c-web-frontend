@@ -10,11 +10,13 @@ const store = new Map();
  * @param {string} stateKey
  * @param {boolean} grid
  * @param {boolean} containerScroll
+ * @param {string} [pathOverride] - when set, used instead of pathname+search (stable keys across soft URL changes)
  */
-export function buildVirtualListStoreKey(pathname, search, stateKey, grid, containerScroll) {
+export function buildVirtualListStoreKey(pathname, search, stateKey, grid, containerScroll, pathOverride) {
   const scrollMode = containerScroll ? 'container' : 'window';
   const layout = grid ? 'grid' : 'list';
-  return `${pathname}${search}::${stateKey}::${layout}::${scrollMode}`;
+  const pathPart = pathOverride ?? `${pathname}${search}`;
+  return `${pathPart}::${stateKey}::${layout}::${scrollMode}`;
 }
 
 /**

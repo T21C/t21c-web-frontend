@@ -67,6 +67,8 @@ const VirtualList = ({
   restoreScroll = true,
   minColumnWidth = 280,
   gap = 24,
+  /** Override pathname+search in the scroll store key (e.g. `/rating` while URL is `/rating/:id`). */
+  scrollStorePath = null,
 }) => {
   const { pathname, search } = useLocation();
   const safeItems = items ?? [];
@@ -103,8 +105,8 @@ const VirtualList = ({
 
   const containerScroll = Boolean(customScrollParent);
   const storeKey = useMemo(
-    () => buildVirtualListStoreKey(pathname, search, stateKey, grid, containerScroll),
-    [pathname, search, stateKey, grid, containerScroll],
+    () => buildVirtualListStoreKey(pathname, search, stateKey, grid, containerScroll, scrollStorePath),
+    [pathname, search, stateKey, grid, containerScroll, scrollStorePath],
   );
 
   const fingerprint = useMemo(

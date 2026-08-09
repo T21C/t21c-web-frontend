@@ -11,5 +11,10 @@
   "button": {
     "buttonPass": "Envoyer une complétion",
     "buttonLevel": "Envoyer un niveau"
+  },
+  "label": {
+    "submit": "Envoyer",
+    "pass": "Complétion",
+    "level": "Niveau"
   }
 } 

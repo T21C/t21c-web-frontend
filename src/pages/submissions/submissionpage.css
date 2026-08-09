@@ -1,27 +1,685 @@
 /* tuf-search: #SubmissionPage #submissionPage #submissions */
-.submission-page .wrapper-body {
-  padding: 4rem 0;
+
+/* =============================================================================
+   MAIN — stage, art, props, labels, zones
+   ============================================================================= */
+
+/* height:100% fails here: .body only has min-height (no definite height), and
+   html/#root/body are not a height:100% chain. Match other full-viewport pages. */
+.submission-page {
+  --submission-glow-pass: color-mix(in srgb, var(--btn-info) 55%, #00e8ff);
+  --submission-glow-level: color-mix(in srgb, var(--warning-color) 70%, var(--btn-warning));
+  --glow-angle: 90deg;
+  min-height: calc(100vh - var(--navbar-height));
+  margin-top: -1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.submission-page :is(.submission-glow--pass, .submission-art--pass, .submission-label--pass) {
+  --side-color: var(--submission-glow-pass);
+  --side-sign: 1;
+}
+
+.submission-page :is(.submission-glow--level, .submission-art--level, .submission-label--level) {
+  --side-color: var(--submission-glow-level);
+  --side-sign: -1;
+}
+
+.submission-page .submission-container,
+.submission-page .submission-stage {
+  flex: 1;
   position: relative;
+  min-height: inherit;
+}
+
+.submission-page .submission-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.submission-page .submission-stage {
+  width: 100%;
+  overflow: hidden;
+}
+
+/* --- binary star (pass / left fly-out) --- */
+.submission-page .submission-binary {
+  position: absolute;
+  left: 5%;
+  top: 49%;
+  width: 0;
+  height: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -10rem);
+  transition:
+    opacity 0.6s var(--ease-out-cubic),
+    left 5s var(--ease-out-expo),
+    top 5s var(--ease-out-expo);
+}
+
+.submission-page .submission-stage--pass-active .submission-binary {
+  opacity: 0.85;
+  left: 13%;
+  top: 52%;
+}
+
+/* Local space: orbit + trails. Scale this node; fly the outer .submission-binary. */
+.submission-page .submission-binary__body {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  transform: scale(var(--binary-scale, 1));
+  transform-origin: 0 0;
+}
+
+.submission-page .submission-binary__trail {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.submission-page .submission-binary__planet {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  top: 0;
+  object-fit: contain;
+  mix-blend-mode: screen;
+  transform-origin: center;
+  will-change: transform;
+}
+
+.submission-page .submission-binary__particle {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 0;
+  width: var(--particle-size, 105px);
+  height: var(--particle-size, 105px);
+  object-fit: contain;
+  pointer-events: none;
+  opacity: 1;
+  transform:
+    translate(-50%, -50%)
+    translate(var(--particle-x, 0px), var(--particle-y, 0px))
+    rotate(var(--particle-rot, 0deg))
+    scale(var(--particle-scale-start, 0.8));
+  transform-origin: center;
+  animation: submission-binary-particle-decay var(--particle-life, 1s) var(--ease-out-sine) forwards;
+}
+
+@keyframes submission-binary-particle-decay {
+  to {
+    transform:
+      translate(-50%, -50%)
+      translate(var(--particle-x, 0px), var(--particle-y, 0px))
+      rotate(var(--particle-rot, 0deg))
+      scale(0);
+  }
+}
+
+/* --- glows --- */
+.submission-page .submission-glow {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.35s var(--ease-out-sine);
+  background: linear-gradient(
+    calc(var(--glow-angle) + (1 - var(--side-sign)) * 90deg),
+    color-mix(in srgb, var(--side-color) 45%, transparent) 0%,
+    color-mix(in srgb, var(--side-color) 18%, transparent) 22%,
+    color-mix(in srgb, var(--side-color) 2%, transparent) 45%,
+    transparent 50%
+  );
+}
+
+.submission-page .submission-stage--pass-active .submission-glow--pass,
+.submission-page .submission-stage--level-active .submission-glow--level {
+  opacity: 1;
+}
+
+/* --- art --- */
+.submission-page .submission-art {
+  position: absolute;
+  top: 47%;
+  width: min(50rem, 55vw);
+  height: min(35rem, 60vh);
+  overflow: visible;
+  z-index: 1;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.submission-page .submission-art--pass {
+  left: 25%;
+}
+
+.submission-page .submission-art--level {
+  left: 75%;
+}
+
+.submission-page .submission-art__layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  transition: filter 0.35s var(--ease-out-sine);
+}
+
+.submission-page .submission-art__layer--bg {
+  width: 112%;
+  height: 112%;
+  inset: -6%;
+}
+
+.submission-page .submission-art__layer--char {
+  z-index: 2;
+  filter: drop-shadow(0 0 0.5rem color-mix(in srgb, var(--color-purple) 35%, transparent));
+}
+
+.submission-page .submission-art__layer--c2 {
+  z-index: 4;
+}
+
+.submission-page .submission-art__layer--c2-glow {
+  z-index: 3;
+  transition: opacity 1s var(--ease-out-sine);
+  opacity: 0.3;
+}
+
+.submission-page .submission-stage--level-active .submission-art__layer--c2-glow {
+  opacity: 1;
+}
+
+.submission-page .submission-art__layer-group-c2 {
+  position: absolute;
+  z-index: 4;
+  top: 0;
+  left: 0;
+  width: 100%;
+  transform: translateY(0.1rem);
+  transition: transform 2s var(--ease-out-expo);
+  height: 100%;
+}
+
+.submission-page .submission-stage--level-active .submission-art__layer-group-c2 {
+  transform: translateY(-0.5rem);
+}
+
+.submission-page .submission-art__layer--stars {
+  z-index: 1;
+  animation: submission-art-stars-drift 7s var(--ease-in-out-sine) infinite;
+}
+
+.submission-page .submission-art__layer--tiles {
+  z-index: 0;
+  animation: submission-art-prop-pulse 5.5s var(--ease-in-out-sine) infinite;
+}
+
+.submission-page .submission-art__layer--cam {
+  z-index: 0;
+  animation: submission-art-prop-pulse 4.5s var(--ease-in-out-sine) infinite;
+}
+
+.submission-page .submission-stage--pass-active .submission-art--pass .submission-art__layer--char,
+.submission-page .submission-stage--level-active .submission-art--level .submission-art__layer--char {
+  filter:
+    drop-shadow(0 0 0.9rem color-mix(in srgb, var(--side-color) 75%, transparent))
+    brightness(1.08);
+}
+
+.submission-page .submission-stage--pass-active .submission-art--pass .submission-art__layer--bg,
+.submission-page .submission-stage--level-active .submission-art--level .submission-art__layer--bg {
+  filter: brightness(1.15);
+}
+
+@keyframes submission-art-stars-drift {
+  0%,
+  100% {
+    opacity: 0.84;
+    transform: translate(0, 0);
+    filter: brightness(0.95);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(0.35rem, -0.25rem);
+    filter: brightness(1.12);
+  }
+}
+
+@keyframes submission-art-prop-pulse {
+  0%,
+  100% {
+    opacity: 0.9;
+    transform: translate(0, 0.15rem);
+    filter: brightness(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-0.2rem, -0.2rem);
+    filter: brightness(1.1);
+  }
+}
+
+@keyframes submission-art-c2-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-0.2rem);
+  }
+}
+
+/* --- props --- */
+.submission-page .submission-prop {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
+.submission-page .submission-prop--keyboard {
+  left: 5%;
+  top: 63%;
+  width: min(32rem, 50vw);
+  transform: translate(-50%, 12%) rotate(0deg);
+  opacity: 0;
+  transition:
+    opacity 0.6s var(--ease-out-cubic),
+    transform 2s var(--ease-out-expo);
+}
+
+.submission-page .submission-stage--pass-active .submission-prop--keyboard {
+  opacity: 0.5;
+  transform: translate(calc(-50% + 5rem), 32%) rotate(5deg);
+}
+
+.submission-page .submission-prop--magic {
+  right: 5%;
+  bottom: 10%;
+  width: min(70rem, 60vw);
+  transform: translate(50%, 45%);
+  opacity: 0;
+  transition:
+    opacity 0.6s var(--ease-out-cubic),
+    transform 2s var(--ease-out-expo);
+}
+
+.submission-page .submission-prop--magic .submission-prop__spin {
+  display: block;
+  width: 100%;
+  height: auto;
+  animation: submission-prop-spin 35s linear infinite;
+}
+
+.submission-page .submission-stage--level-active .submission-prop--magic {
+  opacity: 0.3;
+  transform: translate(40%, 35%);
+}
+
+/* Level tiles: 20%×20% corner square; hover fills an even 3×3; each floats alone. */
+.submission-page .submission-prop--tiles {
+  right: 3%;
+  top: 3%;
+  width: min(40%, 25rem);
+  aspect-ratio: 2/1;
+  opacity: 0;
+  transition: opacity 0.55s var(--ease-out-quad);
+}
+
+.submission-page .submission-stage--level-active .submission-prop--tiles {
+  opacity: 0.7;
+}
+
+.submission-page .submission-prop__tile {
+  --tile-left: 90%;
+  --tile-top: 16%;
+  --tile-spread-left: 50%;
+  --tile-spread-top: 50%;
+  --tile-rot: 0deg;
+  --tile-spread-rot: 0deg;
+  --tile-size: 22%;
+  --float-dur: 5.2s;
+  --float-delay: 0s;
+  --float-x: 0.25rem;
+  --float-y: -0.45rem;
+  position: absolute;
+  left: var(--tile-left);
+  top: var(--tile-top);
+  width: var(--tile-size);
+  transform: translate(-50%, -50%) rotate(var(--tile-rot));
+  transition:
+    left 1s var(--ease-out-expo),
+    top 1s var(--ease-out-expo),
+    transform 1s var(--ease-out-expo);
+}
+
+.submission-page .submission-stage--level-active .submission-prop__tile {
+  left: var(--tile-spread-left);
+  top: var(--tile-spread-top);
+  transform: translate(-50%, -50%) rotate(var(--tile-spread-rot));
+}
+
+.submission-page .submission-prop__tile img {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+}
+
+.submission-page .submission-prop__tile-float {
+  animation: submission-tile-float var(--float-dur) ease-in-out infinite;
+  animation-delay: var(--float-delay);
+  will-change: transform;
+}
+
+.submission-page .submission-prop__tile--0 {
+  --tile-left: 88%;
+  --tile-top: 14%;
+  --tile-rot: -184deg;
+  --tile-spread-left: 80%;
+  --tile-spread-top: 16%;
+  --tile-spread-rot: -6deg;
+  --tile-size: 20%;
+  --float-dur: 4.6s;
+  --float-delay: -0.8s;
+  --float-x: 0.35rem;
+  --float-y: -0.55rem;
+}
+
+.submission-page .submission-prop__tile--0b {
+  --tile-left: 44%;
+  --tile-top: 14%;
+  --tile-rot: -6deg;
+  --tile-spread-left: 3%;
+  --tile-spread-top: 15%;
+  --tile-spread-rot: -172deg;
+  --tile-size: 17%;
+  --float-dur: 5.4s;
+  --float-delay: -2.7s;
+  --float-x: -0.25rem;
+  --float-y: -0.5rem;
+}
+
+.submission-page .submission-prop__tile--90 {
+  --tile-left: 72%;
+  --tile-top: 18%;
+  --tile-rot: 180deg;
+  --tile-spread-left: 54%;
+  --tile-spread-top: 20%;
+  --tile-spread-rot: 176deg;
+  --tile-size: 18%;
+  --float-dur: 5.8s;
+  --float-delay: -2.1s;
+  --float-x: -0.3rem;
+  --float-y: -0.4rem;
+}
+
+.submission-page .submission-prop__tile--90b {
+  --tile-left: 75%;
+  --tile-top: 50%;
+  --tile-rot: 7deg;
+  --tile-spread-left: 52.67%;
+  --tile-spread-top: 67%;
+  --tile-spread-rot: -5deg;
+  --tile-size: 19%;
+  --float-dur: 6.1s;
+  --float-delay: -0.4s;
+  --float-x: 0.3rem;
+  --float-y: -0.45rem;
+}
+
+.submission-page .submission-prop__tile--135 {
+  --tile-left: 90%;
+  --tile-top: 40%;
+  --tile-rot: -45deg;
+  --tile-spread-left: 85%;
+  --tile-spread-top: 70%;
+  --tile-spread-rot: -189deg;
+  --tile-size: 22%;
+  --float-dur: 5.1s;
+  --float-delay: -3.4s;
+  --float-x: 0.2rem;
+  --float-y: -0.65rem;
+}
+
+.submission-page .submission-prop__tile--135b {
+  --tile-left: 80%;
+  --tile-top: 60%;
+  --tile-rot: 2deg;
+  --tile-spread-left: 70%;
+  --tile-spread-top: 105%;
+  --tile-spread-rot: -4deg;
+  --tile-size: 21%;
+  --float-dur: 4.9s;
+  --float-delay: -3.9s;
+  --float-x: -0.2rem;
+  --float-y: -0.6rem;
+}
+
+.submission-page .submission-prop__tile--180 {
+  --tile-left: 70%;
+  --tile-top: 20%;
+  --tile-rot: 5deg;
+  --tile-spread-left: 28.67%;
+  --tile-spread-top: 28%;
+  --tile-spread-rot: 5deg;
+  --tile-size: 22%;
+  --float-dur: 6.4s;
+  --float-delay: -1.5s;
+  --float-x: -0.4rem;
+  --float-y: -0.35rem;
+}
+
+.submission-page .submission-prop__tile--180b {
+  --tile-left: 89%;
+  --tile-top: 50%;
+  --tile-rot: 2deg;
+  --tile-spread-left: 45%;
+  --tile-spread-top: 118.33%;
+  --tile-spread-rot: -4deg;
+  --tile-size: 21%;
+  --float-dur: 4.9s;
+  --float-delay: -3.9s;
+  --float-x: -0.2rem;
+  --float-y: -0.6rem;
+}
+
+.submission-page .submission-prop__tile--end {
+  --tile-left: 50%;
+  --tile-top: 56%;
+  --tile-rot: 10deg;
+  --tile-spread-left: 25%;
+  --tile-spread-top: 80%;
+  --tile-spread-rot: -8deg;
+  --tile-size: 28%;
+  --float-dur: 7.2s;
+  --float-delay: -4.2s;
+  --float-x: 0.15rem;
+  --float-y: -0.7rem;
+}
+
+
+
+
+
+
+@keyframes submission-tile-float {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(var(--float-x, 0.25rem), var(--float-y, -0.45rem));
+  }
+}
+
+@keyframes submission-prop-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* --- labels ---
+   Outer .submission-label: fly-out pose via active class + CSS transition.
+   Inner .submission-label__bob / __spin: transforms owned by JS waypoints only. */
+.submission-page .submission-label {
+  --label-side-offset: 16.5%;
+  --label-angle: 7deg;
+  --label-turn-angle: -7deg;
+  --label-translate-y: -2rem;
+  --label-translate-x: 3rem;
+  position: absolute;
+  bottom: 8%;
+  z-index: 1;
+  margin: 0;
+  padding: 0;
+  color: var(--side-color);
+  text-shadow:
+    0 0 0.35rem color-mix(in srgb, var(--side-color) 45%, transparent),
+    0 0 1.1rem color-mix(in srgb, var(--side-color) 25%, transparent),
+    0 0 2.4rem color-mix(in srgb, var(--side-color) 12%, transparent);
+  opacity: 0.7;
+  pointer-events: none;
+  transform: rotate(calc(var(--side-sign) * var(--label-angle)));
+  transition:
+    opacity 0.55s var(--ease-out-quad),
+    transform 0.75s var(--ease-out-cubic),
+    text-shadow 0.55s var(--ease-out-quad);
+}
+
+.submission-page .submission-label--pass {
+  left: var(--label-side-offset);
+}
+
+.submission-page .submission-label--level {
+  right: var(--label-side-offset);
+}
+
+.submission-page .submission-stage--pass-active .submission-label--pass,
+.submission-page .submission-stage--level-active .submission-label--level {
+  opacity: 1;
+  text-shadow:
+    0 0 0.4rem color-mix(in srgb, var(--side-color) 70%, transparent),
+    0 0 1.4rem color-mix(in srgb, var(--side-color) 40%, transparent),
+    0 0 3rem color-mix(in srgb, var(--side-color) 25%, transparent);
+  transform:
+    rotate(calc(var(--side-sign) * (var(--label-angle) + var(--label-turn-angle))))
+    translateY(var(--label-translate-y))
+    translateX(calc(var(--side-sign) * var(--label-translate-x)));
+}
+
+.submission-page .submission-label__motion {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 0.85;
+  font-size: clamp(1.75rem, 7vw, 4.5rem);
+  font-weight: 1000;
+}
+
+.submission-page :is(.submission-label__line, .submission-label__bob, .submission-label__spin) {
+  display: block;
+}
+
+.submission-page .submission-label__spin {
+  transform-origin: center;
+}
+
+/* --- zones --- */
+.submission-page .submission-zones {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   z-index: 2;
 }
-.submission-page .submission-container {
-  padding: 0 7%;
-  display: flex;
-  position: relative;
-  flex-wrap: wrap;
-  gap: 2rem;
+
+.submission-page .submission-zone {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
 }
+
+.submission-page :is(.submission-zone--pass, .submission-zone--level) {
+  cursor: pointer;
+}
+
+.submission-page .submission-zone--dead {
+  cursor: default;
+}
+
+/* Minimal motion (Settings → Preferences → Motion): keep art/side glow only. */
+.submission-page--minimal-motion .submission-binary,
+.submission-page--minimal-motion .submission-prop--keyboard,
+.submission-page--minimal-motion .submission-prop--magic,
+.submission-page--minimal-motion .submission-prop--tiles {
+  display: none;
+}
+
+.submission-page--minimal-motion :is(
+  .submission-art__layer--stars,
+  .submission-art__layer--tiles,
+  .submission-art__layer--cam,
+  .submission-prop__spin,
+  .submission-prop__tile-float,
+  .submission-binary__particle
+) {
+  animation: none !important;
+}
+
+.submission-page--minimal-motion .submission-art__layer-group-c2 {
+  transition: none;
+  transform: none;
+}
+
+.submission-page--minimal-motion .submission-stage--level-active .submission-art__layer-group-c2 {
+  transform: none;
+}
+
+.submission-page--minimal-motion .submission-label {
+  transition: none;
+  transform: rotate(calc(var(--side-sign) * var(--label-angle)));
+}
+
+.submission-page--minimal-motion .submission-stage--pass-active .submission-label--pass,
+.submission-page--minimal-motion .submission-stage--level-active .submission-label--level {
+  transform: rotate(calc(var(--side-sign) * var(--label-angle)));
+  opacity: 1;
+}
+
+
+/* =============================================================================
+   SUPPLEMENTARY — access banners / verify-email
+   ============================================================================= */
 
 .submission-page .banner-container {
   z-index: 10;
   width: 100vw;
-  height:100%;
-  padding: 0 4%;
+  height: 100%;
   display: flex;
   position: fixed;
-  border-radius: 10px;
+  top: 0;
+  left: 0;
   padding: 1rem;
-  top:0;
 }
 
 .submission-page .banner-container .banner {
@@ -48,7 +706,7 @@
 }
 
 .submission-page .banner-container .banner .verify-email {
-  color: rgb(255, 255, 255);
+  color: var(--color-white);
   display: flex;
   font-size: 1.4rem;
   font-weight: 500;
@@ -58,13 +716,12 @@
 }
 
 .submission-page .banner-container .banner .verify-email .button {
-  color: rgb(255, 255, 255);
+  color: var(--color-white);
   text-shadow: 0 0 7px rgba(0, 0, 0, 0.5);
   border-radius: 10px;
   cursor: pointer;
   padding: 0.5rem 1rem;
   font-weight: 600;
-  margin-top: 1rem;
   font-size: 1.2rem;
   transition: filter 0.2s ease-out;
 }
@@ -75,120 +732,7 @@
   font-size: 0.9rem;
 }
 
-.submission-page .wrapper-body button {
-  font-size: 1.3rem;
-  position: absolute;
-  bottom: -12%;
-  left: 50%;
-  transform: translate(-50%, 50%);
-  padding: 0.7rem 2rem;
-  box-shadow: 2px 4px 3px 2px rgba(16, 0, 34, 0.2);
-}
-.submission-page .wrapper-top {
-  padding: 2rem 0;
-  position: relative;
-  margin-bottom: 15%;
-  width: 100%;
-  flex-wrap: wrap;
-}
-.submission-page .submission-svg {
-  display: block;
-  max-width: 15rem;
-  height: 15rem;
-  margin: 1rem auto;
-  width: 100%;
-}
-.submission-page h2 {
-  margin: 2rem auto 1rem auto;
-  height: auto;
-  max-width: 25rem;
-  font-size: 2rem;
-  text-align: center;
-}
-.submission-page .submit-button {
-  margin: 1rem auto;
-  max-width: 30rem;
-  padding: 0.75rem 2rem;
-  border-radius: 8px;
-  color: var(--color-white);
-  font-size: 1rem;
-  cursor: pointer;
-  font-weight: bold;
-  transition: filter 0.2s ease;
-  display: block;
-  width: fit-content;
-}
-.submission-page .link {
-  margin: 1rem 0;
-  font-size: 0.8rem;
-  display: block;
-  font-weight: bold;
-}
-.submission-page .middle-img {
-  position: absolute;
-  width: 9rem;
-  height: 9rem;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 3;
-}
-.submission-page .submission-level {
-  flex: 1;
-  text-align: center;
-  color: var(--color-white);
-  width: 100%;
-  min-width: 300px;
-}
-.submission-page .submission-passes {
-  flex: 1;
-  text-align: center;
-  color: var(--color-white);
-  width: 100%;
-  min-width: 300px;
-}
-
 @media (max-width: 768px) {
-  .submission-page .submission-container {
-    padding: 0 4%;
-    gap: 1.5rem;
-    margin-top: 1rem;
-  }
-
-  .submission-page .wrapper-body {
-    padding: 2rem 0;
-  }
-
-  .submission-page .wrapper-top {
-    padding: 1.5rem 0;
-  }
-
-  .submission-page h2 {
-    font-size: 1.75rem;
-    margin: 1.5rem auto 1rem auto;
-    max-width: 20rem;
-  }
-
-  .submission-page .submission-svg {
-    max-width: 12rem;
-    height: auto;
-  }
-
-  .submission-page .submit-button {
-    padding: 0.6rem 1.5rem;
-    font-size: 0.95rem;
-    max-width: 25rem;
-  }
-
-  .submission-page .submission-level,
-  .submission-page .submission-passes {
-    min-width: 250px;
-  }
-
-  .submission-page .banner-container {
-    padding: 0 2%;
-  }
-
   .submission-page .banner-container .banner {
     font-size: 1.4rem;
     padding: 1.5rem;
@@ -207,40 +751,6 @@
 }
 
 @media (max-width: 480px) {
-  .submission-page .submission-container {
-    padding: 0 2%;
-    gap: 1rem;
-  }
-
-  .submission-page .wrapper-body {
-    padding: 1.5rem 0;
-  }
-
-  .submission-page .wrapper-top {
-    padding: 1rem 0;
-  }
-
-  .submission-page h2 {
-    font-size: 1.5rem;
-    margin: 1rem auto 0.75rem auto;
-    max-width: 18rem;
-  }
-
-  .submission-page .submission-svg {
-    max-width: 10rem;
-  }
-
-  .submission-page .submit-button {
-    padding: 0.5rem 1.25rem;
-    font-size: 0.9rem;
-    max-width: 20rem;
-  }
-
-  .submission-page .submission-level,
-  .submission-page .submission-passes {
-    min-width: 200px;
-  }
-
   .submission-page .banner-container .banner {
     font-size: 1.2rem;
     padding: 1rem;
@@ -257,59 +767,5 @@
 
   .submission-page .banner-container .banner .contact {
     font-size: 0.8rem;
-  }
-}
-
-@media (max-width: 360px) {
-  .submission-page .submission-container {
-    padding: 0 1%;
-    gap: 0.75rem;
-  }
-
-  .submission-page .wrapper-body {
-    padding: 1rem 0;
-  }
-
-  .submission-page .wrapper-top {
-    padding: 0.75rem 0;
-  }
-
-  .submission-page h2 {
-    font-size: 1.25rem;
-    margin: 0.75rem auto 0.5rem auto;
-    max-width: 16rem;
-  }
-
-  .submission-page .submission-svg {
-    max-width: 8rem;
-  }
-
-  .submission-page .submit-button {
-    padding: 0.4rem 1rem;
-    font-size: 0.85rem;
-    max-width: 18rem;
-  }
-
-  .submission-page .submission-level,
-  .submission-page .submission-passes {
-    min-width: 180px;
-  }
-
-  .submission-page .banner-container .banner {
-    font-size: 1rem;
-    padding: 0.75rem;
-  }
-
-  .submission-page .banner-container .banner .verify-email {
-    font-size: 0.9rem;
-  }
-
-  .submission-page .banner-container .banner .verify-email .button {
-    font-size: 0.8rem;
-    padding: 0.3rem 0.6rem;
-  }
-
-  .submission-page .banner-container .banner .contact {
-    font-size: 0.75rem;
   }
 }

@@ -109,6 +109,56 @@ const isAbortErrorEvent = (event) => {
   });
 };
 
+/** Events created by captureConsoleIntegration (not real thrown errors). */
+const isConsoleCaptureEvent = (event) => {
+  if (event.logger === 'console') return true;
+  const values = event.exception?.values ?? [];
+  return values.some((value) => value.mechanism?.type === 'auto.core.capture_console');
+};
+
+const consoleCaptureEventText = (event) => {
+  const parts = [];
+  if (event.message) parts.push(String(event.message));
+  for (const value of event.exception?.values ?? []) {
+    if (value.value) parts.push(String(value.value));
+    if (value.type) parts.push(String(value.type));
+  }
+  const args = event.extra?.arguments;
+  if (Array.isArray(args)) {
+    for (const arg of args) {
+      if (typeof arg === 'string') parts.push(arg);
+    }
+  }
+  return parts.join(' ');
+};
+
+/**
+ * Only forward console.error / console.warn that match these patterns.
+ * Everything else from captureConsoleIntegration is dropped in beforeSend.
+ */
+const CONSOLE_CAPTURE_ALLOWLIST = [
+  // react-virtuoso (console.error / warn — never thrown, so otherwise invisible)
+  /Zero-sized element/i,
+  /react-virtuoso/i,
+  /was not resolved to pixel value/i,
+  // React runtime warnings that often precede real UI bugs
+  /Maximum update depth exceeded/i,
+  /Cannot update a component .* while rendering a different component/i,
+  /Each child in a list should have a unique ["']key["'] prop/i,
+  /A component suspended while responding to synchronous input/i,
+  /Minified React error #\d+/i,
+  // Lazy route / chunk load failures sometimes only surface on console
+  /Failed to fetch dynamically imported module/i,
+  /Loading chunk [\w.-]+ failed/i,
+  /ChunkLoadError/i,
+];
+
+const isAllowedConsoleCapture = (event) => {
+  const text = consoleCaptureEventText(event);
+  if (!text) return false;
+  return CONSOLE_CAPTURE_ALLOWLIST.some((pattern) => pattern.test(text));
+};
+
 /**
  * Drop AbortErrors from loopback probes outside Vite/API ports — e.g. TUFHelperLite
  * `@adofai-ipc/client` scanning :32145–32155 (see JAVASCRIPT-REACT-1P).
@@ -179,6 +229,11 @@ Sentry.init({
       // frame counts as first-party and exclusive-third-party drop never fires.
       ignoreSentryInternalFrames: true,
     }),
+    // Virtuoso / React often only console.error useful diagnostics (no throw).
+    // beforeSend drops anything that does not match CONSOLE_CAPTURE_ALLOWLIST.
+    Sentry.captureConsoleIntegration({
+      levels: ['error', 'warn'],
+    }),
     Sentry.reactRouterBrowserTracingIntegration({
       useEffect,
       useLocation,
@@ -230,6 +285,10 @@ Sentry.init({
       isExternalDomMutationNoise(event) ||
       isAnonymousInjectedGlobalNoise(event)
     ) {
+      return null;
+    }
+    // captureConsoleIntegration is noisy; only keep allowlisted diagnostics.
+    if (isConsoleCaptureEvent(event) && !isAllowedConsoleCapture(event)) {
       return null;
     }
     return event;

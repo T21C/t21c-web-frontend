@@ -33,7 +33,9 @@
       }
     },
     "submitter": "Submitter:",
-    "uploadTime": "Upload Time"
+    "uploadTime": "Upload Time",
+    "videoLink": "Video link:",
+    "videoLinkPlaceholder": "YouTube or Bilibili URL"
   },
   "playerAssignment": {
     "title": "Assign Player",
@@ -61,13 +63,16 @@
     "profileUpdate": "Failed to update submission with profile",
     "needProfileCreation": "Profile needs to be created before approval",
     "patch": "Failed to update submission",
-    "invalidKeyCount": "Key count must be a positive integer"
+    "invalidKeyCount": "Key count must be a positive integer",
+    "videoLinkUpdateFailed": "Failed to update video link",
+    "videoLinkRequired": "Video link cannot be empty"
   },
   "success": {
     "playerAssigned": "Successfully assigned to {{playerName}}",
     "autoAllow": "Auto-allowed {{count}} submissions",
     "playerCreated": "Successfully created and assigned {{playerName}}",
-    "patch": "Submission updated"
+    "patch": "Submission updated",
+    "videoLinkUpdated": "Video link updated"
   },
   "edit": {
     "edit": "Edit",

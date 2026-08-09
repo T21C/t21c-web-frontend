@@ -586,21 +586,29 @@
   }
 
   .submission-admin-page .suffix-edit-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-white-t10);
+    border: 1px solid var(--color-white-t20);
     border-radius: 4px;
-    padding: 4px 8px;
+    padding: 4px;
     cursor: pointer;
-    font-size: 0.9rem;
+    line-height: 0;
     color: var(--color-white);
-    transition: all 0.2s ease;
+    transition: background 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
     opacity: 0.7;
+  }
+
+  .submission-admin-page .suffix-edit-btn svg {
+    display: block;
+    flex-shrink: 0;
   }
 
   .submission-admin-page .suffix-edit-btn:hover {
     opacity: 1;
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.3);
+    background: var(--color-white-t20);
+    border-color: var(--color-white-t30);
   }
 
   .submission-admin-page .suffix-edit-controls {
@@ -730,6 +738,26 @@
     width: 100%;
   }
 
+  .submission-admin-page .embed-column {
+    grid-column: 6 / span 6;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 0;
+    align-self: stretch;
+  }
+
+  .submission-admin-page .embed-column .embed-container {
+    grid-column: unset;
+    position: relative;
+    height: 300px;
+    overflow: hidden;
+    max-width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .submission-admin-page .embed-container {
     position: relative; /* 16:9 aspect ratio */
     height: 0;
@@ -750,6 +778,147 @@
     height: 100%;
     border: none;
     margin-bottom: 15px;
+  }
+
+  .submission-admin-page .submission-video-link-field {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .submission-admin-page .submission-video-link-field__label {
+    font-size: 0.85rem;
+    color: var(--color-white-t70);
+  }
+
+  .submission-admin-page .submission-video-link-field__display,
+  .submission-admin-page .submission-video-link-field__edit {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .submission-admin-page .submission-video-link-field__link-wrap {
+
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    color: var(--color-white);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .submission-admin-page .submission-video-link-field__link-wrap:hover {
+    color: var(--color-white);
+    opacity: 0.85;
+  }
+
+  .submission-admin-page .submission-video-link-field__link {
+    width: 100%;
+    max-width: 100%;
+    color: inherit;
+    text-decoration: inherit;
+  }
+
+  .submission-admin-page .submission-video-link-field__link-wrap:hover .marquee-text--overflows .marquee-text__inner {
+    animation-name: var(--marquee-animation-name);
+    animation-duration: var(--marquee-cycle-duration, 6s);
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+
+  .submission-admin-page .submission-video-link-field__empty {
+    flex: 1;
+    min-width: 0;
+    opacity: 0.5;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .submission-admin-page .submission-video-link-field__input {
+    flex: 1;
+    min-width: 0;
+    background: var(--color-black-t40);
+    border: 1px solid var(--color-white-t20);
+    border-radius: 4px;
+    color: var(--color-white);
+    padding: 0.4rem 0.6rem;
+    font-size: 0.9rem;
+  }
+
+  .submission-admin-page .submission-video-link-field__input:focus {
+    outline: none;
+    border-color: var(--color-white-t40);
+  }
+
+  .submission-admin-page .submission-video-link-field__actions {
+    display: flex;
+    gap: 0.35rem;
+    flex-shrink: 0;
+  }
+
+  .submission-admin-page .submission-video-link-field__edit-btn,
+  .submission-admin-page .submission-video-link-field__save,
+  .submission-admin-page .submission-video-link-field__cancel {
+    flex-shrink: 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 0.35rem 0.5rem;
+    font-size: 0.85rem;
+    background: var(--color-white-t20);
+    color: var(--color-white);
+  }
+
+  .submission-admin-page .submission-video-link-field__edit-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35rem;
+    line-height: 0;
+  }
+
+  .submission-admin-page .submission-video-link-field__edit-btn svg {
+    display: block;
+    flex-shrink: 0;
+  }
+
+  .submission-admin-page .submission-video-link-field__edit-btn:hover,
+  .submission-admin-page .submission-video-link-field__save:hover,
+  .submission-admin-page .submission-video-link-field__cancel:hover {
+    background: var(--color-white-t30);
+  }
+
+  .submission-admin-page .submission-video-link-field__save {
+    background: var(--btn-success);
+  }
+
+  .submission-admin-page .submission-video-link-field__save:hover {
+    opacity: 0.9;
+    background: var(--btn-success);
+  }
+
+  .submission-admin-page .submission-video-link-field__cancel {
+    background: var(--danger-color);
+  }
+
+  .submission-admin-page .submission-video-link-field__cancel:hover {
+    opacity: 0.9;
+    background: var(--danger-color);
+  }
+
+  .submission-admin-page .submission-video-link-field__save:disabled,
+  .submission-admin-page .submission-video-link-field__cancel:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 
   .submission-admin-page .youtube {
@@ -1240,6 +1409,15 @@
   }
 
 
+
+  .submission-admin-page .pass-submission-card .embed-column {
+    grid-column: 7 / span 5;
+  }
+
+  .submission-admin-page .pass-submission-card .embed-column .embed-container {
+    height: 70%;
+    min-height: 220px;
+  }
 
   .submission-admin-page .pass-submission-card .embed-container {
     grid-column: 7 / span 5; /* Takes up last 5 columns */
@@ -1832,13 +2010,6 @@
     background-color: var(--btn-admin-purple-hover); /* Medium slate blue */
   }
 
-  .submission-admin-page .creator-group {
-    margin-bottom: 20px;
-    padding: 15px;
-    background-color: #E6E6FA22; /* Light purple background */
-    border-radius: 8px;
-  }
-
   .submission-admin-page .creator-group-header {
     display: flex;
     justify-content: space-between;
@@ -1846,9 +2017,8 @@
     color: #FFFFFF;
     font-size: 1.1em;
     font-weight: 600;
-    margin-bottom: 12px;
     text-transform: capitalize;
-    padding-right: 10px;
+    padding: 0 10px;
   }
 
   .submission-admin-page .creator-actions {
@@ -1897,7 +2067,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 12px;
+    padding: 6px 8px;
     background-color: #E6E6FA22;
     border-radius: 4px;
     margin-bottom: 8px;
@@ -1911,7 +2081,6 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin-left: 15px;
   }
 
   .submission-admin-page .creator-name {
@@ -2020,15 +2189,15 @@
 
   .submission-admin-page .creator-group {
     position: relative;
-    margin-bottom: 20px;
-    padding: 15px;
+    margin-top: 0.25rem;
+    padding: 0.75rem;
     background-color: rgba(230, 230, 250, 0.133);
     border-radius: 8px;
     border: 1px solid var(--color-white-t20);
   }
 
   .submission-admin-page .creator-list {
-    margin-bottom: 10px;
+    margin-top: 10px;
   }
 
   .submission-admin-page .creator-actions {
@@ -2049,6 +2218,23 @@
     font-weight: 500;
     transition: all 0.2s ease;
     white-space: nowrap;
+  }
+
+  .submission-admin-page .manage-creator-button,
+  .submission-admin-page .remove-creator-button,
+  .submission-admin-page .add-creator-button--icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    line-height: 0;
+  }
+
+  .submission-admin-page .manage-creator-button svg,
+  .submission-admin-page .remove-creator-button svg,
+  .submission-admin-page .add-creator-button--icon svg {
+    display: block;
+    flex-shrink: 0;
   }
 
   .submission-admin-page .manage-creator-button {
@@ -2072,7 +2258,7 @@
   .submission-admin-page .add-creator-button {
     background-color: var(--btn-success);
     color: white;
-    min-width: 120px;
+    min-width: 2rem;
   }
 
   .submission-admin-page .add-creator-button:hover {
@@ -2083,7 +2269,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 15px;
+    padding: 8px 12px;
     background-color: rgba(230, 230, 250, 0.133);
     border-radius: 4px;
     margin-bottom: 8px;
@@ -2110,11 +2296,14 @@
   }
 
   .submission-admin-page .creator-group-header {
-    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
     font-size: 1.1em;
     font-weight: 600;
     color: var(--color-white);
     text-transform: capitalize;
-    padding-bottom: 8px;
+    padding-bottom: 4px;
     border-bottom: 1px solid var(--color-white-t20);
   }

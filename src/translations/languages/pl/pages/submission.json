@@ -11,5 +11,10 @@
   "button": {
     "buttonPass": "Prześlij przejście",
     "buttonLevel": "Prześlij poziom"
+  },
+  "label": {
+    "submit": "Prześlij",
+    "pass": "Przejście",
+    "level": "Poziom"
   }
 } 

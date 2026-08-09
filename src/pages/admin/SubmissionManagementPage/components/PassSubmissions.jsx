@@ -22,6 +22,7 @@ import {
   getSubmissionCardClassName,
   hasVisibleSubmissions,
 } from './submissionDismiss';
+import SubmissionVideoLinkField from './SubmissionVideoLinkField';
 
 
 const PassSubmissions = ({ setIsAutoAllowing }) => {
@@ -355,10 +356,22 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
                     betweenSpeedAndJudgements={
                       <div className="detail-row">
                         <span className="detail-label">{t('passSubmissions.details.submitter')}</span>
-                        <div className="submitter-details">
-                          <span className="detail-value">{submission.submitterDiscordUsername? `@${submission.submitterDiscordUsername}` : submission.passSubmitter?.username || "Null"}</span>
-                          <span className="detail-subvalue">#{submission.passSubmitter?.playerId || "Null"}</span>
-                        </div>
+                        {submission.passSubmitter?.playerId != null ? (
+                          <Link
+                            to={`/profile/${submission.passSubmitter.playerId}`}
+                            className="submitter-details submitter-link"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <span className="detail-value">{submission.submitterDiscordUsername ? `@${submission.submitterDiscordUsername}` : submission.passSubmitter?.username || "Null"}</span>
+                            <span className="detail-subvalue">#{submission.passSubmitter.playerId}</span>
+                          </Link>
+                        ) : (
+                          <div className="submitter-details">
+                            <span className="detail-value">{submission.submitterDiscordUsername ? `@${submission.submitterDiscordUsername}` : submission.passSubmitter?.username || "Null"}</span>
+                            <span className="detail-subvalue">#{submission.passSubmitter?.playerId || "Null"}</span>
+                          </div>
+                        )}
                       </div>
                     }
                   />
@@ -437,24 +450,58 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
                   </div>
                 </div>
 
-                <div className="embed-container">
-                  {videoEmbeds[submission.id] ? (
-                    <iframe
-                      src={videoEmbeds[submission.id].embed}
-                      title="Video player"
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      referrerPolicy="strict-origin-when-cross-origin"
-                      allowFullScreen
-                    ></iframe>
-                  ) : (
-                    <div
-                      className="thumbnail-container"
-                      style={{
-                        backgroundImage: `url(${videoEmbeds[submission.id]?.image || placeholder})`,
-                      }}
-                    />
-                  )}
+                <div className="embed-column">
+                  <div className="embed-container">
+                    {videoEmbeds[submission.id]?.embed ? (
+                      <iframe
+                        src={videoEmbeds[submission.id].embed}
+                        title="Video player"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerPolicy="strict-origin-when-cross-origin"
+                        allowFullScreen
+                      ></iframe>
+                    ) : (
+                      <div
+                        className="thumbnail-container"
+                        style={{
+                          backgroundImage: `url(${videoEmbeds[submission.id]?.image || placeholder})`,
+                        }}
+                      />
+                    )}
+                  </div>
+                  <SubmissionVideoLinkField
+                    videoLink={submission.videoLink}
+                    labelKey="passSubmissions.details.videoLink"
+                    placeholderKey="passSubmissions.details.videoLinkPlaceholder"
+                    successKey="passSubmissions.success.videoLinkUpdated"
+                    errorKey="passSubmissions.errors.videoLinkUpdateFailed"
+                    emptyErrorKey="passSubmissions.errors.videoLinkRequired"
+                    onSave={async (nextLink) => {
+                      const response = await api.put(
+                        routes.admin.submissions.pass(submission.id),
+                        { videoLink: nextLink },
+                        { headers: { 'Content-Type': 'application/json' } },
+                      );
+                      const updated = response.data?.submission;
+                      if (updated) {
+                        setSubmissions((prev) =>
+                          prev.map((s) => (s.id === updated.id ? updated : s)),
+                        );
+                      } else {
+                        setSubmissions((prev) =>
+                          prev.map((s) =>
+                            s.id === submission.id ? { ...s, videoLink: nextLink } : s,
+                          ),
+                        );
+                      }
+                      setVideoEmbeds((prev) => {
+                        const next = { ...prev };
+                        delete next[submission.id];
+                        return next;
+                      });
+                    }}
+                  />
                 </div>
               </div>
             </div>

@@ -29,6 +29,7 @@ function stateFromCuration(curation) {
     customCSS: curation?.customCSS || '',
     customColor: curation?.customColor || '#ffffff',
     previewLink: curation?.previewLink || null,
+    isDuplicate: curation?.isDuplicate || false,
     typeIds: types.map((t) => t.id),
   };
 }
@@ -41,6 +42,7 @@ function emptyFormState() {
     customCSS: '',
     customColor: '#ffffff',
     previewLink: null,
+    isDuplicate: false,
     typeIds: [],
   };
 }
@@ -221,6 +223,7 @@ const CurationEditPopup = ({
       // Omit visual fields the user cannot edit so the API does not treat them as an attempted update (avoids 403 on empty defaults).
       const body = {
         typeIds: form.typeIds,
+        isDuplicate: form.isDuplicate,
       };
       if (canEditDescription) {
         body.shortDescription = form.shortDescription;
@@ -308,6 +311,22 @@ const CurationEditPopup = ({
                   labels={curationPickLabels}
                   resetSearchSignal={isOpen}
                 />
+              </div>
+
+              <div className="curation-edit-modal__form-group curation-edit-modal__duplicate-flag">
+                <label className="curation-edit-modal__checkbox-label" htmlFor="curation-is-duplicate">
+                  <input
+                    id="curation-is-duplicate"
+                    type="checkbox"
+                    checked={form.isDuplicate}
+                    onChange={(e) => setForm((p) => ({ ...p, isDuplicate: e.target.checked }))}
+                    disabled={!canManageThisCuration}
+                  />
+                  <span>{t('curationEditPopup.form.isDuplicate')}</span>
+                </label>
+                <p className="curation-edit-modal__field-help">
+                  {t('curationEditPopup.form.isDuplicateHelp')}
+                </p>
               </div>
 
               <div className="curation-edit-modal__form-group">

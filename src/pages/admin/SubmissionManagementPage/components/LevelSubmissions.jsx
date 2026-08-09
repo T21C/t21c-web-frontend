@@ -17,7 +17,7 @@ import { EntityActionPopup } from '@/components/popups/Entities';
 import { GalleryInspectPopup } from '@/components/popups/Evidence';
 import { CreatorAssignmentPopup } from '@/components/popups/Creators';
 import { toast } from "react-hot-toast";
-import { ServerCloudIcon, WarningIcon } from "@/components/common/icons";
+import { ServerCloudIcon, WarningIcon, EditIcon, TrashIcon, PlusIcon } from "@/components/common/icons";
 import { Tooltip } from "react-tooltip";
 import { formatDate } from "@/utils/Utility";
 import i18next from "i18next";
@@ -28,6 +28,7 @@ import {
   getSubmissionCardClassName,
   hasVisibleSubmissions,
 } from './submissionDismiss';
+import SubmissionVideoLinkField from './SubmissionVideoLinkField';
 
 
 const LevelSubmissions = () => {
@@ -957,17 +958,23 @@ const LevelSubmissions = () => {
                                 {/* Show remove button if there's more than one artist */}
                                 {submission.artistRequests.length > 1 && (
                                   <button
+                                    type="button"
                                     className="remove-creator-button"
                                     onClick={() => handleRemoveArtistRequest(submission.id, artistRequest.id)}
+                                    title={t('levelSubmissions.buttons.remove')}
+                                    aria-label={t('levelSubmissions.buttons.remove')}
                                   >
-                                    {t('levelSubmissions.buttons.remove')}
+                                    <TrashIcon color="#fff" size="18px" />
                                   </button>
                                 )}
                                 <button
+                                  type="button"
                                   className="manage-creator-button"
                                   onClick={() => handleArtistAction(submission, artistRequest)}
+                                  title={t('levelSubmissions.buttons.manageArtist')}
+                                  aria-label={t('levelSubmissions.buttons.manageArtist')}
                                 >
-                                  {t('levelSubmissions.buttons.manageArtist')}
+                                  <EditIcon color="#fff" size="18px" />
                                 </button>
                               </div>
                             </div>
@@ -1093,6 +1100,7 @@ const LevelSubmissions = () => {
                             {submission.suffix || <span style={{opacity: 0.5}}>{t('levelSubmissions.details.suffixPlaceholder')}</span>}
                           </span>
                           <button
+                            type="button"
                             className="suffix-edit-btn"
                             onClick={() => {
                               setEditingSuffix(prev => ({ ...prev, [submission.id]: true }));
@@ -1102,8 +1110,9 @@ const LevelSubmissions = () => {
                               }));
                             }}
                             title={t('buttons.edit', { ns: 'common' })}
+                            aria-label={t('buttons.edit', { ns: 'common' })}
                           >
-                            ✏️
+                            <EditIcon color="#fff" size="16px" />
                           </button>
                         </div>
                       )}
@@ -1226,7 +1235,18 @@ const LevelSubmissions = () => {
                     return Object.entries(creatorsByRole || {}).map(([role, creators]) => (
                       <div key={role} className="creator-group">
                         <div className="creator-group-header">
-                          {t(`levelSubmissions.details.${role}`)}
+                          <span>{t(`levelSubmissions.details.${role}`)}</span>
+                          {role !== 'team' && (
+                            <button
+                              type="button"
+                              className="add-creator-button add-creator-button--icon"
+                              onClick={() => handleAddCreator(submission.id, role)}
+                              title={t(`levelSubmissions.buttons.add${role === 'vfxer' ? 'Vfxer' : 'Charter'}`)}
+                              aria-label={t(`levelSubmissions.buttons.add${role === 'vfxer' ? 'Vfxer' : 'Charter'}`)}
+                            >
+                              <PlusIcon color="#fff" size="18px" />
+                            </button>
+                          )}
                         </div>
                         <div className="creator-list">
                           {creators.map((request, index) => (
@@ -1250,33 +1270,28 @@ const LevelSubmissions = () => {
                                   (request.role === 'charter' && 
                                     creators.filter(r => r.role === 'charter').length > 1)) && (
                                   <button
+                                    type="button"
                                     className="remove-creator-button"
                                     onClick={() => handleRemoveCreator(submission.id, request.id)}
+                                    title={t('levelSubmissions.buttons.remove')}
+                                    aria-label={t('levelSubmissions.buttons.remove')}
                                   >
-                                    {t('levelSubmissions.buttons.remove')}
+                                    <TrashIcon color="#fff" size="18px" />
                                   </button>
                                 )}
                                 <button
+                                  type="button"
                                   className="manage-creator-button"
                                   onClick={() => handleCreatorAction(submission, request, request.role)}
+                                  title={t('levelSubmissions.buttons.manageCreator')}
+                                  aria-label={t('levelSubmissions.buttons.manageCreator')}
                                 >
-                                  {t('levelSubmissions.buttons.manageCreator')}
+                                  <EditIcon color="#fff" size="18px" />
                                 </button>
                               </div>
                             </div>
                           ))}
                         </div>
-                        {/* Only show add button for charter and vfxer roles */}
-                        {role !== 'team' && (
-                          <div className="add-creator-button-container">
-                            <button
-                              className="add-creator-button"
-                              onClick={() => handleAddCreator(submission.id, role)}
-                            >
-                              {t(`levelSubmissions.buttons.add${role === 'vfxer' ? 'Vfxer' : 'Charter'}`)}
-                            </button>
-                          </div>
-                        )}
                       </div>
                     ));
                   })()}
@@ -1284,7 +1299,18 @@ const LevelSubmissions = () => {
                   {/* Team Request */}
                   <div className="creator-group">
                     <div className="creator-group-header">
-                      {t('levelSubmissions.details.team')}
+                      <span>{t('levelSubmissions.details.team')}</span>
+                      {!submission.teamRequestData && (
+                        <button
+                          type="button"
+                          className="add-creator-button add-creator-button--icon"
+                          onClick={() => handleAddCreator(submission.id, 'team')}
+                          title={t('levelSubmissions.buttons.addTeam')}
+                          aria-label={t('levelSubmissions.buttons.addTeam')}
+                        >
+                          <PlusIcon color="#fff" size="18px" />
+                        </button>
+                      )}
                     </div>
                     <div className="creator-list">
                       {submission.teamRequestData ? (
@@ -1304,29 +1330,26 @@ const LevelSubmissions = () => {
                           </span>
                           <div className="creator-actions">
                             <button
+                              type="button"
                               className="remove-creator-button"
                               onClick={() => handleRemoveCreator(submission.id, submission.teamRequestData.id)}
+                              title={t('levelSubmissions.buttons.remove')}
+                              aria-label={t('levelSubmissions.buttons.remove')}
                             >
-                              {t('levelSubmissions.buttons.remove')}
+                              <TrashIcon color="#fff" size="18px" />
                             </button>
                             <button
+                              type="button"
                               className="manage-creator-button"
                               onClick={() => handleCreatorAction(submission, submission.teamRequestData, 'team')}
+                              title={t('levelSubmissions.buttons.manageTeam')}
+                              aria-label={t('levelSubmissions.buttons.manageTeam')}
                             >
-                              {t('levelSubmissions.buttons.manageTeam')}
+                              <EditIcon color="#fff" size="18px" />
                             </button>
                           </div>
                         </div>
-                      ) : (
-                        <div className="add-creator-button-container">
-                          <button
-                            className="add-creator-button"
-                            onClick={() => handleAddCreator(submission.id, 'team')}
-                          >
-                            {t('levelSubmissions.buttons.addTeam')}
-                          </button>
-                        </div>
-                      )}
+                      ) : null}
                     </div>
                   </div>
 
@@ -1359,24 +1382,44 @@ const LevelSubmissions = () => {
                   </div>
                 </div>
 
-                <div className="embed-container">
-                  {videoEmbeds[submission.id] ? (
-                    <iframe
-                      src={videoEmbeds[submission.id].embed}
-                      title="Video player"
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      referrerPolicy="strict-origin-when-cross-origin"
-                      allowFullScreen
-                    ></iframe>
-                  ) : (
-                    <div
-                      className="thumbnail-container"
-                      style={{
-                        backgroundImage: `url(${videoEmbeds[submission.id]?.image || placeholder})`,
-                      }}
-                    />
-                  )}
+                <div className="embed-column">
+                  <div className="embed-container">
+                    {videoEmbeds[submission.id]?.embed ? (
+                      <iframe
+                        src={videoEmbeds[submission.id].embed}
+                        title="Video player"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerPolicy="strict-origin-when-cross-origin"
+                        allowFullScreen
+                      ></iframe>
+                    ) : (
+                      <div
+                        className="thumbnail-container"
+                        style={{
+                          backgroundImage: `url(${videoEmbeds[submission.id]?.image || placeholder})`,
+                        }}
+                      />
+                    )}
+                  </div>
+                  <SubmissionVideoLinkField
+                    videoLink={submission.videoLink}
+                    onSave={async (nextLink) => {
+                      const response = await api.put(
+                        routes.admin.submissions.levelVideoLink(submission.id),
+                        { videoLink: nextLink },
+                      );
+                      const saved = response.data?.videoLink ?? nextLink;
+                      setSubmissions((prev) =>
+                        prev.map((s) => (s.id === submission.id ? { ...s, videoLink: saved } : s)),
+                      );
+                      setVideoEmbeds((prev) => {
+                        const next = { ...prev };
+                        delete next[submission.id];
+                        return next;
+                      });
+                    }}
+                  />
                 </div>
               </div>
             </div>

@@ -11,7 +11,8 @@ const STORAGE_KEYS = {
   LOW_FILTER_DIFF: 'pass_low_filter_diff',
   HIGH_FILTER_DIFF: 'pass_high_filter_diff',
   SLIDER_RANGE: 'pass_slider_range',
-  KEY_FLAG: 'pass_key_flag'
+  KEY_FLAG: 'pass_key_flag',
+  WF_FILTER: 'pass_wf_filter',
 };
 
 export const PassContext = createContext();
@@ -36,6 +37,7 @@ export const PassContextProvider = ({ children }) => {
     return saved ? JSON.parse(saved) : [1, 9999];
   });
   const [keyFlag, setKeyFlag] = useState(() => localStorage.getItem(STORAGE_KEYS.KEY_FLAG) || 'all');
+  const [wfFilter, setWfFilter] = useState(() => localStorage.getItem(STORAGE_KEYS.WF_FILTER) || 'none');
 
   useEffect(() => {
     if (difficulties.length > 0) {
@@ -85,6 +87,10 @@ export const PassContextProvider = ({ children }) => {
     localStorage.setItem(STORAGE_KEYS.KEY_FLAG, keyFlag);
   }, [keyFlag]);
 
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.WF_FILTER, wfFilter);
+  }, [wfFilter]);
+
   return (
     <PassContext.Provider
       value={{
@@ -115,7 +121,9 @@ export const PassContextProvider = ({ children }) => {
         sliderRange,
         setSliderRange,
         keyFlag,
-        setKeyFlag
+        setKeyFlag,
+        wfFilter,
+        setWfFilter,
       }}
     >
       {children}

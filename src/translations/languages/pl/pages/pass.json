@@ -24,7 +24,8 @@
       "options": {
         "only12k": "Tylko 12K",
         "deletedPasses": "Usunięte przejścia",
-        "keyFlags": "Ilość klawiszy"
+        "keyFlags": "Ilość klawiszy",
+        "wfFilter": "Filtr WF"
       }
     },
     "sort": {

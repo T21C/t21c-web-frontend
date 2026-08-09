@@ -29,7 +29,9 @@
     "previewCSS": "CSS 미리보기",
     "customCSSPlaceholder": "/* 레벨 상세 페이지용 CSS */\n.curation-custom {\n}",
     "customCSSHelp": "이 CSS는 레벨 상세 페이지에 적용됩니다.",
-    "thumbnail": "썸네일"
+    "thumbnail": "썸네일",
+    "isDuplicate": "중복 여부",
+    "isDuplicateHelp": "이 큐레이션을 제작자 획득 유형 집계와 Discord RoleSync에서 제외합니다. 레벨에는 계속 표시됩니다."
   },
   "actions": {
     "save": "저장",

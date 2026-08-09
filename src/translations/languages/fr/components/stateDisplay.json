@@ -3,6 +3,11 @@
     "hide": "Cacher",
     "show": "Montrer",
     "only": "Seulement",
+    "none": "Aucun",
+    "wf": "WF",
+    "wfpp": "WF PP",
+    "either": "L'un ou l'autre",
+    "both": "Les deux",
     "on": "Activé",
     "off": "Désactivé"
   },

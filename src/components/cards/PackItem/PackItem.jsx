@@ -149,7 +149,7 @@ const PackItem = ({
             <div className="pack-item__info">
               {showFolderProgress ? (
                 <div
-                  className="pack-item__progress"
+                  className={`pack-item__progress${folderClears.percent >= 100 ? ' is-complete' : ''}`}
                   role="progressbar"
                   aria-valuemin={0}
                   aria-valuemax={folderClears.total}
