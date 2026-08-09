@@ -73,12 +73,14 @@ export const RatingDetailPopup = ({
   const [isAnimating, setIsAnimating] = useState(false);
   const [isCommentRequired, setIsCommentRequired] = useState(false);
   const [isDetailsCollapsed, setIsDetailsCollapsed] = useState(false);
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [showSecondRatings, setShowSecondRatings] = useState(false);
   const [isAutorating, setIsAutorating] = useState(false);
   const [isCommentFieldOpen, setIsCommentFieldOpen] = useState(false);
 
   const popupRef = useRef(null);
+  const detailsHydratedSeededRef = useRef(false);
+  const seededRatingIdRef = useRef(null);
+  const hasUnsavedChangesRef = useRef(false);
   const { snapshotSeconds: snapshotViewDurationSeconds } = useViewDurationTracker(
     selectedRating?.id ?? null
   );
@@ -100,7 +102,8 @@ export const RatingDetailPopup = ({
       setCommentError(false);
       setOtherRatings([]);
       setIsExiting(false);
-      setIsInitialLoad(true); // Reset initial load state when closing
+      seededRatingIdRef.current = null;
+      detailsHydratedSeededRef.current = false;
     }, 200); // Match the exit animation duration
   }, [setSelectedRating]);
 
@@ -198,24 +201,47 @@ export const RatingDetailPopup = ({
   }, [selectedRating?.displayVideoLink, selectedRating?.level?.videoLink, selectedRating?.id]);
 
   useEffect(() => {
-    if (selectedRating) {
-      const userDetail = selectedRating.details?.find(detail => detail.userId === currentUser?.id);
-      const rating = userDetail?.rating || "";
-      const comment = userDetail?.comment || "";
-      
-      if (isInitialLoad) {
-        setPendingRating(rating);
-        setPendingComment(comment);
-        setIsInitialLoad(false);
-      }
-      
+    hasUnsavedChangesRef.current = hasUnsavedChanges;
+  }, [hasUnsavedChanges]);
+
+  useEffect(() => {
+    if (!selectedRating?.id) return;
+
+    const details = Array.isArray(selectedRating.details) ? selectedRating.details : [];
+    const userDetail = details.find((detail) => detail.userId === currentUser?.id);
+    const rating = userDetail?.rating || "";
+    const comment = userDetail?.comment || "";
+    // Complete payloads include `comment` and/or nested `user`; list rows are slim.
+    const detailsAreFull = details.some(
+      (d) => d && (d.user != null || Object.prototype.hasOwnProperty.call(d, 'comment'))
+    );
+    const isNewOpen = seededRatingIdRef.current !== selectedRating.id;
+
+    if (isNewOpen) {
+      seededRatingIdRef.current = selectedRating.id;
+      detailsHydratedSeededRef.current = detailsAreFull;
+      setPendingRating(rating);
+      setPendingComment(comment);
       setInitialRating(rating);
       setInitialComment(comment);
       validateRating(rating);
-      
-      setHasUnsavedChanges(false);
-      setOtherRatings(selectedRating.details || []);
+    } else if (detailsAreFull && !detailsHydratedSeededRef.current) {
+      detailsHydratedSeededRef.current = true;
+      if (!hasUnsavedChangesRef.current) {
+        setPendingRating(rating);
+        setPendingComment(comment);
+        validateRating(rating);
+      }
+      setInitialRating(rating);
+      setInitialComment(comment);
+    } else {
+      setInitialRating(rating);
+      setInitialComment(comment);
+      validateRating(rating);
     }
+
+    setOtherRatings(details);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- seed once per open/hydrate; avoid pending loops
   }, [selectedRating, currentUser?.id, selectedRating?.details]);
 
   useEffect(() => {
@@ -410,7 +436,7 @@ export const RatingDetailPopup = ({
       setInitialRating(pendingRating);
       setInitialComment(!pendingRating || pendingRating.trim() === '' ? '' : pendingComment);
       setHasUnsavedChanges(false);
-      setIsInitialLoad(false);
+      detailsHydratedSeededRef.current = true;
     } catch (error) {
       console.error('[RatingDetailPopup] Save failed:', error);
       setSaveError(error.response?.data?.error || error.response?.data?.message || error.message || error.error || t('rating.detailPopup.errors.saveFailed'));

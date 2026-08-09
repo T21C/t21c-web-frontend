@@ -1010,8 +1010,10 @@ const RatingZenPage = () => {
                   </a>
                 </div>
                 {(current.level?.rerateNum || current.requesterFR) && (
-                  <p className="rating-zen-page__rerate">
-                    Rerate: {current.level?.rerateNum || current.requesterFR}
+                  <p className="rating-zen-page__request-rating">
+                    {t(`components:rating.ratingCard.labels.${current.level?.rerateNum ? 'rerateNumber' : 'requestedRating'}`)}
+                    {': '}
+                    {current.level?.rerateNum || current.requesterFR}
                   </p>
                 )}
                 {current.level?.rerateReason && (
