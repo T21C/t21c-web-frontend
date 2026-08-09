@@ -49,6 +49,13 @@
         "label": "Mouvement minimal sur la page de soumission",
         "description": "Désactive les animations décoratives sur la page de soumission. La lueur au survol des personnages reste pour indiquer le côté actif."
       }
+    },
+    "display": {
+      "title": "Affichage",
+      "disableMascots": {
+        "label": "Désactiver les mascottes",
+        "description": "Masque les personnages sur la page de soumission."
+      }
     }
   }
 }

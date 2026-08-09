@@ -207,18 +207,55 @@ const RatingPage = () => {
     fetchRatingsPage({ append: true, nextOffset: offset });
   }, [fetchRatingsPage, hasMore, isLoading, isLoadingMore, offset, ratings]);
 
-  const patchRatingRow = useCallback((listRow) => {
+  const listRowMatchesFilters = useCallback((listRow) => {
+    if (!listRow?.id) return false;
+    if (debouncedQuery) return false;
+    if (lowDiffFilter === 'hide' && listRow.lowDiff) return false;
+    if (lowDiffFilter === 'only' && !listRow.lowDiff) return false;
+    const detailCount = Array.isArray(listRow.details) ? listRow.details.length : 0;
+    if (fourVoteFilter === 'only' && detailCount < 4) return false;
+    if (fourVoteFilter === 'hide' && detailCount >= 4) return false;
+    if (hideRated && user?.id && Array.isArray(listRow.details)) {
+      if (listRow.details.some((d) => d.userId === user.id)) return false;
+    }
+    return true;
+  }, [debouncedQuery, lowDiffFilter, fourVoteFilter, hideRated, user?.id]);
+
+  const upsertRatingRow = useCallback((listRow) => {
     if (!listRow?.id) return;
+    let didInsert = false;
     setRatings((prev) => {
       if (!Array.isArray(prev)) return prev;
       const idx = prev.findIndex((r) => r.id === listRow.id);
-      if (idx === -1) return prev;
-      const next = [...prev];
-      next[idx] = { ...next[idx], ...listRow, level: listRow.level || next[idx].level };
+      if (idx !== -1) {
+        const next = [...prev];
+        next[idx] = { ...next[idx], ...listRow, level: listRow.level || next[idx].level };
+        return next;
+      }
+      if (!listRowMatchesFilters(listRow)) return prev;
+      didInsert = true;
+      const isDesc = String(sortOrder).toUpperCase() !== 'ASC';
+      const prepend = (sortType === 'id' || sortType === 'updatedAt') && isDesc;
+      return prepend ? [listRow, ...prev] : [...prev, listRow];
+    });
+    if (didInsert) {
+      setTotalCount((c) => c + 1);
+    }
+    setSelectedRating((sel) => {
+      if (sel?.id !== listRow.id) return sel;
+      const next = { ...sel, ...listRow, level: listRow.level || sel.level };
+      const selDetailsFull = Array.isArray(sel.details) && sel.details.some(
+        (d) => d && (d.user != null || Object.prototype.hasOwnProperty.call(d, 'comment'))
+      );
+      const rowDetailsFull = Array.isArray(listRow.details) && listRow.details.some(
+        (d) => d && (d.user != null || Object.prototype.hasOwnProperty.call(d, 'comment'))
+      );
+      if (selDetailsFull && !rowDetailsFull) {
+        next.details = sel.details;
+      }
       return next;
     });
-    setSelectedRating((sel) => (sel?.id === listRow.id ? { ...sel, ...listRow } : sel));
-  }, []);
+  }, [listRowMatchesFilters, sortOrder, sortType]);
 
   const removeRatingById = useCallback((ratingId) => {
     setRatings((prev) => (Array.isArray(prev) ? prev.filter((r) => r.id !== ratingId) : prev));
@@ -240,7 +277,7 @@ const RatingPage = () => {
   // Keep SSE handlers on a ref so the EventSource effect does not reconnect on every fetch/filter change
   sseHandlersRef.current = {
     logUserCountChange,
-    patchRatingRow,
+    upsertRatingRow,
     removeRatingById,
     removeRatingByLevelId,
     reloadFromStart,
@@ -268,7 +305,7 @@ const RatingPage = () => {
               break;
             }
             if (payload.listRow) {
-              h.patchRatingRow(payload.listRow);
+              h.upsertRatingRow(payload.listRow);
             }
             if (payload.complete && selectedRatingIdRef.current === payload.ratingId) {
               setSelectedRating(payload.complete);
@@ -299,7 +336,7 @@ const RatingPage = () => {
             break;
           }
           case 'submissionUpdate':
-            h.reloadFromStart();
+            // Notification badges refresh elsewhere; list updates via ratingUpdate upsert
             break;
           case 'ping':
             break;
@@ -396,17 +433,20 @@ const RatingPage = () => {
     if (levelId) {
       deepLinkHandledRef.current = levelId;
     }
+    // Open immediately with list-row data; hydrate complete details in the background
+    setSelectedRating(rating);
+    if (levelId) {
+      navigate(`/rating/${levelId}`, { replace: true, state: { preserveScroll: true } });
+    }
+    if (!rating?.id) return;
     try {
       const { data } = await api.get(routes.admin.ratingById(rating.id), {
         params: { completeObject: true },
       });
-      setSelectedRating(data || rating);
+      if (!data) return;
+      setSelectedRating((sel) => (sel?.id === rating.id ? data : sel));
     } catch (err) {
       console.error('Error loading rating details:', err);
-      setSelectedRating(rating);
-    }
-    if (levelId) {
-      navigate(`/rating/${levelId}`, { replace: true, state: { preserveScroll: true } });
     }
   }, [navigate]);
 

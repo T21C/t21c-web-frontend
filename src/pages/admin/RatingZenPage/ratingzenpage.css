@@ -491,7 +491,7 @@ html.rating-zen-active .background::after {
 
 .rating-zen-page__artist,
 .rating-zen-page__creator,
-.rating-zen-page__rerate {
+.rating-zen-page__request-rating {
   margin: 0;
   color: var(--color-gray-2);
 }
