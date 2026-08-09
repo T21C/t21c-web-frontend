@@ -300,9 +300,47 @@
     transform 2s var(--ease-out-expo);
 }
 
+.submission-page .submission-prop--keyboard img {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+}
+
+.submission-page .submission-prop__keyboard-float {
+  animation: submission-keyboard-float 5.5s var(--ease-in-out-sine) infinite;
+  will-change: transform;
+}
+
+.submission-page .submission-prop__keyboard-tilt {
+  animation: submission-keyboard-tilt 7.2s var(--ease-in-out-sine) infinite;
+  animation-delay: -2.4s;
+  will-change: transform;
+}
+
 .submission-page .submission-stage--pass-active .submission-prop--keyboard {
   opacity: 0.5;
   transform: translate(calc(-50% + 5rem), 32%) rotate(5deg);
+}
+
+@keyframes submission-keyboard-float {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(0.2rem, -0.45rem);
+  }
+}
+
+@keyframes submission-keyboard-tilt {
+  0%,
+  100% {
+    transform: rotate(-1.2deg);
+  }
+  50% {
+    transform: rotate(1.4deg);
+  }
 }
 
 .submission-page .submission-prop--magic {
@@ -627,7 +665,7 @@
   cursor: default;
 }
 
-/* Minimal motion (Settings → Preferences → Motion): keep art/side glow only. */
+/* Minimal motion (Settings preference or OS prefers-reduced-motion): keep art/side glow only. */
 .submission-page--minimal-motion .submission-binary,
 .submission-page--minimal-motion .submission-prop--keyboard,
 .submission-page--minimal-motion .submission-prop--magic,
@@ -640,6 +678,8 @@
   .submission-art__layer--tiles,
   .submission-art__layer--cam,
   .submission-prop__spin,
+  .submission-prop__keyboard-float,
+  .submission-prop__keyboard-tilt,
   .submission-prop__tile-float,
   .submission-binary__particle
 ) {

@@ -4,6 +4,7 @@ import { useCallback, useSyncExternalStore } from 'react';
 const STORAGE_KEY = 'settings.preferences.submission.minimalMotion';
 const LEGACY_STORAGE_KEY = 'settings.accessibility.minimalMotion';
 const CHANGE_EVENT = 'tuf:minimal-motion-change';
+const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
 
 function readStoredFlag(key) {
   try {
@@ -40,7 +41,7 @@ function writeMinimalMotion(enabled) {
   window.dispatchEvent(new Event(CHANGE_EVENT));
 }
 
-function subscribe(onStoreChange) {
+function subscribePreference(onStoreChange) {
   const onStorage = (e) => {
     if (
       e.key === STORAGE_KEY
@@ -58,12 +59,22 @@ function subscribe(onStoreChange) {
   };
 }
 
+function subscribeReducedMotion(onStoreChange) {
+  const mq = window.matchMedia(REDUCED_MOTION_QUERY);
+  mq.addEventListener('change', onStoreChange);
+  return () => mq.removeEventListener('change', onStoreChange);
+}
+
+function readReducedMotion() {
+  return window.matchMedia(REDUCED_MOTION_QUERY).matches;
+}
+
 /**
  * Persisted Preferences → Motion → submission-page minimal motion (localStorage).
- * Safe to use outside SettingsProvider (e.g. submission page).
+ * Safe to use outside SettingsProvider (e.g. settings toggle).
  */
 export function useMinimalMotionPreference() {
-  const minimalMotion = useSyncExternalStore(subscribe, readMinimalMotion, () => false);
+  const minimalMotion = useSyncExternalStore(subscribePreference, readMinimalMotion, () => false);
 
   const setMinimalMotion = useCallback((next) => {
     const resolved = typeof next === 'function' ? next(readMinimalMotion()) : next;
@@ -71,4 +82,14 @@ export function useMinimalMotionPreference() {
   }, []);
 
   return [minimalMotion, setMinimalMotion];
+}
+
+/**
+ * Effective minimal motion for the submission page: user preference OR OS
+ * prefers-reduced-motion. Both take the same code path (no separate handling).
+ */
+export function useSubmissionMinimalMotion() {
+  const [preference] = useMinimalMotionPreference();
+  const osReduced = useSyncExternalStore(subscribeReducedMotion, readReducedMotion, () => false);
+  return preference || osReduced;
 }

@@ -34,7 +34,7 @@
       "title": "Motion",
       "submissionMinimalMotion": {
         "label": "Minimal motion on submission page",
-        "description": "Turns off decorative animations on the submission landing page. Character hover glow stays so you can still tell which side is active."
+        "description": "Turns off decorative animations on the submission landing page. Character hover glow stays so you can still tell which side is active. Also applied automatically when your system requests reduced motion."
       }
     }
   },

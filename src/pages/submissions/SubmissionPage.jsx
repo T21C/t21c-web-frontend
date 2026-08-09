@@ -10,7 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { hasAnyFlag, hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { hasAccountEmail } from "@/utils/accountEmail";
 import { useSubmissionLabelWaypoints } from './useSubmissionLabelWaypoints';
-import { useMinimalMotionPreference } from '@/hooks/useMinimalMotionPreference';
+import { useSubmissionMinimalMotion } from '@/hooks/useMinimalMotionPreference';
 
 import ameliaChar from "@/assets/submission/amelia.png";
 import ameliaStars from "@/assets/submission/amelia_bgSTARS.png";
@@ -54,7 +54,7 @@ const SubmissionPage = () => {
   const activeSideRef = useRef(null);
   const motionRef = useRef({ pass: 0, level: 0 });
   const [activeSide, setActiveSide] = useState(null);
-  const [minimalMotion] = useMinimalMotionPreference();
+  const minimalMotion = useSubmissionMinimalMotion();
 
   const pageMeta = useMemo(
     () =>
@@ -91,9 +91,6 @@ const SubmissionPage = () => {
     }
 
     let rafId = 0;
-    const preferReduced =
-      minimalMotion
-      || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const tick = () => {
       const targets = {
@@ -104,7 +101,7 @@ const SubmissionPage = () => {
       for (const side of ['pass', 'level']) {
         const current = motionRef.current[side];
         const target = targets[side];
-        const next = preferReduced
+        const next = minimalMotion
           ? target
           : current + (target - current) * MOTION_EASE;
         const value = Math.abs(target - next) < 0.01 ? target : next;
@@ -130,7 +127,6 @@ const SubmissionPage = () => {
     enabled: labelsEnabled && !minimalMotion,
     stageRef,
     motionRef,
-    reducedMotion: minimalMotion,
   });
 
   if (!user) {
@@ -206,12 +202,13 @@ const SubmissionPage = () => {
             <img className="submission-art__layer submission-art__layer--char" src={ellieChar} alt="" />
           </div>
 
-          <img
-            className="submission-prop submission-prop--keyboard"
-            src={keyboardBlack}
-            alt=""
-            aria-hidden="true"
-          />
+          <div className="submission-prop submission-prop--keyboard" aria-hidden="true">
+            <div className="submission-prop__keyboard-float">
+              <div className="submission-prop__keyboard-tilt">
+                <img src={keyboardBlack} alt="" draggable={false} />
+              </div>
+            </div>
+          </div>
 
           <div className="submission-art submission-art--level" aria-hidden="true">
             <img className="submission-art__layer submission-art__layer--bg submission-art__layer--tiles" src={ameliaTiles} alt="" />
