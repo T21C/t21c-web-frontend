@@ -12,6 +12,11 @@
     "buttonPass": "提交通关记录",
     "buttonLevel": "提交关卡"
   },
+  "label": {
+    "submit": "提交",
+    "pass": "通关",
+    "level": "关卡"
+  },
     "banner": {
     "submissionSuspended": "你的提交功能已被暂停",
     "banned": "你的账号已被封禁",

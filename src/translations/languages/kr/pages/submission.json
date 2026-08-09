@@ -12,6 +12,11 @@
     "buttonPass": "클리어 제출",
     "buttonLevel": "레벨 제출"
   },
+  "label": {
+    "submit": "제출",
+    "pass": "클리어",
+    "level": "레벨"
+  },
     "banner": {
     "submissionSuspended": "제출 정지된 상태입니다",
     "banned": "계정이 제재된 상태입니다",
