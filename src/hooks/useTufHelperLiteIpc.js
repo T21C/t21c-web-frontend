@@ -49,6 +49,7 @@ let tufHelperLiteIntegrationSnapshot = {
   state: initialIntegrationState,
   isSessionDismissed: initialSessionDismissed,
   errorCode: null,
+  versionMismatch: null,
 };
 
 const tufHelperLiteHealthListeners = new Set();
@@ -79,15 +80,25 @@ const getTufHelperLiteDownloadedIdsSnapshot = () => tufHelperLiteDownloadedIdsSn
 const getTufHelperLiteIntegrationSnapshot = () => tufHelperLiteIntegrationSnapshot;
 
 const setTufHelperLiteIntegrationSnapshot = (nextSnapshot) => {
+  const normalizedSnapshot = {
+    ...nextSnapshot,
+    versionMismatch: nextSnapshot.versionMismatch ?? null,
+  };
+  const currentMismatch = tufHelperLiteIntegrationSnapshot.versionMismatch;
+  const nextMismatch = normalizedSnapshot.versionMismatch;
   if (
-    tufHelperLiteIntegrationSnapshot.state === nextSnapshot.state &&
-    tufHelperLiteIntegrationSnapshot.isSessionDismissed === nextSnapshot.isSessionDismissed &&
-    tufHelperLiteIntegrationSnapshot.errorCode === nextSnapshot.errorCode
+    tufHelperLiteIntegrationSnapshot.state === normalizedSnapshot.state &&
+    tufHelperLiteIntegrationSnapshot.isSessionDismissed === normalizedSnapshot.isSessionDismissed &&
+    tufHelperLiteIntegrationSnapshot.errorCode === normalizedSnapshot.errorCode &&
+    currentMismatch?.direction === nextMismatch?.direction &&
+    currentMismatch?.clientVersion === nextMismatch?.clientVersion &&
+    currentMismatch?.serverVersion === nextMismatch?.serverVersion &&
+    currentMismatch?.protocolVersion === nextMismatch?.protocolVersion
   ) {
     return;
   }
 
-  tufHelperLiteIntegrationSnapshot = nextSnapshot;
+  tufHelperLiteIntegrationSnapshot = normalizedSnapshot;
   tufHelperLiteIntegrationListeners.forEach((listener) => listener());
 };
 
@@ -164,11 +175,28 @@ const getTufHelperLiteIpcErrorCode = (error) => (
 );
 
 const isTufHelperLiteNamespaceFailure = (code) => (
+  code === 'VERSION_MISMATCH' ||
   code === 'namespace_status_unavailable' ||
   code === 'namespace_error' ||
   code === 'namespace_initializing' ||
   code === 'namespace_not_found'
 );
+
+const versionMismatchSnapshot = (error) => ({
+  direction: error.direction,
+  clientVersion: error.clientVersion,
+  serverVersion: error.serverVersion,
+  protocolVersion: error.protocolVersion,
+});
+
+const reportTufHelperLiteVersionMismatch = (error) => {
+  setTufHelperLiteIntegrationSnapshot({
+    state: 'unavailable',
+    isSessionDismissed: false,
+    errorCode: 'VERSION_MISMATCH',
+    versionMismatch: versionMismatchSnapshot(error),
+  });
+};
 
 const connectTufHelperLiteIpc = async () => {
   const client = await tryConnect({
@@ -177,6 +205,7 @@ const connectTufHelperLiteIpc = async () => {
     fetch: adofaiIpcFetch,
     probeTimeoutMs: IPC_HEALTH_TIMEOUT_MS,
     requestTimeoutMs: IPC_REQUEST_TIMEOUT_MS,
+    onVersionMismatch: reportTufHelperLiteVersionMismatch,
   });
 
   await client.waitForNamespace(TUFHELPER_LITE_NAMESPACE, {
@@ -285,6 +314,9 @@ export const connectTufHelperLiteIntegration = async () => {
       state: 'unavailable',
       isSessionDismissed: false,
       errorCode: getTufHelperLiteIpcErrorCode(error),
+      versionMismatch: getTufHelperLiteIpcErrorCode(error) === 'VERSION_MISMATCH'
+        ? versionMismatchSnapshot(error)
+        : null,
     });
     return false;
   }
@@ -370,6 +402,9 @@ export const checkTufHelperLiteHealth = async () => {
         state: 'unavailable',
         isSessionDismissed: false,
         errorCode,
+        versionMismatch: errorCode === 'VERSION_MISMATCH'
+          ? versionMismatchSnapshot(error)
+          : null,
       });
     }
 

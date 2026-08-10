@@ -24,7 +24,11 @@ export const TufHelperLiteConnectBanner = () => {
   const isUnavailable = integration.state === 'unavailable';
   const showUnavailable = isUnavailable || isRetrying;
   const errorCode = integration.errorCode;
-  const requiresIpcUpdate = errorCode === 'namespace_status_unavailable';
+  const mismatchDirection = integration.versionMismatch?.direction;
+  const requiresClientUpdate = mismatchDirection === 'client_outdated';
+  const requiresIpcUpdate = errorCode === 'namespace_status_unavailable' ||
+    mismatchDirection === 'server_outdated' ||
+    mismatchDirection === 'legacy_server';
   const namespaceInitializing = errorCode === 'namespace_initializing' || errorCode === 'TIMEOUT';
   const namespaceFailed = errorCode === 'namespace_error';
   const canShow = integration.state === 'prompt' || integration.state === 'unavailable';
@@ -39,7 +43,9 @@ export const TufHelperLiteConnectBanner = () => {
 
   if (!isVisible) return null;
 
-  const title = requiresIpcUpdate
+  const title = requiresClientUpdate
+    ? t('level.tufHelperLiteBanner.clientUpdateTitle')
+    : requiresIpcUpdate
     ? t('level.tufHelperLiteBanner.ipcUpdateTitle')
     : namespaceInitializing
       ? t('level.tufHelperLiteBanner.initializingTitle')
@@ -48,7 +54,9 @@ export const TufHelperLiteConnectBanner = () => {
         : showUnavailable
           ? t('level.tufHelperLiteBanner.unavailableTitle')
           : t('level.tufHelperLiteBanner.title');
-  const description = requiresIpcUpdate
+  const description = requiresClientUpdate
+    ? t('level.tufHelperLiteBanner.clientUpdateDescription')
+    : requiresIpcUpdate
     ? t('level.tufHelperLiteBanner.ipcUpdateDescription')
     : namespaceInitializing
       ? t('level.tufHelperLiteBanner.initializingDescription')
@@ -92,16 +100,26 @@ export const TufHelperLiteConnectBanner = () => {
       </div>
 
       <div className="tufhelperlite-connect-banner__actions">
-        <a
-          className="tufhelperlite-connect-banner__link"
-          href={helpUrl}
-          target="_blank"
-          rel="noreferrer"
-        >
-          {requiresIpcUpdate
-            ? t('level.tufHelperLiteBanner.downloadIpc')
-            : t('level.tufHelperLiteBanner.learnMore')}
-        </a>
+        {requiresClientUpdate ? (
+          <button
+            type="button"
+            className="tufhelperlite-connect-banner__link"
+            onClick={() => window.location.reload()}
+          >
+            {t('level.tufHelperLiteBanner.refreshPage')}
+          </button>
+        ) : (
+          <a
+            className="tufhelperlite-connect-banner__link"
+            href={helpUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {requiresIpcUpdate
+              ? t('level.tufHelperLiteBanner.downloadIpc')
+              : t('level.tufHelperLiteBanner.learnMore')}
+          </a>
+        )}
         <button
           type="button"
           className="tufhelperlite-connect-banner__connect"
