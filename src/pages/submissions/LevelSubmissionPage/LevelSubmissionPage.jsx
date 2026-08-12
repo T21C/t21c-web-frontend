@@ -434,6 +434,9 @@ const LevelSubmissionPage = () => {
         songId: selectedSong?.songId || null,
         artistId: firstArtistId,
         isNewSongRequest: selectedSong?.isNewRequest || false,
+        songVerificationState: selectedSong?.isNewRequest
+          ? (selectedSong?.verificationState || 'pending')
+          : null,
         isNewArtistRequest: hasNewArtistRequest,
         diff: form.diff,
         suffix: form.suffix || '',
