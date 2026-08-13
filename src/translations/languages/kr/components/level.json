@@ -140,6 +140,18 @@
     "dismiss": "이번 세션에서 TUFHelperLite 안내 닫기",
     "unavailableTitle": "TUFHelperLite를 찾지 못했습니다",
     "unavailableDescription": "AdofaiIpc와 TUFHelperLite가 설치되어 있고 ADOFAI가 실행 중인지 확인한 뒤 다시 시도하세요.",
+    "ipcUpdateTitle": "AdofaiIpc 업데이트가 필요합니다",
+    "ipcUpdateDescription": "게임을 종료하고 최신 AdofaiIpc를 다시 설치한 뒤 ADOFAI를 재시작하세요.",
+    "downloadIpc": "AdofaiIpc 다운로드",
+    "clientUpdateTitle": "웹사이트 업데이트가 필요합니다",
+    "clientUpdateDescription": "AdofaiIpc보다 브라우저에 캐시된 웹 클라이언트가 오래됐습니다. 새로고침해 최신 버전을 불러오세요.",
+    "refreshPage": "페이지 새로고침",
+    "initializingTitle": "TUFHelperLite가 초기화 중입니다",
+    "initializingDescription": "게임에서 모드 초기화가 끝날 때까지 잠시 기다린 뒤 다시 시도하세요.",
+    "initializationFailedTitle": "TUFHelperLite 초기화에 실패했습니다",
+    "initializationFailedDescription": "게임 내 UnityModManager 로그에서 TUFHelperLite 오류를 확인하세요.",
+    "outdatedToast": "TUFHelperLite {{version}}은 더 이상 지원되지 않습니다. 웹 연동을 사용하려면 0.1.4 이상으로 업데이트하세요.",
+    "unknownVersion": "알 수 없는 버전",
     "retry": "다시 시도"
   }
 }

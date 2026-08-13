@@ -215,6 +215,18 @@
     "dismiss": "Dismiss TUFHelperLite for this session",
     "unavailableTitle": "TUFHelperLite wasn't found",
     "unavailableDescription": "Make sure AdofaiIpc and TUFHelperLite are installed and ADOFAI is running, then try again.",
+    "ipcUpdateTitle": "AdofaiIpc needs to be updated",
+    "ipcUpdateDescription": "Close the game, reinstall the latest AdofaiIpc release, and then restart ADOFAI.",
+    "downloadIpc": "Download AdofaiIpc",
+    "clientUpdateTitle": "Website update required",
+    "clientUpdateDescription": "AdofaiIpc is newer than the cached website client. Refresh the page to load the latest version.",
+    "refreshPage": "Refresh page",
+    "initializingTitle": "TUFHelperLite is still starting",
+    "initializingDescription": "Wait for the mod to finish initializing in the game, then try again.",
+    "initializationFailedTitle": "TUFHelperLite failed to start",
+    "initializationFailedDescription": "Check the TUFHelperLite error in the in-game UnityModManager log.",
+    "outdatedToast": "TUFHelperLite {{version}} is no longer supported. Update to 0.1.4 or newer to use the website integration.",
+    "unknownVersion": "an unknown version",
     "retry": "Retry"
   }
 }

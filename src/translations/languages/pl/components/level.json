@@ -142,6 +142,8 @@
     "dismiss": "Ukryj TUFHelperLite w tej sesji",
     "unavailableTitle": "Nie znaleziono TUFHelperLite",
     "unavailableDescription": "Upewnij się, że AdofaiIpc i TUFHelperLite są zainstalowane, a ADOFAI jest uruchomione, i spróbuj ponownie.",
+    "outdatedToast": "TUFHelperLite {{version}} nie jest już obsługiwany. Zaktualizuj do wersji 0.1.4 lub nowszej, aby korzystać z integracji z witryną.",
+    "unknownVersion": "nieznana wersja",
     "retry": "Spróbuj ponownie"
   }
 }
