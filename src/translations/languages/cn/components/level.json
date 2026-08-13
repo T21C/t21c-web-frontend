@@ -215,6 +215,8 @@
     "dismiss": "本次会话中关闭 TUFHelperLite 提示",
     "unavailableTitle": "未找到 TUFHelperLite",
     "unavailableDescription": "请确认已安装 AdofaiIpc 和 TUFHelperLite，并且 ADOFAI 正在运行，然后重试。",
+    "outdatedToast": "不再支持 TUFHelperLite {{version}}。请更新到 0.1.4 或更高版本以使用网页集成。",
+    "unknownVersion": "未知版本",
     "retry": "重试"
   }
 }

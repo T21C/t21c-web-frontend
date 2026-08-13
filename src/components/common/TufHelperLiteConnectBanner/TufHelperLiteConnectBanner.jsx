@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-hot-toast';
 import { CheckmarkIcon, CrossIcon, TUFHelperLiteIcon } from '@/components/common/icons';
 import {
   connectTufHelperLiteIntegration,
@@ -12,7 +13,9 @@ import {
 import './tufHelperLiteConnectBanner.css';
 
 const TUFHELPER_LITE_URL = 'https://github.com/KGH1113/TUFHelperLite/releases/latest';
+const ADOFAI_IPC_URL = 'https://github.com/KGH1113/adofai-ipc/releases/latest';
 const SUPPORTED_PATH = /^\/(levels|packs)(\/|$)/;
+const OUTDATED_TOAST_ID = 'tufhelperlite-outdated';
 
 export const TufHelperLiteConnectBanner = () => {
   const { t } = useTranslation('components');
@@ -22,6 +25,14 @@ export const TufHelperLiteConnectBanner = () => {
   const isConnecting = integration.state === 'connecting';
   const isUnavailable = integration.state === 'unavailable';
   const showUnavailable = isUnavailable || isRetrying;
+  const errorCode = integration.errorCode;
+  const mismatchDirection = integration.versionMismatch?.direction;
+  const requiresClientUpdate = mismatchDirection === 'client_outdated';
+  const requiresIpcUpdate = errorCode === 'namespace_status_unavailable' ||
+    mismatchDirection === 'server_outdated' ||
+    mismatchDirection === 'legacy_server';
+  const namespaceInitializing = errorCode === 'namespace_initializing' || errorCode === 'TIMEOUT';
+  const namespaceFailed = errorCode === 'namespace_error';
   const canShow = integration.state === 'prompt' || integration.state === 'unavailable';
   const isVisible =
     SUPPORTED_PATH.test(location.pathname) &&
@@ -32,14 +43,45 @@ export const TufHelperLiteConnectBanner = () => {
     void initializeTufHelperLiteIntegration();
   }, []);
 
+  useEffect(() => {
+    if (integration.errorCode !== 'TUFHELPERLITE_OUTDATED') {
+      toast.dismiss(OUTDATED_TOAST_ID);
+      return;
+    }
+
+    toast.error(
+      t('level.tufHelperLiteBanner.outdatedToast', {
+        version: integration.tufHelperLiteVersion ?? t('level.tufHelperLiteBanner.unknownVersion'),
+      }),
+      { id: OUTDATED_TOAST_ID, duration: 8000 },
+    );
+  }, [integration.errorCode, integration.tufHelperLiteVersion, t]);
+
   if (!isVisible) return null;
 
-  const title = showUnavailable
-    ? t('level.tufHelperLiteBanner.unavailableTitle')
-    : t('level.tufHelperLiteBanner.title');
-  const description = showUnavailable
-    ? t('level.tufHelperLiteBanner.unavailableDescription')
-    : t('level.tufHelperLiteBanner.description');
+  const title = requiresClientUpdate
+    ? t('level.tufHelperLiteBanner.clientUpdateTitle')
+    : requiresIpcUpdate
+    ? t('level.tufHelperLiteBanner.ipcUpdateTitle')
+    : namespaceInitializing
+      ? t('level.tufHelperLiteBanner.initializingTitle')
+      : namespaceFailed
+        ? t('level.tufHelperLiteBanner.initializationFailedTitle')
+        : showUnavailable
+          ? t('level.tufHelperLiteBanner.unavailableTitle')
+          : t('level.tufHelperLiteBanner.title');
+  const description = requiresClientUpdate
+    ? t('level.tufHelperLiteBanner.clientUpdateDescription')
+    : requiresIpcUpdate
+    ? t('level.tufHelperLiteBanner.ipcUpdateDescription')
+    : namespaceInitializing
+      ? t('level.tufHelperLiteBanner.initializingDescription')
+      : namespaceFailed
+        ? t('level.tufHelperLiteBanner.initializationFailedDescription')
+        : showUnavailable
+          ? t('level.tufHelperLiteBanner.unavailableDescription')
+          : t('level.tufHelperLiteBanner.description');
+  const helpUrl = requiresIpcUpdate ? ADOFAI_IPC_URL : TUFHELPER_LITE_URL;
 
   const handleConnect = async () => {
     const retrying = integration.state === 'unavailable';
@@ -74,14 +116,26 @@ export const TufHelperLiteConnectBanner = () => {
       </div>
 
       <div className="tufhelperlite-connect-banner__actions">
-        <a
-          className="tufhelperlite-connect-banner__link"
-          href={TUFHELPER_LITE_URL}
-          target="_blank"
-          rel="noreferrer"
-        >
-          {t('level.tufHelperLiteBanner.learnMore')}
-        </a>
+        {requiresClientUpdate ? (
+          <button
+            type="button"
+            className="tufhelperlite-connect-banner__link"
+            onClick={() => window.location.reload()}
+          >
+            {t('level.tufHelperLiteBanner.refreshPage')}
+          </button>
+        ) : (
+          <a
+            className="tufhelperlite-connect-banner__link"
+            href={helpUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {requiresIpcUpdate
+              ? t('level.tufHelperLiteBanner.downloadIpc')
+              : t('level.tufHelperLiteBanner.learnMore')}
+          </a>
+        )}
         <button
           type="button"
           className="tufhelperlite-connect-banner__connect"

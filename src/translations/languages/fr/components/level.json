@@ -10,6 +10,8 @@
     "dismiss": "Masquer TUFHelperLite pour cette session",
     "unavailableTitle": "TUFHelperLite est introuvable",
     "unavailableDescription": "Vérifiez qu'AdofaiIpc et TUFHelperLite sont installés et qu'ADOFAI est lancé, puis réessayez.",
+    "outdatedToast": "TUFHelperLite {{version}} n'est plus pris en charge. Installez la version 0.1.4 ou ultérieure pour utiliser l'intégration web.",
+    "unknownVersion": "version inconnue",
     "retry": "Réessayer"
   }
 }

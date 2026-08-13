@@ -3,12 +3,16 @@ import { tryConnect } from "@adofai-ipc/client";
 
 const TUFHELPER_LITE_NAMESPACE = 'tufhelperlite';
 const TUFHELPER_LITE_HEALTH_METHOD = 'health';
+const MINIMUM_TUFHELPER_LITE_VERSION = [0, 1, 4];
 const IPC_PORT_START = 32145;
 const IPC_PORT_END = 32155;
 const IPC_HEALTH_POLL_MS = 2500;
 const IPC_JOBS_POLL_MS = 1000;
 const IPC_DOWNLOADED_IDS_POLL_MS = 2500;
 const IPC_HEALTH_TIMEOUT_MS = 800;
+const IPC_REQUEST_TIMEOUT_MS = 30000;
+const IPC_NAMESPACE_READY_TIMEOUT_MS = 15000;
+const IPC_NAMESPACE_POLL_INTERVAL_MS = 100;
 const IPC_HEALTH_MISSES_BEFORE_OFFLINE = 3;
 const IPC_INTEGRATION_STORAGE_KEY = 'tufhelperlite-integration';
 const IPC_BANNER_DISMISSED_SESSION_KEY = 'tufhelperlite-banner-dismissed';
@@ -45,6 +49,9 @@ const tufHelperLiteIntegrationListeners = new Set();
 let tufHelperLiteIntegrationSnapshot = {
   state: initialIntegrationState,
   isSessionDismissed: initialSessionDismissed,
+  errorCode: null,
+  versionMismatch: null,
+  tufHelperLiteVersion: null,
 };
 
 const tufHelperLiteHealthListeners = new Set();
@@ -75,14 +82,27 @@ const getTufHelperLiteDownloadedIdsSnapshot = () => tufHelperLiteDownloadedIdsSn
 const getTufHelperLiteIntegrationSnapshot = () => tufHelperLiteIntegrationSnapshot;
 
 const setTufHelperLiteIntegrationSnapshot = (nextSnapshot) => {
+  const normalizedSnapshot = {
+    ...nextSnapshot,
+    versionMismatch: nextSnapshot.versionMismatch ?? null,
+    tufHelperLiteVersion: nextSnapshot.tufHelperLiteVersion ?? null,
+  };
+  const currentMismatch = tufHelperLiteIntegrationSnapshot.versionMismatch;
+  const nextMismatch = normalizedSnapshot.versionMismatch;
   if (
-    tufHelperLiteIntegrationSnapshot.state === nextSnapshot.state &&
-    tufHelperLiteIntegrationSnapshot.isSessionDismissed === nextSnapshot.isSessionDismissed
+    tufHelperLiteIntegrationSnapshot.state === normalizedSnapshot.state &&
+    tufHelperLiteIntegrationSnapshot.isSessionDismissed === normalizedSnapshot.isSessionDismissed &&
+    tufHelperLiteIntegrationSnapshot.errorCode === normalizedSnapshot.errorCode &&
+    currentMismatch?.direction === nextMismatch?.direction &&
+    currentMismatch?.clientVersion === nextMismatch?.clientVersion &&
+    currentMismatch?.serverVersion === nextMismatch?.serverVersion &&
+    currentMismatch?.protocolVersion === nextMismatch?.protocolVersion &&
+    tufHelperLiteIntegrationSnapshot.tufHelperLiteVersion === normalizedSnapshot.tufHelperLiteVersion
   ) {
     return;
   }
 
-  tufHelperLiteIntegrationSnapshot = nextSnapshot;
+  tufHelperLiteIntegrationSnapshot = normalizedSnapshot;
   tufHelperLiteIntegrationListeners.forEach((listener) => listener());
 };
 
@@ -152,16 +172,88 @@ const getTufHelperLitePort = (client) => {
   return Number.isFinite(port) ? port : null;
 };
 
+const getTufHelperLiteIpcErrorCode = (error) => (
+  error && typeof error === 'object' && typeof error.code === 'string'
+    ? error.code
+    : 'UNAVAILABLE'
+);
+
+const isTufHelperLiteNamespaceFailure = (code) => (
+  code === 'VERSION_MISMATCH' ||
+  code === 'TUFHELPERLITE_OUTDATED' ||
+  code === 'namespace_status_unavailable' ||
+  code === 'namespace_error' ||
+  code === 'namespace_initializing' ||
+  code === 'namespace_not_found'
+);
+
+const readTufHelperLiteVersion = (health) => health?.Version ?? health?.version ?? null;
+
+export const isSupportedTufHelperLiteVersion = (value) => {
+  if (typeof value !== 'string') return false;
+
+  const match = /^v?(\d+)\.(\d+)\.(\d+)(?:[-+][0-9A-Za-z.-]+)?$/.exec(value.trim());
+  if (!match) return false;
+
+  const installed = match.slice(1, 4).map(Number);
+  for (let index = 0; index < MINIMUM_TUFHELPER_LITE_VERSION.length; index += 1) {
+    if (installed[index] !== MINIMUM_TUFHELPER_LITE_VERSION[index]) {
+      return installed[index] > MINIMUM_TUFHELPER_LITE_VERSION[index];
+    }
+  }
+
+  return true;
+};
+
+const assertSupportedTufHelperLiteVersion = (health) => {
+  const version = readTufHelperLiteVersion(health);
+  if (isSupportedTufHelperLiteVersion(version)) return;
+
+  const error = new Error('TUFHelperLite 0.1.4 or newer is required.');
+  error.code = 'TUFHELPERLITE_OUTDATED';
+  error.tufHelperLiteVersion = typeof version === 'string' ? version : null;
+  throw error;
+};
+
+const versionMismatchSnapshot = (error) => ({
+  direction: error.direction,
+  clientVersion: error.clientVersion,
+  serverVersion: error.serverVersion,
+  protocolVersion: error.protocolVersion,
+});
+
+const reportTufHelperLiteVersionMismatch = (error) => {
+  setTufHelperLiteIntegrationSnapshot({
+    state: 'unavailable',
+    isSessionDismissed: false,
+    errorCode: 'VERSION_MISMATCH',
+    versionMismatch: versionMismatchSnapshot(error),
+  });
+};
+
 const connectTufHelperLiteIpc = async () => {
   const client = await tryConnect({
     startPort: IPC_PORT_START,
     endPort: IPC_PORT_END,
     fetch: adofaiIpcFetch,
-    timeoutMs: IPC_HEALTH_TIMEOUT_MS,
+    probeTimeoutMs: IPC_HEALTH_TIMEOUT_MS,
+    requestTimeoutMs: IPC_REQUEST_TIMEOUT_MS,
+    onVersionMismatch: reportTufHelperLiteVersionMismatch,
   });
 
+  await client.waitForNamespace(TUFHELPER_LITE_NAMESPACE, {
+    status: 'ready',
+    timeoutMs: IPC_NAMESPACE_READY_TIMEOUT_MS,
+    pollIntervalMs: IPC_NAMESPACE_POLL_INTERVAL_MS,
+    requestTimeoutMs: IPC_HEALTH_TIMEOUT_MS,
+  });
+
+  const namespaceClient = client.namespace(TUFHELPER_LITE_NAMESPACE);
+  const health = await namespaceClient.call(TUFHELPER_LITE_HEALTH_METHOD);
+  assertSupportedTufHelperLiteVersion(health);
+
   tufHelperLiteClient = client;
-  tufHelperLiteNamespaceClient = client.namespace(TUFHELPER_LITE_NAMESPACE);
+  tufHelperLiteNamespaceClient = namespaceClient;
   return client;
 };
 
@@ -210,7 +302,7 @@ export const initializeTufHelperLiteIntegration = async () => {
 
   if (shouldEnable) {
     writeStorage(window.localStorage, IPC_INTEGRATION_STORAGE_KEY, IPC_INTEGRATION_ENABLED);
-    setTufHelperLiteIntegrationSnapshot({ state: 'enabled', isSessionDismissed: false });
+    setTufHelperLiteIntegrationSnapshot({ state: 'enabled', isSessionDismissed: false, errorCode: null });
     setTufHelperLiteHealthSnapshot({ isAvailable: false, isChecking: true, port: null });
     void checkTufHelperLiteHealth();
     return;
@@ -220,6 +312,7 @@ export const initializeTufHelperLiteIntegration = async () => {
   setTufHelperLiteIntegrationSnapshot({
     state: 'prompt',
     isSessionDismissed: tufHelperLiteIntegrationSnapshot.isSessionDismissed,
+    errorCode: null,
   });
 };
 
@@ -228,13 +321,13 @@ export const showTufHelperLiteIntegrationBanner = () => {
   writeStorage(window.localStorage, IPC_INTEGRATION_STORAGE_KEY, null);
   writeStorage(window.sessionStorage, IPC_BANNER_DISMISSED_SESSION_KEY, null);
   resetTufHelperLiteConnectionData();
-  setTufHelperLiteIntegrationSnapshot({ state: 'prompt', isSessionDismissed: false });
+  setTufHelperLiteIntegrationSnapshot({ state: 'prompt', isSessionDismissed: false, errorCode: null });
 };
 
 export const connectTufHelperLiteIntegration = async () => {
   if (tufHelperLiteIntegrationSnapshot.state === 'connecting') return false;
 
-  setTufHelperLiteIntegrationSnapshot({ state: 'connecting', isSessionDismissed: false });
+  setTufHelperLiteIntegrationSnapshot({ state: 'connecting', isSessionDismissed: false, errorCode: null });
   setTufHelperLiteHealthSnapshot({ isAvailable: false, isChecking: true, port: null });
 
   try {
@@ -242,19 +335,28 @@ export const connectTufHelperLiteIntegration = async () => {
     const workingPort = getTufHelperLitePort(client);
     if (workingPort == null) throw new Error('TUFHelperLite IPC port is not available.');
 
-    await client.namespace(TUFHELPER_LITE_NAMESPACE).call(TUFHELPER_LITE_HEALTH_METHOD);
-
     tufHelperLiteConsecutiveHealthMisses = 0;
     writeStorage(window.localStorage, IPC_INTEGRATION_STORAGE_KEY, IPC_INTEGRATION_ENABLED);
     writeStorage(window.sessionStorage, IPC_BANNER_DISMISSED_SESSION_KEY, null);
     setTufHelperLiteHealthSnapshot({ isAvailable: true, isChecking: false, port: workingPort });
-    setTufHelperLiteIntegrationSnapshot({ state: 'enabled', isSessionDismissed: false });
+    setTufHelperLiteIntegrationSnapshot({ state: 'enabled', isSessionDismissed: false, errorCode: null });
     await Promise.all([checkTufHelperLiteJobs(), checkTufHelperLiteDownloadedIds()]);
     return true;
-  } catch {
+  } catch (error) {
+    const errorCode = getTufHelperLiteIpcErrorCode(error);
     resetTufHelperLiteConnectionData();
     writeStorage(window.localStorage, IPC_INTEGRATION_STORAGE_KEY, null);
-    setTufHelperLiteIntegrationSnapshot({ state: 'unavailable', isSessionDismissed: false });
+    setTufHelperLiteIntegrationSnapshot({
+      state: errorCode === 'TUFHELPERLITE_OUTDATED' ? 'unsupported' : 'unavailable',
+      isSessionDismissed: false,
+      errorCode,
+      versionMismatch: errorCode === 'VERSION_MISMATCH'
+        ? versionMismatchSnapshot(error)
+        : null,
+      tufHelperLiteVersion: errorCode === 'TUFHELPERLITE_OUTDATED'
+        ? error.tufHelperLiteVersion
+        : null,
+    });
     return false;
   }
 };
@@ -271,7 +373,7 @@ export const hideTufHelperLiteIntegration = () => {
   writeStorage(window.localStorage, IPC_INTEGRATION_STORAGE_KEY, IPC_INTEGRATION_HIDDEN);
   writeStorage(window.sessionStorage, IPC_BANNER_DISMISSED_SESSION_KEY, null);
   resetTufHelperLiteConnectionData();
-  setTufHelperLiteIntegrationSnapshot({ state: 'hidden', isSessionDismissed: false });
+  setTufHelperLiteIntegrationSnapshot({ state: 'hidden', isSessionDismissed: false, errorCode: null });
 };
 
 export const invokeTufHelperLiteIpc = async (method, params = {}) => {
@@ -289,9 +391,9 @@ export const invokeTufHelperLiteIpc = async (method, params = {}) => {
 
   try {
     return await tufHelperLiteNamespaceClient.call(method, params, `tufhelperlite-${method}`);
-  } catch {
+  } catch (error) {
     clearTufHelperLiteClient();
-    throw new Error('TUFHelperLite IPC returned an error.');
+    throw error;
   }
 };
 
@@ -309,10 +411,14 @@ export const checkTufHelperLiteHealth = async () => {
   try {
     setTufHelperLiteHealthSnapshot({ ...tufHelperLiteHealthSnapshot, isChecking: true });
 
-    const client = tufHelperLiteClient ?? await connectTufHelperLiteIpc();
+    const existingClient = tufHelperLiteClient;
+    const client = existingClient ?? await connectTufHelperLiteIpc();
     const workingPort = getTufHelperLitePort(client);
 
-    await client.namespace(TUFHELPER_LITE_NAMESPACE).call(TUFHELPER_LITE_HEALTH_METHOD);
+    if (existingClient) {
+      const health = await client.namespace(TUFHELPER_LITE_NAMESPACE).call(TUFHELPER_LITE_HEALTH_METHOD);
+      assertSupportedTufHelperLiteVersion(health);
+    }
 
     if (workingPort != null) {
       tufHelperLiteConsecutiveHealthMisses = 0;
@@ -328,9 +434,25 @@ export const checkTufHelperLiteHealth = async () => {
       isChecking: false,
       port: workingPort ?? (shouldStayAvailable ? tufHelperLiteHealthSnapshot.port : null),
     });
-  } catch {
+  } catch (error) {
     clearTufHelperLiteClient();
     tufHelperLiteConsecutiveHealthMisses += 1;
+
+    const errorCode = getTufHelperLiteIpcErrorCode(error);
+    if (isTufHelperLiteNamespaceFailure(errorCode)) {
+      writeStorage(window.localStorage, IPC_INTEGRATION_STORAGE_KEY, null);
+      setTufHelperLiteIntegrationSnapshot({
+        state: errorCode === 'TUFHELPERLITE_OUTDATED' ? 'unsupported' : 'unavailable',
+        isSessionDismissed: false,
+        errorCode,
+        versionMismatch: errorCode === 'VERSION_MISMATCH'
+          ? versionMismatchSnapshot(error)
+          : null,
+        tufHelperLiteVersion: errorCode === 'TUFHELPERLITE_OUTDATED'
+          ? error.tufHelperLiteVersion
+          : null,
+      });
+    }
 
     const shouldStayAvailable =
       tufHelperLiteHealthSnapshot.isAvailable &&

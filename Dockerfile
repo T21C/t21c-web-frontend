@@ -3,6 +3,7 @@
 FROM node:22-bookworm-slim AS build
 
 ENV PUPPETEER_SKIP_DOWNLOAD=true
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 WORKDIR /app
 # sentry-cli needs a CA bundle for HTTPS (slim image has none by default)
 RUN apt-get update \
