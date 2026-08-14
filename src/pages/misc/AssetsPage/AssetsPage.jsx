@@ -24,6 +24,8 @@ const ASSET_ACTION_ICON_SIZE = 18;
 const DIFF_COLOR_COPY_ICON_SIZE = 14;
 const DOWNLOAD_ALL_ICON_SIZE = 16;
 const STATIC_FONT_EXT_RE = /\.(woff2?|ttf)$/i;
+// Replace legacy immutable image redirects with the current proxied response.
+const ASSET_FETCH_OPTIONS = { mode: "cors", cache: "reload" };
 
 function extensionFromUrl(url) {
   try {
@@ -114,7 +116,7 @@ function triggerBlobDownload(blob, filename) {
 async function downloadAssetFromUrl(url, filename) {
   const safe = filename && String(filename).trim() ? String(filename).trim() : "download";
   try {
-    const res = await fetch(url, { mode: "cors" });
+    const res = await fetch(url, ASSET_FETCH_OPTIONS);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const blob = await res.blob();
     triggerBlobDownload(blob, safe);
@@ -141,7 +143,7 @@ async function downloadAssetsAsZip(entries, zipFilename) {
   await Promise.all(
     list.map(async ({ url, stem }) => {
       try {
-        const res = await fetch(url, { mode: "cors" });
+        const res = await fetch(url, ASSET_FETCH_OPTIONS);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const blob = await res.blob();
         const name = uniqueZipFilename(stem, url, blob, usedNames);
