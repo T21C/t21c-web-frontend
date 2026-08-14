@@ -1,5 +1,6 @@
 // tuf-search: #RatingCard #ratingCard #cards
 import { LinkIcon } from '@/components/common/icons/LinkIcon';
+import { DraftIcon } from '@/components/common/icons';
 import './ratingcard.css';
 import { calculateRatingValue, formatCreatorDisplay, formatDate } from '@/utils/Utility';
 import { useState } from 'react';
@@ -9,6 +10,7 @@ import i18next from 'i18next';
 import { getSongDisplayName } from '@/utils/levelHelpers';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { CommentFormatter } from '@/components/misc';
+import { hasRatingDraft } from '@/utils/ratingDrafts';
 
 const trimString = (str, maxLength = 40) => {
   if (!str || typeof str !== 'string') return '';
@@ -30,6 +32,7 @@ export const RatingCard = ({
     const isVote = /^vote/i.test(rating.level.rerateNum);
     const userRating = rating.details?.find(detail => detail.userId === user?.id)?.rating || "";
     const { difficultyDict } = useDifficultyContext();
+    const hasDraft = Boolean(user?.id && rating?.id && hasRatingDraft(user.id, rating.id));
     // Calculate averages
     const managerRatings = 
     trimString(
@@ -178,8 +181,15 @@ export const RatingCard = ({
           <div className="rating-card-actions">
             <button 
               onClick={() => setSelectedRating(rating)} 
-              className="view-details-btn"
+              className={`view-details-btn${hasDraft ? ' has-draft' : ''}`}
             >
+              {hasDraft && (
+                <DraftIcon
+                  size={16}
+                  color="currentColor"
+                  title={t('rating.ratingCard.tooltips.savedDraft')}
+                />
+              )}
               {t('rating.ratingCard.buttons.viewDetails')}
             </button>
             {hasFlag(user, permissionFlags.SUPER_ADMIN) && (

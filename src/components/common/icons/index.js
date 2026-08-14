@@ -68,6 +68,7 @@ import { HeartIcon } from './HeartIcon';
 import { CopyIcon } from './CopyIcon';
 import GraphIcon from './GraphIcon';
 import { RewindIcon } from './RewindIcon';
+import { DraftIcon } from './DraftIcon';
 export {
     DefaultAvatar,
     DiscordIcon,
@@ -138,4 +139,5 @@ export {
     CopyIcon,
     GraphIcon,
     RewindIcon,
+    DraftIcon,
 }

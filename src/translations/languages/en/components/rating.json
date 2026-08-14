@@ -11,6 +11,7 @@
       "rerateReason": "Rerate Reason:",
       "yourRating": "Your Rating:",
       "yourComment": "Your Comment:",
+      "savedDraft": "Saved draft",
       "otherRatings": "Other Ratings:",
       "noRatings": "No ratings yet",
       "adminRatings": "Manager Ratings",
@@ -47,7 +48,14 @@
       "communityComment": "Please provide a reason for your rating..."
     },
     "confirmations": {
-      "deleteRating": "Are you sure you want to delete this rating from {{username}}?"
+      "deleteRating": "Are you sure you want to delete this rating from {{username}}?",
+      "unsavedDraft": {
+        "title": "Unsaved rating",
+        "body": "Save a draft for later, discard your changes, or stay and keep editing.",
+        "save": "Save draft",
+        "discard": "Discard",
+        "cancel": "Cancel"
+      }
     },
     "messages": {
       "ratingBanned": "You are not allowed to rate",
@@ -74,7 +82,8 @@
       "expandReason": "Click to expand",
       "deleteRating": "Delete rating",
       "lastUpdated": "Last time this rating was modified",
-      "copyLink": "Copy Link"
+      "copyLink": "Copy Link",
+      "savedDraft": "Saved draft"
     },
     "buttons": {
       "viewDetails": "View Details",
