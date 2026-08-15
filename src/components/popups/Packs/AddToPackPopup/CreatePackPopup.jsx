@@ -70,24 +70,10 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
       };
       reader.readAsDataURL(file);
       
-      toast.success(t('packPopups.createPack.success.iconSelected'), {
-        duration: 3000,
-        position: 'top-right',
-        style: {
-          background: '#10b981',
-          color: '#ffffff',
-        },
-      });
+      toast.success(t('packPopups.createPack.success.iconSelected'));
     } catch (error) {
       console.error('Error processing icon:', error);
-      toast.error(t('packPopups.createPack.errors.iconProcessFailed'), {
-        duration: 4000,
-        position: 'top-right',
-        style: {
-          background: '#ef4444',
-          color: '#ffffff',
-        },
-      });
+      toast.error(t('packPopups.createPack.errors.iconProcessFailed'));
     } finally {
       setUploadingIcon(false);
     }
@@ -126,25 +112,11 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
             },
           });
           
-          toast.success(t('packPopups.createPack.success.iconUploaded'), {
-            duration: 3000,
-            position: 'top-right',
-            style: {
-              background: '#10b981',
-              color: '#ffffff',
-            },
-          });
+          toast.success(t('packPopups.createPack.success.iconUploaded'));
         } catch (iconError) {
           console.error('Error uploading pack icon:', iconError);
           const errorMessage = getCdnErrorMessage(iconError, t('packPopups.createPack.errors.iconUploadFailed'));
-          toast.error(errorMessage, {
-            duration: 4000,
-            position: 'top-right',
-            style: {
-              background: '#ef4444',
-              color: '#ffffff',
-            },
-          });
+          toast.error(errorMessage);
         }
       }
 
