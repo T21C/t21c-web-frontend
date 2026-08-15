@@ -46,6 +46,7 @@ const ROUTE_DOCUMENT_META = [
   { path: '/register', titleKey: 'login.meta.title', descriptionKey: 'login.meta.description', noindex: true },
   { path: '/forgot-password', titleKey: 'forgotPassword.meta.title', descriptionKey: 'login.meta.description', noindex: true },
   { path: '/submission/level', titleKey: 'submission.meta.title', descriptionKey: 'submission.meta.description', noindex: true },
+  { path: '/submission/pass/calculator', titleKey: 'passSubmission.calculator.meta.title', descriptionKey: 'passSubmission.calculator.meta.description', noindex: true },
   { path: '/submission/pass', titleKey: 'submission.meta.title', descriptionKey: 'submission.meta.description', noindex: true },
   { path: '/submission', titleKey: 'submission.meta.title', descriptionKey: 'submission.meta.description', noindex: true },
   { path: '/admin/submissions', titleKey: 'submissionManagement.meta.title', descriptionKey: 'submissionManagement.meta.description', noindex: true },

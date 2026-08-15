@@ -69,6 +69,9 @@ import { CopyIcon } from './CopyIcon';
 import GraphIcon from './GraphIcon';
 import { RewindIcon } from './RewindIcon';
 import { DraftIcon } from './DraftIcon';
+import { CalculatorIcon } from './CalculatorIcon';
+import { ImportIcon } from './ImportIcon';
+import { CompareIcon } from './CompareIcon';
 export {
     DefaultAvatar,
     DiscordIcon,
@@ -140,4 +143,7 @@ export {
     GraphIcon,
     RewindIcon,
     DraftIcon,
+    CalculatorIcon,
+    ImportIcon,
+    CompareIcon,
 }

@@ -1,0 +1,117 @@
+/* tuf-search: #JudgementInputs #passCoreForm #judgementInputs */
+.judgement-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  font-size: 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  padding: 1rem;
+  border-radius: 5px;
+  margin: 1rem 0;
+  background-color: rgba(255, 255, 255, 0.03);
+  color: var(--color-white, #fff);
+}
+
+.judgement-inputs .judgement-inputs__row {
+  display: flex;
+  gap: 2rem;
+  justify-content: space-around;
+}
+
+.judgement-inputs .judgement-inputs__row--bottom {
+  justify-content: center;
+}
+
+.judgement-inputs .judgement-inputs__field {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.judgement-inputs .judgement-inputs__row--top .judgement-inputs__field:nth-child(1) {
+  flex: 4;
+}
+
+.judgement-inputs .judgement-inputs__row--top .judgement-inputs__field:nth-child(2) {
+  flex: 5;
+}
+
+.judgement-inputs .judgement-inputs__row--top .judgement-inputs__field:nth-child(3) {
+  flex: 4;
+}
+
+.judgement-inputs .judgement-inputs__row--bottom .judgement-inputs__field {
+  max-width: 7rem;
+  flex: 1;
+}
+
+.judgement-inputs .judgement-inputs__field input {
+  width: 100%;
+  padding: 0.1rem 0.2rem;
+  font-size: 1rem;
+  font-weight: bold;
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 0;
+  border-bottom: 3px solid rgba(255, 255, 255, 0.18);
+  outline: none;
+}
+
+.pass-core-form .judgement-inputs .judgement-inputs__field input {
+  width: 100%;
+  padding: 0.1rem 0.2rem;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.judgement-inputs .judgement-inputs__field input:focus {
+  border-bottom-color: rgba(255, 255, 255, 0.28);
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.judgement-inputs .judgement-inputs__row--top .judgement-inputs__field:nth-child(1) input::placeholder {
+  color: var(--color-marv, #fcff4d);
+  opacity: 0.5;
+}
+
+.judgement-inputs .judgement-inputs__row--top .judgement-inputs__field:nth-child(2) input::placeholder {
+  color: var(--color-perf, #5fff4e);
+  opacity: 0.5;
+}
+
+.judgement-inputs .judgement-inputs__row--top .judgement-inputs__field:nth-child(3) input::placeholder {
+  color: var(--color-great, #fcff4d);
+  opacity: 0.5;
+}
+
+.judgement-inputs .judgement-inputs__row--bottom .judgement-inputs__field:nth-child(1) input::placeholder {
+  color: var(--color-early-2, #ff0000);
+  opacity: 0.5;
+}
+
+.judgement-inputs .judgement-inputs__row--bottom .judgement-inputs__field:nth-child(2) input::placeholder {
+  color: var(--color-early-1, #ff6f4d);
+  opacity: 0.5;
+}
+
+.judgement-inputs .judgement-inputs__row--bottom .judgement-inputs__field:nth-child(3) input::placeholder {
+  color: var(--color-late-1, #ff6f4d);
+  opacity: 0.5;
+}
+
+.judgement-inputs .judgement-inputs__summary {
+  display: flex;
+  justify-content: space-around;
+  gap: 2rem;
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .judgement-inputs .judgement-inputs__field {
+    flex-direction: column;
+  }
+
+  .judgement-inputs .judgement-inputs__row {
+    gap: 0.5rem;
+  }
+}

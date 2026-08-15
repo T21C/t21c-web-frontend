@@ -4,7 +4,7 @@
   border-radius: 8px;
   background-color: var(--color-black, #1a1a1a);
   background-size: contain;
-  background-position: center -80px;
+  background-position: center 0;
   background-repeat: no-repeat;
   display: flex;
   flex-direction: column;
@@ -267,6 +267,32 @@
   text-align: center;
 }
 
+.pass-core-form .level-info-actions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.pass-core-form .accuracy-wrap {
+  display: flex;
+  align-items: stretch;
+  gap: 0.5rem;
+}
+
+.pass-core-form .accuracy-wrap .judgement-inputs {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.pass-core-form .judgement-tool-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  justify-content: flex-start;
+  padding-top: 1rem;
+  flex-shrink: 0;
+}
+
 .pass-core-form .level-icon {
   width: 2.5rem;
   height: 2.5rem;
@@ -369,101 +395,6 @@
   cursor: help;
 }
 
-.pass-core-form .accuracy {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  font-size: 1rem;
-  border: 2px solid rgba(255, 255, 255, 0.18);
-  padding: 1rem;
-  border-radius: 5px;
-  margin: 1rem 0;
-  background-color: rgba(255, 255, 255, 0.03);
-  color: var(--color-white, #fff);
-}
-
-.pass-core-form .accuracy .top,
-.pass-core-form .accuracy .bottom {
-  display: flex;
-  gap: 2rem;
-  justify-content: space-around;
-}
-
-.pass-core-form .accuracy .top input,
-.pass-core-form .accuracy .bottom input {
-  padding: 0;
-  width: 100%;
-}
-
-.pass-core-form .accuracy .top .each-accuracy,
-.pass-core-form .accuracy .bottom .each-accuracy {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  white-space: nowrap;
-}
-
-.pass-core-form .accuracy .top .each-accuracy:nth-child(1) {
-  flex: 4;
-}
-.pass-core-form .accuracy .top .each-accuracy:nth-child(2) {
-  flex: 5;
-}
-.pass-core-form .accuracy .top .each-accuracy:nth-child(3) {
-  flex: 4;
-}
-
-.pass-core-form .accuracy .bottom .each-accuracy:nth-child(1),
-.pass-core-form .accuracy .bottom .each-accuracy:nth-child(2),
-.pass-core-form .accuracy .bottom .each-accuracy:nth-child(3) {
-  max-width: 7rem;
-  flex: 1;
-}
-
-.pass-core-form .accuracy .top .each-accuracy:nth-child(1) input::placeholder {
-  color: var(--color-marv);
-  opacity: 0.5;
-}
-.pass-core-form .accuracy .top .each-accuracy:nth-child(2) input::placeholder {
-  color: var(--color-perf);
-  opacity: 0.5;
-}
-.pass-core-form .accuracy .top .each-accuracy:nth-child(3) input::placeholder {
-  color: var(--color-great);
-  opacity: 0.5;
-}
-
-.pass-core-form .accuracy .bottom .each-accuracy:nth-child(1) input::placeholder {
-  color: var(--color-early-2);
-  opacity: 0.5;
-}
-.pass-core-form .accuracy .bottom .each-accuracy:nth-child(2) input::placeholder {
-  color: var(--color-early-1);
-  opacity: 0.5;
-}
-.pass-core-form .accuracy .bottom .each-accuracy:nth-child(3) input::placeholder {
-  color: var(--color-late-1);
-  opacity: 0.5;
-}
-
-.pass-core-form .accuracy .top .each-accuracy input,
-.pass-core-form .accuracy .bottom .each-accuracy input {
-  font-size: 1rem;
-  padding: 0.1rem 0.2rem;
-  font-weight: bold;
-}
-
-.pass-core-form .accuracy .bottom {
-  justify-content: center;
-}
-
-.pass-core-form .accuracy .acc-score {
-  display: flex;
-  justify-content: space-around;
-  gap: 2rem;
-  font-weight: bold;
-}
-
 /* Direct child only: pass submission page. Edit popup uses `.button-group .submit` (styled in editpasspopup.css). */
 .pass-core-form .info > .submit {
   display: block;
@@ -498,10 +429,6 @@
   .pass-core-form .info input {
     padding: 0.75rem 0.5rem;
     font-size: 1rem;
-  }
-
-  .pass-core-form .accuracy .each-accuracy {
-    flex-direction: column;
   }
 
   .pass-core-form .info .youtube-input {
@@ -616,8 +543,14 @@
     font-size: 0.8rem;
   }
 
-  .pass-core-form .accuracy .top, .pass-core-form .accuracy .bottom {
-    gap: 0.5rem;
+  .pass-core-form .accuracy-wrap {
+    flex-direction: column;
+  }
+
+  .pass-core-form .judgement-tool-actions {
+    flex-direction: row;
+    padding-top: 0;
+    justify-content: flex-end;
   }
 
   .pass-core-form .fetch-icon {

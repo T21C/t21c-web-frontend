@@ -86,7 +86,21 @@ function pinInputDraftsFromPins(pins) {
   };
 }
 
-export const AdminLevelXaccCurvePopup = ({ level, onClose, onSaved }) => {
+/**
+ * @param {object} props
+ * @param {object} props.level Level (or calculator sandbox level) to edit curve for
+ * @param {() => void} props.onClose
+ * @param {(patch: object) => void} [props.onSaved] Admin save callback
+ * @param {boolean} [props.sandbox] When true, Apply returns meta via onApply — no API write
+ * @param {(meta: object | null) => void} [props.onApply] Sandbox apply callback
+ */
+export const AdminLevelXaccCurvePopup = ({
+  level,
+  onClose,
+  onSaved,
+  sandbox = false,
+  onApply,
+}) => {
   const { t } = useTranslation(['components', 'pages']);
   const { difficultyDict } = useDifficultyContext();
   const baseScore = useMemo(
@@ -983,6 +997,36 @@ export const AdminLevelXaccCurvePopup = ({ level, onClose, onSaved }) => {
     );
   };
 
+  const buildCurveMetaPayload = (committed, saveFit) => ({
+    poleOffset: saveFit.derivedE,
+    topMultiplier: saveFit.derivedG,
+    cutoff: XACC_CURVE_DEFAULTS.cutoff,
+    editor: serializeXaccCurveEditorState({
+      pinInputMode,
+      disablePP,
+      accXDisplay: committed.accXDisplay,
+      scoreXDisplay: committed.scoreXDisplay,
+      accYDisplay: committed.accYDisplay,
+      scoreYDisplay: committed.scoreYDisplay,
+      pin1Judgements,
+      pin2Judgements,
+      pin1SourcePassId,
+      pin2SourcePassId,
+    }),
+    pins: {
+      accX: committed.accX,
+      accY: committed.accY,
+      scoreX: committed.scoreX,
+      scoreY: committed.scoreY,
+      multX: saveFit.multX,
+      multY: saveFit.multY,
+      missesX: pinMissContext.missesX,
+      missesY: pinMissContext.missesY,
+      hitTiles: pinMissContext.hitTiles,
+      scoresAreXaccMultipliers: true,
+    },
+  });
+
   const handleSave = async (e) => {
     e.preventDefault();
     pinInputFocusRef.current.clear();
@@ -1042,39 +1086,46 @@ export const AdminLevelXaccCurvePopup = ({ level, onClose, onSaved }) => {
       return;
     }
     setError(null);
+
+    if (sandbox) {
+      applyCommittedPinState(committed);
+      if (saveAsDefaults) {
+        // Explicit site-default curve for calculator (may differ from level meta).
+        const defaultsFit = pinSlidersToXaccCurve(
+          committed.accXDisplay,
+          committed.scoreXDisplay,
+          committed.accYDisplay,
+          committed.scoreYDisplay,
+          baseScore,
+          scoreCapForFit,
+          saveOverrides,
+          {
+            poleOffset: XACC_CURVE_DEFAULTS.poleOffset,
+            topMultiplier: XACC_CURVE_DEFAULTS.topMultiplier,
+          },
+          fitContext,
+        );
+        const meta = defaultsFit.ok
+          ? buildCurveMetaPayload(committed, defaultsFit)
+          : {
+              poleOffset: XACC_CURVE_DEFAULTS.poleOffset,
+              topMultiplier: XACC_CURVE_DEFAULTS.topMultiplier,
+              cutoff: XACC_CURVE_DEFAULTS.cutoff,
+            };
+        onApply?.(meta);
+      } else {
+        onApply?.(buildCurveMetaPayload(committed, saveFit));
+      }
+      onClose();
+      return;
+    }
+
     setSaving(true);
     try {
       const payload = saveAsDefaults
         ? { xaccCurveMeta: null }
         : {
-            xaccCurveMeta: {
-              poleOffset: saveFit.derivedE,
-              topMultiplier: saveFit.derivedG,
-              editor: serializeXaccCurveEditorState({
-                pinInputMode,
-                disablePP,
-                accXDisplay,
-                scoreXDisplay,
-                accYDisplay,
-                scoreYDisplay,
-                pin1Judgements,
-                pin2Judgements,
-                pin1SourcePassId,
-                pin2SourcePassId,
-              }),
-              pins: {
-                accX: committed.accX,
-                accY: committed.accY,
-                scoreX: committed.scoreX,
-                scoreY: committed.scoreY,
-                multX: saveFit.multX,
-                multY: saveFit.multY,
-                missesX: pinMissContext.missesX,
-                missesY: pinMissContext.missesY,
-                hitTiles: pinMissContext.hitTiles,
-                scoresAreXaccMultipliers: true,
-              },
-            },
+            xaccCurveMeta: buildCurveMetaPayload(committed, saveFit),
           };
       const res = await api.patch(
         `${routes.database.levels.root()}/${level.id}/xacc-curve`,
@@ -1176,7 +1227,11 @@ export const AdminLevelXaccCurvePopup = ({ level, onClose, onSaved }) => {
       >
         <div className="admin-level-xacc-curve-popup__header">
           <h2 id="admin-xacc-curve-title">
-            {t('levelPopups.edit.xaccCurve.title')}
+            {sandbox
+              ? t('levelPopups.edit.xaccCurve.sandboxTitle', {
+                  defaultValue: 'Score curve (calculator)',
+                })
+              : t('levelPopups.edit.xaccCurve.title')}
           </h2>
           <CloseButton
             variant="inline"
@@ -1188,7 +1243,12 @@ export const AdminLevelXaccCurvePopup = ({ level, onClose, onSaved }) => {
           />
         </div>
         <p className="admin-level-xacc-curve-popup__hint">
-          {t('levelPopups.edit.xaccCurve.hint')}
+          {sandbox
+            ? t('levelPopups.edit.xaccCurve.sandboxHint', {
+                defaultValue:
+                  'Adjust pin accuracy and scores; the graph updates live. Apply uses this curve only in the calculator — the level is not saved.',
+              })
+            : t('levelPopups.edit.xaccCurve.hint')}
         </p>
         <p className="admin-level-xacc-curve-popup__hint admin-level-xacc-curve-popup__hint--constraint">
           {t('levelPopups.edit.xaccCurve.constraintHint', {
@@ -1481,9 +1541,13 @@ export const AdminLevelXaccCurvePopup = ({ level, onClose, onSaved }) => {
               className="admin-level-xacc-curve-popup__btn admin-level-xacc-curve-popup__btn--primary btn-fill-primary"
               disabled={saving || !hasChanges || (!saveAsDefaults && !fitOk)}
             >
-              {saving
-                ? t('levelPopups.edit.xaccCurve.saving')
-                : t('levelPopups.edit.xaccCurve.save')}
+              {sandbox
+                ? t('levelPopups.edit.xaccCurve.apply', {
+                    defaultValue: 'Apply',
+                  })
+                : saving
+                  ? t('levelPopups.edit.xaccCurve.saving')
+                  : t('levelPopups.edit.xaccCurve.save')}
             </button>
           </div>
         </form>
