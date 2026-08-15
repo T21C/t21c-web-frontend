@@ -44,12 +44,12 @@
     "name": {
       "label": "包名",
       "placeholder": "输入包名……",
-      "help": "为你的包选择一个描述性名称"
+      "help": "为你的包添加名称"
     },
     "description": {
       "label": "描述",
-      "placeholder": "可选：简要介绍这个地图包……",
-      "help": "可选：告诉别人这个地图包是什么（最多 2000 个字符）"
+      "placeholder": "可选的简单描述",
+      "help": "可选：告诉别人这个地图包的内容（最多2000字符）"
     },
     "icon": {
       "label": "地图包图标",
@@ -101,8 +101,8 @@
     },
     "description": {
       "label": "描述",
-      "placeholder": "可选：简要介绍这个地图包……",
-      "help": "可选：告诉别人这个地图包是什么（最多 2000 个字符）"
+      "placeholder": "可选的简单描述",
+      "help": "可选：告诉别人这个地图包的内容（最多2000字符）"
     },
     "icon": {
       "label": "地图包图标",
@@ -232,20 +232,20 @@
     "addFolder": "添加文件夹",
     "addLevels": "添加关卡",
     "move": "移动到此",
-    "submitting": "保存中…"
+    "submitting": "保存中……"
   },
   "addLevelsConfirm": {
     "title": "部分关卡无法添加",
     "titleAllInvalid": "无法添加任何关卡",
     "message": "可添加 {{validCount}} 个关卡。以下关卡无法添加：",
-    "messageAllInvalid": "指定的关卡均无法添加：",
+    "messageAllInvalid": "这些关卡无法被添加：",
     "invalidHeading": "无法添加（{{count}}）",
     "proceed": "添加 {{count}} 个关卡",
-    "submitting": "添加中…",
+    "submitting": "添加中……",
     "reasons": {
       "notFound": "关卡不存在",
       "alreadyInPack": "已在此位置",
-      "quotaExceeded": "已达地图包项目上限"
+      "quotaExceeded": "已达地图包项目数量上限"
     }
   }
 }

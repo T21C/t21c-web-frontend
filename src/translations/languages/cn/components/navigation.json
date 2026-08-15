@@ -45,7 +45,7 @@
         "aboutUs": "关于我们",
         "apiDocs": "API 文档",
         "assets": "资源",
-        "developers": "Developer Portal"
+        "developers": "开发者门户"
       },
       "user": {
         "myProfile": "个人资料",
@@ -65,7 +65,7 @@
         "tournaments": "赛事",
         "backups": "备份",
         "auditLog": "审核日志",
-        "curations": "精选谱面",
+        "curations": "精选关卡",
         "songs": "歌曲",
         "artists": "艺术家"
       }
@@ -75,6 +75,7 @@
     }
   },
   "languages": {
-    "comingSoon": "（即将到来）"
+    "comingSoon": "（即将到来）",
+    "helpTranslate": "参与网站翻译"
   }
 }

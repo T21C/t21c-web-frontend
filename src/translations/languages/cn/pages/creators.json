@@ -37,11 +37,11 @@
   "sortOptions": {
     "name": "名称",
     "chartsTotal": "总关卡数",
-    "chartsCharted": "参与制谱数",
-    "chartsVfxed": "参与特效制作数",
+    "chartsCharted": "参与采音数",
+    "chartsVfxed": "参与特效数",
     "chartsTeamed": "作为团队成员参与的关卡数",
     "totalChartClears": "总关卡通关次数",
-    "totalChartLikes": "总关卡点赞次数"
+    "totalChartLikes": "总关卡收藏次数"
   },
   "infiniteScroll": {
     "end": "你已到达底部！"
@@ -59,7 +59,7 @@
     "help": {
       "declined": "该创作者拒绝让自己的关卡展示在论坛中。",
       "pending": "等待创作者确认。新添加创作者的默认状态。",
-      "conditional": "该创作者同意在特定条件下展示。添加任何提交内容前请先协调。",
+      "conditional": "该创作者同意在特定条件下展示。添加任何提交内容前请先协商。",
       "allowed": "该创作者同意让自己的关卡展示在论坛中。"
     }
   },
@@ -97,20 +97,20 @@
       "header": "谱面",
       "empty": "该创作者暂时没有关卡。",
       "searchPlaceholder": "搜索该创作者的谱面……",
-      "expand": "展开谱面列表",
-      "collapse": "收起谱面列表",
+      "expand": "展开",
+      "collapse": "收起",
       "exportAs": "导出为",
-      "exportDisabled": "当前筛选条件下没有谱面。",
+      "exportDisabled": "无匹配结果。",
       "export": {
         "title": "导出 {{contextName}}",
-        "defaultContextName": "谱面",
-        "description": "下载 {{contextName}} 在当前筛选条件下的全部谱面表格。",
+        "defaultContextName": "关卡",
+        "description": "下载一份包含所有符合{{contextName}}条件的电子表格。",
         "export": "导出",
-        "exporting": "导出中…",
+        "exporting": "导出中……",
         "unavailable": "不可用",
-        "progress": "已收集 {{fetched}} / {{total}}…",
+        "progress": "已选中 {{total}} 个中的 {{fetched}} 个",
         "errors": {
-          "exportFailed": "导出失败，请重试。"
+          "exportFailed": "导出关卡信息失败。请重试。"
         }
       }
     },
@@ -142,9 +142,9 @@
         "levelsAsVfxer": "作为特效师参与的关卡数"
       },
       "content": {
-        "totalTilesMade": "放置砖块数",
+        "totalTilesMade": "采过的物量数",
         "totalLevelDurationMs": "总谱面时长",
-        "averageTilecount": "平均砖块数量",
+        "averageTilecount": "平均物量",
         "averageLevelLengthMs": "平均关卡长度",
         "averageBpm": "平均 BPM",
         "totalClearsOnLevels": "关卡总通关次数",
@@ -154,8 +154,8 @@
       "audience": {
         "uniquePlayersCleared": "通关过的玩家数",
         "worldsFirstsOnLevels": "关卡世界首通次数",
-        "worldsFirstPPsOnLevels": "关卡世界首杀数",
-        "totalTilesPlayedOnLevels": "总击打砖块数"
+        "worldsFirstPPsOnLevels": "关卡世界首杀次数",
+        "totalTilesPlayedOnLevels": "总经过砖块数"
       },
       "timeline": {
         "firstLevelAt": "首个谱面",

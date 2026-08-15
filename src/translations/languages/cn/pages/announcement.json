@@ -38,6 +38,7 @@
     "emptyInProgress": "暂无进行中的公告",
     "emptyRecent": "暂无近期公告",
     "noAnnouncements": "暂无公告",
+    "loading": "发送进度加载中……",
     "mergedNote": "包含进行中项目",
     "status": {
       "queued": "已加入队列",

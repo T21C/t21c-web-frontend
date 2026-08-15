@@ -11,7 +11,7 @@
     "verificationState": "认证状态"
   },
   "sort": {
-    "label": "按……排序",
+    "label": "排序依据",
     "nameAsc": "名称（A-Z）",
     "nameDesc": "名称（Z-A）",
     "idAsc": "ID（由低到高）",

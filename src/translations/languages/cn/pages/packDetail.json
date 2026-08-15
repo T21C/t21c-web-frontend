@@ -6,7 +6,7 @@
   "loading": "正在加载地图包详细信息……",
   "by": "创建者：",
   "description": {
-    "label": "描述",
+    "label": "简介",
     "readMore": "展开",
     "showLess": "收起"
   },
@@ -47,8 +47,8 @@
     "estimatedShort": "（预计，缺少 {{count}} 个）"
   },
   "folderProgress": {
-    "label": "{{percent}}% ({{cleared}}/{{total}})",
-    "aria": "已通关 {{percent}}%，{{cleared}} / {{total}} 关"
+    "label": "{{percent}}%（{{cleared}}/{{total}}）",
+    "aria": "已完成{{percent}}%，已通过{{cleared}}个关卡，共{{total}}个"
   },
   "createFolder": {
     "prompt": "输入新文件夹名称：",
@@ -58,7 +58,7 @@
   "addLevel": {
     "prompt": "输入关卡ID：",
     "success": "关卡添加成功",
-    "partialSuccess": "已添加 {{added}} 个关卡（跳过 {{skipped}} 个）",
+    "partialSuccess": "已添加 {{added}} 个关卡（已跳过 {{skipped}} 个）",
     "error": "关卡添加失败"
   },
   "renameFolder": {

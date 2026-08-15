@@ -33,7 +33,9 @@
       }
     },
     "submitter": "提交者：",
-    "uploadTime": "上传时间"
+    "uploadTime": "上传时间",
+    "videoLink": "视频链接：",
+    "videoLinkPlaceholder": "YouTube 或 Bilibili 链接"
   },
   "playerAssignment": {
     "title": "分配玩家",
@@ -61,13 +63,16 @@
     "profileUpdate": "无法通过个人资料更新通关记录",
     "needProfileCreation": "通过前需创建个人资料",
     "patch": "更新失败",
-    "invalidKeyCount": "按键数目必须为正整数"
+    "invalidKeyCount": "按键数目必须为正整数",
+    "videoLinkUpdateFailed": "视频链接更新失败",
+    "videoLinkRequired": "链接不能为空"
   },
   "success": {
     "playerAssigned": "成功分配给 {{playerName}}",
     "autoAllow": "已自动通过 {{count}} 项通关记录",
     "playerCreated": "成功创建并分配 {{playerName}}",
-    "patch": "已更新"
+    "patch": "提交信息已更新",
+    "videoLinkUpdated": "视频链接已更新"
   },
   "edit": {
     "edit": "编辑",
