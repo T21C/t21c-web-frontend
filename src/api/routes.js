@@ -332,6 +332,9 @@ export const routes = {
       byId: (id) => `/v2/database/passes/byId/${enc(id)}`,
       byIdPath: (id) => `/v2/database/passes/${enc(id)}`,
       level: (levelId) => `/v2/database/passes/level/${enc(levelId)}`,
+      levelPlacement: (levelId) => `/v2/database/passes/level/${enc(levelId)}/placement`,
+      levelCalculatorPlayer: (levelId) =>
+        `/v2/database/passes/level/${enc(levelId)}/calculator-player`,
       unannouncedNew: () => '/v2/database/passes/unannounced/new',
       feelingRating: (id) => `/v2/database/passes/${enc(id)}/feeling-rating`,
       toggleHidden: (id) => `/v2/database/passes/${enc(id)}/toggle-hidden`,

@@ -12,6 +12,7 @@ const PassDetailPage = lazy(() => import('./common/Pass/PassDetailPage/PassDetai
 const LeaderboardPage = lazy(() => import('./common/LeaderboardPage/LeaderboardPage'));
 const LevelSubmissionPage = lazy(() => import('./submissions/LevelSubmissionPage/LevelSubmissionPage'));
 const PassSubmissionPage = lazy(() => import('./submissions/PassSubmissionPage/PassSubmissionPage'));
+const PassScoreCalculatorPage = lazy(() => import('./submissions/PassSubmissionPage/PassScoreCalculatorPage'));
 const PackPage = lazy(() => import('./common/Pack/PackPage/PackPage'));
 const PackDetailPage = lazy(() => import('./common/Pack/PackDetailPage/PackDetailPage'));
 const ArtistListPage = lazy(() => import('./common/Artist/ArtistListPage/ArtistListPage'));
@@ -87,6 +88,7 @@ export {
     PassDetailPage,
     LevelSubmissionPage,
     PassSubmissionPage,
+    PassScoreCalculatorPage,
     LeaderboardPage,
     PackPage,
     PackDetailPage,

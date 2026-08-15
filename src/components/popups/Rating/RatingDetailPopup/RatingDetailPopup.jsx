@@ -10,7 +10,7 @@ import { RatingInput } from '@/components/common/selectors';
 import api from '@/utils/api';
 import { useTranslation } from 'react-i18next';
 import { ReferencesButton, CloseButton } from '@/components/common/buttons';
-import { ExternalLinkIcon, DownloadIcon } from '@/components/common/icons';
+import { ExternalLinkIcon, DownloadIcon, DraftIcon } from '@/components/common/icons';
 import { formatCreatorDisplay } from "@/utils/Utility";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { hasAnyFlag, hasFlag, permissionFlags } from "@/utils/UserPermissions";
@@ -19,6 +19,11 @@ import autoratercato from "@/assets/icons/autorater cato.png";
 import { Tooltip } from "react-tooltip";
 import { CommentFormatter } from '@/components/misc';
 import { useViewDurationTracker } from '@/utils/viewDurationTracker';
+import {
+  getRatingDraft,
+  setRatingDraft,
+  clearRatingDraft,
+} from '@/utils/ratingDrafts';
 // Cache for video data
 const videoCache = new Map();
 
@@ -76,18 +81,29 @@ export const RatingDetailPopup = ({
   const [showSecondRatings, setShowSecondRatings] = useState(false);
   const [isAutorating, setIsAutorating] = useState(false);
   const [isCommentFieldOpen, setIsCommentFieldOpen] = useState(false);
+  const [showUnsavedDraftPrompt, setShowUnsavedDraftPrompt] = useState(false);
+  const [hasSavedDraft, setHasSavedDraft] = useState(false);
 
   const popupRef = useRef(null);
   const detailsHydratedSeededRef = useRef(false);
   const seededRatingIdRef = useRef(null);
   const hasUnsavedChangesRef = useRef(false);
+  const draftViewDurationRef = useRef(0);
   const { snapshotSeconds: snapshotViewDurationSeconds } = useViewDurationTracker(
     selectedRating?.id ?? null
   );
 
   useBodyScrollLock(true);
 
+  const resolveViewDurationSeconds = useCallback(() => {
+    return Math.max(
+      draftViewDurationRef.current,
+      snapshotViewDurationSeconds()
+    );
+  }, [snapshotViewDurationSeconds]);
+
   const initiateClose = useCallback(() => {
+    setShowUnsavedDraftPrompt(false);
     setIsExiting(true);
     // Wait for exit animation to complete
     setTimeout(() => {
@@ -104,6 +120,8 @@ export const RatingDetailPopup = ({
       setIsExiting(false);
       seededRatingIdRef.current = null;
       detailsHydratedSeededRef.current = false;
+      draftViewDurationRef.current = 0;
+      setHasSavedDraft(false);
     }, 200); // Match the exit animation duration
   }, [setSelectedRating]);
 
@@ -111,13 +129,49 @@ export const RatingDetailPopup = ({
     if (isAnimating) return; // Prevent closing during entry animation
 
     if (hasUnsavedChanges) {
-      if (window.confirm(t('rating.detailPopup.errors.unsavedChanges'))) {
-        initiateClose();
+      if (showingConfirmed) {
+        // Historical confirmed view: no draft persistence.
+        if (window.confirm(t('rating.detailPopup.errors.unsavedChanges'))) {
+          initiateClose();
+        }
+        return;
       }
-    } else {
-      initiateClose();
+      setShowUnsavedDraftPrompt(true);
+      return;
     }
-  }, [isAnimating, hasUnsavedChanges, t, initiateClose]);
+    initiateClose();
+  }, [isAnimating, hasUnsavedChanges, showingConfirmed, t, initiateClose]);
+
+  const handleCancelDraftPrompt = useCallback(() => {
+    setShowUnsavedDraftPrompt(false);
+  }, []);
+
+  const handleSaveDraftAndClose = useCallback(() => {
+    if (!showingConfirmed && currentUser?.id && selectedRating?.id) {
+      setRatingDraft(currentUser.id, selectedRating.id, {
+        rating: pendingRating,
+        comment: pendingComment,
+        viewDurationSeconds: resolveViewDurationSeconds(),
+      });
+    }
+    initiateClose();
+  }, [
+    showingConfirmed,
+    currentUser?.id,
+    selectedRating?.id,
+    pendingRating,
+    pendingComment,
+    resolveViewDurationSeconds,
+    initiateClose,
+  ]);
+
+  const handleDiscardDraftAndClose = useCallback(() => {
+    if (!showingConfirmed && currentUser?.id && selectedRating?.id) {
+      clearRatingDraft(currentUser.id, selectedRating.id);
+    }
+    draftViewDurationRef.current = 0;
+    initiateClose();
+  }, [showingConfirmed, currentUser?.id, selectedRating?.id, initiateClose]);
 
   // One history entry per open cycle; cleaned up on Back or programmatic close.
   // Must not re-push when `selectedRating` object identity changes (SSE / parent re-renders).
@@ -126,6 +180,7 @@ export const RatingDetailPopup = ({
   useEffect(() => {
     if (!selectedRating) return undefined;
     setIsExiting(false);
+    setShowUnsavedDraftPrompt(false);
     setIsAnimating(true);
     const timer = setTimeout(() => {
       setIsAnimating(false);
@@ -135,19 +190,24 @@ export const RatingDetailPopup = ({
 
   useEffect(() => {
     const handleEscKey = (event) => {
-      if (event.key === 'Escape' && !event.defaultPrevented && !isAnimating) {
-        handleClose();
+      if (event.key !== 'Escape' || event.defaultPrevented || isAnimating) return;
+      if (showUnsavedDraftPrompt) {
+        event.preventDefault();
+        handleCancelDraftPrompt();
+        return;
       }
+      handleClose();
     };
 
     document.addEventListener('keydown', handleEscKey);
     return () => document.removeEventListener('keydown', handleEscKey);
-  }, [handleClose, isAnimating]);
+  }, [handleClose, handleCancelDraftPrompt, isAnimating, showUnsavedDraftPrompt]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (isAnimating) return; // Prevent closing during animations
-      
+      if (showUnsavedDraftPrompt) return;
+
       if (popupRef.current && 
           !popupRef.current.contains(event.target) && 
           event.target.classList.contains('rating-popup-overlay') &&
@@ -159,7 +219,7 @@ export const RatingDetailPopup = ({
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [handleClose, isAnimating]);
+  }, [handleClose, isAnimating, showUnsavedDraftPrompt]);
 
   useEffect(() => {
     const handleBeforeUnload = (e) => {
@@ -220,11 +280,30 @@ export const RatingDetailPopup = ({
     if (isNewOpen) {
       seededRatingIdRef.current = selectedRating.id;
       detailsHydratedSeededRef.current = detailsAreFull;
-      setPendingRating(rating);
-      setPendingComment(comment);
+      draftViewDurationRef.current = 0;
+
+      let nextRating = rating;
+      let nextComment = comment;
+      let restoredDraft = false;
+      if (!showingConfirmed && currentUser?.id) {
+        const draft = getRatingDraft(currentUser.id, selectedRating.id);
+        if (
+          draft &&
+          (draft.rating !== rating || draft.comment !== comment)
+        ) {
+          nextRating = draft.rating;
+          nextComment = draft.comment;
+          draftViewDurationRef.current = draft.viewDurationSeconds;
+          restoredDraft = true;
+        }
+      }
+      setHasSavedDraft(restoredDraft);
+
+      setPendingRating(nextRating);
+      setPendingComment(nextComment);
       setInitialRating(rating);
       setInitialComment(comment);
-      validateRating(rating);
+      validateRating(nextRating);
     } else if (detailsAreFull && !detailsHydratedSeededRef.current) {
       detailsHydratedSeededRef.current = true;
       if (!hasUnsavedChangesRef.current) {
@@ -242,7 +321,7 @@ export const RatingDetailPopup = ({
 
     setOtherRatings(details);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- seed once per open/hydrate; avoid pending loops
-  }, [selectedRating, currentUser?.id, selectedRating?.details]);
+  }, [selectedRating, currentUser?.id, selectedRating?.details, showingConfirmed]);
 
   useEffect(() => {
     const hasValidChanges = Boolean(
@@ -389,7 +468,7 @@ export const RatingDetailPopup = ({
       }
 
       const isCommunityRating = !isAdminRater();
-      const viewDurationSeconds = snapshotViewDurationSeconds();
+      const viewDurationSeconds = resolveViewDurationSeconds();
       const updatePayload = await updateRating(
         selectedRating.id,
         pendingRating,
@@ -437,6 +516,11 @@ export const RatingDetailPopup = ({
       setInitialComment(!pendingRating || pendingRating.trim() === '' ? '' : pendingComment);
       setHasUnsavedChanges(false);
       detailsHydratedSeededRef.current = true;
+      draftViewDurationRef.current = 0;
+      setHasSavedDraft(false);
+      if (!showingConfirmed && currentUser?.id) {
+        clearRatingDraft(currentUser.id, selectedRating.id);
+      }
     } catch (error) {
       console.error('[RatingDetailPopup] Save failed:', error);
       setSaveError(error.response?.data?.error || error.response?.data?.message || error.message || error.error || t('rating.detailPopup.errors.saveFailed'));
@@ -531,6 +615,53 @@ export const RatingDetailPopup = ({
           <ReferencesButton onClick={() => setShowReferences(true)} />
         </div>
       )}
+      {showUnsavedDraftPrompt && (
+        <div
+          className="rating-unsaved-draft-prompt__overlay"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              handleCancelDraftPrompt();
+            }
+          }}
+        >
+          <div
+            className="rating-unsaved-draft-prompt"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="rating-unsaved-draft-prompt-title"
+          >
+            <h3 id="rating-unsaved-draft-prompt-title" className="rating-unsaved-draft-prompt__title">
+              {t('rating.detailPopup.confirmations.unsavedDraft.title')}
+            </h3>
+            <p className="rating-unsaved-draft-prompt__body">
+              {t('rating.detailPopup.confirmations.unsavedDraft.body')}
+            </p>
+            <div className="rating-unsaved-draft-prompt__actions">
+              <button
+                type="button"
+                className="rating-unsaved-draft-prompt__btn rating-unsaved-draft-prompt__btn--save"
+                onClick={handleSaveDraftAndClose}
+              >
+                {t('rating.detailPopup.confirmations.unsavedDraft.save')}
+              </button>
+              <button
+                type="button"
+                className="rating-unsaved-draft-prompt__btn rating-unsaved-draft-prompt__btn--discard"
+                onClick={handleDiscardDraftAndClose}
+              >
+                {t('rating.detailPopup.confirmations.unsavedDraft.discard')}
+              </button>
+              <button
+                type="button"
+                className="rating-unsaved-draft-prompt__btn rating-unsaved-draft-prompt__btn--cancel"
+                onClick={handleCancelDraftPrompt}
+              >
+                {t('rating.detailPopup.confirmations.unsavedDraft.cancel')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <div className={`rating-popup ${isExiting ? 'exiting' : ''}`} ref={popupRef}>
         <CloseButton
           className="rating-popup-close"
@@ -548,6 +679,7 @@ export const RatingDetailPopup = ({
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="download-link"
+                style={{ minWidth: '24px' }}
               >
                 <DownloadIcon color="#ffffff" size={"24px"} strokeWidth={"2.5"} />
               </a>
@@ -640,7 +772,17 @@ export const RatingDetailPopup = ({
                 ) : user ? (
                   <div className="rating-field-group">
                     <div className="rating-field">
-                      <label>{t('rating.detailPopup.labels.yourRating')}</label>
+                      <label>
+                        {t('rating.detailPopup.labels.yourRating')}
+                        {hasSavedDraft && (
+                          <DraftIcon
+                            className="rating-draft-icon"
+                            size={16}
+                            color="var(--warning-color)"
+                            title={t('rating.detailPopup.labels.savedDraft')}
+                          />
+                        )}
+                      </label>
                       <div className="rating-input-container">
                         <RatingInput
                           value={pendingRating}
@@ -660,6 +802,14 @@ export const RatingDetailPopup = ({
                       <label>
                         {t('rating.detailPopup.labels.yourComment')}
                         {isCommentRequired && <span className="required-mark" data-tooltip-id="required-tooltip" />}
+                        {hasSavedDraft && (
+                          <DraftIcon
+                            className="rating-draft-icon"
+                            size={16}
+                            color="var(--warning-color)"
+                            title={t('rating.detailPopup.labels.savedDraft')}
+                          />
+                        )}
                       </label>
                       <textarea
                         value={pendingComment}

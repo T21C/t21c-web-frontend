@@ -193,9 +193,24 @@
   transition: background-color 0.2s;
 }
 
-.view-details-btn {
+.rating-card .view-details-btn {
   background: var(--btn-info);
   color: white;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.rating-card .view-details-btn.has-draft {
+  background: hsl(43, 100%, 36%);
+}
+
+.rating-card .view-details-btn:hover {
+  background: var(--btn-info-hover);
+}
+
+.rating-card .view-details-btn.has-draft:hover {
+  background: hsl(43, 100%, 31%);
 }
 
 .edit-level-btn {
@@ -211,12 +226,6 @@
 .edit-level-btn.loading {
   background: #3d8c40;
   cursor: not-allowed;
-}
-
-
-
-.view-details-btn:hover {
-  background: var(--btn-info-hover);
 }
 
 .edit-level-btn:hover {

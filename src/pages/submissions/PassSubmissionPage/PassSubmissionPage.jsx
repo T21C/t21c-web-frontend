@@ -1,59 +1,40 @@
 import { routes } from '@/api/routes';
 // tuf-search: #PassSubmissionPage #passSubmissionPage #submissions #passSubmission
 
-import "./passsubmission.css";
-import placeholder from "@/assets/placeholder/3.png";
-import { submitPass } from "@/utils/submissions/passSubmission";
-import { useEffect, useState, useRef, useMemo, useCallback } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
-import { FetchIcon } from "@/components/common/icons";
-import { hasAnyFlag, hasFlag, permissionFlags } from "@/utils/UserPermissions";
-import { Trans, useTranslation } from "react-i18next";
-import api from "@/utils/api";
-import { StagingModeWarning, MetaTags } from "@/components/common/display";
+import './passsubmission.css';
+import { submitPass } from '@/utils/submissions/passSubmission';
+import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { Trans, useTranslation } from 'react-i18next';
+import api from '@/utils/api';
+import { StagingModeWarning, MetaTags } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
-import { PlayerInput } from "@/components/common/selectors";
-import { useDifficultyContext } from "@/contexts/DifficultyContext";
-import RulePopup from "./RulePopup";
-import { difficultyRequiresPassKeyCount, formatCreatorDisplay, normalizeKeyCount } from "@/utils/Utility";
-import { getCookie, setCookie } from "@/utils/cookieUtils";
-import toast from "react-hot-toast";
-import { PassCoreForm } from "@/components/common/cores/PassCoreForm/PassCoreForm";
-import { usePassCoreForm } from "@/components/common/cores/PassCoreForm/usePassCoreForm";
-import { truncateString } from "@/utils/Utility";
-import { getSubmissionErrorMessage } from "@/utils/submissions/formErrors";
-import { resolveSubmissionVideoUrl } from "@/utils/resolveVideoUrl";
+import { useDifficultyContext } from '@/contexts/DifficultyContext';
+import RulePopup from './RulePopup';
+import { difficultyRequiresPassKeyCount, normalizeKeyCount, truncateString } from '@/utils/Utility';
+import { getCookie, setCookie } from '@/utils/cookieUtils';
+import toast from 'react-hot-toast';
+import { usePassCoreForm } from '@/components/common/cores/PassCoreForm/usePassCoreForm';
+import { getSubmissionErrorMessage } from '@/utils/submissions/formErrors';
+import { resolveSubmissionVideoUrl } from '@/utils/resolveVideoUrl';
 import {
   getPassJudgementHitCountFromForm,
   getEffectiveTilecount,
   isTilecountJudgementMismatch,
-} from "@/utils/passJudgementHitCount";
-import { normalizeLevelSearchQuery } from '@/utils/normalizeEntitySearchQuery';
-
+} from '@/utils/passJudgementHitCount';
+import { PASS_SUBMISSION_INITIAL_FORM } from './passSubmissionInitialForm';
+import { PassSubmissionCore } from './PassSubmissionCore';
+import { CalculatorIcon } from '@/components/common/icons';
 
 const PassSubmissionPage = () => {
-  const initialFormState = {
-    levelId: '',
-    videoLink: '',
-    playerId: '',
-    leaderboardName: '',
-    speed: '',
-    keyCount: '',
-    feelingRating: '',
-    expectedRating: '',
-    ePerfect: '',
-    perfect: '',
-    lPerfect: '',
-    tooEarly: '',
-    early: '',
-    late: '',
-    isNoHold: false,
-    isAdofaiV2: false,
-  };
-
-  const { t } = useTranslation('pages');
+  const { t } = useTranslation(['pages', 'common']);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { difficultyDict } = useDifficultyContext();
+  const { user } = useAuth();
+
   const pageMeta = useMemo(
     () =>
       buildStaticPageMeta({
@@ -64,49 +45,26 @@ const PassSubmissionPage = () => {
       }),
     [t, location.pathname],
   );
-  const { difficultyDict } = useDifficultyContext();
-  const { user } = useAuth();
-  const navigate = useNavigate();
 
   useEffect(() => {
-    if (hasAnyFlag(user, [permissionFlags.SUBMISSIONS_PAUSED, permissionFlags.BANNED]) || !hasFlag(user, permissionFlags.EMAIL_VERIFIED)) {
-      navigate('/submission')
+    if (
+      hasAnyFlag(user, [permissionFlags.SUBMISSIONS_PAUSED, permissionFlags.BANNED]) ||
+      !hasFlag(user, permissionFlags.EMAIL_VERIFIED)
+    ) {
+      navigate('/submission');
     }
-  }, [user]);
-
+  }, [user, navigate]);
 
   const [formStateKey, setFormStateKey] = useState(0);
   const [submission, setSubmission] = useState(false);
-  const [searchResults, setSearchResults] = useState([]);
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  const searchCancelTokenRef = useRef(null);
-  const dropdownRef = useRef(null);
-  const searchContainerRef = useRef(null);
-
-  // PlayerInput on this page does not offer creating new players; select an existing profile only.
-
-  const [searchInput, setSearchInput] = useState('');
-  const searchTimeoutRef = useRef(null);
-
-  // Add state for rules checkbox and popup
+  const [searchInput, setSearchInput] = useState(() => location.state?.searchInput || '');
   const [hasReadPassRules, setHasReadRules] = useState(() => {
-    // Initialize from cookie if available
     const savedRulesState = getCookie('hasReadPassRules');
     return savedRulesState === 'true';
   });
   const [showRulesPopup, setShowRulesPopup] = useState(false);
   const [showTilecountMismatchModal, setShowTilecountMismatchModal] = useState(false);
 
-  // Add color logic for FetchIcon
-  const getIconColor = () => {
-    if (!form.levelId) return "#ffc107";
-    if (levelLoading) return "#ffc107";
-    if (!level) return "#dc3545";
-    return "#28a745";
-  };
-
-  // Keep stable so usePassCoreForm re-validates when checkbox (or other extras) change
   const extraValidation = useCallback(
     ({ form: nextForm }) => ({
       playerId: Boolean(nextForm.playerId),
@@ -135,76 +93,63 @@ const PassSubmissionPage = () => {
     score,
     handleInputChange,
   } = usePassCoreForm({
-    mode: "submit",
-    initialForm: initialFormState,
+    mode: 'submit',
+    initialForm: location.state?.form || PASS_SUBMISSION_INITIAL_FORM,
     rejectDeletedLevel: true,
     isUDiffLevel: (lvl) =>
-      difficultyDict[lvl?.diffId]?.name?.[0] === "U" || difficultyDict[lvl?.diffId]?.name?.[0] === "Q",
+      difficultyDict[lvl?.diffId]?.name?.[0] === 'U' ||
+      difficultyDict[lvl?.diffId]?.name?.[0] === 'Q',
     isKeyCountRequiredLevel: (lvl) =>
       difficultyRequiresPassKeyCount(difficultyDict[lvl?.diffId]?.name),
     extraValidation,
+    scoreOverrides: null,
+    allowSandboxScore: false,
   });
 
-  // Save hasReadPassRules state to cookie whenever it changes
   useEffect(() => {
     if (hasReadPassRules) {
-      setCookie('hasReadPassRules', 'true', 30); // Save for 30 days
+      setCookie('hasReadPassRules', 'true', 30);
     }
   }, [hasReadPassRules]);
 
-  // Add cleanup for search requests when component unmounts
-  useEffect(() => {
-    return () => {
-      if (searchCancelTokenRef.current) {
-        searchCancelTokenRef.current.cancel('Component unmounted');
-      }
-    };
-  }, []);
-
   useEffect(() => {
     const fetchProfile = async () => {
+      if (!user?.username) return;
       const { username } = user;
       try {
-        // Search for profiles matching the channel name (v3 flat player docs)
         const searchUrl = `${routes.playersV3.root()}/search?query=${encodeURIComponent(username)}`;
-
         const response = await api.get(searchUrl);
         const body = response.data;
         const profiles = Array.isArray(body) ? body : (body?.results ?? []);
-
-        // Find exact match (case insensitive) against the flat player doc name
-        const exactMatchResult = profiles.find(p =>
-          p?.name && p.name.toLowerCase() === user.nickname.toLowerCase()
+        const exactMatchResult = profiles.find(
+          (p) => p?.name && p.name.toLowerCase() === (user.nickname || '').toLowerCase(),
         );
 
         if (exactMatchResult?.id) {
           setForm((prev) => ({
             ...prev,
-            playerId: exactMatchResult.id,
-            leaderboardName: exactMatchResult.name,
+            playerId: prev.playerId || exactMatchResult.id,
+            leaderboardName: prev.leaderboardName || exactMatchResult.name,
           }));
         } else {
-          // Pre-fill name only; user must select an existing player from the dropdown
           setForm((prev) => ({
             ...prev,
-            playerId: "",
-            leaderboardName: username,
+            playerId: prev.playerId || '',
+            leaderboardName: prev.leaderboardName || username,
           }));
         }
       } catch (error) {
         console.error('[Profile Search] Error searching profiles:', error);
         setForm((prev) => ({
           ...prev,
-          playerId: "",
-          leaderboardName: username,
+          playerId: prev.playerId || '',
+          leaderboardName: prev.leaderboardName || username,
         }));
       }
     };
 
     fetchProfile();
-  }, []);
-
-  // Helper removed — video links are resolved in usePassCoreForm.
+  }, [user, setForm]);
 
   const performSubmit = async () => {
     setSubmission(true);
@@ -237,13 +182,11 @@ const PassSubmissionPage = () => {
 
       await submitPass(payload);
       toast.success(t('passSubmission.alert.success'));
-      setFormStateKey(prevKey => prevKey + 1);
-      setForm(initialFormState);
+      setFormStateKey((prevKey) => prevKey + 1);
+      setForm(PASS_SUBMISSION_INITIAL_FORM);
       setSearchInput('');
-
     } catch (err) {
-      console.error("Submission error:", err);
-      // Prefer message: API `details` is structured metadata (object), not display text.
+      console.error('Submission error:', err);
       const errMsg = getSubmissionErrorMessage(err);
       toast.error(`${t('passSubmission.alert.error')} ${truncateString(errMsg, 120)}`);
     } finally {
@@ -254,15 +197,13 @@ const PassSubmissionPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if(!user){
-      console.error("No user logged in");
+
+    if (!user) {
+      console.error('No user logged in');
       toast.error(t('passSubmission.alert.login'));
       return;
     }
 
-    // Merge live extras so submit does not rely on a stale validation effect tick
-    // (e.g. rules checkbox toggled last, or restored from cookie without a form change).
     const validity =
       isFormValid && typeof isFormValid === 'object'
         ? {
@@ -300,7 +241,10 @@ const PassSubmissionPage = () => {
       const shownCount = 3;
       const invalidFieldsText = invalidKeys.map(labelForKey).slice(0, shownCount).join(', ');
       const remainingCount = invalidKeys.length - shownCount;
-      const moreText = remainingCount > 0 ? ` ${t('passSubmission.alert.more', { count: remainingCount })}` : '';
+      const moreText =
+        remainingCount > 0
+          ? ` ${t('passSubmission.alert.more', { count: remainingCount })}`
+          : '';
       toast.error(`${t('passSubmission.alert.form')}: ${invalidFieldsText}${moreText}`);
       return;
     }
@@ -314,276 +258,92 @@ const PassSubmissionPage = () => {
     await performSubmit();
   };
 
-  const searchLevels = async (query) => {
-    const normalizedQuery = normalizeLevelSearchQuery(query);
-    if (!normalizedQuery) {
-      setSearchResults([]);
-      return;
-    }
-
-    // Cancel previous search request if it exists
-    if (searchCancelTokenRef.current) {
-      searchCancelTokenRef.current.cancel('New search initiated');
-    }
-
-    // Create new cancel token
-    searchCancelTokenRef.current = api.CancelToken.source();
-
-    try {
-      const response = await api.get(`${routes.database.levels.root()}`, 
-        {
-          params: {
-            query: normalizedQuery,
-            limit: 50,
-            offset: 0,
-          },
-          cancelToken: searchCancelTokenRef.current.token
-        }
-      );
-      setSearchResults(response.data.results);
-    } catch (error) {
-      if (!api.isCancel(error)) {
-        console.error('Error searching levels:', error);
-        setSearchResults([]);
-      }
-    }
-  };
-
-  const handleLevelSelect = (selectedLevel) => {
-    setForm(prev => ({
-      ...prev,
-      levelId: selectedLevel.id.toString()
-    }));
-    setLevel(selectedLevel);
-    setIsExpanded(false);
-  };
-
-  const handleLevelInputChange = (e) => {
-    const normalizedValue = normalizeLevelSearchQuery(e.target.value);
-    setForm(prev => ({
-      ...prev,
-      levelId: normalizedValue
-    }));
-    setSearchInput(normalizedValue);
-
-    // Clear any existing timeout
-    if (searchTimeoutRef.current) {
-      clearTimeout(searchTimeoutRef.current);
-    }
-
-    // Set new timeout for search
-    searchTimeoutRef.current = setTimeout(() => {
-      if (normalizedValue) {
-        searchLevels(normalizedValue);
-      } else {
-        setSearchResults([]);
-      }
-    }, 500);
-  };
-
-  const toggleExpand = () => {
-    setIsExpanded(!isExpanded);
-  };
-
-  // Add click outside handler
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && 
-          searchContainerRef.current && 
-          !dropdownRef.current.contains(event.target) && 
-          !searchContainerRef.current.contains(event.target)) {
-        setIsExpanded(false);
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
-  // Profile selection is handled by PlayerInput now.
-
-  // Add cleanup effect
-  useEffect(() => {
-    return () => {
-      if (searchTimeoutRef.current) {
-        clearTimeout(searchTimeoutRef.current);
-      }
-    };
-  }, []);
-
   return (
     <div className="pass-submission-page">
       <MetaTags {...pageMeta} />
       <div className="form-container">
-        {import.meta.env.MODE !== "production" && <StagingModeWarning />}
-        <PassCoreForm
+        {import.meta.env.MODE !== 'production' && <StagingModeWarning />}
+        <div className="pass-submission-page__form-shell">
+          <button
+            type="button"
+            className="pass-submission-page__calculator-link"
+            onClick={() =>
+              navigate('/submission/pass/calculator', {
+                state: {
+                  form,
+                  searchInput,
+                  overrides: location.state?.overrides,
+                  targetScore: location.state?.targetScore,
+                  compareForm: location.state?.compareForm,
+                },
+              })
+            }
+            aria-label={t('passSubmission.calculator.openCalculator')}
+            title={t('passSubmission.calculator.openCalculator')}
+          >
+            <CalculatorIcon size="22px" color="currentColor" />
+          </button>
+          <PassSubmissionCore
           mode="submit"
-          placeholderImage={placeholder}
+          formKey={formStateKey}
           form={form}
+          setForm={setForm}
           isFormValidDisplay={isFormValidDisplay}
           isValidSpeed={isValidSpeed}
           isValidFeelingRating={isValidFeelingRating}
           isValidExpectedRating={isValidExpectedRating}
           isValidKeyCount={isValidKeyCount}
-          isValidTimestamp={true}
           submitAttempt={submitAttempt}
           isFormValid={isFormValid}
-          holdCheckboxVisibility={
-            !level?.tags || level?.tags?.some((tag) => tag.name === "Hold") ? "visible" : "hidden"
-          }
           level={level}
+          setLevel={setLevel}
           levelLoading={levelLoading}
           videoDetail={videoDetail}
           videoLinkResolving={videoLinkResolving}
           accuracy={accuracy}
           score={score}
-          onInputChange={handleInputChange}
-          levelIdValue={searchInput}
-          onLevelIdChange={handleLevelInputChange}
-          renderLevelIdInput={() => (
-            <>
-              <div className="search-container" ref={searchContainerRef}>
+          handleInputChange={handleInputChange}
+          difficultyDict={difficultyDict}
+          searchInput={searchInput}
+          setSearchInput={setSearchInput}
+          renderBelowJudgements={() => (
+            <div className="rules-checkbox-container">
+              <div className="rules-checkbox">
                 <input
-                  type="text"
-                  autoComplete="off"
-                  placeholder={t("passSubmission.submInfo.levelId")}
-                  name="levelId"
-                  value={searchInput}
-                  onChange={handleLevelInputChange}
-                  style={{ borderColor: isFormValidDisplay.levelId ? "" : "red" }}
+                  type="checkbox"
+                  id="rules-checkbox"
+                  checked={hasReadPassRules}
+                  onChange={(e) => setHasReadRules(e.target.checked)}
+                  style={{
+                    outline: submitAttempt && !isFormValid.rulesAccepted ? '2px solid red' : 'none',
+                  }}
                 />
-                {searchResults.length > 0 && (
+                <label htmlFor="rules-checkbox">
+                  {t('passSubmission.rules.checkbox')}{' '}
                   <button
                     type="button"
-                    className={`expand-button btn-fill-primary ${isExpanded ? "expanded" : ""}`}
-                    onClick={toggleExpand}
+                    className="rules-link"
+                    onClick={() => setShowRulesPopup(true)}
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <polyline points="6 9 12 15 18 9"></polyline>
-                    </svg>
+                    {t('passSubmission.rules.rulesLink')}
                   </button>
-                )}
+                </label>
               </div>
-
-              <div className={`level-dropdown ${isExpanded ? "expanded" : ""}`} ref={dropdownRef}>
-                {searchResults.map((result) => (
-                  <div key={result.id} className="level-option" onClick={() => handleLevelSelect(result)}>
-                    <img
-                      src={difficultyDict[result.diffId]?.icon}
-                      alt={difficultyDict[result.diffId]?.name}
-                      className="difficulty-icon"
-                    />
-                    <div className="level-content">
-                      <div className="level-title">
-                        {result.song} (ID: {result.id})
-                      </div>
-                      <div className="level-details">
-                        <span>{result.artist}</span>
-                        <span>{formatCreatorDisplay(result)}</span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-          renderLevelInfoLeading={() =>
-            level && form.levelId ? (
-              <img
-                src={difficultyDict[level.diffId]?.icon}
-                alt={difficultyDict[level.diffId]?.name}
-                className="level-icon"
-              />
-            ) : null
-          }
-          renderVerified={() => <FetchIcon className="fetch-icon" form={form} levelLoading={levelLoading} level={level} color={getIconColor()} />}
-          renderGotoLink={() => (
-            <a
-              href={level ? (level["id"] == form.levelId ? `/levels/${level["id"]}` : "#") : "#"}
-              onClick={(e) => {
-                if (!level || (level && level["id"] != form.levelId)) {
-                  e.preventDefault();
-                }
-              }}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="button-goto"
-              style={{
-                backgroundColor: getIconColor(),
-                cursor: !form.levelId ? "not-allowed" : levelLoading ? "wait" : level ? "pointer" : "not-allowed",
-                textShadow: "0 0 5px #0009",
-              }}
-            >
-              {!form.levelId
-                ? t("passSubmission.levelFetching.input")
-                : levelLoading
-                  ? t("passSubmission.levelFetching.fetching")
-                  : level
-                    ? t("passSubmission.levelFetching.goto")
-                    : t("passSubmission.levelFetching.notfound")}
-            </a>
-          )}
-          renderPrimarySelector={() => (
-            <PlayerInput
-              allowCreatePlayer={false}
-              value={form.leaderboardName || ""}
-              onChange={(value) => {
-                setForm((prev) => ({
-                  ...prev,
-                  leaderboardName: value,
-                  playerId: "",
-                }));
-              }}
-              onSelect={(player) => {
-                setForm((prev) => ({
-                  ...prev,
-                  leaderboardName: player.name,
-                  playerId: player.id,
-                }));
-              }}
-            />
-          )}
-          renderBelowJudgements={() => (
-            <>
-              <div className="rules-checkbox-container">
-                <div className="rules-checkbox">
-                  <input
-                    type="checkbox"
-                    id="rules-checkbox"
-                    checked={hasReadPassRules}
-                    onChange={(e) => setHasReadRules(e.target.checked)}
-                    style={{ outline: submitAttempt && !isFormValid.rulesAccepted ? "2px solid red" : "none" }}
-                  />
-                  <label htmlFor="rules-checkbox">
-                    {t("passSubmission.rules.checkbox")}{" "}
-                    <button type="button" className="rules-link" onClick={() => setShowRulesPopup(true)}>
-                      {t("passSubmission.rules.rulesLink")}
-                    </button>
-                  </label>
-                </div>
-              </div>
-            </>
+            </div>
           )}
           renderSubmitActions={() => (
-            <button className="submit btn-fill-primary alt" onClick={handleSubmit} disabled={submission}>
+            <button
+              className="submit btn-fill-primary alt"
+              onClick={handleSubmit}
+              disabled={submission}
+            >
               {submission
-                ? t("loading.submitting", { ns: "common" })
-                : t("buttons.submit", { ns: "common" })}
+                ? t('loading.submitting', { ns: 'common' })
+                : t('buttons.submit', { ns: 'common' })}
             </button>
           )}
-          formatCreatorDisplay={formatCreatorDisplay}
-          truncateString={truncateString}
         />
+        </div>
       </div>
 
       {showRulesPopup && <RulePopup setShowRulesPopup={setShowRulesPopup} />}

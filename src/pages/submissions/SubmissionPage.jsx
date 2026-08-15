@@ -308,6 +308,17 @@ const SubmissionPage = () => {
         </div>
       )}
       </div>
+      {!noAccess && (
+        <div className="submission-calculator-link-wrap">
+          <button
+            type="button"
+            className="submission-calculator-link btn-fill-neutral-dark"
+            onClick={() => navigate('/submission/pass/calculator')}
+          >
+            {t('passSubmission.calculator.hubLink')}
+          </button>
+        </div>
+      )}
     </div>
   )
 }

@@ -7,13 +7,50 @@
   transition: height 0.4s ease, transform 0.4s ease; 
   transform-origin: top;
   flex-direction: column;
-  margin: 2rem;
 }
 
 
 .pass-submission-page .pass-core-form {
   margin-top: 2rem;
   max-width: 47rem;
+}
+
+.pass-submission-page__form-shell {
+  position: relative;
+  width: 100%;
+  max-width: 47rem;
+  margin-top: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.pass-submission-page__form-shell .pass-core-form {
+  margin-top: 0;
+}
+
+.pass-submission-page__calculator-link {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: 1px solid var(--color-white-t20);
+  border-radius: 0.35rem;
+  background: var(--btn-neutral-dark);
+  color: var(--color-white);
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.pass-submission-page__calculator-link:hover {
+  background: var(--btn-neutral-elevated);
+  color: var(--color-white);
+  border-color: var(--btn-primary);
 }
 
 /* Rules Checkbox Styles */
@@ -82,6 +119,11 @@
     margin-top: 1rem;
     max-width: 100%;
     width: 100%;
+  }
+
+  .pass-submission-page__form-shell {
+    margin-top: 1rem;
+    max-width: 100%;
   }
 
   .pass-submission-page .staging-mode-warning {

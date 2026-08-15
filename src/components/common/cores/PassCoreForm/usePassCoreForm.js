@@ -25,6 +25,7 @@ const BASE_REQUIRED_FIELDS = [
 ];
 
 const JUDGEMENT_FIELDS = ["ePerfect", "perfect", "lPerfect", "tooEarly", "early", "late"];
+const CALCULATOR_REQUIRED_JUDGEMENTS = JUDGEMENT_FIELDS;
 
 // ADOFAI v3 release; uploads before this are ADOFAI v2 (last v2 day: 2026-04-30).
 const ADOFAI_V3_RELEASE_UTC = Date.UTC(2026, 4, 1);
@@ -42,10 +43,15 @@ export function usePassCoreForm({
   isUDiffLevel = () => false,
   isKeyCountRequiredLevel = () => false,
   extraValidation = () => ({}),
+  /** Optional scoring overrides for calculator live Acc/Score (never persisted). */
+  scoreOverrides = null,
+  /** When true (calculator sandbox), allow scoring without a loaded level. */
+  allowSandboxScore = false,
 }) {
   const copy = getPassCoreCopy(mode);
   const { t } = useTranslation([copy.ns, "common"]);
   const { difficultyDict } = useDifficultyContext();
+  const isCalculator = mode === "calculator";
 
   const [form, setForm] = useState(initialForm);
   const [accuracy, setAccuracy] = useState(null);
@@ -67,7 +73,7 @@ export function usePassCoreForm({
   const [videoDetail, setVideoDetail] = useState(null);
 
   const { resolving: videoLinkResolving } = useVideoLinkResolver({
-    value: form.videoLink,
+    value: isCalculator ? "" : form.videoLink,
     onResolve: (url) => setForm((prev) => ({ ...prev, videoLink: url })),
     onVideoDetail: (details) => {
       setVideoDetail(details || null);
@@ -89,6 +95,8 @@ export function usePassCoreForm({
   );
 
   const levelFetchCancelTokenRef = useRef(null);
+  const scoreOverridesRef = useRef(scoreOverrides);
+  scoreOverridesRef.current = scoreOverrides;
 
   useEffect(() => {
     const levelId = form?.levelId ?? "";
@@ -116,7 +124,6 @@ export function usePassCoreForm({
     api
       .get(`${routes.database.levels.root()}/${levelId}`, { cancelToken: levelFetchCancelTokenRef.current.token })
       .then((response) => {
-        // Some endpoints return `{ level }`, older code used `{ data: { level } }`
         const chosenLevel = response?.data?.level ?? response?.data?.data?.level ?? null;
 
         if (rejectDeletedLevel && chosenLevel?.isDeleted) {
@@ -145,6 +152,7 @@ export function usePassCoreForm({
   const updateAccuracyAndScore = (nextForm, nextLevel) => {
     const lvl = nextLevel ?? level;
     const newJudgements = parseJudgements(nextForm);
+    const overrides = scoreOverridesRef.current || {};
 
     if (newJudgements.every(Number.isInteger)) {
       setAccuracy(formatAccuracyRatio(calcAcc(newJudgements)));
@@ -158,26 +166,52 @@ export function usePassCoreForm({
       isNoHoldTap: nextForm.isNoHold,
     };
 
-    if (!nextForm.levelId) {
+    const hasSandboxBase =
+      allowSandboxScore &&
+      (Number(overrides.baseScore) > 0 ||
+        Number(overrides.ppBaseScore) > 0 ||
+        Number(overrides.difficultyBaseScore) > 0);
+
+    if (!nextForm.levelId && !hasSandboxBase) {
       setScore(t(copy.scoreNeedId, { ns: copy.ns }));
     } else if (!newJudgements.every(Number.isInteger)) {
       setScore(t(copy.scoreNeedJudg, { ns: copy.ns }));
     } else if (!Object.values(passData).every((value) => value !== null)) {
       setScore(t(copy.scoreNeedInfo, { ns: copy.ns }));
-    } else if (passData && lvl) {
-      setScore(computePassScoreV2(passData, lvl, {}, difficultyDict).scoreV2.toFixed(2));
+    } else if (passData && (lvl || hasSandboxBase)) {
+      const sandboxBase = Number(overrides.baseScore) || Number(overrides.difficultyBaseScore) || 0;
+      const levelForScore = lvl || {
+        baseScore: sandboxBase || null,
+        ppBaseScore: null,
+        difficulty: { baseScore: sandboxBase },
+        xaccCurveMeta: null,
+      };
+      const scoreCtxOverrides = {
+        ...(overrides.baseScore != null && overrides.baseScore !== ""
+          ? { baseScore: Number(overrides.baseScore) }
+          : overrides.difficultyBaseScore !== undefined && overrides.difficultyBaseScore !== ""
+            ? { baseScore: Number(overrides.difficultyBaseScore) }
+            : {}),
+        ...(overrides.ppBaseScore !== undefined && overrides.ppBaseScore !== ""
+          ? { ppBaseScore: Number(overrides.ppBaseScore) }
+          : {}),
+        ...(overrides.xaccCurveMeta ? { xaccCurveMeta: overrides.xaccCurveMeta } : {}),
+      };
+      setScore(
+        computePassScoreV2(passData, levelForScore, scoreCtxOverrides, difficultyDict).scoreV2.toFixed(2),
+      );
     } else {
       setScore(t(copy.scoreNoInfo, { ns: copy.ns }));
     }
   };
 
   useEffect(() => {
-    if (level) updateAccuracyAndScore(form, level);
+    if (level || allowSandboxScore) updateAccuracyAndScore(form, level);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [level]);
+  }, [level, scoreOverrides, allowSandboxScore]);
 
   useEffect(() => {
-    if (level) updateAccuracyAndScore(form, level);
+    if (level || allowSandboxScore) updateAccuracyAndScore(form, level);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [difficultyDict]);
 
@@ -185,36 +219,56 @@ export function usePassCoreForm({
     const validationResult = {};
     const displayValidationRes = {};
     const isEdit = mode === "edit";
+    const isCalc = mode === "calculator";
 
     const keyCountTrimmed = nextForm.keyCount?.trim?.() ?? "";
     const keyCountParsed =
       keyCountTrimmed !== "" && validateNumber(keyCountTrimmed) && normalizeKeyCount(keyCountTrimmed) !== null;
 
-    if (isEdit) {
+    if (isEdit || isCalc) {
       const keyCountValid =
         keyCountTrimmed === "" ||
         (validateNumber(keyCountTrimmed) && normalizeKeyCount(keyCountTrimmed) !== null);
       setIsValidKeyCount(keyCountValid);
-      // Edit / admin pass updates: only require a valid level; allow empty or free-form text elsewhere
-      validationResult.levelId = !(level === null || level === undefined);
-      validationResult.videoLink = true;
-      validationResult.feelingRating = true;
-      validationResult.expectedRating = true;
-      validationResult.keyCount = keyCountValid;
-      validationResult.speed = true;
-      validationResult.vidUploadTime = true;
 
-      for (const field of JUDGEMENT_FIELDS) {
-        validationResult[field] = true;
+      if (isCalc) {
+        for (const field of CALCULATOR_REQUIRED_JUDGEMENTS) {
+          validationResult[field] =
+            nextForm[field]?.trim?.() !== "" && validateNumber(nextForm[field]);
+        }
+        const speedTrimmed = nextForm.speed?.trim?.() ?? "";
+        const speedValid = speedTrimmed === "" || validateSpeed(nextForm.speed);
+        validationResult.speed = speedValid;
+        setIsValidSpeed(speedValid);
+        validationResult.levelId = true;
+        validationResult.videoLink = true;
+        validationResult.feelingRating = true;
+        validationResult.expectedRating = true;
+        validationResult.keyCount = true;
+        setIsValidFeelingRating(true);
+        setIsValidExpectedRating(true);
+        setIsValidTimestamp(true);
+      } else {
+        validationResult.levelId = !(level === null || level === undefined);
+        validationResult.videoLink = true;
+        validationResult.feelingRating = true;
+        validationResult.expectedRating = true;
+        validationResult.keyCount = keyCountValid;
+        validationResult.speed = true;
+        validationResult.vidUploadTime = true;
+
+        for (const field of JUDGEMENT_FIELDS) {
+          validationResult[field] = true;
+        }
+
+        const frTrimmed = nextForm.feelingRating?.trim?.() ?? "";
+        const erTrimmed = nextForm.expectedRating?.trim?.() ?? "";
+        const speedTrimmed = nextForm.speed?.trim?.() ?? "";
+        setIsValidFeelingRating(!frTrimmed || validateFeelingRating(nextForm.feelingRating));
+        setIsValidExpectedRating(!erTrimmed || validateFeelingRating(nextForm.expectedRating));
+        setIsValidSpeed(!speedTrimmed || validateSpeed(nextForm.speed));
+        setIsValidTimestamp(true);
       }
-
-      const frTrimmed = nextForm.feelingRating?.trim?.() ?? "";
-      const erTrimmed = nextForm.expectedRating?.trim?.() ?? "";
-      const speedTrimmed = nextForm.speed?.trim?.() ?? "";
-      setIsValidFeelingRating(!frTrimmed || validateFeelingRating(nextForm.feelingRating));
-      setIsValidExpectedRating(!erTrimmed || validateFeelingRating(nextForm.expectedRating));
-      setIsValidSpeed(!speedTrimmed || validateSpeed(nextForm.speed));
-      setIsValidTimestamp(true);
     } else {
       for (const field of BASE_REQUIRED_FIELDS) {
         if (JUDGEMENT_FIELDS.includes(field)) {
@@ -238,7 +292,6 @@ export function usePassCoreForm({
 
       const frValid = validateFeelingRating(nextForm.feelingRating);
       const erTrimmed = nextForm.expectedRating?.trim?.() ?? "";
-      // Same as feelingRating: free-form string; format check is a suggestion only (does not block submit).
       const erFormatOk = !erTrimmed || validateFeelingRating(nextForm.expectedRating);
       const speedValid = validateSpeed(nextForm.speed);
       setIsValidFeelingRating(frValid);

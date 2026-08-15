@@ -4,6 +4,7 @@ import { Tooltip } from 'react-tooltip';
 import i18next from 'i18next';
 import { formatDate } from '@/utils/Utility';
 import './PassCoreForm.css';
+import { JudgementInputs } from './JudgementInputs';
 
 export const PASS_CORE_COPY = {
   submit: {
@@ -45,6 +46,49 @@ export const PASS_CORE_COPY = {
     accPrefix: 'passSubmission.acc',
     scorePrefix: 'passSubmission.scoreCalc',
     scoreNeedId: 'passSubmission.score.needId',
+    scoreNeedJudg: 'passSubmission.score.needJudg',
+    scoreNeedInfo: 'passSubmission.score.needInfo',
+    scoreNoInfo: 'passSubmission.score.noInfo',
+  },
+  calculator: {
+    ns: 'pages',
+    title: 'passSubmission.calculator.title',
+    thumbnailInfo: 'passSubmission.calculator.thumbnailInfo',
+    levelIdPlaceholder: 'passSubmission.submInfo.levelId',
+    levelSongPlaceholder: 'passSubmission.levelInfo.song',
+    levelArtistPlaceholder: 'passSubmission.levelInfo.artist',
+    levelCharterPlaceholder: 'passSubmission.levelInfo.charter',
+    levelFetchingInput: 'passSubmission.levelFetching.input',
+    levelFetchingFetching: 'passSubmission.levelFetching.fetching',
+    levelFetchingGoto: 'passSubmission.levelFetching.goto',
+    levelFetchingNotFound: 'passSubmission.levelFetching.notfound',
+    videoLinkPlaceholder: 'passSubmission.videoInfo.videoLink',
+    videoTitleLabel: 'passSubmission.videoInfo.title',
+    videoChannelLabel: 'passSubmission.videoInfo.channel',
+    videoTimestampLabel: 'passSubmission.videoInfo.timestamp',
+    videoNoLink: 'passSubmission.videoInfo.nolink',
+    videoLinkResolving: 'passSubmission.videoInfo.resolving',
+    videoLinkResolved: 'passSubmission.videoInfo.linkResolved',
+    speedPlaceholder: 'passSubmission.submInfo.speed',
+    keyCountPlaceholder: 'passSubmission.submInfo.keyCount',
+    keyCountTooltip: 'passSubmission.keyCountTooltip',
+    feelingPlaceholder: 'passSubmission.submInfo.feelDiff',
+    feelingTooltip: 'passSubmission.feelingTooltip',
+    expectedPlaceholder: 'passSubmission.submInfo.expectedDiff',
+    expectedTooltip: 'passSubmission.expectedTooltip',
+    holdLabel: 'passSubmission.submInfo.nohold',
+    holdTooltip: 'passSubmission.holdTooltip',
+    adofaiV2Label: 'passSubmission.submInfo.isAdofaiV2',
+    adofaiV2Tooltip: 'passSubmission.adofaiV2Tooltip',
+    ePerfect: 'passSubmission.judgements.ePerfect',
+    perfect: 'passSubmission.judgements.perfect',
+    lPerfect: 'passSubmission.judgements.lPerfect',
+    tooEarly: 'passSubmission.judgements.tooearly',
+    early: 'passSubmission.judgements.early',
+    late: 'passSubmission.judgements.late',
+    accPrefix: 'passSubmission.acc',
+    scorePrefix: 'passSubmission.scoreCalc',
+    scoreNeedId: 'passSubmission.calculator.score.needLevelOrSandbox',
     scoreNeedJudg: 'passSubmission.score.needJudg',
     scoreNeedInfo: 'passSubmission.score.needInfo',
     scoreNoInfo: 'passSubmission.score.noInfo',
@@ -95,7 +139,7 @@ export const PASS_CORE_COPY = {
 };
 
 export function getPassCoreCopy(mode) {
-  return PASS_CORE_COPY[mode];
+  return PASS_CORE_COPY[mode] || PASS_CORE_COPY.submit;
 }
 
 export function PassCoreForm({
@@ -124,8 +168,10 @@ export function PassCoreForm({
   renderLevelInfoLeading,
   renderVerified,
   renderGotoLink,
+  renderLevelInfoActions,
   renderPrimarySelector,
   renderExtraCheckboxes,
+  renderJudgementActions,
   renderBelowJudgements,
   renderSubmitActions,
   formatCreatorDisplay,
@@ -134,6 +180,7 @@ export function PassCoreForm({
   const copy = getPassCoreCopy(mode);
   const { t } = useTranslation([copy.ns, 'common']);
   const holdVisibility = holdCheckboxVisibility ?? 'visible';
+  const isCalculator = mode === 'calculator';
 
   const renderRatingField = ({
     name,
@@ -206,11 +253,15 @@ export function PassCoreForm({
 
   return (
     <form
-      className={`form-container pass-core-form ${videoDetail ? 'shadow' : ''}`}
+      className={`form-container pass-core-form ${videoDetail && !isCalculator ? 'shadow' : ''} ${isCalculator ? 'pass-core-form--calculator' : ''}`}
+      onSubmit={(e) => e.preventDefault()}
       style={{
-        backgroundImage: `url(${videoDetail ? videoDetail.image : placeholderImage})`,
+        backgroundImage: isCalculator
+          ? undefined
+          : `url(${videoDetail ? videoDetail.image : placeholderImage})`,
       }}
     >
+      {!isCalculator && (
       <div
         className="thumbnail-container"
         style={{
@@ -232,6 +283,7 @@ export function PassCoreForm({
           </div>
         )}
       </div>
+      )}
 
       <div className="info">
         <h1>{t(copy.title, { ns: copy.ns })}</h1>
@@ -280,9 +332,13 @@ export function PassCoreForm({
             </div>
 
             {renderGotoLink ? renderGotoLink() : null}
+            {renderLevelInfoActions ? (
+              <div className="level-info-actions">{renderLevelInfoActions()}</div>
+            ) : null}
           </div>
         </div>
 
+        {!isCalculator && (
         <div className="youtube-input">
           <input
             type="text"
@@ -348,10 +404,11 @@ export function PassCoreForm({
             </div>
           )}
         </div>
+        )}
 
         {renderPrimarySelector ? <div className="info-input">{renderPrimarySelector()}</div> : null}
 
-        <div className="info-input info-input-grid">
+        <div className={`info-input info-input-grid${isCalculator ? ' info-input-grid--calculator' : ''}`}>
           <input
             type="text"
             autoComplete="off"
@@ -365,6 +422,7 @@ export function PassCoreForm({
             }}
           />
 
+          {!isCalculator && (
           <div className="info-input-field keycount-field">
             <input
               type="number"
@@ -396,8 +454,9 @@ export function PassCoreForm({
               />
             </div>
           </div>
+          )}
 
-          {renderRatingField({
+          {!isCalculator && renderRatingField({
             name: 'feelingRating',
             placeholderKey: copy.feelingPlaceholder,
             tooltipKey: copy.feelingTooltip,
@@ -407,7 +466,7 @@ export function PassCoreForm({
             useDarkInvalidHighlight: true,
           })}
 
-          {renderRatingField({
+          {!isCalculator && renderRatingField({
             name: 'expectedRating',
             placeholderKey: copy.expectedPlaceholder,
             tooltipKey: copy.expectedTooltip,
@@ -439,6 +498,7 @@ export function PassCoreForm({
               <span>{t(copy.holdLabel, { ns: copy.ns })}</span>
             </div>
 
+            {!isCalculator && (
             <div className="keycount-checkbox" data-tooltip-id="adofaiV2Tooltip" data-tooltip-content={t(copy.adofaiV2Tooltip, { ns: copy.ns })}>
               <input
                 type="checkbox"
@@ -450,98 +510,22 @@ export function PassCoreForm({
               <span>{t(copy.adofaiV2Label, { ns: copy.ns })}</span>
               <Tooltip className="tooltip" id="adofaiV2Tooltip" place="bottom-end" effect="solid" />
             </div>
+            )}
           </div>
         </div>
 
-        <div className="accuracy">
-          <div className="top">
-            <div className="each-accuracy">
-              <p>{t(copy.ePerfect, { ns: copy.ns })}</p>
-              <input
-                type="text"
-                autoComplete="off"
-                placeholder="#"
-                name="ePerfect"
-                value={form.ePerfect}
-                onChange={onInputChange}
-                style={{ borderColor: isFormValidDisplay.ePerfect ? '' : 'red', color: '#FCFF4D' }}
-              />
-            </div>
-            <div className="each-accuracy">
-              <p>{t(copy.perfect, { ns: copy.ns })}</p>
-              <input
-                type="text"
-                autoComplete="off"
-                placeholder="#"
-                name="perfect"
-                value={form.perfect}
-                onChange={onInputChange}
-                style={{ borderColor: isFormValidDisplay.perfect ? '' : 'red', color: '#5FFF4E' }}
-              />
-            </div>
-            <div className="each-accuracy">
-              <p>{t(copy.lPerfect, { ns: copy.ns })}</p>
-              <input
-                type="text"
-                name="lPerfect"
-                autoComplete="off"
-                placeholder="#"
-                value={form.lPerfect}
-                onChange={onInputChange}
-                style={{ borderColor: isFormValidDisplay.lPerfect ? '' : 'red', color: '#FCFF4D' }}
-              />
-            </div>
-          </div>
-
-          <div className="bottom">
-            <div className="each-accuracy">
-              <p>{t(copy.tooEarly, { ns: copy.ns })}</p>
-              <input
-                type="text"
-                autoComplete="off"
-                placeholder="#"
-                name="tooEarly"
-                value={form.tooEarly}
-                onChange={onInputChange}
-                style={{ borderColor: isFormValidDisplay.tooEarly ? '' : 'red', color: '#FF0000' }}
-              />
-            </div>
-            <div className="each-accuracy">
-              <p>{t(copy.early, { ns: copy.ns })}</p>
-              <input
-                type="text"
-                autoComplete="off"
-                placeholder="#"
-                name="early"
-                value={form.early}
-                onChange={onInputChange}
-                style={{ borderColor: isFormValidDisplay.early ? '' : 'red', color: '#FF6F4D' }}
-              />
-            </div>
-            <div className="each-accuracy">
-              <p>{t(copy.late, { ns: copy.ns })}</p>
-              <input
-                type="text"
-                autoComplete="off"
-                placeholder="#"
-                name="late"
-                value={form.late}
-                onChange={onInputChange}
-                style={{ borderColor: isFormValidDisplay.late ? '' : 'red', color: '#FF6F4D' }}
-              />
-            </div>
-          </div>
-
-          <div className="acc-score">
-            <p>
-              {t(copy.accPrefix, { ns: copy.ns })}
-              {accuracy !== null ? accuracy : 'N/A'}
-            </p>
-            <p>
-              {t(copy.scorePrefix, { ns: copy.ns })}
-              {score}
-            </p>
-          </div>
+        <div className={renderJudgementActions ? 'accuracy-wrap' : undefined}>
+          <JudgementInputs
+            values={form}
+            onChange={onInputChange}
+            isValidDisplay={isFormValidDisplay}
+            accuracy={accuracy}
+            score={score}
+            copy={copy}
+          />
+          {renderJudgementActions ? (
+            <div className="judgement-tool-actions">{renderJudgementActions()}</div>
+          ) : null}
         </div>
 
         {renderBelowJudgements ? renderBelowJudgements() : null}
