@@ -19,9 +19,17 @@
     "title": "Nouvelle notification",
     "body": ""
   },
+  "visibility": {
+    "public": "public",
+    "hidden": "masqué"
+  },
   "types": {
     "pass": {
       "submission": {
+        "submitted": {
+          "title": "Pass soumis",
+          "body": "Votre pass de {{song}} par {{artist}} a été soumis."
+        },
         "approved": {
           "title": "Pass approuvé",
           "body": "{{song}} par {{artist}} a été approuvé."
@@ -29,6 +37,60 @@
         "declined": {
           "title": "Pass refusé",
           "body": "{{song}} par {{artist}} a été refusé."
+        }
+      },
+      "modified": {
+        "title": "Pass mis à jour",
+        "body": "Votre pass de {{song}} par {{artist}} a été mis à jour."
+      },
+      "deleted": {
+        "title": "Pass retiré",
+        "body": "Votre pass de {{song}} par {{artist}} a été retiré."
+      }
+    },
+    "chart": {
+      "submission": {
+        "submitted": {
+          "title": "Chart soumis",
+          "body": "{{song}} par {{artist}} a été soumis."
+        },
+        "approved": {
+          "title": "Chart accepté",
+          "body": "{{song}} par {{artist}} a été accepté."
+        },
+        "declined": {
+          "title": "Chart refusé",
+          "body": "{{song}} par {{artist}} a été refusé."
+        }
+      },
+      "deleted": {
+        "title": "Chart retiré",
+        "body": "{{song}} par {{artist}} a été retiré."
+      },
+      "visibility": {
+        "changed": {
+          "title": "Visibilité du chart modifiée",
+          "body": "{{song}} par {{artist}} est désormais {{visibility}}."
+        }
+      },
+      "modified": {
+        "title": "Chart mis à jour",
+        "body": "{{song}} par {{artist}} a été mis à jour."
+      },
+      "curated": {
+        "title": "Chart mis en avant",
+        "body": "{{song}} par {{artist}} a été mis en avant."
+      },
+      "curation": {
+        "removed": {
+          "title": "Mise en avant retirée",
+          "body": "{{song}} par {{artist}} n’est plus mis en avant."
+        }
+      },
+      "weekly": {
+        "selected": {
+          "title": "Sélectionné pour Weekly Levels",
+          "body": "{{song}} par {{artist}} a été sélectionné pour Weekly Levels."
         }
       }
     }

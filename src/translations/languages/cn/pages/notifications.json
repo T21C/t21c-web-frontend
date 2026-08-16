@@ -19,9 +19,17 @@
     "title": "新通知",
     "body": ""
   },
+  "visibility": {
+    "public": "公开",
+    "hidden": "隐藏"
+  },
   "types": {
     "pass": {
       "submission": {
+        "submitted": {
+          "title": "Pass 已提交",
+          "body": "你对 {{song}} — {{artist}} 的 Pass 已提交。"
+        },
         "approved": {
           "title": "Pass 已通过",
           "body": "{{song}} — {{artist}} 已通过。"
@@ -29,6 +37,60 @@
         "declined": {
           "title": "Pass 已拒绝",
           "body": "{{song}} — {{artist}} 已拒绝。"
+        }
+      },
+      "modified": {
+        "title": "Pass 已更新",
+        "body": "你对 {{song}} — {{artist}} 的 Pass 已更新。"
+      },
+      "deleted": {
+        "title": "Pass 已移除",
+        "body": "你对 {{song}} — {{artist}} 的 Pass 已移除。"
+      }
+    },
+    "chart": {
+      "submission": {
+        "submitted": {
+          "title": "谱面已提交",
+          "body": "{{song}} — {{artist}} 已提交。"
+        },
+        "approved": {
+          "title": "谱面已通过",
+          "body": "{{song}} — {{artist}} 已通过。"
+        },
+        "declined": {
+          "title": "谱面已拒绝",
+          "body": "{{song}} — {{artist}} 已拒绝。"
+        }
+      },
+      "deleted": {
+        "title": "谱面已移除",
+        "body": "{{song}} — {{artist}} 已移除。"
+      },
+      "visibility": {
+        "changed": {
+          "title": "谱面可见性已更改",
+          "body": "{{song}} — {{artist}} 现在为{{visibility}}。"
+        }
+      },
+      "modified": {
+        "title": "谱面已更新",
+        "body": "{{song}} — {{artist}} 已更新。"
+      },
+      "curated": {
+        "title": "谱面已精选",
+        "body": "{{song}} — {{artist}} 已加入精选。"
+      },
+      "curation": {
+        "removed": {
+          "title": "精选已移除",
+          "body": "{{song}} — {{artist}} 已不再精选。"
+        }
+      },
+      "weekly": {
+        "selected": {
+          "title": "入选 Weekly Levels",
+          "body": "{{song}} — {{artist}} 已入选 Weekly Levels。"
         }
       }
     }

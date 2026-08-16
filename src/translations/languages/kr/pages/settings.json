@@ -40,8 +40,11 @@
     "loadError": "알림 설정을 불러오지 못했습니다",
     "saveError": "설정을 저장하지 못했습니다",
     "inApp": "받은편지함에 표시",
+    "muteCategory": "이 카테고리 끄기",
     "categories": {
-      "submissions": "제출"
+      "submissions": "제출",
+      "chart": "차트",
+      "clears": "클리어"
     }
   },
   "preferences": {
