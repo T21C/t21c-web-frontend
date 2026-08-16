@@ -46,6 +46,10 @@
       "deleted": {
         "title": "Pass 已移除",
         "body": "你对 {{song}} — {{artist}} 的 Pass 已移除。"
+      },
+      "restored": {
+        "title": "Pass 已恢复",
+        "body": "你对 {{song}} — {{artist}} 的 Pass 已恢复。"
       }
     },
     "chart": {
@@ -66,6 +70,10 @@
       "deleted": {
         "title": "谱面已移除",
         "body": "{{song}} — {{artist}} 已移除。"
+      },
+      "restored": {
+        "title": "谱面已恢复",
+        "body": "{{song}} — {{artist}} 已恢复。"
       },
       "visibility": {
         "changed": {

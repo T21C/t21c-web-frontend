@@ -46,6 +46,10 @@
       "deleted": {
         "title": "Pass retiré",
         "body": "Votre pass de {{song}} par {{artist}} a été retiré."
+      },
+      "restored": {
+        "title": "Pass restauré",
+        "body": "Votre pass de {{song}} par {{artist}} a été restauré."
       }
     },
     "chart": {
@@ -66,6 +70,10 @@
       "deleted": {
         "title": "Chart retiré",
         "body": "{{song}} par {{artist}} a été retiré."
+      },
+      "restored": {
+        "title": "Chart restauré",
+        "body": "{{song}} par {{artist}} a été restauré."
       },
       "visibility": {
         "changed": {
