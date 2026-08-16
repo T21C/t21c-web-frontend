@@ -83,6 +83,7 @@ jobs:
       - name: Install dependencies
         env:
           PUPPETEER_SKIP_DOWNLOAD: "true"
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: "true"
         run: npm ci
 
       - name: Lint
