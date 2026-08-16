@@ -90,6 +90,7 @@ function App() {
             <Route path="creator" element={<Pages.SettingsCreatorPage />} />
             <Route path="billing" element={<Pages.SettingsBillingPage />} />
             <Route path="preferences" element={<Pages.SettingsPreferencesPage />} />
+            <Route path="notifications" element={<Pages.SettingsNotificationsPage />} />
           </Route>
           <Route
             path="tuf-stellar/checkout"
@@ -141,6 +142,7 @@ function App() {
           </Route>
           <Route path="profile/:playerId" element={<Pages.ProfilePage />} />
           <Route path="profile" element={<Pages.ProfilePage />} />
+          <Route path="notifications" element={<PrivateRoute><Pages.NotificationsPage /></PrivateRoute>} />
 
           <Route path='leaderboard' element={<Pages.LeaderboardPage />} />
           <Route path='passes' element={<Pages.PassPage />} />

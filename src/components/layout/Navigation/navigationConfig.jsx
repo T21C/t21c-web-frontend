@@ -68,9 +68,8 @@ export const createUserMenuItems = (user) => {
     },
     { divider: true },
     {
-      disabled: true,
+      to: "/notifications",
       translationKey: "navigation.main.dropdowns.user.notifications",
-      badge: "navigation.main.badges.underConstruction",
     },
     {
       translationKey: "navigation.main.dropdowns.user.settings",
@@ -214,10 +213,17 @@ export const createNavigationConfig = (context = {}) => {
       },
       {
         type: "component",
+        component: "InboxBell",
+        condition: () => !!user,
+      },
+      {
+        type: "component",
         component: "UserMenu",
         props: {
           isActive: (pathname) =>
-            pathname.startsWith("/profile") || pathname.startsWith("/tuf-stellar")
+            pathname.startsWith("/profile") ||
+            pathname.startsWith("/tuf-stellar") ||
+            pathname.startsWith("/notifications")
         },
         // Conditional rendering based on user
         condition: () => !!user,

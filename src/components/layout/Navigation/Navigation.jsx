@@ -10,6 +10,7 @@ import NavDropdown from "./NavDropdown";
 import NavLinkItem from "./NavLinkItem";
 import LanguageSelector from "./LanguageSelector";
 import UserMenu from "./UserMenu";
+import InboxBell from "./InboxBell";
 import MobileMenu from "./MobileMenu";
 import { createNavigationConfig } from "./navigationConfig";
 
@@ -138,6 +139,9 @@ const Navigation = ({ children, config: externalConfig = null }) => {
               />
             );
 
+          case "InboxBell":
+            return <InboxBell key="inbox-bell" />;
+
           default:
             return null;
         }
@@ -178,6 +182,7 @@ const Navigation = ({ children, config: externalConfig = null }) => {
               variant="mobile"
               asListItem={false}
             />
+            {user ? <InboxBell variant="mobile" /> : null}
 
             <svg
               className="nav-mobile-menu svg-stroke"

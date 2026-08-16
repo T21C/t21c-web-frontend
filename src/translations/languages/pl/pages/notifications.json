@@ -1,0 +1,36 @@
+{
+  "meta": {
+    "title": "Powiadomienia",
+    "description": "Twoja skrzynka TUF"
+  },
+  "title": "Powiadomienia",
+  "subtitle": "Aktualizacje dotyczące zgłoszeń i konta.",
+  "empty": "Brak powiadomień.",
+  "loading": "Ładowanie powiadomień…",
+  "markAllRead": "Oznacz wszystkie jako przeczytane",
+  "seeAll": "Zobacz wszystkie powiadomienia",
+  "loadMore": "Załaduj więcej",
+  "unread_one": "{{count}} nieprzeczytane",
+  "unread_other": "{{count}} nieprzeczytanych",
+  "bellAria": "Powiadomienia, {{count}} nieprzeczytanych",
+  "untitledLevel": "Poziom #{{levelId}}",
+  "unknownArtist": "Nieznany artysta",
+  "unknown": {
+    "title": "Nowe powiadomienie",
+    "body": ""
+  },
+  "types": {
+    "pass": {
+      "submission": {
+        "approved": {
+          "title": "Pass zatwierdzony",
+          "body": "{{song}} — {{artist}} zostało zatwierdzone."
+        },
+        "declined": {
+          "title": "Pass odrzucony",
+          "body": "{{song}} — {{artist}} zostało odrzucone."
+        }
+      }
+    }
+  }
+}

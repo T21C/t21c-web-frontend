@@ -1,0 +1,36 @@
+{
+  "meta": {
+    "title": "通知",
+    "description": "你的 TUF 收件箱"
+  },
+  "title": "通知",
+  "subtitle": "关于你的提交和账户的更新。",
+  "empty": "暂无通知。",
+  "loading": "正在加载通知…",
+  "markAllRead": "全部标为已读",
+  "seeAll": "查看全部通知",
+  "loadMore": "加载更多",
+  "unread_one": "{{count}} 条未读",
+  "unread_other": "{{count}} 条未读",
+  "bellAria": "通知，{{count}} 条未读",
+  "untitledLevel": "关卡 #{{levelId}}",
+  "unknownArtist": "未知艺术家",
+  "unknown": {
+    "title": "新通知",
+    "body": ""
+  },
+  "types": {
+    "pass": {
+      "submission": {
+        "approved": {
+          "title": "Pass 已通过",
+          "body": "{{song}} — {{artist}} 已通过。"
+        },
+        "declined": {
+          "title": "Pass 已拒绝",
+          "body": "{{song}} — {{artist}} 已拒绝。"
+        }
+      }
+    }
+  }
+}
