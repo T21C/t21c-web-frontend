@@ -24,7 +24,9 @@
     "vfxer": "VFXer(zy):",
     "submitter": "Zgłaszający:",
     "submitterRecordTooltip": "{{accepted}} zaakceptowanych / {{declined}} odrzuconych",
-    "evidence": "Dowody:"
+    "evidence": "Dowody:",
+    "notes": "Notatki",
+    "notesPlaceholder": "Opcjonalne notatki dla managerów"
   },
   "buttons": {
     "manageCreator": "Zarządzaj twórcą",
@@ -60,7 +62,8 @@
     "success": {
       "approved": "Zgłoszenie zostało zaakceptowane",
       "rejected": "Zgłoszenie zostało odrzucone",
-      "suffixUpdated": "Sufiks został zaktualizowany"
+      "suffixUpdated": "Sufiks został zaktualizowany",
+      "notesUpdated": "Notatki zostały zaktualizowane"
     },
     "error": {
       "generic": "Wystąpił błąd",
@@ -108,6 +111,7 @@
     "needArtistForSong": "Artysta musi być ustawiony przed zarządzaniem utworem",
     "artistLockedToSong": "Nie można zmodyfikować artysty: jest przypisany do wybranego utworu",
     "suffixUpdateFailed": "Nie udało się zaktualizować sufiksu",
+    "notesUpdateFailed": "Nie udało się zaktualizować notatek",
     "updateSongFailed": "Nie udało się zaktualizować utworu",
     "updateArtistFailed": "Nie udało się zaktualizować artysty",
     "addSongRequestFailed": "Nie udało się dodać prośby o utwór",

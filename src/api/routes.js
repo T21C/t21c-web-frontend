@@ -196,6 +196,8 @@ export const routes = {
         `/v2/admin/submissions/levels/${enc(submissionId)}/suffix`,
       levelVideoLink: (submissionId) =>
         `/v2/admin/submissions/levels/${enc(submissionId)}/video-link`,
+      levelNotes: (submissionId) =>
+        `/v2/admin/submissions/levels/${enc(submissionId)}/notes`,
       levelCreators: (submissionId) =>
         `/v2/admin/submissions/levels/${enc(submissionId)}/creators`,
       pass: (submissionId) => `/v2/admin/submissions/passes/${enc(submissionId)}`,

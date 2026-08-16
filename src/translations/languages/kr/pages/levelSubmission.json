@@ -19,7 +19,8 @@
     "levelZip": "레벨 Zip 압축 파일",
     "evidence": "증거",
     "evidenceForSong": "곡 증거",
-    "evidenceForArtist": "작곡가 증거"
+    "evidenceForArtist": "작곡가 증거",
+    "notes": "메모"
   },
   "videoInfo": {
     "title": "영상 제목",
@@ -86,7 +87,8 @@
     "searchCreator": "제작자 검색...",
     "searchTeam": "팀 검색...",
     "newCreator": "새 제작자 이름 입력",
-    "newTeam": "새 팀 이름 입력"
+    "newTeam": "새 팀 이름 입력",
+    "notes": "관리자에게 전달할 선택 메모 (차트 세부 정보, 크레딧 등)"
   },
   "cdnTos": {
     "title": "CDN 업로드 확인",

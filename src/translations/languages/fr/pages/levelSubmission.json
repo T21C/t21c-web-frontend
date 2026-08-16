@@ -15,7 +15,8 @@
     "dlLinksOr": "ou",
     "charters": "Charteurs",
     "vfxers": "Effecteurs",
-    "levelZip": "Fichier Zip du niveau"
+    "levelZip": "Fichier Zip du niveau",
+    "notes": "Notes"
   },
   "videoInfo": {
     "title": "Titre de la vidéo",
@@ -56,5 +57,8 @@
     "charter": "Charteur",
     "directLink": "Téléchargement/Workshop/Zip",
     "evidence": "Preuve"
+  },
+  "placeholders": {
+    "notes": "Notes optionnelles pour les managers (détails du chart, crédits, etc.)"
   }
 } 

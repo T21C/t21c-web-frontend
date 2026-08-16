@@ -24,7 +24,9 @@
     "vfxer": "Effecteur :",
     "submitter": "Soumetteur :",
     "submitterRecordTooltip": "{{accepted}} acceptées / {{declined}} refusées",
-    "evidence": "Preuves :"
+    "evidence": "Preuves :",
+    "notes": "Notes",
+    "notesPlaceholder": "Notes optionnelles pour les managers"
   },
   "buttons": {
     "manageCreator": "Gérer le créateur",
@@ -60,7 +62,8 @@
     "success": {
       "approved": "Soumission approuvée avec succès",
       "rejected": "Soumission rejetée avec succès",
-      "suffixUpdated": "Suffixe mis à jour avec succès"
+      "suffixUpdated": "Suffixe mis à jour avec succès",
+      "notesUpdated": "Notes mises à jour avec succès"
     },
     "error": {
       "generic": "Une erreur s'est produite",
@@ -108,6 +111,7 @@
     "needArtistForSong": "L'artiste doit être défini avant de gérer la musique",
     "artistLockedToSong": "Impossible de modifier l'artiste : il est fixé à la musique sélectionnée",
     "suffixUpdateFailed": "Échec de la mise à jour du suffixe",
+    "notesUpdateFailed": "Échec de la mise à jour des notes",
     "updateSongFailed": "Échec de la mise à jour de la musique",
     "updateArtistFailed": "Échec de la mise à jour de l'artiste",
     "addSongRequestFailed": "Échec de l'ajout de la demande de musique",
