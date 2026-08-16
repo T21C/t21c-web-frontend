@@ -498,6 +498,20 @@ export const routes = {
     silentRemovePasses: () => '/v2/webhook/silent-remove/passes',
   },
 
+  notifications: {
+    list: (params) => {
+      const search = new URLSearchParams();
+      if (params?.cursor != null) search.set('cursor', String(params.cursor));
+      if (params?.limit != null) search.set('limit', String(params.limit));
+      const qs = search.toString();
+      return qs ? `/v2/notifications?${qs}` : '/v2/notifications';
+    },
+    unreadCount: () => '/v2/notifications/unread-count',
+    read: (id) => `/v2/notifications/${enc(id)}/read`,
+    readAll: () => '/v2/notifications/read-all',
+    seen: () => '/v2/notifications/seen',
+    preferences: () => '/v2/notifications/preferences',
+  },
   events: () => '/v2/events',
   health: {
     latency: () => '/v2/health/latency',

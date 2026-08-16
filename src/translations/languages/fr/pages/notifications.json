@@ -1,0 +1,36 @@
+{
+  "meta": {
+    "title": "Notifications",
+    "description": "Votre boîte de réception TUF"
+  },
+  "title": "Notifications",
+  "subtitle": "Mises à jour sur vos soumissions et votre compte.",
+  "empty": "Aucune notification pour le moment.",
+  "loading": "Chargement des notifications…",
+  "markAllRead": "Tout marquer comme lu",
+  "seeAll": "Voir toutes les notifications",
+  "loadMore": "Charger plus",
+  "unread_one": "{{count}} non lue",
+  "unread_other": "{{count}} non lues",
+  "bellAria": "Notifications, {{count}} non lues",
+  "untitledLevel": "Niveau #{{levelId}}",
+  "unknownArtist": "Artiste inconnu",
+  "unknown": {
+    "title": "Nouvelle notification",
+    "body": ""
+  },
+  "types": {
+    "pass": {
+      "submission": {
+        "approved": {
+          "title": "Pass approuvé",
+          "body": "{{song}} par {{artist}} a été approuvé."
+        },
+        "declined": {
+          "title": "Pass refusé",
+          "body": "{{song}} par {{artist}} a été refusé."
+        }
+      }
+    }
+  }
+}

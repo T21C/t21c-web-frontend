@@ -1,0 +1,36 @@
+{
+  "meta": {
+    "title": "Notifications",
+    "description": "Your TUF inbox"
+  },
+  "title": "Notifications",
+  "subtitle": "Updates about your submissions and account.",
+  "empty": "No notifications yet.",
+  "loading": "Loading notifications…",
+  "markAllRead": "Mark all as read",
+  "seeAll": "See all notifications",
+  "loadMore": "Load more",
+  "unread_one": "{{count}} unread",
+  "unread_other": "{{count}} unread",
+  "bellAria": "Notifications, {{count}} unread",
+  "untitledLevel": "Level #{{levelId}}",
+  "unknownArtist": "Unknown artist",
+  "unknown": {
+    "title": "New notification",
+    "body": ""
+  },
+  "types": {
+    "pass": {
+      "submission": {
+        "approved": {
+          "title": "Pass approved",
+          "body": "{{song}} by {{artist}} was approved."
+        },
+        "declined": {
+          "title": "Pass declined",
+          "body": "{{song}} by {{artist}} was declined."
+        }
+      }
+    }
+  }
+}

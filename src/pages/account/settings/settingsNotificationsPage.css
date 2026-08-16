@@ -1,0 +1,69 @@
+/* tuf-search: #SettingsNotificationsPage #settingsNotificationsPage #account #settings */
+.settings-notifications-page {
+  align-items: stretch;
+  gap: 0.75rem;
+}
+
+.settings-notifications-page .settings-sub-page__title {
+  margin-bottom: 0.25rem;
+  font-size: 1.5rem;
+}
+
+.settings-notifications-page .settings-sub-page__text {
+  margin-bottom: 1.25rem;
+}
+
+.settings-notifications-page .settings-notifications-page__section {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 8px;
+  background: var(--color-black-t30);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.settings-notifications-page .settings-notifications-page__section-title {
+  margin: 0;
+  color: var(--color-purple-1);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.settings-notifications-page .settings-notifications-page__toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.settings-notifications-page .settings-notifications-page__toggle input[type='checkbox'] {
+  width: 1.1rem;
+  height: 1.1rem;
+  margin-top: 0.15rem;
+  flex-shrink: 0;
+  accent-color: var(--btn-info);
+  cursor: pointer;
+}
+
+.settings-notifications-page .settings-notifications-page__toggle input[type='checkbox']:disabled {
+  cursor: not-allowed;
+}
+
+.settings-notifications-page .settings-notifications-page__toggle-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.settings-notifications-page .settings-notifications-page__toggle-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-white);
+}
+
+.settings-notifications-page .settings-notifications-page__toggle-desc {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--color-gray-2);
+}

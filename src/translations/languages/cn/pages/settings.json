@@ -15,6 +15,7 @@
     "player": "玩家信息",
     "creator": "创作者信息",
     "billing": "订阅与账单",
+    "notifications": "通知",
     "preferences": "偏好设置",
     "short": {
       "account": "账户",
@@ -23,9 +24,25 @@
       "creator": "创作者",
       "billing": "账单",
       "security": "安全",
-      "preferences": "偏好设置"
+      "preferences": "偏好设置",
+      "notifications": "通知"
     },
     "security": "安全"
+  },
+  "notifications": {
+    "meta": {
+      "title": "通知设置",
+      "description": "选择哪些事件会出现在收件箱中"
+    },
+    "title": "通知",
+    "subtitle": "选择哪些事件会出现在收件箱中。邮件和 Discord 渠道稍后添加。",
+    "loading": "正在加载通知设置…",
+    "loadError": "无法加载通知设置",
+    "saveError": "无法保存该设置",
+    "inApp": "显示在收件箱",
+    "categories": {
+      "submissions": "提交"
+    }
   },
   "preferences": {
     "title": "偏好设置",
