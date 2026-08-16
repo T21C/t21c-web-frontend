@@ -1,0 +1,51 @@
+{
+  "meta": {
+    "title": "Mes soumissions",
+    "description": "Consultez vos soumissions de passes et de charts"
+  },
+  "title": "Mes soumissions",
+  "search": {
+    "placeholder": "Rechercher par chanson, artiste, charter, joueur ou lien vidéo"
+  },
+  "filters": {
+    "type": "Type",
+    "status": "Statut",
+    "sort": "Tri"
+  },
+  "types": {
+    "all": "Tous les types",
+    "pass": "Pass",
+    "level": "Chart"
+  },
+  "status": {
+    "all": "Tous les statuts",
+    "pending": "En attente",
+    "approved": "Approuvée",
+    "declined": "Refusée"
+  },
+  "sort": {
+    "dateDesc": "Plus récentes",
+    "dateAsc": "Plus anciennes",
+    "status": "Statut",
+    "type": "Type"
+  },
+  "row": {
+    "openLevel": "Ouvrir le niveau",
+    "watchVideo": "Vidéo",
+    "score": "Score {{value}}",
+    "accuracy": "{{value}}",
+    "speed": "{{value}}×",
+    "charter": "Charter {{name}}",
+    "requestedDiff": "Difficulté demandée {{diff}}"
+  },
+  "pagination": {
+    "prev": "Précédent",
+    "next": "Suivant",
+    "page": "Page {{page}} sur {{totalPages}}",
+    "total_one": "{{count}} soumission",
+    "total_other": "{{count}} soumissions"
+  },
+  "empty": "Aucune soumission trouvée.",
+  "loading": "Chargement des soumissions…",
+  "error": "Impossible de charger vos soumissions. Réessayez."
+}

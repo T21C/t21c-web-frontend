@@ -13,6 +13,7 @@
   "unread_one": "{{count}} 条未读",
   "unread_other": "{{count}} 条未读",
   "bellAria": "通知，{{count}} 条未读",
+  "settingsAria": "通知设置",
   "untitledLevel": "关卡 #{{levelId}}",
   "unknownArtist": "未知艺术家",
   "unknown": {

@@ -27,6 +27,7 @@ const ROUTE_DOCUMENT_META = [
     descriptionParams: { name: '' },
   },
   { path: '/notifications', titleKey: 'notifications.meta.title', descriptionKey: 'notifications.meta.description', noindex: true },
+  { path: '/submissions', titleKey: 'mySubmissions.meta.title', descriptionKey: 'mySubmissions.meta.description', noindex: true },
   { path: '/settings/notifications', titleKey: 'settings.notifications.meta.title', descriptionKey: 'settings.notifications.meta.description', noindex: true },
   { path: '/creator/:creatorId', titleKey: 'creators.meta.title', descriptionKey: 'creators.meta.description' },
   { path: '/creator', titleKey: 'creators.meta.title', descriptionKey: 'creators.meta.description' },

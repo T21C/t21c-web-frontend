@@ -52,6 +52,7 @@
   flex-shrink: 0;
   font-size: 0.75rem;
   color: var(--color-white-t70);
+  white-space: nowrap;
 }
 
 .inbox-notification-row--compact {

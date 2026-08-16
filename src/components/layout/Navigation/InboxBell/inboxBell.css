@@ -5,8 +5,7 @@
   align-items: center;
 }
 
-.inbox-bell__button,
-.inbox-bell--mobile {
+.inbox-bell__button {
   position: relative;
   display: flex;
   align-items: center;
@@ -21,8 +20,7 @@
   cursor: pointer;
 }
 
-.inbox-bell__button:hover,
-.inbox-bell--mobile:hover {
+.inbox-bell__button:hover {
   background: var(--color-white-t10);
   color: var(--color-white);
 }
@@ -78,6 +76,30 @@
   font-size: 0.95rem;
   font-weight: 600;
   color: var(--color-white);
+  min-width: 0;
+}
+
+.inbox-bell__header-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.inbox-bell__settings {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 0.35rem;
+  color: var(--color-gray-2);
+}
+
+.inbox-bell__settings:hover {
+  color: var(--color-white);
+  background: var(--color-white-t10);
 }
 
 .inbox-bell__mark-all {
@@ -120,4 +142,26 @@
 .inbox-bell__footer:hover {
   color: var(--color-white);
   background: var(--color-white-t10);
+}
+
+.inbox-bell--mobile .inbox-bell__menu {
+  position: fixed;
+  top: calc(var(--navbar-height) + 0.4rem);
+  left: 0.75rem;
+  right: 0.75rem;
+  width: auto;
+  max-height: calc(100dvh - var(--navbar-height) - 0.75rem);
+}
+
+.inbox-bell--mobile .inbox-bell__list {
+  max-height: min(22rem, calc(100dvh - var(--navbar-height) - 8rem));
+}
+
+.inbox-bell--mobile .inbox-bell__menu button {
+  min-width: 0;
+  min-height: 0;
+}
+
+.inbox-bell--mobile .inbox-bell__mark-all {
+  padding: 0;
 }

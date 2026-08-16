@@ -13,6 +13,7 @@
   "unread_one": "{{count}} nieprzeczytane",
   "unread_other": "{{count}} nieprzeczytanych",
   "bellAria": "Powiadomienia, {{count}} nieprzeczytanych",
+  "settingsAria": "Ustawienia powiadomień",
   "untitledLevel": "Poziom #{{levelId}}",
   "unknownArtist": "Nieznany artysta",
   "unknown": {

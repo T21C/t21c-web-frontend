@@ -6,6 +6,7 @@ import { UserAvatar } from "@/components/layout";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import { createUserMenuItems } from "../navigationConfig";
 import { ChevronIcon } from "@/components/common/icons";
+import InboxBell from "../InboxBell";
 import "./userMenu.css";
 import { useTranslation } from 'react-i18next';
 
@@ -58,6 +59,12 @@ const UserMenu = ({ isActive }) => {
       className={`nav-user-menu ${openClass} ${activeClass}`}
       ref={dropdownRef}
     >
+      <div
+        className="nav-user-menu__bell"
+        onClick={() => setIsOpen(false)}
+      >
+        <InboxBell />
+      </div>
       <button
         className={`nav-user-button ${hasActiveItem ? "active" : ""}`}
         onClick={() => setIsOpen(!isOpen)}

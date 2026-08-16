@@ -61,9 +61,7 @@ export const createUserMenuItems = (user) => {
         ]
       : []),
     {
-      disabled: true,
-      badge: "navigation.main.badges.underConstruction",
-      to: "/submission",
+      to: "/submissions",
       translationKey: "navigation.main.dropdowns.user.mySubmissions",
     },
     { divider: true },
@@ -210,11 +208,6 @@ export const createNavigationConfig = (context = {}) => {
         props: {
           variant: "desktop",
         },
-      },
-      {
-        type: "component",
-        component: "InboxBell",
-        condition: () => !!user,
       },
       {
         type: "component",
