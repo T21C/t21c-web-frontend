@@ -29,6 +29,7 @@ import {
   hasVisibleSubmissions,
 } from './submissionDismiss';
 import SubmissionVideoLinkField from './SubmissionVideoLinkField';
+import SubmitterRecordBadge, { incrementSubmitterRecord, preserveSubmitterStats } from './SubmitterRecordBadge';
 
 
 const LevelSubmissions = () => {
@@ -193,6 +194,10 @@ const LevelSubmissions = () => {
 
       if (response.status === 200) {
         setCardPhases((prev) => ({ ...prev, [submissionId]: 'placeholder' }));
+        const field = action === 'approve' ? 'accepted' : 'declined';
+        setSubmissions((prev) =>
+          incrementSubmitterRecord(prev, submission.levelSubmitter?.id, field, 'levelSubmitter'),
+        );
       } else {
         console.error('Error updating submission:', response.statusText);
         clearCardPhase(setCardPhases, submissionId);
@@ -339,7 +344,7 @@ const LevelSubmissions = () => {
     setSubmissions(prevSubmissions => prevSubmissions.map(submission => {
       if (submission.id !== selectedSubmission.id) return submission;
       // Merge response data with existing submission to preserve all fields
-      return {
+      const merged = {
         ...submission,
         ...updatedData,
         // Preserve nested objects that might not be in response
@@ -350,6 +355,7 @@ const LevelSubmissions = () => {
         evidence: updatedData.evidence || submission.evidence,
         levelSubmitter: updatedData.levelSubmitter || submission.levelSubmitter
       };
+      return preserveSubmitterStats(submission, merged, 'levelSubmitter');
     }));
     // Close the creator popup
     setShowCreatorPopup(false);
@@ -1189,6 +1195,17 @@ const LevelSubmissions = () => {
                         className={`creator-assignment-button ${submission.levelSubmitter?.creator ? 'has-creator' : 'no-creator'}`}
                         onClick={() => setShowCreatorAssignmentModal(prev => ({ ...prev, [submission.id]: true }))}
                         title={submission.levelSubmitter?.creator ? 'Creator assigned' : 'No creator assigned'}
+                      />
+                    )}
+                    {submission.levelSubmitter && (
+                      <SubmitterRecordBadge
+                        accepted={submission.levelSubmitter.submissionStats?.accepted}
+                        declined={submission.levelSubmitter.submissionStats?.declined}
+                        tooltipId={`level-submitter-record-${submission.id}`}
+                        tooltip={t('levelSubmissions.details.submitterRecordTooltip', {
+                          accepted: submission.levelSubmitter.submissionStats?.accepted ?? 0,
+                          declined: submission.levelSubmitter.submissionStats?.declined ?? 0,
+                        })}
                       />
                     )}
                   </div>

@@ -63,7 +63,7 @@
       "difficultyHint": "通过了不低于此难度的谱面的用户将获得此身份组。",
       "curationType": "精选类型",
       "selectCurationType": "选择精选类型……",
-      "curationTypeHint": "创作了此类型的精选谱面的创作者将获得此身份组。",
+      "curationTypeHint": "创作了此类型的精选关卡的创作者将获得此身份组。",
       "conflictGroup": "冲突组（可选）",
       "conflictGroupPlaceholder": "例如：difficulty-tier",
       "conflictGroupHint": "在同一冲突组中的身份组将相互替代（仅使用最高身份组）。",

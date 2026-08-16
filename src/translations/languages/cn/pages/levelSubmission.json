@@ -26,7 +26,7 @@
     "channel": "UP主名称",
     "timestamp": "上传时间",
     "nolink": "未提供链接",
-    "resolving": "正在解析视频链接…",
+    "resolving": "正在解析视频链接……",
     "linkResolved": "短链接已解析为哔哩哔哩链接"
   },
   "tooltip": "未知难度。仍然可以提交，但请确保管理员能够读懂。正确的难度格式范例：G13；P7~P13；21.1+；19~20.0+",
@@ -53,7 +53,7 @@
     "invalidZip": "请上传有效压缩文件",
     "invalidZipSize": "压缩文件过大（最大 {{maxSize}} MB）",
     "maxEvidenceFiles": "最多允许10个凭证图片",
-    "evidenceRequired": "请求新曲师或歌曲是需要凭证",
+    "evidenceRequired": "请求新曲师或歌曲时需要凭证",
     "evidenceFileTooLarge": "每个凭证图片必须小于 {{maxMb}} MB"
   },
   "fieldShort": {
@@ -62,7 +62,7 @@
     "diff": "难度",
     "videoLink": "视频链接",
     "charter": "谱师",
-    "directLink": "下载/工坊/Zip",
+    "directLink": "下载/工坊/压缩文件",
     "evidence": "凭证"
   },
   "warnings": {

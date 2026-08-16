@@ -23,6 +23,7 @@ import {
   hasVisibleSubmissions,
 } from './submissionDismiss';
 import SubmissionVideoLinkField from './SubmissionVideoLinkField';
+import SubmitterRecordBadge, { incrementSubmitterRecord, preserveSubmitterStats } from './SubmitterRecordBadge';
 
 
 const PassSubmissions = ({ setIsAutoAllowing }) => {
@@ -128,7 +129,7 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
       // Update submission with new player info from response
       if (response.data.submission) {
         setSubmissions(prev => prev.map(sub => 
-          sub.id === submissionId ? response.data.submission : sub
+          sub.id === submissionId ? preserveSubmitterStats(sub, response.data.submission, 'passSubmitter') : sub
         ));
       }
 
@@ -181,6 +182,10 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
 
       if (response.status === 200) {
         setCardPhases((prev) => ({ ...prev, [submissionId]: 'placeholder' }));
+        const field = action === 'approve' ? 'accepted' : 'declined';
+        setSubmissions((prev) =>
+          incrementSubmitterRecord(prev, submission.passSubmitter?.id, field, 'passSubmitter'),
+        );
       } else {
         console.error('Error updating submission:', response.statusText);
         clearCardPhase(setCardPhases, submissionId);
@@ -333,7 +338,7 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
                     submission={submission}
                     difficultyDict={difficultyDict}
                     onPatched={(updated) => {
-                      setSubmissions((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
+                      setSubmissions((prev) => prev.map((s) => (s.id === updated.id ? preserveSubmitterStats(s, updated, 'passSubmitter') : s)));
                     }}
                     betweenLevelAndSpeed={
                       <>
@@ -371,6 +376,17 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
                             <span className="detail-value">{submission.submitterDiscordUsername ? `@${submission.submitterDiscordUsername}` : submission.passSubmitter?.username || "Null"}</span>
                             <span className="detail-subvalue">#{submission.passSubmitter?.playerId || "Null"}</span>
                           </div>
+                        )}
+                        {submission.passSubmitter && (
+                          <SubmitterRecordBadge
+                            accepted={submission.passSubmitter.submissionStats?.accepted}
+                            declined={submission.passSubmitter.submissionStats?.declined}
+                            tooltipId={`pass-submitter-record-${submission.id}`}
+                            tooltip={t('passSubmissions.details.submitterRecordTooltip', {
+                              accepted: submission.passSubmitter.submissionStats?.accepted ?? 0,
+                              declined: submission.passSubmitter.submissionStats?.declined ?? 0,
+                            })}
+                          />
                         )}
                       </div>
                     }
@@ -486,7 +502,7 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
                       const updated = response.data?.submission;
                       if (updated) {
                         setSubmissions((prev) =>
-                          prev.map((s) => (s.id === updated.id ? updated : s)),
+                          prev.map((s) => (s.id === updated.id ? preserveSubmitterStats(s, updated, 'passSubmitter') : s)),
                         );
                       } else {
                         setSubmissions((prev) =>

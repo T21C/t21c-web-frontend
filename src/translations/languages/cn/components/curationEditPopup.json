@@ -27,11 +27,11 @@
     "customColor": "自定义颜色",
     "customCSS": "自定义 CSS",
     "previewCSS": "预览 CSS",
-    "customCSSPlaceholder": "/* Enter custom CSS for this level's detail page */\n.curation-custom {\n  /* Your custom styles here */\n}",
+    "customCSSPlaceholder": "/* 为此关卡的详细页面自定义 CSS */\n.curation-custom {\n  /* 你的自定义信息 */\n}",
     "customCSSHelp": "此 CSS 将应用于关卡详情页面。使用它来自定义外观和布局。",
     "thumbnail": "关卡缩略图",
-    "isDuplicate": "是否为重复",
-    "isDuplicateHelp": "将此精选从创作者已获类型统计与 Discord RoleSync 中排除，但仍会显示在关卡上。"
+    "isDuplicate": "是否重复",
+    "isDuplicateHelp": "将此精选关卡在创作者统计页面和 Discord 身份组同步系统中排除。它仍会显示在关卡中。"
   },
   "actions": {
     "save": "保存更改",

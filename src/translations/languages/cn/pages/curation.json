@@ -12,7 +12,7 @@
     "selectedTypes": "按类型筛选",
     "addTypes": "添加筛选类型",
     "noTypesSelected": "未选择 — 包含全部类型",
-    "searchTypesPlaceholder": "搜索类型…",
+    "searchTypesPlaceholder": "搜索类型……",
     "noTypeResults": "无匹配类型",
     "noAvailableTypes": "已全部加入筛选",
     "removeType": "从筛选中移除",
@@ -43,13 +43,13 @@
     "typeUpdated": "精选关卡类型更新成功",
     "levelAdded": "成功将关卡加入精选关卡",
     "levelUpdated": "更新精选关卡成功",
-    "bulkSuccess": "Bulk curation complete: {{created}} created, {{updated}} updated",
-    "bulkPartialSuccess": "Bulk curation complete for {{affected}} level(s); {{skipped}} skipped",
-    "bulkFailed": "Failed to bulk-create curations"
+    "bulkSuccess": "批量创建完成：已创建 {{created}} 个关卡，已更新 {{updated}} 个关卡",
+    "bulkPartialSuccess": "批量创建 {{affected}} 个关卡完成，已跳过 {{skipped}} 个关卡",
+    "bulkFailed": "批量创建失败"
   },
   "actions": {
     "addLevel": "添加关卡",
-    "bulkCreate": "Bulk-Create Curations",
+    "bulkCreate": "批量添加",
     "manageTypes": "管理类型",
     "manageCurators": "管理精选委员",
     "manageSchedule": "管理每周精选",

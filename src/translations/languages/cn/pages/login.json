@@ -22,39 +22,39 @@
     }
   },
   "mfa": {
-    "title": "查看你的邮箱",
-    "codePrompt": "请输入我们发送到 {{email}} 的验证码以完成登录。",
+    "title": "检查你的收件箱",
+    "codePrompt": "输入发送至{{email}}的代码以结束登录进程。",
     "yourEmail": "你的邮箱",
-    "codeLabel": "登录验证码",
-    "codeRequired": "请输入邮件中的 8 位验证码",
-    "invalidCode": "验证码无效或已过期",
-    "confirm": "继续",
+    "codeLabel": "登录代码",
+    "codeRequired": "输入发送至你的邮箱的8位代码",
+    "invalidCode": "代码无效或已过期",
+    "confirm": "下一步",
     "verifying": "验证中……",
     "resend": "重新发送",
-    "resendIn": "{{seconds}} 秒后可重新发送",
-    "resendCooldown": "请稍后再请求新的验证码",
-    "sendFailed": "发送登录验证码失败",
-    "expired": "登录验证已过期，请重新登录。",
-    "rememberDevice": "在此设备上记住 30 天",
+    "resendIn": "{{seconds}}秒后可重新发送",
+    "resendCooldown": "请求另一代码前请先等候",
+    "sendFailed": "发送登录代码失败",
+    "expired": "登录已过期。请重试。",
+    "rememberDevice": "记住该设备30天",
     "back": "返回登录",
-    "usePasskey": "改用通行密钥",
-    "passkeyFailed": "通行密钥验证失败，请重试。"
+    "usePasskey": "使用通行密钥",
+    "passkeyFailed": "通行密钥验证失败。请重试。"
+  },
+  "passkey": {
+    "button": "用通行密钥登录",
+    "failed": "通行密钥登录失败。请重试。"
   },
   "errors": {
     "generic": "未知错误。请稍后再试。",
     "network": "网络连接错误。请稍后再试。",
+    "invalidCredentials": "邮箱、用户名或密码无效。",
+    "emailNotVerified": "登录前请验证邮箱。",
+    "rateLimit": "请求过多。请稍后重试",
     "discordFailed": "无法启动 Discord 登录。请重试。如果问题仍然存在，请联系管理员。",
-    "invalidCredentials": "邮箱/用户名或密码不正确。",
-    "emailNotVerified": "请先验证邮箱后再登录。",
-    "rateLimit": "尝试次数过多，请稍后再试。",
     "captcha": {
       "notLoaded": "reCAPTCHA 未加载",
       "incomplete": "请完成 reCAPTCHA 验证",
       "failed": "reCAPTCHA 验证失败。请重试。"
     }
-  },
-  "passkey": {
-    "button": "使用通行密钥登录",
-    "failed": "通行密钥登录失败，请重试。"
   }
-}
+} 

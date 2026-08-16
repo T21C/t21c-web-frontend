@@ -23,6 +23,7 @@
     "team": "Drużyna:",
     "vfxer": "VFXer(zy):",
     "submitter": "Zgłaszający:",
+    "submitterRecordTooltip": "{{accepted}} zaakceptowanych / {{declined}} odrzuconych",
     "evidence": "Dowody:"
   },
   "buttons": {

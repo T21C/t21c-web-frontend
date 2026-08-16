@@ -23,6 +23,7 @@
     "team": "팀:",
     "vfxer": "이펙터:",
     "submitter": "제출자:",
+    "submitterRecordTooltip": "{{accepted}} 승인 / {{declined}} 거절",
     "evidence": "증거:"
   },
   "buttons": {

@@ -55,11 +55,12 @@
       "browsePasses": "浏览通关记录",
       "browsePacks": "浏览包",
       "leaderboard": "排行榜",
+      "scoreCalculator": "分数计算器",
       "aboutUs": "关于我们",
       "privacyPolicy": "隐私政策",
       "termsOfService": "服务条款",
       "apiDocs": "API 文档",
-      "developers": "Developer Portal"
+      "developers": "开发者门户"
     },
     "community": {
       "title": "社区链接",

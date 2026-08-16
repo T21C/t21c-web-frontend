@@ -29,8 +29,8 @@
   "sort": {
     "title": "排序",
     "toggle": "切换排序选项",
-    "header": "按……排序",
-    "by": "按……排序",
+    "header": "排序依据",
+    "by": "排序依据",
     "placeholder": "选择排序模式",
     "recent": "最近",
     "name": "名称",

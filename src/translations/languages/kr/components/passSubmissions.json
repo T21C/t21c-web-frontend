@@ -33,6 +33,7 @@
       }
     },
     "submitter": "제출자:",
+    "submitterRecordTooltip": "{{accepted}} 승인 / {{declined}} 거절",
     "uploadTime": "업로드 시간"
   },
   "playerAssignment": {
