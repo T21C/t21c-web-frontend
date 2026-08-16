@@ -36,6 +36,7 @@
       }
     },
     "submitter": "Przesyłający:",
+    "submitterRecordTooltip": "{{accepted}} zaakceptowanych / {{declined}} odrzuconych",
     "uploadTime": "Czas przesłania:"
   },
   "playerAssignment": {

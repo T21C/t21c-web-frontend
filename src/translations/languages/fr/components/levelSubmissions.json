@@ -23,6 +23,7 @@
     "team": "Équipe:",
     "vfxer": "Effecteur :",
     "submitter": "Soumetteur :",
+    "submitterRecordTooltip": "{{accepted}} acceptées / {{declined}} refusées",
     "evidence": "Preuves :"
   },
   "buttons": {

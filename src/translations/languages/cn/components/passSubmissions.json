@@ -33,6 +33,7 @@
       }
     },
     "submitter": "提交者：",
+    "submitterRecordTooltip": "{{accepted}} 已通过 / {{declined}} 已拒绝",
     "uploadTime": "上传时间",
     "videoLink": "视频链接：",
     "videoLinkPlaceholder": "YouTube 或 Bilibili 链接"

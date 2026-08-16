@@ -25,6 +25,7 @@
     "team": "Team:",
     "vfxer": "VFXer:",
     "submitter": "Submitter:",
+    "submitterRecordTooltip": "{{accepted}} accepted / {{declined}} declined",
     "evidence": "Evidence:"
   },
   "buttons": {

@@ -27,6 +27,7 @@ const Footer = () => {
             {t('home.footer.quickLinks.apiDocs')}
           </ExternalLink>
           <Link to="/developers">{t('home.footer.quickLinks.developers')}</Link>
+          <Link to="/submission/pass/calculator">{t('home.footer.quickLinks.scoreCalculator')}</Link>
         </div>
         <div className="footer-section">
           <h4>{t('home.footer.community.title')}</h4>

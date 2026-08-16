@@ -25,6 +25,7 @@
     "team": "团队：",
     "vfxer": "特效师：",
     "submitter": "提交者：",
+    "submitterRecordTooltip": "{{accepted}} 已通过 / {{declined}} 已拒绝",
     "evidence": "凭证："
   },
   "buttons": {

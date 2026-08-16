@@ -1807,6 +1807,66 @@
     color: var(--color-white-t80);
   }
 
+  .submission-admin-page .submitter-record-badge {
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    min-height: 36px;
+    padding: 0.15rem 0.55rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    white-space: nowrap;
+    flex-shrink: 0;
+    background: color-mix(in srgb, var(--danger-color) 50%, var(--color-black));
+  }
+
+  .submission-admin-page .submitter-record-badge::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: calc(var(--submitter-record-accept-pct, 0) * 1%);
+    background: color-mix(in srgb, var(--btn-success) 50%, var(--color-black));
+    pointer-events: none;
+  }
+
+  .submission-admin-page .submitter-record-badge.is-empty {
+    background: var(--color-white-t15);
+  }
+
+  .submission-admin-page .submitter-record-badge.is-empty::before {
+    display: none;
+  }
+
+  .submission-admin-page .submitter-record-accepted,
+  .submission-admin-page .submitter-record-divider,
+  .submission-admin-page .submitter-record-declined {
+    position: relative;
+    z-index: 1;
+  }
+
+  .submission-admin-page .submitter-record-accepted {
+    color: var(--btn-success);
+  }
+
+  .submission-admin-page .submitter-record-divider {
+    color: var(--color-white-t70);
+  }
+
+  .submission-admin-page .submitter-record-declined {
+    color: var(--danger-color);
+  }
+
+  .submission-admin-page .submitter-record-badge.is-empty .submitter-record-accepted,
+  .submission-admin-page .submitter-record-badge.is-empty .submitter-record-declined {
+    color: var(--color-gray-2);
+  }
+
   .submission-admin-page .creator-assignment-button {
     padding: 6px;
     border: none;

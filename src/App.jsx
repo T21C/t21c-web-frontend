@@ -123,7 +123,7 @@ function App() {
 
           <Route path="submission" element={<PrivateRoute><Pages.SubmissionPage /></PrivateRoute>} />
           <Route path="submission/level" element={<PrivateRoute><Pages.LevelSubmissionPage /></PrivateRoute>} />
-          <Route path="submission/pass/calculator" element={<PrivateRoute><Pages.PassScoreCalculatorPage /></PrivateRoute>} />
+          <Route path="submission/pass/calculator" element={<Pages.PassScoreCalculatorPage />} />
           <Route path="submission/pass" element={<PrivateRoute><Pages.PassSubmissionPage /></PrivateRoute>} />
           <Route path="callback" element={<Pages.CallbackPage />} />
           <Route path="oauth/consent" element={<PrivateRoute><Pages.OAuthConsentPage /></PrivateRoute>} />

@@ -33,6 +33,7 @@
       }
     },
     "submitter": "Submitter:",
+    "submitterRecordTooltip": "{{accepted}} accepted / {{declined}} declined",
     "uploadTime": "Upload Time",
     "videoLink": "Video link:",
     "videoLinkPlaceholder": "YouTube or Bilibili URL"
