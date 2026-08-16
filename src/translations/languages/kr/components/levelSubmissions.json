@@ -24,7 +24,9 @@
     "vfxer": "이펙터:",
     "submitter": "제출자:",
     "submitterRecordTooltip": "{{accepted}} 승인 / {{declined}} 거절",
-    "evidence": "증거:"
+    "evidence": "증거:",
+    "notes": "메모",
+    "notesPlaceholder": "관리자용 선택 메모"
   },
   "buttons": {
     "manageCreator": "제작자 관리",
@@ -60,7 +62,8 @@
     "success": {
       "approved": "제출물이 성공적으로 승인되었습니다",
       "rejected": "제출물이 성공적으로 거부되었습니다",
-      "suffixUpdated": "접미사가 성공적으로 업데이트되었습니다"
+      "suffixUpdated": "접미사가 성공적으로 업데이트되었습니다",
+      "notesUpdated": "메모가 성공적으로 업데이트되었습니다"
     },
     "error": {
       "generic": "오류가 발생했습니다",
@@ -108,6 +111,7 @@
     "needArtistForSong": "곡 관리 전에 아티스트를 설정해야 합니다",
     "artistLockedToSong": "아티스트를 수정할 수 없습니다: 선택한 곡에 고정되어 있습니다",
     "suffixUpdateFailed": "접미사 업데이트에 실패했습니다",
+    "notesUpdateFailed": "메모 업데이트에 실패했습니다",
     "updateSongFailed": "곡 업데이트에 실패했습니다",
     "updateArtistFailed": "아티스트 업데이트에 실패했습니다",
     "addSongRequestFailed": "곡 요청 추가에 실패했습니다",

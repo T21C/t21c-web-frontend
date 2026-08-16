@@ -1,0 +1,99 @@
+/* tuf-search: #SettingsNotificationsPage #settingsNotificationsPage #account #settings */
+.settings-notifications-page {
+  align-items: stretch;
+  gap: 0.75rem;
+}
+
+.settings-notifications-page .settings-sub-page__title {
+  margin-bottom: 0.25rem;
+  font-size: 1.5rem;
+}
+
+.settings-notifications-page .settings-sub-page__text {
+  margin-bottom: 1.25rem;
+}
+
+.settings-notifications-page .settings-notifications-page__section {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  background: var(--color-black-t30);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.settings-notifications-page .settings-notifications-page__section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  list-style: none;
+  cursor: pointer;
+  color: var(--color-purple-1);
+}
+
+.settings-notifications-page .settings-notifications-page__section-header::-webkit-details-marker {
+  display: none;
+}
+
+.settings-notifications-page .settings-notifications-page__section-header::before {
+  content: '';
+  width: 0.45rem;
+  height: 0.45rem;
+  flex-shrink: 0;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+}
+
+.settings-notifications-page .settings-notifications-page__section[open] .settings-notifications-page__section-header::before {
+  transform: rotate(45deg);
+}
+
+.settings-notifications-page .settings-notifications-page__section-header:hover,
+.settings-notifications-page .settings-notifications-page__section-header:focus-visible {
+  color: var(--color-white);
+}
+
+.settings-notifications-page .settings-notifications-page__section-title {
+  margin: 0;
+  flex: 1;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.settings-notifications-page .settings-notifications-page__toggle--category {
+  flex-shrink: 0;
+  color: var(--color-white);
+}
+
+.settings-notifications-page .settings-notifications-page__section-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.settings-notifications-page .settings-notifications-page__toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.settings-notifications-page .settings-notifications-page__toggle input[type='checkbox'] {
+  width: 1.1rem;
+  height: 1.1rem;
+  flex-shrink: 0;
+  accent-color: var(--btn-info);
+  cursor: pointer;
+}
+
+.settings-notifications-page .settings-notifications-page__toggle input[type='checkbox']:disabled {
+  cursor: not-allowed;
+}
+
+.settings-notifications-page .settings-notifications-page__toggle-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-white);
+}

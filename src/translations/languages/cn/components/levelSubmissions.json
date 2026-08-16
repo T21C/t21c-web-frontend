@@ -26,7 +26,9 @@
     "vfxer": "特效师：",
     "submitter": "提交者：",
     "submitterRecordTooltip": "{{accepted}} 已通过 / {{declined}} 已拒绝",
-    "evidence": "凭证："
+    "evidence": "凭证：",
+    "notes": "备注",
+    "notesPlaceholder": "可选管理员备注"
   },
   "buttons": {
     "manageCreator": "管理创作者",
@@ -63,7 +65,8 @@
       "approved": "提交批准成功",
       "rejected": "提交拒绝成功",
       "suffixUpdated": "后缀更新成功",
-      "videoLinkUpdated": "视频链接更新成功"
+      "videoLinkUpdated": "视频链接更新成功",
+      "notesUpdated": "备注更新成功"
     },
     "error": {
       "generic": "发生错误",
@@ -112,6 +115,7 @@
     "artistLockedToSong": "无法修改曲师信息：曲师信息已固定为所选歌曲的信息",
     "suffixUpdateFailed": "后缀更新失败",
     "videoLinkUpdateFailed": "视频链接更新失败",
+    "notesUpdateFailed": "备注更新失败",
     "videoLinkRequired": "视频链接不能为空",
     "updateSongFailed": "歌曲更新失败",
     "updateArtistFailed": "艺术家更新失败",

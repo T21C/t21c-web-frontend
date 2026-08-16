@@ -12,7 +12,8 @@
     "team": "Nazwa drużyny (opcj.)",
     "dlLink": "Link do pobrania",
     "workshop": "Link do Warsztatu Steam",
-    "dlLinksOr": "lub"
+    "dlLinksOr": "lub",
+    "notes": "Notatki"
   },
   "videoInfo": {
     "title": "Tytuł wideo",
@@ -43,5 +44,8 @@
     "charter": "Charter",
     "directLink": "Pobranie/Warsztat/Zip",
     "evidence": "Dowód"
+  },
+  "placeholders": {
+    "notes": "Opcjonalne notatki dla managerów (szczegóły chartu, kredyty itd.)"
   }
 } 

@@ -196,6 +196,8 @@ export const routes = {
         `/v2/admin/submissions/levels/${enc(submissionId)}/suffix`,
       levelVideoLink: (submissionId) =>
         `/v2/admin/submissions/levels/${enc(submissionId)}/video-link`,
+      levelNotes: (submissionId) =>
+        `/v2/admin/submissions/levels/${enc(submissionId)}/notes`,
       levelCreators: (submissionId) =>
         `/v2/admin/submissions/levels/${enc(submissionId)}/creators`,
       pass: (submissionId) => `/v2/admin/submissions/passes/${enc(submissionId)}`,
@@ -498,6 +500,20 @@ export const routes = {
     silentRemovePasses: () => '/v2/webhook/silent-remove/passes',
   },
 
+  notifications: {
+    list: (params) => {
+      const search = new URLSearchParams();
+      if (params?.cursor != null) search.set('cursor', String(params.cursor));
+      if (params?.limit != null) search.set('limit', String(params.limit));
+      const qs = search.toString();
+      return qs ? `/v2/notifications?${qs}` : '/v2/notifications';
+    },
+    unreadCount: () => '/v2/notifications/unread-count',
+    read: (id) => `/v2/notifications/${enc(id)}/read`,
+    readAll: () => '/v2/notifications/read-all',
+    seen: () => '/v2/notifications/seen',
+    preferences: () => '/v2/notifications/preferences',
+  },
   events: () => '/v2/events',
   health: {
     latency: () => '/v2/health/latency',
@@ -532,6 +548,9 @@ export const routes = {
       validate: () => '/v2/form/level/validate',
       submit: () => '/v2/form/level/submit',
       selectLevel: () => '/v2/form/level/select-level',
+    },
+    submissions: {
+      root: () => '/v2/form/submissions',
     },
   },
 };

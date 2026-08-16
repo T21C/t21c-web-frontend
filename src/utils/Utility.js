@@ -423,6 +423,34 @@ export function formatDate(date, language = 'en') {
   return new Date(date).toLocaleString(localeMap[language] || 'en-GB', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 }
 
+const TIME_AGO_DIVISIONS = [
+  { amount: 60, unit: 'second' },
+  { amount: 60, unit: 'minute' },
+  { amount: 24, unit: 'hour' },
+  { amount: 7, unit: 'day' },
+  { amount: 4.34524, unit: 'week' },
+  { amount: 12, unit: 'month' },
+  { amount: Number.POSITIVE_INFINITY, unit: 'year' },
+];
+
+export function formatTimeAgo(date, language = 'en') {
+  if (!date) return '';
+  const then = new Date(date).getTime();
+  if (Number.isNaN(then)) return '';
+  const diffSeconds = (then - Date.now()) / 1000;
+  const locale = localeMap[language] || 'en-GB';
+  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'always' });
+  let duration = diffSeconds;
+  for (const division of TIME_AGO_DIVISIONS) {
+    if (Math.abs(duration) < division.amount) {
+      const rounded = Math.round(duration) || (duration < 0 ? -1 : 1);
+      return rtf.format(rounded, division.unit);
+    }
+    duration /= division.amount;
+  }
+  return '';
+}
+
 export function formatDateShort(date, language = 'en') {
   if (!date) return '';
   const d = new Date(date);

@@ -706,6 +706,14 @@ export const RatingDetailPopup = ({
               </div>
             </div>
           )}
+          {selectedRating.level.notes && (
+            <div className="detail-field comment-field open">
+              <span className="detail-label">{t('rating.detailPopup.labels.notes')}</span>
+              <div className="detail-value">
+                <CommentFormatter>{selectedRating.level.notes}</CommentFormatter>
+              </div>
+            </div>
+          )}
           <div className="popup-main-content-container">
             <div className="popup-main-content">
               <div className="video-container">

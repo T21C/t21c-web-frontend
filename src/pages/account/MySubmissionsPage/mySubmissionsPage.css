@@ -1,0 +1,220 @@
+/* tuf-search: #MySubmissionsPage #mySubmissionsPage #account #mySubmissions */
+.my-submissions-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.25rem 1rem 2rem;
+  color: var(--color-white);
+}
+
+.my-submissions-page__header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.my-submissions-page__title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.my-submissions-page__controls {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+.my-submissions-page__search {
+  flex: 1 1 16rem;
+  min-width: 12rem;
+  padding: 0.55rem 0.85rem;
+  background: var(--color-white-t10);
+  border: 1px solid var(--color-white-t20);
+  border-radius: 0.35rem;
+  color: var(--color-white);
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+.my-submissions-page__search:focus {
+  outline: none;
+  border-color: var(--color-white-t40);
+}
+
+.my-submissions-page__list {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-white-t10);
+  border-radius: 0.4rem;
+  overflow: hidden;
+  background: var(--color-black-t30);
+}
+
+.my-submissions-page__empty {
+  margin: 0;
+  padding: 1.5rem 1rem;
+  color: var(--color-gray-2);
+}
+
+.my-submissions-page__row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--color-white-t10);
+}
+
+.my-submissions-page__row:last-child {
+  border-bottom: none;
+}
+
+.my-submissions-page__row:hover {
+  background: var(--color-white-t10);
+}
+
+.my-submissions-page__row-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.my-submissions-page__badges {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.my-submissions-page__badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.my-submissions-page__badge.is-kind-pass {
+  background: color-mix(in srgb, var(--color-purple-1) 28%, transparent);
+  color: var(--color-white);
+}
+
+.my-submissions-page__badge.is-kind-level {
+  background: color-mix(in srgb, var(--btn-info) 28%, transparent);
+  color: var(--color-white);
+}
+
+.my-submissions-page__badge.is-status-pending {
+  background: color-mix(in srgb, var(--btn-warning) 28%, transparent);
+  color: var(--color-white);
+}
+
+.my-submissions-page__badge.is-status-approved {
+  background: var(--btn-success-tint);
+  color: var(--color-white);
+}
+
+.my-submissions-page__badge.is-status-declined {
+  background: var(--danger-color-tint-25);
+  color: var(--color-white);
+}
+
+.my-submissions-page__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.my-submissions-page__row-title {
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: var(--color-white);
+}
+
+.my-submissions-page__row-artist,
+.my-submissions-page__row-extra {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-gray-2);
+}
+
+.my-submissions-page__row-actions {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.my-submissions-page__row-link {
+  color: var(--color-purple-1);
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+.my-submissions-page__row-link:hover {
+  color: var(--color-white);
+}
+
+.my-submissions-page__row-date {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  color: var(--color-white-t70);
+  white-space: nowrap;
+}
+
+.my-submissions-page__pagination {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.my-submissions-page__page-meta {
+  color: var(--color-gray-2);
+  font-size: 0.9rem;
+}
+
+.my-submissions-page__page-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+}
+
+.my-submissions-page__page-btn {
+  border: 1px solid var(--color-white-t20);
+  background: var(--color-black);
+  color: var(--color-white);
+  border-radius: 0.35rem;
+  padding: 0.5rem 0.9rem;
+  font-family: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.my-submissions-page__page-btn:hover:not(:disabled) {
+  background: var(--color-white-t10);
+  color: var(--color-white);
+}
+
+.my-submissions-page__page-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .my-submissions-page__row {
+    flex-direction: column;
+  }
+}

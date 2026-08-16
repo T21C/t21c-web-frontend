@@ -64,6 +64,12 @@ export const SETTINGS_NAV_GROUPS = [
         visible: alwaysVisible,
       },
       {
+        path: "notifications",
+        labelKey: "settings.nav.notifications",
+        shortLabelKey: "settings.nav.short.notifications",
+        visible: alwaysVisible,
+      },
+      {
         path: "preferences",
         labelKey: "settings.nav.preferences",
         shortLabelKey: "settings.nav.short.preferences",

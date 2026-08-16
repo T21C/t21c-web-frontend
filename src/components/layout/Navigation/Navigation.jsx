@@ -10,6 +10,7 @@ import NavDropdown from "./NavDropdown";
 import NavLinkItem from "./NavLinkItem";
 import LanguageSelector from "./LanguageSelector";
 import UserMenu from "./UserMenu";
+import InboxBell from "./InboxBell";
 import MobileMenu from "./MobileMenu";
 import { createNavigationConfig } from "./navigationConfig";
 
@@ -174,10 +175,7 @@ const Navigation = ({ children, config: externalConfig = null }) => {
 
           {/* Mobile Menu Button */}
           <div className="nav-mobile-controls">
-            <LanguageSelector
-              variant="mobile"
-              asListItem={false}
-            />
+            {user ? <InboxBell variant="mobile" /> : null}
 
             <svg
               className="nav-mobile-menu svg-stroke"

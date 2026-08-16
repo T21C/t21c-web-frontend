@@ -15,6 +15,7 @@
     "player": "Player profile",
     "creator": "Creator profile",
     "billing": "Billing",
+    "notifications": "Notifications",
     "preferences": "Preferences",
     "short": {
       "account": "Account",
@@ -23,9 +24,28 @@
       "creator": "Creator",
       "billing": "Billing",
       "security": "Security",
-      "preferences": "Preferences"
+      "preferences": "Preferences",
+      "notifications": "Alerts"
     },
     "security": "Security"
+  },
+  "notifications": {
+    "meta": {
+      "title": "Notification settings",
+      "description": "Choose which events appear in your inbox"
+    },
+    "title": "Notifications",
+    "subtitle": "Choose which events appear in your inbox. Email and Discord channels will be added later.",
+    "loading": "Loading notification settings…",
+    "loadError": "Could not load notification settings",
+    "saveError": "Could not save that setting",
+    "inApp": "Show in inbox",
+    "muteCategory": "Mute this category",
+    "categories": {
+      "submissions": "Submissions",
+      "chart": "Charts",
+      "clears": "Clears"
+    }
   },
   "preferences": {
     "title": "Preferences",

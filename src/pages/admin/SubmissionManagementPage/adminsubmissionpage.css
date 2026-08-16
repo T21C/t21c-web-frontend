@@ -921,6 +921,145 @@
     cursor: not-allowed;
   }
 
+  .submission-admin-page .submission-notes {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+    min-height: 8rem;
+  }
+
+  .submission-admin-page .submission-notes__label {
+    font-size: 0.85rem;
+    color: var(--color-white-t70);
+  }
+
+  .submission-admin-page .submission-notes__display,
+  .submission-admin-page .submission-notes__edit {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .submission-admin-page .submission-notes__body {
+    flex: 1;
+    min-width: 0;
+    text-align: end;
+    max-width: 100%;
+    margin: 0;
+    color: var(--color-white);
+    font-size: 0.9rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .submission-admin-page .submission-notes__empty {
+    flex: 1;
+    min-width: 0;
+    opacity: 0.5;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .submission-admin-page .submission-notes__textarea {
+    flex: 1;
+    min-width: 0;
+    min-height: 6rem;
+    resize: none;
+    background: var(--color-black-t40);
+    border: 1px solid var(--color-white-t20);
+    border-radius: 4px;
+    color: var(--color-white);
+    padding: 0.4rem 0.6rem;
+    font-size: 0.9rem;
+    font-family: inherit;
+  }
+
+  .submission-admin-page .submission-notes__textarea:focus {
+    outline: none;
+    border-color: var(--color-white-t40);
+  }
+
+  .submission-admin-page .submission-notes__textarea::placeholder {
+    color: var(--color-white);
+    opacity: 0.5;
+  }
+
+  .submission-admin-page .submission-notes__textarea:disabled {
+    opacity: 0.7;
+  }
+
+  .submission-admin-page .submission-notes__actions {
+    display: flex;
+    gap: 0.35rem;
+    flex-shrink: 0;
+  }
+
+  .submission-admin-page .submission-notes__edit-btn,
+  .submission-admin-page .submission-notes__save,
+  .submission-admin-page .submission-notes__cancel {
+    flex-shrink: 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 0.35rem 0.5rem;
+    font-size: 0.85rem;
+    background: var(--color-white-t20);
+    color: var(--color-white);
+  }
+
+  .submission-admin-page .submission-notes__edit-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35rem;
+    line-height: 0;
+  }
+
+  .submission-admin-page .submission-notes__edit-btn svg {
+    display: block;
+    flex-shrink: 0;
+  }
+
+  .submission-admin-page .submission-notes__edit-btn:hover,
+  .submission-admin-page .submission-notes__save:hover,
+  .submission-admin-page .submission-notes__cancel:hover {
+    background: var(--color-white-t30);
+  }
+
+  .submission-admin-page .submission-notes__save {
+    background: var(--btn-success);
+  }
+
+  .submission-admin-page .submission-notes__save:hover {
+    opacity: 0.9;
+    background: var(--btn-success);
+  }
+
+  .submission-admin-page .submission-notes__cancel {
+    background: var(--danger-color);
+  }
+
+  .submission-admin-page .submission-notes__cancel:hover {
+    opacity: 0.9;
+    background: var(--danger-color);
+  }
+
+  .submission-admin-page .submission-notes__save:disabled,
+  .submission-admin-page .submission-notes__cancel:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
   .submission-admin-page .youtube {
     position: relative;
     width: 100%;

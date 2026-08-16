@@ -1,0 +1,51 @@
+{
+  "meta": {
+    "title": "Moje zgłoszenia",
+    "description": "Przeglądaj zgłoszenia przejść i chartów"
+  },
+  "title": "Moje zgłoszenia",
+  "search": {
+    "placeholder": "Szukaj po utworze, artyście, charterze, graczu lub linku wideo"
+  },
+  "filters": {
+    "type": "Typ",
+    "status": "Status",
+    "sort": "Sortowanie"
+  },
+  "types": {
+    "all": "Wszystkie typy",
+    "pass": "Przejście",
+    "level": "Chart"
+  },
+  "status": {
+    "all": "Wszystkie statusy",
+    "pending": "Oczekujące",
+    "approved": "Zaakceptowane",
+    "declined": "Odrzucone"
+  },
+  "sort": {
+    "dateDesc": "Najnowsze",
+    "dateAsc": "Najstarsze",
+    "status": "Status",
+    "type": "Typ"
+  },
+  "row": {
+    "openLevel": "Otwórz poziom",
+    "watchVideo": "Wideo",
+    "score": "Wynik {{value}}",
+    "accuracy": "{{value}}",
+    "speed": "{{value}}×",
+    "charter": "Charter {{name}}",
+    "requestedDiff": "Proszona trudność {{diff}}"
+  },
+  "pagination": {
+    "prev": "Poprzednia",
+    "next": "Następna",
+    "page": "Strona {{page}} z {{totalPages}}",
+    "total_one": "{{count}} zgłoszenie",
+    "total_other": "{{count}} zgłoszeń"
+  },
+  "empty": "Nie znaleziono zgłoszeń.",
+  "loading": "Ładowanie zgłoszeń…",
+  "error": "Nie udało się wczytać zgłoszeń. Spróbuj ponownie."
+}

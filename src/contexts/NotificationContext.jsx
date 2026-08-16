@@ -106,7 +106,7 @@ export const NotificationProvider = ({ children }) => {
       return;
     }
 
-    const eventsEndpoint = apiUrl(routes.events());
+    const eventsEndpoint = `${apiUrl(routes.events())}?source=admin`;
 
     console.debug('SSE: Setting up new connection');
     eventSourceRef.current = new EventSource(eventsEndpoint, {
@@ -148,13 +148,6 @@ export const NotificationProvider = ({ children }) => {
     eventSourceRef.current.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        //console.debug('SSE: Received message:', data);
-
-        // Dispatch event to components
-        const sseEvent = new CustomEvent('sse-message', { detail: data });
-        document.dispatchEvent(sseEvent);
-
-        // Handle notification updates
         if (data.type === 'submissionUpdate' || data.type === 'ratingUpdate') {
           if (fetchTimeoutRef.current) {
             clearTimeout(fetchTimeoutRef.current);

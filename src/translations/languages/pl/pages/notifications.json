@@ -1,0 +1,107 @@
+{
+  "meta": {
+    "title": "Powiadomienia",
+    "description": "Twoja skrzynka TUF"
+  },
+  "title": "Powiadomienia",
+  "subtitle": "Aktualizacje dotyczące zgłoszeń i konta.",
+  "empty": "Brak powiadomień.",
+  "loading": "Ładowanie powiadomień…",
+  "markAllRead": "Oznacz wszystkie jako przeczytane",
+  "seeAll": "Zobacz wszystkie powiadomienia",
+  "loadMore": "Załaduj więcej",
+  "unread_one": "{{count}} nieprzeczytane",
+  "unread_other": "{{count}} nieprzeczytanych",
+  "bellAria": "Powiadomienia, {{count}} nieprzeczytanych",
+  "settingsAria": "Ustawienia powiadomień",
+  "untitledLevel": "Poziom #{{levelId}}",
+  "unknownArtist": "Nieznany artysta",
+  "unknown": {
+    "title": "Nowe powiadomienie",
+    "body": ""
+  },
+  "visibility": {
+    "public": "publiczny",
+    "hidden": "ukryty"
+  },
+  "types": {
+    "pass": {
+      "submission": {
+        "submitted": {
+          "title": "Pass wysłany",
+          "body": "Twój pass {{song}} — {{artist}} został wysłany."
+        },
+        "approved": {
+          "title": "Pass zatwierdzony",
+          "body": "{{song}} — {{artist}} zostało zatwierdzone."
+        },
+        "declined": {
+          "title": "Pass odrzucony",
+          "body": "{{song}} — {{artist}} zostało odrzucone."
+        }
+      },
+      "modified": {
+        "title": "Pass zaktualizowany",
+        "body": "Twój pass {{song}} — {{artist}} został zaktualizowany."
+      },
+      "deleted": {
+        "title": "Pass usunięty",
+        "body": "Twój pass {{song}} — {{artist}} został usunięty."
+      },
+      "restored": {
+        "title": "Pass przywrócony",
+        "body": "Twój pass {{song}} — {{artist}} został przywrócony."
+      }
+    },
+    "chart": {
+      "submission": {
+        "submitted": {
+          "title": "Chart wysłany",
+          "body": "{{song}} — {{artist}} został wysłany."
+        },
+        "approved": {
+          "title": "Chart zaakceptowany",
+          "body": "{{song}} — {{artist}} został zaakceptowany."
+        },
+        "declined": {
+          "title": "Chart odrzucony",
+          "body": "{{song}} — {{artist}} został odrzucony."
+        }
+      },
+      "deleted": {
+        "title": "Chart usunięty",
+        "body": "{{song}} — {{artist}} został usunięty."
+      },
+      "restored": {
+        "title": "Chart przywrócony",
+        "body": "{{song}} — {{artist}} został przywrócony."
+      },
+      "visibility": {
+        "changed": {
+          "title": "Zmieniono widoczność chartu",
+          "body": "{{song}} — {{artist}} jest teraz {{visibility}}."
+        }
+      },
+      "modified": {
+        "title": "Chart zaktualizowany",
+        "body": "{{song}} — {{artist}} został zaktualizowany."
+      },
+      "curated": {
+        "title": "Chart wyróżniony",
+        "body": "{{song}} — {{artist}} został wyróżniony."
+      },
+      "curation": {
+        "removed": {
+          "title": "Wyróżnienie usunięte",
+          "body": "{{song}} — {{artist}} nie jest już wyróżniony."
+        }
+      },
+      "weekly": {
+        "selected": {
+          "title": "Wybrano do Weekly Levels",
+          "body": "{{song}} — {{artist}} został wybrany do Weekly Levels."
+        }
+      }
+    }
+  }
+}

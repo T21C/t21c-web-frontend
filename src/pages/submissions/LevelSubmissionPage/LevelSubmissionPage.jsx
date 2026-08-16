@@ -114,7 +114,8 @@ const LevelSubmissionPage = () => {
     songId: null,
     artistId: null,
     isNewSongRequest: false,
-    isNewArtistRequest: false
+    isNewArtistRequest: false,
+    notes: '',
   };
 
   const { t } = useTranslation('pages');
@@ -440,6 +441,7 @@ const LevelSubmissionPage = () => {
         isNewArtistRequest: hasNewArtistRequest,
         diff: form.diff,
         suffix: form.suffix || '',
+        notes: form.notes || '',
         videoLink: cleanedVideoUrl,
         directDL: form.dlLink,
         wsLink: form.workshopLink,
@@ -1398,6 +1400,19 @@ const LevelSubmissionPage = () => {
               </button>
             </div>
 
+            <div className="notes-section">
+              <h3>{t('levelSubmission.submInfo.notes')}</h3>
+              <textarea
+                className="notes-textarea"
+                name="notes"
+                value={form.notes}
+                onChange={handleInputChange}
+                placeholder={t('levelSubmission.placeholders.notes')}
+                rows={4}
+                maxLength={4000}
+                autoComplete="off"
+              />
+            </div>
 
                           {/* Display pending profiles warning */}
             {pendingProfiles.length > 0 && (

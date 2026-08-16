@@ -32,9 +32,29 @@
   "nav": {
     "security": "Bezpieczeństwo",
     "preferences": "Preferencje",
+    "notifications": "Powiadomienia",
     "short": {
       "security": "Bezpieczeństwo",
-      "preferences": "Preferencje"
+      "preferences": "Preferencje",
+      "notifications": "Alerty"
+    }
+  },
+  "notifications": {
+    "meta": {
+      "title": "Ustawienia powiadomień",
+      "description": "Wybierz, które zdarzenia pojawią się w skrzynce"
+    },
+    "title": "Powiadomienia",
+    "subtitle": "Wybierz, które zdarzenia pojawią się w skrzynce. E-mail i Discord zostaną dodane później.",
+    "loading": "Ładowanie ustawień powiadomień…",
+    "loadError": "Nie udało się wczytać ustawień powiadomień",
+    "saveError": "Nie udało się zapisać ustawienia",
+    "inApp": "Pokaż w skrzynce",
+    "muteCategory": "Wycisz tę kategorię",
+    "categories": {
+      "submissions": "Zgłoszenia",
+      "chart": "Charty",
+      "clears": "Cleary"
     }
   },
   "security": {

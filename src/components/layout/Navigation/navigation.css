@@ -282,9 +282,19 @@
 .nav-user-menu {
   position: relative;
   list-style: none;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.nav-user-menu__bell {
+  display: flex;
+  align-items: center;
 }
 
 .nav-user-button {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -1059,7 +1069,7 @@
     gap: 1rem;
   }
 
-  .nav-mobile-controls button,
+  .nav-mobile-controls .inbox-bell__button,
   .nav-mobile-controls .nav-language-selector__button {
     min-width: 44px;
     min-height: 44px;

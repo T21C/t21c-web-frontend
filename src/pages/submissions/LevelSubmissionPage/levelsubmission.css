@@ -55,6 +55,7 @@
 }
 .level-submission-page form .info h1 {
   margin-bottom: 1rem;
+  text-align: center;
 }
 .level-submission-page form .info input {
   background-color: transparent;
@@ -381,6 +382,37 @@
   justify-content: center;
 }
 
+.level-submission-page form .info .notes-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0 2rem;
+}
+
+.level-submission-page form .info .notes-section h3 {
+  margin: 0;
+}
+
+.level-submission-page form .info .notes-textarea {
+  width: 100%;
+  min-height: 2rem;
+  resize: vertical;
+  background-color: transparent;
+  border: 0;
+  border-bottom: 3px solid var(--color-purple-2);
+  outline: none;
+  padding: 0.5rem 0.2rem 0.2rem 0.5rem;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--color-white);
+  caret-color: var(--color-white);
+}
+
+.level-submission-page form .info .notes-textarea::placeholder {
+  color: var(--color-white);
+  opacity: 0.5;
+}
+
 .level-submission-page form .info .creator-action-btn:disabled::before {
   filter: none;
   background-color: var(--btn-disabled-fill);
@@ -659,6 +691,10 @@
   .level-submission-page form .info .creators-section {
     padding: 0 0.5rem;
     margin: 1.5rem 0;
+  }
+
+  .level-submission-page form .info .notes-section {
+    padding: 0 0.5rem;
   }
 
   .level-submission-page form .info .creator-row {

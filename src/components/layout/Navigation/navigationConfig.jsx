@@ -61,16 +61,13 @@ export const createUserMenuItems = (user) => {
         ]
       : []),
     {
-      disabled: true,
-      badge: "navigation.main.badges.underConstruction",
-      to: "/submission",
+      to: "/submissions",
       translationKey: "navigation.main.dropdowns.user.mySubmissions",
     },
     { divider: true },
     {
-      disabled: true,
+      to: "/notifications",
       translationKey: "navigation.main.dropdowns.user.notifications",
-      badge: "navigation.main.badges.underConstruction",
     },
     {
       translationKey: "navigation.main.dropdowns.user.settings",
@@ -217,7 +214,9 @@ export const createNavigationConfig = (context = {}) => {
         component: "UserMenu",
         props: {
           isActive: (pathname) =>
-            pathname.startsWith("/profile") || pathname.startsWith("/tuf-stellar")
+            pathname.startsWith("/profile") ||
+            pathname.startsWith("/tuf-stellar") ||
+            pathname.startsWith("/notifications")
         },
         // Conditional rendering based on user
         condition: () => !!user,
