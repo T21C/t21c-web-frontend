@@ -19,7 +19,8 @@
     "levelZip": "Level Zip",
     "evidence": "Evidence",
     "evidenceForSong": "Evidence for Song",
-    "evidenceForArtist": "Evidence for Artist"
+    "evidenceForArtist": "Evidence for Artist",
+    "notes": "Notes"
   },
   "videoInfo": {
     "title": "Video title",
@@ -86,7 +87,8 @@
     "searchCreator": "Search for a creator...",
     "searchTeam": "Search for a team...",
     "newCreator": "Enter new creator name",
-    "newTeam": "Enter new team name"
+    "newTeam": "Enter new team name",
+    "notes": "Optional notes for managers (chart details, credits, etc.)"
   },
   "cdnTos": {
     "title": "CDN Upload Confirmation",

@@ -29,6 +29,7 @@ import {
   hasVisibleSubmissions,
 } from './submissionDismiss';
 import SubmissionVideoLinkField from './SubmissionVideoLinkField';
+import SubmissionNotesField from './SubmissionNotesField';
 import SubmitterRecordBadge, { incrementSubmitterRecord, preserveSubmitterStats } from './SubmitterRecordBadge';
 
 
@@ -1435,6 +1436,19 @@ const LevelSubmissions = () => {
                         delete next[submission.id];
                         return next;
                       });
+                    }}
+                  />
+                  <SubmissionNotesField
+                    notes={submission.notes}
+                    onSave={async (nextNotes) => {
+                      const response = await api.put(
+                        routes.admin.submissions.levelNotes(submission.id),
+                        { notes: nextNotes },
+                      );
+                      const saved = response.data?.notes ?? (nextNotes || null);
+                      setSubmissions((prev) =>
+                        prev.map((s) => (s.id === submission.id ? { ...s, notes: saved } : s)),
+                      );
                     }}
                   />
                 </div>

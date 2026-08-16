@@ -15,6 +15,12 @@ import { useJobProgressStream } from '@/hooks/useJobProgressStream';
 import ZipLevelFilesList from '@/components/popups/Levels/ZipLevelFilesList/ZipLevelFilesList';
 import { ARCHIVE_ACCEPT_ATTR, isAcceptedArchiveFile } from '@/utils/zipUtils';
 
+/** Discord CDN attachments expire; rewrite to the Hyonsu proxy when prefilling from level data. */
+function rewriteDiscordCdnHost(url) {
+  if (typeof url !== 'string' || url === '') return url;
+  return url.replace(/cdn\.discordapp\.com/gi, 'fixcdn.hyonsu.com');
+}
+
 /** Pseudo UUID v4-shaped id (hex from Date.now + Math.random; non-crypto). */
 function createUploadJobId() {
   const timeHex = Date.now().toString(16).padStart(12, '0').slice(-12);
@@ -231,7 +237,7 @@ const LevelUploadManagementPopup = ({
     if (!v || v === 'removed') {
       setImportUrl(ws || '');
     } else {
-      setImportUrl(String(v));
+      setImportUrl(rewriteDiscordCdnHost(String(v)));
     }
   }, [level?.id, level?.dlLink, level?.workshopLink]);
 
