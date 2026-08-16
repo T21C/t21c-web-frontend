@@ -180,13 +180,13 @@ function sortCreditsDefault(a, b) {
 }
 
 /**
- * @param {Array<any>} placements
- * @param {number[]} orderIds credit ids
+ * @param {Array<any> | null | undefined} placements
+ * @param {number[] | null | undefined} orderIds credit ids
  * @returns {Array<any>}
  */
-export function sortPlacementsByOrder(placements, orderIds = []) {
-  const list = [...placements];
-  if (!orderIds.length) {
+export function sortPlacementsByOrder(placements, orderIds) {
+  const list = Array.isArray(placements) ? [...placements] : [];
+  if (!Array.isArray(orderIds) || !orderIds.length) {
     list.sort(sortCreditsDefault);
     return list;
   }

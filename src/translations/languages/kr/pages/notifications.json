@@ -46,6 +46,10 @@
       "deleted": {
         "title": "패스 삭제됨",
         "body": "{{song}} — {{artist}} 패스가 삭제되었습니다."
+      },
+      "restored": {
+        "title": "패스 복원됨",
+        "body": "{{song}} — {{artist}} 패스가 복원되었습니다."
       }
     },
     "chart": {
@@ -66,6 +70,10 @@
       "deleted": {
         "title": "차트 삭제됨",
         "body": "{{song}} — {{artist}} 가 삭제되었습니다."
+      },
+      "restored": {
+        "title": "차트 복원됨",
+        "body": "{{song}} — {{artist}} 가 복원되었습니다."
       },
       "visibility": {
         "changed": {
