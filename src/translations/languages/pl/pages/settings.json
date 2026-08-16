@@ -50,8 +50,11 @@
     "loadError": "Nie udało się wczytać ustawień powiadomień",
     "saveError": "Nie udało się zapisać ustawienia",
     "inApp": "Pokaż w skrzynce",
+    "muteCategory": "Wycisz tę kategorię",
     "categories": {
-      "submissions": "Zgłoszenia"
+      "submissions": "Zgłoszenia",
+      "chart": "Charty",
+      "clears": "Cleary"
     }
   },
   "security": {

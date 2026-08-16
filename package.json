@@ -56,7 +56,6 @@
     "recharts": "^2.15.0",
     "serve": "^14.2.4",
     "shuffle-seed": "^1.1.6",
-    "socket.io-client": "^4.8.1",
     "super-image-cropper": "^1.0.27",
     "xlsx": "^0.18.5",
     "zod": "^4.4.3"

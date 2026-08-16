@@ -40,8 +40,11 @@
     "loadError": "无法加载通知设置",
     "saveError": "无法保存该设置",
     "inApp": "显示在收件箱",
+    "muteCategory": "静音此分类",
     "categories": {
-      "submissions": "提交"
+      "submissions": "提交",
+      "chart": "谱面",
+      "clears": "通关"
     }
   },
   "preferences": {

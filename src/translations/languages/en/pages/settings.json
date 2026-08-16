@@ -40,8 +40,11 @@
     "loadError": "Could not load notification settings",
     "saveError": "Could not save that setting",
     "inApp": "Show in inbox",
+    "muteCategory": "Mute this category",
     "categories": {
-      "submissions": "Submissions"
+      "submissions": "Submissions",
+      "chart": "Charts",
+      "clears": "Clears"
     }
   },
   "preferences": {

@@ -19,9 +19,17 @@
     "title": "새 알림",
     "body": ""
   },
+  "visibility": {
+    "public": "공개",
+    "hidden": "숨김"
+  },
   "types": {
     "pass": {
       "submission": {
+        "submitted": {
+          "title": "패스 제출됨",
+          "body": "{{song}} — {{artist}} 패스가 제출되었습니다."
+        },
         "approved": {
           "title": "패스 승인됨",
           "body": "{{song}} — {{artist}} 가 승인되었습니다."
@@ -29,6 +37,60 @@
         "declined": {
           "title": "패스 거절됨",
           "body": "{{song}} — {{artist}} 가 거절되었습니다."
+        }
+      },
+      "modified": {
+        "title": "패스 수정됨",
+        "body": "{{song}} — {{artist}} 패스가 수정되었습니다."
+      },
+      "deleted": {
+        "title": "패스 삭제됨",
+        "body": "{{song}} — {{artist}} 패스가 삭제되었습니다."
+      }
+    },
+    "chart": {
+      "submission": {
+        "submitted": {
+          "title": "차트 제출됨",
+          "body": "{{song}} — {{artist}} 가 제출되었습니다."
+        },
+        "approved": {
+          "title": "차트 승인됨",
+          "body": "{{song}} — {{artist}} 가 승인되었습니다."
+        },
+        "declined": {
+          "title": "차트 거절됨",
+          "body": "{{song}} — {{artist}} 가 거절되었습니다."
+        }
+      },
+      "deleted": {
+        "title": "차트 삭제됨",
+        "body": "{{song}} — {{artist}} 가 삭제되었습니다."
+      },
+      "visibility": {
+        "changed": {
+          "title": "차트 공개 설정 변경",
+          "body": "{{song}} — {{artist}} 가 이제 {{visibility}}입니다."
+        }
+      },
+      "modified": {
+        "title": "차트 수정됨",
+        "body": "{{song}} — {{artist}} 가 수정되었습니다."
+      },
+      "curated": {
+        "title": "차트 큐레이션됨",
+        "body": "{{song}} — {{artist}} 가 큐레이션되었습니다."
+      },
+      "curation": {
+        "removed": {
+          "title": "큐레이션 해제됨",
+          "body": "{{song}} — {{artist}} 의 큐레이션이 해제되었습니다."
+        }
+      },
+      "weekly": {
+        "selected": {
+          "title": "Weekly Levels 선정",
+          "body": "{{song}} — {{artist}} 가 Weekly Levels에 선정되었습니다."
         }
       }
     }
