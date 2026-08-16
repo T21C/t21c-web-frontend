@@ -73,6 +73,7 @@ import { CalculatorIcon } from './CalculatorIcon';
 import { ImportIcon } from './ImportIcon';
 import { CompareIcon } from './CompareIcon';
 import { BellIcon } from './BellIcon';
+import { GearIcon } from './GearIcon';
 export {
     DefaultAvatar,
     DiscordIcon,
@@ -148,4 +149,5 @@ export {
     ImportIcon,
     CompareIcon,
     BellIcon,
+    GearIcon,
 }

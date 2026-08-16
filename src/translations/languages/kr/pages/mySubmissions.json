@@ -1,0 +1,51 @@
+{
+  "meta": {
+    "title": "내 제출물",
+    "description": "패스와 채보 제출 내역을 확인하세요"
+  },
+  "title": "내 제출물",
+  "search": {
+    "placeholder": "곡, 아티스트, 채보어, 클리어 플레이어, 영상 링크로 검색"
+  },
+  "filters": {
+    "type": "유형",
+    "status": "상태",
+    "sort": "정렬"
+  },
+  "types": {
+    "all": "모든 유형",
+    "pass": "패스",
+    "level": "채보"
+  },
+  "status": {
+    "all": "모든 상태",
+    "pending": "대기 중",
+    "approved": "승인됨",
+    "declined": "거절됨"
+  },
+  "sort": {
+    "dateDesc": "최신순",
+    "dateAsc": "오래된순",
+    "status": "상태",
+    "type": "유형"
+  },
+  "row": {
+    "openLevel": "레벨 열기",
+    "watchVideo": "영상",
+    "score": "점수 {{value}}",
+    "accuracy": "{{value}}",
+    "speed": "{{value}}×",
+    "charter": "채보어 {{name}}",
+    "requestedDiff": "요청 난이도 {{diff}}"
+  },
+  "pagination": {
+    "prev": "이전",
+    "next": "다음",
+    "page": "{{page}} / {{totalPages}} 페이지",
+    "total_one": "제출 {{count}}건",
+    "total_other": "제출 {{count}}건"
+  },
+  "empty": "제출 내역이 없습니다.",
+  "loading": "제출 내역을 불러오는 중…",
+  "error": "제출 내역을 불러오지 못했습니다. 다시 시도하세요."
+}

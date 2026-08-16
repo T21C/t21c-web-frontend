@@ -547,5 +547,8 @@ export const routes = {
       submit: () => '/v2/form/level/submit',
       selectLevel: () => '/v2/form/level/select-level',
     },
+    submissions: {
+      root: () => '/v2/form/submissions',
+    },
   },
 };

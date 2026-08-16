@@ -2,22 +2,11 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { inboxNotificationCopy } from '@/utils/inboxNotificationCopy';
+import { formatDate, formatTimeAgo } from '@/utils/Utility';
 import './inboxNotificationRow.css';
 
-function formatWhen(iso) {
-  if (!iso) return '';
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return '';
-  return date.toLocaleString(undefined, {
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-}
-
 const InboxNotificationRow = ({ notification, onRead, compact = false }) => {
-  const { t } = useTranslation('pages');
+  const { t, i18n } = useTranslation('pages');
   const copy = inboxNotificationCopy(t, notification);
   const unread = !notification.readAt;
   const className = [
@@ -38,7 +27,12 @@ const InboxNotificationRow = ({ notification, onRead, compact = false }) => {
         <span className="inbox-notification-row__title">{copy.title}</span>
         {copy.body ? <span className="inbox-notification-row__body">{copy.body}</span> : null}
       </span>
-      <span className="inbox-notification-row__meta">{formatWhen(notification.createdAt)}</span>
+      <span
+        className="inbox-notification-row__meta"
+        title={formatDate(notification.createdAt, i18n.language)}
+      >
+        {formatTimeAgo(notification.createdAt, i18n.language)}
+      </span>
     </>
   );
 

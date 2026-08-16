@@ -13,6 +13,7 @@
   "unread_one": "{{count}} non lue",
   "unread_other": "{{count}} non lues",
   "bellAria": "Notifications, {{count}} non lues",
+  "settingsAria": "Paramètres des notifications",
   "untitledLevel": "Niveau #{{levelId}}",
   "unknownArtist": "Artiste inconnu",
   "unknown": {

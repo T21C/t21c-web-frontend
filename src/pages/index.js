@@ -37,6 +37,7 @@ const SettingsBillingPage = lazy(() => import('./account/settings/BillingPage/Bi
 const SettingsPreferencesPage = lazy(() => import('./account/settings/SettingsPreferencesPage'));
 const SettingsNotificationsPage = lazy(() => import('./account/settings/SettingsNotificationsPage'));
 const NotificationsPage = lazy(() => import('./account/NotificationsPage/NotificationsPage'));
+const MySubmissionsPage = lazy(() => import('./account/MySubmissionsPage/MySubmissionsPage'));
 const TufStellarManagePage = lazy(() => import('./account/settings/BillingPage/TufStellarManagePage'));
 const ProfileEditRedirect = lazy(() => import('./account/settings/ProfileEditRedirect'));
 const EmailVerificationPage = lazy(() => import('./account/EmailVerificationPage/EmailVerificationPage'));
@@ -116,6 +117,7 @@ export {
     SettingsPreferencesPage,
     SettingsNotificationsPage,
     NotificationsPage,
+    MySubmissionsPage,
     TufStellarManagePage,
     ProfileEditRedirect,
     EmailVerificationPage,

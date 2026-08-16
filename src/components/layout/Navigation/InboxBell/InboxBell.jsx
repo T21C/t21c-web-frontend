@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { BellIcon } from '@/components/common/icons';
+import { BellIcon, GearIcon } from '@/components/common/icons';
 import InboxNotificationRow from '@/components/inbox/InboxNotificationRow';
 import { useInboxNotifications } from '@/contexts/InboxNotificationContext';
 import './inboxBell.css';
@@ -15,6 +15,7 @@ const InboxBell = ({ variant = 'desktop' }) => {
   const rootRef = useRef(null);
   const preview = items.slice(0, 8);
   const badgeLabel = unreadCount > 99 ? '99+' : String(unreadCount);
+  const isMobile = variant === 'mobile';
 
   useEffect(() => {
     setIsOpen(false);
@@ -28,27 +29,15 @@ const InboxBell = ({ variant = 'desktop' }) => {
         setIsOpen(false);
       }
     };
-    document.addEventListener('mousedown', onPointerDown);
-    return () => document.removeEventListener('mousedown', onPointerDown);
+    document.addEventListener('pointerdown', onPointerDown);
+    return () => document.removeEventListener('pointerdown', onPointerDown);
   }, [isOpen, markSeen]);
 
-  if (variant === 'mobile') {
-    return (
-      <Link
-        to="/notifications"
-        className="inbox-bell inbox-bell--mobile"
-        aria-label={t('notifications.bellAria', { count: unreadCount })}
-      >
-        <BellIcon size={22} color="var(--color-white)" />
-        {unreadCount > 0 ? (
-          <span className="inbox-bell__badge">{badgeLabel}</span>
-        ) : null}
-      </Link>
-    );
-  }
-
   return (
-    <div className={`inbox-bell ${isOpen ? 'inbox-bell--open' : ''}`} ref={rootRef}>
+    <div
+      className={`inbox-bell ${isOpen ? 'inbox-bell--open' : ''} ${isMobile ? 'inbox-bell--mobile' : ''}`}
+      ref={rootRef}
+    >
       <button
         type="button"
         className="inbox-bell__button"
@@ -65,15 +54,25 @@ const InboxBell = ({ variant = 'desktop' }) => {
         <div className="inbox-bell__menu" role="menu">
           <div className="inbox-bell__header">
             <span className="inbox-bell__title">{t('notifications.title')}</span>
-            {unreadCount > 0 ? (
-              <button
-                type="button"
-                className="inbox-bell__mark-all"
-                onClick={markAllRead}
+            <div className="inbox-bell__header-actions">
+              {unreadCount > 0 ? (
+                <button
+                  type="button"
+                  className="inbox-bell__mark-all"
+                  onClick={markAllRead}
+                >
+                  {t('notifications.markAllRead')}
+                </button>
+              ) : null}
+              <Link
+                to="/settings/notifications"
+                className="inbox-bell__settings"
+                aria-label={t('notifications.settingsAria')}
+                onClick={() => setIsOpen(false)}
               >
-                {t('notifications.markAllRead')}
-              </button>
-            ) : null}
+                <GearIcon size={18} color="currentColor" />
+              </Link>
+            </div>
           </div>
           <div className="inbox-bell__list">
             {preview.length ? (

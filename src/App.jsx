@@ -143,6 +143,7 @@ function App() {
           <Route path="profile/:playerId" element={<Pages.ProfilePage />} />
           <Route path="profile" element={<Pages.ProfilePage />} />
           <Route path="notifications" element={<PrivateRoute><Pages.NotificationsPage /></PrivateRoute>} />
+          <Route path="submissions" element={<PrivateRoute><Pages.MySubmissionsPage /></PrivateRoute>} />
 
           <Route path='leaderboard' element={<Pages.LeaderboardPage />} />
           <Route path='passes' element={<Pages.PassPage />} />

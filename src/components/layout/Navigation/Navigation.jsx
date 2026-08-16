@@ -139,9 +139,6 @@ const Navigation = ({ children, config: externalConfig = null }) => {
               />
             );
 
-          case "InboxBell":
-            return <InboxBell key="inbox-bell" />;
-
           default:
             return null;
         }
@@ -178,10 +175,6 @@ const Navigation = ({ children, config: externalConfig = null }) => {
 
           {/* Mobile Menu Button */}
           <div className="nav-mobile-controls">
-            <LanguageSelector
-              variant="mobile"
-              asListItem={false}
-            />
             {user ? <InboxBell variant="mobile" /> : null}
 
             <svg
