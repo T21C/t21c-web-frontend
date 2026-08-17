@@ -47,3 +47,15 @@ export const setUserPermission = (user, permission, value) => {
     permissionFlags: newFlags.toString(),
   };
 };
+
+export const isBanExpired = (bannedUntil) => {
+  if (!bannedUntil) return false;
+  const ms = new Date(bannedUntil).getTime();
+  return !Number.isNaN(ms) && ms <= Date.now();
+};
+
+/** True while the BANNED permission is set and any timed expiry has not passed. */
+export const isUserBanned = (user) => {
+  if (!hasFlag(user, permissionFlags.BANNED)) return false;
+  return !isBanExpired(user?.player?.bannedUntil);
+};

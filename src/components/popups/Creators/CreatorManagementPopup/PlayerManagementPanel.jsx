@@ -5,9 +5,9 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { CloseButton } from '@/components/common/buttons';
-import { CountrySelect } from '@/components/common/selectors';
+import { CountrySelect, CustomSelect } from '@/components/common/selectors';
 import { useAuth } from '@/contexts/AuthContext';
-import { hasFlag, permissionFlags, setUserPermission } from '@/utils/UserPermissions';
+import { hasFlag, isBanExpired, permissionFlags, setUserPermission } from '@/utils/UserPermissions';
 import api from '@/utils/api';
 import { CreatorAssignmentPanel } from '@/components/popups/Creators/CreatorAssignmentPopup/CreatorAssignmentPanel';
 import AliasListEditor from './AliasListEditor';
@@ -20,6 +20,28 @@ const PLAYER_TABS = [
   { id: 'merge', i18nKey: 'player.modes.merge' },
 ];
 
+const BAN_DURATION_UNITS = ['hours', 'days', 'weeks', 'months'];
+const DEFAULT_BAN_DURATION = 1;
+const DEFAULT_BAN_UNIT = 'days';
+
+const formatBanInstant = (value) => {
+  if (!value) return '';
+  const d = value instanceof Date ? value : new Date(value);
+  return Number.isNaN(d.getTime()) ? '' : d.toLocaleString();
+};
+
+const isBanDurationValid = (value) => {
+  const n = Number(value);
+  return Number.isInteger(n) && n >= 1 && n <= 999;
+};
+
+const playerBanIsActive = (playerRecord) => {
+  const flagged =
+    hasFlag(playerRecord?.user, permissionFlags.BANNED) || playerRecord?.isBanned || false;
+  if (!flagged) return false;
+  return !isBanExpired(playerRecord?.bannedUntil);
+};
+
 const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedUpdate }) => {
   const { t } = useTranslation(['components', 'common']);
   const tt = (key, opts) => t(`creatorManagementPopup.${key}`, opts);
@@ -31,9 +53,10 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
   const [selectedCountry, setSelectedCountry] = useState(player?.country || 'XX');
   const [aliases, setAliases] = useState(() => player?.playerAliases?.map((a) => a.name) ?? []);
   const [newAlias, setNewAlias] = useState('');
-  const [isBanned, setIsBanned] = useState(
-    hasFlag(player?.user, permissionFlags.BANNED) || player?.isBanned || false,
-  );
+  const [isBanned, setIsBanned] = useState(() => playerBanIsActive(player));
+  const [bannedUntil, setBannedUntil] = useState(player?.bannedUntil ?? null);
+  const [banDuration, setBanDuration] = useState(String(DEFAULT_BAN_DURATION));
+  const [banUnit, setBanUnit] = useState(DEFAULT_BAN_UNIT);
   const [isSubmissionsPaused, setIsSubmissionsPaused] = useState(
     hasFlag(player?.user, permissionFlags.SUBMISSIONS_PAUSED) || player?.isSubmissionsPaused || false,
   );
@@ -93,10 +116,11 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
   useEffect(() => {
     setPlayerName(player?.name || '');
     setSelectedCountry(player?.country || 'XX');
-    setIsBanned(hasFlag(player?.user, permissionFlags.BANNED) || player?.isBanned || false);
+    setIsBanned(playerBanIsActive(player));
+    setBannedUntil(player?.bannedUntil ?? null);
     setIsSubmissionsPaused(hasFlag(player?.user, permissionFlags.SUBMISSIONS_PAUSED) || false);
     setIsRatingBanned(hasFlag(player?.user, permissionFlags.RATING_BANNED) || false);
-  }, [player?.id, player?.name, player?.country, player?.user, player?.isBanned]);
+  }, [player?.id, player?.name, player?.country, player?.user, player?.isBanned, player?.bannedUntil]);
 
   useEffect(() => {
     const handleEscape = (e) => {
@@ -138,6 +162,18 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
       JSON.stringify([...aliases]) !== JSON.stringify([...originalAliases]);
     return nameChanged || countryChanged || aliasesChanged;
   }, [playerName, selectedCountry, aliases, player, originalAliases]);
+
+  const banUnitOptions = useMemo(
+    () =>
+      BAN_DURATION_UNITS.map((unit) => ({
+        value: unit,
+        label: tt(`player.moderation.units.${unit}`),
+      })),
+    [t],
+  );
+
+  const selectedBanUnitOption =
+    banUnitOptions.find((opt) => opt.value === banUnit) || banUnitOptions[0];
 
   const clearMessages = () => {
     setError('');
@@ -208,32 +244,47 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
     }
   };
 
+  const resetBanDurationFields = () => {
+    setBanDuration(String(DEFAULT_BAN_DURATION));
+    setBanUnit(DEFAULT_BAN_UNIT);
+  };
+
   const handleBanUpdate = async (confirmed) => {
     if (!confirmed) {
       setShowBanConfirm(false);
       setPendingBanState(isBanned);
+      resetBanDurationFields();
+      return;
+    }
+    if (pendingBanState && !isBanDurationValid(banDuration)) {
+      setError(tt('player.errors.banDuration'));
       return;
     }
     setIsLoading(true);
     clearMessages();
     try {
-      const response = await api.patch(`${routes.database.players.root()}/${player.id}/ban`, {
-        isBanned: pendingBanState,
-      });
+      const body = pendingBanState
+        ? { isBanned: true, duration: Number(banDuration), unit: banUnit }
+        : { isBanned: false };
+      const response = await api.patch(`${routes.database.players.root()}/${player.id}/ban`, body);
       const updatedPlayer = response.data?.player;
       const isBannedValue = updatedPlayer?.isBanned ?? pendingBanState;
+      const nextBannedUntil = isBannedValue ? (updatedPlayer?.bannedUntil ?? null) : null;
       setIsBanned(isBannedValue);
+      setBannedUntil(nextBannedUntil);
       onUpdate?.({
         ...player,
         ...updatedPlayer,
         isBanned: isBannedValue,
+        bannedUntil: nextBannedUntil,
         user: player.user
           ? setUserPermission(player.user, permissionFlags.BANNED, isBannedValue)
           : player.user,
       });
       toast.success(tt('player.success.moderation'));
+      resetBanDurationFields();
     } catch (err) {
-      setError(err.response?.data?.details || tt('player.errors.banUpdate'));
+      setError(err.response?.data?.error || err.response?.data?.details || tt('player.errors.banUpdate'));
     } finally {
       setIsLoading(false);
       setShowBanConfirm(false);
@@ -435,16 +486,60 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
                       onChange={(e) => {
                         setPendingBanState(e.target.checked);
                         setShowBanConfirm(true);
+                        if (e.target.checked) {
+                          resetBanDurationFields();
+                        }
                       }}
                       disabled={isLoading || showBanConfirm}
                     />
                     <span>{tt('player.moderation.ban')}</span>
                   </label>
+                  {isBanned && !showBanConfirm ? (
+                    <p className="moderation-option__status">
+                      {bannedUntil
+                        ? tt('player.moderation.bannedUntil', { date: formatBanInstant(bannedUntil) })
+                        : tt('player.moderation.bannedPermanently')}
+                    </p>
+                  ) : null}
                   {showBanConfirm ? (
                     <div className="moderation-confirm">
                       <p>{pendingBanState ? tt('player.moderation.banConfirm') : tt('player.moderation.unbanConfirm')}</p>
+                      {pendingBanState ? (
+                        <div className="moderation-ban-duration">
+                          <span className="moderation-ban-duration__label">{tt('player.moderation.banFor')}</span>
+                          <input
+                            type="number"
+                            min="1"
+                            max="999"
+                            step="1"
+                            className="moderation-ban-duration__value"
+                            value={banDuration}
+                            onChange={(e) => setBanDuration(e.target.value)}
+                            disabled={isLoading}
+                            aria-label={tt('player.moderation.banDurationAria')}
+                          />
+                          <div className="moderation-ban-duration__unit">
+                            <CustomSelect
+                              options={banUnitOptions}
+                              value={selectedBanUnitOption}
+                              onChange={(selected) => {
+                                if (selected?.value) setBanUnit(selected.value);
+                              }}
+                              width="8rem"
+                              isDisabled={isLoading}
+                              isSearchable={false}
+                              aria-label={tt('player.moderation.banUnitAria')}
+                            />
+                          </div>
+                        </div>
+                      ) : null}
                       <div className="moderation-confirm__actions popup-btn-grid">
-                        <button type="button" className="action-button" onClick={() => handleBanUpdate(true)} disabled={isLoading}>
+                        <button
+                          type="button"
+                          className="action-button"
+                          onClick={() => handleBanUpdate(true)}
+                          disabled={isLoading || (pendingBanState && !isBanDurationValid(banDuration))}
+                        >
                           {t('buttons.confirm', { ns: 'common' })}
                         </button>
                         <button type="button" className="mode-btn" onClick={() => handleBanUpdate(false)} disabled={isLoading}>
@@ -590,6 +685,7 @@ PlayerManagementPanel.propTypes = {
     name: PropTypes.string,
     country: PropTypes.string,
     isBanned: PropTypes.bool,
+    bannedUntil: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]),
     isSubmissionsPaused: PropTypes.bool,
     isRatingBanned: PropTypes.bool,
     user: PropTypes.object,

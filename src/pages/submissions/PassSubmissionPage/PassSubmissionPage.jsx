@@ -6,7 +6,7 @@ import { submitPass } from '@/utils/submissions/passSubmission';
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { hasFlag, isUserBanned, permissionFlags } from '@/utils/UserPermissions';
 import { Trans, useTranslation } from 'react-i18next';
 import api from '@/utils/api';
 import { StagingModeWarning, MetaTags } from '@/components/common/display';
@@ -48,7 +48,8 @@ const PassSubmissionPage = () => {
 
   useEffect(() => {
     if (
-      hasAnyFlag(user, [permissionFlags.SUBMISSIONS_PAUSED, permissionFlags.BANNED]) ||
+      hasFlag(user, permissionFlags.SUBMISSIONS_PAUSED) ||
+      isUserBanned(user) ||
       !hasFlag(user, permissionFlags.EMAIL_VERIFIED)
     ) {
       navigate('/submission');

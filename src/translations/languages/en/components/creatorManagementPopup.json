@@ -158,6 +158,17 @@
       "ratingBan": "Ban from rating",
       "banConfirm": "Ban this player?",
       "unbanConfirm": "Unban this player?",
+      "banFor": "for",
+      "banDurationAria": "Ban duration",
+      "banUnitAria": "Ban duration unit",
+      "bannedUntil": "Banned until {{date}}",
+      "bannedPermanently": "Banned permanently",
+      "units": {
+        "hours": "Hours",
+        "days": "Days",
+        "weeks": "Weeks",
+        "months": "Months"
+      },
       "pauseConfirm": "Pause submissions for this player?",
       "resumeConfirm": "Resume submissions for this player?",
       "ratingBanConfirm": "Ban this player from rating?",
@@ -181,6 +192,7 @@
     "errors": {
       "updateFailed": "Failed to update player",
       "banUpdate": "Failed to update ban status",
+      "banDuration": "Enter a duration from 1 to 999",
       "pauseUpdate": "Failed to update submission pause",
       "ratingBanUpdate": "Failed to update rating ban",
       "mergeFailed": "Failed to merge player"

@@ -1,6 +1,6 @@
 // tuf-search: #AccountStatusBanners #accountStatusBanners #account
 import { useTranslation } from 'react-i18next';
-import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { hasFlag, isUserBanned, permissionFlags } from '@/utils/UserPermissions';
 import { hasAccountEmail } from '@/utils/accountEmail';
 import { StatusBanner } from '@/components/common/display/StatusBanner/StatusBanner';
 
@@ -35,10 +35,13 @@ export function AccountStatusBanners({ variant = 'edit', user, navigate }) {
     );
   }
 
-  if (hasFlag(user, permissionFlags.BANNED)) {
+  if (isUserBanned(user)) {
+    const until = user.player?.bannedUntil;
     return (
       <StatusBanner dismissible tone="danger" placement="dock" role="status">
-        {t('profile.banned')}
+        {until
+          ? t('profile.bannedUntil', { date: formatDeletionInstant(until) })
+          : t('profile.banned')}
       </StatusBanner>
     );
   }

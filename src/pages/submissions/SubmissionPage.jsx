@@ -7,7 +7,7 @@ import { MetaTags } from "@/components/common/display";
 import { buildStaticPageMeta } from '@/utils/meta';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useAuth } from "@/contexts/AuthContext";
-import { hasAnyFlag, hasFlag, permissionFlags } from "@/utils/UserPermissions";
+import { hasFlag, isUserBanned, permissionFlags } from "@/utils/UserPermissions";
 import { hasAccountEmail } from "@/utils/accountEmail";
 import { useSubmissionLabelWaypoints } from './useSubmissionLabelWaypoints';
 import { useSubmissionMinimalMotion } from '@/hooks/useMinimalMotionPreference';
@@ -90,7 +90,7 @@ const SubmissionPage = () => {
   };
 
   useEffect(() => {
-    if (!user || hasAnyFlag(user, [permissionFlags.SUBMISSIONS_PAUSED, permissionFlags.BANNED]) || !hasFlag(user, permissionFlags.EMAIL_VERIFIED)) {
+    if (!user || hasFlag(user, permissionFlags.SUBMISSIONS_PAUSED) || isUserBanned(user) || !hasFlag(user, permissionFlags.EMAIL_VERIFIED)) {
       return undefined;
     }
 
@@ -123,7 +123,7 @@ const SubmissionPage = () => {
 
   const labelsEnabled = Boolean(
     user
-    && !hasAnyFlag(user, [permissionFlags.SUBMISSIONS_PAUSED, permissionFlags.BANNED])
+    && !(hasFlag(user, permissionFlags.SUBMISSIONS_PAUSED) || isUserBanned(user))
     && hasFlag(user, permissionFlags.EMAIL_VERIFIED),
   );
 
@@ -145,7 +145,7 @@ const SubmissionPage = () => {
     navigate('/submission/pass');
   };
 
-  const noAccess = hasAnyFlag(user, [permissionFlags.SUBMISSIONS_PAUSED, permissionFlags.BANNED]) || !hasFlag(user, permissionFlags.EMAIL_VERIFIED)
+  const noAccess = hasFlag(user, permissionFlags.SUBMISSIONS_PAUSED) || isUserBanned(user) || !hasFlag(user, permissionFlags.EMAIL_VERIFIED)
   const stageClassName = [
     'submission-stage',
     activeSide === 'pass' ? 'submission-stage--pass-active' : '',
@@ -171,7 +171,7 @@ const SubmissionPage = () => {
             <span className="contact">{t('submission.banner.contact')}</span>
           </span>
         </div>
-      ) : hasFlag(user, permissionFlags.BANNED) ? (
+      ) : isUserBanned(user) ? (
         <div className="banner">
           <span className="banner-text">
             <span className="banned">{t('submission.banner.banned')}</span>

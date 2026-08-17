@@ -158,6 +158,17 @@
       "ratingBan": "禁止评级",
       "banConfirm": "确定封禁该玩家？",
       "unbanConfirm": "确定解封该玩家？",
+      "banFor": "时长",
+      "banDurationAria": "封禁时长",
+      "banUnitAria": "封禁时长单位",
+      "bannedUntil": "封禁至 {{date}}",
+      "bannedPermanently": "永久封禁",
+      "units": {
+        "hours": "小时",
+        "days": "天",
+        "weeks": "周",
+        "months": "月"
+      },
       "pauseConfirm": "确定暂停该玩家的提交申请？",
       "resumeConfirm": "确定恢复该玩家的提交申请？",
       "ratingBanConfirm": "确定禁止该玩家评级？",
@@ -181,6 +192,7 @@
     "errors": {
       "updateFailed": "更新玩家失败",
       "banUpdate": "更新封禁状态失败",
+      "banDuration": "请输入 1 到 999 的时长",
       "pauseUpdate": "更新暂停提交状态失败",
       "ratingBanUpdate": "更新禁止评级状态失败",
       "mergeFailed": "合并玩家失败"
