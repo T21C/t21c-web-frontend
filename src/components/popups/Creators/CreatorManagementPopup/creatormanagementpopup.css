@@ -340,6 +340,43 @@
   font-size: 0.9rem;
 }
 
+.creator-management-popup-container .moderation-option__status {
+  margin: 0;
+  color: var(--color-white-t60);
+  font-size: 0.85rem;
+}
+
+.creator-management-popup-container .moderation-ban-duration {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.creator-management-popup-container .moderation-ban-duration__label {
+  color: var(--color-white-t80);
+  font-size: 0.9rem;
+}
+
+.creator-management-popup-container .moderation-ban-duration__value {
+  padding: 8px 10px;
+  border: 1px solid var(--btn-neutral-disabled-fill);
+  border-radius: 4px;
+  background-color: var(--btn-neutral-dark);
+  color: var(--color-white);
+  box-sizing: border-box;
+  width: 5.5rem;
+}
+
+.creator-management-popup-container .moderation-ban-duration__value:hover {
+  border-color: var(--color-white-t40);
+}
+
+.creator-management-popup-container .moderation-ban-duration__unit {
+  min-width: 8rem;
+  flex: 0 0 auto;
+}
+
 .creator-management-popup-container .moderation-confirm__actions {
   width: 100%;
 }

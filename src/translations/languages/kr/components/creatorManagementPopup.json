@@ -152,6 +152,17 @@
       "ratingBan": "평가 차단",
       "banConfirm": "이 플레이어를 차단하시겠습니까?",
       "unbanConfirm": "차단을 해제하시겠습니까?",
+      "banFor": "기간",
+      "banDurationAria": "차단 기간",
+      "banUnitAria": "차단 기간 단위",
+      "bannedUntil": "{{date}}까지 차단",
+      "bannedPermanently": "영구 차단",
+      "units": {
+        "hours": "시간",
+        "days": "일",
+        "weeks": "주",
+        "months": "개월"
+      },
       "pauseConfirm": "제출을 일시중지하시겠습니까?",
       "resumeConfirm": "제출을 재개하시겠습니까?",
       "ratingBanConfirm": "평가를 차단하시겠습니까?",
@@ -170,6 +181,7 @@
     "errors": {
       "updateFailed": "플레이어 업데이트 실패",
       "banUpdate": "차단 상태 업데이트 실패",
+      "banDuration": "1에서 999 사이의 기간을 입력하세요",
       "pauseUpdate": "제출 일시중지 업데이트 실패",
       "ratingBanUpdate": "평가 차단 업데이트 실패",
       "mergeFailed": "플레이어 병합 실패"

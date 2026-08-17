@@ -28,7 +28,7 @@ import {
 } from '@/utils/zipUtils';
 import { zipLevelFileKey } from '@/components/popups/Levels/ZipLevelFilesList/ZipLevelFilesList';
 import { useNavigate } from "react-router-dom";
-import { hasAnyFlag, hasFlag, permissionFlags } from "@/utils/UserPermissions";
+import { hasFlag, isUserBanned, permissionFlags } from "@/utils/UserPermissions";
 import { QuestionmarkCircleIcon } from "@/components/common/icons";
 import { Tooltip } from "react-tooltip";
 import toast from "react-hot-toast";
@@ -134,7 +134,7 @@ const LevelSubmissionPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (hasAnyFlag(user, [permissionFlags.SUBMISSIONS_PAUSED, permissionFlags.BANNED]) || !hasFlag(user, permissionFlags.EMAIL_VERIFIED)) {
+    if (hasFlag(user, permissionFlags.SUBMISSIONS_PAUSED) || isUserBanned(user) || !hasFlag(user, permissionFlags.EMAIL_VERIFIED)) {
       navigate('/submission')
     }
   }, [user]);
