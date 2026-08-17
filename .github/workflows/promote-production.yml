@@ -34,6 +34,8 @@ jobs:
         with:
           ref: ${{ inputs.source_sha }}
 
+      - uses: docker/setup-qemu-action@v3
+
       - uses: docker/setup-buildx-action@v3
 
       - name: Log in to GHCR
@@ -89,6 +91,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: ghcr.io/t21c/t21c-web-frontend:${{ inputs.source_sha }}
           labels: org.opencontainers.image.revision=${{ inputs.source_sha }}
@@ -103,7 +106,7 @@ jobs:
           oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
           tags: tag:gh-runner
-          ping: tuf-main-server
+          ping: ${{ vars.TUF_DEPLOY_HOST }}
 
       - name: Configure deploy SSH identity
         env:
@@ -120,6 +123,8 @@ jobs:
       - name: Promote frontend
         env:
           IMAGE_TAG: ${{ inputs.source_sha }}
+          DEPLOY_HOST: ${{ vars.TUF_DEPLOY_HOST }}
         run: |
-          ssh -i ~/.ssh/id_ed25519 tuf-deploy@tuf-main-server \
+          [[ -n "$DEPLOY_HOST" ]] || { echo "Repository variable TUF_DEPLOY_HOST is required" >&2; exit 64; }
+          ssh -i ~/.ssh/id_ed25519 "tuf-deploy@${DEPLOY_HOST}" \
             "sudo /srv/tuf/infra/bin/tuf-deploy-frontend '$IMAGE_TAG'"
