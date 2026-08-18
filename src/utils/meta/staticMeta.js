@@ -39,7 +39,7 @@ export const resolveMetaImage = (image) => {
  */
 export const buildThumbnailUrl = (kind, id) => {
   if (id == null || String(id).trim() === '') return DEFAULT_OG_IMAGE;
-  return `${API_BASE}/v2/media/thumbnail/${kind}/${id}`;
+  return `${API_BASE}/v2/media/thumbnail/${kind}/${id}?wait=og`;
 };
 
 const OG_LOCALE_MAP = {

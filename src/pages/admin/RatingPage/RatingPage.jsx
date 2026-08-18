@@ -40,7 +40,7 @@ const RatingPage = () => {
         description: t('rating.meta.description'),
         pathname: location.pathname,
         image: levelIdParam && /^\d+$/.test(levelIdParam)
-          ? `/v2/media/thumbnail/rating/${levelIdParam}`
+          ? `/v2/media/thumbnail/rating/${levelIdParam}?wait=og`
           : '/og-image.jpg',
         type: 'website',
       }),

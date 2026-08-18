@@ -297,6 +297,8 @@ const WheelPopup = ({ items, seed, onSelect, onClose, handleTimeout }) => {
   const [isSpinning, setIsSpinning] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [wheelImageUrl, setWheelImageUrl] = useState('');
+  const [wheelImageFailed, setWheelImageFailed] = useState(false);
   const [showDifficultyRoulette, setShowDifficultyRoulette] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const { difficultyDict } = useDifficultyContext();
@@ -330,9 +332,48 @@ const WheelPopup = ({ items, seed, onSelect, onClose, handleTimeout }) => {
   }, [pendingTimeout, handleTimeout]);
 
   useEffect(() => {
-    const img = new Image();
-    img.src = apiUrl(routes.media.wheelImage(seed));
-    img.onload = () => setImageLoaded(true);
+    const baseUrl = apiUrl(routes.media.wheelImage(seed));
+    let cancelled = false;
+    let retryTimer = null;
+    let retryCount = 0;
+    let currentImage = null;
+
+    setImageLoaded(false);
+    setWheelImageFailed(false);
+    setWheelImageUrl('');
+
+    const loadImage = () => {
+      const requestUrl = retryCount === 0
+        ? baseUrl
+        : `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}retry=${Date.now()}`;
+      const img = new Image();
+      currentImage = img;
+      img.onload = () => {
+        if (cancelled) return;
+        setWheelImageUrl(requestUrl);
+        setImageLoaded(true);
+      };
+      img.onerror = () => {
+        if (cancelled) return;
+        if (retryCount >= 6) {
+          setWheelImageFailed(true);
+          return;
+        }
+        retryCount += 1;
+        retryTimer = window.setTimeout(loadImage, 2000);
+      };
+      img.src = requestUrl;
+    };
+
+    loadImage();
+    return () => {
+      cancelled = true;
+      if (retryTimer !== null) window.clearTimeout(retryTimer);
+      if (currentImage) {
+        currentImage.onload = null;
+        currentImage.onerror = null;
+      }
+    };
   }, [seed]);
 
   const calculateFinalRotation = (itemIndex) => {
@@ -476,9 +517,13 @@ const WheelPopup = ({ items, seed, onSelect, onClose, handleTimeout }) => {
                 }}
               >
                 <img 
-                  src={apiUrl(routes.media.wheelImage(seed))}
+                  src={wheelImageUrl}
                   alt="Roulette Wheel"
                 />
+              </div>
+            ) : wheelImageFailed ? (
+              <div className="level-wheel-loading" role="alert">
+                <span>Failed to load wheel image.</span>
               </div>
             ) : (
               <div className="level-wheel-loading">
