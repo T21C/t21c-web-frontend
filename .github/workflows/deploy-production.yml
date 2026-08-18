@@ -89,7 +89,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/arm64
           push: true
           tags: ghcr.io/t21c/t21c-web-frontend:${{ github.sha }}
           labels: org.opencontainers.image.revision=${{ github.sha }}
