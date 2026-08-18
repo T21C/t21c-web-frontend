@@ -14,8 +14,12 @@ COPY eslint-plugin-tuf ./eslint-plugin-tuf
 RUN --mount=type=cache,target=/root/.npm npm ci
 
 COPY . .
+# Secret mounts are not part of the layer cache key. Hash the env file in CI and
+# pass it here so Vite rebuilds when VITE_* vars / FRONTEND_BUILD_ENV change.
+ARG FRONTEND_ENV_HASH
 RUN --mount=type=secret,id=frontend_env,target=/app/.env.production,required=true \
-    npm run build:prod
+    : "${FRONTEND_ENV_HASH:?FRONTEND_ENV_HASH build-arg is required}" \
+    && npm run build:prod
 
 FROM nginxinc/nginx-unprivileged:1.29-alpine AS runtime
 
