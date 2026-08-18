@@ -22,14 +22,18 @@ import { buildStaticPageMeta } from '@/utils/meta';
 import { useLocation } from 'react-router-dom';
 import { DifficultySlider, TagSelector, FacetQueryBuilder } from "@/components/common/selectors";
 import { buildFacetQueryParam, collectFacetDomainIncludedIds } from "@/utils/facetQueryCodec";
-import { SortAscIcon, SortDescIcon, ResetIcon, SortIcon , FilterIcon, LikeIcon, SwitchIcon, EyeIcon, EyeOffIcon} from "@/components/common/icons";
+import { SortAscIcon, SortDescIcon, ResetIcon, SortIcon , FilterIcon, LikeIcon, SwitchIcon, EyeIcon, EyeOffIcon, TUFHelperLiteIcon} from "@/components/common/icons";
 import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
 import { LevelHelpPopup } from "@/components/popups/Levels";
 import toast from 'react-hot-toast';
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { normalizeLevelSearchQuery } from '@/utils/normalizeEntitySearchQuery';
 import { getDefaultQSliderRange } from '@/utils/getDefaultQSliderRange';
-import { useTufHelperLiteDownloadedIds, useTufHelperLiteHealth } from '@/hooks/useTufHelperLiteIpc';
+import {
+  getTufHelperLiteStorageMigrationStatus,
+  useTufHelperLiteHealth,
+} from '@/hooks/useTufHelperLiteIpc';
+import { TufHelperLiteDownloadManager } from '@/components/common/TufHelperLiteDownloadManager';
 
 const limit = 50;
 
@@ -130,9 +134,45 @@ const LevelPage = ({
   const [searchInput, setSearchInput] = useState(query);
   const [showTagsInCards, setShowTagsInCards] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [showDownloadedOnly, setShowDownloadedOnly] = useState(false);
+  const [showDownloadManager, setShowDownloadManager] = useState(false);
+  const [downloadStorage, setDownloadStorage] = useState(null);
+  const downloadManagerButtonRef = useRef(null);
   const tufHelperLiteHealth = useTufHelperLiteHealth();
-  const tufHelperLiteDownloadedIds = useTufHelperLiteDownloadedIds();
+  const downloadStorageState = String(downloadStorage?.State ?? downloadStorage?.state ?? 'idle').toLowerCase();
+  const downloadStorageBytes = Number(downloadStorage?.BytesProcessed ?? downloadStorage?.bytesProcessed) || 0;
+  const downloadStorageTotal = Number(downloadStorage?.BytesTotal ?? downloadStorage?.bytesTotal) || 0;
+  const downloadStorageProgress = downloadStorageTotal > 0
+    ? Math.min(1, downloadStorageBytes / downloadStorageTotal)
+    : 0;
+  const downloadStorageActive = ['copying', 'verifying', 'switching', 'cleaning'].includes(downloadStorageState);
+
+  useEffect(() => {
+    if (!tufHelperLiteHealth.isAvailable || !tufHelperLiteHealth.supportsStorageMigration) {
+      setDownloadStorage(null);
+      return undefined;
+    }
+
+    let cancelled = false;
+    const refresh = async () => {
+      try {
+        const next = await getTufHelperLiteStorageMigrationStatus();
+        if (!cancelled) setDownloadStorage(next);
+      } catch {
+        // Health polling owns connection-loss feedback.
+      }
+    };
+    void refresh();
+    const timer = window.setInterval(refresh, downloadStorageActive ? 750 : 5000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+    };
+  }, [downloadStorageActive, tufHelperLiteHealth.isAvailable, tufHelperLiteHealth.supportsStorageMigration]);
+
+  const closeDownloadManager = useCallback(() => {
+    setShowDownloadManager(false);
+    window.requestAnimationFrame(() => downloadManagerButtonRef.current?.focus());
+  }, []);
 
   const showC0V0CurationIcons = useMemo(() => {
     const includedIds = collectFacetDomainIncludedIds(levelFacetFilters.curationTypes);
@@ -143,23 +183,6 @@ const LevelPage = ({
       return hiddenNames.has(name);
     });
   }, [levelFacetFilters.curationTypes, curationTypes]);
-
-  const visibleLevelsData = useMemo(() => {
-    if (!showDownloadedOnly || !levelsData) return levelsData;
-
-    return levelsData.filter((level) => {
-      const levelId = level?.id == null ? '' : String(level.id);
-      return levelId && tufHelperLiteDownloadedIds.levelIdSet.has(levelId);
-    });
-  }, [levelsData, showDownloadedOnly, tufHelperLiteDownloadedIds.levelIdSet]);
-
-  const visibleTotalLevels = showDownloadedOnly ? (visibleLevelsData?.length ?? 0) : totalLevels;
-  const downloadedOnlyCanFindMore =
-    showDownloadedOnly &&
-    tufHelperLiteHealth.isAvailable &&
-    (visibleLevelsData?.length ?? 0) < tufHelperLiteDownloadedIds.levelIds.length;
-  const listHasMore = showDownloadedOnly ? hasMore && downloadedOnlyCanFindMore : hasMore;
-  const listLoader = showDownloadedOnly && !loadingMore ? null : <div className="loader loader-relative" />;
 
   // Debounced request runner: filter/query changes wait 500ms before firing
   // and reset the timer + abort any in-flight request when called again.
@@ -478,34 +501,6 @@ const LevelPage = ({
     };
   }, [pageNumber]);
 
-  useEffect(() => {
-    if (!tufHelperLiteHealth.isAvailable && showDownloadedOnly) {
-      setShowDownloadedOnly(false);
-    }
-  }, [tufHelperLiteHealth.isAvailable, showDownloadedOnly]);
-
-  useEffect(() => {
-    if (
-      showDownloadedOnly &&
-      tufHelperLiteHealth.isAvailable &&
-      tufHelperLiteDownloadedIds.levelIds.length > 0 &&
-      levelsData?.length > 0 &&
-      visibleLevelsData?.length === 0 &&
-      listHasMore &&
-      !loadingMore
-    ) {
-      setPageNumber((prevPageNumber) => prevPageNumber + 1);
-    }
-  }, [
-    showDownloadedOnly,
-    tufHelperLiteHealth.isAvailable,
-    tufHelperLiteDownloadedIds.levelIds.length,
-    levelsData?.length,
-    visibleLevelsData?.length,
-    listHasMore,
-    loadingMore,
-  ]);
-
   function handleFilterOpen() {
     setFilterOpen(!filterOpen);
   }
@@ -684,7 +679,18 @@ const LevelPage = ({
            <Tooltip id="state-display" place="bottom" noArrow>
              {t('level.toolTip.stateDisplay')}
            </Tooltip>
+           <Tooltip id="tufhelper-download-manager" place="bottom" noArrow>
+             {tc('level.tufHelperLiteDownloadManager.open')}
+           </Tooltip>
         </div>
+
+        {showDownloadManager ? (
+          <TufHelperLiteDownloadManager
+            onClose={closeDownloadManager}
+            health={tufHelperLiteHealth}
+            onStorageChange={setDownloadStorage}
+          />
+        ) : null}
 
         <div className="input-setting">
 
@@ -852,17 +858,26 @@ const LevelPage = ({
               )}
             </div>
             {tufHelperLiteHealth.isAvailable && (
-              <label className="tufhelperlite-downloaded-filter">
-                <input
-                  type="checkbox"
-                  checked={showDownloadedOnly}
-                  onChange={(event) => setShowDownloadedOnly(event.target.checked)}
-                />
-                <span className="tufhelperlite-downloaded-filter__switch" aria-hidden="true" />
-                <span className="tufhelperlite-downloaded-filter__label">
-                  {t('level.settingExp.showDownloadedOnly')}
-                </span>
-              </label>
+              <div className="tufhelperlite-download-controls">
+                {!embedded && (
+                  <button
+                    ref={downloadManagerButtonRef}
+                    type="button"
+                    className={`tufhelper-download-manager-button${downloadStorageActive ? ' is-migrating' : ''}`}
+                    onClick={() => setShowDownloadManager(true)}
+                    aria-label={tc('level.tufHelperLiteDownloadManager.open')}
+                    data-tooltip-id="tufhelper-download-manager"
+                    style={{ '--tufhelper-storage-progress': `${Math.round(downloadStorageProgress * 100)}%` }}
+                  >
+                    <TUFHelperLiteIcon
+                      className="tufhelper-download-manager-button__icon"
+                      size={26}
+                      aria-hidden="true"
+                    />
+                    <span>{tc('level.tufHelperLiteDownloadManager.open')}</span>
+                  </button>
+                )}
+              </div>
             )}
           </div>
             </CollapsibleContent>
@@ -918,7 +933,7 @@ const LevelPage = ({
             </CollapsibleContent>
           </Collapsible>
         </div>
-        <span className="total-search-results">{t('level.totalResults', { count: visibleTotalLevels })}</span>
+        <span className="total-search-results">{t('level.totalResults', { count: totalLevels })}</span>
         <div className="view-mode-section">
           <p>{t('level.settingExp.viewMode')}</p>
           <div className="view-mode-buttons">
@@ -956,17 +971,17 @@ const LevelPage = ({
         {levelsData ? (
         <VirtualList
           style={{ paddingBottom: "7rem", overflow: "visible", position: "relative", zIndex: 5 }}
-          items={visibleLevelsData}
+          items={levelsData}
           defaultItemHeight={viewMode === 'compact' ? 64 : 90}
           customScrollParent={customScrollParent}
           loadingMore={loadingMore}
           loadMore={() => {
-            if (!loadingMore && listHasMore && levelsData?.length > 0) {
+            if (!loadingMore && hasMore && levelsData?.length > 0) {
               setPageNumber((prevPageNumber) => prevPageNumber + 1);
             }
           }}
-          hasMore={listHasMore && levelsData.length > 0}
-          loader={listLoader}
+          hasMore={hasMore && levelsData.length > 0}
+          loader={<div className="loader loader-relative" />}
           endMessage={
             <p className="end-message">
               <b>{t('level.infScroll.end')}</b>
@@ -983,7 +998,7 @@ const LevelPage = ({
             />
           )}
           computeItemKey={(index, l) => l?.id ?? index}
-          stateKey={showDownloadedOnly ? 'levels-downloaded-only' : 'levels-all'}
+          stateKey="levels-all"
         />
         ) : (
           <div className="loader-shell loader-shell--tall">

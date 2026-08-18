@@ -4,6 +4,8 @@ import { tryConnect } from "@adofai-ipc/client";
 const TUFHELPER_LITE_NAMESPACE = 'tufhelperlite';
 const TUFHELPER_LITE_HEALTH_METHOD = 'health';
 const MINIMUM_TUFHELPER_LITE_VERSION = [0, 1, 4];
+export const TUFHELPER_LITE_STORAGE_CAPABILITY = 'download-storage-migration-v1';
+export const TUFHELPER_LITE_LIBRARY_CAPABILITY = 'downloaded-level-library-v1';
 const IPC_PORT_START = 32145;
 const IPC_PORT_END = 32155;
 const IPC_HEALTH_POLL_MS = 2500;
@@ -59,6 +61,9 @@ let tufHelperLiteHealthSnapshot = {
   isAvailable: false,
   isChecking: false,
   port: null,
+  capabilities: [],
+  supportsStorageMigration: false,
+  supportsDownloadedLibrary: false,
 };
 let tufHelperLiteHealthPollId = null;
 let tufHelperLiteClient = null;
@@ -107,15 +112,26 @@ const setTufHelperLiteIntegrationSnapshot = (nextSnapshot) => {
 };
 
 const setTufHelperLiteHealthSnapshot = (nextSnapshot) => {
+  const capabilities = Array.isArray(nextSnapshot.capabilities)
+    ? nextSnapshot.capabilities
+    : tufHelperLiteHealthSnapshot.capabilities;
+  const normalizedSnapshot = {
+    ...nextSnapshot,
+    capabilities,
+    supportsStorageMigration: capabilities.includes(TUFHELPER_LITE_STORAGE_CAPABILITY),
+    supportsDownloadedLibrary: capabilities.includes(TUFHELPER_LITE_LIBRARY_CAPABILITY),
+  };
   if (
-    tufHelperLiteHealthSnapshot.isAvailable === nextSnapshot.isAvailable &&
-    tufHelperLiteHealthSnapshot.isChecking === nextSnapshot.isChecking &&
-    tufHelperLiteHealthSnapshot.port === nextSnapshot.port
+    tufHelperLiteHealthSnapshot.isAvailable === normalizedSnapshot.isAvailable &&
+    tufHelperLiteHealthSnapshot.isChecking === normalizedSnapshot.isChecking &&
+    tufHelperLiteHealthSnapshot.port === normalizedSnapshot.port &&
+    tufHelperLiteHealthSnapshot.supportsStorageMigration === normalizedSnapshot.supportsStorageMigration &&
+    tufHelperLiteHealthSnapshot.supportsDownloadedLibrary === normalizedSnapshot.supportsDownloadedLibrary
   ) {
     return;
   }
 
-  tufHelperLiteHealthSnapshot = nextSnapshot;
+  tufHelperLiteHealthSnapshot = normalizedSnapshot;
   tufHelperLiteHealthListeners.forEach((listener) => listener());
 };
 
@@ -188,6 +204,7 @@ const isTufHelperLiteNamespaceFailure = (code) => (
 );
 
 const readTufHelperLiteVersion = (health) => health?.Version ?? health?.version ?? null;
+const readTufHelperLiteCapabilities = (health) => health?.Capabilities ?? health?.capabilities ?? [];
 
 export const isSupportedTufHelperLiteVersion = (value) => {
   if (typeof value !== 'string') return false;
@@ -251,6 +268,11 @@ const connectTufHelperLiteIpc = async () => {
   const namespaceClient = client.namespace(TUFHELPER_LITE_NAMESPACE);
   const health = await namespaceClient.call(TUFHELPER_LITE_HEALTH_METHOD);
   assertSupportedTufHelperLiteVersion(health);
+  const capabilities = readTufHelperLiteCapabilities(health);
+  setTufHelperLiteHealthSnapshot({
+    ...tufHelperLiteHealthSnapshot,
+    capabilities: Array.isArray(capabilities) ? capabilities : [],
+  });
 
   tufHelperLiteClient = client;
   tufHelperLiteNamespaceClient = namespaceClient;
@@ -265,7 +287,12 @@ const clearTufHelperLiteClient = () => {
 const resetTufHelperLiteConnectionData = () => {
   clearTufHelperLiteClient();
   tufHelperLiteConsecutiveHealthMisses = 0;
-  setTufHelperLiteHealthSnapshot({ isAvailable: false, isChecking: false, port: null });
+  setTufHelperLiteHealthSnapshot({
+    isAvailable: false,
+    isChecking: false,
+    port: null,
+    capabilities: [],
+  });
   setTufHelperLiteJobsSnapshot({ jobs: [] });
   setTufHelperLiteDownloadedIdsSnapshot({ levelIds: [], levelIdSet: new Set() });
 };
@@ -396,6 +423,36 @@ export const invokeTufHelperLiteIpc = async (method, params = {}) => {
     throw error;
   }
 };
+
+export const getTufHelperLiteStorage = () => invokeTufHelperLiteIpc('storage.get', {});
+
+export const startTufHelperLiteFolderPicker = () =>
+  invokeTufHelperLiteIpc('storage.folder-pick.start', {});
+
+export const getTufHelperLiteFolderPickerStatus = (operationId) =>
+  invokeTufHelperLiteIpc('storage.folder-pick.status', { OperationId: operationId });
+
+export const startTufHelperLiteStorageMigration = ({ selectionToken = null, useDefault = false } = {}) =>
+  invokeTufHelperLiteIpc('storage.migration.start', {
+    SelectionToken: selectionToken,
+    UseDefault: useDefault,
+  });
+
+export const getTufHelperLiteStorageMigrationStatus = () =>
+  invokeTufHelperLiteIpc('storage.migration.status', {});
+
+export const retryTufHelperLiteStorageMigration = () =>
+  invokeTufHelperLiteIpc('storage.migration.retry', {});
+
+export const getTufHelperLiteDownloadedLevelPage = ({ cursor = null, direction = 'next', limit = 20 } = {}) =>
+  invokeTufHelperLiteIpc('level.downloaded-page', {
+    Cursor: cursor,
+    Direction: direction,
+    Limit: limit,
+  });
+
+export const getTufHelperLiteDownloadedLevelSummary = () =>
+  invokeTufHelperLiteIpc('level.downloaded-summary', {});
 
 export const checkTufHelperLiteHealth = async () => {
   if (!isTufHelperLiteIntegrationEnabled()) {

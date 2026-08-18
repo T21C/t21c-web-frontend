@@ -1,20 +1,10 @@
-import { useId, useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import './marqueetext.css';
 
-const MARQUEE_SPEED_PX_PER_SECOND = 25;
-const MARQUEE_START_DELAY_SECONDS = 0.8;
-const MARQUEE_END_PAUSE_SECONDS = 2;
+const MARQUEE_FORWARD_SPEED_PX_PER_SECOND = 50;
+const MARQUEE_RETURN_DURATION_SECONDS = 0.2;
 const FADE_WIDTH = '1.5rem';
 const EDGE_THRESHOLD = 1;
-const MARQUEE_STYLE_PROPS = [
-  '--marquee-distance',
-  '--marquee-cycle-duration',
-  '--marquee-animation-name',
-];
-const MARQUEE_FADE_PROPS = [
-  '--marquee-fade-left',
-  '--marquee-fade-right',
-];
 
 const updateFadeMask = (container, translateX, distance) => {
   const atStart = translateX > -EDGE_THRESHOLD;
@@ -29,37 +19,6 @@ const getTranslateX = (element) => {
   return new DOMMatrixReadOnly(transform).m41;
 };
 
-const buildKeyframeRule = (animationName, cycleDuration) => {
-  const scrollDuration = (cycleDuration - MARQUEE_START_DELAY_SECONDS * 2 - MARQUEE_END_PAUSE_SECONDS) / 2;
-  const toPercent = (elapsed) => ((elapsed / cycleDuration) * 100).toFixed(3);
-
-  const p1 = toPercent(MARQUEE_START_DELAY_SECONDS);
-  const p2 = toPercent(MARQUEE_START_DELAY_SECONDS + scrollDuration);
-  const p3 = toPercent(MARQUEE_START_DELAY_SECONDS + scrollDuration + MARQUEE_END_PAUSE_SECONDS);
-  const p4 = toPercent(
-    MARQUEE_START_DELAY_SECONDS + scrollDuration + MARQUEE_END_PAUSE_SECONDS + scrollDuration,
-  );
-
-  return `
-@keyframes ${animationName} {
-  0%, ${p1}% {
-    transform: translateX(0);
-  }
-  ${p2}% {
-    transform: translateX(calc(-1 * var(--marquee-distance, 0px)));
-  }
-  ${p2}%, ${p3}% {
-    transform: translateX(calc(-1 * var(--marquee-distance, 0px)));
-  }
-  ${p4}% {
-    transform: translateX(0);
-  }
-  ${p4}%, 100% {
-    transform: translateX(0);
-  }
-}`;
-};
-
 const MarqueeText = ({
   children,
   className = '',
@@ -68,17 +27,17 @@ const MarqueeText = ({
 }) => {
   const containerRef = useRef(null);
   const contentRef = useRef(null);
-  const styleRef = useRef(null);
   const distanceRef = useRef(0);
   const rafRef = useRef(null);
+  const transitionRafRef = useRef(null);
   const [overflows, setOverflows] = useState(false);
-  const reactId = useId().replace(/:/g, '');
-  const animationName = `marquee-text-${reactId}`;
 
   useLayoutEffect(() => {
     const container = containerRef.current;
     const content = contentRef.current;
-    if (!container || !content) return;
+    if (!container || !content) return undefined;
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
     const stopFadeTracking = () => {
       if (rafRef.current !== null) {
@@ -88,15 +47,8 @@ const MarqueeText = ({
     };
 
     const trackFade = () => {
-      const translateX = getTranslateX(content);
-      updateFadeMask(container, translateX, distanceRef.current);
-
-      if (getComputedStyle(content).animationName !== 'none') {
-        rafRef.current = requestAnimationFrame(trackFade);
-      } else {
-        rafRef.current = null;
-        updateFadeMask(container, 0, distanceRef.current);
-      }
+      updateFadeMask(container, getTranslateX(content), distanceRef.current);
+      rafRef.current = requestAnimationFrame(trackFade);
     };
 
     const startFadeTracking = () => {
@@ -104,74 +56,84 @@ const MarqueeText = ({
       rafRef.current = requestAnimationFrame(trackFade);
     };
 
-    const handleAnimationStart = () => {
-      startFadeTracking();
+    const moveTo = (target, getDuration) => {
+      if (prefersReducedMotion.matches || distanceRef.current <= 1) return;
+      if (transitionRafRef.current !== null) {
+        cancelAnimationFrame(transitionRafRef.current);
+        transitionRafRef.current = null;
+      }
+
+      const current = getTranslateX(content);
+      const duration = getDuration(Math.abs(target - current));
+      content.style.transition = 'none';
+      content.style.transform = `translateX(${current}px)`;
+      content.getBoundingClientRect();
+
+      if (duration <= 0.01) {
+        content.style.transform = `translateX(${target}px)`;
+        updateFadeMask(container, target, distanceRef.current);
+        return;
+      }
+
+      content.style.transition = `transform ${duration}s linear`;
+      transitionRafRef.current = requestAnimationFrame(() => {
+        transitionRafRef.current = null;
+        content.style.transform = `translateX(${target}px)`;
+        startFadeTracking();
+      });
     };
 
-    const handleAnimationCancel = () => {
+    const handleMouseEnter = () => moveTo(
+      -distanceRef.current,
+      (remainingDistance) => remainingDistance / MARQUEE_FORWARD_SPEED_PX_PER_SECOND,
+    );
+    const handleMouseLeave = () => moveTo(0, () => MARQUEE_RETURN_DURATION_SECONDS);
+    const handleTransitionEnd = (event) => {
+      if (event.propertyName !== 'transform') return;
       stopFadeTracking();
-      updateFadeMask(container, 0, distanceRef.current);
+      updateFadeMask(container, getTranslateX(content), distanceRef.current);
     };
 
     const updateOverflow = () => {
       const distance = Math.max(0, content.scrollWidth - container.clientWidth);
       const overflowsNow = distance > 1;
       distanceRef.current = distance;
-
       setOverflows(overflowsNow);
 
-      if (overflowsNow) {
-        const scrollDuration = distance / MARQUEE_SPEED_PX_PER_SECOND;
-        const cycleDuration =
-          MARQUEE_START_DELAY_SECONDS +
-          scrollDuration +
-          MARQUEE_END_PAUSE_SECONDS +
-          scrollDuration +
-          MARQUEE_START_DELAY_SECONDS;
-
-        if (!styleRef.current) {
-          const styleEl = document.createElement('style');
-          styleEl.dataset.marqueeKeyframes = animationName;
-          document.head.appendChild(styleEl);
-          styleRef.current = styleEl;
-        }
-
-        styleRef.current.textContent = buildKeyframeRule(animationName, cycleDuration);
-        container.style.setProperty('--marquee-distance', `${distance}px`);
-        container.style.setProperty('--marquee-cycle-duration', `${cycleDuration}s`);
-        container.style.setProperty('--marquee-animation-name', animationName);
-        updateFadeMask(container, getTranslateX(content), distance);
+      if (!overflowsNow || prefersReducedMotion.matches) {
+        content.style.transition = 'none';
+        content.style.transform = 'translateX(0)';
+        container.style.removeProperty('--marquee-fade-left');
+        container.style.removeProperty('--marquee-fade-right');
+        stopFadeTracking();
       } else {
-        MARQUEE_STYLE_PROPS.forEach((prop) => container.style.removeProperty(prop));
-        MARQUEE_FADE_PROPS.forEach((prop) => container.style.removeProperty(prop));
-
-        if (styleRef.current) {
-          styleRef.current.remove();
-          styleRef.current = null;
-        }
+        const current = Math.max(-distance, Math.min(0, getTranslateX(content)));
+        content.style.transform = `translateX(${current}px)`;
+        updateFadeMask(container, current, distance);
       }
     };
 
     updateOverflow();
-
     const resizeObserver = new ResizeObserver(updateOverflow);
     resizeObserver.observe(container);
     resizeObserver.observe(content);
-
-    content.addEventListener('animationstart', handleAnimationStart);
-    content.addEventListener('animationcancel', handleAnimationCancel);
+    container.addEventListener('mouseenter', handleMouseEnter);
+    container.addEventListener('mouseleave', handleMouseLeave);
+    content.addEventListener('transitionend', handleTransitionEnd);
+    prefersReducedMotion.addEventListener?.('change', updateOverflow);
 
     return () => {
       resizeObserver.disconnect();
-      content.removeEventListener('animationstart', handleAnimationStart);
-      content.removeEventListener('animationcancel', handleAnimationCancel);
+      container.removeEventListener('mouseenter', handleMouseEnter);
+      container.removeEventListener('mouseleave', handleMouseLeave);
+      content.removeEventListener('transitionend', handleTransitionEnd);
+      prefersReducedMotion.removeEventListener?.('change', updateOverflow);
       stopFadeTracking();
-      if (styleRef.current) {
-        styleRef.current.remove();
-        styleRef.current = null;
-      }
+      if (transitionRafRef.current !== null) cancelAnimationFrame(transitionRafRef.current);
+      content.style.removeProperty('transition');
+      content.style.removeProperty('transform');
     };
-  }, [animationName, children]);
+  }, [children]);
 
   const resolvedTitle =
     title ?? (typeof children === 'string' || typeof children === 'number' ? String(children) : undefined);
