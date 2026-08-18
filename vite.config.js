@@ -75,28 +75,30 @@ export default defineConfig(({ command, mode }) => {
       ? 'VITE_STAGING_API_URL'
       : 'VITE_DEV_API_URL'
 
-  const requiredEnvKeys = [modeApiUrlEnvKey]
+  // Prefer VITE_API_URL / VITE_OWN_URL (repo vars in Docker builds). Mode-specific
+  // keys remain fallbacks for local .env and CI's lint-time production build.
+  const apiUrl =
+    getEnv('VITE_API_URL') ||
+    (mode === 'production'
+      ? getEnv('VITE_PROD_API_URL')
+      : mode === 'staging'
+        ? getEnv('VITE_STAGING_API_URL')
+        : getEnv('VITE_DEV_API_URL'))
 
-  const missingEnvKeys = requiredEnvKeys.filter((key) => !getEnv(key))
-  if (missingEnvKeys.length > 0) {
+  const ownUrl =
+    getEnv('VITE_OWN_URL') ||
+    (mode === 'production'
+      ? getEnv('VITE_OWN_PROD_URL')
+      : mode === 'staging'
+        ? getEnv('VITE_OWN_STAGING_URL')
+        : getEnv('VITE_OWN_DEV_URL'))
+
+  if (!apiUrl) {
     console.warn(
-      `[vite] Missing env vars for ${mode}: ${missingEnvKeys.join(', ')}. ` +
+      `[vite] Missing env vars for ${mode}: VITE_API_URL or ${modeApiUrlEnvKey}. ` +
       'API-backed pages may fail until your .env is configured.'
     )
   }
-
-  // Determine API URL based on environment
-  const apiUrl = mode === 'production' 
-    ? getEnv('VITE_PROD_API_URL')
-    : mode === 'staging' 
-      ? getEnv('VITE_STAGING_API_URL')
-      : getEnv('VITE_DEV_API_URL')
-  
-  const ownUrl = mode === 'production' 
-    ? getEnv('VITE_OWN_PROD_URL')
-    : mode === 'staging' 
-      ? getEnv('VITE_OWN_STAGING_URL')
-      : getEnv('VITE_OWN_DEV_URL')
 
   const port = mode === 'production' ? 5000 : 5173
 
