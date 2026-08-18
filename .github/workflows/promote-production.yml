@@ -43,8 +43,67 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+<<<<<<< Updated upstream
       - name: Prepare frontend build env
         id: frontend_env
+=======
+<<<<<<< Updated upstream
+=======
+      - name: Prepare frontend build env
+        id: frontend_env
+        env:
+          FRONTEND_BUILD_ENV: ${{ secrets.FRONTEND_BUILD_ENV_PRODUCTION }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
+          VITE_CDN_URL: ${{ vars.VITE_CDN_URL }}
+          VITE_OWN_URL: ${{ vars.VITE_OWN_URL }}
+          SENTRY_ORG: ${{ vars.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
+          SENTRY_URL: ${{ vars.SENTRY_URL }}
+          SENTRY_SKIP_UPLOAD: ${{ vars.SENTRY_SKIP_UPLOAD }}
+          RELEASE_SHA: ${{ inputs.source_sha }}
+        run: |
+          set -euo pipefail
+          [[ -n "${FRONTEND_BUILD_ENV}" ]] || { echo "FRONTEND_BUILD_ENV_PRODUCTION is empty" >&2; exit 1; }
+          [[ -n "${VITE_SENTRY_DSN}" ]] || { echo "secret VITE_SENTRY_DSN is empty" >&2; exit 1; }
+          [[ -n "${VITE_API_URL}" ]] || { echo "var VITE_API_URL is empty" >&2; exit 1; }
+          [[ -n "${VITE_CDN_URL}" ]] || { echo "var VITE_CDN_URL is empty" >&2; exit 1; }
+          [[ -n "${VITE_OWN_URL}" ]] || { echo "var VITE_OWN_URL is empty" >&2; exit 1; }
+          skip_upload=false
+          case "${SENTRY_SKIP_UPLOAD,,}" in
+            1|true|yes|on) skip_upload=true ;;
+          esac
+          if [[ "$skip_upload" != true ]]; then
+            [[ -n "${SENTRY_AUTH_TOKEN}" ]] || { echo "secret SENTRY_AUTH_TOKEN is empty (set vars.SENTRY_SKIP_UPLOAD=true to opt out)" >&2; exit 1; }
+          fi
+          out="${RUNNER_TEMP}/frontend.env.production"
+          printf '%s\n' "$FRONTEND_BUILD_ENV" | grep -vE '^(SENTRY_|VITE_SENTRY_DSN|GITHUB_SHA|VITE_API_URL=|VITE_CDN_URL=|VITE_OWN_URL=)' >"$out" || true
+          {
+            printf 'VITE_API_URL=%s\n' "$VITE_API_URL"
+            printf 'VITE_CDN_URL=%s\n' "$VITE_CDN_URL"
+            printf 'VITE_OWN_URL=%s\n' "$VITE_OWN_URL"
+            printf 'VITE_SENTRY_DSN=%s\n' "$VITE_SENTRY_DSN"
+            printf 'SENTRY_ORG=%s\n' "${SENTRY_ORG:-the-universal-forums}"
+            printf 'SENTRY_PROJECT=%s\n' "${SENTRY_PROJECT:-javascript-react}"
+            if [[ -n "${SENTRY_URL}" ]]; then
+              printf 'SENTRY_URL=%s\n' "$SENTRY_URL"
+            fi
+            printf 'GITHUB_SHA=%s\n' "$RELEASE_SHA"
+            printf 'SENTRY_RELEASE=%s\n' "$RELEASE_SHA"
+            if [[ "$skip_upload" == true ]]; then
+              printf 'SENTRY_REQUIRE_UPLOAD=0\n'
+            else
+              printf 'SENTRY_AUTH_TOKEN=%s\n' "$SENTRY_AUTH_TOKEN"
+              printf 'SENTRY_REQUIRE_UPLOAD=1\n'
+            fi
+          } >>"$out"
+          echo "path=${out}" >>"$GITHUB_OUTPUT"
+
+>>>>>>> Stashed changes
+      - name: Build and push immutable production image
+        uses: docker/build-push-action@v6
+>>>>>>> Stashed changes
         env:
           FRONTEND_BUILD_ENV: ${{ secrets.FRONTEND_BUILD_ENV_PRODUCTION }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
