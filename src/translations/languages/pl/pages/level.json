@@ -48,8 +48,7 @@
     "sortClears": "Sortuj według ilości przejść",
     "viewMode": "Tryb przeglądania",
     "clearedLevels": "Z przejściami",
-    "deletedLevels": "Usunięte poziomy",
-    "showDownloadedOnly": "Pokaż tylko pobrane"
+    "deletedLevels": "Usunięte poziomy"
   },
   "infScroll": {
     "end": "Koniec listy poziomów"
