@@ -90,7 +90,9 @@ jobs:
               printf 'SENTRY_REQUIRE_UPLOAD=1\n'
             fi
           } >>"$out"
-          echo "path=${out}" >>"$GITHUB_OUTPUT"
+          hash=$(sha256sum -- "$out" | cut -d' ' -f1)
+          printf 'path=%s\n' "$out" >>"$GITHUB_OUTPUT"
+          printf 'hash=%s\n' "$hash" >>"$GITHUB_OUTPUT"
 
       - name: Install dependencies
         env:
@@ -118,6 +120,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: false
           tags: ghcr.io/t21c/t21c-web-frontend:ci
+          build-args: |
+            FRONTEND_ENV_HASH=${{ steps.frontend_env.outputs.hash }}
           secret-files: |
             frontend_env=${{ steps.frontend_env.outputs.path }}
           cache-from: type=gha
