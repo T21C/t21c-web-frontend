@@ -10,6 +10,9 @@ import {
   retryTufHelperLiteStorageMigration,
   startTufHelperLiteFolderPicker,
   startTufHelperLiteStorageMigration,
+  checkTufHelperLiteLevelUpdate,
+  startTufHelperLiteLevelUpdate,
+  getTufHelperLiteLevelJobStatus,
 } from '@/hooks/useTufHelperLiteIpc';
 import DownloadedLevelList from './DownloadedLevelList';
 import useDownloadedLevelWindow from './useDownloadedLevelWindow';
@@ -43,7 +46,7 @@ export const TufHelperLiteDownloadManager = ({
 }) => {
   const { t, i18n } = useTranslation('components');
   const dialogRef = useRef(null);
-  const updateTimersRef = useRef(new Map());
+  const updatePollsRef = useRef(new Map());
   const [storage, setStorage] = useState(null);
   const [selection, setSelection] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -51,6 +54,7 @@ export const TufHelperLiteDownloadManager = ({
   const [updateStates, setUpdateStates] = useState({});
   const supported = health.supportsStorageMigration;
   const librarySupported = health.supportsDownloadedLibrary;
+  const updateSupported = health.supportsDownloadedLevelUpdate;
   const library = useDownloadedLevelWindow(librarySupported);
   const state = String(field(storage, 'State') || 'idle').toLowerCase();
   const migrationActive = ACTIVE_STATES.has(state);
@@ -136,37 +140,113 @@ export const TufHelperLiteDownloadManager = ({
   }, [onClose]);
 
   useEffect(() => () => {
-    updateTimersRef.current.forEach((timer) => window.clearTimeout(timer));
-    updateTimersRef.current.clear();
+    updatePollsRef.current.forEach((poll) => {
+      poll.cancelled = true;
+      if (poll.timer) window.clearTimeout(poll.timer);
+      poll.resolve?.();
+    });
+    updatePollsRef.current.clear();
   }, []);
 
   useEffect(() => {
     const retainedIds = new Set(library.levels.map((level) => level.id));
-    updateTimersRef.current.forEach((timer, id) => {
+    updatePollsRef.current.forEach((poll, id) => {
       if (!retainedIds.has(id)) {
-        window.clearTimeout(timer);
-        updateTimersRef.current.delete(id);
+        poll.cancelled = true;
+        if (poll.timer) window.clearTimeout(poll.timer);
+        poll.resolve?.();
+        updatePollsRef.current.delete(id);
       }
     });
-    setUpdateStates((current) => Object.fromEntries(
-      Object.entries(current).filter(([id]) => retainedIds.has(Number(id))),
-    ));
+    setUpdateStates((current) => {
+      const next = Object.fromEntries(
+        Object.entries(current).filter(([id]) => retainedIds.has(Number(id))),
+      );
+      library.levels.forEach((level) => {
+        if (!next[level.id] && level.updateState === 'update_available') {
+          next[level.id] = { state: 'update_available', progress: 1 };
+        }
+      });
+      return next;
+    });
   }, [library.levels]);
 
-  const checkForUpdate = useCallback((level) => {
-    const existingTimer = updateTimersRef.current.get(level.id);
-    if (existingTimer) window.clearTimeout(existingTimer);
+  const waitForPoll = useCallback((poll, delay = 450) => new Promise((resolve) => {
+    poll.resolve = resolve;
+    poll.timer = window.setTimeout(() => {
+      poll.timer = null;
+      poll.resolve = null;
+      resolve();
+    }, delay);
+  }), []);
 
-    setUpdateStates((current) => ({ ...current, [level.id]: 'checking' }));
-    const timer = window.setTimeout(() => {
+  const checkForUpdate = useCallback(async (level) => {
+    if (!updateSupported || updatePollsRef.current.has(level.id)) return;
+    const currentState = updateStates[level.id]?.state || level.updateState || 'idle';
+    const isUpdating = currentState === 'update_available';
+    const poll = { cancelled: false, timer: null, resolve: null };
+    updatePollsRef.current.set(level.id, poll);
+    setUpdateStates((current) => ({
+      ...current,
+      [level.id]: { state: isUpdating ? 'updating' : 'checking', progress: -1, stage: 'queued' },
+    }));
+
+    try {
+      let snapshot = isUpdating
+        ? await startTufHelperLiteLevelUpdate(level.id)
+        : await checkTufHelperLiteLevelUpdate(level.id);
+      const jobId = field(snapshot, 'JobId');
+      while (!poll.cancelled && !field(snapshot, 'Done')) {
+        setUpdateStates((current) => ({
+          ...current,
+          [level.id]: {
+            state: isUpdating ? 'updating' : 'checking',
+            progress: Number(field(snapshot, 'Progress')),
+            stage: field(snapshot, 'Stage'),
+          },
+        }));
+        await waitForPoll(poll);
+        if (!poll.cancelled) snapshot = await getTufHelperLiteLevelJobStatus(jobId);
+      }
+      if (poll.cancelled) return;
+      if (String(field(snapshot, 'Status')).toLowerCase() === 'failed') {
+        const nextError = new Error(field(snapshot, 'Error') || field(snapshot, 'Message'));
+        nextError.code = field(snapshot, 'ErrorCode');
+        throw nextError;
+      }
+
+      const nextState = String(field(snapshot, 'UpdateState') || 'up_to_date').toLowerCase();
       setUpdateStates((current) => ({
         ...current,
-        [level.id]: Number(level.id) % 3 === 0 ? 'update_available' : 'up_to_date',
+        [level.id]: { state: nextState, progress: 1 },
       }));
-      updateTimersRef.current.delete(level.id);
-    }, 850);
-    updateTimersRef.current.set(level.id, timer);
-  }, []);
+      library.patchLevel(level.id, {
+        updateState: nextState,
+        levelName: field(snapshot, 'Song') || level.levelName,
+        artist: field(snapshot, 'Artist') || level.artist,
+        creator: field(snapshot, 'Creator') || level.creator,
+        diffId: Number(field(snapshot, 'DifficultyId')) || level.diffId,
+        sizeBytes: Number(field(snapshot, 'SizeBytes')) || level.sizeBytes,
+      });
+      if (isUpdating) void library.refreshSummary();
+    } catch (nextError) {
+      if (!poll.cancelled) {
+        setUpdateStates((current) => ({
+          ...current,
+          [level.id]: {
+            state: 'failed',
+            progress: -1,
+            error: nextError?.message,
+            errorCode: nextError?.code,
+          },
+        }));
+      }
+    } finally {
+      if (poll.timer) window.clearTimeout(poll.timer);
+      poll.resolve?.();
+      updatePollsRef.current.delete(level.id);
+    }
+  }, [library, updateStates, updateSupported, waitForPoll]);
 
   const pollPicker = useCallback(async (operationId) => {
     for (;;) {
@@ -288,6 +368,7 @@ export const TufHelperLiteDownloadManager = ({
               {...library}
               updateStates={updateStates}
               onCheckForUpdate={checkForUpdate}
+              updateSupported={updateSupported}
               t={t}
               locale={i18n.language}
             />
