@@ -17,11 +17,15 @@ import { formatDate } from '@/utils/Utility';
 import i18next from 'i18next';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import {
-  SUBMISSION_DISMISS_MS,
-  clearCardPhase,
+  applySubmissionJobItem,
+  dismissSettledCards,
   getSubmissionCardClassName,
   hasVisibleSubmissions,
+  isSettledCardPhase,
+  markCardsQueued,
+  settledPhaseForAction,
 } from './submissionDismiss';
+import SubmissionCompleteCloseButton from './SubmissionCompleteCloseButton';
 import SubmissionVideoLinkField from './SubmissionVideoLinkField';
 import SubmitterRecordBadge, { incrementSubmitterRecord, preserveSubmitterStats } from './SubmitterRecordBadge';
 
@@ -61,7 +65,6 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
 
 
   useEffect(() => {
-    // Add event listener for refresh button
     const handleRefresh = () => {;
       fetchPendingSubmissions();
     };
@@ -71,6 +74,28 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
       window.removeEventListener('refreshSubmissions', handleRefresh);
     };
   }, []);
+
+  useEffect(() => {
+    const handleJobItem = (event) => {
+      applySubmissionJobItem({
+        item: event.detail,
+        kind: 'pass',
+        setCardPhases,
+        setDisabledButtons,
+        setSubmissions,
+        applyCompletedStats: (prev, submissionId, action) => {
+          const submission = prev.find(s => s.id === submissionId);
+          const field = action === 'decline' ? 'declined' : 'accepted';
+          return incrementSubmitterRecord(prev, submission?.passSubmitter?.id, field, 'passSubmitter');
+        },
+        onFailed: (error) => {
+          toast.error(error || t('passSubmissions.errors.processing'));
+        },
+      });
+    };
+    window.addEventListener('submissionJobItem', handleJobItem);
+    return () => window.removeEventListener('submissionJobItem', handleJobItem);
+  }, [t]);
 
   useEffect(() => {
     // Load video embeds when submissions change
@@ -173,32 +198,38 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
         [submissionId]: true
       }));
       
-      setCardPhases((prev) => ({ ...prev, [submissionId]: action }));
+      setCardPhases((prev) => ({ ...prev, [submissionId]: 'queued' }));
 
-      const [response] = await Promise.all([
-        api.put(`${routes.admin.submissions.root()}/passes/${submissionId}/${action}`),
-        new Promise((resolve) => setTimeout(resolve, SUBMISSION_DISMISS_MS)),
-      ]);
+      const response = await api.put(`${routes.admin.submissions.root()}/passes/${submissionId}/${action}`);
 
+      if (response.status === 202) {
+        return;
+      }
       if (response.status === 200) {
-        setCardPhases((prev) => ({ ...prev, [submissionId]: 'placeholder' }));
+        setCardPhases((prev) => ({ ...prev, [submissionId]: settledPhaseForAction(action) }));
         const field = action === 'approve' ? 'accepted' : 'declined';
         setSubmissions((prev) =>
           incrementSubmitterRecord(prev, submission.passSubmitter?.id, field, 'passSubmitter'),
         );
       } else {
         console.error('Error updating submission:', response.statusText);
-        clearCardPhase(setCardPhases, submissionId);
+        applySubmissionJobItem({
+          item: { kind: 'pass', itemId: submissionId, status: 'failed' },
+          kind: 'pass',
+          setCardPhases,
+          setDisabledButtons,
+          setSubmissions,
+        });
       }
     } catch (error) {
       console.error('Error processing submission:', error);
       toast.error(t('passSubmissions.errors.processing'));
-      clearCardPhase(setCardPhases, submissionId);
-    } finally {
-      setDisabledButtons((prev) => {
-        const next = { ...prev };
-        delete next[submissionId];
-        return next;
+      applySubmissionJobItem({
+        item: { kind: 'pass', itemId: submissionId, status: 'failed' },
+        kind: 'pass',
+        setCardPhases,
+        setDisabledButtons,
+        setSubmissions,
       });
     }
   };
@@ -263,27 +294,19 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
     try {
       setIsAutoAllowing(true);
       const response = await api.post(`${routes.admin.submissions.root()}/auto-approve/passes`);
-      
-      if (response.data.results) {
-        const successCount = response.data.results.filter(r => r.success).length || 0;
-        await fetchPendingSubmissions();
-        
-        // Dispatch completion event with count
-        window.dispatchEvent(new CustomEvent('autoAllowComplete', {
-          detail: { count: successCount }
+      const addedItemIds = response.data?.addedItemIds || [];
+      markCardsQueued(setCardPhases, setDisabledButtons, addedItemIds);
+      if (addedItemIds.length > 0) {
+        toast.success(t('passSubmissions.success.autoAllowQueued', {
+          count: addedItemIds.length,
+          defaultValue: `Queued ${addedItemIds.length} passes`,
         }));
-        toast.success(t('passSubmissions.success.autoAllow', { 
-          count: successCount 
-        }));
+      } else {
+        toast.success(t('passSubmissions.success.autoAllow', { count: 0 }));
       }
     } catch (error) {
       console.error('Error auto-allowing submissions:', error);
       toast.error(t('passSubmissions.errors.autoAllow'));
-      
-      // Dispatch completion event with error
-      window.dispatchEvent(new CustomEvent('autoAllowComplete', {
-        detail: { count: 0 }
-      }));
     } finally {
       setIsAutoAllowing(false);
     }
@@ -520,6 +543,12 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
                   />
                 </div>
               </div>
+              {isSettledCardPhase(phase) && (
+                <SubmissionCompleteCloseButton
+                  onClose={() => dismissSettledCards(setCardPhases, submission.id)}
+                  onCloseAll={() => dismissSettledCards(setCardPhases, 'all')}
+                />
+              )}
             </div>
             );
             }}

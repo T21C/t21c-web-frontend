@@ -67,6 +67,7 @@
   "success": {
     "playerAssigned": "{{playerName}}(으)로 성공적으로 지정되었습니다",
     "autoAllow": "{{count}}개의 제출물을 자동 허용했습니다",
+    "autoAllowQueued": "{{count}}개의 클리어를 순차 처리 대기열에 넣었습니다",
     "patch": "제출물이 업데이트되었습니다"
   },
   "edit": {

@@ -116,6 +116,7 @@
     "updateArtistFailed": "Échec de la mise à jour de l'artiste",
     "addSongRequestFailed": "Échec de l'ajout de la demande de musique",
     "addArtistRequestFailed": "Échec de l'ajout de la demande d'artiste",
-    "removeArtistRequestFailed": "Échec de la suppression de la demande d'artiste"
+    "removeArtistRequestFailed": "Échec de la suppression de la demande d'artiste",
+    "processing": "Erreur lors du traitement de la soumission"
   }
 }

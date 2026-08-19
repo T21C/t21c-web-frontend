@@ -23,11 +23,15 @@ import { formatDate } from "@/utils/Utility";
 import i18next from "i18next";
 import { CreatorIcon } from "@/components/common/icons/CreatorIcon";
 import {
-  SUBMISSION_DISMISS_MS,
-  clearCardPhase,
+  applySubmissionJobItem,
+  dismissSettledCards,
   getSubmissionCardClassName,
   hasVisibleSubmissions,
+  isSettledCardPhase,
+  markCardsQueued,
+  settledPhaseForAction,
 } from './submissionDismiss';
+import SubmissionCompleteCloseButton from './SubmissionCompleteCloseButton';
 import SubmissionVideoLinkField from './SubmissionVideoLinkField';
 import SubmissionNotesField from './SubmissionNotesField';
 import SubmitterRecordBadge, { incrementSubmitterRecord, preserveSubmitterStats } from './SubmitterRecordBadge';
@@ -70,7 +74,6 @@ const LevelSubmissions = () => {
   }, []);
 
   useEffect(() => {
-    // Add event listener for refresh button
     const handleRefresh = () => {
       fetchPendingSubmissions();
     };
@@ -80,6 +83,28 @@ const LevelSubmissions = () => {
       window.removeEventListener('refreshSubmissions', handleRefresh);
     };
   }, []);
+
+  useEffect(() => {
+    const handleJobItem = (event) => {
+      applySubmissionJobItem({
+        item: event.detail,
+        kind: 'level',
+        setCardPhases,
+        setDisabledButtons,
+        setSubmissions,
+        applyCompletedStats: (prev, submissionId, action) => {
+          const submission = prev.find(s => s.id === submissionId);
+          const field = action === 'decline' ? 'declined' : 'accepted';
+          return incrementSubmitterRecord(prev, submission?.levelSubmitter?.id, field, 'levelSubmitter');
+        },
+        onFailed: (error) => {
+          toast.error(error || t('levelSubmissions.errors.processing'));
+        },
+      });
+    };
+    window.addEventListener('submissionJobItem', handleJobItem);
+    return () => window.removeEventListener('submissionJobItem', handleJobItem);
+  }, [t]);
 
   useEffect(() => {
     // Load video embeds when submissions change
@@ -180,37 +205,43 @@ const LevelSubmissions = () => {
         }
       }
 
-      // Disable buttons for this card
       setDisabledButtons(prev => ({
         ...prev,
         [submissionId]: true
       }));
       
-      setCardPhases((prev) => ({ ...prev, [submissionId]: action }));
+      setCardPhases((prev) => ({ ...prev, [submissionId]: 'queued' }));
 
-      const [response] = await Promise.all([
-        api.put(`${routes.admin.submissions.root()}/levels/${submissionId}/${action}`),
-        new Promise((resolve) => setTimeout(resolve, SUBMISSION_DISMISS_MS)),
-      ]);
+      const response = await api.put(`${routes.admin.submissions.root()}/levels/${submissionId}/${action}`);
 
+      if (response.status === 202) {
+        return;
+      }
       if (response.status === 200) {
-        setCardPhases((prev) => ({ ...prev, [submissionId]: 'placeholder' }));
+        setCardPhases((prev) => ({ ...prev, [submissionId]: settledPhaseForAction(action) }));
         const field = action === 'approve' ? 'accepted' : 'declined';
         setSubmissions((prev) =>
           incrementSubmitterRecord(prev, submission.levelSubmitter?.id, field, 'levelSubmitter'),
         );
       } else {
         console.error('Error updating submission:', response.statusText);
-        clearCardPhase(setCardPhases, submissionId);
+        applySubmissionJobItem({
+          item: { kind: 'level', itemId: submissionId, status: 'failed' },
+          kind: 'level',
+          setCardPhases,
+          setDisabledButtons,
+          setSubmissions,
+        });
       }
     } catch (error) {
       console.error(`Error ${action}ing submission:`, error);
-      clearCardPhase(setCardPhases, submissionId);
-    } finally {
-      setDisabledButtons((prev) => {
-        const next = { ...prev };
-        delete next[submissionId];
-        return next;
+      toast.error(error.response?.data?.error || t('levelSubmissions.errors.processing'));
+      applySubmissionJobItem({
+        item: { kind: 'level', itemId: submissionId, status: 'failed', error: error.response?.data?.error },
+        kind: 'level',
+        setCardPhases,
+        setDisabledButtons,
+        setSubmissions,
       });
     }
   };
@@ -1453,6 +1484,12 @@ const LevelSubmissions = () => {
                   />
                 </div>
               </div>
+              {isSettledCardPhase(phase) && (
+                <SubmissionCompleteCloseButton
+                  onClose={() => dismissSettledCards(setCardPhases, submission.id)}
+                  onCloseAll={() => dismissSettledCards(setCardPhases, 'all')}
+                />
+              )}
             </div>
             );
             }}

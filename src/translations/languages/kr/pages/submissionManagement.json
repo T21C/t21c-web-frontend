@@ -11,5 +11,44 @@
     "levels": "레벨 제출",
     "passes": "클리어 제출",
     "autoAllow": "유효한 클리어 기록 자동 허용"
+  },
+  "jobs": {
+    "title": "처리 대기열",
+    "hide": "대기열 숨기기",
+    "loading": "대기열 불러오는 중…",
+    "processing": "처리 중",
+    "done": "완료",
+    "emptyProcessing": "대기열이 비어 있습니다",
+    "emptyDone": "최근 작업이 없습니다",
+    "emptyItems": "항목 없음",
+    "requestedBy": "{{name}}",
+    "autoAllowBatch": "자동 허용",
+    "closeAccepted": "닫기",
+    "holdToCloseAll": "길게 눌러 모두 닫기",
+    "openLevel": "레벨 #{{id}}",
+    "openPass": "클리어 #{{id}}",
+    "status": {
+      "queued": "대기 중",
+      "processing": "처리 중",
+      "completed": "완료",
+      "accepted": "수락됨",
+      "declined": "거절됨",
+      "failed": "실패",
+      "skipped": "건너뜀",
+      "pending": "대기"
+    },
+    "steps": {
+      "validate": "검증",
+      "resolveEntities": "엔티티 확인",
+      "createLevel": "레벨 생성",
+      "notify": "알림",
+      "chartStats": "차트 통계",
+      "autoTags": "자동 태그",
+      "autorate": "자동 채점",
+      "cleanup": "정리",
+      "createPass": "클리어 생성",
+      "index": "인덱싱",
+      "roleSync": "역할 동기화"
+    }
   }
 }

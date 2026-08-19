@@ -116,6 +116,7 @@
     "updateArtistFailed": "Nie udało się zaktualizować artysty",
     "addSongRequestFailed": "Nie udało się dodać prośby o utwór",
     "addArtistRequestFailed": "Nie udało się dodać prośby o artystę",
-    "removeArtistRequestFailed": "Nie udało się usunąć prośby o artystę"
+    "removeArtistRequestFailed": "Nie udało się usunąć prośby o artystę",
+    "processing": "Błąd podczas przetwarzania zgłoszenia"
   }
 }

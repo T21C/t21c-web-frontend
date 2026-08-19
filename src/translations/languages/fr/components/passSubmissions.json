@@ -80,6 +80,7 @@
   },
   "success": {
     "autoAllow": "Approbation auto de {{count}} soumission",
+    "autoAllowQueued": "{{count}} complétions mises en file d'attente",
     "patch": "Soumission mise à jour"
   },
   "edit": {
