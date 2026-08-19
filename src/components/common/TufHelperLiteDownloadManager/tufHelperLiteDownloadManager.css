@@ -311,11 +311,20 @@
 }
 
 .tufhelper-download-manager__update.is-update_available {
-  border-color: var(--color-white-t30);
-  background: var(--color-white-t15);
+  border-color: color-mix(in srgb, var(--btn-primary, #8f4bdb) 78%, white);
+  background: var(--btn-primary, #8f4bdb);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--btn-primary, #8f4bdb) 28%, transparent);
+  color: var(--color-white);
+  font-weight: 600;
 }
 
-.tufhelper-download-manager__update.is-checking svg {
+.tufhelper-download-manager__update.is-update_available:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--btn-primary-light-hover, #b878ff) 82%, white);
+  background: var(--btn-primary-hover, var(--btn-primary-light-hover, #a660f2));
+}
+
+.tufhelper-download-manager__update.is-checking svg,
+.tufhelper-download-manager__update.is-updating svg {
   animation: tufhelper-manager-spin 800ms linear infinite;
 }
 
@@ -574,7 +583,8 @@
 @media (prefers-reduced-motion: reduce) {
   .tufhelper-download-manager__overlay,
   .tufhelper-download-manager,
-  .tufhelper-download-manager__update.is-checking svg {
+  .tufhelper-download-manager__update.is-checking svg,
+  .tufhelper-download-manager__update.is-updating svg {
     animation: none;
   }
 }

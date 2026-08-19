@@ -16,6 +16,8 @@ const UPDATE_LABEL_KEYS = {
   checking: 'checkingForUpdate',
   up_to_date: 'upToDate',
   update_available: 'updateAvailable',
+  updating: 'updatingLevel',
+  failed: 'updateRetry',
 };
 
 const LoadError = ({ message, onRetry, position = 'bottom', t }) => (
@@ -39,6 +41,7 @@ export const DownloadedLevelList = ({
   retryInitial,
   updateStates,
   onCheckForUpdate,
+  updateSupported,
   t,
   locale,
 }) => {
@@ -52,8 +55,15 @@ export const DownloadedLevelList = ({
 
   const renderRow = (_virtualIndex, level) => {
     const difficulty = difficultyDict[level.diffId];
-    const updateState = updateStates[level.id] || 'idle';
-    const labelKey = UPDATE_LABEL_KEYS[updateState] || UPDATE_LABEL_KEYS.idle;
+    const updateStatus = updateStates[level.id] || { state: level.updateState || 'idle' };
+    const updateState = updateStatus.state || 'idle';
+    const labelKey = updateState === 'checking' && updateStatus.stage === 'downloading'
+      ? 'downloadingToCompare'
+      : UPDATE_LABEL_KEYS[updateState] || UPDATE_LABEL_KEYS.idle;
+    const progress = Number(updateStatus.progress);
+    const progressLabel = Number.isFinite(progress) && progress >= 0 && progress < 1
+      ? ` ${Math.round(progress * 100)}%`
+      : '';
 
     return (
       <article className="tufhelper-download-manager__level-row" role="listitem">
@@ -87,11 +97,14 @@ export const DownloadedLevelList = ({
           type="button"
           className={`tufhelper-download-manager__update is-${updateState}`}
           onClick={() => onCheckForUpdate(level)}
-          disabled={updateState === 'checking'}
+          disabled={!updateSupported || updateState === 'checking' || updateState === 'updating'}
           aria-live="polite"
+          title={updateStatus.error || undefined}
         >
           <RefreshIcon size={15} color="currentColor" aria-hidden="true" />
-          {t(`level.tufHelperLiteDownloadManager.${labelKey}`)}
+          {updateSupported
+            ? `${t(`level.tufHelperLiteDownloadManager.${labelKey}`)}${progressLabel}`
+            : t('level.tufHelperLiteDownloadManager.updateRequiredShort')}
         </button>
       </article>
     );

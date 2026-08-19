@@ -6,6 +6,7 @@ const TUFHELPER_LITE_HEALTH_METHOD = 'health';
 const MINIMUM_TUFHELPER_LITE_VERSION = [0, 1, 4];
 export const TUFHELPER_LITE_STORAGE_CAPABILITY = 'download-storage-migration-v1';
 export const TUFHELPER_LITE_LIBRARY_CAPABILITY = 'downloaded-level-library-v1';
+export const TUFHELPER_LITE_UPDATE_CAPABILITY = 'downloaded-level-update-v1';
 const IPC_PORT_START = 32145;
 const IPC_PORT_END = 32155;
 const IPC_HEALTH_POLL_MS = 2500;
@@ -64,6 +65,7 @@ let tufHelperLiteHealthSnapshot = {
   capabilities: [],
   supportsStorageMigration: false,
   supportsDownloadedLibrary: false,
+  supportsDownloadedLevelUpdate: false,
 };
 let tufHelperLiteHealthPollId = null;
 let tufHelperLiteClient = null;
@@ -120,6 +122,7 @@ const setTufHelperLiteHealthSnapshot = (nextSnapshot) => {
     capabilities,
     supportsStorageMigration: capabilities.includes(TUFHELPER_LITE_STORAGE_CAPABILITY),
     supportsDownloadedLibrary: capabilities.includes(TUFHELPER_LITE_LIBRARY_CAPABILITY),
+    supportsDownloadedLevelUpdate: capabilities.includes(TUFHELPER_LITE_UPDATE_CAPABILITY),
   };
   if (
     tufHelperLiteHealthSnapshot.isAvailable === normalizedSnapshot.isAvailable &&
@@ -127,6 +130,7 @@ const setTufHelperLiteHealthSnapshot = (nextSnapshot) => {
     tufHelperLiteHealthSnapshot.port === normalizedSnapshot.port &&
     tufHelperLiteHealthSnapshot.supportsStorageMigration === normalizedSnapshot.supportsStorageMigration &&
     tufHelperLiteHealthSnapshot.supportsDownloadedLibrary === normalizedSnapshot.supportsDownloadedLibrary
+    && tufHelperLiteHealthSnapshot.supportsDownloadedLevelUpdate === normalizedSnapshot.supportsDownloadedLevelUpdate
   ) {
     return;
   }
@@ -453,6 +457,15 @@ export const getTufHelperLiteDownloadedLevelPage = ({ cursor = null, direction =
 
 export const getTufHelperLiteDownloadedLevelSummary = () =>
   invokeTufHelperLiteIpc('level.downloaded-summary', {});
+
+export const checkTufHelperLiteLevelUpdate = (id) =>
+  invokeTufHelperLiteIpc('level.update.check', { Id: String(id) });
+
+export const startTufHelperLiteLevelUpdate = (id) =>
+  invokeTufHelperLiteIpc('level.update.start', { Id: String(id) });
+
+export const getTufHelperLiteLevelJobStatus = (jobId) =>
+  invokeTufHelperLiteIpc('level.status', { JobId: jobId });
 
 export const checkTufHelperLiteHealth = async () => {
   if (!isTufHelperLiteIntegrationEnabled()) {

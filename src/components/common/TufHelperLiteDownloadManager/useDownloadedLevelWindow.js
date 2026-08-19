@@ -18,6 +18,7 @@ const normalizeItem = (item) => ({
   sizeBytes: Number(field(item, 'SizeBytes')) || 0,
   downloadedAtUtc: field(item, 'DownloadedAtUtc') || null,
   metadataState: String(field(item, 'MetadataState') || 'partial').toLowerCase(),
+  updateState: String(field(item, 'UpdateState') || 'idle').toLowerCase(),
 });
 
 const normalizePage = (value) => {
@@ -168,6 +169,19 @@ export const useDownloadedLevelWindow = (enabled) => {
   const levels = useMemo(() => windowState.pages.flatMap((page) => page.items), [windowState.pages]);
   const loadNext = useCallback(() => loadDirection('next'), [loadDirection]);
   const loadPrevious = useCallback(() => loadDirection('previous'), [loadDirection]);
+  const refreshSummary = useCallback(
+    () => loadSummary(generationRef.current),
+    [loadSummary],
+  );
+  const patchLevel = useCallback((id, patch) => {
+    setWindowState((current) => ({
+      ...current,
+      pages: current.pages.map((page) => ({
+        ...page,
+        items: page.items.map((item) => item.id === Number(id) ? { ...item, ...patch } : item),
+      })),
+    }));
+  }, []);
 
   return {
     levels,
@@ -180,6 +194,8 @@ export const useDownloadedLevelWindow = (enabled) => {
     loadNext,
     loadPrevious,
     retryInitial: loadInitial,
+    patchLevel,
+    refreshSummary,
   };
 };
 
