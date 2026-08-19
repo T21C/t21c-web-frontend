@@ -11,5 +11,44 @@
     "levels": "Envois de niveaux",
     "passes": "Envois de complétions",
     "autoAllow": "Approuver automatiquement les complétions valides"
+  },
+  "jobs": {
+    "title": "Traitement",
+    "hide": "Masquer la file",
+    "loading": "Chargement de la file…",
+    "processing": "En cours",
+    "done": "Terminé",
+    "emptyProcessing": "File vide",
+    "emptyDone": "Aucune tâche récente",
+    "emptyItems": "Aucun élément",
+    "requestedBy": "{{name}}",
+    "autoAllowBatch": "Approbation auto",
+    "closeAccepted": "Fermer",
+    "holdToCloseAll": "Maintenir pour tout fermer",
+    "openLevel": "Niveau #{{id}}",
+    "openPass": "Complétion #{{id}}",
+    "status": {
+      "queued": "en file",
+      "processing": "en cours",
+      "completed": "terminé",
+      "accepted": "accepté",
+      "declined": "refusé",
+      "failed": "échec",
+      "skipped": "ignoré",
+      "pending": "en attente"
+    },
+    "steps": {
+      "validate": "Valider",
+      "resolveEntities": "Résoudre les entités",
+      "createLevel": "Créer le niveau",
+      "notify": "Notifier",
+      "chartStats": "Stats du niveau",
+      "autoTags": "Tags auto",
+      "autorate": "Autorate",
+      "cleanup": "Nettoyage",
+      "createPass": "Créer la complétion",
+      "index": "Indexer",
+      "roleSync": "Sync des rôles"
+    }
   }
-} 
+}

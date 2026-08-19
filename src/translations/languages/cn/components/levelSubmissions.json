@@ -121,6 +121,7 @@
     "updateArtistFailed": "艺术家更新失败",
     "addSongRequestFailed": "歌曲请求添加失败",
     "addArtistRequestFailed": "曲师请求添加失败",
-    "removeArtistRequestFailed": "曲师请求移除失败"
+    "removeArtistRequestFailed": "曲师请求移除失败",
+    "processing": "提交项目处理失败"
   }
 } 

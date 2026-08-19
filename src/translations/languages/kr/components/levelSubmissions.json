@@ -116,6 +116,7 @@
     "updateArtistFailed": "아티스트 업데이트에 실패했습니다",
     "addSongRequestFailed": "곡 요청 추가에 실패했습니다",
     "addArtistRequestFailed": "아티스트 요청 추가에 실패했습니다",
-    "removeArtistRequestFailed": "아티스트 요청 제거에 실패했습니다"
+    "removeArtistRequestFailed": "아티스트 요청 제거에 실패했습니다",
+    "processing": "제출물 처리 중 오류가 발생했습니다"
   }
 }

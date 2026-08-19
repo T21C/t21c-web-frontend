@@ -1,18 +1,62 @@
 // tuf-search: #SubmissionManagementPage #submissionManagementPage #admin #submissionManagement — Submission Management
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
 import "./adminsubmissionpage.css";
 import { AccessDenied, MetaTags } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
+import { routes } from '@/api/routes';
+import api from '@/utils/api';
 
 import { ScrollButton } from '@/components/common/buttons';
 import LevelSubmissions from './components/LevelSubmissions';
 import PassSubmissions from './components/PassSubmissions';
+import SubmissionJobsDrawer from './components/SubmissionJobsDrawer';
 import { RefreshIcon } from '@/components/common/icons';
 import { useNotification } from '@/contexts/NotificationContext';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { useSubmissionEvents } from '@/hooks/useSubmissionEvents';
+
+function upsertRequestTree(list, request, fallbackItems) {
+  if (!request?.requestId) return list;
+  const idx = list.findIndex(r => r.requestId === request.requestId);
+  const prev = idx >= 0 ? list[idx] : null;
+  const items =
+    Array.isArray(request.items) && request.items.length > 0
+      ? request.items
+      : (prev?.items?.length ? prev.items : fallbackItems) || request.items || [];
+  const merged = { ...prev, ...request, items };
+  if (idx < 0) return [merged, ...list];
+  const next = [...list];
+  next[idx] = merged;
+  return next;
+}
+
+function patchItemInTrees(list, item) {
+  if (!item) return list;
+  return list.map(req => {
+    if (!req.itemIds?.includes(item.itemId) && !req.items?.some(i => i.itemId === item.itemId && i.kind === item.kind)) {
+      return req;
+    }
+    const items = [...(req.items || [])];
+    const idx = items.findIndex(i => i.itemId === item.itemId && i.kind === item.kind);
+    if (idx >= 0) items[idx] = { ...items[idx], ...item };
+    else items.push(item);
+    return { ...req, items };
+  });
+}
+
+function emitJobItem(item) {
+  if (!item) return;
+  window.dispatchEvent(new CustomEvent('submissionJobItem', { detail: item }));
+}
+
+function emitQueuedJobItem(item) {
+  if (!item) return;
+  if (item.status !== 'queued' && item.status !== 'processing') return;
+  emitJobItem(item);
+}
 
 const SubmissionManagementPage = () => {
   const { t } = useTranslation('pages');
@@ -29,29 +73,101 @@ const SubmissionManagementPage = () => {
     [t, location.pathname],
   );
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState('levels'); // 'levels' or 'passes'
+  const [activeTab, setActiveTab] = useState('levels');
   const [isAutoAllowing, setIsAutoAllowing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [openJobs, setOpenJobs] = useState([]);
+  const [recentJobs, setRecentJobs] = useState([]);
+  const [panelReady, setPanelReady] = useState(false);
+  const [drawerExpanded, setDrawerExpanded] = useState(false);
+  const snapshotReqIdRef = useRef(0);
   const { pendingLevelSubmissions, pendingPassSubmissions } = useNotification();
+  const canUsePanel = hasFlag(user, permissionFlags.SUPER_ADMIN);
+
   const handleRefresh = () => {
     setIsLoading(true);
-    // Dispatch a custom event to trigger refresh in child components
     window.dispatchEvent(new Event('refreshSubmissions'));
-    // Reset loading state after a short delay
     setTimeout(() => setIsLoading(false), 1000);
   };
 
-  // Add event listener for when child components finish loading
+  const fetchSnapshot = useCallback(async () => {
+    if (!canUsePanel) return;
+    const reqId = ++snapshotReqIdRef.current;
+    try {
+      const { data } = await api.get(routes.admin.submissions.jobs());
+      if (reqId !== snapshotReqIdRef.current) return;
+      const open = data.open || [];
+      const recent = data.recent || [];
+      setOpenJobs(open);
+      setRecentJobs(recent);
+      setPanelReady(true);
+      open.forEach(req => (req.items || []).forEach(emitQueuedJobItem));
+      if (open.length > 0) setDrawerExpanded(true);
+    } catch (err) {
+      if (reqId !== snapshotReqIdRef.current) return;
+      console.error('Error fetching submission jobs:', err);
+      setPanelReady(true);
+    }
+  }, [canUsePanel]);
+
+  const handleSseEvent = useCallback((event) => {
+    const { type, data } = event || {};
+    if (!type || !type.startsWith('submission.')) return;
+
+    const request = data?.request;
+    const item = data?.item;
+
+    if (item) emitJobItem(item);
+
+    if (type === 'submission.request.created' || type === 'submission.request.merged') {
+      if (request) {
+        setOpenJobs(prev => upsertRequestTree(prev, { ...request, items: request.items || [] }));
+        (request.items || []).forEach(emitQueuedJobItem);
+        setDrawerExpanded(true);
+      }
+      return;
+    }
+
+    if (type === 'submission.request.updated' && request) {
+      if (request.status === 'completed' || request.status === 'failed') {
+        setOpenJobs(prev => {
+          const existing = prev.find(r => r.requestId === request.requestId);
+          setRecentJobs(recent =>
+            upsertRequestTree(recent, request, existing?.items).slice(0, 25),
+          );
+          return prev.filter(r => r.requestId !== request.requestId);
+        });
+      } else {
+        setOpenJobs(prev => upsertRequestTree(prev, request));
+        setDrawerExpanded(true);
+      }
+      return;
+    }
+
+    if ((type === 'submission.item.updated' || type === 'submission.item.completed') && item) {
+      setOpenJobs(prev => patchItemInTrees(prev, item));
+      setRecentJobs(prev => patchItemInTrees(prev, item));
+    }
+  }, []);
+
+  useSubmissionEvents({
+    enabled: canUsePanel,
+    userId: user?.id,
+    onEvent: handleSseEvent,
+    onConnected: fetchSnapshot,
+  });
+
   useEffect(() => {
     const handleLoadingComplete = () => {
       setIsLoading(false);
+      fetchSnapshot();
     };
     window.addEventListener('submissionsLoadingComplete', handleLoadingComplete);
     
     return () => {
       window.removeEventListener('submissionsLoadingComplete', handleLoadingComplete);
     };
-  }, []);
+  }, [fetchSnapshot]);
 
   if (user.permissionFlags === undefined) {
     return (
@@ -128,10 +244,6 @@ const SubmissionManagementPage = () => {
                 disabled={isAutoAllowing}
               >
                 {t('submissionManagement.tabs.autoAllow')}
-                {isAutoAllowing && (
-                  <div className="loading-spinner">
-                  </div>
-                )}
               </button>
             )}
           </div>
@@ -142,6 +254,13 @@ const SubmissionManagementPage = () => {
             <PassSubmissions setIsAutoAllowing={setIsAutoAllowing} />
           )}
         </div>
+        <SubmissionJobsDrawer
+          open={openJobs}
+          recent={recentJobs}
+          loading={!panelReady}
+          expanded={drawerExpanded}
+          onToggle={() => setDrawerExpanded(v => !v)}
+        />
       </div>
     </>
   );

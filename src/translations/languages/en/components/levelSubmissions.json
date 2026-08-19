@@ -121,6 +121,7 @@
     "updateArtistFailed": "Failed to update artist",
     "addSongRequestFailed": "Failed to add song request",
     "addArtistRequestFailed": "Failed to add artist request",
-    "removeArtistRequestFailed": "Failed to remove artist request"
+    "removeArtistRequestFailed": "Failed to remove artist request",
+    "processing": "Error processing submission"
   }
 } 

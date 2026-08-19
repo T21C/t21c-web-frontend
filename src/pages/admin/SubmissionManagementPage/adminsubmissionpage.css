@@ -235,7 +235,9 @@
       max-height 1s var(--ease-out-expo),
       opacity 1s var(--ease-out-expo),
       margin 1s var(--ease-out-expo),
-      padding 1s var(--ease-out-expo);
+      padding 1s var(--ease-out-expo),
+      background-color 0.25s var(--ease-out-quad),
+      border-color 0.25s var(--ease-out-quad);
     max-height: 4000px;
     opacity: 1;
     position: relative;
@@ -246,7 +248,8 @@
 
   /* Phase 1: shrink in place (row stays in Virtuoso data — no list redraw) */
   .submission-admin-page .submission-card.approve,
-  .submission-admin-page .submission-card.decline {
+  .submission-admin-page .submission-card.decline,
+  .submission-admin-page .submission-card.dismissing {
     max-height: 0;
     opacity: 0;
     margin: 0;
@@ -964,6 +967,7 @@
   .submission-admin-page .submission-notes__empty {
     flex: 1;
     min-width: 0;
+    text-align: end;
     opacity: 0.5;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -2506,3 +2510,459 @@
     padding-bottom: 4px;
     border-bottom: 1px solid var(--color-white-t20);
   }
+
+.submission-admin-page {
+  position: relative;
+}
+
+.submission-admin-page .submission-card.queued,
+.submission-admin-page .submission-card.processing {
+  border-color: color-mix(in srgb, var(--warning-color) 55%, transparent);
+  background: color-mix(in srgb, var(--warning-color) 34%, transparent);
+}
+
+.submission-admin-page .submission-card.processing {
+  background: color-mix(in srgb, var(--warning-color) 48%, transparent);
+}
+
+.submission-admin-page .submission-card.complete,
+.submission-admin-page .submission-card.declined {
+  pointer-events: none;
+  user-select: none;
+}
+
+.submission-admin-page .submission-card.complete {
+  border-color: var(--btn-success-alpha-70);
+  background: var(--btn-success-tint-strong);
+}
+
+.submission-admin-page .submission-card.declined {
+  border-color: var(--danger-color-alpha-80);
+  background: var(--danger-color-tint-36);
+}
+
+.submission-admin-page .submission-card.complete *,
+.submission-admin-page .submission-card.declined * {
+  pointer-events: none;
+}
+
+.submission-admin-page .submission-card.complete .submission-complete-close,
+.submission-admin-page .submission-card.complete .submission-complete-close *,
+.submission-admin-page .submission-card.declined .submission-complete-close,
+.submission-admin-page .submission-card.declined .submission-complete-close * {
+  pointer-events: auto;
+}
+
+.submission-admin-page .submission-card.complete .submission-complete-close,
+.submission-admin-page .submission-card.declined .submission-complete-close {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  z-index: 5;
+}
+
+.submission-admin-page .submission-complete-close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: var(--color-white-t20);
+  color: var(--color-white);
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  transition: background-color 0.15s var(--ease-out-quad);
+}
+
+.submission-admin-page .submission-complete-close-btn:hover,
+.submission-admin-page .submission-complete-close-btn.is-holding {
+  background: var(--color-white-t40);
+}
+
+.submission-admin-page .submission-complete-close-tooltip {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 0.45rem);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.65rem;
+  border-radius: 4px;
+  border: 1px solid var(--color-white-t20);
+  background: var(--color-black-t90);
+  color: var(--color-white);
+  font-size: 0.85rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.submission-admin-page .submission-complete-hold-circle {
+  width: 1.1rem;
+  height: 1.1rem;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 2px solid var(--color-white);
+  background: conic-gradient(
+    from -90deg,
+    var(--color-white) calc(var(--hold-progress, 0) * 1turn),
+    transparent 0
+  );
+  box-sizing: border-box;
+}
+
+.submission-admin-page .submission-card.error {
+  animation: submission-card-error-flash 0.9s var(--ease-out-quad);
+}
+
+@keyframes submission-card-error-flash {
+  0%, 40% {
+    background-color: var(--danger-color-tint-50);
+    border-color: var(--danger-color);
+  }
+  100% {
+    background-color: var(--color-white-t15);
+    border-color: var(--color-white-t20);
+  }
+}
+
+.submission-admin-page .submission-jobs-drawer {
+  --submission-jobs-drawer-width: 20rem;
+  position: fixed;
+  top: var(--navbar-height);
+  right: 0;
+  z-index: 40;
+  width: var(--submission-jobs-drawer-width);
+  height: calc(100vh - var(--navbar-height));
+  overflow: visible;
+  pointer-events: none;
+  transform: translateX(100%);
+  transition: transform 0.35s var(--ease-out-expo);
+}
+
+.submission-admin-page .submission-jobs-drawer.is-expanded {
+  transform: translateX(0);
+}
+
+.submission-admin-page .submission-jobs-drawer-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.submission-admin-page .submission-jobs-drawer-handle {
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 2.25rem;
+  padding: 0.85rem 0.25rem;
+  border: 1px solid var(--color-white-t20);
+  border-right: none;
+  border-radius: 8px 0 0 8px;
+  background-color: var(--color-black-t80);
+  color: var(--color-white);
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.submission-admin-page .submission-jobs-drawer-handle:hover {
+  background-color: var(--color-white-t20);
+  color: var(--color-white);
+}
+
+.submission-admin-page .submission-jobs-drawer-handle-label {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+
+.submission-admin-page .submission-jobs-drawer-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.15rem;
+  padding: 0.15rem 0.25rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  writing-mode: horizontal-tb;
+  background-color: var(--color-white-t20);
+  color: var(--color-white);
+}
+
+.submission-admin-page .submission-jobs-drawer-body {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  background-color: var(--color-black-t95);
+  border: 1px solid var(--color-white-t20);
+  border-right: none;
+  overflow: hidden;
+  pointer-events: auto;
+}
+
+.submission-admin-page .submission-jobs-drawer-title {
+  margin: 0;
+  font-size: 1.15rem;
+  color: var(--color-white);
+}
+
+.submission-admin-page .submission-jobs-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-height: 0;
+}
+
+.submission-admin-page .submission-jobs-section-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1 1 auto;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.submission-admin-page .submission-jobs-section-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100%;
+  padding: 0.35rem 0.4rem;
+  border: none;
+  border-radius: 4px;
+  background-color: var(--color-white-t10);
+  color: var(--color-white);
+  cursor: pointer;
+  text-align: left;
+}
+
+.submission-admin-page .submission-jobs-section-toggle:hover {
+  background-color: var(--color-white-t20);
+}
+
+.submission-admin-page .submission-jobs-section-chevron {
+  width: 0.85rem;
+  font-size: 0.75rem;
+  color: var(--color-white-t60);
+}
+
+.submission-admin-page .submission-jobs-section-title {
+  flex: 1;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-white-t80);
+}
+
+.submission-admin-page .submission-jobs-section-count {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-white-t60);
+  background-color: var(--color-white-t10);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+}
+
+.submission-admin-page .submission-jobs-empty {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-white-t60);
+  padding: 0.35rem 0.25rem;
+}
+
+.submission-admin-page .submission-jobs-empty--nested {
+  font-size: 0.8rem;
+  padding: 0.15rem 0;
+}
+
+.submission-admin-page .submission-jobs-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 0.5rem;
+}
+
+.submission-admin-page .submission-jobs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.submission-admin-page .submission-job-request {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.5rem;
+  background-color: var(--color-white-t10);
+  border-radius: 4px;
+}
+
+.submission-admin-page .submission-job-request-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-white);
+  cursor: pointer;
+  text-align: left;
+}
+
+.submission-admin-page .submission-job-request-header:hover {
+  background-color: var(--color-white-t10);
+  border-radius: 4px;
+}
+
+.submission-admin-page .submission-job-request-kind,
+.submission-admin-page .submission-job-kind-icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--color-white);
+}
+
+.submission-admin-page .submission-job-request-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.submission-admin-page .submission-job-request-title {
+  font-weight: 600;
+  font-size: 0.9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.submission-admin-page .submission-job-request-sub {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.75rem;
+  color: var(--color-white-t60);
+}
+
+.submission-admin-page .submission-job-request-time {
+  font-size: 0.75rem;
+  color: var(--color-white-t60);
+}
+
+.submission-admin-page .submission-job-request-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.submission-admin-page .submission-job-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.submission-admin-page .submission-job-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.submission-admin-page .submission-job-item-label {
+  font-size: 0.85rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  color: var(--color-white);
+}
+
+.submission-admin-page .submission-job-level-link {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  width: fit-content;
+  font-size: 0.8rem;
+  color: var(--btn-primary);
+  text-decoration: none;
+}
+
+.submission-admin-page .submission-job-level-link:hover {
+  color: var(--btn-primary-light-hover);
+}
+
+.submission-admin-page .submission-job-step {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  color: var(--color-white-t80);
+  padding-left: 0.5rem;
+}
+
+.submission-admin-page .submission-job-error {
+  font-size: 0.8rem;
+  color: var(--color-white);
+}
+
+.submission-admin-page .submission-status-chip {
+  flex-shrink: 0;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border-radius: 4px;
+  background-color: var(--color-white-t20);
+  color: var(--color-white);
+  text-transform: lowercase;
+}
+
+.submission-admin-page .submission-status-chip--processing,
+.submission-admin-page .submission-status-chip--queued,
+.submission-admin-page .submission-status-chip--pending {
+  background-color: var(--color-white-t25);
+}
+
+.submission-admin-page .submission-status-chip--completed,
+.submission-admin-page .submission-status-chip--skipped {
+  background-color: var(--color-white-t35);
+}
+
+.submission-admin-page .submission-status-chip--accepted {
+  background-color: var(--btn-success-tint-strong);
+  border: 1px solid var(--btn-success-alpha-70);
+}
+
+.submission-admin-page .submission-status-chip--declined {
+  background-color: var(--danger-color-tint-36);
+  border: 1px solid var(--danger-color-alpha-80);
+}
+
+.submission-admin-page .submission-status-chip--failed {
+  background-color: var(--color-black-t40);
+  border: 1px solid var(--color-white-t30);
+}

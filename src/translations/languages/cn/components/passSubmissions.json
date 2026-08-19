@@ -71,6 +71,7 @@
   "success": {
     "playerAssigned": "成功分配给 {{playerName}}",
     "autoAllow": "已自动通过 {{count}} 项通关记录",
+    "autoAllowQueued": "已将 {{count}} 项通关记录加入顺序处理队列",
     "playerCreated": "成功创建并分配 {{playerName}}",
     "patch": "提交信息已更新",
     "videoLinkUpdated": "视频链接已更新"

@@ -71,6 +71,7 @@
   "success": {
     "playerAssigned": "Successfully assigned to {{playerName}}",
     "autoAllow": "Auto-allowed {{count}} submissions",
+    "autoAllowQueued": "Queued {{count}} passes for sequential processing",
     "playerCreated": "Successfully created and assigned {{playerName}}",
     "patch": "Submission updated",
     "videoLinkUpdated": "Video link updated"

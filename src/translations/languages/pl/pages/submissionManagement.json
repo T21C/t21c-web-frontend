@@ -11,5 +11,44 @@
     "levels": "Zgłoszenia poziomów",
     "passes": "Zgłoszenia przejść",
     "autoAllow": "Automatycznie akceptuj poprawne przejścia"
+  },
+  "jobs": {
+    "title": "Przetwarzanie",
+    "hide": "Ukryj kolejkę",
+    "loading": "Ładowanie kolejki…",
+    "processing": "W toku",
+    "done": "Gotowe",
+    "emptyProcessing": "Kolejka jest pusta",
+    "emptyDone": "Brak ostatnich zadań",
+    "emptyItems": "Brak elementów",
+    "requestedBy": "{{name}}",
+    "autoAllowBatch": "Auto-akceptacja",
+    "closeAccepted": "Zamknij",
+    "holdToCloseAll": "Przytrzymaj, aby zamknąć wszystkie",
+    "openLevel": "Poziom #{{id}}",
+    "openPass": "Przejście #{{id}}",
+    "status": {
+      "queued": "w kolejce",
+      "processing": "przetwarzanie",
+      "completed": "ukończono",
+      "accepted": "zaakceptowano",
+      "declined": "odrzucono",
+      "failed": "błąd",
+      "skipped": "pominięto",
+      "pending": "oczekuje"
+    },
+    "steps": {
+      "validate": "Walidacja",
+      "resolveEntities": "Rozwiązywanie encji",
+      "createLevel": "Tworzenie poziomu",
+      "notify": "Powiadomienie",
+      "chartStats": "Statystyki chartu",
+      "autoTags": "Auto tagi",
+      "autorate": "Autorate",
+      "cleanup": "Czyszczenie",
+      "createPass": "Tworzenie przejścia",
+      "index": "Indeksowanie",
+      "roleSync": "Sync ról"
+    }
   }
-} 
+}
