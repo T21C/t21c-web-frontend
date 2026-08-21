@@ -11,6 +11,7 @@
 }
 
 .linked-levels-popup__dialog {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -29,12 +30,49 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
+  padding-right: 2.75rem;
 }
 
 .linked-levels-popup__header h2 {
   margin: 0;
   font-size: 1.25rem;
   font-weight: 600;
+}
+
+.linked-levels-popup__share {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 0.75rem;
+  margin-left: auto;
+}
+
+.linked-levels-popup__share-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--color-gray-2);
+  font-size: 0.9rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.linked-levels-popup__share-toggle:hover:not(:has(input:disabled)) {
+  color: var(--color-white);
+}
+
+.linked-levels-popup__share-toggle:has(input:checked) {
+  color: var(--color-white);
+}
+
+.linked-levels-popup__share-toggle:has(input:disabled) {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.linked-levels-popup__share-toggle input {
+  accent-color: var(--btn-primary);
+  cursor: inherit;
 }
 
 .linked-levels-popup__description {

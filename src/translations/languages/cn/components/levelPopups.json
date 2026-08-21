@@ -185,11 +185,14 @@
     "unknownSong": "未知曲目",
     "toastAdded": "已关联 {{name}}",
     "toastRemoved": "已取消关联",
+    "shareChart": "谱面",
+    "shareVfx": "特效",
     "errors": {
       "sameLevel": "不能将关卡关联到自身",
       "alreadyLinked": "该关卡已在此组中",
       "add": "关联关卡失败",
-      "remove": "取消关联失败"
+      "remove": "取消关联失败",
+      "saveShare": "更新共享设置失败"
     }
   },
   "download": {

@@ -106,11 +106,14 @@
     "unknownSong": "Morceau inconnu",
     "toastAdded": "{{name}} lié",
     "toastRemoved": "Niveau dissocié",
+    "shareChart": "Chart",
+    "shareVfx": "VFX",
     "errors": {
       "sameLevel": "Impossible de lier un niveau à lui-même",
       "alreadyLinked": "Ce niveau est déjà dans ce groupe",
       "add": "Échec de la liaison",
-      "remove": "Échec de la dissociation"
+      "remove": "Échec de la dissociation",
+      "saveShare": "Échec de la mise à jour du partage"
     }
   }
 } 

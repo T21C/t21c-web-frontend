@@ -3,6 +3,8 @@
  * Build ProfileHeader `iconSlots` for players (P/G/U + WF-based GQ/UQ) and creators (curation types).
  */
 
+import { parseCurationFamilyTier } from "./curationTypeFamilies";
+
 const PGU_REGEX = /^([PGUpgu])(\d{1,2})$/;
 
 /** 1-based n in 1..20 ➔ Q tier 0..4 (four difficulties per bucket). */
@@ -202,19 +204,6 @@ export function buildPlayerIconSlots(aggregates, difficultyDict) {
 }
 
 const CREATOR_SLOT_FAMILIES = ["C", "V", "O", "H"];
-
-/** C / V / O / H followed only by digits (e.g. `C0`, `V3`). Anything else is "misc". */
-function parseCurationFamilyTier(name) {
-  const s = String(name ?? "").trim();
-  if (!s.length) return null;
-  const letter = s[0].toUpperCase();
-  if (!"CVOH".includes(letter)) return null;
-  const rest = s.slice(1);
-  if (rest !== "" && !/^\d+$/.test(rest)) return null;
-  const tier = rest === "" ? 0 : parseInt(rest, 10);
-  if (!Number.isFinite(tier) || tier < 0) return null;
-  return { letter, tier };
-}
 
 function tierDisplayCap(letter) {
   return letter === "H" ? 2 : 3;

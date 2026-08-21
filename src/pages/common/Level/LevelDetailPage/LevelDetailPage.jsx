@@ -1006,6 +1006,11 @@ const LevelDetailPage = ({ mockData = null }) => {
   const [publicPackAppearances, setPublicPackAppearances] = useState([]);
   const [publicTournamentAppearances, setPublicTournamentAppearances] = useState([]);
   const [linkedLevels, setLinkedLevels] = useState([]);
+  const [linkedShare, setLinkedShare] = useState({
+    groupId: null,
+    shareChart: false,
+    shareVfx: false,
+  });
   const [showLinkedLevelsPopup, setShowLinkedLevelsPopup] = useState(false);
   const weeklyHeaderCornerSlotRef = useRef(null);
   const packHeaderCornerSlotRef = useRef(null);
@@ -1038,6 +1043,16 @@ const LevelDetailPage = ({ mockData = null }) => {
   const closeToRatePendingDropdown = useCallback(() => setShowToRatePendingDropdown(false), []);
   const isSuperAdmin = hasFlag(user, permissionFlags.SUPER_ADMIN);
   const showLevelLinksIcon = isSuperAdmin || linkedLevels.length > 0;
+
+  const applyLinkedLevelsResponse = useCallback((data) => {
+    const levels = Array.isArray(data?.levels) ? data.levels : [];
+    setLinkedLevels(levels);
+    setLinkedShare({
+      groupId: data?.groupId ?? null,
+      shareChart: Boolean(data?.shareChart),
+      shareVfx: Boolean(data?.shareVfx),
+    });
+  }, []);
 
   const sortArrowDirection = useMemo(() => {
     return sortDirection === "desc" ? "up" : "down";
@@ -1801,7 +1816,7 @@ const LevelDetailPage = ({ mockData = null }) => {
 
   useEffect(() => {
     if (!effectiveId || mockData) {
-      setLinkedLevels([]);
+      applyLinkedLevelsResponse(null);
       return undefined;
     }
 
@@ -1811,17 +1826,16 @@ const LevelDetailPage = ({ mockData = null }) => {
       .get(routes.database.levels.links(effectiveId))
       .then((response) => {
         if (cancelled) return;
-        const levels = Array.isArray(response.data?.levels) ? response.data.levels : [];
-        setLinkedLevels(levels);
+        applyLinkedLevelsResponse(response.data);
       })
       .catch(() => {
-        if (!cancelled) setLinkedLevels([]);
+        if (!cancelled) applyLinkedLevelsResponse(null);
       });
 
     return () => {
       cancelled = true;
     };
-  }, [effectiveId, mockData]);
+  }, [effectiveId, mockData, applyLinkedLevelsResponse]);
 
   useEffect(() => {
     setActiveVideoIndex(0);
@@ -3404,10 +3418,13 @@ const LevelDetailPage = ({ mockData = null }) => {
       {showLinkedLevelsPopup && (
         <LinkedLevelsPopup
           currentLevelId={Number(effectiveId)}
+          groupId={linkedShare.groupId}
+          shareChart={linkedShare.shareChart}
+          shareVfx={linkedShare.shareVfx}
           levels={linkedLevels}
           canEdit={isSuperAdmin}
           onClose={() => setShowLinkedLevelsPopup(false)}
-          onChange={setLinkedLevels}
+          onChange={applyLinkedLevelsResponse}
         />
       )}
       {showDownloadPopup && (

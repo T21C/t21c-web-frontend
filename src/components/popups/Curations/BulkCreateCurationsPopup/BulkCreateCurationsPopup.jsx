@@ -6,6 +6,7 @@ import { CloseButton } from '@/components/common/buttons';
 import { ItemPickManager } from '@/components/common/selectors';
 import { parseLevelIdsInput } from '@/utils/packTreePlacement';
 import { canAssignCurationType } from '@/utils/curationTypeUtils';
+import { collapseCurationTypeIdsByFamilyTier } from '@/utils/curationTypeFamilies';
 import { hasAnyFlag, permissionFlags } from '@/utils/UserPermissions';
 import { useAuth } from '@/contexts/AuthContext';
 import './BulkCreateCurationsPopup.css';
@@ -89,6 +90,13 @@ const BulkCreateCurationsPopup = ({
   const canSubmit =
     parsedLevelIds.length > 0 && typeIds.length > 0 && !submitting;
 
+  const handleTypeIdsChange = useCallback(
+    (ids) => {
+      setTypeIds(collapseCurationTypeIdsByFamilyTier(ids, curationTypes));
+    },
+    [curationTypes]
+  );
+
   const handleSubmit = () => {
     if (!canSubmit || !onSubmit) return;
     onSubmit({ levelIds: parsedLevelIds, typeIds });
@@ -138,7 +146,7 @@ const BulkCreateCurationsPopup = ({
               className="bulk-create-curations-popup__item-pick"
               items={curationTypes}
               selectedIds={typeIds}
-              onSelectedIdsChange={setTypeIds}
+              onSelectedIdsChange={handleTypeIdsChange}
               poolFilter={curationTypePoolFilter}
               enableGrouping
               fallbackGroupLabel={t('facetQueryBuilder.fallbackGroup')}
