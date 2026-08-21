@@ -91,13 +91,29 @@
       "title": "Warning:",
       "message": "This will delete {{creatorName}} and reassign all credits to the selected creator. This action cannot be undone."
     },
-    "selectTarget": {
-      "label": "Select target creator",
-      "placeholder": "Search and select target creator...",
-      "noOptions": "No matching creators"
+    "search": {
+      "label": "Destination creator",
+      "placeholder": "Search by name or paste a creator ID",
+      "hint": "Select a creator from the results. Pasting a numeric ID looks up that profile so you can verify it before merging.",
+      "noResults": "No creators matched your search.",
+      "empty": "Start typing to find the destination creator.",
+      "selectButton": "Select"
     },
-    "mergeButton": "Merge creators",
-    "creatorLabel": "{{name}} (ID: {{id}}, Charts: {{count}}){{aliases}}"
+    "source": {
+      "label": "Will be deleted"
+    },
+    "destination": {
+      "label": "Will keep all credits"
+    },
+    "idLabel": "ID {{id}}",
+    "chartsLabel": "{{count}} charts",
+    "openProfile": "Open profile",
+    "changeDestination": "Change destination",
+    "confirm": {
+      "message": "All credits from {{sourceName}} will move to {{destName}}. {{sourceName}} will be deleted. This cannot be undone.",
+      "confirmButton": "Merge into {{name}}"
+    },
+    "mergeButton": "Merge creators"
   },
   "split": {
     "newNamesAndRoles": {
@@ -131,6 +147,7 @@
     "updateDiscordFailed": "Failed to update Discord info",
     "unlinkFailed": "Failed to unlink user",
     "mergeFailed": "Failed to merge creators",
+    "mergeSelf": "Cannot merge a creator into itself",
     "splitFailed": "Failed to split creator"
   },
   "player": {
@@ -182,10 +199,26 @@
         "title": "Warning:",
         "message": "All passes will move to the target player and {{name}} will be deleted. This cannot be undone."
       },
-      "understandButton": "I understand — continue",
-      "targetId": {
-        "label": "Target player ID",
-        "placeholder": "Enter target player ID"
+      "search": {
+        "label": "Destination player",
+        "placeholder": "Search by name, @username, #discordId, or pid:123",
+        "hint": "Select a player from the results. Pasting a numeric ID looks up that profile so you can verify it before merging.",
+        "noResults": "No players matched your search.",
+        "empty": "Start typing to find the destination profile.",
+        "selectButton": "Select"
+      },
+      "source": {
+        "label": "Will be deleted"
+      },
+      "destination": {
+        "label": "Will keep all passes"
+      },
+      "idLabel": "ID {{id}}",
+      "openProfile": "Open profile",
+      "changeDestination": "Change destination",
+      "confirm": {
+        "message": "All passes from {{sourceName}} will move to {{destName}}. {{sourceName}} will be deleted. This cannot be undone.",
+        "confirmButton": "Merge into {{name}}"
       },
       "mergeButton": "Merge players"
     },
@@ -195,7 +228,8 @@
       "banDuration": "Enter a duration from 1 to 999",
       "pauseUpdate": "Failed to update submission pause",
       "ratingBanUpdate": "Failed to update rating ban",
-      "mergeFailed": "Failed to merge player"
+      "mergeFailed": "Failed to merge player",
+      "mergeSelf": "Cannot merge a player into itself"
     },
     "success": {
       "updated": "Player updated successfully",

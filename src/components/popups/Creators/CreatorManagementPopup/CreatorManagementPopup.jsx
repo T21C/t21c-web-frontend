@@ -46,6 +46,40 @@ const TABS = [
   { id: 'delete', i18nKey: 'modes.delete' },
 ];
 
+const creatorAliasNames = (subject) =>
+  (subject?.creatorAliases || subject?.aliases || [])
+    .map((alias) => (typeof alias === 'string' ? alias : alias?.name))
+    .filter(Boolean);
+
+const creatorChartCount = (subject) => subject?.credits?.length || 0;
+
+const MergeCreatorIdentity = ({ subject, tt, showOpenProfile = false }) => {
+  const aliases = creatorAliasNames(subject);
+  const handle = subject?.user?.username ? `@${subject.user.username}` : null;
+  return (
+    <div className="merge-compare-identity">
+      <img src={userAvatarDisplayUrl(subject) || ''} alt="" className="player-pfp" />
+      <div className="merge-compare-meta">
+        <span className="player-name">{subject?.name || ''}</span>
+        {handle ? <span className="player-handle">{handle}</span> : null}
+        {aliases.length > 0 ? <span className="player-handle">{aliases.join(', ')}</span> : null}
+        <span className="player-id">{tt('merge.idLabel', { id: subject?.id })}</span>
+        <span className="player-id">{tt('merge.chartsLabel', { count: creatorChartCount(subject) })}</span>
+        {showOpenProfile && subject?.id ? (
+          <a
+            className="merge-profile-link"
+            href={`/creator/${subject.id}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {tt('merge.openProfile')}
+          </a>
+        ) : null}
+      </div>
+    </div>
+  );
+};
+
 export const CreatorManagementPopup = ({
   creator,
   player = null,
@@ -94,7 +128,9 @@ export const CreatorManagementPopup = ({
 
   const [mergeTarget, setMergeTarget] = useState(null);
   const [mergeTargetSearch, setMergeTargetSearch] = useState('');
-  const [availableCreators, setAvailableCreators] = useState([]);
+  const [mergeResults, setMergeResults] = useState([]);
+  const [mergeSearchLoading, setMergeSearchLoading] = useState(false);
+  const [showMergeConfirm, setShowMergeConfirm] = useState(false);
 
   const [splitNames, setSplitNames] = useState(['', '']);
   const [splitRoles, setSplitRoles] = useState([]);
@@ -216,37 +252,79 @@ export const CreatorManagementPopup = ({
     setHasPendingChanges(nameChanged || aliasesChanged || statusChanged || uploadChanged);
   }, [name, aliases, verificationStatus, uploadConditions, creator, curationProfile]);
 
-  // Merge target search (mirrors old popup)
+  // Merge target search
   useEffect(() => {
+    if (mode !== 'merge') {
+      setMergeTargetSearch('');
+      setMergeResults([]);
+      setMergeSearchLoading(false);
+      setMergeTarget(null);
+      setShowMergeConfirm(false);
+      return;
+    }
+  }, [mode]);
+
+  useEffect(() => {
+    if (mode !== 'merge' || mergeTarget) return;
+    const trimmed = mergeTargetSearch.trim();
+    if (trimmed.length < 1) {
+      setMergeResults([]);
+      setMergeSearchLoading(false);
+      return;
+    }
+
+    let cancelled = false;
     let cancelToken;
-    const fetchCreators = async () => {
+    setMergeSearchLoading(true);
+    const timer = setTimeout(async () => {
       try {
-        if (cancelToken) cancelToken.cancel('New search initiated');
         cancelToken = api.CancelToken.source();
-        setAvailableCreators(null);
         const params = new URLSearchParams({
           page: 1,
           limit: 20,
-          search: mergeTargetSearch,
+          search: trimmed,
           sort: 'NAME_ASC',
         });
         const res = await api.get(`${routes.database.creators.root()}?${params}`, {
           cancelToken: cancelToken.token,
         });
-        setAvailableCreators(res.data.results.filter(c => c.id !== creator?.id));
+        if (cancelled) return;
+        let results = (res.data?.results || []).filter((row) => row.id !== creator?.id);
+
+        if (/^[0-9]+$/.test(trimmed)) {
+          try {
+            const byId = await api.get(routes.database.creators.byId(trimmed), {
+              cancelToken: cancelToken.token,
+            });
+            const row = byId.data;
+            if (row?.id && row.id !== creator?.id && !results.some((item) => item.id === row.id)) {
+              results = [row, ...results];
+            }
+          } catch (err) {
+            if (!api.isCancel(err) && err.response?.status !== 404) {
+              console.error('Error fetching creator by id:', err);
+            }
+          }
+        }
+
+        if (!cancelled) setMergeResults(results);
       } catch (err) {
-        if (!api.isCancel(err)) {
+        if (!api.isCancel(err) && !cancelled) {
           console.error('Error fetching creators:', err);
           setError(tt('errors.loadCreatorsFailed'));
-          setAvailableCreators([]);
+          setMergeResults([]);
         }
+      } finally {
+        if (!cancelled) setMergeSearchLoading(false);
       }
-    };
-    if (mode === 'merge') fetchCreators();
+    }, 300);
+
     return () => {
-      if (cancelToken) cancelToken.cancel('Component unmounted');
+      cancelled = true;
+      clearTimeout(timer);
+      if (cancelToken) cancelToken.cancel('New search initiated');
     };
-  }, [creator?.id, mode, mergeTargetSearch]);
+  }, [creator?.id, mode, mergeTarget, mergeTargetSearch]);
 
   // Player search for User Assignment tab
   useEffect(() => {
@@ -422,7 +500,12 @@ export const CreatorManagementPopup = ({
   };
 
   const handleMerge = async () => {
-    if (!mergeTarget) return;
+    if (!mergeTarget?.id) return;
+    if (mergeTarget.id === creator.id) {
+      setError(tt('errors.mergeSelf'));
+      setShowMergeConfirm(false);
+      return;
+    }
     setIsLoading(true);
     clearMessages();
     try {
@@ -430,12 +513,19 @@ export const CreatorManagementPopup = ({
         sourceId: creator.id,
         targetId: mergeTarget.id,
       });
-      setSuccess(tt('success.merged'));
+      toast.success(tt('success.merged'));
       onUpdate?.();
-      setTimeout(onClose, 1500);
+      onClose();
+      window.location.href = `/creator/${mergeTarget.id}`;
     } catch (err) {
       console.error('Error merging creators:', err);
-      setError(tt('errors.mergeFailed'));
+      const msg =
+        err.response?.data?.error ||
+        err.response?.data?.details ||
+        tt('errors.mergeFailed');
+      setError(msg);
+      toast.error(msg);
+      setShowMergeConfirm(false);
     } finally {
       setIsLoading(false);
     }
@@ -894,63 +984,145 @@ export const CreatorManagementPopup = ({
                   </div>
                 </div>
 
-                <div className="form-group">
-                  <label>{tt('merge.selectTarget.label')}</label>
-                  <CustomSelect
-                    options={
-                      availableCreators === null
-                        ? []
-                        : availableCreators.map((c) => ({
-                            value: c.id,
-                            label: tt('merge.creatorLabel', {
-                              name: c.name,
-                              id: c.id,
-                              count: c.credits?.length || 0,
-                              aliases:
-                                c.aliases?.length > 0
-                                  ? ` [${c.aliases.join(', ')}]`
-                                  : '',
-                            }),
-                          }))
-                    }
-                    value={
-                      mergeTarget
-                        ? {
-                            value: mergeTarget.id,
-                            label: `${mergeTarget.name} (ID: ${mergeTarget.id})`,
-                          }
-                        : null
-                    }
-                    onChange={(opt) => {
-                      const target = availableCreators?.find((c) => c.id === opt?.value);
-                      setMergeTarget(target);
-                    }}
-                    placeholder={tt('merge.selectTarget.placeholder')}
-                    onInputChange={(value) => setMergeTargetSearch(value)}
-                    isSearchable={true}
-                    width="100%"
-                    isLoading={availableCreators === null}
-                    noOptionsMessage={() =>
-                      availableCreators === null
-                        ? t('loading.generic', { ns: 'common' })
-                        : tt('merge.selectTarget.noOptions')
-                    }
-                  />
-                </div>
+                {mergeTarget ? (
+                  <>
+                    <div className="merge-compare">
+                      <div className="merge-compare-card merge-compare-card--source">
+                        <span className="merge-compare-label">{tt('merge.source.label')}</span>
+                        <MergeCreatorIdentity subject={creator} tt={tt} />
+                      </div>
+                      <div className="merge-compare-card merge-compare-card--dest">
+                        <span className="merge-compare-label">{tt('merge.destination.label')}</span>
+                        <MergeCreatorIdentity subject={mergeTarget} tt={tt} showOpenProfile />
+                      </div>
+                    </div>
+                    <div className="merge-compare-actions">
+                      <button
+                        type="button"
+                        className="mode-btn"
+                        onClick={() => {
+                          setMergeTarget(null);
+                          setShowMergeConfirm(false);
+                        }}
+                        disabled={isLoading}
+                      >
+                        {tt('merge.changeDestination')}
+                      </button>
+                      <button
+                        type="button"
+                        className={`action-button warning ${isLoading ? 'loading' : ''}`}
+                        onClick={() => setShowMergeConfirm(true)}
+                        disabled={isLoading || !mergeTarget?.id || mergeTarget.id === creator.id}
+                      >
+                        {tt('merge.mergeButton')}
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="form-group">
+                      <label>{tt('merge.search.label')}</label>
+                      <input
+                        type="text"
+                        autoComplete="off"
+                        value={mergeTargetSearch}
+                        onChange={(e) => setMergeTargetSearch(e.target.value)}
+                        placeholder={tt('merge.search.placeholder')}
+                        disabled={isLoading}
+                      />
+                    </div>
+                    <p className="form-hint">{tt('merge.search.hint')}</p>
+                    <div className="player-results-list">
+                      {mergeSearchLoading ? (
+                        <div className="player-loading-row">
+                          {t('loading.generic', { ns: 'common' })}
+                        </div>
+                      ) : mergeResults.length === 0 ? (
+                        <div className="player-empty-row">
+                          {mergeTargetSearch.trim().length > 0
+                            ? tt('merge.search.noResults')
+                            : tt('merge.search.empty')}
+                        </div>
+                      ) : (
+                        mergeResults.map((result) => {
+                          const aliases = creatorAliasNames(result);
+                          return (
+                            <div key={result.id} className="player-result-row">
+                              <img
+                                src={userAvatarDisplayUrl(result) || ''}
+                                alt=""
+                                className="player-pfp"
+                              />
+                              <div className="player-result-info">
+                                <span className="player-name">{result.name}</span>
+                                {result.user?.username ? (
+                                  <span className="player-handle">@{result.user.username}</span>
+                                ) : null}
+                                {aliases.length > 0 ? (
+                                  <span className="player-handle">{aliases.join(', ')}</span>
+                                ) : null}
+                                <span className="player-id">
+                                  {tt('merge.idLabel', { id: result.id })}
+                                  {' · '}
+                                  {tt('merge.chartsLabel', { count: creatorChartCount(result) })}
+                                </span>
+                              </div>
+                              <button
+                                type="button"
+                                className="assign-row-button"
+                                onClick={() => setMergeTarget(result)}
+                                disabled={isLoading}
+                              >
+                                {tt('merge.search.selectButton')}
+                              </button>
+                            </div>
+                          );
+                        })
+                      )}
+                    </div>
+                  </>
+                )}
 
-                <button
-                  className={`action-button warning ${isLoading ? 'loading' : ''}`}
-                  onClick={handleMerge}
-                  disabled={isLoading || !mergeTarget}
-                >
-                  {isLoading ? (
-                    <svg className="spinner spinner-svg spinner-medium" viewBox="0 0 50 50">
-                      <circle cx="25" cy="25" r="20" fill="none" strokeWidth="5" />
-                    </svg>
-                  ) : (
-                    tt('merge.mergeButton')
-                  )}
-                </button>
+                {showMergeConfirm && mergeTarget ? (
+                  <div className="confirm-dialog">
+                    <div className="confirm-content confirm-content--merge">
+                      <div className="merge-compare">
+                        <div className="merge-compare-card merge-compare-card--source">
+                          <span className="merge-compare-label">{tt('merge.source.label')}</span>
+                          <MergeCreatorIdentity subject={creator} tt={tt} />
+                        </div>
+                        <div className="merge-compare-card merge-compare-card--dest">
+                          <span className="merge-compare-label">{tt('merge.destination.label')}</span>
+                          <MergeCreatorIdentity subject={mergeTarget} tt={tt} showOpenProfile />
+                        </div>
+                      </div>
+                      <p>
+                        {tt('merge.confirm.message', {
+                          sourceName: creator?.name || '',
+                          destName: mergeTarget.name || '',
+                        })}
+                      </p>
+                      <div className="confirm-buttons popup-btn-grid">
+                        <button
+                          type="button"
+                          className="confirm-yes"
+                          onClick={handleMerge}
+                          disabled={isLoading}
+                        >
+                          {tt('merge.confirm.confirmButton', { name: mergeTarget.name || '' })}
+                        </button>
+                        <button
+                          type="button"
+                          className="confirm-no"
+                          onClick={() => setShowMergeConfirm(false)}
+                          disabled={isLoading}
+                        >
+                          {t('buttons.cancel', { ns: 'common' })}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ) : null}
               </div>
             )}
 

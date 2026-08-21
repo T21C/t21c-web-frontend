@@ -579,6 +579,82 @@
   font-size: 0.85em;
 }
 
+.creator-management-popup-container .player-id {
+  color: var(--color-white-t60);
+  font-size: 0.8em;
+}
+
+.creator-management-popup-container .merge-compare {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.creator-management-popup-container .merge-compare-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background-color: var(--btn-neutral-dark);
+  border: 1px solid var(--color-white-t12);
+  border-radius: 6px;
+}
+
+.creator-management-popup-container .merge-compare-card--source {
+  border-color: var(--danger-color-tint-40);
+}
+
+.creator-management-popup-container .merge-compare-card--dest {
+  border-color: var(--btn-primary);
+}
+
+.creator-management-popup-container .merge-compare-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-white-t60);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.creator-management-popup-container .merge-compare-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.creator-management-popup-container .merge-compare-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.creator-management-popup-container .merge-compare-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.creator-management-popup-container .merge-compare-actions > * {
+  width: 100%;
+}
+
+.creator-management-popup-container .merge-profile-link {
+  color: var(--btn-primary);
+  font-size: 0.85em;
+  text-decoration: none;
+  width: fit-content;
+}
+
+.creator-management-popup-container .merge-profile-link:hover {
+  color: var(--btn-primary-hover);
+}
+
+.creator-management-popup-container .confirm-content--merge {
+  max-width: 28rem;
+  text-align: left;
+}
+
 .creator-management-popup-container .assign-row-button {
   padding: 6px 12px;
   background-color: var(--btn-primary);
