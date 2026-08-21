@@ -173,10 +173,26 @@ export const InboxNotificationProvider = ({ children }) => {
     }
   }, []);
 
+  const hide = useCallback(async (id, { disableType = false } = {}) => {
+    try {
+      const { data } = await api.post(routes.notifications.hide(id), { disableType });
+      if (!data?.hidden) return;
+      setItems((prev) => prev.filter((row) => row.id !== id));
+      const delta = Number(data.unreadDelta) || 0;
+      if (delta) {
+        setUnreadCount((count) => Math.max(0, count - delta));
+      }
+    } catch (error) {
+      console.error('[Inbox] Failed to hide notification:', error);
+    }
+  }, []);
+
   const loadMore = useCallback(() => {
     if (!nextCursor || loading) return;
     return fetchPage({ cursor: nextCursor });
   }, [fetchPage, loading, nextCursor]);
+
+  const refresh = useCallback(() => fetchPage({ replace: true }), [fetchPage]);
 
   const value = useMemo(
     () => ({
@@ -184,13 +200,14 @@ export const InboxNotificationProvider = ({ children }) => {
       unreadCount,
       nextCursor,
       loading,
-      refresh: () => fetchPage({ replace: true }),
+      refresh,
       loadMore,
       markRead,
       markAllRead,
       markSeen,
+      hide,
     }),
-    [fetchPage, items, loadMore, loading, markAllRead, markRead, markSeen, nextCursor, unreadCount],
+    [hide, items, loadMore, loading, markAllRead, markRead, markSeen, nextCursor, refresh, unreadCount],
   );
 
   return (

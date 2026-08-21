@@ -78,6 +78,15 @@
   align-items: center;
   gap: 0.75rem;
   cursor: pointer;
+  transition: opacity 0.2s ease-out;
+}
+
+.settings-notifications-page .settings-notifications-page__toggle:not(.settings-notifications-page__toggle--category):has(input:not(:checked)) {
+  opacity: 0.6;
+}
+
+.settings-notifications-page .settings-notifications-page__toggle:not(.settings-notifications-page__toggle--category):has(input:not(:checked)):hover {
+  opacity: 1;
 }
 
 .settings-notifications-page .settings-notifications-page__toggle input[type='checkbox'] {

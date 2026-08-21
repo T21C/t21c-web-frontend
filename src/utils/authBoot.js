@@ -34,15 +34,20 @@ export function ensureAuthBoot(fetcher) {
   const early = takeEarlyBoot();
   bootPending = true;
   bootPromise = (async () => {
+    let data = null;
     if (early) {
-      const data = await early.catch(() => null);
-      if (isSessionPayload(data)) return data;
+      data = await early.catch(() => null);
+      if (isSessionPayload(data) && data.user) return data;
     }
     try {
-      return await fetcher();
+      const retry = await fetcher();
+      if (isSessionPayload(retry) && (retry.user || !isSessionPayload(data))) {
+        return retry;
+      }
     } catch {
-      return null;
+      // Keep the early csrf-only payload when the follow-up fails.
     }
+    return isSessionPayload(data) ? data : null;
   })().finally(() => {
     bootPending = false;
   });

@@ -73,7 +73,9 @@ import { CalculatorIcon } from './CalculatorIcon';
 import { ImportIcon } from './ImportIcon';
 import { CompareIcon } from './CompareIcon';
 import { BellIcon } from './BellIcon';
+import { BellOffIcon } from './BellOffIcon';
 import { GearIcon } from './GearIcon';
+import { MoreVerticalIcon } from './MoreVerticalIcon';
 export {
     DefaultAvatar,
     DiscordIcon,
@@ -149,5 +151,7 @@ export {
     ImportIcon,
     CompareIcon,
     BellIcon,
+    BellOffIcon,
     GearIcon,
+    MoreVerticalIcon,
 }

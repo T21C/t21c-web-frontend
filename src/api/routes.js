@@ -511,6 +511,7 @@ export const routes = {
     },
     unreadCount: () => '/v2/notifications/unread-count',
     read: (id) => `/v2/notifications/${enc(id)}/read`,
+    hide: (id) => `/v2/notifications/${enc(id)}/hide`,
     readAll: () => '/v2/notifications/read-all',
     seen: () => '/v2/notifications/seen',
     preferences: () => '/v2/notifications/preferences',

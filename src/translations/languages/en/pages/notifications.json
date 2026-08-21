@@ -14,6 +14,9 @@
   "unread_other": "{{count}} unread",
   "bellAria": "Notifications, {{count}} unread",
   "settingsAria": "Notification settings",
+  "menuAria": "Notification actions",
+  "hide": "Hide this notification",
+  "disableType": "Turn off \"{{title}}\" notifications",
   "untitledLevel": "Level #{{levelId}}",
   "unknownArtist": "Unknown artist",
   "unknown": {
