@@ -169,5 +169,8 @@
   },
   "tournamentAppearance": {
     "header": "赛事收录"
+  },
+  "linkedLevels": {
+    "header": "关联关卡"
   }
 }

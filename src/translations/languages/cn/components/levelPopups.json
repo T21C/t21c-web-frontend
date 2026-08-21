@@ -177,6 +177,21 @@
       "swap": "关卡信息互换失败"
     }
   },
+  "linkedLevels": {
+    "title": "关联关卡",
+    "description": "将仅有细微改动的同一谱面分组显示。",
+    "empty": "暂无关联关卡。",
+    "current": "当前关卡",
+    "unknownSong": "未知曲目",
+    "toastAdded": "已关联 {{name}}",
+    "toastRemoved": "已取消关联",
+    "errors": {
+      "sameLevel": "不能将关卡关联到自身",
+      "alreadyLinked": "该关卡已在此组中",
+      "add": "关联关卡失败",
+      "remove": "取消关联失败"
+    }
+  },
   "download": {
     "title": "下载选项",
     "close": "关闭",

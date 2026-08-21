@@ -169,5 +169,8 @@
   },
   "tournamentAppearance": {
     "header": "토너먼트 수록"
+  },
+  "linkedLevels": {
+    "header": "연결된 레벨"
   }
 } 

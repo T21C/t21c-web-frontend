@@ -98,5 +98,20 @@
   "creditsEdit": {
     "searchPlaceholder": "Szukaj twórców…",
     "noResults": "Brak pasujących twórców"
+  },
+  "linkedLevels": {
+    "title": "Powiązane poziomy",
+    "description": "Poziomy zgrupowane jako niewielkie warianty tego samego chartu.",
+    "empty": "Brak powiązanych poziomów.",
+    "current": "Ten poziom",
+    "unknownSong": "Nieznana piosenka",
+    "toastAdded": "Powiązano {{name}}",
+    "toastRemoved": "Usunięto powiązanie",
+    "errors": {
+      "sameLevel": "Nie można powiązać poziomu z samym sobą",
+      "alreadyLinked": "Ten poziom jest już w tej grupie",
+      "add": "Nie udało się powiązać poziomu",
+      "remove": "Nie udało się usunąć powiązania"
+    }
   }
 } 

@@ -316,6 +316,9 @@ export const routes = {
         `/v2/database/levels/${enc(levelId)}/aliases/${enc(aliasId)}`,
       aliasPropagationCount: (levelId) =>
         `/v2/database/levels/alias-propagation-count/${enc(levelId)}`,
+      links: (id) => `/v2/database/levels/${enc(id)}/links`,
+      linkMember: (id, memberId) =>
+        `/v2/database/levels/${enc(id)}/links/${enc(memberId)}`,
       isLiked: (id) => `/v2/database/levels/${enc(id)}/isLiked`,
       cdnData: (id) => `/v2/database/levels/${enc(id)}/cdnData`,
       ratings: (id) => `/v2/database/levels/${enc(id)}/ratings`,

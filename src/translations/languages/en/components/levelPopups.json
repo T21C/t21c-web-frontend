@@ -180,6 +180,20 @@
       "swap": "Failed to swap level details"
     }
   },
+  "linkedLevels": {
+    "title": "Linked levels",
+    "empty": "No linked levels yet.",
+    "current": "This level",
+    "unknownSong": "Unknown song",
+    "toastAdded": "Linked {{name}}",
+    "toastRemoved": "Level unlinked",
+    "errors": {
+      "sameLevel": "Cannot link a level to itself",
+      "alreadyLinked": "That level is already in this group",
+      "add": "Failed to link level",
+      "remove": "Failed to unlink level"
+    }
+  },
   "download": {
     "title": "Download Options",
     "close": "Close",

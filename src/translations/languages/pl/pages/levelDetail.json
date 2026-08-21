@@ -87,5 +87,8 @@
     "rerateNumber": "Żądany rating",
     "rerateMessage": "Wiadomość",
     "noDetails": "Brak dodatkowych informacji."
+  },
+  "linkedLevels": {
+    "header": "Powiązane poziomy"
   }
 } 

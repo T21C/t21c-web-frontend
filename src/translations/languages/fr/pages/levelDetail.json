@@ -70,5 +70,8 @@
     "rerateNumber": "Note demandée",
     "rerateMessage": "Message",
     "noDetails": "Aucun détail supplémentaire."
+  },
+  "linkedLevels": {
+    "header": "Niveaux liés"
   }
 } 
