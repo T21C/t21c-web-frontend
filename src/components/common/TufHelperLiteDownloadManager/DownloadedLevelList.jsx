@@ -30,7 +30,6 @@ const LoadError = ({ message, onRetry, position = 'bottom', t }) => (
 
 export const DownloadedLevelList = ({
   levels,
-  summary,
   firstItemIndex,
   loading,
   errors,
@@ -42,17 +41,12 @@ export const DownloadedLevelList = ({
   updateStates,
   onCheckForUpdate,
   updateSupported,
+  updateLocked,
   t,
   locale,
 }) => {
   const { difficultyDict, loading: difficultiesLoading } = useDifficultyContext();
   const difficultiesReady = !difficultiesLoading && levels.every((level) => difficultyDict[level.diffId]?.icon);
-  const summaryText = summary?.state === 'ready'
-    ? `${t('level.tufHelperLiteDownloadManager.libraryCount', { count: summary.levelCount })} · ${formatBytes(summary.totalSizeBytes, locale)}`
-    : summary?.state === 'failed'
-      ? t('level.tufHelperLiteDownloadManager.summaryFailed')
-      : t('level.tufHelperLiteDownloadManager.calculatingSummary');
-
   const renderRow = (_virtualIndex, level) => {
     const difficulty = difficultyDict[level.diffId];
     const updateStatus = updateStates[level.id] || { state: level.updateState || 'idle' };
@@ -97,7 +91,7 @@ export const DownloadedLevelList = ({
           type="button"
           className={`tufhelper-download-manager__update is-${updateState}`}
           onClick={() => onCheckForUpdate(level)}
-          disabled={!updateSupported || updateState === 'checking' || updateState === 'updating'}
+          disabled={!updateSupported || updateLocked || updateState === 'checking' || updateState === 'updating'}
           aria-live="polite"
           title={updateStatus.error || undefined}
         >
@@ -112,7 +106,6 @@ export const DownloadedLevelList = ({
 
   return (
     <>
-      <span className="tufhelper-download-manager__library-summary" aria-live="polite">{summaryText}</span>
       {(loading.initial && levels.length === 0) || (levels.length > 0 && !difficultiesReady) ? (
         <div className="tufhelper-download-manager__empty is-loading" role="status">
           <RefreshIcon size={24} color="currentColor" aria-hidden="true" />

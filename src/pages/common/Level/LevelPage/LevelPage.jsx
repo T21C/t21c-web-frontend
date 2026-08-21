@@ -31,6 +31,7 @@ import { normalizeLevelSearchQuery } from '@/utils/normalizeEntitySearchQuery';
 import { getDefaultQSliderRange } from '@/utils/getDefaultQSliderRange';
 import {
   getTufHelperLiteStorageMigrationStatus,
+  getTufHelperLiteBatchUpdateCheckStatus,
   useTufHelperLiteHealth,
 } from '@/hooks/useTufHelperLiteIpc';
 import { TufHelperLiteDownloadManager } from '@/components/common/TufHelperLiteDownloadManager';
@@ -136,6 +137,7 @@ const LevelPage = ({
   const [loadingMore, setLoadingMore] = useState(false);
   const [showDownloadManager, setShowDownloadManager] = useState(false);
   const [downloadStorage, setDownloadStorage] = useState(null);
+  const [downloadBatch, setDownloadBatch] = useState(null);
   const downloadManagerButtonRef = useRef(null);
   const tufHelperLiteHealth = useTufHelperLiteHealth();
   const downloadStorageState = String(downloadStorage?.State ?? downloadStorage?.state ?? 'idle').toLowerCase();
@@ -145,6 +147,16 @@ const LevelPage = ({
     ? Math.min(1, downloadStorageBytes / downloadStorageTotal)
     : 0;
   const downloadStorageActive = ['copying', 'verifying', 'switching', 'cleaning'].includes(downloadStorageState);
+  const downloadBatchState = String(downloadBatch?.State ?? downloadBatch?.state ?? 'idle').toLowerCase();
+  const downloadBatchProcessed = Number(downloadBatch?.LevelsProcessed ?? downloadBatch?.levelsProcessed) || 0;
+  const downloadBatchTotal = Number(downloadBatch?.LevelsTotal ?? downloadBatch?.levelsTotal) || 0;
+  const downloadBatchActive = ['preparing', 'checking', 'cancelling'].includes(downloadBatchState);
+  const downloadManagerActive = downloadStorageActive || downloadBatchActive;
+  const downloadManagerProgress = downloadStorageActive
+    ? downloadStorageProgress
+    : downloadBatchTotal > 0
+      ? Math.min(1, downloadBatchProcessed / downloadBatchTotal)
+      : 0;
 
   useEffect(() => {
     if (!tufHelperLiteHealth.isAvailable || !tufHelperLiteHealth.supportsStorageMigration) {
@@ -168,6 +180,28 @@ const LevelPage = ({
       window.clearInterval(timer);
     };
   }, [downloadStorageActive, tufHelperLiteHealth.isAvailable, tufHelperLiteHealth.supportsStorageMigration]);
+
+  useEffect(() => {
+    if (!tufHelperLiteHealth.isAvailable || !tufHelperLiteHealth.supportsBatchUpdateCheck) {
+      setDownloadBatch(null);
+      return undefined;
+    }
+    let cancelled = false;
+    const refresh = async () => {
+      try {
+        const next = await getTufHelperLiteBatchUpdateCheckStatus();
+        if (!cancelled) setDownloadBatch(next);
+      } catch {
+        // Health polling owns connection-loss feedback.
+      }
+    };
+    void refresh();
+    const timer = window.setInterval(refresh, downloadBatchActive ? 500 : 5000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+    };
+  }, [downloadBatchActive, tufHelperLiteHealth.isAvailable, tufHelperLiteHealth.supportsBatchUpdateCheck]);
 
   const closeDownloadManager = useCallback(() => {
     setShowDownloadManager(false);
@@ -863,11 +897,11 @@ const LevelPage = ({
                   <button
                     ref={downloadManagerButtonRef}
                     type="button"
-                    className={`tufhelper-download-manager-button${downloadStorageActive ? ' is-migrating' : ''}`}
+                    className={`tufhelper-download-manager-button${downloadManagerActive ? ' is-migrating' : ''}`}
                     onClick={() => setShowDownloadManager(true)}
                     aria-label={tc('level.tufHelperLiteDownloadManager.open')}
                     data-tooltip-id="tufhelper-download-manager"
-                    style={{ '--tufhelper-storage-progress': `${Math.round(downloadStorageProgress * 100)}%` }}
+                    style={{ '--tufhelper-storage-progress': `${Math.round(downloadManagerProgress * 100)}%` }}
                   >
                     <TUFHelperLiteIcon
                       className="tufhelper-download-manager-button__icon"
