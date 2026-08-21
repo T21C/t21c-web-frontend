@@ -55,6 +55,13 @@
       "label": "Masquer les re-clears"
     }
   },
+  "info": {
+    "roles": {
+      "charter": "Charteur(s)",
+      "vfxer": "Effecteur(s)",
+      "specialThanks": "Remerciements"
+    }
+  },
   "dialog": {
     "fullInfo": "Voir plus d'infos"
   },

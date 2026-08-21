@@ -70,7 +70,8 @@
     "creator": "创作者",
     "roles": {
       "charter": "采音师",
-      "vfxer": "特效师"
+      "vfxer": "特效师",
+      "specialThanks": "特别感谢"
     },
     "difficulty": "等级",
     "baseScore": "基础分数",

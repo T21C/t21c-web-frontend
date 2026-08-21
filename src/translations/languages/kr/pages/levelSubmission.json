@@ -15,6 +15,7 @@
     "dlLinksOr": "또는",
     "charters": "제작자들",
     "vfxers": "이펙터",
+    "specialThanks": "특별 감사 (선택 사항)",
     "artists": "작곡가",
     "levelZip": "레벨 Zip 압축 파일",
     "evidence": "증거",
@@ -35,6 +36,7 @@
   "buttons": {
     "addCharter": "제작자 추가",
     "addVfxer": "이펙터 추가",
+    "addSpecialThanks": "특별 감사 추가",
     "addArtist": "작곡가 추가",
     "removeCreator": "제거",
     "uploadZip": "Zip 업로드",
@@ -72,6 +74,7 @@
   "roles": {
     "charters": "제작자들",
     "vfxers": "이펙터",
+    "specialThanks": "특별 감사",
     "teams": "팀"
   },
   "badges": {

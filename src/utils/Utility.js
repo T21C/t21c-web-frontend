@@ -263,9 +263,10 @@ export function formatCreatorDisplay (level) {
 
     const charters = creditsByRole['charter'] || [];
     const vfxers = creditsByRole['vfxer'] || [];
+    const primaryCount = charters.length + vfxers.length;
 
-    // Handle different cases based on number of credits
-    if (level.levelCredits.length >= 3) {
+    // Handle different cases based on number of charter/vfxer credits
+    if (primaryCount >= 3) {
       const parts = [];
       if (charters.length > 0) {
         parts.push(charters.length === 1 
@@ -278,7 +279,7 @@ export function formatCreatorDisplay (level) {
           : `${vfxers[0]} & ${vfxers.length - 1} more`);
       }
       return parts.join(' | ');
-    } else if (level.levelCredits.length === 2) {
+    } else if (primaryCount === 2) {
       if (charters.length === 2) {
         return `${charters[0]} & ${charters[1]}`;
       }
@@ -287,7 +288,7 @@ export function formatCreatorDisplay (level) {
       }
     }
 
-    return level.levelCredits[0]?.creator.name || "No credits";
+    return charters[0] || vfxers[0] || "No credits";
   }
 
 

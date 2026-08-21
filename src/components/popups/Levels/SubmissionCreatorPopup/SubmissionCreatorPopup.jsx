@@ -12,12 +12,20 @@ import { CloseButton } from '@/components/common/buttons';
 const CreditRole = {
   CHARTER: 'charter',
   VFXER: 'vfxer',
+  SPECIAL_THANKS: 'specialThanks',
   TEAM: 'team'
 };
 
-const roleOptions = Object.entries(CreditRole).map(([key, value]) => ({
+const ROLE_LABELS = {
+  charter: 'Charter',
+  vfxer: 'Vfxer',
+  specialThanks: 'Special Thanks',
+  team: 'Team',
+};
+
+const roleOptions = Object.entries(CreditRole).map(([, value]) => ({
   value,
-  label: value.charAt(0).toUpperCase() + value.slice(1)
+  label: ROLE_LABELS[value] || value.charAt(0).toUpperCase() + value.slice(1)
 }));
 
 // Helper function to get unique level count from credits

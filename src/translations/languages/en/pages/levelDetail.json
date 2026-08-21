@@ -70,7 +70,8 @@
     "creator": "Creator",
     "roles": {
       "charter": "Charter(s)",
-      "vfxer": "VFXer(s)"
+      "vfxer": "VFXer(s)",
+      "specialThanks": "Special Thanks"
     },
     "difficulty": "Difficulty",
     "baseScore": "Base Score",

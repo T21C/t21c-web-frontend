@@ -1281,21 +1281,27 @@ const LevelSubmissions = () => {
                       return acc;
                     }, {});
 
-                    return Object.entries(creatorsByRole || {}).map(([role, creators]) => (
+                    const addButtonKey = {
+                      charter: 'addCharter',
+                      vfxer: 'addVfxer',
+                      specialThanks: 'addSpecialThanks',
+                    };
+
+                    return ['charter', 'vfxer', 'specialThanks'].map((role) => {
+                      const creators = creatorsByRole?.[role] || [];
+                      return (
                       <div key={role} className="creator-group">
                         <div className="creator-group-header">
                           <span>{t(`levelSubmissions.details.${role}`)}</span>
-                          {role !== 'team' && (
-                            <button
-                              type="button"
-                              className="add-creator-button add-creator-button--icon"
-                              onClick={() => handleAddCreator(submission.id, role)}
-                              title={t(`levelSubmissions.buttons.add${role === 'vfxer' ? 'Vfxer' : 'Charter'}`)}
-                              aria-label={t(`levelSubmissions.buttons.add${role === 'vfxer' ? 'Vfxer' : 'Charter'}`)}
-                            >
-                              <PlusIcon color="#fff" size="18px" />
-                            </button>
-                          )}
+                          <button
+                            type="button"
+                            className="add-creator-button add-creator-button--icon"
+                            onClick={() => handleAddCreator(submission.id, role)}
+                            title={t(`levelSubmissions.buttons.${addButtonKey[role]}`)}
+                            aria-label={t(`levelSubmissions.buttons.${addButtonKey[role]}`)}
+                          >
+                            <PlusIcon color="#fff" size="18px" />
+                          </button>
                         </div>
                         <div className="creator-list">
                           {creators.map((request, index) => (
@@ -1314,10 +1320,8 @@ const LevelSubmissions = () => {
                                 )}
                               </span>
                               <div className="creator-actions">
-                                {/* Show remove button for vfxers or if there's more than one charter */}
-                                {(request.role === 'vfxer' || 
-                                  (request.role === 'charter' && 
-                                    creators.filter(r => r.role === 'charter').length > 1)) && (
+                                {(request.role !== 'charter' ||
+                                  creators.filter(r => r.role === 'charter').length > 1) && (
                                   <button
                                     type="button"
                                     className="remove-creator-button"
@@ -1342,7 +1346,8 @@ const LevelSubmissions = () => {
                           ))}
                         </div>
                       </div>
-                    ));
+                    );
+                    });
                   })()}
 
                   {/* Team Request */}

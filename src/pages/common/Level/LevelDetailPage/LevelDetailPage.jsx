@@ -348,6 +348,7 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty, onArtistClick 
 
     const charters = creditsByRole['charter'] || [];
     const vfxers = creditsByRole['vfxer'] || [];
+    const specialThanks = creditsByRole['specialthanks'] || creditsByRole['specialThanks'] || [];
 
     return (
       <div className="credits-grid">
@@ -366,6 +367,14 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty, onArtistClick 
             <Link key={`vfxer-${index}`} className="creator-name" to={`/creator/${vfxer.id}`}>{vfxer.name}</Link>
           ))}
         </div>
+        {specialThanks.length > 0 && (
+          <div className="credits-column credits-column--thanks">
+            <div className="role-header">{t('levelDetail.info.roles.specialThanks')}</div>
+            {specialThanks.map((credit, index) => (
+              <Link key={`specialThanks-${index}`} className="creator-name" to={`/creator/${credit.id}`}>{credit.name}</Link>
+            ))}
+          </div>
+        )}
       </div>
     );
   };
@@ -1061,6 +1070,7 @@ const LevelDetailPage = ({ mockData = null }) => {
 
     const charters = byRole.charter || [];
     const vfxers = byRole.vfxer || [];
+    const primaryCount = charters.length + vfxers.length;
 
     const renderRole = (list) => {
       if (!Array.isArray(list) || list.length === 0) return null;
@@ -1091,7 +1101,7 @@ const LevelDetailPage = ({ mockData = null }) => {
       );
     };
 
-    if (credits.length >= 3) {
+    if (primaryCount >= 3) {
       const parts = [renderRole(charters), renderRole(vfxers)].filter(Boolean);
       return (
         <span className="level-creator-multi">
@@ -1105,7 +1115,7 @@ const LevelDetailPage = ({ mockData = null }) => {
       );
     }
 
-    if (credits.length === 2) {
+    if (primaryCount === 2) {
       if (charters.length === 2) {
         return (
           <span className="level-creator-multi">
@@ -1134,11 +1144,11 @@ const LevelDetailPage = ({ mockData = null }) => {
       }
     }
 
-    const firstCredit = credits[0]?.creator;
-    if (firstCredit?.id && firstCredit?.name) {
+    const first = charters[0] || vfxers[0];
+    if (first?.id && first?.name) {
       return (
-        <Link className="level-creator-link" to={`/creator/${firstCredit.id}`}>
-          {firstCredit.name}
+        <Link className="level-creator-link" to={`/creator/${first.id}`}>
+          {first.name}
         </Link>
       );
     }

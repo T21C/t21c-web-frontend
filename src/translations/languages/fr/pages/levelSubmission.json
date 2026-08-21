@@ -15,6 +15,7 @@
     "dlLinksOr": "ou",
     "charters": "Charteurs",
     "vfxers": "Effecteurs",
+    "specialThanks": "Remerciements (optionnel)",
     "levelZip": "Fichier Zip du niveau",
     "notes": "Notes"
   },
@@ -30,6 +31,7 @@
   "buttons": {
     "addCharter": "Ajouter un charteur",
     "addVfxer": "Ajouter un effecteur",
+    "addSpecialThanks": "Ajouter des remerciements",
     "removeCreator": "Supprimer",
     "uploadZip": "Télécharger Zip",
     "orDragDrop": "ou glisser-déposer ici",
@@ -60,5 +62,8 @@
   },
   "placeholders": {
     "notes": "Notes optionnelles pour les managers (détails du chart, crédits, etc.)"
+  },
+  "roles": {
+    "specialThanks": "Remerciements"
   }
 } 
