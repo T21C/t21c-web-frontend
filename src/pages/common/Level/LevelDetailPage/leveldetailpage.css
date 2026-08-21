@@ -128,6 +128,10 @@
   border: 1px solid var(--glass-border);
 }
 
+.level-detail .header .left.has-level-links {
+  padding-bottom: calc(var(--spacing-sm) + 2.25rem);
+}
+
 .level-detail .header .left::before {
   content: '';
   position: absolute;
@@ -566,6 +570,13 @@
 .level-detail .header-corner-icon:hover {
   opacity: 0.6;
   background: rgba(255, 255, 255, 0.1);
+}
+
+.level-detail .level-detail-header-link-slot {
+  position: absolute;
+  bottom: var(--spacing-sm);
+  right: var(--spacing-sm);
+  z-index: 20;
 }
 
 .level-detail .weekly-appearance-dropdown,
@@ -1723,6 +1734,10 @@
     gap: var(--spacing-md);
     padding: var(--spacing-md);
   }
+
+  .level-detail .header .left.has-level-links {
+    padding-bottom: calc(var(--spacing-md) + 2.25rem);
+  }
   
   .level-detail .header .right {
     flex: none;
@@ -1813,6 +1828,10 @@
     padding: 0;
     justify-content: center;
   }
+
+  .level-detail .header .left.has-level-links {
+    padding-bottom: 2.25rem;
+  }
   
   .level-detail .header .left .diff {
     margin-top: 0.5rem;
@@ -1880,6 +1899,10 @@
     flex-direction: column;
     align-items: center;
     gap: var(--spacing-xs);
+  }
+
+  .level-detail .header .left.has-level-links {
+    padding-bottom: calc(var(--spacing-xs) + 2.25rem);
   }
   
   .difficulty-icon {

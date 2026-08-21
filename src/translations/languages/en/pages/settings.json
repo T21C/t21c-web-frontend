@@ -44,7 +44,8 @@
     "categories": {
       "submissions": "Submissions",
       "chart": "Charts",
-      "clears": "Clears"
+      "clears": "Clears",
+      "following": "Following"
     }
   },
   "preferences": {

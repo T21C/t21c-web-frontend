@@ -97,5 +97,20 @@
   "creditsEdit": {
     "searchPlaceholder": "Rechercher des créateurs…",
     "noResults": "Aucun créateur correspondant"
+  },
+  "linkedLevels": {
+    "title": "Niveaux liés",
+    "description": "Niveaux regroupés comme variantes mineures du même chart.",
+    "empty": "Aucun niveau lié pour le moment.",
+    "current": "Ce niveau",
+    "unknownSong": "Morceau inconnu",
+    "toastAdded": "{{name}} lié",
+    "toastRemoved": "Niveau dissocié",
+    "errors": {
+      "sameLevel": "Impossible de lier un niveau à lui-même",
+      "alreadyLinked": "Ce niveau est déjà dans ce groupe",
+      "add": "Échec de la liaison",
+      "remove": "Échec de la dissociation"
+    }
   }
 } 

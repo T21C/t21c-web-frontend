@@ -37,6 +37,10 @@
   "adminEdit": "Admin edit",
   "viewUserPacks": "View user's packs",
   "linkToCreator": "View creator profile",
+  "follow": "Follow",
+  "following": "Following",
+  "followLogin": "Please log in to follow",
+  "followError": "Could not update follow",
   "stellarSubscriberIconTooltip": "TUFStellar Subscriber",
   "header": {
     "aka": "a.k.a."

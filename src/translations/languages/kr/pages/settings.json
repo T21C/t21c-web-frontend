@@ -44,7 +44,8 @@
     "categories": {
       "submissions": "제출",
       "chart": "차트",
-      "clears": "클리어"
+      "clears": "클리어",
+      "following": "팔로우"
     }
   },
   "preferences": {

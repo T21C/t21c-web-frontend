@@ -106,6 +106,20 @@
           "body": "{{song}} — {{artist}} 가 Weekly Levels에 선정되었습니다."
         }
       }
+    },
+    "following": {
+      "player": {
+        "pass": {
+          "title": "새 클리어",
+          "body": "{{playerName}}님이 {{song}} — {{artist}} 를 클리어했습니다."
+        }
+      },
+      "creator": {
+        "level": {
+          "title": "새 차트",
+          "body": "{{creatorName}}님이 {{song}} — {{artist}} 를 공개했습니다."
+        }
+      }
     }
   }
 }

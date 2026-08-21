@@ -26,6 +26,10 @@
   "editProfile": "Edytuj profil",
   "adminEdit": "Edycja administratora",
   "viewUserPacks": "Pakiety użytkownika",
+  "follow": "Obserwuj",
+  "following": "Obserwujesz",
+  "followLogin": "Zaloguj się, aby obserwować",
+  "followError": "Nie udało się zaktualizować obserwowania",
   "stellarSubscriberIconTooltip": "Subskrybent TUFStellar",
   "header": {
     "aka": "znany też jako"

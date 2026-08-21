@@ -106,6 +106,20 @@
           "body": "{{song}} — {{artist}} został wybrany do Weekly Levels."
         }
       }
+    },
+    "following": {
+      "player": {
+        "pass": {
+          "title": "Nowe przejście",
+          "body": "{{playerName}} przeszedł {{song}} — {{artist}}."
+        }
+      },
+      "creator": {
+        "level": {
+          "title": "Nowy chart",
+          "body": "{{creatorName}} opublikował {{song}} — {{artist}}."
+        }
+      }
     }
   }
 }

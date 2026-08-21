@@ -13,6 +13,7 @@ import { LevelContextProvider } from "@/contexts/LevelContext";
 import { DifficultyGraph, MetaTags, CreatorStatusBadge } from "@/components/common/display";
 import { buildCreatorMeta } from '@/utils/meta';
 import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
+import ProfileFollowButton from "@/components/account/ProfileFollowButton/ProfileFollowButton";
 import BioCanvasRenderer from "@/components/account/BioCanvasRenderer/BioCanvasRenderer";
 import { TournamentPlacementsSection } from "@/components/account/TournamentPlacements";
 
@@ -258,6 +259,12 @@ const CreatorProfilePage = () => {
           statRows={collapsedCreatorStatRows}
           actions={
             <>
+              {!isOwnCreatorProfile ? (
+                <ProfileFollowButton
+                  following={profile?.isFollowing}
+                  followRoute={routes.creatorsV3.follow(creatorId)}
+                />
+              ) : null}
               {isOwnCreatorProfile ? (
                 <Link
                   className="profile-header__action-btn"

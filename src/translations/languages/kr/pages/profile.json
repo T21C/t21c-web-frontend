@@ -37,6 +37,10 @@
   "adminEdit": "관리자 편집",
   "viewUserPacks": "사용자 팩 보기",
   "linkToCreator": "제작자 프로필 보기",
+  "follow": "팔로우",
+  "following": "팔로잉",
+  "followLogin": "팔로우하려면 로그인하세요",
+  "followError": "팔로우를 업데이트하지 못했습니다",
   "stellarSubscriberIconTooltip": "TUFStellar 구독자",
   "header": {
     "aka": "일명"

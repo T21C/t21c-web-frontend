@@ -21,6 +21,7 @@ import { VirtualList, useScrollParent } from "@/components/common/VirtualList";
 import {
   EditLevelPopup,
   LevelDownloadPopup,
+  LinkedLevelsPopup,
   WebAdofaiViewerButton,
 } from "@/components/popups/Levels";
 import { RatingDetailPopup } from "@/components/popups/Rating";
@@ -33,6 +34,7 @@ import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { MetaTags, ScoreV2GraphDropdown } from "@/components/common/display";
 import { buildLevelMeta } from "@/utils/meta";
 import { StatusBanner } from "@/components/common/display/StatusBanner/StatusBanner";
+import { LinkIcon } from "@/components/common/icons/LinkIcon";
 import { 
   DownloadIcon, 
   EditIcon,
@@ -1003,6 +1005,8 @@ const LevelDetailPage = ({ mockData = null }) => {
   const [showToRatePendingDropdown, setShowToRatePendingDropdown] = useState(false);
   const [publicPackAppearances, setPublicPackAppearances] = useState([]);
   const [publicTournamentAppearances, setPublicTournamentAppearances] = useState([]);
+  const [linkedLevels, setLinkedLevels] = useState([]);
+  const [showLinkedLevelsPopup, setShowLinkedLevelsPopup] = useState(false);
   const weeklyHeaderCornerSlotRef = useRef(null);
   const packHeaderCornerSlotRef = useRef(null);
   const tournamentHeaderCornerSlotRef = useRef(null);
@@ -1032,6 +1036,8 @@ const LevelDetailPage = ({ mockData = null }) => {
     [],
   );
   const closeToRatePendingDropdown = useCallback(() => setShowToRatePendingDropdown(false), []);
+  const isSuperAdmin = hasFlag(user, permissionFlags.SUPER_ADMIN);
+  const showLevelLinksIcon = isSuperAdmin || linkedLevels.length > 0;
 
   const sortArrowDirection = useMemo(() => {
     return sortDirection === "desc" ? "up" : "down";
@@ -1794,6 +1800,30 @@ const LevelDetailPage = ({ mockData = null }) => {
   }, [effectiveId, mockData]);
 
   useEffect(() => {
+    if (!effectiveId || mockData) {
+      setLinkedLevels([]);
+      return undefined;
+    }
+
+    let cancelled = false;
+
+    api
+      .get(routes.database.levels.links(effectiveId))
+      .then((response) => {
+        if (cancelled) return;
+        const levels = Array.isArray(response.data?.levels) ? response.data.levels : [];
+        setLinkedLevels(levels);
+      })
+      .catch(() => {
+        if (!cancelled) setLinkedLevels([]);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [effectiveId, mockData]);
+
+  useEffect(() => {
     setActiveVideoIndex(0);
   }, [effectiveId, res?.level?.videoLink]);
 
@@ -2436,7 +2466,7 @@ const LevelDetailPage = ({ mockData = null }) => {
         ) : null}
       
           <div className="header">
-            <div className="left">
+            <div className={`left${showLevelLinksIcon ? ' has-level-links' : ''}`}>
 
               <div className="level-detail-header-mobile-bar">
                 <div className="level-id mobile">#{effectiveId}</div>
@@ -2846,6 +2876,30 @@ const LevelDetailPage = ({ mockData = null }) => {
                 </button>
                 <Tooltip id="like-tooltip" place="bottom" noArrow />
               </div>
+              {showLevelLinksIcon && (
+                <div className="level-detail-header-link-slot">
+                  <div
+                    className="header-corner-icon"
+                    role="button"
+                    tabIndex={0}
+                    aria-haspopup="dialog"
+                    aria-label={t('levelDetail.linkedLevels.header')}
+                    title={t('levelDetail.linkedLevels.header')}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowLinkedLevelsPopup(true);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setShowLinkedLevelsPopup(true);
+                      }
+                    }}
+                  >
+                    <LinkIcon size={20} color="#fff" />
+                  </div>
+                </div>
+              )}
             </div>
             <div className="right">
               {(() => {
@@ -3345,6 +3399,15 @@ const LevelDetailPage = ({ mockData = null }) => {
             setShowArtistPopup(false);
             setClickedArtist(null);
           }}
+        />
+      )}
+      {showLinkedLevelsPopup && (
+        <LinkedLevelsPopup
+          currentLevelId={Number(effectiveId)}
+          levels={linkedLevels}
+          canEdit={isSuperAdmin}
+          onClose={() => setShowLinkedLevelsPopup(false)}
+          onChange={setLinkedLevels}
         />
       )}
       {showDownloadPopup && (

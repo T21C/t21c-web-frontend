@@ -54,7 +54,8 @@
     "categories": {
       "submissions": "Zgłoszenia",
       "chart": "Charty",
-      "clears": "Cleary"
+      "clears": "Cleary",
+      "following": "Obserwowani"
     }
   },
   "security": {

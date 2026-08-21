@@ -169,5 +169,8 @@
   },
   "tournamentAppearance": {
     "header": "Tournament Appearances"
+  },
+  "linkedLevels": {
+    "header": "Linked levels"
   }
 } 
