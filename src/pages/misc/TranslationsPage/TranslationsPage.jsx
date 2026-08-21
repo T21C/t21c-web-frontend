@@ -9,6 +9,13 @@ import api from '@/utils/api';
 import { routes } from '@/api/routes';
 import './translationspage.css';
 
+function normalizeContributors(value) {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+  return value.filter((name) => typeof name === 'string' && name.trim()).map((name) => name.trim());
+}
+
 function formatStatus(status, t) {
   if (status === 100) {
     return {
@@ -103,6 +110,7 @@ const TranslationsPage = () => {
           display: info.display,
           folder: info.folder || code,
           status: Number(info.status) || 0,
+          contributors: normalizeContributors(info.contributors),
         }));
         list.sort((a, b) => b.status - a.status || a.display.localeCompare(b.display));
         setLanguages(list);
@@ -324,6 +332,16 @@ const TranslationsPage = () => {
                             display: lang.display,
                           })}
                     </button>
+                    {lang.contributors.length > 0 && (
+                      <div className="translations-page__language-contributors">
+                        <span className="translations-page__language-contributors-label">
+                          {t('translations.languages.contributors')}
+                        </span>
+                        <span className="translations-page__language-contributors-names">
+                          {lang.contributors.join(', ')}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 );
               })}
