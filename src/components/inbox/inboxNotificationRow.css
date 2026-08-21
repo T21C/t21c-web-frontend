@@ -46,6 +46,13 @@
   font-size: 0.85rem;
   line-height: 1.35;
   color: var(--color-gray-2);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.inbox-notification-row--compact .inbox-notification-row__body {
+  max-height: 4.5em;
+  overflow: auto;
 }
 
 .inbox-notification-row__meta {

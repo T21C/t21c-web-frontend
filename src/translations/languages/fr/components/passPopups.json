@@ -60,6 +60,9 @@
     "confirmations": {
       "delete": "Voulez-vous supprimer cette complétion ? Elle pourra être restauré plus tard.",
       "restore": "Voulez-vous restaurer cette complétion ?"
+    },
+    "reasonPrompt": {
+      "deleteTitle": "Supprimer ce pass ?"
     }
   }
 } 

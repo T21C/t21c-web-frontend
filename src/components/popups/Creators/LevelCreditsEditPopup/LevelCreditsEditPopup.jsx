@@ -35,19 +35,33 @@ import './levelcreditseditpopup.css';
 const CreditRole = {
   CHARTER: 'charter',
   VFXER: 'vfxer',
+  SPECIAL_THANKS: 'specialThanks',
+};
+
+const CREDIT_ROLES = [CreditRole.CHARTER, CreditRole.VFXER, CreditRole.SPECIAL_THANKS];
+
+const ROLE_LABELS = {
+  [CreditRole.CHARTER]: 'Charter',
+  [CreditRole.VFXER]: 'VFXer',
+  [CreditRole.SPECIAL_THANKS]: 'Special Thanks',
 };
 
 const CHARTER_ZONE_ID = 'charter-zone';
 const VFXER_ZONE_ID = 'vfxer-zone';
+const SPECIAL_THANKS_ZONE_ID = 'specialThanks-zone';
 const MAX_CREATOR_RESULTS = 100;
 
 const roleFromZoneId = (zoneId) => {
   if (zoneId === CHARTER_ZONE_ID) return CreditRole.CHARTER;
   if (zoneId === VFXER_ZONE_ID) return CreditRole.VFXER;
+  if (zoneId === SPECIAL_THANKS_ZONE_ID) return CreditRole.SPECIAL_THANKS;
   return null;
 };
 
-const isZoneId = (id) => id === CHARTER_ZONE_ID || id === VFXER_ZONE_ID;
+const isCreditRole = (role) => CREDIT_ROLES.includes(role);
+
+const isZoneId = (id) =>
+  id === CHARTER_ZONE_ID || id === VFXER_ZONE_ID || id === SPECIAL_THANKS_ZONE_ID;
 
 // A creator appears at most once per role, so role+id is a stable, unique
 // sortable id. It only changes on drop (when the role actually changes), never
@@ -60,10 +74,7 @@ const parseSortableId = (id) => {
   if (dash < 0) return null;
   const role = str.slice(0, dash);
   const creatorId = Number(str.slice(dash + 1));
-  if (
-    (role !== CreditRole.CHARTER && role !== CreditRole.VFXER) ||
-    Number.isNaN(creatorId)
-  ) {
+  if (!isCreditRole(role) || Number.isNaN(creatorId)) {
     return null;
   }
   return { role, creatorId };
@@ -109,6 +120,16 @@ const isolatedZoneCollision = (args) => {
   return zoneContainer ? [{ id: zoneId }] : [];
 };
 
+const bucketsFromList = (list) => {
+  const buckets = {};
+  for (const role of CREDIT_ROLES) {
+    buckets[role] = list.filter((c) => c.role === role);
+  }
+  return buckets;
+};
+
+const flattenBuckets = (buckets) => CREDIT_ROLES.flatMap((role) => buckets[role]);
+
 // The only place the arrangement mutates. Runs once on drop, so nothing reflows
 // during the drag (the source of the previous jitter + scroll leak).
 const computeDrop = (prev, event) => {
@@ -122,11 +143,10 @@ const computeDrop = (prev, event) => {
     : parseSortableId(over.id)?.role ?? null;
   if (!destRole) return { next: prev, duplicate: false };
 
-  let charters = prev.filter((c) => c.role === CreditRole.CHARTER);
-  let vfxers = prev.filter((c) => c.role === CreditRole.VFXER);
+  const buckets = bucketsFromList(prev);
 
   if (sourceRole === destRole) {
-    const list = sourceRole === CreditRole.CHARTER ? [...charters] : [...vfxers];
+    const list = [...buckets[sourceRole]];
     const from = list.findIndex((c) => getSortableId(c) === String(active.id));
     if (from < 0) return { next: prev, duplicate: false };
 
@@ -135,12 +155,10 @@ const computeDrop = (prev, event) => {
       : list.findIndex((c) => getSortableId(c) === String(over.id));
     if (to < 0 || to === from) return { next: prev, duplicate: false };
 
-    const reordered = arrayMove(list, from, to);
-    if (sourceRole === CreditRole.CHARTER) charters = reordered;
-    else vfxers = reordered;
+    buckets[sourceRole] = arrayMove(list, from, to);
   } else {
-    const source = sourceRole === CreditRole.CHARTER ? [...charters] : [...vfxers];
-    const dest = destRole === CreditRole.CHARTER ? [...charters] : [...vfxers];
+    const source = [...buckets[sourceRole]];
+    const dest = [...buckets[destRole]];
 
     const from = source.findIndex((c) => getSortableId(c) === String(active.id));
     if (from < 0) return { next: prev, duplicate: false };
@@ -168,14 +186,11 @@ const computeDrop = (prev, event) => {
     }
 
     dest.splice(insertAt, 0, { ...moved, role: destRole });
-
-    if (sourceRole === CreditRole.CHARTER) charters = source;
-    else vfxers = source;
-    if (destRole === CreditRole.CHARTER) charters = dest;
-    else vfxers = dest;
+    buckets[sourceRole] = source;
+    buckets[destRole] = dest;
   }
 
-  return { next: [...charters, ...vfxers], duplicate: false };
+  return { next: flattenBuckets(buckets), duplicate: false };
 };
 
 const buildPendingTeamFromLevel = (level) =>
@@ -529,11 +544,10 @@ export const LevelCreditsEditPopup = ({
       .filter((c) => c.id === creator.id)
       .map((c) => c.role);
 
-    let assignedRole = CreditRole.CHARTER;
-    if (existingCreatorRoles.includes(CreditRole.CHARTER)) {
-      assignedRole = CreditRole.VFXER;
-    } else if (existingCreatorRoles.includes(CreditRole.VFXER)) {
-      assignedRole = CreditRole.CHARTER;
+    const assignedRole = CREDIT_ROLES.find((role) => !existingCreatorRoles.includes(role));
+    if (!assignedRole) {
+      toast.error('Creator already has all roles');
+      return;
     }
 
     setPendingCreators((prev) => [
@@ -594,7 +608,7 @@ export const LevelCreditsEditPopup = ({
         ? roleFromZoneId(over.id)
         : parseSortableId(over.id)?.role;
       toast.error(
-        `Creator already exists as ${destRole === CreditRole.CHARTER ? 'Charter' : 'VFXer'}`,
+        `Creator already exists as ${ROLE_LABELS[destRole] || destRole}`,
       );
       return;
     }
@@ -655,22 +669,20 @@ export const LevelCreditsEditPopup = ({
 
   const charterCredits = pendingCreators.filter((c) => c.role === CreditRole.CHARTER);
   const vfxerCredits = pendingCreators.filter((c) => c.role === CreditRole.VFXER);
+  const specialThanksCredits = pendingCreators.filter((c) => c.role === CreditRole.SPECIAL_THANKS);
 
   // Block dropping a creator into a role it already holds. State is stable
   // during the drag, so these never flip mid-gesture.
-  const charterDropDisabled =
+  const isDropDisabledForRole = (role) =>
     !!draggingInfo &&
-    draggingInfo.sourceRole !== CreditRole.CHARTER &&
+    draggingInfo.sourceRole !== role &&
     pendingCreators.some(
-      (c) => c.role === CreditRole.CHARTER && c.id === draggingInfo.creatorId,
+      (c) => c.role === role && c.id === draggingInfo.creatorId,
     );
 
-  const vfxerDropDisabled =
-    !!draggingInfo &&
-    draggingInfo.sourceRole !== CreditRole.VFXER &&
-    pendingCreators.some(
-      (c) => c.role === CreditRole.VFXER && c.id === draggingInfo.creatorId,
-    );
+  const charterDropDisabled = isDropDisabledForRole(CreditRole.CHARTER);
+  const vfxerDropDisabled = isDropDisabledForRole(CreditRole.VFXER);
+  const specialThanksDropDisabled = isDropDisabledForRole(CreditRole.SPECIAL_THANKS);
 
   const activeCreator = useMemo(() => {
     if (!activeId) return null;
@@ -779,6 +791,18 @@ export const LevelCreditsEditPopup = ({
                     title="VFXers"
                     zoneModifier="vfxer"
                     isDropDisabled={vfxerDropDisabled}
+                    onToggleOwner={handleToggleOwner}
+                    onRemove={handleRemoveCreator}
+                    searchPlaceholder={t('levelPopups.creditsEdit.searchPlaceholder', { ns: 'components' })}
+                    noResultsLabel={t('levelPopups.creditsEdit.noResults', { ns: 'components' })}
+                  />
+                  <CreditRoleZone
+                    zoneId={SPECIAL_THANKS_ZONE_ID}
+                    role={CreditRole.SPECIAL_THANKS}
+                    credits={specialThanksCredits}
+                    title="Special Thanks"
+                    zoneModifier="specialThanks"
+                    isDropDisabled={specialThanksDropDisabled}
                     onToggleOwner={handleToggleOwner}
                     onRemove={handleRemoveCreator}
                     searchPlaceholder={t('levelPopups.creditsEdit.searchPlaceholder', { ns: 'components' })}

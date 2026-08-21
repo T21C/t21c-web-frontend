@@ -15,6 +15,7 @@
     "dlLinksOr": "或",
     "charters": "采音师",
     "vfxers": "特效师",
+    "specialThanks": "特别感谢（选填）",
     "artists": "曲师",
     "levelZip": "关卡压缩文件",
     "evidence": "凭证",
@@ -35,6 +36,7 @@
   "buttons": {
     "addCharter": "添加采音师",
     "addVfxer": "添加特效师",
+    "addSpecialThanks": "添加特别感谢",
     "addArtist": "添加曲师",
     "removeCreator": "删除",
     "uploadZip": "上传压缩文件",
@@ -72,6 +74,7 @@
   "roles": {
     "charters": "采音师",
     "vfxers": "特效师",
+    "specialThanks": "特别感谢",
     "teams": "团队"
   },
   "badges": {

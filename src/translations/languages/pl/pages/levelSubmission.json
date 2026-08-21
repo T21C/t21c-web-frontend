@@ -13,6 +13,7 @@
     "dlLink": "Link do pobrania",
     "workshop": "Link do Warsztatu Steam",
     "dlLinksOr": "lub",
+    "specialThanks": "Specjalne podziękowania (opcj.)",
     "notes": "Notatki"
   },
   "videoInfo": {
@@ -26,6 +27,9 @@
   "tooltip": "Nieznany poziom trudności, upewnij się, że będzie on czytelny dla manager'ów. Przykłady poprawnego zapisu: G13; P7~P13; 21.1+; 19~20.0+",
   "submit": "Prześlij",
   "submitWait": "...",
+  "buttons": {
+    "addSpecialThanks": "Dodaj specjalne podziękowania"
+  },
   "alert": {
     "success": "Pomyślnie przesłano poziom!",
     "error": "Błąd: ",
@@ -47,5 +51,8 @@
   },
   "placeholders": {
     "notes": "Opcjonalne notatki dla managerów (szczegóły chartu, kredyty itd.)"
+  },
+  "roles": {
+    "specialThanks": "Specjalne podziękowania"
   }
 } 

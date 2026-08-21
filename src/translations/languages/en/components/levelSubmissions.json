@@ -24,6 +24,7 @@
     },
     "team": "Team:",
     "vfxer": "VFXer:",
+    "specialThanks": "Special Thanks:",
     "submitter": "Submitter:",
     "submitterRecordTooltip": "{{accepted}} accepted / {{declined}} declined",
     "evidence": "Evidence:",
@@ -44,12 +45,17 @@
     "decline": "Decline",
     "addCharter": "Add Charter",
     "addVfxer": "Add VFX-er",
+    "addSpecialThanks": "Add Special Thanks",
     "remove": "Remove",
     "searchCreator": "Search",
     "createCreator": "Create New",
     "assignCreator": "Assign Existing",
     "addTeam": "Add Team",
     "addCreator": "Add Creator"
+  },
+  "declinePrompt": {
+    "title": "Decline this chart?",
+    "message": "The submitter will be notified. You can optionally explain why."
   },
   "labels": {
     "levelName": "Level",

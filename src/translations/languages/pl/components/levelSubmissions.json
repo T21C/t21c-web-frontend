@@ -22,6 +22,7 @@
     },
     "team": "Drużyna:",
     "vfxer": "VFXer(zy):",
+    "specialThanks": "Specjalne podziękowania:",
     "submitter": "Zgłaszający:",
     "submitterRecordTooltip": "{{accepted}} zaakceptowanych / {{declined}} odrzuconych",
     "evidence": "Dowody:",
@@ -42,12 +43,17 @@
     "decline": "Odrzuć",
     "addCharter": "Dodaj chartera",
     "addVfxer": "Dodaj VFX-era",
+    "addSpecialThanks": "Dodaj specjalne podziękowania",
     "remove": "Usuń",
     "searchCreator": "Szukaj",
     "createCreator": "Utwórz nowego",
     "assignCreator": "Przypisz istniejącego",
     "addTeam": "Dodaj drużynę",
     "addCreator": "Dodaj twórcę"
+  },
+  "declinePrompt": {
+    "title": "Odrzucić ten chart?",
+    "message": "Zgłaszający zostanie powiadomiony. Możesz opcjonalnie podać powód."
   },
   "labels": {
     "levelName": "Poziom",

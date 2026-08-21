@@ -50,7 +50,8 @@
       "implemented": "Implemented",
       "partial": "{{percent}}% Implemented",
       "pending": "Not Implemented"
-    }
+    },
+    "contributors": "Contributors:"
   },
   "results": {
     "valid": "All translations are valid!",

@@ -24,6 +24,7 @@
     "public": "公开",
     "hidden": "隐藏"
   },
+  "reason": "原因：{{reason}}",
   "types": {
     "pass": {
       "submission": {

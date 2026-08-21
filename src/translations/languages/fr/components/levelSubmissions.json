@@ -22,6 +22,7 @@
     },
     "team": "Équipe:",
     "vfxer": "Effecteur :",
+    "specialThanks": "Remerciements :",
     "submitter": "Soumetteur :",
     "submitterRecordTooltip": "{{accepted}} acceptées / {{declined}} refusées",
     "evidence": "Preuves :",
@@ -42,12 +43,17 @@
     "decline": "Refuser",
     "addCharter": "Ajouter un charteur",
     "addVfxer": "Ajouter un effecteur",
+    "addSpecialThanks": "Ajouter des remerciements",
     "remove": "Retirer",
     "searchCreator": "Rechercher",
     "createCreator": "Créer nouveau",
     "assignCreator": "Assigner existant",
     "addTeam": "Ajouter une équipe",
     "addCreator": "Ajouter un créateur"
+  },
+  "declinePrompt": {
+    "title": "Refuser ce chart ?",
+    "message": "Le soumetteur sera notifié. Vous pouvez optionnellement expliquer pourquoi."
   },
   "labels": {
     "levelName": "Niveau",

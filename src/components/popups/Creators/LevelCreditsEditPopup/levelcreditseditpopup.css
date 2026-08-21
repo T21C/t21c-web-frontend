@@ -142,6 +142,20 @@
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--btn-admin-purple) 35%, transparent);
 }
 
+.level-credits-edit-popup-container .level-credits-edit-popup__credit-zone--specialThanks {
+  border-color: color-mix(in srgb, var(--btn-warning) 45%, var(--btn-neutral-disabled-fill));
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__credit-zone--specialThanks .level-credits-edit-popup__zone-title {
+  color: var(--btn-warning);
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__credit-zone.is-drag-over.level-credits-edit-popup__credit-zone--specialThanks {
+  border-color: var(--btn-warning);
+  background-color: color-mix(in srgb, var(--btn-warning) 14%, rgba(0, 0, 0, 0.12));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--btn-warning) 35%, transparent);
+}
+
 .level-credits-edit-popup-container .level-credits-edit-popup__credit-zone.is-drop-disabled {
   opacity: 0.45;
   border-color: var(--btn-neutral-muted);

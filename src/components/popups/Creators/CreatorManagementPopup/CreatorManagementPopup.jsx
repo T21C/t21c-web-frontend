@@ -21,13 +21,20 @@ import PlayerManagementPanel from './PlayerManagementPanel';
 const CreditRole = {
   CHARTER: 'charter',
   VFXER: 'vfxer',
+  SPECIAL_THANKS: 'specialThanks',
+};
+
+const ROLE_LABELS = {
+  charter: 'Charter',
+  vfxer: 'Vfxer',
+  specialThanks: 'Special Thanks',
 };
 
 const VERIFICATION_STATUSES = ['declined', 'pending', 'conditional', 'allowed'];
 
-const roleOptions = Object.entries(CreditRole).map(([key, value]) => ({
+const roleOptions = Object.entries(CreditRole).map(([, value]) => ({
   value,
-  label: value.charAt(0).toUpperCase() + value.slice(1),
+  label: ROLE_LABELS[value] || value.charAt(0).toUpperCase() + value.slice(1),
 }));
 
 const TABS = [

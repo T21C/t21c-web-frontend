@@ -60,6 +60,9 @@
     "confirmations": {
       "delete": "Czy chcesz usunąć to przejście? Tej czynności nie można cofnąć.",
       "restore": "Czy chcesz odzyskać do przejście?"
+    },
+    "reasonPrompt": {
+      "deleteTitle": "Usunąć ten pass?"
     }
   }
 } 

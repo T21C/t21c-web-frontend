@@ -2102,6 +2102,10 @@
   min-width: 0;
 }
 
+.level-detail-popup .popup-content .popup-body .credits-column--thanks {
+  grid-column: 1 / -1;
+}
+
 .level-detail-popup .popup-content .popup-body .role-header {
   font-weight: bold;
   color: var(--primary-text);

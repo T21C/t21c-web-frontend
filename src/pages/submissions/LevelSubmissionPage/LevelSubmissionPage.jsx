@@ -156,6 +156,7 @@ const LevelSubmissionPage = () => {
   // State for multiple creators
   const [charters, setCharters] = useState([{ name: '', id: null, isNewRequest: false }]);
   const [vfxers, setVfxers] = useState([{ name: '', id: null, isNewRequest: false }]);
+  const [specialThanks, setSpecialThanks] = useState([{ name: '', id: null, isNewRequest: false }]);
   const [team, setTeam] = useState({ name: '', id: null, isNewRequest: false });
 
   // State for song/artist selection
@@ -229,6 +230,15 @@ const LevelSubmissionPage = () => {
       }
     });
 
+    specialThanks.forEach(credit => {
+      if (credit.name && credit.isNewRequest) {
+        newPendingProfiles.push({
+          type: 'specialThanks',
+          name: credit.name
+        });
+      }
+    });
+
     // Add team profile if needed
     if (team.name && team.isNewRequest) {
       newPendingProfiles.push({
@@ -251,7 +261,7 @@ const LevelSubmissionPage = () => {
 
   useEffect(() => {
     validateForm();
-  }, [form, submitAttempt, charters, vfxers, team, selectedSong, artists]);
+  }, [form, submitAttempt, charters, vfxers, specialThanks, team, selectedSong, artists]);
 
   useEffect(() => {
     const videoLink = form.videoLink?.trim?.() ?? "";
@@ -405,6 +415,14 @@ const LevelSubmissionPage = () => {
             creatorName: vfxer.name,
             creatorId: vfxer.id,
             isNewRequest: vfxer.isNewRequest
+          })),
+        ...specialThanks
+          .filter(credit => credit.name)
+          .map(credit => ({
+            role: 'specialThanks',
+            creatorName: credit.name,
+            creatorId: credit.id,
+            isNewRequest: credit.isNewRequest
           }))
       ];
 
@@ -634,6 +652,32 @@ const LevelSubmissionPage = () => {
     }
     setVfxers(prev => prev.map((vfxer, i) => 
       i === index ? (value || { name: '', id: null, isNewRequest: false }) : vfxer
+    ));
+  };
+
+  const addSpecialThanks = () => {
+    if (!Array.isArray(specialThanks)) {
+      setSpecialThanks([{ name: '', id: null, isNewRequest: false }]);
+      return;
+    }
+    setSpecialThanks([...specialThanks, { name: '', id: null, isNewRequest: false }]);
+  };
+
+  const removeSpecialThanks = (index) => {
+    if (!Array.isArray(specialThanks)) {
+      setSpecialThanks([{ name: '', id: null, isNewRequest: false }]);
+      return;
+    }
+    setSpecialThanks(specialThanks.filter((_, i) => i !== index));
+  };
+
+  const handleSpecialThanksChange = (index, value) => {
+    if (!Array.isArray(specialThanks)) {
+      setSpecialThanks([{ name: '', id: null, isNewRequest: false }]);
+      return;
+    }
+    setSpecialThanks(prev => prev.map((credit, i) =>
+      i === index ? (value || { name: '', id: null, isNewRequest: false }) : credit
     ));
   };
 
@@ -1400,6 +1444,39 @@ const LevelSubmissionPage = () => {
               </button>
             </div>
 
+            <div className="creators-section">
+              <h3>{t('levelSubmission.submInfo.specialThanks')}</h3>
+              {Array.isArray(specialThanks) && specialThanks.map((credit, index) => (
+                <div key={index} className="creator-row">
+                  <ProfileSelector
+                    key={`specialThanks-${formStateKey}`}
+                    type="charter"
+                    value={credit || { name: '', id: null, isNewRequest: false }}
+                    onChange={(value) => handleSpecialThanksChange(index, value)}
+                    allowNewRequest
+                    required={false}
+                    placeholder={t('levelSubmission.submInfo.specialThanks')}
+                  />
+                  {index > 0 && (
+                    <button 
+                      className="creator-action-btn remove-creator-btn btn-fill-danger"
+                      onClick={() => removeSpecialThanks(index)}
+                      type="button"
+                    >
+                      🗑️
+                    </button>
+                  )}
+                </div>
+              ))}
+              <button 
+                className="creator-action-btn add-creator-btn btn-fill-neutral"
+                onClick={addSpecialThanks}
+                type="button"
+              >
+                ➕ {t('levelSubmission.buttons.addSpecialThanks')}
+              </button>
+            </div>
+
             <div className="notes-section">
               <h3>{t('levelSubmission.submInfo.notes')}</h3>
               <textarea
@@ -1420,18 +1497,16 @@ const LevelSubmissionPage = () => {
                 <h3>{t('levelSubmission.warnings.pendingProfiles')}</h3>
                 
                 {/* Group profiles by type */}
-                {['charter', 'vfxer', 'team'].map(type => {
-                  const profiles = pendingProfiles.filter(p => 
-                    type === 'charter' ? p.type === 'charter' :
-                    type === 'vfxer' ? p.type === 'vfxer' :
-                    p.type === 'team'
-                  );
+                {['charter', 'vfxer', 'specialThanks', 'team'].map(type => {
+                  const profiles = pendingProfiles.filter(p => p.type === type);
                   
                   if (profiles.length === 0) return null;
+
+                  const headingKey = type === 'specialThanks' ? 'specialThanks' : `${type}s`;
                   
                   return (
                     <div key={type} className="profile-group">
-                      <h4>{t(`levelSubmission.roles.${type}s`)}</h4>
+                      <h4>{t(`levelSubmission.roles.${headingKey}`)}</h4>
                       {profiles.map((profile, index) => (
                         <div key={index} className="profile-item">
                           <span>{profile.name}</span>

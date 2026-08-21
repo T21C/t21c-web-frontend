@@ -70,7 +70,8 @@
     "creator": "제작자",
     "roles": {
       "charter": "채보",
-      "vfxer": "이펙트"
+      "vfxer": "이펙트",
+      "specialThanks": "특별 감사"
     },
     "difficulty": "난이도",
     "baseScore": "기반 점수",

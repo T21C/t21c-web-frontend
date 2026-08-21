@@ -27,6 +27,8 @@ export const ProfileCreationModal = ({ profiles, onComplete, onCancel }) => {
     switch (type) {
       case 'charter':
       case 'vfx':
+      case 'vfxer':
+      case 'specialThanks':
         return routes.database.players.create();
       case 'team':
         return routes.teamsV3.root();
@@ -95,7 +97,7 @@ export const ProfileCreationModal = ({ profiles, onComplete, onCancel }) => {
             <p className="profile-name">{profile.name}</p>
           </div>
 
-          {(profile.type === 'charter' || profile.type === 'vfx') && (
+          {(profile.type === 'charter' || profile.type === 'vfx' || profile.type === 'vfxer' || profile.type === 'specialThanks') && (
             <>
               <div className="form-group">
                 <label htmlFor="discordId">{t('profileCreationModal.fields.discordId')}</label>
@@ -166,7 +168,7 @@ export const ProfileCreationModal = ({ profiles, onComplete, onCancel }) => {
 
 ProfileCreationModal.propTypes = {
   profiles: PropTypes.arrayOf(PropTypes.shape({
-    type: PropTypes.oneOf(['charter', 'vfx', 'team']).isRequired,
+    type: PropTypes.oneOf(['charter', 'vfx', 'vfxer', 'specialThanks', 'team']).isRequired,
     name: PropTypes.string.isRequired
   })).isRequired,
   onComplete: PropTypes.func.isRequired,

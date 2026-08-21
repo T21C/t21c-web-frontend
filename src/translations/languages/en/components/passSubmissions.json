@@ -56,6 +56,10 @@
     "autoAllow": "Auto-Allow",
     "autoReject": "Auto-Reject"
   },
+  "declinePrompt": {
+    "title": "Decline this pass?",
+    "message": "The submitter will be notified. You can optionally explain why."
+  },
   "errors": {
     "noPlayer": "Please assign a player before approving",
     "playerAssignment": "Failed to assign player",

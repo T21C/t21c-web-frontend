@@ -15,6 +15,7 @@
     "dlLinksOr": "or",
     "charters": "Charters",
     "vfxers": "VFX-ers",
+    "specialThanks": "Special Thanks (optional)",
     "artists": "Artists",
     "levelZip": "Level Zip",
     "evidence": "Evidence",
@@ -35,6 +36,7 @@
   "buttons": {
     "addCharter": "Add Charter",
     "addVfxer": "Add VFX-er",
+    "addSpecialThanks": "Add Special Thanks",
     "addArtist": "Add Artist",
     "removeCreator": "Remove",
     "uploadZip": "Upload Zip",
@@ -72,6 +74,7 @@
   "roles": {
     "charters": "Charters",
     "vfxers": "VFX-ers",
+    "specialThanks": "Special Thanks",
     "teams": "Teams"
   },
   "badges": {

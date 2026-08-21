@@ -2610,7 +2610,7 @@
   border-radius: 50%;
   border: 2px solid var(--color-white);
   background: conic-gradient(
-    from -90deg,
+    from 0deg,
     var(--color-white) calc(var(--hold-progress, 0) * 1turn),
     transparent 0
   );

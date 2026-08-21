@@ -56,6 +56,10 @@
     "autoAllow": "自动允许",
     "autoReject": "自动拒绝"
   },
+  "declinePrompt": {
+    "title": "拒绝此通关记录？",
+    "message": "提交者会收到通知。你可以选择说明原因。"
+  },
   "errors": {
     "noPlayer": "请在通过前分配一名玩家",
     "playerAssignment": "分配玩家失败",

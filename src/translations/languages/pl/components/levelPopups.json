@@ -57,6 +57,10 @@
       "restore": "Czy chcesz odzyskać ten poziom?",
       "permanentDelete": "Trwale usunąć ten poziom? Tego nie da się cofnąć. Wszystkie passy, oceny i pliki (pobieranie, miniatury kuracji) zostaną usunięte."
     },
+    "reasonPrompt": {
+      "deleteTitle": "Usunąć ten poziom?",
+      "hideTitle": "Ukryć ten poziom?"
+    },
     "errors": {
       "update": "Nie udało się zaaktualizować poziomu",
       "delete": "Nie udało się usunąć poziomu",

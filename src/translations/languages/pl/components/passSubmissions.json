@@ -57,6 +57,10 @@
     "autoAllow": "Automatycznie akceptuj",
     "autoReject": "Automatycznie odrzucaj"
   },
+  "declinePrompt": {
+    "title": "Odrzucić ten pass?",
+    "message": "Zgłaszający zostanie powiadomiony. Możesz opcjonalnie podać powód."
+  },
   "errors": {
     "noPlayer": "Przypisz gracza przed zatwierdzeniem",
     "playerAssignment": "Nie udało się przypisać gracza",

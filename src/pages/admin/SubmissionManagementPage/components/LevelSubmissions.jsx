@@ -16,6 +16,7 @@ import { ArtistSelectorPopup } from '@/components/popups/Artists';
 import { EntityActionPopup } from '@/components/popups/Entities';
 import { GalleryInspectPopup } from '@/components/popups/Evidence';
 import { CreatorAssignmentPopup } from '@/components/popups/Creators';
+import { AdminReasonPrompt } from '@/components/common/AdminReasonPrompt';
 import { toast } from "react-hot-toast";
 import { ServerCloudIcon, WarningIcon, EditIcon, TrashIcon, PlusIcon } from "@/components/common/icons";
 import { Tooltip } from "react-tooltip";
@@ -68,6 +69,7 @@ const LevelSubmissions = () => {
   const [editingSuffix, setEditingSuffix] = useState({});
   const [suffixValues, setSuffixValues] = useState({});
   const [showCreatorAssignmentModal, setShowCreatorAssignmentModal] = useState({});
+  const [declinePromptId, setDeclinePromptId] = useState(null);
 
   useEffect(() => {
     fetchPendingSubmissions();
@@ -167,7 +169,7 @@ const LevelSubmissions = () => {
     }
   };
 
-  const handleSubmission = async (submissionId, action) => {
+  const handleSubmission = async (submissionId, action, reason = '') => {
     try {
       const submission = submissions.find(s => s.id === submissionId);
       if (!submission) return;
@@ -212,7 +214,10 @@ const LevelSubmissions = () => {
       
       setCardPhases((prev) => ({ ...prev, [submissionId]: 'queued' }));
 
-      const response = await api.put(`${routes.admin.submissions.root()}/levels/${submissionId}/${action}`);
+      const response = await api.put(
+        `${routes.admin.submissions.root()}/levels/${submissionId}/${action}`,
+        action === 'decline' && reason ? { reason } : {},
+      );
 
       if (response.status === 202) {
         return;
@@ -1281,21 +1286,27 @@ const LevelSubmissions = () => {
                       return acc;
                     }, {});
 
-                    return Object.entries(creatorsByRole || {}).map(([role, creators]) => (
+                    const addButtonKey = {
+                      charter: 'addCharter',
+                      vfxer: 'addVfxer',
+                      specialThanks: 'addSpecialThanks',
+                    };
+
+                    return ['charter', 'vfxer', 'specialThanks'].map((role) => {
+                      const creators = creatorsByRole?.[role] || [];
+                      return (
                       <div key={role} className="creator-group">
                         <div className="creator-group-header">
                           <span>{t(`levelSubmissions.details.${role}`)}</span>
-                          {role !== 'team' && (
-                            <button
-                              type="button"
-                              className="add-creator-button add-creator-button--icon"
-                              onClick={() => handleAddCreator(submission.id, role)}
-                              title={t(`levelSubmissions.buttons.add${role === 'vfxer' ? 'Vfxer' : 'Charter'}`)}
-                              aria-label={t(`levelSubmissions.buttons.add${role === 'vfxer' ? 'Vfxer' : 'Charter'}`)}
-                            >
-                              <PlusIcon color="#fff" size="18px" />
-                            </button>
-                          )}
+                          <button
+                            type="button"
+                            className="add-creator-button add-creator-button--icon"
+                            onClick={() => handleAddCreator(submission.id, role)}
+                            title={t(`levelSubmissions.buttons.${addButtonKey[role]}`)}
+                            aria-label={t(`levelSubmissions.buttons.${addButtonKey[role]}`)}
+                          >
+                            <PlusIcon color="#fff" size="18px" />
+                          </button>
                         </div>
                         <div className="creator-list">
                           {creators.map((request, index) => (
@@ -1314,10 +1325,8 @@ const LevelSubmissions = () => {
                                 )}
                               </span>
                               <div className="creator-actions">
-                                {/* Show remove button for vfxers or if there's more than one charter */}
-                                {(request.role === 'vfxer' || 
-                                  (request.role === 'charter' && 
-                                    creators.filter(r => r.role === 'charter').length > 1)) && (
+                                {(request.role !== 'charter' ||
+                                  creators.filter(r => r.role === 'charter').length > 1) && (
                                   <button
                                     type="button"
                                     className="remove-creator-button"
@@ -1342,7 +1351,8 @@ const LevelSubmissions = () => {
                           ))}
                         </div>
                       </div>
-                    ));
+                    );
+                    });
                   })()}
 
                   {/* Team Request */}
@@ -1422,7 +1432,7 @@ const LevelSubmissions = () => {
                       {t('levelSubmissions.buttons.allow')}
                     </button>
                     <button 
-                      onClick={() => handleSubmission(submission.id, 'decline')}
+                      onClick={() => setDeclinePromptId(submission.id)}
                       className="decline-btn"
                       disabled={disabledButtons[submission.id]}
                     >
@@ -1580,6 +1590,21 @@ const LevelSubmissions = () => {
           showTitleHeader={true}
         />
       )}
+
+      <AdminReasonPrompt
+        isOpen={declinePromptId != null}
+        title={t('levelSubmissions.declinePrompt.title')}
+        message={t('levelSubmissions.declinePrompt.message')}
+        confirmLabel={t('levelSubmissions.buttons.decline')}
+        onCancel={() => setDeclinePromptId(null)}
+        onConfirm={(reason) => {
+          const id = declinePromptId;
+          setDeclinePromptId(null);
+          if (id != null) {
+            void handleSubmission(id, 'decline', reason);
+          }
+        }}
+      />
     </>
   );
 };

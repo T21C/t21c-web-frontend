@@ -56,6 +56,10 @@
       "restore": "Voulez-vous restaurer ce niveau ?",
       "permanentDelete": "Supprimer définitivement ce niveau ? Action irréversible. Toutes les passes, notes et fichiers stockés (téléchargement et images de curation) seront supprimés."
     },
+    "reasonPrompt": {
+      "deleteTitle": "Supprimer ce niveau ?",
+      "hideTitle": "Cacher ce niveau ?"
+    },
     "errors": {
       "update": "Échec de la mise à jour du niveau",
       "delete": "Échec de la suppression",

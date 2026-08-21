@@ -68,6 +68,10 @@
       "restore": "确认恢复本关卡？",
       "permanentDelete": "确认永久删除本关卡？此操作无法撤销。所有通关记录、评级及现有文件（下载与精选预览图等）都将被删除。"
     },
+    "reasonPrompt": {
+      "deleteTitle": "删除此关卡？",
+      "hideTitle": "隐藏此关卡？"
+    },
     "errors": {
       "update": "更新关卡失败",
       "delete": "软删除失败",

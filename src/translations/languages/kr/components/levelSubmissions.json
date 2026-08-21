@@ -22,6 +22,7 @@
     },
     "team": "팀:",
     "vfxer": "이펙터:",
+    "specialThanks": "특별 감사:",
     "submitter": "제출자:",
     "submitterRecordTooltip": "{{accepted}} 승인 / {{declined}} 거절",
     "evidence": "증거:",
@@ -42,12 +43,17 @@
     "decline": "거부",
     "addCharter": "채보자 추가",
     "addVfxer": "이펙터 추가",
+    "addSpecialThanks": "특별 감사 추가",
     "remove": "제거",
     "searchCreator": "검색",
     "createCreator": "새로 만들기",
     "assignCreator": "기존 제작자 지정",
     "addTeam": "팀 추가",
     "addCreator": "제작자 추가"
+  },
+  "declinePrompt": {
+    "title": "이 차트를 거절할까요?",
+    "message": "제출자에게 알림이 갑니다. 원하시면 사유를 적을 수 있습니다."
   },
   "labels": {
     "levelName": "레벨",
