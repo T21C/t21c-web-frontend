@@ -10,6 +10,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { hasFlag, isBanExpired, permissionFlags, setUserPermission } from '@/utils/UserPermissions';
 import api from '@/utils/api';
 import { CreatorAssignmentPanel } from '@/components/popups/Creators/CreatorAssignmentPopup/CreatorAssignmentPanel';
+import { userAvatarDisplayUrl } from '@/utils/playerAvatarDisplay';
 import AliasListEditor from './AliasListEditor';
 import '@/components/popups/Creators/CreatorAssignmentPopup/creatorAssignmentPopup.css';
 
@@ -42,6 +43,47 @@ const playerBanIsActive = (playerRecord) => {
   return !isBanExpired(playerRecord?.bannedUntil);
 };
 
+const toPlayerMergeSearchQuery = (raw) => {
+  const trimmed = String(raw || '').trim();
+  if (/^[0-9]+$/.test(trimmed)) return `pid:${trimmed}`;
+  return trimmed;
+};
+
+const playerDisplayName = (subject) => subject?.user?.nickname || subject?.name || '';
+
+const MergePlayerIdentity = ({ subject, tt, showOpenProfile = false }) => {
+  const displayName = playerDisplayName(subject);
+  const handle = subject?.user?.username ? `@${subject.user.username}` : null;
+  const country = subject?.country && subject.country !== 'XX' ? subject.country : null;
+  return (
+    <div className="merge-compare-identity">
+      <img src={userAvatarDisplayUrl(subject) || ''} alt="" className="player-pfp" />
+      <div className="merge-compare-meta">
+        <span className="player-name">{displayName}</span>
+        {handle ? <span className="player-handle">{handle}</span> : null}
+        {country ? <span className="player-handle">{country}</span> : null}
+        <span className="player-id">{tt('player.merge.idLabel', { id: subject?.id })}</span>
+        {showOpenProfile && subject?.id ? (
+          <a
+            className="merge-profile-link"
+            href={`/profile/${subject.id}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {tt('player.merge.openProfile')}
+          </a>
+        ) : null}
+      </div>
+    </div>
+  );
+};
+
+MergePlayerIdentity.propTypes = {
+  subject: PropTypes.object,
+  tt: PropTypes.func.isRequired,
+  showOpenProfile: PropTypes.bool,
+};
+
 const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedUpdate }) => {
   const { t } = useTranslation(['components', 'common']);
   const tt = (key, opts) => t(`creatorManagementPopup.${key}`, opts);
@@ -69,8 +111,11 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
   const [pendingBanState, setPendingBanState] = useState(false);
   const [pendingPauseState, setPendingPauseState] = useState(false);
   const [pendingRatingBanState, setPendingRatingBanState] = useState(false);
-  const [targetPlayerId, setTargetPlayerId] = useState('');
-  const [showMergeInput, setShowMergeInput] = useState(false);
+  const [mergeSearch, setMergeSearch] = useState('');
+  const [mergeResults, setMergeResults] = useState([]);
+  const [mergeSearchLoading, setMergeSearchLoading] = useState(false);
+  const [mergeTarget, setMergeTarget] = useState(null);
+  const [showMergeConfirm, setShowMergeConfirm] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -149,6 +194,47 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
       setMode(visibleTabs[0]?.id || 'update');
     }
   }, [mode, visibleTabs]);
+
+  useEffect(() => {
+    if (mode === 'merge') return;
+    setMergeSearch('');
+    setMergeResults([]);
+    setMergeSearchLoading(false);
+    setMergeTarget(null);
+    setShowMergeConfirm(false);
+  }, [mode]);
+
+  useEffect(() => {
+    if (mode !== 'merge' || mergeTarget) return;
+    const trimmed = mergeSearch.trim();
+    if (trimmed.length < 1) {
+      setMergeResults([]);
+      setMergeSearchLoading(false);
+      return;
+    }
+    const query = toPlayerMergeSearchQuery(trimmed);
+    let cancelled = false;
+    setMergeSearchLoading(true);
+    const timer = setTimeout(async () => {
+      try {
+        const res = await api.get(
+          `${routes.playersV3.search()}?query=${encodeURIComponent(query)}`,
+        );
+        if (cancelled) return;
+        const body = res.data;
+        const results = Array.isArray(body) ? body : (body?.results ?? []);
+        setMergeResults(results.filter((row) => row.id !== player?.id));
+      } catch {
+        if (!cancelled) setMergeResults([]);
+      } finally {
+        if (!cancelled) setMergeSearchLoading(false);
+      }
+    }, 300);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [mode, mergeSearch, mergeTarget, player?.id]);
 
   const originalAliases = useMemo(
     () => player?.playerAliases?.map((a) => a.name) ?? [],
@@ -355,19 +441,29 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
   };
 
   const handleMergePlayer = async () => {
-    if (!targetPlayerId.trim()) return;
+    if (!mergeTarget?.id) return;
+    if (mergeTarget.id === player.id) {
+      setError(tt('player.errors.mergeSelf'));
+      setShowMergeConfirm(false);
+      return;
+    }
     setIsLoading(true);
     clearMessages();
     try {
-      await api.post(`${routes.database.players.root()}/${player.id}/merge`, {
-        targetPlayerId: parseInt(targetPlayerId, 10),
+      await api.post(routes.database.players.merge(player.id), {
+        targetPlayerId: mergeTarget.id,
       });
       toast.success(tt('player.success.merge'));
       onClose();
-      window.location.href = '/leaderboard';
+      window.location.href = `/profile/${mergeTarget.id}`;
     } catch (err) {
-      setError(err.response?.data?.details || tt('player.errors.mergeFailed'));
-      toast.error(err.response?.data?.details || tt('player.errors.mergeFailed'));
+      const msg =
+        err.response?.data?.error ||
+        err.response?.data?.details ||
+        tt('player.errors.mergeFailed');
+      setError(msg);
+      toast.error(msg);
+      setShowMergeConfirm(false);
     } finally {
       setIsLoading(false);
     }
@@ -633,43 +729,145 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
                   <div className="warning-notice-icon">!</div>
                   <div className="warning-notice-content">
                     <strong>{tt('player.merge.warning.title')}</strong>{' '}
-                    {tt('player.merge.warning.message', { name: player?.name || '' })}
+                    {tt('player.merge.warning.message', { name: playerDisplayName(player) })}
                   </div>
                 </div>
 
-                {!showMergeInput ? (
-                  <button
-                    type="button"
-                    className="mode-btn"
-                    onClick={() => setShowMergeInput(true)}
-                    disabled={isLoading}
-                  >
-                    {tt('player.merge.understandButton')}
-                  </button>
+                {mergeTarget ? (
+                  <>
+                    <div className="merge-compare">
+                      <div className="merge-compare-card merge-compare-card--source">
+                        <span className="merge-compare-label">{tt('player.merge.source.label')}</span>
+                        <MergePlayerIdentity subject={player} tt={tt} />
+                      </div>
+                      <div className="merge-compare-card merge-compare-card--dest">
+                        <span className="merge-compare-label">{tt('player.merge.destination.label')}</span>
+                        <MergePlayerIdentity subject={mergeTarget} tt={tt} showOpenProfile />
+                      </div>
+                    </div>
+                    <div className="merge-compare-actions">
+                      <button
+                        type="button"
+                        className="mode-btn"
+                        onClick={() => {
+                          setMergeTarget(null);
+                          setShowMergeConfirm(false);
+                        }}
+                        disabled={isLoading}
+                      >
+                        {tt('player.merge.changeDestination')}
+                      </button>
+                      <button
+                        type="button"
+                        className={`action-button warning ${isLoading ? 'loading' : ''}`}
+                        onClick={() => setShowMergeConfirm(true)}
+                        disabled={isLoading || !mergeTarget?.id || mergeTarget.id === player.id}
+                      >
+                        {tt('player.merge.mergeButton')}
+                      </button>
+                    </div>
+                  </>
                 ) : (
                   <>
                     <div className="form-group">
-                      <label>{tt('player.merge.targetId.label')}</label>
+                      <label>{tt('player.merge.search.label')}</label>
                       <input
                         type="text"
                         autoComplete="off"
-                        className="merge-target-input"
-                        value={targetPlayerId}
-                        onChange={(e) => setTargetPlayerId(e.target.value)}
-                        placeholder={tt('player.merge.targetId.placeholder')}
+                        value={mergeSearch}
+                        onChange={(e) => setMergeSearch(e.target.value)}
+                        placeholder={tt('player.merge.search.placeholder')}
                         disabled={isLoading}
                       />
                     </div>
-                    <button
-                      type="button"
-                      className={`action-button warning ${isLoading ? 'loading' : ''}`}
-                      onClick={handleMergePlayer}
-                      disabled={isLoading || !targetPlayerId.trim()}
-                    >
-                      {tt('player.merge.mergeButton')}
-                    </button>
+                    <p className="form-hint">{tt('player.merge.search.hint')}</p>
+                    <div className="player-results-list">
+                      {mergeSearchLoading ? (
+                        <div className="player-loading-row">
+                          {t('loading.generic', { ns: 'common' })}
+                        </div>
+                      ) : mergeResults.length === 0 ? (
+                        <div className="player-empty-row">
+                          {mergeSearch.trim().length > 0
+                            ? tt('player.merge.search.noResults')
+                            : tt('player.merge.search.empty')}
+                        </div>
+                      ) : (
+                        mergeResults.map((result) => (
+                          <div key={result.id} className="player-result-row">
+                            <img
+                              src={userAvatarDisplayUrl(result) || ''}
+                              alt=""
+                              className="player-pfp"
+                            />
+                            <div className="player-result-info">
+                              <span className="player-name">
+                                {playerDisplayName(result)}
+                              </span>
+                              {result.user?.username ? (
+                                <span className="player-handle">@{result.user.username}</span>
+                              ) : null}
+                              <span className="player-id">
+                                {tt('player.merge.idLabel', { id: result.id })}
+                              </span>
+                            </div>
+                            <button
+                              type="button"
+                              className="assign-row-button"
+                              onClick={() => setMergeTarget(result)}
+                              disabled={isLoading}
+                            >
+                              {tt('player.merge.search.selectButton')}
+                            </button>
+                          </div>
+                        ))
+                      )}
+                    </div>
                   </>
                 )}
+
+                {showMergeConfirm && mergeTarget ? (
+                  <div className="confirm-dialog">
+                    <div className="confirm-content confirm-content--merge">
+                      <div className="merge-compare">
+                        <div className="merge-compare-card merge-compare-card--source">
+                          <span className="merge-compare-label">{tt('player.merge.source.label')}</span>
+                          <MergePlayerIdentity subject={player} tt={tt} />
+                        </div>
+                        <div className="merge-compare-card merge-compare-card--dest">
+                          <span className="merge-compare-label">{tt('player.merge.destination.label')}</span>
+                          <MergePlayerIdentity subject={mergeTarget} tt={tt} showOpenProfile />
+                        </div>
+                      </div>
+                      <p>
+                        {tt('player.merge.confirm.message', {
+                          sourceName: playerDisplayName(player),
+                          destName: playerDisplayName(mergeTarget),
+                        })}
+                      </p>
+                      <div className="confirm-buttons popup-btn-grid">
+                        <button
+                          type="button"
+                          className="confirm-yes"
+                          onClick={handleMergePlayer}
+                          disabled={isLoading}
+                        >
+                          {tt('player.merge.confirm.confirmButton', {
+                            name: playerDisplayName(mergeTarget),
+                          })}
+                        </button>
+                        <button
+                          type="button"
+                          className="confirm-no"
+                          onClick={() => setShowMergeConfirm(false)}
+                          disabled={isLoading}
+                        >
+                          {t('buttons.cancel', { ns: 'common' })}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ) : null}
               </div>
             )}
           </div>

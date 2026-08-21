@@ -87,16 +87,32 @@
   },
   "merge": {
     "warning": {
-      "title": "Warning:",
-      "message": "This will delete {{creatorName}} and reassign all credits to the selected creator. This action cannot be undone."
+      "title": "경고:",
+      "message": "{{creatorName}}을(를) 삭제하고 모든 크레딧을 선택한 크리에이터로 재할당합니다. 되돌릴 수 없습니다."
     },
-    "selectTarget": {
-      "label": "Select target creator",
-      "placeholder": "Search and select target creator...",
-      "noOptions": "No matching creators"
+    "search": {
+      "label": "대상 크리에이터",
+      "placeholder": "이름으로 검색하거나 크리에이터 ID를 붙여넣으세요",
+      "hint": "결과에서 크리에이터를 선택하세요. 숫자 ID를 붙여넣으면 해당 프로필을 조회하여 병합 전에 확인할 수 있습니다.",
+      "noResults": "일치하는 크리에이터가 없습니다.",
+      "empty": "대상 크리에이터를 찾으려면 입력을 시작하세요.",
+      "selectButton": "선택"
     },
-    "mergeButton": "Merge creators",
-    "creatorLabel": "{{name}} (ID: {{id}}, Charts: {{count}}){{aliases}}"
+    "source": {
+      "label": "삭제됩니다"
+    },
+    "destination": {
+      "label": "모든 크레딧을 유지합니다"
+    },
+    "idLabel": "ID {{id}}",
+    "chartsLabel": "채보 {{count}}개",
+    "openProfile": "프로필 열기",
+    "changeDestination": "대상 변경",
+    "confirm": {
+      "message": "{{sourceName}}의 모든 크레딧이 {{destName}}(으)로 이동하고 {{sourceName}}은(는) 삭제됩니다. 되돌릴 수 없습니다.",
+      "confirmButton": "{{name}}(으)로 병합"
+    },
+    "mergeButton": "크리에이터 병합"
   },
   "split": {
     "newNamesAndRoles": {
@@ -130,6 +146,7 @@
     "updateDiscordFailed": "Failed to update Discord info",
     "unlinkFailed": "Failed to unlink user",
     "mergeFailed": "Failed to merge creators",
+    "mergeSelf": "크리에이터를 자기 자신에게 병합할 수 없습니다",
     "splitFailed": "Failed to split creator"
   },
   "player": {
@@ -174,8 +191,27 @@
         "title": "경고:",
         "message": "모든 패스가 대상 플레이어로 이동하고 {{name}}은(는) 삭제됩니다. 되돌릴 수 없습니다."
       },
-      "understandButton": "이해했습니다 — 계속",
-      "targetId": { "label": "대상 플레이어 ID", "placeholder": "대상 플레이어 ID 입력" },
+      "search": {
+        "label": "대상 플레이어",
+        "placeholder": "이름, @사용자명, #discordId 또는 pid:123으로 검색",
+        "hint": "결과에서 플레이어를 선택하세요. 숫자 ID를 붙여넣으면 해당 프로필을 조회하여 병합 전에 확인할 수 있습니다.",
+        "noResults": "일치하는 플레이어가 없습니다.",
+        "empty": "대상 프로필을 찾으려면 입력을 시작하세요.",
+        "selectButton": "선택"
+      },
+      "source": {
+        "label": "삭제됩니다"
+      },
+      "destination": {
+        "label": "모든 패스를 유지합니다"
+      },
+      "idLabel": "ID {{id}}",
+      "openProfile": "프로필 열기",
+      "changeDestination": "대상 변경",
+      "confirm": {
+        "message": "{{sourceName}}의 모든 패스가 {{destName}}(으)로 이동하고 {{sourceName}}은(는) 삭제됩니다. 되돌릴 수 없습니다.",
+        "confirmButton": "{{name}}(으)로 병합"
+      },
       "mergeButton": "플레이어 병합"
     },
     "errors": {
@@ -184,7 +220,8 @@
       "banDuration": "1에서 999 사이의 기간을 입력하세요",
       "pauseUpdate": "제출 일시중지 업데이트 실패",
       "ratingBanUpdate": "평가 차단 업데이트 실패",
-      "mergeFailed": "플레이어 병합 실패"
+      "mergeFailed": "플레이어 병합 실패",
+      "mergeSelf": "플레이어를 자기 자신에게 병합할 수 없습니다"
     },
     "success": {
       "updated": "플레이어가 업데이트되었습니다",
