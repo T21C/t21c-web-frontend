@@ -10,7 +10,7 @@ import './inboxBell.css';
 const InboxBell = ({ variant = 'desktop' }) => {
   const { t } = useTranslation('pages');
   const location = useLocation();
-  const { items, unreadCount, markRead, markAllRead, markSeen } = useInboxNotifications();
+  const { items, unreadCount, markRead, markAllRead, markSeen, hide } = useInboxNotifications();
   const [isOpen, setIsOpen] = useState(false);
   const rootRef = useRef(null);
   const preview = items.slice(0, 8);
@@ -25,7 +25,9 @@ const InboxBell = ({ variant = 'desktop' }) => {
     if (!isOpen) return undefined;
     markSeen();
     const onPointerDown = (event) => {
-      if (rootRef.current && !rootRef.current.contains(event.target)) {
+      const insideBell = rootRef.current && rootRef.current.contains(event.target);
+      const insideRowMenu = event.target.closest?.('.inbox-notification-row-menu');
+      if (!insideBell && !insideRowMenu) {
         setIsOpen(false);
       }
     };
@@ -81,6 +83,7 @@ const InboxBell = ({ variant = 'desktop' }) => {
                   key={notification.id}
                   notification={notification}
                   onRead={markRead}
+                  onHide={hide}
                   compact
                 />
               ))

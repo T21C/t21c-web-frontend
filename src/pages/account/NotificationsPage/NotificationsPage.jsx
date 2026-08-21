@@ -16,6 +16,7 @@ const NotificationsPage = () => {
     loadMore,
     markRead,
     markAllRead,
+    hide,
   } = useInboxNotifications();
 
   useEffect(() => {
@@ -51,6 +52,7 @@ const NotificationsPage = () => {
               key={notification.id}
               notification={notification}
               onRead={markRead}
+              onHide={hide}
             />
           ))
         ) : (
