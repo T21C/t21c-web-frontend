@@ -9,18 +9,16 @@ import { TrashIcon } from '@/components/common/icons';
 import LevelSelectionPopup from '@/components/popups/Levels/LevelSelectionPopup/LevelSelectionPopup';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
+import { getSongDisplayName } from '@/utils/levelHelpers';
 import api from '@/utils/api';
 import { routes } from '@/api/routes';
 import './linkedlevelspopup.css';
 
-function linkedSongLabel(level) {
-  if (!level) return '';
-  const song = level.song || '';
-  return level.suffix ? `${song} ${level.suffix}` : song;
-}
-
 export default function LinkedLevelsPopup({
   currentLevelId,
+  groupId,
+  shareChart = false,
+  shareVfx = false,
   levels,
   canEdit,
   onClose,
@@ -60,7 +58,7 @@ export default function LinkedLevelsPopup({
 
   const applyResult = (data) => {
     if (onChange) {
-      onChange(Array.isArray(data?.levels) ? data.levels : []);
+      onChange(data);
     }
   };
 
@@ -81,7 +79,7 @@ export default function LinkedLevelsPopup({
       });
       applyResult(response.data);
       toast.success(t('levelPopups.linkedLevels.toastAdded', {
-        name: linkedSongLabel(level) || `#${levelId}`,
+        name: getSongDisplayName(level) || `#${levelId}`,
       }));
       setShowPicker(false);
     } catch (err) {
@@ -107,6 +105,23 @@ export default function LinkedLevelsPopup({
     }
   };
 
+  const handleShareToggle = async (field, nextValue) => {
+    if (!canEdit || !groupId || isMutating) return;
+    setIsMutating(true);
+    try {
+      const response = await api.patch(routes.database.levels.links(currentLevelId), {
+        [field]: nextValue,
+      });
+      applyResult(response.data);
+    } catch (err) {
+      toast.error(err.response?.data?.error || t('levelPopups.linkedLevels.errors.saveShare'));
+    } finally {
+      setIsMutating(false);
+    }
+  };
+
+  const showShareToggles = canEdit && Boolean(groupId);
+
   return (
     <Portal>
       <div className="linked-levels-popup" onClick={handleOverlayClick}>
@@ -116,6 +131,28 @@ export default function LinkedLevelsPopup({
         >
           <div className="linked-levels-popup__header">
             <h2>{t('levelPopups.linkedLevels.title')}</h2>
+            {showShareToggles && (
+              <div className="linked-levels-popup__share">
+                <label className="linked-levels-popup__share-toggle">
+                  <input
+                    type="checkbox"
+                    checked={Boolean(shareChart)}
+                    disabled={isMutating}
+                    onChange={(e) => handleShareToggle('shareChart', e.target.checked)}
+                  />
+                  {t('levelPopups.linkedLevels.shareChart')}
+                </label>
+                <label className="linked-levels-popup__share-toggle">
+                  <input
+                    type="checkbox"
+                    checked={Boolean(shareVfx)}
+                    disabled={isMutating}
+                    onChange={(e) => handleShareToggle('shareVfx', e.target.checked)}
+                  />
+                  {t('levelPopups.linkedLevels.shareVfx')}
+                </label>
+              </div>
+            )}
             <CloseButton
               variant="floating"
               onClick={onClose}
@@ -145,7 +182,7 @@ export default function LinkedLevelsPopup({
                     />
                     <div className="linked-levels-popup__meta">
                       <span className="linked-levels-popup__song">
-                        {linkedSongLabel(level) || t('levelPopups.linkedLevels.unknownSong')}
+                        {getSongDisplayName(level) || t('levelPopups.linkedLevels.unknownSong')}
                       </span>
                       <span className="linked-levels-popup__sub">
                         #{level.id}

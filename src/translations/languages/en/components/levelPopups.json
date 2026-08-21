@@ -187,11 +187,14 @@
     "unknownSong": "Unknown song",
     "toastAdded": "Linked {{name}}",
     "toastRemoved": "Level unlinked",
+    "shareChart": "Chart",
+    "shareVfx": "VFX",
     "errors": {
       "sameLevel": "Cannot link a level to itself",
       "alreadyLinked": "That level is already in this group",
       "add": "Failed to link level",
-      "remove": "Failed to unlink level"
+      "remove": "Failed to unlink level",
+      "saveShare": "Failed to update sharing"
     }
   },
   "download": {

@@ -107,11 +107,14 @@
     "unknownSong": "Nieznana piosenka",
     "toastAdded": "Powiązano {{name}}",
     "toastRemoved": "Usunięto powiązanie",
+    "shareChart": "Chart",
+    "shareVfx": "VFX",
     "errors": {
       "sameLevel": "Nie można powiązać poziomu z samym sobą",
       "alreadyLinked": "Ten poziom jest już w tej grupie",
       "add": "Nie udało się powiązać poziomu",
-      "remove": "Nie udało się usunąć powiązania"
+      "remove": "Nie udało się usunąć powiązania",
+      "saveShare": "Nie udało się zaktualizować udostępniania"
     }
   }
 } 
