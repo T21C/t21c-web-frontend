@@ -27,6 +27,7 @@ import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { CreatorIcon } from "@/components/common/icons/CreatorIcon";
 import { AccountStatusBanners } from "@/components/account/AccountStatusBanners/AccountStatusBanners";
 import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
+import ProfileFollowButton from "@/components/account/ProfileFollowButton/ProfileFollowButton";
 import BioCanvasRenderer from "@/components/account/BioCanvasRenderer";
 import { TournamentPlacementsSection } from "@/components/account/TournamentPlacements";
 
@@ -757,6 +758,15 @@ const ProfilePage = () => {
                       (() => {
                         const elements = [];
 
+                        if (!isOwnProfile) {
+                          elements.push(
+                            <ProfileFollowButton
+                              key="follow"
+                              following={playerData?.isFollowing}
+                              followRoute={routes.playersV3.follow(playerData?.id ?? playerId)}
+                            />
+                          );
+                        }
                         if (user && isOwnProfile) {
                           elements.push(
                             <Link

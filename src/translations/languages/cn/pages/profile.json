@@ -37,6 +37,10 @@
   "adminEdit": "管理员页面",
   "viewUserPacks": "查看用户的地图包",
   "linkToCreator": "查看创作者个人资料",
+  "follow": "关注",
+  "following": "已关注",
+  "followLogin": "请登录后再关注",
+  "followError": "无法更新关注状态",
   "stellarSubscriberIconTooltip": "TUFStellar 订阅用户",
   "header": {
     "aka": "又名"

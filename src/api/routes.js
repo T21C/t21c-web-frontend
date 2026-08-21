@@ -405,6 +405,7 @@ export const routes = {
     root: () => '/v3/players',
     search: () => '/v3/players/search',
     profile: (playerId) => `/v3/players/${enc(playerId)}/profile`,
+    follow: (playerId) => `/v3/players/${enc(playerId)}/follow`,
     passes: (playerId) => `/v3/players/${enc(playerId)}/passes`,
     rankHistory: (playerId) => `/v3/players/${enc(playerId)}/rank-history`,
     leaderboard: () => '/v3/players/leaderboard',
@@ -460,6 +461,7 @@ export const routes = {
   creatorsV3: {
     root: () => '/v3/creators',
     profile: (creatorId) => `/v3/creators/${enc(creatorId)}/profile`,
+    follow: (creatorId) => `/v3/creators/${enc(creatorId)}/follow`,
     leaderboard: () => '/v3/creators/leaderboard',
     managedUpdate: (creatorId) => `/v3/creators/${enc(creatorId)}/managed-update`,
     displayCurationTypes: (creatorId) =>

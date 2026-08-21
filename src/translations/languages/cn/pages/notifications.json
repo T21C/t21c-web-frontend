@@ -106,6 +106,20 @@
           "body": "{{song}} — {{artist}} 已入选 Weekly Levels。"
         }
       }
+    },
+    "following": {
+      "player": {
+        "pass": {
+          "title": "新通关",
+          "body": "{{playerName}} 通关了 {{song}} — {{artist}}。"
+        }
+      },
+      "creator": {
+        "level": {
+          "title": "新谱面",
+          "body": "{{creatorName}} 发布了 {{song}} — {{artist}}。"
+        }
+      }
     }
   }
 }

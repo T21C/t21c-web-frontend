@@ -54,7 +54,8 @@
     "categories": {
       "submissions": "Soumissions",
       "chart": "Charts",
-      "clears": "Clears"
+      "clears": "Clears",
+      "following": "Abonnements"
     }
   },
   "security": {

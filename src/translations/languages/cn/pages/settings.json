@@ -44,7 +44,8 @@
     "categories": {
       "submissions": "提交",
       "chart": "谱面",
-      "clears": "通关"
+      "clears": "通关",
+      "following": "关注"
     }
   },
   "preferences": {

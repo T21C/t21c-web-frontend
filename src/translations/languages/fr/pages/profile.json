@@ -8,6 +8,10 @@
   "editProfile": "Modifier le profil",
   "adminEdit": "Édition admin",
   "viewUserPacks": "Voir les packs de l'utilisateur",
+  "follow": "Suivre",
+  "following": "Suivi",
+  "followLogin": "Connectez-vous pour suivre",
+  "followError": "Impossible de mettre à jour le suivi",
   "stellarSubscriberIconTooltip": "Abonné TUFStellar",
   "header": {
     "aka": "alias"
