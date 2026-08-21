@@ -68,6 +68,10 @@
       "restore": "Do you want to restore this level?",
       "permanentDelete": "Permanently delete this level? This cannot be undone. All passes, ratings, and stored files (download and curation images) will be removed."
     },
+    "reasonPrompt": {
+      "deleteTitle": "Delete this level?",
+      "hideTitle": "Hide this level?"
+    },
     "errors": {
       "update": "Failed to update level",
       "delete": "Soft deletion failed",

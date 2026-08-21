@@ -14,15 +14,20 @@ export function inboxNotificationCopy(t, notification) {
     : t('notifications.visibility.public');
   const vars = { ...payload, song, artist, visibility };
   const type = notification?.type || 'unknown';
+  const reasonText = typeof payload.reason === 'string' ? payload.reason.trim() : '';
+  const body = t(`notifications.types.${type}.body`, {
+    ...vars,
+    defaultValue: t('notifications.unknown.body'),
+  });
+  const withReason = reasonText
+    ? [body, t('notifications.reason', { reason: reasonText })].filter(Boolean).join('\n')
+    : body;
   return {
     title: t(`notifications.types.${type}.title`, {
       ...vars,
       defaultValue: t('notifications.unknown.title'),
     }),
-    body: t(`notifications.types.${type}.body`, {
-      ...vars,
-      defaultValue: t('notifications.unknown.body'),
-    }),
+    body: withReason,
     href: notification?.href || null,
   };
 }

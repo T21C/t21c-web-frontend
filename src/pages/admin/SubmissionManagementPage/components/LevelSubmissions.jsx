@@ -16,6 +16,7 @@ import { ArtistSelectorPopup } from '@/components/popups/Artists';
 import { EntityActionPopup } from '@/components/popups/Entities';
 import { GalleryInspectPopup } from '@/components/popups/Evidence';
 import { CreatorAssignmentPopup } from '@/components/popups/Creators';
+import { AdminReasonPrompt } from '@/components/common/AdminReasonPrompt';
 import { toast } from "react-hot-toast";
 import { ServerCloudIcon, WarningIcon, EditIcon, TrashIcon, PlusIcon } from "@/components/common/icons";
 import { Tooltip } from "react-tooltip";
@@ -68,6 +69,7 @@ const LevelSubmissions = () => {
   const [editingSuffix, setEditingSuffix] = useState({});
   const [suffixValues, setSuffixValues] = useState({});
   const [showCreatorAssignmentModal, setShowCreatorAssignmentModal] = useState({});
+  const [declinePromptId, setDeclinePromptId] = useState(null);
 
   useEffect(() => {
     fetchPendingSubmissions();
@@ -167,7 +169,7 @@ const LevelSubmissions = () => {
     }
   };
 
-  const handleSubmission = async (submissionId, action) => {
+  const handleSubmission = async (submissionId, action, reason = '') => {
     try {
       const submission = submissions.find(s => s.id === submissionId);
       if (!submission) return;
@@ -212,7 +214,10 @@ const LevelSubmissions = () => {
       
       setCardPhases((prev) => ({ ...prev, [submissionId]: 'queued' }));
 
-      const response = await api.put(`${routes.admin.submissions.root()}/levels/${submissionId}/${action}`);
+      const response = await api.put(
+        `${routes.admin.submissions.root()}/levels/${submissionId}/${action}`,
+        action === 'decline' && reason ? { reason } : {},
+      );
 
       if (response.status === 202) {
         return;
@@ -1427,7 +1432,7 @@ const LevelSubmissions = () => {
                       {t('levelSubmissions.buttons.allow')}
                     </button>
                     <button 
-                      onClick={() => handleSubmission(submission.id, 'decline')}
+                      onClick={() => setDeclinePromptId(submission.id)}
                       className="decline-btn"
                       disabled={disabledButtons[submission.id]}
                     >
@@ -1585,6 +1590,21 @@ const LevelSubmissions = () => {
           showTitleHeader={true}
         />
       )}
+
+      <AdminReasonPrompt
+        isOpen={declinePromptId != null}
+        title={t('levelSubmissions.declinePrompt.title')}
+        message={t('levelSubmissions.declinePrompt.message')}
+        confirmLabel={t('levelSubmissions.buttons.decline')}
+        onCancel={() => setDeclinePromptId(null)}
+        onConfirm={(reason) => {
+          const id = declinePromptId;
+          setDeclinePromptId(null);
+          if (id != null) {
+            void handleSubmission(id, 'decline', reason);
+          }
+        }}
+      />
     </>
   );
 };

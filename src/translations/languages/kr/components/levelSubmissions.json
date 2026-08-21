@@ -51,6 +51,10 @@
     "addTeam": "팀 추가",
     "addCreator": "제작자 추가"
   },
+  "declinePrompt": {
+    "title": "이 차트를 거절할까요?",
+    "message": "제출자에게 알림이 갑니다. 원하시면 사유를 적을 수 있습니다."
+  },
   "labels": {
     "levelName": "레벨",
     "creatorName": "제작자",

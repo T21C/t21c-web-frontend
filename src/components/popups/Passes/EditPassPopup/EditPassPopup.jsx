@@ -16,6 +16,7 @@ import { usePassCoreForm } from '@/components/common/cores/PassCoreForm/usePassC
 import { truncateString } from '@/utils/Utility';
 import { CloseButton } from '@/components/common/buttons';
 import { Portal } from '@/components/common/Portal';
+import { AdminReasonPrompt } from '@/components/common/AdminReasonPrompt';
 
 export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
   const { t } = useTranslation('components');
@@ -43,6 +44,7 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
   };
   const { user } = useAuth();
   const [submission, setSubmission] = useState(false);
+  const [showDeletePrompt, setShowDeletePrompt] = useState(false);
 
   const navigate = useNavigate();
 
@@ -156,16 +158,19 @@ const handleSubmit = async (e) => {
   }
 };
 
-  const handleDelete = async () => {
-    if (!window.confirm(t('passPopups.edit.confirmations.delete'))) {
-      return;
-    }
+  const handleDelete = () => {
+    setShowDeletePrompt(true);
+  };
 
+  const runSoftDelete = async (reason) => {
     setSubmission(true);
     const toastId = toast.loading(t('loading.generic', { ns: 'common' }));
 
     try {
-      const response = await api.delete(`${routes.database.passes.root()}/${pass.id}`);
+      const response = await api.delete(
+        `${routes.database.passes.root()}/${pass.id}`,
+        reason ? { data: { reason } } : undefined,
+      );
       if (response.data) {
         if (onUpdate) {
           await onUpdate(response.data.pass);
@@ -320,6 +325,18 @@ const handleSubmit = async (e) => {
         />
         </div>
       </div>
+      <AdminReasonPrompt
+        isOpen={showDeletePrompt}
+        title={t('passPopups.edit.reasonPrompt.deleteTitle')}
+        message={t('passPopups.edit.confirmations.delete')}
+        confirmLabel={t('buttons.delete', { ns: 'common' })}
+        submitting={submission}
+        onCancel={() => setShowDeletePrompt(false)}
+        onConfirm={(reason) => {
+          setShowDeletePrompt(false);
+          void runSoftDelete(reason);
+        }}
+      />
     </Portal>
     );
 }; 

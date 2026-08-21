@@ -51,6 +51,10 @@
     "addTeam": "Ajouter une équipe",
     "addCreator": "Ajouter un créateur"
   },
+  "declinePrompt": {
+    "title": "Refuser ce chart ?",
+    "message": "Le soumetteur sera notifié. Vous pouvez optionnellement expliquer pourquoi."
+  },
   "labels": {
     "levelName": "Niveau",
     "creatorName": "Créateur",

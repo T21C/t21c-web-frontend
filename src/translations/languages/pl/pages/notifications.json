@@ -24,6 +24,7 @@
     "public": "publiczny",
     "hidden": "ukryty"
   },
+  "reason": "Powód: {{reason}}",
   "types": {
     "pass": {
       "submission": {

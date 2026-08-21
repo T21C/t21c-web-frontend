@@ -13,6 +13,7 @@ import { toast } from 'react-hot-toast';
 import { ProfileCreationModal } from './ProfileCreationModal';
 import PassSubmissionEditableMeta from './PassSubmissionEditableMeta';
 import { AdminPlayerPopup } from '@/components/popups/Users';
+import { AdminReasonPrompt } from '@/components/common/AdminReasonPrompt';
 import { formatDate } from '@/utils/Utility';
 import i18next from 'i18next';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
@@ -48,6 +49,7 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
   });
   const [showPlayerPopup, setShowPlayerPopup] = useState(false);
   const [selectedSubmission, setSelectedSubmission] = useState(null);
+  const [declinePromptId, setDeclinePromptId] = useState(null);
 
   const { difficultyDict } = useDifficultyContext();
 
@@ -169,7 +171,7 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
   };
 
 
-  const handleSubmission = async (submissionId, action) => {
+  const handleSubmission = async (submissionId, action, reason = '') => {
     try {
       const submission = submissions.find(s => s.id === submissionId);
       if (!submission) {
@@ -200,7 +202,10 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
       
       setCardPhases((prev) => ({ ...prev, [submissionId]: 'queued' }));
 
-      const response = await api.put(`${routes.admin.submissions.root()}/passes/${submissionId}/${action}`);
+      const response = await api.put(
+        `${routes.admin.submissions.root()}/passes/${submissionId}/${action}`,
+        action === 'decline' && reason ? { reason } : {},
+      );
 
       if (response.status === 202) {
         return;
@@ -479,7 +484,7 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
                         {t('passSubmissions.buttons.allow')}
                       </button>
                       <button
-                        onClick={() => handleSubmission(submission.id, 'decline')}
+                        onClick={() => setDeclinePromptId(submission.id)}
                         className="decline-btn"
                         disabled={disabledButtons[submission.id]}
                       >
@@ -576,6 +581,21 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
           onCancel={() => setProfileCreation({ show: false, submission: null, profiles: [] })}
         />
       )}
+
+      <AdminReasonPrompt
+        isOpen={declinePromptId != null}
+        title={t('passSubmissions.declinePrompt.title')}
+        message={t('passSubmissions.declinePrompt.message')}
+        confirmLabel={t('passSubmissions.buttons.decline')}
+        onCancel={() => setDeclinePromptId(null)}
+        onConfirm={(reason) => {
+          const id = declinePromptId;
+          setDeclinePromptId(null);
+          if (id != null) {
+            void handleSubmission(id, 'decline', reason);
+          }
+        }}
+      />
     </>
   );
 };

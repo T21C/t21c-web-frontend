@@ -61,6 +61,9 @@
     "confirmations": {
       "delete": "이 클리어를 삭제하시겠습니까? 이후에 복구할 수 있습니다.",
       "restore": "이 클리어를 복구하시겠습니까?"
+    },
+    "reasonPrompt": {
+      "deleteTitle": "이 클리어를 삭제할까요?"
     }
   }
 }

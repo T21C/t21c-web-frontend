@@ -24,6 +24,7 @@ import { VideoLinkResolver } from '@/components/common/cores/VideoLinkResolver';
 import { ChartIcon, GraphIcon } from '@/components/common/icons';
 import { AdminLevelChartStatsPopup } from './AdminLevelChartStatsPopup';
 import { AdminLevelXaccCurvePopup } from './AdminLevelXaccCurvePopup';
+import { AdminReasonPrompt } from '@/components/common/AdminReasonPrompt';
 
 export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPage = false }) => {
   const { t } = useTranslation(['components', 'common']);
@@ -91,6 +92,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
   const [error, setError] = useState(null);
   const [isHideMode, setIsHideMode] = useState(false);
   const [isPermanentDeleteMode, setIsPermanentDeleteMode] = useState(false);
+  const [reasonPrompt, setReasonPrompt] = useState(null);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const { difficulties } = useDifficultyContext();
   const xaccEditorLevel = useMemo(() => {
@@ -378,15 +380,18 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
       return;
     }
 
-    if (!window.confirm(t('levelPopups.edit.confirmations.delete'))) {
-      return;
-    }
+    setReasonPrompt('delete');
+  };
 
+  const runSoftDelete = async (reason) => {
     setIsSaving(true);
     setError(null);
 
     try {
-      const response = await api.delete(`${routes.database.levels.root()}/${level.id}`);
+      const response = await api.delete(
+        `${routes.database.levels.root()}/${level.id}`,
+        reason ? { data: { reason } } : undefined,
+      );
       if (response.data) {
         const updatedFields = response.data.level || response.data || {};
         if (onUpdate) {
@@ -404,15 +409,26 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
   };
 
   const handleToggleHidden = async () => {
-    if (!window.confirm(level.isHidden ? t('levelPopups.edit.confirmations.unhide') : t('levelPopups.edit.confirmations.hide'))) {
+    if (level.isHidden) {
+      if (!window.confirm(t('levelPopups.edit.confirmations.unhide'))) {
+        return;
+      }
+      await runToggleHidden();
       return;
     }
 
+    setReasonPrompt('hide');
+  };
+
+  const runToggleHidden = async (reason) => {
     setIsSaving(true);
     setError(null);
 
     try {
-      const response = await api.patch(`${routes.database.levels.root()}/${level.id}/toggle-hidden`);
+      const response = await api.patch(
+        `${routes.database.levels.root()}/${level.id}/toggle-hidden`,
+        reason ? { reason } : {},
+      );
       if (response.data) {
         const updatedFields = response.data.level || response.data || {};
         if (onUpdate) {
@@ -1178,5 +1194,38 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     </div>
   );
 
-  return <Portal>{popupContent}</Portal>;
+  return (
+    <Portal>
+      {popupContent}
+      <AdminReasonPrompt
+        isOpen={reasonPrompt === 'delete' || reasonPrompt === 'hide'}
+        title={
+          reasonPrompt === 'hide'
+            ? t('levelPopups.edit.reasonPrompt.hideTitle')
+            : t('levelPopups.edit.reasonPrompt.deleteTitle')
+        }
+        message={
+          reasonPrompt === 'hide'
+            ? t('levelPopups.edit.confirmations.hide')
+            : t('levelPopups.edit.confirmations.delete')
+        }
+        confirmLabel={
+          reasonPrompt === 'hide'
+            ? t('levelPopups.edit.form.buttons.delete.hide')
+            : t('levelPopups.edit.form.buttons.delete.default')
+        }
+        submitting={isSaving}
+        onCancel={() => setReasonPrompt(null)}
+        onConfirm={(reason) => {
+          const type = reasonPrompt;
+          setReasonPrompt(null);
+          if (type === 'hide') {
+            void runToggleHidden(reason);
+          } else if (type === 'delete') {
+            void runSoftDelete(reason);
+          }
+        }}
+      />
+    </Portal>
+  );
 }; 

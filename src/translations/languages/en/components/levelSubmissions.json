@@ -53,6 +53,10 @@
     "addTeam": "Add Team",
     "addCreator": "Add Creator"
   },
+  "declinePrompt": {
+    "title": "Decline this chart?",
+    "message": "The submitter will be notified. You can optionally explain why."
+  },
   "labels": {
     "levelName": "Level",
     "creatorName": "Creator",

@@ -69,6 +69,10 @@
     "autoAllow": "Approver Auto.",
     "autoReject": "Rejeter Auto."
   },
+  "declinePrompt": {
+    "title": "Refuser ce pass ?",
+    "message": "Le soumetteur sera notifié. Vous pouvez optionnellement expliquer pourquoi."
+  },
   "errors": {
     "noPlayer": "Aucun joueur attribué",
     "processing": "Erreur lors du traitement de la soumission",

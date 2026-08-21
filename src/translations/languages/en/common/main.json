@@ -55,6 +55,10 @@
   "confirmations": {
     "unsavedChanges": "You have unsaved changes. Are you sure you want to leave?"
   },
+  "adminReasonPrompt": {
+    "reason": "Reason (optional)",
+    "placeholder": "Explain this decision…"
+  },
   "promote": "Promote",
   "demote": "Demote",
   "promoteTo": "Promote to {{role}}",

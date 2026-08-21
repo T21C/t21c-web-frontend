@@ -56,6 +56,10 @@
     "autoAllow": "자동 허용",
     "autoReject": "자동 거부"
   },
+  "declinePrompt": {
+    "title": "이 패스를 거절할까요?",
+    "message": "제출자에게 알림이 갑니다. 원하시면 사유를 적을 수 있습니다."
+  },
   "errors": {
     "noPlayer": "승인 전에 플레이어를 지정해 주세요",
     "playerAssignment": "플레이어 지정에 실패했습니다",

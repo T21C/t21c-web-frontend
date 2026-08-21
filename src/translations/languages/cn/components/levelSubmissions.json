@@ -53,6 +53,10 @@
     "addTeam": "添加团队",
     "addCreator": "添加创作者"
   },
+  "declinePrompt": {
+    "title": "拒绝此谱面？",
+    "message": "提交者会收到通知。你可以选择说明原因。"
+  },
   "labels": {
     "levelName": "关卡",
     "creatorName": "创作者",

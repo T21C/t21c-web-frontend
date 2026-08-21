@@ -24,6 +24,7 @@
     "public": "공개",
     "hidden": "숨김"
   },
+  "reason": "사유: {{reason}}",
   "types": {
     "pass": {
       "submission": {

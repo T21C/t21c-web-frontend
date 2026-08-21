@@ -51,6 +51,10 @@
     "addTeam": "Dodaj drużynę",
     "addCreator": "Dodaj twórcę"
   },
+  "declinePrompt": {
+    "title": "Odrzucić ten chart?",
+    "message": "Zgłaszający zostanie powiadomiony. Możesz opcjonalnie podać powód."
+  },
   "labels": {
     "levelName": "Poziom",
     "creatorName": "Twórca",
