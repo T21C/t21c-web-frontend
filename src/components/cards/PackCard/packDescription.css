@@ -186,8 +186,25 @@
 .pack-description--detail .pack-description__stats {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 1.25rem;
   flex-wrap: wrap;
+  width: 100%;
+}
+
+.pack-description--detail .pack-description__stats-main {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.pack-description--detail .pack-description__stats-curations {
+  margin-left: auto;
+}
+
+.pack-description--detail .pack-description__stats-curations:empty {
+  display: none;
 }
 
 .pack-description--detail .pack-description__stat {

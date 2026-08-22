@@ -5,7 +5,7 @@ import { Link, useParams, useNavigate, useLocation, useNavigationType } from "re
 import { useTranslation } from "react-i18next";
 import PackItem, { PackLevelItem } from "@/components/cards/PackItem/PackItem";
 import PackDescription from "@/components/cards/PackCard/PackDescription";
-import { MetaTags } from "@/components/common/display";
+import { MetaTags, CurationTypeCountView } from "@/components/common/display";
 import { buildPackMeta } from '@/utils/meta';
 import { ScrollButton } from "@/components/common/buttons";
 import { EditIcon, PinIcon, LockIcon, EyeIcon, UsersIcon, ArrowIcon, PlusIcon, LikeIcon, DownloadIcon, ChevronIcon, ExternalLinkIcon } from "@/components/common/icons";
@@ -16,6 +16,7 @@ import {
   isFolderMoveIntoDescendant,
 } from '@/utils/packTreePlacement';
 import { useAuth } from "@/contexts/AuthContext";
+import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { usePackContext } from "@/contexts/PackContext";
 import api from "@/utils/api";
 import { routes } from '@/api/routes';
@@ -26,6 +27,7 @@ import { Tooltip } from "react-tooltip";
 import { getPackExpandedFolders, setPackExpandedFolders } from "@/utils/folderState";
 import toast from 'react-hot-toast';
 import { summarizePackSize, summarizeFolderSize, summarizePackClears, formatEstimatedSize } from '@/utils/packDownloadUtils';
+import { curationTypeCountsFromPackItems } from '@/utils/packCurationTypeCounts';
 import { DragDropContext, Droppable } from '@hello-pangea/dnd';
 import i18next from 'i18next';
 import { formatDate } from '@/utils/Utility';
@@ -148,6 +150,7 @@ const PackDetailPage = () => {
   const location = useLocation();
   const navigationType = useNavigationType();
   const { user } = useAuth();
+  const { curationTypesDict } = useDifficultyContext();
   const { toggleFavorite } = usePackContext();
   
   const [pack, setPack] = useState(null);
@@ -203,6 +206,10 @@ const PackDetailPage = () => {
   const packExportDisabled = totalLevels === 0;
   const sortedRootItems = useMemo(() => sortItemsByOrder(packItems), [packItems]);
   const totalRenderableItems = useMemo(() => countPackItems(packItems), [packItems]);
+  const packCurationTypeCounts = useMemo(
+    () => curationTypeCountsFromPackItems(packItems),
+    [packItems],
+  );
   const packMeta = useMemo(() => {
     if (!pack) return null;
     return buildPackMeta(pack, t, {
@@ -1347,17 +1354,26 @@ const PackDetailPage = () => {
           itemCount={totalRenderableItems}
           footer={(
             <div className="pack-description__stats">
-              <div className="pack-description__stat">
-                <span className="pack-description__stat-value">{totalLevels}</span>
-                <span className="pack-description__stat-label">{t('packDetail.stats.levels')}</span>
+              <div className="pack-description__stats-main">
+                <div className="pack-description__stat">
+                  <span className="pack-description__stat-value">{totalLevels}</span>
+                  <span className="pack-description__stat-label">{t('packDetail.stats.levels')}</span>
+                </div>
+                <div className="pack-description__stat">
+                  <span className="pack-description__stat-value">{pack.items?.length || 0}</span>
+                  <span className="pack-description__stat-label">{t('packDetail.stats.items')}</span>
+                </div>
+                <div className="pack-description__stat">
+                  <span className="pack-description__stat-value">{formatDate(pack?.createdAt, i18next?.language)}</span>
+                  <span className="pack-description__stat-label">{t('packDetail.stats.created')}</span>
+                </div>
               </div>
-              <div className="pack-description__stat">
-                <span className="pack-description__stat-value">{pack.items?.length || 0}</span>
-                <span className="pack-description__stat-label">{t('packDetail.stats.items')}</span>
-              </div>
-              <div className="pack-description__stat">
-                <span className="pack-description__stat-value">{formatDate(pack?.createdAt, i18next?.language)}</span>
-                <span className="pack-description__stat-label">{t('packDetail.stats.created')}</span>
+              <div className="pack-description__stats-curations">
+                <CurationTypeCountView
+                  curationTypeCounts={packCurationTypeCounts}
+                  curationTypesDict={curationTypesDict || {}}
+                  dialogLabel={t('packDetail.stats.curationPanelDialog')}
+                />
               </div>
             </div>
           )}

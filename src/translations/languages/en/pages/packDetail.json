@@ -20,7 +20,8 @@
   "stats": {
     "levels": "Levels",
     "items": "Items",
-    "created": "Created"
+    "created": "Created",
+    "curationPanelDialog": "Curation types in this pack"
   },
   "items": {
     "title": "Items",
