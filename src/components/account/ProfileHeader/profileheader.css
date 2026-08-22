@@ -125,9 +125,8 @@
 .profile-header__name-svg.profile-header__name-svg--vertical {
   display: block;
   width: 100%;
-  height: auto;
-  min-height: 2.5rem;
-  max-height: 14rem;
+  height: 100%;
+  max-height: 2.6rem;
 }
 
 .profile-header .profile-header__name-vertical-fo {
@@ -282,7 +281,7 @@
 .profile-header__center {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.15rem;
   min-width: 0;
   align-self: start;
 }
@@ -310,6 +309,15 @@
 
 .profile-header__handle {
   font-size: 0.95rem;
+  color: var(--color-white-t80);
+}
+
+.profile-header .profile-header__follower-count {
+  margin-left: 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1.2;
+  text-shadow: 0 1px 2px var(--color-black-t80);
   color: var(--color-white-t80);
 }
 .profile-header__icon-row{
@@ -704,8 +712,13 @@
   }
   .profile-header__left {
     width: 100%;
+    height: fit-content;
+    margin-bottom: -5rem;
   }
   .profile-header__handle-row {
+    margin-left: 0;
+  }
+  .profile-header .profile-header__follower-count {
     margin-left: 0;
   }
   .profile-header__icon-slots {

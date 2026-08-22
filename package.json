@@ -25,7 +25,6 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@google-cloud/recaptcha-enterprise": "^5.13.0",
     "@hello-pangea/dnd": "^18.0.1",
-    "@react-oauth/google": "^0.12.1",
     "@sentry/react": "^10.68.0",
     "@simplewebauthn/browser": "^13.3.0",
     "@splinetool/react-spline": "^2.2.6",

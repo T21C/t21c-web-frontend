@@ -1,6 +1,7 @@
 // tuf-search: #icons #index
 import DefaultAvatar from './DefaultAvatar';
 import { DiscordIcon } from './DiscordIcon';
+import { GoogleIcon } from './GoogleIcon';
 import DownloadIcon from './DownloadIcon';
 import { EditIcon } from './EditIcon';
 import { ExternalLinkIcon } from './ExternalLinkIcon';
@@ -79,6 +80,7 @@ import { MoreVerticalIcon } from './MoreVerticalIcon';
 export {
     DefaultAvatar,
     DiscordIcon,
+    GoogleIcon,
     DownloadIcon,
     EditIcon,
     ExternalLinkIcon,

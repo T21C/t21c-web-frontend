@@ -12,6 +12,8 @@
   "following": "Suivi",
   "followLogin": "Connectez-vous pour suivre",
   "followError": "Impossible de mettre à jour le suivi",
+  "followerCount_one": "{{formatted}} follower",
+  "followerCount_other": "{{formatted}} followers",
   "stellarSubscriberIconTooltip": "Abonné TUFStellar",
   "header": {
     "aka": "alias"

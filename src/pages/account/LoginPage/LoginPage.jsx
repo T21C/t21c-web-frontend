@@ -10,6 +10,7 @@ import { buildStaticPageMeta } from '@/utils/meta';
 import ReCAPTCHA from '@/components/auth/ReCaptcha/ReCaptcha';
 import CodeInput from '@/components/account/CodeInput/CodeInput';
 import { navigateExternal } from '@/utils/externalNavigationGate';
+import { DiscordIcon, GoogleIcon } from '@/components/common/icons';
 import { useLoginFlow } from './useLoginFlow';
 
 const LoginPage = () => {
@@ -175,14 +176,26 @@ const LoginPage = () => {
                 <span>{t('login.form.divider')}</span>
               </div>
 
-              <button
-                type="button"
-                className="discord-button"
-                onClick={flow.submitDiscord}
-                disabled={flow.loading || flow.retryAfter}
-              >
-                {t('login.form.buttons.discordLogin')}
-              </button>
+              <div className="oauth-provider-buttons">
+                <button
+                  type="button"
+                  className="discord-button"
+                  onClick={flow.submitDiscord}
+                  disabled={flow.loading || flow.retryAfter}
+                >
+                  <DiscordIcon size={18} />
+                  {t('login.form.buttons.discordLogin')}
+                </button>
+                <button
+                  type="button"
+                  className="google-button"
+                  onClick={flow.submitGoogle}
+                  disabled={flow.loading || flow.retryAfter}
+                >
+                  <GoogleIcon size={18} />
+                  {t('login.form.buttons.googleLogin')}
+                </button>
+              </div>
 
               {flow.passkeysSupported && (
                 <button

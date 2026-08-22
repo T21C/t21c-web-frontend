@@ -1,0 +1,8 @@
+{
+  "errors": {
+    "googleFailed": "Nie udało się połączyć z Google"
+  },
+  "google": {
+    "register": "Zarejestruj się przez Google"
+  }
+}

@@ -77,8 +77,15 @@
   cursor: not-allowed;
 }
 
+.login-page-wrapper .oauth-provider-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
 .login-page-wrapper .login-button,
-.login-page-wrapper .discord-button {
+.login-page-wrapper .discord-button,
+.login-page-wrapper .google-button {
   width: 100%;
   padding: 0.75rem;
   border: none;
@@ -97,13 +104,25 @@
   background-color: #3b7fd6;
 }
 
-.login-page-wrapper .discord-button {
-  background-color: #5865F2;
-  color: white;
+.login-page-wrapper .discord-button,
+.login-page-wrapper .google-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: var(--color-white-t10);
+  color: var(--color-white);
 }
 
-.login-page-wrapper .discord-button:hover {
-  background-color: #4752C4;
+.login-page-wrapper .discord-button:hover:not(:disabled),
+.login-page-wrapper .google-button:hover:not(:disabled) {
+  background-color: var(--color-white-t20);
+}
+
+.login-page-wrapper .google-button:disabled,
+.login-page-wrapper .discord-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .login-page-wrapper .passkey-button {

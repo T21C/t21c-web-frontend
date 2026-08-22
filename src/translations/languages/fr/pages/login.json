@@ -14,7 +14,8 @@
     "buttons": {
       "login": "Se connecter",
       "loggingIn": "Connexion...",
-      "discordLogin": "Se connecter avec Discord"
+      "discordLogin": "Se connecter avec Discord",
+      "googleLogin": "Se connecter avec Google"
     },
     "divider": "ou",
     "links": {
@@ -44,6 +45,7 @@
     "generic": "Erreur inattendue. Réessayez plus tard.",
     "network": "Erreur de connexion réseau. Réessayez plus tard.",
     "discordFailed": "Impossible de démarrer la connexion Discord. Réessayez ; contactez le développeur si le problème persiste.",
+    "googleFailed": "Impossible de démarrer la connexion Google. Réessayez ; contactez le développeur si le problème persiste.",
     "invalidCredentials": "E-mail/nom d'utilisateur ou mot de passe incorrect.",
     "emailNotVerified": "Vérifiez votre e-mail avant de vous connecter.",
     "rateLimit": "Trop de tentatives. Attendez et réessayez.",

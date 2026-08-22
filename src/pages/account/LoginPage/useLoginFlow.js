@@ -31,7 +31,7 @@ export function useLoginFlow() {
 
   const {
     login,
-    loginWithDiscord,
+    loginWithProvider,
     requestLoginMfaEmail,
     verifyLoginMfa,
     loginWithPasskey,
@@ -317,9 +317,18 @@ export function useLoginFlow() {
   const submitDiscord = async () => {
     try {
       setError('');
-      await loginWithDiscord();
+      await loginWithProvider('discord');
     } catch {
       setError(t('login.errors.discordFailed'));
+    }
+  };
+
+  const submitGoogle = async () => {
+    try {
+      setError('');
+      await loginWithProvider('google');
+    } catch {
+      setError(t('login.errors.googleFailed'));
     }
   };
 
@@ -339,6 +348,7 @@ export function useLoginFlow() {
     formatTime,
     submitCredentials,
     submitDiscord,
+    submitGoogle,
     submitPasskey,
     passkeysSupported,
     mfaCode,

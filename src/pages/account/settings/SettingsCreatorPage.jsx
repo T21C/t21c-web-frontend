@@ -91,6 +91,7 @@ const SettingsCreatorPage = () => {
   const [headerSurfaceStyleDraft, setHeaderSurfaceStyleDraft] = useState(undefined);
   const [stellarVariantDraft, setStellarVariantDraft] = useState(null);
   const [stellarVariantSaving, setStellarVariantSaving] = useState(false);
+  const [followerCountSaving, setFollowerCountSaving] = useState(false);
 
   const canProfileSync = Boolean(user?.playerId && user?.creatorId);
   const presentationSync = profile?.presentationSync;
@@ -430,6 +431,32 @@ const SettingsCreatorPage = () => {
     }
   }, [creatorId, previewStellarVariant, stellarVariantMatchesSaved, t]);
 
+  const handleToggleShowFollowerCount = useCallback(async (next) => {
+    if (followerCountSaving) return;
+    const previous = profile?.showFollowerCount !== false;
+    setProfile((p) =>
+      p && typeof p === "object" ? { ...p, showFollowerCount: next } : p,
+    );
+    setFollowerCountSaving(true);
+    try {
+      const { data } = await api.patch(routes.creatorsV3.meShowFollowerCount(), {
+        showFollowerCount: next,
+      });
+      setProfile((p) =>
+        p && typeof p === "object"
+          ? { ...p, showFollowerCount: data?.showFollowerCount !== false }
+          : p,
+      );
+    } catch {
+      setProfile((p) =>
+        p && typeof p === "object" ? { ...p, showFollowerCount: previous } : p,
+      );
+      toast.error(t("settings.creator.showFollowerCountError"));
+    } finally {
+      setFollowerCountSaving(false);
+    }
+  }, [followerCountSaving, profile?.showFollowerCount, t]);
+
   const handleSaveBio = useCallback(async () => {
     if (creatorId == null || !Number.isFinite(creatorId)) return;
     const trimmed = bioDraft.trim();
@@ -622,6 +649,8 @@ const SettingsCreatorPage = () => {
           country={creatorDoc.user?.country || creatorDoc.country}
           badgeId={creatorDoc?.rank ?? creatorDoc?.chartsTotalRank}
           profileId={creatorDoc?.id}
+          followerCount={profile?.followerCount}
+          showFollowerCount={profile?.showFollowerCount !== false}
           expandStatsAriaLabel={t("creators.profile.funFacts.expandAria")}
           collapseStatsAriaLabel={t("creators.profile.funFacts.collapseAria")}
           statGroups={statGroups}
@@ -762,6 +791,8 @@ const SettingsCreatorPage = () => {
             country: creatorDoc.user?.country || creatorDoc.country,
             badgeId: creatorDoc?.rank ?? creatorDoc?.chartsTotalRank,
             profileId: creatorDoc?.id,
+            followerCount: profile?.followerCount,
+            showFollowerCount: profile?.showFollowerCount !== false,
             expandStatsAriaLabel: t("creators.profile.funFacts.expandAria"),
             collapseStatsAriaLabel: t("creators.profile.funFacts.collapseAria"),
             statGroups,
@@ -890,6 +921,25 @@ const SettingsCreatorPage = () => {
           />
         </SettingsSaveField>
       ) : null}
+
+      <div className="settings-sub-page__block settings-sub-page__field">
+        <label className="settings-sub-page__toggle">
+          <input
+            type="checkbox"
+            checked={profile?.showFollowerCount !== false}
+            onChange={(ev) => handleToggleShowFollowerCount(ev.target.checked)}
+            disabled={followerCountSaving}
+          />
+          <span className="settings-sub-page__toggle-copy">
+            <span className="settings-sub-page__toggle-label">
+              {t("settings.creator.showFollowerCountLabel")}
+            </span>
+            <span className="settings-sub-page__toggle-desc">
+              {t("settings.creator.showFollowerCountHint")}
+            </span>
+          </span>
+        </label>
+      </div>
 
       {canEditHeaderCurationSlots ? (
         <SettingsPreviewSection

@@ -14,7 +14,8 @@
     "buttons": {
       "login": "Zaloguj się",
       "loggingIn": "Logowanie...",
-      "discordLogin": "Zaloguj się z Discord"
+      "discordLogin": "Zaloguj się z Discord",
+      "googleLogin": "Zaloguj się przez Google"
     },
     "divider": "lub",
     "links": {
@@ -44,6 +45,7 @@
     "generic": "Nie udało się zalogować. Spróbuj ponownie",
     "network": "Błąd połączenia sieciowego. Spróbuj ponownie później.",
     "discordFailed": "Nie udało się zainicjować logowania z Discord. Spróbuj ponownie; w razie dalszych problemów skontaktuj się z deweloperem.",
+    "googleFailed": "Nie udało się zainicjować logowania przez Google. Spróbuj ponownie; w razie dalszych problemów skontaktuj się z deweloperem.",
     "invalidCredentials": "Nieprawidłowy e-mail/nazwa użytkownika lub hasło.",
     "emailNotVerified": "Zweryfikuj e-mail przed zalogowaniem.",
     "rateLimit": "Zbyt wiele prób. Poczekaj i spróbuj ponownie.",

@@ -17,5 +17,16 @@
     "deleteSuccess": "Usunięto klucz dostępu",
     "deleteError": "Nie udało się usunąć klucza dostępu",
     "unsupported": "Ta przeglądarka nie obsługuje kluczy dostępu."
+  },
+  "linkedAccounts": {
+    "title": "Połączone konta",
+    "discord": "Discord",
+    "providerId": "ID użytkownika Discord: {{id}}",
+    "providerIdHint": "To numeryczny identyfikator Twojego konta w systemach Discorda",
+    "linkDiscord": "Połącz konto Discord",
+    "google": "Google",
+    "linkGoogle": "Połącz konto Google",
+    "unlink": "Odłącz",
+    "cannotUnlinkLastProvider": "Nie można odłączyć ostatniego dostawcy bez hasła"
   }
 }

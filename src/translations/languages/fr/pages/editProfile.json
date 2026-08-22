@@ -17,5 +17,16 @@
     "deleteSuccess": "Clé d’accès supprimée",
     "deleteError": "Impossible de supprimer la clé d’accès",
     "unsupported": "Les clés d’accès ne sont pas prises en charge dans ce navigateur."
+  },
+  "linkedAccounts": {
+    "title": "Comptes liés",
+    "discord": "Discord",
+    "providerId": "ID utilisateur Discord : {{id}}",
+    "providerIdHint": "Il s’agit de l’identifiant numérique de votre compte Discord",
+    "linkDiscord": "Lier un compte Discord",
+    "google": "Google",
+    "linkGoogle": "Lier un compte Google",
+    "unlink": "Dissocier",
+    "cannotUnlinkLastProvider": "Impossible de dissocier le dernier fournisseur sans mot de passe"
   }
 }

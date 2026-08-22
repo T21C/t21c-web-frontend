@@ -109,10 +109,10 @@ const PrivacyPolicyPage = () => {
                 <div className="data-category">
                   <h3>OAuth and linked accounts</h3>
                   <p>
-                    If you choose to connect a Discord account, we may receive certain identifiers and
-                    profile information made available through Discord&apos;s OAuth flow (for example,
-                    Discord username and user ID), consistent with the permissions you grant and
-                    Discord&apos;s terms and policies.
+                    If you choose to connect a Discord or Google account, we may receive certain identifiers and
+                    profile information made available through that provider&apos;s OAuth flow (for example,
+                    a username, user ID, and verified email address), consistent with the permissions you grant and
+                    the provider&apos;s terms and policies.
                   </p>
                 </div>
                 <div className="data-category">

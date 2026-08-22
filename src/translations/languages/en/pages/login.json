@@ -14,7 +14,8 @@
     "buttons": {
       "login": "Login",
       "loggingIn": "Logging in...",
-      "discordLogin": "Login with Discord"
+      "discordLogin": "Login with Discord",
+      "googleLogin": "Login with Google"
     },
     "divider": "or",
     "links": {
@@ -48,6 +49,7 @@
     "generic": "Unspecified error. Please try again later.",
     "network": "Network connection error. Please try again later.",
     "discordFailed": "Failed to initiate Discord login. Please try again, if the issue persists, contact the developer.",
+    "googleFailed": "Failed to initiate Google login. Please try again, if the issue persists, contact the developer.",
     "invalidCredentials": "Invalid email/username or password.",
     "emailNotVerified": "Please verify your email before signing in.",
     "rateLimit": "Too many attempts. Please wait and try again.",

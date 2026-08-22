@@ -78,5 +78,15 @@
         "description": "Masque les personnages sur la page de soumission."
       }
     }
+  },
+  "player": {
+    "showFollowerCountLabel": "Afficher le nombre de followers",
+    "showFollowerCountHint": "Lorsque c’est activé, les visiteurs voient combien de personnes suivent vous.",
+    "showFollowerCountError": "Impossible de mettre à jour la visibilité du nombre de followers"
+  },
+  "creator": {
+    "showFollowerCountLabel": "Afficher le nombre de followers",
+    "showFollowerCountHint": "Lorsque c’est activé, les visiteurs voient combien de personnes suivent ce profil.",
+    "showFollowerCountError": "Impossible de mettre à jour la visibilité du nombre de followers"
   }
 }

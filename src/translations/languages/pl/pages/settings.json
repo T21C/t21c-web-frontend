@@ -78,5 +78,15 @@
         "description": "Ukrywa grafiki postaci na stronie zgłoszeń."
       }
     }
+  },
+  "player": {
+    "showFollowerCountLabel": "Pokaż liczbę obserwujących",
+    "showFollowerCountHint": "Gdy włączone, odwiedzający widzą, ile osób obserwuje Ciebie.",
+    "showFollowerCountError": "Nie udało się zaktualizować widoczności liczby obserwujących"
+  },
+  "creator": {
+    "showFollowerCountLabel": "Pokaż liczbę obserwujących",
+    "showFollowerCountHint": "Gdy włączone, odwiedzający widzą, ile osób obserwuje ten profil.",
+    "showFollowerCountError": "Nie udało się zaktualizować widoczności liczby obserwujących"
   }
 }

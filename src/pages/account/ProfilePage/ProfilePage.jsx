@@ -733,6 +733,8 @@ const ProfilePage = () => {
                     country={playerData?.country}
                     badgeId={playerData?.rankedScoreRank}
                     profileId={playerData?.id ?? playerId}
+                    followerCount={playerData?.followerCount}
+                    showFollowerCount={playerData?.showFollowerCount !== false}
                     expandStatsAriaLabel={t("profile.funFacts.expandAria")}
                     collapseStatsAriaLabel={t("profile.funFacts.collapseAria")}
                     statGroups={statGroups}
@@ -764,6 +766,19 @@ const ProfilePage = () => {
                               key="follow"
                               following={playerData?.isFollowing}
                               followRoute={routes.playersV3.follow(playerData?.id ?? playerId)}
+                              onFollowChange={({ following, followerCount: nextCount }) => {
+                                setPlayerData((p) =>
+                                  p && typeof p === "object"
+                                    ? {
+                                        ...p,
+                                        isFollowing: following,
+                                        ...(Number.isFinite(Number(nextCount))
+                                          ? { followerCount: Number(nextCount) }
+                                          : {}),
+                                      }
+                                    : p,
+                                );
+                              }}
                             />
                           );
                         }

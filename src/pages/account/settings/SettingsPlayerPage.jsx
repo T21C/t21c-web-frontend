@@ -72,6 +72,7 @@ const SettingsPlayerPage = () => {
   const [headerSurfaceStyleDraft, setHeaderSurfaceStyleDraft] = useState(undefined);
   const [stellarVariantDraft, setStellarVariantDraft] = useState(null);
   const [stellarVariantSaving, setStellarVariantSaving] = useState(false);
+  const [followerCountSaving, setFollowerCountSaving] = useState(false);
 
   const canProfileSync = Boolean(user?.playerId && user?.creatorId);
   const presentationSync = playerData?.presentationSync;
@@ -323,6 +324,32 @@ const SettingsPlayerPage = () => {
     }
   }, [playerId, previewStellarVariant, stellarVariantMatchesSaved, t]);
 
+  const handleToggleShowFollowerCount = useCallback(async (next) => {
+    if (followerCountSaving) return;
+    const previous = playerData?.showFollowerCount !== false;
+    setPlayerData((p) =>
+      p && typeof p === "object" ? { ...p, showFollowerCount: next } : p,
+    );
+    setFollowerCountSaving(true);
+    try {
+      const { data } = await api.patch(routes.playersV3.meShowFollowerCount(), {
+        showFollowerCount: next,
+      });
+      setPlayerData((p) =>
+        p && typeof p === "object"
+          ? { ...p, showFollowerCount: data?.showFollowerCount !== false }
+          : p,
+      );
+    } catch {
+      setPlayerData((p) =>
+        p && typeof p === "object" ? { ...p, showFollowerCount: previous } : p,
+      );
+      toast.error(t("settings.player.showFollowerCountError"));
+    } finally {
+      setFollowerCountSaving(false);
+    }
+  }, [followerCountSaving, playerData?.showFollowerCount, t]);
+
   const handleSaveBio = useCallback(async () => {
     if (playerId == null || !Number.isFinite(playerId)) return;
     const trimmed = bioDraft.trim();
@@ -415,6 +442,8 @@ const SettingsPlayerPage = () => {
           country={playerData?.country}
           badgeId={playerData?.rankedScoreRank}
           profileId={playerData?.id ?? playerId}
+          followerCount={playerData?.followerCount}
+          showFollowerCount={playerData?.showFollowerCount !== false}
           expandStatsAriaLabel={t("profile.funFacts.expandAria")}
           collapseStatsAriaLabel={t("profile.funFacts.collapseAria")}
           statGroups={statGroups}
@@ -539,6 +568,8 @@ const SettingsPlayerPage = () => {
             country: playerData?.country,
             badgeId: playerData?.rankedScoreRank,
             profileId: playerData?.id ?? playerId,
+            followerCount: playerData?.followerCount,
+            showFollowerCount: playerData?.showFollowerCount !== false,
             expandStatsAriaLabel: t("profile.funFacts.expandAria"),
             collapseStatsAriaLabel: t("profile.funFacts.collapseAria"),
             statGroups,
@@ -682,6 +713,25 @@ const SettingsPlayerPage = () => {
           disabled={nicknameSaving}
         />
       </SettingsSaveField>
+
+      <div className="settings-sub-page__block settings-sub-page__field">
+        <label className="settings-sub-page__toggle">
+          <input
+            type="checkbox"
+            checked={playerData?.showFollowerCount !== false}
+            onChange={(ev) => handleToggleShowFollowerCount(ev.target.checked)}
+            disabled={followerCountSaving}
+          />
+          <span className="settings-sub-page__toggle-copy">
+            <span className="settings-sub-page__toggle-label">
+              {t("settings.player.showFollowerCountLabel")}
+            </span>
+            <span className="settings-sub-page__toggle-desc">
+              {t("settings.player.showFollowerCountHint")}
+            </span>
+          </span>
+        </label>
+      </div>
 
       <div className="profile-customization-sync-host">
         <ProfileCustomizationSyncControl

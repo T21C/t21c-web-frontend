@@ -9,7 +9,6 @@ import '@/index.css';
 import { BrowserRouter } from 'react-router-dom';
 import { LevelContextProvider } from '@/contexts/LevelContext';
 import { I18nextProvider } from "react-i18next";
-import { GoogleOAuthProvider } from "@react-oauth/google"
 import { AuthProvider } from '@/contexts/AuthContext';
 import { ElevationProvider } from '@/contexts/ElevationContext';
 import { ZenModeProvider } from '@/contexts/ZenModeContext';
@@ -51,7 +50,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
-          <GoogleOAuthProvider clientId='886035995245-8735p49ljpm17btvst50pp8qbg73t7s4.apps.googleusercontent.com'>
             <AuthProvider>
               <ElevationProvider>
               <ZenModeProvider>
@@ -89,7 +87,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               </ZenModeProvider>
               </ElevationProvider>
             </AuthProvider>
-          </GoogleOAuthProvider>
         </BrowserRouter>
       </QueryClientProvider>
     </HelmetProvider>
