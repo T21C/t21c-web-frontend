@@ -20,7 +20,7 @@ const CALLBACK_LOCK_STORAGE_PREFIX = 'callbackLock:';
 /**
  * Single module-level lock shared by every callback flow (billing, oauth, and any
  * future type). Keyed by a namespaced string so a remount / Strict Mode
- * double-invoke cannot replay a one-shot side effect — e.g. a single-use Discord
+ * double-invoke cannot replay a one-shot side effect — e.g. a single-use OAuth
  * `code` or a billing fulfillment poll.
  *
  * The in-memory Map guards synchronous remounts within one page load. Flows that
@@ -66,8 +66,40 @@ const callbackLockStore = {
 
 const callbackLockKeys = {
   billing: (sessionId) => `billing|${sessionId || ''}`,
-  oauth: (provider, linking, code) => `oauth|${provider}|${linking}|${code || ''}`,
+  oauth: (code, state) => `oauth|${code || ''}|${state || ''}`,
 };
+
+const OAUTH_FLOW_STORAGE_KEY = 'oauthFlow';
+
+function readOauthFlowHint() {
+  try {
+    const raw = sessionStorage.getItem(OAUTH_FLOW_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (
+      parsed &&
+      (parsed.mode === 'login' || parsed.mode === 'linking' || parsed.mode === 'reauth')
+    ) {
+      return parsed;
+    }
+  } catch {
+    /* ignore */
+  }
+  return null;
+}
+
+function clearOauthFlowHint() {
+  try {
+    sessionStorage.removeItem(OAUTH_FLOW_STORAGE_KEY);
+    sessionStorage.removeItem('stepUpScope');
+  } catch {
+    /* ignore */
+  }
+}
+
+function isAccountOauthMode(mode) {
+  return mode === 'linking' || mode === 'reauth';
+}
 
 function readBillingReturnParams(search) {
   const urlParams = new URLSearchParams(search);
@@ -236,21 +268,14 @@ const CallbackPage = () => {
       }
 
       const code = urlParams.get('code');
+      const state = urlParams.get('state');
       const errorParam = urlParams.get('error');
-      const linking = urlParams.get('linking') === 'true';
-      const reauth = urlParams.get('reauth') === 'true';
-      let stepUpScope = urlParams.get('scope');
-      if (!stepUpScope) {
-        try {
-          stepUpScope = sessionStorage.getItem('stepUpScope');
-          if (stepUpScope) sessionStorage.removeItem('stepUpScope');
-        } catch {
-          /* ignore */
-        }
-      }
-      setIsLinking(linking);
-      const provider = urlParams.get('provider') || 'discord';
+      const flowHint = readOauthFlowHint();
       oauthErrorRef.current = '';
+
+      if (isAccountOauthMode(flowHint?.mode)) {
+        setIsLinking(true);
+      }
 
       if (errorParam) {
         setError('Authentication failed');
@@ -264,16 +289,20 @@ const CallbackPage = () => {
         return;
       }
 
-      const oauthMode = linking ? 'linking' : reauth ? 'reauth' : 'login';
-      const oauthLockKey = callbackLockKeys.oauth(provider, oauthMode, code);
+      const oauthLockKey = callbackLockKeys.oauth(code, state);
 
       // This exact single-use code was already handled — either by a synchronous
       // remount in this page load (in-memory lock) or by a previous page load that
-      // completed the exchange (persisted 'done', survives a full refresh). Never
+      // completed the exchange (persisted mode, survives a full refresh). Never
       // replay it; verify the session the first exchange established and route from
       // there so a refresh at any point recovers instead of breaking.
-      if (callbackLockStore.get(oauthLockKey, { persist: true })) {
-        if (reauth) {
+      const priorLock = callbackLockStore.get(oauthLockKey, { persist: true });
+      if (priorLock) {
+        const recoveredMode =
+          priorLock === 'login' || priorLock === 'linking' || priorLock === 'reauth'
+            ? priorLock
+            : flowHint?.mode;
+        if (recoveredMode === 'reauth') {
           if (!cancelled) navigate('/settings/account', { replace: true });
           return;
         }
@@ -294,26 +323,26 @@ const CallbackPage = () => {
       callbackLockStore.set(oauthLockKey, true);
 
       try {
-        const oauthParams = linking
-          ? { linking: true }
-          : reauth
-            ? { reauth: true, ...(stepUpScope ? { scope: stepUpScope } : {}) }
-            : undefined;
-        const response = await api.post(
-          routes.auth.oauthCallback(provider),
-          { code },
-          { params: oauthParams },
-        );
+        const response = await api.post(routes.auth.oauthCallback(), { code, state });
 
         if (cancelled) return;
 
-        // Persist success so a later refresh of this URL recovers via the lock
-        // check above (route to profile) instead of replaying the consumed code.
-        callbackLockStore.set(oauthLockKey, 'done', { persist: true });
+        const responseMode = response.data?.mode || flowHint?.mode || 'login';
+        if (isAccountOauthMode(responseMode)) {
+          setIsLinking(true);
+        }
 
-        if (reauth) {
+        // Persist success so a later refresh of this URL recovers via the lock
+        // check above instead of replaying the consumed code.
+        callbackLockStore.set(oauthLockKey, responseMode, { persist: true });
+        clearOauthFlowHint();
+
+        if (responseMode === 'reauth' || response.data?.stepUp) {
           try {
-            const scope = sessionStorage.getItem('stepUpScope') || 'email-change';
+            const scope =
+              response.data?.scope ||
+              sessionStorage.getItem('stepUpScope') ||
+              'email-change';
             sessionStorage.removeItem('stepUpScope');
             markElevated(scope, 600);
           } catch {
@@ -324,7 +353,7 @@ const CallbackPage = () => {
           return;
         }
 
-        if (linking) {
+        if (responseMode === 'linking') {
           if (response.status === 200) {
             await fetchUser(true);
             if (!cancelled) handleSuccessfulAuth();
@@ -333,7 +362,6 @@ const CallbackPage = () => {
           }
         } else {
           // Same contract as password login: only treat as logged-in when server issued a session.
-          // Future MFA: response may be { mfaRequired: true } with no user.
           if (!response.data?.user) {
             throw new Error('No user received from server');
           }
@@ -346,12 +374,17 @@ const CallbackPage = () => {
           }
         }
       } catch (err) {
+        const errMode = err?.response?.data?.mode || flowHint?.mode;
+        if (isAccountOauthMode(errMode)) {
+          setIsLinking(true);
+        }
+
         // A full reload (or race) can land here after a duplicate request already
         // consumed the code and established the session. For the login flow, trust
         // an existing session over the failed exchange so we never show a false
         // error to an already-authenticated user. Linking always runs while
         // authenticated, so its real errors must surface instead.
-        if (!linking && !reauth) {
+        if (!isAccountOauthMode(errMode)) {
           let recoveredUser = null;
           try {
             recoveredUser = await fetchUser(true, { silent: true });

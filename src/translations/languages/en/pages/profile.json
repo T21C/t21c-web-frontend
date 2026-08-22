@@ -41,6 +41,8 @@
   "following": "Following",
   "followLogin": "Please log in to follow",
   "followError": "Could not update follow",
+  "followerCount_one": "{{formatted}} follower",
+  "followerCount_other": "{{formatted}} followers",
   "stellarSubscriberIconTooltip": "TUFStellar Subscriber",
   "header": {
     "aka": "a.k.a."

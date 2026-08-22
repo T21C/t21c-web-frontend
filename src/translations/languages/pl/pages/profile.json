@@ -30,6 +30,10 @@
   "following": "Obserwujesz",
   "followLogin": "Zaloguj się, aby obserwować",
   "followError": "Nie udało się zaktualizować obserwowania",
+  "followerCount_one": "{{formatted}} obserwujący",
+  "followerCount_few": "{{formatted}} obserwujących",
+  "followerCount_many": "{{formatted}} obserwujących",
+  "followerCount_other": "{{formatted}} obserwujących",
   "stellarSubscriberIconTooltip": "Subskrybent TUFStellar",
   "header": {
     "aka": "znany też jako"

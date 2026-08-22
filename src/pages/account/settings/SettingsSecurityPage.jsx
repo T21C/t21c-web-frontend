@@ -2,7 +2,7 @@
 import { routes } from '@/api/routes';
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { DiscordIcon, UnlinkIcon } from '@/components/common/icons';
+import { DiscordIcon, GoogleIcon, UnlinkIcon } from '@/components/common/icons';
 import { Tooltip } from 'react-tooltip';
 import { toast } from 'react-hot-toast';
 import api from '@/utils/api';
@@ -11,10 +11,17 @@ import { useTranslation } from 'react-i18next';
 import './settingsSubPage.css';
 import './settingsSecurityPage.css';
 
+const LINKABLE_PROVIDERS = [
+  { id: 'discord', showProviderId: true, linkClass: 'link-button btn-fill-discord' },
+  { id: 'google', showProviderId: false, linkClass: 'link-button google-link-button' },
+];
+
 const ProviderIcon = ({ provider, size, color = '#fff' }) => {
   switch (provider) {
     case 'discord':
       return <DiscordIcon size={size} color={color} />;
+    case 'google':
+      return <GoogleIcon size={size} />;
     default:
       return null;
   }
@@ -203,7 +210,6 @@ const SettingsSecurityPage = () => {
   };
 
   const isLastProvider = user?.password === null && user?.providers?.length === 1;
-  const discordProvider = user?.providers?.find((p) => p.name === 'discord');
 
   const hasPendingDeletion = Boolean(user?.deletionExecuteAt && user?.deletionScheduledAt);
 
@@ -462,53 +468,62 @@ const SettingsSecurityPage = () => {
           {t('editProfile.linkedAccounts.title')}
         </h3>
         <div className="linked-accounts">
-          {discordProvider ? (
-            <div className="provider-info">
-              <div className="provider-details-column">
-                <div className="provider-details">
-                  <ProviderIcon provider="discord" size={32} />
-                  <span>{t('editProfile.linkedAccounts.discord')}</span>
+          {LINKABLE_PROVIDERS.map((item) => {
+            const linked = user?.providers?.find((p) => p.name === item.id);
+            if (linked) {
+              return (
+                <div className="provider-info" key={item.id}>
+                  <div className="provider-details-column">
+                    <div className="provider-details">
+                      <ProviderIcon provider={item.id} size={32} />
+                      <span>{t(`editProfile.linkedAccounts.${item.id}`)}</span>
+                    </div>
+                    {item.showProviderId &&
+                      linked.providerId != null &&
+                      linked.providerId !== '' && (
+                        <span
+                          className="provider-id-line"
+                          title={t('editProfile.linkedAccounts.providerIdHint')}
+                        >
+                          {t('editProfile.linkedAccounts.providerId', {
+                            id: String(linked.providerId),
+                          })}
+                        </span>
+                      )}
+                  </div>
+                  <div className="unlink-container">
+                    <button
+                      type="button"
+                      className={`unlink-button btn-fill-danger ${isLastProvider ? 'disabled' : ''}`}
+                      onClick={() => handleProviderUnlink(item.id)}
+                      disabled={isLastProvider}
+                      data-tooltip-id="security-unlink-tooltip"
+                      data-tooltip-content={
+                        isLastProvider
+                          ? t('editProfile.linkedAccounts.cannotUnlinkLastProvider')
+                          : undefined
+                      }
+                    >
+                      {t('editProfile.linkedAccounts.unlink')}
+                      <UnlinkIcon color="#fff" size="24px" />
+                    </button>
+                    <Tooltip id="security-unlink-tooltip" />
+                  </div>
                 </div>
-                {discordProvider.providerId != null && discordProvider.providerId !== '' && (
-                  <span
-                    className="provider-id-line"
-                    title={t('editProfile.linkedAccounts.providerIdHint')}
-                  >
-                    {t('editProfile.linkedAccounts.providerId', {
-                      id: String(discordProvider.providerId),
-                    })}
-                  </span>
-                )}
-              </div>
-              <div className="unlink-container">
-                <button
-                  type="button"
-                  className={`unlink-button btn-fill-danger ${isLastProvider ? 'disabled' : ''}`}
-                  onClick={() => handleProviderUnlink('discord')}
-                  disabled={isLastProvider}
-                  data-tooltip-id="security-unlink-tooltip"
-                  data-tooltip-content={
-                    isLastProvider
-                      ? t('editProfile.linkedAccounts.cannotUnlinkLastProvider')
-                      : undefined
-                  }
-                >
-                  {t('editProfile.linkedAccounts.unlink')}
-                  <UnlinkIcon color="#fff" size="24px" />
-                </button>
-                <Tooltip id="security-unlink-tooltip" />
-              </div>
-            </div>
-          ) : (
-            <button
-              type="button"
-              className="link-button btn-fill-discord"
-              onClick={() => handleProviderLink('discord')}
-            >
-              <DiscordIcon size={16} />
-              {t('editProfile.linkedAccounts.linkDiscord')}
-            </button>
-          )}
+              );
+            }
+            return (
+              <button
+                type="button"
+                key={item.id}
+                className={item.linkClass}
+                onClick={() => handleProviderLink(item.id)}
+              >
+                <ProviderIcon provider={item.id} size={16} />
+                {t(`editProfile.linkedAccounts.link${item.id === 'discord' ? 'Discord' : 'Google'}`)}
+              </button>
+            );
+          })}
         </div>
       </div>
 

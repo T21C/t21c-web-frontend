@@ -323,12 +323,17 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  const loginWithDiscord = async () => {
+  const loginWithProvider = async (provider) => {
     try {
-      const response = await api.get(routes.auth.loginDiscord());
+      try {
+        sessionStorage.setItem('oauthFlow', JSON.stringify({ mode: 'login', provider }));
+      } catch {
+        /* ignore */
+      }
+      const response = await api.get(routes.auth.oauthLogin(provider));
       await navigateExternal(response.data.url);
     } catch (error) {
-      console.error('Discord login error:', error);
+      console.error('OAuth login error:', error);
       if (error.response) {
         console.error('Server response:', error.response.data);
       }
@@ -336,19 +341,17 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const loginWithDiscord = () => loginWithProvider('discord');
+
   const linkProvider = async (provider) => {
     try {
-      
-      if (provider !== 'discord') {
-        console.error('Unsupported provider:', provider);
-        throw new Error('Unsupported provider');
+      try {
+        sessionStorage.setItem('oauthFlow', JSON.stringify({ mode: 'linking', provider }));
+      } catch {
+        /* ignore */
       }
-
       const response = await api.get(routes.auth.oauthLink(provider));
-
-      // Open Discord auth in a new window
       await navigateExternal(response.data.url);
-      
     } catch (error) {
       console.error('Error linking provider:', error);
       throw error;
@@ -458,6 +461,7 @@ export const AuthProvider = ({ children }) => {
   const startOAuthReauth = async (provider = 'discord', scope = 'email-change') => {
     try {
       sessionStorage.setItem('stepUpScope', scope);
+      sessionStorage.setItem('oauthFlow', JSON.stringify({ mode: 'reauth', provider, scope }));
     } catch {
       /* ignore */
     }
@@ -551,6 +555,7 @@ export const AuthProvider = ({ children }) => {
     login,
     register,
     logout,
+    loginWithProvider,
     loginWithDiscord,
     requestLoginMfaEmail,
     verifyLoginMfa,

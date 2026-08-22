@@ -6,7 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 
 import { Tooltip } from 'react-tooltip';
-import { QuestionmarkCircleIcon, WarningIcon } from '@/components/common/icons';
+import { QuestionmarkCircleIcon, WarningIcon, GoogleIcon } from '@/components/common/icons';
 import ReCAPTCHA from '@/components/auth/ReCaptcha/ReCaptcha';
 import { MetaTags } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
@@ -42,7 +42,7 @@ const RegisterPage = () => {
   const [captchaToken, setCaptchaToken] = useState(null);
   const captchaRef = useRef(null);
   const navigate = useNavigate();
-  const { user, loginWithDiscord, register } = useAuth();
+  const { user, loginWithProvider, register } = useAuth();
   const { t } = useTranslation('pages');
   const location = useLocation();
   const pageMeta = useMemo(
@@ -287,9 +287,17 @@ const RegisterPage = () => {
 
   const handleDiscordRegister = async () => {
     try {
-      await loginWithDiscord();
+      await loginWithProvider('discord');
     } catch (err) {
       setError(t('register.errors.discordFailed'));
+    }
+  };
+
+  const handleGoogleRegister = async () => {
+    try {
+      await loginWithProvider('google');
+    } catch (err) {
+      setError(t('register.errors.googleFailed'));
     }
   };
 
@@ -470,13 +478,23 @@ const RegisterPage = () => {
             <span>{t('register.divider')}</span>
           </div>
 
-          <button
-            type="button"
-            className="discord-button"
-            onClick={handleDiscordRegister}
-          >
-            {t('register.discord.register')}
-          </button>
+          <div className="oauth-provider-buttons">
+            <button
+              type="button"
+              className="discord-button"
+              onClick={handleDiscordRegister}
+            >
+              {t('register.discord.register')}
+            </button>
+            <button
+              type="button"
+              className="google-button"
+              onClick={handleGoogleRegister}
+            >
+              <GoogleIcon size={18} />
+              {t('register.google.register')}
+            </button>
+          </div>
 
           <div className="links">
             <Link to="/login" className="login-link">

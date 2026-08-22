@@ -50,11 +50,15 @@
     "rateLimit": "Too many new accounts created. IP temporarily blocked.",
     "timeRemaining": "Time remaining: {{time}}",
     "generic": "Registration failed. Please try again.",
-    "discordFailed": "Failed to connect with Discord"
+    "discordFailed": "Failed to connect with Discord",
+    "googleFailed": "Failed to connect with Google"
   },
   "divider": "or",
   "discord": {
     "register": "Register with Discord"
+  },
+  "google": {
+    "register": "Register with Google"
   },
   "login": {
     "link": "Already have an account? Log in"

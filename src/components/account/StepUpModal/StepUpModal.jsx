@@ -19,7 +19,7 @@ const SCOPE_ACTION_KEYS = {
 
 /**
  * Shared confirmation modal: emailed code for verified accounts, or
- * password / Discord reauth when adding a first email.
+ * password / OAuth reauth when adding a first email.
  */
 const StepUpModal = ({ scope, user, onElevated, onCancel }) => {
   const { t } = useTranslation(['components', 'common', 'pages']);
@@ -154,7 +154,16 @@ const StepUpModal = ({ scope, user, onElevated, onCancel }) => {
     }
     setBusy(true);
     try {
-      await startOAuthReauth('discord', scope);
+      const linkedProviders = Array.isArray(user?.providers) ? user.providers : [];
+      const oauthProvider =
+        linkedProviders.find((p) => p.name === 'discord')?.name ||
+        linkedProviders[0]?.name;
+      if (!oauthProvider) {
+        setError(t('stepUp.oauthFailed'));
+        setBusy(false);
+        return;
+      }
+      await startOAuthReauth(oauthProvider, scope);
     } catch (err) {
       setError(err.response?.data?.message || err.message || t('stepUp.oauthFailed'));
       setBusy(false);

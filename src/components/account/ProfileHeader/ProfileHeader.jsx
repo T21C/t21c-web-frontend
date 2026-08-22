@@ -7,7 +7,7 @@ import { Tooltip } from "react-tooltip";
 import UserAvatar from "@/components/layout/UserAvatar/UserAvatar";
 import ChevronIcon from "@/components/common/icons/ChevronIcon";
 import { ExternalLinkIcon, HeartIcon, TUFStellarIcon } from "@/components/common/icons";
-import { isoToEmoji } from "@/utils";
+import { formatNumber, isoToEmoji } from "@/utils";
 import {
   getDefaultProfileBannerUrl,
   isTufStellarAccessActive,
@@ -134,6 +134,10 @@ const ProfileHeader = ({
   stellarIconVariant = "1",
   /** Optional avatar frame from tournament placement rewards: `{ url, config }`. */
   avatarFrame = null,
+  /** Public follower total. Shown when `showFollowerCount` is not false and the value is a number. */
+  followerCount = null,
+  /** Owner display preference; missing/undefined means on. */
+  showFollowerCount = true,
 }) => {
   const { t } = useTranslation("pages");
   const internalNameTooltipId = useId().replace(/:/g, "");
@@ -658,7 +662,7 @@ const ProfileHeader = ({
                           x="-50%"
                           y="0"
                           width="100%"
-                          height="12rem"
+                          height="100%"
                         >
                           <div
                             xmlns="http://www.w3.org/1999/xhtml"
@@ -742,6 +746,16 @@ const ProfileHeader = ({
                     <span className="profile-header__verification">{verificationBadge}</span>
                   ) : null}
               </div>
+              {showFollowerCount !== false &&
+              followerCount != null &&
+              Number.isFinite(Number(followerCount)) ? (
+                <div className="profile-header__follower-count">
+                  {t("profile.followerCount", {
+                    count: Number(followerCount),
+                    formatted: formatNumber(Number(followerCount), 0),
+                  })}
+                </div>
+              ) : null}
               <div className="profile-header__icon-row" ref={iconRowRef}>
                 <div
                   className={`profile-header__icon-slots-block ${showIconPanel ? "profile-header__icon-slots-block--curation" : ""}`}

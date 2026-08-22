@@ -14,7 +14,8 @@
     "buttons": {
       "login": "로그인",
       "loggingIn": "로그인 중...",
-      "discordLogin": "Discord로 로그인"
+      "discordLogin": "Discord로 로그인",
+      "googleLogin": "Google로 로그인"
     },
     "divider": "또는",
     "links": {
@@ -44,6 +45,7 @@
     "generic": "알 수 없는 오류입니다. 나중에 다시 시도해 주세요.",
     "network": "네트워크 연결 오류입니다. 나중에 다시 시도해 주세요.",
     "discordFailed": "Discord 로그인 시작에 실패했습니다. 다시 시도해 보시고 문제가 계속되면 개발자에게 문의해 주세요.",
+    "googleFailed": "Google 로그인 시작에 실패했습니다. 다시 시도해 보시고 문제가 계속되면 개발자에게 문의해 주세요.",
     "invalidCredentials": "이메일/사용자명 또는 비밀번호가 올바르지 않습니다.",
     "emailNotVerified": "로그인하기 전에 이메일을 인증해 주세요.",
     "rateLimit": "시도 횟수가 너무 많습니다. 잠시 후 다시 시도해 주세요.",

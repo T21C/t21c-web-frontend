@@ -6,7 +6,7 @@ import { BellIcon } from '@/components/common/icons';
 import { useAuth } from '@/contexts/AuthContext';
 import api from '@/utils/api';
 
-const ProfileFollowButton = ({ following = false, followRoute }) => {
+const ProfileFollowButton = ({ following = false, followRoute, onFollowChange }) => {
   const { t } = useTranslation('pages');
   const { user } = useAuth();
   const [isFollowing, setIsFollowing] = useState(Boolean(following));
@@ -29,7 +29,12 @@ const ProfileFollowButton = ({ following = false, followRoute }) => {
     setSaving(true);
     try {
       const { data } = await api.put(followRoute, { following: next });
-      setIsFollowing(Boolean(data?.following));
+      const resolvedFollowing = Boolean(data?.following);
+      setIsFollowing(resolvedFollowing);
+      onFollowChange?.({
+        following: resolvedFollowing,
+        followerCount: data?.followerCount,
+      });
     } catch {
       setIsFollowing(!next);
       toast.error(t('profile.followError'));

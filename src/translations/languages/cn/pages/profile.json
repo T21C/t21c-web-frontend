@@ -41,6 +41,8 @@
   "following": "已关注",
   "followLogin": "请登录后再关注",
   "followError": "无法更新关注状态",
+  "followerCount_one": "{{formatted}} 位关注者",
+  "followerCount_other": "{{formatted}} 位关注者",
   "stellarSubscriberIconTooltip": "TUFStellar 订阅用户",
   "header": {
     "aka": "又名"

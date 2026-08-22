@@ -223,6 +223,8 @@ const CreatorProfilePage = () => {
           country={creatorDoc.user?.country || creatorDoc.country}
           badgeId={creatorDoc?.rank ?? creatorDoc?.chartsTotalRank}
           profileId={creatorDoc?.id}
+          followerCount={profile?.followerCount}
+          showFollowerCount={profile?.showFollowerCount !== false}
           expandStatsAriaLabel={t("creators.profile.funFacts.expandAria")}
           collapseStatsAriaLabel={t("creators.profile.funFacts.collapseAria")}
           statGroups={statGroups}
@@ -263,6 +265,19 @@ const CreatorProfilePage = () => {
                 <ProfileFollowButton
                   following={profile?.isFollowing}
                   followRoute={routes.creatorsV3.follow(creatorId)}
+                  onFollowChange={({ following, followerCount: nextCount }) => {
+                    setProfile((p) =>
+                      p && typeof p === "object"
+                        ? {
+                            ...p,
+                            isFollowing: following,
+                            ...(Number.isFinite(Number(nextCount))
+                              ? { followerCount: Number(nextCount) }
+                              : {}),
+                          }
+                        : p,
+                    );
+                  }}
                 />
               ) : null}
               {isOwnCreatorProfile ? (
