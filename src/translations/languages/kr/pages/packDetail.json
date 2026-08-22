@@ -20,7 +20,8 @@
   "stats": {
     "levels": "레벨",
     "items": "항목",
-    "created": "제작일"
+    "created": "제작일",
+    "curationPanelDialog": "이 팩의 큐레이션 유형"
   },
   "items": {
     "title": "항목",
