@@ -1,5 +1,5 @@
 // tuf-search: #Select #selectors #select
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import ReactSelect, { components } from 'react-select';
 import { getPortalRoot } from '@/utils/portalRoot';
 import { computeSelectMenuPlacement, estimateSelectMenuHeight } from './selectMenuPlacement';
@@ -15,8 +15,29 @@ function resolveMenuPlacement(direction, menuPlacementProp, autoPlacement) {
   return 'bottom';
 }
 
+const EMPTY_OPTIONS = [];
+
+/** Module-level so react-select does not remount the menu (and replay open animation) on parent re-renders. */
+function AnimatedMenu(menuProps) {
+  const { children, placement, ...rest } = menuProps;
+  const isClosing = Boolean(menuProps.selectProps?.isClosing);
+  const placementClass =
+    placement === 'top' ? 'custom-select-menu--top' : 'custom-select-menu--bottom';
+  return (
+    <components.Menu
+      {...rest}
+      placement={placement}
+      className={`custom-select-menu ${placementClass}${isClosing ? ' closing' : ''}`}
+    >
+      {children}
+    </components.Menu>
+  );
+}
+
+const DEFAULT_COMPONENTS = {Menu: AnimatedMenu};
+
 const CustomSelect = ({
-  options = [],
+  options = EMPTY_OPTIONS,
   value,
   onChange,
   label,
@@ -28,6 +49,7 @@ const CustomSelect = ({
   menuPortalTarget,
   backgroundColor = "rgba(255, 255, 255, 0.2)",
   placeholderColor = "#fff8",
+  components: userComponents,
   ...props
 }) => {
   const containerRef = useRef(null);
@@ -46,23 +68,6 @@ const CustomSelect = ({
     return computeSelectMenuPlacement(el, menuHeight);
   }, [options, maxHeight]);
 
-  // Custom Menu component to handle animation (placement from react-select when menu opens above/below)
-  const Menu = (menuProps) => {
-    const { children, placement, ...rest } = menuProps;
-    const placementClass =
-      placement === 'top' ? 'custom-select-menu--top' : 'custom-select-menu--bottom';
-    return (
-      <components.Menu
-        {...rest}
-        placement={placement}
-        className={`custom-select-menu ${placementClass} ${isClosing ? 'closing' : ''}`}
-      >
-        {children}
-      </components.Menu>
-    );
-  };
-
-  // Clean up timeout on unmount
   useEffect(() => {
     return () => {
       if (closeTimeoutRef.current) {
@@ -71,16 +76,15 @@ const CustomSelect = ({
     };
   }, []);
 
-  const handleMenuClose = () => {
+  const handleMenuClose = useCallback(() => {
     setIsClosing(true);
-    // Keep menu open during animation
     closeTimeoutRef.current = setTimeout(() => {
       setIsClosing(false);
       setMenuIsOpen(false);
-    }, 300); // Slightly longer than animation duration for smooth transition
-  };
+    }, 300);
+  }, []);
 
-  const handleMenuOpen = () => {
+  const handleMenuOpen = useCallback(() => {
     setIsClosing(false);
     if (usesAutoPlacement) {
       setAutoPlacement(measureAutoPlacement());
@@ -89,9 +93,18 @@ const CustomSelect = ({
     if (closeTimeoutRef.current) {
       clearTimeout(closeTimeoutRef.current);
     }
-  };
+  }, [usesAutoPlacement, measureAutoPlacement]);
 
-  const customStyles = {
+  const handleChange = useCallback((option) => {
+    onChange(option);
+    handleMenuClose();
+  }, [onChange, handleMenuClose]);
+
+  const mergedComponents = userComponents
+    ? {Menu: AnimatedMenu, ...userComponents}
+    : DEFAULT_COMPONENTS;
+
+  const customStyles = useMemo(() => ({
     input: (base) => ({
       ...base, 
       color: "#fff"
@@ -104,7 +117,7 @@ const CustomSelect = ({
       ...provided,
       zIndex: 20,
     }),
-    control: (provided, state) => ({
+    control: (provided) => ({
       ...provided,
       width: width,
       backgroundColor: backgroundColor,
@@ -184,13 +197,11 @@ const CustomSelect = ({
         }
       }
     }),
-
     placeholder: (provided) => ({
       ...provided,
       color: placeholderColor
     })
-
-  };
+  }), [width, backgroundColor, placeholderColor, maxHeight]);
 
   return (
     <div
@@ -213,21 +224,19 @@ const CustomSelect = ({
       <div className="custom-select-wrapper">
         <ReactSelect
           value={value}
-          onChange={(option) => {
-            onChange(option);
-            handleMenuClose();
-          }}
-          options={Array.isArray(options) ? options : []}
+          onChange={handleChange}
+          options={Array.isArray(options) ? options : EMPTY_OPTIONS}
           menuPortalTarget={menuPortalTarget ?? getPortalRoot()}
           menuPlacement={menuPlacement}
           menuShouldScrollIntoView={false}
           menuPosition="fixed"
           classNamePrefix="custom-select"
           styles={customStyles}
-          components={{ Menu }}
+          components={mergedComponents}
           menuIsOpen={menuIsOpen}
           onMenuOpen={handleMenuOpen}
           onMenuClose={handleMenuClose}
+          isClosing={isClosing}
           {...props}
         />
       </div>

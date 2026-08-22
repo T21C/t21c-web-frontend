@@ -1008,8 +1008,6 @@ const LevelDetailPage = ({ mockData = null }) => {
   const [linkedLevels, setLinkedLevels] = useState([]);
   const [linkedShare, setLinkedShare] = useState({
     groupId: null,
-    shareChart: false,
-    shareVfx: false,
   });
   const [showLinkedLevelsPopup, setShowLinkedLevelsPopup] = useState(false);
   const weeklyHeaderCornerSlotRef = useRef(null);
@@ -1049,8 +1047,6 @@ const LevelDetailPage = ({ mockData = null }) => {
     setLinkedLevels(levels);
     setLinkedShare({
       groupId: data?.groupId ?? null,
-      shareChart: Boolean(data?.shareChart),
-      shareVfx: Boolean(data?.shareVfx),
     });
   }, []);
 
@@ -3419,8 +3415,6 @@ const LevelDetailPage = ({ mockData = null }) => {
         <LinkedLevelsPopup
           currentLevelId={Number(effectiveId)}
           groupId={linkedShare.groupId}
-          shareChart={linkedShare.shareChart}
-          shareVfx={linkedShare.shareVfx}
           levels={linkedLevels}
           canEdit={isSuperAdmin}
           onClose={() => setShowLinkedLevelsPopup(false)}
