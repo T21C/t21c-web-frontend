@@ -1,11 +1,12 @@
 // tuf-search: #LinkedLevelsPopup #linkedLevelsPopup #popups #levels #levelLinks
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { Portal } from '@/components/common/Portal';
 import { CloseButton } from '@/components/common/buttons';
 import { TrashIcon } from '@/components/common/icons';
+import { CustomSelect } from '@/components/common/selectors';
 import LevelSelectionPopup from '@/components/popups/Levels/LevelSelectionPopup/LevelSelectionPopup';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
@@ -14,11 +15,98 @@ import api from '@/utils/api';
 import { routes } from '@/api/routes';
 import './linkedlevelspopup.css';
 
+const GOLDEN_ANGLE = 137.508;
+
+function hashHue(seed) {
+  let x = Number(seed) || 0;
+  x = Math.imul(x ^ (x >>> 16), 0x7feb352d);
+  x = Math.imul(x ^ (x >>> 15), 0x846ca68b);
+  x ^= x >>> 16;
+  return Math.abs(x) % 360;
+}
+
+function subgroupPalette(groupId, count) {
+  const n = Math.max(0, Number(count) || 0);
+  const hue0 = hashHue(groupId);
+  return Array.from({length: n}, (_, i) => {
+    const h = (hue0 + i * GOLDEN_ANGLE) % 360;
+    return `hsl(${h}deg 72% 58%)`;
+  });
+}
+
+function parseSubgroup(value) {
+  const n = Number(value);
+  return Number.isInteger(n) && n > 0 ? n : null;
+}
+
+function SubgroupSwatch({color, label}) {
+  return (
+    <span
+      className={`linked-levels-popup__swatch${color ? '' : ' linked-levels-popup__swatch--empty'}`}
+      style={color ? {background: color} : undefined}
+      aria-hidden="true"
+      title={label}
+    />
+  );
+}
+
+function subgroupColor(palette, n) {
+  if (!palette.length) return null;
+  return palette[(Number(n) - 1) % palette.length];
+}
+
+function formatSubgroupOption(option) {
+  return (
+    <span className="linked-levels-popup__option">
+      <SubgroupSwatch color={option.color} label={String(option.value)} />
+      <span>{option.label}</span>
+    </span>
+  );
+}
+
+function SubgroupPicker({
+  label,
+  value,
+  options,
+  canEdit,
+  disabled,
+  onChange,
+}) {
+  const selected = options.find((opt) => Number(opt.value) === Number(value)) ?? options[0];
+
+  if (!canEdit) {
+    return (
+      <div className="linked-levels-popup__picker linked-levels-popup__picker--readonly">
+        <span className="linked-levels-popup__picker-label">{label}</span>
+        {selected ? formatSubgroupOption(selected) : null}
+      </div>
+    );
+  }
+
+  return (
+    <div className="linked-levels-popup__picker">
+      <span className="linked-levels-popup__picker-label">{label}</span>
+      <CustomSelect
+        options={options}
+        value={selected ?? null}
+        onChange={(opt) => {
+          if (opt == null) return;
+          onChange(Number(opt.value));
+        }}
+        isDisabled={disabled}
+        isSearchable={false}
+        isClearable={false}
+        formatOptionLabel={formatSubgroupOption}
+        width="7rem"
+        aria-label={label}
+      />
+    </div>
+  );
+}
+
 export default function LinkedLevelsPopup({
   currentLevelId,
   groupId,
-  shareChart = false,
-  shareVfx = false,
   levels,
   canEdit,
   onClose,
@@ -30,6 +118,21 @@ export default function LinkedLevelsPopup({
   const [isMutating, setIsMutating] = useState(false);
 
   useBodyScrollLock(true);
+
+  const memberCount = levels.length;
+  const palette = useMemo(
+    () => subgroupPalette(groupId, memberCount),
+    [groupId, memberCount],
+  );
+
+  const selectOptions = useMemo(() => {
+    const nums = Array.from({length: memberCount}, (_, i) => i + 1);
+    return nums.map((n) => ({
+      value: n,
+      label: String(n),
+      color: subgroupColor(palette, n),
+    }));
+  }, [memberCount, palette]);
 
   useEffect(() => {
     if (showPicker) {
@@ -105,13 +208,14 @@ export default function LinkedLevelsPopup({
     }
   };
 
-  const handleShareToggle = async (field, nextValue) => {
+  const handleSubgroupChange = async (memberLevelId, field, nextValue) => {
     if (!canEdit || !groupId || isMutating) return;
     setIsMutating(true);
     try {
-      const response = await api.patch(routes.database.levels.links(currentLevelId), {
-        [field]: nextValue,
-      });
+      const response = await api.patch(
+        routes.database.levels.linkMember(currentLevelId, memberLevelId),
+        {[field]: nextValue},
+      );
       applyResult(response.data);
     } catch (err) {
       toast.error(err.response?.data?.error || t('levelPopups.linkedLevels.errors.saveShare'));
@@ -120,7 +224,17 @@ export default function LinkedLevelsPopup({
     }
   };
 
-  const showShareToggles = canEdit && Boolean(groupId);
+  const optionsForValue = (value) => {
+    if (value == null || value <= memberCount) return selectOptions;
+    return [
+      ...selectOptions,
+      {
+        value,
+        label: String(value),
+        color: subgroupColor(palette, value),
+      },
+    ];
+  };
 
   return (
     <Portal>
@@ -131,28 +245,6 @@ export default function LinkedLevelsPopup({
         >
           <div className="linked-levels-popup__header">
             <h2>{t('levelPopups.linkedLevels.title')}</h2>
-            {showShareToggles && (
-              <div className="linked-levels-popup__share">
-                <label className="linked-levels-popup__share-toggle">
-                  <input
-                    type="checkbox"
-                    checked={Boolean(shareChart)}
-                    disabled={isMutating}
-                    onChange={(e) => handleShareToggle('shareChart', e.target.checked)}
-                  />
-                  {t('levelPopups.linkedLevels.shareChart')}
-                </label>
-                <label className="linked-levels-popup__share-toggle">
-                  <input
-                    type="checkbox"
-                    checked={Boolean(shareVfx)}
-                    disabled={isMutating}
-                    onChange={(e) => handleShareToggle('shareVfx', e.target.checked)}
-                  />
-                  {t('levelPopups.linkedLevels.shareVfx')}
-                </label>
-              </div>
-            )}
             <CloseButton
               variant="floating"
               onClick={onClose}
@@ -167,12 +259,15 @@ export default function LinkedLevelsPopup({
                 {t('levelPopups.linkedLevels.empty')}
               </p>
             ) : (
-              levels.map((level) => {
-    const isCurrent = Number(level.id) === Number(currentLevelId);
+              levels.map((level, index) => {
+                const isCurrent = Number(level.id) === Number(currentLevelId);
                 const icon =
                   level.difficulty?.icon ||
                   difficultyDict[level.diffId]?.icon ||
                   '/default-difficulty-icon.png';
+                const listPosition = index + 1;
+                const chartSubgroup = parseSubgroup(level.chartSubgroup) ?? listPosition;
+                const vfxSubgroup = parseSubgroup(level.vfxSubgroup) ?? listPosition;
                 const rowInner = (
                   <>
                     <img
@@ -207,6 +302,30 @@ export default function LinkedLevelsPopup({
                       >
                         {rowInner}
                       </Link>
+                    )}
+                    {Boolean(groupId) && (
+                      <div className="linked-levels-popup__subgroups">
+                        <SubgroupPicker
+                          label={t('levelPopups.linkedLevels.shareChart')}
+                          value={chartSubgroup}
+                          options={optionsForValue(chartSubgroup)}
+                          canEdit={canEdit}
+                          disabled={isMutating}
+                          onChange={(next) =>
+                            handleSubgroupChange(level.id, 'chartSubgroup', next)
+                          }
+                        />
+                        <SubgroupPicker
+                          label={t('levelPopups.linkedLevels.shareVfx')}
+                          value={vfxSubgroup}
+                          options={optionsForValue(vfxSubgroup)}
+                          canEdit={canEdit}
+                          disabled={isMutating}
+                          onChange={(next) =>
+                            handleSubgroupChange(level.id, 'vfxSubgroup', next)
+                          }
+                        />
+                      </div>
                     )}
                     {canEdit && (
                       <button
