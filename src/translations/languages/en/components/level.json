@@ -255,6 +255,9 @@
     "updateAvailable": "Update available",
     "updatingLevel": "Updating...",
     "updateRetry": "Retry update",
+    "updateErrors": {
+        "downloaded_level_in_use": "Close the level currently open in the game before updating."
+    },
     "updateRequiredShort": "Update TUFHelperLite",
     "calculatingSummary": "Calculating library size…",
     "summaryFailed": "Library size unavailable",
