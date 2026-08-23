@@ -304,6 +304,31 @@
   font-size: 0.76rem;
 }
 
+.tufhelper-download-manager__level-update-cell {
+  display: flex;
+  min-width: 142px;
+  min-height: 62px;
+  align-items: stretch;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.tufhelper-download-manager__level-update-error {
+  display: flex;
+  max-width: 190px;
+  align-items: flex-start;
+  gap: 0.3rem;
+  color: #ff9d9d;
+  font-size: 0.66rem;
+  line-height: 1.25;
+}
+
+.tufhelper-download-manager__level-update-error svg {
+  flex: 0 0 auto;
+  margin-top: 0.05rem;
+}
+
 .tufhelper-download-manager__update.is-up_to_date {
   border-color: transparent;
   background: transparent;
@@ -538,10 +563,18 @@
   .tufhelper-download-manager__level-info { grid-area: info; }
   .tufhelper-download-manager__level-creator { grid-area: creator; }
   .tufhelper-download-manager__level-size { grid-area: size; }
-  .tufhelper-download-manager__update {
+  .tufhelper-download-manager__level-update-cell {
     grid-area: update;
     width: 100%;
+  }
+
+  .tufhelper-download-manager__update {
+    width: 100%;
     min-height: 44px !important;
+  }
+
+  .tufhelper-download-manager__level-update-error {
+    max-width: none;
   }
 
   .tufhelper-download-manager__path-row,

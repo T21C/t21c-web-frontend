@@ -248,6 +248,9 @@
     "updateAvailable": "有可用更新",
     "updatingLevel": "更新中……",
     "updateRetry": "重试更新",
+    "updateErrors": {
+        "downloaded_level_in_use": "更新前请关闭游戏中当前打开的关卡。"
+    },
     "updateRequiredShort": "更新 TUFHelperLite",
     "calculatingSummary": "正在计算库大小…",
     "summaryFailed": "无法获取库大小",

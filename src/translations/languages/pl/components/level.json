@@ -167,6 +167,9 @@
     "updateAvailable": "Dostępna aktualizacja",
     "updatingLevel": "Aktualizowanie...",
     "updateRetry": "Ponów aktualizację",
+    "updateErrors": {
+        "downloaded_level_in_use": "Przed aktualizacją zamknij poziom aktualnie otwarty w grze."
+    },
     "updateRequiredShort": "Zaktualizuj TUFHelperLite",
     "calculatingSummary": "Obliczanie rozmiaru biblioteki…",
     "summaryFailed": "Rozmiar biblioteki jest niedostępny",

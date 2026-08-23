@@ -33,6 +33,9 @@
     "updateAvailable": "Mise à jour disponible",
     "updatingLevel": "Mise à jour...",
     "updateRetry": "Réessayer la mise à jour",
+    "updateErrors": {
+        "downloaded_level_in_use": "Avant la mise à jour, fermez le niveau actuellement ouvert dans le jeu."
+    },
     "updateRequiredShort": "Mettre à jour TUFHelperLite",
     "calculatingSummary": "Calcul de la taille de la bibliothèque…",
     "summaryFailed": "Taille de la bibliothèque indisponible",

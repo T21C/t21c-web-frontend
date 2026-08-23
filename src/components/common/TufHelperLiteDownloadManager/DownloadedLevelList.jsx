@@ -64,6 +64,11 @@ export const DownloadedLevelList = ({
     const progressLabel = Number.isFinite(progress) && progress >= 0 && progress < 1
       ? ` ${Math.round(progress * 100)}%`
       : '';
+    const updateError = updateState === 'failed'
+      ? t(`level.tufHelperLiteDownloadManager.updateErrors.${updateStatus.errorCode}`, {
+        defaultValue: updateStatus.error,
+      })
+      : null;
 
     return (
       <article className="tufhelper-download-manager__level-row" role="listitem">
@@ -93,19 +98,32 @@ export const DownloadedLevelList = ({
           <span>{t('level.tufHelperLiteDownloadManager.size')}</span>
           <strong>{formatBytes(level.sizeBytes, locale)}</strong>
         </div>
-        <button
-          type="button"
-          className={`tufhelper-download-manager__update is-${updateState}`}
-          onClick={() => onCheckForUpdate(level)}
-          disabled={!updateSupported || updateState === 'checking' || updateState === 'updating'}
-          aria-live="polite"
-          title={updateStatus.error || undefined}
-        >
-          <RefreshIcon size={15} color="currentColor" aria-hidden="true" />
-          {updateSupported
-            ? `${t(`level.tufHelperLiteDownloadManager.${labelKey}`)}${progressLabel}`
-            : t('level.tufHelperLiteDownloadManager.updateRequiredShort')}
-        </button>
+        <div className="tufhelper-download-manager__level-update-cell">
+          <button
+            type="button"
+            className={`tufhelper-download-manager__update is-${updateState}`}
+            onClick={() => onCheckForUpdate(level)}
+            disabled={!updateSupported || updateState === 'checking' || updateState === 'updating'}
+            aria-live="polite"
+            aria-describedby={updateError ? `tufhelper-update-error-${level.id}` : undefined}
+          >
+            <RefreshIcon size={15} color="currentColor" aria-hidden="true" />
+            {updateSupported
+              ? `${t(`level.tufHelperLiteDownloadManager.${labelKey}`)}${progressLabel}`
+              : t('level.tufHelperLiteDownloadManager.updateRequiredShort')}
+          </button>
+          {updateError ? (
+            <div
+              id={`tufhelper-update-error-${level.id}`}
+              className="tufhelper-download-manager__level-update-error"
+              role="alert"
+              title={updateError}
+            >
+              <WarningIcon size={13} color="currentColor" aria-hidden="true" />
+              <span>{updateError}</span>
+            </div>
+          ) : null}
+        </div>
       </article>
     );
   };
