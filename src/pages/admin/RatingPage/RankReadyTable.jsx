@@ -6,7 +6,8 @@ import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { useTranslation } from 'react-i18next';
 import { getSongDisplayName } from '@/utils/levelHelpers';
 
-const AUTORATER_USERNAME = 'autorater';
+
+const AUTORATER_USER_ID = 'b19522b7-c12b-42d8-9fcd-08b0cdbf8b7e';
 
 const countDetails = (details = []) => {
   let manager = 0;
@@ -20,7 +21,7 @@ const countDetails = (details = []) => {
 
 const getAutoraterRating = (details = []) => {
   const match = details.find(
-    (detail) => String(detail?.username || '').toLowerCase() === AUTORATER_USERNAME,
+    (detail) => detail?.userId === AUTORATER_USER_ID,
   );
   return match?.rating || '';
 };
