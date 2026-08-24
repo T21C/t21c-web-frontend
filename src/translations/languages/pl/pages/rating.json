@@ -20,6 +20,9 @@
     },
     "fourVote": {
       "label": "4+ ocen"
+    },
+    "rankReady": {
+      "label": "Gotowe do rangi"
     }
   },
   "sort": {
@@ -45,7 +48,21 @@
       "subtitle": "Wszystko ocenione!"
     }
   },
+  "rankReady": {
+    "settledWhileEditing": "Inny manager właśnie rozliczył ten poziom. Możesz dalej edytować lub bezpiecznie wyjść.",
+    "columns": {
+      "name": "Nazwa",
+      "managerAvg": "Śr. managerów",
+      "communityAvg": "Śr. społeczności",
+      "mgrCom": "Mgr/Społ",
+      "autorater": "Autorater"
+    },
+    "empty": {
+      "title": "Brak poziomów gotowych do rangi",
+      "subtitle": "Nic z 4+ ocenami managerów i 0 clearami."
+    }
+  },
   "infiniteScroll": {
     "end": "To już koniec!"
   }
-} 
+}

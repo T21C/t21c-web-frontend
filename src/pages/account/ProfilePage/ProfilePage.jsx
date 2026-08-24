@@ -735,6 +735,11 @@ const ProfilePage = () => {
                     profileId={playerData?.id ?? playerId}
                     followerCount={playerData?.followerCount}
                     showFollowerCount={playerData?.showFollowerCount !== false}
+                    followersUrl={
+                      playerData?.id ?? playerId
+                        ? routes.playersV3.followers(playerData?.id ?? playerId)
+                        : null
+                    }
                     expandStatsAriaLabel={t("profile.funFacts.expandAria")}
                     collapseStatsAriaLabel={t("profile.funFacts.collapseAria")}
                     statGroups={statGroups}

@@ -43,6 +43,18 @@
   "followError": "Could not update follow",
   "followerCount_one": "{{formatted}} follower",
   "followerCount_other": "{{formatted}} followers",
+  "followersPopup": {
+    "title": "Followers",
+    "loading": "Loading followers…",
+    "empty": "No public followers yet",
+    "error": "Could not load followers",
+    "unknown": "Unknown user",
+    "previous": "Previous",
+    "next": "Next",
+    "pageInfo": "Page {{current}} of {{total}}"
+  },
+  "hiddenFollowers_one": "{{formatted}} Hidden follower",
+  "hiddenFollowers_other": "{{formatted}} Hidden followers",
   "stellarSubscriberIconTooltip": "TUFStellar Subscriber",
   "header": {
     "aka": "a.k.a."

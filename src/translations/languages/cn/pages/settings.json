@@ -64,6 +64,14 @@
         "label": "隐藏吉祥物",
         "description": "在提交页面隐藏吉祥物图案，改为显示adofai / 创作者图标。"
       }
+    },
+    "privacy": {
+      "title": "隐私",
+      "publicFollows": {
+        "label": "在他人的关注者列表中显示我",
+        "description": "切换是否在关注者列表中显示你。关闭后，你会和其他选择此选项的人一起显示为“隐藏关注者”。",
+        "error": "无法更新关注者列表可见性"
+      }
     }
   },
   "sessions": {

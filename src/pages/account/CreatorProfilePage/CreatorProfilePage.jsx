@@ -225,6 +225,7 @@ const CreatorProfilePage = () => {
           profileId={creatorDoc?.id}
           followerCount={profile?.followerCount}
           showFollowerCount={profile?.showFollowerCount !== false}
+          followersUrl={creatorId ? routes.creatorsV3.followers(creatorId) : null}
           expandStatsAriaLabel={t("creators.profile.funFacts.expandAria")}
           collapseStatsAriaLabel={t("creators.profile.funFacts.collapseAria")}
           statGroups={statGroups}

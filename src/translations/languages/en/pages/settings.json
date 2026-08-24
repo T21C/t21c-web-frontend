@@ -64,6 +64,14 @@
         "label": "Disable mascots",
         "description": "Hides character art on the submission landing page and shows Adofai / creator icons instead."
       }
+    },
+    "privacy": {
+      "title": "Privacy",
+      "publicFollows": {
+        "label": "Show me on other people's follower lists",
+        "description": "Toggles whether you're shown on the follower lists. When off, you'll be shown as \"Hidden follower\" along others with this option.",
+        "error": "Could not update follower list visibility"
+      }
     }
   },
   "sessions": {

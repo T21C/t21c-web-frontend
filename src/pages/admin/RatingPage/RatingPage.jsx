@@ -24,6 +24,8 @@ import { LeaderboardIcon, SortAscIcon, SortDescIcon } from "@/components/common/
 import { Tooltip } from "react-tooltip";
 import { RatingHelpPopup } from "@/components/popups/Rating";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
+import toast from 'react-hot-toast';
+import { RankReadyTable } from './RankReadyTable';
 
 const RATINGS_BATCH = 30;
 const SEARCH_DEBOUNCE_MS = 300;
@@ -63,6 +65,8 @@ const RatingPage = () => {
     setSearchQuery,
     showDetailedView,
     setShowDetailedView,
+    showRankReadyView,
+    setShowRankReadyView,
     showReferences,
     setShowReferences,
     showRaterManagement,
@@ -90,10 +94,41 @@ const RatingPage = () => {
   const deepLinkHandledRef = useRef(false);
   const selectedRatingIdRef = useRef(null);
   const sseHandlersRef = useRef({});
+  const [settledLevelIds, setSettledLevelIds] = useState(() => new Set());
+  const [isRemotelySettled, setIsRemotelySettled] = useState(false);
+  const editingLevelIdRef = useRef(null);
+  const settledLevelIdsRef = useRef(settledLevelIds);
+  const showRankReadyViewRef = useRef(false);
+  const ratingsRef = useRef(ratings);
+
+  const isSuperAdmin = hasFlag(user, permissionFlags.SUPER_ADMIN);
+  const rankReadyActive = Boolean(isSuperAdmin && showRankReadyView);
 
   useEffect(() => {
     selectedRatingIdRef.current = selectedRating?.id ?? null;
   }, [selectedRating?.id]);
+
+  useEffect(() => {
+    editingLevelIdRef.current = openEditDialog ? selectedLevel?.id ?? null : null;
+  }, [openEditDialog, selectedLevel?.id]);
+
+  useEffect(() => {
+    settledLevelIdsRef.current = settledLevelIds;
+  }, [settledLevelIds]);
+
+  useEffect(() => {
+    showRankReadyViewRef.current = rankReadyActive;
+  }, [rankReadyActive]);
+
+  useEffect(() => {
+    ratingsRef.current = ratings;
+  }, [ratings]);
+
+  useEffect(() => {
+    setSettledLevelIds(new Set());
+    settledLevelIdsRef.current = new Set();
+    setIsRemotelySettled(false);
+  }, [rankReadyActive]);
 
   useEffect(() => {
     // Clear immediately on keystroke; debounce only delays the request (LevelPage clears on query change too).
@@ -116,14 +151,17 @@ const RatingPage = () => {
       sort: sortType,
       order: sortOrder,
       lowDiff: lowDiffFilter,
-      fourVote: fourVoteFilter,
-      hideRated: hideRated ? 'true' : 'false',
+      fourVote: rankReadyActive ? 'only' : fourVoteFilter,
+      hideRated: rankReadyActive ? 'false' : (hideRated ? 'true' : 'false'),
     };
+    if (rankReadyActive) {
+      params.zeroClears = 'true';
+    }
     if (debouncedQuery) {
       params.query = debouncedQuery;
     }
     return params;
-  }, [sortType, sortOrder, lowDiffFilter, fourVoteFilter, hideRated, debouncedQuery]);
+  }, [sortType, sortOrder, lowDiffFilter, fourVoteFilter, hideRated, debouncedQuery, rankReadyActive]);
 
   const normalizePageResults = (data) => {
     // New API: { results, total, hasMore }. Guard against accidental bare/non-array bodies.
@@ -212,14 +250,21 @@ const RatingPage = () => {
     if (debouncedQuery) return false;
     if (lowDiffFilter === 'hide' && listRow.lowDiff) return false;
     if (lowDiffFilter === 'only' && !listRow.lowDiff) return false;
-    const detailCount = Array.isArray(listRow.details) ? listRow.details.length : 0;
+    const details = Array.isArray(listRow.details) ? listRow.details : [];
+    if (rankReadyActive) {
+      const managerCount = details.filter((d) => !d.isCommunityRating).length;
+      if (managerCount < 4) return false;
+      if (Number(listRow.level?.clears ?? 0) !== 0) return false;
+      return true;
+    }
+    const detailCount = details.length;
     if (fourVoteFilter === 'only' && detailCount < 4) return false;
     if (fourVoteFilter === 'hide' && detailCount >= 4) return false;
-    if (hideRated && user?.id && Array.isArray(listRow.details)) {
-      if (listRow.details.some((d) => d.userId === user.id)) return false;
+    if (hideRated && user?.id) {
+      if (details.some((d) => d.userId === user.id)) return false;
     }
     return true;
-  }, [debouncedQuery, lowDiffFilter, fourVoteFilter, hideRated, user?.id]);
+  }, [debouncedQuery, lowDiffFilter, fourVoteFilter, hideRated, user?.id, rankReadyActive]);
 
   const upsertRatingRow = useCallback((listRow) => {
     if (!listRow?.id) return;
@@ -228,8 +273,13 @@ const RatingPage = () => {
       if (!Array.isArray(prev)) return prev;
       const idx = prev.findIndex((r) => r.id === listRow.id);
       if (idx !== -1) {
+        const merged = { ...prev[idx], ...listRow, level: listRow.level || prev[idx].level };
+        const settled = settledLevelIdsRef.current.has(merged.level?.id);
+        if (rankReadyActive && !settled && !listRowMatchesFilters(merged)) {
+          return prev.filter((_, i) => i !== idx);
+        }
         const next = [...prev];
-        next[idx] = { ...next[idx], ...listRow, level: listRow.level || next[idx].level };
+        next[idx] = merged;
         return next;
       }
       if (!listRowMatchesFilters(listRow)) return prev;
@@ -255,7 +305,7 @@ const RatingPage = () => {
       }
       return next;
     });
-  }, [listRowMatchesFilters, sortOrder, sortType]);
+  }, [listRowMatchesFilters, sortOrder, sortType, rankReadyActive]);
 
   const removeRatingById = useCallback((ratingId) => {
     setRatings((prev) => (Array.isArray(prev) ? prev.filter((r) => r.id !== ratingId) : prev));
@@ -267,6 +317,22 @@ const RatingPage = () => {
     setRatings((prev) => (Array.isArray(prev) ? prev.filter((r) => r.level?.id !== levelId) : prev));
     setSelectedRating((sel) => (sel?.level?.id === levelId ? null : sel));
   }, []);
+
+  const settleRatingByLevelId = useCallback((levelId, { announce = true } = {}) => {
+    if (levelId == null) return;
+    if (settledLevelIdsRef.current.has(levelId)) return;
+    setSettledLevelIds((prev) => {
+      if (prev.has(levelId)) return prev;
+      const next = new Set(prev);
+      next.add(levelId);
+      settledLevelIdsRef.current = next;
+      return next;
+    });
+    if (announce && editingLevelIdRef.current === levelId) {
+      setIsRemotelySettled(true);
+      toast(t('rating.rankReady.settledWhileEditing'), { duration: 10000 });
+    }
+  }, [t]);
 
   const logUserCountChange = useCallback((total, managers) => {
     console.debug('SSE Client: User count update:', { total, managers });
@@ -280,6 +346,7 @@ const RatingPage = () => {
     upsertRatingRow,
     removeRatingById,
     removeRatingByLevelId,
+    settleRatingByLevelId,
     reloadFromStart,
   };
 
@@ -300,7 +367,12 @@ const RatingPage = () => {
           case 'ratingUpdate': {
             const payload = data.data || {};
             if (payload.action === 'remove') {
-              if (payload.ratingId) h.removeRatingById(payload.ratingId);
+              if (showRankReadyViewRef.current) {
+                const levelId = payload.levelId
+                  ?? ratingsRef.current?.find((r) => r.id === payload.ratingId)?.level?.id;
+                if (levelId != null) h.settleRatingByLevelId(levelId);
+                else if (payload.ratingId) h.removeRatingById(payload.ratingId);
+              } else if (payload.ratingId) h.removeRatingById(payload.ratingId);
               else if (payload.levelId) h.removeRatingByLevelId(payload.levelId);
               break;
             }
@@ -316,18 +388,28 @@ const RatingPage = () => {
             const payload = data.data || {};
             if (!payload.levelId) break;
             if (payload.level == null || payload.level.toRate === false) {
-              h.removeRatingByLevelId(payload.levelId);
+              if (showRankReadyViewRef.current) {
+                h.settleRatingByLevelId(payload.levelId);
+              } else {
+                h.removeRatingByLevelId(payload.levelId);
+              }
               break;
             }
-            setRatings((prev) =>
-              Array.isArray(prev)
-                ? prev.map((r) =>
-                    r.level?.id === payload.levelId
-                      ? { ...r, level: { ...r.level, ...payload.level } }
-                      : r
-                  )
-                : prev
-            );
+            setRatings((prev) => {
+              if (!Array.isArray(prev)) return prev;
+              return prev.flatMap((r) => {
+                if (r.level?.id !== payload.levelId) return [r];
+                const merged = { ...r, level: { ...r.level, ...payload.level } };
+                if (
+                  showRankReadyViewRef.current &&
+                  !settledLevelIdsRef.current.has(payload.levelId) &&
+                  Number(merged.level?.clears ?? 0) !== 0
+                ) {
+                  return [];
+                }
+                return [merged];
+              });
+            });
             setSelectedRating((sel) =>
               sel?.level?.id === payload.levelId
                 ? { ...sel, level: { ...sel.level, ...payload.level } }
@@ -424,6 +506,7 @@ const RatingPage = () => {
   };
 
   const handleEditLevel = (levelId) => {
+    setIsRemotelySettled(false);
     setSelectedLevel({ id: levelId, _ratingListMinimal: true });
     setOpenEditDialog(true);
   };
@@ -564,7 +647,7 @@ const RatingPage = () => {
               />
             </div>
           </div>
-          {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
+          {isSuperAdmin && (
             <div className="view-mode-toggle">
               <span className="toggle-label">{t('rating.toggles.detailedView.label')}</span>
               <label className="switch">
@@ -577,6 +660,20 @@ const RatingPage = () => {
               </label>
             </div>
           )}
+          {isSuperAdmin && (
+            <div className="view-mode-toggle">
+              <span className="toggle-label">{t('rating.toggles.rankReady.label')}</span>
+              <label className="switch">
+                <input
+                  type="checkbox"
+                  checked={showRankReadyView}
+                  onChange={(e) => setShowRankReadyView(e.target.checked)}
+                />
+                <span className="slider round"></span>
+              </label>
+            </div>
+          )}
+          {!rankReadyActive && (
           <div className="view-mode-toggle">
             <span className="toggle-label">{t('rating.toggles.hideRated.label')}</span>
             <label className="switch">
@@ -588,6 +685,7 @@ const RatingPage = () => {
               <span className="slider round"></span>
             </label>
           </div>
+          )}
             <StateDisplay
               currentState={lowDiffFilter}
               states={['show','hide',  'only']}
@@ -595,6 +693,7 @@ const RatingPage = () => {
               label={t('rating.toggles.lowDiff.label')}
               width={60}
             />
+            {!rankReadyActive && (
             <StateDisplay
               currentState={fourVoteFilter}
               states={['hide', 'show', 'only']}
@@ -602,6 +701,7 @@ const RatingPage = () => {
               label={t('rating.toggles.fourVote.label')}
               width={60}
             />
+            )}
         </div>
 
 
@@ -651,6 +751,16 @@ const RatingPage = () => {
             </div>
           {Array.isArray(ratings) && ratings.length > 0 ? (
           <>
+            {rankReadyActive ? (
+              <RankReadyTable
+                ratings={ratings}
+                settledLevelIds={settledLevelIds}
+                onEditLevel={handleEditLevel}
+                loadMore={loadMoreRatings}
+                hasMore={hasMore && ratings.length > 0}
+                loadingMore={isLoadingMore}
+              />
+            ) : (
             <VirtualList
               style={{ paddingBottom: "4rem", overflow: "visible" }}
               items={ratings}
@@ -674,19 +784,20 @@ const RatingPage = () => {
                   index={index}
                   setSelectedRating={openRatingDetails}
                   user={user}
-                  isSuperAdmin={hasFlag(user, permissionFlags.SUPER_ADMIN)}
+                  isSuperAdmin={isSuperAdmin}
                   showDetailedView={showDetailedView}
                   onEditLevel={() => handleEditLevel(rating.level.id)}
                 />
               )}
               computeItemKey={(index, rating) => rating?.id ?? index}
             />
+            )}
           </>
         ) : 
         Array.isArray(ratings) && ratings.length === 0 && !isLoading ? (
           <div className="all-rated-message">
-            <h2>{t('rating.messages.noRatings.title')}</h2>
-            <p>{t('rating.messages.noRatings.subtitle')}</p>
+            <h2>{t(rankReadyActive ? 'rating.rankReady.empty.title' : 'rating.messages.noRatings.title')}</h2>
+            <p>{t(rankReadyActive ? 'rating.rankReady.empty.subtitle' : 'rating.messages.noRatings.subtitle')}</p>
           </div>
         ) : (
           <div className="loader loader-offset"/>
@@ -715,12 +826,14 @@ const RatingPage = () => {
               />
             )}
 
-            {openEditDialog && selectedLevel && hasFlag(user, permissionFlags.SUPER_ADMIN) && (
+            {openEditDialog && selectedLevel && isSuperAdmin && (
               <EditLevelPopup
                 level={selectedLevel}
+                isRemotelySettled={isRemotelySettled}
                 onClose={() => {
                   setOpenEditDialog(false);
                   setSelectedLevel(null);
+                  setIsRemotelySettled(false);
                 }}
                 onUpdate={(updatedData) => {
                   if (updatedData) {
@@ -729,12 +842,17 @@ const RatingPage = () => {
                       removeRatingByLevelId(rid);
                       setOpenEditDialog(false);
                       setSelectedLevel(null);
+                      setIsRemotelySettled(false);
                       return;
                     }
                     const updatedLevel = updatedData.level || updatedData;
                     const shouldRemove = updatedLevel.toRate === false;
                     if (shouldRemove) {
-                      removeRatingByLevelId(updatedLevel.id);
+                      if (rankReadyActive) {
+                        settleRatingByLevelId(updatedLevel.id, { announce: false });
+                      } else {
+                        removeRatingByLevelId(updatedLevel.id);
+                      }
                     } else {
                       setRatings(prev =>
                         Array.isArray(prev)
@@ -755,6 +873,7 @@ const RatingPage = () => {
                   }
                   setOpenEditDialog(false);
                   setSelectedLevel(null);
+                  setIsRemotelySettled(false);
                 }}
               />
             )}

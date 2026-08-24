@@ -43,6 +43,18 @@
   "followError": "팔로우를 업데이트하지 못했습니다",
   "followerCount_one": "팔로워 {{formatted}}명",
   "followerCount_other": "팔로워 {{formatted}}명",
+  "followersPopup": {
+    "title": "팔로워",
+    "loading": "팔로워를 불러오는 중…",
+    "empty": "공개 팔로워가 없습니다",
+    "error": "팔로워를 불러오지 못했습니다",
+    "unknown": "알 수 없는 사용자",
+    "previous": "이전",
+    "next": "다음",
+    "pageInfo": "{{current}} / {{total}} 페이지"
+  },
+  "hiddenFollowers_one": "숨겨진 팔로워 {{formatted}}명",
+  "hiddenFollowers_other": "숨겨진 팔로워 {{formatted}}명",
   "stellarSubscriberIconTooltip": "TUFStellar 구독자",
   "header": {
     "aka": "일명"
