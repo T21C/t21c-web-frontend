@@ -43,6 +43,18 @@
   "followError": "无法更新关注状态",
   "followerCount_one": "{{formatted}} 位关注者",
   "followerCount_other": "{{formatted}} 位关注者",
+  "followersPopup": {
+    "title": "关注者",
+    "loading": "正在加载关注者…",
+    "empty": "暂无公开关注者",
+    "error": "无法加载关注者",
+    "unknown": "未知用户",
+    "previous": "上一页",
+    "next": "下一页",
+    "pageInfo": "第 {{current}} / {{total}} 页"
+  },
+  "hiddenFollowers_one": "{{formatted}} 位隐藏关注者",
+  "hiddenFollowers_other": "{{formatted}} 位隐藏关注者",
   "stellarSubscriberIconTooltip": "TUFStellar 订阅用户",
   "header": {
     "aka": "又名"

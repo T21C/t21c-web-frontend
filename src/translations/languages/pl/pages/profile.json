@@ -34,6 +34,20 @@
   "followerCount_few": "{{formatted}} obserwujących",
   "followerCount_many": "{{formatted}} obserwujących",
   "followerCount_other": "{{formatted}} obserwujących",
+  "followersPopup": {
+    "title": "Obserwujący",
+    "loading": "Ładowanie obserwujących…",
+    "empty": "Brak publicznych obserwujących",
+    "error": "Nie udało się wczytać obserwujących",
+    "unknown": "Nieznany użytkownik",
+    "previous": "Poprzednia",
+    "next": "Następna",
+    "pageInfo": "Strona {{current}} z {{total}}"
+  },
+  "hiddenFollowers_one": "{{formatted}} ukryty obserwujący",
+  "hiddenFollowers_few": "{{formatted}} ukrytych obserwujących",
+  "hiddenFollowers_many": "{{formatted}} ukrytych obserwujących",
+  "hiddenFollowers_other": "{{formatted}} ukrytych obserwujących",
   "stellarSubscriberIconTooltip": "Subskrybent TUFStellar",
   "header": {
     "aka": "znany też jako"

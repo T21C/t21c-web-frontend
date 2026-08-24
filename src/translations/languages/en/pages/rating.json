@@ -23,6 +23,9 @@
     },
     "fourVote": {
       "label": "4+ Rated"
+    },
+    "rankReady": {
+      "label": "Rank-ready"
     }
   },
   "sort": {
@@ -52,6 +55,21 @@
     "noRatings": {
       "title": "No ratings available",
       "subtitle": "All rated!"
+    }
+  },
+  "rankReady": {
+    "view": "View",
+    "settledWhileEditing": "Another manager has just settled this level, you can keep editing or safely exit.",
+    "columns": {
+      "name": "Name",
+      "managerAvg": "Manager avg",
+      "communityAvg": "Community avg",
+      "mgrCom": "Mgr/Com",
+      "autorater": "Autorater"
+    },
+    "empty": {
+      "title": "No rank-ready levels",
+      "subtitle": "Nothing with 4+ manager votes and 0 clears."
     }
   },
   "infiniteScroll": {

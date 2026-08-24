@@ -407,6 +407,7 @@ export const routes = {
     search: () => '/v3/players/search',
     profile: (playerId) => `/v3/players/${enc(playerId)}/profile`,
     follow: (playerId) => `/v3/players/${enc(playerId)}/follow`,
+    followers: (playerId) => `/v3/players/${enc(playerId)}/followers`,
     passes: (playerId) => `/v3/players/${enc(playerId)}/passes`,
     rankHistory: (playerId) => `/v3/players/${enc(playerId)}/rank-history`,
     leaderboard: () => '/v3/players/leaderboard',
@@ -454,6 +455,10 @@ export const routes = {
     },
   },
 
+  followsV3: {
+    mePublic: () => '/v3/follows/me/public',
+  },
+
   profileCustomizationV3: {
     root: () => '/v3/profile-customization',
     link: (unit) => `/v3/profile-customization/${encodeURIComponent(String(unit))}/link`,
@@ -464,6 +469,7 @@ export const routes = {
     root: () => '/v3/creators',
     profile: (creatorId) => `/v3/creators/${enc(creatorId)}/profile`,
     follow: (creatorId) => `/v3/creators/${enc(creatorId)}/follow`,
+    followers: (creatorId) => `/v3/creators/${enc(creatorId)}/followers`,
     leaderboard: () => '/v3/creators/leaderboard',
     managedUpdate: (creatorId) => `/v3/creators/${enc(creatorId)}/managed-update`,
     displayCurationTypes: (creatorId) =>

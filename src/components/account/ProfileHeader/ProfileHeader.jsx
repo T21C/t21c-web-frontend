@@ -22,6 +22,7 @@ import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import { groupCurationTypesForPanel } from "@/utils/curationTypeUtils";
 import ProfileHeaderIconPanelPortal from "./ProfileHeaderIconPanelPortal";
 import ProfileHeaderNameAliasesTooltip from "./ProfileHeaderNameAliasesTooltip";
+import { FollowersPopup } from "@/components/popups/Account";
 import { useSvgTextDimensions } from "@/hooks/useSvgTextDimensions";
 
 const PROFILE_HEADER_STELLAR_TOOLTIP_ID = "profile-header-stellar-subscriber";
@@ -138,6 +139,8 @@ const ProfileHeader = ({
   followerCount = null,
   /** Owner display preference; missing/undefined means on. */
   showFollowerCount = true,
+  /** When set, the follower count toggles a dropdown list from this URL. */
+  followersUrl = null,
 }) => {
   const { t } = useTranslation("pages");
   const internalNameTooltipId = useId().replace(/:/g, "");
@@ -155,6 +158,8 @@ const ProfileHeader = ({
   const headerRef = useRef(null);
   const iconRowRef = useRef(null);
   const iconPanelPortalRef = useRef(null);
+  const followersWrapRef = useRef(null);
+  const [followersOpen, setFollowersOpen] = useState(false);
 
   const { primaryUrl: resolvedPrimaryAvatarUrl, fallbackUrl: resolvedFallbackAvatarUrl } = useMemo(
     () => userAvatarUrls(avatarSubject),
@@ -337,6 +342,29 @@ const ProfileHeader = ({
     document.addEventListener("pointerdown", onPointerDown);
     return () => document.removeEventListener("pointerdown", onPointerDown);
   }, [iconPanelOpen]);
+
+  useEffect(() => {
+    if (!followersUrl) setFollowersOpen(false);
+  }, [followersUrl]);
+
+  useEffect(() => {
+    if (!followersOpen) return undefined;
+    const onPointerDown = (event) => {
+      const node = event.target;
+      if (!(node instanceof Node)) return;
+      if (followersWrapRef.current?.contains(node)) return;
+      setFollowersOpen(false);
+    };
+    const onKey = (event) => {
+      if (event.key === "Escape") setFollowersOpen(false);
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [followersOpen]);
 
   const badgeText = formatPlayerBadgeText(badgeId);
 
@@ -749,12 +777,35 @@ const ProfileHeader = ({
               {showFollowerCount !== false &&
               followerCount != null &&
               Number.isFinite(Number(followerCount)) ? (
-                <div className="profile-header__follower-count">
-                  {t("profile.followerCount", {
-                    count: Number(followerCount),
-                    formatted: formatNumber(Number(followerCount), 0),
-                  })}
-                </div>
+                followersUrl ? (
+                  <div className="profile-header__followers" ref={followersWrapRef}>
+                    <button
+                      type="button"
+                      className="profile-header__follower-count profile-header__follower-count--button"
+                      aria-expanded={followersOpen}
+                      aria-haspopup="menu"
+                      onClick={() => setFollowersOpen((open) => !open)}
+                    >
+                      {t("profile.followerCount", {
+                        count: Number(followerCount),
+                        formatted: formatNumber(Number(followerCount), 0),
+                      })}
+                    </button>
+                    {followersOpen ? (
+                      <FollowersPopup
+                        followersUrl={followersUrl}
+                        onClose={() => setFollowersOpen(false)}
+                      />
+                    ) : null}
+                  </div>
+                ) : (
+                  <div className="profile-header__follower-count">
+                    {t("profile.followerCount", {
+                      count: Number(followerCount),
+                      formatted: formatNumber(Number(followerCount), 0),
+                    })}
+                  </div>
+                )
               ) : null}
               <div className="profile-header__icon-row" ref={iconRowRef}>
                 <div

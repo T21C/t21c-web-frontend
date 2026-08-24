@@ -77,6 +77,14 @@
         "label": "Désactiver les mascottes",
         "description": "Masque les personnages sur la page de soumission."
       }
+    },
+    "privacy": {
+      "title": "Confidentialité",
+      "publicFollows": {
+        "label": "M’afficher dans les listes de followers des autres",
+        "description": "Active ou non votre affichage dans les listes de followers. Lorsque c’est désactivé, vous apparaissez comme « Follower masqué » avec les autres personnes ayant cette option.",
+        "error": "Impossible de mettre à jour la visibilité de la liste de followers"
+      }
     }
   },
   "player": {

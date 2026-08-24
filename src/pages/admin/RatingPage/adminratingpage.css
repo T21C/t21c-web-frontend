@@ -336,8 +336,23 @@
 
   .admin-rating-page .admin-buttons {
     display: flex;
+    align-items: center;
     gap: 10px;
     margin-bottom: 0.75rem;
+  }
+
+  .admin-rating-page .admin-buttons .rank-ready-button {
+    margin-left: auto;
+  }
+
+  .admin-rating-page .admin-button.rank-ready-button--active {
+    background-color: var(--btn-primary);
+    border-color: var(--btn-primary);
+  }
+
+  .admin-rating-page .admin-button.rank-ready-button--active:hover {
+    background-color: #007bff;
+    border-color: #007bff;
   }
 
   .admin-rating-page .admin-button {
@@ -720,4 +735,112 @@
   margin-top: 2rem;
   font-weight: bold;
   color: rgba(255, 255, 255, 0.6);
+}
+
+.admin-rating-page .rank-ready-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  width: 100%;
+}
+
+.admin-rating-page .rank-ready-table__header,
+.admin-rating-page .rank-ready-table__row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.35rem 0.6rem;
+  min-width: 0;
+}
+
+.admin-rating-page .rank-ready-table__header {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--color-white);
+  opacity: 0.7;
+  border-bottom: 1px solid var(--color-white-t20);
+}
+
+.admin-rating-page .rank-ready-table__row {
+  font-size: 0.85rem;
+  border: 1px solid transparent;
+  background: var(--color-white-t10);
+}
+
+.admin-rating-page .rank-ready-table__row--settled {
+  background: var(--danger-color-tint-36);
+  border-color: var(--danger-color-alpha-80);
+}
+
+.admin-rating-page .rank-ready-table__col {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.admin-rating-page .rank-ready-table__col--name {
+  flex: 1.6;
+}
+
+.admin-rating-page .rank-ready-table__col--avg {
+  flex: 0.8;
+}
+
+.admin-rating-page .rank-ready-table__col--counts {
+  flex: 0.55;
+}
+
+.admin-rating-page .rank-ready-table__col--autorater {
+  flex: 0.9;
+}
+
+.admin-rating-page .rank-ready-table__col--edit {
+  flex: 0 0 5rem;
+}
+
+.admin-rating-page .rank-ready-table__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.admin-rating-page .rank-ready-table__name {
+  display: block;
+  width: 100%;
+}
+
+.admin-rating-page .rank-ready-table__view-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  background: var(--color-white-t10);
+  color: var(--color-white);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.admin-rating-page .rank-ready-table__view-btn:hover {
+  background: var(--color-white-t20);
+}
+
+.admin-rating-page .rank-ready-table__edit-btn {
+  padding: 0.25rem 0.7rem;
+  background: var(--btn-primary);
+  color: var(--color-white);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.admin-rating-page .rank-ready-table__edit-btn:hover:not(:disabled) {
+  background: var(--btn-primary-hover);
+}
+
+.admin-rating-page .rank-ready-table__edit-btn:disabled {
+  background: var(--btn-disabled-fill);
+  cursor: not-allowed;
 }

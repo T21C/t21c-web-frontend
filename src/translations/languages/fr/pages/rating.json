@@ -13,6 +13,9 @@
     },
     "hideRated": {
       "label": "Cacher évalués"
+    },
+    "rankReady": {
+      "label": "Prêt à classer"
     }
   },
   "messages": {
@@ -23,7 +26,22 @@
       "subtitle": "Vous avez tout évalué!"
     }
   },
+  "rankReady": {
+    "view": "Voir",
+    "settledWhileEditing": "Un autre manager vient de valider ce niveau. Tu peux continuer à modifier ou quitter sans risque.",
+    "columns": {
+      "name": "Nom",
+      "managerAvg": "Moy. managers",
+      "communityAvg": "Moy. communauté",
+      "mgrCom": "Mgr/Com",
+      "autorater": "Autorater"
+    },
+    "empty": {
+      "title": "Aucun niveau prêt à classer",
+      "subtitle": "Rien avec 4+ votes managers et 0 clear."
+    }
+  },
   "infiniteScroll": {
     "end": "Vous avez atteint la fin !"
   }
-} 
+}

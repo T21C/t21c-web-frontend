@@ -26,7 +26,7 @@ import { AdminLevelChartStatsPopup } from './AdminLevelChartStatsPopup';
 import { AdminLevelXaccCurvePopup } from './AdminLevelXaccCurvePopup';
 import { AdminReasonPrompt } from '@/components/common/AdminReasonPrompt';
 
-export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPage = false }) => {
+export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPage = false, isRemotelySettled = false }) => {
   const { t } = useTranslation(['components', 'common']);
   const { user } = useAuth();
   const isSuperAdmin = hasFlag(user, permissionFlags.SUPER_ADMIN);
@@ -616,7 +616,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
   if (isHydratingLevel) {
     return (
       <Portal>
-        <div className="edit-level-popup-overlay" onClick={handleOverlayClick}>
+        <div className={`edit-level-popup-overlay${isRemotelySettled ? ' edit-level-popup-overlay--remotely-settled' : ''}`} onClick={handleOverlayClick}>
           <div className="edit-level-popup" onClick={handleContentClick}>
             <div className="loader-shell loader-shell--fill">
               <div className="loader loader-relative" />
@@ -628,7 +628,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
   }
 
   const popupContent = (
-    <div className="edit-level-popup-overlay" onClick={handleOverlayClick}>
+    <div className={`edit-level-popup-overlay${isRemotelySettled ? ' edit-level-popup-overlay--remotely-settled' : ''}`} onClick={handleOverlayClick}>
       <div className="edit-level-popup" onClick={handleContentClick}>
         <div className="popup-header">
           <h2>{t('levelPopups.edit.title')}</h2>

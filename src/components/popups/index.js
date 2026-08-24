@@ -6,6 +6,7 @@ export * from "./Levels";
 export * from "./Passes";
 export * from "./Rating";
 export * from "./Users";
+export * from "./Account";
 export * from "./Songs";
 export * from "./Artists";
 export * from "./Entities";

@@ -14,6 +14,18 @@
   "followError": "Impossible de mettre à jour le suivi",
   "followerCount_one": "{{formatted}} follower",
   "followerCount_other": "{{formatted}} followers",
+  "followersPopup": {
+    "title": "Followers",
+    "loading": "Chargement des followers…",
+    "empty": "Aucun follower public pour le moment",
+    "error": "Impossible de charger les followers",
+    "unknown": "Utilisateur inconnu",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "pageInfo": "Page {{current}} sur {{total}}"
+  },
+  "hiddenFollowers_one": "{{formatted}} follower masqué",
+  "hiddenFollowers_other": "{{formatted}} followers masqués",
   "stellarSubscriberIconTooltip": "Abonné TUFStellar",
   "header": {
     "aka": "alias"

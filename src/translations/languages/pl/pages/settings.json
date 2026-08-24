@@ -77,6 +77,14 @@
         "label": "Wyłącz maskotki",
         "description": "Ukrywa grafiki postaci na stronie zgłoszeń."
       }
+    },
+    "privacy": {
+      "title": "Prywatność",
+      "publicFollows": {
+        "label": "Pokazuj mnie na listach obserwujących innych osób",
+        "description": "Przełącza, czy jesteś widoczny na listach obserwujących. Gdy wyłączone, wyświetlasz się jako „Ukryty obserwujący” wraz z innymi osobami z tą opcją.",
+        "error": "Nie udało się zaktualizować widoczności na liście obserwujących"
+      }
     }
   },
   "player": {
