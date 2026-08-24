@@ -27,6 +27,7 @@
     }
   },
   "rankReady": {
+    "view": "Voir",
     "settledWhileEditing": "Un autre manager vient de valider ce niveau. Tu peux continuer à modifier ou quitter sans risque.",
     "columns": {
       "name": "Nom",

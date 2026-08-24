@@ -49,6 +49,7 @@
     }
   },
   "rankReady": {
+    "view": "Zobacz",
     "settledWhileEditing": "Inny manager właśnie rozliczył ten poziom. Możesz dalej edytować lub bezpiecznie wyjść.",
     "columns": {
       "name": "Nazwa",

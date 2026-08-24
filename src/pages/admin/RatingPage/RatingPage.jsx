@@ -610,6 +610,16 @@ const RatingPage = () => {
             >
               {t('rating.buttons.topRaters')} <LeaderboardIcon />
             </button>
+            {isSuperAdmin && (
+              <button
+                type="button"
+                className={`admin-button rank-ready-button${showRankReadyView ? ' rank-ready-button--active' : ''}`}
+                aria-pressed={showRankReadyView}
+                onClick={() => setShowRankReadyView(!showRankReadyView)}
+              >
+                {t('rating.toggles.rankReady.label')}
+              </button>
+            )}
           </div>
         <div className="view-controls">
           
@@ -647,7 +657,7 @@ const RatingPage = () => {
               />
             </div>
           </div>
-          {isSuperAdmin && (
+          {isSuperAdmin && !rankReadyActive && (
             <div className="view-mode-toggle">
               <span className="toggle-label">{t('rating.toggles.detailedView.label')}</span>
               <label className="switch">
@@ -655,19 +665,6 @@ const RatingPage = () => {
                   type="checkbox"
                   checked={showDetailedView}
                   onChange={(e) => setShowDetailedView(e.target.checked)}
-                />
-                <span className="slider round"></span>
-              </label>
-            </div>
-          )}
-          {isSuperAdmin && (
-            <div className="view-mode-toggle">
-              <span className="toggle-label">{t('rating.toggles.rankReady.label')}</span>
-              <label className="switch">
-                <input
-                  type="checkbox"
-                  checked={showRankReadyView}
-                  onChange={(e) => setShowRankReadyView(e.target.checked)}
                 />
                 <span className="slider round"></span>
               </label>
@@ -755,6 +752,7 @@ const RatingPage = () => {
               <RankReadyTable
                 ratings={ratings}
                 settledLevelIds={settledLevelIds}
+                onViewRating={openRatingDetails}
                 onEditLevel={handleEditLevel}
                 loadMore={loadMoreRatings}
                 hasMore={hasMore && ratings.length > 0}

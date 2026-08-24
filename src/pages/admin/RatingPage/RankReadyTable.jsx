@@ -1,5 +1,6 @@
 // tuf-search: #RankReadyTable #rankReadyTable #admin #rating
 import MarqueeText from '@/components/common/display/MarqueeText/MarqueeText';
+import { EyeIcon } from '@/components/common/icons';
 import { VirtualList } from '@/components/common/VirtualList';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { useTranslation } from 'react-i18next';
@@ -47,7 +48,7 @@ const RankReadyHeader = ({ t }) => (
   </div>
 );
 
-const RankReadyRow = ({ rating, settled, onEditLevel, t, difficultyDict }) => {
+const RankReadyRow = ({ rating, settled, onViewRating, onEditLevel, t, difficultyDict }) => {
   const levelId = rating.level?.id;
   const { manager, community } = countDetails(rating.details);
   const songName = getSongDisplayName(rating.level) || `#${levelId}`;
@@ -71,14 +72,24 @@ const RankReadyRow = ({ rating, settled, onEditLevel, t, difficultyDict }) => {
         {autoraterRating}
       </span>
       <span className="rank-ready-table__col rank-ready-table__col--edit">
-        <button
-          type="button"
-          className="rank-ready-table__edit-btn"
-          disabled={settled}
-          onClick={() => onEditLevel(levelId)}
-        >
-          {t('buttons.edit', { ns: 'common' })}
-        </button>
+        <div className="rank-ready-table__actions">
+          <button
+            type="button"
+            className="rank-ready-table__view-btn"
+            aria-label={t('rating.rankReady.view')}
+            onClick={() => onViewRating(rating)}
+          >
+            <EyeIcon size="14px" color="currentColor" />
+          </button>
+          <button
+            type="button"
+            className="rank-ready-table__edit-btn"
+            disabled={settled}
+            onClick={() => onEditLevel(levelId)}
+          >
+            {t('buttons.edit', { ns: 'common' })}
+          </button>
+        </div>
       </span>
     </div>
   );
@@ -87,6 +98,7 @@ const RankReadyRow = ({ rating, settled, onEditLevel, t, difficultyDict }) => {
 export const RankReadyTable = ({
   ratings,
   settledLevelIds,
+  onViewRating,
   onEditLevel,
   loadMore,
   hasMore,
@@ -119,6 +131,7 @@ export const RankReadyTable = ({
           <RankReadyRow
             rating={rating}
             settled={settledLevelIds.has(rating.level?.id)}
+            onViewRating={onViewRating}
             onEditLevel={onEditLevel}
             t={t}
             difficultyDict={difficultyDict}

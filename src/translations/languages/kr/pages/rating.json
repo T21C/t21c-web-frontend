@@ -55,6 +55,7 @@
     }
   },
   "rankReady": {
+    "view": "보기",
     "settledWhileEditing": "다른 관리자가 방금 이 레벨을 확정했습니다. 계속 편집하거나 안전하게 종료할 수 있습니다.",
     "columns": {
       "name": "이름",

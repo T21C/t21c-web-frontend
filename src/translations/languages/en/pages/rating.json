@@ -58,6 +58,7 @@
     }
   },
   "rankReady": {
+    "view": "View",
     "settledWhileEditing": "Another manager has just settled this level, you can keep editing or safely exit.",
     "columns": {
       "name": "Name",

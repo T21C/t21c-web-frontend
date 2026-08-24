@@ -58,6 +58,7 @@
     }
   },
   "rankReady": {
+    "view": "查看",
     "settledWhileEditing": "另一位管理员刚刚结算了该关卡，你可以继续编辑或安全退出。",
     "columns": {
       "name": "名称",
