@@ -914,7 +914,28 @@ const LevelBannerWarningIcon = () => (
   </svg>
 );
 
-const LevelDetailPage = ({ mockData = null }) => {
+function removeInjectedCurationStyles(levelId) {
+  if (levelId == null || levelId === '') {
+    return;
+  }
+  document.querySelectorAll(
+    [
+      `[data-curation-styles="level-${levelId}"]`,
+      `[data-custom-color-styles="level-${levelId}"]`,
+    ].join(', '),
+  ).forEach((el) => el.remove());
+}
+
+function removeInjectedExternalStyles(levelId) {
+  if (levelId == null || levelId === '') {
+    return;
+  }
+  document.querySelectorAll(
+    `style[data-external-override="true"][data-level-id="${levelId}"]`,
+  ).forEach((el) => el.remove());
+}
+
+const LevelDetailPageContent = ({ mockData = null }) => {
   const { t } = useTranslation(['pages', 'common', 'components']);
   const { id } = useParams();
   const detailPage = useLocation();
@@ -947,14 +968,12 @@ const LevelDetailPage = ({ mockData = null }) => {
   
   // Expandable description state
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
-  const [customStyleElement, setCustomStyleElement] = useState(null);
-  const [customColorStyleElement, setCustomColorStyleElement] = useState(null);
   const [notFound, setNotFound] = useState(false);
   const [isLiking, setIsLiking] = useState(false);
 
   // Add support for external CSS overrides (for preview system)
   const [externalCssOverride, setExternalCssOverride] = useState(null);
-  const [externalStyleElement, setExternalStyleElement] = useState(null);
+  const externalStyleElementRef = useRef(null);
   
   // Flag to disable default styling (for preview mode)
   const [disableDefaultStyling, setDisableDefaultStyling] = useState(false);
@@ -1020,6 +1039,7 @@ const LevelDetailPage = ({ mockData = null }) => {
   const tagsAnchorRef = useRef(null);
   /** Tracks last seen CDN zip identity so we can refetch `/cdnData` after upload/import (`dlLink` / `fileId` change). */
   const cdnZipIdentityRef = useRef(null);
+  const fetchGenerationRef = useRef(0);
 
   const tufHelperLiteHealth = useTufHelperLiteHealth();
   const tufHelperLiteJobs = useTufHelperLiteJobs();
@@ -1397,10 +1417,9 @@ const LevelDetailPage = ({ mockData = null }) => {
 
   // Simple setter for external CSS overrides (for preview system)
   const setExternalCssOverrideValue = useCallback((css) => {
-    // Remove existing external override styles
-    if (externalStyleElement && externalStyleElement.parentNode) {
-      externalStyleElement.parentNode.removeChild(externalStyleElement);
-      setExternalStyleElement(null);
+    if (externalStyleElementRef.current) {
+      externalStyleElementRef.current.remove();
+      externalStyleElementRef.current = null;
     }
 
     if (!css || !css.trim()) {
@@ -1412,20 +1431,15 @@ const LevelDetailPage = ({ mockData = null }) => {
     // Note: In preview mode, we allow CSS overrides regardless of ability for testing purposes
     // This allows admins to preview CSS even if the curation type doesn't have the ability
 
-    // Create new external style element
     const style = document.createElement('style');
     style.type = 'text/css';
-    
     style.innerHTML = sanitizeCSS(css);
     style.setAttribute('data-external-override', 'true');
-    style.setAttribute('data-level-id', effectiveId);
-    style.setAttribute('data-hmr-id', `external-${effectiveId}-${Date.now()}`);
-    
-    // Add to document head
+    style.setAttribute('data-level-id', String(effectiveId));
     document.head.appendChild(style);
-    setExternalStyleElement(style);
+    externalStyleElementRef.current = style;
     setExternalCssOverride(css);
-  }, [effectiveId, externalStyleElement, sanitizeCSS]);
+  }, [effectiveId, sanitizeCSS]);
 
   // Expose the setter function globally for the preview system
   useEffect(() => {
@@ -1440,6 +1454,18 @@ const LevelDetailPage = ({ mockData = null }) => {
       };
     }
   }, [setExternalCssOverrideValue]);
+
+  useLayoutEffect(() => {
+    return () => {
+      fetchGenerationRef.current += 1;
+      if (externalStyleElementRef.current) {
+        externalStyleElementRef.current.remove();
+        externalStyleElementRef.current = null;
+      }
+      removeInjectedCurationStyles(effectiveId);
+      removeInjectedExternalStyles(effectiveId);
+    };
+  }, [effectiveId]);
 
   const handleRerateDropdownClose = () => {
     setShowRerateDropdown(false);
@@ -1661,6 +1687,9 @@ const LevelDetailPage = ({ mockData = null }) => {
   }, [effectiveId, mockData]);
 
   const fetchLevelData = useCallback(async (isRefresh = false) => {
+    const generation = ++fetchGenerationRef.current;
+    const isStale = () => generation !== fetchGenerationRef.current;
+
     // Use mock data if provided - completely override everything
     if (mockData) {
       setRes(mockData);
@@ -1675,20 +1704,27 @@ const LevelDetailPage = ({ mockData = null }) => {
     
     try {
       const levelData = await api.get(`${routes.database.levels.root()}/${effectiveId}`);
+      if (isStale()) return;
 
       if (levelData.data.timeout) {
         setLevelTimeout(levelData.data.timeout);
       }
-      
+
+      const nextLevel = levelData.data?.level;
       setRes(prevRes => ({
         ...prevRes,
         ...levelData.data,
         level: {
-          ...levelData.data?.level,
-          // Keep previous passes until fetchPassesForLevel overwrites (avoids empty leaderboard flash)
-          passes: prevRes?.level?.passes
+          ...nextLevel,
+          // Keep previous passes until fetchPassesForLevel overwrites (avoids empty leaderboard flash).
+          // Never reuse another level's passes if this instance was not remounted.
+          passes: String(prevRes?.level?.id) === String(nextLevel?.id)
+            ? prevRes?.level?.passes
+            : nextLevel?.passes,
         },
-        isLiked: prevRes?.isLiked ?? false
+        isLiked: String(prevRes?.level?.id) === String(nextLevel?.id)
+          ? (prevRes?.isLiked ?? false)
+          : false,
       }));
       setNotFound(false);
       
@@ -1699,6 +1735,7 @@ const LevelDetailPage = ({ mockData = null }) => {
       // Assemble extra bits from separate endpoints: passes, CDN download extras, like status
       const levelFromApi = levelData.data?.level;
       const retryCdnExtras = !!(levelFromApi?.dlLink && isCdnUrl(levelFromApi.dlLink));
+      if (isStale()) return;
       await Promise.all([
         fetchPassesForLevel(),
         fetchCdnDownloadExtras({ retryIfBothNull: retryCdnExtras }),
@@ -1706,6 +1743,7 @@ const LevelDetailPage = ({ mockData = null }) => {
         fetchRatingData()
       ]);
     } catch (error) {
+      if (isStale()) return;
       console.error("Error fetching level data:", error);
       if (error.response?.status === 404 || error.response?.status === 403) {
         setNotFound(true);
@@ -1714,6 +1752,7 @@ const LevelDetailPage = ({ mockData = null }) => {
         toast.error(t('levelDetail.errors.refreshFailed'));
       }
     } finally {
+      if (isStale()) return;
       setInfoLoading(false);
       setIsRefreshingLeaderboard(false);
     }
@@ -1860,94 +1899,42 @@ const LevelDetailPage = ({ mockData = null }) => {
     };
   }, [videoLinks]);
 
-  // Apply curation styles when level data changes
-  useEffect(() => {
-    // Don't apply default curation styles if disabled or external CSS override is active
-    if (disableDefaultStyling || externalCssOverride) {
-      // Remove custom curation styles
-      if (customStyleElement && customStyleElement.parentNode) {
-        customStyleElement.parentNode.removeChild(customStyleElement);
-        setCustomStyleElement(null);
-      }
-      if (customColorStyleElement && customColorStyleElement.parentNode) {
-        customColorStyleElement.parentNode.removeChild(customColorStyleElement);
-        setCustomColorStyleElement(null);
-      }
-      setCurationStyles(null);
-      return;
-    }
+  // Apply curation styles when level data changes.
+  // useLayoutEffect so injected CSS is removed before the next paint (same-route
+  // /levels/:id navigations used to keep the previous stylesheet visible).
+  useLayoutEffect(() => {
+    const injected = [];
 
-    if (!themeCurationHydrated) {
-      // Remove custom styles if no curation
-      if (customStyleElement && customStyleElement.parentNode) {
-        customStyleElement.parentNode.removeChild(customStyleElement);
-        setCustomStyleElement(null);
-      }
-      if (customColorStyleElement && customColorStyleElement.parentNode) {
-        customColorStyleElement.parentNode.removeChild(customColorStyleElement);
-        setCustomColorStyleElement(null);
-      }
-      setCurationStyles(null);
-      return;
-    }
-
-    const curation = themeCurationHydrated;
-    
-    // Handle custom color styles
-    const customColorCSS = createCustomColorCSS(curation);
-    if (customColorCSS) {
-      // Remove existing custom color styles before creating new ones
-      if (customColorStyleElement && customColorStyleElement.parentNode) {
-        customColorStyleElement.parentNode.removeChild(customColorStyleElement);
-        setCustomColorStyleElement(null);
-      }
-
-      // Create new color style element
-      const colorStyle = document.createElement('style');
-      colorStyle.type = 'text/css';
-      colorStyle.innerHTML = customColorCSS;
-      colorStyle.setAttribute('data-custom-color-styles', `level-${effectiveId}`);
-      colorStyle.setAttribute('data-hmr-id', `color-${effectiveId}-${Date.now()}`);
-      
-      // Add to document head
-      document.head.appendChild(colorStyle);
-      setCustomColorStyleElement(colorStyle);
-    }
-    
-    // Handle custom CSS styles
-    const styleSheet = createCurationStyleSheet(curation);
-    if (styleSheet) {
-      // Remove existing custom styles before creating new ones
-      if (customStyleElement && customStyleElement.parentNode) {
-        customStyleElement.parentNode.removeChild(customStyleElement);
-        setCustomStyleElement(null);
-      }
-
-      // Create new style element with !important declarations
+    const inject = (cssText, attr, value) => {
       const style = document.createElement('style');
       style.type = 'text/css';
-      
-      
-      style.innerHTML = styleSheet;
-      style.setAttribute('data-curation-styles', `level-${effectiveId}`);
-      style.setAttribute('data-hmr-id', `curation-${effectiveId}-${Date.now()}`);
-      
-      // Add to document head
+      style.innerHTML = cssText;
+      style.setAttribute(attr, value);
       document.head.appendChild(style);
-      setCustomStyleElement(style);
-    }
-    
-    setCurationStyles(curation);
+      injected.push(style);
+    };
 
-    // Cleanup on component unmount or when dependencies change
+    if (disableDefaultStyling || externalCssOverride || !themeCurationHydrated) {
+      removeInjectedCurationStyles(effectiveId);
+      setCurationStyles(null);
+    } else {
+      const curation = themeCurationHydrated;
+      const customColorCSS = createCustomColorCSS(curation);
+      if (customColorCSS) {
+        inject(customColorCSS, 'data-custom-color-styles', `level-${effectiveId}`);
+      }
+
+      const styleSheet = createCurationStyleSheet(curation);
+      if (styleSheet) {
+        inject(styleSheet, 'data-curation-styles', `level-${effectiveId}`);
+      }
+
+      setCurationStyles(curation);
+    }
+
     return () => {
-      // Clean up current style elements
-      if (customStyleElement && customStyleElement.parentNode) {
-        customStyleElement.parentNode.removeChild(customStyleElement);
-      }
-      if (customColorStyleElement && customColorStyleElement.parentNode) {
-        customColorStyleElement.parentNode.removeChild(customColorStyleElement);
-      }
+      injected.forEach((el) => el.remove());
+      removeInjectedCurationStyles(effectiveId);
     };
   }, [
     themeCurationHydrated,
@@ -1957,53 +1944,6 @@ const LevelDetailPage = ({ mockData = null }) => {
     externalCssOverride,
     disableDefaultStyling,
   ]);
-
-
-
-  // Cleanup all custom styles when component unmounts
-  useEffect(() => {
-    return () => {
-      // Clean up all styles we created
-      if (externalStyleElement && externalStyleElement.parentNode) {
-        externalStyleElement.parentNode.removeChild(externalStyleElement);
-      }
-      if (customStyleElement && customStyleElement.parentNode) {
-        customStyleElement.parentNode.removeChild(customStyleElement);
-      }
-      if (customColorStyleElement && customColorStyleElement.parentNode) {
-        customColorStyleElement.parentNode.removeChild(customColorStyleElement);
-      }
-      
-      // Also clean up any stray style elements that might have been left behind
-      // Remove all curation-related style elements for this level
-      const levelStyleElements = document.querySelectorAll(`[data-curation-styles="level-${effectiveId}"]`);
-      levelStyleElements.forEach(element => {
-        if (element.parentNode) {
-          element.parentNode.removeChild(element);
-        }
-      });
-      
-      const colorStyleElements = document.querySelectorAll(`[data-custom-color-styles="level-${effectiveId}"]`);
-      colorStyleElements.forEach(element => {
-        if (element.parentNode) {
-          element.parentNode.removeChild(element);
-        }
-      });
-      
-      const externalStyleElements = document.querySelectorAll(`[data-level-id="${effectiveId}"]`);
-      externalStyleElements.forEach(element => {
-        if (element.parentNode) {
-          element.parentNode.removeChild(element);
-        }
-      });
-      
-      // Remove global functions
-      if (typeof window !== 'undefined') {
-        delete window.setCurationCssOverride;
-        delete window.setDisableDefaultStyling;
-      }
-    };
-  }, []); // Empty dependency array - only run on mount/unmount
 
   function handleSort(sort) {
     if (leaderboardSort === sort) {
@@ -3495,6 +3435,14 @@ const LevelDetailPage = ({ mockData = null }) => {
       </div>
     </div>
   );
+};
+
+const LevelDetailPage = ({ mockData = null }) => {
+  const { id } = useParams();
+  // Remount when the route id changes so /levels/A → /levels/B does not reuse
+  // injected CSS, popups, or in-flight fetches. Preview has no :id param; keep
+  // that instance stable so mockData updates do not wipe CSS overrides.
+  return <LevelDetailPageContent key={id ?? 'level-detail'} mockData={mockData} />;
 };
 
 export default LevelDetailPage;
