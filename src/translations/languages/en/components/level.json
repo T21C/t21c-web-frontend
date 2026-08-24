@@ -235,6 +235,13 @@
     "title": "Download manager",
     "subtitle": "Manage TUFHelperLite downloads and local storage.",
     "libraryTitle": "Downloaded levels",
+    "checkAll": "Check all",
+    "checkingAll": "Checking {{processed}} / {{total}}",
+    "updatesFound_one": "{{count}} update found",
+    "updatesFound_other": "{{count}} updates found",
+    "batchWarning": "Some levels downloaded with an earlier version of TUFHelperLite may download the latest file once for comparison.",
+    "startCheckAll": "Check all levels",
+    "batchFailed": "The downloaded level check could not be completed.",
     "libraryCount_one": "{{count}} level",
     "libraryCount_other": "{{count}} levels",
     "emptyTitle": "No downloaded levels",
@@ -248,6 +255,9 @@
     "updateAvailable": "Update available",
     "updatingLevel": "Updating...",
     "updateRetry": "Retry update",
+    "updateErrors": {
+        "downloaded_level_in_use": "Close the level currently open in the game before updating."
+    },
     "updateRequiredShort": "Update TUFHelperLite",
     "calculatingSummary": "Calculating library size…",
     "summaryFailed": "Library size unavailable",
@@ -266,6 +276,8 @@
     "restoreDefault": "Use default folder",
     "updateRequired": "Update TUFHelperLite to change the download storage location.",
     "warning": "All downloaded levels will be moved. This may take a long time. Keep ADOFAI open and do not modify either folder until it finishes; downloads are paused during the move.",
+    "reconnectWarning": "This existing TUFHelperLite library will be merged with the current downloads. Duplicate levels are checked against the latest official file before either folder is changed.",
+    "startReconnect": "Merge and reconnect",
     "folderErrors": {
       "selection_token_invalid": "Choose the folder again; the previous selection expired.",
       "folder_picker_busy": "Another folder picker is already open.",
@@ -278,7 +290,8 @@
       "storage_target_overlaps_source": "The new folder cannot contain or be inside the current folder.",
       "storage_target_missing": "The selected folder no longer exists.",
       "storage_target_not_empty": "The selected folder must be empty.",
-      "storage_target_not_writable": "The selected folder is not writable."
+      "storage_target_not_writable": "The selected folder is not writable.",
+      "storage_target_unrecognized_content": "The selected folder is not a valid TUFHelperLite download library."
     },
     "states": {
       "idle": "Ready",
@@ -288,13 +301,15 @@
       "cleaning": "Cleaning up",
       "cleanup_pending": "Cleanup required",
       "completed": "Completed",
+      "cancelled": "Cancelled",
       "failed": "Action required"
     },
     "errors": {
       "unavailable": "Storage information is unavailable.",
       "pickFailed": "The folder picker failed.",
       "startFailed": "The move could not be started.",
-      "retryFailed": "The move could not be retried."
+      "retryFailed": "The move could not be retried.",
+      "cancelFailed": "The storage change could not be cancelled."
     }
   }
 }

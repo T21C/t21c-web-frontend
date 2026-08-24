@@ -236,6 +236,12 @@
     "title": "下载管理器",
     "subtitle": "管理 TUFHelperLite 下载和本地存储。",
     "libraryTitle": "已下载关卡",
+    "checkAll": "全部检查",
+    "checkingAll": "正在检查 {{processed}} / {{total}}",
+    "updatesFound": "发现 {{count}} 个更新",
+    "batchWarning": "使用旧版 TUFHelperLite 下载的部分关卡可能会下载一次最新文件用于比较。",
+    "startCheckAll": "检查所有关卡",
+    "batchFailed": "无法完成已下载关卡的更新检查。",
     "libraryCount": "{{count}} 个关卡",
     "emptyTitle": "暂无已下载关卡",
     "emptyDescription": "通过 TUFHelperLite 下载的关卡会显示在这里。",
@@ -248,6 +254,9 @@
     "updateAvailable": "有可用更新",
     "updatingLevel": "更新中……",
     "updateRetry": "重试更新",
+    "updateErrors": {
+        "downloaded_level_in_use": "更新前请关闭游戏中当前打开的关卡。"
+    },
     "updateRequiredShort": "更新 TUFHelperLite",
     "calculatingSummary": "正在计算库大小…",
     "summaryFailed": "无法获取库大小",
@@ -266,6 +275,8 @@
     "restoreDefault": "使用默认文件夹",
     "updateRequired": "请更新 TUFHelperLite 以更改下载存储位置。",
     "warning": "所有已下载关卡都将被移动。此过程可能需要较长时间。完成前请保持 ADOFAI 运行且不要修改两个文件夹；移动期间下载将暂停。",
+    "reconnectWarning": "此现有 TUFHelperLite 库将与当前下载合并。更改文件夹前会将重复关卡与官方最新文件比较。",
+    "startReconnect": "合并并重新连接",
     "folderErrors": {
       "selection_token_invalid": "之前的选择已过期，请重新选择文件夹。",
       "folder_picker_busy": "另一个文件夹选择器已打开。",
@@ -278,7 +289,8 @@
       "storage_target_overlaps_source": "新文件夹不能包含当前文件夹，也不能位于当前文件夹内。",
       "storage_target_missing": "所选文件夹已不存在。",
       "storage_target_not_empty": "所选文件夹必须为空。",
-      "storage_target_not_writable": "无法写入所选文件夹。"
+      "storage_target_not_writable": "无法写入所选文件夹。",
+      "storage_target_unrecognized_content": "所选文件夹不是有效的 TUFHelperLite 下载库。"
     },
     "states": {
       "idle": "就绪",
@@ -288,13 +300,15 @@
       "cleaning": "正在清理",
       "cleanup_pending": "需要清理",
       "completed": "已完成",
+      "cancelled": "已取消",
       "failed": "需要处理"
     },
     "errors": {
       "unavailable": "无法获取存储信息。",
       "pickFailed": "文件夹选择器失败。",
       "startFailed": "无法开始移动。",
-      "retryFailed": "无法重试移动。"
+      "retryFailed": "无法重试移动。",
+      "cancelFailed": "无法取消存储更改。"
     }
   }
 }

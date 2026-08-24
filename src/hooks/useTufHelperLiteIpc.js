@@ -7,6 +7,8 @@ const MINIMUM_TUFHELPER_LITE_VERSION = [0, 1, 4];
 export const TUFHELPER_LITE_STORAGE_CAPABILITY = 'download-storage-migration-v1';
 export const TUFHELPER_LITE_LIBRARY_CAPABILITY = 'downloaded-level-library-v1';
 export const TUFHELPER_LITE_UPDATE_CAPABILITY = 'downloaded-level-update-v1';
+export const TUFHELPER_LITE_BATCH_UPDATE_CAPABILITY = 'downloaded-level-batch-update-check-v1';
+export const TUFHELPER_LITE_STORAGE_RECONNECT_CAPABILITY = 'download-storage-reconnect-v1';
 const IPC_PORT_START = 32145;
 const IPC_PORT_END = 32155;
 const IPC_HEALTH_POLL_MS = 2500;
@@ -66,6 +68,8 @@ let tufHelperLiteHealthSnapshot = {
   supportsStorageMigration: false,
   supportsDownloadedLibrary: false,
   supportsDownloadedLevelUpdate: false,
+  supportsBatchUpdateCheck: false,
+  supportsStorageReconnect: false,
 };
 let tufHelperLiteHealthPollId = null;
 let tufHelperLiteClient = null;
@@ -123,6 +127,8 @@ const setTufHelperLiteHealthSnapshot = (nextSnapshot) => {
     supportsStorageMigration: capabilities.includes(TUFHELPER_LITE_STORAGE_CAPABILITY),
     supportsDownloadedLibrary: capabilities.includes(TUFHELPER_LITE_LIBRARY_CAPABILITY),
     supportsDownloadedLevelUpdate: capabilities.includes(TUFHELPER_LITE_UPDATE_CAPABILITY),
+    supportsBatchUpdateCheck: capabilities.includes(TUFHELPER_LITE_BATCH_UPDATE_CAPABILITY),
+    supportsStorageReconnect: capabilities.includes(TUFHELPER_LITE_STORAGE_RECONNECT_CAPABILITY),
   };
   if (
     tufHelperLiteHealthSnapshot.isAvailable === normalizedSnapshot.isAvailable &&
@@ -131,6 +137,8 @@ const setTufHelperLiteHealthSnapshot = (nextSnapshot) => {
     tufHelperLiteHealthSnapshot.supportsStorageMigration === normalizedSnapshot.supportsStorageMigration &&
     tufHelperLiteHealthSnapshot.supportsDownloadedLibrary === normalizedSnapshot.supportsDownloadedLibrary
     && tufHelperLiteHealthSnapshot.supportsDownloadedLevelUpdate === normalizedSnapshot.supportsDownloadedLevelUpdate
+    && tufHelperLiteHealthSnapshot.supportsBatchUpdateCheck === normalizedSnapshot.supportsBatchUpdateCheck
+    && tufHelperLiteHealthSnapshot.supportsStorageReconnect === normalizedSnapshot.supportsStorageReconnect
   ) {
     return;
   }
@@ -430,8 +438,8 @@ export const invokeTufHelperLiteIpc = async (method, params = {}) => {
 
 export const getTufHelperLiteStorage = () => invokeTufHelperLiteIpc('storage.get', {});
 
-export const startTufHelperLiteFolderPicker = () =>
-  invokeTufHelperLiteIpc('storage.folder-pick.start', {});
+export const startTufHelperLiteFolderPicker = ({ allowExisting = false } = {}) =>
+  invokeTufHelperLiteIpc('storage.folder-pick.start', { AllowExisting: allowExisting });
 
 export const getTufHelperLiteFolderPickerStatus = (operationId) =>
   invokeTufHelperLiteIpc('storage.folder-pick.status', { OperationId: operationId });
@@ -447,6 +455,21 @@ export const getTufHelperLiteStorageMigrationStatus = () =>
 
 export const retryTufHelperLiteStorageMigration = () =>
   invokeTufHelperLiteIpc('storage.migration.retry', {});
+
+export const startTufHelperLiteStorageChange = ({ selectionToken = null, useDefault = false } = {}) =>
+  invokeTufHelperLiteIpc('storage.change.start', {
+    SelectionToken: selectionToken,
+    UseDefault: useDefault,
+  });
+
+export const getTufHelperLiteStorageChangeStatus = () =>
+  invokeTufHelperLiteIpc('storage.change.status', {});
+
+export const retryTufHelperLiteStorageChange = () =>
+  invokeTufHelperLiteIpc('storage.change.retry', {});
+
+export const cancelTufHelperLiteStorageChange = () =>
+  invokeTufHelperLiteIpc('storage.change.cancel', {});
 
 export const getTufHelperLiteDownloadedLevelPage = ({ cursor = null, direction = 'next', limit = 20 } = {}) =>
   invokeTufHelperLiteIpc('level.downloaded-page', {
@@ -466,6 +489,15 @@ export const startTufHelperLiteLevelUpdate = (id) =>
 
 export const getTufHelperLiteLevelJobStatus = (jobId) =>
   invokeTufHelperLiteIpc('level.status', { JobId: jobId });
+
+export const startTufHelperLiteBatchUpdateCheck = () =>
+  invokeTufHelperLiteIpc('level.update.check-all.start', {});
+
+export const getTufHelperLiteBatchUpdateCheckStatus = () =>
+  invokeTufHelperLiteIpc('level.update.check-all.status', {});
+
+export const cancelTufHelperLiteBatchUpdateCheck = () =>
+  invokeTufHelperLiteIpc('level.update.check-all.cancel', {});
 
 export const checkTufHelperLiteHealth = async () => {
   if (!isTufHelperLiteIntegrationEnabled()) {

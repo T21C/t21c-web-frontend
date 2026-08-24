@@ -194,6 +194,7 @@ export const useDownloadedLevelWindow = (enabled) => {
     loadNext,
     loadPrevious,
     retryInitial: loadInitial,
+    reload: loadInitial,
     patchLevel,
     refreshSummary,
   };

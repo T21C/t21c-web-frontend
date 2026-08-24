@@ -152,6 +152,12 @@
     "title": "Menedżer pobierania",
     "subtitle": "Zarządzaj pobranymi poziomami TUFHelperLite i pamięcią lokalną.",
     "libraryTitle": "Pobrane poziomy",
+    "checkAll": "Sprawdź wszystkie",
+    "checkingAll": "Sprawdzanie {{processed}} / {{total}}",
+    "updatesFound": "Znaleziono aktualizacje: {{count}}",
+    "batchWarning": "Niektóre poziomy pobrane starszą wersją TUFHelperLite mogą jednorazowo pobrać najnowszy plik w celu porównania.",
+    "startCheckAll": "Sprawdź wszystkie poziomy",
+    "batchFailed": "Nie udało się sprawdzić aktualizacji pobranych poziomów.",
     "libraryCount_one": "{{count}} poziom",
     "libraryCount_few": "{{count}} poziomy",
     "libraryCount_many": "{{count}} poziomów",
@@ -167,6 +173,9 @@
     "updateAvailable": "Dostępna aktualizacja",
     "updatingLevel": "Aktualizowanie...",
     "updateRetry": "Ponów aktualizację",
+    "updateErrors": {
+        "downloaded_level_in_use": "Przed aktualizacją zamknij poziom aktualnie otwarty w grze."
+    },
     "updateRequiredShort": "Zaktualizuj TUFHelperLite",
     "calculatingSummary": "Obliczanie rozmiaru biblioteki…",
     "summaryFailed": "Rozmiar biblioteki jest niedostępny",
@@ -185,6 +194,8 @@
     "restoreDefault": "Użyj folderu domyślnego",
     "updateRequired": "Zaktualizuj TUFHelperLite, aby zmienić lokalizację pobierania.",
     "warning": "Wszystkie pobrane poziomy zostaną przeniesione. Może to potrwać. Nie zamykaj ADOFAI ani nie modyfikuj folderów do zakończenia; pobieranie będzie wstrzymane.",
+    "reconnectWarning": "Istniejąca biblioteka TUFHelperLite zostanie połączona z bieżącymi plikami. Duplikaty zostaną porównane z najnowszym oficjalnym plikiem przed zmianą folderów.",
+    "startReconnect": "Połącz i podłącz ponownie",
     "folderErrors": {
       "selection_token_invalid": "Poprzedni wybór wygasł. Wybierz folder ponownie.",
       "folder_picker_busy": "Inne okno wyboru folderu jest już otwarte.",
@@ -197,7 +208,8 @@
       "storage_target_overlaps_source": "Nowy folder nie może zawierać bieżącego folderu ani znajdować się w nim.",
       "storage_target_missing": "Wybrany folder już nie istnieje.",
       "storage_target_not_empty": "Wybrany folder musi być pusty.",
-      "storage_target_not_writable": "Nie można zapisywać w wybranym folderze."
+      "storage_target_not_writable": "Nie można zapisywać w wybranym folderze.",
+      "storage_target_unrecognized_content": "Wybrany folder nie jest prawidłową biblioteką pobrań TUFHelperLite."
     },
     "states": {
       "idle": "Gotowe",
@@ -207,13 +219,15 @@
       "cleaning": "Czyszczenie",
       "cleanup_pending": "Wymagane czyszczenie",
       "completed": "Ukończono",
+      "cancelled": "Anulowano",
       "failed": "Wymagane działanie"
     },
     "errors": {
       "unavailable": "Informacje o pamięci są niedostępne.",
       "pickFailed": "Nie udało się otworzyć wyboru folderu.",
       "startFailed": "Nie udało się rozpocząć przenoszenia.",
-      "retryFailed": "Nie udało się ponowić przenoszenia."
+      "retryFailed": "Nie udało się ponowić przenoszenia.",
+      "cancelFailed": "Nie udało się anulować zmiany pamięci."
     }
   }
 }
