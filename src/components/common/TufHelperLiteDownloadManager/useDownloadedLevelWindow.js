@@ -21,7 +21,7 @@ const normalizeItem = (item) => ({
   updateState: String(field(item, 'UpdateState') || 'idle').toLowerCase(),
 });
 
-const normalizePage = (value) => {
+const normalizePage = (value, request = { cursor: null, direction: 'next' }) => {
   const items = (field(value, 'Items') || []).map(normalizeItem).filter((item) => item.id > 0);
   if (items.some((item) => item.metadataState !== 'ready' || item.diffId <= 0)) {
     const error = new Error('Downloaded level metadata is not ready.');
@@ -36,6 +36,8 @@ const normalizePage = (value) => {
     previousCursor: field(value, 'PreviousCursor') || null,
     hasNext: Boolean(field(value, 'HasNext')),
     hasPrevious: Boolean(field(value, 'HasPrevious')),
+    requestCursor: request.cursor || null,
+    requestDirection: request.direction || 'next',
   };
 };
 
@@ -84,7 +86,8 @@ export const useDownloadedLevelWindow = (enabled) => {
     setLoading((current) => ({ ...current, initial: true }));
     setErrors({ initial: null, next: null, previous: null });
     try {
-      const page = normalizePage(await getTufHelperLiteDownloadedLevelPage({ limit: PAGE_SIZE }));
+      const request = { cursor: null, direction: 'next' };
+      const page = normalizePage(await getTufHelperLiteDownloadedLevelPage({ limit: PAGE_SIZE }), request);
       if (generationRef.current !== generation) return;
       setWindowState({ pages: [page], revision: page.revision, firstItemIndex: INITIAL_ITEM_INDEX });
     } catch (error) {
@@ -140,11 +143,12 @@ export const useDownloadedLevelWindow = (enabled) => {
     setLoading((current) => ({ ...current, [direction]: true }));
     setErrors((current) => ({ ...current, [direction]: null }));
     try {
-      const page = normalizePage(await getTufHelperLiteDownloadedLevelPage({
+      const request = {
         cursor,
         direction,
         limit: PAGE_SIZE,
-      }));
+      };
+      const page = normalizePage(await getTufHelperLiteDownloadedLevelPage(request), request);
       if (generationRef.current !== generation) return;
       if (page.revision !== windowState.revision) {
         resetForStaleCursor();
@@ -173,6 +177,41 @@ export const useDownloadedLevelWindow = (enabled) => {
     () => loadSummary(generationRef.current),
     [loadSummary],
   );
+  const refreshLoadedPages = useCallback(async () => {
+    if (!enabled || requestRef.current.refresh) return;
+    const pages = windowState.pages;
+    if (pages.length === 0) {
+      void loadInitial();
+      return;
+    }
+
+    generationRef.current += 1;
+    const generation = generationRef.current;
+    requestRef.current = { next: false, previous: false, refresh: true };
+    setLoading({ initial: false, next: false, previous: false });
+    try {
+      const refreshed = await Promise.all(pages.map(async (page) => {
+        const request = {
+          cursor: page.requestCursor,
+          direction: page.requestDirection,
+          limit: PAGE_SIZE,
+        };
+        return normalizePage(await getTufHelperLiteDownloadedLevelPage(request), request);
+      }));
+      if (generationRef.current !== generation) return;
+      if (refreshed.some((page) => page.revision !== windowState.revision)) {
+        resetForStaleCursor();
+        return;
+      }
+      setWindowState((current) => ({ ...current, pages: refreshed }));
+    } catch (error) {
+      if (generationRef.current !== generation) return;
+      if (isStaleCursor(error)) resetForStaleCursor();
+      else setErrors((current) => ({ ...current, initial: error }));
+    } finally {
+      if (generationRef.current === generation) requestRef.current.refresh = false;
+    }
+  }, [enabled, loadInitial, resetForStaleCursor, windowState.pages, windowState.revision]);
   const patchLevel = useCallback((id, patch) => {
     setWindowState((current) => ({
       ...current,
@@ -194,7 +233,7 @@ export const useDownloadedLevelWindow = (enabled) => {
     loadNext,
     loadPrevious,
     retryInitial: loadInitial,
-    reload: loadInitial,
+    reload: refreshLoadedPages,
     patchLevel,
     refreshSummary,
   };

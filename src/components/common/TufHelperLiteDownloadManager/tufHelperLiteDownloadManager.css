@@ -99,6 +99,7 @@
 }
 
 .tufhelper-download-manager__library-actions {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 0.7rem;
@@ -118,6 +119,17 @@
   background: var(--color-white-t10) !important;
 }
 
+.tufhelper-download-manager__check-all.is-update-ready {
+  border-color: color-mix(in srgb, var(--btn-primary, #8f4bdb) 78%, white) !important;
+  background: var(--btn-primary, #8f4bdb) !important;
+  color: var(--color-white) !important;
+  font-weight: 600;
+}
+
+.tufhelper-download-manager__check-all.is-update-ready:hover:not(:disabled) {
+  background: var(--btn-primary-hover, var(--btn-primary-light-hover, #a660f2)) !important;
+}
+
 .tufhelper-download-manager__check-all svg {
   margin-right: 0.35rem;
 }
@@ -132,11 +144,40 @@
   line-height: 1;
 }
 
-.tufhelper-download-manager__batch-confirmation {
-  margin-bottom: 0.8rem;
-  padding: 0 0.8rem 0.8rem;
-  border-bottom: 1px solid var(--color-white-t10);
-  background: rgba(255, 255, 255, 0.025);
+.tufhelper-download-manager__batch-popover {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 0.6rem);
+  right: 0;
+  width: min(370px, calc(100vw - 3rem));
+  padding: 0.8rem;
+  border: 1px solid var(--color-white-t20);
+  border-radius: 8px;
+  background: #292929;
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.42);
+  animation: tufhelper-manager-fade 120ms ease-out;
+}
+
+.tufhelper-download-manager__batch-popover::before {
+  position: absolute;
+  top: -5px;
+  right: 1.1rem;
+  width: 9px;
+  height: 9px;
+  border-top: 1px solid var(--color-white-t20);
+  border-left: 1px solid var(--color-white-t20);
+  background: #292929;
+  content: '';
+  transform: rotate(45deg);
+}
+
+.tufhelper-download-manager__batch-popover .tufhelper-download-manager__notice {
+  margin-top: 0;
+  font-size: 0.78rem;
+}
+
+.tufhelper-download-manager__batch-popover .tufhelper-download-manager__actions {
+  margin-top: 0.75rem;
 }
 
 .tufhelper-download-manager__level-list {
@@ -658,6 +699,7 @@
 @media (prefers-reduced-motion: reduce) {
   .tufhelper-download-manager__overlay,
   .tufhelper-download-manager,
+  .tufhelper-download-manager__batch-popover,
   .tufhelper-download-manager__update.is-checking svg,
   .tufhelper-download-manager__update.is-updating svg {
     animation: none;

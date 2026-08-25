@@ -8,6 +8,7 @@ export const TUFHELPER_LITE_STORAGE_CAPABILITY = 'download-storage-migration-v1'
 export const TUFHELPER_LITE_LIBRARY_CAPABILITY = 'downloaded-level-library-v1';
 export const TUFHELPER_LITE_UPDATE_CAPABILITY = 'downloaded-level-update-v1';
 export const TUFHELPER_LITE_BATCH_UPDATE_CAPABILITY = 'downloaded-level-batch-update-check-v1';
+export const TUFHELPER_LITE_UPDATE_ALL_CAPABILITY = 'downloaded-level-batch-update-v1';
 export const TUFHELPER_LITE_STORAGE_RECONNECT_CAPABILITY = 'download-storage-reconnect-v1';
 const IPC_PORT_START = 32145;
 const IPC_PORT_END = 32155;
@@ -69,6 +70,7 @@ let tufHelperLiteHealthSnapshot = {
   supportsDownloadedLibrary: false,
   supportsDownloadedLevelUpdate: false,
   supportsBatchUpdateCheck: false,
+  supportsBatchUpdate: false,
   supportsStorageReconnect: false,
 };
 let tufHelperLiteHealthPollId = null;
@@ -128,6 +130,7 @@ const setTufHelperLiteHealthSnapshot = (nextSnapshot) => {
     supportsDownloadedLibrary: capabilities.includes(TUFHELPER_LITE_LIBRARY_CAPABILITY),
     supportsDownloadedLevelUpdate: capabilities.includes(TUFHELPER_LITE_UPDATE_CAPABILITY),
     supportsBatchUpdateCheck: capabilities.includes(TUFHELPER_LITE_BATCH_UPDATE_CAPABILITY),
+    supportsBatchUpdate: capabilities.includes(TUFHELPER_LITE_UPDATE_ALL_CAPABILITY),
     supportsStorageReconnect: capabilities.includes(TUFHELPER_LITE_STORAGE_RECONNECT_CAPABILITY),
   };
   if (
@@ -138,6 +141,7 @@ const setTufHelperLiteHealthSnapshot = (nextSnapshot) => {
     tufHelperLiteHealthSnapshot.supportsDownloadedLibrary === normalizedSnapshot.supportsDownloadedLibrary
     && tufHelperLiteHealthSnapshot.supportsDownloadedLevelUpdate === normalizedSnapshot.supportsDownloadedLevelUpdate
     && tufHelperLiteHealthSnapshot.supportsBatchUpdateCheck === normalizedSnapshot.supportsBatchUpdateCheck
+    && tufHelperLiteHealthSnapshot.supportsBatchUpdate === normalizedSnapshot.supportsBatchUpdate
     && tufHelperLiteHealthSnapshot.supportsStorageReconnect === normalizedSnapshot.supportsStorageReconnect
   ) {
     return;
@@ -498,6 +502,15 @@ export const getTufHelperLiteBatchUpdateCheckStatus = () =>
 
 export const cancelTufHelperLiteBatchUpdateCheck = () =>
   invokeTufHelperLiteIpc('level.update.check-all.cancel', {});
+
+export const startTufHelperLiteBatchUpdate = () =>
+  invokeTufHelperLiteIpc('level.update.all.start', {});
+
+export const getTufHelperLiteBatchUpdateStatus = () =>
+  invokeTufHelperLiteIpc('level.update.all.status', {});
+
+export const cancelTufHelperLiteBatchUpdate = () =>
+  invokeTufHelperLiteIpc('level.update.all.cancel', {});
 
 export const checkTufHelperLiteHealth = async () => {
   if (!isTufHelperLiteIntegrationEnabled()) {
