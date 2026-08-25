@@ -60,7 +60,7 @@
     },
     "empty": {
       "title": "Brak poziomów gotowych do rangi",
-      "subtitle": "Nic z 4+ ocenami managerów i 0 clearami."
+      "subtitle": "Nic z 2+ ocenami managerów i 0 clearami."
     }
   },
   "infiniteScroll": {

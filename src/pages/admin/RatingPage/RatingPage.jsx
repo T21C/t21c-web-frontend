@@ -13,6 +13,7 @@ import { useZenMode } from "@/contexts/ZenModeContext";
 import { useRatingFilter } from "@/contexts/RatingFilterContext";
 import { useTranslation } from "react-i18next";
 import { RatingCard } from "@/components/cards";
+import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { EditLevelPopup } from "@/components/popups/Levels";
 import { RaterManagementPopup, RatingDetailPopup, TopRatersPopup } from "@/components/popups/Rating";
 import { ReferencesPopup } from "@/components/popups/Difficulties";
@@ -25,7 +26,7 @@ import { Tooltip } from "react-tooltip";
 import { RatingHelpPopup } from "@/components/popups/Rating";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import toast from 'react-hot-toast';
-import { RankReadyTable } from './RankReadyTable';
+import { RankReadyTable, isAutoraterDetail, compareRankReadyRows } from './RankReadyTable';
 
 const RATINGS_BATCH = 30;
 const SEARCH_DEBOUNCE_MS = 300;
@@ -49,6 +50,7 @@ const RatingPage = () => {
     [t, location.pathname, levelIdParam],
   );
   const { user } = useAuth();
+  const { difficultyDict } = useDifficultyContext();
   const { hasActiveSession } = useZenMode();
   const { 
     sortOrder, 
@@ -151,11 +153,12 @@ const RatingPage = () => {
       sort: sortType,
       order: sortOrder,
       lowDiff: lowDiffFilter,
-      fourVote: rankReadyActive ? 'only' : fourVoteFilter,
+      fourVote: rankReadyActive ? 'show' : fourVoteFilter,
       hideRated: rankReadyActive ? 'false' : (hideRated ? 'true' : 'false'),
     };
     if (rankReadyActive) {
       params.zeroClears = 'true';
+      params.rankReady = 'true';
     }
     if (debouncedQuery) {
       params.query = debouncedQuery;
@@ -252,8 +255,8 @@ const RatingPage = () => {
     if (lowDiffFilter === 'only' && !listRow.lowDiff) return false;
     const details = Array.isArray(listRow.details) ? listRow.details : [];
     if (rankReadyActive) {
-      const managerCount = details.filter((d) => !d.isCommunityRating).length;
-      if (managerCount < 4) return false;
+      const managerCount = details.filter((d) => !d.isCommunityRating && !isAutoraterDetail(d)).length;
+      if (managerCount < 2) return false;
       if (Number(listRow.level?.clears ?? 0) !== 0) return false;
       return true;
     }
@@ -280,10 +283,18 @@ const RatingPage = () => {
         }
         const next = [...prev];
         next[idx] = merged;
+        if (rankReadyActive) {
+          next.sort((a, b) => compareRankReadyRows(a, b, difficultyDict, sortType, sortOrder));
+        }
         return next;
       }
       if (!listRowMatchesFilters(listRow)) return prev;
       didInsert = true;
+      if (rankReadyActive) {
+        return [...prev, listRow].sort((a, b) =>
+          compareRankReadyRows(a, b, difficultyDict, sortType, sortOrder)
+        );
+      }
       const isDesc = String(sortOrder).toUpperCase() !== 'ASC';
       const prepend = (sortType === 'id' || sortType === 'updatedAt') && isDesc;
       return prepend ? [listRow, ...prev] : [...prev, listRow];
@@ -305,7 +316,7 @@ const RatingPage = () => {
       }
       return next;
     });
-  }, [listRowMatchesFilters, sortOrder, sortType, rankReadyActive]);
+  }, [listRowMatchesFilters, sortOrder, sortType, rankReadyActive, difficultyDict]);
 
   const removeRatingById = useCallback((ratingId) => {
     setRatings((prev) => (Array.isArray(prev) ? prev.filter((r) => r.id !== ratingId) : prev));

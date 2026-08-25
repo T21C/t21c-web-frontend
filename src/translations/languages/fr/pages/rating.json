@@ -38,7 +38,7 @@
     },
     "empty": {
       "title": "Aucun niveau prêt à classer",
-      "subtitle": "Rien avec 4+ votes managers et 0 clear."
+      "subtitle": "Rien avec 2+ votes managers et 0 clear."
     }
   },
   "infiniteScroll": {

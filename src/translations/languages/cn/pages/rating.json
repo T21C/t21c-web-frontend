@@ -69,7 +69,7 @@
     },
     "empty": {
       "title": "没有待定级关卡",
-      "subtitle": "没有 4+ 管理员票且 0 通关的关卡。"
+      "subtitle": "没有 2+ 管理员票且 0 通关的关卡。"
     }
   },
   "infiniteScroll": {
