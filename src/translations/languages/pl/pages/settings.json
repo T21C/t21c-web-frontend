@@ -45,12 +45,16 @@
       "description": "Wybierz, które zdarzenia pojawią się w skrzynce"
     },
     "title": "Powiadomienia",
-    "subtitle": "Wybierz, które zdarzenia pojawią się w skrzynce. E-mail i Discord zostaną dodane później.",
+    "subtitle": "Wybierz, które zdarzenia pojawią się w skrzynce. Powiadomienia przeglądarki stosują te same ustawienia.",
     "loading": "Ładowanie ustawień powiadomień…",
     "loadError": "Nie udało się wczytać ustawień powiadomień",
     "saveError": "Nie udało się zapisać ustawienia",
     "inApp": "Pokaż w skrzynce",
     "muteCategory": "Wycisz tę kategorię",
+    "pushTitle": "Powiadomienia przeglądarki",
+    "pushHint": "Używa tych samych typów i kategorii co skrzynka.",
+    "pushDenied": "Powiadomienia są zablokowane dla tej witryny. Włącz je w ustawieniach przeglądarki.",
+    "pushUnsupported": "Ta przeglądarka nie obsługuje powiadomień.",
     "categories": {
       "submissions": "Zgłoszenia",
       "chart": "Charty",

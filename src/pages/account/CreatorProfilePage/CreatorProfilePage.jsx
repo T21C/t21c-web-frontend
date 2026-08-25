@@ -265,13 +265,15 @@ const CreatorProfilePage = () => {
               {!isOwnCreatorProfile ? (
                 <ProfileFollowButton
                   following={profile?.isFollowing}
+                  notifyLevel={profile?.notifyLevel}
                   followRoute={routes.creatorsV3.follow(creatorId)}
-                  onFollowChange={({ following, followerCount: nextCount }) => {
+                  onFollowChange={({ following, followerCount: nextCount, notifyLevel }) => {
                     setProfile((p) =>
                       p && typeof p === "object"
                         ? {
                             ...p,
                             isFollowing: following,
+                            notifyLevel: following ? notifyLevel : null,
                             ...(Number.isFinite(Number(nextCount))
                               ? { followerCount: Number(nextCount) }
                               : {}),

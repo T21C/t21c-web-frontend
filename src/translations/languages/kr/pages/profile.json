@@ -41,6 +41,10 @@
   "following": "팔로잉",
   "followLogin": "팔로우하려면 로그인하세요",
   "followError": "팔로우를 업데이트하지 못했습니다",
+  "followNotifyAll": "모든 알림",
+  "followNotifyNone": "알림 없음",
+  "unfollow": "언팔로우",
+  "followMenuAria": "팔로우 옵션",
   "followerCount_one": "팔로워 {{formatted}}명",
   "followerCount_other": "팔로워 {{formatted}}명",
   "followersPopup": {

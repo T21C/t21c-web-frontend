@@ -770,13 +770,15 @@ const ProfilePage = () => {
                             <ProfileFollowButton
                               key="follow"
                               following={playerData?.isFollowing}
+                              notifyLevel={playerData?.notifyLevel}
                               followRoute={routes.playersV3.follow(playerData?.id ?? playerId)}
-                              onFollowChange={({ following, followerCount: nextCount }) => {
+                              onFollowChange={({ following, followerCount: nextCount, notifyLevel }) => {
                                 setPlayerData((p) =>
                                   p && typeof p === "object"
                                     ? {
                                         ...p,
                                         isFollowing: following,
+                                        notifyLevel: following ? notifyLevel : null,
                                         ...(Number.isFinite(Number(nextCount))
                                           ? { followerCount: Number(nextCount) }
                                           : {}),

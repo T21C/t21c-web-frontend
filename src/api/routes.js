@@ -529,6 +529,8 @@ export const routes = {
     readAll: () => '/v2/notifications/read-all',
     seen: () => '/v2/notifications/seen',
     preferences: () => '/v2/notifications/preferences',
+    pushVapidKey: () => '/v2/notifications/push/vapid-key',
+    pushSubscribe: () => '/v2/notifications/push/subscribe',
   },
   events: () => '/v2/events',
   health: {

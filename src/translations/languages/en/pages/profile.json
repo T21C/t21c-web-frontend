@@ -41,6 +41,10 @@
   "following": "Following",
   "followLogin": "Please log in to follow",
   "followError": "Could not update follow",
+  "followNotifyAll": "All notifications",
+  "followNotifyNone": "No notifications",
+  "unfollow": "Unfollow",
+  "followMenuAria": "Follow options",
   "followerCount_one": "{{formatted}} follower",
   "followerCount_other": "{{formatted}} followers",
   "followersPopup": {

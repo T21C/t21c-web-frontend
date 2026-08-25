@@ -45,12 +45,16 @@
       "description": "Choisissez les événements affichés dans votre boîte de réception"
     },
     "title": "Notifications",
-    "subtitle": "Choisissez les événements affichés dans votre boîte de réception. E-mail et Discord arriveront plus tard.",
+    "subtitle": "Choisissez les événements affichés dans votre boîte de réception. Les notifications du navigateur suivent ces réglages.",
     "loading": "Chargement des paramètres de notification…",
     "loadError": "Impossible de charger les paramètres de notification",
     "saveError": "Impossible d'enregistrer ce paramètre",
     "inApp": "Afficher dans la boîte de réception",
     "muteCategory": "Désactiver cette catégorie",
+    "pushTitle": "Notifications du navigateur",
+    "pushHint": "Utilise les mêmes types et catégories que la boîte de réception.",
+    "pushDenied": "Les notifications sont bloquées pour ce site. Autorisez-les dans les paramètres du navigateur.",
+    "pushUnsupported": "Ce navigateur ne prend pas en charge les notifications.",
     "categories": {
       "submissions": "Soumissions",
       "chart": "Charts",

@@ -313,6 +313,12 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
+      const {unsubscribeCurrentBrowser} = await import('@/utils/webPush');
+      await unsubscribeCurrentBrowser();
+    } catch {
+      // ignore
+    }
+    try {
       await api.post(routes.auth.logout());
     } catch (e) {
       // ignore
