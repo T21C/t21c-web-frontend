@@ -28,15 +28,46 @@ const LoadError = ({ message, onRetry, position = 'bottom', t }) => (
   </div>
 );
 
+const DownloadedLevelSkeleton = () => (
+  <article
+    className="tufhelper-download-manager__level-row is-skeleton"
+    role="presentation"
+    aria-hidden="true"
+  >
+    <div className="tufhelper-download-manager__difficulty">
+      <span className="tufhelper-download-manager__skeleton-block is-difficulty" />
+    </div>
+    <div className="tufhelper-download-manager__level-info">
+      <span className="tufhelper-download-manager__skeleton-block is-meta" />
+      <span className="tufhelper-download-manager__skeleton-block is-title" />
+    </div>
+    <div className="tufhelper-download-manager__level-creator">
+      <span className="tufhelper-download-manager__skeleton-block is-label" />
+      <span className="tufhelper-download-manager__skeleton-block is-value" />
+    </div>
+    <div className="tufhelper-download-manager__level-size">
+      <span className="tufhelper-download-manager__skeleton-block is-label" />
+      <span className="tufhelper-download-manager__skeleton-block is-value is-short" />
+    </div>
+    <div className="tufhelper-download-manager__level-update-cell">
+      <span className="tufhelper-download-manager__skeleton-block is-action" />
+    </div>
+  </article>
+);
+
 export const DownloadedLevelList = ({
   levels,
+  itemsByIndex,
   firstItemIndex,
+  totalCount,
+  positioned,
   loading,
   errors,
   hasNext,
   hasPrevious,
   loadNext,
   loadPrevious,
+  onVisibleRangeChange,
   retryInitial,
   updateStates,
   onCheckForUpdate,
@@ -47,6 +78,7 @@ export const DownloadedLevelList = ({
 }) => {
   const { difficultyDict, loading: difficultiesLoading } = useDifficultyContext();
   const difficultiesReady = !difficultiesLoading && levels.every((level) => difficultyDict[level.diffId]?.icon);
+  const isEmpty = positioned ? totalCount === 0 : levels.length === 0;
   const renderRow = (_virtualIndex, level) => {
     const difficulty = difficultyDict[level.diffId];
     const updateStatus = updateStates[level.id] || { state: level.updateState || 'idle' };
@@ -133,7 +165,7 @@ export const DownloadedLevelList = ({
         <div className="tufhelper-download-manager__empty">
           <LoadError message={t('level.tufHelperLiteDownloadManager.loadLevelsFailed')} onRetry={retryInitial} t={t} />
         </div>
-      ) : levels.length === 0 ? (
+      ) : isEmpty ? (
         <div className="tufhelper-download-manager__empty" role="status">
           <DownloadIcon size={26} aria-hidden="true" />
           <strong>{t('level.tufHelperLiteDownloadManager.emptyTitle')}</strong>
@@ -146,13 +178,24 @@ export const DownloadedLevelList = ({
           ) : null}
           <Virtuoso
             className="tufhelper-download-manager__virtuoso"
-            data={levels}
-            firstItemIndex={firstItemIndex}
-            computeItemKey={(_index, level) => level.id}
-            itemContent={renderRow}
-            startReached={() => { if (hasPrevious) loadPrevious(); }}
-            endReached={() => { if (hasNext) loadNext(); }}
+            data={positioned ? undefined : levels}
+            totalCount={positioned ? totalCount : undefined}
+            firstItemIndex={positioned ? undefined : firstItemIndex}
+            computeItemKey={(index, level) => {
+              const positionedLevel = positioned ? itemsByIndex.get(index) : level;
+              return positionedLevel ? `level-${positionedLevel.id}` : `skeleton-${index}`;
+            }}
+            itemContent={(index, level) => {
+              const positionedLevel = positioned ? itemsByIndex.get(index) : level;
+              return positionedLevel ? renderRow(index, positionedLevel) : <DownloadedLevelSkeleton />;
+            }}
+            startReached={positioned ? undefined : () => { if (hasPrevious) loadPrevious(); }}
+            endReached={positioned ? undefined : () => { if (hasNext) loadNext(); }}
             rangeChanged={({ startIndex, endIndex }) => {
+              if (positioned) {
+                onVisibleRangeChange({ startIndex, endIndex });
+                return;
+              }
               const localStartIndex = startIndex >= firstItemIndex ? startIndex - firstItemIndex : startIndex;
               const localEndIndex = endIndex >= firstItemIndex ? endIndex - firstItemIndex : endIndex;
               if (hasPrevious && localStartIndex <= 5) loadPrevious();
@@ -161,7 +204,7 @@ export const DownloadedLevelList = ({
             increaseViewportBy={{ top: 220, bottom: 220 }}
             role="list"
           />
-          {loading.next || loading.previous ? (
+          {!positioned && (loading.next || loading.previous) ? (
             <div className={`tufhelper-download-manager__list-status is-${loading.previous ? 'top' : 'bottom'}`} role="status">
               <RefreshIcon size={14} color="currentColor" aria-hidden="true" />
               <span>{t('level.tufHelperLiteDownloadManager.loadingLevels')}</span>

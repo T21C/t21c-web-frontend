@@ -3,7 +3,10 @@ import {
   getTufHelperLiteDownloadedLevelPage,
   getTufHelperLiteDownloadedLevelSummary,
 } from '@/hooks/useTufHelperLiteIpc';
-import { mergeDownloadedLevelPage } from './downloadLevelWindowState';
+import {
+  mergeDownloadedLevelPage,
+  mergePositionedDownloadedLevelPage,
+} from './downloadLevelWindowState';
 
 const PAGE_SIZE = 20;
 const INITIAL_ITEM_INDEX = 1_000_000;
@@ -29,8 +32,12 @@ const normalizePage = (value, request = { cursor: null, direction: 'next' }) => 
     throw error;
   }
 
+  const rawStartIndex = field(value, 'StartIndex');
+  const rawTotalCount = field(value, 'TotalCount');
   return {
     revision: Number(field(value, 'Revision')) || 0,
+    startIndex: rawStartIndex == null ? null : Math.max(0, Number(rawStartIndex) || 0),
+    totalCount: rawTotalCount == null ? null : Math.max(0, Number(rawTotalCount) || 0),
     items,
     nextCursor: field(value, 'NextCursor') || null,
     previousCursor: field(value, 'PreviousCursor') || null,
@@ -56,13 +63,16 @@ const isStaleCursor = (error) => (
   String(error?.message || '').includes('download_library_cursor_stale')
 );
 
-export const useDownloadedLevelWindow = (enabled) => {
+export const useDownloadedLevelWindow = (enabled, positionedPagesEnabled = false) => {
   const generationRef = useRef(0);
   const requestRef = useRef({ next: false, previous: false });
+  const visibleRangeRef = useRef({ startIndex: 0, endIndex: 0 });
   const [windowState, setWindowState] = useState({
     pages: [],
     revision: 0,
     firstItemIndex: INITIAL_ITEM_INDEX,
+    totalCount: 0,
+    positioned: false,
   });
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState({ initial: false, next: false, previous: false });
@@ -89,7 +99,14 @@ export const useDownloadedLevelWindow = (enabled) => {
       const request = { cursor: null, direction: 'next' };
       const page = normalizePage(await getTufHelperLiteDownloadedLevelPage({ limit: PAGE_SIZE }), request);
       if (generationRef.current !== generation) return;
-      setWindowState({ pages: [page], revision: page.revision, firstItemIndex: INITIAL_ITEM_INDEX });
+      const positioned = positionedPagesEnabled && page.startIndex != null && page.totalCount != null;
+      setWindowState({
+        pages: [page],
+        revision: page.revision,
+        firstItemIndex: INITIAL_ITEM_INDEX,
+        totalCount: positioned ? page.totalCount : page.items.length,
+        positioned,
+      });
     } catch (error) {
       if (generationRef.current === generation) {
         setErrors((current) => ({ ...current, initial: error }));
@@ -100,13 +117,16 @@ export const useDownloadedLevelWindow = (enabled) => {
         setLoading((current) => ({ ...current, initial: false }));
       }
     }
-  }, [enabled]);
+  }, [enabled, positionedPagesEnabled]);
 
   useEffect(() => {
     generationRef.current += 1;
     const generation = generationRef.current;
     requestRef.current = { next: false, previous: false };
-    setWindowState({ pages: [], revision: 0, firstItemIndex: INITIAL_ITEM_INDEX });
+    setWindowState({
+      pages: [], revision: 0, firstItemIndex: INITIAL_ITEM_INDEX, totalCount: 0, positioned: false,
+    });
+    visibleRangeRef.current = { startIndex: 0, endIndex: 0 };
     setSummary(null);
     setErrors({ initial: null, next: null, previous: null });
     if (enabled) {
@@ -126,7 +146,10 @@ export const useDownloadedLevelWindow = (enabled) => {
   const resetForStaleCursor = useCallback(() => {
     generationRef.current += 1;
     requestRef.current = { next: false, previous: false };
-    setWindowState({ pages: [], revision: 0, firstItemIndex: INITIAL_ITEM_INDEX });
+    setWindowState({
+      pages: [], revision: 0, firstItemIndex: INITIAL_ITEM_INDEX, totalCount: 0, positioned: false,
+    });
+    visibleRangeRef.current = { startIndex: 0, endIndex: 0 };
     void loadInitial();
     void loadSummary(generationRef.current);
   }, [loadInitial, loadSummary]);
@@ -136,7 +159,7 @@ export const useDownloadedLevelWindow = (enabled) => {
     const boundaryPage = direction === 'previous' ? pages[0] : pages[pages.length - 1];
     const hasMore = direction === 'previous' ? boundaryPage?.hasPrevious : boundaryPage?.hasNext;
     const cursor = direction === 'previous' ? boundaryPage?.previousCursor : boundaryPage?.nextCursor;
-    if (!enabled || !boundaryPage || !hasMore || !cursor || requestRef.current[direction]) return;
+    if (!enabled || !boundaryPage || !hasMore || !cursor || requestRef.current[direction] || requestRef.current.refresh) return;
 
     const generation = generationRef.current;
     requestRef.current[direction] = true;
@@ -154,9 +177,15 @@ export const useDownloadedLevelWindow = (enabled) => {
         resetForStaleCursor();
         return;
       }
+      if (windowState.positioned && page.totalCount !== windowState.totalCount) {
+        resetForStaleCursor();
+        return;
+      }
 
       setWindowState((current) => {
-        return mergeDownloadedLevelPage(current, page, direction);
+        return current.positioned
+          ? mergePositionedDownloadedLevelPage(current, page, direction)
+          : mergeDownloadedLevelPage(current, page, direction);
       });
     } catch (error) {
       if (generationRef.current !== generation) return;
@@ -168,11 +197,58 @@ export const useDownloadedLevelWindow = (enabled) => {
         setLoading((current) => ({ ...current, [direction]: false }));
       }
     }
-  }, [enabled, resetForStaleCursor, windowState.pages, windowState.revision]);
+  }, [
+    enabled,
+    resetForStaleCursor,
+    windowState.pages,
+    windowState.positioned,
+    windowState.revision,
+    windowState.totalCount,
+  ]);
 
   const levels = useMemo(() => windowState.pages.flatMap((page) => page.items), [windowState.pages]);
+  const itemsByIndex = useMemo(() => {
+    const items = new Map();
+    if (!windowState.positioned) return items;
+    windowState.pages.forEach((page) => {
+      page.items.forEach((item, offset) => items.set(page.startIndex + offset, item));
+    });
+    return items;
+  }, [windowState.pages, windowState.positioned]);
   const loadNext = useCallback(() => loadDirection('next'), [loadDirection]);
   const loadPrevious = useCallback(() => loadDirection('previous'), [loadDirection]);
+  const hasNext = Boolean(windowState.pages[windowState.pages.length - 1]?.hasNext);
+  const hasPrevious = Boolean(windowState.pages[0]?.hasPrevious);
+  const loadForVisibleRange = useCallback((range) => {
+    if (!windowState.positioned || windowState.pages.length === 0) return;
+    const firstPage = windowState.pages[0];
+    const lastPage = windowState.pages[windowState.pages.length - 1];
+    const loadedStartIndex = firstPage.startIndex;
+    const loadedEndIndex = lastPage.startIndex + lastPage.items.length - 1;
+
+    if (hasPrevious && !errors.previous && range.startIndex <= loadedStartIndex + 5) {
+      void loadPrevious();
+    } else if (hasNext && !errors.next && range.endIndex >= loadedEndIndex - 5) {
+      void loadNext();
+    }
+  }, [
+    errors.next,
+    errors.previous,
+    hasNext,
+    hasPrevious,
+    loadNext,
+    loadPrevious,
+    windowState.pages,
+    windowState.positioned,
+  ]);
+  const updateVisibleRange = useCallback((range) => {
+    visibleRangeRef.current = range;
+    loadForVisibleRange(range);
+  }, [loadForVisibleRange]);
+
+  useEffect(() => {
+    loadForVisibleRange(visibleRangeRef.current);
+  }, [loadForVisibleRange]);
   const refreshSummary = useCallback(
     () => loadSummary(generationRef.current),
     [loadSummary],
@@ -203,7 +279,17 @@ export const useDownloadedLevelWindow = (enabled) => {
         resetForStaleCursor();
         return;
       }
-      setWindowState((current) => ({ ...current, pages: refreshed }));
+      if (windowState.positioned && refreshed.some((page) => page.totalCount !== windowState.totalCount)) {
+        resetForStaleCursor();
+        return;
+      }
+      requestRef.current.refresh = false;
+      setWindowState((current) => ({
+        ...current,
+        pages: current.positioned
+          ? [...refreshed].sort((left, right) => left.startIndex - right.startIndex)
+          : refreshed,
+      }));
     } catch (error) {
       if (generationRef.current !== generation) return;
       if (isStaleCursor(error)) resetForStaleCursor();
@@ -224,14 +310,18 @@ export const useDownloadedLevelWindow = (enabled) => {
 
   return {
     levels,
+    itemsByIndex,
     summary,
     firstItemIndex: windowState.firstItemIndex,
-    hasNext: Boolean(windowState.pages[windowState.pages.length - 1]?.hasNext),
-    hasPrevious: Boolean(windowState.pages[0]?.hasPrevious),
+    totalCount: windowState.positioned ? windowState.totalCount : levels.length,
+    positioned: windowState.positioned,
+    hasNext,
+    hasPrevious,
     loading,
     errors,
     loadNext,
     loadPrevious,
+    onVisibleRangeChange: updateVisibleRange,
     retryInitial: loadInitial,
     reload: refreshLoadedPages,
     patchLevel,
