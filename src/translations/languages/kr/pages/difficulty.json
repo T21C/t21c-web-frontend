@@ -31,7 +31,10 @@
     "deletingTag": "태그 삭제 중...",
     "reorderingTags": "태그 순서 변경 중...",
     "reorderingGroups": "그룹 순서 변경 중...",
-    "fetchingTags": "태그 불러오는 중..."
+    "fetchingTags": "태그 불러오는 중...",
+    "savingGroup": "그룹 생성 중...",
+    "updatingGroup": "그룹 수정 중...",
+    "deletingGroup": "그룹 삭제 중..."
   },
   "noItems": {
     "message": "등록된 난이도가 없습니다."
@@ -130,7 +133,8 @@
         "remove": "아이콘 제거"
       },
       "createButton": "생성",
-      "cancelButton": "취소"
+      "cancelButton": "취소",
+      "isCommunity": "커뮤니티 태그 (플레이어가 레벨에 투표할 수 있음)"
     },
     "edit": {
       "title": "태그 수정",
@@ -147,7 +151,8 @@
       },
       "updateButton": "Update",
       "cancelButton": "Cancel",
-      "unsavedChanges": "저장하지 않은 변경 사항이 있습니다. 정말로 닫으실건가요?"
+      "unsavedChanges": "저장하지 않은 변경 사항이 있습니다. 정말로 닫으실건가요?",
+      "isCommunity": "커뮤니티 태그 (플레이어가 레벨에 투표할 수 있음)"
     },
     "delete": {
       "title": "태그 제거",
@@ -169,10 +174,33 @@
     }
   },
   "groups": {
-    "noGroups": "No groups found. Create tags with groups first!",
+    "createButton": "Create Group",
+    "noGroups": "No groups found. Create a group or assign a group name when creating a tag.",
+    "create": {
+      "title": "Create Group",
+      "name": "Name",
+      "createButton": "Create"
+    },
+    "edit": {
+      "title": "Edit Group",
+      "name": "Name",
+      "updateButton": "Update"
+    },
+    "delete": {
+      "title": "Delete Group",
+      "message": "Are you sure you want to delete the group \"{{name}}\"?",
+      "description": "Tags in this group will become ungrouped. This cannot be undone.",
+      "deleteButton": "Delete"
+    },
     "notifications": {
       "reordered": "Groups reordered successfully",
-      "reorderFailed": "Failed to reorder groups"
+      "reorderFailed": "Failed to reorder groups",
+      "created": "Group created successfully",
+      "createFailed": "Failed to create group",
+      "updated": "Group updated successfully",
+      "updateFailed": "Failed to update group",
+      "deleted": "Group deleted successfully",
+      "deleteFailed": "Failed to delete group"
     }
   }
 }

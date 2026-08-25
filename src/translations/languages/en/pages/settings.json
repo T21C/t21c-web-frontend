@@ -35,12 +35,16 @@
       "description": "Choose which events appear in your inbox"
     },
     "title": "Notifications",
-    "subtitle": "Choose which events appear in your inbox. Email and Discord channels will be added later.",
+    "subtitle": "Choose which events appear in your inbox. Browser notifications follow these inbox settings.",
     "loading": "Loading notification settings…",
     "loadError": "Could not load notification settings",
     "saveError": "Could not save that setting",
     "inApp": "Show in inbox",
     "muteCategory": "Mute this category",
+    "pushTitle": "Browser notifications",
+    "pushHint": "Uses the same type and category switches as your inbox.",
+    "pushDenied": "Notifications are blocked for this site. Allow them in your browser settings to receive alerts.",
+    "pushUnsupported": "This browser does not support notifications.",
     "categories": {
       "submissions": "Submissions",
       "chart": "Charts",

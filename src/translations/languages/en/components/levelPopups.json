@@ -153,6 +153,8 @@
       "noResults": "No tags found matching your search",
       "noAvailableTags": "No available tags to add",
       "addTag": "Add tag",
+      "communityTags": "Community tags",
+      "communityTagsHint": "These tags were added by community votes. Saving will not pin them unless you add them above.",
       "errors": {
         "fetchTags": "Failed to fetch tags",
         "saveTags": "Failed to save tags"

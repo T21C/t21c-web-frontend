@@ -41,6 +41,10 @@
   "following": "已关注",
   "followLogin": "请登录后再关注",
   "followError": "无法更新关注状态",
+  "followNotifyAll": "全部通知",
+  "followNotifyNone": "不接收通知",
+  "unfollow": "取消关注",
+  "followMenuAria": "关注选项",
   "followerCount_one": "{{formatted}} 位关注者",
   "followerCount_other": "{{formatted}} 位关注者",
   "followersPopup": {

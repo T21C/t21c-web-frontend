@@ -79,16 +79,16 @@ const InboxNotificationRow = ({ notification, onRead, onHide, compact = false })
 
   const inner = (
     <>
-      <span className="inbox-notification-row__copy">
+      <span className="inbox-notification-row__header">
         <span className="inbox-notification-row__title">{copy.title}</span>
-        {copy.body ? <span className="inbox-notification-row__body">{copy.body}</span> : null}
+        <span
+          className="inbox-notification-row__meta"
+          title={formatDate(notification.createdAt, i18n.language)}
+        >
+          {formatTimeAgo(notification.createdAt, i18n.language)}
+        </span>
       </span>
-      <span
-        className="inbox-notification-row__meta"
-        title={formatDate(notification.createdAt, i18n.language)}
-      >
-        {formatTimeAgo(notification.createdAt, i18n.language)}
-      </span>
+      {copy.body ? <span className="inbox-notification-row__body">{copy.body}</span> : null}
     </>
   );
 

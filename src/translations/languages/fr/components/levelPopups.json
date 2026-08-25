@@ -87,6 +87,10 @@
         "tilecount": "Le nombre de tuiles doit être un entier positif ou nul",
         "length": "La durée doit être un nombre positif ou nul (secondes, décimales autorisées)"
       }
+    },
+    "tags": {
+      "communityTags": "Tags communautaires",
+      "communityTagsHint": "Ces tags ont été ajoutés par des votes communautaires. Les enregistrer ne les épinglera pas sauf si vous les ajoutez ci-dessus."
     }
   },
   "download": {

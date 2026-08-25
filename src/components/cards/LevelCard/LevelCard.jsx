@@ -18,13 +18,14 @@ import { getPrimaryVideoLink } from "@/utils/videoLink";
 import { ABILITIES, hasBit } from "@/utils/Abilities";
 import { permissionFlags } from "@/utils/UserPermissions";
 import { hasFlag } from "@/utils/UserPermissions";
-import { getSongDisplayName, getArtistDisplayName } from "@/utils/levelHelpers";
+import { getSongDisplayName, getArtistDisplayName, formatAutoTilecountTooltip, formatDuration } from "@/utils/levelHelpers";
 import {
   getCurationTypesResolved,
   sortCurationsForDisplay,
   sortCurationTypesForDisplay,
 } from "@/utils/curationTypeUtils";
-import { formatAutoTilecountTooltip, formatDuration } from "@/utils/levelHelpers";
+import { formatCommunityTagScore, selectLevelCardDisplayTags, COMMUNITY_TAG_CARD_CAP } from "@/utils/communityTags";
+import TagConfidenceBar from "@/components/common/display/TagConfidenceBar/TagConfidenceBar";
 import { Tooltip } from "react-tooltip";
 import MarqueeText from "@/components/common/display/MarqueeText/MarqueeText";
 import {
@@ -115,8 +116,24 @@ const LevelCard = ({
       : null;
   const resolvesTagBadges =
     showTags && (displayMode === 'normal' || displayMode === 'pack');
-  const tagIds = resolvesTagBadges ? (level?.tags?.map((item) => item.id) || []) : [];
-  const tags = tagIds.map((id) => tagsDict[id]).filter(Boolean); // Filter out undefined/null tags
+  const tags = useMemo(() => {
+    if (!resolvesTagBadges) return [];
+    const assignedList = level?.tags || [];
+    const assignmentById = new Map(assignedList.map((item) => [item.id, item]));
+    const merged = assignedList
+      .map((assigned) => {
+        const catalog = tagsDict[assigned.id];
+        if (!catalog && assigned.id == null) return null;
+        return {
+          ...(catalog || assigned),
+          pinned: Boolean(assigned.pinned),
+          score: assigned.score ?? null,
+          isCommunity: Boolean(catalog?.isCommunity ?? assigned.isCommunity),
+        };
+      })
+      .filter(Boolean);
+    return selectLevelCardDisplayTags(merged, COMMUNITY_TAG_CARD_CAP);
+  }, [resolvesTagBadges, tagsDict, level?.tags]);
   const hasSongPopup = (level?.songs && level.songs.length > 0) ? true : false;
   const hasArtistPopup = (level?.artists && level.artists.length > 0) ? true : false;
   const levelDetailTo = level?.id != null ? `/levels/${level.id}` : '#';
@@ -449,13 +466,19 @@ const LevelCard = ({
               '--tag-border-color': tag.color,
               '--tag-text-color': tag.color
             }}
-            title={tag.name}
+            title={
+              tag.isCommunity && formatCommunityTagScore(tag.score)
+                ? `${tag.name} (${formatCommunityTagScore(tag.score)})`
+                : tag.name
+            }
           >
-            {tag.icon ? (
-              <img src={tag.icon} alt={tag.name} />
-            ) : (
-              <span className="level-tag-letter">{tag.name.charAt(0).toUpperCase()}</span>
-            )}
+            <TagConfidenceBar score={tag.score} show={Boolean(tag.isCommunity)}>
+              {tag.icon ? (
+                <img src={tag.icon} alt={tag.name} />
+              ) : (
+                <span className="level-tag-letter">{tag.name.charAt(0).toUpperCase()}</span>
+              )}
+            </TagConfidenceBar>
           </div>
         ))}
         </div>

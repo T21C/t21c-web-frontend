@@ -35,12 +35,16 @@
       "description": "选择哪些事件会出现在收件箱中"
     },
     "title": "通知",
-    "subtitle": "选择哪些事件会出现在收件箱中。邮件和 Discord 渠道稍后添加。",
+    "subtitle": "选择哪些事件会出现在收件箱中。浏览器通知沿用这些收件箱设置。",
     "loading": "正在加载通知设置…",
     "loadError": "无法加载通知设置",
     "saveError": "无法保存该设置",
     "inApp": "显示在收件箱",
     "muteCategory": "静音此分类",
+    "pushTitle": "浏览器通知",
+    "pushHint": "使用与收件箱相同的类型和分类开关。",
+    "pushDenied": "此网站的通知已被阻止。请在浏览器设置中允许通知。",
+    "pushUnsupported": "此浏览器不支持通知。",
     "categories": {
       "submissions": "提交",
       "chart": "谱面",

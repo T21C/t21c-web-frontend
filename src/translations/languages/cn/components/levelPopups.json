@@ -150,6 +150,8 @@
       "noResults": "无匹配结果",
       "noAvailableTags": "无可用标签",
       "addTag": "添加标签",
+      "communityTags": "社区标签",
+      "communityTagsHint": "这些标签由社区投票产生。保存时不会固定它们，除非你把它们加到上方。",
       "errors": {
         "fetchTags": "标签获取失败",
         "saveTags": "标签保存失败"

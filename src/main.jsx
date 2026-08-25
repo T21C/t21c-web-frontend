@@ -19,6 +19,7 @@ import { PackContextProvider } from '@/contexts/PackContext';
 import { HelmetProvider } from 'react-helmet-async';
 import { NotificationProvider } from '@/contexts/NotificationContext';
 import { InboxNotificationProvider } from '@/contexts/InboxNotificationContext';
+import WebPushLifecycle from '@/components/push/WebPushLifecycle';
 import { ArtistContextProvider } from '@/contexts/ArtistContext';
 import { SongContextProvider } from '@/contexts/SongContext';
 import { CreatorListContextProvider } from '@/contexts/CreatorListContext';
@@ -68,6 +69,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                                   <SongContextProvider>
                                     <CreatorListContextProvider>
                                       <CreatorProfileContextProvider>
+                                        <WebPushLifecycle />
                                         <App />
                                       </CreatorProfileContextProvider>
                                     </CreatorListContextProvider>

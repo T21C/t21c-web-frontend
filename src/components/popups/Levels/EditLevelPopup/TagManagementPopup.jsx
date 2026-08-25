@@ -1,24 +1,51 @@
 import { routes } from '@/api/routes';
 // tuf-search: #TagManagementPopup #tagManagementPopup #popups #levels #editLevel
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import './editlevelpopup.css';
 import api from '@/utils/api';
 import { useTranslation } from 'react-i18next';
 import { CloseButton } from '@/components/common/buttons';
 import { ItemPickManager } from '@/components/common/selectors';
+import { sortTagsByGroupThenSortOrder } from '@/utils/communityTags';
 
 export const TagManagementPopup = ({ levelId, currentTags = [], onClose, onSave }) => {
   const { t } = useTranslation(['components', 'common']);
 
   const [allTags, setAllTags] = useState([]);
-  const [selectedIds, setSelectedIds] = useState(() => currentTags.map((tag) => tag.id));
+  const [selectedIds, setSelectedIds] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState(null);
 
+  const catalogById = useMemo(() => new Map(allTags.map((tag) => [tag.id, tag])), [allTags]);
+
+  const communityWonTags = useMemo(
+    () =>
+      sortTagsByGroupThenSortOrder(
+        currentTags.filter((tag) => {
+          const catalog = catalogById.get(tag.id) || tag;
+          return Boolean(catalog.isCommunity) && !tag.pinned;
+        }),
+      ),
+    [currentTags, catalogById],
+  );
+
+  const communityWonIds = useMemo(
+    () => new Set(communityWonTags.map((tag) => tag.id)),
+    [communityWonTags],
+  );
+
   useEffect(() => {
-    setSelectedIds(currentTags.map((tag) => tag.id));
-  }, [currentTags]);
+    setSelectedIds(
+      currentTags
+        .filter((tag) => {
+          const catalog = catalogById.get(tag.id) || tag;
+          if (!catalog.isCommunity) return true;
+          return Boolean(tag.pinned);
+        })
+        .map((tag) => tag.id),
+    );
+  }, [currentTags, catalogById]);
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -69,7 +96,6 @@ export const TagManagementPopup = ({ levelId, currentTags = [], onClose, onSave 
       e.preventDefault();
       e.stopPropagation();
     }
-    setSelectedIds(currentTags.map((tag) => tag.id));
     onClose();
   };
 
@@ -110,12 +136,47 @@ export const TagManagementPopup = ({ levelId, currentTags = [], onClose, onSave 
             items={allTags}
             selectedIds={selectedIds}
             onSelectedIdsChange={setSelectedIds}
+            poolFilter={(item) => !communityWonIds.has(item.id)}
             enableGrouping
             fallbackGroupLabel={t('facetQueryBuilder.fallbackGroup')}
             labels={pickLabels}
             isLoading={isLoading}
             resetSearchSignal={levelId}
           />
+
+          {communityWonTags.length > 0 && (
+            <div className="item-pick-manager__section tag-management-community">
+              <h3 className="item-pick-manager__heading">
+                {t('levelPopups.edit.tags.communityTags')}
+              </h3>
+              <p className="tag-management-community__hint">
+                {t('levelPopups.edit.tags.communityTagsHint')}
+              </p>
+              <div className="item-pick-manager__chip-row">
+                {communityWonTags.map((tag) => {
+                  const catalog = catalogById.get(tag.id) || tag;
+                  const color = catalog.color || '#888';
+                  return (
+                    <div
+                      key={tag.id}
+                      className="item-pick-manager__chip item-pick-manager__chip--readonly"
+                      style={{
+                        '--ipm-bg': `${color}50`,
+                        '--ipm-border': color,
+                        '--ipm-text': color,
+                      }}
+                      title={catalog.name}
+                    >
+                      {catalog.icon ? (
+                        <img src={catalog.icon} alt="" className="item-pick-manager__chip-icon" />
+                      ) : null}
+                      <span className="item-pick-manager__chip-name">{catalog.name}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           <div className="tag-management-actions">
             <button

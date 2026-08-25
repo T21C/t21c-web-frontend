@@ -90,5 +90,19 @@
   },
   "linkedLevels": {
     "header": "Powiązane poziomy"
+  },
+  "tags": {
+    "header": "Tagi poziomu",
+    "vote": {
+      "header": "Tagi społeczności",
+      "open": "Głosuj",
+      "vote": "Zagłosuj na ten tag",
+      "unvote": "Usuń głos",
+      "voted": "Zagłosowano na {{tag}}",
+      "unvoted": "Usunięto głos z {{tag}}",
+      "failed": "Nie udało się zaktualizować głosu",
+      "loginRequired": "Zaloguj się, aby głosować na tagi społeczności",
+      "banned": "Nie możesz głosować na tagi społeczności"
+    }
   }
 } 

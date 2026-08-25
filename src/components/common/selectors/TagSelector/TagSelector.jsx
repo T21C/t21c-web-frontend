@@ -4,6 +4,7 @@ import { Portal } from "@/components/common/Portal";
 import "./tagselector.css";
 import { useTranslation } from "react-i18next";
 import { PORTALED_PANEL_CLASS, usePortaledPanelAnchor } from "@/hooks/usePortaledPanelAnchor";
+import { compareSerializedTagOrder } from "@/utils/communityTags";
 //import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 
 // Define group order and their display names
@@ -71,14 +72,7 @@ const TagSelector = ({
   }, [isOpen]);
 
   // Sort items by groupSortOrder first, then sortOrder within groups
-  const sortedFilteredItems = [...filteredItems].sort((a, b) => {
-    const groupOrderA = a.groupSortOrder ?? Number.MAX_SAFE_INTEGER;
-    const groupOrderB = b.groupSortOrder ?? Number.MAX_SAFE_INTEGER;
-    if (groupOrderA !== groupOrderB) return groupOrderA - groupOrderB;
-    const sortOrderA = a.sortOrder ?? Number.MAX_SAFE_INTEGER;
-    const sortOrderB = b.sortOrder ?? Number.MAX_SAFE_INTEGER;
-    return sortOrderA - sortOrderB;
-  });
+  const sortedFilteredItems = [...filteredItems].sort(compareSerializedTagOrder);
 
   const itemGroups = sortedFilteredItems.reduce((groups, item) => {
     let group;

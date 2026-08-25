@@ -152,7 +152,18 @@
     "noDetails": "No rerate details were provided."
   },
   "tags": {
-    "header": "Level Tags"
+    "header": "Level Tags",
+    "vote": {
+      "header": "Community tags",
+      "open": "Vote",
+      "vote": "Vote for this tag",
+      "unvote": "Remove your vote",
+      "voted": "Voted for {{tag}}",
+      "unvoted": "Removed vote from {{tag}}",
+      "failed": "Failed to update vote",
+      "loginRequired": "Log in to vote on community tags",
+      "banned": "You are not allowed to vote on community tags"
+    }
   },
   "weeklyAppearance": {
     "header": "Weekly Appearances",

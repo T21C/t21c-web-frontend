@@ -73,5 +73,19 @@
   },
   "linkedLevels": {
     "header": "Niveaux liés"
+  },
+  "tags": {
+    "header": "Tags du niveau",
+    "vote": {
+      "header": "Tags communautaires",
+      "open": "Voter",
+      "vote": "Voter pour ce tag",
+      "unvote": "Retirer le vote",
+      "voted": "Vote pour {{tag}}",
+      "unvoted": "Vote retiré de {{tag}}",
+      "failed": "Impossible de mettre à jour le vote",
+      "loginRequired": "Connectez-vous pour voter sur les tags communautaires",
+      "banned": "Vous n'êtes pas autorisé à voter sur les tags communautaires"
+    }
   }
 } 

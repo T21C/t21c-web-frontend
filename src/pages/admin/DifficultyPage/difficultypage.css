@@ -503,6 +503,22 @@
   color: var(--color-white);
 }
 
+.difficulty-page .form-group.form-group--checkbox {
+  flex-direction: row;
+  align-items: center;
+}
+
+.difficulty-page .form-group.form-group--checkbox label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.difficulty-page .form-group.form-group--checkbox input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+}
+
 .difficulty-page .form-group input[type="text"],
 .difficulty-page .form-group input[type="file"] {
   width: 100%;
@@ -718,6 +734,29 @@
   font-size: 0.8rem;
   color: var(--color-white-t60);
   margin-left: 0.25rem;
+}
+
+.difficulty-page .group-item-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.difficulty-page .group-item-actions button {
+  padding: 0.5rem;
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  color: var(--color-white);
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.difficulty-page .group-item-actions button:hover {
+  background-color: var(--color-white-t10);
 }
 
 /* Tag item group display - hidden when in grouped view */

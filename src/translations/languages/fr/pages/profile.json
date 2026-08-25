@@ -12,6 +12,10 @@
   "following": "Suivi",
   "followLogin": "Connectez-vous pour suivre",
   "followError": "Impossible de mettre à jour le suivi",
+  "followNotifyAll": "Toutes les notifications",
+  "followNotifyNone": "Aucune notification",
+  "unfollow": "Ne plus suivre",
+  "followMenuAria": "Options de suivi",
   "followerCount_one": "{{formatted}} follower",
   "followerCount_other": "{{formatted}} followers",
   "followersPopup": {

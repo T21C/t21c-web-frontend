@@ -152,7 +152,18 @@
     "noDetails": "未填写额外信息。"
   },
   "tags": {
-    "header": "关卡标签"
+    "header": "关卡标签",
+    "vote": {
+      "header": "社区标签",
+      "open": "投票",
+      "vote": "为该标签投票",
+      "unvote": "取消投票",
+      "voted": "已为 {{tag}} 投票",
+      "unvoted": "已取消对 {{tag}} 的投票",
+      "failed": "更新投票失败",
+      "loginRequired": "登录后才能为社区标签投票",
+      "banned": "你已被禁止为社区标签投票"
+    }
   },
   "weeklyAppearance": {
     "header": "周常展示",

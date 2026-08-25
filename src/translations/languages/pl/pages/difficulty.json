@@ -31,7 +31,10 @@
     "deletingTag": "Usuwanie tagu...",
     "reorderingTags": "Aktualizowanie kolejności tagów...",
     "reorderingGroups": "Aktualizowanie kolejności grup...",
-    "fetchingTags": "Ładowanie tagów..."
+    "fetchingTags": "Ładowanie tagów...",
+    "savingGroup": "Tworzenie grupy...",
+    "updatingGroup": "Aktualizowanie grupy...",
+    "deletingGroup": "Usuwanie grupy..."
   },
   "noItems": {
     "message": "Nie znaleziono poziomów trudności."

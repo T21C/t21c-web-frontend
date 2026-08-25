@@ -173,6 +173,7 @@
       "ban": "封禁玩家",
       "pause": "暂停提交",
       "ratingBan": "禁止评级",
+      "tagVoteBan": "禁止社区标签投票",
       "banConfirm": "确定封禁该玩家？",
       "unbanConfirm": "确定解封该玩家？",
       "banFor": "时长",
@@ -189,7 +190,9 @@
       "pauseConfirm": "确定暂停该玩家的提交申请？",
       "resumeConfirm": "确定恢复该玩家的提交申请？",
       "ratingBanConfirm": "确定禁止该玩家评级？",
-      "ratingUnbanConfirm": "确定允许该玩家评级？"
+      "ratingUnbanConfirm": "确定允许该玩家评级？",
+      "tagVoteBanConfirm": "禁止该玩家为社区标签投票？",
+      "tagVoteUnbanConfirm": "允许该玩家再次为社区标签投票？"
     },
     "link": {
       "hint": "为该用户账号分配或移除关联的创作者资料。"
@@ -228,6 +231,7 @@
       "banDuration": "请输入 1 到 999 的时长",
       "pauseUpdate": "更新暂停提交状态失败",
       "ratingBanUpdate": "更新禁止评级状态失败",
+      "tagVoteBanUpdate": "更新社区标签投票禁令失败",
       "mergeFailed": "合并玩家失败",
       "mergeSelf": "不能将玩家合并到自身"
     },

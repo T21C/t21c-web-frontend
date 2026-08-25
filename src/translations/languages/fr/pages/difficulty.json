@@ -31,7 +31,10 @@
     "deletingTag": "Suppression du tag...",
     "reorderingTags": "Mise à jour de l'ordre des tags...",
     "reorderingGroups": "Mise à jour de l'ordre des groupes...",
-    "fetchingTags": "Chargement des tags..."
+    "fetchingTags": "Chargement des tags...",
+    "savingGroup": "Création du groupe...",
+    "updatingGroup": "Mise à jour du groupe...",
+    "deletingGroup": "Suppression du groupe..."
   },
   "noItems": {
     "message": "Aucune difficulté trouvée."

@@ -3557,6 +3557,7 @@
   position: relative;
   flex-shrink: 0;
   z-index: calc(100 - var(--tag-index, 0));
+  overflow: hidden;
 }
 
 .level-detail .level-tags-container .tag-icon-preview[data-letter-only="true"] {
@@ -3585,6 +3586,9 @@
 }
 
 .tags-dropdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
   border-radius: 4px;
   padding: 0.5rem;
   min-width: 200px;
@@ -3600,12 +3604,35 @@
 }
 
 .tags-dropdown .tags-header {
-  color: var(--tertiary-text);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  color: var(--color-white);
   font-size: 1rem;
   font-weight: 600;
-  margin-bottom: 6px;
   padding: 4px;
   border-bottom: 1px solid var(--btn-neutral-elevated);
+}
+
+.tags-dropdown .tags-header-title {
+  min-width: 0;
+}
+
+.tags-dropdown .tags-header-vote {
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-white);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.15rem 0.25rem;
+  white-space: nowrap;
+}
+
+.tags-dropdown .tags-header-vote:hover {
+  color: var(--btn-primary);
 }
 
 /* Grouped Tags List */
@@ -3656,6 +3683,13 @@
   border-radius: 2px;
 }
 
+.tags-dropdown .tag-chip-icon-wrap {
+  width: 1.5rem;
+  height: 1.5rem;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
 .tags-dropdown .tag-chip-letter {
   font-size: 0.7rem;
   font-weight: bold;
@@ -3664,6 +3698,12 @@
 
 .tags-dropdown .tag-chip-name {
   font-size: 0.8rem;
+}
+
+.tags-dropdown .tag-chip-score {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--btn-success);
 }
 
 /* Like container */
