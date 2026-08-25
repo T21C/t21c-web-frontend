@@ -69,7 +69,7 @@
     },
     "empty": {
       "title": "No rank-ready levels",
-      "subtitle": "Nothing with 4+ manager votes and 0 clears."
+      "subtitle": "Nothing with 2+ manager votes and 0 clears."
     }
   },
   "infiniteScroll": {

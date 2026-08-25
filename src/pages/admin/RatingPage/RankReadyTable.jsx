@@ -9,14 +9,49 @@ import { getSongDisplayName } from '@/utils/levelHelpers';
 
 const AUTORATER_USER_ID = 'b19522b7-c12b-42d8-9fcd-08b0cdbf8b7e';
 
-const countDetails = (details = []) => {
+export const isAutoraterDetail = (detail) => detail?.userId === AUTORATER_USER_ID;
+
+export const countDetails = (details = []) => {
   let manager = 0;
   let community = 0;
   for (const detail of details) {
+    if (isAutoraterDetail(detail)) continue;
     if (detail?.isCommunityRating) community += 1;
     else manager += 1;
   }
   return { manager, community };
+};
+
+export const rankReadyPguBand = (difficulty) => {
+  const letter = String(difficulty?.name || '').charAt(0).toUpperCase();
+  if (letter === 'U' || letter === 'Q') return 0;
+  if (letter === 'G') return 1;
+  if (letter === 'P') return 2;
+  return 3;
+};
+
+export const compareRankReadyRows = (a, b, difficultyDict, sortType, sortOrder) => {
+  const dict = difficultyDict || {};
+  const bandDiff =
+    rankReadyPguBand(dict[a?.averageDifficultyId]) - rankReadyPguBand(dict[b?.averageDifficultyId]);
+  if (bandDiff !== 0) return bandDiff;
+
+  const isDesc = String(sortOrder).toUpperCase() !== 'ASC';
+  const dir = isDesc ? -1 : 1;
+  if (sortType === 'ratings') {
+    const countA = countDetails(a?.details).manager;
+    const countB = countDetails(b?.details).manager;
+    if (countA !== countB) return (countA - countB) * dir;
+  } else if (sortType === 'updatedAt') {
+    const timeA = new Date(a?.updatedAt || 0).getTime();
+    const timeB = new Date(b?.updatedAt || 0).getTime();
+    if (timeA !== timeB) return (timeA - timeB) * dir;
+  } else {
+    const idA = Number(a?.level?.id ?? a?.levelId ?? 0);
+    const idB = Number(b?.level?.id ?? b?.levelId ?? 0);
+    if (idA !== idB) return (idA - idB) * dir;
+  }
+  return Number(a?.id ?? 0) - Number(b?.id ?? 0);
 };
 
 const getAutoraterRating = (details = []) => {
