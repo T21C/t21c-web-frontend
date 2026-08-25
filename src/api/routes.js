@@ -168,6 +168,7 @@ export const routes = {
       revokeRole: () => '/v2/admin/users/revoke-role',
       discord: (discordId) => `/v2/admin/users/discord/${enc(discordId)}`,
       ratingBan: (userId) => `/v2/admin/users/${enc(userId)}/rating-ban`,
+      tagVoteBan: (userId) => `/v2/admin/users/${enc(userId)}/tag-vote-ban`,
       scheduleAccountDeletion: (userId) =>
         `/v2/admin/users/${enc(userId)}/schedule-account-deletion`,
     },
@@ -325,6 +326,9 @@ export const routes = {
       ratings: (id) => `/v2/database/levels/${enc(id)}/ratings`,
       timeout: (id) => `/v2/database/levels/${enc(id)}/timeout`,
       like: (id) => `/v2/database/levels/${enc(id)}/like`,
+      communityTags: (id) => `/v2/database/levels/${enc(id)}/community-tags`,
+      communityTagVote: (id, tagId) =>
+        `/v2/database/levels/${enc(id)}/community-tags/${enc(tagId)}`,
       difficulty: (id) => `/v2/database/levels/${enc(id)}/difficulty`,
       toggleHidden: (id) => `/v2/database/levels/${enc(id)}/toggle-hidden`,
       restore: (id) => `/v2/database/levels/${enc(id)}/restore`,

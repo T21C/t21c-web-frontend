@@ -8,6 +8,8 @@ import React, { useEffect, useLayoutEffect, useState, useRef, useCallback, useMe
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Portal } from "@/components/common/Portal";
 import { PORTALED_PANEL_CLASS, usePortaledPanelAnchor } from "@/hooks/usePortaledPanelAnchor";
+import { formatCommunityTagScore, groupTagsByGroup, sortTagsByGroupThenSortOrder } from '@/utils/communityTags';
+import TagConfidenceBar from '@/components/common/display/TagConfidenceBar/TagConfidenceBar';
 
 import {
   getVideoDetails
@@ -67,6 +69,7 @@ import {
 import { RouletteWheel, SlotMachine, StateDisplay } from '@/components/common/selectors';
 import { CloseButton } from '@/components/common/buttons';
 import { CommentFormatter } from '@/components/misc';
+import CommunityTagVotePopup from './CommunityTagVotePopup';
 import { toast } from 'react-hot-toast';
 import { ABILITIES, hasBit } from '@/utils/Abilities';
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
@@ -208,7 +211,7 @@ const AliasesDropdown = ({ aliases, show, onClose }) => {
   );
 };
 
-const TagsDropdown = ({ tags, show, onClose, anchorRef }) => {
+const TagsDropdown = ({ tags, show, onClose, anchorRef, onVoteClick }) => {
   const { t } = useTranslation('pages');
   const panelRef = useRef(null);
 
@@ -216,7 +219,7 @@ const TagsDropdown = ({ tags, show, onClose, anchorRef }) => {
     open: show,
     anchorRef,
     panelRef,
-    reanchorDeps: [tags?.length],
+    reanchorDeps: [tags?.length, Boolean(onVoteClick)],
   });
 
   useEffect(() => {
@@ -241,37 +244,10 @@ const TagsDropdown = ({ tags, show, onClose, anchorRef }) => {
     e.stopPropagation();
   };
 
-  if (!show || !tags?.length || !portalRoot) return null;
+  if (!show || !portalRoot) return null;
+  if (!tags?.length && typeof onVoteClick !== 'function') return null;
 
-  // Sort tags by groupSortOrder then sortOrder (ungrouped last)
-  const groupSortKey = (tag) => {
-    const hasGroup = tag.group && String(tag.group).trim() !== '';
-    if (!hasGroup) return Number.MAX_SAFE_INTEGER;
-    return tag.groupSortOrder ?? 0;
-  };
-
-  const sortedTags = [...tags].sort((a, b) => {
-    const groupOrderA = groupSortKey(a);
-    const groupOrderB = groupSortKey(b);
-    if (groupOrderA !== groupOrderB) return groupOrderA - groupOrderB;
-    return (a.sortOrder ?? 0) - (b.sortOrder ?? 0);
-  });
-
-  // Group tags by their group field
-  const groupedTags = sortedTags.reduce((groups, tag) => {
-    const groupName = tag.group || '';
-    if (!groups[groupName]) {
-      groups[groupName] = {
-        name: groupName,
-        tags: [],
-        groupSortOrder: groupSortKey(tag)
-      };
-    }
-    groups[groupName].tags.push(tag);
-    return groups;
-  }, {});
-
-  const orderedGroups = Object.values(groupedTags).sort((a, b) => a.groupSortOrder - b.groupSortOrder);
+  const groupedTags = groupTagsByGroup(tags || []);
 
   return (
     <Portal root={portalRoot}>
@@ -282,9 +258,28 @@ const TagsDropdown = ({ tags, show, onClose, anchorRef }) => {
       data-placement={placement}
       style={panelStyle}
     >
-      <div className="tags-header">{t("levelDetail.tags.header") || "Tags"}</div>
+      <div className="tags-header">
+        <span className="tags-header-title">{t("levelDetail.tags.header") || "Tags"}</span>
+        {typeof onVoteClick === 'function' && (
+          <button
+            type="button"
+            className="tags-header-vote"
+            onMouseDown={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onVoteClick();
+            }}
+          >
+            {t("levelDetail.tags.vote.open")}
+          </button>
+        )}
+      </div>
+      {groupedTags.length > 0 && (
       <div className="tags-grouped-list">
-        {orderedGroups.map((group) => (
+        {groupedTags.map((group) => (
           <div key={group.name || "ungrouped"} className="tags-group">
             {group.name && <div className="tags-group-header">{group.name}</div>}
             <div className="tags-group-items">
@@ -297,20 +292,32 @@ const TagsDropdown = ({ tags, show, onClose, anchorRef }) => {
                     "--tag-border-color": tag.color,
                     "--tag-text-color": tag.color,
                   }}
-                  title={tag.name}
+                  title={
+                    tag.isCommunity && formatCommunityTagScore(tag.score)
+                      ? `${tag.name} (${formatCommunityTagScore(tag.score)})`
+                      : tag.name
+                  }
                 >
-                  {tag.icon ? (
-                    <img src={tag.icon} alt={tag.name} className="tag-chip-icon" />
-                  ) : (
-                    <span className="tag-chip-letter">{tag.name.charAt(0).toUpperCase()}</span>
-                  )}
+                  <span className="tag-chip-icon-wrap">
+                    <TagConfidenceBar score={tag.score} show={Boolean(tag.isCommunity)}>
+                      {tag.icon ? (
+                        <img src={tag.icon} alt={tag.name} className="tag-chip-icon" />
+                      ) : (
+                        <span className="tag-chip-letter">{tag.name.charAt(0).toUpperCase()}</span>
+                      )}
+                    </TagConfidenceBar>
+                  </span>
                   <span className="tag-chip-name">{tag.name}</span>
+                  {tag.isCommunity && formatCommunityTagScore(tag.score) ? (
+                    <span className="tag-chip-score">{formatCommunityTagScore(tag.score)}</span>
+                  ) : null}
                 </div>
               ))}
             </div>
           </div>
         ))}
       </div>
+      )}
     </div>
     </Portal>
   );
@@ -992,7 +999,11 @@ const LevelDetailPageContent = ({ mockData = null }) => {
   const [showSongPopup, setShowSongPopup] = useState(false);
   const [showArtistPopup, setShowArtistPopup] = useState(false);
 
-  const { difficultyDict, curationTypesDict, difficulties } = useDifficultyContext();
+  const { difficultyDict, curationTypesDict, difficulties, tags: catalogTags } = useDifficultyContext();
+  const hasCommunityCatalog = useMemo(
+    () => (catalogTags || []).some((tag) => Boolean(tag.isCommunity)),
+    [catalogTags],
+  );
 
   const location = useLocation();
   const levelMeta = useMemo(() => {
@@ -1010,6 +1021,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
 
   const [activeAliasDropdown, setActiveAliasDropdown] = useState(null);
   const [showTagsDropdown, setShowTagsDropdown] = useState(false);
+  const [showCommunityTagVotePopup, setShowCommunityTagVotePopup] = useState(false);
   const [showRatingPopup, setShowRatingPopup] = useState(false);
   const [levelTimeout, setLevelTimeout] = useState(null);
   const [showWheel, setShowWheel] = useState(false);
@@ -1536,6 +1548,24 @@ const LevelDetailPageContent = ({ mockData = null }) => {
   const handleTagsButtonClick = () => {
     setShowTagsDropdown(prev => !prev);
   };
+
+  const handleCommunityTagVoteOpen = () => {
+    setShowTagsDropdown(false);
+    setShowCommunityTagVotePopup(true);
+  };
+
+  const handleAssignedTagsChange = useCallback((nextTags) => {
+    setRes((prev) => {
+      if (!prev?.level) return prev;
+      return {
+        ...prev,
+        level: {
+          ...prev.level,
+          tags: nextTags,
+        },
+      };
+    });
+  }, []);
 
   useEffect(() => {
     let interval;
@@ -2355,15 +2385,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
 
   const difficulty = difficultyDict[res.level.diffId];
   
-  // Use tags from level data, sorted by groupSortOrder then sortOrder
-  const tags = [...(res.level.tags || [])].sort((a, b) => {
-    const hasGroupA = a.group && String(a.group).trim() !== '';
-    const hasGroupB = b.group && String(b.group).trim() !== '';
-    const groupOrderA = hasGroupA ? (a.groupSortOrder ?? 0) : Number.MAX_SAFE_INTEGER;
-    const groupOrderB = hasGroupB ? (b.groupSortOrder ?? 0) : Number.MAX_SAFE_INTEGER;
-    if (groupOrderA !== groupOrderB) return groupOrderA - groupOrderB;
-    return (a.sortOrder ?? 0) - (b.sortOrder ?? 0);
-  });
+  const tags = sortTagsByGroupThenSortOrder(res.level.tags || []);
 
   const rerateHistoryAnchorNode = res?.rerateHistory?.length > 0 ? (
     <div ref={rerateHistoryAnchorRef} className="rerate-history-dropdown-anchor">
@@ -2683,7 +2705,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                 )}
                 
                 {/* Tags display */}
-                {tags && tags.length > 0 && (
+                {(tags.length > 0 || (hasCommunityCatalog && !mockData && !res?.level?.isDeleted)) && (
                   <div
                     ref={tagsAnchorRef}
                     className="level-tags-container"
@@ -2699,6 +2721,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                     >
                       ▼
                     </span>
+                    {tags.length > 0 && (
                     <div className="tags-icons-row">
                       {tags.map((tag, index) => (
                         <div
@@ -2711,24 +2734,36 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                             '--tag-index': index
                           }}
                           data-letter-only={!tag.icon}
-                          title={tag.name}
+                          title={
+                            tag.isCommunity && formatCommunityTagScore(tag.score)
+                              ? `${tag.name} (${formatCommunityTagScore(tag.score)})`
+                              : tag.name
+                          }
                         >
-                          {tag.icon ? (
-                            <img 
-                              src={tag.icon} 
-                              alt={tag.name}
-                            />
-                          ) : (
-                            <span className="tag-letter">{tag.name.charAt(0).toUpperCase()}</span>
-                          )}
+                          <TagConfidenceBar score={tag.score} show={Boolean(tag.isCommunity)}>
+                            {tag.icon ? (
+                              <img 
+                                src={tag.icon} 
+                                alt={tag.name}
+                              />
+                            ) : (
+                              <span className="tag-letter">{tag.name.charAt(0).toUpperCase()}</span>
+                            )}
+                          </TagConfidenceBar>
                         </div>
                       ))}
                     </div>
+                    )}
                     <TagsDropdown 
                       tags={tags}
                       show={showTagsDropdown}
                       onClose={handleDropdownClose}
                       anchorRef={tagsAnchorRef}
+                      onVoteClick={
+                        hasCommunityCatalog && !mockData && !res?.level?.isDeleted
+                          ? handleCommunityTagVoteOpen
+                          : undefined
+                      }
                     />
                   </div>
                 )}
@@ -3244,6 +3279,15 @@ const LevelDetailPageContent = ({ mockData = null }) => {
               }
             </div>
           </div>
+          {showCommunityTagVotePopup && !mockData && !res?.level?.isDeleted && (
+            <CommunityTagVotePopup
+              levelId={effectiveId}
+              user={user}
+              disabled={Boolean(res?.level?.isDeleted)}
+              onClose={() => setShowCommunityTagVotePopup(false)}
+              onAssignedTagsChange={handleAssignedTagsChange}
+            />
+          )}
           {openEditDialog && (
         <EditLevelPopup
           level={res.level}

@@ -167,6 +167,7 @@
       "ban": "플레이어 차단",
       "pause": "제출 일시중지",
       "ratingBan": "평가 차단",
+      "tagVoteBan": "커뮤니티 태그 투표 차단",
       "banConfirm": "이 플레이어를 차단하시겠습니까?",
       "unbanConfirm": "차단을 해제하시겠습니까?",
       "banFor": "기간",
@@ -183,7 +184,9 @@
       "pauseConfirm": "제출을 일시중지하시겠습니까?",
       "resumeConfirm": "제출을 재개하시겠습니까?",
       "ratingBanConfirm": "평가를 차단하시겠습니까?",
-      "ratingUnbanConfirm": "평가를 다시 허용하시겠습니까?"
+      "ratingUnbanConfirm": "평가를 다시 허용하시겠습니까?",
+      "tagVoteBanConfirm": "커뮤니티 태그 투표를 차단하시겠습니까?",
+      "tagVoteUnbanConfirm": "커뮤니티 태그 투표를 다시 허용하시겠습니까?"
     },
     "link": { "hint": "이 계정에 연결된 크리에이터 프로필을 할당하거나 제거합니다." },
     "merge": {
@@ -220,6 +223,7 @@
       "banDuration": "1에서 999 사이의 기간을 입력하세요",
       "pauseUpdate": "제출 일시중지 업데이트 실패",
       "ratingBanUpdate": "평가 차단 업데이트 실패",
+      "tagVoteBanUpdate": "커뮤니티 태그 투표 차단 업데이트 실패",
       "mergeFailed": "플레이어 병합 실패",
       "mergeSelf": "플레이어를 자기 자신에게 병합할 수 없습니다"
     },

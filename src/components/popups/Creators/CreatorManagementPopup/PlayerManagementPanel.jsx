@@ -105,12 +105,17 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
   const [isRatingBanned, setIsRatingBanned] = useState(
     hasFlag(player?.user, permissionFlags.RATING_BANNED) || player?.user?.isRatingBanned || false,
   );
+  const [isTagVoteBanned, setIsTagVoteBanned] = useState(
+    hasFlag(player?.user, permissionFlags.TAG_VOTE_BANNED) || player?.user?.isTagVoteBanned || false,
+  );
   const [showBanConfirm, setShowBanConfirm] = useState(false);
   const [showPauseConfirm, setShowPauseConfirm] = useState(false);
   const [showRatingBanConfirm, setShowRatingBanConfirm] = useState(false);
+  const [showTagVoteBanConfirm, setShowTagVoteBanConfirm] = useState(false);
   const [pendingBanState, setPendingBanState] = useState(false);
   const [pendingPauseState, setPendingPauseState] = useState(false);
   const [pendingRatingBanState, setPendingRatingBanState] = useState(false);
+  const [pendingTagVoteBanState, setPendingTagVoteBanState] = useState(false);
   const [mergeSearch, setMergeSearch] = useState('');
   const [mergeResults, setMergeResults] = useState([]);
   const [mergeSearchLoading, setMergeSearchLoading] = useState(false);
@@ -440,6 +445,37 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
     }
   };
 
+  const handleTagVoteBanUpdate = async (confirmed) => {
+    if (!confirmed) {
+      setShowTagVoteBanConfirm(false);
+      setPendingTagVoteBanState(isTagVoteBanned);
+      return;
+    }
+    setIsLoading(true);
+    clearMessages();
+    try {
+      const response = await api.patch(routes.admin.users.tagVoteBan(player.id), {
+        isTagVoteBanned: pendingTagVoteBanState,
+      });
+      const isTagVoteBannedValue =
+        response.data?.user?.isTagVoteBanned ?? pendingTagVoteBanState;
+      setIsTagVoteBanned(isTagVoteBannedValue);
+      onUpdate?.({
+        ...player,
+        isTagVoteBanned: isTagVoteBannedValue,
+        user: player.user
+          ? setUserPermission(player.user, permissionFlags.TAG_VOTE_BANNED, isTagVoteBannedValue)
+          : player.user,
+      });
+      toast.success(tt('player.success.moderation'));
+    } catch (err) {
+      setError(err.response?.data?.details || tt('player.errors.tagVoteBanUpdate'));
+    } finally {
+      setIsLoading(false);
+      setShowTagVoteBanConfirm(false);
+    }
+  };
+
   const handleMergePlayer = async () => {
     if (!mergeTarget?.id) return;
     if (mergeTarget.id === player.id) {
@@ -705,6 +741,38 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
                     </div>
                   ) : null}
                 </div>
+
+                <div className="moderation-option">
+                  <label className="moderation-option__label moderation-option__label--rating">
+                    <input
+                      type="checkbox"
+                      checked={showTagVoteBanConfirm ? pendingTagVoteBanState : isTagVoteBanned}
+                      onChange={(e) => {
+                        setPendingTagVoteBanState(e.target.checked);
+                        setShowTagVoteBanConfirm(true);
+                      }}
+                      disabled={isLoading || showTagVoteBanConfirm}
+                    />
+                    <span>{tt('player.moderation.tagVoteBan')}</span>
+                  </label>
+                  {showTagVoteBanConfirm ? (
+                    <div className="moderation-confirm">
+                      <p>
+                        {pendingTagVoteBanState
+                          ? tt('player.moderation.tagVoteBanConfirm')
+                          : tt('player.moderation.tagVoteUnbanConfirm')}
+                      </p>
+                      <div className="moderation-confirm__actions popup-btn-grid">
+                        <button type="button" className="action-button" onClick={() => handleTagVoteBanUpdate(true)} disabled={isLoading}>
+                          {t('buttons.confirm', { ns: 'common' })}
+                        </button>
+                        <button type="button" className="mode-btn" onClick={() => handleTagVoteBanUpdate(false)} disabled={isLoading}>
+                          {t('buttons.cancel', { ns: 'common' })}
+                        </button>
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
               </div>
             )}
 
@@ -886,6 +954,7 @@ PlayerManagementPanel.propTypes = {
     bannedUntil: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]),
     isSubmissionsPaused: PropTypes.bool,
     isRatingBanned: PropTypes.bool,
+    isTagVoteBanned: PropTypes.bool,
     user: PropTypes.object,
     playerAliases: PropTypes.array,
   }).isRequired,

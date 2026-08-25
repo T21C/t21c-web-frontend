@@ -2,6 +2,7 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { Portal } from '@/components/common/Portal';
 import { useTranslation } from 'react-i18next';
+import { compareSerializedTagOrder } from '@/utils/communityTags';
 import './facetitempicker.css';
 
 /**
@@ -69,6 +70,9 @@ const FacetItemPicker = ({
       }
       return acc;
     }, {});
+    for (const data of Object.values(itemGroups)) {
+      data.items.sort(compareSerializedTagOrder);
+    }
     return Object.entries(itemGroups).sort((a, b) => a[1].groupSortOrder - b[1].groupSortOrder);
   }, [filtered, enableGrouping, t]);
 

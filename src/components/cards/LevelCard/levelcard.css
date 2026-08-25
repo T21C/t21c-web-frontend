@@ -963,6 +963,8 @@
   backdrop-filter: brightness(40%);
   color: var(--tag-text-color, inherit);
   filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.5));
+  overflow: hidden;
+  position: relative;
 }
 
 

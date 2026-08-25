@@ -173,6 +173,7 @@
       "ban": "Ban player",
       "pause": "Pause submissions",
       "ratingBan": "Ban from rating",
+      "tagVoteBan": "Ban from community tag votes",
       "banConfirm": "Ban this player?",
       "unbanConfirm": "Unban this player?",
       "banFor": "for",
@@ -189,7 +190,9 @@
       "pauseConfirm": "Pause submissions for this player?",
       "resumeConfirm": "Resume submissions for this player?",
       "ratingBanConfirm": "Ban this player from rating?",
-      "ratingUnbanConfirm": "Allow this player to rate again?"
+      "ratingUnbanConfirm": "Allow this player to rate again?",
+      "tagVoteBanConfirm": "Ban this player from community tag votes?",
+      "tagVoteUnbanConfirm": "Allow this player to vote on community tags again?"
     },
     "link": {
       "hint": "Assign or remove a creator profile linked to this user account."
@@ -228,6 +231,7 @@
       "banDuration": "Enter a duration from 1 to 999",
       "pauseUpdate": "Failed to update submission pause",
       "ratingBanUpdate": "Failed to update rating ban",
+      "tagVoteBanUpdate": "Failed to update community tag vote ban",
       "mergeFailed": "Failed to merge player",
       "mergeSelf": "Cannot merge a player into itself"
     },

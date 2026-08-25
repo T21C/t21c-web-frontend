@@ -6,6 +6,7 @@ import { Tooltip } from 'react-tooltip';
 import { CustomSelect } from '@/components/common/selectors';
 import FacetItemPicker from './FacetItemPicker';
 import { PORTALED_PANEL_CLASS, usePortaledPanelAnchor } from '@/hooks/usePortaledPanelAnchor';
+import { compareSerializedTagOrder } from '@/utils/communityTags';
 import './facetquerybuilder.css';
 //import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 
@@ -334,6 +335,9 @@ const FacetQueryBuilder = ({ items, value, onChange, title, enableGrouping = tru
       }
       return acc;
     }, {});
+    for (const data of Object.values(itemGroups)) {
+      data.items.sort(compareSerializedTagOrder);
+    }
     return Object.entries(itemGroups).sort((a, b) => a[1].groupSortOrder - b[1].groupSortOrder);
   }, [filteredItems, enableGrouping, t, addSearch]);
 

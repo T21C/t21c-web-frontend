@@ -23,6 +23,15 @@ import { RatingInput } from '@/components/common/selectors';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { CDN_IMAGE_ACCEPT } from '@/config/constants/cdnImageAccept';
 
+const EMPTY_NEW_TAG = {
+  name: '',
+  iconFile: null,
+  icon: null,
+  color: '#FF5733',
+  group: '',
+  isCommunity: false,
+};
+
 const DifficultyPage = () => {
   const { user } = useAuth();
   const { difficulties, loading: contextLoading, reloadDifficulties, setDifficulties } = useDifficultyContext();
@@ -85,13 +94,7 @@ const DifficultyPage = () => {
   const [editingGroup, setEditingGroup] = useState(null);
   const [deletingGroup, setDeletingGroup] = useState(null);
   const [newGroupName, setNewGroupName] = useState('');
-  const [newTag, setNewTag] = useState({
-    name: '',
-    iconFile: null,
-    icon: null, // For preview only
-    color: '#FF5733',
-    group: ''
-  });
+  const [newTag, setNewTag] = useState(EMPTY_NEW_TAG);
 
   // Fetch tags when tags tab is active
   useEffect(() => {
@@ -135,6 +138,7 @@ const DifficultyPage = () => {
           if (newTag.group) {
             formData.append('group', newTag.group);
           }
+          formData.append('isCommunity', newTag.isCommunity ? 'true' : 'false');
 
           if (newTag.iconFile) {
             formData.append('icon', newTag.iconFile);
@@ -152,7 +156,7 @@ const DifficultyPage = () => {
             URL.revokeObjectURL(newTag.icon);
           }
           setIsCreatingTag(false);
-          setNewTag({ name: '', iconFile: null, icon: null, color: '#FF5733', group: '' });
+          setNewTag(EMPTY_NEW_TAG);
           await fetchTags();
           return response.data;
         })(),
@@ -179,6 +183,7 @@ const DifficultyPage = () => {
           if (editingTag.group !== undefined) {
             formData.append('group', editingTag.group || '');
           }
+          formData.append('isCommunity', editingTag.isCommunity ? 'true' : 'false');
 
           if (editingTag.iconFile) {
             formData.append('icon', editingTag.iconFile);
@@ -232,6 +237,8 @@ const DifficultyPage = () => {
     const editingGroup = (editingTag.group || '').trim();
     const originalGroup = (originalTag.group || '').trim();
     if (editingGroup !== originalGroup) return true;
+
+    if (Boolean(editingTag.isCommunity) !== Boolean(originalTag.isCommunity)) return true;
     
     // Check if icon was changed
     // New file uploaded
@@ -1230,7 +1237,7 @@ const DifficultyPage = () => {
                         URL.revokeObjectURL(newTag.iconUrl);
                       }
                       setIsCreatingTag(false);
-                      setNewTag({ name: '', iconFile: null, icon: null, color: '#FF5733', group: '' });
+                      setNewTag(EMPTY_NEW_TAG);
                     }
                   }}
                 >
@@ -1240,7 +1247,7 @@ const DifficultyPage = () => {
                       className="modal-close-button"
                       onClick={() => {
                         setIsCreatingTag(false);
-                        setNewTag({ name: '', iconFile: null, icon: null, color: '#FF5733', group: '' });
+                        setNewTag(EMPTY_NEW_TAG);
                       }}
                       aria-label={t('buttons.close', { ns: 'common' })}
                     />
@@ -1272,6 +1279,16 @@ const DifficultyPage = () => {
                           onChange={(e) => setNewTag({ ...newTag, group: e.target.value })}
                           placeholder={t('difficulty.tags.create.group.placeholder')}
                         />
+                      </div>
+                      <div className="form-group form-group--checkbox">
+                        <label>
+                          <input
+                            type="checkbox"
+                            checked={Boolean(newTag.isCommunity)}
+                            onChange={(e) => setNewTag({ ...newTag, isCommunity: e.target.checked })}
+                          />
+                          <span>{t('difficulty.tags.create.isCommunity')}</span>
+                        </label>
                       </div>
                       <div className="form-group">
                         <label>{t('difficulty.tags.create.icon.label')}</label>
@@ -1325,7 +1342,7 @@ const DifficultyPage = () => {
                               URL.revokeObjectURL(newTag.icon);
                             }
                             setIsCreatingTag(false);
-                            setNewTag({ name: '', iconFile: null, icon: null, color: '#FF5733', group: '' });
+                            setNewTag(EMPTY_NEW_TAG);
                           }}
                         >
                           {t('buttons.cancel', { ns: 'common' })}
@@ -1381,6 +1398,16 @@ const DifficultyPage = () => {
                           onChange={(e) => setEditingTag({ ...editingTag, group: e.target.value })}
                           placeholder={t('difficulty.tags.edit.group.placeholder')}
                         />
+                      </div>
+                      <div className="form-group form-group--checkbox">
+                        <label>
+                          <input
+                            type="checkbox"
+                            checked={Boolean(editingTag.isCommunity)}
+                            onChange={(e) => setEditingTag({ ...editingTag, isCommunity: e.target.checked })}
+                          />
+                          <span>{t('difficulty.tags.edit.isCommunity')}</span>
+                        </label>
                       </div>
                       <div className="form-group">
                         <label>{t('difficulty.tags.edit.icon.label')}</label>

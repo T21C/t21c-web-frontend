@@ -129,7 +129,8 @@
         "remove": "Remove Icon"
       },
       "createButton": "Create",
-      "cancelButton": "Cancel"
+      "cancelButton": "Cancel",
+      "isCommunity": "Community tag (players can vote this onto levels)"
     },
     "edit": {
       "title": "Edit Tag",
@@ -146,7 +147,8 @@
       },
       "updateButton": "Update",
       "cancelButton": "Cancel",
-      "unsavedChanges": "You have unsaved changes. Are you sure you want to close?"
+      "unsavedChanges": "You have unsaved changes. Are you sure you want to close?",
+      "isCommunity": "Community tag (players can vote this onto levels)"
     },
     "delete": {
       "title": "Delete Tag",

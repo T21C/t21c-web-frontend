@@ -970,6 +970,25 @@
 /* Tag Management Popup — list UI lives in selectors/ItemPickManager/itemPickManager.css */
 .tag-management-popup {
   max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.tag-management-popup .tag-management-community {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tag-management-popup .tag-management-community__hint {
+  margin: 0;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.tag-management-popup .item-pick-manager__chip--readonly {
+  cursor: default;
 }
 
 .tag-management-actions {

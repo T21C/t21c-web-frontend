@@ -152,7 +152,18 @@
     "noDetails": "추가 정보가 없습니다."
   },
   "tags": {
-    "header": "레벨 태그"
+    "header": "레벨 태그",
+    "vote": {
+      "header": "커뮤니티 태그",
+      "open": "투표",
+      "vote": "이 태그에 투표",
+      "unvote": "투표 취소",
+      "voted": "{{tag}}에 투표했습니다",
+      "unvoted": "{{tag}} 투표를 취소했습니다",
+      "failed": "투표 업데이트에 실패했습니다",
+      "loginRequired": "커뮤니티 태그에 투표하려면 로그인하세요",
+      "banned": "커뮤니티 태그 투표가 제한되어 있습니다"
+    }
   },
   "weeklyAppearance": {
     "header": "주간 노출",

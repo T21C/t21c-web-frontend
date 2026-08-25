@@ -88,6 +88,10 @@
         "tilecount": "Liczba kafelków musi być nieujemną liczbą całkowitą",
         "length": "Długość musi być nieujemną liczbą (sekundy, dopuszczalne ułamki)"
       }
+    },
+    "tags": {
+      "communityTags": "Tagi społeczności",
+      "communityTagsHint": "Te tagi pochodzą z głosów społeczności. Zapis nie przypnie ich, chyba że dodasz je powyżej."
     }
   },
   "download": {
