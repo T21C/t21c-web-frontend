@@ -182,6 +182,7 @@
 
 .tufhelper-download-manager__level-list {
   position: relative;
+  --tufhelper-level-row-height: 84px;
   height: min(417px, 48svh);
   overflow: hidden;
   border-top: 1px solid var(--color-white-t10);
@@ -213,6 +214,19 @@
 
 .tufhelper-download-manager__level-row:hover {
   background: rgba(255, 255, 255, 0.035);
+}
+
+.tufhelper-download-manager__level-list.is-positioned .tufhelper-download-manager__level-row {
+  height: var(--tufhelper-level-row-height);
+  min-height: var(--tufhelper-level-row-height);
+  overflow: hidden;
+}
+
+.tufhelper-download-manager__level-list.is-positioned .tufhelper-download-manager__level-update-error,
+.tufhelper-download-manager__level-list.is-positioned .tufhelper-download-manager__level-update-error span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .tufhelper-download-manager__level-row.is-skeleton {
