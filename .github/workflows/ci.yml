@@ -128,9 +128,9 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      # linux/arm64 is native on the self-hosted runner; QEMU is only for amd64 failover.
-      - uses: docker/setup-qemu-action@v3
+      - name: Set up QEMU
         if: ${{ runner.arch != 'ARM64' }}
+        uses: docker/setup-qemu-action@v3
 
       - uses: docker/setup-buildx-action@v3
 
