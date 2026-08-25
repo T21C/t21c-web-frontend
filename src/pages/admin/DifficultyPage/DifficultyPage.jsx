@@ -75,11 +75,16 @@ const DifficultyPage = () => {
   
   // Tag management state
   const [tags, setTags] = useState([]);
+  const [tagGroups, setTagGroups] = useState([]);
   const [tagsLoading, setTagsLoading] = useState(false);
   const [editingTag, setEditingTag] = useState(null);
   const [originalTag, setOriginalTag] = useState(null); // Store original tag data for comparison
   const [isCreatingTag, setIsCreatingTag] = useState(false);
   const [deletingTag, setDeletingTag] = useState(null);
+  const [isCreatingGroup, setIsCreatingGroup] = useState(false);
+  const [editingGroup, setEditingGroup] = useState(null);
+  const [deletingGroup, setDeletingGroup] = useState(null);
+  const [newGroupName, setNewGroupName] = useState('');
   const [newTag, setNewTag] = useState({
     name: '',
     iconFile: null,
@@ -98,12 +103,20 @@ const DifficultyPage = () => {
   const fetchTags = async () => {
     setTagsLoading(true);
     try {
-      const response = await api.get(`${routes.database.difficulties.root()}/tags`, {
-        headers: {
-          'X-Super-Admin-Password': verifiedPassword,
-        },
-      });
-      setTags(response.data);
+      const [tagsResponse, groupsResponse] = await Promise.all([
+        api.get(`${routes.database.difficulties.root()}/tags`, {
+          headers: {
+            'X-Super-Admin-Password': verifiedPassword,
+          },
+        }),
+        api.get(routes.database.difficulties.tagGroups(), {
+          headers: {
+            'X-Super-Admin-Password': verifiedPassword,
+          },
+        }),
+      ]);
+      setTags(tagsResponse.data || []);
+      setTagGroups(groupsResponse.data || []);
     } catch (error) {
       console.error('Error fetching tags:', error);
       toast.error(t('difficulty.tags.notifications.fetchFailed'));
@@ -135,12 +148,12 @@ const DifficultyPage = () => {
               'Content-Type': 'multipart/form-data',
             },
           });
-          setTags((prev) => [...prev, response.data]);
           if (newTag.icon && newTag.icon.startsWith('blob:')) {
-            URL.revokeObjectURL(newTag.iconUrl);
+            URL.revokeObjectURL(newTag.icon);
           }
           setIsCreatingTag(false);
           setNewTag({ name: '', iconFile: null, icon: null, color: '#FF5733', group: '' });
+          await fetchTags();
           return response.data;
         })(),
         {
@@ -189,6 +202,7 @@ const DifficultyPage = () => {
           }
           setEditingTag(null);
           setOriginalTag(null);
+          await fetchTags();
           return response.data;
         })(),
         {
@@ -260,6 +274,7 @@ const DifficultyPage = () => {
           });
           setTags((prev) => prev.filter((tag) => tag.id !== tagId));
           setDeletingTag(null);
+          await fetchTags();
         })(),
         {
           loading: t('difficulty.loading.deletingTag'),
@@ -285,6 +300,9 @@ const DifficultyPage = () => {
       isCreatingTag ||
       editingTag !== null ||
       deletingTag !== null ||
+      isCreatingGroup ||
+      editingGroup !== null ||
+      deletingGroup !== null ||
       showDiscordRolesPopup,
     [
       isCreating,
@@ -295,6 +313,9 @@ const DifficultyPage = () => {
       isCreatingTag,
       editingTag,
       deletingTag,
+      isCreatingGroup,
+      editingGroup,
+      deletingGroup,
       showDiscordRolesPopup,
     ]
   );
@@ -644,25 +665,17 @@ const DifficultyPage = () => {
     setIsGroupsReordering(true);
     
     try {
-      const items = Array.from(orderedGroups);
+      const items = Array.from(sortedNamedGroups);
       const [reorderedItem] = items.splice(result.source.index, 1);
       items.splice(result.destination.index, 0, reorderedItem);
       
-      // Create groups array with new sort orders
       const groupUpdates = items.map((group, index) => ({
+        id: group.id,
         name: group.name,
         sortOrder: index
       }));
       
-      // Update local state - update all tags with new groupSortOrder
-      setTags(prev => prev.map(tag => {
-        const tagGroup = tag.group || '';
-        const groupUpdate = groupUpdates.find(g => g.name === tagGroup);
-        if (groupUpdate) {
-          return { ...tag, groupSortOrder: groupUpdate.sortOrder };
-        }
-        return tag;
-      }));
+      setTagGroups(items.map((group, index) => ({ ...group, sortOrder: index })));
       
       await toast.promise(
         api.put(
@@ -689,31 +702,117 @@ const DifficultyPage = () => {
     }
   };
 
+  const handleCreateGroup = async () => {
+    const name = newGroupName.trim();
+    if (!name) return;
+    try {
+      await toast.promise(
+        (async () => {
+          await api.post(
+            routes.database.difficulties.tagGroups(),
+            { name },
+            { headers: { 'X-Super-Admin-Password': verifiedPassword } },
+          );
+          setIsCreatingGroup(false);
+          setNewGroupName('');
+          await fetchTags();
+        })(),
+        {
+          loading: t('difficulty.loading.savingGroup'),
+          success: t('difficulty.groups.notifications.created'),
+          error: (err) =>
+            getRateLimitMessage(err) || t('difficulty.groups.notifications.createFailed'),
+        },
+      );
+    } catch (error) {
+      console.error('Error creating tag group:', error);
+    }
+  };
+
+  const handleUpdateGroup = async () => {
+    if (!editingGroup) return;
+    const name = String(editingGroup.name || '').trim();
+    if (!name) return;
+    try {
+      await toast.promise(
+        (async () => {
+          await api.put(
+            routes.database.difficulties.tagGroup(editingGroup.id),
+            { name },
+            { headers: { 'X-Super-Admin-Password': verifiedPassword } },
+          );
+          setEditingGroup(null);
+          await fetchTags();
+        })(),
+        {
+          loading: t('difficulty.loading.updatingGroup'),
+          success: t('difficulty.groups.notifications.updated'),
+          error: (err) =>
+            getRateLimitMessage(err) || t('difficulty.groups.notifications.updateFailed'),
+        },
+      );
+    } catch (error) {
+      console.error('Error updating tag group:', error);
+    }
+  };
+
+  const handleDeleteGroup = async () => {
+    if (!deletingGroup) return;
+    const groupId = deletingGroup.id;
+    try {
+      await toast.promise(
+        (async () => {
+          await api.delete(routes.database.difficulties.tagGroup(groupId), {
+            headers: { 'X-Super-Admin-Password': verifiedPassword },
+          });
+          setDeletingGroup(null);
+          await fetchTags();
+        })(),
+        {
+          loading: t('difficulty.loading.deletingGroup'),
+          success: t('difficulty.groups.notifications.deleted'),
+          error: (err) =>
+            getRateLimitMessage(err) || t('difficulty.groups.notifications.deleteFailed'),
+        },
+      );
+    } catch (error) {
+      console.error('Error deleting tag group:', error);
+    }
+  };
+
   const sortedDifficulties = [...difficulties].sort((a, b) => a.sortOrder - b.sortOrder);
-  const sortedTags = [...tags].sort((a, b) => {
-    // First sort by groupSortOrder, then by sortOrder within group
-    const groupOrderA = a.groupSortOrder ?? 0;
-    const groupOrderB = b.groupSortOrder ?? 0;
-    if (groupOrderA !== groupOrderB) return groupOrderA - groupOrderB;
-    return (a.sortOrder ?? 0) - (b.sortOrder ?? 0);
+
+  const sortedNamedGroups = [...tagGroups].sort((a, b) => {
+    const orderA = a.sortOrder ?? 0;
+    const orderB = b.sortOrder ?? 0;
+    if (orderA !== orderB) return orderA - orderB;
+    return String(a.name || '').localeCompare(String(b.name || ''));
   });
 
-  // Group tags by their group field
-  const groupedTags = sortedTags.reduce((groups, tag) => {
-    const groupName = tag.group || '';
-    if (!groups[groupName]) {
-      groups[groupName] = {
-        name: groupName,
-        tags: [],
-        groupSortOrder: tag.groupSortOrder ?? 0
-      };
-    }
-    groups[groupName].tags.push(tag);
-    return groups;
+  const tagsByGroupId = tags.reduce((acc, tag) => {
+    const key = tag.groupId == null ? 'ungrouped' : String(tag.groupId);
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(tag);
+    return acc;
   }, {});
 
-  // Get ordered groups list
-  const orderedGroups = Object.values(groupedTags).sort((a, b) => a.groupSortOrder - b.groupSortOrder);
+  const sortTagsInGroup = (list) =>
+    [...(list || [])].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+
+  const namedGroupSections = sortedNamedGroups.map((group) => ({
+    id: group.id,
+    name: group.name,
+    groupSortOrder: group.sortOrder ?? 0,
+    tags: sortTagsInGroup(tagsByGroupId[String(group.id)]),
+  }));
+
+  const ungroupedTags = sortTagsInGroup(tagsByGroupId.ungrouped);
+  const orderedGroups = [
+    ...namedGroupSections,
+    ...(ungroupedTags.length
+      ? [{ id: null, name: '', groupSortOrder: Number.MAX_SAFE_INTEGER, tags: ungroupedTags }]
+      : []),
+  ];
 
   const handleDirectDelete = async () => {
     if (!fallbackDiff || fallbackDiff === String(deletingDifficulty?.id)) return;
@@ -1016,9 +1115,19 @@ const DifficultyPage = () => {
               ) : (
                 <>
                   {/* Groups Sub-tab */}
+                  <button
+                    className="create-button"
+                    onClick={() => {
+                      setNewGroupName('');
+                      setIsCreatingGroup(true);
+                    }}
+                    disabled={tagsLoading || isGroupsReordering}
+                  >
+                    {t('difficulty.groups.createButton')}
+                  </button>
                   {tagsLoading ? (
                     <div className="loading-message">{t('loading.generic', { ns: 'common' })}</div>
-                  ) : orderedGroups.length === 0 ? (
+                  ) : sortedNamedGroups.length === 0 ? (
                     <div className="no-items-message">{t('difficulty.groups.noGroups')}</div>
                   ) : (
                     <DragDropContext onDragEnd={handleGroupDragEnd}>
@@ -1029,10 +1138,10 @@ const DifficultyPage = () => {
                             {...provided.droppableProps}
                             ref={provided.innerRef}
                           >
-                            {orderedGroups.map((group, index) => (
+                            {sortedNamedGroups.map((group, index) => (
                               <Draggable 
-                                key={group.name || 'ungrouped'} 
-                                draggableId={`group-${group.name || 'ungrouped'}`} 
+                                key={group.id} 
+                                draggableId={`group-${group.id}`} 
                                 index={index}
                                 isDragDisabled={isGroupsReordering}
                               >
@@ -1045,14 +1154,14 @@ const DifficultyPage = () => {
                                   >
                                     <div className="group-item-content">
                                       <div className="group-item-name">
-                                        {group.name || t('difficulty.tags.ungrouped')}
+                                        {group.name}
                                       </div>
                                       <div className="group-item-count">
-                                        {t('difficulty.tags.tagCount', { count: group.tags.length, plural: group.tags.length !== 1 ? 's' : '' })}
+                                        {t('difficulty.tags.tagCount', { count: (tagsByGroupId[String(group.id)] || []).length, plural: (tagsByGroupId[String(group.id)] || []).length !== 1 ? 's' : '' })}
                                       </div>
                                     </div>
                                     <div className="group-item-preview">
-                                      {group.tags.slice(0, 5).map(tag => (
+                                      {sortTagsInGroup(tagsByGroupId[String(group.id)]).slice(0, 5).map(tag => (
                                         <div
                                           key={tag.id}
                                           className="group-tag-preview"
@@ -1069,9 +1178,33 @@ const DifficultyPage = () => {
                                           )}
                                         </div>
                                       ))}
-                                      {group.tags.length > 5 && (
-                                        <span className="more-tags">+{group.tags.length - 5}</span>
+                                      {(tagsByGroupId[String(group.id)] || []).length > 5 && (
+                                        <span className="more-tags">+{(tagsByGroupId[String(group.id)] || []).length - 5}</span>
                                       )}
+                                    </div>
+                                    <div className="group-item-actions">
+                                      <button
+                                        type="button"
+                                        onMouseDown={(e) => e.stopPropagation()}
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setEditingGroup({ ...group });
+                                        }}
+                                        disabled={isGroupsReordering}
+                                      >
+                                        <EditIcon color="#fff" size="20px" />
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onMouseDown={(e) => e.stopPropagation()}
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setDeletingGroup(group);
+                                        }}
+                                        disabled={isGroupsReordering}
+                                      >
+                                        <TrashIcon color="#fff" size="20px" />
+                                      </button>
                                     </div>
                                   </div>
                                 )}
@@ -1097,7 +1230,7 @@ const DifficultyPage = () => {
                         URL.revokeObjectURL(newTag.iconUrl);
                       }
                       setIsCreatingTag(false);
-                      setNewTag({ name: '', iconFile: null, icon: null, color: '#FF5733' });
+                      setNewTag({ name: '', iconFile: null, icon: null, color: '#FF5733', group: '' });
                     }
                   }}
                 >
@@ -1107,7 +1240,7 @@ const DifficultyPage = () => {
                       className="modal-close-button"
                       onClick={() => {
                         setIsCreatingTag(false);
-                        setNewTag({ name: '', iconFile: null, icon: null, color: '#FF5733' });
+                        setNewTag({ name: '', iconFile: null, icon: null, color: '#FF5733', group: '' });
                       }}
                       aria-label={t('buttons.close', { ns: 'common' })}
                     />
@@ -1192,7 +1325,7 @@ const DifficultyPage = () => {
                               URL.revokeObjectURL(newTag.icon);
                             }
                             setIsCreatingTag(false);
-                            setNewTag({ name: '', iconFile: null, icon: null, color: '#FF5733' });
+                            setNewTag({ name: '', iconFile: null, icon: null, color: '#FF5733', group: '' });
                           }}
                         >
                           {t('buttons.cancel', { ns: 'common' })}
@@ -1343,6 +1476,136 @@ const DifficultyPage = () => {
                         type="button"
                         className="cancel-button"
                         onClick={() => setDeletingTag(null)}
+                      >
+                        {t('buttons.cancel', { ns: 'common' })}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {isCreatingGroup && (
+                <div
+                  className="difficulty-modal"
+                  onClick={(e) => {
+                    if (e.target.className === 'difficulty-modal') {
+                      setIsCreatingGroup(false);
+                      setNewGroupName('');
+                    }
+                  }}
+                >
+                  <div className="difficulty-modal-content">
+                    <CloseButton
+                      variant="floating"
+                      className="modal-close-button"
+                      onClick={() => {
+                        setIsCreatingGroup(false);
+                        setNewGroupName('');
+                      }}
+                      aria-label={t('buttons.close', { ns: 'common' })}
+                    />
+                    <h2>{t('difficulty.groups.create.title')}</h2>
+                    <form onSubmit={(e) => { e.preventDefault(); handleCreateGroup(); }}>
+                      <div className="form-group">
+                        <label>{t('difficulty.groups.create.name')}</label>
+                        <input
+                          type="text"
+                          value={newGroupName}
+                          onChange={(e) => setNewGroupName(e.target.value)}
+                          required
+                        />
+                      </div>
+                      <div className="modal-actions">
+                        <button type="submit" className="confirm-button">{t('difficulty.groups.create.createButton')}</button>
+                        <button
+                          type="button"
+                          className="cancel-button"
+                          onClick={() => {
+                            setIsCreatingGroup(false);
+                            setNewGroupName('');
+                          }}
+                        >
+                          {t('buttons.cancel', { ns: 'common' })}
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              )}
+
+              {editingGroup && (
+                <div
+                  className="difficulty-modal"
+                  onClick={(e) => {
+                    if (e.target.className === 'difficulty-modal') {
+                      setEditingGroup(null);
+                    }
+                  }}
+                >
+                  <div className="difficulty-modal-content">
+                    <CloseButton
+                      variant="floating"
+                      className="modal-close-button"
+                      onClick={() => setEditingGroup(null)}
+                      aria-label={t('buttons.close', { ns: 'common' })}
+                    />
+                    <h2>{t('difficulty.groups.edit.title')}</h2>
+                    <form onSubmit={(e) => { e.preventDefault(); handleUpdateGroup(); }}>
+                      <div className="form-group">
+                        <label>{t('difficulty.groups.edit.name')}</label>
+                        <input
+                          type="text"
+                          value={editingGroup.name}
+                          onChange={(e) => setEditingGroup({ ...editingGroup, name: e.target.value })}
+                          required
+                        />
+                      </div>
+                      <div className="modal-actions">
+                        <button type="submit" className="confirm-button">{t('difficulty.groups.edit.updateButton')}</button>
+                        <button
+                          type="button"
+                          className="cancel-button"
+                          onClick={() => setEditingGroup(null)}
+                        >
+                          {t('buttons.cancel', { ns: 'common' })}
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              )}
+
+              {deletingGroup && (
+                <div
+                  className="difficulty-modal"
+                  onClick={(e) => {
+                    if (e.target.className === 'difficulty-modal') {
+                      setDeletingGroup(null);
+                    }
+                  }}
+                >
+                  <div className="difficulty-modal-content">
+                    <CloseButton
+                      variant="floating"
+                      className="modal-close-button"
+                      onClick={() => setDeletingGroup(null)}
+                      aria-label={t('buttons.close', { ns: 'common' })}
+                    />
+                    <h2>{t('difficulty.groups.delete.title')}</h2>
+                    <p>{t('difficulty.groups.delete.message', { name: deletingGroup.name })}</p>
+                    <p>{t('difficulty.groups.delete.description')}</p>
+                    <div className="modal-actions">
+                      <button
+                        type="button"
+                        className="delete-confirm-button"
+                        onClick={handleDeleteGroup}
+                      >
+                        {t('difficulty.groups.delete.deleteButton')}
+                      </button>
+                      <button
+                        type="button"
+                        className="cancel-button"
+                        onClick={() => setDeletingGroup(null)}
                       >
                         {t('buttons.cancel', { ns: 'common' })}
                       </button>

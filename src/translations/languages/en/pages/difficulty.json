@@ -28,7 +28,10 @@
     "deletingTag": "Deleting tag...",
     "reorderingTags": "Updating tag order...",
     "reorderingGroups": "Updating group order...",
-    "fetchingTags": "Loading tags..."
+    "fetchingTags": "Loading tags...",
+    "savingGroup": "Creating group...",
+    "updatingGroup": "Updating group...",
+    "deletingGroup": "Deleting group..."
   },
   "noItems": {
     "message": "No difficulties found."
@@ -165,10 +168,33 @@
     }
   },
   "groups": {
-    "noGroups": "No groups found. Create tags with groups first!",
+    "createButton": "Create Group",
+    "noGroups": "No groups found. Create a group or assign a group name when creating a tag.",
+    "create": {
+      "title": "Create Group",
+      "name": "Name",
+      "createButton": "Create"
+    },
+    "edit": {
+      "title": "Edit Group",
+      "name": "Name",
+      "updateButton": "Update"
+    },
+    "delete": {
+      "title": "Delete Group",
+      "message": "Are you sure you want to delete the group \"{{name}}\"?",
+      "description": "Tags in this group will become ungrouped. This cannot be undone.",
+      "deleteButton": "Delete"
+    },
     "notifications": {
       "reordered": "Groups reordered successfully",
-      "reorderFailed": "Failed to reorder groups"
+      "reorderFailed": "Failed to reorder groups",
+      "created": "Group created successfully",
+      "createFailed": "Failed to create group",
+      "updated": "Group updated successfully",
+      "updateFailed": "Failed to update group",
+      "deleted": "Group deleted successfully",
+      "deleteFailed": "Failed to delete group"
     }
   }
 } 

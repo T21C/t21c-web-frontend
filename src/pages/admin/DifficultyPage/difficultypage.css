@@ -720,6 +720,29 @@
   margin-left: 0.25rem;
 }
 
+.difficulty-page .group-item-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.difficulty-page .group-item-actions button {
+  padding: 0.5rem;
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  color: var(--color-white);
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.difficulty-page .group-item-actions button:hover {
+  background-color: var(--color-white-t10);
+}
+
 /* Tag item group display - hidden when in grouped view */
 .difficulty-page .tag-item-group {
   font-size: 0.75rem;

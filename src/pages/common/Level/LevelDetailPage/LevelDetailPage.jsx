@@ -243,10 +243,16 @@ const TagsDropdown = ({ tags, show, onClose, anchorRef }) => {
 
   if (!show || !tags?.length || !portalRoot) return null;
 
-  // Sort tags by groupSortOrder then sortOrder
+  // Sort tags by groupSortOrder then sortOrder (ungrouped last)
+  const groupSortKey = (tag) => {
+    const hasGroup = tag.group && String(tag.group).trim() !== '';
+    if (!hasGroup) return Number.MAX_SAFE_INTEGER;
+    return tag.groupSortOrder ?? 0;
+  };
+
   const sortedTags = [...tags].sort((a, b) => {
-    const groupOrderA = a.groupSortOrder ?? 0;
-    const groupOrderB = b.groupSortOrder ?? 0;
+    const groupOrderA = groupSortKey(a);
+    const groupOrderB = groupSortKey(b);
     if (groupOrderA !== groupOrderB) return groupOrderA - groupOrderB;
     return (a.sortOrder ?? 0) - (b.sortOrder ?? 0);
   });
@@ -258,7 +264,7 @@ const TagsDropdown = ({ tags, show, onClose, anchorRef }) => {
       groups[groupName] = {
         name: groupName,
         tags: [],
-        groupSortOrder: tag.groupSortOrder ?? 0
+        groupSortOrder: groupSortKey(tag)
       };
     }
     groups[groupName].tags.push(tag);
@@ -2351,8 +2357,10 @@ const LevelDetailPageContent = ({ mockData = null }) => {
   
   // Use tags from level data, sorted by groupSortOrder then sortOrder
   const tags = [...(res.level.tags || [])].sort((a, b) => {
-    const groupOrderA = a.groupSortOrder ?? 0;
-    const groupOrderB = b.groupSortOrder ?? 0;
+    const hasGroupA = a.group && String(a.group).trim() !== '';
+    const hasGroupB = b.group && String(b.group).trim() !== '';
+    const groupOrderA = hasGroupA ? (a.groupSortOrder ?? 0) : Number.MAX_SAFE_INTEGER;
+    const groupOrderB = hasGroupB ? (b.groupSortOrder ?? 0) : Number.MAX_SAFE_INTEGER;
     if (groupOrderA !== groupOrderB) return groupOrderA - groupOrderB;
     return (a.sortOrder ?? 0) - (b.sortOrder ?? 0);
   });
