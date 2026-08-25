@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import MarqueeText from '@/components/common/display/MarqueeText/MarqueeText';
@@ -18,6 +19,25 @@ const UPDATE_LABEL_KEYS = {
   update_available: 'updateAvailable',
   updating: 'updatingLevel',
   failed: 'updateRetry',
+};
+const MOBILE_LEVEL_ROW_QUERY = '(max-width: 700px)';
+const DESKTOP_LEVEL_ROW_HEIGHT = 84;
+const MOBILE_LEVEL_ROW_HEIGHT = 184;
+
+const useLevelRowHeight = () => {
+  const [mobile, setMobile] = useState(() => (
+    typeof window !== 'undefined' && window.matchMedia(MOBILE_LEVEL_ROW_QUERY).matches
+  ));
+
+  useEffect(() => {
+    const query = window.matchMedia(MOBILE_LEVEL_ROW_QUERY);
+    const update = (event) => setMobile(event.matches);
+    setMobile(query.matches);
+    query.addEventListener('change', update);
+    return () => query.removeEventListener('change', update);
+  }, []);
+
+  return mobile ? MOBILE_LEVEL_ROW_HEIGHT : DESKTOP_LEVEL_ROW_HEIGHT;
 };
 
 const LoadError = ({ message, onRetry, position = 'bottom', t }) => (
@@ -77,6 +97,7 @@ export const DownloadedLevelList = ({
   locale,
 }) => {
   const { difficultyDict, loading: difficultiesLoading } = useDifficultyContext();
+  const levelRowHeight = useLevelRowHeight();
   const difficultiesReady = !difficultiesLoading && levels.every((level) => difficultyDict[level.diffId]?.icon);
   const isEmpty = positioned ? totalCount === 0 : levels.length === 0;
   const renderRow = (_virtualIndex, level) => {
@@ -172,7 +193,10 @@ export const DownloadedLevelList = ({
           <p>{t('level.tufHelperLiteDownloadManager.emptyDescription')}</p>
         </div>
       ) : (
-        <div className="tufhelper-download-manager__level-list">
+        <div
+          className={`tufhelper-download-manager__level-list${positioned ? ' is-positioned' : ''}`}
+          style={positioned ? { '--tufhelper-level-row-height': `${levelRowHeight}px` } : undefined}
+        >
           {errors.previous ? (
             <LoadError message={t('level.tufHelperLiteDownloadManager.loadMoreFailed')} onRetry={loadPrevious} position="top" t={t} />
           ) : null}
@@ -180,6 +204,7 @@ export const DownloadedLevelList = ({
             className="tufhelper-download-manager__virtuoso"
             data={positioned ? undefined : levels}
             totalCount={positioned ? totalCount : undefined}
+            fixedItemHeight={positioned ? levelRowHeight : undefined}
             firstItemIndex={positioned ? undefined : firstItemIndex}
             computeItemKey={(index, level) => {
               const positionedLevel = positioned ? itemsByIndex.get(index) : level;
