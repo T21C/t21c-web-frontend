@@ -6,6 +6,7 @@ const TUFHELPER_LITE_HEALTH_METHOD = 'health';
 const MINIMUM_TUFHELPER_LITE_VERSION = [0, 1, 4];
 export const TUFHELPER_LITE_STORAGE_CAPABILITY = 'download-storage-migration-v1';
 export const TUFHELPER_LITE_LIBRARY_CAPABILITY = 'downloaded-level-library-v1';
+export const TUFHELPER_LITE_POSITIONED_PAGES_CAPABILITY = 'downloaded-level-positioned-pages-v1';
 export const TUFHELPER_LITE_UPDATE_CAPABILITY = 'downloaded-level-update-v1';
 export const TUFHELPER_LITE_BATCH_UPDATE_CAPABILITY = 'downloaded-level-batch-update-check-v1';
 export const TUFHELPER_LITE_UPDATE_ALL_CAPABILITY = 'downloaded-level-batch-update-v1';
@@ -68,6 +69,7 @@ let tufHelperLiteHealthSnapshot = {
   capabilities: [],
   supportsStorageMigration: false,
   supportsDownloadedLibrary: false,
+  supportsPositionedDownloadedPages: false,
   supportsDownloadedLevelUpdate: false,
   supportsBatchUpdateCheck: false,
   supportsBatchUpdate: false,
@@ -128,6 +130,7 @@ const setTufHelperLiteHealthSnapshot = (nextSnapshot) => {
     capabilities,
     supportsStorageMigration: capabilities.includes(TUFHELPER_LITE_STORAGE_CAPABILITY),
     supportsDownloadedLibrary: capabilities.includes(TUFHELPER_LITE_LIBRARY_CAPABILITY),
+    supportsPositionedDownloadedPages: capabilities.includes(TUFHELPER_LITE_POSITIONED_PAGES_CAPABILITY),
     supportsDownloadedLevelUpdate: capabilities.includes(TUFHELPER_LITE_UPDATE_CAPABILITY),
     supportsBatchUpdateCheck: capabilities.includes(TUFHELPER_LITE_BATCH_UPDATE_CAPABILITY),
     supportsBatchUpdate: capabilities.includes(TUFHELPER_LITE_UPDATE_ALL_CAPABILITY),
@@ -139,6 +142,7 @@ const setTufHelperLiteHealthSnapshot = (nextSnapshot) => {
     tufHelperLiteHealthSnapshot.port === normalizedSnapshot.port &&
     tufHelperLiteHealthSnapshot.supportsStorageMigration === normalizedSnapshot.supportsStorageMigration &&
     tufHelperLiteHealthSnapshot.supportsDownloadedLibrary === normalizedSnapshot.supportsDownloadedLibrary
+    && tufHelperLiteHealthSnapshot.supportsPositionedDownloadedPages === normalizedSnapshot.supportsPositionedDownloadedPages
     && tufHelperLiteHealthSnapshot.supportsDownloadedLevelUpdate === normalizedSnapshot.supportsDownloadedLevelUpdate
     && tufHelperLiteHealthSnapshot.supportsBatchUpdateCheck === normalizedSnapshot.supportsBatchUpdateCheck
     && tufHelperLiteHealthSnapshot.supportsBatchUpdate === normalizedSnapshot.supportsBatchUpdate

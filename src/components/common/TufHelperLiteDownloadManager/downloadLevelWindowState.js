@@ -20,3 +20,19 @@ export const mergeDownloadedLevelPage = (current, page, direction) => {
 
   return { ...current, pages, firstItemIndex };
 };
+
+export const mergePositionedDownloadedLevelPage = (current, page, direction) => {
+  const withoutSameRange = current.pages.filter((entry) => entry.startIndex !== page.startIndex);
+  let pages = [...withoutSameRange, page].sort((left, right) => left.startIndex - right.startIndex);
+
+  if (pages.length > MAX_DOWNLOAD_LEVEL_PAGES) {
+    if (direction === 'previous') pages = pages.slice(0, MAX_DOWNLOAD_LEVEL_PAGES);
+    else pages = pages.slice(pages.length - MAX_DOWNLOAD_LEVEL_PAGES);
+  }
+
+  return {
+    ...current,
+    pages,
+    totalCount: page.totalCount,
+  };
+};
