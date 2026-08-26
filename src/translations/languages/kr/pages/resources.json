@@ -1,0 +1,97 @@
+{
+  "meta": {
+    "title": "자료",
+    "description": "TUF 팀의 유용한 가이드, 문서, Notion 페이지"
+  },
+  "title": "자료",
+  "subtitle": "TUF 팀이 모은 가이드, 문서, Notion 페이지입니다.",
+  "empty": "아직 공개된 자료가 없습니다.",
+  "open": "열기",
+  "ungrouped": "그룹 없음",
+  "errors": {
+    "loadFailed": "자료를 불러오지 못했습니다. 나중에 다시 시도해 주세요."
+  },
+  "admin": {
+    "manage": "링크 관리",
+    "hidden": "숨김"
+  },
+  "tabs": {
+    "links": "링크",
+    "groups": "그룹"
+  },
+  "loading": {
+    "reorderingLinks": "링크 순서를 저장하는 중...",
+    "reorderingGroups": "그룹 순서를 저장하는 중..."
+  },
+  "links": {
+    "createButton": "링크 만들기",
+    "noLinks": "링크가 없습니다. 첫 링크를 만들어 보세요!",
+    "ungrouped": "그룹 없음",
+    "linkCount": "링크 {{count}}개",
+    "fields": {
+      "title": "제목",
+      "url": "URL",
+      "urlPlaceholder": "https://www.notion.so/…",
+      "description": "설명",
+      "published": "이 페이지에 표시",
+      "group": {
+        "label": "그룹 (선택)",
+        "placeholder": "그룹 이름 입력"
+      }
+    },
+    "create": {
+      "title": "링크 만들기",
+      "createButton": "만들기"
+    },
+    "edit": {
+      "title": "링크 수정",
+      "updateButton": "업데이트"
+    },
+    "delete": {
+      "title": "링크 삭제",
+      "message": "링크 \"{{name}}\"을(를) 삭제할까요?",
+      "description": "이 작업은 되돌릴 수 없습니다.",
+      "deleteButton": "삭제"
+    },
+    "notifications": {
+      "created": "링크가 만들어졌습니다",
+      "createFailed": "링크를 만들지 못했습니다",
+      "updated": "링크가 수정되었습니다",
+      "updateFailed": "링크를 수정하지 못했습니다",
+      "deleted": "링크가 삭제되었습니다",
+      "deleteFailed": "링크를 삭제하지 못했습니다",
+      "reordered": "링크 순서가 저장되었습니다",
+      "reorderFailed": "링크 순서를 저장하지 못했습니다"
+    }
+  },
+  "groups": {
+    "createButton": "그룹 만들기",
+    "noGroups": "그룹이 없습니다. 그룹을 만들거나 링크를 만들 때 그룹 이름을 지정하세요.",
+    "create": {
+      "title": "그룹 만들기",
+      "name": "이름",
+      "createButton": "만들기"
+    },
+    "edit": {
+      "title": "그룹 수정",
+      "name": "이름",
+      "updateButton": "업데이트"
+    },
+    "delete": {
+      "title": "그룹 삭제",
+      "message": "그룹 \"{{name}}\"을(를) 삭제할까요?",
+      "description": "이 그룹의 링크는 그룹 없음 상태가 됩니다. 이 작업은 되돌릴 수 없습니다.",
+      "deleteButton": "삭제"
+    },
+    "notifications": {
+      "reordered": "그룹 순서가 저장되었습니다",
+      "reorderFailed": "그룹 순서를 저장하지 못했습니다",
+      "created": "그룹이 만들어졌습니다",
+      "createFailed": "그룹을 만들지 못했습니다",
+      "updated": "그룹이 수정되었습니다",
+      "updateFailed": "그룹을 수정하지 못했습니다",
+      "deleted": "그룹이 삭제되었습니다",
+      "deleteFailed": "그룹을 삭제하지 못했습니다"
+    }
+  }
+}

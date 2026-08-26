@@ -57,6 +57,7 @@
         "tos": "ToS",
         "privacyPolicy": "개인정보 처리방침",
         "aboutUs": "TUF 소개",
+        "resources": "자료",
         "apiDocs": "API 문서",
         "assets": "에셋",
         "developers": "Developer Portal"
@@ -81,7 +82,8 @@
         "auditLog": "Audit Log",
         "curations": "큐레이션",
         "songs": "곡",
-        "artists": "작곡가"
+        "artists": "작곡가",
+        "resources": "자료"
       }
     },
     "badges": {

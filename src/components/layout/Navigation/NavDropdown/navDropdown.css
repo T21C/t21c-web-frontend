@@ -7,6 +7,18 @@
   align-items: center;
 }
 
+.nav-right > .nav-dropdown {
+  position: relative;
+  align-self: stretch;
+  pointer-events: none;
+}
+
+.nav-right > .nav-dropdown .nav-dropdown-button,
+.nav-right > .nav-dropdown .nav-dropdown-panel,
+.nav-right > .nav-dropdown:has(.nav-dropdown-panel)::before {
+  pointer-events: auto;
+}
+
 .nav-dropdown:has(.nav-dropdown-panel)::before {
   content: "";
   position: absolute;

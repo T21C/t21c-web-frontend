@@ -218,6 +218,7 @@ export const createNavigationConfig = (context = {}) => {
         label: "navigation.main.sections.help",
         items: [
           { to: "/about", translationKey: "navigation.main.dropdowns.more.aboutUs" },
+          { to: "/resources", translationKey: "navigation.main.dropdowns.more.resources" },
           { to: "/terms-of-service", translationKey: "navigation.main.dropdowns.more.tos" },
           { to: "/privacy-policy", translationKey: "navigation.main.dropdowns.more.privacyPolicy" },
           {
@@ -235,7 +236,7 @@ export const createNavigationConfig = (context = {}) => {
       createSection({
         id: "admin",
         label: "navigation.main.links.admin.admin",
-        menuAlign: "right",
+        menuAlign: "left",
         items: [
           { to: "/admin/submissions", translationKey: "navigation.main.dropdowns.admin.submissions" },
           { to: "/admin/announcements", translationKey: "navigation.main.dropdowns.admin.announcements" },

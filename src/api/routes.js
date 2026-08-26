@@ -236,6 +236,14 @@ export const routes = {
       byId: (id) => `/v2/admin/oauth-clients/${enc(id)}`,
       action: (id, action) => `/v2/admin/oauth-clients/${enc(id)}/${enc(action)}`,
     },
+    usefulLinks: {
+      root: () => '/v2/admin/useful-links',
+      byId: (id) => `/v2/admin/useful-links/${enc(id)}`,
+      sortOrders: () => '/v2/admin/useful-links/sort-orders',
+      groupSortOrders: () => '/v2/admin/useful-links/group-sort-orders',
+      groups: () => '/v2/admin/useful-links/groups',
+      groupById: (id) => `/v2/admin/useful-links/groups/${enc(id)}`,
+    },
   },
 
   database: {
@@ -561,6 +569,9 @@ export const routes = {
     languages: () => '/v2/utils/languages',
     verifyTranslations: () => '/v2/utils/verify-translations',
     downloadTranslations: (lang) => `/v2/utils/download-translations/${lang}`,
+  },
+  usefulLinks: {
+    list: () => '/v2/useful-links',
   },
   form: {
     pass: {
