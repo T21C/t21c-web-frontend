@@ -545,6 +545,7 @@ export const routes = {
     preferences: () => '/v2/notifications/preferences',
     pushVapidKey: () => '/v2/notifications/push/vapid-key',
     pushSubscribe: () => '/v2/notifications/push/subscribe',
+    chartClears: (levelId) => `/v2/notifications/chart-clears/${enc(levelId)}`,
   },
   events: () => '/v2/events',
   health: {

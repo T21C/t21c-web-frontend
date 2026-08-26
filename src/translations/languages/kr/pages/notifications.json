@@ -108,6 +108,10 @@
           "title": "Weekly Levels 선정",
           "body": "{{song}} — {{artist}} 가 Weekly Levels에 선정되었습니다."
         }
+      },
+      "cleared": {
+        "title": "차트가 클리어되었습니다",
+        "body": "{{playerName}}님이 {{song}} — {{artist}} 를 클리어했습니다."
       }
     },
     "following": {

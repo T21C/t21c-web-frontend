@@ -105,5 +105,11 @@
     "dontShowAgain": "不再显示",
     "agree": "同意",
     "decline": "不同意并取消"
+  },
+  "chartClearNotify": {
+    "title": "谱面通关通知",
+    "body": "有人通关你的谱面时，要接收通知吗？",
+    "enable": "开启",
+    "dismiss": "暂不"
   }
 } 

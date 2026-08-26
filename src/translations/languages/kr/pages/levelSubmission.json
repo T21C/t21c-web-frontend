@@ -105,5 +105,11 @@
     "dontShowAgain": "다시 보지 않음",
     "agree": "승인",
     "decline": "취소"
+  },
+  "chartClearNotify": {
+    "title": "차트 클리어 알림",
+    "body": "다른 사람이 내 차트를 클리어하면 알림을 받으시겠어요?",
+    "enable": "사용",
+    "dismiss": "나중에"
   }
 }

@@ -1,3 +1,10 @@
 /* tuf-search: #UserMenu #userMenu #layout #navigation */
 /* UserMenu styles are inherited from navigation.css */
-/* This file can be used for user menu-specific overrides if needed */
+
+/* Profile is an identity control, not a section tab — never draw the nav underline. */
+.nav-user-menu::after,
+.nav-user-menu .nav-dropdown::after,
+.nav-user-menu .nav-dropdown.has-active::after {
+  content: none;
+  display: none;
+}

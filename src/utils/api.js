@@ -9,6 +9,7 @@ import {
   syncCsrfFromResponse,
 } from '@/utils/csrf';
 import { getPendingAuthBoot } from '@/utils/authBoot';
+import { isUnauthorizedError } from '@/utils/authErrors';
 
 const baseURL = API_BASE;
 
@@ -131,7 +132,7 @@ api.interceptors.response.use(
       // Don't try refresh for auth endpoints that return 401 as part of their normal flow
       const isLoginOrRegister = originalRequest.url?.includes('/auth/login') || originalRequest.url?.includes('/auth/register');
       if (isLoginOrRegister || originalRequest.url?.includes('/auth/refresh') || originalRequest.url?.includes('/auth/logout')) {
-        if (!isLoginOrRegister) {
+        if (!isLoginOrRegister && isUnauthorizedError(error)) {
           clearCsrfToken();
           window.dispatchEvent(new Event('auth:logout'));
         }
@@ -159,8 +160,10 @@ api.interceptors.response.use(
             setCsrfToken(boot.csrfToken);
           }
           if (!boot.user) {
-            // Boot settled anonymous — refreshing can only 401 again.
+            // Boot settled with an explicit anonymous session.
             processQueue(error, null);
+            clearCsrfToken();
+            window.dispatchEvent(new Event('auth:logout'));
             return Promise.reject(error);
           }
           processQueue(null);
@@ -178,8 +181,10 @@ api.interceptors.response.use(
         });
       } catch (refreshError) {
         processQueue(refreshError, null);
-        clearCsrfToken();
-        window.dispatchEvent(new Event('auth:logout'));
+        if (isUnauthorizedError(refreshError)) {
+          clearCsrfToken();
+          window.dispatchEvent(new Event('auth:logout'));
+        }
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;

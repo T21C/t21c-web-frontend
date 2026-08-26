@@ -65,5 +65,11 @@
   },
   "roles": {
     "specialThanks": "Remerciements"
+  },
+  "chartClearNotify": {
+    "title": "Notifications de clear",
+    "body": "Souhaitez-vous être notifié quand quelqu’un clear vos charts ?",
+    "enable": "Activer",
+    "dismiss": "Pas maintenant"
   }
 } 

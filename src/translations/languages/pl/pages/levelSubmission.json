@@ -54,5 +54,11 @@
   },
   "roles": {
     "specialThanks": "Specjalne podziękowania"
+  },
+  "chartClearNotify": {
+    "title": "Powiadomienia o przejściach",
+    "body": "Czy chcesz dostawać powiadomienia, gdy ktoś przejdzie twoje charty?",
+    "enable": "Włącz",
+    "dismiss": "Nie teraz"
   }
 } 
