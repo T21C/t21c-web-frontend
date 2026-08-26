@@ -39,7 +39,12 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
-      retry: 1,
+      retry: (failureCount, error) => {
+        const status = error?.response?.status;
+        // 4xx is an explicit answer for that resource; 401 is handled by the auth interceptor.
+        if (typeof status === 'number' && status >= 400 && status < 500) return false;
+        return failureCount < 4;
+      },
       staleTime: 5 * 60 * 1000, // 5 minutes
     },
   },

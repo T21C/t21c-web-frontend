@@ -1,4 +1,12 @@
 /**
+ * @param {unknown} err
+ * @returns {boolean}
+ */
+export function isUnauthorizedError(err) {
+  return Boolean(err && typeof err === 'object' && err.response?.status === 401);
+}
+
+/**
  * Normalize axios (or similar) auth errors into a consistent shape for login / OAuth UI.
  * @param {unknown} err
  * @param {{ generic?: string, network?: string }} [labels]

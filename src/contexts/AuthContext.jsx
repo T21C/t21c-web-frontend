@@ -1,8 +1,10 @@
 // tuf-search: #AuthContext #authContext
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import api from '@/utils/api';
-import { clearCsrfToken, setCsrfToken } from '@/utils/csrf';
-import { ensureAuthBoot } from '@/utils/authBoot';
+import { clearCsrfToken, getCsrfToken, setCsrfToken } from '@/utils/csrf';
+import { completeAuthBoot, ensureAuthBoot } from '@/utils/authBoot';
+import { clearCachedUser, readCachedUser, writeCachedUser } from '@/utils/authUserCache';
+import { isUnauthorizedError } from '@/utils/authErrors';
 import { routes } from '@/api/routes';
 import { useNotification } from './NotificationContext';
 import { useNavigate } from 'react-router-dom';
@@ -17,8 +19,8 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUserState] = useState(() => readCachedUser());
+  const [loading, setLoading] = useState(() => !readCachedUser());
   const [lastFetchTime, setLastFetchTime] = useState(0);
   const { restartNotifications, resetNotifications, cleanup } = useNotification();
   const navigate = useNavigate();
@@ -61,6 +63,31 @@ export const AuthProvider = ({ children }) => {
     ensureAuthBoot(async () => (await api.get(routes.auth.session())).data),
   );
 
+  const commitUser = useCallback((next) => {
+    setUserState((prev) => {
+      const resolved = typeof next === 'function' ? next(prev) : next;
+      if (resolved) {
+        writeCachedUser(resolved);
+      } else {
+        clearCachedUser();
+      }
+      return resolved ?? null;
+    });
+  }, []);
+
+  const acceptSessionUser = useCallback((nextUser) => {
+    if (!nextUser) return;
+    commitUser(nextUser);
+    setLoading(false);
+    completeAuthBoot({
+      user: nextUser,
+      csrfToken: getCsrfToken() || '',
+    });
+    if (hasAnyFlag(nextUser, [permissionFlags.SUPER_ADMIN, permissionFlags.RATER])) {
+      restartNotifications(true);
+    }
+  }, [commitUser, restartNotifications]);
+
   // Listen for auth events
   useEffect(() => {
     const handlePermissionChange = () => {
@@ -68,7 +95,11 @@ export const AuthProvider = ({ children }) => {
     };
 
     const handleLogout = () => {
-      setUser(null);
+      completeAuthBoot({
+        user: null,
+        csrfToken: '',
+      });
+      commitUser(null);
       clearOriginUrl();
     };
 
@@ -79,21 +110,22 @@ export const AuthProvider = ({ children }) => {
       window.removeEventListener('auth:permission-changed', handlePermissionChange);
       window.removeEventListener('auth:logout', handleLogout);
     };
-  }, []);
+  }, [commitUser]);
 
   useEffect(() => {
     const applySessionPayload = (data) => {
       if (!data || typeof data !== 'object') {
-        setUser(null);
         return;
       }
       if (typeof data.csrfToken === 'string' && data.csrfToken.length > 0) {
         setCsrfToken(data.csrfToken);
       }
       const nextUser = data.user ?? null;
-      setUser(nextUser);
-      if (nextUser && hasAnyFlag(nextUser, [permissionFlags.SUPER_ADMIN, permissionFlags.RATER])) {
-        restartNotifications(true);
+      if (nextUser) {
+        acceptSessionUser(nextUser);
+      } else {
+        commitUser(null);
+        setLoading(false);
       }
     };
 
@@ -101,13 +133,13 @@ export const AuthProvider = ({ children }) => {
       try {
         applySessionPayload(await sessionBoot);
       } catch {
-        setUser(null);
+        // Transient boot failures keep retrying; do not treat them as logout.
       } finally {
         setLoading(false);
       }
     };
     bootAuth();
-  }, [sessionBoot]);
+  }, [sessionBoot, acceptSessionUser, commitUser]);
 
   // Add verification state check
   const checkVerificationState = useCallback(async () => {
@@ -118,7 +150,7 @@ export const AuthProvider = ({ children }) => {
       const currentVerificationState = hasFlag(response.data.user, permissionFlags.EMAIL_VERIFIED);
       // If verification state has changed, update user
       if (currentVerificationState !== hasFlag(user, permissionFlags.EMAIL_VERIFIED)) {
-        setUser(response.data.user);
+        commitUser(response.data.user);
         return true; // State changed
       }
       return false; // No change
@@ -126,12 +158,12 @@ export const AuthProvider = ({ children }) => {
       console.error('[Auth] Error checking verification state:', error);
       return false;
     }
-  }, [user]);
+  }, [user, commitUser]);
 
   /**
    * @param {boolean} force
    * @param {{ silent?: boolean }} [options] If silent, does not toggle global `loading` (avoids unmounting the tree — needed after verify-email / change-email so the verification page does not remount and retry a one-time token).
-   * @returns {Promise<object | null | undefined>} Current profile user, null on auth error, undefined if skipped (throttle)
+   * @returns {Promise<object | null | undefined>} Current profile user, null on 401, undefined if skipped (throttle) or the fetch failed without 401
    */
   const fetchUser = async (force = false, options = {}) => {
     const silent = options && typeof options === 'object' && options.silent === true;
@@ -147,15 +179,15 @@ export const AuthProvider = ({ children }) => {
       }
       const response = await api.get(routes.auth.profile.me());
       const newUser = response.data.user;
-      setUser(newUser);
-      if (hasAnyFlag(newUser, [permissionFlags.SUPER_ADMIN, permissionFlags.RATER])) {
-        restartNotifications(true);
-      }
+      acceptSessionUser(newUser);
       return newUser;
     } catch (error) {
       console.error('[Auth] Error fetching user:', error);
-      setUser(null);
-      return null;
+      if (isUnauthorizedError(error)) {
+        commitUser(null);
+        return null;
+      }
+      return undefined;
     } finally {
       if (!silent) {
         setLoading(false);
@@ -193,7 +225,8 @@ export const AuthProvider = ({ children }) => {
       // Only load profile when the server issued a session (has user).
       // MFA challenge returns { status: 'mfa_required' } with no user.
       if (response.data?.user) {
-        await fetchUser(true);
+        acceptSessionUser(response.data.user);
+        await fetchUser(true, { silent: true });
       }
       return response.data;
     } catch (error) {
@@ -213,7 +246,8 @@ export const AuthProvider = ({ children }) => {
       rememberDevice: Boolean(rememberDevice),
     });
     if (response.data?.user) {
-      await fetchUser(true);
+      acceptSessionUser(response.data.user);
+      await fetchUser(true, { silent: true });
     }
     return response.data;
   };
@@ -234,7 +268,8 @@ export const AuthProvider = ({ children }) => {
         response: assertion,
       });
       if (response.data?.user) {
-        await fetchUser(true);
+        acceptSessionUser(response.data.user);
+        await fetchUser(true, { silent: true });
       }
       return response.data;
     } catch (error) {
@@ -260,7 +295,8 @@ export const AuthProvider = ({ children }) => {
         rememberDevice: Boolean(rememberDevice),
       });
       if (response.data?.user) {
-        await fetchUser(true);
+        acceptSessionUser(response.data.user);
+        await fetchUser(true, { silent: true });
       }
       return response.data;
     } catch (error) {
@@ -291,10 +327,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await api.post(routes.auth.register(), userData);
       if (response.data.user) {
-        setUser(response.data.user);
-        if (hasAnyFlag(response.data.user, [permissionFlags.SUPER_ADMIN, permissionFlags.RATER])) {
-          restartNotifications(true);
-        }
+        acceptSessionUser(response.data.user);
       }
       return response.data;
     } catch (error) {
@@ -312,6 +345,11 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
+    completeAuthBoot({
+      user: null,
+      csrfToken: '',
+    });
+    commitUser(null);
     try {
       const {unsubscribeCurrentBrowser} = await import('@/utils/webPush');
       await unsubscribeCurrentBrowser();
@@ -326,7 +364,6 @@ export const AuthProvider = ({ children }) => {
     clearCsrfToken();
     cleanup();
     resetNotifications();
-    setUser(null);
   };
 
   const loginWithProvider = async (provider) => {
@@ -377,7 +414,7 @@ export const AuthProvider = ({ children }) => {
   const updateProfile = async (data) => {
     try {
       const response = await api.put(routes.auth.profile.me(), data);
-      setUser(response.data.user);
+      commitUser(response.data.user);
       return response.data;
     } catch (error) {
       throw new Error(error.response?.data?.error || 'Failed to update profile');
@@ -398,7 +435,11 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await api.post(routes.auth.verify.email(), { code });
       if (response.data?.requireLogin) {
-        setUser(null);
+        completeAuthBoot({
+          user: null,
+          csrfToken: '',
+        });
+        commitUser(null);
         window.dispatchEvent(new Event('auth:logout'));
         return response.data;
       }
@@ -417,7 +458,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await api.post(routes.auth.verify.resend());
       if (response.data?.emailResendAvailableAt || response.data?.pendingEmail) {
-        setUser((prev) =>
+        commitUser((prev) =>
           prev
             ? {
                 ...prev,
@@ -433,7 +474,7 @@ export const AuthProvider = ({ children }) => {
       const retryAfter = error.response?.data?.retryAfter;
       if (retryAfter != null && Number.isFinite(Number(retryAfter))) {
         const availableAt = new Date(Date.now() + Number(retryAfter)).toISOString();
-        setUser((prev) =>
+        commitUser((prev) =>
           prev ? { ...prev, emailResendAvailableAt: availableAt } : prev,
         );
       }
@@ -484,7 +525,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await api.post(routes.auth.verify.changeEmail(), { email });
       if (response.data?.user) {
-        setUser((prev) =>
+        commitUser((prev) =>
           prev
             ? {
                 ...prev,
@@ -500,7 +541,7 @@ export const AuthProvider = ({ children }) => {
             : response.data.user
         );
       } else if (response.data?.pendingEmail) {
-        setUser((prev) =>
+        commitUser((prev) =>
           prev
             ? {
                 ...prev,
@@ -545,7 +586,11 @@ export const AuthProvider = ({ children }) => {
         password
       });
       if (response.data?.requireLogin) {
-        setUser(null);
+        completeAuthBoot({
+          user: null,
+          csrfToken: '',
+        });
+        commitUser(null);
         window.dispatchEvent(new Event('auth:logout'));
       }
       return response.data;
@@ -583,7 +628,8 @@ export const AuthProvider = ({ children }) => {
     cancelPendingEmail,
     requestPasswordReset,
     resetPassword,
-    setUser,
+    setUser: commitUser,
+    acceptSessionUser,
     getOriginUrl,
     setOriginUrl,
     clearOriginUrl,

@@ -153,7 +153,7 @@ export const createUserMenuItems = (user) => {
  * @returns {Object} Complete navigation configuration
  */
 export const createNavigationConfig = (context = {}) => {
-  const { user } = context;
+  const { user, loading } = context;
   const tufExtension = getTufExtensionVer();
 
   return {
@@ -278,14 +278,18 @@ export const createNavigationConfig = (context = {}) => {
             sectionIsActive(createUserMenuItems(user) || [], pathname),
         },
         condition: () => !!user,
-        fallback: {
-          type: "button",
-          translationKey: "navigation.main.links.signIn",
-          className: "nav-signin-button",
-          onClick: (initiateLogin) => () => {
-            initiateLogin(window.location.pathname);
-          },
-        },
+        ...(loading
+          ? {}
+          : {
+              fallback: {
+                type: "button",
+                translationKey: "navigation.main.links.signIn",
+                className: "nav-signin-button",
+                onClick: (initiateLogin) => () => {
+                  initiateLogin(window.location.pathname);
+                },
+              },
+            }),
       },
     ],
   };

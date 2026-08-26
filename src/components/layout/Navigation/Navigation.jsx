@@ -19,12 +19,12 @@ const Navigation = ({ children, config: externalConfig = null }) => {
   const { t } = useTranslation("components");
 
   const [openNav, setOpenNav] = useState(false);
-  const { user, initiateLogin } = useAuth();
+  const { user, initiateLogin, loading } = useAuth();
   const location = useLocation();
   const navSpacerRef = useRef(null);
 
   // Create navigation config from external config or generate from context
-  const config = externalConfig || createNavigationConfig({ user, location });
+  const config = externalConfig || createNavigationConfig({ user, location, loading });
 
   // Update global --navbar-height so other elements can use calc(100vh - var(--navbar-height))
   useEffect(() => {

@@ -130,7 +130,7 @@ const CallbackPage = () => {
   const [redirecting, setRedirecting] = useState(false);
   const [mode, setMode] = useState(() => (billingFromUrl.isBillingReturn ? 'billing' : 'oauth'));
   const [billingState, setBillingState] = useState(() => initialBillingState(search));
-  const { fetchUser, getOriginUrl } = useAuth();
+  const { fetchUser, getOriginUrl, acceptSessionUser } = useAuth();
   const { markElevated } = useElevation();
 
   /** OAuth branch only: stable empty-string ref so finally doesn't read stale state `error`. */
@@ -310,6 +310,9 @@ const CallbackPage = () => {
         if (cancelled) return;
         if (existingUser) {
           handleSuccessfulAuth();
+        } else if (existingUser === undefined) {
+          // Transient profile fetch — cookies may already be valid.
+          handleSuccessfulAuth();
         } else {
           oauthErrorRef.current = 'Authentication failed';
           setError('Authentication failed');
@@ -355,8 +358,15 @@ const CallbackPage = () => {
 
         if (responseMode === 'linking') {
           if (response.status === 200) {
-            await fetchUser(true);
-            if (!cancelled) handleSuccessfulAuth();
+            if (response.data?.user) {
+              acceptSessionUser(response.data.user);
+            }
+            const linkedUser = await fetchUser(true, { silent: true });
+            if (cancelled) return;
+            if (linkedUser === null) {
+              throw new Error('Linking failed');
+            }
+            handleSuccessfulAuth();
           } else {
             throw new Error('Linking failed');
           }
@@ -365,13 +375,13 @@ const CallbackPage = () => {
           if (!response.data?.user) {
             throw new Error('No user received from server');
           }
-          const newUser = await fetchUser(true);
+          acceptSessionUser(response.data.user);
+          const newUser = await fetchUser(true, { silent: true });
           if (cancelled) return;
-          if (newUser) {
-            handleSuccessfulAuth();
-          } else {
+          if (newUser === null) {
             throw new Error('No user received from server');
           }
+          handleSuccessfulAuth();
         }
       } catch (err) {
         const errMode = err?.response?.data?.mode || flowHint?.mode;

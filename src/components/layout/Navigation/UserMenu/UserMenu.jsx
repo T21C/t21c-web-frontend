@@ -80,11 +80,7 @@ const UserMenu = ({ isActive }) => {
   };
 
   return (
-    <div
-      className={`nav-user-menu ${menu.isOpen ? "open" : ""} ${
-        hasActiveItem ? "has-active" : ""
-      }`}
-    >
+    <div className={`nav-user-menu ${menu.isOpen ? "open" : ""}`}>
       <div
         className="nav-user-menu__bell"
         onClick={() => menu.closeNow()}
