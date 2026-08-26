@@ -1,0 +1,97 @@
+{
+  "meta": {
+    "title": "Ressources",
+    "description": "Guides, documents et pages Notion utiles de l'équipe TUF"
+  },
+  "title": "Ressources",
+  "subtitle": "Guides, documents et pages Notion rassemblés par l'équipe TUF.",
+  "empty": "Aucune ressource n'a encore été publiée.",
+  "open": "Ouvrir",
+  "ungrouped": "Sans groupe",
+  "errors": {
+    "loadFailed": "Impossible de charger les ressources. Réessayez plus tard."
+  },
+  "admin": {
+    "manage": "Gérer les liens",
+    "hidden": "Masqué"
+  },
+  "tabs": {
+    "links": "Liens",
+    "groups": "Groupes"
+  },
+  "loading": {
+    "reorderingLinks": "Enregistrement de l'ordre des liens...",
+    "reorderingGroups": "Enregistrement de l'ordre des groupes..."
+  },
+  "links": {
+    "createButton": "Créer un lien",
+    "noLinks": "Aucun lien. Créez votre premier lien !",
+    "ungrouped": "Sans groupe",
+    "linkCount": "{{count}} lien{{plural}}",
+    "fields": {
+      "title": "Titre",
+      "url": "URL",
+      "urlPlaceholder": "https://www.notion.so/…",
+      "description": "Description",
+      "published": "Visible sur cette page",
+      "group": {
+        "label": "Groupe (facultatif)",
+        "placeholder": "Saisir un nom de groupe"
+      }
+    },
+    "create": {
+      "title": "Créer un lien",
+      "createButton": "Créer"
+    },
+    "edit": {
+      "title": "Modifier le lien",
+      "updateButton": "Mettre à jour"
+    },
+    "delete": {
+      "title": "Supprimer le lien",
+      "message": "Voulez-vous vraiment supprimer le lien « {{name}} » ?",
+      "description": "Cette action est irréversible.",
+      "deleteButton": "Supprimer"
+    },
+    "notifications": {
+      "created": "Lien créé",
+      "createFailed": "Impossible de créer le lien",
+      "updated": "Lien mis à jour",
+      "updateFailed": "Impossible de mettre à jour le lien",
+      "deleted": "Lien supprimé",
+      "deleteFailed": "Impossible de supprimer le lien",
+      "reordered": "Ordre des liens enregistré",
+      "reorderFailed": "Impossible de réordonner les liens"
+    }
+  },
+  "groups": {
+    "createButton": "Créer un groupe",
+    "noGroups": "Aucun groupe. Créez-en un ou saisissez un nom de groupe en créant un lien.",
+    "create": {
+      "title": "Créer un groupe",
+      "name": "Nom",
+      "createButton": "Créer"
+    },
+    "edit": {
+      "title": "Modifier le groupe",
+      "name": "Nom",
+      "updateButton": "Mettre à jour"
+    },
+    "delete": {
+      "title": "Supprimer le groupe",
+      "message": "Voulez-vous vraiment supprimer le groupe « {{name}} » ?",
+      "description": "Les liens de ce groupe deviendront sans groupe. Cette action est irréversible.",
+      "deleteButton": "Supprimer"
+    },
+    "notifications": {
+      "reordered": "Ordre des groupes enregistré",
+      "reorderFailed": "Impossible de réordonner les groupes",
+      "created": "Groupe créé",
+      "createFailed": "Impossible de créer le groupe",
+      "updated": "Groupe mis à jour",
+      "updateFailed": "Impossible de mettre à jour le groupe",
+      "deleted": "Groupe supprimé",
+      "deleteFailed": "Impossible de supprimer le groupe"
+    }
+  }
+}

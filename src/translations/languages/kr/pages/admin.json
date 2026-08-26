@@ -28,7 +28,9 @@
     "tournaments": "Tournaments",
     "tournamentsDesc": "Manage tournament placements, name links, and reward frames",
     "oauthClients": "OAuth apps",
-    "oauthClientsDesc": "Search, freeze, verify, or delete third-party OAuth apps"
+    "oauthClientsDesc": "Search, freeze, verify, or delete third-party OAuth apps",
+    "resources": "자료",
+    "resourcesDesc": "유용한 Notion 및 문서 링크를 추가, 수정, 정렬합니다"
   },
   "oauthClients": {
     "meta": {

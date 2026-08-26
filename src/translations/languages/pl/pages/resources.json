@@ -1,0 +1,97 @@
+{
+  "meta": {
+    "title": "Materiały",
+    "description": "Przydatne poradniki, dokumenty i strony Notion od zespołu TUF"
+  },
+  "title": "Materiały",
+  "subtitle": "Poradniki, dokumenty i strony Notion zebrane przez zespół TUF.",
+  "empty": "Nie opublikowano jeszcze żadnych materiałów.",
+  "open": "Otwórz",
+  "ungrouped": "Bez grupy",
+  "errors": {
+    "loadFailed": "Nie udało się wczytać materiałów. Spróbuj ponownie później."
+  },
+  "admin": {
+    "manage": "Zarządzaj linkami",
+    "hidden": "Ukryty"
+  },
+  "tabs": {
+    "links": "Linki",
+    "groups": "Grupy"
+  },
+  "loading": {
+    "reorderingLinks": "Zapisywanie kolejności linków...",
+    "reorderingGroups": "Zapisywanie kolejności grup..."
+  },
+  "links": {
+    "createButton": "Utwórz link",
+    "noLinks": "Brak linków. Utwórz pierwszy link!",
+    "ungrouped": "Bez grupy",
+    "linkCount": "{{count}} link{{plural}}",
+    "fields": {
+      "title": "Tytuł",
+      "url": "URL",
+      "urlPlaceholder": "https://www.notion.so/…",
+      "description": "Opis",
+      "published": "Widoczny na tej stronie",
+      "group": {
+        "label": "Grupa (opcjonalnie)",
+        "placeholder": "Wpisz nazwę grupy"
+      }
+    },
+    "create": {
+      "title": "Utwórz link",
+      "createButton": "Utwórz"
+    },
+    "edit": {
+      "title": "Edytuj link",
+      "updateButton": "Aktualizuj"
+    },
+    "delete": {
+      "title": "Usuń link",
+      "message": "Czy na pewno chcesz usunąć link „{{name}}”?",
+      "description": "Tej operacji nie można cofnąć.",
+      "deleteButton": "Usuń"
+    },
+    "notifications": {
+      "created": "Utworzono link",
+      "createFailed": "Nie udało się utworzyć linku",
+      "updated": "Zaktualizowano link",
+      "updateFailed": "Nie udało się zaktualizować linku",
+      "deleted": "Usunięto link",
+      "deleteFailed": "Nie udało się usunąć linku",
+      "reordered": "Zapisano kolejność linków",
+      "reorderFailed": "Nie udało się zmienić kolejności linków"
+    }
+  },
+  "groups": {
+    "createButton": "Utwórz grupę",
+    "noGroups": "Brak grup. Utwórz grupę albo podaj jej nazwę przy tworzeniu linku.",
+    "create": {
+      "title": "Utwórz grupę",
+      "name": "Nazwa",
+      "createButton": "Utwórz"
+    },
+    "edit": {
+      "title": "Edytuj grupę",
+      "name": "Nazwa",
+      "updateButton": "Aktualizuj"
+    },
+    "delete": {
+      "title": "Usuń grupę",
+      "message": "Czy na pewno chcesz usunąć grupę „{{name}}”?",
+      "description": "Linki z tej grupy staną się bez grupy. Tej operacji nie można cofnąć.",
+      "deleteButton": "Usuń"
+    },
+    "notifications": {
+      "reordered": "Zapisano kolejność grup",
+      "reorderFailed": "Nie udało się zmienić kolejności grup",
+      "created": "Utworzono grupę",
+      "createFailed": "Nie udało się utworzyć grupy",
+      "updated": "Zaktualizowano grupę",
+      "updateFailed": "Nie udało się zaktualizować grupy",
+      "deleted": "Usunięto grupę",
+      "deleteFailed": "Nie udało się usunąć grupy"
+    }
+  }
+}

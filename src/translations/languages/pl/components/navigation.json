@@ -38,7 +38,11 @@
       },
       "more": {
         "tufHelperLite": "TUFHelperLite",
+        "resources": "Materiały",
         "developers": "Developer Portal"
+      },
+      "admin": {
+        "resources": "Materiały"
       }
     }
   },

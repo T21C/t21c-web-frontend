@@ -28,7 +28,9 @@
     "tournaments": "Tournaments",
     "tournamentsDesc": "Manage tournament placements, name links, and reward frames",
     "oauthClients": "OAuth apps",
-    "oauthClientsDesc": "Search, freeze, verify, or delete third-party OAuth apps"
+    "oauthClientsDesc": "Search, freeze, verify, or delete third-party OAuth apps",
+    "resources": "Materiały",
+    "resourcesDesc": "Dodawaj, edytuj i zmieniaj kolejność przydatnych linków Notion i dokumentacji"
   },
   "oauthClients": {
     "meta": {

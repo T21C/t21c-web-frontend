@@ -1,0 +1,97 @@
+{
+  "meta": {
+    "title": "Resources",
+    "description": "Useful guides, docs, and Notion pages from the TUF team"
+  },
+  "title": "Resources",
+  "subtitle": "Guides, docs, and Notion pages collected by the TUF team.",
+  "empty": "No resources have been published yet.",
+  "open": "Open",
+  "ungrouped": "Ungrouped",
+  "errors": {
+    "loadFailed": "Could not load resources. Please try again later."
+  },
+  "admin": {
+    "manage": "Manage links",
+    "hidden": "Hidden"
+  },
+  "tabs": {
+    "links": "Links",
+    "groups": "Groups"
+  },
+  "loading": {
+    "reorderingLinks": "Saving link order...",
+    "reorderingGroups": "Saving group order..."
+  },
+  "links": {
+    "createButton": "Create Link",
+    "noLinks": "No links found. Create your first link!",
+    "ungrouped": "Ungrouped",
+    "linkCount": "{{count}} link{{plural}}",
+    "fields": {
+      "title": "Title",
+      "url": "URL",
+      "urlPlaceholder": "https://www.notion.so/…",
+      "description": "Description",
+      "published": "Visible on this page",
+      "group": {
+        "label": "Group (Optional)",
+        "placeholder": "Enter group name"
+      }
+    },
+    "create": {
+      "title": "Create Link",
+      "createButton": "Create"
+    },
+    "edit": {
+      "title": "Edit Link",
+      "updateButton": "Update"
+    },
+    "delete": {
+      "title": "Delete Link",
+      "message": "Are you sure you want to delete the link \"{{name}}\"?",
+      "description": "This action cannot be undone.",
+      "deleteButton": "Delete"
+    },
+    "notifications": {
+      "created": "Link created successfully",
+      "createFailed": "Failed to create link",
+      "updated": "Link updated successfully",
+      "updateFailed": "Failed to update link",
+      "deleted": "Link deleted successfully",
+      "deleteFailed": "Failed to delete link",
+      "reordered": "Links reordered successfully",
+      "reorderFailed": "Failed to reorder links"
+    }
+  },
+  "groups": {
+    "createButton": "Create Group",
+    "noGroups": "No groups found. Create a group or assign a group name when creating a link.",
+    "create": {
+      "title": "Create Group",
+      "name": "Name",
+      "createButton": "Create"
+    },
+    "edit": {
+      "title": "Edit Group",
+      "name": "Name",
+      "updateButton": "Update"
+    },
+    "delete": {
+      "title": "Delete Group",
+      "message": "Are you sure you want to delete the group \"{{name}}\"?",
+      "description": "Links in this group will become ungrouped. This cannot be undone.",
+      "deleteButton": "Delete"
+    },
+    "notifications": {
+      "reordered": "Groups reordered successfully",
+      "reorderFailed": "Failed to reorder groups",
+      "created": "Group created successfully",
+      "createFailed": "Failed to create group",
+      "updated": "Group updated successfully",
+      "updateFailed": "Failed to update group",
+      "deleted": "Group deleted successfully",
+      "deleteFailed": "Failed to delete group"
+    }
+  }
+}

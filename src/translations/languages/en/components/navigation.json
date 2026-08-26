@@ -57,6 +57,7 @@
         "tos": "ToS",
         "privacyPolicy": "Privacy Policy",
         "aboutUs": "About Us",
+        "resources": "Resources",
         "apiDocs": "API Docs",
         "assets": "Assets",
         "developers": "Developer Portal"
@@ -81,7 +82,8 @@
         "auditLog": "Audit Log",
         "curations": "Curations",
         "songs": "Songs",
-        "artists": "Artists"
+        "artists": "Artists",
+        "resources": "Resources"
       }
     },
     "badges": {
