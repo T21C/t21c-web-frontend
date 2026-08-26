@@ -34,3 +34,7 @@
 .nav-language-selector .nav-dropdown-panel {
   min-width: 15rem;
 }
+
+.nav-language-selector.nav-dropdown {
+  position: relative;
+}
