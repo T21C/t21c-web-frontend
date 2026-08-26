@@ -1,5 +1,12 @@
 {
   "main": {
+    "sections": {
+      "levels": "Levels",
+      "rankings": "Rankings",
+      "creators": "Creators",
+      "tools": "Tools",
+      "help": "Help"
+    },
     "links": {
       "home": "Home",
       "levels": "Levels",
@@ -26,13 +33,20 @@
       }
     },
     "dropdowns": {
+      "levels": {
+        "listing": "Level listing"
+      },
       "creators": {
+        "listing": "Creator listing",
         "creators": "Creators",
         "artists": "Artists",
         "songs": "Songs"
       },
       "packs": {
         "allPacks": "All Packs"
+      },
+      "tools": {
+        "scoreCalculator": "Score calculator"
       },
       "more": {
         "passes": "Passes",

@@ -1,3 +1,185 @@
 /* tuf-search: #NavDropdown #navDropdown #layout #navigation */
-/* NavDropdown styles are inherited from navigation.css */
-/* This file can be used for dropdown-specific overrides if needed */
+
+.nav-dropdown {
+  position: relative;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+}
+
+.nav-dropdown-button {
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+  gap: 0.25rem;
+  background: none;
+  border: none;
+  color: var(--color-white);
+  font-size: inherit;
+  font-weight: inherit;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 0.5rem;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  position: relative;
+  z-index: 11;
+}
+
+.nav-dropdown-button:hover {
+  color: var(--color-purple-1);
+}
+
+.nav-dropdown.open .nav-dropdown-button,
+.nav-dropdown-button.active {
+  color: var(--color-purple-1);
+}
+
+.nav-dropdown.has-active .nav-dropdown-button.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0.5rem;
+  right: 0.5rem;
+  height: 1px;
+  background: var(--color-purple-1);
+}
+
+.nav-dropdown-panel {
+  position: absolute;
+  top: calc(100% - 8px);
+  left: 0;
+  z-index: 1;
+  min-width: 13rem;
+  pointer-events: auto;
+  clip-path: inset(0 0 100% 0);
+  -webkit-clip-path: inset(0 0 100% 0);
+  transition:
+    clip-path 280ms var(--ease-out-expo),
+    -webkit-clip-path 280ms var(--ease-out-expo);
+}
+
+.nav-dropdown-panel--right {
+  left: auto;
+  right: 0;
+}
+
+.nav-dropdown-panel.is-closing {
+  pointer-events: none;
+}
+
+.nav-dropdown-panel.is-expanded {
+  clip-path: inset(0 0 0% 0);
+  -webkit-clip-path: inset(0 0 0% 0);
+}
+
+.nav-dropdown-panel.is-reduced-motion {
+  transition: none;
+}
+
+.nav-dropdown-shell {
+  background: var(--color-black-t95);
+  border: 1px solid var(--color-white-t10);
+  border-top: none;
+}
+
+.nav-dropdown-menu {
+  position: relative;
+  z-index: 0;
+  min-width: 12rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 1rem 0 0.45rem;
+}
+
+.nav-dropdown-item {
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  font-size: 1.1rem;
+  color: var(--color-white);
+  gap: 0.75rem;
+  text-decoration: none;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+}
+
+.nav-dropdown-item:hover {
+  background: var(--color-white-t10);
+  color: var(--color-white);
+}
+
+.nav-dropdown-item.active {
+  background: color-mix(in srgb, var(--color-purple-1) 20%, transparent);
+  color: var(--color-purple-1);
+}
+
+.nav-dropdown-item.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--color-purple-1);
+}
+
+.nav-dropdown-item.active:hover {
+  background: color-mix(in srgb, var(--color-purple-1) 30%, transparent);
+  color: var(--color-purple-1);
+}
+
+.nav-dropdown-item--disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  flex-direction: column;
+  gap: 0;
+}
+
+.nav-dropdown-item--disabled:hover {
+  background: transparent;
+}
+
+.nav-dropdown-item--button {
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+.nav-dropdown-item--button:hover {
+  background: var(--color-white-t10);
+}
+
+.nav-dropdown-divider {
+  height: 1px;
+  background: var(--color-white-t10);
+  margin: 0.25rem 0.5rem;
+}
+
+.nav-dropdown-badge {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.4rem;
+  background: var(--color-white-t10);
+  border-radius: 0.25rem;
+  color: var(--color-white-t70);
+}
+
+.nav-dropdown-item-label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex: 1;
+}
+
+.nav-dropdown-item.not-implemented {
+  opacity: 0.55;
+  cursor: not-allowed;
+}

@@ -603,23 +603,6 @@ const PassScoreCalculatorPage = () => {
 
       <div className="form-container">
         <div className="pass-score-calculator__form-shell">
-          <button
-            type="button"
-            className="pass-score-calculator__back-btn"
-            onClick={() =>
-              navigate('/submission/pass', {
-                state: {
-                  form,
-                  searchInput,
-                  ...calculatorState,
-                },
-              })
-            }
-            aria-label={t('passSubmission.calculator.backToSubmit')}
-            title={t('passSubmission.calculator.backToSubmit')}
-          >
-            <ChevronIcon direction="left" size={20} color="currentColor" />
-          </button>
           <PassSubmissionCore
           mode="calculator"
           form={form}

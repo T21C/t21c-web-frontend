@@ -1,5 +1,12 @@
 {
   "main": {
+    "sections": {
+      "levels": "레벨",
+      "rankings": "랭킹",
+      "creators": "제작자",
+      "tools": "도구",
+      "help": "도움말"
+    },
     "links": {
       "home": "홈",
       "levels": "레벨",
@@ -26,13 +33,20 @@
       }
     },
     "dropdowns": {
+      "levels": {
+        "listing": "레벨 목록"
+      },
       "creators": {
+        "listing": "제작자 목록",
         "creators": "제작자",
         "artists": "작곡가",
         "songs": "곡"
       },
       "packs": {
         "allPacks": "모든 팩"
+      },
+      "tools": {
+        "scoreCalculator": "점수 계산기"
       },
       "more": {
         "passes": "클리어",
@@ -75,6 +89,7 @@
     }
   },
   "languages": {
-    "comingSoon": "(곧 제공 예정)"
+    "comingSoon": "(곧 제공 예정)",
+    "helpTranslate": "번역 돕기"
   }
 }

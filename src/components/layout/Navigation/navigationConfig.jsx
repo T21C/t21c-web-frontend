@@ -8,34 +8,94 @@ import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 /**
  * Navigation configuration
  * Centralized configuration for navigation items
- * 
+ *
  * This config completely defines the navigation structure.
  * The Navigation component is data-driven and renders based on this config.
  */
 
-
 const tufExtensionLinks = {
-  chrome: {to: "https://chromewebstore.google.com/detail/tufextension/nfbkilgekbcbaipecmehlnlakccgbcfa", 
-    translationKey: "navigation.main.dropdowns.more.tufExtension", 
-    attachIcon: <ExternalLinkIcon size={16} color="var(--color-white-t80)"/>,
-    icon: <ChromeIcon size={24} />},
-  firefox: {to: "https://addons.mozilla.org/en-US/firefox/addon/tufextension/", 
+  chrome: {
+    to: "https://chromewebstore.google.com/detail/tufextension/nfbkilgekbcbaipecmehlnlakccgbcfa",
     translationKey: "navigation.main.dropdowns.more.tufExtension",
-    attachIcon: <ExternalLinkIcon size={16} color="var(--color-white-t80)"/>,
-    icon: <FirefoxIcon size={24} />},
+    attachIcon: <ExternalLinkIcon size={16} color="var(--color-white-t80)" />,
+    icon: <ChromeIcon size={24} />,
+  },
+  firefox: {
+    to: "https://addons.mozilla.org/en-US/firefox/addon/tufextension/",
+    translationKey: "navigation.main.dropdowns.more.tufExtension",
+    attachIcon: <ExternalLinkIcon size={16} color="var(--color-white-t80)" />,
+    icon: <FirefoxIcon size={24} />,
+  },
 };
 
 function getTufExtensionVer() {
+  if (typeof navigator === "undefined") return null;
   const ua = navigator.userAgent.toLowerCase();
   if (ua.includes("chrome") || ua.includes("edg") || ua.includes("opr")) {
     return tufExtensionLinks.chrome;
-  } else if (ua.includes("firefox")) {
-    return tufExtensionLinks.firefox;
-  } else {
-    return null;
   }
+  if (ua.includes("firefox")) {
+    return tufExtensionLinks.firefox;
+  }
+  return null;
 }
 
+export function isInternalNavPath(to) {
+  return typeof to === "string" && to.startsWith("/") && !to.startsWith("//");
+}
+
+export function isExternalNavPath(to) {
+  return typeof to === "string" && /^https?:\/\//i.test(to);
+}
+
+function isNavItemVisible(item) {
+  if (!item || typeof item !== "object") return false;
+  if (item.divider) return true;
+  return Boolean(item.to || item.onClick || item.disabled || item.translationKey || item.label);
+}
+
+export function getSectionParentTo(items = []) {
+  const first = items.find(
+    (item) =>
+      isNavItemVisible(item) &&
+      !item.divider &&
+      isInternalNavPath(item.to) &&
+      !item.onClick &&
+      !item.suppressActive,
+  );
+  return first?.to ?? null;
+}
+
+export function pathMatchesNavTo(pathname, to, { exact = false } = {}) {
+  if (!isInternalNavPath(to) || typeof pathname !== "string") return false;
+  if (exact) return pathname === to;
+  return pathname === to || pathname.startsWith(`${to}/`);
+}
+
+export function sectionIsActive(items = [], pathname) {
+  return items.some(
+    (item) =>
+      item &&
+      !item.divider &&
+      !item.suppressActive &&
+      pathMatchesNavTo(pathname, item.to, { exact: item.exact }),
+  );
+}
+
+function createSection({ id, label, items, condition, menuAlign, className }) {
+  const cleaned = (items || []).filter(isNavItemVisible);
+  return {
+    type: "dropdown",
+    id,
+    label,
+    items: cleaned,
+    linkTo: getSectionParentTo(cleaned),
+    isActive: (pathname) => sectionIsActive(cleaned, pathname),
+    condition,
+    menuAlign,
+    className,
+  };
+}
 
 /**
  * Creates user menu items configuration
@@ -78,6 +138,7 @@ export const createUserMenuItems = (user) => {
       ? [
           {
             to: "/admin",
+            exact: true,
             translationKey: "navigation.main.dropdowns.user.admin",
           },
           { divider: true },
@@ -93,89 +154,88 @@ export const createUserMenuItems = (user) => {
  */
 export const createNavigationConfig = (context = {}) => {
   const { user } = context;
+  const tufExtension = getTufExtensionVer();
 
   return {
-    // Logo configuration
     logo: {
       to: "/",
-      component: null, // Will use default LogoFullOutlineSVG
+      component: null,
     },
 
-    // Left navigation items
     leftNav: [
-      {
-        type: "link",
-        to: "/levels",
-        translationKey: "navigation.main.links.levels",
-      },
-      {
-        type: "link",
-        to: "/leaderboard",
-        translationKey: "navigation.main.links.leaderboard",
-      },
-      {
-        type: "link",
-        to: "/creators",
-        translationKey: "navigation.main.links.creators",
-      },
-      {
-        type: "link",
-        to: "/packs",
-        translationKey: "navigation.main.links.packs",
-      },
-      {
-        type: "link",
-        to: "/rating",
-        translationKey: "navigation.main.links.rating",
-      },
-      {
-        type: "dropdown",
-        label: "navigation.main.links.more",
+      createSection({
+        id: "levels",
+        label: "navigation.main.sections.levels",
         items: [
+          { to: "/levels", translationKey: "navigation.main.dropdowns.levels.listing" },
+          { to: "/packs", translationKey: "navigation.main.links.packs" },
           { to: "/passes", translationKey: "navigation.main.dropdowns.more.passes" },
+          { to: "/rating", translationKey: "navigation.main.links.rating" },
           { to: "/admin/curations", translationKey: "navigation.main.dropdowns.admin.curations" },
-          { divider: true },
-          { to: "https://github.com/coyami-ke/TUFHelper/releases", 
-            translationKey: "navigation.main.dropdowns.more.tufHelper", 
-            attachIcon: <ExternalLinkIcon size={16} color="var(--color-white-t80)"/>},
-          { to: "/levels",
+        ],
+      }),
+      createSection({
+        id: "rankings",
+        label: "navigation.main.sections.rankings",
+        items: [
+          { to: "/leaderboard", translationKey: "navigation.main.links.leaderboard" },
+        ],
+      }),
+      createSection({
+        id: "creators",
+        label: "navigation.main.sections.creators",
+        items: [
+          { to: "/creators", translationKey: "navigation.main.dropdowns.creators.listing" },
+          { to: "/artists", translationKey: "navigation.main.dropdowns.creators.artists" },
+          { to: "/songs", translationKey: "navigation.main.dropdowns.creators.songs" },
+        ],
+      }),
+      createSection({
+        id: "tools",
+        label: "navigation.main.sections.tools",
+        items: [
+          {
+            to: "/submission/pass/calculator",
+            translationKey: "navigation.main.dropdowns.tools.scoreCalculator",
+          },
+          {
+            to: "https://github.com/coyami-ke/TUFHelper/releases",
+            translationKey: "navigation.main.dropdowns.more.tufHelper",
+            attachIcon: <ExternalLinkIcon size={16} color="var(--color-white-t80)" />,
+          },
+          {
+            to: "/levels",
             translationKey: "navigation.main.dropdowns.more.tufHelperLite",
             onClick: showTufHelperLiteIntegrationBanner,
             suppressActive: true,
-            icon: <TUFHelperLiteIcon size={24} /> },
-          { ...getTufExtensionVer() },
-          { divider: true },
-          { to: "/songs", translationKey: "navigation.main.dropdowns.creators.songs" },
-          { to: "/artists", translationKey: "navigation.main.dropdowns.creators.artists" },
-          { divider: true },
+            icon: <TUFHelperLiteIcon size={24} />,
+          },
+          tufExtension,
+        ],
+      }),
+      createSection({
+        id: "help",
+        label: "navigation.main.sections.help",
+        items: [
+          { to: "/about", translationKey: "navigation.main.dropdowns.more.aboutUs" },
           { to: "/terms-of-service", translationKey: "navigation.main.dropdowns.more.tos" },
           { to: "/privacy-policy", translationKey: "navigation.main.dropdowns.more.privacyPolicy" },
-          { to: "/about", translationKey: "navigation.main.dropdowns.more.aboutUs" },
-          { divider: true },
-          { to: "https://api.tuforums.com/docs/", 
+          {
+            to: "https://api.tuforums.com/docs/",
             translationKey: "navigation.main.dropdowns.more.apiDocs",
-            attachIcon: <ExternalLinkIcon size={16} color="var(--color-white-t80)"/>},
-          { to: "/asset-list", 
-            translationKey: "navigation.main.dropdowns.more.assets"},
-          { to: "/developers",
-            translationKey: "navigation.main.dropdowns.more.developers"},
+            attachIcon: <ExternalLinkIcon size={16} color="var(--color-white-t80)" />,
+          },
+          { to: "/asset-list", translationKey: "navigation.main.dropdowns.more.assets" },
+          { to: "/developers", translationKey: "navigation.main.dropdowns.more.developers" },
         ],
-        isActive: (pathname) =>
-          pathname.startsWith("/passes") ||
-          pathname.startsWith("/admin/curations") ||
-          pathname.startsWith("/terms-of-service") ||
-          pathname.startsWith("/privacy-policy") ||
-          pathname === "/about" ||
-          pathname.startsWith("/asset-list") ||
-          pathname.startsWith("/developers"),
-      },
+      }),
     ],
 
-    // Right navigation items
     rightNav: [
-      {
-        type: "dropdown",
+      createSection({
+        id: "admin",
         label: "navigation.main.links.admin.admin",
+        menuAlign: "right",
         items: [
           { to: "/admin/submissions", translationKey: "navigation.main.dropdowns.admin.submissions" },
           { to: "/admin/announcements", translationKey: "navigation.main.dropdowns.admin.announcements" },
@@ -190,20 +250,19 @@ export const createNavigationConfig = (context = {}) => {
           { to: "/admin/backups", translationKey: "navigation.main.dropdowns.admin.backups" },
           { to: "/admin/audit-log", translationKey: "navigation.main.dropdowns.admin.auditLog" },
         ],
-        isActive: (pathname) => pathname.startsWith("/admin"),
-        // Only show admin dropdown if user is admin
         condition: () => hasFlag(user, permissionFlags.SUPER_ADMIN),
-      },
+      }),
       {
         type: "link",
         to: "/submission",
         translationKey: "navigation.main.links.submission",
         className: "nav-submit-button btn-fill-primary alt",
         linkClassName: "no-active",
-        isActive: (pathname) => {return false},
+        isActive: () => false,
       },
       {
         type: "component",
+        id: "language",
         component: "LanguageSelector",
         props: {
           variant: "desktop",
@@ -211,16 +270,13 @@ export const createNavigationConfig = (context = {}) => {
       },
       {
         type: "component",
+        id: "user",
         component: "UserMenu",
         props: {
           isActive: (pathname) =>
-            pathname.startsWith("/profile") ||
-            pathname.startsWith("/tuf-stellar") ||
-            pathname.startsWith("/notifications")
+            sectionIsActive(createUserMenuItems(user) || [], pathname),
         },
-        // Conditional rendering based on user
         condition: () => !!user,
-        // Fallback when condition is false
         fallback: {
           type: "button",
           translationKey: "navigation.main.links.signIn",
@@ -231,9 +287,6 @@ export const createNavigationConfig = (context = {}) => {
         },
       },
     ],
-
-    // Mobile menu uses leftNav + rightNav directly
-    // No separate mobileMenu.items needed - it's derived from the config above
   };
 };
 
@@ -241,4 +294,4 @@ export const createNavigationConfig = (context = {}) => {
  * Default navigation configuration (for backward compatibility)
  * Uses default values when context is not available
  */
-export const navigationConfig = createNavigationConfig(() => {}, {});
+export const navigationConfig = createNavigationConfig({});

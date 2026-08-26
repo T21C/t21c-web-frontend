@@ -13,6 +13,7 @@ import UserMenu from "./UserMenu";
 import InboxBell from "./InboxBell";
 import MobileMenu from "./MobileMenu";
 import { createNavigationConfig } from "./navigationConfig";
+import { FINE_POINTER_QUERY } from "@/hooks/useFinePointer";
 
 const Navigation = ({ children, config: externalConfig = null }) => {
   const { t } = useTranslation("components");
@@ -49,20 +50,20 @@ const Navigation = ({ children, config: externalConfig = null }) => {
     setOpenNav(false);
   }, [location]);
 
-  // Close mobile nav when viewport crosses threshold (580px)
+  // Close the drawer when the primary pointer can hover (desktop chrome)
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth > 580 && openNav) {
+    const mq = window.matchMedia(FINE_POINTER_QUERY);
+    const handleChange = () => {
+      if (mq.matches && openNav) {
         setOpenNav(false);
       }
     };
 
-    window.addEventListener("resize", handleResize);
-    // Check on mount in case viewport is already above threshold
-    handleResize();
+    mq.addEventListener("change", handleChange);
+    handleChange();
 
     return () => {
-      window.removeEventListener("resize", handleResize);
+      mq.removeEventListener("change", handleChange);
     };
   }, [openNav]);
 
@@ -71,12 +72,12 @@ const Navigation = ({ children, config: externalConfig = null }) => {
   };
 
   // Render navigation item based on type
-  const renderNavItem = (item, index) => {
+  const renderNavItem = (item, index, { asItem = true } = {}) => {
     // Check condition if present
     if (item.condition && !item.condition()) {
       // Use fallback if available
       if (item.fallback) {
-        return renderNavItem(item.fallback, index);
+        return renderNavItem(item.fallback, index, { asItem });
       }
       return null;
     }
@@ -97,13 +98,14 @@ const Navigation = ({ children, config: externalConfig = null }) => {
       case "dropdown":
         return (
           <NavDropdown
-            key={item.label || index}
+            key={item.id || item.label || index}
             label={t(item.label)}
             items={item.items}
             isActive={item.isActive}
             className={item.className}
-            showAsLink={item.showAsLink}
             linkTo={item.linkTo}
+            menuAlign={item.menuAlign}
+            asItem={asItem}
           />
         );
 
@@ -163,13 +165,17 @@ const Navigation = ({ children, config: externalConfig = null }) => {
             </NavLink>
 
             <ul className="nav-list">
-              {config.leftNav.map((item, index) => renderNavItem(item, index))}
+              {config.leftNav.map((item, index) =>
+                renderNavItem(item, index, { asItem: true }),
+              )}
             </ul>
           </div>
 
           {/* Right side: Submit, Language, Profile */}
           <div className="nav-right">
-            {config.rightNav.map((item, index) => renderNavItem(item, index))}
+            {config.rightNav.map((item, index) =>
+              renderNavItem(item, index, { asItem: false }),
+            )}
             {children}
           </div>
 
