@@ -1,8 +1,17 @@
 {
   "main": {
+    "sections": {
+      "levels": "Niveaux",
+      "rankings": "Classements",
+      "creators": "Créateurs",
+      "tools": "Outils",
+      "help": "Aide"
+    },
     "links": {
       "levels": "Niveaux",
       "leaderboard": "Classement",
+      "creators": "Créateurs",
+      "packs": "Packs",
       "pass": "Complétions",
       "submission": "Soumission",
       "rating": "Notation",
@@ -17,6 +26,15 @@
       }
     },
     "dropdowns": {
+      "levels": {
+        "listing": "Liste des niveaux"
+      },
+      "creators": {
+        "listing": "Liste des créateurs"
+      },
+      "tools": {
+        "scoreCalculator": "Calculateur de score"
+      },
       "more": {
         "tufHelperLite": "TUFHelperLite",
         "developers": "Developer Portal"
@@ -27,6 +45,7 @@
     }
   },
   "languages": {
-    "comingSoon": "(À venir)"
+    "comingSoon": "(À venir)",
+    "helpTranslate": "Aider à traduire"
   }
 }

@@ -24,3 +24,17 @@
 .nav-language-select__option--action .nav-language-select__option-link:hover {
   color: var(--color-purple-2);
 }
+
+.nav-dropdown-item.selected,
+.nav-mobile-dropdown-item.selected {
+  background: color-mix(in srgb, var(--color-purple-1) 20%, transparent);
+  color: var(--color-white);
+}
+
+.nav-language-selector .nav-dropdown-panel {
+  min-width: 15rem;
+}
+
+.nav-language-selector.nav-dropdown {
+  position: relative;
+}

@@ -1,14 +1,17 @@
 // tuf-search: #LanguageSelector #languageSelector #layout #navigation
-import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
-import { Portal } from "@/components/common/Portal";
+import React, { useEffect, useRef, useState } from "react";
+import { NavLink } from "react-router-dom";
 import { isoToEmoji } from "@/utils";
 import api from "@/utils/api";
-import { routes } from '@/api/routes';
-import { ChevronIcon } from "@/components/common/icons";
+import { routes } from "@/api/routes";
 import "./languageSelector.css";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 import { changeAppLanguage, normalizeLanguage } from "@/translations/config";
+import { useFinePointer } from "@/hooks/useFinePointer";
+import { useSubmissionMinimalMotion } from "@/hooks/useMinimalMotionPreference";
+import { useNavHoverMenu } from "../useNavHoverMenu";
+import { NavDropdownPanel } from "../NavDropdown/NavDropdown";
+import MobileDropdown from "../MobileDropdown/MobileDropdown";
 
 const DEFAULT_LANGUAGES = {
   en: { display: "English", countryCode: "us", status: 100 },
@@ -50,22 +53,31 @@ function normalizeLanguageOptions(value) {
   }, {});
 }
 
-/**
- * Language selector component
- * @param {Object} props
- * @param {string} props.variant - 'desktop' or 'mobile'
- * @param {boolean} props.asListItem - Whether to render as list item (default: true for mobile)
- */
-const LanguageSelector = ({ variant = "desktop", asListItem = null }) => {
-  const { t, i18n } = useTranslation('components');
-  const [isOpen, setIsOpen] = useState(false);
-  const [languages, setLanguages] = useState(DEFAULT_LANGUAGES);
+function languageStatusLabel(status, t) {
+  if (status === 0) return t("navigation.languages.comingSoon");
+  if (status < 100) return `${status.toFixed(1)}%`;
+  return "100%";
+}
 
-  const dropdownRef = useRef(null);
-  const portalRef = useRef(null);
+const LanguageSelector = ({
+  variant = "desktop",
+  open: openProp,
+  onOpenChange,
+  onItemClick,
+}) => {
+  const { t, i18n } = useTranslation("components");
+  const [languages, setLanguages] = useState(DEFAULT_LANGUAGES);
+  const isFinePointer = useFinePointer();
+  const reducedMotion = useSubmissionMinimalMotion();
+  const menu = useNavHoverMenu({
+    reducedMotion,
+    enabled: variant === "desktop" && isFinePointer,
+  });
+  const rootRef = useRef(null);
+  const triggerRef = useRef(null);
+  const panelRef = useRef(null);
   const language = normalizeLanguage(i18n.resolvedLanguage || i18n.language);
 
-  // Fetch language implementation status on mount
   useEffect(() => {
     const fetchLanguageStatus = async () => {
       try {
@@ -80,99 +92,161 @@ const LanguageSelector = ({ variant = "desktop", asListItem = null }) => {
     fetchLanguageStatus();
   }, []);
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    function handleClickOutside(event) {
-      const clickedInsideTrigger =
-        dropdownRef.current && dropdownRef.current.contains(event.target);
-      const clickedInsidePortal =
-        portalRef.current && portalRef.current.contains(event.target);
-
-      if (!clickedInsideTrigger && !clickedInsidePortal) {
-        setIsOpen(false);
-      }
-    }
-
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => document.removeEventListener("mousedown", handleClickOutside);
-    }
-  }, [isOpen]);
-
-  // Convert to array and sort
-  const sortedLanguages = Object.entries(languages)
-    .sort(([keyA, a], [keyB, b]) => {
-      if (a.status !== b.status) {
-        return b.status - a.status;
-      }
-      return a.display.localeCompare(b.display || keyB);
-    })
-    .reduce((obj, [key, value]) => {
-      obj[key] = value;
-      return obj;
-    }, {});
+  const sortedLanguages = Object.entries(languages).sort(([, a], [, b]) => {
+    if (a.status !== b.status) return b.status - a.status;
+    return a.display.localeCompare(b.display || "");
+  });
 
   const getCurrentCountryCode = () => {
-    if (language === "en" || language === "us") {
-      return "us";
-    }
+    if (language === "en" || language === "us") return "us";
     return languages[language]?.countryCode || language;
   };
 
-  const handleToggle = (e) => {
-    e.stopPropagation();
-    setIsOpen(!isOpen);
-  };
-
-  const handleChangeLanguage = async (newLanguage, e) => {
-    e.stopPropagation();
-
+  const handleChangeLanguage = async (newLanguage) => {
     if (!languages[newLanguage] || languages[newLanguage].status === 0) {
       return;
     }
-
     await changeAppLanguage(newLanguage);
-    setIsOpen(false);
+    menu.closeNow();
+    onItemClick?.();
   };
 
-  const helpTranslateItem = (
-    <li className="nav-language-select__option nav-language-select__option--action">
-      <Link
-        to="/translation"
-        className="nav-language-select__option-link"
-        onClick={(e) => {
-          e.stopPropagation();
-          setIsOpen(false);
-        }}
-      >
-        <div className="nav-language-select__option-content">
-          <span>{t("navigation.languages.helpTranslate")}</span>
-        </div>
-      </Link>
-    </li>
-  );
-
-  const isMobile = variant === "mobile";
   const currentLanguage = languages[language]?.display || "Language";
-  // Default to true for mobile if not specified, false for desktop
-  const renderAsListItem = asListItem !== null ? asListItem : isMobile;
 
-  // Render mobile dropdown content
-  const mobileDropdownContent = isOpen && isMobile ? (
-    <div className="nav-language-select mobile open" ref={portalRef}>
-      <ul className="nav-language-select__list">
-        {Object.entries(sortedLanguages).map(
-          ([code, { display, countryCode, status }]) => (
-            <li
+  const languageItems = [
+    ...sortedLanguages.map(([code, { display, countryCode, status }]) => ({
+      disabled: status === 0,
+      className:
+        language === code || (language === "en" && code === "us")
+          ? "selected"
+          : "",
+      onClick: () => handleChangeLanguage(code),
+      content: (
+        <>
+          <img
+            className="nav-language-select__option-flag"
+            src={isoToEmoji(countryCode)}
+            alt={display}
+          />
+          <div className="nav-language-select__option-content">
+            <span>{display}</span>
+            <span className="nav-mobile-lang-status">
+              {languageStatusLabel(status, t)}
+            </span>
+          </div>
+        </>
+      ),
+    })),
+    {
+      to: "/translation",
+      translationKey: "navigation.languages.helpTranslate",
+    },
+  ];
+
+  if (variant === "mobile") {
+    const buttonContent = (
+      <span className="nav-mobile-user-button-content">
+        <img
+          className="nav-language-selector__flag"
+          src={isoToEmoji(getCurrentCountryCode())}
+          alt={currentLanguage}
+        />
+        <span className="nav-mobile-dropdown-label">{currentLanguage}</span>
+      </span>
+    );
+
+    return (
+      <MobileDropdown
+        label={currentLanguage}
+        buttonContent={buttonContent}
+        items={languageItems}
+        open={Boolean(openProp)}
+        onOpenChange={onOpenChange}
+        onItemClick={onItemClick}
+      />
+    );
+  }
+
+  const handleTriggerKeyDown = (event) => {
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      menu.open();
+      requestAnimationFrame(() => {
+        panelRef.current
+          ?.querySelector(
+            ".nav-dropdown-item:not(.nav-dropdown-item--disabled)",
+          )
+          ?.focus();
+      });
+    }
+    if (event.key === "Escape") {
+      event.preventDefault();
+      menu.close();
+      triggerRef.current?.focus();
+    }
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      if (menu.isOpen) menu.close();
+      else menu.open();
+    }
+  };
+
+  const handleRootBlur = (event) => {
+    const next = event.relatedTarget;
+    if (rootRef.current && next && rootRef.current.contains(next)) return;
+    menu.close();
+  };
+
+  return (
+    <div
+      className={`nav-language-selector nav-dropdown ${menu.isOpen ? "open" : ""}`}
+      ref={rootRef}
+      onMouseEnter={menu.scheduleOpen}
+      onMouseLeave={menu.scheduleClose}
+      onBlur={handleRootBlur}
+    >
+      <button
+        ref={triggerRef}
+        type="button"
+        className="nav-language-selector__button"
+        aria-expanded={menu.isOpen}
+        aria-haspopup="menu"
+        aria-controls={menu.panelId}
+        onFocus={() => {
+          if (isFinePointer) menu.open();
+        }}
+        onKeyDown={handleTriggerKeyDown}
+      >
+        <img
+          className="nav-language-selector__flag"
+          src={isoToEmoji(getCurrentCountryCode())}
+          alt={currentLanguage}
+        />
+      </button>
+      {menu.isVisible && (
+        <NavDropdownPanel
+          id={menu.panelId}
+          phase={menu.phase}
+          zIndex={menu.zIndex}
+          align="right"
+          reducedMotion={reducedMotion}
+          onCloseAnimationEnd={menu.handleCloseAnimationEnd}
+          panelRef={panelRef}
+        >
+          {sortedLanguages.map(([code, { display, countryCode, status }]) => (
+            <button
               key={code}
-              className={`nav-language-select__option ${
+              type="button"
+              role="menuitem"
+              className={`nav-dropdown-item nav-dropdown-item--button nav-language-select__option ${
                 status === 0 ? "not-implemented" : ""
               } ${
                 language === code || (language === "en" && code === "us")
                   ? "selected"
                   : ""
               }`}
-              onClick={(e) => handleChangeLanguage(code, e)}
+              disabled={status === 0}
+              onClick={() => handleChangeLanguage(code)}
             >
               <img
                 className="nav-language-select__option-flag"
@@ -181,141 +255,30 @@ const LanguageSelector = ({ variant = "desktop", asListItem = null }) => {
               />
               <div className="nav-language-select__option-content">
                 <span>{display}</span>
-                {status === 0 ? (
-                  <span className="nav-language-select__option-status">
-                    {t("navigation.languages.comingSoon")}
-                  </span>
-                ) : status < 100 ? (
-                  <span className="nav-language-select__option-status partially-implemented">
-                    {status.toFixed(1)}% ✔
-                  </span>
-                ) : (
-                  <span className="nav-language-select__option-status fully-implemented">
-                    100% ✔
-                  </span>
-                )}
+                <span className="nav-mobile-lang-status">
+                  {languageStatusLabel(status, t)}
+                </span>
               </div>
-            </li>
-          )
-        )}
-        {helpTranslateItem}
-      </ul>
-    </div>
-  ) : null;
-
-  if (isMobile) {
-    const buttonContent = (
-      <button className="nav-language-selector__button" onClick={handleToggle}>
-        <img
-          className="nav-language-selector__flag"
-          src={isoToEmoji(getCurrentCountryCode())}
-          alt={currentLanguage}
-        />
-        {renderAsListItem && <span>{currentLanguage}</span>}
-        {renderAsListItem && (
-          <ChevronIcon
-            direction={isOpen ? "up" : "down"}
-            className="nav-language-selector__arrow"
-            size={16}
-          />
-        )}
-      </button>
-    );
-
-    if (renderAsListItem) {
-      return (
-        <>
-          <li
-            className={`nav-list-item nav-language-selector-mobile`}
-            ref={dropdownRef}
-          >
-            {buttonContent}
-          </li>
-
-          <Portal when={!!mobileDropdownContent} mount="root">
-            {mobileDropdownContent}
-          </Portal>
-        </>
-      );
-    } else {
-      // Standalone button for navbar controls
-      return (
-        <>
-          <div
-            className={`nav-language-selector mobile`}
-            ref={dropdownRef}
-          >
-            {buttonContent}
-          </div>
-
-          <Portal when={!!mobileDropdownContent}>
-            {mobileDropdownContent}
-          </Portal>
-        </>
-      );
-    }
-  }
-
-  // Desktop variant
-  return (
-    <li
-      className={`nav-language-selector ${isOpen ? "open" : ""}`}
-      ref={dropdownRef}
-    >
-      <button className="nav-language-selector__button" onClick={handleToggle}>
-        <img
-          className="nav-language-selector__flag"
-          src={isoToEmoji(getCurrentCountryCode())}
-          alt={currentLanguage}
-        />
-      </button>
-
-      {isOpen && (
-        <div className="nav-language-select open">
-          <ul className="nav-language-select__list">
-            {Object.entries(sortedLanguages).map(
-              ([code, { display, countryCode, status }]) => (
-                <li
-                  key={code}
-                  className={`nav-language-select__option ${
-                    status === 0 ? "not-implemented" : ""
-                  } ${
-                    language === code || (language === "en" && code === "us")
-                      ? "selected"
-                      : ""
-                  }`}
-                  onClick={(e) => handleChangeLanguage(code, e)}
-                >
-                  <img
-                    className="nav-language-select__option-flag"
-                    src={isoToEmoji(countryCode)}
-                    alt={display}
-                  />
-                  <div className="nav-language-select__option-content">
-                    <span>{display}</span>
-                    {status === 0 ? (
-                      <span className="nav-language-select__option-status">
-                        {t("navigation.languages.comingSoon")}
-                      </span>
-                    ) : status < 100 ? (
-                      <span className="nav-language-select__option-status partially-implemented">
-                        {status.toFixed(1)}% ✔
-                      </span>
-                    ) : (
-                      <span className="nav-language-select__option-status fully-implemented">
-                        100% ✔
-                      </span>
-                    )}
-                  </div>
-                </li>
-              )
-            )}
-            {helpTranslateItem}
-          </ul>
-        </div>
+            </button>
+          ))}
+          <HelpTranslateItem t={t} onClick={menu.closeNow} />
+        </NavDropdownPanel>
       )}
-    </li>
+    </div>
   );
 };
+
+function HelpTranslateItem({ t, onClick }) {
+  return (
+    <NavLink
+      to="/translation"
+      role="menuitem"
+      className="nav-dropdown-item"
+      onClick={onClick}
+    >
+      {t("navigation.languages.helpTranslate")}
+    </NavLink>
+  );
+}
 
 export default LanguageSelector;

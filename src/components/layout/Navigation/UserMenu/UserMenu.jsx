@@ -1,5 +1,5 @@
 // tuf-search: #UserMenu #userMenu #layout #navigation
-import React, { useState, useRef, useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { UserAvatar } from "@/components/layout";
@@ -7,130 +7,139 @@ import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import { createUserMenuItems } from "../navigationConfig";
 import { ChevronIcon } from "@/components/common/icons";
 import InboxBell from "../InboxBell";
+import { useFinePointer } from "@/hooks/useFinePointer";
+import { useSubmissionMinimalMotion } from "@/hooks/useMinimalMotionPreference";
+import { useNavHoverMenu } from "../useNavHoverMenu";
+import { NavDropdownPanel, NavMenuItems } from "../NavDropdown/NavDropdown";
 import "./userMenu.css";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
-/**
- * User menu dropdown component
- * @param {Object} props
- * @param {Function} props.isActive - Function to check if menu should be marked as active
- */
+const USER_PARENT_TO = "/profile";
+
 const UserMenu = ({ isActive }) => {
-  const { t } = useTranslation('components');
-  const [isOpen, setIsOpen] = useState(false);
+  const { t } = useTranslation("components");
   const { user, logout } = useAuth();
   const location = useLocation();
-  const dropdownRef = useRef(null);
+  const isFinePointer = useFinePointer();
+  const reducedMotion = useSubmissionMinimalMotion();
+  const menu = useNavHoverMenu({
+    reducedMotion,
+    enabled: isFinePointer,
+  });
+  const rootRef = useRef(null);
+  const triggerRef = useRef(null);
+  const panelRef = useRef(null);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  // Close dropdown when location changes
-  useEffect(() => {
-    setIsOpen(false);
+    menu.closeNow();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- close on navigate only
   }, [location]);
-
-  const handleLogout = () => {
-    logout();
-    setIsOpen(false);
-  };
 
   if (!user) {
     return null;
   }
 
   const hasActiveItem = isActive ? isActive(location.pathname) : false;
-  const activeClass = hasActiveItem ? "has-active" : "";
-  const openClass = isOpen ? "open" : "";
+  const menuItems = [
+    ...(createUserMenuItems(user) || []),
+    {
+      translationKey: "navigation.main.dropdowns.user.logout",
+      onClick: () => {
+        logout();
+      },
+    },
+  ];
 
-  const menuItems = createUserMenuItems(user) || [];
+  const focusFirstItem = () => {
+    requestAnimationFrame(() => {
+      panelRef.current
+        ?.querySelector(
+          ".nav-dropdown-item:not(.nav-dropdown-item--disabled)",
+        )
+        ?.focus();
+    });
+  };
+
+  const handleTriggerKeyDown = (event) => {
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      menu.open();
+      focusFirstItem();
+    }
+    if (event.key === "Escape") {
+      event.preventDefault();
+      menu.close();
+      triggerRef.current?.focus();
+    }
+  };
+
+  const handleRootBlur = (event) => {
+    const next = event.relatedTarget;
+    if (rootRef.current && next && rootRef.current.contains(next)) return;
+    menu.close();
+  };
 
   return (
-    <li
-      className={`nav-user-menu ${openClass} ${activeClass}`}
-      ref={dropdownRef}
+    <div
+      className={`nav-user-menu ${menu.isOpen ? "open" : ""} ${
+        hasActiveItem ? "has-active" : ""
+      }`}
     >
       <div
         className="nav-user-menu__bell"
-        onClick={() => setIsOpen(false)}
+        onClick={() => menu.closeNow()}
       >
         <InboxBell />
       </div>
-      <button
-        className={`nav-user-button ${hasActiveItem ? "active" : ""}`}
-        onClick={() => setIsOpen(!isOpen)}
+      <div
+        className="nav-dropdown"
+        ref={rootRef}
+        onMouseEnter={menu.scheduleOpen}
+        onMouseLeave={menu.scheduleClose}
+        onBlur={handleRootBlur}
       >
-      <UserAvatar
-        {...userAvatarUrls(user)}
-        className="nav-user-avatar"
-      />
-        <div className="nav-user-info">
-          <div className="nav-user-name">{user?.nickname}</div>
-          <div className="nav-user-username">@{user?.username}</div>
-        </div>
-        <ChevronIcon
-          direction={isOpen ? "up" : "down"}
-          className="nav-dropdown-arrow"
-          color="#fffb"
-          size={16}
-        />
-      </button>
-      {isOpen && (
-        <div className="nav-dropdown-menu nav-user-dropdown">
-          {menuItems.map((item, index) => {
-            if (item.divider) {
-              return (
-                <div key={`divider-${index}`} className="nav-dropdown-divider" />
-              );
-            }
-
-            if (item.disabled) {
-              return (
-                <div
-                  key={item.translationKey || index}
-                  className="nav-dropdown-item nav-dropdown-item--disabled"
-                >
-                  {t(item.translationKey)}
-                  {item.badge && (
-                    <span className="nav-dropdown-badge">
-                      {t(item.badge)}
-                    </span>
-                  )}
-                </div>
-              );
-            }
-
-            return (
-              <NavLink
-                key={item.to || item.translationKey || index}
-                to={item.to}
-                className={({ isActive }) =>
-                  `nav-dropdown-item ${isActive ? "active" : ""}`
-                }
-                onClick={() => setIsOpen(false)}
-              >
-                {t(item.translationKey)}
-              </NavLink>
-            );
-          })}
-          <button
-            className="nav-dropdown-item nav-dropdown-item--button"
-            onClick={handleLogout}
+        <NavLink
+          ref={triggerRef}
+          to={USER_PARENT_TO}
+          className={`nav-user-button ${hasActiveItem ? "active" : ""}`}
+          aria-expanded={menu.isOpen}
+          aria-haspopup="menu"
+          aria-controls={menu.panelId}
+          onFocus={() => {
+            if (isFinePointer) menu.open();
+          }}
+          onKeyDown={handleTriggerKeyDown}
+        >
+          <UserAvatar
+            {...userAvatarUrls(user)}
+            className="nav-user-avatar"
+          />
+          <div className="nav-user-info">
+            <div className="nav-user-name">{user?.nickname}</div>
+            <div className="nav-user-username">@{user?.username}</div>
+          </div>
+          <ChevronIcon
+            direction={menu.isOpen ? "up" : "down"}
+            className="nav-dropdown-arrow"
+            color="#fffb"
+            size={16}
+          />
+        </NavLink>
+        {menu.isVisible && (
+          <NavDropdownPanel
+            id={menu.panelId}
+            phase={menu.phase}
+            zIndex={menu.zIndex}
+            align="right"
+            reducedMotion={reducedMotion}
+            onCloseAnimationEnd={menu.handleCloseAnimationEnd}
+            panelRef={panelRef}
           >
-            {t('navigation.main.dropdowns.user.logout')}
-          </button>
-        </div>
-      )}
-    </li>
+            <NavMenuItems items={menuItems} t={t} onItemClick={menu.closeNow} />
+          </NavDropdownPanel>
+        )}
+      </div>
+    </div>
   );
 };
 

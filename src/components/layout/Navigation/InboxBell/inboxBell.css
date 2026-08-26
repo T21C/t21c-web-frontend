@@ -1,6 +1,7 @@
 /* tuf-search: #InboxBell #inboxBell #layout #navigation */
 .inbox-bell {
   position: relative;
+  z-index: 11;
   display: flex;
   align-items: center;
 }

@@ -1,20 +1,24 @@
 // tuf-search: #MobileDropdown #mobileDropdown #layout #navigation
-import React, { useState, useRef, useEffect } from "react";
+import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { ChevronIcon } from "@/components/common/icons";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/common/Collapsible";
+import { isExternalNavPath } from "../navigationConfig";
 import "./mobileDropdown.css";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
+
+function itemLabel(item, t) {
+  if (item.content) return item.content;
+  return item.translationKey ? t(item.translationKey) : item.label;
+}
 
 /**
- * Mobile dropdown component that displays items above the trigger
- * Handles viewport overflow by positioning above and adjusting if needed
- * @param {Object} props
- * @param {string} props.label - The label text for the dropdown button
- * @param {Array} props.items - Array of dropdown items
- * @param {Function} props.getTranslation - Function to get translation
- * @param {Function} props.isActive - Function to check if dropdown should be marked as active
- * @param {Function} props.onItemClick - Callback when item is clicked (to close mobile menu)
- * @param {ReactNode} props.buttonContent - Custom content for the button (overrides label)
+ * In-flow accordion section for the mobile drawer (osu-style).
+ * Parent is a toggle only — never a navigation link.
  */
 const MobileDropdown = ({
   label,
@@ -22,189 +26,123 @@ const MobileDropdown = ({
   isActive,
   onItemClick,
   buttonContent,
+  open = false,
+  onOpenChange,
 }) => {
-  const { t } = useTranslation('components');
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef(null);
-  const menuRef = useRef(null);
+  const { t } = useTranslation("components");
   const location = useLocation();
-
-  // Close dropdown when location changes
-  useEffect(() => {
-    setIsOpen(false);
-  }, [location]);
-
-  // Close dropdown on outside tap/click (and Escape)
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handlePointerDown = (e) => {
-      const root = dropdownRef.current;
-      if (!root) return;
-      if (root.contains(e.target)) return;
-      setIsOpen(false);
-    };
-
-    const handleKeyDown = (e) => {
-      if (e.key === "Escape") setIsOpen(false);
-    };
-
-    document.addEventListener("pointerdown", handlePointerDown, true);
-    document.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.removeEventListener("pointerdown", handlePointerDown, true);
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [isOpen]);
-
-  // Handle viewport positioning
-  useEffect(() => {
-    if (isOpen && menuRef.current && dropdownRef.current) {
-      const menu = menuRef.current;
-      const trigger = dropdownRef.current;
-      
-      // Reset positioning
-      menu.style.top = "";
-      menu.style.bottom = "";
-      menu.style.maxHeight = "";
-
-      // Get viewport and element positions
-      const triggerRect = trigger.getBoundingClientRect();
-      const menuRect = menu.getBoundingClientRect();
-      const viewportHeight = window.innerHeight;
-      
-      // Calculate space above and below
-      const spaceAbove = triggerRect.top;
-      const spaceBelow = viewportHeight - triggerRect.bottom;
-      const menuHeight = menuRect.height;
-
-      // Position above by default
-      menu.style.bottom = `${trigger.offsetHeight}px`;
-      
-      // If menu would overflow above, position below instead
-      if (spaceAbove < menuHeight && spaceBelow > spaceAbove) {
-        menu.style.bottom = "";
-        menu.style.top = `${trigger.offsetHeight}px`;
-      }
-
-      // Limit max height to available space
-      const maxAvailableSpace = Math.max(spaceAbove, spaceBelow);
-      if (menuHeight > maxAvailableSpace) {
-        menu.style.maxHeight = `${maxAvailableSpace - 10}px`;
-        menu.style.overflowY = "auto";
-      }
-    }
-  }, [isOpen, items]);
-
   const hasActiveItem = isActive ? isActive(location.pathname) : false;
-  const activeClass = hasActiveItem ? "has-active" : "";
-  const openClass = isOpen ? "open" : "";
-
-  const handleToggle = (e) => {
-    e.stopPropagation();
-    setIsOpen(!isOpen);
-  };
-
-  const handleItemClick = () => {
-    setIsOpen(false);
-    if (onItemClick) {
-      onItemClick();
-    }
-  };
 
   return (
     <li
-      className={`nav-mobile-dropdown ${openClass} ${activeClass}`}
-      ref={dropdownRef}
+      className={`nav-mobile-dropdown ${open ? "open" : ""} ${
+        hasActiveItem ? "has-active" : ""
+      }`}
     >
-      <button
-        className={`nav-mobile-dropdown-button ${hasActiveItem ? "active" : ""}`}
-        onClick={handleToggle}
+      <Collapsible
+        open={open}
+        onOpenChange={onOpenChange}
+        fade={false}
+        duration="0.28s"
+        className="nav-mobile-dropdown__collapsible"
       >
-        {buttonContent || <span>{label}</span>}
-        <ChevronIcon
-          direction={isOpen ? "up" : "down"}
-          className="nav-mobile-dropdown-arrow"
-          size={16}
-        />
-      </button>
-      {items.length > 0 && (
-        <div className={`nav-mobile-dropdown-menu${isOpen ? ' open' : ''}`} ref={menuRef}>
-          {items.map((item, index) => {
-            if (item.divider) {
-              return (
-                <div
-                  key={`divider-${index}`}
-                  className="nav-mobile-dropdown-divider"
-                />
-              );
-            }
+        <CollapsibleTrigger
+          preset="none"
+          className={`nav-mobile-dropdown-button ${hasActiveItem ? "active" : ""}`}
+        >
+          <ChevronIcon
+            direction={open ? "down" : "right"}
+            className="nav-mobile-dropdown-arrow"
+            size={16}
+          />
+          {buttonContent || <span className="nav-mobile-dropdown-label">{label}</span>}
+        </CollapsibleTrigger>
+        <CollapsibleContent className="nav-mobile-dropdown-region">
+          <div className="nav-mobile-dropdown-menu">
+            {items.map((item, index) => {
+              if (item.divider) {
+                return (
+                  <div
+                    key={`divider-${index}`}
+                    className="nav-mobile-dropdown-divider"
+                  />
+                );
+              }
 
-            if (item.disabled) {
-              return (
-                <div
-                  key={item.translationKey || item.label || index}
-                  className="nav-mobile-dropdown-item nav-mobile-dropdown-item--disabled"
-                >
-                  {item.translationKey
-                    ? t(item.translationKey)
-                    : item.label}
-                  {item.badge && (
-                    <span className="nav-mobile-dropdown-badge">
-                      {t(item.badge)}
-                    </span>
-                  )}
-                </div>
-              );
-            }
+              const extraClass = item.className ? ` ${item.className}` : "";
 
-            // Handle button type items (like logout) - check for onClick without 'to'
-            if (!item.to && item.onClick) {
-              return (
-                <button
-                  key={item.translationKey || index}
-                  className="nav-mobile-dropdown-item nav-mobile-dropdown-item--button"
-                  onClick={() => {
-                    if (item.onClick) {
+              if (item.disabled) {
+                return (
+                  <div
+                    key={item.translationKey || item.label || index}
+                    className={`nav-mobile-dropdown-item nav-mobile-dropdown-item--disabled${extraClass}`}
+                  >
+                    {itemLabel(item, t)}
+                    {item.badge && (
+                      <span className="nav-mobile-dropdown-badge">
+                        {t(item.badge)}
+                      </span>
+                    )}
+                  </div>
+                );
+              }
+
+              if (!item.to && item.onClick) {
+                return (
+                  <button
+                    key={item.translationKey || item.label || index}
+                    type="button"
+                    className={`nav-mobile-dropdown-item nav-mobile-dropdown-item--button${extraClass}`}
+                    onClick={() => {
                       item.onClick();
-                    }
-                    handleItemClick();
-                  }}
-                >
-                  {item.translationKey
-                    ? t(item.translationKey)
-                    : item.label}
-                </button>
-              );
-            }
+                      onItemClick?.();
+                    }}
+                  >
+                    {itemLabel(item, t)}
+                  </button>
+                );
+              }
 
-            // Regular link item
-            if (item.to) {
+              if (!item.to) return null;
+
+              const handleClick = () => {
+                item.onClick?.();
+                onItemClick?.();
+              };
+
+              if (isExternalNavPath(item.to)) {
+                return (
+                  <a
+                    key={item.to || item.translationKey || index}
+                    href={item.to}
+                    className={`nav-mobile-dropdown-item${extraClass}`}
+                    onClick={handleClick}
+                  >
+                    {itemLabel(item, t)}
+                    {item.attachIcon}
+                  </a>
+                );
+              }
+
               return (
                 <NavLink
                   key={item.to || item.translationKey || index}
                   to={item.to}
-                  className={({ isActive }) =>
-                    `nav-mobile-dropdown-item ${isActive && !item.suppressActive ? "active" : ""}`
+                  className={({ isActive: linkActive }) =>
+                    `nav-mobile-dropdown-item${extraClass} ${
+                      linkActive && !item.suppressActive ? "active" : ""
+                    }`
                   }
-                  onClick={() => {
-                    item.onClick?.();
-                    handleItemClick();
-                  }}
+                  onClick={handleClick}
                 >
-                  {item.translationKey
-                    ? t(item.translationKey)
-                    : item.label}
+                  {itemLabel(item, t)}
+                  {item.attachIcon}
                 </NavLink>
               );
-            }
-
-            // Fallback for items without 'to' or 'onClick'
-            return null;
-          })}
-        </div>
-      )}
+            })}
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
     </li>
   );
 };

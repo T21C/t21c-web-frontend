@@ -1,5 +1,12 @@
 {
   "main": {
+    "sections": {
+      "levels": "关卡",
+      "rankings": "排行",
+      "creators": "创作者",
+      "tools": "工具",
+      "help": "帮助"
+    },
     "links": {
       "home": "主页",
       "levels": "关卡列表",
@@ -26,13 +33,20 @@
       }
     },
     "dropdowns": {
+      "levels": {
+        "listing": "关卡列表"
+      },
       "creators": {
+        "listing": "创作者列表",
         "creators": "创作者",
         "artists": "艺术家",
         "songs": "歌曲"
       },
       "packs": {
         "allPacks": "所有地图包"
+      },
+      "tools": {
+        "scoreCalculator": "分数计算器"
       },
       "more": {
         "passes": "通关列表",

@@ -832,10 +832,6 @@
   margin-right: auto;
 }
 
-.pass-core-form--calculator .info h1 {
-  padding-left: 2.5rem;
-}
-
 .pass-core-form--calculator .info-input-grid--calculator {
   grid-template-columns: 1fr;
 }
