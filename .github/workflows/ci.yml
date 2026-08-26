@@ -1,10 +1,15 @@
 name: CI
 
+# pull_request: install + lint
+# merge_group / push to main / workflow_dispatch: lint + production compile
+# push to main / workflow_dispatch: also image + deploy
 on:
-  workflow_dispatch:
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  merge_group:
   push:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -24,7 +29,17 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
 
+      - name: Install dependencies
+        env:
+          PUPPETEER_SKIP_DOWNLOAD: "true"
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: "true"
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
       - name: Check production build secrets
+        if: github.event_name != 'pull_request'
         env:
           FRONTEND_BUILD_ENV: ${{ secrets.FRONTEND_BUILD_ENV_PRODUCTION }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
@@ -48,6 +63,7 @@ jobs:
           esac
 
       - name: Prepare frontend build env
+        if: github.event_name != 'pull_request'
         id: frontend_env
         env:
           FRONTEND_BUILD_ENV: ${{ secrets.FRONTEND_BUILD_ENV_PRODUCTION }}
@@ -93,18 +109,10 @@ jobs:
           printf 'path=%s\n' "$out" >>"$GITHUB_OUTPUT"
           printf 'hash=%s\n' "$hash" >>"$GITHUB_OUTPUT"
 
-      - name: Install dependencies
-        env:
-          PUPPETEER_SKIP_DOWNLOAD: "true"
-          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: "true"
-        run: npm ci
-
-      - name: Lint
-        run: npm run lint
-
       # Compile with production VITE_* origins. Strip the Sentry token so this
       # job cannot upload sourcemaps; the image build is the single uploader.
       - name: Build production assets
+        if: github.event_name != 'pull_request'
         env:
           FRONTEND_ENV_PATH: ${{ steps.frontend_env.outputs.path }}
         run: |
