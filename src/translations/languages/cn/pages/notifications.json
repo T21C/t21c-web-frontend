@@ -108,6 +108,10 @@
           "title": "入选 Weekly Levels",
           "body": "{{song}} — {{artist}} 已入选 Weekly Levels。"
         }
+      },
+      "cleared": {
+        "title": "你的谱面已被通关",
+        "body": "{{playerName}} 通关了 {{song}} — {{artist}}。"
       }
     },
     "following": {

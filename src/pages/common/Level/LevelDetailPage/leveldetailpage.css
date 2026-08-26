@@ -579,6 +579,43 @@
   z-index: 20;
 }
 
+.level-detail .level-detail-header-notify-slot {
+  position: absolute;
+  top: var(--spacing-sm);
+  right: var(--spacing-sm);
+  z-index: 10;
+}
+
+.level-detail .level-detail-header-notify-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-width: 0;
+  background: none;
+  border: none;
+  padding: var(--spacing-xs);
+  border-radius: var(--border-radius);
+  color: var(--color-white);
+  opacity: 0.55;
+  cursor: pointer;
+  transition: color var(--transition-normal), opacity var(--transition-normal), background-color var(--transition-normal);
+}
+
+.level-detail .level-detail-header-notify-button:hover,
+.level-detail .level-detail-header-notify-button:focus-visible {
+  opacity: 0.9;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.level-detail .level-detail-header-notify-button.muted {
+  opacity: 0.4;
+}
+
+.level-detail .level-detail-header-notify-button:disabled {
+  cursor: not-allowed;
+}
+
 .level-detail .weekly-appearance-dropdown,
 .level-detail .to-rate-pending-dropdown {
   position: absolute;
@@ -1772,6 +1809,11 @@
     margin: 0;
     z-index: 10;
   }
+
+  .level-detail .level-detail-header-notify-slot {
+    top: var(--spacing-sm);
+    right: calc(var(--spacing-sm) + 2.75rem);
+  }
   
   /* Ensure proper spacing for mobile layout */
   .level-detail .left .diff {
@@ -1950,6 +1992,15 @@
     right: var(--spacing-xs);
     margin: 0;
     z-index: 10;
+  }
+
+  .level-detail .level-detail-header-notify-slot {
+    top: var(--spacing-xs);
+    right: calc(var(--spacing-xs) + 2.75rem);
+  }
+
+  .level-detail .level-detail-header-notify-button {
+    width: auto;
   }
   
   /* Ensure proper spacing for mobile layout */

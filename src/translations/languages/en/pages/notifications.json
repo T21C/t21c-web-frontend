@@ -108,6 +108,10 @@
           "title": "Selected for Weekly Levels",
           "body": "{{song}} by {{artist}} was selected for Weekly Levels."
         }
+      },
+      "cleared": {
+        "title": "Your chart has been cleared",
+        "body": "{{playerName}} cleared {{song}} by {{artist}}."
       }
     },
     "following": {

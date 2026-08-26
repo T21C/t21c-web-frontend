@@ -105,5 +105,11 @@
     "dontShowAgain": "Don't show this again",
     "agree": "I Confirm",
     "decline": "Cancel"
+  },
+  "chartClearNotify": {
+    "title": "Chart clear notifications",
+    "body": "Would you like to be notified when someone clears your charts?",
+    "enable": "Enable",
+    "dismiss": "Not now"
   }
 } 

@@ -24,7 +24,9 @@
   },
   "tooltips": {
     "loginRequired": "登录以收藏此关卡",
-    "editDisabled": "此关卡有超过两个采音师。如果你认为自己应该是所有者，请联系管理员。"
+    "editDisabled": "此关卡有超过两个采音师。如果你认为自己应该是所有者，请联系管理员。",
+    "muteChartClears": "关闭此谱面的通关通知",
+    "unmuteChartClears": "开启此谱面的通关通知"
   },
   "links": {
     "download": "下载关卡",

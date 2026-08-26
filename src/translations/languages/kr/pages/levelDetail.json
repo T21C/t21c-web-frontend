@@ -24,7 +24,9 @@
   },
   "tooltips": {
     "loginRequired": "좋아요를 누르려면 로그인 하세요",
-    "editDisabled": "이 레벨은 2명 이상의 제작자가 할당되어 있습니다. 소유자가 되어야 한다고 생각되면 관리자에게 문의해주세요."
+    "editDisabled": "이 레벨은 2명 이상의 제작자가 할당되어 있습니다. 소유자가 되어야 한다고 생각되면 관리자에게 문의해주세요.",
+    "muteChartClears": "이 차트의 클리어 알림 끄기",
+    "unmuteChartClears": "이 차트의 클리어 알림 켜기"
   },
   "links": {
     "download": "레벨 다운로드",

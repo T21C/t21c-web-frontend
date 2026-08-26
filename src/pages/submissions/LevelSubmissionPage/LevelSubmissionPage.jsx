@@ -15,7 +15,7 @@ import i18next from "i18next";
 import { StagingModeWarning, MetaTags } from "@/components/common/display";
 import { buildStaticPageMeta } from '@/utils/meta';
 import { ProfileSelector } from "@/components/common/selectors";
-import { LevelSelectionPopup, CDNTosPopup } from "@/components/popups/Levels";
+import { LevelSelectionPopup, CDNTosPopup, ChartClearNotifyOptInPopup } from "@/components/popups/Levels";
 import { SongSelectorPopup } from "@/components/popups/Songs";
 import { ArtistSelectorPopup } from "@/components/popups/Artists";
 
@@ -174,6 +174,8 @@ const LevelSubmissionPage = () => {
   const [showCancelWarning, setShowCancelWarning] = useState(false);
 
   const [showCdnTos, setShowCdnTos] = useState(false);
+  const [showChartClearNotifyOptIn, setShowChartClearNotifyOptIn] = useState(false);
+  const [chartClearOptInBusy, setChartClearOptInBusy] = useState(false);
   const [pendingZipFile, setPendingZipFile] = useState(null);
   const [isDragOver, setIsDragOver] = useState(false);
   const [uploadProgress, setUploadProgress] = useState({ phase: 'idle', percent: 0 });
@@ -183,6 +185,34 @@ const LevelSubmissionPage = () => {
   const { job: cdnJob } = useJobProgressStream(cdnJobId, Boolean(submission && cdnJobId));
 
   const resolveVideoLinkRequest = useDebouncedRequest(500);
+
+  const maybePromptChartClearNotify = async () => {
+    try {
+      const { data } = await api.get(routes.notifications.preferences());
+      const pref = (data?.preferences || []).find((row) => row.type === 'chart.cleared');
+      if (!pref || pref.inAppExplicit) return;
+      setShowChartClearNotifyOptIn(true);
+    } catch (error) {
+      console.error('Failed to check chart-clear notification preference:', error);
+    }
+  };
+
+  const saveChartClearOptIn = async (enabled) => {
+    if (chartClearOptInBusy) return;
+    setChartClearOptInBusy(true);
+    try {
+      await api.put(routes.notifications.preferences(), {
+        type: 'chart.cleared',
+        inApp: enabled,
+      });
+      setShowChartClearNotifyOptIn(false);
+    } catch (error) {
+      console.error('Failed to save chart-clear notification preference:', error);
+      toast.error(t('settings.notifications.saveError'));
+    } finally {
+      setChartClearOptInBusy(false);
+    }
+  };
 
   const validateForm = () => {
     // Use selected song/artist or fallback to form text fields
@@ -519,6 +549,7 @@ const LevelSubmissionPage = () => {
       if (response?.success) {
         resetForm();
         toast.success(t('levelSubmission.alert.success'));
+        void maybePromptChartClearNotify();
       } else {
         throw new Error(response?.error || 'Failed to submit form');
       }
@@ -549,6 +580,7 @@ const LevelSubmissionPage = () => {
       if (response?.success) {
         resetForm();
         toast.success(t('levelSubmission.alert.success'));
+        void maybePromptChartClearNotify();
       } else {
         throw new Error(response?.error || 'Failed to select level');
       }
@@ -584,6 +616,7 @@ const LevelSubmissionPage = () => {
       if (response?.success) {
         resetForm();
         toast.success(t('levelSubmission.alert.success'));
+        void maybePromptChartClearNotify();
       } else {
         throw new Error(response?.error || 'Failed to select level');
       }
@@ -886,6 +919,14 @@ const LevelSubmissionPage = () => {
           <CDNTosPopup 
             onAgree={handleCdnTosAgree}
             onDecline={handleCdnTosDecline}
+          />
+        )}
+
+        {showChartClearNotifyOptIn && (
+          <ChartClearNotifyOptInPopup
+            busy={chartClearOptInBusy}
+            onEnable={() => saveChartClearOptIn(true)}
+            onDismiss={() => saveChartClearOptIn(false)}
           />
         )}
 

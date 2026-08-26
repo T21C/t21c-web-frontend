@@ -6,6 +6,7 @@ import LevelUploadManagementPopup from "./LevelUploadManagementPopup/LevelUpload
 import LevelPayloadSwapPopup from "./LevelPayloadSwapPopup/LevelPayloadSwapPopup";
 import LinkedLevelsPopup from "./LinkedLevelsPopup/LinkedLevelsPopup";
 import CDNTosPopup from "./CDNTosPopup/CDNTosPopup";
+import ChartClearNotifyOptInPopup from "./ChartClearNotifyOptInPopup/ChartClearNotifyOptInPopup";
 import SubmissionCreatorPopup from "./SubmissionCreatorPopup/SubmissionCreatorPopup";
 import LevelDownloadPopup from "./LevelDownloadPopup/LevelDownloadPopup";
 import LevelListExportPopup from "./LevelListExportPopup/LevelListExportPopup";
@@ -19,6 +20,7 @@ export {
   LevelPayloadSwapPopup,
   LinkedLevelsPopup,
   CDNTosPopup,
+  ChartClearNotifyOptInPopup,
   SubmissionCreatorPopup,
   LevelDownloadPopup,
   LevelListExportPopup,

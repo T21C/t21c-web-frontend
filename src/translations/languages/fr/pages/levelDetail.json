@@ -11,6 +11,10 @@
   "buttons": {
     "edit": "Modifier les details du niveau"
   },
+  "tooltips": {
+    "muteChartClears": "Couper les notifications de clear pour ce chart",
+    "unmuteChartClears": "Activer les notifications de clear pour ce chart"
+  },
   "links": {
     "download": "Télécharger le niveau",
     "workshop": "Voir sur le Workshop",

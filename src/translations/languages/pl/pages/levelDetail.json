@@ -13,6 +13,10 @@
     "edit": "Edytuj poziom",
     "close": "Zamknij"
   },
+  "tooltips": {
+    "muteChartClears": "Wycisz powiadomienia o przejściach tego chartu",
+    "unmuteChartClears": "Włącz powiadomienia o przejściach tego chartu"
+  },
   "links": {
     "download": "Pobierz poziom",
     "workshop": "Warsztat steam",

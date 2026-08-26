@@ -57,6 +57,8 @@ import {
   ArrowIcon,
   VideoLinkIcon,
   TUFHelperLiteOpenIcon,
+  BellIcon,
+  BellOffIcon,
 } from "@/components/common/icons";
 import { createEventSystem, formatBaseScore, formatCreatorDisplay, formatDate, formatPassDate, isCdnUrl, selectIconSize } from "@/utils/Utility";
 import { formatAccuracyRatio } from "@/utils/statFormatters";
@@ -983,6 +985,8 @@ const LevelDetailPageContent = ({ mockData = null }) => {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [notFound, setNotFound] = useState(false);
   const [isLiking, setIsLiking] = useState(false);
+  const [chartClearMute, setChartClearMute] = useState({ credited: false, muted: false });
+  const [isTogglingChartClearMute, setIsTogglingChartClearMute] = useState(false);
 
   // Add support for external CSS overrides (for preview system)
   const [externalCssOverride, setExternalCssOverride] = useState(null);
@@ -1614,6 +1618,27 @@ const LevelDetailPageContent = ({ mockData = null }) => {
       });
     }
   }, [effectiveId, user?.id, mockData]);
+
+  const fetchChartClearMute = useCallback(async () => {
+    if (!user?.id || mockData || !effectiveId) {
+      setChartClearMute({ credited: false, muted: false });
+      return;
+    }
+    try {
+      const response = await api.get(routes.notifications.chartClears(effectiveId));
+      setChartClearMute({
+        credited: Boolean(response.data?.credited),
+        muted: Boolean(response.data?.muted),
+      });
+    } catch (error) {
+      console.error("Error fetching chart-clear mute state:", error);
+      setChartClearMute({ credited: false, muted: false });
+    }
+  }, [effectiveId, user?.id, mockData]);
+
+  useEffect(() => {
+    fetchChartClearMute();
+  }, [fetchChartClearMute]);
 
   /** CDN zip metadata for download popup (downloadCount comes from level row in GET /levels/:id). */
   const fetchCdnDownloadExtras = useCallback(
@@ -2270,6 +2295,29 @@ const LevelDetailPageContent = ({ mockData = null }) => {
     }
   };
 
+  const handleChartClearMuteToggle = async () => {
+    if (!user || !chartClearMute.credited || isTogglingChartClearMute || !effectiveId) {
+      return;
+    }
+    const nextMuted = !chartClearMute.muted;
+    setIsTogglingChartClearMute(true);
+    setChartClearMute((prev) => ({ ...prev, muted: nextMuted }));
+    try {
+      const response = await api.put(routes.notifications.chartClears(effectiveId), {
+        muted: nextMuted,
+      });
+      setChartClearMute({
+        credited: Boolean(response.data?.credited),
+        muted: Boolean(response.data?.muted),
+      });
+    } catch (error) {
+      console.error("Error updating chart-clear mute:", error);
+      setChartClearMute((prev) => ({ ...prev, muted: !nextMuted }));
+    } finally {
+      setIsTogglingChartClearMute(false);
+    }
+  };
+
   const handleLikeToggle = async () => {
     if (!user) {
       toast.error(t('levelDetail.errors.loginRequired'));
@@ -2846,6 +2894,35 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                 </div>
               )}
               
+              {chartClearMute.credited && (
+                <div className="level-detail-header-notify-slot">
+                  <button
+                    type="button"
+                    className={`level-detail-header-notify-button${chartClearMute.muted ? ' muted' : ''}`}
+                    data-tooltip-id="chart-clear-mute-tooltip"
+                    data-tooltip-content={
+                      chartClearMute.muted
+                        ? t('levelDetail.tooltips.unmuteChartClears')
+                        : t('levelDetail.tooltips.muteChartClears')
+                    }
+                    aria-label={
+                      chartClearMute.muted
+                        ? t('levelDetail.tooltips.unmuteChartClears')
+                        : t('levelDetail.tooltips.muteChartClears')
+                    }
+                    aria-pressed={chartClearMute.muted}
+                    onClick={handleChartClearMuteToggle}
+                    disabled={isTogglingChartClearMute}
+                  >
+                    {chartClearMute.muted ? (
+                      <BellOffIcon size={20} color="currentColor" />
+                    ) : (
+                      <BellIcon size={20} color="currentColor" />
+                    )}
+                  </button>
+                  <Tooltip id="chart-clear-mute-tooltip" place="bottom" noArrow />
+                </div>
+              )}
               <div 
                 className="like-container"
                 data-margin-auto={true}
