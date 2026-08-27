@@ -159,12 +159,21 @@
       "header": "社区标签",
       "open": "投票",
       "vote": "为该标签投票",
+      "upvote": "赞成该标签",
+      "downvote": "反对该标签",
       "unvote": "取消投票",
       "voted": "已为 {{tag}} 投票",
+      "upvoted": "已赞成 {{tag}}",
+      "downvoted": "已反对 {{tag}}",
       "unvoted": "已取消对 {{tag}} 的投票",
       "failed": "更新投票失败",
       "loginRequired": "登录后才能为社区标签投票",
-      "banned": "你已被禁止为社区标签投票"
+      "banned": "你已被禁止为社区标签投票",
+      "topPlay": "你的最高通关不足以给这张谱投票",
+      "mustClear": "你必须通关这张谱才能投这个标签",
+      "uncleared": "这张谱有通关记录后才能使用社区标签",
+      "band": "该标签不适用于此难度",
+      "deleted": "无法给已删除的关卡投票"
     }
   },
   "weeklyAppearance": {

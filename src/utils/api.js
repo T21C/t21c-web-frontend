@@ -10,6 +10,8 @@ import {
 } from '@/utils/csrf';
 import { getPendingAuthBoot } from '@/utils/authBoot';
 import { isUnauthorizedError } from '@/utils/authErrors';
+import { createSuperAdminProof } from '@/utils/superAdminProof';
+import { getSuperAdminProofActor } from '@/utils/superAdminProofActor';
 
 const baseURL = API_BASE;
 
@@ -45,6 +47,70 @@ export async function ensureCsrfToken({ force = false } = {}) {
   return csrfEnsurePromise;
 }
 
+function isPlainRequestBody(data) {
+  if (!data || typeof data !== 'object') return false;
+  if (typeof FormData !== 'undefined' && data instanceof FormData) return false;
+  if (typeof URLSearchParams !== 'undefined' && data instanceof URLSearchParams) return false;
+  if (typeof Blob !== 'undefined' && data instanceof Blob) return false;
+  return true;
+}
+
+function readAxiosHeader(headers, name) {
+  if (!headers) return '';
+  if (typeof headers.get === 'function') {
+    const value = headers.get(name);
+    return typeof value === 'string' ? value : '';
+  }
+  const value = headers[name] ?? headers[name.toLowerCase()];
+  return typeof value === 'string' ? value : '';
+}
+
+function setAxiosHeader(headers, name, value) {
+  if (typeof headers.set === 'function') {
+    headers.set(name, value);
+    return;
+  }
+  headers[name] = value;
+}
+
+function deleteAxiosHeader(headers, name) {
+  if (typeof headers.delete === 'function') {
+    headers.delete(name);
+    return;
+  }
+  delete headers[name];
+  delete headers[name.toLowerCase()];
+}
+
+async function applySuperAdminProof(config) {
+  const headers = config.headers || {};
+  const fromHeader = readAxiosHeader(headers, 'X-Super-Admin-Password');
+  const body = isPlainRequestBody(config.data) ? config.data : null;
+  const fromBody = typeof body?.superAdminPassword === 'string' ? body.superAdminPassword : '';
+  const secret = fromHeader || fromBody;
+  if (!secret) return;
+
+  deleteAxiosHeader(headers, 'X-Super-Admin-Password');
+  if (body && 'superAdminPassword' in body) {
+    delete body.superAdminPassword;
+  }
+
+  const actor = getSuperAdminProofActor();
+  if (!actor) {
+    throw new Error('Super admin proof requires an authenticated user');
+  }
+
+  const proof = await createSuperAdminProof({
+    secret,
+    userId: actor.id,
+    username: actor.username,
+    method: config.method || 'get',
+    path: config.url || '/',
+  });
+  setAxiosHeader(headers, 'X-Super-Admin-Proof', proof);
+  config.headers = headers;
+}
+
 // Request interceptor: cookies + CSRF double-submit header for mutating calls
 api.interceptors.request.use(
   async (config) => {
@@ -70,6 +136,7 @@ api.interceptors.request.use(
         config.headers['X-CSRF-Token'] = csrf;
       }
     }
+    await applySuperAdminProof(config);
     return config;
   },
   (error) => {

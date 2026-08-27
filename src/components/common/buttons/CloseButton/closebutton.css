@@ -57,7 +57,7 @@
 /* Corner overlay: absolute positioning; parent needs position: relative */
 .tuf-close-button.tuf-close-button--floating {
   position: absolute;
-  z-index: 2;
+  z-index: 99;
   top: 1rem;
   right: 1rem;
   padding: 8px;

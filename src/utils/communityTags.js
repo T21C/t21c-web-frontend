@@ -40,6 +40,37 @@ export function formatCommunityTagScore(score) {
   return `${Math.round(Math.min(1, Math.max(0, score)) * 100)}%`;
 }
 
+export function communityTagHoverTitle(tag) {
+  const parts = [];
+  if (tag?.name) parts.push(tag.name);
+  if (tag?.description) parts.push(tag.description);
+  const score = tag?.isCommunity ? formatCommunityTagScore(tag.score) : '';
+  if (score) parts.push(score);
+  return parts.join(' — ');
+}
+
+/** Matches server env fallbacks in getCommunityTagConfig(). */
+export const COMMUNITY_TAG_DEFAULT_KNOBS = {
+  wilsonZ: 4,
+  scoreOn: 0.45,
+  scoreOff: 0.35,
+};
+
+/**
+ * Smallest all-upvote weight that reaches `threshold` under Wilson Z:
+ * n / (n + z²) >= t  =>  n >= t * z² / (1 - t)
+ */
+export function minWeightToPassThreshold(wilsonZ, threshold) {
+  const z = Number(wilsonZ);
+  const t = Number(threshold);
+  if (!(z > 0) || !Number.isFinite(t) || t < 0) return null;
+  if (t === 0) return 0;
+  if (t >= 1) return null;
+  const needed = (t * z * z) / (1 - t);
+  if (!Number.isFinite(needed) || needed < 0) return null;
+  return Math.ceil(needed - 1e-12);
+}
+
 function compareScoreThenSortOrder(a, b) {
   const scoreA = typeof a.score === 'number' && Number.isFinite(a.score) ? a.score : -1;
   const scoreB = typeof b.score === 'number' && Number.isFinite(b.score) ? b.score : -1;

@@ -24,7 +24,7 @@ import {
   sortCurationsForDisplay,
   sortCurationTypesForDisplay,
 } from "@/utils/curationTypeUtils";
-import { formatCommunityTagScore, selectLevelCardDisplayTags, COMMUNITY_TAG_CARD_CAP } from "@/utils/communityTags";
+import { selectLevelCardDisplayTags, COMMUNITY_TAG_CARD_CAP, communityTagHoverTitle } from "@/utils/communityTags";
 import TagConfidenceBar from "@/components/common/display/TagConfidenceBar/TagConfidenceBar";
 import { Tooltip } from "react-tooltip";
 import MarqueeText from "@/components/common/display/MarqueeText/MarqueeText";
@@ -466,11 +466,7 @@ const LevelCard = ({
               '--tag-border-color': tag.color,
               '--tag-text-color': tag.color
             }}
-            title={
-              tag.isCommunity && formatCommunityTagScore(tag.score)
-                ? `${tag.name} (${formatCommunityTagScore(tag.score)})`
-                : tag.name
-            }
+            title={communityTagHoverTitle(tag)}
           >
             <TagConfidenceBar score={tag.score} show={Boolean(tag.isCommunity)}>
               {tag.icon ? (

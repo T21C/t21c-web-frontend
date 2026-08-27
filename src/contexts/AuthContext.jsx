@@ -4,6 +4,7 @@ import api from '@/utils/api';
 import { clearCsrfToken, getCsrfToken, setCsrfToken } from '@/utils/csrf';
 import { completeAuthBoot, ensureAuthBoot } from '@/utils/authBoot';
 import { clearCachedUser, readCachedUser, writeCachedUser } from '@/utils/authUserCache';
+import { setSuperAdminProofActor } from '@/utils/superAdminProofActor';
 import { isUnauthorizedError } from '@/utils/authErrors';
 import { routes } from '@/api/routes';
 import { useNotification } from './NotificationContext';
@@ -19,7 +20,13 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUserState] = useState(() => readCachedUser());
+  const [user, setUserState] = useState(() => {
+    const cached = readCachedUser();
+    if (cached) {
+      setSuperAdminProofActor({ id: cached.id, username: cached.username });
+    }
+    return cached;
+  });
   const [loading, setLoading] = useState(() => !readCachedUser());
   const [lastFetchTime, setLastFetchTime] = useState(0);
   const { restartNotifications, resetNotifications, cleanup } = useNotification();
@@ -68,8 +75,10 @@ export const AuthProvider = ({ children }) => {
       const resolved = typeof next === 'function' ? next(prev) : next;
       if (resolved) {
         writeCachedUser(resolved);
+        setSuperAdminProofActor({ id: resolved.id, username: resolved.username });
       } else {
         clearCachedUser();
+        setSuperAdminProofActor(null);
       }
       return resolved ?? null;
     });

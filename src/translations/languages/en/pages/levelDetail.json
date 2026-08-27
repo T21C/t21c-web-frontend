@@ -159,12 +159,21 @@
       "header": "Community tags",
       "open": "Vote",
       "vote": "Vote for this tag",
+      "upvote": "Upvote this tag",
+      "downvote": "Downvote this tag",
       "unvote": "Remove your vote",
       "voted": "Voted for {{tag}}",
+      "upvoted": "Upvoted {{tag}}",
+      "downvoted": "Downvoted {{tag}}",
       "unvoted": "Removed vote from {{tag}}",
       "failed": "Failed to update vote",
       "loginRequired": "Log in to vote on community tags",
-      "banned": "You are not allowed to vote on community tags"
+      "banned": "You are not allowed to vote on community tags",
+      "topPlay": "Your top play is not high enough to vote on this chart",
+      "mustClear": "You must clear this chart to vote on this tag",
+      "uncleared": "Community tags are available after this chart has a clear",
+      "band": "This tag is not available for this difficulty",
+      "deleted": "Cannot vote on a deleted level"
     }
   },
   "weeklyAppearance": {

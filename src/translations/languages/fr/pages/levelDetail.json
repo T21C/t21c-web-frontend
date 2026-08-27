@@ -84,12 +84,21 @@
       "header": "Tags communautaires",
       "open": "Voter",
       "vote": "Voter pour ce tag",
+      "upvote": "Voter pour ce tag",
+      "downvote": "Voter contre ce tag",
       "unvote": "Retirer le vote",
       "voted": "Vote pour {{tag}}",
+      "upvoted": "Vote pour {{tag}}",
+      "downvoted": "Vote contre {{tag}}",
       "unvoted": "Vote retiré de {{tag}}",
       "failed": "Impossible de mettre à jour le vote",
       "loginRequired": "Connectez-vous pour voter sur les tags communautaires",
-      "banned": "Vous n'êtes pas autorisé à voter sur les tags communautaires"
+      "banned": "Vous n'êtes pas autorisé à voter sur les tags communautaires",
+      "topPlay": "Votre meilleur clear n'est pas assez élevé pour voter sur ce niveau",
+      "mustClear": "Vous devez clear ce niveau pour voter sur ce tag",
+      "uncleared": "Les tags communautaires sont disponibles après un clear sur ce niveau",
+      "band": "Ce tag n'est pas disponible pour cette difficulté",
+      "deleted": "Impossible de voter sur un niveau supprimé"
     }
   }
 } 

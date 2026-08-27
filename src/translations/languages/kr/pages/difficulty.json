@@ -119,6 +119,23 @@
     "noTags": "태그 미발견됨. 당신의 첫 태그를 만드세요!",
     "ungrouped": "Ungrouped",
     "tagCount": "{{count}} tag{{plural}}",
+    "fields": {
+      "description": "설명",
+      "assignmentSection": "태그 부여",
+      "inherit": "상속",
+      "scoringMode": "점수 모드",
+      "modeWilson": "윌슨 (최고 클리어 + 1)",
+      "modeSkillset": "스킬셋 (클리어한 사람만)",
+      "wilsonZ": "윌슨 Z",
+      "wilsonZHint": "적은 표에 점수가 얼마나 신중한지입니다. Z가 클수록 같은 임계값에 도달하려면 동의 표가 더 필요합니다.",
+      "wilsonZWeightHint": "클리어하지 않은 사람의 표는 클리어한 사람의 0.1배로 계산됩니다",
+      "wilsonZInfoAria": "비클리어 표 가중치 설명",
+      "scoreOn": "부여 임계값",
+      "scoreOff": "제거 임계값",
+      "reqVotes": "필요 표: {{count}}",
+      "allowedBands": "난이도 대역",
+      "allowedBandsHint": "모두 해제하면 상속합니다. P / G / U / SPEC는 해당 대역에서만 커뮤니티 투표를 허용합니다. SPEC는 특수 난이도입니다."
+    },
     "create": {
       "title": "태그 생성",
       "name": "이름",
