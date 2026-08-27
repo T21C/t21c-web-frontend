@@ -12,8 +12,8 @@
     "detailedView": {
       "label": "Widok szczegółowy"
     },
-    "hideRated": {
-      "label": "Ukryj ocenione"
+    "myRated": {
+      "label": "Moje ocenione"
     },
     "lowDiff": {
       "label": "Niski poziom trudności"

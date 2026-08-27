@@ -28,8 +28,36 @@ import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import toast from 'react-hot-toast';
 import { createViewDurationTracker } from '@/utils/viewDurationTracker';
 
-const DECK_SIZES = [5, 10, 15, 20, 25, 30];
+const DECK_SIZES = [
+  5, 10, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 125, 150, 175, 200,
+];
 const DECK_UNIT = 5;
+
+const REQUEST_BANDS = [
+  ['P', 'includeP'],
+  ['G', 'includeG'],
+  ['U', 'includeU'],
+];
+
+/** Same buckets as server requestPguBand: U, then P, else G. */
+function zenRequestBand(card) {
+  const rerateNum = card?.level?.rerateNum;
+  const requesterFR = card?.requesterFR;
+  const primary =
+    rerateNum != null && String(rerateNum).trim() !== ''
+      ? String(rerateNum).trim()
+      : String(requesterFR || '').trim();
+  if (
+    /\bU(?:[1-9]|1[0-9]|20)\b/i.test(primary) ||
+    /\bUQ\d*\b/i.test(primary) ||
+    /\bQ\d+\b/i.test(primary) ||
+    /(?:^|[^0-9.])(21(?:\.[0-4])?\+?)(?:$|[^0-9])/.test(primary)
+  ) {
+    return 'U';
+  }
+  if (card?.lowDiff || /^[pP]\d/.test(primary)) return 'P';
+  return 'G';
+}
 
 const videoCache = new Map();
 
@@ -65,8 +93,9 @@ const RatingZenPage = () => {
   const {
     phase,
     deckSize,
-    onlyLowDiff,
-    excludeUniversals,
+    includeP,
+    includeG,
+    includeU,
     sortPreset,
     randomness,
     cards,
@@ -206,6 +235,11 @@ const RatingZenPage = () => {
   );
 
   const current = cards[index] || null;
+  const currentRequestBand = zenRequestBand(current);
+  const showRequestedRating =
+    (currentRequestBand === 'P' && includeP) ||
+    (currentRequestBand === 'G' && includeG) ||
+    (currentRequestBand === 'U' && includeU);
   const isAdminRater = Boolean(
     user && hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.RATER])
   );
@@ -288,8 +322,9 @@ const RatingZenPage = () => {
       const { data } = await api.get(routes.admin.ratingZenDeal(), {
         params: {
           deckSize,
-          onlyLowDiff: onlyLowDiff ? 'true' : 'false',
-          excludeUniversals: excludeUniversals ? 'true' : 'false',
+          includeP: includeP ? 'true' : 'false',
+          includeG: includeG ? 'true' : 'false',
+          includeU: includeU ? 'true' : 'false',
           randomness,
           ...sortParams,
         },
@@ -313,8 +348,9 @@ const RatingZenPage = () => {
         pendingComment: '',
         phase: dealt.length === 0 ? 'done' : 'stage',
         deckSize,
-        onlyLowDiff,
-        excludeUniversals,
+        includeP,
+        includeG,
+        includeU,
         sortPreset,
         randomness,
       });
@@ -334,8 +370,9 @@ const RatingZenPage = () => {
   }, [
     user,
     deckSize,
-    onlyLowDiff,
-    excludeUniversals,
+    includeP,
+    includeG,
+    includeU,
     randomness,
     sortPreset,
     sortParams,
@@ -742,26 +779,31 @@ const RatingZenPage = () => {
               </small>
             </div>
 
-            <div className="rating-zen-page__field-row">
-              <label className="rating-zen-page__toggle">
-                <input
-                  type="checkbox"
-                  checked={onlyLowDiff}
-                  onChange={(e) => patchSession({ onlyLowDiff: e.target.checked })}
-                />
-                <span>{t('rating.zen.setup.onlyLowDiff')}</span>
-              </label>
-
-              <label className="rating-zen-page__toggle">
-                <input
-                  type="checkbox"
-                  checked={excludeUniversals}
-                  onChange={(e) =>
-                    patchSession({ excludeUniversals: e.target.checked })
-                  }
-                />
-                <span>{t('rating.zen.setup.excludeUniversals')}</span>
-              </label>
+            <div className="rating-zen-page__field">
+              <span>{t('rating.zen.setup.requestBands')}</span>
+              <div className="rating-zen-page__pgu">
+                {REQUEST_BANDS.map(([band, key]) => {
+                  const included =
+                    key === 'includeP'
+                      ? includeP
+                      : key === 'includeG'
+                        ? includeG
+                        : includeU;
+                  return (
+                    <label key={band} className="rating-zen-page__pgu-item">
+                      <span>{band}</span>
+                      <input
+                        type="checkbox"
+                        checked={!included}
+                        onChange={(e) =>
+                          patchSession({ [key]: !e.target.checked })
+                        }
+                      />
+                    </label>
+                  );
+                })}
+              </div>
+              <small>{t('rating.zen.setup.requestBandsHint')}</small>
             </div>
 
             <div className="rating-zen-page__field">
@@ -1009,14 +1051,14 @@ const RatingZenPage = () => {
                     <p className="rating-zen-page__creator">{formatCreatorDisplay(current.level)}</p>
                   </a>
                 </div>
-                {(current.level?.rerateNum || current.requesterFR) && (
+                {showRequestedRating && (current.level?.rerateNum || current.requesterFR) && (
                   <p className="rating-zen-page__request-rating">
                     {t(`components:rating.ratingCard.labels.${current.level?.rerateNum ? 'rerateNumber' : 'requestedRating'}`)}
                     {': '}
                     {current.level?.rerateNum || current.requesterFR}
                   </p>
                 )}
-                {current.level?.rerateReason && (
+                {showRequestedRating && current.level?.rerateReason && (
                   <div className="rating-zen-page__reason">
                     <CommentFormatter>{current.level.rerateReason}</CommentFormatter>
                   </div>

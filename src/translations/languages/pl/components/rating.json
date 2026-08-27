@@ -88,8 +88,8 @@
       },
       "filters": {
         "title": "Dostępne filtry",
-        "hideRated": "Ukryj ocenione",
-        "hideRatedDesc": "Ukrywa poziomy, które zostały już przez ciebie ocenione",
+        "myRated": "Moje ocenione",
+        "myRatedDesc": "Pokaż, ukryj lub pokaż tylko poziomy, które już oceniłeś",
         "lowDiff": "Niski poziom trudności",
         "lowDiffDesc": "Filtruje poziomy z oznaczeniem niskiego poziomu trudności",
         "fourVote": "4+ ocen",

@@ -12,8 +12,8 @@
     "detailedView": {
       "label": "상세 보기"
     },
-    "hideRated": {
-      "label": "책정 완료 숨기기"
+    "myRated": {
+      "label": "내 평가"
     },
     "lowDiff": {
       "label": "낮은 난이도"

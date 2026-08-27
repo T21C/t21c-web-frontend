@@ -2437,6 +2437,9 @@ const LevelDetailPageContent = ({ mockData = null }) => {
         ...catalog,
         ...tag,
         description: tag.description || catalog.description || '',
+        sortOrder: catalog.sortOrder ?? tag.sortOrder,
+        groupSortOrder: catalog.groupSortOrder ?? tag.groupSortOrder,
+        group: catalog.group ?? tag.group,
       };
     }),
   );

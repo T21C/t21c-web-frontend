@@ -14,6 +14,7 @@
 }
 
 .nav-right > .nav-dropdown .nav-dropdown-button,
+.nav-right > .nav-dropdown .nav-language-selector__button,
 .nav-right > .nav-dropdown .nav-dropdown-panel,
 .nav-right > .nav-dropdown:has(.nav-dropdown-panel)::before {
   pointer-events: auto;

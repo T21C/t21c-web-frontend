@@ -14,6 +14,7 @@ export const useRatingFilter = () => {
 const STORAGE_KEYS = {
   SORT_ORDER: 'rating_sort_order',
   HIDE_RATED: 'rating_hide_rated',
+  MY_RATED: 'rating_my_rated',
   LOW_DIFF_FILTER: 'rating_low_diff_filter',
   FOUR_VOTE_FILTER: 'rating_four_vote_filter',
   SORT_TYPE: 'rating_sort_type',
@@ -25,9 +26,18 @@ const STORAGE_KEYS = {
   SHOW_HELP: 'rating_show_help'
 };
 
+const MY_RATED_STATES = ['show', 'hide', 'only'];
+
+function readMyRatedFilter() {
+  const stored = localStorage.getItem(STORAGE_KEYS.MY_RATED);
+  if (MY_RATED_STATES.includes(stored)) return stored;
+  if (localStorage.getItem(STORAGE_KEYS.HIDE_RATED) === 'true') return 'hide';
+  return 'show';
+}
+
 export const RatingFilterProvider = ({ children }) => {
   const [sortOrder, setSortOrder] = useState(() => localStorage.getItem(STORAGE_KEYS.SORT_ORDER) || 'ASC');
-  const [hideRated, setHideRated] = useState(() => localStorage.getItem(STORAGE_KEYS.HIDE_RATED) === 'true');
+  const [myRatedFilter, setMyRatedFilter] = useState(readMyRatedFilter);
   const [lowDiffFilter, setLowDiffFilter] = useState(() => localStorage.getItem(STORAGE_KEYS.LOW_DIFF_FILTER) || 'show');
   const [fourVoteFilter, setFourVoteFilter] = useState(() => localStorage.getItem(STORAGE_KEYS.FOUR_VOTE_FILTER) || 'show');
   const [sortType, setSortType] = useState(() => localStorage.getItem(STORAGE_KEYS.SORT_TYPE) || 'ratings');
@@ -43,8 +53,8 @@ export const RatingFilterProvider = ({ children }) => {
   }, [sortOrder]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.HIDE_RATED, hideRated);
-  }, [hideRated]);
+    localStorage.setItem(STORAGE_KEYS.MY_RATED, myRatedFilter);
+  }, [myRatedFilter]);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.LOW_DIFF_FILTER, lowDiffFilter);
@@ -84,7 +94,7 @@ export const RatingFilterProvider = ({ children }) => {
 
   const value = {
     sortOrder,
-    hideRated,
+    myRatedFilter,
     lowDiffFilter,
     fourVoteFilter,
     sortType,
@@ -95,7 +105,7 @@ export const RatingFilterProvider = ({ children }) => {
     showRaterManagement,
     showHelpPopup,
     setSortOrder,
-    setHideRated,
+    setMyRatedFilter,
     setLowDiffFilter,
     setFourVoteFilter,
     setSortType,

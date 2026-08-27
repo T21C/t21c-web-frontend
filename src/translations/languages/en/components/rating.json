@@ -133,8 +133,8 @@
       },
       "filters": {
         "title": "Available Filters",
-        "hideRated": "Hide Rated",
-        "hideRatedDesc": "Hides levels you have already rated",
+        "myRated": "My Rated",
+        "myRatedDesc": "Show, hide, or show only levels you have already rated",
         "lowDiff": "Low Difficulty",
         "lowDiffDesc": "Filter levels marked as low difficulty",
         "fourVote": "4+ Rated",
