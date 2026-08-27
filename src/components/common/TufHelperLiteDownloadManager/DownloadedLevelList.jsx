@@ -205,7 +205,7 @@ export const DownloadedLevelList = ({
             data={positioned ? undefined : levels}
             totalCount={positioned ? totalCount : undefined}
             fixedItemHeight={positioned ? levelRowHeight : undefined}
-            firstItemIndex={positioned ? undefined : firstItemIndex}
+            firstItemIndex={positioned ? 0 : firstItemIndex}
             computeItemKey={(index, level) => {
               const positionedLevel = positioned ? itemsByIndex.get(index) : level;
               return positionedLevel ? `level-${positionedLevel.id}` : `skeleton-${index}`;
