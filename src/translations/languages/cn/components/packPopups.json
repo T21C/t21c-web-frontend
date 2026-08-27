@@ -15,6 +15,7 @@
     "loginRequired": "请登录以管理你的地图包",
     "levels": "关卡",
     "alreadyInPack": "已在包中",
+    "packFull": "已满",
     "loading": "正在加载地图包……",
     "addToPack": "添加至地图包",
     "lookupInPacks": "在包中查找",

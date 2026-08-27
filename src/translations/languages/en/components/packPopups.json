@@ -15,6 +15,7 @@
     "loginRequired": "Please log in to manage your packs",
     "levels": "levels",
     "alreadyInPack": "Already in pack",
+    "packFull": "Pack full",
     "loading": "Loading packs...",
     "addToPack": "Add to Pack",
     "lookupInPacks": "Find in Packs",
