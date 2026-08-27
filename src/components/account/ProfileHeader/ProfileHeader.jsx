@@ -456,84 +456,17 @@ const ProfileHeader = ({
     config.textAlign,
     layoutWidth,
   );
-  const verticalNameDims = useSvgTextDimensions(
-    displayName,
-    String(overlayNameDx),
-    config.textAlign,
-    layoutWidth,
-  );
 
-  const verticalNameFoRef = useRef(null);
-  const [verticalFoBBox, setVerticalFoBBox] = useState(null);
-
-  useLayoutEffect(() => {
-    if (!isNarrowNameLayout || !showStellarBadge) {
-      setVerticalFoBBox(null);
-      return undefined;
-    }
-    const fo = verticalNameFoRef.current;
-    if (!fo) {
-      setVerticalFoBBox(null);
-      return undefined;
-    }
-    const measure = () => {
-      try {
-        const b = fo.getBBox();
-        setVerticalFoBBox({ x: b.x, y: b.y, width: b.width, height: b.height });
-      } catch {
-        setVerticalFoBBox(null);
-      }
-    };
-    measure();
-    const ro =
-      typeof ResizeObserver !== "undefined"
-        ? new ResizeObserver(() => {
-            requestAnimationFrame(measure);
-          })
-        : null;
-    if (ro) ro.observe(fo);
-    const headerEl = headerRef.current;
-    const headerRo =
-      typeof ResizeObserver !== "undefined" && headerEl
-        ? new ResizeObserver(() => {
-            requestAnimationFrame(measure);
-          })
-        : null;
-    if (headerRo && headerEl) headerRo.observe(headerEl);
-    return () => {
-      ro?.disconnect();
-      headerRo?.disconnect();
-    };
-  }, [
-    isNarrowNameLayout,
-    showStellarBadge,
-    displayName,
-    overlayNameDx,
-    config.textAlign,
-    config.nameXPosition,
-    config.nameYPosition,
-  ]);
-
-  const profileNameTextDimensions = isNarrowNameLayout
-    ? showStellarBadge
-      ? verticalFoBBox
-      : verticalNameDims.dimensions
-    : overlayNameDims.dimensions;
+  const profileNameTextDimensions = overlayNameDims.dimensions;
 
   const stellarIconGroupTransform = useMemo(() => {
     if (profileNameTextDimensions == null) {
       return `translate(${STELLAR_ICON_GAP}, ${STELLAR_ICON_DY}) scale(1.5)`;
     }
-    const { x, y, width, height } = profileNameTextDimensions;
+    const { x, width } = profileNameTextDimensions;
     const tx = x + width + STELLAR_ICON_GAP;
-    const scaledIcon = STELLAR_ICON_SIZE * 1.5;
-    const alignStellarToFoBlock =
-      isNarrowNameLayout && showStellarBadge && profileNameTextDimensions != null;
-    const ty = alignStellarToFoBlock
-      ? y + height / 2 - scaledIcon / 2
-      : STELLAR_ICON_DY;
-    return `translate(${tx}, ${ty}) scale(1.5)`;
-  }, [profileNameTextDimensions, isNarrowNameLayout, showStellarBadge]);
+    return `translate(${tx}, ${STELLAR_ICON_DY}) scale(1.5)`;
+  }, [profileNameTextDimensions]);
 
   return (
     <div className={shellClass}>
@@ -677,79 +610,24 @@ const ProfileHeader = ({
                 </div>
               ) : null}
               <div className="profile-header__name-vertical">
-                <svg className="profile-header__name-svg profile-header__name-svg--vertical" dominantBaseline="hanging">
-                  <g
-                    style={{
-                      transform: `translate(${config.nameXPosition}, ${config.nameYPosition})`,
-                    }}
-                  >
-                    {isNarrowNameLayout && showStellarBadge || true ? (
-                      <>
-                        <foreignObject
-                          ref={verticalNameFoRef}
-                          x="-50%"
-                          y="0"
-                          width="100%"
-                          height="100%"
-                        >
-                          <div
-                            xmlns="http://www.w3.org/1999/xhtml"
-                            style={{
-                              position: "relative",
-                              display: "flex",
-                              textAlign: "center",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              gap: "0.25rem",
-                              width: "100%"
-                            }}
-                            {...nameTooltipProps}
-                          >
-                            <span className="profile-header__name-vertical-fo">
-                            {displayName}
-                            </span>
-                            
-                            {showStellarBadge ? (
-                              <TUFStellarIcon
-                                variant={resolvedStellarVariant}
-                                className="profile-header__stellar-icon vertical"
-                                size={STELLAR_ICON_SIZE*1.25}
-                                color="#fff"
-                                data-tooltip-id={PROFILE_HEADER_STELLAR_TOOLTIP_ID}
-                                style={{ filter: "drop-shadow(0 0 6px rgba(255, 255, 255, 0.2))" }}
-                              />
-                          ) : null}
-                          </div>
-
-                        </foreignObject>
-                        <g
-                          className="profile-header__stellar-hit profile-header__stellar-hit--vertical"
-                          transform={stellarIconGroupTransform}
-                        >
-                          <TUFStellarIcon
-                            svg
-                            variant={resolvedStellarVariant}
-                            className="profile-header__stellar-icon"
-                            size={STELLAR_ICON_SIZE}
-                            color="#fff"
-                            data-tooltip-id={PROFILE_HEADER_STELLAR_TOOLTIP_ID}
-                            style={{ filter: "drop-shadow(0 0 6px rgba(255, 255, 255, 0.2))" }}
-                          />
-                        </g>
-                      </>
-                    ) : (
-                      <text
-                        ref={verticalNameDims.textRef}
-                        dx={overlayNameDx}
-                        className="profile-header__name-svg-text vertical"
-                        textAnchor={config.textAlign}
-                        {...nameTooltipProps}
-                      >
-                        {displayName}
-                      </text>
-                    )}
-                  </g>
-                </svg>
+                <div
+                  className="profile-header__name-vertical-inner"
+                  {...nameTooltipProps}
+                >
+                  <span className="profile-header__name-vertical-fo">
+                    {displayName}
+                  </span>
+                  {showStellarBadge ? (
+                    <TUFStellarIcon
+                      variant={resolvedStellarVariant}
+                      className="profile-header__stellar-icon vertical"
+                      size={STELLAR_ICON_SIZE * 1.25}
+                      color="#fff"
+                      data-tooltip-id={PROFILE_HEADER_STELLAR_TOOLTIP_ID}
+                      style={{ filter: "drop-shadow(0 0 6px rgba(255, 255, 255, 0.2))" }}
+                    />
+                  ) : null}
+                </div>
               </div>
             </div>
 
