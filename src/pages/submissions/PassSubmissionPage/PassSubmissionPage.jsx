@@ -27,6 +27,7 @@ import {
 import { PASS_SUBMISSION_INITIAL_FORM } from './passSubmissionInitialForm';
 import { PassSubmissionCore } from './PassSubmissionCore';
 import { CalculatorIcon } from '@/components/common/icons';
+import CommunityTagVotePopup from '@/pages/common/Level/LevelDetailPage/CommunityTagVotePopup';
 
 const PassSubmissionPage = () => {
   const { t } = useTranslation(['pages', 'common']);
@@ -65,6 +66,7 @@ const PassSubmissionPage = () => {
   });
   const [showRulesPopup, setShowRulesPopup] = useState(false);
   const [showTilecountMismatchModal, setShowTilecountMismatchModal] = useState(false);
+  const [votePopupLevelId, setVotePopupLevelId] = useState(null);
 
   const extraValidation = useCallback(
     ({ form: nextForm }) => ({
@@ -181,11 +183,15 @@ const PassSubmissionPage = () => {
         isAdofaiV2: form.isAdofaiV2,
       };
 
+      const submittedLevelId = form.levelId;
       await submitPass(payload);
       toast.success(t('passSubmission.alert.success'));
       setFormStateKey((prevKey) => prevKey + 1);
       setForm(PASS_SUBMISSION_INITIAL_FORM);
       setSearchInput('');
+      if (submittedLevelId) {
+        setVotePopupLevelId(submittedLevelId);
+      }
     } catch (err) {
       console.error('Submission error:', err);
       const errMsg = getSubmissionErrorMessage(err);
@@ -346,6 +352,14 @@ const PassSubmissionPage = () => {
         />
         </div>
       </div>
+
+      {votePopupLevelId ? (
+        <CommunityTagVotePopup
+          levelId={votePopupLevelId}
+          user={user}
+          onClose={() => setVotePopupLevelId(null)}
+        />
+      ) : null}
 
       {showRulesPopup && <RulePopup setShowRulesPopup={setShowRulesPopup} />}
 

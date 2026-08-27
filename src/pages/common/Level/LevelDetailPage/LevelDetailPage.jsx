@@ -8,7 +8,7 @@ import React, { useEffect, useLayoutEffect, useState, useRef, useCallback, useMe
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Portal } from "@/components/common/Portal";
 import { PORTALED_PANEL_CLASS, usePortaledPanelAnchor } from "@/hooks/usePortaledPanelAnchor";
-import { formatCommunityTagScore, groupTagsByGroup, sortTagsByGroupThenSortOrder } from '@/utils/communityTags';
+import { communityTagHoverTitle, formatCommunityTagScore, groupTagsByGroup, sortTagsByGroupThenSortOrder } from '@/utils/communityTags';
 import TagConfidenceBar from '@/components/common/display/TagConfidenceBar/TagConfidenceBar';
 
 import {
@@ -294,11 +294,7 @@ const TagsDropdown = ({ tags, show, onClose, anchorRef, onVoteClick }) => {
                     "--tag-border-color": tag.color,
                     "--tag-text-color": tag.color,
                   }}
-                  title={
-                    tag.isCommunity && formatCommunityTagScore(tag.score)
-                      ? `${tag.name} (${formatCommunityTagScore(tag.score)})`
-                      : tag.name
-                  }
+                  title={communityTagHoverTitle(tag)}
                 >
                   <span className="tag-chip-icon-wrap">
                     <TagConfidenceBar score={tag.score} show={Boolean(tag.isCommunity)}>
@@ -1003,7 +999,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
   const [showSongPopup, setShowSongPopup] = useState(false);
   const [showArtistPopup, setShowArtistPopup] = useState(false);
 
-  const { difficultyDict, curationTypesDict, difficulties, tags: catalogTags } = useDifficultyContext();
+  const { difficultyDict, curationTypesDict, difficulties, tags: catalogTags, tagsDict } = useDifficultyContext();
   const hasCommunityCatalog = useMemo(
     () => (catalogTags || []).some((tag) => Boolean(tag.isCommunity)),
     [catalogTags],
@@ -2433,7 +2429,18 @@ const LevelDetailPageContent = ({ mockData = null }) => {
 
   const difficulty = difficultyDict[res.level.diffId];
   
-  const tags = sortTagsByGroupThenSortOrder(res.level.tags || []);
+  const tags = sortTagsByGroupThenSortOrder(
+    (res.level.tags || []).map((tag) => {
+      const catalog = tagsDict?.[tag.id];
+      if (!catalog) return tag;
+      return {
+        ...catalog,
+        ...tag,
+        description: tag.description || catalog.description || '',
+      };
+    }),
+  );
+  const chartHasClears = res?.level?.uniqueClears !== 0;
 
   const rerateHistoryAnchorNode = res?.rerateHistory?.length > 0 ? (
     <div ref={rerateHistoryAnchorRef} className="rerate-history-dropdown-anchor">
@@ -2753,7 +2760,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                 )}
                 
                 {/* Tags display */}
-                {(tags.length > 0 || (hasCommunityCatalog && !mockData && !res?.level?.isDeleted)) && (
+                {(tags.length > 0 || (hasCommunityCatalog && !mockData && !res?.level?.isDeleted && chartHasClears)) && (
                   <div
                     ref={tagsAnchorRef}
                     className="level-tags-container"
@@ -2782,11 +2789,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                             '--tag-index': index
                           }}
                           data-letter-only={!tag.icon}
-                          title={
-                            tag.isCommunity && formatCommunityTagScore(tag.score)
-                              ? `${tag.name} (${formatCommunityTagScore(tag.score)})`
-                              : tag.name
-                          }
+                          title={communityTagHoverTitle(tag)}
                         >
                           <TagConfidenceBar score={tag.score} show={Boolean(tag.isCommunity)}>
                             {tag.icon ? (
@@ -2808,7 +2811,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                       onClose={handleDropdownClose}
                       anchorRef={tagsAnchorRef}
                       onVoteClick={
-                        hasCommunityCatalog && !mockData && !res?.level?.isDeleted
+                        hasCommunityCatalog && !mockData && !res?.level?.isDeleted && chartHasClears
                           ? handleCommunityTagVoteOpen
                           : undefined
                       }

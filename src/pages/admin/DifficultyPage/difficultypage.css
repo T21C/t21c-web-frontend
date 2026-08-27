@@ -519,8 +519,46 @@
   margin: 0;
 }
 
+.difficulty-page .form-section-split {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.difficulty-page .form-section-split::before,
+.difficulty-page .form-section-split::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background-color: var(--color-white-t20);
+}
+
+.difficulty-page .form-section-split-label {
+  flex-shrink: 0;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-white-t60);
+}
+
+.difficulty-page .form-assignment-fields {
+  display: flex;
+  flex-direction: column;
+  transition: opacity 0.2s;
+}
+
+.difficulty-page .form-assignment-fields.is-inactive {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
 .difficulty-page .form-group input[type="text"],
-.difficulty-page .form-group input[type="file"] {
+.difficulty-page .form-group input[type="number"],
+.difficulty-page .form-group input[type="file"],
+.difficulty-page .form-group textarea,
+.difficulty-page .form-group select {
   width: 100%;
   padding: 0.5rem;
   margin-top: 0.5rem;
@@ -532,10 +570,79 @@
 }
 
 .difficulty-page .form-group input[type="text"]:focus,
-.difficulty-page .form-group input[type="file"]:focus {
+.difficulty-page .form-group input[type="number"]:focus,
+.difficulty-page .form-group input[type="file"]:focus,
+.difficulty-page .form-group textarea:focus,
+.difficulty-page .form-group select:focus {
   outline: none;
   border-color: rgba(255, 255, 255, 0.4);
   background-color: var(--color-white-t15);
+}
+
+.difficulty-page .form-group textarea {
+  min-height: 4.5rem;
+  resize: vertical;
+}
+
+.difficulty-page .form-group .custom-select-container {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.difficulty-page .form-hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-white-t60);
+}
+
+.difficulty-page .form-group-label-with-info {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.difficulty-page .form-info-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-white-t60);
+  cursor: help;
+  line-height: 0;
+}
+
+.difficulty-page .form-info-button:hover {
+  color: var(--color-white);
+}
+
+.difficulty-page .form-group-label-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.difficulty-page .form-group-label-row .form-hint {
+  flex-shrink: 0;
+}
+
+.difficulty-page .form-group-bands {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.difficulty-page .form-group-band {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.difficulty-page .form-group-band input[type="checkbox"] {
+  width: auto;
+  margin: 0;
 }
 
 .difficulty-page .form-group input[type="color"] {

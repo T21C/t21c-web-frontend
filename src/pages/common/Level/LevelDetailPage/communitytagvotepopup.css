@@ -45,6 +45,15 @@
   color: var(--color-white);
 }
 
+.community-tag-vote-popup .community-tag-vote-popup__banner {
+  margin: 0;
+  padding: 0.5rem 0.65rem;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--btn-warning) 18%, transparent);
+  color: var(--color-white);
+  font-size: 0.85rem;
+}
+
 .community-tag-vote-popup .community-tag-vote-popup__search {
   width: 100%;
   padding: 0.55rem 0.65rem;
@@ -98,7 +107,6 @@
   border-radius: 4px;
   background: var(--tag-bg-color, var(--color-white-t5));
   color: var(--color-white);
-  cursor: pointer;
   text-align: left;
   font-size: 0.9rem;
   opacity: 0.45;
@@ -108,18 +116,14 @@
   opacity: 1;
 }
 
-.community-tag-vote-popup .community-tag-vote-popup__item.available:hover {
+.community-tag-vote-popup .community-tag-vote-popup__item.upvoted {
   background: var(--btn-success-tint);
   border-color: var(--btn-success);
 }
 
-.community-tag-vote-popup .community-tag-vote-popup__item.voted {
-  background: var(--btn-success-tint);
-  border-color: var(--btn-success);
-}
-
-.community-tag-vote-popup .community-tag-vote-popup__item:disabled {
-  cursor: not-allowed;
+.community-tag-vote-popup .community-tag-vote-popup__item.downvoted {
+  background: color-mix(in srgb, var(--btn-danger) 22%, transparent);
+  border-color: var(--btn-danger);
 }
 
 .community-tag-vote-popup .community-tag-vote-popup__icon {
@@ -155,4 +159,42 @@
   font-size: 0.78rem;
   font-weight: 600;
   color: var(--btn-success);
+}
+
+.community-tag-vote-popup .community-tag-vote-popup__votes {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+.community-tag-vote-popup .community-tag-vote-popup__vote {
+  width: 1.7rem;
+  height: 1.7rem;
+  padding: 0;
+  border-radius: 4px;
+  border: 1px solid var(--color-white-t20);
+  background: var(--color-white-t10);
+  color: var(--color-white);
+  cursor: pointer;
+  font-size: 0.7rem;
+  line-height: 1;
+}
+
+.community-tag-vote-popup .community-tag-vote-popup__vote:disabled {
+  cursor: not-allowed;
+}
+
+.community-tag-vote-popup .community-tag-vote-popup__vote--up:hover:not(:disabled),
+.community-tag-vote-popup .community-tag-vote-popup__vote--up.active {
+  background: var(--btn-success-tint);
+  border-color: var(--btn-success);
+  color: var(--btn-success);
+}
+
+.community-tag-vote-popup .community-tag-vote-popup__vote--down:hover:not(:disabled),
+.community-tag-vote-popup .community-tag-vote-popup__vote--down.active {
+  background: color-mix(in srgb, var(--btn-danger) 22%, transparent);
+  border-color: var(--btn-danger);
+  color: var(--btn-danger);
 }

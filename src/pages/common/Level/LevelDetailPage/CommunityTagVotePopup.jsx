@@ -9,8 +9,7 @@ import TagConfidenceBar from '@/components/common/display/TagConfidenceBar/TagCo
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import api from '@/utils/api';
 import { routes } from '@/api/routes';
-import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
-import { formatCommunityTagScore, groupTagsByGroup } from '@/utils/communityTags';
+import { communityTagHoverTitle, formatCommunityTagScore, groupTagsByGroup } from '@/utils/communityTags';
 import './communitytagvotepopup.css';
 
 export default function CommunityTagVotePopup({
@@ -22,13 +21,11 @@ export default function CommunityTagVotePopup({
 }) {
   const { t } = useTranslation(['pages', 'common', 'components']);
   const [tags, setTags] = useState([]);
+  const [chartCleared, setChartCleared] = useState(true);
   const [search, setSearch] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isVoting, setIsVoting] = useState(false);
 
-  const isBanned =
-    hasFlag(user, permissionFlags.TAG_VOTE_BANNED) || Boolean(user?.isTagVoteBanned);
-  const canVote = Boolean(user) && !isBanned && !disabled;
   const tooltipId = `community-tag-vote-popup-${levelId}`;
 
   useBodyScrollLock(true);
@@ -47,6 +44,7 @@ export default function CommunityTagVotePopup({
     try {
       const response = await api.get(routes.database.levels.communityTags(levelId));
       setTags(response.data?.tags || []);
+      setChartCleared(response.data?.chartCleared !== false);
     } catch (error) {
       console.error('Error fetching community tags:', error);
       toast.error(t('errors.generic', { ns: 'common' }));
@@ -54,7 +52,7 @@ export default function CommunityTagVotePopup({
     } finally {
       setIsLoading(false);
     }
-  }, [levelId]);
+  }, [levelId, t]);
 
   useEffect(() => {
     loadTags();
@@ -63,36 +61,76 @@ export default function CommunityTagVotePopup({
   const filteredTags = useMemo(() => {
     const q = search.toLowerCase().trim();
     if (!q) return tags;
-    return tags.filter((tag) => String(tag.name || '').toLowerCase().includes(q));
+    return tags.filter((tag) => {
+      const name = String(tag.name || '').toLowerCase();
+      const description = String(tag.description || '').toLowerCase();
+      return name.includes(q) || description.includes(q);
+    });
   }, [tags, search]);
 
   const groups = useMemo(() => groupTagsByGroup(filteredTags), [filteredTags]);
 
-  const handleVote = async (tag) => {
-    if (!canVote || isVoting) return;
+  const blockReasonLabel = (reason) => {
+    if (!reason) return '';
+    const reasonKeys = {
+      login: 'loginRequired',
+      banned: 'banned',
+      uncleared: 'uncleared',
+      topPlay: 'topPlay',
+      mustClear: 'mustClear',
+      band: 'band',
+      deleted: 'deleted',
+    };
+    const suffix = reasonKeys[reason] || reason;
+    const key = `levelDetail.tags.vote.${suffix}`;
+    const translated = t(key);
+    return translated === key ? t('levelDetail.tags.vote.failed') : translated;
+  };
+
+  const voteButtonTooltip = (tag, direction) => {
+    if (disabled) return t('levelDetail.tags.vote.deleted');
+    if (tag.voteBlockReason) return blockReasonLabel(tag.voteBlockReason);
+    if (tag.voteDirection === direction) return t('levelDetail.tags.vote.unvote');
+    return direction === 1
+      ? t('levelDetail.tags.vote.upvote')
+      : t('levelDetail.tags.vote.downvote');
+  };
+
+  const handleVote = async (tag, requestedAction) => {
+    if (!tag.canVote || isVoting || disabled) return;
+    const current = tag.voteDirection;
+    let action = requestedAction;
+    if (requestedAction === 'upvote' && current === 1) action = 'unvote';
+    if (requestedAction === 'downvote' && current === -1) action = 'unvote';
     setIsVoting(true);
-    const action = tag.voted ? 'unvote' : 'vote';
     try {
       const response = await api.put(
         routes.database.levels.communityTagVote(levelId, tag.id),
         { action },
       );
       setTags(response.data?.tags || []);
-      toast.success(
-        action === 'vote'
-          ? t('levelDetail.tags.vote.voted', { tag: tag.name })
-          : t('levelDetail.tags.vote.unvoted', { tag: tag.name }),
-      );
+      if (typeof response.data?.chartCleared === 'boolean') {
+        setChartCleared(response.data.chartCleared);
+      }
+      const toastKey =
+        action === 'upvote'
+          ? 'levelDetail.tags.vote.upvoted'
+          : action === 'downvote'
+            ? 'levelDetail.tags.vote.downvoted'
+            : 'levelDetail.tags.vote.unvoted';
+      toast.success(t(toastKey, { tag: tag.name }));
       if (onAssignedTagsChange) {
         const assignedResponse = await api.get(routes.database.difficulties.levelTags(levelId));
         onAssignedTagsChange(assignedResponse.data || []);
       }
     } catch (error) {
       console.error('Error toggling community tag vote:', error);
-      const status = error.response?.status;
-      if (status === 401) {
+      const reason = error.response?.data?.reason;
+      if (reason) {
+        toast.error(blockReasonLabel(reason));
+      } else if (error.response?.status === 401) {
         toast.error(t('levelDetail.tags.vote.loginRequired'));
-      } else if (status === 403) {
+      } else if (error.response?.status === 403) {
         toast.error(t('levelDetail.tags.vote.banned'));
       } else {
         toast.error(t('levelDetail.tags.vote.failed'));
@@ -100,12 +138,6 @@ export default function CommunityTagVotePopup({
     } finally {
       setIsVoting(false);
     }
-  };
-
-  const itemTooltip = (tag) => {
-    if (!user) return t('levelDetail.tags.vote.loginRequired');
-    if (isBanned) return t('levelDetail.tags.vote.banned');
-    return tag.voted ? t('levelDetail.tags.vote.unvote') : t('levelDetail.tags.vote.vote');
   };
 
   return (
@@ -141,6 +173,11 @@ export default function CommunityTagVotePopup({
               aria-label={t('buttons.close', { ns: 'common' })}
             />
           </div>
+          {!chartCleared ? (
+            <p className="community-tag-vote-popup__banner">
+              {t('levelDetail.tags.vote.uncleared')}
+            </p>
+          ) : null}
           <input
             type="search"
             className="community-tag-vote-popup__search"
@@ -166,23 +203,21 @@ export default function CommunityTagVotePopup({
                   <div className="community-tag-vote-popup__list">
                     {group.tags.map((tag) => {
                       const scoreLabel = formatCommunityTagScore(tag.score);
+                      const canVote = Boolean(tag.canVote) && !disabled && !isVoting;
                       return (
-                        <button
+                        <div
                           key={tag.id}
-                          type="button"
-                          data-tooltip-id={tooltipId}
-                          data-tooltip-content={itemTooltip(tag)}
-                          className={`community-tag-vote-popup__item${canVote ? ' available' : ''}${tag.voted ? ' voted' : ''}`}
+                          className={`community-tag-vote-popup__item${canVote ? ' available' : ''}${tag.voteDirection === 1 ? ' upvoted' : ''}${tag.voteDirection === -1 ? ' downvoted' : ''}`}
                           style={{
                             '--tag-bg-color': `${tag.color}40`,
                             '--tag-border-color': tag.color,
                             '--tag-text-color': tag.color,
                           }}
-                          disabled={!canVote || isVoting}
-                          aria-pressed={Boolean(tag.voted)}
-                          onClick={() => handleVote(tag)}
                         >
-                          <span className="community-tag-vote-popup__icon">
+                          <span
+                            className="community-tag-vote-popup__icon"
+                            title={communityTagHoverTitle(tag)}
+                          >
                             <TagConfidenceBar score={tag.score} show>
                               {tag.icon ? (
                                 <img src={tag.icon} alt="" />
@@ -193,11 +228,42 @@ export default function CommunityTagVotePopup({
                               )}
                             </TagConfidenceBar>
                           </span>
-                          <span className="community-tag-vote-popup__name">{tag.name}</span>
+                          <span
+                            className="community-tag-vote-popup__name"
+                            title={communityTagHoverTitle(tag)}
+                          >
+                            {tag.name}
+                          </span>
                           {scoreLabel ? (
                             <span className="community-tag-vote-popup__score">{scoreLabel}</span>
                           ) : null}
-                        </button>
+                          <div className="community-tag-vote-popup__votes">
+                            <button
+                              type="button"
+                              className={`community-tag-vote-popup__vote community-tag-vote-popup__vote--up${tag.voteDirection === 1 ? ' active' : ''}`}
+                              data-tooltip-id={tooltipId}
+                              data-tooltip-content={voteButtonTooltip(tag, 1)}
+                              disabled={!canVote}
+                              aria-pressed={tag.voteDirection === 1}
+                              aria-label={t('levelDetail.tags.vote.upvote')}
+                              onClick={() => handleVote(tag, 'upvote')}
+                            >
+                              ▲
+                            </button>
+                            <button
+                              type="button"
+                              className={`community-tag-vote-popup__vote community-tag-vote-popup__vote--down${tag.voteDirection === -1 ? ' active' : ''}`}
+                              data-tooltip-id={tooltipId}
+                              data-tooltip-content={voteButtonTooltip(tag, -1)}
+                              disabled={!canVote}
+                              aria-pressed={tag.voteDirection === -1}
+                              aria-label={t('levelDetail.tags.vote.downvote')}
+                              onClick={() => handleVote(tag, 'downvote')}
+                            >
+                              ▼
+                            </button>
+                          </div>
+                        </div>
                       );
                     })}
                   </div>

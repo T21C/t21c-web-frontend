@@ -101,12 +101,21 @@
       "header": "Tagi społeczności",
       "open": "Głosuj",
       "vote": "Zagłosuj na ten tag",
+      "upvote": "Zagłosuj za tym tagiem",
+      "downvote": "Zagłosuj przeciw temu tagowi",
       "unvote": "Usuń głos",
       "voted": "Zagłosowano na {{tag}}",
+      "upvoted": "Oddano głos za {{tag}}",
+      "downvoted": "Oddano głos przeciw {{tag}}",
       "unvoted": "Usunięto głos z {{tag}}",
       "failed": "Nie udało się zaktualizować głosu",
       "loginRequired": "Zaloguj się, aby głosować na tagi społeczności",
-      "banned": "Nie możesz głosować na tagi społeczności"
+      "banned": "Nie możesz głosować na tagi społeczności",
+      "topPlay": "Twój najwyższy clear jest zbyt niski, aby głosować na ten poziom",
+      "mustClear": "Musisz ukończyć ten poziom, aby głosować na ten tag",
+      "uncleared": "Tagi społeczności są dostępne po pierwszym clearze",
+      "band": "Ten tag nie jest dostępny dla tej trudności",
+      "deleted": "Nie można głosować na usunięty poziom"
     }
   }
 } 

@@ -115,6 +115,23 @@
     "noTags": "No tags found. Create your first tag!",
     "ungrouped": "Ungrouped",
     "tagCount": "{{count}} tag{{plural}}",
+    "fields": {
+      "description": "Description",
+      "assignmentSection": "Tag assignment",
+      "inherit": "Inherit",
+      "scoringMode": "Scoring mode",
+      "modeWilson": "Wilson (top play + 1)",
+      "modeSkillset": "Skillset (clearers only)",
+      "wilsonZ": "Wilson Z",
+      "wilsonZHint": "How skeptical scoring is of small vote counts. Higher Z needs more agreeing votes to hit the same thresholds.",
+      "wilsonZWeightHint": "Non-clearer votes count as 0.1x of clearer's",
+      "wilsonZInfoAria": "Vote weight for non-clearers",
+      "scoreOn": "Assign threshold",
+      "scoreOff": "Remove threshold",
+      "reqVotes": "Req. votes: {{count}}",
+      "allowedBands": "Difficulty bands",
+      "allowedBandsHint": "Leave all unchecked to inherit. P / G / U / SPEC restrict community voting to those bands."
+    },
     "create": {
       "title": "Create Tag",
       "name": "Name",
