@@ -286,12 +286,14 @@ export const TufHelperLiteDownloadManager = ({
       }
 
       const nextState = String(field(snapshot, 'UpdateState') || 'up_to_date').toLowerCase();
+      const updateStateExpiresAtUtc = field(snapshot, 'UpdateStateExpiresAtUtc') || null;
       setUpdateStates((current) => ({
         ...current,
-        [level.id]: { state: nextState, progress: 1 },
+        [level.id]: { state: nextState, progress: 1, updateStateExpiresAtUtc },
       }));
       patchLevel(level.id, {
         updateState: nextState,
+        updateStateExpiresAtUtc,
         levelName: field(snapshot, 'Song') || level.levelName,
         artist: field(snapshot, 'Artist') || level.artist,
         creator: field(snapshot, 'Creator') || level.creator,

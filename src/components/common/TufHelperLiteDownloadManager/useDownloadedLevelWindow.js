@@ -22,6 +22,7 @@ const normalizeItem = (item) => ({
   downloadedAtUtc: field(item, 'DownloadedAtUtc') || null,
   metadataState: String(field(item, 'MetadataState') || 'partial').toLowerCase(),
   updateState: String(field(item, 'UpdateState') || 'idle').toLowerCase(),
+  updateStateExpiresAtUtc: field(item, 'UpdateStateExpiresAtUtc') || null,
 });
 
 const normalizePage = (value, request = { cursor: null, direction: 'next' }) => {

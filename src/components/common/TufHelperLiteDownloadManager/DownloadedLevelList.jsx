@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import MarqueeText from '@/components/common/display/MarqueeText/MarqueeText';
@@ -23,6 +23,23 @@ const UPDATE_LABEL_KEYS = {
 const MOBILE_LEVEL_ROW_QUERY = '(max-width: 700px)';
 const DESKTOP_LEVEL_ROW_HEIGHT = 84;
 const MOBILE_LEVEL_ROW_HEIGHT = 184;
+const MAX_TIMEOUT_DELAY = 2_147_483_647;
+
+const parseExpiry = (value) => {
+  if (!value) return null;
+  const timestamp = Date.parse(value);
+  return Number.isFinite(timestamp) ? timestamp : null;
+};
+
+const getUpdateStatus = (level, updateStates, now) => {
+  const override = updateStates[level.id];
+  const status = override || { state: level.updateState || 'idle' };
+  const expiry = parseExpiry(override?.updateStateExpiresAtUtc ?? level.updateStateExpiresAtUtc);
+  if (status.state === 'up_to_date' && expiry !== null && now >= expiry) {
+    return { ...status, state: 'idle' };
+  }
+  return status;
+};
 
 const useLevelRowHeight = () => {
   const [mobile, setMobile] = useState(() => (
@@ -98,11 +115,28 @@ export const DownloadedLevelList = ({
 }) => {
   const { difficultyDict, loading: difficultiesLoading } = useDifficultyContext();
   const levelRowHeight = useLevelRowHeight();
+  const [expiryNow, setExpiryNow] = useState(() => Date.now());
+  const nearestExpiry = useMemo(() => levels.reduce((nearest, level) => {
+    const override = updateStates[level.id];
+    const state = override?.state || level.updateState || 'idle';
+    if (state !== 'up_to_date') return nearest;
+    const expiry = parseExpiry(override?.updateStateExpiresAtUtc ?? level.updateStateExpiresAtUtc);
+    if (expiry === null || expiry <= expiryNow) return nearest;
+    return nearest === null ? expiry : Math.min(nearest, expiry);
+  }, null), [expiryNow, levels, updateStates]);
+
+  useEffect(() => {
+    if (nearestExpiry === null) return undefined;
+    const delay = Math.min(MAX_TIMEOUT_DELAY, Math.max(0, nearestExpiry - Date.now()) + 10);
+    const timer = window.setTimeout(() => setExpiryNow(Date.now()), delay);
+    return () => window.clearTimeout(timer);
+  }, [nearestExpiry]);
+
   const difficultiesReady = !difficultiesLoading && levels.every((level) => difficultyDict[level.diffId]?.icon);
   const isEmpty = positioned ? totalCount === 0 : levels.length === 0;
   const renderRow = (_virtualIndex, level) => {
     const difficulty = difficultyDict[level.diffId];
-    const updateStatus = updateStates[level.id] || { state: level.updateState || 'idle' };
+    const updateStatus = getUpdateStatus(level, updateStates, expiryNow);
     const updateState = updateStatus.state || 'idle';
     const labelKey = updateState === 'checking' && updateStatus.stage === 'downloading'
       ? 'downloadingToCompare'
