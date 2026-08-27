@@ -109,7 +109,7 @@
 
 .pack-item__info {
   flex: 1;
-  min-width: 0;
+  min-width: 6rem;
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
@@ -168,6 +168,7 @@
   font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
+  min-width: 3rem;
   text-overflow: ellipsis;
 }
 

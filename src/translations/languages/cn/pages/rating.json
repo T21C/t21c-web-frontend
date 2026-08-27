@@ -15,8 +15,8 @@
     "detailedView": {
       "label": "详细视图"
     },
-    "hideRated": {
-      "label": "隐藏已评级关卡"
+    "myRated": {
+      "label": "我的评级"
     },
     "lowDiff": {
       "label": "低难度"
@@ -94,8 +94,8 @@
       "discard": "放弃并重新开始",
       "deckSize": "本次评级关卡数量",
       "peekHint": "每 5 个关卡有 1 次查看机会",
-      "onlyLowDiff": "仅P级关卡",
-      "excludeUniversals": "不看U级关卡",
+      "requestBands": "隐藏申请",
+      "requestBandsHint": "勾选则不加入该申请类型",
       "sort": "优先级",
       "sortLeast": "最新评级优先",
       "sortMost": "最多评级优先",

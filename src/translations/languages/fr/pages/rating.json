@@ -11,8 +11,8 @@
     "detailedView": {
       "label": "Mode détaillé"
     },
-    "hideRated": {
-      "label": "Cacher évalués"
+    "myRated": {
+      "label": "Mes évalués"
     },
     "rankReady": {
       "label": "Prêt à classer"

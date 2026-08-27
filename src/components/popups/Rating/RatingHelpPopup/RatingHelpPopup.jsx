@@ -92,7 +92,7 @@ export const RatingHelpPopup = ({ onClose }) => {
           <section>
             <h3>{t('rating.helpPopup.sections.filters.title')}</h3>
             <ul>
-              <li><strong>{t('rating.helpPopup.sections.filters.hideRated')}:</strong> {t('rating.helpPopup.sections.filters.hideRatedDesc')}</li>
+              <li><strong>{t('rating.helpPopup.sections.filters.myRated')}:</strong> {t('rating.helpPopup.sections.filters.myRatedDesc')}</li>
               <li><strong>{t('rating.helpPopup.sections.filters.lowDiff')}:</strong> {t('rating.helpPopup.sections.filters.lowDiffDesc')}</li>
               <li><strong>{t('rating.helpPopup.sections.filters.fourVote')}:</strong> {t('rating.helpPopup.sections.filters.fourVoteDesc')}</li>
             </ul>

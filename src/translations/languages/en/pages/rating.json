@@ -15,8 +15,8 @@
     "detailedView": {
       "label": "Detailed View"
     },
-    "hideRated": {
-      "label": "Hide Rated"
+    "myRated": {
+      "label": "My Rated"
     },
     "lowDiff": {
       "label": "Low Difficulty"
@@ -94,8 +94,8 @@
       "discard": "Discard & new",
       "deckSize": "Deck size",
       "peekHint": "1 peek per 5 cards",
-      "onlyLowDiff": "Only P's",
-      "excludeUniversals": "Exclude U's",
+      "requestBands": "Hide requested",
+      "requestBandsHint": "Check to leave that request type out of the deck",
       "sort": "Priority",
       "sortLeast": "Least rated first",
       "sortMost": "Most rated first",

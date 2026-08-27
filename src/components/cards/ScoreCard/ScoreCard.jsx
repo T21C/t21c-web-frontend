@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import "./scorecard.css"
 import "@/index.css"
 import { useTranslation } from "react-i18next";
-import { clampFloat, formatScore, formatPassDate, formatCreatorDisplay, normalizeKeyCount } from "@/utils/Utility"
+import { clampFloat, formatScore, formatPassDate, formatCreatorDisplay, getPassKeycountBadgeType, getPassKeycountBadgeValue } from "@/utils/Utility"
 import { formatNumber } from "@/utils";
 import { formatAccuracyRatio } from "@/utils/statFormatters";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
@@ -34,20 +34,34 @@ const Judgements = ({judgements}) => {
   );
 };
 
-const PassFlags = ({ pass, t }) => (
-  <div className="flags-wrapper">
-    {normalizeKeyCount(pass.keyCount) != null ? (
-      <div className="flag">{t('cards.pass.flags.keyCount', { count: normalizeKeyCount(pass.keyCount) })}</div>
-    ) : (
-      <>
-        {pass.is12K && <div className="flag">{t('cards.pass.flags.twelveKey')}</div>}
-        {pass.is16K && <div className="flag">{t('cards.pass.flags.sixteenKey')}</div>}
-      </>
-    )}
-    {pass.isNoHoldTap && <div className="flag">{t('cards.pass.flags.noHoldTap')}</div>}
-    {pass.isAdofaiV2 && <PassAdofaiV2Flag className="flag flag--adofai-v2" />}
-  </div>
-);
+const keyCountFlagLabel = (pass, t) => {
+  const type = getPassKeycountBadgeType(pass);
+  if (type === 'keyCount') {
+    return t('cards.pass.flags.keyCount', { count: getPassKeycountBadgeValue(pass) });
+  }
+  if (type === '16k') {
+    return t('cards.pass.flags.sixteenKey');
+  }
+  if (type === '12k') {
+    return t('cards.pass.flags.twelveKey');
+  }
+  return null;
+};
+
+const PassFlags = ({ pass, t }) => {
+  const keyCountLabel = keyCountFlagLabel(pass, t);
+  if (!keyCountLabel && !pass.isNoHoldTap && !pass.isAdofaiV2) {
+    return null;
+  }
+
+  return (
+    <div className="flags-wrapper">
+      {keyCountLabel ? <div className="flag">{keyCountLabel}</div> : null}
+      {pass.isNoHoldTap && <div className="flag">{t('cards.pass.flags.noHoldTap')}</div>}
+      {pass.isAdofaiV2 && <PassAdofaiV2Flag className="flag flag--adofai-v2" />}
+    </div>
+  );
+};
 
 // eslint-disable-next-line react/prop-types
 const ScoreCard = ({ scoreData, topScores = [], potentialTopScores = [], mode = 'profile' }) => {
@@ -179,7 +193,7 @@ const ScoreCard = ({ scoreData, topScores = [], potentialTopScores = [], mode = 
       {scoreBlock}
       {accuracyBlock}
       {speedBlock}
-      {isPassCardMode && !isFeaturedMode && <PassFlags pass={scoreData} t={t} />}
+      <PassFlags pass={scoreData} t={t} />
       {!isFeaturedMode && (formattedDate || (scoreData.videoLink && !isHiddenLevel)) && (
         <div className="score-card__trailing">
           {formattedDate && (

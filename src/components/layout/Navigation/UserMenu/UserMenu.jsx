@@ -1,6 +1,6 @@
 // tuf-search: #UserMenu #userMenu #layout #navigation
 import React, { useEffect, useRef } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { UserAvatar } from "@/components/layout";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
@@ -14,21 +14,20 @@ import { NavDropdownPanel, NavMenuItems } from "../NavDropdown/NavDropdown";
 import "./userMenu.css";
 import { useTranslation } from "react-i18next";
 
-const USER_PARENT_TO = "/profile";
-
 const UserMenu = ({ isActive }) => {
   const { t } = useTranslation("components");
   const { user, logout } = useAuth();
   const location = useLocation();
   const isFinePointer = useFinePointer();
   const reducedMotion = useSubmissionMinimalMotion();
-  const menu = useNavHoverMenu({
-    reducedMotion,
-    enabled: isFinePointer,
-  });
   const rootRef = useRef(null);
   const triggerRef = useRef(null);
   const panelRef = useRef(null);
+  const menu = useNavHoverMenu({
+    reducedMotion,
+    enabled: isFinePointer,
+    rootRef,
+  });
 
   useEffect(() => {
     menu.closeNow();
@@ -68,15 +67,9 @@ const UserMenu = ({ isActive }) => {
     }
     if (event.key === "Escape") {
       event.preventDefault();
-      menu.close();
+      menu.dismiss();
       triggerRef.current?.focus();
     }
-  };
-
-  const handleRootBlur = (event) => {
-    const next = event.relatedTarget;
-    if (rootRef.current && next && rootRef.current.contains(next)) return;
-    menu.close();
   };
 
   return (
@@ -88,19 +81,20 @@ const UserMenu = ({ isActive }) => {
         <InboxBell />
       </div>
       <div
-        className="nav-dropdown"
+        className={`nav-dropdown ${menu.isPinned ? "pinned" : ""}`}
         ref={rootRef}
         onMouseEnter={menu.scheduleOpen}
         onMouseLeave={menu.scheduleClose}
-        onBlur={handleRootBlur}
+        onBlur={menu.handleRootBlur}
       >
-        <NavLink
+        <button
           ref={triggerRef}
-          to={USER_PARENT_TO}
+          type="button"
           className={`nav-user-button ${hasActiveItem ? "active" : ""}`}
           aria-expanded={menu.isOpen}
           aria-haspopup="menu"
           aria-controls={menu.panelId}
+          onClick={menu.handleTriggerClick}
           onFocus={() => {
             if (isFinePointer) menu.open();
           }}
@@ -120,7 +114,7 @@ const UserMenu = ({ isActive }) => {
             color="#fffb"
             size={16}
           />
-        </NavLink>
+        </button>
         {menu.isVisible && (
           <NavDropdownPanel
             id={menu.panelId}

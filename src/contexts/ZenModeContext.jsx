@@ -20,8 +20,9 @@ export const DEFAULT_RANDOMNESS = 40;
  * @typedef {object} ZenSession
  * @property {ZenPhase} phase
  * @property {number} deckSize
- * @property {boolean} onlyLowDiff
- * @property {boolean} excludeUniversals
+ * @property {boolean} includeP
+ * @property {boolean} includeG
+ * @property {boolean} includeU
  * @property {string} sortPreset
  * @property {number} randomness
  * @property {array} cards
@@ -44,8 +45,9 @@ export function createDefaultZenSession() {
   return {
     phase: 'setup',
     deckSize: DEFAULT_DECK_SIZE,
-    onlyLowDiff: false,
-    excludeUniversals: false,
+    includeP: true,
+    includeG: true,
+    includeU: true,
     sortPreset: 'least',
     randomness: DEFAULT_RANDOMNESS,
     cards: [],
@@ -68,6 +70,27 @@ function isValidPhase(phase) {
   return phase === 'setup' || phase === 'stage' || phase === 'done';
 }
 
+function includeBandsFromParsed(parsed) {
+  if (
+    typeof parsed.includeP === 'boolean' ||
+    typeof parsed.includeG === 'boolean' ||
+    typeof parsed.includeU === 'boolean'
+  ) {
+    return {
+      includeP: parsed.includeP !== false,
+      includeG: parsed.includeG !== false,
+      includeU: parsed.includeU !== false,
+    };
+  }
+  if (parsed.onlyLowDiff) {
+    return { includeP: true, includeG: false, includeU: false };
+  }
+  if (parsed.excludeUniversals) {
+    return { includeP: true, includeG: true, includeU: false };
+  }
+  return { includeP: true, includeG: true, includeU: true };
+}
+
 /** @returns {ZenSession} */
 function readStoredSession() {
   try {
@@ -76,7 +99,10 @@ function readStoredSession() {
     const parsed = JSON.parse(raw);
     if (!parsed || typeof parsed !== 'object') return createDefaultZenSession();
     const base = createDefaultZenSession();
-    const next = { ...base, ...parsed };
+    const next = { ...base, ...parsed, ...includeBandsFromParsed(parsed) };
+    delete next.onlyLowDiff;
+    delete next.excludeUniversals;
+    delete next.hideRequestedRating;
     if (!isValidPhase(next.phase)) next.phase = 'setup';
     if (!Array.isArray(next.cards)) next.cards = [];
     if (!Array.isArray(next.cardOutcomes)) next.cardOutcomes = [];
@@ -147,8 +173,9 @@ export function ZenModeProvider({ children }) {
     setSession((prev) => ({
       ...createDefaultZenSession(),
       deckSize: prev.deckSize,
-      onlyLowDiff: prev.onlyLowDiff,
-      excludeUniversals: prev.excludeUniversals,
+      includeP: prev.includeP,
+      includeG: prev.includeG,
+      includeU: prev.includeU,
       sortPreset: prev.sortPreset,
       randomness: prev.randomness,
       phase: 'setup',

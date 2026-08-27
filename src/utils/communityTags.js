@@ -100,6 +100,5 @@ export function selectLevelCardDisplayTags(tags = [], cap = COMMUNITY_TAG_CARD_C
 
   unpinnedCommunity.sort(compareScoreThenSortOrder);
   const limitedUnpinned = unpinnedCommunity.slice(0, Math.max(0, cap));
-  const communityVisible = [...pinnedCommunity, ...limitedUnpinned].sort(compareScoreThenSortOrder);
-  return [...nonCommunity, ...communityVisible];
+  return [...nonCommunity, ...pinnedCommunity, ...limitedUnpinned].sort(compareSerializedTagOrder);
 }

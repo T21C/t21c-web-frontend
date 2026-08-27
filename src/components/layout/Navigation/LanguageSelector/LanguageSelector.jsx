@@ -69,13 +69,14 @@ const LanguageSelector = ({
   const [languages, setLanguages] = useState(DEFAULT_LANGUAGES);
   const isFinePointer = useFinePointer();
   const reducedMotion = useSubmissionMinimalMotion();
-  const menu = useNavHoverMenu({
-    reducedMotion,
-    enabled: variant === "desktop" && isFinePointer,
-  });
   const rootRef = useRef(null);
   const triggerRef = useRef(null);
   const panelRef = useRef(null);
+  const menu = useNavHoverMenu({
+    reducedMotion,
+    enabled: variant === "desktop" && isFinePointer,
+    rootRef,
+  });
   const language = normalizeLanguage(i18n.resolvedLanguage || i18n.language);
 
   useEffect(() => {
@@ -181,29 +182,18 @@ const LanguageSelector = ({
     }
     if (event.key === "Escape") {
       event.preventDefault();
-      menu.close();
+      menu.dismiss();
       triggerRef.current?.focus();
     }
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      if (menu.isOpen) menu.close();
-      else menu.open();
-    }
-  };
-
-  const handleRootBlur = (event) => {
-    const next = event.relatedTarget;
-    if (rootRef.current && next && rootRef.current.contains(next)) return;
-    menu.close();
   };
 
   return (
     <div
-      className={`nav-language-selector nav-dropdown ${menu.isOpen ? "open" : ""}`}
+      className={`nav-language-selector nav-dropdown ${menu.isOpen ? "open" : ""} ${menu.isPinned ? "pinned" : ""}`}
       ref={rootRef}
       onMouseEnter={menu.scheduleOpen}
       onMouseLeave={menu.scheduleClose}
-      onBlur={handleRootBlur}
+      onBlur={menu.handleRootBlur}
     >
       <button
         ref={triggerRef}
@@ -212,6 +202,7 @@ const LanguageSelector = ({
         aria-expanded={menu.isOpen}
         aria-haspopup="menu"
         aria-controls={menu.panelId}
+        onClick={menu.handleTriggerClick}
         onFocus={() => {
           if (isFinePointer) menu.open();
         }}

@@ -289,7 +289,7 @@
   font-size: 0.875rem;
 }
 
-.score-card--passcard .flags-wrapper {
+.score-card .flags-wrapper {
   display: flex;
   gap: 0.5rem;
   min-width: 100px;
@@ -297,7 +297,7 @@
   flex-wrap: wrap;
 }
 
-.score-card--passcard .flags-wrapper .flag {
+.score-card .flags-wrapper .flag {
   background-color: var(--color-white-t20);
   padding: 0.2rem 0.5rem;
   border-radius: 4px;
@@ -305,7 +305,7 @@
   height: fit-content;
 }
 
-.score-card--passcard .flags-wrapper .flag--adofai-v2 {
+.score-card .flags-wrapper .flag--adofai-v2 {
   display: inline-flex;
   align-items: center;
   gap: 0.2rem;
@@ -360,6 +360,16 @@ a.score-card.score-card--featured:hover {
 
 .score-card--featured:hover .acc-wrapper-inner {
   transform: none;
+}
+
+.score-card--featured .flags-wrapper {
+  min-width: 0;
+  gap: 0.35rem;
+}
+
+.score-card--featured .flags-wrapper .flag {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.4rem;
 }
 
 

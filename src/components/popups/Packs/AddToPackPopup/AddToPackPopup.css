@@ -231,6 +231,17 @@
   background: var(--btn-neutral-dark);
 }
 
+.add-to-pack-popup__pack-item.pack-full {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: var(--btn-neutral-dark);
+}
+
+.add-to-pack-popup__pack-item.pack-full:hover {
+  border-color: #333333;
+  background: var(--btn-neutral-dark);
+}
+
 .add-to-pack-popup__pack-icon {
   width: 40px;
   height: 40px;
@@ -281,11 +292,16 @@
 
 .add-to-pack-popup__pack-status-text {
   font-size: 12px;
-  color: #ff8c00;
+  color: var(--btn-warning);
   font-weight: 500;
-  background: rgba(255, 140, 0, 0.1);
+  background: color-mix(in srgb, var(--btn-warning) 12%, transparent);
   padding: 4px 8px;
   border-radius: 4px;
+}
+
+.add-to-pack-popup__pack-status-text--full {
+  color: var(--btn-danger);
+  background: var(--danger-color-tint);
 }
 
 .add-to-pack-popup__pack-selected {

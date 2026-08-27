@@ -14,6 +14,9 @@
   --profile-header-surface: color-mix(in srgb, var(--color-purple) 32%, var(--color-black) 68%);
   --profile-header-gradient-end: color-mix(in srgb, var(--color-purple) 50%, #f00 20%);
   --profile-header-banner-height: 9rem;
+  --profile-header-name-font-size: 2.5rem;
+  --profile-header-name-line-height: 1.45;
+  --profile-header-name-max-lines: 3;
   position: relative;
   width: 100%;
   max-width: 100%;
@@ -122,33 +125,41 @@
   height: 15rem;
 }
 
-.profile-header__name-svg.profile-header__name-svg--vertical {
-  display: block;
-  width: 100%;
-  height: 100%;
+.profile-header .profile-header__name-vertical-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  box-sizing: border-box;
+  width: fit-content;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .profile-header .profile-header__name-vertical-fo {
   box-sizing: border-box;
-  width: fit-content;
-  max-width: 100%;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+  flex: 1 1 auto;
+  min-width: 0;
   margin: 0;
-  padding: 0 0.35rem;
+  padding: 0.12em 0.35rem 0.28em;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  font-size: 2.5rem;
+  font-size: var(--profile-header-name-font-size, 2.5rem);
   font-weight: 800;
   letter-spacing: -0.02em;
-  line-height: 1.15;
+  line-height: var(--profile-header-name-line-height, 1.45);
   color: var(--color-white);
   word-break: keep-all;
+  overflow-wrap: anywhere;
   text-align: center;
 }
 
-@media (max-width: 600px) {
-  .profile-header__name-svg.profile-header__name-svg--vertical {
-    white-space: nowrap;
-    height: 3rem;
-  }
+.profile-header .profile-header__name-vertical .profile-header__stellar-icon.vertical {
+  flex-shrink: 0;
 }
 
 .profile-header__name-svg-text {
@@ -158,7 +169,7 @@
   min-width: 0;
   align-self: stretch;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  font-size: 2.5rem;
+  font-size: var(--profile-header-name-font-size, 2.5rem);
   font-weight: 800;
   height: 1.2rem;
   letter-spacing: -0.02em;
@@ -729,8 +740,10 @@
     display: none;
   }
   .profile-header__name-vertical {
-    display: block;
+    display: flex;
+    justify-content: center;
     width: 100%;
+    min-width: 0;
     padding: 3px;
   }
   .profile-header__badge-wrap .profile-header__profile-id {
@@ -755,10 +768,6 @@
   .profile-header__icon-slots {
     width: unset;
   }
-}
-
-.profile-header__name-vertical .profile-header__stellar-hit--vertical {
-  pointer-events: auto;
 }
 
 .profile-header .profile-header__name-tooltip {

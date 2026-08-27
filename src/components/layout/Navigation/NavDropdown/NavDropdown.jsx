@@ -177,15 +177,16 @@ export function NavDropdownPanel({
 }
 
 /**
- * Desktop section dropdown. Parent is a link to the first internal child when
- * `linkTo` is set; otherwise a hover/focus target only (e.g. Tools).
+ * Desktop section dropdown. Hover opens the panel; click pins it so mouseleave
+ * will not close until a click outside. `linkTo` is kept for callers but the
+ * label itself does not navigate — section pages live in the menu.
  */
 const NavDropdown = ({
   label,
   items = [],
   isActive,
   className = "",
-  linkTo = null,
+  linkTo: _linkTo = null,
   menuAlign = "left",
   asItem = true,
   triggerContent = null,
@@ -195,13 +196,14 @@ const NavDropdown = ({
   const location = useLocation();
   const isFinePointer = useFinePointer();
   const reducedMotion = useSubmissionMinimalMotion();
-  const menu = useNavHoverMenu({
-    reducedMotion,
-    enabled: isFinePointer,
-  });
   const rootRef = useRef(null);
   const triggerRef = useRef(null);
   const panelRef = useRef(null);
+  const menu = useNavHoverMenu({
+    reducedMotion,
+    enabled: isFinePointer,
+    rootRef,
+  });
 
   useEffect(() => {
     menu.closeNow();
@@ -210,6 +212,7 @@ const NavDropdown = ({
 
   const hasActiveItem = isActive ? isActive(location.pathname) : false;
   const openClass = menu.isOpen ? "open" : "";
+  const pinnedClass = menu.isPinned ? "pinned" : "";
   const activeClass = hasActiveItem ? "has-active" : "";
 
   const focusFirstItem = () => {
@@ -231,57 +234,37 @@ const NavDropdown = ({
     }
     if (event.key === "Escape") {
       event.preventDefault();
-      menu.close();
+      menu.dismiss();
       triggerRef.current?.focus();
-      return;
     }
-    if (!linkTo && (event.key === "Enter" || event.key === " ")) {
-      event.preventDefault();
-      if (menu.isOpen) menu.close();
-      else menu.open();
-    }
-  };
-
-  const handleRootBlur = (event) => {
-    const next = event.relatedTarget;
-    if (rootRef.current && next && rootRef.current.contains(next)) return;
-    menu.close();
   };
 
   const triggerClass = `${triggerClassName} ${hasActiveItem ? "active" : ""}`;
   const triggerInner = triggerContent || label;
 
-  const triggerProps = {
-    ref: triggerRef,
-    className: triggerClass,
-    "aria-expanded": menu.isOpen,
-    "aria-haspopup": "menu",
-    "aria-controls": menu.panelId,
-    onFocus: () => {
-      if (isFinePointer) menu.open();
-    },
-    onKeyDown: handleTriggerKeyDown,
-  };
-
-  const trigger = linkTo ? (
-    <NavLink {...triggerProps} to={linkTo}>
-      {triggerInner}
-    </NavLink>
-  ) : (
-    <button {...triggerProps} type="button">
-      {triggerInner}
-    </button>
-  );
-
   const body = (
     <div
-      className={`nav-dropdown ${openClass} ${activeClass} ${className}`.trim()}
+      className={`nav-dropdown ${openClass} ${pinnedClass} ${activeClass} ${className}`.trim()}
       ref={rootRef}
       onMouseEnter={menu.scheduleOpen}
       onMouseLeave={menu.scheduleClose}
-      onBlur={handleRootBlur}
+      onBlur={menu.handleRootBlur}
     >
-      {trigger}
+      <button
+        ref={triggerRef}
+        type="button"
+        className={triggerClass}
+        aria-expanded={menu.isOpen}
+        aria-haspopup="menu"
+        aria-controls={menu.panelId}
+        onClick={menu.handleTriggerClick}
+        onFocus={() => {
+          if (isFinePointer) menu.open();
+        }}
+        onKeyDown={handleTriggerKeyDown}
+      >
+        {triggerInner}
+      </button>
       {menu.isVisible && (
         <NavDropdownPanel
           id={menu.panelId}

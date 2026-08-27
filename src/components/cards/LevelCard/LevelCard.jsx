@@ -119,7 +119,6 @@ const LevelCard = ({
   const tags = useMemo(() => {
     if (!resolvesTagBadges) return [];
     const assignedList = level?.tags || [];
-    const assignmentById = new Map(assignedList.map((item) => [item.id, item]));
     const merged = assignedList
       .map((assigned) => {
         const catalog = tagsDict[assigned.id];
@@ -129,6 +128,9 @@ const LevelCard = ({
           pinned: Boolean(assigned.pinned),
           score: assigned.score ?? null,
           isCommunity: Boolean(catalog?.isCommunity ?? assigned.isCommunity),
+          sortOrder: catalog?.sortOrder ?? assigned.sortOrder,
+          groupSortOrder: catalog?.groupSortOrder ?? assigned.groupSortOrder,
+          group: catalog?.group ?? assigned.group,
         };
       })
       .filter(Boolean);

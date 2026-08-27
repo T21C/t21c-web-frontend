@@ -121,8 +121,8 @@
       },
       "filters": {
         "title": "사용 가능한 필터",
-        "hideRated": "평가한 항목 숨기기",
-        "hideRatedDesc": "이미 평가한 레벨을 숨김",
+        "myRated": "내 평가",
+        "myRatedDesc": "이미 평가한 레벨을 표시, 숨김 또는 해당 항목만 표시",
         "lowDiff": "낮은 난이도",
         "lowDiffDesc": "낮은 난이도로 표시된 레벨 필터링",
         "fourVote": "4표 이상 평가됨",

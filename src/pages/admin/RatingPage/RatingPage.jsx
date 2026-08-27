@@ -54,10 +54,10 @@ const RatingPage = () => {
   const { hasActiveSession } = useZenMode();
   const { 
     sortOrder, 
-    hideRated, 
+    myRatedFilter, 
     lowDiffFilter,
     fourVoteFilter, 
-    setHideRated, 
+    setMyRatedFilter, 
     setLowDiffFilter,
     setFourVoteFilter,
     sortType,
@@ -154,7 +154,7 @@ const RatingPage = () => {
       order: sortOrder,
       lowDiff: lowDiffFilter,
       fourVote: rankReadyActive ? 'show' : fourVoteFilter,
-      hideRated: rankReadyActive ? 'false' : (hideRated ? 'true' : 'false'),
+      myRated: rankReadyActive ? 'show' : myRatedFilter,
     };
     if (rankReadyActive) {
       params.zeroClears = 'true';
@@ -164,7 +164,7 @@ const RatingPage = () => {
       params.query = debouncedQuery;
     }
     return params;
-  }, [sortType, sortOrder, lowDiffFilter, fourVoteFilter, hideRated, debouncedQuery, rankReadyActive]);
+  }, [sortType, sortOrder, lowDiffFilter, fourVoteFilter, myRatedFilter, debouncedQuery, rankReadyActive]);
 
   const normalizePageResults = (data) => {
     // New API: { results, total, hasMore }. Guard against accidental bare/non-array bodies.
@@ -263,11 +263,13 @@ const RatingPage = () => {
     const detailCount = details.length;
     if (fourVoteFilter === 'only' && detailCount < 4) return false;
     if (fourVoteFilter === 'hide' && detailCount >= 4) return false;
-    if (hideRated && user?.id) {
-      if (details.some((d) => d.userId === user.id)) return false;
+    if (user?.id && myRatedFilter !== 'show') {
+      const hasMyRating = details.some((d) => d.userId === user.id);
+      if (myRatedFilter === 'hide' && hasMyRating) return false;
+      if (myRatedFilter === 'only' && !hasMyRating) return false;
     }
     return true;
-  }, [debouncedQuery, lowDiffFilter, fourVoteFilter, hideRated, user?.id, rankReadyActive]);
+  }, [debouncedQuery, lowDiffFilter, fourVoteFilter, myRatedFilter, user?.id, rankReadyActive]);
 
   const upsertRatingRow = useCallback((listRow) => {
     if (!listRow?.id) return;
@@ -682,17 +684,13 @@ const RatingPage = () => {
             </div>
           )}
           {!rankReadyActive && (
-          <div className="view-mode-toggle">
-            <span className="toggle-label">{t('rating.toggles.hideRated.label')}</span>
-            <label className="switch">
-              <input
-                type="checkbox"
-                checked={hideRated}
-                onChange={(e) => setHideRated(e.target.checked)}
-              />
-              <span className="slider round"></span>
-            </label>
-          </div>
+            <StateDisplay
+              currentState={myRatedFilter}
+              states={['show', 'hide', 'only']}
+              onChange={setMyRatedFilter}
+              label={t('rating.toggles.myRated.label')}
+              width={60}
+            />
           )}
             <StateDisplay
               currentState={lowDiffFilter}

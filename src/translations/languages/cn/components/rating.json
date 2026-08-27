@@ -124,8 +124,8 @@
       },
       "filters": {
         "title": "可用筛选条件",
-        "hideRated": "隐藏已评级",
-        "hideRatedDesc": "隐藏你已评级的关卡",
+        "myRated": "我的评级",
+        "myRatedDesc": "显示、隐藏或仅显示你已评级的关卡",
         "lowDiff": "低难度",
         "lowDiffDesc": "筛选被标记为低难度的关卡",
         "fourVote": "4+ 评级",
