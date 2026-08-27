@@ -1,6 +1,6 @@
 import { routes } from '@/api/routes';
 // tuf-search: #DifficultyPage #difficultyPage #admin #difficulty — Manage Difficulties
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import toast from 'react-hot-toast';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { useAuth } from "@/contexts/AuthContext";
@@ -17,7 +17,7 @@ import { getCdnErrorMessage } from '@/utils/uploadErrors';
 import { getRateLimitMessage, toastIfRateLimited } from '@/utils/rateLimitError';
 import './difficultypage.css';
 import { Tooltip } from 'react-tooltip';
-import { EditIcon, InfoIcon, RefreshIcon, TrashIcon } from '@/components/common/icons';
+import { EditIcon, ImageIcon, InfoIcon, RefreshIcon, TrashIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { RatingInput, CustomSelect } from '@/components/common/selectors';
@@ -34,6 +34,7 @@ const EMPTY_TAG_KNOBS = {
   scoreOn: '',
   scoreOff: '',
   scoringMode: '',
+  requireTopPlay: '',
   allowedBands: [],
 };
 
@@ -49,6 +50,12 @@ const EMPTY_NEW_TAG = {
 
 const COMMUNITY_TAG_BAND_OPTIONS = ['P', 'G', 'U', 'SPEC'];
 
+function requireTopPlayFormValue(value) {
+  if (value === true || value === 'true' || value === 1 || value === '1') return 'true';
+  if (value === false || value === 'false' || value === 0 || value === '0') return 'false';
+  return '';
+}
+
 function withCommunityTagKnobs(entity = {}) {
   return {
     ...entity,
@@ -57,6 +64,7 @@ function withCommunityTagKnobs(entity = {}) {
     scoreOn: entity.scoreOn ?? '',
     scoreOff: entity.scoreOff ?? '',
     scoringMode: entity.scoringMode || '',
+    requireTopPlay: requireTopPlayFormValue(entity.requireTopPlay),
     allowedBands: Array.isArray(entity.allowedBands) ? [...entity.allowedBands] : [],
   };
 }
@@ -67,6 +75,7 @@ function appendCommunityTagKnobs(formData, source) {
   formData.append('scoreOn', source.scoreOn === 0 || source.scoreOn ? String(source.scoreOn) : '');
   formData.append('scoreOff', source.scoreOff === 0 || source.scoreOff ? String(source.scoreOff) : '');
   formData.append('scoringMode', source.scoringMode || '');
+  formData.append('requireTopPlay', requireTopPlayFormValue(source.requireTopPlay));
   formData.append(
     'allowedBands',
     JSON.stringify(Array.isArray(source.allowedBands) ? source.allowedBands : []),
@@ -79,6 +88,7 @@ function communityTagKnobsPayload(source) {
     scoreOn: source.scoreOn === 0 || source.scoreOn ? source.scoreOn : '',
     scoreOff: source.scoreOff === 0 || source.scoreOff ? source.scoreOff : '',
     scoringMode: source.scoringMode || '',
+    requireTopPlay: requireTopPlayFormValue(source.requireTopPlay),
     allowedBands: Array.isArray(source.allowedBands) ? source.allowedBands : [],
   };
 }
@@ -130,6 +140,51 @@ function resolvePreviewKnobs(value, tagGroups, inheritFromGroup) {
   };
 }
 
+function TagIconEditor({ icon, onSelectFile, onRemove, t, i18nPrefix }) {
+  const inputRef = useRef(null);
+
+  return (
+    <div className="form-group">
+      <label>{t(`${i18nPrefix}.icon.label`)}</label>
+      <div className="tag-icon-editor">
+        <input
+          ref={inputRef}
+          type="file"
+          accept={CDN_IMAGE_ACCEPT}
+          className="tag-icon-editor-input"
+          onChange={(event) => {
+            const file = event.target.files?.[0];
+            event.target.value = '';
+            if (file) onSelectFile(file);
+          }}
+        />
+        <button
+          type="button"
+          className="tag-icon-editor-preview"
+          onClick={() => inputRef.current?.click()}
+          aria-label={t(`${i18nPrefix}.icon.preview`)}
+        >
+          {icon ? (
+            <img src={icon} alt="" />
+          ) : (
+            <ImageIcon size="28px" color="currentColor" />
+          )}
+        </button>
+        {icon ? (
+          <button
+            type="button"
+            className="tag-icon-editor-remove"
+            onClick={onRemove}
+            aria-label={t(`${i18nPrefix}.icon.remove`)}
+          >
+            <TrashIcon color="currentColor" size="20px" />
+          </button>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
 function CommunityTagScoringFields({
   value,
   onChange,
@@ -159,6 +214,14 @@ function CommunityTagScoringFields({
   const scoringModeValue =
     scoringModeOptions.find((option) => option.value === (value.scoringMode || ''))
     || scoringModeOptions[0];
+  const requireTopPlayOptions = [
+    { value: '', label: t('difficulty.tags.fields.inherit') },
+    { value: 'true', label: t('difficulty.tags.fields.requireTopPlayOn') },
+    { value: 'false', label: t('difficulty.tags.fields.requireTopPlayOff') },
+  ];
+  const requireTopPlayValue =
+    requireTopPlayOptions.find((option) => option.value === requireTopPlayFormValue(value.requireTopPlay))
+    || requireTopPlayOptions[0];
 
   return (
     <>
@@ -183,6 +246,18 @@ function CommunityTagScoringFields({
               options={scoringModeOptions}
               value={scoringModeValue}
               onChange={(option) => onChange({ ...value, scoringMode: option?.value ?? '' })}
+              width="100%"
+              direction="auto"
+              isSearchable={false}
+            />
+          </div>
+          <div className="form-group">
+            <label>{t('difficulty.tags.fields.requireTopPlay')}</label>
+            <p className="form-hint">{t('difficulty.tags.fields.requireTopPlayHint')}</p>
+            <CustomSelect
+              options={requireTopPlayOptions}
+              value={requireTopPlayValue}
+              onChange={(option) => onChange({ ...value, requireTopPlay: option?.value ?? '' })}
               width="100%"
               direction="auto"
               isSearchable={false}
@@ -489,6 +564,7 @@ const DifficultyPage = () => {
     if (String(editingTag.scoreOn ?? '') !== String(originalTag.scoreOn ?? '')) return true;
     if (String(editingTag.scoreOff ?? '') !== String(originalTag.scoreOff ?? '')) return true;
     if (String(editingTag.scoringMode || '') !== String(originalTag.scoringMode || '')) return true;
+    if (requireTopPlayFormValue(editingTag.requireTopPlay) !== requireTopPlayFormValue(originalTag.requireTopPlay)) return true;
     if (!sameBandSelection(editingTag.allowedBands, originalTag.allowedBands)) return true;
     
     // Check if icon was changed
@@ -1508,45 +1584,27 @@ const DifficultyPage = () => {
                     />
                     <h2>{t('difficulty.tags.create.title')}</h2>
                     <form onSubmit={(e) => { e.preventDefault(); handleCreateTag(); }}>
-                      <div className="form-group">
-                        <label>{t('difficulty.tags.create.icon.label')}</label>
-                        <input
-                          type="file"
-                          accept={CDN_IMAGE_ACCEPT}
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              const previewUrl = URL.createObjectURL(file);
-                              setNewTag({
-                                ...newTag,
-                                iconFile: file,
-                                icon: previewUrl,
-                              });
-                            }
-                          }}
-                        />
-                        {newTag.icon && (
-                          <>
-                            <img
-                              src={newTag.icon}
-                              alt={t('difficulty.tags.create.icon.preview')}
-                              className="icon-preview"
-                            />
-                            <button
-                              type="button"
-                              className="remove-icon-button"
-                              onClick={() => {
-                                if (newTag.icon && newTag.icon.startsWith('blob:')) {
-                                  URL.revokeObjectURL(newTag.icon);
-                                }
-                                setNewTag({ ...newTag, iconFile: null, icon: null });
-                              }}
-                            >
-                              {t('difficulty.tags.create.icon.remove')}
-                            </button>
-                          </>
-                        )}
-                      </div>
+                      <TagIconEditor
+                        icon={newTag.icon}
+                        i18nPrefix="difficulty.tags.create"
+                        t={t}
+                        onSelectFile={(file) => {
+                          if (newTag.icon && newTag.icon.startsWith('blob:')) {
+                            URL.revokeObjectURL(newTag.icon);
+                          }
+                          setNewTag({
+                            ...newTag,
+                            iconFile: file,
+                            icon: URL.createObjectURL(file),
+                          });
+                        }}
+                        onRemove={() => {
+                          if (newTag.icon && newTag.icon.startsWith('blob:')) {
+                            URL.revokeObjectURL(newTag.icon);
+                          }
+                          setNewTag({ ...newTag, iconFile: null, icon: null });
+                        }}
+                      />
                       <div className="form-group">
                         <label>{t('difficulty.tags.create.name')}</label>
                         <input
@@ -1645,48 +1703,27 @@ const DifficultyPage = () => {
                     />
                     <h2>{t('difficulty.tags.edit.title')}</h2>
                     <form onSubmit={(e) => { e.preventDefault(); handleUpdateTag(); }}>
-                      <div className="form-group">
-                        <label>{t('difficulty.tags.edit.icon.label')}</label>
-                        <input
-                          type="file"
-                          accept={CDN_IMAGE_ACCEPT}
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              if (editingTag.icon && editingTag.icon.startsWith('blob:')) {
-                                URL.revokeObjectURL(editingTag.icon);
-                              }
-                              const previewUrl = URL.createObjectURL(file);
-                              setEditingTag({
-                                ...editingTag,
-                                iconFile: file,
-                                icon: previewUrl,
-                              });
-                            }
-                          }}
-                        />
-                        {editingTag.icon && (
-                          <>
-                            <img
-                              src={editingTag.icon}
-                              alt={t('difficulty.tags.edit.icon.preview')}
-                              className="icon-preview"
-                            />
-                            <button
-                              type="button"
-                              className="remove-icon-button"
-                              onClick={() => {
-                                if (editingTag.icon && editingTag.icon.startsWith('blob:')) {
-                                  URL.revokeObjectURL(editingTag.icon);
-                                }
-                                setEditingTag({ ...editingTag, iconFile: null, icon: null });
-                              }}
-                            >
-                              {t('difficulty.tags.edit.icon.remove')}
-                            </button>
-                          </>
-                        )}
-                      </div>
+                      <TagIconEditor
+                        icon={editingTag.icon}
+                        i18nPrefix="difficulty.tags.edit"
+                        t={t}
+                        onSelectFile={(file) => {
+                          if (editingTag.icon && editingTag.icon.startsWith('blob:')) {
+                            URL.revokeObjectURL(editingTag.icon);
+                          }
+                          setEditingTag({
+                            ...editingTag,
+                            iconFile: file,
+                            icon: URL.createObjectURL(file),
+                          });
+                        }}
+                        onRemove={() => {
+                          if (editingTag.icon && editingTag.icon.startsWith('blob:')) {
+                            URL.revokeObjectURL(editingTag.icon);
+                          }
+                          setEditingTag({ ...editingTag, iconFile: null, icon: null });
+                        }}
+                      />
                       <div className="form-group">
                         <label>{t('difficulty.tags.edit.name')}</label>
                         <input
