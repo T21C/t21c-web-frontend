@@ -2,7 +2,7 @@
 import { Link } from "react-router-dom";
 import "./levelcard.css"
 import { useTranslation } from "react-i18next";
-import { useState, useMemo, useEffect } from "react";
+import { memo, useState, useMemo, useEffect } from "react";
 import toast from "react-hot-toast";
 import api from "@/utils/api";
 import { routes } from "@/api/routes";
@@ -41,6 +41,71 @@ import {
 
 /** Curation type names hidden from the difficulty-arc curation icons */
 const HIDDEN_CURATION_ARC_TYPE_NAMES = new Set(['C0', 'V0']);
+
+const TufHelperLiteLevelButton = memo(function TufHelperLiteLevelButton({ level, dlLink }) {
+  const { t } = useTranslation('components');
+  const health = useTufHelperLiteHealth();
+  const jobs = useTufHelperLiteJobs();
+  const downloadedIds = useTufHelperLiteDownloadedIds();
+  const download = getTufHelperLiteDownloadState(
+    health,
+    jobs.jobs,
+    downloadedIds.levelIdSet,
+    level,
+    dlLink,
+  );
+
+  if (!health.isAvailable) return null;
+
+  const isDownloading = download.state === 'downloading';
+  const handleClick = async (event) => {
+    event.stopPropagation();
+
+    if (!health.isAvailable || isDownloading) return;
+
+    try {
+      if (level?.id != null) {
+        await invokeTufHelperLiteIpc('level.open-from-id', {
+          id: String(level.id),
+          source: 'tuforums-levels',
+          openAfterDownload: true,
+        });
+      } else {
+        await invokeTufHelperLiteIpc('level.open-from-url', {
+          url: dlLink,
+          source: 'tuforums-levels',
+          openAfterDownload: true,
+        });
+      }
+
+      void checkTufHelperLiteJobs();
+      void checkTufHelperLiteDownloadedIds();
+    } catch {
+      void checkTufHelperLiteHealth();
+    }
+  };
+
+  return (
+    <button
+      type="button"
+      className="tufhelperlite-button"
+      onClick={handleClick}
+      title={t('level.tufHelperLiteBanner.openWith')}
+      aria-label={t('level.tufHelperLiteBanner.openWith')}
+      disabled={isDownloading}
+      data-available="true"
+      data-state={download.state}
+      style={{ '--tufhelperlite-progress': `${Math.round(download.progress * 100)}%` }}
+    >
+      <span className="tufhelperlite-button__icon-stack" aria-hidden="true">
+        {isDownloading && (
+          <TUFHelperLiteOpenIcon className="tufhelperlite-button__icon tufhelperlite-button__icon--base" size="100%" />
+        )}
+        <TUFHelperLiteOpenIcon className="tufhelperlite-button__icon tufhelperlite-button__icon--color" size="100%" />
+      </span>
+    </button>
+  );
+});
 
 const LevelCard = ({
   level: initialLevel = null,
@@ -139,17 +204,6 @@ const LevelCard = ({
   const hasSongPopup = (level?.songs && level.songs.length > 0) ? true : false;
   const hasArtistPopup = (level?.artists && level.artists.length > 0) ? true : false;
   const levelDetailTo = level?.id != null ? `/levels/${level.id}` : '#';
-  const tufHelperLiteHealth = useTufHelperLiteHealth();
-  const tufHelperLiteJobs = useTufHelperLiteJobs();
-  const tufHelperLiteDownloadedIds = useTufHelperLiteDownloadedIds();
-  const tufHelperLiteDownload = getTufHelperLiteDownloadState(
-    tufHelperLiteHealth,
-    tufHelperLiteJobs.jobs,
-    tufHelperLiteDownloadedIds.levelIdSet,
-    level,
-    dlLink,
-  );
-
   useBodyScrollLock(showEditPopup || showAddToPackPopup || showSongPopup || showArtistPopup);
 
   // Keep local like state in sync with the level data (search annotation or edits).
@@ -218,35 +272,6 @@ const LevelCard = ({
   const handleEditClick = (e) => { e.stopPropagation(); setShowEditPopup(true); };
   const handleAddToPackClick = (e) => { e.stopPropagation(); setShowAddToPackPopup(true); };
   const handleDeleteClick = (e) => { e.stopPropagation(); onDeleteItem?.(packItem); };
-  const handleTufHelperLiteClick = async (e) => {
-    e.stopPropagation();
-
-    if (!tufHelperLiteHealth.isAvailable || !dlLinkValid || tufHelperLiteDownload.state === 'downloading') {
-      return;
-    }
-
-    try {
-      if (level?.id != null) {
-        await invokeTufHelperLiteIpc('level.open-from-id', {
-          id: String(level.id),
-          source: 'tuforums-levels',
-          openAfterDownload: true,
-        });
-      } else {
-        await invokeTufHelperLiteIpc('level.open-from-url', {
-          url: dlLink,
-          source: 'tuforums-levels',
-          openAfterDownload: true,
-        });
-      }
-
-      void checkTufHelperLiteJobs();
-      void checkTufHelperLiteDownloadedIds();
-    } catch {
-      void checkTufHelperLiteHealth();
-    }
-  };
-
   // Determine glow class based on abilities
   const getGlowClass = () => {
     for (const slot of curationTypeIconSlots) {
@@ -428,23 +453,8 @@ const LevelCard = ({
           </svg>
         </button>
       )}
-      {showTufHelperLite && showDownload && dlLinkValid && tufHelperLiteHealth.isAvailable && (
-        <button
-          type="button"
-          className="tufhelperlite-button"
-          onClick={handleTufHelperLiteClick}
-          title={t('level.tufHelperLiteBanner.openWith')}
-          aria-label={t('level.tufHelperLiteBanner.openWith')}
-          disabled={tufHelperLiteDownload.state === 'downloading'}
-          data-available="true"
-          data-state={tufHelperLiteDownload.state}
-          style={{ '--tufhelperlite-progress': `${Math.round(tufHelperLiteDownload.progress * 100)}%` }}
-        >
-          <span className="tufhelperlite-button__icon-stack" aria-hidden="true">
-            <TUFHelperLiteOpenIcon className="tufhelperlite-button__icon tufhelperlite-button__icon--base" size="100%" />
-            <TUFHelperLiteOpenIcon className="tufhelperlite-button__icon tufhelperlite-button__icon--color" size="100%" />
-          </span>
-        </button>
+      {showTufHelperLite && showDownload && dlLinkValid && (
+        <TufHelperLiteLevelButton level={level} dlLink={dlLink} />
       )}
     </div>
   );
