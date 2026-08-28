@@ -12,21 +12,63 @@ import { routes } from '@/api/routes';
 import { communityTagHoverTitle, formatCommunityTagScore, groupTagsByGroup } from '@/utils/communityTags';
 import './communitytagvotepopup.css';
 
+function passBelongsToPlayer(pass, playerId) {
+  if (playerId == null || !pass) return false;
+  const pid = Number(playerId);
+  if (!Number.isFinite(pid)) return false;
+  const passPlayerId = Number(pass.playerId ?? pass.player?.id);
+  return Number.isFinite(passPlayerId) && passPlayerId === pid;
+}
+
+export function userHasClearOnLevel(passes, playerId) {
+  if (!Array.isArray(passes) || playerId == null) return false;
+  return passes.some((pass) => {
+    if (!pass || pass.isDeleted) return false;
+    return passBelongsToPlayer(pass, playerId);
+  });
+}
+
+function tagRequiresTopPlay(tag) {
+  return tag?.requireTopPlay === true || tag?.settings?.requireTopPlay === true;
+}
+
+function blockReasonAfterClear(tag, userHasClear) {
+  const reason = tag?.voteBlockReason ?? null;
+  if (reason === 'topPlay' && !tagRequiresTopPlay(tag)) return null;
+  if (!userHasClear || !reason) return reason;
+  if (reason === 'mustClear') return null;
+  if (reason === 'topPlay') return null;
+  return reason;
+}
+
+function isTagEligible(tag, { disabled, userHasClear }) {
+  if (disabled) return false;
+  if (tag.canVote) return true;
+  if (tag.voteBlockReason === 'topPlay' && !tagRequiresTopPlay(tag)) return true;
+  if (!userHasClear) return false;
+  if (tag.voteBlockReason === 'mustClear') return true;
+  if (tag.voteBlockReason === 'topPlay' && tagRequiresTopPlay(tag)) return true;
+  return false;
+}
+
 export default function CommunityTagVotePopup({
   levelId,
   user,
   disabled = false,
+  userClearedThisLevel = false,
   onClose,
   onAssignedTagsChange,
 }) {
   const { t } = useTranslation(['pages', 'common', 'components']);
   const [tags, setTags] = useState([]);
   const [chartCleared, setChartCleared] = useState(true);
+  const [viewerCleared, setViewerCleared] = useState(false);
   const [search, setSearch] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isVoting, setIsVoting] = useState(false);
 
   const tooltipId = `community-tag-vote-popup-${levelId}`;
+  const userHasClear = Boolean(userClearedThisLevel || viewerCleared);
 
   useBodyScrollLock(true);
 
@@ -45,6 +87,7 @@ export default function CommunityTagVotePopup({
       const response = await api.get(routes.database.levels.communityTags(levelId));
       setTags(response.data?.tags || []);
       setChartCleared(response.data?.chartCleared !== false);
+      setViewerCleared(Boolean(response.data?.viewerCleared));
     } catch (error) {
       console.error('Error fetching community tags:', error);
       toast.error(t('errors.generic', { ns: 'common' }));
@@ -89,15 +132,19 @@ export default function CommunityTagVotePopup({
 
   const voteButtonTooltip = (tag, direction) => {
     if (disabled) return t('levelDetail.tags.vote.deleted');
-    if (tag.voteBlockReason) return blockReasonLabel(tag.voteBlockReason);
+    const reason = blockReasonAfterClear(tag, userHasClear);
+    if (reason) return blockReasonLabel(reason);
     if (tag.voteDirection === direction) return t('levelDetail.tags.vote.unvote');
     return direction === 1
       ? t('levelDetail.tags.vote.upvote')
       : t('levelDetail.tags.vote.downvote');
   };
 
+  const tagIsEligible = (tag) => isTagEligible(tag, { disabled, userHasClear });
+  const tagCanVote = (tag) => tagIsEligible(tag) && !isVoting;
+
   const handleVote = async (tag, requestedAction) => {
-    if (!tag.canVote || isVoting || disabled) return;
+    if (!tagCanVote(tag)) return;
     const current = tag.voteDirection;
     let action = requestedAction;
     if (requestedAction === 'upvote' && current === 1) action = 'unvote';
@@ -111,6 +158,9 @@ export default function CommunityTagVotePopup({
       setTags(response.data?.tags || []);
       if (typeof response.data?.chartCleared === 'boolean') {
         setChartCleared(response.data.chartCleared);
+      }
+      if (typeof response.data?.viewerCleared === 'boolean') {
+        setViewerCleared(response.data.viewerCleared);
       }
       const toastKey =
         action === 'upvote'
@@ -203,11 +253,12 @@ export default function CommunityTagVotePopup({
                   <div className="community-tag-vote-popup__list">
                     {group.tags.map((tag) => {
                       const scoreLabel = formatCommunityTagScore(tag.score);
-                      const canVote = Boolean(tag.canVote) && !disabled && !isVoting;
+                      const eligible = tagIsEligible(tag);
+                      const canVote = tagCanVote(tag);
                       return (
                         <div
                           key={tag.id}
-                          className={`community-tag-vote-popup__item${canVote ? ' available' : ''}${tag.voteDirection === 1 ? ' upvoted' : ''}${tag.voteDirection === -1 ? ' downvoted' : ''}`}
+                          className={`community-tag-vote-popup__item${eligible ? ' available' : ' is-locked'}${tag.voteDirection === 1 ? ' upvoted' : ''}${tag.voteDirection === -1 ? ' downvoted' : ''}`}
                           style={{
                             '--tag-bg-color': `${tag.color}40`,
                             '--tag-border-color': tag.color,

@@ -109,11 +109,10 @@
   color: var(--color-white);
   text-align: left;
   font-size: 0.9rem;
-  opacity: 0.45;
 }
 
-.community-tag-vote-popup .community-tag-vote-popup__item.available {
-  opacity: 1;
+.community-tag-vote-popup .community-tag-vote-popup__item.is-locked {
+  opacity: 0.45;
 }
 
 .community-tag-vote-popup .community-tag-vote-popup__item.upvoted {

@@ -71,7 +71,7 @@ import {
 import { RouletteWheel, SlotMachine, StateDisplay } from '@/components/common/selectors';
 import { CloseButton } from '@/components/common/buttons';
 import { CommentFormatter } from '@/components/misc';
-import CommunityTagVotePopup from './CommunityTagVotePopup';
+import CommunityTagVotePopup, { userHasClearOnLevel } from './CommunityTagVotePopup';
 import { toast } from 'react-hot-toast';
 import { ABILITIES, hasBit } from '@/utils/Abilities';
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
@@ -1551,6 +1551,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
 
   const handleCommunityTagVoteOpen = () => {
     setShowTagsDropdown(false);
+    void fetchPassesForLevel();
     setShowCommunityTagVotePopup(true);
   };
 
@@ -2444,6 +2445,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
     }),
   );
   const chartHasClears = res?.level?.uniqueClears !== 0;
+  const userClearedThisLevel = userHasClearOnLevel(res?.level?.passes, user?.playerId);
 
   const rerateHistoryAnchorNode = res?.rerateHistory?.length > 0 ? (
     <div ref={rerateHistoryAnchorRef} className="rerate-history-dropdown-anchor">
@@ -3367,6 +3369,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
               levelId={effectiveId}
               user={user}
               disabled={Boolean(res?.level?.isDeleted)}
+              userClearedThisLevel={userClearedThisLevel}
               onClose={() => setShowCommunityTagVotePopup(false)}
               onAssignedTagsChange={handleAssignedTagsChange}
             />

@@ -214,13 +214,19 @@ function CommunityTagScoringFields({
   const scoringModeValue =
     scoringModeOptions.find((option) => option.value === (value.scoringMode || ''))
     || scoringModeOptions[0];
-  const requireTopPlayOptions = [
-    { value: '', label: t('difficulty.tags.fields.inherit') },
-    { value: 'true', label: t('difficulty.tags.fields.requireTopPlayOn') },
-    { value: 'false', label: t('difficulty.tags.fields.requireTopPlayOff') },
-  ];
+  const requireTopPlayOptions = inheritFromGroup
+    ? [
+        { value: '', label: t('difficulty.tags.fields.inherit') },
+        { value: 'true', label: t('difficulty.tags.fields.requireTopPlayOn') },
+        { value: 'false', label: t('difficulty.tags.fields.requireTopPlayOff') },
+      ]
+    : [
+        { value: 'false', label: t('difficulty.tags.fields.requireTopPlayOff') },
+        { value: 'true', label: t('difficulty.tags.fields.requireTopPlayOn') },
+      ];
+  const requireTopPlayForm = requireTopPlayFormValue(value.requireTopPlay);
   const requireTopPlayValue =
-    requireTopPlayOptions.find((option) => option.value === requireTopPlayFormValue(value.requireTopPlay))
+    requireTopPlayOptions.find((option) => option.value === requireTopPlayForm)
     || requireTopPlayOptions[0];
 
   return (
@@ -253,7 +259,13 @@ function CommunityTagScoringFields({
           </div>
           <div className="form-group">
             <label>{t('difficulty.tags.fields.requireTopPlay')}</label>
-            <p className="form-hint">{t('difficulty.tags.fields.requireTopPlayHint')}</p>
+            <p className="form-hint">
+              {t(
+                inheritFromGroup
+                  ? 'difficulty.tags.fields.requireTopPlayHint'
+                  : 'difficulty.tags.fields.requireTopPlayGroupHint',
+              )}
+            </p>
             <CustomSelect
               options={requireTopPlayOptions}
               value={requireTopPlayValue}
@@ -1070,9 +1082,11 @@ const DifficultyPage = () => {
     try {
       await toast.promise(
         (async () => {
+          const groupKnobs = communityTagKnobsPayload(editingGroup);
+          if (!groupKnobs.requireTopPlay) groupKnobs.requireTopPlay = 'false';
           await api.put(
             routes.database.difficulties.tagGroup(editingGroup.id),
-            { name, ...communityTagKnobsPayload(editingGroup) },
+            { name, ...groupKnobs },
             { headers: { 'X-Super-Admin-Password': verifiedPassword } },
           );
           setEditingGroup(null);
