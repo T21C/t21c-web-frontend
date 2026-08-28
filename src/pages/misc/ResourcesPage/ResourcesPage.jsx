@@ -8,48 +8,68 @@ import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { MetaTags } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
 import { Footer } from '@/components/layout';
-import { CustomSelect } from '@/components/common/selectors';
-import { PinIcon } from '@/components/common/icons';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
-import { UsefulLinkClusterViewModes } from '@/utils/constants';
-import CreateClusterPopup from '@/components/popups/Resources/CreateClusterPopup';
-import ResourcesCatalogAdmin from './ResourcesCatalogAdmin';
+import { ExternalLink } from '@/components/common/LinkConfirm';
+import { ExternalLinkIcon } from '@/components/common/icons';
+import { normalizeLanguage } from '@/translations/config';
+import {
+  availableSliceCodes,
+  displayFieldsForLocale,
+  hostFromUrl,
+  languageFlagSrc,
+  languageLabel,
+  linkHasLocale,
+  localesOnLink,
+  pickInitialSliceLanguage,
+} from '@/utils/usefulLinkLocales';
 import './resourcesPage.css';
 
-const PAGE_SIZE = 30;
+function applyCatalog(data) {
+  return {
+    groups: Array.isArray(data?.groups) ? data.groups : [],
+    links: Array.isArray(data?.links) ? data.links : [],
+  };
+}
+
+function linkSearchHaystack(link, languageCode) {
+  const locale = displayFieldsForLocale(link, languageCode);
+  const parts = [locale?.title, locale?.description, locale?.url];
+  for (const row of link?.locales || []) {
+    parts.push(row.title, row.description, row.url);
+  }
+  return parts.map((value) => String(value || '').toLowerCase()).join('\n');
+}
+
+function linkMatchesQuery(link, languageCode, query) {
+  const q = query.trim().toLowerCase();
+  if (!q) return true;
+  return linkSearchHaystack(link, languageCode).includes(q);
+}
 
 const ResourcesPage = () => {
-  const { user, loading: authLoading } = useAuth();
-  const { t } = useTranslation(['pages', 'common']);
+  const { user } = useAuth();
+  const { t, i18n } = useTranslation(['pages', 'common']);
   const location = useLocation();
   const isAdmin = hasFlag(user, permissionFlags.SUPER_ADMIN);
-  const isMy = location.pathname === '/resources/my';
 
   const pageMeta = useMemo(
     () =>
       buildStaticPageMeta({
-        title: isMy ? t('resources.meta.myTitle') : t('resources.meta.title'),
-        description: isMy ? t('resources.meta.myDescription') : t('resources.meta.description'),
+        title: t('resources.meta.title'),
+        description: t('resources.meta.description'),
         pathname: location.pathname,
         image: '/og-image.jpg',
         type: 'website',
       }),
-    [t, location.pathname, isMy],
+    [t, location.pathname],
   );
 
-  const [clusters, setClusters] = useState([]);
-  const [total, setTotal] = useState(0);
+  const [groups, setGroups] = useState([]);
+  const [links, setLinks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
   const [query, setQuery] = useState('');
-  const [sort, setSort] = useState('RECENT');
-  const [viewMode, setViewMode] = useState(String(UsefulLinkClusterViewModes.PUBLIC));
-  const [managingCatalog, setManagingCatalog] = useState(false);
-  const [creating, setCreating] = useState(false);
   const [languageMap, setLanguageMap] = useState({});
-  const [offset, setOffset] = useState(0);
-
-  useBodyScrollLock(creating);
+  const [selectedLanguage, setSelectedLanguage] = useState(null);
 
   useEffect(() => {
     api.get(routes.utils.languages()).then(({ data }) => {
@@ -57,55 +77,108 @@ const ResourcesPage = () => {
     }).catch(() => {});
   }, []);
 
-  const sortOptions = [
-    { value: 'RECENT', label: t('resources.sort.recent') },
-    { value: 'NAME', label: t('resources.sort.name') },
-  ];
-
-  const viewModeOptions = [
-    { value: 'all', label: t('resources.viewMode.all') },
-    { value: String(UsefulLinkClusterViewModes.PUBLIC), label: t('resources.viewMode.public') },
-    { value: String(UsefulLinkClusterViewModes.LINKONLY), label: t('resources.viewMode.linkonly') },
-    { value: String(UsefulLinkClusterViewModes.PRIVATE), label: t('resources.viewMode.private') },
-  ];
-
-  const loadClusters = useCallback(
-    async ({ append = false, nextOffset = 0 } = {}) => {
-      setLoadError(false);
-      try {
-        const params = {
-          offset: nextOffset,
-          limit: PAGE_SIZE,
-          sort,
-          order: sort === 'NAME' ? 'ASC' : 'DESC',
-        };
-        if (query.trim()) params.query = query.trim();
-        if (isMy) params.mine = 'true';
-        if (isAdmin && !isMy && viewMode !== 'all') params.viewMode = viewMode;
-        const { data } = await api.get(routes.usefulLinkClusters.list(), { params });
-        const page = Array.isArray(data?.clusters) ? data.clusters : [];
-        setTotal(Number(data?.total) || 0);
-        setClusters((prev) => (append ? [...prev, ...page] : page));
-        setOffset(nextOffset + page.length);
-      } catch {
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    setLoadError(false);
+    api
+      .get(routes.usefulLinks.list())
+      .then(({ data }) => {
+        if (cancelled) return;
+        const catalog = applyCatalog(data);
+        setGroups(catalog.groups);
+        setLinks(catalog.links);
+      })
+      .catch(() => {
+        if (cancelled) return;
         setLoadError(true);
-        if (!append) setClusters([]);
-      } finally {
-        setLoading(false);
-      }
-    },
-    [query, sort, viewMode, isMy, isAdmin],
+        setGroups([]);
+        setLinks([]);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const availableCodes = useMemo(
+    () => availableSliceCodes(links, localesOnLink),
+    [links],
   );
 
   useEffect(() => {
-    if (authLoading) return;
-    setLoading(true);
-    loadClusters({ append: false, nextOffset: 0 });
-  }, [loadClusters, authLoading]);
+    if (loading) return;
+    const site = normalizeLanguage(i18n.resolvedLanguage || i18n.language);
+    const next = pickInitialSliceLanguage(availableCodes, site);
+    setSelectedLanguage((current) =>
+      current && availableCodes.includes(current) ? current : next,
+    );
+  }, [availableCodes, i18n.language, i18n.resolvedLanguage, loading]);
 
-  const handleCreate = async (payload) => {
-    const { data } = await api.post(routes.usefulLinkClusters.list(), payload);
-    return data;
+  const languageCode = selectedLanguage || pickInitialSliceLanguage(availableCodes);
+  const searching = Boolean(query.trim());
+  const linkById = useMemo(() => {
+    const map = new Map();
+    for (const link of links) map.set(link.id, link);
+    return map;
+  }, [links]);
+
+  const visibleLink = useCallback(
+    (link) =>
+      Boolean(link) &&
+      linkHasLocale(link.locales, languageCode) &&
+      linkMatchesQuery(link, languageCode, query),
+    [languageCode, query],
+  );
+
+  const groupedSections = useMemo(() => {
+    if (!groups.length) {
+      const ungrouped = [...links]
+        .sort((a, b) => (a.sortWeight ?? 0) - (b.sortWeight ?? 0) || a.id - b.id)
+        .filter(visibleLink);
+      return ungrouped.length || !searching
+        ? [{ id: 'ungrouped', name: t('resources.ungrouped'), links: ungrouped }]
+        : [];
+    }
+    return groups
+      .map((group) => ({
+        id: group.id,
+        name: group.name,
+        links: (group.linkIds || [])
+          .map((id) => linkById.get(id))
+          .filter(visibleLink),
+      }))
+      .filter((section) => section.links.length > 0 || !searching);
+  }, [groups, links, linkById, visibleLink, searching, t]);
+
+  const visibleCount = groupedSections.reduce((sum, section) => sum + section.links.length, 0);
+  const hasAnyLocaleLinks = links.some((link) => linkHasLocale(link.locales, languageCode));
+
+  const renderCard = (link) => {
+    const fields = displayFieldsForLocale(link, languageCode);
+    if (!fields?.url) return null;
+    return (
+      <ExternalLink
+        key={link.id}
+        href={fields.url}
+        className="resources-page__card resources-page__card--link"
+      >
+        <div className="resources-page__card-copy">
+          <div className="resources-page__card-title-row">
+            <strong className="resources-page__card-title">{fields.title}</strong>
+          </div>
+          {fields.description ? (
+            <p className="resources-page__card-description">{fields.description}</p>
+          ) : null}
+          <div className="resources-page__card-meta">
+            <span>{hostFromUrl(fields.url)}</span>
+          </div>
+        </div>
+        <ExternalLinkIcon size={18} color="var(--color-white-t70)" />
+      </ExternalLink>
+    );
   };
 
   return (
@@ -115,148 +188,78 @@ const ResourcesPage = () => {
         <div className="resources-page__container page-content-70rem">
           <header className="resources-page__header">
             <div className="resources-page__heading">
-              <h1>{isMy ? t('resources.titleMy') : t('resources.title')}</h1>
-              <p>{isMy ? t('resources.subtitleMy') : t('resources.subtitle')}</p>
+              <h1>{t('resources.title')}</h1>
+              <p>{t('resources.subtitle')}</p>
             </div>
             <div className="resources-page__header-actions">
-              {user && !managingCatalog ? (
-                <Link
-                  to={isMy ? '/resources' : '/resources/my'}
-                  className="btn-fill-secondary"
-                >
-                  {isMy ? t('resources.allClusters') : t('resources.myClusters')}
-                </Link>
-              ) : null}
-              {user && !managingCatalog ? (
-                <button type="button" className="btn-fill-primary" onClick={() => setCreating(true)}>
-                  {t('resources.createCluster')}
-                </button>
-              ) : null}
               {isAdmin ? (
-                <button
-                  type="button"
-                  className={managingCatalog ? 'btn-fill-secondary' : 'btn-fill-primary'}
-                  onClick={() => setManagingCatalog((value) => !value)}
-                >
-                  {managingCatalog ? t('buttons.done', { ns: 'common' }) : t('resources.manageCatalog')}
-                </button>
+                <Link to="/resources/edit" className="btn-fill-primary">
+                  {t('buttons.edit', { ns: 'common' })}
+                </Link>
               ) : null}
             </div>
           </header>
 
-          {managingCatalog && isAdmin ? (
-            <ResourcesCatalogAdmin languageMap={languageMap} />
+          <div
+            className="resources-page__language-slice"
+            role="group"
+            aria-label={t('resources.language.label')}
+          >
+            {availableCodes.map((code) => (
+              <button
+                key={code}
+                type="button"
+                className={`resources-page__lang-btn${
+                  languageCode === code ? ' resources-page__lang-btn--active' : ''
+                }`}
+                onClick={() => setSelectedLanguage(code)}
+              >
+                <img src={languageFlagSrc(code, languageMap)} alt="" />
+                <span>{languageLabel(code, languageMap)}</span>
+              </button>
+            ))}
+          </div>
+
+          <div className="resources-page__search">
+            <input
+              type="search"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder={t('resources.searchPlaceholder')}
+            />
+          </div>
+
+          {loading ? (
+            <div className="loading-message">{t('loading.generic', { ns: 'common' })}</div>
+          ) : loadError ? (
+            <div className="no-items-message">{t('resources.errors.loadFailed')}</div>
+          ) : !links.length ? (
+            <p className="resources-page__empty">{t('resources.empty')}</p>
+          ) : visibleCount === 0 ? (
+            <p className="resources-page__empty">
+              {searching
+                ? t('resources.emptySearch')
+                : hasAnyLocaleLinks
+                  ? t('resources.empty')
+                  : t('resources.language.emptySlice')}
+            </p>
           ) : (
-            <>
-              <div className="resources-page__search">
-                <input
-                  type="search"
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                  placeholder={t('resources.searchPlaceholder')}
-                />
-                <CustomSelect
-                  options={sortOptions}
-                  value={sortOptions.find((option) => option.value === sort)}
-                  onChange={(option) => setSort(option?.value || 'RECENT')}
-                  width="10rem"
-                />
-                {isAdmin && !isMy ? (
-                  <CustomSelect
-                    options={viewModeOptions}
-                    value={viewModeOptions.find((option) => option.value === viewMode)}
-                    onChange={(option) => setViewMode(option?.value || String(UsefulLinkClusterViewModes.PUBLIC))}
-                    width="12rem"
-                  />
-                ) : null}
-              </div>
-
-              {loading ? (
-                <div className="loading-message">{t('loading.generic', { ns: 'common' })}</div>
-              ) : loadError ? (
-                <div className="no-items-message">{t('resources.errors.loadFailed')}</div>
-              ) : clusters.length === 0 ? (
-                <p className="resources-page__empty">
-                  {isMy
-                    ? t('resources.emptyMine')
-                    : query.trim()
-                      ? t('resources.emptySearch')
-                      : t('resources.empty')}
-                </p>
-              ) : (
-                <div className="resources-page__clusters">
-                  {clusters.map((cluster) => (
-                    <Link
-                      key={cluster.id}
-                      to={`/resources/${cluster.linkCode || cluster.id}`}
-                      className="resources-page__cluster-card"
-                    >
-                      {cluster.iconUrl ? (
-                        <img src={cluster.iconUrl} alt="" className="resources-page__cluster-icon" />
-                      ) : null}
-                      <div className="resources-page__card-copy">
-                        <div className="resources-page__card-title-row">
-                          <strong className="resources-page__card-title">{cluster.name}</strong>
-                          {cluster.isPinned ? <PinIcon size="16px" color="var(--color-white)" /> : null}
-                          {cluster.isOfficial ? (
-                            <span className="resources-page__badge resources-page__badge--official">
-                              {t('resources.badges.official')}
-                            </span>
-                          ) : null}
-                        </div>
-                        {cluster.description ? (
-                          <p className="resources-page__card-description">{cluster.description}</p>
-                        ) : null}
-                        {(cluster.tags || []).length ? (
-                          <div className="resources-page__tag-chips">
-                            {cluster.tags.map((tag) => (
-                              <span
-                                key={tag.id}
-                                className="resources-page__tag-chip"
-                                style={{ borderColor: tag.color, background: `${tag.color}40` }}
-                              >
-                                {tag.name}
-                              </span>
-                            ))}
-                          </div>
-                        ) : null}
-                        <div className="resources-page__card-meta">
-                          <span>
-                            {cluster.owner?.nickname || cluster.owner?.username || ''}
-                          </span>
-                          <span>
-                            {t('resources.itemCount', {
-                              count: cluster.itemCount || 0,
-                              plural: (cluster.itemCount || 0) === 1 ? '' : 's',
-                            })}
-                          </span>
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
+            <div className="resources-page__groups">
+              {groupedSections.map((section) =>
+                section.links.length === 0 ? null : (
+                  <section key={section.id} className="resources-page__group">
+                    <h2>{section.name}</h2>
+                    <div className="resources-page__list">
+                      {section.links.map(renderCard)}
+                    </div>
+                  </section>
+                ),
               )}
-
-              {clusters.length < total ? (
-                <button
-                  type="button"
-                  className="btn-fill-secondary"
-                  onClick={() => loadClusters({ append: true, nextOffset: offset })}
-                >
-                  {t('resources.loadMore')}
-                </button>
-              ) : null}
-            </>
+            </div>
           )}
         </div>
         <Footer />
       </div>
-      {creating ? (
-        <CreateClusterPopup
-          onClose={() => setCreating(false)}
-          onCreate={handleCreate}
-        />
-      ) : null}
     </>
   );
 };
