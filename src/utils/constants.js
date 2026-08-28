@@ -5,6 +5,12 @@ export const LevelPackViewModes = {
     PRIVATE: 3,
     FORCED_PRIVATE: 4
   };
+
+export const UsefulLinkClusterViewModes = {
+  PUBLIC: 1,
+  LINKONLY: 2,
+  PRIVATE: 3,
+};
   
   export const LevelPackCSSFlags = {
     THEME_DEFAULT: 0,

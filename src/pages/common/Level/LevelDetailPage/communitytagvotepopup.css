@@ -129,12 +129,16 @@
 .community-tag-vote-popup .community-tag-vote-popup__icon {
   width: 1.25rem;
   height: 1.25rem;
-  border-radius: 50%;
-  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+}
+
+.community-tag-vote-popup .community-tag-vote-popup__icon[data-letter-only="true"] {
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: var(--tag-bg-color, transparent);
 }
 
 .community-tag-vote-popup .community-tag-vote-popup__icon img {

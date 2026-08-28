@@ -82,6 +82,20 @@
         "description": "Ukrywa grafiki postaci na stronie zgłoszeń."
       }
     },
+    "navigation": {
+      "title": "Nawigacja",
+      "dropdownClickMode": {
+        "legend": "Kliknięcie sekcji paska nawigacji",
+        "cycle": {
+          "label": "Przełączaj kolejne linki (domyślne)",
+          "description": "Kliknięcie sekcji paska otwiera jej pierwszą stronę, a każde kolejne kliknięcie następną. Menu zostaje otwarte, żeby było widać bieżącą stronę. Zamyka się po 5 sekundach albo szybciej, gdy odjedziesz kursorem; następne kliknięcie znowu zaczyna od pierwszej strony."
+        },
+        "pin": {
+          "label": "Przypnij otwarte menu",
+          "description": "Kliknięcie sekcji paska przypina menu bez przechodzenia do strony. Stronę wybierasz z listy."
+        }
+      }
+    },
     "privacy": {
       "title": "Prywatność",
       "publicFollows": {

@@ -90,8 +90,22 @@ function TargetIcon({ size = 20, color = 'currentColor' }) {
   );
 }
 
+function integerInputValue(value) {
+  if (value == null || value === '') return '';
+  const match = String(value).match(/^\d+/);
+  return match ? match[0] : '';
+}
+
 function cloneCompareForm(raw) {
-  return { ...EMPTY_COMPARE, ...(raw || {}) };
+  const merged = { ...EMPTY_COMPARE, ...(raw || {}) };
+  return {
+    ePerfect: integerInputValue(merged.ePerfect),
+    perfect: integerInputValue(merged.perfect),
+    lPerfect: integerInputValue(merged.lPerfect),
+    tooEarly: integerInputValue(merged.tooEarly),
+    early: integerInputValue(merged.early),
+    late: integerInputValue(merged.late),
+  };
 }
 
 function compareFormsEqual(a, b) {
@@ -570,6 +584,7 @@ const PassScoreCalculatorPage = () => {
   };
 
   const patchCompare = (key, value) => {
+    if (value !== '' && !/^\d+$/.test(String(value))) return;
     setDraftCompareForm((prev) => ({ ...cloneCompareForm(prev), [key]: value }));
   };
 
@@ -826,15 +841,17 @@ const PassScoreCalculatorPage = () => {
               values={draftCompareForm}
               onChange={(e) => patchCompare(e.target.name, e.target.value)}
               showScore={false}
+              integerOnly
             />
             <PopupSaveCancel onCancel={closeComparePopup} onSave={saveComparePopup}>
               <button
                 type="button"
                 className="pass-score-calculator__btn pass-score-calculator__btn--ghost pass-score-calculator__btn--icon"
                 onClick={importCompareFromForm}
+                title={t('passSubmission.calculator.compareInputs.copyJudgementsTooltip')}
               >
                 <ImportIcon size="16px" color="currentColor" />
-                {t('passSubmission.calculator.compareInputs.importJudgements')}
+                {t('passSubmission.calculator.compareInputs.copyJudgements')}
               </button>
             </PopupSaveCancel>
           </div>

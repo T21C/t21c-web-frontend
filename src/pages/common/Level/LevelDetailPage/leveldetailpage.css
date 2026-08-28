@@ -3608,11 +3608,11 @@
   position: relative;
   flex-shrink: 0;
   z-index: calc(100 - var(--tag-index, 0));
-  overflow: hidden;
 }
 
 .level-detail .level-tags-container .tag-icon-preview[data-letter-only="true"] {
   border-radius: 50%;
+  overflow: hidden;
   background-color: var(--tag-bg-color, transparent);
   -webkit-backdrop-filter: brightness(40%);
   backdrop-filter: brightness(40%);
@@ -3730,14 +3730,13 @@
 
 .tags-dropdown .tag-chip-icon {
   width: 1.5rem;
+  height: 1.5rem;
   object-fit: contain;
-  border-radius: 2px;
 }
 
 .tags-dropdown .tag-chip-icon-wrap {
   width: 1.5rem;
   height: 1.5rem;
-  overflow: hidden;
   flex-shrink: 0;
 }
 

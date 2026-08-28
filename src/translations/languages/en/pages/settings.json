@@ -69,6 +69,20 @@
         "description": "Hides character art on the submission landing page and shows Adofai / creator icons instead."
       }
     },
+    "navigation": {
+      "title": "Navigation",
+      "dropdownClickMode": {
+        "legend": "Navbar section click",
+        "cycle": {
+          "label": "Cycle through links (default)",
+          "description": "Clicking a navbar section goes to its first page, then the next page on each click. The menu stays open so you can see the current page. It closes after 5 seconds, or sooner if you move the pointer away, and the next click starts at the first page again."
+        },
+        "pin": {
+          "label": "Pin menu open",
+          "description": "Clicking a navbar section pins the dropdown open without navigating. Pick a page from the menu."
+        }
+      }
+    },
     "privacy": {
       "title": "Privacy",
       "publicFollows": {

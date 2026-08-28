@@ -880,19 +880,22 @@
 /* Level tag badge - normal/compact list modes (under song) */
 .level-card .song-wrapper .level-tags-wrapper .level-tag-badge {
   padding: 0;
-  border-radius: 50%;
   aspect-ratio: 1/1;
   display: flex;
   width: 1.1rem;
   align-items: center;
   justify-content: center;
+  color: var(--tag-text-color, inherit);
+  filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.5));
+  position: relative;
+}
+
+.level-card .song-wrapper .level-tags-wrapper .level-tag-badge[data-letter-only="true"] {
+  border-radius: 50%;
   background-color: var(--tag-bg-color, transparent);
   -webkit-backdrop-filter: brightness(40%);
   backdrop-filter: brightness(40%);
-  color: var(--tag-text-color, inherit);
-  filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.5));
   overflow: hidden;
-  position: relative;
 }
 
 

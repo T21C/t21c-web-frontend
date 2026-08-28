@@ -39,6 +39,7 @@
   },
   "player": {
     "title": "플레이어",
+    "listPosition": "목록 {{position}}위",
     "stats": {
       "rankedScore": "공식 점수",
       "totalScoreV2": "총 점수",

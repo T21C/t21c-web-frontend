@@ -216,6 +216,7 @@ export default function CommunityTagVotePopup({
                         >
                           <span
                             className="community-tag-vote-popup__icon"
+                            data-letter-only={!tag.icon}
                             title={communityTagHoverTitle(tag)}
                           >
                             <TagConfidenceBar score={tag.score} show>

@@ -463,6 +463,7 @@ const LevelCard = ({
           <div
             key={tag.id}
             className="level-tag-badge"
+            data-letter-only={!tag.icon}
             style={{
               '--tag-bg-color': `${tag.color}50`,
               '--tag-border-color': tag.color,

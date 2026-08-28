@@ -837,10 +837,11 @@ const LeaderboardPage = () => {
                   </p>
                 )
               }
-              renderItem={(playerStat) => (
+              renderItem={(playerStat, index) => (
                 <PlayerCard
                   currSort={pastMode ? historyMetric : sortBy}
                   player={playerStat}
+                  listIndex={index}
                   historical={pastMode}
                   onCreatorAssignmentClick={pastMode ? undefined : handleCreatorAssignmentClick}
                 />
