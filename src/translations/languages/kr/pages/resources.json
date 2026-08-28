@@ -29,6 +29,8 @@
       "title": "제목",
       "url": "URL",
       "urlPlaceholder": "https://www.notion.so/…",
+      "shorthand": "약칭",
+      "shorthandPlaceholder": "TUF Notion",
       "description": "설명"
     },
     "create": {

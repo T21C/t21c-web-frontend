@@ -14,7 +14,7 @@ import { normalizeLanguage } from '@/translations/config';
 import {
   availableSliceCodes,
   displayFieldsForLocale,
-  hostFromUrl,
+  linkDisplayHost,
   languageFlagSrc,
   languageLabel,
   linkHasLocale,
@@ -32,9 +32,9 @@ function applyCatalog(data) {
 
 function linkSearchHaystack(link, languageCode) {
   const locale = displayFieldsForLocale(link, languageCode);
-  const parts = [locale?.title, locale?.description, locale?.url];
+  const parts = [locale?.title, locale?.description, locale?.url, locale?.shorthand];
   for (const row of link?.locales || []) {
-    parts.push(row.title, row.description, row.url);
+    parts.push(row.title, row.description, row.url, row.shorthand);
   }
   return parts.map((value) => String(value || '').toLowerCase()).join('\n');
 }
@@ -173,7 +173,7 @@ const ResourcesPage = () => {
             <p className="resources-page__card-description">{fields.description}</p>
           ) : null}
           <div className="resources-page__card-meta">
-            <span>{hostFromUrl(fields.url)}</span>
+            <span>{linkDisplayHost(fields.url, fields.shorthand)}</span>
           </div>
         </div>
         <ExternalLinkIcon size={18} color="var(--color-white-t70)" />
