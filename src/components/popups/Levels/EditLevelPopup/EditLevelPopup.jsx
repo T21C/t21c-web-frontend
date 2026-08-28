@@ -865,9 +865,9 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                     <div
                       key={tag.id}
                       className="edit-level-popup__tag-icon"
+                      data-letter-only={!tag.icon}
                       style={{
-                        backgroundColor: `${tag.color}aa`,
-                        '--tag-bg-color': tag.color
+                        '--tag-bg-color': `${tag.color}aa`,
                       }}
                       title={tag.name}
                     >
