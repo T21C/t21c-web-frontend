@@ -191,7 +191,6 @@ function CommunityTagScoringFields({
   t,
   includeDescription = false,
   includeAssignment = true,
-  includeRequireTopPlay = true,
   inheritFromGroup = false,
   tagGroups = [],
   inactive = false,
@@ -215,10 +214,16 @@ function CommunityTagScoringFields({
   const scoringModeValue =
     scoringModeOptions.find((option) => option.value === (value.scoringMode || ''))
     || scoringModeOptions[0];
-  const requireTopPlayOptions = [
-    { value: 'false', label: t('difficulty.tags.fields.requireTopPlayOff') },
-    { value: 'true', label: t('difficulty.tags.fields.requireTopPlayOn') },
-  ];
+  const requireTopPlayOptions = inheritFromGroup
+    ? [
+        { value: '', label: t('difficulty.tags.fields.inherit') },
+        { value: 'true', label: t('difficulty.tags.fields.requireTopPlayOn') },
+        { value: 'false', label: t('difficulty.tags.fields.requireTopPlayOff') },
+      ]
+    : [
+        { value: 'false', label: t('difficulty.tags.fields.requireTopPlayOff') },
+        { value: 'true', label: t('difficulty.tags.fields.requireTopPlayOn') },
+      ];
   const requireTopPlayForm = requireTopPlayFormValue(value.requireTopPlay);
   const requireTopPlayValue =
     requireTopPlayOptions.find((option) => option.value === requireTopPlayForm)
@@ -252,10 +257,15 @@ function CommunityTagScoringFields({
               isSearchable={false}
             />
           </div>
-          {includeRequireTopPlay ? (
           <div className="form-group">
             <label>{t('difficulty.tags.fields.requireTopPlay')}</label>
-            <p className="form-hint">{t('difficulty.tags.fields.requireTopPlayHint')}</p>
+            <p className="form-hint">
+              {t(
+                inheritFromGroup
+                  ? 'difficulty.tags.fields.requireTopPlayHint'
+                  : 'difficulty.tags.fields.requireTopPlayGroupHint',
+              )}
+            </p>
             <CustomSelect
               options={requireTopPlayOptions}
               value={requireTopPlayValue}
@@ -265,7 +275,6 @@ function CommunityTagScoringFields({
               isSearchable={false}
             />
           </div>
-          ) : null}
           <div className="form-group">
             <div className="form-group-label-with-info">
               <label>{t('difficulty.tags.fields.wilsonZ')}</label>
@@ -1073,7 +1082,8 @@ const DifficultyPage = () => {
     try {
       await toast.promise(
         (async () => {
-          const { requireTopPlay: _groupTopPlay, ...groupKnobs } = communityTagKnobsPayload(editingGroup);
+          const groupKnobs = communityTagKnobsPayload(editingGroup);
+          if (!groupKnobs.requireTopPlay) groupKnobs.requireTopPlay = 'false';
           await api.put(
             routes.database.difficulties.tagGroup(editingGroup.id),
             { name, ...groupKnobs },
@@ -1922,7 +1932,6 @@ const DifficultyPage = () => {
                         value={editingGroup}
                         onChange={setEditingGroup}
                         t={t}
-                        includeRequireTopPlay={false}
                       />
                       <div className="modal-actions">
                         <button type="submit" className="confirm-button">{t('difficulty.groups.edit.updateButton')}</button>
