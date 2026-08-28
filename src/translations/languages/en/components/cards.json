@@ -48,6 +48,7 @@
   },
   "player": {
     "title": "Player",
+    "listPosition": "List position {{position}}",
     "stats": {
       "rankedScore": "Ranked Score",
       "totalScoreV2": "Total Score",

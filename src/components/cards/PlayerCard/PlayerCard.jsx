@@ -18,7 +18,7 @@ import { TUFStellarIcon } from "@/components/common/icons";
 const diffFields = ["topDiff", "top12kDiff"];
 const passes = ["totalPasses", "universalPassCount", "worldsFirstCount", "worldsFirstPPCount"];
 
-const PlayerCard = ({ player, onCreatorAssignmentClick, historical = false }) => {
+const PlayerCard = ({ player, listIndex, onCreatorAssignmentClick, historical = false }) => {
   const { sortBy } = useContext(PlayerContext);
   const { t } = useTranslation("components");
   const { user } = useAuth();
@@ -94,6 +94,7 @@ const PlayerCard = ({ player, onCreatorAssignmentClick, historical = false }) =>
     
   const rankValue = player.rank ?? player.rankedScoreRank ?? 0;
   const rankStr = String(rankValue);
+  const listPosition = typeof listIndex === 'number' && listIndex >= 0 ? listIndex + 1 : null;
   const profileTo = `/profile/${player.id}`;
 
   let primaryField = null;
@@ -211,6 +212,15 @@ const PlayerCard = ({ player, onCreatorAssignmentClick, historical = false }) =>
             )}
           </div>
         </div>
+
+        {listPosition != null && (
+          <span
+            className="player-card__list-index"
+            aria-label={t('cards.player.listPosition', { position: listPosition })}
+          >
+            #{listPosition}
+          </span>
+        )}
 
         {!historical && primaryField && (
         <div className="info-wrapper">

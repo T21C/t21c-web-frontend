@@ -37,6 +37,7 @@
   },
   "player": {
     "title": "Joueur",
+    "listPosition": "Position dans la liste {{position}}",
     "stats": {
       "rankedScore": "Score Classement",
       "generalScore": "Score Général",

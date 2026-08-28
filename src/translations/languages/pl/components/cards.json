@@ -38,6 +38,7 @@
   },
   "player": {
     "title": "Gracz",
+    "listPosition": "Pozycja na liście {{position}}",
     "stats": {
       "rankedScore": "Wynik rankingowy",
       "totalScoreV2": "Wynik całkowity",
