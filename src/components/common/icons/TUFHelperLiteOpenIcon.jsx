@@ -2,7 +2,7 @@
 import React from 'react';
 import { TUFHelperLiteGradient } from './TUFHelperLiteIcon';
 
-export const TUFHelperLiteOpenIcon = ({ size = 24, className = '', ...props }) => {
+export const TUFHelperLiteOpenIcon = React.memo(function TUFHelperLiteOpenIcon({ size = 24, className = '', ...props }) {
   const gradientId = `tufhelperlite-open-${React.useId().replace(/:/g, '')}`;
 
   return (
@@ -32,6 +32,6 @@ export const TUFHelperLiteOpenIcon = ({ size = 24, className = '', ...props }) =
       </g>
     </svg>
   );
-};
+});
 
 export default TUFHelperLiteOpenIcon;

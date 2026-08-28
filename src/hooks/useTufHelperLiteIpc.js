@@ -155,12 +155,39 @@ const setTufHelperLiteHealthSnapshot = (nextSnapshot) => {
   tufHelperLiteHealthListeners.forEach((listener) => listener());
 };
 
+const areSnapshotValuesEqual = (left, right) => {
+  if (Object.is(left, right)) return true;
+  if (typeof left !== 'object' || left == null || typeof right !== 'object' || right == null) {
+    return false;
+  }
+  if (Array.isArray(left) || Array.isArray(right)) {
+    return Array.isArray(left) && Array.isArray(right) &&
+      left.length === right.length &&
+      left.every((value, index) => areSnapshotValuesEqual(value, right[index]));
+  }
+
+  const leftKeys = Object.keys(left);
+  const rightKeys = Object.keys(right);
+  return leftKeys.length === rightKeys.length &&
+    leftKeys.every((key) => Object.prototype.hasOwnProperty.call(right, key) &&
+      areSnapshotValuesEqual(left[key], right[key]));
+};
+
 const setTufHelperLiteJobsSnapshot = (nextSnapshot) => {
+  if (areSnapshotValuesEqual(tufHelperLiteJobsSnapshot.jobs, nextSnapshot.jobs)) return;
   tufHelperLiteJobsSnapshot = nextSnapshot;
   tufHelperLiteJobsListeners.forEach((listener) => listener());
 };
 
 const setTufHelperLiteDownloadedIdsSnapshot = (nextSnapshot) => {
+  const currentIds = tufHelperLiteDownloadedIdsSnapshot.levelIdSet;
+  const nextIds = nextSnapshot.levelIdSet;
+  if (
+    currentIds.size === nextIds.size &&
+    Array.from(currentIds).every((levelId) => nextIds.has(levelId))
+  ) {
+    return;
+  }
   tufHelperLiteDownloadedIdsSnapshot = nextSnapshot;
   tufHelperLiteDownloadedIdsListeners.forEach((listener) => listener());
 };
@@ -652,38 +679,81 @@ const subscribeTufHelperLiteIntegration = (listener) => {
   return () => tufHelperLiteIntegrationListeners.delete(listener);
 };
 
+const stopTufHelperLiteJobsPolling = () => {
+  if (tufHelperLiteJobsPollId == null) return;
+  window.clearInterval(tufHelperLiteJobsPollId);
+  tufHelperLiteJobsPollId = null;
+};
+
+const startTufHelperLiteJobsPolling = () => {
+  if (document.hidden || tufHelperLiteJobsListeners.size === 0 || tufHelperLiteJobsPollId != null) return;
+  void checkTufHelperLiteJobs();
+  tufHelperLiteJobsPollId = window.setInterval(checkTufHelperLiteJobs, IPC_JOBS_POLL_MS);
+};
+
+const handleTufHelperLiteJobsVisibilityChange = () => {
+  if (document.hidden) stopTufHelperLiteJobsPolling();
+  else startTufHelperLiteJobsPolling();
+};
+
 const subscribeTufHelperLiteJobs = (listener) => {
   tufHelperLiteJobsListeners.add(listener);
 
-  if (tufHelperLiteJobsPollId == null) {
-    void checkTufHelperLiteJobs();
-    tufHelperLiteJobsPollId = window.setInterval(checkTufHelperLiteJobs, IPC_JOBS_POLL_MS);
+  if (tufHelperLiteJobsListeners.size === 1) {
+    document.addEventListener('visibilitychange', handleTufHelperLiteJobsVisibilityChange);
+    startTufHelperLiteJobsPolling();
   }
 
   return () => {
     tufHelperLiteJobsListeners.delete(listener);
 
-    if (tufHelperLiteJobsListeners.size === 0 && tufHelperLiteJobsPollId != null) {
-      window.clearInterval(tufHelperLiteJobsPollId);
-      tufHelperLiteJobsPollId = null;
+    if (tufHelperLiteJobsListeners.size === 0) {
+      document.removeEventListener('visibilitychange', handleTufHelperLiteJobsVisibilityChange);
+      stopTufHelperLiteJobsPolling();
     }
   };
+};
+
+const stopTufHelperLiteDownloadedIdsPolling = () => {
+  if (tufHelperLiteDownloadedIdsPollId == null) return;
+  window.clearInterval(tufHelperLiteDownloadedIdsPollId);
+  tufHelperLiteDownloadedIdsPollId = null;
+};
+
+const startTufHelperLiteDownloadedIdsPolling = () => {
+  if (
+    document.hidden ||
+    tufHelperLiteDownloadedIdsListeners.size === 0 ||
+    tufHelperLiteDownloadedIdsPollId != null
+  ) {
+    return;
+  }
+  void checkTufHelperLiteDownloadedIds();
+  tufHelperLiteDownloadedIdsPollId = window.setInterval(
+    checkTufHelperLiteDownloadedIds,
+    IPC_DOWNLOADED_IDS_POLL_MS,
+  );
+};
+
+const handleTufHelperLiteDownloadedIdsVisibilityChange = () => {
+  if (document.hidden) stopTufHelperLiteDownloadedIdsPolling();
+  else startTufHelperLiteDownloadedIdsPolling();
 };
 
 const subscribeTufHelperLiteDownloadedIds = (listener) => {
   tufHelperLiteDownloadedIdsListeners.add(listener);
 
-  if (tufHelperLiteDownloadedIdsPollId == null) {
-    void checkTufHelperLiteDownloadedIds();
-    tufHelperLiteDownloadedIdsPollId = window.setInterval(checkTufHelperLiteDownloadedIds, IPC_DOWNLOADED_IDS_POLL_MS);
+  if (tufHelperLiteDownloadedIdsListeners.size === 1) {
+    document.addEventListener('visibilitychange', handleTufHelperLiteDownloadedIdsVisibilityChange);
+    startTufHelperLiteDownloadedIdsPolling();
   }
 
   return () => {
     tufHelperLiteDownloadedIdsListeners.delete(listener);
 
-    if (tufHelperLiteDownloadedIdsListeners.size === 0 && tufHelperLiteDownloadedIdsPollId != null) {
-      window.clearInterval(tufHelperLiteDownloadedIdsPollId);
-      tufHelperLiteDownloadedIdsPollId = null;
+    if (tufHelperLiteDownloadedIdsListeners.size === 0) {
+      document.removeEventListener('visibilitychange', handleTufHelperLiteDownloadedIdsVisibilityChange);
+      stopTufHelperLiteDownloadedIdsPolling();
     }
   };
 };
