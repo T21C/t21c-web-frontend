@@ -82,6 +82,20 @@
         "description": "Masque les personnages sur la page de soumission."
       }
     },
+    "navigation": {
+      "title": "Navigation",
+      "dropdownClickMode": {
+        "legend": "Clic sur une section de la barre",
+        "cycle": {
+          "label": "Parcourir les liens (par défaut)",
+          "description": "Un clic sur une section ouvre sa première page, puis la suivante à chaque clic. Le menu reste ouvert pour voir la page actuelle. Il se ferme après 5 secondes, ou plus tôt si vous éloignez le pointeur, et le clic suivant recommence à la première page."
+        },
+        "pin": {
+          "label": "Épingler le menu ouvert",
+          "description": "Un clic sur une section épingle le menu sans naviguer. Choisissez une page dans la liste."
+        }
+      }
+    },
     "privacy": {
       "title": "Confidentialité",
       "publicFollows": {

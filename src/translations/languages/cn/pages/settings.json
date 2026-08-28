@@ -69,6 +69,20 @@
         "description": "在提交页面隐藏吉祥物图案，改为显示adofai / 创作者图标。"
       }
     },
+    "navigation": {
+      "title": "导航",
+      "dropdownClickMode": {
+        "legend": "点击导航栏分组",
+        "cycle": {
+          "label": "循环打开链接（默认）",
+          "description": "点击导航栏分组会进入该组的第一个页面，之后每次点击进入下一个。菜单会保持打开以便看到当前页面。5 秒后关闭，若移开指针则会更快关闭；再次点击会从第一个页面重新开始。"
+        },
+        "pin": {
+          "label": "固定打开菜单",
+          "description": "点击导航栏分组会固定打开下拉菜单，而不会立即跳转。从菜单中选择页面。"
+        }
+      }
+    },
     "privacy": {
       "title": "隐私",
       "publicFollows": {

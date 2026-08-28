@@ -54,16 +54,23 @@ function isNavItemVisible(item) {
   return Boolean(item.to || item.onClick || item.disabled || item.translationKey || item.label);
 }
 
-export function getSectionParentTo(items = []) {
-  const first = items.find(
-    (item) =>
-      isNavItemVisible(item) &&
-      !item.divider &&
-      isInternalNavPath(item.to) &&
-      !item.onClick &&
-      !item.suppressActive,
+function isSectionCycleItem(item) {
+  return (
+    isNavItemVisible(item) &&
+    !item.divider &&
+    !item.disabled &&
+    isInternalNavPath(item.to) &&
+    !item.onClick &&
+    !item.suppressActive
   );
-  return first?.to ?? null;
+}
+
+export function getSectionParentTo(items = []) {
+  return items.find(isSectionCycleItem)?.to ?? null;
+}
+
+export function getSectionCycleTos(items = []) {
+  return items.filter(isSectionCycleItem).map((item) => item.to);
 }
 
 export function pathMatchesNavTo(pathname, to, { exact = false } = {}) {

@@ -5,6 +5,10 @@ import { toast } from 'react-hot-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { useMinimalMotionPreference } from '@/hooks/useMinimalMotionPreference';
 import { useDisableMascotsPreference } from '@/hooks/useDisableMascotsPreference';
+import {
+  NAV_DROPDOWN_CLICK_MODES,
+  useNavDropdownClickModePreference,
+} from '@/hooks/useNavDropdownClickModePreference';
 import { routes } from '@/api/routes';
 import api from '@/utils/api';
 import './settingsSubPage.css';
@@ -19,6 +23,7 @@ const SettingsPreferencesPage = () => {
   const { user, setUser } = useAuth();
   const [minimalMotion, setMinimalMotion] = useMinimalMotionPreference();
   const [disableMascots, setDisableMascots] = useDisableMascotsPreference();
+  const [dropdownClickMode, setDropdownClickMode] = useNavDropdownClickModePreference();
   const [publicFollowsSaving, setPublicFollowsSaving] = useState(false);
 
   const publicFollows = user?.publicFollows !== false;
@@ -50,6 +55,40 @@ const SettingsPreferencesPage = () => {
     <div className="settings-sub-page settings-preferences-page">
       <h1 className="settings-sub-page__title">{t('settings.preferences.title')}</h1>
       <p className="settings-sub-page__text">{t('settings.preferences.subtitle')}</p>
+
+      <section
+        className="settings-preferences-page__section"
+        aria-labelledby="settings-prefs-navigation-heading"
+      >
+        <h2 id="settings-prefs-navigation-heading" className="settings-preferences-page__section-title">
+          {t('settings.preferences.navigation.title')}
+        </h2>
+
+        <fieldset className="settings-preferences-page__radio-group">
+          <legend className="settings-preferences-page__legend">
+            {t('settings.preferences.navigation.dropdownClickMode.legend')}
+          </legend>
+          {NAV_DROPDOWN_CLICK_MODES.map((mode) => (
+            <label key={mode} className="settings-preferences-page__toggle">
+              <input
+                type="radio"
+                name="settings-nav-dropdown-click-mode"
+                value={mode}
+                checked={dropdownClickMode === mode}
+                onChange={() => setDropdownClickMode(mode)}
+              />
+              <span className="settings-preferences-page__toggle-copy">
+                <span className="settings-preferences-page__toggle-label">
+                  {t(`settings.preferences.navigation.dropdownClickMode.${mode}.label`)}
+                </span>
+                <span className="settings-preferences-page__toggle-desc">
+                  {t(`settings.preferences.navigation.dropdownClickMode.${mode}.description`)}
+                </span>
+              </span>
+            </label>
+          ))}
+        </fieldset>
+      </section>
 
       <section
         className="settings-preferences-page__section"
