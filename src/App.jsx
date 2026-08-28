@@ -176,8 +176,7 @@ function App() {
           <Route path="admin/backup" element={<PrivateRoute><Pages.BackupPage /></PrivateRoute>} />
           
           <Route path='about' element={<Pages.AboutUsPage />} />
-          <Route path='resources/my' element={<Pages.ResourcesPage />} />
-          <Route path='resources/:id' element={<Pages.ResourcesClusterDetailPage />} />
+          <Route path='resources/edit' element={<Pages.ResourcesEditPage />} />
           <Route path='resources' element={<Pages.ResourcesPage />} />
           <Route path='privacy-policy' element={<Pages.PrivacyPolicyPage />} />
           <Route path='terms-of-service' element={<Pages.TermsOfServicePage />} />

@@ -1,7 +1,5 @@
 import { isoToEmoji } from '@/utils';
 import { normalizeLanguage } from '@/translations/config';
-import { UsefulLinkClusterViewModes } from '@/utils/constants';
-import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 
 export const DEFAULT_LINK_LANGUAGE = 'en';
 
@@ -68,13 +66,6 @@ export function languageFlagSrc(code, languageMap) {
 
 export function languageLabel(code, languageMap) {
   return languageMap?.[code]?.display || String(code || '').toUpperCase();
-}
-
-export function canEditUsefulLinkCluster(cluster, user) {
-  if (!user || !cluster) return false;
-  if (hasFlag(user, permissionFlags.SUPER_ADMIN)) return true;
-  if (cluster.ownerId !== user.id) return false;
-  return cluster.viewMode !== UsefulLinkClusterViewModes.PUBLIC;
 }
 
 export function hostFromUrl(url) {
