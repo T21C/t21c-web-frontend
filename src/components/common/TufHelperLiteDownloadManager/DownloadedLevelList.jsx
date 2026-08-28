@@ -1,3 +1,4 @@
+import { useEffect, useMemo, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import MarqueeText from '@/components/common/display/MarqueeText/MarqueeText';
@@ -19,6 +20,42 @@ const UPDATE_LABEL_KEYS = {
   updating: 'updatingLevel',
   failed: 'updateRetry',
 };
+const MOBILE_LEVEL_ROW_QUERY = '(max-width: 700px)';
+const DESKTOP_LEVEL_ROW_HEIGHT = 84;
+const MOBILE_LEVEL_ROW_HEIGHT = 184;
+const MAX_TIMEOUT_DELAY = 2_147_483_647;
+
+const parseExpiry = (value) => {
+  if (!value) return null;
+  const timestamp = Date.parse(value);
+  return Number.isFinite(timestamp) ? timestamp : null;
+};
+
+const getUpdateStatus = (level, updateStates, now) => {
+  const override = updateStates[level.id];
+  const status = override || { state: level.updateState || 'idle' };
+  const expiry = parseExpiry(override?.updateStateExpiresAtUtc ?? level.updateStateExpiresAtUtc);
+  if (status.state === 'up_to_date' && expiry !== null && now >= expiry) {
+    return { ...status, state: 'idle' };
+  }
+  return status;
+};
+
+const useLevelRowHeight = () => {
+  const [mobile, setMobile] = useState(() => (
+    typeof window !== 'undefined' && window.matchMedia(MOBILE_LEVEL_ROW_QUERY).matches
+  ));
+
+  useEffect(() => {
+    const query = window.matchMedia(MOBILE_LEVEL_ROW_QUERY);
+    const update = (event) => setMobile(event.matches);
+    setMobile(query.matches);
+    query.addEventListener('change', update);
+    return () => query.removeEventListener('change', update);
+  }, []);
+
+  return mobile ? MOBILE_LEVEL_ROW_HEIGHT : DESKTOP_LEVEL_ROW_HEIGHT;
+};
 
 const LoadError = ({ message, onRetry, position = 'bottom', t }) => (
   <div className={`tufhelper-download-manager__list-status is-error is-${position}`} role="alert">
@@ -28,15 +65,46 @@ const LoadError = ({ message, onRetry, position = 'bottom', t }) => (
   </div>
 );
 
+const DownloadedLevelSkeleton = () => (
+  <article
+    className="tufhelper-download-manager__level-row is-skeleton"
+    role="presentation"
+    aria-hidden="true"
+  >
+    <div className="tufhelper-download-manager__difficulty">
+      <span className="tufhelper-download-manager__skeleton-block is-difficulty" />
+    </div>
+    <div className="tufhelper-download-manager__level-info">
+      <span className="tufhelper-download-manager__skeleton-block is-meta" />
+      <span className="tufhelper-download-manager__skeleton-block is-title" />
+    </div>
+    <div className="tufhelper-download-manager__level-creator">
+      <span className="tufhelper-download-manager__skeleton-block is-label" />
+      <span className="tufhelper-download-manager__skeleton-block is-value" />
+    </div>
+    <div className="tufhelper-download-manager__level-size">
+      <span className="tufhelper-download-manager__skeleton-block is-label" />
+      <span className="tufhelper-download-manager__skeleton-block is-value is-short" />
+    </div>
+    <div className="tufhelper-download-manager__level-update-cell">
+      <span className="tufhelper-download-manager__skeleton-block is-action" />
+    </div>
+  </article>
+);
+
 export const DownloadedLevelList = ({
   levels,
+  itemsByIndex,
   firstItemIndex,
+  totalCount,
+  positioned,
   loading,
   errors,
   hasNext,
   hasPrevious,
   loadNext,
   loadPrevious,
+  onVisibleRangeChange,
   retryInitial,
   updateStates,
   onCheckForUpdate,
@@ -46,10 +114,29 @@ export const DownloadedLevelList = ({
   locale,
 }) => {
   const { difficultyDict, loading: difficultiesLoading } = useDifficultyContext();
+  const levelRowHeight = useLevelRowHeight();
+  const [expiryNow, setExpiryNow] = useState(() => Date.now());
+  const nearestExpiry = useMemo(() => levels.reduce((nearest, level) => {
+    const override = updateStates[level.id];
+    const state = override?.state || level.updateState || 'idle';
+    if (state !== 'up_to_date') return nearest;
+    const expiry = parseExpiry(override?.updateStateExpiresAtUtc ?? level.updateStateExpiresAtUtc);
+    if (expiry === null || expiry <= expiryNow) return nearest;
+    return nearest === null ? expiry : Math.min(nearest, expiry);
+  }, null), [expiryNow, levels, updateStates]);
+
+  useEffect(() => {
+    if (nearestExpiry === null) return undefined;
+    const delay = Math.min(MAX_TIMEOUT_DELAY, Math.max(0, nearestExpiry - Date.now()) + 10);
+    const timer = window.setTimeout(() => setExpiryNow(Date.now()), delay);
+    return () => window.clearTimeout(timer);
+  }, [nearestExpiry]);
+
   const difficultiesReady = !difficultiesLoading && levels.every((level) => difficultyDict[level.diffId]?.icon);
+  const isEmpty = positioned ? totalCount === 0 : levels.length === 0;
   const renderRow = (_virtualIndex, level) => {
     const difficulty = difficultyDict[level.diffId];
-    const updateStatus = updateStates[level.id] || { state: level.updateState || 'idle' };
+    const updateStatus = getUpdateStatus(level, updateStates, expiryNow);
     const updateState = updateStatus.state || 'idle';
     const labelKey = updateState === 'checking' && updateStatus.stage === 'downloading'
       ? 'downloadingToCompare'
@@ -133,26 +220,41 @@ export const DownloadedLevelList = ({
         <div className="tufhelper-download-manager__empty">
           <LoadError message={t('level.tufHelperLiteDownloadManager.loadLevelsFailed')} onRetry={retryInitial} t={t} />
         </div>
-      ) : levels.length === 0 ? (
+      ) : isEmpty ? (
         <div className="tufhelper-download-manager__empty" role="status">
           <DownloadIcon size={26} aria-hidden="true" />
           <strong>{t('level.tufHelperLiteDownloadManager.emptyTitle')}</strong>
           <p>{t('level.tufHelperLiteDownloadManager.emptyDescription')}</p>
         </div>
       ) : (
-        <div className="tufhelper-download-manager__level-list">
+        <div
+          className={`tufhelper-download-manager__level-list${positioned ? ' is-positioned' : ''}`}
+          style={positioned ? { '--tufhelper-level-row-height': `${levelRowHeight}px` } : undefined}
+        >
           {errors.previous ? (
             <LoadError message={t('level.tufHelperLiteDownloadManager.loadMoreFailed')} onRetry={loadPrevious} position="top" t={t} />
           ) : null}
           <Virtuoso
             className="tufhelper-download-manager__virtuoso"
-            data={levels}
-            firstItemIndex={firstItemIndex}
-            computeItemKey={(_index, level) => level.id}
-            itemContent={renderRow}
-            startReached={() => { if (hasPrevious) loadPrevious(); }}
-            endReached={() => { if (hasNext) loadNext(); }}
+            data={positioned ? undefined : levels}
+            totalCount={positioned ? totalCount : undefined}
+            fixedItemHeight={positioned ? levelRowHeight : undefined}
+            firstItemIndex={positioned ? 0 : firstItemIndex}
+            computeItemKey={(index, level) => {
+              const positionedLevel = positioned ? itemsByIndex.get(index) : level;
+              return positionedLevel ? `level-${positionedLevel.id}` : `skeleton-${index}`;
+            }}
+            itemContent={(index, level) => {
+              const positionedLevel = positioned ? itemsByIndex.get(index) : level;
+              return positionedLevel ? renderRow(index, positionedLevel) : <DownloadedLevelSkeleton />;
+            }}
+            startReached={positioned ? undefined : () => { if (hasPrevious) loadPrevious(); }}
+            endReached={positioned ? undefined : () => { if (hasNext) loadNext(); }}
             rangeChanged={({ startIndex, endIndex }) => {
+              if (positioned) {
+                onVisibleRangeChange({ startIndex, endIndex });
+                return;
+              }
               const localStartIndex = startIndex >= firstItemIndex ? startIndex - firstItemIndex : startIndex;
               const localEndIndex = endIndex >= firstItemIndex ? endIndex - firstItemIndex : endIndex;
               if (hasPrevious && localStartIndex <= 5) loadPrevious();
@@ -161,7 +263,7 @@ export const DownloadedLevelList = ({
             increaseViewportBy={{ top: 220, bottom: 220 }}
             role="list"
           />
-          {loading.next || loading.previous ? (
+          {!positioned && (loading.next || loading.previous) ? (
             <div className={`tufhelper-download-manager__list-status is-${loading.previous ? 'top' : 'bottom'}`} role="status">
               <RefreshIcon size={14} color="currentColor" aria-hidden="true" />
               <span>{t('level.tufHelperLiteDownloadManager.loadingLevels')}</span>

@@ -19,13 +19,16 @@ import {
   startTufHelperLiteBatchUpdateCheck,
   getTufHelperLiteBatchUpdateCheckStatus,
   cancelTufHelperLiteBatchUpdateCheck,
+  startTufHelperLiteBatchUpdate,
+  getTufHelperLiteBatchUpdateStatus,
+  cancelTufHelperLiteBatchUpdate,
 } from '@/hooks/useTufHelperLiteIpc';
 import DownloadedLevelList from './DownloadedLevelList';
 import useDownloadedLevelWindow from './useDownloadedLevelWindow';
 import './tufHelperLiteDownloadManager.css';
 
 const ACTIVE_STATES = new Set(['copying', 'verifying', 'switching', 'cleaning']);
-const BATCH_ACTIVE_STATES = new Set(['preparing', 'checking', 'cancelling']);
+const BATCH_ACTIVE_STATES = new Set(['preparing', 'checking', 'updating', 'cancelling']);
 const field = (value, name) => value?.[name] ?? value?.[name.charAt(0).toLowerCase() + name.slice(1)];
 const FOLDER_ERROR_PREFIXES = ['storage_target_', 'selection_token_', 'folder_picker_'];
 
@@ -53,7 +56,11 @@ export const TufHelperLiteDownloadManager = ({
 }) => {
   const { t, i18n } = useTranslation('components');
   const dialogRef = useRef(null);
+  const batchPopoverRef = useRef(null);
+  const batchTriggerRef = useRef(null);
+  const refreshedBatchOperationRef = useRef(null);
   const updatePollsRef = useRef(new Map());
+  const retainedLevelIdsRef = useRef(new Set());
   const [storage, setStorage] = useState(null);
   const [selection, setSelection] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -61,18 +68,26 @@ export const TufHelperLiteDownloadManager = ({
   const [updateStates, setUpdateStates] = useState({});
   const [batch, setBatch] = useState(null);
   const [batchError, setBatchError] = useState(null);
-  const [showBatchConfirmation, setShowBatchConfirmation] = useState(false);
+  const [batchConfirmation, setBatchConfirmation] = useState(null);
   const supported = health.supportsStorageMigration;
   const librarySupported = health.supportsDownloadedLibrary;
+  const positionedPagesSupported = health.supportsPositionedDownloadedPages;
   const updateSupported = health.supportsDownloadedLevelUpdate;
   const batchSupported = health.supportsBatchUpdateCheck;
+  const batchUpdateSupported = health.supportsBatchUpdate;
   const reconnectSupported = health.supportsStorageReconnect;
-  const library = useDownloadedLevelWindow(librarySupported);
+  const library = useDownloadedLevelWindow(librarySupported, positionedPagesSupported);
   const { patchLevel, refreshSummary, reload: reloadLibrary } = library;
   const state = String(field(storage, 'State') || 'idle').toLowerCase();
   const migrationActive = ACTIVE_STATES.has(state);
   const batchState = String(field(batch, 'State') || 'idle').toLowerCase();
+  const batchOperationKind = String(field(batch, 'OperationKind') || 'check').toLowerCase();
   const batchActive = BATCH_ACTIVE_STATES.has(batchState);
+  const availableUpdateCount = batchState === 'completed'
+    ? batchOperationKind === 'update'
+      ? Number(field(batch, 'LevelsFailed')) || 0
+      : Number(field(batch, 'UpdatesAvailable')) || 0
+    : 0;
   const currentDirectory = field(storage, 'CurrentDirectory') || field(storage, 'SourceDirectory');
   const targetDirectory = field(selection, 'Directory') || field(storage, 'TargetDirectory');
   const selectionKind = String(field(selection, 'SelectionKind') || 'migration').toLowerCase();
@@ -107,11 +122,13 @@ export const TufHelperLiteDownloadManager = ({
   const refreshBatch = useCallback(async () => {
     if (!batchSupported) return;
     try {
-      setBatch(await getTufHelperLiteBatchUpdateCheckStatus());
+      setBatch(await (batchOperationKind === 'update' && batchUpdateSupported
+        ? getTufHelperLiteBatchUpdateStatus()
+        : getTufHelperLiteBatchUpdateCheckStatus()));
     } catch {
       // Connection health owns global connection-loss feedback.
     }
-  }, [batchSupported]);
+  }, [batchOperationKind, batchSupported, batchUpdateSupported]);
 
   useEffect(() => {
     dialogRef.current?.focus();
@@ -165,16 +182,37 @@ export const TufHelperLiteDownloadManager = ({
 
   useEffect(() => {
     if (batchState !== 'completed') return;
+    const operationId = field(batch, 'OperationId');
+    const refreshKey = `${batchOperationKind}:${operationId || 'completed'}`;
+    if (refreshedBatchOperationRef.current === refreshKey) return;
+    refreshedBatchOperationRef.current = refreshKey;
+    setUpdateStates({});
     void reloadLibrary();
-  }, [batchState, reloadLibrary]);
+  }, [batch, batchOperationKind, batchState, reloadLibrary]);
 
   useEffect(() => {
     const onKeyDown = (event) => {
-      if (event.key === 'Escape') onClose();
+      if (event.key !== 'Escape') return;
+      if (batchConfirmation) {
+        setBatchConfirmation(null);
+        batchTriggerRef.current?.focus();
+        return;
+      }
+      onClose();
     };
     document.addEventListener('keydown', onKeyDown);
     return () => document.removeEventListener('keydown', onKeyDown);
-  }, [onClose]);
+  }, [batchConfirmation, onClose]);
+
+  useEffect(() => {
+    if (!batchConfirmation) return undefined;
+    const onPointerDown = (event) => {
+      if (batchPopoverRef.current?.contains(event.target) || batchTriggerRef.current?.contains(event.target)) return;
+      setBatchConfirmation(null);
+    };
+    document.addEventListener('pointerdown', onPointerDown);
+    return () => document.removeEventListener('pointerdown', onPointerDown);
+  }, [batchConfirmation]);
 
   useEffect(() => () => {
     updatePollsRef.current.forEach((poll) => {
@@ -187,17 +225,12 @@ export const TufHelperLiteDownloadManager = ({
 
   useEffect(() => {
     const retainedIds = new Set(library.levels.map((level) => level.id));
-    updatePollsRef.current.forEach((poll, id) => {
-      if (!retainedIds.has(id)) {
-        poll.cancelled = true;
-        if (poll.timer) window.clearTimeout(poll.timer);
-        poll.resolve?.();
-        updatePollsRef.current.delete(id);
-      }
-    });
+    retainedLevelIdsRef.current = retainedIds;
     setUpdateStates((current) => {
       const next = Object.fromEntries(
-        Object.entries(current).filter(([id]) => retainedIds.has(Number(id))),
+        Object.entries(current).filter(([id]) => (
+          retainedIds.has(Number(id)) || updatePollsRef.current.has(Number(id))
+        )),
       );
       library.levels.forEach((level) => {
         if (!next[level.id] && level.updateState === 'update_available') {
@@ -253,12 +286,14 @@ export const TufHelperLiteDownloadManager = ({
       }
 
       const nextState = String(field(snapshot, 'UpdateState') || 'up_to_date').toLowerCase();
+      const updateStateExpiresAtUtc = field(snapshot, 'UpdateStateExpiresAtUtc') || null;
       setUpdateStates((current) => ({
         ...current,
-        [level.id]: { state: nextState, progress: 1 },
+        [level.id]: { state: nextState, progress: 1, updateStateExpiresAtUtc },
       }));
       patchLevel(level.id, {
         updateState: nextState,
+        updateStateExpiresAtUtc,
         levelName: field(snapshot, 'Song') || level.levelName,
         artist: field(snapshot, 'Artist') || level.artist,
         creator: field(snapshot, 'Creator') || level.creator,
@@ -282,6 +317,13 @@ export const TufHelperLiteDownloadManager = ({
       if (poll.timer) window.clearTimeout(poll.timer);
       poll.resolve?.();
       updatePollsRef.current.delete(level.id);
+      if (!retainedLevelIdsRef.current.has(level.id)) {
+        setUpdateStates((current) => {
+          const next = { ...current };
+          delete next[level.id];
+          return next;
+        });
+      }
     }
   }, [batchActive, patchLevel, refreshSummary, updateStates, updateSupported, waitForPoll]);
 
@@ -290,9 +332,23 @@ export const TufHelperLiteDownloadManager = ({
     setBatchError(null);
     try {
       setBatch(await startTufHelperLiteBatchUpdateCheck());
-      setShowBatchConfirmation(false);
+      setBatchConfirmation(null);
     } catch (nextError) {
       setBatchError(toUiError(nextError, t('level.tufHelperLiteDownloadManager.batchFailed')));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const startBatchUpdate = async () => {
+    if (!batchUpdateSupported) return;
+    setBusy(true);
+    setBatchError(null);
+    try {
+      setBatch(await startTufHelperLiteBatchUpdate());
+      setBatchConfirmation(null);
+    } catch (nextError) {
+      setBatchError(toUiError(nextError, t('level.tufHelperLiteDownloadManager.updateAllFailed')));
     } finally {
       setBusy(false);
     }
@@ -301,7 +357,9 @@ export const TufHelperLiteDownloadManager = ({
   const cancelBatchCheck = async () => {
     try {
       setBatchError(null);
-      setBatch(await cancelTufHelperLiteBatchUpdateCheck());
+      setBatch(await (batchOperationKind === 'update' && batchUpdateSupported
+        ? cancelTufHelperLiteBatchUpdate()
+        : cancelTufHelperLiteBatchUpdateCheck()));
     } catch (nextError) {
       setBatchError(toUiError(nextError, t('level.tufHelperLiteDownloadManager.batchFailed')));
     }
@@ -442,46 +500,78 @@ export const TufHelperLiteDownloadManager = ({
                     : t('level.tufHelperLiteDownloadManager.calculatingSummary')}
               </span>
               {batchSupported ? (
-                <button
-                  type="button"
-                  className="tufhelper-download-manager__check-all"
-                  onClick={() => batchActive ? void cancelBatchCheck() : setShowBatchConfirmation(true)}
-                  disabled={busy || migrationActive}
-                >
-                  {batchActive
-                    ? <span className="tufhelper-download-manager__cancel-glyph" aria-hidden="true">×</span>
-                    : <RefreshIcon size={15} color="currentColor" aria-hidden="true" />}
-                  {batchActive
-                    ? t('level.tufHelperLiteDownloadManager.checkingAll', {
-                      processed: field(batch, 'LevelsProcessed') || 0,
-                      total: field(batch, 'LevelsTotal') || 0,
-                    })
-                    : batchState === 'completed' && Number(field(batch, 'UpdatesAvailable')) > 0
-                      ? t('level.tufHelperLiteDownloadManager.updatesFound', { count: field(batch, 'UpdatesAvailable') })
-                      : t('level.tufHelperLiteDownloadManager.checkAll')}
-                </button>
+                <>
+                  <button
+                    ref={batchTriggerRef}
+                    type="button"
+                    className={`tufhelper-download-manager__check-all${availableUpdateCount > 0 ? ' is-update-ready' : ''}`}
+                    onClick={() => {
+                      if (batchActive) {
+                        void cancelBatchCheck();
+                        return;
+                      }
+                      setBatchConfirmation(availableUpdateCount > 0
+                        ? batchUpdateSupported ? 'update' : 'upgrade'
+                        : 'check');
+                    }}
+                    disabled={busy || migrationActive}
+                    aria-expanded={Boolean(batchConfirmation)}
+                    aria-controls={batchConfirmation ? 'tufhelper-batch-confirmation' : undefined}
+                  >
+                    {batchActive
+                      ? <span className="tufhelper-download-manager__cancel-glyph" aria-hidden="true">×</span>
+                      : <RefreshIcon size={15} color="currentColor" aria-hidden="true" />}
+                    {batchActive
+                      ? t(`level.tufHelperLiteDownloadManager.${batchOperationKind === 'update' ? 'updatingAll' : 'checkingAll'}`, {
+                        processed: field(batch, 'LevelsProcessed') || 0,
+                        total: field(batch, 'LevelsTotal') || 0,
+                      })
+                      : availableUpdateCount > 0
+                        ? t('level.tufHelperLiteDownloadManager.updatesFound', { count: availableUpdateCount })
+                        : t('level.tufHelperLiteDownloadManager.checkAll')}
+                  </button>
+                  {batchConfirmation ? (
+                    <div
+                      ref={batchPopoverRef}
+                      id="tufhelper-batch-confirmation"
+                      className="tufhelper-download-manager__batch-popover"
+                      role="dialog"
+                      aria-label={t('level.tufHelperLiteDownloadManager.batchConfirmationTitle')}
+                    >
+                      <div className="tufhelper-download-manager__notice is-warning">
+                        <WarningIcon size={18} color="currentColor" aria-hidden="true" />
+                        <p>{t(`level.tufHelperLiteDownloadManager.${batchConfirmation === 'check'
+                          ? 'batchWarning'
+                          : batchConfirmation === 'update'
+                            ? 'updateAllWarning'
+                            : 'updateAllRequired'}`, { count: availableUpdateCount })}</p>
+                      </div>
+                      <div className="tufhelper-download-manager__actions">
+                        <button type="button" className="is-quiet" onClick={() => setBatchConfirmation(null)}>
+                          {t('level.tufHelperLiteDownloadManager.cancel')}
+                        </button>
+                        {batchConfirmation !== 'upgrade' ? (
+                          <button
+                            type="button"
+                            className="is-primary"
+                            onClick={() => void (batchConfirmation === 'update' ? startBatchUpdate() : startBatchCheck())}
+                            disabled={busy}
+                          >
+                            {t(`level.tufHelperLiteDownloadManager.${batchConfirmation === 'update' ? 'startUpdateAll' : 'startCheckAll'}`)}
+                          </button>
+                        ) : null}
+                      </div>
+                    </div>
+                  ) : null}
+                </>
               ) : null}
             </div>
           </div>
-          {showBatchConfirmation ? (
-            <div className="tufhelper-download-manager__batch-confirmation">
-              <div className="tufhelper-download-manager__notice is-warning">
-                <WarningIcon size={20} color="currentColor" />
-                <p>{t('level.tufHelperLiteDownloadManager.batchWarning')}</p>
-              </div>
-              <div className="tufhelper-download-manager__actions">
-                <button type="button" className="is-quiet" onClick={() => setShowBatchConfirmation(false)}>
-                  {t('level.tufHelperLiteDownloadManager.cancel')}
-                </button>
-                <button type="button" className="is-primary" onClick={() => void startBatchCheck()} disabled={busy}>
-                  {t('level.tufHelperLiteDownloadManager.startCheckAll')}
-                </button>
-              </div>
-            </div>
-          ) : null}
           {batchError || batchState === 'failed' ? (
             <p className="tufhelper-download-manager__error" role="alert">
-              {batchError?.message || field(batch, 'Message') || t('level.tufHelperLiteDownloadManager.batchFailed')}
+              {batchError?.message || field(batch, 'Message') || t(`level.tufHelperLiteDownloadManager.${batchOperationKind === 'update'
+                ? 'updateAllFailed'
+                : 'batchFailed'}`)}
             </p>
           ) : null}
           {!librarySupported ? (
