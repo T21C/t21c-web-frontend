@@ -123,7 +123,7 @@
       "modeWilson": "Wilson (top play + 1)",
       "modeSkillset": "Skillset (clearers only)",
       "requireTopPlay": "Top play requirement",
-      "requireTopPlayHint": "When required, voters need a top clear at least this chart's difficulty (top play + 1).",
+      "requireTopPlayHint": "Applies to this tag only, not the rest of its group. When required, voters need a top clear at least this chart's difficulty (top play + 1).",
       "requireTopPlayOn": "Required",
       "requireTopPlayOff": "Not required",
       "wilsonZ": "Wilson Z",
