@@ -30,6 +30,10 @@ const BOTTOM_FIELDS = [
   { name: 'late', color: '#FF6F4D' },
 ];
 
+function isIntegerInputValue(value) {
+  return value === '' || /^\d+$/.test(value);
+}
+
 export function JudgementInputs({
   values,
   onChange,
@@ -40,6 +44,7 @@ export function JudgementInputs({
   showScore,
   copy: copyProp,
   className = '',
+  integerOnly = false,
 }) {
   const copy = copyProp || DEFAULT_COPY;
   const { t } = useTranslation([copy.ns, 'common']);
@@ -59,11 +64,16 @@ export function JudgementInputs({
         <p>{t(copy[name], { ns: copy.ns })}</p>
         <input
           type="text"
+          inputMode={integerOnly ? 'numeric' : undefined}
+          pattern={integerOnly ? '[0-9]*' : undefined}
           autoComplete="off"
           placeholder="#"
           name={name}
           value={values[name] ?? ''}
-          onChange={onChange}
+          onChange={(e) => {
+            if (integerOnly && !isIntegerInputValue(e.target.value)) return;
+            onChange(e);
+          }}
           style={{ borderColor: valid ? '' : 'red', color }}
         />
       </div>

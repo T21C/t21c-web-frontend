@@ -135,7 +135,8 @@
     "compareInputs": {
       "title": "Compare judgements",
       "hint": "Fill compare judgements below, then Calculate.",
-      "importJudgements": "Import judgements"
+      "copyJudgements": "Copy judgements",
+      "copyJudgementsTooltip": "Copies the judgements you inputted in the main calculator to here"
     },
     "score": {
       "needLevelOrSandbox": "Enter level ID or sandbox base scores"

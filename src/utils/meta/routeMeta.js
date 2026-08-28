@@ -38,6 +38,8 @@ const ROUTE_DOCUMENT_META = [
   { path: '/songs/:id', titleKey: 'songList.meta.title', descriptionKey: 'songDetail.meta.description', descriptionParams: { name: '' } },
   { path: '/songs', titleKey: 'songList.meta.title', descriptionKey: 'songList.meta.description' },
   { path: '/about', titleKey: 'about.meta.title', descriptionKey: 'about.meta.description' },
+  { path: '/resources/my', titleKey: 'resources.meta.myTitle', descriptionKey: 'resources.meta.myDescription', noindex: true },
+  { path: '/resources/:id', titleKey: 'resources.meta.title', descriptionKey: 'resources.meta.description' },
   { path: '/resources', titleKey: 'resources.meta.title', descriptionKey: 'resources.meta.description' },
   { path: '/privacy-policy', titleKey: 'about.meta.title', descriptionKey: 'about.meta.description' },
   { path: '/terms-of-service', titleKey: 'about.meta.title', descriptionKey: 'about.meta.description' },

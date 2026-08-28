@@ -79,6 +79,7 @@ const TermsOfServicePage = lazy(() => import('./misc/TermsOfServicePage/TermsOfS
 const HealthCheckPage = lazy(() => import('./misc/HealthCheckPage/HealthCheckPage'));
 const AssetsCatalogPage = lazy(() => import('./misc/AssetsPage/AssetsPage'));
 const ResourcesPage = lazy(() => import('./misc/ResourcesPage/ResourcesPage'));
+const ResourcesClusterDetailPage = lazy(() => import('./misc/ResourcesPage/ResourcesClusterDetailPage'));
 const TranslationsPage = lazy(() => import('./misc/TranslationsPage/TranslationsPage'));
 
 export {
@@ -155,5 +156,6 @@ export {
     HealthCheckPage,
     AssetsCatalogPage,
     ResourcesPage,
+    ResourcesClusterDetailPage,
     TranslationsPage
 };

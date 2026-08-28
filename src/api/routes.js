@@ -240,9 +240,15 @@ export const routes = {
       root: () => '/v2/admin/useful-links',
       byId: (id) => `/v2/admin/useful-links/${enc(id)}`,
       sortOrders: () => '/v2/admin/useful-links/sort-orders',
-      groupSortOrders: () => '/v2/admin/useful-links/group-sort-orders',
-      groups: () => '/v2/admin/useful-links/groups',
-      groupById: (id) => `/v2/admin/useful-links/groups/${enc(id)}`,
+      tags: () => '/v2/admin/useful-links/tags',
+      tagById: (id) => `/v2/admin/useful-links/tags/${enc(id)}`,
+      tagSortOrders: () => '/v2/admin/useful-links/tags/sort-orders',
+      tagGroupSortOrders: () => '/v2/admin/useful-links/tags/group-sort-orders',
+      tagGroups: () => '/v2/admin/useful-links/tags/groups',
+      tagGroupById: (id) => `/v2/admin/useful-links/tags/groups/${enc(id)}`,
+      locales: (id) => `/v2/admin/useful-links/${enc(id)}/locales`,
+      locale: (id, languageCode) =>
+        `/v2/admin/useful-links/${enc(id)}/locales/${enc(languageCode)}`,
     },
   },
 
@@ -573,6 +579,22 @@ export const routes = {
   },
   usefulLinks: {
     list: () => '/v2/useful-links',
+    tags: () => '/v2/useful-links/tags',
+  },
+  usefulLinkClusters: {
+    list: () => '/v2/useful-link-clusters',
+    byId: (id) => `/v2/useful-link-clusters/${enc(id)}`,
+    items: (id) => `/v2/useful-link-clusters/${enc(id)}/items`,
+    itemSortOrders: (id) => `/v2/useful-link-clusters/${enc(id)}/items/sort-orders`,
+    item: (id, itemId) => `/v2/useful-link-clusters/${enc(id)}/items/${enc(itemId)}`,
+    itemLink: (id, itemId) =>
+      `/v2/useful-link-clusters/${enc(id)}/items/${enc(itemId)}/link`,
+    itemLocales: (id, itemId) =>
+      `/v2/useful-link-clusters/${enc(id)}/items/${enc(itemId)}/locales`,
+    itemLocale: (id, itemId, languageCode) =>
+      `/v2/useful-link-clusters/${enc(id)}/items/${enc(itemId)}/locales/${enc(languageCode)}`,
+    localeDefaults: (id) => `/v2/useful-link-clusters/${enc(id)}/locale-defaults`,
+    icon: (id) => `/v2/useful-link-clusters/${enc(id)}/icon`,
   },
   form: {
     pass: {
