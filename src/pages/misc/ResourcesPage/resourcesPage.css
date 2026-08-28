@@ -479,8 +479,13 @@
   border: none;
 }
 
-.resources-page .confirm-button:hover {
+.resources-page .confirm-button:hover:not(:disabled) {
   background-color: var(--color-white-t30);
+}
+
+.resources-page .confirm-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
 }
 
 .resources-page .cancel-button {

@@ -27,6 +27,7 @@ export function displayFieldsForLocale(link, languageCode) {
     title: resolved?.title || link.title,
     url: resolved?.url || link.url,
     description: resolved?.description ?? link.description ?? null,
+    shorthand: resolved ? resolved.shorthand ?? null : link.shorthand ?? null,
     languageCode: resolved?.languageCode || DEFAULT_LINK_LANGUAGE,
   };
 }
@@ -74,4 +75,9 @@ export function hostFromUrl(url) {
   } catch {
     return url || '';
   }
+}
+
+export function linkDisplayHost(url, shorthand) {
+  const label = typeof shorthand === 'string' ? shorthand.trim() : '';
+  return label || hostFromUrl(url);
 }

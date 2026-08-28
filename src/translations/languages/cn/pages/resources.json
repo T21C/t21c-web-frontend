@@ -29,6 +29,8 @@
       "title": "标题",
       "url": "网址",
       "urlPlaceholder": "https://www.notion.so/…",
+      "shorthand": "简称",
+      "shorthandPlaceholder": "TUF Notion",
       "description": "描述"
     },
     "create": {

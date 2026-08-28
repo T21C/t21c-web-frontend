@@ -17,6 +17,16 @@ function localeToFields(locale, fallback) {
     title: source?.title || '',
     url: source?.url || '',
     description: source?.description || '',
+    shorthand: source?.shorthand || '',
+  };
+}
+
+function normalizeFields(fields) {
+  return {
+    title: (fields?.title || '').trim(),
+    url: (fields?.url || '').trim(),
+    description: (fields?.description || '').trim(),
+    shorthand: (fields?.shorthand || '').trim(),
   };
 }
 
@@ -61,6 +71,22 @@ const EditUsefulLinkPopup = ({
     setFields(localeToFields(next || resolveLinkLocale(list, DEFAULT_LINK_LANGUAGE), link));
   }, [link, activeCode]);
 
+  const savedFields = useMemo(() => {
+    const list = Array.isArray(link?.locales) ? link.locales : EMPTY_LOCALES;
+    const next = list.find((row) => row.languageCode === activeCode);
+    return normalizeFields(localeToFields(next || resolveLinkLocale(list, DEFAULT_LINK_LANGUAGE), link));
+  }, [link, activeCode]);
+
+  const isDirty = useMemo(() => {
+    const current = normalizeFields(fields);
+    return (
+      current.title !== savedFields.title ||
+      current.url !== savedFields.url ||
+      current.description !== savedFields.description ||
+      current.shorthand !== savedFields.shorthand
+    );
+  }, [fields, savedFields]);
+
   const run = async (fn) => {
     setSaving(true);
     try {
@@ -81,6 +107,7 @@ const EditUsefulLinkPopup = ({
         title: en?.title || '',
         url: en?.url || '',
         description: en?.description || '',
+        shorthand: en?.shorthand || '',
       });
       setActiveCode(code);
     });
@@ -94,14 +121,17 @@ const EditUsefulLinkPopup = ({
 
   const handleSave = (event) => {
     event.preventDefault();
-    return run(() =>
-      onSave({
+    if (!isDirty) return;
+    return run(async () => {
+      await onSave({
         languageCode: activeCode,
         title: fields.title,
         url: fields.url,
         description: fields.description,
-      }),
-    );
+        shorthand: fields.shorthand,
+      });
+      onClose();
+    });
   };
 
   return (
@@ -156,6 +186,17 @@ const EditUsefulLinkPopup = ({
             />
           </label>
           <label>
+            {t('resources.links.fields.shorthand')}
+            <input
+              type="text"
+              value={fields.shorthand}
+              onChange={(event) => setFields({ ...fields, shorthand: event.target.value })}
+              placeholder={t('resources.links.fields.shorthandPlaceholder')}
+              maxLength={64}
+              disabled={saving}
+            />
+          </label>
+          <label>
             {t('resources.links.fields.description')}
             <textarea
               rows={3}
@@ -182,7 +223,7 @@ const EditUsefulLinkPopup = ({
               <button type="button" className="btn-fill-secondary" onClick={onClose} disabled={saving}>
                 {t('buttons.cancel', { ns: 'common' })}
               </button>
-              <button type="submit" className="btn-fill-primary" disabled={saving}>
+              <button type="submit" className="btn-fill-primary" disabled={saving || !isDirty}>
                 {t('buttons.save', { ns: 'common' })}
               </button>
             </div>

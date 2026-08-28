@@ -14,7 +14,7 @@ import { CloseButton } from '@/components/common/buttons';
 import { EditIcon, TrashIcon } from '@/components/common/icons';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { getRateLimitMessage } from '@/utils/rateLimitError';
-import { hostFromUrl } from '@/utils/usefulLinkLocales';
+import { linkDisplayHost } from '@/utils/usefulLinkLocales';
 import EditUsefulLinkPopup from '@/components/popups/Resources/EditUsefulLinkPopup';
 import './resourcesPage.css';
 
@@ -24,6 +24,7 @@ const EMPTY_LINK = {
   title: '',
   url: '',
   description: '',
+  shorthand: '',
 };
 
 function apiError(error, fallback) {
@@ -263,7 +264,7 @@ const ResourcesEditPage = () => {
           <div className="tag-item-content">
             <div className="tag-item-info">
               <div className="tag-item-name">{link.title}</div>
-              <div className="tag-item-color">{hostFromUrl(link.url)}</div>
+              <div className="tag-item-color">{linkDisplayHost(link.url, link.shorthand)}</div>
             </div>
           </div>
           <div className="tag-item-actions">
@@ -492,6 +493,7 @@ const ResourcesEditPage = () => {
                     title: newLink.title,
                     url: newLink.url,
                     description: newLink.description,
+                    shorthand: newLink.shorthand,
                   });
                 }}
               >
@@ -516,6 +518,18 @@ const ResourcesEditPage = () => {
                   />
                 </div>
                 <div className="form-group">
+                  <label>{t('resources.links.fields.shorthand')}</label>
+                  <input
+                    type="text"
+                    value={newLink.shorthand || ''}
+                    onChange={(event) =>
+                      setNewLink({ ...newLink, shorthand: event.target.value })
+                    }
+                    placeholder={t('resources.links.fields.shorthandPlaceholder')}
+                    maxLength={64}
+                  />
+                </div>
+                <div className="form-group">
                   <label>{t('resources.links.fields.description')}</label>
                   <textarea
                     rows={3}
@@ -534,7 +548,11 @@ const ResourcesEditPage = () => {
                   >
                     {t('buttons.cancel', { ns: 'common' })}
                   </button>
-                  <button type="submit" className="confirm-button">
+                  <button
+                    type="submit"
+                    className="confirm-button"
+                    disabled={!newLink.title.trim() || !newLink.url.trim()}
+                  >
                     {t('resources.links.create.createButton')}
                   </button>
                 </div>
@@ -549,13 +567,14 @@ const ResourcesEditPage = () => {
           link={editingLink}
           languageMap={languageMap}
           onClose={() => setEditingLink(null)}
-          onSave={async ({ languageCode, title, url, description }) => {
+          onSave={async ({ languageCode, title, url, description, shorthand }) => {
             try {
               const { data } = await api.put(routes.admin.usefulLinks.locales(editingLink.id), {
                 languageCode,
                 title,
                 url,
                 description,
+                shorthand,
               });
               setEditingLink(data);
               toast.success(t('resources.links.notifications.updated'));
@@ -691,7 +710,17 @@ const ResourcesEditPage = () => {
                   >
                     {t('buttons.cancel', { ns: 'common' })}
                   </button>
-                  <button type="submit" className="confirm-button">
+                  <button
+                    type="submit"
+                    className="confirm-button"
+                    disabled={
+                      editingGroup
+                        ? !editingGroup.name.trim() ||
+                          editingGroup.name.trim() ===
+                            (groups.find((group) => group.id === editingGroup.id)?.name || '').trim()
+                        : !newGroupName.trim()
+                    }
+                  >
                     {editingGroup
                       ? t('resources.groups.edit.updateButton')
                       : t('resources.groups.create.createButton')}

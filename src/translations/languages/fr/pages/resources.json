@@ -29,6 +29,8 @@
       "title": "Titre",
       "url": "URL",
       "urlPlaceholder": "https://www.notion.so/…",
+      "shorthand": "Libellé",
+      "shorthandPlaceholder": "TUF Notion",
       "description": "Description"
     },
     "create": {
