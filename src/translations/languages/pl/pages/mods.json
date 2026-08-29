@@ -1,0 +1,64 @@
+{
+  "meta": {
+    "title": "Mody",
+    "description": "Katalog modów ADOFAI kuratorowany przez adminów, wyszukiwanie po nazwie i twórcy.",
+    "editTitle": "Edytuj mody"
+  },
+  "title": "Mody",
+  "subtitle": "Kuratorowany katalog modów ADOFAI. Szukaj po nazwie lub twórcy Discord.",
+  "editTitle": "Edytuj mody",
+  "editSubtitle": "Twórz, edytuj, ukrywaj lub usuwaj wpisy katalogu.",
+  "empty": "Brak modów.",
+  "emptySearch": "Żaden mod nie pasuje do wyszukiwania.",
+  "searchPlaceholder": "Szukaj po nazwie lub twórcy",
+  "sort": {
+    "label": "Sortuj",
+    "nameAsc": "Nazwa (A–Z)",
+    "nameDesc": "Nazwa (Z–A)",
+    "dateNewest": "Data (najnowsze)",
+    "dateOldest": "Data (najstarsze)",
+    "creatorAsc": "Twórca (A–Z)",
+    "creatorDesc": "Twórca (Z–A)"
+  },
+  "backToMods": "Wróć do modów",
+  "download": "Pobierz",
+  "hiddenBadge": "Ukryty",
+  "createButton": "Utwórz mod",
+  "noMods": "Brak modów. Utwórz pierwszy.",
+  "errors": {
+    "loadFailed": "Nie udało się wczytać modów. Spróbuj później."
+  },
+  "fields": {
+    "name": "Nazwa",
+    "creatorUsername": "Nazwa twórcy",
+    "creatorDiscordId": "Discord ID twórcy",
+    "version": "Wersja",
+    "description": "Opis",
+    "downloadUrl": "URL pobierania",
+    "imageUrl": "URL obrazu (tylko GitHub)",
+    "sourceUploadedAt": "Dodano",
+    "hidden": "Ukryj w publicznym katalogu"
+  },
+  "create": {
+    "title": "Utwórz mod",
+    "createButton": "Utwórz"
+  },
+  "edit": {
+    "title": "Edytuj mod",
+    "updateButton": "Zapisz"
+  },
+  "delete": {
+    "title": "Usuń mod",
+    "message": "Czy na pewno chcesz usunąć mod „{{name}}”?",
+    "description": "Tej operacji nie można cofnąć.",
+    "deleteButton": "Usuń"
+  },
+  "notifications": {
+    "created": "Mod utworzony",
+    "createFailed": "Nie udało się utworzyć moda",
+    "updated": "Mod zaktualizowany",
+    "updateFailed": "Nie udało się zaktualizować moda",
+    "deleted": "Mod usunięty",
+    "deleteFailed": "Nie udało się usunąć moda"
+  }
+}

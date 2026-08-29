@@ -80,6 +80,8 @@ const HealthCheckPage = lazy(() => import('./misc/HealthCheckPage/HealthCheckPag
 const AssetsCatalogPage = lazy(() => import('./misc/AssetsPage/AssetsPage'));
 const ResourcesPage = lazy(() => import('./misc/ResourcesPage/ResourcesPage'));
 const ResourcesEditPage = lazy(() => import('./misc/ResourcesPage/ResourcesEditPage'));
+const ModsPage = lazy(() => import('./misc/ModsPage/ModsPage'));
+const ModsEditPage = lazy(() => import('./misc/ModsPage/ModsEditPage'));
 const TranslationsPage = lazy(() => import('./misc/TranslationsPage/TranslationsPage'));
 
 export {
@@ -157,5 +159,7 @@ export {
     AssetsCatalogPage,
     ResourcesPage,
     ResourcesEditPage,
+    ModsPage,
+    ModsEditPage,
     TranslationsPage
 };

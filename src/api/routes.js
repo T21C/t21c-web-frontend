@@ -240,6 +240,10 @@ export const routes = {
       byId: (id) => `/v2/admin/oauth-clients/${enc(id)}`,
       action: (id, action) => `/v2/admin/oauth-clients/${enc(id)}/${enc(action)}`,
     },
+    mods: {
+      root: () => '/v2/admin/mods',
+      byId: (id) => `/v2/admin/mods/${enc(id)}`,
+    },
     usefulLinks: {
       root: () => '/v2/admin/useful-links',
       byId: (id) => `/v2/admin/useful-links/${enc(id)}`,
@@ -581,6 +585,9 @@ export const routes = {
   },
   usefulLinks: {
     list: () => '/v2/useful-links',
+  },
+  mods: {
+    list: () => '/v2/mods',
   },
   form: {
     pass: {

@@ -226,6 +226,7 @@ export const createNavigationConfig = (context = {}) => {
         items: [
           { to: "/about", translationKey: "navigation.main.dropdowns.more.aboutUs" },
           { to: "/resources", translationKey: "navigation.main.dropdowns.more.resources" },
+          { to: "/mods", translationKey: "navigation.main.dropdowns.more.mods" },
           { to: "/terms-of-service", translationKey: "navigation.main.dropdowns.more.tos" },
           { to: "/privacy-policy", translationKey: "navigation.main.dropdowns.more.privacyPolicy" },
           {

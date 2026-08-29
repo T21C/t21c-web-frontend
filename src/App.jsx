@@ -178,6 +178,8 @@ function App() {
           <Route path='about' element={<Pages.AboutUsPage />} />
           <Route path='resources/edit' element={<Pages.ResourcesEditPage />} />
           <Route path='resources' element={<Pages.ResourcesPage />} />
+          <Route path='mods/edit' element={<Pages.ModsEditPage />} />
+          <Route path='mods' element={<Pages.ModsPage />} />
           <Route path='privacy-policy' element={<Pages.PrivacyPolicyPage />} />
           <Route path='terms-of-service' element={<Pages.TermsOfServicePage />} />
           <Route path='health' element={<Pages.HealthCheckPage />} />
