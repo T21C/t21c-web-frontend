@@ -27,6 +27,20 @@ const EMPTY_LINK = {
   shorthand: '',
 };
 
+function confirmDiscardUnsaved(t, isDirty) {
+  if (!isDirty) return true;
+  return window.confirm(t('confirmations.unsavedChanges', { ns: 'common' }));
+}
+
+function isNewLinkDirty(link) {
+  return Boolean(
+    (link?.title || '').trim() ||
+      (link?.url || '').trim() ||
+      (link?.description || '').trim() ||
+      (link?.shorthand || '').trim(),
+  );
+}
+
 function apiError(error, fallback) {
   return getRateLimitMessage(error) || error?.response?.data?.error || fallback;
 }
@@ -245,6 +259,22 @@ const ResourcesEditPage = () => {
     } catch (error) {
       toast.error(apiError(error, t('resources.links.notifications.createFailed')));
     }
+  };
+
+  const closeCreateLink = () => {
+    if (!confirmDiscardUnsaved(t, isNewLinkDirty(newLink))) return;
+    setIsCreatingLink(false);
+    setNewLink(EMPTY_LINK);
+  };
+
+  const closeGroupModal = () => {
+    const dirty = editingGroup
+      ? editingGroup.name.trim() !==
+        (groups.find((group) => group.id === editingGroup.id)?.name || '').trim()
+      : Boolean(newGroupName.trim());
+    if (!confirmDiscardUnsaved(t, dirty)) return;
+    setIsCreatingGroup(false);
+    setEditingGroup(null);
   };
 
   const renderLinkRow = (link, index, droppableKey) => (
@@ -478,11 +508,11 @@ const ResourcesEditPage = () => {
         <Footer />
 
       {isCreatingLink ? (
-          <div className="difficulty-modal" onClick={() => setIsCreatingLink(false)}>
+          <div className="difficulty-modal" onClick={closeCreateLink}>
             <div className="difficulty-modal-content" onClick={(event) => event.stopPropagation()}>
               <CloseButton
                 variant="floating"
-                onClick={() => setIsCreatingLink(false)}
+                onClick={closeCreateLink}
                 aria-label={t('buttons.close', { ns: 'common' })}
               />
               <h2>{t('resources.links.create.title')}</h2>
@@ -544,7 +574,7 @@ const ResourcesEditPage = () => {
                   <button
                     type="button"
                     className="cancel-button"
-                    onClick={() => setIsCreatingLink(false)}
+                    onClick={closeCreateLink}
                   >
                     {t('buttons.cancel', { ns: 'common' })}
                   </button>
@@ -648,10 +678,7 @@ const ResourcesEditPage = () => {
       {isCreatingGroup || editingGroup ? (
           <div
             className="difficulty-modal"
-            onClick={() => {
-              setIsCreatingGroup(false);
-              setEditingGroup(null);
-            }}
+            onClick={closeGroupModal}
           >
             <div className="difficulty-modal-content" onClick={(event) => event.stopPropagation()}>
               <h2>
@@ -703,10 +730,7 @@ const ResourcesEditPage = () => {
                   <button
                     type="button"
                     className="cancel-button"
-                    onClick={() => {
-                      setIsCreatingGroup(false);
-                      setEditingGroup(null);
-                    }}
+                    onClick={closeGroupModal}
                   >
                     {t('buttons.cancel', { ns: 'common' })}
                   </button>

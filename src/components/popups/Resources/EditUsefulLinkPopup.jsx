@@ -96,8 +96,9 @@ const EditUsefulLinkPopup = ({
     }
   };
 
-  const handleAdd = (code) =>
-    run(async () => {
+  const handleAdd = (code) => {
+    if (isDirty && !window.confirm(t('confirmations.unsavedChanges', { ns: 'common' }))) return;
+    return run(async () => {
       const en =
         activeCode === DEFAULT_LINK_LANGUAGE
           ? fields
@@ -111,12 +112,25 @@ const EditUsefulLinkPopup = ({
       });
       setActiveCode(code);
     });
+  };
 
   const handleRemove = () => {
     if (activeCode === DEFAULT_LINK_LANGUAGE) return;
     const name = languageLabel(activeCode, languageMap);
     if (!window.confirm(t('resources.languages.removeConfirm', { name }))) return;
     return run(() => onRemoveLocale(activeCode));
+  };
+
+  const handleSelectLanguage = (code) => {
+    if (code === activeCode) return;
+    if (isDirty && !window.confirm(t('confirmations.unsavedChanges', { ns: 'common' }))) return;
+    setActiveCode(code);
+  };
+
+  const requestClose = () => {
+    if (saving) return;
+    if (isDirty && !window.confirm(t('confirmations.unsavedChanges', { ns: 'common' }))) return;
+    onClose();
   };
 
   const handleSave = (event) => {
@@ -137,9 +151,7 @@ const EditUsefulLinkPopup = ({
   return (
     <div
       className="edit-useful-link-popup"
-      onClick={() => {
-        if (!saving) onClose();
-      }}
+      onClick={requestClose}
     >
       <div
         className="edit-useful-link-popup__content"
@@ -148,7 +160,7 @@ const EditUsefulLinkPopup = ({
         <div className="edit-useful-link-popup__header">
           <h2>{title}</h2>
           <CloseButton
-            onClick={onClose}
+            onClick={requestClose}
             aria-label={t('buttons.close', { ns: 'common' })}
             disabled={saving}
           />
@@ -157,7 +169,7 @@ const EditUsefulLinkPopup = ({
           attachedCodes={attachedCodes}
           activeCode={activeCode}
           languageMap={languageMap}
-          onSelect={setActiveCode}
+          onSelect={handleSelectLanguage}
           onAdd={handleAdd}
           disabled={saving}
           allowAdd
@@ -220,7 +232,7 @@ const EditUsefulLinkPopup = ({
               ) : null}
             </div>
             <div className="edit-useful-link-popup__actions-end">
-              <button type="button" className="btn-fill-secondary" onClick={onClose} disabled={saving}>
+              <button type="button" className="btn-fill-secondary" onClick={requestClose} disabled={saving}>
                 {t('buttons.cancel', { ns: 'common' })}
               </button>
               <button type="submit" className="btn-fill-primary" disabled={saving || !isDirty}>
