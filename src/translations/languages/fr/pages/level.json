@@ -41,8 +41,7 @@
     "headerSort": "Paramètres de triage",
     "sortRecent": "Récent",
     "filterDiffs": "Difficulté",
-    "sortRandom": "Aléatoire",
-    "showDownloadedOnly": "Afficher seulement les niveaux téléchargés"
+    "sortRandom": "Aléatoire"
   },
   "infScroll": {
     "end": "Vous avez atteint la fin!"

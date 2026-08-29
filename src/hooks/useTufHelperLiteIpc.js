@@ -4,6 +4,13 @@ import { tryConnect } from "@adofai-ipc/client";
 const TUFHELPER_LITE_NAMESPACE = 'tufhelperlite';
 const TUFHELPER_LITE_HEALTH_METHOD = 'health';
 const MINIMUM_TUFHELPER_LITE_VERSION = [0, 1, 4];
+export const TUFHELPER_LITE_STORAGE_CAPABILITY = 'download-storage-migration-v1';
+export const TUFHELPER_LITE_LIBRARY_CAPABILITY = 'downloaded-level-library-v1';
+export const TUFHELPER_LITE_POSITIONED_PAGES_CAPABILITY = 'downloaded-level-positioned-pages-v1';
+export const TUFHELPER_LITE_UPDATE_CAPABILITY = 'downloaded-level-update-v1';
+export const TUFHELPER_LITE_BATCH_UPDATE_CAPABILITY = 'downloaded-level-batch-update-check-v1';
+export const TUFHELPER_LITE_UPDATE_ALL_CAPABILITY = 'downloaded-level-batch-update-v1';
+export const TUFHELPER_LITE_STORAGE_RECONNECT_CAPABILITY = 'download-storage-reconnect-v1';
 const IPC_PORT_START = 32145;
 const IPC_PORT_END = 32155;
 const IPC_HEALTH_POLL_MS = 2500;
@@ -59,6 +66,14 @@ let tufHelperLiteHealthSnapshot = {
   isAvailable: false,
   isChecking: false,
   port: null,
+  capabilities: [],
+  supportsStorageMigration: false,
+  supportsDownloadedLibrary: false,
+  supportsPositionedDownloadedPages: false,
+  supportsDownloadedLevelUpdate: false,
+  supportsBatchUpdateCheck: false,
+  supportsBatchUpdate: false,
+  supportsStorageReconnect: false,
 };
 let tufHelperLiteHealthPollId = null;
 let tufHelperLiteClient = null;
@@ -107,24 +122,72 @@ const setTufHelperLiteIntegrationSnapshot = (nextSnapshot) => {
 };
 
 const setTufHelperLiteHealthSnapshot = (nextSnapshot) => {
+  const capabilities = Array.isArray(nextSnapshot.capabilities)
+    ? nextSnapshot.capabilities
+    : tufHelperLiteHealthSnapshot.capabilities;
+  const normalizedSnapshot = {
+    ...nextSnapshot,
+    capabilities,
+    supportsStorageMigration: capabilities.includes(TUFHELPER_LITE_STORAGE_CAPABILITY),
+    supportsDownloadedLibrary: capabilities.includes(TUFHELPER_LITE_LIBRARY_CAPABILITY),
+    supportsPositionedDownloadedPages: capabilities.includes(TUFHELPER_LITE_POSITIONED_PAGES_CAPABILITY),
+    supportsDownloadedLevelUpdate: capabilities.includes(TUFHELPER_LITE_UPDATE_CAPABILITY),
+    supportsBatchUpdateCheck: capabilities.includes(TUFHELPER_LITE_BATCH_UPDATE_CAPABILITY),
+    supportsBatchUpdate: capabilities.includes(TUFHELPER_LITE_UPDATE_ALL_CAPABILITY),
+    supportsStorageReconnect: capabilities.includes(TUFHELPER_LITE_STORAGE_RECONNECT_CAPABILITY),
+  };
   if (
-    tufHelperLiteHealthSnapshot.isAvailable === nextSnapshot.isAvailable &&
-    tufHelperLiteHealthSnapshot.isChecking === nextSnapshot.isChecking &&
-    tufHelperLiteHealthSnapshot.port === nextSnapshot.port
+    tufHelperLiteHealthSnapshot.isAvailable === normalizedSnapshot.isAvailable &&
+    tufHelperLiteHealthSnapshot.isChecking === normalizedSnapshot.isChecking &&
+    tufHelperLiteHealthSnapshot.port === normalizedSnapshot.port &&
+    tufHelperLiteHealthSnapshot.supportsStorageMigration === normalizedSnapshot.supportsStorageMigration &&
+    tufHelperLiteHealthSnapshot.supportsDownloadedLibrary === normalizedSnapshot.supportsDownloadedLibrary
+    && tufHelperLiteHealthSnapshot.supportsPositionedDownloadedPages === normalizedSnapshot.supportsPositionedDownloadedPages
+    && tufHelperLiteHealthSnapshot.supportsDownloadedLevelUpdate === normalizedSnapshot.supportsDownloadedLevelUpdate
+    && tufHelperLiteHealthSnapshot.supportsBatchUpdateCheck === normalizedSnapshot.supportsBatchUpdateCheck
+    && tufHelperLiteHealthSnapshot.supportsBatchUpdate === normalizedSnapshot.supportsBatchUpdate
+    && tufHelperLiteHealthSnapshot.supportsStorageReconnect === normalizedSnapshot.supportsStorageReconnect
   ) {
     return;
   }
 
-  tufHelperLiteHealthSnapshot = nextSnapshot;
+  tufHelperLiteHealthSnapshot = normalizedSnapshot;
   tufHelperLiteHealthListeners.forEach((listener) => listener());
 };
 
+const areSnapshotValuesEqual = (left, right) => {
+  if (Object.is(left, right)) return true;
+  if (typeof left !== 'object' || left == null || typeof right !== 'object' || right == null) {
+    return false;
+  }
+  if (Array.isArray(left) || Array.isArray(right)) {
+    return Array.isArray(left) && Array.isArray(right) &&
+      left.length === right.length &&
+      left.every((value, index) => areSnapshotValuesEqual(value, right[index]));
+  }
+
+  const leftKeys = Object.keys(left);
+  const rightKeys = Object.keys(right);
+  return leftKeys.length === rightKeys.length &&
+    leftKeys.every((key) => Object.prototype.hasOwnProperty.call(right, key) &&
+      areSnapshotValuesEqual(left[key], right[key]));
+};
+
 const setTufHelperLiteJobsSnapshot = (nextSnapshot) => {
+  if (areSnapshotValuesEqual(tufHelperLiteJobsSnapshot.jobs, nextSnapshot.jobs)) return;
   tufHelperLiteJobsSnapshot = nextSnapshot;
   tufHelperLiteJobsListeners.forEach((listener) => listener());
 };
 
 const setTufHelperLiteDownloadedIdsSnapshot = (nextSnapshot) => {
+  const currentIds = tufHelperLiteDownloadedIdsSnapshot.levelIdSet;
+  const nextIds = nextSnapshot.levelIdSet;
+  if (
+    currentIds.size === nextIds.size &&
+    Array.from(currentIds).every((levelId) => nextIds.has(levelId))
+  ) {
+    return;
+  }
   tufHelperLiteDownloadedIdsSnapshot = nextSnapshot;
   tufHelperLiteDownloadedIdsListeners.forEach((listener) => listener());
 };
@@ -188,6 +251,7 @@ const isTufHelperLiteNamespaceFailure = (code) => (
 );
 
 const readTufHelperLiteVersion = (health) => health?.Version ?? health?.version ?? null;
+const readTufHelperLiteCapabilities = (health) => health?.Capabilities ?? health?.capabilities ?? [];
 
 export const isSupportedTufHelperLiteVersion = (value) => {
   if (typeof value !== 'string') return false;
@@ -251,6 +315,11 @@ const connectTufHelperLiteIpc = async () => {
   const namespaceClient = client.namespace(TUFHELPER_LITE_NAMESPACE);
   const health = await namespaceClient.call(TUFHELPER_LITE_HEALTH_METHOD);
   assertSupportedTufHelperLiteVersion(health);
+  const capabilities = readTufHelperLiteCapabilities(health);
+  setTufHelperLiteHealthSnapshot({
+    ...tufHelperLiteHealthSnapshot,
+    capabilities: Array.isArray(capabilities) ? capabilities : [],
+  });
 
   tufHelperLiteClient = client;
   tufHelperLiteNamespaceClient = namespaceClient;
@@ -265,7 +334,12 @@ const clearTufHelperLiteClient = () => {
 const resetTufHelperLiteConnectionData = () => {
   clearTufHelperLiteClient();
   tufHelperLiteConsecutiveHealthMisses = 0;
-  setTufHelperLiteHealthSnapshot({ isAvailable: false, isChecking: false, port: null });
+  setTufHelperLiteHealthSnapshot({
+    isAvailable: false,
+    isChecking: false,
+    port: null,
+    capabilities: [],
+  });
   setTufHelperLiteJobsSnapshot({ jobs: [] });
   setTufHelperLiteDownloadedIdsSnapshot({ levelIds: [], levelIdSet: new Set() });
 };
@@ -396,6 +470,78 @@ export const invokeTufHelperLiteIpc = async (method, params = {}) => {
     throw error;
   }
 };
+
+export const getTufHelperLiteStorage = () => invokeTufHelperLiteIpc('storage.get', {});
+
+export const startTufHelperLiteFolderPicker = ({ allowExisting = false } = {}) =>
+  invokeTufHelperLiteIpc('storage.folder-pick.start', { AllowExisting: allowExisting });
+
+export const getTufHelperLiteFolderPickerStatus = (operationId) =>
+  invokeTufHelperLiteIpc('storage.folder-pick.status', { OperationId: operationId });
+
+export const startTufHelperLiteStorageMigration = ({ selectionToken = null, useDefault = false } = {}) =>
+  invokeTufHelperLiteIpc('storage.migration.start', {
+    SelectionToken: selectionToken,
+    UseDefault: useDefault,
+  });
+
+export const getTufHelperLiteStorageMigrationStatus = () =>
+  invokeTufHelperLiteIpc('storage.migration.status', {});
+
+export const retryTufHelperLiteStorageMigration = () =>
+  invokeTufHelperLiteIpc('storage.migration.retry', {});
+
+export const startTufHelperLiteStorageChange = ({ selectionToken = null, useDefault = false } = {}) =>
+  invokeTufHelperLiteIpc('storage.change.start', {
+    SelectionToken: selectionToken,
+    UseDefault: useDefault,
+  });
+
+export const getTufHelperLiteStorageChangeStatus = () =>
+  invokeTufHelperLiteIpc('storage.change.status', {});
+
+export const retryTufHelperLiteStorageChange = () =>
+  invokeTufHelperLiteIpc('storage.change.retry', {});
+
+export const cancelTufHelperLiteStorageChange = () =>
+  invokeTufHelperLiteIpc('storage.change.cancel', {});
+
+export const getTufHelperLiteDownloadedLevelPage = ({ cursor = null, direction = 'next', limit = 20 } = {}) =>
+  invokeTufHelperLiteIpc('level.downloaded-page', {
+    Cursor: cursor,
+    Direction: direction,
+    Limit: limit,
+  });
+
+export const getTufHelperLiteDownloadedLevelSummary = () =>
+  invokeTufHelperLiteIpc('level.downloaded-summary', {});
+
+export const checkTufHelperLiteLevelUpdate = (id) =>
+  invokeTufHelperLiteIpc('level.update.check', { Id: String(id) });
+
+export const startTufHelperLiteLevelUpdate = (id) =>
+  invokeTufHelperLiteIpc('level.update.start', { Id: String(id) });
+
+export const getTufHelperLiteLevelJobStatus = (jobId) =>
+  invokeTufHelperLiteIpc('level.status', { JobId: jobId });
+
+export const startTufHelperLiteBatchUpdateCheck = () =>
+  invokeTufHelperLiteIpc('level.update.check-all.start', {});
+
+export const getTufHelperLiteBatchUpdateCheckStatus = () =>
+  invokeTufHelperLiteIpc('level.update.check-all.status', {});
+
+export const cancelTufHelperLiteBatchUpdateCheck = () =>
+  invokeTufHelperLiteIpc('level.update.check-all.cancel', {});
+
+export const startTufHelperLiteBatchUpdate = () =>
+  invokeTufHelperLiteIpc('level.update.all.start', {});
+
+export const getTufHelperLiteBatchUpdateStatus = () =>
+  invokeTufHelperLiteIpc('level.update.all.status', {});
+
+export const cancelTufHelperLiteBatchUpdate = () =>
+  invokeTufHelperLiteIpc('level.update.all.cancel', {});
 
 export const checkTufHelperLiteHealth = async () => {
   if (!isTufHelperLiteIntegrationEnabled()) {
@@ -533,38 +679,81 @@ const subscribeTufHelperLiteIntegration = (listener) => {
   return () => tufHelperLiteIntegrationListeners.delete(listener);
 };
 
+const stopTufHelperLiteJobsPolling = () => {
+  if (tufHelperLiteJobsPollId == null) return;
+  window.clearInterval(tufHelperLiteJobsPollId);
+  tufHelperLiteJobsPollId = null;
+};
+
+const startTufHelperLiteJobsPolling = () => {
+  if (document.hidden || tufHelperLiteJobsListeners.size === 0 || tufHelperLiteJobsPollId != null) return;
+  void checkTufHelperLiteJobs();
+  tufHelperLiteJobsPollId = window.setInterval(checkTufHelperLiteJobs, IPC_JOBS_POLL_MS);
+};
+
+const handleTufHelperLiteJobsVisibilityChange = () => {
+  if (document.hidden) stopTufHelperLiteJobsPolling();
+  else startTufHelperLiteJobsPolling();
+};
+
 const subscribeTufHelperLiteJobs = (listener) => {
   tufHelperLiteJobsListeners.add(listener);
 
-  if (tufHelperLiteJobsPollId == null) {
-    void checkTufHelperLiteJobs();
-    tufHelperLiteJobsPollId = window.setInterval(checkTufHelperLiteJobs, IPC_JOBS_POLL_MS);
+  if (tufHelperLiteJobsListeners.size === 1) {
+    document.addEventListener('visibilitychange', handleTufHelperLiteJobsVisibilityChange);
+    startTufHelperLiteJobsPolling();
   }
 
   return () => {
     tufHelperLiteJobsListeners.delete(listener);
 
-    if (tufHelperLiteJobsListeners.size === 0 && tufHelperLiteJobsPollId != null) {
-      window.clearInterval(tufHelperLiteJobsPollId);
-      tufHelperLiteJobsPollId = null;
+    if (tufHelperLiteJobsListeners.size === 0) {
+      document.removeEventListener('visibilitychange', handleTufHelperLiteJobsVisibilityChange);
+      stopTufHelperLiteJobsPolling();
     }
   };
+};
+
+const stopTufHelperLiteDownloadedIdsPolling = () => {
+  if (tufHelperLiteDownloadedIdsPollId == null) return;
+  window.clearInterval(tufHelperLiteDownloadedIdsPollId);
+  tufHelperLiteDownloadedIdsPollId = null;
+};
+
+const startTufHelperLiteDownloadedIdsPolling = () => {
+  if (
+    document.hidden ||
+    tufHelperLiteDownloadedIdsListeners.size === 0 ||
+    tufHelperLiteDownloadedIdsPollId != null
+  ) {
+    return;
+  }
+  void checkTufHelperLiteDownloadedIds();
+  tufHelperLiteDownloadedIdsPollId = window.setInterval(
+    checkTufHelperLiteDownloadedIds,
+    IPC_DOWNLOADED_IDS_POLL_MS,
+  );
+};
+
+const handleTufHelperLiteDownloadedIdsVisibilityChange = () => {
+  if (document.hidden) stopTufHelperLiteDownloadedIdsPolling();
+  else startTufHelperLiteDownloadedIdsPolling();
 };
 
 const subscribeTufHelperLiteDownloadedIds = (listener) => {
   tufHelperLiteDownloadedIdsListeners.add(listener);
 
-  if (tufHelperLiteDownloadedIdsPollId == null) {
-    void checkTufHelperLiteDownloadedIds();
-    tufHelperLiteDownloadedIdsPollId = window.setInterval(checkTufHelperLiteDownloadedIds, IPC_DOWNLOADED_IDS_POLL_MS);
+  if (tufHelperLiteDownloadedIdsListeners.size === 1) {
+    document.addEventListener('visibilitychange', handleTufHelperLiteDownloadedIdsVisibilityChange);
+    startTufHelperLiteDownloadedIdsPolling();
   }
 
   return () => {
     tufHelperLiteDownloadedIdsListeners.delete(listener);
 
-    if (tufHelperLiteDownloadedIdsListeners.size === 0 && tufHelperLiteDownloadedIdsPollId != null) {
-      window.clearInterval(tufHelperLiteDownloadedIdsPollId);
-      tufHelperLiteDownloadedIdsPollId = null;
+    if (tufHelperLiteDownloadedIdsListeners.size === 0) {
+      document.removeEventListener('visibilitychange', handleTufHelperLiteDownloadedIdsVisibilityChange);
+      stopTufHelperLiteDownloadedIdsPolling();
     }
   };
 };
