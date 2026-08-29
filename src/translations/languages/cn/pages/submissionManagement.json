@@ -50,5 +50,11 @@
       "index": "索引",
       "roleSync": "角色同步"
     }
+  },
+  "lock": {
+    "lock": "锁定提交",
+    "unlock": "解锁提交",
+    "lockedHint": "已锁定 — 无法通过或拒绝",
+    "failed": "更新提交锁定状态失败"
   }
 }

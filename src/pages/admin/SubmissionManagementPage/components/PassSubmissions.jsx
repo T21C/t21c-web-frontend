@@ -27,12 +27,14 @@ import {
   settledPhaseForAction,
 } from './submissionDismiss';
 import SubmissionCompleteCloseButton from './SubmissionCompleteCloseButton';
+import SubmissionLockButton from './SubmissionLockButton';
+import { sortPendingSubmissions, togglePendingSubmissionLock } from './submissionLock';
 import SubmissionVideoLinkField from './SubmissionVideoLinkField';
 import SubmitterRecordBadge, { incrementSubmitterRecord, preserveSubmitterStats } from './SubmitterRecordBadge';
 
 
 const PassSubmissions = ({ setIsAutoAllowing }) => {
-  const { t } = useTranslation('components');
+  const { t } = useTranslation(['components', 'pages']);
 
   const [submissions, setSubmissions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -130,7 +132,7 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
       });
       setPlayerSearchValues(initialSearchValues);
       
-      setSubmissions(data);
+      setSubmissions(sortPendingSubmissions(data));
     } catch (error) {
       console.error('Error fetching submissions:', error);
     } finally {
@@ -176,6 +178,11 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
       const submission = submissions.find(s => s.id === submissionId);
       if (!submission) {
         console.error('[PassSubmissions] Submission not found:', submissionId);
+        return;
+      }
+
+      if (submission.isLocked) {
+        toast.error(t('submissionManagement.lock.lockedHint', { ns: 'pages' }));
         return;
       }
 
@@ -352,7 +359,7 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
                 );
               }
               return (
-            <div className={getSubmissionCardClassName('submission-card pass-submission-card', phase)}>
+            <div className={`${getSubmissionCardClassName('submission-card pass-submission-card', phase)}${submission.isLocked ? ' is-locked' : ''}`}>
               <div className="submission-header">
                 <h3>{submission.title || "Null"}</h3>
                 <span className="submission-date">
@@ -477,8 +484,9 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
                       <button
                         onClick={() => handleSubmission(submission.id, 'approve')}
                         className="approve-btn"
-                        disabled={disabledButtons[submission.id] || !submission.assignedPlayerId || (submission.passerRequest && !submission.assignedPlayerId)}
-                        title={!submission.assignedPlayerId ? t('passSubmissions.errors.noPlayer') : 
+                        disabled={disabledButtons[submission.id] || submission.isLocked || !submission.assignedPlayerId || (submission.passerRequest && !submission.assignedPlayerId)}
+                        title={submission.isLocked ? t('submissionManagement.lock.lockedHint', { ns: 'pages' }) :
+                               !submission.assignedPlayerId ? t('passSubmissions.errors.noPlayer') : 
                                (submission.passerRequest && !submission.assignedPlayerId) ? t('passSubmissions.errors.needProfileCreation') : ''}
                       >
                         {t('passSubmissions.buttons.allow')}
@@ -486,7 +494,8 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
                       <button
                         onClick={() => setDeclinePromptId(submission.id)}
                         className="decline-btn"
-                        disabled={disabledButtons[submission.id]}
+                        disabled={disabledButtons[submission.id] || submission.isLocked}
+                        title={submission.isLocked ? t('submissionManagement.lock.lockedHint', { ns: 'pages' }) : ''}
                       >
                         {t('passSubmissions.buttons.decline')}
                       </button>
@@ -552,6 +561,22 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
                 <SubmissionCompleteCloseButton
                   onClose={() => dismissSettledCards(setCardPhases, submission.id)}
                   onCloseAll={() => dismissSettledCards(setCardPhases, 'all')}
+                />
+              )}
+              {!isSettledCardPhase(phase) && (
+                <SubmissionLockButton
+                  isLocked={submission.isLocked}
+                  onToggle={() => togglePendingSubmissionLock({
+                    lockUrl: routes.admin.submissions.passLock(submission.id),
+                    submission,
+                    setSubmissions,
+                  }).catch((error) => {
+                    console.error('Error updating submission lock:', error);
+                    toast.error(
+                      error.response?.data?.error
+                        || t('submissionManagement.lock.failed', { ns: 'pages' }),
+                    );
+                  })}
                 />
               )}
             </div>

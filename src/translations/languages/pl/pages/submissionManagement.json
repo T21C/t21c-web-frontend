@@ -50,5 +50,11 @@
       "index": "Indeksowanie",
       "roleSync": "Sync ról"
     }
+  },
+  "lock": {
+    "lock": "Zablokuj zgłoszenie",
+    "unlock": "Odblokuj zgłoszenie",
+    "lockedHint": "Zablokowane — nie można zaakceptować ani odrzucić",
+    "failed": "Nie udało się zaktualizować blokady zgłoszenia"
   }
 }

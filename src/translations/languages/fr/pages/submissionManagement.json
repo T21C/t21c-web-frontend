@@ -50,5 +50,11 @@
       "index": "Indexer",
       "roleSync": "Sync des rôles"
     }
+  },
+  "lock": {
+    "lock": "Verrouiller la soumission",
+    "unlock": "Déverrouiller la soumission",
+    "lockedHint": "Verrouillée — impossible d'approuver ou de refuser",
+    "failed": "Échec de la mise à jour du verrouillage"
   }
 }

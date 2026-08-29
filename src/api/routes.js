@@ -208,6 +208,10 @@ export const routes = {
         `/v2/admin/submissions/passes/${enc(submissionId)}/${enc(action)}`,
       passAssignPlayer: (submissionId) =>
         `/v2/admin/submissions/passes/${enc(submissionId)}/assign-player`,
+      levelLock: (submissionId) =>
+        `/v2/admin/submissions/levels/${enc(submissionId)}/lock`,
+      passLock: (submissionId) =>
+        `/v2/admin/submissions/passes/${enc(submissionId)}/lock`,
     },
     curations: {
       root: () => '/v2/admin/curations',
