@@ -19,7 +19,8 @@
     "toggleQSlider": "Q 난이도 슬라이더 토글",
     "orderAsc": "오름차순",
     "orderDesc": "내림차순",
-    "stateDisplay": "보기 설정"
+    "stateDisplay": "보기 설정",
+    "hideCardTags": "카드에서 숨길 태그 선택"
   },
   "settings": {
     "sort": {

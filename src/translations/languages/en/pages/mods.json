@@ -1,0 +1,93 @@
+{
+  "meta": {
+    "title": "Mods",
+    "description": "Admin-curated ADOFAI mods, searchable by name and creator.",
+    "editTitle": "Edit mods"
+  },
+  "title": "Mods",
+  "editTitle": "Edit mods",
+  "editSubtitle": "Create, edit, hide, or delete catalog entries.",
+  "empty": "No mods yet.",
+  "emptySearch": "No mods match that search.",
+  "infScroll": {
+    "end": "You've reached the end!"
+  },
+  "searchPlaceholder": "Search by name or creator",
+  "sort": {
+    "label": "Sort by",
+    "nameAsc": "Name (A–Z)",
+    "nameDesc": "Name (Z–A)",
+    "dateNewest": "Date (newest)",
+    "dateOldest": "Date (oldest)",
+    "creatorAsc": "Creator (A–Z)",
+    "creatorDesc": "Creator (Z–A)"
+  },
+  "backToMods": "Back to mods",
+  "download": "Download",
+  "project": "Project",
+  "hiddenBadge": "Hidden",
+  "createButton": "Create mod",
+  "noMods": "No mods yet. Create your first mod.",
+  "errors": {
+    "loadFailed": "Could not load mods. Please try again later."
+  },
+  "fields": {
+    "name": "Name",
+    "creatorUsername": "Creator username",
+    "creatorDiscordId": "Creator Discord ID",
+    "version": "Version",
+    "description": "Description",
+    "downloadUrl": "Download URL",
+    "projectUrl": "Project link",
+    "sourceUploadedAt": "Uploaded",
+    "hidden": "Hide from public catalog"
+  },
+  "create": {
+    "title": "Create mod",
+    "createButton": "Create"
+  },
+  "edit": {
+    "title": "Edit mod",
+    "updateButton": "Update"
+  },
+  "delete": {
+    "title": "Delete mod",
+    "message": "Are you sure you want to delete the mod \"{{name}}\"?",
+    "description": "This cannot be undone.",
+    "deleteButton": "Delete"
+  },
+  "postedBy": "Posted by",
+  "alsoAssigned": "Also",
+  "assign": {
+    "title": "Assigned users",
+    "empty": "No users assigned.",
+    "placeholder": "Search player to assign",
+    "applySameCreator": "Also assign to other mods with this creator Discord ID",
+    "addButton": "Assign user",
+    "assigned": "User assigned",
+    "assignedMany": "User assigned to {{count}} mods",
+    "failed": "Failed to assign user",
+    "removed": "User unassigned",
+    "removeFailed": "Failed to unassign user",
+    "remove": "Unassign {{name}}",
+    "confirmTitle": "Assign to other mods?",
+    "confirmMessage": "This will assign this user to {{count}} other mods, proceed?",
+    "confirmButton": "Assign"
+  },
+  "notifications": {
+    "created": "Mod created successfully",
+    "createFailed": "Failed to create mod",
+    "updated": "Mod updated successfully",
+    "updateFailed": "Failed to update mod",
+    "deleted": "Mod deleted successfully",
+    "deleteFailed": "Failed to delete mod"
+  },
+  "icon": {
+    "change": "Change icon",
+    "remove": "Remove icon",
+    "uploaded": "Icon uploaded",
+    "uploadFailed": "Failed to upload icon",
+    "removed": "Icon removed",
+    "removeFailed": "Failed to remove icon"
+  }
+}

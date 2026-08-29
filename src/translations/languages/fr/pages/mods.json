@@ -1,0 +1,94 @@
+{
+  "meta": {
+    "title": "Mods",
+    "description": "Mods ADOFAI curatés par l'équipe, recherchables par nom et créateur.",
+    "editTitle": "Modifier les mods"
+  },
+  "title": "Mods",
+  "subtitle": "Catalogue curaté de mods ADOFAI. Recherchez par nom ou créateur Discord.",
+  "editTitle": "Modifier les mods",
+  "editSubtitle": "Créer, modifier, masquer ou supprimer des entrées du catalogue.",
+  "empty": "Aucun mod pour le moment.",
+  "emptySearch": "Aucun mod ne correspond à cette recherche.",
+  "infScroll": {
+    "end": "Vous avez atteint la fin !"
+  },
+  "searchPlaceholder": "Rechercher par nom ou créateur",
+  "sort": {
+    "label": "Trier par",
+    "nameAsc": "Nom (A–Z)",
+    "nameDesc": "Nom (Z–A)",
+    "dateNewest": "Date (plus récent)",
+    "dateOldest": "Date (plus ancien)",
+    "creatorAsc": "Créateur (A–Z)",
+    "creatorDesc": "Créateur (Z–A)"
+  },
+  "backToMods": "Retour aux mods",
+  "download": "Télécharger",
+  "project": "Projet",
+  "hiddenBadge": "Masqué",
+  "createButton": "Créer un mod",
+  "noMods": "Aucun mod. Créez le premier.",
+  "errors": {
+    "loadFailed": "Impossible de charger les mods. Réessayez plus tard."
+  },
+  "fields": {
+    "name": "Nom",
+    "creatorUsername": "Nom d'utilisateur du créateur",
+    "creatorDiscordId": "ID Discord du créateur",
+    "version": "Version",
+    "description": "Description",
+    "downloadUrl": "URL de téléchargement",
+    "projectUrl": "Lien du projet",
+    "sourceUploadedAt": "Mis en ligne",
+    "hidden": "Masquer du catalogue public"
+  },
+  "create": {
+    "title": "Créer un mod",
+    "createButton": "Créer"
+  },
+  "edit": {
+    "title": "Modifier le mod",
+    "updateButton": "Mettre à jour"
+  },
+  "delete": {
+    "title": "Supprimer le mod",
+    "message": "Voulez-vous vraiment supprimer le mod « {{name}} » ?",
+    "description": "Cette action est irréversible.",
+    "deleteButton": "Supprimer"
+  },
+  "postedBy": "Publié par",
+  "alsoAssigned": "Aussi",
+  "assign": {
+    "title": "Utilisateurs assignés",
+    "empty": "Aucun utilisateur assigné.",
+    "placeholder": "Rechercher un joueur à assigner",
+    "applySameCreator": "Assigner aussi aux autres mods avec cet ID Discord de créateur",
+    "addButton": "Assigner",
+    "assigned": "Utilisateur assigné",
+    "assignedMany": "Utilisateur assigné à {{count}} mods",
+    "failed": "Échec de l'assignation",
+    "removed": "Utilisateur retiré",
+    "removeFailed": "Échec du retrait",
+    "remove": "Retirer {{name}}",
+    "confirmTitle": "Assigner aux autres mods ?",
+    "confirmMessage": "Ceci assignera cet utilisateur à {{count}} autres mods, continuer ?",
+    "confirmButton": "Assigner"
+  },
+  "notifications": {
+    "created": "Mod créé",
+    "createFailed": "Échec de la création du mod",
+    "updated": "Mod mis à jour",
+    "updateFailed": "Échec de la mise à jour du mod",
+    "deleted": "Mod supprimé",
+    "deleteFailed": "Échec de la suppression du mod"
+  },
+  "icon": {
+    "change": "Changer l'icône",
+    "remove": "Supprimer l'icône",
+    "uploaded": "Icône mise en ligne",
+    "uploadFailed": "Échec de l'envoi de l'icône",
+    "removed": "Icône supprimée",
+    "removeFailed": "Échec de la suppression de l'icône"
+  }
+}

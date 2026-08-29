@@ -1,0 +1,94 @@
+{
+  "meta": {
+    "title": "模组",
+    "description": "由管理员整理的 ADOFAI 模组目录，可按名称和作者搜索。",
+    "editTitle": "编辑模组"
+  },
+  "title": "模组",
+  "subtitle": "精选 ADOFAI 模组目录。可按名称或 Discord 作者搜索。",
+  "editTitle": "编辑模组",
+  "editSubtitle": "创建、编辑、隐藏或删除目录条目。",
+  "empty": "暂无模组。",
+  "emptySearch": "没有匹配的模组。",
+  "infScroll": {
+    "end": "已到达底部！"
+  },
+  "searchPlaceholder": "按名称或作者搜索",
+  "sort": {
+    "label": "排序",
+    "nameAsc": "名称（A–Z）",
+    "nameDesc": "名称（Z–A）",
+    "dateNewest": "日期（最新）",
+    "dateOldest": "日期（最早）",
+    "creatorAsc": "作者（A–Z）",
+    "creatorDesc": "作者（Z–A）"
+  },
+  "backToMods": "返回模组",
+  "download": "下载",
+  "project": "项目",
+  "hiddenBadge": "已隐藏",
+  "createButton": "创建模组",
+  "noMods": "暂无模组。请创建第一个。",
+  "errors": {
+    "loadFailed": "无法加载模组，请稍后再试。"
+  },
+  "fields": {
+    "name": "名称",
+    "creatorUsername": "作者用户名",
+    "creatorDiscordId": "作者 Discord ID",
+    "version": "版本",
+    "description": "描述",
+    "downloadUrl": "下载链接",
+    "projectUrl": "项目链接",
+    "sourceUploadedAt": "上传时间",
+    "hidden": "从公开目录隐藏"
+  },
+  "create": {
+    "title": "创建模组",
+    "createButton": "创建"
+  },
+  "edit": {
+    "title": "编辑模组",
+    "updateButton": "保存"
+  },
+  "delete": {
+    "title": "删除模组",
+    "message": "确定要删除模组“{{name}}”吗？",
+    "description": "此操作无法撤销。",
+    "deleteButton": "删除"
+  },
+  "postedBy": "发布者",
+  "alsoAssigned": "另外",
+  "assign": {
+    "title": "已分配用户",
+    "empty": "尚未分配用户。",
+    "placeholder": "搜索要分配的玩家",
+    "applySameCreator": "同时分配给使用此创作者 Discord ID 的其他模组",
+    "addButton": "分配用户",
+    "assigned": "已分配用户",
+    "assignedMany": "已将用户分配到 {{count}} 个模组",
+    "failed": "分配用户失败",
+    "removed": "已取消分配",
+    "removeFailed": "取消分配失败",
+    "remove": "取消分配 {{name}}",
+    "confirmTitle": "分配到其他模组？",
+    "confirmMessage": "这将把该用户分配到另外 {{count}} 个模组，是否继续？",
+    "confirmButton": "分配"
+  },
+  "notifications": {
+    "created": "已创建模组",
+    "createFailed": "创建模组失败",
+    "updated": "已更新模组",
+    "updateFailed": "更新模组失败",
+    "deleted": "已删除模组",
+    "deleteFailed": "删除模组失败"
+  },
+  "icon": {
+    "change": "更换图标",
+    "remove": "移除图标",
+    "uploaded": "图标已上传",
+    "uploadFailed": "上传图标失败",
+    "removed": "图标已移除",
+    "removeFailed": "移除图标失败"
+  }
+}

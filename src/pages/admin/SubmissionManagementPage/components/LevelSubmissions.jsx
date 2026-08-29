@@ -33,13 +33,15 @@ import {
   settledPhaseForAction,
 } from './submissionDismiss';
 import SubmissionCompleteCloseButton from './SubmissionCompleteCloseButton';
+import SubmissionLockButton from './SubmissionLockButton';
+import { sortPendingSubmissions, togglePendingSubmissionLock } from './submissionLock';
 import SubmissionVideoLinkField from './SubmissionVideoLinkField';
 import SubmissionNotesField from './SubmissionNotesField';
 import SubmitterRecordBadge, { incrementSubmitterRecord, preserveSubmitterStats } from './SubmitterRecordBadge';
 
 
 const LevelSubmissions = () => {
-  const { t } = useTranslation(['components', 'common']);
+  const { t } = useTranslation(['components', 'common', 'pages']);
   
   const [submissions, setSubmissions] = useState([]);
   const [videoEmbeds, setVideoEmbeds] = useState({});
@@ -160,7 +162,7 @@ const LevelSubmissions = () => {
       const response = await api.get(`${routes.admin.submissions.root()}/levels/pending`);
       const data = await response.data;
       
-      setSubmissions(data);
+      setSubmissions(sortPendingSubmissions(data));
     } catch (error) {
       console.error('Error fetching submissions:', error);
     } finally {
@@ -173,6 +175,11 @@ const LevelSubmissions = () => {
     try {
       const submission = submissions.find(s => s.id === submissionId);
       if (!submission) return;
+
+      if (submission.isLocked) {
+        toast.error(t('submissionManagement.lock.lockedHint', { ns: 'pages' }));
+        return;
+      }
 
       // Check for profile creation requests when approving
       if (action === 'approve') {
@@ -884,7 +891,7 @@ const LevelSubmissions = () => {
                 );
               }
               return (
-            <div className={getSubmissionCardClassName('submission-card', phase)}>
+            <div className={`${getSubmissionCardClassName('submission-card', phase)}${submission.isLocked ? ' is-locked' : ''}`}>
               <div className="submission-header">
                 <h3>
                   {submission.songObject?.name || submission.song} {submission.suffix && ` ${submission.suffix}`}
@@ -1418,8 +1425,8 @@ const LevelSubmissions = () => {
                     <button 
                       onClick={() => handleSubmission(submission.id, 'approve')}
                       className="approve-btn"
-                      disabled={disabledButtons[submission.id] || !canBeApproved(submission)}
-                      title={!canBeApproved(submission) ? (
+                      disabled={disabledButtons[submission.id] || submission.isLocked || !canBeApproved(submission)}
+                      title={submission.isLocked ? t('submissionManagement.lock.lockedHint', { ns: 'pages' }) : !canBeApproved(submission) ? (
                         !(submission.songObject || submission.songId)
                           ? t('levelSubmissions.errors.needSongAndArtist')
                           : (!(submission.songId && submission.songObject?.credits) && 
@@ -1434,7 +1441,8 @@ const LevelSubmissions = () => {
                     <button 
                       onClick={() => setDeclinePromptId(submission.id)}
                       className="decline-btn"
-                      disabled={disabledButtons[submission.id]}
+                      disabled={disabledButtons[submission.id] || submission.isLocked}
+                      title={submission.isLocked ? t('submissionManagement.lock.lockedHint', { ns: 'pages' }) : ''}
                     >
                       {t('levelSubmissions.buttons.decline')}
                     </button>
@@ -1498,6 +1506,22 @@ const LevelSubmissions = () => {
                 <SubmissionCompleteCloseButton
                   onClose={() => dismissSettledCards(setCardPhases, submission.id)}
                   onCloseAll={() => dismissSettledCards(setCardPhases, 'all')}
+                />
+              )}
+              {!isSettledCardPhase(phase) && (
+                <SubmissionLockButton
+                  isLocked={submission.isLocked}
+                  onToggle={() => togglePendingSubmissionLock({
+                    lockUrl: routes.admin.submissions.levelLock(submission.id),
+                    submission,
+                    setSubmissions,
+                  }).catch((error) => {
+                    console.error('Error updating submission lock:', error);
+                    toast.error(
+                      error.response?.data?.error
+                        || t('submissionManagement.lock.failed', { ns: 'pages' }),
+                    );
+                  })}
                 />
               )}
             </div>

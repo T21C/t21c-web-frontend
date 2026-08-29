@@ -8,6 +8,7 @@
   "navAria": "Developer portal",
   "nav": {
     "apps": "My Apps",
+    "mods": "Mods",
     "admin": "Admin Page"
   },
   "hubTitle": "Your apps",
@@ -83,5 +84,18 @@
     "danger": "Danger"
   },
   "dangerTitle": "Delete this app",
-  "dangerBody": "This permanently removes the client. Users with existing grants keep tokens until they expire or are revoked."
+  "dangerBody": "This permanently removes the client. Users with existing grants keep tokens until they expire or are revoked.",
+  "mods": {
+    "title": "모드",
+    "emptyTitle": "할당된 모드 없음",
+    "emptyBody": "계정에 할당된 모드가 없습니다.",
+    "loadError": "모드를 불러오지 못했습니다",
+    "notFound": "모드를 찾을 수 없습니다",
+    "back": "모든 모드",
+    "editTitle": "모드 편집",
+    "preview": "미리보기",
+    "saved": "모드를 저장했습니다",
+    "saveError": "모드를 저장하지 못했습니다",
+    "save": "저장"
+  }
 }

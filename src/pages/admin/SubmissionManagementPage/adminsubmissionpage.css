@@ -1919,7 +1919,8 @@
     margin-top: 1rem;
   }
 
-  .submission-admin-page .approve-btn:disabled {
+  .submission-admin-page .approve-btn:disabled,
+  .submission-admin-page .decline-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
@@ -2583,6 +2584,63 @@
 .submission-admin-page .submission-complete-close-btn:hover,
 .submission-admin-page .submission-complete-close-btn.is-holding {
   background: var(--color-white-t40);
+}
+
+.submission-admin-page .submission-card.is-locked .submission-header,
+.submission-admin-page .submission-card.is-locked .submission-details,
+.submission-admin-page .submission-card.is-locked .embed-column {
+  filter: grayscale(1);
+  opacity: 0.5;
+}
+
+.submission-admin-page .submission-card.is-locked:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+
+
+.submission-admin-page .submission-lock-toggle {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  z-index: 5;
+}
+
+.submission-admin-page .submission-card:not(.complete):not(.declined):not(.submission-card--placeholder) {
+  padding-bottom: 3.25rem;
+}
+
+.submission-admin-page .submission-lock-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: var(--color-white-t20);
+  color: var(--color-white);
+  cursor: pointer;
+  transition: background-color 0.15s var(--ease-out-quad), color 0.15s var(--ease-out-quad);
+}
+
+.submission-admin-page .submission-lock-toggle-btn:hover:not(:disabled) {
+  background: var(--color-white-t40);
+}
+
+.submission-admin-page .submission-lock-toggle-btn.is-locked {
+  background: var(--btn-warning);
+  color: var(--color-white);
+}
+
+.submission-admin-page .submission-lock-toggle-btn.is-locked:hover:not(:disabled) {
+  background: var(--btn-warning-hover);
+}
+
+.submission-admin-page .submission-lock-toggle-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .submission-admin-page .submission-complete-close-tooltip {

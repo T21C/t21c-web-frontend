@@ -1,0 +1,94 @@
+{
+  "meta": {
+    "title": "모드",
+    "description": "관리자가 정리한 ADOFAI 모드 목록. 이름과 제작자로 검색할 수 있습니다.",
+    "editTitle": "모드 편집"
+  },
+  "title": "모드",
+  "subtitle": "관리자가 정리한 ADOFAI 모드 목록입니다. 이름 또는 Discord 제작자로 검색하세요.",
+  "editTitle": "모드 편집",
+  "editSubtitle": "카탈로그 항목을 만들거나 수정, 숨김, 삭제합니다.",
+  "empty": "모드가 없습니다.",
+  "emptySearch": "검색과 일치하는 모드가 없습니다.",
+  "infScroll": {
+    "end": "마지막입니다!"
+  },
+  "searchPlaceholder": "이름 또는 제작자로 검색",
+  "sort": {
+    "label": "정렬",
+    "nameAsc": "이름 (A–Z)",
+    "nameDesc": "이름 (Z–A)",
+    "dateNewest": "날짜 (최신순)",
+    "dateOldest": "날짜 (오래된순)",
+    "creatorAsc": "제작자 (A–Z)",
+    "creatorDesc": "제작자 (Z–A)"
+  },
+  "backToMods": "모드로 돌아가기",
+  "download": "다운로드",
+  "project": "프로젝트",
+  "hiddenBadge": "숨김",
+  "createButton": "모드 만들기",
+  "noMods": "모드가 없습니다. 첫 모드를 만드세요.",
+  "errors": {
+    "loadFailed": "모드를 불러오지 못했습니다. 나중에 다시 시도하세요."
+  },
+  "fields": {
+    "name": "이름",
+    "creatorUsername": "제작자 이름",
+    "creatorDiscordId": "제작자 Discord ID",
+    "version": "버전",
+    "description": "설명",
+    "downloadUrl": "다운로드 URL",
+    "projectUrl": "프로젝트 링크",
+    "sourceUploadedAt": "업로드 시각",
+    "hidden": "공개 목록에서 숨기기"
+  },
+  "create": {
+    "title": "모드 만들기",
+    "createButton": "만들기"
+  },
+  "edit": {
+    "title": "모드 편집",
+    "updateButton": "저장"
+  },
+  "delete": {
+    "title": "모드 삭제",
+    "message": "모드 \"{{name}}\"을(를) 삭제할까요?",
+    "description": "이 작업은 되돌릴 수 없습니다.",
+    "deleteButton": "삭제"
+  },
+  "postedBy": "게시자",
+  "alsoAssigned": "추가",
+  "assign": {
+    "title": "할당된 사용자",
+    "empty": "할당된 사용자가 없습니다.",
+    "placeholder": "할당할 플레이어 검색",
+    "applySameCreator": "같은 제작자 Discord ID의 다른 모드에도 할당",
+    "addButton": "사용자 할당",
+    "assigned": "사용자를 할당했습니다",
+    "assignedMany": "{{count}}개 모드에 사용자를 할당했습니다",
+    "failed": "사용자를 할당하지 못했습니다",
+    "removed": "할당을 해제했습니다",
+    "removeFailed": "할당을 해제하지 못했습니다",
+    "remove": "{{name}} 할당 해제",
+    "confirmTitle": "다른 모드에도 할당할까요?",
+    "confirmMessage": "이 사용자를 다른 모드 {{count}}개에도 할당합니다. 계속할까요?",
+    "confirmButton": "할당"
+  },
+  "notifications": {
+    "created": "모드를 만들었습니다",
+    "createFailed": "모드를 만들지 못했습니다",
+    "updated": "모드를 저장했습니다",
+    "updateFailed": "모드를 저장하지 못했습니다",
+    "deleted": "모드를 삭제했습니다",
+    "deleteFailed": "모드를 삭제하지 못했습니다"
+  },
+  "icon": {
+    "change": "아이콘 변경",
+    "remove": "아이콘 제거",
+    "uploaded": "아이콘을 올렸습니다",
+    "uploadFailed": "아이콘을 올리지 못했습니다",
+    "removed": "아이콘을 제거했습니다",
+    "removeFailed": "아이콘을 제거하지 못했습니다"
+  }
+}

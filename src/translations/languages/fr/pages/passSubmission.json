@@ -81,5 +81,31 @@
     "bodyWithAuto": "Ce niveau comporte <b>{{rawTilecount}}</b> tuiles (<b>{{autoTileCount}}</b> auto), donc <b>{{tilecount}}</b> jugements sont attendus. Le total de tes jugements est <b>{{hitSum}}</b>. Ces valeurs peuvent être incorrectes.",
     "reviewInputs": "Annuler",
     "submitAnyway": "Soumettre quand même"
+  },
+  "tagWarnings": {
+    "title": "Veuillez confirmer ces exigences du niveau",
+    "continue": "Continuer",
+    "keyLimit": "Ce niveau doit être réussi avec au plus {{count}} touches.",
+    "overlapAllowed": "Ce niveau autorise le chevauchement de touches. Confirme que tu es resté dans le chevauchement autorisé.",
+    "twoHandPseudos": "Ce niveau restreint les pseudos à deux mains. Confirme que tu as respecté l'usage de touches autorisé.",
+    "onhandOffhandLimit": "Ce niveau a une limite onhand/offhand. Confirme que tu as respecté l'usage de touches autorisé.",
+    "variableKeyLimit": "Ce niveau a une limite de touches variable. Confirme que tu as respecté la limite dans chaque section.",
+    "noLargeKeys": "Ce niveau n'autorise pas les grandes touches.",
+    "feetOnly": "Ce niveau doit être réussi uniquement avec les pieds.",
+    "fourKeyBaseLimit": "Ce niveau a une limite de base 4 touches. Confirme que tu as respecté l'usage de touches autorisé.",
+    "twoKeyBaseLimit": "Ce niveau a une limite de base 2 touches. Confirme que tu as respecté l'usage de touches autorisé.",
+    "freeRoam": "Ce niveau inclut du Free Roam. Termine-le comme prévu.",
+    "multiTrack": "Ce niveau a un gimmick multi-pistes. Joue les pistes prévues.",
+    "math": "Ce niveau a un gimmick mathématique. Termine-le comme prévu.",
+    "rpg": "Ce niveau a un gimmick RPG. Joue-le comme prévu.",
+    "memorization": "Ce niveau a un gimmick de mémorisation. Il doit être réussi avec tous les VFX.",
+    "unorthodoxReading": "Ce niveau a une lecture non conventionnelle. Joue-le avec les visuels prévus.",
+    "arrowKey": "Ce niveau est prévu pour être joué avec les flèches directionnelles.",
+    "cameraRequired": "Ce niveau nécessite la caméra. Il doit être réussi avec la caméra/les VFX prévus.",
+    "autoTile": "Ce niveau inclut des tuiles automatiques. Vérifie bien les jugements avant de soumettre.",
+    "judgementLimit": "Ce niveau a une limite de jugement. Confirme que le réglage de jugement de ta replay correspond à l'exigence.",
+    "hpBar": "Ce niveau utilise une barre de PV. Confirme que tu as joué avec le réglage de barre de PV requis.",
+    "detailedJudgement": "Ce niveau nécessite le jugement détaillé. Confirme que l'affichage des jugements correspond à l'exigence.",
+    "timingWindowScale": "Ce niveau utilise une fenêtre de timing mise à l'échelle. Confirme que tu as joué avec la fenêtre de timing requise."
   }
 } 

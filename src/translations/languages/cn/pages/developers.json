@@ -8,6 +8,7 @@
   "navAria": "开发者门户",
   "nav": {
     "apps": "我的应用",
+    "mods": "模组",
     "admin": "管理员界面"
   },
   "hubTitle": "你的应用",
@@ -83,5 +84,18 @@
     "danger": "危险区"
   },
   "dangerTitle": "删除此应用",
-  "dangerBody": "这将永久删除此客户端。现有授权用户将保留令牌，至许可过期或撤销后失效。"
+  "dangerBody": "这将永久删除此客户端。现有授权用户将保留令牌，至许可过期或撤销后失效。",
+  "mods": {
+    "title": "模组",
+    "emptyTitle": "尚未分配模组",
+    "emptyBody": "你的账户尚未被分配任何模组。",
+    "loadError": "无法加载模组",
+    "notFound": "未找到模组",
+    "back": "全部模组",
+    "editTitle": "编辑模组",
+    "preview": "预览",
+    "saved": "已保存模组",
+    "saveError": "保存模组失败",
+    "save": "保存更改"
+  }
 }

@@ -15,6 +15,12 @@
   "tooltips": {
     "tufStellarOut": "TUFStellar가 출시되었어요!"
   },
+  "resourcesCta": {
+    "title": "포럼이 처음이신가요?",
+    "subtitle": "여기서 시작하세요!",
+    "dontShowAgain": "다시 보지 않음",
+    "iconAlt": "TUF 시작 아이콘"
+  },
   "stats": {
     "overview": {
       "title": "개요",
@@ -58,6 +64,7 @@
       "scoreCalculator": "점수 계산기",
       "aboutUs": "소개",
       "resources": "자료",
+      "mods": "모드",
       "privacyPolicy": "개인정보처리방침",
       "termsOfService": "서비스 이용약관",
       "apiDocs": "API Docs",

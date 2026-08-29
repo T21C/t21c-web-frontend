@@ -45,6 +45,7 @@ const EMPTY_NEW_TAG = {
   color: '#FF5733',
   group: '',
   isCommunity: false,
+  passWarningEnabled: true,
   ...EMPTY_TAG_KNOBS,
 };
 
@@ -468,6 +469,7 @@ const DifficultyPage = () => {
             formData.append('group', newTag.group);
           }
           formData.append('isCommunity', newTag.isCommunity ? 'true' : 'false');
+          formData.append('passWarningEnabled', newTag.passWarningEnabled !== false ? 'true' : 'false');
           appendCommunityTagKnobs(formData, newTag);
 
           if (newTag.iconFile) {
@@ -514,6 +516,7 @@ const DifficultyPage = () => {
             formData.append('group', editingTag.group || '');
           }
           formData.append('isCommunity', editingTag.isCommunity ? 'true' : 'false');
+          formData.append('passWarningEnabled', editingTag.passWarningEnabled !== false ? 'true' : 'false');
           appendCommunityTagKnobs(formData, editingTag);
 
           if (editingTag.iconFile) {
@@ -570,6 +573,7 @@ const DifficultyPage = () => {
     if (editingGroup !== originalGroup) return true;
 
     if (Boolean(editingTag.isCommunity) !== Boolean(originalTag.isCommunity)) return true;
+    if ((editingTag.passWarningEnabled !== false) !== (originalTag.passWarningEnabled !== false)) return true;
 
     if (String(editingTag.description || '') !== String(originalTag.description || '')) return true;
     if (String(editingTag.wilsonZ ?? '') !== String(originalTag.wilsonZ ?? '')) return true;
@@ -1663,6 +1667,16 @@ const DifficultyPage = () => {
                           <span>{t('difficulty.tags.create.isCommunity')}</span>
                         </label>
                       </div>
+                      <div className="form-group form-group--checkbox">
+                        <label>
+                          <input
+                            type="checkbox"
+                            checked={newTag.passWarningEnabled !== false}
+                            onChange={(e) => setNewTag({ ...newTag, passWarningEnabled: e.target.checked })}
+                          />
+                          <span>{t('difficulty.tags.create.passWarningEnabled')}</span>
+                        </label>
+                      </div>
                       <div className="form-section-split">
                         <span className="form-section-split-label">
                           {t('difficulty.tags.fields.assignmentSection')}
@@ -1780,6 +1794,16 @@ const DifficultyPage = () => {
                             onChange={(e) => setEditingTag({ ...editingTag, isCommunity: e.target.checked })}
                           />
                           <span>{t('difficulty.tags.edit.isCommunity')}</span>
+                        </label>
+                      </div>
+                      <div className="form-group form-group--checkbox">
+                        <label>
+                          <input
+                            type="checkbox"
+                            checked={editingTag.passWarningEnabled !== false}
+                            onChange={(e) => setEditingTag({ ...editingTag, passWarningEnabled: e.target.checked })}
+                          />
+                          <span>{t('difficulty.tags.edit.passWarningEnabled')}</span>
                         </label>
                       </div>
                       <div className="form-section-split">

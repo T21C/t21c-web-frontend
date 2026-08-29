@@ -19,7 +19,8 @@
     "toggleQSlider": "切换Q等级滑块",
     "orderAsc": "升序",
     "orderDesc": "降序",
-    "stateDisplay": "显示设置"
+    "stateDisplay": "显示设置",
+    "hideCardTags": "选择要在卡片上隐藏的标签"
   },
   "settings": {
     "sort": {

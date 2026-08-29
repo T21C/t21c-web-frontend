@@ -1,0 +1,94 @@
+{
+  "meta": {
+    "title": "Mody",
+    "description": "Katalog modów ADOFAI kuratorowany przez adminów, wyszukiwanie po nazwie i twórcy.",
+    "editTitle": "Edytuj mody"
+  },
+  "title": "Mody",
+  "subtitle": "Kuratorowany katalog modów ADOFAI. Szukaj po nazwie lub twórcy Discord.",
+  "editTitle": "Edytuj mody",
+  "editSubtitle": "Twórz, edytuj, ukrywaj lub usuwaj wpisy katalogu.",
+  "empty": "Brak modów.",
+  "emptySearch": "Żaden mod nie pasuje do wyszukiwania.",
+  "infScroll": {
+    "end": "Dotarłeś do końca!"
+  },
+  "searchPlaceholder": "Szukaj po nazwie lub twórcy",
+  "sort": {
+    "label": "Sortuj",
+    "nameAsc": "Nazwa (A–Z)",
+    "nameDesc": "Nazwa (Z–A)",
+    "dateNewest": "Data (najnowsze)",
+    "dateOldest": "Data (najstarsze)",
+    "creatorAsc": "Twórca (A–Z)",
+    "creatorDesc": "Twórca (Z–A)"
+  },
+  "backToMods": "Wróć do modów",
+  "download": "Pobierz",
+  "project": "Projekt",
+  "hiddenBadge": "Ukryty",
+  "createButton": "Utwórz mod",
+  "noMods": "Brak modów. Utwórz pierwszy.",
+  "errors": {
+    "loadFailed": "Nie udało się wczytać modów. Spróbuj później."
+  },
+  "fields": {
+    "name": "Nazwa",
+    "creatorUsername": "Nazwa twórcy",
+    "creatorDiscordId": "Discord ID twórcy",
+    "version": "Wersja",
+    "description": "Opis",
+    "downloadUrl": "URL pobierania",
+    "projectUrl": "Link do projektu",
+    "sourceUploadedAt": "Dodano",
+    "hidden": "Ukryj w publicznym katalogu"
+  },
+  "create": {
+    "title": "Utwórz mod",
+    "createButton": "Utwórz"
+  },
+  "edit": {
+    "title": "Edytuj mod",
+    "updateButton": "Zapisz"
+  },
+  "delete": {
+    "title": "Usuń mod",
+    "message": "Czy na pewno chcesz usunąć mod „{{name}}”?",
+    "description": "Tej operacji nie można cofnąć.",
+    "deleteButton": "Usuń"
+  },
+  "postedBy": "Opublikował",
+  "alsoAssigned": "Także",
+  "assign": {
+    "title": "Przypisani użytkownicy",
+    "empty": "Brak przypisanych użytkowników.",
+    "placeholder": "Szukaj gracza do przypisania",
+    "applySameCreator": "Przypisz też do innych modów z tym Discord ID twórcy",
+    "addButton": "Przypisz",
+    "assigned": "Użytkownik przypisany",
+    "assignedMany": "Użytkownik przypisany do {{count}} modów",
+    "failed": "Nie udało się przypisać użytkownika",
+    "removed": "Użytkownik odpięty",
+    "removeFailed": "Nie udało się odpiąć użytkownika",
+    "remove": "Odepnij {{name}}",
+    "confirmTitle": "Przypisać do innych modów?",
+    "confirmMessage": "To przypisze tego użytkownika do {{count}} innych modów. Kontynuować?",
+    "confirmButton": "Przypisz"
+  },
+  "notifications": {
+    "created": "Mod utworzony",
+    "createFailed": "Nie udało się utworzyć moda",
+    "updated": "Mod zaktualizowany",
+    "updateFailed": "Nie udało się zaktualizować moda",
+    "deleted": "Mod usunięty",
+    "deleteFailed": "Nie udało się usunąć moda"
+  },
+  "icon": {
+    "change": "Zmień ikonę",
+    "remove": "Usuń ikonę",
+    "uploaded": "Ikona przesłana",
+    "uploadFailed": "Nie udało się przesłać ikony",
+    "removed": "Ikona usunięta",
+    "removeFailed": "Nie udało się usunąć ikony"
+  }
+}

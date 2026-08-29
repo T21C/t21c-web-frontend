@@ -49,6 +49,8 @@ const DevelopersLayout = lazy(() => import('./developers/DevelopersLayout'));
 const DevelopersHubPage = lazy(() => import('./developers/DevelopersHubPage'));
 const DevelopersCreatePage = lazy(() => import('./developers/DevelopersCreatePage'));
 const DevelopersAppDetailPage = lazy(() => import('./developers/DevelopersAppDetailPage'));
+const DevelopersModsPage = lazy(() => import('./developers/DevelopersModsPage'));
+const DevelopersModEditPage = lazy(() => import('./developers/DevelopersModEditPage'));
 const AdminOAuthClientsPage = lazy(() => import('./admin/AdminOAuthClientsPage/AdminOAuthClientsPage'));
 
 // Admin pages
@@ -80,6 +82,8 @@ const HealthCheckPage = lazy(() => import('./misc/HealthCheckPage/HealthCheckPag
 const AssetsCatalogPage = lazy(() => import('./misc/AssetsPage/AssetsPage'));
 const ResourcesPage = lazy(() => import('./misc/ResourcesPage/ResourcesPage'));
 const ResourcesEditPage = lazy(() => import('./misc/ResourcesPage/ResourcesEditPage'));
+const ModsPage = lazy(() => import('./misc/ModsPage/ModsPage'));
+const ModsEditPage = lazy(() => import('./misc/ModsPage/ModsEditPage'));
 const TranslationsPage = lazy(() => import('./misc/TranslationsPage/TranslationsPage'));
 
 export {
@@ -130,6 +134,8 @@ export {
     DevelopersHubPage,
     DevelopersCreatePage,
     DevelopersAppDetailPage,
+    DevelopersModsPage,
+    DevelopersModEditPage,
     AdminOAuthClientsPage,
     
     // Admin pages
@@ -157,5 +163,7 @@ export {
     AssetsCatalogPage,
     ResourcesPage,
     ResourcesEditPage,
+    ModsPage,
+    ModsEditPage,
     TranslationsPage
 };

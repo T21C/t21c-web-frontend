@@ -193,7 +193,15 @@ export default defineConfig(({ command, mode }) => {
       }
     },
     optimizeDeps: {
-      include: ['react-helmet-async', 'hash-wasm', 'react-rnd', 'react-draggable'],
+      include: [
+        'react-helmet-async',
+        'hash-wasm',
+        'react-rnd',
+        'react-draggable',
+        'react-markdown',
+        'remark-gfm',
+        'remark-breaks',
+      ],
       esbuildOptions: {
         define: {
           'process.env.DRAGGABLE_DEBUG': JSON.stringify(''),

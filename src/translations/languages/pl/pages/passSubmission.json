@@ -81,5 +81,31 @@
     "bodyWithAuto": "Ten poziom ma <b>{{rawTilecount}}</b> kafli (<b>{{autoTileCount}}</b> auto), więc oczekiwane jest <b>{{tilecount}}</b> judgmentów. Suma twoich judgmentów to <b>{{hitSum}}</b>. Te wartości mogą być błędne.",
     "reviewInputs": "Anuluj",
     "submitAnyway": "Wyślij mimo to"
+  },
+  "tagWarnings": {
+    "title": "Potwierdź wymagania tego poziomu",
+    "continue": "Kontynuuj",
+    "keyLimit": "Ten poziom wymaga przejścia przy użyciu co najwyżej {{count}} klawiszy.",
+    "overlapAllowed": "Ten poziom pozwala na nakładanie klawiszy. Potwierdź, że mieścisz się w dozwolonym nakładaniu.",
+    "twoHandPseudos": "Ten poziom ogranicza dwuręczne pseudo. Potwierdź, że stosowałeś dozwolone użycie klawiszy.",
+    "onhandOffhandLimit": "Ten poziom ma limit onhand/offhand. Potwierdź, że stosowałeś dozwolone użycie klawiszy.",
+    "variableKeyLimit": "Ten poziom ma zmienny limit klawiszy. Potwierdź, że przestrzegałeś limitu w każdej sekcji.",
+    "noLargeKeys": "Ten poziom nie pozwala na duże klawisze.",
+    "feetOnly": "Ten poziom wymaga przejścia wyłącznie nogami.",
+    "fourKeyBaseLimit": "Ten poziom ma bazowy limit 4 klawiszy. Potwierdź, że stosowałeś dozwolone użycie klawiszy.",
+    "twoKeyBaseLimit": "Ten poziom ma bazowy limit 2 klawiszy. Potwierdź, że stosowałeś dozwolone użycie klawiszy.",
+    "freeRoam": "Ten poziom zawiera Free Roam. Ukończ go zgodnie z zamysłem.",
+    "multiTrack": "Ten poziom ma gimmick wielu ścieżek. Graj zamierzone ścieżki.",
+    "math": "Ten poziom ma gimmick matematyczny. Ukończ go zgodnie z zamysłem.",
+    "rpg": "Ten poziom ma gimmick RPG. Graj zgodnie z zamysłem.",
+    "memorization": "Ten poziom ma gimmick zapamiętywania. Należy go przejść z pełnym VFX.",
+    "unorthodoxReading": "Ten poziom ma nieortodoksyjne czytanie. Graj z zamierzonymi wizualami.",
+    "arrowKey": "Ten poziom jest przeznaczony do gry strzałkami.",
+    "cameraRequired": "Ten poziom wymaga kamery. Należy go przejść z zamierzoną kamerą/VFX.",
+    "autoTile": "Ten poziom zawiera auto kafle. Przed wysłaniem dokładnie sprawdź judgmenty.",
+    "judgementLimit": "Ten poziom ma limit judgmentów. Potwierdź, że ustawienie judgmentów w replayu zgadza się z wymaganiem.",
+    "hpBar": "Ten poziom używa paska HP. Potwierdź, że grałeś z wymaganym ustawieniem paska HP.",
+    "detailedJudgement": "Ten poziom wymaga szczegółowych judgmentów. Potwierdź, że wyświetlanie judgmentów zgadza się z wymaganiem.",
+    "timingWindowScale": "Ten poziom używa skalowanego okna timingowego. Potwierdź, że grałeś z wymaganym oknem timingowym."
   }
 } 

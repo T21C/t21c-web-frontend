@@ -20,7 +20,7 @@ import { ReferencesButton, ScrollButton } from "@/components/common/buttons";
 import { MetaTags } from "@/components/common/display";
 import { buildStaticPageMeta } from '@/utils/meta';
 import { useLocation } from 'react-router-dom';
-import { DifficultySlider, TagSelector, FacetQueryBuilder } from "@/components/common/selectors";
+import { DifficultySlider, TagSelector, FacetQueryBuilder, TagVisibilityDropdown } from "@/components/common/selectors";
 import { buildFacetQueryParam, collectFacetDomainIncludedIds } from "@/utils/facetQueryCodec";
 import { SortAscIcon, SortDescIcon, ResetIcon, SortIcon , FilterIcon, LikeIcon, SwitchIcon, EyeIcon, EyeOffIcon, TUFHelperLiteIcon} from "@/components/common/icons";
 import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
@@ -29,6 +29,7 @@ import toast from 'react-hot-toast';
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { normalizeLevelSearchQuery } from '@/utils/normalizeEntitySearchQuery';
 import { getDefaultQSliderRange } from '@/utils/getDefaultQSliderRange';
+import { useHiddenLevelCardTagsPreference } from '@/hooks/useHiddenLevelCardTagsPreference';
 import {
   getTufHelperLiteStorageMigrationStatus,
   getTufHelperLiteBatchUpdateCheckStatus,
@@ -133,7 +134,7 @@ const LevelPage = ({
   const [viewMode, setViewMode] = useState('normal');
   const [stateDisplayOpen, setStateDisplayOpen] = useState(false);
   const [searchInput, setSearchInput] = useState(query);
-  const [showTagsInCards, setShowTagsInCards] = useState(true);
+  const [hiddenTagIds, setHiddenTagIds] = useHiddenLevelCardTagsPreference();
   const [loadingMore, setLoadingMore] = useState(false);
   const [showDownloadManager, setShowDownloadManager] = useState(false);
   const [downloadStorage, setDownloadStorage] = useState(null);
@@ -800,13 +801,11 @@ const LevelPage = ({
                       title={t('level.settingExp.tags')}
                     />
                   </div>
-                  <button
-                    className={`tags-visibility-toggle ${!showTagsInCards ? 'hidden' : ''}`}
-                    onClick={() => setShowTagsInCards(!showTagsInCards)}
-                    title={showTagsInCards ? 'Hide tags in cards' : 'Show tags in cards'}
-                  >
-                    {showTagsInCards ? <EyeIcon size="18px" /> : <EyeOffIcon size="18px" />}
-                  </button>
+                  <TagVisibilityDropdown
+                    items={tags}
+                    hiddenIds={hiddenTagIds}
+                    onChange={setHiddenTagIds}
+                  />
                 </div>
                 <button 
                   className={`q-toggle-button ${qSliderVisible ? 'active' : ''}`}
@@ -1026,7 +1025,8 @@ const LevelPage = ({
               level={l}
               user={user}
               displayMode={viewMode}
-              showTags={showTagsInCards}
+              showTags
+              hiddenTagIds={hiddenTagIds}
               showC0V0CurationIcons={showC0V0CurationIcons}
               showEstimatedDifficulty={sort === 'DIFF'}
             />

@@ -22,7 +22,8 @@
     "diffDesc": "Sortuj od najtrudniejszych",
     "clearsAsc": "Sortuj od najmniejszej ilości przejść",
     "clearsDesc": "Sortuj od największej ilości przejść",
-    "random": "Losowe sortowanie"
+    "random": "Losowe sortowanie",
+    "hideCardTags": "Wybierz tagi ukrywane na kartach"
   },
   "settings": {
     "sort": {

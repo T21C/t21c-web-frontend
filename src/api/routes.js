@@ -92,6 +92,11 @@ export const routes = {
       byId: (id) => `/v2/developers/apps/${enc(id)}`,
       icon: (id) => `/v2/developers/apps/${enc(id)}/icon`,
     },
+    mods: {
+      list: () => '/v2/developers/mods',
+      byId: (id) => `/v2/developers/mods/${enc(id)}`,
+      icon: (id) => `/v2/developers/mods/${enc(id)}/icon`,
+    },
   },
 
   admin: {
@@ -208,6 +213,10 @@ export const routes = {
         `/v2/admin/submissions/passes/${enc(submissionId)}/${enc(action)}`,
       passAssignPlayer: (submissionId) =>
         `/v2/admin/submissions/passes/${enc(submissionId)}/assign-player`,
+      levelLock: (submissionId) =>
+        `/v2/admin/submissions/levels/${enc(submissionId)}/lock`,
+      passLock: (submissionId) =>
+        `/v2/admin/submissions/passes/${enc(submissionId)}/lock`,
     },
     curations: {
       root: () => '/v2/admin/curations',
@@ -235,6 +244,13 @@ export const routes = {
       list: () => '/v2/admin/oauth-clients',
       byId: (id) => `/v2/admin/oauth-clients/${enc(id)}`,
       action: (id, action) => `/v2/admin/oauth-clients/${enc(id)}/${enc(action)}`,
+    },
+    mods: {
+      root: () => '/v2/admin/mods',
+      byId: (id) => `/v2/admin/mods/${enc(id)}`,
+      icon: (id) => `/v2/admin/mods/${enc(id)}/icon`,
+      assignees: (id) => `/v2/admin/mods/${enc(id)}/assignees`,
+      assignee: (id, userId) => `/v2/admin/mods/${enc(id)}/assignees/${enc(userId)}`,
     },
     usefulLinks: {
       root: () => '/v2/admin/useful-links',
@@ -577,6 +593,9 @@ export const routes = {
   },
   usefulLinks: {
     list: () => '/v2/useful-links',
+  },
+  mods: {
+    list: () => '/v2/mods',
   },
   form: {
     pass: {

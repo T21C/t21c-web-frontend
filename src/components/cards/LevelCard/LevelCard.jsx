@@ -113,6 +113,8 @@ const LevelCard = ({
   user,
   displayMode = 'normal',
   showTags = true,
+  /** Tag ids to omit from card badges (display preference). */
+  hiddenTagIds = null,
   /** When true, show C0/V0 on the difficulty-arc curation icons (level list filter). */
   showC0V0CurationIcons = false,
   /** When true, show community estimated difficulty overlay on Q charts. */
@@ -181,6 +183,12 @@ const LevelCard = ({
       : null;
   const resolvesTagBadges =
     showTags && (displayMode === 'normal' || displayMode === 'pack');
+  const hiddenTagIdSet = useMemo(() => {
+    if (!hiddenTagIds) return null;
+    if (hiddenTagIds instanceof Set) return hiddenTagIds.size ? hiddenTagIds : null;
+    if (!hiddenTagIds.length) return null;
+    return new Set(hiddenTagIds);
+  }, [hiddenTagIds]);
   const tags = useMemo(() => {
     if (!resolvesTagBadges) return [];
     const assignedList = level?.tags || [];
@@ -198,9 +206,9 @@ const LevelCard = ({
           group: catalog?.group ?? assigned.group,
         };
       })
-      .filter(Boolean);
+      .filter((tag) => tag && (!hiddenTagIdSet || !hiddenTagIdSet.has(tag.id)));
     return selectLevelCardDisplayTags(merged, COMMUNITY_TAG_CARD_CAP);
-  }, [resolvesTagBadges, tagsDict, level?.tags]);
+  }, [resolvesTagBadges, tagsDict, level?.tags, hiddenTagIdSet]);
   const hasSongPopup = (level?.songs && level.songs.length > 0) ? true : false;
   const hasArtistPopup = (level?.artists && level.artists.length > 0) ? true : false;
   const levelDetailTo = level?.id != null ? `/levels/${level.id}` : '#';

@@ -22,6 +22,7 @@ const Footer = () => {
           <h4>{t('home.footer.quickLinks.title')}</h4>
           <Link to="/about">{t('home.footer.quickLinks.aboutUs')}</Link>
           <Link to="/resources">{t('home.footer.quickLinks.resources')}</Link>
+          <Link to="/mods">{t('home.footer.quickLinks.mods')}</Link>
           <Link to="/privacy-policy">{t('home.footer.quickLinks.privacyPolicy')}</Link>
           <Link to="/terms-of-service">{t('home.footer.quickLinks.termsOfService')}</Link>
           <ExternalLink href="https://api.tuforums.com/docs/">

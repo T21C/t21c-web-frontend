@@ -152,7 +152,8 @@
       },
       "createButton": "Create",
       "cancelButton": "Cancel",
-      "isCommunity": "Community tag (players can vote this onto levels)"
+      "isCommunity": "Community tag (players can vote this onto levels)",
+      "passWarningEnabled": "Warn on pass submit when this tag is present"
     },
     "edit": {
       "title": "Edit Tag",
@@ -170,7 +171,8 @@
       "updateButton": "Update",
       "cancelButton": "Cancel",
       "unsavedChanges": "You have unsaved changes. Are you sure you want to close?",
-      "isCommunity": "Community tag (players can vote this onto levels)"
+      "isCommunity": "Community tag (players can vote this onto levels)",
+      "passWarningEnabled": "Warn on pass submit when this tag is present"
     },
     "delete": {
       "title": "Delete Tag",

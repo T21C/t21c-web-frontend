@@ -139,6 +139,8 @@ function App() {
             <Route index element={<Pages.DevelopersHubPage />} />
             <Route path="apps/new" element={<Pages.DevelopersCreatePage />} />
             <Route path="apps/:appId" element={<Pages.DevelopersAppDetailPage />} />
+            <Route path="mods" element={<Pages.DevelopersModsPage />} />
+            <Route path="mods/:id" element={<Pages.DevelopersModEditPage />} />
           </Route>
           <Route path="profile/:playerId" element={<Pages.ProfilePage />} />
           <Route path="profile" element={<Pages.ProfilePage />} />
@@ -178,6 +180,8 @@ function App() {
           <Route path='about' element={<Pages.AboutUsPage />} />
           <Route path='resources/edit' element={<Pages.ResourcesEditPage />} />
           <Route path='resources' element={<Pages.ResourcesPage />} />
+          <Route path='mods/edit' element={<Pages.ModsEditPage />} />
+          <Route path='mods' element={<Pages.ModsPage />} />
           <Route path='privacy-policy' element={<Pages.PrivacyPolicyPage />} />
           <Route path='terms-of-service' element={<Pages.TermsOfServicePage />} />
           <Route path='health' element={<Pages.HealthCheckPage />} />

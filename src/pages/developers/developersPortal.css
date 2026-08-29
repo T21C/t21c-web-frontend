@@ -544,6 +544,10 @@
   background: var(--color-white-t15);
 }
 
+.developers-portal .image-selector-popup-overlay {
+  z-index: 1100;
+}
+
 .developers-portal__icon-row {
   display: flex;
   flex-wrap: wrap;
@@ -601,6 +605,102 @@
 .developers-portal__danger p {
   margin: 0;
   color: var(--color-gray-2);
+}
+
+.developers-portal__mod-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.developers-portal__mod-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-white-t20);
+  background: var(--color-white-t10);
+  min-height: 12rem;
+}
+
+.developers-portal__mod-preview-title {
+  margin: 0;
+  font-weight: 600;
+  color: var(--color-white);
+}
+
+.developers-portal__md-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  color: var(--color-white-t80);
+  line-height: 1.45;
+}
+
+.developers-portal__md-preview p,
+.developers-portal__md-preview h1,
+.developers-portal__md-preview h2,
+.developers-portal__md-preview h3,
+.developers-portal__md-preview h4,
+.developers-portal__md-preview ul,
+.developers-portal__md-preview ol,
+.developers-portal__md-preview blockquote,
+.developers-portal__md-preview pre {
+  margin: 0;
+}
+
+.developers-portal__md-preview h1,
+.developers-portal__md-preview h2,
+.developers-portal__md-preview h3,
+.developers-portal__md-preview h4 {
+  color: var(--color-white);
+  font-size: 1rem;
+}
+
+.developers-portal__md-preview a {
+  color: var(--color-white);
+  text-decoration: underline;
+}
+
+.developers-portal__md-preview a:hover {
+  color: var(--color-purple-1);
+}
+
+.developers-portal__md-preview ul,
+.developers-portal__md-preview ol {
+  padding-left: 1.25rem;
+}
+
+.developers-portal__md-preview blockquote {
+  padding-left: 0.75rem;
+  border-left: 3px solid var(--color-white-t20);
+  color: var(--color-gray-2);
+}
+
+.developers-portal__md-preview code {
+  font-family: ui-monospace, monospace;
+  font-size: 0.9em;
+}
+
+.developers-portal__md-preview pre {
+  overflow-x: auto;
+  padding: 0.6rem;
+  border-radius: 4px;
+  background: var(--color-white-t10);
+}
+
+.developers-portal__md-preview img {
+  max-width: 100%;
+  height: auto;
+}
+
+@media (min-width: 900px) {
+  .developers-portal__mod-edit {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
 }
 
 @media (max-width: 560px) {

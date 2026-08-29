@@ -15,6 +15,12 @@
   "tooltips": {
     "tufStellarOut": "TUFStellar 已上线！"
   },
+  "resourcesCta": {
+    "title": "第一次来论坛？",
+    "subtitle": "从这里开始！",
+    "dontShowAgain": "不再显示",
+    "iconAlt": "TUF 入门图标"
+  },
   "stats": {
     "overview": {
       "title": "总览",
@@ -58,6 +64,7 @@
       "scoreCalculator": "分数计算器",
       "aboutUs": "关于我们",
       "resources": "资料",
+      "mods": "模组",
       "privacyPolicy": "隐私政策",
       "termsOfService": "服务条款",
       "apiDocs": "API 文档",
