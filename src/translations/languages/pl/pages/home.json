@@ -15,6 +15,12 @@
   "tooltips": {
     "tufStellarOut": "TUFStellar jest już dostępny!"
   },
+  "resourcesCta": {
+    "title": "Nowy na Forum?",
+    "subtitle": "Zacznij tutaj!",
+    "dontShowAgain": "Nie pokazuj ponownie",
+    "iconAlt": "Ikona startowa TUF"
+  },
   "stats": {
     "overview": {
       "title": "Przegląd",

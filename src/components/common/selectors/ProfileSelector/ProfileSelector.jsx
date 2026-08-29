@@ -23,6 +23,8 @@ export const ProfileSelector = ({
   userSearchIncludeSelf = false,
   /** Render the suggestion dropdown in a portal (avoids overflow clipping in modals). */
   portalDropdown = false,
+  /** When false, hide the “request new” option (assignment pickers). Default true. */
+  allowRequestNew = true,
 }) => {
   const { t } = useTranslation('components');
   const { user } = useAuth();
@@ -181,7 +183,8 @@ export const ProfileSelector = ({
       id: profile.id,
       name: profile.name,
       type: profile.type || type,
-      isNewRequest: false
+      isNewRequest: false,
+      user: profile.user || null,
     });
   };
 
@@ -248,7 +251,7 @@ export const ProfileSelector = ({
                   {profile.type && <span className="profile-type">{profile.type}</span>}
                 </div>
               ))}
-          {type !== 'user' && searchTerm.length >= 1 ? (
+          {type !== 'user' && allowRequestNew && searchTerm.length >= 1 ? (
             <div className="profile-selector-request">
               {profiles.length === 0 && (
                 <div className="profile-selector-no-results">
@@ -262,6 +265,11 @@ export const ProfileSelector = ({
               >
                 {type === 'team' ? t('profileSelector.requestNewTeam') : t('profileSelector.requestNew')}
               </button>
+            </div>
+          ) : null}
+          {type !== 'user' && !allowRequestNew && !loading && profiles.length === 0 && searchTerm.length >= 1 ? (
+            <div className="profile-selector-no-results profile-selector-no-results--standalone">
+              {t('profileSelector.noResults')}
             </div>
           ) : null}
           {type === 'user' && !loading && profiles.length === 0 && searchTerm.trim().length >= 2 ? (
@@ -344,4 +352,5 @@ ProfileSelector.propTypes = {
   disabled: PropTypes.bool,
   userSearchIncludeSelf: PropTypes.bool,
   portalDropdown: PropTypes.bool,
+  allowRequestNew: PropTypes.bool,
 };

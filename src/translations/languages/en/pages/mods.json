@@ -9,6 +9,9 @@
   "editSubtitle": "Create, edit, hide, or delete catalog entries.",
   "empty": "No mods yet.",
   "emptySearch": "No mods match that search.",
+  "infScroll": {
+    "end": "You've reached the end!"
+  },
   "searchPlaceholder": "Search by name or creator",
   "sort": {
     "label": "Sort by",
@@ -21,6 +24,7 @@
   },
   "backToMods": "Back to mods",
   "download": "Download",
+  "project": "Project",
   "hiddenBadge": "Hidden",
   "createButton": "Create mod",
   "noMods": "No mods yet. Create your first mod.",
@@ -34,7 +38,7 @@
     "version": "Version",
     "description": "Description",
     "downloadUrl": "Download URL",
-    "imageUrl": "Image URL (GitHub only)",
+    "projectUrl": "Project link",
     "sourceUploadedAt": "Uploaded",
     "hidden": "Hide from public catalog"
   },
@@ -52,6 +56,24 @@
     "description": "This cannot be undone.",
     "deleteButton": "Delete"
   },
+  "postedBy": "Posted by",
+  "alsoAssigned": "Also",
+  "assign": {
+    "title": "Assigned users",
+    "empty": "No users assigned.",
+    "placeholder": "Search player to assign",
+    "applySameCreator": "Also assign to other mods with this creator Discord ID",
+    "addButton": "Assign user",
+    "assigned": "User assigned",
+    "assignedMany": "User assigned to {{count}} mods",
+    "failed": "Failed to assign user",
+    "removed": "User unassigned",
+    "removeFailed": "Failed to unassign user",
+    "remove": "Unassign {{name}}",
+    "confirmTitle": "Assign to other mods?",
+    "confirmMessage": "This will assign this user to {{count}} other mods, proceed?",
+    "confirmButton": "Assign"
+  },
   "notifications": {
     "created": "Mod created successfully",
     "createFailed": "Failed to create mod",
@@ -59,5 +81,13 @@
     "updateFailed": "Failed to update mod",
     "deleted": "Mod deleted successfully",
     "deleteFailed": "Failed to delete mod"
+  },
+  "icon": {
+    "change": "Change icon",
+    "remove": "Remove icon",
+    "uploaded": "Icon uploaded",
+    "uploadFailed": "Failed to upload icon",
+    "removed": "Icon removed",
+    "removeFailed": "Failed to remove icon"
   }
 }

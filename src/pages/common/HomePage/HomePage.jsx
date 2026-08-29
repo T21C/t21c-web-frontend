@@ -14,7 +14,61 @@ import { ScrollButton } from "@/components/common/buttons";
 import { PassIcon, ChartIcon, LeaderboardIcon, PackIcon, TUFStellarIcon } from "@/components/common/icons";
 import { useWeeklyCurations } from "@/hooks/useWeeklyCurations";
 import LogoFullOutlineSVG from "@/assets/tuf-logo/LogoFullOutlined/LogoFullOutlined";
+import adofaiTufStartIcon from "@/assets/icons/ADOFAI_TUF_START_ICON.png";
 import { navigateExternal } from "@/utils/externalNavigationGate";
+
+const RESOURCES_CTA_STORAGE_KEY = 'home.resourcesCta.dismissed';
+
+function readResourcesCtaDismissed() {
+  try {
+    return localStorage.getItem(RESOURCES_CTA_STORAGE_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+
+function writeResourcesCtaDismissed() {
+  try {
+    localStorage.setItem(RESOURCES_CTA_STORAGE_KEY, '1');
+  } catch {
+    /* ignore quota / private mode */
+  }
+}
+
+const ResourcesCta = () => {
+  const { t } = useTranslation('pages');
+  const [dismissed, setDismissed] = useState(readResourcesCtaDismissed);
+
+  const handleDismiss = useCallback(() => {
+    writeResourcesCtaDismissed();
+    setDismissed(true);
+  }, []);
+
+  if (dismissed) return null;
+
+  return (
+    <div className="home-resources-cta">
+      <Link to="/resources" className="home-resources-cta__link">
+        <img
+          src={adofaiTufStartIcon}
+          alt={t('home.resourcesCta.iconAlt')}
+          className="home-resources-cta__icon"
+        />
+        <span className="home-resources-cta__text">
+          <span className="home-resources-cta__title">{t('home.resourcesCta.title')}</span>
+          <span className="home-resources-cta__subtitle">{t('home.resourcesCta.subtitle')}</span>
+        </span>
+      </Link>
+      <button
+        type="button"
+        className="home-resources-cta__dismiss"
+        onClick={handleDismiss}
+      >
+        {t('home.resourcesCta.dontShowAgain')}
+      </button>
+    </div>
+  );
+};
 
 const SupportButton = () => {
   const { t } = useTranslation('pages');
@@ -101,6 +155,7 @@ const HomePage = () => {
       
       <ScrollButton />
       <div className="home-container">
+        <ResourcesCta />
         <Tooltip id="home-tuf-stellar" style={{ zIndex: 1000, fontSize: "1.4rem", fontWeight: "500", padding: "0.75rem 1.25rem" }}>
               {t('home.tooltips.tufStellarOut')}
         </Tooltip>

@@ -92,6 +92,11 @@ export const routes = {
       byId: (id) => `/v2/developers/apps/${enc(id)}`,
       icon: (id) => `/v2/developers/apps/${enc(id)}/icon`,
     },
+    mods: {
+      list: () => '/v2/developers/mods',
+      byId: (id) => `/v2/developers/mods/${enc(id)}`,
+      icon: (id) => `/v2/developers/mods/${enc(id)}/icon`,
+    },
   },
 
   admin: {
@@ -243,6 +248,9 @@ export const routes = {
     mods: {
       root: () => '/v2/admin/mods',
       byId: (id) => `/v2/admin/mods/${enc(id)}`,
+      icon: (id) => `/v2/admin/mods/${enc(id)}/icon`,
+      assignees: (id) => `/v2/admin/mods/${enc(id)}/assignees`,
+      assignee: (id, userId) => `/v2/admin/mods/${enc(id)}/assignees/${enc(userId)}`,
     },
     usefulLinks: {
       root: () => '/v2/admin/useful-links',

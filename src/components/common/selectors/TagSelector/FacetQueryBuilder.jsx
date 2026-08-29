@@ -5,8 +5,8 @@ import { Trans, useTranslation } from 'react-i18next';
 import { Tooltip } from 'react-tooltip';
 import { CustomSelect } from '@/components/common/selectors';
 import FacetItemPicker from './FacetItemPicker';
+import FacetSimpleList from './FacetSimpleList';
 import { PORTALED_PANEL_CLASS, usePortaledPanelAnchor } from '@/hooks/usePortaledPanelAnchor';
-import { compareSerializedTagOrder } from '@/utils/communityTags';
 import './facetquerybuilder.css';
 //import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 
@@ -76,7 +76,6 @@ const FacetQueryBuilder = ({ items, value, onChange, title, enableGrouping = tru
   const { t } = useTranslation('components');
   const simpleConfirmTooltipId = `facet-qb-simple-${useId().replace(/:/g, '')}`;
   const [isOpen, setIsOpen] = useState(false);
-  const [addSearch, setAddSearch] = useState('');
   const [picker, setPicker] = useState(null);
   const [simpleSwitchArmed, setSimpleSwitchArmed] = useState(false);
   const builderRootRef = useRef(null);
@@ -317,30 +316,6 @@ const FacetQueryBuilder = ({ items, value, onChange, title, enableGrouping = tru
     return n;
   };
 
-  const orderedGroups = useMemo(() => {
-    const q = addSearch.toLowerCase();
-    const list = q
-      ? filteredItems.filter((it) => String(it.name).toLowerCase().includes(q))
-      : filteredItems;
-    if (!enableGrouping) return [['', { items: list, groupSortOrder: 0 }]];
-    const itemGroups = list.reduce((acc, item) => {
-      const group =
-        item.group && String(item.group).trim() !== ''
-          ? item.group
-          : t('facetQueryBuilder.fallbackGroup');
-      if (!acc[group]) acc[group] = { items: [], groupSortOrder: item.groupSortOrder ?? 999999 };
-      acc[group].items.push(item);
-      if (item.groupSortOrder != null && item.groupSortOrder < acc[group].groupSortOrder) {
-        acc[group].groupSortOrder = item.groupSortOrder;
-      }
-      return acc;
-    }, {});
-    for (const data of Object.values(itemGroups)) {
-      data.items.sort(compareSerializedTagOrder);
-    }
-    return Object.entries(itemGroups).sort((a, b) => a[1].groupSortOrder - b[1].groupSortOrder);
-  }, [filteredItems, enableGrouping, t, addSearch]);
-
   const advancedVal = value?.mode === 'advanced' ? padBetweenPairs(value) : null;
   const pairs = advancedVal?.betweenPairs || [];
 
@@ -452,78 +427,13 @@ const FacetQueryBuilder = ({ items, value, onChange, title, enableGrouping = tru
             </div>
 
             {uiMode === 'simple' && (
-              <div className="facet-query-builder__simple">
-                <input
-                  type="search"
-                  className="facet-query-builder__search"
-                  placeholder={t('facetQueryBuilder.searchPlaceholder')}
-                  value={addSearch}
-                  onChange={(e) => setAddSearch(e.target.value)}
-                />
-                <div className="facet-query-builder__chips">
-                  {(value?.mode === 'simple' ? value.ids || [] : []).map((id) => {
-                    const it = itemById.get(id);
-                    if (!it) return null;
-                    return (
-                      <button
-                        key={id}
-                        type="button"
-                        className="facet-query-builder__chip"
-                        style={{ backgroundColor: `${it.color || '#444'}55` }}
-                        onClick={() => toggleSimpleId(id)}
-                      >
-                        {it.icon && <img src={it.icon} alt="" className="facet-query-builder__chip-icon" />}
-                        {it.name}
-                      </button>
-                    );
-                  })}
-                </div>
-                <div className="facet-query-builder__grid">
-                  {orderedGroups.map(([group, data]) => (
-                    <div key={group} className="facet-query-builder__group">
-                      <div className="facet-query-builder__group-head">
-                        {enableGrouping ? (
-                          <h4 className="facet-query-builder__group-title">{group}</h4>
-                        ) : (
-                          <span
-                            className="facet-query-builder__group-title facet-query-builder__group-title--spacer"
-                            aria-hidden
-                          />
-                        )}
-                        {data.items.length > 0 && (
-                          <button
-                            type="button"
-                            className="facet-query-builder__toggle-group-all"
-                            onClick={() => toggleSimpleGroupAll(data.items.map((it) => it.id))}
-                          >
-                            {t('facetQueryBuilder.toggleGroupAll')}
-                          </button>
-                        )}
-                      </div>
-                      <div className="facet-query-builder__list">
-                        {data.items.map((item) => (
-                          <button
-                            key={item.id}
-                            type="button"
-                            className={`facet-query-builder__item ${
-                              value?.mode === 'simple' && (value.ids || []).includes(item.id)
-                                ? 'is-selected'
-                                : ''
-                            }`}
-                            style={{ backgroundColor: `${item.color}55` }}
-                            onClick={() => toggleSimpleId(item.id)}
-                          >
-                            {item.icon && (
-                              <img src={item.icon} alt="" className="facet-query-builder__item-icon" />
-                            )}
-                            <span>{item.name}</span>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <FacetSimpleList
+                items={filteredItems}
+                selectedIds={value?.mode === 'simple' ? value.ids || [] : []}
+                onToggleId={toggleSimpleId}
+                onToggleGroupAll={toggleSimpleGroupAll}
+                enableGrouping={enableGrouping}
+              />
             )}
 
             {uiMode === 'advanced' && advancedVal && (

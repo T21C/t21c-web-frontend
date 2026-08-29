@@ -89,5 +89,31 @@
     "bodyWithAuto": "该谱面物量总数为<b>{{rawTilecount}}</b>（其中<b>{{autoTileCount}}</b>个为自动砖块），因此应有<b>{{tilecount}}</b>个判定结果。你的判定总数为<b>{{hitSum}}</b>，输入的判定数据可能有误。",
     "reviewInputs": "取消",
     "submitAnyway": "仍然提交"
+  },
+  "tagWarnings": {
+    "title": "请确认以下关卡要求",
+    "continue": "继续",
+    "keyLimit": "该关卡需以最多 {{count}} 键通关。",
+    "overlapAllowed": "该关卡允许按键重叠。请确认你未超出允许的重叠范围。",
+    "twoHandPseudos": "该关卡限制双手伪双押。请确认你遵守了允许的按键用法。",
+    "onhandOffhandLimit": "该关卡有主手/副手限制。请确认你遵守了允许的按键用法。",
+    "variableKeyLimit": "该关卡有分段键数限制。请确认你在各段遵守了键数限制。",
+    "noLargeKeys": "该关卡不允许使用大键帽。",
+    "feetOnly": "该关卡需仅用脚键通关。",
+    "fourKeyBaseLimit": "该关卡有 4 键基础限制。请确认你遵守了允许的按键用法。",
+    "twoKeyBaseLimit": "该关卡有 2 键基础限制。请确认你遵守了允许的按键用法。",
+    "freeRoam": "该关卡包含自由移动。请按设计完成该部分。",
+    "multiTrack": "该关卡有多轨道机制。请按设计的轨道游玩。",
+    "math": "该关卡有数学机制。请按设计完成。",
+    "rpg": "该关卡有 RPG 机制。请按设计游玩。",
+    "memorization": "该关卡有记忆机制。应以完整特效通关。",
+    "unorthodoxReading": "该关卡有非常规读谱。请使用设计的视觉效果游玩。",
+    "arrowKey": "该关卡设计为使用方向键游玩。",
+    "cameraRequired": "该关卡需要镜头。应以设计的镜头/特效通关。",
+    "autoTile": "该关卡包含自动砖块。提交前请仔细核对判定。",
+    "judgementLimit": "该关卡有判定限制。请确认回放中的判定设置符合要求。",
+    "hpBar": "该关卡使用血条。请确认你使用了要求的血条设置。",
+    "detailedJudgement": "该关卡需要详细判定。请确认判定显示符合要求。",
+    "timingWindowScale": "该关卡使用缩放判定窗口。请确认你使用了要求的判定窗口。"
   }
 }

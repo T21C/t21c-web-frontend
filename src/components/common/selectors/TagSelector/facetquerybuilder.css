@@ -221,6 +221,10 @@
   outline: 2px solid var(--color-white-t80);
 }
 
+.facet-query-builder__simple--hide .facet-query-builder__item.is-hidden {
+  opacity: 0.3;
+}
+
 .facet-query-builder__item-icon {
   width: 1rem;
   height: 1rem;

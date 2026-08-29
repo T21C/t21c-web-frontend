@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, Navigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
@@ -13,8 +13,13 @@ import { CloseButton } from '@/components/common/buttons';
 import { EditIcon, TrashIcon } from '@/components/common/icons';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { getRateLimitMessage } from '@/utils/rateLimitError';
+import { ProfileSelector } from '@/components/common/selectors';
+import ImageSelectorPopup from '@/components/common/selectors/ImageSelectorPopup/ImageSelectorPopup';
+import { getCdnErrorMessage } from '@/utils/uploadErrors';
 import ModsListControls from './ModsListControls';
-import { DEFAULT_MOD_SORT, sortMods } from './modListSort';
+import { listCreatorText } from './modPeople';
+import { useModsList } from './useModsList';
+import { VirtualList } from '@/components/common/VirtualList';
 import './modsPage.css';
 
 const EMPTY_MOD = {
@@ -24,7 +29,7 @@ const EMPTY_MOD = {
   version: '',
   description: '',
   downloadUrl: '',
-  imageUrl: '',
+  projectUrl: '',
   sourceUploadedAt: '',
   hidden: false,
 };
@@ -68,7 +73,7 @@ function formFromMod(mod) {
     version: mod?.version || '',
     description: mod?.description || '',
     downloadUrl: mod?.downloadUrl || '',
-    imageUrl: mod?.imageUrl || '',
+    projectUrl: mod?.projectUrl || '',
     sourceUploadedAt: toDatetimeLocalValue(mod?.sourceUploadedAt),
     hidden: Boolean(mod?.hidden),
   };
@@ -86,7 +91,7 @@ function toPayload(form, { includeUploadedAt }) {
     version: form.version,
     description: form.description,
     downloadUrl: form.downloadUrl,
-    imageUrl: form.imageUrl || null,
+    projectUrl: form.projectUrl || null,
     hidden: Boolean(form.hidden),
   };
   if (includeUploadedAt) {
@@ -96,25 +101,48 @@ function toPayload(form, { includeUploadedAt }) {
   return payload;
 }
 
-function creatorLabel(mod) {
-  const username = mod?.creatorUsername || '';
-  const snowflake = mod?.creatorDiscordId || '';
-  if (username && snowflake) return `${username} @${snowflake}`;
-  return username || snowflake;
+function mergeMods(prev, updated) {
+  const byId = new Map(prev.map((mod) => [mod.id, mod]));
+  for (const mod of updated) byId.set(mod.id, mod);
+  return [...byId.values()];
 }
 
-function modSearchHaystack(mod) {
-  return [
-    mod?.name,
-    mod?.creatorUsername,
-    mod?.creatorDiscordId,
-    creatorLabel(mod),
-  ]
-    .map((value) => String(value || '').toLowerCase())
-    .join('\n');
+function countOtherModsForAssign(mods, currentMod, userId) {
+  if (!currentMod?.creatorDiscordId) return 0;
+  return mods.filter((mod) => {
+    if (mod.id === currentMod.id) return false;
+    if (mod.creatorDiscordId !== currentMod.creatorDiscordId) return false;
+    if (!userId) return true;
+    return !(mod.assignees || []).some((assignee) => assignee.userId === userId);
+  }).length;
 }
 
-function ModFormFields({ form, onChange, t }) {
+function ModIconRow({ previewUrl, name, disabled, onChange, onRemove, t }) {
+  const initial = (name || '?').trim().charAt(0).toUpperCase() || '?';
+  return (
+    <div className="mods-page__icon-row">
+      {previewUrl ? (
+        <img className="mods-page__icon-preview" src={previewUrl} alt="" />
+      ) : (
+        <span className="mods-page__icon-preview mods-page__icon-preview--fallback" aria-hidden>
+          {initial}
+        </span>
+      )}
+      <div className="mods-page__icon-actions">
+        <button type="button" className="cancel-button" disabled={disabled} onClick={onChange}>
+          {t('mods.icon.change')}
+        </button>
+        {previewUrl ? (
+          <button type="button" className="cancel-button" disabled={disabled} onClick={onRemove}>
+            {t('mods.icon.remove')}
+          </button>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+function ModFormFields({ form, onChange, t, icon }) {
   const setField = (field) => (event) => {
     const value =
       event.target.type === 'checkbox' ? event.target.checked : event.target.value;
@@ -123,6 +151,16 @@ function ModFormFields({ form, onChange, t }) {
 
   return (
     <>
+      {icon ? (
+        <ModIconRow
+          previewUrl={icon.previewUrl}
+          name={form.name}
+          disabled={icon.disabled}
+          onChange={icon.onChange}
+          onRemove={icon.onRemove}
+          t={t}
+        />
+      ) : null}
       <div className="form-group">
         <label htmlFor="mod-name">{t('mods.fields.name')}</label>
         <input
@@ -177,12 +215,12 @@ function ModFormFields({ form, onChange, t }) {
         />
       </div>
       <div className="form-group">
-        <label htmlFor="mod-image">{t('mods.fields.imageUrl')}</label>
+        <label htmlFor="mod-project">{t('mods.fields.projectUrl')}</label>
         <input
-          id="mod-image"
+          id="mod-project"
           type="url"
-          value={form.imageUrl}
-          onChange={setField('imageUrl')}
+          value={form.projectUrl}
+          onChange={setField('projectUrl')}
         />
       </div>
       <div className="form-group">
@@ -237,56 +275,194 @@ const ModsEditPage = () => {
     [t, location.pathname],
   );
 
-  const [mods, setMods] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState(false);
-  const [query, setQuery] = useState('');
-  const [sort, setSort] = useState(DEFAULT_MOD_SORT);
+  const {
+    mods,
+    setMods,
+    loading,
+    loadingMore,
+    loadError,
+    hasMore,
+    total,
+    query,
+    setQuery,
+    sort,
+    setSort,
+    loadMore,
+    reload,
+  } = useModsList({
+    path: routes.admin.mods.root(),
+    enabled: !authLoading && isAdmin,
+  });
   const [isCreating, setIsCreating] = useState(false);
   const [newMod, setNewMod] = useState(EMPTY_MOD);
   const [editingMod, setEditingMod] = useState(null);
   const [editForm, setEditForm] = useState(EMPTY_MOD);
   const [deletingMod, setDeletingMod] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [assignPlayer, setAssignPlayer] = useState(null);
+  const [applyToSameCreator, setApplyToSameCreator] = useState(false);
+  const [assignConfirmCount, setAssignConfirmCount] = useState(null);
+  const [assigning, setAssigning] = useState(false);
+  const [createIconFile, setCreateIconFile] = useState(null);
+  const [createIconPreview, setCreateIconPreview] = useState('');
+  const [iconPicker, setIconPicker] = useState(null);
+  const [iconBusy, setIconBusy] = useState(false);
 
-  const anyModalOpen = Boolean(isCreating || editingMod || deletingMod);
+  const anyModalOpen = Boolean(isCreating || editingMod || deletingMod || iconPicker);
   useBodyScrollLock(anyModalOpen);
 
-  const loadData = useCallback(async () => {
-    setLoadError(false);
-    try {
-      const { data } = await api.get(routes.admin.mods.root());
-      setMods(applyMods(data));
-    } catch {
-      setLoadError(true);
-      setMods([]);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const setPendingCreateIcon = (file) => {
+    setCreateIconPreview((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return file ? URL.createObjectURL(file) : '';
+    });
+    setCreateIconFile(file || null);
+  };
 
   useEffect(() => {
-    if (!authLoading && isAdmin) loadData();
-  }, [authLoading, isAdmin, loadData]);
+    return () => {
+      if (createIconPreview) URL.revokeObjectURL(createIconPreview);
+    };
+  }, [createIconPreview]);
 
-  const visibleMods = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    const filtered = q
-      ? mods.filter((mod) => modSearchHaystack(mod).includes(q))
-      : mods;
-    return sortMods(filtered, sort);
-  }, [mods, query, sort]);
+  const searching = Boolean(query.trim());
 
   const closeCreate = () => {
-    if (!confirmDiscardUnsaved(t, isFormDirty(newMod, EMPTY_MOD))) return;
+    if (!confirmDiscardUnsaved(t, isFormDirty(newMod, EMPTY_MOD) || Boolean(createIconFile))) return;
     setIsCreating(false);
     setNewMod(EMPTY_MOD);
+    setPendingCreateIcon(null);
   };
 
   const closeEdit = () => {
     const baseline = formFromMod(editingMod);
     if (!confirmDiscardUnsaved(t, isFormDirty(editForm, baseline))) return;
     setEditingMod(null);
+    setAssignPlayer(null);
+    setApplyToSameCreator(false);
+    setAssignConfirmCount(null);
+  };
+
+  const runAssign = async (applySame) => {
+    if (!editingMod || !assignPlayer?.id || assigning) return;
+    setAssigning(true);
+    try {
+      const { data } = await api.post(routes.admin.mods.assignees(editingMod.id), {
+        playerId: assignPlayer.id,
+        applyToSameCreator: Boolean(applySame),
+      });
+      const updated = Array.isArray(data?.mods) ? data.mods : [];
+      setMods((prev) => mergeMods(prev, updated));
+      const current = updated.find((mod) => mod.id === editingMod.id);
+      if (current) setEditingMod(current);
+      setAssignPlayer(null);
+      setApplyToSameCreator(false);
+      setAssignConfirmCount(null);
+      if (updated.length > 1) await reload();
+      const count = Number(data?.assignedModCount) || updated.length;
+      toast.success(
+        count > 1 ? t('mods.assign.assignedMany', { count }) : t('mods.assign.assigned'),
+      );
+    } catch (error) {
+      toast.error(apiError(error, t('mods.assign.failed')));
+    } finally {
+      setAssigning(false);
+    }
+  };
+
+  const requestAssign = async () => {
+    if (!editingMod || !assignPlayer?.id || assignPlayer.isNewRequest) return;
+    let otherCount = 0;
+    if (applyToSameCreator && editingMod.creatorDiscordId) {
+      try {
+        const { data } = await api.get(routes.admin.mods.root(), {
+          params: {
+            q: editingMod.creatorDiscordId,
+            offset: 0,
+            limit: 100,
+            sort: 'name-asc',
+          },
+        });
+        otherCount = countOtherModsForAssign(applyMods(data), editingMod, assignPlayer.user?.id);
+      } catch {
+        otherCount = countOtherModsForAssign(mods, editingMod, assignPlayer.user?.id);
+      }
+    }
+    if (otherCount > 0) {
+      setAssignConfirmCount(otherCount);
+      return;
+    }
+    void runAssign(false);
+  };
+
+  const unassignUser = async (userId) => {
+    if (!editingMod || assigning) return;
+    setAssigning(true);
+    try {
+      const { data } = await api.delete(routes.admin.mods.assignee(editingMod.id, userId));
+      if (data?.mod) {
+        setEditingMod(data.mod);
+        setMods((prev) => mergeMods(prev, [data.mod]));
+      }
+      toast.success(t('mods.assign.removed'));
+    } catch (error) {
+      toast.error(apiError(error, t('mods.assign.removeFailed')));
+    } finally {
+      setAssigning(false);
+    }
+  };
+
+  const applyModUpdate = (mod) => {
+    if (!mod) return;
+    setEditingMod(mod);
+    setMods((prev) => mergeMods(prev, [mod]));
+  };
+
+  const postModIcon = async (modId, file) => {
+    const body = new FormData();
+    body.append('icon', file);
+    const { data } = await api.post(routes.admin.mods.icon(modId), body, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return data?.mod;
+  };
+
+  const handleIconSave = async (file) => {
+    if (iconPicker === 'create') {
+      setPendingCreateIcon(file);
+      setIconPicker(null);
+      return;
+    }
+    if (iconPicker !== 'edit' || !editingMod) return;
+    setIconBusy(true);
+    try {
+      const next = await postModIcon(editingMod.id, file);
+      applyModUpdate(next);
+      toast.success(t('mods.icon.uploaded'));
+    } catch (error) {
+      toast.error(getCdnErrorMessage(error, t('mods.icon.uploadFailed')));
+    } finally {
+      setIconBusy(false);
+      setIconPicker(null);
+    }
+  };
+
+  const handleIconRemove = async () => {
+    if (isCreating) {
+      setPendingCreateIcon(null);
+      return;
+    }
+    if (!editingMod) return;
+    setIconBusy(true);
+    try {
+      const { data } = await api.delete(routes.admin.mods.icon(editingMod.id));
+      applyModUpdate(data?.mod);
+      toast.success(t('mods.icon.removed'));
+    } catch (error) {
+      toast.error(apiError(error, t('mods.icon.removeFailed')));
+    } finally {
+      setIconBusy(false);
+    }
   };
 
   const canSubmit = (form) =>
@@ -325,6 +501,7 @@ const ModsEditPage = () => {
                 className="btn-fill-primary"
                 onClick={() => {
                   setNewMod(EMPTY_MOD);
+                  setPendingCreateIcon(null);
                   setIsCreating(true);
                 }}
               >
@@ -341,18 +518,40 @@ const ModsEditPage = () => {
             t={t}
           />
 
-          {loading ? (
-            <div className="loading-message">{t('loading.generic', { ns: 'common' })}</div>
+          {total != null && !loadError ? (
+            <span className="mods-page__total">
+              {t('totalResults', { ns: 'common', count: total })}
+            </span>
+          ) : null}
+
+          {loading && mods.length === 0 ? (
+            <div className="loader-shell loader-shell--tall">
+              <div className="loader loader-relative" />
+            </div>
           ) : loadError ? (
             <div className="no-items-message">{t('mods.errors.loadFailed')}</div>
           ) : mods.length === 0 ? (
-            <p className="mods-page__empty">{t('mods.noMods')}</p>
-          ) : visibleMods.length === 0 ? (
-            <p className="mods-page__empty">{t('mods.emptySearch')}</p>
+            <p className="mods-page__empty">
+              {searching ? t('mods.emptySearch') : t('mods.noMods')}
+            </p>
           ) : (
-            <div className="mods-page__list">
-              {visibleMods.map((mod) => (
-                <div key={mod.id} className="mods-page__admin-row">
+            <VirtualList
+              style={{ paddingBottom: '4rem', minHeight: '50vh' }}
+              items={mods}
+              loadMore={loadMore}
+              hasMore={hasMore}
+              loadingMore={loadingMore}
+              overscan={400}
+              listClassName="mods-page__list"
+              itemClassName="mods-page__list-item"
+              loader={<div className="loader loader-relative" />}
+              endMessage={
+                <p className="mods-page__end-message">
+                  <b>{t('mods.infScroll.end')}</b>
+                </p>
+              }
+              renderItem={(mod) => (
+                <div className="mods-page__admin-row">
                   <div className="mods-page__admin-row-copy">
                     <div className="mods-page__admin-row-name">
                       <strong>{mod.name}</strong>
@@ -361,7 +560,7 @@ const ModsEditPage = () => {
                         <span className="mods-page__hidden-badge">{t('mods.hiddenBadge')}</span>
                       ) : null}
                     </div>
-                    <div className="mods-page__admin-row-meta">{creatorLabel(mod)}</div>
+                    <div className="mods-page__admin-row-meta">{listCreatorText(mod)}</div>
                   </div>
                   <div className="mods-page__admin-row-actions">
                     <button
@@ -369,6 +568,9 @@ const ModsEditPage = () => {
                       onClick={() => {
                         setEditingMod(mod);
                         setEditForm(formFromMod(mod));
+                        setAssignPlayer(null);
+                        setApplyToSameCreator(false);
+                        setAssignConfirmCount(null);
                       }}
                       aria-label={t('buttons.edit', { ns: 'common' })}
                     >
@@ -383,8 +585,9 @@ const ModsEditPage = () => {
                     </button>
                   </div>
                 </div>
-              ))}
-            </div>
+              )}
+              computeItemKey={(index, mod) => mod?.id ?? index}
+            />
           )}
         </div>
         <Footer />
@@ -404,11 +607,22 @@ const ModsEditPage = () => {
                   if (!canSubmit(newMod) || saving) return;
                   setSaving(true);
                   try {
-                    await api.post(routes.admin.mods.root(), toPayload(newMod, { includeUploadedAt: true }));
+                    const { data } = await api.post(
+                      routes.admin.mods.root(),
+                      toPayload(newMod, { includeUploadedAt: true }),
+                    );
+                    if (createIconFile && data?.id) {
+                      try {
+                        await postModIcon(data.id, createIconFile);
+                      } catch (iconError) {
+                        toast.error(getCdnErrorMessage(iconError, t('mods.icon.uploadFailed')));
+                      }
+                    }
                     toast.success(t('mods.notifications.created'));
                     setIsCreating(false);
                     setNewMod(EMPTY_MOD);
-                    await loadData();
+                    setPendingCreateIcon(null);
+                    await reload();
                   } catch (error) {
                     toast.error(apiError(error, t('mods.notifications.createFailed')));
                   } finally {
@@ -416,7 +630,17 @@ const ModsEditPage = () => {
                   }
                 }}
               >
-                <ModFormFields form={newMod} onChange={setNewMod} t={t} />
+                <ModFormFields
+                  form={newMod}
+                  onChange={setNewMod}
+                  t={t}
+                  icon={{
+                    previewUrl: createIconPreview,
+                    disabled: saving || iconBusy,
+                    onChange: () => setIconPicker('create'),
+                    onRemove: handleIconRemove,
+                  }}
+                />
                 <div className="modal-actions">
                   <button type="button" className="cancel-button" onClick={closeCreate}>
                     {t('buttons.cancel', { ns: 'common' })}
@@ -451,7 +675,7 @@ const ModsEditPage = () => {
                     );
                     toast.success(t('mods.notifications.updated'));
                     setEditingMod(null);
-                    await loadData();
+                    await reload();
                   } catch (error) {
                     toast.error(apiError(error, t('mods.notifications.updateFailed')));
                   } finally {
@@ -459,7 +683,17 @@ const ModsEditPage = () => {
                   }
                 }}
               >
-                <ModFormFields form={editForm} onChange={setEditForm} t={t} />
+                <ModFormFields
+                  form={editForm}
+                  onChange={setEditForm}
+                  t={t}
+                  icon={{
+                    previewUrl: editingMod.imageUrl,
+                    disabled: saving || iconBusy,
+                    onChange: () => setIconPicker('edit'),
+                    onRemove: handleIconRemove,
+                  }}
+                />
                 <div className="modal-actions">
                   <button type="button" className="cancel-button" onClick={closeEdit}>
                     {t('buttons.cancel', { ns: 'common' })}
@@ -469,6 +703,76 @@ const ModsEditPage = () => {
                   </button>
                 </div>
               </form>
+              <div className="mods-page__assign">
+                <p className="mods-page__assign-title">{t('mods.assign.title')}</p>
+                <div className="mods-page__assignee-chips">
+                  {(editingMod.assignees || []).length === 0 ? (
+                    <span className="mods-page__assign-empty">{t('mods.assign.empty')}</span>
+                  ) : (
+                    (editingMod.assignees || []).map((assignee) => (
+                      <span key={assignee.userId} className="mods-page__assignee-chip">
+                        <span>{assignee.name}</span>
+                        <button
+                          type="button"
+                          onClick={() => unassignUser(assignee.userId)}
+                          disabled={assigning}
+                          aria-label={t('mods.assign.remove', { name: assignee.name })}
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))
+                  )}
+                </div>
+                <ProfileSelector
+                  type="player"
+                  value={assignPlayer}
+                  onChange={setAssignPlayer}
+                  placeholder={t('mods.assign.placeholder')}
+                  portalDropdown
+                  allowRequestNew={false}
+                  disabled={assigning}
+                />
+                <label className="mods-page__assign-same">
+                  <input
+                    type="checkbox"
+                    checked={applyToSameCreator}
+                    onChange={(event) => setApplyToSameCreator(event.target.checked)}
+                    disabled={assigning}
+                  />
+                  {t('mods.assign.applySameCreator')}
+                </label>
+                <button
+                  type="button"
+                  className="confirm-button"
+                  disabled={!assignPlayer?.id || assignPlayer.isNewRequest || assigning}
+                  onClick={requestAssign}
+                >
+                  {t('mods.assign.addButton')}
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : null}
+
+        {assignConfirmCount != null ? (
+          <div className="mods-page__modal" onClick={() => setAssignConfirmCount(null)}>
+            <div className="mods-page__modal-content" onClick={(event) => event.stopPropagation()}>
+              <h2>{t('mods.assign.confirmTitle')}</h2>
+              <p>{t('mods.assign.confirmMessage', { count: assignConfirmCount })}</p>
+              <div className="modal-actions">
+                <button type="button" className="cancel-button" onClick={() => setAssignConfirmCount(null)}>
+                  {t('buttons.cancel', { ns: 'common' })}
+                </button>
+                <button
+                  type="button"
+                  className="confirm-button"
+                  disabled={assigning}
+                  onClick={() => void runAssign(true)}
+                >
+                  {t('mods.assign.confirmButton')}
+                </button>
+              </div>
             </div>
           </div>
         ) : null}
@@ -491,7 +795,7 @@ const ModsEditPage = () => {
                       await api.delete(routes.admin.mods.byId(deletingMod.id));
                       toast.success(t('mods.notifications.deleted'));
                       setDeletingMod(null);
-                      await loadData();
+                      await reload();
                     } catch (error) {
                       toast.error(apiError(error, t('mods.notifications.deleteFailed')));
                     }
@@ -503,6 +807,16 @@ const ModsEditPage = () => {
             </div>
           </div>
         ) : null}
+
+        <ImageSelectorPopup
+          isOpen={Boolean(iconPicker)}
+          onClose={() => setIconPicker(null)}
+          onSave={handleIconSave}
+          currentAvatar={iconPicker === 'edit' ? editingMod?.imageUrl : createIconPreview}
+          mode="avatar"
+          title={t('mods.icon.change')}
+          outputFileName="mod-icon.jpg"
+        />
       </div>
     </>
   );

@@ -11,7 +11,6 @@
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
-  gap: 1.5rem;
   width: 100%;
   padding: 2rem 1.5rem;
 }
@@ -75,6 +74,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.65rem;
+  margin-bottom: 1.5rem;
 }
 
 .mods-page__header-actions {
@@ -127,10 +127,31 @@
   color: var(--color-white-t80);
 }
 
+.mods-page__total {
+  display: block;
+  margin: 0 0 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: right;
+  color: var(--color-white);
+  opacity: 0.6;
+}
+
+.mods-page__end-message {
+  margin: 0;
+  text-align: center;
+  font-size: 1.15rem;
+  color: var(--color-white-t80);
+}
+
 .mods-page__list {
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
+  gap: 0;
+}
+
+.mods-page__list-item {
+  padding-bottom: 0.65rem;
 }
 
 .mods-page__card {
@@ -286,22 +307,63 @@
   font-size: 0.85rem;
 }
 
+.mods-page__people {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.mods-page__people-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.5rem;
+  align-items: center;
+}
+
+.mods-page__people-row a {
+  color: var(--color-white);
+  text-decoration: underline;
+}
+
+.mods-page__people-row a:hover {
+  color: var(--color-purple-1);
+}
+
+.mods-page .mods-page__card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-left: auto;
+}
+
 .mods-page__download {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  margin-left: auto;
-  color: var(--color-white);
+  color: var(--color-white-t80);
   text-decoration: none;
   padding: 0.4rem 0.7rem;
   border-radius: 0.4rem;
   background: var(--color-white-t10);
   border: 1px solid var(--color-white-t20);
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
 }
 
-.mods-page__download:hover {
-  background: color-mix(in srgb, var(--color-purple-1) 16%, var(--color-black));
+.mods-page__download:hover,
+.mods-page__download:focus-visible {
+  background: color-mix(in srgb, var(--color-purple-1) 22%, var(--color-black));
   border-color: var(--color-purple-1);
+  color: var(--color-white);
+  outline: none;
+}
+
+.mods-page__download:active {
+  background: color-mix(in srgb, var(--color-purple-1) 32%, var(--color-black));
+  border-color: var(--color-purple-2);
 }
 
 .mods-page__admin-row {
@@ -366,6 +428,41 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
+}
+
+.mods-page .image-selector-popup-overlay {
+  z-index: 1100;
+}
+
+.mods-page__icon-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+}
+
+.mods-page__icon-preview {
+  width: 4.5rem;
+  height: 4.5rem;
+  object-fit: cover;
+  border-radius: 8px;
+  background: var(--color-black);
+  flex-shrink: 0;
+}
+
+.mods-page__icon-preview--fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: var(--color-white);
+  background: var(--btn-neutral);
+}
+
+.mods-page__icon-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .mods-page .mods-page__modal-content {
@@ -450,6 +547,75 @@
   font-weight: 400;
 }
 
+.mods-page__assign {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--color-white-t20);
+}
+
+.mods-page__assign-title {
+  margin: 0;
+  color: var(--color-white);
+  font-weight: 600;
+}
+
+.mods-page__assign-empty {
+  color: var(--color-white-t70);
+  font-size: 0.875rem;
+}
+
+.mods-page__assignee-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.mods-page__assignee-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+  background: var(--color-white-t10);
+  border: 1px solid var(--color-white-t20);
+  color: var(--color-white);
+  font-size: 0.875rem;
+}
+
+.mods-page__assignee-chip button {
+  background: transparent;
+  border: none;
+  color: var(--color-white-t80);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  font-size: 1.1rem;
+}
+
+.mods-page__assignee-chip button:hover:not(:disabled) {
+  color: var(--danger-color);
+}
+
+.mods-page__assignee-chip button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.mods-page__assign-same {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-white);
+  font-size: 0.9rem;
+}
+
+.mods-page__assign .confirm-button {
+  align-self: flex-start;
+}
+
 .mods-page .modal-actions {
   display: flex;
   flex-wrap: wrap;
@@ -477,7 +643,8 @@
   background-color: var(--btn-primary-hover);
 }
 
-.mods-page .confirm-button:disabled {
+.mods-page .confirm-button:disabled,
+.mods-page .cancel-button:disabled {
   cursor: not-allowed;
   opacity: 0.55;
 }

@@ -15,6 +15,12 @@
   "tooltips": {
     "tufStellarOut": "TUFStellar is out!"
   },
+  "resourcesCta": {
+    "title": "New to the Forums?",
+    "subtitle": "Get started here!",
+    "dontShowAgain": "Don't show again",
+    "iconAlt": "TUF start icon"
+  },
   "stats": {
     "overview": {
       "title": "Overview",

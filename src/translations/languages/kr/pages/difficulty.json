@@ -156,7 +156,8 @@
       },
       "createButton": "생성",
       "cancelButton": "취소",
-      "isCommunity": "커뮤니티 태그 (플레이어가 레벨에 투표할 수 있음)"
+      "isCommunity": "커뮤니티 태그 (플레이어가 레벨에 투표할 수 있음)",
+      "passWarningEnabled": "이 태그가 있으면 클리어 제출 시 경고 표시"
     },
     "edit": {
       "title": "태그 수정",
@@ -174,7 +175,8 @@
       "updateButton": "Update",
       "cancelButton": "Cancel",
       "unsavedChanges": "저장하지 않은 변경 사항이 있습니다. 정말로 닫으실건가요?",
-      "isCommunity": "커뮤니티 태그 (플레이어가 레벨에 투표할 수 있음)"
+      "isCommunity": "커뮤니티 태그 (플레이어가 레벨에 투표할 수 있음)",
+      "passWarningEnabled": "이 태그가 있으면 클리어 제출 시 경고 표시"
     },
     "delete": {
       "title": "태그 제거",

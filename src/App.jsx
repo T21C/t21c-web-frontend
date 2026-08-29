@@ -139,6 +139,8 @@ function App() {
             <Route index element={<Pages.DevelopersHubPage />} />
             <Route path="apps/new" element={<Pages.DevelopersCreatePage />} />
             <Route path="apps/:appId" element={<Pages.DevelopersAppDetailPage />} />
+            <Route path="mods" element={<Pages.DevelopersModsPage />} />
+            <Route path="mods/:id" element={<Pages.DevelopersModEditPage />} />
           </Route>
           <Route path="profile/:playerId" element={<Pages.ProfilePage />} />
           <Route path="profile" element={<Pages.ProfilePage />} />

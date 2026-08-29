@@ -49,6 +49,8 @@ const DevelopersLayout = lazy(() => import('./developers/DevelopersLayout'));
 const DevelopersHubPage = lazy(() => import('./developers/DevelopersHubPage'));
 const DevelopersCreatePage = lazy(() => import('./developers/DevelopersCreatePage'));
 const DevelopersAppDetailPage = lazy(() => import('./developers/DevelopersAppDetailPage'));
+const DevelopersModsPage = lazy(() => import('./developers/DevelopersModsPage'));
+const DevelopersModEditPage = lazy(() => import('./developers/DevelopersModEditPage'));
 const AdminOAuthClientsPage = lazy(() => import('./admin/AdminOAuthClientsPage/AdminOAuthClientsPage'));
 
 // Admin pages
@@ -132,6 +134,8 @@ export {
     DevelopersHubPage,
     DevelopersCreatePage,
     DevelopersAppDetailPage,
+    DevelopersModsPage,
+    DevelopersModEditPage,
     AdminOAuthClientsPage,
     
     // Admin pages

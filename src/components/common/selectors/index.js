@@ -7,6 +7,7 @@ import CustomSelect from "./Select/Select";
 import PackRefSelect from "./PackRefSelect/PackRefSelect";
 import TagSelector from "./TagSelector/TagSelector";
 import FacetQueryBuilder from "./TagSelector/FacetQueryBuilder";
+import TagVisibilityDropdown from "./TagSelector/TagVisibilityDropdown";
 import StateDisplay from "./StateDisplay/StateDisplay";
 import { RatingInput } from "./RatingInput/RatingInput";
 import { RouletteWheel } from "./RouletteWheel/RouletteWheel";
@@ -25,6 +26,7 @@ export {
     PackRefSelect,
     TagSelector,
     FacetQueryBuilder,
+    TagVisibilityDropdown,
     StateDisplay,
     RatingInput,
     RouletteWheel,

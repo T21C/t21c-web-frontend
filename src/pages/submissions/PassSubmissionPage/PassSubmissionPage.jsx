@@ -25,6 +25,7 @@ import {
   isTilecountJudgementMismatch,
 } from '@/utils/passJudgementHitCount';
 import { PASS_SUBMISSION_INITIAL_FORM } from './passSubmissionInitialForm';
+import { getPassSubmissionTagWarnings } from './passSubmissionTagWarnings';
 import { PassSubmissionCore } from './PassSubmissionCore';
 import { CalculatorIcon } from '@/components/common/icons';
 import CommunityTagVotePopup from '@/pages/common/Level/LevelDetailPage/CommunityTagVotePopup';
@@ -66,6 +67,7 @@ const PassSubmissionPage = () => {
   });
   const [showRulesPopup, setShowRulesPopup] = useState(false);
   const [showTilecountMismatchModal, setShowTilecountMismatchModal] = useState(false);
+  const [showTagWarningsModal, setShowTagWarningsModal] = useState(false);
   const [votePopupLevelId, setVotePopupLevelId] = useState(null);
 
   const extraValidation = useCallback(
@@ -108,6 +110,11 @@ const PassSubmissionPage = () => {
     scoreOverrides: null,
     allowSandboxScore: false,
   });
+
+  const tagWarnings = useMemo(
+    () => getPassSubmissionTagWarnings(level?.tags),
+    [level?.tags],
+  );
 
   useEffect(() => {
     if (hasReadPassRules) {
@@ -202,6 +209,15 @@ const PassSubmissionPage = () => {
     }
   };
 
+  const proceedAfterTagWarnings = async () => {
+    const hitSum = getPassJudgementHitCountFromForm(form);
+    if (isTilecountJudgementMismatch(level?.tilecount, hitSum, level?.autoTileCount)) {
+      setShowTilecountMismatchModal(true);
+      return;
+    }
+    await performSubmit();
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -256,13 +272,12 @@ const PassSubmissionPage = () => {
       return;
     }
 
-    const hitSum = getPassJudgementHitCountFromForm(form);
-    if (isTilecountJudgementMismatch(level?.tilecount, hitSum, level?.autoTileCount)) {
-      setShowTilecountMismatchModal(true);
+    if (tagWarnings.length > 0) {
+      setShowTagWarningsModal(true);
       return;
     }
 
-    await performSubmit();
+    await proceedAfterTagWarnings();
   };
 
   return (
@@ -362,6 +377,62 @@ const PassSubmissionPage = () => {
       ) : null}
 
       {showRulesPopup && <RulePopup setShowRulesPopup={setShowRulesPopup} />}
+
+      {showTagWarningsModal && tagWarnings.length > 0 && (
+        <div
+          className="tag-warnings-modal-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="tag-warnings-title"
+          onClick={() => setShowTagWarningsModal(false)}
+        >
+          <div className="tag-warnings-modal" onClick={(e) => e.stopPropagation()}>
+            <h2 id="tag-warnings-title">{t('passSubmission.tagWarnings.title')}</h2>
+            <ul className="tag-warnings-modal-list">
+              {tagWarnings.map((warning) => (
+                <li key={warning.tagName} className="tag-warnings-modal-item">
+                  <span
+                    className="tag-warnings-modal-icon"
+                    data-letter-only={!warning.icon}
+                    style={warning.color ? { '--tag-bg-color': warning.color } : undefined}
+                  >
+                    {warning.icon ? (
+                      <img src={warning.icon} alt="" />
+                    ) : (
+                      <span className="tag-warnings-modal-letter">
+                        {warning.tagName.charAt(0).toUpperCase()}
+                      </span>
+                    )}
+                  </span>
+                  <span className="tag-warnings-modal-text">
+                    {t(warning.i18nKey, warning.values)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <div className="tag-warnings-modal-actions">
+              <button
+                type="button"
+                className="tag-warnings-review-btn btn-fill-secondary"
+                onClick={() => setShowTagWarningsModal(false)}
+              >
+                {t('buttons.cancel', { ns: 'common' })}
+              </button>
+              <button
+                type="button"
+                className="tag-warnings-continue-btn btn-fill-primary alt"
+                onClick={async () => {
+                  setShowTagWarningsModal(false);
+                  await proceedAfterTagWarnings();
+                }}
+                disabled={submission}
+              >
+                {t('passSubmission.tagWarnings.continue')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {showTilecountMismatchModal && (
         <div

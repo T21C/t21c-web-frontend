@@ -1,3 +1,5 @@
+import { creatorSortKey } from './modPeople';
+
 export const DEFAULT_MOD_SORT = 'name-asc';
 
 export const MOD_SORT_OPTIONS = [
@@ -32,13 +34,13 @@ export function compareModsBySort(a, b, sort) {
       return uploadedMs(a) - uploadedMs(b) || compareText(a.name, b.name) || a.id - b.id;
     case 'creator-asc':
       return (
-        compareText(a.creatorUsername, b.creatorUsername) ||
+        compareText(creatorSortKey(a), creatorSortKey(b)) ||
         compareText(a.name, b.name) ||
         a.id - b.id
       );
     case 'creator-desc':
       return (
-        compareText(b.creatorUsername, a.creatorUsername) ||
+        compareText(creatorSortKey(b), creatorSortKey(a)) ||
         compareText(a.name, b.name) ||
         a.id - b.id
       );

@@ -18,7 +18,8 @@
     "recentDesc": "Le plus récent en premier",
     "difficultyAsc": "Trier par difficultés ascendante",
     "difficultyDesc": "Trier par difficultés descendante",
-    "random": "Trier aléatoirement"
+    "random": "Trier aléatoirement",
+    "hideCardTags": "Choisir les tags à masquer sur les cartes"
   },
   "settings": {
     "sort": {

@@ -8,6 +8,7 @@
   "navAria": "Developer portal",
   "nav": {
     "apps": "My Apps",
+    "mods": "Mods",
     "admin": "Admin Page"
   },
   "hubTitle": "Your apps",
@@ -83,5 +84,18 @@
     "danger": "Danger"
   },
   "dangerTitle": "Delete this app",
-  "dangerBody": "This permanently removes the client. Users with existing grants keep tokens until they expire or are revoked."
+  "dangerBody": "This permanently removes the client. Users with existing grants keep tokens until they expire or are revoked.",
+  "mods": {
+    "title": "Mods",
+    "emptyTitle": "Aucun mod assigné",
+    "emptyBody": "Aucun mod n'est assigné à votre compte.",
+    "loadError": "Impossible de charger les mods",
+    "notFound": "Mod introuvable",
+    "back": "Tous les mods",
+    "editTitle": "Modifier le mod",
+    "preview": "Aperçu",
+    "saved": "Mod enregistré",
+    "saveError": "Échec de l'enregistrement",
+    "save": "Enregistrer"
+  }
 }

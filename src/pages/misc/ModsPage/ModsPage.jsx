@@ -1,7 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import api from '@/utils/api';
 import { routes } from '@/api/routes';
 import { useAuth } from '@/contexts/AuthContext';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
@@ -10,27 +9,12 @@ import { buildStaticPageMeta } from '@/utils/meta';
 import { Footer } from '@/components/layout';
 import { ExternalLink } from '@/components/common/LinkConfirm';
 import { ExternalLinkIcon } from '@/components/common/icons';
+import { VirtualList } from '@/components/common/VirtualList';
 import ModsMarkdown from './ModsMarkdown';
 import ModsListControls from './ModsListControls';
-import { DEFAULT_MOD_SORT, sortMods } from './modListSort';
+import { dumpCreatorLabel, hasAssignees, otherAssignees } from './modPeople';
+import { useModsList } from './useModsList';
 import './modsPage.css';
-
-function applyMods(data) {
-  return Array.isArray(data?.mods) ? data.mods : [];
-}
-
-function modSearchHaystack(mod) {
-  return [
-    mod?.name,
-    mod?.creatorUsername,
-    mod?.creatorDiscordId,
-    mod?.creatorUsername && mod?.creatorDiscordId
-      ? `${mod.creatorUsername} @${mod.creatorDiscordId}`
-      : '',
-  ]
-    .map((value) => String(value || '').toLowerCase())
-    .join('\n');
-}
 
 function formatUploadedAt(value) {
   if (!value) return '';
@@ -39,11 +23,75 @@ function formatUploadedAt(value) {
   return date.toLocaleDateString();
 }
 
-function creatorLabel(mod) {
-  const username = mod?.creatorUsername || '';
-  const snowflake = mod?.creatorDiscordId || '';
-  if (username && snowflake) return `${username} @${snowflake}`;
-  return username || snowflake;
+function personName(person) {
+  return person?.name || '';
+}
+
+function PersonLink({ person }) {
+  const name = personName(person);
+  if (!name) return null;
+  if (!person.playerId) return <span>{name}</span>;
+  return <Link to={`/profile/${person.playerId}`}>{name}</Link>;
+}
+
+function ModCatalogCard({ mod, t }) {
+  const assigned = hasAssignees(mod);
+  const also = otherAssignees(mod);
+  const dumpLabel = dumpCreatorLabel(mod);
+  return (
+    <article className="mods-page__card">
+      {mod.imageUrl ? (
+        <img className="mods-page__card-thumb" src={mod.imageUrl} alt="" />
+      ) : null}
+      <div className="mods-page__card-copy">
+        <div className="mods-page__card-title-row">
+          <strong className="mods-page__card-title">{mod.name}</strong>
+          {mod.version ? <span className="mods-page__version">{mod.version}</span> : null}
+        </div>
+        <div className="mods-page__card-meta">
+          {!assigned && dumpLabel ? <span>{dumpLabel}</span> : null}
+          {assigned && (mod.postedBy || also.length) ? (
+            <div className="mods-page__people">
+              {mod.postedBy ? (
+                <div className="mods-page__people-row">
+                  <span>{t('mods.postedBy')}</span>
+                  <PersonLink person={mod.postedBy} />
+                </div>
+              ) : null}
+              {also.length ? (
+                <div className="mods-page__people-row">
+                  {mod.postedBy ? <span>{t('mods.alsoAssigned')}</span> : null}
+                  {also.map((person) => (
+                    <PersonLink key={person.userId} person={person} />
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          ) : null}
+          {formatUploadedAt(mod.sourceUploadedAt) ? (
+            <span>{formatUploadedAt(mod.sourceUploadedAt)}</span>
+          ) : null}
+        </div>
+        {mod.description ? (
+          <ModsMarkdown className="mods-page__card-description">{mod.description}</ModsMarkdown>
+        ) : null}
+      </div>
+      <div className="mods-page__card-actions">
+        {mod.projectUrl ? (
+          <ExternalLink href={mod.projectUrl} className="mods-page__download">
+            <span>{t('mods.project')}</span>
+            <ExternalLinkIcon size={16} color="currentColor" />
+          </ExternalLink>
+        ) : null}
+        {mod.downloadUrl ? (
+          <ExternalLink href={mod.downloadUrl} className="mods-page__download">
+            <span>{t('mods.download')}</span>
+            <ExternalLinkIcon size={16} color="currentColor" />
+          </ExternalLink>
+        ) : null}
+      </div>
+    </article>
+  );
 }
 
 const ModsPage = () => {
@@ -51,6 +99,19 @@ const ModsPage = () => {
   const { t } = useTranslation(['pages', 'common']);
   const location = useLocation();
   const isAdmin = hasFlag(user, permissionFlags.SUPER_ADMIN);
+  const {
+    mods,
+    loading,
+    loadingMore,
+    loadError,
+    hasMore,
+    total,
+    query,
+    setQuery,
+    sort,
+    setSort,
+    loadMore,
+  } = useModsList({ path: routes.mods.list() });
 
   const pageMeta = useMemo(
     () =>
@@ -64,43 +125,8 @@ const ModsPage = () => {
     [t, location.pathname],
   );
 
-  const [mods, setMods] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState(false);
-  const [query, setQuery] = useState('');
-  const [sort, setSort] = useState(DEFAULT_MOD_SORT);
-
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    setLoadError(false);
-    api
-      .get(routes.mods.list())
-      .then(({ data }) => {
-        if (cancelled) return;
-        setMods(applyMods(data));
-      })
-      .catch(() => {
-        if (cancelled) return;
-        setLoadError(true);
-        setMods([]);
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
   const searching = Boolean(query.trim());
-  const visibleMods = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    const filtered = q
-      ? mods.filter((mod) => modSearchHaystack(mod).includes(q))
-      : mods;
-    return sortMods(filtered, sort);
-  }, [mods, query, sort]);
+  const renderItem = useCallback((mod) => <ModCatalogCard mod={mod} t={t} />, [t]);
 
   return (
     <>
@@ -128,55 +154,41 @@ const ModsPage = () => {
             t={t}
           />
 
-          {loading ? (
-            <div className="loading-message">{t('loading.generic', { ns: 'common' })}</div>
+          {total != null && !loadError ? (
+            <span className="mods-page__total">
+              {t('totalResults', { ns: 'common', count: total })}
+            </span>
+          ) : null}
+
+          {loading && mods.length === 0 ? (
+            <div className="loader-shell loader-shell--tall">
+              <div className="loader loader-relative" />
+            </div>
           ) : loadError ? (
             <div className="no-items-message">{t('mods.errors.loadFailed')}</div>
-          ) : !mods.length ? (
-            <p className="mods-page__empty">{t('mods.empty')}</p>
-          ) : visibleMods.length === 0 ? (
+          ) : mods.length === 0 ? (
             <p className="mods-page__empty">
               {searching ? t('mods.emptySearch') : t('mods.empty')}
             </p>
           ) : (
-            <div className="mods-page__list">
-              {visibleMods.map((mod) => (
-                <article key={mod.id} className="mods-page__card">
-                  {mod.imageUrl ? (
-                    <img
-                      className="mods-page__card-thumb"
-                      src={mod.imageUrl}
-                      alt=""
-                    />
-                  ) : null}
-                  <div className="mods-page__card-copy">
-                    <div className="mods-page__card-title-row">
-                      <strong className="mods-page__card-title">{mod.name}</strong>
-                      {mod.version ? (
-                        <span className="mods-page__version">{mod.version}</span>
-                      ) : null}
-                    </div>
-                    <div className="mods-page__card-meta">
-                      <span>{creatorLabel(mod)}</span>
-                      {formatUploadedAt(mod.sourceUploadedAt) ? (
-                        <span>{formatUploadedAt(mod.sourceUploadedAt)}</span>
-                      ) : null}
-                    </div>
-                    {mod.description ? (
-                      <ModsMarkdown className="mods-page__card-description">
-                        {mod.description}
-                      </ModsMarkdown>
-                    ) : null}
-                  </div>
-                  {mod.downloadUrl ? (
-                    <ExternalLink href={mod.downloadUrl} className="mods-page__download">
-                      <span>{t('mods.download')}</span>
-                      <ExternalLinkIcon size={16} color="var(--color-white-t70)" />
-                    </ExternalLink>
-                  ) : null}
-                </article>
-              ))}
-            </div>
+            <VirtualList
+              style={{ paddingBottom: '4rem', minHeight: '50vh' }}
+              items={mods}
+              loadMore={loadMore}
+              hasMore={hasMore}
+              loadingMore={loadingMore}
+              overscan={400}
+              listClassName="mods-page__list"
+              itemClassName="mods-page__list-item"
+              loader={<div className="loader loader-relative" />}
+              endMessage={
+                <p className="mods-page__end-message">
+                  <b>{t('mods.infScroll.end')}</b>
+                </p>
+              }
+              renderItem={renderItem}
+              computeItemKey={(index, mod) => mod?.id ?? index}
+            />
           )}
         </div>
         <Footer />
