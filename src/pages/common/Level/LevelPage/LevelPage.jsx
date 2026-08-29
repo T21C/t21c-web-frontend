@@ -29,7 +29,6 @@ import toast from 'react-hot-toast';
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { normalizeLevelSearchQuery } from '@/utils/normalizeEntitySearchQuery';
 import { getDefaultQSliderRange } from '@/utils/getDefaultQSliderRange';
-import { useTufHelperLiteDownloadedIds, useTufHelperLiteHealth } from '@/hooks/useTufHelperLiteIpc';
 import { useHiddenLevelCardTagsPreference } from '@/hooks/useHiddenLevelCardTagsPreference';
 import {
   getTufHelperLiteStorageMigrationStatus,
