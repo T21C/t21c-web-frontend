@@ -817,6 +817,16 @@
   background: var(--color-purple-1);
 }
 
+.mods-page .mods-page__deprecated-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 0.12rem 0.4rem;
+  border-radius: 999px;
+  color: var(--color-black);
+  background: var(--warning-color);
+}
+
 .mods-page .mods-page__tags,
 .mods-page .mods-page__version-form {
   display: flex;
@@ -875,6 +885,67 @@
 
 .mods-page .mods-page__like.is-liked {
   color: var(--btn-danger);
+}
+
+.mods-page .mods-page__report {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem 0.6rem;
+  border: none;
+  background: transparent;
+  color: var(--color-white-t80);
+  cursor: pointer;
+}
+
+.mods-page .mods-page__report:hover,
+.mods-page .mods-page__report:focus-visible {
+  color: var(--warning-color);
+  outline: none;
+}
+
+.mods-page .mods-page__card-report {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  z-index: 1;
+  padding: 0.35rem;
+  border: none;
+  background: transparent;
+  color: var(--color-white-t80);
+  cursor: pointer;
+}
+
+.mods-page .mods-page__card-report span {
+  position: absolute;
+  right: 100%;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  padding-right: 0.35rem;
+  white-space: nowrap;
+  pointer-events: none;
+  font-size: 0.8rem;
+  font-weight: 500;
+  line-height: 1;
+  opacity: 0;
+  transform: translateX(0.5rem);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.mods-page .mods-page__card-report:hover,
+.mods-page .mods-page__card-report:focus-visible {
+  color: var(--warning-color);
+  outline: none;
+}
+
+.mods-page .mods-page__card-report:hover span,
+.mods-page .mods-page__card-report:focus-visible span {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .mods-page .mods-page__version-list {

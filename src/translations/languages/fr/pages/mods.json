@@ -29,6 +29,7 @@
   "details": "Détails",
   "project": "Projet",
   "pinned": "Épinglé",
+  "deprecatedAfterLabel": "Obsolète après {{version}}",
   "readme": "À propos",
   "downloadsCount": "{{count}} téléchargements",
   "hiddenBadge": "Masqué",
@@ -42,6 +43,25 @@
     "label": "J'aime",
     "loginRequired": "Connectez-vous pour aimer un mod",
     "failed": "Impossible de mettre à jour le j'aime"
+  },
+  "report": {
+    "label": "Signaler",
+    "title": "Signaler {{name}}",
+    "reason": "Motif",
+    "submit": "Envoyer le signalement",
+    "loginRequired": "Connectez-vous pour signaler un mod",
+    "sent": "Signalement envoyé",
+    "failed": "Impossible d'envoyer le signalement",
+    "reasons": {
+      "deprecated": "Obsolète",
+      "abuse": "Abus",
+      "duplicate": "Doublon"
+    },
+    "version": "Version",
+    "brokenEffect": "Ce qui se passe sur la version cassée",
+    "note": "Motif",
+    "targetUrl": "Lien du mod principal",
+    "mergeWhy": "Pourquoi il doit être fusionné"
   },
   "copy": {
     "latest": "Copier le lien latest",
@@ -113,6 +133,7 @@
     "notes": "Notes de version",
     "hidden": "Masquer du catalogue public",
     "isPinned": "Épingler en haut du catalogue",
+    "deprecatedAfter": "Obsolète après (version du jeu)",
     "color": "Couleur"
   },
   "create": {

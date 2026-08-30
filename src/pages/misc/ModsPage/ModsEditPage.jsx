@@ -31,6 +31,7 @@ const EMPTY_MOD = {
   description: '',
   downloadUrl: '',
   projectUrl: '',
+  deprecatedAfter: '',
   sourceUploadedAt: '',
   hidden: false,
   isPinned: false,
@@ -77,6 +78,7 @@ function formFromMod(mod) {
     description: mod?.description || '',
     downloadUrl: mod?.downloadUrl || '',
     projectUrl: mod?.projectUrl || '',
+    deprecatedAfter: mod?.deprecatedAfter || '',
     sourceUploadedAt: toDatetimeLocalValue(mod?.sourceUploadedAt),
     hidden: Boolean(mod?.hidden),
     isPinned: Boolean(mod?.isPinned),
@@ -97,6 +99,7 @@ function toPayload(form, { includeUploadedAt }) {
     description: form.description,
     downloadUrl: form.downloadUrl,
     projectUrl: form.projectUrl || null,
+    deprecatedAfter: form.deprecatedAfter || null,
     hidden: Boolean(form.hidden),
     isPinned: Boolean(form.isPinned),
   };
@@ -257,6 +260,17 @@ function ModFormFields({ form, onChange, t, icon }) {
           value={form.description}
           onChange={setField('description')}
           maxLength={16384}
+        />
+      </div>
+      <div className="form-group">
+        <label htmlFor="mod-deprecated-after">{t('mods.fields.deprecatedAfter')}</label>
+        <input
+          id="mod-deprecated-after"
+          type="text"
+          value={form.deprecatedAfter}
+          onChange={setField('deprecatedAfter')}
+          maxLength={64}
+          placeholder="v2.9.8"
         />
       </div>
       <div className="form-group form-group--checkbox">
@@ -649,6 +663,11 @@ const ModsEditPage = () => {
                       {mod.version ? <span className="mods-page__version">{mod.version}</span> : null}
                       {mod.isPinned ? (
                         <span className="mods-page__pin-badge">{t('mods.pinned')}</span>
+                      ) : null}
+                      {mod.deprecatedAfter ? (
+                        <span className="mods-page__deprecated-badge">
+                          {t('mods.deprecatedAfterLabel', { version: mod.deprecatedAfter })}
+                        </span>
                       ) : null}
                       {mod.hidden ? (
                         <span className="mods-page__hidden-badge">{t('mods.hiddenBadge')}</span>

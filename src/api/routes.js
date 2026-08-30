@@ -613,6 +613,7 @@ export const routes = {
     downloadVersion: (slug, version) => `/v2/mods/${enc(slug)}/${enc(version)}/download`,
     like: (slug) => `/v2/mods/${enc(slug)}/like`,
     isLiked: (slug) => `/v2/mods/${enc(slug)}/isLiked`,
+    report: (slug) => `/v2/mods/${enc(slug)}/report`,
   },
   form: {
     pass: {
