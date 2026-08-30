@@ -2,8 +2,7 @@
 import { useTranslation } from 'react-i18next';
 import './cdntospopup.css';
 import { useState } from 'react';
-
-const CDN_TOS_AGREED_KEY = 'cdn_tos_agreed';
+import { CLIENT_PREF_KEYS, setClientPreferences } from '@/utils/clientPreferences';
 
 const CDNTosPopup = ({ onAgree, onDecline }) => {
     const { t } = useTranslation('pages');
@@ -11,7 +10,7 @@ const CDNTosPopup = ({ onAgree, onDecline }) => {
 
     const handleAgree = () => {
         if (dontShowAgain) {
-            localStorage.setItem(CDN_TOS_AGREED_KEY, 'true');
+            setClientPreferences({ [CLIENT_PREF_KEYS.SUBMISSIONS_CDN_TOS_AGREED]: true });
         }
         onAgree();
     };

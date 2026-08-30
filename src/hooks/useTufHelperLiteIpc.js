@@ -1,5 +1,12 @@
 import { useSyncExternalStore } from "react";
 import { tryConnect } from "@adofai-ipc/client";
+import {
+  CLIENT_PREF_KEYS,
+  getClientPreference,
+  readBootTufHelperLiteNeverShow,
+  setClientPreferences,
+  setTufHelperLiteNeverShowListener,
+} from '@/utils/clientPreferences';
 
 const TUFHELPER_LITE_NAMESPACE = 'tufhelperlite';
 const TUFHELPER_LITE_HEALTH_METHOD = 'health';
@@ -46,9 +53,13 @@ const writeStorage = (storage, key, value) => {
 const storedIntegrationPreference = typeof window === 'undefined'
   ? null
   : readStorage(window.localStorage, IPC_INTEGRATION_STORAGE_KEY);
-const initialIntegrationState = storedIntegrationPreference === IPC_INTEGRATION_HIDDEN
-  ? 'hidden'
-  : 'checking-permission';
+const bootNeverShow = typeof window !== 'undefined' && readBootTufHelperLiteNeverShow();
+const storedEnabled = storedIntegrationPreference === IPC_INTEGRATION_ENABLED;
+const initialIntegrationState = storedEnabled
+  ? 'checking-permission'
+  : (storedIntegrationPreference === IPC_INTEGRATION_HIDDEN || bootNeverShow)
+    ? 'hidden'
+    : 'checking-permission';
 const initialSessionDismissed = typeof window !== 'undefined' &&
   readStorage(window.sessionStorage, IPC_BANNER_DISMISSED_SESSION_KEY) === '1';
 
@@ -362,7 +373,8 @@ const queryTufHelperLitePermission = async () => {
   return null;
 };
 
-let isTufHelperLiteIntegrationInitialized = initialIntegrationState === 'hidden';
+let isTufHelperLiteIntegrationInitialized =
+  initialIntegrationState === 'hidden' && !storedEnabled;
 
 export const initializeTufHelperLiteIntegration = async () => {
   if (isTufHelperLiteIntegrationInitialized) return;
@@ -371,8 +383,9 @@ export const initializeTufHelperLiteIntegration = async () => {
   const permissionState = await queryTufHelperLitePermission();
   // Some Chrome builds keep reporting `prompt` after a successful loopback request.
   // A completed IPC handshake is the more reliable signal that the user opted in.
+  const liveStored = readStorage(window.localStorage, IPC_INTEGRATION_STORAGE_KEY);
   const shouldEnable = permissionState === 'granted' ||
-    storedIntegrationPreference === IPC_INTEGRATION_ENABLED;
+    liveStored === IPC_INTEGRATION_ENABLED;
 
   if (shouldEnable) {
     writeStorage(window.localStorage, IPC_INTEGRATION_STORAGE_KEY, IPC_INTEGRATION_ENABLED);
@@ -382,7 +395,20 @@ export const initializeTufHelperLiteIntegration = async () => {
     return;
   }
 
-  writeStorage(window.localStorage, IPC_INTEGRATION_STORAGE_KEY, null);
+  const neverShow = getClientPreference(CLIENT_PREF_KEYS.TUFHELPERLITE_NEVER_SHOW, false) === true
+    || readBootTufHelperLiteNeverShow();
+  if (neverShow) {
+    setTufHelperLiteIntegrationSnapshot({
+      state: 'hidden',
+      isSessionDismissed: tufHelperLiteIntegrationSnapshot.isSessionDismissed,
+      errorCode: null,
+    });
+    return;
+  }
+
+  if (liveStored !== IPC_INTEGRATION_ENABLED) {
+    writeStorage(window.localStorage, IPC_INTEGRATION_STORAGE_KEY, null);
+  }
   setTufHelperLiteIntegrationSnapshot({
     state: 'prompt',
     isSessionDismissed: tufHelperLiteIntegrationSnapshot.isSessionDismissed,
@@ -392,6 +418,7 @@ export const initializeTufHelperLiteIntegration = async () => {
 
 export const showTufHelperLiteIntegrationBanner = () => {
   isTufHelperLiteIntegrationInitialized = true;
+  setClientPreferences({ [CLIENT_PREF_KEYS.TUFHELPERLITE_NEVER_SHOW]: false });
   writeStorage(window.localStorage, IPC_INTEGRATION_STORAGE_KEY, null);
   writeStorage(window.sessionStorage, IPC_BANNER_DISMISSED_SESSION_KEY, null);
   resetTufHelperLiteConnectionData();
@@ -444,6 +471,7 @@ export const dismissTufHelperLiteBannerForSession = () => {
 };
 
 export const hideTufHelperLiteIntegration = () => {
+  setClientPreferences({ [CLIENT_PREF_KEYS.TUFHELPERLITE_NEVER_SHOW]: true });
   writeStorage(window.localStorage, IPC_INTEGRATION_STORAGE_KEY, IPC_INTEGRATION_HIDDEN);
   writeStorage(window.sessionStorage, IPC_BANNER_DISMISSED_SESSION_KEY, null);
   resetTufHelperLiteConnectionData();
@@ -823,3 +851,15 @@ export const useTufHelperLiteIntegration = () => useSyncExternalStore(
   getTufHelperLiteIntegrationSnapshot,
   getTufHelperLiteIntegrationSnapshot,
 );
+
+setTufHelperLiteNeverShowListener((neverShow) => {
+  if (!neverShow) return;
+  const state = tufHelperLiteIntegrationSnapshot.state;
+  if (state === 'prompt' || state === 'unavailable' || state === 'checking-permission') {
+    isTufHelperLiteIntegrationInitialized = true;
+    setTufHelperLiteIntegrationSnapshot({
+      ...tufHelperLiteIntegrationSnapshot,
+      state: 'hidden',
+    });
+  }
+});

@@ -13,7 +13,7 @@ import { CloseButton } from '@/components/common/buttons';
 import { EditIcon, TrashIcon } from '@/components/common/icons';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { getRateLimitMessage } from '@/utils/rateLimitError';
-import { FacetQueryBuilder, ProfileSelector } from '@/components/common/selectors';
+import { CustomSelect, FacetQueryBuilder, ProfileSelector } from '@/components/common/selectors';
 import ImageSelectorPopup from '@/components/common/selectors/ImageSelectorPopup/ImageSelectorPopup';
 import { getCdnErrorMessage } from '@/utils/uploadErrors';
 import { buildFacetQueryParam } from '@/utils/facetQueryCodec';
@@ -31,6 +31,7 @@ const EMPTY_MOD = {
   description: '',
   downloadUrl: '',
   projectUrl: '',
+  deprecatedAfter: '',
   sourceUploadedAt: '',
   hidden: false,
   isPinned: false,
@@ -77,6 +78,7 @@ function formFromMod(mod) {
     description: mod?.description || '',
     downloadUrl: mod?.downloadUrl || '',
     projectUrl: mod?.projectUrl || '',
+    deprecatedAfter: mod?.deprecatedAfter || '',
     sourceUploadedAt: toDatetimeLocalValue(mod?.sourceUploadedAt),
     hidden: Boolean(mod?.hidden),
     isPinned: Boolean(mod?.isPinned),
@@ -97,6 +99,7 @@ function toPayload(form, { includeUploadedAt }) {
     description: form.description,
     downloadUrl: form.downloadUrl,
     projectUrl: form.projectUrl || null,
+    deprecatedAfter: form.deprecatedAfter || null,
     hidden: Boolean(form.hidden),
     isPinned: Boolean(form.isPinned),
   };
@@ -259,6 +262,17 @@ function ModFormFields({ form, onChange, t, icon }) {
           maxLength={16384}
         />
       </div>
+      <div className="form-group">
+        <label htmlFor="mod-deprecated-after">{t('mods.fields.deprecatedAfter')}</label>
+        <input
+          id="mod-deprecated-after"
+          type="text"
+          value={form.deprecatedAfter}
+          onChange={setField('deprecatedAfter')}
+          maxLength={64}
+          placeholder="v2.9.8"
+        />
+      </div>
       <div className="form-group form-group--checkbox">
         <label htmlFor="mod-hidden">
           <input
@@ -341,6 +355,18 @@ const ModsEditPage = () => {
   const [catalogTags, setCatalogTags] = useState([]);
   const [versionForm, setVersionForm] = useState({ version: '', downloadUrl: '', releasedAt: '', notes: '' });
   const [mergeSourceId, setMergeSourceId] = useState('');
+
+  const mergeOptions = useMemo(
+    () =>
+      (editingMod
+        ? mods.filter((item) => item.id !== editingMod.id)
+        : mods
+      ).map((item) => ({
+        value: String(item.id),
+        label: `${item.name} (${item.slug || item.id})`,
+      })),
+    [mods, editingMod],
+  );
 
   const loadCatalogTags = useCallback(async () => {
     try {
@@ -638,11 +664,29 @@ const ModsEditPage = () => {
                       {mod.isPinned ? (
                         <span className="mods-page__pin-badge">{t('mods.pinned')}</span>
                       ) : null}
+                      {mod.deprecatedAfter ? (
+                        <span className="mods-page__deprecated-badge">
+                          {t('mods.deprecatedAfterLabel', { version: mod.deprecatedAfter })}
+                        </span>
+                      ) : null}
                       {mod.hidden ? (
                         <span className="mods-page__hidden-badge">{t('mods.hiddenBadge')}</span>
                       ) : null}
                     </div>
                     <div className="mods-page__admin-row-meta">{listCreatorText(mod)}</div>
+                    {Array.isArray(mod.tags) && mod.tags.length ? (
+                      <div className="mods-page__tags">
+                        {mod.tags.map((tag) => (
+                          <span
+                            key={tag.id}
+                            className="mods-page__tag"
+                            style={{ borderColor: tag.color, color: tag.color }}
+                          >
+                            {tag.name}
+                          </span>
+                        ))}
+                      </div>
+                    ) : null}
                   </div>
                   <div className="mods-page__admin-row-actions">
                     <button
@@ -843,7 +887,7 @@ const ModsEditPage = () => {
                         key={tag.id}
                         type="button"
                         className={`mods-page__tag-toggle ${selected ? 'is-selected' : ''}`.trim()}
-                        style={{ borderColor: tag.color, color: tag.color }}
+                        style={{ color: tag.color }}
                         onClick={async () => {
                           const nextIds = selected
                             ? (editingMod.tags || []).filter((item) => item.id !== tag.id).map((item) => item.id)
@@ -942,19 +986,15 @@ const ModsEditPage = () => {
               </div>
               <div className="mods-page__assign">
                 <p className="mods-page__assign-title">{t('mods.merge.title')}</p>
-                <select
-                  value={mergeSourceId}
-                  onChange={(event) => setMergeSourceId(event.target.value)}
-                >
-                  <option value="">{t('mods.merge.placeholder')}</option>
-                  {mods
-                    .filter((item) => item.id !== editingMod.id)
-                    .map((item) => (
-                      <option key={item.id} value={item.id}>
-                        {item.name} ({item.slug || item.id})
-                      </option>
-                    ))}
-                </select>
+                <CustomSelect
+                  options={mergeOptions}
+                  value={mergeOptions.find((option) => option.value === mergeSourceId) || null}
+                  onChange={(option) => setMergeSourceId(option?.value || '')}
+                  placeholder={t('mods.merge.placeholder')}
+                  width="100%"
+                  isClearable
+                  isSearchable
+                />
                 <button
                   type="button"
                   className="delete-confirm-button"

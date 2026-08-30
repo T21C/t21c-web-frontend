@@ -10,9 +10,10 @@ import { MetaTags } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
 import { Footer } from '@/components/layout';
 import { ExternalLink } from '@/components/common/LinkConfirm';
-import { EditIcon, ExternalLinkIcon } from '@/components/common/icons';
+import { EditIcon, ExternalLinkIcon, WarningIcon } from '@/components/common/icons';
 import ModsMarkdown from './ModsMarkdown';
 import ModLikeButton from './ModLikeButton';
+import ModReportPopup from './ModReportPopup';
 import { dumpCreatorLabel, hasAssignees, isAssignedToMod, otherAssignees } from './modPeople';
 import { modDownloadHref, modPermalink } from './modUrls';
 import './modsPage.css';
@@ -52,6 +53,7 @@ const ModDetailPage = () => {
   const [mod, setMod] = useState(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
 
   const load = useCallback(async () => {
     if (!slug) return;
@@ -139,6 +141,11 @@ const ModDetailPage = () => {
                   <div className="mods-page__card-title-row">
                     <h1>{mod.name}</h1>
                     {mod.isPinned ? <span className="mods-page__pin-badge">{t('mods.pinned')}</span> : null}
+                    {mod.deprecatedAfter ? (
+                      <span className="mods-page__deprecated-badge">
+                        {t('mods.deprecatedAfterLabel', { version: mod.deprecatedAfter })}
+                      </span>
+                    ) : null}
                     {latest?.version ? <span className="mods-page__version">{latest.version}</span> : null}
                   </div>
                   <div className="mods-page__card-meta">
@@ -184,6 +191,20 @@ const ModDetailPage = () => {
                     </Link>
                   ) : null}
                   <ModLikeButton mod={mod} />
+                  <button
+                    type="button"
+                    className="mods-page__report"
+                    onClick={() => {
+                      if (!user) {
+                        toast.error(t('mods.report.loginRequired'));
+                        return;
+                      }
+                      setReportOpen(true);
+                    }}
+                  >
+                    <WarningIcon size="16px" color="currentColor" />
+                    <span>{t('mods.report.label')}</span>
+                  </button>
                   {mod.projectUrl ? (
                     <ExternalLink href={mod.projectUrl} className="mods-page__download">
                       <span>{t('mods.project')}</span>
@@ -260,6 +281,7 @@ const ModDetailPage = () => {
         </div>
         <Footer />
       </div>
+      <ModReportPopup isOpen={reportOpen && Boolean(mod)} mod={mod} onClose={() => setReportOpen(false)} />
     </>
   );
 };

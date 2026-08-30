@@ -16,8 +16,7 @@
   "settings": {
     "filter": {
       "header": "Paramètres de filtres",
-      "following": "Abonnements",
-      "followingLogin": "Connectez-vous pour filtrer par abonnements"
+      "following": "Abonnements"
     },
     "sort": {
       "header": "Paramètres de triage",

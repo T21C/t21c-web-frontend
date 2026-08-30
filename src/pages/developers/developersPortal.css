@@ -706,14 +706,22 @@
   font-size: 0.75rem;
   padding: 0.15rem 0.45rem;
   border-radius: 999px;
-  border: 1px solid var(--color-white-t20);
+  border: 1px solid color-mix(in srgb, currentColor 35%, transparent);
   background: transparent;
   cursor: pointer;
 }
 
-.developers-portal__section .mods-page__tag-toggle:hover,
+.developers-portal__section .mods-page__tag-toggle:hover {
+  border-color: color-mix(in srgb, currentColor 70%, transparent);
+}
+
 .developers-portal__section .mods-page__tag-toggle.is-selected {
-  background: var(--color-white-t10);
+  border-color: currentColor;
+  background: var(--color-white-t25);
+}
+
+.developers-portal__section .mods-page__tag-toggle.is-selected:hover {
+  background: var(--color-white-t30);
 }
 
 @media (min-width: 900px) {

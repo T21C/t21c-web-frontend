@@ -29,6 +29,7 @@
   "details": "자세히",
   "project": "프로젝트",
   "pinned": "고정",
+  "deprecatedAfterLabel": "{{version}} 이후 지원 종료",
   "readme": "소개",
   "downloadsCount": "다운로드 {{count}}회",
   "hiddenBadge": "숨김",
@@ -42,6 +43,25 @@
     "label": "좋아요",
     "loginRequired": "모드에 좋아요를 누르려면 로그인하세요",
     "failed": "좋아요를 변경하지 못했습니다"
+  },
+  "report": {
+    "label": "신고",
+    "title": "{{name}} 신고",
+    "reason": "사유",
+    "submit": "신고 보내기",
+    "loginRequired": "모드를 신고하려면 로그인하세요",
+    "sent": "신고를 보냈습니다",
+    "failed": "신고를 보내지 못했습니다",
+    "reasons": {
+      "deprecated": "지원 종료",
+      "abuse": "남용",
+      "duplicate": "중복"
+    },
+    "version": "버전",
+    "brokenEffect": "깨진 버전에서 일어나는 일",
+    "note": "사유",
+    "targetUrl": "원본 모드 링크",
+    "mergeWhy": "병합이 필요한 이유"
   },
   "copy": {
     "latest": "최신 링크 복사",
@@ -113,6 +133,7 @@
     "notes": "릴리스 노트",
     "hidden": "공개 목록에서 숨기기",
     "isPinned": "목록 상단에 고정",
+    "deprecatedAfter": "이후 지원 종료 (게임 버전)",
     "color": "색"
   },
   "create": {

@@ -28,6 +28,7 @@
   "details": "Details",
   "project": "Project",
   "pinned": "Pinned",
+  "deprecatedAfterLabel": "Deprecated after {{version}}",
   "readme": "About",
   "downloadsCount": "{{count}} downloads",
   "hiddenBadge": "Hidden",
@@ -41,6 +42,25 @@
     "label": "Like",
     "loginRequired": "You must be logged in to like mods",
     "failed": "Could not update like"
+  },
+  "report": {
+    "label": "Report",
+    "title": "Report {{name}}",
+    "reason": "Reason",
+    "submit": "Send report",
+    "loginRequired": "You must be logged in to report mods",
+    "sent": "Report sent",
+    "failed": "Could not send report",
+    "reasons": {
+      "deprecated": "Deprecated",
+      "abuse": "Abuse",
+      "duplicate": "Duplicate"
+    },
+    "version": "Version",
+    "brokenEffect": "What happens on the broken version",
+    "note": "Reason",
+    "targetUrl": "Main mod link",
+    "mergeWhy": "Why it needs to be merged"
   },
   "copy": {
     "latest": "Copy latest link",
@@ -112,6 +132,7 @@
     "notes": "Release notes",
     "hidden": "Hide from public catalog",
     "isPinned": "Pin to top of catalog",
+    "deprecatedAfter": "Deprecated after (game version)",
     "color": "Color"
   },
   "create": {

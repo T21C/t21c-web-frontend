@@ -16,33 +16,19 @@ import { useWeeklyCurations } from "@/hooks/useWeeklyCurations";
 import LogoFullOutlineSVG from "@/assets/tuf-logo/LogoFullOutlined/LogoFullOutlined";
 import adofaiTufStartIcon from "@/assets/icons/ADOFAI_TUF_START_ICON.png";
 import { navigateExternal } from "@/utils/externalNavigationGate";
-
-const RESOURCES_CTA_STORAGE_KEY = 'home.resourcesCta.dismissed';
-
-function readResourcesCtaDismissed() {
-  try {
-    return localStorage.getItem(RESOURCES_CTA_STORAGE_KEY) === '1';
-  } catch {
-    return false;
-  }
-}
-
-function writeResourcesCtaDismissed() {
-  try {
-    localStorage.setItem(RESOURCES_CTA_STORAGE_KEY, '1');
-  } catch {
-    /* ignore quota / private mode */
-  }
-}
+import { CLIENT_PREF_KEYS } from '@/utils/clientPreferences';
+import { useClientPreference } from '@/hooks/useClientPreference';
 
 const ResourcesCta = () => {
   const { t } = useTranslation('pages');
-  const [dismissed, setDismissed] = useState(readResourcesCtaDismissed);
+  const [dismissed, setDismissed] = useClientPreference(
+    CLIENT_PREF_KEYS.HOME_RESOURCES_CTA_DISMISSED,
+    false,
+  );
 
   const handleDismiss = useCallback(() => {
-    writeResourcesCtaDismissed();
     setDismissed(true);
-  }, []);
+  }, [setDismissed]);
 
   if (dismissed) return null;
 

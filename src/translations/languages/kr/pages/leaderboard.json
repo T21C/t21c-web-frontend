@@ -17,7 +17,6 @@
     "filter": {
       "header": "필터 설정",
       "following": "팔로잉",
-      "followingLogin": "팔로우한 사람만 보려면 로그인하세요",
       "country": "국가 또는 지역",
       "addStatFilters": "스탯 필터 추가",
       "selectStatPlaceholder": "필터에 추가할 스탯 선택...",

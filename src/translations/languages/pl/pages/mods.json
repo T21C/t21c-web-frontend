@@ -29,6 +29,7 @@
   "details": "Szczegóły",
   "project": "Projekt",
   "pinned": "Przypięty",
+  "deprecatedAfterLabel": "Przestarzały po {{version}}",
   "readme": "Opis",
   "downloadsCount": "{{count}} pobrań",
   "hiddenBadge": "Ukryty",
@@ -42,6 +43,25 @@
     "label": "Polub",
     "loginRequired": "Zaloguj się, aby polubić mody",
     "failed": "Nie udało się zaktualizować polubienia"
+  },
+  "report": {
+    "label": "Zgłoś",
+    "title": "Zgłoś {{name}}",
+    "reason": "Powód",
+    "submit": "Wyślij zgłoszenie",
+    "loginRequired": "Zaloguj się, aby zgłaszać mody",
+    "sent": "Wysłano zgłoszenie",
+    "failed": "Nie udało się wysłać zgłoszenia",
+    "reasons": {
+      "deprecated": "Przestarzały",
+      "abuse": "Nadużycie",
+      "duplicate": "Duplikat"
+    },
+    "version": "Wersja",
+    "brokenEffect": "Co się dzieje na zepsutej wersji",
+    "note": "Powód",
+    "targetUrl": "Link do głównego moda",
+    "mergeWhy": "Dlaczego trzeba go scalić"
   },
   "copy": {
     "latest": "Kopiuj link do najnowszej",
@@ -113,6 +133,7 @@
     "notes": "Notatki wydania",
     "hidden": "Ukryj w publicznym katalogu",
     "isPinned": "Przypnij na górze katalogu",
+    "deprecatedAfter": "Przestarzały po (wersja gry)",
     "color": "Kolor"
   },
   "create": {

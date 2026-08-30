@@ -7,13 +7,15 @@ import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { MetaTags } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
 import { Footer } from '@/components/layout';
-import { CalendarIcon, DownloadIcon, InfoIcon, UsersIcon } from '@/components/common/icons';
+import { CalendarIcon, DownloadIcon, InfoIcon, UsersIcon, WarningIcon } from '@/components/common/icons';
 import { VirtualList } from '@/components/common/VirtualList';
 import { FacetQueryBuilder } from '@/components/common/selectors';
 import { buildFacetQueryParam } from '@/utils/facetQueryCodec';
 import api from '@/utils/api';
+import toast from 'react-hot-toast';
 import ModsListControls from './ModsListControls';
 import ModLikeButton from './ModLikeButton';
+import ModReportPopup from './ModReportPopup';
 import { assignedPeople, dumpCreatorLabel, hasAssignees } from './modPeople';
 import { useModsList } from './useModsList';
 import { modDownloadHref, modPermalink } from './modUrls';
@@ -79,7 +81,7 @@ function AuthorLine({ mod }) {
   return dumpLabel ? <span>{dumpLabel}</span> : null;
 }
 
-function ModCatalogCard({ mod, t }) {
+function ModCatalogCard({ mod, t, onReport }) {
   const href = modPermalink(mod.slug);
   const summary = excerpt(mod.description);
   const uploaded = formatUploadedAt(mod.sourceUploadedAt);
@@ -93,7 +95,25 @@ function ModCatalogCard({ mod, t }) {
             {mod.name}
           </Link>
           {mod.isPinned ? <span className="mods-page__pin-badge">{t('mods.pinned')}</span> : null}
+          {mod.deprecatedAfter ? (
+            <span className="mods-page__deprecated-badge">
+              {t('mods.deprecatedAfterLabel', { version: mod.deprecatedAfter })}
+            </span>
+          ) : null}
         </div>
+        <button
+          type="button"
+          className="mods-page__card-report"
+          aria-label={t('mods.report.label')}
+          onClick={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            onReport?.(mod);
+          }}
+        >
+          <WarningIcon size="16px" color="currentColor" />
+          <span aria-hidden="true">{t('mods.report.label')}</span>
+        </button>
       </div>
       {summary ? <p className="mods-page__card-excerpt">{summary}</p> : null}
       <div className="mods-page__card-meta-list">
@@ -150,6 +170,7 @@ const ModsPage = () => {
   const isAdmin = hasFlag(user, permissionFlags.SUPER_ADMIN);
   const [tagItems, setTagItems] = useState([]);
   const [tagFacet, setTagFacet] = useState(null);
+  const [reportingMod, setReportingMod] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -198,7 +219,20 @@ const ModsPage = () => {
   );
 
   const searching = Boolean(query.trim()) || Boolean(facetQuery);
-  const renderItem = useCallback((mod) => <ModCatalogCard mod={mod} t={t} />, [t]);
+  const requestReport = useCallback(
+    (mod) => {
+      if (!user) {
+        toast.error(t('mods.report.loginRequired'));
+        return;
+      }
+      setReportingMod(mod);
+    },
+    [t, user],
+  );
+  const renderItem = useCallback(
+    (mod) => <ModCatalogCard mod={mod} t={t} onReport={requestReport} />,
+    [requestReport, t],
+  );
 
   return (
     <>
@@ -283,6 +317,11 @@ const ModsPage = () => {
         </div>
         <Footer />
       </div>
+      <ModReportPopup
+        isOpen={Boolean(reportingMod)}
+        mod={reportingMod}
+        onClose={() => setReportingMod(null)}
+      />
     </>
   );
 };

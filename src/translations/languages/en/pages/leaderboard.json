@@ -17,7 +17,6 @@
     "filter": {
       "header": "Filter Settings",
       "following": "Following",
-      "followingLogin": "Log in to filter by who you follow",
       "country": "Country or Region",
       "addStatFilters": "Add Stat Filters",
       "selectStatPlaceholder": "Select stat to filter...",

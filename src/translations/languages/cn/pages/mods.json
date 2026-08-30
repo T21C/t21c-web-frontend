@@ -29,6 +29,7 @@
   "details": "详情",
   "project": "项目",
   "pinned": "置顶",
+  "deprecatedAfterLabel": "{{version}} 之后弃用",
   "readme": "介绍",
   "downloadsCount": "{{count}} 次下载",
   "hiddenBadge": "已隐藏",
@@ -42,6 +43,25 @@
     "label": "点赞",
     "loginRequired": "登录后才能点赞模组",
     "failed": "无法更新点赞"
+  },
+  "report": {
+    "label": "举报",
+    "title": "举报 {{name}}",
+    "reason": "原因",
+    "submit": "发送举报",
+    "loginRequired": "登录后才能举报模组",
+    "sent": "已发送举报",
+    "failed": "无法发送举报",
+    "reasons": {
+      "deprecated": "已弃用",
+      "abuse": "滥用",
+      "duplicate": "重复"
+    },
+    "version": "版本",
+    "brokenEffect": "在损坏版本上会发生什么",
+    "note": "原因",
+    "targetUrl": "主模组链接",
+    "mergeWhy": "为何需要合并"
   },
   "copy": {
     "latest": "复制最新链接",
@@ -113,6 +133,7 @@
     "notes": "版本说明",
     "hidden": "从公开目录隐藏",
     "isPinned": "置顶到目录顶部",
+    "deprecatedAfter": "此后弃用（游戏版本）",
     "color": "颜色"
   },
   "create": {

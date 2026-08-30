@@ -15,6 +15,7 @@ function formFromMod(mod) {
     name: mod?.name || '',
     description: mod?.description || '',
     projectUrl: mod?.projectUrl || '',
+    deprecatedAfter: mod?.deprecatedAfter || '',
   };
 }
 
@@ -23,6 +24,7 @@ function toPayload(form) {
     name: form.name,
     description: form.description,
     projectUrl: form.projectUrl || null,
+    deprecatedAfter: form.deprecatedAfter || null,
   };
 }
 
@@ -190,6 +192,16 @@ const DevelopersModEditPage = () => {
             <input type="url" value={form.projectUrl} onChange={setField('projectUrl')} />
           </label>
           <label className="developers-portal__field">
+            {t('mods.fields.deprecatedAfter')}
+            <input
+              type="text"
+              value={form.deprecatedAfter}
+              onChange={setField('deprecatedAfter')}
+              maxLength={64}
+              placeholder="v2.9.8"
+            />
+          </label>
+          <label className="developers-portal__field">
             {t('mods.fields.description')}
             <textarea
               rows={10}
@@ -209,7 +221,7 @@ const DevelopersModEditPage = () => {
                       key={tag.id}
                       type="button"
                       className={`mods-page__tag-toggle ${selected ? 'is-selected' : ''}`.trim()}
-                      style={{ borderColor: tag.color, color: tag.color }}
+                      style={{ color: tag.color }}
                       onClick={async () => {
                         const nextIds = selected
                           ? selectedTagIds.filter((item) => item !== tag.id)

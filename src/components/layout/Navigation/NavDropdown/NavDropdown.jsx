@@ -172,22 +172,29 @@ export function NavDropdownPanel({
   };
 
   return (
-    <div
-      className={`nav-dropdown-panel nav-dropdown-panel--${align} ${
-        reducedMotion ? "is-reduced-motion" : ""
-      } ${expanded ? "is-expanded" : ""} ${phase === "closing" ? "is-closing" : ""}`}
-      style={{ zIndex }}
-      onTransitionEnd={handleTransitionEnd}
-    >
+    <>
       <div
-        ref={panelRef}
-        id={id}
-        role="menu"
-        className="nav-dropdown-shell"
+        className={`nav-dropdown-seam nav-dropdown-seam--${align}`}
+        aria-hidden="true"
+        style={{ zIndex }}
+      />
+      <div
+        className={`nav-dropdown-panel nav-dropdown-panel--${align} ${
+          reducedMotion ? "is-reduced-motion" : ""
+        } ${expanded ? "is-expanded" : ""} ${phase === "closing" ? "is-closing" : ""}`}
+        style={{ zIndex }}
+        onTransitionEnd={handleTransitionEnd}
       >
-        <div className="nav-dropdown-menu">{children}</div>
+        <div
+          ref={panelRef}
+          id={id}
+          role="menu"
+          className="nav-dropdown-shell"
+        >
+          <div className="nav-dropdown-menu">{children}</div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
