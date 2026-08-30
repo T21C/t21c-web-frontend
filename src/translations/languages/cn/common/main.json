@@ -52,6 +52,14 @@
     "create": "创建",
     "createNew": "新建"
   },
+  "like": {
+    "like": "收藏",
+    "unlike": "取消收藏",
+    "liked": "已收藏",
+    "unliked": "已取消收藏",
+    "failed": "收藏状态更新失败",
+    "loginRequired": "你必须登录才能收藏"
+  },
   "confirmations": {
     "unsavedChanges": "您有未保存的更改。确定要离开吗？"
   },

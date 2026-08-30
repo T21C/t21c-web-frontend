@@ -6,6 +6,12 @@
     "tagsTitle": "Tags de mods"
   },
   "title": "Mods",
+  "startGuideCta": {
+    "title": "Nouveau au modding ?",
+    "subtitle": "Consultez notre guide ici !",
+    "dontShowAgain": "Ne plus afficher",
+    "iconAlt": "Icône de démarrage TUF"
+  },
   "subtitle": "Catalogue curaté de mods ADOFAI. Recherchez par nom ou créateur Discord.",
   "editTitle": "Modifier les mods",
   "editSubtitle": "Créer, modifier, masquer ou supprimer des entrées du catalogue.",
@@ -74,9 +80,31 @@
     "empty": "Aucune version.",
     "latest": "Dernière",
     "add": "Ajouter une version",
+    "addTitle": "Ajouter une version",
+    "editTitle": "Modifier la version",
+    "save": "Enregistrer",
     "created": "Version ajoutée",
     "createFailed": "Échec de l'ajout de la version",
-    "deleteFailed": "Échec de la suppression de la version"
+    "updated": "Version mise à jour",
+    "updateFailed": "Échec de la mise à jour de la version",
+    "deleted": "Version supprimée",
+    "deleteFailed": "Échec de la suppression de la version",
+    "deleteConfirm": "Supprimer la version {{version}} ?",
+    "source": "Source",
+    "githubUrl": "URL GitHub",
+    "zip": "Fichier zip",
+    "zipHint": "Envoyez un .zip de 100 Mio maximum.",
+    "zipTooLarge": "Le zip doit faire au plus 100 Mio",
+    "hostedZipHint": "Ce zip est en lecture seule : il ne peut qu'être supprimé, pas modifié",
+    "downloadZip": "Télécharger {{name}}",
+    "downloadZipFallback": "Télécharger le zip",
+    "releasedAt": "Publiée",
+    "sources": {
+      "hosted": "Hébergé",
+      "github": "GitHub",
+      "external": "Externe",
+      "zip": "Zip hébergé"
+    }
   },
   "tags": {
     "title": "Tags",

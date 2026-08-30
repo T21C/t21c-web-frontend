@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { routes } from '@/api/routes';
 import { useAuth } from '@/contexts/AuthContext';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
-import { MetaTags } from '@/components/common/display';
+import { MetaTags, StartGuideCta } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
 import { Footer } from '@/components/layout';
 import { CalendarIcon, DownloadIcon, InfoIcon, UsersIcon, WarningIcon } from '@/components/common/icons';
@@ -12,9 +12,10 @@ import { VirtualList } from '@/components/common/VirtualList';
 import { FacetQueryBuilder } from '@/components/common/selectors';
 import { buildFacetQueryParam } from '@/utils/facetQueryCodec';
 import api from '@/utils/api';
+import { CLIENT_PREF_KEYS } from '@/utils/clientPreferences';
 import toast from 'react-hot-toast';
+import { LikeButton } from '@/components/common/buttons';
 import ModsListControls from './ModsListControls';
-import ModLikeButton from './ModLikeButton';
 import ModReportPopup from './ModReportPopup';
 import { assignedPeople, dumpCreatorLabel, hasAssignees } from './modPeople';
 import { useModsList } from './useModsList';
@@ -101,19 +102,19 @@ function ModCatalogCard({ mod, t, onReport }) {
             </span>
           ) : null}
         </div>
-        <button
-          type="button"
-          className="mods-page__card-report"
-          aria-label={t('mods.report.label')}
-          onClick={(event) => {
-            event.preventDefault();
-            event.stopPropagation();
-            onReport?.(mod);
+        <LikeButton
+          className="mods-page__card-like"
+          liked={Boolean(mod.isLiked)}
+          count={Number(mod.likes || 0)}
+          iconSize={16}
+          stopPropagation
+          onRequest={async (action) => {
+            const { data } = await api.put(routes.mods.like(mod.slug), { action });
+            if (!data?.success) throw new Error('like failed');
+            return { likes: data.likes };
           }}
-        >
-          <WarningIcon size="16px" color="currentColor" />
-          <span aria-hidden="true">{t('mods.report.label')}</span>
-        </button>
+          disabled={!mod.slug}
+        />
       </div>
       {summary ? <p className="mods-page__card-excerpt">{summary}</p> : null}
       <div className="mods-page__card-meta-list">
@@ -144,20 +145,34 @@ function ModCatalogCard({ mod, t, onReport }) {
         <ModTags tags={mod.tags} />
         <div className="mods-page__card-extras-actions">
           <span>{t('mods.downloadsCount', { count: Number(mod.downloadCount || 0) })}</span>
-          <ModLikeButton mod={mod} />
         </div>
       </div>
-      <div className="mods-page__card-actions">
-        {mod.slug ? (
-          <a href={modDownloadHref(mod.slug)} className="btn-fill-primary mods-page__card-download">
-            <DownloadIcon size={16} color="currentColor" />
-            <span>{t('mods.download')}</span>
-          </a>
-        ) : null}
-        <Link to={href} className="mods-page__card-details">
-          <InfoIcon size={16} color="currentColor" />
-          <span>{t('mods.details')}</span>
-        </Link>
+      <div className="mods-page__card-footer">
+        <button
+          type="button"
+          className="mods-page__card-report"
+          aria-label={t('mods.report.label')}
+          onClick={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            onReport?.(mod);
+          }}
+        >
+          <WarningIcon size="16px" color="currentColor" />
+          <span aria-hidden="true">{t('mods.report.label')}</span>
+        </button>
+        <div className="mods-page__card-actions">
+          {mod.slug ? (
+            <a href={modDownloadHref(mod.slug)} className="btn-fill-primary mods-page__card-download">
+              <DownloadIcon size={16} color="currentColor" />
+              <span>{t('mods.download')}</span>
+            </a>
+          ) : null}
+          <Link to={href} className="mods-page__card-details">
+            <InfoIcon size={16} color="currentColor" />
+            <span>{t('mods.details')}</span>
+          </Link>
+        </div>
       </div>
     </article>
   );
@@ -243,6 +258,15 @@ const ModsPage = () => {
             <div className="mods-page__heading">
               <h1>{t('mods.title')}</h1>
             </div>
+            <StartGuideCta
+              title={t('mods.startGuideCta.title')}
+              subtitle={t('mods.startGuideCta.subtitle')}
+              dismissLabel={t('mods.startGuideCta.dontShowAgain')}
+              iconAlt={t('mods.startGuideCta.iconAlt')}
+              to="/resources?q=install+mods"
+              appearFrom="left"
+              dismissPreferenceKey={CLIENT_PREF_KEYS.MODS_START_GUIDE_CTA_DISMISSED}
+            />
             <div className="mods-page__header-actions">
               {isAdmin ? (
                 <>

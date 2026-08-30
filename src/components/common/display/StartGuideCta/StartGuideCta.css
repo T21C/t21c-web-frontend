@@ -1,0 +1,105 @@
+/* tuf-search: #StartGuideCta #startGuideCta #display */
+.tuf-start-guide-cta {
+  --tuf-start-guide-cta-delay: 2s;
+  --tuf-start-guide-cta-duration: 0.75s;
+  --tuf-start-guide-cta-from-x: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+  width: fit-content;
+  max-width: 22rem;
+  padding: 0.75rem 0.75rem 0.6rem 0.75rem;
+  border: 2px solid var(--color-white-t30);
+  border-radius: 8px;
+  background: var(--color-white-t10);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  color: var(--color-white);
+  opacity: 0;
+  animation: tufStartGuideCtaAppear var(--tuf-start-guide-cta-duration) var(--tuf-start-guide-cta-delay) var(--ease-out-expo) both;
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.tuf-start-guide-cta:hover,
+.tuf-start-guide-cta:focus-within {
+  background: var(--color-white-t20);
+  border-color: var(--color-white);
+}
+
+.tuf-start-guide-cta__link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: var(--color-white);
+  min-width: 0;
+}
+
+.tuf-start-guide-cta__link:focus-visible {
+  outline: 2px solid var(--color-white-t45);
+  outline-offset: 2px;
+  border-radius: 16px;
+}
+
+.tuf-start-guide-cta__icon {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.tuf-start-guide-cta__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.tuf-start-guide-cta__title {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--color-white);
+}
+
+.tuf-start-guide-cta__subtitle {
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--color-white-t80);
+}
+
+.tuf-start-guide-cta__dismiss {
+  display: inline-flex;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  margin-inline-start: calc(52px + 0.75rem);
+  cursor: pointer;
+  color: var(--color-white-t60);
+  font-size: 0.75rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.tuf-start-guide-cta__dismiss:hover {
+  color: var(--color-white);
+}
+
+.tuf-start-guide-cta__dismiss:focus-visible {
+  outline: 2px solid var(--color-white-t45);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@keyframes tufStartGuideCtaAppear {
+  from {
+    opacity: 0;
+    transform: translateX(var(--tuf-start-guide-cta-from-x));
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

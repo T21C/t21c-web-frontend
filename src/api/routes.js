@@ -97,6 +97,8 @@ export const routes = {
       byId: (id) => `/v2/developers/mods/${enc(id)}`,
       icon: (id) => `/v2/developers/mods/${enc(id)}/icon`,
       tags: (id) => `/v2/developers/mods/${enc(id)}/tags`,
+      versions: (id) => `/v2/developers/mods/${enc(id)}/versions`,
+      version: (id, versionId) => `/v2/developers/mods/${enc(id)}/versions/${enc(versionId)}`,
     },
   },
 

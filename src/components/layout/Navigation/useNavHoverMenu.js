@@ -25,10 +25,19 @@ function isModifiedClick(event) {
 
 /**
  * Independent open/closing/closed state for one nav panel.
- * Several menus may be animating at once while sweeping the bar.
+ * Opening a menu (hover, focus, or pin) immediately starts closing every
+ * other nav hover menu so sweeping the bar only shows one panel.
  * A click on the trigger pins the panel so mouseleave will not close it
- * until a click outside (or Escape / another trigger click).
+ * until a click outside (or Escape / another trigger click / another menu).
  */
+const navHoverMenuExclusive = new Set();
+
+function closeOtherNavHoverMenus(keep) {
+  for (const entry of navHoverMenuExclusive) {
+    if (entry !== keep) entry.closeExclusive();
+  }
+}
+
 export function useNavHoverMenu({
   reducedMotion = false,
   enabled = true,
@@ -66,8 +75,26 @@ export function useNavHoverMenu({
     setPhase("closing");
   }, [reducedMotion]);
 
+  const closeExclusive = useCallback(() => {
+    if (phaseRef.current === "closed") return;
+    clearCloseTimer();
+    pinnedRef.current = false;
+    setIsPinned(false);
+    beginClose();
+  }, [beginClose, clearCloseTimer]);
+
+  const exclusiveRef = useRef({ closeExclusive });
+  exclusiveRef.current.closeExclusive = closeExclusive;
+
+  useEffect(() => {
+    const entry = exclusiveRef.current;
+    navHoverMenuExclusive.add(entry);
+    return () => navHoverMenuExclusive.delete(entry);
+  }, []);
+
   const open = useCallback(() => {
     if (!enabled) return;
+    closeOtherNavHoverMenus(exclusiveRef.current);
     setZIndex(nextNavMenuZ());
     setPhase("open");
   }, [enabled]);

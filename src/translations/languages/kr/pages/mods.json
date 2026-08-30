@@ -6,6 +6,12 @@
     "tagsTitle": "모드 태그"
   },
   "title": "모드",
+  "startGuideCta": {
+    "title": "모드가 처음이신가요?",
+    "subtitle": "가이드를 확인하세요!",
+    "dontShowAgain": "다시 보지 않음",
+    "iconAlt": "TUF 시작 아이콘"
+  },
   "subtitle": "관리자가 정리한 ADOFAI 모드 목록입니다. 이름 또는 Discord 제작자로 검색하세요.",
   "editTitle": "모드 편집",
   "editSubtitle": "카탈로그 항목을 만들거나 수정, 숨김, 삭제합니다.",
@@ -74,9 +80,31 @@
     "empty": "릴리스가 없습니다.",
     "latest": "최신",
     "add": "릴리스 추가",
+    "addTitle": "릴리스 추가",
+    "editTitle": "릴리스 편집",
+    "save": "릴리스 저장",
     "created": "릴리스를 추가했습니다",
     "createFailed": "릴리스를 추가하지 못했습니다",
-    "deleteFailed": "릴리스를 삭제하지 못했습니다"
+    "updated": "릴리스를 업데이트했습니다",
+    "updateFailed": "릴리스를 업데이트하지 못했습니다",
+    "deleted": "릴리스를 삭제했습니다",
+    "deleteFailed": "릴리스를 삭제하지 못했습니다",
+    "deleteConfirm": "{{version}} 릴리스를 삭제할까요?",
+    "source": "출처",
+    "githubUrl": "GitHub URL",
+    "zip": "Zip 파일",
+    "zipHint": "최대 100MiB의 .zip을 업로드하세요.",
+    "zipTooLarge": "Zip은 최대 100MiB여야 합니다",
+    "hostedZipHint": "이 zip은 읽기 전용입니다. 삭제만 가능하며 변경할 수 없습니다",
+    "downloadZip": "{{name}} 다운로드",
+    "downloadZipFallback": "Zip 다운로드",
+    "releasedAt": "출시일",
+    "sources": {
+      "hosted": "호스팅됨",
+      "github": "GitHub",
+      "external": "외부",
+      "zip": "호스팅 zip"
+    }
   },
   "tags": {
     "title": "태그",

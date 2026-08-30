@@ -2,8 +2,7 @@
 import { Link } from "react-router-dom";
 import "./levelcard.css"
 import { useTranslation } from "react-i18next";
-import { memo, useState, useMemo, useEffect } from "react";
-import toast from "react-hot-toast";
+import { memo, useState, useMemo } from "react";
 import api from "@/utils/api";
 import { routes } from "@/api/routes";
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
@@ -12,7 +11,8 @@ import { AddToPackPopup } from "@/components/popups/Packs";
 import { SongPopup } from "@/components/popups/Songs";
 import { ArtistPopup } from "@/components/popups/Artists";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
-import { EditIcon, SteamIcon, DownloadIcon, VideoLinkIcon, PassIcon, LikeIcon, PackIcon, DragHandleIcon, MetronomeIcon, ChartIcon, TimeIcon, TUFHelperLiteOpenIcon } from "@/components/common/icons";
+import { EditIcon, SteamIcon, DownloadIcon, VideoLinkIcon, PassIcon, PackIcon, DragHandleIcon, MetronomeIcon, ChartIcon, TimeIcon, TUFHelperLiteOpenIcon } from "@/components/common/icons";
+import { LikeButton } from "@/components/common/buttons";
 import { clampFloat, formatCreatorDisplay } from "@/utils/Utility";
 import { getPrimaryVideoLink } from "@/utils/videoLink";
 import { ABILITIES, hasBit } from "@/utils/Abilities";
@@ -136,11 +136,6 @@ const LevelCard = ({
   const [showAddToPackPopup, setShowAddToPackPopup] = useState(false);
   const [showSongPopup, setShowSongPopup] = useState(false);
   const [showArtistPopup, setShowArtistPopup] = useState(false);
-  const [isLiked, setIsLiked] = useState(
-    typeof initialLevel?.isLiked === 'boolean' ? initialLevel.isLiked : false
-  );
-  const [likeCount, setLikeCount] = useState(initialLevel?.likes ?? 0);
-  const [isLiking, setIsLiking] = useState(false);
   const { difficultyDict, curationTypesDict, tagsDict } = useDifficultyContext();
   const revealHiddenCurationArcTypes =
     showC0V0CurationIcons || !!packItem || displayMode === 'pack';
@@ -214,55 +209,14 @@ const LevelCard = ({
   const levelDetailTo = level?.id != null ? `/levels/${level.id}` : '#';
   useBodyScrollLock(showEditPopup || showAddToPackPopup || showSongPopup || showArtistPopup);
 
-  // Keep local like state in sync with the level data (search annotation or edits).
-  useEffect(() => {
-    setLikeCount(level?.likes ?? 0);
-    if (typeof level?.isLiked === 'boolean') {
-      setIsLiked(level.isLiked);
-    } else {
-      setIsLiked(false);
-    }
-  }, [level?.id, level?.likes, level?.isLiked]);
+  const handleLikeRequest = async (action) => {
+    const { data } = await api.put(routes.database.levels.like(level.id), { action });
+    if (!data?.success) throw new Error('like failed');
+    return { likes: data.likes };
+  };
 
-  // Handlers
-  const handleLikeToggle = async (e) => {
-    e?.preventDefault?.();
-    e?.stopPropagation?.();
-    if (!user) {
-      toast.error(t('cards.level.like.loginRequired', { defaultValue: 'You must be logged in to like levels' }));
-      return;
-    }
-    if (isLiking || level?.id == null) return;
-
-    const action = isLiked ? 'unlike' : 'like';
-    const prevLiked = isLiked;
-    const prevCount = likeCount;
-
-    // Optimistic update
-    setIsLiked(!prevLiked);
-    setLikeCount((c) => Math.max(0, (c ?? 0) + (action === 'like' ? 1 : -1)));
-    setIsLiking(true);
-
-    try {
-      const response = await api.put(routes.database.levels.like(level.id), { action });
-      if (response.data?.success) {
-        if (response.data.likes !== undefined) setLikeCount(response.data.likes);
-        toast.success(
-          action === 'like'
-            ? t('cards.level.like.liked', { defaultValue: 'Level liked' })
-            : t('cards.level.like.unliked', { defaultValue: 'Level unliked' })
-        );
-      } else {
-        setIsLiked(prevLiked);
-        setLikeCount(prevCount);
-      }
-    } catch (error) {
-      setIsLiked(prevLiked);
-      setLikeCount(prevCount);
-      toast.error(t('cards.level.like.failed', { defaultValue: 'Failed to update like' }));
-    } finally {
-      setIsLiking(false);
-    }
+  const handleLikeChange = ({ liked: nextLiked, count: nextCount }) => {
+    setLevel((prev) => (prev ? { ...prev, isLiked: nextLiked, likes: nextCount } : prev));
   };
 
   const handleLevelUpdate = (updatedData) => {
@@ -383,29 +337,16 @@ const LevelCard = ({
 
       </div>
       {showLikes && (
-        user ? (
-          <button
-            type="button"
-            className={`icon-wrapper level-card__like ${isLiked ? 'liked' : ''}`}
-            data-opacity={1}
-            onClick={handleLikeToggle}
-            disabled={isLiking}
-            aria-pressed={isLiked}
-            aria-label={
-              isLiked
-                ? t('cards.level.like.unlike', { defaultValue: 'Unlike' })
-                : t('cards.level.like.like', { defaultValue: 'Like' })
-            }
-          >
-            <div className="icon-value">{likeCount || 0}</div>
-            <LikeIcon size={"22px"}/>
-          </button>
-        ) : (
-          <div className="icon-wrapper" data-opacity={likeCount ? 1 : 0}>
-            <div className="icon-value">{likeCount || 0}</div>
-            <LikeIcon color={"#ffffff"} size={"22px"}/>
-          </div>
-        )
+        <LikeButton
+          className="icon-wrapper"
+          liked={Boolean(level?.isLiked)}
+          count={level?.likes ?? 0}
+          onRequest={handleLikeRequest}
+          onChange={handleLikeChange}
+          stopPropagation
+          invisibleWhenEmpty={!user}
+          disabled={level?.id == null}
+        />
       )}
     </>
   );

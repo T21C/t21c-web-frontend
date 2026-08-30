@@ -6,6 +6,12 @@
     "tagsTitle": "Tagi modów"
   },
   "title": "Mody",
+  "startGuideCta": {
+    "title": "Nowy w modowaniu?",
+    "subtitle": "Zobacz nasz poradnik!",
+    "dontShowAgain": "Nie pokazuj ponownie",
+    "iconAlt": "Ikona startowa TUF"
+  },
   "subtitle": "Kuratorowany katalog modów ADOFAI. Szukaj po nazwie lub twórcy Discord.",
   "editTitle": "Edytuj mody",
   "editSubtitle": "Twórz, edytuj, ukrywaj lub usuwaj wpisy katalogu.",
@@ -74,9 +80,31 @@
     "empty": "Brak wydań.",
     "latest": "Najnowsze",
     "add": "Dodaj wydanie",
+    "addTitle": "Dodaj wydanie",
+    "editTitle": "Edytuj wydanie",
+    "save": "Zapisz wydanie",
     "created": "Dodano wydanie",
     "createFailed": "Nie udało się dodać wydania",
-    "deleteFailed": "Nie udało się usunąć wydania"
+    "updated": "Zaktualizowano wydanie",
+    "updateFailed": "Nie udało się zaktualizować wydania",
+    "deleted": "Usunięto wydanie",
+    "deleteFailed": "Nie udało się usunąć wydania",
+    "deleteConfirm": "Usunąć wydanie {{version}}?",
+    "source": "Źródło",
+    "githubUrl": "Adres GitHub",
+    "zip": "Plik zip",
+    "zipHint": "Prześlij plik .zip o rozmiarze do 100 MiB.",
+    "zipTooLarge": "Zip może mieć maksymalnie 100 MiB",
+    "hostedZipHint": "Ten zip jest tylko do odczytu: można go tylko usunąć, nie da się go zmienić",
+    "downloadZip": "Pobierz {{name}}",
+    "downloadZipFallback": "Pobierz zip",
+    "releasedAt": "Data wydania",
+    "sources": {
+      "hosted": "Hostowane",
+      "github": "GitHub",
+      "external": "Zewnętrzne",
+      "zip": "Hostowany zip"
+    }
   },
   "tags": {
     "title": "Tagi",
