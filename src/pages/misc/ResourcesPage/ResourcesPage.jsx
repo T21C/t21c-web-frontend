@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
 import { routes } from '@/api/routes';
@@ -64,6 +64,8 @@ const ResourcesPage = () => {
   const { user } = useAuth();
   const { t, i18n } = useTranslation(['pages', 'common']);
   const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const qParam = searchParams.get('q') ?? '';
   const isAdmin = hasFlag(user, permissionFlags.SUPER_ADMIN);
 
   const pageMeta = useMemo(
@@ -82,10 +84,14 @@ const ResourcesPage = () => {
   const [links, setLinks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState(qParam);
   const [languageMap, setLanguageMap] = useState({});
   const [selectedLanguage, setSelectedLanguage] = useState(null);
   const [languageTouched, setLanguageTouched] = useState(false);
+
+  useEffect(() => {
+    setQuery(qParam);
+  }, [qParam]);
 
   useEffect(() => {
     api.get(routes.utils.languages()).then(({ data }) => {

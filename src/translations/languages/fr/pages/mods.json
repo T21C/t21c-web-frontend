@@ -6,6 +6,12 @@
     "tagsTitle": "Tags de mods"
   },
   "title": "Mods",
+  "startGuideCta": {
+    "title": "Nouveau au modding ?",
+    "subtitle": "Consultez notre guide ici !",
+    "dontShowAgain": "Ne plus afficher",
+    "iconAlt": "Icône de démarrage TUF"
+  },
   "subtitle": "Catalogue curaté de mods ADOFAI. Recherchez par nom ou créateur Discord.",
   "editTitle": "Modifier les mods",
   "editSubtitle": "Créer, modifier, masquer ou supprimer des entrées du catalogue.",

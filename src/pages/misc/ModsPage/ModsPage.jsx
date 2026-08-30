@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { routes } from '@/api/routes';
 import { useAuth } from '@/contexts/AuthContext';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
-import { MetaTags } from '@/components/common/display';
+import { MetaTags, StartGuideCta } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
 import { Footer } from '@/components/layout';
 import { CalendarIcon, DownloadIcon, InfoIcon, UsersIcon, WarningIcon } from '@/components/common/icons';
@@ -12,6 +12,7 @@ import { VirtualList } from '@/components/common/VirtualList';
 import { FacetQueryBuilder } from '@/components/common/selectors';
 import { buildFacetQueryParam } from '@/utils/facetQueryCodec';
 import api from '@/utils/api';
+import { CLIENT_PREF_KEYS } from '@/utils/clientPreferences';
 import toast from 'react-hot-toast';
 import ModsListControls from './ModsListControls';
 import ModLikeButton from './ModLikeButton';
@@ -243,6 +244,15 @@ const ModsPage = () => {
             <div className="mods-page__heading">
               <h1>{t('mods.title')}</h1>
             </div>
+            <StartGuideCta
+              title={t('mods.startGuideCta.title')}
+              subtitle={t('mods.startGuideCta.subtitle')}
+              dismissLabel={t('mods.startGuideCta.dontShowAgain')}
+              iconAlt={t('mods.startGuideCta.iconAlt')}
+              to="/resources?q=install+mods"
+              appearFrom="left"
+              dismissPreferenceKey={CLIENT_PREF_KEYS.MODS_START_GUIDE_CTA_DISMISSED}
+            />
             <div className="mods-page__header-actions">
               {isAdmin ? (
                 <>

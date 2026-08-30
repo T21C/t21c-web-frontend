@@ -6,6 +6,12 @@
     "tagsTitle": "모드 태그"
   },
   "title": "모드",
+  "startGuideCta": {
+    "title": "모드가 처음이신가요?",
+    "subtitle": "가이드를 확인하세요!",
+    "dontShowAgain": "다시 보지 않음",
+    "iconAlt": "TUF 시작 아이콘"
+  },
   "subtitle": "관리자가 정리한 ADOFAI 모드 목록입니다. 이름 또는 Discord 제작자로 검색하세요.",
   "editTitle": "모드 편집",
   "editSubtitle": "카탈로그 항목을 만들거나 수정, 숨김, 삭제합니다.",

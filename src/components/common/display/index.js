@@ -9,6 +9,7 @@ import { DifficultyGraph } from './DifficultyGraph/DifficultyGraph';
 import { ScoreV2Graph } from './ScoreV2Graph/ScoreV2Graph';
 import { ScoreV2GraphDropdown } from './ScoreV2Graph/ScoreV2GraphDropdown';
 import TagConfidenceBar from './TagConfidenceBar/TagConfidenceBar';
+import StartGuideCta from './StartGuideCta/StartGuideCta';
 
 export { 
     AccessDenied,
@@ -21,4 +22,5 @@ export {
     ScoreV2Graph,
     ScoreV2GraphDropdown,
     TagConfidenceBar,
+    StartGuideCta,
 }

@@ -20,11 +20,20 @@
 }
 
 .mods-page__header {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
   align-items: flex-start;
   justify-content: space-between;
+}
+
+.mods-page .tuf-start-guide-cta {
+  position: absolute;
+  top: -2rem;
+  left: 6.25rem;
+  z-index: 3;
+  max-width: min(22rem, calc(100% - 6.5rem));
 }
 
 .mods-page__heading {

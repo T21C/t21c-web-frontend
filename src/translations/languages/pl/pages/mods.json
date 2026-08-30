@@ -6,6 +6,12 @@
     "tagsTitle": "Tagi modów"
   },
   "title": "Mody",
+  "startGuideCta": {
+    "title": "Nowy w modowaniu?",
+    "subtitle": "Zobacz nasz poradnik!",
+    "dontShowAgain": "Nie pokazuj ponownie",
+    "iconAlt": "Ikona startowa TUF"
+  },
   "subtitle": "Kuratorowany katalog modów ADOFAI. Szukaj po nazwie lub twórcy Discord.",
   "editTitle": "Edytuj mody",
   "editSubtitle": "Twórz, edytuj, ukrywaj lub usuwaj wpisy katalogu.",

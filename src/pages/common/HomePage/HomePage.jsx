@@ -1,9 +1,9 @@
 import { routes } from '@/api/routes';
 // tuf-search: #HomePage #homePage #home — Home
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import "./homepage.css"
 import { Footer } from "@/components/layout";
-import { MetaTags, WeeklyGallery, DifficultyGraph } from "@/components/common/display";
+import { MetaTags, WeeklyGallery, DifficultyGraph, StartGuideCta } from "@/components/common/display";
 import api from "@/utils/api";
 import { Link } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
@@ -14,47 +14,7 @@ import { ScrollButton } from "@/components/common/buttons";
 import { PassIcon, ChartIcon, LeaderboardIcon, PackIcon, TUFStellarIcon } from "@/components/common/icons";
 import { useWeeklyCurations } from "@/hooks/useWeeklyCurations";
 import LogoFullOutlineSVG from "@/assets/tuf-logo/LogoFullOutlined/LogoFullOutlined";
-import adofaiTufStartIcon from "@/assets/icons/ADOFAI_TUF_START_ICON.png";
 import { navigateExternal } from "@/utils/externalNavigationGate";
-import { CLIENT_PREF_KEYS } from '@/utils/clientPreferences';
-import { useClientPreference } from '@/hooks/useClientPreference';
-
-const ResourcesCta = () => {
-  const { t } = useTranslation('pages');
-  const [dismissed, setDismissed] = useClientPreference(
-    CLIENT_PREF_KEYS.HOME_RESOURCES_CTA_DISMISSED,
-    false,
-  );
-
-  const handleDismiss = useCallback(() => {
-    setDismissed(true);
-  }, [setDismissed]);
-
-  if (dismissed) return null;
-
-  return (
-    <div className="home-resources-cta">
-      <Link to="/resources" className="home-resources-cta__link">
-        <img
-          src={adofaiTufStartIcon}
-          alt={t('home.resourcesCta.iconAlt')}
-          className="home-resources-cta__icon"
-        />
-        <span className="home-resources-cta__text">
-          <span className="home-resources-cta__title">{t('home.resourcesCta.title')}</span>
-          <span className="home-resources-cta__subtitle">{t('home.resourcesCta.subtitle')}</span>
-        </span>
-      </Link>
-      <button
-        type="button"
-        className="home-resources-cta__dismiss"
-        onClick={handleDismiss}
-      >
-        {t('home.resourcesCta.dontShowAgain')}
-      </button>
-    </div>
-  );
-};
 
 const SupportButton = () => {
   const { t } = useTranslation('pages');
@@ -141,7 +101,12 @@ const HomePage = () => {
       
       <ScrollButton />
       <div className="home-container">
-        <ResourcesCta />
+        <StartGuideCta
+          title={t('home.resourcesCta.title')}
+          subtitle={t('home.resourcesCta.subtitle')}
+          dismissLabel={t('home.resourcesCta.dontShowAgain')}
+          iconAlt={t('home.resourcesCta.iconAlt')}
+        />
         <Tooltip id="home-tuf-stellar" style={{ zIndex: 1000, fontSize: "1.4rem", fontWeight: "500", padding: "0.75rem 1.25rem" }}>
               {t('home.tooltips.tufStellarOut')}
         </Tooltip>

@@ -6,6 +6,12 @@
     "tagsTitle": "Mod tags"
   },
   "title": "Mods",
+  "startGuideCta": {
+    "title": "New to modding?",
+    "subtitle": "View our guide here!",
+    "dontShowAgain": "Don't show again",
+    "iconAlt": "TUF start icon"
+  },
   "editTitle": "Edit mods",
   "editSubtitle": "Create, edit, hide, or delete catalog entries.",
   "empty": "No mods yet.",

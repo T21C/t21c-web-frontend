@@ -6,6 +6,12 @@
     "tagsTitle": "模组标签"
   },
   "title": "模组",
+  "startGuideCta": {
+    "title": "第一次玩模组？",
+    "subtitle": "查看我们的指南！",
+    "dontShowAgain": "不再显示",
+    "iconAlt": "TUF 入门图标"
+  },
   "subtitle": "精选 ADOFAI 模组目录。可按名称或 Discord 作者搜索。",
   "editTitle": "编辑模组",
   "editSubtitle": "创建、编辑、隐藏或删除目录条目。",
