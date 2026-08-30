@@ -2,6 +2,8 @@ import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { loadTranslations } from './utils/loadTranslations';
 
+import { persistAppLanguage, readBootLanguage } from '@/utils/clientPreferences';
+
 const DEFAULT_LANGUAGE = 'en';
 const NAMESPACES = ['common', 'pages', 'components'];
 
@@ -40,17 +42,22 @@ export const ensureLanguageLoaded = async (lang) => {
   return normalizedLanguage;
 };
 
-export const changeAppLanguage = async (lang) => {
+export const changeAppLanguage = async (lang, { persist = true } = {}) => {
   const normalizedLanguage = await ensureLanguageLoaded(lang);
 
   await i18next.changeLanguage(normalizedLanguage);
-  localStorage.setItem('appLanguage', normalizedLanguage);
+  try {
+    localStorage.setItem('appLanguage', normalizedLanguage);
+  } catch {
+    /* ignore quota / private mode */
+  }
+  if (persist) persistAppLanguage(normalizedLanguage);
 
   return normalizedLanguage;
 };
 
 const initializeTranslations = async () => {
-  const currentLang = normalizeLanguage(localStorage.getItem('appLanguage'));
+  const currentLang = normalizeLanguage(readBootLanguage());
 
   await i18next
     .use(initReactI18next)

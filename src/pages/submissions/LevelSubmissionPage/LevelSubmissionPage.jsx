@@ -41,6 +41,7 @@ import {
 } from '@/utils/submissions/levelSubmission';
 import { getSubmissionErrorMessage } from '@/utils/submissions/formErrors';
 import { useJobProgressStream } from '@/hooks/useJobProgressStream';
+import { CLIENT_PREF_KEYS, getClientPreference } from '@/utils/clientPreferences';
 
 /** Keep in sync with server/src/server/submissions/submissionEvidenceRules.ts (display-only). */
 const SONG_VERIFICATION_NO_EVIDENCE = new Set(['ysmod_only', 'allowed', 'tuf_verified']);
@@ -769,7 +770,7 @@ const LevelSubmissionPage = () => {
 
   // Check if user has agreed to CDN ToS
   const hasAgreedToCdnTos = () => {
-    return localStorage.getItem('cdn_tos_agreed') === 'true';
+    return getClientPreference(CLIENT_PREF_KEYS.SUBMISSIONS_CDN_TOS_AGREED, false) === true;
   };
 
   const handleCdnTosAgree = () => {

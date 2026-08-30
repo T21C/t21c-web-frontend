@@ -10,6 +10,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { LevelContextProvider } from '@/contexts/LevelContext';
 import { I18nextProvider } from "react-i18next";
 import { AuthProvider } from '@/contexts/AuthContext';
+import { ClientPreferencesProvider } from '@/contexts/ClientPreferencesContext';
 import { ElevationProvider } from '@/contexts/ElevationContext';
 import { ZenModeProvider } from '@/contexts/ZenModeContext';
 import { PlayerContextProvider } from '@/contexts/PlayerContext';
@@ -57,6 +58,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
             <AuthProvider>
+              <ClientPreferencesProvider>
               <ElevationProvider>
               <ZenModeProvider>
               <DifficultyContextProvider>
@@ -93,6 +95,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               </DifficultyContextProvider>
               </ZenModeProvider>
               </ElevationProvider>
+              </ClientPreferencesProvider>
             </AuthProvider>
         </BrowserRouter>
       </QueryClientProvider>

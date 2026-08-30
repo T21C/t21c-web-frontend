@@ -8,12 +8,12 @@ import {useInboxNotifications} from '@/contexts/InboxNotificationContext';
 import {routes} from '@/api/routes';
 import api from '@/utils/api';
 import {
-  PUSH_NUDGE_STORAGE_KEY,
   fetchPushAvailability,
   getPushPermission,
   isPushSupported,
   subscribeCurrentBrowser,
 } from '@/utils/webPush';
+import { CLIENT_PREF_KEYS, getClientPreference, setClientPreferences } from '@/utils/clientPreferences';
 import './inboxBell.css';
 
 const InboxBell = ({variant = 'desktop'}) => {
@@ -51,7 +51,7 @@ const InboxBell = ({variant = 'desktop'}) => {
     (async () => {
       try {
         if (!isPushSupported() || getPushPermission() !== 'default') return;
-        if (localStorage.getItem(PUSH_NUDGE_STORAGE_KEY) === '1') return;
+        if (getClientPreference(CLIENT_PREF_KEYS.INBOX_PUSH_NUDGE_DISMISSED, false)) return;
         const {available} = await fetchPushAvailability();
         if (!cancelled) setShowNudge(available);
       } catch {
@@ -64,7 +64,7 @@ const InboxBell = ({variant = 'desktop'}) => {
   }, [isOpen]);
 
   const dismissNudge = () => {
-    localStorage.setItem(PUSH_NUDGE_STORAGE_KEY, '1');
+    setClientPreferences({ [CLIENT_PREF_KEYS.INBOX_PUSH_NUDGE_DISMISSED]: true });
     setShowNudge(false);
   };
 

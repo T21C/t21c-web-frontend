@@ -1,8 +1,6 @@
 import api from '@/utils/api';
 import {routes} from '@/api/routes';
 
-export const PUSH_NUDGE_STORAGE_KEY = 'tuf.inboxPushNudge.dismissed';
-
 export function isPushSupported() {
   return (
     typeof window !== 'undefined' &&

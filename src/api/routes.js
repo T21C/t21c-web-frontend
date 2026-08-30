@@ -503,6 +503,10 @@ export const routes = {
     mePublic: () => '/v3/follows/me/public',
   },
 
+  preferencesV3: {
+    me: () => '/v3/preferences/me',
+  },
+
   profileCustomizationV3: {
     root: () => '/v3/profile-customization',
     link: (unit) => `/v3/profile-customization/${encodeURIComponent(String(unit))}/link`,

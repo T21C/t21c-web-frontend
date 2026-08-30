@@ -14,7 +14,6 @@ import { buildStaticPageMeta } from '@/utils/meta';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import RulePopup from './RulePopup';
 import { difficultyRequiresPassKeyCount, normalizeKeyCount, truncateString } from '@/utils/Utility';
-import { getCookie, setCookie } from '@/utils/cookieUtils';
 import toast from 'react-hot-toast';
 import { usePassCoreForm } from '@/components/common/cores/PassCoreForm/usePassCoreForm';
 import { getSubmissionErrorMessage } from '@/utils/submissions/formErrors';
@@ -29,6 +28,8 @@ import { getPassSubmissionTagWarnings } from './passSubmissionTagWarnings';
 import { PassSubmissionCore } from './PassSubmissionCore';
 import { CalculatorIcon } from '@/components/common/icons';
 import CommunityTagVotePopup from '@/pages/common/Level/LevelDetailPage/CommunityTagVotePopup';
+import { CLIENT_PREF_KEYS } from '@/utils/clientPreferences';
+import { useClientPreference } from '@/hooks/useClientPreference';
 
 const PassSubmissionPage = () => {
   const { t } = useTranslation(['pages', 'common']);
@@ -61,10 +62,10 @@ const PassSubmissionPage = () => {
   const [formStateKey, setFormStateKey] = useState(0);
   const [submission, setSubmission] = useState(false);
   const [searchInput, setSearchInput] = useState(() => location.state?.searchInput || '');
-  const [hasReadPassRules, setHasReadRules] = useState(() => {
-    const savedRulesState = getCookie('hasReadPassRules');
-    return savedRulesState === 'true';
-  });
+  const [hasReadPassRules, setHasReadRules] = useClientPreference(
+    CLIENT_PREF_KEYS.SUBMISSIONS_PASS_RULES_READ,
+    false,
+  );
   const [showRulesPopup, setShowRulesPopup] = useState(false);
   const [showTilecountMismatchModal, setShowTilecountMismatchModal] = useState(false);
   const [showTagWarningsModal, setShowTagWarningsModal] = useState(false);
@@ -115,12 +116,6 @@ const PassSubmissionPage = () => {
     () => getPassSubmissionTagWarnings(level?.tags),
     [level?.tags],
   );
-
-  useEffect(() => {
-    if (hasReadPassRules) {
-      setCookie('hasReadPassRules', 'true', 30);
-    }
-  }, [hasReadPassRules]);
 
   useEffect(() => {
     const fetchProfile = async () => {
