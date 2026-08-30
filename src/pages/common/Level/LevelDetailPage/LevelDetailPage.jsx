@@ -41,7 +41,6 @@ import {
   DownloadIcon, 
   EditIcon,
   HistoryListIcon, 
-  LikeIcon, 
   SteamIcon, 
   PackIcon, 
   TournamentAppearanceIcon,
@@ -69,7 +68,7 @@ import {
   formatDuration,
 } from "@/utils/levelHelpers";
 import { RouletteWheel, SlotMachine, StateDisplay } from '@/components/common/selectors';
-import { CloseButton } from '@/components/common/buttons';
+import { CloseButton, LikeButton } from '@/components/common/buttons';
 import { CommentFormatter } from '@/components/misc';
 import CommunityTagVotePopup, { userHasClearOnLevel } from './CommunityTagVotePopup';
 import { toast } from 'react-hot-toast';
@@ -980,7 +979,6 @@ const LevelDetailPageContent = ({ mockData = null }) => {
   // Expandable description state
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [notFound, setNotFound] = useState(false);
-  const [isLiking, setIsLiking] = useState(false);
   const [chartClearMute, setChartClearMute] = useState({ credited: false, muted: false });
   const [isTogglingChartClearMute, setIsTogglingChartClearMute] = useState(false);
 
@@ -2315,36 +2313,24 @@ const LevelDetailPageContent = ({ mockData = null }) => {
     }
   };
 
-  const handleLikeToggle = async () => {
-    if (!user) {
-      toast.error(t('levelDetail.errors.loginRequired'));
-      return;
-    }
+  const handleLikeRequest = async (action) => {
+    const { data } = await api.put(routes.database.levels.like(effectiveId), { action });
+    if (!data?.success) throw new Error('like failed');
+    return { likes: data.likes };
+  };
 
-    if (isLiking) return;
-    
-    setIsLiking(true);
-    try {
-      const action = res.isLiked ? 'unlike' : 'like';
-      const response = await api.put(`${routes.database.levels.root()}/${effectiveId}/like`, { action });
-      
-      if (response.data.success) {
-        setRes(prevRes => ({
-          ...prevRes,
-          isLiked: action === 'like',
-          level: {
-            ...prevRes.level,
-            likes: response.data.likes
-          }
-        }));
-        toast.success(action === 'like' ? t('levelDetail.messages.liked') : t('levelDetail.messages.unliked'));
-      }
-    } catch (error) {
-      console.error('Error toggling like:', error);
-      toast.error(t('levelDetail.errors.likeFailed'));
-    } finally {
-      setIsLiking(false);
-    }
+  const handleLikeChange = ({ liked: nextLiked, count: nextCount }) => {
+    setRes((prevRes) => {
+      if (!prevRes) return prevRes;
+      return {
+        ...prevRes,
+        isLiked: nextLiked,
+        level: {
+          ...prevRes.level,
+          likes: nextCount,
+        },
+      };
+    });
   };
 
   // Find the download button click handler and replace it with:
@@ -2902,57 +2888,45 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                 </div>
               )}
               
-              {chartClearMute.credited && (
-                <div className="level-detail-header-notify-slot">
-                  <button
-                    type="button"
-                    className={`level-detail-header-notify-button${chartClearMute.muted ? ' muted' : ''}`}
-                    data-tooltip-id="chart-clear-mute-tooltip"
-                    data-tooltip-content={
-                      chartClearMute.muted
-                        ? t('levelDetail.tooltips.unmuteChartClears')
-                        : t('levelDetail.tooltips.muteChartClears')
-                    }
-                    aria-label={
-                      chartClearMute.muted
-                        ? t('levelDetail.tooltips.unmuteChartClears')
-                        : t('levelDetail.tooltips.muteChartClears')
-                    }
-                    aria-pressed={chartClearMute.muted}
-                    onClick={handleChartClearMuteToggle}
-                    disabled={isTogglingChartClearMute}
-                  >
-                    {chartClearMute.muted ? (
-                      <BellOffIcon size={20} color="currentColor" />
-                    ) : (
-                      <BellIcon size={20} color="currentColor" />
-                    )}
-                  </button>
-                  <Tooltip id="chart-clear-mute-tooltip" place="bottom" noArrow />
-                </div>
-              )}
               <div 
                 className="like-container"
                 data-margin-auto={true}
               >
-                <span className="like-count">{res.level.likes || 0}</span>
-                <button 
-                  data-tooltip-id="like-tooltip"
-                  data-tooltip-content={
-                    user ?
-                      res.isLiked ? t('levelDetail.buttons.unlike') : t('levelDetail.buttons.like')
-                    : t('levelDetail.tooltips.loginRequired')
-                  }
-                  className={
-                    `like-button 
-                    ${res.isLiked ? 'liked' : ''}
-                    ${user ? 'available' : ''}`} 
-                  onClick={handleLikeToggle}
-                  disabled={isLiking || !user}
-                >
-                  <LikeIcon color={res.isLiked ? "#ff2222" : "none"} size={"24px"}/>
-                </button>
-                <Tooltip id="like-tooltip" place="bottom" noArrow />
+                {chartClearMute.credited && (
+                  <div className="level-detail-header-notify-slot">
+                    <button
+                      type="button"
+                      className={`level-detail-header-notify-button${chartClearMute.muted ? ' muted' : ''}`}
+                      data-tooltip-id="chart-clear-mute-tooltip"
+                      data-tooltip-content={
+                        chartClearMute.muted
+                          ? t('levelDetail.tooltips.unmuteChartClears')
+                          : t('levelDetail.tooltips.muteChartClears')
+                      }
+                      aria-label={
+                        chartClearMute.muted
+                          ? t('levelDetail.tooltips.unmuteChartClears')
+                          : t('levelDetail.tooltips.muteChartClears')
+                      }
+                      aria-pressed={chartClearMute.muted}
+                      onClick={handleChartClearMuteToggle}
+                      disabled={isTogglingChartClearMute}
+                    >
+                      {chartClearMute.muted ? (
+                        <BellOffIcon size={20} color="currentColor" />
+                      ) : (
+                        <BellIcon size={20} color="currentColor" />
+                      )}
+                    </button>
+                    <Tooltip id="chart-clear-mute-tooltip" place="bottom" noArrow />
+                  </div>
+                )}
+                <LikeButton
+                  liked={Boolean(res.isLiked)}
+                  count={res.level.likes ?? 0}
+                  onRequest={handleLikeRequest}
+                  onChange={handleLikeChange}
+                />
               </div>
               {showLevelLinksIcon && (
                 <div className="level-detail-header-link-slot">

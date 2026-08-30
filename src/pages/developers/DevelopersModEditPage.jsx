@@ -9,6 +9,7 @@ import { getRateLimitMessage } from '@/utils/rateLimitError';
 import { getCdnErrorMessage } from '@/utils/uploadErrors';
 import ImageSelectorPopup from '@/components/common/selectors/ImageSelectorPopup/ImageSelectorPopup';
 import ModsMarkdown from '@/pages/misc/ModsPage/ModsMarkdown';
+import ModReleasesSection from '@/pages/misc/ModsPage/ModReleasesSection';
 
 function formFromMod(mod) {
   return {
@@ -41,6 +42,7 @@ const DevelopersModEditPage = () => {
   const [selectedTagIds, setSelectedTagIds] = useState([]);
   const [iconPickerOpen, setIconPickerOpen] = useState(false);
   const [uploadingIcon, setUploadingIcon] = useState(false);
+  const [versions, setVersions] = useState([]);
 
   const apiError = (error, fallback) =>
     getRateLimitMessage(error) || error?.response?.data?.error || fallback;
@@ -59,6 +61,7 @@ const DevelopersModEditPage = () => {
       setIconUrl(next.imageUrl || null);
       setSlug(next.slug || '');
       setSelectedTagIds((next.tags || []).map((tag) => tag.id));
+      setVersions(Array.isArray(next.versions) ? next.versions : []);
     } catch (error) {
       toast.error(apiError(error, t('developers.mods.notFound')));
       navigate('/developers/mods');
@@ -221,7 +224,7 @@ const DevelopersModEditPage = () => {
                       key={tag.id}
                       type="button"
                       className={`mods-page__tag-toggle ${selected ? 'is-selected' : ''}`.trim()}
-                      style={{ color: tag.color }}
+                      style={{ '--tag-color': tag.color }}
                       onClick={async () => {
                         const nextIds = selected
                           ? selectedTagIds.filter((item) => item !== tag.id)
@@ -265,6 +268,17 @@ const DevelopersModEditPage = () => {
           ) : null}
         </div>
       </div>
+      <ModReleasesSection
+        versions={versions}
+        versionsUrl={routes.developers.mods.versions(id)}
+        versionUrl={(versionId) => routes.developers.mods.version(id, versionId)}
+        onModUpdate={(mod) => {
+          if (Array.isArray(mod?.versions)) setVersions(mod.versions);
+        }}
+        addButtonClassName="developers-portal__btn developers-portal__btn--primary"
+        editButtonClassName="developers-portal__btn developers-portal__btn--secondary"
+        deleteButtonClassName="developers-portal__btn developers-portal__btn--ghost"
+      />
       <ImageSelectorPopup
         isOpen={iconPickerOpen}
         onClose={() => setIconPickerOpen(false)}

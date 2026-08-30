@@ -80,9 +80,31 @@
     "empty": "暂无版本。",
     "latest": "最新",
     "add": "添加版本",
+    "addTitle": "添加版本",
+    "editTitle": "编辑版本",
+    "save": "保存版本",
     "created": "已添加版本",
     "createFailed": "添加版本失败",
-    "deleteFailed": "删除版本失败"
+    "updated": "已更新版本",
+    "updateFailed": "更新版本失败",
+    "deleted": "已删除版本",
+    "deleteFailed": "删除版本失败",
+    "deleteConfirm": "删除版本 {{version}}？",
+    "source": "来源",
+    "githubUrl": "GitHub 链接",
+    "zip": "Zip 文件",
+    "zipHint": "上传不超过 100 MiB 的 .zip 文件。",
+    "zipTooLarge": "Zip 最大为 100 MiB",
+    "hostedZipHint": "此 zip 为只读，只能删除，不能更改",
+    "downloadZip": "下载 {{name}}",
+    "downloadZipFallback": "下载 zip",
+    "releasedAt": "发布于",
+    "sources": {
+      "hosted": "已托管",
+      "github": "GitHub",
+      "external": "外部",
+      "zip": "托管 zip"
+    }
   },
   "tags": {
     "title": "标签",

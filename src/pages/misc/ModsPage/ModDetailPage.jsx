@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import api from '@/utils/api';
@@ -12,8 +12,9 @@ import { Footer } from '@/components/layout';
 import { ExternalLink } from '@/components/common/LinkConfirm';
 import { EditIcon, ExternalLinkIcon, WarningIcon } from '@/components/common/icons';
 import ModsMarkdown from './ModsMarkdown';
-import ModLikeButton from './ModLikeButton';
+import { LikeButton } from '@/components/common/buttons';
 import ModReportPopup from './ModReportPopup';
+import ModAdminEditPopup from './ModAdminEditPopup';
 import { dumpCreatorLabel, hasAssignees, isAssignedToMod, otherAssignees } from './modPeople';
 import { modDownloadHref, modPermalink } from './modUrls';
 import './modsPage.css';
@@ -50,15 +51,19 @@ const ModDetailPage = () => {
   const { user } = useAuth();
   const { slug, version } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const [mod, setMod] = useState(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async ({ silent = false } = {}) => {
     if (!slug) return;
-    setLoading(true);
-    setLoadError(false);
+    if (!silent) {
+      setLoading(true);
+      setLoadError(false);
+    }
     try {
       const path = version
         ? routes.mods.bySlugVersion(slug, version)
@@ -70,7 +75,7 @@ const ModDetailPage = () => {
       setMod(null);
       setLoadError(true);
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   }, [slug, version]);
 
@@ -81,8 +86,8 @@ const ModDetailPage = () => {
   const selected = mod?.selectedVersion || mod?.latestVersion || (mod?.versions || [])[0] || null;
   const latest = (mod?.versions || [])[0] || mod?.latestVersion || null;
   const assignedToMod = isAssignedToMod(mod, user?.id);
-  const canEditMod = Boolean(mod && (assignedToMod || hasFlag(user, permissionFlags.SUPER_ADMIN)));
-  const editHref = assignedToMod ? `/developers/mods/${mod.id}` : '/mods/edit';
+  const isSadmin = hasFlag(user, permissionFlags.SUPER_ADMIN);
+  const canEditMod = Boolean(mod && (assignedToMod || isSadmin));
   const pageMeta = useMemo(
     () =>
       buildStaticPageMeta({
@@ -185,12 +190,18 @@ const ModDetailPage = () => {
                 </div>
                 <div className="mod-detail-page__actions">
                   {canEditMod ? (
-                    <Link to={editHref} className="btn-fill-primary">
-                      <EditIcon size="16px" color="currentColor" />
-                      <span>{t('buttons.edit', { ns: 'common' })}</span>
-                    </Link>
+                    isSadmin ? (
+                      <button type="button" className="btn-fill-primary" onClick={() => setEditOpen(true)}>
+                        <EditIcon size="16px" color="currentColor" />
+                        <span>{t('buttons.edit', { ns: 'common' })}</span>
+                      </button>
+                    ) : (
+                      <Link to={`/developers/mods/${mod.id}`} className="btn-fill-primary">
+                        <EditIcon size="16px" color="currentColor" />
+                        <span>{t('buttons.edit', { ns: 'common' })}</span>
+                      </Link>
+                    )
                   ) : null}
-                  <ModLikeButton mod={mod} />
                   <button
                     type="button"
                     className="mods-page__report"
@@ -205,6 +216,19 @@ const ModDetailPage = () => {
                     <WarningIcon size="16px" color="currentColor" />
                     <span>{t('mods.report.label')}</span>
                   </button>
+                  <LikeButton
+                    liked={Boolean(mod.isLiked)}
+                    count={Number(mod.likes || 0)}
+                    onRequest={async (action) => {
+                      const { data } = await api.put(routes.mods.like(mod.slug), { action });
+                      if (!data?.success) throw new Error('like failed');
+                      return { likes: data.likes };
+                    }}
+                    onChange={({ liked: nextLiked, count: nextCount }) => {
+                      setMod((prev) => (prev ? { ...prev, isLiked: nextLiked, likes: nextCount } : prev));
+                    }}
+                    disabled={!mod.slug}
+                  />
                   {mod.projectUrl ? (
                     <ExternalLink href={mod.projectUrl} className="mods-page__download">
                       <span>{t('mods.project')}</span>
@@ -280,6 +304,25 @@ const ModDetailPage = () => {
           )}
         </div>
         <Footer />
+        <ModAdminEditPopup
+          isOpen={editOpen && Boolean(mod)}
+          mod={mod}
+          onClose={() => {
+            setEditOpen(false);
+            void load({ silent: true });
+          }}
+          onChange={(next) => {
+            setMod((prev) => (prev ? { ...prev, ...next } : next));
+          }}
+          onSaved={(next) => {
+            setEditOpen(false);
+            if (next?.slug && next.slug !== slug) {
+              navigate(modPermalink(next.slug, version), { replace: true });
+              return;
+            }
+            void load({ silent: true });
+          }}
+        />
       </div>
       <ModReportPopup isOpen={reportOpen && Boolean(mod)} mod={mod} onClose={() => setReportOpen(false)} />
     </>

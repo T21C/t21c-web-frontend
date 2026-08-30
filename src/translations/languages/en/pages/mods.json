@@ -79,9 +79,31 @@
     "empty": "No releases yet.",
     "latest": "Latest",
     "add": "Add release",
+    "addTitle": "Add release",
+    "editTitle": "Edit release",
+    "save": "Save release",
     "created": "Release added",
     "createFailed": "Failed to add release",
-    "deleteFailed": "Failed to delete release"
+    "updated": "Release updated",
+    "updateFailed": "Failed to update release",
+    "deleted": "Release deleted",
+    "deleteFailed": "Failed to delete release",
+    "deleteConfirm": "Delete release {{version}}?",
+    "source": "Source",
+    "githubUrl": "GitHub URL",
+    "zip": "Zip file",
+    "zipHint": "Upload a .zip up to 100 MiB.",
+    "zipTooLarge": "Zip must be at most 100 MiB",
+    "hostedZipHint": "This zip is read-only, it can only be deleted and cannot be changed",
+    "downloadZip": "Download {{name}}",
+    "downloadZipFallback": "Download zip",
+    "releasedAt": "Released",
+    "sources": {
+      "hosted": "Hosted",
+      "github": "GitHub",
+      "external": "External",
+      "zip": "Hosted zip"
+    }
   },
   "tags": {
     "title": "Tags",

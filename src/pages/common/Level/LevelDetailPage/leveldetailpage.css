@@ -1110,11 +1110,6 @@
   backdrop-filter: blur(10px);
 }
 
-.like-count {
-  font-weight: 600;
-  color: var(--secondary-text);
-}
-
 /* ============================================
    MAIN BODY LAYOUT
    ============================================ */
@@ -1584,41 +1579,10 @@
   margin-right: var(--spacing-md);
 }
 
-.level-detail .left .like-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--primary-text);
-  transition: all var(--transition-normal);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-xs);
-}
-
-.level-detail .left .like-button.available:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  transform: scale(1.1);
-}
-
-.level-detail .left .like-button.available.liked {
-  color: #ff4d4d;
-}
-
-.level-detail .left .like-button:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.level-detail .left .like-button svg {
-  width: 24px;
-  height: 24px;
-}
-
-.level-detail .left .like-count {
-  font-size: var(--font-size-base);
-  font-weight: 500;
+.level-detail .like-container .level-detail-header-notify-slot {
+  position: static;
+  top: auto;
+  right: auto;
 }
 
 /* ============================================
@@ -1801,7 +1765,7 @@
     height: 2.75rem;
   }
   
-  /* Position like button absolutely in top right */
+  /* Position like + mute together in top right */
   .level-detail .left .like-container {
     position: absolute;
     top: var(--spacing-sm);
@@ -1812,7 +1776,7 @@
 
   .level-detail .level-detail-header-notify-slot {
     top: var(--spacing-sm);
-    right: calc(var(--spacing-sm) + 2.75rem);
+    right: var(--spacing-sm);
   }
   
   /* Ensure proper spacing for mobile layout */
@@ -1996,7 +1960,7 @@
 
   .level-detail .level-detail-header-notify-slot {
     top: var(--spacing-xs);
-    right: calc(var(--spacing-xs) + 2.75rem);
+    right: var(--spacing-xs);
   }
 
   .level-detail .level-detail-header-notify-button {
@@ -2748,7 +2712,6 @@
 /* Ensure proper touch targets on mobile */
 @media (max-width: 768px) {
   .level-detail .wrapper-level button,
-  .level-detail .left .like-button,
   .level-detail .title-container .tag-list-arrow {
     min-height: 16px;
     min-width: 16px;  
@@ -3025,7 +2988,6 @@
 /* Improve mobile focus states for accessibility */
 @media (max-width: 768px) {
   .level-detail .wrapper-level button:focus,
-  .level-detail .left .like-button:focus,
   .level-detail .rerate-arrow:focus,
   .level-detail .title-container .tag-list-arrow:focus {
     outline: 2px solid var(--accent-color);
@@ -3063,7 +3025,6 @@
   }
   
   .level-detail .wrapper-level button,
-  .level-detail .left .like-button,
   .level-detail .rerate-arrow,
   .level-detail .title-container .tag-list-arrow,
   .level-detail .level-detail__curation-icon-cell {
@@ -3074,7 +3035,6 @@
 /* Improve mobile backdrop filters */
 @media (max-width: 768px) {
   .level-detail .wrapper-level button,
-  .level-detail .left .like-button,
   .level-detail .rerate-arrow,
   .level-detail .title-container .tag-list-arrow,
   .level-detail .rank .sort svg {
@@ -3093,14 +3053,12 @@
 /* Improve mobile shadow performance */
 @media (max-width: 768px) {
   .level-detail .wrapper-level button:hover,
-  .level-detail .left .like-button.available:hover,
   .level-detail .rerate-arrow:hover,
   .level-detail .title-container .tag-list-arrow:hover {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }
   
   .level-detail .wrapper-level button:active,
-  .level-detail .left .like-button.available:active,
   .level-detail .rerate-arrow:active,
   .level-detail .title-container .tag-list-arrow:active {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
@@ -3110,7 +3068,6 @@
 /* Improve mobile border radius consistency */
 @media (max-width: 768px) {
   .level-detail .wrapper-level button,
-  .level-detail .left .like-button,
   .level-detail .title-container .tag-list-arrow,
   .level-detail .rank .sort svg,
   .level-detail .difficulty-icon,
@@ -3156,7 +3113,6 @@
 /* Improve mobile hover states for devices that support them */
 @media (hover: hover) and (max-width: 768px) {
   .level-detail .wrapper-level button:hover,
-  .level-detail .left .like-button.available:hover,
   .level-detail .title-container .tag-list-arrow:hover {
     transform: scale(1.025);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
@@ -3180,7 +3136,6 @@
 /* Improve mobile active states */
 @media (max-width: 768px) {
   .level-detail .wrapper-level button:active,
-  .level-detail .left .like-button.available:active,
   .level-detail .title-container .tag-list-arrow:active {
     transform: translateY(0);
     transition: transform 0.1s ease-out;
@@ -3205,7 +3160,6 @@
 /* Improve mobile disabled states */
 @media (max-width: 768px) {
   .level-detail .wrapper-level button:disabled,
-  .level-detail .left .like-button:disabled,
   .level-detail .rerate-arrow:disabled,
   .level-detail .title-container .tag-list-arrow:disabled {
     opacity: 0.5;
@@ -3215,7 +3169,6 @@
   }
   
   .level-detail .wrapper-level button:disabled:hover,
-  .level-detail .left .like-button:disabled:hover,
   .level-detail .rerate-arrow:disabled:hover,
   .level-detail .title-container .tag-list-arrow:disabled:hover {
     transform: none;
@@ -3241,7 +3194,6 @@
 /* Improve mobile accessibility */
 @media (max-width: 768px) {
   .level-detail .wrapper-level button,
-  .level-detail .left .like-button,
   .level-detail .rerate-arrow,
   .level-detail .title-container .tag-list-arrow,
   .level-detail .rank .sort svg {
@@ -3298,7 +3250,6 @@
 @media (max-width: 768px) {
   
   .level-detail .wrapper-level button,
-  .level-detail .left .like-button,
   .level-detail .rerate-arrow,
   .level-detail .title-container .tag-list-arrow,
   .level-detail .rank .sort svg {
@@ -3336,7 +3287,6 @@
 /* Improve mobile security */
 @media (max-width: 768px) {
   .level-detail .wrapper-level button,
-  .level-detail .left .like-button,
   .level-detail .rerate-arrow,
   .level-detail .title-container .tag-list-arrow,
   .level-detail .rank .sort svg {
@@ -3352,7 +3302,6 @@
 /* Improve mobile accessibility compliance */
 @media (max-width: 768px) {
   .level-detail .wrapper-level button,
-  .level-detail .left .like-button,
   .level-detail .rerate-arrow,
   .level-detail .title-container .tag-list-arrow,
   .level-detail .rank .sort svg {

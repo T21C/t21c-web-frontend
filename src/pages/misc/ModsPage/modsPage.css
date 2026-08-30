@@ -415,12 +415,20 @@
   color: var(--color-purple-1);
 }
 
+.mods-page .mods-page__card-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  align-items: flex-end;
+  margin-top: auto;
+  width: 100%;
+}
+
 .mods-page .mods-page__card-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
   align-items: stretch;
-  margin-top: auto;
   width: 100%;
 }
 
@@ -620,16 +628,22 @@
   gap: 0.5rem;
 }
 
-.mods-page .form-group label {
+.mods-page .form-group label,
+.mods-page .form-group > span {
   font-size: 1rem;
   font-weight: 500;
   color: var(--color-white);
+}
+
+.mods-page .form-group .custom-select-container {
+  width: 100%;
 }
 
 .mods-page .form-group input[type="text"],
 .mods-page .form-group input[type="url"],
 .mods-page .form-group input[type="datetime-local"],
 .mods-page .form-group input[type="color"],
+.mods-page .form-group input[type="file"],
 .mods-page .form-group select,
 .mods-page .form-group textarea {
   width: 100%;
@@ -849,8 +863,9 @@
   font-size: 0.75rem;
   padding: 0.15rem 0.45rem;
   border-radius: 999px;
+  filter: brightness(1.15);
   border: 1px solid var(--color-white-t20);
-  background: transparent;
+  background: var(--color-black-t35);
 }
 
 .mods-page .mods-page__tag {
@@ -859,6 +874,7 @@
 
 .mods-page .mods-page__tag-toggle {
   cursor: pointer;
+  color: var(--tag-color);
   background: transparent;
   border-color: color-mix(in srgb, currentColor 35%, transparent);
 }
@@ -868,32 +884,13 @@
 }
 
 .mods-page .mods-page__tag-toggle.is-selected {
-  border-color: currentColor;
-  background: var(--color-white-t10);
+  border-color: var(--tag-color);
   color: var(--color-white);
+  background: color-mix(in srgb, var(--tag-color) 22%, transparent);
 }
 
 .mods-page .mods-page__tag-toggle.is-selected:hover {
-  background: var(--color-white-t20);
-}
-
-.mods-page .mods-page__like {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.35rem 0.6rem;
-  border: none;
-  background: transparent;
-  color: var(--color-white-t80);
-  cursor: pointer;
-}
-
-.mods-page .mods-page__like:hover {
-  color: var(--color-white);
-}
-
-.mods-page .mods-page__like.is-liked {
-  color: var(--btn-danger);
+  background: var(--color-white-t30);
 }
 
 .mods-page .mods-page__report {
@@ -913,6 +910,13 @@
   outline: none;
 }
 
+.mods-page .mods-page__card-like {
+  flex-shrink: 0;
+  z-index: 1;
+  font-size: 0.8rem;
+  color: var(--color-white-t80);
+}
+
 .mods-page .mods-page__card-report {
   position: relative;
   display: inline-flex;
@@ -923,7 +927,7 @@
   padding: 0.35rem;
   border: none;
   background: transparent;
-  color: var(--color-white-t80);
+  color: var(--color-white-t35);
   cursor: pointer;
 }
 
@@ -977,6 +981,40 @@
   justify-content: space-between;
 }
 
+.mods-page .mods-page__release-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--color-white-t10);
+  color: var(--color-gray-2);
+}
+
+.mods-page .mods-page__release-badge--hosted {
+  background: color-mix(in srgb, var(--btn-success) 22%, transparent);
+  color: var(--btn-success);
+}
+
+.mods-page .mods-page__release-badge--github {
+  background: color-mix(in srgb, var(--btn-primary) 22%, transparent);
+  color: var(--btn-primary);
+}
+
+.mods-page .mods-page__release-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.mods-page .mods-page__release-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .mods-page .mods-page__version-form input,
 .mods-page .mods-page__version-form textarea {
   padding: 0.45rem 0.6rem;
@@ -990,6 +1028,10 @@
   width: 100%;
 }
 
+.mods-page.mod-detail-page .mods-page__container {
+  gap: 1.5rem;
+}
+
 .mods-page .mod-detail-page__header,
 .mods-page .mod-detail-page__readme,
 .mods-page .mod-detail-page__releases {
@@ -997,7 +1039,9 @@
   flex-wrap: wrap;
   gap: 1rem;
   align-items: flex-start;
-  margin: 0 0 1.5rem;
+  padding: 1.25rem;
+  border-radius: 0.6rem;
+  background: var(--color-white-t10);
 }
 
 .mods-page .mod-detail-page__readme,
@@ -1010,7 +1054,7 @@
   flex-direction: column;
   gap: 0.45rem;
   flex: 1;
-  min-width: 0;
+  min-width: 12rem;
 }
 
 .mods-page .mod-detail-page__heading h1 {
@@ -1046,7 +1090,7 @@
 
 .mods-page .mod-detail-page__release-list {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   gap: 0.75rem;
   list-style: none;
   padding: 0;
@@ -1055,6 +1099,8 @@
 
 .mods-page .mod-detail-page__release {
   display: flex;
+  
+  flex: 0.3 1 auto;
   flex-direction: column;
   gap: 0.5rem;
   padding: 0.85rem 1rem;

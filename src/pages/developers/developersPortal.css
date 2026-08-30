@@ -613,14 +613,18 @@
   gap: 1.5rem;
 }
 
+.developers-portal__mod-edit .developers-portal__form,
 .developers-portal__mod-preview {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  padding: 1rem;
+  gap: 1rem;
+  padding: 1.25rem;
   border-radius: 8px;
-  border: 1px solid var(--color-white-t20);
   background: var(--color-white-t10);
+}
+
+.developers-portal__mod-preview {
+  gap: 0.75rem;
   min-height: 12rem;
 }
 
@@ -703,6 +707,7 @@
 }
 
 .developers-portal__section .mods-page__tag-toggle {
+  color: var(--tag-color);
   font-size: 0.75rem;
   padding: 0.15rem 0.45rem;
   border-radius: 999px;
@@ -716,12 +721,82 @@
 }
 
 .developers-portal__section .mods-page__tag-toggle.is-selected {
-  border-color: currentColor;
-  background: var(--color-white-t25);
+  border-color: var(--tag-color);
+  color: var(--color-white);
+  background: color-mix(in srgb, var(--tag-color) 22%, transparent);
 }
 
 .developers-portal__section .mods-page__tag-toggle.is-selected:hover {
   background: var(--color-white-t30);
+}
+
+.developers-portal .mods-page__assign {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  border-radius: 8px;
+  background: var(--color-white-t10);
+}
+
+.developers-portal .mods-page__assign-title {
+  margin: 0;
+  font-weight: 600;
+}
+
+.developers-portal .mods-page__assign-empty {
+  color: var(--color-gray-2);
+}
+
+.developers-portal .mods-page__version-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.developers-portal .mods-page__version-list li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.developers-portal .mods-page__release-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--color-white-t10);
+  color: var(--color-gray-2);
+}
+
+.developers-portal .mods-page__release-badge--hosted {
+  background: color-mix(in srgb, var(--btn-success) 22%, transparent);
+  color: var(--btn-success);
+}
+
+.developers-portal .mods-page__release-badge--github {
+  background: color-mix(in srgb, var(--btn-primary) 22%, transparent);
+  color: var(--btn-primary);
+}
+
+.developers-portal .mods-page__release-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.developers-portal .mods-page__release-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 @media (min-width: 900px) {
