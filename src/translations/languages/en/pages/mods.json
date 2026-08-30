@@ -2,7 +2,8 @@
   "meta": {
     "title": "Mods",
     "description": "Admin-curated ADOFAI mods, searchable by name and creator.",
-    "editTitle": "Edit mods"
+    "editTitle": "Edit mods",
+    "tagsTitle": "Mod tags"
   },
   "title": "Mods",
   "editTitle": "Edit mods",
@@ -24,15 +25,83 @@
   },
   "backToMods": "Back to mods",
   "download": "Download",
+  "details": "Details",
   "project": "Project",
+  "pinned": "Pinned",
+  "readme": "About",
+  "downloadsCount": "{{count}} downloads",
   "hiddenBadge": "Hidden",
   "createButton": "Create mod",
   "noMods": "No mods yet. Create your first mod.",
   "errors": {
-    "loadFailed": "Could not load mods. Please try again later."
+    "loadFailed": "Could not load mods. Please try again later.",
+    "notFound": "This mod could not be found."
+  },
+  "like": {
+    "label": "Like",
+    "loginRequired": "You must be logged in to like mods",
+    "failed": "Could not update like"
+  },
+  "copy": {
+    "latest": "Copy latest link",
+    "permalink": "Copy permalink",
+    "copied": "Link copied",
+    "failed": "Could not copy link"
+  },
+  "releases": {
+    "title": "Releases",
+    "empty": "No releases yet.",
+    "latest": "Latest",
+    "add": "Add release",
+    "created": "Release added",
+    "createFailed": "Failed to add release",
+    "deleteFailed": "Failed to delete release"
+  },
+  "tags": {
+    "title": "Tags",
+    "filter": "Tags",
+    "pageTitle": "Mod tags",
+    "pageSubtitle": "Create and edit tags used on catalog mods.",
+    "manage": "Manage tags",
+    "backToEdit": "Back to edit mods",
+    "empty": "No tags yet.",
+    "created": "Tag created",
+    "createFailed": "Failed to create tag",
+    "updated": "Tag updated",
+    "updateFailed": "Failed to update tag",
+    "deleted": "Tag deleted",
+    "deleteFailed": "Failed to delete tag",
+    "assignFailed": "Failed to update tags",
+    "loadFailed": "Could not load tags.",
+    "createButton": "Create tag",
+    "create": {
+      "title": "Create tag",
+      "name": "Name",
+      "color": "Color",
+      "createButton": "Create"
+    },
+    "edit": {
+      "title": "Edit tag",
+      "updateButton": "Update"
+    },
+    "delete": {
+      "title": "Delete tag",
+      "message": "Are you sure you want to delete the tag \"{{name}}\"?",
+      "description": "Mods using this tag will no longer have it assigned.",
+      "deleteButton": "Delete"
+    }
+  },
+  "merge": {
+    "title": "Merge another mod into this one",
+    "placeholder": "Select a mod to merge",
+    "button": "Merge",
+    "confirm": "Merge the selected mod into \"{{name}}\"? Release history will be combined.",
+    "done": "Mods merged",
+    "failed": "Failed to merge mods"
   },
   "fields": {
     "name": "Name",
+    "slug": "Slug",
     "creatorUsername": "Creator username",
     "creatorDiscordId": "Creator Discord ID",
     "version": "Version",
@@ -40,7 +109,10 @@
     "downloadUrl": "Download URL",
     "projectUrl": "Project link",
     "sourceUploadedAt": "Uploaded",
-    "hidden": "Hide from public catalog"
+    "notes": "Release notes",
+    "hidden": "Hide from public catalog",
+    "isPinned": "Pin to top of catalog",
+    "color": "Color"
   },
   "create": {
     "title": "Create mod",

@@ -55,8 +55,8 @@ const limit = 50;
  *        into every API request without being reflected in the UI. Use this to
  *        pin the search to a specific scope (e.g. `{ byCreatorId: 123 }` to
  *        restrict results to a single creator's charts). Conceptually equivalent
- *        to appending `creatorId:123` to the user's query, but routed through
- *        the existing typed filter params.
+ *        to appending `creator:name` to the user's query, but routed through
+ *        the existing typed filter params (charter/vfxer credits only).
  */
 const LevelPage = ({
   embedded = false,

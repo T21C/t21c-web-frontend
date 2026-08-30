@@ -90,7 +90,8 @@
       "updateFailed": "Échec de la mise à jour du groupe",
       "deleted": "Groupe supprimé",
       "deleteFailed": "Échec de la suppression du groupe"
-    }
+    },
+    "removeLocaleConfirm": "Retirer la traduction {{name}} de ce groupe ?"
   },
   "languages": {
     "title": "Gérer les langues",

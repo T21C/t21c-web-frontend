@@ -1,6 +1,6 @@
 import { creatorSortKey } from './modPeople';
 
-export const DEFAULT_MOD_SORT = 'name-asc';
+export const DEFAULT_MOD_SORT = 'date-desc';
 
 export const MOD_SORT_OPTIONS = [
   { value: 'name-asc', labelKey: 'nameAsc' },

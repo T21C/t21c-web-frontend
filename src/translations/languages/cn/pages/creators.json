@@ -19,7 +19,9 @@
   },
   "settings": {
     "filter": {
-      "header": "筛选"
+      "header": "筛选",
+      "following": "关注中",
+      "followingLogin": "登录后可按关注筛选"
     },
     "sort": {
       "header": "排序设置",
@@ -47,7 +49,8 @@
     "end": "你已到达底部！"
   },
   "list": {
-    "empty": "未找到创作者。"
+    "empty": "未找到创作者。",
+    "emptyFollowing": "你还没有关注任何人。"
   },
   "card": {
     "verified": "已认证",

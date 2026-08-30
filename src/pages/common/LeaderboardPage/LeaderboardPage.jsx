@@ -17,6 +17,7 @@ import { ScrollButton } from "@/components/common/buttons";
 import { MetaTags } from "@/components/common/display";
 import { buildLeaderboardMeta } from '@/utils/meta';
 import { useAuth } from "@/contexts/AuthContext";
+import toast from 'react-hot-toast';
 import { SortDescIcon, SortAscIcon, SortIcon, FilterIcon, ResetIcon, RewindIcon } from "@/components/common/icons";
 import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
 import { CreatorAssignmentPopup } from "@/components/popups/Creators";
@@ -80,6 +81,8 @@ const LeaderboardPage = () => {
     setSortBy,
     playerFlagFilter,
     setPlayerFlagFilter,
+    onlyFollowing,
+    setOnlyFollowing,
     forceUpdate,
     setForceUpdate
   } = useContext(PlayerContext);
@@ -184,6 +187,10 @@ const LeaderboardPage = () => {
       params.append('filters', JSON.stringify({...apiFilters, country: country}));
     }
 
+    if (user && onlyFollowing) {
+      params.set('following', 'true');
+    }
+
     const endpoint = `${routes.playersV3.leaderboard()}?${params.toString()}`;
     try {
       const response = await runner(({ signal }) => api.get(endpoint, { signal }));
@@ -230,6 +237,9 @@ const LeaderboardPage = () => {
     if (historyQuery) {
       params.set('query', historyQuery);
     }
+    if (user && onlyFollowing) {
+      params.set('following', 'true');
+    }
 
     const endpoint = `${routes.playersV3.leaderboardHistory()}?${params.toString()}`;
     try {
@@ -265,7 +275,7 @@ const LeaderboardPage = () => {
         setHistoryHasMore(false);
       }
     }
-  }, [historyDate, historyMetric, historySort, historyQuery, historyRequest]);
+  }, [historyDate, historyMetric, historySort, historyQuery, historyRequest, user, onlyFollowing]);
 
   useEffect(() => {
     if (filters && Object.keys(filters).length > 0) {
@@ -281,7 +291,7 @@ const LeaderboardPage = () => {
         Array.isArray(displayedPlayers) &&
         displayedPlayers.length > 0 &&
         leaderboardListTotal != null;
-      if (hasCached) {
+      if (hasCached && !(onlyFollowing && !user)) {
         setHasMore(displayedPlayers.length < leaderboardListTotal);
         return;
       }
@@ -290,7 +300,7 @@ const LeaderboardPage = () => {
     setPlayerData(null);
     setDisplayedPlayers(null);
     fetchPlayers(0);
-  }, [forceUpdate, query, sort, sortBy, playerFlagFilter, country, filters, pastMode]);
+  }, [forceUpdate, query, sort, sortBy, playerFlagFilter, country, filters, pastMode, onlyFollowing, user]);
 
   useEffect(() => {
     if (!pastMode || !historyDate) return;
@@ -298,7 +308,7 @@ const LeaderboardPage = () => {
     setHistoryTotal(null);
     // Debounced so name search doesn't hammer the API; timeline already debounces date.
     fetchHistoryPlayers(0);
-  }, [pastMode, historyDate, historyMetric, historySort, historyQuery]);
+  }, [pastMode, historyDate, historyMetric, historySort, historyQuery, onlyFollowing, user]);
 
   const enterPastMode = async () => {
     setPastMode(true);
@@ -354,6 +364,14 @@ const LeaderboardPage = () => {
 
   function handleFilterOpen() {
     setFilterOpen(!filterOpen);
+  }
+
+  function handleOnlyFollowingChange(state) {
+    if (state === 'on' && !user) {
+      toast.error(t('leaderboard.settings.filter.followingLogin'));
+      return;
+    }
+    setOnlyFollowing(state === 'on');
   }
 
   function handleSortOpen() {
@@ -425,6 +443,7 @@ const LeaderboardPage = () => {
       if (historyMaxDate) {
         setHistoryDate(historyMaxDate);
       }
+      setOnlyFollowing(false);
       return;
     }
     runRequest.cancel();
@@ -433,6 +452,7 @@ const LeaderboardPage = () => {
     setQuery("");
     setPlayerFlagFilter(DEFAULT_PLAYER_FLAG_FILTER);
     setCountry('');
+    setOnlyFollowing(false);
     setActiveFilters({});
     setFilters({});
     setSelectedFilterField(null);
@@ -517,11 +537,9 @@ const LeaderboardPage = () => {
           </div>
 
           <div className="button-container">
-            {!pastMode && (
-              <Tooltip id="filter" place="bottom" noArrow>
-                {t('leaderboard.tooltips.filter')}
-              </Tooltip>
-            )}
+            <Tooltip id="filter" place="bottom" noArrow>
+              {t('leaderboard.tooltips.filter')}
+            </Tooltip>
             <Tooltip id="sort" place="bottom" noArrow>
               {t('leaderboard.tooltips.sort')}
             </Tooltip>
@@ -529,16 +547,14 @@ const LeaderboardPage = () => {
               {t('leaderboard.tooltips.reset')}
             </Tooltip>
 
-            {!pastMode && (
-              <FilterIcon
-                data-tooltip-id="filter"
-                color="#ffffff"
-                style={{
-                  backgroundColor: filterOpen ? "rgba(255, 255, 255, 0.7)" : "",
-                }}
-                onClick={handleFilterOpen}
-              />
-            )}
+            <FilterIcon
+              data-tooltip-id="filter"
+              color="#ffffff"
+              style={{
+                backgroundColor: filterOpen || onlyFollowing ? "rgba(255, 255, 255, 0.7)" : "",
+              }}
+              onClick={handleFilterOpen}
+            />
 
             <SortIcon
               data-tooltip-id="sort"
@@ -558,7 +574,6 @@ const LeaderboardPage = () => {
         </div>
 
         <div className="input-setting">
-          {!pastMode && (
           <Collapsible
             open={filterOpen}
             onOpenChange={setFilterOpen}
@@ -573,6 +588,20 @@ const LeaderboardPage = () => {
             
             <div className="filter-section">
               <div className="filter-row">
+                <div className="filter-container following-filter">
+                  <StateDisplay
+                    label={t('leaderboard.settings.filter.following')}
+                    currentState={onlyFollowing ? 'on' : 'off'}
+                    onChange={handleOnlyFollowingChange}
+                    states={['off', 'on']}
+                    activeStates={['on']}
+                    showValue={false}
+                    width={56}
+                    height={24}
+                    padding={3}
+                  />
+                </div>
+                {!pastMode && (
                 <div className="filter-container country-filter">
                   <p className="setting-description">{t('leaderboard.settings.filter.country')}</p>
                   <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
@@ -593,8 +622,11 @@ const LeaderboardPage = () => {
                     )}
                   </div>
                 </div>
+                )}
               </div>
 
+              {!pastMode && (
+              <>
               <div className="filter-builder" >
                 <p className="setting-description">{t('leaderboard.settings.filter.addStatFilters')}</p>
                 <div className="filter-selector-row">
@@ -730,11 +762,12 @@ const LeaderboardPage = () => {
                   </div>
                 </div>
               )}
+              </>
+              )}
             </div>
           </div>
             </CollapsibleContent>
           </Collapsible>
-          )}
 
           <Collapsible
             open={activeSortOpen}
@@ -815,7 +848,11 @@ const LeaderboardPage = () => {
             </div>
           ) : listDisplayed?.length === 0 ? (
             <p className="leaderboard-empty-msg">
-              {pastMode ? t('leaderboard.past.noData') : t('leaderboard.infiniteScroll.end')}
+              {user && onlyFollowing
+                ? t('leaderboard.list.emptyFollowing')
+                : pastMode
+                  ? t('leaderboard.past.noData')
+                  : t('leaderboard.infiniteScroll.end')}
             </p>
           ) : (
             <VirtualList

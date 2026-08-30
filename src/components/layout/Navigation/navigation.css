@@ -108,7 +108,7 @@
   cursor: pointer;
   list-style: none;
   display: flex;
-  align-items: center;
+  align-items: stretch;
 }
 
 .nav-list-item {
@@ -734,7 +734,7 @@
 /* Narrow spacing only — not used for chrome */
 @media (max-width: 580px) {
   .nav-wrapper {
-    padding: 0.7rem;
+    padding: 0 0.7rem;
   }
 
   /* Touch-friendly button styles */

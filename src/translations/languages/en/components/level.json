@@ -87,8 +87,8 @@
           "desc": "Filter by artist name (supports aliases and credited artists)."
         },
         "creator": {
-          "title": "Creator (any role)",
-          "desc": "Search across all creator roles (charter, vfx, etc.)."
+          "title": "Creator (charter or VFXer)",
+          "desc": "Search charter and VFXer credits. Special thanks is not searched."
         },
         "charter": {
           "title": "Charter",

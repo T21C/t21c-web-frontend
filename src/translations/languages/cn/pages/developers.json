@@ -96,6 +96,7 @@
     "preview": "预览",
     "saved": "已保存模组",
     "saveError": "保存模组失败",
-    "save": "保存更改"
+    "save": "保存更改",
+    "viewPublic": "查看公开页面"
   }
 }

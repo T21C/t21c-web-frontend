@@ -36,6 +36,16 @@ export function localesOnLink(link) {
   return (link?.locales || []).map((row) => row.languageCode);
 }
 
+export function localesOnGroup(group) {
+  return (group?.locales || []).map((row) => row.languageCode);
+}
+
+export function displayGroupName(group, languageCode) {
+  if (!group) return '';
+  const resolved = resolveLinkLocale(group.locales, languageCode);
+  return resolved?.name || group.name || '';
+}
+
 export function availableSliceCodes(entries, getLocales) {
   const codes = new Set([DEFAULT_LINK_LANGUAGE]);
   for (const entry of entries || []) {
@@ -48,7 +58,7 @@ export function availableSliceCodes(entries, getLocales) {
 
 export function pickInitialSliceLanguage(availableCodes, siteLanguage) {
   const wanted = normalizeLanguage(siteLanguage);
-  if (wanted !== DEFAULT_LINK_LANGUAGE && availableCodes.includes(wanted)) {
+  if (wanted && availableCodes.includes(wanted)) {
     return wanted;
   }
   return DEFAULT_LINK_LANGUAGE;

@@ -291,6 +291,16 @@ export function formatCreatorDisplay (level) {
     return charters[0] || vfxers[0] || "No credits";
   }
 
+export function isContributingCreditRole(role) {
+  const normalized = String(role ?? "").toLowerCase();
+  return normalized === "charter" || normalized === "vfxer";
+}
+
+export function contributingCreditCount(credits) {
+  if (!Array.isArray(credits)) return 0;
+  return credits.filter((credit) => isContributingCreditRole(credit?.role)).length;
+}
+
 
   export function gaussianRandom(mean=0, stdev=1) {
     const u = 1 - Math.random(); // Converting [0,1) to (0,1]

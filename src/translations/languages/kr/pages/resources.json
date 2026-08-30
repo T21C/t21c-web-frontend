@@ -90,7 +90,8 @@
       "updateFailed": "그룹을 업데이트하지 못했습니다",
       "deleted": "그룹이 삭제되었습니다",
       "deleteFailed": "그룹을 삭제하지 못했습니다"
-    }
+    },
+    "removeLocaleConfirm": "이 그룹에서 {{name}} 번역을 제거할까요?"
   },
   "languages": {
     "title": "언어 관리",

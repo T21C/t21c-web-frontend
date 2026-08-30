@@ -90,7 +90,8 @@
       "updateFailed": "Failed to update group",
       "deleted": "Group deleted successfully",
       "deleteFailed": "Failed to delete group"
-    }
+    },
+    "removeLocaleConfirm": "Remove the {{name}} translation from this group?"
   },
   "languages": {
     "title": "Manage languages",

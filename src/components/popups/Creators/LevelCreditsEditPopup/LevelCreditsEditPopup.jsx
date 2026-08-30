@@ -28,6 +28,7 @@ import { CustomSelect } from '@/components/common/selectors';
 import { DragHandleIcon, SearchIcon } from '@/components/common/icons';
 import MarqueeText from '@/components/common/display/MarqueeText/MarqueeText';
 import api from '@/utils/api';
+import { contributingCreditCount } from '@/utils/Utility';
 import { routes } from '@/api/routes';
 import toast from 'react-hot-toast';
 import './levelcreditseditpopup.css';
@@ -558,7 +559,7 @@ export const LevelCreditsEditPopup = ({
         isOwner: false,
         role: assignedRole,
         verificationStatus: creator.verificationStatus || 'allowed',
-        levelCount: creator.credits?.length || 0,
+        levelCount: contributingCreditCount(creator.credits),
         aliases: creator.creatorAliases?.map((alias) => alias.name) || [],
       },
     ]);
@@ -822,7 +823,7 @@ export const LevelCreditsEditPopup = ({
                       ? []
                       : availableCreators.map((creator) => ({
                           value: creator.id,
-                          label: `${creator.name} (ID: ${creator.id}, Charts: ${creator.credits?.length || 0})${creator.creatorAliases?.length > 0 ? ` [${creator.creatorAliases.map((alias) => alias.name).join(', ')}]` : ''}`,
+                          label: `${creator.name} (ID: ${creator.id}, Charts: ${contributingCreditCount(creator.credits)})${creator.creatorAliases?.length > 0 ? ` [${creator.creatorAliases.map((alias) => alias.name).join(', ')}]` : ''}`,
                         }))
                   }
                   value={null}

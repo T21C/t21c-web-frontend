@@ -96,6 +96,7 @@
     "preview": "미리보기",
     "saved": "모드를 저장했습니다",
     "saveError": "모드를 저장하지 못했습니다",
-    "save": "저장"
+    "save": "저장",
+    "viewPublic": "공개 페이지 보기"
   }
 }

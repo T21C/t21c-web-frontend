@@ -12,6 +12,7 @@ import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import api from '@/utils/api';
 import { toastIfRateLimited } from '@/utils/rateLimitError';
+import { contributingCreditCount } from '@/utils/Utility';
 import './creatormanagementpopup.css';
 import { userAvatarDisplayUrl } from '@/utils/playerAvatarDisplay';
 import AliasListEditor from './AliasListEditor';
@@ -51,7 +52,7 @@ const creatorAliasNames = (subject) =>
     .map((alias) => (typeof alias === 'string' ? alias : alias?.name))
     .filter(Boolean);
 
-const creatorChartCount = (subject) => subject?.credits?.length || 0;
+const creatorChartCount = (subject) => contributingCreditCount(subject?.credits);
 
 const MergeCreatorIdentity = ({ subject, tt, showOpenProfile = false }) => {
   const aliases = creatorAliasNames(subject);

@@ -90,7 +90,8 @@
       "updateFailed": "更新分组失败",
       "deleted": "分组已删除",
       "deleteFailed": "删除分组失败"
-    }
+    },
+    "removeLocaleConfirm": "要从该分组移除 {{name}} 翻译吗？"
   },
   "languages": {
     "title": "管理语言",

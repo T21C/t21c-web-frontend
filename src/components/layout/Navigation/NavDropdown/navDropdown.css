@@ -1,14 +1,14 @@
 /* tuf-search: #NavDropdown #navDropdown #layout #navigation */
 
 .nav-dropdown {
-  position: static;
+  position: relative;
+  align-self: stretch;
   list-style: none;
   display: flex;
   align-items: center;
 }
 
 .nav-right > .nav-dropdown {
-  position: relative;
   align-self: stretch;
   pointer-events: none;
 }
@@ -16,7 +16,8 @@
 .nav-right > .nav-dropdown .nav-dropdown-button,
 .nav-right > .nav-dropdown .nav-language-selector__button,
 .nav-right > .nav-dropdown .nav-dropdown-panel,
-.nav-right > .nav-dropdown:has(.nav-dropdown-panel)::before {
+.nav-right > .nav-dropdown:has(.nav-dropdown-panel)::before,
+.nav-right > .nav-dropdown:has(.nav-dropdown-panel)::after {
   pointer-events: auto;
 }
 
@@ -26,8 +27,25 @@
   left: 0;
   right: 0;
   top: 0;
-  bottom: -8px;
+  bottom: -12px;
   z-index: 1;
+}
+
+/* Panel-width seam under the navbar so moving onto the menu (or back)
+   does not fall through clip-path holes into page content. */
+.nav-dropdown:has(.nav-dropdown-panel)::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 16rem;
+  top: calc(100% - 8px);
+  height: 2.75rem;
+  z-index: 1;
+}
+
+.nav-dropdown:has(.nav-dropdown-panel--right)::after {
+  left: auto;
+  right: 0;
 }
 
 .nav-dropdown-button {

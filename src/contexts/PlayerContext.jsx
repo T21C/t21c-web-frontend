@@ -11,6 +11,7 @@ const STORAGE_KEYS = {
   FLAG_FILTER: 'player_flag_filter',
   FILTERS: 'player_filters',
   COUNTRY: 'player_country',
+  ONLY_FOLLOWING: 'player_only_following',
 };
 
 const VALID_FLAG_FIELDS = new Set(['isBanned', 'isSubmissionsPaused', 'isRatingBanned']);
@@ -67,6 +68,9 @@ export const PlayerContextProvider = ({ children }) => {
   const [initialLoading, setInitialLoading] = useState(true);
   const [forceUpdate, setForceUpdate] = useState(false);
   const [country, setCountry] = useState(() => localStorage.getItem(STORAGE_KEYS.COUNTRY) || '');
+  const [onlyFollowing, setOnlyFollowing] = useState(
+    () => localStorage.getItem(STORAGE_KEYS.ONLY_FOLLOWING) === 'true',
+  );
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.FILTER_OPEN, filterOpen);
@@ -100,6 +104,10 @@ export const PlayerContextProvider = ({ children }) => {
     localStorage.setItem(STORAGE_KEYS.COUNTRY, country);
   }, [country]);
 
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.ONLY_FOLLOWING, onlyFollowing);
+  }, [onlyFollowing]);
+
   return (
     <PlayerContext.Provider
       value={{
@@ -132,7 +140,9 @@ export const PlayerContextProvider = ({ children }) => {
         filters,
         setFilters,
         country,
-        setCountry
+        setCountry,
+        onlyFollowing,
+        setOnlyFollowing,
       }}
     >
       {children}
