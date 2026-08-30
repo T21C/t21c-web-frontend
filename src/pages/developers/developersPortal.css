@@ -695,6 +695,27 @@
   height: auto;
 }
 
+.developers-portal__section .mods-page__assignee-chips,
+.developers-portal__section .mods-page__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.developers-portal__section .mods-page__tag-toggle {
+  font-size: 0.75rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-white-t20);
+  background: transparent;
+  cursor: pointer;
+}
+
+.developers-portal__section .mods-page__tag-toggle:hover,
+.developers-portal__section .mods-page__tag-toggle.is-selected {
+  background: var(--color-white-t10);
+}
+
 @media (min-width: 900px) {
   .developers-portal__mod-edit {
     display: grid;

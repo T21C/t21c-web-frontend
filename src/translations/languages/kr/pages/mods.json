@@ -2,7 +2,8 @@
   "meta": {
     "title": "모드",
     "description": "관리자가 정리한 ADOFAI 모드 목록. 이름과 제작자로 검색할 수 있습니다.",
-    "editTitle": "모드 편집"
+    "editTitle": "모드 편집",
+    "tagsTitle": "모드 태그"
   },
   "title": "모드",
   "subtitle": "관리자가 정리한 ADOFAI 모드 목록입니다. 이름 또는 Discord 제작자로 검색하세요.",
@@ -25,15 +26,83 @@
   },
   "backToMods": "모드로 돌아가기",
   "download": "다운로드",
+  "details": "자세히",
   "project": "프로젝트",
+  "pinned": "고정",
+  "readme": "소개",
+  "downloadsCount": "다운로드 {{count}}회",
   "hiddenBadge": "숨김",
   "createButton": "모드 만들기",
   "noMods": "모드가 없습니다. 첫 모드를 만드세요.",
   "errors": {
-    "loadFailed": "모드를 불러오지 못했습니다. 나중에 다시 시도하세요."
+    "loadFailed": "모드를 불러오지 못했습니다. 나중에 다시 시도하세요.",
+    "notFound": "이 모드를 찾을 수 없습니다."
+  },
+  "like": {
+    "label": "좋아요",
+    "loginRequired": "모드에 좋아요를 누르려면 로그인하세요",
+    "failed": "좋아요를 변경하지 못했습니다"
+  },
+  "copy": {
+    "latest": "최신 링크 복사",
+    "permalink": "고유 링크 복사",
+    "copied": "링크를 복사했습니다",
+    "failed": "링크를 복사하지 못했습니다"
+  },
+  "releases": {
+    "title": "릴리스",
+    "empty": "릴리스가 없습니다.",
+    "latest": "최신",
+    "add": "릴리스 추가",
+    "created": "릴리스를 추가했습니다",
+    "createFailed": "릴리스를 추가하지 못했습니다",
+    "deleteFailed": "릴리스를 삭제하지 못했습니다"
+  },
+  "tags": {
+    "title": "태그",
+    "filter": "태그",
+    "pageTitle": "모드 태그",
+    "pageSubtitle": "카탈로그 모드에 사용하는 태그를 만들고 편집합니다.",
+    "manage": "태그 관리",
+    "backToEdit": "모드 편집으로 돌아가기",
+    "empty": "태그가 없습니다.",
+    "created": "태그를 만들었습니다",
+    "createFailed": "태그를 만들지 못했습니다",
+    "updated": "태그를 업데이트했습니다",
+    "updateFailed": "태그를 업데이트하지 못했습니다",
+    "deleted": "태그를 삭제했습니다",
+    "deleteFailed": "태그를 삭제하지 못했습니다",
+    "assignFailed": "태그를 업데이트하지 못했습니다",
+    "loadFailed": "태그를 불러오지 못했습니다.",
+    "createButton": "태그 만들기",
+    "create": {
+      "title": "태그 만들기",
+      "name": "이름",
+      "color": "색상",
+      "createButton": "만들기"
+    },
+    "edit": {
+      "title": "태그 편집",
+      "updateButton": "업데이트"
+    },
+    "delete": {
+      "title": "태그 삭제",
+      "message": "태그 \"{{name}}\"을(를) 삭제할까요?",
+      "description": "이 태그가 지정된 모드는 더 이상 해당 태그를 갖지 않습니다.",
+      "deleteButton": "삭제"
+    }
+  },
+  "merge": {
+    "title": "다른 모드를 이 모드로 병합",
+    "placeholder": "병합할 모드 선택",
+    "button": "병합",
+    "confirm": "선택한 모드를 \"{{name}}\"에 병합할까요? 릴리스 기록이 합쳐집니다.",
+    "done": "모드를 병합했습니다",
+    "failed": "모드를 병합하지 못했습니다"
   },
   "fields": {
     "name": "이름",
+    "slug": "슬러그",
     "creatorUsername": "제작자 이름",
     "creatorDiscordId": "제작자 Discord ID",
     "version": "버전",
@@ -41,7 +110,10 @@
     "downloadUrl": "다운로드 URL",
     "projectUrl": "프로젝트 링크",
     "sourceUploadedAt": "업로드 시각",
-    "hidden": "공개 목록에서 숨기기"
+    "notes": "릴리스 노트",
+    "hidden": "공개 목록에서 숨기기",
+    "isPinned": "목록 상단에 고정",
+    "color": "색"
   },
   "create": {
     "title": "모드 만들기",

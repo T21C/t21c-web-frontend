@@ -2,7 +2,8 @@
   "meta": {
     "title": "模组",
     "description": "由管理员整理的 ADOFAI 模组目录，可按名称和作者搜索。",
-    "editTitle": "编辑模组"
+    "editTitle": "编辑模组",
+    "tagsTitle": "模组标签"
   },
   "title": "模组",
   "subtitle": "精选 ADOFAI 模组目录。可按名称或 Discord 作者搜索。",
@@ -25,15 +26,83 @@
   },
   "backToMods": "返回模组",
   "download": "下载",
+  "details": "详情",
   "project": "项目",
+  "pinned": "置顶",
+  "readme": "介绍",
+  "downloadsCount": "{{count}} 次下载",
   "hiddenBadge": "已隐藏",
   "createButton": "创建模组",
   "noMods": "暂无模组。请创建第一个。",
   "errors": {
-    "loadFailed": "无法加载模组，请稍后再试。"
+    "loadFailed": "无法加载模组，请稍后再试。",
+    "notFound": "找不到该模组。"
+  },
+  "like": {
+    "label": "点赞",
+    "loginRequired": "登录后才能点赞模组",
+    "failed": "无法更新点赞"
+  },
+  "copy": {
+    "latest": "复制最新链接",
+    "permalink": "复制永久链接",
+    "copied": "已复制链接",
+    "failed": "无法复制链接"
+  },
+  "releases": {
+    "title": "版本",
+    "empty": "暂无版本。",
+    "latest": "最新",
+    "add": "添加版本",
+    "created": "已添加版本",
+    "createFailed": "添加版本失败",
+    "deleteFailed": "删除版本失败"
+  },
+  "tags": {
+    "title": "标签",
+    "filter": "标签",
+    "pageTitle": "模组标签",
+    "pageSubtitle": "创建和编辑目录模组使用的标签。",
+    "manage": "管理标签",
+    "backToEdit": "返回编辑模组",
+    "empty": "暂无标签。",
+    "created": "已创建标签",
+    "createFailed": "创建标签失败",
+    "updated": "已更新标签",
+    "updateFailed": "更新标签失败",
+    "deleted": "已删除标签",
+    "deleteFailed": "删除标签失败",
+    "assignFailed": "更新标签失败",
+    "loadFailed": "无法加载标签。",
+    "createButton": "创建标签",
+    "create": {
+      "title": "创建标签",
+      "name": "名称",
+      "color": "颜色",
+      "createButton": "创建"
+    },
+    "edit": {
+      "title": "编辑标签",
+      "updateButton": "更新"
+    },
+    "delete": {
+      "title": "删除标签",
+      "message": "确定要删除标签“{{name}}”吗？",
+      "description": "使用此标签的模组将不再关联该标签。",
+      "deleteButton": "删除"
+    }
+  },
+  "merge": {
+    "title": "将另一个模组合并到此模组",
+    "placeholder": "选择要合并的模组",
+    "button": "合并",
+    "confirm": "将所选模组合并到“{{name}}”？版本历史会合并。",
+    "done": "已合并模组",
+    "failed": "合并模组失败"
   },
   "fields": {
     "name": "名称",
+    "slug": "Slug",
     "creatorUsername": "作者用户名",
     "creatorDiscordId": "作者 Discord ID",
     "version": "版本",
@@ -41,7 +110,10 @@
     "downloadUrl": "下载链接",
     "projectUrl": "项目链接",
     "sourceUploadedAt": "上传时间",
-    "hidden": "从公开目录隐藏"
+    "notes": "版本说明",
+    "hidden": "从公开目录隐藏",
+    "isPinned": "置顶到目录顶部",
+    "color": "颜色"
   },
   "create": {
     "title": "创建模组",

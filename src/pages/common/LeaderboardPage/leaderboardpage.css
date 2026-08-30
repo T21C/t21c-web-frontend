@@ -238,6 +238,28 @@
   display: flex;
   gap: 1rem;
   align-items: center;
+  flex-wrap: wrap;
+}
+
+.leaderboard-page .leaderboard-body .filter-container.following-filter {
+  display: flex;
+  align-items: center;
+}
+
+.leaderboard-page .leaderboard-body .state-display--binary-track {
+  background: rgba(0, 0, 0, 0.28);
+}
+
+.leaderboard-page .leaderboard-body .state-display--binary-track.state-display--active-track {
+  background: var(--btn-info);
+}
+
+.leaderboard-page .leaderboard-body .state-display--binary-track.state-display--active-track:hover {
+  background: var(--btn-info-light-hover);
+}
+
+.leaderboard-page .leaderboard-body .state-display--binary-track:not(.state-display--active-track):hover {
+  background: var(--btn-info-dark-hover);
 }
 
 /* State display styles */

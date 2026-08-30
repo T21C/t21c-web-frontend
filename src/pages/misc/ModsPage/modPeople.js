@@ -11,6 +11,11 @@ export function hasAssignees(mod) {
   return (mod?.assignees || []).length > 0;
 }
 
+export function isAssignedToMod(mod, userId) {
+  if (!userId) return false;
+  return (mod?.assignees || []).some((person) => person?.userId === userId);
+}
+
 export function assignedPeople(mod) {
   const assignees = (mod?.assignees || []).filter((person) => person?.userId);
   const posted = mod?.postedBy;

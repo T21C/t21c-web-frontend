@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { routes } from '@/api/routes';
@@ -7,13 +7,16 @@ import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { MetaTags } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
 import { Footer } from '@/components/layout';
-import { ExternalLink } from '@/components/common/LinkConfirm';
-import { ExternalLinkIcon } from '@/components/common/icons';
+import { CalendarIcon, DownloadIcon, InfoIcon, UsersIcon } from '@/components/common/icons';
 import { VirtualList } from '@/components/common/VirtualList';
-import ModsMarkdown from './ModsMarkdown';
+import { FacetQueryBuilder } from '@/components/common/selectors';
+import { buildFacetQueryParam } from '@/utils/facetQueryCodec';
+import api from '@/utils/api';
 import ModsListControls from './ModsListControls';
-import { dumpCreatorLabel, hasAssignees, otherAssignees } from './modPeople';
+import ModLikeButton from './ModLikeButton';
+import { assignedPeople, dumpCreatorLabel, hasAssignees } from './modPeople';
 import { useModsList } from './useModsList';
+import { modDownloadHref, modPermalink } from './modUrls';
 import './modsPage.css';
 
 function formatUploadedAt(value) {
@@ -34,61 +37,107 @@ function PersonLink({ person }) {
   return <Link to={`/profile/${person.playerId}`}>{name}</Link>;
 }
 
-function ModCatalogCard({ mod, t }) {
-  const assigned = hasAssignees(mod);
-  const also = otherAssignees(mod);
-  const dumpLabel = dumpCreatorLabel(mod);
+function excerpt(text) {
+  const plain = String(text || '')
+    .replace(/[#*_`>\-\[\]()]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  if (!plain) return '';
+  return plain.length > 140 ? `${plain.slice(0, 137)}…` : plain;
+}
+
+function ModTags({ tags }) {
+  if (!Array.isArray(tags) || tags.length === 0) return null;
   return (
-    <article className="mods-page__card">
-      {mod.imageUrl ? (
-        <img className="mods-page__card-thumb" src={mod.imageUrl} alt="" />
-      ) : null}
-      <div className="mods-page__card-copy">
+    <div className="mods-page__tags">
+      {tags.map((tag) => (
+        <span
+          key={tag.id}
+          className="mods-page__tag"
+          style={{ borderColor: tag.color, color: tag.color }}
+        >
+          {tag.name}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function AuthorLine({ mod }) {
+  if (hasAssignees(mod)) {
+    const people = assignedPeople(mod);
+    if (!people.length) return null;
+    return (
+      <div className="mods-page__people-row">
+        {people.map((person) => (
+          <PersonLink key={person.userId} person={person} />
+        ))}
+      </div>
+    );
+  }
+  const dumpLabel = dumpCreatorLabel(mod);
+  return dumpLabel ? <span>{dumpLabel}</span> : null;
+}
+
+function ModCatalogCard({ mod, t }) {
+  const href = modPermalink(mod.slug);
+  const summary = excerpt(mod.description);
+  const uploaded = formatUploadedAt(mod.sourceUploadedAt);
+  const hasAuthor = hasAssignees(mod) ? assignedPeople(mod).length > 0 : Boolean(dumpCreatorLabel(mod));
+  return (
+    <article className={`mods-page__card ${mod.isPinned ? 'is-pinned' : ''}`.trim()}>
+      <div className="mods-page__card-head">
+        {mod.imageUrl ? <img className="mods-page__card-thumb" src={mod.imageUrl} alt="" /> : null}
         <div className="mods-page__card-title-row">
-          <strong className="mods-page__card-title">{mod.name}</strong>
-          {mod.version ? <span className="mods-page__version">{mod.version}</span> : null}
+          <Link className="mods-page__card-title" to={href}>
+            {mod.name}
+          </Link>
+          {mod.isPinned ? <span className="mods-page__pin-badge">{t('mods.pinned')}</span> : null}
         </div>
-        <div className="mods-page__card-meta">
-          {!assigned && dumpLabel ? <span>{dumpLabel}</span> : null}
-          {assigned && (mod.postedBy || also.length) ? (
-            <div className="mods-page__people">
-              {mod.postedBy ? (
-                <div className="mods-page__people-row">
-                  <span>{t('mods.postedBy')}</span>
-                  <PersonLink person={mod.postedBy} />
-                </div>
-              ) : null}
-              {also.length ? (
-                <div className="mods-page__people-row">
-                  {mod.postedBy ? <span>{t('mods.alsoAssigned')}</span> : null}
-                  {also.map((person) => (
-                    <PersonLink key={person.userId} person={person} />
-                  ))}
-                </div>
-              ) : null}
-            </div>
-          ) : null}
-          {formatUploadedAt(mod.sourceUploadedAt) ? (
-            <span>{formatUploadedAt(mod.sourceUploadedAt)}</span>
-          ) : null}
-        </div>
-        {mod.description ? (
-          <ModsMarkdown className="mods-page__card-description">{mod.description}</ModsMarkdown>
+      </div>
+      {summary ? <p className="mods-page__card-excerpt">{summary}</p> : null}
+      <div className="mods-page__card-meta-list">
+        {hasAuthor ? (
+          <div className="mods-page__meta-row">
+            <UsersIcon size={16} color="currentColor" />
+            <AuthorLine mod={mod} />
+          </div>
+        ) : null}
+        {mod.version ? (
+          <div className="mods-page__meta-row">
+            <span className="mods-page__meta-hash" aria-hidden>
+              #
+            </span>
+            <span>
+              {t('mods.fields.version')}: {mod.version}
+            </span>
+          </div>
+        ) : null}
+        {uploaded ? (
+          <div className="mods-page__meta-row">
+            <CalendarIcon size={16} color="currentColor" />
+            <span>{uploaded}</span>
+          </div>
         ) : null}
       </div>
+      <div className="mods-page__card-extras">
+        <ModTags tags={mod.tags} />
+        <div className="mods-page__card-extras-actions">
+          <span>{t('mods.downloadsCount', { count: Number(mod.downloadCount || 0) })}</span>
+          <ModLikeButton mod={mod} />
+        </div>
+      </div>
       <div className="mods-page__card-actions">
-        {mod.projectUrl ? (
-          <ExternalLink href={mod.projectUrl} className="mods-page__download">
-            <span>{t('mods.project')}</span>
-            <ExternalLinkIcon size={16} color="currentColor" />
-          </ExternalLink>
-        ) : null}
-        {mod.downloadUrl ? (
-          <ExternalLink href={mod.downloadUrl} className="mods-page__download">
+        {mod.slug ? (
+          <a href={modDownloadHref(mod.slug)} className="btn-fill-primary mods-page__card-download">
+            <DownloadIcon size={16} color="currentColor" />
             <span>{t('mods.download')}</span>
-            <ExternalLinkIcon size={16} color="currentColor" />
-          </ExternalLink>
+          </a>
         ) : null}
+        <Link to={href} className="mods-page__card-details">
+          <InfoIcon size={16} color="currentColor" />
+          <span>{t('mods.details')}</span>
+        </Link>
       </div>
     </article>
   );
@@ -99,6 +148,25 @@ const ModsPage = () => {
   const { t } = useTranslation(['pages', 'common']);
   const location = useLocation();
   const isAdmin = hasFlag(user, permissionFlags.SUPER_ADMIN);
+  const [tagItems, setTagItems] = useState([]);
+  const [tagFacet, setTagFacet] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    api
+      .get(routes.mods.tags())
+      .then((res) => {
+        if (!cancelled) setTagItems(Array.isArray(res.data?.tags) ? res.data.tags : []);
+      })
+      .catch(() => {
+        if (!cancelled) setTagItems([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const facetQuery = useMemo(() => buildFacetQueryParam({ tags: tagFacet }), [tagFacet]);
   const {
     mods,
     loading,
@@ -111,7 +179,11 @@ const ModsPage = () => {
     sort,
     setSort,
     loadMore,
-  } = useModsList({ path: routes.mods.list() });
+  } = useModsList({
+    path: routes.mods.list(),
+    withLikeState: Boolean(user),
+    facetQuery,
+  });
 
   const pageMeta = useMemo(
     () =>
@@ -125,7 +197,7 @@ const ModsPage = () => {
     [t, location.pathname],
   );
 
-  const searching = Boolean(query.trim());
+  const searching = Boolean(query.trim()) || Boolean(facetQuery);
   const renderItem = useCallback((mod) => <ModCatalogCard mod={mod} t={t} />, [t]);
 
   return (
@@ -139,9 +211,14 @@ const ModsPage = () => {
             </div>
             <div className="mods-page__header-actions">
               {isAdmin ? (
-                <Link to="/mods/edit" className="btn-fill-primary">
-                  {t('buttons.edit', { ns: 'common' })}
-                </Link>
+                <>
+                  <Link to="/mods/edit/tags" className="btn-fill-secondary">
+                    {t('mods.tags.manage')}
+                  </Link>
+                  <Link to="/mods/edit" className="btn-fill-primary">
+                    {t('buttons.edit', { ns: 'common' })}
+                  </Link>
+                </>
               ) : null}
             </div>
           </header>
@@ -152,7 +229,17 @@ const ModsPage = () => {
             sort={sort}
             onSortChange={setSort}
             t={t}
-          />
+          >
+            {tagItems.length ? (
+              <FacetQueryBuilder
+                items={tagItems}
+                value={tagFacet}
+                onChange={setTagFacet}
+                title={t('mods.tags.filter')}
+                enableGrouping={false}
+              />
+            ) : null}
+          </ModsListControls>
 
           {total != null && !loadError ? (
             <span className="mods-page__total">
@@ -178,8 +265,11 @@ const ModsPage = () => {
               hasMore={hasMore}
               loadingMore={loadingMore}
               overscan={400}
-              listClassName="mods-page__list"
-              itemClassName="mods-page__list-item"
+              grid
+              minColumnWidth={300}
+              gap={20}
+              listClassName="mods-page__grid"
+              itemClassName="mods-page__grid-item"
               loader={<div className="loader loader-relative" />}
               endMessage={
                 <p className="mods-page__end-message">

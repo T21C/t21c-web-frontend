@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, Navigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
@@ -13,9 +13,10 @@ import { CloseButton } from '@/components/common/buttons';
 import { EditIcon, TrashIcon } from '@/components/common/icons';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { getRateLimitMessage } from '@/utils/rateLimitError';
-import { ProfileSelector } from '@/components/common/selectors';
+import { FacetQueryBuilder, ProfileSelector } from '@/components/common/selectors';
 import ImageSelectorPopup from '@/components/common/selectors/ImageSelectorPopup/ImageSelectorPopup';
 import { getCdnErrorMessage } from '@/utils/uploadErrors';
+import { buildFacetQueryParam } from '@/utils/facetQueryCodec';
 import ModsListControls from './ModsListControls';
 import { listCreatorText } from './modPeople';
 import { useModsList } from './useModsList';
@@ -32,6 +33,8 @@ const EMPTY_MOD = {
   projectUrl: '',
   sourceUploadedAt: '',
   hidden: false,
+  isPinned: false,
+  slug: '',
 };
 
 function confirmDiscardUnsaved(t, isDirty) {
@@ -76,6 +79,8 @@ function formFromMod(mod) {
     projectUrl: mod?.projectUrl || '',
     sourceUploadedAt: toDatetimeLocalValue(mod?.sourceUploadedAt),
     hidden: Boolean(mod?.hidden),
+    isPinned: Boolean(mod?.isPinned),
+    slug: mod?.slug || '',
   };
 }
 
@@ -93,7 +98,9 @@ function toPayload(form, { includeUploadedAt }) {
     downloadUrl: form.downloadUrl,
     projectUrl: form.projectUrl || null,
     hidden: Boolean(form.hidden),
+    isPinned: Boolean(form.isPinned),
   };
+  if (form.slug.trim()) payload.slug = form.slug.trim();
   if (includeUploadedAt) {
     const uploaded = fromDatetimeLocalValue(form.sourceUploadedAt);
     if (uploaded) payload.sourceUploadedAt = uploaded;
@@ -170,6 +177,16 @@ function ModFormFields({ form, onChange, t, icon }) {
           onChange={setField('name')}
           maxLength={512}
           required
+        />
+      </div>
+      <div className="form-group">
+        <label htmlFor="mod-slug">{t('mods.fields.slug')}</label>
+        <input
+          id="mod-slug"
+          type="text"
+          value={form.slug}
+          onChange={setField('slug')}
+          maxLength={80}
         />
       </div>
       <div className="form-group">
@@ -253,6 +270,17 @@ function ModFormFields({ form, onChange, t, icon }) {
           {t('mods.fields.hidden')}
         </label>
       </div>
+      <div className="form-group form-group--checkbox">
+        <label htmlFor="mod-pinned">
+          <input
+            id="mod-pinned"
+            type="checkbox"
+            checked={Boolean(form.isPinned)}
+            onChange={setField('isPinned')}
+          />
+          {t('mods.fields.isPinned')}
+        </label>
+      </div>
     </>
   );
 }
@@ -275,6 +303,8 @@ const ModsEditPage = () => {
     [t, location.pathname],
   );
 
+  const [tagFacet, setTagFacet] = useState(null);
+  const facetQuery = useMemo(() => buildFacetQueryParam({ tags: tagFacet }), [tagFacet]);
   const {
     mods,
     setMods,
@@ -292,6 +322,7 @@ const ModsEditPage = () => {
   } = useModsList({
     path: routes.admin.mods.root(),
     enabled: !authLoading && isAdmin,
+    facetQuery,
   });
   const [isCreating, setIsCreating] = useState(false);
   const [newMod, setNewMod] = useState(EMPTY_MOD);
@@ -307,6 +338,41 @@ const ModsEditPage = () => {
   const [createIconPreview, setCreateIconPreview] = useState('');
   const [iconPicker, setIconPicker] = useState(null);
   const [iconBusy, setIconBusy] = useState(false);
+  const [catalogTags, setCatalogTags] = useState([]);
+  const [versionForm, setVersionForm] = useState({ version: '', downloadUrl: '', releasedAt: '', notes: '' });
+  const [mergeSourceId, setMergeSourceId] = useState('');
+
+  const loadCatalogTags = useCallback(async () => {
+    try {
+      const { data } = await api.get(routes.admin.mods.tags());
+      setCatalogTags(Array.isArray(data?.tags) ? data.tags : []);
+    } catch {
+      setCatalogTags([]);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!authLoading && isAdmin) void loadCatalogTags();
+  }, [authLoading, isAdmin, loadCatalogTags]);
+
+  const openEdit = async (mod) => {
+    setEditingMod(mod);
+    setEditForm(formFromMod(mod));
+    setAssignPlayer(null);
+    setApplyToSameCreator(false);
+    setAssignConfirmCount(null);
+    setMergeSourceId('');
+    setVersionForm({ version: '', downloadUrl: '', releasedAt: '', notes: '' });
+    try {
+      const { data } = await api.get(routes.admin.mods.byId(mod.id));
+      if (data?.mod) {
+        setEditingMod(data.mod);
+        setEditForm(formFromMod(data.mod));
+      }
+    } catch (error) {
+      toast.error(apiError(error, t('mods.errors.loadFailed')));
+    }
+  };
 
   const anyModalOpen = Boolean(isCreating || editingMod || deletingMod || iconPicker);
   useBodyScrollLock(anyModalOpen);
@@ -496,6 +562,9 @@ const ModsEditPage = () => {
               <p>{t('mods.editSubtitle')}</p>
             </div>
             <div className="mods-page__header-actions">
+              <Link to="/mods/edit/tags" className="btn-fill-secondary">
+                {t('mods.tags.manage')}
+              </Link>
               <button
                 type="button"
                 className="btn-fill-primary"
@@ -516,7 +585,17 @@ const ModsEditPage = () => {
             sort={sort}
             onSortChange={setSort}
             t={t}
-          />
+          >
+            {catalogTags.length ? (
+              <FacetQueryBuilder
+                items={catalogTags}
+                value={tagFacet}
+                onChange={setTagFacet}
+                title={t('mods.tags.filter')}
+                enableGrouping={false}
+              />
+            ) : null}
+          </ModsListControls>
 
           {total != null && !loadError ? (
             <span className="mods-page__total">
@@ -556,6 +635,9 @@ const ModsEditPage = () => {
                     <div className="mods-page__admin-row-name">
                       <strong>{mod.name}</strong>
                       {mod.version ? <span className="mods-page__version">{mod.version}</span> : null}
+                      {mod.isPinned ? (
+                        <span className="mods-page__pin-badge">{t('mods.pinned')}</span>
+                      ) : null}
                       {mod.hidden ? (
                         <span className="mods-page__hidden-badge">{t('mods.hiddenBadge')}</span>
                       ) : null}
@@ -565,13 +647,7 @@ const ModsEditPage = () => {
                   <div className="mods-page__admin-row-actions">
                     <button
                       type="button"
-                      onClick={() => {
-                        setEditingMod(mod);
-                        setEditForm(formFromMod(mod));
-                        setAssignPlayer(null);
-                        setApplyToSameCreator(false);
-                        setAssignConfirmCount(null);
-                      }}
+                      onClick={() => void openEdit(mod)}
                       aria-label={t('buttons.edit', { ns: 'common' })}
                     >
                       <EditIcon color="#fff" size="20px" />
@@ -749,6 +825,156 @@ const ModsEditPage = () => {
                   onClick={requestAssign}
                 >
                   {t('mods.assign.addButton')}
+                </button>
+              </div>
+              <div className="mods-page__assign">
+                <p className="mods-page__assign-title">{t('mods.tags.title')}</p>
+                {catalogTags.length === 0 ? (
+                  <span className="mods-page__assign-empty">
+                    {t('mods.tags.empty')}{' '}
+                    <Link to="/mods/edit/tags">{t('mods.tags.manage')}</Link>
+                  </span>
+                ) : null}
+                <div className="mods-page__assignee-chips">
+                  {catalogTags.map((tag) => {
+                    const selected = (editingMod.tags || []).some((item) => item.id === tag.id);
+                    return (
+                      <button
+                        key={tag.id}
+                        type="button"
+                        className={`mods-page__tag-toggle ${selected ? 'is-selected' : ''}`.trim()}
+                        style={{ borderColor: tag.color, color: tag.color }}
+                        onClick={async () => {
+                          const nextIds = selected
+                            ? (editingMod.tags || []).filter((item) => item.id !== tag.id).map((item) => item.id)
+                            : [...(editingMod.tags || []).map((item) => item.id), tag.id];
+                          try {
+                            const { data } = await api.put(routes.admin.mods.modTags(editingMod.id), {
+                              tagIds: nextIds,
+                            });
+                            if (data?.mod) applyModUpdate(data.mod);
+                          } catch (error) {
+                            toast.error(apiError(error, t('mods.tags.assignFailed')));
+                          }
+                        }}
+                      >
+                        {tag.name}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+              <div className="mods-page__assign">
+                <p className="mods-page__assign-title">{t('mods.releases.title')}</p>
+                <ul className="mods-page__version-list">
+                  {(editingMod.versions || []).map((release) => (
+                    <li key={release.id}>
+                      <strong>{release.version}</strong>
+                      <span>{release.downloadUrl}</span>
+                      <button
+                        type="button"
+                        className="cancel-button"
+                        onClick={async () => {
+                          try {
+                            const { data } = await api.delete(
+                              routes.admin.mods.version(editingMod.id, release.id),
+                            );
+                            if (data?.mod) applyModUpdate(data.mod);
+                          } catch (error) {
+                            toast.error(apiError(error, t('mods.releases.deleteFailed')));
+                          }
+                        }}
+                      >
+                        {t('buttons.delete', { ns: 'common' })}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mods-page__version-form">
+                  <input
+                    type="text"
+                    value={versionForm.version}
+                    onChange={(event) => setVersionForm((prev) => ({ ...prev, version: event.target.value }))}
+                    placeholder={t('mods.fields.version')}
+                  />
+                  <input
+                    type="url"
+                    value={versionForm.downloadUrl}
+                    onChange={(event) => setVersionForm((prev) => ({ ...prev, downloadUrl: event.target.value }))}
+                    placeholder={t('mods.fields.downloadUrl')}
+                  />
+                  <input
+                    type="datetime-local"
+                    value={versionForm.releasedAt}
+                    onChange={(event) => setVersionForm((prev) => ({ ...prev, releasedAt: event.target.value }))}
+                  />
+                  <textarea
+                    value={versionForm.notes}
+                    onChange={(event) => setVersionForm((prev) => ({ ...prev, notes: event.target.value }))}
+                    placeholder={t('mods.fields.notes')}
+                    rows={3}
+                  />
+                  <button
+                    type="button"
+                    className="confirm-button"
+                    disabled={!versionForm.version.trim() || !versionForm.downloadUrl.trim()}
+                    onClick={async () => {
+                      try {
+                        const body = {
+                          version: versionForm.version.trim(),
+                          downloadUrl: versionForm.downloadUrl.trim(),
+                          notes: versionForm.notes || null,
+                        };
+                        const released = fromDatetimeLocalValue(versionForm.releasedAt);
+                        if (released) body.releasedAt = released;
+                        const { data } = await api.post(routes.admin.mods.versions(editingMod.id), body);
+                        if (data?.mod) applyModUpdate(data.mod);
+                        setVersionForm({ version: '', downloadUrl: '', releasedAt: '', notes: '' });
+                        toast.success(t('mods.releases.created'));
+                      } catch (error) {
+                        toast.error(apiError(error, t('mods.releases.createFailed')));
+                      }
+                    }}
+                  >
+                    {t('mods.releases.add')}
+                  </button>
+                </div>
+              </div>
+              <div className="mods-page__assign">
+                <p className="mods-page__assign-title">{t('mods.merge.title')}</p>
+                <select
+                  value={mergeSourceId}
+                  onChange={(event) => setMergeSourceId(event.target.value)}
+                >
+                  <option value="">{t('mods.merge.placeholder')}</option>
+                  {mods
+                    .filter((item) => item.id !== editingMod.id)
+                    .map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {item.name} ({item.slug || item.id})
+                      </option>
+                    ))}
+                </select>
+                <button
+                  type="button"
+                  className="delete-confirm-button"
+                  disabled={!mergeSourceId}
+                  onClick={async () => {
+                    if (!window.confirm(t('mods.merge.confirm', { name: editingMod.name }))) return;
+                    try {
+                      const { data } = await api.post(routes.admin.mods.merge(editingMod.id), {
+                        sourceModId: Number(mergeSourceId),
+                      });
+                      if (data?.mod) applyModUpdate(data.mod);
+                      setMergeSourceId('');
+                      toast.success(t('mods.merge.done'));
+                      await reload();
+                    } catch (error) {
+                      toast.error(apiError(error, t('mods.merge.failed')));
+                    }
+                  }}
+                >
+                  {t('mods.merge.button')}
                 </button>
               </div>
             </div>

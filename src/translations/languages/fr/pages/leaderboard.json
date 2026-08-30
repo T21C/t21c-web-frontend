@@ -15,7 +15,9 @@
   },
   "settings": {
     "filter": {
-      "header": "Paramètres de filtres"
+      "header": "Paramètres de filtres",
+      "following": "Abonnements",
+      "followingLogin": "Connectez-vous pour filtrer par abonnements"
     },
     "sort": {
       "header": "Paramètres de triage",
@@ -45,5 +47,8 @@
   },
   "infiniteScroll": {
     "end": "Vous avez atteint la fin!"
+  },
+  "list": {
+    "emptyFollowing": "Vous ne suivez personne pour le moment."
   }
 } 

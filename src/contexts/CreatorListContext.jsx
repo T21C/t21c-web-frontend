@@ -12,6 +12,7 @@ const STORAGE_KEYS = {
   SORT_BY: 'creator_sort_by',
   VERIFICATION_FILTER: 'creator_verification_filter',
   CREATOR_FACET_V1: 'creator_facet_v1',
+  ONLY_FOLLOWING: 'creator_only_following',
 };
 
 const DEFAULT_CREATOR_FACET_FILTERS = {
@@ -55,6 +56,9 @@ export const CreatorListContextProvider = ({ children }) => {
     () => localStorage.getItem(STORAGE_KEYS.VERIFICATION_FILTER) || '',
   );
   const [creatorFacetFilters, setCreatorFacetFilters] = useState(loadCreatorFacetV1);
+  const [onlyFollowing, setOnlyFollowing] = useState(
+    () => localStorage.getItem(STORAGE_KEYS.ONLY_FOLLOWING) === 'true',
+  );
   const [loading, setLoading] = useState(true);
   const [initialLoading, setInitialLoading] = useState(true);
   const [forceUpdate, setForceUpdate] = useState(false);
@@ -94,6 +98,10 @@ export const CreatorListContextProvider = ({ children }) => {
     localStorage.setItem(STORAGE_KEYS.CREATOR_FACET_V1, JSON.stringify(creatorFacetFilters));
   }, [creatorFacetFilters]);
 
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.ONLY_FOLLOWING, onlyFollowing);
+  }, [onlyFollowing]);
+
   return (
     <CreatorListContext.Provider
       value={{
@@ -119,6 +127,8 @@ export const CreatorListContextProvider = ({ children }) => {
         setVerificationFilter,
         creatorFacetFilters,
         setCreatorFacetFilters,
+        onlyFollowing,
+        setOnlyFollowing,
         loading,
         setLoading,
         initialLoading,

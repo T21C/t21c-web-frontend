@@ -14,10 +14,12 @@ import { normalizeLanguage } from '@/translations/config';
 import {
   availableSliceCodes,
   displayFieldsForLocale,
+  displayGroupName,
   linkDisplayHost,
   languageFlagSrc,
   languageLabel,
   linkHasLocale,
+  localesOnGroup,
   localesOnLink,
   pickInitialSliceLanguage,
 } from '@/utils/usefulLinkLocales';
@@ -39,10 +41,23 @@ function linkSearchHaystack(link, languageCode) {
   return parts.map((value) => String(value || '').toLowerCase()).join('\n');
 }
 
-function linkMatchesQuery(link, languageCode, query) {
+function groupNameHaystack(group) {
+  const parts = [group?.name];
+  for (const row of group?.locales || []) {
+    parts.push(row.name);
+  }
+  return parts.map((value) => String(value || '').toLowerCase()).join('\n');
+}
+
+function linkMatchesQuery(link, languageCode, query, groupsById) {
   const q = query.trim().toLowerCase();
   if (!q) return true;
-  return linkSearchHaystack(link, languageCode).includes(q);
+  if (linkSearchHaystack(link, languageCode).includes(q)) return true;
+  for (const groupId of link?.groupIds || []) {
+    const group = groupsById?.get(groupId);
+    if (group && groupNameHaystack(group).includes(q)) return true;
+  }
+  return false;
 }
 
 const ResourcesPage = () => {
@@ -70,6 +85,7 @@ const ResourcesPage = () => {
   const [query, setQuery] = useState('');
   const [languageMap, setLanguageMap] = useState({});
   const [selectedLanguage, setSelectedLanguage] = useState(null);
+  const [languageTouched, setLanguageTouched] = useState(false);
 
   useEffect(() => {
     api.get(routes.utils.languages()).then(({ data }) => {
@@ -103,21 +119,31 @@ const ResourcesPage = () => {
     };
   }, []);
 
-  const availableCodes = useMemo(
-    () => availableSliceCodes(links, localesOnLink),
-    [links],
-  );
+  const availableCodes = useMemo(() => {
+    const codes = new Set([
+      ...availableSliceCodes(links, localesOnLink),
+      ...availableSliceCodes(groups, localesOnGroup),
+    ]);
+    return [...codes];
+  }, [links, groups]);
+
+  const siteLanguage = normalizeLanguage(i18n.resolvedLanguage || i18n.language);
 
   useEffect(() => {
-    if (loading) return;
-    const site = normalizeLanguage(i18n.resolvedLanguage || i18n.language);
-    const next = pickInitialSliceLanguage(availableCodes, site);
-    setSelectedLanguage((current) =>
-      current && availableCodes.includes(current) ? current : next,
-    );
-  }, [availableCodes, i18n.language, i18n.resolvedLanguage, loading]);
+    setLanguageTouched(false);
+  }, [siteLanguage]);
 
-  const languageCode = selectedLanguage || pickInitialSliceLanguage(availableCodes);
+  useEffect(() => {
+    if (languageTouched) return;
+    if (loading) {
+      setSelectedLanguage(siteLanguage);
+      return;
+    }
+    setSelectedLanguage(pickInitialSliceLanguage(availableCodes, siteLanguage));
+  }, [availableCodes, siteLanguage, loading, languageTouched]);
+
+  const languageCode =
+    selectedLanguage || pickInitialSliceLanguage(availableCodes, siteLanguage);
   const searching = Boolean(query.trim());
   const linkById = useMemo(() => {
     const map = new Map();
@@ -125,12 +151,18 @@ const ResourcesPage = () => {
     return map;
   }, [links]);
 
+  const groupById = useMemo(() => {
+    const map = new Map();
+    for (const group of groups) map.set(group.id, group);
+    return map;
+  }, [groups]);
+
   const visibleLink = useCallback(
     (link) =>
       Boolean(link) &&
       linkHasLocale(link.locales, languageCode) &&
-      linkMatchesQuery(link, languageCode, query),
-    [languageCode, query],
+      linkMatchesQuery(link, languageCode, query, groupById),
+    [languageCode, query, groupById],
   );
 
   const groupedSections = useMemo(() => {
@@ -145,13 +177,13 @@ const ResourcesPage = () => {
     return groups
       .map((group) => ({
         id: group.id,
-        name: group.name,
+        name: displayGroupName(group, languageCode),
         links: (group.linkIds || [])
           .map((id) => linkById.get(id))
           .filter(visibleLink),
       }))
       .filter((section) => section.links.length > 0 || !searching);
-  }, [groups, links, linkById, visibleLink, searching, t]);
+  }, [groups, links, linkById, visibleLink, searching, languageCode, t]);
 
   const visibleCount = groupedSections.reduce((sum, section) => sum + section.links.length, 0);
   const hasAnyLocaleLinks = links.some((link) => linkHasLocale(link.locales, languageCode));
@@ -212,7 +244,10 @@ const ResourcesPage = () => {
                 className={`resources-page__lang-btn${
                   languageCode === code ? ' resources-page__lang-btn--active' : ''
                 }`}
-                onClick={() => setSelectedLanguage(code)}
+                onClick={() => {
+                  setLanguageTouched(true);
+                  setSelectedLanguage(code);
+                }}
               >
                 <img src={languageFlagSrc(code, languageMap)} alt="" />
                 <span>{languageLabel(code, languageMap)}</span>

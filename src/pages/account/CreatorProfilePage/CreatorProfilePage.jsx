@@ -89,8 +89,8 @@ const CreatorProfilePage = () => {
   }, [creatorId, profileReloadKey]);
 
   // Pin the embedded level search to this creator. The hidden filter is
-  // applied silently on every fetch and behaves like an `creatorId:<id>`
-  // term tacked onto the user's query.
+  // applied silently on every fetch and behaves like an `creator:name`
+  // term tacked onto the user's query (charter/vfxer only).
   const { scrollRef: levelsScrollRef, scrollParent: levelsScrollParent } = useScrollParent();
 
   const embeddedHiddenFilters = useMemo(

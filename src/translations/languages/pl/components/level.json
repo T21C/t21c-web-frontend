@@ -65,7 +65,7 @@
         "operatorNot": { "title": "NOT (wyklucz)", "desc": "Dodaj prefiks \\!, aby wykluczyć wyniki zawierające daną frazę." },
         "song": { "title": "Nazwa utworu", "desc": "Filtruj po nazwie utworu (wspiera aliasy)." },
         "artist": { "title": "Nazwa artysty", "desc": "Filtruj po nazwie artysty (wspiera aliasy i kredyty)." },
-        "creator": { "title": "Twórca (dowolna rola)", "desc": "Szukaj twórców we wszystkich rolach (charter, vfx itd.)." },
+        "creator": { "title": "Twórca (charter lub VFXer)", "desc": "Szukaj charterów i VFXerów. Specjalne podziękowania nie są uwzględniane." },
         "charter": { "title": "Charter", "desc": "Filtruj po nazwie charter-a." },
         "vfxer": { "title": "VFXer", "desc": "Filtruj po nazwie VFXer-a." },
         "team": { "title": "Team", "desc": "Filtruj po nazwie teamu (wspiera aliasy)." },

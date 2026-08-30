@@ -96,6 +96,7 @@
     "preview": "Preview",
     "saved": "Mod saved",
     "saveError": "Could not save mod",
-    "save": "Save changes"
+    "save": "Save changes",
+    "viewPublic": "View public page"
   }
 }

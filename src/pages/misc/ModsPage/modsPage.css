@@ -154,28 +154,49 @@
   padding-bottom: 0.65rem;
 }
 
-.mods-page__card {
+.mods-page .mods-page__card {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 0.75rem;
-  align-items: flex-start;
-  padding: 0.9rem 1rem;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  padding: 1rem;
   border-radius: 0.6rem;
   background: var(--color-white-t10);
   border: 1px solid var(--color-white-t20);
   color: var(--text-color);
+  box-sizing: border-box;
 }
 
-.mods-page__card-thumb {
+.mods-page .mods-page__card.is-pinned {
+  border-color: var(--color-purple-1);
+}
+
+.mods-page .mods-page__card-head {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.mods-page .mods-page__card-thumb {
   width: 3.5rem;
   height: 3.5rem;
+  aspect-ratio: 1 / 1;
   object-fit: cover;
   border-radius: 0.4rem;
   flex-shrink: 0;
+  align-self: flex-start;
   background: var(--color-white-t10);
 }
 
-.mods-page__card-copy {
+.mods-page .mods-page__card-head .mods-page__card-title-row {
+  flex: 1;
+  min-width: 0;
+}
+
+.mods-page .mods-page__card-copy {
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
@@ -183,15 +204,23 @@
   min-width: 0;
 }
 
-.mods-page__card-title-row {
+.mods-page .mods-page__card-title-row {
   display: flex;
   flex-wrap: wrap;
   gap: 0.45rem;
   align-items: center;
 }
 
-.mods-page__card-title {
-  font-size: 1.5rem;
+.mods-page .mods-page__card-title {
+  color: var(--color-white);
+  text-decoration: none;
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.mods-page .mods-page__card-title:hover {
+  color: var(--color-purple-1);
 }
 
 .mods-page__version,
@@ -299,12 +328,60 @@
   color: var(--color-white-t70);
 }
 
-.mods-page__card-meta {
+.mods-page .mods-page__card-meta {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
   color: var(--color-gray-2);
   font-size: 0.85rem;
+}
+
+.mods-page .mods-page__card-meta-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  color: var(--color-white-t70);
+  font-size: 0.85rem;
+}
+
+.mods-page .mods-page__meta-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.mods-page .mods-page__meta-row .mods-page__people-row {
+  min-width: 0;
+}
+
+.mods-page .mods-page__meta-row svg,
+.mods-page .mods-page__meta-hash {
+  flex-shrink: 0;
+}
+
+.mods-page .mods-page__meta-hash {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  font-weight: 700;
+  color: var(--color-white-t70);
+}
+
+.mods-page .mods-page__card-extras {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.mods-page .mods-page__card-extras-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  color: var(--color-white-t70);
+  font-size: 0.8rem;
 }
 
 .mods-page__people {
@@ -332,8 +409,39 @@
 .mods-page .mods-page__card-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.45rem;
-  margin-left: auto;
+  gap: 0.5rem;
+  align-items: stretch;
+  margin-top: auto;
+  width: 100%;
+}
+
+.mods-page .mods-page__card-download {
+  flex: 1 1 auto;
+}
+
+.mods-page .mods-page__card-details {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  flex: 0 0 auto;
+  padding: 0.45rem 0.85rem;
+  border-radius: 0.4rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.2;
+  text-decoration: none;
+  color: var(--color-white);
+  background: var(--color-white-t20);
+  border: none;
+  cursor: pointer;
+}
+
+.mods-page .mods-page__card-details:hover,
+.mods-page .mods-page__card-details:focus-visible {
+  background: var(--color-white-t30);
+  color: var(--color-white);
+  outline: none;
 }
 
 .mods-page__download {
@@ -512,6 +620,8 @@
 .mods-page .form-group input[type="text"],
 .mods-page .form-group input[type="url"],
 .mods-page .form-group input[type="datetime-local"],
+.mods-page .form-group input[type="color"],
+.mods-page .form-group select,
 .mods-page .form-group textarea {
   width: 100%;
   padding: 0.5rem;
@@ -520,6 +630,13 @@
   background-color: var(--color-white-t10);
   color: var(--color-white);
   font-size: 1rem;
+}
+
+.mods-page .form-group input[type="color"] {
+  width: 3rem;
+  height: 2.25rem;
+  padding: 0.15rem;
+  cursor: pointer;
 }
 
 .mods-page .form-group textarea {
@@ -564,6 +681,14 @@
 .mods-page__assign-empty {
   color: var(--color-white-t70);
   font-size: 0.875rem;
+}
+
+.mods-page .mods-page__assign-empty a {
+  color: var(--color-white);
+}
+
+.mods-page .mods-page__assign-empty a:hover {
+  color: var(--color-purple-1);
 }
 
 .mods-page__assignee-chips {
@@ -667,6 +792,198 @@
 
 .mods-page .delete-confirm-button:hover {
   background-color: var(--danger-color-tint-30);
+}
+
+.mods-page .mods-page__card-excerpt {
+  margin: 0;
+  color: var(--color-white-t80);
+  font-size: 0.875rem;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.mods-page .mods-page__pin-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.12rem 0.4rem;
+  border-radius: 999px;
+  color: var(--color-white);
+  background: var(--color-purple-1);
+}
+
+.mods-page .mods-page__tags,
+.mods-page .mods-page__version-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.mods-page .mods-page__tag,
+.mods-page .mods-page__tag-toggle {
+  font-size: 0.75rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-white-t20);
+  background: transparent;
+  cursor: default;
+}
+
+.mods-page .mods-page__tag-toggle {
+  cursor: pointer;
+}
+
+.mods-page .mods-page__tag-toggle:hover,
+.mods-page .mods-page__tag-toggle.is-selected {
+  background: var(--color-white-t10);
+}
+
+.mods-page .mods-page__like {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem 0.6rem;
+  border: none;
+  background: transparent;
+  color: var(--color-white-t80);
+  cursor: pointer;
+}
+
+.mods-page .mods-page__like:hover {
+  color: var(--color-white);
+}
+
+.mods-page .mods-page__like.is-liked {
+  color: var(--btn-danger);
+}
+
+.mods-page .mods-page__version-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin: 0 0 1rem;
+}
+
+.mods-page .mods-page__version-list {
+  list-style: none;
+  padding: 0;
+}
+
+.mods-page .mods-page__version-list li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mods-page .mods-page__version-form input,
+.mods-page .mods-page__version-form textarea,
+.mods-page .mods-page__assign select {
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--color-white-t20);
+  border-radius: 4px;
+  background: var(--color-white-t10);
+  color: var(--color-white);
+}
+
+.mods-page .mod-detail-page__header,
+.mods-page .mod-detail-page__readme,
+.mods-page .mod-detail-page__releases {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-start;
+  margin: 0 0 1.5rem;
+}
+
+.mods-page .mod-detail-page__readme,
+.mods-page .mod-detail-page__releases {
+  flex-direction: column;
+}
+
+.mods-page .mod-detail-page__heading {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.mods-page .mod-detail-page__heading h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.mods-page .mod-detail-page__icon {
+  width: 4.5rem;
+  height: 4.5rem;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  flex-shrink: 0;
+}
+
+.mods-page .mod-detail-page__icon--fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  background: var(--btn-neutral);
+  color: var(--color-white);
+}
+
+.mods-page .mod-detail-page__actions,
+.mods-page .mod-detail-page__release-actions,
+.mods-page .mod-detail-page__release-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.mods-page .mod-detail-page__release-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.mods-page .mod-detail-page__release {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--color-white-t20);
+  border-radius: 0.5rem;
+  background: var(--color-white-t10);
+}
+
+.mods-page .mod-detail-page__release.is-selected {
+  border-color: var(--color-purple-1);
+}
+
+.mods-page .mod-detail-page__release-name {
+  color: var(--color-white);
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.mods-page .mod-detail-page__release-name:hover {
+  color: var(--color-purple-1);
+}
+
+.mods-page .mod-detail-page__readme h2,
+.mods-page .mod-detail-page__releases h2 {
+  margin: 0;
+  font-size: 1.15rem;
 }
 
 @media (max-width: 700px) {

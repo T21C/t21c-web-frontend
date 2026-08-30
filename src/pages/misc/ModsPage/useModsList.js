@@ -9,7 +9,7 @@ function applyList(data) {
   return Array.isArray(data?.mods) ? data.mods : [];
 }
 
-export function useModsList({ path, enabled = true }) {
+export function useModsList({ path, enabled = true, withLikeState = false, facetQuery = undefined }) {
   const runSearch = useDebouncedRequest(300);
   const [mods, setMods] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,11 +23,15 @@ export function useModsList({ path, enabled = true }) {
   const modsRef = useRef(mods);
   const queryRef = useRef(query);
   const sortRef = useRef(sort);
+  const facetRef = useRef(facetQuery);
+  const likeRef = useRef(withLikeState);
   const hasMoreRef = useRef(false);
   const loadingMoreRef = useRef(false);
   modsRef.current = mods;
   queryRef.current = query;
   sortRef.current = sort;
+  facetRef.current = facetQuery;
+  likeRef.current = withLikeState;
 
   const fetchPage = useCallback(
     async ({ reset = false, immediate = false } = {}) => {
@@ -50,6 +54,8 @@ export function useModsList({ path, enabled = true }) {
         sort: sortRef.current,
       };
       if (q) params.q = q;
+      if (facetRef.current) params.facetQuery = facetRef.current;
+      if (likeRef.current) params.withLikeState = true;
       const runner = reset && q && !immediate ? runSearch : runSearch.flush;
 
       try {
@@ -90,7 +96,7 @@ export function useModsList({ path, enabled = true }) {
   useEffect(() => {
     if (!enabled) return;
     void fetchPage({ reset: true });
-  }, [enabled, query, sort, fetchPage]);
+  }, [enabled, query, sort, facetQuery, withLikeState, fetchPage]);
 
   const loadMore = useCallback(() => {
     void fetchPage({ reset: false, immediate: true });

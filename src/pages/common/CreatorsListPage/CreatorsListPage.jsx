@@ -6,7 +6,7 @@ import "@/pages/common/sort.css";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import axios from "axios";
 import { CreatorCard } from "@/components/cards";
-import { CustomSelect, FacetQueryBuilder } from "@/components/common/selectors";
+import { CustomSelect, FacetQueryBuilder, StateDisplay } from "@/components/common/selectors";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { buildFacetQueryParam, facetDomainHasFilter } from "@/utils/facetQueryCodec";
 import { Tooltip } from "react-tooltip";
@@ -18,7 +18,9 @@ import {
 } from '@/utils/creatorLeaderboardSort';
 import { useDebouncedRequest } from '@/hooks/useDebouncedRequest';
 import { CreatorListContext } from "@/contexts/CreatorListContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
+import toast from 'react-hot-toast';
 import { ScrollButton } from "@/components/common/buttons";
 import { MetaTags } from "@/components/common/display";
 import { buildStaticPageMeta } from '@/utils/meta';
@@ -38,6 +40,7 @@ const CREATOR_VERIFICATION_STATUSES = ['declined', 'pending', 'conditional', 'al
 
 const CreatorsListPage = () => {
   const { t } = useTranslation('pages');
+  const { user } = useAuth();
   const location = useLocation();
   const pageMeta = useMemo(
     () =>
@@ -78,6 +81,8 @@ const CreatorsListPage = () => {
     setVerificationFilter,
     creatorFacetFilters,
     setCreatorFacetFilters,
+    onlyFollowing,
+    setOnlyFollowing,
     forceUpdate,
     setForceUpdate,
   } = useContext(CreatorListContext);
@@ -157,6 +162,9 @@ const CreatorsListPage = () => {
     if (facetQuery) {
       params.set('facetQuery', facetQuery);
     }
+    if (user && onlyFollowing) {
+      params.set('following', 'true');
+    }
     const endpoint = `${routes.creatorsV3.leaderboard()}?${params.toString()}`;
     try {
       const response = await runner(({ signal }) => api.get(endpoint, { signal }));
@@ -196,7 +204,7 @@ const CreatorsListPage = () => {
         Array.isArray(displayedCreators) &&
         displayedCreators.length > 0 &&
         creatorListTotal != null;
-      if (hasCached) {
+      if (hasCached && !(onlyFollowing && !user)) {
         setHasMore(displayedCreators.length < creatorListTotal);
         return;
       }
@@ -204,7 +212,7 @@ const CreatorsListPage = () => {
     setCreatorListTotal(null);
     setCreatorData(null);
     fetchCreators(0);
-  }, [forceUpdate, query, sort, sortBy, verificationFilter, creatorFacetFilters]);
+  }, [forceUpdate, query, sort, sortBy, verificationFilter, creatorFacetFilters, onlyFollowing, user]);
 
   const handleQueryChange = (e) => {
     setQuery(normalizeCreatorSearchQuery(e.target.value));
@@ -218,6 +226,7 @@ const CreatorsListPage = () => {
     setQuery('');
     setVerificationFilter('');
     setCreatorFacetFilters({ curationTypes: null, combine: 'and' });
+    setOnlyFollowing(false);
     setForceUpdate(prev => !prev);
   };
 
@@ -276,7 +285,7 @@ const CreatorsListPage = () => {
               color="#ffffff"
               onClick={() => setFilterOpen(!filterOpen)}
               data-tooltip-id="creator-filter"
-              className={`action-button ${filterOpen || verificationFilter || hasCurationFacetFilter ? 'active' : ''}`}
+              className={`action-button ${filterOpen || verificationFilter || hasCurationFacetFilter || onlyFollowing ? 'active' : ''}`}
             />
             <SortIcon
               data-tooltip-id="creator-sort"
@@ -308,6 +317,23 @@ const CreatorsListPage = () => {
             </h2>
             <div className="filter-section">
               <div className="filter-row">
+                <StateDisplay
+                  label={t('creators.settings.filter.following')}
+                  currentState={onlyFollowing ? 'on' : 'off'}
+                  onChange={(state) => {
+                    if (state === 'on' && !user) {
+                      toast.error(t('creators.settings.filter.followingLogin'));
+                      return;
+                    }
+                    setOnlyFollowing(state === 'on');
+                  }}
+                  states={['off', 'on']}
+                  activeStates={['on']}
+                  showValue={false}
+                  width={56}
+                  height={24}
+                  padding={3}
+                />
                 <CustomSelect
                   value={selectedVerificationOption}
                   onChange={(option) => {
@@ -420,7 +446,7 @@ const CreatorsListPage = () => {
           ) : (
             <div className="creators-list-page__empty">
               <p className="end-message">
-                <b>{t('creators.list.empty')}</b>
+                <b>{user && onlyFollowing ? t('creators.list.emptyFollowing') : t('creators.list.empty')}</b>
               </p>
             </div>
           )}

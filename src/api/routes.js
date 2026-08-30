@@ -96,6 +96,7 @@ export const routes = {
       list: () => '/v2/developers/mods',
       byId: (id) => `/v2/developers/mods/${enc(id)}`,
       icon: (id) => `/v2/developers/mods/${enc(id)}/icon`,
+      tags: (id) => `/v2/developers/mods/${enc(id)}/tags`,
     },
   },
 
@@ -251,6 +252,12 @@ export const routes = {
       icon: (id) => `/v2/admin/mods/${enc(id)}/icon`,
       assignees: (id) => `/v2/admin/mods/${enc(id)}/assignees`,
       assignee: (id, userId) => `/v2/admin/mods/${enc(id)}/assignees/${enc(userId)}`,
+      tags: () => '/v2/admin/mods/tags',
+      tag: (id) => `/v2/admin/mods/tags/${enc(id)}`,
+      modTags: (id) => `/v2/admin/mods/${enc(id)}/tags`,
+      versions: (id) => `/v2/admin/mods/${enc(id)}/versions`,
+      version: (id, versionId) => `/v2/admin/mods/${enc(id)}/versions/${enc(versionId)}`,
+      merge: (id) => `/v2/admin/mods/${enc(id)}/merge`,
     },
     usefulLinks: {
       root: () => '/v2/admin/useful-links',
@@ -263,6 +270,9 @@ export const routes = {
       locales: (id) => `/v2/admin/useful-links/${enc(id)}/locales`,
       locale: (id, languageCode) =>
         `/v2/admin/useful-links/${enc(id)}/locales/${enc(languageCode)}`,
+      groupLocales: (id) => `/v2/admin/useful-links/groups/${enc(id)}/locales`,
+      groupLocale: (id, languageCode) =>
+        `/v2/admin/useful-links/groups/${enc(id)}/locales/${enc(languageCode)}`,
     },
   },
 
@@ -596,6 +606,13 @@ export const routes = {
   },
   mods: {
     list: () => '/v2/mods',
+    tags: () => '/v2/mods/tags',
+    bySlug: (slug) => `/v2/mods/${enc(slug)}`,
+    bySlugVersion: (slug, version) => `/v2/mods/${enc(slug)}/${enc(version)}`,
+    download: (slug) => `/v2/mods/${enc(slug)}/download`,
+    downloadVersion: (slug, version) => `/v2/mods/${enc(slug)}/${enc(version)}/download`,
+    like: (slug) => `/v2/mods/${enc(slug)}/like`,
+    isLiked: (slug) => `/v2/mods/${enc(slug)}/isLiked`,
   },
   form: {
     pass: {

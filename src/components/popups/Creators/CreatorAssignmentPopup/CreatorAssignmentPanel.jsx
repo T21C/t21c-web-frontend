@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { CustomSelect } from '@/components/common/selectors';
 import { CreatorStatusBadge } from '@/components/common/display';
 import api from '@/utils/api';
+import { contributingCreditCount } from '@/utils/Utility';
 import { routes } from '@/api/routes';
 import { toast } from 'react-hot-toast';
 
@@ -232,7 +233,7 @@ export const CreatorAssignmentPanel = ({ user, onUserUpdate, showIntro = true })
                     ? []
                     : availableCreators.map((c) => ({
                         value: c.id,
-                        label: `${c.name} (ID: ${c.id}, Charts: ${c.credits?.length || 0})${
+                        label: `${c.name} (ID: ${c.id}, Charts: ${contributingCreditCount(c.credits)})${
                           c.creatorAliases?.length > 0
                             ? ` [${c.creatorAliases.map((a) => a.name).join(', ')}]`
                             : ''

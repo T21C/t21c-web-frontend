@@ -2,6 +2,8 @@
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 
 export const NAV_DROP_DURATION_MS = 280;
+/** Grace period so a 1px gap between trigger and panel does not start closing. */
+export const NAV_HOVER_CLOSE_DELAY_MS = 200;
 
 let navMenuZ = 1;
 
@@ -39,8 +41,16 @@ export function useNavHoverMenu({
   const [isPinned, setIsPinned] = useState(false);
   const phaseRef = useRef(phase);
   const pinnedRef = useRef(false);
+  const closeTimerRef = useRef(null);
 
   phaseRef.current = phase;
+
+  const clearCloseTimer = useCallback(() => {
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+  }, []);
 
   const unpin = useCallback(() => {
     pinnedRef.current = false;
@@ -64,18 +74,21 @@ export function useNavHoverMenu({
 
   const close = useCallback(() => {
     if (pinnedRef.current) return;
+    clearCloseTimer();
     beginClose();
-  }, [beginClose]);
+  }, [beginClose, clearCloseTimer]);
 
   const closeNow = useCallback(() => {
+    clearCloseTimer();
     unpin();
     setPhase("closed");
-  }, [unpin]);
+  }, [clearCloseTimer, unpin]);
 
   const dismiss = useCallback(() => {
+    clearCloseTimer();
     unpin();
     beginClose();
-  }, [beginClose, unpin]);
+  }, [beginClose, clearCloseTimer, unpin]);
 
   const pin = useCallback(() => {
     if (!enabled) return;
@@ -86,14 +99,21 @@ export function useNavHoverMenu({
 
   const scheduleOpen = useCallback(() => {
     if (!enabled) return;
+    clearCloseTimer();
     if (phaseRef.current === "open") return;
     open();
-  }, [enabled, open]);
+  }, [clearCloseTimer, enabled, open]);
 
   const scheduleClose = useCallback(() => {
     if (!enabled) return;
-    close();
-  }, [close, enabled]);
+    if (pinnedRef.current) return;
+    if (phaseRef.current === "closed") return;
+    clearCloseTimer();
+    closeTimerRef.current = setTimeout(() => {
+      closeTimerRef.current = null;
+      close();
+    }, NAV_HOVER_CLOSE_DELAY_MS);
+  }, [clearCloseTimer, close, enabled]);
 
   const handleTriggerClick = useCallback(
     (event) => {
@@ -138,6 +158,8 @@ export function useNavHoverMenu({
     document.addEventListener("pointerdown", onPointerDown, true);
     return () => document.removeEventListener("pointerdown", onPointerDown, true);
   }, [dismiss, isPinned, rootRef]);
+
+  useEffect(() => () => clearCloseTimer(), [clearCloseTimer]);
 
   return {
     phase,

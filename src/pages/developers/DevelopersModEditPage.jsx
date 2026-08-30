@@ -10,46 +10,20 @@ import { getCdnErrorMessage } from '@/utils/uploadErrors';
 import ImageSelectorPopup from '@/components/common/selectors/ImageSelectorPopup/ImageSelectorPopup';
 import ModsMarkdown from '@/pages/misc/ModsPage/ModsMarkdown';
 
-function pad(value) {
-  return String(value).padStart(2, '0');
-}
-
-function toDatetimeLocalValue(iso) {
-  if (!iso) return '';
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return '';
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
-}
-
-function fromDatetimeLocalValue(value) {
-  if (!value) return undefined;
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return undefined;
-  return date.toISOString();
-}
-
 function formFromMod(mod) {
   return {
     name: mod?.name || '',
-    version: mod?.version || '',
     description: mod?.description || '',
-    downloadUrl: mod?.downloadUrl || '',
     projectUrl: mod?.projectUrl || '',
-    sourceUploadedAt: toDatetimeLocalValue(mod?.sourceUploadedAt),
   };
 }
 
 function toPayload(form) {
-  const payload = {
+  return {
     name: form.name,
-    version: form.version,
     description: form.description,
-    downloadUrl: form.downloadUrl,
     projectUrl: form.projectUrl || null,
   };
-  const uploaded = fromDatetimeLocalValue(form.sourceUploadedAt);
-  if (uploaded) payload.sourceUploadedAt = uploaded;
-  return payload;
 }
 
 const DevelopersModEditPage = () => {
@@ -60,6 +34,9 @@ const DevelopersModEditPage = () => {
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState(null);
   const [iconUrl, setIconUrl] = useState(null);
+  const [slug, setSlug] = useState('');
+  const [tagItems, setTagItems] = useState([]);
+  const [selectedTagIds, setSelectedTagIds] = useState([]);
   const [iconPickerOpen, setIconPickerOpen] = useState(false);
   const [uploadingIcon, setUploadingIcon] = useState(false);
 
@@ -78,6 +55,8 @@ const DevelopersModEditPage = () => {
       }
       setForm(formFromMod(next));
       setIconUrl(next.imageUrl || null);
+      setSlug(next.slug || '');
+      setSelectedTagIds((next.tags || []).map((tag) => tag.id));
     } catch (error) {
       toast.error(apiError(error, t('developers.mods.notFound')));
       navigate('/developers/mods');
@@ -90,13 +69,20 @@ const DevelopersModEditPage = () => {
     load();
   }, [load]);
 
+  useEffect(() => {
+    api
+      .get(routes.mods.tags())
+      .then((res) => setTagItems(Array.isArray(res.data?.tags) ? res.data.tags : []))
+      .catch(() => setTagItems([]));
+  }, []);
+
   const setField = (field) => (event) => {
     setForm((prev) => ({ ...prev, [field]: event.target.value }));
   };
 
   const submit = async (event) => {
     event.preventDefault();
-    if (!form?.name.trim() || !form?.downloadUrl.trim() || saving) return;
+    if (!form?.name.trim() || saving) return;
     setSaving(true);
     try {
       await api.patch(routes.developers.mods.byId(id), toPayload(form));
@@ -200,34 +186,8 @@ const DevelopersModEditPage = () => {
             />
           </label>
           <label className="developers-portal__field">
-            {t('mods.fields.version')}
-            <input
-              type="text"
-              value={form.version}
-              onChange={setField('version')}
-              maxLength={64}
-            />
-          </label>
-          <label className="developers-portal__field">
-            {t('mods.fields.downloadUrl')}
-            <input
-              type="url"
-              value={form.downloadUrl}
-              onChange={setField('downloadUrl')}
-              required
-            />
-          </label>
-          <label className="developers-portal__field">
             {t('mods.fields.projectUrl')}
             <input type="url" value={form.projectUrl} onChange={setField('projectUrl')} />
-          </label>
-          <label className="developers-portal__field">
-            {t('mods.fields.sourceUploadedAt')}
-            <input
-              type="datetime-local"
-              value={form.sourceUploadedAt}
-              onChange={setField('sourceUploadedAt')}
-            />
           </label>
           <label className="developers-portal__field">
             {t('mods.fields.description')}
@@ -238,11 +198,49 @@ const DevelopersModEditPage = () => {
               maxLength={16384}
             />
           </label>
+          {tagItems.length ? (
+            <div className="developers-portal__field">
+              <span>{t('mods.tags.title')}</span>
+              <div className="mods-page__assignee-chips">
+                {tagItems.map((tag) => {
+                  const selected = selectedTagIds.includes(tag.id);
+                  return (
+                    <button
+                      key={tag.id}
+                      type="button"
+                      className={`mods-page__tag-toggle ${selected ? 'is-selected' : ''}`.trim()}
+                      style={{ borderColor: tag.color, color: tag.color }}
+                      onClick={async () => {
+                        const nextIds = selected
+                          ? selectedTagIds.filter((item) => item !== tag.id)
+                          : [...selectedTagIds, tag.id];
+                        try {
+                          const { data } = await api.put(routes.developers.mods.tags(id), {
+                            tagIds: nextIds,
+                          });
+                          setSelectedTagIds((data?.mod?.tags || []).map((item) => item.id));
+                        } catch (error) {
+                          toast.error(apiError(error, t('mods.tags.assignFailed')));
+                        }
+                      }}
+                    >
+                      {tag.name}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ) : null}
+          {slug ? (
+            <Link to={`/mods/${encodeURIComponent(slug)}`} className="developers-portal__back">
+              {t('developers.mods.viewPublic')}
+            </Link>
+          ) : null}
           <div className="developers-portal__actions">
             <button
               type="submit"
               className="developers-portal__btn developers-portal__btn--primary"
-              disabled={!form.name.trim() || !form.downloadUrl.trim() || saving}
+              disabled={!form.name.trim() || saving}
             >
               {saving ? t('developers.saving') : t('developers.mods.save')}
             </button>

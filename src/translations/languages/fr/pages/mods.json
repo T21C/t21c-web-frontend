@@ -2,7 +2,8 @@
   "meta": {
     "title": "Mods",
     "description": "Mods ADOFAI curatés par l'équipe, recherchables par nom et créateur.",
-    "editTitle": "Modifier les mods"
+    "editTitle": "Modifier les mods",
+    "tagsTitle": "Tags de mods"
   },
   "title": "Mods",
   "subtitle": "Catalogue curaté de mods ADOFAI. Recherchez par nom ou créateur Discord.",
@@ -25,15 +26,83 @@
   },
   "backToMods": "Retour aux mods",
   "download": "Télécharger",
+  "details": "Détails",
   "project": "Projet",
+  "pinned": "Épinglé",
+  "readme": "À propos",
+  "downloadsCount": "{{count}} téléchargements",
   "hiddenBadge": "Masqué",
   "createButton": "Créer un mod",
   "noMods": "Aucun mod. Créez le premier.",
   "errors": {
-    "loadFailed": "Impossible de charger les mods. Réessayez plus tard."
+    "loadFailed": "Impossible de charger les mods. Réessayez plus tard.",
+    "notFound": "Ce mod est introuvable."
+  },
+  "like": {
+    "label": "J'aime",
+    "loginRequired": "Connectez-vous pour aimer un mod",
+    "failed": "Impossible de mettre à jour le j'aime"
+  },
+  "copy": {
+    "latest": "Copier le lien latest",
+    "permalink": "Copier le permalien",
+    "copied": "Lien copié",
+    "failed": "Impossible de copier le lien"
+  },
+  "releases": {
+    "title": "Versions",
+    "empty": "Aucune version.",
+    "latest": "Dernière",
+    "add": "Ajouter une version",
+    "created": "Version ajoutée",
+    "createFailed": "Échec de l'ajout de la version",
+    "deleteFailed": "Échec de la suppression de la version"
+  },
+  "tags": {
+    "title": "Tags",
+    "filter": "Tags",
+    "pageTitle": "Tags de mods",
+    "pageSubtitle": "Créer et modifier les tags du catalogue de mods.",
+    "manage": "Gérer les tags",
+    "backToEdit": "Retour à l'édition des mods",
+    "empty": "Aucun tag.",
+    "created": "Tag créé",
+    "createFailed": "Échec de la création du tag",
+    "updated": "Tag mis à jour",
+    "updateFailed": "Échec de la mise à jour du tag",
+    "deleted": "Tag supprimé",
+    "deleteFailed": "Échec de la suppression du tag",
+    "assignFailed": "Échec de la mise à jour des tags",
+    "loadFailed": "Impossible de charger les tags.",
+    "createButton": "Créer un tag",
+    "create": {
+      "title": "Créer un tag",
+      "name": "Nom",
+      "color": "Couleur",
+      "createButton": "Créer"
+    },
+    "edit": {
+      "title": "Modifier le tag",
+      "updateButton": "Mettre à jour"
+    },
+    "delete": {
+      "title": "Supprimer le tag",
+      "message": "Voulez-vous vraiment supprimer le tag « {{name}} » ?",
+      "description": "Les mods utilisant ce tag n'y seront plus associés.",
+      "deleteButton": "Supprimer"
+    }
+  },
+  "merge": {
+    "title": "Fusionner un autre mod dans celui-ci",
+    "placeholder": "Choisir un mod à fusionner",
+    "button": "Fusionner",
+    "confirm": "Fusionner le mod sélectionné dans « {{name}} » ? L'historique des versions sera combiné.",
+    "done": "Mods fusionnés",
+    "failed": "Échec de la fusion"
   },
   "fields": {
     "name": "Nom",
+    "slug": "Slug",
     "creatorUsername": "Nom d'utilisateur du créateur",
     "creatorDiscordId": "ID Discord du créateur",
     "version": "Version",
@@ -41,7 +110,10 @@
     "downloadUrl": "URL de téléchargement",
     "projectUrl": "Lien du projet",
     "sourceUploadedAt": "Mis en ligne",
-    "hidden": "Masquer du catalogue public"
+    "notes": "Notes de version",
+    "hidden": "Masquer du catalogue public",
+    "isPinned": "Épingler en haut du catalogue",
+    "color": "Couleur"
   },
   "create": {
     "title": "Créer un mod",

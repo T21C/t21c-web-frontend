@@ -138,9 +138,11 @@ export function NavDropdownPanel({
       const frame1 = requestAnimationFrame(() => {
         frame2 = requestAnimationFrame(() => setExpanded(true));
       });
+      const timeout = setTimeout(() => setExpanded(true), 32);
       return () => {
         cancelAnimationFrame(frame1);
         cancelAnimationFrame(frame2);
+        clearTimeout(timeout);
       };
     }
     if (phase === "closing") {

@@ -16,6 +16,7 @@ import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { getRateLimitMessage } from '@/utils/rateLimitError';
 import { linkDisplayHost } from '@/utils/usefulLinkLocales';
 import EditUsefulLinkPopup from '@/components/popups/Resources/EditUsefulLinkPopup';
+import EditUsefulLinkGroupPopup from '@/components/popups/Resources/EditUsefulLinkGroupPopup';
 import './resourcesPage.css';
 
 const UNGROUPED_ID = 'ungrouped';
@@ -267,14 +268,10 @@ const ResourcesEditPage = () => {
     setNewLink(EMPTY_LINK);
   };
 
-  const closeGroupModal = () => {
-    const dirty = editingGroup
-      ? editingGroup.name.trim() !==
-        (groups.find((group) => group.id === editingGroup.id)?.name || '').trim()
-      : Boolean(newGroupName.trim());
-    if (!confirmDiscardUnsaved(t, dirty)) return;
+  const closeCreateGroup = () => {
+    if (!confirmDiscardUnsaved(t, Boolean(newGroupName.trim()))) return;
     setIsCreatingGroup(false);
-    setEditingGroup(null);
+    setNewGroupName('');
   };
 
   const renderLinkRow = (link, index, droppableKey) => (
@@ -675,39 +672,25 @@ const ResourcesEditPage = () => {
           </div>
       ) : null}
 
-      {isCreatingGroup || editingGroup ? (
+      {isCreatingGroup ? (
           <div
             className="difficulty-modal"
-            onClick={closeGroupModal}
+            onClick={closeCreateGroup}
           >
             <div className="difficulty-modal-content" onClick={(event) => event.stopPropagation()}>
-              <h2>
-                {editingGroup ? t('resources.groups.edit.title') : t('resources.groups.create.title')}
-              </h2>
+              <h2>{t('resources.groups.create.title')}</h2>
               <form
                 onSubmit={async (event) => {
                   event.preventDefault();
-                  const name = editingGroup ? editingGroup.name : newGroupName;
                   try {
-                    if (editingGroup) {
-                      await api.put(routes.admin.usefulLinks.groupById(editingGroup.id), { name });
-                      toast.success(t('resources.groups.notifications.updated'));
-                      setEditingGroup(null);
-                    } else {
-                      await api.post(routes.admin.usefulLinks.groups(), { name });
-                      toast.success(t('resources.groups.notifications.created'));
-                      setIsCreatingGroup(false);
-                      setNewGroupName('');
-                    }
+                    await api.post(routes.admin.usefulLinks.groups(), { name: newGroupName });
+                    toast.success(t('resources.groups.notifications.created'));
+                    setIsCreatingGroup(false);
+                    setNewGroupName('');
                     await loadData();
                   } catch (error) {
                     toast.error(
-                      apiError(
-                        error,
-                        editingGroup
-                          ? t('resources.groups.notifications.updateFailed')
-                          : t('resources.groups.notifications.createFailed'),
-                      ),
+                      apiError(error, t('resources.groups.notifications.createFailed')),
                     );
                   }
                 }}
@@ -716,12 +699,8 @@ const ResourcesEditPage = () => {
                   <label>{t('resources.groups.create.name')}</label>
                   <input
                     type="text"
-                    value={editingGroup ? editingGroup.name : newGroupName}
-                    onChange={(event) =>
-                      editingGroup
-                        ? setEditingGroup({ ...editingGroup, name: event.target.value })
-                        : setNewGroupName(event.target.value)
-                    }
+                    value={newGroupName}
+                    onChange={(event) => setNewGroupName(event.target.value)}
                     maxLength={64}
                     required
                   />
@@ -730,29 +709,71 @@ const ResourcesEditPage = () => {
                   <button
                     type="button"
                     className="cancel-button"
-                    onClick={closeGroupModal}
+                    onClick={closeCreateGroup}
                   >
                     {t('buttons.cancel', { ns: 'common' })}
                   </button>
                   <button
                     type="submit"
                     className="confirm-button"
-                    disabled={
-                      editingGroup
-                        ? !editingGroup.name.trim() ||
-                          editingGroup.name.trim() ===
-                            (groups.find((group) => group.id === editingGroup.id)?.name || '').trim()
-                        : !newGroupName.trim()
-                    }
+                    disabled={!newGroupName.trim()}
                   >
-                    {editingGroup
-                      ? t('resources.groups.edit.updateButton')
-                      : t('resources.groups.create.createButton')}
+                    {t('resources.groups.create.createButton')}
                   </button>
                 </div>
               </form>
             </div>
           </div>
+      ) : null}
+
+      {editingGroup ? (
+        <EditUsefulLinkGroupPopup
+          title={t('resources.groups.edit.title')}
+          group={editingGroup}
+          languageMap={languageMap}
+          onClose={() => setEditingGroup(null)}
+          onSave={async ({ languageCode, name }) => {
+            try {
+              const { data } = await api.put(
+                routes.admin.usefulLinks.groupLocales(editingGroup.id),
+                { languageCode, name },
+              );
+              setEditingGroup(data);
+              toast.success(t('resources.groups.notifications.updated'));
+              await loadData();
+            } catch (error) {
+              toast.error(apiError(error, t('resources.groups.notifications.updateFailed')));
+              throw error;
+            }
+          }}
+          onAddLocale={async (payload) => {
+            try {
+              const { data } = await api.put(
+                routes.admin.usefulLinks.groupLocales(editingGroup.id),
+                payload,
+              );
+              setEditingGroup(data);
+              toast.success(t('resources.links.notifications.localeSaved'));
+              await loadData();
+            } catch (error) {
+              toast.error(apiError(error, t('resources.links.notifications.localeSaveFailed')));
+              throw error;
+            }
+          }}
+          onRemoveLocale={async (code) => {
+            try {
+              const { data } = await api.delete(
+                routes.admin.usefulLinks.groupLocale(editingGroup.id, code),
+              );
+              setEditingGroup(data);
+              toast.success(t('resources.links.notifications.localeRemoved'));
+              await loadData();
+            } catch (error) {
+              toast.error(apiError(error, t('resources.links.notifications.localeRemoveFailed')));
+              throw error;
+            }
+          }}
+        />
       ) : null}
 
       {deletingGroup ? (

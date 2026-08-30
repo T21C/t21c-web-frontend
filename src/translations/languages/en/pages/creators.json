@@ -19,7 +19,9 @@
   },
   "settings": {
     "filter": {
-      "header": "Filters"
+      "header": "Filters",
+      "following": "Following",
+      "followingLogin": "Log in to filter by who you follow"
     },
     "sort": {
       "header": "Sort Settings",
@@ -47,7 +49,8 @@
     "end": "You've reached the end!"
   },
   "list": {
-    "empty": "No creators found."
+    "empty": "No creators found.",
+    "emptyFollowing": "You're not following anyone yet."
   },
   "card": {
     "verified": "Verified",

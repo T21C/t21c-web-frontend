@@ -37,6 +37,10 @@
   flex-wrap: wrap;
 }
 
+.creators-list-page .filter-row .state-display-toggle {
+  align-self: flex-end;
+}
+
 .creators-list-page .creators-list-page__curation-facet-row {
   width: 100%;
   align-items: stretch;

@@ -19,7 +19,9 @@
   },
   "settings": {
     "filter": {
-      "header": "필터"
+      "header": "필터",
+      "following": "팔로잉",
+      "followingLogin": "팔로우한 사람만 보려면 로그인하세요"
     },
     "sort": {
       "header": "정렬 설정",
@@ -47,7 +49,8 @@
     "end": "제일 아래에 도달했어요!"
   },
   "list": {
-    "empty": "제작자 발견되지 않음"
+    "empty": "제작자 발견되지 않음",
+    "emptyFollowing": "아직 팔로우한 사람이 없습니다."
   },
   "card": {
     "verified": "인증됨",

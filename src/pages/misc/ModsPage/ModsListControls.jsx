@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { CustomSelect } from '@/components/common/selectors';
 import { DEFAULT_MOD_SORT, MOD_SORT_OPTIONS } from './modListSort';
 
-const ModsListControls = ({ query, onQueryChange, sort, onSortChange, t }) => {
+const ModsListControls = ({ query, onQueryChange, sort, onSortChange, t, children }) => {
   const sortOptions = useMemo(
     () =>
       MOD_SORT_OPTIONS.map((option) => ({
@@ -32,6 +32,7 @@ const ModsListControls = ({ query, onQueryChange, sort, onSortChange, t }) => {
         width="13rem"
         isSearchable={false}
       />
+      {children}
     </div>
   );
 };

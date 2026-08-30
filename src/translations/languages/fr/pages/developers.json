@@ -96,6 +96,7 @@
     "preview": "Aperçu",
     "saved": "Mod enregistré",
     "saveError": "Échec de l'enregistrement",
-    "save": "Enregistrer"
+    "save": "Enregistrer",
+    "viewPublic": "Voir la page publique"
   }
 }
