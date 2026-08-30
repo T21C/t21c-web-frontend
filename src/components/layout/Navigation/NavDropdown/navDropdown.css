@@ -17,7 +17,7 @@
 .nav-right > .nav-dropdown .nav-language-selector__button,
 .nav-right > .nav-dropdown .nav-dropdown-panel,
 .nav-right > .nav-dropdown:has(.nav-dropdown-panel)::before,
-.nav-right > .nav-dropdown:has(.nav-dropdown-panel)::after {
+.nav-right > .nav-dropdown .nav-dropdown-seam {
   pointer-events: auto;
 }
 
@@ -29,23 +29,6 @@
   top: 0;
   bottom: -12px;
   z-index: 1;
-}
-
-/* Panel-width seam under the navbar so moving onto the menu (or back)
-   does not fall through clip-path holes into page content. */
-.nav-dropdown:has(.nav-dropdown-panel)::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  width: 16rem;
-  top: calc(100% - 8px);
-  height: 2.75rem;
-  z-index: 1;
-}
-
-.nav-dropdown:has(.nav-dropdown-panel--right)::after {
-  left: auto;
-  right: 0;
 }
 
 .nav-dropdown-button {
@@ -81,10 +64,29 @@
   bottom: 0.35rem;
   left: 0.5rem;
   right: 0.5rem;
+  width: auto;
   height: 1.5px;
   background: var(--color-purple-1);
   pointer-events: none;
   z-index: 11;
+}
+
+.nav-dropdown-seam {
+  position: absolute;
+  top: calc(100% - 8px);
+  left: 0;
+  width: 16rem;
+  height: 2.75rem;
+  pointer-events: auto;
+}
+
+.nav-dropdown-seam--right {
+  left: auto;
+  right: 0;
+}
+
+.nav-dropdown:has(.nav-dropdown-panel.is-closing) .nav-dropdown-seam {
+  pointer-events: none;
 }
 
 .nav-dropdown-panel {
