@@ -13,7 +13,7 @@ import { CloseButton } from '@/components/common/buttons';
 import { EditIcon, TrashIcon } from '@/components/common/icons';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { getRateLimitMessage } from '@/utils/rateLimitError';
-import { FacetQueryBuilder, ProfileSelector } from '@/components/common/selectors';
+import { CustomSelect, FacetQueryBuilder, ProfileSelector } from '@/components/common/selectors';
 import ImageSelectorPopup from '@/components/common/selectors/ImageSelectorPopup/ImageSelectorPopup';
 import { getCdnErrorMessage } from '@/utils/uploadErrors';
 import { buildFacetQueryParam } from '@/utils/facetQueryCodec';
@@ -342,6 +342,18 @@ const ModsEditPage = () => {
   const [versionForm, setVersionForm] = useState({ version: '', downloadUrl: '', releasedAt: '', notes: '' });
   const [mergeSourceId, setMergeSourceId] = useState('');
 
+  const mergeOptions = useMemo(
+    () =>
+      (editingMod
+        ? mods.filter((item) => item.id !== editingMod.id)
+        : mods
+      ).map((item) => ({
+        value: String(item.id),
+        label: `${item.name} (${item.slug || item.id})`,
+      })),
+    [mods, editingMod],
+  );
+
   const loadCatalogTags = useCallback(async () => {
     try {
       const { data } = await api.get(routes.admin.mods.tags());
@@ -643,6 +655,19 @@ const ModsEditPage = () => {
                       ) : null}
                     </div>
                     <div className="mods-page__admin-row-meta">{listCreatorText(mod)}</div>
+                    {Array.isArray(mod.tags) && mod.tags.length ? (
+                      <div className="mods-page__tags">
+                        {mod.tags.map((tag) => (
+                          <span
+                            key={tag.id}
+                            className="mods-page__tag"
+                            style={{ borderColor: tag.color, color: tag.color }}
+                          >
+                            {tag.name}
+                          </span>
+                        ))}
+                      </div>
+                    ) : null}
                   </div>
                   <div className="mods-page__admin-row-actions">
                     <button
@@ -843,7 +868,7 @@ const ModsEditPage = () => {
                         key={tag.id}
                         type="button"
                         className={`mods-page__tag-toggle ${selected ? 'is-selected' : ''}`.trim()}
-                        style={{ borderColor: tag.color, color: tag.color }}
+                        style={{ color: tag.color }}
                         onClick={async () => {
                           const nextIds = selected
                             ? (editingMod.tags || []).filter((item) => item.id !== tag.id).map((item) => item.id)
@@ -942,19 +967,15 @@ const ModsEditPage = () => {
               </div>
               <div className="mods-page__assign">
                 <p className="mods-page__assign-title">{t('mods.merge.title')}</p>
-                <select
-                  value={mergeSourceId}
-                  onChange={(event) => setMergeSourceId(event.target.value)}
-                >
-                  <option value="">{t('mods.merge.placeholder')}</option>
-                  {mods
-                    .filter((item) => item.id !== editingMod.id)
-                    .map((item) => (
-                      <option key={item.id} value={item.id}>
-                        {item.name} ({item.slug || item.id})
-                      </option>
-                    ))}
-                </select>
+                <CustomSelect
+                  options={mergeOptions}
+                  value={mergeOptions.find((option) => option.value === mergeSourceId) || null}
+                  onChange={(option) => setMergeSourceId(option?.value || '')}
+                  placeholder={t('mods.merge.placeholder')}
+                  width="100%"
+                  isClearable
+                  isSearchable
+                />
                 <button
                   type="button"
                   className="delete-confirm-button"

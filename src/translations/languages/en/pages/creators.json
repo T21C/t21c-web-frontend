@@ -20,8 +20,7 @@
   "settings": {
     "filter": {
       "header": "Filters",
-      "following": "Following",
-      "followingLogin": "Log in to filter by who you follow"
+      "following": "Following"
     },
     "sort": {
       "header": "Sort Settings",

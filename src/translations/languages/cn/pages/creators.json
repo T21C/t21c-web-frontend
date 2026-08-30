@@ -20,8 +20,7 @@
   "settings": {
     "filter": {
       "header": "筛选",
-      "following": "关注中",
-      "followingLogin": "登录后可按关注筛选"
+      "following": "关注中"
     },
     "sort": {
       "header": "排序设置",

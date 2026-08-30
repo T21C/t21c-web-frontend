@@ -209,7 +209,7 @@ const DevelopersModEditPage = () => {
                       key={tag.id}
                       type="button"
                       className={`mods-page__tag-toggle ${selected ? 'is-selected' : ''}`.trim()}
-                      style={{ borderColor: tag.color, color: tag.color }}
+                      style={{ color: tag.color }}
                       onClick={async () => {
                         const nextIds = selected
                           ? selectedTagIds.filter((item) => item !== tag.id)

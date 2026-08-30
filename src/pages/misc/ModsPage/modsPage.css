@@ -832,16 +832,30 @@
   border-radius: 999px;
   border: 1px solid var(--color-white-t20);
   background: transparent;
+}
+
+.mods-page .mods-page__tag {
   cursor: default;
 }
 
 .mods-page .mods-page__tag-toggle {
   cursor: pointer;
+  background: transparent;
+  border-color: color-mix(in srgb, currentColor 35%, transparent);
 }
 
-.mods-page .mods-page__tag-toggle:hover,
+.mods-page .mods-page__tag-toggle:hover {
+  border-color: color-mix(in srgb, currentColor 70%, transparent);
+}
+
 .mods-page .mods-page__tag-toggle.is-selected {
+  border-color: currentColor;
   background: var(--color-white-t10);
+  color: var(--color-white);
+}
+
+.mods-page .mods-page__tag-toggle.is-selected:hover {
+  background: var(--color-white-t20);
 }
 
 .mods-page .mods-page__like {
@@ -884,13 +898,16 @@
 }
 
 .mods-page .mods-page__version-form input,
-.mods-page .mods-page__version-form textarea,
-.mods-page .mods-page__assign select {
+.mods-page .mods-page__version-form textarea {
   padding: 0.45rem 0.6rem;
   border: 1px solid var(--color-white-t20);
   border-radius: 4px;
   background: var(--color-white-t10);
   color: var(--color-white);
+}
+
+.mods-page .mods-page__assign .custom-select-container {
+  width: 100%;
 }
 
 .mods-page .mod-detail-page__header,

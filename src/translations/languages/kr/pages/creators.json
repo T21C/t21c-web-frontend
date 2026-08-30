@@ -20,8 +20,7 @@
   "settings": {
     "filter": {
       "header": "필터",
-      "following": "팔로잉",
-      "followingLogin": "팔로우한 사람만 보려면 로그인하세요"
+      "following": "팔로잉"
     },
     "sort": {
       "header": "정렬 설정",

@@ -17,7 +17,6 @@ import { ScrollButton } from "@/components/common/buttons";
 import { MetaTags } from "@/components/common/display";
 import { buildLeaderboardMeta } from '@/utils/meta';
 import { useAuth } from "@/contexts/AuthContext";
-import toast from 'react-hot-toast';
 import { SortDescIcon, SortAscIcon, SortIcon, FilterIcon, ResetIcon, RewindIcon } from "@/components/common/icons";
 import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
 import { CreatorAssignmentPopup } from "@/components/popups/Creators";
@@ -81,8 +80,8 @@ const LeaderboardPage = () => {
     setSortBy,
     playerFlagFilter,
     setPlayerFlagFilter,
-    onlyFollowing,
-    setOnlyFollowing,
+    followingFilter,
+    setFollowingFilter,
     forceUpdate,
     setForceUpdate
   } = useContext(PlayerContext);
@@ -187,8 +186,8 @@ const LeaderboardPage = () => {
       params.append('filters', JSON.stringify({...apiFilters, country: country}));
     }
 
-    if (user && onlyFollowing) {
-      params.set('following', 'true');
+    if (user && followingFilter === 'only') {
+      params.set('following', 'only');
     }
 
     const endpoint = `${routes.playersV3.leaderboard()}?${params.toString()}`;
@@ -237,8 +236,8 @@ const LeaderboardPage = () => {
     if (historyQuery) {
       params.set('query', historyQuery);
     }
-    if (user && onlyFollowing) {
-      params.set('following', 'true');
+    if (user && followingFilter === 'only') {
+      params.set('following', 'only');
     }
 
     const endpoint = `${routes.playersV3.leaderboardHistory()}?${params.toString()}`;
@@ -275,7 +274,7 @@ const LeaderboardPage = () => {
         setHistoryHasMore(false);
       }
     }
-  }, [historyDate, historyMetric, historySort, historyQuery, historyRequest, user, onlyFollowing]);
+  }, [historyDate, historyMetric, historySort, historyQuery, historyRequest, user, followingFilter]);
 
   useEffect(() => {
     if (filters && Object.keys(filters).length > 0) {
@@ -291,7 +290,7 @@ const LeaderboardPage = () => {
         Array.isArray(displayedPlayers) &&
         displayedPlayers.length > 0 &&
         leaderboardListTotal != null;
-      if (hasCached && !(onlyFollowing && !user)) {
+      if (hasCached && !(followingFilter === 'only' && !user)) {
         setHasMore(displayedPlayers.length < leaderboardListTotal);
         return;
       }
@@ -300,7 +299,7 @@ const LeaderboardPage = () => {
     setPlayerData(null);
     setDisplayedPlayers(null);
     fetchPlayers(0);
-  }, [forceUpdate, query, sort, sortBy, playerFlagFilter, country, filters, pastMode, onlyFollowing, user]);
+  }, [forceUpdate, query, sort, sortBy, playerFlagFilter, country, filters, pastMode, followingFilter, user]);
 
   useEffect(() => {
     if (!pastMode || !historyDate) return;
@@ -308,7 +307,7 @@ const LeaderboardPage = () => {
     setHistoryTotal(null);
     // Debounced so name search doesn't hammer the API; timeline already debounces date.
     fetchHistoryPlayers(0);
-  }, [pastMode, historyDate, historyMetric, historySort, historyQuery, onlyFollowing, user]);
+  }, [pastMode, historyDate, historyMetric, historySort, historyQuery, followingFilter, user]);
 
   const enterPastMode = async () => {
     setPastMode(true);
@@ -364,14 +363,6 @@ const LeaderboardPage = () => {
 
   function handleFilterOpen() {
     setFilterOpen(!filterOpen);
-  }
-
-  function handleOnlyFollowingChange(state) {
-    if (state === 'on' && !user) {
-      toast.error(t('leaderboard.settings.filter.followingLogin'));
-      return;
-    }
-    setOnlyFollowing(state === 'on');
   }
 
   function handleSortOpen() {
@@ -443,7 +434,7 @@ const LeaderboardPage = () => {
       if (historyMaxDate) {
         setHistoryDate(historyMaxDate);
       }
-      setOnlyFollowing(false);
+      setFollowingFilter('no');
       return;
     }
     runRequest.cancel();
@@ -452,7 +443,7 @@ const LeaderboardPage = () => {
     setQuery("");
     setPlayerFlagFilter(DEFAULT_PLAYER_FLAG_FILTER);
     setCountry('');
-    setOnlyFollowing(false);
+    setFollowingFilter('no');
     setActiveFilters({});
     setFilters({});
     setSelectedFilterField(null);
@@ -547,14 +538,16 @@ const LeaderboardPage = () => {
               {t('leaderboard.tooltips.reset')}
             </Tooltip>
 
+            {(!pastMode || user) && (
             <FilterIcon
               data-tooltip-id="filter"
               color="#ffffff"
               style={{
-                backgroundColor: filterOpen || onlyFollowing ? "rgba(255, 255, 255, 0.7)" : "",
+                backgroundColor: filterOpen || (user && followingFilter === 'only') ? "rgba(255, 255, 255, 0.7)" : "",
               }}
               onClick={handleFilterOpen}
             />
+            )}
 
             <SortIcon
               data-tooltip-id="sort"
@@ -575,7 +568,7 @@ const LeaderboardPage = () => {
 
         <div className="input-setting">
           <Collapsible
-            open={filterOpen}
+            open={filterOpen && (!pastMode || !!user)}
             onOpenChange={setFilterOpen}
             revealOverflow
             duration="0.6s"
@@ -588,19 +581,15 @@ const LeaderboardPage = () => {
             
             <div className="filter-section">
               <div className="filter-row">
-                <div className="filter-container following-filter">
+                {user && (
                   <StateDisplay
                     label={t('leaderboard.settings.filter.following')}
-                    currentState={onlyFollowing ? 'on' : 'off'}
-                    onChange={handleOnlyFollowingChange}
-                    states={['off', 'on']}
-                    activeStates={['on']}
+                    currentState={followingFilter}
+                    onChange={setFollowingFilter}
+                    states={['no', 'only']}
                     showValue={false}
-                    width={56}
-                    height={24}
-                    padding={3}
                   />
-                </div>
+                )}
                 {!pastMode && (
                 <div className="filter-container country-filter">
                   <p className="setting-description">{t('leaderboard.settings.filter.country')}</p>
@@ -848,7 +837,7 @@ const LeaderboardPage = () => {
             </div>
           ) : listDisplayed?.length === 0 ? (
             <p className="leaderboard-empty-msg">
-              {user && onlyFollowing
+              {user && followingFilter === 'only'
                 ? t('leaderboard.list.emptyFollowing')
                 : pastMode
                   ? t('leaderboard.past.noData')

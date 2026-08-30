@@ -16,8 +16,7 @@
   "settings": {
     "filter": {
       "header": "Ustawienia filtrowania",
-      "following": "Obserwowani",
-      "followingLogin": "Zaloguj się, aby filtrować po obserwowanych"
+      "following": "Obserwowani"
     },
     "sort": {
       "header": "Ustawienia sortowania",
