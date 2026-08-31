@@ -315,6 +315,38 @@ export const buildArtistMeta = (artist, t, options = {}) => {
 };
 
 /**
+ * @param {object} tournament
+ * @param {(key: string, opts?: object) => string} t
+ * @param {{ pathname?: string }} [options]
+ */
+export const buildTournamentMeta = (tournament, t, options = {}) => {
+  const { pathname = tournament?.id ? `/tournaments/${tournament.id}` : '/tournaments' } = options;
+  const name = tournament?.fullName || tournament?.shortName || '';
+  const url = buildCanonicalUrl(pathname);
+  const image = resolveMetaImage(tournament?.iconUrl);
+  const title = t('tournamentDetail.meta.title', { name });
+  const description = t('tournamentDetail.meta.description', { name });
+
+  return buildStaticPageMeta({
+    title,
+    description,
+    pathname,
+    image,
+    type: 'article',
+    noindex: Boolean(tournament?.isHidden || tournament?.status === 'draft'),
+    jsonLd: [
+      creativeWorkJsonLd({ name, description, url, image }),
+      breadcrumbJsonLd({
+        items: [
+          { name: t('tournamentList.meta.title'), url: buildCanonicalUrl('/tournaments') },
+          { name, url },
+        ],
+      }),
+    ],
+  });
+};
+
+/**
  * @param {object} params
  */
 export const buildListPageMeta = ({

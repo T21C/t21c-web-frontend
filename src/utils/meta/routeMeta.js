@@ -33,6 +33,8 @@ const ROUTE_DOCUMENT_META = [
   { path: '/creator', titleKey: 'creators.meta.title', descriptionKey: 'creators.meta.description' },
   { path: '/creators', titleKey: 'creators.meta.title', descriptionKey: 'creators.meta.description' },
   { path: '/leaderboard', titleKey: 'leaderboard.meta.title', descriptionKey: 'leaderboard.meta.description' },
+  { path: '/tournaments/:id', titleKey: 'tournamentDetail.meta.fallbackTitle', descriptionKey: 'tournamentDetail.meta.description', descriptionParams: { name: '' } },
+  { path: '/tournaments', titleKey: 'tournamentList.meta.title', descriptionKey: 'tournamentList.meta.description' },
   { path: '/artists/:id', titleKey: 'artistList.meta.title', descriptionKey: 'artistDetail.meta.description', descriptionParams: { name: '' } },
   { path: '/artists', titleKey: 'artistList.meta.title', descriptionKey: 'artistList.meta.description' },
   { path: '/songs/:id', titleKey: 'songList.meta.title', descriptionKey: 'songDetail.meta.description', descriptionParams: { name: '' } },

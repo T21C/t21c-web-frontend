@@ -1,0 +1,22 @@
+{
+  "title": "锦标赛",
+  "meta": {
+    "title": "锦标赛",
+    "description": "浏览 The Universal Forums 上的公开锦标赛、系列与排名"
+  },
+  "search": {
+    "placeholder": "搜索锦标赛…"
+  },
+  "filter": {
+    "status": "状态",
+    "allStatuses": "全部状态"
+  },
+  "statuses": {
+    "ongoing": "进行中",
+    "completed": "已结束",
+    "cancelled": "已取消",
+    "draft": "草稿"
+  },
+  "unseriesed": "无系列",
+  "empty": "未找到锦标赛"
+}

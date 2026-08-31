@@ -1,0 +1,38 @@
+{
+  "title": "토너먼트",
+  "meta": {
+    "title": "{{name}}",
+    "fallbackTitle": "토너먼트",
+    "description": "The Universal Forums에서 {{name}}의 순위, 메모, 보상을 확인하세요"
+  },
+  "backToList": "토너먼트 목록으로",
+  "sections": {
+    "organizers": "주최",
+    "notes": "메모",
+    "rewards": "보상",
+    "standings": "순위"
+  },
+  "links": {
+    "pack": "팩 열기",
+    "youtube": "YouTube",
+    "external": "외부 링크"
+  },
+  "statuses": {
+    "ongoing": "진행 중",
+    "completed": "완료",
+    "cancelled": "취소됨",
+    "draft": "초안"
+  },
+  "badges": {
+    "pending": "대기",
+    "withdrew": "기권",
+    "unlisted": "비공개"
+  },
+  "unofficialBanner": "결과는 아직 확정되지 않았습니다.",
+  "emptyStandings": "아직 순위가 없습니다.",
+  "untiered": "기타",
+  "errors": {
+    "notFound": "토너먼트를 찾을 수 없습니다",
+    "loadFailed": "토너먼트를 불러오지 못했습니다"
+  }
+}
