@@ -19,6 +19,8 @@ const ArtistListPage = lazy(() => import('./common/Artist/ArtistListPage/ArtistL
 const ArtistDetailPage = lazy(() => import('./common/Artist/ArtistDetailPage/ArtistDetailPage'));
 const SongListPage = lazy(() => import('./common/Song/SongListPage/SongListPage'));
 const SongDetailPage = lazy(() => import('./common/Song/SongDetailPage/SongDetailPage'));
+const TournamentListPage = lazy(() => import('./common/Tournament/TournamentListPage/TournamentListPage'));
+const TournamentDetailPage = lazy(() => import('./common/Tournament/TournamentDetailPage/TournamentDetailPage'));
 const CreatorsListPage = lazy(() => import('./common/CreatorsListPage/CreatorsListPage'));
 const CreatorProfilePage = lazy(() => import('./account/CreatorProfilePage/CreatorProfilePage'));
 // Account pages
@@ -107,6 +109,8 @@ export {
     ArtistDetailPage,
     SongListPage,
     SongDetailPage,
+    TournamentListPage,
+    TournamentDetailPage,
     CreatorsListPage,
     CreatorProfilePage,
     // Account related pages

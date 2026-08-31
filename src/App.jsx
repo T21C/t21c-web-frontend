@@ -148,6 +148,8 @@ function App() {
           <Route path="submissions" element={<PrivateRoute><Pages.MySubmissionsPage /></PrivateRoute>} />
 
           <Route path='leaderboard' element={<Pages.LeaderboardPage />} />
+          <Route path='tournaments' element={<Pages.TournamentListPage />} />
+          <Route path='tournaments/:id' element={<Pages.TournamentDetailPage />} />
           <Route path='passes' element={<Pages.PassPage />} />
           <Route path='packs' element={<Pages.PackPage />} />
           <Route path='packs/:id' element={<Pages.PackDetailPage />} />

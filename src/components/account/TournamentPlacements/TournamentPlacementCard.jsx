@@ -11,6 +11,7 @@ import {
   resolvePlacementCardBackground,
   resolveTierIcon,
   resolveTournamentIcon,
+  resolveTournamentPageHref,
 } from "@/utils/tournamentPlacements";
 import TournamentPlacementIconRail from "./TournamentPlacementIconRail";
 
@@ -43,8 +44,18 @@ const TournamentPlacementCard = ({
   const levelHref = resolveLevelHref(levelId);
   const packRef = resolveCreditPackRef(placement);
   const packHref = resolvePackHref(packRef);
+  const tournamentHref = resolveTournamentPageHref(placement.tournament);
   const coCreditCount = resolveCoCreditCount(placement);
   const showTournament = !hideTournamentLabel && Boolean(tournamentLabel);
+
+  const tournamentLabelNode =
+    tournamentHref && !previewMode ? (
+      <Link className="tournament-placements__link" to={tournamentHref}>
+        {tournamentLabel}
+      </Link>
+    ) : (
+      <span>{tournamentLabel}</span>
+    );
 
   const wrapWithLevelLink = (node) => {
     if (!levelHref || previewMode) return node;
@@ -95,7 +106,7 @@ const TournamentPlacementCard = ({
         </div>
         {showTournament || tierLabel ? (
           <div className="tournament-placements__context">
-            {showTournament ? <span>{tournamentLabel}</span> : null}
+            {showTournament ? tournamentLabelNode : null}
             {showTournament && tierLabel ? (
               <span className="tournament-placements__context-sep">·</span>
             ) : null}
@@ -107,7 +118,9 @@ const TournamentPlacementCard = ({
       </>
     );
   } else if (layout === "levelStyle") {
-    const primaryHref = levelHref || packHref;
+    const primaryHref = hideTournamentLabel
+      ? levelHref || packHref
+      : tournamentHref || levelHref || packHref;
     const primaryLabel = hideTournamentLabel
       ? tierLabel || tournamentLabel
       : tournamentLabel || tierLabel;
@@ -151,7 +164,7 @@ const TournamentPlacementCard = ({
         {wrapWithLevelLink(tierLine)}
         {showTournament ? (
           <div className="tournament-placements__event">
-            <span>{tournamentLabel}</span>
+            {tournamentLabelNode}
           </div>
         ) : null}
         {levelName ? (

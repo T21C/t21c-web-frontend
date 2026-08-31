@@ -4,6 +4,17 @@
  * and profile display preferences.
  */
 import { getSongDisplayName } from "@/utils/levelHelpers";
+import {
+  resolvePackHref,
+  resolveTournamentAppearanceHref,
+  resolveTournamentPageHref,
+} from "./tournamentAppearanceHref";
+
+export {
+  resolvePackHref,
+  resolveTournamentAppearanceHref,
+  resolveTournamentPageHref,
+};
 
 export const UNSERIESED_SORT_WEIGHT = 100;
 
@@ -279,38 +290,75 @@ export function resolvePlacementRailIcon(credit) {
 }
 
 /**
- * @param {string | null | undefined} packRef
- * @returns {string | null}
+ * Group public catalog cards by series `sortWeight`, then tournament `sortWeight`.
+ * @param {Array<any> | null | undefined} tournaments
+ * @param {string} [unseriesedLabel]
+ * @returns {Array<{ key: string, label: string, series: any | null, items: any[] }>}
  */
-export function resolvePackHref(packRef) {
-  if (!packRef) return null;
-  return `/packs/${encodeURIComponent(String(packRef))}`;
-}
+export function groupPublicTournamentsBySeries(tournaments, unseriesedLabel = "") {
+  const list = Array.isArray(tournaments) ? tournaments : [];
+  const bySeriesKey = new Map();
 
-/**
- * @param {any} appearance
- * @returns {{ href: string | null, external: boolean }}
- */
-export function resolveTournamentAppearanceHref(appearance) {
-  const tournament = appearance?.tournament;
-  if (!tournament) return { href: null, external: false };
+  for (const item of list) {
+    const seriesId = Number(item.seriesId);
+    const hasSeries = Number.isFinite(seriesId) && seriesId > 0;
+    const key = hasSeries ? `series-${seriesId}` : "series-none";
+    if (!bySeriesKey.has(key)) bySeriesKey.set(key, []);
+    bySeriesKey.get(key).push(item);
+  }
 
-  const packHref = resolvePackHref(tournament.packRef);
-  if (packHref) return { href: packHref, external: false };
+  const sortItems = (items) =>
+    [...items].sort((a, b) => (a.sortWeight ?? 0) - (b.sortWeight ?? 0));
 
-  const externalUrl =
-    typeof tournament.externalUrl === "string" && tournament.externalUrl.trim()
-      ? tournament.externalUrl.trim()
-      : null;
-  if (externalUrl) return { href: externalUrl, external: true };
+  const seriesOrder = [];
+  const seenSeries = new Set();
+  const sortedForSeries = [...list].sort((a, b) => {
+    const weightA = a.series?.sortWeight ?? a.seriesSortWeight ?? UNSERIESED_SORT_WEIGHT;
+    const weightB = b.series?.sortWeight ?? b.seriesSortWeight ?? UNSERIESED_SORT_WEIGHT;
+    return weightA - weightB;
+  });
+  for (const item of sortedForSeries) {
+    if (!item.series?.id || Number(item.series.id) <= 0 || seenSeries.has(item.series.id)) continue;
+    seenSeries.add(item.series.id);
+    seriesOrder.push(item.series);
+  }
 
-  const youtubeUrl =
-    typeof tournament.youtubeUrl === "string" && tournament.youtubeUrl.trim()
-      ? tournament.youtubeUrl.trim()
-      : null;
-  if (youtubeUrl) return { href: youtubeUrl, external: true };
+  const groups = [];
+  for (const series of seriesOrder) {
+    const key = `series-${series.id}`;
+    const items = bySeriesKey.get(key);
+    if (!items?.length) continue;
+    groups.push({
+      key,
+      label: series.name,
+      series,
+      items: sortItems(items),
+    });
+    bySeriesKey.delete(key);
+  }
 
-  return { href: null, external: false };
+  const unseriesed = bySeriesKey.get("series-none");
+  if (unseriesed?.length) {
+    groups.push({
+      key: "series-none",
+      label: unseriesedLabel,
+      series: null,
+      items: sortItems(unseriesed),
+    });
+    bySeriesKey.delete("series-none");
+  }
+
+  for (const [key, items] of bySeriesKey) {
+    if (!items.length) continue;
+    groups.push({
+      key,
+      label: items[0]?.series?.name || unseriesedLabel || key,
+      series: items[0]?.series ?? null,
+      items: sortItems(items),
+    });
+  }
+
+  return groups;
 }
 
 /**

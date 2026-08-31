@@ -186,6 +186,7 @@ export const createNavigationConfig = (context = {}) => {
         label: "navigation.main.sections.rankings",
         items: [
           { to: "/leaderboard", translationKey: "navigation.main.links.leaderboard" },
+          { to: "/tournaments", translationKey: "navigation.main.links.tournaments" },
         ],
       }),
       createSection({

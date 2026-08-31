@@ -34,6 +34,7 @@ export {
   buildPlayerMeta,
   buildSongMeta,
   buildArtistMeta,
+  buildTournamentMeta,
   buildListPageMeta,
   buildLeaderboardMeta,
   buildStaticPageMeta,

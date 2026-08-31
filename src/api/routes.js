@@ -298,6 +298,11 @@ export const routes = {
       levelsInfo: (id) => `/v2/database/songs/${enc(id)}/levels/info`,
       levelsSuffix: (id) => `/v2/database/songs/${enc(id)}/levels/suffix`,
     },
+    tournaments: {
+      root: () => '/v2/database/tournaments',
+      series: () => '/v2/database/tournaments/series',
+      byId: (id) => `/v2/database/tournaments/${enc(id)}`,
+    },
     artists: {
       root: () => '/v2/database/artists',
       byId: (id) => `/v2/database/artists/${enc(id)}`,

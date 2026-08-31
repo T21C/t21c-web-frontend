@@ -2872,12 +2872,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                     onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded && isLongDescription)}
                   >
                     <div className="curation-description-content">
-                      {isDescriptionExpanded ? 
-                        themeCurationHydrated.description : 
-                        isLongDescription ? 
-                          `${themeCurationHydrated.description.substring(0, 250)}...` : 
-                          themeCurationHydrated.description
-                      }
+                      {themeCurationHydrated.description}
                     </div>
                     {isLongDescription && (
                       <div className="curation-description-toggle">
