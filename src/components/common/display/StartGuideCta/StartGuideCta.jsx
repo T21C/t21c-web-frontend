@@ -8,7 +8,7 @@ import './StartGuideCta.css';
 
 const DEFAULT_TO = '/resources';
 const DEFAULT_APPEAR_FROM = 'right';
-const DEFAULT_DELAY = 2;
+const DEFAULT_DELAY = 1;
 const DEFAULT_DURATION = 0.75;
 
 export default function StartGuideCta({
