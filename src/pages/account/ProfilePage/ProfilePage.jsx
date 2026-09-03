@@ -732,6 +732,7 @@ const ProfilePage = () => {
                     handle={playerData?.user?.username}
                     country={playerData?.country}
                     badgeId={playerData?.rankedScoreRank}
+                    highestRankedScore={playerData?.highestRankedScore}
                     profileId={playerData?.id ?? playerId}
                     followerCount={playerData?.followerCount}
                     showFollowerCount={playerData?.showFollowerCount !== false}

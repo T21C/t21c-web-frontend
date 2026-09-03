@@ -1,6 +1,6 @@
 /* tuf-search: #StartGuideCta #startGuideCta #display */
 .tuf-start-guide-cta {
-  --tuf-start-guide-cta-delay: 2s;
+  --tuf-start-guide-cta-delay: 1s;
   --tuf-start-guide-cta-duration: 0.75s;
   --tuf-start-guide-cta-from-x: 1rem;
   display: flex;

@@ -383,7 +383,8 @@
   flex: 1;
 }
 
-.tournament-management-popup__col-withdrew input {
+.tournament-management-popup__col-withdrew input,
+.tournament-management-popup__col-disqualified input {
   width: auto;
   min-width: 0;
 }

@@ -26,6 +26,7 @@
   "badges": {
     "pending": "Pending",
     "withdrew": "Withdrew",
+    "disqualified": "Disqualified",
     "unlisted": "Unlisted"
   },
   "unofficialBanner": "Results are not final.",

@@ -282,6 +282,23 @@
   background-color: var(--color-black-t35);
 }
 
+.profile-header__badge--has-highest {
+  cursor: help;
+}
+
+.profile-header__highest-rank-tooltip {
+  z-index: 10060;
+  max-width: min(18rem, 90vw);
+  background: var(--color-black-t85) !important;
+  color: var(--color-white) !important;
+}
+
+.profile-header__highest-rank-tooltip-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
 .profile-header__profile-id {
   font-size: 0.75rem;
   font-weight: 600;

@@ -32,7 +32,10 @@
   "hiddenFollowers_other": "{{formatted}} followers masqués",
   "stellarSubscriberIconTooltip": "Abonné TUFStellar",
   "header": {
-    "aka": "alias"
+    "aka": "alias",
+    "highestRank": "Meilleur rang : #{{rank}}",
+    "highestRankAt": "le {{date}}",
+    "highestRankNow": "Actuellement à son meilleur rang !"
   },
   "valueLabels": {
     "rankedScore": "Score Classement",

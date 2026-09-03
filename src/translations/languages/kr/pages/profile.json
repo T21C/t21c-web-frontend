@@ -61,7 +61,10 @@
   "hiddenFollowers_other": "숨겨진 팔로워 {{formatted}}명",
   "stellarSubscriberIconTooltip": "TUFStellar 구독자",
   "header": {
-    "aka": "일명"
+    "aka": "일명",
+    "highestRank": "최고 순위: #{{rank}}",
+    "highestRankAt": "{{date}}",
+    "highestRankNow": "지금 최고 순위입니다!"
   },
   "bio": {
     "header": "내 소개",
@@ -82,6 +85,7 @@
       "expand": "토너먼트 펼치기",
       "collapse": "토너먼트 접기",
       "withdrew": "기권",
+      "disqualified": "실격",
       "unseriesed": "기타 토너먼트",
       "unknownTournament": "토너먼트",
       "openPack": "팩 열기",
