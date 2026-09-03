@@ -26,6 +26,7 @@
   "badges": {
     "pending": "待定",
     "withdrew": "退赛",
+    "disqualified": "取消资格",
     "unlisted": "未公开"
   },
   "unofficialBanner": "结果尚未最终确定。",

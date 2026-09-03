@@ -65,11 +65,11 @@ export function resolveEffectiveCardLayout(credit, fallback = "classic") {
  */
 export function listPublicPlacements(placements) {
   if (!Array.isArray(placements)) return [];
-  return placements.filter((p) => p && !p.isPending && !p.withdrew);
+  return placements.filter((p) => p && !p.isPending && !p.withdrew && !p.disqualified);
 }
 
 /**
- * All non-pending, non-withdrew credits for editor management (includes profile-hidden).
+ * All non-pending, non-withdrew, non-disqualified credits for editor management (includes profile-hidden).
  * @param {Array<any> | null | undefined} placements
  * @returns {Array<any>}
  */

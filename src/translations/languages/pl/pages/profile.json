@@ -54,7 +54,10 @@
   "hiddenFollowers_other": "{{formatted}} ukrytych obserwujących",
   "stellarSubscriberIconTooltip": "Subskrybent TUFStellar",
   "header": {
-    "aka": "znany też jako"
+    "aka": "znany też jako",
+    "highestRank": "Najwyższa ranga: #{{rank}}",
+    "highestRankAt": "dnia {{date}}",
+    "highestRankNow": "Obecnie na najwyższej randze!"
   },
   "sections": {
     "scores": {

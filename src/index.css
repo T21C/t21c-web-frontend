@@ -38,6 +38,7 @@
   --btn-primary-light-hover: color-mix(in srgb, var(--btn-primary) 72%, #fff);
   --btn-secondary-hover: color-mix(in srgb, var(--btn-secondary) 82%, #000);
   --btn-warning: #d97706;
+  --btn-warning-tint: color-mix(in srgb, var(--btn-warning) 12%, transparent);
   --btn-danger-intense: #bd1727;
   --btn-success-hover: color-mix(in srgb, var(--btn-success) 75%, #000);
   --btn-admin-purple: #9370db;

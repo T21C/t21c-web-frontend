@@ -26,6 +26,7 @@
   "badges": {
     "pending": "대기",
     "withdrew": "기권",
+    "disqualified": "실격",
     "unlisted": "비공개"
   },
   "unofficialBanner": "결과는 아직 확정되지 않았습니다.",

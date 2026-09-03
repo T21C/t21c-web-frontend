@@ -101,9 +101,12 @@
 .tournament-detail-page__badge {
   padding: 0.2rem 0.55rem;
   border-radius: 999px;
+  font-weight: 600;
+  filter: brightness(1.25);
   font-size: 0.8rem;
   background-color: var(--color-white-t10);
   color: var(--color-white-t80);
+  text-shadow: 0 0 2px var(--color-black-t100);
 }
 
 .tournament-detail-page__chip.is-ongoing {
@@ -122,9 +125,15 @@
   color: var(--color-white);
 }
 
-.tournament-detail-page__badge.is-withdrew {
+.tournament-detail-page__badge.is-disqualified {
   background-color: var(--danger-color-tint);
   color: var(--danger-color);
+}
+
+
+.tournament-detail-page__badge.is-withdrew {
+  background-color: var(--btn-warning-tint);
+  color: var(--btn-warning);
 }
 
 .tournament-detail-page .btn-fill-primary,

@@ -69,6 +69,14 @@ const PLACEMENT_TABLE_COLUMNS = [
     labelKey: null,
     labelNsKey: "withdrew",
   },
+  {
+    id: "disqualified",
+    defaultWidth: 112,
+    minWidth: 72,
+    resizable: true,
+    labelKey: null,
+    labelNsKey: "disqualified",
+  },
   { id: "team", defaultWidth: 120, minWidth: 72, resizable: true, labelKey: "team" },
   { id: "actions", defaultWidth: 80, minWidth: 80, resizable: false },
 ];
@@ -332,6 +340,7 @@ const TournamentManagementPopup = ({
         tierCode: "1",
         displayName: "",
         withdrew: false,
+        disqualified: false,
         isPending: false,
         teamName: "",
         playerId: null,
@@ -414,6 +423,7 @@ const TournamentManagementPopup = ({
           tierCode: r.tierCode,
           displayName: r.displayName.trim(),
           withdrew: r.withdrew,
+          disqualified: r.disqualified,
           isPending: r.isPending,
           teamName: r.teamName || null,
           rowMode: r.rowMode ?? null,
@@ -723,6 +733,18 @@ const TournamentManagementPopup = ({
               })
             }
             aria-label={t("tournamentManagement.withdrew")}
+          />
+        </td>
+        <td className="tournament-management-popup__col-disqualified">
+          <input
+            type="checkbox"
+            checked={row.disqualified}
+            onChange={(e) =>
+              updatePlacementRow(row.key, {
+                disqualified: e.target.checked,
+              })
+            }
+            aria-label={t("tournamentManagement.disqualified")}
           />
         </td>
         <td className="tournament-management-popup__col-team">

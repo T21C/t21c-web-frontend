@@ -89,6 +89,11 @@ function PlacementBadges({ placement, t }) {
           {t('tournamentDetail.badges.withdrew')}
         </span>
       ) : null}
+      {placement.disqualified ? (
+        <span className="tournament-detail-page__badge is-disqualified">
+          {t('tournamentDetail.badges.disqualified')}
+        </span>
+      ) : null}
     </>
   );
 }

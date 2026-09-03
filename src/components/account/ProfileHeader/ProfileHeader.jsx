@@ -8,6 +8,7 @@ import UserAvatar from "@/components/layout/UserAvatar/UserAvatar";
 import ChevronIcon from "@/components/common/icons/ChevronIcon";
 import { ExternalLinkIcon, HeartIcon, TUFStellarIcon } from "@/components/common/icons";
 import { formatNumber, isoToEmoji } from "@/utils";
+import { formatPassDate } from "@/utils/Utility";
 import {
   getDefaultProfileBannerUrl,
   isTufStellarAccessActive,
@@ -28,6 +29,7 @@ import { useSvgTextDimensions } from "@/hooks/useSvgTextDimensions";
 const PROFILE_HEADER_STELLAR_TOOLTIP_ID = "profile-header-stellar-subscriber";
 /** Shared id for fun-fact stat row values that expose `data-tooltip-content`. */
 const PROFILE_HEADER_STAT_ROW_TOOLTIP_ID = "profile-header-stat-row-tooltip";
+const PROFILE_HEADER_HIGHEST_RANK_TOOLTIP_ID = "profile-header-highest-rank";
 
 /** Tracks `.profile-header` inline size so layout breakpoints match `@container profile-header` CSS. */
 function useProfileHeaderContainerWidth(headerRef) {
@@ -109,6 +111,8 @@ const ProfileHeader = ({
   handle,
   country,
   badgeId,
+  /** All-time peak ranked-score rank from rank events: `{ rank, date }` (`date` is `YYYY-MM-DD`). */
+  highestRankedScore = null,
   /** Shown under the leaderboard rank badge as `ID NN`. Falls back to `avatarSubject.id`. */
   profileId,
   bannerUrl = null,
@@ -142,7 +146,7 @@ const ProfileHeader = ({
   /** When set, the follower count toggles a dropdown list from this URL. */
   followersUrl = null,
 }) => {
-  const { t } = useTranslation("pages");
+  const { t, i18n } = useTranslation("pages");
   const internalNameTooltipId = useId().replace(/:/g, "");
   const nameCutoutMaskId = `profile-header-name-cutout${useId().replace(/:/g, "")}`;
   const bannerMaskStyle = useMemo(
@@ -367,6 +371,25 @@ const ProfileHeader = ({
   }, [followersOpen]);
 
   const badgeText = formatPlayerBadgeText(badgeId);
+  const rankNum = Number(badgeId);
+
+  const peakRankNum = Number(highestRankedScore?.rank);
+  const peakRankDate =
+    typeof highestRankedScore?.date === "string" ? highestRankedScore.date.trim() : "";
+  const showHighestRankTooltip =
+    mode === "player" &&
+    Number.isFinite(peakRankNum) &&
+    peakRankNum > 0 &&
+    /^\d{4}-\d{2}-\d{2}/.test(peakRankDate);
+  const isAtHighestRank =
+    showHighestRankTooltip &&
+    Number.isFinite(rankNum) &&
+    rankNum > 0 &&
+    rankNum <= peakRankNum;
+  const highestRankDateLabel =
+    showHighestRankTooltip && !isAtHighestRank
+      ? formatPassDate(peakRankDate.slice(0, 10), i18n.language)
+      : "";
 
   const resolvedProfileId = useMemo(() => {
     const raw = profileId ?? avatarSubject?.id;
@@ -374,8 +397,6 @@ const ProfileHeader = ({
     if (!Number.isFinite(n) || n <= 0) return null;
     return Math.trunc(n);
   }, [profileId, avatarSubject?.id]);
-
-  const rankNum = Number(badgeId);
   const rankForColor =
     mode === "player" && Number.isFinite(rankNum) && rankNum > 0 ? rankNum : 0;
   const rankColor =
@@ -504,6 +525,25 @@ const ProfileHeader = ({
                 <HeartIcon size={18} color="#f44" fill="#f44" strokeWidth="2" />
               </Tooltip>
             ) : null}
+      {showHighestRankTooltip ? (
+        <Tooltip
+          id={PROFILE_HEADER_HIGHEST_RANK_TOOLTIP_ID}
+          place="bottom"
+          noArrow
+          className="profile-header__highest-rank-tooltip"
+        >
+          <div className="profile-header__highest-rank-tooltip-body">
+            {isAtHighestRank ? (
+              <div>{t("profile.header.highestRankNow")}</div>
+            ) : (
+              <>
+                <div>{t("profile.header.highestRank", { rank: peakRankNum })}</div>
+                <div>{t("profile.header.highestRankAt", { date: highestRankDateLabel })}</div>
+              </>
+            )}
+          </div>
+        </Tooltip>
+      ) : null}
       {useBuiltInNameTooltip && displayNameText.length > 0 ? (
         <ProfileHeaderNameAliasesTooltip
           tooltipId={internalNameTooltipId}
@@ -591,7 +631,7 @@ const ProfileHeader = ({
                 <div className="profile-header__badge-wrap">
                   {mode === "player" ? (
                     <div
-                      className="profile-header__badge"
+                      className={`profile-header__badge${showHighestRankTooltip ? " profile-header__badge--has-highest" : ""}`}
                       style={
                         badgeText !== "Unranked"
                           ? {
@@ -600,6 +640,9 @@ const ProfileHeader = ({
                             }
                           : undefined
                       }
+                      {...(showHighestRankTooltip
+                        ? { "data-tooltip-id": PROFILE_HEADER_HIGHEST_RANK_TOOLTIP_ID }
+                        : {})}
                     >
                       {badgeText}
                     </div>

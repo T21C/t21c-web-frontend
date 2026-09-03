@@ -61,7 +61,10 @@
   "hiddenFollowers_other": "{{formatted}} 位隐藏关注者",
   "stellarSubscriberIconTooltip": "TUFStellar 订阅用户",
   "header": {
-    "aka": "又名"
+    "aka": "又名",
+    "highestRank": "最高排名：#{{rank}}",
+    "highestRankAt": "于 {{date}}",
+    "highestRankNow": "当前正处于最高排名！"
   },
   "bio": {
     "header": "个人简介",
@@ -75,6 +78,7 @@
       "expand": "展开赛事",
       "collapse": "收起赛事",
       "withdrew": "退赛",
+      "disqualified": "取消资格",
       "unseriesed": "其他赛事",
       "unknownTournament": "赛事",
       "openPack": "打开地图包",
