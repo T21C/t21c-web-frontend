@@ -263,12 +263,9 @@ export const createNavigationConfig = (context = {}) => {
         condition: () => hasFlag(user, permissionFlags.SUPER_ADMIN),
       }),
       {
-        type: "link",
-        to: "/submission",
-        translationKey: "navigation.main.links.submission",
-        className: "nav-submit-button btn-fill-primary alt",
-        linkClassName: "no-active",
-        isActive: () => false,
+        type: "component",
+        id: "submit",
+        component: "NavSubmitButton",
       },
       {
         type: "component",

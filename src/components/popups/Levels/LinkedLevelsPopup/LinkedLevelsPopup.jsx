@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Tooltip } from 'react-tooltip';
 import toast from 'react-hot-toast';
 import { Portal } from '@/components/common/Portal';
 import { CloseButton } from '@/components/common/buttons';
@@ -14,6 +15,8 @@ import { getSongDisplayName } from '@/utils/levelHelpers';
 import api from '@/utils/api';
 import { routes } from '@/api/routes';
 import './linkedlevelspopup.css';
+
+const CURRENT_LEVEL_TOOLTIP_ID = 'linked-levels-popup-current';
 
 const GOLDEN_ANGLE = 137.508;
 
@@ -282,14 +285,22 @@ export default function LinkedLevelsPopup({
                       <span className="linked-levels-popup__sub">
                         #{level.id}
                         {level.artist ? ` — ${level.artist}` : ''}
-                        {isCurrent ? ` · ${t('levelPopups.linkedLevels.current')}` : ''}
                       </span>
                     </div>
                   </>
                 );
 
                 return (
-                  <div key={level.id} className="linked-levels-popup__row">
+                  <div
+                    key={level.id}
+                    className={`linked-levels-popup__row${isCurrent ? ' linked-levels-popup__row--current' : ''}`}
+                    {...(isCurrent
+                      ? {
+                          'data-tooltip-id': CURRENT_LEVEL_TOOLTIP_ID,
+                          'aria-current': 'page',
+                        }
+                      : {})}
+                  >
                     {isCurrent ? (
                       <div className="linked-levels-popup__row-main linked-levels-popup__row-main--current">
                         {rowInner}
@@ -359,6 +370,19 @@ export default function LinkedLevelsPopup({
           )}
         </div>
       </div>
+
+      {levels.some((level) => Number(level.id) === Number(currentLevelId)) && (
+        <Tooltip
+          id={CURRENT_LEVEL_TOOLTIP_ID}
+          place="left"
+          hidden={showPicker}
+          positionStrategy="fixed"
+          className="linked-levels-popup__here-tooltip"
+          opacity={1}
+        >
+          {t('levelPopups.linkedLevels.youAreHere')}
+        </Tooltip>
+      )}
 
       <LevelSelectionPopup
         isOpen={showPicker}

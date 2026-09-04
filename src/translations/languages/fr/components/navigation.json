@@ -15,6 +15,7 @@
       "packs": "Packs",
       "pass": "Complétions",
       "submission": "Soumission",
+      "submitPassForLevel": "Soumettre une complétion pour ce niveau",
       "rating": "Notation",
       "admin": {
         "rating": "Notation",

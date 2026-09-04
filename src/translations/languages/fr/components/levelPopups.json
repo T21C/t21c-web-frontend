@@ -106,7 +106,7 @@
     "title": "Niveaux liés",
     "description": "Niveaux regroupés comme variantes mineures du même chart.",
     "empty": "Aucun niveau lié pour le moment.",
-    "current": "Ce niveau",
+    "youAreHere": "Vous êtes ici",
     "unknownSong": "Morceau inconnu",
     "toastAdded": "{{name}} lié",
     "toastRemoved": "Niveau dissocié",

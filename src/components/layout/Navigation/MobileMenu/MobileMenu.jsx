@@ -6,6 +6,7 @@ import { UserAvatar } from "@/components/layout";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import { createUserMenuItems } from "../navigationConfig";
 import LanguageSelector from "../LanguageSelector/LanguageSelector";
+import NavSubmitButton from "../NavSubmitButton";
 import MobileDropdown from "../MobileDropdown/MobileDropdown";
 import "./mobileMenu.css";
 import { useTranslation } from "react-i18next";
@@ -95,6 +96,15 @@ const MobileMenu = ({
                 open={openSectionId === "language"}
                 onOpenChange={(next) => setSectionOpen("language", next)}
                 onItemClick={onClose}
+              />
+            );
+
+          case "NavSubmitButton":
+            return (
+              <NavSubmitButton
+                key="nav-submit-button"
+                variant="mobile"
+                onNavigate={onClose}
               />
             );
 

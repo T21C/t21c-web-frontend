@@ -51,8 +51,11 @@
       "leaderboard": "Classement",
       "scoreCalculator": "Calculateur de score",
       "aboutUs": "A propos de nous",
+      "levels": "Niveaux",
       "resources": "Ressources",
       "mods": "Mods",
+      "privacyPolicy": "Politique de confidentialité",
+      "termsOfService": "Conditions d'utilisation",
       "apiDocs": "API Docs",
       "developers": "Developer Portal"
     },
