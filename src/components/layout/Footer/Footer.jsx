@@ -20,16 +20,12 @@ const Footer = () => {
         </div>
         <div className="footer-section links">
           <h4>{t('home.footer.quickLinks.title')}</h4>
-          <Link to="/about">{t('home.footer.quickLinks.aboutUs')}</Link>
-          <Link to="/resources">{t('home.footer.quickLinks.resources')}</Link>
+          <Link to="/levels">{t('home.footer.quickLinks.levels')}</Link>
           <Link to="/mods">{t('home.footer.quickLinks.mods')}</Link>
-          <Link to="/privacy-policy">{t('home.footer.quickLinks.privacyPolicy')}</Link>
-          <Link to="/terms-of-service">{t('home.footer.quickLinks.termsOfService')}</Link>
-          <ExternalLink href="https://api.tuforums.com/docs/">
-            {t('home.footer.quickLinks.apiDocs')}
-          </ExternalLink>
+          <Link to="/resources">{t('home.footer.quickLinks.resources')}</Link>
           <Link to="/developers">{t('home.footer.quickLinks.developers')}</Link>
-          <Link to="/submission/pass/calculator">{t('home.footer.quickLinks.scoreCalculator')}</Link>
+          <Link to="/terms-of-service">{t('home.footer.quickLinks.termsOfService')}</Link>
+          <Link to="/privacy-policy">{t('home.footer.quickLinks.privacyPolicy')}</Link>
         </div>
         <div className="footer-section">
           <h4>{t('home.footer.community.title')}</h4>

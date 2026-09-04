@@ -9,6 +9,7 @@ import LogoFullOutlineSVG from "@/assets/tuf-logo/LogoFullOutlined/LogoFullOutli
 import NavDropdown from "./NavDropdown";
 import NavLinkItem from "./NavLinkItem";
 import LanguageSelector from "./LanguageSelector";
+import NavSubmitButton from "./NavSubmitButton";
 import UserMenu from "./UserMenu";
 import InboxBell from "./InboxBell";
 import MobileMenu from "./MobileMenu";
@@ -130,6 +131,14 @@ const Navigation = ({ children, config: externalConfig = null }) => {
               <LanguageSelector
                 key="language-selector"
                 {...item.props}
+              />
+            );
+
+          case "NavSubmitButton":
+            return (
+              <NavSubmitButton
+                key="nav-submit-button"
+                variant="desktop"
               />
             );
 

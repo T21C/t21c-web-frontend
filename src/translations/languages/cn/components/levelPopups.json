@@ -183,7 +183,7 @@
     "title": "关联关卡",
     "description": "将仅有细微改动的同一谱面分组显示。",
     "empty": "暂无关联关卡。",
-    "current": "当前关卡",
+    "youAreHere": "您在这里",
     "unknownSong": "未知曲目",
     "toastAdded": "已关联 {{name}}",
     "toastRemoved": "已取消关联",

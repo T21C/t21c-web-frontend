@@ -16,6 +16,7 @@
       "packs": "Paczki",
       "pass": "Przejścia",
       "submission": "Prześlij",
+      "submitPassForLevel": "Prześlij przejście dla tego poziomu",
       "rating": "Ocenianie",
       "admin": {
         "rating": "Ocenianie",

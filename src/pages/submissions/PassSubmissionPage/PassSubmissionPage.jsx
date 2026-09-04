@@ -100,7 +100,7 @@ const PassSubmissionPage = () => {
     handleInputChange,
   } = usePassCoreForm({
     mode: 'submit',
-    initialForm: location.state?.form || PASS_SUBMISSION_INITIAL_FORM,
+    initialForm: { ...PASS_SUBMISSION_INITIAL_FORM, ...(location.state?.form || {}) },
     rejectDeletedLevel: true,
     isUDiffLevel: (lvl) =>
       difficultyDict[lvl?.diffId]?.name?.[0] === 'U' ||

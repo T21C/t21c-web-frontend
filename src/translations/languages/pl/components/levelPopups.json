@@ -107,7 +107,7 @@
     "title": "Powiązane poziomy",
     "description": "Poziomy zgrupowane jako niewielkie warianty tego samego chartu.",
     "empty": "Brak powiązanych poziomów.",
-    "current": "Ten poziom",
+    "youAreHere": "Jesteś tutaj",
     "unknownSong": "Nieznana piosenka",
     "toastAdded": "Powiązano {{name}}",
     "toastRemoved": "Usunięto powiązanie",

@@ -54,8 +54,11 @@
       "leaderboard": "Lista rankingowa",
       "scoreCalculator": "Kalkulator wyniku",
       "aboutUs": "O nas",
+      "levels": "Poziomy",
       "resources": "Materiały",
       "mods": "Mody",
+      "privacyPolicy": "Polityka prywatności",
+      "termsOfService": "Regulamin",
       "apiDocs": "API Docs",
       "developers": "Developer Portal"
     },

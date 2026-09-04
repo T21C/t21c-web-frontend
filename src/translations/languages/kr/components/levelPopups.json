@@ -109,7 +109,7 @@
     "title": "연결된 레벨",
     "description": "같은 차트의 사소한 변형으로 묶인 레벨입니다.",
     "empty": "연결된 레벨이 없습니다.",
-    "current": "이 레벨",
+    "youAreHere": "여기입니다",
     "unknownSong": "알 수 없는 곡",
     "toastAdded": "{{name}} 연결됨",
     "toastRemoved": "연결이 해제되었습니다",
