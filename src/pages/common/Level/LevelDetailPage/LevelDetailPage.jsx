@@ -93,6 +93,20 @@ const gimmickReasons = []
 
 const ENABLE_ROULETTE = import.meta.env.VITE_APRIL_FOOLS === "true";
 
+const LEVEL_DETAIL_TOOLTIP_STYLE = { zIndex: 1000 };
+
+function LevelDetailTooltip({ style, ...props }) {
+  return (
+    <Portal>
+      <Tooltip
+        {...props}
+        positionStrategy="fixed"
+        style={{ ...LEVEL_DETAIL_TOOLTIP_STYLE, ...style }}
+      />
+    </Portal>
+  );
+}
+
 const getHighScores = (players) => {
   if (!players?.length) return null;
   const sortedPlayers = [...players].sort((a, b) => 
@@ -1419,6 +1433,8 @@ const LevelDetailPageContent = ({ mockData = null }) => {
 
   // Custom CSS injection system for curations
   const createCurationStyleSheet = useCallback((curation) => {
+    return null; // DISABLED
+
     if (!curation || !curation.customCSS) {
       return null;
     }
@@ -2734,7 +2750,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                         <ChartIcon size={22} />
                         <span className="metadata-value">{res.level.tilecount}</span>
                         {autoTilecountTooltip && (
-                          <Tooltip style={{ zIndex: 10, fontSize: '0.85rem' }} id={tilecountTooltipId} place="bottom" />
+                          <LevelDetailTooltip style={{ fontSize: '0.85rem' }} id={tilecountTooltipId} place="bottom" />
                         )}
                       </div>
                     );
@@ -2913,7 +2929,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                         <BellIcon size={20} color="currentColor" />
                       )}
                     </button>
-                    <Tooltip id="chart-clear-mute-tooltip" place="bottom" noArrow />
+                    <LevelDetailTooltip id="chart-clear-mute-tooltip" place="bottom" noArrow />
                   </div>
                 )}
                 <LikeButton
@@ -3012,7 +3028,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                 ).length || 0;
                 const showTooltip = !isCreator && charterCount > 2;
                 
-                return showTooltip ? <Tooltip id="edit-disabled-tooltip" place="left" noArrow style={{ zIndex: '1', maxWidth: '400px' }}/> : null;
+                return showTooltip ? <LevelDetailTooltip id="edit-disabled-tooltip" place="left" noArrow style={{ maxWidth: '400px' }}/> : null;
               })()}
                   </div>
                 );
@@ -3153,7 +3169,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                       `${totalPassCount} (${clearCount})` 
                       : t('levelDetail.stats.waiting')}
                 </span>
-                {hasRepeatedClears && <Tooltip id="total-clears-tooltip" place="left" noArrow />}
+                {hasRepeatedClears && <LevelDetailTooltip id="total-clears-tooltip" place="left" noArrow />}
               </div>
               </>
               ) : (
@@ -3243,18 +3259,18 @@ const LevelDetailPageContent = ({ mockData = null }) => {
             </div>
             {sortedLeaderboard.length > 0 ? (
               <div className="leaderboard-sort">
-                <Tooltip id="tm" place="top" noArrow>
+                <LevelDetailTooltip id="tm" place="top" noArrow>
                   {t('levelDetail.leaderboard.tooltips.time')}
-                </Tooltip>
-                <Tooltip id="ac" place="top" noArrow>
+                </LevelDetailTooltip>
+                <LevelDetailTooltip id="ac" place="top" noArrow>
                   {t('levelDetail.leaderboard.tooltips.accuracy')}
-                </Tooltip>
-                <Tooltip id="sc" place="top" noArrow>
+                </LevelDetailTooltip>
+                <LevelDetailTooltip id="sc" place="top" noArrow>
                   {t('levelDetail.leaderboard.tooltips.score')}
-                </Tooltip>
-                <Tooltip id="sp" place="top" noArrow>
+                </LevelDetailTooltip>
+                <LevelDetailTooltip id="sp" place="top" noArrow>
                   {t('levelDetail.leaderboard.tooltips.speed')}
-                </Tooltip>
+                </LevelDetailTooltip>
 
                 <div className="sort-button-container" onClick={() => handleSort("TIME")}>
                   <CalendarIcon 

@@ -367,6 +367,7 @@ const LevelSubmissionPage = () => {
     // Reset creator states with empty values
     setCharters([{ name: '', id: null, isNewRequest: false }]);
     setVfxers([{ name: '', id: null, isNewRequest: false }]);
+    setSpecialThanks([{ name: '', id: null, isNewRequest: false }]);
     setTeam({ name: '', id: null, isNewRequest: false });
 
     // Reset song/artist selection

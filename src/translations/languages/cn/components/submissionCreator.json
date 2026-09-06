@@ -100,7 +100,9 @@
       "teamLoadFailed": "团队加载失败",
       "teamNotFound": "未找到团队",
       "invalidTeamData": "提供的团队数据无效",
-      "creditRequestIdMissing": "缺少制作组请求 ID"
+      "creditRequestIdMissing": "缺少制作组请求 ID",
+      "nameExists": "已存在同名创作者。请使用搜索进行分配。",
+      "teamNameExists": "已存在同名团队。请使用搜索进行分配。"
     }
   }
 } 
