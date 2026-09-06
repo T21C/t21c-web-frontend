@@ -193,6 +193,17 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
     setShowCreateForm(false);
   };
 
+  const openCreateForm = () => {
+    setSelectedCreatorId(null);
+    setSelectedTeamId(null);
+    setCreatorDetails(null);
+    setTeamDetails(null);
+    setSearchQuery('');
+    setSearchResults([]);
+    setError('');
+    setShowCreateForm(true);
+  };
+
   const handleCreate = async (e) => {
     e.preventDefault();
     if (isCreating) return; // Prevent multiple simultaneous submissions
@@ -245,6 +256,11 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
       console.error('Error in creation process:', error);
       if (error.message === 'Credit request ID is missing') {
         setError(t('submissionCreator.messages.error.creditRequestIdMissing'));
+      } else if (error.response?.status === 409) {
+        setError(error.response?.data?.error ||
+          (isTeamMode
+            ? t('submissionCreator.messages.error.teamNameExists')
+            : t('submissionCreator.messages.error.nameExists')));
       } else {
         setError(error.response?.data?.error ||
           (isTeamMode
@@ -363,21 +379,10 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
             <CustomSelect
               options={roleOptions}
               value={roleOptions.find(opt => opt.value === selectedRole)}
-              onChange={(selected) => {
-                setSelectedRole(selected.value);
-                setSearchQuery('');
-                setSearchResults([]);
-                setShowCreateForm(false);
-                setError('');
-                // Clear selected entities when switching roles
-                setSelectedCreatorId(null);
-                setSelectedTeamId(null);
-                setCreatorDetails(null);
-                setTeamDetails(null);
-              }}
+              onChange={(selected) => setSelectedRole(selected.value)}
               className="role-select"
               width="100%"
-              isDisabled={isLoadingDetails}
+              isDisabled
             />
           </div>
 
@@ -441,7 +446,7 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
                     />
                     <button 
                       className="create-creator-button"
-                      onClick={() => setShowCreateForm(true)}
+                      onClick={openCreateForm}
                     >
                       {t('submissionCreator.buttons.createNew')}
                     </button>
@@ -522,7 +527,7 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
               )}
             </div>
 
-            {selectedDetails && (
+            {selectedDetails && !showCreateForm && (
               <div className="creator-stats">
                 <h3>{isTeamMode ? t('submissionCreator.teamStats.title') : t('submissionCreator.stats.title')}</h3>
                 <div className="stats-content">
@@ -543,16 +548,18 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
             )}
           </div>
 
-          <div className="action-buttons">
-            <button
-              className={`action-button ${isLoading || isLoadingDetails ? 'loading' : ''}`}
-              onClick={handleAssign}
-              disabled={(!selectedCreatorId && !isTeamMode) || (!selectedTeamId && isTeamMode) || isLoading || isLoadingDetails}
-            >
-              {isTeamMode ? t('submissionCreator.buttons.assignTeam') : t('submissionCreator.buttons.assign')}
-              {(isLoading || isLoadingDetails) && <div className="loading-spinner" />}
-            </button>
-          </div>
+          {!showCreateForm && (
+            <div className="action-buttons">
+              <button
+                className={`action-button ${isLoading || isLoadingDetails ? 'loading' : ''}`}
+                onClick={handleAssign}
+                disabled={(!selectedCreatorId && !isTeamMode) || (!selectedTeamId && isTeamMode) || isLoading || isLoadingDetails}
+              >
+                {isTeamMode ? t('submissionCreator.buttons.assignTeam') : t('submissionCreator.buttons.assign')}
+                {(isLoading || isLoadingDetails) && <div className="loading-spinner" />}
+              </button>
+            </div>
+          )}
 
           {error && <div className="error-message">{error}</div>}
           {success && <div className="success-message">{success}</div>}

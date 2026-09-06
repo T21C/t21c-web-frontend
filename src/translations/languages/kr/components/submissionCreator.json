@@ -99,7 +99,10 @@
       "teamAssignFailed": "팀 할당에 실패했습니다",
       "teamLoadFailed": "팀 불러오기에 실패했습니다",
       "teamNotFound": "팀을 찾을 수 없습니다",
-      "invalidTeamData": "잘못된 팀 데이터가 제공되었습니다"
+      "invalidTeamData": "잘못된 팀 데이터가 제공되었습니다",
+      "creditRequestIdMissing": "크레딧 요청 ID가 없습니다",
+      "nameExists": "같은 이름의 제작자가 이미 있습니다. 검색으로 할당하세요.",
+      "teamNameExists": "같은 이름의 팀이 이미 있습니다. 검색으로 할당하세요."
     }
   }
 }

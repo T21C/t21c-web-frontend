@@ -39,6 +39,32 @@ import SubmissionVideoLinkField from './SubmissionVideoLinkField';
 import SubmissionNotesField from './SubmissionNotesField';
 import SubmitterRecordBadge, { incrementSubmitterRecord, preserveSubmitterStats } from './SubmitterRecordBadge';
 
+const NESTED_SUBMISSION_KEYS = [
+  'songObject',
+  'artistObject',
+  'songRequest',
+  'artistRequest',
+  'artistRequests',
+  'creatorRequests',
+  'teamRequestData',
+  'evidence',
+  'levelSubmitter',
+];
+
+function pickNested(updated, existing, key) {
+  return Object.prototype.hasOwnProperty.call(updated ?? {}, key) ? updated[key] : existing[key];
+}
+
+function mergeLevelSubmission(existing, updated, overrides = {}) {
+  const source = updated ?? {};
+  const merged = { ...existing, ...source };
+  for (const key of NESTED_SUBMISSION_KEYS) {
+    merged[key] = pickNested(source, existing, key);
+  }
+  Object.assign(merged, overrides);
+  return merged;
+}
+
 
 const LevelSubmissions = () => {
   const { t } = useTranslation(['components', 'common', 'pages']);
@@ -387,18 +413,7 @@ const LevelSubmissions = () => {
     // Update the submission in the list with the returned data
     setSubmissions(prevSubmissions => prevSubmissions.map(submission => {
       if (submission.id !== selectedSubmission.id) return submission;
-      // Merge response data with existing submission to preserve all fields
-      const merged = {
-        ...submission,
-        ...updatedData,
-        // Preserve nested objects that might not be in response
-        songObject: updatedData.songObject || submission.songObject,
-        artistObject: updatedData.artistObject || submission.artistObject,
-        songRequest: updatedData.songRequest || submission.songRequest,
-        artistRequest: updatedData.artistRequest || submission.artistRequest,
-        evidence: updatedData.evidence || submission.evidence,
-        levelSubmitter: updatedData.levelSubmitter || submission.levelSubmitter
-      };
+      const merged = mergeLevelSubmission(submission, updatedData);
       return preserveSubmitterStats(submission, merged, 'levelSubmitter');
     }));
     // Close the creator popup
@@ -418,19 +433,7 @@ const LevelSubmissions = () => {
       // Update the submissions list with the new data
       setSubmissions(prevSubmissions => prevSubmissions.map(submission => {
         if (submission.id === submissionId) {
-          // Merge response data with existing submission to preserve all fields
-          return {
-            ...submission,
-            ...response.data,
-            // Preserve nested objects that might not be in response
-            songObject: response.data.songObject || submission.songObject,
-            artistObject: response.data.artistObject || submission.artistObject,
-            songRequest: response.data.songRequest || submission.songRequest,
-            artistRequest: response.data.artistRequest || submission.artistRequest,
-            teamRequestData: response.data.teamRequestData || submission.teamRequestData,
-            evidence: response.data.evidence || submission.evidence,
-            levelSubmitter: response.data.levelSubmitter || submission.levelSubmitter
-          };
+          return mergeLevelSubmission(submission, response.data);
         }
         return submission;
       }));
@@ -487,28 +490,11 @@ const LevelSubmissions = () => {
       } else {
         setSubmissions(prevSubmissions => prevSubmissions.map(submission => {
           if (submission.id === selectedSongSubmission.id) {
-            // Merge response data with existing submission to preserve all fields
-            const updatedSubmission = {
-              ...submission,
-              ...response.data,
-              // Clear artist requests when song is set (case 1)
-              artistRequests: songData.songId ? [] : (response.data.artistRequests || submission.artistRequests),
-              // Preserve nested objects that might not be in response
-              creatorRequests: response.data.creatorRequests || submission.creatorRequests,
-              teamRequestData: response.data.teamRequestData || submission.teamRequestData,
-              evidence: response.data.evidence || submission.evidence,
-              levelSubmitter: response.data.levelSubmitter || submission.levelSubmitter,
-              artistObject: response.data.artistObject || submission.artistObject
-            };
-            
-            // For new requests, ensure songId and songObject are cleared
+            const updatedSubmission = mergeLevelSubmission(submission, response.data);
             if (songData.isNewRequest) {
               updatedSubmission.songId = null;
               updatedSubmission.songObject = null;
-            } else {
-              updatedSubmission.songObject = response.data.songObject || submission.songObject;
             }
-            
             return updatedSubmission;
           }
           return submission;
@@ -593,19 +579,7 @@ const LevelSubmissions = () => {
       
       setSubmissions(prevSubmissions => prevSubmissions.map(submission => {
         if (submission.id === selectedArtistSubmission.id) {
-          // Merge response data with existing submission to preserve all fields
-          return {
-            ...submission,
-            ...response.data,
-            // Preserve nested objects that might not be in response
-            creatorRequests: response.data.creatorRequests || submission.creatorRequests,
-            teamRequestData: response.data.teamRequestData || submission.teamRequestData,
-            artistRequests: response.data.artistRequests || submission.artistRequests,
-            songObject: response.data.songObject || submission.songObject,
-            songRequest: response.data.songRequest || submission.songRequest,
-            evidence: response.data.evidence || submission.evidence,
-            levelSubmitter: response.data.levelSubmitter || submission.levelSubmitter
-          };
+          return mergeLevelSubmission(submission, response.data);
         }
         return submission;
       }));
@@ -674,19 +648,7 @@ const LevelSubmissions = () => {
       // Update the submissions list with the new data
       setSubmissions(prevSubmissions => prevSubmissions.map(submission => {
         if (submission.id === submissionId) {
-          // Merge response data with existing submission to preserve all fields
-          return {
-            ...submission,
-            ...response.data,
-            // Preserve nested objects that might not be in response
-            songObject: response.data.songObject || submission.songObject,
-            artistObject: response.data.artistObject || submission.artistObject,
-            songRequest: response.data.songRequest || submission.songRequest,
-            artistRequest: response.data.artistRequest || submission.artistRequest,
-            teamRequestData: response.data.teamRequestData || submission.teamRequestData,
-            evidence: response.data.evidence || submission.evidence,
-            levelSubmitter: response.data.levelSubmitter || submission.levelSubmitter
-          };
+          return mergeLevelSubmission(submission, response.data);
         }
         return submission;
       }));
@@ -782,18 +744,7 @@ const LevelSubmissions = () => {
       
       setSubmissions(prevSubmissions => prevSubmissions.map(submission => {
         if (submission.id === submissionId) {
-          // Merge response data with existing submission to preserve all fields
-          return {
-            ...submission,
-            ...response.data,
-            // Preserve nested objects that might not be in response
-            creatorRequests: response.data.creatorRequests || submission.creatorRequests,
-            teamRequestData: response.data.teamRequestData || submission.teamRequestData,
-            artistObject: response.data.artistObject || submission.artistObject,
-            artistRequest: response.data.artistRequest || submission.artistRequest,
-            evidence: response.data.evidence || submission.evidence,
-            levelSubmitter: response.data.levelSubmitter || submission.levelSubmitter
-          };
+          return mergeLevelSubmission(submission, response.data);
         }
         return submission;
       }));
@@ -812,19 +763,7 @@ const LevelSubmissions = () => {
       
       setSubmissions(prevSubmissions => prevSubmissions.map(submission => {
         if (submission.id === submissionId) {
-          // Merge response data with existing submission to preserve all fields
-          return {
-            ...submission,
-            ...response.data,
-            // Preserve nested objects that might not be in response
-            creatorRequests: response.data.creatorRequests || submission.creatorRequests,
-            teamRequestData: response.data.teamRequestData || submission.teamRequestData,
-            songObject: response.data.songObject || submission.songObject,
-            songRequest: response.data.songRequest || submission.songRequest,
-            artistRequests: response.data.artistRequests || submission.artistRequests,
-            evidence: response.data.evidence || submission.evidence,
-            levelSubmitter: response.data.levelSubmitter || submission.levelSubmitter
-          };
+          return mergeLevelSubmission(submission, response.data);
         }
         return submission;
       }));
@@ -843,19 +782,13 @@ const LevelSubmissions = () => {
       
       setSubmissions(prevSubmissions => prevSubmissions.map(submission => {
         if (submission.id === submissionId) {
-          return {
-            ...submission,
-            ...response.data,
-            artistRequests: response.data.artistRequests || submission.artistRequests?.filter(
+          const merged = mergeLevelSubmission(submission, response.data);
+          if (!Object.prototype.hasOwnProperty.call(response.data ?? {}, 'artistRequests')) {
+            merged.artistRequests = submission.artistRequests?.filter(
               req => req.id !== artistRequestId
-            ),
-            creatorRequests: response.data.creatorRequests || submission.creatorRequests,
-            teamRequestData: response.data.teamRequestData || submission.teamRequestData,
-            songObject: response.data.songObject || submission.songObject,
-            songRequest: response.data.songRequest || submission.songRequest,
-            evidence: response.data.evidence || submission.evidence,
-            levelSubmitter: response.data.levelSubmitter || submission.levelSubmitter
-          };
+            );
+          }
+          return merged;
         }
         return submission;
       }));

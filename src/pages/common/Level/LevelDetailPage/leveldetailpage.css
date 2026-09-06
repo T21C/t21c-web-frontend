@@ -56,7 +56,9 @@
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
   
-  /* Z-index scale */
+  /* Z-index scale
+     Header: background overlay (1) < copy/description (2) < chrome (like, mute, actions) (10)
+     < dropdowns (~100–130) < tooltips (1000). Description must not outrank chrome. */
   --z-background: 1;
   --z-content: 2;
   --z-overlay: 10;
@@ -95,6 +97,10 @@
   z-index: var(--z-content);
 }
 
+.level-detail .react-tooltip {
+  z-index: var(--z-tooltip);
+}
+
 /* ============================================
    HEADER SECTION
    ============================================ */
@@ -106,7 +112,7 @@
   padding: var(--spacing-sm);
   gap: var(--spacing-sm);
   position: relative;
-  z-index: 2;
+  z-index: var(--z-content);
   min-height: var(--header-height);
 }
 
@@ -126,10 +132,6 @@
   display: flex;
   background-color: var(--glass-bg);
   border: 1px solid var(--glass-border);
-}
-
-.level-detail .header .left.has-level-links {
-  padding-bottom: calc(var(--spacing-sm) + 2.25rem);
 }
 
 .level-detail .header .left::before {
@@ -160,6 +162,8 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--spacing-md);
+  position: relative;
+  z-index: var(--z-overlay);
 }
 
 /* When there are 4 or fewer items, force single column */
@@ -583,7 +587,7 @@
   position: absolute;
   top: var(--spacing-sm);
   right: var(--spacing-sm);
-  z-index: 10;
+  z-index: var(--z-overlay);
 }
 
 .level-detail .level-detail-header-notify-button {
@@ -1574,7 +1578,8 @@
   align-items: center;
   gap: var(--spacing-xs);
   margin-top: 12px;
-  z-index: 2;
+  position: relative;
+  z-index: var(--z-overlay);
   margin-left: auto;
   margin-right: var(--spacing-md);
 }
@@ -1771,7 +1776,7 @@
     top: var(--spacing-sm);
     right: var(--spacing-sm);
     margin: 0;
-    z-index: 10;
+    z-index: var(--z-overlay);
   }
 
   .level-detail .level-detail-header-notify-slot {
@@ -1955,7 +1960,7 @@
     top: var(--spacing-xs);
     right: var(--spacing-xs);
     margin: 0;
-    z-index: 10;
+    z-index: var(--z-overlay);
   }
 
   .level-detail .level-detail-header-notify-slot {
@@ -2531,7 +2536,7 @@
   min-width: 20rem;
   width: 100%;
   position: relative;
-  z-index: 3;
+  z-index: var(--z-content);
   flex: 1;
   align-self: stretch;
   display: flex;
@@ -2579,7 +2584,7 @@
   flex-direction: column;
   gap: 0.5rem;
   background: rgba(0, 0, 0, 1);
-  z-index: 10;
+  z-index: var(--z-content);
   box-shadow: var(--shadow-lg);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);

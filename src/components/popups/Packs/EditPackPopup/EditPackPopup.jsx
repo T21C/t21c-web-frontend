@@ -164,8 +164,7 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
 
       setTransferOwnershipLoading(true);
       try {
-        const encodedSearch = encodeURIComponent(transferOwnershipSearch);
-        const response = await api.get(routes.database.levels.packs.usersSearch(encodedSearch));
+        const response = await api.get(routes.database.levels.packs.usersSearch(transferOwnershipSearch));
         setTransferOwnershipUsers(response.data || []);
       } catch (error) {
         console.error('Error searching users:', error);

@@ -3,13 +3,13 @@ import { Link } from "react-router-dom";
 import "./scorecard.css"
 import "@/index.css"
 import { useTranslation } from "react-i18next";
-import { clampFloat, formatScore, formatPassDate, formatCreatorDisplay, getPassKeycountBadgeType, getPassKeycountBadgeValue } from "@/utils/Utility"
+import { clampFloat, formatScore, formatPassDate, formatCreatorDisplay } from "@/utils/Utility"
 import { formatNumber } from "@/utils";
 import { formatAccuracyRatio } from "@/utils/statFormatters";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { Tooltip } from "react-tooltip";
 import WorldsFirstFlag from "../WorldsFirstFlag/WorldsFirstFlag";
-import PassAdofaiV2Flag from "../PassAdofaiV2Flag";
+import PassFlags from "../PassFlags";
 import { VideoLinkIcon } from "@/components/common/icons";
 import { getPrimaryVideoLink } from "@/utils/videoLink";
 import { UserAvatar } from "@/components/layout";
@@ -30,35 +30,6 @@ const Judgements = ({judgements}) => {
         <span className="early-single">{judgements.earlySingle}</span>
         <span className="late-single">{judgements.lateSingle}</span>
       </div>
-    </div>
-  );
-};
-
-const keyCountFlagLabel = (pass, t) => {
-  const type = getPassKeycountBadgeType(pass);
-  if (type === 'keyCount') {
-    return t('cards.pass.flags.keyCount', { count: getPassKeycountBadgeValue(pass) });
-  }
-  if (type === '16k') {
-    return t('cards.pass.flags.sixteenKey');
-  }
-  if (type === '12k') {
-    return t('cards.pass.flags.twelveKey');
-  }
-  return null;
-};
-
-const PassFlags = ({ pass, t }) => {
-  const keyCountLabel = keyCountFlagLabel(pass, t);
-  if (!keyCountLabel && !pass.isNoHoldTap && !pass.isAdofaiV2) {
-    return null;
-  }
-
-  return (
-    <div className="flags-wrapper">
-      {keyCountLabel ? <div className="flag">{keyCountLabel}</div> : null}
-      {pass.isNoHoldTap && <div className="flag">{t('cards.pass.flags.noHoldTap')}</div>}
-      {pass.isAdofaiV2 && <PassAdofaiV2Flag className="flag flag--adofai-v2" />}
     </div>
   );
 };
@@ -193,7 +164,7 @@ const ScoreCard = ({ scoreData, topScores = [], potentialTopScores = [], mode = 
       {scoreBlock}
       {accuracyBlock}
       {speedBlock}
-      <PassFlags pass={scoreData} t={t} />
+      <PassFlags pass={scoreData} />
       {!isFeaturedMode && (formattedDate || (scoreData.videoLink && !isHiddenLevel)) && (
         <div className="score-card__trailing">
           {formattedDate && (
