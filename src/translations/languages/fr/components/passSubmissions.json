@@ -89,8 +89,6 @@
   },
   "edit": {
     "edit": "Modifier",
-    "save": "Sauvegarder",
-    "cancel": "Annuler",
     "levelPlaceholder": "Rechercher ou saisir l’ID du niveau",
     "fetchingLevel": "Chargement du niveau…",
     "songPlaceholder": "Morceau"
@@ -116,4 +114,4 @@
   "notifications": {
     "autoAllow": "Approbation auto de {{count}} soumissions"
   }
-} 
+}

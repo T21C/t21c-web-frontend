@@ -22,7 +22,6 @@
   "newTournament": "新建赛事",
   "editTournament": "编辑赛事",
   "emptyList": "暂无赛事。请新建或导入 CSV。",
-  "save": "保存",
   "delete": "删除",
   "selectTournamentFirst": "请先在「赛事」标签页中选择一个赛事。",
   "addRow": "添加行",

@@ -82,8 +82,6 @@
   },
   "edit": {
     "edit": "Edit",
-    "save": "Save",
-    "cancel": "Cancel",
     "levelPlaceholder": "Search or enter level ID",
     "fetchingLevel": "Loading level…",
     "songPlaceholder": "Song"
@@ -105,4 +103,4 @@
   "notifications": {
     "autoAllow": "Auto-approved {{count}} submissions"
   }
-} 
+}

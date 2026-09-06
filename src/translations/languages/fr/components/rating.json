@@ -12,8 +12,7 @@
     },
     "zenModeChip": "Zen Mode",
     "buttons": {
-      "saveChanges": "Enregistrer",
-      "saving": "Enregistrement..."
+      "saveChanges": "Enregistrer"
     },
     "errors": {
       "commentLength": "Le commentaire doit faire moins de 1000 caractères",
@@ -39,4 +38,4 @@
       "editLevel": "Editer le niveau"
     }
   }
-} 
+}

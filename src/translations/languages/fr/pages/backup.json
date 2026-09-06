@@ -19,8 +19,6 @@
     "creating": "Création...",
     "restore": "Restaurer",
     "delete": "Supprimer",
-    "save": "Sauvegarder",
-    "saving": "Sauvergarde...",
     "cancel": "Annuler",
     "confirm": "Confirmer"
   },
@@ -69,4 +67,4 @@
     "size": "Taille: {{size}}",
     "newName": "Entrer le nouveau nom"
   }
-} 
+}

@@ -139,7 +139,7 @@ const DevelopersCreatePage = () => {
             className="developers-portal__btn developers-portal__btn--primary"
             disabled={saving}
           >
-            {saving ? t('developers.saving') : t('developers.createSubmit')}
+            {saving ? t('loading.saving', { ns: 'common' }) : t('developers.createSubmit')}
           </button>
         </div>
       </form>

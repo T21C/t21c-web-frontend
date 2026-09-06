@@ -213,7 +213,7 @@ export default function ProfileHeaderSurfaceEditorPopup({
           <h2 id="profile-header-surface-popup-title" className="profile-header-surface-popup__title">
             {t("settings.headerSurface.editorTitle")}
           </h2>
-          <CloseButton onClick={requestClose} ariaLabel={t("settings.headerSurface.cancel")} />
+          <CloseButton onClick={requestClose} ariaLabel={t("buttons.cancel", { ns: "common" })} />
         </header>
 
         <div className="profile-header-surface-popup__body">

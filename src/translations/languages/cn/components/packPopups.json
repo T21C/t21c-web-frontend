@@ -136,18 +136,15 @@
     },
     "save": "保存更改",
     "delete": "删除此包",
-    "deleting": "删除中……",
     "noPermission": "你无权限编辑此包",
     "deleteConfirm": {
       "title": "删除此包",
-      "message": "你确定你要删除此包吗？此操作不可撤销。",
-      "confirm": "删除此包"
+      "message": "你确定你要删除此包吗？此操作不可撤销。"
     },
     "transferOwnership": {
       "label": "更改所有者",
       "currentOwner": "当前所有者",
       "placeholder": "按用户名或昵称搜索……",
-      "searching": "搜索中……",
       "noResults": "未找到用户",
       "selected": "已选中",
       "transfer": "更改所有者",

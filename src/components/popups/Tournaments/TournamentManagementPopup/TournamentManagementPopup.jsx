@@ -944,7 +944,7 @@ const TournamentManagementPopup = ({
                     onClick={saveTournament}
                     disabled={!detailsDirty}
                   >
-                    {t("tournamentManagement.save")}
+                    {t("buttons.save", { ns: "common" })}
                   </button>
                   <button type="button" className="btn-fill-danger" onClick={deleteTournament}>
                     {t("tournamentManagement.delete")}

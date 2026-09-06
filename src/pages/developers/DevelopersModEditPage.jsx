@@ -257,7 +257,7 @@ const DevelopersModEditPage = () => {
               className="developers-portal__btn developers-portal__btn--primary"
               disabled={!form.name.trim() || saving}
             >
-              {saving ? t('developers.saving') : t('developers.mods.save')}
+              {saving ? t('loading.saving', { ns: 'common' }) : t('developers.mods.save')}
             </button>
           </div>
         </form>

@@ -32,7 +32,6 @@
   "deleteConfirm": "删除此应用？现有授权将在许可过期或撤销后失效。",
   "delete": "删除应用",
   "save": "保存更改",
-  "saving": "保存中……",
   "clientId": "客户端ID",
   "clientSecret": "私密客户端",
   "copy": "复制",

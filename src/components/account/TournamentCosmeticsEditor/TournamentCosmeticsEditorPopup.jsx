@@ -160,7 +160,7 @@ export default function TournamentCosmeticsEditorPopup({
             >
               {t("settings.tournaments.editorTitle")}
             </h2>
-            <CloseButton onClick={requestClose} ariaLabel={t("settings.tournaments.cancel")} />
+            <CloseButton onClick={requestClose} ariaLabel={t("buttons.cancel", { ns: "common" })} />
           </header>
 
           <div className="tournament-cosmetics-editor-popup__body">
@@ -282,7 +282,7 @@ export default function TournamentCosmeticsEditorPopup({
                 disabled={saveBusy}
                 onClick={requestClose}
               >
-                {t("settings.tournaments.cancel")}
+                {t("buttons.cancel", { ns: "common" })}
               </button>
               <button
                 type="button"

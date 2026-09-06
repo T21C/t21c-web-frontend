@@ -520,10 +520,10 @@ export default function PassSubmissionEditableMeta({
               </div>
               <div className="pass-submission-meta-actions">
                 <button type="button" className="pass-submission-meta-save" onClick={saveLevel}>
-                  {t('passSubmissions.edit.save')}
+                  {t('buttons.save', { ns: 'common' })}
                 </button>
                 <button type="button" className="pass-submission-meta-cancel" onClick={cancelEditLevel}>
-                  {t('passSubmissions.edit.cancel')}
+                  {t('buttons.cancel', { ns: 'common' })}
                 </button>
               </div>
             </div>
@@ -554,10 +554,10 @@ export default function PassSubmissionEditableMeta({
               />
               <div className="pass-submission-meta-actions">
                 <button type="button" className="pass-submission-meta-save" onClick={saveSpeed}>
-                  {t('passSubmissions.edit.save')}
+                  {t('buttons.save', { ns: 'common' })}
                 </button>
                 <button type="button" className="pass-submission-meta-cancel" onClick={cancelEditSpeed}>
-                  {t('passSubmissions.edit.cancel')}
+                  {t('buttons.cancel', { ns: 'common' })}
                 </button>
               </div>
             </div>
@@ -614,10 +614,10 @@ export default function PassSubmissionEditableMeta({
                 </div>
                 <div className="pass-submission-meta-actions">
                   <button type="button" className="pass-submission-meta-save" onClick={saveJudgements}>
-                    {t('passSubmissions.edit.save')}
+                    {t('buttons.save', { ns: 'common' })}
                   </button>
                   <button type="button" className="pass-submission-meta-cancel" onClick={cancelEditJudgements}>
-                    {t('passSubmissions.edit.cancel')}
+                    {t('buttons.cancel', { ns: 'common' })}
                   </button>
                 </div>
               </div>
@@ -698,10 +698,10 @@ export default function PassSubmissionEditableMeta({
               </label>
               <div className="pass-submission-meta-actions">
                 <button type="button" className="pass-submission-meta-save" onClick={saveFlags}>
-                  {t('passSubmissions.edit.save')}
+                  {t('buttons.save', { ns: 'common' })}
                 </button>
                 <button type="button" className="pass-submission-meta-cancel" onClick={cancelEditFlags}>
-                  {t('passSubmissions.edit.cancel')}
+                  {t('buttons.cancel', { ns: 'common' })}
                 </button>
               </div>
             </div>

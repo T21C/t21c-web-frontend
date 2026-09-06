@@ -22,7 +22,6 @@
     "buttons": {
       "saveChanges": "변경 사항 저장",
       "removeRating": "책정 삭제",
-      "saving": "저장 중...",
       "viewAdminRatings": "관리자 책정 보기",
       "viewCommunityRatings": "커뮤니티 책정 보기"
     },

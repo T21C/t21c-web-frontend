@@ -727,7 +727,7 @@ const TournamentManagementPage = () => {
               disabled={!canSaveSeries}
             >
               {editingSeriesId != null
-                ? t("tournamentManagement.save")
+                ? t("buttons.save", { ns: "common" })
                 : t("tournamentManagement.createSeries")}
             </button>
             {editingSeriesId != null ? (

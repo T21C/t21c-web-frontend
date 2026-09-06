@@ -13,8 +13,7 @@
     },
     "zenModeChip": "Zen Mode",
     "buttons": {
-      "saveChanges": "Zapisz zmiany",
-      "saving": "Zapisywanie..."
+      "saveChanges": "Zapisz zmiany"
     },
     "errors": {
       "commentLength": "Komentarz musi być krótszy niż 1000 znaków",
@@ -105,4 +104,4 @@
       }
     }
   }
-} 
+}

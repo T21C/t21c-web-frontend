@@ -348,7 +348,7 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
                   >
                     <ImageIcon />
                     <span>
-                      {uploadingIcon ? t('packPopups.editPack.icon.uploading') : t('packPopups.editPack.icon.upload')}
+                      {uploadingIcon ? t('loading.uploading', { ns: 'common' }) : t('packPopups.editPack.icon.upload')}
                     </span>
                   </button>
                   {formData.iconUrl && (
@@ -461,7 +461,7 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
                     <div className="edit-pack-popup__transfer-dropdown" ref={transferDropdownRef}>
                       {transferOwnershipLoading ? (
                         <div className="edit-pack-popup__transfer-loading">
-                          {t('packPopups.editPack.transferOwnership.searching')}
+                          {t('loading.searching', { ns: 'common' })}
                         </div>
                       ) : transferOwnershipUsers.length === 0 ? (
                         <div className="edit-pack-popup__transfer-no-results">
@@ -552,7 +552,7 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
                 className="edit-pack-popup__save-btn"
                 disabled={loading || !canEdit || !formData.name.trim()}
               >
-                {loading ? t('packPopups.editPack.saving') : t('packPopups.editPack.save')}
+                {loading ? t('loading.saving', { ns: 'common' }) : t('packPopups.editPack.save')}
               </button>
             </div>
           </div>

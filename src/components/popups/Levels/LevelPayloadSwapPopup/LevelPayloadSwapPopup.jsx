@@ -159,7 +159,7 @@ export default function LevelPayloadSwapPopup({ sourceLevel, onClose, onSuccess 
               onClick={onClose}
               disabled={isSwapping}
             >
-              {t('levelPopups.payloadSwap.cancel')}
+              {t('buttons.cancel', { ns: 'common' })}
             </button>
             <button
               type="button"

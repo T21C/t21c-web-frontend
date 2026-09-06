@@ -114,7 +114,7 @@ function DisplayPlacementPopup({
             variant="floating"
             className="tournament-display-tree-editor__placement-close"
             onClick={onClose}
-            aria-label={t("settings.tournaments.cancel")}
+            aria-label={t("buttons.cancel", { ns: "common" })}
           />
 
           <div className="tournament-display-tree-editor__placement-content">
@@ -240,7 +240,7 @@ function DisplayPlacementPopup({
                 className="tournament-display-tree-editor__placement-btn tournament-display-tree-editor__placement-btn--secondary btn-fill-secondary"
                 onClick={onClose}
               >
-                {t("settings.tournaments.cancel")}
+                {t("buttons.cancel", { ns: "common" })}
               </button>
               <button
                 type="button"

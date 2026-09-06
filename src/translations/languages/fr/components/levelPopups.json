@@ -72,9 +72,6 @@
       "openButtonTitle": "Modifier BPM, tuiles et durée (hors CDN)",
       "clearHint": "Laisser un champ vide puis enregistrer pour l'effacer.",
       "preview": "Aperçu",
-      "save": "Enregistrer",
-      "saving": "Enregistrement...",
-      "cancel": "Annuler",
       "toastSaved": "Métadonnées du chart enregistrées",
       "labels": {
         "bpm": "BPM",
@@ -120,4 +117,4 @@
       "saveShare": "Échec de la mise à jour du partage"
     }
   }
-} 
+}

@@ -168,7 +168,7 @@ const ThumbnailUpload = ({
             disabled={isUploading || disabled}
             className="thumbnail-upload__upload-btn"
           >
-            {isUploading ? t('thumbnailUpload.uploading') : t('thumbnailUpload.upload')}
+            {isUploading ? t('loading.uploading', { ns: 'common' }) : t('thumbnailUpload.upload')}
           </button>
         )}
       </div>
