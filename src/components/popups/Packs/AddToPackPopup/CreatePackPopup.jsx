@@ -209,7 +209,7 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
                   >
                     <ImageIcon />
                     <span>
-                      {uploadingIcon ? t('packPopups.createPack.icon.uploading') : t('packPopups.createPack.icon.upload')}
+                      {uploadingIcon ? t('loading.uploading', { ns: 'common' }) : t('packPopups.createPack.icon.upload')}
                     </span>
                   </button>
                   {formData.iconUrl && (

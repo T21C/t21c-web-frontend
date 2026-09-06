@@ -11,8 +11,7 @@
       "label": "Judgment'y:",
       "tilecountMismatchTooltip": "Suma judgmentów <b>{{hitSum}}</b> nie zgadza się z osiągalną liczbą kafli <b>{{tilecount}}</b>.",
       "tilecountMismatchTooltipWithAuto": "Suma judgmentów <b>{{hitSum}}</b> nie zgadza się z osiągalną liczbą kafli <b>{{tilecount}}</b> ({{rawTilecount}} łącznie, {{autoTileCount}} auto).",
-      "types": {
-      },
+      "types": {},
       "fields": {
         "earlyDouble": "ED",
         "earlySingle": "ES",
@@ -77,8 +76,6 @@
   },
   "edit": {
     "edit": "Edytuj",
-    "save": "Zapisz",
-    "cancel": "Anuluj",
     "levelPlaceholder": "Szukaj lub wpisz ID poziomu",
     "fetchingLevel": "Ładowanie poziomu…",
     "songPlaceholder": "Utwór"
@@ -104,4 +101,4 @@
   "notifications": {
     "autoAllow": "Zaakceptowano automatycznie {{count}} zgłoszenia/eń"
   }
-} 
+}

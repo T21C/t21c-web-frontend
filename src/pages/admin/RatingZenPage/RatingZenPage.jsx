@@ -989,12 +989,12 @@ const RatingZenPage = () => {
                     disabled={!canSubmit}
                     aria-label={
                       isSaving
-                        ? t('rating.zen.actions.saving')
+                        ? t('loading.saving', { ns: 'common' })
                         : t('rating.zen.actions.submit')
                     }
                     title={
                       isSaving
-                        ? t('rating.zen.actions.saving')
+                        ? t('loading.saving', { ns: 'common' })
                         : !pendingRating.trim()
                           ? t('rating.zen.errors.ratingRequired')
                           : !pendingComment.trim()

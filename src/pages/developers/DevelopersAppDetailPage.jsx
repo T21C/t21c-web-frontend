@@ -296,7 +296,7 @@ const DevelopersAppDetailPage = () => {
                 className="developers-portal__btn developers-portal__btn--primary"
                 disabled={saving}
               >
-                {saving ? t('developers.saving') : t('developers.save')}
+                {saving ? t('loading.saving', { ns: 'common' }) : t('developers.save')}
               </button>
             </div>
           )}
@@ -343,7 +343,7 @@ const DevelopersAppDetailPage = () => {
                 className="developers-portal__btn developers-portal__btn--primary"
                 disabled={saving}
               >
-                {saving ? t('developers.saving') : t('developers.save')}
+                {saving ? t('loading.saving', { ns: 'common' }) : t('developers.save')}
               </button>
             </div>
           )}

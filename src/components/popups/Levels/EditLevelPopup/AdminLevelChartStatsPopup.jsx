@@ -208,7 +208,7 @@ export const AdminLevelChartStatsPopup = ({ level, onClose, onSaved }) => {
               onClick={onClose}
               disabled={saving}
             >
-              {t('levelPopups.edit.chartStats.cancel')}
+              {t('buttons.cancel', { ns: 'common' })}
             </button>
             <button
               type="submit"
@@ -216,8 +216,8 @@ export const AdminLevelChartStatsPopup = ({ level, onClose, onSaved }) => {
               disabled={saving}
             >
               {saving
-                ? t('levelPopups.edit.chartStats.saving')
-                : t('levelPopups.edit.chartStats.save')}
+                ? t('loading.saving', { ns: 'common' })
+                : t('buttons.save', { ns: 'common' })}
             </button>
           </div>
         </form>

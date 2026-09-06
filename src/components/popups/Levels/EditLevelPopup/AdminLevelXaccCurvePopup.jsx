@@ -1534,7 +1534,7 @@ export const AdminLevelXaccCurvePopup = ({
               onClick={requestClose}
               disabled={saving}
             >
-              {t('levelPopups.edit.xaccCurve.cancel')}
+              {t('buttons.cancel', { ns: 'common' })}
             </button>
             <button
               type="submit"
@@ -1546,8 +1546,8 @@ export const AdminLevelXaccCurvePopup = ({
                     defaultValue: 'Apply',
                   })
                 : saving
-                  ? t('levelPopups.edit.xaccCurve.saving')
-                  : t('levelPopups.edit.xaccCurve.save')}
+                  ? t('loading.saving', { ns: 'common' })
+                  : t('buttons.save', { ns: 'common' })}
             </button>
           </div>
         </form>

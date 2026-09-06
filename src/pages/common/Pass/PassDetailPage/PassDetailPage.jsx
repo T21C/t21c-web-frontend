@@ -521,7 +521,7 @@ const PassDetailPage = () => {
                   disabled={isSavingFeelingRating}
                 >
                   {isSavingFeelingRating
-                    ? t('passDetail.feelingRating.saving')
+                    ? t('loading.saving', { ns: 'common' })
                     : t('buttons.confirm', { ns: 'common' })}
                 </button>
                 <button

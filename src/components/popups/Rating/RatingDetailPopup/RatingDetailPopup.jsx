@@ -656,7 +656,7 @@ export const RatingDetailPopup = ({
                 className="rating-unsaved-draft-prompt__btn rating-unsaved-draft-prompt__btn--cancel"
                 onClick={handleCancelDraftPrompt}
               >
-                {t('rating.detailPopup.confirmations.unsavedDraft.cancel')}
+                {t('buttons.cancel', { ns: 'common' })}
               </button>
             </div>
           </div>

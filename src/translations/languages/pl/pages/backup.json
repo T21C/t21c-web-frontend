@@ -19,8 +19,6 @@
     "creating": "Tworzenie...",
     "restore": "Przywróć",
     "delete": "Usuń",
-    "save": "Zapisz",
-    "saving": "Zapisywanie...",
     "cancel": "Anuluj",
     "confirm": "Potwierdź",
     "upload": "Prześlij",
@@ -85,4 +83,4 @@
     "size": "Rozmiar: {{size}}",
     "newName": "Wpisz nową nazwę"
   }
-} 
+}

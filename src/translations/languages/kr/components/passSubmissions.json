@@ -76,8 +76,6 @@
   },
   "edit": {
     "edit": "편집",
-    "save": "저장",
-    "cancel": "취소",
     "levelPlaceholder": "검색 또는 레벨 ID 입력",
     "fetchingLevel": "레벨 불러오는 중…",
     "songPlaceholder": "곡"

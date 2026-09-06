@@ -387,7 +387,7 @@ const BackupList = ({ backups, isLoadingBackups, showConfirmation, storedPasswor
                         onClick={() => handleAction('rename', backup)}
                         disabled={renameLoading || !newName.trim()}
                       >
-                        {renameLoading ? t('backup.buttons.saving') : t('backup.buttons.save')}
+                        {renameLoading ? t('loading.saving', { ns: 'common' }) : t('buttons.save', { ns: 'common' })}
                       </button>
                       <button
                         className="cancel-rename-btn"

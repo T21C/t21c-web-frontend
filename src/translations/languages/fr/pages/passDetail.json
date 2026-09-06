@@ -97,11 +97,10 @@
   },
   "feelingRating": {
     "title": "Modifier la difficulté ressentie",
-    "placeholder": "ex. U15, G18~G20",
-    "saving": "Enregistrement..."
+    "placeholder": "ex. U15, G18~G20"
   },
   "errors": {
     "updateFeelingRating": "Échec de la mise à jour de la difficulté ressentie",
     "feelingRatingRequired": "La difficulté ressentie est obligatoire"
   }
-} 
+}

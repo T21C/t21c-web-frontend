@@ -89,9 +89,6 @@
       "baseScoreFallback": "缺少关卡基础分数，锚点分数按 {{base}} 缩放。",
       "tilecountFallback": "缺少物量，预览使用 100 物量。",
       "resetDefaults": "恢复站点默认值",
-      "save": "保存",
-      "saving": "保存中……",
-      "cancel": "取消",
       "toastSaved": "X精准度-分数曲线已保存",
       "toastSavedWithPasses": "X精准度-分数曲线已保存，已重算 {{count}} 个通关记录分数。",
       "sliderDisplay": "滑块 {{value}}",
@@ -123,9 +120,6 @@
       "openButtonTitle": "编辑 BPM、物量与时长信息",
       "clearHint": "留空可隐藏对应条目。",
       "preview": "预览",
-      "save": "保存",
-      "saving": "保存中……",
-      "cancel": "取消",
       "toastSaved": "谱面数据已保存",
       "labels": {
         "bpm": "BPM",
@@ -170,7 +164,6 @@
     "noTarget": "未选择关卡",
     "chooseTarget": "选择",
     "changeTarget": "修改",
-    "cancel": "取消",
     "confirm": "互换信息",
     "swapping": "互换中……",
     "toastSuccess": "关卡信息已互换",
@@ -241,4 +234,4 @@
     "searchPlaceholder": "搜索创作者…",
     "noResults": "没有匹配的创作者"
   }
-} 
+}

@@ -82,8 +82,6 @@
   },
   "edit": {
     "edit": "编辑",
-    "save": "保存",
-    "cancel": "取消",
     "levelPlaceholder": "搜索或输入关卡 ID",
     "fetchingLevel": "加载关卡中…",
     "songPlaceholder": "曲名"
@@ -105,4 +103,4 @@
   "notifications": {
     "autoAllow": "已自动通过 {{count}} 项通关记录"
   }
-} 
+}

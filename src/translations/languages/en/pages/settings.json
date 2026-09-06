@@ -208,7 +208,6 @@
     "previewWidthLabel": "Preview width",
     "previewResizeAria": "Drag to change preview width",
     "closeConfirm": "You have unsaved changes. Discard them and close?",
-    "cancel": "Cancel",
     "title": "Card background",
     "hint": "Stack gradients and an optional background image. Reorder layers to blend; save to upload images.",
     "lockedHint": "TUFStellar subscribers can customize the profile card background.",
@@ -347,7 +346,6 @@
       "insertShort": "Insert at {{index}}"
     },
     "save": "Save changes",
-    "cancel": "Cancel",
     "revertDraft": "Revert changes",
     "unsavedConfirm": "You have unsaved changes. Discard them and close?",
     "saveSuccess": "Tournament cosmetics updated",

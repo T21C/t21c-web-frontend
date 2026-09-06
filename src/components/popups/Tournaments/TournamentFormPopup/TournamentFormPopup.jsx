@@ -93,8 +93,8 @@ const TournamentFormPopup = ({
               disabled={saving || !form.shortName.trim()}
             >
               {saving
-                ? t("loading.saving", { ns: "common", defaultValue: "Saving…" })
-                : t("tournamentManagement.save")}
+                ? t("loading.saving", { ns: "common" })
+                : t("buttons.save", { ns: "common" })}
             </button>
           </div>
         </form>

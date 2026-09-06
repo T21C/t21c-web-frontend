@@ -73,9 +73,6 @@
       "openButtonTitle": "Edytuj BPM, kafelki i długość (bez CDN)",
       "clearHint": "Pozostaw pole puste i zapisz, aby je wyczyścić.",
       "preview": "Podgląd",
-      "save": "Zapisz",
-      "saving": "Zapisywanie...",
-      "cancel": "Anuluj",
       "toastSaved": "Zapisano metadane chartu",
       "labels": {
         "bpm": "BPM",
@@ -121,4 +118,4 @@
       "saveShare": "Nie udało się zaktualizować udostępniania"
     }
   }
-} 
+}
