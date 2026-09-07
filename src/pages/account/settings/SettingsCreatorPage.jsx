@@ -651,6 +651,7 @@ const SettingsCreatorPage = () => {
           profileId={creatorDoc?.id}
           followerCount={profile?.followerCount}
           showFollowerCount={profile?.showFollowerCount !== false}
+          youtubeChannels={profile?.youtubeChannels ?? user?.youtubeChannels}
           expandStatsAriaLabel={t("creators.profile.funFacts.expandAria")}
           collapseStatsAriaLabel={t("creators.profile.funFacts.collapseAria")}
           statGroups={statGroups}
@@ -793,6 +794,7 @@ const SettingsCreatorPage = () => {
             profileId: creatorDoc?.id,
             followerCount: profile?.followerCount,
             showFollowerCount: profile?.showFollowerCount !== false,
+            youtubeChannels: profile?.youtubeChannels ?? user?.youtubeChannels,
             expandStatsAriaLabel: t("creators.profile.funFacts.expandAria"),
             collapseStatsAriaLabel: t("creators.profile.funFacts.collapseAria"),
             statGroups,

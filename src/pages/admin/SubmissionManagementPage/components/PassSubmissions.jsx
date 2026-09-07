@@ -31,6 +31,7 @@ import SubmissionLockButton from './SubmissionLockButton';
 import { sortPendingSubmissions, togglePendingSubmissionLock } from './submissionLock';
 import SubmissionVideoLinkField from './SubmissionVideoLinkField';
 import SubmitterRecordBadge, { incrementSubmitterRecord, preserveSubmitterStats } from './SubmitterRecordBadge';
+import { resolveYoutubeVideoMatch } from '@/utils/youtubeChannel';
 
 
 const PassSubmissions = ({ setIsAutoAllowing }) => {
@@ -530,6 +531,12 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
                     successKey="passSubmissions.success.videoLinkUpdated"
                     errorKey="passSubmissions.errors.videoLinkUpdateFailed"
                     emptyErrorKey="passSubmissions.errors.videoLinkRequired"
+                    ownChannelCaptionKey="passSubmissions.details.videoFromOwnChannel"
+                    youtubeMatch={resolveYoutubeVideoMatch({
+                      videoChannelId: videoEmbeds[submission.id]?.channelId,
+                      submitterChannelIds: submission.passSubmitter?.youtubeChannelIds,
+                      assignedPlayerChannelIds: submission.assignedPlayer?.youtubeChannelIds,
+                    })}
                     onSave={async (nextLink) => {
                       const response = await api.put(
                         routes.admin.submissions.pass(submission.id),

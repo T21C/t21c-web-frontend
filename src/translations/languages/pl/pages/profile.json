@@ -57,7 +57,9 @@
     "aka": "znany też jako",
     "highestRank": "Najwyższa ranga: #{{rank}}",
     "highestRankAt": "dnia {{date}}",
-    "highestRankNow": "Obecnie na najwyższej randze!"
+    "highestRankNow": "Obecnie na najwyższej randze!",
+    "youtubeChannel": "YouTube: {{name}}",
+    "youtubeMore": "Więcej kanałów YouTube"
   },
   "sections": {
     "scores": {

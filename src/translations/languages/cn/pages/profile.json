@@ -64,7 +64,9 @@
     "aka": "又名",
     "highestRank": "最高排名：#{{rank}}",
     "highestRankAt": "于 {{date}}",
-    "highestRankNow": "当前正处于最高排名！"
+    "highestRankNow": "当前正处于最高排名！",
+    "youtubeChannel": "YouTube：{{name}}",
+    "youtubeMore": "更多 YouTube 频道"
   },
   "bio": {
     "header": "个人简介",

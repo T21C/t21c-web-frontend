@@ -23,6 +23,7 @@ import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import { groupCurationTypesForPanel } from "@/utils/curationTypeUtils";
 import ProfileHeaderIconPanelPortal from "./ProfileHeaderIconPanelPortal";
 import ProfileHeaderNameAliasesTooltip from "./ProfileHeaderNameAliasesTooltip";
+import ProfileHeaderYoutubeLink from "./ProfileHeaderYoutubeLink";
 import { FollowersPopup } from "@/components/popups/Account";
 import { useSvgTextDimensions } from "@/hooks/useSvgTextDimensions";
 
@@ -145,6 +146,7 @@ const ProfileHeader = ({
   showFollowerCount = true,
   /** When set, the follower count toggles a dropdown list from this URL. */
   followersUrl = null,
+  youtubeChannels = null,
 }) => {
   const { t, i18n } = useTranslation("pages");
   const internalNameTooltipId = useId().replace(/:/g, "");
@@ -563,6 +565,7 @@ const ProfileHeader = ({
             style={bannerMaskStyle}
           />
         </div>
+        <ProfileHeaderYoutubeLink youtubeChannels={youtubeChannels} />
         <div className="profile-header__name-mask-defs" aria-hidden="true">
           <div className="profile-header__name-wrap name-mask">
             <svg className="profile-header__name-svg" dominantBaseline="hanging">

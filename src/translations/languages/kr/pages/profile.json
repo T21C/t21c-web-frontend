@@ -64,7 +64,9 @@
     "aka": "일명",
     "highestRank": "최고 순위: #{{rank}}",
     "highestRankAt": "{{date}}",
-    "highestRankNow": "지금 최고 순위입니다!"
+    "highestRankNow": "지금 최고 순위입니다!",
+    "youtubeChannel": "YouTube: {{name}}",
+    "youtubeMore": "다른 YouTube 채널"
   },
   "bio": {
     "header": "내 소개",

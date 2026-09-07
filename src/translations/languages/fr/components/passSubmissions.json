@@ -44,7 +44,9 @@
     },
     "submitter": "Envoyeur :",
     "submitterRecordTooltip": "{{accepted}} acceptées / {{declined}} refusées",
-    "uploadTime": "Upload Time:"
+    "uploadTime": "Upload Time:",
+    "videoFromOwnChannel": "Vidéo de la chaîne de l'utilisateur",
+    "videoFromPasserChannel": "Chaîne du passeur"
   },
   "playerAssignment": {
     "title": "Attribuer Joueur.se",

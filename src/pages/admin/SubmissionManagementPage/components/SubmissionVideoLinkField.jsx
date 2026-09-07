@@ -16,6 +16,9 @@ import MarqueeText from '@/components/common/display/MarqueeText/MarqueeText';
  * @param {string} [props.successKey]
  * @param {string} [props.errorKey]
  * @param {string} [props.emptyErrorKey]
+ * @param {'submitter' | 'player' | null} [props.youtubeMatch]
+ * @param {string} [props.ownChannelCaptionKey]
+ * @param {string} [props.passerChannelCaptionKey]
  */
 export default function SubmissionVideoLinkField({
   videoLink = '',
@@ -25,6 +28,9 @@ export default function SubmissionVideoLinkField({
   successKey = 'levelSubmissions.messages.success.videoLinkUpdated',
   errorKey = 'levelSubmissions.errors.videoLinkUpdateFailed',
   emptyErrorKey = 'levelSubmissions.errors.videoLinkRequired',
+  youtubeMatch = null,
+  ownChannelCaptionKey = 'levelSubmissions.details.videoFromOwnChannel',
+  passerChannelCaptionKey = 'passSubmissions.details.videoFromPasserChannel',
 }) {
   const { t } = useTranslation(['components', 'common']);
   const [editing, setEditing] = useState(false);
@@ -71,8 +77,21 @@ export default function SubmissionVideoLinkField({
     }
   };
 
+  const matchModifier =
+    youtubeMatch === 'submitter'
+      ? 'submission-video-link-field--match-submitter'
+      : youtubeMatch === 'player'
+        ? 'submission-video-link-field--match-player'
+        : '';
+  const captionKey =
+    youtubeMatch === 'submitter'
+      ? ownChannelCaptionKey
+      : youtubeMatch === 'player'
+        ? passerChannelCaptionKey
+        : null;
+
   return (
-    <div className="submission-video-link-field">
+    <div className={`submission-video-link-field${matchModifier ? ` ${matchModifier}` : ''}`}>
       <span className="submission-video-link-field__label">{t(labelKey)}</span>
       {editing ? (
         <div className="submission-video-link-field__edit">
@@ -144,6 +163,9 @@ export default function SubmissionVideoLinkField({
           </button>
         </div>
       )}
+      {captionKey ? (
+        <span className="submission-video-link-field__caption">{t(captionKey)}</span>
+      ) : null}
     </div>
   );
 }

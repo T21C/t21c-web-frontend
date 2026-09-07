@@ -64,7 +64,9 @@
     "aka": "a.k.a.",
     "highestRank": "Highest rank: #{{rank}}",
     "highestRankAt": "at {{date}}",
-    "highestRankNow": "At highest rank right now!"
+    "highestRankNow": "At highest rank right now!",
+    "youtubeChannel": "YouTube: {{name}}",
+    "youtubeMore": "More YouTube channels"
   },
   "bio": {
     "header": "Bio",

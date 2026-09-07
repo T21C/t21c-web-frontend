@@ -91,7 +91,21 @@
     "google": "Google",
     "linkGoogle": "Google 계정 연결",
     "unlink": "연결 해제",
-    "cannotUnlinkLastProvider": "Cannot unlink last provider without a password"
+    "cannotUnlinkLastProvider": "Cannot unlink last provider without a password",
+    "youtube": "YouTube",
+    "youtubeSubtitle": "인증된 채널이 프로필에 표시됩니다. 기본 채널이 헤더 버튼입니다.",
+    "linkYoutube": "YouTube 채널 연결",
+    "linkAnotherYoutube": "다른 YouTube 채널 연결",
+    "youtubePrimary": "기본 채널",
+    "youtubeUnlink": "채널 연결 해제",
+    "youtubeLinked": "YouTube 채널이 연결되었습니다",
+    "youtubeUnlinked": "YouTube 채널 연결이 해제되었습니다",
+    "youtubePrimarySet": "기본 YouTube 채널이 업데이트되었습니다",
+    "youtubeLinkFailed": "YouTube 채널을 연결할 수 없습니다",
+    "youtubeUnlinkFailed": "YouTube 채널 연결을 해제할 수 없습니다",
+    "youtubePrimaryFailed": "기본 YouTube 채널을 업데이트할 수 없습니다",
+    "youtubeHandle": "@{{handle}}",
+    "youtubeChannelId": "채널 ID: {{id}}"
   },
   "dangerZone": {
     "title": "계정 삭제",

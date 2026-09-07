@@ -34,7 +34,9 @@
     },
     "submitter": "제출자:",
     "submitterRecordTooltip": "{{accepted}} 승인 / {{declined}} 거절",
-    "uploadTime": "업로드 시간"
+    "uploadTime": "업로드 시간",
+    "videoFromOwnChannel": "사용자 본인 채널의 영상",
+    "videoFromPasserChannel": "클리어한 플레이어의 채널"
   },
   "playerAssignment": {
     "title": "플레이어 지정",

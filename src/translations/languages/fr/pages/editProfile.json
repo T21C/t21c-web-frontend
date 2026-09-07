@@ -27,6 +27,20 @@
     "google": "Google",
     "linkGoogle": "Lier un compte Google",
     "unlink": "Dissocier",
-    "cannotUnlinkLastProvider": "Impossible de dissocier le dernier fournisseur sans mot de passe"
+    "cannotUnlinkLastProvider": "Impossible de dissocier le dernier fournisseur sans mot de passe",
+    "youtube": "YouTube",
+    "youtubeSubtitle": "Les chaînes vérifiées apparaissent sur votre profil. La chaîne principale est le bouton d’en-tête.",
+    "linkYoutube": "Lier une chaîne YouTube",
+    "linkAnotherYoutube": "Lier une autre chaîne YouTube",
+    "youtubePrimary": "Chaîne principale",
+    "youtubeUnlink": "Dissocier la chaîne",
+    "youtubeLinked": "Chaîne YouTube liée",
+    "youtubeUnlinked": "Chaîne YouTube dissociée",
+    "youtubePrimarySet": "Chaîne YouTube principale mise à jour",
+    "youtubeLinkFailed": "Impossible de lier la chaîne YouTube",
+    "youtubeUnlinkFailed": "Impossible de dissocier la chaîne YouTube",
+    "youtubePrimaryFailed": "Impossible de mettre à jour la chaîne principale",
+    "youtubeHandle": "@{{handle}}",
+    "youtubeChannelId": "ID de chaîne : {{id}}"
   }
 }
