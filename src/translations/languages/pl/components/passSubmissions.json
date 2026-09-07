@@ -36,7 +36,9 @@
     },
     "submitter": "Przesyłający:",
     "submitterRecordTooltip": "{{accepted}} zaakceptowanych / {{declined}} odrzuconych",
-    "uploadTime": "Czas przesłania:"
+    "uploadTime": "Czas przesłania:",
+    "videoFromOwnChannel": "Film z kanału użytkownika",
+    "videoFromPasserChannel": "Kanał gracza"
   },
   "playerAssignment": {
     "title": "Przypisz gracza",

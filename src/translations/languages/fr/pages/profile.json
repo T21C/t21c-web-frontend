@@ -35,7 +35,9 @@
     "aka": "alias",
     "highestRank": "Meilleur rang : #{{rank}}",
     "highestRankAt": "le {{date}}",
-    "highestRankNow": "Actuellement à son meilleur rang !"
+    "highestRankNow": "Actuellement à son meilleur rang !",
+    "youtubeChannel": "YouTube : {{name}}",
+    "youtubeMore": "Autres chaînes YouTube"
   },
   "valueLabels": {
     "rankedScore": "Score Classement",

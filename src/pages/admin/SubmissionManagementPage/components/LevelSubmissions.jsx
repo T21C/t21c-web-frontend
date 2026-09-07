@@ -38,6 +38,7 @@ import { sortPendingSubmissions, togglePendingSubmissionLock } from './submissio
 import SubmissionVideoLinkField from './SubmissionVideoLinkField';
 import SubmissionNotesField from './SubmissionNotesField';
 import SubmitterRecordBadge, { incrementSubmitterRecord, preserveSubmitterStats } from './SubmitterRecordBadge';
+import { resolveYoutubeVideoMatch } from '@/utils/youtubeChannel';
 
 const NESTED_SUBMISSION_KEYS = [
   'songObject',
@@ -1404,6 +1405,10 @@ const LevelSubmissions = () => {
                   </div>
                   <SubmissionVideoLinkField
                     videoLink={submission.videoLink}
+                    youtubeMatch={resolveYoutubeVideoMatch({
+                      videoChannelId: videoEmbeds[submission.id]?.channelId,
+                      submitterChannelIds: submission.levelSubmitter?.youtubeChannelIds,
+                    })}
                     onSave={async (nextLink) => {
                       const response = await api.put(
                         routes.admin.submissions.levelVideoLink(submission.id),

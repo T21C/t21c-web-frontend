@@ -444,6 +444,7 @@ const SettingsPlayerPage = () => {
           profileId={playerData?.id ?? playerId}
           followerCount={playerData?.followerCount}
           showFollowerCount={playerData?.showFollowerCount !== false}
+          youtubeChannels={playerData?.youtubeChannels ?? user?.youtubeChannels}
           expandStatsAriaLabel={t("profile.funFacts.expandAria")}
           collapseStatsAriaLabel={t("profile.funFacts.collapseAria")}
           statGroups={statGroups}
@@ -570,6 +571,7 @@ const SettingsPlayerPage = () => {
             profileId: playerData?.id ?? playerId,
             followerCount: playerData?.followerCount,
             showFollowerCount: playerData?.showFollowerCount !== false,
+            youtubeChannels: playerData?.youtubeChannels ?? user?.youtubeChannels,
             expandStatsAriaLabel: t("profile.funFacts.expandAria"),
             collapseStatsAriaLabel: t("profile.funFacts.collapseAria"),
             statGroups,

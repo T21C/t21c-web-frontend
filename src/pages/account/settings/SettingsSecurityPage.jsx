@@ -2,7 +2,9 @@
 import { routes } from '@/api/routes';
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { DiscordIcon, GoogleIcon, UnlinkIcon } from '@/components/common/icons';
+import { DiscordIcon, GoogleIcon, UnlinkIcon, YoutubeIcon } from '@/components/common/icons';
+import { CustomSelect } from '@/components/common/selectors';
+import { youtubeChannelUrl, sortYoutubeChannels, isYoutubeChannelLinkingEnabledForUser } from '@/utils/youtubeChannel';
 import { Tooltip } from 'react-tooltip';
 import { toast } from 'react-hot-toast';
 import api from '@/utils/api';
@@ -205,6 +207,72 @@ const SettingsSecurityPage = () => {
           err.response?.data?.message ||
           err.message ||
           t('editProfile.error.failedToUnlinkAccount', { provider }),
+      );
+    }
+  };
+
+  const youtubeChannels = sortYoutubeChannels(user?.youtubeChannels);
+  const youtubePrimary = youtubeChannels.find((c) => c.isPrimary) || youtubeChannels[0] || null;
+  const youtubePrimaryOptions = youtubeChannels.map((channel) => ({
+    value: channel.channelId,
+    label: channel.handle
+      ? t('editProfile.linkedAccounts.youtubeHandle', { handle: channel.handle.replace(/^@/, '') })
+      : channel.title || channel.channelId,
+  }));
+
+  const handleYoutubeLink = async () => {
+    try {
+      setError('');
+      setSuccess('');
+      await linkProvider('youtube');
+      setSuccess(t('editProfile.linkedAccounts.youtubeLinked'));
+    } catch (err) {
+      setError(
+        err.response?.data?.error ||
+          err.response?.data?.message ||
+          err.message ||
+          t('editProfile.linkedAccounts.youtubeLinkFailed'),
+      );
+    }
+  };
+
+  const handleYoutubeUnlink = async (channelId) => {
+    try {
+      setError('');
+      setSuccess('');
+      await requireElevation('security', async () => {
+        await api.delete(routes.auth.youtubeChannels.unlink(channelId));
+        await fetchUser();
+      });
+      setSuccess(t('editProfile.linkedAccounts.youtubeUnlinked'));
+    } catch (err) {
+      if (err?.code === 'ELEVATION_CANCELLED') return;
+      setError(
+        err.response?.data?.error ||
+          err.response?.data?.message ||
+          err.message ||
+          t('editProfile.linkedAccounts.youtubeUnlinkFailed'),
+      );
+    }
+  };
+
+  const handleYoutubePrimary = async (channelId) => {
+    if (!channelId || channelId === youtubePrimary?.channelId) return;
+    try {
+      setError('');
+      setSuccess('');
+      await requireElevation('security', async () => {
+        await api.post(routes.auth.youtubeChannels.setPrimary(channelId));
+        await fetchUser();
+      });
+      setSuccess(t('editProfile.linkedAccounts.youtubePrimarySet'));
+    } catch (err) {
+      if (err?.code === 'ELEVATION_CANCELLED') return;
+      setError(
+        err.response?.data?.error ||
+          err.response?.data?.message ||
+          err.message ||
+          t('editProfile.linkedAccounts.youtubePrimaryFailed'),
       );
     }
   };
@@ -524,6 +592,87 @@ const SettingsSecurityPage = () => {
               </button>
             );
           })}
+          {isYoutubeChannelLinkingEnabledForUser(user) ? (
+            <div className="youtube-channels">
+              <div className="youtube-channels__header">
+                <YoutubeIcon size={28} />
+                <div className="youtube-channels__titles">
+                  <span>{t('editProfile.linkedAccounts.youtube')}</span>
+                  <p className="youtube-channels__subtitle">
+                    {t('editProfile.linkedAccounts.youtubeSubtitle')}
+                  </p>
+                </div>
+              </div>
+              {youtubeChannels.length > 0 ? (
+                <>
+                  {youtubeChannels.length > 1 ? (
+                    <CustomSelect
+                      label={t('editProfile.linkedAccounts.youtubePrimary')}
+                      options={youtubePrimaryOptions}
+                      value={
+                        youtubePrimaryOptions.find((opt) => opt.value === youtubePrimary?.channelId) ||
+                        null
+                      }
+                      onChange={(selected) => {
+                        if (selected?.value) void handleYoutubePrimary(selected.value);
+                      }}
+                      width="100%"
+                    />
+                  ) : null}
+                  <ul className="youtube-channels__list">
+                    {youtubeChannels.map((channel) => (
+                      <li className="youtube-channels__row" key={channel.channelId}>
+                        <a
+                          className="youtube-channels__link"
+                          href={channel.url || youtubeChannelUrl(channel)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <span className="youtube-channels__name">
+                            {channel.handle
+                              ? t('editProfile.linkedAccounts.youtubeHandle', {
+                                  handle: channel.handle.replace(/^@/, ''),
+                                })
+                              : channel.title || channel.channelId}
+                          </span>
+                          <span className="youtube-channels__id">
+                            {t('editProfile.linkedAccounts.youtubeChannelId', {
+                              id: channel.channelId,
+                            })}
+                          </span>
+                        </a>
+                        <button
+                          type="button"
+                          className="unlink-button btn-fill-danger"
+                          onClick={() => handleYoutubeUnlink(channel.channelId)}
+                        >
+                          {t('editProfile.linkedAccounts.youtubeUnlink')}
+                          <UnlinkIcon color="#fff" size="24px" />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                  <button
+                    type="button"
+                    className="link-button youtube-link-button"
+                    onClick={() => void handleYoutubeLink()}
+                  >
+                    <YoutubeIcon size={16} />
+                    {t('editProfile.linkedAccounts.linkAnotherYoutube')}
+                  </button>
+                </>
+              ) : (
+                <button
+                  type="button"
+                  className="link-button youtube-link-button"
+                  onClick={() => void handleYoutubeLink()}
+                >
+                  <YoutubeIcon size={16} />
+                  {t('editProfile.linkedAccounts.linkYoutube')}
+                </button>
+              )}
+            </div>
+          ) : null}
         </div>
       </div>
 

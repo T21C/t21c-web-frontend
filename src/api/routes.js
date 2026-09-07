@@ -44,6 +44,10 @@ export const routes = {
       revoke: (id) => `/v2/auth/trusted-devices/${enc(id)}`,
     },
     oauthReauth: (provider) => `/v2/auth/oauth/reauth/${enc(provider)}`,
+    youtubeChannels: {
+      setPrimary: (channelId) => `/v2/auth/youtube-channels/${enc(channelId)}/primary`,
+      unlink: (channelId) => `/v2/auth/youtube-channels/${enc(channelId)}`,
+    },
     sessions: {
       list: () => '/v2/auth/sessions',
       revoke: (id) => `/v2/auth/sessions/${enc(id)}`,

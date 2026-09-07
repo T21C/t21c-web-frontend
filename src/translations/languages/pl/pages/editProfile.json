@@ -27,6 +27,20 @@
     "google": "Google",
     "linkGoogle": "Połącz konto Google",
     "unlink": "Odłącz",
-    "cannotUnlinkLastProvider": "Nie można odłączyć ostatniego dostawcy bez hasła"
+    "cannotUnlinkLastProvider": "Nie można odłączyć ostatniego dostawcy bez hasła",
+    "youtube": "YouTube",
+    "youtubeSubtitle": "Zweryfikowane kanały są widoczne na profilu. Główny kanał to przycisk w nagłówku.",
+    "linkYoutube": "Połącz kanał YouTube",
+    "linkAnotherYoutube": "Połącz kolejny kanał YouTube",
+    "youtubePrimary": "Główny kanał",
+    "youtubeUnlink": "Odłącz kanał",
+    "youtubeLinked": "Połączono kanał YouTube",
+    "youtubeUnlinked": "Odłączono kanał YouTube",
+    "youtubePrimarySet": "Zaktualizowano główny kanał YouTube",
+    "youtubeLinkFailed": "Nie udało się połączyć kanału YouTube",
+    "youtubeUnlinkFailed": "Nie udało się odłączyć kanału YouTube",
+    "youtubePrimaryFailed": "Nie udało się ustawić głównego kanału YouTube",
+    "youtubeHandle": "@{{handle}}",
+    "youtubeChannelId": "ID kanału: {{id}}"
   }
 }

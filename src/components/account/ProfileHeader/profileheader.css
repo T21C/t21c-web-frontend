@@ -83,6 +83,69 @@
   mask-size: 100% 100%;
 }
 
+.profile-header .profile-header__youtube {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.profile-header .profile-header__youtube-button,
+.profile-header .profile-header__youtube-more {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid var(--color-white-t15);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--color-black) 55%, transparent);
+  color: var(--color-white);
+}
+
+.profile-header .profile-header__youtube-button:hover,
+.profile-header .profile-header__youtube-more:hover {
+  background: color-mix(in srgb, var(--danger-color) 45%, var(--color-black) 55%);
+  border-color: var(--color-white-t30);
+}
+
+.profile-header .profile-header__youtube-more {
+  width: 1.5rem;
+}
+
+.profile-header .profile-header__youtube-menu {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin: 0;
+  padding: 0.35rem;
+  list-style: none;
+  min-width: 10rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-white-t15);
+  background: color-mix(in srgb, var(--color-black) 82%, var(--color-purple) 18%);
+}
+
+.profile-header .profile-header__youtube-menu-link {
+  display: block;
+  padding: 0.4rem 0.55rem;
+  border-radius: 6px;
+  color: var(--color-white);
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+
+.profile-header .profile-header__youtube-menu-link:hover {
+  background: var(--color-white-t10);
+}
+
 /* Mask definition only: below inner content; no pointer capture (see name-overlay for hit targets). */
 .profile-header__name-mask-defs {
   position: relative;

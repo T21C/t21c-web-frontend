@@ -741,6 +741,7 @@ const ProfilePage = () => {
                         ? routes.playersV3.followers(playerData?.id ?? playerId)
                         : null
                     }
+                    youtubeChannels={playerData?.youtubeChannels}
                     expandStatsAriaLabel={t("profile.funFacts.expandAria")}
                     collapseStatsAriaLabel={t("profile.funFacts.collapseAria")}
                     statGroups={statGroups}

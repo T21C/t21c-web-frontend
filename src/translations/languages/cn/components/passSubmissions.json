@@ -36,7 +36,9 @@
     "submitterRecordTooltip": "{{accepted}} 已通过 / {{declined}} 已拒绝",
     "uploadTime": "上传时间",
     "videoLink": "视频链接：",
-    "videoLinkPlaceholder": "YouTube 或 Bilibili 链接"
+    "videoLinkPlaceholder": "YouTube 或 Bilibili 链接",
+    "videoFromOwnChannel": "视频来自用户自己的频道",
+    "videoFromPasserChannel": "通关者的频道"
   },
   "playerAssignment": {
     "title": "分配玩家",
