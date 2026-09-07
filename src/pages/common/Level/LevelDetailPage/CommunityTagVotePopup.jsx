@@ -25,6 +25,7 @@ export default function CommunityTagVotePopup({
   levelId,
   user,
   disabled = false,
+  afterPassSubmit = false,
   onClose,
   onAssignedTagsChange,
 }) {
@@ -101,7 +102,9 @@ export default function CommunityTagVotePopup({
     if (disabled) return t('levelDetail.tags.vote.deleted');
     if (tag.voteBlockReason) return blockReasonLabel(tag.voteBlockReason);
     if (tag.voteDirection === direction) return t('levelDetail.tags.vote.unvote');
-    const inactive = tag.voteInactiveReason || (tag.weight === 0 ? 'inert' : null);
+    const inactive = afterPassSubmit
+      ? null
+      : (tag.voteInactiveReason || (tag.weight === 0 ? 'inert' : null));
     if (inactive) return blockReasonLabel(inactive);
     return direction === 1
       ? t('levelDetail.tags.vote.upvote')
@@ -220,7 +223,7 @@ export default function CommunityTagVotePopup({
                       const scoreLabel = formatCommunityTagScore(tag.score);
                       const eligible = tagIsEligible(tag);
                       const canVote = tagCanVote(tag);
-                      const grayedOut = !eligible || isTopPlayInert(tag);
+                      const grayedOut = !eligible || (!afterPassSubmit && isTopPlayInert(tag));
                       return (
                         <div
                           key={tag.id}
