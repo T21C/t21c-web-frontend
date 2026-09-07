@@ -70,7 +70,7 @@ import {
 import { RouletteWheel, SlotMachine, StateDisplay } from '@/components/common/selectors';
 import { CloseButton, LikeButton } from '@/components/common/buttons';
 import { CommentFormatter } from '@/components/misc';
-import CommunityTagVotePopup, { userHasClearOnLevel } from './CommunityTagVotePopup';
+import CommunityTagVotePopup from './CommunityTagVotePopup';
 import { toast } from 'react-hot-toast';
 import { ABILITIES, hasBit } from '@/utils/Abilities';
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
@@ -2446,8 +2446,6 @@ const LevelDetailPageContent = ({ mockData = null }) => {
       };
     }),
   );
-  const chartHasClears = res?.level?.uniqueClears !== 0;
-  const userClearedThisLevel = userHasClearOnLevel(res?.level?.passes, user?.playerId);
 
   const rerateHistoryAnchorNode = res?.rerateHistory?.length > 0 ? (
     <div ref={rerateHistoryAnchorRef} className="rerate-history-dropdown-anchor">
@@ -2767,7 +2765,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                 )}
                 
                 {/* Tags display */}
-                {(tags.length > 0 || (hasCommunityCatalog && !mockData && !res?.level?.isDeleted && chartHasClears)) && (
+                {(tags.length > 0 || (hasCommunityCatalog && !mockData && !res?.level?.isDeleted)) && (
                   <div
                     ref={tagsAnchorRef}
                     className="level-tags-container"
@@ -2818,7 +2816,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                       onClose={handleDropdownClose}
                       anchorRef={tagsAnchorRef}
                       onVoteClick={
-                        hasCommunityCatalog && !mockData && !res?.level?.isDeleted && chartHasClears
+                        hasCommunityCatalog && !mockData && !res?.level?.isDeleted
                           ? handleCommunityTagVoteOpen
                           : undefined
                       }
@@ -3354,7 +3352,6 @@ const LevelDetailPageContent = ({ mockData = null }) => {
               levelId={effectiveId}
               user={user}
               disabled={Boolean(res?.level?.isDeleted)}
-              userClearedThisLevel={userClearedThisLevel}
               onClose={() => setShowCommunityTagVotePopup(false)}
               onAssignedTagsChange={handleAssignedTagsChange}
             />
