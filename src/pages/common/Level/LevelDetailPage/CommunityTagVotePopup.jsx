@@ -102,9 +102,7 @@ export default function CommunityTagVotePopup({
     if (disabled) return t('levelDetail.tags.vote.deleted');
     if (tag.voteBlockReason) return blockReasonLabel(tag.voteBlockReason);
     if (tag.voteDirection === direction) return t('levelDetail.tags.vote.unvote');
-    const inactive = afterPassSubmit
-      ? null
-      : (tag.voteInactiveReason || (tag.weight === 0 ? 'inert' : null));
+    const inactive = tag.voteInactiveReason || (tag.weight === 0 ? 'inert' : null);
     if (inactive) return blockReasonLabel(inactive);
     return direction === 1
       ? t('levelDetail.tags.vote.upvote')
