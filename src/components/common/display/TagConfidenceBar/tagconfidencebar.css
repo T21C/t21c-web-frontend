@@ -6,15 +6,29 @@
   justify-content: center;
   width: 100%;
   height: 100%;
+  /* Tweak to match tag icon corner rounding */
+  --tag-confidence-radius: 33%;
+  --tag-confidence-stroke: 3px;
 }
 
 .tag-confidence-bar .tag-confidence-bar__fill {
   position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 2px;
-  height: calc(var(--tag-confidence, 0) * 100%);
-  background: #0f0;
+  inset: 0;
+  box-sizing: border-box;
   pointer-events: none;
-  border-radius: 1px;
+  border-radius: var(--tag-confidence-radius);
+  padding: var(--tag-confidence-stroke);
+  background: conic-gradient(
+    from calc(135deg - (var(--tag-confidence, 0) * 360deg)),
+    #0f0 calc(var(--tag-confidence, 0) * 360deg),
+    transparent 0
+  );
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
 }
