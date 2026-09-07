@@ -367,6 +367,7 @@ const PassSubmissionPage = () => {
         <CommunityTagVotePopup
           levelId={votePopupLevelId}
           user={user}
+          afterPassSubmit
           onClose={() => setVotePopupLevelId(null)}
         />
       ) : null}
