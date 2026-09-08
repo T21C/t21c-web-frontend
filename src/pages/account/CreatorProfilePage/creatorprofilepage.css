@@ -26,6 +26,7 @@
 
 .creator-profile-page .creator-profile-page__section {
   display: flex;
+  width: 100%;
   flex-direction: column;
   padding: 1.25rem 1.5rem;
   border-radius: 10px;
