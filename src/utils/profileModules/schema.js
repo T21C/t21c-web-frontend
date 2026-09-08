@@ -5,6 +5,8 @@ import {
   PROFILE_MODULE_VERSION,
   createProfileModuleId,
   isModuleTypeForKind,
+  isRequiredModuleType,
+  requiredModuleTypesForKind,
   stockModuleId,
   stockModuleTypesForKind,
 } from "./catalog";
@@ -12,6 +14,7 @@ import {
 const MODULE_ID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const STOCK_ID_RE = /^stock-[a-zA-Z0-9_-]+$/;
+const PACK_LINK_CODE_RE = /^[A-Za-z0-9]{1,32}$/;
 
 function parseModuleId(raw) {
   if (typeof raw !== "string" || !raw.length || raw.length > MAX_PROFILE_MODULE_ID_LENGTH) {
@@ -23,6 +26,18 @@ function parseModuleId(raw) {
   return null;
 }
 
+export function parseFavoriteItemId(kind, raw) {
+  if (kind === "pack") {
+    if (typeof raw !== "string") return null;
+    const code = raw.trim();
+    if (!PACK_LINK_CODE_RE.test(code)) return null;
+    return code;
+  }
+  const id = Number(raw);
+  if (!Number.isInteger(id) || id <= 0) return null;
+  return id;
+}
+
 function parseFavoriteItems(raw) {
   if (raw == null) return [];
   if (!Array.isArray(raw)) return [];
@@ -31,8 +46,9 @@ function parseFavoriteItems(raw) {
   for (const row of raw) {
     if (!row || typeof row !== "object") continue;
     const kind = row.kind;
-    const id = Number(row.id);
-    if (!FAVORITE_ITEM_KINDS.includes(kind) || !Number.isInteger(id) || id <= 0) continue;
+    if (!FAVORITE_ITEM_KINDS.includes(kind)) continue;
+    const id = parseFavoriteItemId(kind, row.id);
+    if (id == null) continue;
     const key = `${kind}:${id}`;
     if (seen.has(key)) continue;
     seen.add(key);
@@ -61,6 +77,23 @@ export function createStockLayout(kind) {
   };
 }
 
+function ensureRequiredModules(document, kind) {
+  const modules = [...(document?.modules || [])];
+  const have = new Set(modules.map((mod) => mod.type));
+  for (const type of requiredModuleTypesForKind(kind)) {
+    if (have.has(type)) continue;
+    modules.push({
+      id: stockModuleId(type),
+      type,
+      config: {},
+    });
+  }
+  return {
+    version: PROFILE_MODULE_VERSION,
+    modules,
+  };
+}
+
 export function readStoredProfileModules(raw) {
   if (raw == null || typeof raw !== "object" || Array.isArray(raw)) return null;
   if (!Array.isArray(raw.modules)) return null;
@@ -85,13 +118,25 @@ export function readStoredProfileModules(raw) {
 export function resolveLayout(document, kind) {
   const stored = readStoredProfileModules(document);
   if (!stored) return createStockLayout(kind).modules;
-  return stored.modules.filter((mod) => isModuleTypeForKind(kind, mod.type));
+  return ensureRequiredModules(
+    {
+      version: PROFILE_MODULE_VERSION,
+      modules: stored.modules.filter((mod) => isModuleTypeForKind(kind, mod.type)),
+    },
+    kind,
+  ).modules;
 }
 
 export function previousModuleCount(stored, kind) {
   const doc = readStoredProfileModules(stored);
   if (!doc) return createStockLayout(kind).modules.length;
-  return doc.modules.length;
+  return ensureRequiredModules(
+    {
+      version: PROFILE_MODULE_VERSION,
+      modules: doc.modules.filter((mod) => isModuleTypeForKind(kind, mod.type)),
+    },
+    kind,
+  ).modules.length;
 }
 
 export function canAddModule(nextCount, previousCount, cap) {
@@ -102,19 +147,22 @@ export function canAddModule(nextCount, previousCount, cap) {
 export function cloneModulesDocument(kind, document) {
   const stored = readStoredProfileModules(document);
   if (!stored) return createStockLayout(kind);
-  return {
-    version: PROFILE_MODULE_VERSION,
-    modules: stored.modules
-      .filter((mod) => isModuleTypeForKind(kind, mod.type))
-      .map((mod) => ({
-        id: mod.id,
-        type: mod.type,
-        config:
-          mod.type === "favorite"
-            ? { items: [...(mod.config.items || [])] }
-            : {},
-      })),
-  };
+  return ensureRequiredModules(
+    {
+      version: PROFILE_MODULE_VERSION,
+      modules: stored.modules
+        .filter((mod) => isModuleTypeForKind(kind, mod.type))
+        .map((mod) => ({
+          id: mod.id,
+          type: mod.type,
+          config:
+            mod.type === "favorite"
+              ? { items: [...(mod.config.items || [])] }
+              : {},
+        })),
+    },
+    kind,
+  );
 }
 
 export function addModuleType(document, kind, type) {
@@ -132,6 +180,7 @@ export function addModuleType(document, kind, type) {
 export function removeModuleAt(document, kind, index) {
   const next = cloneModulesDocument(kind, document);
   if (index < 0 || index >= next.modules.length) return next;
+  if (isRequiredModuleType(kind, next.modules[index].type)) return next;
   next.modules.splice(index, 1);
   return next;
 }

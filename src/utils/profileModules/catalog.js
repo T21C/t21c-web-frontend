@@ -40,6 +40,22 @@ export function stockModuleTypesForKind(kind) {
   return kind === "player" ? PLAYER_STOCK_MODULE_TYPES : CREATOR_STOCK_MODULE_TYPES;
 }
 
+export const PLAYER_REQUIRED_MODULE_TYPES = ["scores"];
+export const CREATOR_REQUIRED_MODULE_TYPES = ["charts"];
+
+export function requiredModuleTypesForKind(kind) {
+  return kind === "player" ? PLAYER_REQUIRED_MODULE_TYPES : CREATOR_REQUIRED_MODULE_TYPES;
+}
+
+export function isRequiredModuleType(kind, type) {
+  return requiredModuleTypesForKind(kind).includes(type);
+}
+
+/** i18n keys: kind-specific label first, then the shared type name. */
+export function profileModuleTypeLabelKeys(kind, type) {
+  return [`profile.modules.types.${kind}.${type}`, `profile.modules.types.${type}`];
+}
+
 export function isModuleTypeForKind(kind, type) {
   return kind === "player" ? PLAYER_TYPE_SET.has(type) : CREATOR_TYPE_SET.has(type);
 }

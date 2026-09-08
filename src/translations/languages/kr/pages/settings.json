@@ -358,6 +358,7 @@
     "capReached": "모듈 슬롯을 모두 사용했습니다.",
     "capReachedFree": "무료 프로필은 모듈 {{freeCap}}개까지 사용할 수 있습니다. TUFStellar는 {{stellarCap}}개까지 올립니다.",
     "addPlaceholder": "모듈 추가",
+    "required": "필수",
     "dragAria": "드래그하여 순서 변경",
     "favoriteCount": "{{used}}/{{max}}개 항목",
     "searchPlayer": "플레이어 검색",

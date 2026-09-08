@@ -7,7 +7,9 @@ import {
   addModuleType,
   cloneModulesDocument,
   createStockLayout,
+  isRequiredModuleType,
   moduleTypesForKind,
+  profileModuleTypeLabelKeys,
   profileModulesCap,
   profileModulesCapsFromUser,
   removeModuleAt,
@@ -41,10 +43,10 @@ export default function ProfileModulesEditor({
 
   const enabledTypes = new Set(document.modules.map((mod) => mod.type));
   const addOptions = moduleTypesForKind(kind)
-    .filter((type) => !enabledTypes.has(type))
+    .filter((type) => !enabledTypes.has(type) && !isRequiredModuleType(kind, type))
     .map((type) => ({
       value: type,
-      label: t(`profile.modules.types.${type}`),
+      label: t(profileModuleTypeLabelKeys(kind, type), { defaultValue: type }),
     }));
 
   const handleDragEnd = (result) => {
@@ -120,15 +122,23 @@ export default function ProfileModulesEditor({
                           <DragHandleIcon size="16px" color="currentColor" />
                         </button>
                         <span className="profile-modules-editor__name">
-                          {t(`profile.modules.types.${mod.type}`)}
+                          {t(profileModuleTypeLabelKeys(kind, mod.type), {
+                            defaultValue: mod.type,
+                          })}
                         </span>
-                        <button
-                          type="button"
-                          className="profile-modules-editor__btn profile-modules-editor__btn--icon btn-fill-secondary"
-                          onClick={() => onChange(removeModuleAt(document, kind, index))}
-                        >
-                          <TrashIcon size="16px" color="currentColor" />
-                        </button>
+                        {isRequiredModuleType(kind, mod.type) ? (
+                          <span className="profile-modules-editor__required">
+                            {t("settings.modules.required")}
+                          </span>
+                        ) : (
+                          <button
+                            type="button"
+                            className="profile-modules-editor__btn profile-modules-editor__btn--icon btn-fill-secondary"
+                            onClick={() => onChange(removeModuleAt(document, kind, index))}
+                          >
+                            <TrashIcon size="16px" color="currentColor" />
+                          </button>
+                        )}
                       </div>
                       {mod.type === "favorite" ? (
                         <FavoriteItemsEditor

@@ -95,8 +95,15 @@
       "difficulty": "Difficulté",
       "rankHistory": "Historique de rang",
       "scores": "Scores",
-      "charts": "Charts",
-      "favorite": "Favoris"
+      "charts": "Niveaux",
+      "favorite": "Favoris",
+      "player": {
+        "difficulty": "Clears par difficulté"
+      },
+      "creator": {
+        "difficulty": "Niveaux par difficulté",
+        "charts": "Niveaux"
+      }
     },
     "favoriteKinds": {
       "pass": "Clear",

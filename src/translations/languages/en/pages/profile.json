@@ -269,8 +269,15 @@
       "difficulty": "Difficulty",
       "rankHistory": "Rank history",
       "scores": "Scores",
-      "charts": "Charts",
-      "favorite": "Favorite"
+      "charts": "Levels",
+      "favorite": "Favorite",
+      "player": {
+        "difficulty": "Clears by difficulty"
+      },
+      "creator": {
+        "difficulty": "Levels by difficulty",
+        "charts": "Levels"
+      }
     },
     "favoriteKinds": {
       "pass": "Clear",

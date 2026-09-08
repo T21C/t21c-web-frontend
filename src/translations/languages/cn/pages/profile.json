@@ -270,8 +270,15 @@
       "difficulty": "难度",
       "rankHistory": "排名历史",
       "scores": "成绩",
-      "charts": "谱面",
-      "favorite": "收藏"
+      "charts": "关卡",
+      "favorite": "收藏",
+      "player": {
+        "difficulty": "按难度的通关"
+      },
+      "creator": {
+        "difficulty": "按难度的关卡",
+        "charts": "关卡"
+      }
     },
     "favoriteKinds": {
       "pass": "通关",

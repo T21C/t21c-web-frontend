@@ -269,8 +269,15 @@
       "difficulty": "난이도",
       "rankHistory": "랭크 기록",
       "scores": "점수",
-      "charts": "차트",
-      "favorite": "즐겨찾기"
+      "charts": "레벨",
+      "favorite": "즐겨찾기",
+      "player": {
+        "difficulty": "난이도별 클리어"
+      },
+      "creator": {
+        "difficulty": "난이도별 레벨",
+        "charts": "레벨"
+      }
     },
     "favoriteKinds": {
       "pass": "클리어",

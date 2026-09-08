@@ -397,3 +397,78 @@
 .pack-card--compact .pack-card__view-mode-text {
   font-size: 11px;
 }
+
+/* Showcase mode (favorites / embeds). Isolated from grid, list, compact, and size variants. */
+.pack-card.pack-card--showcase {
+  display: flex;
+  align-items: center;
+  min-height: 5.5rem;
+  padding: 0.75rem;
+  background: var(--color-black-t20);
+  border: 1px solid var(--color-white-t10);
+}
+
+.pack-card.pack-card--showcase:not(.pack-card--pinned):hover {
+  background: var(--btn-neutral-dark);
+  border-color: var(--color-purple-2);
+}
+
+.pack-card.pack-card--showcase .pack-card__link-wrap {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  min-width: 0;
+  text-decoration: none;
+  color: inherit;
+}
+
+.pack-card.pack-card--showcase .pack-card__icon {
+  width: 3rem;
+  height: 3rem;
+}
+
+.pack-card.pack-card--showcase .pack-card__icon-placeholder {
+  font-size: 1.25rem;
+}
+
+.pack-card.pack-card--showcase .pack-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.pack-card.pack-card--showcase .pack-card__name {
+  margin: 0;
+  font-size: 1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pack-card.pack-card--showcase .pack-card__meta {
+  gap: 0.4rem;
+}
+
+.pack-card.pack-card--showcase .pack-card__level-count {
+  font-size: 0.8rem;
+}
+
+.pack-card.pack-card--showcase .pack-card__owner {
+  min-width: 0;
+}
+
+.pack-card.pack-card--showcase .pack-card__owner-avatar {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+.pack-card.pack-card--showcase .pack-card__owner-name {
+  font-size: 0.85rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 10rem;
+}
