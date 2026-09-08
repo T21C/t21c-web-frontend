@@ -5,7 +5,7 @@ import {
   PROFILE_MODULES_STELLAR_CAP,
   profileModulesCap,
   profileModulesCapsFromUser,
-} from "./catalog.js";
+} from "./catalog";
 
 test("profileModulesCapsFromUser reads auth-user fields from the server", () => {
   const caps = profileModulesCapsFromUser({

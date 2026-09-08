@@ -5,7 +5,7 @@ import {
   unwrapFavoritePack,
   unwrapFavoritePass,
   unwrapFavoritePlayer,
-} from "./favoriteEntityShape.js";
+} from "./favoriteEntityShape";
 
 export {
   favoriteEntityId,
@@ -15,7 +15,7 @@ export {
   unwrapFavoritePack,
   unwrapFavoritePass,
   unwrapFavoritePlayer,
-} from "./favoriteEntityShape.js";
+} from "./favoriteEntityShape";
 
 export async function fetchFavoriteEntity(kind, id, options = {}) {
   const { signal } = options;

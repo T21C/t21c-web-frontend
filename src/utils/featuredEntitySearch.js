@@ -4,9 +4,9 @@ import {
   buildIdOrQuery,
   normalizePositiveIds,
   orderByIds,
-} from "./featuredEntitySearchQuery.js";
+} from "./featuredEntitySearchQuery";
 
-export { buildIdOrQuery, normalizePositiveIds, orderByIds } from "./featuredEntitySearchQuery.js";
+export { buildIdOrQuery, normalizePositiveIds, orderByIds } from "./featuredEntitySearchQuery";
 
 export async function fetchLevelsByIds(ids, { signal } = {}) {
   const normalized = normalizePositiveIds(ids);

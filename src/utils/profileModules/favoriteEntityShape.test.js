@@ -7,7 +7,7 @@ import {
   unwrapFavoritePack,
   unwrapFavoritePass,
   unwrapFavoritePlayer,
-} from "./favoriteEntityShape.js";
+} from "./favoriteEntityShape";
 
 test("unwrapFavoritePass reads LoadPassPopup-style results[0]", () => {
   const pass = { id: 28338, player: { name: "Ada" }, level: { song: "Track" } };
