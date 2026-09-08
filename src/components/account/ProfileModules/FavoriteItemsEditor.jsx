@@ -262,12 +262,25 @@ export default function FavoriteItemsEditor({
     }
     setSearching(true);
     runSearch(async ({ signal }) => {
+      if (kind === "pack") {
+        const packLookup = parseHashtagPackQuery(trimmed);
+        if (packLookup) {
+          try {
+            const entity = await fetchFavoriteEntity("pack", packLookup, { signal });
+            setResults(entity ? [entity] : []);
+          } catch (error) {
+            if (api.isCancel(error)) throw error;
+            setResults([]);
+          }
+          setSearching(false);
+          return;
+        }
+      }
       let url;
-      const hashId =
-        kind === "pack" ? parseHashtagPackQuery(trimmed) : parseHashtagIdQuery(trimmed);
+      const hashId = kind === "pack" ? null : parseHashtagIdQuery(trimmed);
       const params = {
         query: hashId || trimmed,
-        limit: 8,
+        limit: 30,
         offset: 0,
       };
       if (kind === "level") {

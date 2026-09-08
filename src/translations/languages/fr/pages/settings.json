@@ -129,6 +129,7 @@
     "capReached": "Tous les emplacements de modules sont utilisés.",
     "capReachedFree": "Les profils gratuits peuvent activer {{freeCap}} modules. TUFStellar passe à {{stellarCap}}.",
     "addPlaceholder": "Ajouter un module",
+    "required": "Obligatoire",
     "dragAria": "Glisser pour réordonner",
     "favoriteCount": "{{used}}/{{max}} éléments",
     "searchPlayer": "Rechercher des joueurs",

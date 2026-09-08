@@ -27,8 +27,7 @@ function ShowcaseItem({ item, levelById, passById, levelsLoading, passesLoading 
       <PackCard
         packId={item.pack.id}
         pack={item.pack}
-        displayMode="compact"
-        size="small"
+        displayMode="showcase"
       />
     );
   }

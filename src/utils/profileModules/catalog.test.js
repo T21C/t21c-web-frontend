@@ -3,6 +3,7 @@ import test from "node:test";
 import {
   PROFILE_MODULES_FREE_CAP,
   PROFILE_MODULES_STELLAR_CAP,
+  isRequiredModuleType,
   profileModulesCap,
   profileModulesCapsFromUser,
 } from "./catalog";
@@ -27,4 +28,11 @@ test("profileModulesCapsFromUser ignores junk and falls back", () => {
   });
   assert.equal(caps.freeCap, PROFILE_MODULES_FREE_CAP);
   assert.equal(caps.stellarCap, PROFILE_MODULES_STELLAR_CAP);
+});
+
+test("scores and charts are required for player and creator layouts", () => {
+  assert.equal(isRequiredModuleType("player", "scores"), true);
+  assert.equal(isRequiredModuleType("player", "bio"), false);
+  assert.equal(isRequiredModuleType("creator", "charts"), true);
+  assert.equal(isRequiredModuleType("creator", "bio"), false);
 });

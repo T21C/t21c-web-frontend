@@ -101,8 +101,15 @@
       "difficulty": "Trudność",
       "rankHistory": "Historia rangi",
       "scores": "Wyniki",
-      "charts": "Charty",
-      "favorite": "Ulubione"
+      "charts": "Poziomy",
+      "favorite": "Ulubione",
+      "player": {
+        "difficulty": "Ukończenia wg trudności"
+      },
+      "creator": {
+        "difficulty": "Poziomy wg trudności",
+        "charts": "Poziomy"
+      }
     },
     "favoriteKinds": {
       "pass": "Clear",

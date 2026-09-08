@@ -316,6 +316,7 @@
 /* Featured mode — bio canvas embeds: one link, no video/judgements/impact chrome */
 a.score-card.score-card--featured {
   text-decoration: none;
+  height: 100%;
   color: inherit;
   background: var(--color-black-t20);
   min-height: 2.75rem;
@@ -332,8 +333,8 @@ a.score-card.score-card--featured:hover {
   background: var(--btn-primary-tint);
 }
 
-.score-card--featured .img-wrapper {
-  width: 2.25rem;
+.score-card.score-card--featured .score-card__row--primary {
+  gap: 1.5rem;
 }
 
 .score-card--featured .score-desc-song {
@@ -342,15 +343,15 @@ a.score-card.score-card--featured:hover {
 
 .score-card--featured .score-exp-artist,
 .score-card--featured .score-desc-player {
-  font-size: 0.75rem;
+  font-size: 0.85rem;
 }
 
 .score-card--featured .score-exp {
-  font-size: 0.75rem;
+  font-size: 1rem;
 }
 
 .score-card--featured .score-desc {
-  font-size: 1rem;
+  font-size: 1.2rem;
 }
 
 .score-card--featured .score-card__player-avatar {

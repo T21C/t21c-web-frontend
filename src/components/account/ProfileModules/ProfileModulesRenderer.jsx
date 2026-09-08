@@ -16,7 +16,7 @@ export default function ProfileModulesRenderer({
         const empty = profileModuleIsEmpty(mod.type, emptyContext);
         if (empty && !isOwner) return null;
         if (empty && isOwner) {
-          return <ProfileModuleMissing key={mod.id} type={mod.type} />;
+          return <ProfileModuleMissing key={mod.id} kind={kind} type={mod.type} />;
         }
         return (
           <div key={mod.id} className="profile-modules__slot">

@@ -21,10 +21,12 @@ test("unwrapFavoriteLevel reads byId document or { level }", () => {
   assert.equal(unwrapFavoriteLevel({ level }).id, 11425);
 });
 
-test("favoriteEntityId prefers packId over public linkCode id", () => {
-  assert.equal(favoriteEntityId("pack", { id: "Ab12Cd34", packId: 9, name: "Pack" }), 9);
+test("favoriteEntityId uses pack linkCode, never numeric packId", () => {
+  assert.equal(favoriteEntityId("pack", { id: "Ab12Cd34", packId: 9, name: "Pack" }), "Ab12Cd34");
+  assert.equal(favoriteEntityId("pack", { linkCode: "Zz99Yy88", packId: 9 }), "Zz99Yy88");
+  assert.equal(favoriteEntityId("pack", { packId: 9, name: "Pack" }), null);
   assert.equal(favoriteEntityId("level", { id: 11425 }), 11425);
-  assert.equal(favoriteItemFromEntity("pack", { id: "Ab12Cd34", packId: 9 }).id, 9);
+  assert.equal(favoriteItemFromEntity("pack", { id: "Ab12Cd34", packId: 9 }).id, "Ab12Cd34");
 });
 
 test("unwrapFavoritePlayer and pack accept top-level payloads", () => {

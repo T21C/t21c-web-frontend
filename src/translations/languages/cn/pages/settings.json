@@ -493,6 +493,7 @@
     "capReached": "模块栏位已用完。",
     "capReachedFree": "免费资料最多启用 {{freeCap}} 个模块。TUFStellar 可提升至 {{stellarCap}} 个。",
     "addPlaceholder": "添加模块",
+    "required": "必选",
     "dragAria": "拖动以排序",
     "favoriteCount": "{{used}}/{{max}} 项",
     "searchPlayer": "搜索玩家",

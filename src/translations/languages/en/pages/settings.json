@@ -493,6 +493,7 @@
     "capReached": "You have used all module slots.",
     "capReachedFree": "Free profiles can enable {{freeCap}} modules. TUFStellar raises this to {{stellarCap}}.",
     "addPlaceholder": "Add module",
+    "required": "Required",
     "dragAria": "Drag to reorder",
     "favoriteCount": "{{used}}/{{max}} items",
     "searchPlayer": "Search players",

@@ -53,8 +53,7 @@ export function profileModuleIsEmpty(type, ctx) {
   if (type === "tournaments") return isTournamentsModuleEmpty(ctx.profile);
   if (type === "difficulty") return isDifficultyModuleEmpty(ctx.difficultyGraphData);
   if (type === "rankHistory") return isRankHistoryModuleEmpty(ctx.rankHistory);
-  if (type === "scores") return isScoresModuleEmpty(ctx.scores);
-  if (type === "charts") return isChartsModuleEmpty(ctx.profile);
+  if (type === "scores" || type === "charts") return false;
   if (type === "favorite") return isFavoriteModuleEmpty(ctx.favoriteItems);
   return false;
 }

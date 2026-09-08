@@ -114,13 +114,62 @@ const PackCard = ({
     hasFlag(user, permissionFlags.SUPER_ADMIN)
   );
 
+  const isShowcase = displayMode === 'showcase';
   const cardClasses = [
     'pack-card',
-    `pack-card--${size}`,
+    isShowcase ? '' : `pack-card--${size}`,
     `pack-card--${displayMode}`,
     pack.isPinned ? 'pack-card--pinned' : '',
     pack.viewMode === LevelPackViewModes.FORCED_PRIVATE ? 'pack-card--forced-private' : ''
   ].filter(Boolean).join(' ');
+
+  const packIcon = (
+    <div className="pack-card__icon">
+      {pack.iconUrl ? (
+        <img
+          src={pack.iconUrl}
+          alt={pack.name}
+          className="pack-card__icon-image"
+          onError={(e) => {
+            e.target.style.display = 'none';
+            e.target.nextSibling.style.display = 'flex';
+          }}
+        />
+      ) : null}
+      <div
+        className="pack-card__icon-placeholder"
+        style={{ display: pack.iconUrl ? 'none' : 'flex' }}
+      >
+        📦
+      </div>
+    </div>
+  );
+
+  const packInfo = (
+    <div className="pack-card__info">
+      <h3 className="pack-card__name">{pack.name}</h3>
+      <div className="pack-card__meta">
+        <span className="pack-card__level-count">
+          {pack.totalLevelCount} {t('cards.pack.stats.levels')}
+        </span>
+        {pack.isPinned && (
+          <PinIcon className="pack-card__pin-icon" />
+        )}
+      </div>
+    </div>
+  );
+
+  const packOwner = (
+    <div className="pack-card__owner">
+      <UserAvatar
+        {...userAvatarUrls(pack.packOwner)}
+        className="pack-card__owner-avatar"
+      />
+      <span className="pack-card__owner-name">
+        {pack.packOwner?.nickname || pack.packOwner?.username || 'Unknown'}
+      </span>
+    </div>
+  );
 
   return (
     <>
@@ -129,39 +178,18 @@ const PackCard = ({
         data-tooltip-id={`pack-tooltip-${pack.id}`}
         data-tooltip-content={`${t('cards.pack.clickToView')} ${pack.name}`}
       >
+        {isShowcase ? (
+          <Link className="pack-card__link-wrap" to={packTo} aria-label={pack.name}>
+            {packIcon}
+            {packInfo}
+            {packOwner}
+          </Link>
+        ) : (
+          <>
         <div className="pack-card__header">
           <Link className="pack-card__link-wrap" to={packTo} aria-label={pack.name}>
-            <div className="pack-card__icon">
-              {pack.iconUrl ? (
-                <img 
-                  src={pack.iconUrl} 
-                  alt={pack.name}
-                  className="pack-card__icon-image"
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                    e.target.nextSibling.style.display = 'flex';
-                  }}
-                />
-              ) : null}
-              <div 
-                className="pack-card__icon-placeholder"
-                style={{ display: pack.iconUrl ? 'none' : 'flex' }}
-              >
-                📦
-              </div>
-            </div>
-            
-            <div className="pack-card__info">
-              <h3 className="pack-card__name">{pack.name}</h3>
-              <div className="pack-card__meta">
-                <span className="pack-card__level-count">
-                  {pack.totalLevelCount} {t('cards.pack.stats.levels')}
-                </span>
-                {pack.isPinned && (
-                  <PinIcon className="pack-card__pin-icon" />
-                )}
-              </div>
-            </div>
+            {packIcon}
+            {packInfo}
           </Link>
 
           <div className="pack-card__actions">
@@ -199,15 +227,7 @@ const PackCard = ({
 
         <Link className="pack-card__link-wrap" to={packTo} aria-label={pack.name}>
           <div className="pack-card__footer">
-            <div className="pack-card__owner">
-              <UserAvatar 
-                {...userAvatarUrls(pack.packOwner)} 
-                className="pack-card__owner-avatar"
-              />
-              <span className="pack-card__owner-name">
-                {pack.packOwner?.nickname || pack.packOwner?.username || 'Unknown'}
-              </span>
-            </div>
+            {packOwner}
             
             <div className="pack-card__view-mode">
               {getViewModeIcon()}
@@ -239,6 +259,8 @@ const PackCard = ({
               </div>
             </div>
           </Link>
+        )}
+          </>
         )}
       </div>
 

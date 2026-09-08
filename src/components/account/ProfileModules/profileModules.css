@@ -100,6 +100,13 @@
   font-weight: 600;
 }
 
+.profile-modules-editor .profile-modules-editor__required {
+  color: var(--color-gray-2);
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
 .profile-modules-editor .profile-modules-editor__add {
   display: flex;
   flex-wrap: wrap;
@@ -336,7 +343,7 @@
 }
 
 .profile-modules .profile-showcase__row {
-  min-height: 2.75rem;
+  min-height: 6rem;
   width: 100%;
 }
 
@@ -348,11 +355,6 @@
   margin: 0;
 }
 
-.profile-modules .profile-showcase .pack-card__actions,
-.profile-modules .profile-showcase .pack-card > .pack-card__link-wrap {
-  display: none;
-}
-
 .profile-modules .profile-showcase .player-card.player-card--showcase {
   min-height: 2.75rem;
   padding: 0.35rem 0.75rem;
@@ -361,8 +363,8 @@
 }
 
 .profile-modules .profile-showcase .player-card.player-card--showcase .img-wrapper {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 3rem;
+  height: 3rem;
 }
 
 .profile-modules .profile-showcase .player-card.player-card--showcase .rank-display {
