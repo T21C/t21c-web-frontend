@@ -55,6 +55,8 @@
     "pushHint": "Utilise les mêmes types et catégories que la boîte de réception.",
     "pushDenied": "Les notifications sont bloquées pour ce site. Autorisez-les dans les paramètres du navigateur.",
     "pushUnsupported": "Ce navigateur ne prend pas en charge les notifications.",
+    "hideOwnActivityTitle": "Masquer mes propres actions",
+    "hideOwnActivityHint": "Si cette option est activée, vos actions n’apparaissent pas dans la boîte de réception. Laissez-la désactivée pour confirmer qu’une soumission ou une modification a bien été prise en compte.",
     "categories": {
       "submissions": "Soumissions",
       "chart": "Charts",
@@ -114,5 +116,23 @@
     "showFollowerCountLabel": "Afficher le nombre de followers",
     "showFollowerCountHint": "Lorsque c’est activé, les visiteurs voient combien de personnes suivent ce profil.",
     "showFollowerCountError": "Impossible de mettre à jour la visibilité du nombre de followers"
+  },
+  "modules": {
+    "label": "Modules du profil",
+    "counter": "{{used}}/{{cap}} activés",
+    "reset": "Réinitialiser",
+    "resetConfirm": "Réinitialiser les modules à la mise en page par défaut ? Les favoris seront retirés. Il faudra encore enregistrer.",
+    "discard": "Annuler",
+    "saveSuccess": "Modules du profil enregistrés",
+    "saveError": "Impossible d’enregistrer les modules du profil",
+    "sessionExpired": "Votre session a expiré. Veuillez vous reconnecter et réessayer.",
+    "capReached": "Tous les emplacements de modules sont utilisés.",
+    "capReachedFree": "Les profils gratuits peuvent activer {{freeCap}} modules. TUFStellar passe à {{stellarCap}}.",
+    "addPlaceholder": "Ajouter un module",
+    "dragAria": "Glisser pour réordonner",
+    "favoriteCount": "{{used}}/{{max}} éléments",
+    "searchPlayer": "Rechercher des joueurs",
+    "searchEntity": "Rechercher pour ajouter",
+    "searchNoResults": "Aucun résultat"
   }
 }

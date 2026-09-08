@@ -176,8 +176,7 @@ const LevelCard = ({
     level?.baseScore && level.baseScore !== difficultyDict[level.diffId]?.baseScore
       ? level.baseScore
       : null;
-  const resolvesTagBadges =
-    showTags && (displayMode === 'normal' || displayMode === 'pack');
+  const resolvesTagBadges = Boolean(showTags);
   const hiddenTagIdSet = useMemo(() => {
     if (!hiddenTagIds) return null;
     if (hiddenTagIds instanceof Set) return hiddenTagIds.size ? hiddenTagIds : null;

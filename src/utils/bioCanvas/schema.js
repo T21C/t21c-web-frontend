@@ -251,6 +251,41 @@ export function toPlainText(doc) {
   return joined.length > 2000 ? joined.slice(0, 2000) : joined;
 }
 
+/** Text / link / social only — used when TUFStellar is inactive. Skips embed, image, featuredLevels. */
+export const LAPSED_PLAIN_BIO_TYPES = new Set(["text", "link", "social"]);
+
+export function toLapsedPlainBio(doc) {
+  if (!doc?.blocks?.length) return null;
+  const parts = [];
+  for (const block of doc.blocks) {
+    if (!LAPSED_PLAIN_BIO_TYPES.has(block.type)) continue;
+    const descriptor = getBlockDescriptor(block.type);
+    if (!descriptor) continue;
+    const text = descriptor.toPlainText(block.data);
+    if (text?.trim()) parts.push(text.trim());
+  }
+  if (!parts.length) return null;
+  const joined = parts.join("\n\n");
+  return joined.length > 2000 ? joined.slice(0, 2000) : joined;
+}
+
+export function canvasHasBlocks(canvas) {
+  return Array.isArray(canvas?.blocks) && canvas.blocks.length > 0;
+}
+
+/**
+ * Public/settings text when the canvas must not render.
+ * If a canvas exists, only lapsed-allowed blocks are used (never the stored dump).
+ * If there is no canvas, use `profile.bio`.
+ */
+export function getDisplayBioText(profile) {
+  if (canvasHasBlocks(profile?.bioCanvas)) {
+    return toLapsedPlainBio(profile.bioCanvas);
+  }
+  const bio = typeof profile?.bio === "string" ? profile.bio.trim() : "";
+  return bio.length ? bio : null;
+}
+
 export function getImageBlockIds(doc) {
   if (!doc?.blocks?.length) return [];
   return doc.blocks.filter((b) => b.type === "image").map((b) => b.id);

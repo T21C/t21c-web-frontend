@@ -97,10 +97,10 @@
       "topPlay": "Votre meilleur clear n'est pas assez élevé pour voter sur ce niveau",
       "mustClear": "Vous devez clear ce niveau pour voter sur ce tag",
       "uncleared": "Les tags communautaires sont disponibles après un clear sur ce niveau",
-      "inert": "Ce vote est enregistré et comptera quand vous clearz ce niveau",
+      "inert": "Ce vote est enregistré et comptera quand vous serez éligible",
       "inertUncleared": "Les votes sont enregistrés maintenant et compteront après un clear sur ce niveau",
       "inertMustClear": "Enregistré maintenant ; compte à poids plein quand vous clearz ce niveau",
-      "inertTopPlay": "Enregistré maintenant ; compte quand vous clearz ce niveau ou si votre meilleur clear est assez élevé",
+      "inertTopPlay": "Enregistré maintenant ; compte quand votre meilleur clear est assez élevé",
       "band": "Ce tag n'est pas disponible pour cette difficulté",
       "deleted": "Impossible de voter sur un niveau supprimé"
     }

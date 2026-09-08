@@ -55,6 +55,8 @@
     "pushHint": "Używa tych samych typów i kategorii co skrzynka.",
     "pushDenied": "Powiadomienia są zablokowane dla tej witryny. Włącz je w ustawieniach przeglądarki.",
     "pushUnsupported": "Ta przeglądarka nie obsługuje powiadomień.",
+    "hideOwnActivityTitle": "Ukryj własną aktywność",
+    "hideOwnActivityHint": "Gdy włączone, twoje własne działania nie pojawią się w skrzynce. Zostaw wyłączone, jeśli chcesz potwierdzenia, że zgłoszenie lub edycja doszły.",
     "categories": {
       "submissions": "Zgłoszenia",
       "chart": "Charty",
@@ -114,5 +116,23 @@
     "showFollowerCountLabel": "Pokaż liczbę obserwujących",
     "showFollowerCountHint": "Gdy włączone, odwiedzający widzą, ile osób obserwuje ten profil.",
     "showFollowerCountError": "Nie udało się zaktualizować widoczności liczby obserwujących"
+  },
+  "modules": {
+    "label": "Moduły profilu",
+    "counter": "{{used}}/{{cap}} włączonych",
+    "reset": "Przywróć domyślne",
+    "resetConfirm": "Przywrócić moduły do domyślnego układu? Ulubione zostaną usunięte. Nadal trzeba zapisać.",
+    "discard": "Odrzuć",
+    "saveSuccess": "Zapisano moduły profilu",
+    "saveError": "Nie udało się zapisać modułów profilu",
+    "sessionExpired": "Sesja wygasła. Zaloguj się ponownie i spróbuj jeszcze raz.",
+    "capReached": "Wszystkie sloty modułów są zajęte.",
+    "capReachedFree": "Darmowe profile mogą włączyć {{freeCap}} modułów. TUFStellar podnosi limit do {{stellarCap}}.",
+    "addPlaceholder": "Dodaj moduł",
+    "dragAria": "Przeciągnij, aby zmienić kolejność",
+    "favoriteCount": "{{used}}/{{max}} elementów",
+    "searchPlayer": "Szukaj graczy",
+    "searchEntity": "Szukaj, aby dodać",
+    "searchNoResults": "Brak wyników"
   }
 }

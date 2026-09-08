@@ -260,6 +260,27 @@
       "SPECIAL": "특수"
     }
   },
+  "modules": {
+    "missing": "아직 표시할 내용이 없습니다.",
+    "types": {
+      "bio": "소개",
+      "tournaments": "토너먼트",
+      "scoreBreakdown": "점수 구성",
+      "difficulty": "난이도",
+      "rankHistory": "랭크 기록",
+      "scores": "점수",
+      "charts": "차트",
+      "favorite": "즐겨찾기"
+    },
+    "favoriteKinds": {
+      "pass": "클리어",
+      "level": "차트",
+      "pack": "팩",
+      "player": "플레이어"
+    },
+    "expandFavorite": "즐겨찾기 펼치기",
+    "collapseFavorite": "즐겨찾기 접기"
+  },
   "discordRoleSync": {
     "buttonTitle": {
       "own": "Refresh your Discord roles",

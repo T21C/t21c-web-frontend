@@ -18,9 +18,11 @@ const SettingsNotificationsPage = () => {
   const [categories, setCategories] = useState([]);
   const [pushEnabled, setPushEnabled] = useState(false);
   const [pushAvailable, setPushAvailable] = useState(false);
+  const [hideOwnActivity, setHideOwnActivity] = useState(false);
   const [permission, setPermission] = useState(getPushPermission());
   const [loading, setLoading] = useState(true);
   const [pushBusy, setPushBusy] = useState(false);
+  const [hideOwnBusy, setHideOwnBusy] = useState(false);
   const unsupported = !isPushSupported();
 
   const applyState = (data) => {
@@ -28,6 +30,7 @@ const SettingsNotificationsPage = () => {
     if (Array.isArray(data?.categories)) setCategories(data.categories);
     if (typeof data?.pushEnabled === 'boolean') setPushEnabled(data.pushEnabled);
     if (typeof data?.pushAvailable === 'boolean') setPushAvailable(data.pushAvailable);
+    if (typeof data?.hideOwnActivity === 'boolean') setHideOwnActivity(data.hideOwnActivity);
   };
 
   const load = useCallback(async () => {
@@ -109,6 +112,22 @@ const SettingsNotificationsPage = () => {
     }
   };
 
+  const toggleHideOwnActivity = async () => {
+    if (hideOwnBusy) return;
+    const next = !hideOwnActivity;
+    setHideOwnBusy(true);
+    setHideOwnActivity(next);
+    try {
+      const {data} = await api.put(routes.notifications.preferences(), {hideOwnActivity: next});
+      applyState(data);
+    } catch (error) {
+      toast.error(t('settings.notifications.saveError'));
+      setHideOwnActivity(!next);
+    } finally {
+      setHideOwnBusy(false);
+    }
+  };
+
   const togglePush = async () => {
     if (!pushAvailable || unsupported || permission === 'denied' || pushBusy) return;
     setPushBusy(true);
@@ -139,6 +158,22 @@ const SettingsNotificationsPage = () => {
         <p className="settings-sub-page__text">{t('settings.notifications.loading')}</p>
       ) : (
         <>
+          <div className="settings-notifications-page__account">
+            <label className="settings-notifications-page__toggle settings-notifications-page__toggle--account">
+              <input
+                type="checkbox"
+                checked={hideOwnActivity}
+                disabled={hideOwnBusy}
+                onChange={toggleHideOwnActivity}
+              />
+              <span className="settings-notifications-page__toggle-label">
+                {t('settings.notifications.hideOwnActivityTitle')}
+              </span>
+            </label>
+            <p className="settings-notifications-page__status">
+              {t('settings.notifications.hideOwnActivityHint')}
+            </p>
+          </div>
           {pushAvailable ? (
             <div className="settings-notifications-page__push">
               <label className="settings-notifications-page__toggle">

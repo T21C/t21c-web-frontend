@@ -45,15 +45,6 @@
   color: var(--color-white);
 }
 
-.community-tag-vote-popup .community-tag-vote-popup__banner {
-  margin: 0;
-  padding: 0.5rem 0.65rem;
-  border-radius: 4px;
-  background: color-mix(in srgb, var(--btn-warning) 18%, transparent);
-  color: var(--color-white);
-  font-size: 0.85rem;
-}
-
 .community-tag-vote-popup .community-tag-vote-popup__search {
   width: 100%;
   padding: 0.55rem 0.65rem;
@@ -132,11 +123,12 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  overflow: visible;
 }
 
 .community-tag-vote-popup .community-tag-vote-popup__icon[data-letter-only="true"] {
   border-radius: 4px;
-  overflow: hidden;
+  overflow: visible;
   background-color: var(--tag-bg-color, transparent);
 }
 

@@ -3569,10 +3569,12 @@
 .level-detail .level-tags-container .tags-icons-row {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.4rem;
+  padding: 2px;
   transition: gap 0.3s ease;
   flex-wrap: wrap;
   z-index: 1;
+  overflow: visible;
 }
 
 .level-detail .level-tags-container[data-open="true"] .tags-icons-row {
@@ -3591,11 +3593,12 @@
   position: relative;
   flex-shrink: 0;
   z-index: calc(100 - var(--tag-index, 0));
+  overflow: visible;
 }
 
 .level-detail .level-tags-container .tag-icon-preview[data-letter-only="true"] {
   border-radius: 50%;
-  overflow: hidden;
+  overflow: visible;
   background-color: var(--tag-bg-color, transparent);
   -webkit-backdrop-filter: brightness(40%);
   backdrop-filter: brightness(40%);
@@ -3721,6 +3724,7 @@
   width: 1.5rem;
   height: 1.5rem;
   flex-shrink: 0;
+  overflow: visible;
 }
 
 .tags-dropdown .tag-chip-letter {

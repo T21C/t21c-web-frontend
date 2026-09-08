@@ -93,6 +93,10 @@
         "title": "Chart zaktualizowany",
         "body": "{{song}} — {{artist}} został zaktualizowany."
       },
+      "rated": {
+        "title": "Chart oceniony",
+        "body": "{{song}} — {{artist}} został oceniony {{difficultyName}}."
+      },
       "curated": {
         "title": "Chart wyróżniony",
         "body": "{{song}} — {{artist}} został wyróżniony."

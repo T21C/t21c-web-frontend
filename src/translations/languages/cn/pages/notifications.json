@@ -93,6 +93,10 @@
         "title": "谱面已更新",
         "body": "{{song}} — {{artist}} 已更新。"
       },
+      "rated": {
+        "title": "谱面已评级",
+        "body": "{{song}} — {{artist}} 已评为 {{difficultyName}}。"
+      },
       "curated": {
         "title": "谱面已精选",
         "body": "{{song}} — {{artist}} 已加入精选。"

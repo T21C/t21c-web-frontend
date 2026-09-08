@@ -93,6 +93,10 @@
         "title": "차트 수정됨",
         "body": "{{song}} — {{artist}} 가 수정되었습니다."
       },
+      "rated": {
+        "title": "차트 평가됨",
+        "body": "{{song}} — {{artist}} 가 {{difficultyName}}(으)로 평가되었습니다."
+      },
       "curated": {
         "title": "차트 큐레이션됨",
         "body": "{{song}} — {{artist}} 가 큐레이션되었습니다."

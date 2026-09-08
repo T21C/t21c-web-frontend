@@ -261,6 +261,27 @@
       "SPECIAL": "特殊"
     }
   },
+  "modules": {
+    "missing": "该模块暂无可展示内容。",
+    "types": {
+      "bio": "简介",
+      "tournaments": "锦标赛",
+      "scoreBreakdown": "分数构成",
+      "difficulty": "难度",
+      "rankHistory": "排名历史",
+      "scores": "成绩",
+      "charts": "谱面",
+      "favorite": "收藏"
+    },
+    "favoriteKinds": {
+      "pass": "通关",
+      "level": "谱面",
+      "pack": "曲包",
+      "player": "玩家"
+    },
+    "expandFavorite": "展开收藏",
+    "collapseFavorite": "收起收藏"
+  },
   "discordRoleSync": {
     "buttonTitle": {
       "own": "刷新你的 Discord 身份组",

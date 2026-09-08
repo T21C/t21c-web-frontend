@@ -40,7 +40,13 @@ import {
   normalizeProfileAliasNames,
 } from "@/utils/profileAliasNames";
 import { isTufStellarEnabledForUser } from "@/utils/tufStellarFeature";
+import { getDisplayBioText } from "@/utils/bioCanvas";
 import { ProfileCustomizationSyncControl } from "@/components/account/ProfileCustomizationSyncControl/ProfileCustomizationSyncControl";
+import { ProfileModulesEditor } from "@/components/account/ProfileModules";
+import {
+  cloneModulesDocument,
+  documentsEqual,
+} from "@/utils/profileModules";
 import "./settingsSubPage.css";
 
 const SettingsPlayerPage = () => {
@@ -73,6 +79,10 @@ const SettingsPlayerPage = () => {
   const [stellarVariantDraft, setStellarVariantDraft] = useState(null);
   const [stellarVariantSaving, setStellarVariantSaving] = useState(false);
   const [followerCountSaving, setFollowerCountSaving] = useState(false);
+  /** `undefined` = follow server */
+  const [modulesDraft, setModulesDraft] = useState(undefined);
+  const [modulesSaving, setModulesSaving] = useState(false);
+  const [modulesFieldError, setModulesFieldError] = useState("");
 
   const canProfileSync = Boolean(user?.playerId && user?.creatorId);
   const presentationSync = playerData?.presentationSync;
@@ -114,6 +124,7 @@ const SettingsPlayerPage = () => {
     setBioCanvasDraft(undefined);
     setHeaderSurfaceStyleDraft(undefined);
     setStellarVariantDraft(null);
+    setModulesDraft(undefined);
   }, [playerId]);
 
   useEffect(() => {
@@ -125,19 +136,14 @@ const SettingsPlayerPage = () => {
 
   useEffect(() => {
     if (!playerData) return;
-    setBioDraft(typeof playerData.bio === "string" ? playerData.bio : "");
+    setBioDraft(getDisplayBioText(playerData) || "");
     setBioFieldError("");
-  }, [playerData?.bio, playerId]);
+  }, [playerData?.bio, playerData?.bioCanvas, playerId]);
 
   const hasSettingsDrafts =
     headerSurfaceStyleDraft !== undefined ||
     bannerPresetDraft !== undefined ||
     bioCanvasDraft !== undefined;
-
-  const canUseBioCanvas = useMemo(
-    () => isTufStellarEnabledForUser(user) && isTufStellarAccessActive(user),
-    [user],
-  );
 
   useEffect(() => {
     const onVis = () => {
@@ -190,6 +196,11 @@ const SettingsPlayerPage = () => {
     [user, playerData?.user],
   );
 
+  const canUseBioCanvas = useMemo(
+    () => isTufStellarEnabledForUser(user) && isTufStellarAccessActive(stellarEntitlementSubject),
+    [user, stellarEntitlementSubject],
+  );
+
   const settingsBannerUrl = useMemo(() => {
     if (!playerData) return null;
     const flags = playerData.user?.permissionFlags ?? user?.permissionFlags ?? 0;
@@ -236,9 +247,9 @@ const SettingsPlayerPage = () => {
   }, [nicknameDraft, playerData?.user?.nickname, playerData?.name]);
 
   const bioMatchesSaved = useMemo(() => {
-    const saved = playerData?.bio == null ? "" : String(playerData.bio);
+    const saved = getDisplayBioText(playerData) || "";
     return bioDraft.trim() === saved.trim();
-  }, [playerData?.bio, bioDraft]);
+  }, [playerData, bioDraft]);
 
   const settingsHeaderSurface = useMemo(() => {
     if (!playerData) return { style: null, imageAssets: {} };
@@ -349,6 +360,43 @@ const SettingsPlayerPage = () => {
       setFollowerCountSaving(false);
     }
   }, [followerCountSaving, playerData?.showFollowerCount, t]);
+
+  const publishedModules = useMemo(
+    () => cloneModulesDocument("player", playerData?.profileModules),
+    [playerData?.profileModules],
+  );
+  const editingModules =
+    modulesDraft !== undefined ? modulesDraft : publishedModules;
+  const modulesMatchSaved = documentsEqual(editingModules, publishedModules);
+
+  const handleSaveModules = useCallback(async () => {
+    setModulesFieldError("");
+    setModulesSaving(true);
+    const toastId = toast.loading(t("loading.saving", { ns: "common" }));
+    try {
+      await ensureAuthSession();
+      const { data } = await api.patch(routes.playersV3.meProfileModules(), editingModules);
+      setPlayerData((p) =>
+        p && typeof p === "object"
+          ? {
+              ...p,
+              profileModules: data?.profileModules ?? editingModules,
+              profileModulesResolved: data?.profileModulesResolved ?? p.profileModulesResolved,
+            }
+          : p,
+      );
+      setModulesDraft(undefined);
+      toast.success(t("settings.modules.saveSuccess"), { id: toastId });
+    } catch (e) {
+      const msg = isNoTokenAuthError(e)
+        ? t("settings.modules.sessionExpired")
+        : e?.response?.data?.error || t("settings.modules.saveError");
+      setModulesFieldError(msg);
+      toast.error(msg, { id: toastId });
+    } finally {
+      setModulesSaving(false);
+    }
+  }, [editingModules, t]);
 
   const handleSaveBio = useCallback(async () => {
     if (playerId == null || !Number.isFinite(playerId)) return;
@@ -734,6 +782,29 @@ const SettingsPlayerPage = () => {
           </span>
         </label>
       </div>
+
+      <SettingsSaveField
+        sectionId="profileModules"
+        label={t("settings.modules.label")}
+        inputId="settings-player-modules"
+        labelElement="div"
+        onSave={handleSaveModules}
+        saving={modulesSaving}
+        matchesSaved={modulesMatchSaved}
+        fieldError={modulesFieldError}
+        stack
+      >
+        <ProfileModulesEditor
+          kind="player"
+          value={editingModules}
+          resolved={playerData?.profileModulesResolved}
+          stellarActive={isTufStellarAccessActive(stellarEntitlementSubject)}
+          user={user}
+          dirty={!modulesMatchSaved}
+          onChange={setModulesDraft}
+          onDiscard={() => setModulesDraft(undefined)}
+        />
+      </SettingsSaveField>
 
       <div className="profile-customization-sync-host">
         <ProfileCustomizationSyncControl

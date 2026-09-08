@@ -31,7 +31,6 @@ export default function CommunityTagVotePopup({
 }) {
   const { t } = useTranslation(['pages', 'common', 'components']);
   const [tags, setTags] = useState([]);
-  const [chartCleared, setChartCleared] = useState(true);
   const [search, setSearch] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isVoting, setIsVoting] = useState(false);
@@ -54,7 +53,6 @@ export default function CommunityTagVotePopup({
     try {
       const response = await api.get(routes.database.levels.communityTags(levelId));
       setTags(response.data?.tags || []);
-      setChartCleared(response.data?.chartCleared !== false);
     } catch (error) {
       console.error('Error fetching community tags:', error);
       toast.error(t('errors.generic', { ns: 'common' }));
@@ -125,9 +123,6 @@ export default function CommunityTagVotePopup({
         { action },
       );
       setTags(response.data?.tags || []);
-      if (typeof response.data?.chartCleared === 'boolean') {
-        setChartCleared(response.data.chartCleared);
-      }
       const toastKey =
         action === 'upvote'
           ? 'levelDetail.tags.vote.upvoted'
@@ -189,11 +184,6 @@ export default function CommunityTagVotePopup({
               aria-label={t('buttons.close', { ns: 'common' })}
             />
           </div>
-          {!chartCleared ? (
-            <p className="community-tag-vote-popup__banner">
-              {t('levelDetail.tags.vote.inertUncleared')}
-            </p>
-          ) : null}
           <input
             type="search"
             className="community-tag-vote-popup__search"
