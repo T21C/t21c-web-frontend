@@ -60,64 +60,66 @@ export default function FavoriteShowcase({
     (levelIds.length > 0 && levelsLoading) || (passIds.length > 0 && passesLoading);
 
   return (
-    <section className={`${sectionClassName} profile-showcase`}>
-      <div className="account-profile-page__section-title-row">
-        <h2 className="account-profile-page__section-title">
-          {t("profile.modules.types.favorite")}
-        </h2>
-        <button
-          type="button"
-          className="account-profile-page__chevron-btn"
-          aria-expanded={expanded}
-          aria-label={
-            collapsed
-              ? t("profile.modules.expandFavorite")
-              : t("profile.modules.collapseFavorite")
-          }
-          onClick={() => onCollapsedChange(!collapsed)}
+    <section className={sectionClassName}>
+      <div className="profile-showcase">
+        <div className="account-profile-page__section-title-row">
+          <h2 className="account-profile-page__section-title">
+            {t("profile.modules.types.favorite")}
+          </h2>
+          <button
+            type="button"
+            className="account-profile-page__chevron-btn"
+            aria-expanded={expanded}
+            aria-label={
+              collapsed
+                ? t("profile.modules.expandFavorite")
+                : t("profile.modules.collapseFavorite")
+            }
+            onClick={() => onCollapsedChange(!collapsed)}
+          >
+            <ChevronIcon direction={expanded ? "down" : "right"} />
+          </button>
+        </div>
+        <Collapsible
+          open={!collapsed}
+          onOpenChange={(open) => onCollapsedChange(!open)}
+          revealOverflow
+          duration="0.3s"
+          easing="ease-in-out"
         >
-          <ChevronIcon direction={expanded ? "down" : "right"} />
-        </button>
+          <CollapsibleContent>
+            <div className="account-profile-page__collapsible profile-showcase__list">
+              {loading ? (
+                <p className="profile-showcase__loading">
+                  {t("loading.generic", { ns: "common" })}
+                </p>
+              ) : null}
+              {items.map((item) => {
+                if (item.kind === "level" && levelsLoading && !levelById.has(item.id)) {
+                  return null;
+                }
+                if (item.kind === "pass" && passesLoading && !passById.has(item.id)) {
+                  return null;
+                }
+                return (
+                  <div
+                    key={`${item.kind}-${item.id}`}
+                    className="profile-showcase__row"
+                  >
+                    <ShowcaseItem
+                      item={item}
+                      levelById={levelById}
+                      passById={passById}
+                      levelsLoading={levelsLoading}
+                      passesLoading={passesLoading}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
       </div>
-      <Collapsible
-        open={!collapsed}
-        onOpenChange={(open) => onCollapsedChange(!open)}
-        revealOverflow
-        duration="0.3s"
-        easing="ease-in-out"
-      >
-        <CollapsibleContent>
-          <div className="account-profile-page__collapsible profile-showcase__list">
-            {loading ? (
-              <p className="profile-showcase__loading">
-                {t("loading.generic", { ns: "common" })}
-              </p>
-            ) : null}
-            {items.map((item) => {
-              if (item.kind === "level" && levelsLoading && !levelById.has(item.id)) {
-                return null;
-              }
-              if (item.kind === "pass" && passesLoading && !passById.has(item.id)) {
-                return null;
-              }
-              return (
-                <div
-                  key={`${item.kind}-${item.id}`}
-                  className="profile-showcase__row"
-                >
-                  <ShowcaseItem
-                    item={item}
-                    levelById={levelById}
-                    passById={passById}
-                    levelsLoading={levelsLoading}
-                    passesLoading={passesLoading}
-                  />
-                </div>
-              );
-            })}
-          </div>
-        </CollapsibleContent>
-      </Collapsible>
     </section>
   );
 }
