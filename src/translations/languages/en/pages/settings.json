@@ -45,6 +45,8 @@
     "pushHint": "Uses the same type and category switches as your inbox.",
     "pushDenied": "Notifications are blocked for this site. Allow them in your browser settings to receive alerts.",
     "pushUnsupported": "This browser does not support notifications.",
+    "hideOwnActivityTitle": "Hide my own activity",
+    "hideOwnActivityHint": "When on, actions you take will not appear in your inbox. Leave this off if you want a confirmation that a submission or edit went through.",
     "categories": {
       "submissions": "Submissions",
       "chart": "Charts",

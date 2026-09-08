@@ -45,6 +45,8 @@
     "pushHint": "使用与收件箱相同的类型和分类开关。",
     "pushDenied": "此网站的通知已被阻止。请在浏览器设置中允许通知。",
     "pushUnsupported": "此浏览器不支持通知。",
+    "hideOwnActivityTitle": "隐藏我自己的操作",
+    "hideOwnActivityHint": "开启后，你自己的操作不会出现在收件箱。若希望提交或编辑成功后收到确认，请保持关闭。",
     "categories": {
       "submissions": "提交",
       "chart": "谱面",

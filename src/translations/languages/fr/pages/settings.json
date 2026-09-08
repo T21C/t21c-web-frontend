@@ -55,6 +55,8 @@
     "pushHint": "Utilise les mêmes types et catégories que la boîte de réception.",
     "pushDenied": "Les notifications sont bloquées pour ce site. Autorisez-les dans les paramètres du navigateur.",
     "pushUnsupported": "Ce navigateur ne prend pas en charge les notifications.",
+    "hideOwnActivityTitle": "Masquer mes propres actions",
+    "hideOwnActivityHint": "Si cette option est activée, vos actions n’apparaissent pas dans la boîte de réception. Laissez-la désactivée pour confirmer qu’une soumission ou une modification a bien été prise en compte.",
     "categories": {
       "submissions": "Soumissions",
       "chart": "Charts",

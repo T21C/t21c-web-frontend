@@ -45,6 +45,8 @@
     "pushHint": "받은편지함과 같은 유형 및 카테고리 설정을 사용합니다.",
     "pushDenied": "이 사이트에 대한 알림이 차단되어 있습니다. 브라우저 설정에서 허용하세요.",
     "pushUnsupported": "이 브라우저는 알림을 지원하지 않습니다.",
+    "hideOwnActivityTitle": "내 활동 숨기기",
+    "hideOwnActivityHint": "켜면 내가 한 작업은 받은편지함에 나타나지 않습니다. 제출이나 수정이 반영되었는지 확인하려면 꺼 두세요.",
     "categories": {
       "submissions": "제출",
       "chart": "차트",

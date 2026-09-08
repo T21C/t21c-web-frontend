@@ -55,6 +55,8 @@
     "pushHint": "Używa tych samych typów i kategorii co skrzynka.",
     "pushDenied": "Powiadomienia są zablokowane dla tej witryny. Włącz je w ustawieniach przeglądarki.",
     "pushUnsupported": "Ta przeglądarka nie obsługuje powiadomień.",
+    "hideOwnActivityTitle": "Ukryj własną aktywność",
+    "hideOwnActivityHint": "Gdy włączone, twoje własne działania nie pojawią się w skrzynce. Zostaw wyłączone, jeśli chcesz potwierdzenia, że zgłoszenie lub edycja doszły.",
     "categories": {
       "submissions": "Zgłoszenia",
       "chart": "Charty",

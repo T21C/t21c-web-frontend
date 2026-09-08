@@ -114,10 +114,10 @@
       "topPlay": "Twój najwyższy clear jest zbyt niski, aby głosować na ten poziom",
       "mustClear": "Musisz ukończyć ten poziom, aby głosować na ten tag",
       "uncleared": "Tagi społeczności są dostępne po pierwszym clearze",
-      "inert": "Głos jest zapisany i zacznie się liczyć po clearze tego poziomu",
+      "inert": "Głos jest zapisany i zacznie się liczyć, gdy będziesz uprawniony",
       "inertUncleared": "Głosy są zapisywane teraz i zaczną się liczyć po pierwszym clearze",
       "inertMustClear": "Zapisane teraz; pełna waga po clearze tego poziomu",
-      "inertTopPlay": "Zapisane teraz; liczy się po clearze tego poziomu lub gdy twój najwyższy clear będzie wystarczający",
+      "inertTopPlay": "Zapisane teraz; liczy się, gdy twój najwyższy clear będzie wystarczający",
       "band": "Ten tag nie jest dostępny dla tej trudności",
       "deleted": "Nie można głosować na usunięty poziom"
     }

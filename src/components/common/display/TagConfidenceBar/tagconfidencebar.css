@@ -8,7 +8,7 @@
   height: 100%;
   overflow: visible;
   /* Tweak to match tag icon corner rounding */
-  --tag-confidence-radius: 35%;
+  --tag-confidence-radius: 40%;
   --tag-confidence-stroke: 2px;
 }
 
