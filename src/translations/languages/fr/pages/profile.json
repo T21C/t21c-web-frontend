@@ -85,5 +85,26 @@
     "difficultyHeaderGridCellTooltip": "{{name}} · {{count}} complétions",
     "clearsByTypeTooltip": "{{count}} niveaux uniques complétés",
     "clearsByTypeTooltipWithReclears": "{{unique}} niveaux uniques complétés ({{total}} passes au total)"
+  },
+  "modules": {
+    "missing": "Ce module n’a encore rien à afficher.",
+    "types": {
+      "bio": "Bio",
+      "tournaments": "Tournois",
+      "scoreBreakdown": "Répartition du score",
+      "difficulty": "Difficulté",
+      "rankHistory": "Historique de rang",
+      "scores": "Scores",
+      "charts": "Charts",
+      "favorite": "Favoris"
+    },
+    "favoriteKinds": {
+      "pass": "Clear",
+      "level": "Chart",
+      "pack": "Pack",
+      "player": "Joueur"
+    },
+    "expandFavorite": "Développer les favoris",
+    "collapseFavorite": "Réduire les favoris"
   }
 } 

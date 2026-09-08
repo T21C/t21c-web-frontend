@@ -9,19 +9,23 @@ import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
 import api from "@/utils/api";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
-import { LevelContextProvider } from "@/contexts/LevelContext";
-import { DifficultyGraph, MetaTags, CreatorStatusBadge } from "@/components/common/display";
+import { MetaTags, CreatorStatusBadge } from "@/components/common/display";
 import { buildCreatorMeta } from '@/utils/meta';
 import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
 import ProfileFollowButton from "@/components/account/ProfileFollowButton/ProfileFollowButton";
-import BioCanvasRenderer from "@/components/account/BioCanvasRenderer/BioCanvasRenderer";
 import { TournamentPlacementsSection } from "@/components/account/TournamentPlacements";
+import {
+  ProfileModulesRenderer,
+  CreatorBioModule,
+  CreatorDifficultyModule,
+  CreatorChartsModule,
+  FavoriteShowcase,
+} from "@/components/account/ProfileModules";
 
 import { ScrollButton } from "@/components/common/buttons";
-import { ChevronIcon, AdofaiIcon, EditIcon, ShieldIcon, InfoIcon } from "@/components/common/icons";
+import { AdofaiIcon, EditIcon, ShieldIcon, InfoIcon } from "@/components/common/icons";
 import { CreatorManagementPopup } from "@/components/popups/Creators";
 import { useScrollParent } from "@/components/common/VirtualList";
-import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { buildCreatorIconSlots } from "@/utils/profileIconSlots";
 import { getCreatorCurationTypesForHeaderPanel } from "@/utils/curationTypeUtils";
@@ -29,11 +33,11 @@ import { toDifficultyGraphData } from "@/utils/statFormatters";
 import {
   getEffectiveProfileBannerUrl,
   getEffectiveProfileHeaderSurface,
+  isTufStellarAccessActive,
   normalizeTufStellarIconVariant,
 } from "@/utils/profileBanners";
 import { normalizeProfileAliasNames } from "@/utils/profileAliasNames";
 import { Tooltip } from "react-tooltip";
-import CreatorChartsSection from "./CreatorChartsSection";
 
 const CreatorProfilePage = () => {
   const { creatorId } = useParams();
@@ -51,6 +55,7 @@ const CreatorProfilePage = () => {
   const [bioCollapsed, setBioCollapsed] = useState(false);
   const [levelsCollapsed, setLevelsCollapsed] = useState(false);
   const [difficultyCollapsed, setDifficultyCollapsed] = useState(false);
+  const [favoriteCollapsed, setFavoriteCollapsed] = useState(false);
 
   useEffect(() => {
     if (!user && !creatorId) {
@@ -176,6 +181,25 @@ const CreatorProfilePage = () => {
     });
   }, [creatorDoc, t, location.pathname, creatorId, profile?.funFacts?.totalLevels]);
 
+  const favoriteItems = useMemo(() => {
+    const resolved = profile?.profileModulesResolved;
+    if (!resolved || typeof resolved !== "object") return [];
+    for (const row of Object.values(resolved)) {
+      if (Array.isArray(row?.items)) return row.items;
+    }
+    return [];
+  }, [profile?.profileModulesResolved]);
+
+  const moduleEmptyContext = useMemo(
+    () => ({
+      profile,
+      bioCanvasEntitled: isTufStellarAccessActive(profile?.user || creatorDoc?.user),
+      difficultyGraphData,
+      favoriteItems,
+    }),
+    [profile, creatorDoc?.user, difficultyGraphData, favoriteItems],
+  );
+
   if (profileLoading) {
     return (
       <div className="account-profile-page creator-profile-page">
@@ -195,9 +219,6 @@ const CreatorProfilePage = () => {
       </div>
     );
   }
-
-  const bioExpanded = !bioCollapsed;
-  const difficultyExpanded = !difficultyCollapsed;
 
   return (
     <div className="account-profile-page creator-profile-page">
@@ -320,112 +341,67 @@ const CreatorProfilePage = () => {
           }
         />
 
-        <section className="creator-profile-page__section">
-          <div className="account-profile-page__section-title-row">
-            <h2 className="account-profile-page__section-title">
-              {t('creators.profile.bio.header')}
-            </h2>
-            <button
-              type="button"
-              className="account-profile-page__chevron-btn"
-              aria-expanded={bioExpanded}
-              aria-label={
-                bioCollapsed
-                  ? t('creators.profile.bio.expand', { defaultValue: 'Expand bio' })
-                  : t('creators.profile.bio.collapse', { defaultValue: 'Collapse bio' })
-              }
-              onClick={() => setBioCollapsed((v) => !v)}
-            >
-              <ChevronIcon direction={bioExpanded ? 'down' : 'right'} />
-            </button>
-          </div>
-          <Collapsible
-            open={!bioCollapsed}
-            onOpenChange={(open) => setBioCollapsed(!open)}
-            revealOverflow
-            duration="0.3s"
-            easing="ease-in-out"
-          >
-            <CollapsibleContent>
-          <div className="account-profile-page__collapsible">
-            <div className="creator-profile-page__bio">
-              {profile?.bioCanvas?.blocks?.length > 0 ? (
-                <BioCanvasRenderer
-                  canvas={profile.bioCanvas}
-                  imageAssets={profile.bioCanvasImageAssets}
+        <ProfileModulesRenderer
+          kind="creator"
+          profileModules={profile?.profileModules}
+          isOwner={Boolean(user && isOwnCreatorProfile)}
+          emptyContext={moduleEmptyContext}
+          renderModule={(mod) => {
+            if (mod.type === "bio") {
+              return (
+                <CreatorBioModule
+                  profile={profile}
+                  subjectUser={profile?.user || creatorDoc?.user}
+                  collapsed={bioCollapsed}
+                  onCollapsedChange={setBioCollapsed}
                 />
-              ) : typeof profile?.bio === "string" && profile.bio.trim().length > 0 ? (
-                <p className="creator-profile-page__bio-text">{profile.bio}</p>
-              ) : (
-                <p className="creator-profile-page__bio-placeholder">
-                  {t("creators.profile.bio.placeholder")}
-                </p>
-              )}
-            </div>
-          </div>
-            </CollapsibleContent>
-          </Collapsible>
-        </section>
-
-        <TournamentPlacementsSection
-          placements={profile?.tournamentPlacements}
-          orderIds={profile?.placementOrderIds}
-          sectionClassName="creator-profile-page__section"
+              );
+            }
+            if (mod.type === "tournaments") {
+              return (
+                <TournamentPlacementsSection
+                  placements={profile?.tournamentPlacements}
+                  orderIds={profile?.placementOrderIds}
+                  sectionClassName="creator-profile-page__section"
+                />
+              );
+            }
+            if (mod.type === "difficulty") {
+              return (
+                <CreatorDifficultyModule
+                  graphData={difficultyGraphData}
+                  collapsed={difficultyCollapsed}
+                  onCollapsedChange={setDifficultyCollapsed}
+                />
+              );
+            }
+            if (mod.type === "charts") {
+              return (
+                <CreatorChartsModule
+                  creatorId={creatorId}
+                  creatorName={creatorDoc?.name || profile?.creator?.name || "creator"}
+                  levelsCollapsed={levelsCollapsed}
+                  setLevelsCollapsed={setLevelsCollapsed}
+                  levelsScrollRef={levelsScrollRef}
+                  levelsScrollParent={levelsScrollParent}
+                  embeddedHiddenFilters={embeddedHiddenFilters}
+                />
+              );
+            }
+            if (mod.type === "favorite") {
+              return (
+                <FavoriteShowcase
+                  items={profile?.profileModulesResolved?.[mod.id]?.items || []}
+                  collapsed={favoriteCollapsed}
+                  onCollapsedChange={setFavoriteCollapsed}
+                  sectionClassName="creator-profile-page__section"
+                />
+              );
+            }
+            return null;
+          }}
         />
 
-        {difficultyGraphData.length > 0 ? (
-          <section className="creator-profile-page__section creator-profile-page__section--difficulty">
-            <div className="account-profile-page__section-title-row">
-              <h2 className="account-profile-page__section-title">
-                {t("creators.profile.sections.difficultyBreakdown.title")}
-              </h2>
-
-              <button
-                type="button"
-                className="account-profile-page__chevron-btn"
-                aria-expanded={difficultyExpanded}
-                aria-label={
-                  difficultyCollapsed
-                    ? t('creators.profile.sections.difficultyBreakdown.expand')
-                    : t('creators.profile.sections.difficultyBreakdown.collapse')
-
-                }
-                onClick={() => setDifficultyCollapsed((v) => !v)}
-              >
-                <ChevronIcon direction={difficultyExpanded ? 'down' : 'right'} />
-              </button>
-            </div>
-            <Collapsible
-              open={!difficultyCollapsed}
-              onOpenChange={(open) => setDifficultyCollapsed(!open)}
-              revealOverflow
-              duration="0.3s"
-              easing="ease-in-out"
-            >
-              <CollapsibleContent>
-            <div className="account-profile-page__collapsible">
-              <DifficultyGraph data={difficultyGraphData} mode="levels" />
-            </div>
-              </CollapsibleContent>
-            </Collapsible>
-          </section>
-        ) : null}
-
-        <section className="creator-profile-page__section creator-profile-page__section--levels">
-          <LevelContextProvider
-            key={creatorId}
-            storagePrefix={`creator_${creatorId}_`}
-          >
-            <CreatorChartsSection
-              creatorName={creatorDoc?.name || profile?.creator?.name || 'creator'}
-              levelsCollapsed={levelsCollapsed}
-              setLevelsCollapsed={setLevelsCollapsed}
-              levelsScrollRef={levelsScrollRef}
-              levelsScrollParent={levelsScrollParent}
-              embeddedHiddenFilters={embeddedHiddenFilters}
-            />
-          </LevelContextProvider>
-        </section>
       </div>
 
       {showManagementPopup && (

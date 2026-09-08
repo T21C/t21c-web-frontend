@@ -260,6 +260,27 @@
       "SPECIAL": "Special"
     }
   },
+  "modules": {
+    "missing": "This module has nothing to show yet.",
+    "types": {
+      "bio": "Bio",
+      "tournaments": "Tournaments",
+      "scoreBreakdown": "Score breakdown",
+      "difficulty": "Difficulty",
+      "rankHistory": "Rank history",
+      "scores": "Scores",
+      "charts": "Charts",
+      "favorite": "Favorite"
+    },
+    "favoriteKinds": {
+      "pass": "Clear",
+      "level": "Chart",
+      "pack": "Pack",
+      "player": "Player"
+    },
+    "expandFavorite": "Expand favorite",
+    "collapseFavorite": "Collapse favorite"
+  },
   "discordRoleSync": {
     "buttonTitle": {
       "own": "Refresh your Discord roles",

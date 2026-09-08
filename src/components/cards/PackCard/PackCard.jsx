@@ -2,12 +2,12 @@
 import { Link } from "react-router-dom";
 import "./packcard.css"
 import { useTranslation } from "react-i18next";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { EditPackPopup } from "@/components/popups/Packs";
 import { EditIcon, PinIcon, LockIcon, EyeIcon, LikeIcon } from "@/components/common/icons";
 import toast from 'react-hot-toast';
-import { usePackContext } from "@/contexts/PackContext";
+import { PackContext } from "@/contexts/PackContext";
 import { UserAvatar } from "@/components/layout";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import { permissionFlags } from "@/utils/UserPermissions";
@@ -20,20 +20,31 @@ import PackDescription from "./PackDescription";
 const PackCard = ({
   index,
   packId,
+  pack: packOverride,
   user,
   sortBy,
   displayMode = 'normal',
   size = 'medium'
 }) => {
   const { t } = useTranslation('components');
-  
+  const packContext = useContext(PackContext);
   const [showEditPopup, setShowEditPopup] = useState(false);
   const { difficultyDict } = useDifficultyContext();
-  const { toggleFavorite } = usePackContext();
-  const { getPackById } = usePackContext();
-  const [pack, setPack] = useState(getPackById(packId));
+  const toggleFavorite = packContext?.toggleFavorite;
+  const [pack, setPack] = useState(
+    () => packOverride || packContext?.getPackById?.(packId),
+  );
 
+  useEffect(() => {
+    if (packOverride) {
+      setPack(packOverride);
+      return;
+    }
+    const fromCtx = packContext?.getPackById?.(packId);
+    if (fromCtx) setPack(fromCtx);
+  }, [packOverride, packContext, packId]);
 
+  if (!pack) return null;
 
   const isFavorited = pack.isFavorited;
 
@@ -50,6 +61,7 @@ const PackCard = ({
     e.preventDefault();
     e.stopPropagation();
 
+    if (!toggleFavorite) return;
     if (!user) {
       toast.error('Please log in to favorite packs');
       return;
@@ -164,6 +176,7 @@ const PackCard = ({
               </button>
             )}
 
+            {toggleFavorite ? (
             <button
               className='pack-card__favorite-btn'
               onClick={handleFavoriteClick}
@@ -174,6 +187,7 @@ const PackCard = ({
               <LikeIcon color={isFavorited ? "#ffffff" : "none"} />
               <span className="pack-card__favorite-count">{pack.favoritesCount}</span>
             </button>
+            ) : null}
           </div>
         </div>
 
@@ -208,8 +222,8 @@ const PackCard = ({
           <Link className="pack-card__link-wrap" to={packTo} aria-label={pack.name}>
             <div className="pack-card__preview">
               <div className="pack-card__preview-levels">
-                {pack.packItems
-                  .map((item, idx) => (
+                {(pack.packItems || [])
+                    .map((item, idx) => (
                     <div key={idx} className="pack-card__preview-level">
                       <span className="pack-card__preview-level-name">
                         <img className="pack-card__preview-level-icon" src={difficultyDict[item.referencedLevel?.diffId]?.icon} alt={item.referencedLevel?.song} />

@@ -18,8 +18,9 @@ import { TUFStellarIcon } from "@/components/common/icons";
 const diffFields = ["topDiff", "top12kDiff"];
 const passes = ["totalPasses", "universalPassCount", "worldsFirstCount", "worldsFirstPPCount"];
 
-const PlayerCard = ({ player, listIndex, onCreatorAssignmentClick, historical = false }) => {
-  const { sortBy } = useContext(PlayerContext);
+const PlayerCard = ({ player, listIndex, onCreatorAssignmentClick, historical = false, displayMode = "normal" }) => {
+  const playerCtx = useContext(PlayerContext);
+  const sortBy = displayMode === "showcase" ? "rankedScore" : playerCtx?.sortBy || "rankedScore";
   const { t } = useTranslation("components");
   const { user } = useAuth();
 
@@ -156,7 +157,7 @@ const PlayerCard = ({ player, listIndex, onCreatorAssignmentClick, historical = 
 
   return (
     <div
-      className={`player-card${historical ? ' player-card--historical' : ''}`}
+      className={`player-card${historical ? ' player-card--historical' : ''}${displayMode === 'showcase' ? ' player-card--showcase' : ''}`}
       style={{ backgroundColor: player.rankedScoreRank === -1 ? "#ff000099" : "" }}
     >
       <Link className="player-card__link-wrap" to={profileTo} aria-label={player.name}>
@@ -197,7 +198,7 @@ const PlayerCard = ({ player, listIndex, onCreatorAssignmentClick, historical = 
                   style={{ marginLeft: "0rem" }}
                 />
               )}
-              {!historical && user && player.user && hasFlag(user, permissionFlags.SUPER_ADMIN) && (
+              {!historical && displayMode !== "showcase" && user && player.user && hasFlag(user, permissionFlags.SUPER_ADMIN) && (
                 <button
                   className="creator-assignment-btn"
                   onClick={handleCreatorAssignmentClick}
@@ -222,7 +223,7 @@ const PlayerCard = ({ player, listIndex, onCreatorAssignmentClick, historical = 
           </span>
         )}
 
-        {!historical && primaryField && (
+        {!historical && displayMode !== "showcase" && primaryField && (
         <div className="info-wrapper">
           <div className="score-wrapper">
             <p className="player-exp">{primaryField.label}</p>

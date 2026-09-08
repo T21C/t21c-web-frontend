@@ -91,5 +91,26 @@
     "difficultyHeaderGridCellTooltip": "{{name}} · {{count}} ukończeń",
     "clearsByTypeTooltip": "{{count}} unikalnych poziomów ukończonych",
     "clearsByTypeTooltipWithReclears": "{{unique}} unikalnych poziomów ukończonych ({{total}} przejść łącznie)"
+  },
+  "modules": {
+    "missing": "Ten moduł nie ma jeszcze nic do pokazania.",
+    "types": {
+      "bio": "Bio",
+      "tournaments": "Turnieje",
+      "scoreBreakdown": "Rozkład wyniku",
+      "difficulty": "Trudność",
+      "rankHistory": "Historia rangi",
+      "scores": "Wyniki",
+      "charts": "Charty",
+      "favorite": "Ulubione"
+    },
+    "favoriteKinds": {
+      "pass": "Clear",
+      "level": "Chart",
+      "pack": "Paczka",
+      "player": "Gracz"
+    },
+    "expandFavorite": "Rozwiń ulubione",
+    "collapseFavorite": "Zwiń ulubione"
   }
 } 

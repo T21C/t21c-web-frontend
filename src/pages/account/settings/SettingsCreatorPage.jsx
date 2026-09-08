@@ -47,6 +47,12 @@ import {
   readProfileAliasNamesChronological,
 } from "@/utils/profileAliasNames";
 import { ProfileCustomizationSyncControl } from "@/components/account/ProfileCustomizationSyncControl/ProfileCustomizationSyncControl";
+import { getDisplayBioText } from "@/utils/bioCanvas";
+import { ProfileModulesEditor } from "@/components/account/ProfileModules";
+import {
+  cloneModulesDocument,
+  documentsEqual,
+} from "@/utils/profileModules";
 import "./settingsSubPage.css";
 
 const MAX_CREATOR_ALIASES = 100;
@@ -92,6 +98,9 @@ const SettingsCreatorPage = () => {
   const [stellarVariantDraft, setStellarVariantDraft] = useState(null);
   const [stellarVariantSaving, setStellarVariantSaving] = useState(false);
   const [followerCountSaving, setFollowerCountSaving] = useState(false);
+  const [modulesDraft, setModulesDraft] = useState(undefined);
+  const [modulesSaving, setModulesSaving] = useState(false);
+  const [modulesFieldError, setModulesFieldError] = useState("");
 
   const canProfileSync = Boolean(user?.playerId && user?.creatorId);
   const presentationSync = profile?.presentationSync;
@@ -144,6 +153,7 @@ const SettingsCreatorPage = () => {
     setBioCanvasDraft(undefined);
     setHeaderSurfaceStyleDraft(undefined);
     setStellarVariantDraft(null);
+    setModulesDraft(undefined);
   }, [creatorId]);
 
   const creatorDoc = profile?.creator || profile?.doc || profile;
@@ -182,9 +192,9 @@ const SettingsCreatorPage = () => {
 
   useEffect(() => {
     if (!profile) return;
-    setBioDraft(typeof profile.bio === "string" ? profile.bio : "");
+    setBioDraft(getDisplayBioText(profile) || "");
     setBioFieldError("");
-  }, [profile?.bio, creatorId]);
+  }, [profile?.bio, profile?.bioCanvas, creatorId]);
 
   useEffect(() => {
     if (!profile) return;
@@ -487,6 +497,43 @@ const SettingsCreatorPage = () => {
     }
   }, [creatorId, bioDraft, t]);
 
+  const publishedModules = useMemo(
+    () => cloneModulesDocument("creator", profile?.profileModules),
+    [profile?.profileModules],
+  );
+  const editingModules =
+    modulesDraft !== undefined ? modulesDraft : publishedModules;
+  const modulesMatchSaved = documentsEqual(editingModules, publishedModules);
+
+  const handleSaveModules = useCallback(async () => {
+    setModulesFieldError("");
+    setModulesSaving(true);
+    const toastId = toast.loading(t("loading.saving", { ns: "common" }));
+    try {
+      await ensureAuthSession();
+      const { data } = await api.patch(routes.creatorsV3.meProfileModules(), editingModules);
+      setProfile((p) =>
+        p && typeof p === "object"
+          ? {
+              ...p,
+              profileModules: data?.profileModules ?? editingModules,
+              profileModulesResolved: data?.profileModulesResolved ?? p.profileModulesResolved,
+            }
+          : p,
+      );
+      setModulesDraft(undefined);
+      toast.success(t("settings.modules.saveSuccess"), { id: toastId });
+    } catch (err) {
+      const msg = isNoTokenAuthError(err)
+        ? t("settings.modules.sessionExpired")
+        : err?.response?.data?.error || t("settings.modules.saveError");
+      setModulesFieldError(msg);
+      toast.error(msg, { id: toastId });
+    } finally {
+      setModulesSaving(false);
+    }
+  }, [editingModules, t]);
+
   const handleSaveUploadConditions = useCallback(async () => {
     if (creatorId == null || !Number.isFinite(creatorId)) return;
     const trimmed = uploadConditionsDraft.trim();
@@ -557,9 +604,9 @@ const SettingsCreatorPage = () => {
   }, [creatorDoc?.name, displayNameDraft]);
 
   const bioMatchesSaved = useMemo(() => {
-    const saved = profile?.bio == null ? "" : String(profile.bio);
+    const saved = getDisplayBioText(profile) || "";
     return bioDraft.trim() === saved.trim();
-  }, [profile?.bio, bioDraft]);
+  }, [profile, bioDraft]);
 
   const uploadConditionsMatchSaved = useMemo(() => {
     const saved = profile?.uploadConditions == null ? "" : String(profile.uploadConditions);
@@ -942,6 +989,29 @@ const SettingsCreatorPage = () => {
           </span>
         </label>
       </div>
+
+      <SettingsSaveField
+        sectionId="profileModules"
+        label={t("settings.modules.label")}
+        inputId="settings-creator-modules"
+        labelElement="div"
+        onSave={handleSaveModules}
+        saving={modulesSaving}
+        matchesSaved={modulesMatchSaved}
+        fieldError={modulesFieldError}
+        stack
+      >
+        <ProfileModulesEditor
+          kind="creator"
+          value={editingModules}
+          resolved={profile?.profileModulesResolved}
+          stellarActive={isTufStellarAccessActive(stellarEntitlementSubject)}
+          user={user}
+          dirty={!modulesMatchSaved}
+          onChange={setModulesDraft}
+          onDiscard={() => setModulesDraft(undefined)}
+        />
+      </SettingsSaveField>
 
       {canEditHeaderCurationSlots ? (
         <SettingsPreviewSection

@@ -8,18 +8,15 @@ import { useEffect, useState, useMemo, useRef } from "react";
 import { Link, useParams, useLocation, useNavigate } from "react-router-dom"
 import { formatNumber } from "@/utils";
 import { formatAccuracyRatio } from "@/utils/statFormatters";
-import { DifficultyGraph, MetaTags } from "@/components/common/display";
+import { MetaTags } from "@/components/common/display";
 import { buildPlayerMeta } from '@/utils/meta';
-import { ScoreCard } from "@/components/cards";
-import { useTranslation, Trans } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
 import { AdminPlayerPopup } from "@/components/popups/Users";
-import { ShieldIcon, EditIcon, SortAscIcon, SortDescIcon, PackIcon, EyeIcon, EyeOffIcon, ChevronIcon, InfoIcon } from "@/components/common/icons";
-import { Tooltip as ProfileTooltip } from "react-tooltip";
-import { CaseOpenSelector, CustomSelect } from "@/components/common/selectors";
+import { ShieldIcon, EditIcon, PackIcon } from "@/components/common/icons";
 import caseOpen from "@/assets/icons/case.png";
-import { VirtualList, useScrollParent } from "@/components/common/VirtualList";
-import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
+import { CaseOpenSelector } from "@/components/common/selectors";
+import { useScrollParent } from "@/components/common/VirtualList";
 import { ScrollButton } from "@/components/common/buttons";
 import { useProfileContext } from "@/contexts/ProfileContext";
 import { useDebouncedRequest } from "@/hooks/useDebouncedRequest";
@@ -28,8 +25,16 @@ import { CreatorIcon } from "@/components/common/icons/CreatorIcon";
 import { AccountStatusBanners } from "@/components/account/AccountStatusBanners/AccountStatusBanners";
 import ProfileHeader from "@/components/account/ProfileHeader/ProfileHeader";
 import ProfileFollowButton from "@/components/account/ProfileFollowButton/ProfileFollowButton";
-import BioCanvasRenderer from "@/components/account/BioCanvasRenderer";
 import { TournamentPlacementsSection } from "@/components/account/TournamentPlacements";
+import {
+  ProfileModulesRenderer,
+  PlayerBioModule,
+  PlayerScoreBreakdownModule,
+  PlayerDifficultyModule,
+  PlayerRankHistoryModule,
+  PlayerScoresModule,
+  FavoriteShowcase,
+} from "@/components/account/ProfileModules";
 
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { buildPlayerStatGroups } from "@/utils/profileStatGroups";
@@ -39,19 +44,11 @@ import { toDifficultyGraphData } from "@/utils/statFormatters";
 import {
   getEffectiveProfileBannerUrl,
   getEffectiveProfileHeaderSurface,
+  isTufStellarAccessActive,
   normalizeTufStellarIconVariant,
 } from "@/utils/profileBanners";
 import { userAvatarDisplayUrl } from "@/utils/playerAvatarDisplay";
 import { normalizeProfileAliasNames } from "@/utils/profileAliasNames";
-import {
-  ResponsiveContainer,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-} from "recharts";
 import { formatDateShort } from "@/utils/Utility";
 import i18next from 'i18next';
 const ENABLE_ROULETTE = import.meta.env.VITE_APRIL_FOOLS === "true";
@@ -132,6 +129,7 @@ const ProfilePage = () => {
     const { scrollRef: scoresScrollRef, scrollParent: scoresScrollParent } = useScrollParent();
 
     const [rankHistoryCollapsed, setRankHistoryCollapsed] = useState(false);
+    const [favoriteCollapsed, setFavoriteCollapsed] = useState(false);
     const [rankHistoryMetric, setRankHistoryMetric] = useState("rankedScore");
     const [rankHistoryRange, setRankHistoryRange] = useState("365d");
     const [rankHistorySeries, setRankHistorySeries] = useState([]);
@@ -363,11 +361,6 @@ const ProfilePage = () => {
       const lowestImpactScore = playerData?.topScores?.reduce((minItem, score) =>
         minItem == null || score.impact < minItem.impact ? score : minItem
       , null);
-
-      const scoresExpanded = !scoresCollapsed;
-      const scoreBreakdownExpanded = !scoreBreakdownCollapsed;
-      const difficultyExpanded = !difficultyCollapsed;
-      const bioExpanded = !bioCollapsed;
 
       // Sort options are pure labels now — ordering is resolved server-side.
       const sortOptions = useMemo(() => [
@@ -653,7 +646,45 @@ const ProfilePage = () => {
         return ticks;
       };
 
-      const rankHistoryExpanded = !rankHistoryCollapsed;
+      const favoriteItems = useMemo(() => {
+        const resolved = playerData?.profileModulesResolved;
+        if (!resolved || typeof resolved !== "object") return [];
+        for (const row of Object.values(resolved)) {
+          if (Array.isArray(row?.items)) return row.items;
+        }
+        return [];
+      }, [playerData?.profileModulesResolved]);
+
+      const moduleEmptyContext = useMemo(
+        () => ({
+          profile: playerData,
+          bioCanvasEntitled: isTufStellarAccessActive(playerData?.user),
+          difficultyGraphData,
+          rankHistory: {
+            loading: rankHistoryLoading,
+            error: rankHistoryError,
+            series: rankHistoryChartData,
+          },
+          scores: {
+            loading: passesInitialLoading,
+            total: passesTotal,
+            displayedCount: displayedPasses.length,
+            funFactTotal: playerData?.funFacts?.counts?.totalPasses,
+          },
+          favoriteItems,
+        }),
+        [
+          playerData,
+          difficultyGraphData,
+          rankHistoryLoading,
+          rankHistoryError,
+          rankHistoryChartData,
+          passesInitialLoading,
+          passesTotal,
+          displayedPasses.length,
+          favoriteItems,
+        ],
+      );
 
       const loadMorePasses = () => {
         if (displayedPasses.length >= passesTotal) {
@@ -854,460 +885,115 @@ const ProfilePage = () => {
                 </div>
               </div>
 
-              <section className="player-page__section">
-                <div className="account-profile-page__section-title-row">
-                  <h2 className="account-profile-page__section-title">{t('profile.bio.header')}</h2>
-                  <button
-                    type="button"
-                    className="account-profile-page__chevron-btn"
-                    aria-expanded={bioExpanded}
-                    aria-label={
-                      bioCollapsed
-                        ? t('profile.bio.expand', { defaultValue: 'Expand bio' })
-                        : t('profile.bio.collapse', { defaultValue: 'Collapse bio' })
-                    }
-                    onClick={() => setBioCollapsed((v) => !v)}
-                  >
-                    <ChevronIcon direction={bioExpanded ? 'down' : 'right'} />
-                  </button>
-                </div>
-                <Collapsible
-                  open={!bioCollapsed}
-                  onOpenChange={(open) => setBioCollapsed(!open)}
-                  revealOverflow
-                  duration="0.3s"
-                  easing="ease-in-out"
-                >
-                  <CollapsibleContent>
-                <div className="account-profile-page__collapsible">
-                  <div className="player-page__bio">
-                    {playerData?.bioCanvas?.blocks?.length > 0 ? (
-                      <BioCanvasRenderer
-                        canvas={playerData.bioCanvas}
-                        imageAssets={playerData.bioCanvasImageAssets}
+              <ProfileModulesRenderer
+                kind="player"
+                profileModules={playerData?.profileModules}
+                isOwner={Boolean(user && isOwnProfile)}
+                emptyContext={moduleEmptyContext}
+                renderModule={(mod) => {
+                  if (mod.type === "bio") {
+                    return (
+                      <PlayerBioModule
+                        playerData={playerData}
+                        subjectUser={playerData?.user}
+                        collapsed={bioCollapsed}
+                        onCollapsedChange={setBioCollapsed}
                       />
-                    ) : typeof playerData?.bio === "string" && playerData.bio.trim().length > 0 ? (
-                      <p className="player-page__bio-text">{playerData.bio}</p>
-                    ) : (
-                      <p className="player-page__bio-placeholder">{t("profile.bio.placeholder")}</p>
-                    )}
-                  </div>
-                </div>
-                  </CollapsibleContent>
-                </Collapsible>
-              </section>
-
-              <TournamentPlacementsSection
-                placements={playerData?.tournamentPlacements}
-                orderIds={playerData?.placementOrderIds}
+                    );
+                  }
+                  if (mod.type === "tournaments") {
+                    return (
+                      <TournamentPlacementsSection
+                        placements={playerData?.tournamentPlacements}
+                        orderIds={playerData?.placementOrderIds}
+                      />
+                    );
+                  }
+                  if (mod.type === "scoreBreakdown") {
+                    return (
+                      <PlayerScoreBreakdownModule
+                        playerId={playerId}
+                        tiles={scoreBreakdownTiles}
+                        collapsed={scoreBreakdownCollapsed}
+                        onCollapsedChange={setScoreBreakdownCollapsed}
+                      />
+                    );
+                  }
+                  if (mod.type === "difficulty") {
+                    return (
+                      <PlayerDifficultyModule
+                        graphData={difficultyGraphData}
+                        includeDupes={includeDupes}
+                        onIncludeDupesChange={setIncludeDupes}
+                        collapsed={difficultyCollapsed}
+                        onCollapsedChange={setDifficultyCollapsed}
+                      />
+                    );
+                  }
+                  if (mod.type === "rankHistory") {
+                    return (
+                      <PlayerRankHistoryModule
+                        collapsed={rankHistoryCollapsed}
+                        onCollapsedChange={setRankHistoryCollapsed}
+                        metricOptions={rankHistoryMetricOptions}
+                        selectedMetricOption={rankHistorySelectedMetricOption}
+                        onMetricChange={setRankHistoryMetric}
+                        range={rankHistoryRange}
+                        onRangeChange={setRankHistoryRange}
+                        chartKey={rankHistoryChartKey}
+                        chartData={rankHistoryChartData}
+                        yDomain={rankHistoryYDomain}
+                        getTicks={getTicks}
+                        utcWholeDaysAgo={utcWholeDaysAgo}
+                        loading={rankHistoryLoading}
+                        error={rankHistoryError}
+                      />
+                    );
+                  }
+                  if (mod.type === "scores") {
+                    return (
+                      <PlayerScoresModule
+                        collapsed={scoresCollapsed}
+                        onCollapsedChange={setScoresCollapsed}
+                        scoresScrollRef={scoresScrollRef}
+                        scoresScrollParent={scoresScrollParent}
+                        searchQuery={searchQuery}
+                        onSearchQueryChange={setSearchQuery}
+                        sortOptions={sortOptions}
+                        selectedSortOption={selectedSortOption}
+                        onSortTypeChange={setSortType}
+                        sortOrder={sortOrder}
+                        onSortOrderChange={setSortOrder}
+                        hideReclears={hideReclears}
+                        onHideReclearsChange={setHideReclears}
+                        isOwnProfile={isOwnProfile}
+                        showHiddenPasses={showHiddenPasses}
+                        onToggleHiddenPasses={() => setShowHiddenPasses(!showHiddenPasses)}
+                        passesTotal={passesTotal}
+                        passesInitialLoading={passesInitialLoading}
+                        displayedPasses={displayedPasses}
+                        loadMorePasses={loadMorePasses}
+                        hasMore={hasMore}
+                        playerData={playerData}
+                        lowestImpactScore={lowestImpactScore}
+                        sortType={sortType}
+                        normalizePassSearchQuery={normalizePassSearchQuery}
+                      />
+                    );
+                  }
+                  if (mod.type === "favorite") {
+                    return (
+                      <FavoriteShowcase
+                        items={playerData?.profileModulesResolved?.[mod.id]?.items || []}
+                        collapsed={favoriteCollapsed}
+                        onCollapsedChange={setFavoriteCollapsed}
+                      />
+                    );
+                  }
+                  return null;
+                }}
               />
 
-              {scoreBreakdownTiles.length > 0 ? (
-                <section className="player-page__section player-page__score-breakdown">
-                  <div className="account-profile-page__section-title-row">
-                    <h2 className="account-profile-page__section-title">
-                      {t("profile.sections.scoreBreakdown.title")}
-                    </h2>
-
-                    <button
-                      type="button"
-                      className="account-profile-page__chevron-btn"
-                      aria-expanded={scoreBreakdownExpanded}
-                      aria-label={
-                        scoreBreakdownCollapsed
-                          ? t("profile.sections.scoreBreakdown.expand")
-                          : t("profile.sections.scoreBreakdown.collapse")
-                      }
-                      onClick={() => setScoreBreakdownCollapsed((v) => !v)}
-                    >
-                      <ChevronIcon direction={scoreBreakdownExpanded ? "down" : "right"} />
-                    </button>
-                  </div>
-                  <Collapsible
-                    open={!scoreBreakdownCollapsed}
-                    onOpenChange={(open) => setScoreBreakdownCollapsed(!open)}
-                    revealOverflow
-                    duration="0.3s"
-                    easing="ease-in-out"
-                  >
-                    <CollapsibleContent>
-                  <div className="account-profile-page__collapsible player-page__score-breakdown-collapsible">
-                    <div className="player-page__score-breakdown-grid">
-                      {scoreBreakdownTiles.map((tile) => {
-                        const tooltipId = `player-score-breakdown-${playerId}-${tile.key}`;
-                        return (
-                          <div key={tile.key} className="player-page__score-breakdown-tile">
-                            <div className="player-page__score-breakdown-label-row">
-                              <span className="player-page__score-breakdown-label">{tile.label}</span>
-                              <button
-                                type="button"
-                                className="player-page__score-breakdown-info-btn"
-                                data-tooltip-id={tooltipId}
-                                aria-label={t(`profile.sections.scoreBreakdown.tooltips.${tile.key}.aria`)}
-                              >
-                                <InfoIcon color="#fff8" size={16} />
-                              </button>
-                              <ProfileTooltip
-                                id={tooltipId}
-                                place="top"
-                                className="player-page__score-breakdown-tooltip"
-                                style={{ maxWidth: "min(22rem, 92vw)", zIndex: 30 }}
-                              >
-                                {t(`profile.sections.scoreBreakdown.tooltips.${tile.key}.description`)}
-                              </ProfileTooltip>
-                            </div>
-                            <span className="player-page__score-breakdown-value">{tile.value}</span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                    </CollapsibleContent>
-                  </Collapsible>
-                </section>
-              ) : null}
-
-              {difficultyGraphData.length > 0 ? (
-                <section className="player-page__difficulty-section">
-                  <div className="account-profile-page__section-title-row">
-                    <h2 className="account-profile-page__section-title">{t("profile.sections.difficultyBreakdown.title")}</h2>
-                    <button
-                      type="button"
-                      className="account-profile-page__chevron-btn"
-                      aria-expanded={difficultyExpanded}
-                      aria-label={
-                        difficultyCollapsed
-                          ? t('profile.sections.difficultyBreakdown.expand')
-                          : t('profile.sections.difficultyBreakdown.collapse')
-                      }
-                      onClick={() => setDifficultyCollapsed((v) => !v)}
-                    >
-                      <ChevronIcon direction={difficultyExpanded ? 'down' : 'right'} />
-                    </button>
-                  </div>
-                  <Collapsible
-                    open={!difficultyCollapsed}
-                    onOpenChange={(open) => setDifficultyCollapsed(!open)}
-                    revealOverflow
-                    duration="0.3s"
-                    easing="ease-in-out"
-                  >
-                    <CollapsibleContent>
-                  <div className="account-profile-page__collapsible player-page__difficulty-collapsible">
-                    <label className="player-page__difficulty-dupes-toggle">
-                      <input
-                        type="checkbox"
-                        checked={includeDupes}
-                        onChange={(e) => setIncludeDupes(e.target.checked)}
-                      />
-                      <span>{t('profile.sections.difficultyBreakdown.includeDupes')}</span>
-                    </label>
-                    <DifficultyGraph data={difficultyGraphData} mode="passes" />
-                  </div>
-                    </CollapsibleContent>
-                  </Collapsible>
-                </section>
-              ) : null}
-
-              <section className="player-page__section player-page__rank-history">
-                <div className="account-profile-page__section-title-row">
-                  <h2 className="account-profile-page__section-title">
-                    {t('profile.sections.rankHistory.title')}
-                  </h2>
-                  <button
-                    type="button"
-                    className="account-profile-page__chevron-btn"
-                    aria-expanded={rankHistoryExpanded}
-                    aria-label={
-                      rankHistoryCollapsed
-                        ? t('profile.sections.rankHistory.expand')
-                        : t('profile.sections.rankHistory.collapse')
-                    }
-                    onClick={() => setRankHistoryCollapsed((v) => !v)}
-                  >
-                    <ChevronIcon direction={rankHistoryExpanded ? 'down' : 'right'} />
-                  </button>
-                </div>
-                <Collapsible
-                  open={!rankHistoryCollapsed}
-                  onOpenChange={(open) => setRankHistoryCollapsed(!open)}
-                  revealOverflow
-                  duration="0.3s"
-                  easing="ease-in-out"
-                >
-                  <CollapsibleContent>
-                <div className="account-profile-page__collapsible">
-                  <div className="rank-history__controls">
-                    <div className="rank-history__control">
-                      <span className="rank-history__control-label">
-                        {t('profile.sections.rankHistory.metricLabel')}
-                      </span>
-                      <CustomSelect
-                        options={rankHistoryMetricOptions}
-                        value={rankHistorySelectedMetricOption}
-                        onChange={(option) => setRankHistoryMetric(option.value)}
-                        width="14rem"
-                        menuPlacement="bottom"
-                        isSearchable={false}
-                      />
-                    </div>
-                    <div className="rank-history__control">
-                      <span className="rank-history__control-label">
-                        {t('profile.sections.rankHistory.rangeLabel')}
-                      </span>
-                      <div className="rank-history__range-buttons">
-                        {[
-                          { key: '30d', label: t('profile.sections.rankHistory.range30') },
-                          { key: '90d', label: t('profile.sections.rankHistory.range90') },
-                          { key: '365d', label: t('profile.sections.rankHistory.range365') },
-                          { key: 'all', label: t('profile.sections.rankHistory.rangeAll') },
-                        ].map((b) => (
-                          <button
-                            key={b.key}
-                            type="button"
-                            className={[
-                              'rank-history__range-btn',
-                              rankHistoryRange === b.key ? 'rank-history__range-btn--active' : '',
-                            ]
-                              .join(' ')
-                              .trim()}
-                            onClick={() => setRankHistoryRange(b.key)}
-                          >
-                            {b.label}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="rank-history__chart-wrap">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart
-                        key={rankHistoryChartKey}
-                        data={rankHistoryChartData}
-                        margin={{ top: 8, right: 12, left: 0, bottom: 0 }}
-                      >
-                        <CartesianGrid vertical={false} stroke="rgba(255,255,255,0.12)" />
-                        <XAxis
-                          dataKey="date"
-                          tick={{ fill: 'var(--color-gray-2)', fontSize: 11 }}
-                          interval="equidistantPreserveStart"
-                        />
-                        <YAxis
-                          dataKey="rank"
-                          domain={rankHistoryYDomain}
-                          reversed
-                          allowDecimals={false}
-                          width={44}
-                          ticks={getTicks(rankHistoryYDomain[0], rankHistoryYDomain[1], 10)}
-                          tick={{ fill: 'var(--color-gray-2)', fontSize: 11 }}
-                          label={{
-                            value: t('profile.sections.rankHistory.yAxisRank'),
-                            angle: -90,
-                            position: 'insideLeft',
-                            fill: 'var(--color-gray-2)',
-                            fontSize: 11,
-                          }}
-                        />
-                        <Tooltip
-                          contentStyle={{
-                            background: 'var(--color-black)',
-                            border: '1px solid var(--btn-neutral-heavy)',
-                            color: 'var(--color-white)',
-                          }}
-                          labelStyle={{ color: 'var(--color-gray-2)' }}
-                          labelFormatter={(label) => {
-                            if (typeof label !== 'string') return label != null ? String(label) : '';
-                            const days = utcWholeDaysAgo(label);
-                            if (days === null) return label;
-                            if (days < 0) return label;
-                            if (days === 0) return t('profile.sections.rankHistory.tooltipToday');
-                            if (days === 1) return t('profile.sections.rankHistory.tooltipOneDayAgo');
-                            return t('profile.sections.rankHistory.tooltipDaysAgo', { count: days });
-                          }}
-                          formatter={(value) => [value != null ? `#${value}` : '—', t('profile.sections.rankHistory.yAxisRank')]}
-                        />
-                        <Line
-                          type="bump"
-                          dataKey="rank"
-                          stroke="var(--btn-primary)"
-                          strokeWidth={4}
-                          dot={false}
-                          connectNulls={false}
-                          isAnimationActive={true}
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                  {rankHistoryLoading ? (
-                    <div className="rank-history__status" aria-busy="true">
-                      {t('profile.sections.rankHistory.loading')}
-                    </div>
-                  ) : null}
-                  {rankHistoryError ? (
-                    <div className="rank-history__status rank-history__status--error">
-                      {t('profile.sections.rankHistory.error')}
-                    </div>
-                  ) : null}
-                  {!rankHistoryLoading && !rankHistoryError && rankHistoryChartData.length === 0 ? (
-                    <div className="rank-history__status">{t('profile.sections.rankHistory.empty')}</div>
-                  ) : null}
-                </div>
-                  </CollapsibleContent>
-                </Collapsible>
-              </section>
-
-              {(passesInitialLoading || displayedPasses.length > 0 || passesTotal > 0 || (playerData?.funFacts?.counts?.totalPasses ?? 0) > 0) && (
-                <div className="scores-section">
-                  <div className="account-profile-page__section-title-row">
-                    <h2 className="account-profile-page__section-title">{t('profile.sections.scores.title')}</h2>
-                    <button
-                      type="button"
-                      className="account-profile-page__chevron-btn"
-                      aria-expanded={scoresExpanded}
-                      aria-label={
-                        scoresCollapsed
-                          ? t('profile.sections.scores.expand', { defaultValue: 'Expand scores' })
-                          : t('profile.sections.scores.collapse', { defaultValue: 'Collapse scores' })
-                      }
-                      onClick={() => setScoresCollapsed((v) => !v)}
-                    >
-                      <ChevronIcon direction={scoresExpanded ? 'down' : 'right'} />
-                    </button>
-                  </div>
-
-                  <Collapsible
-                    open={!scoresCollapsed}
-                    onOpenChange={(open) => setScoresCollapsed(!open)}
-                    revealOverflow
-                    duration="0.3s"
-                    easing="ease-in-out"
-                  >
-                    <CollapsibleContent>
-                  <div
-                    id="player-scores-scroll-container"
-                    ref={scoresScrollRef}
-                    className="player-page__scores-container"
-                  >
-                  <div className="scores-controls">
-                    <div className="search-container">
-                      <svg className="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                      </svg>
-                      <input
-                        type="text"
-                        className="search-input"
-                        placeholder={t('profile.search.placeholder')}
-                        name="search"
-                        autoComplete="off"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(normalizePassSearchQuery(e.target.value))}
-                      />
-                    </div>
-                    
-                    <div className="scores-controls-row">
-                      <div className="sort-controls">
-                        <CustomSelect
-                          options={sortOptions}
-                          value={selectedSortOption}
-                          onChange={(option) => setSortType(option.value)}
-                          width="12rem"
-                          menuPlacement="bottom"
-                          isSearchable={false}
-                        />
-                        <div className="sort-buttons">
-                          <SortAscIcon
-                            className="svg-fill"
-                            style={{
-                              backgroundColor: sortOrder === 'ASC' ? "rgba(255, 255, 255, 0.4)" : "",
-                            }}
-                            onClick={() => setSortOrder('ASC')}
-                          />
-                          <SortDescIcon
-                            className="svg-fill"
-                            style={{
-                              backgroundColor: sortOrder === 'DESC' ? "rgba(255, 255, 255, 0.4)" : "",
-                            }}
-                            onClick={() => setSortOrder('DESC')}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="scores-controls-row__actions">
-                        <label className="scores-hide-reclears-toggle">
-                          <input
-                            type="checkbox"
-                            checked={hideReclears}
-                            onChange={(e) => setHideReclears(e.target.checked)}
-                          />
-                          <span>{t('profile.sections.scores.hideReclears')}</span>
-                        </label>
-                        {isOwnProfile && (
-                          <button
-                            className="toggle-hidden-passes-button"
-                            onClick={() => setShowHiddenPasses(!showHiddenPasses)}
-                            title={showHiddenPasses ? t('profile.hideHiddenPasses') : t('profile.showHiddenPasses')}
-                          >
-                            {showHiddenPasses ? <EyeIcon size="20px" /> : <EyeOffIcon size="20px" />}
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                    
-                    <div className="results-count">
-                      {t('profile.labels.totalPasses', { count: passesTotal })}
-                    </div>
-                  </div>
-
-                  {passesInitialLoading && displayedPasses.length === 0 ? (
-                    <div className="scores-section__list-loading" aria-busy="true" aria-live="polite">
-                      <div className="loader loader-relative" />
-                    </div>
-                  ) : (
-                  <VirtualList
-                    customScrollParent={scoresScrollParent}
-                    items={displayedPasses}
-                    loadMore={loadMorePasses}
-                    hasMore={hasMore}
-                    listClassName="scores-list"
-                    endMessage={
-                      displayedPasses.length > 0 && (
-                        <p style={{ textAlign: 'center', padding: '1rem', color: 'rgba(255, 255, 255, 0.6)' }}>
-                          <b>{t('profile.infiniteScroll.end')}</b>
-                        </p>
-                      )
-                    }
-                    loader={<div className="loader loader-relative"/>}
-                    style={{ overflow: 'visible', paddingBottom: '6rem' }}
-                    renderItem={(score, index) => (
-                      <div>
-                        <li>
-                          <ScoreCard scoreData={score} topScores={playerData?.topScores || []} potentialTopScores={playerData?.potentialTopScores || []} />
-                        </li>
-                        {lowestImpactScore && lowestImpactScore.id === score.id && passesTotal > 20 && sortType === 'score' && sortOrder === 'DESC' && (
-                          <div className="lowest-impact-score-indicator">
-                            <p>
-                              <Trans
-                                t={t}
-                                i18nKey="profile.sections.scores.lowestImpactScore"
-                                values={{
-                                  score: `${(Number(score.scoreV2) + 0.01).toFixed(2)}PP`,
-                                }}
-                                components={{ pp: <b style={{ color: "#0f0" }} /> }}
-                              />
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                    computeItemKey={(index, score) => score?.id ?? index}
-                  />
-                  )}
-                  </div>
-                    </CollapsibleContent>
-                  </Collapsible>
-                </div>
-              )}
             </div>
           ) : <h1 className="player-notfound">{t('profile.notFound')}</h1>)
           : <div className="loader"></div>}

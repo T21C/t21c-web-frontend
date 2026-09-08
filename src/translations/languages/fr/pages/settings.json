@@ -114,5 +114,23 @@
     "showFollowerCountLabel": "Afficher le nombre de followers",
     "showFollowerCountHint": "Lorsque c’est activé, les visiteurs voient combien de personnes suivent ce profil.",
     "showFollowerCountError": "Impossible de mettre à jour la visibilité du nombre de followers"
+  },
+  "modules": {
+    "label": "Modules du profil",
+    "counter": "{{used}}/{{cap}} activés",
+    "reset": "Réinitialiser",
+    "resetConfirm": "Réinitialiser les modules à la mise en page par défaut ? Les favoris seront retirés. Il faudra encore enregistrer.",
+    "discard": "Annuler",
+    "saveSuccess": "Modules du profil enregistrés",
+    "saveError": "Impossible d’enregistrer les modules du profil",
+    "sessionExpired": "Votre session a expiré. Veuillez vous reconnecter et réessayer.",
+    "capReached": "Tous les emplacements de modules sont utilisés.",
+    "capReachedFree": "Les profils gratuits peuvent activer {{freeCap}} modules. TUFStellar passe à {{stellarCap}}.",
+    "addPlaceholder": "Ajouter un module",
+    "dragAria": "Glisser pour réordonner",
+    "favoriteCount": "{{used}}/{{max}} éléments",
+    "searchPlayer": "Rechercher des joueurs",
+    "searchEntity": "Rechercher pour ajouter",
+    "searchNoResults": "Aucun résultat"
   }
 }

@@ -132,11 +132,12 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  overflow: visible;
 }
 
 .community-tag-vote-popup .community-tag-vote-popup__icon[data-letter-only="true"] {
   border-radius: 4px;
-  overflow: hidden;
+  overflow: visible;
   background-color: var(--tag-bg-color, transparent);
 }
 

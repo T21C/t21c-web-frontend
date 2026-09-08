@@ -478,5 +478,23 @@
   },
   "security": {
     "title": "Security"
+  },
+  "modules": {
+    "label": "Profile modules",
+    "counter": "{{used}}/{{cap}} enabled",
+    "reset": "Reset to default",
+    "resetConfirm": "Reset modules to the default layout? Favorite will be removed. You still need to save.",
+    "discard": "Discard",
+    "saveSuccess": "Profile modules saved",
+    "saveError": "Could not save profile modules",
+    "sessionExpired": "Your session expired. Please sign in again and retry.",
+    "capReached": "You have used all module slots.",
+    "capReachedFree": "Free profiles can enable {{freeCap}} modules. TUFStellar raises this to {{stellarCap}}.",
+    "addPlaceholder": "Add module",
+    "dragAria": "Drag to reorder",
+    "favoriteCount": "{{used}}/{{max}} items",
+    "searchPlayer": "Search players",
+    "searchEntity": "Search to add",
+    "searchNoResults": "No results"
   }
 }

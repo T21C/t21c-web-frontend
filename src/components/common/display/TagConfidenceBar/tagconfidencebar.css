@@ -6,14 +6,15 @@
   justify-content: center;
   width: 100%;
   height: 100%;
+  overflow: visible;
   /* Tweak to match tag icon corner rounding */
-  --tag-confidence-radius: 33%;
-  --tag-confidence-stroke: 3px;
+  --tag-confidence-radius: 35%;
+  --tag-confidence-stroke: 2px;
 }
 
 .tag-confidence-bar .tag-confidence-bar__fill {
   position: absolute;
-  inset: 0;
+  inset: calc(-1 * var(--tag-confidence-stroke));
   box-sizing: border-box;
   pointer-events: none;
   border-radius: var(--tag-confidence-radius);

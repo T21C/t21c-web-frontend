@@ -114,5 +114,23 @@
     "showFollowerCountLabel": "Pokaż liczbę obserwujących",
     "showFollowerCountHint": "Gdy włączone, odwiedzający widzą, ile osób obserwuje ten profil.",
     "showFollowerCountError": "Nie udało się zaktualizować widoczności liczby obserwujących"
+  },
+  "modules": {
+    "label": "Moduły profilu",
+    "counter": "{{used}}/{{cap}} włączonych",
+    "reset": "Przywróć domyślne",
+    "resetConfirm": "Przywrócić moduły do domyślnego układu? Ulubione zostaną usunięte. Nadal trzeba zapisać.",
+    "discard": "Odrzuć",
+    "saveSuccess": "Zapisano moduły profilu",
+    "saveError": "Nie udało się zapisać modułów profilu",
+    "sessionExpired": "Sesja wygasła. Zaloguj się ponownie i spróbuj jeszcze raz.",
+    "capReached": "Wszystkie sloty modułów są zajęte.",
+    "capReachedFree": "Darmowe profile mogą włączyć {{freeCap}} modułów. TUFStellar podnosi limit do {{stellarCap}}.",
+    "addPlaceholder": "Dodaj moduł",
+    "dragAria": "Przeciągnij, aby zmienić kolejność",
+    "favoriteCount": "{{used}}/{{max}} elementów",
+    "searchPlayer": "Szukaj graczy",
+    "searchEntity": "Szukaj, aby dodać",
+    "searchNoResults": "Brak wyników"
   }
 }
