@@ -65,7 +65,7 @@
 .player-page .scores-section {
   margin-top: 20px;
   padding: 20px;
-  width: 1000px;
+  width: 100%;
   max-width: 90%; /* Fallback for smaller screens */
   background-color: #00000057;
 }
@@ -281,7 +281,7 @@
 .player-page .player-page__difficulty-section {
   margin-top: 20px;
   padding: 20px;
-  width: 1000px;
+  width: 100%;
   max-width: 90%; /* Fallback for smaller screens */
   background-color: #00000057;
 }
@@ -290,7 +290,7 @@
   position: relative;
   margin-top: 20px;
   padding: 20px;
-  width: 1000px;
+  width: 100%;
   max-width: 90%;
   background-color: #00000057;
 }
