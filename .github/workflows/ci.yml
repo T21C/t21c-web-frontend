@@ -2,7 +2,7 @@ name: CI
 
 # pull_request: install + lint
 # merge_group / push to main / workflow_dispatch: lint + production compile
-# push to main / workflow_dispatch: also image + deploy
+# refs/heads/main: also image + deploy
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
@@ -17,8 +17,8 @@ permissions:
 jobs:
   validate:
     concurrency:
-      group: frontend-ci-${{ github.workflow }}-${{ github.ref }}
-      cancel-in-progress: true
+      group: frontend-ci-${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     runs-on: ${{ fromJSON(vars.CI_RUNS_ON || '["ubuntu-latest"]') }}
     steps:
       - uses: actions/checkout@v5
@@ -123,9 +123,7 @@ jobs:
 
   deploy:
     needs: validate
-    if: >-
-      github.ref == 'refs/heads/main' &&
-      (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    if: github.ref == 'refs/heads/main'
     concurrency:
       group: tuf-frontend-production
       cancel-in-progress: false

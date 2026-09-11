@@ -295,7 +295,7 @@
 }
 
 .creator-management-page .level-item:hover {
-  background-color: var(--btn-neutral-disabled-fill);
+  background-color: var(--btn-neutral-dark-hover);
 }
 
 .creator-management-page .level-item h3 {
@@ -327,7 +327,7 @@
 
 .creator-management-page .creator-tag {
   padding: 0.25rem 0.5rem;
-  background-color: var(--btn-neutral-disabled-fill);
+  background-color: var(--btn-neutral);
   border-radius: 4px;
   font-size: 0.9rem;
 }

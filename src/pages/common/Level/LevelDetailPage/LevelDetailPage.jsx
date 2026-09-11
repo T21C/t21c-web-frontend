@@ -59,7 +59,7 @@ import {
   BellIcon,
   BellOffIcon,
 } from "@/components/common/icons";
-import { createEventSystem, formatBaseScore, formatCreatorDisplay, formatDate, formatPassDate, isCdnUrl, selectIconSize } from "@/utils/Utility";
+import { createEventSystem, formatBaseScore, formatCreatorDisplay, formatDate, formatPassDate, isCdnUrl, selectIconSize, sortLevelCredits } from "@/utils/Utility";
 import { formatAccuracyRatio } from "@/utils/statFormatters";
 import {
   formatAutoTilecountTooltip,
@@ -357,17 +357,19 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty, onArtistClick 
       );
     }
 
-    const creditsByRole = level.levelCredits.reduce((acc, credit) => {
-      const role = credit.role.toLowerCase();
+    const creditsByRole = sortLevelCredits(level.levelCredits).reduce((acc, credit) => {
+      const role = String(credit?.role ?? '').toLowerCase();
+      if (!role) return acc;
       if (!acc[role]) {
         acc[role] = [];
       }
       
-      const aliasNames = credit.creator.creatorAliases?.slice(0, 6).map(alias => alias.name).join(', ');
-      const moreCount = credit.creator.creatorAliases?.length > 6 ? ` (+${credit.creator.creatorAliases.length - 6} more)` : '';
-      const creatorName = credit.creator.creatorAliases?.length > 0 
+      const aliasNames = credit.creator?.creatorAliases?.slice(0, 6).map(alias => alias.name).join(', ');
+      const moreCount = credit.creator?.creatorAliases?.length > 6 ? ` (+${credit.creator.creatorAliases.length - 6} more)` : '';
+      const creatorName = credit.creator?.creatorAliases?.length > 0 
         ? `${credit.creator.name} (${aliasNames}${moreCount})`
-        : credit.creator.name;
+        : credit.creator?.name;
+      if (!creatorName) return acc;
       acc[role].push({name: creatorName, isOwner: credit.isOwner, id: credit.creator.id});
       return acc;
     }, {});
@@ -1117,7 +1119,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
     if (!level) return null;
     if (level.team) return <span className="level-creator-text">{level.team}</span>;
 
-    const credits = Array.isArray(level.levelCredits) ? level.levelCredits : [];
+    const credits = sortLevelCredits(level.levelCredits);
     if (credits.length === 0) {
       return (
         <span className="level-creator-text">

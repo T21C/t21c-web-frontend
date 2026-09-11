@@ -28,7 +28,7 @@ import { CustomSelect } from '@/components/common/selectors';
 import { DragHandleIcon, SearchIcon } from '@/components/common/icons';
 import MarqueeText from '@/components/common/display/MarqueeText/MarqueeText';
 import api from '@/utils/api';
-import { contributingCreditCount } from '@/utils/Utility';
+import { contributingCreditCount, sortLevelCredits } from '@/utils/Utility';
 import { routes } from '@/api/routes';
 import toast from 'react-hot-toast';
 import './levelcreditseditpopup.css';
@@ -131,6 +131,8 @@ const bucketsFromList = (list) => {
 
 const flattenBuckets = (buckets) => CREDIT_ROLES.flatMap((role) => buckets[role]);
 
+const toEditorCreditOrder = (list) => flattenBuckets(bucketsFromList(sortLevelCredits(list)));
+
 // The only place the arrangement mutates. Runs once on drop, so nothing reflows
 // during the drag (the source of the previous jitter + scroll leak).
 const computeDrop = (prev, event) => {
@@ -197,8 +199,22 @@ const computeDrop = (prev, event) => {
 const buildPendingTeamFromLevel = (level) =>
   level.team ? { id: level.team.id, name: level.team.name } : null;
 
-const buildPendingCreatorsFromLevel = (level) =>
-  level.currentCreators?.map((c) => ({
+const buildPendingCreatorsFromLevel = (level) => {
+  const fromCurrent = Array.isArray(level.currentCreators) ? level.currentCreators : [];
+  const fromCredits = Array.isArray(level.levelCredits)
+    ? level.levelCredits.map((c) => ({
+        id: c.creator?.id ?? c.creatorId ?? c.id,
+        name: c.creator?.name ?? c.name,
+        role: c.role || CreditRole.CHARTER,
+        isOwner: c.isOwner,
+        verificationStatus: c.verificationStatus || c.creator?.verificationStatus || 'allowed',
+        levelCount: c.levelCount || 0,
+        aliases: c.aliases || c.creatorAliases?.map((alias) => alias.name) || c.creator?.creatorAliases?.map((alias) => alias.name) || [],
+        sortOrder: c.sortOrder,
+      }))
+    : [];
+  const source = fromCurrent.length > 0 ? fromCurrent : fromCredits;
+  return toEditorCreditOrder(source).map((c, index) => ({
     id: c.id,
     name: c.name,
     role: c.role || CreditRole.CHARTER,
@@ -206,7 +222,9 @@ const buildPendingCreatorsFromLevel = (level) =>
     verificationStatus: c.verificationStatus || 'allowed',
     levelCount: c.levelCount || 0,
     aliases: c.aliases || c.creatorAliases?.map((alias) => alias.name) || [],
-  })) || [];
+    sortOrder: index,
+  }));
+};
 
 const formatCreatorItemLabel = (creator) => {
   const levelLabel = creator.levelCount === 1 ? 'level' : 'levels';
@@ -551,18 +569,22 @@ export const LevelCreditsEditPopup = ({
       return;
     }
 
-    setPendingCreators((prev) => [
-      ...prev,
-      {
-        id: creator.id,
-        name: creator.name,
-        isOwner: false,
-        role: assignedRole,
-        verificationStatus: creator.verificationStatus || 'allowed',
-        levelCount: contributingCreditCount(creator.credits),
-        aliases: creator.creatorAliases?.map((alias) => alias.name) || [],
-      },
-    ]);
+    setPendingCreators((prev) => {
+      const buckets = bucketsFromList(prev);
+      buckets[assignedRole] = [
+        ...buckets[assignedRole],
+        {
+          id: creator.id,
+          name: creator.name,
+          isOwner: false,
+          role: assignedRole,
+          verificationStatus: creator.verificationStatus || 'allowed',
+          levelCount: contributingCreditCount(creator.credits),
+          aliases: creator.creatorAliases?.map((alias) => alias.name) || [],
+        },
+      ];
+      return flattenBuckets(buckets).map((c, index) => ({ ...c, sortOrder: index }));
+    });
     setHasUnsavedChanges(true);
   };
 
@@ -615,7 +637,7 @@ export const LevelCreditsEditPopup = ({
     }
 
     if (next !== pendingCreators) {
-      setPendingCreators(next);
+      setPendingCreators(next.map((c, index) => ({ ...c, sortOrder: index })));
       setHasUnsavedChanges(true);
     }
   };
@@ -633,11 +655,13 @@ export const LevelCreditsEditPopup = ({
         await api.delete(routes.levelsV3.team(level.id));
       }
 
+      const orderedCreators = toEditorCreditOrder(pendingCreators);
       const response = await api.put(routes.database.creators.level(level.id), {
-        creators: pendingCreators.map((c) => ({
+        creators: orderedCreators.map((c, index) => ({
           id: c.id,
           role: c.role,
-          isOwner: c.isOwner,
+          isOwner: Boolean(c.isOwner),
+          sortOrder: index,
         })),
       });
 
