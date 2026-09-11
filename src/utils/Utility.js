@@ -234,6 +234,27 @@ export  function formatScore(score) {
       maximumFractionDigits: 2,
     }).format(score);
   }
+
+export function compareLevelCreditOrder(a, b) {
+  const ao = Number(a?.sortOrder);
+  const bo = Number(b?.sortOrder);
+  const aOk = Number.isFinite(ao);
+  const bOk = Number.isFinite(bo);
+  if (aOk && bOk && ao !== bo) return ao - bo;
+  if (aOk !== bOk) return aOk ? -1 : 1;
+  return 0;
+}
+
+export function sortLevelCredits(credits) {
+  if (!Array.isArray(credits)) return [];
+  return credits
+    .map((credit, index) => ({ credit, index }))
+    .sort((a, b) => {
+      const byOrder = compareLevelCreditOrder(a.credit, b.credit);
+      return byOrder !== 0 ? byOrder : a.index - b.index;
+    })
+    .map(({ credit }) => credit);
+}
   
 export function formatCreatorDisplay (level) {
     // If team exists, it takes priority
@@ -243,21 +264,23 @@ export function formatCreatorDisplay (level) {
       return level.team;
     }
 
+    const sortedCredits = sortLevelCredits(level.levelCredits);
     // If no credits, fall back to creator field
-    if (!level.levelCredits || level.levelCredits.length === 0) {
+    if (sortedCredits.length === 0) {
       return "No credits";
     }
 
-    // Group credits by role
-    const creditsByRole = level.levelCredits.reduce((acc, credit) => {
-      const role = credit.role.toLowerCase();
+    // Group credits by role, preserving sortOrder within each role
+    const creditsByRole = sortedCredits.reduce((acc, credit) => {
+      const role = String(credit?.role ?? "").toLowerCase();
+      if (!role || !acc) return acc;
       if (!acc[role]) {
         acc[role] = [];
       }
-      const creatorName = credit.creator.aliases?.length > 0 
+      const creatorName = credit.creator?.aliases?.length > 0 
         ? credit.creator.aliases[0]
-        : credit.creator.name;
-      acc[role].push(creatorName);
+        : credit.creator?.name;
+      if (creatorName) acc[role].push(creatorName);
       return acc;
     }, {});
 

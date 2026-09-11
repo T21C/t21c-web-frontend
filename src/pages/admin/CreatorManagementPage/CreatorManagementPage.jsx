@@ -15,6 +15,7 @@ import { SortDescIcon, SortAscIcon } from '@/components/common/icons';
 import { AccessDenied, MetaTags } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { sortLevelCredits } from '@/utils/Utility';
 import toast from 'react-hot-toast';
 
 const CreatorManagementPage = () => {
@@ -360,7 +361,7 @@ const CreatorManagementPage = () => {
           </p>
         )}
         <div className="current-creators">
-          {level.currentCreators?.map(creator => (
+          {sortLevelCredits(level.currentCreators).map(creator => (
             <span key={`${creator.role}-${creator.id}`} className="creator-tag">
               {creator.name} ({creator.role})
               {creator.aliases && creator.aliases.length > 0 && (

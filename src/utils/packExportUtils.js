@@ -1,5 +1,5 @@
 // tuf-search: #packExportUtils #pack #export
-import { formatCreatorDisplay } from '@/utils/Utility';
+import { formatCreatorDisplay, sortLevelCredits } from '@/utils/Utility';
 import { getSongDisplayName, getArtistDisplayName } from '@/utils/levelHelpers';
 import {
   getCurationTypesResolved,
@@ -29,8 +29,8 @@ const sortItemsByOrder = (items = []) =>
   [...items].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
 
 function joinCreditNamesByRole(level, role) {
-  const credits = level?.levelCredits;
-  if (!Array.isArray(credits) || credits.length === 0) return '';
+  const credits = sortLevelCredits(level?.levelCredits);
+  if (credits.length === 0) return '';
 
   return credits
     .filter((credit) => credit?.role?.toLowerCase() === role)
