@@ -66,7 +66,6 @@
   margin-top: 20px;
   padding: 20px;
   width: 100%;
-  max-width: 90%; /* Fallback for smaller screens */
   background-color: #00000057;
 }
 
@@ -282,7 +281,6 @@
   margin-top: 20px;
   padding: 20px;
   width: 100%;
-  max-width: 90%; /* Fallback for smaller screens */
   background-color: #00000057;
 }
 
@@ -291,7 +289,6 @@
   margin-top: 20px;
   padding: 20px;
   width: 100%;
-  max-width: 90%;
   background-color: #00000057;
 }
 
@@ -548,14 +545,6 @@
   }
 }
 
-/* Leaderboard rank history (Recharts) */
-.player-page__rank-history {
-  width: 100%;
-  max-width: 50rem;
-  display: flex;
-  flex-direction: column;
-}
-
 .player-page__rank-history .rank-history__controls {
   display: flex;
   flex-wrap: wrap;
@@ -616,11 +605,6 @@
 
 .player-page__rank-history .rank-history__status--error {
   color: var(--danger-color);
-}
-
-.player-page__score-breakdown {
-  width: 100%;
-  max-width: 50rem;
 }
 
 .player-page__score-breakdown-grid {
