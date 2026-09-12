@@ -53,6 +53,7 @@ const LevelUploadManagementPopup = ({
   const [levelFiles, setLevelFiles] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState(null);
   const [isSelecting, setIsSelecting] = useState(false);
+  const [isReparsing, setIsReparsing] = useState(false);
   const [targetLevel, setTargetLevel] = useState(null);
   const [originalZip, setOriginalZip] = useState(null);
   const [songFiles, setSongFiles] = useState({});
@@ -517,7 +518,7 @@ const LevelUploadManagementPopup = ({
   };
 
   const handleLevelSelect = async () => {
-    if (!selectedLevel || isSelecting || selectedLevel === targetLevel) return;
+    if (!selectedLevel || isSelecting || isReparsing || selectedLevel === targetLevel) return;
 
     try {
       setIsSelecting(true);
@@ -537,6 +538,26 @@ const LevelUploadManagementPopup = ({
       notifyError(resolveUserMessage(error, t('levelUploadManagement.errors.selectFailed')));
     } finally {
       setIsSelecting(false);
+    }
+  };
+
+  const handleReparseChart = async () => {
+    if (!originalZip || !targetLevel || isUploading || isSelecting || isReparsing) return;
+
+    try {
+      setIsReparsing(true);
+      const result = await api.post(routes.levelsV3.reparseChart(level.id));
+
+      if (result.data.success) {
+        void refreshLevelMetadata();
+        toastSuccess(t('levelUploadManagement.reparse.success'));
+      } else {
+        notifyError(result.data.error || t('levelUploadManagement.errors.reparseFailed'));
+      }
+    } catch (error) {
+      notifyError(resolveUserMessage(error, t('levelUploadManagement.errors.reparseFailed')));
+    } finally {
+      setIsReparsing(false);
     }
   };
 
@@ -704,19 +725,36 @@ const LevelUploadManagementPopup = ({
               }}
               targetKey={targetLevel}
             />
-            {selectedLevel && levelFiles.length > 0 && (
-            <button 
-              className={`select-button btn-fill-primary ${isSelecting ? 'is-selecting' : ''}`}
-              onClick={handleLevelSelect}
-              disabled={!selectedLevel || selectedLevel === targetLevel || isSelecting}
-            >
-              {isSelecting
-                ? `${t('levelUploadManagement.buttons.select')}...`
-                : selectedLevel === targetLevel
-                  ? t('levelUploadManagement.buttons.currentlySelected')
-                  : t('levelUploadManagement.buttons.select')}
-            </button>
-            )}
+            {(originalZip && targetLevel) || (selectedLevel && levelFiles.length > 0) ? (
+              <div className="level-file-actions">
+                {selectedLevel && levelFiles.length > 0 && (
+                  <button
+                    type="button"
+                    className={`select-button btn-fill-primary ${isSelecting ? 'is-selecting' : ''}`}
+                    onClick={handleLevelSelect}
+                    disabled={!selectedLevel || selectedLevel === targetLevel || isSelecting || isReparsing || isUploading}
+                  >
+                    {isSelecting
+                      ? `${t('levelUploadManagement.buttons.select')}...`
+                      : selectedLevel === targetLevel
+                        ? t('levelUploadManagement.buttons.currentlySelected')
+                        : t('levelUploadManagement.buttons.select')}
+                  </button>
+                )}
+                {originalZip && targetLevel && (
+                  <button
+                    type="button"
+                    className={`reparse-button btn-fill-secondary ${isReparsing ? 'is-reparsing' : ''}`}
+                    onClick={handleReparseChart}
+                    disabled={isUploading || isSelecting || isReparsing}
+                  >
+                    {isReparsing
+                      ? `${t('levelUploadManagement.buttons.reparse')}...`
+                      : t('levelUploadManagement.buttons.reparse')}
+                  </button>
+                )}
+              </div>
+            ) : null}
           </div>
         )}
           <div className="upload-actions">

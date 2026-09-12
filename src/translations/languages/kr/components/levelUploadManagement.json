@@ -7,6 +7,7 @@
     "fetchFailed": "Failed to fetch level files",
     "uploadFailed": "Failed to upload level file",
     "selectFailed": "Failed to select level file",
+    "reparseFailed": "채보 다시 파싱에 실패했습니다",
     "deleteFailed": "Failed to delete level file",
     "missingUrl": "Please enter a URL",
     "cdnNotAllowed": "That URL points to the site CDN. Use a direct download link instead.",
@@ -29,6 +30,7 @@
   },
   "buttons": {
     "select": "Select Level",
+    "reparse": "다시 파싱",
     "currentlySelected": "Currently Selected",
     "uploadNew": "Upload New Level",
     "import": "Import",
@@ -54,5 +56,8 @@
   "confirmCloseDuringUpload": "Upload in progress. Are you sure you want to cancel?",
   "select": {
     "success": "Level file selected"
+  },
+  "reparse": {
+    "success": "채보가 다시 파싱되었습니다"
   }
 }

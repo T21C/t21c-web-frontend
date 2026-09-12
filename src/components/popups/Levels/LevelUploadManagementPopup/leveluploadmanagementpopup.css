@@ -187,6 +187,19 @@
   min-width: 0;
 }
 
+.level-upload-management-popup .level-file-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.level-upload-management-popup .level-file-actions .select-button,
+.level-upload-management-popup .level-file-actions .reparse-button {
+  flex: 1 1 140px;
+  min-width: 0;
+}
+
 .level-upload-management-popup .upload-button--full {
   width: 100%;
 }
@@ -332,12 +345,12 @@
 .level-upload-management-popup .upload-import-button,
 .level-upload-management-popup .delete-button,
 .level-upload-management-popup .select-button,
+.level-upload-management-popup .reparse-button,
 .level-upload-management-popup .cancel-upload-button {
   padding: 10px 20px;
   border-radius: 4px;
   cursor: pointer;
   font-weight: bold;
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
 .level-upload-management-popup .upload-button:disabled::before {
@@ -360,7 +373,17 @@
   cursor: not-allowed;
 }
 
-.level-upload-management-popup .select-button.is-selecting, 
+.level-upload-management-popup .reparse-button:disabled::before {
+  filter: none;
+  background-color: var(--btn-neutral-dark);
+}
+
+.level-upload-management-popup .reparse-button:disabled {
+  color: rgba(255, 255, 255, 0.6);
+  cursor: not-allowed;
+}
+
+.level-upload-management-popup .select-button.is-selecting,
 .level-upload-management-popup .select-button:not(:disabled):active {
   transform: scale(0.99);
 }
@@ -456,6 +479,7 @@
   .level-upload-management-popup .upload-import-button,
   .level-upload-management-popup .delete-button,
   .level-upload-management-popup .select-button,
+  .level-upload-management-popup .reparse-button,
   .level-upload-management-popup .cancel-upload-button {
     padding: 14px;
     font-size: 16px;
@@ -477,6 +501,7 @@
   .level-upload-management-popup .upload-import-button,
   .level-upload-management-popup .delete-button,
   .level-upload-management-popup .select-button,
+  .level-upload-management-popup .reparse-button,
   .level-upload-management-popup .cancel-upload-button {
     padding: 12px;
     font-size: 14px;

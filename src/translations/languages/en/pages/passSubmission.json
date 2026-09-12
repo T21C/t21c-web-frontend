@@ -86,6 +86,8 @@
     "title": "Judgement total does not match achievable tilecount",
     "body": "This level's chart has <b>{{tilecount}}</b> achievable tiles. Your total judgements add up to <b>{{hitSum}}</b>. These values might be wrong.",
     "bodyWithAuto": "This level's chart has <b>{{rawTilecount}}</b> tiles (<b>{{autoTileCount}}</b> auto), so <b>{{tilecount}}</b> judgements are expected. Your total judgements add up to <b>{{hitSum}}</b>. These values might be wrong.",
+    "bodyWithMidspin": "This level's chart has <b>{{rawTilecount}}</b> tiles (<b>{{midspinCount}}</b> midspin), so <b>{{tilecount}}</b> judgements are expected. Your total judgements add up to <b>{{hitSum}}</b>. These values might be wrong.",
+    "bodyWithAutoAndMidspin": "This level's chart has <b>{{rawTilecount}}</b> tiles (<b>{{autoTileCount}}</b> auto, <b>{{midspinCount}}</b> midspin), so <b>{{tilecount}}</b> judgements are expected. Your total judgements add up to <b>{{hitSum}}</b>. These values might be wrong.",
     "reviewInputs": "Cancel",
     "submitAnyway": "Submit anyway"
   },

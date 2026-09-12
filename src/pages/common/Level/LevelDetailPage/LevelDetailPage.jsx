@@ -2735,6 +2735,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                     const autoTilecountTooltip = formatAutoTilecountTooltip(
                       res.level.tilecount,
                       res.level.autoTileCount,
+                      res.level.midspinCount,
                     );
                     const tilecountTooltipId = `tilecount-auto-tooltip-${res.level.id}`;
                     return (

@@ -452,6 +452,7 @@ const LevelCard = ({
             const autoTilecountTooltip = formatAutoTilecountTooltip(
               level.tilecount,
               level.autoTileCount,
+              level.midspinCount,
             );
             const tilecountTooltipId = `tilecount-auto-tooltip-${level.id}`;
             return (

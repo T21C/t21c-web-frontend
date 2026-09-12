@@ -87,6 +87,8 @@
     "title": "判定总数与物量数量不一致",
     "body": "该谱面物量总数为<b>{{tilecount}}</b>，而你的判定总数为 <b>{{hitSum}}</b>。输入的判定数据可能有误。",
     "bodyWithAuto": "该谱面物量总数为<b>{{rawTilecount}}</b>（其中<b>{{autoTileCount}}</b>个为自动砖块），因此应有<b>{{tilecount}}</b>个判定结果。你的判定总数为<b>{{hitSum}}</b>，输入的判定数据可能有误。",
+    "bodyWithMidspin": "该谱面物量总数为<b>{{rawTilecount}}</b>（其中<b>{{midspinCount}}</b>个为中旋砖块），因此应有<b>{{tilecount}}</b>个判定结果。你的判定总数为<b>{{hitSum}}</b>，输入的判定数据可能有误。",
+    "bodyWithAutoAndMidspin": "该谱面物量总数为<b>{{rawTilecount}}</b>（其中<b>{{autoTileCount}}</b>个为自动砖块、<b>{{midspinCount}}</b>个为中旋砖块），因此应有<b>{{tilecount}}</b>个判定结果。你的判定总数为<b>{{hitSum}}</b>，输入的判定数据可能有误。",
     "reviewInputs": "取消",
     "submitAnyway": "仍然提交"
   },
