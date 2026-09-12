@@ -55,7 +55,7 @@
     "unknown": "未知用户",
     "previous": "上一页",
     "next": "下一页",
-    "pageInfo": "第 {{current}} / {{total}} 页"
+    "pageInfo": "第 {{current}} 页，共 {{total}} 页"
   },
   "hiddenFollowers_one": "{{formatted}} 位隐藏关注者",
   "hiddenFollowers_other": "{{formatted}} 位隐藏关注者",
@@ -64,9 +64,9 @@
     "aka": "又名",
     "highestRank": "最高排名：#{{rank}}",
     "highestRankAt": "于 {{date}}",
-    "highestRankNow": "当前正处于最高排名！",
-    "youtubeChannel": "YouTube：{{name}}",
-    "youtubeMore": "更多 YouTube 频道"
+    "highestRankNow": "当前为最高排名！",
+    "youtubeChannel": "YouTube频道名：{{name}}",
+    "youtubeMore": "更多YouTube频道"
   },
   "bio": {
     "header": "个人简介",
@@ -75,24 +75,24 @@
     "collapse": "收起"
   },
   "sections": {
-    "tournaments": {
-      "title": "赛事",
-      "expand": "展开赛事",
-      "collapse": "收起赛事",
-      "withdrew": "退赛",
-      "disqualified": "取消资格",
-      "unseriesed": "其他赛事",
-      "unknownTournament": "赛事",
-      "openPack": "打开地图包",
-      "othersCount": "+{{count}} 其他人"
-    },
     "scores": {
       "title": "通关记录列表",
       "expand": "展开",
       "collapse": "收起",
-      "hideReclears": "隐藏重复通关",
+      "hideReclears": "隐藏重击破",
       "lowestImpactScore": "排位分加分下限：<pp>{{score}}</pp>",
       "tl_comment": "别动这个 ↑"
+    },
+    "tournaments": {
+      "title": "赛事",
+      "expand": "展开",
+      "collapse": "收起",
+      "withdrew": "退赛",
+      "disqualified": "已取消资格",
+      "unseriesed": "其他赛事",
+      "unknownTournament": "赛事",
+      "openPack": "打开地图包",
+      "othersCount": "+{{count}} 其他人"
     },
     "scoreBreakdown": {
       "title": "分数信息",
@@ -262,32 +262,32 @@
     }
   },
   "modules": {
-    "missing": "该模块暂无可展示内容。",
+    "missing": "此模块无可展示项目。",
     "types": {
-      "bio": "简介",
-      "tournaments": "锦标赛",
-      "scoreBreakdown": "分数构成",
+      "bio": "个人简介",
+      "tournaments": "赛事",
+      "scoreBreakdown": "分数信息",
       "difficulty": "难度",
       "rankHistory": "排名历史",
-      "scores": "成绩",
+      "scores": "分数",
       "charts": "关卡",
       "favorite": "收藏",
       "player": {
-        "difficulty": "按难度的通关"
+        "difficulty": "通关记录统计列表"
       },
       "creator": {
-        "difficulty": "按难度的关卡",
+        "difficulty": "关卡统计列表",
         "charts": "关卡"
       }
     },
     "favoriteKinds": {
-      "pass": "通关",
-      "level": "谱面",
-      "pack": "曲包",
-      "player": "玩家"
+      "pass": "通关记录",
+      "level": "关卡",
+      "pack": "地图包",
+      "player": "晚间"
     },
-    "expandFavorite": "展开收藏",
-    "collapseFavorite": "收起收藏"
+    "expandFavorite": "展开",
+    "collapseFavorite": "收起"
   },
   "discordRoleSync": {
     "buttonTitle": {

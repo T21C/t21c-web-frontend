@@ -28,7 +28,7 @@
   "savePlacements": "保存名次",
   "syncCredits": "同步积分",
   "withdrew": "退赛",
-  "disqualified": "取消资格",
+  "disqualified": "已取消资格",
   "autoLinkExact": "自动关联完全匹配",
   "noUnresolved": "所有名次名称均已关联。",
   "addReward": "添加装饰",
@@ -147,7 +147,7 @@
         "intro": "赛事系列与赛事列表使用稠密 1..n 权重。",
         "bullets": {
           "series": "在赛事系列标签用上下按钮调整顺序。",
-          "tier": "编辑器中名次按档位排名权重排序。"
+          "tier": "编辑器中名次按档位排名权重排。"
         }
       },
       "pack": {
@@ -274,11 +274,11 @@
     "noImage": "无图片",
     "messages": {
       "uploadSuccess": "图片上传成功",
-      "removed": "图片已移除"
+      "removed": "图片已删除"
     },
     "errors": {
       "uploadFailed": "图片上传失败",
-      "removeFailed": "图片移除失败"
+      "removeFailed": "图片删除失败"
     }
   },
   "tiers": {
@@ -337,7 +337,7 @@
       "series": "赛事系列",
       "tierTemplate": "档位模板",
       "hidden": "隐藏",
-      "resultsFinal": "结果已定",
+      "resultsFinal": "最终结果",
       "notes": "备注"
     },
     "packRefSearchPlaceholder": "搜索地图包",

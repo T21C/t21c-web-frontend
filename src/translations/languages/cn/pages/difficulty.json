@@ -34,7 +34,7 @@
     "deletingGroup": "分组删除中……"
   },
   "noItems": {
-    "message": "未找到等级"
+    "message": "未找到等级。"
   },
   "difficultyTypes": {
     "PGU": "PGU",
@@ -120,22 +120,22 @@
       "assignmentSection": "标签分配",
       "inherit": "继承",
       "scoringMode": "计分模式",
-      "modeWilson": "威尔逊（最高通关 + 1）",
-      "modeSkillset": "技巧（仅通关者）",
-      "requireTopPlay": "最高通关要求",
-      "requireTopPlayHint": "继承使用分组设置。需要/不需要会覆盖该设置。开启后，投票者的最高通关需要至少达到这张谱的难度（最高通关 + 1）。",
-      "requireTopPlayGroupHint": "应用于本分组中设为继承的标签。开启后，投票者的最高通关需要至少达到这张谱的难度（最高通关 + 1）。",
-      "requireTopPlayOn": "需要",
-      "requireTopPlayOff": "不需要",
-      "wilsonZ": "威尔逊 Z",
-      "wilsonZHint": "评分对少量投票有多谨慎。Z 越大，达到同样阈值需要的赞成票越多。",
-      "wilsonZWeightHint": "未通关者的投票计为通关者的 0.1 倍",
-      "wilsonZInfoAria": "未通关者投票权重说明",
-      "scoreOn": "添加阈值",
-      "scoreOff": "移除阈值",
-      "reqVotes": "所需票数：{{count}}",
-      "allowedBands": "难度段",
-      "allowedBandsHint": "全部不勾选表示继承。P / G / U / SPEC 会把社区投票限制在对应段（SPEC 为特殊难度）。"
+      "modeWilson": "Wilson 模式（最高通关难度 + 1）",
+      "modeSkillset": "Skillset 模式（仅通关者）",
+      "requireTopPlay": "需要最高通关难度",
+      "requireTopPlayHint": "“继承”选项会沿用所属组的设置，而“必选”或“非必选”设置则会覆盖该默认值。若设为“必选”，则投票者必须拥有最少一个该谱面难度的通关记录。（最高通关难度 + 1）",
+      "requireTopPlayGroupHint": "适用于该组中设置为“继承”的标签。若有要求，玩家需拥有最少一个该谱面难度的通关记录。（最高通关难度 + 1）",
+      "requireTopPlayOn": "必须",
+      "requireTopPlayOff": "非必须",
+      "wilsonZ": "Wilson 模式 Z 值",
+      "wilsonZHint": "“怀疑度评分”机制对小规模票数持审慎态度：Z值越高，意味着需要更多相同的投票才能达到同样的阈值。",
+      "wilsonZWeightHint": "非通关者的投票按0.1倍通关者投票计入",
+      "wilsonZInfoAria": "非通关者投票权重",
+      "scoreOn": "分配阈值",
+      "scoreOff": "删除阈值",
+      "reqVotes": "需要票数：{{count}}",
+      "allowedBands": "难度区间",
+      "allowedBandsHint": "将所有未更改项目设为“继承”。PGU或特殊难度限制社区评级到这些区间。"
     },
     "create": {
       "title": "创建标签",
@@ -153,7 +153,7 @@
       "createButton": "创建",
       "cancelButton": "取消",
       "isCommunity": "社区标签（玩家可以投票把它加到关卡上）",
-      "passWarningEnabled": "此标签出现时在通关提交中显示警告"
+      "passWarningEnabled": "此标签存在时提交通关记录时提醒"
     },
     "edit": {
       "title": "编辑标签",
@@ -172,7 +172,7 @@
       "cancelButton": "取消",
       "unsavedChanges": "你有未保存的更改，确定要退出吗？",
       "isCommunity": "社区标签（玩家可以投票把它加到关卡上）",
-      "passWarningEnabled": "此标签出现时在通关提交中显示警告"
+      "passWarningEnabled": "此标签存在时提交通关记录时提醒"
     },
     "delete": {
       "title": "删除标签",

@@ -1,40 +1,40 @@
 {
   "meta": {
-    "title": "Resources",
-    "description": "Useful guides, docs, and Notion pages from the TUF team",
-    "editTitle": "编辑资源"
+    "title": "资料",
+    "description": "有用的指南、文档和 TUF团队编写的 Notion 文章",
+    "editTitle": "编辑资料"
   },
-  "title": "Resources",
-  "subtitle": "来自 TUF 团队的指南、文档和链接。",
-  "editTitle": "编辑资源",
-  "editSubtitle": "创建分组、在组之间拖动链接，并编辑翻译。",
-  "empty": "暂无资源。",
-  "emptySearch": "没有符合搜索的链接。",
+  "title": "资料",
+  "subtitle": "指南、文档和 TUF团队收集的 Notion 文章。",
+  "editTitle": "编辑资料",
+  "editSubtitle": "创建分组，在链接之间拖动它们，并编辑翻译。",
+  "empty": "无已公开资料。",
+  "emptySearch": "无匹配结果。",
   "ungrouped": "未分组",
-  "searchPlaceholder": "搜索标题、描述和网址",
-  "backToResources": "返回资源",
+  "searchPlaceholder": "按标题、描述和链接搜索",
+  "backToResources": "返回资料",
   "errors": {
-    "loadFailed": "无法加载资源，请稍后再试。"
+    "loadFailed": "无法加载资料。请稍后再试。"
   },
   "language": {
     "label": "语言",
-    "emptySlice": "此语言没有可用链接。"
+    "emptySlice": "没有链接在该语言中可用。"
   },
   "links": {
-    "createButton": "创建链接",
-    "noLinks": "还没有链接。请创建第一个链接。",
+    "createButton": "新建链接",
+    "noLinks": "未找到链接。创建你的第一个链接！",
     "linkCount": "{{count}} 个链接",
     "linkCount_plural": "{{count}} 个链接",
     "fields": {
       "title": "标题",
-      "url": "网址",
-      "urlPlaceholder": "https://www.notion.so/…",
+      "url": "链接",
+      "urlPlaceholder": "https://www.notion.so/……",
       "shorthand": "简称",
       "shorthandPlaceholder": "TUF Notion",
       "description": "描述"
     },
     "create": {
-      "title": "创建链接",
+      "title": "新建链接",
       "createButton": "创建"
     },
     "edit": {
@@ -43,28 +43,28 @@
     },
     "delete": {
       "title": "删除链接",
-      "message": "确定要删除链接“{{name}}”吗？",
-      "description": "此操作无法撤销。",
+      "message": "你确定删除链接 \"{{name}}\" ？",
+      "description": "此操作不可撤销。",
       "deleteButton": "删除"
     },
     "notifications": {
-      "created": "链接已创建",
-      "createFailed": "创建链接失败",
-      "updated": "链接已更新",
-      "updateFailed": "更新链接失败",
-      "deleted": "链接已删除",
-      "deleteFailed": "删除链接失败",
-      "reordered": "链接顺序已保存",
-      "reorderFailed": "保存链接顺序失败",
-      "localeSaved": "语言已保存",
-      "localeSaveFailed": "保存语言失败",
-      "localeRemoved": "语言已移除",
-      "localeRemoveFailed": "移除语言失败"
+      "created": "链接创建成功",
+      "createFailed": "链接创建失败",
+      "updated": "链接更新成功",
+      "updateFailed": "链接更新失败",
+      "deleted": "链接删除成功",
+      "deleteFailed": "链接删除失败",
+      "reordered": "链接重排成功",
+      "reorderFailed": "链接重排失败",
+      "localeSaved": "语言保存成功",
+      "localeSaveFailed": "语言保存失败",
+      "localeRemoved": "语言已删除",
+      "localeRemoveFailed": "语言删除失败"
     }
   },
   "groups": {
     "createButton": "创建分组",
-    "noGroups": "还没有分组。创建一个分组来整理链接。",
+    "noGroups": "未找到分组。创建分组或创建链接时输入分组名。",
     "create": {
       "title": "创建分组",
       "name": "名称",
@@ -77,29 +77,29 @@
     },
     "delete": {
       "title": "删除分组",
-      "message": "确定要删除分组“{{name}}”吗？",
-      "description": "该分组中的链接会移到剩余的第一个分组；如果没有分组，则变为未分组。",
+      "message": "你确定删除分组 \"{{name}}\" ？",
+      "description": "此分组内所有链接将解除分组。此操作不可撤销。",
       "deleteButton": "删除"
     },
     "notifications": {
-      "reordered": "分组顺序已保存",
-      "reorderFailed": "保存分组顺序失败",
-      "created": "分组已创建",
-      "createFailed": "创建分组失败",
-      "updated": "分组已更新",
-      "updateFailed": "更新分组失败",
-      "deleted": "分组已删除",
-      "deleteFailed": "删除分组失败"
+      "reordered": "分组重排成功",
+      "reorderFailed": "分组重排失败",
+      "created": "分组创建成功",
+      "createFailed": "分组创建失败",
+      "updated": "分组更新成功",
+      "updateFailed": "分组更新失败",
+      "deleted": "分组删除成功",
+      "deleteFailed": "分组删除失败"
     },
-    "removeLocaleConfirm": "要从该分组移除 {{name}} 翻译吗？"
+    "removeLocaleConfirm": "从分组中删除{{name}}的翻译？"
   },
   "languages": {
     "title": "管理语言",
     "add": "添加语言",
     "addPlaceholder": "选择语言",
-    "remove": "移除语言",
-    "enLocked": "无法移除英语",
-    "emptyAdd": "所有可用语言均已添加",
-    "removeConfirm": "要从该链接移除 {{name}} 翻译吗？"
+    "remove": "删除语言",
+    "enLocked": "不能删除英语",
+    "emptyAdd": "已添加所有语言",
+    "removeConfirm": "从此链接中删除{{name}}的翻译？"
   }
 }

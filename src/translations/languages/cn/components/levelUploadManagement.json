@@ -7,7 +7,6 @@
     "fetchFailed": "获取关卡文件失败",
     "uploadFailed": "上传关卡文件失败",
     "selectFailed": "选择关卡文件失败",
-    "reparseFailed": "重新解析关卡失败",
     "deleteFailed": "删除关卡文件失败",
     "missingUrl": "请输入 URL",
     "cdnNotAllowed": "该链接指向站点 CDN，请使用直接下载链接。",
@@ -30,7 +29,6 @@
   },
   "buttons": {
     "select": "选择关卡",
-    "reparse": "重新解析",
     "currentlySelected": "当前选中",
     "uploadNew": "上传新关卡",
     "import": "导入",
@@ -56,8 +54,5 @@
   "confirmCloseDuringUpload": "上传中。你确定要取消吗？",
   "select": {
     "success": "已选择关卡文件"
-  },
-  "reparse": {
-    "success": "关卡解析已更新"
   }
 }

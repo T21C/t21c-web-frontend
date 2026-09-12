@@ -20,12 +20,12 @@
   "settings": {
     "filter": {
       "header": "筛选",
-      "following": "关注中"
+      "following": "已关注"
     },
     "sort": {
       "header": "排序设置",
       "sortOrder": "排序顺序",
-      "sortBy": "排序方式"
+      "sortBy": "排序依据："
     },
     "verificationFilter": {
       "label": "认证状态",
@@ -41,15 +41,15 @@
     "chartsCharted": "参与采音数",
     "chartsVfxed": "参与特效数",
     "chartsTeamed": "作为团队成员参与的关卡数",
-    "totalChartClears": "总关卡通关次数",
-    "totalChartLikes": "总关卡收藏次数"
+    "totalChartClears": "关卡通关总次数",
+    "totalChartLikes": "关卡收藏总次数"
   },
   "infiniteScroll": {
     "end": "你已到达底部！"
   },
   "list": {
     "empty": "未找到创作者。",
-    "emptyFollowing": "你还没有关注任何人。"
+    "emptyFollowing": "你没关注任何人。"
   },
   "card": {
     "verified": "已认证",
@@ -60,7 +60,7 @@
   "verificationStatus": {
     "help": {
       "declined": "该创作者拒绝让自己的关卡展示在论坛中。",
-      "pending": "等待创作者确认。新添加创作者的默认状态。",
+      "pending": "等待创作者确认。新建创作者的默认状态。",
       "conditional": "该创作者同意在特定条件下展示。添加任何提交内容前请先协商。",
       "allowed": "该创作者同意让自己的关卡展示在论坛中。"
     }
@@ -74,7 +74,7 @@
     "verified": "已认证",
     "manageButton": "管理创作者",
     "stats": {
-      "header": "创作者统计",
+      "header": "创作者统计信息",
       "chartsCharted": "参与制谱数",
       "chartsVfxed": "参与特效制作数",
       "chartsTeamed": "作为团队成员参与的关卡数",
@@ -96,7 +96,7 @@
       "dialogLabel": "已署名关卡中的精选类型"
     },
     "levels": {
-      "header": "关卡",
+      "header": "谱面",
       "empty": "该创作者暂时没有关卡。",
       "searchPlaceholder": "搜索该创作者的谱面……",
       "expand": "展开",
@@ -118,7 +118,7 @@
     },
     "sections": {
       "difficultyBreakdown": {
-        "title": "关卡数统计",
+        "title": "关卡统计列表",
         "expand": "展开",
         "collapse": "收起"
       }
