@@ -21,6 +21,7 @@ import { resolveSubmissionVideoUrl } from '@/utils/resolveVideoUrl';
 import {
   getPassJudgementHitCountFromForm,
   getEffectiveTilecount,
+  getTilecountMismatchI18nSuffix,
   isTilecountJudgementMismatch,
 } from '@/utils/passJudgementHitCount';
 import { PASS_SUBMISSION_INITIAL_FORM } from './passSubmissionInitialForm';
@@ -206,7 +207,7 @@ const PassSubmissionPage = () => {
 
   const proceedAfterTagWarnings = async () => {
     const hitSum = getPassJudgementHitCountFromForm(form);
-    if (isTilecountJudgementMismatch(level?.tilecount, hitSum, level?.autoTileCount)) {
+    if (isTilecountJudgementMismatch(level?.tilecount, hitSum, level?.autoTileCount, level?.midspinCount)) {
       setShowTilecountMismatchModal(true);
       return;
     }
@@ -442,16 +443,13 @@ const PassSubmissionPage = () => {
             <h2 id="tilecount-mismatch-title">{t('passSubmission.tilecountMismatch.title')}</h2>
             <p className="tilecount-mismatch-modal-body">
               <Trans
-                i18nKey={
-                  (level?.autoTileCount ?? 0) > 0
-                    ? 'passSubmission.tilecountMismatch.bodyWithAuto'
-                    : 'passSubmission.tilecountMismatch.body'
-                }
+                i18nKey={`passSubmission.tilecountMismatch.body${getTilecountMismatchI18nSuffix(level?.autoTileCount, level?.midspinCount)}`}
                 ns="pages"
                 values={{
-                  tilecount: getEffectiveTilecount(level?.tilecount, level?.autoTileCount),
+                  tilecount: getEffectiveTilecount(level?.tilecount, level?.autoTileCount, level?.midspinCount),
                   rawTilecount: level?.tilecount,
                   autoTileCount: level?.autoTileCount ?? 0,
+                  midspinCount: level?.midspinCount ?? 0,
                   hitSum: getPassJudgementHitCountFromForm(form),
                 }}
                 components={{ b: <b /> }}

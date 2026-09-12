@@ -10,6 +10,8 @@
       "label": "판정",
       "tilecountMismatchTooltip": "판정 합계 <b>{{hitSum}}</b>이(가) 달성 가능한 타일 수 <b>{{tilecount}}</b>와 일치하지 않습니다.",
       "tilecountMismatchTooltipWithAuto": "판정 합계 <b>{{hitSum}}</b>이(가) 달성 가능한 타일 수 <b>{{tilecount}}</b>와 일치하지 않습니다 (전체 {{rawTilecount}}, 자동 {{autoTileCount}}).",
+      "tilecountMismatchTooltipWithMidspin": "판정 합계 <b>{{hitSum}}</b>이(가) 달성 가능한 타일 수 <b>{{tilecount}}</b>와 일치하지 않습니다 (전체 {{rawTilecount}}, 미드스핀 {{midspinCount}}).",
+      "tilecountMismatchTooltipWithAutoAndMidspin": "판정 합계 <b>{{hitSum}}</b>이(가) 달성 가능한 타일 수 <b>{{tilecount}}</b>와 일치하지 않습니다 (전체 {{rawTilecount}}, 자동 {{autoTileCount}}, 미드스핀 {{midspinCount}}).",
       "fields": {
         "earlyDouble": "ED",
         "earlySingle": "ES",

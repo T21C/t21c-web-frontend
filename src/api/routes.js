@@ -485,6 +485,7 @@ export const routes = {
     upload: (levelId) => `/v3/levels/${enc(levelId)}/upload`,
     uploadFromUrl: (levelId) => `/v3/levels/${enc(levelId)}/upload-from-url`,
     selectLevel: (levelId) => `/v3/levels/${enc(levelId)}/select-level`,
+    reparseChart: (levelId) => `/v3/levels/${enc(levelId)}/reparse-chart`,
     team: (levelId) => `/v3/levels/${enc(levelId)}/team`,
   },
 

@@ -38,7 +38,7 @@ export function scoringDefaultsFromLevel(level, difficultyDict = {}) {
   const diff = difficultyDict?.[level.diffId] || level.difficulty || {};
   const resolvedBase =
     Number(level.baseScore) > 0 ? level.baseScore : diff.baseScore;
-  const effectiveTc = getEffectiveTilecount(level.tilecount, level.autoTileCount);
+  const effectiveTc = getEffectiveTilecount(level.tilecount, level.autoTileCount, level.midspinCount);
   return {
     baseScore: formatLevelNum(resolvedBase),
     ppBaseScore: formatLevelNum(level.ppBaseScore),
@@ -164,6 +164,7 @@ export function buildCalculatorLevelContext(level, overrides = {}, difficultyDic
     xaccCurveMeta: null,
     tilecount: overrides.tilecount != null && overrides.tilecount !== '' ? Number(overrides.tilecount) : null,
     autoTileCount: 0,
+    midspinCount: 0,
   };
 
   return buildLevelScoreContext(sandboxLevel, baseOverrides, difficultyDict);
@@ -373,9 +374,9 @@ export function runLocalCalculatorMath(input) {
   const primary = scoreBreakdown(basePass, levelCtx, difficultyDict);
   const hitTiles =
     overrides.tilecount != null && overrides.tilecount !== ''
-      ? getEffectiveTilecount(Number(overrides.tilecount), 0)
+      ? getEffectiveTilecount(Number(overrides.tilecount), 0, 0)
       : level
-        ? getEffectiveTilecount(level.tilecount, level.autoTileCount)
+        ? getEffectiveTilecount(level.tilecount, level.autoTileCount, level.midspinCount)
         : hitTilesFromJudgements(judgements);
 
   // Miss budget

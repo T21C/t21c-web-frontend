@@ -10,6 +10,8 @@
       "label": "Judgements",
       "tilecountMismatchTooltip": "Sum of judgements <b>{{hitSum}}</b> does not match the achievable tilecount <b>{{tilecount}}</b>.",
       "tilecountMismatchTooltipWithAuto": "Sum of judgements <b>{{hitSum}}</b> does not match the achievable tilecount <b>{{tilecount}}</b> ({{rawTilecount}} total, {{autoTileCount}} auto).",
+      "tilecountMismatchTooltipWithMidspin": "Sum of judgements <b>{{hitSum}}</b> does not match the achievable tilecount <b>{{tilecount}}</b> ({{rawTilecount}} total, {{midspinCount}} midspin).",
+      "tilecountMismatchTooltipWithAutoAndMidspin": "Sum of judgements <b>{{hitSum}}</b> does not match the achievable tilecount <b>{{tilecount}}</b> ({{rawTilecount}} total, {{autoTileCount}} auto, {{midspinCount}} midspin).",
       "fields": {
         "earlyDouble": "ED",
         "earlySingle": "ES",
