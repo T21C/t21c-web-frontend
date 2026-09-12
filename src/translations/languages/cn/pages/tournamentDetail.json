@@ -1,14 +1,14 @@
 {
-  "title": "锦标赛",
+  "title": "赛事",
   "meta": {
     "title": "{{name}}",
-    "fallbackTitle": "锦标赛",
-    "description": "在 The Universal Forums 查看 {{name}} 的排名、备注与奖励"
+    "fallbackTitle": "赛事",
+    "description": "{{name}}在TUF上的排名、说明与奖励"
   },
-  "backToList": "返回锦标赛列表",
+  "backToList": "返回赛事",
   "sections": {
-    "organizers": "主办",
-    "notes": "备注",
+    "organizers": "组织者",
+    "notes": "说明",
     "rewards": "奖励",
     "standings": "排名"
   },
@@ -21,19 +21,19 @@
     "ongoing": "进行中",
     "completed": "已结束",
     "cancelled": "已取消",
-    "draft": "草稿"
+    "draft": "拟定中"
   },
   "badges": {
-    "pending": "待定",
-    "withdrew": "退赛",
-    "disqualified": "取消资格",
-    "unlisted": "未公开"
+    "pending": "待办中",
+    "withdrew": "已退出",
+    "disqualified": "被取消资格",
+    "unlisted": "未列出"
   },
-  "unofficialBanner": "结果尚未最终确定。",
-  "emptyStandings": "暂无排名。",
+  "unofficialBanner": "非最终结果。",
+  "emptyStandings": "无排名。",
   "untiered": "其他",
   "errors": {
-    "notFound": "未找到锦标赛",
-    "loadFailed": "无法加载锦标赛"
+    "notFound": "未找到赛事",
+    "loadFailed": "赛事加载失败"
   }
 }

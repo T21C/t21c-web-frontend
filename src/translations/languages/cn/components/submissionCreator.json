@@ -1,5 +1,5 @@
 {
-  "title": "管理创作者/团队",
+  "title": "管理创作者与团队",
   "loading": "加载中……",
   "modes": {
     "assign": "分配现有",
@@ -23,7 +23,7 @@
     "noTeamsFound": "未找到团队"
   },
   "createForm": {
-    "title": "新建创作者",
+    "title": "创建新创作者",
     "name": "创作者名称",
     "namePlaceholder": "输入创作者名称",
     "aliases": "别名（可选）",
@@ -101,8 +101,8 @@
       "teamNotFound": "未找到团队",
       "invalidTeamData": "提供的团队数据无效",
       "creditRequestIdMissing": "缺少制作组请求 ID",
-      "nameExists": "已存在同名创作者。请使用搜索进行分配。",
-      "teamNameExists": "已存在同名团队。请使用搜索进行分配。"
+      "nameExists": "使用该名称的创作者已存在。应搜索并分配。",
+      "teamNameExists": "使用该名称的团队已存在。应搜索并分配。"
     }
   }
 } 

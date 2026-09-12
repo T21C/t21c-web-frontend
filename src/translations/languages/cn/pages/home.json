@@ -16,8 +16,8 @@
     "tufStellarOut": "TUFStellar 已上线！"
   },
   "resourcesCta": {
-    "title": "第一次来论坛？",
-    "subtitle": "从这里开始！",
+    "title": "第一次上论坛？",
+    "subtitle": "从此处入门！",
     "dontShowAgain": "不再显示",
     "iconAlt": "TUF 入门图标"
   },
@@ -59,7 +59,7 @@
       "title": "其他页面",
       "browseLevels": "浏览关卡",
       "browsePasses": "浏览通关记录",
-      "browsePacks": "浏览包",
+      "browsePacks": "浏览地图包",
       "leaderboard": "排行榜",
       "scoreCalculator": "分数计算器",
       "aboutUs": "关于我们",
@@ -78,7 +78,7 @@
     },
     "copyright": {
       "main": "© {{year}} TUF团队。与 7th Beat Games 无关。",
-      "credit": "由 V0W4N 用 ❤️ 制作，中文翻译由 Alex1044 和 Desktop-0114514 提供"
+      "credit": "由 V0W4N 用 ❤️ 制作"
     }
   }
 } 

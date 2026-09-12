@@ -15,7 +15,7 @@
     "loginRequired": "请登录以管理你的地图包",
     "levels": "关卡",
     "alreadyInPack": "已在包中",
-    "packFull": "已满",
+    "packFull": "地图包已满",
     "loading": "正在加载地图包……",
     "addToPack": "添加至地图包",
     "lookupInPacks": "在包中查找",
@@ -76,8 +76,8 @@
       "private": "私密 - 仅自己可见"
     },
     "pinned": {
-      "label": "固定在顶部",
-      "help": "把此包固定在你的地图包列表顶端"
+      "label": "置顶",
+      "help": "把此包在你的地图包列表中置顶"
     },
     "create": "创建地图包",
     "success": {
@@ -148,7 +148,7 @@
       "noResults": "未找到用户",
       "selected": "已选中",
       "transfer": "更改所有者",
-      "transferring": "更改中",
+      "transferring": "更改中……",
       "help": "将地图包所有者更改为另一个用户。"
     },
     "success": {
@@ -241,7 +241,7 @@
     "proceed": "添加 {{count}} 个关卡",
     "submitting": "添加中……",
     "reasons": {
-      "notFound": "关卡不存在",
+      "notFound": "未找到关卡",
       "alreadyInPack": "已在此位置",
       "quotaExceeded": "已达地图包项目数量上限"
     }
