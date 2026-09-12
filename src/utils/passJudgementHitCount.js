@@ -37,27 +37,25 @@ export function getPassJudgementHitCountFromSubmissionJudgements(j) {
 }
 
 /**
- * Achievable manual judgements: chart tilecount minus auto-play tiles and midspins.
+ * Achievable manual judgements: persisted tilecount (already excludes midspins) minus auto-play tiles.
+ * `midspinCount` is ignored so existing call sites do not need a sweep.
  */
-export function getEffectiveTilecount(levelTilecount, autoTileCount = 0, midspinCount = 0) {
+export function getEffectiveTilecount(levelTilecount, autoTileCount = 0, _midspinCount = 0) {
   if (levelTilecount == null) return null;
   const tc = typeof levelTilecount === 'number' ? levelTilecount : Number(levelTilecount);
   if (!Number.isFinite(tc)) return null;
   const tileInt = Math.floor(tc);
   const autoInt = Math.floor(num(autoTileCount));
-  const midspinInt = Math.floor(num(midspinCount));
-  return Math.max(tileInt - autoInt - midspinInt, 0);
+  return Math.max(tileInt - autoInt, 0);
 }
 
 /**
- * Suffix for tilecount-mismatch i18n keys (`''`, `WithAuto`, `WithMidspin`, `WithAutoAndMidspin`).
+ * Suffix for tilecount-mismatch i18n keys (`''` or `WithAuto`).
+ * Midspins are already excluded from persisted tilecount.
  */
-export function getTilecountMismatchI18nSuffix(autoTileCount = 0, midspinCount = 0) {
+export function getTilecountMismatchI18nSuffix(autoTileCount = 0, _midspinCount = 0) {
   const hasAuto = Math.floor(num(autoTileCount)) > 0;
-  const hasMidspin = Math.floor(num(midspinCount)) > 0;
-  if (hasAuto && hasMidspin) return 'WithAutoAndMidspin';
   if (hasAuto) return 'WithAuto';
-  if (hasMidspin) return 'WithMidspin';
   return '';
 }
 

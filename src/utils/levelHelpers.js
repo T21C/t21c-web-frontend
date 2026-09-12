@@ -77,15 +77,16 @@ export const getSongDisplayName = (level) => {
 
 
 /**
- * Tooltip label for tilecount chips when auto tiles or midspins are excluded:
- * "{effective} (N auto, M midspin)".
- * @returns {string|null} e.g. "70 (10 auto, 5 midspin)", or null when nothing is excluded
+ * Tooltip label for tilecount chips when auto tiles remain or midspins were excluded:
+ * "{manual} (N auto, M midspin)". Leading number is tilecount minus auto only
+ * (midspins are already removed from persisted tilecount).
+ * @returns {string|null} e.g. "70 (10 auto, 5 midspin)", or null when nothing extra to show
  */
 export function formatAutoTilecountTooltip(tilecount, autoTileCount, midspinCount = 0) {
   const auto = Math.floor(Number(autoTileCount) || 0);
   const midspin = Math.floor(Number(midspinCount) || 0);
   if (auto <= 0 && midspin <= 0) return null;
-  const manual = getEffectiveTilecount(tilecount, auto, midspin);
+  const manual = getEffectiveTilecount(tilecount, auto, 0);
   if (manual == null) return null;
   const parts = [];
   if (auto > 0) parts.push(`${auto} auto`);
