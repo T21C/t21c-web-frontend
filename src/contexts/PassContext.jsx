@@ -13,6 +13,7 @@ const STORAGE_KEYS = {
   SLIDER_RANGE: 'pass_slider_range',
   KEY_FLAG: 'pass_key_flag',
   WF_FILTER: 'pass_wf_filter',
+  ADOFAI_VERSION_FILTER: 'pass_adofai_version_filter',
 };
 
 export const PassContext = createContext();
@@ -38,6 +39,9 @@ export const PassContextProvider = ({ children }) => {
   });
   const [keyFlag, setKeyFlag] = useState(() => localStorage.getItem(STORAGE_KEYS.KEY_FLAG) || 'all');
   const [wfFilter, setWfFilter] = useState(() => localStorage.getItem(STORAGE_KEYS.WF_FILTER) || 'none');
+  const [adofaiVersionFilter, setAdofaiVersionFilter] = useState(
+    () => localStorage.getItem(STORAGE_KEYS.ADOFAI_VERSION_FILTER) || 'all',
+  );
 
   useEffect(() => {
     if (difficulties.length > 0) {
@@ -91,6 +95,10 @@ export const PassContextProvider = ({ children }) => {
     localStorage.setItem(STORAGE_KEYS.WF_FILTER, wfFilter);
   }, [wfFilter]);
 
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.ADOFAI_VERSION_FILTER, adofaiVersionFilter);
+  }, [adofaiVersionFilter]);
+
   return (
     <PassContext.Provider
       value={{
@@ -124,6 +132,8 @@ export const PassContextProvider = ({ children }) => {
         setKeyFlag,
         wfFilter,
         setWfFilter,
+        adofaiVersionFilter,
+        setAdofaiVersionFilter,
       }}
     >
       {children}

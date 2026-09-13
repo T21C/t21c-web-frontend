@@ -207,6 +207,8 @@
 .clear-card .e-perfect,
 .clear-card .l-perfect { color: yellow; }
 .clear-card .perfect { color: lightgreen; }
+.clear-card .perfect-minus,
+.clear-card .perfect-plus { color: var(--color-xperfect, #ffffff); }
 
 .clear-card .flags-wrapper {
   display: flex;

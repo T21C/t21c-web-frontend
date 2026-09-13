@@ -12,7 +12,9 @@
         "nohold": "Pas de maintien",
         "is12K": "12K",
         "is16K": "16K",
-        "isAdofaiV2": "ADOFAI v2"
+        "isAdofaiV2": "ADOFAI v2",
+        "adofaiVersion": "Version ADOFAI",
+        "isXPerfectMode": "X-Perfect"
       },
       "levelInfo": {
         "song": "Chanson",
@@ -36,11 +38,18 @@
       },
       "judgements": {
         "ePerfect": "Parfait-Tôt",
+        "perfectMinus": "Parfait−",
         "perfect": "Parfait",
+        "perfectPlus": "Parfait+",
         "lPerfect": "Parfait-Tard",
         "tooearly": "Trop tôt",
         "early": "Tôt",
         "late": "Tard"
+      },
+      "adofaiVersion": {
+        "latest": "Latest",
+        "pre340": "<3.4.0",
+        "v2": "v2"
       }
     },
     "acc": "Précision : ",
@@ -49,6 +58,14 @@
     "12kTooltip": "Variante 12 touches",
     "16kTooltip": "Variante 16 touches",
     "adofaiV2Tooltip": "Check this if the clear was recorded on ADOFAI v2",
+    "adofaiVersionTooltip": "Version du jeu utilisée pour cette complétion. Latest correspond à 3.4.0+.",
+    "xPerfectTooltip": "Enregistrer les comptes Perfect− et Perfect+ du mode X-Perfect (3.4.0+ uniquement).",
+    "midspinWarning": {
+      "willApply": "Ce niveau a {{count}} tuiles midspin. Elles seront soustraites de Perfect à l'enregistrement.",
+      "alreadyApplied": "Les Perfect midspin ont déjà été retirés de cette complétion.",
+      "missing": "Ce niveau n'a pas encore de nombre de midspin, Perfect ne sera pas ajusté.",
+      "perfectLt": "Perfect est inférieur au nombre de midspin, Perfect ne sera pas ajusté."
+    },
     "tooltip": "Entrez un nombre entre 1 et 10",
     "alert": {
       "success": "Complétion mise à jour avec succès !",

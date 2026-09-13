@@ -3,6 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { Tooltip } from 'react-tooltip';
 import i18next from 'i18next';
 import { formatDate } from '@/utils/Utility';
+import { CustomSelect } from '@/components/common/selectors';
+import {
+  ADOFAI_VERSION,
+  canUseXPerfectMode,
+  parseAdofaiVersion,
+} from '@/utils/adofaiVersion';
+import { applyMidspinPerfectDecrement, willApplyMidspinDecrement } from '@/utils/midspinPerfectDecrement';
 import './PassCoreForm.css';
 import { JudgementInputs } from './JudgementInputs';
 
@@ -35,10 +42,17 @@ export const PASS_CORE_COPY = {
     expectedTooltip: 'passSubmission.expectedTooltip',
     holdLabel: 'passSubmission.submInfo.nohold',
     holdTooltip: 'passSubmission.holdTooltip',
-    adofaiV2Label: 'passSubmission.submInfo.isAdofaiV2',
-    adofaiV2Tooltip: 'passSubmission.adofaiV2Tooltip',
+    adofaiVersionLabel: 'passSubmission.submInfo.adofaiVersion',
+    adofaiVersionTooltip: 'passSubmission.adofaiVersionTooltip',
+    adofaiVersionLatest: 'passSubmission.adofaiVersion.latest',
+    adofaiVersionPre340: 'passSubmission.adofaiVersion.pre340',
+    adofaiVersionV2: 'passSubmission.adofaiVersion.v2',
+    xPerfectLabel: 'passSubmission.submInfo.isXPerfectMode',
+    xPerfectTooltip: 'passSubmission.xPerfectTooltip',
     ePerfect: 'passSubmission.judgements.ePerfect',
+    perfectMinus: 'passSubmission.judgements.perfectMinus',
     perfect: 'passSubmission.judgements.perfect',
+    perfectPlus: 'passSubmission.judgements.perfectPlus',
     lPerfect: 'passSubmission.judgements.lPerfect',
     tooEarly: 'passSubmission.judgements.tooearly',
     early: 'passSubmission.judgements.early',
@@ -78,10 +92,17 @@ export const PASS_CORE_COPY = {
     expectedTooltip: 'passSubmission.expectedTooltip',
     holdLabel: 'passSubmission.submInfo.nohold',
     holdTooltip: 'passSubmission.holdTooltip',
-    adofaiV2Label: 'passSubmission.submInfo.isAdofaiV2',
-    adofaiV2Tooltip: 'passSubmission.adofaiV2Tooltip',
+    adofaiVersionLabel: 'passSubmission.submInfo.adofaiVersion',
+    adofaiVersionTooltip: 'passSubmission.adofaiVersionTooltip',
+    adofaiVersionLatest: 'passSubmission.adofaiVersion.latest',
+    adofaiVersionPre340: 'passSubmission.adofaiVersion.pre340',
+    adofaiVersionV2: 'passSubmission.adofaiVersion.v2',
+    xPerfectLabel: 'passSubmission.submInfo.isXPerfectMode',
+    xPerfectTooltip: 'passSubmission.xPerfectTooltip',
     ePerfect: 'passSubmission.judgements.ePerfect',
+    perfectMinus: 'passSubmission.judgements.perfectMinus',
     perfect: 'passSubmission.judgements.perfect',
+    perfectPlus: 'passSubmission.judgements.perfectPlus',
     lPerfect: 'passSubmission.judgements.lPerfect',
     tooEarly: 'passSubmission.judgements.tooearly',
     early: 'passSubmission.judgements.early',
@@ -121,10 +142,17 @@ export const PASS_CORE_COPY = {
     expectedTooltip: 'passPopups.edit.expectedTooltip',
     holdLabel: 'passPopups.edit.form.submInfo.nohold',
     holdTooltip: 'passPopups.edit.holdTooltip',
-    adofaiV2Label: 'passPopups.edit.form.submInfo.isAdofaiV2',
-    adofaiV2Tooltip: 'passPopups.edit.adofaiV2Tooltip',
+    adofaiVersionLabel: 'passPopups.edit.form.submInfo.adofaiVersion',
+    adofaiVersionTooltip: 'passPopups.edit.adofaiVersionTooltip',
+    adofaiVersionLatest: 'passPopups.edit.form.adofaiVersion.latest',
+    adofaiVersionPre340: 'passPopups.edit.form.adofaiVersion.pre340',
+    adofaiVersionV2: 'passPopups.edit.form.adofaiVersion.v2',
+    xPerfectLabel: 'passPopups.edit.form.submInfo.isXPerfectMode',
+    xPerfectTooltip: 'passPopups.edit.xPerfectTooltip',
     ePerfect: 'passPopups.edit.form.judgements.ePerfect',
+    perfectMinus: 'passPopups.edit.form.judgements.perfectMinus',
     perfect: 'passPopups.edit.form.judgements.perfect',
+    perfectPlus: 'passPopups.edit.form.judgements.perfectPlus',
     lPerfect: 'passPopups.edit.form.judgements.lPerfect',
     tooEarly: 'passPopups.edit.form.judgements.tooearly',
     early: 'passPopups.edit.form.judgements.early',
@@ -162,6 +190,7 @@ export function PassCoreForm({
   accuracy,
   score,
   onInputChange,
+  onAdofaiVersionChange,
   onLevelIdChange,
   levelIdValue,
   renderLevelIdInput,
@@ -181,6 +210,42 @@ export function PassCoreForm({
   const { t } = useTranslation([copy.ns, 'common']);
   const holdVisibility = holdCheckboxVisibility ?? 'visible';
   const isCalculator = mode === 'calculator';
+  const adofaiVersion = parseAdofaiVersion(form.adofaiVersion, ADOFAI_VERSION.V3_4_0);
+  const showXPerfectToggle = canUseXPerfectMode(adofaiVersion);
+  const showXPerfectFields = showXPerfectToggle && !!form.isXPerfectMode;
+  const eraOptions = [
+    { value: ADOFAI_VERSION.V3_4_0, label: t(copy.adofaiVersionLatest, { ns: copy.ns }) },
+    { value: ADOFAI_VERSION.PRE_3_4_0, label: t(copy.adofaiVersionPre340, { ns: copy.ns }) },
+    { value: ADOFAI_VERSION.V2, label: t(copy.adofaiVersionV2, { ns: copy.ns }) },
+  ];
+  const perfectCount = parseInt(form.perfect, 10);
+  const midspinPreview = applyMidspinPerfectDecrement({
+    judgements: { perfect: Number.isInteger(perfectCount) ? perfectCount : 0 },
+    adofaiVersion,
+    passMetaFlags: form.passMetaFlags,
+    midspinCount: level?.midspinCount,
+  });
+  const willSubtractMidspin = willApplyMidspinDecrement({
+    adofaiVersion,
+    passMetaFlags: form.passMetaFlags,
+    midspinCount: level?.midspinCount,
+    perfect: Number.isInteger(perfectCount) ? perfectCount : undefined,
+  });
+  const midspinWarningKey = mode === 'edit' ? 'passPopups.edit.midspinWarning' : 'passSubmission.midspinWarning';
+  const midspinWarningNs = mode === 'edit' ? 'components' : 'pages';
+  let midspinWarningText = null;
+  if (midspinPreview.skippedReason === 'already_applied') {
+    midspinWarningText = t(`${midspinWarningKey}.alreadyApplied`, { ns: midspinWarningNs });
+  } else if (level && midspinPreview.skippedReason === 'midspin_missing') {
+    midspinWarningText = t(`${midspinWarningKey}.missing`, { ns: midspinWarningNs });
+  } else if (Number.isInteger(perfectCount) && midspinPreview.skippedReason === 'perfect_lt_midspin') {
+    midspinWarningText = t(`${midspinWarningKey}.perfectLt`, { ns: midspinWarningNs });
+  } else if (willSubtractMidspin) {
+    midspinWarningText = t(`${midspinWarningKey}.willApply`, {
+      ns: midspinWarningNs,
+      count: midspinPreview.subtracted || Number(level?.midspinCount) || 0,
+    });
+  }
 
   const renderRatingField = ({
     name,
@@ -482,6 +547,21 @@ export function PassCoreForm({
 
           <div className="gameplay-checkboxes">
             <div
+              className="pass-core-form__era-select"
+              data-tooltip-id="adofaiVersionTooltip"
+              data-tooltip-content={t(copy.adofaiVersionTooltip, { ns: copy.ns })}
+            >
+              <CustomSelect
+                options={eraOptions}
+                value={eraOptions.find((o) => o.value === adofaiVersion) ?? eraOptions[0]}
+                onChange={(opt) => onAdofaiVersionChange?.(opt?.value)}
+                placeholder={t(copy.adofaiVersionLabel, { ns: copy.ns })}
+                width="11rem"
+              />
+              <Tooltip className="tooltip" id="adofaiVersionTooltip" place="bottom-end" effect="solid" />
+            </div>
+
+            <div
               className="hold-checkbox"
               data-tooltip-id="holdTooltip"
               data-tooltip-content={t(copy.holdTooltip, { ns: copy.ns })}
@@ -498,19 +578,23 @@ export function PassCoreForm({
               <span>{t(copy.holdLabel, { ns: copy.ns })}</span>
             </div>
 
-            {!isCalculator && (
-            <div className="keycount-checkbox" data-tooltip-id="adofaiV2Tooltip" data-tooltip-content={t(copy.adofaiV2Tooltip, { ns: copy.ns })}>
-              <input
-                type="checkbox"
-                value={form.isAdofaiV2}
-                onChange={onInputChange}
-                name="isAdofaiV2"
-                checked={!!form.isAdofaiV2}
-              />
-              <span>{t(copy.adofaiV2Label, { ns: copy.ns })}</span>
-              <Tooltip className="tooltip" id="adofaiV2Tooltip" place="bottom-end" effect="solid" />
-            </div>
-            )}
+            {showXPerfectToggle ? (
+              <div
+                className="hold-checkbox"
+                data-tooltip-id="xPerfectTooltip"
+                data-tooltip-content={t(copy.xPerfectTooltip, { ns: copy.ns })}
+              >
+                <input
+                  type="checkbox"
+                  value={form.isXPerfectMode}
+                  onChange={onInputChange}
+                  name="isXPerfectMode"
+                  checked={!!form.isXPerfectMode}
+                />
+                <span>{t(copy.xPerfectLabel, { ns: copy.ns })}</span>
+                <Tooltip className="tooltip" id="xPerfectTooltip" place="bottom-end" effect="solid" />
+              </div>
+            ) : null}
           </div>
         </div>
 
@@ -522,11 +606,16 @@ export function PassCoreForm({
             accuracy={accuracy}
             score={score}
             copy={copy}
+            showXPerfectFields={showXPerfectFields}
           />
           {renderJudgementActions ? (
             <div className="judgement-tool-actions">{renderJudgementActions()}</div>
           ) : null}
         </div>
+
+        {midspinWarningText ? (
+          <p className="pass-core-form__midspin-warning">{midspinWarningText}</p>
+        ) : null}
 
         {renderBelowJudgements ? renderBelowJudgements() : null}
 

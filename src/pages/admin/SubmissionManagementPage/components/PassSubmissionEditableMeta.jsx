@@ -13,6 +13,14 @@ import {
   isTilecountJudgementMismatch,
 } from '@/utils/passJudgementHitCount';
 import { normalizeLevelSearchQuery } from '@/utils/normalizeEntitySearchQuery';
+import { CustomSelect } from '@/components/common/selectors';
+import {
+  ADOFAI_VERSION,
+  adofaiVersionFromPass,
+  canUseXPerfectMode,
+  parseAdofaiVersion,
+} from '@/utils/adofaiVersion';
+import { applyMidspinPerfectDecrement, willApplyMidspinDecrement } from '@/utils/midspinPerfectDecrement';
 
 function truncateString(str, maxLength) {
   if (str == null || typeof str !== 'string') return '';
@@ -23,7 +31,9 @@ const JUDGEMENT_KEYS = [
   'earlyDouble',
   'earlySingle',
   'ePerfect',
+  'perfectMinus',
   'perfect',
+  'perfectPlus',
   'lPerfect',
   'lateSingle',
   'lateDouble',
@@ -33,11 +43,23 @@ const JUDGEMENT_CLASS = {
   earlyDouble: 'early-double',
   earlySingle: 'early-single',
   ePerfect: 'e-perfect',
+  perfectMinus: 'perfect-minus',
   perfect: 'perfect',
+  perfectPlus: 'perfect-plus',
   lPerfect: 'l-perfect',
   lateSingle: 'late-single',
   lateDouble: 'late-double',
 };
+
+function shouldShowXPerfectJudgementKeys(flags, judgements) {
+  if (flags?.isXPerfectMode) return true;
+  return Number(judgements?.perfectMinus) > 0 || Number(judgements?.perfectPlus) > 0;
+}
+
+function visibleJudgementKeys(flags, judgements) {
+  if (shouldShowXPerfectJudgementKeys(flags, judgements)) return JUDGEMENT_KEYS;
+  return JUDGEMENT_KEYS.filter((k) => k !== 'perfectMinus' && k !== 'perfectPlus');
+}
 
 function judgementsFromSubmission(sub) {
   const j = sub.judgements || {};
@@ -55,9 +77,13 @@ function keyCountDraftFromSubmission(sub) {
 
 function flagsFromSubmission(sub) {
   const f = sub.flags || {};
+  const adofaiVersion = adofaiVersionFromPass({ flags: f, adofaiVersion: f.adofaiVersion, isAdofaiV2: f.isAdofaiV2 });
   return {
     isNoHoldTap: !!f.isNoHoldTap,
-    isAdofaiV2: !!f.isAdofaiV2,
+    isAdofaiV2: adofaiVersion === ADOFAI_VERSION.V2,
+    adofaiVersion,
+    isXPerfectMode: !!f.isXPerfectMode,
+    passMetaFlags: f.passMetaFlags ?? 0,
   };
 }
 
@@ -76,7 +102,8 @@ function diffJudgements(snapStr, draftStr) {
 function diffFlags(snap, draft) {
   const out = {};
   if (snap.isNoHoldTap !== draft.isNoHoldTap) out.isNoHoldTap = draft.isNoHoldTap;
-  if (snap.isAdofaiV2 !== draft.isAdofaiV2) out.isAdofaiV2 = draft.isAdofaiV2;
+  if (snap.adofaiVersion !== draft.adofaiVersion) out.adofaiVersion = draft.adofaiVersion;
+  if (snap.isXPerfectMode !== draft.isXPerfectMode) out.isXPerfectMode = draft.isXPerfectMode;
   return out;
 }
 
@@ -165,6 +192,60 @@ export default function PassSubmissionEditableMeta({
   }, [submission.level?.midspinCount]);
 
   const tilecountTooltipId = `pass-submission-tilecount-${submission.id}`;
+
+  const eraOptions = useMemo(
+    () => [
+      { value: ADOFAI_VERSION.V3_4_0, label: t('passSubmissions.details.flags.era.latest') },
+      { value: ADOFAI_VERSION.PRE_3_4_0, label: t('passSubmissions.details.flags.era.pre340') },
+      { value: ADOFAI_VERSION.V2, label: t('passSubmissions.details.flags.era.v2') },
+    ],
+    [t],
+  );
+
+  const viewingFlags = flagsFromSubmission(submission);
+  const activeFlags = editingFlags ? draftFlags : viewingFlags;
+  const activePerfect = editingJudgements
+    ? parseInt(draftJudgements.perfect, 10)
+    : parseInt(String(submission.judgements?.perfect ?? '0'), 10);
+  const midspinPreview = applyMidspinPerfectDecrement({
+    judgements: { perfect: Number.isInteger(activePerfect) ? activePerfect : 0 },
+    adofaiVersion: activeFlags.adofaiVersion,
+    passMetaFlags: viewingFlags.passMetaFlags,
+    midspinCount: submission.level?.midspinCount,
+  });
+  const willSubtractMidspin = willApplyMidspinDecrement({
+    adofaiVersion: activeFlags.adofaiVersion,
+    passMetaFlags: viewingFlags.passMetaFlags,
+    midspinCount: submission.level?.midspinCount,
+    perfect: Number.isInteger(activePerfect) ? activePerfect : undefined,
+  });
+  let midspinWarningText = null;
+  if (midspinPreview.skippedReason === 'already_applied') {
+    midspinWarningText = t('passSubmissions.midspinWarning.alreadyApplied');
+  } else if (submission.level && midspinPreview.skippedReason === 'midspin_missing') {
+    midspinWarningText = t('passSubmissions.midspinWarning.missing');
+  } else if (Number.isInteger(activePerfect) && midspinPreview.skippedReason === 'perfect_lt_midspin') {
+    midspinWarningText = t('passSubmissions.midspinWarning.perfectLt');
+  } else if (willSubtractMidspin) {
+    midspinWarningText = t('passSubmissions.midspinWarning.willApply', {
+      count: midspinPreview.subtracted || Number(submission.level?.midspinCount) || 0,
+    });
+  }
+
+  const displayJudgementKeys = visibleJudgementKeys(viewingFlags, submission.judgements);
+  const editJudgementKeys = visibleJudgementKeys(
+    { isXPerfectMode: viewingFlags.isXPerfectMode || draftFlags.isXPerfectMode },
+    { ...submission.judgements, ...draftJudgements },
+  );
+  const showXPerfectToggle = canUseXPerfectMode(draftFlags.adofaiVersion);
+  const eraDisplayKey =
+    viewingFlags.adofaiVersion === ADOFAI_VERSION.V2
+      ? 'v2'
+      : viewingFlags.adofaiVersion === ADOFAI_VERSION.PRE_3_4_0
+        ? 'pre340'
+        : viewingFlags.adofaiVersion === ADOFAI_VERSION.V3_4_0
+          ? 'latest'
+          : null;
 
   const patch = useCallback(
     async (body) => {
@@ -587,7 +668,7 @@ export default function PassSubmissionEditableMeta({
                   hasTilecountMismatch && levelTilecountForTooltip != null ? tilecountTooltipId : undefined
                 }
               >
-                {JUDGEMENT_KEYS.map((k) => (
+                {displayJudgementKeys.map((k) => (
                   <span key={k} className={`judgement ${JUDGEMENT_CLASS[k]}`}>
                     {submission.judgements?.[k] !== null && submission.judgements?.[k] !== undefined
                       ? submission.judgements[k]
@@ -607,7 +688,7 @@ export default function PassSubmissionEditableMeta({
                   hasTilecountMismatch && levelTilecountForTooltip != null ? tilecountTooltipId : undefined
                 }
               >
-                  {JUDGEMENT_KEYS.map((k) => (
+                  {editJudgementKeys.map((k) => (
                     <label key={k} className="pass-submission-judgement-field">
                       <span className="pass-submission-judgement-label">{t(`passSubmissions.details.judgements.fields.${k}`)}</span>
                       <input
@@ -633,6 +714,10 @@ export default function PassSubmissionEditableMeta({
             )}
         </div>
       </div>
+
+      {midspinWarningText ? (
+        <p className="pass-submission-midspin-warning">{midspinWarningText}</p>
+      ) : null}
 
       {hasTilecountMismatch && levelTilecountForTooltip != null && (
         <Tooltip
@@ -663,7 +748,10 @@ export default function PassSubmissionEditableMeta({
               <div className="flags-details">
                 {keyCountDisplay && <span>{keyCountDisplay}</span>}
                 {flags?.isNoHoldTap && <span>{t('passSubmissions.details.flags.types.nht')}</span>}
-                {flags?.isAdofaiV2 && <span>{t('passSubmissions.details.flags.types.adofaiV2')}</span>}
+                {eraDisplayKey && (
+                  <span>{t(`passSubmissions.details.flags.era.${eraDisplayKey}`)}</span>
+                )}
+                {flags?.isXPerfectMode && <span>{t('passSubmissions.details.flags.types.xPerfect')}</span>}
               </div>
               <button type="button" className="pass-submission-meta-edit-btn" onClick={beginEditFlags}>
                 {t('passSubmissions.edit.edit')}
@@ -694,14 +782,39 @@ export default function PassSubmissionEditableMeta({
                 />
                 <span>{t('passSubmissions.details.flags.types.nht')}</span>
               </label>
-              <label className="pass-submission-flag-field">
-                <input
-                  type="checkbox"
-                  checked={draftFlags.isAdofaiV2}
-                  onChange={(e) => setDraftFlags((f) => ({ ...f, isAdofaiV2: e.target.checked }))}
-                />
-                <span>{t('passSubmissions.details.flags.types.adofaiV2')}</span>
+              <label className="pass-submission-flag-field pass-submission-era-field">
+                <span>{t('passSubmissions.details.flags.types.adofaiVersion')}</span>
+                <div className="pass-submission-era-select">
+                  <CustomSelect
+                    options={eraOptions}
+                    value={eraOptions.find((o) => o.value === draftFlags.adofaiVersion) ?? eraOptions[0]}
+                    onChange={(opt) => {
+                      const version = parseAdofaiVersion(opt?.value, ADOFAI_VERSION.PRE_3_4_0);
+                      setDraftFlags((f) => ({
+                        ...f,
+                        adofaiVersion: version,
+                        isAdofaiV2: version === ADOFAI_VERSION.V2,
+                        isXPerfectMode: canUseXPerfectMode(version) ? f.isXPerfectMode : false,
+                      }));
+                    }}
+                    placeholder={t('passSubmissions.details.flags.types.adofaiVersion')}
+                    width="10rem"
+                    isSearchable={false}
+                  />
+                </div>
               </label>
+              {showXPerfectToggle ? (
+                <label className="pass-submission-flag-field">
+                  <input
+                    type="checkbox"
+                    checked={!!draftFlags.isXPerfectMode}
+                    onChange={(e) =>
+                      setDraftFlags((f) => ({ ...f, isXPerfectMode: e.target.checked }))
+                    }
+                  />
+                  <span>{t('passSubmissions.details.flags.types.xPerfect')}</span>
+                </label>
+              ) : null}
               <div className="pass-submission-meta-actions">
                 <button type="button" className="pass-submission-meta-save" onClick={saveFlags}>
                   {t('buttons.save', { ns: 'common' })}

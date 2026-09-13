@@ -7,7 +7,8 @@ import calcAcc from "@/utils/CalcAcc";
 import { formatAccuracyRatio } from "@/utils/statFormatters";
 import { computePassScoreV2 } from "@/utils/scoreService";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
-import { parseJudgements } from "@/utils/ParseJudgements";
+import { parseJudgements, judgementsAreComplete, previewPassFormScoring } from "@/utils/ParseJudgements";
+import { ADOFAI_VERSION, parseAdofaiVersion, resolveAdofaiVersionFromTimestamp, canUseXPerfectMode, isAdofaiV2FromVersion } from "@/utils/adofaiVersion";
 import { normalizeKeyCount, validateFeelingRating, validateNumber, validateSpeed } from "@/utils/Utility";
 import { useTranslation } from "react-i18next";
 import { getPassCoreCopy } from "./PassCoreForm";
@@ -25,16 +26,8 @@ const BASE_REQUIRED_FIELDS = [
 ];
 
 const JUDGEMENT_FIELDS = ["ePerfect", "perfect", "lPerfect", "tooEarly", "early", "late"];
+const XPERFECT_FIELDS = ["perfectMinus", "perfectPlus"];
 const CALCULATOR_REQUIRED_JUDGEMENTS = JUDGEMENT_FIELDS;
-
-// ADOFAI v3 release; uploads before this are ADOFAI v2 (last v2 day: 2026-04-30).
-const ADOFAI_V3_RELEASE_UTC = Date.UTC(2026, 4, 1);
-
-function isAdofaiV2EraVideoTimestamp(timestamp) {
-  if (!timestamp) return false;
-  const videoDate = new Date(timestamp);
-  return !Number.isNaN(videoDate.getTime()) && videoDate.getTime() < ADOFAI_V3_RELEASE_UTC;
-}
 
 export function usePassCoreForm({
   mode,
@@ -78,8 +71,20 @@ export function usePassCoreForm({
     onVideoDetail: (details) => {
       setVideoDetail(details || null);
       if (mode === "submit") {
-        const isAdofaiV2 = isAdofaiV2EraVideoTimestamp(details?.timestamp);
-        setForm((prev) => (prev.isAdofaiV2 === isAdofaiV2 ? prev : { ...prev, isAdofaiV2 }));
+        const adofaiVersion = resolveAdofaiVersionFromTimestamp(details?.timestamp);
+        setForm((prev) => {
+          const next = {
+            ...prev,
+            adofaiVersion,
+            isAdofaiV2: isAdofaiV2FromVersion(adofaiVersion),
+          };
+          if (!canUseXPerfectMode(adofaiVersion)) {
+            next.isXPerfectMode = false;
+            next.perfectMinus = "";
+            next.perfectPlus = "";
+          }
+          return next;
+        });
       }
     },
     toastMessage: t(copy.videoLinkResolved, {
@@ -151,18 +156,23 @@ export function usePassCoreForm({
 
   const updateAccuracyAndScore = (nextForm, nextLevel) => {
     const lvl = nextLevel ?? level;
-    const newJudgements = parseJudgements(nextForm);
+    const parsed = parseJudgements(nextForm);
+    const requireXPerfect = !!nextForm.isXPerfectMode
+      && canUseXPerfectMode(parseAdofaiVersion(nextForm.adofaiVersion, ADOFAI_VERSION.V3_4_0));
+    const complete = judgementsAreComplete(parsed, { requireXPerfectFields: requireXPerfect });
+    const preview = previewPassFormScoring(nextForm, lvl);
+    const scoringJudgements = preview.judgements;
     const overrides = scoreOverridesRef.current || {};
 
-    if (newJudgements.every(Number.isInteger)) {
-      setAccuracy(formatAccuracyRatio(calcAcc(newJudgements)));
+    if (complete) {
+      setAccuracy(formatAccuracyRatio(calcAcc(scoringJudgements)));
     } else {
       setAccuracy(null);
     }
 
     const passData = {
       speed: nextForm.speed,
-      judgements: newJudgements,
+      judgements: scoringJudgements,
       isNoHoldTap: nextForm.isNoHold,
     };
 
@@ -174,7 +184,7 @@ export function usePassCoreForm({
 
     if (!nextForm.levelId && !hasSandboxBase) {
       setScore(t(copy.scoreNeedId, { ns: copy.ns }));
-    } else if (!newJudgements.every(Number.isInteger)) {
+    } else if (!complete) {
       setScore(t(copy.scoreNeedJudg, { ns: copy.ns }));
     } else if (!Object.values(passData).every((value) => value !== null)) {
       setScore(t(copy.scoreNeedInfo, { ns: copy.ns }));
@@ -236,6 +246,18 @@ export function usePassCoreForm({
           validationResult[field] =
             nextForm[field]?.trim?.() !== "" && validateNumber(nextForm[field]);
         }
+        const calcXPerfect = !!nextForm.isXPerfectMode
+          && canUseXPerfectMode(parseAdofaiVersion(nextForm.adofaiVersion, ADOFAI_VERSION.V3_4_0));
+        if (calcXPerfect) {
+          for (const field of XPERFECT_FIELDS) {
+            validationResult[field] =
+              nextForm[field]?.trim?.() !== "" && validateNumber(nextForm[field]);
+          }
+        } else {
+          for (const field of XPERFECT_FIELDS) {
+            validationResult[field] = true;
+          }
+        }
         const speedTrimmed = nextForm.speed?.trim?.() ?? "";
         const speedValid = speedTrimmed === "" || validateSpeed(nextForm.speed);
         validationResult.speed = speedValid;
@@ -260,6 +282,9 @@ export function usePassCoreForm({
         for (const field of JUDGEMENT_FIELDS) {
           validationResult[field] = true;
         }
+        for (const field of XPERFECT_FIELDS) {
+          validationResult[field] = true;
+        }
 
         const frTrimmed = nextForm.feelingRating?.trim?.() ?? "";
         const erTrimmed = nextForm.expectedRating?.trim?.() ?? "";
@@ -275,6 +300,19 @@ export function usePassCoreForm({
           validationResult[field] = nextForm[field]?.trim?.() !== "" && validateNumber(nextForm[field]);
         } else {
           validationResult[field] = nextForm[field]?.trim?.() !== "";
+        }
+      }
+
+      const submitXPerfect = !!nextForm.isXPerfectMode
+        && canUseXPerfectMode(parseAdofaiVersion(nextForm.adofaiVersion, ADOFAI_VERSION.V3_4_0));
+      if (submitXPerfect) {
+        for (const field of XPERFECT_FIELDS) {
+          validationResult[field] =
+            nextForm[field]?.trim?.() !== "" && validateNumber(nextForm[field]);
+        }
+      } else {
+        for (const field of XPERFECT_FIELDS) {
+          validationResult[field] = true;
         }
       }
 
@@ -317,12 +355,38 @@ export function usePassCoreForm({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form, level, videoDetail, submitAttempt, isUDiff, keyCountRequired, extraValidation]);
 
+  const applyFormPatch = (patch) => {
+    setForm((prev) => {
+      const next = { ...prev, ...patch };
+      updateAccuracyAndScore(next);
+      return next;
+    });
+  };
+
+  const handleAdofaiVersionChange = (version) => {
+    const adofaiVersion = parseAdofaiVersion(version, ADOFAI_VERSION.V3_4_0);
+    const patch = {
+      adofaiVersion,
+      isAdofaiV2: isAdofaiV2FromVersion(adofaiVersion),
+    };
+    if (!canUseXPerfectMode(adofaiVersion)) {
+      patch.isXPerfectMode = false;
+      patch.perfectMinus = "";
+      patch.perfectPlus = "";
+    }
+    applyFormPatch(patch);
+  };
+
   const handleInputChange = (e) => {
     const { name, type, value, checked } = e.target;
     const inputValue = type === "checkbox" ? checked : value;
 
     setForm((prev) => {
       const next = { ...prev, [name]: inputValue };
+      if (name === "isXPerfectMode" && !inputValue) {
+        next.perfectMinus = "";
+        next.perfectPlus = "";
+      }
       updateAccuracyAndScore(next);
       return next;
     });
@@ -351,5 +415,6 @@ export function usePassCoreForm({
     score,
     isUDiff,
     handleInputChange,
+    handleAdofaiVersionChange,
   };
 };

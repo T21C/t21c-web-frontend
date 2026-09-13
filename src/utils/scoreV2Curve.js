@@ -1,5 +1,5 @@
 // tuf-search: #scoreV2Curve #ScoreV2Curve
-import calcAcc from "./CalcAcc";
+import calcAcc, { emptyJudgements } from "./CalcAcc";
 import { computePassScoreV2 } from "./scoreService";
 import {
   XACC_CURVE_DEFAULTS,
@@ -183,7 +183,7 @@ function setCachedCurve(key, points) {
 }
 
 /**
- * Build 6-element judgement array: [tooEarly, early, ePerfect, perfect, lPerfect, late].
+ * Named judgements for a synthetic accuracy point.
  */
 export function buildJudgements(misses, hitTiles, eCount, earlyCount) {
   const totalDegraded = Math.min(hitTiles, Math.max(0, eCount) + Math.max(0, earlyCount));
@@ -194,7 +194,14 @@ export function buildJudgements(misses, hitTiles, eCount, earlyCount) {
   const eRem = e - eHalf;
   const earlyHalf = Math.floor(early / 2);
   const earlyRem = early - earlyHalf;
-  return [misses, earlyHalf, eHalf, perfect, eRem, earlyRem];
+  const j = emptyJudgements();
+  j.earlyDouble = misses;
+  j.earlySingle = earlyHalf;
+  j.ePerfect = eHalf;
+  j.perfect = perfect;
+  j.lPerfect = eRem;
+  j.lateSingle = earlyRem;
+  return j;
 }
 
 function accuracyKey(acc) {
@@ -202,13 +209,16 @@ function accuracyKey(acc) {
 }
 
 function judgementCountsFromArray(judgements) {
+  const j = judgements && typeof judgements === 'object' && !Array.isArray(judgements)
+    ? judgements
+    : {};
   return {
-    miss: judgements[0],
-    early: judgements[1],
-    ePerfect: judgements[2],
-    perfect: judgements[3],
-    lPerfect: judgements[4],
-    late: judgements[5],
+    miss: j.earlyDouble ?? judgements?.[0] ?? 0,
+    early: j.earlySingle ?? judgements?.[1] ?? 0,
+    ePerfect: j.ePerfect ?? judgements?.[2] ?? 0,
+    perfect: j.perfect ?? judgements?.[3] ?? 0,
+    lPerfect: j.lPerfect ?? judgements?.[4] ?? 0,
+    late: j.lateSingle ?? judgements?.[5] ?? 0,
   };
 }
 

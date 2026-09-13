@@ -15,7 +15,9 @@ export function getPassJudgementHitCountFromForm(form) {
   return (
     num(form.early) +
     num(form.ePerfect) +
+    num(form.perfectMinus) +
     num(form.perfect) +
+    num(form.perfectPlus) +
     num(form.lPerfect) +
     num(form.late)
   );
@@ -30,7 +32,9 @@ export function getPassJudgementHitCountFromSubmissionJudgements(j) {
   return (
     num(j.earlySingle) +
     num(j.ePerfect) +
+    num(j.perfectMinus) +
     num(j.perfect) +
+    num(j.perfectPlus) +
     num(j.lPerfect) +
     num(j.lateSingle)
   );

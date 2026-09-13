@@ -16,7 +16,9 @@
         "earlyDouble": "ED",
         "earlySingle": "ES",
         "ePerfect": "EP",
+        "perfectMinus": "P−",
         "perfect": "P",
+        "perfectPlus": "P+",
         "lPerfect": "LP",
         "lateSingle": "LS",
         "lateDouble": "LD"
@@ -31,7 +33,14 @@
         "12k": "12K",
         "nht": "NHT",
         "16k": "16K",
-        "adofaiV2": "ADOFAI v2"
+        "adofaiV2": "ADOFAI v2",
+        "adofaiVersion": "ADOFAI 버전",
+        "xPerfect": "X-Perfect"
+      },
+      "era": {
+        "latest": "Latest",
+        "pre340": "<3.4.0",
+        "v2": "v2"
       }
     },
     "submitter": "제출자:",
@@ -39,6 +48,12 @@
     "uploadTime": "업로드 시간",
     "videoFromOwnChannel": "사용자 본인 채널의 영상",
     "videoFromPasserChannel": "클리어한 플레이어의 채널"
+  },
+  "midspinWarning": {
+    "willApply": "이 채보에는 미드스핀 타일이 {{count}}개 있습니다. 저장 시 Perfect에서 차감됩니다.",
+    "alreadyApplied": "미드스핀 Perfect는 이미 이 클리어에서 제거되었습니다.",
+    "missing": "이 레벨에 미드스핀 수가 없어 Perfect를 조정하지 않습니다.",
+    "perfectLt": "Perfect가 미드스핀 수보다 작아 Perfect를 조정하지 않습니다."
   },
   "playerAssignment": {
     "title": "플레이어 지정",

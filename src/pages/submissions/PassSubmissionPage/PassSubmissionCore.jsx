@@ -33,6 +33,7 @@ export function PassSubmissionCore({
   accuracy,
   score,
   handleInputChange,
+  handleAdofaiVersionChange,
   difficultyDict,
   searchInput,
   setSearchInput,
@@ -172,6 +173,7 @@ export function PassSubmissionCore({
       accuracy={accuracy}
       score={score}
       onInputChange={handleInputChange}
+      onAdofaiVersionChange={handleAdofaiVersionChange}
       levelIdValue={searchInput}
       onLevelIdChange={handleLevelInputChange}
       renderLevelIdInput={() => (

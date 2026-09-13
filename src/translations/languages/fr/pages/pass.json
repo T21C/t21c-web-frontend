@@ -20,7 +20,8 @@
       "options": {
         "only12k": "12K seulement",
         "deletedPasses": "Complétions supprimées",
-        "wfFilter": "Filtre WF"
+        "wfFilter": "Filtre WF",
+        "adofaiVersion": "Version ADOFAI"
       }
     },
     "sort": {

@@ -29,16 +29,22 @@
   white-space: nowrap;
 }
 
-.judgement-inputs .judgement-inputs__row--top .judgement-inputs__field:nth-child(1) {
+.judgement-inputs .judgement-inputs__row--top .judgement-inputs__field--ePerfect,
+.judgement-inputs .judgement-inputs__row--top .judgement-inputs__field--lPerfect {
   flex: 4;
 }
 
-.judgement-inputs .judgement-inputs__row--top .judgement-inputs__field:nth-child(2) {
+.judgement-inputs .judgement-inputs__row--top .judgement-inputs__field--perfect {
   flex: 5;
 }
 
-.judgement-inputs .judgement-inputs__row--top .judgement-inputs__field:nth-child(3) {
-  flex: 4;
+.judgement-inputs.judgement-inputs--xperfect .judgement-inputs__row--top {
+  gap: 0.75rem;
+}
+
+.judgement-inputs.judgement-inputs--xperfect .judgement-inputs__row--top .judgement-inputs__field--perfectMinus,
+.judgement-inputs.judgement-inputs--xperfect .judgement-inputs__row--top .judgement-inputs__field--perfectPlus {
+  flex: 3;
 }
 
 .judgement-inputs .judgement-inputs__row--bottom .judgement-inputs__field {
@@ -69,33 +75,31 @@
   background-color: rgba(255, 255, 255, 0.08);
 }
 
-.judgement-inputs .judgement-inputs__row--top .judgement-inputs__field:nth-child(1) input::placeholder {
+.judgement-inputs .judgement-inputs__field--ePerfect input::placeholder,
+.judgement-inputs .judgement-inputs__field--lPerfect input::placeholder {
   color: var(--color-marv, #fcff4d);
   opacity: 0.5;
 }
 
-.judgement-inputs .judgement-inputs__row--top .judgement-inputs__field:nth-child(2) input::placeholder {
+.judgement-inputs .judgement-inputs__field--perfect input::placeholder {
   color: var(--color-perf, #5fff4e);
   opacity: 0.5;
 }
 
-.judgement-inputs .judgement-inputs__row--top .judgement-inputs__field:nth-child(3) input::placeholder {
-  color: var(--color-great, #fcff4d);
+.judgement-inputs .judgement-inputs__field--perfectMinus input::placeholder,
+.judgement-inputs .judgement-inputs__field--perfectPlus input::placeholder {
+  color: var(--color-xperfect, #ffffff);
   opacity: 0.5;
 }
 
-.judgement-inputs .judgement-inputs__row--bottom .judgement-inputs__field:nth-child(1) input::placeholder {
+.judgement-inputs .judgement-inputs__field--tooEarly input::placeholder {
   color: var(--color-early-2, #ff0000);
   opacity: 0.5;
 }
 
-.judgement-inputs .judgement-inputs__row--bottom .judgement-inputs__field:nth-child(2) input::placeholder {
+.judgement-inputs .judgement-inputs__field--early input::placeholder,
+.judgement-inputs .judgement-inputs__field--late input::placeholder {
   color: var(--color-early-1, #ff6f4d);
-  opacity: 0.5;
-}
-
-.judgement-inputs .judgement-inputs__row--bottom .judgement-inputs__field:nth-child(3) input::placeholder {
-  color: var(--color-late-1, #ff6f4d);
   opacity: 0.5;
 }
 

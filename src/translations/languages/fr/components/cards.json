@@ -29,7 +29,9 @@
       "worldsFirstPurePerfectTooltip": "Première clear Pure Perfect mondiale !",
       "twelveKey": "12K",
       "noHoldTap": "No Hold",
-      "adofaiV2": "<adofaiicon></adofaiicon> v2"
+      "adofaiV2": "<adofaiicon></adofaiicon> v2",
+      "adofaiPre340": "<3.4.0",
+      "xPerfect": "X-Perfect"
     },
     "links": {
       "video": "Voir la vidéo"

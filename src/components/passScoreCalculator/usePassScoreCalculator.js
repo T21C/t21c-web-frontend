@@ -2,22 +2,31 @@
 import { useCallback, useState } from 'react';
 import api from '@/utils/api';
 import { routes } from '@/api/routes';
-import { parseJudgements } from '@/utils/ParseJudgements';
+import { formToScoringJudgements, judgementsAreComplete, parseJudgements, previewPassFormScoring } from '@/utils/ParseJudgements';
 import { runLocalCalculatorMath, isCustomScoring } from './passScoreCalculatorMath';
 
-function parseOptionalJudgementForm(partial) {
+function scoringJudgementsFromForm(form, level) {
+  return previewPassFormScoring(form, level).judgements;
+}
+
+function parseOptionalJudgementForm(partial, level, form) {
   if (!partial) return null;
   const fake = {
     tooEarly: partial.tooEarly ?? '',
     early: partial.early ?? '',
     ePerfect: partial.ePerfect ?? '',
+    perfectMinus: partial.perfectMinus ?? '0',
     perfect: partial.perfect ?? '',
+    perfectPlus: partial.perfectPlus ?? '0',
     lPerfect: partial.lPerfect ?? '',
     late: partial.late ?? '',
+    adofaiVersion: form?.adofaiVersion,
+    isXPerfectMode: form?.isXPerfectMode,
+    passMetaFlags: form?.passMetaFlags,
   };
-  const j = parseJudgements(fake);
-  if (!j.every(Number.isInteger)) return null;
-  return j;
+  const parsed = parseJudgements(fake);
+  if (!judgementsAreComplete(parsed)) return null;
+  return scoringJudgementsFromForm({ ...form, ...fake }, level);
 }
 
 /**
@@ -39,9 +48,9 @@ export function usePassScoreCalculator() {
     setIsCalculating(true);
     setError(null);
     try {
-      const judgements = parseJudgements(form);
-      if (!judgements.every(Number.isInteger)) {
-        throw new Error('Enter all six judgement counts as integers');
+      const judgements = scoringJudgementsFromForm(form, level);
+      if (!judgementsAreComplete(parseJudgements(form))) {
+        throw new Error('Enter all judgement counts as integers');
       }
 
       const hasSandboxBase =
@@ -59,7 +68,7 @@ export function usePassScoreCalculator() {
       }
 
       const custom = isCustomScoring(level, overrides, difficultyDict);
-      const compareJudgements = parseOptionalJudgementForm(compareForm);
+      const compareJudgements = parseOptionalJudgementForm(compareForm, level, form);
 
       let placement = null;
       let playerContext = null;

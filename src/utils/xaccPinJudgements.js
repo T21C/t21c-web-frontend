@@ -1,5 +1,5 @@
 // tuf-search: #xaccPinJudgements #judgements #xaccCurve
-import calcAcc from './CalcAcc'
+import calcAcc, { emptyJudgements, tilecount } from './CalcAcc'
 import { computePassScoreV2 } from './scoreService'
 import { scoreV2MtpFromMisses } from './CalcScore'
 import { formatAccuracyRatio } from './statFormatters'
@@ -9,7 +9,9 @@ export const EMPTY_JUDGEMENT_FORM = {
     earlyDouble: '0',
     earlySingle: '0',
     ePerfect: '0',
+    perfectMinus: '0',
     perfect: '0',
+    perfectPlus: '0',
     lPerfect: '0',
     lateSingle: '0',
     lateDouble: '0',
@@ -29,14 +31,33 @@ function parseCount(value) {
     return Number.isFinite(n) && n >= 0 ? n : 0
 }
 
-/** Client calcAcc / getScoreV2 6-element judgement array. */
+export function judgementFormToJudgements(form) {
+    if (!form) {
+        return emptyJudgements()
+    }
+    const j = emptyJudgements()
+    j.earlyDouble = parseCount(form.earlyDouble) + parseCount(form.lateDouble)
+    j.earlySingle = parseCount(form.earlySingle)
+    j.ePerfect = parseCount(form.ePerfect)
+    j.perfectMinus = parseCount(form.perfectMinus)
+    j.perfect = parseCount(form.perfect)
+    j.perfectPlus = parseCount(form.perfectPlus)
+    j.lPerfect = parseCount(form.lPerfect)
+    j.lateSingle = parseCount(form.lateSingle)
+    return j
+}
+
+/** @deprecated use judgementFormToJudgements */
+export function judgementFormToCalcArray(form) {
+    return judgementFormToJudgements(form)
+}
+
 export function missCountFromJudgementForm(form) {
-    return judgementFormToCalcArray(form)[0]
+    return judgementFormToJudgements(form).earlyDouble
 }
 
 export function hitTilesFromJudgementForm(form) {
-    const arr = judgementFormToCalcArray(form)
-    return arr.slice(1).reduce((a, b) => a + b, 0)
+    return tilecount(judgementFormToJudgements(form))
 }
 
 export function scoreV2MtpFromJudgementForm(form, fallbackHitTiles = 0) {
@@ -46,25 +67,11 @@ export function scoreV2MtpFromJudgementForm(form, fallbackHitTiles = 0) {
     return scoreV2MtpFromMisses(misses, hitTiles)
 }
 
-export function judgementFormToCalcArray(form) {
-    if (!form) {
-        return [0, 0, 0, 0, 0, 0]
-    }
-    return [
-        parseCount(form.earlyDouble) + parseCount(form.lateDouble),
-        parseCount(form.earlySingle),
-        parseCount(form.ePerfect),
-        parseCount(form.perfect),
-        parseCount(form.lPerfect),
-        parseCount(form.lateSingle),
-    ]
-}
-
 export function accuracyFromJudgementForm(form) {
-    const arr = judgementFormToCalcArray(form)
-    const sum = arr.reduce((a, b) => a + b, 0)
+    const j = judgementFormToJudgements(form)
+    const sum = tilecount(j) + j.earlyDouble + j.lateDouble
     if (sum <= 0) return null
-    const acc = calcAcc(arr)
+    const acc = calcAcc(j)
     return Number.isFinite(acc) ? acc : null
 }
 
@@ -74,7 +81,9 @@ export function judgementFormFromPass(pass) {
         earlyDouble: String(j.earlyDouble ?? 0),
         earlySingle: String(j.earlySingle ?? 0),
         ePerfect: String(j.ePerfect ?? 0),
+        perfectMinus: String(j.perfectMinus ?? 0),
         perfect: String(j.perfect ?? 0),
+        perfectPlus: String(j.perfectPlus ?? 0),
         lPerfect: String(j.lPerfect ?? 0),
         lateSingle: String(j.lateSingle ?? 0),
         lateDouble: String(j.lateDouble ?? 0),
@@ -114,7 +123,7 @@ export function scoreV2FromJudgementForm(
     speed = 1,
     isNoHoldTap = false,
 ) {
-    const judgements = judgementFormToCalcArray(form)
+    const judgements = judgementFormToJudgements(form)
     const { scoreV2: score } = computePassScoreV2(
         { speed, judgements, isNoHoldTap },
         levelData ?? {},

@@ -17,7 +17,9 @@
         "earlyDouble": "Double Tôt",
         "earlySingle": "Simple Tôt",
         "ePerfect": "Parfait-Tôt",
+        "perfectMinus": "Parfait−",
         "perfect": "Parfait",
+        "perfectPlus": "Parfait+",
         "lPerfect": "Parfait-Tard",
         "lateSingle": "Simple Tard",
         "lateDouble": "Double Tard"
@@ -26,7 +28,9 @@
         "earlyDouble": "Double Tôt",
         "earlySingle": "Simple Tôt",
         "ePerfect": "Parfait-Tôt",
+        "perfectMinus": "Parfait−",
         "perfect": "Parfait",
+        "perfectPlus": "Parfait+",
         "lPerfect": "Parfait-Tard",
         "lateSingle": "Simple Tard",
         "lateDouble": "Double Tard"
@@ -41,7 +45,14 @@
         "12k": "12K",
         "nht": "NHT",
         "16k": "16K",
-        "adofaiV2": "ADOFAI v2"
+        "adofaiV2": "ADOFAI v2",
+        "adofaiVersion": "Version ADOFAI",
+        "xPerfect": "X-Perfect"
+      },
+      "era": {
+        "latest": "Latest",
+        "pre340": "<3.4.0",
+        "v2": "v2"
       }
     },
     "submitter": "Envoyeur :",
@@ -49,6 +60,12 @@
     "uploadTime": "Upload Time:",
     "videoFromOwnChannel": "Vidéo de la chaîne de l'utilisateur",
     "videoFromPasserChannel": "Chaîne du passeur"
+  },
+  "midspinWarning": {
+    "willApply": "Ce niveau a {{count}} tuiles midspin. Elles seront soustraites de Perfect à l'enregistrement.",
+    "alreadyApplied": "Les Perfect midspin ont déjà été retirés de cette complétion.",
+    "missing": "Ce niveau n'a pas encore de nombre de midspin, Perfect ne sera pas ajusté.",
+    "perfectLt": "Perfect est inférieur au nombre de midspin, Perfect ne sera pas ajusté."
   },
   "playerAssignment": {
     "title": "Attribuer Joueur.se",

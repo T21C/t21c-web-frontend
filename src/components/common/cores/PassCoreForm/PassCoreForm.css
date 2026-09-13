@@ -360,6 +360,13 @@
   gap: 1rem;
   margin-left: auto;
   align-items: center;
+  flex-wrap: wrap;
+}
+
+.pass-core-form .pass-core-form__era-select {
+  display: flex;
+  align-items: center;
+  min-width: 11rem;
 }
 
 .pass-core-form .checkbox-row .hold-checkbox,
@@ -368,6 +375,17 @@
   align-items: center;
   gap: 0.5rem;
   color: var(--color-white, #fff);
+}
+
+.pass-core-form .pass-core-form__midspin-warning {
+  display: flex;
+  margin: 0 0 1rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 5px;
+  background-color: var(--btn-warning-tint);
+  color: var(--color-white);
+  font-size: 0.9rem;
+  line-height: 1.35;
 }
 
 .pass-core-form .checkbox-row input[type="checkbox"] {

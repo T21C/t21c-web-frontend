@@ -1,5 +1,5 @@
 // tuf-search: #CalcScore #calcScore
-import calcAcc from "./CalcAcc"
+import calcAcc, { tilecount, unwrapJudgements, emptyJudgements } from "./CalcAcc"
 import {
     resolveXaccCurveForLevelData,
     xaccMultiplier as xaccCurveMultiplier,
@@ -12,23 +12,16 @@ const startDeduc = 10
 const endDeduc = 50
 const pwr = 0.7
 
-function arraySum(arr) {
-    return arr.reduce(add, 0);
-}
-
-function add(accumulator, a) {
-  return accumulator + a;
-}
-
 /** Applied by getScoreV2 when miss count is zero (matches plotted zero-miss curve). */
 export const SCORE_V2_ZERO_MISS_MULTIPLIER = 1.1
 
 export const getScoreV2Mtp = (inputs) => {
-    if (!inputs || !Array.isArray(inputs)) {
+    if (!inputs) {
         return SCORE_V2_ZERO_MISS_MULTIPLIER
     }
-    const misses = inputs[0]
-    const tiles = arraySum(inputs.slice(1))
+    const j = unwrapJudgements(inputs)
+    const misses = j.earlyDouble
+    const tiles = tilecount(j)
     if (!misses){
         return SCORE_V2_ZERO_MISS_MULTIPLIER
     }
@@ -64,7 +57,10 @@ export function scoreV2MtpFromMisses(misses, hitTiles) {
     if (hits <= 0) {
         return m === 0 ? SCORE_V2_ZERO_MISS_MULTIPLIER : 1
     }
-    return getScoreV2Mtp([m, 0, 0, hits, 0, 0])
+    const j = emptyJudgements()
+    j.earlyDouble = m
+    j.perfect = hits
+    return getScoreV2Mtp(j)
 }
 
 const getXaccMtp = (inp, baseScore, curveOverrides) => {

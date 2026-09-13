@@ -16,13 +16,16 @@ import { UserAvatar } from "@/components/layout";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import MarqueeText from "@/components/common/display/MarqueeText/MarqueeText";
 import i18next from "i18next";
+import { shouldShowXPerfectJudgements } from "@/utils/adofaiVersion";
 
-const Judgements = ({judgements}) => {
+const Judgements = ({judgements, showXPerfect}) => {
   return (
     <div className="judgements-container">
-      <div className="judgements-grid">
+      <div className={`judgements-grid${showXPerfect ? ' judgements-grid--xperfect' : ''}`}>
         <span className="e-perfect">{judgements.ePerfect}</span>
+        {showXPerfect ? <span className="perfect-minus">{judgements.perfectMinus ?? 0}</span> : null}
         <span className="perfect">{judgements.perfect}</span>
+        {showXPerfect ? <span className="perfect-plus">{judgements.perfectPlus ?? 0}</span> : null}
         <span className="l-perfect">{judgements.lPerfect}</span>
         </div>
         <div className="judgements-grid">
@@ -142,7 +145,12 @@ const ScoreCard = ({ scoreData, topScores = [], potentialTopScores = [], mode = 
         <p className="score-exp">{t('score.card.labels.accuracy')}</p>
         <div className={`score-desc ${scoreData.accuracy == 1 ? 'pure-perfect' : ''}`}>{formatAccuracyRatio(scoreData.accuracy)}</div>
       </div>
-      {!isFeaturedMode && scoreData.judgements ? <Judgements judgements={scoreData.judgements} /> : null}
+      {!isFeaturedMode && scoreData.judgements ? (
+        <Judgements
+          judgements={scoreData.judgements}
+          showXPerfect={shouldShowXPerfectJudgements(scoreData)}
+        />
+      ) : null}
     </div>
   );
 

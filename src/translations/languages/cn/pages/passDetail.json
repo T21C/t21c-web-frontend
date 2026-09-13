@@ -58,7 +58,10 @@
     "16k": "16键",
     "noHoldTap": "非默认长按设置",
     "adofaiV2": "<adofaiicon></adofaiicon> v2",
-    "adofaiV2Note": "录制于 ADOFAI v2"
+    "adofaiV2Note": "录制于 ADOFAI v2",
+    "adofaiPre340": "<3.4.0",
+    "adofaiPre340Note": "录制于 ADOFAI 3.4.0 之前",
+    "xPerfect": "X-Perfect"
   },
   "judgements": {
     "title": "判定结果",
@@ -69,6 +72,14 @@
       },
       "perfect": {
         "label": "完美！",
+        "value": "{{count}}"
+      },
+      "perfectMinus": {
+        "label": "完美−",
+        "value": "{{count}}"
+      },
+      "perfectPlus": {
+        "label": "完美+",
         "value": "{{count}}"
       },
       "latePerfect": {

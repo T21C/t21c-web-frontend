@@ -2,7 +2,7 @@
  * Client preview scoring facade — keep API in sync with
  * server/src/misc/utils/pass/scoreService.ts
  */
-import calcAcc from './CalcAcc'
+import calcAcc, { unwrapJudgements, emptyJudgements, sumJudgements } from './CalcAcc'
 import { getScoreV2 } from './CalcScore'
 
 /**
@@ -74,16 +74,20 @@ export function normalizePassScoreInput(pass = {}) {
         speed = Number(pass.speed)
     }
 
-    const judgements = Array.isArray(pass.judgements)
-        ? pass.judgements
-        : null
-    if (judgements == null) {
+    let judgements
+    if (pass.judgements == null) {
         warnings.push('judgements missing; defaulting to zeros')
+        judgements = emptyJudgements()
+    } else {
+        judgements = unwrapJudgements(pass.judgements)
+        if (sumJudgements(judgements) === 0) {
+            warnings.push('judgements sum to zero; accuracy/score will be 0')
+        }
     }
 
     return {
         speed,
-        judgements: judgements ?? [0, 0, 0, 0, 0, 0],
+        judgements,
         isNoHoldTap: pass.isNoHoldTap === true,
         warnings,
     }

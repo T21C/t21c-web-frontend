@@ -1,5 +1,5 @@
 // tuf-search: #passScoreCalculatorMath #passScoreCalculator
-import calcAcc from '@/utils/CalcAcc';
+import calcAcc, { emptyJudgements, tilecount, unwrapJudgements } from '@/utils/CalcAcc';
 import {
   getScoreV2,
   getSpeedMtp,
@@ -203,8 +203,8 @@ function scoreBreakdown(passData, levelCtx, difficultyDict) {
   const speed = Number.isFinite(passData.speed) ? passData.speed : 1;
   const speedMtp = getSpeedMtp(speed);
   const missMtpRaw = scoreV2MtpFromMisses(
-    Array.isArray(judgements) ? judgements[0] : 0,
-    Array.isArray(judgements) ? judgements.slice(1).reduce((a, b) => a + (Number(b) || 0), 0) : 0,
+    unwrapJudgements(judgements).earlyDouble,
+    tilecount(judgements),
   );
   const noHoldFactor = passData.isNoHoldTap ? 0.95 : 1;
   const missMtp = missMtpRaw * noHoldFactor;
@@ -257,42 +257,39 @@ function scoreV2AtExactAccuracy({
 function judgementsAtAccuracy(accuracy, hitTiles, misses = 0) {
   const hits = Math.max(0, Math.floor(hitTiles));
   const m = Math.max(0, Math.floor(misses));
+  const j = emptyJudgements();
+  j.earlyDouble = m;
   if (hits <= 0) {
-    return [m, 0, 0, 0, 0, 0];
+    return j;
   }
-  // Perfect-weighted: accuracy ≈ perfect/hits when only perfects; mix early for lower acc.
-  // Use: perfect + 0.75*ep + 0.4*early = accuracy * (hits)  with ep=0, late=0, lPerfect=0
-  // early + perfect = hits; perfect + 0.4*early = accuracy * hits
-  // perfect + 0.4*(hits-perfect) = acc*hits
-  // 0.6*perfect = acc*hits - 0.4*hits
-  // perfect = hits*(acc - 0.4)/0.6
   const acc = Math.min(1, Math.max(0, accuracy));
   const wantPp = acc === 1;
   let perfect = Math.round((hits * (acc - 0.4)) / 0.6);
   perfect = Math.min(hits, Math.max(0, perfect));
   let early = hits - perfect;
-  // Refine with ePerfect if needed for mid-band
   let ePerfect = 0;
   let lPerfect = 0;
   let late = 0;
   if (acc >= 0.95 && early > 0) {
-    // Prefer ePerfect/lPerfect over early for high acc
     const convert = Math.min(early, Math.round(early * 0.7));
     ePerfect = Math.floor(convert / 2);
     lPerfect = convert - ePerfect;
     early -= convert;
   }
-  // Integer counts snap near-100% to all-perfects; keep a non-PP row below 100%.
   if (!wantPp && hits > 0 && perfect >= hits && ePerfect === 0 && lPerfect === 0 && early === 0 && late === 0) {
     perfect = hits - 1;
     ePerfect = 1;
   }
-  return [m, early, ePerfect, perfect, lPerfect, late];
+  j.earlySingle = early;
+  j.ePerfect = ePerfect;
+  j.perfect = perfect;
+  j.lPerfect = lPerfect;
+  j.lateSingle = late;
+  return j;
 }
 
 function hitTilesFromJudgements(judgements) {
-  if (!Array.isArray(judgements)) return 0;
-  return (judgements[1] || 0) + (judgements[2] || 0) + (judgements[3] || 0) + (judgements[4] || 0) + (judgements[5] || 0);
+  return tilecount(judgements);
 }
 
 /**
@@ -341,12 +338,12 @@ export function computeRankedImpact(top20, levelId, simulatedScore) {
  * Full local calculator snapshot.
  * @param {{
  *   form: object,
- *   judgements: number[],
+ *   judgements: object,
  *   level: object|null,
  *   overrides: object,
  *   difficultyDict: object,
  *   targetScore?: number|null,
- *   compareJudgements?: number[]|null,
+ *   compareJudgements?: object|null,
  *   playerContext?: object|null,
  * }} input
  */
@@ -444,7 +441,7 @@ export function runLocalCalculatorMath(input) {
   };
 
   let compare = null;
-  if (Array.isArray(compareJudgements) && compareJudgements.every(Number.isInteger)) {
+  if (compareJudgements && typeof compareJudgements === 'object') {
     const cmpPass = withJudgements(basePass, compareJudgements);
     const cmp = scoreBreakdown(cmpPass, levelCtx, difficultyDict);
     compare = {
