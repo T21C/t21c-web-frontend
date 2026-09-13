@@ -12,7 +12,9 @@
         "nohold": "Bez holder'ów",
         "is12K": "12K",
         "is16K": "16K",
-        "isAdofaiV2": "ADOFAI v2"
+        "isAdofaiV2": "ADOFAI v2",
+        "adofaiVersion": "Wersja ADOFAI",
+        "isXPerfectMode": "X-Perfect"
       },
       "levelInfo": {
         "song": "Piosenka",
@@ -36,11 +38,18 @@
       },
       "judgements": {
         "ePerfect": "WPerfekcyjnie",
+        "perfectMinus": "Perfekcyjnie−",
         "perfect": "Perfekcyjnie",
+        "perfectPlus": "Perfekcyjnie+",
         "lPerfect": "PPerfekcyjnie",
         "tooearly": "Za wcześnie",
         "early": "Wcześnie",
         "late": "Późno"
+      },
+      "adofaiVersion": {
+        "latest": "Latest",
+        "pre340": "<3.4.0",
+        "v2": "v2"
       }
     },
     "acc": "Dokładność: ",
@@ -49,6 +58,14 @@
     "12kTooltip": "Wariant 12K",
     "16kTooltip": "Wariant 16K",
     "adofaiV2Tooltip": "Check this if the clear was recorded on ADOFAI v2",
+    "adofaiVersionTooltip": "Game version used for this clear. Latest is 3.4.0+.",
+    "xPerfectTooltip": "Record Perfect− and Perfect+ counts from X-Perfect mode (3.4.0+ only).",
+    "midspinWarning": {
+      "willApply": "This chart has {{count}} midspin tiles. They will be subtracted from Perfect when you save.",
+      "alreadyApplied": "Midspin Perfects have already been removed from this pass.",
+      "missing": "This level has no midspin count yet, so Perfect will not be adjusted.",
+      "perfectLt": "Perfect is lower than the midspin count, so Perfect will not be adjusted."
+    },
     "tooltip": "Wpisz numer 1-10",
     "alert": {
       "success": "Pomyślnie zaaktualizowano przejście!",

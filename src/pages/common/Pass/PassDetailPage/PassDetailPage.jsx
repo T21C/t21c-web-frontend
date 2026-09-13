@@ -22,6 +22,8 @@ import { EyeIcon, EyeOffIcon, TrashIcon } from "@/components/common/icons";
 import PassAdofaiV2Flag from "@/components/cards/PassAdofaiV2Flag";
 import WorldsFirstFlag from "@/components/cards/WorldsFirstFlag/WorldsFirstFlag";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
+import { isPureXPerfect } from "@/utils/CalcAcc";
+import { ADOFAI_VERSION, adofaiVersionFromPass, shouldShowXPerfectJudgements } from "@/utils/adofaiVersion";
 const parseRankColor = (rank) => {
   var clr;
   switch(rank) {
@@ -183,6 +185,11 @@ const PassDetailPage = () => {
 
   const { pass } = res;
   const accuracy = pass.accuracy;
+  const xPerfectShine = isPureXPerfect(pass.judgements, pass.isXPerfectMode, accuracy);
+  const ppShine = accuracy === 1 && !xPerfectShine;
+  const accShineClass = xPerfectShine ? 'xperfect-shine' : ppShine ? 'perfect-shine' : '';
+  const showXPerfectCounts = shouldShowXPerfectJudgements(pass);
+  const era = adofaiVersionFromPass(pass);
   const levelDiff = difficultyDict[pass.level?.diffId];
   const baseScore = pass.level?.baseScore || levelDiff?.baseScore;
   const isOwnPass = user && user.playerId === pass.player?.id;
@@ -288,7 +295,7 @@ const PassDetailPage = () => {
                 </div>
                 <div className="info-item">
                   <p>{t('passDetail.stats.accuracy.label')}</p>
-                  <span className={`info-desc ${accuracy === 1 ? 'perfect-shine' : ''}`}>
+                  <span className={`info-desc ${accShineClass}`}>
                     {t('passDetail.stats.accuracy.value', { accuracy: formatAccuracyRatio(accuracy, { withPercent: false }) })}
                   </span>
                 </div>
@@ -309,7 +316,7 @@ const PassDetailPage = () => {
                   </span>
                 </div>
               </div>
-              {(pass.isWorldsFirst || pass.isWorldsFirstPP || normalizeKeyCount(pass.keyCount) != null || pass.is12K || pass.is16K || pass.isNoHoldTap || pass.isAdofaiV2) && (
+              {(pass.isWorldsFirst || pass.isWorldsFirstPP || normalizeKeyCount(pass.keyCount) != null || pass.is12K || pass.is16K || pass.isNoHoldTap || era === ADOFAI_VERSION.V2 || era === ADOFAI_VERSION.PRE_3_4_0 || pass.isXPerfectMode) && (
                 <div className="flags-container">
                   {pass.isWorldsFirst && (
                     <WorldsFirstFlag variant="clear" tooltipIndex={`${pass.id}-detail-clear`} className="worlds-first" />
@@ -317,7 +324,7 @@ const PassDetailPage = () => {
                   {pass.isWorldsFirstPP && (
                     <WorldsFirstFlag variant="pp" tooltipIndex={`${pass.id}-detail-pp`} className="worlds-first" />
                   )}
-                  {(normalizeKeyCount(pass.keyCount) != null || pass.is12K || pass.is16K || pass.isNoHoldTap || pass.isAdofaiV2) && (
+                  {(normalizeKeyCount(pass.keyCount) != null || pass.is12K || pass.is16K || pass.isNoHoldTap || era === ADOFAI_VERSION.V2 || era === ADOFAI_VERSION.PRE_3_4_0 || pass.isXPerfectMode) && (
                     <div className="flags">
                       {normalizeKeyCount(pass.keyCount) != null ? (
                         <span className="flag">{t('passDetail.flags.keyCount', { count: normalizeKeyCount(pass.keyCount) })}</span>
@@ -328,13 +335,21 @@ const PassDetailPage = () => {
                         </>
                       )}
                       {pass.isNoHoldTap && <span className="flag">{t('passDetail.flags.noHoldTap')}</span>}
-                      {pass.isAdofaiV2 && (
+                      {era === ADOFAI_VERSION.V2 && (
                         <PassAdofaiV2Flag
                           className="flag flag--adofai-v2"
                           i18nKey="passDetail.flags.adofaiV2"
                           ns="pages"
                           title={t('passDetail.flags.adofaiV2Note')}
                         />
+                      )}
+                      {era === ADOFAI_VERSION.PRE_3_4_0 && (
+                        <span className="flag" title={t('passDetail.flags.adofaiPre340Note')}>
+                          {t('passDetail.flags.adofaiPre340')}
+                        </span>
+                      )}
+                      {pass.isXPerfectMode && (
+                        <span className="flag">{t('passDetail.flags.xPerfect')}</span>
                       )}
                     </div>
                   )}
@@ -349,15 +364,21 @@ const PassDetailPage = () => {
                       <label>{t('passDetail.judgements.types.earlyPerfect.label')}</label>
                       <span>{t('passDetail.judgements.types.earlyPerfect.value', { count: pass.judgements?.ePerfect || 0 })}</span>
                     </div>
-                    <div className={`judgement-item perfect ${accuracy === 1 ? 'perfect-shine' : ''}`}>
+                    {showXPerfectCounts ? (
+                      <div className={`judgement-item perfect-minus ${xPerfectShine ? 'xperfect-shine' : ''}`}>
+                        <label>{t('passDetail.judgements.types.perfectMinus.label')}</label>
+                        <span>{t('passDetail.judgements.types.perfectMinus.value', { count: pass.judgements?.perfectMinus || 0 })}</span>
+                      </div>
+                    ) : null}
+                    <div className={`judgement-item perfect ${accShineClass}`}>
                       <label>{t('passDetail.judgements.types.perfect.label')}</label>
                       <div className="value-container">
-                        {accuracy === 1 && (
+                        {(ppShine || xPerfectShine) && (
                           <div className="particles">
                             {particles.map((particle, i) => (
                               <div 
                                 key={particle.id}
-                                className="particle" 
+                                className={`particle${xPerfectShine ? ' particle--xperfect' : ''}`}
                                 style={{ 
                                   '--move-duration': `${particle.moveDuration}s`,
                                   '--fade-in-duration': `${particle.fadeInDuration}s`,
@@ -377,6 +398,12 @@ const PassDetailPage = () => {
                         <span>{t('passDetail.judgements.types.perfect.value', { count: pass.judgements?.perfect || 0 })}</span>
                       </div>
                     </div>
+                    {showXPerfectCounts ? (
+                      <div className={`judgement-item perfect-plus ${xPerfectShine ? 'xperfect-shine' : ''}`}>
+                        <label>{t('passDetail.judgements.types.perfectPlus.label')}</label>
+                        <span>{t('passDetail.judgements.types.perfectPlus.value', { count: pass.judgements?.perfectPlus || 0 })}</span>
+                      </div>
+                    ) : null}
                     <div className="judgement-item late-perfect">
                       <label>{t('passDetail.judgements.types.latePerfect.label')}</label>
                       <span>{t('passDetail.judgements.types.latePerfect.value', { count: pass.judgements?.lPerfect || 0 })}</span>

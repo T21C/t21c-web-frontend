@@ -2,6 +2,7 @@
 import { useTranslation } from 'react-i18next';
 import PassAdofaiV2Flag from './PassAdofaiV2Flag';
 import { getPassKeycountBadgeType, getPassKeycountBadgeValue } from '@/utils/Utility';
+import { ADOFAI_VERSION, adofaiVersionFromPass } from '@/utils/adofaiVersion';
 
 const keyCountFlagLabel = (pass, t) => {
   const type = getPassKeycountBadgeType(pass);
@@ -20,7 +21,11 @@ const keyCountFlagLabel = (pass, t) => {
 const PassFlags = ({ pass, className = 'flags-wrapper' }) => {
   const { t } = useTranslation('components');
   const keyCountLabel = keyCountFlagLabel(pass, t);
-  if (!keyCountLabel && !pass?.isNoHoldTap && !pass?.isAdofaiV2) {
+  const era = adofaiVersionFromPass(pass);
+  const showV2 = era === ADOFAI_VERSION.V2;
+  const showPre340 = era === ADOFAI_VERSION.PRE_3_4_0;
+  const showXPerfect = !!(pass?.isXPerfectMode || pass?.flags?.isXPerfectMode);
+  if (!keyCountLabel && !pass?.isNoHoldTap && !showV2 && !showPre340 && !showXPerfect) {
     return null;
   }
 
@@ -28,7 +33,11 @@ const PassFlags = ({ pass, className = 'flags-wrapper' }) => {
     <div className={className}>
       {keyCountLabel ? <div className="flag">{keyCountLabel}</div> : null}
       {pass.isNoHoldTap && <div className="flag">{t('cards.pass.flags.noHoldTap')}</div>}
-      {pass.isAdofaiV2 && <PassAdofaiV2Flag className="flag flag--adofai-v2" />}
+      {showV2 && <PassAdofaiV2Flag className="flag flag--adofai-v2" />}
+      {showPre340 && (
+        <span className="flag flag--adofai-pre340">{t('cards.pass.flags.adofaiPre340')}</span>
+      )}
+      {showXPerfect && <div className="flag">{t('cards.pass.flags.xPerfect')}</div>}
     </div>
   );
 };

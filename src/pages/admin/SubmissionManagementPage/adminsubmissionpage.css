@@ -1190,6 +1190,8 @@
     padding: 3px;
     border-radius: 4px;
     display: flex;
+    flex-wrap: wrap;
+    gap: 0.15rem;
     margin-top: 3px;
     align-items: center;
     font-size: 1.1rem;
@@ -1261,6 +1263,11 @@
 
   .submission-admin-page .pass-submission-card .perfect {
     color: #5FFF4E;  /* Perfect - Green */
+  }
+
+  .submission-admin-page .pass-submission-card .perfect-minus,
+  .submission-admin-page .pass-submission-card .perfect-plus {
+    color: var(--color-xperfect);
   }
 
   .submission-admin-page .pass-submission-card .l-perfect {
@@ -1380,6 +1387,7 @@
   .submission-admin-page .pass-submission-card .pass-submission-judgements-inputs {
     display: flex;
     flex-wrap: wrap;
+    gap: 0.35rem;
   }
 
   .submission-admin-page .pass-submission-card .pass-submission-judgement-field {
@@ -1436,6 +1444,28 @@
     gap: 0.35rem;
     font-size: 0.9rem;
     cursor: pointer;
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-era-field {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: default;
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-era-select {
+    min-width: 10rem;
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-midspin-warning {
+    display: flex;
+    margin: 0;
+    padding: 0.5rem 0.65rem;
+    border-radius: 4px;
+    background-color: var(--btn-warning-tint);
+    color: var(--color-white);
+    font-size: 0.85rem;
+    line-height: 1.35;
   }
 
   .submission-admin-page .pass-submission-card .pass-submission-level-edit {

@@ -107,6 +107,10 @@
   height: 0.825rem;
 }
 
+.score-card .judgements-grid.judgements-grid--xperfect {
+  grid-template-columns: repeat(5, 1fr);
+}
+
 .score-card .judgements-grid span {
   min-width: 1.2rem;
 }
@@ -125,6 +129,11 @@
 
 .score-card .perfect {
   color: #5fff4e;
+}
+
+.score-card .perfect-minus,
+.score-card .perfect-plus {
+  color: var(--color-xperfect, #ffffff);
 }
 
 

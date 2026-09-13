@@ -18,7 +18,9 @@
         "earlyDouble": "ED",
         "earlySingle": "ES",
         "ePerfect": "EP",
+        "perfectMinus": "P−",
         "perfect": "P",
+        "perfectPlus": "P+",
         "lPerfect": "LP",
         "lateSingle": "LS",
         "lateDouble": "LD"
@@ -33,7 +35,14 @@
         "12k": "12K",
         "nht": "NHT",
         "16k": "16K",
-        "adofaiV2": "ADOFAI v2"
+        "adofaiV2": "ADOFAI v2",
+        "adofaiVersion": "Wersja ADOFAI",
+        "xPerfect": "X-Perfect"
+      },
+      "era": {
+        "latest": "Latest",
+        "pre340": "<3.4.0",
+        "v2": "v2"
       }
     },
     "submitter": "Przesyłający:",
@@ -41,6 +50,12 @@
     "uploadTime": "Czas przesłania:",
     "videoFromOwnChannel": "Film z kanału użytkownika",
     "videoFromPasserChannel": "Kanał gracza"
+  },
+  "midspinWarning": {
+    "willApply": "This chart has {{count}} midspin tiles. They will be subtracted from Perfect when you save.",
+    "alreadyApplied": "Midspin Perfects have already been removed from this pass.",
+    "missing": "This level has no midspin count yet, so Perfect will not be adjusted.",
+    "perfectLt": "Perfect is lower than the midspin count, so Perfect will not be adjusted."
   },
   "playerAssignment": {
     "title": "Przypisz gracza",

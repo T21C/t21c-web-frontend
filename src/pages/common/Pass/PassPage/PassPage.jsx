@@ -101,6 +101,8 @@ const PassPage = () => {
     setKeyFlag,
     wfFilter,
     setWfFilter,
+    adofaiVersionFilter,
+    setAdofaiVersionFilter,
   } = useContext(PassContext);
 
   const sortOptions = [
@@ -153,6 +155,7 @@ const PassPage = () => {
           deletedFilter,
           keyFlag,
           wfFilter,
+          adofaiVersionFilter,
           minDiff: selectedLowFilterDiff !== 0 ? selectedLowFilterDiff : undefined,
           maxDiff: selectedHighFilterDiff !== 0 ? selectedHighFilterDiff : undefined,
           specialDifficulties: selectedSpecialDiffs,
@@ -186,7 +189,7 @@ const PassPage = () => {
     };
 
     fetchPasses();
-  }, [query, pageNumber, forceUpdate, deletedFilter, hide12k, selectedSpecialDiffs]);
+  }, [query, pageNumber, forceUpdate, deletedFilter, hide12k, selectedSpecialDiffs, keyFlag, wfFilter, adofaiVersionFilter, sort]);
 
   function resetAll() {
     setSort("SCORE_DESC");
@@ -198,6 +201,7 @@ const PassPage = () => {
     setSliderRange([1, difficulties.find(d => d.name === "U20")?.sortOrder || 61]);
     setKeyFlag("all");
     setWfFilter("none");
+    setAdofaiVersionFilter("all");
     setDeletedFilter("hide");
 
     // Clear and reload data
@@ -556,6 +560,17 @@ const PassPage = () => {
                   states={['all', '12k', '16k']}
                   onChange={(newState) => {
                     setKeyFlag(newState);
+                    triggerRefresh();
+                  }}
+                />
+              </div>
+              <div className="state-switches-item">
+                <span className="state-switches-label">{t('pass.settings.filter.options.adofaiVersion')}</span>
+                <StateDisplay
+                  currentState={adofaiVersionFilter}
+                  states={['all', 'latest', 'pre340', 'v2']}
+                  onChange={(newState) => {
+                    setAdofaiVersionFilter(newState);
                     triggerRefresh();
                   }}
                 />

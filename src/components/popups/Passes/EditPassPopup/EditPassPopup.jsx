@@ -31,7 +31,9 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
     expectedRating: pass.expectedRating || '',
     keyCount: pass.keyCount != null ? String(pass.keyCount) : '',
     ePerfect: pass.judgements.ePerfect.toString() || '',
+    perfectMinus: (pass.judgements.perfectMinus ?? 0).toString(),
     perfect: pass.judgements.perfect.toString() || '',
+    perfectPlus: (pass.judgements.perfectPlus ?? 0).toString(),
     lPerfect: pass.judgements.lPerfect.toString() || '',
     tooEarly: pass.judgements.earlyDouble.toString() || '',
     early: pass.judgements.earlySingle.toString() || '',
@@ -40,6 +42,9 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
     isAnnounced: pass.isAnnounced || false,
     isDuplicate: pass.isDuplicate || false,
     isAdofaiV2: pass.isAdofaiV2 || false,
+    adofaiVersion: pass.adofaiVersion != null ? Number(pass.adofaiVersion) : (pass.isAdofaiV2 ? 1 : 2),
+    isXPerfectMode: !!pass.isXPerfectMode,
+    passMetaFlags: pass.passMetaFlags ?? 0,
     vidUploadTime: pass.vidUploadTime || new Date().toISOString()
   };
   const { user } = useAuth();
@@ -67,6 +72,7 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
     accuracy,
     score,
     handleInputChange,
+    handleAdofaiVersionChange,
   } = usePassCoreForm({
     mode: "edit",
     initialForm: initialFormState,
@@ -113,14 +119,17 @@ const handleSubmit = async (e) => {
       isNoHoldTap: form.isNoHold,
       isAnnounced: form.isAnnounced,
       isDuplicate: form.isDuplicate,
-      isAdofaiV2: form.isAdofaiV2,
+      isAdofaiV2: form.adofaiVersion === 1,
+      adofaiVersion: form.adofaiVersion,
+      isXPerfectMode: !!form.isXPerfectMode && form.adofaiVersion === 3,
 
-      // Judgements in the exact format expected by the API
       judgements: {
         earlyDouble: parseInt(form.tooEarly) || 0,
         earlySingle: parseInt(form.early) || 0,
         ePerfect: parseInt(form.ePerfect) || 0,
+        perfectMinus: parseInt(form.perfectMinus) || 0,
         perfect: parseInt(form.perfect) || 0,
+        perfectPlus: parseInt(form.perfectPlus) || 0,
         lPerfect: parseInt(form.lPerfect) || 0,
         lateSingle: parseInt(form.late) || 0,
         lateDouble: 0
@@ -240,6 +249,7 @@ const handleSubmit = async (e) => {
           accuracy={accuracy}
           score={score}
           onInputChange={handleInputChange}
+          onAdofaiVersionChange={handleAdofaiVersionChange}
           renderVerified={() => {
             const color = !form.levelId ? "#ffc107" : levelLoading ? "#ffc107" : level ? "#28a745" : "#dc3545";
             return <FetchIcon className="fetch-icon" form={form} levelLoading={levelLoading} level={level} color={color} />;

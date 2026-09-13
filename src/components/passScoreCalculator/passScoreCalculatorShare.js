@@ -13,7 +13,9 @@ const NUM_KEYS = [
   'tilecount',
   'targetScore',
   'ePerfect',
+  'perfectMinus',
   'perfect',
+  'perfectPlus',
   'lPerfect',
   'tooEarly',
   'early',
@@ -65,11 +67,15 @@ export function encodeCalculatorShare({ form, overrides, targetScore, compareFor
   if (form?.isNoHold) params.set('noHold', '1');
 
   put('ePerfect', form?.ePerfect);
+  put('perfectMinus', form?.perfectMinus);
   put('perfect', form?.perfect);
+  put('perfectPlus', form?.perfectPlus);
   put('lPerfect', form?.lPerfect);
   put('tooEarly', form?.tooEarly);
   put('early', form?.early);
   put('late', form?.late);
+  if (form?.adofaiVersion != null) put('adofaiVersion', form.adofaiVersion);
+  if (form?.isXPerfectMode) params.set('xPerfect', '1');
 
   put('baseScore', overrides?.baseScore || overrides?.difficultyBaseScore);
   put('ppBaseScore', overrides?.ppBaseScore);
@@ -89,7 +95,9 @@ export function encodeCalculatorShare({ form, overrides, targetScore, compareFor
 
   if (compareForm) {
     put('cEPerfect', compareForm.ePerfect);
+    put('cPerfectMinus', compareForm.perfectMinus);
     put('cPerfect', compareForm.perfect);
+    put('cPerfectPlus', compareForm.perfectPlus);
     put('cLPerfect', compareForm.lPerfect);
     put('cTooEarly', compareForm.tooEarly);
     put('cEarly', compareForm.early);
@@ -118,9 +126,11 @@ export function decodeCalculatorShare(search) {
   if (get('player')) form.leaderboardName = get('player');
   form.isNoHold = get('noHold') === '1';
 
-  for (const k of ['ePerfect', 'perfect', 'lPerfect', 'tooEarly', 'early', 'late']) {
+  for (const k of ['ePerfect', 'perfectMinus', 'perfect', 'perfectPlus', 'lPerfect', 'tooEarly', 'early', 'late']) {
     if (get(k) != null) form[k] = get(k);
   }
+  if (get('adofaiVersion') != null) form.adofaiVersion = Number(get('adofaiVersion'));
+  form.isXPerfectMode = get('xPerfect') === '1';
 
   if (get('baseScore') != null) overrides.baseScore = get('baseScore');
   else if (get('difficultyBaseScore') != null) overrides.baseScore = get('difficultyBaseScore');
@@ -141,7 +151,9 @@ export function decodeCalculatorShare(search) {
 
   const cmap = {
     cEPerfect: 'ePerfect',
+    cPerfectMinus: 'perfectMinus',
     cPerfect: 'perfect',
+    cPerfectPlus: 'perfectPlus',
     cLPerfect: 'lPerfect',
     cTooEarly: 'tooEarly',
     cEarly: 'early',

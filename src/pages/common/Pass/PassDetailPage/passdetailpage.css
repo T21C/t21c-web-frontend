@@ -271,6 +271,11 @@
   color: #fcff4e;
 }
 
+.pass-detail .info-desc.xperfect-shine {
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+  color: var(--color-xperfect, #ffffff);
+}
+
 .pass-detail .flags-container {
   display: flex;
   flex-direction: column;
@@ -383,6 +388,21 @@
   z-index: 2;
 }
 
+.pass-detail .judgement-item.perfect.xperfect-shine span,
+.pass-detail .judgement-item.perfect-minus.xperfect-shine span,
+.pass-detail .judgement-item.perfect-plus.xperfect-shine span {
+  color: var(--color-xperfect, #ffffff);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.85),
+               0 0 20px rgba(255, 255, 255, 0.4);
+  position: relative;
+  z-index: 2;
+}
+
+.pass-detail .judgement-item.perfect-minus span,
+.pass-detail .judgement-item.perfect-plus span {
+  color: var(--color-xperfect, #ffffff);
+}
+
 .pass-detail .particles {
   position: absolute;
   width: 100%;
@@ -406,6 +426,10 @@
   animation: 
     particle-fade-out var(--move-duration) linear var(--delay) forwards,
     particle-move var(--move-duration) ease-out var(--delay) forwards;
+}
+
+.pass-detail .particle.particle--xperfect {
+  background: var(--color-xperfect, #ffffff);
 }
 
 @keyframes particle-fade-out {

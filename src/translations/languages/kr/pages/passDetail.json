@@ -58,7 +58,10 @@
     "16k": "16키",
     "noHoldTap": "기본 외 홀드 타일 동작",
     "adofaiV2": "<adofaiicon></adofaiicon> v2",
-    "adofaiV2Note": "얼불춤v2 기록"
+    "adofaiV2Note": "얼불춤v2 기록",
+    "adofaiPre340": "<3.4.0",
+    "adofaiPre340Note": "ADOFAI 3.4.0 이전 기록",
+    "xPerfect": "X-Perfect"
   },
   "judgements": {
     "title": "판정",
@@ -69,6 +72,14 @@
       },
       "perfect": {
         "label": "정확",
+        "value": "{{count}}"
+      },
+      "perfectMinus": {
+        "label": "정확−",
+        "value": "{{count}}"
+      },
+      "perfectPlus": {
+        "label": "정확+",
         "value": "{{count}}"
       },
       "latePerfect": {

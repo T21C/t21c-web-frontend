@@ -14,11 +14,25 @@ import WorldsFirstFlag from "../WorldsFirstFlag/WorldsFirstFlag";
 import PassFlags from "../PassFlags";
 import i18next from "i18next";
 
-const JUDGEMENT_KEYS = [
+import { shouldShowXPerfectJudgements } from "@/utils/adofaiVersion";
+
+const BASE_JUDGEMENT_KEYS = [
   ["earlyDouble", "early-double"],
   ["earlySingle", "early-single"],
   ["ePerfect", "e-perfect"],
   ["perfect", "perfect"],
+  ["lPerfect", "l-perfect"],
+  ["lateSingle", "late-single"],
+  ["lateDouble", "late-double"],
+];
+
+const XPERFECT_JUDGEMENT_KEYS = [
+  ["earlyDouble", "early-double"],
+  ["earlySingle", "early-single"],
+  ["ePerfect", "e-perfect"],
+  ["perfectMinus", "perfect-minus"],
+  ["perfect", "perfect"],
+  ["perfectPlus", "perfect-plus"],
   ["lPerfect", "l-perfect"],
   ["lateSingle", "late-single"],
   ["lateDouble", "late-double"],
@@ -29,6 +43,9 @@ const ClearCard = ({scoreData, index}) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const countryCode = scoreData.player?.country;
   const judgements = scoreData.judgements;
+  const judgementKeys = shouldShowXPerfectJudgements(scoreData, judgements)
+    ? XPERFECT_JUDGEMENT_KEYS
+    : BASE_JUDGEMENT_KEYS;
   const feelingRating = scoreData.feelingRating;
   const needsExpansion = Boolean(feelingRating && feelingRating.length > 20);
 
@@ -86,7 +103,7 @@ const ClearCard = ({scoreData, index}) => {
 
         {judgements ? (
           <div className="judgements">
-            {JUDGEMENT_KEYS.map(([key, className]) => (
+            {judgementKeys.map(([key, className]) => (
               <span key={key} className={className}>{judgements[key] ?? 0}</span>
             ))}
           </div>

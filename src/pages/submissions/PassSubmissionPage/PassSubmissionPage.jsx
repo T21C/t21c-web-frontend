@@ -19,11 +19,12 @@ import { usePassCoreForm } from '@/components/common/cores/PassCoreForm/usePassC
 import { getSubmissionErrorMessage } from '@/utils/submissions/formErrors';
 import { resolveSubmissionVideoUrl } from '@/utils/resolveVideoUrl';
 import {
-  getPassJudgementHitCountFromForm,
   getEffectiveTilecount,
   getTilecountMismatchI18nSuffix,
   isTilecountJudgementMismatch,
 } from '@/utils/passJudgementHitCount';
+import { previewPassFormHitCount } from '@/utils/ParseJudgements';
+import { ADOFAI_VERSION, canUseXPerfectMode, isAdofaiV2FromVersion, parseAdofaiVersion } from '@/utils/adofaiVersion';
 import { PASS_SUBMISSION_INITIAL_FORM } from './passSubmissionInitialForm';
 import { getPassSubmissionTagWarnings } from './passSubmissionTagWarnings';
 import { PassSubmissionCore } from './PassSubmissionCore';
@@ -99,6 +100,7 @@ const PassSubmissionPage = () => {
     accuracy,
     score,
     handleInputChange,
+    handleAdofaiVersionChange,
   } = usePassCoreForm({
     mode: 'submit',
     initialForm: { ...PASS_SUBMISSION_INITIAL_FORM, ...(location.state?.form || {}) },
@@ -178,12 +180,18 @@ const PassSubmissionPage = () => {
         earlyDouble: parseInt(form.tooEarly) || 0,
         earlySingle: parseInt(form.early) || 0,
         ePerfect: parseInt(form.ePerfect) || 0,
+        perfectMinus: parseInt(form.perfectMinus) || 0,
         perfect: parseInt(form.perfect) || 0,
+        perfectPlus: parseInt(form.perfectPlus) || 0,
         lPerfect: parseInt(form.lPerfect) || 0,
         lateSingle: parseInt(form.late) || 0,
         lateDouble: 0,
         isNoHoldTap: form.isNoHold,
-        isAdofaiV2: form.isAdofaiV2,
+        isAdofaiV2: isAdofaiV2FromVersion(parseAdofaiVersion(form.adofaiVersion, ADOFAI_VERSION.V3_4_0)),
+        adofaiVersion: parseAdofaiVersion(form.adofaiVersion, ADOFAI_VERSION.V3_4_0),
+        isXPerfectMode:
+          !!form.isXPerfectMode
+          && canUseXPerfectMode(parseAdofaiVersion(form.adofaiVersion, ADOFAI_VERSION.V3_4_0)),
       };
 
       const submittedLevelId = form.levelId;
@@ -206,7 +214,7 @@ const PassSubmissionPage = () => {
   };
 
   const proceedAfterTagWarnings = async () => {
-    const hitSum = getPassJudgementHitCountFromForm(form);
+    const hitSum = previewPassFormHitCount(form, level);
     if (isTilecountJudgementMismatch(level?.tilecount, hitSum, level?.autoTileCount, level?.midspinCount)) {
       setShowTilecountMismatchModal(true);
       return;
@@ -247,7 +255,9 @@ const PassSubmissionPage = () => {
           expectedRating: 'Expected difficulty',
           keyCount: 'Key count',
           ePerfect: 'EPerfect',
+          perfectMinus: 'Perfect−',
           perfect: 'Perfect',
+          perfectPlus: 'Perfect+',
           lPerfect: 'LPerfect',
           tooEarly: 'Too Early',
           early: 'Early',
@@ -321,6 +331,7 @@ const PassSubmissionPage = () => {
           accuracy={accuracy}
           score={score}
           handleInputChange={handleInputChange}
+          handleAdofaiVersionChange={handleAdofaiVersionChange}
           difficultyDict={difficultyDict}
           searchInput={searchInput}
           setSearchInput={setSearchInput}
@@ -450,7 +461,7 @@ const PassSubmissionPage = () => {
                   rawTilecount: level?.tilecount,
                   autoTileCount: level?.autoTileCount ?? 0,
                   midspinCount: level?.midspinCount ?? 0,
-                  hitSum: getPassJudgementHitCountFromForm(form),
+                  hitSum: previewPassFormHitCount(form, level),
                 }}
                 components={{ b: <b /> }}
               />

@@ -14,7 +14,9 @@
         "earlyDouble": "太快！！",
         "earlySingle": "太快！",
         "ePerfect": "稍快！",
+        "perfectMinus": "完美−",
         "perfect": "完美！",
+        "perfectPlus": "完美+",
         "lPerfect": "稍慢！",
         "lateSingle": "太慢！",
         "lateDouble": "太慢！！"
@@ -29,7 +31,14 @@
         "12k": "12键",
         "nht": "非默认长按设置",
         "16k": "16键",
-        "adofaiV2": "ADOFAI v2"
+        "adofaiV2": "ADOFAI v2",
+        "adofaiVersion": "ADOFAI 版本",
+        "xPerfect": "X-Perfect"
+      },
+      "era": {
+        "latest": "Latest",
+        "pre340": "<3.4.0",
+        "v2": "v2"
       }
     },
     "submitter": "提交者：",
@@ -39,6 +48,12 @@
     "videoLinkPlaceholder": "YouTube 或 Bilibili 链接",
     "videoFromOwnChannel": "来自用户自己的频道的视频",
     "videoFromPasserChannel": "通关者主页"
+  },
+  "midspinWarning": {
+    "willApply": "此谱面有 {{count}} 个 midspin 砖块。保存时会从 Perfect 中扣除。",
+    "alreadyApplied": "Midspin Perfect 已从该通关记录中移除。",
+    "missing": "该关卡尚无 midspin 数量，因此不会调整 Perfect。",
+    "perfectLt": "Perfect 少于 midspin 数量，因此不会调整 Perfect。"
   },
   "playerAssignment": {
     "title": "分配玩家",

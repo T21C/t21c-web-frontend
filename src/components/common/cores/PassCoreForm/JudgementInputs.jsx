@@ -3,13 +3,15 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import calcAcc from '@/utils/CalcAcc';
 import { formatAccuracyRatio } from '@/utils/statFormatters';
-import { parseJudgements } from '@/utils/ParseJudgements';
+import { judgementsAreComplete, parseJudgements } from '@/utils/ParseJudgements';
 import './JudgementInputs.css';
 
 const DEFAULT_COPY = {
   ns: 'pages',
   ePerfect: 'passSubmission.judgements.ePerfect',
+  perfectMinus: 'passSubmission.judgements.perfectMinus',
   perfect: 'passSubmission.judgements.perfect',
+  perfectPlus: 'passSubmission.judgements.perfectPlus',
   lPerfect: 'passSubmission.judgements.lPerfect',
   tooEarly: 'passSubmission.judgements.tooearly',
   early: 'passSubmission.judgements.early',
@@ -19,15 +21,23 @@ const DEFAULT_COPY = {
 };
 
 const TOP_FIELDS = [
-  { name: 'ePerfect', color: '#FCFF4D' },
-  { name: 'perfect', color: '#5FFF4E' },
-  { name: 'lPerfect', color: '#FCFF4D' },
+  { name: 'ePerfect', color: 'var(--color-marv, #FCFF4D)' },
+  { name: 'perfect', color: 'var(--color-perf, #5FFF4E)' },
+  { name: 'lPerfect', color: 'var(--color-great, #FCFF4D)' },
+];
+
+const XPERFECT_TOP_FIELDS = [
+  { name: 'ePerfect', color: 'var(--color-marv, #FCFF4D)' },
+  { name: 'perfectMinus', color: 'var(--color-xperfect, #ffffff)' },
+  { name: 'perfect', color: 'var(--color-perf, #5FFF4E)' },
+  { name: 'perfectPlus', color: 'var(--color-xperfect, #ffffff)' },
+  { name: 'lPerfect', color: 'var(--color-great, #FCFF4D)' },
 ];
 
 const BOTTOM_FIELDS = [
-  { name: 'tooEarly', color: '#FF0000' },
-  { name: 'early', color: '#FF6F4D' },
-  { name: 'late', color: '#FF6F4D' },
+  { name: 'tooEarly', color: 'var(--color-early-2, #FF0000)' },
+  { name: 'early', color: 'var(--color-early-1, #FF6F4D)' },
+  { name: 'late', color: 'var(--color-late-1, #FF6F4D)' },
 ];
 
 function isIntegerInputValue(value) {
@@ -45,23 +55,25 @@ export function JudgementInputs({
   copy: copyProp,
   className = '',
   integerOnly = false,
+  showXPerfectFields = false,
 }) {
   const copy = copyProp || DEFAULT_COPY;
   const { t } = useTranslation([copy.ns, 'common']);
   const shouldShowScore = showScore ?? score != null;
+  const topFields = showXPerfectFields ? XPERFECT_TOP_FIELDS : TOP_FIELDS;
 
   const resolvedAccuracy = useMemo(() => {
     if (accuracy !== undefined) return accuracy;
     const parsed = parseJudgements(values);
-    if (!parsed.every(Number.isInteger)) return null;
+    if (!judgementsAreComplete(parsed, { requireXPerfectFields: showXPerfectFields })) return null;
     return formatAccuracyRatio(calcAcc(parsed));
-  }, [accuracy, values]);
+  }, [accuracy, values, showXPerfectFields]);
 
   const renderField = ({ name, color }) => {
     const valid = !isValidDisplay || isValidDisplay[name];
     return (
-      <div className="judgement-inputs__field" key={name}>
-        <p>{t(copy[name], { ns: copy.ns })}</p>
+      <div className={`judgement-inputs__field judgement-inputs__field--${name}`} key={name}>
+        <p>{t(copy[name], { ns: copy.ns, defaultValue: name })}</p>
         <input
           type="text"
           inputMode={integerOnly ? 'numeric' : undefined}
@@ -81,9 +93,9 @@ export function JudgementInputs({
   };
 
   return (
-    <div className={`judgement-inputs${className ? ` ${className}` : ''}`}>
+    <div className={`judgement-inputs${showXPerfectFields ? ' judgement-inputs--xperfect' : ''}${className ? ` ${className}` : ''}`}>
       <div className="judgement-inputs__row judgement-inputs__row--top">
-        {TOP_FIELDS.map(renderField)}
+        {topFields.map(renderField)}
       </div>
       <div className="judgement-inputs__row judgement-inputs__row--bottom">
         {BOTTOM_FIELDS.map(renderField)}

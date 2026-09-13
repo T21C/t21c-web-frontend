@@ -73,7 +73,9 @@ function overridesAreEqual(a, b) {
 
 const EMPTY_COMPARE = {
   ePerfect: '',
+  perfectMinus: '',
   perfect: '',
+  perfectPlus: '',
   lPerfect: '',
   tooEarly: '',
   early: '',
@@ -100,7 +102,9 @@ function cloneCompareForm(raw) {
   const merged = { ...EMPTY_COMPARE, ...(raw || {}) };
   return {
     ePerfect: integerInputValue(merged.ePerfect),
+    perfectMinus: integerInputValue(merged.perfectMinus),
     perfect: integerInputValue(merged.perfect),
+    perfectPlus: integerInputValue(merged.perfectPlus),
     lPerfect: integerInputValue(merged.lPerfect),
     tooEarly: integerInputValue(merged.tooEarly),
     early: integerInputValue(merged.early),
@@ -115,7 +119,9 @@ function compareFormsEqual(a, b) {
 function compareFormFromPassForm(form) {
   return cloneCompareForm({
     ePerfect: form?.ePerfect ?? '',
+    perfectMinus: form?.perfectMinus ?? '',
     perfect: form?.perfect ?? '',
+    perfectPlus: form?.perfectPlus ?? '',
     lPerfect: form?.lPerfect ?? '',
     tooEarly: form?.tooEarly ?? '',
     early: form?.early ?? '',
@@ -217,6 +223,7 @@ const PassScoreCalculatorPage = () => {
     accuracy,
     score,
     handleInputChange,
+    handleAdofaiVersionChange,
   } = usePassCoreForm({
     mode: 'calculator',
     initialForm: location.state?.form || PASS_SUBMISSION_INITIAL_FORM,
@@ -462,9 +469,14 @@ const PassScoreCalculatorPage = () => {
       tooEarly: String(j.earlyDouble ?? j.tooEarly ?? 0),
       early: String(j.earlySingle ?? j.early ?? 0),
       ePerfect: String(j.ePerfect ?? 0),
+      perfectMinus: String(j.perfectMinus ?? 0),
       perfect: String(j.perfect ?? 0),
+      perfectPlus: String(j.perfectPlus ?? 0),
       lPerfect: String(j.lPerfect ?? 0),
       late: String(j.lateSingle ?? j.late ?? 0),
+      adofaiVersion: pass.adofaiVersion != null ? Number(pass.adofaiVersion) : (pass.isAdofaiV2 ? 1 : 2),
+      isXPerfectMode: !!pass.isXPerfectMode,
+      passMetaFlags: pass.passMetaFlags ?? 0,
     }));
     setSearchInput(String(pass.levelId ?? pass.level?.id ?? ''));
     if (pass.level) setLevel(pass.level);
@@ -637,6 +649,7 @@ const PassScoreCalculatorPage = () => {
           accuracy={accuracy}
           score={score}
           handleInputChange={handleInputChange}
+          handleAdofaiVersionChange={handleAdofaiVersionChange}
           difficultyDict={difficultyDict}
           searchInput={searchInput}
           setSearchInput={setSearchInput}
@@ -842,6 +855,7 @@ const PassScoreCalculatorPage = () => {
               onChange={(e) => patchCompare(e.target.name, e.target.value)}
               showScore={false}
               integerOnly
+              showXPerfectFields={!!form.isXPerfectMode && Number(form.adofaiVersion) === 3}
             />
             <PopupSaveCancel onCancel={closeComparePopup} onSave={saveComparePopup}>
               <button
