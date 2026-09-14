@@ -4,7 +4,8 @@
     "description": "{{playerName}} a clear {{song}} par {{artist}} — {{difficulty}} · Score {{score}}"
   },
   "banners": {
-    "deleted": "Cette complétion a été supprimée"
+    "deleted": "Cette complétion a été supprimée",
+    "missingCdn": "Ce clear n'augmente pas le score ranked car le fichier n'est pas hébergé sur le CDN."
   },
   "level": {
     "baseScore": "{{score}}PP",
@@ -19,9 +20,13 @@
     "score": {
       "current": "{{score}}",
       "difference": {
-        "positive": "+{{score}}"
+        "positive": "+{{score}}",
+        "potential": "+{{score}}"
       },
-      "previous": "{{score}}"
+      "previous": "{{score}}",
+      "tooltips": {
+        "potentialScore": "Score ranked potentiel, ne compte pas car le fichier du niveau est manquant."
+      }
     },
     "clearDate": "Complété le {{date}}"
   },

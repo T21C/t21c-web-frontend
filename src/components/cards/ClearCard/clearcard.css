@@ -208,7 +208,8 @@
 .clear-card .l-perfect { color: yellow; }
 .clear-card .perfect { color: lightgreen; }
 .clear-card .perfect-minus,
-.clear-card .perfect-plus { color: var(--color-xperfect, #ffffff); }
+.clear-card .perfect-plus { color: lightgreen; }
+.clear-card .judgements--xperfect .perfect { color: var(--color-xperfect, #ffffff); }
 
 .clear-card .flags-wrapper {
   display: flex;
@@ -225,7 +226,8 @@
   height: fit-content;
 }
 
-.clear-card .flags-wrapper .flag--adofai-v2 {
+.clear-card .flags-wrapper .flag--adofai-v2,
+.clear-card .flags-wrapper .flag--adofai-pre340 {
   display: inline-flex;
   align-items: center;
   gap: 0.2rem;

@@ -13,6 +13,7 @@ import {
   xaccMultiplier,
 } from '@/utils/scoreV2XaccCurve';
 import { getEffectiveTilecount } from '@/utils/passJudgementHitCount';
+import { levelCountsForRanked } from '@/utils/Utility';
 
 const MISS_BUDGET_CAP = 10;
 const RANKED_TOP_N = 20;
@@ -297,8 +298,10 @@ function hitTilesFromJudgements(judgements) {
  * @param {{ levelId: number, scoreV2: number }[]} top20
  * @param {number|null} levelId
  * @param {number} simulatedScore
+ * @param {{ countsForRanked?: boolean }} [options]
  */
-export function computeRankedImpact(top20, levelId, simulatedScore) {
+export function computeRankedImpact(top20, levelId, simulatedScore, options = {}) {
+  const countsForRanked = options.countsForRanked !== false;
   const list = (top20 || []).map((p) => ({
     levelId: Number(p.levelId),
     scoreV2: Number(p.scoreV2) || 0,
@@ -312,6 +315,20 @@ export function computeRankedImpact(top20, levelId, simulatedScore) {
     .sort((a, b) => b.scoreV2 - a.scoreV2)
     .slice(0, RANKED_TOP_N);
   const beforeSum = before.reduce((sum, p, i) => sum + p.scoreV2 * Math.pow(RANKED_DECAY, i), 0);
+
+  if (!countsForRanked) {
+    return {
+      beforeRanked: beforeSum,
+      afterRanked: beforeSum,
+      delta: 0,
+      currentBestOnLevel: currentBestScore,
+      beatsBest: simulatedScore > currentBestScore,
+      entersTop20: false,
+      slotIndex: null,
+      generalDelta: Math.max(0, simulatedScore - currentBestScore),
+      countsForRanked: false,
+    };
+  }
 
   const nextScore = Math.max(simulatedScore, currentBestScore);
   const afterList = [...without, { levelId: Number(levelId), scoreV2: nextScore }]
@@ -331,6 +348,7 @@ export function computeRankedImpact(top20, levelId, simulatedScore) {
     entersTop20,
     slotIndex: slotIndex >= 0 ? slotIndex + 1 : null,
     generalDelta: Math.max(0, simulatedScore - currentBestScore),
+    countsForRanked: true,
   };
 }
 
@@ -456,7 +474,9 @@ export function runLocalCalculatorMath(input) {
   let reclear = null;
   if (playerContext && level?.id) {
     rankedImpact = {
-      ...computeRankedImpact(playerContext.top20 || [], level.id, primary.scoreV2),
+      ...computeRankedImpact(playerContext.top20 || [], level.id, primary.scoreV2, {
+        countsForRanked: levelCountsForRanked(level),
+      }),
       ppDelta: primary.accuracy === 1 ? Math.max(0, primary.scoreV2 - (playerContext.bestOnLevel?.scoreV2 || 0)) : 0,
     };
     const best = playerContext.bestOnLevel;

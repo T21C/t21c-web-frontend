@@ -1,4 +1,6 @@
 // tuf-search: #Utility #utils — shared client helpers
+import { CDN_RECOGNITION_BASES } from '@/config/env';
+
 const DIFFICULTY_LEVELS = {
   'P': { base: 0, max: 20 },    // P1-P20
   'G': { base: 20, max: 20 },   // G1-G10 (values 21-30)
@@ -503,8 +505,26 @@ export function formatPassDate(date, language = 'en') {
   return new Date(date).toLocaleString(localeMap[language] || 'en-GB', { year: 'numeric', month: 'long', day: 'numeric' })
 }
 
+function urlMatchesCdnPrefix(url, prefix) {
+  if (!url || !prefix) return false;
+  return url === prefix || url.startsWith(`${prefix}/`);
+}
+
 export function isCdnUrl(url) {
-  return url?.startsWith(import.meta.env.VITE_CDN_URL);
+  if (!url) return false;
+  return CDN_RECOGNITION_BASES.some((base) => urlMatchesCdnPrefix(url, base));
+}
+
+/** Hosted TUF CDN zip: present, not the `removed` sentinel, and `isCdnUrl`. */
+export function hasDomesticCdnFile(dlLink) {
+  return typeof dlLink === 'string' && dlLink !== '' && dlLink !== 'removed' && isCdnUrl(dlLink);
+}
+
+/** Ranked eligibility: domestic CDN zip or `isExternallyAvailable`. */
+export function levelCountsForRanked(level) {
+  if (!level) return false;
+  if (level.isExternallyAvailable === true || level.isExternallyAvailable === 1) return true;
+  return hasDomesticCdnFile(level.dlLink);
 }
 
 /**

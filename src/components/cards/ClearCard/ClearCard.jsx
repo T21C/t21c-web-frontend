@@ -102,7 +102,7 @@ const ClearCard = ({scoreData, index}) => {
         </div>
 
         {judgements ? (
-          <div className="judgements">
+          <div className={`judgements${judgementKeys === XPERFECT_JUDGEMENT_KEYS ? ' judgements--xperfect' : ''}`}>
             {judgementKeys.map(([key, className]) => (
               <span key={key} className={className}>{judgements[key] ?? 0}</span>
             ))}

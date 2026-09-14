@@ -200,6 +200,14 @@
   font-size: 0.9rem;
 }
 
+.pass-detail .score-difference.potential {
+  background-color: #ff03;
+  color: #ff0;
+  padding: 0.15rem 0.5rem;
+  border-radius: 3px;
+  font-size: 0.9rem;
+}
+
 .pass-detail .previous-score {
   color: var(--color-white-t60);
   font-size: 0.85rem;
@@ -306,7 +314,8 @@
   font-weight: 500;
 }
 
-.pass-detail .flag--adofai-v2 {
+.pass-detail .flag--adofai-v2,
+.pass-detail .flag--adofai-pre340 {
   display: inline-flex;
   align-items: center;
   gap: 0.2rem;
@@ -370,6 +379,10 @@
   color: #5FFF4E;
 }
 
+.pass-detail .judgement-grid--xperfect .judgement-item.perfect span {
+  color: var(--color-xperfect, #ffffff);
+}
+
 .pass-detail .judgement-item.perfect.perfect-shine {
   position: relative;
 }
@@ -388,9 +401,7 @@
   z-index: 2;
 }
 
-.pass-detail .judgement-item.perfect.xperfect-shine span,
-.pass-detail .judgement-item.perfect-minus.xperfect-shine span,
-.pass-detail .judgement-item.perfect-plus.xperfect-shine span {
+.pass-detail .judgement-item.perfect.xperfect-shine span {
   color: var(--color-xperfect, #ffffff);
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.85),
                0 0 20px rgba(255, 255, 255, 0.4);
@@ -398,9 +409,19 @@
   z-index: 2;
 }
 
+.pass-detail .judgement-item.perfect-minus.xperfect-shine span,
+.pass-detail .judgement-item.perfect-plus.xperfect-shine span {
+  color: #5FFF4E;
+  text-shadow: 0 0 10px rgba(95, 255, 78, 0.8),
+               0 0 20px rgba(95, 255, 78, 0.4),
+               0 0 30px rgba(95, 255, 78, 0.2);
+  position: relative;
+  z-index: 2;
+}
+
 .pass-detail .judgement-item.perfect-minus span,
 .pass-detail .judgement-item.perfect-plus span {
-  color: var(--color-xperfect, #ffffff);
+  color: #5FFF4E;
 }
 
 .pass-detail .particles {

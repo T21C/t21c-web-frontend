@@ -129,10 +129,14 @@ const ScoreCard = ({ scoreData, topScores = [], potentialTopScores = [], mode = 
       ) : null}
       {potentialScoreEntry ? (
         <p className="score-impact potential"
-          data-tooltip-id="potential-score-tooltip">+{formatNumber(potentialScoreEntry.impact)}</p>
+          data-tooltip-id={`potential-score-tooltip-${scoreData.id}`}>+{formatNumber(potentialScoreEntry.impact)}</p>
       ) : null}
       {potentialScoreEntry && (
-        <Tooltip id="potential-score-tooltip" place="bottom" style={{maxWidth: '400px'}}>
+        <Tooltip
+          id={`potential-score-tooltip-${scoreData.id}`}
+          place="top"
+          style={{ maxWidth: '16rem', zIndex: 1000 }}
+        >
           {t('score.card.tooltips.potentialScore')}
         </Tooltip>
       )}

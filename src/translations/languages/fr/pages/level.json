@@ -41,7 +41,8 @@
     "headerSort": "Paramètres de triage",
     "sortRecent": "Récent",
     "filterDiffs": "Difficulté",
-    "sortRandom": "Aléatoire"
+    "sortRandom": "Aléatoire",
+    "availableDl": "CDN disponible"
   },
   "infScroll": {
     "end": "Vous avez atteint la fin!"

@@ -28,9 +28,9 @@ const TOP_FIELDS = [
 
 const XPERFECT_TOP_FIELDS = [
   { name: 'ePerfect', color: 'var(--color-marv, #FCFF4D)' },
-  { name: 'perfectMinus', color: 'var(--color-xperfect, #ffffff)' },
-  { name: 'perfect', color: 'var(--color-perf, #5FFF4E)' },
-  { name: 'perfectPlus', color: 'var(--color-xperfect, #ffffff)' },
+  { name: 'perfectMinus', color: 'var(--color-perf, #5FFF4E)' },
+  { name: 'perfect', color: 'var(--color-xperfect, #ffffff)' },
+  { name: 'perfectPlus', color: 'var(--color-perf, #5FFF4E)' },
   { name: 'lPerfect', color: 'var(--color-great, #FCFF4D)' },
 ];
 

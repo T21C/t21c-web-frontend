@@ -1267,7 +1267,20 @@
 
   .submission-admin-page .pass-submission-card .perfect-minus,
   .submission-admin-page .pass-submission-card .perfect-plus {
+    color: #5FFF4E;
+  }
+
+  .submission-admin-page .pass-submission-card .judgements-details--xperfect .judgement.perfect {
     color: var(--color-xperfect);
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-judgements-inputs--xperfect .perfect input {
+    color: var(--color-xperfect);
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-judgements-inputs--xperfect .perfect-minus input,
+  .submission-admin-page .pass-submission-card .pass-submission-judgements-inputs--xperfect .perfect-plus input {
+    color: #5FFF4E;
   }
 
   .submission-admin-page .pass-submission-card .l-perfect {
