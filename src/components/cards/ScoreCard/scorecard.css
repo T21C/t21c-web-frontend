@@ -133,6 +133,10 @@
 
 .score-card .perfect-minus,
 .score-card .perfect-plus {
+  color: #5fff4e;
+}
+
+.score-card .judgements-grid--xperfect .perfect {
   color: var(--color-xperfect, #ffffff);
 }
 

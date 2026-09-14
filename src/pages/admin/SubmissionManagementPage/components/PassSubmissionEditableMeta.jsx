@@ -237,6 +237,8 @@ export default function PassSubmissionEditableMeta({
     { isXPerfectMode: viewingFlags.isXPerfectMode || draftFlags.isXPerfectMode },
     { ...submission.judgements, ...draftJudgements },
   );
+  const showXPerfectJudgementUi = displayJudgementKeys.includes('perfectMinus');
+  const showXPerfectJudgementEdit = editJudgementKeys.includes('perfectMinus');
   const showXPerfectToggle = canUseXPerfectMode(draftFlags.adofaiVersion);
   const eraDisplayKey =
     viewingFlags.adofaiVersion === ADOFAI_VERSION.V2
@@ -663,7 +665,7 @@ export default function PassSubmissionEditableMeta({
           {!editingJudgements ? (
             <>
               <div
-                className={`judgements-details${hasTilecountMismatch ? ' judgements-details--tilecount-mismatch pass-submission-judgements-tooltip-anchor' : ''}`}
+                className={`judgements-details${showXPerfectJudgementUi ? ' judgements-details--xperfect' : ''}${hasTilecountMismatch ? ' judgements-details--tilecount-mismatch pass-submission-judgements-tooltip-anchor' : ''}`}
                 data-tooltip-id={
                   hasTilecountMismatch && levelTilecountForTooltip != null ? tilecountTooltipId : undefined
                 }
@@ -683,13 +685,13 @@ export default function PassSubmissionEditableMeta({
           ) : (
             <div className="pass-submission-judgements-edit">
               <div
-                className={`pass-submission-judgements-inputs${hasTilecountMismatch ? ' pass-submission-judgements-inputs--tilecount-mismatch pass-submission-judgements-tooltip-anchor' : ''}`}
+                className={`pass-submission-judgements-inputs${showXPerfectJudgementEdit ? ' pass-submission-judgements-inputs--xperfect' : ''}${hasTilecountMismatch ? ' pass-submission-judgements-inputs--tilecount-mismatch pass-submission-judgements-tooltip-anchor' : ''}`}
                 data-tooltip-id={
                   hasTilecountMismatch && levelTilecountForTooltip != null ? tilecountTooltipId : undefined
                 }
               >
                   {editJudgementKeys.map((k) => (
-                    <label key={k} className="pass-submission-judgement-field">
+                    <label key={k} className={`pass-submission-judgement-field ${JUDGEMENT_CLASS[k] || ''}`}>
                       <span className="pass-submission-judgement-label">{t(`passSubmissions.details.judgements.fields.${k}`)}</span>
                       <input
                         type="text"

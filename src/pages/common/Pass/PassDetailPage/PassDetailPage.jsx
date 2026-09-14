@@ -358,7 +358,7 @@ const PassDetailPage = () => {
 
               <div className="judgements">
                 <h3>{t('passDetail.judgements.title')}</h3>
-                <div className="judgement-grid">
+                <div className={`judgement-grid${showXPerfectCounts ? ' judgement-grid--xperfect' : ''}`}>
                   <div className="top">
                     <div className="judgement-item early-perfect">
                       <label>{t('passDetail.judgements.types.earlyPerfect.label')}</label>

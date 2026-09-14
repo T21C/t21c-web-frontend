@@ -86,9 +86,14 @@
   opacity: 0.5;
 }
 
+.judgement-inputs.judgement-inputs--xperfect .judgement-inputs__field--perfect input::placeholder {
+  color: var(--color-xperfect, #ffffff);
+  opacity: 0.5;
+}
+
 .judgement-inputs .judgement-inputs__field--perfectMinus input::placeholder,
 .judgement-inputs .judgement-inputs__field--perfectPlus input::placeholder {
-  color: var(--color-xperfect, #ffffff);
+  color: var(--color-perf, #5fff4e);
   opacity: 0.5;
 }
 
