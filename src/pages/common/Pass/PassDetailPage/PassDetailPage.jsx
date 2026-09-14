@@ -18,7 +18,8 @@ import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { formatDate, normalizeKeyCount, validateFeelingRating } from "@/utils/Utility";
 import { formatAccuracyRatio } from "@/utils/statFormatters";
 import i18next from "i18next";
-import { EyeIcon, EyeOffIcon, TrashIcon } from "@/components/common/icons";
+import { EyeIcon, EyeOffIcon, TrashIcon, WarningIcon, AdofaiIcon } from "@/components/common/icons";
+import { Tooltip } from "react-tooltip";
 import PassAdofaiV2Flag from "@/components/cards/PassAdofaiV2Flag";
 import WorldsFirstFlag from "@/components/cards/WorldsFirstFlag/WorldsFirstFlag";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
@@ -209,6 +210,11 @@ const PassDetailPage = () => {
             {t('passDetail.banners.hidden')}
           </StatusBanner>
         )}
+        {pass?.scoreInfo?.countsForRanked === false && (
+          <StatusBanner tone="warning" placement="centered" icon={<WarningIcon color="#fff" size="24px" />}>
+            {t('passDetail.banners.missingCdn')}
+          </StatusBanner>
+        )}
 
         <div className="pass-content">
           <div className="header">
@@ -269,15 +275,28 @@ const PassDetailPage = () => {
                     <div className="score-container">
                       <div className="current-score">
                         <span className="score-value">{t('passDetail.player.score.current', { score: formatNumber(pass.scoreInfo.currentRankedScore) })}</span>
-                        {pass.scoreInfo.impact > 0 && (
+                        {pass.scoreInfo.countsForRanked !== false && pass.scoreInfo.impact > 0 && (
                           <span className="score-difference positive">
                             {t('passDetail.player.score.difference.positive', { score: formatNumber(pass.scoreInfo.impact) })}
+                          </span>
+                        )}
+                        {pass.scoreInfo.countsForRanked === false && pass.scoreInfo.potentialImpact > 0 && (
+                          <span
+                            className="score-difference potential"
+                            data-tooltip-id="pass-detail-potential-score-tooltip"
+                          >
+                            {t('passDetail.player.score.difference.potential', { score: formatNumber(pass.scoreInfo.potentialImpact) })}
                           </span>
                         )}
                       </div>
                       <div className="previous-score">
                         {t('passDetail.player.score.previous', { score: formatNumber(pass.scoreInfo.previousRankedScore) })}
                       </div>
+                      {pass.scoreInfo.countsForRanked === false && pass.scoreInfo.potentialImpact > 0 && (
+                        <Tooltip id="pass-detail-potential-score-tooltip" place="top" style={{ maxWidth: '16rem', zIndex: 1000 }}>
+                          {t('passDetail.player.score.tooltips.potentialScore')}
+                        </Tooltip>
+                      )}
                     </div>
                   )}
                 </div>
@@ -344,7 +363,8 @@ const PassDetailPage = () => {
                         />
                       )}
                       {era === ADOFAI_VERSION.PRE_3_4_0 && (
-                        <span className="flag" title={t('passDetail.flags.adofaiPre340Note')}>
+                        <span className="flag flag--adofai-pre340" title={t('passDetail.flags.adofaiPre340Note')}>
+                          <AdofaiIcon size={14} color="currentColor" rotation={-20} aria-hidden />
                           {t('passDetail.flags.adofaiPre340')}
                         </span>
                       )}

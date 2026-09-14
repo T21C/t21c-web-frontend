@@ -1,6 +1,7 @@
 // tuf-search: #PassFlags #passFlags #cards
 import { useTranslation } from 'react-i18next';
 import PassAdofaiV2Flag from './PassAdofaiV2Flag';
+import { AdofaiIcon } from '@/components/common/icons';
 import { getPassKeycountBadgeType, getPassKeycountBadgeValue } from '@/utils/Utility';
 import { ADOFAI_VERSION, adofaiVersionFromPass } from '@/utils/adofaiVersion';
 
@@ -35,7 +36,10 @@ const PassFlags = ({ pass, className = 'flags-wrapper' }) => {
       {pass.isNoHoldTap && <div className="flag">{t('cards.pass.flags.noHoldTap')}</div>}
       {showV2 && <PassAdofaiV2Flag className="flag flag--adofai-v2" />}
       {showPre340 && (
-        <span className="flag flag--adofai-pre340">{t('cards.pass.flags.adofaiPre340')}</span>
+        <span className="flag flag--adofai-pre340">
+          <AdofaiIcon size={14} color="currentColor" rotation={-20} aria-hidden />
+          {t('cards.pass.flags.adofaiPre340')}
+        </span>
       )}
       {showXPerfect && <div className="flag">{t('cards.pass.flags.xPerfect')}</div>}
     </div>

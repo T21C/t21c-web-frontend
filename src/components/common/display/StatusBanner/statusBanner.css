@@ -19,6 +19,7 @@
 .status-banner-slot--centered {
   display: flex;
   justify-content: center;
+  align-items: center;
   margin-bottom: 2rem;
 }
 
@@ -33,6 +34,11 @@
 
 .status-banner-slot--centered .status-banner--tone-muted {
   max-width: min(70rem, 100%);
+}
+
+.status-banner-slot--centered .status-banner--tone-warning {
+  max-width: min(70rem, 100%);
+  width: 100%;
 }
 
 /* Ribbon pinned to the top edge of a positioned ancestor */

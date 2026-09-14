@@ -200,6 +200,14 @@
   font-size: 0.9rem;
 }
 
+.pass-detail .score-difference.potential {
+  background-color: #ff03;
+  color: #ff0;
+  padding: 0.15rem 0.5rem;
+  border-radius: 3px;
+  font-size: 0.9rem;
+}
+
 .pass-detail .previous-score {
   color: var(--color-white-t60);
   font-size: 0.85rem;
@@ -306,7 +314,8 @@
   font-weight: 500;
 }
 
-.pass-detail .flag--adofai-v2 {
+.pass-detail .flag--adofai-v2,
+.pass-detail .flag--adofai-pre340 {
   display: inline-flex;
   align-items: center;
   gap: 0.2rem;

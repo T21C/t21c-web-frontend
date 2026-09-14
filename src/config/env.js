@@ -18,6 +18,18 @@ export const HEALTH_BASE = normalizeOrigin(
 export const OWN_BASE = normalizeOrigin(import.meta.env.VITE_OWN_URL);
 export const CDN_BASE = normalizeOrigin(import.meta.env.VITE_CDN_URL);
 
+/** Production public CDN. Always recognized for rankings even when Vite points at localhost. */
+export const PROD_CDN_BASE = 'https://api.tuforums.com/cdn';
+
+/** Writable CDN plus production origin when they differ (rankings / `isCdnUrl`). */
+export const CDN_RECOGNITION_BASES = [
+  ...new Set(
+    [import.meta.env.VITE_CDN_URL, import.meta.env.VITE_PROD_CDN_URL, PROD_CDN_BASE]
+      .map(normalizeOrigin)
+      .filter(Boolean),
+  ),
+];
+
 /** All known site origins (dev/staging/prod) for parsing pasted level links in search. */
 export const OWN_URL_BASES = [
   ...new Set(

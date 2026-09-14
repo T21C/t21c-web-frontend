@@ -5,7 +5,8 @@
   },
   "banners": {
     "deleted": "이 클리어 기록은 삭제되었습니다",
-    "hidden": "이 클리어 기록은 리더보드에서 숨겨졌습니다"
+    "hidden": "이 클리어 기록은 리더보드에서 숨겨졌습니다",
+    "missingCdn": "차트 파일이 CDN에 없어 이 클리어는 랭크 점수에 반영되지 않습니다."
   },
   "level": {
     "baseScore": "{{score}}PP",
@@ -20,9 +21,13 @@
     "score": {
       "current": "{{score}}",
       "difference": {
-        "positive": "+{{score}}"
+        "positive": "+{{score}}",
+        "potential": "+{{score}}"
       },
-      "previous": "{{score}}"
+      "previous": "{{score}}",
+      "tooltips": {
+        "potentialScore": "잠재 랭크 점수, 레벨 파일이 없어 반영되지 않습니다."
+      }
     },
     "clearDate": "{{date}} 클리어"
   },

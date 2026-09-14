@@ -47,6 +47,9 @@ export function RankedImpactPanel({ result }) {
           </div>
         )}
       </div>
+      {r.countsForRanked === false ? (
+        <p className="psc-muted">{t('passSubmission.calculator.ranked.missingCdn')}</p>
+      ) : null}
     </div>
   );
 }

@@ -49,7 +49,8 @@
     "sortClears": "Sortuj według ilości przejść",
     "viewMode": "Tryb przeglądania",
     "clearedLevels": "Z przejściami",
-    "deletedLevels": "Usunięte poziomy"
+    "deletedLevels": "Usunięte poziomy",
+    "availableDl": "CDN dostępne"
   },
   "infScroll": {
     "end": "Koniec listy poziomów"

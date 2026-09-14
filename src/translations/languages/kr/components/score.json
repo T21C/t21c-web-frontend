@@ -6,7 +6,8 @@
       "speed": "배속"
     },
     "tooltips": {
-      "watchVideo": "영상 보기"
+      "watchVideo": "영상 보기",
+      "potentialScore": "잠재 랭크 점수, 레벨 파일이 없어 반영되지 않습니다."
     }
   }
 }

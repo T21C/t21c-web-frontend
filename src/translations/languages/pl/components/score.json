@@ -6,7 +6,8 @@
       "speed": "Prędkość"
     },
     "tooltips": {
-      "watchVideo": "Obejrz wideo"
+      "watchVideo": "Obejrz wideo",
+      "potentialScore": "Potencjalny ranked score, nie liczy się, bo brakuje pliku poziomu."
     }
   }
 } 

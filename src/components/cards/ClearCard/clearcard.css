@@ -226,7 +226,8 @@
   height: fit-content;
 }
 
-.clear-card .flags-wrapper .flag--adofai-v2 {
+.clear-card .flags-wrapper .flag--adofai-v2,
+.clear-card .flags-wrapper .flag--adofai-pre340 {
   display: inline-flex;
   align-items: center;
   gap: 0.2rem;
