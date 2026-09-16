@@ -18,6 +18,10 @@
     "lowDiff": {
       "label": "낮은 난이도"
     },
+    "requestBands": {
+      "label": "요청 숨기기",
+      "hint": "해당 요청 유형을 목록에서 숨기려면 체크하세요"
+    },
     "fourVote": {
       "label": "4명 이상 평가됨"
     },

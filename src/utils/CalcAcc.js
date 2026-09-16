@@ -96,6 +96,7 @@ export function isPureXPerfect(judgements, isXPerfectMode, accuracy) {
   return acc === 1;
 }
 
+/** Weighted xacc. Perfect− / Perfect+ count as 1.0 like Perfect (keep in sync with server CalcAcc / MySQL calculate_accuracy). */
 export default function calcAcc(inp, raw = true) {
   if (!inp) return 0;
   const judgements = unwrapJudgements(inp);

@@ -2661,12 +2661,15 @@
 
 .submission-admin-page .submission-card.is-locked .submission-header,
 .submission-admin-page .submission-card.is-locked .submission-details,
-.submission-admin-page .submission-card.is-locked .embed-column {
+.submission-admin-page .submission-card.is-locked .submission-video-link-field,
+.submission-admin-page .submission-card.is-locked .submission-notes {
   filter: grayscale(1);
   opacity: 0.5;
 }
 
-.submission-admin-page .submission-card.is-locked .card-content {
+.submission-admin-page .submission-card.is-locked .card-content,
+.submission-admin-page .submission-card.is-locked .submission-video-link-field,
+.submission-admin-page .submission-card.is-locked .submission-notes {
   pointer-events: none;
 }
 

@@ -27,6 +27,7 @@ export const AdminLevelChartStatsPopup = ({ level, onClose, onSaved }) => {
   const { t } = useTranslation('components');
   const [bpm, setBpm] = useState('');
   const [tilecount, setTilecount] = useState('');
+  const [midspinCount, setMidspinCount] = useState('');
   const [lengthSeconds, setLengthSeconds] = useState('');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
@@ -34,9 +35,10 @@ export const AdminLevelChartStatsPopup = ({ level, onClose, onSaved }) => {
   useEffect(() => {
     setBpm(fieldToInput(level?.bpm));
     setTilecount(fieldToInput(level?.tilecount));
+    setMidspinCount(fieldToInput(level?.midspinCount));
     setLengthSeconds(msToLengthSecondsInput(level?.levelLengthInMs));
     setError(null);
-  }, [level?.id, level?.bpm, level?.tilecount, level?.levelLengthInMs]);
+  }, [level?.id, level?.bpm, level?.tilecount, level?.midspinCount, level?.levelLengthInMs]);
 
   useEffect(() => {
     const onEsc = (e) => {
@@ -67,6 +69,12 @@ export const AdminLevelChartStatsPopup = ({ level, onClose, onSaved }) => {
         return t('levelPopups.edit.chartStats.errors.tilecount');
       }
     }
+    if (midspinCount.trim() !== '') {
+      const n = Number(midspinCount);
+      if (!Number.isFinite(n) || !Number.isInteger(n) || n < 0) {
+        return t('levelPopups.edit.chartStats.errors.midspinCount');
+      }
+    }
     if (lengthSeconds.trim() !== '') {
       const n = Number(lengthSeconds);
       if (!Number.isFinite(n) || n < 0) {
@@ -89,6 +97,7 @@ export const AdminLevelChartStatsPopup = ({ level, onClose, onSaved }) => {
       const payload = {
         bpm: bpm.trim() === '' ? null : Number(bpm),
         tilecount: tilecount.trim() === '' ? null : Number(tilecount),
+        midspinCount: midspinCount.trim() === '' ? null : Number(midspinCount),
         levelLengthInMs:
           lengthSeconds.trim() === ''
             ? null
@@ -103,6 +112,7 @@ export const AdminLevelChartStatsPopup = ({ level, onClose, onSaved }) => {
         onSaved({
           bpm: updated.bpm ?? null,
           tilecount: updated.tilecount ?? null,
+          midspinCount: updated.midspinCount ?? null,
           levelLengthInMs: updated.levelLengthInMs ?? null,
         });
       }
@@ -177,6 +187,19 @@ export const AdminLevelChartStatsPopup = ({ level, onClose, onSaved }) => {
                 autoComplete="off"
                 value={tilecount}
                 onChange={(e) => setTilecount(e.target.value)}
+              />
+            </div>
+            <div className="admin-level-chart-stats-popup__field">
+              <label htmlFor="chart-stats-midspins">
+                {t('levelPopups.edit.chartStats.labels.midspinCount')}
+              </label>
+              <input
+                id="chart-stats-midspins"
+                type="text"
+                inputMode="numeric"
+                autoComplete="off"
+                value={midspinCount}
+                onChange={(e) => setMidspinCount(e.target.value)}
               />
             </div>
             <div className="admin-level-chart-stats-popup__field">

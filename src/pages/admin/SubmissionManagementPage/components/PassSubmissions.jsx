@@ -503,6 +503,7 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
                     </div>
                   </div>
                 </div>
+              </div>
 
                 <div className="embed-column">
                   <div className="embed-container">
@@ -563,7 +564,6 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
                     }}
                   />
                 </div>
-              </div>
               {isSettledCardPhase(phase) && (
                 <SubmissionCompleteCloseButton
                   onClose={() => dismissSettledCards(setCardPhases, submission.id)}

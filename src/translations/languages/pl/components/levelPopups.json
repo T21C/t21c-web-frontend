@@ -70,19 +70,21 @@
     },
     "chartStats": {
       "title": "Metadane chartu",
-      "openButtonTitle": "Edytuj BPM, kafelki i długość (bez CDN)",
+      "openButtonTitle": "Edytuj BPM, kafelki, midspiny i długość (bez CDN)",
       "clearHint": "Pozostaw pole puste i zapisz, aby je wyczyścić.",
       "preview": "Podgląd",
       "toastSaved": "Zapisano metadane chartu",
       "labels": {
         "bpm": "BPM",
         "tilecount": "Liczba kafelków",
+        "midspinCount": "Midspiny",
         "lengthSeconds": "Długość (sekundy)"
       },
       "errors": {
         "save": "Nie udało się zapisać metadanych chartu",
         "bpm": "BPM musi być liczbą większą od 0",
         "tilecount": "Liczba kafelków musi być nieujemną liczbą całkowitą",
+        "midspinCount": "Liczba midspinów musi być nieujemną liczbą całkowitą",
         "length": "Długość musi być nieujemną liczbą (sekundy, dopuszczalne ułamki)"
       }
     },

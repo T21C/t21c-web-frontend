@@ -27,6 +27,7 @@ import { RatingHelpPopup } from "@/components/popups/Rating";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import toast from 'react-hot-toast';
 import { RankReadyTable, isAutoraterDetail, compareRankReadyRows } from './RankReadyTable';
+import { REQUEST_BANDS, requestPguBand } from '@/utils/ratingRequestBand';
 
 const RATINGS_BATCH = 30;
 const SEARCH_DEBOUNCE_MS = 300;
@@ -55,10 +56,12 @@ const RatingPage = () => {
   const { 
     sortOrder, 
     myRatedFilter, 
-    lowDiffFilter,
+    includeP,
+    includeG,
+    includeU,
     fourVoteFilter, 
     setMyRatedFilter, 
-    setLowDiffFilter,
+    setIncludeBands,
     setFourVoteFilter,
     sortType,
     setSortType,
@@ -152,7 +155,9 @@ const RatingPage = () => {
       limit: RATINGS_BATCH,
       sort: sortType,
       order: sortOrder,
-      lowDiff: lowDiffFilter,
+      includeP: includeP ? 'true' : 'false',
+      includeG: includeG ? 'true' : 'false',
+      includeU: includeU ? 'true' : 'false',
       fourVote: rankReadyActive ? 'show' : fourVoteFilter,
       myRated: rankReadyActive ? 'show' : myRatedFilter,
     };
@@ -164,7 +169,7 @@ const RatingPage = () => {
       params.query = debouncedQuery;
     }
     return params;
-  }, [sortType, sortOrder, lowDiffFilter, fourVoteFilter, myRatedFilter, debouncedQuery, rankReadyActive]);
+  }, [sortType, sortOrder, includeP, includeG, includeU, fourVoteFilter, myRatedFilter, debouncedQuery, rankReadyActive]);
 
   const normalizePageResults = (data) => {
     // New API: { results, total, hasMore }. Guard against accidental bare/non-array bodies.
@@ -251,8 +256,10 @@ const RatingPage = () => {
   const listRowMatchesFilters = useCallback((listRow) => {
     if (!listRow?.id) return false;
     if (debouncedQuery) return false;
-    if (lowDiffFilter === 'hide' && listRow.lowDiff) return false;
-    if (lowDiffFilter === 'only' && !listRow.lowDiff) return false;
+    const band = requestPguBand(listRow);
+    if (band === 'P' && !includeP) return false;
+    if (band === 'G' && !includeG) return false;
+    if (band === 'U' && !includeU) return false;
     const details = Array.isArray(listRow.details) ? listRow.details : [];
     if (rankReadyActive) {
       const managerCount = details.filter((d) => !d.isCommunityRating && !isAutoraterDetail(d)).length;
@@ -269,7 +276,7 @@ const RatingPage = () => {
       if (myRatedFilter === 'only' && !hasMyRating) return false;
     }
     return true;
-  }, [debouncedQuery, lowDiffFilter, fourVoteFilter, myRatedFilter, user?.id, rankReadyActive]);
+  }, [debouncedQuery, includeP, includeG, includeU, fourVoteFilter, myRatedFilter, user?.id, rankReadyActive]);
 
   const upsertRatingRow = useCallback((listRow) => {
     if (!listRow?.id) return;
@@ -692,13 +699,37 @@ const RatingPage = () => {
               width={60}
             />
           )}
-            <StateDisplay
-              currentState={lowDiffFilter}
-              states={['show','hide',  'only']}
-              onChange={setLowDiffFilter}
-              label={t('rating.toggles.lowDiff.label')}
-              width={60}
-            />
+            <div
+              className="pgu-band-filter"
+              title={t('rating.toggles.requestBands.hint')}
+            >
+              <span className="toggle-label">{t('rating.toggles.requestBands.label')}</span>
+              <div className="pgu-band-filter__items">
+                {REQUEST_BANDS.map(([band, key]) => {
+                  const included =
+                    key === 'includeP'
+                      ? includeP
+                      : key === 'includeG'
+                        ? includeG
+                        : includeU;
+                  return (
+                    <label key={band} className="pgu-band-filter__item">
+                      <input
+                        type="checkbox"
+                        checked={!included}
+                        onChange={(e) =>
+                          setIncludeBands((prev) => ({
+                            ...prev,
+                            [key]: !e.target.checked,
+                          }))
+                        }
+                      />
+                      <span>{band}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
             {!rankReadyActive && (
             <StateDisplay
               currentState={fourVoteFilter}

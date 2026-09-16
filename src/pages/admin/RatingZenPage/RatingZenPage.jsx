@@ -27,36 +27,26 @@ import { getSongDisplayName } from '@/utils/levelHelpers';
 import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import toast from 'react-hot-toast';
 import { createViewDurationTracker } from '@/utils/viewDurationTracker';
+import { REQUEST_BANDS, requestPguBand } from '@/utils/ratingRequestBand';
 
 const DECK_SIZES = [
   5, 10, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 125, 150, 175, 200,
 ];
 const DECK_UNIT = 5;
+const MIN_DECK_SIZE = 1;
+const MAX_DECK_SIZE = 200;
+const CUSTOM_DECK_VALUE = 'custom';
 
-const REQUEST_BANDS = [
-  ['P', 'includeP'],
-  ['G', 'includeG'],
-  ['U', 'includeU'],
-];
+function peeksForDeckSize(n) {
+  return Math.floor(Math.max(0, Number(n) || 0) / DECK_UNIT);
+}
 
-/** Same buckets as server requestPguBand: U, then P, else G. */
-function zenRequestBand(card) {
-  const rerateNum = card?.level?.rerateNum;
-  const requesterFR = card?.requesterFR;
-  const primary =
-    rerateNum != null && String(rerateNum).trim() !== ''
-      ? String(rerateNum).trim()
-      : String(requesterFR || '').trim();
-  if (
-    /\bU(?:[1-9]|1[0-9]|20)\b/i.test(primary) ||
-    /\bUQ\d*\b/i.test(primary) ||
-    /\bQ\d+\b/i.test(primary) ||
-    /(?:^|[^0-9.])(21(?:\.[0-4])?\+?)(?:$|[^0-9])/.test(primary)
-  ) {
-    return 'U';
-  }
-  if (card?.lowDiff || /^[pP]\d/.test(primary)) return 'P';
-  return 'G';
+function parseDeckSizeInput(raw) {
+  if (typeof raw !== 'string' || raw.trim() === '') return null;
+  if (!/^\d+$/.test(raw.trim())) return null;
+  const n = Number(raw.trim());
+  if (!Number.isInteger(n) || n < MIN_DECK_SIZE || n > MAX_DECK_SIZE) return null;
+  return n;
 }
 
 const videoCache = new Map();
@@ -150,6 +140,10 @@ const RatingZenPage = () => {
   const [videoData, setVideoData] = useState(null);
   const [isVideoLoading, setIsVideoLoading] = useState(false);
   const [showCommunityPeers, setShowCommunityPeers] = useState(false);
+  const [customDeckPicked, setCustomDeckPicked] = useState(
+    () => !DECK_SIZES.includes(session.deckSize)
+  );
+  const [customDeckDraft, setCustomDeckDraft] = useState(() => String(session.deckSize));
   const viewTrackersRef = useRef(new Map());
 
   const disposeViewTrackers = useCallback(() => {
@@ -235,7 +229,7 @@ const RatingZenPage = () => {
   );
 
   const current = cards[index] || null;
-  const currentRequestBand = zenRequestBand(current);
+  const currentRequestBand = requestPguBand(current);
   const showRequestedRating =
     (currentRequestBand === 'P' && includeP) ||
     (currentRequestBand === 'G' && includeG) ||
@@ -245,20 +239,37 @@ const RatingZenPage = () => {
   );
 
   const deckSizeOptions = useMemo(
-    () =>
-      DECK_SIZES.map((n) => ({
+    () => [
+      ...DECK_SIZES.map((n) => ({
         value: n,
-        label: `${n} (${n / DECK_UNIT} peeks)`,
+        label: `${n} (${peeksForDeckSize(n)} peeks)`,
       })),
-    []
+      {
+        value: CUSTOM_DECK_VALUE,
+        label: t('rating.zen.setup.deckSizeCustom'),
+      },
+    ],
+    [t]
   );
+
+  const showCustomDeckInput = customDeckPicked || !DECK_SIZES.includes(deckSize);
+  const customDeckParsed = parseDeckSizeInput(customDeckDraft);
+  const deckSizeIsValid = showCustomDeckInput
+    ? customDeckParsed != null
+    : DECK_SIZES.includes(deckSize);
 
   const selectedDeckSizeOption = useMemo(
     () =>
-      deckSizeOptions.find((option) => option.value === deckSize) ??
-      deckSizeOptions.find((option) => option.value === DEFAULT_DECK_SIZE) ??
-      deckSizeOptions[0],
-    [deckSize, deckSizeOptions]
+      showCustomDeckInput
+        ? deckSizeOptions.find((option) => option.value === CUSTOM_DECK_VALUE)
+        : deckSizeOptions.find((option) => option.value === deckSize) ??
+          deckSizeOptions.find((option) => option.value === DEFAULT_DECK_SIZE) ??
+          deckSizeOptions[0],
+    [deckSize, deckSizeOptions, showCustomDeckInput]
+  );
+
+  const requestedPeeks = peeksForDeckSize(
+    showCustomDeckInput && customDeckParsed != null ? customDeckParsed : deckSize
   );
 
   const sortOptions = useMemo(
@@ -308,8 +319,36 @@ const RatingZenPage = () => {
 
   const handleDiscardSession = useCallback(() => {
     disposeViewTrackers();
+    setCustomDeckPicked(false);
+    setCustomDeckDraft(String(DEFAULT_DECK_SIZE));
     clearSession();
   }, [clearSession, disposeViewTrackers]);
+
+  const handleDeckSizeOptionChange = useCallback(
+    (option) => {
+      if (!option) return;
+      if (option.value === CUSTOM_DECK_VALUE) {
+        setCustomDeckPicked(true);
+        setCustomDeckDraft(String(deckSize));
+        return;
+      }
+      setCustomDeckPicked(false);
+      setCustomDeckDraft(String(option.value));
+      patchSession({ deckSize: option.value });
+    },
+    [deckSize, patchSession]
+  );
+
+  const handleCustomDeckDraftChange = useCallback(
+    (raw) => {
+      setCustomDeckDraft(raw);
+      const parsed = parseDeckSizeInput(raw);
+      if (parsed != null) {
+        patchSession({ deckSize: parsed });
+      }
+    },
+    [patchSession]
+  );
 
   const startDeal = useCallback(async () => {
     if (!user) {
@@ -317,11 +356,18 @@ const RatingZenPage = () => {
       navigate('/login');
       return;
     }
+    const requestedSize = showCustomDeckInput
+      ? parseDeckSizeInput(customDeckDraft)
+      : deckSize;
+    if (requestedSize == null) {
+      toast.error(t('rating.zen.errors.invalidDeckSize'));
+      return;
+    }
     setIsDealing(true);
     try {
       const { data } = await api.get(routes.admin.ratingZenDeal(), {
         params: {
-          deckSize,
+          deckSize: requestedSize,
           includeP: includeP ? 'true' : 'false',
           includeG: includeG ? 'true' : 'false',
           includeU: includeU ? 'true' : 'false',
@@ -330,7 +376,7 @@ const RatingZenPage = () => {
         },
       });
       const dealt = data?.cards || [];
-      const peeks = data?.peeksAllowed ?? Math.floor(deckSize / DECK_UNIT);
+      const peeks = peeksForDeckSize(dealt.length);
       disposeViewTrackers();
       startSession({
         cards: dealt,
@@ -347,7 +393,7 @@ const RatingZenPage = () => {
         pendingRating: '',
         pendingComment: '',
         phase: dealt.length === 0 ? 'done' : 'stage',
-        deckSize,
+        deckSize: requestedSize,
         includeP,
         includeG,
         includeU,
@@ -357,6 +403,8 @@ const RatingZenPage = () => {
       setSaveError(null);
       if (dealt.length === 0) {
         toast(t('rating.zen.messages.emptyDeck'));
+      } else if (dealt.length < requestedSize) {
+        toast(t('rating.zen.messages.shortDeck', { n: dealt.length, requested: requestedSize }));
       }
     } catch (err) {
       console.error(err);
@@ -370,6 +418,8 @@ const RatingZenPage = () => {
   }, [
     user,
     deckSize,
+    customDeckDraft,
+    showCustomDeckInput,
     includeP,
     includeG,
     includeU,
@@ -501,12 +551,15 @@ const RatingZenPage = () => {
           }
         }
 
+        const isRepeatSubmit = previous != null && previous !== 'skipped';
         const streakPatch =
           streakDelta === null
             ? {}
             : streakDelta === 0
               ? { streak: 0 }
-              : { streak: prev.streak + streakDelta };
+              : isRepeatSubmit
+                ? {}
+                : { streak: prev.streak + streakDelta };
 
         if (nextOpen < 0) {
           return {
@@ -769,14 +822,33 @@ const RatingZenPage = () => {
               <CustomSelect
                 options={deckSizeOptions}
                 value={selectedDeckSizeOption}
-                onChange={(option) => patchSession({ deckSize: option.value })}
+                onChange={handleDeckSizeOptionChange}
                 width="100%"
                 menuPlacement="bottom"
                 isSearchable={false}
               />
+              {showCustomDeckInput ? (
+                <input
+                  type="number"
+                  className="rating-zen-page__number"
+                  min={MIN_DECK_SIZE}
+                  max={MAX_DECK_SIZE}
+                  step={1}
+                  inputMode="numeric"
+                  value={customDeckDraft}
+                  onChange={(e) => handleCustomDeckDraftChange(e.target.value)}
+                  aria-label={t('rating.zen.setup.deckSizeCustom')}
+                  aria-invalid={!deckSizeIsValid}
+                />
+              ) : null}
               <small>
-                {t('rating.zen.setup.peekHint')}
+                {t('rating.zen.setup.peekHint', { peeks: requestedPeeks })}
               </small>
+              {showCustomDeckInput && !deckSizeIsValid ? (
+                <small className="rating-zen-page__field-error">
+                  {t('rating.zen.errors.invalidDeckSize')}
+                </small>
+              ) : null}
             </div>
 
             <div className="rating-zen-page__field">
@@ -791,7 +863,6 @@ const RatingZenPage = () => {
                         : includeU;
                   return (
                     <label key={band} className="rating-zen-page__pgu-item">
-                      <span>{band}</span>
                       <input
                         type="checkbox"
                         checked={!included}
@@ -799,6 +870,7 @@ const RatingZenPage = () => {
                           patchSession({ [key]: !e.target.checked })
                         }
                       />
+                      <span>{band}</span>
                     </label>
                   );
                 })}
@@ -847,7 +919,7 @@ const RatingZenPage = () => {
                 type="button"
                 className="rating-zen-page__btn rating-zen-page__btn--primary"
                 onClick={() => void startDeal()}
-                disabled={isDealing || !user || showResumeActions}
+                disabled={isDealing || !user || showResumeActions || !deckSizeIsValid}
               >
                 {isDealing
                   ? t('rating.zen.setup.dealing')
