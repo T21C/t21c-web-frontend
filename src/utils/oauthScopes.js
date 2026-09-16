@@ -11,10 +11,13 @@ export const oauthScopeFlags = {
   USER_SUBMISSION_CREATE: 1n << 16n,
 };
 
-/** Identity-only v1 grantable mask (public profile). */
+/** Self-service app registration remains limited to public profile. */
 export const V1_GRANTABLE_MASK = oauthScopeFlags.USER_READ_PUBLIC;
 
 export const V1_GRANTABLE_MASK_STRING = V1_GRANTABLE_MASK.toString();
+
+/** Scopes that consent can display after server authorization. */
+export const CONSENT_SCOPE_MASK = V1_GRANTABLE_MASK | oauthScopeFlags.USER_SUBMISSION_CREATE;
 
 export const OAUTH_SCOPE_EXPAND_DISCORD_URL = 'https://discord.gg/AjyAVbqaxf';
 
@@ -52,9 +55,9 @@ export function listOAuthScopeFlags(bits) {
 }
 
 /**
- * Grantable flags only (v1).
+ * Displayable authorized flags, including official auto-submission access.
  * @param {bigint} bits
  */
 export function listGrantableOAuthScopeFlags(bits) {
-  return listOAuthScopeFlags(bits & V1_GRANTABLE_MASK);
+  return listOAuthScopeFlags(bits & CONSENT_SCOPE_MASK);
 }

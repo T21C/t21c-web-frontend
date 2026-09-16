@@ -12,6 +12,7 @@ import WorldsFirstFlag from "../WorldsFirstFlag/WorldsFirstFlag";
 import PassFlags from "../PassFlags";
 import { VideoLinkIcon } from "@/components/common/icons";
 import { getPrimaryVideoLink } from "@/utils/videoLink";
+import { isAutoSubmittedPass } from "@/utils/passSubmissionSource";
 import { UserAvatar } from "@/components/layout";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import MarqueeText from "@/components/common/display/MarqueeText/MarqueeText";
@@ -44,6 +45,7 @@ const ScoreCard = ({ scoreData, topScores = [], potentialTopScores = [], mode = 
   const isPassCardMode = mode === 'passcard' || isFeaturedMode;
   const isHiddenLevel = scoreData.level?.isHidden || false;
   const isHiddenPass = scoreData.isHidden || false;
+  const showVideo = Boolean(scoreData.videoLink) && !isHiddenLevel && !isAutoSubmittedPass(scoreData);
   const { difficultyDict } = useDifficultyContext();
   const formattedDate = formatPassDate(scoreData.vidUploadTime, i18next?.language);
   const passDetailTo = `/passes/${scoreData.id}`;
@@ -177,7 +179,7 @@ const ScoreCard = ({ scoreData, topScores = [], potentialTopScores = [], mode = 
       {accuracyBlock}
       {speedBlock}
       <PassFlags pass={scoreData} />
-      {!isFeaturedMode && (formattedDate || (scoreData.videoLink && !isHiddenLevel)) && (
+      {!isFeaturedMode && (formattedDate || showVideo) && (
         <div className="score-card__trailing">
           {formattedDate && (
             <time className="score-card__date" dateTime={scoreData.vidUploadTime}>
@@ -186,7 +188,7 @@ const ScoreCard = ({ scoreData, topScores = [], potentialTopScores = [], mode = 
           )}
 
           <div className="vid-logo-wrapper">
-            {scoreData.videoLink && !isHiddenLevel && (
+            {showVideo && (
               <a className="svg-fill" href={getPrimaryVideoLink(scoreData.videoLink)} target="_blank" rel="noreferrer" title={t('score.card.tooltips.watchVideo')}>
                 <VideoLinkIcon size="32px" url={scoreData.videoLink} />
               </a>
