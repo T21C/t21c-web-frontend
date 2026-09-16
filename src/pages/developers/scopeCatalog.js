@@ -15,7 +15,7 @@ export const OAUTH_SCOPE_CATALOG = {
   [oauthScopeFlags.USER_SUBMISSION_CREATE.toString()]: {
     key: 'USER_SUBMISSION_CREATE',
     label: 'Create submissions',
-    description: 'Reserved — not available yet.',
+    description: 'Create TUF pass submissions from recorded clears through this app.',
   },
 };
 

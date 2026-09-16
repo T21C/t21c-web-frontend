@@ -1,0 +1,57 @@
+/* tuf-search: #ReplayImmersiveView */
+.replay-immersive {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: #080808;
+  color: var(--color-white);
+  box-sizing: border-box;
+}
+.replay-immersive::backdrop {
+  background: #080808;
+}
+.replay-full-window {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.replay-full-window .replay-heading {
+  margin: 0;
+  padding: .5rem 1rem;
+  background: #161616;
+  flex-shrink: 0;
+}
+.replay-full-window .replay-workspace {
+  flex: 1;
+  min-height: 0;
+  border-radius: 0;
+  background: #161616;
+}
+.replay-full-window .replay-main {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.replay-full-window .replay-stage {
+  flex: 1;
+  min-height: 0;
+  aspect-ratio: auto;
+}
+.replay-full-window .replay-controls,
+.replay-full-window .replay-bottom-bar {
+  flex-shrink: 0;
+}
+.replay-full-window {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  z-index: 10000;
+  background: #14131c;
+}

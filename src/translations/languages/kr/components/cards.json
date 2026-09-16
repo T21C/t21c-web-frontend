@@ -24,6 +24,7 @@
       "speed": "배속"
     },
     "flags": {
+      "autoSubmitted": "자동 제출",
       "worldsFirst": "WF",
       "worldsFirstPP": "WF PP",
       "worldsFirstClearTooltip": "세계 최초 클리어!",
