@@ -69,19 +69,21 @@
     },
     "chartStats": {
       "title": "Métadonnées du chart",
-      "openButtonTitle": "Modifier BPM, tuiles et durée (hors CDN)",
+      "openButtonTitle": "Modifier BPM, tuiles, midspins et durée (hors CDN)",
       "clearHint": "Laisser un champ vide puis enregistrer pour l'effacer.",
       "preview": "Aperçu",
       "toastSaved": "Métadonnées du chart enregistrées",
       "labels": {
         "bpm": "BPM",
         "tilecount": "Nombre de tuiles",
+        "midspinCount": "Midspins",
         "lengthSeconds": "Durée (secondes)"
       },
       "errors": {
         "save": "Échec de l'enregistrement des métadonnées",
         "bpm": "Le BPM doit être un nombre supérieur à 0",
         "tilecount": "Le nombre de tuiles doit être un entier positif ou nul",
+        "midspinCount": "Le nombre de midspins doit être un entier positif ou nul",
         "length": "La durée doit être un nombre positif ou nul (secondes, décimales autorisées)"
       }
     },

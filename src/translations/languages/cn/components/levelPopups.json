@@ -120,19 +120,21 @@
     },
     "chartStats": {
       "title": "谱面数据",
-      "openButtonTitle": "编辑 BPM、物量与时长信息",
+      "openButtonTitle": "编辑 BPM、物量、中旋与时长信息",
       "clearHint": "留空可隐藏对应条目。",
       "preview": "预览",
       "toastSaved": "谱面数据已保存",
       "labels": {
         "bpm": "BPM",
         "tilecount": "物量",
+        "midspinCount": "中旋数",
         "lengthSeconds": "时长（秒）"
       },
       "errors": {
         "save": "保存谱面数据失败",
         "bpm": "BPM 必须为大于 0 的数字",
         "tilecount": "物量必须为非负整数",
+        "midspinCount": "中旋数必须为非负整数",
         "length": "时长必须为非负数（秒，可含小数）"
       }
     },
