@@ -1382,6 +1382,7 @@ const LevelSubmissions = () => {
                     </button>
                   </div>
                 </div>
+              </div>
 
                 <div className="embed-column">
                   <div className="embed-container">
@@ -1439,7 +1440,6 @@ const LevelSubmissions = () => {
                     }}
                   />
                 </div>
-              </div>
               {isSettledCardPhase(phase) && (
                 <SubmissionCompleteCloseButton
                   onClose={() => dismissSettledCards(setCardPhases, submission.id)}

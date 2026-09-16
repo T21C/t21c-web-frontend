@@ -14,6 +14,10 @@
     "myRated": {
       "label": "Mes évalués"
     },
+    "requestBands": {
+      "label": "Masquer demandés",
+      "hint": "Cochez pour masquer ce type de demande dans la liste"
+    },
     "rankReady": {
       "label": "Prêt à classer"
     }

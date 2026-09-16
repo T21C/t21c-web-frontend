@@ -5,6 +5,7 @@ import { Navigation } from "@/components/layout";
 import { PrivateRoute } from "@/components/auth";
 import { DeprecatedRedirect } from "@/components/routing/DeprecatedRedirect";
 import { ScrollToTopOnNavigate } from "@/components/routing/ScrollToTopOnNavigate";
+import { PathnameChangeBridge } from "@/components/routing/PathnameChangeBridge";
 import { RouteDocumentHead } from "@/components/routing/RouteDocumentHead";
 import { ChunkLoadErrorBoundary } from "@/components/routing/ChunkLoadErrorBoundary";
 import { DEPRECATED_ROUTES } from "@/config/deprecatedRoutes";
@@ -30,6 +31,7 @@ function App() {
   return (
     <>
       <ScrollToTopOnNavigate />
+      <PathnameChangeBridge />
       <RouteDocumentHead />
       {!hideChrome && <Navigation />}
       <div className="app-notifications" aria-live="polite">

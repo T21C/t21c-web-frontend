@@ -134,8 +134,8 @@
         "title": "Available Filters",
         "myRated": "My Rated",
         "myRatedDesc": "Show, hide, or show only levels you have already rated",
-        "lowDiff": "Low Difficulty",
-        "lowDiffDesc": "Filter levels marked as low difficulty",
+        "requestBands": "PGU request",
+        "requestBandsDesc": "Hide Planetary (P), Galactic (G), or Universal (U) requested ratings",
         "fourVote": "4+ Rated",
         "fourVoteDesc": "Filter levels that have 4 or more ratings"
       },

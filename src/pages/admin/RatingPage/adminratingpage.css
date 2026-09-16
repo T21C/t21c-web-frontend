@@ -376,6 +376,52 @@
     border-color: rgba(255, 255, 255, 0.5);
   }
 
+.admin-rating-page .admin-rating-body .pgu-band-filter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.admin-rating-page .admin-rating-body .pgu-band-filter .toggle-label {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+  font-weight: 500;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.admin-rating-page .admin-rating-body .pgu-band-filter__items {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  gap: 0.3rem;
+}
+
+.admin-rating-page .admin-rating-body .pgu-band-filter__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  cursor: pointer;
+  color: var(--color-gray-2);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  min-width: 1.35rem;
+}
+
+.admin-rating-page .admin-rating-body .pgu-band-filter__item:hover {
+  color: var(--color-white);
+}
+
+.admin-rating-page .admin-rating-body .pgu-band-filter__item input {
+  margin: 0;
+  cursor: pointer;
+}
+
 .admin-rating-page .admin-rating-body .view-mode-toggle {
     display: flex;
     align-items: center;

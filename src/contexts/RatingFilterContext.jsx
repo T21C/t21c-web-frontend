@@ -16,6 +16,7 @@ const STORAGE_KEYS = {
   HIDE_RATED: 'rating_hide_rated',
   MY_RATED: 'rating_my_rated',
   LOW_DIFF_FILTER: 'rating_low_diff_filter',
+  INCLUDE_BANDS: 'rating_include_bands',
   FOUR_VOTE_FILTER: 'rating_four_vote_filter',
   SORT_TYPE: 'rating_sort_type',
   SEARCH_QUERY: 'rating_search_query',
@@ -25,6 +26,30 @@ const STORAGE_KEYS = {
   SHOW_RATER_MANAGEMENT: 'rating_show_rater_management',
   SHOW_HELP: 'rating_show_help'
 };
+
+const DEFAULT_INCLUDE_BANDS = { includeP: true, includeG: true, includeU: true };
+
+function readIncludeBands() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEYS.INCLUDE_BANDS);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === 'object') {
+        return {
+          includeP: parsed.includeP !== false,
+          includeG: parsed.includeG !== false,
+          includeU: parsed.includeU !== false,
+        };
+      }
+    }
+  } catch {
+    // fall through to legacy lowDiff
+  }
+  const lowDiff = localStorage.getItem(STORAGE_KEYS.LOW_DIFF_FILTER);
+  if (lowDiff === 'only') return { includeP: true, includeG: false, includeU: false };
+  if (lowDiff === 'hide') return { includeP: false, includeG: true, includeU: true };
+  return { ...DEFAULT_INCLUDE_BANDS };
+}
 
 const MY_RATED_STATES = ['show', 'hide', 'only'];
 
@@ -38,7 +63,7 @@ function readMyRatedFilter() {
 export const RatingFilterProvider = ({ children }) => {
   const [sortOrder, setSortOrder] = useState(() => localStorage.getItem(STORAGE_KEYS.SORT_ORDER) || 'ASC');
   const [myRatedFilter, setMyRatedFilter] = useState(readMyRatedFilter);
-  const [lowDiffFilter, setLowDiffFilter] = useState(() => localStorage.getItem(STORAGE_KEYS.LOW_DIFF_FILTER) || 'show');
+  const [includeBands, setIncludeBands] = useState(readIncludeBands);
   const [fourVoteFilter, setFourVoteFilter] = useState(() => localStorage.getItem(STORAGE_KEYS.FOUR_VOTE_FILTER) || 'show');
   const [sortType, setSortType] = useState(() => localStorage.getItem(STORAGE_KEYS.SORT_TYPE) || 'ratings');
   const [searchQuery, setSearchQuery] = useState(() => localStorage.getItem(STORAGE_KEYS.SEARCH_QUERY) || '');
@@ -57,8 +82,8 @@ export const RatingFilterProvider = ({ children }) => {
   }, [myRatedFilter]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.LOW_DIFF_FILTER, lowDiffFilter);
-  }, [lowDiffFilter]);
+    localStorage.setItem(STORAGE_KEYS.INCLUDE_BANDS, JSON.stringify(includeBands));
+  }, [includeBands]);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.FOUR_VOTE_FILTER, fourVoteFilter);
@@ -95,7 +120,9 @@ export const RatingFilterProvider = ({ children }) => {
   const value = {
     sortOrder,
     myRatedFilter,
-    lowDiffFilter,
+    includeP: includeBands.includeP,
+    includeG: includeBands.includeG,
+    includeU: includeBands.includeU,
     fourVoteFilter,
     sortType,
     searchQuery,
@@ -106,7 +133,7 @@ export const RatingFilterProvider = ({ children }) => {
     showHelpPopup,
     setSortOrder,
     setMyRatedFilter,
-    setLowDiffFilter,
+    setIncludeBands,
     setFourVoteFilter,
     setSortType,
     setSearchQuery,
