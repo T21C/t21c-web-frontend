@@ -5,8 +5,10 @@ import { useEffect, useState, useMemo } from "react";
 import { useParams, Link, useLocation } from 'react-router-dom';
 import { UserAvatar } from "@/components/layout";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
-import { formatNumber, getVideoDetails, isoToEmoji } from "@/utils";
-import { getPrimaryVideoLink } from "@/utils/videoLink";
+import { formatNumber, isoToEmoji } from "@/utils";
+import { isAutoSubmittedPass } from "@/utils/passSubmissionSource";
+import PassAutoSubmissionFlag from "@/components/cards/PassAutoSubmissionFlag";
+import PassMedia from "./PassMedia";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
 import api from "@/utils/api";
@@ -41,7 +43,6 @@ const PassDetailPage = () => {
   const { id } = useParams();
   const location = useLocation();
   const [res, setRes] = useState(null);
-  const [videoDetail, setVideoDetail] = useState(null);
   const { user } = useAuth();
   const { difficultyDict } = useDifficultyContext();
   const [openEditDialog, setOpenEditDialog] = useState(false);
@@ -85,9 +86,10 @@ const PassDetailPage = () => {
     }, Math.random() * 300); // Small random delay before regenerating
   };
 
-  const fetchPassData = async () => {
+  const fetchPassData = async (isCurrent = () => true) => {
     try {
       const passData = await api.get(routes.database.passes.byIdPath(id));
+      if (!isCurrent()) return;
       setRes(prevRes => ({
         ...prevRes,
         pass: passData.data
@@ -153,14 +155,10 @@ const PassDetailPage = () => {
   };
 
   useEffect(() => {
-    fetchPassData();
+    let active = true;
+    fetchPassData(() => active);
+    return () => { active = false; };
   }, [id]);
-
-  useEffect(() => {
-    if (res?.pass?.videoLink) {
-      void getVideoDetails(res.pass.videoLink).then(setVideoDetail);
-    }
-  }, [res?.pass?.videoLink]);
 
   useEffect(() => {
     if (res?.pass) {
@@ -176,7 +174,7 @@ const PassDetailPage = () => {
     [res?.pass, t, location.pathname],
   );
 
-  if (res == null)
+  if (res == null || Number(res.pass.id) !== Number(id))
     return (
       <div className="pass-detail-page">
         
@@ -199,7 +197,7 @@ const PassDetailPage = () => {
     <>
       {passMeta ? <MetaTags {...passMeta} /> : null}
       
-      <div className="pass-detail">
+      <div className={`pass-detail${isAutoSubmittedPass(pass) ? ' pass-detail--replay' : ''}`}>
         {pass?.isDeleted && (
           <StatusBanner dismissible tone="danger" placement="centered" icon={<TrashIcon color="#fff" size="24px" />}>
             {t('passDetail.banners.deleted')}
@@ -306,6 +304,7 @@ const PassDetailPage = () => {
           </div>
 
           <div className="pass-detail-body">
+            {isAutoSubmittedPass(pass) && <PassMedia key={pass.id} pass={pass} />}
             <div className="info">
               <div className="info-items">
                 <div className="info-item">
@@ -335,7 +334,7 @@ const PassDetailPage = () => {
                   </span>
                 </div>
               </div>
-              {(pass.isWorldsFirst || pass.isWorldsFirstPP || normalizeKeyCount(pass.keyCount) != null || pass.is12K || pass.is16K || pass.isNoHoldTap || era === ADOFAI_VERSION.V2 || era === ADOFAI_VERSION.PRE_3_4_0 || pass.isXPerfectMode) && (
+              {(isAutoSubmittedPass(pass) || pass.isWorldsFirst || pass.isWorldsFirstPP || normalizeKeyCount(pass.keyCount) != null || pass.is12K || pass.is16K || pass.isNoHoldTap || era === ADOFAI_VERSION.V2 || era === ADOFAI_VERSION.PRE_3_4_0 || pass.isXPerfectMode) && (
                 <div className="flags-container">
                   {pass.isWorldsFirst && (
                     <WorldsFirstFlag variant="clear" tooltipIndex={`${pass.id}-detail-clear`} className="worlds-first" />
@@ -343,8 +342,9 @@ const PassDetailPage = () => {
                   {pass.isWorldsFirstPP && (
                     <WorldsFirstFlag variant="pp" tooltipIndex={`${pass.id}-detail-pp`} className="worlds-first" />
                   )}
-                  {(normalizeKeyCount(pass.keyCount) != null || pass.is12K || pass.is16K || pass.isNoHoldTap || era === ADOFAI_VERSION.V2 || era === ADOFAI_VERSION.PRE_3_4_0 || pass.isXPerfectMode) && (
+                  {(isAutoSubmittedPass(pass) || normalizeKeyCount(pass.keyCount) != null || pass.is12K || pass.is16K || pass.isNoHoldTap || era === ADOFAI_VERSION.V2 || era === ADOFAI_VERSION.PRE_3_4_0 || pass.isXPerfectMode) && (
                     <div className="flags">
+                      {isAutoSubmittedPass(pass) && <PassAutoSubmissionFlag />}
                       {normalizeKeyCount(pass.keyCount) != null ? (
                         <span className="flag">{t('passDetail.flags.keyCount', { count: normalizeKeyCount(pass.keyCount) })}</span>
                       ) : (
@@ -451,29 +451,7 @@ const PassDetailPage = () => {
               </div>
             </div>
 
-            <div className="youtube">
-              {videoDetail ? (
-                <iframe
-                  src={videoDetail.embed}
-                  title="Video player"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  referrerPolicy="strict-origin-when-cross-origin"
-                  allowFullScreen
-                />
-              ) : (
-                <div className="thumbnail-container">
-                  <div className="thumbnail-text">
-                    <p>{t('passDetail.video.notAvailable.text')}</p>
-                    {pass.videoLink && (
-                      <a href={getPrimaryVideoLink(pass.videoLink)} target="_blank" rel="noopener noreferrer">
-                        {t('passDetail.video.notAvailable.watchOnYoutube')}
-                      </a>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
+            {!isAutoSubmittedPass(pass) && <PassMedia key={pass.id} pass={pass} />}
           </div>
 
           <div className="pass-actions">

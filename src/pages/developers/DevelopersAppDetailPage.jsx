@@ -10,7 +10,6 @@ import { getCdnErrorMessage } from '@/utils/uploadErrors';
 import DevelopersAppIcon from './DevelopersAppIcon';
 import DevelopersRedirectChips from './DevelopersRedirectChips';
 import DevelopersScopeNotice from './DevelopersScopeNotice';
-import { V1_GRANTABLE_MASK_STRING } from '@/utils/oauthScopes';
 
 const TABS = ['overview', 'credentials', 'config', 'danger'];
 
@@ -92,7 +91,6 @@ const DevelopersAppDetailPage = () => {
     try {
       const res = await api.patch(routes.developers.apps.byId(appId), {
         redirectUris: form.redirectUris,
-        allowedScopes: V1_GRANTABLE_MASK_STRING,
       });
       setApp(res.data.app);
       setForm((f) => ({
