@@ -723,6 +723,23 @@ const RatingZenPage = () => {
   const communityRatings = peerDetails.filter((d) => d.isCommunityRating);
   const visiblePeers = showCommunityPeers ? communityRatings : adminRatings;
   const hasPeersToPeek = peerDetails.length > 0;
+  const peekSourceKind =
+    adminRatings.length > 0
+      ? 'has-managers'
+      : communityRatings.length > 0
+        ? 'community-only'
+        : 'none';
+  const peekSourceLabel =
+    peekSourceKind === 'has-managers'
+      ? t('rating.zen.peekSources.hasManagers', {
+          managers: adminRatings.length,
+          community: communityRatings.length,
+        })
+      : peekSourceKind === 'community-only'
+        ? t('rating.zen.peekSources.communityOnly', {
+            count: communityRatings.length,
+          })
+        : t('rating.zen.noPeers');
   const showResumeActions = hasResumableDeck;
 
   const progressBar = cards.length > 0 && (
@@ -1018,80 +1035,89 @@ const RatingZenPage = () => {
                   {t('components:rating.detailPopup.messages.ratingBanned')}
                 </p>
               ) : (
-                <div className="rating-zen-page__actions">
-                  <button
-                    type="button"
-                    className="rating-zen-page__btn rating-zen-page__btn--ghost rating-zen-page__btn--icon"
-                    onClick={handleSkip}
-                    disabled={isSaving}
-                    aria-label={t('rating.zen.actions.skip')}
-                    title={t('rating.zen.actions.skip')}
-                  >
-                    <span aria-hidden="true">
-                      <SkipIcon size={22} color="currentColor" />
-                    </span>
-                  </button>
-                  <span
-                    className="rating-zen-page__action-slot"
-                    data-tooltip-id={!hasPeersToPeek ? 'rating-zen-peek-empty' : undefined}
-                  >
+                <div className="rating-zen-page__actions-block">
+                  <div className="rating-zen-page__actions">
                     <button
                       type="button"
-                      className="rating-zen-page__btn rating-zen-page__btn--secondary rating-zen-page__btn--icon"
-                      onClick={handlePeek}
-                      disabled={cardPeeked || peeksLeft <= 0 || isSaving || !hasPeersToPeek}
+                      className="rating-zen-page__btn rating-zen-page__btn--ghost rating-zen-page__btn--icon"
+                      onClick={handleSkip}
+                      disabled={isSaving}
+                      aria-label={t('rating.zen.actions.skip')}
+                      title={t('rating.zen.actions.skip')}
+                    >
+                      <span aria-hidden="true">
+                        <SkipIcon size={22} color="currentColor" />
+                      </span>
+                    </button>
+                    <span
+                      className="rating-zen-page__action-slot"
+                      data-tooltip-id={!hasPeersToPeek ? 'rating-zen-peek-empty' : undefined}
+                    >
+                      <button
+                        type="button"
+                        className="rating-zen-page__btn rating-zen-page__btn--secondary rating-zen-page__btn--icon"
+                        onClick={handlePeek}
+                        disabled={cardPeeked || peeksLeft <= 0 || isSaving || !hasPeersToPeek}
+                        aria-label={
+                          cardPeeked
+                            ? t('rating.zen.actions.peeked')
+                            : `${t('rating.zen.actions.peek', { n: peeksLeft })}. ${peekSourceLabel}`
+                        }
+                        title={
+                          cardPeeked
+                            ? t('rating.zen.actions.peeked')
+                            : hasPeersToPeek
+                              ? `${t('rating.zen.actions.peek', { n: peeksLeft })} — ${peekSourceLabel}`
+                              : undefined
+                        }
+                      >
+                        <span aria-hidden="true">
+                          <EyeIcon size={22} color="currentColor" />
+                        </span>
+                      </button>
+                    </span>
+                    <button
+                      type="button"
+                      className="rating-zen-page__btn rating-zen-page__btn--primary rating-zen-page__btn--icon"
+                      onClick={() => void handleSubmit()}
+                      disabled={!canSubmit}
                       aria-label={
-                        cardPeeked
-                          ? t('rating.zen.actions.peeked')
-                          : t('rating.zen.actions.peek', { n: peeksLeft })
+                        isSaving
+                          ? t('loading.saving', { ns: 'common' })
+                          : t('rating.zen.actions.submit')
                       }
                       title={
-                        hasPeersToPeek
-                          ? cardPeeked
-                            ? t('rating.zen.actions.peeked')
-                            : t('rating.zen.actions.peek', { n: peeksLeft })
-                          : undefined
+                        isSaving
+                          ? t('loading.saving', { ns: 'common' })
+                          : !pendingRating.trim()
+                            ? t('rating.zen.errors.ratingRequired')
+                            : !pendingComment.trim()
+                              ? t('rating.zen.errors.commentRequired')
+                              : t('rating.zen.actions.submit')
                       }
                     >
                       <span aria-hidden="true">
-                        <EyeIcon size={22} color="currentColor" />
+                        {isSaving ? (
+                          <span className="spinner spinner-small" />
+                        ) : (
+                          <CheckmarkIcon size={20} color="currentColor" />
+                        )}
                       </span>
                     </button>
-                  </span>
-                  <button
-                    type="button"
-                    className="rating-zen-page__btn rating-zen-page__btn--primary rating-zen-page__btn--icon"
-                    onClick={() => void handleSubmit()}
-                    disabled={!canSubmit}
-                    aria-label={
-                      isSaving
-                        ? t('loading.saving', { ns: 'common' })
-                        : t('rating.zen.actions.submit')
-                    }
-                    title={
-                      isSaving
-                        ? t('loading.saving', { ns: 'common' })
-                        : !pendingRating.trim()
-                          ? t('rating.zen.errors.ratingRequired')
-                          : !pendingComment.trim()
-                            ? t('rating.zen.errors.commentRequired')
-                            : t('rating.zen.actions.submit')
-                    }
-                  >
-                    <span aria-hidden="true">
-                      {isSaving ? (
-                        <span className="spinner spinner-small" />
-                      ) : (
-                        <CheckmarkIcon size={20} color="currentColor" />
-                      )}
-                    </span>
-                  </button>
+                  </div>
+                  {!cardPeeked && (
+                    <p
+                      className={`rating-zen-page__peek-sources rating-zen-page__peek-sources--${peekSourceKind}`}
+                    >
+                      {peekSourceLabel}
+                    </p>
+                  )}
+                  {!hasPeersToPeek && (
+                    <Tooltip id="rating-zen-peek-empty" place="bottom" noArrow>
+                      {t('rating.zen.noPeers')}
+                    </Tooltip>
+                  )}
                 </div>
-              )}
-              {!hasPeersToPeek && !hasFlag(user, permissionFlags.RATING_BANNED) && (
-                <Tooltip id="rating-zen-peek-empty" place="bottom" noArrow>
-                  {t('rating.zen.noPeers')}
-                </Tooltip>
               )}
 
               <div className="rating-zen-page__meta">

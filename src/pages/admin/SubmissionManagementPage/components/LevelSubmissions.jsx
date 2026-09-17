@@ -7,10 +7,10 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { VirtualList } from '@/components/common/VirtualList';
 import { useTranslation } from "react-i18next";
-import { isImageUrl } from "@/utils/Utility";
+import { isImageUrl, formatDate } from "@/utils/Utility";
 import api from "@/utils/api";
 import { ProfileCreationModal } from './ProfileCreationModal';
-import { SubmissionCreatorPopup } from '@/components/popups/Levels';
+import { SubmissionCreatorPopup, LevelUploadManagementPopup } from '@/components/popups/Levels';
 import { SongSelectorPopup } from '@/components/popups/Songs';
 import { ArtistSelectorPopup } from '@/components/popups/Artists';
 import { EntityActionPopup } from '@/components/popups/Entities';
@@ -20,7 +20,6 @@ import { AdminReasonPrompt } from '@/components/common/AdminReasonPrompt';
 import { toast } from "react-hot-toast";
 import { ServerCloudIcon, WarningIcon, EditIcon, TrashIcon, PlusIcon } from "@/components/common/icons";
 import { Tooltip } from "react-tooltip";
-import { formatDate } from "@/utils/Utility";
 import i18next from "i18next";
 import { CreatorIcon } from "@/components/common/icons/CreatorIcon";
 import {
@@ -66,11 +65,20 @@ function mergeLevelSubmission(existing, updated, overrides = {}) {
   return merged;
 }
 
+function isUploadManageDisabled(phase) {
+  return isSettledCardPhase(phase)
+    || phase === 'queued'
+    || phase === 'processing'
+    || phase === 'approve'
+    || phase === 'decline';
+}
+
 
 const LevelSubmissions = () => {
   const { t } = useTranslation(['components', 'common', 'pages']);
   
   const [submissions, setSubmissions] = useState([]);
+  const [managingUploadId, setManagingUploadId] = useState(null);
   const [videoEmbeds, setVideoEmbeds] = useState({});
   const [cardPhases, setCardPhases] = useState({});
   const [disabledButtons, setDisabledButtons] = useState({});
@@ -804,6 +812,11 @@ const LevelSubmissions = () => {
     return <p className="no-submissions">{t('levelSubmissions.noSubmissions')}</p>;
   }
 
+  const managingSubmission =
+    managingUploadId != null
+      ? submissions.find((s) => s.id === managingUploadId)
+      : null;
+
   return (
     <>
       <div className="submissions-list">  
@@ -1107,34 +1120,43 @@ const LevelSubmissions = () => {
                     <span className="detail-value">{submission.diff}</span>
                   </div>
 
-                  {submission.directDL ? (
-                    <div className="detail-row">
-                      <span className="detail-label">{t('levelSubmissions.details.download.label')}</span>
-                      <a 
-                        href={submission.directDL} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="detail-link"
+                  <div className="detail-row">
+                    <span className="detail-label">{t('levelSubmissions.details.download.label')}</span>
+                    <div className="detail-value-group download-manage-group">
+                      {submission.directDL ? (
+                        <a
+                          href={submission.directDL}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="detail-link"
+                        >
+                          {t('levelSubmissions.details.download.directLink')}
+                          {submission.directDL.includes(import.meta.env.VITE_CDN_URL) && (
+                            <ServerCloudIcon size="24px" color="#aaffaa"
+                              data-tooltip-id="cdn-tooltip"
+                            />
+                          )}
+                          <Tooltip className="cdn-tooltip" id="cdn-tooltip" place="right">
+                            {t('levelSubmissions.details.download.cdnLink')}
+                          </Tooltip>
+                        </a>
+                      ) : (
+                        <span className="detail-value" style={{color: "rgb(255, 100, 100)"}}>
+                          {t('levelSubmissions.details.download.notAvailable')}
+                        </span>
+                      )}
+                      <button
+                        type="button"
+                        className="download-manage-btn"
+                        disabled={isUploadManageDisabled(phase)}
+                        onClick={() => setManagingUploadId(submission.id)}
                       >
-                        {t('levelSubmissions.details.download.directLink')}
-                        {submission.directDL.includes(import.meta.env.VITE_CDN_URL) && (
-                          <ServerCloudIcon size="24px" color="#aaffaa" 
-                            data-tooltip-id="cdn-tooltip"
-                          />
-                        )}
-                        <Tooltip className="cdn-tooltip" id="cdn-tooltip" place="right">
-                          {t('levelSubmissions.details.download.cdnLink')}
-                        </Tooltip>
-                      </a>
+                        {submission.directDL
+                          ? t('levelSubmissions.details.download.manage')
+                          : t('levelSubmissions.details.download.manageMissing')}
+                      </button>
                     </div>
-                  ) : (
-                    <div className="detail-row">
-                      <span className="detail-label">{t('levelSubmissions.details.download.label')}</span>
-                      <span className="detail-value" style={{color: "rgb(255, 100, 100)"}}>
-                        {t('levelSubmissions.details.download.notAvailable')}
-                      </span>
-                    </div>
-                  )}
+                  </div>
 
                   {submission.wsLink && (
                     <div className="detail-row">
@@ -1550,6 +1572,29 @@ const LevelSubmissions = () => {
             setSelectedEvidenceSubmission(null);
           }}
           showTitleHeader={true}
+        />
+      )}
+
+      {managingSubmission && (
+        <LevelUploadManagementPopup
+          zipTarget={{
+            kind: 'submission',
+            id: managingSubmission.id,
+            dlLink: managingSubmission.directDL,
+            workshopLink: managingSubmission.wsLink,
+          }}
+          onDlLinkChange={(newDlLink) => {
+            setSubmissions((prev) =>
+              prev.map((s) =>
+                s.id === managingSubmission.id
+                  ? mergeLevelSubmission(s, { directDL: newDlLink })
+                  : s
+              )
+            );
+          }}
+          onClose={() => setManagingUploadId(null)}
+          allowDelete={false}
+          isSuperAdmin
         />
       )}
 

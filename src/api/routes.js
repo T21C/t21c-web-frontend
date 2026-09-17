@@ -215,6 +215,14 @@ export const routes = {
         `/v2/admin/submissions/levels/${enc(submissionId)}/notes`,
       levelCreators: (submissionId) =>
         `/v2/admin/submissions/levels/${enc(submissionId)}/creators`,
+      levelUpload: (submissionId) =>
+        `/v2/admin/submissions/levels/${enc(submissionId)}/upload`,
+      levelUploadFromUrl: (submissionId) =>
+        `/v2/admin/submissions/levels/${enc(submissionId)}/upload-from-url`,
+      levelSelectLevel: (submissionId) =>
+        `/v2/admin/submissions/levels/${enc(submissionId)}/select-level`,
+      levelReparseChart: (submissionId) =>
+        `/v2/admin/submissions/levels/${enc(submissionId)}/reparse-chart`,
       pass: (submissionId) => `/v2/admin/submissions/passes/${enc(submissionId)}`,
       passAction: (submissionId, action) =>
         `/v2/admin/submissions/passes/${enc(submissionId)}/${enc(action)}`,

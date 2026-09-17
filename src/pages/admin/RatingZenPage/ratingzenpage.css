@@ -653,9 +653,31 @@ html.rating-zen-active .background::after {
   flex-shrink: 0;
 }
 
-.rating-zen-page__panel > .rating-zen-page__actions {
+.rating-zen-page .rating-zen-page__actions-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid var(--color-white-t10);
+}
+
+.rating-zen-page .rating-zen-page__peek-sources {
+  margin: 0;
+  text-align: center;
+  font-size: 0.8rem;
+  line-height: 1.3;
+}
+
+.rating-zen-page .rating-zen-page__peek-sources--none {
+  color: var(--color-gray-2);
+}
+
+.rating-zen-page .rating-zen-page__peek-sources--community-only {
+  color: var(--btn-warning);
+}
+
+.rating-zen-page .rating-zen-page__peek-sources--has-managers {
+  color: var(--btn-success);
 }
 
 .rating-zen-page__action-slot {

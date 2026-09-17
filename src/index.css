@@ -918,16 +918,6 @@ button {
   color: #ffc107;
 }
 
-.verification-chip.conditional {
-  background-color: rgba(255, 152, 0, 0.2);
-  color: #ff9800;
-}
-
-.verification-chip.ysmod_only {
-  background-color: rgba(156, 39, 176, 0.2);
-  color: #9c27b0;
-}
-
 .verification-chip.mostly_declined {
   background-color: rgba(244, 119, 15, 0.2);
   color: #ff772e;
@@ -947,6 +937,7 @@ button {
   background-color: rgba(255, 152, 0, 0.2);
   color: #ff9800;
 }
+
 .verification-chip.ysmod_only {
   background-color: rgba(54, 77, 224, 0.2);
   color: #364de0;

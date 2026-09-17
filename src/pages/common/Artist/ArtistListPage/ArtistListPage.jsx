@@ -16,6 +16,7 @@ import { useArtistContext } from '@/contexts/ArtistContext';
 import './artistListPage.css';
 import '@/pages/common/search-section.css';
 import { getVerificationClass } from '@/utils/Utility';
+import { artistVerificationSelectOptions } from '@/utils/verificationStates';
 
 const ArtistListPage = () => {
   const { t } = useTranslation(['pages', 'common']);
@@ -127,15 +128,9 @@ const ArtistListPage = () => {
     { value: 'ID_DESC', label: t('artistList.sort.idDesc') }
   ];
 
-  const verificationStateOptions = [
+  const verificationStateOptions = artistVerificationSelectOptions(t, [
     { value: null, label: t('verification.all', { ns: 'common' }) },
-    { value: 'unverified', label: t('verification.unverified', { ns: 'common' }) },
-    { value: 'pending', label: t('verification.pending', { ns: 'common' }) },
-    { value: 'declined', label: t('verification.declined', { ns: 'common' }) },
-    { value: 'mostly_declined', label: t('verification.mostly_declined', { ns: 'common' }) },
-    { value: 'mostly_allowed', label: t('verification.mostly_allowed', { ns: 'common' }) },
-    { value: 'allowed', label: t('verification.allowed', { ns: 'common' }) }
-  ];
+  ]);
 
   return (
     <div className="artist-list-page">

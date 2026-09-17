@@ -90,6 +90,10 @@
     "exit": "Pause session",
     "noVideo": "No video available",
     "noPeers": "No ratings yet",
+    "peekSources": {
+      "hasManagers": "Managers: {{managers}} · Community: {{community}}",
+      "communityOnly": "Community only ({{count}})"
+    },
     "setup": {
       "title": "Rating Zen Mode",
       "subtitle": "Rate levels, one at a time.",

@@ -17,7 +17,9 @@
       "label": "下载：",
       "directLink": "直链",
       "notAvailable": "无",
-      "cdnLink": "本地 CDN 链接"
+      "cdnLink": "本地 CDN 链接",
+      "manage": "管理上传",
+      "manageMissing": "添加上传"
     },
     "workshop": {
       "label": "创意工坊：",

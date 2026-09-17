@@ -134,6 +134,16 @@
   color: #aaa;
 }
 
+.artist-selector-popup .verification-status.ysmod_only {
+  background-color: rgba(54, 77, 224, 0.2);
+  color: #364de0;
+}
+
+.artist-selector-popup .verification-status.tuf_verified {
+  background-color: rgba(195, 0, 255, 0.25);
+  color: #ff42f9;
+}
+
 .artist-selector-popup .artist-stats {
   margin-top: 16px;
   padding-top: 16px;
@@ -312,6 +322,16 @@
 .artist-selector-popup .artist-result .verification-badge.unverified {
   background-color: rgba(128, 128, 128, 0.2);
   color: #aaa;
+}
+
+.artist-selector-popup .artist-result .verification-badge.ysmod_only {
+  background-color: rgba(54, 77, 224, 0.2);
+  color: #364de0;
+}
+
+.artist-selector-popup .artist-result .verification-badge.tuf_verified {
+  background-color: rgba(195, 0, 255, 0.25);
+  color: #ff42f9;
 }
 
 .artist-selector-popup .create-artist-form {

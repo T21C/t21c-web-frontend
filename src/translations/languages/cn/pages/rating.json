@@ -90,6 +90,10 @@
     "exit": "暂停",
     "noVideo": "无可用视频",
     "noPeers": "无评级",
+    "peekSources": {
+      "hasManagers": "评级员 {{managers}} · 玩家 {{community}}",
+      "communityOnly": "仅有玩家评级（{{count}}）"
+    },
     "setup": {
       "title": "沉浸模式评级",
       "subtitle": "沉浸评级，一次一个。",
