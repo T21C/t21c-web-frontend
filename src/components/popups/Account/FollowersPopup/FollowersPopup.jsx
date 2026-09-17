@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { PopupShell } from '@/components/common/PopupShell';
 import api from '@/utils/api';
 import { formatNumber } from '@/utils';
 import { UserAvatar } from '@/components/layout';
@@ -59,7 +60,12 @@ const FollowersPopup = ({ followersUrl, onClose }) => {
   const hasNext = page < totalPages;
 
   return (
-    <div className="followers-popup" role="menu" aria-label={t('profile.followersPopup.title')}>
+    <PopupShell
+      onClose={onClose}
+      overlayClassName="followers-popup-overlay"
+      panelClassName="followers-popup"
+      ariaLabel={t('profile.followersPopup.title')}
+    >
       <div className="followers-popup__list">
         {loading ? (
           <p className="followers-popup__status">{t('profile.followersPopup.loading')}</p>
@@ -133,7 +139,7 @@ const FollowersPopup = ({ followersUrl, onClose }) => {
           </button>
         </div>
       ) : null}
-    </div>
+    </PopupShell>
   );
 };
 

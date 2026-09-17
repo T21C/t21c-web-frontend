@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
 import api from '@/utils/api';
 import { routes } from '@/api/routes';
+import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { getRateLimitMessage } from '@/utils/rateLimitError';
 import { getCdnErrorMessage } from '@/utils/uploadErrors';
 import ImageSelectorPopup from '@/components/common/selectors/ImageSelectorPopup/ImageSelectorPopup';
@@ -150,7 +151,7 @@ const DevelopersModEditPage = () => {
         <form className="developers-portal__form" onSubmit={submit}>
           <div className="developers-portal__icon-row">
             {iconUrl ? (
-              <img className="developers-portal__app-icon developers-portal__app-icon--lg" src={iconUrl} alt="" />
+              <img className="developers-portal__app-icon developers-portal__app-icon--lg" src={selectIconSize(iconUrl, ICON_SIZE.MEDIUM)} alt="" />
             ) : (
               <span
                 className="developers-portal__app-icon developers-portal__app-icon--lg developers-portal__app-icon--fallback"

@@ -11,6 +11,7 @@ import { toastError, toastSuccess } from '@/utils/toastMessage';
 import { isCdnUrl } from '@/utils/Utility';
 import { CrossIcon } from '@/components/common/icons';
 import { CloseButton } from '@/components/common/buttons';
+import { PopupShell } from '@/components/common/PopupShell';
 import { useJobProgressStream } from '@/hooks/useJobProgressStream';
 import ZipLevelFilesList from '@/components/popups/Levels/ZipLevelFilesList/ZipLevelFilesList';
 import { ARCHIVE_ACCEPT_ATTR, isAcceptedArchiveFile } from '@/utils/zipUtils';
@@ -592,13 +593,6 @@ const LevelUploadManagementPopup = ({
     }
   };
 
-  const handleOverlayClick = (e) => {
-    if (e.target === e.currentTarget) {
-      e.stopPropagation();
-      handleClose();
-    }
-  };
-
   const handleClose = () => {
     // Prevent closing during upload
     if (isUploading) {
@@ -612,10 +606,6 @@ const LevelUploadManagementPopup = ({
       }
     }
     onClose();
-  };
-
-  const handleContentClick = (e) => {
-    e.stopPropagation();
   };
 
   const streamPct = typeof cdnJob?.percent === 'number' ? cdnJob.percent : 0;
@@ -635,18 +625,17 @@ const LevelUploadManagementPopup = ({
   const showDropOverlay = isDragOver && !isUploading;
 
   return (
-    <div
-      className="level-upload-management-popup"
-      onClick={handleOverlayClick}
-      onDragEnter={handleDragEnter}
-      onDragLeave={handleDragLeave}
-      onDragOver={handleDragOver}
-      onDrop={handleDrop}
+    <PopupShell
+      onClose={handleClose}
+      overlayClassName="level-upload-management-popup"
+      panelClassName={`level-upload-management-content${showDropOverlay ? ' is-drop-target' : ''}`}
+      overlayProps={{
+        onDragEnter: handleDragEnter,
+        onDragLeave: handleDragLeave,
+        onDragOver: handleDragOver,
+        onDrop: handleDrop,
+      }}
     >
-      <div
-        className={`level-upload-management-content${showDropOverlay ? ' is-drop-target' : ''}`}
-        onClick={handleContentClick}
-      >
         {showDropOverlay && (
           <div className="level-upload-drop-zone" aria-live="polite">
             <p className="level-upload-drop-zone__message">
@@ -860,8 +849,7 @@ const LevelUploadManagementPopup = ({
           </>
         )}
         </div>
-      </div>
-    </div>
+    </PopupShell>
   );
 };
 

@@ -12,6 +12,7 @@ import { VirtualList } from '@/components/common/VirtualList';
 import { FacetQueryBuilder } from '@/components/common/selectors';
 import { buildFacetQueryParam } from '@/utils/facetQueryCodec';
 import api from '@/utils/api';
+import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { CLIENT_PREF_KEYS } from '@/utils/clientPreferences';
 import toast from 'react-hot-toast';
 import { LikeButton } from '@/components/common/buttons';
@@ -90,7 +91,7 @@ function ModCatalogCard({ mod, t, onReport }) {
   return (
     <article className={`mods-page__card ${mod.isPinned ? 'is-pinned' : ''}`.trim()}>
       <div className="mods-page__card-head">
-        {mod.imageUrl ? <img className="mods-page__card-thumb" src={mod.imageUrl} alt="" /> : null}
+        {mod.imageUrl ? <img className="mods-page__card-thumb" src={selectIconSize(mod.imageUrl, ICON_SIZE.MEDIUM)} alt="" /> : null}
         <div className="mods-page__card-title-row">
           <Link className="mods-page__card-title" to={href}>
             {mod.name}

@@ -8,6 +8,7 @@ import { AccessDenied, MetaTags } from '@/components/common/display';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { CustomSelect } from '@/components/common/selectors';
 import { EntityActionPopup } from '@/components/popups/Entities';
+import { PopupShell } from '@/components/common/PopupShell';
 import api from '@/utils/api';
 import { routes } from '@/api/routes';
 import { getCdnErrorMessage } from '@/utils/uploadErrors';
@@ -473,8 +474,12 @@ const EntityManagementPage = ({ type = 'artist' }) => {
       )}
 
       {showAddForm && (
-        <div className="add-form-overlay" onClick={() => setShowAddForm(false)}>
-          <div className="add-form" onClick={(e) => e.stopPropagation()}>
+        <PopupShell
+          onClose={() => setShowAddForm(false)}
+          closeDisabled={isCreating}
+          overlayClassName="add-form-overlay"
+          panelClassName="add-form"
+        >
             <h3>{tEntity('form.title')}</h3>
             <div className="form-group">
               <label>{tEntity('form.name')}</label>
@@ -616,8 +621,7 @@ const EntityManagementPage = ({ type = 'artist' }) => {
                 {t('buttons.cancel', { ns: 'common' })}
               </button>
             </div>
-          </div>
-        </div>
+        </PopupShell>
       )}
     </div>
     </div>

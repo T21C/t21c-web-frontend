@@ -1,6 +1,6 @@
 // tuf-search: #TopRatersPopup #topRatersPopup #popups #rating #topRaters
 import React, { useState, useEffect, useCallback } from 'react';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { PopupShell } from '@/components/common/PopupShell';
 import './topraterspopup.css';
 import api from '@/utils/api';
 import { routes } from '@/api/routes';
@@ -97,32 +97,6 @@ const TopRatersPopup = ({ onClose }) => {
     hasPrevPage: false
   });
 
-  const handleClickOutside = useCallback((event) => {
-    if (event.target.classList.contains('top-raters-overlay')) {
-      onClose();
-    }
-  }, [onClose]);
-
-  const handleEscapeKey = useCallback((event) => {
-    if (event.key === 'Escape') {
-      onClose();
-    }
-  }, [onClose]);
-
-  useBodyScrollLock(true);
-
-  useEffect(() => {
-    // Add event listeners
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('keydown', handleEscapeKey);
-
-    // Cleanup
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleEscapeKey);
-    };
-  }, [handleClickOutside, handleEscapeKey]);
-
   const fetchTopRaters = useCallback(async (page = 1) => {
     try {
       setIsLoading(true);
@@ -144,18 +118,6 @@ const TopRatersPopup = ({ onClose }) => {
         .sort((a, b) => b.averagePerDay - a.averagePerDay);
 
       setTopRaters(allRaters);
-
-      // Format numbers for better readability
-      const formatNumber = (num) => {
-        if (num >= 1000) {
-          return (num / 1000).toFixed(1) + 'k';
-        }
-        return num.toString();
-      };
-
-      const formatAverage = (avg) => {
-        return avg.toFixed(1);
-      };
 
       setOverallStats({
         totalUsers: totalUsers,
@@ -195,8 +157,11 @@ const TopRatersPopup = ({ onClose }) => {
   };
 
   return (
-    <div className="top-raters-overlay">
-      <div className="top-raters-popup">
+    <PopupShell
+      onClose={onClose}
+      overlayClassName="top-raters-overlay"
+      panelClassName="top-raters-popup"
+    >
         <div className="popup-header">
           <h2>{t('topRaters.title')}</h2>
           <CloseButton
@@ -315,7 +280,6 @@ const TopRatersPopup = ({ onClose }) => {
             <span>{t('topRaters.legend.crownOrnament')}</span>
           </div>
         </div>
-      </div>
 
       {errorMessage && (
         <div className="error-message-container">
@@ -323,7 +287,7 @@ const TopRatersPopup = ({ onClose }) => {
           <button className="close-error" onClick={() => setErrorMessage('')}>×</button>
         </div>
       )}
-    </div>
+    </PopupShell>
   );
 };
 

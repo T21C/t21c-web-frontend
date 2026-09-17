@@ -6,6 +6,7 @@ import './aliasmanagementpopup.css';
 import api from '@/utils/api';
 import { CustomSelect } from '@/components/common/selectors';
 import { CloseButton } from '@/components/common/buttons';
+import { PopupShell } from '@/components/common/PopupShell';
 
 const AliasManagementPopup = ({ levelId, onClose }) => {
   const { t } = useTranslation('common');
@@ -39,20 +40,7 @@ const AliasManagementPopup = ({ levelId, onClose }) => {
 
     fetchLevelData();
     fetchAliases();
-
-    // Add ESC key handler
-    const handleEsc = (e) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
-    };
-    window.addEventListener('keydown', handleEsc);
-
-    // Cleanup
-    return () => {
-      window.removeEventListener('keydown', handleEsc);
-    };
-  }, [levelId, onClose]);
+  }, [levelId]);
 
   // Add effect to fetch affected levels count when propagation settings change
   useEffect(() => {
@@ -86,17 +74,6 @@ const AliasManagementPopup = ({ levelId, onClose }) => {
 
     fetchAffectedLevelsCount();
   }, [newAlias.propagate, newAlias.field, newAlias.matchType, levelId]);
-
-  const handleOverlayClick = (e) => {
-    if (e.target === e.currentTarget) {
-      e.stopPropagation();
-      onClose();
-    }
-  };
-
-  const handleContentClick = (e) => {
-    e.stopPropagation();
-  };
 
   const fetchAliases = async () => {
     try {
@@ -153,16 +130,16 @@ const AliasManagementPopup = ({ levelId, onClose }) => {
   };
 
   return (
-    <div className="alias-management-popup" onClick={handleOverlayClick}>
-      <div className="alias-management-content" onClick={handleContentClick}>
+    <PopupShell
+      onClose={onClose}
+      overlayClassName="alias-management-popup"
+      panelClassName="alias-management-content"
+    >
         <div className="alias-management-header">
           <h2>Manage Aliases</h2>
           <CloseButton
             variant="inline"
-            onClick={(e) => {
-              e.stopPropagation();
-              onClose();
-            }}
+            onClick={onClose}
             aria-label={t('buttons.close', { ns: 'common' })}
           />
         </div>
@@ -262,8 +239,7 @@ const AliasManagementPopup = ({ levelId, onClose }) => {
             </table>
           )}
         </div>
-      </div>
-    </div>
+    </PopupShell>
   );
 };
 

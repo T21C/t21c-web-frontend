@@ -22,6 +22,7 @@ import { useTranslation } from 'react-i18next';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { RatingInput, CustomSelect } from '@/components/common/selectors';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { CDN_IMAGE_ACCEPT } from '@/config/constants/cdnImageAccept';
 import {
   COMMUNITY_TAG_DEFAULT_KNOBS,
@@ -166,7 +167,7 @@ function TagIconEditor({ icon, onSelectFile, onRemove, t, i18nPrefix }) {
           aria-label={t(`${i18nPrefix}.icon.preview`)}
         >
           {icon ? (
-            <img src={icon} alt="" />
+            <img src={selectIconSize(icon, ICON_SIZE.SMALL)} alt="" />
           ) : (
             <ImageIcon size="28px" color="currentColor" />
           )}
@@ -1318,7 +1319,7 @@ const DifficultyPage = () => {
                           >
                             <div className="difficulty-info">
                               <img 
-                                src={difficulty.icon} 
+                                src={selectIconSize(difficulty.icon, ICON_SIZE.MEDIUM)} 
                                 alt={difficulty.name} 
                                 className="difficulty-icon"
                               />
@@ -1419,7 +1420,7 @@ const DifficultyPage = () => {
                                           <div className="tag-item-content">
                                             {tag.icon && (
                                               <img
-                                                src={tag.icon}
+                                                src={selectIconSize(tag.icon, ICON_SIZE.SMALL)}
                                                 alt={tag.name}
                                                 className="tag-item-icon"
                                               />
@@ -1528,7 +1529,7 @@ const DifficultyPage = () => {
                                           title={tag.name}
                                         >
                                           {tag.icon ? (
-                                            <img src={tag.icon} alt={tag.name} />
+                                            <img src={selectIconSize(tag.icon, ICON_SIZE.SMALL)} alt={tag.name} />
                                           ) : (
                                             <span>{tag.name.charAt(0)}</span>
                                           )}

@@ -1,10 +1,9 @@
 // tuf-search: #ChangeEmailPopup #changeEmailPopup #popups #users #changeEmail
 import React, { useState, useEffect, useRef } from 'react';
-import { Portal } from '@/components/common/Portal';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { CloseButton } from '@/components/common/buttons';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { PopupShell } from '@/components/common/PopupShell';
 import { hasAccountEmail } from '@/utils/accountEmail';
 import { useElevation } from '@/contexts/ElevationContext';
 import './changeEmailPopup.css';
@@ -27,8 +26,6 @@ const ChangeEmailPopup = ({
   const [isSaving, setIsSaving] = useState(false);
   const [ready, setReady] = useState(false);
   const elevatingRef = useRef(false);
-
-  useBodyScrollLock(isOpen);
 
   useEffect(() => {
     if (!isOpen) {
@@ -65,15 +62,6 @@ const ChangeEmailPopup = ({
     // Intentionally only re-run when the popup opens/closes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
-
-  useEffect(() => {
-    if (!isOpen) return undefined;
-    const onKey = (e) => {
-      if (e.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [isOpen, onClose]);
 
   if (!isOpen || !ready) return null;
 
@@ -131,19 +119,13 @@ const ChangeEmailPopup = ({
   };
 
   return (
-    <Portal>
-      <div
-        className="change-email-popup-overlay"
-        role="presentation"
-        onClick={onClose}
-      >
-        <div
-          className="change-email-popup"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="change-email-popup-title"
-          onClick={(e) => e.stopPropagation()}
-        >
+    <PopupShell
+      onClose={onClose}
+      closeDisabled={isSaving}
+      overlayClassName="change-email-popup-overlay"
+      panelClassName="change-email-popup"
+      ariaLabelledBy="change-email-popup-title"
+    >
           <div className="change-email-popup-header">
             <h2 id="change-email-popup-title">
               {isSettingEmail
@@ -218,9 +200,7 @@ const ChangeEmailPopup = ({
               </button>
             </div>
           </form>
-        </div>
-      </div>
-    </Portal>
+    </PopupShell>
   );
 };
 

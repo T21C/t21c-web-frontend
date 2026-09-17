@@ -1,7 +1,7 @@
 // tuf-search: #PackDownloadPopup #packDownloadPopup #popups #packs #packDownload
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { PopupShell } from '@/components/common/PopupShell';
 import { useJobProgressStream } from '@/hooks/useJobProgressStream';
 import './PackDownloadPopup.css';
 import { formatEstimatedSize } from '@/utils/packDownloadUtils';
@@ -39,7 +39,6 @@ const PackDownloadPopup = ({
   onRequestDownload
 }) => {
   const { t } = useTranslation(['components', 'common']);
-  const popupRef = useRef(null);
   const [step, setStep] = useState('confirm');
   const [error, setError] = useState(null);
   const [downloadData, setDownloadData] = useState(null);
@@ -97,33 +96,6 @@ const PackDownloadPopup = ({
     }
   }, [isOpen, step, packJobId, packJob, t]);
 
-  useBodyScrollLock(isOpen);
-
-  useEffect(() => {
-    if (!isOpen) return undefined;
-
-    const handleEscapeKey = (event) => {
-      if (event.key === 'Escape') {
-        onClose();
-      }
-    };
-
-    const handleClickOutside = (event) => {
-      if (popupRef.current && !popupRef.current.contains(event.target)) {
-        onClose();
-      }
-    };
-
-    document.addEventListener('keydown', handleEscapeKey);
-    document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('keydown', handleEscapeKey);
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isOpen, onClose]);
-
-
   if (!isOpen) {
     return null;
   }
@@ -161,8 +133,11 @@ const PackDownloadPopup = ({
   const { sizeLabel, missingCount } = formatEstimatedSize(sizeSummary || DEFAULT_SIZE_SUMMARY);
 
   return (
-    <div className="pack-download-popup__overlay">
-      <div className="pack-download-popup" ref={popupRef}>
+    <PopupShell
+      onClose={onClose}
+      overlayClassName="pack-download-popup__overlay"
+      panelClassName="pack-download-popup"
+    >
         <CloseButton
           variant="floating"
           className="pack-download-popup__close-btn"
@@ -293,8 +268,7 @@ const PackDownloadPopup = ({
             </div>
           )}
         </div>
-      </div>
-    </div>
+    </PopupShell>
   );
 };
 

@@ -1,10 +1,9 @@
 // tuf-search: #TournamentDisplayTreeEditor #tournamentDisplayTree
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Portal } from "@/components/common/Portal";
+import { PopupShell } from "@/components/common/PopupShell";
 import { CloseButton } from "@/components/common/buttons";
 import { ChevronIcon, EyeIcon, EyeOffIcon } from "@/components/common/icons";
-import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 import { getCreditId } from "@/utils/tournamentPlacements";
 import {
   buildDisplayNodePathLabel,
@@ -37,7 +36,6 @@ function DisplayPlacementPopup({
   onSubmit,
 }) {
   const { t } = useTranslation("pages");
-  const popupRef = useRef(null);
   const [groupName, setGroupName] = useState("");
   const [selectedSlotKey, setSelectedSlotKey] = useState(null);
   const [collapsedGroupIds, setCollapsedGroupIds] = useState(() => new Set());
@@ -62,24 +60,6 @@ function DisplayPlacementPopup({
     });
     setSelectedSlotKey(defaultSlot.slotKey);
   }, [isOpen, tree, excludeId, movingNode, mode]);
-
-  useBodyScrollLock(isOpen);
-
-  useEffect(() => {
-    if (!isOpen) return undefined;
-    const onKey = (event) => {
-      if (event.key === "Escape") onClose();
-    };
-    const onClickOutside = (event) => {
-      if (popupRef.current && !popupRef.current.contains(event.target)) onClose();
-    };
-    document.addEventListener("keydown", onKey);
-    document.addEventListener("mousedown", onClickOutside);
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.removeEventListener("mousedown", onClickOutside);
-    };
-  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -107,9 +87,11 @@ function DisplayPlacementPopup({
   const indentRem = (depth) => `${0.5 + clampDisplayIndentDepth(depth) * 1.1}rem`;
 
   return (
-    <Portal>
-      <div className="tournament-display-tree-editor__placement-overlay">
-        <div className="tournament-display-tree-editor__placement-popup" ref={popupRef}>
+    <PopupShell
+      onClose={onClose}
+      overlayClassName="tournament-display-tree-editor__placement-overlay"
+      panelClassName="tournament-display-tree-editor__placement-popup"
+    >
           <CloseButton
             variant="floating"
             className="tournament-display-tree-editor__placement-close"
@@ -254,9 +236,7 @@ function DisplayPlacementPopup({
               </button>
             </div>
           </div>
-        </div>
-      </div>
-    </Portal>
+    </PopupShell>
   );
 }
 

@@ -21,7 +21,7 @@ import { toast } from 'react-hot-toast';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { canAssignCurationType } from '@/utils/curationTypeUtils';
-import { formatCreatorDisplay } from '@/utils/Utility';
+import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { FacetQueryBuilder } from '@/components/common/selectors';
 import { buildFacetQueryParam } from '@/utils/facetQueryCodec';
 import { normalizeLevelSearchQuery } from '@/utils/normalizeEntitySearchQuery';
@@ -703,7 +703,7 @@ const CurationPage = () => {
                     <div className="curation-song-wrapper">
                       <div className="curation-song-header">
                         <img
-                          src={difficultyDict[level?.diffId]?.icon || '/default-difficulty-icon.png'}
+                          src={selectIconSize(difficultyDict[level?.diffId]?.icon, ICON_SIZE.MEDIUM) || '/default-difficulty-icon.png'}
                           alt={difficultyDict[level?.diffId]?.name || 'Difficulty'}
                           className="curation-difficulty-icon"
                         />
@@ -741,9 +741,11 @@ const CurationPage = () => {
                                   <span key={typ.id} className="curation-type-badge">
                                     <img
                                       src={
-                                        (typ.id != null && curationTypesDict?.[typ.id]?.icon) ||
-                                        typ.icon ||
-                                        "/default-curation-icon.png"
+                                        selectIconSize(
+                                          (typ.id != null && curationTypesDict?.[typ.id]?.icon) ||
+                                            typ.icon,
+                                          ICON_SIZE.SMALL,
+                                        ) || "/default-curation-icon.png"
                                       }
                                       alt=""
                                       className="curation-type-slot-icon"

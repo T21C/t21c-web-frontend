@@ -1,8 +1,7 @@
 // tuf-search: #ProfileHeaderSurfaceEditorPopup
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Portal } from "@/components/common/Portal";
-import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
+import { PopupShell } from "@/components/common/PopupShell";
 import { CloseButton } from "@/components/common/buttons";
 import ProfileHeaderSurfacePreviewFrame from "./ProfileHeaderSurfacePreviewFrame";
 import { useProfileHeaderSurfaceEditor } from "./useProfileHeaderSurfaceEditor";
@@ -35,7 +34,6 @@ export default function ProfileHeaderSurfaceEditorPopup({
   onPendingImagesChange,
 }) {
   const { t } = useTranslation(["pages", "common"]);
-  const panelRef = useRef(null);
   const [selectedStackId, setSelectedStackId] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -85,8 +83,6 @@ export default function ProfileHeaderSurfaceEditorPopup({
     onPendingImagesChange?.(editor.pendingImages);
   }, [editor.pendingImages, onPendingImagesChange]);
 
-  useBodyScrollLock(isOpen);
-
   useEffect(() => {
     if (!isOpen) return;
     setDrawerOpen(false);
@@ -121,24 +117,6 @@ export default function ProfileHeaderSurfaceEditorPopup({
     }
     onClose();
   }, [isDirtySinceOpen, onClose, onDiscardDraft, t]);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    const onKey = (ev) => {
-      if (ev.key === "Escape") {
-        ev.preventDefault();
-        requestClose();
-      }
-    };
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [isOpen, requestClose]);
-
-  const handleBackdropClick = (ev) => {
-    if (panelRef.current && !panelRef.current.contains(ev.target)) {
-      requestClose();
-    }
-  };
 
   const handleSaveAndClose = async () => {
     const ok = await handleSaveStyle();
@@ -195,20 +173,12 @@ export default function ProfileHeaderSurfaceEditorPopup({
   };
 
   return (
-    <Portal>
-    <div
-      className="profile-header-surface-popup-overlay"
-      role="presentation"
-      onMouseDown={handleBackdropClick}
+    <PopupShell
+      onClose={requestClose}
+      overlayClassName="profile-header-surface-popup-overlay"
+      panelClassName="profile-header-surface-popup"
+      ariaLabelledBy="profile-header-surface-popup-title"
     >
-      <div
-        ref={panelRef}
-        className="profile-header-surface-popup"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="profile-header-surface-popup-title"
-        onMouseDown={(ev) => ev.stopPropagation()}
-      >
         <header className="profile-header-surface-popup__header">
           <h2 id="profile-header-surface-popup-title" className="profile-header-surface-popup__title">
             {t("settings.headerSurface.editorTitle")}
@@ -296,8 +266,6 @@ export default function ProfileHeaderSurfaceEditorPopup({
             </button>
           </div>
         </footer>
-      </div>
-    </div>
-    </Portal>
+    </PopupShell>
   );
 }

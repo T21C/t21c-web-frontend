@@ -2,11 +2,12 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import { ICON_SIZE, selectIconSize } from "@/utils/Utility";
 import api from "@/utils/api";
 import { routes } from "@/api/routes";
-import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 import { useResizableTableColumns } from "@/hooks/useResizableTableColumns";
 import { CloseButton } from "@/components/common/buttons";
+import { PopupShell } from "@/components/common/PopupShell";
 import { ProfileSelector, CustomSelect } from "@/components/common/selectors";
 import LevelSelectionPopup from "@/components/popups/Levels/LevelSelectionPopup/LevelSelectionPopup";
 import TournamentFormFields from "../TournamentFormFields/TournamentFormFields";
@@ -110,8 +111,6 @@ const TournamentManagementPopup = ({
   const savedPlacementsRef = useRef("[]");
   const savedPlacementRowsRef = useRef([]);
   const [tiersEditorKey, setTiersEditorKey] = useState(0);
-
-  useBodyScrollLock(true);
 
   useEffect(() => {
     setSubTab(normalizeSubTab(initialTab));
@@ -286,12 +285,6 @@ const TournamentManagementPopup = ({
   const refreshDetail = async () => {
     await loadDetail();
     onUpdated?.();
-  };
-
-  const handleBackdropClick = (e) => {
-    if (e.target.classList.contains("tournament-management-popup")) {
-      requestClose();
-    }
   };
 
   const updateFormField = (key, value) => {
@@ -570,7 +563,7 @@ const TournamentManagementPopup = ({
             {tierMeta?.iconUrl ? (
               <img
                 className="tournament-management-popup__tier-thumb"
-                src={tierMeta.iconUrl}
+                src={selectIconSize(tierMeta.iconUrl, ICON_SIZE.SMALL)}
                 alt=""
               />
             ) : null}
@@ -848,20 +841,19 @@ const TournamentManagementPopup = ({
 
   return (
     <>
-      <div className="tournament-management-popup" onClick={handleBackdropClick}>
-        <div
-          className="tournament-management-popup__content"
-          onClick={(e) => e.stopPropagation()}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="tournament-management-popup-title"
-        >
+      <PopupShell
+        onClose={requestClose}
+        closeDisabled={Boolean(levelPickerRowKey) || Boolean(nomineesRow) || showHelp || showPackImport}
+        overlayClassName="tournament-management-popup"
+        panelClassName="tournament-management-popup__content"
+        ariaLabelledBy="tournament-management-popup-title"
+      >
           <div className="tournament-management-popup__header">
             <div className="tournament-management-popup__title-row">
               {detail?.iconUrl ? (
                 <img
                   className="tournament-management-popup__icon"
-                  src={detail.iconUrl}
+                  src={selectIconSize(detail.iconUrl, ICON_SIZE.MEDIUM)}
                   alt=""
                 />
               ) : null}
@@ -1237,8 +1229,7 @@ const TournamentManagementPopup = ({
               </>
             ) : null}
           </div>
-        </div>
-      </div>
+      </PopupShell>
 
       <LevelSelectionPopup
         isOpen={Boolean(levelPickerRowKey)}

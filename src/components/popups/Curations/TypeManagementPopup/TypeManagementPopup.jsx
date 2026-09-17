@@ -1,6 +1,6 @@
 import { routes } from '@/api/routes';
 // tuf-search: #TypeManagementPopup #typeManagementPopup #popups #curations #typeManagement
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
 import { getCdnErrorMessage } from '@/utils/uploadErrors';
@@ -11,8 +11,10 @@ import { EditIcon, TrashIcon } from '@/components/common/icons';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { ABILITIES } from '@/utils/Abilities';
 import { CDN_IMAGE_ACCEPT, isCdnSupportedImageMimeType } from '@/config/constants/cdnImageAccept';
+import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { CloseButton } from '@/components/common/buttons';
+import { PopupShell } from '@/components/common/PopupShell';
 
 const POPUP_MODES = {
   LIST: 'LIST',
@@ -33,12 +35,10 @@ const TypeManagementPopup = ({
   const [mode, setMode] = useState(POPUP_MODES.LIST);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedType, setSelectedType] = useState(null);
-  const [mouseDownOutside, setMouseDownOutside] = useState(false);
   const [isReordering, setIsReordering] = useState(false);
   const [isGroupsReordering, setIsGroupsReordering] = useState(false);
   const [typesSubTab, setTypesSubTab] = useState('types');
   const [localCurationTypes, setLocalCurationTypes] = useState([]);
-  const modalRef = useRef(null);
 
   // Form state for create/edit
   const [formData, setFormData] = useState({
@@ -50,33 +50,13 @@ const TypeManagementPopup = ({
     group: '',
   });
 
-  const handleMouseDown = (e) => {
-    if (modalRef.current && !modalRef.current.contains(e.target)) {
-      setMouseDownOutside(true);
-    }
-  };
-
-  const handleMouseUp = (e) => {
-    if (mouseDownOutside && modalRef.current && !modalRef.current.contains(e.target)) {
-      onClose();
-    }
-    setMouseDownOutside(false);
-  };
-
   useEffect(() => {
     if (isOpen) {
-      document.addEventListener('mousedown', handleMouseDown);
-      document.addEventListener('mouseup', handleMouseUp);
       setMode(POPUP_MODES.LIST);
       setSelectedType(null);
       resetForm();
     }
-
-    return () => {
-      document.removeEventListener('mousedown', handleMouseDown);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isOpen, mouseDownOutside]);
+  }, [isOpen]);
 
   // Sync local curation types with props (group order, then type order)
   useEffect(() => {
@@ -435,8 +415,11 @@ const TypeManagementPopup = ({
   if (!isOpen) return null;
 
   return (
-    <div className="type-management-modal">
-      <div className="type-management-modal__content" ref={modalRef}>
+    <PopupShell
+      onClose={onClose}
+      overlayClassName="type-management-modal"
+      panelClassName="type-management-modal__content"
+    >
         <CloseButton
           variant="floating"
           className="type-management-modal__close-button"
@@ -529,7 +512,7 @@ const TypeManagementPopup = ({
                                           <div className="type-management-modal__drag-handle">⋮⋮</div>
                                           {type.icon && (
                                             <img
-                                              src={type.icon}
+                                              src={selectIconSize(type.icon, ICON_SIZE.SMALL)}
                                               alt={`${type.name} icon`}
                                               className="type-management-modal__type-icon"
                                             />
@@ -688,7 +671,7 @@ const TypeManagementPopup = ({
                 {formData.iconPreview && (
                   <div className="type-management-modal__icon-preview">
                     <img 
-                      src={formData.iconPreview} 
+                      src={selectIconSize(formData.iconPreview, ICON_SIZE.SMALL)} 
                       alt="Icon preview"
                       className="type-management-modal__icon-preview-img"
                     />
@@ -811,8 +794,7 @@ const TypeManagementPopup = ({
             </div>
           </form>
         )}
-      </div>
-    </div>
+    </PopupShell>
   );
 };
 

@@ -10,6 +10,8 @@ import {
   clampFloat,
   formatCreatorDisplay,
   formatScore,
+  ICON_SIZE,
+  selectIconSize,
   truncateString,
 } from '@/utils/Utility';
 import {
@@ -270,7 +272,7 @@ export function LoadPassPopup({ difficultyDict, onClose, onImport }) {
                   >
                     {resultDiff?.icon ? (
                       <img
-                        src={resultDiff.icon}
+                        src={selectIconSize(resultDiff.icon, ICON_SIZE.MEDIUM)}
                         alt={resultDiff.name || ''}
                         className="pass-score-calculator__pass-option-icon"
                       />
@@ -299,7 +301,7 @@ export function LoadPassPopup({ difficultyDict, onClose, onImport }) {
               <div className="pass-score-calculator__pass-preview-main">
                 {difficulty?.icon ? (
                   <img
-                    src={difficulty.icon}
+                    src={selectIconSize(difficulty.icon, ICON_SIZE.MEDIUM)}
                     alt={difficulty.name || ''}
                     className="pass-score-calculator__pass-preview-diff"
                   />

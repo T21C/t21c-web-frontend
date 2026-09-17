@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import './roulettewheel.css';
-import { createEventSystem } from '@/utils/Utility';
+import { createEventSystem, ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { CloseButton } from '@/components/common/buttons';
 
 export const RouletteWheel = ({ 
@@ -340,7 +340,7 @@ export const RouletteWheel = ({
                           <span className={`pit ${mode === 'text' ? 'text-mode' : ''}`}>
                             {mode === 'icon' && itemValue !== selectedItem && (
                               <img 
-                                src={itemValue.icon} 
+                                src={selectIconSize(itemValue.icon, ICON_SIZE.MEDIUM)} 
                                 alt={itemValue.name}
                                 className="item-icon"
                               />
@@ -364,7 +364,7 @@ export const RouletteWheel = ({
                         <div className="result-number">
                           {(mode === 'icon' || mode === 'image') && (
                             <img 
-                              src={selectedItem.icon || selectedItem} 
+                              src={selectIconSize(selectedItem.icon, ICON_SIZE.MEDIUM) || selectedItem} 
                               alt={typeof selectedItem === 'string' ? selectedItem : selectedItem.name}
                               className="result-icon"
                             />

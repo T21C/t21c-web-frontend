@@ -1,6 +1,7 @@
 // tuf-search: #DifficultyGraph #difficultyGraph #display
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import { ICON_SIZE, selectIconSize } from "@/utils/Utility";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import {
   BarChart,
@@ -24,7 +25,7 @@ const CustomTooltip = ({ active, payload, label, labelMode }) => {
         <div className="difficulty-graph__tooltip-content">
           <div className="difficulty-graph__tooltip-left">
             <img
-              src={difficulty.icon}
+              src={selectIconSize(difficulty.icon, ICON_SIZE.MEDIUM)}
               alt={label}
               className="difficulty-graph__difficulty-icon"
             />

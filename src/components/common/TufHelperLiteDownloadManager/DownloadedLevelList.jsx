@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
+import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import MarqueeText from '@/components/common/display/MarqueeText/MarqueeText';
 import { DownloadIcon, RefreshIcon, WarningIcon } from '@/components/common/icons';
@@ -155,7 +156,7 @@ export const DownloadedLevelList = ({
       <article className="tufhelper-download-manager__level-row" role="listitem">
         <div className="tufhelper-download-manager__difficulty">
           <img
-            src={difficulty.icon}
+            src={selectIconSize(difficulty.icon, ICON_SIZE.MEDIUM)}
             alt={difficulty.name}
             loading="lazy"
             decoding="async"

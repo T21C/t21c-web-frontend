@@ -1,6 +1,6 @@
 // tuf-search: #EntityActionPopup #entityActionPopup #popups #entities #entityAction
-import React, { useState, useEffect, useRef } from 'react';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import React, { useState, useEffect } from 'react';
+import { PopupShell } from '@/components/common/PopupShell';
 import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
 import { routes } from '@/api/routes';
@@ -19,7 +19,6 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
     const translationKey = type === 'song' ? `songActionPopup.${key}` : `artistActionPopup.${key}`;
     return t(translationKey, params) || key;
   };
-  const popupRef = useRef(null);
 
   const [mode, setMode] = useState('update'); // update, merge, split, aliases, links, evidence, credits (songs only), levelSuffix (songs only)
   const [name, setName] = useState(artist?.name || '');
@@ -81,8 +80,6 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
         { value: 'unverified', label: t('verification.unverified', { ns: 'common' }) }
       ];
 
-  useBodyScrollLock(true);
-
   // Song-specific state
   const [credits, setCredits] = useState(type === 'song' ? (song?.credits || []) : []);
   const [newCreditArtistId, setNewCreditArtistId] = useState('');
@@ -117,32 +114,6 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
       }
     }
   }, [entity, type]);
-
-  useEffect(() => {
-    const handleEscapeKey = (event) => {
-      if (event.key === 'Escape') onClose();
-    };
-
-    const handleClickOutside = (event) => {
-      if (event.button !== 0 && event.button !== undefined) return;
-      if (popupRef.current && !popupRef.current.contains(event.target)) {
-        const isReactSelectMenu = event.target.closest('.custom-select-menu') || 
-                                  event.target.closest('[class*="react-select"]') ||
-                                  event.target.closest('[id*="react-select"]');
-        if (!isReactSelectMenu) {
-          onClose();
-        }
-      }
-    };
-
-    document.addEventListener('keydown', handleEscapeKey);
-    document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('keydown', handleEscapeKey);
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [onClose]);
 
   useEffect(() => {
     let cancelToken;
@@ -924,8 +895,12 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
   const availableMergeTargets = type === 'song' ? availableSongs : availableArtists;
 
   return (
-    <div className={`entity-action-popup-overlay`}>
-      <div className={`entity-action-popup`} ref={popupRef}>
+    <PopupShell
+      onClose={onClose}
+      closeDisabled={showEvidenceGallery}
+      overlayClassName="entity-action-popup-overlay"
+      panelClassName="entity-action-popup"
+    >
         <div className="popup-header">
           <h2>{tEntity('title', { name: entity.name })}</h2>
           <CloseButton
@@ -1184,8 +1159,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
           {error && <div className="error-message">{error}</div>}
           {success && <div className="success-message">{success}</div>}
         </div>
-      </div>
-    </div>
+    </PopupShell>
   );
 };
 

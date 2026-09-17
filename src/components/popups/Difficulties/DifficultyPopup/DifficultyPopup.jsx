@@ -10,8 +10,10 @@ import { toastIfRateLimited, getRateLimitMessage } from '@/utils/rateLimitError'
 import './difficultypopup.css';
 import toast from 'react-hot-toast';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { CDN_IMAGE_ACCEPT, isCdnSupportedImageMimeType } from '@/config/constants/cdnImageAccept';
 import { CloseButton } from '@/components/common/buttons';
+import { PopupShell } from '@/components/common/PopupShell';
 import { Collapsible, CollapsibleContent } from '@/components/common/Collapsible';
 
 const DIRECTIVE_MODES = {
@@ -56,42 +58,14 @@ const DifficultyPopup = ({
   const [roleModalSource, setRoleModalSource] = useState('edit');
   const [channelLabel, setChannelLabel] = useState('');
   const [channelWebhookUrl, setChannelWebhookUrl] = useState('');
-  const [mouseDownOutside, setMouseDownOutside] = useState(false);
   const [pasteError, setPasteError] = useState('');
   const [expandedDirectives, setExpandedDirectives] = useState({});
   const [expandedActions, setExpandedActions] = useState({});
-  const modalRef = useRef(null);
   const [iconFile, setIconFile] = useState(null);
   const [iconPreview, setIconPreview] = useState(null);
   const [legacyIconFile, setLegacyIconFile] = useState(null);
   const [legacyIconPreview, setLegacyIconPreview] = useState(null);
 
-  const handleMouseDown = (e) => {
-    if (modalRef.current && !modalRef.current.contains(e.target)) {
-      setMouseDownOutside(true);
-    }
-  };
-
-  const handleMouseUp = (e) => {
-    if (mouseDownOutside && modalRef.current && !modalRef.current.contains(e.target)) {
-      onClose();
-    }
-    setMouseDownOutside(false);
-  };
-
-  useEffect(() => {
-    if (isOpen) {
-      document.addEventListener('mousedown', handleMouseDown);
-      document.addEventListener('mouseup', handleMouseUp);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleMouseDown);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isOpen, mouseDownOutside]);
-
-  // Load directives, roles, and channels when modal opens
   useEffect(() => {
     if (isOpen && !isCreating) {
       loadDirectives();
@@ -978,14 +952,39 @@ const DifficultyPopup = ({
     }
   };
 
+  const closePasswordModal = () => {
+    setShowPasswordModal(false);
+    setPassword('');
+    setPasswordError('');
+    setPendingDirectives(null);
+  };
+
+  const closeChannelModal = () => {
+    setShowChannelModal(false);
+    setSelectedChannel(null);
+    setChannelLabel('');
+    setChannelWebhookUrl('');
+    setChannelError('');
+  };
+
+  const closeRoleModal = () => {
+    setShowRoleModal(false);
+    setSelectedRole(null);
+    setRoleError('');
+  };
+
+  const innerDialogOpen =
+    Boolean(showPasswordModal && !verifiedPassword) || showChannelModal || showRoleModal;
+
   if (!isOpen) return null;
 
   return (
-    <div 
-      className="difficulty-modal"
-      ref={modalRef}
+    <PopupShell
+      onClose={onClose}
+      closeDisabled={innerDialogOpen}
+      overlayClassName="difficulty-modal"
+      panelClassName="difficulty-modal__content"
     >
-      <div className="difficulty-modal__content">
         <CloseButton
           variant="floating"
           className="difficulty-modal__close-button"
@@ -993,10 +992,12 @@ const DifficultyPopup = ({
           aria-label={t('difficultyPopup.modal.close')}
         />
 
-        {/* Password Modal - Only show if needed and not using verifiedPassword */}
         {showPasswordModal && !verifiedPassword && (
-          <div className="difficulty-modal__password-modal">
-            <div className="difficulty-modal__password-modal-content">
+          <PopupShell
+            onClose={closePasswordModal}
+            overlayClassName="difficulty-modal__password-modal"
+            panelClassName="difficulty-modal__password-modal-content"
+          >
               <h3>{t('difficultyPopup.modal.password.title')}</h3>
               <form onSubmit={handlePasswordSubmit}>
                 <div className="difficulty-modal__form-group">
@@ -1018,25 +1019,21 @@ const DifficultyPopup = ({
                   <button
                     type="button"
                     className="difficulty-modal__button difficulty-modal__button--cancel"
-                    onClick={() => {
-                      setShowPasswordModal(false);
-                      setPassword('');
-                      setPasswordError('');
-                      setPendingDirectives(null);
-                    }}
+                    onClick={closePasswordModal}
                   >
                     {t('buttons.cancel', { ns: 'common' })}
                   </button>
                 </div>
               </form>
-            </div>
-          </div>
+          </PopupShell>
         )}
 
-        {/* Channel Modal */}
         {showChannelModal && (
-          <div className="difficulty-modal__channel-modal">
-            <div className="difficulty-modal__channel-modal-content">
+          <PopupShell
+            onClose={closeChannelModal}
+            overlayClassName="difficulty-modal__channel-modal"
+            panelClassName="difficulty-modal__channel-modal-content"
+          >
               <h3>{channelModalSource === 'edit' ? t('difficultyPopup.modal.channel.editTitle') : t('difficultyPopup.modal.channel.addTitle')}</h3>
               <form onSubmit={handleChannelSubmit}>
                 <div className="difficulty-modal__form-group">
@@ -1078,26 +1075,21 @@ const DifficultyPopup = ({
                   <button
                     type="button"
                     className="difficulty-modal__button difficulty-modal__button--cancel"
-                    onClick={() => {
-                      setShowChannelModal(false);
-                      setSelectedChannel(null);
-                      setChannelLabel('');
-                      setChannelWebhookUrl('');
-                      setChannelError('');
-                    }}
+                    onClick={closeChannelModal}
                   >
                     {t('buttons.cancel', { ns: 'common' })}
                   </button>
                 </div>
               </form>
-            </div>
-          </div>
+          </PopupShell>
         )}
 
-        {/* Role Modal */}
         {showRoleModal && (
-          <div className="difficulty-modal__role-modal">
-            <div className="difficulty-modal__role-modal-content">
+          <PopupShell
+            onClose={closeRoleModal}
+            overlayClassName="difficulty-modal__role-modal"
+            panelClassName="difficulty-modal__role-modal-content"
+          >
               <h3>{roleModalSource === 'edit' ? t('difficultyPopup.modal.role.editTitle') : t('difficultyPopup.modal.role.addTitle')}</h3>
               <form onSubmit={handleRoleSubmit}>
                 <div className="difficulty-modal__form-group">
@@ -1161,18 +1153,13 @@ const DifficultyPopup = ({
                   <button
                     type="button"
                     className="difficulty-modal__button difficulty-modal__button--cancel"
-                    onClick={() => {
-                      setShowRoleModal(false);
-                      setSelectedRole(null);
-                      setRoleError('');
-                    }}
+                    onClick={closeRoleModal}
                   >
                     {t('buttons.cancel', { ns: 'common' })}
                   </button>
                 </div>
               </form>
-            </div>
-          </div>
+          </PopupShell>
         )}
 
         <div className="difficulty-modal__tabs">
@@ -1245,7 +1232,7 @@ const DifficultyPopup = ({
                   {iconPreview && (
                     <div className="difficulty-modal__icon-preview">
                       <img 
-                        src={iconPreview} 
+                        src={selectIconSize(iconPreview, ICON_SIZE.MEDIUM)} 
                         alt="Icon preview"
                         className="difficulty-modal__icon-preview-img"
                       />
@@ -1278,7 +1265,7 @@ const DifficultyPopup = ({
                   {legacyIconPreview && (
                     <div className="difficulty-modal__icon-preview">
                       <img 
-                        src={legacyIconPreview} 
+                        src={selectIconSize(legacyIconPreview, ICON_SIZE.MEDIUM)} 
                         alt="Legacy icon preview"
                         className="difficulty-modal__icon-preview-img"
                       />
@@ -1822,8 +1809,7 @@ const DifficultyPopup = ({
             </div>
           ) : null}
         </div>
-      </div>
-    </div>
+    </PopupShell>
   );
 };
 

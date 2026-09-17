@@ -1,9 +1,9 @@
 import { routes } from '@/api/routes';
-import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
 import { CountrySelect, CustomSelect } from '@/components/common/selectors';
 import { useAuth } from '@/contexts/AuthContext';
@@ -87,7 +87,6 @@ MergePlayerIdentity.propTypes = {
 const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedUpdate }) => {
   const { t } = useTranslation(['components', 'common']);
   const tt = (key, opts) => t(`creatorManagementPopup.${key}`, opts);
-  const popupRef = useRef(null);
   const { user: authUser } = useAuth();
 
   const [mode, setMode] = useState('update');
@@ -124,8 +123,6 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-
-  useBodyScrollLock(true);
 
   const isSuperAdminViewer = Boolean(authUser && hasFlag(authUser, permissionFlags.SUPER_ADMIN));
   const showLinkTab = isSuperAdminViewer && Boolean(player?.user?.id);
@@ -171,28 +168,6 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
     setIsSubmissionsPaused(hasFlag(player?.user, permissionFlags.SUBMISSIONS_PAUSED) || false);
     setIsRatingBanned(hasFlag(player?.user, permissionFlags.RATING_BANNED) || false);
   }, [player?.id, player?.name, player?.country, player?.user, player?.isBanned, player?.bannedUntil]);
-
-  useEffect(() => {
-    const handleEscape = (e) => {
-      if (e.key === 'Escape') onClose();
-    };
-    const handleClickOutside = (e) => {
-      if (e.button !== 0 && e.button !== undefined) return;
-      if (popupRef.current && !popupRef.current.contains(e.target)) {
-        const isReactSelect =
-          e.target.closest('.custom-select-menu') ||
-          e.target.closest('[class*="react-select"]') ||
-          e.target.closest('[id*="react-select"]');
-        if (!isReactSelect) onClose();
-      }
-    };
-    document.addEventListener('keydown', handleEscape);
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('keydown', handleEscape);
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [onClose]);
 
   useEffect(() => {
     if (!visibleTabs.some((tab) => tab.id === mode)) {
@@ -523,9 +498,11 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
   const headerSubtitle = player?.user?.username ? `@${player.user.username}` : null;
 
   return (
-    <div className="creator-management-popup-container">
-      <div className="creator-management-popup-overlay">
-        <div className="creator-management-popup" ref={popupRef}>
+    <PopupShell
+      onClose={onClose}
+      overlayClassName="creator-management-popup-container creator-management-popup-overlay"
+      panelClassName="creator-management-popup"
+    >
           <CloseButton variant="floating" onClick={onClose} aria-label={tt('close')} />
 
           <div className="popup-header">
@@ -939,9 +916,7 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
               </div>
             )}
           </div>
-        </div>
-      </div>
-    </div>
+    </PopupShell>
   );
 };
 

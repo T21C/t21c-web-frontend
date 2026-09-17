@@ -3,6 +3,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { useTranslation } from "react-i18next";
 import ChevronIcon from "@/components/common/icons/ChevronIcon";
 import ProfileHeaderIconPanelPortal from "@/components/account/ProfileHeader/ProfileHeaderIconPanelPortal";
+import { ICON_SIZE, selectIconSize } from "@/utils/Utility";
 import { buildCreatorIconSlots } from "@/utils/profileIconSlots";
 import {
   getCreatorCurationTypesForHeaderPanel,
@@ -150,7 +151,7 @@ const CurationTypeCountView = ({
             {slot.iconUrl ? (
               <img
                 className="curation-type-count-view__slot-img"
-                src={slot.iconUrl}
+                src={selectIconSize(slot.iconUrl, ICON_SIZE.SMALL)}
                 alt=""
                 decoding="async"
               />

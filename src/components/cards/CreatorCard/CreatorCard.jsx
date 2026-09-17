@@ -9,6 +9,7 @@ import { CreatorStatusBadge } from "@/components/common/display";
 import { CreatorListContext } from "@/contexts/CreatorListContext";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { normalizeCreatorLeaderboardSortBy } from "@/utils/creatorLeaderboardSort";
+import { ICON_SIZE, selectIconSize } from "@/utils/Utility";
 import { buildCreatorIconSlots } from "@/utils/profileIconSlots";
 import {
   curationCountsRecordFromLeaderboardHit,
@@ -110,7 +111,7 @@ const CreatorCard = ({ creator }) => {
                 {slot.iconUrl ? (
                   <img
                     className="creator-card__badge-slot-img"
-                    src={slot.iconUrl}
+                    src={selectIconSize(slot.iconUrl, ICON_SIZE.SMALL)}
                     alt=""
                     decoding="async"
                   />

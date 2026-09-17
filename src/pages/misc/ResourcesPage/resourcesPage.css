@@ -373,7 +373,8 @@
   flex-shrink: 0;
 }
 
-.resources-page .difficulty-modal {
+.resources-page .difficulty-modal,
+.resources-page.difficulty-modal {
   position: fixed;
   top: 0;
   left: 0;
@@ -386,7 +387,8 @@
   z-index: 1000;
 }
 
-.resources-page .difficulty-modal-content {
+.resources-page .difficulty-modal-content,
+.resources-page.difficulty-modal .difficulty-modal-content {
   display: flex;
   flex-direction: column;
   gap: 1rem;

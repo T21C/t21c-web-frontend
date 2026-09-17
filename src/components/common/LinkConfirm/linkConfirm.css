@@ -1,19 +1,6 @@
 .link-confirm {
-  position: fixed;
-  inset: 0;
   z-index: 10050;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   padding: 1rem;
-}
-
-.link-confirm__backdrop {
-  position: absolute;
-  inset: 0;
-  border: none;
-  background: var(--color-black-t60);
-  cursor: pointer;
 }
 
 .link-confirm__panel {

@@ -1,15 +1,15 @@
 // tuf-search: #LinkedLevelsPopup #linkedLevelsPopup #popups #levels #levelLinks
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Tooltip } from 'react-tooltip';
 import toast from 'react-hot-toast';
-import { Portal } from '@/components/common/Portal';
+import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
 import { TrashIcon } from '@/components/common/icons';
 import { CustomSelect } from '@/components/common/selectors';
 import LevelSelectionPopup from '@/components/popups/Levels/LevelSelectionPopup/LevelSelectionPopup';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { getSongDisplayName } from '@/utils/levelHelpers';
 import api from '@/utils/api';
@@ -120,8 +120,6 @@ export default function LinkedLevelsPopup({
   const [showPicker, setShowPicker] = useState(false);
   const [isMutating, setIsMutating] = useState(false);
 
-  useBodyScrollLock(true);
-
   const memberCount = levels.length;
   const palette = useMemo(
     () => subgroupPalette(groupId, memberCount),
@@ -136,31 +134,6 @@ export default function LinkedLevelsPopup({
       color: subgroupColor(palette, n),
     }));
   }, [memberCount, palette]);
-
-  useEffect(() => {
-    if (showPicker) {
-      return undefined;
-    }
-    const handleEscape = (event) => {
-      if (event.key !== 'Escape' || isMutating) {
-        return;
-      }
-      event.preventDefault();
-      event.stopPropagation();
-      onClose();
-    };
-    document.addEventListener('keydown', handleEscape, true);
-    return () => {
-      document.removeEventListener('keydown', handleEscape, true);
-    };
-  }, [showPicker, isMutating, onClose]);
-
-  const handleOverlayClick = (e) => {
-    e.stopPropagation();
-    if (e.target === e.currentTarget && !isMutating && !showPicker) {
-      onClose();
-    }
-  };
 
   const applyResult = (data) => {
     if (onChange) {
@@ -240,12 +213,13 @@ export default function LinkedLevelsPopup({
   };
 
   return (
-    <Portal>
-      <div className="linked-levels-popup" onClick={handleOverlayClick}>
-        <div
-          className="linked-levels-popup__dialog"
-          onClick={(e) => e.stopPropagation()}
-        >
+    <>
+      <PopupShell
+        onClose={onClose}
+        closeDisabled={isMutating || showPicker}
+        overlayClassName="linked-levels-popup"
+        panelClassName="linked-levels-popup__dialog"
+      >
           <div className="linked-levels-popup__header">
             <h2>{t('levelPopups.linkedLevels.title')}</h2>
             <CloseButton
@@ -274,7 +248,7 @@ export default function LinkedLevelsPopup({
                 const rowInner = (
                   <>
                     <img
-                      src={icon}
+                      src={selectIconSize(icon, ICON_SIZE.MEDIUM) || '/default-difficulty-icon.png'}
                       alt=""
                       className="linked-levels-popup__diff-icon"
                     />
@@ -368,8 +342,7 @@ export default function LinkedLevelsPopup({
               </button>
             </div>
           )}
-        </div>
-      </div>
+      </PopupShell>
 
       {levels.some((level) => Number(level.id) === Number(currentLevelId)) && (
         <Tooltip
@@ -390,6 +363,6 @@ export default function LinkedLevelsPopup({
         onLevelSelect={handleLevelSelect}
         variant="pick"
       />
-    </Portal>
+    </>
   );
 }

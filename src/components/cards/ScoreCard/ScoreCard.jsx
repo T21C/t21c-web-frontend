@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import "./scorecard.css"
 import "@/index.css"
 import { useTranslation } from "react-i18next";
-import { clampFloat, formatScore, formatPassDate, formatCreatorDisplay } from "@/utils/Utility"
+import { clampFloat, formatScore, formatPassDate, formatCreatorDisplay, ICON_SIZE, selectIconSize } from "@/utils/Utility"
 import { formatNumber } from "@/utils";
 import { formatAccuracyRatio } from "@/utils/statFormatters";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
@@ -63,7 +63,7 @@ const ScoreCard = ({ scoreData, topScores = [], potentialTopScores = [], mode = 
   ].filter(Boolean).join(' ');
 
   const difficultyIcon = !isHiddenLevel ? (
-    <img src={difficultyDict[scoreData.level.diffId]?.icon} referrerPolicy="no-referrer" alt="" />
+    <img src={selectIconSize(difficultyDict[scoreData.level.diffId]?.icon, ICON_SIZE.MEDIUM)} referrerPolicy="no-referrer" alt="" />
   ) : (
     <div className="hidden-level-icon">🔒</div>
   );

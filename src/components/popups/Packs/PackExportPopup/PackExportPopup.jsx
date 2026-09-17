@@ -1,7 +1,7 @@
 // tuf-search: #PackExportPopup #packExportPopup #popups #packs #packExport
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { buildExportRows, downloadPackExport } from '@/utils/packExportUtils';
@@ -15,7 +15,6 @@ const PackExportPopup = ({
   packItems,
 }) => {
   const { t } = useTranslation(['components', 'common']);
-  const popupRef = useRef(null);
   const { difficultyDict, curationTypesDict } = useDifficultyContext();
   const [format, setFormat] = useState('xlsx');
   const [includeFolders, setIncludeFolders] = useState(true);
@@ -34,32 +33,6 @@ const PackExportPopup = ({
       resetState();
     }
   }, [isOpen, resetState]);
-
-  useBodyScrollLock(isOpen);
-
-  useEffect(() => {
-    if (!isOpen) return undefined;
-
-    const handleEscapeKey = (event) => {
-      if (event.key === 'Escape') {
-        onClose();
-      }
-    };
-
-    const handleClickOutside = (event) => {
-      if (popupRef.current && !popupRef.current.contains(event.target)) {
-        onClose();
-      }
-    };
-
-    document.addEventListener('keydown', handleEscapeKey);
-    document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('keydown', handleEscapeKey);
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isOpen, onClose]);
 
   if (!isOpen) {
     return null;
@@ -97,8 +70,11 @@ const PackExportPopup = ({
   const displayName = packName || pack?.name || t('packPopups.exportPack.defaultContextName');
 
   return (
-    <div className="pack-export-popup__overlay">
-      <div className="pack-export-popup" ref={popupRef}>
+    <PopupShell
+      onClose={onClose}
+      overlayClassName="pack-export-popup__overlay"
+      panelClassName="pack-export-popup"
+    >
         <CloseButton
           variant="floating"
           className="pack-export-popup__close-btn"
@@ -196,8 +172,7 @@ const PackExportPopup = ({
             </button>
           </div>
         </div>
-      </div>
-    </div>
+    </PopupShell>
   );
 };
 

@@ -10,6 +10,7 @@ import toast from 'react-hot-toast';
 import { PackContext } from "@/contexts/PackContext";
 import { UserAvatar } from "@/components/layout";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
+import { ICON_SIZE, selectIconSize } from "@/utils/Utility";
 import { permissionFlags } from "@/utils/UserPermissions";
 import { hasFlag } from "@/utils/UserPermissions";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
@@ -127,7 +128,7 @@ const PackCard = ({
     <div className="pack-card__icon">
       {pack.iconUrl ? (
         <img
-          src={pack.iconUrl}
+          src={selectIconSize(pack.iconUrl, ICON_SIZE.MEDIUM)}
           alt={pack.name}
           className="pack-card__icon-image"
           onError={(e) => {
@@ -246,7 +247,7 @@ const PackCard = ({
                     .map((item, idx) => (
                     <div key={idx} className="pack-card__preview-level">
                       <span className="pack-card__preview-level-name">
-                        <img className="pack-card__preview-level-icon" src={difficultyDict[item.referencedLevel?.diffId]?.icon} alt={item.referencedLevel?.song} />
+                        <img className="pack-card__preview-level-icon" src={selectIconSize(difficultyDict[item.referencedLevel?.diffId]?.icon, ICON_SIZE.SMALL)} alt={item.referencedLevel?.song} />
                         <span className="pack-card__preview-level-name-text">{item.referencedLevel?.song || `Level ${item.levelId}`}</span>
                       </span>
                     </div>

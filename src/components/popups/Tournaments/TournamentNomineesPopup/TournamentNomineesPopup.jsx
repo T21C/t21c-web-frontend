@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 import { CloseButton } from "@/components/common/buttons";
-import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
+import { PopupShell } from "@/components/common/PopupShell";
 import {
   getNomineeDisplayName,
   invalidateNomineeCandidates,
@@ -29,8 +29,6 @@ const TournamentNomineesPopup = ({
   const { t } = useTranslation(["pages", "common"]);
   const { candidates, loading, reload } = useNomineeCandidates(levelId);
   const [selectedIds, setSelectedIds] = useState(new Set());
-
-  useBodyScrollLock(true);
 
   useEffect(() => {
     if (!levelId || loading) return;
@@ -86,12 +84,6 @@ const TournamentNomineesPopup = ({
     onClose();
   };
 
-  const handleBackdropClick = (e) => {
-    if (e.target.classList.contains("tournament-nominees-popup")) {
-      onClose();
-    }
-  };
-
   const handleReload = () => {
     invalidateNomineeCandidates(levelId);
     reload().catch(() => {
@@ -100,14 +92,12 @@ const TournamentNomineesPopup = ({
   };
 
   return (
-    <div className="tournament-nominees-popup" onClick={handleBackdropClick}>
-      <div
-        className="tournament-nominees-popup__content"
-        onClick={(e) => e.stopPropagation()}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="tournament-nominees-popup-title"
-      >
+    <PopupShell
+      onClose={onClose}
+      overlayClassName="tournament-nominees-popup"
+      panelClassName="tournament-nominees-popup__content"
+      ariaLabelledBy="tournament-nominees-popup-title"
+    >
         <div className="tournament-nominees-popup__header">
           <div>
             <h2 id="tournament-nominees-popup-title" className="tournament-nominees-popup__title">
@@ -191,8 +181,7 @@ const TournamentNomineesPopup = ({
             {t("tournamentManagement.nominees.save")}
           </button>
         </div>
-      </div>
-    </div>
+    </PopupShell>
   );
 };
 

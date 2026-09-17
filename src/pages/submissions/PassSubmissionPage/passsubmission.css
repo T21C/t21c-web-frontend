@@ -157,7 +157,7 @@
   }
 }
 
-.pass-submission-page .tilecount-mismatch-modal-overlay {
+.tilecount-mismatch-modal-overlay {
   position: fixed;
   inset: 0;
   z-index: 2100;
@@ -168,7 +168,7 @@
   background-color: rgba(0, 0, 0, 0.8);
 }
 
-.pass-submission-page .tilecount-mismatch-modal {
+.tilecount-mismatch-modal-overlay .tilecount-mismatch-modal {
   width: 100%;
   max-width: 28rem;
   border-radius: 8px;
@@ -180,34 +180,34 @@
   gap: 1rem;
 }
 
-.pass-submission-page .tilecount-mismatch-modal h2 {
+.tilecount-mismatch-modal-overlay .tilecount-mismatch-modal h2 {
   margin: 0;
   font-size: 1.2rem;
   color: var(--color-white);
 }
 
-.pass-submission-page .tilecount-mismatch-modal-body {
+.tilecount-mismatch-modal-overlay .tilecount-mismatch-modal-body {
   margin: 0;
   font-size: 0.95rem;
   line-height: 1.45;
   color: var(--color-gray-2);
 }
 
-.pass-submission-page .tilecount-mismatch-modal-actions {
+.tilecount-mismatch-modal-overlay .tilecount-mismatch-modal-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
   justify-content: flex-end;
 }
 
-.pass-submission-page .tilecount-mismatch-modal-actions .tilecount-mismatch-review-btn,
-.pass-submission-page .tilecount-mismatch-modal-actions .tilecount-mismatch-submit-anyway-btn {
+.tilecount-mismatch-modal-overlay .tilecount-mismatch-modal-actions .tilecount-mismatch-review-btn,
+.tilecount-mismatch-modal-overlay .tilecount-mismatch-modal-actions .tilecount-mismatch-submit-anyway-btn {
   padding: 0.45rem 1rem;
   border-radius: 6px;
   font-weight: 600;
 }
 
-.pass-submission-page .tag-warnings-modal-overlay {
+.tag-warnings-modal-overlay {
   position: fixed;
   inset: 0;
   z-index: 2100;
@@ -218,7 +218,7 @@
   background-color: rgba(0, 0, 0, 0.8);
 }
 
-.pass-submission-page .tag-warnings-modal {
+.tag-warnings-modal-overlay .tag-warnings-modal {
   width: 100%;
   max-width: 28rem;
   border-radius: 8px;
@@ -231,13 +231,13 @@
   border: 1px solid color-mix(in srgb, var(--warning-color) 55%, transparent);
 }
 
-.pass-submission-page .tag-warnings-modal h2 {
+.tag-warnings-modal-overlay .tag-warnings-modal h2 {
   margin: 0;
   font-size: 1.2rem;
   color: var(--color-white);
 }
 
-.pass-submission-page .tag-warnings-modal-list {
+.tag-warnings-modal-overlay .tag-warnings-modal-list {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -248,7 +248,7 @@
   overflow-y: auto;
 }
 
-.pass-submission-page .tag-warnings-modal-item {
+.tag-warnings-modal-overlay .tag-warnings-modal-item {
   display: flex;
   align-items: flex-start;
   gap: 0.75rem;
@@ -258,7 +258,7 @@
   border: 1px solid color-mix(in srgb, var(--warning-color) 45%, transparent);
 }
 
-.pass-submission-page .tag-warnings-modal-icon {
+.tag-warnings-modal-overlay .tag-warnings-modal-icon {
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -268,39 +268,39 @@
   aspect-ratio: 1 / 1;
 }
 
-.pass-submission-page .tag-warnings-modal-icon img {
+.tag-warnings-modal-overlay .tag-warnings-modal-icon img {
   width: 100%;
   height: 100%;
   object-fit: contain;
 }
 
-.pass-submission-page .tag-warnings-modal-icon[data-letter-only="true"] {
+.tag-warnings-modal-overlay .tag-warnings-modal-icon[data-letter-only="true"] {
   border-radius: 50%;
   background-color: var(--tag-bg-color, var(--btn-warning));
   color: var(--color-white);
 }
 
-.pass-submission-page .tag-warnings-modal-letter {
+.tag-warnings-modal-overlay .tag-warnings-modal-letter {
   font-size: 0.75rem;
   font-weight: 700;
   line-height: 1;
 }
 
-.pass-submission-page .tag-warnings-modal-text {
+.tag-warnings-modal-overlay .tag-warnings-modal-text {
   font-size: 0.95rem;
   line-height: 1.45;
   color: var(--color-gray-2);
 }
 
-.pass-submission-page .tag-warnings-modal-actions {
+.tag-warnings-modal-overlay .tag-warnings-modal-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
   justify-content: flex-end;
 }
 
-.pass-submission-page .tag-warnings-modal-actions .tag-warnings-review-btn,
-.pass-submission-page .tag-warnings-modal-actions .tag-warnings-continue-btn {
+.tag-warnings-modal-overlay .tag-warnings-modal-actions .tag-warnings-review-btn,
+.tag-warnings-modal-overlay .tag-warnings-modal-actions .tag-warnings-continue-btn {
   padding: 0.45rem 1rem;
   border-radius: 6px;
   font-weight: 600;

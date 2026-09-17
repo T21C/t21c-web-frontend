@@ -44,6 +44,8 @@ module.exports = {
   rules: {
     // Gate external navigation through navigateExternal / LinkConfirm.
     'tuf/no-ungated-external-navigation': 'error',
+    // CDN icon URLs must pick small|medium|large|original via selectIconSize.
+    'tuf/no-unsized-icon-url': 'error',
 
     // Enable import resolution and named exports validation
     'import/no-unresolved': 'error',

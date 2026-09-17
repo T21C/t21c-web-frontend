@@ -1,6 +1,7 @@
 // tuf-search: #CreatePackPopup #createPackPopup #popups #packs #addToPack
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { PopupShell } from '@/components/common/PopupShell';
 import { CrossIcon, ImageIcon } from '@/components/common/icons';
 import { ImageSelectorPopup, CustomSelect } from '@/components/common/selectors';
 import './CreatePackPopup.css';
@@ -8,6 +9,7 @@ import toast from 'react-hot-toast';
 import api from '@/utils/api';
 import { routes } from '@/api/routes';
 import { getCdnErrorMessage } from '@/utils/uploadErrors';
+import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { useAuth } from '@/contexts/AuthContext';
 import { LevelPackViewModes } from '@/utils/constants';
@@ -132,16 +134,14 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
     }
   };
 
-  // Close popup when clicking outside
-  const handleBackdropClick = (e) => {
-    if (e.target.classList.contains('create-pack-popup')) {
-      onClose();
-    }
-  };
-
   return (
-    <div className="create-pack-popup" onClick={handleBackdropClick}>
-      <div className="create-pack-popup__content" onClick={(e) => e.stopPropagation()}>
+    <>
+    <PopupShell
+      onClose={onClose}
+      closeDisabled={showImageSelector}
+      overlayClassName="create-pack-popup"
+      panelClassName="create-pack-popup__content"
+    >
         <div className="create-pack-popup__header">
           <h2 className="create-pack-popup__title">{t('packPopups.createPack.title')}</h2>
           <button className="create-pack-popup__close" onClick={onClose}>
@@ -194,7 +194,7 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
                 {formData.iconUrl && (
                   <div className="create-pack-popup__icon-preview">
                     <img 
-                      src={formData.iconUrl} 
+                      src={selectIconSize(formData.iconUrl, ICON_SIZE.MEDIUM)} 
                       alt="Pack icon" 
                       className="create-pack-popup__icon-preview-img"
                     />
@@ -304,7 +304,7 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
             </button>
           </div>
         </form>
-      </div>
+    </PopupShell>
 
       {showImageSelector && (
         <ImageSelectorPopup
@@ -313,7 +313,7 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
           onSave={handleIconUpload}
         />
       )}
-    </div>
+    </>
   );
 };
 

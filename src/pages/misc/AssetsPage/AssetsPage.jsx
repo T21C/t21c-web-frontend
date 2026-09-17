@@ -13,7 +13,7 @@ import {
   resolveIconGalleryComponent,
 } from "@/components/common/icons/iconGalleryModules";
 import { getStaticAssetGalleryEntries } from "@/utils/staticAssetGalleryModules";
-import { selectIconSize } from "@/utils/Utility";
+import { ICON_SIZE, selectIconSize } from "@/utils/Utility";
 import { StateDisplay } from "@/components/common/selectors";
 import { CopyIcon, DownloadIcon, ExternalLinkIcon } from "@/components/common/icons";
 import "./assetsPage.css";
@@ -373,7 +373,7 @@ export default function AssetsPage() {
         if (!tag.icon) continue;
         const name = String(tag.name || tag.id).trim() || String(tag.id);
         entries.push({
-          url: selectIconSize(tag.icon, "original"),
+          url: selectIconSize(tag.icon, ICON_SIZE.ORIGINAL),
           stem: group ? `${group}-${name}` : name,
         });
       }
@@ -385,7 +385,7 @@ export default function AssetsPage() {
     return difficultiesFiltered
       .filter((d) => d.icon)
       .map((d) => ({
-        url: selectIconSize(d.icon, "original"),
+        url: selectIconSize(d.icon, ICON_SIZE.ORIGINAL),
         stem: String(d.name || d.id).trim() || String(d.id),
       }));
   }, [difficultiesFiltered]);
@@ -394,7 +394,7 @@ export default function AssetsPage() {
     return curationSorted
       .filter((ct) => ct.icon)
       .map((ct) => ({
-        url: selectIconSize(ct.icon, "original"),
+        url: selectIconSize(ct.icon, ICON_SIZE.ORIGINAL),
         stem: String(ct.name || ct.id).trim() || String(ct.id),
       }));
   }, [curationSorted]);
@@ -459,7 +459,7 @@ export default function AssetsPage() {
                   {groupName ? <h3 className="assets-page__tag-group-title">{groupName}</h3> : null}
                   <div className="assets-page__tag-grid">
                     {groupTags.map((tag) => {
-                      const tagIconUrl = tag.icon ? selectIconSize(tag.icon, "original") : null;
+                      const tagIconUrl = tag.icon ? selectIconSize(tag.icon, ICON_SIZE.ORIGINAL) : null;
                       return (
                       <div key={tag.id} className="assets-page__tag-card">
                         <div className="assets-page__tag-card-top">
@@ -467,7 +467,7 @@ export default function AssetsPage() {
                           className="assets-page__tag-swatch"
                         >
                           {tagIconUrl ? (
-                            <img src={tagIconUrl} alt="" className="assets-page__tag-img" decoding="async" />
+                            <img src={selectIconSize(tagIconUrl, ICON_SIZE.ORIGINAL)} alt="" className="assets-page__tag-img" decoding="async" />
                           ) : (
                             <span className="assets-page__tag-letter" style={{ color: tag.color }}>
                               {(tag.name || "?").charAt(0).toUpperCase()}
@@ -530,14 +530,14 @@ export default function AssetsPage() {
             ) : null}
             <div className="assets-page__diff-grid">
               {difficultiesFiltered.map((d) => {
-                const diffIconUrl = d.icon ? selectIconSize(d.icon, "original") : null;
+                const diffIconUrl = d.icon ? selectIconSize(d.icon, ICON_SIZE.ORIGINAL) : null;
                 return (
                 <div key={d.id} className="assets-page__diff-card">
                   <div
                     className="assets-page__diff-icon-wrap"
                   >
                     {diffIconUrl ? (
-                      <img src={diffIconUrl} alt="" className="assets-page__diff-img" decoding="async" />
+                      <img src={selectIconSize(diffIconUrl, ICON_SIZE.ORIGINAL)} alt="" className="assets-page__diff-img" decoding="async" />
                     ) : (
                       <span className="assets-page__diff-fallback">{d.name?.slice(0, 2) ?? d.id}</span>
                     )}
@@ -597,12 +597,12 @@ export default function AssetsPage() {
             ) : null}
             <div className="assets-page__curation-grid">
               {curationSorted.map((ct) => {
-                const curationIconUrl = ct.icon ? selectIconSize(ct.icon, "original") : null;
+                const curationIconUrl = ct.icon ? selectIconSize(ct.icon, ICON_SIZE.ORIGINAL) : null;
                 return (
                 <div key={ct.id} className="assets-page__curation-card">
                   <div className="assets-page__curation-icon-wrap">
                     {curationIconUrl ? (
-                      <img src={curationIconUrl} alt="" className="assets-page__curation-img" decoding="async" />
+                      <img src={selectIconSize(curationIconUrl, ICON_SIZE.ORIGINAL)} alt="" className="assets-page__curation-img" decoding="async" />
                     ) : (
                       <span className="assets-page__curation-fallback">{ct.name?.slice(0, 1) ?? "?"}</span>
                     )}

@@ -9,7 +9,7 @@ import { routes } from "@/api/routes";
 import { useDebouncedRequest } from "@/hooks/useDebouncedRequest";
 import { PORTALED_PANEL_CLASS, usePortaledPanelAnchor } from "@/hooks/usePortaledPanelAnchor";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
-import { formatCreatorDisplay } from "@/utils/Utility";
+import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from "@/utils/Utility";
 import { userAvatarDisplayUrl } from "@/utils/playerAvatarDisplay";
 import {
   normalizeLevelSearchQuery,
@@ -168,7 +168,7 @@ function FavoriteEntityRow({ item, difficultyDict, t }) {
   return (
     <span className="profile-modules-editor__entity">
       {iconSrc ? (
-        <img className={iconClass} src={iconSrc} alt="" />
+        <img className={iconClass} src={selectIconSize(iconSrc, ICON_SIZE.SMALL)} alt="" />
       ) : (
         <span className={iconClass} aria-hidden />
       )}

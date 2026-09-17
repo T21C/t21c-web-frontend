@@ -1,6 +1,6 @@
 import { routes } from '@/api/routes';
 // tuf-search: #CurationSelectionPopup #curationSelectionPopup #popups #curations #curationSelection
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
@@ -8,12 +8,10 @@ import './curationselectionpopup.css';
 import { CloseButton } from '@/components/common/buttons';
 import toast from 'react-hot-toast';
 import { FacetQueryBuilder } from '@/components/common/selectors';
-import { Portal } from '@/components/common/Portal';
+import { PopupShell } from '@/components/common/PopupShell';
 import { buildFacetQueryParam } from '@/utils/facetQueryCodec';
 import { normalizeLevelSearchQuery } from '@/utils/normalizeEntitySearchQuery';
-import { formatCreatorDisplay } from '@/utils/Utility';
-import { PORTALED_PANEL_CLASS } from '@/hooks/usePortaledPanelAnchor';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from '@/utils/Utility';
 
 function makeEmptyCurationFacet() {
   return {
@@ -23,25 +21,6 @@ function makeEmptyCurationFacet() {
     betweenGroups: 'and',
     excludeIds: [],
   };
-}
-
-/** Portaled facet / select UI lives outside modalRef; treat those clicks as inside. */
-function isInsidePortaledUi(target) {
-  if (!target || typeof target.closest !== 'function') return false;
-  return Boolean(
-    target.closest(`.${PORTALED_PANEL_CLASS}`) ||
-      target.closest('.facet-item-picker') ||
-      target.closest('.custom-select-menu') ||
-      target.closest('.custom-select__menu') ||
-      target.closest('[class*="custom-select__menu-portal"]')
-  );
-}
-
-function isOutsideModal(modalEl, target) {
-  if (!modalEl || !target) return false;
-  if (modalEl.contains(target)) return false;
-  if (isInsidePortaledUi(target)) return false;
-  return true;
 }
 
 const CurationSelectionPopup = ({
@@ -61,27 +40,10 @@ const CurationSelectionPopup = ({
   const [curationFacetFilter, setCurationFacetFilter] = useState(makeEmptyCurationFacet);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [mouseDownOutside, setMouseDownOutside] = useState(false);
   /** id -> curation (persists across pages while filters unchanged) */
   const [selectedCurationsMap, setSelectedCurationsMap] = useState(() => new Map());
-  const modalRef = useRef(null);
 
   const LIMIT = 10;
-
-  useBodyScrollLock(isOpen);
-
-  const handleMouseDown = (e) => {
-    if (isOutsideModal(modalRef.current, e.target)) {
-      setMouseDownOutside(true);
-    }
-  };
-
-  const handleMouseUp = (e) => {
-    if (mouseDownOutside && isOutsideModal(modalRef.current, e.target)) {
-      onClose();
-    }
-    setMouseDownOutside(false);
-  };
 
   const fetchCurations = useCallback(async () => {
     try {
@@ -116,16 +78,9 @@ const CurationSelectionPopup = ({
 
   useEffect(() => {
     if (isOpen) {
-      document.addEventListener('mousedown', handleMouseDown);
-      document.addEventListener('mouseup', handleMouseUp);
       fetchCurations();
     }
-
-    return () => {
-      document.removeEventListener('mousedown', handleMouseDown);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isOpen, fetchCurations, mouseDownOutside]);
+  }, [isOpen, fetchCurations]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -181,9 +136,12 @@ const CurationSelectionPopup = ({
   if (!isOpen) return null;
 
   return (
-    <Portal>
-      <div className="curation-selection-modal">
-        <div className="curation-selection-modal__content" ref={modalRef}>
+    <PopupShell
+      onClose={onClose}
+      overlayClassName="curation-selection-modal"
+      panelClassName="curation-selection-modal__content"
+      when={isOpen}
+    >
           <CloseButton
             variant="floating"
             type="button"
@@ -304,7 +262,7 @@ const CurationSelectionPopup = ({
                         {curation.level?.diffId != null && difficultyDict[curation.level.diffId] && (
                           <div className="curation-selection-modal__difficulty">
                             <img
-                              src={difficultyDict[curation.level.diffId].icon}
+                              src={selectIconSize(difficultyDict[curation.level.diffId].icon, ICON_SIZE.MEDIUM)}
                               alt={difficultyDict[curation.level.diffId].name}
                               className="curation-selection-modal__difficulty-icon"
                             />
@@ -376,9 +334,7 @@ const CurationSelectionPopup = ({
               </button>
             </div>
           )}
-        </div>
-      </div>
-    </Portal>
+    </PopupShell>
   );
 };
 

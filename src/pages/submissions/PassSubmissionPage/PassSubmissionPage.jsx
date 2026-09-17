@@ -13,7 +13,8 @@ import { StagingModeWarning, MetaTags } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import RulePopup from './RulePopup';
-import { difficultyRequiresPassKeyCount, normalizeKeyCount, truncateString } from '@/utils/Utility';
+import { PopupShell } from '@/components/common/PopupShell';
+import { difficultyRequiresPassKeyCount, ICON_SIZE, normalizeKeyCount, selectIconSize, truncateString } from '@/utils/Utility';
 import toast from 'react-hot-toast';
 import { usePassCoreForm } from '@/components/common/cores/PassCoreForm/usePassCoreForm';
 import { getSubmissionErrorMessage } from '@/utils/submissions/formErrors';
@@ -387,14 +388,12 @@ const PassSubmissionPage = () => {
       {showRulesPopup && <RulePopup setShowRulesPopup={setShowRulesPopup} />}
 
       {showTagWarningsModal && tagWarnings.length > 0 && (
-        <div
-          className="tag-warnings-modal-overlay"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="tag-warnings-title"
-          onClick={() => setShowTagWarningsModal(false)}
+        <PopupShell
+          onClose={() => setShowTagWarningsModal(false)}
+          overlayClassName="tag-warnings-modal-overlay"
+          panelClassName="tag-warnings-modal"
+          ariaLabelledBy="tag-warnings-title"
         >
-          <div className="tag-warnings-modal" onClick={(e) => e.stopPropagation()}>
             <h2 id="tag-warnings-title">{t('passSubmission.tagWarnings.title')}</h2>
             <ul className="tag-warnings-modal-list">
               {tagWarnings.map((warning) => (
@@ -405,7 +404,7 @@ const PassSubmissionPage = () => {
                     style={warning.color ? { '--tag-bg-color': warning.color } : undefined}
                   >
                     {warning.icon ? (
-                      <img src={warning.icon} alt="" />
+                      <img src={selectIconSize(warning.icon, ICON_SIZE.SMALL)} alt="" />
                     ) : (
                       <span className="tag-warnings-modal-letter">
                         {warning.tagName.charAt(0).toUpperCase()}
@@ -438,19 +437,16 @@ const PassSubmissionPage = () => {
                 {t('passSubmission.tagWarnings.continue')}
               </button>
             </div>
-          </div>
-        </div>
+        </PopupShell>
       )}
 
       {showTilecountMismatchModal && (
-        <div
-          className="tilecount-mismatch-modal-overlay"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="tilecount-mismatch-title"
-          onClick={() => setShowTilecountMismatchModal(false)}
+        <PopupShell
+          onClose={() => setShowTilecountMismatchModal(false)}
+          overlayClassName="tilecount-mismatch-modal-overlay"
+          panelClassName="tilecount-mismatch-modal"
+          ariaLabelledBy="tilecount-mismatch-title"
         >
-          <div className="tilecount-mismatch-modal" onClick={(e) => e.stopPropagation()}>
             <h2 id="tilecount-mismatch-title">{t('passSubmission.tilecountMismatch.title')}</h2>
             <p className="tilecount-mismatch-modal-body">
               <Trans
@@ -486,8 +482,7 @@ const PassSubmissionPage = () => {
                 {t('passSubmission.tilecountMismatch.submitAnyway')}
               </button>
             </div>
-          </div>
-        </div>
+        </PopupShell>
       )}
     </div>
   );

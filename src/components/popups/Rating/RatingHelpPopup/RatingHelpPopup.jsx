@@ -1,16 +1,14 @@
 // tuf-search: #RatingHelpPopup #ratingHelpPopup #popups #rating #ratingHelp
 import React, { useEffect, useRef } from 'react';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import './ratinghelppopup.css';
 import { useTranslation } from 'react-i18next';
+import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
 import { CommentFormatter, KeyCombo, KeyDisplay } from '@/components/misc';
 
 export const RatingHelpPopup = ({ onClose }) => {
   const { t } = useTranslation('components');
   const popupRef = useRef(null);
-
-  useBodyScrollLock(true);
 
   useEffect(() => {
     const handleKeyEvents = (event) => {
@@ -30,32 +28,14 @@ export const RatingHelpPopup = ({ onClose }) => {
     };
   }, []);
 
-  useEffect(() => {
-    const handleEscapeKey = (event) => {
-      if (event.key === 'Escape') {
-        event.stopPropagation(); // Prevent other listeners from handling Escape
-        onClose();
-      }
-    };
-
-    const handleClickOutside = (event) => {
-      if (popupRef.current && !popupRef.current.contains(event.target)) {
-        onClose();
-      }
-    };
-
-    document.addEventListener('keydown', handleEscapeKey, true); // Use capture phase
-    document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('keydown', handleEscapeKey, true);
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [onClose]);
-
   return (
-    <div className="rating-help-popup-overlay">
-      <div className="rating-help-popup" ref={popupRef}>
+    <PopupShell
+      onClose={onClose}
+      dismissOnEscape
+      overlayClassName="rating-help-popup-overlay"
+      panelClassName="rating-help-popup"
+      panelProps={{ ref: popupRef }}
+    >
         <CloseButton
           variant="floating"
           onClick={onClose}
@@ -159,7 +139,6 @@ export const RatingHelpPopup = ({ onClose }) => {
             </ul>
           </section>
         </div>
-      </div>
-    </div>
+    </PopupShell>
   );
 }; 

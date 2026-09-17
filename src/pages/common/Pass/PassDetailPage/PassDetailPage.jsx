@@ -13,11 +13,12 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
 import api from "@/utils/api";
 import { EditPassPopup } from "@/components/popups/Passes";
+import { PopupShell } from "@/components/common/PopupShell";
 import { MetaTags } from "@/components/common/display";
 import { buildPassMeta } from "@/utils/meta";
 import { StatusBanner } from "@/components/common/display/StatusBanner/StatusBanner";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
-import { formatDate, normalizeKeyCount, validateFeelingRating } from "@/utils/Utility";
+import { formatDate, ICON_SIZE, normalizeKeyCount, selectIconSize, validateFeelingRating } from "@/utils/Utility";
 import { formatAccuracyRatio } from "@/utils/statFormatters";
 import i18next from "i18next";
 import { EyeIcon, EyeOffIcon, TrashIcon, WarningIcon, AdofaiIcon } from "@/components/common/icons";
@@ -219,7 +220,7 @@ const PassDetailPage = () => {
             <div className="level-card">
               <div className="difficulty-section">
                 <div className="difficulty-icon">
-                  <img src={levelDiff?.icon} alt={levelDiff?.name} />
+                  <img src={selectIconSize(levelDiff?.icon, ICON_SIZE.MEDIUM)} alt={levelDiff?.name} />
                 </div>
                 {baseScore && <span className="base-score">{t('passDetail.level.baseScore', { score: baseScore })}</span>}
               </div>
@@ -492,8 +493,12 @@ const PassDetailPage = () => {
         </div>
 
         {showHideConfirm && (
-          <div className="hide-confirm-overlay" onClick={() => setShowHideConfirm(false)}>
-            <div className="hide-confirm-dialog" onClick={(e) => e.stopPropagation()}>
+          <PopupShell
+            onClose={() => setShowHideConfirm(false)}
+            closeDisabled={isTogglingHidden}
+            overlayClassName="hide-confirm-overlay"
+            panelClassName="hide-confirm-dialog"
+          >
               <h3>{pass.isHidden ? t('passDetail.confirm.unhide.title') : t('passDetail.confirm.hide.title')}</h3>
               <p>{pass.isHidden ? t('passDetail.confirm.unhide.message') : t('passDetail.confirm.hide.message')}</p>
               <div className="hide-confirm-actions">
@@ -507,8 +512,7 @@ const PassDetailPage = () => {
                   {t('buttons.cancel', { ns: 'common' })}
                 </button>
               </div>
-            </div>
-          </div>
+          </PopupShell>
         )}
 
         {openEditDialog && (
@@ -523,8 +527,12 @@ const PassDetailPage = () => {
         )}
 
         {openEditFeelingRatingPopup && (
-          <div className="hide-confirm-overlay" onClick={handleCloseFeelingRatingPopup}>
-            <div className="hide-confirm-dialog" onClick={(e) => e.stopPropagation()}>
+          <PopupShell
+            onClose={handleCloseFeelingRatingPopup}
+            closeDisabled={isSavingFeelingRating}
+            overlayClassName="hide-confirm-overlay"
+            panelClassName="hide-confirm-dialog"
+          >
               <h3>{t('passDetail.feelingRating.title')}</h3>
               <input
                 type="text"
@@ -557,8 +565,7 @@ const PassDetailPage = () => {
                   {t('buttons.cancel', { ns: 'common' })}
                 </button>
               </div>
-            </div>
-          </div>
+          </PopupShell>
         )}
       </div>
     </>

@@ -5,7 +5,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { Tooltip } from 'react-tooltip';
 import { toast } from 'react-hot-toast';
 import api from '@/utils/api';
-import { formatCreatorDisplay, normalizeKeyCount } from '@/utils/Utility';
+import { formatCreatorDisplay, ICON_SIZE, normalizeKeyCount, selectIconSize } from '@/utils/Utility';
 import {
   getPassJudgementHitCountFromSubmissionJudgements,
   getEffectiveTilecount,
@@ -526,7 +526,7 @@ export default function PassSubmissionEditableMeta({
                 }}
               >
                 <img
-                  src={difficultyDict[diffIconKey]?.icon}
+                  src={selectIconSize(difficultyDict[diffIconKey]?.icon, ICON_SIZE.MEDIUM)}
                   alt={level?.song}
                   className="diff-icon"
                 />
@@ -568,7 +568,7 @@ export default function PassSubmissionEditableMeta({
                       onClick={() => handleLevelSelect(result)}
                     >
                       <img
-                        src={difficultyDict[result.diffId]?.icon}
+                        src={selectIconSize(difficultyDict[result.diffId]?.icon, ICON_SIZE.MEDIUM)}
                         alt={difficultyDict[result.diffId]?.name}
                         className="difficulty-icon"
                       />
@@ -588,7 +588,7 @@ export default function PassSubmissionEditableMeta({
                   {levelPreview && levelInput && /^\d+$/.test(levelInput.trim()) ? (
                     <a href={`/levels/${levelPreview.id}`} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} target="_blank" rel="noopener noreferrer">
                       <img
-                        src={difficultyDict[levelPreview.diffId]?.icon}
+                        src={selectIconSize(difficultyDict[levelPreview.diffId]?.icon, ICON_SIZE.MEDIUM)}
                         alt={difficultyDict[levelPreview.diffId]?.name}
                         className="level-icon"
                       />

@@ -1,11 +1,10 @@
 import { routes } from '@/api/routes';
 // tuf-search: #EntityPopup #entityPopup #popups #entities #entity
-import React, { useState, useEffect, useRef } from 'react';
-import { Portal } from '@/components/common/Portal';
+import React, { useState, useEffect } from 'react';
+import { PopupShell } from '@/components/common/PopupShell';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import api from '@/utils/api';
-import { getPortalRoot } from '@/utils/portalRoot';
 import './entityPopup.css';
 import { ExternalLinkIcon } from '@/components/common/icons';
 import { CloseButton } from '@/components/common/buttons';
@@ -17,41 +16,9 @@ export const EntityPopup = ({ artist, song, onClose, type = 'artist' }) => {
     const translationKey = type === 'artist' ? `artistPopup.${key}` : `songPopup.${key}`;
     return t(translationKey, params) || key;
   };
-  const popupRef = useRef(null);
   const navigate = useNavigate();
   const [entityData, setEntityData] = useState(artist || song);
   const [loading, setLoading] = useState(!entityData);
-
-  useEffect(() => {
-    const handleEscapeKey = (event) => {
-      if (event.key === 'Escape') {
-        onClose();
-      }
-    };
-
-    const handleClickOutside = (event) => {
-      if (event.button !== 0 && event.button !== undefined) {
-        return;
-      }
-      
-      if (popupRef.current && !popupRef.current.contains(event.target)) {
-        const isReactSelectMenu = event.target.closest('.custom-select-menu') || 
-                                  event.target.closest('[class*="react-select"]') ||
-                                  event.target.closest('[id*="react-select"]');
-        if (!isReactSelectMenu) {
-          onClose();
-        }
-      }
-    };
-
-    document.addEventListener('keydown', handleEscapeKey);
-    document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('keydown', handleEscapeKey);
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [onClose]);
 
   useEffect(() => {
     const fetchEntityData = async () => {
@@ -78,41 +45,6 @@ export const EntityPopup = ({ artist, song, onClose, type = 'artist' }) => {
     fetchEntityData();
   }, [artist, song, type]);
 
-  useEffect(() => {
-    const isOpen = loading || !!entityData;
-    if (!isOpen) return undefined;
-
-    const root = getPortalRoot();
-    if (!root) return undefined;
-
-    const prevOverflow = root.style.overflow;
-    root.style.overflow = 'hidden';
-    return () => {
-      root.style.overflow = prevOverflow;
-    };
-  }, [loading, entityData]);
-
-  const overlayProps = {
-    className: 'entity-popup-overlay',
-    onClick: (e) => e.target === e.currentTarget && onClose(),
-  };
-
-  if (loading) {
-    return (
-      <Portal>
-        <div {...overlayProps}>
-          <div className="entity-popup" ref={popupRef}>
-            <div className="popup-loading">{t('loading.generic', { ns: 'common' })}</div>
-          </div>
-        </div>
-      </Portal>
-    );
-  }
-
-  if (!entityData) {
-    return null;
-  }
-
   const handleArtistClick = (artistId) => {
     onClose();
     navigate(`/artists/${artistId}`);
@@ -127,10 +59,28 @@ export const EntityPopup = ({ artist, song, onClose, type = 'artist' }) => {
     }
   };
 
+  if (loading) {
+    return (
+      <PopupShell
+        onClose={onClose}
+        overlayClassName="entity-popup-overlay"
+        panelClassName="entity-popup"
+      >
+            <div className="popup-loading">{t('loading.generic', { ns: 'common' })}</div>
+      </PopupShell>
+    );
+  }
+
+  if (!entityData) {
+    return null;
+  }
+
   return (
-    <Portal>
-    <div {...overlayProps}>
-      <div className="entity-popup" ref={popupRef}>
+    <PopupShell
+      onClose={onClose}
+      overlayClassName="entity-popup-overlay"
+      panelClassName="entity-popup"
+    >
         <div className="popup-header">
           <div className="popup-header-content">
             {type === 'artist' && entityData.avatarUrl && (
@@ -263,9 +213,7 @@ export const EntityPopup = ({ artist, song, onClose, type = 'artist' }) => {
             </button>
           </div>
         </div>
-      </div>
-    </div>
-    </Portal>
+    </PopupShell>
   );
 };
 

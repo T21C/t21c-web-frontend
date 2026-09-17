@@ -9,6 +9,7 @@ import { CDN_IMAGE_ACCEPT, isCdnSupportedImageMimeType } from '@/config/constant
 import { Trans, useTranslation } from 'react-i18next';
 import { Tooltip } from 'react-tooltip';
 import { CloseButton } from '@/components/common/buttons';
+import { PopupShell } from '@/components/common/PopupShell';
 
 const ROTATION_HINT_TOOLTIP_ID = 'image-selector-rotation-hint';
 
@@ -411,13 +412,13 @@ const ImageSelectorPopup = ({
     const avatarCircle = !isBanner && mode === 'avatar';
 
     return (
-        <div
-            ref={popupShellRef}
-            className="image-selector-popup-overlay"
+        <PopupShell
+            onClose={onClose}
+            overlayClassName="image-selector-popup-overlay"
+            panelClassName={`image-selector-popup image-selector-popup--${mode}${useBasicCropper ? ' image-selector-popup--banner-basic' : ''}`}
+            overlayProps={{ ref: popupShellRef }}
+            when={isOpen}
         >
-            <div
-                className={`image-selector-popup image-selector-popup--${mode}${useBasicCropper ? ' image-selector-popup--banner-basic' : ''}`}
-            >
                 <div className="image-selector-popup-header">
                     <h2>{popupTitle}</h2>
                     <CloseButton variant="inline" onClick={onClose} aria-label={t('buttons.close', { ns: 'common' })} />
@@ -501,8 +502,7 @@ const ImageSelectorPopup = ({
                         </button>
                     </div>
                 </div>
-            </div>
-        </div>
+        </PopupShell>
     );
 };
 

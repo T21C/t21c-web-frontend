@@ -1,7 +1,7 @@
 // tuf-search: #PackAddLevelsConfirmPopup #packAddLevelsConfirmPopup #popups #packs
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
 import './PackAddLevelsConfirmPopup.css';
 
@@ -17,33 +17,6 @@ const PackAddLevelsConfirmPopup = ({
   allInvalid = false,
 }) => {
   const { t } = useTranslation(['components', 'common']);
-  const popupRef = useRef(null);
-
-  useBodyScrollLock(isOpen);
-
-  useEffect(() => {
-    if (!isOpen) return undefined;
-
-    const handleEscapeKey = (event) => {
-      if (event.key === 'Escape' && !submitting) {
-        onCancel?.();
-      }
-    };
-
-    const handleClickOutside = (event) => {
-      if (popupRef.current && !popupRef.current.contains(event.target) && !submitting) {
-        onCancel?.();
-      }
-    };
-
-    document.addEventListener('keydown', handleEscapeKey);
-    document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('keydown', handleEscapeKey);
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isOpen, onCancel, submitting]);
 
   const groupedInvalid = useMemo(() => {
     const groups = new Map();
@@ -76,8 +49,12 @@ const PackAddLevelsConfirmPopup = ({
   };
 
   return (
-    <div className="pack-add-levels-confirm-popup__overlay">
-      <div className="pack-add-levels-confirm-popup" ref={popupRef}>
+    <PopupShell
+      onClose={onCancel}
+      closeDisabled={submitting}
+      overlayClassName="pack-add-levels-confirm-popup__overlay"
+      panelClassName="pack-add-levels-confirm-popup"
+    >
         <CloseButton
           variant="floating"
           className="pack-add-levels-confirm-popup__close-btn"
@@ -140,8 +117,7 @@ const PackAddLevelsConfirmPopup = ({
             )}
           </div>
         </div>
-      </div>
-    </div>
+    </PopupShell>
   );
 };
 

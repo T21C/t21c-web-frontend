@@ -1,7 +1,6 @@
 // tuf-search: #CreatorManagementPage #creatorManagementPage #admin #creatorManagement — Creator Management
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { useAuth } from '@/contexts/AuthContext';
 
 import { CustomSelect } from '@/components/common/selectors';
@@ -10,6 +9,7 @@ import api from '@/utils/api';
 import { routes } from '@/api/routes';
 import { useTranslation } from 'react-i18next';
 import { CreatorManagementPopup, LevelCreditsEditPopup } from '@/components/popups/Creators';
+import { PopupShell } from '@/components/common/PopupShell';
 import { CreatorStatusBadge } from '@/components/common/display';
 import { SortDescIcon, SortAscIcon } from '@/components/common/icons';
 import { AccessDenied, MetaTags } from '@/components/common/display';
@@ -28,8 +28,6 @@ const CreatorManagementPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [creatorPage, setCreatorPage] = useState(1);
   const [activeTab, setActiveTab] = useState('credits');
-  const [showMergeWarning, setShowMergeWarning] = useState(false);
-  const [showSplitDialog, setShowSplitDialog] = useState(false);
   const levelsPerPage = 50;
   const creatorsPerPage = 100;
   const [selectedCreatorForAction, setSelectedCreatorForAction] = useState(null);
@@ -197,24 +195,6 @@ const CreatorManagementPage = () => {
       fetchLevelsAudit()
     ]).catch(console.error);
   }, [excludeAliases]);
-
-  useBodyScrollLock(showMergeWarning || showSplitDialog || !!creditsEditLevel);
-
-  useEffect(() => {
-    const handleEscape = (e) => {
-      if (e.key === 'Escape') {
-        if (showMergeWarning) {
-          setShowMergeWarning(false);
-        }
-        if (showSplitDialog) {
-          setShowSplitDialog(false);
-        }
-      }
-    };
-
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, [showMergeWarning, showSplitDialog]);
 
   const fetchTeams = async (search = '') => {
     // Cancel previous request if it exists
@@ -793,8 +773,16 @@ const CreatorManagementPage = () => {
       )}
 
       {showAddCreatorForm && (
-        <div className="add-creator-form-overlay">
-          <div className="add-creator-form">
+        <PopupShell
+          onClose={() => {
+            setShowAddCreatorForm(false);
+            setNewCreatorData({ name: '', aliases: [] });
+            setNewCreatorAlias('');
+          }}
+          closeDisabled={isCreatingCreator}
+          overlayClassName="add-creator-form-overlay"
+          panelClassName="add-creator-form"
+        >
             <h3>{t('creatorManagement.form.title')}</h3>
             <div className="form-group">
               <label>{t('creatorManagement.form.labels.creatorName')}</label>
@@ -880,20 +868,21 @@ const CreatorManagementPage = () => {
                 {t('buttons.cancel', { ns: 'common' })}
               </button>
             </div>
-          </div>
-        </div>
+        </PopupShell>
       )}
 
       {(showAddTeamForm || selectedTeam) && (
-        <div className="add-creator-form-overlay" onClick={() => {
-          if (!isCreatingTeam && !isUpdatingTeam) {
+        <PopupShell
+          onClose={() => {
             setShowAddTeamForm(false);
             setSelectedTeam(null);
             setNewTeamData({ name: '', description: '', aliases: [] });
             setNewTeamAlias('');
-          }
-        }}>
-          <div className="add-creator-form" onClick={(e) => e.stopPropagation()}>
+          }}
+          closeDisabled={isCreatingTeam || isUpdatingTeam}
+          overlayClassName="add-creator-form-overlay"
+          panelClassName="add-creator-form"
+        >
             <h3>{selectedTeam ? 'Edit Team' : 'Add Team'}</h3>
             <div className="form-group">
               <label>Team Name</label>
@@ -991,8 +980,7 @@ const CreatorManagementPage = () => {
                 Cancel
               </button>
             </div>
-          </div>
-        </div>
+        </PopupShell>
       )}
     </>
   );

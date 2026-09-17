@@ -21,6 +21,10 @@
   cursor: not-allowed;
 }
 
+.mod-release-popup .mod-release-popup__panel > form {
+  display: contents;
+}
+
 .mod-release-popup__panel {
   position: relative;
   z-index: 1;

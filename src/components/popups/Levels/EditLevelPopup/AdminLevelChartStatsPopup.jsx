@@ -2,10 +2,10 @@ import { routes } from '@/api/routes';
 // tuf-search: #AdminLevelChartStatsPopup #chartStats #levels #admin
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Portal } from '@/components/common/Portal';
 import './adminlevelchartstatspopup.css';
 import api from '@/utils/api';
 import { CloseButton } from '@/components/common/buttons';
+import { PopupShell } from '@/components/common/PopupShell';
 import { formatSecondsAsHhMmSs } from '@/utils/levelHelpers';
 import toast from 'react-hot-toast';
 
@@ -39,14 +39,6 @@ export const AdminLevelChartStatsPopup = ({ level, onClose, onSaved }) => {
     setLengthSeconds(msToLengthSecondsInput(level?.levelLengthInMs));
     setError(null);
   }, [level?.id, level?.bpm, level?.tilecount, level?.midspinCount, level?.levelLengthInMs]);
-
-  useEffect(() => {
-    const onEsc = (e) => {
-      if (e.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', onEsc);
-    return () => window.removeEventListener('keydown', onEsc);
-  }, [onClose]);
 
   const lengthTimeLabel = (() => {
     const raw = lengthSeconds.trim();
@@ -130,28 +122,21 @@ export const AdminLevelChartStatsPopup = ({ level, onClose, onSaved }) => {
     }
   };
 
-  const handleOverlay = (e) => {
-    if (e.target === e.currentTarget) onClose();
-  };
-
   const content = (
-    <div className="admin-level-chart-stats-popup" onClick={handleOverlay}>
-      <div
-        className="admin-level-chart-stats-popup__panel"
-        onClick={(e) => e.stopPropagation()}
-        role="dialog"
-        aria-labelledby="admin-chart-stats-title"
-      >
+    <PopupShell
+      onClose={onClose}
+      closeDisabled={saving}
+      overlayClassName="admin-level-chart-stats-popup"
+      panelClassName="admin-level-chart-stats-popup__panel"
+      ariaLabelledBy="admin-chart-stats-title"
+    >
         <div className="admin-level-chart-stats-popup__header">
           <h2 id="admin-chart-stats-title">
             {t('levelPopups.edit.chartStats.title')}
           </h2>
           <CloseButton
             variant="inline"
-            onClick={(e) => {
-              e.stopPropagation();
-              onClose();
-            }}
+            onClick={onClose}
             aria-label={t('levelPopups.edit.close')}
           />
         </div>
@@ -244,9 +229,8 @@ export const AdminLevelChartStatsPopup = ({ level, onClose, onSaved }) => {
             </button>
           </div>
         </form>
-      </div>
-    </div>
+    </PopupShell>
   );
 
-  return <Portal>{content}</Portal>;
+  return content;
 };

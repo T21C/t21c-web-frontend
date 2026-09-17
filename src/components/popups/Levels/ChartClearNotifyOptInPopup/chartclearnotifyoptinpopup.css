@@ -1,15 +1,6 @@
 /* tuf-search: #ChartClearNotifyOptInPopup #chartClearNotifyOptInPopup #popups #levels */
 .chart-clear-notify-opt-in {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
+  background-color: var(--color-black-t70);
 }
 
 .chart-clear-notify-opt-in .chart-clear-notify-opt-in__content {

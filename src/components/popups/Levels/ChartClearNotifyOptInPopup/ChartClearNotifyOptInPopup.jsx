@@ -1,13 +1,18 @@
 // tuf-search: #ChartClearNotifyOptInPopup #chartClearNotifyOptInPopup #popups #levels
 import { useTranslation } from 'react-i18next';
+import { PopupShell } from '@/components/common/PopupShell';
 import './chartclearnotifyoptinpopup.css';
 
 const ChartClearNotifyOptInPopup = ({ busy = false, onEnable, onDismiss }) => {
   const { t } = useTranslation('pages');
 
   return (
-    <div className="chart-clear-notify-opt-in">
-      <div className="chart-clear-notify-opt-in__content">
+    <PopupShell
+      onClose={onDismiss}
+      closeDisabled={busy}
+      overlayClassName="chart-clear-notify-opt-in"
+      panelClassName="chart-clear-notify-opt-in__content"
+    >
         <h3>{t('levelSubmission.chartClearNotify.title')}</h3>
         <p className="chart-clear-notify-opt-in__body">
           {t('levelSubmission.chartClearNotify.body')}
@@ -30,8 +35,7 @@ const ChartClearNotifyOptInPopup = ({ busy = false, onEnable, onDismiss }) => {
             {t('levelSubmission.chartClearNotify.enable')}
           </button>
         </div>
-      </div>
-    </div>
+    </PopupShell>
   );
 };
 

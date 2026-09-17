@@ -78,7 +78,8 @@ const CurationSchedulePage = () => {
       // Ensure the date is sent in UTC format
       const response = await api.get(`${routes.admin.curations.root()}/schedules`, {
         params: {
-          weekStart: currentMonday.toISOString().split('T')[0]
+          weekStart: currentMonday.toISOString().split('T')[0],
+          includeUnavailable: '1',
         }
       });
       setSchedules(response.data.schedules || []);
@@ -161,6 +162,13 @@ const CurationSchedulePage = () => {
         behavior: 'smooth'
       });
     }
+  };
+
+  const getUnavailableKind = (schedule) => {
+    const level = schedule?.scheduledCuration?.level;
+    if (!level || level.isDeleted) return 'deleted';
+    if (level.isHidden) return 'hidden';
+    return null;
   };
 
   // Filter schedules by type
@@ -288,7 +296,10 @@ const CurationSchedulePage = () => {
             <div className="curation-schedule-page__hall-scroll" ref={primaryScrollRef}>
               <div className="curation-schedule-page__hall-list">
                 {primarySchedules.map((schedule, index) => (
-                  <div key={schedule.id} className="curation-schedule-page__hall-item">
+                  <div
+                    key={schedule.id}
+                    className={`curation-schedule-page__hall-item${getUnavailableKind(schedule) ? ' curation-schedule-page__hall-item--unavailable' : ''}`}
+                  >
                     <div className="curation-schedule-page__hall-position">
                       {index + 1}
                     </div>
@@ -308,6 +319,11 @@ const CurationSchedulePage = () => {
                     <div className="curation-schedule-page__hall-info">
                       <h4>{schedule.scheduledCuration?.level?.song || 'Unknown Song'}</h4>
                       <p>{schedule.scheduledCuration?.level?.artist || 'Unknown Artist'}</p>
+                      {getUnavailableKind(schedule) && (
+                        <div className="curation-schedule-page__hall-unavailable">
+                          {t(`curationSchedule.unavailable.${getUnavailableKind(schedule)}`)}
+                        </div>
+                      )}
                       <div 
                         className="curation-schedule-page__hall-type"
                         style={{
@@ -379,7 +395,10 @@ const CurationSchedulePage = () => {
             <div className="curation-schedule-page__hall-scroll" ref={secondaryScrollRef}>
               <div className="curation-schedule-page__hall-list">
                 {secondarySchedules.map((schedule, index) => (
-                  <div key={schedule.id} className="curation-schedule-page__hall-item">
+                  <div
+                    key={schedule.id}
+                    className={`curation-schedule-page__hall-item${getUnavailableKind(schedule) ? ' curation-schedule-page__hall-item--unavailable' : ''}`}
+                  >
                     <div className="curation-schedule-page__hall-position">
                       {index + 1}
                     </div>
@@ -399,6 +418,11 @@ const CurationSchedulePage = () => {
                     <div className="curation-schedule-page__hall-info">
                       <h4>{schedule.scheduledCuration?.level?.song || 'Unknown Song'}</h4>
                       <p>{schedule.scheduledCuration?.level?.artist || 'Unknown Artist'}</p>
+                      {getUnavailableKind(schedule) && (
+                        <div className="curation-schedule-page__hall-unavailable">
+                          {t(`curationSchedule.unavailable.${getUnavailableKind(schedule)}`)}
+                        </div>
+                      )}
                       <div 
                         className="curation-schedule-page__hall-type"
                         style={{

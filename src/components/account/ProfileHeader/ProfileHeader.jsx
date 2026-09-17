@@ -8,7 +8,7 @@ import UserAvatar from "@/components/layout/UserAvatar/UserAvatar";
 import ChevronIcon from "@/components/common/icons/ChevronIcon";
 import { ExternalLinkIcon, HeartIcon, TUFStellarIcon } from "@/components/common/icons";
 import { formatNumber, isoToEmoji } from "@/utils";
-import { formatPassDate } from "@/utils/Utility";
+import { formatPassDate, ICON_SIZE, selectIconSize } from "@/utils/Utility";
 import {
   getDefaultProfileBannerUrl,
   isTufStellarAccessActive,
@@ -164,7 +164,6 @@ const ProfileHeader = ({
   const headerRef = useRef(null);
   const iconRowRef = useRef(null);
   const iconPanelPortalRef = useRef(null);
-  const followersWrapRef = useRef(null);
   const [followersOpen, setFollowersOpen] = useState(false);
 
   const { primaryUrl: resolvedPrimaryAvatarUrl, fallbackUrl: resolvedFallbackAvatarUrl } = useMemo(
@@ -352,25 +351,6 @@ const ProfileHeader = ({
   useEffect(() => {
     if (!followersUrl) setFollowersOpen(false);
   }, [followersUrl]);
-
-  useEffect(() => {
-    if (!followersOpen) return undefined;
-    const onPointerDown = (event) => {
-      const node = event.target;
-      if (!(node instanceof Node)) return;
-      if (followersWrapRef.current?.contains(node)) return;
-      setFollowersOpen(false);
-    };
-    const onKey = (event) => {
-      if (event.key === "Escape") setFollowersOpen(false);
-    };
-    document.addEventListener("pointerdown", onPointerDown);
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("pointerdown", onPointerDown);
-      document.removeEventListener("keydown", onKey);
-    };
-  }, [followersOpen]);
 
   const badgeText = formatPlayerBadgeText(badgeId);
   const rankNum = Number(badgeId);
@@ -702,12 +682,12 @@ const ProfileHeader = ({
               followerCount != null &&
               Number.isFinite(Number(followerCount)) ? (
                 followersUrl ? (
-                  <div className="profile-header__followers" ref={followersWrapRef}>
+                  <div className="profile-header__followers">
                     <button
                       type="button"
                       className="profile-header__follower-count profile-header__follower-count--button"
                       aria-expanded={followersOpen}
-                      aria-haspopup="menu"
+                      aria-haspopup="dialog"
                       onClick={() => setFollowersOpen((open) => !open)}
                     >
                       {t("profile.followerCount", {
@@ -745,7 +725,7 @@ const ProfileHeader = ({
                         {slot.iconUrl ? (
                           <img
                             className="profile-header__icon-slot-img"
-                            src={slot.iconUrl}
+                            src={selectIconSize(slot.iconUrl, ICON_SIZE.MEDIUM)}
                             alt=""
                             decoding="async"
                           />

@@ -1,6 +1,6 @@
 // tuf-search: #DiscordRolesManager #discordRolesManager #discord
 import React, { useState, useEffect, useMemo } from 'react';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { PopupShell } from '@/components/common/PopupShell';
 import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
 import { routes } from '@/api/routes';
@@ -141,8 +141,6 @@ const DiscordRolesManager = ({
     setShowRoleModal(false);
     resetRoleForm();
   };
-
-  useBodyScrollLock(showGuildModal || showRoleModal);
 
   useEffect(() => {
     loadGuilds();
@@ -650,8 +648,11 @@ const DiscordRolesManager = ({
 
       {/* Guild Modal */}
       {showGuildModal && (
-        <div className="discord-roles-manager__modal-overlay" onClick={handleCloseGuildModal}>
-          <div className="discord-roles-manager__modal" onClick={e => e.stopPropagation()}>
+        <PopupShell
+          onClose={handleCloseGuildModal}
+          overlayClassName="discord-roles-manager__modal-overlay"
+          panelClassName="discord-roles-manager__modal"
+        >
             <h3>{editingGuild ? t('discordRoles.guild.edit') : t('discordRoles.guild.add')}</h3>
             <form onSubmit={(e) => { e.preventDefault(); editingGuild ? handleUpdateGuild() : handleCreateGuild(); }}>
               <div className="discord-roles-manager__form-group">
@@ -722,14 +723,16 @@ const DiscordRolesManager = ({
                 </button>
               </div>
             </form>
-          </div>
-        </div>
+        </PopupShell>
       )}
 
       {/* Role Modal */}
       {showRoleModal && (
-        <div className="discord-roles-manager__modal-overlay" onClick={handleCloseRoleModal}>
-          <div className="discord-roles-manager__modal" onClick={e => e.stopPropagation()}>
+        <PopupShell
+          onClose={handleCloseRoleModal}
+          overlayClassName="discord-roles-manager__modal-overlay"
+          panelClassName="discord-roles-manager__modal"
+        >
             <h3>{editingRole ? t('discordRoles.role.edit') : t('discordRoles.role.add')}</h3>
             <form onSubmit={(e) => { e.preventDefault(); editingRole ? handleUpdateRole() : handleCreateRole(); }}>
               <div className="discord-roles-manager__form-group">
@@ -844,8 +847,7 @@ const DiscordRolesManager = ({
                 </button>
               </div>
             </form>
-          </div>
-        </div>
+        </PopupShell>
       )}
     </div>
   );

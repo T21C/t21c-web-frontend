@@ -1,5 +1,5 @@
 // tuf-search: #LevelCreditsEditPopup #levelCreditsEditPopup #popups #creators #creditManagement
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   DndContext,
@@ -22,7 +22,7 @@ import {
   useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
 import { CustomSelect } from '@/components/common/selectors';
 import { DragHandleIcon, SearchIcon } from '@/components/common/icons';
@@ -443,7 +443,6 @@ export const LevelCreditsEditPopup = ({
   onSaved,
 }) => {
   const { t } = useTranslation(['components', 'common']);
-  const popupRef = useRef(null);
 
   const [pendingTeam, setPendingTeam] = useState(() => buildPendingTeamFromLevel(level));
   const [pendingCreators, setPendingCreators] = useState(() => buildPendingCreatorsFromLevel(level));
@@ -459,8 +458,6 @@ export const LevelCreditsEditPopup = ({
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
 
-  useBodyScrollLock(true);
-
   const requestClose = useCallback(() => {
     if (
       hasUnsavedChanges &&
@@ -470,16 +467,6 @@ export const LevelCreditsEditPopup = ({
     }
     onClose();
   }, [hasUnsavedChanges, onClose, t]);
-
-  useEffect(() => {
-    const handleEscape = (e) => {
-      if (e.key === 'Escape') {
-        requestClose();
-      }
-    };
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, [requestClose]);
 
   useEffect(() => {
     let cancelToken;
@@ -530,12 +517,6 @@ export const LevelCreditsEditPopup = ({
         ),
     );
   }, [fetchedCreators, pendingCreators]);
-
-  const handleBackdropClick = (e) => {
-    if (e.target === e.currentTarget) {
-      requestClose();
-    }
-  };
 
   const handleTeamInputChange = (input) => {
     if (!input) {
@@ -721,20 +702,12 @@ export const LevelCreditsEditPopup = ({
   }, [activeId, pendingCreators]);
 
   return (
-    <div className="level-credits-edit-popup-container">
-      <div
-        className="level-credits-edit-popup-overlay"
-        onClick={handleBackdropClick}
-        role="presentation"
-      >
-        <div
-          className="level-credits-edit-popup"
-          ref={popupRef}
-          onClick={(e) => e.stopPropagation()}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="level-credits-edit-popup-title"
-        >
+    <PopupShell
+      onClose={requestClose}
+      overlayClassName="level-credits-edit-popup-container level-credits-edit-popup-overlay"
+      panelClassName="level-credits-edit-popup"
+      ariaLabelledBy="level-credits-edit-popup-title"
+    >
           <CloseButton variant="floating" onClick={requestClose} aria-label="Close" />
 
           <header className="level-credits-edit-popup__header">
@@ -888,9 +861,7 @@ export const LevelCreditsEditPopup = ({
               Cancel
             </button>
           </footer>
-        </div>
-      </div>
-    </div>
+    </PopupShell>
   );
 };
 

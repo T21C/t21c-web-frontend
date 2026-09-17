@@ -1,18 +1,17 @@
 import { routes } from '@/api/routes';
 // tuf-search: #SongSelectorPopup #songSelectorPopup #popups #songs #songSelector
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import api from '@/utils/api';
 import './songSelectorPopup.css';
 import { CloseButton } from '@/components/common/buttons';
+import { PopupShell } from '@/components/common/PopupShell';
 import { getVerificationClass } from '@/utils/Utility';
 import { normalizeSongSearchQuery } from '@/utils/normalizeEntitySearchQuery';
 import { CustomSelect } from '@/components/common/selectors';
 
 export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selectedArtist = null, allowCreate = true }) => {
   const { t } = useTranslation(['components', 'common']);
-  const popupRef = useRef(null);
   const normalizedInitialSongId = initialSong?.id ?? initialSong?.songId ?? null;
   const normalizedInitialSongName = initialSong?.name ?? initialSong?.songName ?? '';
 
@@ -327,32 +326,12 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
     }
   };
 
-  useBodyScrollLock(true);
-
-  // Close handlers
-  useEffect(() => {
-    const handleEscapeKey = (event) => {
-      if (event.key === 'Escape') onClose();
-    };
-
-    const handleClickOutside = (event) => {
-      if (popupRef.current && !popupRef.current.contains(event.target)) {
-        onClose();
-      }
-    };
-
-    document.addEventListener('keydown', handleEscapeKey);
-    document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('keydown', handleEscapeKey);
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [onClose]);
-
   return (
-    <div className="song-selector-popup-overlay">
-      <div className="song-selector-popup" ref={popupRef}>
+    <PopupShell
+      onClose={onClose}
+      overlayClassName="song-selector-popup-overlay"
+      panelClassName="song-selector-popup"
+    >
         <div className="popup-header">
           <h2>{t('songSelector.title')}</h2>
           <CloseButton
@@ -614,8 +593,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
           {error && <div className="error-message">{error}</div>}
           {success && <div className="success-message">{success}</div>}
         </div>
-      </div>
-    </div>
+    </PopupShell>
   );
 };
 

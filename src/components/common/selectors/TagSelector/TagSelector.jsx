@@ -1,5 +1,6 @@
 // tuf-search: #TagSelector #tagSelector #selectors
 import React, { useState, useRef, useEffect } from "react";
+import { ICON_SIZE, selectIconSize } from "@/utils/Utility";
 import { Portal } from "@/components/common/Portal";
 import "./tagselector.css";
 import { useTranslation } from "react-i18next";
@@ -161,7 +162,7 @@ const TagSelector = ({
                 }}
               >
                 {item.icon && (
-                  <img src={item.icon} alt="" className="tag-selector-icon" />
+                  <img src={selectIconSize(item.icon, ICON_SIZE.SMALL)} alt="" className="tag-selector-icon" />
                 )}
                 <span className="tag-selector-name">{item.name}</span>
               </button>

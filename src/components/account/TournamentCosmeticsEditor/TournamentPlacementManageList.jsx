@@ -2,6 +2,7 @@
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { useTranslation } from "react-i18next";
 import { EyeIcon, EyeOffIcon } from "@/components/common/icons";
+import { ICON_SIZE, selectIconSize } from "@/utils/Utility";
 import {
   getCreditId,
   resolvePlacementListLabel,
@@ -65,7 +66,7 @@ function PlacementManageRow({
         {iconUrl ? (
           <img
             className="tournament-cosmetics-editor-popup__placement-icon"
-            src={iconUrl}
+            src={selectIconSize(iconUrl, ICON_SIZE.SMALL)}
             alt=""
             draggable={false}
           />

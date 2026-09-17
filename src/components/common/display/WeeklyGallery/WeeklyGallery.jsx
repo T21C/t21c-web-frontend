@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import './WeeklyGallery.css';
 import { ChevronIcon } from '../../icons';
-import { formatCreatorDisplay } from '@/utils/Utility';
+import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { NavLink } from 'react-router-dom';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { getVideoDetails } from '@/utils';
@@ -350,7 +350,7 @@ const WeeklyGallery = ({
                     <div className="weekly-gallery__difficulty-hero">
                       {diff?.icon ? (
                         <img
-                          src={diff.icon}
+                          src={selectIconSize(diff.icon, ICON_SIZE.MEDIUM)}
                           alt={diff.name || 'Difficulty'}
                           className="weekly-gallery__difficulty-hero-img"
                         />
@@ -373,7 +373,7 @@ const WeeklyGallery = ({
                             (t?.id != null && curationTypesDict?.[t.id]?.icon) || t?.icon || null;
                           return iconSrc ? (
                             <div key={t.id ?? ti} className="weekly-gallery__standalone-curation-icon">
-                              <img src={iconSrc} alt={t.name || ''} className="weekly-gallery__standalone-curation-img" />
+                              <img src={selectIconSize(iconSrc, ICON_SIZE.SMALL)} alt={t.name || ''} className="weekly-gallery__standalone-curation-img" />
                             </div>
                           ) : null;
                         })}

@@ -17,6 +17,7 @@ import {
 } from '@/components/common/icons';
 import LogoFullOutlineSVG from '@/assets/tuf-logo/LogoFullOutlined/LogoFullOutlined';
 import { describeGrantableScopes } from '@/pages/developers/scopeCatalog';
+import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { userAvatarUrls } from '@/utils/playerAvatarDisplay';
 import { navigateExternal } from '@/utils/externalNavigationGate';
 import './oauthConsentPage.css';
@@ -186,7 +187,7 @@ const OAuthConsentPage = () => {
               <div className="oauth-consent-page__connect-icons">
                 {info.client.iconUrl ? (
                   <img
-                    src={info.client.iconUrl}
+                    src={selectIconSize(info.client.iconUrl, ICON_SIZE.MEDIUM)}
                     alt=""
                     className="oauth-consent-page__party-icon"
                   />

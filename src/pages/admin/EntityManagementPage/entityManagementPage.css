@@ -260,20 +260,11 @@
   color: rgba(255, 255, 255, 0.6);
 }
 
-.entity-management-container .add-form-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+.add-form-overlay {
   background-color: rgba(0, 0, 0, 0.75);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
 }
 
-.entity-management-container .add-form {
+.add-form-overlay .add-form {
   background-color: #1e1e1e;
   border-radius: 8px;
   padding: 2rem;
@@ -283,25 +274,25 @@
   overflow-y: auto;
 }
 
-.entity-management-container .add-form h3 {
+.add-form-overlay .add-form h3 {
   margin: 0 0 1.5rem 0;
   color: var(--color-white);
 }
 
-.entity-management-container .form-group {
+.add-form-overlay .form-group {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   margin-bottom: 1.5rem;
 }
 
-.entity-management-container .form-group label {
+.add-form-overlay .form-group label {
   color: var(--color-white);
   font-weight: 500;
 }
 
-.entity-management-container .form-group input,
-.entity-management-container .form-group select {
+.add-form-overlay .form-group input,
+.add-form-overlay .form-group select {
   padding: 0.75rem;
   background-color: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -310,22 +301,22 @@
   font-size: 1rem;
 }
 
-.entity-management-container .form-group input:focus,
-.entity-management-container .form-group select:focus {
+.add-form-overlay .form-group input:focus,
+.add-form-overlay .form-group select:focus {
   outline: none;
   border-color: rgba(255, 255, 255, 0.4);
 }
 
-.entity-management-container .alias-input-group {
+.add-form-overlay .alias-input-group {
   display: flex;
   gap: 0.5rem;
 }
 
-.entity-management-container .alias-input-group input {
+.add-form-overlay .alias-input-group input {
   flex: 1;
 }
 
-.entity-management-container .alias-input-group button {
+.add-form-overlay .alias-input-group button {
   padding: 0.75rem 1rem;
   background-color: var(--btn-success);
   border: none;
@@ -335,18 +326,18 @@
   font-weight: 500;
 }
 
-.entity-management-container .alias-input-group button:hover {
+.add-form-overlay .alias-input-group button:hover {
   background-color: var(--btn-success-hover);
 }
 
-.entity-management-container .aliases-list {
+.add-form-overlay .aliases-list {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-top: 0.5rem;
 }
 
-.entity-management-container .alias-tag {
+.add-form-overlay .alias-tag {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -356,7 +347,7 @@
   color: var(--color-white);
 }
 
-.entity-management-container .alias-tag button {
+.add-form-overlay .alias-tag button {
   background: none;
   border: none;
   color: var(--danger-color);
@@ -370,14 +361,14 @@
   justify-content: center;
 }
 
-.entity-management-container .form-actions {
+.add-form-overlay .form-actions {
   display: flex;
   gap: 1rem;
   margin-top: 2rem;
 }
 
-.entity-management-container .submit-button,
-.entity-management-container .cancel-button {
+.add-form-overlay .submit-button,
+.add-form-overlay .cancel-button {
   flex: 1;
   padding: 0.75rem;
   border: none;
@@ -387,26 +378,26 @@
   transition: background-color 0.2s;
 }
 
-.entity-management-container .submit-button {
+.add-form-overlay .submit-button {
   background-color: var(--btn-success);
   color: #ffffff;
 }
 
-.entity-management-container .submit-button:hover:not(:disabled) {
+.add-form-overlay .submit-button:hover:not(:disabled) {
   background-color: var(--btn-success-hover);
 }
 
-.entity-management-container .submit-button:disabled {
+.add-form-overlay .submit-button:disabled {
   background-color: #666;
   cursor: not-allowed;
 }
 
-.entity-management-container .cancel-button {
+.add-form-overlay .cancel-button {
   background-color: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: var(--color-white);
 }
 
-.entity-management-container .cancel-button:hover {
+.add-form-overlay .cancel-button:hover {
   background-color: rgba(255, 255, 255, 0.2);
 }

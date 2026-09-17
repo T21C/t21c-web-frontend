@@ -2,7 +2,7 @@ import { routes } from '@/api/routes';
 // tuf-search: #RatingDetailPopup #ratingDetailPopup #popups #rating #ratingDetail
 import "./ratingdetailpopup.css";
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { PopupShell } from '@/components/common/PopupShell';
 import { usePopupHistory } from '@/hooks/usePopupHistory';
 import { getVideoDetails } from "@/utils";
 import { RatingItem } from '@/components/cards';
@@ -11,7 +11,7 @@ import api from '@/utils/api';
 import { useTranslation } from 'react-i18next';
 import { ReferencesButton, CloseButton } from '@/components/common/buttons';
 import { ExternalLinkIcon, DownloadIcon, DraftIcon } from '@/components/common/icons';
-import { formatCreatorDisplay } from "@/utils/Utility";
+import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from "@/utils/Utility";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { hasAnyFlag, hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import toast from 'react-hot-toast';
@@ -84,7 +84,6 @@ export const RatingDetailPopup = ({
   const [showUnsavedDraftPrompt, setShowUnsavedDraftPrompt] = useState(false);
   const [hasSavedDraft, setHasSavedDraft] = useState(false);
 
-  const popupRef = useRef(null);
   const detailsHydratedSeededRef = useRef(false);
   const seededRatingIdRef = useRef(null);
   const hasUnsavedChangesRef = useRef(false);
@@ -92,8 +91,6 @@ export const RatingDetailPopup = ({
   const { snapshotSeconds: snapshotViewDurationSeconds } = useViewDurationTracker(
     selectedRating?.id ?? null
   );
-
-  useBodyScrollLock(true);
 
   const resolveViewDurationSeconds = useCallback(() => {
     return Math.max(
@@ -184,42 +181,9 @@ export const RatingDetailPopup = ({
     setIsAnimating(true);
     const timer = setTimeout(() => {
       setIsAnimating(false);
-    }, 400); // Match the animation duration
+    }, 400);
     return () => clearTimeout(timer);
   }, [selectedRating?.id]);
-
-  useEffect(() => {
-    const handleEscKey = (event) => {
-      if (event.key !== 'Escape' || event.defaultPrevented || isAnimating) return;
-      if (showUnsavedDraftPrompt) {
-        event.preventDefault();
-        handleCancelDraftPrompt();
-        return;
-      }
-      handleClose();
-    };
-
-    document.addEventListener('keydown', handleEscKey);
-    return () => document.removeEventListener('keydown', handleEscKey);
-  }, [handleClose, handleCancelDraftPrompt, isAnimating, showUnsavedDraftPrompt]);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (isAnimating) return; // Prevent closing during animations
-      if (showUnsavedDraftPrompt) return;
-
-      if (popupRef.current && 
-          !popupRef.current.contains(event.target) && 
-          event.target.classList.contains('rating-popup-overlay') &&
-          !event.target.closest('.references-popup') &&
-          !event.target.closest('.references-button')) {
-        handleClose();
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [handleClose, isAnimating, showUnsavedDraftPrompt]);
 
   useEffect(() => {
     const handleBeforeUnload = (e) => {
@@ -609,60 +573,20 @@ export const RatingDetailPopup = ({
 
   if (!selectedRating) return null;
   return (
-    <div className={`rating-popup-overlay ${isExiting ? 'exiting' : ''}`}>
-      {enableReferences && (
-        <div className="references-button-container">
-          <ReferencesButton onClick={() => setShowReferences(true)} />
-        </div>
-      )}
-      {showUnsavedDraftPrompt && (
-        <div
-          className="rating-unsaved-draft-prompt__overlay"
-          onMouseDown={(event) => {
-            if (event.target === event.currentTarget) {
-              handleCancelDraftPrompt();
-            }
-          }}
-        >
-          <div
-            className="rating-unsaved-draft-prompt"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="rating-unsaved-draft-prompt-title"
-          >
-            <h3 id="rating-unsaved-draft-prompt-title" className="rating-unsaved-draft-prompt__title">
-              {t('rating.detailPopup.confirmations.unsavedDraft.title')}
-            </h3>
-            <p className="rating-unsaved-draft-prompt__body">
-              {t('rating.detailPopup.confirmations.unsavedDraft.body')}
-            </p>
-            <div className="rating-unsaved-draft-prompt__actions">
-              <button
-                type="button"
-                className="rating-unsaved-draft-prompt__btn rating-unsaved-draft-prompt__btn--save"
-                onClick={handleSaveDraftAndClose}
-              >
-                {t('rating.detailPopup.confirmations.unsavedDraft.save')}
-              </button>
-              <button
-                type="button"
-                className="rating-unsaved-draft-prompt__btn rating-unsaved-draft-prompt__btn--discard"
-                onClick={handleDiscardDraftAndClose}
-              >
-                {t('rating.detailPopup.confirmations.unsavedDraft.discard')}
-              </button>
-              <button
-                type="button"
-                className="rating-unsaved-draft-prompt__btn rating-unsaved-draft-prompt__btn--cancel"
-                onClick={handleCancelDraftPrompt}
-              >
-                {t('buttons.cancel', { ns: 'common' })}
-              </button>
-            </div>
+    <>
+    <PopupShell
+      onClose={handleClose}
+      closeDisabled={isAnimating}
+      overlayClassName={`rating-popup-overlay${isExiting ? ' exiting' : ''}`}
+      panelClassName={`rating-popup${isExiting ? ' exiting' : ''}`}
+      overlayChildren={
+        enableReferences ? (
+          <div className="references-button-container">
+            <ReferencesButton onClick={() => setShowReferences(true)} />
           </div>
-        </div>
-      )}
-      <div className={`rating-popup ${isExiting ? 'exiting' : ''}`} ref={popupRef}>
+        ) : null
+      }
+    >
         <CloseButton
           className="rating-popup-close"
           variant="floating"
@@ -757,15 +681,15 @@ export const RatingDetailPopup = ({
                 </div>
                 <div className="detail-field">
                   <span className="detail-label">{t('rating.detailPopup.labels.currentDifficulty')}</span>
-                  <img src={difficultyDict[selectedRating.level.diffId]?.icon} alt="" className="detail-value lv-icon" />
+                  <img src={selectIconSize(difficultyDict[selectedRating.level.diffId]?.icon, ICON_SIZE.MEDIUM)} alt="" className="detail-value lv-icon" />
                 </div>
                 <div className="detail-field" style={{visibility: selectedRating.averageDifficultyId ? 'visible' : 'hidden'}}>
                   <span className="detail-label">{t('rating.detailPopup.labels.averageRating')}</span>
-                  <img src={difficultyDict[selectedRating.averageDifficultyId]?.icon} alt="" className="detail-value lv-icon" />
+                  <img src={selectIconSize(difficultyDict[selectedRating.averageDifficultyId]?.icon, ICON_SIZE.MEDIUM)} alt="" className="detail-value lv-icon" />
                 </div>
                 <div className="detail-field" style={{visibility: selectedRating.communityDifficultyId ? 'visible' : 'hidden'}}>
                   <span className="detail-label">{t('rating.detailPopup.labels.communityRating')}</span>
-                  <img src={difficultyDict[selectedRating.communityDifficultyId]?.icon} alt="" className="detail-value lv-icon" />
+                  <img src={selectIconSize(difficultyDict[selectedRating.communityDifficultyId]?.icon, ICON_SIZE.MEDIUM)} alt="" className="detail-value lv-icon" />
                 </div>
 
               </div>
@@ -803,7 +727,7 @@ export const RatingDetailPopup = ({
                           allowCustomInput={true}
                         />
                         {(pendingRating && difficulties.find(d => d.name === pendingRating)) && 
-                          <img src={difficulties.find(d => d.name === pendingRating)?.icon} alt="" className="detail-value lv-icon" />}
+                          <img src={selectIconSize(difficulties.find(d => d.name === pendingRating)?.icon, ICON_SIZE.MEDIUM)} alt="" className="detail-value lv-icon" />}
                       </div>
                     </div>
                     <div className="rating-field">
@@ -911,7 +835,45 @@ export const RatingDetailPopup = ({
             </div>
           </div>
         </div>
-      </div>
-    </div>
+    </PopupShell>
+    {showUnsavedDraftPrompt && (
+      <PopupShell
+        onClose={handleCancelDraftPrompt}
+        overlayClassName="rating-unsaved-draft-prompt__overlay"
+        panelClassName="rating-unsaved-draft-prompt"
+        ariaLabelledBy="rating-unsaved-draft-prompt-title"
+      >
+            <h3 id="rating-unsaved-draft-prompt-title" className="rating-unsaved-draft-prompt__title">
+              {t('rating.detailPopup.confirmations.unsavedDraft.title')}
+            </h3>
+            <p className="rating-unsaved-draft-prompt__body">
+              {t('rating.detailPopup.confirmations.unsavedDraft.body')}
+            </p>
+            <div className="rating-unsaved-draft-prompt__actions">
+              <button
+                type="button"
+                className="rating-unsaved-draft-prompt__btn rating-unsaved-draft-prompt__btn--save"
+                onClick={handleSaveDraftAndClose}
+              >
+                {t('rating.detailPopup.confirmations.unsavedDraft.save')}
+              </button>
+              <button
+                type="button"
+                className="rating-unsaved-draft-prompt__btn rating-unsaved-draft-prompt__btn--discard"
+                onClick={handleDiscardDraftAndClose}
+              >
+                {t('rating.detailPopup.confirmations.unsavedDraft.discard')}
+              </button>
+              <button
+                type="button"
+                className="rating-unsaved-draft-prompt__btn rating-unsaved-draft-prompt__btn--cancel"
+                onClick={handleCancelDraftPrompt}
+              >
+                {t('buttons.cancel', { ns: 'common' })}
+              </button>
+            </div>
+      </PopupShell>
+    )}
+    </>
   );
 };

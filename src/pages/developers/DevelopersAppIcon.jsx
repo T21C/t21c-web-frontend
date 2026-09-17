@@ -1,4 +1,7 @@
 // tuf-search: #DevelopersAppIcon
+// tuf-search: #DevelopersAppIcon
+import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
+
 /**
  * @param {{ name?: string, iconUrl?: string | null, size?: 'sm' | 'md' | 'lg', className?: string }} props
  */
@@ -14,7 +17,7 @@ const DevelopersAppIcon = ({ name = '?', iconUrl, size = 'md', className = '' })
   if (iconUrl) {
     return (
       <img
-        src={iconUrl}
+        src={size === 'sm' ? selectIconSize(iconUrl, ICON_SIZE.SMALL) : selectIconSize(iconUrl, ICON_SIZE.MEDIUM)}
         alt=""
         className={`developers-portal__app-icon ${sizeClass} ${className}`.trim()}
       />

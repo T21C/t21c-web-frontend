@@ -1,8 +1,7 @@
 // tuf-search: #StepUpModal #stepUpModal #account #stepUp
 import React, { useCallback, useEffect, useState } from 'react';
-import { Portal } from '@/components/common/Portal';
+import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
@@ -44,8 +43,6 @@ const StepUpModal = ({ scope, user, onElevated, onCancel }) => {
   const [resendAvailableAt, setResendAvailableAt] = useState(null);
   const [resendSeconds, setResendSeconds] = useState(0);
   const [codeRequested, setCodeRequested] = useState(false);
-
-  useBodyScrollLock(true);
 
   const actionKey = SCOPE_ACTION_KEYS[scope] || 'security';
   const actionLabel = t(`stepUp.actions.${actionKey}`, {
@@ -103,14 +100,6 @@ const StepUpModal = ({ scope, user, onElevated, onCancel }) => {
     const id = setInterval(tick, 500);
     return () => clearInterval(id);
   }, [resendAvailableAt]);
-
-  useEffect(() => {
-    const onKey = (e) => {
-      if (e.key === 'Escape' && !busy) onCancel();
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [busy, onCancel]);
 
   const handleConfirmCode = async (e) => {
     e.preventDefault();
@@ -176,15 +165,13 @@ const StepUpModal = ({ scope, user, onElevated, onCancel }) => {
   };
 
   return (
-    <Portal>
-      <div className="step-up-modal-overlay" role="presentation" onClick={() => !busy && onCancel()}>
-        <div
-          className="step-up-modal"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="step-up-modal-title"
-          onClick={(e) => e.stopPropagation()}
-        >
+    <PopupShell
+      onClose={onCancel}
+      closeDisabled={busy}
+      overlayClassName="step-up-modal-overlay"
+      panelClassName="step-up-modal"
+      ariaLabelledBy="step-up-modal-title"
+    >
           <div className="step-up-modal__header">
             <h2 id="step-up-modal-title">{t('stepUp.title')}</h2>
             <CloseButton
@@ -276,9 +263,7 @@ const StepUpModal = ({ scope, user, onElevated, onCancel }) => {
               </div>
             </form>
           )}
-        </div>
-      </div>
-    </Portal>
+    </PopupShell>
   );
 };
 

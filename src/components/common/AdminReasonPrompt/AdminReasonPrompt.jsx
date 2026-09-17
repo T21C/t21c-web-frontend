@@ -1,9 +1,8 @@
 // tuf-search: #AdminReasonPrompt #adminReasonPrompt
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Portal } from '@/components/common/Portal';
+import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import './adminReasonPrompt.css';
 
 const REASON_MAX_LENGTH = 4000;
@@ -22,8 +21,6 @@ export default function AdminReasonPrompt({
   const textareaRef = useRef(null);
   const [reason, setReason] = useState('');
 
-  useBodyScrollLock(isOpen);
-
   useEffect(() => {
     if (!isOpen) return undefined;
     setReason('');
@@ -39,37 +36,17 @@ export default function AdminReasonPrompt({
     el.style.height = `${Math.min(Math.max(el.scrollHeight, TEXTAREA_MIN_PX), maxPx)}px`;
   }, [reason, isOpen]);
 
-  useEffect(() => {
-    if (!isOpen) return undefined;
-    const onKey = (event) => {
-      if (event.key === 'Escape' && !submitting) {
-        onCancel?.();
-      }
-    };
-    document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
-  }, [isOpen, onCancel, submitting]);
-
   if (!isOpen) return null;
 
   return (
-    <Portal mount="documentBody">
-      <div className="admin-reason-prompt" role="presentation">
-        <button
-          type="button"
-          className="admin-reason-prompt__backdrop"
-          aria-label={t('buttons.cancel')}
-          disabled={submitting}
-          onClick={() => {
-            if (!submitting) onCancel?.();
-          }}
-        />
-        <div
-          className="admin-reason-prompt__panel"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="admin-reason-prompt-title"
-        >
+    <PopupShell
+      onClose={onCancel}
+      closeDisabled={submitting}
+      overlayClassName="admin-reason-prompt"
+      panelClassName="admin-reason-prompt__panel"
+      ariaLabelledBy="admin-reason-prompt-title"
+      mount="documentBody"
+    >
           <CloseButton
             variant="floating"
             onClick={onCancel}
@@ -113,8 +90,6 @@ export default function AdminReasonPrompt({
               {confirmLabel || t('buttons.confirm')}
             </button>
           </div>
-        </div>
-      </div>
-    </Portal>
+    </PopupShell>
   );
 }

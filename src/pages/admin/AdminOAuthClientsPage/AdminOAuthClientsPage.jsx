@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '@/contexts/AuthContext';
+import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import AccessDenied from '@/components/common/display/AccessDenied/AccessDenied';
 import api from '@/utils/api';
@@ -17,7 +18,7 @@ const PAGE_SIZE = 50;
 const AppIcon = ({ name, iconUrl }) => {
   const initial = (name || '?').trim().charAt(0).toUpperCase() || '?';
   if (iconUrl) {
-    return <img src={iconUrl} alt="" className="admin-oauth-clients-page__icon" />;
+    return <img src={selectIconSize(iconUrl, ICON_SIZE.MEDIUM)} alt="" className="admin-oauth-clients-page__icon" />;
   }
   return (
     <span className="admin-oauth-clients-page__icon admin-oauth-clients-page__icon--fallback" aria-hidden>

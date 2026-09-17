@@ -1,8 +1,7 @@
 // tuf-search: #LinkConfirmProvider #linkConfirm
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { Portal } from "@/components/common/Portal";
+import { PopupShell } from "@/components/common/PopupShell";
 import { useTranslation } from "react-i18next";
-import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 import { formatUrlForDisplay, getUrlHost, parseSafeUrl } from "@/utils/bioCanvas/urls";
 import {
   getUnapprovedExternalUrl,
@@ -64,7 +63,6 @@ function writeAlwaysTrustedDomains(set) {
 function LinkConfirmModal({ pending, onConfirm, onCancel }) {
   const { t } = useTranslation(["pages"]);
   const [trustMode, setTrustMode] = useState("none");
-  useBodyScrollLock(Boolean(pending));
 
   if (!pending) return null;
 
@@ -72,20 +70,13 @@ function LinkConfirmModal({ pending, onConfirm, onCancel }) {
   const host = getUrlHost(pending.url);
 
   return (
-    <Portal mount="documentBody">
-      <div className="link-confirm" role="presentation">
-        <button
-          type="button"
-          className="link-confirm__backdrop"
-          aria-label={t("bioCanvas.linkConfirm.cancel", { defaultValue: "Cancel" })}
-          onClick={onCancel}
-        />
-        <div
-          className="link-confirm__panel"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="link-confirm-title"
-        >
+    <PopupShell
+      onClose={onCancel}
+      overlayClassName="link-confirm"
+      panelClassName="link-confirm__panel"
+      ariaLabelledBy="link-confirm-title"
+      mount="documentBody"
+    >
           <h2 id="link-confirm-title" className="link-confirm__title">
             {t("bioCanvas.linkConfirm.title", { defaultValue: "Leaving TUF?" })}
           </h2>
@@ -139,9 +130,7 @@ function LinkConfirmModal({ pending, onConfirm, onCancel }) {
               {t("bioCanvas.linkConfirm.continue", { defaultValue: "Continue" })}
             </button>
           </div>
-        </div>
-      </div>
-    </Portal>
+    </PopupShell>
   );
 }
 

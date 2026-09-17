@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import MarqueeText from "@/components/common/display/MarqueeText/MarqueeText";
 import { EditIcon } from "@/components/common/icons";
-import { formatCreatorDisplay } from "@/utils/Utility";
+import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from "@/utils/Utility";
 import { getArtistDisplayName, getSongDisplayName } from "@/utils/levelHelpers";
 
 const PlacementLevelPreview = ({ linkedLevel, emptyLabel, onEdit, editLabel, readOnly = false }) => {
@@ -38,15 +38,13 @@ const PlacementLevelPreview = ({ linkedLevel, emptyLabel, onEdit, editLabel, rea
     levelCredits: linkedLevel.levelCredits,
   };
   const diffId = linkedLevel.diffId;
-  const difficultyIcon =
-    difficultyDict[diffId]?.icon || "/default-difficulty-icon.png";
   const artistName = getArtistDisplayName(levelForDisplay) || linkedLevel.artist || "";
   const songName = getSongDisplayName(levelForDisplay) || linkedLevel.song || "";
 
   return (
     <div className="tournament-management-popup__level-preview">
       <div className="tournament-management-popup__level-preview-icon">
-        <img src={difficultyIcon} alt="" />
+        <img src={selectIconSize(difficultyDict[diffId]?.icon, ICON_SIZE.MEDIUM) || "/default-difficulty-icon.png"} alt="" />
       </div>
       <div className="tournament-management-popup__level-preview-song">
         <MarqueeText className="tournament-management-popup__level-exp" as="p">

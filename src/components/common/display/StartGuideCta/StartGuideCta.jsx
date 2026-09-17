@@ -1,6 +1,7 @@
 // tuf-search: #StartGuideCta #startGuideCta #display
 import { useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { CLIENT_PREF_KEYS } from '@/utils/clientPreferences';
 import { useClientPreference } from '@/hooks/useClientPreference';
 import adofaiTufStartIcon from '@/assets/icons/ADOFAI_TUF_START_ICON.png';
@@ -45,7 +46,7 @@ export default function StartGuideCta({
       }}
     >
       <Link to={to} className="tuf-start-guide-cta__link">
-        <img src={icon} alt={iconAlt} className="tuf-start-guide-cta__icon" />
+        <img src={selectIconSize(icon, ICON_SIZE.SMALL)} alt={iconAlt} className="tuf-start-guide-cta__icon" />
         <span className="tuf-start-guide-cta__text">
           <span className="tuf-start-guide-cta__title">{title}</span>
           <span className="tuf-start-guide-cta__subtitle">{subtitle}</span>

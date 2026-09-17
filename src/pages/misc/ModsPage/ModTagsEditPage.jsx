@@ -12,7 +12,7 @@ import { buildStaticPageMeta } from '@/utils/meta';
 import { Footer } from '@/components/layout';
 import { CloseButton } from '@/components/common/buttons';
 import { EditIcon, TrashIcon } from '@/components/common/icons';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { PopupShell } from '@/components/common/PopupShell';
 import { getRateLimitMessage } from '@/utils/rateLimitError';
 import './modTagsEditPage.css';
 
@@ -91,9 +91,6 @@ const ModTagsEditPage = () => {
   const [newTag, setNewTag] = useState(EMPTY_TAG_FORM);
   const [editingTag, setEditingTag] = useState(null);
   const [deletingTag, setDeletingTag] = useState(null);
-
-  const popupOpen = isCreating || Boolean(editingTag) || Boolean(deletingTag);
-  useBodyScrollLock(popupOpen);
 
   const loadTags = useCallback(async ({ silent } = {}) => {
     if (!silent) {
@@ -278,18 +275,13 @@ const ModTagsEditPage = () => {
         </div>
 
         {isCreating ? (
-          <div
-            className="mods-tags-page__modal"
-            onClick={(event) => {
-              if (event.target === event.currentTarget && !saving) closeCreate();
-            }}
+          <PopupShell
+            onClose={closeCreate}
+            closeDisabled={saving}
+            overlayClassName="mods-tags-page mods-tags-page__modal"
+            panelClassName="mods-tags-page__modal-content"
+            ariaLabelledBy="mod-tag-create-title"
           >
-            <div
-              className="mods-tags-page__modal-content"
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="mod-tag-create-title"
-            >
               <CloseButton
                 variant="floating"
                 onClick={closeCreate}
@@ -320,23 +312,17 @@ const ModTagsEditPage = () => {
                   </button>
                 </div>
               </form>
-            </div>
-          </div>
+          </PopupShell>
         ) : null}
 
         {editingTag ? (
-          <div
-            className="mods-tags-page__modal"
-            onClick={(event) => {
-              if (event.target === event.currentTarget && !saving) closeEdit();
-            }}
+          <PopupShell
+            onClose={closeEdit}
+            closeDisabled={saving}
+            overlayClassName="mods-tags-page mods-tags-page__modal"
+            panelClassName="mods-tags-page__modal-content"
+            ariaLabelledBy="mod-tag-edit-title"
           >
-            <div
-              className="mods-tags-page__modal-content"
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="mod-tag-edit-title"
-            >
               <CloseButton
                 variant="floating"
                 onClick={closeEdit}
@@ -367,23 +353,17 @@ const ModTagsEditPage = () => {
                   </button>
                 </div>
               </form>
-            </div>
-          </div>
+          </PopupShell>
         ) : null}
 
         {deletingTag ? (
-          <div
-            className="mods-tags-page__modal"
-            onClick={(event) => {
-              if (event.target === event.currentTarget && !saving) setDeletingTag(null);
-            }}
+          <PopupShell
+            onClose={() => setDeletingTag(null)}
+            closeDisabled={saving}
+            overlayClassName="mods-tags-page mods-tags-page__modal"
+            panelClassName="mods-tags-page__modal-content"
+            ariaLabelledBy="mod-tag-delete-title"
           >
-            <div
-              className="mods-tags-page__modal-content"
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="mod-tag-delete-title"
-            >
               <CloseButton
                 variant="floating"
                 onClick={() => setDeletingTag(null)}
@@ -411,8 +391,7 @@ const ModTagsEditPage = () => {
                   {t('buttons.cancel', { ns: 'common' })}
                 </button>
               </div>
-            </div>
-          </div>
+          </PopupShell>
         ) : null}
 
         <Footer />

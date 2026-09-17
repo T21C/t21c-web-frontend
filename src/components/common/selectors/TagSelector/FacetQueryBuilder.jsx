@@ -1,5 +1,6 @@
 // tuf-search: #FacetQueryBuilder #facetQueryBuilder #selectors #tagSelector
 import React, { useMemo, useState, useRef, useEffect, useId, useCallback } from 'react';
+import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { Portal } from '@/components/common/Portal';
 import { Trans, useTranslation } from 'react-i18next';
 import { Tooltip } from 'react-tooltip';
@@ -500,7 +501,7 @@ const FacetQueryBuilder = ({ items, value, onChange, title, enableGrouping = tru
                               onClick={() => removeFromGroup(gi, id)}
                             >
                               {it.icon && (
-                                <img src={it.icon} alt="" className="facet-query-builder__chip-icon" />
+                                <img src={selectIconSize(it.icon, ICON_SIZE.SMALL)} alt="" className="facet-query-builder__chip-icon" />
                               )}
                               {it.name}
                             </button>
@@ -537,7 +538,7 @@ const FacetQueryBuilder = ({ items, value, onChange, title, enableGrouping = tru
                           onClick={() => removeExclude(id)}
                         >
                           {it.icon && (
-                            <img src={it.icon} alt="" className="facet-query-builder__chip-icon" />
+                            <img src={selectIconSize(it.icon, ICON_SIZE.SMALL)} alt="" className="facet-query-builder__chip-icon" />
                           )}
                           {it.name}
                         </button>

@@ -1,5 +1,6 @@
 // tuf-search: #FacetItemPicker #facetItemPicker #selectors #tagSelector
 import React, { useMemo, useState, useEffect, useRef } from 'react';
+import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { Portal } from '@/components/common/Portal';
 import { useTranslation } from 'react-i18next';
 import { compareSerializedTagOrder } from '@/utils/communityTags';
@@ -169,7 +170,7 @@ const FacetItemPicker = ({
                       }}
                     >
                       {item.icon && (
-                        <img src={item.icon} alt="" className="facet-item-picker__item-icon" />
+                        <img src={selectIconSize(item.icon, ICON_SIZE.SMALL)} alt="" className="facet-item-picker__item-icon" />
                       )}
                       <span className="facet-item-picker__item-name">{item.name}</span>
                     </button>

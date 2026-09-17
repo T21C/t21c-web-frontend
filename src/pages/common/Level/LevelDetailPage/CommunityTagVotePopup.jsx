@@ -3,13 +3,13 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
 import { Tooltip } from 'react-tooltip';
-import { Portal } from '@/components/common/Portal';
+import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
 import TagConfidenceBar from '@/components/common/display/TagConfidenceBar/TagConfidenceBar';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import api from '@/utils/api';
 import { routes } from '@/api/routes';
 import { communityTagHoverTitle, formatCommunityTagScore, groupTagsByGroup } from '@/utils/communityTags';
+import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import './communitytagvotepopup.css';
 
 function isTagEligible(tag, { disabled }) {
@@ -36,16 +36,6 @@ export default function CommunityTagVotePopup({
   const [isVoting, setIsVoting] = useState(false);
 
   const tooltipId = `community-tag-vote-popup-${levelId}`;
-
-  useBodyScrollLock(true);
-
-  useEffect(() => {
-    const onKey = (e) => {
-      if (e.key === 'Escape') onClose();
-    };
-    document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
-  }, [onClose]);
 
   const loadTags = useCallback(async () => {
     if (!levelId) return;
@@ -152,27 +142,13 @@ export default function CommunityTagVotePopup({
   };
 
   return (
-    <Portal>
-      <div
-        className="community-tag-vote-popup"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="community-tag-vote-popup-title"
+    <>
+      <PopupShell
+        onClose={onClose}
+        overlayClassName="community-tag-vote-popup"
+        panelClassName="community-tag-vote-popup__dialog"
+        ariaLabelledBy="community-tag-vote-popup-title"
       >
-        <button
-          type="button"
-          className="community-tag-vote-popup__backdrop"
-          aria-label={t('buttons.close', { ns: 'common' })}
-          onMouseDown={(e) => e.stopPropagation()}
-          onClick={(e) => {
-            e.stopPropagation();
-            onClose();
-          }}
-        />
-        <div
-          className="community-tag-vote-popup__dialog"
-          onMouseDown={(e) => e.stopPropagation()}
-        >
           <div className="community-tag-vote-popup__header">
             <h3 id="community-tag-vote-popup-title" className="community-tag-vote-popup__title">
               {t('levelDetail.tags.vote.header')}
@@ -229,7 +205,7 @@ export default function CommunityTagVotePopup({
                           >
                             <TagConfidenceBar score={tag.score} show>
                               {tag.icon ? (
-                                <img src={tag.icon} alt="" />
+                                <img src={selectIconSize(tag.icon, ICON_SIZE.SMALL)} alt="" />
                               ) : (
                                 <span className="community-tag-vote-popup__letter">
                                   {String(tag.name || '?').charAt(0).toUpperCase()}
@@ -280,9 +256,8 @@ export default function CommunityTagVotePopup({
               ))
             )}
           </div>
-        </div>
+      </PopupShell>
         <Tooltip id={tooltipId} place="bottom" noArrow style={{ zIndex: 10001 }} />
-      </div>
-    </Portal>
+    </>
   );
 }
