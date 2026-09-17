@@ -1,4 +1,5 @@
 // tuf-search: #ProfileHeaderIconPanelPortal #profileHeaderIconPanelPortal #account #profileHeader
+import { ICON_SIZE, selectIconSize } from "@/utils/Utility";
 import { Portal } from "@/components/common/Portal";
 import { useTranslation } from "react-i18next";
 import { Tooltip } from "react-tooltip";
@@ -67,7 +68,7 @@ export default function ProfileHeaderIconPanelPortal({
             aria-label={tooltipContent}
           >
             {icon ? (
-              <img className="profile-header__difficulty-cell-img" src={icon} alt="" decoding="async" />
+              <img className="profile-header__difficulty-cell-img" src={selectIconSize(icon, ICON_SIZE.MEDIUM)} alt="" decoding="async" />
             ) : (
               <span className="profile-header__difficulty-cell-fallback">{String(name).slice(0, 2)}</span>
             )}
@@ -113,7 +114,7 @@ export default function ProfileHeaderIconPanelPortal({
                     return (
                       <div key={id} className="profile-header__curation-chip" title={nm}>
                         {ct.icon ? (
-                          <img className="profile-header__curation-chip-icon" src={ct.icon} alt="" decoding="async" />
+                          <img className="profile-header__curation-chip-icon" src={selectIconSize(ct.icon, ICON_SIZE.SMALL)} alt="" decoding="async" />
                         ) : (
                           <span className="profile-header__curation-chip-fallback">{nm.slice(0, 2)}</span>
                         )}

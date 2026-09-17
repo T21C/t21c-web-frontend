@@ -1,6 +1,7 @@
 // tuf-search: #DifficultySlider #difficultySlider #selectors
 import React, { useRef, useState, useCallback, useEffect } from 'react';
 import './difficultyslider.css';
+import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 
 const DifficultySlider = ({ 
@@ -278,7 +279,7 @@ const DifficultySlider = ({
           >
             {minDiff?.icon && (
               <img 
-                src={minDiff.icon} 
+                src={selectIconSize(minDiff.icon, ICON_SIZE.MEDIUM)} 
                 alt={minDiff.name} 
                 className="difficulty-icon knob"
                 onDragStart={preventDrag}
@@ -294,7 +295,7 @@ const DifficultySlider = ({
           >
             {maxDiff?.icon && (
               <img 
-                src={maxDiff.icon} 
+                src={selectIconSize(maxDiff.icon, ICON_SIZE.MEDIUM)} 
                 alt={maxDiff.name} 
                 className="difficulty-icon knob"
                 onDragStart={preventDrag}

@@ -6,15 +6,13 @@ import api from "@/utils/api";
 import { routes } from "@/api/routes";
 import { CloseButton } from "@/components/common/buttons";
 import { PackRefSelect } from "@/components/common/selectors";
-import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
+import { PopupShell } from "@/components/common/PopupShell";
 import "./tournamentpackcreatepopup.css";
 
 const TournamentPackCreatePopup = ({ onClose, onCreated }) => {
   const { t } = useTranslation(["pages", "common"]);
   const [packRef, setPackRef] = useState("");
   const [saving, setSaving] = useState(false);
-
-  useBodyScrollLock(true);
 
   const handleCreate = async () => {
     const ref = packRef.trim();
@@ -41,21 +39,13 @@ const TournamentPackCreatePopup = ({ onClose, onCreated }) => {
     }
   };
 
-  const handleBackdropClick = (e) => {
-    if (e.target.classList.contains("tournament-pack-create-popup")) {
-      onClose();
-    }
-  };
-
   return (
-    <div className="tournament-pack-create-popup" onClick={handleBackdropClick}>
-      <div
-        className="tournament-pack-create-popup__content"
-        onClick={(e) => e.stopPropagation()}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="tournament-pack-create-popup-title"
-      >
+    <PopupShell
+      onClose={onClose}
+      overlayClassName="tournament-pack-create-popup"
+      panelClassName="tournament-pack-create-popup__content"
+      ariaLabelledBy="tournament-pack-create-popup-title"
+    >
         <div className="tournament-pack-create-popup__header">
           <div>
             <h2
@@ -101,8 +91,7 @@ const TournamentPackCreatePopup = ({ onClose, onCreated }) => {
             {t("buttons.cancel", { ns: "common" })}
           </button>
         </div>
-      </div>
-    </div>
+    </PopupShell>
   );
 };
 

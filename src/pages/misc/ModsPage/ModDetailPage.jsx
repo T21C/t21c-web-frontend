@@ -6,6 +6,7 @@ import api from '@/utils/api';
 import { routes } from '@/api/routes';
 import { useAuth } from '@/contexts/AuthContext';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { MetaTags } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
 import { Footer } from '@/components/layout';
@@ -136,7 +137,7 @@ const ModDetailPage = () => {
             <>
               <header className="mod-detail-page__header">
                 {mod.imageUrl ? (
-                  <img className="mod-detail-page__icon" src={mod.imageUrl} alt="" />
+                  <img className="mod-detail-page__icon" src={selectIconSize(mod.imageUrl, ICON_SIZE.MEDIUM)} alt="" />
                 ) : (
                   <span className="mod-detail-page__icon mod-detail-page__icon--fallback" aria-hidden>
                     {(mod.name || '?').trim().charAt(0).toUpperCase()}

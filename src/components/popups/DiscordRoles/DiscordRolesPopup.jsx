@@ -1,10 +1,11 @@
 // tuf-search: #DiscordRolesPopup #discordRolesPopup #popups #discordRoles
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { DiscordRolesManager } from '@/components/common/discord';
 import './discordrolespopup.css';
 import { CloseButton } from '@/components/common/buttons';
+import { PopupShell } from '@/components/common/PopupShell';
 
 const DiscordRolesPopup = ({
   isOpen,
@@ -17,8 +18,6 @@ const DiscordRolesPopup = ({
 }) => {
   const { t } = useTranslation(['components', 'common']);
   const { difficulties: allDifficulties } = useDifficultyContext();
-  const [mouseDownOutside, setMouseDownOutside] = useState(false);
-  const modalRef = useRef(null);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   // Track unsaved changes from DiscordRolesManager
@@ -39,45 +38,14 @@ const DiscordRolesPopup = ({
     }
   };
 
-  const handleMouseDown = (e) => {
-    if (modalRef.current && !modalRef.current.contains(e.target)) {
-      setMouseDownOutside(true);
-    }
-  };
-
-  const handleMouseUp = (e) => {
-    if (mouseDownOutside && modalRef.current && !modalRef.current.contains(e.target)) {
-      handleClose();
-    }
-    setMouseDownOutside(false);
-  };
-
-  // Handle Escape key
-  useEffect(() => {
-    const handleEscapeKey = (event) => {
-      if (event.key === 'Escape' && isOpen) {
-        handleClose();
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener('keydown', handleEscapeKey);
-      document.addEventListener('mousedown', handleMouseDown);
-      document.addEventListener('mouseup', handleMouseUp);
-    }
-
-    return () => {
-      document.removeEventListener('keydown', handleEscapeKey);
-      document.removeEventListener('mousedown', handleMouseDown);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isOpen, mouseDownOutside, hasUnsavedChanges]);
-
   if (!isOpen) return null;
 
   return (
-    <div className="discord-roles-popup">
-      <div className="discord-roles-popup__content" ref={modalRef}>
+    <PopupShell
+      onClose={handleClose}
+      overlayClassName="discord-roles-popup"
+      panelClassName="discord-roles-popup__content"
+    >
         <CloseButton
           variant="floating"
           className="discord-roles-popup__close-button"
@@ -101,8 +69,7 @@ const DiscordRolesPopup = ({
             verifiedPassword={verifiedPassword}
           />
         </div>
-      </div>
-    </div>
+    </PopupShell>
   );
 };
 

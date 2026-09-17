@@ -9,9 +9,8 @@ import toast from 'react-hot-toast';
 import api from '@/utils/api';
 import { routes } from '@/api/routes';
 import { useNavigate } from 'react-router-dom';
-import { formatCreatorDisplay } from "@/utils/Utility";
-import { Portal } from '@/components/common/Portal';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from "@/utils/Utility";
+import { PopupShell } from '@/components/common/PopupShell';
 import {
   normalizePackSearchQuery,
   parseHashtagPackQuery,
@@ -284,24 +283,16 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
     setSelectedPackId(packId);
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (event.target.classList.contains('add-to-pack-popup')) {
-        onClose();
-      }
-    };
-
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
-  }, [onClose]);
-
-  useBodyScrollLock(true);
-
-  let popupContent = null;
-  if (!user) {
-    popupContent = (
-      <div className="add-to-pack-popup" onClick={onClose}>
-        <div className="add-to-pack-popup__content" onClick={(e) => e.stopPropagation()}>
+  return (
+    <>
+      <PopupShell
+        onClose={onClose}
+        closeDisabled={showCreatePopup}
+        overlayClassName="add-to-pack-popup"
+        panelClassName="add-to-pack-popup__content"
+      >
+        {!user ? (
+          <>
           <div className="add-to-pack-popup__header">
             <h2 className="add-to-pack-popup__title">{t('packPopups.addToPack.title')}</h2>
             <button className="add-to-pack-popup__close" onClick={onClose}>
@@ -313,14 +304,9 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
               {t('packPopups.addToPack.loginRequired')}
             </p>
           </div>
-        </div>
-      </div>
-    );
-  } else {
-    popupContent = (
-      <>
-        <div className="add-to-pack-popup" onClick={onClose}>
-          <div className="add-to-pack-popup__content" onClick={(e) => e.stopPropagation()}>
+          </>
+        ) : (
+          <>
             <div className="add-to-pack-popup__header">
               <h2 className="add-to-pack-popup__title">{t('packPopups.addToPack.title')}</h2>
               <button className="add-to-pack-popup__close" onClick={onClose}>
@@ -408,7 +394,7 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
                           <div className="add-to-pack-popup__pack-icon">
                             {pack.iconUrl ? (
                               <img
-                                src={pack.iconUrl}
+                                src={selectIconSize(pack.iconUrl, ICON_SIZE.MEDIUM)}
                                 alt={pack.name}
                                 className="add-to-pack-popup__pack-icon-image"
                               />
@@ -509,22 +495,21 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
                 {submitting ? t('packPopups.addToPack.adding') : t('packPopups.addToPack.addToPack')}
               </button>
             </div>
-          </div>
-        </div>
-
-        {showCreatePopup && (
-          <CreatePackPopup
-            onClose={() => {
-              setShowCreatePopup(false);
-              fetchUserPacks();
-            }}
-            onCreate={handleCreatePack}
-          />
+          </>
         )}
-      </>
-    );
-  }
-  return <Portal>{popupContent}</Portal>;
+      </PopupShell>
+
+      {user && showCreatePopup && (
+        <CreatePackPopup
+          onClose={() => {
+            setShowCreatePopup(false);
+            fetchUserPacks();
+          }}
+          onCreate={handleCreatePack}
+        />
+      )}
+    </>
+  );
 };
 
 export default AddToPackPopup;

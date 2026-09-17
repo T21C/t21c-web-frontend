@@ -21,6 +21,10 @@
   cursor: not-allowed;
 }
 
+.mod-report-popup .mod-report-popup__panel > form {
+  display: contents;
+}
+
 .mod-report-popup__panel {
   position: relative;
   z-index: 1;

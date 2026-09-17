@@ -1,6 +1,6 @@
 import { routes } from '@/api/routes';
 // tuf-search: #CurationEditPopup #curationEditPopup #popups #curations #curationEdit
-import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation } from 'react-router-dom';
 import api from '@/utils/api';
@@ -10,9 +10,10 @@ import ThumbnailUpload from '@/components/common/upload/ThumbnailUpload';
 import { hasAbility, canAssignCurationType } from '@/utils/curationTypeUtils';
 import { hasAnyFlag, permissionFlags } from '@/utils/UserPermissions';
 import { useAuth } from '@/contexts/AuthContext';
-import { formatCreatorDisplay } from '@/utils/Utility';
+import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { ItemPickManager } from '@/components/common/selectors';
 import { CloseButton } from '@/components/common/buttons';
+import { PopupShell } from '@/components/common/PopupShell';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 
 const ABILITY_CUSTOM_CSS = 1n << 0n;
@@ -66,11 +67,9 @@ const CurationEditPopup = ({
   const [level, setLevel] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [mouseDownOutside, setMouseDownOutside] = useState(false);
   const [previewPending, setPreviewPending] = useState(false);
   /** Types from last GET curations response — used when an id is not yet in `curationTypes` (stale catalog) */
   const [typesFromApi, setTypesFromApi] = useState([]);
-  const modalRef = useRef(null);
 
   const selectedTypes = useMemo(() => {
     const catalog = curationTypes || [];
@@ -170,30 +169,6 @@ const CurationEditPopup = ({
     }
   }, [location.state, navigate, location.pathname, previewPending]);
 
-  const handleMouseDown = (e) => {
-    if (modalRef.current && !modalRef.current.contains(e.target)) {
-      setMouseDownOutside(true);
-    }
-  };
-
-  const handleMouseUp = (e) => {
-    if (mouseDownOutside && modalRef.current && !modalRef.current.contains(e.target)) {
-      onClose();
-    }
-    setMouseDownOutside(false);
-  };
-
-  useEffect(() => {
-    if (isOpen) {
-      document.addEventListener('mousedown', handleMouseDown);
-      document.addEventListener('mouseup', handleMouseUp);
-    }
-    return () => {
-      document.removeEventListener('mousedown', handleMouseDown);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isOpen, mouseDownOutside]);
-
   const validate = () => {
     for (const tid of form.typeIds) {
       const type = selectedTypes.find((x) => x.id === tid);
@@ -253,8 +228,11 @@ const CurationEditPopup = ({
   if (!isOpen || !levelId) return null;
 
   return (
-    <div className="curation-edit-modal">
-      <div className="curation-edit-modal__content" ref={modalRef}>
+    <PopupShell
+      onClose={onClose}
+      overlayClassName="curation-edit-modal"
+      panelClassName="curation-edit-modal__content"
+    >
         <CloseButton
           variant="floating"
           type="button"
@@ -274,7 +252,7 @@ const CurationEditPopup = ({
               <div className="curation-edit-modal__level-card">
                 <div className="curation-edit-modal__level-header">
                   <img
-                    src={difficultyDict[displayLevel.diffId]?.icon || '/default-difficulty-icon.png'}
+                    src={selectIconSize(difficultyDict[displayLevel.diffId]?.icon, ICON_SIZE.MEDIUM) || '/default-difficulty-icon.png'}
                     alt=""
                     className="curation-edit-modal__difficulty-icon"
                   />
@@ -458,8 +436,7 @@ const CurationEditPopup = ({
             </form>
           )}
         </div>
-      </div>
-    </div>
+    </PopupShell>
   );
 };
 

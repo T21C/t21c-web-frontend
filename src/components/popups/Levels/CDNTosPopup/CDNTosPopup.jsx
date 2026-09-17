@@ -2,6 +2,7 @@
 import { useTranslation } from 'react-i18next';
 import './cdntospopup.css';
 import { useState } from 'react';
+import { PopupShell } from '@/components/common/PopupShell';
 import { CLIENT_PREF_KEYS, setClientPreferences } from '@/utils/clientPreferences';
 
 const CDNTosPopup = ({ onAgree, onDecline }) => {
@@ -21,8 +22,12 @@ const CDNTosPopup = ({ onAgree, onDecline }) => {
     };
 
     return (
-        <div className="cdn-tos-popup">
-            <div className="cdn-tos-content">
+        <PopupShell
+            onClose={onDecline}
+            dismissOnOverlay={false}
+            overlayClassName="cdn-tos-popup"
+            panelClassName="cdn-tos-content"
+        >
                 <h3>{t('levelSubmission.cdnTos.title')}</h3>
                 <div className="cdn-tos-text">
                     <p>
@@ -54,8 +59,7 @@ const CDNTosPopup = ({ onAgree, onDecline }) => {
                         </button>
                     </div>
                 </div>
-            </div>
-        </div>
+        </PopupShell>
     );
 };
 

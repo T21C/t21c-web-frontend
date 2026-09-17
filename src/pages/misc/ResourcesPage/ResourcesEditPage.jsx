@@ -12,7 +12,7 @@ import { buildStaticPageMeta } from '@/utils/meta';
 import { Footer } from '@/components/layout';
 import { CloseButton } from '@/components/common/buttons';
 import { EditIcon, TrashIcon } from '@/components/common/icons';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { PopupShell } from '@/components/common/PopupShell';
 import { getRateLimitMessage } from '@/utils/rateLimitError';
 import { linkDisplayHost } from '@/utils/usefulLinkLocales';
 import EditUsefulLinkPopup from '@/components/popups/Resources/EditUsefulLinkPopup';
@@ -110,11 +110,6 @@ const ResourcesEditPage = () => {
   const [newGroupName, setNewGroupName] = useState('');
   const [isLinksReordering, setIsLinksReordering] = useState(false);
   const [isGroupsReordering, setIsGroupsReordering] = useState(false);
-
-  const anyModalOpen = Boolean(
-    isCreatingLink || editingLink || deletingLink || isCreatingGroup || editingGroup || deletingGroup,
-  );
-  useBodyScrollLock(anyModalOpen);
 
   const loadData = useCallback(async (nextCatalog) => {
     if (nextCatalog) {
@@ -505,8 +500,11 @@ const ResourcesEditPage = () => {
         <Footer />
 
       {isCreatingLink ? (
-          <div className="difficulty-modal" onClick={closeCreateLink}>
-            <div className="difficulty-modal-content" onClick={(event) => event.stopPropagation()}>
+          <PopupShell
+            onClose={closeCreateLink}
+            overlayClassName="resources-page difficulty-modal"
+            panelClassName="difficulty-modal-content"
+          >
               <CloseButton
                 variant="floating"
                 onClick={closeCreateLink}
@@ -584,8 +582,7 @@ const ResourcesEditPage = () => {
                   </button>
                 </div>
               </form>
-            </div>
-          </div>
+          </PopupShell>
       ) : null}
 
       {editingLink ? (
@@ -642,8 +639,11 @@ const ResourcesEditPage = () => {
       ) : null}
 
       {deletingLink ? (
-          <div className="difficulty-modal" onClick={() => setDeletingLink(null)}>
-            <div className="difficulty-modal-content" onClick={(event) => event.stopPropagation()}>
+          <PopupShell
+            onClose={() => setDeletingLink(null)}
+            overlayClassName="resources-page difficulty-modal"
+            panelClassName="difficulty-modal-content"
+          >
               <h2>{t('resources.links.delete.title')}</h2>
               <p>{t('resources.links.delete.message', { name: deletingLink.title })}</p>
               <p>{t('resources.links.delete.description')}</p>
@@ -668,16 +668,15 @@ const ResourcesEditPage = () => {
                   {t('resources.links.delete.deleteButton')}
                 </button>
               </div>
-            </div>
-          </div>
+          </PopupShell>
       ) : null}
 
       {isCreatingGroup ? (
-          <div
-            className="difficulty-modal"
-            onClick={closeCreateGroup}
+          <PopupShell
+            onClose={closeCreateGroup}
+            overlayClassName="resources-page difficulty-modal"
+            panelClassName="difficulty-modal-content"
           >
-            <div className="difficulty-modal-content" onClick={(event) => event.stopPropagation()}>
               <h2>{t('resources.groups.create.title')}</h2>
               <form
                 onSubmit={async (event) => {
@@ -722,8 +721,7 @@ const ResourcesEditPage = () => {
                   </button>
                 </div>
               </form>
-            </div>
-          </div>
+          </PopupShell>
       ) : null}
 
       {editingGroup ? (
@@ -777,8 +775,11 @@ const ResourcesEditPage = () => {
       ) : null}
 
       {deletingGroup ? (
-          <div className="difficulty-modal" onClick={() => setDeletingGroup(null)}>
-            <div className="difficulty-modal-content" onClick={(event) => event.stopPropagation()}>
+          <PopupShell
+            onClose={() => setDeletingGroup(null)}
+            overlayClassName="resources-page difficulty-modal"
+            panelClassName="difficulty-modal-content"
+          >
               <h2>{t('resources.groups.delete.title')}</h2>
               <p>{t('resources.groups.delete.message', { name: deletingGroup.name })}</p>
               <p>{t('resources.groups.delete.description')}</p>
@@ -809,8 +810,7 @@ const ResourcesEditPage = () => {
                   {t('resources.groups.delete.deleteButton')}
                 </button>
               </div>
-            </div>
-          </div>
+          </PopupShell>
       ) : null}
       </div>
     </>

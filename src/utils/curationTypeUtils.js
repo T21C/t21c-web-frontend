@@ -1,7 +1,7 @@
 // tuf-search: #curationTypeUtils
 import { permissionFlags } from "./UserPermissions";
 import { ABILITIES } from "./Abilities";
-import { selectIconSize } from "./Utility";
+import { ICON_SIZE, selectIconSize } from "./Utility";
 // Client-side utility functions for curation type abilities
 // This mirrors the server-side functionality but for use in React components
 
@@ -172,7 +172,7 @@ export const resolveCurationTypeFromDict = (typeRef, curationTypesDict) => {
   if (fromDict) return fromDict;
   const rawIcon = typeRef.icon ?? null;
   if (!rawIcon) return typeRef;
-  const icon = selectIconSize(rawIcon, "small") || rawIcon;
+  const icon = selectIconSize(rawIcon, ICON_SIZE.SMALL) || rawIcon;
   if (icon === typeRef.icon) return typeRef;
   return { ...typeRef, icon };
 };

@@ -3,6 +3,7 @@ import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";
 import { CopyIcon } from "@/components/common/icons";
+import { PopupShell } from "@/components/common/PopupShell";
 import api from "@/utils/api";
 import { routes } from '@/api/routes';
 import {
@@ -171,14 +172,13 @@ export function BillingHistorySection({ events, onAfterRefund }) {
       </div>
 
       {refundModal ? (
-        <div className="billing-page__overlay" role="presentation" onClick={closeRefundModal}>
-          <div
-            className="billing-page__modal"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="billing-refund-modal-title"
-            onClick={(e) => e.stopPropagation()}
-          >
+        <PopupShell
+          onClose={closeRefundModal}
+          closeDisabled={refundSubmitting}
+          overlayClassName="billing-page__overlay"
+          panelClassName="billing-page__modal"
+          ariaLabelledBy="billing-refund-modal-title"
+        >
             <h4 id="billing-refund-modal-title" className="billing-page__modal-title">
               {t("billing.history.refundConfirmTitle")}
             </h4>
@@ -210,8 +210,7 @@ export function BillingHistorySection({ events, onAfterRefund }) {
                 {refundSubmitting ? t("billing.history.refundSubmitting") : t("billing.history.refundConfirm")}
               </button>
             </div>
-          </div>
-        </div>
+        </PopupShell>
       ) : null}
     </section>
   );

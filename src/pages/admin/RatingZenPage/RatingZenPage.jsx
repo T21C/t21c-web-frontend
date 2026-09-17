@@ -22,7 +22,7 @@ import { Tooltip } from 'react-tooltip';
 import { CommentFormatter } from '@/components/misc';
 import api from '@/utils/api';
 import { getVideoDetails } from '@/utils';
-import { formatCreatorDisplay } from '@/utils/Utility';
+import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { getSongDisplayName } from '@/utils/levelHelpers';
 import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import toast from 'react-hot-toast';
@@ -1095,7 +1095,7 @@ const RatingZenPage = () => {
                   <div className="rating-zen-page__meta-header-left">
                     {difficultyDict[current.level?.diffId]?.icon && (
                       <img
-                        src={difficultyDict[current.level.diffId].icon}
+                        src={selectIconSize(difficultyDict[current.level.diffId].icon, ICON_SIZE.MEDIUM)}
                         alt={difficultyDict[current.level.diffId]?.name || ''}
                         className="rating-zen-page__diff-icon"
                       />

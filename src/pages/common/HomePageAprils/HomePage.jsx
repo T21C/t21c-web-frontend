@@ -24,7 +24,7 @@ import { buildStaticPageMeta, siteJsonLd } from '@/utils/meta';
 import { ScrollButton, CloseButton } from "@/components/common/buttons";
 import { PassIcon, ChartIcon, LeaderboardIcon } from "@/components/common/icons";
 import { RouletteWheel, SlotMachine } from '@/components/common/selectors';
-import { createEventSystem } from "@/utils/Utility";
+import { createEventSystem, ICON_SIZE, selectIconSize } from "@/utils/Utility";
 import { useAuth } from "@/contexts/AuthContext";
 // Import the logo
 import logoFull from '@/assets/tuf-logo/logo-full.svg';
@@ -162,7 +162,7 @@ const CustomTooltip = ({ active, payload, label, labelMode }) => {
         <div className="tooltip-content">
           <div className="tooltip-left">
             <img 
-              src={difficulty.icon} 
+              src={selectIconSize(difficulty.icon, ICON_SIZE.MEDIUM)} 
               alt={label} 
               className="difficulty-icon"
             />
@@ -552,7 +552,7 @@ const WheelPopup = ({ items, seed, onSelect, onClose, handleTimeout }) => {
             <div className="level-result-display">
               <div className="level-result-left">
                 <div className="level-result-difficulty-icon" style={{boxShadow: `0 0 10px ${difficultyDict[selectedItem.diffId]?.color || '#666'}`}}>
-                  <img src={difficultyDict[selectedItem.diffId]?.icon} alt={`ID: ${selectedItem.diffId}`} />
+                  <img src={selectIconSize(difficultyDict[selectedItem.diffId]?.icon, ICON_SIZE.MEDIUM)} alt={`ID: ${selectedItem.diffId}`} />
                 </div>
                 <div className="level-result-container">
                   <span className="level-result-name">{selectedItem.name}</span>
@@ -575,7 +575,7 @@ const WheelPopup = ({ items, seed, onSelect, onClose, handleTimeout }) => {
                     <div className="config-details">
                       <div className="config-item">
                         <span className="config-label">Difficulty:</span>
-                        <img className="config-difficulty-icon" src={selectedDifficulty.icon} alt={selectedDifficulty.name} />
+                        <img className="config-difficulty-icon" src={selectIconSize(selectedDifficulty.icon, ICON_SIZE.MEDIUM)} alt={selectedDifficulty.name} />
                       </div>
                       {selectedMinus2Reason ? (
                         <div className="config-item">

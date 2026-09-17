@@ -7,6 +7,7 @@ import placeholder from "@/assets/placeholder/3.png";
 import React, { useEffect, useLayoutEffect, useState, useRef, useCallback, useMemo } from "react";
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Portal } from "@/components/common/Portal";
+import { PopupShell } from "@/components/common/PopupShell";
 import { PORTALED_PANEL_CLASS, usePortaledPanelAnchor } from "@/hooks/usePortaledPanelAnchor";
 import { communityTagHoverTitle, formatCommunityTagScore, groupTagsByGroup, sortTagsByGroupThenSortOrder } from '@/utils/communityTags';
 import TagConfidenceBar from '@/components/common/display/TagConfidenceBar/TagConfidenceBar';
@@ -59,7 +60,7 @@ import {
   BellIcon,
   BellOffIcon,
 } from "@/components/common/icons";
-import { createEventSystem, formatBaseScore, formatCreatorDisplay, formatDate, formatPassDate, isCdnUrl, selectIconSize, sortLevelCredits } from "@/utils/Utility";
+import { createEventSystem, formatBaseScore, formatCreatorDisplay, formatDate, formatPassDate, ICON_SIZE, isCdnUrl, selectIconSize, sortLevelCredits } from "@/utils/Utility";
 import { formatAccuracyRatio } from "@/utils/statFormatters";
 import {
   formatAutoTilecountTooltip,
@@ -83,7 +84,6 @@ import {
   sortCurationsForDisplay,
 } from "@/utils/curationTypeUtils";
 import i18next from "i18next";
-import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 import { checkTufHelperLiteDownloadedIds, checkTufHelperLiteHealth, checkTufHelperLiteJobs, getTufHelperLiteDownloadState, invokeTufHelperLiteIpc, useTufHelperLiteDownloadedIds, useTufHelperLiteHealth, useTufHelperLiteJobs } from '@/hooks/useTufHelperLiteIpc';
 import { navigateExternal } from '@/utils/externalNavigationGate';
 
@@ -312,7 +312,7 @@ const TagsDropdown = ({ tags, show, onClose, anchorRef, onVoteClick }) => {
                   <span className="tag-chip-icon-wrap">
                     <TagConfidenceBar score={tag.score} show={Boolean(tag.isCommunity)}>
                       {tag.icon ? (
-                        <img src={tag.icon} alt={tag.name} className="tag-chip-icon" />
+                        <img src={selectIconSize(tag.icon, ICON_SIZE.SMALL)} alt={tag.name} className="tag-chip-icon" />
                       ) : (
                         <span className="tag-chip-letter">{tag.name.charAt(0).toUpperCase()}</span>
                       )}
@@ -336,16 +336,6 @@ const TagsDropdown = ({ tags, show, onClose, anchorRef, onVoteClick }) => {
 
 const FullInfoPopup = ({ level, onClose, videoDetail, difficulty, onArtistClick }) => {
   const { t } = useTranslation('pages');
-  useBodyScrollLock(true);
-  useEffect(() => {
-    const handleEscape = (e) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
-    };
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, [onClose]);
 
   const formatCredits = () => {
     if (!level.levelCredits || level.levelCredits.length === 0) {
@@ -438,10 +428,11 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty, onArtistClick 
     );
   };
   return (
-    <Portal>
-    <>
-      <div className="level-detail-popup-overlay" onClick={onClose}></div>
-      <div className="level-detail-popup">
+    <PopupShell
+      onClose={onClose}
+      overlayClassName="level-detail-popup-overlay"
+      panelClassName="level-detail-popup"
+    >
         <div className="popup-content">
           <div className="popup-header" style={{ '--popup-header-bg': difficulty?.color ? `${difficulty.color}cc` : undefined }}>
             <h2>{getSongDisplayName(level)}</h2>
@@ -525,9 +516,7 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty, onArtistClick 
             </div>
           </div>
         </div>
-      </div>
-    </>
-    </Portal>
+    </PopupShell>
   );
 };
 
@@ -697,7 +686,7 @@ const PackAppearanceDropdown = ({ packs, show, onClose, containerRef }) => {
             >
               <div className="pack-appearance-icon">
                 {pack.iconUrl ? (
-                  <img src={pack.iconUrl} alt="" className="pack-appearance-icon-image" />
+                  <img src={selectIconSize(pack.iconUrl, ICON_SIZE.MEDIUM)} alt="" className="pack-appearance-icon-image" />
                 ) : (
                   <span className="pack-appearance-icon-placeholder" aria-hidden>📦</span>
                 )}
@@ -772,7 +761,7 @@ const TournamentAppearanceDropdown = ({ appearances, show, onClose, containerRef
       <>
         <div className="tournament-appearance-icon">
           {iconUrl ? (
-            <img src={iconUrl} alt="" className="tournament-appearance-icon-image" />
+            <img src={selectIconSize(iconUrl, ICON_SIZE.MEDIUM)} alt="" className="tournament-appearance-icon-image" />
           ) : (
             <TournamentAppearanceIcon
               color="var(--color-white)"
@@ -903,7 +892,7 @@ const RerateHistoryDropdown = ({ show, onClose, rerateHistory, difficultyDict, c
                   {legacyPrevDiff ? 
                   <LegacyDiffIcon diff={legacyPrevDiff} /> 
                   : prevDiff?.icon ? 
-                  <img src={prevDiff.icon} alt={prevDiff.name} /> 
+                  <img src={selectIconSize(prevDiff.icon, ICON_SIZE.SMALL)} alt={prevDiff.name} /> 
                   : <span>{prevDiff?.name || entry.previousDiffId}</span>}
                   {(entry.previousBaseScore || difficultyDict[entry.previousDiffId]?.baseScore !== undefined) && <div className="rerate-history-basescore">{entry.previousBaseScore || difficultyDict[entry.previousDiffId]?.baseScore}PP</div>}
                 </div>
@@ -912,7 +901,7 @@ const RerateHistoryDropdown = ({ show, onClose, rerateHistory, difficultyDict, c
                   {legacyNewDiff ? 
                   <LegacyDiffIcon diff={legacyNewDiff} /> 
                   : newDiff?.icon ? 
-                  <img src={newDiff.icon} alt={newDiff.name} /> : <span>{newDiff?.name || entry.newDiffId}</span>}
+                  <img src={selectIconSize(newDiff.icon, ICON_SIZE.SMALL)} alt={newDiff.name} /> : <span>{newDiff?.name || entry.newDiffId}</span>}
                   {(entry.newBaseScore || difficultyDict[entry.newDiffId]?.baseScore !== undefined) && <div className="rerate-history-basescore">{entry.newBaseScore || difficultyDict[entry.newDiffId]?.baseScore}PP</div>}
                 </div>
                 <div className="rerate-history-meta">
@@ -2437,10 +2426,16 @@ const LevelDetailPageContent = ({ mockData = null }) => {
   const tags = sortTagsByGroupThenSortOrder(
     (res.level.tags || []).map((tag) => {
       const catalog = tagsDict?.[tag.id];
-      if (!catalog) return tag;
+      if (!catalog) {
+        return {
+          ...tag,
+          icon: selectIconSize(tag.icon, ICON_SIZE.SMALL),
+        };
+      }
       return {
         ...catalog,
         ...tag,
+        icon: catalog.icon || selectIconSize(tag.icon, ICON_SIZE.SMALL),
         description: tag.description || catalog.description || '',
         sortOrder: catalog.sortOrder ?? tag.sortOrder,
         groupSortOrder: catalog.groupSortOrder ?? tag.groupSortOrder,
@@ -2663,7 +2658,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                       onClick={handleScoreGraphDropdownToggle}
                     >
                       <img
-                        src={difficulty.icon}
+                        src={selectIconSize(difficulty.icon, ICON_SIZE.MEDIUM)}
                         alt={difficulty.name || 'Difficulty icon'}
                         className="difficulty-icon"
                       />
@@ -2687,7 +2682,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                   <div className="scorev2-graph-dropdown-anchor">
                     {rerateHistoryAnchorNode}
                     <img
-                      src={difficulty.icon}
+                      src={selectIconSize(difficulty.icon, ICON_SIZE.MEDIUM)}
                       alt={difficulty.name || 'Difficulty icon'}
                       className="difficulty-icon"
                     />
@@ -2802,7 +2797,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                           <TagConfidenceBar score={tag.score} show={Boolean(tag.isCommunity)}>
                             {tag.icon ? (
                               <img 
-                                src={tag.icon} 
+                                src={selectIconSize(tag.icon, ICON_SIZE.SMALL)} 
                                 alt={tag.name}
                               />
                             ) : (
@@ -2866,7 +2861,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                             {typesSorted.map((t) => (
                               <img
                                 key={t.id ?? t.name ?? t.icon}
-                                src={t.icon}
+                                src={selectIconSize(t.icon, ICON_SIZE.MEDIUM)}
                                 alt={t.name || ''}
                                 className="level-detail__curation-type-icon-img"
                               />
@@ -3534,7 +3529,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                     {assignerPortal?.avatarUrl && (
                       <img
                         className="curation-tooltip-avatar"
-                        src={selectIconSize(assignerPortal.avatarUrl, "small")}
+                        src={selectIconSize(assignerPortal.avatarUrl, ICON_SIZE.SMALL)}
                         alt={assignerPortal.nickname || "User"}
                       />
                     )}

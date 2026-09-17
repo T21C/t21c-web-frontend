@@ -1,11 +1,5 @@
 /* tuf-search: #StepUpModal #stepUpModal #account #stepUp */
 .step-up-modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 110;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   padding: 1rem;
   background-color: var(--color-black-t75);
 }

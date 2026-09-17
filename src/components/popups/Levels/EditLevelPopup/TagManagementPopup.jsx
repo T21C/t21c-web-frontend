@@ -5,7 +5,9 @@ import './editlevelpopup.css';
 import api from '@/utils/api';
 import { useTranslation } from 'react-i18next';
 import { CloseButton } from '@/components/common/buttons';
+import { PopupShell } from '@/components/common/PopupShell';
 import { ItemPickManager } from '@/components/common/selectors';
+import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { sortTagsByGroupThenSortOrder } from '@/utils/communityTags';
 
 export const TagManagementPopup = ({ levelId, currentTags = [], onClose, onSave }) => {
@@ -112,15 +114,12 @@ export const TagManagementPopup = ({ levelId, currentTags = [], onClose, onSave 
   };
 
   return (
-    <div
-      className="edit-level-popup-overlay"
-      onClick={(e) => {
-        if (e.target.className === 'edit-level-popup-overlay') {
-          handleCancel();
-        }
-      }}
+    <PopupShell
+      onClose={handleCancel}
+      closeDisabled={isSaving}
+      overlayClassName="edit-level-popup-overlay"
+      panelClassName="edit-level-popup tag-management-popup"
     >
-      <div className="edit-level-popup tag-management-popup" onClick={(e) => e.stopPropagation()}>
         <CloseButton
           variant="floating"
           onClick={handleCancel}
@@ -168,7 +167,7 @@ export const TagManagementPopup = ({ levelId, currentTags = [], onClose, onSave 
                       title={catalog.name}
                     >
                       {catalog.icon ? (
-                        <img src={catalog.icon} alt="" className="item-pick-manager__chip-icon" />
+                        <img src={selectIconSize(catalog.icon, ICON_SIZE.SMALL)} alt="" className="item-pick-manager__chip-icon" />
                       ) : null}
                       <span className="item-pick-manager__chip-name">{catalog.name}</span>
                     </div>
@@ -197,7 +196,6 @@ export const TagManagementPopup = ({ levelId, currentTags = [], onClose, onSave 
             </button>
           </div>
         </div>
-      </div>
-    </div>
+    </PopupShell>
   );
 };

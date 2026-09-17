@@ -1,7 +1,7 @@
 // tuf-search: #BulkCreateCurationsConfirmPopup #bulkCreateCurationsConfirmPopup #popups #curations
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
 import './BulkCreateCurationsConfirmPopup.css';
 
@@ -17,33 +17,6 @@ const BulkCreateCurationsConfirmPopup = ({
   allInvalid = false,
 }) => {
   const { t } = useTranslation(['components', 'common']);
-  const popupRef = useRef(null);
-
-  useBodyScrollLock(isOpen);
-
-  useEffect(() => {
-    if (!isOpen) return undefined;
-
-    const handleEscapeKey = (event) => {
-      if (event.key === 'Escape' && !submitting) {
-        onCancel?.();
-      }
-    };
-
-    const handleClickOutside = (event) => {
-      if (popupRef.current && !popupRef.current.contains(event.target) && !submitting) {
-        onCancel?.();
-      }
-    };
-
-    document.addEventListener('keydown', handleEscapeKey);
-    document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('keydown', handleEscapeKey);
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isOpen, onCancel, submitting]);
 
   const groupedInvalid = useMemo(() => {
     const groups = new Map();
@@ -74,8 +47,12 @@ const BulkCreateCurationsConfirmPopup = ({
   };
 
   return (
-    <div className="bulk-create-curations-confirm-popup__overlay">
-      <div className="bulk-create-curations-confirm-popup" ref={popupRef}>
+    <PopupShell
+      onClose={onCancel}
+      closeDisabled={submitting}
+      overlayClassName="bulk-create-curations-confirm-popup__overlay"
+      panelClassName="bulk-create-curations-confirm-popup"
+    >
         <CloseButton
           variant="floating"
           className="bulk-create-curations-confirm-popup__close-btn"
@@ -138,8 +115,7 @@ const BulkCreateCurationsConfirmPopup = ({
             )}
           </div>
         </div>
-      </div>
-    </div>
+    </PopupShell>
   );
 };
 

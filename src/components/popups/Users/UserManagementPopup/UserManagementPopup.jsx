@@ -9,6 +9,7 @@ import { UserAvatar } from '@/components/layout';
 import { userAvatarUrls } from '@/utils/playerAvatarDisplay';
 import { hasAnyFlag, permissionFlags } from '@/utils/UserPermissions';
 import { hasFlag } from '@/utils/UserPermissions';
+import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
 import { toastIfRateLimited, getRateLimitMessage } from '@/utils/rateLimitError';
 
@@ -455,30 +456,6 @@ const UserManagementPopup = ({ onClose, currentUser, initialMode = 'rater' }) =>
   const [superAdminPassword, setSuperAdminPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleClickOutside = useCallback((event) => {
-    if (event.target.classList.contains('user-management-overlay')) {
-      onClose();
-    }
-  }, [onClose]);
-
-  const handleEscapeKey = useCallback((event) => {
-    if (event.key === 'Escape') {
-      onClose();
-    }
-  }, [onClose]);
-
-  useEffect(() => {
-    // Add event listeners
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('keydown', handleEscapeKey);
-
-    // Cleanup
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleEscapeKey);
-    };
-  }, [handleClickOutside, handleEscapeKey]);
-
   const fetchUsers = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -558,8 +535,11 @@ const UserManagementPopup = ({ onClose, currentUser, initialMode = 'rater' }) =>
   });
 
   return (
-    <div className="user-management-overlay">
-      <div className="user-management-popup">
+    <PopupShell
+      onClose={onClose}
+      overlayClassName="user-management-overlay"
+      panelClassName="user-management-popup"
+    >
         <div className="popup-header">
           {/* Only show mode toggle if user is not a head curator */}
           {!isOnlyHeadCurator(currentUser) && (
@@ -645,7 +625,6 @@ const UserManagementPopup = ({ onClose, currentUser, initialMode = 'rater' }) =>
             <button onClick={handleAddUser}>{t('userManagement.addUser.button')}</button>
           </div>
         )}
-      </div>
 
       {errorMessage && (
         <div className="error-message-container">
@@ -653,7 +632,7 @@ const UserManagementPopup = ({ onClose, currentUser, initialMode = 'rater' }) =>
           <button className="close-error" onClick={() => setErrorMessage('')}>×</button>
         </div>
       )}
-    </div>
+    </PopupShell>
   );
 };
 

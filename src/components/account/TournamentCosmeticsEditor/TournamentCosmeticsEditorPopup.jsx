@@ -1,8 +1,7 @@
 // tuf-search: #TournamentCosmeticsEditorPopup
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Portal } from "@/components/common/Portal";
-import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
+import { PopupShell } from "@/components/common/PopupShell";
 import { CloseButton } from "@/components/common/buttons";
 import TournamentPlacementCard from "@/components/account/TournamentPlacements/TournamentPlacementCard";
 import TournamentDisplayTreeEditor from "@/components/account/TournamentPlacements/TournamentDisplayTreeEditor";
@@ -41,7 +40,6 @@ export default function TournamentCosmeticsEditorPopup({
   onSaved,
 }) {
   const { t } = useTranslation("pages");
-  const panelRef = useRef(null);
   const [previewPlacementId, setPreviewPlacementId] = useState(null);
 
   const editor = useTournamentCosmeticsEditor({
@@ -73,8 +71,6 @@ export default function TournamentCosmeticsEditorPopup({
     revertDraft,
     saveAll,
   } = editor;
-
-  useBodyScrollLock(isOpen);
 
   useEffect(() => {
     if (!isOpen) {
@@ -113,24 +109,6 @@ export default function TournamentCosmeticsEditorPopup({
     onClose();
   }, [isDirty, onClose, revertDraft, t]);
 
-  useEffect(() => {
-    if (!isOpen) return;
-    const onKey = (ev) => {
-      if (ev.key === "Escape") {
-        ev.preventDefault();
-        requestClose();
-      }
-    };
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [isOpen, requestClose]);
-
-  const handleBackdropClick = (ev) => {
-    if (panelRef.current && !panelRef.current.contains(ev.target)) {
-      requestClose();
-    }
-  };
-
   const handleSaveAndClose = async () => {
     const ok = await saveAll();
     if (ok) onClose();
@@ -139,20 +117,12 @@ export default function TournamentCosmeticsEditorPopup({
   if (!isOpen) return null;
 
   return (
-    <Portal>
-      <div
-        className="tournament-cosmetics-editor-popup-overlay"
-        onMouseDown={handleBackdropClick}
-        role="presentation"
-      >
-        <div
-          ref={panelRef}
-          className="tournament-cosmetics-editor-popup"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="tournament-cosmetics-editor-popup-title"
-          onMouseDown={(ev) => ev.stopPropagation()}
-        >
+    <PopupShell
+      onClose={requestClose}
+      overlayClassName="tournament-cosmetics-editor-popup-overlay"
+      panelClassName="tournament-cosmetics-editor-popup"
+      ariaLabelledBy="tournament-cosmetics-editor-popup-title"
+    >
           <header className="tournament-cosmetics-editor-popup__header">
             <h2
               id="tournament-cosmetics-editor-popup-title"
@@ -294,8 +264,6 @@ export default function TournamentCosmeticsEditorPopup({
               </button>
             </div>
           </footer>
-        </div>
-      </div>
-    </Portal>
+    </PopupShell>
   );
 }

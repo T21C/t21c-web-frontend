@@ -1,8 +1,9 @@
 // tuf-search: #SearchHelpPopup #searchHelpPopup #common
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import './searchhelppopup.css';
 import { Trans, useTranslation } from 'react-i18next';
+import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
 import {
   Collapsible,
@@ -111,34 +112,14 @@ export const SearchHelpPopup = ({
   translationNs = 'components',
 }) => {
   const { t } = useTranslation([translationNs]);
-  const popupRef = useRef(null);
   const [openSection, setOpenSection] = useState(defaultOpenSection);
 
-  useEffect(() => {
-    const handleEscapeKey = (event) => {
-      if (event.key === 'Escape') {
-        onClose();
-      }
-    };
-
-    const handleClickOutside = (event) => {
-      if (popupRef.current && !popupRef.current.contains(event.target)) {
-        onClose();
-      }
-    };
-
-    document.addEventListener('keydown', handleEscapeKey);
-    document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('keydown', handleEscapeKey);
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [onClose]);
-
   return (
-    <div className="search-help-popup-overlay">
-      <div className="search-help-popup" ref={popupRef}>
+    <PopupShell
+      onClose={onClose}
+      overlayClassName="search-help-popup-overlay"
+      panelClassName="search-help-popup"
+    >
         <CloseButton
           variant="floating"
           onClick={onClose}
@@ -196,8 +177,7 @@ export const SearchHelpPopup = ({
             })}
           </div>
         </div>
-      </div>
-    </div>
+    </PopupShell>
   );
 };
 

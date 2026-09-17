@@ -7,7 +7,7 @@ import placeholder from '@/assets/placeholder/3.png';
 import { FetchIcon } from '@/components/common/icons';
 import { PlayerInput } from '@/components/common/selectors';
 import { PassCoreForm } from '@/components/common/cores/PassCoreForm/PassCoreForm';
-import { formatCreatorDisplay, truncateString } from '@/utils/Utility';
+import { formatCreatorDisplay, ICON_SIZE, selectIconSize, truncateString } from '@/utils/Utility';
 import { normalizeLevelSearchQuery } from '@/utils/normalizeEntitySearchQuery';
 
 /**
@@ -217,7 +217,7 @@ export function PassSubmissionCore({
                 onClick={() => handleLevelSelect(result)}
               >
                 <img
-                  src={difficultyDict[result.diffId]?.icon}
+                  src={selectIconSize(difficultyDict[result.diffId]?.icon, ICON_SIZE.MEDIUM)}
                   alt={difficultyDict[result.diffId]?.name}
                   className="difficulty-icon"
                 />
@@ -238,7 +238,7 @@ export function PassSubmissionCore({
       renderLevelInfoLeading={() =>
         level && form.levelId ? (
           <img
-            src={difficultyDict[level.diffId]?.icon}
+            src={selectIconSize(difficultyDict[level.diffId]?.icon, ICON_SIZE.MEDIUM)}
             alt={difficultyDict[level.diffId]?.name}
             className="level-icon"
           />

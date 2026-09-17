@@ -1,7 +1,7 @@
 // tuf-search: #LevelListExportPopup #levelListExportPopup #popups #levels #export
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
 import './LevelListExportPopup.css';
 
@@ -16,7 +16,6 @@ const LevelListExportPopup = ({
   onExport,
 }) => {
   const { t } = useTranslation(['pages', 'components', 'common']);
-  const popupRef = useRef(null);
   const abortRef = useRef(null);
   const [format, setFormat] = useState('xlsx');
   const [exporting, setExporting] = useState(false);
@@ -43,33 +42,6 @@ const LevelListExportPopup = ({
       resetState();
     }
   }, [isOpen, resetState, abortActive]);
-
-  useBodyScrollLock(isOpen);
-
-  useEffect(() => {
-    if (!isOpen) return undefined;
-
-    const handleEscapeKey = (event) => {
-      if (event.key === 'Escape' && !exporting) {
-        onClose();
-      }
-    };
-
-    const handleClickOutside = (event) => {
-      if (exporting) return;
-      if (popupRef.current && !popupRef.current.contains(event.target)) {
-        onClose();
-      }
-    };
-
-    document.addEventListener('keydown', handleEscapeKey);
-    document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('keydown', handleEscapeKey);
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isOpen, onClose, exporting]);
 
   if (!isOpen) {
     return null;
@@ -127,8 +99,12 @@ const LevelListExportPopup = ({
       : null;
 
   return (
-    <div className="level-list-export-popup__overlay">
-      <div className="level-list-export-popup" ref={popupRef}>
+    <PopupShell
+      onClose={onClose}
+      closeDisabled={exporting}
+      overlayClassName="level-list-export-popup__overlay"
+      panelClassName="level-list-export-popup"
+    >
         <CloseButton
           variant="floating"
           className="level-list-export-popup__close-btn"
@@ -210,8 +186,7 @@ const LevelListExportPopup = ({
             </button>
           </div>
         </div>
-      </div>
-    </div>
+    </PopupShell>
   );
 };
 

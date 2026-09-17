@@ -1,12 +1,6 @@
 /* tuf-search: #PackAddLevelsConfirmPopup #packAddLevelsConfirmPopup #popups #packs */
 .pack-add-levels-confirm-popup__overlay {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.6);
-  z-index: 1100;
+  background: var(--color-black-t70);
 }
 
 .pack-add-levels-confirm-popup {

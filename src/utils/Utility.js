@@ -554,21 +554,82 @@ export function isImageUrl(url) {
   return false;
 }
 
+/** CDN variant tokens. Prefer these at render sites so size is an explicit use-case choice. */
+export const ICON_SIZE = {
+  SMALL: 'small',
+  MEDIUM: 'medium',
+  LARGE: 'large',
+  ORIGINAL: 'original',
+};
+
+/** Rank high → low. Used to fall back when a type has no `large` / `thumbnail` / etc. */
+const ICON_SIZE_RANK = {
+  original: 4,
+  large: 3,
+  medium: 2,
+  small: 1,
+  thumbnail: 0,
+};
+
+/**
+ * Path segment → available variants (mirrors server IMAGE_TYPES names).
+ * Icon-like types omit `large`; requesting it falls back to `medium`.
+ */
+const CDN_IMAGE_TYPE_SIZES = {
+  profile: ['original', 'large', 'medium', 'small', 'thumbnail'],
+  banner: ['original', 'large', 'medium', 'small'],
+  thumbnail: ['original', 'large', 'medium', 'small'],
+  curation_icon: ['original', 'medium', 'small'],
+  difficulty_icon: ['original', 'medium', 'small'],
+  level_thumbnail: ['original', 'large', 'medium', 'small', 'thumbnail'],
+  pack_icon: ['original', 'medium', 'small'],
+  cluster_icon: ['original', 'medium', 'small'],
+  oauth_client_icon: ['original', 'medium', 'small'],
+  tag_icon: ['original', 'medium', 'small'],
+  mod_icon: ['original', 'medium', 'small'],
+  evidence: ['original', 'large', 'medium', 'small'],
+  tournament_placement_icon: ['original', 'medium', 'small'],
+  tournament_placement_card: ['original', 'large'],
+};
+
+const ICON_SIZE_SEGMENT_RE = /\/(?:small|medium|large|original)(?=\/|\.|\?|#|$)/gi;
+
+function parseCdnImageTypeName(url) {
+  const match = url.match(/\/images\/([a-z0-9_]+)\//i);
+  return match ? match[1].toLowerCase() : null;
+}
+
+function resolveIconSizeToken(requested, url) {
+  const allowed = new Set(['small', 'medium', 'large', 'original']);
+  const token = allowed.has(requested) ? requested : ICON_SIZE.SMALL;
+  const typeName = parseCdnImageTypeName(url);
+  const available = typeName ? CDN_IMAGE_TYPE_SIZES[typeName] : null;
+  if (!available?.length || available.includes(token)) return token;
+
+  const requestedRank = ICON_SIZE_RANK[token] ?? ICON_SIZE_RANK.small;
+  const ranked = available
+    .filter((name) => ICON_SIZE_RANK[name] != null)
+    .sort((a, b) => ICON_SIZE_RANK[b] - ICON_SIZE_RANK[a]);
+  const smallerOrEqual = ranked.find((name) => ICON_SIZE_RANK[name] <= requestedRank);
+  return smallerOrEqual || ranked[ranked.length - 1] || token;
+}
+
 /**
  * Swap CDN icon size path segment (`small` | `medium` | `large` | `original`) to the requested size.
  * Replaces every occurrence so URLs stay consistent whether they currently use `/medium`, `/original`, etc.
  * If no size segment is present, returns the URL unchanged.
+ * Unknown sizes for a known image type fall back to the next-smaller existing variant
+ * (e.g. `large` on `tag_icon` → `medium`).
  *
  * @param {string | null | undefined} url
  * @param {'small' | 'medium' | 'large' | 'original'} [size='small']
  * @returns {string | null}
  */
-export function selectIconSize(url, size = "small") {
+export function selectIconSize(url, size = ICON_SIZE.SMALL) {
   if (url == null || url === "") return null;
   if (typeof url !== "string") return null;
-  const allowed = new Set(["small", "medium", "large", "original"]);
-  const token = allowed.has(size) ? size : "small";
-  return url.replace(/\/(?:small|medium|large|original)(?=\/|\.|\?|#|$)/gi, `/${token}`);
+  const token = resolveIconSizeToken(size, url);
+  return url.replace(ICON_SIZE_SEGMENT_RE, `/${token}`);
 }
 
 /** Base score as display string (no suffix); trims trailing fraction zeros, keeps one 0 after "." if needed. */

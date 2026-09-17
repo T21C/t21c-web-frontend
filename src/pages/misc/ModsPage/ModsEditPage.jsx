@@ -11,7 +11,7 @@ import { buildStaticPageMeta } from '@/utils/meta';
 import { Footer } from '@/components/layout';
 import { CloseButton } from '@/components/common/buttons';
 import { EditIcon, TrashIcon } from '@/components/common/icons';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { PopupShell } from '@/components/common/PopupShell';
 import { FacetQueryBuilder } from '@/components/common/selectors';
 import ImageSelectorPopup from '@/components/common/selectors/ImageSelectorPopup/ImageSelectorPopup';
 import { getCdnErrorMessage } from '@/utils/uploadErrors';
@@ -95,9 +95,6 @@ const ModsEditPage = () => {
   useEffect(() => {
     if (!authLoading && isAdmin) void loadCatalogTags();
   }, [authLoading, isAdmin, loadCatalogTags]);
-
-  const anyModalOpen = Boolean(isCreating || deletingMod || iconPicker);
-  useBodyScrollLock(anyModalOpen);
 
   const setPendingCreateIcon = (file) => {
     setCreateIconPreview((prev) => {
@@ -307,8 +304,12 @@ const ModsEditPage = () => {
         <Footer />
 
         {isCreating ? (
-          <div className="mods-page__modal" onClick={closeCreate}>
-            <div className="mods-page__modal-content" onClick={(event) => event.stopPropagation()}>
+          <PopupShell
+            onClose={closeCreate}
+            closeDisabled={saving}
+            overlayClassName="mods-page mods-page__modal"
+            panelClassName="mods-page__modal-content"
+          >
               <CloseButton
                 variant="floating"
                 onClick={closeCreate}
@@ -369,8 +370,7 @@ const ModsEditPage = () => {
                   </button>
                 </div>
               </form>
-            </div>
-          </div>
+          </PopupShell>
         ) : null}
 
         <ModAdminEditPopup
@@ -396,8 +396,11 @@ const ModsEditPage = () => {
         />
 
         {deletingMod ? (
-          <div className="mods-page__modal" onClick={() => setDeletingMod(null)}>
-            <div className="mods-page__modal-content" onClick={(event) => event.stopPropagation()}>
+          <PopupShell
+            onClose={() => setDeletingMod(null)}
+            overlayClassName="mods-page mods-page__modal"
+            panelClassName="mods-page__modal-content"
+          >
               <h2>{t('mods.delete.title')}</h2>
               <p>{t('mods.delete.message', { name: deletingMod.name })}</p>
               <p>{t('mods.delete.description')}</p>
@@ -422,8 +425,7 @@ const ModsEditPage = () => {
                   {t('mods.delete.deleteButton')}
                 </button>
               </div>
-            </div>
-          </div>
+          </PopupShell>
         ) : null}
 
         <ImageSelectorPopup

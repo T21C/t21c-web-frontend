@@ -9,6 +9,7 @@ import {
   getCreatorCurationTypesForHeaderPanel,
   groupCurationTypesForPanel,
 } from "@/utils/curationTypeUtils";
+import { ICON_SIZE, selectIconSize } from "@/utils/Utility";
 import { buildCreatorIconSlots } from "@/utils/profileIconSlots";
 
 const MAX_SELECTED = 5;
@@ -175,7 +176,7 @@ const CurationTypeSelector = ({
               title={slot.tooltip ?? slot.title}
             >
               {slot.iconUrl ? (
-                <img className="curation-type-selector__preview-img" src={slot.iconUrl} alt="" decoding="async" />
+                <img className="curation-type-selector__preview-img" src={selectIconSize(slot.iconUrl, ICON_SIZE.SMALL)} alt="" decoding="async" />
               ) : (
                 <span className="curation-type-selector__preview-letter">{slot.letter}</span>
               )}
@@ -217,7 +218,7 @@ const CurationTypeSelector = ({
                         {ct.icon ? (
                           <img
                             className="curation-type-selector__chip-icon"
-                            src={ct.icon}
+                            src={selectIconSize(ct.icon, ICON_SIZE.SMALL)}
                             alt=""
                             decoding="async"
                           />

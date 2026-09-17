@@ -1,5 +1,6 @@
 // tuf-search: #FacetSimpleList #facetQueryBuilder #selectors #tagSelector
 import React, { useMemo, useState } from 'react';
+import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { useTranslation } from 'react-i18next';
 import { compareSerializedTagOrder } from '@/utils/communityTags';
 import './facetquerybuilder.css';
@@ -89,7 +90,7 @@ const FacetSimpleList = ({
                 style={{ backgroundColor: `${it.color || '#444'}55` }}
                 onClick={() => onToggleId(id)}
               >
-                {it.icon && <img src={it.icon} alt="" className="facet-query-builder__chip-icon" />}
+                {it.icon && <img src={selectIconSize(it.icon, ICON_SIZE.SMALL)} alt="" className="facet-query-builder__chip-icon" />}
                 {it.name}
               </button>
             );
@@ -134,7 +135,7 @@ const FacetSimpleList = ({
                   onClick={() => onToggleId(item.id)}
                 >
                   {item.icon && (
-                    <img src={item.icon} alt="" className="facet-query-builder__item-icon" />
+                    <img src={selectIconSize(item.icon, ICON_SIZE.SMALL)} alt="" className="facet-query-builder__item-icon" />
                   )}
                   <span>{item.name}</span>
                 </button>

@@ -1,5 +1,6 @@
 // tuf-search: #ItemPickManager #itemPickManager #selectors
 import React, { useMemo, useState, useEffect, useCallback } from 'react';
+import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { TrashIcon } from '@/components/common/icons';
 import './itemPickManager.css';
 
@@ -199,7 +200,7 @@ const ItemPickManager = ({
       }}
     >
       {item.icon && (
-        <img src={item.icon} alt="" className="item-pick-manager__chip-icon" />
+        <img src={selectIconSize(item.icon, ICON_SIZE.SMALL)} alt="" className="item-pick-manager__chip-icon" />
       )}
       <span className="item-pick-manager__chip-name">{item.name}</span>
       {addable ? (

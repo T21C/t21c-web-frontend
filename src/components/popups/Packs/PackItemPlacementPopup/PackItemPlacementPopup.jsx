@@ -1,7 +1,7 @@
 // tuf-search: #PackItemPlacementPopup #packItemPlacementPopup #popups #packs #placement
-import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
 import { ChevronIcon } from '@/components/common/icons';
 import {
@@ -24,7 +24,6 @@ const PackItemPlacementPopup = ({
   submitting = false,
 }) => {
   const { t } = useTranslation(['components', 'common']);
-  const popupRef = useRef(null);
   const [folderName, setFolderName] = useState('');
   const [levelIdsInput, setLevelIdsInput] = useState('');
   const [selectedSlotKey, setSelectedSlotKey] = useState(null);
@@ -56,32 +55,6 @@ const PackItemPlacementPopup = ({
     setSelectedSlotKey(defaultSlot.slotKey);
     setCollapsedFolderIds(new Set());
   }, [isOpen, packItems, excludeId, movingItem, mode, resetState]);
-
-  useBodyScrollLock(isOpen);
-
-  useEffect(() => {
-    if (!isOpen) return undefined;
-
-    const handleEscapeKey = (event) => {
-      if (event.key === 'Escape') {
-        onClose();
-      }
-    };
-
-    const handleClickOutside = (event) => {
-      if (popupRef.current && !popupRef.current.contains(event.target)) {
-        onClose();
-      }
-    };
-
-    document.addEventListener('keydown', handleEscapeKey);
-    document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('keydown', handleEscapeKey);
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isOpen, onClose]);
 
   const toggleFolderCollapsed = (folderId) => {
     setCollapsedFolderIds((prev) => {
@@ -147,8 +120,11 @@ const PackItemPlacementPopup = ({
   const indentRem = (depth) => `${0.5 + clampIndentDepth(depth) * 1.1}rem`;
 
   return (
-    <div className="pack-item-placement-popup__overlay">
-      <div className="pack-item-placement-popup" ref={popupRef}>
+    <PopupShell
+      onClose={onClose}
+      overlayClassName="pack-item-placement-popup__overlay"
+      panelClassName="pack-item-placement-popup"
+    >
         <CloseButton
           variant="floating"
           className="pack-item-placement-popup__close-btn"
@@ -309,8 +285,7 @@ const PackItemPlacementPopup = ({
             </button>
           </div>
         </div>
-      </div>
-    </div>
+    </PopupShell>
   );
 };
 

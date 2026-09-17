@@ -15,11 +15,12 @@ import { PassCoreForm } from '@/components/common/cores/PassCoreForm/PassCoreFor
 import { usePassCoreForm } from '@/components/common/cores/PassCoreForm/usePassCoreForm';
 import { truncateString } from '@/utils/Utility';
 import { CloseButton } from '@/components/common/buttons';
-import { Portal } from '@/components/common/Portal';
+import { PopupShell } from '@/components/common/PopupShell';
 import { AdminReasonPrompt } from '@/components/common/AdminReasonPrompt';
+import { useUnsavedClose } from '@/hooks/useUnsavedClose';
 
 export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
-  const { t } = useTranslation('components');
+  const { t } = useTranslation(['components', 'common']);
 
   const initialFormState = {
     levelId: pass.levelId.toString() || '',
@@ -50,6 +51,7 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
   const { user } = useAuth();
   const [submission, setSubmission] = useState(false);
   const [showDeletePrompt, setShowDeletePrompt] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   const navigate = useNavigate();
 
@@ -78,6 +80,21 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
     initialForm: initialFormState,
     isUDiffLevel: (lvl) => (lvl?.diffId ?? 0) >= 41,
   });
+
+  const { requestClose } = useUnsavedClose({
+    isDirty: hasUnsavedChanges,
+    onClose,
+  });
+
+  const handleUserInputChange = (e) => {
+    setHasUnsavedChanges(true);
+    handleInputChange(e);
+  };
+
+  const handleUserAdofaiVersionChange = (value) => {
+    setHasUnsavedChanges(true);
+    handleAdofaiVersionChange(value);
+  };
 
 const handleSubmit = async (e) => {
   e.preventDefault();
@@ -149,6 +166,7 @@ const handleSubmit = async (e) => {
 
     if (response.data) {
       toast.success(t('pass.updated', { ns: 'common' }), { id: toastId });
+      setHasUnsavedChanges(false);
       if (onUpdate) {
         await onUpdate(response.data.pass);
       }
@@ -221,13 +239,17 @@ const handleSubmit = async (e) => {
   };
 
   return (
-    <Portal>
-    <div className="edit-pass-popup-overlay">
-      <div className="form-container">
+    <>
+    <PopupShell
+      onClose={requestClose}
+      closeDisabled={showDeletePrompt}
+      overlayClassName="edit-pass-popup-overlay"
+      panelClassName="form-container"
+    >
         <CloseButton
           variant="floating"
           className="edit-pass-popup-close"
-          onClick={onClose}
+          onClick={requestClose}
           aria-label={t('passPopups.edit.close')}
         />
         <PassCoreForm
@@ -248,8 +270,8 @@ const handleSubmit = async (e) => {
           videoLinkResolving={videoLinkResolving}
           accuracy={accuracy}
           score={score}
-          onInputChange={handleInputChange}
-          onAdofaiVersionChange={handleAdofaiVersionChange}
+          onInputChange={handleUserInputChange}
+          onAdofaiVersionChange={handleUserAdofaiVersionChange}
           renderVerified={() => {
             const color = !form.levelId ? "#ffc107" : levelLoading ? "#ffc107" : level ? "#28a745" : "#dc3545";
             return <FetchIcon className="fetch-icon" form={form} levelLoading={levelLoading} level={level} color={color} />;
@@ -282,12 +304,14 @@ const handleSubmit = async (e) => {
             <PlayerInput
               value={form.leaderboardName || ""}
               onChange={(value) => {
+                setHasUnsavedChanges(true);
                 setForm((prev) => ({
                   ...prev,
                   leaderboardName: value,
                 }));
               }}
               onSelect={(player) => {
+                setHasUnsavedChanges(true);
                 setForm((prev) => ({
                   ...prev,
                   leaderboardName: player.name,
@@ -299,12 +323,12 @@ const handleSubmit = async (e) => {
           renderExtraCheckboxes={() => (
             <div className="announcement-status">
               <label className="checkbox-container">
-                <input type="checkbox" name="isAnnounced" checked={form.isAnnounced} onChange={handleInputChange} />
+                <input type="checkbox" name="isAnnounced" checked={form.isAnnounced} onChange={handleUserInputChange} />
                 <span className="checkmark"></span>
                 <span>Is Announced</span>
               </label>
               <label className="checkbox-container">
-                <input type="checkbox" name="isDuplicate" checked={form.isDuplicate} onChange={handleInputChange} />
+                <input type="checkbox" name="isDuplicate" checked={form.isDuplicate} onChange={handleUserInputChange} />
                 <span className="checkmark"></span>
                 <span>Is Duplicate</span>
               </label>
@@ -333,8 +357,7 @@ const handleSubmit = async (e) => {
           formatCreatorDisplay={formatCreatorDisplay}
           truncateString={truncateString}
         />
-        </div>
-      </div>
+    </PopupShell>
       <AdminReasonPrompt
         isOpen={showDeletePrompt}
         title={t('passPopups.edit.reasonPrompt.deleteTitle')}
@@ -347,6 +370,6 @@ const handleSubmit = async (e) => {
           void runSoftDelete(reason);
         }}
       />
-    </Portal>
+    </>
     );
 }; 

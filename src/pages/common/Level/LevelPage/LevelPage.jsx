@@ -12,6 +12,7 @@ import { VirtualList } from "@/components/common/VirtualList";
 import axios from "axios";
 import api from '@/utils/api';
 import { useDebouncedRequest } from '@/hooks/useDebouncedRequest';
+import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { LevelContext } from "@/contexts/LevelContext";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
@@ -815,7 +816,7 @@ const LevelPage = ({
                   title={t('level.toolTip.toggleQSlider')}
                   data-tooltip-id="q-toggle"
                 >
-                  <img src={difficulties.find(d => d.name === "Qq" || d.name.startsWith("Q")).icon} alt="Q Slider" />
+                  <img src={selectIconSize(difficulties.find(d => d.name === "Qq" || d.name.startsWith("Q")).icon, ICON_SIZE.SMALL)} alt="Q Slider" />
                 </button>
                 <Tooltip id="q-toggle" place="bottom" noArrow>
                   {t('level.toolTip.toggleQSlider')}

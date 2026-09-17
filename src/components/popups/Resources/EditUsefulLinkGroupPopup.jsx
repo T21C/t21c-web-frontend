@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CloseButton } from '@/components/common/buttons';
+import { PopupShell } from '@/components/common/PopupShell';
 import {
   DEFAULT_LINK_LANGUAGE,
   languageLabel,
@@ -136,14 +137,12 @@ const EditUsefulLinkGroupPopup = ({
   };
 
   return (
-    <div
-      className="edit-useful-link-popup"
-      onClick={requestClose}
+    <PopupShell
+      onClose={requestClose}
+      closeDisabled={saving}
+      overlayClassName="edit-useful-link-popup"
+      panelClassName="edit-useful-link-popup__content"
     >
-      <div
-        className="edit-useful-link-popup__content"
-        onClick={(event) => event.stopPropagation()}
-      >
         <div className="edit-useful-link-popup__header">
           <h2>{title}</h2>
           <CloseButton
@@ -196,8 +195,7 @@ const EditUsefulLinkGroupPopup = ({
             </div>
           </div>
         </form>
-      </div>
-    </div>
+    </PopupShell>
   );
 };
 

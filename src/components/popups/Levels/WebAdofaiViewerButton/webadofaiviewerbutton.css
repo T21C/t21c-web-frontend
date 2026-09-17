@@ -31,14 +31,8 @@
 }
 
 .web-adofai-viewer-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 130;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   padding: 3rem;
-  background: rgba(0, 0, 0, 0.72);
+  background: var(--color-black-t70);
 }
 
 .web-adofai-viewer-dialog {

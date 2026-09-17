@@ -1,9 +1,8 @@
 // tuf-search: #GalleryInspectPopup #galleryInspectPopup #popups
 // showTitleHeader: false hides the titled header for lightweight image inspection (toolbar: close only).
 import React, { useState, useEffect, useRef } from 'react';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { useTranslation } from 'react-i18next';
-import { Portal } from '@/components/common/Portal';
+import { PopupShell } from '@/components/common/PopupShell';
 import { isImageUrl } from '@/utils/Utility';
 import './galleryInspectPopup.css';
 import { ChevronIcon, ExternalLinkIcon } from '@/components/common/icons';
@@ -18,7 +17,6 @@ export const GalleryInspectPopup = ({
   showTitleHeader = true,
 }) => {
   const { t } = useTranslation(['components', 'common']);
-  const popupRef = useRef(null);
   const imageRef = useRef(null);
   const containerRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -34,13 +32,14 @@ export const GalleryInspectPopup = ({
 
   useEffect(() => {
     const handleEscapeKey = (event) => {
-      if (event.key === 'Escape') {
-        if (zoom > minZoom) {
-          setZoom(defaultZoom);
-          setPosition({ x: 0, y: 0 });
-        } else {
-          onClose();
-        }
+      if (event.key !== 'Escape') return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      if (zoom > minZoom) {
+        setZoom(defaultZoom);
+        setPosition({ x: 0, y: 0 });
+      } else {
+        onClose();
       }
     };
 
@@ -52,34 +51,20 @@ export const GalleryInspectPopup = ({
       }
     };
 
-    document.addEventListener('keydown', handleEscapeKey);
+    document.addEventListener('keydown', handleEscapeKey, true);
     document.addEventListener('keydown', handleKeyNavigation);
 
     return () => {
-      document.removeEventListener('keydown', handleEscapeKey);
+      document.removeEventListener('keydown', handleEscapeKey, true);
       document.removeEventListener('keydown', handleKeyNavigation);
     };
   }, [onClose, zoom, currentIndex, evidenceList.length]);
-
-
-  useBodyScrollLock(true);
 
   // Reset zoom and position when image changes
   useEffect(() => {
     setZoom(defaultZoom);
     setPosition({ x: 0, y: 0 });
   }, [currentIndex]);
-
-  const handleClickOutside = (event) => {
-    if (popupRef.current && !popupRef.current.contains(event.target)) {
-      onClose();
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
 
   const handlePrevious = () => {
     if (currentIndex > 0) {
@@ -223,13 +208,12 @@ export const GalleryInspectPopup = ({
 
   if (evidenceList.length === 0) {
     return (
-      <Portal>
-        <div className="gallery-inspect-popup-overlay" onClick={onClose}>
-          <div
-            className={`gallery-inspect-popup${!showTitleHeader ? ' gallery-inspect-popup--minimal' : ''}`}
-            ref={popupRef}
-            onClick={(e) => e.stopPropagation()}
-          >
+      <PopupShell
+        onClose={onClose}
+        dismissOnEscape={false}
+        overlayClassName="gallery-inspect-popup-overlay"
+        panelClassName={`gallery-inspect-popup${!showTitleHeader ? ' gallery-inspect-popup--minimal' : ''}`}
+      >
             {showTitleHeader ? (
               <div className="popup-header">
                 <h2>{t('evidenceGallery.title')}</h2>
@@ -251,9 +235,7 @@ export const GalleryInspectPopup = ({
             <div className="popup-content">
               <p className="no-evidence">{t('evidenceGallery.noEvidence')}</p>
             </div>
-          </div>
-        </div>
-      </Portal>
+      </PopupShell>
     );
   }
 
@@ -261,13 +243,12 @@ export const GalleryInspectPopup = ({
   const isImage = isImageUrl(currentEvidence.link);
 
   return (
-    <Portal>
-    <div className="gallery-inspect-popup-overlay" onClick={onClose}>
-      <div
-        className={`gallery-inspect-popup${!showTitleHeader ? ' gallery-inspect-popup--minimal' : ''}`}
-        ref={popupRef}
-        onClick={(e) => e.stopPropagation()}
-      >
+    <PopupShell
+      onClose={onClose}
+      dismissOnEscape={false}
+      overlayClassName="gallery-inspect-popup-overlay"
+      panelClassName={`gallery-inspect-popup${!showTitleHeader ? ' gallery-inspect-popup--minimal' : ''}`}
+    >
         {showTitleHeader ? (
           <div className="popup-header">
             <h2>
@@ -462,9 +443,7 @@ export const GalleryInspectPopup = ({
             </div>
           )}
         </div>
-      </div>
-    </div>
-    </Portal>
+    </PopupShell>
   );
 };
 

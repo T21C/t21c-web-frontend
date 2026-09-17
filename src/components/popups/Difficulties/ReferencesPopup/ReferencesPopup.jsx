@@ -7,6 +7,7 @@ import api from '@/utils/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { useTranslation } from 'react-i18next';
+import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
 import { toast } from 'react-hot-toast';
 import rollingIcon from '@/assets/icons/Rolling RITKnew.png';
@@ -19,7 +20,7 @@ import hideIcons from '@/assets/icons/RITK hidden.png'
 import showIcons from '@/assets/icons/RITK visible.png'
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { getPrimaryVideoLink } from '@/utils/videoLink';
-import { formatCreatorDisplay } from '@/utils/Utility';
+import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { VideoLinkIcon } from '@/components/common/icons';
 
 const hexToRgb = (hex) => {
@@ -299,7 +300,6 @@ const ReferencesPopup = ({ onClose }) => {
   const [initialLevelIds, setInitialLevelIds] = useState({});
   const [isAllExpanded, setIsAllExpanded] = useState(false);
   const navigate = useNavigate();
-  const popupRef = useRef(null);
   const [changedDifficulties, setChangedDifficulties] = useState(new Set());
   const [showHelp, setShowHelp] = useState(false);
   const helpRef = useRef(null);
@@ -604,7 +604,7 @@ const ReferencesPopup = ({ onClose }) => {
               >
                 <div className="difficulty-info">
                   <img 
-                    src={difficultyDict[difficultyInfo.id]?.icon} 
+                    src={selectIconSize(difficultyDict[difficultyInfo.id]?.icon, ICON_SIZE.MEDIUM)} 
                     alt={difficultyInfo.name}
                     className="difficulty-icon"
                   />
@@ -677,7 +677,7 @@ const ReferencesPopup = ({ onClose }) => {
                 }}
               >
                 <img 
-                  src={difficultyDict[difficultyInfo.id]?.icon} 
+                  src={selectIconSize(difficultyDict[difficultyInfo.id]?.icon, ICON_SIZE.MEDIUM)} 
                   alt={difficultyInfo.name} 
                   className="difficulty-icon"
                 />
@@ -737,9 +737,6 @@ const ReferencesPopup = ({ onClose }) => {
         case 'ArrowRight':
           handleTabChange(1);
           break;
-        case 'Escape':
-          onClose();
-          break;
         default:
           break;
       }
@@ -753,23 +750,6 @@ const ReferencesPopup = ({ onClose }) => {
       window.removeEventListener('keydown', handleKeyPress);
     };
   }, [onClose, activeTab, handleTabChange, isEditMode]); // Add isEditMode to dependencies
-
-  // Add click outside handler
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (popupRef.current && !popupRef.current.contains(event.target)) {
-        onClose();
-      }
-    };
-
-    // Add event listener
-    document.addEventListener('mousedown', handleClickOutside);
-
-    // Clean up
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [onClose]);
 
   // Add click outside handler for help popup
   useEffect(() => {
@@ -802,11 +782,11 @@ const ReferencesPopup = ({ onClose }) => {
   };
 
   return (
-    <div className="references-popup-overlay">
-      <div 
-        ref={popupRef} 
-        className="references-popup"
-      >
+    <PopupShell
+      onClose={onClose}
+      overlayClassName="references-popup-overlay"
+      panelClassName="references-popup"
+    >
         <div className="popup-header">
           <CloseButton
             variant="floating"
@@ -934,8 +914,7 @@ const ReferencesPopup = ({ onClose }) => {
             </div>
           </>
         )}
-      </div>
-    </div>
+    </PopupShell>
   );
 }; 
 

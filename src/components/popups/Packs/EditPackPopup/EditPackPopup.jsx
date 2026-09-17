@@ -1,7 +1,7 @@
 // tuf-search: #EditPackPopup #editPackPopup #popups #packs #editPack
 import { useState, useEffect, useRef } from 'react';
 import { Portal } from '@/components/common/Portal';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { PopupShell } from '@/components/common/PopupShell';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { CrossIcon, ImageIcon, TrashIcon } from '@/components/common/icons';
@@ -9,6 +9,7 @@ import ImageSelectorPopup from '../../../common/selectors/ImageSelectorPopup/Ima
 import { CustomSelect } from '@/components/common/selectors';
 import './EditPackPopup.css';
 import toast from 'react-hot-toast';
+import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import api from '@/utils/api';
 import { routes } from '@/api/routes';
@@ -203,15 +204,6 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
     }
   };
 
-  // Close popup when clicking outside
-  const handleBackdropClick = (e) => {
-    if (e.target.classList.contains('edit-pack-popup')) {
-      onClose();
-    }
-  };
-
-  useBodyScrollLock(true);
-
   // Position dropdown portal and handle clicks outside
   useEffect(() => {
     if (transferOwnershipSearch.length >= 1 && transferSearchRef.current && transferDropdownRef.current) {
@@ -277,8 +269,13 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
   const isForcedPrivate = pack.viewMode === LevelPackViewModes.FORCED_PRIVATE;
 
   return (
-    <div className="edit-pack-popup" onClick={handleBackdropClick}>
-      <div className="edit-pack-popup__content" onClick={(e) => e.stopPropagation()}>
+    <>
+    <PopupShell
+      onClose={onClose}
+      closeDisabled={showImageSelector || showDeleteConfirm}
+      overlayClassName="edit-pack-popup"
+      panelClassName="edit-pack-popup__content"
+    >
         <div className="edit-pack-popup__header">
           <h2 className="edit-pack-popup__title">{t('packPopups.editPack.title')}</h2>
           <button className="edit-pack-popup__close" onClick={onClose}>
@@ -333,7 +330,7 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
                 {formData.iconUrl && (
                   <div className="edit-pack-popup__icon-preview">
                     <img 
-                      src={formData.iconUrl} 
+                      src={selectIconSize(formData.iconUrl, ICON_SIZE.MEDIUM)} 
                       alt="Pack icon" 
                       className="edit-pack-popup__icon-preview-img"
                     />
@@ -557,7 +554,6 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
             </div>
           </div>
         </form>
-      </div>
 
       {showDeleteConfirm && (
         <div className="edit-pack-popup__delete-confirm">
@@ -583,6 +579,7 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
           </div>
         </div>
       )}
+    </PopupShell>
 
       {showImageSelector && (
         <ImageSelectorPopup
@@ -592,7 +589,7 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
           currentAvatar={formData.iconUrl}
         />
       )}
-    </div>
+    </>
   );
 };
 

@@ -1,12 +1,11 @@
 // tuf-search: #LevelPayloadSwapPopup #levelPayloadSwapPopup #popups #levels #payloadSwap
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
-import { Portal } from '@/components/common/Portal';
+import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
 import LevelSelectionPopup from '@/components/popups/Levels/LevelSelectionPopup/LevelSelectionPopup';
 import { getSongDisplayName } from '@/utils/levelHelpers';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import api from '@/utils/api';
 import { routes } from '@/api/routes';
 import './levelpayloadswappopup.css';
@@ -26,26 +25,6 @@ export default function LevelPayloadSwapPopup({ sourceLevel, onClose, onSuccess 
   const [targetLevel, setTargetLevel] = useState(null);
   const [showPicker, setShowPicker] = useState(false);
   const [isSwapping, setIsSwapping] = useState(false);
-
-  useBodyScrollLock(true);
-
-  useEffect(() => {
-    if (showPicker) {
-      return undefined;
-    }
-    const handleEscape = (event) => {
-      if (event.key !== 'Escape' || isSwapping) {
-        return;
-      }
-      event.preventDefault();
-      event.stopPropagation();
-      onClose();
-    };
-    document.addEventListener('keydown', handleEscape, true);
-    return () => {
-      document.removeEventListener('keydown', handleEscape, true);
-    };
-  }, [showPicker, isSwapping, onClose]);
 
   const handleLevelSelect = ({ levelId, level }) => {
     if (levelId === sourceLevel?.id) {
@@ -83,20 +62,14 @@ export default function LevelPayloadSwapPopup({ sourceLevel, onClose, onSuccess 
     }
   };
 
-  const handleOverlayClick = (e) => {
-    e.stopPropagation();
-    if (e.target === e.currentTarget && !isSwapping && !showPicker) {
-      onClose();
-    }
-  };
-
   return (
-    <Portal>
-      <div className="level-payload-swap-popup" onClick={handleOverlayClick}>
-        <div
-          className="level-payload-swap-popup__dialog"
-          onClick={(e) => e.stopPropagation()}
-        >
+    <>
+      <PopupShell
+        onClose={onClose}
+        closeDisabled={isSwapping || showPicker}
+        overlayClassName="level-payload-swap-popup"
+        panelClassName="level-payload-swap-popup__dialog"
+      >
           <div className="level-payload-swap-popup__header">
             <h2>{t('levelPopups.payloadSwap.title')}</h2>
             <CloseButton
@@ -172,8 +145,7 @@ export default function LevelPayloadSwapPopup({ sourceLevel, onClose, onSuccess 
                 : t('levelPopups.payloadSwap.confirm')}
             </button>
           </div>
-        </div>
-      </div>
+      </PopupShell>
 
       <LevelSelectionPopup
         isOpen={showPicker}
@@ -181,6 +153,6 @@ export default function LevelPayloadSwapPopup({ sourceLevel, onClose, onSuccess 
         onLevelSelect={handleLevelSelect}
         variant="pick"
       />
-    </Portal>
+    </>
   );
 }

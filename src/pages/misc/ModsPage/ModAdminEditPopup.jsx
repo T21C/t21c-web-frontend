@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import api from '@/utils/api';
 import { routes } from '@/api/routes';
 import { CloseButton } from '@/components/common/buttons';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { PopupShell } from '@/components/common/PopupShell';
 import { CustomSelect, ProfileSelector } from '@/components/common/selectors';
 import ImageSelectorPopup from '@/components/common/selectors/ImageSelectorPopup/ImageSelectorPopup';
 import { getCdnErrorMessage } from '@/utils/uploadErrors';
@@ -72,8 +72,6 @@ export default function ModAdminEditPopup({
       })),
     [mergeSourceMods, editingMod],
   );
-
-  useBodyScrollLock(Boolean(isOpen));
 
   const emitChange = useCallback(
     (next) => {
@@ -237,8 +235,12 @@ export default function ModAdminEditPopup({
 
   return (
     <>
-      <div className="mods-page__modal" onClick={closeEdit}>
-        <div className="mods-page__modal-content" onClick={(event) => event.stopPropagation()}>
+      <PopupShell
+        onClose={closeEdit}
+        closeDisabled={assignConfirmCount != null || iconPicker}
+        overlayClassName="mods-page mods-page__modal"
+        panelClassName="mods-page__modal-content"
+      >
           <CloseButton
             variant="floating"
             onClick={closeEdit}
@@ -406,12 +408,14 @@ export default function ModAdminEditPopup({
               {t('mods.merge.button')}
             </button>
           </div>
-        </div>
-      </div>
+      </PopupShell>
 
       {assignConfirmCount != null ? (
-        <div className="mods-page__modal" onClick={() => setAssignConfirmCount(null)}>
-          <div className="mods-page__modal-content" onClick={(event) => event.stopPropagation()}>
+        <PopupShell
+          onClose={() => setAssignConfirmCount(null)}
+          overlayClassName="mods-page mods-page__modal"
+          panelClassName="mods-page__modal-content"
+        >
             <h2>{t('mods.assign.confirmTitle')}</h2>
             <p>{t('mods.assign.confirmMessage', { count: assignConfirmCount })}</p>
             <div className="modal-actions">
@@ -427,8 +431,7 @@ export default function ModAdminEditPopup({
                 {t('mods.assign.confirmButton')}
               </button>
             </div>
-          </div>
-        </div>
+        </PopupShell>
       ) : null}
 
       <ImageSelectorPopup

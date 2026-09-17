@@ -9,6 +9,7 @@ import { useDebouncedRequest } from '@/hooks/useDebouncedRequest';
 import { MetaTags } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
 import { CustomSelect } from '@/components/common/selectors';
+import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { groupPublicTournamentsBySeries } from '@/utils/tournamentPlacements';
 import './tournamentListPage.css';
 
@@ -119,7 +120,7 @@ const TournamentListPage = () => {
                       >
                         {tournament.iconUrl ? (
                           <div className="tournament-list-page__card-icon">
-                            <img src={tournament.iconUrl} alt="" />
+                            <img src={selectIconSize(tournament.iconUrl, ICON_SIZE.MEDIUM)} alt="" />
                           </div>
                         ) : (
                           <div className="tournament-list-page__card-icon is-placeholder" />

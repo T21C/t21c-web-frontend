@@ -1,7 +1,7 @@
 // tuf-search: #BulkCreateCurationsPopup #bulkCreateCurationsPopup #popups #curations
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
 import { ItemPickManager } from '@/components/common/selectors';
 import { parseLevelIdsInput } from '@/utils/packTreePlacement';
@@ -22,11 +22,8 @@ const BulkCreateCurationsPopup = ({
 }) => {
   const { t } = useTranslation(['components', 'common']);
   const { user } = useAuth();
-  const popupRef = useRef(null);
   const [levelIdsInput, setLevelIdsInput] = useState('');
   const [typeIds, setTypeIds] = useState([]);
-
-  useBodyScrollLock(isOpen);
 
   useEffect(() => {
     if (!isOpen) return undefined;
@@ -34,32 +31,6 @@ const BulkCreateCurationsPopup = ({
     setTypeIds([]);
     return undefined;
   }, [isOpen]);
-
-  useEffect(() => {
-    if (!isOpen) return undefined;
-
-    const dismissBlocked = submitting || suppressDismiss;
-
-    const handleEscapeKey = (event) => {
-      if (event.key === 'Escape' && !dismissBlocked) {
-        onClose?.();
-      }
-    };
-
-    const handleClickOutside = (event) => {
-      if (popupRef.current && !popupRef.current.contains(event.target) && !dismissBlocked) {
-        onClose?.();
-      }
-    };
-
-    document.addEventListener('keydown', handleEscapeKey);
-    document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('keydown', handleEscapeKey);
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isOpen, onClose, submitting, suppressDismiss]);
 
   const isElevatedCurationUser =
     user && hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.HEAD_CURATOR]);
@@ -105,8 +76,12 @@ const BulkCreateCurationsPopup = ({
   if (!isOpen) return null;
 
   return (
-    <div className="bulk-create-curations-popup__overlay">
-      <div className="bulk-create-curations-popup" ref={popupRef}>
+    <PopupShell
+      onClose={onClose}
+      closeDisabled={submitting || suppressDismiss}
+      overlayClassName="bulk-create-curations-popup__overlay"
+      panelClassName="bulk-create-curations-popup"
+    >
         <CloseButton
           variant="floating"
           className="bulk-create-curations-popup__close-btn"
@@ -176,8 +151,7 @@ const BulkCreateCurationsPopup = ({
             </button>
           </div>
         </div>
-      </div>
-    </div>
+    </PopupShell>
   );
 };
 

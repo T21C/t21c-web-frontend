@@ -1,8 +1,8 @@
 import { routes } from '@/api/routes';
 // tuf-search: #SubmissionCreatorPopup #submissionCreatorPopup #popups #levels #submissionCreator
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { PopupShell } from '@/components/common/PopupShell';
 import { CustomSelect } from '@/components/common/selectors';
 import { CreatorStatusBadge } from '@/components/common/display';
 import api from '@/utils/api';
@@ -45,7 +45,6 @@ const getRoleCreditCount = (credits, role) => {
 
 export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialRole, initialRequest }) => {
   const { t } = useTranslation(['components', 'common']);
-  const popupRef = useRef(null);
 
   // Core state
   const [selectedRole, setSelectedRole] = useState(initialRole || CreditRole.CHARTER);
@@ -336,34 +335,14 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
     }
   };
 
-  useBodyScrollLock(true);
-
-  // Close handlers
-  useEffect(() => {
-    const handleEscapeKey = (event) => {
-      if (event.key === 'Escape') onClose();
-    };
-
-    const handleClickOutside = (event) => {
-      if (popupRef.current && !popupRef.current.contains(event.target)) {
-        onClose();
-      }
-    };
-
-    document.addEventListener('keydown', handleEscapeKey);
-    document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('keydown', handleEscapeKey);
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [onClose]);
-
   const selectedDetails = isTeamMode ? teamDetails : creatorDetails;
   
   return (
-    <div className="submission-creator-popup-overlay">
-      <div className="submission-creator-popup" ref={popupRef}>
+    <PopupShell
+      onClose={onClose}
+      overlayClassName="submission-creator-popup-overlay"
+      panelClassName="submission-creator-popup"
+    >
         <div className="popup-header">
           <h2>{t('submissionCreator.title')}</h2>
           <CloseButton
@@ -564,8 +543,7 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
           {error && <div className="error-message">{error}</div>}
           {success && <div className="success-message">{success}</div>}
         </div>
-      </div>
-    </div>
+    </PopupShell>
   );
 };
 

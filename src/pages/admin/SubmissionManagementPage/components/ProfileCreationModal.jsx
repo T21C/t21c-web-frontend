@@ -3,6 +3,7 @@ import { routes } from '@/api/routes';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
+import { PopupShell } from '@/components/common/PopupShell';
 import api from '@/utils/api';
 import './profilecreationmodal.css';
 
@@ -84,8 +85,12 @@ export const ProfileCreationModal = ({ profiles, onComplete, onCancel }) => {
   const isLastProfile = currentProfile === profiles.length - 1;
 
   return (
-    <div className="profile-creation-modal">
-      <div className="modal-content">
+    <PopupShell
+      onClose={onCancel}
+      closeDisabled={isLoading}
+      overlayClassName="profile-creation-modal"
+      panelClassName="modal-content"
+    >
         <h2>{t('profileCreationModal.title')}</h2>
         <p className="progress">
           {t('profileCreationModal.progress', { current: currentProfile + 1, total: profiles.length })}
@@ -161,8 +166,7 @@ export const ProfileCreationModal = ({ profiles, onComplete, onCancel }) => {
             </button>
           </div>
         </form>
-      </div>
-    </div>
+    </PopupShell>
   );
 };
 

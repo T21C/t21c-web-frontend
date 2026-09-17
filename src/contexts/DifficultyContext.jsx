@@ -3,7 +3,7 @@ import { routes } from '@/api/routes';
 /* eslint-disable react/prop-types */
 import { createContext, useState, useEffect, useContext, useRef } from "react";
 import api from "@/utils/api";
-import { selectIconSize } from "@/utils/Utility";
+import { ICON_SIZE, selectIconSize } from "@/utils/Utility";
 
 const DifficultyContext = createContext();
 
@@ -55,7 +55,7 @@ const DifficultyContextProvider = (props) => {
             }
             const normalizedDiffs = diffsArray.map((diff) => ({
                 ...diff,
-                icon: selectIconSize(diff.icon, "medium"),
+                icon: selectIconSize(diff.icon, ICON_SIZE.MEDIUM),
             }));
             if (update && normalizedDiffs.length) {
                 try {
@@ -103,7 +103,7 @@ const DifficultyContextProvider = (props) => {
             }
             const normalizedTypes = typesArray.map((type) => ({
                 ...type,
-                // icon: type.icon?.includes(".gif") ? type.icon : selectIconSize(type.icon, "small"),
+                icon: selectIconSize(type.icon, ICON_SIZE.SMALL),
             }));
             if (update && normalizedTypes.length) {
                 try {
@@ -151,7 +151,7 @@ const DifficultyContextProvider = (props) => {
             }
             const normalizedTags = tagsArray.map((tag) => ({
                 ...tag,
-                icon: selectIconSize(tag.icon, "small"),
+                icon: selectIconSize(tag.icon, ICON_SIZE.SMALL),
             }));
             if (update && normalizedTags.length) {
                 try {

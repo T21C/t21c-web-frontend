@@ -1,7 +1,7 @@
 import { routes } from '@/api/routes';
 // tuf-search: #EditLevelPopup #editLevelPopup #popups #levels #editLevel
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { Portal } from '@/components/common/Portal';
+import { PopupShell } from '@/components/common/PopupShell';
 import './editlevelpopup.css';
 import api from '@/utils/api';
 import { RatingInput } from '@/components/common/selectors';
@@ -14,8 +14,8 @@ import { UploadIcon, RefreshIcon } from '@/components/common/icons';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { TagManagementPopup } from './TagManagementPopup';
-import { isCdnUrl } from '@/utils/Utility';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { ICON_SIZE, isCdnUrl, selectIconSize } from '@/utils/Utility';
+import { useUnsavedClose } from '@/hooks/useUnsavedClose';
 import { useAuth } from '@/contexts/AuthContext';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { SongSelectorPopup } from '@/components/popups/Songs';
@@ -226,23 +226,10 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     showChartStatsPopup ||
     showXaccCurvePopup;
 
-  useEffect(() => {
-    const handleEsc = (e) => {
-      if (e.key !== 'Escape') {
-        return;
-      }
-      if (hasNestedPopupOpen) {
-        return;
-      }
-      handleClose();
-    };
-    window.addEventListener('keydown', handleEsc);
-    return () => {
-      window.removeEventListener('keydown', handleEsc);
-    };
-  }, [hasNestedPopupOpen, hasUnsavedChanges]);
-
-  useBodyScrollLock(true);
+  const { requestClose } = useUnsavedClose({
+    isDirty: hasUnsavedChanges,
+    onClose,
+  });
 
   const handleInputChange = (e) => {
     const { name, type, value, checked } = e.target;
@@ -445,16 +432,6 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     }
   };
 
-  const handleClose = () => {
-    if (hasUnsavedChanges) {
-      if (window.confirm(t('levelPopups.edit.confirmations.unsavedChanges'))) {
-        onClose();
-      }
-    } else {
-      onClose();
-    }
-  };
-
   const toggleMode = (e) => {
     e.stopPropagation();
     setIsHideMode(!isHideMode);
@@ -600,36 +577,30 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     setShowUploadManagement(true);
   };
 
-  const handleOverlayClick = (e) => {
-    if (hasNestedPopupOpen) {
-      return;
-    }
-    if (e.target === e.currentTarget) {
-      handleClose();
-    }
-  };
-
-  const handleContentClick = (e) => {
-    e.stopPropagation();
-  };
+  const overlayClassName = `edit-level-popup-overlay${isRemotelySettled ? ' edit-level-popup-overlay--remotely-settled' : ''}`;
 
   if (isHydratingLevel) {
     return (
-      <Portal>
-        <div className={`edit-level-popup-overlay${isRemotelySettled ? ' edit-level-popup-overlay--remotely-settled' : ''}`} onClick={handleOverlayClick}>
-          <div className="edit-level-popup" onClick={handleContentClick}>
-            <div className="loader-shell loader-shell--fill">
-              <div className="loader loader-relative" />
-            </div>
-          </div>
+      <PopupShell
+        onClose={requestClose}
+        overlayClassName={overlayClassName}
+        panelClassName="edit-level-popup"
+      >
+        <div className="loader-shell loader-shell--fill">
+          <div className="loader loader-relative" />
         </div>
-      </Portal>
+      </PopupShell>
     );
   }
 
-  const popupContent = (
-    <div className={`edit-level-popup-overlay${isRemotelySettled ? ' edit-level-popup-overlay--remotely-settled' : ''}`} onClick={handleOverlayClick}>
-      <div className="edit-level-popup" onClick={handleContentClick}>
+  return (
+    <>
+    <PopupShell
+      onClose={requestClose}
+      closeDisabled={hasNestedPopupOpen || Boolean(reasonPrompt)}
+      overlayClassName={overlayClassName}
+      panelClassName="edit-level-popup"
+    >
         <div className="popup-header">
           <h2>{t('levelPopups.edit.title')}</h2>
           <div className="popup-actions">
@@ -651,7 +622,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
               variant="floating"
               onClick={(e) => {
                 e.stopPropagation();
-                handleClose();
+                requestClose();
               }}
               aria-label={t('levelPopups.edit.close')}
             />
@@ -872,7 +843,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                       title={tag.name}
                     >
                       {tag.icon ? (
-                        <img src={tag.icon} alt={tag.name} />
+                        <img src={selectIconSize(tag.icon, ICON_SIZE.SMALL)} alt={tag.name} />
                       ) : (
                         <span className="edit-level-popup__tag-icon-fallback">
                           {tag.name.charAt(0).toUpperCase()}
@@ -1107,7 +1078,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
             </div>
           </form>
         </div>
-      </div>
+    </PopupShell>
 
       {showAliasManagement && (
         <AliasManagementPopup
@@ -1191,12 +1162,6 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
           }}
         />
       )}
-    </div>
-  );
-
-  return (
-    <Portal>
-      {popupContent}
       <AdminReasonPrompt
         isOpen={reasonPrompt === 'delete' || reasonPrompt === 'hide'}
         title={
@@ -1226,6 +1191,6 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
           }
         }}
       />
-    </Portal>
+    </>
   );
 }; 

@@ -13,7 +13,7 @@ import { ArtistPopup } from "@/components/popups/Artists";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { EditIcon, SteamIcon, DownloadIcon, VideoLinkIcon, PassIcon, PackIcon, DragHandleIcon, MetronomeIcon, ChartIcon, TimeIcon, TUFHelperLiteOpenIcon } from "@/components/common/icons";
 import { LikeButton } from "@/components/common/buttons";
-import { clampFloat, formatCreatorDisplay } from "@/utils/Utility";
+import { clampFloat, formatCreatorDisplay, ICON_SIZE, selectIconSize } from "@/utils/Utility";
 import { getPrimaryVideoLink } from "@/utils/videoLink";
 import { ABILITIES, hasBit } from "@/utils/Abilities";
 import { permissionFlags } from "@/utils/UserPermissions";
@@ -253,7 +253,7 @@ const LevelCard = ({
 
   const renderDifficultyIcon = ({ showRating = showEstimatedDifficulty, showCuration = true, showBaseScore = true } = {}) => (
     <div className="img-wrapper">
-      <img src={difficultyDict[difficultyInfo?.id]?.icon} alt={difficultyInfo?.name || 'Difficulty icon'} className="difficulty-icon" />
+      <img src={selectIconSize(difficultyDict[difficultyInfo?.id]?.icon, ICON_SIZE.MEDIUM)} alt={difficultyInfo?.name || 'Difficulty icon'} className="difficulty-icon" />
       
       {showRating && level.rating?.averageDifficultyId && 
        difficultyDict[level.rating.averageDifficultyId]?.icon &&
@@ -261,7 +261,7 @@ const LevelCard = ({
        difficultyDict[level.diffId]?.name.includes("Q") && (
         <img 
           className="rating-icon"
-          src={difficultyDict[level.rating.averageDifficultyId]?.icon}
+          src={selectIconSize(difficultyDict[level.rating.averageDifficultyId]?.icon, ICON_SIZE.SMALL)}
           alt="Rating icon" 
         />
       )}
@@ -272,7 +272,7 @@ const LevelCard = ({
               key={slot.key ?? `${slot.typeId}-${idx}`}
               className={`curation-icon curation-icon--${idx + 1}`}
               style={{ '--idx': idx, '--curation-count': curationTypeIconSlots.length }}
-              src={slot.icon}
+              src={selectIconSize(slot.icon, ICON_SIZE.SMALL)}
               alt="Curation icon"
             />
         ))}
@@ -431,7 +431,7 @@ const LevelCard = ({
           >
             <TagConfidenceBar score={tag.score} show={Boolean(tag.isCommunity)}>
               {tag.icon ? (
-                <img src={tag.icon} alt={tag.name} />
+                <img src={selectIconSize(tag.icon, ICON_SIZE.SMALL)} alt={tag.name} />
               ) : (
                 <span className="level-tag-letter">{tag.name.charAt(0).toUpperCase()}</span>
               )}

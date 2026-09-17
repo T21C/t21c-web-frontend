@@ -1,13 +1,14 @@
 import { routes } from '@/api/routes';
 // tuf-search: #LevelSelectionPopup #levelSelectionPopup #popups #levels #levelSelection
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
 import './levelselectionpopup.css';
 import toast from 'react-hot-toast';
-import { formatCreatorDisplay } from '@/utils/Utility';
+import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import ZipLevelFilesList from '@/components/popups/Levels/ZipLevelFilesList/ZipLevelFilesList';
 import { CloseButton } from '@/components/common/buttons';
+import { PopupShell } from '@/components/common/PopupShell';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { normalizeLevelSearchQuery } from '@/utils/normalizeEntitySearchQuery';
 
@@ -50,37 +51,6 @@ const LevelSelectionPopup = ({
   const [inputValue, setInputValue] = useState('1');
   const [selectedZipKey, setSelectedZipKey] = useState(null);
   const [isConfirmingZip, setIsConfirmingZip] = useState(false);
-  const modalRef = useRef(null);
-
-  useEffect(() => {
-    if (!isOpen) {
-      return undefined;
-    }
-    const handleEscape = (event) => {
-      if (event.key !== 'Escape') {
-        return;
-      }
-      event.preventDefault();
-      event.stopPropagation();
-      onClose();
-    };
-    document.addEventListener('keydown', handleEscape, true);
-    return () => {
-      document.removeEventListener('keydown', handleEscape, true);
-    };
-  }, [isOpen, onClose]);
-
-  const handleBackdropClick = (e) => {
-    if (e.target !== e.currentTarget) {
-      return;
-    }
-    e.stopPropagation();
-    onClose();
-  };
-
-  const handleContentClick = (e) => {
-    e.stopPropagation();
-  };
 
   async function fetchLevels() {
     try {
@@ -211,12 +181,12 @@ const LevelSelectionPopup = ({
 
   if (zipPickerMode) {
     return (
-      <div className="level-selection-modal" onClick={handleBackdropClick}>
-        <div
-          className="level-selection-modal__content submission-zip-level-modal"
-          ref={modalRef}
-          onClick={handleContentClick}
-        >
+      <PopupShell
+        onClose={onClose}
+        closeDisabled={isConfirmingZip}
+        overlayClassName="level-selection-modal"
+        panelClassName="level-selection-modal__content submission-zip-level-modal"
+      >
           <CloseButton
             variant="floating"
             className="level-selection-modal__close-button"
@@ -251,18 +221,16 @@ const LevelSelectionPopup = ({
                 : t('levelSelectionPopup.zipPicker.confirm')}
             </button>
           </div>
-        </div>
-      </div>
+      </PopupShell>
     );
   }
 
   return (
-    <div className="level-selection-modal" onClick={handleBackdropClick}>
-      <div
-        className="level-selection-modal__content"
-        ref={modalRef}
-        onClick={handleContentClick}
-      >
+    <PopupShell
+      onClose={onClose}
+      overlayClassName="level-selection-modal"
+      panelClassName="level-selection-modal__content"
+    >
         <CloseButton
           variant="floating"
           className="level-selection-modal__close-button"
@@ -304,7 +272,7 @@ const LevelSelectionPopup = ({
                 <div className="level-selection-modal__level-card-wrapper">
                   <div className="level-selection-modal__img-wrapper">
                     <img
-                      src={difficultyDict[level.diffId]?.icon || '/default-difficulty-icon.png'}
+                      src={selectIconSize(difficultyDict[level.diffId]?.icon, ICON_SIZE.MEDIUM) || '/default-difficulty-icon.png'}
                       alt={difficultyDict[level.diffId]?.name || 'Difficulty icon'}
                       className="level-selection-modal__difficulty-icon"
                     />
@@ -369,8 +337,7 @@ const LevelSelectionPopup = ({
             </button>
           </div>
         )}
-      </div>
-    </div>
+    </PopupShell>
   );
 };
 

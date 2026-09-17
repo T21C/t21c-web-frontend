@@ -4,10 +4,9 @@ import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import api from '@/utils/api';
 import { routes } from '@/api/routes';
-import { Portal } from '@/components/common/Portal';
+import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
 import { CustomSelect } from '@/components/common/selectors';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { getRateLimitMessage } from '@/utils/rateLimitError';
 import './modReportPopup.css';
 
@@ -55,20 +54,11 @@ export default function ModReportPopup({ isOpen, mod, onClose }) {
   const [form, setForm] = useState(EMPTY_FORM);
   const [submitting, setSubmitting] = useState(false);
 
-  useBodyScrollLock(isOpen);
-
   useEffect(() => {
-    if (!isOpen) return undefined;
+    if (!isOpen) return;
     setForm(EMPTY_FORM);
     setSubmitting(false);
-    const onKey = (event) => {
-      if (event.key !== 'Escape' || submitting) return;
-      if (document.querySelector('.custom-select-menu')) return;
-      onClose?.();
-    };
-    document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
-  }, [isOpen, onClose, submitting]);
+  }, [isOpen]);
 
   const reasonOptions = useMemo(
     () =>
@@ -105,24 +95,16 @@ export default function ModReportPopup({ isOpen, mod, onClose }) {
   };
 
   return (
-    <Portal mount="documentBody">
-      <div className="mod-report-popup" role="presentation">
-        <button
-          type="button"
-          className="mod-report-popup__backdrop"
-          aria-label={t('buttons.cancel', { ns: 'common' })}
-          disabled={submitting}
-          onClick={() => {
-            if (!submitting) onClose?.();
-          }}
-        />
-        <form
-          className="mod-report-popup__panel"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="mod-report-popup-title"
-          onSubmit={submit}
-        >
+    <PopupShell
+      onClose={onClose}
+      closeDisabled={submitting}
+      overlayClassName="mod-report-popup"
+      panelClassName="mod-report-popup__panel"
+      ariaLabelledBy="mod-report-popup-title"
+      mount="documentBody"
+      when={isOpen}
+    >
+        <form onSubmit={submit}>
           <CloseButton
             variant="floating"
             onClick={onClose}
@@ -229,7 +211,6 @@ export default function ModReportPopup({ isOpen, mod, onClose }) {
             </button>
           </div>
         </form>
-      </div>
-    </Portal>
+    </PopupShell>
   );
 }

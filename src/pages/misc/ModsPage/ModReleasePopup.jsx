@@ -1,11 +1,10 @@
 // tuf-search: #ModReleasePopup
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Portal } from '@/components/common/Portal';
+import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
 import { ExternalLinkIcon } from '@/components/common/icons';
 import { CustomSelect } from '@/components/common/selectors';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import './modReleasePopup.css';
 
 const VERSION_MAX = 64;
@@ -82,25 +81,12 @@ export default function ModReleasePopup({ isOpen, release, onClose, onSubmit }) 
   const [submitting, setSubmitting] = useState(false);
   const [fileError, setFileError] = useState('');
 
-  useBodyScrollLock(isOpen);
-
   useEffect(() => {
     if (!isOpen) return;
     setForm(emptyForm(release, Boolean(release)));
     setSubmitting(false);
     setFileError('');
   }, [isOpen, release]);
-
-  useEffect(() => {
-    if (!isOpen) return undefined;
-    const onKey = (event) => {
-      if (event.key !== 'Escape' || submitting) return;
-      if (document.querySelector('.custom-select-menu')) return;
-      onClose?.();
-    };
-    document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
-  }, [isOpen, onClose, submitting]);
 
   const sourceOptions = useMemo(
     () => [
@@ -151,24 +137,16 @@ export default function ModReleasePopup({ isOpen, release, onClose, onSubmit }) 
   };
 
   return (
-    <Portal mount="documentBody">
-      <div className="mod-release-popup" role="presentation">
-        <button
-          type="button"
-          className="mod-release-popup__backdrop"
-          aria-label={t('buttons.cancel', { ns: 'common' })}
-          disabled={submitting}
-          onClick={() => {
-            if (!submitting) onClose?.();
-          }}
-        />
-        <form
-          className="mod-release-popup__panel"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="mod-release-popup-title"
-          onSubmit={submit}
-        >
+    <PopupShell
+      onClose={onClose}
+      closeDisabled={submitting}
+      overlayClassName="mod-release-popup"
+      panelClassName="mod-release-popup__panel"
+      ariaLabelledBy="mod-release-popup-title"
+      mount="documentBody"
+      when={isOpen}
+    >
+        <form onSubmit={submit}>
           <CloseButton
             variant="floating"
             onClick={onClose}
@@ -286,7 +264,6 @@ export default function ModReleasePopup({ isOpen, release, onClose, onSubmit }) 
             </button>
           </div>
         </form>
-      </div>
-    </Portal>
+    </PopupShell>
   );
 }

@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import DefaultAvatar from '@/components/common/icons/DefaultAvatar';
 import './useravatar.css';
-import { selectIconSize } from '@/utils/Utility';
+import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 
 /**
  * @param {{
@@ -25,8 +25,8 @@ const UserAvatar = ({
 
   useEffect(() => {
     switchedToFallbackRef.current = false;
-    const primary = selectIconSize(primaryUrl, 'small');
-    const fallback = selectIconSize(fallbackUrl, 'small');
+    const primary = selectIconSize(primaryUrl, ICON_SIZE.SMALL);
+    const fallback = selectIconSize(fallbackUrl, ICON_SIZE.SMALL);
     if (primary) {
       setImgSrc(primary);
     } else if (fallback && fallback !== 'none') {
@@ -37,8 +37,8 @@ const UserAvatar = ({
   }, [primaryUrl, fallbackUrl]);
 
   const handleImgError = () => {
-    const primary = selectIconSize(primaryUrl, 'small');
-    const fallback = selectIconSize(fallbackUrl, 'small');
+    const primary = selectIconSize(primaryUrl, ICON_SIZE.SMALL);
+    const fallback = selectIconSize(fallbackUrl, ICON_SIZE.SMALL);
     if (
       !switchedToFallbackRef.current &&
       primary &&

@@ -30,7 +30,7 @@ import { summarizePackSize, summarizeFolderSize, summarizePackClears, formatEsti
 import { curationTypeCountsFromPackItems } from '@/utils/packCurationTypeCounts';
 import { DragDropContext, Droppable } from '@hello-pangea/dnd';
 import i18next from 'i18next';
-import { formatDate } from '@/utils/Utility';
+import { formatDate, ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { validatePackLevelInsert, executePackLevelInsert } from '@/utils/packLevelInsert';
 
 const ROOT_DROPPABLE_ID = 'folder-root';
@@ -1244,7 +1244,7 @@ const PackDetailPage = () => {
               <div className="icon">
                 {pack.iconUrl ? (
                   <img 
-                    src={pack.iconUrl} 
+                    src={selectIconSize(pack.iconUrl, ICON_SIZE.MEDIUM)} 
                     alt={pack.name}
                     className="icon-img"
                   />

@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
-import { formatDate } from '@/utils/Utility';
+import { formatDate, ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { getArtistDisplayName, getSongDisplayName } from '@/utils/levelHelpers';
 import api from '@/utils/api';
 import { MetaTags } from '@/components/common/display';
@@ -128,7 +128,7 @@ function ProfileStandingRow({ placement, t }) {
   return (
     <div className="tournament-detail-page__standing-row is-profile">
       {tier?.iconUrl ? (
-        <img className="tournament-detail-page__tier-icon" src={tier.iconUrl} alt="" />
+        <img className="tournament-detail-page__tier-icon" src={selectIconSize(tier.iconUrl, ICON_SIZE.SMALL)} alt="" />
       ) : (
         <span
           className="tournament-detail-page__tier-swatch"
@@ -159,7 +159,7 @@ function LevelStandingRow({ placement, t }) {
       {diffIcon ? (
         <img
           className="tournament-detail-page__diff-icon"
-          src={diffIcon}
+          src={selectIconSize(diffIcon, ICON_SIZE.SMALL)}
           alt=""
           referrerPolicy="no-referrer"
         />
@@ -179,7 +179,7 @@ function LevelStandingRow({ placement, t }) {
   return (
     <div className="tournament-detail-page__standing-row is-level">
       {tier?.iconUrl ? (
-        <img className="tournament-detail-page__tier-icon" src={tier.iconUrl} alt="" />
+        <img className="tournament-detail-page__tier-icon" src={selectIconSize(tier.iconUrl, ICON_SIZE.SMALL)} alt="" />
       ) : (
         <span
           className="tournament-detail-page__tier-swatch"
@@ -342,7 +342,7 @@ const TournamentDetailPage = () => {
         <header className="tournament-detail-page__header">
           {tournament.iconUrl ? (
             <div className="tournament-detail-page__icon">
-              <img src={tournament.iconUrl} alt="" />
+              <img src={selectIconSize(tournament.iconUrl, ICON_SIZE.MEDIUM)} alt="" />
             </div>
           ) : null}
           <div className="tournament-detail-page__header-body">
@@ -472,7 +472,7 @@ const TournamentDetailPage = () => {
                     style={group.tier?.color ? { color: group.tier.color } : undefined}
                   >
                     {group.tier?.iconUrl ? (
-                      <img src={group.tier.iconUrl} alt="" className="tournament-detail-page__tier-icon" />
+                      <img src={selectIconSize(group.tier.iconUrl, ICON_SIZE.SMALL)} alt="" className="tournament-detail-page__tier-icon" />
                     ) : null}
                     {group.tier?.label || group.tier?.code || t('tournamentDetail.untiered')}
                   </h3>

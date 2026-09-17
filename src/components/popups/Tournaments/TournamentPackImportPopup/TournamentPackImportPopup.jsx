@@ -6,7 +6,7 @@ import api from "@/utils/api";
 import { routes } from "@/api/routes";
 import { CloseButton } from "@/components/common/buttons";
 import { PackRefSelect } from "@/components/common/selectors";
-import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
+import { PopupShell } from "@/components/common/PopupShell";
 import "./tournamentpackimportpopup.css";
 
 const EMPTY_DIFF = { adds: [], removes: [], diverged: [] };
@@ -16,8 +16,6 @@ const TournamentPackImportPopup = ({ tournamentId, onClose, onImported }) => {
   const [packRef, setPackRef] = useState("");
   const [diff, setDiff] = useState(null);
   const [loading, setLoading] = useState(false);
-
-  useBodyScrollLock(true);
 
   const runDiff = async () => {
     const ref = packRef.trim();
@@ -68,12 +66,6 @@ const TournamentPackImportPopup = ({ tournamentId, onClose, onImported }) => {
     }
   };
 
-  const handleBackdropClick = (e) => {
-    if (e.target.classList.contains("tournament-pack-import-popup")) {
-      onClose();
-    }
-  };
-
   const renderDiffList = (items, emptyKey) => {
     if (!items.length) {
       return <p className="tournament-pack-import-popup__diff-empty">{t(emptyKey)}</p>;
@@ -90,14 +82,12 @@ const TournamentPackImportPopup = ({ tournamentId, onClose, onImported }) => {
   };
 
   return (
-    <div className="tournament-pack-import-popup" onClick={handleBackdropClick}>
-      <div
-        className="tournament-pack-import-popup__content"
-        onClick={(e) => e.stopPropagation()}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="tournament-pack-import-popup-title"
-      >
+    <PopupShell
+      onClose={onClose}
+      overlayClassName="tournament-pack-import-popup"
+      panelClassName="tournament-pack-import-popup__content"
+      ariaLabelledBy="tournament-pack-import-popup-title"
+    >
         <div className="tournament-pack-import-popup__header">
           <div>
             <h2 id="tournament-pack-import-popup-title" className="tournament-pack-import-popup__title">
@@ -171,8 +161,7 @@ const TournamentPackImportPopup = ({ tournamentId, onClose, onImported }) => {
             {t("buttons.cancel", { ns: "common" })}
           </button>
         </div>
-      </div>
-    </div>
+    </PopupShell>
   );
 };
 

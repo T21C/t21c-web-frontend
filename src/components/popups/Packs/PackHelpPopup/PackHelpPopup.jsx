@@ -1,7 +1,8 @@
 // tuf-search: #PackHelpPopup #packHelpPopup #popups #packs #packHelp
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import './packhelppopup.css';
 import { useTranslation } from 'react-i18next';
+import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
 
 /**
@@ -27,33 +28,13 @@ import { CloseButton } from '@/components/common/buttons';
  */
 export const PackHelpPopup = ({ onClose }) => {
   const { t } = useTranslation(['components']);
-  const popupRef = useRef(null);
-
-  useEffect(() => {
-    const handleEscapeKey = (event) => {
-      if (event.key === 'Escape') {
-        onClose();
-      }
-    };
-
-    const handleClickOutside = (event) => {
-      if (popupRef.current && !popupRef.current.contains(event.target)) {
-        onClose();
-      }
-    };
-
-    document.addEventListener('keydown', handleEscapeKey);
-    document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('keydown', handleEscapeKey);
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [onClose]);
 
   return (
-    <div className="pack-help-popup-overlay">
-      <div className="pack-help-popup" ref={popupRef}>
+    <PopupShell
+      onClose={onClose}
+      overlayClassName="pack-help-popup-overlay"
+      panelClassName="pack-help-popup"
+    >
         <CloseButton
           variant="floating"
           onClick={onClose}
@@ -117,7 +98,6 @@ export const PackHelpPopup = ({ onClose }) => {
             </ul>
           </section>
         </div>
-      </div>
-    </div>
+    </PopupShell>
   );
 };

@@ -2,10 +2,11 @@ import { routes } from '@/api/routes';
 // tuf-search: #AdminLevelXaccCurvePopup #xaccCurve #levels #admin
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Portal } from '@/components/common/Portal';
+import { PopupShell } from '@/components/common/PopupShell';
 import './adminlevelxacccurvepopup.css';
 import api from '@/utils/api';
 import { CloseButton } from '@/components/common/buttons';
+import { useUnsavedClose } from '@/hooks/useUnsavedClose';
 import toast from 'react-hot-toast';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { ScoreV2Graph } from '@/components/common/display/ScoreV2Graph/ScoreV2Graph';
@@ -209,8 +210,6 @@ export const AdminLevelXaccCurvePopup = ({
     missesY: initial.missesY ?? 0,
   }));
   const pinInputFocusRef = useRef(new Set());
-  const panelRef = useRef(null);
-  const pointerDownOutsideRef = useRef(false);
   const lastValidCurveRef = useRef({
     poleOffset: initialCurve.poleOffset,
     topMultiplier: initialCurve.topMultiplier,
@@ -341,15 +340,10 @@ export const AdminLevelXaccCurvePopup = ({
     [pinAccX, pinAccY, pinScoreX, pinScoreY, changeBaseline],
   );
 
-  const requestClose = useCallback(() => {
-    if (
-      hasChanges &&
-      !window.confirm(t('levelPopups.edit.confirmations.unsavedChanges'))
-    ) {
-      return;
-    }
-    onClose();
-  }, [hasChanges, onClose, t]);
+  const { requestClose } = useUnsavedClose({
+    isDirty: hasChanges,
+    onClose,
+  });
 
   /** Keep site E/G on mount, after reset, until the user moves a pin control. */
   const lockSiteDefaultCurve = saveAsDefaults || (usesSiteDefaults && !pinEdits);
@@ -598,45 +592,16 @@ export const AdminLevelXaccCurvePopup = ({
   }, [pinAccX, pinAccY, pinScoreX, pinScoreY]);
 
   useEffect(() => {
+    if (openPassPickerPin == null) return undefined;
     const onEsc = (e) => {
-      if (e.key !== 'Escape') {
-        return;
-      }
-      if (openPassPickerPin != null) {
-        setOpenPassPickerPin(null);
-        return;
-      }
-      requestClose();
+      if (e.key !== 'Escape') return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      setOpenPassPickerPin(null);
     };
-    window.addEventListener('keydown', onEsc);
-    return () => window.removeEventListener('keydown', onEsc);
-  }, [requestClose, openPassPickerPin]);
-
-  useEffect(() => {
-    const onMouseDown = (e) => {
-      const panel = panelRef.current;
-      pointerDownOutsideRef.current = Boolean(
-        panel && !panel.contains(e.target),
-      );
-    };
-    const onMouseUp = (e) => {
-      const panel = panelRef.current;
-      if (
-        pointerDownOutsideRef.current &&
-        panel &&
-        !panel.contains(e.target)
-      ) {
-        requestClose();
-      }
-      pointerDownOutsideRef.current = false;
-    };
-    document.addEventListener('mousedown', onMouseDown);
-    document.addEventListener('mouseup', onMouseUp);
-    return () => {
-      document.removeEventListener('mousedown', onMouseDown);
-      document.removeEventListener('mouseup', onMouseUp);
-    };
-  }, [requestClose]);
+    document.addEventListener('keydown', onEsc, true);
+    return () => document.removeEventListener('keydown', onEsc, true);
+  }, [openPassPickerPin]);
 
   useEffect(() => {
     if (!level?.id) {
@@ -1218,13 +1183,14 @@ export const AdminLevelXaccCurvePopup = ({
   }, [pinMissContext]);
 
   const content = (
-    <div className="admin-level-xacc-curve-popup">
-      <div
-        ref={panelRef}
-        className="admin-level-xacc-curve-popup__panel"
-        role="dialog"
-        aria-labelledby="admin-xacc-curve-title"
-      >
+    <PopupShell
+      onClose={requestClose}
+      closeDisabled={saving}
+      dismissOnEscape={openPassPickerPin == null}
+      overlayClassName="admin-level-xacc-curve-popup"
+      panelClassName="admin-level-xacc-curve-popup__panel"
+      ariaLabelledBy="admin-xacc-curve-title"
+    >
         <div className="admin-level-xacc-curve-popup__header">
           <h2 id="admin-xacc-curve-title">
             {sandbox
@@ -1551,9 +1517,8 @@ export const AdminLevelXaccCurvePopup = ({
             </button>
           </div>
         </form>
-      </div>
-    </div>
+    </PopupShell>
   );
 
-  return <Portal>{content}</Portal>;
+  return content;
 };

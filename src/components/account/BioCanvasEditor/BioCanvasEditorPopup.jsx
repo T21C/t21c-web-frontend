@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Portal } from "@/components/common/Portal";
+import { PopupShell } from "@/components/common/PopupShell";
 import { Tooltip } from "react-tooltip";
-import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 import { CloseButton } from "@/components/common/buttons";
 import BioCanvasEditor from "./BioCanvasEditor";
 import { useBioCanvasEditor } from "./useBioCanvasEditor";
@@ -41,8 +40,6 @@ export default function BioCanvasEditorPopup({
     isOpen,
     snapshotAtOpen: snapshotAtOpenRef.current,
   });
-
-  useBodyScrollLock(isOpen);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -106,10 +103,12 @@ export default function BioCanvasEditorPopup({
   if (!isOpen) return null;
 
   return (
-    <Portal>
-    <div className="bio-canvas-editor-popup" role="presentation">
-      <button type="button" className="bio-canvas-editor-popup__backdrop" aria-label="Close" onClick={handleClose} />
-      <div className="bio-canvas-editor-popup__panel" role="dialog" aria-modal="true">
+    <PopupShell
+      onClose={handleClose}
+      overlayClassName="bio-canvas-editor-popup"
+      panelClassName="bio-canvas-editor-popup__panel"
+      when={isOpen}
+    >
         <div className="bio-canvas-editor-popup__head">
           <h2 className="bio-canvas-editor-popup__title">
             {t("settings.bioCanvas.title", { defaultValue: "Bio canvas editor" })}
@@ -167,9 +166,7 @@ export default function BioCanvasEditorPopup({
             {t("settings.bioCanvas.save", { defaultValue: "Save canvas" })}
           </button>
         </div>
-      </div>
-    </div>
-    </Portal>
+    </PopupShell>
   );
 }
 

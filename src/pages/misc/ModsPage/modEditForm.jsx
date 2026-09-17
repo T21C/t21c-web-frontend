@@ -1,5 +1,6 @@
 // tuf-search: #modEditForm
 import toast from 'react-hot-toast';
+import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { CustomSelect } from '@/components/common/selectors';
 import { getRateLimitMessage } from '@/utils/rateLimitError';
 import { fromDatetimeLocalValue } from './ModReleasePopup';
@@ -123,7 +124,7 @@ function ModIconRow({ previewUrl, name, disabled, onChange, onRemove, t }) {
   return (
     <div className="mods-page__icon-row">
       {previewUrl ? (
-        <img className="mods-page__icon-preview" src={previewUrl} alt="" />
+        <img className="mods-page__icon-preview" src={selectIconSize(previewUrl, ICON_SIZE.MEDIUM)} alt="" />
       ) : (
         <span className="mods-page__icon-preview mods-page__icon-preview--fallback" aria-hidden>
           {initial}

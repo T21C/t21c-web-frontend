@@ -1,6 +1,5 @@
 // tuf-search: #LevelDownloadPopup #levelDownloadPopup #popups #levels #levelDownload
-import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import React, { useState, useEffect, useMemo } from 'react';
 import './LevelDownloadPopup.css';
 import EnhancedSelect from './EnhancedSelect';
 import { Tooltip } from 'react-tooltip';
@@ -8,7 +7,7 @@ import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 import { CloseButton } from '@/components/common/buttons';
-import { Portal } from '@/components/common/Portal';
+import { PopupShell } from '@/components/common/PopupShell';
 import { formatFileSize } from '@/utils/zipUtils';
 import { navigateExternal } from '@/utils/externalNavigationGate';
 
@@ -39,7 +38,6 @@ const LevelDownloadPopup = ({
         dropFilters: []
     });
 
-    const popupRef = useRef(null);
     const fileId = fileIdProp || (typeof dlLink === 'string' ? dlLink.split('/').pop() : null);
 
     // Download popup consumes `transformOptions` and `metadata` that the level
@@ -64,38 +62,6 @@ const LevelDownloadPopup = ({
     }, [availableOptions]);
 
     const canConvertV2 = Number(availableOptions?.version) >= 18;
-
-    useBodyScrollLock(true);
-
-    useEffect(() => {
-        const handleEscapeKey = (event) => {
-            if (event.key === 'Escape') {
-                onClose();
-            }
-        };
-
-        const handleClickOutside = (event) => {
-            // Check if click is on a dropdown
-            const isDropdownClick = event.target.closest('.enhanced-select-dropdown');
-            if (isDropdownClick) return;
-
-            // Check if click is on a select header
-            const isSelectHeaderClick = event.target.closest('.enhanced-select-header');
-            if (isSelectHeaderClick) return;
-
-            if (popupRef.current && !popupRef.current.contains(event.target)) {
-                onClose();
-            }
-        };
-
-        document.addEventListener('keydown', handleEscapeKey);
-        document.addEventListener('mousedown', handleClickOutside);
-
-        return () => {
-            document.removeEventListener('keydown', handleEscapeKey);
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, [onClose]);
 
     useEffect(() => {
         if (!availableOptions) return;
@@ -174,9 +140,12 @@ const LevelDownloadPopup = ({
     if (!isOpen) return null;
     
     return (
-        <Portal when={isOpen}>
-        <div className="level-download-popup">
-            <div className="level-download-content" ref={popupRef}>
+        <PopupShell
+            onClose={onClose}
+            overlayClassName="level-download-popup"
+            panelClassName="level-download-content"
+            when={isOpen}
+        >
                 <CloseButton
                     variant="floating"
                     onClick={onClose}
@@ -390,9 +359,7 @@ const LevelDownloadPopup = ({
                         </div>
                     </div>
                 )}
-            </div>
-        </div>
-        </Portal>
+        </PopupShell>
     );
 };
 

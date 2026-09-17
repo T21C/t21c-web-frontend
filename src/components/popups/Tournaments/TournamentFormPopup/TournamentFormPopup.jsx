@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 import { CloseButton } from "@/components/common/buttons";
+import { PopupShell } from "@/components/common/PopupShell";
 import TournamentFormFields from "../TournamentFormFields/TournamentFormFields";
 import { emptyTournamentForm } from "../tournamentFormUtils";
 import "./tournamentFormPopup.css";
@@ -24,12 +25,6 @@ const TournamentFormPopup = ({
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleBackdropClick = (e) => {
-    if (e.target.classList.contains("tournament-form-popup")) {
-      onClose();
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.shortName.trim()) {
@@ -48,14 +43,12 @@ const TournamentFormPopup = ({
   };
 
   return (
-    <div className="tournament-form-popup" onClick={handleBackdropClick}>
-      <div
-        className="tournament-form-popup__content"
-        onClick={(e) => e.stopPropagation()}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="tournament-form-popup-title"
-      >
+    <PopupShell
+      onClose={onClose}
+      overlayClassName="tournament-form-popup"
+      panelClassName="tournament-form-popup__content"
+      ariaLabelledBy="tournament-form-popup-title"
+    >
         <div className="tournament-form-popup__header">
           <h2 id="tournament-form-popup-title" className="tournament-form-popup__title">
             {t("tournamentManagement.newTournament")}
@@ -98,8 +91,7 @@ const TournamentFormPopup = ({
             </button>
           </div>
         </form>
-      </div>
-    </div>
+    </PopupShell>
   );
 };
 

@@ -1,6 +1,7 @@
 // tuf-search: #RulePopup #rulePopup #submissions #passSubmission
 import { CheckmarkIcon, CrossedPhoneIcon, CrossIcon } from "@/components/common/icons";
 import { useTranslation } from "react-i18next";
+import { PopupShell } from "@/components/common/PopupShell";
 
 import "./RulePopup.css";
 import strict from "@/assets/icons/Strict.png"
@@ -10,8 +11,11 @@ import lenient from "@/assets/icons/Lenient.png"
 const RulePopup = ({ setShowRulesPopup }) => {
   const { t } = useTranslation('components');
 return (
-    <div className="pass-rules-popup rules-popup-overlay" onClick={() => setShowRulesPopup(false)}>
-      <div className="rules-popup" onClick={(e) => e.stopPropagation()}>
+    <PopupShell
+      onClose={() => setShowRulesPopup(false)}
+      overlayClassName="pass-rules-popup rules-popup-overlay"
+      panelClassName="rules-popup"
+    >
         <div className="rules-popup-header">
           <h2>{t('passSubmissionRules.title')}</h2>
           <button 
@@ -148,8 +152,7 @@ return (
             <p><strong>Note:</strong> {t('passSubmissionRules.footer.note')}</p>
           </div>
         </div>
-        </div>
-      </div>
+    </PopupShell>
   );
 };
 

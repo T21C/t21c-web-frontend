@@ -1,7 +1,6 @@
 // tuf-search: #WebAdofaiViewerButton #webAdofai #levelDetail
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Portal } from "@/components/common/Portal";
-import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
+import { PopupShell } from "@/components/common/PopupShell";
 import "./webadofaiviewerbutton.css";
 
 const WEB_ADOFAI_LEVEL_URL = "https://web-adofai.impl1113.dev/levels";
@@ -16,24 +15,9 @@ const WebAdofaiViewerButton = ({ levelId }) => {
     return `${WEB_ADOFAI_LEVEL_URL}/${encodeURIComponent(levelId)}?embed=true`;
   }, [levelId]);
 
-  useBodyScrollLock(isOpen);
-
   useEffect(() => {
     setIsOpen(false);
   }, [levelId]);
-
-  useEffect(() => {
-    if (!isOpen) return undefined;
-
-    const handleKeyDown = (event) => {
-      if (event.key === "Escape") {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen]);
 
   useEffect(() => {
     if (!isOpen) return undefined;
@@ -54,35 +38,6 @@ const WebAdofaiViewerButton = ({ levelId }) => {
 
   if (!iframeSrc) return null;
 
-  const modal = isOpen ? (
-    <div
-      className="web-adofai-viewer-overlay"
-      role="presentation"
-      onMouseDown={(event) => {
-        if (event.target === event.currentTarget) {
-          setIsOpen(false);
-        }
-      }}
-    >
-      <section
-        className="web-adofai-viewer-dialog"
-        role="dialog"
-        aria-modal="true"
-        aria-label="Web ADOFAI level viewer"
-      >
-        <iframe
-          ref={iframeRef}
-          className="web-adofai-viewer-frame"
-          title="Web ADOFAI level viewer"
-          src={iframeSrc}
-          allow="autoplay; fullscreen"
-          referrerPolicy="strict-origin-when-cross-origin"
-          sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-downloads"
-        />
-      </section>
-    </div>
-  ) : null;
-
   return (
     <>
       <button
@@ -93,7 +48,24 @@ const WebAdofaiViewerButton = ({ levelId }) => {
       >
         Web ADOFAI
       </button>
-      <Portal when={isOpen}>{modal}</Portal>
+      {isOpen ? (
+        <PopupShell
+          onClose={() => setIsOpen(false)}
+          overlayClassName="web-adofai-viewer-overlay"
+          panelClassName="web-adofai-viewer-dialog"
+          ariaLabel="Web ADOFAI level viewer"
+        >
+          <iframe
+            ref={iframeRef}
+            className="web-adofai-viewer-frame"
+            title="Web ADOFAI level viewer"
+            src={iframeSrc}
+            allow="autoplay; fullscreen"
+            referrerPolicy="strict-origin-when-cross-origin"
+            sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-downloads"
+          />
+        </PopupShell>
+      ) : null}
     </>
   );
 };

@@ -10,6 +10,7 @@ import { formatAccuracyRatio } from "@/utils/statFormatters";
 import { UserAvatar } from "@/components/layout";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import { useAuth } from "@/contexts/AuthContext";
+import { ICON_SIZE, selectIconSize } from "@/utils/Utility";
 import { permissionFlags, hasFlag } from "@/utils/UserPermissions";
 import { isTufStellarAccessActive, normalizeTufStellarIconVariant } from "@/utils/profileBanners";
 import { CreatorIcon } from "@/components/common/icons/CreatorIcon";
@@ -230,7 +231,7 @@ const PlayerCard = ({ player, listIndex, onCreatorAssignmentClick, historical = 
             <div className="player-desc">
               {difficultyIcon ? (
                 <div className="difficulty-display">
-                  <img src={difficultyIcon} alt={primaryField.value} className="difficulty-icon" />
+                  <img src={selectIconSize(difficultyIcon, ICON_SIZE.MEDIUM)} alt={primaryField.value} className="difficulty-icon" />
                   <span>{primaryField.value}</span>
                 </div>
               ) : (

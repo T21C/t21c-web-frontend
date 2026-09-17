@@ -198,7 +198,8 @@
   cursor: not-allowed;
 }
 
-.mods-tags-page .mods-tags-page__modal {
+.mods-tags-page .mods-tags-page__modal,
+.mods-tags-page.mods-tags-page__modal {
   position: fixed;
   top: 0;
   left: 0;
@@ -211,7 +212,8 @@
   z-index: 1000;
 }
 
-.mods-tags-page .mods-tags-page__modal-content {
+.mods-tags-page .mods-tags-page__modal-content,
+.mods-tags-page.mods-tags-page__modal .mods-tags-page__modal-content {
   position: relative;
   background-color: var(--color-black);
   padding: 2rem;
@@ -236,7 +238,8 @@
 }
 
 .mods-tags-page .mods-tags-page__form,
-.mods-tags-page .mods-tags-page__modal-content {
+.mods-tags-page .mods-tags-page__modal-content,
+.mods-tags-page.mods-tags-page__modal .mods-tags-page__modal-content {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
