@@ -60,6 +60,15 @@
     "messages": {
       "ratingBanned": "你没有评级权限",
       "autorateSuccess": "自动评级成功"
+    },
+    "accuracy": {
+      "provisional": "暂定",
+      "specialCareer": "特殊 {{score}} · {{n}}",
+      "thisChart": "本关 {{score}}",
+      "modeQ": "{{settled}}",
+      "modeSpecial": "{{settled}} 特殊",
+      "modeRank": "{{center}} 精确",
+      "scoredAs": "按 {{value}} 计分"
     }
   },
   "ratingCard": {
@@ -128,6 +137,17 @@
           "special": "如果特殊评级（Censored、Impossible等）获得 4 票或更多投票，则会覆盖平均值",
           "ranges": "范围（如 U12~U14）在计入最终评分之前会进行平均",
           "order": "PGU 评分是根据难度顺序而非数值进行平均的"
+        }
+      },
+      "accuracy": {
+        "title": "评级准确度",
+        "description": "关卡确认后，每条评级会被冻结，并对照最终难度计分。",
+        "points": {
+          "q": "最终名称为 Q 区间（GQ/UQ）时，该区间内为平台分，再向邻近等级较缓衰减（τ = 3）。",
+          "rank": "最终名称为精确 PGU 等级时，使用以该等级为中心的拉普拉斯核（τ = 2）。",
+          "ranges": "G5~G8 这类范围是具名等级的平均值，范围越宽分数越低于精确命中。",
+          "freeze": "评级在确认时冻结。之后无法再改，避免知道结果后再刷准确度。",
+          "sort": "列表按收缩后的生涯均值排序，样本少的评级员不会排得过高。每行数字是原始百分比 · 样本数。"
         }
       },
       "filters": {

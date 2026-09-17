@@ -91,6 +91,7 @@
 
 .rating-input-wrapper.disabled {
   cursor: not-allowed;
+  pointer-events: none;
 }
 .rating-input-container.disabled {
   pointer-events: none;

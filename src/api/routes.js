@@ -109,6 +109,7 @@ export const routes = {
   admin: {
     statistics: () => '/v2/admin/statistics',
     statisticsRatingsPerUser: () => '/v2/admin/statistics/ratings-per-user',
+    statisticsRatingAccuracy: () => '/v2/admin/statistics/rating-accuracy',
     rating: () => '/v2/admin/rating',
     ratingById: (id) => `/v2/admin/rating/${enc(id)}`,
     ratingByLevelId: (levelId) => `/v2/admin/rating/by-level/${enc(levelId)}`,

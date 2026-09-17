@@ -2,6 +2,7 @@ import { routes } from '@/api/routes';
 // tuf-search: #RatingDetailPopup #ratingDetailPopup #popups #rating #ratingDetail
 import "./ratingdetailpopup.css";
 import { useEffect, useState, useRef, useCallback } from 'react';
+import { careerForDetail, compareAccuracyDetails } from '@/utils/ratingAccuracy';
 import { PopupShell } from '@/components/common/PopupShell';
 import { usePopupHistory } from '@/hooks/usePopupHistory';
 import { getVideoDetails } from "@/utils";
@@ -57,10 +58,12 @@ export const RatingDetailPopup = ({
   isSuperAdmin = false,
   enableReferences = true,
   showingConfirmed=false,
-  weeklyRaterActivity = []
+  weeklyRaterActivity = [],
+  ratingAccuracyStats: ratingAccuracyStatsProp,
 }) => {
   const currentUser = user;
   const { t } = useTranslation(['components', 'common']);
+  const isRatingLocked = Boolean(showingConfirmed || selectedRating?.confirmedAt);
 
   const { difficulties, difficultyDict } = useDifficultyContext();
   const [videoData, setVideoData] = useState(null);
@@ -83,6 +86,7 @@ export const RatingDetailPopup = ({
   const [isCommentFieldOpen, setIsCommentFieldOpen] = useState(false);
   const [showUnsavedDraftPrompt, setShowUnsavedDraftPrompt] = useState(false);
   const [hasSavedDraft, setHasSavedDraft] = useState(false);
+  const [fetchedAccuracyStats, setFetchedAccuracyStats] = useState([]);
 
   const detailsHydratedSeededRef = useRef(false);
   const seededRatingIdRef = useRef(null);
@@ -126,7 +130,7 @@ export const RatingDetailPopup = ({
     if (isAnimating) return; // Prevent closing during entry animation
 
     if (hasUnsavedChanges) {
-      if (showingConfirmed) {
+      if (showingConfirmed || selectedRating?.confirmedAt) {
         // Historical confirmed view: no draft persistence.
         if (window.confirm(t('rating.detailPopup.errors.unsavedChanges'))) {
           initiateClose();
@@ -137,14 +141,14 @@ export const RatingDetailPopup = ({
       return;
     }
     initiateClose();
-  }, [isAnimating, hasUnsavedChanges, showingConfirmed, t, initiateClose]);
+  }, [isAnimating, hasUnsavedChanges, showingConfirmed, selectedRating?.confirmedAt, t, initiateClose]);
 
   const handleCancelDraftPrompt = useCallback(() => {
     setShowUnsavedDraftPrompt(false);
   }, []);
 
   const handleSaveDraftAndClose = useCallback(() => {
-    if (!showingConfirmed && currentUser?.id && selectedRating?.id) {
+    if (!showingConfirmed && !selectedRating?.confirmedAt && currentUser?.id && selectedRating?.id) {
       setRatingDraft(currentUser.id, selectedRating.id, {
         rating: pendingRating,
         comment: pendingComment,
@@ -154,6 +158,7 @@ export const RatingDetailPopup = ({
     initiateClose();
   }, [
     showingConfirmed,
+    selectedRating?.confirmedAt,
     currentUser?.id,
     selectedRating?.id,
     pendingRating,
@@ -163,12 +168,12 @@ export const RatingDetailPopup = ({
   ]);
 
   const handleDiscardDraftAndClose = useCallback(() => {
-    if (!showingConfirmed && currentUser?.id && selectedRating?.id) {
+    if (!showingConfirmed && !selectedRating?.confirmedAt && currentUser?.id && selectedRating?.id) {
       clearRatingDraft(currentUser.id, selectedRating.id);
     }
     draftViewDurationRef.current = 0;
     initiateClose();
-  }, [showingConfirmed, currentUser?.id, selectedRating?.id, initiateClose]);
+  }, [showingConfirmed, selectedRating?.confirmedAt, currentUser?.id, selectedRating?.id, initiateClose]);
 
   // One history entry per open cycle; cleaned up on Back or programmatic close.
   // Must not re-push when `selectedRating` object identity changes (SSE / parent re-renders).
@@ -249,7 +254,7 @@ export const RatingDetailPopup = ({
       let nextRating = rating;
       let nextComment = comment;
       let restoredDraft = false;
-      if (!showingConfirmed && currentUser?.id) {
+      if (!showingConfirmed && !selectedRating?.confirmedAt && currentUser?.id) {
         const draft = getRatingDraft(currentUser.id, selectedRating.id);
         if (
           draft &&
@@ -306,11 +311,31 @@ export const RatingDetailPopup = ({
   }, [pendingRating, pendingComment, initialRating, initialComment]);
 
   useEffect(() => {
+    if (Array.isArray(ratingAccuracyStatsProp)) return undefined;
+    let cancelled = false;
+    api.get(routes.admin.statisticsRatingAccuracy())
+      .then(({ data }) => {
+        if (!cancelled) setFetchedAccuracyStats(data?.stats || []);
+      })
+      .catch((error) => {
+        console.error('Error fetching rating accuracy:', error);
+        if (!cancelled) setFetchedAccuracyStats([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [ratingAccuracyStatsProp, selectedRating?.id]);
+
+  useEffect(() => {
     const handleKeyPress = (event) => {
       // Check for Ctrl+Enter
       if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
         event.preventDefault();
-        if (!isSaving && ((hasUnsavedChanges && (!isCommentRequired || pendingComment.trim())) || (!pendingRating && initialRating))) {
+        if (
+          !isRatingLocked
+          && !isSaving
+          && ((hasUnsavedChanges && (!isCommentRequired || pendingComment.trim())) || (!pendingRating && initialRating))
+        ) {
           handleSaveChanges();
         }
       }
@@ -318,11 +343,11 @@ export const RatingDetailPopup = ({
 
     document.addEventListener('keydown', handleKeyPress);
     return () => document.removeEventListener('keydown', handleKeyPress);
-  }, [hasUnsavedChanges, isSaving, pendingRating, pendingComment, isCommentRequired, initialRating]);
+  }, [hasUnsavedChanges, isSaving, pendingRating, pendingComment, isCommentRequired, initialRating, isRatingLocked]);
 
 
   const runAutorate = async (ratingId) => {
-    if (isAutorating) return;
+    if (isAutorating || isRatingLocked) return;
     setIsAutorating(true);
     try {
       await api.post(routes.external.autorate(ratingId));
@@ -401,16 +426,24 @@ export const RatingDetailPopup = ({
     */
   };
 
-  // Split ratings into admin and community
-  const adminRatings = otherRatings.filter(r => !r.isCommunityRating);
-  const communityRatings = otherRatings.filter(r => r.isCommunityRating);
+  const ratingAccuracyStats = Array.isArray(ratingAccuracyStatsProp)
+    ? ratingAccuracyStatsProp
+    : fetchedAccuracyStats;
+
+  // Split ratings into admin and community, highest shrunk PGU accuracy first
+  const adminRatings = otherRatings
+    .filter(r => !r.isCommunityRating)
+    .sort((a, b) => compareAccuracyDetails(a, b, ratingAccuracyStats));
+  const communityRatings = otherRatings
+    .filter(r => r.isCommunityRating)
+    .sort((a, b) => compareAccuracyDetails(a, b, ratingAccuracyStats));
 
   const isAdminRater = () => {
     return user && (hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.RATER]));
   };
 
   const handleSaveChanges = async () => {
-    if (!selectedRating || !hasUnsavedChanges) return;
+    if (!selectedRating || !hasUnsavedChanges || isRatingLocked) return;
   
     setIsSaving(true);
     setSaveError(null);
@@ -501,6 +534,7 @@ export const RatingDetailPopup = ({
   };
 
   const handleDeleteRating = async (userId) => {
+    if (isRatingLocked) return;
     try {
       const response = await api.delete(`${routes.admin.rating()}/${selectedRating.id}/detail/${userId}`);
       
@@ -547,6 +581,8 @@ export const RatingDetailPopup = ({
               isSuperAdmin={isSuperAdmin}
               onDelete={handleDeleteRating}
               weeklyRaterActivity={weeklyRaterActivity}
+              career={careerForDetail(ratingDetail, ratingAccuracyStats)}
+              showingConfirmed={isRatingLocked}
             />
           ))}
         </div>
@@ -725,6 +761,7 @@ export const RatingDetailPopup = ({
                           showDiff={false}
                           difficulties={difficulties}
                           allowCustomInput={true}
+                          disabled={isRatingLocked}
                         />
                         {(pendingRating && difficulties.find(d => d.name === pendingRating)) && 
                           <img src={selectIconSize(difficulties.find(d => d.name === pendingRating)?.icon, ICON_SIZE.MEDIUM)} alt="" className="detail-value lv-icon" />}
@@ -746,6 +783,7 @@ export const RatingDetailPopup = ({
                       <textarea
                         value={pendingComment}
                         onChange={(e) => setPendingComment(e.target.value)}
+                        disabled={isRatingLocked}
                         style={{
                           borderColor: commentError ? 'red' : '',
                           backgroundColor: isCommentRequired && commentError ? 'rgba(255, 0, 0, 0.05)' : ''
@@ -753,6 +791,7 @@ export const RatingDetailPopup = ({
                         placeholder={t('rating.detailPopup.placeholders.communityComment')}
                       />
                     </div>
+                    {!isRatingLocked && (
                     <div className="save-button-container">
                       <button 
                         className={getSaveButtonClass()}
@@ -776,6 +815,7 @@ export const RatingDetailPopup = ({
                         {getSaveButtonText()}
                       </button>
                     </div>
+                    )}
                     {saveError && (
                       <div className="save-error-message">
                         {saveError}
@@ -789,7 +829,7 @@ export const RatingDetailPopup = ({
                     <label className="rating-field-label">
                       {showSecondRatings ? t('rating.detailPopup.labels.communityRatings') : t('rating.detailPopup.labels.adminRatings')}
                     </label>
-                    {isSuperAdmin && (
+                    {isSuperAdmin && !isRatingLocked && (
                       <button
                         type="button"
                         className={`autorater-icon-btn ${isAutorating ? 'autorater-icon--loading' : ''}`}

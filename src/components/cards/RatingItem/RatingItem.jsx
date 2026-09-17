@@ -10,9 +10,23 @@ import { CrownIcon } from '@/components/common/icons';
 import { Collapsible, CollapsibleContent } from '@/components/common/Collapsible';
 import { formatDate } from '@/utils/Utility';
 import { formatViewDuration } from '@/utils/viewDurationTracker';
+import {
+  RATING_ACCURACY_PROVISIONAL_N,
+  formatAccuracyScore,
+  accuracyModeLabel,
+  accuracyMappingLabel,
+} from '@/utils/ratingAccuracy';
+import { RatingAccuracyKernelChart } from '@/components/common/display/RatingAccuracyKernelChart/RatingAccuracyKernelChart';
 import i18next from 'i18next';
 
-export const RatingItem = ({ ratingDetail, isSuperAdmin, onDelete, weeklyRaterActivity = [] }) => {
+export const RatingItem = ({
+  ratingDetail,
+  isSuperAdmin,
+  onDelete,
+  weeklyRaterActivity = [],
+  career = null,
+  showingConfirmed = false,
+}) => {
     // Accept full rating detail object and extract fields from it
     const { rating, comment, createdAt, user, userId, isCommunityRating, ratedInZen, viewDurationSeconds } = ratingDetail || {};
     
@@ -49,11 +63,16 @@ export const RatingItem = ({ ratingDetail, isSuperAdmin, onDelete, weeklyRaterAc
             })
           : null;
 
+    const sample = ratingDetail?.accuracySample || null;
+    const pguN = career?.pguN ?? 0;
+    const isProvisional = pguN < RATING_ACCURACY_PROVISIONAL_N;
+    const canExpand = Boolean(comment) || (showingConfirmed && sample);
+
     return (
       <div className="rating-item-container">
         <div 
           className={`other-rating-item ${isExpanded ? 'expanded' : ''}`}
-          onClick={() => comment && setIsExpanded(!isExpanded)}
+          onClick={() => canExpand && setIsExpanded(!isExpanded)}
         >
           <div className="rating-item-header">
             <div className="rater-avatar-container">
@@ -70,15 +89,40 @@ export const RatingItem = ({ ratingDetail, isSuperAdmin, onDelete, weeklyRaterAc
                 </div>
               )}
             </div>
-            <span className="rater-name">{user?.username || user?.nickname}:</span>
-            <span className="rater-rating">{rating || ''}</span>
-            {ratedInZen && (
-              <span className="zen-mode-chip">
-                <span className="zen-mode-chip-text">
-                  {t('rating.detailPopup.zenModeChip')}
-                </span>
-              </span>
-            )}
+            <div className="rater-identity">
+              <div className="rater-identity-main">
+                <span className="rater-name">{user?.username || user?.nickname}:</span>
+                {rating ? <span className="rater-rating">{rating}</span> : null}
+                {ratedInZen && (
+                  <span className="zen-mode-chip">
+                    <span className="zen-mode-chip-text">
+                      {t('rating.detailPopup.zenModeChip')}
+                    </span>
+                  </span>
+                )}
+              </div>
+              {career && (
+                <div className="rater-accuracy">
+                  <span className={`rater-accuracy-career ${isProvisional ? 'is-provisional' : ''}`}>
+                    {formatAccuracyScore(career.pguRawMean)} · {pguN}
+                    {isProvisional && (
+                      <span className="rater-accuracy-provisional">
+                        {t('rating.detailPopup.accuracy.provisional', { defaultValue: 'provisional' })}
+                      </span>
+                    )}
+                  </span>
+                  {career.specialN > 0 && (
+                    <span className="rater-accuracy-special">
+                      {t('rating.detailPopup.accuracy.specialCareer', {
+                        score: formatAccuracyScore(career.specialRawMean),
+                        n: career.specialN,
+                        defaultValue: 'special {{score}} · {{n}}',
+                      })}
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
             {(createdAt || viewedSeconds > 0) && (
               <div className="rating-item-timestamps">
                 {createdAt && (
@@ -90,7 +134,7 @@ export const RatingItem = ({ ratingDetail, isSuperAdmin, onDelete, weeklyRaterAc
               </div>
             )}
             <div className="rating-item-icons">
-              {comment && (
+              {(comment || (showingConfirmed && sample)) && (
                 <div className="comment-icon">
                   <svg 
                     width="16" 
@@ -109,7 +153,7 @@ export const RatingItem = ({ ratingDetail, isSuperAdmin, onDelete, weeklyRaterAc
                   </svg>
                 </div>
               )}
-              {isSuperAdmin && (
+              {isSuperAdmin && !showingConfirmed && (
                 <div 
                   className="delete-icon"
                   onClick={handleDelete}
@@ -142,6 +186,27 @@ export const RatingItem = ({ ratingDetail, isSuperAdmin, onDelete, weeklyRaterAc
             <div className="rating-comment">
               <CommentFormatter>{comment}</CommentFormatter>
             </div>
+              </CollapsibleContent>
+            </Collapsible>
+          )}
+          {showingConfirmed && sample && (
+            <Collapsible open={isExpanded} onOpenChange={setIsExpanded} duration="0.3s" easing="ease">
+              <CollapsibleContent>
+                <div className="rating-accuracy-explain">
+                  <span className="rating-accuracy-explain__chip">
+                    {accuracyModeLabel(sample, t)}
+                  </span>
+                  <span className="rating-accuracy-explain__map">
+                    {accuracyMappingLabel(sample, t)}
+                  </span>
+                  <span className="rating-accuracy-explain__score">
+                    {t('rating.detailPopup.accuracy.thisChart', {
+                      score: formatAccuracyScore(sample.score),
+                      defaultValue: 'This chart {{score}}',
+                    })}
+                  </span>
+                  <RatingAccuracyKernelChart chart={sample.chart} />
+                </div>
               </CollapsibleContent>
             </Collapsible>
           )}

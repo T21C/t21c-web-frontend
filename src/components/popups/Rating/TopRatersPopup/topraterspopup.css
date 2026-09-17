@@ -9,7 +9,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
 }
 
 .top-raters-overlay .top-raters-popup {
@@ -18,7 +17,7 @@
   border-radius: 8px;
   padding: 20px;
   width: 90%;
-  max-width: 700px;
+  max-width: 840px;
   height: 85vh;
   display: flex;
   flex-direction: column;
@@ -106,6 +105,14 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+}
+
+.top-raters-overlay .date-input-group.sort-input-group {
+  flex: 0 0 auto;
+}
+
+.top-raters-overlay .date-input-group.sort-input-group .custom-select-container {
+  width: 12rem;
 }
 
 .top-raters-overlay .date-selection label {
@@ -298,9 +305,10 @@
   flex-direction: row;
   flex-wrap: wrap;
   gap: 8px;
-  min-width: 240px;
+  min-width: 330px;
 }
 
+.top-raters-overlay .rater-accuracy,
 .top-raters-overlay .total-ratings,
 .top-raters-overlay .average-per-day {
   display: flex;
@@ -313,7 +321,7 @@
   position: relative;
   overflow: hidden;
   flex: 1;
-  min-width: 100px;
+  min-width: 130px;
 }
 
 .top-raters-overlay .total-ratings,
@@ -321,6 +329,10 @@
   border-left: 3px solid var(--color-white-t20);
 }
 
+.top-raters-overlay .rater-accuracy {
+  border-left: 3px solid var(--color-purple-1);
+  cursor: help;
+}
 
 .top-raters-overlay .total-ratings.high-value {
   border-left: 3px solid var(--btn-success);
@@ -328,6 +340,16 @@
 
 .top-raters-overlay .average-per-day.high-value {
   border-left: 3px solid var(--btn-info);
+}
+
+.top-raters-overlay .rater-accuracy.has-value .stat-value {
+  color: var(--color-purple-1);
+  text-shadow: 0 0 8px color-mix(in srgb, var(--color-purple-1) 35%, transparent);
+}
+
+.top-raters-overlay .rater-accuracy.is-provisional .stat-value {
+  color: var(--warning-color);
+  text-shadow: 0 0 8px color-mix(in srgb, var(--warning-color) 35%, transparent);
 }
 
 .top-raters-overlay .total-ratings .stat-value,
@@ -359,17 +381,37 @@
   color: var(--color-white);
   font-weight: bold;
   font-size: 1.1em;
+  height: -webkit-fill-available;
+  align-content: center;
   position: relative;
 }
 
-/* Add hover effects for the stat containers */
+.top-raters-overlay .rater-accuracy-provisional {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--warning-color);
+}
+
+.top-raters-overlay .rater-accuracy-special {
+  font-size: 0.75em;
+  font-weight: 500;
+  color: var(--color-white-t70);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.top-raters-overlay .rater-accuracy:hover,
 .top-raters-overlay .total-ratings:hover,
 .top-raters-overlay .average-per-day:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  transition: all 0.2s ease;
+  background: linear-gradient(135deg, var(--color-white-t20) 0%, var(--color-white-t15) 100%);
 }
 
-/* Add top-raters-popup_pulse animation for high values */
+.top-raters-overlay .rater-accuracy.has-value:hover {
+  border-left-color: var(--color-purple-2);
+}
+
 .top-raters-overlay .total-ratings.top-value .stat-value,
 .top-raters-overlay .average-per-day.top-value .stat-value {
   animation: valuetop-raters-popup_pulse 2s infinite;
@@ -385,12 +427,14 @@
 }
 
 /* Add special styling for top performers */
+.top-raters-overlay .top-rater-entry.top-performer .rater-accuracy,
 .top-raters-overlay .top-rater-entry.top-performer .total-ratings,
 .top-raters-overlay .top-rater-entry.top-performer .average-per-day {
   background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 215, 0, 0.05) 100%);
   border-color: rgba(255, 215, 0, 0.3);
 }
 
+.top-raters-overlay .top-rater-entry.top-performer .rater-accuracy::before,
 .top-raters-overlay .top-rater-entry.top-performer .total-ratings::before,
 .top-raters-overlay .top-rater-entry.top-performer .average-per-day::before {
   background: linear-gradient(90deg, #FFD700, #FFA500);
@@ -510,6 +554,7 @@
     min-width: 0;
   }
   
+  .top-raters-overlay .rater-accuracy,
   .top-raters-overlay .total-ratings,
   .top-raters-overlay .average-per-day {
     flex: none;
@@ -540,6 +585,7 @@
     justify-content: stretch;
   }
 
+  .top-raters-overlay .rater-accuracy,
   .top-raters-overlay .total-ratings,
   .top-raters-overlay .average-per-day {
     flex: 1;
@@ -583,4 +629,15 @@
   font-size: 0.9em;
   min-width: 80px;
   text-align: center;
+}
+
+.top-raters-accuracy-tooltip {
+  z-index: 1100;
+  max-width: 16rem;
+}
+
+.top-raters-accuracy-tooltip .top-raters-accuracy-tooltip-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }

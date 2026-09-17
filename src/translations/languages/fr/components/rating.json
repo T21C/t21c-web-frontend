@@ -11,6 +11,15 @@
       "otherRatings": "Autres évaluations:"
     },
     "zenModeChip": "Zen Mode",
+    "accuracy": {
+      "provisional": "provisoire",
+      "specialCareer": "spécial {{score}} · {{n}}",
+      "thisChart": "Ce niveau {{score}}",
+      "modeQ": "{{settled}}",
+      "modeSpecial": "{{settled}} spécial",
+      "modeRank": "{{center}} précis",
+      "scoredAs": "Noté comme {{value}}"
+    },
     "buttons": {
       "saveChanges": "Enregistrer"
     },

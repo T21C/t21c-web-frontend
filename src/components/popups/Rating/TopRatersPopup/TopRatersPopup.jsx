@@ -1,5 +1,5 @@
 // tuf-search: #TopRatersPopup #topRatersPopup #popups #rating #topRaters
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { PopupShell } from '@/components/common/PopupShell';
 import './topraterspopup.css';
 import api from '@/utils/api';
@@ -11,8 +11,13 @@ import { userAvatarUrls } from '@/utils/playerAvatarDisplay';
 import { CrownIcon } from '@/components/common/icons';
 import { CloseButton } from '@/components/common/buttons';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/common/Collapsible';
+import { CustomSelect } from '@/components/common/selectors';
+import { Tooltip } from 'react-tooltip';
+import {
+  formatAccuracyScore,
+  RATING_ACCURACY_PROVISIONAL_N,
+} from '@/utils/ratingAccuracy';
 
-// Format numbers for better readability
 const formatNumber = (num) => {
   if (num >= 1000) {
     return (num / 1000).toFixed(1) + 'k';
@@ -27,9 +32,15 @@ const formatAverage = (avg) => {
 const TopRaterEntry = ({ rater, rank, averagePerDay }) => {
   const { t } = useTranslation('components');
 
-  // Determine visual indicators based on average per day
   const hasCircleOrnament = averagePerDay >= 5;
   const hasCrown = averagePerDay >= 15;
+  const pguN = Number(rater.pguN) || 0;
+  const specialN = Number(rater.specialN) || 0;
+  const isProvisional = pguN < RATING_ACCURACY_PROVISIONAL_N;
+  const accuracyValue = pguN > 0
+    ? formatAccuracyScore(rater.pguRawMean)
+    : formatAccuracyScore(null);
+  const tooltipId = `top-rater-accuracy-${rater.userId}`;
 
   return (
     <div className={`top-rater-entry ${hasCrown ? 'top-performer' : ''}`}>
@@ -56,6 +67,75 @@ const TopRaterEntry = ({ rater, rank, averagePerDay }) => {
         </div>
       </div>
       <div className="rater-stats">
+        <div
+          className={`rater-accuracy${pguN > 0 ? ' has-value' : ''}${isProvisional && pguN > 0 ? ' is-provisional' : ''}`}
+          data-tooltip-id={tooltipId}
+        >
+          <span className="stat-label">{t('topRaters.raterEntry.stats.accuracy')}</span>
+          <span className="stat-value">{accuracyValue}</span>
+          {isProvisional && pguN > 0 && (
+            <span className="rater-accuracy-provisional">
+              {t('rating.detailPopup.accuracy.provisional', { defaultValue: 'provisional' })}
+            </span>
+          )}
+          {specialN > 0 && (
+            <span className="rater-accuracy-special">
+              {t('topRaters.raterEntry.stats.special', {
+                score: formatAccuracyScore(rater.specialRawMean),
+                defaultValue: 'special {{score}}',
+              })}
+            </span>
+          )}
+          <Tooltip
+            id={tooltipId}
+            place="top"
+            noArrow
+            className="top-raters-accuracy-tooltip"
+          >
+            <div className="top-raters-accuracy-tooltip-body">
+              {pguN > 0 ? (
+                <>
+                  <span>
+                    {t('topRaters.raterEntry.tooltip.raw', {
+                      score: formatAccuracyScore(rater.pguRawMean),
+                      n: pguN,
+                      defaultValue: 'Raw {{score}} · {{n}}',
+                    })}
+                  </span>
+                  <span>
+                    {t('topRaters.raterEntry.tooltip.weighted', {
+                      score: formatAccuracyScore(rater.pguShrunkMean),
+                      defaultValue: 'Weighted {{score}} (ranking)',
+                    })}
+                  </span>
+                  {isProvisional && (
+                    <span>
+                      {t('topRaters.raterEntry.tooltip.provisional', {
+                        min: RATING_ACCURACY_PROVISIONAL_N,
+                        defaultValue: 'Provisional — under {{min}} scored charts',
+                      })}
+                    </span>
+                  )}
+                </>
+              ) : (
+                <span>
+                  {t('topRaters.raterEntry.tooltip.empty', {
+                    defaultValue: 'No scored PGU charts',
+                  })}
+                </span>
+              )}
+              {specialN > 0 && (
+                <span>
+                  {t('topRaters.raterEntry.tooltip.special', {
+                    score: formatAccuracyScore(rater.specialRawMean),
+                    n: specialN,
+                    defaultValue: 'Special {{score}} · {{n}}',
+                  })}
+                </span>
+              )}
+            </div>
+          </Tooltip>
+        </div>
         <div className={`total-ratings ${hasCircleOrnament ? 'high-value' : ''}`}>
           <span className="stat-label">{t('topRaters.stats.totalRatings')}</span>
           <span className="stat-value">{formatNumber(rater.ratingCount)}</span>
@@ -74,14 +154,13 @@ const TopRatersPopup = ({ onClose }) => {
 
   const [topRaters, setTopRaters] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [sortType, setSortType] = useState('accuracy');
   const [selectedStartDate, setSelectedStartDate] = useState(() => {
-    // Default to a week ago
     const date = new Date();
     date.setDate(date.getDate() - 7);
     return date.toISOString().split('T')[0];
   });
   const [selectedEndDate, setSelectedEndDate] = useState(() => {
-    // Default to today
     return new Date().toISOString().split('T')[0];
   });
   const [errorMessage, setErrorMessage] = useState('');
@@ -97,10 +176,28 @@ const TopRatersPopup = ({ onClose }) => {
     hasPrevPage: false
   });
 
+  const sortOptions = useMemo(() => [
+    { value: 'accuracy', label: t('topRaters.sort.accuracy') },
+    { value: 'count', label: t('topRaters.sort.count') },
+  ], [t]);
+
+  const selectedSortOption = useMemo(
+    () => sortOptions.find((option) => option.value === sortType),
+    [sortOptions, sortType]
+  );
+
   const fetchTopRaters = useCallback(async (page = 1) => {
     try {
       setIsLoading(true);
-      const response = await api.get(`${routes.admin.statisticsRatingsPerUser()}?startDate=${selectedStartDate}&endDate=${selectedEndDate}&page=${page}&limit=20`);
+      const response = await api.get(routes.admin.statisticsRatingsPerUser(), {
+        params: {
+          startDate: selectedStartDate,
+          endDate: selectedEndDate,
+          page,
+          limit: 20,
+          sort: sortType,
+        },
+      });
       
       const { 
         ratingsPerUser, 
@@ -112,12 +209,8 @@ const TopRatersPopup = ({ onClose }) => {
         hasNextPage, 
         hasPrevPage 
       } = response.data;
-      
-      // Sort raters by average per day (already calculated by the API)
-      const allRaters = ratingsPerUser
-        .sort((a, b) => b.averagePerDay - a.averagePerDay);
 
-      setTopRaters(allRaters);
+      setTopRaters(ratingsPerUser || []);
 
       setOverallStats({
         totalUsers: totalUsers,
@@ -138,7 +231,7 @@ const TopRatersPopup = ({ onClose }) => {
     } finally {
       setIsLoading(false);
     }
-  }, [selectedStartDate, selectedEndDate]);
+  }, [selectedStartDate, selectedEndDate, sortType]);
 
   useEffect(() => {
     fetchTopRaters(1);
@@ -205,6 +298,20 @@ const TopRatersPopup = ({ onClose }) => {
                       value={selectedEndDate}
                       onChange={handleEndDateChange}
                       className="date-input"
+                    />
+                  </div>
+                  <div className="date-input-group sort-input-group">
+                    <label htmlFor="top-raters-sort">{t('topRaters.sort.label')}</label>
+                    <CustomSelect
+                      inputId="top-raters-sort"
+                      options={sortOptions}
+                      value={selectedSortOption}
+                      onChange={(option) => {
+                        if (option?.value) setSortType(option.value);
+                      }}
+                      width="12rem"
+                      menuPlacement="bottom"
+                      isSearchable={false}
                     />
                   </div>
                 </div>
@@ -289,6 +396,23 @@ const TopRatersPopup = ({ onClose }) => {
       )}
     </PopupShell>
   );
+};
+
+TopRaterEntry.propTypes = {
+  rater: PropTypes.shape({
+    userId: PropTypes.string,
+    username: PropTypes.string,
+    nickname: PropTypes.string,
+    avatarUrl: PropTypes.string,
+    ratingCount: PropTypes.number,
+    pguRawMean: PropTypes.number,
+    pguN: PropTypes.number,
+    pguShrunkMean: PropTypes.number,
+    specialRawMean: PropTypes.number,
+    specialN: PropTypes.number,
+  }).isRequired,
+  rank: PropTypes.number.isRequired,
+  averagePerDay: PropTypes.number.isRequired,
 };
 
 TopRatersPopup.propTypes = {

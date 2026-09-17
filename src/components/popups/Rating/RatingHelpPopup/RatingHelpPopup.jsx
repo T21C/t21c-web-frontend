@@ -70,6 +70,18 @@ export const RatingHelpPopup = ({ onClose }) => {
           </section>
 
           <section>
+            <h3>{t('rating.helpPopup.sections.accuracy.title')}</h3>
+            <p>{t('rating.helpPopup.sections.accuracy.description')}</p>
+            <ul>
+              <li>{t('rating.helpPopup.sections.accuracy.points.q')}</li>
+              <li>{t('rating.helpPopup.sections.accuracy.points.rank')}</li>
+              <li>{t('rating.helpPopup.sections.accuracy.points.ranges')}</li>
+              <li>{t('rating.helpPopup.sections.accuracy.points.freeze')}</li>
+              <li>{t('rating.helpPopup.sections.accuracy.points.sort')}</li>
+            </ul>
+          </section>
+
+          <section>
             <h3>{t('rating.helpPopup.sections.filters.title')}</h3>
             <ul>
               <li><strong>{t('rating.helpPopup.sections.filters.myRated')}:</strong> {t('rating.helpPopup.sections.filters.myRatedDesc')}</li>

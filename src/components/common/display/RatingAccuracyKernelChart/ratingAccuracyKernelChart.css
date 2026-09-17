@@ -1,0 +1,31 @@
+/* tuf-search: #RatingAccuracyKernelChart #ratingAccuracy */
+.rating-accuracy-kernel-chart {
+  width: 100%;
+  min-height: 120px;
+}
+
+.rating-accuracy-kernel-chart .recharts-tooltip-wrapper {
+  outline: none;
+}
+
+.rating-accuracy-kernel-chart__tooltip {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  background: var(--color-black-t90);
+  border: 1px solid var(--color-white-t20);
+  border-radius: 8px;
+  padding: 0.4rem 0.55rem;
+  pointer-events: none;
+}
+
+.rating-accuracy-kernel-chart__tooltip-name {
+  color: var(--color-white);
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.rating-accuracy-kernel-chart__tooltip-k {
+  color: var(--color-purple-1);
+  font-size: 0.75rem;
+}
