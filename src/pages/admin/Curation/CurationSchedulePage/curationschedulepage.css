@@ -296,6 +296,21 @@
   background: rgba(0, 0, 0, 0.5);
 }
 
+.curation-schedule-page .curation-schedule-page__hall-item--unavailable {
+  border-color: var(--danger-color-tint-45);
+  opacity: 0.7;
+}
+
+.curation-schedule-page .curation-schedule-page__hall-item--unavailable:hover {
+  border-color: var(--danger-color);
+}
+
+.curation-schedule-page .curation-schedule-page__hall-unavailable {
+  color: var(--danger-color);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
 .curation-schedule-page__hall-position {
   position: absolute;
   top: -10px;
