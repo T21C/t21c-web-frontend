@@ -17,13 +17,14 @@ import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { CustomSelect, RatingInput } from '@/components/common/selectors';
 import { RatingItem } from '@/components/cards';
 import { CloseButton, ReferencesButton } from '@/components/common/buttons';
-import { CheckmarkIcon, EyeIcon, SkipIcon } from '@/components/common/icons';
+import { CheckmarkIcon, ChartIcon, EyeIcon, MetronomeIcon, SkipIcon, TimeIcon } from '@/components/common/icons';
+import { WebAdofaiViewerButton } from '@/components/popups/Levels';
 import { Tooltip } from 'react-tooltip';
 import { CommentFormatter } from '@/components/misc';
 import api from '@/utils/api';
 import { getVideoDetails } from '@/utils';
 import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from '@/utils/Utility';
-import { getSongDisplayName } from '@/utils/levelHelpers';
+import { formatAutoTilecountTooltip, formatDuration, getSongDisplayName } from '@/utils/levelHelpers';
 import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import toast from 'react-hot-toast';
 import { createViewDurationTracker } from '@/utils/viewDurationTracker';
@@ -940,6 +941,9 @@ const RatingZenPage = () => {
             onClick={handleExit}
             aria-label={t('rating.zen.exit')}
           />
+          {current.level?.id && current.level?.fileId ? (
+            <WebAdofaiViewerButton levelId={current.level.id} />
+          ) : null}
           <header className="rating-zen-page__bar">
             <div className="rating-zen-page__bar-main">
               <div className="rating-zen-page__bar-stats">
@@ -1123,6 +1127,57 @@ const RatingZenPage = () => {
                     <p className="rating-zen-page__creator">{formatCreatorDisplay(current.level)}</p>
                   </a>
                 </div>
+                {(current.level?.tilecount || current.level?.bpm || current.level?.levelLengthInMs) && (
+                  <div className="rating-zen-page__metadata">
+                    {!!current.level?.levelLengthInMs && (
+                      <div className="rating-zen-page__metadata-item">
+                        <TimeIcon size={18} />
+                        <span className="rating-zen-page__metadata-value">
+                          {formatDuration(current.level.levelLengthInMs)}
+                        </span>
+                      </div>
+                    )}
+                    {!!current.level?.tilecount && (() => {
+                      const autoTilecountTooltip = formatAutoTilecountTooltip(
+                        current.level.tilecount,
+                        current.level.autoTileCount,
+                        current.level.midspinCount,
+                      );
+                      const tilecountTooltipId = `rating-zen-tilecount-${current.level.id}`;
+                      return (
+                        <div
+                          className="rating-zen-page__metadata-item"
+                          {...(autoTilecountTooltip
+                            ? {
+                                'data-tooltip-id': tilecountTooltipId,
+                                'data-tooltip-content': autoTilecountTooltip,
+                              }
+                            : {})}
+                        >
+                          <ChartIcon size={18} />
+                          <span className="rating-zen-page__metadata-value">
+                            {current.level.tilecount}
+                          </span>
+                          {autoTilecountTooltip && (
+                            <Tooltip
+                              style={{ zIndex: 10, fontSize: '0.85rem', fontWeight: 500 }}
+                              id={tilecountTooltipId}
+                              place="bottom"
+                            />
+                          )}
+                        </div>
+                      );
+                    })()}
+                    {!!current.level?.bpm && (
+                      <div className="rating-zen-page__metadata-item">
+                        <MetronomeIcon size={18} />
+                        <span className="rating-zen-page__metadata-value">
+                          {current.level.bpm}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
                 {showRequestedRating && (current.level?.rerateNum || current.requesterFR) && (
                   <p className="rating-zen-page__request-rating">
                     {t(`components:rating.ratingCard.labels.${current.level?.rerateNum ? 'rerateNumber' : 'requestedRating'}`)}
