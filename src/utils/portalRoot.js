@@ -9,3 +9,24 @@ export function getPortalRoot(selector = '.body') {
   if (!body) return null;
   return body.querySelector(selector) ?? body;
 }
+
+const popupShellStack = [];
+
+/** Register an open PopupShell overlay node. Returns an unregister function. */
+export function registerPopupShell(el) {
+  if (!el) return () => {};
+  popupShellStack.push(el);
+  return () => {
+    const idx = popupShellStack.lastIndexOf(el);
+    if (idx !== -1) popupShellStack.splice(idx, 1);
+  };
+}
+
+/**
+ * Dropdowns / pickers that must paint above the current popup: mount inside that
+ * shell (same stacking context). Nested shells are later siblings, so they cover
+ * these floats. With no popup open, this is `.body` like getPortalRoot().
+ */
+export function getFloatPortalRoot() {
+  return popupShellStack[popupShellStack.length - 1] ?? getPortalRoot();
+}

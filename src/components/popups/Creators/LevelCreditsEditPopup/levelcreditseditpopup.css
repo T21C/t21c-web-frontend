@@ -1,12 +1,6 @@
 /* tuf-search: #LevelCreditsEditPopup #levelCreditsEditPopup #popups #creators */
 .level-credits-edit-popup-container.level-credits-edit-popup-overlay {
-  position: fixed;
-  inset: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
   -webkit-backdrop-filter: blur(2px);
   backdrop-filter: blur(2px);
   overflow-y: auto;

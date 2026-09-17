@@ -158,12 +158,6 @@
 }
 
 .tilecount-mismatch-modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 2100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   padding: 1rem;
   background-color: rgba(0, 0, 0, 0.8);
 }
@@ -208,12 +202,6 @@
 }
 
 .tag-warnings-modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 2100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   padding: 1rem;
   background-color: rgba(0, 0, 0, 0.8);
 }

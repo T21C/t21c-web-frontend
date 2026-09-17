@@ -7,7 +7,7 @@
   left: var(--profile-header-icon-panel-row-center, 0);
   min-width: var(--profile-header-icon-panel-min-width, 280px);
   transform: translateX(-50%);
-  z-index: 10050;
+  z-index: var(--z-popup);
   box-sizing: border-box;
 }
 
@@ -137,7 +137,7 @@
 }
 
 .profile-header__difficulty-grid-tooltip {
-  z-index: 10060;
+  z-index: var(--z-float);
   max-width: min(18rem, 90vw);
   background: var(--color-black-t85) !important;
   color: var(--color-white) !important;

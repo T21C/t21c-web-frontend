@@ -544,10 +544,6 @@
   background: var(--color-white-t15);
 }
 
-.developers-portal .image-selector-popup-overlay {
-  z-index: 1100;
-}
-
 .developers-portal__icon-row {
   display: flex;
   flex-wrap: wrap;

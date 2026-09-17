@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import './referencesbutton.css';
 import { ReferencesPopup } from '@/components/popups/Difficulties';
+import { Portal } from '@/components/common/Portal';
 import { useTranslation } from 'react-i18next';
 
 const ReferencesButton = ({ ...props }) => {
@@ -10,6 +11,7 @@ const ReferencesButton = ({ ...props }) => {
 
   return (
     <>
+      <Portal>
       <button
         className="references-button visible"
         onClick={() => setShowPopup(true)}
@@ -27,6 +29,7 @@ const ReferencesButton = ({ ...props }) => {
           <span className="button-text">{t('references.button.text')}</span>
         </span>
       </button>
+      </Portal>
       {showPopup && <ReferencesPopup onClose={() => setShowPopup(false)} />}
     </>
   );

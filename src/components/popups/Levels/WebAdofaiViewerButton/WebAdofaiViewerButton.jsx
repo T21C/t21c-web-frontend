@@ -1,6 +1,7 @@
 // tuf-search: #WebAdofaiViewerButton #webAdofai #levelDetail
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { PopupShell } from "@/components/common/PopupShell";
+import { Portal } from "@/components/common/Portal";
 import "./webadofaiviewerbutton.css";
 
 const WEB_ADOFAI_LEVEL_URL = "https://web-adofai.impl1113.dev/levels";
@@ -40,6 +41,7 @@ const WebAdofaiViewerButton = ({ levelId }) => {
 
   return (
     <>
+      <Portal>
       <button
         type="button"
         className="web-adofai-viewer-button"
@@ -48,6 +50,7 @@ const WebAdofaiViewerButton = ({ levelId }) => {
       >
         Web ADOFAI
       </button>
+      </Portal>
       {isOpen ? (
         <PopupShell
           onClose={() => setIsOpen(false)}

@@ -1,6 +1,6 @@
 // tuf-search: #usePortaledPanelAnchor #portaledPanel
 import { useCallback, useEffect, useLayoutEffect, useState } from "react";
-import { getPortalRoot } from "@/utils/portalRoot";
+import { getFloatPortalRoot } from "@/utils/portalRoot";
 import {
   computePortaledPanelBox,
   portaledPanelBoxToStyle,
@@ -96,7 +96,7 @@ export function usePortaledPanelAnchor({
     };
   }, [open, update]);
 
-  const portalRoot = typeof document !== "undefined" ? getPortalRoot() : null;
+  const portalRoot = typeof document !== "undefined" ? getFloatPortalRoot() : null;
 
   return {
     panelBox,

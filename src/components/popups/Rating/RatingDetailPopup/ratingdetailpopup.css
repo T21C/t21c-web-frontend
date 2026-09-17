@@ -4,8 +4,6 @@
     align-items: flex-start;
     padding: 4rem 0 0 0;
     animation: fadeInBackground-rating-popup 0.2s ease-out forwards;
-    will-change: opacity;
-    overflow-y: auto;
 }
 
 .rating-popup-overlay.exiting {
@@ -23,7 +21,6 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     animation: slideInPopup-rating-popup 0.3s var(--ease-out-expo) forwards;
     transform-origin: center;
-    will-change: transform, opacity, clip-path;
     overflow-y: auto;
     max-height: 87vh;
 }

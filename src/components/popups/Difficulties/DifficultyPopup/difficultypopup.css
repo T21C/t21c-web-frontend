@@ -1,15 +1,6 @@
 /* tuf-search: #DifficultyPopup #difficultyPopup #popups #difficulties #difficulty */
 .difficulty-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
   background-color: rgba(0, 0, 0, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
 }
 
 .difficulty-modal__content {
@@ -620,16 +611,7 @@
 }
 
 .difficulty-modal__password-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
   background-color: rgba(0, 0, 0, 0.9);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1102;
 }
 
 .difficulty-modal__password-modal-content {
@@ -650,16 +632,7 @@
 
 /* Channel Modal Styles */
 .difficulty-modal__channel-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
   background-color: rgba(0, 0, 0, 0.9);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1100;
 }
 
 .difficulty-modal__channel-modal-content {
@@ -742,16 +715,7 @@
 
 /* Role Modal Styles */
 .difficulty-modal__role-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
   background-color: rgba(0, 0, 0, 0.9);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1101;
 }
 
 .difficulty-modal__role-modal-content {
@@ -833,8 +797,8 @@
 }
 
 /* Ensure modals stack properly */
-.difficulty-modal__channel-modal { z-index: 1100; }
-.difficulty-modal__role-modal { z-index: 1101; }
+.difficulty-modal__channel-modal {}
+.difficulty-modal__role-modal {}
 
 @keyframes modalFadeIn {
   from {

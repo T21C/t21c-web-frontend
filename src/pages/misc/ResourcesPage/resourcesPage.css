@@ -375,16 +375,7 @@
 
 .resources-page .difficulty-modal,
 .resources-page.difficulty-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
   background-color: var(--color-black-t80);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
 }
 
 .resources-page .difficulty-modal-content,
