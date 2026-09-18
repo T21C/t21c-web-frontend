@@ -1,7 +1,7 @@
 // tuf-search: #Select #selectors #select
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import ReactSelect, { components } from 'react-select';
-import { getPortalRoot } from '@/utils/portalRoot';
+import { getFloatPortalRoot } from '@/utils/portalRoot';
 import { computeSelectMenuPlacement, estimateSelectMenuHeight } from './selectMenuPlacement';
 import './select.css';
 
@@ -111,7 +111,7 @@ const CustomSelect = ({
     }),
     menuPortal: (base) => ({
       ...base,
-      zIndex: 9999,
+      zIndex: 'var(--z-popup)',
     }),
     container: (provided) => ({
       ...provided,
@@ -157,7 +157,7 @@ const CustomSelect = ({
       border: "1px solid rgba(255, 255, 255, 0.1)",
       boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
       overflow: "hidden",
-      zIndex: 9999,
+      zIndex: 'var(--z-popup)',
       marginTop: state.placement === 'top' ? 0 : '4px',
       marginBottom: state.placement === 'top' ? '4px' : 0,
       maxHeight: maxHeight
@@ -226,7 +226,7 @@ const CustomSelect = ({
           value={value}
           onChange={handleChange}
           options={Array.isArray(options) ? options : EMPTY_OPTIONS}
-          menuPortalTarget={menuPortalTarget ?? getPortalRoot()}
+          menuPortalTarget={menuPortalTarget ?? getFloatPortalRoot()}
           menuPlacement={menuPlacement}
           menuShouldScrollIntoView={false}
           menuPosition="fixed"

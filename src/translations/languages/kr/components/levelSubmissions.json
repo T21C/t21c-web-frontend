@@ -15,7 +15,9 @@
       "label": "다운로드:",
       "directLink": "직접 링크",
       "notAvailable": "이용 불가",
-      "cdnLink": "로컬 CDN 링크"
+      "cdnLink": "로컬 CDN 링크",
+      "manage": "업로드 관리",
+      "manageMissing": "업로드 추가"
     },
     "workshop": {
       "label": "워크숍:",

@@ -9,9 +9,11 @@ import { PopupShell } from '@/components/common/PopupShell';
 import { getVerificationClass } from '@/utils/Utility';
 import { normalizeSongSearchQuery } from '@/utils/normalizeEntitySearchQuery';
 import { CustomSelect } from '@/components/common/selectors';
+import { songVerificationSelectOptions } from '@/utils/verificationStates';
 
 export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selectedArtist = null, allowCreate = true }) => {
   const { t } = useTranslation(['components', 'common']);
+  const verificationOptions = songVerificationSelectOptions(t);
   const normalizedInitialSongId = initialSong?.id ?? initialSong?.songId ?? null;
   const normalizedInitialSongName = initialSong?.name ?? initialSong?.songName ?? '';
 
@@ -510,25 +512,13 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                     />
                   </div>
                   <div className="form-group">
-                    {(() => {
-                      const verificationOptions = [
-                        { value: 'pending', label: t('verification.pending', { ns: 'common' }) },
-                        { value: 'allowed', label: t('verification.allowed', { ns: 'common' }) },
-                        { value: 'conditional', label: t('verification.conditional', { ns: 'common' }) },
-                        { value: 'tuf_verified', label: t('verification.tuf_verified', { ns: 'common' }) },
-                        { value: 'ysmod_only', label: t('verification.ysmod_only', { ns: 'common' }) },
-                        { value: 'declined', label: t('verification.declined', { ns: 'common' }) }
-                      ];
-                      return (
-                        <CustomSelect
-                          label={t('verification.verificationState', { ns: 'common' })}
-                          options={verificationOptions}
-                          value={verificationOptions.find(opt => opt.value === verificationState) || verificationOptions[0]}
-                          onChange={(option) => setVerificationState(option?.value || 'pending')}
-                          width="100%"
-                        />
-                      );
-                    })()}
+                    <CustomSelect
+                      label={t('verification.verificationState', { ns: 'common' })}
+                      options={verificationOptions}
+                      value={verificationOptions.find(opt => opt.value === verificationState) || verificationOptions[0]}
+                      onChange={(option) => setVerificationState(option?.value || 'pending')}
+                      width="100%"
+                    />
                   </div>
                   <div className="form-buttons">
                     <button

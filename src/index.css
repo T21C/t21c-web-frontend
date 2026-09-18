@@ -3,6 +3,12 @@
 @import "./styles/portaledPanel.css";
 
 :root {
+  /* Stacking: nested PopupShells share --z-popup and paint by later DOM order.
+     Overlay classNames must not set z-index (they share the .popup-shell node). */
+  --z-toast: 50;
+  --z-nav: 100;
+  --z-popup: 1100;
+  --z-float: 1200;
   /* Set by Navigation.jsx via ResizeObserver; fallback for SSR / before mount */
   --navbar-height: 2rem;
   --text-color: #f9fafb;
@@ -200,7 +206,7 @@ body {
 /* Toast host sits between nav and main content (react-hot-toast may portal; z-index helps when host renders in-tree) */
 .app-notifications {
   position: relative;
-  z-index: 50;
+  z-index: var(--z-toast);
 }
 
 /* Use --navbar-height for full-height layouts: height: calc(100vh - var(--navbar-height)); min-height: calc(100vh - var(--navbar-height)); */
@@ -918,16 +924,6 @@ button {
   color: #ffc107;
 }
 
-.verification-chip.conditional {
-  background-color: rgba(255, 152, 0, 0.2);
-  color: #ff9800;
-}
-
-.verification-chip.ysmod_only {
-  background-color: rgba(156, 39, 176, 0.2);
-  color: #9c27b0;
-}
-
 .verification-chip.mostly_declined {
   background-color: rgba(244, 119, 15, 0.2);
   color: #ff772e;
@@ -947,6 +943,7 @@ button {
   background-color: rgba(255, 152, 0, 0.2);
   color: #ff9800;
 }
+
 .verification-chip.ysmod_only {
   background-color: rgba(54, 77, 224, 0.2);
   color: #364de0;

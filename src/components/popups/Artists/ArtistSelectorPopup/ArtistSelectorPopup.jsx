@@ -8,20 +8,12 @@ import './artistSelectorPopup.css';
 import { CloseButton } from '@/components/common/buttons';
 import { PopupShell } from '@/components/common/PopupShell';
 import { normalizeArtistSearchQuery } from '@/utils/normalizeEntitySearchQuery';
+import { artistVerificationSelectOptions } from '@/utils/verificationStates';
 
 export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null }) => {
   const { t } = useTranslation(['components', 'common']);
 
-  // Verification state options for CustomSelect
-  const verificationStateOptions = [
-    { value: 'allowed', label: t('verification.allowed', { ns: 'common' }) },
-    { value: 'mostly_allowed', label: t('verification.mostly_allowed', { ns: 'common' }) },
-    { value: 'mostly_declined', label: t('verification.mostly_declined', { ns: 'common' }) },
-    { value: 'declined', label: t('verification.declined', { ns: 'common' }) },
-    { value: 'ysmod_only', label: t('verification.ysmod_only', { ns: 'common' }) },
-    { value: 'pending', label: t('verification.pending', { ns: 'common' }) },
-    { value: 'unverified', label: t('verification.unverified', { ns: 'common' }) }
-  ];
+  const verificationStateOptions = artistVerificationSelectOptions(t);
 
   // Core state
   const [selectedArtistId, setSelectedArtistId] = useState(initialArtist?.id || null);

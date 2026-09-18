@@ -15,7 +15,9 @@
       "label": "Link do pobrania:",
       "directLink": "Link bezpośredni",
       "notAvailable": "Niedostępny",
-      "cdnLink": "Lokalny link CDN"
+      "cdnLink": "Lokalny link CDN",
+      "manage": "Zarządzaj przesyłaniem",
+      "manageMissing": "Dodaj przesyłanie"
     },
     "workshop": {
       "label": "Warsztat Steam:",

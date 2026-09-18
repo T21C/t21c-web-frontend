@@ -1,12 +1,6 @@
 /* tuf-search: #BulkCreateCurationsPopup #bulkCreateCurationsPopup #popups #curations */
 .bulk-create-curations-popup__overlay {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   background: rgba(0, 0, 0, 0.6);
-  z-index: 1000;
 }
 
 .bulk-create-curations-popup {

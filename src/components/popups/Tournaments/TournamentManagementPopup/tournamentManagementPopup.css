@@ -1,12 +1,7 @@
 /* tuf-search: #TournamentManagementPopup #tournamentManagementPopup #popups #tournaments */
 .tournament-management-popup {
-  position: fixed;
-  inset: 0;
   background: color-mix(in srgb, var(--color-black) 55%, transparent);
-  display: flex;
   align-items: flex-start;
-  justify-content: center;
-  z-index: 100;
   padding: 1rem;
   padding-top: calc(var(--navbar-height) + 1rem);
 }

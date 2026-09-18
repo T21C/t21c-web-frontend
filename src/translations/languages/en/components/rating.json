@@ -48,6 +48,15 @@
       "difficultyInput": "Enter difficulty...",
       "communityComment": "Please provide a reason for your rating..."
     },
+    "accuracy": {
+      "provisional": "provisional",
+      "specialCareer": "special {{score}} · {{n}}",
+      "thisChart": "This chart {{score}}",
+      "modeQ": "{{settled}}",
+      "modeSpecial": "{{settled}} special",
+      "modeRank": "{{center}} precise",
+      "scoredAs": "Scored as {{value}}"
+    },
     "confirmations": {
       "deleteRating": "Are you sure you want to delete this rating from {{username}}?",
       "unsavedDraft": {
@@ -128,6 +137,17 @@
           "special": "Special ratings (Censored, Impossible, etc.) override the average if they receive 4 or more votes",
           "ranges": "Ranges (like U12~U14) are averaged before contributing to the final rating",
           "order": "PGU ratings are averaged based on their difficulty order, not their numerical values"
+        }
+      },
+      "accuracy": {
+        "title": "Rating accuracy",
+        "description": "After a level is confirmed, each rating is frozen and scored against the settled difficulty.",
+        "points": {
+          "q": "When the settled name is a Q-range (GQ/UQ), scores use a plateau across that bucket, then fall off more slowly toward nearby ranks (τ = 3).",
+          "rank": "When the settled name is a precise PGU rank, scores use a Laplace kernel centered on that rank (τ = 2).",
+          "ranges": "A range like G5~G8 is the average of the named ranks, so wider guesses score lower than an exact hit.",
+          "freeze": "Ratings freeze at confirm. Later edits are locked so accuracy cannot be changed after the result is known.",
+          "sort": "The list is sorted by a shrunk career mean so raters with few scored charts are not over-ranked. The number on each row is the raw percent · sample count."
         }
       },
       "filters": {

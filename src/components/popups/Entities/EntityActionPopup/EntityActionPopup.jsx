@@ -10,6 +10,10 @@ import { toast } from 'react-hot-toast';
 import { isCdnSupportedImageMimeType } from '@/config/constants/cdnImageAccept';
 import { UpdateTab, MergeTab, SplitTab, AliasesTab, LinksTab, CreditsTab, EvidenceTab, LevelSuffixTab, RelationsTab } from './tabs';
 import { CloseButton } from '@/components/common/buttons';
+import {
+  artistVerificationSelectOptions,
+  songVerificationSelectOptions,
+} from '@/utils/verificationStates';
 
 export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'artist' }) => {
   const { t } = useTranslation(['components', 'common']);
@@ -60,25 +64,9 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
   const [editingEntityExtraInfo, setEditingEntityExtraInfo] = useState('');
   const [isEditingEntityExtraInfo, setIsEditingEntityExtraInfo] = useState(false);
 
-  const verificationStateOptions = type === 'song' 
-    ? [
-        { value: 'allowed', label: t('verification.allowed', { ns: 'common' }) },
-        { value: 'ysmod_only', label: t('verification.ysmod_only', { ns: 'common' }) },
-        { value: 'tuf_verified', label: t('verification.tuf_verified', { ns: 'common' }) },
-        { value: 'conditional', label: t('verification.conditional', { ns: 'common' }) },
-        { value: 'pending', label: t('verification.pending', { ns: 'common' }) },
-        { value: 'declined', label: t('verification.declined', { ns: 'common' }) }
-      ]
-    : [
-        { value: 'allowed', label: t('verification.allowed', { ns: 'common' }) },
-        { value: 'mostly_allowed', label: t('verification.mostly_allowed', { ns: 'common' }) },
-        { value: 'mostly_declined', label: t('verification.mostly_declined', { ns: 'common' }) },
-        { value: 'declined', label: t('verification.declined', { ns: 'common' }) },
-        { value: 'tuf_verified', label: t('verification.tuf_verified', { ns: 'common' }) },
-        { value: 'ysmod_only', label: t('verification.ysmod_only', { ns: 'common' }) },
-        { value: 'pending', label: t('verification.pending', { ns: 'common' }) },
-        { value: 'unverified', label: t('verification.unverified', { ns: 'common' }) }
-      ];
+  const verificationStateOptions = type === 'song'
+    ? songVerificationSelectOptions(t)
+    : artistVerificationSelectOptions(t);
 
   // Song-specific state
   const [credits, setCredits] = useState(type === 'song' ? (song?.credits || []) : []);

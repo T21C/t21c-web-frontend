@@ -1107,11 +1107,34 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
 
       {showUploadManagement && (
         <LevelUploadManagementPopup
-          level={level}
-          setLevel={onUpdate}
+          zipTarget={{
+            kind: 'level',
+            id: level.id,
+            dlLink: formData.dlLink,
+            workshopLink: formData.workshopLink,
+          }}
+          onDlLinkChange={(newDlLink) => {
+            setFormData((prev) => ({ ...prev, dlLink: newDlLink }));
+            if (onUpdate) {
+              onUpdate({ level: { ...level, dlLink: newDlLink } });
+            }
+          }}
+          onLevelRefresh={(fullLevel, hint) => {
+            setFormData((prev) => ({
+              ...prev,
+              dlLink: hint ?? fullLevel.dlLink ?? prev.dlLink,
+              videoLink: fullLevel.videoLink ?? prev.videoLink,
+              workshopLink: fullLevel.workshopLink ?? prev.workshopLink,
+              songId: fullLevel.songId ?? prev.songId,
+              song: fullLevel.songObject?.name ?? fullLevel.song ?? prev.song,
+              suffix: fullLevel.suffix ?? prev.suffix,
+            }));
+            if (onUpdate) {
+              onUpdate({ level: hint ? { ...fullLevel, dlLink: hint } : fullLevel });
+            }
+          }}
           onClose={() => setShowUploadManagement(false)}
-          setFormData={setFormData}
-          formData={formData}
+          allowDelete
           isSuperAdmin={isSuperAdmin}
         />
       )}

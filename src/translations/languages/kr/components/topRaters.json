@@ -2,9 +2,17 @@
   "title": "Top Raters",
   "loading": "Loading top raters...",
   "noRaters": "No raters found for the selected period",
+  "filters": {
+    "title": "Filters & Stats"
+  },
   "dateSelector": {
     "startDate": "Start Date",
     "endDate": "End Date"
+  },
+  "sort": {
+    "label": "Sort by",
+    "accuracy": "Accuracy",
+    "count": "Count"
   },
   "stats": {
     "totalUsers": "Total Users",
@@ -18,8 +26,17 @@
   "raterEntry": {
     "unknown": "Unknown User",
     "stats": {
+      "accuracy": "Accuracy",
+      "special": "special {{score}}",
       "totalRatings": "Total",
       "averagePerDay": "Avg/Day"
+    },
+    "tooltip": {
+      "raw": "Raw {{score}} · {{n}}",
+      "weighted": "Weighted {{score}} (ranking)",
+      "special": "Special {{score}} · {{n}}",
+      "provisional": "Provisional — under {{min}} scored charts",
+      "empty": "No scored PGU charts"
     }
   },
   "pagination": {

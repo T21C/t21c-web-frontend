@@ -1,7 +1,8 @@
 // tuf-search: #PopupShell #popupShell
-import { useEffect } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 import { Portal } from '@/components/common/Portal';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { registerPopupShell } from '@/utils/portalRoot';
 import './popupshell.css';
 
 const escapeStack = [];
@@ -50,9 +51,15 @@ export function PopupShell({
   when = true,
   role = 'dialog',
 }) {
+  const overlayRef = useRef(null);
   const overlayActive = Boolean(when) && !closeDisabled;
   useBodyScrollLock(Boolean(when));
   usePopupShellEscape(onClose, overlayActive && dismissOnEscape);
+
+  useLayoutEffect(() => {
+    if (!when) return undefined;
+    return registerPopupShell(overlayRef.current);
+  }, [when]);
 
   const handleOverlayClick = (event) => {
     overlayProps?.onClick?.(event);
@@ -64,12 +71,15 @@ export function PopupShell({
   return (
     <Portal when={when} mount={mount}>
       <div
-        className={classNames('popup-shell', overlayClassName)}
         role="presentation"
         {...overlayProps}
+        ref={overlayRef}
+        className={classNames('popup-shell', overlayClassName, overlayProps?.className)}
         onClick={handleOverlayClick}
       >
-        {overlayChildren}
+        {overlayChildren ? (
+          <div className="popup-shell__chrome">{overlayChildren}</div>
+        ) : null}
         <div
           className={classNames('popup-shell__panel', panelClassName)}
           role={role}

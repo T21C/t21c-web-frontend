@@ -1,7 +1,7 @@
 .popup-shell {
   position: fixed;
   inset: 0;
-  z-index: 1100;
+  z-index: var(--z-popup);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -9,8 +9,20 @@
   background: var(--color-black-t70);
 }
 
+.popup-shell__chrome {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.popup-shell__chrome > * {
+  pointer-events: auto;
+}
+
 .popup-shell__panel {
   position: relative;
+  z-index: 1;
   min-width: 0;
   max-height: 100%;
 }

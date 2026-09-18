@@ -38,13 +38,53 @@ function createUploadJobId() {
   return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`;
 }
 
+function zipTargetChunkedMeta(zipTarget) {
+  return zipTarget.kind === 'submission'
+    ? { submissionId: zipTarget.id }
+    : { levelId: zipTarget.id };
+}
+
+function zipTargetUploadUrl(zipTarget) {
+  return zipTarget.kind === 'submission'
+    ? routes.admin.submissions.levelUpload(zipTarget.id)
+    : routes.levelsV3.upload(zipTarget.id);
+}
+
+function zipTargetUploadFromUrl(zipTarget) {
+  return zipTarget.kind === 'submission'
+    ? routes.admin.submissions.levelUploadFromUrl(zipTarget.id)
+    : routes.levelsV3.uploadFromUrl(zipTarget.id);
+}
+
+function zipTargetSelectLevelUrl(zipTarget) {
+  return zipTarget.kind === 'submission'
+    ? routes.admin.submissions.levelSelectLevel(zipTarget.id)
+    : routes.levelsV3.selectLevel(zipTarget.id);
+}
+
+function zipTargetReparseUrl(zipTarget) {
+  return zipTarget.kind === 'submission'
+    ? routes.admin.submissions.levelReparseChart(zipTarget.id)
+    : routes.levelsV3.reparseChart(zipTarget.id);
+}
+
+function dlLinkFromUploadResponse(data) {
+  return (
+    data?.dlLink ||
+    data?.directDL ||
+    data?.level?.dlLink ||
+    data?.submission?.directDL ||
+    null
+  );
+}
+
 const LevelUploadManagementPopup = ({
-  level,
-  formData,
-  setFormData,
+  zipTarget,
+  onDlLinkChange,
+  onLevelRefresh,
   onClose,
-  setLevel,
   isSuperAdmin = false,
+  allowDelete = true,
 }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -143,11 +183,11 @@ const LevelUploadManagementPopup = ({
   /**
    * Load LEVELZIP file list from the search API (proxies CDN metadata).
    * @param {string} [dlLinkOverride] — When set (e.g. right after upload), use this URL instead of
-   *   `formData.dlLink`. Required because `setFormData` does not update the closure until the next
+   *   `zipTarget.dlLink`. Required because parent state does not update the closure until the next
    *   render; calling without an override immediately after upload would still request the old file id.
    */
   const fetchLevelFiles = useCallback(async (dlLinkOverride) => {
-    const dlLink = dlLinkOverride ?? formData.dlLink;
+    const dlLink = dlLinkOverride ?? zipTarget.dlLink;
     if (dlLink && dlLink !== 'removed' && isCdnUrl(dlLink)) {
       try {
         const fileId = dlLink.split('/').pop();
@@ -192,16 +232,24 @@ const LevelUploadManagementPopup = ({
         console.error('Error fetching level files:', error);
         notifyError(t('levelUploadManagement.errors.fetchFailed'));
       }
+    } else {
+      setLevelFiles([]);
+      setSongFiles({});
+      setOriginalZip(null);
+      setTargetLevel(null);
     }
-  }, [formData.dlLink, t]);
+  }, [zipTarget.dlLink, t]);
 
   useEffect(() => {
     void fetchLevelFiles();
   }, [fetchLevelFiles]);
 
   const refreshLevelMetadata = async (dlLinkHint) => {
+    if (zipTarget.kind !== 'level' || !onLevelRefresh) {
+      return;
+    }
     try {
-      const response = await api.get(`${routes.database.levels.root()}/${level.id}`);
+      const response = await api.get(`${routes.database.levels.root()}/${zipTarget.id}`);
       const fullLevel = response?.data?.level ?? response?.data?.data?.level ?? response?.data ?? null;
       if (!fullLevel) return;
 
@@ -210,23 +258,7 @@ const LevelUploadManagementPopup = ({
           ? String(dlLinkHint)
           : null;
 
-      // Keep local edit form in sync with server-derived metadata changes (tilecount, songObject, etc.)
-      setFormData((prev) => ({
-        ...prev,
-        // After upload, GET /levels/:id can briefly return a cached old dlLink; prefer the link we
-        // just received from the upload job so we do not regress to a removed / stale file id.
-        dlLink: hint ?? fullLevel.dlLink ?? prev.dlLink,
-        videoLink: fullLevel.videoLink ?? prev.videoLink,
-        workshopLink: fullLevel.workshopLink ?? prev.workshopLink,
-        songId: fullLevel.songId ?? prev.songId,
-        song: fullLevel.songObject?.name ?? fullLevel.song ?? prev.song,
-        suffix: fullLevel.suffix ?? prev.suffix,
-      }));
-
-      // Propagate to parent (EditLevelPopup passes onUpdate here) so metadata updates without refresh.
-      if (setLevel) {
-        setLevel({ level: hint ? { ...fullLevel, dlLink: hint } : fullLevel });
-      }
+      onLevelRefresh(fullLevel, hint);
     } catch (error) {
       // Non-fatal: upload/select already succeeded; this is just metadata refresh.
       console.warn('[LevelUploadManagementPopup] Failed to refresh level metadata:', error);
@@ -234,18 +266,18 @@ const LevelUploadManagementPopup = ({
   };
 
   useEffect(() => {
-    const v = level?.dlLink;
-    const ws = typeof level?.workshopLink === 'string' ? level.workshopLink.trim() : '';
+    const v = zipTarget?.dlLink;
+    const ws = typeof zipTarget?.workshopLink === 'string' ? zipTarget.workshopLink.trim() : '';
     if (!v || v === 'removed') {
       setImportUrl(ws || '');
     } else {
       setImportUrl(rewriteDiscordCdnHost(String(v)));
     }
-  }, [level?.id, level?.dlLink, level?.workshopLink]);
+  }, [zipTarget?.id, zipTarget?.kind, zipTarget?.dlLink, zipTarget?.workshopLink]);
 
   useEffect(() => {
     setUrlImportPanelOpen(false);
-  }, [level?.id]);
+  }, [zipTarget?.id, zipTarget?.kind]);
 
   const closeUrlImportPanel = () => {
     if (isUploading) {
@@ -263,23 +295,18 @@ const LevelUploadManagementPopup = ({
     };
   }, []);
 
-  const applySuccessfulLevelUpload = (updatedLevel, newDlLink, { closeUrlPanel = false } = {}) => {
-    setFormData((prev) => ({
-      ...prev,
-      dlLink: newDlLink,
-    }));
+  const applySuccessfulLevelUpload = (newDlLink, { closeUrlPanel = false } = {}) => {
+    if (onDlLinkChange && newDlLink) {
+      onDlLinkChange(newDlLink);
+    }
     if (newDlLink) {
       setImportUrl(String(newDlLink));
-    }
-    if (setLevel) {
-      setLevel({ level: { ...level, ...updatedLevel, dlLink: newDlLink } });
     }
     setUploadProgress(100);
     if (closeUrlPanel) {
       setUrlImportPanelOpen(false);
     }
     void fetchLevelFiles(newDlLink);
-    // Ensure server-derived metadata (e.g. tilecount) is updated in UI without refresh.
     void refreshLevelMetadata(newDlLink);
   };
 
@@ -349,7 +376,7 @@ const LevelUploadManagementPopup = ({
         try {
           const client = new ChunkedUploadClient({ kind: 'level-zip' });
           const { session: uploadSession } = await client.upload(file, {
-            meta: { levelId: level.id },
+            meta: zipTargetChunkedMeta(zipTarget),
             signal,
             forceNew,
             onProgress: ({ phase, percent }) => {
@@ -363,7 +390,7 @@ const LevelUploadManagementPopup = ({
           if (signal.aborted) return;
 
           const response = await api.post(
-            routes.levelsV3.upload(level.id),
+            zipTargetUploadUrl(zipTarget),
             {
               sessionId: uploadSession.id,
               uploadJobId: jobId,
@@ -386,15 +413,17 @@ const LevelUploadManagementPopup = ({
             }
             const base = String(import.meta.env.VITE_CDN_URL || '').replace(/\/$/, '');
             const newDlLink = `${base}/${newId}`;
-            applySuccessfulLevelUpload({}, newDlLink, { closeUrlPanel: false });
+            applySuccessfulLevelUpload(newDlLink, { closeUrlPanel: false });
             toastSuccess(t('levelUploadManagement.upload.success'));
             return;
           }
 
           if (response.data.success) {
-            const updatedLevel = response.data.level || {};
-            const newDlLink = updatedLevel.dlLink || response.data.dlLink;
-            applySuccessfulLevelUpload(updatedLevel, newDlLink, { closeUrlPanel: false });
+            const newDlLink = dlLinkFromUploadResponse(response.data);
+            if (!newDlLink) {
+              throw new Error('Upload finished but server did not return a file id');
+            }
+            applySuccessfulLevelUpload(newDlLink, { closeUrlPanel: false });
             toastSuccess(t('levelUploadManagement.upload.success'));
             return;
           }
@@ -468,7 +497,7 @@ const LevelUploadManagementPopup = ({
       setCdnJobId(jobId);
 
       const response = await api.post(
-        routes.levelsV3.uploadFromUrl(level.id),
+        zipTargetUploadFromUrl(zipTarget),
         { url: trimmed, uploadJobId: jobId },
         {
           signal,
@@ -488,15 +517,17 @@ const LevelUploadManagementPopup = ({
         }
         const base = String(import.meta.env.VITE_CDN_URL || '').replace(/\/$/, '');
         const newDlLink = `${base}/${newId}`;
-        applySuccessfulLevelUpload({}, newDlLink, { closeUrlPanel: true });
+        applySuccessfulLevelUpload(newDlLink, { closeUrlPanel: true });
         toastSuccess(t('levelUploadManagement.upload.importSuccess'));
         return;
       }
 
       if (response.data.success) {
-        const updatedLevel = response.data.level || {};
-        const newDlLink = updatedLevel.dlLink || response.data.dlLink;
-        applySuccessfulLevelUpload(updatedLevel, newDlLink, { closeUrlPanel: true });
+        const newDlLink = dlLinkFromUploadResponse(response.data);
+        if (!newDlLink) {
+          throw new Error('Import finished but server did not return a file id');
+        }
+        applySuccessfulLevelUpload(newDlLink, { closeUrlPanel: true });
         toastSuccess(t('levelUploadManagement.upload.importSuccess'));
       }
     } catch (err) {
@@ -523,7 +554,7 @@ const LevelUploadManagementPopup = ({
 
     try {
       setIsSelecting(true);
-      const result = await api.post(routes.levelsV3.selectLevel(level.id), {
+      const result = await api.post(zipTargetSelectLevelUrl(zipTarget), {
         selectedLevel,
       });
 
@@ -547,7 +578,7 @@ const LevelUploadManagementPopup = ({
 
     try {
       setIsReparsing(true);
-      const result = await api.post(routes.levelsV3.reparseChart(level.id));
+      const result = await api.post(zipTargetReparseUrl(zipTarget));
 
       if (result.data.success) {
         void refreshLevelMetadata();
@@ -563,23 +594,20 @@ const LevelUploadManagementPopup = ({
   };
 
   const handleDelete = async () => {
+    if (!allowDelete || zipTarget.kind !== 'level') {
+      return;
+    }
     if (!window.confirm(t('levelUploadManagement.confirmDelete'))) {
       return;
     }
 
     try {
-      const response = await api.delete(routes.levelsV3.upload(level.id));
+      const response = await api.delete(routes.levelsV3.upload(zipTarget.id));
       if (response.data && response.data.success) {
-        // Update formData with removed dlLink
-        setFormData(prev => ({ ...prev, dlLink: "removed" }));
-        
-        // Update level data through onUpdate callback
-        // setLevel is actually onUpdate which expects { level: {...} } format
-        if (setLevel) {
-          setLevel({ level: { ...level, dlLink: "removed" } });
+        if (onDlLinkChange) {
+          onDlLinkChange('removed');
         }
         
-        // Clear file-related state since file is deleted
         setLevelFiles([]);
         setSongFiles({});
         setOriginalZip(null);
@@ -812,7 +840,7 @@ const LevelUploadManagementPopup = ({
                       className="upload-import-button"
                       onClick={() => {
                         const ws =
-                          typeof level?.workshopLink === 'string' ? level.workshopLink.trim() : '';
+                          typeof zipTarget?.workshopLink === 'string' ? zipTarget.workshopLink.trim() : '';
                         if (ws) {
                           setImportUrl(ws);
                         }
@@ -835,7 +863,7 @@ const LevelUploadManagementPopup = ({
                 </button>
               )}
             </div>
-            {isCdnUrl(level.dlLink) && (
+            {allowDelete && isCdnUrl(zipTarget.dlLink) && (
               <button
                 type="button"
                 className="delete-button btn-fill-danger"

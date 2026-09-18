@@ -4,7 +4,7 @@
   width: 100%;
   background: transparent;
   color: var(--color-white);
-  z-index: 100;
+  z-index: var(--z-nav);
   position: fixed;
   font-weight: 500;
   top: 0;

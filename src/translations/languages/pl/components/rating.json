@@ -37,6 +37,15 @@
     },
     "messages": {
       "autorateSuccess": "Ocena zautomatyzowana pomyślnie"
+    },
+    "accuracy": {
+      "provisional": "wstępna",
+      "specialCareer": "specjalne {{score}} · {{n}}",
+      "thisChart": "Ten poziom {{score}}",
+      "modeQ": "{{settled}}",
+      "modeSpecial": "{{settled}} special",
+      "modeRank": "{{center}} precyzyjnie",
+      "scoredAs": "Liczone jako {{value}}"
     }
   },
   "ratingCard": {
@@ -83,6 +92,17 @@
           "special": "Oceny specjalne (-2, -21, itp.) zastępują średnią ocen, jeśli otrzymają 4 lub więcej głosów",
           "ranges": "Przedziały (np. U12~U14) są uśredniane przed uwzględnieniem w ocenie",
           "order": "Oceny w formacie PGU są przy uśrednianiu sortowane w zależności od ich poziomu trudności, a nie wartości liczbowej"
+        }
+      },
+      "accuracy": {
+        "title": "Dokładność ocen",
+        "description": "Po zatwierdzeniu poziomu każda ocena jest zamrażana i porównywana z ostateczną trudnością.",
+        "points": {
+          "q": "Gdy zatwierdzona nazwa to zakres Q (GQ/UQ), wynik używa plateau na całym kubełku, a potem opada wolniej ku sąsiednim rangom (τ = 3).",
+          "rank": "Gdy zatwierdzona nazwa to dokładna ranga PGU, wynik używa jądra Laplace’a wycentrowanego na tej randze (τ = 2).",
+          "ranges": "Zakres jak G5~G8 to średnia nazwanych rang, więc szersze zgadywanie daje niższy wynik niż trafienie w punkt.",
+          "freeze": "Oceny zamrażają się w momencie zatwierdzenia. Późniejsze edycje są zablokowane, żeby nie dało się poprawiać wyniku po poznaniu trudności.",
+          "sort": "Lista jest sortowana według skurczonej średniej kariery, żeby osoby z małą liczbą ocen nie dominowały. Na wierszu widać surowy procent · liczbę próbek."
         }
       },
       "filters": {

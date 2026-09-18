@@ -13,7 +13,8 @@
 
   .rating-item-header {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
     gap: 0.5rem;
   }
 
@@ -53,12 +54,35 @@
     transform: scale(1.1);
   }
 
+  .rater-identity {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    min-width: 0;
+  }
+
+  .rater-identity-main {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
   .rater-name {
     font-weight: 500;
+    line-height: 1.2;
   }
 
   .rater-rating {
     font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .rater-accuracy {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
   }
 
   .zen-mode-chip {
@@ -168,6 +192,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    align-self: center;
   }
 
   .rater-avatar-container .rater-avatar {
@@ -193,6 +218,59 @@
     left: 10px;
     transform: translateX(-50%) rotate(-20deg);
     z-index: 3;
+  }
+
+  .rater-accuracy-career,
+  .rater-accuracy-special {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.75rem;
+    color: var(--color-white-t70);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .rater-accuracy-career {
+    color: var(--color-gray-2);
+    font-weight: 600;
+  }
+
+  .rater-accuracy-career.is-provisional {
+    color: var(--warning-color);
+  }
+
+  .rater-accuracy-provisional {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  .rating-accuracy-explain {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background-color: var(--color-white-t5);
+    border-radius: 4px;
+  }
+
+  .rating-accuracy-explain__chip,
+  .rating-accuracy-explain__map,
+  .rating-accuracy-explain__score {
+    font-size: 0.8rem;
+    color: var(--color-white-t80);
+  }
+
+  .rating-accuracy-explain__chip {
+    color: var(--color-purple-1);
+    font-weight: 600;
+  }
+
+  .rating-accuracy-explain__score {
+    font-weight: 600;
+    color: var(--color-white);
   }
 
   /* Animations */

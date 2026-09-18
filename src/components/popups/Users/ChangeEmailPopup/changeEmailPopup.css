@@ -1,11 +1,5 @@
 /* tuf-search: #ChangeEmailPopup #changeEmailPopup #popups #users #changeEmail */
 .change-email-popup-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   padding: 1rem;
   background-color: rgba(0, 0, 0, 0.75);
 }

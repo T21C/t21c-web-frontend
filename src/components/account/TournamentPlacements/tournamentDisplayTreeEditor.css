@@ -118,12 +118,6 @@
 }
 
 .tournament-display-tree-editor__placement-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 1200;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   padding: 1rem;
   background: var(--color-black-t75);
 }

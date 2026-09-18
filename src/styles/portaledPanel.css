@@ -5,10 +5,7 @@
   pointer-events: auto;
 }
 
-.portaled-panel--z-dropdown {
-  z-index: 130;
-}
-
+.portaled-panel--z-dropdown,
 .portaled-panel--z-popover {
-  z-index: 9998;
+  z-index: var(--z-popup);
 }

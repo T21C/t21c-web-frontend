@@ -1,15 +1,6 @@
 /* tuf-search: #ArtistSelectorPopup #artistSelectorPopup #popups #artists #artistSelector */
 .artist-selector-popup-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
   background-color: rgba(0, 0, 0, 0.75);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
 }
 
 .artist-selector-popup {
@@ -132,6 +123,16 @@
 .artist-selector-popup .verification-status.unverified {
   background-color: rgba(128, 128, 128, 0.2);
   color: #aaa;
+}
+
+.artist-selector-popup .verification-status.ysmod_only {
+  background-color: rgba(54, 77, 224, 0.2);
+  color: #364de0;
+}
+
+.artist-selector-popup .verification-status.tuf_verified {
+  background-color: rgba(195, 0, 255, 0.25);
+  color: #ff42f9;
 }
 
 .artist-selector-popup .artist-stats {
@@ -312,6 +313,16 @@
 .artist-selector-popup .artist-result .verification-badge.unverified {
   background-color: rgba(128, 128, 128, 0.2);
   color: #aaa;
+}
+
+.artist-selector-popup .artist-result .verification-badge.ysmod_only {
+  background-color: rgba(54, 77, 224, 0.2);
+  color: #364de0;
+}
+
+.artist-selector-popup .artist-result .verification-badge.tuf_verified {
+  background-color: rgba(195, 0, 255, 0.25);
+  color: #ff42f9;
 }
 
 .artist-selector-popup .create-artist-form {

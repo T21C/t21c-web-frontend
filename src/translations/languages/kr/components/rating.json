@@ -49,6 +49,15 @@
     "messages": {
       "ratingBanned": "책정할 권한이 없습니다",
       "autorateSuccess": "자동책정이 완료되었습니다"
+    },
+    "accuracy": {
+      "provisional": "임시",
+      "specialCareer": "특수 {{score}} · {{n}}",
+      "thisChart": "이 차트 {{score}}",
+      "modeQ": "{{settled}}",
+      "modeSpecial": "{{settled}} 특수",
+      "modeRank": "{{center}} 정밀",
+      "scoredAs": "{{value}}(으)로 채점"
     }
   },
   "ratingCard": {
@@ -116,6 +125,17 @@
           "special": "특수 책정(Censored, Impossible 등)는 4표 이상 받으면 평균을 덮어씁니다",
           "ranges": "범위 책정(U12~U14 등)는 평균 산출 전에 처리됩니다",
           "order": "PGU 책정은 숫자가 아니라 난이도 순서로 평균이 계산됩니다"
+        }
+      },
+      "accuracy": {
+        "title": "책정 정확도",
+        "description": "레벨이 확정되면 각 책정은 고정되어 최종 난이도와 비교됩니다.",
+        "points": {
+          "q": "확정 이름이 Q 범위(GQ/UQ)이면 해당 구간에 평탄한 점수를 준 뒤 가까운 랭크로 더 천천히 떨어집니다 (τ = 3).",
+          "rank": "확정 이름이 정확한 PGU 랭크이면 그 랭크를 중심으로 한 라플라스 커널(τ = 2)로 채점합니다.",
+          "ranges": "G5~G8 같은 범위는 이름 붙은 랭크의 평균이라, 넓은 추측은 정확한 맞힘보다 점수가 낮습니다.",
+          "freeze": "책정은 확정 시점에 고정됩니다. 이후 수정은 잠겨서 결과를 안 뒤에 정확도를 바꿀 수 없습니다.",
+          "sort": "목록은 수축된 커리어 평균으로 정렬되어 표본이 적은 책정자가 과대평가되지 않습니다. 각 행의 숫자는 원시 퍼센트 · 표본 수입니다."
         }
       },
       "filters": {

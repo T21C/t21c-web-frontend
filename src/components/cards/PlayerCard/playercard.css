@@ -519,7 +519,7 @@
   line-height: 1.35 !important;
   padding: 0.45rem 0.6rem !important;
   word-break: break-word;
-  z-index: 10060;
+  z-index: var(--z-float);
 }
 
 .difficulty-display {

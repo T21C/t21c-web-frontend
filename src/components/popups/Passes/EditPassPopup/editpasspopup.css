@@ -1,16 +1,7 @@
 /* tuf-search: #EditPassPopup #editPassPopup #popups #passes #editPass */
 .edit-pass-popup-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
   background-color: rgba(0, 0, 0, 0.85);
-  display: flex;
   color: #ffffff;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
 }
 
 .edit-pass-popup-overlay .form-container {

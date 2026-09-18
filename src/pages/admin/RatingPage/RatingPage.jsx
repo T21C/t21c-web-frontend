@@ -95,6 +95,7 @@ const RatingPage = () => {
   const [connectedManagers, setConnectedManagers] = useState(0);
   const [showTopRaters, setShowTopRaters] = useState(false);
   const [weeklyRaterActivity, setWeeklyRaterActivity] = useState([]);
+  const [ratingAccuracyStats, setRatingAccuracyStats] = useState([]);
   const fetchGenRef = useRef(0);
   const deepLinkHandledRef = useRef(false);
   const selectedRatingIdRef = useRef(null);
@@ -203,8 +204,18 @@ const RatingPage = () => {
       const weeklyPromise = append
         ? Promise.resolve(null)
         : api.get(`${routes.admin.statisticsRatingsPerUser()}?date=${weekAgo}&limit=1000`);
+      const accuracyPromise = append
+        ? Promise.resolve(null)
+        : api.get(routes.admin.statisticsRatingAccuracy()).catch((error) => {
+            console.error('Error fetching rating accuracy:', error);
+            return { data: { stats: [] } };
+          });
 
-      const [ratingsResponse, weeklyActivityResponse] = await Promise.all([listPromise, weeklyPromise]);
+      const [ratingsResponse, weeklyActivityResponse, accuracyResponse] = await Promise.all([
+        listPromise,
+        weeklyPromise,
+        accuracyPromise,
+      ]);
       if (gen !== fetchGenRef.current) return;
 
       const page = normalizePageResults(ratingsResponse.data);
@@ -227,6 +238,9 @@ const RatingPage = () => {
         setRatings(results);
         if (weeklyActivityResponse?.data) {
           setWeeklyRaterActivity(weeklyActivityResponse.data.ratingsPerUser || []);
+        }
+        if (accuracyResponse?.data) {
+          setRatingAccuracyStats(accuracyResponse.data.stats || []);
         }
       }
     } catch (error) {
@@ -861,6 +875,7 @@ const RatingPage = () => {
                 user={user}
                 isSuperAdmin={hasFlag(user, permissionFlags.SUPER_ADMIN)}
                 weeklyRaterActivity={weeklyRaterActivity}
+                ratingAccuracyStats={ratingAccuracyStats}
               />
             )}
 

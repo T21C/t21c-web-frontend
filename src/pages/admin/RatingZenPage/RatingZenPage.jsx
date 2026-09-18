@@ -17,13 +17,14 @@ import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { CustomSelect, RatingInput } from '@/components/common/selectors';
 import { RatingItem } from '@/components/cards';
 import { CloseButton, ReferencesButton } from '@/components/common/buttons';
-import { CheckmarkIcon, EyeIcon, SkipIcon } from '@/components/common/icons';
+import { CheckmarkIcon, ChartIcon, EyeIcon, MetronomeIcon, SkipIcon, TimeIcon } from '@/components/common/icons';
+import { WebAdofaiViewerButton } from '@/components/popups/Levels';
 import { Tooltip } from 'react-tooltip';
 import { CommentFormatter } from '@/components/misc';
 import api from '@/utils/api';
 import { getVideoDetails } from '@/utils';
 import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from '@/utils/Utility';
-import { getSongDisplayName } from '@/utils/levelHelpers';
+import { formatAutoTilecountTooltip, formatDuration, getSongDisplayName } from '@/utils/levelHelpers';
 import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import toast from 'react-hot-toast';
 import { createViewDurationTracker } from '@/utils/viewDurationTracker';
@@ -722,6 +723,23 @@ const RatingZenPage = () => {
   const communityRatings = peerDetails.filter((d) => d.isCommunityRating);
   const visiblePeers = showCommunityPeers ? communityRatings : adminRatings;
   const hasPeersToPeek = peerDetails.length > 0;
+  const peekSourceKind =
+    adminRatings.length > 0
+      ? 'has-managers'
+      : communityRatings.length > 0
+        ? 'community-only'
+        : 'none';
+  const peekSourceLabel =
+    peekSourceKind === 'has-managers'
+      ? t('rating.zen.peekSources.hasManagers', {
+          managers: adminRatings.length,
+          community: communityRatings.length,
+        })
+      : peekSourceKind === 'community-only'
+        ? t('rating.zen.peekSources.communityOnly', {
+            count: communityRatings.length,
+          })
+        : t('rating.zen.noPeers');
   const showResumeActions = hasResumableDeck;
 
   const progressBar = cards.length > 0 && (
@@ -940,6 +958,9 @@ const RatingZenPage = () => {
             onClick={handleExit}
             aria-label={t('rating.zen.exit')}
           />
+          {current.level?.id && current.level?.fileId ? (
+            <WebAdofaiViewerButton levelId={current.level.id} />
+          ) : null}
           <header className="rating-zen-page__bar">
             <div className="rating-zen-page__bar-main">
               <div className="rating-zen-page__bar-stats">
@@ -1014,80 +1035,89 @@ const RatingZenPage = () => {
                   {t('components:rating.detailPopup.messages.ratingBanned')}
                 </p>
               ) : (
-                <div className="rating-zen-page__actions">
-                  <button
-                    type="button"
-                    className="rating-zen-page__btn rating-zen-page__btn--ghost rating-zen-page__btn--icon"
-                    onClick={handleSkip}
-                    disabled={isSaving}
-                    aria-label={t('rating.zen.actions.skip')}
-                    title={t('rating.zen.actions.skip')}
-                  >
-                    <span aria-hidden="true">
-                      <SkipIcon size={22} color="currentColor" />
-                    </span>
-                  </button>
-                  <span
-                    className="rating-zen-page__action-slot"
-                    data-tooltip-id={!hasPeersToPeek ? 'rating-zen-peek-empty' : undefined}
-                  >
+                <div className="rating-zen-page__actions-block">
+                  <div className="rating-zen-page__actions">
                     <button
                       type="button"
-                      className="rating-zen-page__btn rating-zen-page__btn--secondary rating-zen-page__btn--icon"
-                      onClick={handlePeek}
-                      disabled={cardPeeked || peeksLeft <= 0 || isSaving || !hasPeersToPeek}
+                      className="rating-zen-page__btn rating-zen-page__btn--ghost rating-zen-page__btn--icon"
+                      onClick={handleSkip}
+                      disabled={isSaving}
+                      aria-label={t('rating.zen.actions.skip')}
+                      title={t('rating.zen.actions.skip')}
+                    >
+                      <span aria-hidden="true">
+                        <SkipIcon size={22} color="currentColor" />
+                      </span>
+                    </button>
+                    <span
+                      className="rating-zen-page__action-slot"
+                      data-tooltip-id={!hasPeersToPeek ? 'rating-zen-peek-empty' : undefined}
+                    >
+                      <button
+                        type="button"
+                        className="rating-zen-page__btn rating-zen-page__btn--secondary rating-zen-page__btn--icon"
+                        onClick={handlePeek}
+                        disabled={cardPeeked || peeksLeft <= 0 || isSaving || !hasPeersToPeek}
+                        aria-label={
+                          cardPeeked
+                            ? t('rating.zen.actions.peeked')
+                            : `${t('rating.zen.actions.peek', { n: peeksLeft })}. ${peekSourceLabel}`
+                        }
+                        title={
+                          cardPeeked
+                            ? t('rating.zen.actions.peeked')
+                            : hasPeersToPeek
+                              ? `${t('rating.zen.actions.peek', { n: peeksLeft })} — ${peekSourceLabel}`
+                              : undefined
+                        }
+                      >
+                        <span aria-hidden="true">
+                          <EyeIcon size={22} color="currentColor" />
+                        </span>
+                      </button>
+                    </span>
+                    <button
+                      type="button"
+                      className="rating-zen-page__btn rating-zen-page__btn--primary rating-zen-page__btn--icon"
+                      onClick={() => void handleSubmit()}
+                      disabled={!canSubmit}
                       aria-label={
-                        cardPeeked
-                          ? t('rating.zen.actions.peeked')
-                          : t('rating.zen.actions.peek', { n: peeksLeft })
+                        isSaving
+                          ? t('loading.saving', { ns: 'common' })
+                          : t('rating.zen.actions.submit')
                       }
                       title={
-                        hasPeersToPeek
-                          ? cardPeeked
-                            ? t('rating.zen.actions.peeked')
-                            : t('rating.zen.actions.peek', { n: peeksLeft })
-                          : undefined
+                        isSaving
+                          ? t('loading.saving', { ns: 'common' })
+                          : !pendingRating.trim()
+                            ? t('rating.zen.errors.ratingRequired')
+                            : !pendingComment.trim()
+                              ? t('rating.zen.errors.commentRequired')
+                              : t('rating.zen.actions.submit')
                       }
                     >
                       <span aria-hidden="true">
-                        <EyeIcon size={22} color="currentColor" />
+                        {isSaving ? (
+                          <span className="spinner spinner-small" />
+                        ) : (
+                          <CheckmarkIcon size={20} color="currentColor" />
+                        )}
                       </span>
                     </button>
-                  </span>
-                  <button
-                    type="button"
-                    className="rating-zen-page__btn rating-zen-page__btn--primary rating-zen-page__btn--icon"
-                    onClick={() => void handleSubmit()}
-                    disabled={!canSubmit}
-                    aria-label={
-                      isSaving
-                        ? t('loading.saving', { ns: 'common' })
-                        : t('rating.zen.actions.submit')
-                    }
-                    title={
-                      isSaving
-                        ? t('loading.saving', { ns: 'common' })
-                        : !pendingRating.trim()
-                          ? t('rating.zen.errors.ratingRequired')
-                          : !pendingComment.trim()
-                            ? t('rating.zen.errors.commentRequired')
-                            : t('rating.zen.actions.submit')
-                    }
-                  >
-                    <span aria-hidden="true">
-                      {isSaving ? (
-                        <span className="spinner spinner-small" />
-                      ) : (
-                        <CheckmarkIcon size={20} color="currentColor" />
-                      )}
-                    </span>
-                  </button>
+                  </div>
+                  {!cardPeeked && (
+                    <p
+                      className={`rating-zen-page__peek-sources rating-zen-page__peek-sources--${peekSourceKind}`}
+                    >
+                      {peekSourceLabel}
+                    </p>
+                  )}
+                  {!hasPeersToPeek && (
+                    <Tooltip id="rating-zen-peek-empty" place="bottom" noArrow>
+                      {t('rating.zen.noPeers')}
+                    </Tooltip>
+                  )}
                 </div>
-              )}
-              {!hasPeersToPeek && !hasFlag(user, permissionFlags.RATING_BANNED) && (
-                <Tooltip id="rating-zen-peek-empty" place="bottom" noArrow>
-                  {t('rating.zen.noPeers')}
-                </Tooltip>
               )}
 
               <div className="rating-zen-page__meta">
@@ -1123,6 +1153,57 @@ const RatingZenPage = () => {
                     <p className="rating-zen-page__creator">{formatCreatorDisplay(current.level)}</p>
                   </a>
                 </div>
+                {(current.level?.tilecount || current.level?.bpm || current.level?.levelLengthInMs) && (
+                  <div className="rating-zen-page__metadata">
+                    {!!current.level?.levelLengthInMs && (
+                      <div className="rating-zen-page__metadata-item">
+                        <TimeIcon size={18} />
+                        <span className="rating-zen-page__metadata-value">
+                          {formatDuration(current.level.levelLengthInMs)}
+                        </span>
+                      </div>
+                    )}
+                    {!!current.level?.tilecount && (() => {
+                      const autoTilecountTooltip = formatAutoTilecountTooltip(
+                        current.level.tilecount,
+                        current.level.autoTileCount,
+                        current.level.midspinCount,
+                      );
+                      const tilecountTooltipId = `rating-zen-tilecount-${current.level.id}`;
+                      return (
+                        <div
+                          className="rating-zen-page__metadata-item"
+                          {...(autoTilecountTooltip
+                            ? {
+                                'data-tooltip-id': tilecountTooltipId,
+                                'data-tooltip-content': autoTilecountTooltip,
+                              }
+                            : {})}
+                        >
+                          <ChartIcon size={18} />
+                          <span className="rating-zen-page__metadata-value">
+                            {current.level.tilecount}
+                          </span>
+                          {autoTilecountTooltip && (
+                            <Tooltip
+                              style={{ zIndex: 10, fontSize: '0.85rem', fontWeight: 500 }}
+                              id={tilecountTooltipId}
+                              place="bottom"
+                            />
+                          )}
+                        </div>
+                      );
+                    })()}
+                    {!!current.level?.bpm && (
+                      <div className="rating-zen-page__metadata-item">
+                        <MetronomeIcon size={18} />
+                        <span className="rating-zen-page__metadata-value">
+                          {current.level.bpm}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
                 {showRequestedRating && (current.level?.rerateNum || current.requesterFR) && (
                   <p className="rating-zen-page__request-rating">
                     {t(`components:rating.ratingCard.labels.${current.level?.rerateNum ? 'rerateNumber' : 'requestedRating'}`)}

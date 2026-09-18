@@ -114,15 +114,21 @@ export const RatingInput = ({
           type="text"
           autoComplete='off'
           value={inputValue}
+          disabled={disabled}
           onChange={handleInputChange}
-          onFocus={() => setShowDropdown(true)}
+          onFocus={() => {
+            if (!disabled) setShowDropdown(true);
+          }}
           onKeyDown={handleKeyDown}
           placeholder={placeholder || t('rating.detailPopup.placeholders.difficultyInput')}
         />
         <button 
           className="dropdown-toggle"
-          onClick={() => setShowDropdown(!showDropdown)}
+          onClick={() => {
+            if (!disabled) setShowDropdown(!showDropdown);
+          }}
           type="button"
+          disabled={disabled}
         >
           <div className={`dropdown-toggle-icon ${showDropdown ? 'open' : ''}`}>▼</div>
         </button>

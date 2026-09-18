@@ -2,6 +2,7 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { Portal } from '@/components/common/Portal';
+import { getFloatPortalRoot } from '@/utils/portalRoot';
 import { useTranslation } from 'react-i18next';
 import { compareSerializedTagOrder } from '@/utils/communityTags';
 import './facetitempicker.css';
@@ -87,7 +88,7 @@ const FacetItemPicker = ({
   };
 
   return (
-    <Portal>
+    <Portal root={getFloatPortalRoot()}>
     <div ref={setOverlayNode} className="facet-item-picker" role="dialog" aria-modal="true">
       <button
         type="button"
