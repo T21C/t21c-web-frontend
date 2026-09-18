@@ -40,6 +40,42 @@ import { TufHelperLiteDownloadManager } from '@/components/common/TufHelperLiteD
 
 const limit = 50;
 
+function buildLevelsListSignature({
+  query,
+  sort,
+  order,
+  deletedFilter,
+  clearedFilter,
+  availableDlFilter,
+  selectedLowFilterDiff,
+  selectedHighFilterDiff,
+  sliderQRange,
+  qSliderVisible,
+  levelFacetFilters,
+  selectedSpecialDiffs,
+  onlyMyLikes,
+  userId,
+  hiddenFiltersKey,
+}) {
+  return JSON.stringify({
+    query: query || '',
+    sort,
+    order,
+    deletedFilter: deletedFilter || 'hide',
+    clearedFilter: clearedFilter || 'show',
+    availableDlFilter: availableDlFilter || 'show',
+    selectedLowFilterDiff,
+    selectedHighFilterDiff,
+    sliderQRange,
+    qSliderVisible,
+    levelFacetFilters,
+    selectedSpecialDiffs,
+    onlyMyLikes: Boolean(userId && onlyMyLikes),
+    userId: userId || null,
+    hiddenFiltersKey: hiddenFiltersKey || '',
+  });
+}
+
 /**
  * @param {object} props
  * @param {boolean} [props.embedded] - When true, suppresses page-level chrome
@@ -128,7 +164,8 @@ const LevelPage = ({
     onlyMyLikes,
     setOnlyMyLikes,
     levelFacetFilters,
-    setLevelFacetFilters
+    setLevelFacetFilters,
+    listFetchSignatureRef,
   } = useContext(LevelContext);
 
   const [showHelpPopup, setShowHelpPopup] = useState(false);
@@ -241,6 +278,50 @@ const LevelPage = ({
     return randomSeedRef.current;
   }
 
+  const getListSignature = useCallback(
+    () =>
+      buildLevelsListSignature({
+        query,
+        sort,
+        order,
+        deletedFilter,
+        clearedFilter,
+        availableDlFilter,
+        selectedLowFilterDiff,
+        selectedHighFilterDiff,
+        sliderQRange,
+        qSliderVisible,
+        levelFacetFilters,
+        selectedSpecialDiffs,
+        onlyMyLikes,
+        userId: user?.id,
+        hiddenFiltersKey,
+      }),
+    [
+      query,
+      sort,
+      order,
+      deletedFilter,
+      clearedFilter,
+      availableDlFilter,
+      selectedLowFilterDiff,
+      selectedHighFilterDiff,
+      sliderQRange,
+      qSliderVisible,
+      levelFacetFilters,
+      selectedSpecialDiffs,
+      onlyMyLikes,
+      user?.id,
+      hiddenFiltersKey,
+    ],
+  );
+
+  function invalidateListCache() {
+    if (listFetchSignatureRef) {
+      listFetchSignatureRef.current = null;
+    }
+  }
+
   // Filter difficulties by type
   const pguDifficulties = difficulties.filter(d => d.type === 'PGU').sort((a, b) => a.sortOrder - b.sortOrder);
   const qDifficulties = difficulties.filter(d => d.name.includes('Q')).sort((a, b) => a.sortOrder - b.sortOrder);
@@ -301,6 +382,7 @@ const LevelPage = ({
         if (response.data.seed != null) {
           randomSeedRef.current = response.data.seed;
         }
+        if (listFetchSignatureRef) listFetchSignatureRef.current = getListSignature();
 
         if (resetPage) {
           // Replace entire list for new search/filter
@@ -348,16 +430,19 @@ const LevelPage = ({
               // Leave unannotated; card treats missing isLiked as false.
             }
           }
+          if (listFetchSignatureRef) listFetchSignatureRef.current = getListSignature();
           setLevelsData([level]);
           setTotalLevels(1);
           setHasMore(false);
         } else {
+          if (listFetchSignatureRef) listFetchSignatureRef.current = getListSignature();
           setTotalLevels(0);
           setLevelsData([]);
           setHasMore(false);
         }
       } catch (error) {
         if (axios.isCancel(error)) return;
+        if (listFetchSignatureRef) listFetchSignatureRef.current = getListSignature();
         setTotalLevels(0);
         setLevelsData([]);
         if (error.response?.status !== 404) {
@@ -391,6 +476,8 @@ const LevelPage = ({
     user,
     hiddenFiltersKey,
     runRequest,
+    getListSignature,
+    listFetchSignatureRef,
   ]);
   fetchLevelsDataRef.current = fetchLevelsData;
 
@@ -471,8 +558,14 @@ const LevelPage = ({
     setSearchInput(newValue);
     setQuery(newValue);
     setPageNumber(0);
+    invalidateListCache();
     setLevelsData(null);
+    setTotalLevels(0);
   }
+
+  useEffect(() => {
+    setSearchInput(query);
+  }, [query]);
 
   // Note: Removed auto-clearing of curation types when filter changes to 'hide'
   // to preserve user's selection for when they switch back to 'only' mode
@@ -481,17 +574,22 @@ const LevelPage = ({
   // is owned by `useDebouncedRequest`, so we just call it; rapid edits coalesce
   // into a single request automatically.
   useEffect(() => {
-    // On initial mount, keep existing context-backed results (e.g. browser back/forward navigation).
-    // Only fetch if there is no cached data yet.
+    // On remount, keep context-backed rows only when they were fetched for the
+    // current saved query + filters. Restoring `level_query` into the search
+    // bar does not change `query` (it's already that value), so a naive
+    // "skip if we have rows" left an unfiltered list under a stored search.
     if (isFirstFilterEffectRef.current) {
       isFirstFilterEffectRef.current = false;
-      if (!levelsData || levelsData.length === 0) {
-        // Must run immediately: the debounced runner can be cancelled by
-        // InfiniteScroll's first `next()` (flush). With dataLength 0 the window
-        // is often treated as "at bottom", so page becomes 1 and offset 50
-        // runs while the page-0 request never fires — empty list, real total.
-        fetchLevelsData(true, { immediate: true });
+      if (levelsData !== null && listFetchSignatureRef?.current === getListSignature()) {
+        return;
       }
+      // Must run immediately: the debounced runner can be cancelled by
+      // InfiniteScroll's first `next()` (flush). With dataLength 0 the window
+      // is often treated as "at bottom", so page becomes 1 and offset 50
+      // runs while the page-0 request never fires — empty list, real total.
+      setLevelsData(null);
+      setTotalLevels(0);
+      fetchLevelsData(true, { immediate: true });
       return;
     }
 
@@ -499,7 +597,9 @@ const LevelPage = ({
       setPageNumber(0);
     }
     setHasMore(true);
+    invalidateListCache();
     setLevelsData(null);
+    setTotalLevels(0);
     fetchLevelsData(true);
   }, [
     query,
@@ -552,6 +652,7 @@ const LevelPage = ({
   function handleSortType(value) {
     setPageNumber(0);
     setHasMore(true);
+    invalidateListCache();
     setLevelsData(null);
     if (value === 'RANDOM') {
       // Selecting or re-selecting RANDOM starts a new shuffle.
@@ -571,6 +672,7 @@ const LevelPage = ({
   function handleSortOrder(value) {
     setPageNumber(0);
     setHasMore(true);
+    invalidateListCache();
     setLevelsData(null);
     if (value === order) {
       fetchLevelsData(true, { immediate: true });
@@ -606,7 +708,9 @@ const LevelPage = ({
     setLevelFacetFilters({ tags: null, curationTypes: null, combine: 'and' });
     setQSliderVisible(false);
     setPageNumber(0);
-    setLevelsData([]);
+    invalidateListCache();
+    setLevelsData(null);
+    setTotalLevels(0);
     setHasMore(true);
   }
 

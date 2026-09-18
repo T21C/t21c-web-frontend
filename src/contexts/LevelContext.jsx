@@ -131,7 +131,11 @@ const LevelContextProvider = (props) => {
         curationTypesLoading,
     } = useDifficultyContext();
 
-    const [levelsData, setLevelsData] = useState([])
+    // null = never fetched / loading sentinel. [] is a real empty result set.
+    const [levelsData, setLevelsData] = useState(null)
+    // Last successful /levels list request key. Lives here so LevelPage remounts
+    // (route back/forward) can tell whether context rows still match the saved query.
+    const listFetchSignatureRef = useRef(null);
     const [legacyDiff, setLegacyDiff] = useState(() => storage.getItem(STORAGE_KEYS.LEGACY_DIFF) === 'true');
     const [filterOpen, setFilterOpen] = useState(() => storage.getItem(STORAGE_KEYS.FILTER_OPEN) !== 'false');
     const [sortOpen, setSortOpen] = useState(() => storage.getItem(STORAGE_KEYS.SORT_OPEN) !== 'false');
@@ -344,7 +348,8 @@ const LevelContextProvider = (props) => {
                 selectedSpecialDiffs, setSelectedSpecialDiffs,
                 qSliderVisible, setQSliderVisible,
                 onlyMyLikes, setOnlyMyLikes,
-                levelFacetFilters, setLevelFacetFilters
+                levelFacetFilters, setLevelFacetFilters,
+                listFetchSignatureRef,
             }}
         >
             {props.children}

@@ -86,6 +86,14 @@
         "tilecount": "Liczba kafelków musi być nieujemną liczbą całkowitą",
         "midspinCount": "Liczba midspinów musi być nieujemną liczbą całkowitą",
         "length": "Długość musi być nieujemną liczbą (sekundy, dopuszczalne ułamki)"
+      },
+      "perfectsDifference": {
+        "title": "Zaktualizować Perfecty passów?",
+        "message": "Liczba midspinów zmienia się z {{from}} na {{to}}. Perfecty każdego passa zmienią się o {{delta}}.",
+        "unset": "brak",
+        "question": "Zastosować tę różnicę do wszystkich passów tego poziomu?",
+        "toastSavedWithPasses": "Zapisano metadane chartu. Zaktualizowano Perfecty na {{count}} passach.",
+        "toastSavedWithPassesSkipped": "Zapisano metadane chartu. Zaktualizowano Perfecty na {{updated}} passach. Pominięto {{skipped}}, bo Perfect spadłby poniżej 0."
       }
     },
     "tags": {
