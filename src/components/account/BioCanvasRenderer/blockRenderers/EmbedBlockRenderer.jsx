@@ -1,51 +1,16 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useExternalLink } from "@/components/common/LinkConfirm";
-import { getVideoDetails } from "@/utils";
-import {
-  getEmbedProvider,
-  getYouTubeEmbedUrl,
-  getYouTubeThumbnailUrl,
-} from "@/utils/bioCanvas/blocks/embed";
+import { getLocalVideoPreview } from "@/utils/bioCanvas/blocks/embed";
 
 export default function EmbedBlockRenderer({ block }) {
   const openExternal = useExternalLink();
   const { url, title } = block.data ?? {};
-  const [videoDetail, setVideoDetail] = useState(null);
-
-  const provider = useMemo(() => (url ? getEmbedProvider(url) : null), [url]);
-  const youtubeEmbed = useMemo(
-    () => (provider === "youtube" && url ? getYouTubeEmbedUrl(url) : null),
-    [provider, url],
-  );
-  const youtubeThumbnail = useMemo(
-    () => (provider === "youtube" && url ? getYouTubeThumbnailUrl(url) : null),
-    [provider, url],
-  );
-
-  useEffect(() => {
-    let active = true;
-    setVideoDetail(null);
-
-    if (!url || provider !== "bilibili") {
-      return () => {
-        active = false;
-      };
-    }
-
-    getVideoDetails(url)
-      .then((detail) => {
-        if (active) setVideoDetail(detail);
-      });
-
-    return () => {
-      active = false;
-    };
-  }, [url, provider]);
+  const preview = useMemo(() => (url ? getLocalVideoPreview(url) : null), [url]);
 
   if (!url) return null;
 
-  const embedSrc = youtubeEmbed ?? videoDetail?.embed ?? null;
-  const thumbImage = youtubeThumbnail ?? videoDetail?.image ?? null;
+  const embedSrc = preview?.embed ?? null;
+  const thumbImage = preview?.image ?? null;
 
   return (
     <div className="bio-canvas-block bio-canvas-block--embed">
@@ -67,7 +32,7 @@ export default function EmbedBlockRenderer({ block }) {
             style={thumbImage ? { backgroundImage: `url(${thumbImage})` } : undefined}
             onClick={() => openExternal(url)}
           >
-            <span>{title?.trim() || videoDetail?.title || "Open video"}</span>
+            <span>{title?.trim() || "Open video"}</span>
           </button>
         )}
       </div>

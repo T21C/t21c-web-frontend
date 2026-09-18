@@ -176,8 +176,6 @@ const PassSubmissionPage = () => {
         feelingDifficulty: form.feelingRating,
         expectedDifficulty: form.expectedRating?.trim() || null,
         keyCount: normalizeKeyCount(form.keyCount),
-        title: videoDetail?.title || '',
-        rawTime: videoDetail?.timestamp || new Date().toISOString(),
         earlyDouble: parseInt(form.tooEarly) || 0,
         earlySingle: parseInt(form.early) || 0,
         ePerfect: parseInt(form.ePerfect) || 0,

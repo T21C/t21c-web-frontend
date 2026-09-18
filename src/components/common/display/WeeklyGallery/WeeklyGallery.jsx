@@ -6,8 +6,7 @@ import { ChevronIcon } from '../../icons';
 import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { NavLink } from 'react-router-dom';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
-import { getVideoDetails } from '@/utils';
-import { getPrimaryVideoLink } from '@/utils/videoLink';
+import { getYouTubeThumbnailUrl } from '@/utils/videoLink';
 
 const WeeklyGallery = ({ 
   curations = [], 
@@ -26,50 +25,6 @@ const WeeklyGallery = ({
   const autoScrollRef = useRef(null);
   const pauseTimeoutRef = useRef(null);
   const containerRef = useRef(null);
-  /** Resolved preview URLs keyed by `String(curation.id)` — async fills non-YouTube links via `getVideoDetails`. */
-  const [thumbnailUrls, setThumbnailUrls] = useState({});
-
-  const getYoutubeMqFromVideoLink = useCallback((videoLink) => {
-    const primary = getPrimaryVideoLink(videoLink);
-    if (!primary) return null;
-    const videoId = primary.match(
-      /(?:youtu\.be\/|youtube\.com\/(?:.*v=|.*\/videos\/)|youtube-nocookie\.com\/(?:embed\/|v\/)|youtube\.com\/(?:v\/|e\/|embed\/|user\/[^/]+\/u\/[0-9]+\/)|watch\?v=)([^#\&\?]*)/,
-    )?.[1];
-    return videoId ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg` : null;
-  }, []);
-
-  useEffect(() => {
-    let cancelled = false;
-    const allowed = new Set(curations.map((c) => String(c.id)));
-
-    setThumbnailUrls((prev) => {
-      const next = {};
-      for (const [k, v] of Object.entries(prev)) {
-        if (allowed.has(k)) next[k] = v;
-      }
-      return next;
-    });
-
-    for (const c of curations) {
-      const key = String(c.id);
-      const level = c.scheduledCuration?.level || c.level;
-      if (c.previewLink || !level?.videoLink) continue;
-      if (getYoutubeMqFromVideoLink(level.videoLink)) continue;
-
-      getVideoDetails(level.videoLink)
-        .then((data) => {
-          if (cancelled) return;
-          const thumb = data?.image;
-          if (thumb) {
-            setThumbnailUrls((prev) => ({ ...prev, [key]: thumb }));
-          }
-        });
-    }
-
-    return () => {
-      cancelled = true;
-    };
-  }, [curations, getYoutubeMqFromVideoLink]);
 
   // Handle auto-scroll
   useEffect(() => {
@@ -304,12 +259,10 @@ const WeeklyGallery = ({
         <div className="weekly-gallery__items">
           {curations.map((curation, index) => {
             const position = getCurationPosition(index);
-            const thumbKey = String(curation.id);
             const levelRow = curation.scheduledCuration?.level || curation.level;
             const thumbSrc =
-              thumbnailUrls[thumbKey] ??
               curation.previewLink ??
-              getYoutubeMqFromVideoLink(levelRow?.videoLink) ??
+              getYouTubeThumbnailUrl(levelRow?.videoLink) ??
               null;
             return (
               <NavLink

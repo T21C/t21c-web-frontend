@@ -5,8 +5,8 @@ import "./levelsubmission.css";
 import placeholder from "@/assets/placeholder/3.png";
 import { useEffect, useRef, useState, useMemo } from "react";
 import { useLocation } from 'react-router-dom';
-import { getVideoDetails } from "@/utils";
 import { resolveSubmissionVideoUrl } from "@/utils/resolveVideoUrl";
+import { getLocalVideoPreview } from "@/utils/videoLink";
 import { useDebouncedRequest } from "@/hooks/useDebouncedRequest";
 import { useAuth } from "@/contexts/AuthContext";
 import { validateFeelingRating, formatDate, truncateString } from "@/utils/Utility";
@@ -303,10 +303,11 @@ const LevelSubmissionPage = () => {
     }
 
     setVideoLinkResolving(true);
+    setVideoDetail(getLocalVideoPreview(videoLink));
 
     resolveVideoLinkRequest(({ signal }) =>
       resolveSubmissionVideoUrl(videoLink, { signal })
-        .then(async ({ url: resolvedUrl, resolved }) => {
+        .then(({ url: resolvedUrl, resolved }) => {
           if (resolved && resolvedUrl && resolvedUrl !== videoLink) {
             setForm((prevForm) => ({ ...prevForm, videoLink: resolvedUrl }));
             toast.success(t('levelSubmission.videoInfo.linkResolved', {
@@ -314,23 +315,14 @@ const LevelSubmissionPage = () => {
             }));
           }
 
-          const videoDetails = await getVideoDetails(resolvedUrl);
-          setVideoDetail(videoDetails ? videoDetails : null);
-
-          if (videoDetails?.downloadLink) {
-            setForm((prevForm) => {
-              if (prevForm.levelZip) return prevForm;
-              return {
-                ...prevForm,
-                dlLink: videoDetails.downloadLink ? videoDetails.downloadLink : "",
-              };
-            });
-          }
+          setVideoDetail(getLocalVideoPreview(resolvedUrl));
         })
         .catch((error) => {
           if (api.isCancel(error)) return;
           console.error("Error fetching data:", error);
-          setVideoDetail(null);
+          if (!getLocalVideoPreview(videoLink)) {
+            setVideoDetail(null);
+          }
         })
         .finally(() => {
           setVideoLinkResolving(false);
@@ -1191,21 +1183,27 @@ const LevelSubmissionPage = () => {
                 onChange={handleInputChange}
                 style={{ borderColor: isFormValidDisplay.videoLink ? "" : "red" }}
               />
-              {videoDetail ? 
+              {videoDetail?.title || videoDetail?.channelName || videoDetail?.timestamp ? 
               (<div className="youtube-info">
+                {videoDetail.title ? (
                 <div className="yt-info">
                   <h4>{t('levelSubmission.videoInfo.title')}</h4>
                   <p>{videoDetail.title}</p>
                 </div>
+                ) : null}
+                {videoDetail.channelName ? (
                 <div className="yt-info">
                   <h4>{t('levelSubmission.videoInfo.channel')}</h4>
                   <p>{videoDetail.channelName}</p>
                 </div>
+                ) : null}
+                {videoDetail.timestamp ? (
                 <div className="yt-info">
                   <h4>{t('levelSubmission.videoInfo.timestamp')}</h4>
                   <p>{formatDate(videoDetail.timestamp, i18next?.language)}</p>
                 </div>
-              </div>) : 
+                ) : null}
+              </div>) : !videoDetail ? 
               (<div className="yt-info">
                 <p style={{color: "#aaa"}}>
                   {videoLinkResolving
@@ -1213,7 +1211,7 @@ const LevelSubmissionPage = () => {
                     : t('levelSubmission.videoInfo.nolink')}
                 </p>
                 <br />
-              </div>)}
+              </div>) : null}
             </div>
 
             <div className="zip-upload-section">

@@ -33,6 +33,77 @@ export function getVideoProvider(url) {
   }
 }
 
+const YOUTUBE_ID_PATTERNS = [
+  /youtu\.be\/([a-zA-Z0-9_-]{11})/,
+  /youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/,
+  /youtube\.com\/live\/([a-zA-Z0-9_-]{11})/,
+  /youtube(?:-nocookie)?\.com\/embed\/([a-zA-Z0-9_-]{11})/,
+  /[?&]v=([a-zA-Z0-9_-]{11})/,
+];
+
+/** Extract an 11-character YouTube video id from common watch/short/embed URLs. */
+export function extractYouTubeVideoId(url) {
+  const primary = getPrimaryVideoLink(url);
+  if (!primary) return null;
+  for (const pattern of YOUTUBE_ID_PATTERNS) {
+    const match = primary.match(pattern);
+    if (match?.[1]) return match[1];
+  }
+  return null;
+}
+
+/** Build a YouTube iframe embed URL without hitting the video details API. */
+export function getYouTubeEmbedUrl(url) {
+  const videoId = extractYouTubeVideoId(url);
+  if (!videoId) return null;
+
+  const primary = getPrimaryVideoLink(url);
+  const timestampMatch = primary.match(/[?&]t=(\d+)s?/);
+  const timestamp = timestampMatch?.[1] ?? null;
+  let embedUrl = `https://www.youtube.com/embed/${videoId}`;
+  if (timestamp) {
+    embedUrl += `?start=${timestamp}`;
+  }
+  return embedUrl;
+}
+
+/** Thumbnail for YouTube links without API calls. */
+export function getYouTubeThumbnailUrl(url) {
+  const videoId = extractYouTubeVideoId(url);
+  return videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : null;
+}
+
+/** Extract a Bilibili BV id from a video or b23 URL. */
+export function extractBilibiliBvId(url) {
+  const primary = getPrimaryVideoLink(url);
+  if (!primary) return null;
+  const match = primary.match(/\/(BV[a-zA-Z0-9]+)/);
+  return match?.[1] ?? null;
+}
+
+/** Build a Bilibili iframe embed URL from BV id only (no cid / API). */
+export function getBilibiliEmbedUrl(url) {
+  const bvid = extractBilibiliBvId(url);
+  if (!bvid) return null;
+  return `https://player.bilibili.com/player.html?isOutside=true&bvid=${bvid}&p=1&autoplay=0`;
+}
+
+/**
+ * Quota-free embed preview for YouTube and Bilibili.
+ * @returns {{ embed: string, image: string | null } | null}
+ */
+export function getLocalVideoPreview(url) {
+  const ytEmbed = getYouTubeEmbedUrl(url);
+  if (ytEmbed) {
+    return { embed: ytEmbed, image: getYouTubeThumbnailUrl(url) };
+  }
+  const biliEmbed = getBilibiliEmbedUrl(url);
+  if (biliEmbed) {
+    return { embed: biliEmbed, image: null };
+  }
+  return null;
+}
+
 function cleanSingleVideoUrl(url) {
   if (!url || typeof url !== 'string') return '';
 
@@ -40,6 +111,8 @@ function cleanSingleVideoUrl(url) {
     /https?:\/\/(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/,
     /https?:\/\/(?:www\.)?youtu\.be\/([a-zA-Z0-9_-]+)/,
     /https?:\/\/(?:www\.)?youtube\.com\/live\/([a-zA-Z0-9_-]+)/,
+    /https?:\/\/(?:www\.)?youtube\.com\/shorts\/([a-zA-Z0-9_-]+)/,
+    /https?:\/\/(?:www\.)?youtube\.com\/embed\/([a-zA-Z0-9_-]+)/,
     /https?:\/\/(?:www\.|m\.)?bilibili\.com\/video\/(BV[a-zA-Z0-9]+)/,
     /https?:\/\/(?:www\.|m\.)?b23\.tv\/(BV[a-zA-Z0-9]+)/,
     /https?:\/\/(?:www\.|m\.)?bilibili\.com\/.*?(BV[a-zA-Z0-9]+)/,

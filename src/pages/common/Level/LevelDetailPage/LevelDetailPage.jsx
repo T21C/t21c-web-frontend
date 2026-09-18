@@ -12,10 +12,7 @@ import { PORTALED_PANEL_CLASS, usePortaledPanelAnchor } from "@/hooks/usePortale
 import { communityTagHoverTitle, formatCommunityTagScore, groupTagsByGroup, sortTagsByGroupThenSortOrder } from '@/utils/communityTags';
 import TagConfidenceBar from '@/components/common/display/TagConfidenceBar/TagConfidenceBar';
 
-import {
-  getVideoDetails
-} from "@/utils";
-import { getPrimaryVideoLink, getVideoProvider, splitVideoLinks } from "@/utils/videoLink";
+import { getPrimaryVideoLink, getVideoProvider, getLocalVideoPreview, splitVideoLinks } from "@/utils/videoLink";
 
 import { Tooltip } from "react-tooltip";
 import { useTranslation } from "react-i18next";
@@ -968,12 +965,15 @@ const LevelDetailPageContent = ({ mockData = null }) => {
   const [clearCount, setClearCount] = useState(0);
   const [hasRepeatedClears, setHasRepeatedClears] = useState(false);
   const [activeVideoIndex, setActiveVideoIndex] = useState(0);
-  const [videoDetailsByUrl, setVideoDetailsByUrl] = useState({});
 
   const videoLinks = useMemo(
     () => splitVideoLinks(res?.level?.videoLink),
     [res?.level?.videoLink],
   );
+  const videoDetailsByUrl = useMemo(() => {
+    const entries = videoLinks.map((url) => [url, getLocalVideoPreview(url)]);
+    return Object.fromEntries(entries);
+  }, [videoLinks]);
   const primaryVideoDetail = videoDetailsByUrl[videoLinks[0]] ?? null;
   const activeVideoDetail = videoDetailsByUrl[videoLinks[activeVideoIndex]] ?? null;
   const activeVideoLink = videoLinks[activeVideoIndex] ?? '';
@@ -1938,29 +1938,6 @@ const LevelDetailPageContent = ({ mockData = null }) => {
   useEffect(() => {
     setActiveVideoIndex(0);
   }, [effectiveId, res?.level?.videoLink]);
-
-  useEffect(() => {
-    if (videoLinks.length === 0) {
-      setVideoDetailsByUrl({});
-      return undefined;
-    }
-
-    let cancelled = false;
-
-    Promise.all(
-      videoLinks.map(async (url) => {
-        const detail = await getVideoDetails(url);
-        return [url, detail];
-      }),
-    ).then((entries) => {
-      if (cancelled) return;
-      setVideoDetailsByUrl(Object.fromEntries(entries));
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [videoLinks]);
 
   // Apply curation styles when level data changes.
   // useLayoutEffect so injected CSS is removed before the next paint (same-route

@@ -130,7 +130,7 @@ const handleSubmit = async (e) => {
       feelingRating: form.feelingRating,
       expectedRating: form.expectedRating?.trim() || null,
       keyCount: normalizeKeyCount(form.keyCount),
-      vidTitle: videoDetail?.title || level?.song || '',
+      vidTitle: pass.vidTitle || level?.song || '',
       videoLink: form.videoLink,
       vidUploadTime: form.vidUploadTime,
       isNoHoldTap: form.isNoHold,
