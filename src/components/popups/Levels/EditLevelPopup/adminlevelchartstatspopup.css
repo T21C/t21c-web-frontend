@@ -14,6 +14,30 @@
   box-shadow: 0 8px 32px var(--color-black-t50);
 }
 
+.admin-level-chart-stats-popup__panel--prompt {
+  max-width: 480px;
+}
+
+.admin-level-chart-stats-popup__prompt {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.admin-level-chart-stats-popup__prompt .admin-level-chart-stats-popup__hint {
+  margin: 0;
+}
+
+.admin-level-chart-stats-popup__actions--prompt {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.admin-level-chart-stats-popup__actions-end {
+  display: flex;
+  gap: 10px;
+}
+
 .admin-level-chart-stats-popup__header {
   display: flex;
   align-items: center;

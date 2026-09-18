@@ -41,7 +41,8 @@ export function getPassJudgementHitCountFromSubmissionJudgements(j) {
 }
 
 /**
- * Achievable manual judgements: persisted tilecount (already excludes midspins) minus auto-play tiles.
+ * Achievable manual judgements: persisted tilecount (excludes non-auto midspins)
+ * minus auto-play tiles (including auto-range midspins).
  * `midspinCount` is ignored so existing call sites do not need a sweep.
  */
 export function getEffectiveTilecount(levelTilecount, autoTileCount = 0, _midspinCount = 0) {

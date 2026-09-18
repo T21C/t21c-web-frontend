@@ -23,14 +23,35 @@ function msToLengthSecondsInput(ms) {
   return String(Number(s.toFixed(6)));
 }
 
+function parseOptionalNonNegInt(raw) {
+  if (raw.trim() === '') return null;
+  return Number(raw);
+}
+
+function sameNullableNumber(a, b) {
+  if (a == null && b == null) return true;
+  return a === b;
+}
+
+function midspinOrZero(value) {
+  if (value == null || !Number.isFinite(Number(value))) return 0;
+  return Math.max(0, Math.floor(Number(value)));
+}
+
+function formatSignedDelta(n) {
+  if (n > 0) return `+${n}`;
+  return String(n);
+}
+
 export const AdminLevelChartStatsPopup = ({ level, onClose, onSaved }) => {
-  const { t } = useTranslation('components');
+  const { t } = useTranslation(['components', 'common']);
   const [bpm, setBpm] = useState('');
   const [tilecount, setTilecount] = useState('');
   const [midspinCount, setMidspinCount] = useState('');
   const [lengthSeconds, setLengthSeconds] = useState('');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
+  const [perfectsPrompt, setPerfectsPrompt] = useState(null);
 
   useEffect(() => {
     setBpm(fieldToInput(level?.bpm));
@@ -38,6 +59,7 @@ export const AdminLevelChartStatsPopup = ({ level, onClose, onSaved }) => {
     setMidspinCount(fieldToInput(level?.midspinCount));
     setLengthSeconds(msToLengthSecondsInput(level?.levelLengthInMs));
     setError(null);
+    setPerfectsPrompt(null);
   }, [level?.id, level?.bpm, level?.tilecount, level?.midspinCount, level?.levelLengthInMs]);
 
   const lengthTimeLabel = (() => {
@@ -76,28 +98,23 @@ export const AdminLevelChartStatsPopup = ({ level, onClose, onSaved }) => {
     return null;
   };
 
-  const handleSave = async (e) => {
-    e.preventDefault();
-    const v = validate();
-    if (v) {
-      setError(v);
-      return;
-    }
-    setError(null);
+  const buildPayload = () => ({
+    bpm: bpm.trim() === '' ? null : Number(bpm),
+    tilecount: tilecount.trim() === '' ? null : Number(tilecount),
+    midspinCount: parseOptionalNonNegInt(midspinCount),
+    levelLengthInMs:
+      lengthSeconds.trim() === ''
+        ? null
+        : Math.round(Number(lengthSeconds) * 1000),
+  });
+
+  const submitChartStats = async (payload, applyPerfectsDifference) => {
     setSaving(true);
+    setError(null);
     try {
-      const payload = {
-        bpm: bpm.trim() === '' ? null : Number(bpm),
-        tilecount: tilecount.trim() === '' ? null : Number(tilecount),
-        midspinCount: midspinCount.trim() === '' ? null : Number(midspinCount),
-        levelLengthInMs:
-          lengthSeconds.trim() === ''
-            ? null
-            : Math.round(Number(lengthSeconds) * 1000),
-      };
       const res = await api.patch(
         `${routes.database.levels.root()}/${level.id}/chart-stats`,
-        payload,
+        { ...payload, applyPerfectsDifference: Boolean(applyPerfectsDifference) },
       );
       const updated = res.data?.level;
       if (updated && onSaved) {
@@ -108,7 +125,22 @@ export const AdminLevelChartStatsPopup = ({ level, onClose, onSaved }) => {
           levelLengthInMs: updated.levelLengthInMs ?? null,
         });
       }
-      toast.success(t('levelPopups.edit.chartStats.toastSaved'));
+      const updatedCount = Number(res.data?.passesUpdated) || 0;
+      const skippedCount = Number(res.data?.passesSkipped) || 0;
+      if (applyPerfectsDifference && updatedCount > 0) {
+        toast.success(
+          skippedCount > 0
+            ? t('levelPopups.edit.chartStats.perfectsDifference.toastSavedWithPassesSkipped', {
+                updated: updatedCount,
+                skipped: skippedCount,
+              })
+            : t('levelPopups.edit.chartStats.perfectsDifference.toastSavedWithPasses', {
+                count: updatedCount,
+              }),
+        );
+      } else {
+        toast.success(t('levelPopups.edit.chartStats.toastSaved'));
+      }
       onClose();
     } catch (err) {
       console.error(err);
@@ -117,22 +149,67 @@ export const AdminLevelChartStatsPopup = ({ level, onClose, onSaved }) => {
         t('levelPopups.edit.chartStats.errors.save');
       setError(msg);
       toast.error(msg);
+      setPerfectsPrompt(null);
     } finally {
       setSaving(false);
     }
   };
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    const v = validate();
+    if (v) {
+      setError(v);
+      return;
+    }
+    setError(null);
+    const payload = buildPayload();
+    const previousMidspin =
+      level?.midspinCount == null || level?.midspinCount === ''
+        ? null
+        : Number(level.midspinCount);
+    const nextMidspin = payload.midspinCount;
+    if (!sameNullableNumber(previousMidspin, nextMidspin)) {
+      const delta =
+        midspinOrZero(previousMidspin) - midspinOrZero(nextMidspin);
+      if (delta !== 0) {
+        setPerfectsPrompt({
+          payload,
+          from: previousMidspin,
+          to: nextMidspin,
+          delta,
+        });
+        return;
+      }
+    }
+    await submitChartStats(payload, false);
+  };
+
+  const handlePromptAnswer = async (applyPerfectsDifference) => {
+    if (!perfectsPrompt) return;
+    await submitChartStats(perfectsPrompt.payload, applyPerfectsDifference);
+  };
+
+  const displayMidspin = (value) =>
+    value == null
+      ? t('levelPopups.edit.chartStats.perfectsDifference.unset')
+      : String(value);
 
   const content = (
     <PopupShell
       onClose={onClose}
       closeDisabled={saving}
       overlayClassName="admin-level-chart-stats-popup"
-      panelClassName="admin-level-chart-stats-popup__panel"
+      panelClassName={`admin-level-chart-stats-popup__panel${
+        perfectsPrompt ? ' admin-level-chart-stats-popup__panel--prompt' : ''
+      }`}
       ariaLabelledBy="admin-chart-stats-title"
     >
         <div className="admin-level-chart-stats-popup__header">
           <h2 id="admin-chart-stats-title">
-            {t('levelPopups.edit.chartStats.title')}
+            {perfectsPrompt
+              ? t('levelPopups.edit.chartStats.perfectsDifference.title')
+              : t('levelPopups.edit.chartStats.title')}
           </h2>
           <CloseButton
             variant="inline"
@@ -140,6 +217,56 @@ export const AdminLevelChartStatsPopup = ({ level, onClose, onSaved }) => {
             aria-label={t('levelPopups.edit.close')}
           />
         </div>
+        {perfectsPrompt ? (
+          <div className="admin-level-chart-stats-popup__prompt">
+            <p className="admin-level-chart-stats-popup__hint">
+              {t('levelPopups.edit.chartStats.perfectsDifference.message', {
+                from: displayMidspin(perfectsPrompt.from),
+                to: displayMidspin(perfectsPrompt.to),
+                delta: formatSignedDelta(perfectsPrompt.delta),
+              })}
+            </p>
+            <p className="admin-level-chart-stats-popup__hint">
+              {t('levelPopups.edit.chartStats.perfectsDifference.question')}
+            </p>
+            {error ? (
+              <div className="admin-level-chart-stats-popup__error">{error}</div>
+            ) : null}
+            <div className="admin-level-chart-stats-popup__actions admin-level-chart-stats-popup__actions--prompt">
+              <button
+                type="button"
+                className="admin-level-chart-stats-popup__btn admin-level-chart-stats-popup__btn--secondary btn-fill-neutral-muted"
+                onClick={() => {
+                  setPerfectsPrompt(null);
+                  setError(null);
+                }}
+                style={{ marginRight: 'auto' }}
+                disabled={saving}
+              >
+                {t('buttons.back', { ns: 'common' })}
+              </button>
+              <div className="admin-level-chart-stats-popup__actions-end">
+                <button
+                  type="button"
+                  className="admin-level-chart-stats-popup__btn admin-level-chart-stats-popup__btn--secondary btn-fill-danger"
+                  onClick={() => handlePromptAnswer(false)}
+                  disabled={saving}
+                >
+                  {t('buttons.no', { ns: 'common' })}
+                </button>
+                <button
+                  type="button"
+                  className="admin-level-chart-stats-popup__btn admin-level-chart-stats-popup__btn--primary btn-fill-success"
+                  onClick={() => handlePromptAnswer(true)}
+                  disabled={saving}
+                >
+                  {t('buttons.yes', { ns: 'common' })}
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <>
         <p className="admin-level-chart-stats-popup__hint">
           {t('levelPopups.edit.chartStats.clearHint')}
         </p>
@@ -229,6 +356,8 @@ export const AdminLevelChartStatsPopup = ({ level, onClose, onSaved }) => {
             </button>
           </div>
         </form>
+          </>
+        )}
     </PopupShell>
   );
 

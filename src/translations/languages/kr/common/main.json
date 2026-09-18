@@ -50,7 +50,9 @@
     "return": "Return",
     "reset": "초기화",
     "create": "만들기",
-    "createNew": "새로 만들기"
+    "createNew": "새로 만들기",
+    "yes": "예",
+    "no": "아니요"
   },
   "like": {
     "like": "좋아요",

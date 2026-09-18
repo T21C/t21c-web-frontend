@@ -9,11 +9,39 @@ import api from '@/utils/api';
 import { routes } from '@/api/routes';
 import './translationspage.css';
 
+const translationPageFiles = import.meta.glob(
+  '../../../translations/languages/*/pages/translations.json',
+  { eager: true },
+);
+
 function normalizeContributors(value) {
+  if (typeof value === 'string') {
+    return value
+      .split(',')
+      .map((name) => name.trim())
+      .filter(Boolean);
+  }
   if (!Array.isArray(value)) {
     return [];
   }
   return value.filter((name) => typeof name === 'string' && name.trim()).map((name) => name.trim());
+}
+
+function contributorNamesFromTranslationFile(langCode) {
+  const suffix = `/languages/${langCode}/pages/translations.json`;
+  const entry = Object.entries(translationPageFiles).find(([filePath]) =>
+    filePath.endsWith(suffix),
+  );
+  if (!entry) {
+    return null;
+  }
+
+  const json = entry[1]?.default ?? entry[1];
+  const value = json?.languages?.contributorNames;
+  if (typeof value !== 'string') {
+    return null;
+  }
+  return normalizeContributors(value);
 }
 
 function formatStatus(status, t) {
@@ -110,7 +138,9 @@ const TranslationsPage = () => {
           display: info.display,
           folder: info.folder || code,
           status: Number(info.status) || 0,
-          contributors: normalizeContributors(info.contributors),
+          contributors:
+            contributorNamesFromTranslationFile(code) ??
+            normalizeContributors(info.contributors),
         }));
         list.sort((a, b) => b.status - a.status || a.display.localeCompare(b.display));
         setLanguages(list);
@@ -286,6 +316,11 @@ const TranslationsPage = () => {
                   <p className="translations-page__example-note">
                     {t('translations.guide.steps.extract.placeholderWarning', placeholderVars)}
                   </p>
+                </div>
+                <div className="translations-page__example">
+                  <p>{t('translations.guide.steps.extract.contributorCreditsLabel')}</p>
+                  <p>{t('translations.guide.steps.extract.contributorCreditsBody')}</p>
+                  <pre>{t('translations.guide.steps.extract.contributorCreditsExample')}</pre>
                 </div>
               </div>
 

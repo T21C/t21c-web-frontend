@@ -311,9 +311,13 @@
   background: linear-gradient(135deg, var(--color-white-t15) 0%, var(--color-white-t10) 100%);
   border: 1px solid var(--color-white-t20);
   position: relative;
-  overflow: hidden;
   flex: 1;
   min-width: 130px;
+}
+
+.top-raters-overlay .total-ratings,
+.top-raters-overlay .average-per-day {
+  overflow: hidden;
 }
 
 .top-raters-overlay .total-ratings,
@@ -624,7 +628,7 @@
 }
 
 .top-raters-accuracy-tooltip {
-  z-index: var(--z-float);
+  z-index: var(--z-float) !important;
   max-width: 16rem;
 }
 

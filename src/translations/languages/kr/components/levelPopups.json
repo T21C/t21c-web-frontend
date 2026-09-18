@@ -88,6 +88,14 @@
         "tilecount": "타일 수는 0 이상의 정수여야 합니다",
         "midspinCount": "미드스핀 수는 0 이상의 정수여야 합니다",
         "length": "길이는 0 이상의 숫자(초, 소수 가능)여야 합니다"
+      },
+      "perfectsDifference": {
+        "title": "클리어 Perfect를 업데이트할까요?",
+        "message": "미드스핀 수가 {{from}}에서 {{to}}(으)로 바뀝니다. 각 클리어의 Perfect는 {{delta}}만큼 변경됩니다.",
+        "unset": "없음",
+        "question": "이 차이를 이 레벨의 모든 클리어에 적용할까요?",
+        "toastSavedWithPasses": "채보 메타데이터가 저장되었습니다. {{count}}개의 클리어 Perfect가 업데이트되었습니다.",
+        "toastSavedWithPassesSkipped": "채보 메타데이터가 저장되었습니다. {{updated}}개의 클리어 Perfect가 업데이트되었습니다. Perfect가 0 미만이 되어 {{skipped}}개는 건너뛰었습니다."
       }
     },
     "tags": {

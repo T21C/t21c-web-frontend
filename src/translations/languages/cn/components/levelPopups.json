@@ -136,6 +136,14 @@
         "tilecount": "物量必须为非负整数",
         "midspinCount": "中旋数必须为非负整数",
         "length": "时长必须为非负数（秒，可含小数）"
+      },
+      "perfectsDifference": {
+        "title": "是否更新通关 Perfect？",
+        "message": "中旋数将从 {{from}} 改为 {{to}}。每条通关的 Perfect 将变化 {{delta}}。",
+        "unset": "未设置",
+        "question": "是否将此差值应用到本关所有通关？",
+        "toastSavedWithPasses": "谱面数据已保存。已更新 {{count}} 条通关的 Perfect。",
+        "toastSavedWithPassesSkipped": "谱面数据已保存。已更新 {{updated}} 条通关的 Perfect。另有 {{skipped}} 条因 Perfect 会小于 0 而跳过。"
       }
     },
     "tags": {

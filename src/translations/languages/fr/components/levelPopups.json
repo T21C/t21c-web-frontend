@@ -85,6 +85,14 @@
         "tilecount": "Le nombre de tuiles doit être un entier positif ou nul",
         "midspinCount": "Le nombre de midspins doit être un entier positif ou nul",
         "length": "La durée doit être un nombre positif ou nul (secondes, décimales autorisées)"
+      },
+      "perfectsDifference": {
+        "title": "Mettre à jour les Perfect des passes ?",
+        "message": "Le nombre de midspins passe de {{from}} à {{to}}. Les Perfect de chaque passe changeraient de {{delta}}.",
+        "unset": "non défini",
+        "question": "Appliquer cette différence à toutes les passes de ce niveau ?",
+        "toastSavedWithPasses": "Métadonnées du chart enregistrées. Perfect mis à jour sur {{count}} passes.",
+        "toastSavedWithPassesSkipped": "Métadonnées du chart enregistrées. Perfect mis à jour sur {{updated}} passes. {{skipped}} ignorées car le Perfect serait inférieur à 0."
       }
     },
     "tags": {
