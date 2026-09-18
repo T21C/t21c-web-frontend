@@ -190,27 +190,6 @@
   font-size: 0.9rem;
 }
 
-.tournament-management-popup .btn-fill-primary,
-.tournament-management-popup .btn-fill-secondary,
-.tournament-management-popup .btn-fill-danger {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.35rem;
-  padding: 0.45rem 0.85rem;
-  border-radius: 0.4rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  line-height: 1.2;
-  cursor: pointer;
-  border: none;
-}
-
-.tournament-management-popup label.btn-fill-primary,
-.tournament-management-popup label.btn-fill-secondary {
-  cursor: pointer;
-}
-
 .tournament-management-popup__placements-wrap {
   overflow: auto;
   flex: 1;
@@ -541,13 +520,6 @@
 .tournament-management-popup__nominees-edit-btn:disabled {
   opacity: 0.5;
   cursor: default;
-}
-
-.tournament-management-popup__placements-table .btn-fill-danger,
-.tournament-management-popup__placements-table .btn-fill-secondary {
-  padding: 0.25rem 0.55rem;
-  min-width: 2rem;
-  font-size: 0.8rem;
 }
 
 .tournament-management-popup__muted {

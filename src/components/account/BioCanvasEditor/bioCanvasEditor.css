@@ -58,27 +58,6 @@
   gap: 0.75rem;
 }
 
-.bio-canvas-editor-popup [class*="btn-fill-"],
-.bio-canvas-editor [class*="btn-fill-"] {
-  padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  line-height: 1.25;
-  white-space: nowrap;
-}
-
-.bio-canvas-editor-popup__actions [class*="btn-fill-"] {
-  padding: 0.625rem 1.25rem;
-  min-width: 5.5rem;
-}
-
-.bio-canvas-editor-popup [class*="btn-fill-"]:disabled,
-.bio-canvas-editor [class*="btn-fill-"]:disabled {
-  cursor: not-allowed;
-  opacity: 0.7;
-}
-
 .bio-canvas-editor {
   height: 100%;
   display: grid;
@@ -469,15 +448,7 @@
 }
 
 .bio-canvas-editor__align-group [class*="btn-fill-"] {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   flex: 0 0 auto;
-  width: 2rem;
-  height: 2rem;
-  padding: 0;
-  font-size: 1rem;
-  line-height: 1;
 }
 
 .bio-canvas-editor__position-controls {
@@ -488,9 +459,6 @@
 
 .bio-canvas-editor__position-controls [class*="btn-fill-"] {
   flex: 1;
-  padding: 0.4rem 0.5rem;
-  font-size: 0.8125rem;
-  line-height: 1.2;
 }
 
 .bio-canvas-editor__position-controls .bio-canvas-editor__position-controls-reset {
@@ -520,9 +488,6 @@
 .bio-canvas-editor__rotation-controls [class*="btn-fill-"] {
   flex: 1;
   min-width: 2.25rem;
-  padding: 0.4rem 0.5rem;
-  font-size: 0.8125rem;
-  line-height: 1.2;
 }
 
 .bio-canvas-editor__social-row {
@@ -573,11 +538,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-}
-
-.bio-canvas-editor__crop-actions [class*="btn-fill-"] {
-  padding: 0.4rem 0.75rem;
-  font-size: 0.8125rem;
 }
 
 .bio-canvas-editor__hint {

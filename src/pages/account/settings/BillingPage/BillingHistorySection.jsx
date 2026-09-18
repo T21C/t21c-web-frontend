@@ -147,7 +147,7 @@ export function BillingHistorySection({ events, onAfterRefund }) {
                     <div className="billing-page__history-actions">
                       <button
                         type="button"
-                        className="billing-page__btn billing-page__btn--ghost billing-page__history-icon-btn"
+                        className="btn-fill-ghost btn-icon btn-sm billing-page__history-icon-btn"
                         onClick={() => copyBillingSupportInfo(ev)}
                         aria-label={t("billing.history.copyDetailsAria")}
                       >
@@ -156,7 +156,7 @@ export function BillingHistorySection({ events, onAfterRefund }) {
                       {showRefund ? (
                         <button
                           type="button"
-                          className="billing-page__btn billing-page__btn--ghost billing-page__history-refund-btn"
+                          className="btn-fill-ghost billing-page__history-refund-btn"
                           onClick={() => openRefundFlow(ev)}
                         >
                           {t("billing.history.refundButton")}
@@ -195,7 +195,7 @@ export function BillingHistorySection({ events, onAfterRefund }) {
             <div className="billing-page__modal-actions">
               <button
                 type="button"
-                className="billing-page__btn billing-page__btn--ghost"
+                className="btn-fill-ghost"
                 onClick={closeRefundModal}
                 disabled={refundSubmitting}
               >
@@ -203,7 +203,7 @@ export function BillingHistorySection({ events, onAfterRefund }) {
               </button>
               <button
                 type="button"
-                className="billing-page__btn billing-page__btn--primary"
+                className="btn-fill-primary"
                 onClick={confirmRefund}
                 disabled={refundSubmitting}
               >

@@ -678,30 +678,6 @@
   justify-content: flex-end;
 }
 
-.hide-confirm-overlay .hide-confirm-actions .confirm-button,
-.hide-confirm-overlay .hide-confirm-actions .cancel-button {
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.2s;
-}
-
-.hide-confirm-overlay .hide-confirm-actions .confirm-button {
-  color: var(--color-white);
-}
-
-.hide-confirm-overlay .hide-confirm-actions .cancel-button {
-  color: var(--color-white);
-}
-
-.hide-confirm-overlay .hide-confirm-actions .confirm-button:disabled,
-.hide-confirm-overlay .hide-confirm-actions .cancel-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
 @media (max-width: 1024px) {
   .pass-detail {
     padding: 1rem 1.5rem 1.5rem;

@@ -59,7 +59,7 @@ export default function ProfileHeaderSurfaceLayerList({
         <div className="profile-header-surface-layer-list__head-actions">
           <button
             type="button"
-            className="btn-fill-secondary profile-header-surface-layer-list__add"
+            className="btn-fill-secondary btn-sm profile-header-surface-layer-list__add"
             disabled={!canAddStackEntry}
             onClick={onAddLayer}
           >
@@ -67,7 +67,7 @@ export default function ProfileHeaderSurfaceLayerList({
           </button>
           <button
             type="button"
-            className="btn-fill-secondary profile-header-surface-layer-list__add"
+            className="btn-fill-secondary btn-sm profile-header-surface-layer-list__add"
             disabled={!canAddImageLayer}
             onClick={onAddImage}
           >

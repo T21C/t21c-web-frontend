@@ -545,95 +545,6 @@
   background: var(--color-black-t10);
 }
 
-.billing-page .billing-page__btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 2.5rem;
-  padding: 0 1.1rem;
-  font-size: 0.92rem;
-  font-weight: 600;
-  font-family: inherit;
-  border: 1px solid transparent;
-  border-radius: 8px;
-  cursor: pointer;
-  color: var(--color-white);
-  transition: background-color 0.15s ease, border-color 0.15s ease, opacity 0.2s ease, filter 0.15s ease;
-}
-
-.billing-page .billing-page__btn:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-
-.billing-page .billing-page__btn:focus-visible {
-  outline: 2px solid var(--btn-primary-light-hover);
-  outline-offset: 2px;
-}
-
-.billing-page .billing-page__btn--primary {
-  background: var(--btn-primary);
-}
-
-.billing-page .billing-page__subscription-actions .billing-page__btn--primary {
-  background: #ccc4;
-  font-size: 0.8rem;
-  opacity: 0.8;
-  min-height: 1.75rem;
-}
-
-.billing-page .billing-page__subscription-actions .billing-page__btn--primary:hover:not(:disabled) {
-  background: #4197c68f;
-  opacity: 1;
-}
-
-.billing-page .billing-page__subscription-actions .billing-page__btn--danger {
-  background: #c6414199;
-  opacity: 1;
-  min-height: 1.75rem;
-}
-
-.billing-page .billing-page__subscription-actions .billing-page__btn--danger:hover:not(:disabled) {
-  background: #c64141cc;
-  opacity: 1;
-}
-
-.billing-page .billing-page__btn--primary:hover:not(:disabled) {
-  background: var(--btn-primary-hover);
-}
-
-.billing-page .billing-page__btn--secondary {
-  background: var(--color-white-t10);
-  border-color: var(--color-white-t15);
-  color: var(--color-white);
-}
-
-.billing-page .billing-page__btn--secondary:hover:not(:disabled) {
-  background: var(--color-white-t15);
-  border-color: var(--color-white-t20);
-}
-
-.billing-page .billing-page__btn--danger {
-  background: var(--btn-danger);
-}
-
-.billing-page .billing-page__btn--danger:hover:not(:disabled) {
-  filter: brightness(1.08);
-}
-
-.billing-page .billing-page__btn--ghost {
-  background: transparent;
-  border-color: var(--color-white-t15);
-  color: var(--color-gray-2);
-  font-weight: 500;
-}
-
-.billing-page .billing-page__btn--ghost:hover:not(:disabled) {
-  background: var(--color-white-t10);
-  border-color: var(--color-white-t20);
-  color: var(--color-white);
-}
-
 .billing-page .billing-page__history-table-wrap {
   width: 100%;
   overflow-x: auto;
@@ -686,19 +597,7 @@
 }
 
 .billing-page .billing-page__history-icon-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 2rem;
-  min-height: 2rem;
-  padding: 0;
   color: var(--color-white);
-}
-
-.billing-page .billing-page__history-refund-btn {
-  min-height: 2rem;
-  padding: 0 0.65rem;
-  font-size: 0.82rem;
 }
 
 .billing-page .billing-page__support-copy {
@@ -1726,7 +1625,9 @@
 }
 
 @media (max-width: 36rem) {
-  .billing-page .billing-page__btn {
+  .billing-page .billing-page__header--toolbar > [class*="btn-fill"],
+  .billing-page .billing-page__header-actions > [class*="btn-fill"],
+  .billing-page .billing-page__cross-links > [class*="btn-fill"] {
     flex: 1 1 auto;
   }
 
@@ -1826,8 +1727,11 @@
 }
 
 .billing-page .billing-page__admin-grant-toggle--active {
-  border-color: var(--btn-admin-purple, #9370db);
-  background: color-mix(in srgb, var(--btn-admin-purple, #9370db) 18%, transparent);
+  color: var(--color-white);
+}
+
+.billing-page .billing-page__admin-grant-toggle--active::before {
+  background-color: color-mix(in srgb, var(--btn-admin-purple) 18%, transparent);
 }
 
 .billing-page .billing-page__admin-grant-select {

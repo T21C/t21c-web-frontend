@@ -47,29 +47,6 @@
   max-width: 42rem;
 }
 
-.resources-page .btn-fill-primary,
-.resources-page .btn-fill-secondary,
-.resources-page .btn-fill-danger {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.35rem;
-  padding: 0.45rem 0.85rem;
-  border-radius: 0.4rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  line-height: 1.2;
-  cursor: pointer;
-  border: none;
-  text-decoration: none;
-}
-
-.resources-page .btn-fill-primary:disabled,
-.resources-page .btn-fill-secondary:disabled {
-  cursor: not-allowed;
-  opacity: 0.55;
-}
-
 .resources-page__header-actions,
 .resources-page__search,
 .resources-page__language-slice {
@@ -454,51 +431,6 @@
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: 1rem;
-}
-
-.resources-page .confirm-button,
-.resources-page .cancel-button,
-.resources-page .delete-confirm-button {
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.resources-page .confirm-button {
-  background-color: var(--color-white-t20);
-  color: var(--color-white);
-  border: none;
-}
-
-.resources-page .confirm-button:hover:not(:disabled) {
-  background-color: var(--color-white-t30);
-}
-
-.resources-page .confirm-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.55;
-}
-
-.resources-page .cancel-button {
-  background-color: transparent;
-  color: var(--color-white);
-  border: 1px solid var(--color-white-t20);
-}
-
-.resources-page .cancel-button:hover {
-  background-color: var(--color-white-t10);
-}
-
-.resources-page .delete-confirm-button {
-  background-color: var(--danger-color-tint-20);
-  color: var(--color-white);
-  border: 1px solid var(--danger-color-alpha-80);
-}
-
-.resources-page .delete-confirm-button:hover {
-  background-color: var(--danger-color-tint-30);
 }
 
 @media (max-width: 700px) {

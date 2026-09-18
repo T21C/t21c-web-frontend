@@ -47,7 +47,7 @@ export const AliasesTab = ({
 
       <div className="form-actions">
         <button
-          className="submit-button"
+          className="submit-button btn-fill-success"
           onClick={handleUpdate}
           disabled={isLoading}
         >

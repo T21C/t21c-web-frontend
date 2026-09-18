@@ -136,7 +136,7 @@ const DevelopersCreatePage = () => {
         <div className="developers-portal__actions">
           <button
             type="submit"
-            className="developers-portal__btn developers-portal__btn--primary"
+            className="btn-fill-primary"
             disabled={saving}
           >
             {saving ? t('loading.saving', { ns: 'common' }) : t('developers.createSubmit')}

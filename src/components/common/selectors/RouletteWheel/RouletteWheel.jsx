@@ -407,7 +407,7 @@ export const RouletteWheel = ({
                 </button>
             ) : (
               <button 
-                className="confirm-button"
+                className="btn-fill-success"
                 onClick={handleConfirm}
               >
                 Confirm

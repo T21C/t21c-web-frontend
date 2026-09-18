@@ -163,7 +163,7 @@ const DevelopersModEditPage = () => {
             <div className="developers-portal__icon-actions">
               <button
                 type="button"
-                className="developers-portal__btn developers-portal__btn--secondary"
+                className="btn-fill-secondary"
                 disabled={uploadingIcon}
                 onClick={() => setIconPickerOpen(true)}
               >
@@ -172,7 +172,7 @@ const DevelopersModEditPage = () => {
               {iconUrl ? (
                 <button
                   type="button"
-                  className="developers-portal__btn developers-portal__btn--ghost"
+                  className="btn-fill-ghost"
                   disabled={uploadingIcon}
                   onClick={handleIconRemove}
                 >
@@ -255,7 +255,7 @@ const DevelopersModEditPage = () => {
           <div className="developers-portal__actions">
             <button
               type="submit"
-              className="developers-portal__btn developers-portal__btn--primary"
+              className="btn-fill-primary"
               disabled={!form.name.trim() || saving}
             >
               {saving ? t('loading.saving', { ns: 'common' }) : t('developers.mods.save')}
@@ -276,9 +276,9 @@ const DevelopersModEditPage = () => {
         onModUpdate={(mod) => {
           if (Array.isArray(mod?.versions)) setVersions(mod.versions);
         }}
-        addButtonClassName="developers-portal__btn developers-portal__btn--primary"
-        editButtonClassName="developers-portal__btn developers-portal__btn--secondary"
-        deleteButtonClassName="developers-portal__btn developers-portal__btn--ghost"
+        addButtonClassName="btn-fill-primary"
+        editButtonClassName="btn-fill-secondary"
+        deleteButtonClassName="btn-fill-ghost"
       />
       <ImageSelectorPopup
         isOpen={iconPickerOpen}

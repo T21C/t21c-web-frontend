@@ -397,7 +397,7 @@ const EntityManagementPage = ({ type = 'artist' }) => {
                     {t('buttons.edit', { ns: 'common' })}
                   </button>
                   <button
-                    className="delete-button"
+                    className="delete-button btn-fill-danger"
                     onClick={() => handleDelete(entity.id)}
                   >
                     {t('buttons.delete', { ns: 'common' })}
@@ -567,14 +567,14 @@ const EntityManagementPage = ({ type = 'artist' }) => {
             </div>
             <div className="form-actions">
               <button
-                className="submit-button"
+                className="submit-button btn-fill-success"
                 onClick={handleCreate}
                 disabled={isCreating || !newEntityData.name.trim()}
               >
                 {isCreating ? t('loading.creating', { ns: 'common' }) : tEntity('buttons.create')}
               </button>
               <button
-                className="cancel-button"
+                className="cancel-button btn-fill-ghost"
                 onClick={() => {
                   setShowAddForm(false);
                   setNewEntityData({

@@ -793,14 +793,14 @@ const RatingZenPage = () => {
               <div className="rating-zen-page__setup-actions">
                 <button
                   type="button"
-                  className="rating-zen-page__btn rating-zen-page__btn--primary"
+                  className="btn-fill-primary"
                   onClick={handleContinueSession}
                 >
                   {t('rating.zen.setup.continue')}
                 </button>
                 <button
                   type="button"
-                  className="rating-zen-page__btn rating-zen-page__btn--ghost"
+                  className="btn-fill-neutral-dark"
                   onClick={handleDiscardSession}
                 >
                   {t('rating.zen.setup.discard')}
@@ -910,7 +910,7 @@ const RatingZenPage = () => {
             <div className="rating-zen-page__setup-actions">
               <button
                 type="button"
-                className="rating-zen-page__btn rating-zen-page__btn--primary"
+                className="btn-fill-primary"
                 onClick={() => void startDeal()}
                 disabled={isDealing || !user || showResumeActions || !deckSizeIsValid}
               >
@@ -918,7 +918,7 @@ const RatingZenPage = () => {
                   ? t('rating.zen.setup.dealing')
                   : t('rating.zen.setup.start')}
               </button>
-              <Link to="/rating" className="rating-zen-page__btn rating-zen-page__btn--ghost">
+              <Link to="/rating" className="btn-fill-neutral-dark">
                 {t('rating.zen.setup.back')}
               </Link>
             </div>
@@ -1010,7 +1010,7 @@ const RatingZenPage = () => {
                   <div className="rating-zen-page__actions">
                     <button
                       type="button"
-                      className="rating-zen-page__btn rating-zen-page__btn--ghost rating-zen-page__btn--icon"
+                      className="btn-fill-neutral-dark btn-block"
                       onClick={handleSkip}
                       disabled={isSaving}
                       aria-label={t('rating.zen.actions.skip')}
@@ -1026,7 +1026,7 @@ const RatingZenPage = () => {
                     >
                       <button
                         type="button"
-                        className="rating-zen-page__btn rating-zen-page__btn--secondary rating-zen-page__btn--icon"
+                        className="btn-fill-admin btn-block"
                         onClick={handlePeek}
                         disabled={cardPeeked || peeksLeft <= 0 || isSaving || !hasPeersToPeek}
                         aria-label={
@@ -1049,7 +1049,7 @@ const RatingZenPage = () => {
                     </span>
                     <button
                       type="button"
-                      className="rating-zen-page__btn rating-zen-page__btn--primary rating-zen-page__btn--icon"
+                      className="btn-fill-primary btn-block"
                       onClick={() => void handleSubmit()}
                       disabled={!canSubmit}
                       aria-label={
@@ -1229,7 +1229,7 @@ const RatingZenPage = () => {
                     </span>
                     <button
                       type="button"
-                      className="rating-zen-page__btn rating-zen-page__btn--ghost"
+                      className="btn-fill-neutral-dark"
                       onClick={() => setShowCommunityPeers((v) => !v)}
                     >
                       {showCommunityPeers
@@ -1292,7 +1292,7 @@ const RatingZenPage = () => {
           <div className="rating-zen-page__setup-actions">
             <button
               type="button"
-              className="rating-zen-page__btn rating-zen-page__btn--primary"
+              className="btn-fill-primary"
               onClick={() => {
                 disposeViewTrackers();
                 resetToSetup();
@@ -1300,7 +1300,7 @@ const RatingZenPage = () => {
             >
               {t('rating.zen.done.again')}
             </button>
-            <Link to="/rating" className="rating-zen-page__btn rating-zen-page__btn--ghost">
+            <Link to="/rating" className="btn-fill-neutral-dark">
               {t('rating.zen.done.queue')}
             </Link>
           </div>

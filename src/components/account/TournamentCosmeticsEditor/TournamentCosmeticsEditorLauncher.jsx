@@ -105,7 +105,7 @@ export default function TournamentCosmeticsEditorLauncher({
 
       <button
         type="button"
-        className="tournament-cosmetics-editor-launcher__btn btn-fill-primary"
+        className="btn-fill-primary"
         onClick={handleOpen}
       >
         {t("settings.tournaments.openEditor")}

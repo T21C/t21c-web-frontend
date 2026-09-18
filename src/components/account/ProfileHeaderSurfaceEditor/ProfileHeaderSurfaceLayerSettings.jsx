@@ -203,7 +203,7 @@ export default function ProfileHeaderSurfaceLayerSettings({
           <span>{t("settings.headerSurface.colorStops")}</span>
           <button
             type="button"
-            className="btn-fill-secondary profile-header-surface-layer-settings__stop-add"
+            className="btn-fill-secondary btn-sm profile-header-surface-layer-settings__stop-add"
             disabled={layer.stops.length >= MAX_PROFILE_HEADER_SURFACE_STOPS}
             onClick={() =>
               patchStackEntry(stackIndex, (entry) => {

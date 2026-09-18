@@ -250,7 +250,7 @@ const CurationTypeSelector = ({
           </button>
           <button
             type="button"
-            className="curation-type-selector__btn curation-type-selector__btn--primary"
+            className="btn-fill-glass"
             onClick={handleSave}
             disabled={saving || !creatorId || draftMatchesSaved}
           >

@@ -116,39 +116,7 @@
   align-items: center;
 }
 
-.profile-modules-editor .profile-modules-editor__btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.35rem;
-  min-height: 2.75rem;
-  padding: 0 1.25rem;
-  font-size: 0.95rem;
-  font-weight: 600;
-  font-family: inherit;
-  line-height: 1.2;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.profile-modules-editor .profile-modules-editor__btn:disabled {
-  cursor: not-allowed;
-  opacity: 0.55;
-}
-
-.profile-modules-editor .profile-modules-editor__btn:focus-visible {
-  outline: 2px solid var(--btn-primary-light-hover);
-  outline-offset: 2px;
-}
-
-.profile-modules-editor .profile-modules-editor__btn--icon {
-  min-height: 2.25rem;
-  width: 2.25rem;
-  padding: 0;
-  flex-shrink: 0;
-}
-
-.profile-modules-editor .profile-modules-editor__btn--icon:hover:not(:disabled) {
+.profile-modules-editor .btn-icon:hover:not(:disabled) {
   color: var(--btn-primary);
 }
 

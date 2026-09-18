@@ -231,18 +231,18 @@ const ModDetailPage = () => {
                     disabled={!mod.slug}
                   />
                   {mod.projectUrl ? (
-                    <ExternalLink href={mod.projectUrl} className="mods-page__download">
+                    <ExternalLink href={mod.projectUrl} className="mods-page__download btn-fill-glass">
                       <span>{t('mods.project')}</span>
                       <ExternalLinkIcon size={16} color="currentColor" />
                     </ExternalLink>
                   ) : null}
                   {latest ? (
-                    <a href={modDownloadHref(mod.slug)} className="mods-page__download">
+                    <a href={modDownloadHref(mod.slug)} className="mods-page__download btn-fill-primary">
                       <span>{t('mods.download')}</span>
                       <ExternalLinkIcon size={16} color="currentColor" />
                     </a>
                   ) : null}
-                  <button type="button" className="mods-page__download" onClick={copyLatest}>
+                  <button type="button" className="mods-page__download btn-fill-glass" onClick={copyLatest}>
                     {t('mods.copy.latest')}
                   </button>
                 </div>
@@ -282,14 +282,14 @@ const ModDetailPage = () => {
                           <div className="mod-detail-page__release-actions">
                             <a
                               href={modDownloadHref(mod.slug, release.version)}
-                              className="mods-page__download"
+                              className="mods-page__download btn-fill-primary"
                             >
                               <span>{t('mods.download')}</span>
                               <ExternalLinkIcon size={16} color="currentColor" />
                             </a>
                             <button
                               type="button"
-                              className="mods-page__download"
+                              className="mods-page__download btn-fill-glass"
                               onClick={() => copyVersion(release.version)}
                             >
                               {t('mods.copy.permalink')}

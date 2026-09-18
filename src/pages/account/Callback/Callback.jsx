@@ -449,7 +449,7 @@ const CallbackPage = () => {
                   {t('billing.callback.redirectingToBilling', { defaultValue: 'Redirecting to billing...' })}
                 </p>
               ) : (
-                <button className="continue-button" onClick={handleContinue}>
+                <button className="continue-button btn-fill-primary" onClick={handleContinue}>
                   {t('billing.callback.backToBilling', { defaultValue: 'Back to billing' })}
                 </button>
               )}
@@ -491,7 +491,7 @@ const CallbackPage = () => {
                 {isLinking ? "Redirecting to profile edit page..." : "Redirecting to login page..."}
               </p>
             ) : (
-              <button className="continue-button" onClick={handleContinue}>
+              <button className="continue-button btn-fill-primary" onClick={handleContinue}>
                 {isLinking ? "Return to Profile Edit" : "Return to Login"}
               </button>
             )}

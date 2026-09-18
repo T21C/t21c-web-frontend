@@ -275,10 +275,10 @@ export default function ModAdminEditPopup({
               }}
             />
             <div className="modal-actions">
-              <button type="button" className="cancel-button" onClick={closeEdit}>
+              <button type="button" className="cancel-button btn-fill-ghost" onClick={closeEdit}>
                 {t('buttons.cancel', { ns: 'common' })}
               </button>
-              <button type="submit" className="confirm-button" disabled={!canSubmitEdit(editForm) || saving}>
+              <button type="submit" className="confirm-button btn-fill-primary" disabled={!canSubmitEdit(editForm) || saving}>
                 {t('mods.edit.updateButton')}
               </button>
             </div>
@@ -324,7 +324,7 @@ export default function ModAdminEditPopup({
             </label>
             <button
               type="button"
-              className="confirm-button"
+              className="confirm-button btn-fill-primary"
               disabled={!assignPlayer?.id || assignPlayer.isNewRequest || assigning}
               onClick={requestAssign}
             >
@@ -388,7 +388,7 @@ export default function ModAdminEditPopup({
             />
             <button
               type="button"
-              className="delete-confirm-button"
+              className="delete-confirm-button btn-fill-danger"
               disabled={!mergeSourceId}
               onClick={async () => {
                 if (!window.confirm(t('mods.merge.confirm', { name: editingMod.name }))) return;
@@ -419,12 +419,12 @@ export default function ModAdminEditPopup({
             <h2>{t('mods.assign.confirmTitle')}</h2>
             <p>{t('mods.assign.confirmMessage', { count: assignConfirmCount })}</p>
             <div className="modal-actions">
-              <button type="button" className="cancel-button" onClick={() => setAssignConfirmCount(null)}>
+              <button type="button" className="cancel-button btn-fill-ghost" onClick={() => setAssignConfirmCount(null)}>
                 {t('buttons.cancel', { ns: 'common' })}
               </button>
               <button
                 type="button"
-                className="confirm-button"
+                className="confirm-button btn-fill-primary"
                 disabled={assigning}
                 onClick={() => void runAssign(true)}
               >

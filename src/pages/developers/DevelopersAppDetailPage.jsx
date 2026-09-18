@@ -215,7 +215,7 @@ const DevelopersAppDetailPage = () => {
             <div className="developers-portal__icon-actions">
               <button
                 type="button"
-                className="developers-portal__btn developers-portal__btn--secondary"
+                className="btn-fill-secondary"
                 disabled={frozen || uploadingIcon}
                 onClick={() => setIconPickerOpen(true)}
               >
@@ -224,7 +224,7 @@ const DevelopersAppDetailPage = () => {
               {app.iconUrl ? (
                 <button
                   type="button"
-                  className="developers-portal__btn developers-portal__btn--ghost"
+                  className="btn-fill-ghost"
                   disabled={frozen || uploadingIcon}
                   onClick={handleIconRemove}
                 >
@@ -291,7 +291,7 @@ const DevelopersAppDetailPage = () => {
             <div className="developers-portal__actions">
               <button
                 type="submit"
-                className="developers-portal__btn developers-portal__btn--primary"
+                className="btn-fill-primary"
                 disabled={saving}
               >
                 {saving ? t('loading.saving', { ns: 'common' }) : t('developers.save')}
@@ -309,7 +309,7 @@ const DevelopersAppDetailPage = () => {
               <input type="text" readOnly value={app.clientId} onFocus={(e) => e.target.select()} />
               <button
                 type="button"
-                className="developers-portal__btn developers-portal__btn--secondary"
+                className="btn-fill-secondary"
                 onClick={copyClientId}
               >
                 {t('developers.copy')}
@@ -338,7 +338,7 @@ const DevelopersAppDetailPage = () => {
             <div className="developers-portal__actions">
               <button
                 type="submit"
-                className="developers-portal__btn developers-portal__btn--primary"
+                className="btn-fill-primary"
                 disabled={saving}
               >
                 {saving ? t('loading.saving', { ns: 'common' }) : t('developers.save')}
@@ -354,7 +354,7 @@ const DevelopersAppDetailPage = () => {
           <p>{t('developers.dangerBody')}</p>
           <button
             type="button"
-            className="developers-portal__btn developers-portal__btn--danger"
+            className="btn-fill-danger"
             onClick={handleDelete}
           >
             {t('developers.delete')}

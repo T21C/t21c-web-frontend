@@ -64,7 +64,7 @@
   margin-top: 0.75rem;
 }
 
-.pass-score-calculator__form-actions .pass-score-calculator__btn {
+.pass-score-calculator__form-actions > button {
   flex: 1 1 8rem;
 }
 
@@ -341,38 +341,6 @@
   flex-wrap: wrap;
   gap: 0.65rem;
   margin-left: auto;
-}
-
-.pass-score-calculator__btn {
-  border: none;
-  border-radius: 0.4rem;
-  padding: 0.65rem 1.1rem;
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
-  color: var(--color-white);
-  transition: background-color 0.2s ease, filter 0.2s ease;
-}
-
-.pass-score-calculator__btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.pass-score-calculator__btn--primary {
-  background: var(--btn-primary);
-}
-
-.pass-score-calculator__btn--primary:hover:not(:disabled) {
-  background: var(--btn-primary-hover);
-}
-
-.pass-score-calculator__btn--ghost {
-  background: var(--btn-neutral-dark);
-}
-
-.pass-score-calculator__btn--ghost:hover:not(:disabled) {
-  background: var(--btn-neutral-elevated);
 }
 
 .pass-score-calculator__layout {

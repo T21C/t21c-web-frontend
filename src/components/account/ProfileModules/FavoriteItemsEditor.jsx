@@ -489,7 +489,7 @@ export default function FavoriteItemsEditor({
                       />
                       <button
                         type="button"
-                        className="profile-modules-editor__btn profile-modules-editor__btn--icon btn-fill-secondary"
+                        className="btn-fill-secondary btn-icon"
                         onClick={() =>
                           onChange(items.filter((_, i) => i !== index))
                         }

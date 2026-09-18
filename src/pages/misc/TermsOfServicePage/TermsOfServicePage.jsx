@@ -271,7 +271,7 @@ const TermsOfServicePage = () => {
               <p>For questions about these Terms, contact managers on our Discord server:</p>
               <p>
                 Discord:{" "}
-                <button type="button" className="discord-button" onClick={() => void navigateExternal("https://discord.gg/MaW353r8xg", { newTab: true })}>
+                <button type="button" className="discord-button btn-fill-discord" onClick={() => void navigateExternal("https://discord.gg/MaW353r8xg", { newTab: true })}>
                   Join
                 </button>
               </p>

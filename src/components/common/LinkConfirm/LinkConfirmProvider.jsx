@@ -119,12 +119,12 @@ function LinkConfirmModal({ pending, onConfirm, onCancel }) {
             </label>
           </div>
           <div className="link-confirm__actions">
-            <button type="button" className="btn-fill-neutral link-confirm__btn" onClick={onCancel}>
+            <button type="button" className="btn-fill-neutral" onClick={onCancel}>
               {t("bioCanvas.linkConfirm.cancel", { defaultValue: "Cancel" })}
             </button>
             <button
               type="button"
-              className="btn-fill-primary link-confirm__btn"
+              className="btn-fill-primary"
               onClick={() => onConfirm(trustMode)}
             >
               {t("bioCanvas.linkConfirm.continue", { defaultValue: "Continue" })}

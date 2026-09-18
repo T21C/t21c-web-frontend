@@ -96,7 +96,7 @@ const TufStellarManagePage = () => {
           <div className="billing-page__header-actions">
             <button
               type="button"
-              className="billing-page__btn billing-page__btn--ghost"
+              className="btn-fill-ghost"
               onClick={handleAdminGrantModeToggle}
             >
               {t("billing.adminGrants.exitMode")}
@@ -122,7 +122,7 @@ const TufStellarManagePage = () => {
         <div className="billing-page__header-actions">
           <button
             type="button"
-            className="billing-page__btn billing-page__btn--ghost"
+            className="btn-fill-ghost"
             onClick={() => fetchAll({ forceRefresh: true })}
             disabled={loading}
           >
@@ -131,7 +131,7 @@ const TufStellarManagePage = () => {
           {isSuperAdmin ? (
             <button
               type="button"
-              className="billing-page__btn billing-page__btn--ghost"
+              className="btn-fill-ghost"
               onClick={handleAdminGrantModeToggle}
             >
               {t("billing.adminGrants.openMode")}
@@ -143,14 +143,14 @@ const TufStellarManagePage = () => {
       {errorState ? (
         <div className="billing-page__card billing-page__card--error">
           <p className="settings-sub-page__text">{t("billing.loadError")}</p>
-          <button type="button" className="billing-page__btn billing-page__btn--secondary" onClick={() => fetchAll({ forceRefresh: true })}>
+          <button type="button" className="btn-fill-glass" onClick={() => fetchAll({ forceRefresh: true })}>
             {t("billing.actions.retry", { defaultValue: t("buttons.retry", { ns: "common", defaultValue: "Retry" }) })}
           </button>
         </div>
       ) : null}
 
       <nav className="billing-page__cross-links billing-page__cross-links--toolbar" aria-label={t("billing.crossLinks.navAria")}>
-        <Link className="billing-page__btn billing-page__btn--ghost billing-page__cross-link" to="/settings/billing">
+        <Link className="btn-fill-ghost billing-page__cross-link" to="/settings/billing">
           {t("billing.crossLinks.viewBillingHistory")}
         </Link>
       </nav>

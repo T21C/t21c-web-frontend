@@ -214,7 +214,7 @@ const ModTagsEditPage = () => {
             <div className="mods-tags-page__header-actions">
               <button
                 type="button"
-                className="create-button"
+                className="create-button btn-fill-primary"
                 onClick={() => {
                   setNewTag(EMPTY_TAG_FORM);
                   setIsCreating(true);
@@ -302,12 +302,12 @@ const ModTagsEditPage = () => {
                 <div className="modal-actions">
                   <button
                     type="submit"
-                    className="confirm-button"
+                    className="confirm-button btn-fill-primary"
                     disabled={saving || !newTag.name.trim()}
                   >
                     {t('mods.tags.create.createButton')}
                   </button>
-                  <button type="button" className="cancel-button" onClick={closeCreate} disabled={saving}>
+                  <button type="button" className="cancel-button btn-fill-ghost" onClick={closeCreate} disabled={saving}>
                     {t('buttons.cancel', { ns: 'common' })}
                   </button>
                 </div>
@@ -343,12 +343,12 @@ const ModTagsEditPage = () => {
                 <div className="modal-actions">
                   <button
                     type="submit"
-                    className="confirm-button"
+                    className="confirm-button btn-fill-primary"
                     disabled={saving || !editingTag.name.trim()}
                   >
                     {t('mods.tags.edit.updateButton')}
                   </button>
-                  <button type="button" className="cancel-button" onClick={closeEdit} disabled={saving}>
+                  <button type="button" className="cancel-button btn-fill-ghost" onClick={closeEdit} disabled={saving}>
                     {t('buttons.cancel', { ns: 'common' })}
                   </button>
                 </div>
@@ -376,7 +376,7 @@ const ModTagsEditPage = () => {
               <div className="modal-actions">
                 <button
                   type="button"
-                  className="delete-confirm-button"
+                  className="delete-confirm-button btn-fill-danger"
                   onClick={handleDelete}
                   disabled={saving}
                 >
@@ -384,7 +384,7 @@ const ModTagsEditPage = () => {
                 </button>
                 <button
                   type="button"
-                  className="cancel-button"
+                  className="cancel-button btn-fill-ghost"
                   onClick={() => setDeletingTag(null)}
                   disabled={saving}
                 >

@@ -858,21 +858,21 @@ export const RatingDetailPopup = ({
             <div className="rating-unsaved-draft-prompt__actions">
               <button
                 type="button"
-                className="rating-unsaved-draft-prompt__btn rating-unsaved-draft-prompt__btn--save"
+                className="btn-fill-primary"
                 onClick={handleSaveDraftAndClose}
               >
                 {t('rating.detailPopup.confirmations.unsavedDraft.save')}
               </button>
               <button
                 type="button"
-                className="rating-unsaved-draft-prompt__btn rating-unsaved-draft-prompt__btn--discard"
+                className="btn-fill-danger"
                 onClick={handleDiscardDraftAndClose}
               >
                 {t('rating.detailPopup.confirmations.unsavedDraft.discard')}
               </button>
               <button
                 type="button"
-                className="rating-unsaved-draft-prompt__btn rating-unsaved-draft-prompt__btn--cancel"
+                className="btn-fill-neutral-dark"
                 onClick={handleCancelDraftPrompt}
               >
                 {t('buttons.cancel', { ns: 'common' })}

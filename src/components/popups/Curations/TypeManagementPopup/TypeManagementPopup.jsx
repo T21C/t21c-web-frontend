@@ -780,14 +780,14 @@ const TypeManagementPopup = ({
               <button
                 type="button"
                 onClick={handleBackToList}
-                className="type-management-modal__btn type-management-modal__btn--cancel"
+                className="btn-fill-neutral-dark"
               >
                 {t('buttons.cancel', { ns: 'common' })}
               </button>
               <button
                 type="submit"
                 disabled={isLoading}
-                className="type-management-modal__btn type-management-modal__btn--submit"
+                className="btn-fill-primary"
               >
                 {isLoading ? t('typeManagementPopup.buttons.submitting') : (mode === POPUP_MODES.CREATE ? t('typeManagementPopup.buttons.create') : t('typeManagementPopup.buttons.update'))}
               </button>

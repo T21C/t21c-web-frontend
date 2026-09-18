@@ -152,20 +152,11 @@
 
 .edit-level-popup-overlay .button-group button {
   flex: 1;
-  padding: 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: filter 0.2s ease;
 }
 
 .edit-level-popup-overlay .save-button {
   margin-top: 0;
   width: auto;
-  padding: 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
 }
 
 .edit-level-popup-overlay .delete-button {
@@ -661,8 +652,6 @@
   .edit-level-popup-overlay .restore-toggle-button {
     max-width: none;
     width: 100%;
-    padding: 14px;
-    font-size: 16px;
   }
 
   .edit-level-popup-overlay .to-rate-group {

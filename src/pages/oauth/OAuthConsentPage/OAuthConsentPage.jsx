@@ -152,7 +152,7 @@ const OAuthConsentPage = () => {
         </Link>
         <div className="oauth-consent-page__card oauth-consent-page__card--narrow">
           <p className="oauth-consent-page__lede">{t('oauthConsent.needLogin')}</p>
-          <Link to="/login" className="oauth-consent-page__btn oauth-consent-page__btn--approve">
+          <Link to="/login" className="btn-fill-primary btn-block">
             {t('oauthConsent.loginLink')}
           </Link>
         </div>
@@ -318,7 +318,7 @@ const OAuthConsentPage = () => {
             <div className="oauth-consent-page__actions">
               <button
                 type="button"
-                className="oauth-consent-page__btn oauth-consent-page__btn--deny"
+                className="btn-fill-neutral btn-block"
                 onClick={deny}
                 disabled={busy}
               >
@@ -326,7 +326,7 @@ const OAuthConsentPage = () => {
               </button>
               <button
                 type="button"
-                className="oauth-consent-page__btn oauth-consent-page__btn--approve"
+                className="btn-fill-primary alt btn-block"
                 onClick={approve}
                 disabled={busy}
               >

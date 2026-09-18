@@ -158,7 +158,7 @@ export default function BioCanvasLayoutControls({
         <div className="bio-canvas-editor__align-group" role="group" aria-label="Align horizontally">
           <button
             type="button"
-            className="btn-fill-neutral"
+            className="btn-fill-neutral btn-icon"
             aria-label="Align left"
             title="Align left"
             onClick={() => alignHorizontal("left")}
@@ -167,7 +167,7 @@ export default function BioCanvasLayoutControls({
           </button>
           <button
             type="button"
-            className="btn-fill-neutral"
+            className="btn-fill-neutral btn-icon"
             aria-label="Align horizontal center"
             title="Align horizontal center"
             onClick={() => alignHorizontal("center")}
@@ -176,7 +176,7 @@ export default function BioCanvasLayoutControls({
           </button>
           <button
             type="button"
-            className="btn-fill-neutral"
+            className="btn-fill-neutral btn-icon"
             aria-label="Align right"
             title="Align right"
             onClick={() => alignHorizontal("right")}
@@ -187,7 +187,7 @@ export default function BioCanvasLayoutControls({
         <div className="bio-canvas-editor__align-group" role="group" aria-label="Align vertically">
           <button
             type="button"
-            className="btn-fill-neutral"
+            className="btn-fill-neutral btn-icon"
             aria-label="Align top"
             title="Align top"
             onClick={() => alignVertical("top")}
@@ -196,7 +196,7 @@ export default function BioCanvasLayoutControls({
           </button>
           <button
             type="button"
-            className="btn-fill-neutral"
+            className="btn-fill-neutral btn-icon"
             aria-label="Align vertical center"
             title="Align vertical center"
             onClick={() => alignVertical("center")}
@@ -205,7 +205,7 @@ export default function BioCanvasLayoutControls({
           </button>
           <button
             type="button"
-            className="btn-fill-neutral"
+            className="btn-fill-neutral btn-icon"
             aria-label="Align bottom"
             title="Align bottom"
             onClick={() => alignVertical("bottom")}

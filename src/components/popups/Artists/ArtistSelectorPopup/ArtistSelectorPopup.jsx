@@ -343,7 +343,7 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
                         setNewName('');
                         setVerificationState('unverified');
                       }}
-                      className="cancel-button"
+                      className="cancel-button btn-fill-ghost"
                       disabled={isCreating}
                     >
                       {t('buttons.cancel', { ns: 'common' })}
@@ -351,7 +351,7 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
                     <button
                       type="submit"
                       disabled={isCreating || !newName.trim()}
-                      className={`submit-button ${isCreating ? 'loading' : ''}`}
+                      className={`submit-button btn-fill-primary ${isCreating ? 'loading' : ''}`}
                     >
                       {isCreating ? t('loading.creating', { ns: 'common' }) : t('artistSelector.buttons.create')}
                     </button>
@@ -375,7 +375,7 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
 
           <div className="action-buttons">
             <button
-              className={`action-button ${isLoading || isLoadingDetails ? 'loading' : ''}`}
+              className={`action-button btn-fill-success ${isLoading || isLoadingDetails ? 'loading' : ''}`}
               onClick={handleAssign}
               disabled={!selectedArtistId || isLoading || isLoadingDetails}
             >

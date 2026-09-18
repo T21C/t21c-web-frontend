@@ -55,29 +55,6 @@
   max-width: 42rem;
 }
 
-.mods-page .btn-fill-primary,
-.mods-page .btn-fill-secondary,
-.mods-page .btn-fill-danger {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.35rem;
-  padding: 0.45rem 0.85rem;
-  border-radius: 0.4rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  line-height: 1.2;
-  cursor: pointer;
-  border: none;
-  text-decoration: none;
-}
-
-.mods-page .btn-fill-primary:disabled,
-.mods-page .btn-fill-secondary:disabled {
-  cursor: not-allowed;
-  opacity: 0.55;
-}
-
 .mods-page__header-actions,
 .mods-page__search {
   display: flex;
@@ -437,58 +414,11 @@
 }
 
 .mods-page .mods-page__card-details {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.35rem;
   flex: 0 0 auto;
-  padding: 0.45rem 0.85rem;
-  border-radius: 0.4rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  line-height: 1.2;
-  text-decoration: none;
-  color: var(--color-white);
-  background: var(--color-white-t20);
-  border: none;
-  cursor: pointer;
-}
-
-.mods-page .mods-page__card-details:hover,
-.mods-page .mods-page__card-details:focus-visible {
-  background: var(--color-white-t30);
-  color: var(--color-white);
-  outline: none;
 }
 
 .mods-page__download {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  color: var(--color-white-t80);
   text-decoration: none;
-  padding: 0.4rem 0.7rem;
-  border-radius: 0.4rem;
-  background: var(--color-white-t10);
-  border: 1px solid var(--color-white-t20);
-  cursor: pointer;
-  transition:
-    background 0.15s ease,
-    border-color 0.15s ease,
-    color 0.15s ease;
-}
-
-.mods-page__download:hover,
-.mods-page__download:focus-visible {
-  background: color-mix(in srgb, var(--color-purple-1) 22%, var(--color-black));
-  border-color: var(--color-purple-1);
-  color: var(--color-white);
-  outline: none;
-}
-
-.mods-page__download:active {
-  background: color-mix(in srgb, var(--color-purple-1) 32%, var(--color-black));
-  border-color: var(--color-purple-2);
 }
 
 .mods-page__admin-row {
@@ -761,52 +691,6 @@
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: 1rem;
-}
-
-.mods-page .confirm-button,
-.mods-page .cancel-button,
-.mods-page .delete-confirm-button {
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.mods-page .confirm-button {
-  background-color: var(--btn-primary);
-  color: var(--color-white);
-  border: none;
-}
-
-.mods-page .confirm-button:hover:not(:disabled) {
-  background-color: var(--btn-primary-hover);
-}
-
-.mods-page .confirm-button:disabled,
-.mods-page .cancel-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.55;
-}
-
-.mods-page .cancel-button {
-  background-color: transparent;
-  color: var(--color-white);
-  border: 1px solid var(--color-white-t20);
-}
-
-.mods-page .cancel-button:hover {
-  background-color: var(--color-white-t10);
-}
-
-.mods-page .delete-confirm-button {
-  background-color: var(--btn-danger);
-  color: var(--color-white);
-  border: 1px solid var(--danger-color-alpha-80);
-}
-
-.mods-page .delete-confirm-button:hover {
-  background-color: var(--danger-color-tint-30);
 }
 
 .mods-page .mods-page__card-excerpt {

@@ -846,7 +846,7 @@ export const LevelCreditsEditPopup = ({
           <footer className="level-credits-edit-popup__footer">
             <button
               type="button"
-              className="level-credits-edit-popup__btn level-credits-edit-popup__btn--save"
+              className="btn-fill-primary"
               onClick={handleSave}
               disabled={!hasUnsavedChanges || isSaving}
             >
@@ -854,7 +854,7 @@ export const LevelCreditsEditPopup = ({
             </button>
             <button
               type="button"
-              className="level-credits-edit-popup__btn level-credits-edit-popup__btn--cancel"
+              className="btn-fill-neutral-muted"
               onClick={onClose}
               disabled={isSaving}
             >

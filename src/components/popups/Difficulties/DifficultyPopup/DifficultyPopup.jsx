@@ -1013,12 +1013,12 @@ const DifficultyPopup = ({
                 </div>
                 {passwordError && <div className="difficulty-modal__error-message">{passwordError}</div>}
                 <div className="difficulty-modal__actions">
-                  <button type="submit" className="difficulty-modal__button difficulty-modal__button--save">
+                  <button type="submit" className="difficulty-modal__button btn-fill-primary">
                     {t('difficultyPopup.modal.password.confirm')}
                   </button>
                   <button
                     type="button"
-                    className="difficulty-modal__button difficulty-modal__button--cancel"
+                    className="difficulty-modal__button btn-fill-ghost"
                     onClick={closePasswordModal}
                   >
                     {t('buttons.cancel', { ns: 'common' })}
@@ -1060,13 +1060,13 @@ const DifficultyPopup = ({
                 </div>
                 {channelError && <div className="difficulty-modal__error-message">{channelError}</div>}
                 <div className="difficulty-modal__actions">
-                  <button type="submit" className="difficulty-modal__button difficulty-modal__button--save">
+                  <button type="submit" className="difficulty-modal__button btn-fill-primary">
                     {channelModalSource === 'edit' ? t('buttons.save', { ns: 'common' }) : t('buttons.add', { ns: 'common' })}
                   </button>
                   {channelModalSource === 'edit' && (
                     <button
                       type="button"
-                      className="difficulty-modal__button difficulty-modal__button--delete"
+                      className="difficulty-modal__button difficulty-modal__button--delete btn-fill-danger"
                       onClick={handleDeleteChannel}
                     >
                       {t('buttons.delete', { ns: 'common' })}
@@ -1074,7 +1074,7 @@ const DifficultyPopup = ({
                   )}
                   <button
                     type="button"
-                    className="difficulty-modal__button difficulty-modal__button--cancel"
+                    className="difficulty-modal__button btn-fill-ghost"
                     onClick={closeChannelModal}
                   >
                     {t('buttons.cancel', { ns: 'common' })}
@@ -1138,13 +1138,13 @@ const DifficultyPopup = ({
                 </div>
                 {roleError && <div className="difficulty-modal__error-message">{roleError}</div>}
                 <div className="difficulty-modal__actions">
-                  <button type="submit" className="difficulty-modal__button difficulty-modal__button--save">
+                  <button type="submit" className="difficulty-modal__button btn-fill-primary">
                     {roleModalSource === 'edit' ? t('buttons.save', { ns: 'common' }) : t('buttons.add', { ns: 'common' })}
                   </button>
                   {roleModalSource === 'edit' && (
                     <button
                       type="button"
-                      className="difficulty-modal__button difficulty-modal__button--delete"
+                      className="difficulty-modal__button difficulty-modal__button--delete btn-fill-danger"
                       onClick={handleDeleteRole}
                     >
                       {t('buttons.delete', { ns: 'common' })}
@@ -1152,7 +1152,7 @@ const DifficultyPopup = ({
                   )}
                   <button
                     type="button"
-                    className="difficulty-modal__button difficulty-modal__button--cancel"
+                    className="difficulty-modal__button btn-fill-ghost"
                     onClick={closeRoleModal}
                   >
                     {t('buttons.cancel', { ns: 'common' })}
@@ -1360,12 +1360,12 @@ const DifficultyPopup = ({
               {error && <div className="difficulty-modal__error-message">{error}</div>}
 
               <div className="difficulty-modal__actions">
-                <button type="submit" className="difficulty-modal__button difficulty-modal__button--save">
+                <button type="submit" className="difficulty-modal__button btn-fill-primary">
                   {isCreating ? t('buttons.create', { ns: 'common' }) : t('buttons.save', { ns: 'common' })}
                 </button>
                 <button
                   type="button"
-                  className="difficulty-modal__button difficulty-modal__button--cancel"
+                  className="difficulty-modal__button btn-fill-ghost"
                   onClick={onClose}
                 >
                   {t('buttons.cancel', { ns: 'common' })}
@@ -1792,13 +1792,13 @@ const DifficultyPopup = ({
                   <div className="difficulty-modal__actions">
                     <button 
                       type="submit" 
-                      className={`difficulty-modal__button difficulty-modal__button--save ${!hasAnyChanges() ? 'difficulty-modal__button--disabled' : ''}`}
+                      className={`difficulty-modal__button btn-fill-primary ${!hasAnyChanges() ? 'difficulty-modal__button--disabled' : ''}`}
                     >
                       {t('buttons.save', { ns: 'common' })}
                     </button>
                     <button
                       type="button"
-                      className="difficulty-modal__button difficulty-modal__button--cancel"
+                      className="difficulty-modal__button btn-fill-ghost"
                       onClick={onClose}
                     >
                       {t('buttons.cancel', { ns: 'common' })}

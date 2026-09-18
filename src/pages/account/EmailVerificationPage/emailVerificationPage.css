@@ -63,47 +63,9 @@
 }
 
 .email-verification-page .action-button {
-  background-color: var(--btn-primary);
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 500;
-  transition: background-color 0.2s ease;
   width: 100%;
   max-width: 300px;
   text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-}
-
-.email-verification-page .action-button:hover:not(:disabled) {
-  background-color: var(--btn-primary-hover, #3b7ecc);
-}
-
-.email-verification-page .action-button:disabled {
-  background-color: #555;
-  cursor: not-allowed;
-}
-
-.email-verification-page .action-button.secondary {
-  background-color: transparent;
-  color: var(--color-white);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.email-verification-page .action-button.secondary:hover:not(:disabled) {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.email-verification-page .action-button.secondary:disabled {
-  background-color: transparent;
-  color: var(--color-white-t40, rgba(249, 250, 251, 0.4));
-  border-color: rgba(255, 255, 255, 0.12);
 }
 
 .email-verification-page .verify-form,

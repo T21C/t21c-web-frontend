@@ -259,32 +259,6 @@
   align-items: center;
 }
 
-.tournament-mgmt-page .btn-fill-primary,
-.tournament-mgmt-page .btn-fill-secondary,
-.tournament-mgmt-page .btn-fill-danger {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.35rem;
-  padding: 0.45rem 0.85rem;
-  border-radius: 0.4rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  line-height: 1.2;
-  cursor: pointer;
-  border: none;
-}
-
-.tournament-mgmt-page label.btn-fill-primary,
-.tournament-mgmt-page label.btn-fill-secondary {
-  cursor: pointer;
-}
-
-.tournament-mgmt-page__placements-table .btn-fill-danger {
-  padding: 0.25rem 0.55rem;
-  min-width: 2rem;
-}
-
 .tournament-mgmt-page__field .custom-select-container {
   width: 100%;
 }

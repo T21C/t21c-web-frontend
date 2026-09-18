@@ -256,7 +256,7 @@ const ForgotPasswordPage = () => {
 
               <button 
                 type="submit" 
-                className="action-button" 
+                className="action-button btn-fill-primary btn-block"
                 disabled={loading || retryAfter || (requireCaptcha && !captchaToken)}
               >
                 {loading ? t('forgotPassword.request.form.buttons.sending') : t('forgotPassword.request.form.buttons.sendReset')}
@@ -264,7 +264,7 @@ const ForgotPasswordPage = () => {
             </form>
 
             <button
-              className="action-button secondary"
+              className="action-button btn-fill-ghost btn-block"
               onClick={() => navigate('/login')}
             >
               {t('forgotPassword.request.form.buttons.backToLogin')}
@@ -285,7 +285,7 @@ const ForgotPasswordPage = () => {
               {t('forgotPassword.sent.info')}
             </p>
             <button
-              className="action-button"
+              className="action-button btn-fill-primary btn-block"
               onClick={() => navigate('/login')}
             >
               {t('forgotPassword.sent.buttons.backToLogin')}
@@ -363,7 +363,7 @@ const ForgotPasswordPage = () => {
 
               <button 
                 type="submit" 
-                className="action-button" 
+                className="action-button btn-fill-primary btn-block"
                 disabled={loading}
               >
                 {loading ? t('forgotPassword.reset.form.buttons.resetting') : t('forgotPassword.reset.form.buttons.reset')}
@@ -381,7 +381,7 @@ const ForgotPasswordPage = () => {
               {t('forgotPassword.success.description')}
             </p>
             <button
-              className="action-button"
+              className="action-button btn-fill-primary btn-block"
               onClick={() => initiateLogin()}
             >
               {t('forgotPassword.success.buttons.login')}
@@ -396,13 +396,13 @@ const ForgotPasswordPage = () => {
             <h1>Reset Failed</h1>
             {error && <p className="error-message">{error}</p>}
             <button
-              className="action-button"
+              className="action-button btn-fill-primary btn-block"
               onClick={() => navigate('/forgot-password')}
             >
               Try Again
             </button>
             <button
-              className="action-button secondary"
+              className="action-button btn-fill-ghost btn-block"
               onClick={() => navigate('/login')}
             >
               Back to Login

@@ -56,7 +56,7 @@ const DevelopersHubPage = () => {
           <p>{t('developers.emptyBody')}</p>
           <Link
             to="/developers/apps/new"
-            className="developers-portal__btn developers-portal__btn--primary"
+            className="btn-fill-primary"
           >
             {t('developers.createFirst')}
           </Link>

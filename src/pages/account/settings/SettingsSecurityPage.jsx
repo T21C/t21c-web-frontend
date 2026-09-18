@@ -386,7 +386,7 @@ const SettingsSecurityPage = () => {
 
             <button
               type="submit"
-              className="save-button btn-fill-primary"
+              className="save-button btn-fill-primary btn-block"
               disabled={addPasswordUnchanged}
             >
               {t('editProfile.password.createPassword')}
@@ -395,7 +395,7 @@ const SettingsSecurityPage = () => {
         ) : !isChangingPassword ? (
           <button
             type="button"
-            className="change-password-button btn-fill-secondary"
+            className="change-password-button btn-fill-secondary btn-block"
             onClick={() => setIsChangingPassword(true)}
           >
             {t('editProfile.password.changePassword')}
@@ -449,14 +449,14 @@ const SettingsSecurityPage = () => {
 
             <button
               type="submit"
-              className="save-button btn-fill-primary"
+              className="save-button btn-fill-primary btn-block"
               disabled={changePasswordUnchanged}
             >
               {t('editProfile.password.updatePassword')}
             </button>
             <button
               type="button"
-              className="change-password-button btn-fill-secondary"
+              className="change-password-button btn-fill-secondary btn-block"
               onClick={() => setIsChangingPassword(false)}
             >
               {t('buttons.cancel', { ns: 'common' })}
@@ -521,7 +521,7 @@ const SettingsSecurityPage = () => {
         {passkeysSupported ? (
           <button
             type="button"
-            className="change-password-button btn-fill-secondary"
+            className="change-password-button btn-fill-secondary btn-block"
             onClick={handleAddPasskey}
           >
             {t('editProfile.passkeys.add')}
@@ -654,7 +654,7 @@ const SettingsSecurityPage = () => {
                   </ul>
                   <button
                     type="button"
-                    className="link-button youtube-link-button"
+                    className="btn-fill-secondary btn-block link-button youtube-link-button"
                     onClick={() => void handleYoutubeLink()}
                   >
                     <YoutubeIcon size={16} />
@@ -664,7 +664,7 @@ const SettingsSecurityPage = () => {
               ) : (
                 <button
                   type="button"
-                  className="link-button youtube-link-button"
+                  className="btn-fill-secondary btn-block link-button youtube-link-button"
                   onClick={() => void handleYoutubeLink()}
                 >
                   <YoutubeIcon size={16} />

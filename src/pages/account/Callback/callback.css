@@ -79,21 +79,5 @@
 }
 
 .continue-button {
-  background-color: #4a6cf7;
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s;
   margin-top: 1rem;
-}
-
-.continue-button:hover {
-  background-color: #3a5ce5;
-}
-
-.continue-button:active {
-  transform: translateY(1px);
 } 
