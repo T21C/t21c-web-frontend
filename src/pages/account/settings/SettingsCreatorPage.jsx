@@ -1196,7 +1196,7 @@ const SettingsCreatorPage = () => {
             </div>
             <button
               type="button"
-              className="settings-sub-page__alias-add-btn"
+              className="settings-sub-page__alias-add-btn btn-fill-secondary"
               onClick={handleAddAlias}
               disabled={aliasSaving || aliasList.length >= MAX_CREATOR_ALIASES}
             >
@@ -1204,7 +1204,7 @@ const SettingsCreatorPage = () => {
             </button>
             <button
               type="button"
-              className="settings-sub-page__save-btn"
+              className="settings-sub-page__save-btn btn-fill-primary"
               onClick={handleSaveAliases}
               disabled={aliasSaving || aliasesMatchSaved}
             >

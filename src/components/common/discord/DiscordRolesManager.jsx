@@ -702,13 +702,13 @@ const DiscordRolesManager = ({
                 </label>
               </div>
               <div className="discord-roles-manager__modal-actions">
-                <button type="submit" className="discord-roles-manager__btn--primary">
+                <button type="submit" className="btn-fill-primary">
                   {editingGuild ? t('buttons.save', { ns: 'common' }) : t('buttons.add', { ns: 'common' })}
                 </button>
                 {editingGuild && (
                   <button
                     type="button"
-                    className="discord-roles-manager__btn--danger"
+                    className="btn-fill-danger"
                     onClick={() => handleDeleteGuild(editingGuild.id)}
                   >
                     {t('buttons.delete', { ns: 'common' })}
@@ -716,7 +716,7 @@ const DiscordRolesManager = ({
                 )}
                 <button
                   type="button"
-                  className="discord-roles-manager__btn--secondary"
+                  className="btn-fill-ghost"
                   onClick={handleCloseGuildModal}
                 >
                   {t('buttons.cancel', { ns: 'common' })}
@@ -826,13 +826,13 @@ const DiscordRolesManager = ({
               </div>
 
               <div className="discord-roles-manager__modal-actions">
-                <button type="submit" className="discord-roles-manager__btn--primary">
+                <button type="submit" className="btn-fill-primary">
                   {editingRole ? t('buttons.save', { ns: 'common' }) : t('buttons.add', { ns: 'common' })}
                 </button>
                 {editingRole && (
                   <button
                     type="button"
-                    className="discord-roles-manager__btn--danger"
+                    className="btn-fill-danger"
                     onClick={handleDeleteRole}
                   >
                     {t('buttons.delete', { ns: 'common' })}
@@ -840,7 +840,7 @@ const DiscordRolesManager = ({
                 )}
                 <button
                   type="button"
-                  className="discord-roles-manager__btn--secondary"
+                  className="btn-fill-ghost"
                   onClick={handleCloseRoleModal}
                 >
                   {t('buttons.cancel', { ns: 'common' })}

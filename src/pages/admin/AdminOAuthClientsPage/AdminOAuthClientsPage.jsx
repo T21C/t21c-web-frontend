@@ -143,7 +143,7 @@ const AdminOAuthClientsPage = () => {
             autoComplete="off"
           />
         </label>
-        <button type="submit" className="admin-oauth-clients-page__btn admin-oauth-clients-page__btn--primary">
+        <button type="submit" className="btn-fill-primary">
           {t('admin.oauthClients.search')}
         </button>
       </form>
@@ -201,7 +201,7 @@ const AdminOAuthClientsPage = () => {
                 {app.status === 'active' ? (
                   <button
                     type="button"
-                    className="admin-oauth-clients-page__btn"
+                    className="btn-fill-secondary"
                     disabled={busyId === app.id}
                     onClick={() => act(app.id, 'freeze')}
                   >
@@ -210,7 +210,7 @@ const AdminOAuthClientsPage = () => {
                 ) : (
                   <button
                     type="button"
-                    className="admin-oauth-clients-page__btn"
+                    className="btn-fill-secondary"
                     disabled={busyId === app.id}
                     onClick={() => act(app.id, 'unfreeze')}
                   >
@@ -220,7 +220,7 @@ const AdminOAuthClientsPage = () => {
                 {app.verified ? (
                   <button
                     type="button"
-                    className="admin-oauth-clients-page__btn"
+                    className="btn-fill-secondary"
                     disabled={busyId === app.id}
                     onClick={() => act(app.id, 'unverify')}
                   >
@@ -229,7 +229,7 @@ const AdminOAuthClientsPage = () => {
                 ) : (
                   <button
                     type="button"
-                    className="admin-oauth-clients-page__btn admin-oauth-clients-page__btn--primary"
+                    className="btn-fill-primary"
                     disabled={busyId === app.id}
                     onClick={() => act(app.id, 'verify')}
                   >
@@ -238,7 +238,7 @@ const AdminOAuthClientsPage = () => {
                 )}
                 <button
                   type="button"
-                  className="admin-oauth-clients-page__btn admin-oauth-clients-page__btn--danger"
+                  className="btn-fill-danger"
                   disabled={busyId === app.id}
                   onClick={() => handleDelete(app)}
                 >
@@ -254,7 +254,7 @@ const AdminOAuthClientsPage = () => {
         <div className="admin-oauth-clients-page__pager">
           <button
             type="button"
-            className="admin-oauth-clients-page__btn"
+            className="btn-fill-secondary"
             disabled={!canPrev}
             onClick={() => setOffset((o) => Math.max(0, o - PAGE_SIZE))}
           >
@@ -265,7 +265,7 @@ const AdminOAuthClientsPage = () => {
           </span>
           <button
             type="button"
-            className="admin-oauth-clients-page__btn"
+            className="btn-fill-secondary"
             disabled={!canNext}
             onClick={() => setOffset((o) => o + PAGE_SIZE)}
           >

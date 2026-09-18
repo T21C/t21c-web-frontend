@@ -243,26 +243,6 @@
     gap: 12px;
 }
 
-.cancel-button,
-.save-button {
-    padding: 8px 16px;
-    border-radius: 4px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.cancel-button {
-    background: none;
-    border: 1px solid #444;
-    color: #fff;
-}
-
-.cancel-button:hover {
-    background: #333;
-    border-color: #555;
-}
-
 /* CropperJS — circle mask for avatar; banner basic corners */
 .image-selector-popup--avatar .cropper-view-box,
 .image-selector-popup--avatar .cropper-face {

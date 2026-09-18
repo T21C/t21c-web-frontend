@@ -404,7 +404,7 @@ const TournamentTiersEditor = ({
                 <td className="tournament-management-popup__col-actions">
                   <button
                     type="button"
-                    className="btn-fill-danger"
+                    className="btn-fill-danger btn-icon btn-sm"
                     onClick={() => removeRow(row.key)}
                   >
                     ×

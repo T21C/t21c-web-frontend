@@ -85,84 +85,18 @@
 
 .login-page-wrapper .login-button,
 .login-page-wrapper .discord-button,
-.login-page-wrapper .google-button {
+.login-page-wrapper .google-button,
+.login-page-wrapper .passkey-button,
+.login-page-wrapper .login-mfa-passkey {
   width: 100%;
-  padding: 0.75rem;
-  border: none;
-  border-radius: 4px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.login-page-wrapper .login-button {
-  background-color: var(--btn-primary);
-  color: white;
-}
-
-.login-page-wrapper .login-button:hover {
-  background-color: #3b7fd6;
-}
-
-.login-page-wrapper .discord-button,
-.login-page-wrapper .google-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  background-color: var(--color-white-t10);
-  color: var(--color-white);
-}
-
-.login-page-wrapper .discord-button:hover:not(:disabled),
-.login-page-wrapper .google-button:hover:not(:disabled) {
-  background-color: var(--color-white-t20);
-}
-
-.login-page-wrapper .google-button:disabled,
-.login-page-wrapper .discord-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
 }
 
 .login-page-wrapper .passkey-button {
-  width: 100%;
   margin-top: 0.75rem;
-  padding: 0.75rem;
-  border: 1px solid var(--color-white-t20);
-  border-radius: 4px;
-  font-weight: 500;
-  cursor: pointer;
-  background-color: var(--color-white-t10);
-  color: var(--color-white);
-  transition: background-color 0.2s;
-}
-
-.login-page-wrapper .passkey-button:hover {
-  background-color: var(--color-white-t20);
-}
-
-.login-page-wrapper .passkey-button:disabled,
-.login-page-wrapper .login-mfa-passkey:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
 }
 
 .login-page-wrapper .login-mfa-passkey {
-  width: 100%;
   margin-bottom: 1rem;
-  padding: 0.75rem;
-  border: 1px solid var(--color-white-t20);
-  border-radius: 4px;
-  font-weight: 500;
-  cursor: pointer;
-  background-color: var(--color-white-t10);
-  color: var(--color-white);
-  transition: background-color 0.2s;
-}
-
-.login-page-wrapper .login-mfa-passkey:hover {
-  background-color: var(--color-white-t20);
 }
 
 .login-page-wrapper .divider {

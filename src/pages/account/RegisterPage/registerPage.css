@@ -96,49 +96,12 @@
 .register-page-wrapper .discord-button,
 .register-page-wrapper .google-button {
   width: 100%;
-  padding: 0.75rem;
-  border: none;
-  border-radius: 4px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.register-page-wrapper .register-button {
-  background-color: var(--btn-primary);
-  color: white;
-}
-
-.register-page-wrapper .register-button:hover {
-  background-color: #3d84d5;
-}
-
-.register-page-wrapper .discord-button {
-  background-color: #5865F2;
-  color: white;
-}
-
-.register-page-wrapper .discord-button:hover {
-  background-color: #5865F2;
 }
 
 .register-page-wrapper .oauth-provider-buttons {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-}
-
-.register-page-wrapper .google-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  background-color: var(--color-white-t10);
-  color: var(--color-white);
-}
-
-.register-page-wrapper .google-button:hover {
-  background-color: var(--color-white-t20);
 }
 
 .register-page-wrapper .divider {
@@ -274,20 +237,7 @@
 }
 
 .register-page .profile-button {
-  background-color: #4a6cf7;
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s;
   margin-top: 1rem;
-  display: inline-block;
-}
-
-.register-page .profile-button:hover {
-  background-color: #3a5ce5;
 }
 
 .register-page .success-container {
@@ -311,22 +261,6 @@
   padding: 0.5rem;
   background-color: rgba(255, 215, 0, 0.1);
   border-radius: 4px;
-}
-
-.register-page .profile-button {
-  background-color: #4a6cf7;
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  margin-top: 1rem;
-}
-
-.register-page .profile-button:hover {
-  background-color: #3a5ce5;
 }
 
 .register-page .error-message {
@@ -375,12 +309,6 @@
 .register-page-wrapper .terms-link:hover {
   color: var(--primary-color-dark);
   text-decoration: underline;
-}
-
-.register-page-wrapper .register-button.disabled {
-  background-color: #4a6cf7;
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 
 .register-page-wrapper .captcha-container {

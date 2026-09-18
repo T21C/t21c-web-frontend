@@ -241,71 +241,6 @@ html.rating-zen-active .background::after {
   margin-top: 0.5rem;
 }
 
-.rating-zen-page__btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  border: none;
-  border-radius: 0.4rem;
-  padding: 0.65rem 1rem;
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: none;
-  color: var(--color-white);
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease,
-    filter 0.2s ease,
-    opacity 0.2s ease;
-}
-
-.rating-zen-page__btn:disabled {
-  cursor: not-allowed;
-  background: var(--btn-disabled-fill);
-  color: var(--color-gray-2);
-  filter: none;
-  opacity: 0.75;
-  transition: none;
-}
-
-.rating-zen-page__btn--primary {
-  background: var(--btn-primary);
-}
-
-.rating-zen-page__btn--primary:hover:not(:disabled) {
-  background: var(--btn-primary-hover);
-}
-
-.rating-zen-page__btn--secondary {
-  background: var(--btn-admin-purple);
-}
-
-.rating-zen-page__btn--secondary:hover:not(:disabled) {
-  background: var(--btn-admin-purple-hover);
-}
-
-.rating-zen-page__btn--secondary.rating-zen-page__btn--icon:hover:not(:disabled) {
-  background: var(--btn-admin-purple-hover);
-}
-
-.rating-zen-page__btn--secondary.rating-zen-page__btn--icon:hover:not(:disabled) svg {
-  transition: opacity 0.2s ease;
-}
-
-.rating-zen-page__btn--ghost {
-  background: var(--btn-neutral-dark);
-}
-
-.rating-zen-page__btn--ghost:hover:not(:disabled) {
-  background: var(--btn-neutral-elevated);
-}
-
-.rating-zen-page__btn--icon svg {
-  transition: opacity 0.2s ease;
-}
-
 .rating-zen-page__stage {
   position: relative;
   display: flex;
@@ -685,22 +620,10 @@ html.rating-zen-active .background::after {
   min-width: 0;
 }
 
-.rating-zen-page__action-slot > .rating-zen-page__btn,
-.rating-zen-page__actions > .rating-zen-page__btn {
+.rating-zen-page__action-slot > [class*="btn-fill-"],
+.rating-zen-page__actions > [class*="btn-fill-"] {
   width: 100%;
-}
-
-.rating-zen-page__btn--icon {
   min-height: 2.5rem;
-  padding: 0.5rem;
-  font-size: 1.25rem;
-  line-height: 1;
-}
-
-.rating-zen-page__btn--icon > span {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .rating-zen-page__error,

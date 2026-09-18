@@ -74,29 +74,6 @@
 
 .settings-security-page .save-button,
 .settings-security-page .change-password-button,
-.settings-security-page .link-button,
-.settings-security-page .unlink-button,
-.settings-security-page .danger-zone__button,
-.settings-security-page .passkeys-row-actions .settings-sub-page__btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  min-height: 2.75rem;
-  padding: 0.75rem 1.25rem;
-  border: none;
-  border-radius: 6px;
-  font-family: inherit;
-  font-size: 0.95rem;
-  font-weight: 600;
-  line-height: 1.2;
-  color: var(--color-white);
-  cursor: pointer;
-  transition: opacity 0.2s ease;
-}
-
-.settings-security-page .save-button,
-.settings-security-page .change-password-button,
 .settings-security-page .link-button {
   width: 100%;
 }
@@ -108,16 +85,12 @@
 
 .settings-security-page .unlink-button {
   width: auto;
-  padding: 0.5rem 1rem;
-  min-height: 2.5rem;
 }
 
 .settings-security-page .passkeys-row-actions .settings-sub-page__btn {
   width: auto;
   flex: 0 0 auto;
   align-self: center;
-  min-height: 2.5rem;
-  padding: 0 1rem;
 }
 
 .settings-security-page .linked-accounts {

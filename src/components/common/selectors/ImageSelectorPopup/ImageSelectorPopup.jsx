@@ -490,7 +490,7 @@ const ImageSelectorPopup = ({
                         </div>
                     )}
                     <div className="footer-buttons">
-                        <button className="cancel-button" onClick={onClose}>
+                        <button className="cancel-button btn-fill-ghost" onClick={onClose}>
                             Cancel
                         </button>
                         <button

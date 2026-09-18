@@ -223,47 +223,8 @@
   flex-wrap: wrap;
 }
 
-.difficulty-modal__button {
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.difficulty-modal__button--save {
-  background-color: var(--btn-primary);
-  color: #FFFFFF;
-}
-
-.difficulty-modal__button--save:hover {
-  background-color: var(--btn-primary-light-hover);
-}
-
-.difficulty-modal__button--cancel {
-  background-color: transparent;
-  color: #FFFFFF;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.difficulty-modal__button--cancel:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
 .difficulty-modal__button--delete {
-  background-color: var(--danger-color);
-  color: #FFFFFF;
   margin-right: auto;
-}
-
-.difficulty-modal__button--delete:hover {
-  background-color: #FF6666;
-}
-
-.difficulty-modal__button--delete:active {
-  background-color: #CC3333;
 }
 
 .difficulty-modal__error-message {
@@ -601,13 +562,8 @@
 }
 
 .difficulty-modal__button--disabled {
-  background-color: #666;
   cursor: not-allowed;
   opacity: 0.7;
-}
-
-.difficulty-modal__button--disabled:hover {
-  background-color: #666;
 }
 
 .difficulty-modal__password-modal {

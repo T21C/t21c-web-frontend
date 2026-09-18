@@ -301,44 +301,6 @@
   margin-top: 1.5rem;
 }
 
-.discord-roles-manager__btn--primary,
-.discord-roles-manager__btn--secondary,
-.discord-roles-manager__btn--danger {
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.875rem;
-  transition: background 0.2s;
-}
-
-.discord-roles-manager__btn--primary {
-  background: var(--accent-primary, #5865F2);
-  color: white;
-}
-
-.discord-roles-manager__btn--primary:hover {
-  background: var(--accent-primary-hover, #4752C4);
-}
-
-.discord-roles-manager__btn--secondary {
-  background: var(--bg-tertiary, #333);
-  color: var(--text-primary, #fff);
-}
-
-.discord-roles-manager__btn--secondary:hover {
-  background: var(--bg-secondary, #444);
-}
-
-.discord-roles-manager__btn--danger {
-  background: #f04747;
-  color: white;
-}
-
-.discord-roles-manager__btn--danger:hover {
-  background: #d43b3b;
-}
-
 /* Confirmation Dialog */
 .discord-roles-manager__confirm-overlay {
   position: fixed;

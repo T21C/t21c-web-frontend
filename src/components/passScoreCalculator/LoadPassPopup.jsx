@@ -352,14 +352,14 @@ export function LoadPassPopup({ difficultyDict, onClose, onImport }) {
           <div className="pass-score-calculator__popup-actions-end">
             <button
               type="button"
-              className="pass-score-calculator__btn pass-score-calculator__btn--ghost"
+              className="btn-fill-neutral-dark"
               onClick={onClose}
             >
               {t('buttons.cancel', { ns: 'common' })}
             </button>
             <button
               type="button"
-              className="pass-score-calculator__btn pass-score-calculator__btn--primary"
+              className="btn-fill-primary"
               onClick={() => onImport(previewPass)}
               disabled={!previewPass}
             >

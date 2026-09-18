@@ -66,7 +66,7 @@ export default function ProfileModulesEditor({
           {dirty && onDiscard ? (
             <button
               type="button"
-              className="profile-modules-editor__btn btn-fill-secondary"
+              className="btn-fill-secondary"
               onClick={onDiscard}
             >
               {t("settings.modules.discard")}
@@ -74,7 +74,7 @@ export default function ProfileModulesEditor({
           ) : null}
           <button
             type="button"
-            className="profile-modules-editor__btn btn-fill-secondary"
+            className="btn-fill-secondary"
             onClick={() => {
               if (!window.confirm(t("settings.modules.resetConfirm"))) return;
               onChange(createStockLayout(kind));
@@ -133,7 +133,7 @@ export default function ProfileModulesEditor({
                         ) : (
                           <button
                             type="button"
-                            className="profile-modules-editor__btn profile-modules-editor__btn--icon btn-fill-secondary"
+                            className="btn-fill-secondary btn-icon"
                             onClick={() => onChange(removeModuleAt(document, kind, index))}
                           >
                             <TrashIcon size="16px" color="currentColor" />

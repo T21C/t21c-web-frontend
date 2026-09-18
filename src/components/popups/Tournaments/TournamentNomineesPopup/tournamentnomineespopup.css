@@ -140,15 +140,6 @@
   border-top: 1px solid color-mix(in srgb, var(--color-white) 10%, transparent);
 }
 
-.tournament-nominees-popup__actions .btn-fill-primary,
-.tournament-nominees-popup__actions .btn-fill-secondary {
-  padding: 0.45rem 0.85rem;
-  border-radius: 0.4rem;
-  font-size: 0.875rem;
-  cursor: pointer;
-  border: none;
-}
-
 @media (max-width: 640px) {
   .tournament-nominees-popup__grid {
     grid-template-columns: minmax(0, 1fr);

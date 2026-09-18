@@ -739,7 +739,7 @@ const CreatorManagementPage = () => {
                           </button>
                           <button 
                             onClick={() => handleDeleteTeam(team.id)}
-                            className="delete-button"
+                            className="delete-button btn-fill-danger"
                           >
                             Delete
                           </button>
@@ -834,7 +834,7 @@ const CreatorManagementPage = () => {
             </div>
             <div className="form-actions">
               <button
-                className={`submit-button ${isCreatingCreator ? 'loading' : ''}`}
+                className={`submit-button btn-fill-primary ${isCreatingCreator ? 'loading' : ''}`}
                 onClick={async () => {
                   if (!newCreatorData.name.trim()) {
                     toast.error(t('creatorManagement.messages.nameRequired'));
@@ -858,7 +858,7 @@ const CreatorManagementPage = () => {
                 {isCreatingCreator ? t('loading.creating', { ns: 'common' }) : t('buttons.create', { ns: 'common' })}
               </button>
               <button
-                className="cancel-button"
+                className="cancel-button btn-fill-ghost"
                 onClick={() => {
                   setShowAddCreatorForm(false);
                   setNewCreatorData({ name: '', aliases: [] });
@@ -959,7 +959,7 @@ const CreatorManagementPage = () => {
             </div>
             <div className="form-actions">
               <button
-                className={`submit-button ${(isCreatingTeam || isUpdatingTeam) ? 'loading' : ''}`}
+                className={`submit-button btn-fill-primary ${(isCreatingTeam || isUpdatingTeam) ? 'loading' : ''}`}
                 onClick={selectedTeam ? handleUpdateTeam : handleCreateTeam}
                 disabled={(isCreatingTeam || isUpdatingTeam) || !newTeamData.name.trim()}
               >
@@ -968,7 +968,7 @@ const CreatorManagementPage = () => {
                   : (selectedTeam ? 'Update' : 'Create')}
               </button>
               <button
-                className="cancel-button"
+                className="cancel-button btn-fill-ghost"
                 onClick={() => {
                   setShowAddTeamForm(false);
                   setSelectedTeam(null);

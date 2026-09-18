@@ -28,7 +28,8 @@
   --color-gray-3: #e9e9ea;
   --success-color: #28a745;
   --danger-color: #dc3545;
-  /* Semantic button fills: one base per variant; hover/active via .btn-fill-* + filter in @layer components */
+  /* Semantic button fills: one base per variant; hover/active via .btn-fill-* + filter.
+     Shape (padding, radius, type) is also on .btn-fill-*; use .btn-sm/.btn-lg/.btn-icon/.btn-block. */
   --btn-primary: #4a90e2;
   --btn-primary-alt: #745bda;
   --btn-danger: #bb2222;
@@ -41,6 +42,21 @@
   --btn-discord: #7289da;
   --btn-success: #41c641;
   --btn-disabled-fill: #555555;
+  /* Button shape: padding + type. Do not set width/height on action buttons. */
+  --btn-gap: 0.35rem;
+  --btn-radius: 0.4rem;
+  --btn-font-size: 0.875rem;
+  --btn-font-weight: 500;
+  --btn-line-height: 1.2;
+  --btn-pad-y: 0.65rem;
+  --btn-pad-x: 0.85rem;
+  --btn-sm-pad-y: 0.25rem;
+  --btn-sm-pad-x: 0.45rem;
+  --btn-sm-font-size: 0.8rem;
+  --btn-lg-pad-y: 0.7rem;
+  --btn-lg-pad-x: 1.25rem;
+  --btn-lg-font-size: 0.9375rem;
+  --btn-icon-pad: 0.45rem;
   /* Explicit hover fills where components do not use .btn-fill-* + filter */
   --btn-primary-hover: color-mix(in srgb, var(--btn-primary) 78%, #000);
   --btn-primary-light-hover: color-mix(in srgb, var(--btn-primary) 72%, #fff);
@@ -662,12 +678,14 @@ select:-moz-focusring {
 
 button {
   cursor: pointer;
+  font-family: inherit;
 }
 
 @layer components {
   /*
-   * Button fill utilities: solid fill lives on ::before so filter (hover/active)
-   * never affects label, icons, or other content.
+   * Action buttons: .btn-fill-* is color + default size (padding/type, not
+   * width/height). Optional .btn-sm / .btn-lg / .btn-icon / .btn-block.
+   * Fill lives on ::before so hover filter never tints label or icons.
    */
   .btn-fill-primary,
   .btn-fill-danger,
@@ -679,13 +697,63 @@ button {
   .btn-fill-discord,
   .btn-fill-accent,
   .btn-fill-success,
-  .btn-fill-glass {
+  .btn-fill-glass,
+  .btn-fill-ghost,
+  .btn-fill-admin {
     position: relative;
     z-index: 0;
     isolation: isolate;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--btn-gap);
+    padding: var(--btn-pad-y) var(--btn-pad-x);
     border: none;
+    border-radius: var(--btn-radius);
     background-color: transparent;
     color: var(--color-white);
+    font-family: inherit;
+    font-size: var(--btn-font-size);
+    font-weight: var(--btn-font-weight);
+    line-height: var(--btn-line-height);
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .btn-fill-primary:disabled,
+  .btn-fill-danger:disabled,
+  .btn-fill-neutral:disabled,
+  .btn-fill-neutral-dark:disabled,
+  .btn-fill-neutral-muted:disabled,
+  .btn-fill-neutral-heavy:disabled,
+  .btn-fill-secondary:disabled,
+  .btn-fill-discord:disabled,
+  .btn-fill-accent:disabled,
+  .btn-fill-success:disabled,
+  .btn-fill-glass:disabled,
+  .btn-fill-ghost:disabled,
+  .btn-fill-admin:disabled {
+    cursor: not-allowed;
+  }
+
+  .btn-fill-primary:focus-visible,
+  .btn-fill-danger:focus-visible,
+  .btn-fill-neutral:focus-visible,
+  .btn-fill-neutral-dark:focus-visible,
+  .btn-fill-neutral-muted:focus-visible,
+  .btn-fill-neutral-heavy:focus-visible,
+  .btn-fill-secondary:focus-visible,
+  .btn-fill-discord:focus-visible,
+  .btn-fill-accent:focus-visible,
+  .btn-fill-success:focus-visible,
+  .btn-fill-glass:focus-visible,
+  .btn-fill-ghost:focus-visible,
+  .btn-fill-admin:focus-visible {
+    outline: 2px solid var(--btn-primary-light-hover);
+    outline-offset: 2px;
   }
 
   .btn-fill-primary {
@@ -723,7 +791,13 @@ button {
   }
   .btn-fill-glass {
     --btn-fill: var(--color-white-t20);
-    transition: transform 0.2s;
+  }
+  .btn-fill-ghost {
+    --btn-fill: transparent;
+    color: var(--color-gray-2);
+  }
+  .btn-fill-admin {
+    --btn-fill: var(--btn-admin-purple);
   }
 
   .btn-fill-primary::before,
@@ -736,7 +810,9 @@ button {
   .btn-fill-discord::before,
   .btn-fill-accent::before,
   .btn-fill-success::before,
-  .btn-fill-glass::before {
+  .btn-fill-glass::before,
+  .btn-fill-ghost::before,
+  .btn-fill-admin::before {
     content: "";
     position: absolute;
     inset: 0;
@@ -846,6 +922,54 @@ button {
   }
   .btn-fill-glass:active:not(:disabled)::before {
     filter: brightness(1.05);
+  }
+
+  .btn-fill-ghost:hover:not(:disabled) {
+    color: var(--color-white);
+  }
+  .btn-fill-ghost:hover:not(:disabled)::before {
+    filter: none;
+    background-color: var(--color-white-t10);
+  }
+  .btn-fill-ghost:active:not(:disabled)::before {
+    filter: none;
+    background-color: var(--color-white-t15);
+  }
+
+  .btn-fill-admin:hover:not(:disabled)::before {
+    filter: brightness(0.88);
+  }
+  .btn-fill-admin:active:not(:disabled)::before {
+    filter: brightness(0.8);
+  }
+  .btn-fill-admin:disabled::before {
+    filter: none;
+    background-color: var(--btn-disabled-fill);
+  }
+
+  .btn-sm {
+    padding: var(--btn-sm-pad-y) var(--btn-sm-pad-x);
+    font-size: var(--btn-sm-font-size);
+  }
+
+  .btn-lg {
+    padding: var(--btn-lg-pad-y) var(--btn-lg-pad-x);
+    font-size: var(--btn-lg-font-size);
+  }
+
+  .btn-icon {
+    aspect-ratio: 1;
+    padding: var(--btn-icon-pad);
+    gap: 0;
+    flex-shrink: 0;
+  }
+
+  .btn-icon.btn-sm {
+    padding: var(--btn-sm-pad-y);
+  }
+
+  .btn-block {
+    width: 100%;
   }
 
   /* When route overrides the fill (e.g. nav submit active), repaint ::before only */
@@ -1008,13 +1132,6 @@ button {
   justify-content: flex-end;
 }
 
-.password-modal-actions button {
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
-}
-
 .password-modal-actions .confirm-btn {
   color: #ffffff;
 }
@@ -1054,8 +1171,6 @@ button {
   .password-modal-actions .confirm-btn,
   .password-modal-actions .cancel-btn {
     width: 100%;
-    padding: 0.75rem;
-    font-size: 1rem;
   }
 }
 

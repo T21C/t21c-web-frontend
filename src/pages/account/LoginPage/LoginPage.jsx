@@ -159,7 +159,7 @@ const LoginPage = () => {
 
                 <button
                   type="submit"
-                  className="login-button"
+                  className="login-button btn-fill-primary btn-block"
                   disabled={
                     flow.loading ||
                     flow.retryAfter ||
@@ -179,7 +179,7 @@ const LoginPage = () => {
               <div className="oauth-provider-buttons">
                 <button
                   type="button"
-                  className="discord-button"
+                  className="discord-button btn-fill-discord btn-block"
                   onClick={flow.submitDiscord}
                   disabled={flow.loading || flow.retryAfter}
                 >
@@ -188,7 +188,7 @@ const LoginPage = () => {
                 </button>
                 <button
                   type="button"
-                  className="google-button"
+                  className="google-button btn-fill-glass btn-block"
                   onClick={flow.submitGoogle}
                   disabled={flow.loading || flow.retryAfter}
                 >
@@ -200,7 +200,7 @@ const LoginPage = () => {
               {flow.passkeysSupported && (
                 <button
                   type="button"
-                  className="passkey-button"
+                  className="passkey-button btn-fill-glass btn-block"
                   onClick={handlePasskeyLogin}
                   disabled={flow.loading || flow.retryAfter}
                 >
@@ -221,7 +221,7 @@ const LoginPage = () => {
               {flow.mfaMethods.includes('passkey') && flow.passkeysSupported && (
                 <button
                   type="button"
-                  className="login-mfa-passkey"
+                  className="login-mfa-passkey btn-fill-glass btn-block"
                   onClick={handleMfaPasskey}
                   disabled={flow.loading}
                 >
@@ -260,7 +260,7 @@ const LoginPage = () => {
               {flow.mfaMethods.includes('email') && (
                 <button
                   type="submit"
-                  className="login-button"
+                  className="login-button btn-fill-primary btn-block"
                   disabled={flow.loading || flow.mfaCode.length < 8}
                 >
                   {flow.loading

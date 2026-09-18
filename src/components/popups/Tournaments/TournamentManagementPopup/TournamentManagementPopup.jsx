@@ -755,7 +755,7 @@ const TournamentManagementPopup = ({
             {isLevelMode && row.id ? (
               <button
                 type="button"
-                className="btn-fill-secondary"
+                className="btn-fill-secondary btn-icon btn-sm"
                 title={t("tournamentManagement.syncCredits")}
                 onClick={() => syncCredits(row.id)}
               >
@@ -764,7 +764,7 @@ const TournamentManagementPopup = ({
             ) : null}
             <button
               type="button"
-              className="btn-fill-danger"
+              className="btn-fill-danger btn-icon btn-sm"
               onClick={() => removePlacementRow(row.key)}
             >
               ×

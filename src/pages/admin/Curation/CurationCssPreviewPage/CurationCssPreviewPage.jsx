@@ -274,21 +274,21 @@ const CurationCssPreviewPage = () => {
           
           <div className="css-editor-actions">
             <button
-              className="reset-button"
+              className="reset-button btn-fill-neutral-dark"
               onClick={handleReset}
               disabled={isSaving || !hasUnsavedChanges}
             >
               {t('buttons.reset', { ns: 'common' })}
             </button>
             <button
-              className="save-button"
+              className="save-button btn-fill-accent"
               onClick={handleSave}
               disabled={isSaving || !hasUnsavedChanges}
             >
               {isSaving ? t('loading.saving', { ns: 'common' }) : t('buttons.save', { ns: 'common' })}
             </button>
             <button
-              className="return-button"
+              className="return-button btn-fill-ghost"
               onClick={handleReturn}
               disabled={isSaving}
             >

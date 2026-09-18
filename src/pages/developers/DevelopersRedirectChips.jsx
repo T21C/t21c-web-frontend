@@ -75,7 +75,7 @@ const DevelopersRedirectChips = ({ uris, onChange, disabled = false, max = 10 })
           />
           <button
             type="button"
-            className="developers-portal__btn developers-portal__btn--secondary"
+            className="btn-fill-secondary"
             onClick={addUri}
             disabled={disabled}
           >

@@ -208,49 +208,6 @@
 .return-button {
   flex: 1;
   min-width: 120px;
-  padding: 0.75rem 1rem;
-  border: none;
-  border-radius: 6px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 0.9rem;
-}
-
-.return-button {
-  background: var(--btn-neutral-dark);
-  color: var(--color-white);
-}
-
-.return-button:hover:not(:disabled) {
-  background: var(--btn-neutral-disabled-fill);
-  border-color: #505050;
-}
-
-.reset-button {
-  background: var(--btn-neutral-disabled-fill);
-  color: var(--color-white);
-  border: 1px solid #505050;
-}
-
-.reset-button:hover:not(:disabled) {
-  background: #505050;
-}
-
-.save-button {
-  background: var(--color-purple-3);
-  color: var(--color-white);
-}
-
-.save-button:hover:not(:disabled) {
-  background: var(--color-purple-2);
-}
-
-.reset-button:disabled,
-.save-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
 }
 
 /* Level Detail Page Wrapper */

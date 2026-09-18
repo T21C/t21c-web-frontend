@@ -148,25 +148,7 @@
 
 .creator-management-page .create-creator-section .submit-button {
   width: 100%;
-  padding: 0.75rem;
-  background-color: var(--btn-primary);
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.2s;
   position: relative;
-}
-
-.creator-management-page .create-creator-section .submit-button:hover:not(:disabled) {
-  background-color: var(--btn-primary-hover);
-}
-
-.creator-management-page .create-creator-section .submit-button:disabled {
-  background-color: #2a5a8f;
-  cursor: not-allowed;
-  opacity: 0.7;
 }
 
 .creator-management-page .create-creator-section .submit-button.loading {
@@ -260,12 +242,6 @@
 
 .creator-management-page .submit-button {
   width: 100%;
-  padding: 0.75rem;
-  background-color: var(--btn-primary);
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
   margin-top: 1rem;
 }
 
@@ -509,62 +485,8 @@
   margin-top: 1rem;
 }
 
-.creator-management-page .save-button,
 .creator-management-page .cancel-button {
   flex: 1;
-  height: 42px;
-  padding: 0 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  transition: all 0.2s;
-}
-
-.creator-management-page .save-button {
-  background-color: var(--btn-primary);
-  color: white;
-}
-
-.creator-management-page .save-button:hover:not(:disabled) {
-  background-color: var(--btn-primary-hover);
-}
-
-.creator-management-page .save-button:disabled {
-  background-color: #2a5a8f;
-  cursor: not-allowed;
-  opacity: 0.7;
-}
-
-.creator-management-page .cancel-button {
-  background-color: #666666;
-  color: white;
-}
-
-.creator-management-page .cancel-button:hover:not(:disabled) {
-  background-color: #555555;
-}
-
-.creator-management-page .cancel-button:disabled {
-  background-color: #444444;
-  cursor: not-allowed;
-  opacity: 0.7;
-}
-
-.creator-management-page .save-button.loading {
-  color: transparent;
-}
-
-.creator-management-page .save-button .spinner {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
 }
 
 @media (max-width: 768px) {
@@ -1046,19 +968,7 @@
 }
 
 .creator-management-page .team-actions .delete-button {
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: background-color 0.2s;
-  background-color: var(--danger-color);
-  color: white;
   flex: 1;
-}
-
-.creator-management-page .team-actions .delete-button:hover {
-  background-color: var(--danger-color-hover);
 }
 
 @media (max-width: 768px) {
@@ -1221,19 +1131,7 @@
 }
 
 .creator-management-page .team-actions .delete-button {
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: background-color 0.2s;
-  background-color: var(--danger-color);
-  color: white;
   flex: 1;
-}
-
-.creator-management-page .team-actions .delete-button:hover {
-  background-color: var(--danger-color-hover);
 }
 
 @media (max-width: 768px) {
@@ -1569,36 +1467,7 @@
 
 .add-creator-form-overlay .add-creator-form .form-actions button {
   flex: 1;
-  padding: 0.75rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1rem;
   position: relative;
-}
-
-.add-creator-form-overlay .add-creator-form .form-actions .submit-button {
-  background-color: var(--btn-success);
-  color: white;
-}
-
-.add-creator-form-overlay .add-creator-form .form-actions .submit-button:hover:not(:disabled) {
-  background-color: var(--btn-success-hover);
-}
-
-.add-creator-form-overlay .add-creator-form .form-actions .submit-button:disabled {
-  background-color: #2d7230;
-  cursor: not-allowed;
-  opacity: 0.7;
-}
-
-.add-creator-form-overlay .add-creator-form .form-actions .cancel-button {
-  background-color: #666666;
-  color: white;
-}
-
-.add-creator-form-overlay .add-creator-form .form-actions .cancel-button:hover {
-  background-color: #555555;
 }
 
 .add-creator-form-overlay .add-creator-form .form-actions .submit-button.loading {

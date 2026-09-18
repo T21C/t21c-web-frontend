@@ -368,41 +368,6 @@
   margin-top: 1rem;
 }
 
-.type-management-modal__btn {
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.type-management-modal__btn--cancel {
-  background: #333333;
-  color: #ffffff;
-  border: 1px solid var(--btn-neutral-disabled-fill);
-}
-
-.type-management-modal__btn--cancel:hover {
-  background: #1a1a1a;
-}
-
-.type-management-modal__btn--submit {
-  background: var(--btn-primary);
-  color: white;
-}
-
-.type-management-modal__btn--submit:hover:not(:disabled) {
-  background: var(--btn-primary-hover);
-}
-
-.type-management-modal__btn--submit:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-}
-
 @media (max-width: 768px) {
   .type-management-modal__content {
     margin: 1rem;
@@ -436,7 +401,7 @@
     flex-direction: column;
   }
 
-  .type-management-modal__btn {
+  .type-management-modal__form-actions > * {
     width: 100%;
   }
 }

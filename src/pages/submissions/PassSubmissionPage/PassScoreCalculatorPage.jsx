@@ -155,14 +155,14 @@ function PopupSaveCancel({ onCancel, onSave, children = null }) {
       <div className="pass-score-calculator__popup-actions-end">
         <button
           type="button"
-          className="pass-score-calculator__btn pass-score-calculator__btn--ghost"
+          className="btn-fill-neutral-dark"
           onClick={onCancel}
         >
           {t('buttons.cancel', { ns: 'common' })}
         </button>
         <button
           type="button"
-          className="pass-score-calculator__btn pass-score-calculator__btn--primary"
+          className="btn-fill-primary"
           onClick={onSave}
         >
           {t('buttons.save', { ns: 'common' })}
@@ -699,7 +699,7 @@ const PassScoreCalculatorPage = () => {
             <div className="pass-score-calculator__form-actions">
               <button
                 type="button"
-                className="pass-score-calculator__btn pass-score-calculator__btn--primary"
+                className="btn-fill-primary"
                 onClick={handleCalculate}
                 disabled={isCalculating}
               >
@@ -709,7 +709,7 @@ const PassScoreCalculatorPage = () => {
               </button>
               <button
                 type="button"
-                className="pass-score-calculator__btn pass-score-calculator__btn--ghost"
+                className="btn-fill-neutral-dark"
                 onClick={() => void handleCopyLink()}
               >
                 {t('passSubmission.calculator.copyLink')}
@@ -777,7 +777,7 @@ const PassScoreCalculatorPage = () => {
               <div className="pass-score-calculator__curve-actions">
                 <button
                   type="button"
-                  className="pass-score-calculator__btn pass-score-calculator__btn--ghost"
+                  className="btn-fill-neutral-dark"
                   onClick={() => setShowCurveEditor(true)}
                 >
                   {t('passSubmission.calculator.overrides.editCurve')}
@@ -785,7 +785,7 @@ const PassScoreCalculatorPage = () => {
                 {editorHasCurveOverride ? (
                   <button
                     type="button"
-                    className="pass-score-calculator__btn pass-score-calculator__btn--ghost"
+                    className="btn-fill-neutral-dark"
                     onClick={handleClearCurveOverride}
                   >
                     {t('passSubmission.calculator.overrides.clearCurve')}
@@ -807,7 +807,7 @@ const PassScoreCalculatorPage = () => {
             <PopupSaveCancel onCancel={closeOverridesPopup} onSave={saveOverridesPopup}>
               <button
                 type="button"
-                className="pass-score-calculator__btn pass-score-calculator__btn--ghost"
+                className="btn-fill-neutral-dark"
                 onClick={handleResetOverrides}
               >
                 {t('passSubmission.calculator.overrides.reset')}
@@ -860,7 +860,7 @@ const PassScoreCalculatorPage = () => {
             <PopupSaveCancel onCancel={closeComparePopup} onSave={saveComparePopup}>
               <button
                 type="button"
-                className="pass-score-calculator__btn pass-score-calculator__btn--ghost pass-score-calculator__btn--icon"
+                className="btn-fill-neutral-dark pass-score-calculator__btn--icon"
                 onClick={importCompareFromForm}
                 title={t('passSubmission.calculator.compareInputs.copyJudgementsTooltip')}
               >

@@ -187,10 +187,10 @@ const StepUpModal = ({ scope, user, onElevated, onCancel }) => {
             <div className="step-up-modal__body">
               <p className="step-up-modal__text">{t('stepUp.emailRequiredBody')}</p>
               <div className="step-up-modal__actions">
-                <button type="button" className="step-up-modal__btn step-up-modal__btn--secondary" onClick={onCancel}>
+                <button type="button" className="btn-fill-ghost" onClick={onCancel}>
                   {t('buttons.cancel', { ns: 'common' })}
                 </button>
-                <button type="button" className="step-up-modal__btn step-up-modal__btn--primary" onClick={goAddEmail}>
+                <button type="button" className="btn-fill-accent" onClick={goAddEmail}>
                   {t('stepUp.addEmail')}
                 </button>
               </div>
@@ -218,10 +218,10 @@ const StepUpModal = ({ scope, user, onElevated, onCancel }) => {
               )}
               {error ? <p className="step-up-modal__error">{error}</p> : null}
               <div className="step-up-modal__actions">
-                <button type="button" className="step-up-modal__btn step-up-modal__btn--secondary" onClick={onCancel} disabled={busy}>
+                <button type="button" className="btn-fill-ghost" onClick={onCancel} disabled={busy}>
                   {t('buttons.cancel', { ns: 'common' })}
                 </button>
-                <button type="submit" className="step-up-modal__btn step-up-modal__btn--primary" disabled={busy}>
+                <button type="submit" className="btn-fill-accent" disabled={busy}>
                   {busy ? '...' : hasPassword ? t('stepUp.continue') : t('stepUp.continueDiscord')}
                 </button>
               </div>
@@ -245,7 +245,7 @@ const StepUpModal = ({ scope, user, onElevated, onCancel }) => {
               <div className="step-up-modal__actions">
                 <button
                   type="button"
-                  className="step-up-modal__btn step-up-modal__btn--secondary"
+                  className="btn-fill-ghost"
                   onClick={() => void requestCode()}
                   disabled={busy || resendSeconds > 0}
                 >
@@ -255,7 +255,7 @@ const StepUpModal = ({ scope, user, onElevated, onCancel }) => {
                 </button>
                 <button
                   type="submit"
-                  className="step-up-modal__btn step-up-modal__btn--primary"
+                  className="btn-fill-accent"
                   disabled={busy || code.length < 8}
                 >
                   {busy ? '...' : t('stepUp.confirm')}

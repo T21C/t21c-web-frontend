@@ -303,7 +303,7 @@ export function AdminGrantPanel({ storedPassword, onGrantChange }) {
               )}
               <button
                 type="button"
-                className="billing-page__btn billing-page__btn--ghost billing-page__recipient-change"
+                className="btn-fill-ghost billing-page__recipient-change"
                 onClick={clearBeneficiary}
                 disabled={submitting}
               >
@@ -328,7 +328,7 @@ export function AdminGrantPanel({ storedPassword, onGrantChange }) {
           <div className="billing-page__admin-grant-duration-toggle" role="group" aria-label={t("billing.adminGrants.durationLabel")}>
             <button
               type="button"
-              className={`billing-page__btn billing-page__btn--ghost${durationKind === "months" ? " billing-page__admin-grant-toggle--active" : ""}`}
+              className={`btn-fill-ghost${durationKind === "months" ? " billing-page__admin-grant-toggle--active" : ""}`}
               onClick={() => setDurationKind("months")}
               disabled={submitting}
             >
@@ -336,7 +336,7 @@ export function AdminGrantPanel({ storedPassword, onGrantChange }) {
             </button>
             <button
               type="button"
-              className={`billing-page__btn billing-page__btn--ghost${durationKind === "days" ? " billing-page__admin-grant-toggle--active" : ""}`}
+              className={`btn-fill-ghost${durationKind === "days" ? " billing-page__admin-grant-toggle--active" : ""}`}
               onClick={() => setDurationKind("days")}
               disabled={submitting}
             >
@@ -382,7 +382,7 @@ export function AdminGrantPanel({ storedPassword, onGrantChange }) {
 
         <button
           type="button"
-          className="billing-page__btn billing-page__btn--primary billing-page__admin-grant-submit"
+          className="btn-fill-primary billing-page__admin-grant-submit"
           onClick={handleGrant}
           disabled={submitting}
         >
@@ -409,7 +409,7 @@ export function AdminGrantPanel({ storedPassword, onGrantChange }) {
             isDisabled={loadingLog}
             aria-label={t("billing.adminGrants.expiredFilterLabel")}
           />
-          <button type="button" className="billing-page__btn billing-page__btn--ghost" onClick={loadGrants} disabled={loadingLog}>
+          <button type="button" className="btn-fill-ghost" onClick={loadGrants} disabled={loadingLog}>
             {t("billing.adminGrants.refreshLog")}
           </button>
         </div>
@@ -464,7 +464,7 @@ export function AdminGrantPanel({ storedPassword, onGrantChange }) {
                         {canRetract ? (
                           <button
                             type="button"
-                            className="billing-page__btn billing-page__btn--ghost billing-page__admin-grant-retract-btn"
+                            className="btn-fill-ghost billing-page__admin-grant-retract-btn"
                             onClick={() => handleRetract(row)}
                             disabled={retractingId === row.id}
                           >

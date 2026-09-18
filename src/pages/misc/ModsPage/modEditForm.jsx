@@ -131,11 +131,11 @@ function ModIconRow({ previewUrl, name, disabled, onChange, onRemove, t }) {
         </span>
       )}
       <div className="mods-page__icon-actions">
-        <button type="button" className="cancel-button" disabled={disabled} onClick={onChange}>
+        <button type="button" className="btn-fill-secondary" disabled={disabled} onClick={onChange}>
           {t('mods.icon.change')}
         </button>
         {previewUrl ? (
-          <button type="button" className="cancel-button" disabled={disabled} onClick={onRemove}>
+          <button type="button" className="btn-fill-danger" disabled={disabled} onClick={onRemove}>
             {t('mods.icon.remove')}
           </button>
         ) : null}

@@ -488,7 +488,7 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
                     <button
                       type="button"
                       onClick={() => setShowCreateForm(false)}
-                      className="cancel-button"
+                      className="cancel-button btn-fill-ghost"
                       disabled={isCreating}
                     >
                       {t('buttons.cancel', { ns: 'common' })}
@@ -496,7 +496,7 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
                     <button
                       type="submit"
                       disabled={isCreating || !newName.trim()}
-                      className={`submit-button ${isCreating ? 'loading' : ''}`}
+                      className={`submit-button btn-fill-primary ${isCreating ? 'loading' : ''}`}
                     >
                       {isCreating ? t('loading.creating', { ns: 'common' }) : 
                         (isTeamMode ? t('submissionCreator.buttons.createTeam') : t('submissionCreator.buttons.create'))}
@@ -530,7 +530,7 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
           {!showCreateForm && (
             <div className="action-buttons">
               <button
-                className={`action-button ${isLoading || isLoadingDetails ? 'loading' : ''}`}
+                className={`btn-fill-success action-button ${isLoading || isLoadingDetails ? 'loading' : ''}`}
                 onClick={handleAssign}
                 disabled={(!selectedCreatorId && !isTeamMode) || (!selectedTeamId && isTeamMode) || isLoading || isLoadingDetails}
               >

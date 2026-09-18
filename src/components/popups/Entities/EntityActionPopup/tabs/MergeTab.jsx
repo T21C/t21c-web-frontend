@@ -45,7 +45,7 @@ export const MergeTab = ({
 
       <div className="form-actions">
         <button
-          className="submit-button"
+          className="submit-button btn-fill-success"
           onClick={handleMerge}
           disabled={isLoading || !currentMergeTarget}
         >

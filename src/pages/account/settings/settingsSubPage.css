@@ -29,32 +29,8 @@
   color: var(--color-gray-2);
 }
 
-/* Secondary / neutral actions (retry, open profile from error state).
-   Pairs with global @layer .btn-fill-* (padding/radius live here; fill on ::before). */
 .settings-sub-page .settings-sub-page__btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   align-self: flex-start;
-  min-height: 2.75rem;
-  padding: 0 1.25rem;
-  font-size: 0.95rem;
-  font-weight: 600;
-  font-family: inherit;
-  line-height: 1.2;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: opacity 0.2s ease;
-}
-
-.settings-sub-page .settings-sub-page__btn:disabled {
-  cursor: not-allowed;
-  opacity: 0.55;
-}
-
-.settings-sub-page .settings-sub-page__btn:focus-visible {
-  outline: 2px solid var(--btn-primary-light-hover);
-  outline-offset: 2px;
 }
 
 .settings-sub-page__btn--ghost {
@@ -305,32 +281,6 @@
 .settings-sub-page .settings-sub-page__save-btn {
   flex: 0 0 auto;
   align-self: flex-end;
-  height: 2.75rem;
-  min-width: 8.5rem;
-  padding: 0 1.35rem;
-  font-size: 0.95rem;
-  font-weight: 600;
-  font-family: inherit;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  color: var(--color-white);
-  background: var(--btn-primary);
-  transition: background-color 0.2s ease, opacity 0.2s ease;
-}
-
-.settings-sub-page .settings-sub-page__save-btn:hover:not(:disabled) {
-  background: var(--btn-primary-hover);
-}
-
-.settings-sub-page .settings-sub-page__save-btn:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-
-.settings-sub-page .settings-sub-page__save-btn:focus-visible {
-  outline: 2px solid var(--btn-primary-light-hover);
-  outline-offset: 2px;
 }
 
 .settings-sub-page .settings-sub-page__field-error {
@@ -380,26 +330,6 @@
 .settings-sub-page .settings-sub-page__alias-add-btn {
   flex: 0 0 auto;
   align-self: stretch;
-  min-height: 2.75rem;
-  padding: 0 1rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  font-family: inherit;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  color: var(--color-white);
-  background: var(--btn-secondary);
-  transition: filter 0.15s ease, opacity 0.2s ease;
-}
-
-.settings-sub-page .settings-sub-page__alias-add-btn:hover:not(:disabled) {
-  filter: brightness(0.95);
-}
-
-.settings-sub-page .settings-sub-page__alias-add-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 
 .settings-sub-page .settings-sub-page__aliases-chips {

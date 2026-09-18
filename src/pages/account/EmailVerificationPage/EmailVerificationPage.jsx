@@ -192,7 +192,7 @@ const EmailVerificationPage = () => {
           <>
             <h1>Sign in required</h1>
             <p className="status-message">Log in to verify or change your email.</p>
-            <button type="button" className="action-button" onClick={() => initiateLogin()}>
+            <button type="button" className="action-button btn-fill-primary btn-block" onClick={() => initiateLogin()}>
               Log In
             </button>
           </>
@@ -205,7 +205,7 @@ const EmailVerificationPage = () => {
             <p className="status-message">
               Your email was confirmed. Please log in again to continue.
             </p>
-            <button type="button" className="action-button" onClick={() => initiateLogin()}>
+            <button type="button" className="action-button btn-fill-primary btn-block" onClick={() => initiateLogin()}>
               Log In
             </button>
           </>
@@ -216,7 +216,7 @@ const EmailVerificationPage = () => {
             <div className="success-icon">✓</div>
             <h1>Email Verified!</h1>
             <p className="status-message">Your email has been successfully verified.</p>
-            <Link className="action-button" to="/profile">
+            <Link className="action-button btn-fill-primary btn-block" to="/profile">
               Go to Profile
             </Link>
           </>
@@ -227,7 +227,7 @@ const EmailVerificationPage = () => {
             <div className="success-icon">✓</div>
             <h1>Email Verified</h1>
             <p className="status-message">Your email is verified. No action is needed.</p>
-            <Link className="action-button" to="/profile">
+            <Link className="action-button btn-fill-primary btn-block" to="/profile">
               Go to Profile
             </Link>
           </>
@@ -239,7 +239,7 @@ const EmailVerificationPage = () => {
             <p className="status-message">
               Your account does not have an email address. Add one in account settings.
             </p>
-            <Link className="action-button" to="/settings/account">
+            <Link className="action-button btn-fill-primary btn-block" to="/settings/account">
               Add email in account settings
             </Link>
           </>
@@ -257,7 +257,7 @@ const EmailVerificationPage = () => {
               {error ? <p className="error-message">{error}</p> : null}
               {notice && !error ? <p className="notice-message">{notice}</p> : null}
               <button
-                className="action-button"
+                className="action-button btn-fill-primary btn-block"
                 type="submit"
                 disabled={submitting || !code}
               >
@@ -267,7 +267,7 @@ const EmailVerificationPage = () => {
 
             <div className="verify-actions">
               <button
-                className="action-button secondary"
+                className="action-button btn-fill-ghost btn-block"
                 type="button"
                 onClick={handleResend}
                 disabled={resending || !pendingEmail || cooldownSec > 0}
@@ -280,7 +280,7 @@ const EmailVerificationPage = () => {
               </button>
               {pendingEmail && verifiedEmail ? (
                 <button
-                  className="action-button secondary"
+                  className="action-button btn-fill-ghost btn-block"
                   type="button"
                   onClick={handleCancelPending}
                   disabled={submitting}
@@ -288,7 +288,7 @@ const EmailVerificationPage = () => {
                   Cancel pending change
                 </button>
               ) : null}
-              <Link className="action-button secondary" to="/profile">
+              <Link className="action-button btn-fill-ghost btn-block" to="/profile">
                 Back to Profile
               </Link>
             </div>

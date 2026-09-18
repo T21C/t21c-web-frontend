@@ -910,39 +910,9 @@
   margin-top: 24px;
 }
 
-.entity-action-popup .submit-button {
-  flex: 1;
-  padding: 12px;
-  background-color: var(--btn-success);
-  border: none;
-  border-radius: 4px;
-  color: #ffffff;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.entity-action-popup .submit-button:hover:not(:disabled) {
-  background-color: var(--btn-success-hover);
-}
-
-.entity-action-popup .submit-button:disabled {
-  background-color: #666;
-  cursor: not-allowed;
-}
-
+.entity-action-popup .submit-button,
 .entity-action-popup .cancel-button {
-  padding: 12px 24px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-  color: #ffffff;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.entity-action-popup .cancel-button:hover {
-  background-color: rgba(255, 255, 255, 0.2);
+  flex: 1;
 }
 
 .entity-action-popup .error-message {

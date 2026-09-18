@@ -1268,14 +1268,14 @@ const DifficultyPage = () => {
             <>
               <div className="difficulty-actions-container">
                 <button
-                  className="create-button"
+                  className="create-button btn-fill-primary"
                   onClick={handleCreateClick}
                   disabled={isLoading || contextLoading || isReordering}
                 >
                   {t('difficulty.buttons.create')}
                 </button>
                 <button
-                  className="discord-roles-button"
+                  className="discord-roles-button btn-fill-glass"
                   onClick={() => {
                     if (!verifiedPassword) {
                       setPendingAction({ type: 'discordRoles' });
@@ -1376,7 +1376,7 @@ const DifficultyPage = () => {
               {tagsSubTab === 'tags' ? (
                 <>
                   <button
-                    className="create-button"
+                    className="create-button btn-fill-primary"
                     onClick={() => setIsCreatingTag(true)}
                     disabled={tagsLoading || isTagsReordering}
                   >
@@ -1473,7 +1473,7 @@ const DifficultyPage = () => {
                 <>
                   {/* Groups Sub-tab */}
                   <button
-                    className="create-button"
+                    className="create-button btn-fill-primary"
                     onClick={() => {
                       setNewGroupName('');
                       setIsCreatingGroup(true);
@@ -1692,10 +1692,10 @@ const DifficultyPage = () => {
                         inactive={!newTag.isCommunity}
                       />
                       <div className="modal-actions">
-                        <button type="submit" className="confirm-button">{t('difficulty.tags.create.createButton')}</button>
+                        <button type="submit" className="confirm-button btn-fill-primary">{t('difficulty.tags.create.createButton')}</button>
                         <button
                           type="button"
-                          className="cancel-button"
+                          className="cancel-button btn-fill-ghost"
                           onClick={() => {
                             // Clean up preview URL if exists
                             if (newTag.icon && newTag.icon.startsWith('blob:')) {
@@ -1821,10 +1821,10 @@ const DifficultyPage = () => {
                         inactive={!editingTag.isCommunity}
                       />
                       <div className="modal-actions">
-                        <button type="submit" className="confirm-button">{t('difficulty.tags.edit.updateButton')}</button>
+                        <button type="submit" className="confirm-button btn-fill-primary">{t('difficulty.tags.edit.updateButton')}</button>
                       <button
                         type="button"
-                        className="cancel-button"
+                        className="cancel-button btn-fill-ghost"
                         onClick={handleCloseEditTag}
                       >
                           {t('buttons.cancel', { ns: 'common' })}
@@ -1860,14 +1860,14 @@ const DifficultyPage = () => {
                     <div className="modal-actions">
                       <button
                         type="button"
-                        className="delete-confirm-button"
+                        className="delete-confirm-button btn-fill-danger"
                         onClick={handleDeleteTag}
                       >
                         {t('difficulty.tags.delete.deleteButton')}
                       </button>
                       <button
                         type="button"
-                        className="cancel-button"
+                        className="cancel-button btn-fill-ghost"
                         onClick={() => setDeletingTag(null)}
                       >
                         {t('buttons.cancel', { ns: 'common' })}
@@ -1909,10 +1909,10 @@ const DifficultyPage = () => {
                         />
                       </div>
                       <div className="modal-actions">
-                        <button type="submit" className="confirm-button">{t('difficulty.groups.create.createButton')}</button>
+                        <button type="submit" className="confirm-button btn-fill-primary">{t('difficulty.groups.create.createButton')}</button>
                         <button
                           type="button"
-                          className="cancel-button"
+                          className="cancel-button btn-fill-ghost"
                           onClick={() => {
                             setIsCreatingGroup(false);
                             setNewGroupName('');
@@ -1959,10 +1959,10 @@ const DifficultyPage = () => {
                         t={t}
                       />
                       <div className="modal-actions">
-                        <button type="submit" className="confirm-button">{t('difficulty.groups.edit.updateButton')}</button>
+                        <button type="submit" className="confirm-button btn-fill-primary">{t('difficulty.groups.edit.updateButton')}</button>
                         <button
                           type="button"
-                          className="cancel-button"
+                          className="cancel-button btn-fill-ghost"
                           onClick={() => setEditingGroup(null)}
                         >
                           {t('buttons.cancel', { ns: 'common' })}
@@ -1995,14 +1995,14 @@ const DifficultyPage = () => {
                     <div className="modal-actions">
                       <button
                         type="button"
-                        className="delete-confirm-button"
+                        className="delete-confirm-button btn-fill-danger"
                         onClick={handleDeleteGroup}
                       >
                         {t('difficulty.groups.delete.deleteButton')}
                       </button>
                       <button
                         type="button"
-                        className="cancel-button"
+                        className="cancel-button btn-fill-ghost"
                         onClick={() => setDeletingGroup(null)}
                       >
                         {t('buttons.cancel', { ns: 'common' })}
@@ -2080,12 +2080,12 @@ const DifficultyPage = () => {
                       </p>
                     </div>
                     <div className="modal-actions">
-                      <button type="button" className="delete-confirm-button" onClick={handleDirectDelete} disabled={!fallbackDiff || fallbackDiff === String(deletingDifficulty?.id) || isLoading}>
+                      <button type="button" className="delete-confirm-button btn-fill-danger" onClick={handleDirectDelete} disabled={!fallbackDiff || fallbackDiff === String(deletingDifficulty?.id) || isLoading}>
                         {isLoading ? t('difficulty.loading.deleting') || 'Deleting...' : t('buttons.delete', { ns: 'common' })}
                       </button>
                       <button
                         type="button"
-                        className="cancel-button"
+                        className="cancel-button btn-fill-ghost"
                         onClick={handleCloseDeleteModal}
                       >
                         {t('buttons.cancel', { ns: 'common' })}

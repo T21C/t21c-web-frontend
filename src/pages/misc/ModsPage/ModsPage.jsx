@@ -169,7 +169,7 @@ function ModCatalogCard({ mod, t, onReport }) {
               <span>{t('mods.download')}</span>
             </a>
           ) : null}
-          <Link to={href} className="mods-page__card-details">
+          <Link to={href} className="btn-fill-glass mods-page__card-details">
             <InfoIcon size={16} color="currentColor" />
             <span>{t('mods.details')}</span>
           </Link>

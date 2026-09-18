@@ -83,7 +83,7 @@ export const SplitTab = ({
       </div>
       <div className="form-actions">
         <button
-          className="submit-button"
+          className="submit-button btn-fill-success"
           onClick={handleSplit}
           disabled={isLoading || !splitEntity1 || !splitEntity2}
         >

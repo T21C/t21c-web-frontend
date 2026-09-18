@@ -72,7 +72,7 @@ export function BillingPurchaseSection({
               )}
               <button
                 type="button"
-                className="billing-page__btn billing-page__btn--ghost billing-page__recipient-change"
+                className="btn-fill-ghost billing-page__recipient-change"
                 onClick={clearRecipient}
               >
                 {t("billing.checkout.changeRecipient")}
@@ -139,7 +139,7 @@ export function BillingPurchaseSection({
       <div className="billing-page__action-row">
         <button
           type="button"
-          className="billing-page__btn billing-page__btn--primary"
+          className="btn-fill-primary"
           onClick={onCheckout}
           disabled={subscribing || !canOpenCheckout}
         >

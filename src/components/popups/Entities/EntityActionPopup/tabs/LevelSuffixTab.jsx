@@ -196,7 +196,7 @@ export const LevelSuffixTab = ({
 
           <div className="form-actions">
             <button
-              className="submit-button"
+              className="submit-button btn-fill-success"
               onClick={handleUpdateSuffix}
               disabled={isLoading}
             >

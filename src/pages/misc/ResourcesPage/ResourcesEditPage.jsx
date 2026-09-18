@@ -568,14 +568,14 @@ const ResourcesEditPage = () => {
                 <div className="modal-actions">
                   <button
                     type="button"
-                    className="cancel-button"
+                    className="cancel-button btn-fill-ghost"
                     onClick={closeCreateLink}
                   >
                     {t('buttons.cancel', { ns: 'common' })}
                   </button>
                   <button
                     type="submit"
-                    className="confirm-button"
+                    className="confirm-button btn-fill-primary"
                     disabled={!newLink.title.trim() || !newLink.url.trim()}
                   >
                     {t('resources.links.create.createButton')}
@@ -648,12 +648,12 @@ const ResourcesEditPage = () => {
               <p>{t('resources.links.delete.message', { name: deletingLink.title })}</p>
               <p>{t('resources.links.delete.description')}</p>
               <div className="modal-actions">
-                <button type="button" className="cancel-button" onClick={() => setDeletingLink(null)}>
+                <button type="button" className="cancel-button btn-fill-ghost" onClick={() => setDeletingLink(null)}>
                   {t('buttons.cancel', { ns: 'common' })}
                 </button>
                 <button
                   type="button"
-                  className="delete-confirm-button"
+                  className="delete-confirm-button btn-fill-danger"
                   onClick={async () => {
                     try {
                       await api.delete(routes.admin.usefulLinks.byId(deletingLink.id));
@@ -707,14 +707,14 @@ const ResourcesEditPage = () => {
                 <div className="modal-actions">
                   <button
                     type="button"
-                    className="cancel-button"
+                    className="cancel-button btn-fill-ghost"
                     onClick={closeCreateGroup}
                   >
                     {t('buttons.cancel', { ns: 'common' })}
                   </button>
                   <button
                     type="submit"
-                    className="confirm-button"
+                    className="confirm-button btn-fill-primary"
                     disabled={!newGroupName.trim()}
                   >
                     {t('resources.groups.create.createButton')}
@@ -786,14 +786,14 @@ const ResourcesEditPage = () => {
               <div className="modal-actions">
                 <button
                   type="button"
-                  className="cancel-button"
+                  className="cancel-button btn-fill-ghost"
                   onClick={() => setDeletingGroup(null)}
                 >
                   {t('buttons.cancel', { ns: 'common' })}
                 </button>
                 <button
                   type="button"
-                  className="delete-confirm-button"
+                  className="delete-confirm-button btn-fill-danger"
                   onClick={async () => {
                     try {
                       await api.delete(routes.admin.usefulLinks.groupById(deletingGroup.id));

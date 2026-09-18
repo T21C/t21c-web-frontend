@@ -104,34 +104,3 @@
   justify-content: flex-end;
 }
 
-.step-up-modal__btn {
-  padding: 0.55rem 1rem;
-  border-radius: 6px;
-  border: 1px solid transparent;
-  font-size: 0.95rem;
-  cursor: pointer;
-}
-
-.step-up-modal__btn:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-
-.step-up-modal__btn--secondary {
-  background: transparent;
-  border-color: var(--color-white-t25);
-  color: var(--color-white);
-}
-
-.step-up-modal__btn--secondary:hover:not(:disabled) {
-  background: var(--color-white-t10);
-}
-
-.step-up-modal__btn--primary {
-  background: var(--color-purple-1);
-  color: var(--color-white);
-}
-
-.step-up-modal__btn--primary:hover:not(:disabled) {
-  background: var(--color-purple-2);
-}

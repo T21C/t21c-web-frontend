@@ -362,10 +362,10 @@ const ModsEditPage = () => {
                   }}
                 />
                 <div className="modal-actions">
-                  <button type="button" className="cancel-button" onClick={closeCreate}>
+                  <button type="button" className="cancel-button btn-fill-ghost" onClick={closeCreate}>
                     {t('buttons.cancel', { ns: 'common' })}
                   </button>
-                  <button type="submit" className="confirm-button" disabled={!canSubmitCreate(newMod) || saving}>
+                  <button type="submit" className="confirm-button btn-fill-primary" disabled={!canSubmitCreate(newMod) || saving}>
                     {t('mods.create.createButton')}
                   </button>
                 </div>
@@ -405,12 +405,12 @@ const ModsEditPage = () => {
               <p>{t('mods.delete.message', { name: deletingMod.name })}</p>
               <p>{t('mods.delete.description')}</p>
               <div className="modal-actions">
-                <button type="button" className="cancel-button" onClick={() => setDeletingMod(null)}>
+                <button type="button" className="cancel-button btn-fill-ghost" onClick={() => setDeletingMod(null)}>
                   {t('buttons.cancel', { ns: 'common' })}
                 </button>
                 <button
                   type="button"
-                  className="delete-confirm-button"
+                  className="delete-confirm-button btn-fill-danger"
                   onClick={async () => {
                     try {
                       await api.delete(routes.admin.mods.byId(deletingMod.id));

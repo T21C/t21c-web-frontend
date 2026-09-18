@@ -321,7 +321,7 @@ const RegisterPage = () => {
                   {t('register.success.usernameModified', { username: modifiedUsername })}
                 </p>
               )}
-              <button className="profile-button" onClick={handleGoToProfile}>
+              <button className="profile-button btn-fill-primary" onClick={handleGoToProfile}>
                 {t('register.success.goToProfile')}
               </button>
             </div>
@@ -467,7 +467,7 @@ const RegisterPage = () => {
 
             <button 
               type="submit" 
-              className={`register-button ${!agreedToTerms || isSubmitting || !captchaToken ? 'disabled' : ''}`}
+              className={`register-button btn-fill-primary btn-block ${!agreedToTerms || isSubmitting || !captchaToken ? 'disabled' : ''}`}
               disabled={!agreedToTerms || isSubmitting || !captchaToken}
             >
               {isSubmitting ? t('loading.submitting', { ns: 'common' }) : t('register.form.submit.default')}
@@ -481,14 +481,14 @@ const RegisterPage = () => {
           <div className="oauth-provider-buttons">
             <button
               type="button"
-              className="discord-button"
+              className="discord-button btn-fill-discord btn-block"
               onClick={handleDiscordRegister}
             >
               {t('register.discord.register')}
             </button>
             <button
               type="button"
-              className="google-button"
+              className="google-button btn-fill-glass btn-block"
               onClick={handleGoogleRegister}
             >
               <GoogleIcon size={18} />

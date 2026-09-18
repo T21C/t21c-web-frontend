@@ -381,43 +381,8 @@
   flex-shrink: 0;
 }
 
-.level-credits-edit-popup-container .level-credits-edit-popup__btn {
+.level-credits-edit-popup-container .level-credits-edit-popup__footer > * {
   flex: 1;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 4px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s, opacity 0.2s;
-}
-
-.level-credits-edit-popup-container .level-credits-edit-popup__btn--save {
-  background-color: var(--btn-primary);
-  color: var(--color-white);
-}
-
-.level-credits-edit-popup-container .level-credits-edit-popup__btn--save:hover:not(:disabled) {
-  background-color: var(--btn-primary-hover);
-}
-
-.level-credits-edit-popup-container .level-credits-edit-popup__btn--save:disabled {
-  background-color: var(--btn-neutral-heavy);
-  cursor: not-allowed;
-  opacity: 0.7;
-}
-
-.level-credits-edit-popup-container .level-credits-edit-popup__btn--cancel {
-  background-color: var(--btn-neutral-muted);
-  color: var(--color-white);
-}
-
-.level-credits-edit-popup-container .level-credits-edit-popup__btn--cancel:hover:not(:disabled) {
-  background-color: var(--btn-neutral);
-}
-
-.level-credits-edit-popup-container .level-credits-edit-popup__btn--cancel:disabled {
-  cursor: not-allowed;
-  opacity: 0.7;
 }
 
 @media (max-width: 768px) {

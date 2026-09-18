@@ -313,28 +313,28 @@
 }
 
 .roulette-wheel-popup .spin-button,
-.roulette-wheel-popup .confirm-button {
-  background: var(--btn-success);
-  border: none;
-  border-radius: 4px;
-  color: white;
-  padding: 0.75rem 2rem;
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
+.roulette-wheel-popup .btn-fill-success {
   width: 100%;
   max-width: 200px;
 }
 
+.roulette-wheel-popup .spin-button {
+  background: var(--btn-success);
+  border: none;
+  border-radius: var(--btn-radius);
+  color: var(--color-white);
+  padding: var(--btn-lg-pad-y) var(--btn-lg-pad-x);
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
 .roulette-wheel-popup .spin-button:disabled {
-  background: #666;
+  background: var(--btn-disabled-fill);
   cursor: not-allowed;
 }
 
-.roulette-wheel-popup .spin-button:hover:not(:disabled),
-.roulette-wheel-popup .confirm-button:hover {
+.roulette-wheel-popup .spin-button:hover:not(:disabled) {
   background: var(--btn-success-hover);
-  transform: scale(1.05);
 }
 
 @keyframes roulette-wheel_fadeIn {

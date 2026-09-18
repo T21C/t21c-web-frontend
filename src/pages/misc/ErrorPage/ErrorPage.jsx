@@ -56,7 +56,7 @@ export default function ErrorPage({ error, componentStack, eventId, resetError }
           {typeof resetError === 'function' ? (
             <button
               type="button"
-              className="error-page__btn btn-fill-primary"
+              className="btn-fill-primary"
               onClick={resetError}
             >
               Try again
@@ -64,7 +64,7 @@ export default function ErrorPage({ error, componentStack, eventId, resetError }
           ) : null}
           <button
             type="button"
-            className="error-page__btn btn-fill-neutral"
+            className="btn-fill-neutral"
             onClick={handleReload}
           >
             Back to home

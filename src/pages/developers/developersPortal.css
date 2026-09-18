@@ -449,60 +449,6 @@
   gap: 0.75rem;
 }
 
-.developers-portal__btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.35rem;
-  padding: 0.6rem 1.1rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font: inherit;
-  font-weight: 600;
-  color: var(--color-white);
-  text-decoration: none;
-}
-
-.developers-portal__btn:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-
-.developers-portal__btn--primary {
-  background: var(--btn-primary);
-}
-
-.developers-portal__btn--primary:hover:not(:disabled) {
-  background: var(--btn-primary-hover);
-}
-
-.developers-portal__btn--secondary {
-  background: var(--btn-secondary);
-}
-
-.developers-portal__btn--secondary:hover:not(:disabled) {
-  background: var(--btn-secondary-hover);
-}
-
-.developers-portal__btn--ghost {
-  background: transparent;
-  color: var(--color-gray-2);
-}
-
-.developers-portal__btn--ghost:hover:not(:disabled) {
-  color: var(--color-white);
-  background: var(--color-white-t10);
-}
-
-.developers-portal__btn--danger {
-  background: var(--btn-danger);
-}
-
-.developers-portal__btn--danger:hover:not(:disabled) {
-  background: var(--btn-danger-intense);
-}
-
 .developers-portal__detail-head {
   display: flex;
   align-items: center;
