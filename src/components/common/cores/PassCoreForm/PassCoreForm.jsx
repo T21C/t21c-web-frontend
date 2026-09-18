@@ -323,7 +323,7 @@ export function PassCoreForm({
       style={{
         backgroundImage: isCalculator
           ? undefined
-          : `url(${videoDetail ? videoDetail.image : placeholderImage})`,
+          : `url(${videoDetail?.image || placeholderImage})`,
       }}
     >
       {!isCalculator && (
@@ -414,32 +414,38 @@ export function PassCoreForm({
             onChange={onInputChange}
             style={{ borderColor: isFormValidDisplay.videoLink ? '' : 'red' }}
           />
-          {videoDetail ? (
+          {videoDetail && (videoDetail.title || videoDetail.channelName || videoDetail.timestamp || mode === 'edit') ? (
             <div className="youtube-info">
-              <div className="yt-info">
-                <h4>{t(copy.videoTitleLabel, { ns: copy.ns })}</h4>
-                <p style={{ maxWidth: '%' }}>{videoDetail.title}</p>
-              </div>
-              <div className="yt-info">
-                <h4>{t(copy.videoChannelLabel, { ns: copy.ns })}</h4>
-                <p>{videoDetail.channelName}</p>
-              </div>
-              <div className="yt-info">
-                <h4>{t(copy.videoTimestampLabel, { ns: copy.ns })}</h4>
-                {mode === 'edit' ? (
-                  <input
-                    type="text"
-                    autoComplete="off"
-                    placeholder="YYYY-MM-DDTHH:MM:SS"
-                    name="vidUploadTime"
-                    value={form.vidUploadTime}
-                    onChange={onInputChange}
-                    style={{ borderColor: isFormValidDisplay.vidUploadTime ? '' : 'red' }}
-                  />
-                ) : (
-                  <p>{formatDate(videoDetail.timestamp, i18next?.language)}</p>
-                )}
-              </div>
+              {videoDetail.title ? (
+                <div className="yt-info">
+                  <h4>{t(copy.videoTitleLabel, { ns: copy.ns })}</h4>
+                  <p style={{ maxWidth: '%' }}>{videoDetail.title}</p>
+                </div>
+              ) : null}
+              {videoDetail.channelName ? (
+                <div className="yt-info">
+                  <h4>{t(copy.videoChannelLabel, { ns: copy.ns })}</h4>
+                  <p>{videoDetail.channelName}</p>
+                </div>
+              ) : null}
+              {mode === 'edit' || videoDetail.timestamp ? (
+                <div className="yt-info">
+                  <h4>{t(copy.videoTimestampLabel, { ns: copy.ns })}</h4>
+                  {mode === 'edit' ? (
+                    <input
+                      type="text"
+                      autoComplete="off"
+                      placeholder="YYYY-MM-DDTHH:MM:SS"
+                      name="vidUploadTime"
+                      value={form.vidUploadTime}
+                      onChange={onInputChange}
+                      style={{ borderColor: isFormValidDisplay.vidUploadTime ? '' : 'red' }}
+                    />
+                  ) : (
+                    <p>{formatDate(videoDetail.timestamp, i18next?.language)}</p>
+                  )}
+                </div>
+              ) : null}
             </div>
           ) : mode === 'edit' ? (
             <div className="youtube-info">
@@ -458,7 +464,7 @@ export function PassCoreForm({
                 />
               </div>
             </div>
-          ) : (
+          ) : !videoDetail ? (
             <div className="yt-info">
               <p style={{ color: '#aaa' }}>
                 {videoLinkResolving
@@ -467,7 +473,7 @@ export function PassCoreForm({
               </p>
               <br />
             </div>
-          )}
+          ) : null}
         </div>
         )}
 

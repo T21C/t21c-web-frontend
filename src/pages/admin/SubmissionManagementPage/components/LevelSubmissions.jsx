@@ -1,7 +1,7 @@
 import { routes } from '@/api/routes';
 // tuf-search: #LevelSubmissions #levelSubmissions #admin #submissionManagement — Submission Management
-import { getVideoDetails } from "@/utils";
 import placeholder from "@/assets/placeholder/1.png"
+import { getLocalVideoPreview } from "@/utils/videoLink";
 import "../adminsubmissionpage.css";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
@@ -146,17 +146,13 @@ const LevelSubmissions = () => {
   }, [t]);
 
   useEffect(() => {
-    // Load video embeds when submissions change
-    submissions.forEach(async (submission) => {
-      if (submission.videoLink && !videoEmbeds[submission.id]) {
-        const videoDetails = await getVideoDetails(submission.videoLink);
-        if (!videoDetails) return;
-        setVideoEmbeds((prev) => ({
-          ...prev,
-          [submission.id]: videoDetails,
-        }));
-      }
-    });
+    const next = {};
+    for (const submission of submissions) {
+      if (!submission.videoLink) continue;
+      const preview = getLocalVideoPreview(submission.videoLink);
+      if (preview) next[submission.id] = preview;
+    }
+    setVideoEmbeds(next);
   }, [submissions]);
 
   const canBeApproved = (submission) => {

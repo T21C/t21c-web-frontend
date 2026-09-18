@@ -1,11 +1,11 @@
 import { routes } from '@/api/routes';
 // tuf-search: #RatingDetailPopup #ratingDetailPopup #popups #rating #ratingDetail
 import "./ratingdetailpopup.css";
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import { careerForDetail, compareAccuracyDetails } from '@/utils/ratingAccuracy';
 import { PopupShell } from '@/components/common/PopupShell';
 import { usePopupHistory } from '@/hooks/usePopupHistory';
-import { getVideoDetails } from "@/utils";
+import { getLocalVideoPreview } from "@/utils/videoLink";
 import { RatingItem } from '@/components/cards';
 import { RatingInput } from '@/components/common/selectors';
 import api from '@/utils/api';
@@ -25,8 +25,6 @@ import {
   setRatingDraft,
   clearRatingDraft,
 } from '@/utils/ratingDrafts';
-// Cache for video data
-const videoCache = new Map();
 
 
 async function updateRating(id, rating, comment, isCommunityRating = false, viewDurationSeconds = 0) {
@@ -66,7 +64,8 @@ export const RatingDetailPopup = ({
   const isRatingLocked = Boolean(showingConfirmed || selectedRating?.confirmedAt);
 
   const { difficulties, difficultyDict } = useDifficultyContext();
-  const [videoData, setVideoData] = useState(null);
+  const videoLink = selectedRating?.displayVideoLink || selectedRating?.level?.videoLink;
+  const videoData = useMemo(() => (videoLink ? getLocalVideoPreview(videoLink) : null), [videoLink]);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [pendingRating, setPendingRating] = useState("");
   const [pendingComment, setPendingComment] = useState("");
@@ -76,7 +75,6 @@ export const RatingDetailPopup = ({
   const [saveError, setSaveError] = useState(null);
   const [otherRatings, setOtherRatings] = useState([]);
   const [commentError, setCommentError] = useState(false);
-  const [isVideoLoading, setIsVideoLoading] = useState(true);
   const [isExiting, setIsExiting] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [isCommentRequired, setIsCommentRequired] = useState(false);
@@ -109,7 +107,6 @@ export const RatingDetailPopup = ({
     // Wait for exit animation to complete
     setTimeout(() => {
       setSelectedRating(null);
-      setVideoData(null);
       setPendingRating("");
       setPendingComment("");
       setInitialRating("");
@@ -201,33 +198,6 @@ export const RatingDetailPopup = ({
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [hasUnsavedChanges]);
-
-  useEffect(() => {
-    const videoLink = selectedRating?.displayVideoLink || selectedRating?.level?.videoLink;
-    if (!videoLink) {
-      setVideoData(null);
-      setIsVideoLoading(false);
-      return;
-    }
-
-    setIsVideoLoading(true);
-
-    const cachedData = videoCache.get(videoLink);
-    if (cachedData) {
-      setVideoData(cachedData);
-      setIsVideoLoading(false);
-      return;
-    }
-
-    void getVideoDetails(videoLink)
-      .then((data) => {
-        if (data) videoCache.set(videoLink, data);
-        setVideoData(data);
-      })
-      .finally(() => {
-        setIsVideoLoading(false);
-      });
-  }, [selectedRating?.displayVideoLink, selectedRating?.level?.videoLink, selectedRating?.id]);
 
   useEffect(() => {
     hasUnsavedChangesRef.current = hasUnsavedChanges;
@@ -678,15 +648,7 @@ export const RatingDetailPopup = ({
             <div className="popup-main-content">
               <div className="video-container">
                 <div className="video-aspect-ratio">
-                  {isVideoLoading ? (
-                    <div className="video-placeholder">
-                      <div className="spinner spinner-xlarge video-loading" />
-                    </div>
-                  ) : !videoData ? (
-                    <div className="video-placeholder">
-                      No video available
-                    </div>
-                  ) : (
+                  {videoData ? (
                     <iframe 
                       src={videoData.embed}
                       title="Video"
@@ -695,6 +657,10 @@ export const RatingDetailPopup = ({
                       allowFullScreen
                       onLoad={handleVideoLoad}
                     />
+                  ) : (
+                    <div className="video-placeholder">
+                      No video available
+                    </div>
                   )}
                   
                   <button 

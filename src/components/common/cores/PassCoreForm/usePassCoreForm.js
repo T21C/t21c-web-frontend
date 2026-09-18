@@ -8,7 +8,7 @@ import { formatAccuracyRatio } from "@/utils/statFormatters";
 import { computePassScoreV2 } from "@/utils/scoreService";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { parseJudgements, judgementsAreComplete, previewPassFormScoring } from "@/utils/ParseJudgements";
-import { ADOFAI_VERSION, parseAdofaiVersion, resolveAdofaiVersionFromTimestamp, canUseXPerfectMode, isAdofaiV2FromVersion } from "@/utils/adofaiVersion";
+import { ADOFAI_VERSION, parseAdofaiVersion, canUseXPerfectMode, isAdofaiV2FromVersion } from "@/utils/adofaiVersion";
 import { normalizeKeyCount, validateFeelingRating, validateNumber, validateSpeed } from "@/utils/Utility";
 import { useTranslation } from "react-i18next";
 import { getPassCoreCopy } from "./PassCoreForm";
@@ -70,22 +70,6 @@ export function usePassCoreForm({
     onResolve: (url) => setForm((prev) => ({ ...prev, videoLink: url })),
     onVideoDetail: (details) => {
       setVideoDetail(details || null);
-      if (mode === "submit") {
-        const adofaiVersion = resolveAdofaiVersionFromTimestamp(details?.timestamp);
-        setForm((prev) => {
-          const next = {
-            ...prev,
-            adofaiVersion,
-            isAdofaiV2: isAdofaiV2FromVersion(adofaiVersion),
-          };
-          if (!canUseXPerfectMode(adofaiVersion)) {
-            next.isXPerfectMode = false;
-            next.perfectMinus = "";
-            next.perfectPlus = "";
-          }
-          return next;
-        });
-      }
     },
     toastMessage: t(copy.videoLinkResolved, {
       ns: copy.ns,

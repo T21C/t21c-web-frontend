@@ -22,7 +22,7 @@ import { WebAdofaiViewerButton } from '@/components/popups/Levels';
 import { Tooltip } from 'react-tooltip';
 import { CommentFormatter } from '@/components/misc';
 import api from '@/utils/api';
-import { getVideoDetails } from '@/utils';
+import { getLocalVideoPreview } from '@/utils/videoLink';
 import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { formatAutoTilecountTooltip, formatDuration, getSongDisplayName } from '@/utils/levelHelpers';
 import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
@@ -49,8 +49,6 @@ function parseDeckSizeInput(raw) {
   if (!Number.isInteger(n) || n < MIN_DECK_SIZE || n > MAX_DECK_SIZE) return null;
   return n;
 }
-
-const videoCache = new Map();
 
 async function submitZenRating(id, rating, comment, isCommunityRating, viewDurationSeconds = 0) {
   const response = await api.put(`${routes.admin.rating()}/${id}`, {
@@ -138,8 +136,6 @@ const RatingZenPage = () => {
   const [isDealing, setIsDealing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState(null);
-  const [videoData, setVideoData] = useState(null);
-  const [isVideoLoading, setIsVideoLoading] = useState(false);
   const [showCommunityPeers, setShowCommunityPeers] = useState(false);
   const [customDeckPicked, setCustomDeckPicked] = useState(
     () => !DECK_SIZES.includes(session.deckSize)
@@ -231,6 +227,8 @@ const RatingZenPage = () => {
 
   const current = cards[index] || null;
   const currentRequestBand = requestPguBand(current);
+  const videoLink = current?.displayVideoLink || current?.level?.videoLink;
+  const videoData = useMemo(() => (videoLink ? getLocalVideoPreview(videoLink) : null), [videoLink]);
   const showRequestedRating =
     (currentRequestBand === 'P' && includeP) ||
     (currentRequestBand === 'G' && includeG) ||
@@ -432,29 +430,6 @@ const RatingZenPage = () => {
     startSession,
     disposeViewTrackers,
   ]);
-
-  useEffect(() => {
-    const videoLink = current?.displayVideoLink || current?.level?.videoLink;
-    if (!videoLink) {
-      setVideoData(null);
-      setIsVideoLoading(false);
-      return;
-    }
-    setIsVideoLoading(true);
-    const link = videoLink;
-    const cached = videoCache.get(link);
-    if (cached) {
-      setVideoData(cached);
-      setIsVideoLoading(false);
-      return;
-    }
-    void getVideoDetails(link)
-      .then((data) => {
-        if (data) videoCache.set(link, data);
-        setVideoData(data);
-      })
-      .finally(() => setIsVideoLoading(false));
-  }, [current?.displayVideoLink, current?.level?.videoLink, current?.id]);
 
   useEffect(() => {
     const saved = cardAnswers[index];
@@ -1009,15 +984,7 @@ const RatingZenPage = () => {
             </svg>
           </button>
               <div className="rating-zen-page__video-aspect">
-                {isVideoLoading ? (
-                  <div className="rating-zen-page__video-placeholder">
-                    <div className="spinner spinner-xlarge" />
-                  </div>
-                ) : !videoData ? (
-                  <div className="rating-zen-page__video-placeholder">
-                    {t('rating.zen.noVideo')}
-                  </div>
-                ) : (
+                {videoData ? (
                   <iframe
                     src={videoData.embed}
                     title="Video"
@@ -1025,6 +992,10 @@ const RatingZenPage = () => {
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                   />
+                ) : (
+                  <div className="rating-zen-page__video-placeholder">
+                    {t('rating.zen.noVideo')}
+                  </div>
                 )}
               </div>
             </div>

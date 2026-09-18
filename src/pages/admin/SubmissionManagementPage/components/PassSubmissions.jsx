@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import placeholder from '@/assets/placeholder/1.png';
-import { getVideoDetails } from "@/utils";
+import { getLocalVideoPreview } from "@/utils/videoLink";
 import "../adminsubmissionpage.css";
 import { VirtualList } from '@/components/common/VirtualList';
 import api from "@/utils/api";
@@ -103,17 +103,13 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
   }, [t]);
 
   useEffect(() => {
-    // Load video embeds when submissions change
-    submissions.forEach(async (submission) => {
-      if (submission.videoLink && !videoEmbeds[submission.id]) {
-        const videoDetails = await getVideoDetails(submission.videoLink);
-        if (!videoDetails) return;
-        setVideoEmbeds((prev) => ({
-          ...prev,
-          [submission.id]: videoDetails,
-        }));
-      }
-    });
+    const next = {};
+    for (const submission of submissions) {
+      if (!submission.videoLink) continue;
+      const preview = getLocalVideoPreview(submission.videoLink);
+      if (preview) next[submission.id] = preview;
+    }
+    setVideoEmbeds(next);
   }, [submissions]);
 
   const fetchPendingSubmissions = async () => {
