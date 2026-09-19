@@ -168,6 +168,18 @@
       "transferFailed": "Failed to transfer pack ownership"
     }
   },
+  "editFolder": {
+    "title": "폴더 편집",
+    "name": {
+      "label": "폴더 이름",
+      "placeholder": "폴더 이름 입력",
+      "help": "다운로드 시 폴더 경로로 사용됩니다"
+    },
+    "description": {
+      "label": "설명",
+      "placeholder": "이 폴더에 대한 선택적 설명..."
+    }
+  },
   "downloadPack": {
     "title": "Download {{contextName}}",
     "defaultContextName": "Pack",
@@ -220,6 +232,8 @@
     "titleMove": "Move item",
     "folderName": "Folder name",
     "folderNamePlaceholder": "Enter folder name",
+    "folderDescription": "설명",
+    "folderDescriptionPlaceholder": "이 폴더에 대한 선택적 설명 (웹사이트 전용)",
     "levelIds": "Level IDs",
     "levelIdsPlaceholder": "e.g. 1234, 5678 or one per line",
     "positionLabel": "Position in pack",

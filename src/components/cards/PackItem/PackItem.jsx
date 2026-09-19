@@ -1,5 +1,5 @@
 // tuf-search: #PackItem #packItem #cards
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { Draggable, Droppable } from '@hello-pangea/dnd';
 import { useTranslation } from 'react-i18next';
 import { ChevronIcon, FolderIcon, DragHandleIcon, DownloadIcon } from '@/components/common/icons';
@@ -37,6 +37,61 @@ export const PackLevelItem = ({
   );
 };
 
+function FolderDescription({ text }) {
+  const { t } = useTranslation();
+  const textRef = useRef(null);
+  const [expanded, setExpanded] = useState(false);
+  const [canExpand, setCanExpand] = useState(false);
+
+  useEffect(() => {
+    setExpanded(false);
+    setCanExpand(false);
+  }, [text]);
+
+  useEffect(() => {
+    const el = textRef.current;
+    if (!el || expanded) return undefined;
+
+    const check = () => {
+      setCanExpand(el.scrollHeight > el.clientHeight + 1);
+    };
+    check();
+
+    if (typeof ResizeObserver === 'undefined') {
+      return undefined;
+    }
+
+    const observer = new ResizeObserver(check);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [text, expanded]);
+
+  return (
+    <div className="pack-item__description-wrap">
+      <p
+        ref={textRef}
+        className={`pack-item__description${expanded ? '' : ' is-clamped'}`}
+      >
+        {text}
+      </p>
+      {(canExpand || expanded) && (
+        <button
+          type="button"
+          className="pack-item__description-toggle"
+          onClick={(e) => {
+            e.stopPropagation();
+            setExpanded((open) => !open);
+          }}
+        >
+          {expanded
+            ? t('pages:packDetail.description.showLess')
+            : t('pages:packDetail.description.readMore')}
+        </button>
+      )}
+    </div>
+  );
+}
+
 const PackItem = ({
   item,
   index,
@@ -45,7 +100,7 @@ const PackItem = ({
   canEdit,
   isReordering,
   user,
-  onRenameFolder,
+  onEditFolder,
   onDeleteItem,
   onDownloadFolder,
   onRequestMove,
@@ -63,6 +118,7 @@ const PackItem = ({
   const showFolderProgress = Boolean(user) && folderClears.total > 0;
   const folderDownloadDisabled = folderSizeSummary.levelCount === 0;
   const downloadFolderLabel = t('pages:packDetail.actions.downloadFolder', 'Download Folder');
+  const folderDescription = typeof item.description === 'string' ? item.description.trim() : '';
   const sortedChildren = useMemo(() => {
     if (!item.children) return [];
     return [...item.children].sort((a, b) => a.sortOrder - b.sortOrder);
@@ -176,6 +232,7 @@ const PackItem = ({
                 </div>
               ) : null}
               <div className="pack-item__name">{item.name}</div>
+              {folderDescription ? <FolderDescription text={folderDescription} /> : null}
               <div className="pack-item__count">
                 {childCount} {childCount === 1 ? 'item' : 'items'}
               </div>
@@ -227,9 +284,9 @@ const PackItem = ({
                   className="pack-item__action-btn"
                   onClick={(e) => {
                     e.stopPropagation();
-                    onRenameFolder?.(item);
+                    onEditFolder?.(item);
                   }}
-                  title="Rename folder"
+                  title={t('pages:packDetail.actions.editFolder', 'Edit folder')}
                 >
                   ✏️
                 </button>
@@ -345,7 +402,7 @@ const PackItem = ({
                       onToggleExpanded={onToggleExpanded}
                       canEdit={canEdit}
                       user={user}
-                      onRenameFolder={onRenameFolder}
+                      onEditFolder={onEditFolder}
                       onDeleteItem={onDeleteItem}
                       onDownloadFolder={onDownloadFolder}
                       onRequestMove={onRequestMove}

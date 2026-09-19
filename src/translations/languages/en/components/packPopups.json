@@ -168,6 +168,18 @@
       "transferFailed": "Failed to transfer pack ownership"
     }
   },
+  "editFolder": {
+    "title": "Edit folder",
+    "name": {
+      "label": "Folder name",
+      "placeholder": "Enter folder name",
+      "help": "This name is used as the folder path when downloading"
+    },
+    "description": {
+      "label": "Description",
+      "placeholder": "Optional details about this folder..."
+    }
+  },
   "downloadPack": {
     "title": "Download {{contextName}}",
     "defaultContextName": "Pack",
@@ -220,6 +232,8 @@
     "titleMove": "Move item",
     "folderName": "Folder name",
     "folderNamePlaceholder": "Enter folder name",
+    "folderDescription": "Description",
+    "folderDescriptionPlaceholder": "Optional details about this folder (website only)",
     "levelIds": "Level IDs",
     "levelIdsPlaceholder": "e.g. 1234, 5678 or one per line",
     "positionLabel": "Position in pack",

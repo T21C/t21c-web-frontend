@@ -41,7 +41,8 @@
     "downloadFolder": "Download Folder",
     "exportAs": "Export as",
     "addToFolder": "Add to existing folder…",
-    "moveItem": "Click to move, or drag"
+    "moveItem": "Click to move, or drag",
+    "editFolder": "폴더 편집"
   },
   "download": {
     "estimatedLong": "(estimated: {{count}} missing metadata)",
@@ -66,6 +67,10 @@
     "prompt": "Enter a new name for the folder",
     "success": "Folder renamed successfully",
     "error": "Failed to rename folder"
+  },
+  "editFolder": {
+    "success": "폴더가 업데이트되었습니다",
+    "error": "폴더 업데이트에 실패했습니다"
   },
   "deleteItem": {
     "success": "Item deleted successfully!",

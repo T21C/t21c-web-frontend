@@ -25,6 +25,7 @@ const PackItemPlacementPopup = ({
 }) => {
   const { t } = useTranslation(['components', 'common']);
   const [folderName, setFolderName] = useState('');
+  const [folderDescription, setFolderDescription] = useState('');
   const [levelIdsInput, setLevelIdsInput] = useState('');
   const [selectedSlotKey, setSelectedSlotKey] = useState(null);
   const [collapsedFolderIds, setCollapsedFolderIds] = useState(() => new Set());
@@ -38,6 +39,7 @@ const PackItemPlacementPopup = ({
 
   const resetState = useCallback(() => {
     setFolderName('');
+    setFolderDescription('');
     setLevelIdsInput('');
     setSelectedSlotKey(null);
     setCollapsedFolderIds(new Set());
@@ -106,6 +108,7 @@ const PackItemPlacementPopup = ({
       parentId: slot.parentId,
       index: slot.index,
       name: mode === 'add-folder' ? folderName.trim() : undefined,
+      description: mode === 'add-folder' ? folderDescription : undefined,
       levelIds: mode === 'add-level' ? levelIdsInput.trim() : undefined,
     });
   };
@@ -142,19 +145,34 @@ const PackItemPlacementPopup = ({
           )}
 
           {mode === 'add-folder' && (
-            <label className="pack-item-placement-popup__field">
-              <span className="pack-item-placement-popup__label">
-                {t('packPopups.placement.folderName')}
-              </span>
-              <input
-                type="text"
-                className="pack-item-placement-popup__input"
-                value={folderName}
-                onChange={(e) => setFolderName(e.target.value)}
-                placeholder={t('packPopups.placement.folderNamePlaceholder')}
-                autoFocus
-              />
-            </label>
+            <>
+              <label className="pack-item-placement-popup__field">
+                <span className="pack-item-placement-popup__label">
+                  {t('packPopups.placement.folderName')}
+                </span>
+                <input
+                  type="text"
+                  className="pack-item-placement-popup__input"
+                  value={folderName}
+                  onChange={(e) => setFolderName(e.target.value)}
+                  placeholder={t('packPopups.placement.folderNamePlaceholder')}
+                  autoFocus
+                />
+              </label>
+              <label className="pack-item-placement-popup__field">
+                <span className="pack-item-placement-popup__label">
+                  {t('packPopups.placement.folderDescription')}
+                </span>
+                <textarea
+                  className="pack-item-placement-popup__textarea"
+                  value={folderDescription}
+                  onChange={(e) => setFolderDescription(e.target.value)}
+                  placeholder={t('packPopups.placement.folderDescriptionPlaceholder')}
+                  maxLength={2000}
+                  rows={3}
+                />
+              </label>
+            </>
           )}
 
           {mode === 'add-level' && (

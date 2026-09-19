@@ -104,7 +104,7 @@
   "tags": {
     "fields": {
       "allowedBands": "S'applique à",
-      "allowedBandsHint": "Contrôle uniquement les bandes de difficulté où ce tag apparaît dans le vote. Tout masquer pour hériter (groupe, puis toutes les bandes).",
+      "allowedBandsHint": "Contrôle uniquement les bandes de difficulté où ce tag apparaît dans le vote. Tout décocher pour hériter (groupe, puis toutes les bandes).",
       "bandP": "Planetary",
       "bandG": "Galactic",
       "bandU": "Universal",

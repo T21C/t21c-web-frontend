@@ -41,7 +41,8 @@
     "downloadFolder": "Download Folder",
     "exportAs": "Export as",
     "addToFolder": "Add to existing folder…",
-    "moveItem": "Click to move, or drag"
+    "moveItem": "Click to move, or drag",
+    "editFolder": "Edit folder"
   },
   "download": {
     "estimatedLong": "(estimated: {{count}} missing metadata)",
@@ -66,6 +67,10 @@
     "prompt": "Enter a new name for the folder",
     "success": "Folder renamed successfully",
     "error": "Failed to rename folder"
+  },
+  "editFolder": {
+    "success": "Folder updated successfully",
+    "error": "Failed to update folder"
   },
   "deleteItem": {
     "success": "Item deleted successfully!",

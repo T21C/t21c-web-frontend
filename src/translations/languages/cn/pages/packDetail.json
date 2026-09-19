@@ -41,7 +41,8 @@
     "exportAs": "导出为",
     "addToFolder": "添加到现有文件夹…",
     "moveItem": "点击移动，或拖动",
-    "downloadFolder": "下载文件夹"
+    "downloadFolder": "下载文件夹",
+    "editFolder": "编辑文件夹"
   },
   "download": {
     "estimatedLong": "（预计：缺少 {{count}} 个大小元数据）",
@@ -66,6 +67,10 @@
     "prompt": "输入新的文件夹名称：",
     "success": "文件夹重命名成功",
     "error": "文件夹重命名失败"
+  },
+  "editFolder": {
+    "success": "文件夹更新成功",
+    "error": "文件夹更新失败"
   },
   "deleteItem": {
     "success": "项目删除成功",

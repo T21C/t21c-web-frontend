@@ -12,21 +12,29 @@ export function getPortalRoot(selector = '.body') {
 
 export const POPUP_STACK_ID = 'tuf-popup-stack';
 
+function getAppRoot() {
+  if (typeof document === 'undefined') return null;
+  return document.getElementById('root') ?? document.body;
+}
+
 /**
- * Dedicated stacking root on `document.body`, above nav / `.body`.
+ * Dedicated stacking root on `#root` (same tree as the toaster), above nav / `.body`.
  * Nested PopupShells are siblings here so later DOM order (and assigned layers)
- * paints the newest dialog on top.
+ * paints the newest dialog on top. Must stay inside `#root` so `--z-toast` on
+ * `.app-notifications` can paint above `--z-popup`.
  */
 export function getPopupStackRoot() {
-  const body = typeof document !== 'undefined' ? document.body : null;
-  if (!body) return null;
+  const root = getAppRoot();
+  if (!root) return null;
   let stack = document.getElementById(POPUP_STACK_ID);
   if (!stack) {
     stack = document.createElement('div');
     stack.id = POPUP_STACK_ID;
     stack.className = 'tuf-popup-stack';
     stack.setAttribute('data-tuf-popup-stack', '');
-    body.appendChild(stack);
+    root.appendChild(stack);
+  } else if (stack.parentElement !== root) {
+    root.appendChild(stack);
   }
   return stack;
 }
@@ -61,9 +69,9 @@ export function getTopPopupShell() {
 export function registerPopupShell(el) {
   if (!el) return () => {};
   const stack = getPopupStackRoot();
-  const body = typeof document !== 'undefined' ? document.body : null;
-  if (stack && body && body.lastElementChild !== stack) {
-    body.appendChild(stack);
+  const root = getAppRoot();
+  if (stack && root && root.lastElementChild !== stack) {
+    root.appendChild(stack);
   }
   popupShellStack.push(el);
   syncPopupShellLayers();

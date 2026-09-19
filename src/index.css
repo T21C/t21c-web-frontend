@@ -3,13 +3,15 @@
 @import "./styles/portaledPanel.css";
 
 :root {
-  /* Stacking: PopupShells portal into .tuf-popup-stack on document.body
-     (above nav / .body). Nested shells share that stack and layer by DOM order.
-     Overlay classNames must not set z-index (they share the .popup-shell node). */
-  --z-toast: 50;
+  /* Stacking (low → high): nav, popups, in-popup floats, toasts.
+     PopupShells portal into .tuf-popup-stack on #root (same tree as the toaster).
+     Nested shells share that stack and layer by DOM order.
+     Overlay classNames must not set z-index (they share the .popup-shell node).
+     Toaster renders in-tree under .app-notifications; that host must sit above --z-popup. */
   --z-nav: 100;
   --z-popup: 1100;
   --z-float: 1200;
+  --z-toast: 1300;
   /* Set by Navigation.jsx via ResizeObserver; fallback for SSR / before mount */
   --navbar-height: 2rem;
   --text-color: #f9fafb;
@@ -220,10 +222,10 @@ body {
   background-color: var(--color-black);
 }
 
-/* Toast host sits between nav and main content (react-hot-toast may portal; z-index helps when host renders in-tree) */
 .app-notifications {
   position: relative;
   z-index: var(--z-toast);
+  pointer-events: none;
 }
 
 /* Use --navbar-height for full-height layouts: height: calc(100vh - var(--navbar-height)); min-height: calc(100vh - var(--navbar-height)); */

@@ -168,6 +168,18 @@
       "transferFailed": "更改所有者失败"
     }
   },
+  "editFolder": {
+    "title": "编辑文件夹",
+    "name": {
+      "label": "文件夹名称",
+      "placeholder": "输入文件夹名称",
+      "help": "下载时会用作文件夹路径"
+    },
+    "description": {
+      "label": "描述",
+      "placeholder": "可选：更详细地说明此文件夹……"
+    }
+  },
   "downloadPack": {
     "title": "下载 {{contextName}}",
     "defaultContextName": "地图包",
@@ -220,6 +232,8 @@
     "titleMove": "移动项目",
     "folderName": "文件夹名称",
     "folderNamePlaceholder": "输入文件夹名称",
+    "folderDescription": "描述",
+    "folderDescriptionPlaceholder": "可选：更详细地说明此文件夹（仅网站显示）",
     "levelIds": "关卡 ID",
     "levelIdsPlaceholder": "例如 1234、5678 或每行一个",
     "positionLabel": "在地图包中的位置",

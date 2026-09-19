@@ -61,16 +61,25 @@
   color: rgba(255, 255, 255, 0.5);
 }
 
-.pack-item-placement-popup__input {
+.pack-item-placement-popup__input,
+.pack-item-placement-popup__textarea {
   padding: 0.65rem 0.85rem;
   border: 1px solid var(--color-white-t20, rgba(255, 255, 255, 0.2));
   border-radius: 8px;
   background: var(--color-white-t10, rgba(255, 255, 255, 0.06));
   color: inherit;
   font-size: 0.95rem;
+  font-family: inherit;
 }
 
-.pack-item-placement-popup__input:focus {
+.pack-item-placement-popup__textarea {
+  resize: vertical;
+  min-height: 4.5rem;
+  line-height: 1.45;
+}
+
+.pack-item-placement-popup__input:focus,
+.pack-item-placement-popup__textarea:focus {
   outline: none;
   border-color: var(--accent-primary, #687bff);
 }
