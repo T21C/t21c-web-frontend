@@ -585,6 +585,10 @@
   border-radius: 0 var(--btn-radius) var(--btn-radius) 0;
 }
 
+.pack-detail-page .add-btn--solo {
+  border-radius: 6px;
+}
+
 .pack-detail-page .empty-actions {
   display: flex;
   flex-wrap: wrap;
