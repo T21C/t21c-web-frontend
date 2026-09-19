@@ -50,10 +50,10 @@
   "feelingTooltip": "개인적으로 얼마나 어려웠는지 작성해주세요. 예: G1-G5, 17~18+, U1 등",
   "expectedTooltip": "이 레벨이 어떤 난이도여야 하는지 작성해주세요. (선택, 체감 난이도와 같은 형식)",
   "adofaiV2Tooltip": "ADOFAI v2에서 기록된 클리어인 경우 선택해주세요.",
-  "adofaiVersionTooltip": "이 클리어에 사용한 게임 버전입니다. Latest는 3.4.0+입니다. 영상 날짜로 자동 채워지며 직접 바꿀 수 있습니다.",
+  "adofaiVersionTooltip": "이 클리어에 사용한 게임 버전입니다. Alpha는 3.4.0+입니다. 영상 날짜로 자동 채워지며 직접 바꿀 수 있습니다.",
   "xPerfectTooltip": "X-Perfect 모드의 Perfect− / Perfect+ 개수를 기록합니다. (3.4.0+만)",
   "adofaiVersion": {
-    "latest": "Latest",
+    "latest": "Alpha",
     "pre340": "<3.4.0",
     "v2": "v2"
   },

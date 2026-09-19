@@ -47,7 +47,7 @@
         "late": "Tard"
       },
       "adofaiVersion": {
-        "latest": "Latest",
+        "latest": "Alpha",
         "pre340": "<3.4.0",
         "v2": "v2"
       }
@@ -58,7 +58,7 @@
     "12kTooltip": "Variante 12 touches",
     "16kTooltip": "Variante 16 touches",
     "adofaiV2Tooltip": "Check this if the clear was recorded on ADOFAI v2",
-    "adofaiVersionTooltip": "Version du jeu utilisée pour cette complétion. Latest correspond à 3.4.0+.",
+    "adofaiVersionTooltip": "Version du jeu utilisée pour cette complétion. Alpha correspond à 3.4.0+.",
     "xPerfectTooltip": "Enregistrer les comptes Perfect− et Perfect+ du mode X-Perfect (3.4.0+ uniquement).",
     "midspinWarning": {
       "willApply": "Ce niveau a {{count}} tuiles midspin. Elles seront soustraites de Perfect à l'enregistrement.",

@@ -48,7 +48,7 @@
         "late": "太慢！"
       },
       "adofaiVersion": {
-        "latest": "Latest",
+        "latest": "Alpha",
         "pre340": "<3.4.0",
         "v2": "v2"
       }
@@ -60,7 +60,7 @@
     "feelingTooltip": "你的体感难度，例如 G1-G5、17~18+、U1 等。",
     "expectedTooltip": "你认为本关卡应评级的难度（选填），格式与体感难度相同。",
     "adofaiV2Tooltip": "如果本次通关使用的是v2版本的ADOFAI，请勾选此项。",
-    "adofaiVersionTooltip": "本次通关使用的游戏版本。Latest 为 3.4.0+。",
+    "adofaiVersionTooltip": "本次通关使用的游戏版本。Alpha 为 3.4.0+。",
     "xPerfectTooltip": "记录 X-Perfect 模式下的 Perfect− / Perfect+ 数量（仅 3.4.0+）。",
     "midspinWarning": {
       "willApply": "此谱面有 {{count}} 个 midspin 砖块。保存时会从 Perfect 中扣除。",
