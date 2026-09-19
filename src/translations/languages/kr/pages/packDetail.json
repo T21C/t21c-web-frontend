@@ -33,6 +33,7 @@
     "edit": "Edit Pack",
     "addFolder": "Add Folder",
     "addLevel": "Add Level",
+    "addNote": "메모 추가",
     "collapseAll": "Collapse All",
     "expandAll": "Expand All",
     "addToFavorites": "좋아요",
@@ -42,7 +43,9 @@
     "exportAs": "Export as",
     "addToFolder": "Add to existing folder…",
     "moveItem": "Click to move, or drag",
-    "editFolder": "폴더 편집"
+    "editFolder": "폴더 편집",
+    "editNote": "메모 편집",
+    "deleteNote": "메모 삭제"
   },
   "download": {
     "estimatedLong": "(estimated: {{count}} missing metadata)",
@@ -56,6 +59,10 @@
     "prompt": "Enter a name for the new folder",
     "success": "Folder created successfully",
     "error": "Failed to create folder"
+  },
+  "createNote": {
+    "success": "메모가 추가되었습니다",
+    "error": "메모 추가에 실패했습니다"
   },
   "addLevel": {
     "prompt": "Enter a level ID to add",
@@ -72,12 +79,19 @@
     "success": "폴더가 업데이트되었습니다",
     "error": "폴더 업데이트에 실패했습니다"
   },
+  "editNote": {
+    "success": "메모가 업데이트되었습니다",
+    "error": "메모 업데이트에 실패했습니다"
+  },
   "deleteItem": {
     "success": "Item deleted successfully!",
     "error": "Failed to delete item"
   },
   "deleteFolder": {
     "confirm": "Are you sure you want to delete the folder \"{{name}}\"? This will also delete all items inside it."
+  },
+  "deleteNote": {
+    "confirm": "\"{{name}}\" 메모를 삭제하시겠습니까?"
   },
   "deleteLevel": {
     "confirm": "Are you sure you want to remove this level from the pack?"

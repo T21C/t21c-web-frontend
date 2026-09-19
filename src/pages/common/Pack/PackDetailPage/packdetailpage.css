@@ -617,8 +617,13 @@
   border-color: var(--color-primary);
 }
 
+.pack-detail-page .add-btn--solo {
+  border-radius: 6px;
+}
+
 .pack-detail-page .empty-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   margin-top: 1rem;
   justify-content: center;

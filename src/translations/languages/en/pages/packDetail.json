@@ -33,6 +33,7 @@
     "edit": "Edit Pack",
     "addFolder": "Add Folder",
     "addLevel": "Add Level",
+    "addNote": "Add Note",
     "collapseAll": "Collapse All",
     "expandAll": "Expand All",
     "addToFavorites": "Add to Favorites",
@@ -42,7 +43,9 @@
     "exportAs": "Export as",
     "addToFolder": "Add to existing folder…",
     "moveItem": "Click to move, or drag",
-    "editFolder": "Edit folder"
+    "editFolder": "Edit folder",
+    "editNote": "Edit note",
+    "deleteNote": "Delete note"
   },
   "download": {
     "estimatedLong": "(estimated: {{count}} missing metadata)",
@@ -56,6 +59,10 @@
     "prompt": "Enter a name for the new folder",
     "success": "Folder created successfully",
     "error": "Failed to create folder"
+  },
+  "createNote": {
+    "success": "Note added successfully",
+    "error": "Failed to add note"
   },
   "addLevel": {
     "prompt": "Enter a level ID to add",
@@ -72,12 +79,19 @@
     "success": "Folder updated successfully",
     "error": "Failed to update folder"
   },
+  "editNote": {
+    "success": "Note updated successfully",
+    "error": "Failed to update note"
+  },
   "deleteItem": {
     "success": "Item deleted successfully!",
     "error": "Failed to delete item"
   },
   "deleteFolder": {
     "confirm": "Are you sure you want to delete the folder \"{{name}}\"? This will also delete all items inside it."
+  },
+  "deleteNote": {
+    "confirm": "Are you sure you want to delete the note \"{{name}}\"?"
   },
   "deleteLevel": {
     "confirm": "Are you sure you want to remove this level from the pack?"

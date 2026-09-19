@@ -44,6 +44,92 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
 }
 
+.pack-item--note {
+  position: relative;
+  background: var(--color-white-t5, #111827);
+  border: 1px solid var(--color-white-t20, #374151);
+  border-radius: 8px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pack-item--note:hover {
+  border-color: var(--color-purple-1);
+  box-shadow: 0 4px 12px var(--color-black-t35);
+}
+
+.pack-item--note .pack-item__icon {
+  color: var(--color-purple-1);
+  flex-shrink: 0;
+}
+
+.pack-item--note .pack-item__actions {
+  margin-left: auto;
+}
+
+.pack-item--note .pack-item__note-body {
+  white-space: normal;
+  color: var(--color-white-t70);
+}
+
+.pack-item--note .pack-item__note-body.is-clamped {
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  max-height: 5.4em;
+}
+
+.pack-item--note .pack-item__note-body > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.pack-item--note .pack-item__note-body p,
+.pack-item--note .pack-item__note-body ul,
+.pack-item--note .pack-item__note-body ol,
+.pack-item--note .pack-item__note-body pre,
+.pack-item--note .pack-item__note-body blockquote,
+.pack-item--note .pack-item__note-body table {
+  margin: 0;
+}
+
+.pack-item--note .pack-item__note-body ul,
+.pack-item--note .pack-item__note-body ol {
+  padding-left: 1.2rem;
+}
+
+.pack-item--note .pack-item__note-body a {
+  color: var(--color-purple-1);
+}
+
+.pack-item--note .pack-item__note-body a:hover {
+  color: var(--color-white);
+}
+
+.pack-item--note .pack-item__note-body code {
+  font-size: 0.85em;
+  background: var(--color-white-t10);
+  border-radius: 4px;
+  padding: 0.05em 0.3em;
+}
+
+.pack-item--note .pack-item__note-body pre {
+  overflow-x: auto;
+  background: var(--color-white-t10);
+  border-radius: 6px;
+  padding: 0.5rem 0.65rem;
+}
+
+.pack-item--note .pack-item__note-body pre code {
+  padding: 0;
+  background: none;
+}
+
+.pack-item--note .pack-item__note-body table {
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
 .pack-item__header {
   display: flex;
   align-items: center;
@@ -305,7 +391,6 @@
 .pack-item__children {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
   padding: 0 0.75rem 0.75rem;
   transition: background-color 0.2s ease, min-height 0.2s ease;
 }

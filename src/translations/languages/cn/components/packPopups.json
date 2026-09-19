@@ -180,6 +180,18 @@
       "placeholder": "可选：更详细地说明此文件夹……"
     }
   },
+  "editNote": {
+    "title": "编辑备注",
+    "name": {
+      "label": "标题",
+      "placeholder": "输入标题"
+    },
+    "description": {
+      "label": "内容",
+      "placeholder": "写下你想让其他人知道的信息……",
+      "help": "支持 Markdown（加粗、列表、链接）。"
+    }
+  },
   "downloadPack": {
     "title": "下载 {{contextName}}",
     "defaultContextName": "地图包",
@@ -229,11 +241,17 @@
   "placement": {
     "titleAddFolder": "添加文件夹",
     "titleAddLevel": "添加关卡",
+    "titleAddNote": "添加备注",
     "titleMove": "移动项目",
     "folderName": "文件夹名称",
     "folderNamePlaceholder": "输入文件夹名称",
     "folderDescription": "描述",
     "folderDescriptionPlaceholder": "可选：更详细地说明此文件夹（仅网站显示）",
+    "noteTitle": "标题",
+    "noteTitlePlaceholder": "输入标题",
+    "noteBody": "内容",
+    "noteBodyPlaceholder": "写下你想让其他人知道的信息……",
+    "noteBodyHelp": "支持 Markdown（加粗、列表、链接）。仅在网站显示，不会包含在下载中。",
     "levelIds": "关卡 ID",
     "levelIdsPlaceholder": "例如 1234、5678 或每行一个",
     "positionLabel": "在地图包中的位置",
@@ -243,6 +261,7 @@
     "dividerHint": "将鼠标悬停在分割线上以选择插入位置",
     "addFolder": "添加文件夹",
     "addLevels": "添加关卡",
+    "addNote": "添加备注",
     "move": "移动到此",
     "submitting": "保存中……"
   },

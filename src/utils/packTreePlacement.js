@@ -76,6 +76,9 @@ export function getItemDisplayLabel(item) {
   if (item.type === 'folder') {
     return item.name || 'Folder';
   }
+  if (item.type === 'note') {
+    return item.name || 'Note';
+  }
   const level = item.referencedLevel;
   if (level) {
     const song = getSongDisplayName(level);
@@ -136,6 +139,14 @@ export function flattenTreeToPositions(items, { excludeId } = {}) {
           ).length,
         });
         walkContainer(child.children || [], child.id, depth + 1, folderAncestors);
+      } else if (child.type === 'note') {
+        rows.push({
+          kind: 'note-ref',
+          item: child,
+          label: getItemDisplayLabel(child),
+          depth: clampIndentDepth(depth + 1),
+          containedByFolders: ancestorFolderIds,
+        });
       } else {
         rows.push({
           kind: 'level-ref',

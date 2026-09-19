@@ -2,8 +2,9 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { Draggable, Droppable } from '@hello-pangea/dnd';
 import { useTranslation } from 'react-i18next';
-import { ChevronIcon, FolderIcon, DragHandleIcon, DownloadIcon } from '@/components/common/icons';
+import { ChevronIcon, FolderIcon, DragHandleIcon, DownloadIcon, InfoIcon } from '@/components/common/icons';
 import { summarizeFolderSize, summarizeFolderClears, formatEstimatedSize } from '@/utils/packDownloadUtils';
+import MarkdownText from '@/components/common/display/MarkdownText/MarkdownText';
 
 import LevelCard from '@/components/cards/LevelCard/LevelCard';
 import './PackItem.css';
@@ -37,7 +38,7 @@ export const PackLevelItem = ({
   );
 };
 
-function FolderDescription({ text }) {
+function ClampedBlock({ contentKey, className = '', children }) {
   const { t } = useTranslation();
   const textRef = useRef(null);
   const [expanded, setExpanded] = useState(false);
@@ -46,7 +47,7 @@ function FolderDescription({ text }) {
   useEffect(() => {
     setExpanded(false);
     setCanExpand(false);
-  }, [text]);
+  }, [contentKey]);
 
   useEffect(() => {
     const el = textRef.current;
@@ -64,16 +65,16 @@ function FolderDescription({ text }) {
     const observer = new ResizeObserver(check);
     observer.observe(el);
     return () => observer.disconnect();
-  }, [text, expanded]);
+  }, [contentKey, expanded]);
 
   return (
     <div className="pack-item__description-wrap">
-      <p
+      <div
         ref={textRef}
-        className={`pack-item__description${expanded ? '' : ' is-clamped'}`}
+        className={`pack-item__description${className ? ` ${className}` : ''}${expanded ? '' : ' is-clamped'}`}
       >
-        {text}
-      </p>
+        {children}
+      </div>
       {(canExpand || expanded) && (
         <button
           type="button"
@@ -92,6 +93,18 @@ function FolderDescription({ text }) {
   );
 }
 
+function FolderDescription({ text }) {
+  return <ClampedBlock contentKey={text}>{text}</ClampedBlock>;
+}
+
+function NoteBody({ text }) {
+  return (
+    <ClampedBlock contentKey={text} className="pack-item__note-body">
+      <MarkdownText>{text}</MarkdownText>
+    </ClampedBlock>
+  );
+}
+
 const PackItem = ({
   item,
   index,
@@ -101,6 +114,7 @@ const PackItem = ({
   isReordering,
   user,
   onEditFolder,
+  onEditNote,
   onDeleteItem,
   onDownloadFolder,
   onRequestMove,
@@ -148,6 +162,76 @@ const PackItem = ({
                 dragHandleProps={provided.dragHandleProps}
                 onRequestMove={onRequestMove}
               />
+            </div>
+          </div>
+        )}
+      </Draggable>
+    );
+  }
+
+  if (item.type === 'note') {
+    const noteBody = typeof item.description === 'string' ? item.description.trim() : '';
+    return (
+      <Draggable
+        draggableId={`item-${item.id}`}
+        index={index}
+        isDragDisabled={!canEdit}
+      >
+        {(provided, snapshot) => (
+          <div
+            ref={provided.innerRef}
+            {...provided.draggableProps}
+            className={`pack-item pack-item--note ${snapshot.isDragging ? 'dragging' : ''}`}
+            style={provided.draggableProps.style}
+          >
+            <div className="pack-item__header">
+              {canEdit && provided.dragHandleProps && (
+                <button
+                  type="button"
+                  className="pack-item__drag-handle"
+                  {...provided.dragHandleProps}
+                  title={t('pages:packDetail.actions.moveItem', 'Click to move, or drag')}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onRequestMove?.(item);
+                  }}
+                >
+                  <DragHandleIcon />
+                </button>
+              )}
+              <div className="pack-item__icon">
+                <InfoIcon size={20} color="currentColor" />
+              </div>
+              <div className="pack-item__info">
+                <div className="pack-item__name">{item.name}</div>
+                {noteBody ? <NoteBody text={noteBody} /> : null}
+              </div>
+              {canEdit && (
+                <div className="pack-item__actions">
+                  <button
+                    type="button"
+                    className="pack-item__action-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onEditNote?.(item);
+                    }}
+                    title={t('pages:packDetail.actions.editNote', 'Edit note')}
+                  >
+                    ✏️
+                  </button>
+                  <button
+                    type="button"
+                    className="pack-item__action-btn pack-item__action-btn--delete"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDeleteItem?.(item);
+                    }}
+                    title={t('pages:packDetail.actions.deleteNote', 'Delete note')}
+                  >
+                    🗑️
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -319,6 +403,31 @@ const PackItem = ({
                 draggedItem = findItemFn(allItems, draggedItemId);
               }
               
+              if (draggedItem?.type === 'note') {
+                return (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                    className={`pack-item pack-item--note dragging-clone ${cloneSnapshot.isDragging ? 'is-dragging' : ''}`}
+                    style={{
+                      ...provided.draggableProps.style,
+                      zIndex: 9999,
+                      opacity: 1,
+                    }}
+                  >
+                    <div className="pack-item__header">
+                      <div className="pack-item__icon">
+                        <InfoIcon size={20} color="currentColor" />
+                      </div>
+                      <div className="pack-item__info">
+                        <div className="pack-item__name">{draggedItem?.name || 'Note'}</div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+
               if (draggedItem?.type === 'level') {
                 return (
                   <div
@@ -345,7 +454,7 @@ const PackItem = ({
                   </div>
                 );
               }
-              
+
               // Fallback for folders or unknown items
               return (
                 <div
@@ -403,6 +512,7 @@ const PackItem = ({
                       canEdit={canEdit}
                       user={user}
                       onEditFolder={onEditFolder}
+                      onEditNote={onEditNote}
                       onDeleteItem={onDeleteItem}
                       onDownloadFolder={onDownloadFolder}
                       onRequestMove={onRequestMove}
