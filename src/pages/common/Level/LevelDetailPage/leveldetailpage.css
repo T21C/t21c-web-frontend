@@ -2545,7 +2545,7 @@
   transition: all 0.4s var(--ease-out-expo);
 }
 
-.curation-description-container.expanded {
+.level-detail .curation-description-container.expanded {
   overflow: visible;
   z-index: var(--z-content);
 }
@@ -2605,7 +2605,7 @@
   overflow: visible;
 }
 
-.curation-description.expanded .curation-description-content {
+.level-detail .curation-description.expanded .curation-description-content {
   overflow: visible;
   max-height: none;
   flex: none;
