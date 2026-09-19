@@ -63,7 +63,15 @@
     "difficulty": "Poziom trudności",
     "baseScore": "Wynik podstawowy",
     "aliases": "Inne nazwy",
-    "comments": "Komentarze"
+    "comments": "Komentarze",
+    "description": "Opis"
+  },
+  "descriptionMode": {
+    "curation": "Opis kuracji",
+    "creator": "Opis twórcy",
+    "fromCreator": "Od twórcy",
+    "hide": "Ukryj opis",
+    "show": "Pokaż opis"
   },
   "leaderboard": {
     "header": "Lista rankingowa",

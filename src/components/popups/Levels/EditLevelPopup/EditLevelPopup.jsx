@@ -79,6 +79,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     dlLink: '',
     workshopLink: '',
     publicComments: '',
+    description: '',
     notes: '',
     rerateNum: '',
     toRate: false,
@@ -178,6 +179,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
         dlLink: src.dlLink ?? '',
         workshopLink: src.workshopLink ?? '',
         publicComments: src.publicComments ?? '',
+        description: src.description ?? '',
         notes: src.notes ?? '',
         rerateNum: src.rerateNum ?? '',
         toRate: Boolean(src.toRate),
@@ -985,6 +987,20 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                 value={formData.publicComments}
                 onChange={handleInputChange}
                 disabled={!isSuperAdmin}
+              />
+            </div>
+
+            <div className={`form-group ${isSuperAdmin ? 'field-enabled' : ''}`}>
+              <label htmlFor="description">{t('levelPopups.edit.form.labels.description')}</label>
+              <textarea
+                autoComplete='off'
+                id="description"
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                disabled={!isSuperAdmin}
+                maxLength={2000}
+                rows={4}
               />
             </div>
 

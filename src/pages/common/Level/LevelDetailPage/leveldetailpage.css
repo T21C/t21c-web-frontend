@@ -2224,6 +2224,15 @@
   color: var(--secondary-text);
 }
 
+.level-detail-popup .popup-content .popup-body .team-info .each-info--description {
+  align-items: start;
+}
+
+.level-detail-popup .popup-content .popup-body .team-info .each-info--description span:last-child {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 .level-detail-popup .popup-content .popup-body .links {
   display: flex;
   justify-content: center;
@@ -2522,15 +2531,28 @@
    EXPANDABLE CURATION DESCRIPTION
    ============================================ */
 .curation-description-container {
+  --desc-btn-size: calc(16px + (var(--btn-icon-pad) * 2) + 2px);
   min-width: 20rem;
   width: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  min-height: calc(var(--header-height) - var(--spacing-sm) * 2);
   position: relative;
   z-index: var(--z-content);
   flex: 1;
-  align-self: stretch;
+  align-self: flex-start;
+  margin-left: auto;
   display: flex;
   flex-direction: column;
-  min-height: 0;
+  overflow: hidden;
+  transition:
+    min-width var(--transition-normal),
+    max-width var(--transition-normal),
+    width var(--transition-normal),
+    height var(--transition-normal),
+    max-height var(--transition-normal),
+    min-height var(--transition-normal),
+    flex-basis var(--transition-normal);
 }
 
 .curation-description {
@@ -2608,6 +2630,122 @@
 .curation-description-container.expandable:not(.expanded) .curation-description-content {
   mask-image: linear-gradient(to bottom, #000 0%, #000 calc(100% - 1rem), transparent 100%);
   -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 calc(100% - 1rem), transparent 100%);
+}
+
+.level-detail .curation-description-container .curation-description-chrome {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--spacing-sm);
+  flex-shrink: 0;
+}
+
+.level-detail .curation-description-container .curation-description-toolbar {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--btn-gap);
+  flex-shrink: 0;
+  min-width: 0;
+}
+
+.level-detail .curation-description-container .curation-description-mode-selector {
+  display: flex;
+  align-items: center;
+  gap: var(--btn-gap);
+}
+
+.level-detail .curation-description-container .curation-description-mode-btn,
+.level-detail .curation-description-container .curation-description-mode-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: var(--btn-icon-pad);
+  border-radius: var(--btn-radius);
+  border: 1px solid var(--color-white-t20);
+  background-color: transparent;
+  color: var(--color-white);
+  line-height: 0;
+}
+
+.level-detail .curation-description-container .curation-description-mode-btn svg,
+.level-detail .curation-description-container .curation-description-mode-badge svg {
+  display: block;
+}
+
+.level-detail .curation-description-container .curation-description-mode-btn:hover,
+.level-detail .curation-description-container .curation-description-mode-btn[aria-pressed="true"],
+.level-detail .curation-description-container .curation-description-mode-badge {
+  background-color: var(--color-white-t15);
+}
+
+.level-detail .curation-description-container .curation-description-from-creator {
+  font-style: italic;
+  color: var(--secondary-text);
+  font-size: var(--btn-sm-font-size);
+  white-space: nowrap;
+}
+
+.level-detail .curation-description-container.description-collapsed {
+  flex: 0 0 var(--desc-btn-size);
+  align-self: flex-start;
+  margin-left: auto;
+  width: var(--desc-btn-size);
+  height: var(--desc-btn-size);
+  min-width: var(--desc-btn-size);
+  max-width: var(--desc-btn-size);
+  min-height: var(--desc-btn-size);
+  max-height: var(--desc-btn-size);
+}
+
+.level-detail .header .left:has(.description-collapsed) .like-container[data-margin-auto="true"] {
+  margin-left: 0;
+}
+
+.level-detail .curation-description-container.description-collapsed .curation-description {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  gap: 0;
+  overflow: hidden;
+  cursor: default;
+}
+
+.level-detail .curation-description-container.description-collapsed .curation-description-chrome {
+  height: 100%;
+  width: 100%;
+  gap: 0;
+}
+
+.level-detail .curation-description-container.description-collapsed .curation-description-hide-btn {
+  width: 100%;
+  height: 100%;
+  border-color: transparent;
+  background-color: transparent;
+}
+
+.level-detail .curation-description-container.description-collapsed .curation-description-hide-btn:hover {
+  background-color: var(--color-white-t15);
+}
+
+.level-detail .curation-description-container.description-collapsed .curation-description-toolbar,
+.level-detail .curation-description-container.description-collapsed .curation-description-mode-selector,
+.level-detail .curation-description-container.description-collapsed .curation-description-from-creator,
+.level-detail .curation-description-container.description-collapsed .curation-description-content,
+.level-detail .curation-description-container.description-collapsed .curation-description-toggle {
+  overflow: hidden;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  pointer-events: none;
 }
 
 /* ============================================
@@ -2807,6 +2945,18 @@
   .curation-description-container {
     order: 3;
     flex: none;
+    align-self: stretch;
+    margin-left: 0;
+    min-height: 0;
+    width: 100%;
+  }
+
+  .level-detail .curation-description-container.description-collapsed {
+    flex: 0 0 var(--desc-btn-size);
+    width: var(--desc-btn-size);
+    height: var(--desc-btn-size);
+    align-self: flex-end;
+    margin-left: auto;
   }
 
   .curation-description-container:not(.expanded) .curation-description {

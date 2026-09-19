@@ -80,7 +80,15 @@
     "ppBaseScore": "완벽한 플레이 기반 점수",
     "aliases": "별칭",
     "comments": "댓글",
+    "description": "설명",
     "createdAt": "제작일"
+  },
+  "descriptionMode": {
+    "curation": "큐레이션 설명",
+    "creator": "제작자 설명",
+    "fromCreator": "제작자 작성",
+    "hide": "설명 숨기기",
+    "show": "설명 보기"
   },
   "leaderboard": {
     "header": "리더보드",
