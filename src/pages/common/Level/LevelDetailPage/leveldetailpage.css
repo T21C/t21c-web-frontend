@@ -2530,7 +2530,7 @@
    ============================================ */
 .curation-description-container {
   --desc-btn-size: calc(16px + (var(--btn-icon-pad) * 2) + 2px);
-  min-width: 20rem;
+  min-width: 22rem;
   width: 100%;
   max-width: 100%;
   height: 100%;
@@ -2588,8 +2588,9 @@
   right: 0;
   bottom: auto;
   height: auto;
-  max-height: none;
+  max-height: 40rem;
   overflow: visible;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
