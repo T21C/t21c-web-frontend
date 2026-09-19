@@ -20,7 +20,7 @@ import { Tooltip } from 'react-tooltip';
 import { EditIcon, ImageIcon, InfoIcon, RefreshIcon, TrashIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { RatingInput, CustomSelect } from '@/components/common/selectors';
+import { RatingInput, CustomSelect, StateDisplay } from '@/components/common/selectors';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { CDN_IMAGE_ACCEPT } from '@/config/constants/cdnImageAccept';
@@ -51,6 +51,12 @@ const EMPTY_NEW_TAG = {
 };
 
 const COMMUNITY_TAG_BAND_OPTIONS = ['P', 'G', 'U', 'SPEC'];
+const COMMUNITY_TAG_BAND_LABEL_KEYS = {
+  P: 'bandP',
+  G: 'bandG',
+  U: 'bandU',
+  SPEC: 'bandSpec',
+};
 
 function requireTopPlayFormValue(value) {
   if (value === true || value === 'true' || value === 1 || value === '1') return 'true';
@@ -197,12 +203,15 @@ function CommunityTagScoringFields({
   tagGroups = [],
   inactive = false,
 }) {
-  const toggleBand = (band) => {
+  const setBandVisibility = (band, state) => {
     const current = Array.isArray(value.allowedBands) ? value.allowedBands : [];
-    const next = current.includes(band)
-      ? current.filter((item) => item !== band)
-      : [...current, band];
-    onChange({ ...value, allowedBands: next });
+    const shown = new Set(current);
+    if (state === 'show') shown.add(band);
+    else shown.delete(band);
+    onChange({
+      ...value,
+      allowedBands: COMMUNITY_TAG_BAND_OPTIONS.filter((item) => shown.has(item)),
+    });
   };
 
   const preview = resolvePreviewKnobs(value, tagGroups, inheritFromGroup);
@@ -248,6 +257,25 @@ function CommunityTagScoringFields({
           className={`form-assignment-fields${inactive ? ' is-inactive' : ''}`}
           inert={inactive ? true : undefined}
         >
+          <div className="form-group">
+            <label>{t('difficulty.tags.fields.allowedBands')}</label>
+            <p className="form-hint">{t('difficulty.tags.fields.allowedBandsHint')}</p>
+            <div className="form-group-bands">
+              {COMMUNITY_TAG_BAND_OPTIONS.map((band) => {
+                const included = Array.isArray(value.allowedBands) && value.allowedBands.includes(band);
+                return (
+                  <StateDisplay
+                    key={band}
+                    currentState={included ? 'show' : 'hide'}
+                    states={['hide', 'show']}
+                    activeStates={['show']}
+                    label={t(`difficulty.tags.fields.${COMMUNITY_TAG_BAND_LABEL_KEYS[band]}`)}
+                    onChange={(state) => setBandVisibility(band, state)}
+                  />
+                );
+              })}
+            </div>
+          </div>
           <div className="form-group">
             <label>{t('difficulty.tags.fields.scoringMode')}</label>
             <CustomSelect
@@ -340,22 +368,6 @@ function CommunityTagScoringFields({
               value={value.scoreOff}
               onChange={(e) => onChange({ ...value, scoreOff: e.target.value })}
             />
-          </div>
-          <div className="form-group">
-            <label>{t('difficulty.tags.fields.allowedBands')}</label>
-            <p className="form-hint">{t('difficulty.tags.fields.allowedBandsHint')}</p>
-            <div className="form-group-bands">
-              {COMMUNITY_TAG_BAND_OPTIONS.map((band) => (
-                <label key={band} className="form-group-band">
-                  <input
-                    type="checkbox"
-                    checked={Array.isArray(value.allowedBands) && value.allowedBands.includes(band)}
-                    onChange={() => toggleBand(band)}
-                  />
-                  <span>{band}</span>
-                </label>
-              ))}
-            </div>
           </div>
         </div>
       ) : null}

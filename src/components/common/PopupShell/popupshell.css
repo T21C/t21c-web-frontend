@@ -1,12 +1,22 @@
-.popup-shell {
+.tuf-popup-stack {
   position: fixed;
   inset: 0;
   z-index: var(--z-popup);
+  pointer-events: none;
+  isolation: isolate;
+}
+
+.popup-shell {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 1.25rem;
   background: var(--color-black-t70);
+  pointer-events: auto;
+  isolation: isolate;
 }
 
 .popup-shell__chrome {

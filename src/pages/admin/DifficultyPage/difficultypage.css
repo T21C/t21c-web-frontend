@@ -538,19 +538,13 @@
 
 .difficulty-page .form-group-bands {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
 }
 
-.difficulty-page .form-group-band {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-
-.difficulty-page .form-group-band input[type="checkbox"] {
-  width: auto;
-  margin: 0;
+.difficulty-page .form-group-bands .state-display-toggle {
+  width: 100%;
 }
 
 .difficulty-page .form-group input[type="color"] {

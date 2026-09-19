@@ -2,24 +2,20 @@
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import { Portal } from '@/components/common/Portal';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
-import { registerPopupShell } from '@/utils/portalRoot';
+import { getPopupStackRoot, getTopPopupShell, registerPopupShell } from '@/utils/portalRoot';
 import './popupshell.css';
-
-const escapeStack = [];
 
 function classNames(...parts) {
   return parts.filter(Boolean).join(' ');
 }
 
-function usePopupShellEscape(onClose, enabled) {
+function usePopupShellEscape(onClose, enabled, overlayRef) {
   useEffect(() => {
     if (!enabled) return undefined;
 
-    escapeStack.push(onClose);
-
     const onKey = (event) => {
       if (event.key !== 'Escape') return;
-      if (escapeStack[escapeStack.length - 1] !== onClose) return;
+      if (getTopPopupShell() !== overlayRef.current) return;
       event.preventDefault();
       event.stopImmediatePropagation();
       onClose();
@@ -28,10 +24,8 @@ function usePopupShellEscape(onClose, enabled) {
     document.addEventListener('keydown', onKey, true);
     return () => {
       document.removeEventListener('keydown', onKey, true);
-      const idx = escapeStack.lastIndexOf(onClose);
-      if (idx !== -1) escapeStack.splice(idx, 1);
     };
-  }, [onClose, enabled]);
+  }, [onClose, enabled, overlayRef]);
 }
 
 export function PopupShell({
@@ -47,14 +41,15 @@ export function PopupShell({
   panelProps,
   ariaLabelledBy,
   ariaLabel,
-  mount,
+  mount: _mount,
+  root,
   when = true,
   role = 'dialog',
 }) {
   const overlayRef = useRef(null);
   const overlayActive = Boolean(when) && !closeDisabled;
   useBodyScrollLock(Boolean(when));
-  usePopupShellEscape(onClose, overlayActive && dismissOnEscape);
+  usePopupShellEscape(onClose, overlayActive && dismissOnEscape, overlayRef);
 
   useLayoutEffect(() => {
     if (!when) return undefined;
@@ -68,8 +63,10 @@ export function PopupShell({
     if (event.target === event.currentTarget) onClose();
   };
 
+  const stackRoot = typeof document !== 'undefined' ? getPopupStackRoot() : null;
+
   return (
-    <Portal when={when} mount={mount}>
+    <Portal when={when} root={root ?? stackRoot}>
       <div
         role="presentation"
         {...overlayProps}

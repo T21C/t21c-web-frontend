@@ -100,5 +100,15 @@
     "created": "Difficulté créé avec succès",
     "updated": "Difficulté modifiée avec succès",
     "deleted": "Difficulté supprimée avec succès"
+  },
+  "tags": {
+    "fields": {
+      "allowedBands": "S'applique à",
+      "allowedBandsHint": "Contrôle uniquement les bandes de difficulté où ce tag apparaît dans le vote. Tout masquer pour hériter (groupe, puis toutes les bandes).",
+      "bandP": "Planetary",
+      "bandG": "Galactic",
+      "bandU": "Universal",
+      "bandSpec": "Spécial"
+    }
   }
 } 
