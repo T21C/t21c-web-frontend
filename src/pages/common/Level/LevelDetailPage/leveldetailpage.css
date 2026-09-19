@@ -1014,7 +1014,6 @@
 
 .level-detail .wrapper-level button {
   background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
   color: var(--primary-text);
   border-radius: var(--border-radius);
   padding: var(--spacing-sm);
@@ -1029,8 +1028,7 @@
 }
 
 .level-detail .wrapper-level button:hover {
-  background: var(--accent-color);
-  border-color: var(--accent-color);
+  background: var(--glass-border);
   box-shadow: var(--shadow-md);
 }
 
@@ -2545,14 +2543,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  transition:
-    min-width var(--transition-normal),
-    max-width var(--transition-normal),
-    width var(--transition-normal),
-    height var(--transition-normal),
-    max-height var(--transition-normal),
-    min-height var(--transition-normal),
-    flex-basis var(--transition-normal);
+  transition: all 0.4s var(--ease-out-expo);
 }
 
 .curation-description {
@@ -2643,8 +2634,8 @@
 
 .level-detail .curation-description-container .curation-description-toolbar {
   display: flex;
-  flex-direction: row-reverse;
   align-items: center;
+  margin-right: auto;
   justify-content: flex-start;
   gap: var(--btn-gap);
   flex-shrink: 0;
@@ -2665,7 +2656,7 @@
   flex-shrink: 0;
   padding: var(--btn-icon-pad);
   border-radius: var(--btn-radius);
-  border: 1px solid var(--color-white-t20);
+  border: none;
   background-color: transparent;
   color: var(--color-white);
   line-height: 0;

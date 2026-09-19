@@ -2994,11 +2994,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                 </div>
               )}
               
-              <div 
-                className="like-container"
-                data-margin-auto={true}
-              >
-                {chartClearMute.credited && (
+              {chartClearMute.credited && (
                   <div className="level-detail-header-notify-slot">
                     <button
                       type="button"
@@ -3027,6 +3023,10 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                     <LevelDetailTooltip id="chart-clear-mute-tooltip" place="bottom" noArrow />
                   </div>
                 )}
+              <div 
+                className="like-container"
+                data-margin-auto={true}
+              >
                 <LikeButton
                   liked={Boolean(res.isLiked)}
                   count={res.level.likes ?? 0}

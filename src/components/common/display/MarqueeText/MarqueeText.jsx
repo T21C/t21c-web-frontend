@@ -2,7 +2,7 @@ import { useLayoutEffect, useRef, useState } from 'react';
 import './marqueetext.css';
 
 const MARQUEE_FORWARD_SPEED_PX_PER_SECOND = 50;
-const MARQUEE_RETURN_DURATION_SECONDS = 0.2;
+const MARQUEE_RETURN_SPEED_PX_PER_SECOND = 400;
 const FADE_WIDTH = '1.5rem';
 const EDGE_THRESHOLD = 1;
 
@@ -87,7 +87,10 @@ const MarqueeText = ({
       -distanceRef.current,
       (remainingDistance) => remainingDistance / MARQUEE_FORWARD_SPEED_PX_PER_SECOND,
     );
-    const handleMouseLeave = () => moveTo(0, () => MARQUEE_RETURN_DURATION_SECONDS);
+    const handleMouseLeave = () => moveTo(
+      0,
+      (remainingDistance) => remainingDistance / MARQUEE_RETURN_SPEED_PX_PER_SECOND,
+    );
     const handleTransitionEnd = (event) => {
       if (event.propertyName !== 'transform') return;
       stopFadeTracking();
