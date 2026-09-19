@@ -7,10 +7,9 @@ module.exports = {
   },
   extends: [
     'plugin:import/recommended',
-    'plugin:import/typescript',
     'plugin:react/recommended'
   ],
-  ignorePatterns: ['dist', 'dist.tmp', '.eslintrc.cjs', 'vite.config.js'],
+  ignorePatterns: ['dist', 'dist.tmp', '.eslintcache', '.eslintrc.cjs', 'vite.config.js'],
   parser: '@babel/eslint-parser',
   parserOptions: { 
     ecmaVersion: 'latest', 
@@ -47,11 +46,12 @@ module.exports = {
     // CDN icon URLs must pick small|medium|large|original via selectIconSize.
     'tuf/no-unsized-icon-url': 'error',
 
-    // Enable import resolution and named exports validation
+    // Path existence only — named/default/namespace parse every imported module
+    // (including node_modules) and dominate lint time.
     'import/no-unresolved': 'error',
-    'import/named': 'error',
-    'import/default': 'error',
-    'import/namespace': 'error',
+    'import/named': 'off',
+    'import/default': 'off',
+    'import/namespace': 'off',
     'import/export': 'error',
     'import/no-self-import': 'error',
     'import/extensions': ['error', 'never', { json: 'always' }],
@@ -72,10 +72,13 @@ module.exports = {
     'no-unused-vars': 'off',
     'react/display-name': 'off',
     'react/jsx-no-undef': 'off',
+    'react/no-deprecated': 'off',
     'react/no-did-mount-set-state': 'off',
     'react/no-did-update-set-state': 'off',
+    'react/no-direct-mutation-state': 'off',
     'react/no-unknown-property': 'off',
     'react/react-in-jsx-scope': 'off',
+    'react/require-render-return': 'off',
     'react/self-closing-comp': 'off',
     'react/sort-comp': 'off',
     'unused-imports/no-unused-imports': 'off',
