@@ -3,7 +3,8 @@
 @import "./styles/portaledPanel.css";
 
 :root {
-  /* Stacking: nested PopupShells share --z-popup and paint by later DOM order.
+  /* Stacking: PopupShells portal into .tuf-popup-stack on document.body
+     (above nav / .body). Nested shells share that stack and layer by DOM order.
      Overlay classNames must not set z-index (they share the .popup-shell node). */
   --z-toast: 50;
   --z-nav: 100;

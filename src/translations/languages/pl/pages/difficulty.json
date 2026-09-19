@@ -100,5 +100,15 @@
     "created": "Pomyślnie utworzono poziom trudności",
     "updated": "Pomyślnie zaktualizowano poziom trudności",
     "deleted": "Pomyślnie usunięto poziom trudności"
+  },
+  "tags": {
+    "fields": {
+      "allowedBands": "Dotyczy",
+      "allowedBandsHint": "Kontroluje tylko, w których pasmach trudności tag pojawia się w oknie głosowania. Ukryj wszystkie, aby dziedziczyć (grupa, potem wszystkie pasma).",
+      "bandP": "Planetary",
+      "bandG": "Galactic",
+      "bandU": "Universal",
+      "bandSpec": "Specjalne"
+    }
   }
 } 

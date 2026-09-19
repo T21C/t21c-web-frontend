@@ -188,10 +188,14 @@ const LevelCard = ({
     const assignedList = level?.tags || [];
     const merged = assignedList
       .map((assigned) => {
+        if (!assigned || assigned.id == null) return null;
         const catalog = tagsDict[assigned.id];
-        if (!catalog && assigned.id == null) return null;
+        // Pack payloads may send `{ id }` only and hydrate from tagsDict. Skip until
+        // the catalog (or a full assigned row) actually has a display name.
+        const source = catalog || assigned;
+        if (typeof source.name !== 'string' || source.name.length === 0) return null;
         return {
-          ...(catalog || assigned),
+          ...source,
           pinned: Boolean(assigned.pinned),
           score: assigned.score ?? null,
           isCommunity: Boolean(catalog?.isCommunity ?? assigned.isCommunity),
