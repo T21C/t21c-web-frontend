@@ -35,6 +35,14 @@ jobs:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: "true"
         run: npm ci
 
+      - uses: actions/cache@v4
+        with:
+          path: .eslintcache
+          key: eslint-${{ runner.os }}-${{ hashFiles('.eslintrc.cjs', 'package-lock.json') }}
+          restore-keys: |
+            eslint-${{ runner.os }}-
+
+      # Image build skips lint (Vite-only). This job is the lint gate.
       - name: Lint
         run: npm run lint
 

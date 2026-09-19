@@ -1,6 +1,8 @@
 # syntax=docker/dockerfile:1.7
 
-FROM node:22-bookworm-slim AS build
+# Compile on the runner's arch (x86 today). `platforms: linux/arm64` only applies
+# to the nginx stage — otherwise Node/esbuild/Vite run under QEMU.
+FROM --platform=$BUILDPLATFORM node:22-bookworm-slim AS build
 
 ENV PUPPETEER_SKIP_DOWNLOAD=true
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true

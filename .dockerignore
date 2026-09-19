@@ -9,6 +9,7 @@ node_modules
 dist
 dist.tmp
 coverage
+.eslintcache
 
 .env
 .env.*

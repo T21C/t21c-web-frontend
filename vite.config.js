@@ -216,6 +216,7 @@ export default defineConfig(({ command, mode }) => {
       assetsDir: 'assets',
       manifest: true,
       cssCodeSplit: true,
+      reportCompressedSize: false,
       modulePreload: {
         polyfill: true,
       },
