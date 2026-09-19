@@ -47,7 +47,7 @@
         "late": "느림!"
       },
       "adofaiVersion": {
-        "latest": "Latest",
+        "latest": "Alpha",
         "pre340": "<3.4.0",
         "v2": "v2"
       }
@@ -57,7 +57,7 @@
     "holdTooltip": "대체 홀드 옵션을 사용한 경우 체크하세요.",
     "keyCountTooltip": "이 클리어에 사용된 키의 수",
     "adofaiV2Tooltip": "ADOFAI v2에서 기록된 클리어인 경우 선택해주세요.",
-    "adofaiVersionTooltip": "이 클리어에 사용한 게임 버전입니다. Latest는 3.4.0+입니다.",
+    "adofaiVersionTooltip": "이 클리어에 사용한 게임 버전입니다. Alpha는 3.4.0+입니다.",
     "xPerfectTooltip": "X-Perfect 모드의 Perfect− / Perfect+ 개수를 기록합니다. (3.4.0+만)",
     "midspinWarning": {
       "willApply": "이 채보에는 미드스핀 타일이 {{count}}개 있습니다. 저장 시 Perfect에서 차감됩니다.",
