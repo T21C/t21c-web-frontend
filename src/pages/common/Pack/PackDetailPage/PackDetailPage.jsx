@@ -1522,7 +1522,7 @@ const PackDetailPage = () => {
                   <div className="add-buttons__group">
                     <button
                       type="button"
-                      className="add-btn"
+                      className="add-btn btn-fill-glass"
                       onClick={handleAddFolder}
                       title={t('packDetail.actions.addFolder')}
                     >
@@ -1530,7 +1530,7 @@ const PackDetailPage = () => {
                     </button>
                     <button
                       type="button"
-                      className="add-to-folder-btn"
+                      className="add-to-folder-btn btn-fill-glass btn-icon"
                       onClick={openAddFolderPlacement}
                       title={t('packDetail.actions.addToFolder')}
                       aria-label={t('packDetail.actions.addToFolder')}
@@ -1541,7 +1541,7 @@ const PackDetailPage = () => {
                   <div className="add-buttons__group">
                     <button
                       type="button"
-                      className="add-btn"
+                      className="add-btn btn-fill-glass"
                       onClick={handleAddLevel}
                       title={t('packDetail.actions.addLevel')}
                     >
@@ -1549,7 +1549,7 @@ const PackDetailPage = () => {
                     </button>
                     <button
                       type="button"
-                      className="add-to-folder-btn"
+                      className="add-to-folder-btn btn-fill-glass btn-icon"
                       onClick={openAddLevelPlacement}
                       title={t('packDetail.actions.addToFolder')}
                       aria-label={t('packDetail.actions.addToFolder')}
@@ -1560,7 +1560,7 @@ const PackDetailPage = () => {
                   <div className="add-buttons__group">
                     <button
                       type="button"
-                      className="add-btn add-btn--solo"
+                      className="add-btn btn-fill-glass"
                       onClick={openAddNotePlacement}
                       title={t('packDetail.actions.addNote')}
                     >
@@ -1634,12 +1634,12 @@ const PackDetailPage = () => {
               {canEdit && (
                 <div className="empty-actions">
                   <div className="add-buttons__group">
-                    <button type="button" className="add-btn" onClick={handleAddFolder}>
+                    <button type="button" className="add-btn btn-fill-glass" onClick={handleAddFolder}>
                       <PlusIcon /> {t('packDetail.actions.addFolder')}
                     </button>
                     <button
                       type="button"
-                      className="add-to-folder-btn"
+                      className="add-to-folder-btn btn-fill-glass btn-icon"
                       onClick={openAddFolderPlacement}
                       title={t('packDetail.actions.addToFolder')}
                       aria-label={t('packDetail.actions.addToFolder')}
@@ -1648,12 +1648,12 @@ const PackDetailPage = () => {
                     </button>
                   </div>
                   <div className="add-buttons__group">
-                    <button type="button" className="add-btn" onClick={handleAddLevel}>
+                    <button type="button" className="add-btn btn-fill-glass" onClick={handleAddLevel}>
                       <PlusIcon /> {t('packDetail.actions.addLevel')}
                     </button>
                     <button
                       type="button"
-                      className="add-to-folder-btn"
+                      className="add-to-folder-btn btn-fill-glass btn-icon"
                       onClick={openAddLevelPlacement}
                       title={t('packDetail.actions.addToFolder')}
                       aria-label={t('packDetail.actions.addToFolder')}
@@ -1664,7 +1664,7 @@ const PackDetailPage = () => {
                   <div className="add-buttons__group">
                     <button
                       type="button"
-                      className="add-btn add-btn--solo"
+                      className="add-btn btn-fill-glass"
                       onClick={openAddNotePlacement}
                     >
                       <PlusIcon /> {t('packDetail.actions.addNote')}

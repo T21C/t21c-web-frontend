@@ -97,7 +97,7 @@ const PackAddLevelsConfirmPopup = ({
           <div className="pack-add-levels-confirm-popup__actions">
             <button
               type="button"
-              className="pack-add-levels-confirm-popup__secondary-btn"
+              className="btn-fill-secondary"
               onClick={onCancel}
               disabled={submitting}
             >
@@ -106,7 +106,7 @@ const PackAddLevelsConfirmPopup = ({
             {!allInvalid && (
               <button
                 type="button"
-                className="pack-add-levels-confirm-popup__primary-btn"
+                className="btn-fill-primary"
                 onClick={onConfirm}
                 disabled={validCount === 0 || submitting}
               >

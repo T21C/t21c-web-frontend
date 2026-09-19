@@ -102,7 +102,7 @@ const EditNotePopup = ({
         <div className="edit-note-popup__actions">
           <button
             type="button"
-            className="edit-note-popup__secondary-btn"
+            className="btn-fill-secondary"
             onClick={onClose}
             disabled={submitting}
           >
@@ -110,7 +110,7 @@ const EditNotePopup = ({
           </button>
           <button
             type="submit"
-            className="edit-note-popup__primary-btn"
+            className="btn-fill-primary"
             disabled={!canSubmit}
           >
             {submitting

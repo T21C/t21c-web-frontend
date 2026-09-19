@@ -577,44 +577,12 @@
   align-items: stretch;
 }
 
-.pack-detail-page .add-to-folder-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.5rem 0.65rem;
-  border: none;
-  border-radius: 0 6px 6px 0;
-  background: var(--color-white-t10);
-  color: var(--color-white);
-  font-size: 0.9rem;
-  line-height: 0;
-  cursor: pointer;
-  transition: background 0.2s ease, border-color 0.2s ease;
+.pack-detail-page .add-buttons__group .add-btn:not(:only-child) {
+  border-radius: var(--btn-radius) 0 0 var(--btn-radius);
 }
 
-.pack-detail-page .add-to-folder-btn:hover {
-  background: var(--color-white-t20);
-  border-color: var(--color-white-t30);
-}
-
-.pack-detail-page .add-btn {
-  padding: 0.5rem 0.65rem;
-  border: none;
-  border-radius: 6px 0 0 6px;
-  background: var(--color-white-t10);
-  color: var(--color-white);
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-}
-
-.pack-detail-page .add-btn:hover {
-  background: var(--color-white-t20);
-  border-color: var(--color-primary);
+.pack-detail-page .add-buttons__group .add-to-folder-btn {
+  border-radius: 0 var(--btn-radius) var(--btn-radius) 0;
 }
 
 .pack-detail-page .add-btn--solo {

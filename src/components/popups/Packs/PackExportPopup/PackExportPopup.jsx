@@ -154,7 +154,7 @@ const PackExportPopup = ({
           <div className="pack-export-popup__actions">
             <button
               type="button"
-              className="pack-export-popup__secondary-btn"
+              className="btn-fill-secondary"
               onClick={onClose}
               disabled={exporting}
             >
@@ -162,7 +162,7 @@ const PackExportPopup = ({
             </button>
             <button
               type="button"
-              className="pack-export-popup__primary-btn"
+              className="btn-fill-primary"
               onClick={handleExport}
               disabled={exporting}
             >

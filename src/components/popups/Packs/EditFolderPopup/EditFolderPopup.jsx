@@ -102,7 +102,7 @@ const EditFolderPopup = ({
         <div className="edit-folder-popup__actions">
           <button
             type="button"
-            className="edit-folder-popup__secondary-btn"
+            className="btn-fill-secondary"
             onClick={onClose}
             disabled={submitting}
           >
@@ -110,7 +110,7 @@ const EditFolderPopup = ({
           </button>
           <button
             type="submit"
-            className="edit-folder-popup__primary-btn"
+            className="btn-fill-primary"
             disabled={!canSubmit}
           >
             {submitting

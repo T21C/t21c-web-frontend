@@ -203,13 +203,13 @@ const PackDownloadPopup = ({
               </label>
               <div className="pack-download-popup__actions">
                 <button
-                  className="pack-download-popup__secondary-btn"
+                  className="btn-fill-secondary"
                   onClick={onClose}
                 >
                   {t('buttons.cancel', { ns: 'common' })}
                 </button>
                 <button
-                  className="pack-download-popup__primary-btn"
+                  className="btn-fill-primary"
                   onClick={handleConfirm}
                   disabled={exceedsSizeLimit}
                 >
@@ -252,13 +252,13 @@ const PackDownloadPopup = ({
               </p>
               <div className="pack-download-popup__actions">
                 <button
-                  className="pack-download-popup__secondary-btn"
+                  className="btn-fill-secondary"
                   onClick={onClose}
                 >
                   {t('packPopups.downloadPack.close')}
                 </button>
                 <button
-                  className="pack-download-popup__primary-btn"
+                  className="btn-fill-primary"
                   disabled={exceedsSizeLimit}
                   onClick={handleDownload}
                 >

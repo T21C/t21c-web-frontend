@@ -349,7 +349,7 @@ const PackItemPlacementPopup = ({
           <div className="pack-item-placement-popup__actions">
             <button
               type="button"
-              className="pack-item-placement-popup__secondary-btn"
+              className="btn-fill-secondary"
               onClick={onClose}
               disabled={submitting}
             >
@@ -357,7 +357,7 @@ const PackItemPlacementPopup = ({
             </button>
             <button
               type="button"
-              className="pack-item-placement-popup__primary-btn"
+              className="btn-fill-primary"
               onClick={handleSubmit}
               disabled={!canSubmit}
             >
