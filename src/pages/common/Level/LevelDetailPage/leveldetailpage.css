@@ -2533,8 +2533,7 @@
   min-width: 20rem;
   width: 100%;
   max-width: 100%;
-  max-height: 100%;
-  min-height: calc(var(--header-height) - var(--spacing-sm) * 2);
+  height: 100%;
   position: relative;
   z-index: var(--z-content);
   flex: 1;
@@ -2544,6 +2543,11 @@
   flex-direction: column;
   overflow: hidden;
   transition: all 0.4s var(--ease-out-expo);
+}
+
+.curation-description-container.expanded {
+  overflow: visible;
+  z-index: var(--z-content);
 }
 
 .curation-description {
@@ -2582,6 +2586,10 @@
   top: 0;
   left: 0;
   right: 0;
+  bottom: auto;
+  height: auto;
+  max-height: none;
+  overflow: visible;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -2590,6 +2598,17 @@
   box-shadow: var(--shadow-lg);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
+}
+
+.level-detail .header:has(.curation-description-container.expanded),
+.level-detail .header .left:has(.curation-description-container.expanded) {
+  overflow: visible;
+}
+
+.curation-description.expanded .curation-description-content {
+  overflow: visible;
+  max-height: none;
+  flex: none;
 }
 
 .curation-description-content {
@@ -2940,6 +2959,10 @@
     margin-left: 0;
     min-height: 0;
     width: 100%;
+  }
+
+  .curation-description-container.expanded {
+    height: auto;
   }
 
   .level-detail .curation-description-container.description-collapsed {
@@ -3541,6 +3564,11 @@
   
   .level-detail .header {
     contain: layout style paint;
+  }
+
+  .level-detail:has(.curation-description-container.expanded),
+  .level-detail .header:has(.curation-description-container.expanded) {
+    contain: none;
   }
   
   .level-detail .level-detail-body {
