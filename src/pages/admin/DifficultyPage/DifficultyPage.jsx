@@ -21,7 +21,7 @@ import { Tooltip } from 'react-tooltip';
 import { EditIcon, ImageIcon, InfoIcon, RefreshIcon, TrashIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { RatingInput, CustomSelect } from '@/components/common/selectors';
+import { RatingInput, CustomSelect, StateDisplay } from '@/components/common/selectors';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { CDN_IMAGE_ACCEPT } from '@/config/constants/cdnImageAccept';
@@ -204,10 +204,10 @@ function CommunityTagScoringFields({
   tagGroups = [],
   inactive = false,
 }) {
-  const setBandVisibility = (band, included) => {
+  const setBandVisibility = (band, state) => {
     const current = Array.isArray(value.allowedBands) ? value.allowedBands : [];
     const shown = new Set(current);
-    if (included) shown.add(band);
+    if (state === 'show') shown.add(band);
     else shown.delete(band);
     onChange({
       ...value,
@@ -265,18 +265,14 @@ function CommunityTagScoringFields({
               {COMMUNITY_TAG_BAND_OPTIONS.map((band) => {
                 const included = Array.isArray(value.allowedBands) && value.allowedBands.includes(band);
                 return (
-                  <label
+                  <StateDisplay
                     key={band}
-                    className="form-group-bands-option"
-                    title={t(`difficulty.tags.fields.${COMMUNITY_TAG_BAND_LABEL_KEYS[band]}`)}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={included}
-                      onChange={(e) => setBandVisibility(band, e.target.checked)}
-                    />
-                    <span>{band}</span>
-                  </label>
+                    currentState={included ? 'show' : 'hide'}
+                    states={['hide', 'show']}
+                    activeStates={['show']}
+                    label={t(`difficulty.tags.fields.${COMMUNITY_TAG_BAND_LABEL_KEYS[band]}`)}
+                    onChange={(state) => setBandVisibility(band, state)}
+                  />
                 );
               })}
             </div>

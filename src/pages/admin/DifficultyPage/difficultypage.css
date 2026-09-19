@@ -538,28 +538,13 @@
 
 .difficulty-page .form-group-bands {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.75rem 1rem;
+  flex-direction: column;
+  gap: 0.5rem;
   margin-top: 0.5rem;
 }
 
-.difficulty-page .form-group .form-group-bands-option {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  flex: 0 0 auto;
-  font-size: 0.9rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  color: var(--color-white);
-  cursor: pointer;
-}
-
-.difficulty-page .form-group .form-group-bands-option input[type="checkbox"] {
-  width: auto;
-  margin: 0;
-  cursor: pointer;
+.difficulty-page .form-group-bands .state-display-toggle {
+  width: 100%;
 }
 
 .difficulty-page .form-group input[type="color"] {
