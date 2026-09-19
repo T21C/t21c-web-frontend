@@ -140,11 +140,12 @@
   font-size: 1.1rem;
 }
 
-.difficulty-page .difficulty-modal {
+.difficulty-page.difficulty-page__modal {
   background-color: rgba(0, 0, 0, 0.8);
 }
 
-.difficulty-page .difficulty-modal-content {
+.difficulty-page .difficulty-modal-content,
+.difficulty-page.difficulty-page__modal .difficulty-modal-content {
   background-color: var(--color-black);
   padding: 2rem;
   border-radius: 8px;
@@ -152,7 +153,6 @@
   max-width: 600px;
   max-height: calc(100vh - 12rem);
   overflow-y: auto;
-  margin-top: 1.5rem;
   position: relative;
 }
 

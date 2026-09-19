@@ -9,7 +9,7 @@ import { MetaTags, CurationTypeCountView } from "@/components/common/display";
 import { buildPackMeta } from '@/utils/meta';
 import { ScrollButton } from "@/components/common/buttons";
 import { EditIcon, PinIcon, LockIcon, EyeIcon, UsersIcon, ArrowIcon, PlusIcon, LikeIcon, DownloadIcon, ChevronIcon, ExternalLinkIcon } from "@/components/common/icons";
-import { EditPackPopup, PackDownloadPopup, PackExportPopup, PackItemPlacementPopup, PackAddLevelsConfirmPopup } from "@/components/popups/Packs";
+import { EditPackPopup, EditFolderPopup, EditNotePopup, PackDownloadPopup, PackExportPopup, PackItemPlacementPopup, PackAddLevelsConfirmPopup } from "@/components/popups/Packs";
 import {
   moveItemToPosition,
   insertNodesAtPosition,
@@ -43,7 +43,7 @@ const packScrollPositions = new Map();
 // Render clone for dragging items - this renders in a portal to prevent layout shifts
 // from affecting hit detection on Droppables above the source
 const RenderClone = ({ item, provided, snapshot, user, canEdit }) => {
-  if (item.type === 'level') {
+  if (item?.type === 'level') {
     return (
       <div
         ref={provided.innerRef}
@@ -71,6 +71,29 @@ const RenderClone = ({ item, provided, snapshot, user, canEdit }) => {
     );
   }
   
+  if (item?.type === 'note') {
+    return (
+      <div
+        ref={provided.innerRef}
+        {...provided.draggableProps}
+        {...provided.dragHandleProps}
+        className={`pack-item pack-item--note dragging-clone ${snapshot.isDragging ? 'is-dragging' : ''}`}
+        style={{
+          ...provided.draggableProps.style,
+          zIndex: 9999,
+          opacity: 1,
+        }}
+      >
+        <div className="pack-item__header">
+          <div className="pack-item__icon">📝</div>
+          <div className="pack-item__info">
+            <div className="pack-item__name">{item.name}</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // For folders (though folders have isDragDisabled=true currently)
   return (
     <div
@@ -157,6 +180,10 @@ const PackDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [showEditPopup, setShowEditPopup] = useState(false);
+  const [editFolderItem, setEditFolderItem] = useState(null);
+  const [editFolderSubmitting, setEditFolderSubmitting] = useState(false);
+  const [editNoteItem, setEditNoteItem] = useState(null);
+  const [editNoteSubmitting, setEditNoteSubmitting] = useState(false);
   const [expandedFolders, setExpandedFolders] = useState(new Set());
   const [downloadContext, setDownloadContext] = useState(null);
   const [showExportPopup, setShowExportPopup] = useState(false);
@@ -430,6 +457,10 @@ const PackDetailPage = () => {
     setPlacement({ open: true, mode: 'add-level', item: null });
   }, []);
 
+  const openAddNotePlacement = useCallback(() => {
+    setPlacement({ open: true, mode: 'add-note', item: null });
+  }, []);
+
   const openMovePlacement = useCallback((item) => {
     if (!item) return;
     setPlacement({ open: true, mode: 'move', item });
@@ -611,7 +642,7 @@ const PackDetailPage = () => {
     }
   }, [levelInsertConfirm, submitValidatedLevelInsert, fetchPack, t]);
 
-  const handlePlacementSubmit = useCallback(async ({ mode, parentId, index, name, levelIds }) => {
+  const handlePlacementSubmit = useCallback(async ({ mode, parentId, index, name, description, levelIds }) => {
     if (!pack?.id) return;
 
     setPlacementSubmitting(true);
@@ -643,6 +674,7 @@ const PackDetailPage = () => {
         const response = await api.post(routes.database.levels.packs.items(pack.id), {
           type: 'folder',
           name,
+          description,
           parentId: destParentId,
         });
 
@@ -662,6 +694,30 @@ const PackDetailPage = () => {
 
         await persistPackTree(newTree, destParentId, pack.id);
         toast.success(t('packDetail.createFolder.success'));
+        closePlacement();
+      } else if (mode === 'add-note') {
+        const response = await api.post(routes.database.levels.packs.items(pack.id), {
+          type: 'note',
+          name,
+          description,
+          parentId: destParentId,
+        });
+
+        const created = response.data;
+        const node = {
+          ...created,
+          type: 'note',
+        };
+
+        const newTree = insertNodesAtPosition(packItems, [node], destParentId, index);
+        if (!newTree) {
+          await fetchPack(true);
+          closePlacement();
+          return;
+        }
+
+        await persistPackTree(newTree, destParentId, pack.id);
+        toast.success(t('packDetail.createNote.success'));
         closePlacement();
       } else if (mode === 'add-level') {
         await requestLevelInsert({
@@ -684,7 +740,9 @@ const PackDetailPage = () => {
           ? t('packDetail.move.error')
           : mode === 'add-folder'
             ? t('packDetail.createFolder.error')
-            : t('packDetail.addLevel.error'));
+            : mode === 'add-note'
+              ? t('packDetail.createNote.error')
+              : t('packDetail.addLevel.error'));
       toast.error(message);
       await fetchPack(true);
     } finally {
@@ -761,34 +819,81 @@ const PackDetailPage = () => {
     return response.data;
   }, [downloadContext, pack?.id]);
 
-  // Handle rename folder
-  const handleRenameFolder = async (item) => {
-    const newName = prompt(t('packDetail.renameFolder.prompt'), item.name);
-    if (!newName?.trim() || newName === item.name) return;
+  const openEditFolder = useCallback((item) => {
+    setEditFolderItem(item);
+  }, []);
 
+  const closeEditFolder = useCallback(() => {
+    if (editFolderSubmitting) return;
+    setEditFolderItem(null);
+  }, [editFolderSubmitting]);
+
+  const handleSaveFolder = useCallback(async ({ name, description }) => {
+    if (!pack?.id || !editFolderItem) return;
+
+    setEditFolderSubmitting(true);
     try {
-      await api.put(routes.database.levels.packs.item(pack.id, item.id), {
-        name: newName.trim()
+      await api.put(routes.database.levels.packs.item(pack.id, editFolderItem.id), {
+        name,
+        description,
       });
-      
-      toast.success(t('packDetail.renameFolder.success'));
-      await fetchPack(true); // Silent refetch
-      
-      // Notify any other listeners that the pack was updated
+
+      toast.success(t('packDetail.editFolder.success'));
+      setEditFolderItem(null);
+      await fetchPack(true);
+
       window.dispatchEvent(new CustomEvent('packUpdated', {
         detail: { packId: pack.id }
       }));
     } catch (error) {
-      console.error('Error renaming folder:', error);
-      toast.error(error.response?.data?.error || t('packDetail.renameFolder.error'));
+      console.error('Error updating folder:', error);
+      toast.error(error.response?.data?.error || t('packDetail.editFolder.error'));
+    } finally {
+      setEditFolderSubmitting(false);
     }
-  };
+  }, [pack?.id, editFolderItem, fetchPack, t]);
+
+  const openEditNote = useCallback((item) => {
+    setEditNoteItem(item);
+  }, []);
+
+  const closeEditNote = useCallback(() => {
+    if (editNoteSubmitting) return;
+    setEditNoteItem(null);
+  }, [editNoteSubmitting]);
+
+  const handleSaveNote = useCallback(async ({ name, description }) => {
+    if (!pack?.id || !editNoteItem) return;
+
+    setEditNoteSubmitting(true);
+    try {
+      await api.put(routes.database.levels.packs.item(pack.id, editNoteItem.id), {
+        name,
+        description,
+      });
+
+      toast.success(t('packDetail.editNote.success'));
+      setEditNoteItem(null);
+      await fetchPack(true);
+
+      window.dispatchEvent(new CustomEvent('packUpdated', {
+        detail: { packId: pack.id }
+      }));
+    } catch (error) {
+      console.error('Error updating note:', error);
+      toast.error(error.response?.data?.error || t('packDetail.editNote.error'));
+    } finally {
+      setEditNoteSubmitting(false);
+    }
+  }, [pack?.id, editNoteItem, fetchPack, t]);
 
   // Handle delete item
   const handleDeleteItem = async (item) => {
-    const confirmMessage = item?.type === 'folder' 
+    const confirmMessage = item?.type === 'folder'
       ? t('packDetail.deleteFolder.confirm', { name: item.name })
-      : t('packDetail.deleteLevel.confirm');
+      : item?.type === 'note'
+        ? t('packDetail.deleteNote.confirm', { name: item.name })
+        : t('packDetail.deleteLevel.confirm');
     
     if (!confirm(confirmMessage)) return;
 
@@ -879,6 +984,9 @@ const PackDetailPage = () => {
             ...node,
             children: node.children ? walk(node.children) : undefined,
           };
+        }
+        if (node.type === 'note') {
+          return { ...node };
         }
         return node;
       });
@@ -1449,6 +1557,16 @@ const PackDetailPage = () => {
                       ➔📁
                     </button>
                   </div>
+                  <div className="add-buttons__group">
+                    <button
+                      type="button"
+                      className="add-btn add-btn--solo"
+                      onClick={openAddNotePlacement}
+                      title={t('packDetail.actions.addNote')}
+                    >
+                      <PlusIcon /> 📝 {t('packDetail.actions.addNote')}
+                    </button>
+                  </div>
                 </div>
               )}
               {canEdit && totalRenderableItems > 1 && (
@@ -1496,7 +1614,8 @@ const PackDetailPage = () => {
                         onToggleExpanded={toggleFolderExpanded}
                         canEdit={canEdit}
                         user={user}
-                        onRenameFolder={handleRenameFolder}
+                        onEditFolder={openEditFolder}
+                        onEditNote={openEditNote}
                         onDeleteItem={handleDeleteItem}
                         onDownloadFolder={handleFolderDownload}
                         onRequestMove={openMovePlacement}
@@ -1542,6 +1661,15 @@ const PackDetailPage = () => {
                       ➔📁
                     </button>
                   </div>
+                  <div className="add-buttons__group">
+                    <button
+                      type="button"
+                      className="add-btn add-btn--solo"
+                      onClick={openAddNotePlacement}
+                    >
+                      <PlusIcon /> {t('packDetail.actions.addNote')}
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
@@ -1565,6 +1693,22 @@ const PackDetailPage = () => {
         packName={pack?.name}
         pack={pack}
         packItems={packItems}
+      />
+
+      <EditFolderPopup
+        isOpen={Boolean(editFolderItem)}
+        folder={editFolderItem}
+        onClose={closeEditFolder}
+        onSave={handleSaveFolder}
+        submitting={editFolderSubmitting}
+      />
+
+      <EditNotePopup
+        isOpen={Boolean(editNoteItem)}
+        note={editNoteItem}
+        onClose={closeEditNote}
+        onSave={handleSaveNote}
+        submitting={editNoteSubmitting}
       />
 
       <PackItemPlacementPopup

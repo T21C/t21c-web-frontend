@@ -168,6 +168,30 @@
       "transferFailed": "Failed to transfer pack ownership"
     }
   },
+  "editFolder": {
+    "title": "폴더 편집",
+    "name": {
+      "label": "폴더 이름",
+      "placeholder": "폴더 이름 입력",
+      "help": "다운로드 시 폴더 경로로 사용됩니다"
+    },
+    "description": {
+      "label": "설명",
+      "placeholder": "이 폴더에 대한 선택적 설명..."
+    }
+  },
+  "editNote": {
+    "title": "메모 편집",
+    "name": {
+      "label": "제목",
+      "placeholder": "제목 입력"
+    },
+    "description": {
+      "label": "내용",
+      "placeholder": "다른 사람에게 알리고 싶은 내용을 작성하세요…",
+      "help": "Markdown을 지원합니다 (굵게, 목록, 링크)."
+    }
+  },
   "downloadPack": {
     "title": "Download {{contextName}}",
     "defaultContextName": "Pack",
@@ -217,9 +241,17 @@
   "placement": {
     "titleAddFolder": "Add folder",
     "titleAddLevel": "Add levels",
+    "titleAddNote": "메모 추가",
     "titleMove": "Move item",
     "folderName": "Folder name",
     "folderNamePlaceholder": "Enter folder name",
+    "folderDescription": "설명",
+    "folderDescriptionPlaceholder": "이 폴더에 대한 선택적 설명 (웹사이트 전용)",
+    "noteTitle": "제목",
+    "noteTitlePlaceholder": "제목 입력",
+    "noteBody": "내용",
+    "noteBodyPlaceholder": "다른 사람에게 알리고 싶은 내용을 작성하세요…",
+    "noteBodyHelp": "Markdown을 지원합니다 (굵게, 목록, 링크). 웹사이트 전용이며 다운로드에 포함되지 않습니다.",
     "levelIds": "Level IDs",
     "levelIdsPlaceholder": "e.g. 1234, 5678 or one per line",
     "positionLabel": "Position in pack",
@@ -229,6 +261,7 @@
     "dividerHint": "Hover a line to select an insertion point",
     "addFolder": "Add folder",
     "addLevels": "Add levels",
+    "addNote": "메모 추가",
     "move": "Move here",
     "submitting": "Saving…"
   },

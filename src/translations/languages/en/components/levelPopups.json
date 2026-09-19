@@ -19,6 +19,7 @@
         "dlLink": "Download Link",
         "workshopLink": "Workshop Link",
         "publicComments": "Public Comments",
+        "description": "Description",
         "notes": "Notes",
         "isExternallyAvailable": "Is Externally Available",
         "previousDifficulty": "Previous Difficulty"

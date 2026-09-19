@@ -10,6 +10,7 @@ import { MetaTags, AccessDenied } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
 import { useLocation } from 'react-router-dom';
 import { ScrollButton, CloseButton } from '@/components/common/buttons';
+import { PopupShell } from '@/components/common/PopupShell';
 import { DifficultyPopup } from '@/components/popups/Difficulties';
 import { DiscordRolesPopup } from '@/components/popups/DiscordRoles';
 import api from '@/utils/api';
@@ -320,7 +321,7 @@ function CommunityTagScoringFields({
                 id="difficulty-wilson-z-info"
                 place="top"
                 noArrow
-                style={{ zIndex: 1100 }}
+                style={{ zIndex: 2000 }}
               >
                 {t('difficulty.tags.fields.wilsonZWeightHint')}
               </Tooltip>
@@ -372,6 +373,34 @@ function CommunityTagScoringFields({
         </div>
       ) : null}
     </>
+  );
+}
+
+function noopClose() {}
+
+function DifficultyPageModal({
+  onClose,
+  children,
+  panelClassName = '',
+  closeDisabled,
+  dismissOnOverlay = true,
+  dismissOnEscape = true,
+  ariaLabelledBy,
+  ariaLabel,
+}) {
+  return (
+    <PopupShell
+      onClose={onClose}
+      closeDisabled={closeDisabled}
+      dismissOnOverlay={dismissOnOverlay}
+      dismissOnEscape={dismissOnEscape}
+      overlayClassName="difficulty-page difficulty-page__modal"
+      panelClassName={['difficulty-modal-content', panelClassName].filter(Boolean).join(' ')}
+      ariaLabelledBy={ariaLabelledBy}
+      ariaLabel={ariaLabel}
+    >
+      {children}
+    </PopupShell>
   );
 }
 
@@ -623,6 +652,19 @@ const DifficultyPage = () => {
     }
     setEditingTag(null);
     setOriginalTag(null);
+  };
+
+  const handleCloseCreateTag = () => {
+    if (newTag.icon && newTag.icon.startsWith('blob:')) {
+      URL.revokeObjectURL(newTag.icon);
+    }
+    setIsCreatingTag(false);
+    setNewTag(EMPTY_NEW_TAG);
+  };
+
+  const handleCloseCreateGroup = () => {
+    setIsCreatingGroup(false);
+    setNewGroupName('');
   };
 
   const handleDeleteTag = async () => {
@@ -1588,32 +1630,18 @@ const DifficultyPage = () => {
                 </>
               )}
 
-              {/* Create Tag Modal */}
               {isCreatingTag && (
-                <div
-                  className="difficulty-modal"
-                  onClick={(e) => {
-                    if (e.target.className === 'difficulty-modal') {
-                      // Clean up preview URL if exists
-                      if (newTag.icon && newTag.icon.startsWith('blob:')) {
-                        URL.revokeObjectURL(newTag.iconUrl);
-                      }
-                      setIsCreatingTag(false);
-                      setNewTag(EMPTY_NEW_TAG);
-                    }
-                  }}
+                <DifficultyPageModal
+                  onClose={handleCloseCreateTag}
+                  ariaLabelledBy="difficulty-create-tag-title"
                 >
-                  <div className="difficulty-modal-content">
                     <CloseButton
                       variant="floating"
                       className="modal-close-button"
-                      onClick={() => {
-                        setIsCreatingTag(false);
-                        setNewTag(EMPTY_NEW_TAG);
-                      }}
+                      onClick={handleCloseCreateTag}
                       aria-label={t('buttons.close', { ns: 'common' })}
                     />
-                    <h2>{t('difficulty.tags.create.title')}</h2>
+                    <h2 id="difficulty-create-tag-title">{t('difficulty.tags.create.title')}</h2>
                     <form onSubmit={(e) => { e.preventDefault(); handleCreateTag(); }}>
                       <TagIconEditor
                         icon={newTag.icon}
@@ -1708,41 +1736,27 @@ const DifficultyPage = () => {
                         <button
                           type="button"
                           className="cancel-button btn-fill-ghost"
-                          onClick={() => {
-                            // Clean up preview URL if exists
-                            if (newTag.icon && newTag.icon.startsWith('blob:')) {
-                              URL.revokeObjectURL(newTag.icon);
-                            }
-                            setIsCreatingTag(false);
-                            setNewTag(EMPTY_NEW_TAG);
-                          }}
+                          onClick={handleCloseCreateTag}
                         >
                           {t('buttons.cancel', { ns: 'common' })}
                         </button>
                       </div>
                     </form>
-                  </div>
-                </div>
+                </DifficultyPageModal>
               )}
 
-              {/* Edit Tag Modal */}
               {editingTag && (
-                <div
-                  className="difficulty-modal"
-                  onClick={(e) => {
-                    if (e.target.className === 'difficulty-modal') {
-                      handleCloseEditTag();
-                    }
-                  }}
+                <DifficultyPageModal
+                  onClose={handleCloseEditTag}
+                  ariaLabelledBy="difficulty-edit-tag-title"
                 >
-                  <div className="difficulty-modal-content">
                     <CloseButton
                       variant="floating"
                       className="modal-close-button"
                       onClick={handleCloseEditTag}
                       aria-label={t('buttons.close', { ns: 'common' })}
                     />
-                    <h2>{t('difficulty.tags.edit.title')}</h2>
+                    <h2 id="difficulty-edit-tag-title">{t('difficulty.tags.edit.title')}</h2>
                     <form onSubmit={(e) => { e.preventDefault(); handleUpdateTag(); }}>
                       <TagIconEditor
                         icon={editingTag.icon}
@@ -1834,37 +1848,30 @@ const DifficultyPage = () => {
                       />
                       <div className="modal-actions">
                         <button type="submit" className="confirm-button btn-fill-primary">{t('difficulty.tags.edit.updateButton')}</button>
-                      <button
-                        type="button"
-                        className="cancel-button btn-fill-ghost"
-                        onClick={handleCloseEditTag}
-                      >
+                        <button
+                          type="button"
+                          className="cancel-button btn-fill-ghost"
+                          onClick={handleCloseEditTag}
+                        >
                           {t('buttons.cancel', { ns: 'common' })}
                         </button>
                       </div>
                     </form>
-                  </div>
-                </div>
+                </DifficultyPageModal>
               )}
 
-              {/* Delete Tag Confirmation */}
               {deletingTag && (
-                <div
-                  className="difficulty-modal"
-                  onClick={(e) => {
-                    if (e.target.className === 'difficulty-modal') {
-                      setDeletingTag(null);
-                    }
-                  }}
+                <DifficultyPageModal
+                  onClose={() => setDeletingTag(null)}
+                  ariaLabelledBy="difficulty-delete-tag-title"
                 >
-                  <div className="difficulty-modal-content">
                     <CloseButton
                       variant="floating"
                       className="modal-close-button"
                       onClick={() => setDeletingTag(null)}
                       aria-label={t('buttons.close', { ns: 'common' })}
                     />
-                    <h2>{t('difficulty.tags.delete.title')}</h2>
+                    <h2 id="difficulty-delete-tag-title">{t('difficulty.tags.delete.title')}</h2>
                     <p>{t('difficulty.tags.delete.message', { name: deletingTag.name })}</p>
                     <p>
                       {t('difficulty.tags.delete.description')}
@@ -1885,31 +1892,21 @@ const DifficultyPage = () => {
                         {t('buttons.cancel', { ns: 'common' })}
                       </button>
                     </div>
-                  </div>
-                </div>
+                </DifficultyPageModal>
               )}
 
               {isCreatingGroup && (
-                <div
-                  className="difficulty-modal"
-                  onClick={(e) => {
-                    if (e.target.className === 'difficulty-modal') {
-                      setIsCreatingGroup(false);
-                      setNewGroupName('');
-                    }
-                  }}
+                <DifficultyPageModal
+                  onClose={handleCloseCreateGroup}
+                  ariaLabelledBy="difficulty-create-group-title"
                 >
-                  <div className="difficulty-modal-content">
                     <CloseButton
                       variant="floating"
                       className="modal-close-button"
-                      onClick={() => {
-                        setIsCreatingGroup(false);
-                        setNewGroupName('');
-                      }}
+                      onClick={handleCloseCreateGroup}
                       aria-label={t('buttons.close', { ns: 'common' })}
                     />
-                    <h2>{t('difficulty.groups.create.title')}</h2>
+                    <h2 id="difficulty-create-group-title">{t('difficulty.groups.create.title')}</h2>
                     <form onSubmit={(e) => { e.preventDefault(); handleCreateGroup(); }}>
                       <div className="form-group">
                         <label>{t('difficulty.groups.create.name')}</label>
@@ -1925,36 +1922,27 @@ const DifficultyPage = () => {
                         <button
                           type="button"
                           className="cancel-button btn-fill-ghost"
-                          onClick={() => {
-                            setIsCreatingGroup(false);
-                            setNewGroupName('');
-                          }}
+                          onClick={handleCloseCreateGroup}
                         >
                           {t('buttons.cancel', { ns: 'common' })}
                         </button>
                       </div>
                     </form>
-                  </div>
-                </div>
+                </DifficultyPageModal>
               )}
 
               {editingGroup && (
-                <div
-                  className="difficulty-modal"
-                  onClick={(e) => {
-                    if (e.target.className === 'difficulty-modal') {
-                      setEditingGroup(null);
-                    }
-                  }}
+                <DifficultyPageModal
+                  onClose={() => setEditingGroup(null)}
+                  ariaLabelledBy="difficulty-edit-group-title"
                 >
-                  <div className="difficulty-modal-content">
                     <CloseButton
                       variant="floating"
                       className="modal-close-button"
                       onClick={() => setEditingGroup(null)}
                       aria-label={t('buttons.close', { ns: 'common' })}
                     />
-                    <h2>{t('difficulty.groups.edit.title')}</h2>
+                    <h2 id="difficulty-edit-group-title">{t('difficulty.groups.edit.title')}</h2>
                     <form onSubmit={(e) => { e.preventDefault(); handleUpdateGroup(); }}>
                       <div className="form-group">
                         <label>{t('difficulty.groups.edit.name')}</label>
@@ -1981,27 +1969,21 @@ const DifficultyPage = () => {
                         </button>
                       </div>
                     </form>
-                  </div>
-                </div>
+                </DifficultyPageModal>
               )}
 
               {deletingGroup && (
-                <div
-                  className="difficulty-modal"
-                  onClick={(e) => {
-                    if (e.target.className === 'difficulty-modal') {
-                      setDeletingGroup(null);
-                    }
-                  }}
+                <DifficultyPageModal
+                  onClose={() => setDeletingGroup(null)}
+                  ariaLabelledBy="difficulty-delete-group-title"
                 >
-                  <div className="difficulty-modal-content">
                     <CloseButton
                       variant="floating"
                       className="modal-close-button"
                       onClick={() => setDeletingGroup(null)}
                       aria-label={t('buttons.close', { ns: 'common' })}
                     />
-                    <h2>{t('difficulty.groups.delete.title')}</h2>
+                    <h2 id="difficulty-delete-group-title">{t('difficulty.groups.delete.title')}</h2>
                     <p>{t('difficulty.groups.delete.message', { name: deletingGroup.name })}</p>
                     <p>{t('difficulty.groups.delete.description')}</p>
                     <div className="modal-actions">
@@ -2020,22 +2002,17 @@ const DifficultyPage = () => {
                         {t('buttons.cancel', { ns: 'common' })}
                       </button>
                     </div>
-                  </div>
-                </div>
+                </DifficultyPageModal>
               )}
             </>
           )}
 
           {deletingDifficulty && (
-            <div 
-              className="difficulty-modal"
-              onClick={(e) => {
-                if (e.target.className === 'difficulty-modal') {
-                  handleCloseDeleteModal();
-                }
-              }}
+            <DifficultyPageModal
+              onClose={handleCloseDeleteModal}
+              panelClassName="delete-modal"
+              ariaLabelledBy="difficulty-delete-title"
             >
-              <div className="difficulty-modal-content delete-modal">
                 <CloseButton
                   variant="floating"
                   className="modal-close-button"
@@ -2044,7 +2021,7 @@ const DifficultyPage = () => {
                 />
 
                 <div className={`delete-warning ${showDeleteInput ? 'fade-out' : ''}`}>
-                  <h2>{t('difficulty.modal.delete.warning.title')}</h2>
+                  <h2 id="difficulty-delete-title">{t('difficulty.modal.delete.warning.title')}</h2>
                   <div className="warning-content">
                     <p>{t('difficulty.modal.delete.warning.message', { name: deletingDifficulty?.name })}</p>
                     <p>{t('difficulty.modal.delete.warning.description')}</p>
@@ -2105,14 +2082,22 @@ const DifficultyPage = () => {
                     </div>
                   </form>
                 </div>
-              </div>
-            </div>
+            </DifficultyPageModal>
           )}
 
           {showPasswordPrompt && (
-            <div className="password-modal">
-              <div className="password-modal-content">
-                <h3>{t('difficulty.passwordModal.title')}</h3>
+            <PopupShell
+              onClose={() => {
+                setShowPasswordPrompt(false);
+                setSuperAdminPassword('');
+                setPendingAction(null);
+              }}
+              dismissOnOverlay={false}
+              overlayClassName="difficulty-page difficulty-page__modal"
+              panelClassName="password-modal-content"
+              ariaLabelledBy="difficulty-password-title"
+            >
+                <h3 id="difficulty-password-title">{t('difficulty.passwordModal.title')}</h3>
                 <p>{t('difficulty.passwordModal.message', { action: pendingAction?.type })}</p>
                 <input
                   type="password"
@@ -2141,14 +2126,19 @@ const DifficultyPage = () => {
                     {t('buttons.cancel', { ns: 'common' })}
                   </button>
                 </div>
-              </div>
-            </div>
+            </PopupShell>
           )}
 
           {showInitialPasswordPrompt && (
-            <div className="password-modal">
-              <div className="password-modal-content">
-                <h3>{t('difficulty.passwordModal.initialTitle')}</h3>
+            <PopupShell
+              onClose={noopClose}
+              dismissOnOverlay={false}
+              dismissOnEscape={false}
+              overlayClassName="difficulty-page difficulty-page__modal"
+              panelClassName="password-modal-content"
+              ariaLabelledBy="difficulty-initial-password-title"
+            >
+                <h3 id="difficulty-initial-password-title">{t('difficulty.passwordModal.initialTitle')}</h3>
                 <p>{t('difficulty.passwordModal.initialMessage')}</p>
                 <input
                   type="password"
@@ -2167,8 +2157,7 @@ const DifficultyPage = () => {
                     {t('buttons.confirm', { ns: 'common' })}
                   </button>
                 </div>
-              </div>
-            </div>
+            </PopupShell>
           )}
 
           <DifficultyPopup

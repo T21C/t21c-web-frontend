@@ -1,6 +1,6 @@
 // tuf-search: #App #root — application shell
 import { Navigate, Route, useLocation, useSearchParams } from "react-router-dom";
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useLayoutEffect } from "react";
 import { Navigation } from "@/components/layout";
 import { PrivateRoute } from "@/components/auth";
 import { DeprecatedRedirect } from "@/components/routing/DeprecatedRedirect";
@@ -14,6 +14,7 @@ import { Toaster } from "react-hot-toast";
 import { TufStellarRoute } from "@/components/routing/TufStellarRoute";
 import { TufHelperLiteConnectBanner } from "@/components/common/TufHelperLiteConnectBanner";
 import { SentryRoutes } from "@/hooks/useSentry";
+import { getPopupStackRoot } from "@/utils/portalRoot";
 
 function App() {
   const [searchParams] = useSearchParams();
@@ -21,6 +22,10 @@ function App() {
   const isEmbedded = searchParams.get("embed") === "true";
   const isOauthConsent = location.pathname === "/oauth/consent";
   const hideChrome = isEmbedded || isOauthConsent;
+
+  useLayoutEffect(() => {
+    getPopupStackRoot();
+  }, []);
 
   useEffect(() => {
     if (!hideChrome) return;
@@ -37,6 +42,7 @@ function App() {
       <div className="app-notifications" aria-live="polite">
         <Toaster
           position="bottom-right"
+          containerStyle={{ zIndex: 'var(--z-toast)' }}
           toastOptions={{
             duration: 3000,
             style: {

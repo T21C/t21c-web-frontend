@@ -75,6 +75,7 @@ import { ImportIcon } from './ImportIcon';
 import { CompareIcon } from './CompareIcon';
 import { BellIcon } from './BellIcon';
 import { BellOffIcon } from './BellOffIcon';
+import { SparkleIcon } from './SparkleIcon';
 import { GearIcon } from './GearIcon';
 import { MoreVerticalIcon } from './MoreVerticalIcon';
 export {
@@ -154,6 +155,7 @@ export {
     CompareIcon,
     BellIcon,
     BellOffIcon,
+    SparkleIcon,
     GearIcon,
     MoreVerticalIcon,
 }

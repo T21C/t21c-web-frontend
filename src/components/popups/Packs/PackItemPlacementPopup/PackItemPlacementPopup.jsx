@@ -14,6 +14,8 @@ import {
 } from '@/utils/packTreePlacement';
 import './PackItemPlacementPopup.css';
 
+const NOTE_BODY_MAX_LENGTH = 2000;
+
 const PackItemPlacementPopup = ({
   isOpen,
   onClose,
@@ -25,6 +27,9 @@ const PackItemPlacementPopup = ({
 }) => {
   const { t } = useTranslation(['components', 'common']);
   const [folderName, setFolderName] = useState('');
+  const [folderDescription, setFolderDescription] = useState('');
+  const [noteName, setNoteName] = useState('');
+  const [noteDescription, setNoteDescription] = useState('');
   const [levelIdsInput, setLevelIdsInput] = useState('');
   const [selectedSlotKey, setSelectedSlotKey] = useState(null);
   const [collapsedFolderIds, setCollapsedFolderIds] = useState(() => new Set());
@@ -38,6 +43,9 @@ const PackItemPlacementPopup = ({
 
   const resetState = useCallback(() => {
     setFolderName('');
+    setFolderDescription('');
+    setNoteName('');
+    setNoteDescription('');
     setLevelIdsInput('');
     setSelectedSlotKey(null);
     setCollapsedFolderIds(new Set());
@@ -82,7 +90,9 @@ const PackItemPlacementPopup = ({
       ? 'packPopups.placement.titleAddFolder'
       : mode === 'add-level'
         ? 'packPopups.placement.titleAddLevel'
-        : 'packPopups.placement.titleMove';
+        : mode === 'add-note'
+          ? 'packPopups.placement.titleAddNote'
+          : 'packPopups.placement.titleMove';
 
   const canSubmitMove = Boolean(selectedSlotKey) && !submitting;
   const parsedLevelIds = parseLevelIdsInput(levelIdsInput);
@@ -90,9 +100,17 @@ const PackItemPlacementPopup = ({
     folderName.trim().length > 0 && Boolean(selectedSlotKey) && !submitting;
   const canSubmitAddLevel =
     parsedLevelIds.length > 0 && Boolean(selectedSlotKey) && !submitting;
+  const canSubmitAddNote =
+    noteName.trim().length > 0 && Boolean(selectedSlotKey) && !submitting;
 
   const canSubmit =
-    mode === 'move' ? canSubmitMove : mode === 'add-level' ? canSubmitAddLevel : canSubmitAddFolder;
+    mode === 'move'
+      ? canSubmitMove
+      : mode === 'add-level'
+        ? canSubmitAddLevel
+        : mode === 'add-note'
+          ? canSubmitAddNote
+          : canSubmitAddFolder;
 
   const handleSubmit = () => {
     if (!canSubmit || !onSubmit) return;
@@ -105,7 +123,16 @@ const PackItemPlacementPopup = ({
       mode,
       parentId: slot.parentId,
       index: slot.index,
-      name: mode === 'add-folder' ? folderName.trim() : undefined,
+      name: mode === 'add-folder'
+        ? folderName.trim()
+        : mode === 'add-note'
+          ? noteName.trim()
+          : undefined,
+      description: mode === 'add-folder'
+        ? folderDescription
+        : mode === 'add-note'
+          ? noteDescription
+          : undefined,
       levelIds: mode === 'add-level' ? levelIdsInput.trim() : undefined,
     });
   };
@@ -115,7 +142,9 @@ const PackItemPlacementPopup = ({
       ? t('packPopups.placement.move')
       : mode === 'add-level'
         ? t('packPopups.placement.addLevels')
-        : t('packPopups.placement.addFolder');
+        : mode === 'add-note'
+          ? t('packPopups.placement.addNote')
+          : t('packPopups.placement.addFolder');
 
   const indentRem = (depth) => `${0.5 + clampIndentDepth(depth) * 1.1}rem`;
 
@@ -142,19 +171,34 @@ const PackItemPlacementPopup = ({
           )}
 
           {mode === 'add-folder' && (
-            <label className="pack-item-placement-popup__field">
-              <span className="pack-item-placement-popup__label">
-                {t('packPopups.placement.folderName')}
-              </span>
-              <input
-                type="text"
-                className="pack-item-placement-popup__input"
-                value={folderName}
-                onChange={(e) => setFolderName(e.target.value)}
-                placeholder={t('packPopups.placement.folderNamePlaceholder')}
-                autoFocus
-              />
-            </label>
+            <>
+              <label className="pack-item-placement-popup__field">
+                <span className="pack-item-placement-popup__label">
+                  {t('packPopups.placement.folderName')}
+                </span>
+                <input
+                  type="text"
+                  className="pack-item-placement-popup__input"
+                  value={folderName}
+                  onChange={(e) => setFolderName(e.target.value)}
+                  placeholder={t('packPopups.placement.folderNamePlaceholder')}
+                  autoFocus
+                />
+              </label>
+              <label className="pack-item-placement-popup__field">
+                <span className="pack-item-placement-popup__label">
+                  {t('packPopups.placement.folderDescription')}
+                </span>
+                <textarea
+                  className="pack-item-placement-popup__textarea"
+                  value={folderDescription}
+                  onChange={(e) => setFolderDescription(e.target.value)}
+                  placeholder={t('packPopups.placement.folderDescriptionPlaceholder')}
+                  maxLength={2000}
+                  rows={3}
+                />
+              </label>
+            </>
           )}
 
           {mode === 'add-level' && (
@@ -171,6 +215,41 @@ const PackItemPlacementPopup = ({
                 autoFocus
               />
             </label>
+          )}
+
+          {mode === 'add-note' && (
+            <>
+              <label className="pack-item-placement-popup__field">
+                <span className="pack-item-placement-popup__label">
+                  {t('packPopups.placement.noteTitle')}
+                </span>
+                <input
+                  type="text"
+                  className="pack-item-placement-popup__input"
+                  value={noteName}
+                  onChange={(e) => setNoteName(e.target.value)}
+                  placeholder={t('packPopups.placement.noteTitlePlaceholder')}
+                  maxLength={255}
+                  autoFocus
+                />
+              </label>
+              <label className="pack-item-placement-popup__field">
+                <span className="pack-item-placement-popup__label">
+                  {t('packPopups.placement.noteBody')}
+                </span>
+                <textarea
+                  className="pack-item-placement-popup__textarea"
+                  value={noteDescription}
+                  onChange={(e) => setNoteDescription(e.target.value)}
+                  placeholder={t('packPopups.placement.noteBodyPlaceholder')}
+                  maxLength={NOTE_BODY_MAX_LENGTH}
+                  rows={5}
+                />
+                <span className="pack-item-placement-popup__position-hint">
+                  {t('packPopups.placement.noteBodyHelp')}
+                </span>
+              </label>
+            </>
           )}
 
           <div className="pack-item-placement-popup__position-section">
@@ -245,16 +324,17 @@ const PackItemPlacementPopup = ({
                   );
                 }
 
-                if (row.kind === 'level-ref') {
+                if (row.kind === 'level-ref' || row.kind === 'note-ref') {
+                  const isNote = row.kind === 'note-ref';
                   return (
                     <div
-                      key={`level-${row.item.id}-${idx}`}
-                      className="pack-item-placement-popup__level-ref"
+                      key={`${isNote ? 'note' : 'level'}-${row.item.id}-${idx}`}
+                      className={`pack-item-placement-popup__level-ref${isNote ? ' pack-item-placement-popup__note-ref' : ''}`}
                       style={{ paddingLeft: indentRem(row.depth) }}
                       title={row.label}
                     >
                       <span className="pack-item-placement-popup__level-ref-icon" aria-hidden>
-                        🎵
+                        {isNote ? '📝' : '🎵'}
                       </span>
                       <span className="pack-item-placement-popup__level-ref-label">{row.label}</span>
                     </div>

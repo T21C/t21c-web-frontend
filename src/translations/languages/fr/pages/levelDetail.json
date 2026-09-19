@@ -64,7 +64,15 @@
       "charter": "Charteur(s)",
       "vfxer": "Effecteur(s)",
       "specialThanks": "Remerciements"
-    }
+    },
+    "description": "Description"
+  },
+  "descriptionMode": {
+    "curation": "Description de curation",
+    "creator": "Description du créateur",
+    "fromCreator": "Du créateur",
+    "hide": "Masquer la description",
+    "show": "Afficher la description"
   },
   "dialog": {
     "fullInfo": "Voir plus d'infos"

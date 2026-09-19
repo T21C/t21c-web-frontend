@@ -80,7 +80,15 @@
     "ppBaseScore": "无暇基础分数",
     "aliases": "别名",
     "comments": "评论",
+    "description": "描述",
     "createdAt": "上传日期"
+  },
+  "descriptionMode": {
+    "curation": "策展描述",
+    "creator": "作者描述",
+    "fromCreator": "来自作者",
+    "hide": "隐藏描述",
+    "show": "显示描述"
   },
   "leaderboard": {
     "header": "排行榜",

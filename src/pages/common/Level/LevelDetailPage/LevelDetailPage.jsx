@@ -56,7 +56,11 @@ import {
   TUFHelperLiteOpenIcon,
   BellIcon,
   BellOffIcon,
+  SparkleIcon,
+  EyeIcon,
+  EyeOffIcon,
 } from "@/components/common/icons";
+import { CreatorIcon } from "@/components/common/icons/CreatorIcon";
 import { createEventSystem, formatBaseScore, formatCreatorDisplay, formatDate, formatPassDate, ICON_SIZE, isCdnUrl, selectIconSize, sortLevelCredits } from "@/utils/Utility";
 import { formatAccuracyRatio } from "@/utils/statFormatters";
 import {
@@ -479,6 +483,12 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty, onArtistClick 
                       `${alias.field}: ${alias.alias}`
                     ).join(', ')}
                   </span>
+                </div>
+              )}
+              {level.description && (
+                <div id="description" className="each-info each-info--description">
+                  <span>{t('levelDetail.info.description')}:</span>
+                  <span>{level.description}</span>
                 </div>
               )}
               {level.publicComments && (
@@ -983,6 +993,8 @@ const LevelDetailPageContent = ({ mockData = null }) => {
   
   // Expandable description state
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const [isDescriptionCollapsed, setIsDescriptionCollapsed] = useState(false);
+  const [descriptionMode, setDescriptionMode] = useState('curation');
   const [notFound, setNotFound] = useState(false);
   const [chartClearMute, setChartClearMute] = useState({ credited: false, muted: false });
   const [isTogglingChartClearMute, setIsTogglingChartClearMute] = useState(false);
@@ -1222,10 +1234,6 @@ const LevelDetailPageContent = ({ mockData = null }) => {
     setHasArtistPopup(res?.level?.songObject?.artists && res?.level?.songObject?.artists.length > 0);
   }, [res?.level]);
 
-  useEffect(() => {
-    setIsLongDescription(res?.level?.curation?.description?.length > 250);
-  }, [res?.level?.curation?.description]);
-
   const curationsSorted = useMemo(() => {
     if (!res?.level) return [];
     const raw = res.level.curations?.length
@@ -1242,6 +1250,46 @@ const LevelDetailPageContent = ({ mockData = null }) => {
     if (!res?.level?.curation) return null;
     return hydrateCurationWithCatalog(res.level.curation, curationTypesDict);
   }, [res?.level?.curation, curationTypesDict]);
+
+  const curationDescription = (themeCurationHydrated?.description || '').trim();
+  const levelDescription = (res?.level?.description || '').trim();
+  const hasCurationDescription = curationDescription.length > 0;
+  const hasLevelDescription = levelDescription.length > 0;
+  const hasDescriptionSwitch = hasCurationDescription && hasLevelDescription;
+  const showDescriptionBox = hasCurationDescription || hasLevelDescription;
+  const activeDescription = descriptionMode === 'level' && hasLevelDescription
+    ? levelDescription
+    : hasCurationDescription
+      ? curationDescription
+      : levelDescription;
+  const isCreatorDescriptionMode = hasLevelDescription && (
+    !hasCurationDescription || descriptionMode === 'level'
+  );
+
+  useEffect(() => {
+    setDescriptionMode(hasCurationDescription ? 'curation' : 'level');
+    setIsDescriptionExpanded(false);
+    setIsDescriptionCollapsed(false);
+  }, [effectiveId, hasCurationDescription, hasLevelDescription]);
+
+  useEffect(() => {
+    setIsLongDescription(activeDescription.length > 250);
+  }, [activeDescription]);
+
+  const selectDescriptionMode = useCallback((mode) => {
+    setDescriptionMode(mode);
+    setIsDescriptionExpanded(false);
+  }, []);
+
+  const toggleDescriptionCollapsed = useCallback((event) => {
+    event.stopPropagation();
+    setIsDescriptionCollapsed((prev) => {
+      if (!prev) {
+        setIsDescriptionExpanded(false);
+      }
+      return !prev;
+    });
+  }, []);
 
   const [activeCurationTooltipId, setActiveCurationTooltipId] = useState(null);
   const [curationTooltipCoords, setCurationTooltipCoords] = useState({ top: 0, left: 0 });
@@ -2851,17 +2899,91 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                 </div>
               )}
 
-              {/* Expandable Curation Description */}
-              {(themeCurationHydrated?.types?.length > 0 || themeCurationHydrated?.type) &&
-               themeCurationHydrated?.description &&
-               themeCurationHydrated.description.trim() && (
-                <div className={`curation-description-container ${isDescriptionExpanded ? 'expanded' : ''} ${isLongDescription ? 'expandable' : ''}`}>
+              {/* Expandable Curation / Creator Description */}
+              {showDescriptionBox && (
+                <div className={`curation-description-container ${isDescriptionExpanded ? 'expanded' : ''} ${isLongDescription ? 'expandable' : ''} ${isDescriptionCollapsed ? 'description-collapsed' : ''}`}>
                   <div 
-                    className={`curation-description ${isDescriptionExpanded ? 'expanded' : ''}`}
-                    onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded && isLongDescription)}
+                    className={`curation-description ${isDescriptionExpanded ? 'expanded' : ''} ${isCreatorDescriptionMode ? 'curation-description--from-creator' : ''}`}
+                    onClick={() => {
+                      if (isDescriptionCollapsed) return;
+                      setIsDescriptionExpanded(!isDescriptionExpanded && isLongDescription);
+                    }}
                   >
+                    <div
+                      className="curation-description-chrome"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <button
+                        type="button"
+                        className="curation-description-mode-btn curation-description-hide-btn"
+                        aria-pressed={isDescriptionCollapsed}
+                        aria-expanded={!isDescriptionCollapsed}
+                        aria-label={
+                          isDescriptionCollapsed
+                            ? t('levelDetail.descriptionMode.show')
+                            : t('levelDetail.descriptionMode.hide')
+                        }
+                        title={
+                          isDescriptionCollapsed
+                            ? t('levelDetail.descriptionMode.show')
+                            : t('levelDetail.descriptionMode.hide')
+                        }
+                        onClick={toggleDescriptionCollapsed}
+                      >
+                        {isDescriptionCollapsed ? (
+                          <EyeOffIcon size={16} color="currentColor" />
+                        ) : (
+                          <EyeIcon size={16} color="currentColor" />
+                        )}
+                      </button>
+                      <div className="curation-description-toolbar">
+                      <div className="curation-description-mode-selector">
+                      {hasCurationDescription && (
+                        hasDescriptionSwitch ? (
+                          <button
+                            type="button"
+                            className="curation-description-mode-btn"
+                            aria-pressed={descriptionMode === 'curation'}
+                            aria-label={t('levelDetail.descriptionMode.curation')}
+                            title={t('levelDetail.descriptionMode.curation')}
+                            onClick={() => selectDescriptionMode('curation')}
+                          >
+                            <SparkleIcon size={16} color="currentColor" />
+                          </button>
+                        ) : (
+                          <span className="curation-description-mode-badge">
+                            <SparkleIcon size={16} color="currentColor" />
+                          </span>
+                        )
+                      )}
+                      {hasLevelDescription && (
+                        hasDescriptionSwitch ? (
+                          <button
+                            type="button"
+                            className="curation-description-mode-btn"
+                            aria-pressed={descriptionMode === 'level'}
+                            aria-label={t('levelDetail.descriptionMode.creator')}
+                            title={t('levelDetail.descriptionMode.creator')}
+                            onClick={() => selectDescriptionMode('level')}
+                          >
+                            <CreatorIcon size={16} color="currentColor" />
+                          </button>
+                        ) : (
+                          <span className="curation-description-mode-badge">
+                            <CreatorIcon size={16} color="currentColor" />
+                          </span>
+                        )
+                      )}
+                      </div>
+                      {isCreatorDescriptionMode && (
+                        <span className="curation-description-from-creator">
+                          {t('levelDetail.descriptionMode.fromCreator')}
+                        </span>
+                      )}
+                      </div>
+                    </div>
                     <div className="curation-description-content">
-                      {themeCurationHydrated.description}
+                      {activeDescription}
                     </div>
                     {isLongDescription && (
                       <div className="curation-description-toggle">
@@ -2872,11 +2994,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                 </div>
               )}
               
-              <div 
-                className="like-container"
-                data-margin-auto={true}
-              >
-                {chartClearMute.credited && (
+              {chartClearMute.credited && (
                   <div className="level-detail-header-notify-slot">
                     <button
                       type="button"
@@ -2905,6 +3023,10 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                     <LevelDetailTooltip id="chart-clear-mute-tooltip" place="bottom" noArrow />
                   </div>
                 )}
+              <div 
+                className="like-container"
+                data-margin-auto={true}
+              >
                 <LikeButton
                   liked={Boolean(res.isLiked)}
                   count={res.level.likes ?? 0}
