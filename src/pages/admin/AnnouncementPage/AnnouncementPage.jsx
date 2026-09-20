@@ -94,6 +94,7 @@ const AnnouncementPage = () => {
   const [gate, setGate] = useState(null);
   const [focusedRequestId, setFocusedRequestId] = useState(null);
   const [panelReady, setPanelReady] = useState(false);
+  const [discardingRequestId, setDiscardingRequestId] = useState(null);
 
   const kind = TAB_TO_KIND[activeTab];
   const canUsePanel =
@@ -179,7 +180,9 @@ const AnnouncementPage = () => {
           return prev.filter(r => r.requestId !== request.requestId);
         });
         if (request.status === 'failed') {
-          toastError(request.error || t('announcement.errors.announceFailed'));
+          if (request.error !== 'Discarded') {
+            toastError(request.error || t('announcement.errors.announceFailed'));
+          }
         }
       } else {
         setOpenJobs(prev => upsertRequestTree(prev, request));
@@ -218,6 +221,22 @@ const AnnouncementPage = () => {
     onEvent: handleSseEvent,
     onConnected: () => fetchSnapshot(kind),
   });
+
+  const handleDiscardRequest = useCallback(async (request) => {
+    if (!request?.requestId || discardingRequestId) return;
+    if (!window.confirm(t('announcement.panel.discardConfirm'))) return;
+    setDiscardingRequestId(request.requestId);
+    try {
+      await api.post(routes.webhook.discardAnnouncementJob(request.requestId));
+      toastSuccess(t('announcement.panel.discarded'));
+      fetchSnapshot(kind);
+    } catch (err) {
+      console.error('Error discarding announcement job:', err);
+      toastError(err.response?.data?.error || t('announcement.errors.discardFailed'));
+    } finally {
+      setDiscardingRequestId(null);
+    }
+  }, [discardingRequestId, t, fetchSnapshot, kind]);
 
   const fetchItems = async () => {
     setIsLoading(true);
@@ -593,6 +612,8 @@ const AnnouncementPage = () => {
               focusedRequestId={focusedRequestId}
               gate={gate}
               loading={!panelReady}
+              onDiscard={handleDiscardRequest}
+              discardingRequestId={discardingRequestId}
             />
           </div>
         </div>

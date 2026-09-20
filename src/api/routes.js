@@ -581,6 +581,8 @@ export const routes = {
     passes: () => '/v2/webhook/passes',
     announcementJobs: (kind) =>
       `/v2/webhook/announcement-jobs?kind=${encodeURIComponent(kind)}`,
+    discardAnnouncementJob: (requestId) =>
+      `/v2/webhook/announcement-jobs/${encodeURIComponent(requestId)}/discard`,
     silentRemoveLevels: () => '/v2/webhook/silent-remove/levels',
     silentRemoveRerates: () => '/v2/webhook/silent-remove/rerates',
     silentRemovePasses: () => '/v2/webhook/silent-remove/passes',

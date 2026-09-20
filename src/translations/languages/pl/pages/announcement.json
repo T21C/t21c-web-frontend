@@ -26,7 +26,8 @@
     "fetchFailed": "Nie udało się pozyskać przedmiotów. Spróbuj ponownie.",
     "announceFailed": "Nie udało się ogłosić przedmiotów. Spróbuj ponownie.",
     "invalidIds": "Niektóre z zaznaczonych przedmiotów mają niewłaściwe ID",
-    "discordBlocked": "Webhooki Discord są tymczasowo zablokowane. Spróbuj ponownie za {{time}}."
+    "discordBlocked": "Webhooki Discord są tymczasowo zablokowane. Spróbuj ponownie za {{time}}.",
+    "discardFailed": "Nie udało się odrzucić ogłoszenia."
   },
   "gate": {
     "banner": "Dostarczanie Discord jest zablokowane. Ponów za {{time}}."
@@ -42,6 +43,9 @@
     "mergedNote": "Zawiera elementy już w trakcie wysyłki",
     "stale": "Brak aktualizacji od {{time}}",
     "attempt": "próba {{count}}",
+    "discard": "Odrzuć",
+    "discardConfirm": "Zatrzymać to ogłoszenie i zwolnić elementy, aby można je było wysłać ponownie?",
+    "discarded": "Ogłoszenie odrzucone",
     "status": {
       "queued": "w kolejce",
       "sending": "wysyłanie",
