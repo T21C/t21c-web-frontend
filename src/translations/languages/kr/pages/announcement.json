@@ -26,7 +26,8 @@
     "fetchFailed": "항목을 불러오지 못했습니다. 다시 시도해 주세요.",
     "announceFailed": "공지에 실패했습니다. 다시 시도해 주세요.",
     "invalidIds": "선택한 항목 중 일부에 잘못된 ID가 있습니다",
-    "discordBlocked": "Discord 웹훅이 일시적으로 차단되었습니다. {{time}} 후 다시 시도해 주세요."
+    "discordBlocked": "Discord 웹훅이 일시적으로 차단되었습니다. {{time}} 후 다시 시도해 주세요.",
+    "discardFailed": "공지를 취소하지 못했습니다."
   },
   "gate": {
     "banner": "Discord 전송이 차단되었습니다. {{time}} 후 다시 시도하세요."
@@ -42,6 +43,9 @@
     "mergedNote": "이미 전송 중인 항목이 포함됨",
     "stale": "{{time}} 이후 업데이트 없음",
     "attempt": "{{count}}번째 시도",
+    "discard": "취소",
+    "discardConfirm": "이 공지를 중지하고 항목을 다시 보낼 수 있도록 해제할까요?",
+    "discarded": "공지가 취소되었습니다",
     "status": {
       "queued": "대기",
       "sending": "전송 중",

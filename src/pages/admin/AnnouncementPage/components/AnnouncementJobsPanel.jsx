@@ -78,6 +78,12 @@ function CollapsibleSection({ title, count, defaultOpen = true, children }) {
   );
 }
 
+function formatErrorText(error, t) {
+  if (!error) return '';
+  if (error === 'Discarded') return t('announcement.panel.discarded');
+  return error;
+}
+
 function StaleNote({ updatedAt, t }) {
   return (
     <div className="announcement-job-stale">
@@ -86,7 +92,7 @@ function StaleNote({ updatedAt, t }) {
   );
 }
 
-function RequestTree({ request, focusedRequestId, t, now }) {
+function RequestTree({ request, focusedRequestId, t, now, onDiscard, discarding }) {
   const [expanded, setExpanded] = useState(
     () =>
       request.requestId === focusedRequestId
@@ -99,6 +105,7 @@ function RequestTree({ request, focusedRequestId, t, now }) {
   const items = request.items || [];
   const requestStale =
     REQUEST_IN_PROGRESS.has(request.status) && isStale(request.updatedAt, now);
+  const canDiscard = REQUEST_IN_PROGRESS.has(request.status);
 
   return (
     <div
@@ -106,20 +113,32 @@ function RequestTree({ request, focusedRequestId, t, now }) {
         requestStale ? ' announcement-job-request--stale' : ''
       }`}
     >
-      <button
-        type="button"
-        className="announcement-job-request-header"
-        onClick={() => setExpanded(v => !v)}
-        aria-expanded={expanded}
-      >
-        <span className="announcement-job-request-meta">
-          <span className="announcement-job-request-user">
-            {request.requestedBy?.username || '—'}
+      <div className="announcement-job-request-top">
+        <button
+          type="button"
+          className="announcement-job-request-header"
+          onClick={() => setExpanded(v => !v)}
+          aria-expanded={expanded}
+        >
+          <span className="announcement-job-request-meta">
+            <span className="announcement-job-request-user">
+              {request.requestedBy?.username || '—'}
+            </span>
+            <span className="announcement-job-request-time">{formatTime(request.createdAt)}</span>
           </span>
-          <span className="announcement-job-request-time">{formatTime(request.createdAt)}</span>
-        </span>
-        <StatusChip status={request.status} t={t} />
-      </button>
+          <StatusChip status={request.status} t={t} />
+        </button>
+        {canDiscard && (
+          <button
+            type="button"
+            className="announcement-job-discard"
+            disabled={discarding}
+            onClick={() => onDiscard?.(request)}
+          >
+            {t('announcement.panel.discard')}
+          </button>
+        )}
+      </div>
 
       {expanded && (
         <div className="announcement-job-request-body">
@@ -171,21 +190,21 @@ function RequestTree({ request, focusedRequestId, t, now }) {
                             <StatusChip status={batch.status} t={t} />
                           </div>
                           {batch.error && (
-                            <div className="announcement-job-error">{batch.error}</div>
+                            <div className="announcement-job-error">{formatErrorText(batch.error, t)}</div>
                           )}
                         </li>
                       ))}
                     </ul>
                   )}
                   {item.error && (
-                    <div className="announcement-job-error">{item.error}</div>
+                    <div className="announcement-job-error">{formatErrorText(item.error, t)}</div>
                   )}
                 </div>
               );
             })
           )}
           {request.error && (
-            <div className="announcement-job-error">{request.error}</div>
+            <div className="announcement-job-error">{formatErrorText(request.error, t)}</div>
           )}
         </div>
       )}
@@ -202,6 +221,8 @@ export default function AnnouncementJobsPanel({
   focusedRequestId = null,
   gate = null,
   loading = false,
+  onDiscard = null,
+  discardingRequestId = null,
 }) {
   const { t } = useTranslation('pages');
   const [now, setNow] = useState(() => Date.now());
@@ -249,6 +270,8 @@ export default function AnnouncementJobsPanel({
                     focusedRequestId={focusedRequestId}
                     t={t}
                     now={now}
+                    onDiscard={onDiscard}
+                    discarding={discardingRequestId === req.requestId}
                   />
                 ))}
               </div>
@@ -271,6 +294,8 @@ export default function AnnouncementJobsPanel({
                     focusedRequestId={focusedRequestId}
                     t={t}
                     now={now}
+                    onDiscard={onDiscard}
+                    discarding={discardingRequestId === req.requestId}
                   />
                 ))}
               </div>

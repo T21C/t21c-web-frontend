@@ -26,7 +26,8 @@
     "fetchFailed": "Echec de la récupération des éléments séléctionnés. Veuillez rééssayer.",
     "announceFailed": "Echec de l'annonce des éléments séléctionnés. Veuillez rééssayer.",
     "invalidIds": "Un ou plusieurs éléments ont un identifiant invalide",
-    "discordBlocked": "Les webhooks Discord sont temporairement bloqués. Réessayez dans {{time}}."
+    "discordBlocked": "Les webhooks Discord sont temporairement bloqués. Réessayez dans {{time}}.",
+    "discardFailed": "Échec de l'abandon de l'annonce."
   },
   "gate": {
     "banner": "L'envoi Discord est bloqué. Réessayez dans {{time}}."
@@ -42,6 +43,9 @@
     "mergedNote": "Inclut des éléments déjà en cours d'envoi",
     "stale": "Aucune mise à jour depuis {{time}}",
     "attempt": "tentative {{count}}",
+    "discard": "Abandonner",
+    "discardConfirm": "Arrêter cette annonce et libérer les éléments pour pouvoir les renvoyer ?",
+    "discarded": "Annonce abandonnée",
     "status": {
       "queued": "en file",
       "sending": "envoi",
