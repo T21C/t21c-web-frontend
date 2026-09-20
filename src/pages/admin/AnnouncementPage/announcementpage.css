@@ -528,6 +528,17 @@
   background-color: var(--color-white-t15);
 }
 
+.announcement-page .announcement-job-request--stale {
+  border-color: var(--color-white-t30);
+}
+
+.announcement-page .announcement-job-item--stale {
+  padding: 0.25rem;
+  border: 1px solid var(--color-white-t30);
+  border-radius: 4px;
+  background-color: var(--color-black-t40);
+}
+
 .announcement-page .announcement-job-request-header {
   display: flex;
   align-items: center;
@@ -613,6 +624,12 @@
   color: var(--color-white-t80);
 }
 
+.announcement-page .announcement-job-batch-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
 .announcement-page .announcement-job-batch-progress {
   color: var(--color-white-t60);
 }
@@ -621,6 +638,12 @@
   font-size: 0.8rem;
   color: var(--color-white);
   opacity: 0.85;
+}
+
+.announcement-page .announcement-job-stale,
+.announcement-page .announcement-job-attempt {
+  font-size: 0.75rem;
+  color: var(--color-white-t60);
 }
 
 .announcement-page .announcement-status-chip {
@@ -635,7 +658,12 @@
 }
 
 .announcement-page .announcement-status-chip--sending,
-.announcement-page .announcement-status-chip--queued {
+.announcement-page .announcement-status-chip--queued,
+.announcement-page .announcement-status-chip--pending,
+.announcement-page .announcement-status-chip--preparing,
+.announcement-page .announcement-status-chip--resolving,
+.announcement-page .announcement-status-chip--sending_webhook,
+.announcement-page .announcement-status-chip--recording {
   background-color: var(--color-white-t25);
 }
 
@@ -647,7 +675,8 @@
 }
 
 .announcement-page .announcement-status-chip--failed,
-.announcement-page .announcement-status-chip--blocked {
+.announcement-page .announcement-status-chip--blocked,
+.announcement-page .announcement-status-chip--waiting_gate {
   background-color: var(--color-black-t40);
   border: 1px solid var(--color-white-t30);
 }

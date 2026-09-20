@@ -40,6 +40,8 @@
     "noAnnouncements": "Brak ogłoszeń",
     "loading": "Ładowanie postępu wysyłki…",
     "mergedNote": "Zawiera elementy już w trakcie wysyłki",
+    "stale": "Brak aktualizacji od {{time}}",
+    "attempt": "próba {{count}}",
     "status": {
       "queued": "w kolejce",
       "sending": "wysyłanie",
@@ -50,6 +52,14 @@
       "delivered": "dostarczono",
       "skipped": "pominięto",
       "sent": "wysłano"
+    },
+    "phase": {
+      "queued": "w kolejce",
+      "preparing": "przygotowywanie",
+      "resolving": "ustalanie destynacji",
+      "waiting_gate": "oczekiwanie na Discord",
+      "sending_webhook": "wysyłanie do {{label}}",
+      "recording": "zapisywanie"
     }
   }
 }

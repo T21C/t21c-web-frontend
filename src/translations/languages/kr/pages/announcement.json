@@ -40,6 +40,8 @@
     "noAnnouncements": "공지 없음",
     "loading": "전송 진행 불러오는 중…",
     "mergedNote": "이미 전송 중인 항목이 포함됨",
+    "stale": "{{time}} 이후 업데이트 없음",
+    "attempt": "{{count}}번째 시도",
     "status": {
       "queued": "대기",
       "sending": "전송 중",
@@ -50,6 +52,14 @@
       "delivered": "전달됨",
       "skipped": "건너뜀",
       "sent": "전송됨"
+    },
+    "phase": {
+      "queued": "대기",
+      "preparing": "준비 중",
+      "resolving": "대상 확인 중",
+      "waiting_gate": "Discord 대기 중",
+      "sending_webhook": "{{label}}(으)로 전송 중",
+      "recording": "기록 중"
     }
   }
 }
