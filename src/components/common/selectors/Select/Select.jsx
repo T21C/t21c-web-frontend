@@ -111,7 +111,7 @@ const CustomSelect = ({
     }),
     menuPortal: (base) => ({
       ...base,
-      zIndex: 'var(--z-popup)',
+      zIndex: 'var(--z-float)',
     }),
     container: (provided) => ({
       ...provided,
@@ -157,7 +157,7 @@ const CustomSelect = ({
       border: "1px solid rgba(255, 255, 255, 0.1)",
       boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
       overflow: "hidden",
-      zIndex: 'var(--z-popup)',
+      zIndex: 'var(--z-float)',
       marginTop: state.placement === 'top' ? 0 : '4px',
       marginBottom: state.placement === 'top' ? '4px' : 0,
       maxHeight: maxHeight

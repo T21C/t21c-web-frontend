@@ -11,7 +11,6 @@
   overflow-y: auto;
   margin: auto;
   border-radius: 8px;
-  z-index: 10000;
 }
 
 .edit-pass-popup-overlay .form-container::-webkit-scrollbar {
@@ -25,10 +24,6 @@
 .edit-pass-popup-overlay .form-container::-webkit-scrollbar-thumb {
   background: #4a4a4a;
   border-radius: 4px;
-}
-
-.edit-pass-popup-overlay .edit-pass-popup-close.tuf-close-button--floating {
-  z-index: 10002;
 }
 
 .edit-pass-popup-overlay .button-group {
