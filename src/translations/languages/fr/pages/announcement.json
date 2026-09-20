@@ -40,6 +40,8 @@
     "noAnnouncements": "Aucune annonce",
     "loading": "Chargement de la progression…",
     "mergedNote": "Inclut des éléments déjà en cours d'envoi",
+    "stale": "Aucune mise à jour depuis {{time}}",
+    "attempt": "tentative {{count}}",
     "status": {
       "queued": "en file",
       "sending": "envoi",
@@ -50,6 +52,14 @@
       "delivered": "livré",
       "skipped": "ignoré",
       "sent": "envoyé"
+    },
+    "phase": {
+      "queued": "en file",
+      "preparing": "préparation",
+      "resolving": "résolution des destinations",
+      "waiting_gate": "en attente de Discord",
+      "sending_webhook": "envoi vers {{label}}",
+      "recording": "enregistrement"
     }
   }
 }

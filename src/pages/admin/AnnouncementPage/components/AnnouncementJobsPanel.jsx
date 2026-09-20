@@ -1,5 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+
+const STALE_MS = 2 * 60 * 1000;
+const ITEM_TERMINAL = new Set(['delivered', 'failed', 'skipped']);
+const ITEM_IN_PROGRESS = new Set(['pending', 'sending']);
+const REQUEST_IN_PROGRESS = new Set(['queued', 'sending', 'blocked']);
+const PHASES = new Set([
+  'queued',
+  'preparing',
+  'resolving',
+  'waiting_gate',
+  'sending_webhook',
+  'recording',
+]);
 
 function formatTime(ts) {
   if (!ts) return '';
@@ -10,10 +23,31 @@ function formatTime(ts) {
   }
 }
 
-function StatusChip({ status, t }) {
+function isStale(updatedAt, now) {
+  return Boolean(updatedAt) && now - updatedAt > STALE_MS;
+}
+
+function itemChipKey(item) {
+  if (ITEM_TERMINAL.has(item.status)) return item.status;
+  return item.phase || item.status || 'queued';
+}
+
+function chipLabel(status, t, extra = {}) {
+  if (status === 'sending_webhook') {
+    const label = extra.label;
+    if (label) return t('announcement.panel.phase.sending_webhook', { label });
+    return t('announcement.panel.status.sending');
+  }
+  if (PHASES.has(status)) {
+    return t(`announcement.panel.phase.${status}`, extra);
+  }
+  return t(`announcement.panel.status.${status || 'queued'}`);
+}
+
+function StatusChip({ status, t, extra }) {
   return (
     <span className={`announcement-status-chip announcement-status-chip--${status || 'queued'}`}>
-      {t(`announcement.panel.status.${status || 'queued'}`)}
+      {chipLabel(status, t, extra)}
     </span>
   );
 }
@@ -44,17 +78,33 @@ function CollapsibleSection({ title, count, defaultOpen = true, children }) {
   );
 }
 
-function RequestTree({ request, focusedRequestId, t }) {
+function StaleNote({ updatedAt, t }) {
+  return (
+    <div className="announcement-job-stale">
+      {t('announcement.panel.stale', { time: formatTime(updatedAt) })}
+    </div>
+  );
+}
+
+function RequestTree({ request, focusedRequestId, t, now }) {
   const [expanded, setExpanded] = useState(
-    () => request.requestId === focusedRequestId || request.status === 'sending' || request.status === 'queued',
+    () =>
+      request.requestId === focusedRequestId
+      || request.status === 'sending'
+      || request.status === 'queued'
+      || request.status === 'blocked',
   );
 
   const isFocused = focusedRequestId && request.requestId === focusedRequestId;
   const items = request.items || [];
+  const requestStale =
+    REQUEST_IN_PROGRESS.has(request.status) && isStale(request.updatedAt, now);
 
   return (
     <div
-      className={`announcement-job-request${isFocused ? ' announcement-job-request--focused' : ''}`}
+      className={`announcement-job-request${isFocused ? ' announcement-job-request--focused' : ''}${
+        requestStale ? ' announcement-job-request--stale' : ''
+      }`}
     >
       <button
         type="button"
@@ -73,34 +123,66 @@ function RequestTree({ request, focusedRequestId, t }) {
 
       {expanded && (
         <div className="announcement-job-request-body">
+          {requestStale && <StaleNote updatedAt={request.updatedAt} t={t} />}
           {items.length === 0 ? (
             <p className="announcement-jobs-empty announcement-jobs-empty--nested">
               {t('announcement.panel.noAnnouncements')}
             </p>
           ) : (
-            items.map(item => (
-              <div key={item.itemId} className="announcement-job-item">
-                <div className="announcement-job-item-row">
-                  <span className="announcement-job-item-label" title={item.label}>
-                    {item.label || `#${item.itemId}`}
-                  </span>
-                  <StatusChip status={item.status} t={t} />
+            items.map(item => {
+              const chip = itemChipKey(item);
+              const sendingBatch = (item.batches || []).find(b => b.status === 'sending');
+              const itemStale =
+                ITEM_IN_PROGRESS.has(item.status) && isStale(item.updatedAt, now);
+              return (
+                <div
+                  key={item.itemId}
+                  className={`announcement-job-item${itemStale ? ' announcement-job-item--stale' : ''}`}
+                >
+                  <div className="announcement-job-item-row">
+                    <span className="announcement-job-item-label" title={item.label}>
+                      {item.label || `#${item.itemId}`}
+                    </span>
+                    <StatusChip
+                      status={chip}
+                      t={t}
+                      extra={
+                        chip === 'sending_webhook'
+                          ? { label: sendingBatch?.webhookLabel || '' }
+                          : undefined
+                      }
+                    />
+                  </div>
+                  {item.attempt > 1 && (
+                    <div className="announcement-job-attempt">
+                      {t('announcement.panel.attempt', { count: item.attempt })}
+                    </div>
+                  )}
+                  {itemStale && <StaleNote updatedAt={item.updatedAt} t={t} />}
+                  {(item.batches || []).length > 0 && (
+                    <ul className="announcement-job-batches">
+                      {item.batches.map(batch => (
+                        <li key={batch.batchId} className="announcement-job-batch-wrap">
+                          <div className="announcement-job-batch">
+                            <span>{batch.webhookLabel}</span>
+                            <span className="announcement-job-batch-progress">
+                              {batch.destinationsDone}/{batch.destinationsRequired}
+                            </span>
+                            <StatusChip status={batch.status} t={t} />
+                          </div>
+                          {batch.error && (
+                            <div className="announcement-job-error">{batch.error}</div>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  {item.error && (
+                    <div className="announcement-job-error">{item.error}</div>
+                  )}
                 </div>
-                {(item.batches || []).length > 0 && (
-                  <ul className="announcement-job-batches">
-                    {item.batches.map(batch => (
-                      <li key={batch.batchId} className="announcement-job-batch">
-                        <span>{batch.webhookLabel}</span>
-                        <span className="announcement-job-batch-progress">
-                          {batch.destinationsDone}/{batch.destinationsRequired}
-                        </span>
-                        <StatusChip status={batch.status} t={t} />
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            ))
+              );
+            })
           )}
           {request.error && (
             <div className="announcement-job-error">{request.error}</div>
@@ -122,9 +204,15 @@ export default function AnnouncementJobsPanel({
   loading = false,
 }) {
   const { t } = useTranslation('pages');
+  const [now, setNow] = useState(() => Date.now());
   // Keep Recent expanded by default so completed jobs are visible after refresh
   // (In progress is often empty once delivery finishes).
   const recentDefaultOpen = recent.length > 0 || open.length === 0;
+
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 30_000);
+    return () => clearInterval(id);
+  }, []);
 
   return (
     <aside className="announcement-jobs-panel">
@@ -160,6 +248,7 @@ export default function AnnouncementJobsPanel({
                     request={req}
                     focusedRequestId={focusedRequestId}
                     t={t}
+                    now={now}
                   />
                 ))}
               </div>
@@ -181,6 +270,7 @@ export default function AnnouncementJobsPanel({
                     request={req}
                     focusedRequestId={focusedRequestId}
                     t={t}
+                    now={now}
                   />
                 ))}
               </div>
