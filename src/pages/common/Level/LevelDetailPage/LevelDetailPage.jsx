@@ -13,6 +13,7 @@ import { communityTagHoverTitle, formatCommunityTagScore, groupTagsByGroup, sort
 import TagConfidenceBar from '@/components/common/display/TagConfidenceBar/TagConfidenceBar';
 
 import { getPrimaryVideoLink, getVideoProvider, getLocalVideoPreview, splitVideoLinks } from "@/utils/videoLink";
+import { getBilibiliCoverUrl } from "@/utils/bilibiliCover";
 
 import { Tooltip } from "react-tooltip";
 import { useTranslation } from "react-i18next";
@@ -987,6 +988,8 @@ const LevelDetailPageContent = ({ mockData = null }) => {
   const primaryVideoDetail = videoDetailsByUrl[videoLinks[0]] ?? null;
   const activeVideoDetail = videoDetailsByUrl[videoLinks[activeVideoIndex]] ?? null;
   const activeVideoLink = videoLinks[activeVideoIndex] ?? '';
+  const primaryThumb = primaryVideoDetail?.image || getBilibiliCoverUrl(videoLinks[0]);
+  const activeThumb = activeVideoDetail?.image || getBilibiliCoverUrl(activeVideoLink);
 
   // Custom styling state for curations
   const [curationStyles, setCurationStyles] = useState(null);
@@ -2511,7 +2514,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
           })()
         }
         style={{
-          '--header-bg-image': primaryVideoDetail?.image ? `url(${primaryVideoDetail.image})` : 'none'
+          '--header-bg-image': primaryThumb ? `url("${primaryThumb}")` : 'none'
         }}
       >
         
@@ -3296,7 +3299,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                   <div
                     className="thumbnail-container"
                     style={{
-                      '--thumbnail-bg-image': `url(${activeVideoDetail?.image ?? placeholder})`,
+                      '--thumbnail-bg-image': `url("${activeThumb || placeholder}")`,
                     }}
                   >
                     <div className="thumbnail-text">

@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import placeholder from '@/assets/placeholder/1.png';
 import { getLocalVideoPreview } from "@/utils/videoLink";
+import { getBilibiliCoverUrl } from "@/utils/bilibiliCover";
 import "../adminsubmissionpage.css";
 import { VirtualList } from '@/components/common/VirtualList';
 import api from "@/utils/api";
@@ -516,7 +517,7 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
                       <div
                         className="thumbnail-container"
                         style={{
-                          backgroundImage: `url(${videoEmbeds[submission.id]?.image || placeholder})`,
+                          backgroundImage: `url("${videoEmbeds[submission.id]?.image || getBilibiliCoverUrl(submission.videoLink) || placeholder}")`,
                         }}
                       />
                     )}

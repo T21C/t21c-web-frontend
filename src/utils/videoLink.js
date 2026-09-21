@@ -1,7 +1,7 @@
 // tuf-search: #videoLink #getVideoProvider #youtube #bilibili
 
 const VIDEO_HOST_PATTERNS = [
-  { host: /(^|\.)youtube\.com$|(^|\.)youtu\.be$/i, label: 'youtube' },
+  { host: /(^|\.)youtube\.com$|(^|\.)youtube-nocookie\.com$|(^|\.)youtu\.be$/i, label: 'youtube' },
   { host: /(^|\.)bilibili\.com$|(^|\.)b23\.tv$/i, label: 'bilibili' },
 ];
 
@@ -44,7 +44,7 @@ const YOUTUBE_ID_PATTERNS = [
 /** Extract an 11-character YouTube video id from common watch/short/embed URLs. */
 export function extractYouTubeVideoId(url) {
   const primary = getPrimaryVideoLink(url);
-  if (!primary) return null;
+  if (!primary || getVideoProvider(primary) !== 'youtube') return null;
   for (const pattern of YOUTUBE_ID_PATTERNS) {
     const match = primary.match(pattern);
     if (match?.[1]) return match[1];
@@ -76,7 +76,7 @@ export function getYouTubeThumbnailUrl(url) {
 /** Extract a Bilibili BV id from a video or b23 URL. */
 export function extractBilibiliBvId(url) {
   const primary = getPrimaryVideoLink(url);
-  if (!primary) return null;
+  if (!primary || getVideoProvider(primary) !== 'bilibili') return null;
   const match = primary.match(/\/(BV[a-zA-Z0-9]+)/);
   return match?.[1] ?? null;
 }
@@ -89,17 +89,21 @@ export function getBilibiliEmbedUrl(url) {
 }
 
 /**
- * Quota-free embed preview for YouTube and Bilibili.
+ * Quota-free embed preview.
+ * YouTube `image` is img.youtube.com. Bilibili `image` stays null here;
+ * covers are served by `getBilibiliCoverUrl` and never share this helper.
  * @returns {{ embed: string, image: string | null } | null}
  */
 export function getLocalVideoPreview(url) {
-  const ytEmbed = getYouTubeEmbedUrl(url);
-  if (ytEmbed) {
-    return { embed: ytEmbed, image: getYouTubeThumbnailUrl(url) };
+  if (getVideoProvider(url) === 'youtube') {
+    const embed = getYouTubeEmbedUrl(url);
+    if (!embed) return null;
+    return { embed, image: getYouTubeThumbnailUrl(url) };
   }
-  const biliEmbed = getBilibiliEmbedUrl(url);
-  if (biliEmbed) {
-    return { embed: biliEmbed, image: null };
+  if (getVideoProvider(url) === 'bilibili') {
+    const embed = getBilibiliEmbedUrl(url);
+    if (!embed) return null;
+    return { embed, image: null };
   }
   return null;
 }
