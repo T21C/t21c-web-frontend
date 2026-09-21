@@ -21,6 +21,7 @@
   min-width: 50px;
   width: 50px;
   overflow: hidden;
+  pointer-events: auto;
 }
 
 .references-button.visible {

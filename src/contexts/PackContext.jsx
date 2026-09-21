@@ -12,6 +12,9 @@ import { parseHashtagPackQuery } from '@/utils/normalizeEntitySearchQuery';
 
 const PackContext = createContext()
 
+const isPacksListPath = (pathname) =>
+    pathname === '/packs' || pathname === '/packs/my';
+
 const PackContextProvider = (props) => {
     const { user } = useAuth();
     const location = useLocation();
@@ -64,8 +67,13 @@ const PackContextProvider = (props) => {
         setForceUpdate((f) => !f);
     }, []);
 
-    // Preset searches from router state, window context, or URL (?levelId=)
+    // Preset searches from router state, window context, or URL (?levelId=).
+    // Only apply on the packs list so other routes don't rewrite pack filters.
     useEffect(() => {
+        if (!isPacksListPath(location.pathname)) {
+            return;
+        }
+
         const stateQuery = location.state?.packSearchQuery;
         if (typeof stateQuery === 'string' && stateQuery.trim()) {
             applyPresetQuery(stateQuery, { force: true });
@@ -96,14 +104,14 @@ const PackContextProvider = (props) => {
     const runRequest = useDebouncedRequest(500);
 
     // Pack browsing function (page-exclusive)
-    const fetchPacks = useCallback(async () => {
+    const fetchPacks = useCallback(async ({ immediate = false } = {}) => {
         setLoading(true);
         setError(false);
 
         const currentFilters = filtersRef.current;
         const trimmedQuery = currentFilters.query.trim();
         const packLookupId = parseHashtagPackQuery(trimmedQuery);
-        const runner = pageNumber > 0 ? runRequest.flush : runRequest;
+        const runner = pageNumber > 0 || immediate ? runRequest.flush : runRequest;
 
         if (packLookupId && pageNumber === 0) {
             try {
@@ -226,14 +234,15 @@ const PackContextProvider = (props) => {
         }
     }, [user]);
 
-    // Effect to fetch packs when dependencies change
-    useEffect(() => {
+    // List fetch is owned by PackPage so a full reload on other routes
+    // does not hit the packs API. forceUpdate is in the identity so
+    // triggerRefresh still refetches while PackPage is mounted.
+    const loadPackList = useCallback((options) => {
         if (filtersRef.current.viewMode === 'favorites') {
-            fetchFavorites();
-        } else {
-            fetchPacks();
+            return fetchFavorites();
         }
-    }, [fetchPacks, fetchFavorites, forceUpdate]);
+        return fetchPacks(options);
+    }, [fetchFavorites, fetchPacks, forceUpdate]);
 
     // General pack operations (for page use)
     const createPack = async (packData) => {
@@ -374,6 +383,8 @@ const PackContextProvider = (props) => {
 
         // Page browsing actions
         fetchPacks,
+        loadPackList,
+        forceUpdate,
         triggerRefresh,
         loadMore,
         retryLoadMore,

@@ -11,6 +11,7 @@ export function getPortalRoot(selector = '.body') {
 }
 
 export const POPUP_STACK_ID = 'tuf-popup-stack';
+export const FLOAT_CHROME_ID = 'tuf-float-chrome';
 
 /**
  * Dedicated stacking root on `document.body`, above nav / `.body`.
@@ -67,12 +68,35 @@ export function registerPopupShell(el) {
   }
   popupShellStack.push(el);
   syncPopupShellLayers();
+  const chrome = document.getElementById(FLOAT_CHROME_ID);
+  if (chrome && body && body.lastElementChild !== chrome) {
+    body.appendChild(chrome);
+  }
   return () => {
     const idx = popupShellStack.lastIndexOf(el);
     if (idx !== -1) popupShellStack.splice(idx, 1);
     el.style.removeProperty('z-index');
     syncPopupShellLayers();
   };
+}
+
+/**
+ * Persistent page chrome (FABs) that must paint above every PopupShell.
+ * Sibling of `#tuf-popup-stack` on `document.body` at `--z-float`.
+ * Pointer events are none on the host so popups stay clickable; children opt in.
+ */
+export function getFloatChromeRoot() {
+  const body = typeof document !== 'undefined' ? document.body : null;
+  if (!body) return null;
+  let chrome = document.getElementById(FLOAT_CHROME_ID);
+  if (!chrome) {
+    chrome = document.createElement('div');
+    chrome.id = FLOAT_CHROME_ID;
+    chrome.className = 'tuf-float-chrome';
+    chrome.setAttribute('data-tuf-float-chrome', '');
+    body.appendChild(chrome);
+  }
+  return chrome;
 }
 
 /**

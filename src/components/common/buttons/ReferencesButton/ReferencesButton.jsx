@@ -3,20 +3,34 @@ import React, { useState } from 'react';
 import './referencesbutton.css';
 import { ReferencesPopup } from '@/components/popups/Difficulties';
 import { Portal } from '@/components/common/Portal';
+import { getFloatChromeRoot } from '@/utils/portalRoot';
 import { useTranslation } from 'react-i18next';
 
-const ReferencesButton = ({ ...props }) => {
+/** RatingPage stays mounted on `/rating` and `/rating/:id`; do not hide the FAB. */
+function hideReferencesButtonOnNavigate(pathname, mountPathname) {
+  const isRatingPagePath = (path) => path === '/rating' || /^\/rating\/\d+$/.test(path);
+  if (isRatingPagePath(mountPathname) && isRatingPagePath(pathname)) {
+    return false;
+  }
+  return pathname !== mountPathname;
+}
+
+const ReferencesButton = ({ onClick, ...props }) => {
   const [showPopup, setShowPopup] = useState(false);
   const { t } = useTranslation('components');
+  const chromeRoot = typeof document !== 'undefined' ? getFloatChromeRoot() : null;
 
   return (
     <>
-      <Portal>
+      <Portal root={chromeRoot} hideOnNavigate={hideReferencesButtonOnNavigate}>
       <button
         className="references-button visible"
-        onClick={() => setShowPopup(true)}
         aria-label={t('references.button.label')}
         {...props}
+        onClick={(event) => {
+          setShowPopup(true);
+          onClick?.(event);
+        }}
       >
         <span className="button-content">
           <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#ffffff" >
@@ -35,4 +49,4 @@ const ReferencesButton = ({ ...props }) => {
   );
 };
 
-export default ReferencesButton; 
+export default ReferencesButton;

@@ -3,10 +3,12 @@
 @import "./styles/portaledPanel.css";
 
 :root {
-  /* Stacking (low → high): nav, popups, in-popup floats, toasts.
-     PopupShells portal into .tuf-popup-stack on #root (same tree as the toaster).
+  /* Stacking (low → high): nav, popups, floats/chrome, toasts.
+     PopupShells portal into #tuf-popup-stack on document.body.
      Nested shells share that stack and layer by DOM order.
      Overlay classNames must not set z-index (they share the .popup-shell node).
+     Persistent FABs (ReferencesButton) portal into #tuf-float-chrome at --z-float.
+     In-popup menus still mount via getFloatPortalRoot() inside the current shell.
      Toaster renders in-tree under .app-notifications; that host must sit above --z-popup. */
   --z-nav: 100;
   --z-popup: 1100;
@@ -225,6 +227,14 @@ body {
 .app-notifications {
   position: relative;
   z-index: var(--z-toast);
+  pointer-events: none;
+}
+
+/* Body-level host for persistent FABs. Created by getFloatChromeRoot(). */
+.tuf-float-chrome {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-float);
   pointer-events: none;
 }
 

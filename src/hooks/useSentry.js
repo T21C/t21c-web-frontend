@@ -190,6 +190,19 @@ const isNonAppLoopbackAbortNoise = (event) => {
 
 const sentryRelease = import.meta.env.VITE_SENTRY_RELEASE;
 
+/** Vite hashed bundles (`/assets/…`) and Vite-dev source files (`/src/assets/…`). */
+const STATIC_ASSET_PATH_RE = /\/(?:src\/)?assets\//i;
+
+function isStaticAssetTraceUrl(url) {
+  if (typeof url !== 'string' || !url) return false;
+  try {
+    const path = url.startsWith('http') ? new URL(url).pathname : url;
+    return STATIC_ASSET_PATH_RE.test(path);
+  } catch {
+    return STATIC_ASSET_PATH_RE.test(url);
+  }
+}
+
 const tracePropagationTargets = [
   'localhost',
   /^\//, // same-origin (Vite /v2|/v3 proxy in dev)
@@ -248,6 +261,9 @@ Sentry.init({
       traceFetch: true,
       traceXHR: true,
       enableHTTPTimings: true,
+      // Resource Timing still emits `/assets/index.hash.js` as resource.script
+      // children; ignoreSpans below drops those. This skips fetch/XHR chunk loads.
+      shouldCreateSpanForRequest: (url) => !isStaticAssetTraceUrl(url),
       // INP click roots flatten server spans; leave Web Vitals without INP spans.
       enableInp: false,
       // Capture the post-navigation request burst, then end (default finalTimeout=30s).
@@ -263,6 +279,9 @@ Sentry.init({
   tracesSampleRate: import.meta.env.DEV ? 1.0 : 0.1,
   tracePropagationTargets,
   allowUrls,
+  // Drop Vite static-file resource spans (`/assets/foo.hash.js`) from waterfalls.
+  // allowUrls `/assets/` above is stack-frame matching for errors, not traces.
+  ignoreSpans: [{ name: STATIC_ASSET_PATH_RE }],
   // Browser extensions / page translators mutate React-owned DOM; React then
   // throws NotFoundError on removeChild during commit. Unfixable from app code.
   // (Has first-party React frames, so thirdPartyErrorFilterIntegration keeps it.)
