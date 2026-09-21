@@ -4,6 +4,24 @@ import { createPortal } from "react-dom";
 import { getPortalRoot } from "@/utils/portalRoot";
 import { subscribePathnameChange } from "@/utils/pathnameChange";
 
+function showPortalNode(wrap) {
+  wrap.removeAttribute("hidden");
+  wrap.style.removeProperty("display");
+}
+
+function hidePortalNode(wrap) {
+  wrap.setAttribute("hidden", "");
+  wrap.style.setProperty("display", "none", "important");
+}
+
+function shouldHideOnPathChange(hideOnNavigate, pathname, mountPathname) {
+  if (hideOnNavigate === false) return false;
+  if (typeof hideOnNavigate === "function") {
+    return hideOnNavigate(pathname, mountPathname);
+  }
+  return pathname !== mountPathname;
+}
+
 /**
  * Declarative portal wrapper. Portaled UI must use self-contained class selectors
  * or co-located CSS imports — never depend on a page wrapper ancestor.
@@ -11,14 +29,23 @@ import { subscribePathnameChange } from "@/utils/pathnameChange";
  * On pathname change the wrapper is hidden immediately. Lazy route <Suspense>
  * keeps the previous page (and this portal) mounted until the next chunk
  * loads; hiding here is what makes overlays disappear when the navbar is used.
+ * Returning to the mount pathname unhides the wrapper. Pass `hideOnNavigate`
+ * to keep chrome visible across in-page param changes (e.g. `/rating` ↔ id).
  *
  * @param {object} props
  * @param {import('react').ReactNode} props.children
  * @param {boolean} [props.when=true]
  * @param {'body' | 'documentBody' | 'root'} [props.mount='body']
  * @param {HTMLElement | null} [props.root] - explicit mount node; wins over mount
+ * @param {boolean | ((pathname: string, mountPathname: string) => boolean)} [props.hideOnNavigate=true]
  */
-export function Portal({ children, when = true, mount = "body", root: rootProp }) {
+export function Portal({
+  children,
+  when = true,
+  mount = "body",
+  root: rootProp,
+  hideOnNavigate = true,
+}) {
   const wrapRef = useRef(null);
   const mountPathRef = useRef("");
 
@@ -27,19 +54,18 @@ export function Portal({ children, when = true, mount = "body", root: rootProp }
 
     mountPathRef.current = window.location.pathname;
     const node = wrapRef.current;
-    if (node) {
-      node.removeAttribute("hidden");
-      node.style.removeProperty("display");
-    }
+    if (node) showPortalNode(node);
 
     return subscribePathnameChange((pathname) => {
-      if (pathname === mountPathRef.current) return;
       const wrap = wrapRef.current;
       if (!wrap) return;
-      wrap.setAttribute("hidden", "");
-      wrap.style.setProperty("display", "none", "important");
+      if (shouldHideOnPathChange(hideOnNavigate, pathname, mountPathRef.current)) {
+        hidePortalNode(wrap);
+      } else {
+        showPortalNode(wrap);
+      }
     });
-  }, [when]);
+  }, [when, hideOnNavigate]);
 
   if (!when || children == null) return null;
 

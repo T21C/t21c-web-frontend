@@ -82,12 +82,6 @@
     pointer-events: none;
 }
 
-/* Ensure references button stays above the popup */
-.references-button-container {
-    position: relative;
-    z-index: 1001;
-}
-
 .rating-popup .detail-field.comment-field {
     flex-direction: column;
     align-items: flex-start;

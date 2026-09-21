@@ -10,7 +10,7 @@ import { RatingItem } from '@/components/cards';
 import { RatingInput } from '@/components/common/selectors';
 import api from '@/utils/api';
 import { useTranslation } from 'react-i18next';
-import { ReferencesButton, CloseButton } from '@/components/common/buttons';
+import { CloseButton } from '@/components/common/buttons';
 import { ExternalLinkIcon, DownloadIcon, DraftIcon } from '@/components/common/icons';
 import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from "@/utils/Utility";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
@@ -50,11 +50,9 @@ async function updateRating(id, rating, comment, isCommunityRating = false, view
 export const RatingDetailPopup = ({ 
   selectedRating, 
   setSelectedRating = () => {},
-  setShowReferences = () => {},
   setRatings = () => {}, 
   user = null, 
   isSuperAdmin = false,
-  enableReferences = true,
   showingConfirmed=false,
   weeklyRaterActivity = [],
   ratingAccuracyStats: ratingAccuracyStatsProp,
@@ -585,13 +583,6 @@ export const RatingDetailPopup = ({
       closeDisabled={isAnimating}
       overlayClassName={`rating-popup-overlay${isExiting ? ' exiting' : ''}`}
       panelClassName={`rating-popup${isExiting ? ' exiting' : ''}`}
-      overlayChildren={
-        enableReferences ? (
-          <div className="references-button-container">
-            <ReferencesButton onClick={() => setShowReferences(true)} />
-          </div>
-        ) : null
-      }
     >
         <CloseButton
           className="rating-popup-close"

@@ -45,6 +45,8 @@ const PackPageContent = () => {
     error,
     hasMore,
     totalPacks,
+    loadPackList,
+    forceUpdate,
     triggerRefresh,
     loadMore,
     retryLoadMore,
@@ -60,6 +62,21 @@ const PackPageContent = () => {
   const [showHelpPopup, setShowHelpPopup] = useState(false);
   const [displayMode, setDisplayMode] = useState('grid');
   const scrollRef = useRef(null);
+  const isFirstListEffectRef = useRef(true);
+
+  // Lazy-load the list only while this page is mounted. On remount, keep
+  // context-backed rows (same idea as LevelPage / LeaderboardPage).
+  useEffect(() => {
+    if (isFirstListEffectRef.current) {
+      isFirstListEffectRef.current = false;
+      if (totalPacks != null) {
+        return;
+      }
+      loadPackList({ immediate: true });
+      return;
+    }
+    loadPackList();
+  }, [loadPackList, forceUpdate]);
 
   // Sort options
   const sortOptions = [
@@ -456,7 +473,6 @@ const PackPageContent = () => {
   );
 };
 
-// Main wrapper component that provides the unified PackContext
 const PackPage = () => {
   return <PackPageContent />;
 };
