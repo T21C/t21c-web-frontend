@@ -7,6 +7,7 @@ import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from '@/utils/Utility
 import { NavLink } from 'react-router-dom';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { getYouTubeThumbnailUrl } from '@/utils/videoLink';
+import { getBilibiliCoverUrl } from '@/utils/bilibiliCover';
 
 const WeeklyGallery = ({ 
   curations = [], 
@@ -22,6 +23,7 @@ const WeeklyGallery = ({
   const [isAutoScrolling, setIsAutoScrolling] = useState(autoScroll);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [brokenThumbs, setBrokenThumbs] = useState({});
   const autoScrollRef = useRef(null);
   const pauseTimeoutRef = useRef(null);
   const containerRef = useRef(null);
@@ -260,10 +262,11 @@ const WeeklyGallery = ({
           {curations.map((curation, index) => {
             const position = getCurationPosition(index);
             const levelRow = curation.scheduledCuration?.level || curation.level;
-            const thumbSrc =
+            const thumbCandidate =
               curation.previewLink ??
               getYouTubeThumbnailUrl(levelRow?.videoLink) ??
-              null;
+              getBilibiliCoverUrl(levelRow?.videoLink);
+            const thumbSrc = brokenThumbs[curation.id] ? null : thumbCandidate;
             return (
               <NavLink
                 to={`/levels/${curation.scheduledCuration?.level?.id || curation.level?.id}`}
@@ -286,6 +289,11 @@ const WeeklyGallery = ({
                       src={thumbSrc}
                       alt={`${levelRow?.song || 'Unknown'} thumbnail`}
                       className="weekly-gallery__thumbnail"
+                      onError={() => {
+                        setBrokenThumbs((prev) => (
+                          prev[curation.id] ? prev : { ...prev, [curation.id]: true }
+                        ));
+                      }}
                     />
                   ) : (
                     <div className="weekly-gallery__no-thumbnail" aria-hidden>

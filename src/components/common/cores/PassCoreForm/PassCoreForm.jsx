@@ -12,6 +12,7 @@ import {
 import { applyMidspinPerfectDecrement, willApplyMidspinDecrement } from '@/utils/midspinPerfectDecrement';
 import './PassCoreForm.css';
 import { JudgementInputs } from './JudgementInputs';
+import { getBilibiliCoverUrl } from '@/utils/bilibiliCover';
 
 export const PASS_CORE_COPY = {
   submit: {
@@ -323,7 +324,7 @@ export function PassCoreForm({
       style={{
         backgroundImage: isCalculator
           ? undefined
-          : `url(${videoDetail?.image || placeholderImage})`,
+          : `url("${videoDetail?.image || getBilibiliCoverUrl(form?.videoLink) || placeholderImage}")`,
       }}
     >
       {!isCalculator && (
