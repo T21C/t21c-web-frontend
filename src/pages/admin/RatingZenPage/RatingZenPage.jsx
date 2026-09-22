@@ -971,18 +971,18 @@ const RatingZenPage = () => {
 
           <div className="rating-zen-page__main">
             <div className="rating-zen-page__video-wrap">
-            <button
-            type="button"
-            className="rating-zen-page__flag"
-            onClick={() => void handleReport()}
-            title={t('rating.zen.report')}
-            aria-label={t('rating.zen.report')}
-          >
-            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
-              <line x1="4" y1="22" x2="4" y2="15" />
-            </svg>
-          </button>
+              <button
+                type="button"
+                className="rating-zen-page__flag"
+                onClick={() => void handleReport()}
+                title={t('rating.zen.report')}
+                aria-label={t('rating.zen.report')}
+              >
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+                  <line x1="4" y1="22" x2="4" y2="15" />
+                </svg>
+              </button>
               <div className="rating-zen-page__video-aspect">
                 {videoData ? (
                   <iframe
@@ -998,6 +998,16 @@ const RatingZenPage = () => {
                   </div>
                 )}
               </div>
+              {current.level?.notes?.trim() && (
+                <div className="rating-zen-page__notes">
+                  <span className="rating-zen-page__notes-label">
+                    {t('components:rating.detailPopup.labels.notes')}
+                  </span>
+                  <div className="rating-zen-page__notes-body">
+                    <CommentFormatter>{current.level.notes}</CommentFormatter>
+                  </div>
+                </div>
+              )}
             </div>
 
             <aside className="rating-zen-page__panel">

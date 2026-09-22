@@ -190,6 +190,7 @@ const PassDetailPage = () => {
   const accShineClass = xPerfectShine ? 'xperfect-shine' : ppShine ? 'perfect-shine' : '';
   const showXPerfectCounts = shouldShowXPerfectJudgements(pass);
   const era = adofaiVersionFromPass(pass);
+  const showWrongJudgement = hasFlag(user, permissionFlags.SUPER_ADMIN) && !!pass.isWrongJudgement;
   const levelDiff = difficultyDict[pass.level?.diffId];
   const baseScore = pass.level?.baseScore || levelDiff?.baseScore;
   const isOwnPass = user && user.playerId === pass.player?.id;
@@ -335,7 +336,7 @@ const PassDetailPage = () => {
                   </span>
                 </div>
               </div>
-              {(isAutoSubmittedPass(pass) || pass.isWorldsFirst || pass.isWorldsFirstPP || normalizeKeyCount(pass.keyCount) != null || pass.is12K || pass.is16K || pass.isNoHoldTap || era === ADOFAI_VERSION.V2 || era === ADOFAI_VERSION.PRE_3_4_0 || pass.isXPerfectMode) && (
+              {(showWrongJudgement || isAutoSubmittedPass(pass) || pass.isWorldsFirst || pass.isWorldsFirstPP || normalizeKeyCount(pass.keyCount) != null || pass.is12K || pass.is16K || pass.isNoHoldTap || era === ADOFAI_VERSION.V2 || era === ADOFAI_VERSION.PRE_3_4_0 || pass.isXPerfectMode) && (
                 <div className="flags-container">
                   {pass.isWorldsFirst && (
                     <WorldsFirstFlag variant="clear" tooltipIndex={`${pass.id}-detail-clear`} className="worlds-first" />
@@ -343,8 +344,9 @@ const PassDetailPage = () => {
                   {pass.isWorldsFirstPP && (
                     <WorldsFirstFlag variant="pp" tooltipIndex={`${pass.id}-detail-pp`} className="worlds-first" />
                   )}
-                  {(isAutoSubmittedPass(pass) || normalizeKeyCount(pass.keyCount) != null || pass.is12K || pass.is16K || pass.isNoHoldTap || era === ADOFAI_VERSION.V2 || era === ADOFAI_VERSION.PRE_3_4_0 || pass.isXPerfectMode) && (
+                  {(showWrongJudgement || isAutoSubmittedPass(pass) || normalizeKeyCount(pass.keyCount) != null || pass.is12K || pass.is16K || pass.isNoHoldTap || era === ADOFAI_VERSION.V2 || era === ADOFAI_VERSION.PRE_3_4_0 || pass.isXPerfectMode) && (
                     <div className="flags">
+                      {showWrongJudgement && <span className="flag">{t('passDetail.flags.wrongJudgement')}</span>}
                       {isAutoSubmittedPass(pass) && <PassAutoSubmissionFlag />}
                       {normalizeKeyCount(pass.keyCount) != null ? (
                         <span className="flag">{t('passDetail.flags.keyCount', { count: normalizeKeyCount(pass.keyCount) })}</span>

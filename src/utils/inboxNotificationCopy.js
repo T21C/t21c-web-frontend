@@ -12,7 +12,20 @@ export function inboxNotificationCopy(t, notification) {
   const visibility = payload.isHidden
     ? t('notifications.visibility.hidden')
     : t('notifications.visibility.public');
-  const vars = { ...payload, song, artist, visibility };
+  const swappedWithSong = payload.swappedWithLevelId
+    ? (payload.swappedWithSong || t('notifications.untitledLevel', { levelId: payload.swappedWithLevelId }))
+    : payload.swappedWithSong;
+  const swappedWithArtist = payload.swappedWithLevelId
+    ? (payload.swappedWithArtist || t('notifications.unknownArtist'))
+    : payload.swappedWithArtist;
+  const vars = {
+    ...payload,
+    song,
+    artist,
+    visibility,
+    swappedWithSong,
+    swappedWithArtist,
+  };
   const type = notification?.type || 'unknown';
   const reasonText = typeof payload.reason === 'string' ? payload.reason.trim() : '';
   const body = t(`notifications.types.${type}.body`, {

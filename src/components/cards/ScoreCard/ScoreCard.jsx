@@ -18,6 +18,7 @@ import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import MarqueeText from "@/components/common/display/MarqueeText/MarqueeText";
 import i18next from "i18next";
 import { shouldShowXPerfectJudgements } from "@/utils/adofaiVersion";
+import { isPureXPerfect } from "@/utils/CalcAcc";
 
 const Judgements = ({judgements, showXPerfect}) => {
   return (
@@ -49,6 +50,15 @@ const ScoreCard = ({ scoreData, topScores = [], potentialTopScores = [], mode = 
   const { difficultyDict } = useDifficultyContext();
   const formattedDate = formatPassDate(scoreData.vidUploadTime, i18next?.language);
   const passDetailTo = `/passes/${scoreData.id}`;
+  const xPerfectMode = !!(scoreData.isXPerfectMode || scoreData.flags?.isXPerfectMode);
+  const accuracyNumber = scoreData.accuracy == null || scoreData.accuracy === ''
+    ? null
+    : Number(scoreData.accuracy);
+  const accuracyClass = isPureXPerfect(scoreData.judgements, xPerfectMode, accuracyNumber)
+    ? 'pure-xperfect'
+    : scoreData.accuracy == 1
+      ? 'pure-perfect'
+      : '';
 
   const cardStyle = {
     pointerEvents: isHiddenLevel ? 'none' : 'auto',
@@ -149,7 +159,7 @@ const ScoreCard = ({ scoreData, topScores = [], potentialTopScores = [], mode = 
     <div className="acc-wrapper">
       <div className="acc-wrapper-inner">
         <p className="score-exp">{t('score.card.labels.accuracy')}</p>
-        <div className={`score-desc ${scoreData.accuracy == 1 ? 'pure-perfect' : ''}`}>{formatAccuracyRatio(scoreData.accuracy)}</div>
+        <div className={`score-desc ${accuracyClass}`}>{formatAccuracyRatio(scoreData.accuracy)}</div>
       </div>
       {!isFeaturedMode && scoreData.judgements ? (
         <Judgements

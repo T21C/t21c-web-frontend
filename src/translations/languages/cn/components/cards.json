@@ -42,7 +42,8 @@
       "noHoldTap": "非默认长按设置",
       "adofaiV2": "<adofaiicon></adofaiicon> v2",
       "adofaiPre340": "<3.4.0",
-      "xPerfect": "X-Perfect"
+      "xPerfect": "X-Perfect",
+      "wrongJudgement": "判定不符"
     },
     "links": {
       "video": "观看视频"

@@ -29,7 +29,8 @@
         "deletedPasses": "삭제된 클리어",
         "keyFlags": "키 개수",
         "wfFilter": "WF 필터",
-        "adofaiVersion": "ADOFAI 버전"
+        "adofaiVersion": "ADOFAI 버전",
+        "wrongJudgement": "잘못된 판정"
       }
     },
     "sort": {

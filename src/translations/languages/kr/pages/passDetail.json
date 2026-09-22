@@ -113,7 +113,8 @@
     "adofaiV2Note": "얼불춤v2 기록",
     "adofaiPre340": "<3.4.0",
     "adofaiPre340Note": "ADOFAI 3.4.0 이전 기록",
-    "xPerfect": "X-Perfect"
+    "xPerfect": "X-Perfect",
+    "wrongJudgement": "잘못된 판정"
   },
   "judgements": {
     "title": "판정",

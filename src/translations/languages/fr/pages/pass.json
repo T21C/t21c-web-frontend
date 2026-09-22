@@ -21,7 +21,8 @@
         "only12k": "12K seulement",
         "deletedPasses": "Complétions supprimées",
         "wfFilter": "Filtre WF",
-        "adofaiVersion": "Version ADOFAI"
+        "adofaiVersion": "Version ADOFAI",
+        "wrongJudgement": "Mauvais jugements"
       }
     },
     "sort": {

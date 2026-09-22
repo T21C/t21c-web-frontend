@@ -957,6 +957,7 @@ const PackDetailPage = () => {
           referencedLevel: item.referencedLevel ?? null,
           isCleared: !!item.isCleared,
           isPurePerfect: !!item.isPurePerfect,
+          isPureXPerfect: !!item.isPureXPerfect,
         });
       }
       if (item.children?.length) {
@@ -977,6 +978,7 @@ const PackDetailPage = () => {
             referencedLevel: meta?.referencedLevel ?? null,
             isCleared: meta?.isCleared ?? false,
             isPurePerfect: meta?.isPurePerfect ?? false,
+            isPureXPerfect: meta?.isPureXPerfect ?? false,
           };
         }
         if (node.type === 'folder') {
@@ -1320,7 +1322,7 @@ const PackDetailPage = () => {
         <div className="header">
           {showPackProgress ? (
             <div
-              className={`pack-clear-progress${packClears.percent >= 100 ? ' is-complete' : ''}`}
+              className={`pack-clear-progress${packClears.percent >= 100 ? ' is-complete' : ''}${packClears.percent >= 100 && packClears.allPureXPerfect ? ' is-pure-xperfect' : ''}`}
               role="progressbar"
               aria-valuemin={0}
               aria-valuemax={packClears.total}

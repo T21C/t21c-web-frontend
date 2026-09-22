@@ -12,8 +12,24 @@ import { parseHashtagPackQuery } from '@/utils/normalizeEntitySearchQuery';
 
 const PackContext = createContext()
 
+const DEFAULT_PACK_SORT = 'FAVORITES';
+const PACK_SORT_DEFAULT_KEY = 'pack_sort_default';
+const PACK_SORT_DEFAULT_VERSION = 'favorites';
+
 const isPacksListPath = (pathname) =>
     pathname === '/packs' || pathname === '/packs/my';
+
+const readInitialPackSort = () => {
+    const stored = localStorage.getItem('pack_sort');
+    const appliedDefault = localStorage.getItem(PACK_SORT_DEFAULT_KEY);
+    if (appliedDefault !== PACK_SORT_DEFAULT_VERSION) {
+        localStorage.setItem(PACK_SORT_DEFAULT_KEY, PACK_SORT_DEFAULT_VERSION);
+        if (!stored || stored === 'RECENT') {
+            return DEFAULT_PACK_SORT;
+        }
+    }
+    return stored || DEFAULT_PACK_SORT;
+};
 
 const PackContextProvider = (props) => {
     const { user } = useAuth();
@@ -34,7 +50,7 @@ const PackContextProvider = (props) => {
     const [filters, setFilters] = useState(() => ({
         query: localStorage.getItem('pack_query') || "",
         viewMode: localStorage.getItem('pack_viewMode') || LevelPackViewModes.PUBLIC,
-        sort: localStorage.getItem('pack_sort') || "RECENT",
+        sort: readInitialPackSort(),
         order: localStorage.getItem('pack_order') || "DESC",
         myLikesOnly: localStorage.getItem('pack_myLikesOnly') === 'true' || false
     }));
@@ -323,7 +339,7 @@ const PackContextProvider = (props) => {
         setFilters({
             query: "",
             viewMode: LevelPackViewModes.PUBLIC,
-            sort: "RECENT",
+            sort: DEFAULT_PACK_SORT,
             order: "DESC",
             myLikesOnly: false
         });

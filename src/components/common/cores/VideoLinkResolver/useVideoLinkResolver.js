@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import api from '@/utils/api';
 import { getLocalVideoPreview } from '@/utils/videoLink';
+import { loadSubmissionVideoDetail } from '@/utils/fetchVideoDetail';
 import { resolveSubmissionVideoUrl } from '@/utils/resolveVideoUrl';
 import { useDebouncedRequest } from '@/hooks/useDebouncedRequest';
 
@@ -12,12 +13,13 @@ import { useDebouncedRequest } from '@/hooks/useDebouncedRequest';
  * Watches `value`; when it contains a b23.tv short link that resolves to a
  * different (Bilibili) URL, it calls `onResolve(resolvedUrl)` so the caller can
  * swap the field value, and shows a success toast. When `onVideoDetail` is
- * provided, it also builds a quota-free local embed preview.
+ * provided, it builds a local embed preview and, for Bilibili, loads title,
+ * channel, and publish time from the video-details route.
  *
  * @param {object} args
  * @param {string} args.value                 Current video link value.
  * @param {(url: string) => void} [args.onResolve]      Called with the expanded URL.
- * @param {(details: object|null) => void} [args.onVideoDetail] Called with local preview.
+ * @param {(details: object|null) => void} [args.onVideoDetail] Called with embed preview, plus Bilibili title/channel/time when those load.
  * @param {string} [args.toastMessage]        Success toast shown after a replace.
  * @param {boolean} [args.enabled=true]       Disable to skip all resolving.
  * @param {number} [args.debounceMs=500]      Debounce window for the request.
@@ -59,28 +61,43 @@ export function useVideoLinkResolver({
     onVideoDetailRef.current?.(getLocalVideoPreview(videoLink));
     setResolving(true);
 
-    resolveRequest(({ signal }) =>
-      resolveSubmissionVideoUrl(videoLink, { signal })
-        .then(({ url: resolvedUrl, resolved }) => {
-          if (resolved && resolvedUrl && resolvedUrl !== videoLink) {
-            onResolveRef.current?.(resolvedUrl);
-            if (toastMessageRef.current) {
-              toast.success(toastMessageRef.current);
-            }
+    resolveRequest(async ({ signal }) => {
+      let previewUrl = videoLink;
+      try {
+        const { url: resolvedUrl, resolved } = await resolveSubmissionVideoUrl(videoLink, { signal });
+        if (resolved && resolvedUrl && resolvedUrl !== videoLink) {
+          onResolveRef.current?.(resolvedUrl);
+          if (toastMessageRef.current) {
+            toast.success(toastMessageRef.current);
           }
+        }
+        if (resolvedUrl) previewUrl = resolvedUrl;
+      } catch (error) {
+        if (api.isCancel(error)) throw error;
+      }
 
-          onVideoDetailRef.current?.(getLocalVideoPreview(resolvedUrl) || null);
-        })
-        .catch((error) => {
-          if (api.isCancel(error)) return;
-          if (!getLocalVideoPreview(videoLink)) {
-            onVideoDetailRef.current?.(null);
-          }
-        })
-        .finally(() => {
-          setResolving(false);
-        }),
-    );
+      try {
+        const detail = await loadSubmissionVideoDetail(previewUrl, { signal });
+        onVideoDetailRef.current?.(detail || null);
+      } catch (error) {
+        if (api.isCancel(error)) throw error;
+        const preview = getLocalVideoPreview(previewUrl);
+        if (preview) {
+          onVideoDetailRef.current?.(preview);
+        } else if (!getLocalVideoPreview(videoLink)) {
+          onVideoDetailRef.current?.(null);
+        }
+      }
+    })
+      .catch((error) => {
+        if (api.isCancel(error)) return;
+        if (!getLocalVideoPreview(videoLink)) {
+          onVideoDetailRef.current?.(null);
+        }
+      })
+      .finally(() => {
+        setResolving(false);
+      });
 
     return () => {
       resolveRequest.cancel();

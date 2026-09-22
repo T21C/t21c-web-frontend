@@ -103,6 +103,8 @@ const PassPage = () => {
     setWfFilter,
     adofaiVersionFilter,
     setAdofaiVersionFilter,
+    wrongJudgementFilter,
+    setWrongJudgementFilter,
   } = useContext(PassContext);
 
   const sortOptions = [
@@ -156,6 +158,7 @@ const PassPage = () => {
           keyFlag,
           wfFilter,
           adofaiVersionFilter,
+          wrongJudgementFilter,
           minDiff: selectedLowFilterDiff !== 0 ? selectedLowFilterDiff : undefined,
           maxDiff: selectedHighFilterDiff !== 0 ? selectedHighFilterDiff : undefined,
           specialDifficulties: selectedSpecialDiffs,
@@ -189,7 +192,7 @@ const PassPage = () => {
     };
 
     fetchPasses();
-  }, [query, pageNumber, forceUpdate, deletedFilter, hide12k, selectedSpecialDiffs, keyFlag, wfFilter, adofaiVersionFilter, sort]);
+  }, [query, pageNumber, forceUpdate, deletedFilter, hide12k, selectedSpecialDiffs, keyFlag, wfFilter, adofaiVersionFilter, wrongJudgementFilter, sort]);
 
   function resetAll() {
     setSort("SCORE_DESC");
@@ -203,6 +206,7 @@ const PassPage = () => {
     setWfFilter("none");
     setAdofaiVersionFilter("all");
     setDeletedFilter("hide");
+    setWrongJudgementFilter("all");
 
     // Clear and reload data
     setLoading(true);
@@ -550,6 +554,19 @@ const PassPage = () => {
                       triggerRefresh();
                     }}
                     states={['show', 'hide', 'only']}
+                  />
+                </div>
+              )}
+              {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
+                <div className="state-switches-item">
+                  <span className="state-switches-label">{t('pass.settings.filter.options.wrongJudgement')}</span>
+                  <StateDisplay
+                    currentState={wrongJudgementFilter}
+                    onChange={(newState) => {
+                      setWrongJudgementFilter(newState);
+                      triggerRefresh();
+                    }}
+                    states={['all', 'only']}
                   />
                 </div>
               )}

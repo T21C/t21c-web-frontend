@@ -709,6 +709,10 @@
   filter: drop-shadow(0 0 6px rgba(255, 255, 0, 0.5));
 }
 
+.level-card.pack .level-card__cleared.pure-xperfect {
+  filter: drop-shadow(0 0 6px rgba(var(--color-platinum-glow-rgb), 0.55));
+}
+
 .level-card.pack:hover .level-card__cleared,
 .level-card.pack .level-card__cleared.no-hover {
   left: -1.75rem;

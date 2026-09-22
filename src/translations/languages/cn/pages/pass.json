@@ -29,7 +29,8 @@
         "deletedPasses": "已删除通关记录",
         "keyFlags": "按键数目",
         "wfFilter": "世界首个",
-        "adofaiVersion": "ADOFAI 版本"
+        "adofaiVersion": "ADOFAI 版本",
+        "wrongJudgement": "判定不符"
       }
     },
     "sort": {

@@ -14,6 +14,7 @@ const STORAGE_KEYS = {
   KEY_FLAG: 'pass_key_flag',
   WF_FILTER: 'pass_wf_filter',
   ADOFAI_VERSION_FILTER: 'pass_adofai_version_filter',
+  WRONG_JUDGEMENT_FILTER: 'pass_wrong_judgement_filter',
 };
 
 export const PassContext = createContext();
@@ -41,6 +42,9 @@ export const PassContextProvider = ({ children }) => {
   const [wfFilter, setWfFilter] = useState(() => localStorage.getItem(STORAGE_KEYS.WF_FILTER) || 'none');
   const [adofaiVersionFilter, setAdofaiVersionFilter] = useState(
     () => localStorage.getItem(STORAGE_KEYS.ADOFAI_VERSION_FILTER) || 'all',
+  );
+  const [wrongJudgementFilter, setWrongJudgementFilter] = useState(
+    () => localStorage.getItem(STORAGE_KEYS.WRONG_JUDGEMENT_FILTER) || 'all',
   );
 
   useEffect(() => {
@@ -99,6 +103,10 @@ export const PassContextProvider = ({ children }) => {
     localStorage.setItem(STORAGE_KEYS.ADOFAI_VERSION_FILTER, adofaiVersionFilter);
   }, [adofaiVersionFilter]);
 
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.WRONG_JUDGEMENT_FILTER, wrongJudgementFilter);
+  }, [wrongJudgementFilter]);
+
   return (
     <PassContext.Provider
       value={{
@@ -134,6 +142,8 @@ export const PassContextProvider = ({ children }) => {
         setWfFilter,
         adofaiVersionFilter,
         setAdofaiVersionFilter,
+        wrongJudgementFilter,
+        setWrongJudgementFilter,
       }}
     >
       {children}

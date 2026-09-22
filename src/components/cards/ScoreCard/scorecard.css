@@ -71,6 +71,12 @@
   font-weight: 700;
 }
 
+.score-card .score-desc.pure-xperfect {
+  color: var(--color-platinum);
+  text-shadow: 0 0 10px rgba(var(--color-platinum-glow-rgb), 0.75);
+  font-weight: 700;
+}
+
 .score-card .acc-wrapper-inner {
   position: relative;
   z-index: 2;

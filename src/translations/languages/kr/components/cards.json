@@ -34,7 +34,8 @@
       "noHoldTap": "홀드 설정 꺼짐",
       "adofaiV2": "<adofaiicon></adofaiicon> v2",
       "adofaiPre340": "<3.4.0",
-      "xPerfect": "X-Perfect"
+      "xPerfect": "X-Perfect",
+      "wrongJudgement": "잘못된 판정"
     },
     "links": {
       "video": "영상 보기"

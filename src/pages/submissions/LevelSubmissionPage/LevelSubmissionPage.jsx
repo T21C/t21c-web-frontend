@@ -7,6 +7,7 @@ import { useEffect, useRef, useState, useMemo } from "react";
 import { useLocation } from 'react-router-dom';
 import { resolveSubmissionVideoUrl } from "@/utils/resolveVideoUrl";
 import { getLocalVideoPreview } from "@/utils/videoLink";
+import { loadSubmissionVideoDetail } from "@/utils/fetchVideoDetail";
 import { useDebouncedRequest } from "@/hooks/useDebouncedRequest";
 import { useAuth } from "@/contexts/AuthContext";
 import { validateFeelingRating, formatDate, truncateString } from "@/utils/Utility";
@@ -305,29 +306,39 @@ const LevelSubmissionPage = () => {
     setVideoLinkResolving(true);
     setVideoDetail(getLocalVideoPreview(videoLink));
 
-    resolveVideoLinkRequest(({ signal }) =>
-      resolveSubmissionVideoUrl(videoLink, { signal })
-        .then(({ url: resolvedUrl, resolved }) => {
-          if (resolved && resolvedUrl && resolvedUrl !== videoLink) {
-            setForm((prevForm) => ({ ...prevForm, videoLink: resolvedUrl }));
-            toast.success(t('levelSubmission.videoInfo.linkResolved', {
-              defaultValue: 'Short link resolved to Bilibili URL',
-            }));
-          }
+    resolveVideoLinkRequest(async ({ signal }) => {
+      let previewUrl = videoLink;
+      try {
+        const { url: resolvedUrl, resolved } = await resolveSubmissionVideoUrl(videoLink, { signal });
+        if (resolved && resolvedUrl && resolvedUrl !== videoLink) {
+          setForm((prevForm) => ({ ...prevForm, videoLink: resolvedUrl }));
+          toast.success(t('levelSubmission.videoInfo.linkResolved', {
+            defaultValue: 'Short link resolved to Bilibili URL',
+          }));
+        }
+        if (resolvedUrl) previewUrl = resolvedUrl;
+      } catch (error) {
+        if (api.isCancel(error)) throw error;
+        console.error("Error fetching data:", error);
+      }
 
-          setVideoDetail(getLocalVideoPreview(resolvedUrl));
-        })
-        .catch((error) => {
-          if (api.isCancel(error)) return;
-          console.error("Error fetching data:", error);
-          if (!getLocalVideoPreview(videoLink)) {
-            setVideoDetail(null);
-          }
-        })
-        .finally(() => {
-          setVideoLinkResolving(false);
-        }),
-    );
+      const detail = await loadSubmissionVideoDetail(previewUrl, { signal });
+      if (detail) {
+        setVideoDetail(detail);
+      } else if (!getLocalVideoPreview(videoLink)) {
+        setVideoDetail(null);
+      }
+    })
+      .catch((error) => {
+        if (api.isCancel(error)) return;
+        console.error("Error fetching data:", error);
+        if (!getLocalVideoPreview(videoLink)) {
+          setVideoDetail(null);
+        }
+      })
+      .finally(() => {
+        setVideoLinkResolving(false);
+      });
 
     return () => {
       resolveVideoLinkRequest.cancel();

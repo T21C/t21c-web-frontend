@@ -169,6 +169,8 @@ const PassSubmissionPage = () => {
       const payload = {
         levelId: form.levelId,
         videoLink: cleanedVideoUrl,
+        title: videoDetail?.title || '',
+        rawTime: videoDetail?.timestamp || undefined,
         passer: form.leaderboardName || '',
         passerId: form.playerId || null,
         passerRequest: false,
