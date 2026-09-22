@@ -280,8 +280,8 @@
 }
 
 .pass-detail .info-desc.xperfect-shine {
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
-  color: var(--color-xperfect, #ffffff);
+  text-shadow: 0 0 10px rgba(var(--color-platinum-glow-rgb), 0.85);
+  color: var(--color-platinum);
 }
 
 .pass-detail .flags-container {
@@ -402,9 +402,9 @@
 }
 
 .pass-detail .judgement-item.perfect.xperfect-shine span {
-  color: var(--color-xperfect, #ffffff);
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.85),
-               0 0 20px rgba(255, 255, 255, 0.4);
+  color: var(--color-platinum);
+  text-shadow: 0 0 10px rgba(var(--color-platinum-glow-rgb), 0.85),
+               0 0 20px rgba(var(--color-platinum-glow-rgb), 0.4);
   position: relative;
   z-index: 2;
 }
@@ -450,7 +450,7 @@
 }
 
 .pass-detail .particle.particle--xperfect {
-  background: var(--color-xperfect, #ffffff);
+  background: var(--color-platinum);
 }
 
 @keyframes particle-fade-out {

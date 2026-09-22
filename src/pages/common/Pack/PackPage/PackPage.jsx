@@ -116,7 +116,7 @@ const PackPageContent = () => {
   const handleReset = useCallback(() => {
     updateFilter('query', '');
     updateFilter('viewMode', LevelPackViewModes.PUBLIC);
-    updateFilter('sort', 'RECENT');
+    updateFilter('sort', 'FAVORITES');
     updateFilter('order', 'DESC');
     updateFilter('myLikesOnly', false);
     triggerRefresh();

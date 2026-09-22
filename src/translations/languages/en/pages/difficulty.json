@@ -135,7 +135,7 @@
       "scoreOff": "Remove threshold",
       "reqVotes": "Req. votes: {{count}}",
       "allowedBands": "Applies to",
-      "allowedBandsHint": "Only controls which tags appear in the tag-vote popup. Leave all hidden to inherit (group, then every band).",
+      "allowedBandsHint": "Turning a band off hides this tag on charts in that range, even if the community already assigned it. Votes are kept. Leave all hidden to inherit (group, then every band).",
       "bandP": "Planetary",
       "bandG": "Galactic",
       "bandU": "Universal",

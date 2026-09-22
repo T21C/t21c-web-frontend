@@ -249,6 +249,16 @@
   filter: drop-shadow(0 0 4px rgba(255, 255, 0, 0.45));
 }
 
+.pack-item .pack-item__progress.is-complete.is-pure-xperfect .pack-item__progress-fill {
+  background: var(--color-platinum);
+  box-shadow: 0 0 6px rgba(var(--color-platinum-glow-rgb), 0.55);
+}
+
+.pack-item .pack-item__progress.is-complete.is-pure-xperfect .pack-item__progress-label {
+  color: var(--color-platinum);
+  filter: drop-shadow(0 0 4px rgba(var(--color-platinum-glow-rgb), 0.5));
+}
+
 .pack-item__name {
   color: #f8fafc;
   font-weight: 600;

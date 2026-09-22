@@ -93,6 +93,10 @@
         "title": "차트 수정됨",
         "body": "{{song}} — {{artist}} 가 수정되었습니다."
       },
+      "swapped": {
+        "title": "차트 데이터가 교환됨",
+        "body": "{{song}} — {{artist}} 가 이제 레벨 #{{levelId}}이며, {{swappedWithSong}} — {{swappedWithArtist}} (레벨 #{{swappedWithLevelId}}) 와 교환되었습니다."
+      },
       "rated": {
         "title": "차트 평가됨",
         "body": "{{song}} — {{artist}} 가 {{difficultyName}}(으)로 평가되었습니다."

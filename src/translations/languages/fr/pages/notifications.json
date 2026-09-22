@@ -93,6 +93,10 @@
         "title": "Chart mis à jour",
         "body": "{{song}} par {{artist}} a été mis à jour."
       },
+      "swapped": {
+        "title": "Données du chart échangées",
+        "body": "{{song}} par {{artist}} est maintenant le niveau #{{levelId}}, échangé avec {{swappedWithSong}} par {{swappedWithArtist}} (niveau #{{swappedWithLevelId}})."
+      },
       "rated": {
         "title": "Chart classé",
         "body": "{{song}} par {{artist}} a été classé {{difficultyName}}."
