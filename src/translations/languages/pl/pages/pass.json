@@ -26,7 +26,8 @@
         "deletedPasses": "Usunięte przejścia",
         "keyFlags": "Ilość klawiszy",
         "wfFilter": "Filtr WF",
-        "adofaiVersion": "Wersja ADOFAI"
+        "adofaiVersion": "Wersja ADOFAI",
+        "wrongJudgement": "Błędne osądy"
       }
     },
     "sort": {

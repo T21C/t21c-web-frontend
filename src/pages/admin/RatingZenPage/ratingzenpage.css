@@ -423,9 +423,36 @@ html.rating-zen-active .background::after {
   align-items: start;
 }
 
-.rating-zen-page__video-wrap {
+.rating-zen-page .rating-zen-page__video-wrap {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
   width: 100%;
+}
+
+.rating-zen-page .rating-zen-page__notes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  max-height: 12rem;
+  padding: 0.65rem 0.75rem;
+  overflow: auto;
+  border-radius: 0.5rem;
+  background: var(--color-black-t60);
+  border: 1px solid var(--color-white-t10);
+}
+
+.rating-zen-page .rating-zen-page__notes-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-gray-2);
+}
+
+.rating-zen-page .rating-zen-page__notes-body {
+  font-size: 0.95rem;
+  line-height: 1.45;
+  word-break: break-word;
 }
 
 .rating-zen-page__video-aspect {

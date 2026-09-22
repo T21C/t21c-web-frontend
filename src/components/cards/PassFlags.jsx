@@ -1,5 +1,7 @@
 // tuf-search: #PassFlags #passFlags #cards
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/contexts/AuthContext';
+import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import PassAdofaiV2Flag from './PassAdofaiV2Flag';
 import { AdofaiIcon } from '@/components/common/icons';
 import PassAutoSubmissionFlag from './PassAutoSubmissionFlag';
@@ -23,17 +25,22 @@ const keyCountFlagLabel = (pass, t) => {
 
 const PassFlags = ({ pass, className = 'flags-wrapper' }) => {
   const { t } = useTranslation('components');
+  const auth = useAuth();
+  const user = auth?.user;
   const keyCountLabel = keyCountFlagLabel(pass, t);
   const era = adofaiVersionFromPass(pass);
   const showV2 = era === ADOFAI_VERSION.V2;
   const showPre340 = era === ADOFAI_VERSION.PRE_3_4_0;
   const showXPerfect = !!(pass?.isXPerfectMode || pass?.flags?.isXPerfectMode);
-  if (!keyCountLabel && !pass?.isNoHoldTap && !showV2 && !showPre340 && !showXPerfect && !isAutoSubmittedPass(pass)) {
+  const showWrongJudgement =
+    hasFlag(user, permissionFlags.SUPER_ADMIN) && !!pass?.isWrongJudgement;
+  if (!keyCountLabel && !pass?.isNoHoldTap && !showV2 && !showPre340 && !showXPerfect && !isAutoSubmittedPass(pass) && !showWrongJudgement) {
     return null;
   }
 
   return (
     <div className={className}>
+      {showWrongJudgement && <div className="flag">{t('cards.pass.flags.wrongJudgement')}</div>}
       {isAutoSubmittedPass(pass) && <PassAutoSubmissionFlag />}
       {keyCountLabel ? <div className="flag">{keyCountLabel}</div> : null}
       {pass.isNoHoldTap && <div className="flag">{t('cards.pass.flags.noHoldTap')}</div>}

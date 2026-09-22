@@ -5,43 +5,17 @@ import { useTranslation } from 'react-i18next';
 import { MetaTags } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
 import { useAuth } from '@/contexts/AuthContext';
+import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import api from '@/utils/api';
 import { routes } from '@/api/routes';
+import ContributorEditor from './ContributorEditor';
 import './translationspage.css';
 
-const translationPageFiles = import.meta.glob(
-  '../../../translations/languages/*/pages/translations.json',
-  { eager: true },
-);
-
 function normalizeContributors(value) {
-  if (typeof value === 'string') {
-    return value
-      .split(',')
-      .map((name) => name.trim())
-      .filter(Boolean);
-  }
   if (!Array.isArray(value)) {
     return [];
   }
   return value.filter((name) => typeof name === 'string' && name.trim()).map((name) => name.trim());
-}
-
-function contributorNamesFromTranslationFile(langCode) {
-  const suffix = `/languages/${langCode}/pages/translations.json`;
-  const entry = Object.entries(translationPageFiles).find(([filePath]) =>
-    filePath.endsWith(suffix),
-  );
-  if (!entry) {
-    return null;
-  }
-
-  const json = entry[1]?.default ?? entry[1];
-  const value = json?.languages?.contributorNames;
-  if (typeof value !== 'string') {
-    return null;
-  }
-  return normalizeContributors(value);
 }
 
 function formatStatus(status, t) {
@@ -104,7 +78,8 @@ const TranslationsPage = () => {
   const { t } = useTranslation('pages');
   const location = useLocation();
   const navigate = useNavigate();
-  const { isAuthenticated, setOriginUrl } = useAuth();
+  const { isAuthenticated, user, setOriginUrl } = useAuth();
+  const isAdmin = Boolean(user && hasFlag(user, permissionFlags.SUPER_ADMIN));
   const [languages, setLanguages] = useState([]);
   const [file, setFile] = useState(null);
   const [verifying, setVerifying] = useState(false);
@@ -138,9 +113,7 @@ const TranslationsPage = () => {
           display: info.display,
           folder: info.folder || code,
           status: Number(info.status) || 0,
-          contributors:
-            contributorNamesFromTranslationFile(code) ??
-            normalizeContributors(info.contributors),
+          contributors: normalizeContributors(info.contributors),
         }));
         list.sort((a, b) => b.status - a.status || a.display.localeCompare(b.display));
         setLanguages(list);
@@ -320,7 +293,6 @@ const TranslationsPage = () => {
                 <div className="translations-page__example">
                   <p>{t('translations.guide.steps.extract.contributorCreditsLabel')}</p>
                   <p>{t('translations.guide.steps.extract.contributorCreditsBody')}</p>
-                  <pre>{t('translations.guide.steps.extract.contributorCreditsExample')}</pre>
                 </div>
               </div>
 
@@ -367,15 +339,29 @@ const TranslationsPage = () => {
                             display: lang.display,
                           })}
                     </button>
-                    {lang.contributors.length > 0 && (
-                      <div className="translations-page__language-contributors">
-                        <span className="translations-page__language-contributors-label">
-                          {t('translations.languages.contributors')}
-                        </span>
-                        <span className="translations-page__language-contributors-names">
-                          {lang.contributors.join(', ')}
-                        </span>
-                      </div>
+                    {isAdmin ? (
+                      <ContributorEditor
+                        languageCode={lang.code}
+                        names={lang.contributors}
+                        onSaved={(names) => {
+                          setLanguages((current) =>
+                            current.map((item) =>
+                              item.code === lang.code ? { ...item, contributors: names } : item,
+                            ),
+                          );
+                        }}
+                      />
+                    ) : (
+                      lang.contributors.length > 0 && (
+                        <div className="translations-page__language-contributors">
+                          <span className="translations-page__language-contributors-label">
+                            {t('translations.languages.contributors')}
+                          </span>
+                          <span className="translations-page__language-contributors-names">
+                            {lang.contributors.join(', ')}
+                          </span>
+                        </div>
+                      )
                     )}
                   </div>
                 );

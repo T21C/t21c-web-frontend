@@ -274,6 +274,8 @@ export const routes = {
       version: (id, versionId) => `/v2/admin/mods/${enc(id)}/versions/${enc(versionId)}`,
       merge: (id) => `/v2/admin/mods/${enc(id)}/merge`,
     },
+    translationContributors: (lang) =>
+      `/v2/admin/translation-contributors/${enc(lang)}`,
     usefulLinks: {
       root: () => '/v2/admin/useful-links',
       byId: (id) => `/v2/admin/useful-links/${enc(id)}`,

@@ -306,8 +306,87 @@
   color: var(--color-white-t70);
 }
 
+.translations-page .translations-page__language-contributors-label {
+  font-size: 0.8rem;
+  color: var(--color-white-t70);
+}
+
 .translations-page .translations-page__language-contributors-names {
   line-height: 1.15;
+}
+
+.translations-page .translations-page__contributor-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.translations-page .translations-page__contributor-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.translations-page .translations-page__contributor-row {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.translations-page .translations-page__contributor-row input {
+  flex: 1;
+  min-width: 0;
+  background: var(--color-black-t40);
+  border: 2px solid var(--color-white-t15);
+  border-radius: 6px;
+  color: var(--color-white);
+  padding: 0.4rem 0.55rem;
+  font: inherit;
+  font-size: 0.85rem;
+}
+
+.translations-page .translations-page__contributor-row input:focus {
+  outline: none;
+  border-color: var(--color-purple-1);
+}
+
+.translations-page .translations-page__contributor-handle {
+  cursor: grab;
+  touch-action: none;
+  color: var(--color-white);
+}
+
+.translations-page .translations-page__contributor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.translations-page .translations-page__contributor-actions .translations-page__button {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.8rem;
+}
+
+.translations-page .translations-page__button--neutral {
+  background: var(--btn-neutral);
+}
+
+.translations-page .translations-page__button--neutral:hover:not(:disabled) {
+  background: var(--btn-neutral-dark-hover);
+}
+
+.translations-page .translations-page__button--neutral:disabled {
+  background: var(--btn-disabled-fill);
+}
+
+.translations-page .translations-page__contributor-status {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--btn-success);
+}
+
+.translations-page .translations-page__contributor-status.error {
+  color: var(--btn-danger);
 }
 
 @media (max-width: 640px) {

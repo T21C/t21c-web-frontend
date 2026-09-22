@@ -137,6 +137,8 @@ const ProfilePage = () => {
     const [rankHistoryError, setRankHistoryError] = useState(null);
 
     const isOwnProfile = !playerId || Number(playerId) === user?.playerId;
+    const canRevealHiddenPasses =
+      Boolean(user) && (isOwnProfile || hasFlag(user, permissionFlags.SUPER_ADMIN));
 
     if (!playerId) {
       playerId = user?.playerId;
@@ -186,7 +188,7 @@ const ProfilePage = () => {
         const fetchPlayer = async () => {
           try {
             const qs =
-              isOwnProfile && showHiddenPasses
+              canRevealHiddenPasses && showHiddenPasses
                 ? '?showHidden=true'
                 : '';
             const response = await api.get(
@@ -200,7 +202,7 @@ const ProfilePage = () => {
         };
 
         fetchPlayer();
-      }, [playerId, isOwnProfile, showHiddenPasses]);
+      }, [playerId, canRevealHiddenPasses, showHiddenPasses]);
 
       // Passes are served from a paginated endpoint so we only fetch what is
       // visible. Sorting and searching happen server-side; the infinite
@@ -214,7 +216,7 @@ const ProfilePage = () => {
           order: sortOrder,
         });
         if (searchQuery) params.append('query', searchQuery);
-        if (isOwnProfile && showHiddenPasses) params.append('showHidden', 'true');
+        if (canRevealHiddenPasses && showHiddenPasses) params.append('showHidden', 'true');
         if (hideReclears) params.append('bestPerLevel', 'true');
 
         const url = `${routes.playersV3.root()}/${playerId}/passes?${params.toString()}`;
@@ -260,7 +262,7 @@ const ProfilePage = () => {
         setHasMore(true);
         fetchPassesPage(0);
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [playerId, searchQuery, sortType, sortOrder, showHiddenPasses, hideReclears]);
+      }, [playerId, searchQuery, sortType, sortOrder, showHiddenPasses, hideReclears, canRevealHiddenPasses]);
 
       const handlePlayerUpdate = (updatedPlayer) => {
         setPlayerData(updatedPlayer);
@@ -776,7 +778,7 @@ const ProfilePage = () => {
                     expandStatsAriaLabel={t("profile.funFacts.expandAria")}
                     collapseStatsAriaLabel={t("profile.funFacts.collapseAria")}
                     statGroups={statGroups}
-                    statRowFilter={(row) => isOwnProfile || row.key !== "hiddenPasses"}
+                    statRowFilter={(row) => canRevealHiddenPasses || row.key !== "hiddenPasses"}
                     statRows={[
                       {
                         key: "rankedScore",
@@ -966,7 +968,7 @@ const ProfilePage = () => {
                         onSortOrderChange={setSortOrder}
                         hideReclears={hideReclears}
                         onHideReclearsChange={setHideReclears}
-                        isOwnProfile={isOwnProfile}
+                        canRevealHiddenPasses={canRevealHiddenPasses}
                         showHiddenPasses={showHiddenPasses}
                         onToggleHiddenPasses={() => setShowHiddenPasses(!showHiddenPasses)}
                         passesTotal={passesTotal}

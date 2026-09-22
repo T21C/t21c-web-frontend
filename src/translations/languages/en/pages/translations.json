@@ -31,8 +31,7 @@
         "placeholderExample": "\"welcome\": \"Welcome back, {{open}}username{{close}}!\"\n→ \"welcome\": \"{{open}}username{{close}}, willkommen zurück!\"\n\n\"progress\": \"{{open}}count{{close}} of {{open}}total{{close}} levels completed\"\n→ \"progress\": \"{{open}}count{{close}} von {{open}}total{{close}} Level abgeschlossen\"",
         "placeholderWarning": "Never translate the placeholders themselves (e.g., {{open}}username{{close}}, {{open}}count{{close}}, etc.)",
         "contributorCreditsLabel": "Translator Credits:",
-        "contributorCreditsBody": "Set languages.contributorNames in this file to a comma-separated list of translator names for this language. That list is shown on the language cards below. Leave it empty to hide credits.",
-        "contributorCreditsExample": "\"contributorNames\": \"YourName, OtherTranslator\""
+        "contributorCreditsBody": "Contributor names are not stored in this file. Site admins edit each language's credit list on this page."
       },
       "verify": {
         "title": "Pack & Verify",
@@ -55,7 +54,10 @@
       "pending": "Not Implemented"
     },
     "contributors": "Contributors:",
-    "contributorNames": ""
+    "contributorPlaceholder": "Name",
+    "dragContributor": "Drag to reorder",
+    "contributorsSaved": "Saved",
+    "contributorsSaveError": "Could not save contributors: {{message}}"
   },
   "results": {
     "valid": "All translations are valid!",

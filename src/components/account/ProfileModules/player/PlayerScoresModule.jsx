@@ -19,7 +19,7 @@ export default function PlayerScoresModule({
   onSortOrderChange,
   hideReclears,
   onHideReclearsChange,
-  isOwnProfile,
+  canRevealHiddenPasses,
   showHiddenPasses,
   onToggleHiddenPasses,
   passesTotal,
@@ -126,7 +126,7 @@ export default function PlayerScoresModule({
                     />
                     <span>{t("profile.sections.scores.hideReclears")}</span>
                   </label>
-                  {isOwnProfile && (
+                  {canRevealHiddenPasses && (
                     <button
                       className="toggle-hidden-passes-button"
                       onClick={onToggleHiddenPasses}
