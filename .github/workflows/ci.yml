@@ -46,6 +46,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Replay delivery tests
+        run: node --test tests/replay-delivery.test.js
+
       - name: Check production build secrets
         if: github.event_name != 'pull_request'
         env:
