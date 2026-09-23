@@ -4,9 +4,21 @@ import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 // Node's native ESM test runner requires the explicit extension.
 // eslint-disable-next-line import/extensions
-import { playerMessageSchema, replayOpenPayload } from '../src/pages/common/Pass/PassDetailPage/replay/replayDelivery.js';
+import { playerMessageSchema, replayConfiguration, replayOpenPayload } from '../src/pages/common/Pass/PassDetailPage/replay/replayDelivery.js';
 
 const runId = '00000000-0000-4000-8000-000000000001';
+test('replay uses the production player when its optional build setting is absent or empty', () => {
+  for (const configured of [undefined, '', '   ']) {
+    assert.deepEqual(replayConfiguration(configured), { player: 'https://web-adofai.impl1113.dev' });
+  }
+});
+test('replay preserves explicit player overrides and validates their origins', () => {
+  assert.deepEqual(replayConfiguration(' http://127.0.0.1:5190/replay/embed '), { player: 'http://127.0.0.1:5190' });
+  assert.deepEqual(replayConfiguration('https://player.example/replay/embed'), { player: 'https://player.example' });
+  for (const configured of ['invalid', '/relative', 'javascript:alert(1)', 'ftp://player.example', 'https://user:password@player.example']) {
+    assert.throws(() => replayConfiguration(configured));
+  }
+});
 test('host sends identity only, independent of replay formats and visual sources', () => {
   assert.deepEqual(replayOpenPayload({ id: '123', level: { id: 45 }, autoSubmissionRunId: runId, visuals: { source: 'future-source' } }),
     { runId, passId: 123, levelId: 45 });
