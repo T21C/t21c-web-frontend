@@ -232,7 +232,8 @@
       "all": "Wszystkie",
       "unlinked": "Niepowiązane",
       "linked": "Powiązane",
-      "problems": "Problemy"
+      "problems": "Problemy",
+      "duplicates": "Duplikaty"
     },
     "botId": "Id bota",
     "unlinked": "Niepowiązane",
@@ -254,6 +255,8 @@
     "unlinkFailed": "Nie udało się odłączyć moda bota",
     "watch": "Obserwuj",
     "watchFailed": "Nie udało się zmienić obserwacji",
+    "duplicate": "Duplikat",
+    "duplicateFailed": "Nie udało się zmienić flagi duplikatu",
     "pickMod": "Wybierz mod z katalogu",
     "linkPopupTitle": "Powiąż z modem w katalogu",
     "lastSync": "Ostatnia synchronizacja",
@@ -269,7 +272,8 @@
       "error": "Błąd",
       "ignored": "Zignorowano",
       "missing": "Brak",
-      "linked": "Powiązane"
+      "linked": "Powiązane",
+      "duplicate": "Duplikat"
     }
   }
 }

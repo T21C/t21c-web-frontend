@@ -232,7 +232,8 @@
       "all": "전체",
       "unlinked": "미연결",
       "linked": "연결됨",
-      "problems": "문제"
+      "problems": "문제",
+      "duplicates": "중복"
     },
     "botId": "봇 id",
     "unlinked": "연결되지 않음",
@@ -254,6 +255,8 @@
     "unlinkFailed": "봇 모드 연결을 해제하지 못했습니다",
     "watch": "감시",
     "watchFailed": "감시 상태를 바꾸지 못했습니다",
+    "duplicate": "중복",
+    "duplicateFailed": "중복 표시를 바꾸지 못했습니다",
     "pickMod": "카탈로그 모드 선택",
     "linkPopupTitle": "카탈로그 모드에 연결",
     "lastSync": "마지막 동기화",
@@ -269,7 +272,8 @@
       "error": "오류",
       "ignored": "무시됨",
       "missing": "없음",
-      "linked": "연결됨"
+      "linked": "연결됨",
+      "duplicate": "중복"
     }
   }
 }

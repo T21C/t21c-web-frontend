@@ -232,7 +232,8 @@
       "all": "Tous",
       "unlinked": "Non liés",
       "linked": "Liés",
-      "problems": "Problèmes"
+      "problems": "Problèmes",
+      "duplicates": "Doublons"
     },
     "botId": "Id du bot",
     "unlinked": "Non lié",
@@ -254,6 +255,8 @@
     "unlinkFailed": "Échec du déliage du mod du bot",
     "watch": "Surveiller",
     "watchFailed": "Échec de la mise à jour de la surveillance",
+    "duplicate": "Doublon",
+    "duplicateFailed": "Échec de la mise à jour du drapeau doublon",
     "pickMod": "Sélectionner un mod du catalogue",
     "linkPopupTitle": "Lier à un mod du catalogue",
     "lastSync": "Dernière synchro",
@@ -269,7 +272,8 @@
       "error": "Erreur",
       "ignored": "Ignoré",
       "missing": "Absent",
-      "linked": "Lié"
+      "linked": "Lié",
+      "duplicate": "Doublon"
     }
   }
 }
