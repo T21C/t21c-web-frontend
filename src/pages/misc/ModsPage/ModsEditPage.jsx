@@ -181,6 +181,9 @@ const ModsEditPage = () => {
               <Link to="/mods/edit/tags" className="btn-fill-secondary">
                 {t('mods.tags.manage')}
               </Link>
+              <Link to="/mods/edit/bot" className="btn-fill-secondary">
+                {t('mods.botMods.manage')}
+              </Link>
               <button
                 type="button"
                 className="btn-fill-primary"

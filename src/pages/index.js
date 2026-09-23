@@ -87,6 +87,7 @@ const ResourcesEditPage = lazy(() => import('./misc/ResourcesPage/ResourcesEditP
 const ModsPage = lazy(() => import('./misc/ModsPage/ModsPage'));
 const ModsEditPage = lazy(() => import('./misc/ModsPage/ModsEditPage'));
 const ModTagsEditPage = lazy(() => import('./misc/ModsPage/ModTagsEditPage'));
+const BotModsEditPage = lazy(() => import('./misc/ModsPage/BotModsEditPage'));
 const ModDetailPage = lazy(() => import('./misc/ModsPage/ModDetailPage'));
 const TranslationsPage = lazy(() => import('./misc/TranslationsPage/TranslationsPage'));
 
@@ -172,6 +173,7 @@ export {
     ModsPage,
     ModsEditPage,
     ModTagsEditPage,
+    BotModsEditPage,
     ModDetailPage,
     TranslationsPage
 };
