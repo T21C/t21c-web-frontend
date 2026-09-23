@@ -73,7 +73,7 @@
 
 .score-card .score-desc.pure-xperfect {
   color: var(--color-platinum);
-  text-shadow: 0 0 10px rgba(var(--color-platinum-glow-rgb), 0.75);
+  text-shadow: 0 0 10px rgba(var(--color-platinum-rgb), 1);
   font-weight: 700;
 }
 

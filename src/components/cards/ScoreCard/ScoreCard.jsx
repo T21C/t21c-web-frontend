@@ -51,10 +51,7 @@ const ScoreCard = ({ scoreData, topScores = [], potentialTopScores = [], mode = 
   const formattedDate = formatPassDate(scoreData.vidUploadTime, i18next?.language);
   const passDetailTo = `/passes/${scoreData.id}`;
   const xPerfectMode = !!(scoreData.isXPerfectMode || scoreData.flags?.isXPerfectMode);
-  const accuracyNumber = scoreData.accuracy == null || scoreData.accuracy === ''
-    ? null
-    : Number(scoreData.accuracy);
-  const accuracyClass = isPureXPerfect(scoreData.judgements, xPerfectMode, accuracyNumber)
+  const accuracyClass = isPureXPerfect(scoreData.judgements, xPerfectMode)
     ? 'pure-xperfect'
     : scoreData.accuracy == 1
       ? 'pure-perfect'

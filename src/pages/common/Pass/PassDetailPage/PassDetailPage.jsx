@@ -185,7 +185,7 @@ const PassDetailPage = () => {
 
   const { pass } = res;
   const accuracy = pass.accuracy;
-  const xPerfectShine = isPureXPerfect(pass.judgements, pass.isXPerfectMode, accuracy);
+  const xPerfectShine = isPureXPerfect(pass.judgements, pass.isXPerfectMode);
   const ppShine = accuracy === 1 && !xPerfectShine;
   const accShineClass = xPerfectShine ? 'xperfect-shine' : ppShine ? 'perfect-shine' : '';
   const showXPerfectCounts = shouldShowXPerfectJudgements(pass);
@@ -388,7 +388,7 @@ const PassDetailPage = () => {
                       <span>{t('passDetail.judgements.types.earlyPerfect.value', { count: pass.judgements?.ePerfect || 0 })}</span>
                     </div>
                     {showXPerfectCounts ? (
-                      <div className={`judgement-item perfect-minus ${xPerfectShine ? 'xperfect-shine' : ''}`}>
+                      <div className={`judgement-item perfect-minus ${ppShine ? 'perfect-shine' : ''}`}>
                         <label>{t('passDetail.judgements.types.perfectMinus.label')}</label>
                         <span>{t('passDetail.judgements.types.perfectMinus.value', { count: pass.judgements?.perfectMinus || 0 })}</span>
                       </div>
@@ -422,7 +422,7 @@ const PassDetailPage = () => {
                       </div>
                     </div>
                     {showXPerfectCounts ? (
-                      <div className={`judgement-item perfect-plus ${xPerfectShine ? 'xperfect-shine' : ''}`}>
+                      <div className={`judgement-item perfect-plus ${ppShine ? 'perfect-shine' : ''}`}>
                         <label>{t('passDetail.judgements.types.perfectPlus.label')}</label>
                         <span>{t('passDetail.judgements.types.perfectPlus.value', { count: pass.judgements?.perfectPlus || 0 })}</span>
                       </div>

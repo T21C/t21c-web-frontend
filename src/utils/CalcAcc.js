@@ -90,10 +90,12 @@ export function tilecount(inp) {
   );
 }
 
-export function isPureXPerfect(judgements, isXPerfectMode, accuracy) {
+/** Every hit is an x-perfect (center perfect). Perfect− / Perfect+ still score 1.0, so accuracy alone is not enough. */
+export function isPureXPerfect(judgements, isXPerfectMode) {
   if (!isXPerfectMode) return false;
-  const acc = accuracy == null ? calcAcc(judgements) : accuracy;
-  return acc === 1;
+  const j = unwrapJudgements(judgements);
+  const total = sumJudgements(j);
+  return total > 0 && j.perfect === total;
 }
 
 /** Weighted xacc. Perfect− / Perfect+ count as 1.0 like Perfect (keep in sync with server CalcAcc / MySQL calculate_accuracy). */
