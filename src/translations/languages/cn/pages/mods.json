@@ -231,7 +231,8 @@
       "all": "全部",
       "unlinked": "未关联",
       "linked": "已关联",
-      "problems": "问题"
+      "problems": "问题",
+      "duplicates": "重复"
     },
     "botId": "机器人 id",
     "unlinked": "未关联",
@@ -253,6 +254,8 @@
     "unlinkFailed": "取消关联失败",
     "watch": "监视",
     "watchFailed": "更新监视状态失败",
+    "duplicate": "重复",
+    "duplicateFailed": "更新重复标记失败",
     "pickMod": "选择目录模组",
     "linkPopupTitle": "关联到目录模组",
     "lastSync": "上次同步",
@@ -268,7 +271,8 @@
       "error": "错误",
       "ignored": "已忽略",
       "missing": "缺失",
-      "linked": "已关联"
+      "linked": "已关联",
+      "duplicate": "重复"
     }
   }
 }

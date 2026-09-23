@@ -58,7 +58,6 @@
 
 .bot-mods-page__header-actions,
 .bot-mods-page__controls,
-.bot-mods-page__item-actions,
 .bot-mods-page__flags,
 .bot-mods-page__link-form {
   display: flex;
@@ -120,13 +119,22 @@
 }
 
 .bot-mods-page__item {
-  padding: 0.75rem;
+  position: relative;
+  padding: 0.75rem 0.75rem 1.85rem;
   background-color: var(--color-white-t10);
   border-radius: 4px;
 }
 
 .bot-mods-page__item:hover {
   background-color: var(--color-white-t20);
+}
+
+.bot-mods-page .bot-mods-page__item--duplicate {
+  background-color: var(--color-white-t5);
+}
+
+.bot-mods-page .bot-mods-page__item--duplicate:hover {
+  background-color: var(--color-white-t10);
 }
 
 .bot-mods-page__item-main {
@@ -175,7 +183,43 @@
 }
 
 .bot-mods-page__item-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  align-items: center;
+  justify-content: flex-end;
   flex-shrink: 0;
+}
+
+.bot-mods-page .bot-mods-page__duplicate {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.45rem;
+  z-index: 1;
+  display: flex;
+  gap: 0.3rem;
+  align-items: center;
+  color: var(--color-white-t70);
+  font-size: 0.75rem;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.bot-mods-page .bot-mods-page__duplicate:hover {
+  color: var(--color-white);
+}
+
+.bot-mods-page .bot-mods-page__duplicate input {
+  width: 0.8rem;
+  height: 0.8rem;
+  margin: 0;
+  accent-color: var(--btn-primary);
+  cursor: pointer;
+}
+
+.bot-mods-page .bot-mods-page__duplicate input:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .bot-mods-page__flag {

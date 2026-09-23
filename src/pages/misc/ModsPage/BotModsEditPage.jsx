@@ -58,6 +58,7 @@ const BotModsEditPage = () => {
       { value: 'unlinked', label: t('mods.botMods.filters.unlinked') },
       { value: 'linked', label: t('mods.botMods.filters.linked') },
       { value: 'problems', label: t('mods.botMods.filters.problems') },
+      { value: 'duplicates', label: t('mods.botMods.filters.duplicates') },
     ],
     [t],
   );
@@ -212,6 +213,19 @@ const BotModsEditPage = () => {
     }
   };
 
+  const handleDuplicate = async (row, isDuplicate) => {
+    if (busyId) return;
+    setBusyId(row.id);
+    try {
+      await api.patch(routes.admin.botMods.byId(row.id), { isDuplicate });
+      await loadRows({ silent: true });
+    } catch (error) {
+      toast.error(apiError(error, t('mods.botMods.duplicateFailed')));
+    } finally {
+      setBusyId('');
+    }
+  };
+
   const selectedFilter = filterOptions.find((option) => option.value === filter) || filterOptions[0];
   const selectedCatalog = catalogOptions(catalogMods).find((option) => option.value === selectedModId) || null;
 
@@ -270,7 +284,7 @@ const BotModsEditPage = () => {
                 options={filterOptions}
                 value={selectedFilter}
                 onChange={(option) => setFilter(option?.value || 'all')}
-                width="14rem"
+                width="16rem"
               />
             </div>
           </div>
@@ -291,7 +305,7 @@ const BotModsEditPage = () => {
                   : '';
                 const statusLabel = statusKey && t(statusKey) !== statusKey ? t(statusKey) : row.link?.lastSyncStatus;
                 return (
-                  <li key={row.id} className="bot-mods-page__item">
+                  <li key={row.id} className={`bot-mods-page__item${row.isDuplicate ? ' bot-mods-page__item--duplicate' : ''}`}>
                     <div className="bot-mods-page__item-main">
                       <div className="bot-mods-page__item-info">
                         <p className="bot-mods-page__item-name">{row.name}</p>
@@ -316,6 +330,9 @@ const BotModsEditPage = () => {
                           {row.link?.lastSyncMessage ? ` — ${row.link.lastSyncMessage}` : ''}
                         </p>
                         <div className="bot-mods-page__flags">
+                          {row.isDuplicate ? (
+                            <span className="bot-mods-page__flag">{t('mods.botMods.duplicate')}</span>
+                          ) : null}
                           {row.missingSince ? (
                             <span className="bot-mods-page__flag bot-mods-page__flag--warn">
                               {t('mods.botMods.missing')}
@@ -348,7 +365,7 @@ const BotModsEditPage = () => {
                               {t('mods.botMods.unlink')}
                             </button>
                           </>
-                        ) : (
+                        ) : row.isDuplicate ? null : (
                           <button
                             type="button"
                             className="btn-fill-primary"
@@ -359,6 +376,15 @@ const BotModsEditPage = () => {
                         )}
                       </div>
                     </div>
+                    <label className="bot-mods-page__duplicate">
+                      <input
+                        type="checkbox"
+                        checked={Boolean(row.isDuplicate)}
+                        disabled={busyId === row.id}
+                        onChange={(event) => void handleDuplicate(row, event.target.checked)}
+                      />
+                      {t('mods.botMods.duplicate')}
+                    </label>
                   </li>
                 );
               })}

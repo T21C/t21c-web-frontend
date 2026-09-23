@@ -277,6 +277,7 @@ export const routes = {
     botMods: {
       root: () => '/v2/admin/bot-mods',
       sync: () => '/v2/admin/bot-mods/sync',
+      byId: (botId) => `/v2/admin/bot-mods/${enc(botId)}`,
       link: (botId) => `/v2/admin/bot-mods/${enc(botId)}/link`,
     },
     translationContributors: (lang) =>

@@ -231,7 +231,8 @@
       "all": "All",
       "unlinked": "Unlinked",
       "linked": "Linked",
-      "problems": "Problems"
+      "problems": "Problems",
+      "duplicates": "Duplicates"
     },
     "botId": "Bot id",
     "unlinked": "Unlinked",
@@ -253,6 +254,8 @@
     "unlinkFailed": "Failed to unlink bot mod",
     "watch": "Watch",
     "watchFailed": "Failed to update watch state",
+    "duplicate": "Duplicate",
+    "duplicateFailed": "Failed to update duplicate flag",
     "pickMod": "Select a catalog mod",
     "linkPopupTitle": "Link to catalog mod",
     "lastSync": "Last sync",
@@ -268,7 +271,8 @@
       "error": "Error",
       "ignored": "Ignored",
       "missing": "Missing",
-      "linked": "Linked"
+      "linked": "Linked",
+      "duplicate": "Duplicate"
     }
   }
 }
