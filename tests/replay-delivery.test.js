@@ -1,40 +1,28 @@
 // tuf-search: #replayDeliveryTest
-// ESLint's node resolver does not recognize Bun's built-in test module.
-// eslint-disable-next-line import/no-unresolved
-import { describe, expect, test } from 'bun:test';
-import { defaultReplaySettings, playerMessageSchema, replayManifestSchema, replaySettingsSchema } from '../src/pages/common/Pass/PassDetailPage/replay/replayDelivery';
-import { interpolateReplayPosition } from '../src/pages/common/Pass/PassDetailPage/replay/useReplayPosition';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { test } from 'node:test';
+// Node's native ESM test runner requires the explicit extension.
+// eslint-disable-next-line import/extensions
+import { playerMessageSchema, replayOpenPayload } from '../src/pages/common/Pass/PassDetailPage/replay/replayDelivery.js';
 
-const envelope = payload => ({ source: 'tuf-replay', protocolVersion: 1, sessionId: '00000000-0000-4000-8000-000000000001', type: 'player.state', payload });
-const state = { positionUs: 100000, durationUs: 1000000, paused: false, ended: false, appliedCommandId: 1, settings: defaultReplaySettings };
-
-describe('replay host contract', () => {
-  test('requires a versioned gameplay hash in public replay manifests', () => {
-    const manifest = {
-      format_version: 2, run_id: '00000000-0000-4000-8000-000000000001', tuf_level_id: 1,
-      external_pass_id: 1, official_file_id: 'old-file', chart_path: 'main.adofai',
-      chart_sha256: 'a'.repeat(64), gameplay_hash_version: 1, gameplay_hash: 'b'.repeat(64),
-      evidence_digest: 'c'.repeat(64), recorded_speed: 1,
-      files: ['inputs', 'hits', 'metadata'].map((kind, index) => ({
-        name: `${kind}.${kind === 'metadata' ? 'json' : 'csv'}`, kind,
-        media_type: 'text/plain', url: `/files/${index}`, sha256: 'd'.repeat(64), bytes: 1, records: 1,
-      })),
-    };
-    expect(replayManifestSchema.safeParse(manifest).success).toBe(true);
-    expect(replayManifestSchema.safeParse({ ...manifest, gameplay_hash: undefined }).success).toBe(false);
-  });
-  test('accepts complete state and rejects incompatible protocol and malformed values', () => {
-    expect(playerMessageSchema.safeParse(envelope(state)).success).toBe(true);
-    expect(playerMessageSchema.safeParse({ ...envelope(state), protocolVersion: 2 }).success).toBe(false);
-    expect(playerMessageSchema.safeParse(envelope({ ...state, positionUs: -1 })).success).toBe(false);
-    expect(playerMessageSchema.safeParse(envelope({ ...state, settings: { ...defaultReplaySettings, pitchPercent: 0 } })).success).toBe(false);
-    expect(replaySettingsSchema.safeParse({ ...defaultReplaySettings, unknownControl: true }).success).toBe(false);
-  });
-  test('interpolates in recorded microseconds using pitch and clamps to duration', () => {
-    expect(interpolateReplayPosition(state, 250)).toBe(350000);
-    expect(interpolateReplayPosition({ ...state, settings: { pitchPercent: 200 } }, 250)).toBe(600000);
-    expect(interpolateReplayPosition(state, 2000)).toBe(1000000);
-    expect(interpolateReplayPosition({ ...state, paused: true }, 2000)).toBe(100000);
-    expect(interpolateReplayPosition(state, -100)).toBe(100000);
-  });
+const runId = '00000000-0000-4000-8000-000000000001';
+test('host sends identity only, independent of replay formats and visual sources', () => {
+  assert.deepEqual(replayOpenPayload({ id: '123', level: { id: 45 }, autoSubmissionRunId: runId, visuals: { source: 'future-source' } }),
+    { runId, passId: 123, levelId: 45 });
+  assert.throws(() => replayOpenPayload({ id: 0, levelId: 45, autoSubmissionRunId: runId }));
+});
+test('host accepts new player events without understanding their payload', () => {
+  const envelope = { source: 'tuf-replay', protocolVersion: 3, sessionId: runId, type: 'player.future', payload: { future: true } };
+  assert.equal(playerMessageSchema.safeParse(envelope).success, true);
+  assert.equal(playerMessageSchema.safeParse({ ...envelope, protocolVersion: 2 }).success, false);
+  assert.equal(playerMessageSchema.safeParse({ ...envelope, source: 'foreign' }).success, false);
+});
+test('host hook never downloads payloads and validates both message origin and window', () => {
+  const source = readFileSync(new URL('../src/pages/common/Pass/PassDetailPage/replay/usePassReplay.js', import.meta.url), 'utf8');
+  assert.doesNotMatch(source, /fetch\(|arrayBuffer|loadReplay|transferables/i);
+  assert.ok(source.includes('event.origin !== current.config.player'));
+  assert.ok(source.includes('event.source !== iframeRef.current?.contentWindow'));
+  assert.ok(source.includes('host.open'));
+  assert.ok(source.includes('host.dispose'));
 });
