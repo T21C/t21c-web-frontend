@@ -46,15 +46,14 @@
 
 .pack-item--note {
   position: relative;
-  background: var(--color-white-t5, #111827);
-  border: 1px solid var(--color-white-t20, #374151);
+  background: var(--color-black-t35);
   border-radius: 8px;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .pack-item--note:hover {
-  border-color: var(--color-purple-1);
-  box-shadow: 0 4px 12px var(--color-black-t35);
+  background: var(--color-black-t45);
+  box-shadow: 0 4px 12px var(--color-black-t15);
 }
 
 .pack-item--note .pack-item__icon {
@@ -68,7 +67,7 @@
 
 .pack-item--note .pack-item__note-body {
   white-space: normal;
-  color: var(--color-white-t70);
+  color: var(--color-white-t80);
 }
 
 .pack-item--note .pack-item__note-body.is-clamped {

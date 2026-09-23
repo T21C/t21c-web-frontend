@@ -409,6 +409,8 @@
   z-index: 2;
 }
 
+.pass-detail .judgement-item.perfect-minus.perfect-shine span,
+.pass-detail .judgement-item.perfect-plus.perfect-shine span,
 .pass-detail .judgement-item.perfect-minus.xperfect-shine span,
 .pass-detail .judgement-item.perfect-plus.xperfect-shine span {
   color: #5FFF4E;

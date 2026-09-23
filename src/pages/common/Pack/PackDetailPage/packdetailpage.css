@@ -578,11 +578,12 @@
 .pack-detail-page .add-buttons {
   display: flex;
   gap: 0.5rem;
-  align-items: center;
+  align-items: stretch;
   flex-wrap: wrap;
 }
 
 .pack-detail-page .add-buttons__group {
+  --add-btn-size: calc(var(--btn-pad-y) * 2 + var(--btn-line-height) * var(--btn-font-size));
   display: flex;
   align-items: stretch;
 }
@@ -592,11 +593,14 @@
 }
 
 .pack-detail-page .add-buttons__group .add-to-folder-btn {
+  aspect-ratio: auto;
+  flex: 0 0 var(--add-btn-size);
+  width: var(--add-btn-size);
+  min-width: var(--add-btn-size);
+  max-width: var(--add-btn-size);
+  padding: 0;
+  overflow: hidden;
   border-radius: 0 var(--btn-radius) var(--btn-radius) 0;
-}
-
-.pack-detail-page .add-btn--solo {
-  border-radius: 6px;
 }
 
 .pack-detail-page .empty-actions {
@@ -689,8 +693,14 @@
     width: 100%;
   }
 
-  .pack-detail-page .add-btn {
+  .pack-detail-page .add-buttons__group {
     width: 100%;
+  }
+
+  .pack-detail-page .add-btn {
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 0;
     justify-content: center;
   }
 

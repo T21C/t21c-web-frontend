@@ -837,7 +837,7 @@ button {
     z-index: -1;
     border-radius: inherit;
     background-color: var(--btn-fill);
-    transition: filter 100ms linear;
+    transition: filter 100ms linear, background-color 100ms linear;
   }
 
   .btn-fill-primary:hover:not(:disabled)::before {
@@ -936,10 +936,12 @@ button {
   }
 
   .btn-fill-glass:hover:not(:disabled)::before {
-    filter: brightness(1.15);
+    filter: none;
+    background-color: var(--color-white-t35);
   }
   .btn-fill-glass:active:not(:disabled)::before {
-    filter: brightness(1.05);
+    filter: none;
+    background-color: var(--color-white-t25);
   }
 
   .btn-fill-ghost:hover:not(:disabled) {
