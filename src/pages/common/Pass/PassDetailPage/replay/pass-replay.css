@@ -53,16 +53,16 @@
 }
 .replay-main {
   min-width: 0;
+  container-type: inline-size;
 }
 .replay-stage {
+  /* Embed geometry contract: reserve the toolbar before the iframe exists. */
+  --replay-controls-height: 82px;
   position: relative;
   width: 100%;
-  aspect-ratio: 16/9;
   box-sizing: border-box;
   min-width: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
   background: #080808;
   border-radius: 5px 5px 0 0;
 }
@@ -77,6 +77,25 @@
   justify-content: center;
   box-sizing: border-box;
   text-align: center;
+}
+.replay-stage::before {
+  content: "";
+  display: block;
+  padding-top: 56.25%;
+}
+.replay-stage::after {
+  content: "";
+  display: block;
+  height: var(--replay-controls-height);
+}
+@container (max-width: 480px) {
+  .replay-stage {
+    --replay-controls-height: 104px;
+  }
+}
+.replay-full-window .replay-stage::before,
+.replay-full-window .replay-stage::after {
+  display: none;
 }
 .pass-replay button {
   font: inherit;
@@ -105,6 +124,22 @@
   position: absolute;
   top: .5rem;
   right: .5rem;
+}
+.pass-replay .replay-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 4px;
+  color: var(--color-white-t80);
+}
+.pass-replay .replay-icon-button:hover:not(:disabled) {
+  background: #ffffff10;
+  color: #fff;
 }
 @media (max-width: 900px) {
   .pass-detail--replay .pass-detail-body > .info {
