@@ -12,10 +12,9 @@ export const playerMessageSchema = z.object({
   source: z.literal('tuf-replay'), protocolVersion: z.literal(3), sessionId: z.string().uuid(), type: z.string(), payload: z.unknown().optional(),
 });
 
-export function replayConfiguration() {
-  const configured = import.meta.env.VITE_WEB_ADOFAI_URL;
-  if (!configured) throw new Error('replay_not_configured');
-  const player = new URL(configured);
+export function replayConfiguration(configured = import.meta.env?.VITE_WEB_ADOFAI_URL) {
+  // Match the existing level viewer when no deployment-specific override is set.
+  const player = new URL(configured?.trim() || 'https://web-adofai.impl1113.dev');
   if (!['http:', 'https:'].includes(player.protocol) || player.username || player.password) throw new Error('replay_not_configured');
   return { player: player.origin };
 }
