@@ -191,6 +191,7 @@ function App() {
           <Route path='resources/edit' element={<Pages.ResourcesEditPage />} />
           <Route path='resources' element={<Pages.ResourcesPage />} />
           <Route path='mods/edit/tags' element={<Pages.ModTagsEditPage />} />
+          <Route path='mods/edit/bot' element={<Pages.BotModsEditPage />} />
           <Route path='mods/edit' element={<Pages.ModsEditPage />} />
           <Route path='mods/:slug/:version' element={<Pages.ModDetailPage />} />
           <Route path='mods/:slug' element={<Pages.ModDetailPage />} />

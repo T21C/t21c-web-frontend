@@ -32,6 +32,23 @@ export function apiError(error, fallback) {
   return getRateLimitMessage(error) || error?.response?.data?.error || fallback;
 }
 
+export function toastBotModLinked(t, botMod) {
+  const status = botMod?.link?.lastSyncStatus;
+  if (status === 'created') {
+    toast.success(t('mods.botMods.releaseCreated', { version: botMod.link.lastAppliedVersion || botMod.version }));
+    return;
+  }
+  if (status === 'error') {
+    toast.error(t('mods.botMods.linkApplyFailed', { message: botMod.link.lastSyncMessage || '' }));
+    return;
+  }
+  if (status === 'skipped') {
+    toast.success(t('mods.botMods.linkedExists'));
+    return;
+  }
+  toast.success(t('mods.botMods.linkedOk'));
+}
+
 export function applyMods(data) {
   return Array.isArray(data?.mods) ? data.mods : [];
 }

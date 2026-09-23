@@ -274,6 +274,11 @@ export const routes = {
       version: (id, versionId) => `/v2/admin/mods/${enc(id)}/versions/${enc(versionId)}`,
       merge: (id) => `/v2/admin/mods/${enc(id)}/merge`,
     },
+    botMods: {
+      root: () => '/v2/admin/bot-mods',
+      sync: () => '/v2/admin/bot-mods/sync',
+      link: (botId) => `/v2/admin/bot-mods/${enc(botId)}/link`,
+    },
     translationContributors: (lang) =>
       `/v2/admin/translation-contributors/${enc(lang)}`,
     usefulLinks: {

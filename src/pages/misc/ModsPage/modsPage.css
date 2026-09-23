@@ -682,6 +682,37 @@
   font-size: 0.9rem;
 }
 
+.mods-page .mods-page__bot-link-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  color: var(--color-white-t80);
+  font-size: 0.875rem;
+}
+
+.mods-page .mods-page__bot-link-field input {
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--color-white-t20);
+  border-radius: 4px;
+  background-color: var(--color-white-t10);
+  color: var(--text-color);
+}
+
+.mods-page .mods-page__bot-link-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  align-items: center;
+}
+
+.mods-page .mods-page__bot-link-actions a {
+  color: var(--color-white-t80);
+}
+
+.mods-page .mods-page__bot-link-actions a:hover {
+  color: var(--color-white);
+}
+
 .mods-page__assign .confirm-button {
   align-self: flex-start;
 }

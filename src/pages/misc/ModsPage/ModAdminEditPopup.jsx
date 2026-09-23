@@ -21,6 +21,7 @@ import {
   isFormDirty,
   ModFormFields,
   toEditPayload,
+  toastBotModLinked,
 } from './modEditForm';
 
 const EMPTY_MODS = [];
@@ -55,6 +56,9 @@ export default function ModAdminEditPopup({
   const [catalogTags, setCatalogTags] = useState([]);
   const [mergeSourceId, setMergeSourceId] = useState('');
   const [fetchedMergeMods, setFetchedMergeMods] = useState(EMPTY_MODS);
+  const [botIdInput, setBotIdInput] = useState('');
+  const [botLink, setBotLink] = useState(null);
+  const [botLinkBusy, setBotLinkBusy] = useState(false);
   const listModsRef = useRef(listMods);
   const onChangeRef = useRef(onChange);
   listModsRef.current = listMods;
@@ -94,12 +98,16 @@ export default function ModAdminEditPopup({
     setAssignConfirmCount(null);
     setMergeSourceId('');
     setFetchedMergeMods(EMPTY_MODS);
+    setBotIdInput('');
+    setBotLink(null);
+    setBotLinkBusy(false);
     let cancelled = false;
     const load = async () => {
       try {
         const requests = [
           api.get(routes.admin.mods.byId(mod.id)),
           api.get(routes.admin.mods.tags()).catch(() => ({ data: { tags: [] } })),
+          api.get(routes.admin.botMods.root(), { params: { modId: mod.id, limit: 1 } }).catch(() => null),
         ];
         if (!listModsRef.current.length) {
           requests.push(
@@ -108,7 +116,7 @@ export default function ModAdminEditPopup({
               .catch(() => null),
           );
         }
-        const [detailRes, tagsRes, mergeRes] = await Promise.all(requests);
+        const [detailRes, tagsRes, botRes, mergeRes] = await Promise.all(requests);
         if (cancelled) return;
         const detail = asMod(detailRes?.data);
         if (detail) {
@@ -117,6 +125,9 @@ export default function ModAdminEditPopup({
           onChangeRef.current?.(detail);
         }
         setCatalogTags(Array.isArray(tagsRes.data?.tags) ? tagsRes.data.tags : []);
+        const linked = Array.isArray(botRes?.data?.botMods) ? botRes.data.botMods[0] : null;
+        setBotLink(linked || null);
+        setBotIdInput(linked?.id || '');
         if (mergeRes?.data) setFetchedMergeMods(applyMods(mergeRes.data));
       } catch (error) {
         if (!cancelled) toast.error(apiError(error, t('mods.errors.loadFailed')));
@@ -230,6 +241,39 @@ export default function ModAdminEditPopup({
       toast.error(apiError(error, t('mods.icon.removeFailed')));
     } finally {
       setIconBusy(false);
+    }
+  };
+
+  const saveBotLink = async () => {
+    const botId = botIdInput.trim();
+    if (!botId || botLinkBusy) return;
+    setBotLinkBusy(true);
+    try {
+      const { data } = await api.put(routes.admin.botMods.link(botId), { modId: editingMod.id });
+      const row = data?.botMod || null;
+      setBotLink(row);
+      setBotIdInput(row?.id || botId);
+      toastBotModLinked(t, row);
+    } catch (error) {
+      toast.error(apiError(error, t('mods.botMods.linkFailed')));
+    } finally {
+      setBotLinkBusy(false);
+    }
+  };
+
+  const clearBotLink = async () => {
+    const botId = botLink?.id || botIdInput.trim();
+    if (!botId || botLinkBusy) return;
+    setBotLinkBusy(true);
+    try {
+      await api.delete(routes.admin.botMods.link(botId));
+      setBotLink(null);
+      setBotIdInput('');
+      toast.success(t('mods.botMods.unlinkedOk'));
+    } catch (error) {
+      toast.error(apiError(error, t('mods.botMods.unlinkFailed')));
+    } finally {
+      setBotLinkBusy(false);
     }
   };
 
@@ -366,6 +410,41 @@ export default function ModAdminEditPopup({
                   </button>
                 );
               })}
+            </div>
+          </div>
+          <div className="mods-page__assign">
+            <p className="mods-page__assign-title">{t('mods.botMods.linkTitle')}</p>
+            <p className="mods-page__assign-empty">{t('mods.botMods.linkHint')}</p>
+            <label className="mods-page__bot-link-field" htmlFor="mod-bot-id">
+              {t('mods.botMods.botId')}
+              <input
+                id="mod-bot-id"
+                type="text"
+                value={botIdInput}
+                onChange={(event) => setBotIdInput(event.target.value)}
+                placeholder={t('mods.botMods.linkPlaceholder')}
+                autoComplete="off"
+                disabled={botLinkBusy}
+              />
+            </label>
+            <div className="mods-page__bot-link-actions">
+              <button
+                type="button"
+                className="confirm-button btn-fill-primary"
+                disabled={!botIdInput.trim() || botLinkBusy}
+                onClick={() => void saveBotLink()}
+              >
+                {t('mods.botMods.linkSave')}
+              </button>
+              <button
+                type="button"
+                className="delete-confirm-button btn-fill-danger"
+                disabled={(!botLink && !botIdInput.trim()) || botLinkBusy}
+                onClick={() => void clearBotLink()}
+              >
+                {t('mods.botMods.linkClear')}
+              </button>
+              <Link to="/mods/edit/bot">{t('mods.botMods.manage')}</Link>
             </div>
           </div>
           <ModReleasesSection
