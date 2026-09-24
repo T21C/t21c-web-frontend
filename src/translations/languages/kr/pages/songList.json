@@ -8,7 +8,8 @@
     "placeholder": "곡 검색..."
   },
   "filter": {
-    "verificationState": "승인 상태"
+    "verificationState": "승인 상태",
+    "tufVerified": "TUF 인증"
   },
   "sort": {
     "label": "정렬",

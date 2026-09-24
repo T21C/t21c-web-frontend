@@ -50,6 +50,11 @@
 
 .artist-list-page .artist-cards-grid .artist-card-verification {
   margin-top: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
 }
 
 .artist-list-page .artist-card {
@@ -123,6 +128,11 @@
 
 .artist-list-page .artist-card-verification {
   margin-top: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
 }
 
 .artist-list-page .no-artists {

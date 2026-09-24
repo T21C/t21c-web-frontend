@@ -16,7 +16,7 @@ import { useArtistContext } from '@/contexts/ArtistContext';
 import './artistListPage.css';
 import '@/pages/common/search-section.css';
 import { getVerificationClass } from '@/utils/Utility';
-import { artistVerificationSelectOptions } from '@/utils/verificationStates';
+import { artistVerificationSelectOptions, tufVerifiedFilterSelectOptions } from '@/utils/verificationStates';
 
 const ArtistListPage = () => {
   const { t } = useTranslation(['pages', 'common']);
@@ -36,9 +36,11 @@ const ArtistListPage = () => {
     searchQuery,
     sortBy,
     verificationState,
+    tufVerified,
     setSearchQuery,
     setSortBy,
-    setVerificationState
+    setVerificationState,
+    setTufVerified,
   } = useArtistContext();
 
   const [artists, setArtists] = useState([]);
@@ -54,7 +56,7 @@ const ArtistListPage = () => {
 
   useEffect(() => {
     fetchArtists(true);
-  }, [searchQuery, sortBy, verificationState]);
+  }, [searchQuery, sortBy, verificationState, tufVerified]);
 
   const fetchArtists = async (reset = false) => {
     if (reset) {
@@ -74,6 +76,9 @@ const ArtistListPage = () => {
 
     if (verificationState) {
       params.verificationState = verificationState;
+    }
+    if (tufVerified === true) {
+      params.tufVerified = true;
     }
 
     const runner = reset ? runRequest : runRequest.flush;
@@ -117,6 +122,10 @@ const ArtistListPage = () => {
     setVerificationState(option?.value || null);
   };
   
+  const handleTufVerifiedChange = (option) => {
+    setTufVerified(option?.value === true ? true : null);
+  };
+  
   const handleSortChange = (option) => {
     setSortBy(option?.value || 'NAME_ASC');
   };
@@ -131,6 +140,7 @@ const ArtistListPage = () => {
   const verificationStateOptions = artistVerificationSelectOptions(t, [
     { value: null, label: t('verification.all', { ns: 'common' }) },
   ]);
+  const tufVerifiedFilterOptions = tufVerifiedFilterSelectOptions(t);
 
   return (
     <div className="artist-list-page">
@@ -157,6 +167,16 @@ const ArtistListPage = () => {
               value={verificationStateOptions.find(opt => opt.value === verificationState) || verificationStateOptions[0]}
               onChange={handleVerificationChange}
               label={t('artistList.filter.verificationState')}
+              width="12rem"
+            />
+          </div>
+
+          <div className="filter-container">
+            <CustomSelect
+              options={tufVerifiedFilterOptions}
+              value={tufVerifiedFilterOptions.find(opt => opt.value === tufVerified) || tufVerifiedFilterOptions[0]}
+              onChange={handleTufVerifiedChange}
+              label={t('artistList.filter.tufVerified')}
               width="12rem"
             />
           </div>
@@ -225,6 +245,11 @@ const ArtistListPage = () => {
                     <span className={getVerificationClass(artist.verificationState)}>
                       {t(`verification.${artist.verificationState}`, { ns: 'common' })}
                     </span>
+                    {artist.tufVerified && (
+                      <span className={getVerificationClass('tuf_verified')}>
+                        {t('verification.tuf_verified', { ns: 'common' })}
+                      </span>
+                    )}
                   </div>
                 </div>
               </Link>

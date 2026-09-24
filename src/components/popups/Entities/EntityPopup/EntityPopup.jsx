@@ -107,6 +107,11 @@ export const EntityPopup = ({ artist, song, onClose, type = 'artist' }) => {
               <span className={getVerificationClass(entityData.verificationState)}>
                 {t(`verification.${entityData.verificationState}`, { ns: 'common' })}
               </span>
+              {entityData.tufVerified && (
+                <span className={getVerificationClass('tuf_verified')}>
+                  {t('verification.tuf_verified', { ns: 'common' })}
+                </span>
+              )}
             </div>
           </div>
 

@@ -70,6 +70,10 @@
 
 .song-list-container .song-cards-grid .song-card-verification {
   margin-top: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
 }
 
 .song-list-container .song-card {
@@ -152,6 +156,10 @@
 
 .song-list-container .song-card-verification {
   margin-top: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
 }
 
 .song-list-container .no-songs {

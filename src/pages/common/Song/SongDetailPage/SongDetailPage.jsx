@@ -96,6 +96,11 @@ const SongDetailPage = () => {
               <span className={getVerificationClass(song.verificationState)}>
                 {t(`verification.${song.verificationState}`, { ns: 'common' })}
               </span>
+              {song.tufVerified && (
+                <span className={getVerificationClass('tuf_verified')}>
+                  {t('verification.tuf_verified', { ns: 'common' })}
+                </span>
+              )}
             </div>
           </div>
         </div>

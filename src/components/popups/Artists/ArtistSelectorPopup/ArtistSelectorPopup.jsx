@@ -241,6 +241,11 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
                             {t(`verification.${artistDetails.verificationState}`, { ns: 'common' })}
                           </span>
                         )}
+                        {artistDetails.tufVerified && (
+                          <span className="verification-status tuf_verified">
+                            {t('verification.tuf_verified', { ns: 'common' })}
+                          </span>
+                        )}
                       </>
                     ) : (
                       t('artistSelector.currentArtist.none')
@@ -303,6 +308,11 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
                           {artist.verificationState && (
                             <span className={`verification-badge ${artist.verificationState}`}>
                               {t(`verification.${artist.verificationState}`, { ns: 'common' })}
+                            </span>
+                          )}
+                          {artist.tufVerified && (
+                            <span className="verification-badge tuf_verified">
+                              {t('verification.tuf_verified', { ns: 'common' })}
                             </span>
                           )}
                         </div>

@@ -14,7 +14,8 @@
     "avatarUrl": "Avatar",
     "avatarUrlPlaceholder": "Enter avatar URL",
     "avatarCdnInfo": "CDN-hosted avatar can only be changed via upload/delete",
-    "verificationState": "인증 상태"
+    "verificationState": "인증 상태",
+    "tufVerified": "TUF 인증"
   },
   "merge": {
     "info": "이 작곡가를 다른 작곡가에 병합합니다. 모든 데이터가 이전됩니다.",

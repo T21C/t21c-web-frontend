@@ -11,7 +11,8 @@
   },
   "form": {
     "name": "名称",
-    "verificationState": "认证状态"
+    "verificationState": "认证状态",
+    "tufVerified": "TUF 认证"
   },
   "merge": {
     "info": "将此音乐合并到另一音乐中。所有数据都将被转移。",

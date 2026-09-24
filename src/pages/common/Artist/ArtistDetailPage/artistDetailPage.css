@@ -37,6 +37,10 @@
 
 .artist-detail-page .artist-verification {
   margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
 }
 
 .artist-detail-page .artist-content {

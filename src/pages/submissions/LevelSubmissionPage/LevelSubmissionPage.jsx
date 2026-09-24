@@ -45,8 +45,8 @@ import { useJobProgressStream } from '@/hooks/useJobProgressStream';
 import { CLIENT_PREF_KEYS, getClientPreference } from '@/utils/clientPreferences';
 
 /** Keep in sync with server/src/server/submissions/submissionEvidenceRules.ts (display-only). */
-const SONG_VERIFICATION_NO_EVIDENCE = new Set(['ysmod_only', 'allowed', 'tuf_verified']);
-const ARTIST_VERIFICATION_NO_EVIDENCE = new Set(['ysmod_only', 'allowed', 'mostly_allowed', 'tuf_verified']);
+const SONG_VERIFICATION_NO_EVIDENCE = new Set(['ysmod_only', 'allowed']);
+const ARTIST_VERIFICATION_NO_EVIDENCE = new Set(['ysmod_only', 'allowed', 'mostly_allowed']);
 const ARTIST_LINEUP_WAIVES_SONG_EVIDENCE = new Set(['allowed', 'mostly_allowed']);
 
 const normalizeVerificationState = (value) =>

@@ -21,6 +21,8 @@ import { getVerificationClass, isCdnUrl, isImageUrl } from '@/utils/Utility';
 import {
   artistVerificationSelectOptions,
   songVerificationSelectOptions,
+  tufVerifiedFilterSelectOptions,
+  tufVerifiedYesNoSelectOptions,
 } from '@/utils/verificationStates';
 import { GalleryInspectPopup } from '@/components/popups/Evidence';
 import { CDN_IMAGE_ACCEPT } from '@/config/constants/cdnImageAccept';
@@ -55,9 +57,11 @@ const EntityManagementPage = ({ type = 'artist' }) => {
   const searchQuery = context.searchQuery;
   const sortBy = context.sortBy;
   const verificationFilter = context.verificationState;
+  const tufVerifiedFilter = context.tufVerified;
   const setSearchQuery = context.setSearchQuery;
   const setSortBy = context.setSortBy;
   const setVerificationFilter = context.setVerificationState;
+  const setTufVerifiedFilter = context.setTufVerified;
 
   const [entities, setEntities] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -68,6 +72,7 @@ const EntityManagementPage = ({ type = 'artist' }) => {
   const [newEntityData, setNewEntityData] = useState({
     name: '',
     verificationState: type === 'song' ? 'pending' : 'unverified',
+    tufVerified: false,
     aliases: []
   });
   const [newAlias, setNewAlias] = useState('');
@@ -90,7 +95,7 @@ const EntityManagementPage = ({ type = 'artist' }) => {
         abortControllerRef.current.abort();
       }
     };
-  }, [searchQuery, sortBy, verificationFilter, user, type]);
+  }, [searchQuery, sortBy, verificationFilter, tufVerifiedFilter, user, type]);
 
   const fetchEntities = async (reset = false) => {
     // Cancel previous request if it exists
@@ -119,6 +124,9 @@ const EntityManagementPage = ({ type = 'artist' }) => {
 
       if (verificationFilter && verificationFilter !== '') {
         params.verificationState = verificationFilter;
+      }
+      if (tufVerifiedFilter === true) {
+        params.tufVerified = true;
       }
 
       const endpoint = type === 'song' ? routes.database.songs.root() : routes.database.artists.root();
@@ -179,6 +187,7 @@ const EntityManagementPage = ({ type = 'artist' }) => {
         const formData = new FormData();
         formData.append('name', newEntityData.name.trim());
         formData.append('verificationState', newEntityData.verificationState);
+        formData.append('tufVerified', newEntityData.tufVerified ? 'true' : 'false');
         
         if (avatarFile) {
           formData.append('avatar', avatarFile);
@@ -202,6 +211,7 @@ const EntityManagementPage = ({ type = 'artist' }) => {
       setNewEntityData({
         name: '',
         verificationState: type === 'song' ? 'pending' : 'unverified',
+        tufVerified: false,
         aliases: []
       });
       setNewAlias('');
@@ -239,7 +249,9 @@ const EntityManagementPage = ({ type = 'artist' }) => {
   const verificationStateOptions = [
     { value: '', label: tEntity('filter.all') },
     ...verificationStateFormOptions,
-  ]; 
+  ];
+  const tufVerifiedFilterOptions = tufVerifiedFilterSelectOptions(t);
+  const tufVerifiedFormOptions = tufVerifiedYesNoSelectOptions(t); 
 
   const sortOptions = [
     { value: 'NAME_ASC', label: tEntity('sort.nameAsc') },
@@ -302,6 +314,16 @@ const EntityManagementPage = ({ type = 'artist' }) => {
             />
           </div>
 
+          <div className="filter-container">
+            <CustomSelect
+              label={tEntity('filter.tufVerified')}
+              options={tufVerifiedFilterOptions}
+              value={tufVerifiedFilterOptions.find(opt => opt.value === tufVerifiedFilter) || tufVerifiedFilterOptions[0]}
+              onChange={(option) => setTufVerifiedFilter(option?.value === true ? true : null)}
+              width="12rem"
+            />
+          </div>
+
           <div className="sort-container">
             <CustomSelect
               label={tEntity('sort.label')}
@@ -350,6 +372,11 @@ const EntityManagementPage = ({ type = 'artist' }) => {
                       <span className={getVerificationClass(entity.verificationState)}>
                         {t(`verification.${entity.verificationState}`, { ns: 'common' })}
                       </span>
+                      {entity.tufVerified && (
+                        <span className={getVerificationClass('tuf_verified')}>
+                          {t('verification.tuf_verified', { ns: 'common' })}
+                        </span>
+                      )}
                       {entity.aliases && entity.aliases.length > 0 && (
                         <span className="aliases-count">
                           {entity.aliases.length} {tEntity('aliases')}
@@ -515,6 +542,15 @@ const EntityManagementPage = ({ type = 'artist' }) => {
               />
             </div>
             <div className="form-group">
+              <CustomSelect
+                label={tEntity('form.tufVerified')}
+                options={tufVerifiedFormOptions}
+                value={tufVerifiedFormOptions.find(opt => opt.value === !!newEntityData.tufVerified) || tufVerifiedFormOptions[0]}
+                onChange={(option) => setNewEntityData(prev => ({...prev, tufVerified: option?.value === true}))}
+                width="100%"
+              />
+            </div>
+            <div className="form-group">
               <label>{tEntity('form.aliases')}</label>
               <div className="alias-input-group">
                 <input
@@ -580,6 +616,7 @@ const EntityManagementPage = ({ type = 'artist' }) => {
                   setNewEntityData({
                     name: '',
                     verificationState: type === 'song' ? 'pending' : 'unverified',
+                    tufVerified: false,
                     aliases: []
                   });
                   setNewAlias('');

@@ -32,6 +32,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
       ? (song?.verificationState || 'pending')
       : (artist?.verificationState || 'unverified')
   );
+  const [tufVerified, setTufVerified] = useState(!!entity?.tufVerified);
   const [aliases, setAliases] = useState(artist?.aliases?.map(a => a.alias) || []);
   const [links, setLinks] = useState(artist?.links?.map(l => l.link) || []);
   const [evidences, setEvidences] = useState(artist?.evidences || []);
@@ -89,7 +90,8 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
       if (type === 'artist') {
         setAvatarUrl(entity.avatarUrl || '');
       }
-      setVerificationState(entity.verificationState || 'unverified');
+      setVerificationState(entity.verificationState || (type === 'song' ? 'pending' : 'unverified'));
+      setTufVerified(!!entity.tufVerified);
       setAliases(entity.aliases?.map(a => a.alias) || []);
       setLinks(entity.links?.map(l => l.link) || []);
       setEvidences(entity.evidences || []);
@@ -386,7 +388,8 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
       const endpoint = type === 'song' ? routes.database.songs.byId(entityId) : routes.database.artists.byId(entityId);
       await api.put(endpoint, {
         name: name.trim(),
-        verificationState
+        verificationState,
+        tufVerified,
       });
 
       // Update aliases
@@ -1001,6 +1004,8 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
               verificationState={verificationState}
               setVerificationState={setVerificationState}
               verificationStateOptions={verificationStateOptions}
+              tufVerified={tufVerified}
+              setTufVerified={setTufVerified}
               handleUpdate={handleUpdate}
               isLoading={isLoading}
               tEntity={tEntity}

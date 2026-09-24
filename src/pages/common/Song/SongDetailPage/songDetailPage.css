@@ -33,6 +33,10 @@
 
 .song-detail-page .song-verification {
   margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
 }
 
 .song-detail-page .song-content {

@@ -18,6 +18,8 @@ export const UpdateTab = ({
   verificationState,
   setVerificationState,
   verificationStateOptions,
+  tufVerified,
+  setTufVerified,
   handleUpdate,
   isLoading,
   tEntity
@@ -89,6 +91,17 @@ export const UpdateTab = ({
           onChange={(option) => setVerificationState(option?.value || (type === 'song' ? 'pending' : 'unverified'))}
           width="100%"
         />
+      </div>
+
+      <div className="form-group">
+        <label className="checkbox-label">
+          <input
+            type="checkbox"
+            checked={!!tufVerified}
+            onChange={(e) => setTufVerified(e.target.checked)}
+          />
+          {tEntity('form.tufVerified')}
+        </label>
       </div>
 
       <div className="form-actions">
