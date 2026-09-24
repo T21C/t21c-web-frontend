@@ -2959,6 +2959,7 @@
     align-self: stretch;
     margin-left: 0;
     min-height: 0;
+    min-width: 0;
     width: 100%;
   }
 

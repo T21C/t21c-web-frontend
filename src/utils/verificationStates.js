@@ -8,7 +8,6 @@ export const SONG_VERIFICATION_STATES = [
   'conditional',
   'ysmod_only',
   'allowed',
-  'tuf_verified',
 ];
 
 export const ARTIST_VERIFICATION_STATES = [
@@ -19,7 +18,6 @@ export const ARTIST_VERIFICATION_STATES = [
   'mostly_allowed',
   'allowed',
   'ysmod_only',
-  'tuf_verified',
 ];
 
 export function verificationStateSelectOptions(t, states) {
@@ -35,4 +33,18 @@ export function songVerificationSelectOptions(t, extraLeading = []) {
 
 export function artistVerificationSelectOptions(t, extraLeading = []) {
   return [...extraLeading, ...verificationStateSelectOptions(t, ARTIST_VERIFICATION_STATES)];
+}
+
+export function tufVerifiedFilterSelectOptions(t) {
+  return [
+    { value: null, label: t('verification.all', { ns: 'common' }) },
+    { value: true, label: t('verification.tuf_verified', { ns: 'common' }) },
+  ];
+}
+
+export function tufVerifiedYesNoSelectOptions(t) {
+  return [
+    { value: false, label: t('buttons.no', { ns: 'common' }) },
+    { value: true, label: t('buttons.yes', { ns: 'common' }) },
+  ];
 }
