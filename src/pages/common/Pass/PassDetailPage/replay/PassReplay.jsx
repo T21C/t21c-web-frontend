@@ -7,6 +7,8 @@ import usePassReplay from './usePassReplay';
 import './replay-immersive.css';
 import PassAutoSubmissionFlag from '@/components/cards/PassAutoSubmissionFlag';
 import './pass-replay.css';
+import { useAuth } from '@/contexts/AuthContext';
+import ReplayVisualSettings from './ReplayVisualSettings.jsx';
 
 
 const PassReplay = ({ pass }) => {
@@ -16,6 +18,9 @@ const PassReplay = ({ pass }) => {
   const expandButtonRef = useRef(null);
   const wasExpanded = useRef(false);
   const [expanded, setExpanded] = useState(false);
+  const [editingVisuals, setEditingVisuals] = useState(false);
+  const { user } = useAuth();
+  const ownsPass = !!user?.playerId && Number(user.playerId) === Number(pass.playerId ?? pass.player?.id);
   useEffect(() => {
     if (wasExpanded.current && !expanded) expandButtonRef.current?.focus();
     wasExpanded.current = expanded;
@@ -33,6 +38,7 @@ const PassReplay = ({ pass }) => {
       <div className="replay-heading">
         <div className="replay-title-row"><h2>{t('title')}</h2><PassAutoSubmissionFlag /></div>
         <div className="replay-heading-actions">
+          {ownsPass && <button type="button" onClick={() => setEditingVisuals(true)}>{t('visualSettings.title')}</button>}
           <button ref={expandButtonRef} type="button" className="replay-icon-button" onClick={() => setExpanded(!expanded)} aria-label={t(expanded ? 'collapse' : 'expand')} aria-pressed={expanded} title={t(expanded ? 'collapse' : 'expand')}>
             {expanded ? <FiMinimize2 /> : <FiMaximize2 />}
           </button>
@@ -51,6 +57,7 @@ const PassReplay = ({ pass }) => {
           </div>
         </div>
       </div>
+      {editingVisuals && ownsPass && <ReplayVisualSettings key={`${pass.id}:${user.id}`} passId={pass.id} onClose={() => setEditingVisuals(false)} onChanged={replay.visualsChanged} />}
     </section>
   );
   return expanded ? <ReplayImmersiveView label={t('title')} onClose={() => setExpanded(false)}>{content}</ReplayImmersiveView> : content;

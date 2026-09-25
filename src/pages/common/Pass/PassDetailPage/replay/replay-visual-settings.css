@@ -1,0 +1,14 @@
+.replay-visual-settings { width: min(36rem, calc(100vw - 2rem)); max-height: calc(100dvh - 2rem); overflow-y: auto; padding: 1.5rem; border-radius: 1rem; }
+.replay-visual-settings-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.replay-visual-settings h2 { margin: 0; font-size: 1.3rem; }
+.replay-visual-settings p { line-height: 1.6; opacity: .85; }
+.replay-visual-settings form { display: grid; gap: 1rem; margin: 1.5rem 0; }
+.replay-visual-settings label { display: grid; gap: .5rem; }
+.replay-visual-settings select { min-width: 0; width: 100%; padding: .7rem; border: 1px solid #ffffff40; border-radius: .5rem; color: inherit; background: var(--color-background, #16161b); }
+.replay-visual-settings button { padding: .5rem .9rem; border-radius: .5rem; cursor: pointer; }
+.replay-visual-settings button:disabled { opacity: .5; cursor: wait; }
+.replay-visual-settings ul { padding: 0; list-style: none; }
+.replay-visual-settings li { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: .8rem 0; border-top: 1px solid #ffffff20; }
+.replay-visual-settings li div { min-width: 0; overflow-wrap: anywhere; }
+.replay-visual-settings small { display: block; margin-top: .2rem; opacity: .7; }
+.replay-visual-settings :focus-visible { outline: 2px solid var(--color-primary, #8f8fff); outline-offset: 3px; }
