@@ -33,6 +33,7 @@ import {
   PlayerDifficultyModule,
   PlayerRankHistoryModule,
   PlayerScoresModule,
+  PlayerKeyboardsModule,
   FavoriteShowcase,
 } from "@/components/account/ProfileModules";
 
@@ -130,6 +131,9 @@ const ProfilePage = () => {
 
     const [rankHistoryCollapsed, setRankHistoryCollapsed] = useState(false);
     const [favoriteCollapsed, setFavoriteCollapsed] = useState(false);
+    const [keyboardsCollapsed, setKeyboardsCollapsed] = useState(false);
+    const [keyboardSetup, setKeyboardSetup] = useState(null);
+    const [keyboardCatalog, setKeyboardCatalog] = useState({ geometries: [], products: [], switches: [] });
     const [rankHistoryMetric, setRankHistoryMetric] = useState("rankedScore");
     const [rankHistoryRange, setRankHistoryRange] = useState("365d");
     const [rankHistorySeries, setRankHistorySeries] = useState([]);
@@ -203,6 +207,30 @@ const ProfilePage = () => {
 
         fetchPlayer();
       }, [playerId, canRevealHiddenPasses, showHiddenPasses]);
+
+      useEffect(() => {
+        const id =
+          playerId != null && playerId !== ""
+            ? Number(playerId)
+            : NaN;
+        if (!Number.isFinite(id) || id <= 0) return undefined;
+        let cancelled = false;
+        Promise.all([
+          api.get(routes.playersV3.keyboardSetups(id)),
+          api.get(routes.keyboardsV3.catalog()),
+        ])
+          .then(([setupRes, catalogRes]) => {
+            if (cancelled) return;
+            setKeyboardSetup(setupRes.data);
+            setKeyboardCatalog(catalogRes.data);
+          })
+          .catch((error) => {
+            if (!cancelled) console.error("Error fetching keyboard setups:", error);
+          });
+        return () => {
+          cancelled = true;
+        };
+      }, [playerId]);
 
       // Passes are served from a paginated endpoint so we only fetch what is
       // visible. Sorting and searching happen server-side; the infinite
@@ -674,6 +702,8 @@ const ProfilePage = () => {
             funFactTotal: playerData?.funFacts?.counts?.totalPasses,
           },
           favoriteItems,
+          keyboardSetup,
+          keyboardSetupOwner: Boolean(user && isOwnProfile),
         }),
         [
           playerData,
@@ -685,6 +715,9 @@ const ProfilePage = () => {
           passesTotal,
           displayedPasses.length,
           favoriteItems,
+          keyboardSetup,
+          user,
+          isOwnProfile,
         ],
       );
 
@@ -989,6 +1022,18 @@ const ProfilePage = () => {
                         items={playerData?.profileModulesResolved?.[mod.id]?.items || []}
                         collapsed={favoriteCollapsed}
                         onCollapsedChange={setFavoriteCollapsed}
+                      />
+                    );
+                  }
+                  if (mod.type === "keyboards") {
+                    return (
+                      <PlayerKeyboardsModule
+                        isOwner={Boolean(user && isOwnProfile)}
+                        setup={keyboardSetup}
+                        catalog={keyboardCatalog}
+                        collapsed={keyboardsCollapsed}
+                        onCollapsedChange={setKeyboardsCollapsed}
+                        onSetupChange={setKeyboardSetup}
                       />
                     );
                   }

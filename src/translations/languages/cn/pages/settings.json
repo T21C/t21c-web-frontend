@@ -497,6 +497,7 @@
     "dragAria": "拖拽以重拍",
     "favoriteCount": "已使用 {{used}} 项，最多 {{max}} 项",
     "searchPlayer": "搜索玩家",
+    "searchCreator": "搜索创作者",
     "searchEntity": "搜索以添加",
     "searchNoResults": "无结果"
   }

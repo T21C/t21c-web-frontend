@@ -6,7 +6,7 @@ export const PROFILE_MODULES_STELLAR_CAP = 20;
 export const MAX_FAVORITE_ITEMS = 20;
 export const MAX_PROFILE_MODULE_ID_LENGTH = 64;
 
-export const FAVORITE_ITEM_KINDS = ["pass", "level", "pack", "player"];
+export const FAVORITE_ITEM_KINDS = ["pass", "level", "pack", "player", "creator"];
 
 export const PLAYER_STOCK_MODULE_TYPES = [
   "bio",
@@ -24,10 +24,12 @@ export const CREATOR_STOCK_MODULE_TYPES = [
   "charts",
 ];
 
-export const EXTRA_PROFILE_MODULE_TYPES = ["favorite"];
+export const EXTRA_PROFILE_MODULE_TYPES = ["favorite", "keyboards"];
+export const PLAYER_EXTRA_MODULE_TYPES = ["favorite", "keyboards"];
+export const CREATOR_EXTRA_MODULE_TYPES = ["favorite"];
 
-export const PLAYER_MODULE_TYPES = [...PLAYER_STOCK_MODULE_TYPES, ...EXTRA_PROFILE_MODULE_TYPES];
-export const CREATOR_MODULE_TYPES = [...CREATOR_STOCK_MODULE_TYPES, ...EXTRA_PROFILE_MODULE_TYPES];
+export const PLAYER_MODULE_TYPES = [...PLAYER_STOCK_MODULE_TYPES, ...PLAYER_EXTRA_MODULE_TYPES];
+export const CREATOR_MODULE_TYPES = [...CREATOR_STOCK_MODULE_TYPES, ...CREATOR_EXTRA_MODULE_TYPES];
 
 const PLAYER_TYPE_SET = new Set(PLAYER_MODULE_TYPES);
 const CREATOR_TYPE_SET = new Set(CREATOR_MODULE_TYPES);

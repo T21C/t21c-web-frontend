@@ -169,8 +169,9 @@ export function addModuleType(document, kind, type) {
   const next = cloneModulesDocument(kind, document);
   if (!isModuleTypeForKind(kind, type)) return next;
   if (next.modules.some((mod) => mod.type === type)) return next;
+  const extra = !stockModuleTypesForKind(kind).includes(type);
   next.modules.push({
-    id: type === "favorite" ? createProfileModuleId() : stockModuleId(type),
+    id: extra ? createProfileModuleId() : stockModuleId(type),
     type,
     config: type === "favorite" ? { items: [] } : {},
   });

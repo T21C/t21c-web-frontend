@@ -30,10 +30,17 @@ export function isFavoritePlayerHidden(player) {
   return Boolean(player.isBanned);
 }
 
+export function isFavoriteCreatorHidden(creator) {
+  if (!creator) return true;
+  const id = Number(creator.id);
+  return !Number.isInteger(id) || id <= 0;
+}
+
 export function isFavoriteEntityHidden(kind, entity) {
   if (kind === "pass") return isFavoritePassHidden(entity);
   if (kind === "level") return isFavoriteLevelHidden(entity);
   if (kind === "pack") return isFavoritePackHidden(entity);
   if (kind === "player") return isFavoritePlayerHidden(entity);
+  if (kind === "creator") return isFavoriteCreatorHidden(entity);
   return true;
 }

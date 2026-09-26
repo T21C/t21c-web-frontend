@@ -320,7 +320,8 @@
 .profile-modules .profile-showcase .score-card,
 .profile-modules .profile-showcase .level-card,
 .profile-modules .profile-showcase .pack-card,
-.profile-modules .profile-showcase .player-card {
+.profile-modules .profile-showcase .player-card,
+.profile-modules .profile-showcase .creator-card {
   width: 100%;
   margin: 0;
 }
@@ -346,5 +347,22 @@
 }
 
 .profile-modules .profile-showcase .player-card.player-card--showcase .info-wrapper {
+  display: none;
+}
+
+.profile-modules .profile-showcase .creator-card.creator-card--showcase {
+  min-height: 2.75rem;
+  padding: 0.35rem 0.75rem;
+  gap: 0.75rem;
+  flex-wrap: nowrap;
+}
+
+.profile-modules .profile-showcase .creator-card.creator-card--showcase .creator-card__avatar {
+  width: 3rem;
+  height: 3rem;
+}
+
+.profile-modules .profile-showcase .creator-card.creator-card--showcase .creator-card__exp,
+.profile-modules .profile-showcase .creator-card.creator-card--showcase .creator-card__info {
   display: none;
 }

@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
 import { ChevronIcon } from "@/components/common/icons";
-import { LevelCard, ScoreCard, PackCard, PlayerCard } from "@/components/cards";
+import { LevelCard, ScoreCard, PackCard, PlayerCard, CreatorCard } from "@/components/cards";
 import { useLevelsByIds, usePassesByIds } from "@/hooks/useFeaturedEntitiesByIds";
 import { useTranslation } from "react-i18next";
 import "./profileModules.css";
@@ -33,6 +33,9 @@ function ShowcaseItem({ item, levelById, passById, levelsLoading, passesLoading 
   }
   if (item.kind === "player" && item.player) {
     return <PlayerCard player={item.player} displayMode="showcase" />;
+  }
+  if (item.kind === "creator" && item.creator) {
+    return <CreatorCard creator={item.creator} displayMode="showcase" />;
   }
   return null;
 }

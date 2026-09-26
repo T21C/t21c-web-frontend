@@ -3,7 +3,8 @@
     "labels": {
       "score": "Wynik",
       "accuracy": "Dokładność",
-      "speed": "Prędkość"
+      "speed": "Prędkość",
+      "keyboardBind": "Układ {{count}}K"
     },
     "tooltips": {
       "watchVideo": "Obejrz wideo",

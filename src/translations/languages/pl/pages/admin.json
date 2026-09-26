@@ -29,6 +29,8 @@
     "tournamentsDesc": "Manage tournament placements, name links, and reward frames",
     "oauthClients": "OAuth apps",
     "oauthClientsDesc": "Search, freeze, verify, or delete third-party OAuth apps",
+    "keyboards": "Klawiatury",
+    "keyboardsDesc": "Kształty, produkty i switche w katalogu staff",
     "resources": "Materiały",
     "resourcesDesc": "Dodawaj, edytuj i zmieniaj kolejność przydatnych linków Notion i dokumentacji"
   },
@@ -75,6 +77,56 @@
       "verify": "Verify failed",
       "unverify": "Unverify failed"
     }
+  },
+  "keyboards": {
+    "title": "Katalog klawiatur",
+    "geometries": "Układy",
+    "products": "Produkty",
+    "switches": "Switche",
+    "slug": "Slug",
+    "name": "Nazwa",
+    "kle": "JSON KLE",
+    "kleInvalid": "Nie udało się odczytać tego JSON-a układu",
+    "openEditor": "Otwórz edytor",
+    "importKle": "Importuj KLE",
+    "brand": "Marka",
+    "model": "Model",
+    "formFactor": "Format",
+    "addShape": "Dodaj układ",
+    "editShape": "Edytuj układ",
+    "addProduct": "Dodaj produkt",
+    "editProduct": "Edytuj produkt",
+    "addSwitch": "Dodaj switch",
+    "editSwitch": "Edytuj switch",
+    "formFactorsTab": "Formaty",
+    "addFormFactor": "Dodaj format",
+    "editFormFactor": "Edytuj format",
+    "note": "Notatka",
+    "stem": "Trzpień",
+    "baseColor": "Kolor obudowy",
+    "stemColor": "Kolor trzpienia",
+    "baseOpacity": "Krycie obudowy {{percent}}%",
+    "tabs": {
+      "details": "Szczegóły",
+      "layout": "Rozkład"
+    },
+    "formFactors": {
+      "full": "Pełnowymiarowa",
+      "tkl": "TKL",
+      "96": "96%",
+      "75": "75%",
+      "65": "65%",
+      "other": "Inny"
+    },
+    "loadError": "Nie udało się wczytać katalogu klawiatur",
+    "saveError": "Nie udało się zapisać katalogu klawiatur",
+    "deleteError": "Nie udało się usunąć tego elementu",
+    "saved": "Zapisano element katalogu",
+    "deleted": "Usunięto element katalogu",
+    "deleteConfirm": "Usunąć ten element katalogu?",
+    "dragFormFactor": "Przeciągnij, aby zmienić kolejność",
+    "reordered": "Zapisano kolejność formatów",
+    "reorderError": "Nie udało się zmienić kolejności formatów"
   }
 }
  

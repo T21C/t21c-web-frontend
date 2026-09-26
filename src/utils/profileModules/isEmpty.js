@@ -55,5 +55,25 @@ export function profileModuleIsEmpty(type, ctx) {
   if (type === "rankHistory") return isRankHistoryModuleEmpty(ctx.rankHistory);
   if (type === "scores" || type === "charts") return false;
   if (type === "favorite") return isFavoriteModuleEmpty(ctx.favoriteItems);
+  if (type === "keyboards") {
+    if (ctx.keyboardSetupOwner) return false;
+    return isKeyboardsModuleEmpty(ctx.keyboardSetup);
+  }
   return false;
+}
+
+export function isKeyboardsModuleEmpty(setup) {
+  if (!setup || setup.visible === false) return true;
+  const rigs = setup.rigs || [];
+  for (const rig of rigs) {
+    const boards = rig.boardPeriods || [];
+    const board = boards[boards.length - 1];
+    if (!board || board.isGap) continue;
+    for (const lane of rig.lanes || []) {
+      const periods = lane.periods || [];
+      const period = periods[periods.length - 1];
+      if (period && Array.isArray(period.keys) && period.keys.length) return false;
+    }
+  }
+  return true;
 }

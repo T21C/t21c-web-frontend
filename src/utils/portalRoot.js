@@ -12,6 +12,23 @@ export function getPortalRoot(selector = '.body') {
 
 export const POPUP_STACK_ID = 'tuf-popup-stack';
 export const FLOAT_CHROME_ID = 'tuf-float-chrome';
+export const APP_NOTIFICATIONS_ID = 'app-notifications';
+
+/**
+ * `#app-notifications` must be a direct child of `document.body`.
+ * `#root` is `position: relative; z-index: 2`, so a toast host inside it
+ * cannot paint above `#tuf-popup-stack` on body.
+ * Returns null when the node is not in the document yet.
+ */
+export function ensureAppNotificationsOnBody() {
+  const body = typeof document !== 'undefined' ? document.body : null;
+  if (!body) return null;
+  const host = document.getElementById(APP_NOTIFICATIONS_ID);
+  if (host && host.parentElement !== body) {
+    body.appendChild(host);
+  }
+  return host;
+}
 
 /**
  * Dedicated stacking root on `document.body`, above nav / `.body`.

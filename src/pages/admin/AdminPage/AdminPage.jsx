@@ -109,6 +109,13 @@ const AdminPage = () => {
       icon: "🔑"
     },
     {
+      id: 'keyboards',
+      path: '/admin/keyboards',
+      title: t("admin.links.keyboards"),
+      description: t("admin.links.keyboardsDesc"),
+      icon: "⌨️"
+    },
+    {
       id: 'resources',
       path: '/resources',
       title: t("admin.links.resources"),

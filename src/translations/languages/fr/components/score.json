@@ -3,7 +3,8 @@
     "labels": {
       "score": "Score",
       "accuracy": "Précision",
-      "speed": "Vitesse"
+      "speed": "Vitesse",
+      "keyboardBind": "Bind {{count}}K"
     },
     "tooltips": {
       "watchVideo": "Regarder la vidéo",

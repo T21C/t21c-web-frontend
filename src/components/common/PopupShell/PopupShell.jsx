@@ -47,6 +47,7 @@ export function PopupShell({
   role = 'dialog',
 }) {
   const overlayRef = useRef(null);
+  const pressedOnOverlayRef = useRef(false);
   const overlayActive = Boolean(when) && !closeDisabled;
   useBodyScrollLock(Boolean(when));
   usePopupShellEscape(onClose, overlayActive && dismissOnEscape, overlayRef);
@@ -56,11 +57,29 @@ export function PopupShell({
     return registerPopupShell(overlayRef.current);
   }, [when]);
 
-  const handleOverlayClick = (event) => {
-    overlayProps?.onClick?.(event);
+  const handleOverlayPointerDown = (event) => {
+    overlayProps?.onPointerDown?.(event);
+    pressedOnOverlayRef.current = event.button === 0 && event.target === event.currentTarget;
+  };
+
+  const handleOverlayPointerUp = (event) => {
+    overlayProps?.onPointerUp?.(event);
+    const startedOnOverlay = pressedOnOverlayRef.current;
+    pressedOnOverlayRef.current = false;
     if (event.defaultPrevented) return;
     if (!overlayActive || !dismissOnOverlay) return;
-    if (event.target === event.currentTarget) onClose();
+    if (!startedOnOverlay || event.button !== 0) return;
+    if (event.target !== event.currentTarget) return;
+    onClose();
+  };
+
+  const handleOverlayPointerCancel = (event) => {
+    overlayProps?.onPointerCancel?.(event);
+    pressedOnOverlayRef.current = false;
+  };
+
+  const handleOverlayClick = (event) => {
+    overlayProps?.onClick?.(event);
   };
 
   const stackRoot = typeof document !== 'undefined' ? getPopupStackRoot() : null;
@@ -72,6 +91,9 @@ export function PopupShell({
         {...overlayProps}
         ref={overlayRef}
         className={classNames('popup-shell', overlayClassName, overlayProps?.className)}
+        onPointerDown={handleOverlayPointerDown}
+        onPointerUp={handleOverlayPointerUp}
+        onPointerCancel={handleOverlayPointerCancel}
         onClick={handleOverlayClick}
       >
         {overlayChildren ? (

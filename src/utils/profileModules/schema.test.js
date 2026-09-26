@@ -14,6 +14,8 @@ test("pack favorite ids are link codes, not private numeric ids", () => {
   assert.equal(parseFavoriteItemId("pack", 9), null);
   assert.equal(parseFavoriteItemId("level", 11425), 11425);
   assert.equal(parseFavoriteItemId("level", "Ab12Cd34"), null);
+  assert.equal(parseFavoriteItemId("creator", 12), 12);
+  assert.equal(parseFavoriteItemId("creator", "nope"), null);
 
   const stored = readStoredProfileModules({
     version: 1,

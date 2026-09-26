@@ -21,6 +21,10 @@ export function unwrapFavoritePlayer(data) {
   return firstIdObject(data?.player, data);
 }
 
+export function unwrapFavoriteCreator(data) {
+  return firstIdObject(data?.creator, data);
+}
+
 export function favoriteItemHasEntity(item) {
   if (!item || typeof item !== "object") return false;
   const entity = item[item.kind];

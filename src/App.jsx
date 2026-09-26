@@ -1,6 +1,7 @@
 // tuf-search: #App #root — application shell
 import { Navigate, Route, useLocation, useSearchParams } from "react-router-dom";
 import { Suspense, useEffect, useLayoutEffect } from "react";
+import { createPortal } from "react-dom";
 import { Navigation } from "@/components/layout";
 import { PrivateRoute } from "@/components/auth";
 import { DeprecatedRedirect } from "@/components/routing/DeprecatedRedirect";
@@ -14,7 +15,7 @@ import { Toaster } from "react-hot-toast";
 import { TufStellarRoute } from "@/components/routing/TufStellarRoute";
 import { TufHelperLiteConnectBanner } from "@/components/common/TufHelperLiteConnectBanner";
 import { SentryRoutes } from "@/hooks/useSentry";
-import { getPopupStackRoot } from "@/utils/portalRoot";
+import { ensureAppNotificationsOnBody, getPopupStackRoot } from "@/utils/portalRoot";
 
 function App() {
   const [searchParams] = useSearchParams();
@@ -25,6 +26,7 @@ function App() {
 
   useLayoutEffect(() => {
     getPopupStackRoot();
+    ensureAppNotificationsOnBody();
   }, []);
 
   useEffect(() => {
@@ -39,23 +41,28 @@ function App() {
       <PathnameChangeBridge />
       <RouteDocumentHead />
       {!hideChrome && <Navigation />}
-      <div className="app-notifications" aria-live="polite">
-        <Toaster
-          position="bottom-right"
-          containerStyle={{ zIndex: 'var(--z-toast)' }}
-          toastOptions={{
-            duration: 3000,
-            style: {
-              background: 'var(--color-black)',
-              color: 'var(--color-white)',
-              border: '1px solid var(--color-white-t20)',
-              borderRadius: '4px',
-              padding: '0.75rem 1rem',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)'
-            }
-          }}
-        />
-      </div>
+      {typeof document !== "undefined" && document.body
+        ? createPortal(
+          <div id="app-notifications" className="app-notifications" aria-live="polite">
+            <Toaster
+              position="bottom-right"
+              containerStyle={{ zIndex: 'var(--z-toast)' }}
+              toastOptions={{
+                duration: 3000,
+                style: {
+                  background: 'var(--color-black)',
+                  color: 'var(--color-white)',
+                  border: '1px solid var(--color-white-t20)',
+                  borderRadius: '4px',
+                  padding: '0.75rem 1rem',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)'
+                }
+              }}
+            />
+          </div>,
+          document.body,
+        )
+        : null}
       {!hideChrome && <TufHelperLiteConnectBanner />}
       <div className={`body${hideChrome ? " body--chrome-free" : ""}`}>
       {!hideChrome && <div className="nav-spacer" />}
@@ -185,6 +192,7 @@ function App() {
           <Route path="admin/songs" element={<PrivateRoute><Pages.SongManagementPage /></PrivateRoute>} />
           <Route path="admin/audit-log" element={<PrivateRoute><Pages.AuditLogPage /></PrivateRoute>} />
           <Route path="admin/oauth-clients" element={<PrivateRoute><Pages.AdminOAuthClientsPage /></PrivateRoute>} />
+          <Route path="admin/keyboards" element={<PrivateRoute><Pages.KeyboardCatalogPage /></PrivateRoute>} />
           <Route path="admin/backup" element={<PrivateRoute><Pages.BackupPage /></PrivateRoute>} />
           
           <Route path='about' element={<Pages.AboutUsPage />} />

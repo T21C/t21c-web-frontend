@@ -1,5 +1,5 @@
 // tuf-search: #ContributorEditor #contributorEditor #translations
-import { useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   DndContext,
@@ -17,9 +17,12 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { DragHandleIcon, TrashIcon } from '@/components/common/icons';
+import toast from 'react-hot-toast';
+import { DragHandleIcon, EditIcon, TrashIcon } from '@/components/common/icons';
+import { useUnsavedClose } from '@/hooks/useUnsavedClose';
 import api from '@/utils/api';
 import { routes } from '@/api/routes';
+import { toastDurationForMessage } from '@/utils/toastMessage';
 
 const MAX_CONTRIBUTORS = 40;
 
@@ -75,17 +78,13 @@ function SortableContributorRow({ row, onChange, onRemove }) {
   );
 }
 
-const ContributorEditor = ({ languageCode, names, onSaved }) => {
+const ContributorEditor = ({ languageCode, names, header, children, onSaved }) => {
   const { t } = useTranslation(['pages', 'common']);
   const nextId = useRef(1);
-  const [rows, setRows] = useState(() =>
-    names.map((name) => ({ id: String(nextId.current++), name })),
-  );
-  const [savedNames, setSavedNames] = useState(() =>
-    names.map((name) => name.trim()).filter(Boolean),
-  );
+  const baselineRef = useRef(names);
+  const [editing, setEditing] = useState(false);
+  const [rows, setRows] = useState([]);
   const [saving, setSaving] = useState(false);
-  const [status, setStatus] = useState(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
@@ -93,7 +92,21 @@ const ContributorEditor = ({ languageCode, names, onSaved }) => {
   );
 
   const currentNames = useMemo(() => trimmedNames(rows), [rows]);
-  const dirty = !sameNames(currentNames, savedNames);
+  const dirty = editing && !sameNames(currentNames, baselineRef.current);
+
+  const closeEdit = useCallback(() => {
+    setEditing(false);
+    setRows([]);
+  }, []);
+
+  const { requestClose } = useUnsavedClose({ isDirty: dirty, onClose: closeEdit });
+
+  const openEdit = () => {
+    const baseline = names.map((name) => name.trim()).filter(Boolean);
+    baselineRef.current = baseline;
+    setRows(baseline.map((name) => ({ id: String(nextId.current++), name })));
+    setEditing(true);
+  };
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
@@ -104,12 +117,11 @@ const ContributorEditor = ({ languageCode, names, onSaved }) => {
       if (oldIndex < 0 || newIndex < 0) return current;
       return arrayMove(current, oldIndex, newIndex);
     });
-    setStatus(null);
   };
 
   const handleSave = async () => {
     setSaving(true);
-    setStatus(null);
+    const toastId = toast.loading(t('loading.saving', { ns: 'common' }));
     try {
       const response = await api.put(routes.admin.translationContributors(languageCode), {
         names: currentNames,
@@ -117,77 +129,105 @@ const ContributorEditor = ({ languageCode, names, onSaved }) => {
       const saved = Array.isArray(response.data?.names)
         ? response.data.names.filter((name) => typeof name === 'string')
         : currentNames;
-      setSavedNames(saved);
-      setRows(saved.map((name) => ({ id: String(nextId.current++), name })));
-      setStatus({ kind: 'ok', text: t('translations.languages.contributorsSaved') });
+      baselineRef.current = saved;
+      setEditing(false);
+      setRows([]);
+      const savedText = t('translations.languages.contributorsSaved');
+      toast.success(savedText, { id: toastId, duration: toastDurationForMessage(savedText) });
       onSaved(saved);
     } catch (saveError) {
       const message = saveError?.response?.data?.error || saveError.message || 'Unknown error';
-      setStatus({
-        kind: 'error',
-        text: t('translations.languages.contributorsSaveError', { message }),
-      });
+      const errorText = t('translations.languages.contributorsSaveError', { message });
+      toast.error(errorText, { id: toastId, duration: toastDurationForMessage(errorText) });
     } finally {
       setSaving(false);
     }
   };
 
   return (
-    <div className="translations-page__contributor-editor">
-      <span className="translations-page__language-contributors-label">
-        {t('translations.languages.contributors')}
-      </span>
-      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-        <SortableContext items={rows.map((row) => row.id)} strategy={verticalListSortingStrategy}>
-          <div className="translations-page__contributor-list">
-            {rows.map((row) => (
-              <SortableContributorRow
-                key={row.id}
-                row={row}
-                onChange={(id, name) => {
-                  setRows((current) =>
-                    current.map((item) => (item.id === id ? { ...item, name } : item)),
-                  );
-                  setStatus(null);
-                }}
-                onRemove={(id) => {
-                  setRows((current) => current.filter((item) => item.id !== id));
-                  setStatus(null);
-                }}
-              />
-            ))}
-          </div>
-        </SortableContext>
-      </DndContext>
-      <div className="translations-page__contributor-actions">
+    <>
+      <div className="translations-page__language-header">
+        {header}
         <button
           type="button"
-          className="translations-page__button translations-page__button--neutral"
-          onClick={() => {
-            setRows((current) => [...current, { id: String(nextId.current++), name: '' }]);
-            setStatus(null);
-          }}
-          disabled={saving || rows.length >= MAX_CONTRIBUTORS}
+          className={`btn-icon btn-sm translations-page__language-edit ${editing ? 'btn-fill-accent' : 'btn-fill-neutral-dark'}`}
+          aria-label={t('buttons.edit', { ns: 'common' })}
+          aria-pressed={editing}
+          disabled={saving}
+          onClick={editing ? requestClose : openEdit}
         >
-          {t('buttons.add', { ns: 'common' })}
-        </button>
-        <button
-          type="button"
-          className="translations-page__button"
-          onClick={handleSave}
-          disabled={saving || !dirty}
-        >
-          {saving ? t('loading.saving', { ns: 'common' }) : t('buttons.save', { ns: 'common' })}
+          <EditIcon size="16px" color="currentColor" />
         </button>
       </div>
-      {status && (
-        <p
-          className={`translations-page__contributor-status${status.kind === 'error' ? ' error' : ''}`}
-        >
-          {status.text}
-        </p>
+      {children}
+      {editing && (
+        <div className="translations-page__contributor-editor">
+          <span className="translations-page__language-contributors-label">
+            {t('translations.languages.contributors')}
+          </span>
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext items={rows.map((row) => row.id)} strategy={verticalListSortingStrategy}>
+              <div className="translations-page__contributor-list">
+                {rows.map((row) => (
+                  <SortableContributorRow
+                    key={row.id}
+                    row={row}
+                    onChange={(id, name) => {
+                      setRows((current) =>
+                        current.map((item) => (item.id === id ? { ...item, name } : item)),
+                      );
+                    }}
+                    onRemove={(id) => {
+                      setRows((current) => current.filter((item) => item.id !== id));
+                    }}
+                  />
+                ))}
+              </div>
+            </SortableContext>
+          </DndContext>
+          <div className="translations-page__contributor-actions">
+            <button
+              type="button"
+              className="btn-fill-neutral btn-sm"
+              onClick={() => {
+                setRows((current) => [...current, { id: String(nextId.current++), name: '' }]);
+              }}
+              disabled={saving || rows.length >= MAX_CONTRIBUTORS}
+            >
+              {t('buttons.add', { ns: 'common' })}
+            </button>
+            <div className="translations-page__contributor-commit">
+              <button
+                type="button"
+                className="btn-fill-neutral btn-sm"
+                onClick={requestClose}
+                disabled={saving}
+              >
+                {t('buttons.cancel', { ns: 'common' })}
+              </button>
+              <button
+                type="button"
+                className="btn-fill-primary btn-sm"
+                onClick={handleSave}
+                disabled={saving || !dirty}
+              >
+                {saving ? t('loading.saving', { ns: 'common' }) : t('buttons.save', { ns: 'common' })}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
-    </div>
+      {!editing && names.length > 0 && (
+        <div className="translations-page__language-contributors">
+          <span className="translations-page__language-contributors-label">
+            {t('translations.languages.contributors')}
+          </span>
+          <span className="translations-page__language-contributors-names">
+            {names.join(', ')}
+          </span>
+        </div>
+      )}
+    </>
   );
 };
 

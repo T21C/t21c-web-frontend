@@ -9,7 +9,7 @@
      Overlay classNames must not set z-index (they share the .popup-shell node).
      Persistent FABs (ReferencesButton) portal into #tuf-float-chrome at --z-float.
      In-popup menus still mount via getFloatPortalRoot() inside the current shell.
-     Toaster renders in-tree under .app-notifications; that host must sit above --z-popup. */
+     Toaster renders under #app-notifications, portaled onto document.body above --z-popup. */
   --z-nav: 100;
   --z-popup: 1100;
   --z-float: 1200;
@@ -225,6 +225,10 @@ body {
   overflow-x: hidden;
   color: var(--text-color);
   background-color: var(--color-black);
+}
+
+input {
+  color-scheme: dark;
 }
 
 .app-notifications {

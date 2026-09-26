@@ -6,8 +6,10 @@ import { MetaTags } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
 import { useAuth } from '@/contexts/AuthContext';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import toast from 'react-hot-toast';
 import api from '@/utils/api';
 import { routes } from '@/api/routes';
+import { toastDurationForMessage } from '@/utils/toastMessage';
 import ContributorEditor from './ContributorEditor';
 import './translationspage.css';
 
@@ -152,7 +154,8 @@ const TranslationsPage = () => {
       document.body.removeChild(a);
     } catch (error) {
       const message = error?.response?.data?.error || error.message || 'Unknown error';
-      alert(t('translations.languages.downloadError', { message }));
+      const errorText = t('translations.languages.downloadError', { message });
+      toast.error(errorText, { duration: toastDurationForMessage(errorText) });
     } finally {
       setDownloading(null);
     }
@@ -315,34 +318,39 @@ const TranslationsPage = () => {
             <div className="translations-page__language-list">
               {languages.map((lang) => {
                 const status = formatStatus(lang.status, t);
+                const header = (
+                  <>
+                    <span className="translations-page__language-name">
+                      {lang.display}
+                    </span>
+                    <span
+                      className={`translations-page__language-status ${status.className}`.trim()}
+                    >
+                      {status.label}
+                    </span>
+                  </>
+                );
+                const download = (
+                  <button
+                    type="button"
+                    className="translations-page__button translations-page__download-button"
+                    disabled={lang.status === 0 || downloading === lang.folder}
+                    onClick={() => handleDownload(lang.folder)}
+                  >
+                    {downloading === lang.folder
+                      ? t('translations.languages.preparing')
+                      : t('translations.languages.download', {
+                          display: lang.display,
+                        })}
+                  </button>
+                );
                 return (
                   <div key={lang.code} className="translations-page__language-card">
-                    <div className="translations-page__language-header">
-                      <span className="translations-page__language-name">
-                        {lang.display}
-                      </span>
-                      <span
-                        className={`translations-page__language-status ${status.className}`.trim()}
-                      >
-                        {status.label}
-                      </span>
-                    </div>
-                    <button
-                      type="button"
-                      className="translations-page__button translations-page__download-button"
-                      disabled={lang.status === 0 || downloading === lang.folder}
-                      onClick={() => handleDownload(lang.folder)}
-                    >
-                      {downloading === lang.folder
-                        ? t('translations.languages.preparing')
-                        : t('translations.languages.download', {
-                            display: lang.display,
-                          })}
-                    </button>
                     {isAdmin ? (
                       <ContributorEditor
                         languageCode={lang.code}
                         names={lang.contributors}
+                        header={header}
                         onSaved={(names) => {
                           setLanguages((current) =>
                             current.map((item) =>
@@ -350,18 +358,24 @@ const TranslationsPage = () => {
                             ),
                           );
                         }}
-                      />
+                      >
+                        {download}
+                      </ContributorEditor>
                     ) : (
-                      lang.contributors.length > 0 && (
-                        <div className="translations-page__language-contributors">
-                          <span className="translations-page__language-contributors-label">
-                            {t('translations.languages.contributors')}
-                          </span>
-                          <span className="translations-page__language-contributors-names">
-                            {lang.contributors.join(', ')}
-                          </span>
-                        </div>
-                      )
+                      <>
+                        <div className="translations-page__language-header">{header}</div>
+                        {download}
+                        {lang.contributors.length > 0 && (
+                          <div className="translations-page__language-contributors">
+                            <span className="translations-page__language-contributors-label">
+                              {t('translations.languages.contributors')}
+                            </span>
+                            <span className="translations-page__language-contributors-names">
+                              {lang.contributors.join(', ')}
+                            </span>
+                          </div>
+                        )}
+                      </>
                     )}
                   </div>
                 );

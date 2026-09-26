@@ -3,7 +3,8 @@
     "labels": {
       "score": "점수",
       "accuracy": "정확도",
-      "speed": "배속"
+      "speed": "배속",
+      "keyboardBind": "{{count}}키 바인드"
     },
     "tooltips": {
       "watchVideo": "영상 보기",

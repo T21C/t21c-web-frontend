@@ -4,6 +4,7 @@ import {
   unwrapFavoriteLevel,
   unwrapFavoritePack,
   unwrapFavoritePass,
+  unwrapFavoriteCreator,
   unwrapFavoritePlayer,
 } from "./favoriteEntityShape";
 
@@ -11,6 +12,7 @@ export {
   favoriteEntityId,
   favoriteItemFromEntity,
   favoriteItemHasEntity,
+  unwrapFavoriteCreator,
   unwrapFavoriteLevel,
   unwrapFavoritePack,
   unwrapFavoritePass,
@@ -37,6 +39,10 @@ export async function fetchFavoriteEntity(kind, id, options = {}) {
   if (kind === "player") {
     const { data } = await api.get(`${routes.playersV3.root()}/${id}`, { signal });
     return unwrapFavoritePlayer(data);
+  }
+  if (kind === "creator") {
+    const { data } = await api.get(`${routes.creatorsV3.root()}/${id}`, { signal });
+    return unwrapFavoriteCreator(data);
   }
   return null;
 }

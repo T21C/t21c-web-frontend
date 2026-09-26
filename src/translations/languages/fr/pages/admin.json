@@ -29,6 +29,8 @@
     "tournamentsDesc": "Manage tournament placements, name links, and reward frames",
     "oauthClients": "OAuth apps",
     "oauthClientsDesc": "Search, freeze, verify, or delete third-party OAuth apps",
+    "keyboards": "Claviers",
+    "keyboardsDesc": "Formes, produits et switches du catalogue staff",
     "resources": "Ressources",
     "resourcesDesc": "Ajouter, modifier et réordonner les liens Notion et la documentation utiles"
   },
@@ -75,6 +77,56 @@
       "verify": "Verify failed",
       "unverify": "Unverify failed"
     }
+  },
+  "keyboards": {
+    "title": "Catalogue claviers",
+    "geometries": "Formes",
+    "products": "Produits",
+    "switches": "Switches",
+    "slug": "Slug",
+    "name": "Nom",
+    "kle": "JSON KLE",
+    "kleInvalid": "Ce JSON de disposition n’a pas pu être lu",
+    "openEditor": "Ouvrir l’éditeur",
+    "importKle": "Importer KLE",
+    "brand": "Marque",
+    "model": "Modèle",
+    "formFactor": "Format",
+    "addShape": "Ajouter une forme",
+    "editShape": "Modifier la forme",
+    "addProduct": "Ajouter un produit",
+    "editProduct": "Modifier le produit",
+    "addSwitch": "Ajouter un switch",
+    "editSwitch": "Modifier le switch",
+    "formFactorsTab": "Formats",
+    "addFormFactor": "Ajouter un format",
+    "editFormFactor": "Modifier le format",
+    "note": "Note",
+    "stem": "Stem",
+    "baseColor": "Couleur du boîtier",
+    "stemColor": "Couleur du stem",
+    "baseOpacity": "Opacité du boîtier {{percent}} %",
+    "tabs": {
+      "details": "Détails",
+      "layout": "Disposition"
+    },
+    "formFactors": {
+      "full": "Pleine taille",
+      "tkl": "TKL",
+      "96": "96 %",
+      "75": "75 %",
+      "65": "65 %",
+      "other": "Autre"
+    },
+    "loadError": "Impossible de charger le catalogue clavier",
+    "saveError": "Impossible d’enregistrer le catalogue clavier",
+    "deleteError": "Impossible de supprimer cet élément",
+    "saved": "Élément du catalogue enregistré",
+    "deleted": "Élément du catalogue supprimé",
+    "deleteConfirm": "Supprimer cet élément du catalogue ?",
+    "dragFormFactor": "Glisser pour réordonner",
+    "reordered": "Ordre des formats enregistré",
+    "reorderError": "Impossible de réordonner les formats"
   }
 }
  

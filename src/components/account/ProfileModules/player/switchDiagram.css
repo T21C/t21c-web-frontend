@@ -1,0 +1,30 @@
+.switch-diagram {
+  position: relative;
+  display: block;
+  width: 4.75rem;
+  flex-shrink: 0;
+  overflow: visible;
+  color: var(--color-white);
+}
+
+.switch-diagram .switch-diagram__art {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.switch-diagram .switch-diagram__badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 32%;
+  height: auto;
+  overflow: visible;
+  pointer-events: none;
+  filter: drop-shadow(0 0 5px #000);
+}
+
+.switch-diagram.switch-diagram--inline {
+  width: 2.15rem;
+}

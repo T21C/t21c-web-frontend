@@ -29,6 +29,8 @@
     "tournamentsDesc": "Manage tournament placements, name links, and reward frames",
     "oauthClients": "OAuth apps",
     "oauthClientsDesc": "Search, freeze, verify, or delete third-party OAuth apps",
+    "keyboards": "키보드",
+    "keyboardsDesc": "배열, 제품, 스위치 관리",
     "resources": "자료",
     "resourcesDesc": "유용한 Notion 및 문서 링크를 추가, 수정, 정렬합니다"
   },
@@ -75,6 +77,56 @@
       "verify": "Verify failed",
       "unverify": "Unverify failed"
     }
+  },
+  "keyboards": {
+    "title": "키보드 카탈로그",
+    "geometries": "배열",
+    "products": "제품",
+    "switches": "스위치",
+    "slug": "슬러그",
+    "name": "이름",
+    "kle": "KLE JSON",
+    "kleInvalid": "이 레이아웃 JSON을 읽지 못했습니다",
+    "openEditor": "에디터 열기",
+    "importKle": "KLE 가져오기",
+    "brand": "브랜드",
+    "model": "모델",
+    "formFactor": "폼팩터",
+    "addShape": "배열 추가",
+    "editShape": "배열 편집",
+    "addProduct": "제품 추가",
+    "editProduct": "제품 편집",
+    "addSwitch": "스위치 추가",
+    "editSwitch": "스위치 편집",
+    "formFactorsTab": "폼팩터",
+    "addFormFactor": "폼팩터 추가",
+    "editFormFactor": "폼팩터 편집",
+    "note": "설명",
+    "stem": "스템",
+    "baseColor": "베이스 색",
+    "stemColor": "스템 색",
+    "baseOpacity": "베이스 불투명도 {{percent}}%",
+    "tabs": {
+      "details": "정보",
+      "layout": "레이아웃"
+    },
+    "formFactors": {
+      "full": "풀사이즈",
+      "tkl": "TKL",
+      "96": "96%",
+      "75": "75%",
+      "65": "65%",
+      "other": "기타"
+    },
+    "loadError": "키보드 카탈로그를 불러오지 못했습니다",
+    "saveError": "키보드 카탈로그를 저장하지 못했습니다",
+    "deleteError": "이 항목을 삭제하지 못했습니다",
+    "saved": "카탈로그 항목을 저장했습니다",
+    "deleted": "카탈로그 항목을 삭제했습니다",
+    "deleteConfirm": "이 항목을 삭제할까요?",
+    "dragFormFactor": "드래그하여 순서 변경",
+    "reordered": "폼팩터 순서를 저장했습니다",
+    "reorderError": "폼팩터 순서를 바꾸지 못했습니다"
   }
 }
  

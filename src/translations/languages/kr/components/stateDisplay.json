@@ -20,7 +20,9 @@
     "pixel": "px",
     "keyword": "side",
     "on": "켜기",
-    "off": "끄기"
+    "off": "끄기",
+    "single": "단일 지점",
+    "split": "분리"
   },
   "accessDenied": {
     "title": "접근 거부",

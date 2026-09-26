@@ -32,6 +32,7 @@ import { fetchFavoriteEntity } from "@/utils/profileModules/fetchFavoriteEntitie
 import "./profileModules.css";
 
 const KIND_DROPPABLE = "favorite-items";
+const PROFILE_SELECTOR_KINDS = new Set(["player", "creator"]);
 
 function listRows(data) {
   if (Array.isArray(data?.results)) return data.results;
@@ -144,6 +145,25 @@ function describeFavoriteEntity(item, difficultyDict, t) {
       metaParts: handle ? [handle] : [],
     };
   }
+  if (kind === "creator") {
+    const creator = item.creator;
+    if (!creator) {
+      return {
+        iconSrc: null,
+        iconKind: "avatar",
+        title: `Creator #${item.id}`,
+        metaParts: [],
+      };
+    }
+    const name = creator.name || `Creator #${item.id}`;
+    const handle = creator.user?.username ? `@${creator.user.username}` : "";
+    return {
+      iconSrc: userAvatarDisplayUrl(creator),
+      iconKind: "avatar",
+      title: name,
+      metaParts: handle ? [handle] : [],
+    };
+  }
   return {
     iconSrc: null,
     iconKind: "diff",
@@ -195,6 +215,7 @@ export default function FavoriteItemsEditor({
   const { t } = useTranslation(["pages", "common"]);
   const { difficultyDict } = useDifficultyContext();
   const [kind, setKind] = useState("level");
+  const [profilePickerKey, setProfilePickerKey] = useState(0);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [searching, setSearching] = useState(false);
@@ -231,8 +252,9 @@ export default function FavoriteItemsEditor({
   }, [items, resolvedItems, entityByKey]);
 
   const queryTrimmed = String(query).trim();
+  const usesProfileSelector = PROFILE_SELECTOR_KINDS.has(kind);
   const dropdownOpen =
-    kind !== "player" && showDropdown && queryTrimmed.length >= 1;
+    !usesProfileSelector && showDropdown && queryTrimmed.length >= 1;
 
   const { panelStyle, portalRoot } = usePortaledPanelAnchor({
     open: dropdownOpen,
@@ -244,7 +266,7 @@ export default function FavoriteItemsEditor({
   });
 
   useEffect(() => {
-    if (kind === "player") {
+    if (PROFILE_SELECTOR_KINDS.has(kind)) {
       setResults([]);
       setSearching(false);
       return undefined;
@@ -391,6 +413,7 @@ export default function FavoriteItemsEditor({
     if (existing.has(key)) return;
     rememberEntity(nextKind, entity);
     onChange([...items, { kind: nextKind, id }]);
+    setProfilePickerKey((current) => current + 1);
     setQuery("");
     setResults([]);
     setShowDropdown(false);
@@ -519,16 +542,21 @@ export default function FavoriteItemsEditor({
           width="10rem"
           isSearchable={false}
         />
-        {kind === "player" ? (
+        {usesProfileSelector ? (
           <div className="profile-modules-editor__favorite-search">
             <ProfileSelector
-              type="player"
+              key={`${kind}-${profilePickerKey}`}
+              type={kind}
               value={null}
               allowRequestNew={false}
               disabled={atCap}
               portalDropdown
-              placeholder={t("settings.modules.searchPlayer")}
-              onChange={(player) => addItem("player", player)}
+              placeholder={
+                kind === "creator"
+                  ? t("settings.modules.searchCreator")
+                  : t("settings.modules.searchPlayer")
+              }
+              onChange={(profile) => addItem(kind, profile)}
             />
           </div>
         ) : (
