@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import { PopupShell } from "@/components/common/PopupShell";
+import { ExternalLink } from "@/components/common/LinkConfirm";
 import { CloseButton } from "@/components/common/buttons";
 import { DragHandleIcon, ExternalLinkIcon } from "@/components/common/icons";
 import { CustomSelect } from "@/components/common/selectors";
@@ -89,15 +90,13 @@ function CatalogPopup({ title, onClose, saving, children, onSubmit, onDelete, sh
           <h2 id="keyboard-catalog-popup-title">{title}</h2>
           <div className="keyboard-catalog-popup__header-actions">
             {showEditorLink ? (
-              <a
+              <ExternalLink
                 className="keyboard-catalog-popup__editor"
                 href="https://editor.keyboard-tools.xyz/"
-                target="_blank"
-                rel="noopener noreferrer"
               >
                 {t("admin.keyboards.openEditor")}
                 <ExternalLinkIcon size={14} color="currentColor" />
-              </a>
+              </ExternalLink>
             ) : null}
             <CloseButton onClick={onClose} aria-label={t("buttons.close", { ns: "common" })} disabled={saving} />
           </div>

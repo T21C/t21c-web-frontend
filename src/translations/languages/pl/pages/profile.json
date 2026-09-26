@@ -116,7 +116,8 @@
       "pass": "Clear",
       "level": "Chart",
       "pack": "Paczka",
-      "player": "Gracz"
+      "player": "Gracz",
+      "creator": "Twórca"
     },
     "expandFavorite": "Rozwiń ulubione",
     "collapseFavorite": "Zwiń ulubione"

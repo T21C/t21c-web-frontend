@@ -110,7 +110,8 @@
       "pass": "Clear",
       "level": "Chart",
       "pack": "Pack",
-      "player": "Joueur"
+      "player": "Joueur",
+      "creator": "Créateur"
     },
     "expandFavorite": "Développer les favoris",
     "collapseFavorite": "Réduire les favoris"

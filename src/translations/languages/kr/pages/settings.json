@@ -362,6 +362,7 @@
     "dragAria": "드래그하여 순서 변경",
     "favoriteCount": "{{used}}/{{max}}개 항목",
     "searchPlayer": "플레이어 검색",
+    "searchCreator": "크리에이터 검색",
     "searchEntity": "검색하여 추가",
     "searchNoResults": "결과 없음"
   }

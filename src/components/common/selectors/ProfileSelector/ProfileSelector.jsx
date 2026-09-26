@@ -12,7 +12,7 @@ import { Portal } from '@/components/common/Portal';
 import { PORTALED_PANEL_CLASS, usePortaledPanelAnchor } from '@/hooks/usePortaledPanelAnchor';
 
 export const ProfileSelector = ({
-  type, // 'player', 'charter', 'vfx', 'team', 'user'
+  type, // 'player', 'creator', 'charter', 'vfx', 'team', 'user'
   value,
   onChange,
   required,
@@ -77,11 +77,13 @@ export const ProfileSelector = ({
   }, [value?.id, value?.name, value?.isNewRequest]);
 
   // Get API endpoint based on type
-  // Players use the v3 Elasticsearch-backed endpoint; other profile types keep their v2 paths.
+  // Players, creators, and teams use v3 search; charter and vfx keep their v2 paths.
   const getEndpoint = () => {
     switch (type) {
       case 'player':
         return routes.playersV3.root();
+      case 'creator':
+        return routes.creatorsV3.root();
       case 'charter':
         return routes.database.creators.root();
       case 'vfx':
@@ -132,12 +134,13 @@ export const ProfileSelector = ({
             return;
           }
           const encodedSearchTerm = encodeURIComponent(searchTerm);
-          // v3 player/team search uses `/search?query=`; other endpoints keep `/search/:name`.
-          const url = (type === 'player' || type === 'team')
+          // v3 player/creator/team search uses `/search?query=`; other endpoints keep `/search/:name`.
+          const usesQuerySearch = type === 'player' || type === 'creator' || type === 'team';
+          const url = usesQuerySearch
             ? `${endpoint}/search?query=${encodedSearchTerm}`
             : `${endpoint}/search/${encodedSearchTerm}`;
           const response = await api.get(url);
-          if (type === 'player' || type === 'team') {
+          if (usesQuerySearch) {
             const body = response.data;
             const rows = Array.isArray(body) ? body : (body?.results ?? []);
             setProfiles(rows);
@@ -338,7 +341,7 @@ export const ProfileSelector = ({
 };
 
 ProfileSelector.propTypes = {
-  type: PropTypes.oneOf(['player', 'charter', 'vfx', 'team', 'user']).isRequired,
+  type: PropTypes.oneOf(['player', 'creator', 'charter', 'vfx', 'team', 'user']).isRequired,
   value: PropTypes.shape({
     id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     name: PropTypes.string,

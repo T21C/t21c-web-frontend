@@ -6,7 +6,7 @@ export const PROFILE_MODULES_STELLAR_CAP = 20;
 export const MAX_FAVORITE_ITEMS = 20;
 export const MAX_PROFILE_MODULE_ID_LENGTH = 64;
 
-export const FAVORITE_ITEM_KINDS = ["pass", "level", "pack", "player"];
+export const FAVORITE_ITEM_KINDS = ["pass", "level", "pack", "player", "creator"];
 
 export const PLAYER_STOCK_MODULE_TYPES = [
   "bio",

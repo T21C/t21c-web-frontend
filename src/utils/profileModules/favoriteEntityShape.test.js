@@ -6,6 +6,7 @@ import {
   unwrapFavoriteLevel,
   unwrapFavoritePack,
   unwrapFavoritePass,
+  unwrapFavoriteCreator,
   unwrapFavoritePlayer,
 } from "./favoriteEntityShape";
 
@@ -32,4 +33,12 @@ test("favoriteEntityId uses pack linkCode, never numeric packId", () => {
 test("unwrapFavoritePlayer and pack accept top-level payloads", () => {
   assert.equal(unwrapFavoritePlayer({ id: 25, name: "Player" }).name, "Player");
   assert.equal(unwrapFavoritePack({ id: "Ab12Cd34", packId: 9, name: "Pack" }).name, "Pack");
+});
+
+test("unwrapFavoriteCreator reads the creator document or a wrapped payload", () => {
+  const creator = { id: 12, name: "Ada" };
+  assert.equal(unwrapFavoriteCreator(creator).name, "Ada");
+  assert.equal(unwrapFavoriteCreator({ creator }).id, 12);
+  assert.equal(favoriteEntityId("creator", creator), 12);
+  assert.equal(favoriteItemFromEntity("creator", creator).kind, "creator");
 });

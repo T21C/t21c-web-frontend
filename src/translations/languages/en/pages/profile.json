@@ -284,7 +284,8 @@
       "pass": "Clear",
       "level": "Chart",
       "pack": "Pack",
-      "player": "Player"
+      "player": "Player",
+      "creator": "Creator"
     },
     "expandFavorite": "Expand favorite",
     "collapseFavorite": "Collapse favorite"

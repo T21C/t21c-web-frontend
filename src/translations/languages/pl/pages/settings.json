@@ -133,6 +133,7 @@
     "dragAria": "Przeciągnij, aby zmienić kolejność",
     "favoriteCount": "{{used}}/{{max}} elementów",
     "searchPlayer": "Szukaj graczy",
+    "searchCreator": "Szukaj twórców",
     "searchEntity": "Szukaj, aby dodać",
     "searchNoResults": "Brak wyników"
   }
