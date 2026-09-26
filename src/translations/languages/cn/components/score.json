@@ -3,7 +3,8 @@
     "labels": {
       "score": "分数",
       "accuracy": "精准度",
-      "speed": "飙速"
+      "speed": "飙速",
+      "keyboardBind": "{{count}}K 键位"
     },
     "tooltips": {
       "watchVideo": "观看视频",

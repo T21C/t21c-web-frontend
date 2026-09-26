@@ -186,6 +186,11 @@ const ScoreCard = ({ scoreData, topScores = [], potentialTopScores = [], mode = 
       {accuracyBlock}
       {speedBlock}
       <PassFlags pass={scoreData} />
+      {scoreData.keyboardSetup?.keyCount ? (
+        <p className="score-card__keyboard-bind">
+          {t("score.card.labels.keyboardBind", { count: scoreData.keyboardSetup.keyCount })}
+        </p>
+      ) : null}
       {!isFeaturedMode && (formattedDate || showVideo) && (
         <div className="score-card__trailing">
           {formattedDate && (

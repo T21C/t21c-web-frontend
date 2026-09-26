@@ -29,6 +29,8 @@
     "tournamentsDesc": "管理各类赛事名次、名称关联与头像框奖励",
     "oauthClients": "OAuth 应用",
     "oauthClientsDesc": "搜索、冻结、认证或删除第三方 OAuth 应用",
+    "keyboards": "键盘",
+    "keyboardsDesc": "管理配列、产品和轴体目录",
     "resources": "资料",
     "resourcesDesc": "添加、编辑并调整实用 Notion 与文档链接的顺序"
   },
@@ -75,6 +77,56 @@
       "verify": "验证失败",
       "unverify": "解除验证失败"
     }
+  },
+  "keyboards": {
+    "title": "键盘目录",
+    "geometries": "配列",
+    "products": "产品",
+    "switches": "轴体",
+    "slug": "Slug",
+    "name": "名称",
+    "kle": "KLE JSON",
+    "kleInvalid": "无法读取该布局 JSON",
+    "openEditor": "打开编辑器",
+    "importKle": "导入 KLE",
+    "brand": "品牌",
+    "model": "型号",
+    "formFactor": "配列规格",
+    "addShape": "添加配列",
+    "editShape": "编辑配列",
+    "addProduct": "添加产品",
+    "editProduct": "编辑产品",
+    "addSwitch": "添加轴体",
+    "editSwitch": "编辑轴体",
+    "formFactorsTab": "配列规格",
+    "addFormFactor": "添加配列规格",
+    "editFormFactor": "编辑配列规格",
+    "note": "说明",
+    "stem": "轴心",
+    "baseColor": "底座颜色",
+    "stemColor": "轴心颜色",
+    "baseOpacity": "底座不透明度 {{percent}}%",
+    "tabs": {
+      "details": "详情",
+      "layout": "布局"
+    },
+    "formFactors": {
+      "full": "全尺寸",
+      "tkl": "TKL",
+      "96": "96%",
+      "75": "75%",
+      "65": "65%",
+      "other": "其他"
+    },
+    "loadError": "无法加载键盘目录",
+    "saveError": "无法保存键盘目录",
+    "deleteError": "无法删除此目录项",
+    "saved": "已保存目录项",
+    "deleted": "已删除目录项",
+    "deleteConfirm": "删除此目录项？",
+    "dragFormFactor": "拖动以排序",
+    "reordered": "配列规格顺序已保存",
+    "reorderError": "无法调整配列规格顺序"
   }
 }
  

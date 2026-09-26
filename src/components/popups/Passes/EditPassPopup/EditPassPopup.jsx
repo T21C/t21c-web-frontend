@@ -3,16 +3,18 @@ import { routes } from '@/api/routes';
 import './editpasspopup.css';
 import { useTranslation } from 'react-i18next'; 
 import { useAuth } from '@/contexts/AuthContext';
-import { formatCreatorDisplay, normalizeKeyCount } from '@/utils/Utility';
+import { formatCreatorDisplay, formatDateShort, normalizeKeyCount } from '@/utils/Utility';
 import placeholder from '@/assets/placeholder/4.png';
 import { FetchIcon } from '@/components/common/icons';
 import { useNavigate } from 'react-router-dom';
 import { PlayerInput } from '@/components/common/selectors';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import api from "@/utils/api";
 import toast from 'react-hot-toast';
 import { PassCoreForm } from '@/components/common/cores/PassCoreForm/PassCoreForm';
 import { usePassCoreForm } from '@/components/common/cores/PassCoreForm/usePassCoreForm';
+import { CustomSelect } from '@/components/common/selectors';
+import { formatKeybind } from '@/utils/keyboards/keys';
 import { truncateString } from '@/utils/Utility';
 import { CloseButton } from '@/components/common/buttons';
 import { PopupShell } from '@/components/common/PopupShell';
@@ -20,7 +22,7 @@ import { AdminReasonPrompt } from '@/components/common/AdminReasonPrompt';
 import { useUnsavedClose } from '@/hooks/useUnsavedClose';
 
 export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
-  const { t } = useTranslation(['components', 'common']);
+  const { t, i18n } = useTranslation(['components', 'pages', 'common']);
 
   const initialFormState = {
     levelId: pass.levelId.toString() || '',
@@ -52,6 +54,12 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
   const [submission, setSubmission] = useState(false);
   const [showDeletePrompt, setShowDeletePrompt] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const initialBindId =
+    pass.keyboardSetup?.source === 'override' && pass.keyboardSetup?.lanePeriodId
+      ? String(pass.keyboardSetup.lanePeriodId)
+      : '';
+  const [bindOptions, setBindOptions] = useState([]);
+  const [lanePeriodId, setLanePeriodId] = useState(initialBindId);
 
   const navigate = useNavigate();
 
@@ -85,6 +93,70 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
     isDirty: hasUnsavedChanges,
     onClose,
   });
+
+  const bindPlayerId = Number(form.playerId) || pass.playerId || pass.player?.id || null;
+
+  useEffect(() => {
+    const originalId = Number(pass.playerId || pass.player?.id || 0);
+    if (bindPlayerId && originalId && Number(bindPlayerId) !== originalId) {
+      setLanePeriodId('');
+    }
+  }, [bindPlayerId, pass.playerId, pass.player?.id]);
+
+  useEffect(() => {
+    if (!bindPlayerId) {
+      setBindOptions([]);
+      return undefined;
+    }
+    let cancelled = false;
+    api.get(routes.playersV3.keyboardSetups(bindPlayerId))
+      .then(({ data }) => {
+        if (cancelled) return;
+        const options = [];
+        for (const rig of data?.rigs || []) {
+          for (const lane of rig.lanes || []) {
+            for (const period of lane.periods || []) {
+              if (period.isGap || !Array.isArray(period.keys) || !period.keys.length) continue;
+              const since = period.sinceDate
+                ? t('profile.keyboards.since', { date: formatDateShort(period.sinceDate, i18n.language) })
+                : null;
+              options.push({
+                value: String(period.id),
+                keyCount: lane.keyCount,
+                label: [
+                  rig.name || t('profile.keyboards.rig'),
+                  (typeof lane.name === "string" && lane.name.trim()) || `${lane.keyCount}K`,
+                  since,
+                  formatKeybind(period.keys),
+                ]
+                  .filter(Boolean)
+                  .join(' · '),
+              });
+            }
+          }
+        }
+        setBindOptions(options);
+      })
+      .catch(() => {
+        if (!cancelled) setBindOptions([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [bindPlayerId, t]);
+
+  const bindSelectOptions = useMemo(() => {
+    const keyCount = Number(form.keyCount);
+    const sorted = [...bindOptions].sort((left, right) => {
+      const leftMatch = left.keyCount === keyCount ? 0 : 1;
+      const rightMatch = right.keyCount === keyCount ? 0 : 1;
+      return leftMatch - rightMatch || left.keyCount - right.keyCount;
+    });
+    return [
+      { value: '', label: t('profile.keyboards.autoBind') },
+      ...sorted,
+    ];
+  }, [bindOptions, form.keyCount, t]);
 
   const handleUserInputChange = (e) => {
     setHasUnsavedChanges(true);
@@ -165,10 +237,22 @@ const handleSubmit = async (e) => {
     );
 
     if (response.data) {
+      let updatedPass = response.data.pass;
+      if (lanePeriodId !== initialBindId) {
+        const bindResponse = await api.patch(routes.playersV3.mePassKeyboardSetup(pass.id), {
+          lanePeriodId: lanePeriodId || null,
+        });
+        if (updatedPass) {
+          updatedPass = {
+            ...updatedPass,
+            keyboardSetup: bindResponse.data?.keyboardSetup ?? null,
+          };
+        }
+      }
       toast.success(t('pass.updated', { ns: 'common' }), { id: toastId });
       setHasUnsavedChanges(false);
       if (onUpdate) {
-        await onUpdate(response.data.pass);
+        await onUpdate(updatedPass);
       }
     } else {
       toast.error(t('pass.errors.updateFailed', { ns: 'common' }), { id: toastId });
@@ -335,7 +419,21 @@ const handleSubmit = async (e) => {
             </div>
           )}
           renderSubmitActions={() => (
-            <div className="button-group">
+            <div className="edit-pass-keyboard-bind">
+              <CustomSelect
+                options={bindSelectOptions}
+                value={bindSelectOptions.find((option) => option.value === lanePeriodId) || bindSelectOptions[0]}
+                onChange={(option) => {
+                  setHasUnsavedChanges(true);
+                  setLanePeriodId(option?.value || '');
+                }}
+                width="100%"
+                label={t('profile.keyboards.bindField')}
+              />
+              {!bindOptions.length ? (
+                <p className="edit-pass-keyboard-bind__hint">{t('profile.keyboards.noLayouts')}</p>
+              ) : null}
+              <div className="button-group">
               <button disabled={submission} className="save-button btn-fill-primary" onClick={handleSubmit}>
                 {submission
                   ? t('loading.saving', { ns: 'common' })
@@ -352,6 +450,7 @@ const handleSubmit = async (e) => {
                   ? t('buttons.restore', { ns: 'common' })
                   : t('buttons.delete', { ns: 'common' })}
               </button>
+            </div>
             </div>
           )}
           formatCreatorDisplay={formatCreatorDisplay}

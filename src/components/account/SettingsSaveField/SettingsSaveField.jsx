@@ -12,7 +12,7 @@ export function SettingsSaveButton({ saving = false, matchesSaved = false, disab
   return (
     <button
       type="button"
-      className={["settings-sub-page__save-btn", className].filter(Boolean).join(" ")}
+      className={["settings-sub-page__save-btn btn-fill-primary", className].filter(Boolean).join(" ")}
       onClick={onClick}
       disabled={disabled || saving || matchesSaved}
     >

@@ -29,6 +29,14 @@
   flex-wrap: wrap;
   justify-content: flex-end;
 }
+
+.score-card .score-card__keyboard-bind {
+  margin: 0;
+  color: var(--color-gray-2);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
 .score-card:hover {
   background-color: var(--color-white-t30);
   z-index: 3;

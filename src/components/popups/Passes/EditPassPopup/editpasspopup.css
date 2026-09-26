@@ -26,7 +26,18 @@
   border-radius: 4px;
 }
 
-.edit-pass-popup-overlay .button-group {
+.edit-pass-popup-overlay .edit-pass-keyboard-bind {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.edit-pass-popup-overlay .edit-pass-keyboard-bind__hint {
+  margin: 0;
+  color: var(--color-gray-2);
+  font-size: 0.85rem;
+}
   display: flex;
   gap: 1rem;
   margin-top: 1rem;

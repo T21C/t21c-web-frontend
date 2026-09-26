@@ -5,6 +5,7 @@ export { default as PlayerScoreBreakdownModule } from "./player/PlayerScoreBreak
 export { default as PlayerDifficultyModule } from "./player/PlayerDifficultyModule";
 export { default as PlayerRankHistoryModule } from "./player/PlayerRankHistoryModule";
 export { default as PlayerScoresModule } from "./player/PlayerScoresModule";
+export { default as PlayerKeyboardsModule } from "./player/PlayerKeyboardsModule";
 export { default as CreatorBioModule } from "./creator/CreatorBioModule";
 export { default as CreatorDifficultyModule } from "./creator/CreatorDifficultyModule";
 export { default as CreatorChartsModule } from "./creator/CreatorChartsModule";
