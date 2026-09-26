@@ -458,6 +458,7 @@ function SwitchPopup({ row, onClose, onSaved }) {
     sensing: row?.sensing || "mechanical",
     stem: initialStem,
     baseColor: row?.baseColor || "#1a1a1a",
+    topColor: row?.topColor || row?.baseColor || "#1a1a1a",
     stemColor: row?.stemColor || (unsetMechanical ? "#b0b4ba" : defaultStemColor(initialStem)),
     baseOpacity: row?.baseOpacity == null ? "1" : String(row.baseOpacity),
   });
@@ -506,69 +507,86 @@ function SwitchPopup({ row, onClose, onSaved }) {
       onDelete={editing ? remove : null}
     >
       <div className="keyboard-catalog-popup__body">
-        <div className="keyboard-catalog__form">
-          <SwitchDiagram
-            stem={form.stem}
-            sensing={form.sensing}
-            baseColor={form.baseColor}
-            stemColor={form.stemColor}
-            baseOpacity={Number(form.baseOpacity)}
-          />
-          <label className="keyboard-setup__field">
-            <span>{t("admin.keyboards.name")}</span>
-            <input
-              value={form.name}
-              onChange={(event) => setForm((prev) => ({ ...prev, name: event.target.value }))}
+        <div className="keyboard-catalog__form keyboard-catalog__switch-form">
+          <div className="keyboard-catalog__switch-head">
+            <SwitchDiagram
+              stem={form.stem}
+              sensing={form.sensing}
+              baseColor={form.baseColor}
+              topColor={form.topColor}
+              stemColor={form.stemColor}
+              baseOpacity={Number(form.baseOpacity)}
             />
-          </label>
-          <CustomSelect
-            options={stemChoices}
-            value={stemChoices.find((option) => option.value === form.stem)}
-            onChange={(option) =>
-              setForm((prev) => ({
-                ...prev,
-                stem: option.value,
-                stemColor:
-                  prev.stemColor === defaultStemColor(prev.stem) || prev.stemColor === "#b0b4ba"
-                    ? defaultStemColor(option.value)
-                    : prev.stemColor,
-              }))
-            }
-            width="12rem"
-            label={t("admin.keyboards.stem")}
-          />
-          <CustomSelect
-            options={options}
-            value={options.find((option) => option.value === form.sensing)}
-            onChange={(option) => setForm((prev) => ({ ...prev, sensing: option.value }))}
-            width="12rem"
-            label={t("profile.keyboards.sensingLabel")}
-          />
-          <label className="keyboard-setup__field">
-            <span>{t("admin.keyboards.baseColor")}</span>
-            <input
-              type="color"
-              value={form.baseColor}
-              onChange={(event) => setForm((prev) => ({ ...prev, baseColor: event.target.value }))}
-            />
-          </label>
-          <label className="keyboard-setup__field keyboard-catalog__opacity">
-            <span>{t("admin.keyboards.baseOpacity", { percent: Math.round(Number(form.baseOpacity) * 100) })}</span>
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.05"
-              value={form.baseOpacity}
-              onChange={(event) => setForm((prev) => ({ ...prev, baseOpacity: event.target.value }))}
-            />
-          </label>
+            <div className="keyboard-catalog__switch-fields">
+              <label className="keyboard-setup__field">
+                <span>{t("admin.keyboards.name")}</span>
+                <input
+                  value={form.name}
+                  onChange={(event) => setForm((prev) => ({ ...prev, name: event.target.value }))}
+                />
+              </label>
+              <div className="keyboard-catalog__switch-selects">
+                <CustomSelect
+                  options={stemChoices}
+                  value={stemChoices.find((option) => option.value === form.stem)}
+                  onChange={(option) =>
+                    setForm((prev) => ({
+                      ...prev,
+                      stem: option.value,
+                      stemColor:
+                        prev.stemColor === defaultStemColor(prev.stem) || prev.stemColor === "#b0b4ba"
+                          ? defaultStemColor(option.value)
+                          : prev.stemColor,
+                    }))
+                  }
+                  width="100%"
+                  label={t("admin.keyboards.stem")}
+                />
+                <CustomSelect
+                  options={options}
+                  value={options.find((option) => option.value === form.sensing)}
+                  onChange={(option) => setForm((prev) => ({ ...prev, sensing: option.value }))}
+                  width="100%"
+                  label={t("profile.keyboards.sensingLabel")}
+                />
+              </div>
+            </div>
+          </div>
           <label className="keyboard-setup__field">
             <span>{t("admin.keyboards.stemColor")}</span>
             <input
               type="color"
               value={form.stemColor}
               onChange={(event) => setForm((prev) => ({ ...prev, stemColor: event.target.value }))}
+            />
+          </label>
+          <div className="keyboard-catalog__base-row">
+            <label className="keyboard-setup__field">
+              <span>{t("admin.keyboards.topColor")}</span>
+              <input
+                type="color"
+                value={form.topColor}
+                onChange={(event) => setForm((prev) => ({ ...prev, topColor: event.target.value }))}
+              />
+            </label>
+            <label className="keyboard-setup__field keyboard-catalog__opacity">
+              <span>{t("admin.keyboards.baseOpacity", { percent: Math.round(Number(form.baseOpacity) * 100) })}</span>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.05"
+                value={form.baseOpacity}
+                onChange={(event) => setForm((prev) => ({ ...prev, baseOpacity: event.target.value }))}
+              />
+            </label>
+          </div>
+          <label className="keyboard-setup__field">
+            <span>{t("admin.keyboards.baseColor")}</span>
+            <input
+              type="color"
+              value={form.baseColor}
+              onChange={(event) => setForm((prev) => ({ ...prev, baseColor: event.target.value }))}
             />
           </label>
         </div>
@@ -710,6 +728,7 @@ export default function KeyboardCatalogPage() {
                 stem={row.stem}
                 sensing={row.sensing}
                 baseColor={row.baseColor}
+                topColor={row.topColor}
                 stemColor={row.stemColor}
                 baseOpacity={row.baseOpacity}
               />

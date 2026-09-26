@@ -89,6 +89,19 @@ function periodForLane(row, lanes, sinceDate, selected) {
   return currentPeriod(covering) || currentPeriod(periods);
 }
 
+function visibleBrandModel(board) {
+  if (board?.product?.brand || board?.product?.model) {
+    return {
+      brand: board.product.brand || "",
+      model: board.product.model || "",
+    };
+  }
+  return {
+    brand: board?.customBrand || "",
+    model: board?.customModel || "",
+  };
+}
+
 function draftFromRig(rig, geometries, sinceDate, laneId) {
   const rigLanes = rig?.lanes || [];
   const boards = (rig?.boardPeriods || []).filter((period) => !period.isGap);
@@ -126,14 +139,15 @@ function draftFromRig(rig, geometries, sinceDate, laneId) {
   }
   const selected = lanes.find((row) => laneId && row.id === laneId) || lanes[lanes.length - 1];
   const boardRange = rangeFrom(board);
+  const names = visibleBrandModel(board);
   return {
     sinceDate: selected.sinceDate ?? sinceDate ?? utcToday(),
     untilDate: selected.untilDate || "",
     untilAuto: selected.untilAuto !== false,
     geometryId: board?.geometryId ? String(board.geometryId) : geometries[0] ? String(geometries[0].id) : "",
-    productId: board?.productId ? String(board.productId) : "",
-    customBrand: board?.customBrand || "",
-    customModel: board?.customModel || "",
+    productId: "",
+    customBrand: names.brand,
+    customModel: names.model,
     sensing: board?.sensing || "mechanical",
     switchId: board?.switchId ? String(board.switchId) : "",
     customSwitch: board?.customSwitch || "",
@@ -144,6 +158,9 @@ function draftFromRig(rig, geometries, sinceDate, laneId) {
     rapidTriggerReleaseMm: board?.rapidTriggerReleaseMm ?? "",
     colorway: board?.colorway || "",
     note: board?.note || "",
+    stemColor: board?.stemColor || "",
+    baseColor: board?.baseColor || "",
+    topColor: board?.topColor || "",
     boardPeriodId: board?.id ?? null,
     boardSinceDate: board?.sinceDate || "",
     boardUntilDate: boardRange.untilDate || "",
@@ -186,15 +203,16 @@ function sameDate(left, right) {
 }
 
 function boardFields(period) {
+  const names = visibleBrandModel(period);
   return {
     sinceDate: period?.sinceDate ?? null,
     untilDate: period?.untilAuto === false ? period?.untilDate ?? null : null,
     untilAuto: period?.untilAuto !== false,
     isGap: Boolean(period?.isGap),
     geometryId: period?.geometryId ?? null,
-    productId: period?.productId ?? null,
-    customBrand: period?.customBrand || null,
-    customModel: period?.customModel || null,
+    productId: null,
+    customBrand: names.brand || null,
+    customModel: names.model || null,
     sensing: period?.sensing || null,
     switchId: period?.switchId ?? null,
     customSwitch: period?.customSwitch || null,
@@ -205,6 +223,9 @@ function boardFields(period) {
     rapidTriggerReleaseMm: period?.rapidTriggerReleaseMm ?? null,
     colorway: period?.colorway || null,
     note: period?.note || null,
+    stemColor: period?.stemColor || null,
+    baseColor: period?.baseColor || null,
+    topColor: period?.topColor || null,
     keyOverrides: (period?.keyOverrides || []).map((row) => ({
       code: row.code,
       socketEmpty: Boolean(row.socketEmpty),
@@ -222,9 +243,9 @@ function draftBoardFields(draft, sensing, previous) {
     untilAuto: draft.boardUntilAuto !== false,
     isGap: false,
     geometryId: Number(draft.geometryId) || null,
-    productId: draft.productId ? Number(draft.productId) : null,
-    customBrand: draft.productId ? null : draft.customBrand || null,
-    customModel: draft.productId ? null : draft.customModel || null,
+    productId: null,
+    customBrand: draft.customBrand || null,
+    customModel: draft.customModel || null,
     sensing,
     switchId: draft.switchId ? Number(draft.switchId) : null,
     customSwitch: draft.switchId ? null : draft.customSwitch || null,
@@ -244,6 +265,9 @@ function draftBoardFields(draft, sensing, previous) {
         : null,
     colorway: draft.colorway || null,
     note: draft.note || null,
+    stemColor: draft.stemColor || null,
+    baseColor: draft.baseColor || null,
+    topColor: draft.topColor || null,
     keyOverrides: previous?.keyOverrides || [],
   };
 }
@@ -329,11 +353,11 @@ function buildSnapshot(rig, draft, sensing, includeDraft) {
 function boardSpecChanged(draft, board, sensing) {
   if (!board || board.isGap) return true;
   const same = (left, right) => String(left ?? "") === String(right ?? "");
+  const names = visibleBrandModel(board);
   return !(
     same(draft.geometryId, board.geometryId) &&
-    same(draft.productId, board.productId) &&
-    same(draft.customBrand, board.customBrand) &&
-    same(draft.customModel, board.customModel) &&
+    same(draft.customBrand, names.brand) &&
+    same(draft.customModel, names.model) &&
     same(sensing, board.sensing) &&
     same(draft.switchId, board.switchId) &&
     same(draft.customSwitch, board.customSwitch) &&
@@ -344,6 +368,9 @@ function boardSpecChanged(draft, board, sensing) {
     same(draft.rapidTriggerReleaseMm, board.rapidTriggerReleaseMm) &&
     same(draft.colorway, board.colorway) &&
     same(draft.note, board.note) &&
+    same(draft.stemColor, board.stemColor) &&
+    same(draft.baseColor, board.baseColor) &&
+    same(draft.topColor, board.topColor) &&
     same(draft.boardUntilAuto !== false, board.untilAuto !== false) &&
     same(draft.boardUntilAuto !== false ? null : draft.boardUntilDate, board.untilDate)
   );
@@ -386,7 +413,6 @@ export default function KeyboardSetupPopup({
 }) {
   const { t } = useTranslation(["pages", "common"]);
   const geometries = catalog?.geometries || [];
-  const products = catalog?.products || [];
   const switches = catalog?.switches || [];
   const formFactors = catalog?.formFactors || [];
   const [saving, setSaving] = useState(false);
@@ -407,12 +433,6 @@ export default function KeyboardSetupPopup({
     value: String(row.id),
     label: `${row.name} (${formFactors.find((factor) => factor.slug === row.formFactor)?.name || row.formFactor})`,
   }));
-  const productOptions = [
-    { value: "", label: t("profile.keyboards.customProduct") },
-    ...products
-      .filter((row) => !draft.geometryId || row.geometryId === Number(draft.geometryId))
-      .map((row) => ({ value: String(row.id), label: `${row.brand} ${row.model}` })),
-  ];
   const switchOptions = [
     { value: "", label: t("profile.keyboards.customSwitch") },
     ...switches.map((row) => ({ value: String(row.id), label: row.name })),
@@ -652,7 +672,7 @@ export default function KeyboardSetupPopup({
         boardPeriodId: draft.boardPeriodId ?? currentBoard?.id ?? null,
         skipBoard,
         geometryId: Number(draft.geometryId),
-        productId: draft.productId ? Number(draft.productId) : null,
+        productId: null,
         customBrand: draft.customBrand || null,
         customModel: draft.customModel || null,
         sensing: effectiveSensing,
@@ -674,6 +694,9 @@ export default function KeyboardSetupPopup({
             : null,
         colorway: draft.colorway || null,
         note: draft.note || null,
+        stemColor: draft.stemColor || null,
+        baseColor: draft.baseColor || null,
+        topColor: draft.topColor || null,
         lanes: lanePayload.filter((row) => row.keyCount > 0),
       });
       toast.success(t("profile.keyboards.saved"), { id: toastId });
@@ -921,35 +944,10 @@ export default function KeyboardSetupPopup({
                 <CustomSelect
                   options={geometryOptions}
                   value={geometryOptions.find((option) => option.value === String(draft.geometryId)) || null}
-                  onChange={(option) => setDraft((prev) => ({ ...prev, geometryId: option.value, productId: "" }))}
+                  onChange={(option) => setDraft((prev) => ({ ...prev, geometryId: option.value }))}
                   width="100%"
                   label={t("profile.keyboards.geometry")}
                 />
-                <CustomSelect
-                  options={productOptions}
-                  value={productOptions.find((option) => option.value === String(draft.productId || "")) || productOptions[0]}
-                  onChange={(option) => setDraft((prev) => ({ ...prev, productId: option.value }))}
-                  width="100%"
-                  label={t("profile.keyboards.product")}
-                />
-                {!draft.productId && (
-                  <label className="keyboard-setup__field">
-                    <span>{t("profile.keyboards.brand")}</span>
-                    <input
-                      value={draft.customBrand}
-                      onChange={(event) => setDraft((prev) => ({ ...prev, customBrand: event.target.value }))}
-                    />
-                  </label>
-                )}
-                {!draft.productId && (
-                  <label className="keyboard-setup__field">
-                    <span>{t("profile.keyboards.model")}</span>
-                    <input
-                      value={draft.customModel}
-                      onChange={(event) => setDraft((prev) => ({ ...prev, customModel: event.target.value }))}
-                    />
-                  </label>
-                )}
                 <SinceRangeField
                   label={t("profile.keyboards.usingKeyboardSince")}
                   from={draft.boardSinceDate}
@@ -966,10 +964,17 @@ export default function KeyboardSetupPopup({
                   autoLabel={t("profile.keyboards.rangeAuto")}
                 />
                 <label className="keyboard-setup__field">
-                  <span>{t("profile.keyboards.note")}</span>
+                  <span>{t("profile.keyboards.brand")}</span>
                   <input
-                    value={draft.note}
-                    onChange={(event) => setDraft((prev) => ({ ...prev, note: event.target.value }))}
+                    value={draft.customBrand}
+                    onChange={(event) => setDraft((prev) => ({ ...prev, customBrand: event.target.value }))}
+                  />
+                </label>
+                <label className="keyboard-setup__field">
+                  <span>{t("profile.keyboards.model")}</span>
+                  <input
+                    value={draft.customModel}
+                    onChange={(event) => setDraft((prev) => ({ ...prev, customModel: event.target.value }))}
                   />
                 </label>
               </div>
@@ -995,16 +1000,32 @@ export default function KeyboardSetupPopup({
                   className="switch-diagram--editor"
                   stem={selectedSwitch?.stem}
                   sensing={selectedSwitch?.sensing || draft.sensing}
-                  baseColor={selectedSwitch?.baseColor}
-                  stemColor={selectedSwitch?.stemColor}
+                  baseColor={draft.baseColor || selectedSwitch?.baseColor}
+                  topColor={draft.topColor || selectedSwitch?.topColor}
+                  stemColor={draft.stemColor || selectedSwitch?.stemColor}
                   baseOpacity={selectedSwitch?.baseOpacity}
                   title={selectedSwitch?.name || draft.customSwitch || t("profile.keyboards.customSwitch")}
+                  colorable
+                  stemLabel={t("admin.keyboards.stemColor")}
+                  topLabel={t("admin.keyboards.topColor")}
+                  baseLabel={t("admin.keyboards.baseColor")}
+                  onStemColor={(stemColor) => setDraft((prev) => ({ ...prev, stemColor }))}
+                  onTopColor={(topColor) => setDraft((prev) => ({ ...prev, topColor }))}
+                  onBaseColor={(baseColor) => setDraft((prev) => ({ ...prev, baseColor }))}
                 />
                 <div className="keyboard-setup__switch-fields">
                   <CustomSelect
                     options={switchOptions}
                     value={switchOptions.find((option) => option.value === String(draft.switchId || "")) || switchOptions[0]}
-                    onChange={(option) => setDraft((prev) => ({ ...prev, switchId: option.value }))}
+                    onChange={(option) =>
+                      setDraft((prev) => ({
+                        ...prev,
+                        switchId: option.value,
+                        stemColor: "",
+                        baseColor: "",
+                        topColor: "",
+                      }))
+                    }
                     width="100%"
                     label={t("profile.keyboards.switch")}
                   />

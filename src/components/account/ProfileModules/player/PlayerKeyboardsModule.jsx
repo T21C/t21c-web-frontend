@@ -234,8 +234,9 @@ export default function PlayerKeyboardsModule({
                         className="switch-diagram--spec"
                         stem={board.switch?.stem}
                         sensing={board.switch?.sensing || board.sensing}
-                        baseColor={board.switch?.baseColor}
-                        stemColor={board.switch?.stemColor}
+                        baseColor={board.baseColor || board.switch?.baseColor}
+                        topColor={board.topColor || board.switch?.topColor}
+                        stemColor={board.stemColor || board.switch?.stemColor}
                         baseOpacity={board.switch?.baseOpacity}
                       />
                     )}

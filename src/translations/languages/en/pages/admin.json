@@ -104,8 +104,9 @@
     "note": "Note",
     "stem": "Stem",
     "baseColor": "Base color",
+    "topColor": "Top color",
     "stemColor": "Stem color",
-    "baseOpacity": "Base opacity {{percent}}%",
+    "baseOpacity": "Top opacity {{percent}}%",
     "tabs": {
       "details": "Details",
       "layout": "Layout"

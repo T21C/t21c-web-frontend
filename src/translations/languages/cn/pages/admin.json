@@ -104,8 +104,9 @@
     "note": "说明",
     "stem": "轴心",
     "baseColor": "底座颜色",
+    "topColor": "上盖颜色",
     "stemColor": "轴心颜色",
-    "baseOpacity": "底座不透明度 {{percent}}%",
+    "baseOpacity": "上盖不透明度 {{percent}}%",
     "tabs": {
       "details": "详情",
       "layout": "布局"

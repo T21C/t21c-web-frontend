@@ -1,7 +1,7 @@
 .switch-diagram {
   position: relative;
   display: block;
-  width: 4.75rem;
+  width: 5.5rem;
   flex-shrink: 0;
   overflow: visible;
   color: var(--color-white);
@@ -27,4 +27,87 @@
 
 .switch-diagram.switch-diagram--inline {
   width: 2.15rem;
+}
+
+.switch-diagram.switch-diagram--colorable {
+  overflow: visible;
+}
+
+.switch-diagram .switch-diagram__hit {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cg fill='none' stroke='%23111' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 20l5.2-5.2'/%3E%3Cpath d='M8.4 15.6l6.2-6.2 2.8 2.8-6.2 6.2H8.4v-2.8z'/%3E%3Cpath d='M13.8 6.2l3.4-3.4 3.4 3.4-3.4 3.4'/%3E%3C/g%3E%3Cg fill='none' stroke='%23fff' stroke-width='1.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 20l5.2-5.2'/%3E%3Cpath d='M8.4 15.6l6.2-6.2 2.8 2.8-6.2 6.2H8.4v-2.8z'/%3E%3Cpath d='M13.8 6.2l3.4-3.4 3.4 3.4-3.4 3.4'/%3E%3C/g%3E%3C/svg%3E") 3 20, crosshair;
+}
+
+.switch-diagram .switch-diagram__lower {
+  opacity: 1;
+}
+
+.switch-diagram:hover .switch-diagram__lower {
+  opacity: 0.35;
+}
+
+.switch-diagram .switch-diagram__hit--stem {
+  left: 36%;
+  top: 1%;
+  width: 28%;
+  height: 28%;
+  z-index: 3;
+}
+
+.switch-diagram .switch-diagram__hit--top {
+  left: 10%;
+  top: 24%;
+  width: 80%;
+  height: 28%;
+  z-index: 2;
+}
+
+.switch-diagram .switch-diagram__hit--base {
+  left: 6%;
+  top: 48%;
+  width: 88%;
+  height: 50%;
+  z-index: 1;
+}
+
+.switch-diagram .switch-diagram__picker {
+  position: absolute;
+  right: calc(100% + 0.45rem);
+  z-index: 4;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid var(--color-white-t15);
+  border-radius: 0.45rem;
+  background: var(--color-black);
+}
+
+.switch-diagram .switch-diagram__picker--stem {
+  top: 0;
+}
+
+.switch-diagram .switch-diagram__picker--top {
+  top: 22%;
+}
+
+.switch-diagram .switch-diagram__picker--base {
+  top: 52%;
+}
+
+.switch-diagram .switch-diagram__picker-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  color: var(--color-gray-2);
+  font-size: 0.75rem;
+}
+
+.switch-diagram .switch-diagram__picker-field input[type="color"] {
+  width: 2.4rem;
+  height: 2.4rem;
+  padding: 0;
+  border: 1px solid var(--color-white-t15);
+  border-radius: 0.45rem;
+  background: transparent;
 }

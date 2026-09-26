@@ -35,7 +35,12 @@ export function apiError(error, fallback) {
 export function toastBotModLinked(t, botMod) {
   const status = botMod?.link?.lastSyncStatus;
   if (status === 'created') {
-    toast.success(t('mods.botMods.releaseCreated', { version: botMod.link.lastAppliedVersion || botMod.version }));
+    const fromMessage = String(botMod.link.lastSyncMessage || '').replace(/^Created releases? /, '');
+    toast.success(
+      t('mods.botMods.releaseCreated', {
+        version: fromMessage || botMod.link.lastAppliedVersion || botMod.version,
+      }),
+    );
     return;
   }
   if (status === 'error') {

@@ -1,4 +1,4 @@
-import { useId } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { SWITCH_ART } from "./switchArt";
 import "./switchDiagram.css";
 
@@ -71,25 +71,63 @@ export default function SwitchDiagram({
   stem,
   sensing,
   baseColor,
+  topColor,
   stemColor,
   baseOpacity,
   className = "",
   title,
+  colorable = false,
+  stemLabel = "Stem color",
+  topLabel = "Top color",
+  baseLabel = "Base color",
+  onStemColor,
+  onTopColor,
+  onBaseColor,
 }) {
   const kind = resolveSwitchStem(stem);
   const explicitStem = SWITCH_STEMS.includes(stem);
   const ink = safeHex(stemColor, explicitStem ? defaultStemColor(kind) : "#b0b4ba");
   const shell = safeHex(baseColor, DEFAULT_BASE);
+  const lid = safeHex(topColor, shell);
   const opacity = clampOpacity(baseOpacity == null ? 1 : baseOpacity);
   const Art = SWITCH_ART[kind] || SWITCH_ART.linear;
   const gradientId = `switch-spring-${useId().replace(/:/g, "")}`;
-  const classes = ["switch-diagram", className].filter(Boolean).join(" ");
+  const rootRef = useRef(null);
+  const [open, setOpen] = useState(null);
+  const picking = Boolean(colorable && onStemColor && onTopColor && onBaseColor);
+  const classes = ["switch-diagram", picking ? "switch-diagram--colorable" : "", className]
+    .filter(Boolean)
+    .join(" ");
+
+  useEffect(() => {
+    if (!picking || !open) return undefined;
+    function onPointerDown(event) {
+      if (!rootRef.current?.contains(event.target)) setOpen(null);
+    }
+    function onKeyDown(event) {
+      if (event.key === "Escape") setOpen(null);
+    }
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [picking, open]);
+
+  function toggleHit(part) {
+    setOpen((current) => (current === part ? null : part));
+  }
+
+  const pickerValue = open === "stem" ? ink : open === "top" ? lid : shell;
+  const pickerLabel = open === "stem" ? stemLabel : open === "top" ? topLabel : baseLabel;
 
   return (
-    <span className={classes}>
-      <svg className="switch-diagram__art" viewBox="60 50 400 400" role={title ? "img" : undefined} aria-label={title} aria-hidden={title ? undefined : true}>
+    <span className={classes} ref={rootRef}>
+      <svg className="switch-diagram__art" viewBox="100 50 330 310" role={title ? "img" : undefined} aria-label={title} aria-hidden={title ? undefined : true}>
         <Art
           base={shell}
+          top={lid}
           stem={ink}
           stemDark={stemOutlineColor(ink)}
           opacity={opacity}
@@ -97,6 +135,48 @@ export default function SwitchDiagram({
         />
       </svg>
       <SensingBadge sensing={sensing} />
+      {picking && (
+        <>
+          <button
+            type="button"
+            className={`switch-diagram__hit switch-diagram__hit--base${open === "base" ? " is-open" : ""}`}
+            aria-label={baseLabel}
+            aria-expanded={open === "base"}
+            onClick={() => toggleHit("base")}
+          />
+          <button
+            type="button"
+            className={`switch-diagram__hit switch-diagram__hit--top${open === "top" ? " is-open" : ""}`}
+            aria-label={topLabel}
+            aria-expanded={open === "top"}
+            onClick={() => toggleHit("top")}
+          />
+          <button
+            type="button"
+            className={`switch-diagram__hit switch-diagram__hit--stem${open === "stem" ? " is-open" : ""}`}
+            aria-label={stemLabel}
+            aria-expanded={open === "stem"}
+            onClick={() => toggleHit("stem")}
+          />
+          {open && (
+            <div className={`switch-diagram__picker switch-diagram__picker--${open}`} role="dialog">
+              <label className="switch-diagram__picker-field">
+                <span>{pickerLabel}</span>
+                <input
+                  type="color"
+                  value={pickerValue}
+                  onChange={(event) => {
+                    const value = event.target.value.toLowerCase();
+                    if (open === "stem") onStemColor(value);
+                    else if (open === "top") onTopColor(value);
+                    else onBaseColor(value);
+                  }}
+                />
+              </label>
+            </div>
+          )}
+        </>
+      )}
     </span>
   );
 }

@@ -103,9 +103,10 @@
     "editFormFactor": "Modifier le format",
     "note": "Note",
     "stem": "Stem",
-    "baseColor": "Couleur du boîtier",
+    "baseColor": "Couleur de la base",
+    "topColor": "Couleur du capot",
     "stemColor": "Couleur du stem",
-    "baseOpacity": "Opacité du boîtier {{percent}} %",
+    "baseOpacity": "Opacité du capot {{percent}} %",
     "tabs": {
       "details": "Détails",
       "layout": "Disposition"
