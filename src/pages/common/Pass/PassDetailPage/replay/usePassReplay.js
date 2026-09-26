@@ -46,5 +46,10 @@ export default function usePassReplay(pass) {
       }, 30000);
     } catch { setView({ status: 'error', src: '', error: 'replay_not_configured' }); }
   };
-  return { ...view, iframeRef, load, close };
+  const visualsChanged = useDefaults => {
+    const current = session.current;
+    if (!current) return;
+    iframeRef.current?.contentWindow?.postMessage({ source: 'tuf-replay', protocolVersion: 3, sessionId: current.id, type: 'host.visualsChanged', payload: { useDefaults } }, current.config.player);
+  };
+  return { ...view, iframeRef, load, close, visualsChanged };
 }

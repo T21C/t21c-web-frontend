@@ -414,6 +414,8 @@ export const routes = {
         `/v2/database/passes/level/${enc(levelId)}/calculator-player`,
       unannouncedNew: () => '/v2/database/passes/unannounced/new',
       feelingRating: (id) => `/v2/database/passes/${enc(id)}/feeling-rating`,
+      replayVisuals: (id) => `/v2/database/passes/${enc(id)}/replay-visuals`,
+      replayVisualVisibility: (id, presetId) => `/v2/database/passes/${enc(id)}/replay-visuals/${enc(presetId)}/visibility`,
       toggleHidden: (id) => `/v2/database/passes/${enc(id)}/toggle-hidden`,
       restore: (id) => `/v2/database/passes/${enc(id)}/restore`,
     },
