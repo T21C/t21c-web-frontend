@@ -1,5 +1,5 @@
 // tuf-search: #ReplayVisualSettings #passDetail #replayVisuals
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PopupShell } from '@/components/common/PopupShell';
 import { routes } from '@/api/routes';
@@ -15,6 +15,9 @@ export default function ReplayVisualSettings({ passId, onClose, onChanged }) {
   const [error, setError] = useState('');
   const [saved, setSaved] = useState(false);
   const [attempt, setAttempt] = useState(0);
+  const [kind, setKind] = useState('keyviewer');
+  const group = useId();
+  const sources = { dmnote: 'DMNote', 'impl-dmnote': 'Impl DMNote', 'jipper-keyviewer': 'Jipper KeyViewer', 'jipper-resourcepack': 'Jipper ResourcePack', implresourcepack: 'ImplResourcePack', 'impl-resourcepack': 'ImplResourcePack' };
   const panel = useRef(null);
   const active = useRef(true);
   useEffect(() => {
@@ -58,39 +61,52 @@ export default function ReplayVisualSettings({ passId, onClose, onChanged }) {
   };
   const trapFocus = event => {
     if (event.key !== 'Tab') return;
-    const controls = panel.current?.querySelectorAll('button:not(:disabled), select:not(:disabled)');
+    const controls = panel.current?.querySelectorAll('button:not(:disabled):not([tabindex="-1"]), input:not(:disabled), [role="tabpanel"]');
     if (!controls?.length) { event.preventDefault(); return; }
     const first = controls[0]; const last = controls[controls.length - 1];
     if (event.shiftKey && (document.activeElement === first || document.activeElement === panel.current)) { event.preventDefault(); last.focus(); }
     else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
   };
   return <PopupShell onClose={onClose} ariaLabel={t('title')} panelClassName="replay-visual-settings">
-    <div ref={panel} tabIndex={-1} onKeyDown={trapFocus}>
+    <div ref={panel} tabIndex={-1} onKeyDown={trapFocus} className="replay-visual-settings-layout">
+      <header>
       <div className="replay-visual-settings-heading"><h2>{t('title')}</h2><button type="button" onClick={onClose}>{t('close')}</button></div>
       <p>{t('description')}</p>
-      {error && <p role="alert">{error}</p>}
-      {busy && <p role="status">{t('working')}</p>}
-      {!settings && !busy && <button type="button" onClick={() => setAttempt(value => value + 1)}>{t('retry')}</button>}
-      {settings && <>
-        <form onSubmit={save} aria-busy={busy}>
-          {['keyviewer', 'overlay'].map(kind => <label key={kind}>
-            <span>{t(kind)}</span>
-            <select disabled={busy} value={draft[`${kind}_id`] ?? ''} onChange={event => { setDraft(previous => ({ ...previous, [`${kind}_id`]: event.target.value || null })); setSaved(false); }}>
-              <option value="">{t('none')}</option>
-              {settings.presets.filter(preset => preset.kind === kind && !preset.is_hidden).map(preset => <option key={preset.id} value={preset.id}>{preset.name}</option>)}
-            </select>
-          </label>)}
-          <button className="btn-fill-primary" type="submit" disabled={busy}>{t('save')}</button>
-          {saved && <span role="status">{t('saved')}</span>}
-        </form>
-        <h3>{t('library')}</h3><p>{t('hideHint')}</p>
-        {settings.presets.length === 0 ? <p>{t('empty')}</p> : <ul>
-          {settings.presets.map(preset => <li key={preset.id}>
-            <div><strong>{preset.name}</strong><small>{t(preset.kind)}{preset.is_hidden ? ` · ${t('hidden')}` : ''}</small></div>
-            <button type="button" disabled={busy} onClick={() => visibility(preset)} aria-label={t(preset.is_hidden ? 'showNamed' : 'hideNamed', { name: preset.name })}>{t(preset.is_hidden ? 'show' : 'hide')}</button>
-          </li>)}
-        </ul>}
-      </>}
+      <div role="tablist" aria-label={t('library')} className="replay-visual-settings-tabs">
+        {['keyviewer', 'overlay'].map(value => <button key={value} type="button" role="tab" id={`${group}-${value}-tab`} aria-controls={`${group}-gallery`} aria-selected={kind === value} tabIndex={kind === value ? 0 : -1} onClick={() => setKind(value)} onKeyDown={event => {
+          if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+          event.preventDefault();
+          const next = event.key === 'Home' ? 'keyviewer' : event.key === 'End' ? 'overlay' : kind === 'keyviewer' ? 'overlay' : 'keyviewer';
+          setKind(next); document.getElementById(`${group}-${next}-tab`)?.focus();
+        }}>{t(value)}</button>)}
+      </div>
+      </header>
+      <form onSubmit={save} aria-busy={busy}>
+        <div className="replay-visual-settings-scroll" role="tabpanel" id={`${group}-gallery`} aria-labelledby={`${group}-${kind}-tab`} tabIndex={0}>
+          {settings && <>
+            <label className="replay-visual-settings-none"><input type="radio" name={`${group}-${kind}`} checked={draft[`${kind}_id`] === null} disabled={busy} onChange={() => { setDraft(previous => ({ ...previous, [`${kind}_id`]: null })); setSaved(false); }} />{t('none')}</label>
+            <div className="replay-visual-settings-grid">
+              {settings.presets.filter(preset => preset.kind === kind).map(preset => <div key={preset.id} className={`replay-visual-settings-card${draft[`${kind}_id`] === preset.id ? ' is-selected' : ''}${preset.is_hidden ? ' is-hidden' : ''}`}>
+                <label>
+                  <input className="replay-visual-settings-radio" type="radio" name={`${group}-${kind}`} checked={draft[`${kind}_id`] === preset.id} disabled={busy || preset.is_hidden} onChange={() => { setDraft(previous => ({ ...previous, [`${kind}_id`]: preset.id })); setSaved(false); }} />
+                  <span className="replay-visual-settings-avatar" aria-hidden="true">{Array.from(preset.name)[0] ?? '?'}</span>
+                  {draft[`${kind}_id`] === preset.id && <span className="replay-visual-settings-check" aria-hidden="true">✓</span>}
+                  <span className="replay-visual-settings-card-info"><strong>{preset.name}</strong><span className="replay-visual-settings-source">{sources[preset.source] ?? preset.source}</span></span>
+                </label>
+                <div className="replay-visual-settings-card-actions"><span>{preset.is_hidden ? t('hidden') : ''}</span><button type="button" disabled={busy} onClick={() => visibility(preset)} aria-label={t(preset.is_hidden ? 'showNamed' : 'hideNamed', { name: preset.name })}>{t(preset.is_hidden ? 'show' : 'hide')}</button></div>
+              </div>)}
+            </div>
+            {!settings.presets.some(preset => preset.kind === kind) && <p className="replay-visual-settings-empty">{t('empty')}</p>}
+            <p className="replay-visual-settings-hint">{t('hideHint')}</p>
+          </>}
+          {!settings && !busy && <button type="button" onClick={() => setAttempt(value => value + 1)}>{t('retry')}</button>}
+        </div>
+        <footer>
+          {error && <p role="alert">{error}</p>}
+          <div role="status">{busy ? t('working') : saved ? t('saved') : ''}</div>
+          <div className="replay-visual-settings-footer-actions"><button type="button" onClick={onClose}>{t('close')}</button><button className="btn-fill-primary" type="submit" disabled={busy || !settings}>{t('save')}</button></div>
+        </footer>
+      </form>
     </div>
   </PopupShell>;
 }
