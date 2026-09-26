@@ -57,7 +57,7 @@ const PassReplay = ({ pass }) => {
           </div>
         </div>
       </div>
-      {editingVisuals && ownsPass && <ReplayVisualSettings key={`${pass.id}:${user.id}`} passId={pass.id} onClose={() => setEditingVisuals(false)} onChanged={replay.visualsChanged} />}
+      {editingVisuals && ownsPass && <ReplayVisualSettings key={`${pass.id}:${user.id}`} passId={pass.id} onClose={() => setEditingVisuals(false)} onChanged={replay.visualsChanged} popupRoot={expanded ? document.querySelector('.replay-immersive') : undefined} />}
     </section>
   );
   return expanded ? <ReplayImmersiveView label={t('title')} onClose={() => setExpanded(false)}>{content}</ReplayImmersiveView> : content;

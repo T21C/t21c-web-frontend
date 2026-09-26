@@ -7,7 +7,7 @@ import api from '@/utils/api';
 import { availableDefaults, visualSettingsSchema } from './replayVisualSettings';
 import './replay-visual-settings.css';
 
-export default function ReplayVisualSettings({ passId, onClose, onChanged }) {
+export default function ReplayVisualSettings({ passId, onClose, onChanged, popupRoot }) {
   const { t } = useTranslation('pages', { keyPrefix: 'passDetail.replay.visualSettings' });
   const [settings, setSettings] = useState(null);
   const [draft, setDraft] = useState({ keyviewer_id: null, overlay_id: null });
@@ -67,10 +67,10 @@ export default function ReplayVisualSettings({ passId, onClose, onChanged }) {
     if (event.shiftKey && (document.activeElement === first || document.activeElement === panel.current)) { event.preventDefault(); last.focus(); }
     else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
   };
-  return <PopupShell onClose={onClose} ariaLabel={t('title')} panelClassName="replay-visual-settings">
+  return <PopupShell onClose={onClose} ariaLabel={t('title')} overlayClassName="replay-visual-settings-overlay" panelClassName="replay-visual-settings" root={popupRoot}>
     <div ref={panel} tabIndex={-1} onKeyDown={trapFocus} className="replay-visual-settings-layout">
       <header>
-      <div className="replay-visual-settings-heading"><h2>{t('title')}</h2><button type="button" onClick={onClose}>{t('close')}</button></div>
+      <div className="replay-visual-settings-heading"><h2>{t('title')}</h2><button className="btn-fill-neutral-dark" type="button" onClick={onClose}>{t('close')}</button></div>
       <p>{t('description')}</p>
       <div role="tablist" aria-label={t('library')} className="replay-visual-settings-tabs">
         {['keyviewer', 'overlay'].map(value => <button key={value} type="button" role="tab" id={`${group}-${value}-tab`} aria-controls={`${group}-gallery`} aria-selected={kind === value} tabIndex={kind === value ? 0 : -1} onClick={() => setKind(value)} onKeyDown={event => {
@@ -93,18 +93,18 @@ export default function ReplayVisualSettings({ passId, onClose, onChanged }) {
                   {draft[`${kind}_id`] === preset.id && <span className="replay-visual-settings-check" aria-hidden="true">✓</span>}
                   <span className="replay-visual-settings-card-info"><strong>{preset.name}</strong><span className="replay-visual-settings-source">{sources[preset.source] ?? preset.source}</span></span>
                 </label>
-                <div className="replay-visual-settings-card-actions"><span>{preset.is_hidden ? t('hidden') : ''}</span><button type="button" disabled={busy} onClick={() => visibility(preset)} aria-label={t(preset.is_hidden ? 'showNamed' : 'hideNamed', { name: preset.name })}>{t(preset.is_hidden ? 'show' : 'hide')}</button></div>
+                <div className="replay-visual-settings-card-actions"><span>{preset.is_hidden ? t('hidden') : ''}</span><button className="btn-fill-neutral-dark btn-sm" type="button" disabled={busy} onClick={() => visibility(preset)} aria-label={t(preset.is_hidden ? 'showNamed' : 'hideNamed', { name: preset.name })}>{t(preset.is_hidden ? 'show' : 'hide')}</button></div>
               </div>)}
             </div>
             {!settings.presets.some(preset => preset.kind === kind) && <p className="replay-visual-settings-empty">{t('empty')}</p>}
             <p className="replay-visual-settings-hint">{t('hideHint')}</p>
           </>}
-          {!settings && !busy && <button type="button" onClick={() => setAttempt(value => value + 1)}>{t('retry')}</button>}
+          {!settings && !busy && <button className="btn-fill-neutral-dark" type="button" onClick={() => setAttempt(value => value + 1)}>{t('retry')}</button>}
         </div>
         <footer>
           {error && <p role="alert">{error}</p>}
           <div role="status">{busy ? t('working') : saved ? t('saved') : ''}</div>
-          <div className="replay-visual-settings-footer-actions"><button type="button" onClick={onClose}>{t('close')}</button><button className="btn-fill-primary" type="submit" disabled={busy || !settings}>{t('save')}</button></div>
+          <div className="replay-visual-settings-footer-actions"><button className="btn-fill-neutral-dark" type="button" onClick={onClose}>{t('close')}</button><button className="btn-fill-primary" type="submit" disabled={busy || !settings}>{t('save')}</button></div>
         </footer>
       </form>
     </div>
