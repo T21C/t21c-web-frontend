@@ -336,6 +336,7 @@
       "mechanical": "Mechanical",
       "optical": "Optical",
       "hall": "Hall effect",
+      "membrane": "Membrane",
       "other": "Other"
     },
     "stems": {

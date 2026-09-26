@@ -90,14 +90,16 @@ function candidatesForLine(line) {
 }
 
 function unusedCandidate(legends, used) {
+  const matches = [];
   for (let index = legends.length - 1; index >= 0; index -= 1) {
     for (const code of candidatesForLine(legends[index])) {
+      if (!matches.includes(code)) matches.push(code);
       if (!used.has(code)) return code;
       const twin = TWIN_CODE[code];
       if (twin && !used.has(twin)) return twin;
     }
   }
-  return null;
+  return matches[0] ?? null;
 }
 
 function displayLabel(legends) {
@@ -138,11 +140,7 @@ function assignKleCodes(items) {
   for (const item of items) {
     if (item.assigned) continue;
     if (!item.legends.length) {
-      if (!used.has("Space")) claim(item, "Space", true);
-      else {
-        custom += 1;
-        claim(item, `Custom${custom}`, false);
-      }
+      claim(item, "Space", true);
       continue;
     }
     claimResolved(item);

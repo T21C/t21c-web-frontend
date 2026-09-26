@@ -337,6 +337,7 @@
       "mechanical": "机械",
       "optical": "光轴",
       "hall": "磁轴",
+      "membrane": "薄膜",
       "other": "其他"
     },
     "stems": {

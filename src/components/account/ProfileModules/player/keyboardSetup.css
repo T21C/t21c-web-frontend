@@ -316,6 +316,9 @@
   flex-direction: column;
   gap: 1.25rem;
   padding: 1rem;
+  width: 100%;
+  max-width: 70rem;
+  justify-self: center;
   margin-bottom: 6rem;
 }
 
@@ -517,7 +520,7 @@
 
 .keyboard-setup-popup .keyboard-setup__board-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.65rem;
   align-items: end;
 }
@@ -620,6 +623,7 @@
   flex-wrap: wrap;
   gap: 0.85rem;
   align-items: flex-start;
+  overflow: visible;
 }
 
 .keyboard-setup-popup .keyboard-setup__switch-fields {
@@ -632,6 +636,10 @@
 
 .keyboard-setup-popup .switch-diagram--editor {
   width: 6.5rem;
+}
+
+.keyboard-setup-popup .switch-diagram--editor.switch-diagram--picking {
+  margin-bottom: 4.25rem;
 }
 
 .keyboard-setup-popup .keyboard-setup__paste-row {
@@ -891,8 +899,61 @@
   align-items: flex-start;
 }
 
+.keyboard-catalog .keyboard-catalog__switch-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.85rem;
+  width: 100%;
+}
+
+.keyboard-catalog .keyboard-catalog__switch-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+
+.keyboard-catalog .keyboard-catalog__switch-head .keyboard-setup__field {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto;
+}
+
+.keyboard-catalog .keyboard-catalog__switch-selects {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.keyboard-catalog .keyboard-catalog__switch-selects > .custom-select-container {
+  flex: 1 1 10rem;
+  min-width: 0;
+}
+
+.keyboard-catalog .keyboard-catalog__base-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  width: 100%;
+}
+
+.keyboard-catalog .keyboard-catalog__base-row > .keyboard-setup__field:first-child {
+  flex: 0 0 auto;
+  width: auto;
+}
+
 .keyboard-catalog .keyboard-catalog__opacity {
   min-width: 10rem;
+}
+
+.keyboard-catalog .keyboard-catalog__base-row .keyboard-catalog__opacity {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
 }
 
 .keyboard-catalog .keyboard-catalog__opacity input[type="range"] {

@@ -104,8 +104,9 @@
     "note": "설명",
     "stem": "스템",
     "baseColor": "베이스 색",
+    "topColor": "상단 하우징 색",
     "stemColor": "스템 색",
-    "baseOpacity": "베이스 불투명도 {{percent}}%",
+    "baseOpacity": "상단 불투명도 {{percent}}%",
     "tabs": {
       "details": "정보",
       "layout": "레이아웃"

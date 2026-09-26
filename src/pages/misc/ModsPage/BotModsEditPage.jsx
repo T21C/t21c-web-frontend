@@ -304,6 +304,10 @@ const BotModsEditPage = () => {
                   ? `mods.botMods.statuses.${row.link.lastSyncStatus}`
                   : '';
                 const statusLabel = statusKey && t(statusKey) !== statusKey ? t(statusKey) : row.link?.lastSyncStatus;
+                const releaseVersions = (row.releases || []).map((release) => release.version).filter(Boolean);
+                const versionLabel = releaseVersions.length
+                  ? releaseVersions.join(', ')
+                  : row.version || t('mods.botMods.noVersion');
                 return (
                   <li key={row.id} className={`bot-mods-page__item${row.isDuplicate ? ' bot-mods-page__item--duplicate' : ''}`}>
                     <div className="bot-mods-page__item-main">
@@ -311,8 +315,7 @@ const BotModsEditPage = () => {
                         <p className="bot-mods-page__item-name">{row.name}</p>
                         <p className="bot-mods-page__item-meta">
                           <span>{row.cachedUsername}</span>
-                          <span>{row.version || t('mods.botMods.noVersion')}</span>
-                          <span className="bot-mods-page__bot-id">{row.id}</span>
+                          <span>{versionLabel}</span>
                         </p>
                         <p className="bot-mods-page__item-link">
                           {row.link ? (

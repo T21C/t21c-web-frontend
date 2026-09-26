@@ -336,6 +336,7 @@
       "mechanical": "기계식",
       "optical": "광축",
       "hall": "홀 효과",
+      "membrane": "멤브레인",
       "other": "기타"
     },
     "stems": {

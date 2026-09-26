@@ -103,9 +103,10 @@
     "editFormFactor": "Edytuj format",
     "note": "Notatka",
     "stem": "Trzpień",
-    "baseColor": "Kolor obudowy",
+    "baseColor": "Kolor podstawy",
+    "topColor": "Kolor górnej obudowy",
     "stemColor": "Kolor trzpienia",
-    "baseOpacity": "Krycie obudowy {{percent}}%",
+    "baseOpacity": "Krycie górnej obudowy {{percent}}%",
     "tabs": {
       "details": "Szczegóły",
       "layout": "Rozkład"

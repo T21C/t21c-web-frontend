@@ -227,38 +227,45 @@ export default function PlayerKeyboardsModule({
                     emptySockets={emptySocketSet(board)}
                   />
                 )}
-                {(board?.switch?.name || board?.customSwitch || board?.actuationMm != null || board?.rapidTriggerSplit || board?.rapidTriggerActuationMm != null) && (
+                {(board?.sensing === "membrane" || board?.switch?.name || board?.customSwitch || board?.actuationMm != null || board?.rapidTriggerSplit || board?.rapidTriggerActuationMm != null) && (
                   <div className="keyboard-setup__spec">
-                    {(board?.switch?.name || board?.customSwitch) && (
+                    {(board?.sensing === "membrane" || board?.switch?.name || board?.customSwitch) && (
                       <SwitchDiagram
                         className="switch-diagram--spec"
                         stem={board.switch?.stem}
                         sensing={board.switch?.sensing || board.sensing}
-                        baseColor={board.switch?.baseColor}
-                        stemColor={board.switch?.stemColor}
-                        baseOpacity={board.switch?.baseOpacity}
+                        baseColor={board.baseColor || board.switch?.baseColor}
+                        topColor={board.topColor || board.switch?.topColor}
+                        stemColor={board.stemColor || board.switch?.stemColor}
+                        baseOpacity={board.baseOpacity == null ? board.switch?.baseOpacity : board.baseOpacity}
                       />
                     )}
                     <div className="keyboard-setup__spec-copy">
-                      {(board?.switch?.name || board?.customSwitch) && (
-                        <p className="keyboard-setup__spec-name">{board.switch?.name || board.customSwitch}</p>
-                      )}
-                      {board?.actuationMm != null && (
-                        <p className="keyboard-setup__spec-line">
-                          {t("profile.keyboards.actuation", { mm: board.actuationMm })}
-                        </p>
-                      )}
-                      {board?.rapidTriggerSplit ? (
-                        <p className="keyboard-setup__spec-line">
-                          {t("profile.keyboards.rtSplit", {
-                            press: board.rapidTriggerPressMm ?? "—",
-                            release: board.rapidTriggerReleaseMm ?? "—",
-                          })}
-                        </p>
-                      ) : board?.rapidTriggerActuationMm != null && (
-                        <p className="keyboard-setup__spec-line">
-                          {t("profile.keyboards.rtActuation", { mm: board.rapidTriggerActuationMm })}
-                        </p>
+                      {board?.sensing === "membrane" ? (
+                        <p className="keyboard-setup__spec-name">{t("profile.keyboards.sensing.membrane")}</p>
+                      ) : (
+                        <>
+                          {(board?.switch?.name || board?.customSwitch) && (
+                            <p className="keyboard-setup__spec-name">{board.switch?.name || board.customSwitch}</p>
+                          )}
+                          {board?.actuationMm != null && (
+                            <p className="keyboard-setup__spec-line">
+                              {t("profile.keyboards.actuation", { mm: board.actuationMm })}
+                            </p>
+                          )}
+                          {board?.rapidTriggerSplit ? (
+                            <p className="keyboard-setup__spec-line">
+                              {t("profile.keyboards.rtSplit", {
+                                press: board.rapidTriggerPressMm ?? "—",
+                                release: board.rapidTriggerReleaseMm ?? "—",
+                              })}
+                            </p>
+                          ) : board?.rapidTriggerActuationMm != null && (
+                            <p className="keyboard-setup__spec-line">
+                              {t("profile.keyboards.rtActuation", { mm: board.rapidTriggerActuationMm })}
+                            </p>
+                          )}
+                        </>
                       )}
                     </div>
                   </div>

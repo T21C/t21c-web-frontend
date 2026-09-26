@@ -85,7 +85,7 @@ function CatalogPopup({ title, onClose, saving, children, onSubmit, onDelete, sh
       panelClassName="keyboard-catalog-popup__panel"
       ariaLabelledBy="keyboard-catalog-popup-title"
     >
-      <form className="keyboard-catalog keyboard-setup keyboard-catalog-popup__form" onSubmit={onSubmit}>
+      <form className="keyboard-setup keyboard-catalog-popup__form" onSubmit={onSubmit}>
         <div className="keyboard-catalog-popup__header">
           <h2 id="keyboard-catalog-popup-title">{title}</h2>
           <div className="keyboard-catalog-popup__header-actions">
@@ -368,85 +368,6 @@ function FormFactorPopup({ row, onClose, onSaved }) {
   );
 }
 
-function ProductPopup({ product, geometries, onClose, onSaved }) {
-  const { t } = useTranslation(["pages", "common"]);
-  const editing = Boolean(product?.id);
-  const [saving, setSaving] = useState(false);
-  const [form, setForm] = useState({
-    geometryId: product?.geometryId ? String(product.geometryId) : geometries[0] ? String(geometries[0].id) : "",
-    brand: product?.brand || "",
-    model: product?.model || "",
-  });
-  const geometryOptions = geometries.map((row) => ({ value: String(row.id), label: row.name }));
-  const geometry = geometries.find((row) => String(row.id) === String(form.geometryId));
-
-  async function save(event) {
-    event.preventDefault();
-    setSaving(true);
-    const body = {
-      geometryId: Number(form.geometryId),
-      brand: form.brand,
-      model: form.model,
-    };
-    await runCatalogAction(t, {
-      onDone: onSaved,
-      run: () =>
-        editing
-          ? api.patch(routes.admin.keyboardProduct(product.id), body)
-          : api.post(routes.admin.keyboardProducts(), body),
-    });
-    setSaving(false);
-  }
-
-  async function remove() {
-    if (!window.confirm(t("admin.keyboards.deleteConfirm"))) return;
-    setSaving(true);
-    await runCatalogAction(t, {
-      deleting: true,
-      onDone: onSaved,
-      run: () => api.delete(routes.admin.keyboardProduct(product.id)),
-    });
-    setSaving(false);
-  }
-
-  return (
-    <CatalogPopup
-      title={editing ? t("admin.keyboards.editProduct") : t("admin.keyboards.addProduct")}
-      onClose={onClose}
-      saving={saving}
-      onSubmit={save}
-      onDelete={editing ? remove : null}
-    >
-      <div className="keyboard-catalog-popup__body">
-        <div className="keyboard-catalog__form">
-          <KeyboardThumb geometry={geometry} />
-          <CustomSelect
-            options={geometryOptions}
-            value={geometryOptions.find((option) => option.value === form.geometryId) || null}
-            onChange={(option) => setForm((prev) => ({ ...prev, geometryId: option.value }))}
-            width="16rem"
-            label={t("admin.keyboards.geometries")}
-          />
-          <label className="keyboard-setup__field">
-            <span>{t("admin.keyboards.brand")}</span>
-            <input
-              value={form.brand}
-              onChange={(event) => setForm((prev) => ({ ...prev, brand: event.target.value }))}
-            />
-          </label>
-          <label className="keyboard-setup__field">
-            <span>{t("admin.keyboards.model")}</span>
-            <input
-              value={form.model}
-              onChange={(event) => setForm((prev) => ({ ...prev, model: event.target.value }))}
-            />
-          </label>
-        </div>
-      </div>
-    </CatalogPopup>
-  );
-}
-
 function SwitchPopup({ row, onClose, onSaved }) {
   const { t } = useTranslation(["pages", "common"]);
   const editing = Boolean(row?.id);
@@ -458,6 +379,7 @@ function SwitchPopup({ row, onClose, onSaved }) {
     sensing: row?.sensing || "mechanical",
     stem: initialStem,
     baseColor: row?.baseColor || "#1a1a1a",
+    topColor: row?.topColor || row?.baseColor || "#1a1a1a",
     stemColor: row?.stemColor || (unsetMechanical ? "#b0b4ba" : defaultStemColor(initialStem)),
     baseOpacity: row?.baseOpacity == null ? "1" : String(row.baseOpacity),
   });
@@ -506,69 +428,86 @@ function SwitchPopup({ row, onClose, onSaved }) {
       onDelete={editing ? remove : null}
     >
       <div className="keyboard-catalog-popup__body">
-        <div className="keyboard-catalog__form">
-          <SwitchDiagram
-            stem={form.stem}
-            sensing={form.sensing}
-            baseColor={form.baseColor}
-            stemColor={form.stemColor}
-            baseOpacity={Number(form.baseOpacity)}
-          />
-          <label className="keyboard-setup__field">
-            <span>{t("admin.keyboards.name")}</span>
-            <input
-              value={form.name}
-              onChange={(event) => setForm((prev) => ({ ...prev, name: event.target.value }))}
+        <div className="keyboard-catalog__form keyboard-catalog__switch-form">
+          <div className="keyboard-catalog__switch-head">
+            <SwitchDiagram
+              stem={form.stem}
+              sensing={form.sensing}
+              baseColor={form.baseColor}
+              topColor={form.topColor}
+              stemColor={form.stemColor}
+              baseOpacity={Number(form.baseOpacity)}
             />
-          </label>
-          <CustomSelect
-            options={stemChoices}
-            value={stemChoices.find((option) => option.value === form.stem)}
-            onChange={(option) =>
-              setForm((prev) => ({
-                ...prev,
-                stem: option.value,
-                stemColor:
-                  prev.stemColor === defaultStemColor(prev.stem) || prev.stemColor === "#b0b4ba"
-                    ? defaultStemColor(option.value)
-                    : prev.stemColor,
-              }))
-            }
-            width="12rem"
-            label={t("admin.keyboards.stem")}
-          />
-          <CustomSelect
-            options={options}
-            value={options.find((option) => option.value === form.sensing)}
-            onChange={(option) => setForm((prev) => ({ ...prev, sensing: option.value }))}
-            width="12rem"
-            label={t("profile.keyboards.sensingLabel")}
-          />
-          <label className="keyboard-setup__field">
-            <span>{t("admin.keyboards.baseColor")}</span>
-            <input
-              type="color"
-              value={form.baseColor}
-              onChange={(event) => setForm((prev) => ({ ...prev, baseColor: event.target.value }))}
-            />
-          </label>
-          <label className="keyboard-setup__field keyboard-catalog__opacity">
-            <span>{t("admin.keyboards.baseOpacity", { percent: Math.round(Number(form.baseOpacity) * 100) })}</span>
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.05"
-              value={form.baseOpacity}
-              onChange={(event) => setForm((prev) => ({ ...prev, baseOpacity: event.target.value }))}
-            />
-          </label>
+            <div className="keyboard-catalog__switch-fields">
+              <label className="keyboard-setup__field">
+                <span>{t("admin.keyboards.name")}</span>
+                <input
+                  value={form.name}
+                  onChange={(event) => setForm((prev) => ({ ...prev, name: event.target.value }))}
+                />
+              </label>
+              <div className="keyboard-catalog__switch-selects">
+                <CustomSelect
+                  options={stemChoices}
+                  value={stemChoices.find((option) => option.value === form.stem)}
+                  onChange={(option) =>
+                    setForm((prev) => ({
+                      ...prev,
+                      stem: option.value,
+                      stemColor:
+                        prev.stemColor === defaultStemColor(prev.stem) || prev.stemColor === "#b0b4ba"
+                          ? defaultStemColor(option.value)
+                          : prev.stemColor,
+                    }))
+                  }
+                  width="100%"
+                  label={t("admin.keyboards.stem")}
+                />
+                <CustomSelect
+                  options={options}
+                  value={options.find((option) => option.value === form.sensing)}
+                  onChange={(option) => setForm((prev) => ({ ...prev, sensing: option.value }))}
+                  width="100%"
+                  label={t("profile.keyboards.sensingLabel")}
+                />
+              </div>
+            </div>
+          </div>
           <label className="keyboard-setup__field">
             <span>{t("admin.keyboards.stemColor")}</span>
             <input
               type="color"
               value={form.stemColor}
               onChange={(event) => setForm((prev) => ({ ...prev, stemColor: event.target.value }))}
+            />
+          </label>
+          <div className="keyboard-catalog__base-row">
+            <label className="keyboard-setup__field">
+              <span>{t("admin.keyboards.topColor")}</span>
+              <input
+                type="color"
+                value={form.topColor}
+                onChange={(event) => setForm((prev) => ({ ...prev, topColor: event.target.value }))}
+              />
+            </label>
+            <label className="keyboard-setup__field keyboard-catalog__opacity">
+              <span>{t("admin.keyboards.baseOpacity", { percent: Math.round(Number(form.baseOpacity) * 100) })}</span>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.05"
+                value={form.baseOpacity}
+                onChange={(event) => setForm((prev) => ({ ...prev, baseOpacity: event.target.value }))}
+              />
+            </label>
+          </div>
+          <label className="keyboard-setup__field">
+            <span>{t("admin.keyboards.baseColor")}</span>
+            <input
+              type="color"
+              value={form.baseColor}
+              onChange={(event) => setForm((prev) => ({ ...prev, baseColor: event.target.value }))}
             />
           </label>
         </div>
@@ -597,10 +536,6 @@ export default function KeyboardCatalogPage() {
     load().catch((err) => toast.error(actionError(err, t("admin.keyboards.loadError"))));
   }, [load, t]);
 
-  function geometryById(id) {
-    return catalog.geometries.find((row) => row.id === id) || null;
-  }
-
   async function reorderFactors(result) {
     const destination = result.destination;
     if (!destination || destination.index === result.source.index) return;
@@ -625,11 +560,9 @@ export default function KeyboardCatalogPage() {
   const addLabel =
     tab === "shapes"
       ? t("admin.keyboards.addShape")
-      : tab === "products"
-        ? t("admin.keyboards.addProduct")
-        : tab === "switches"
-          ? t("admin.keyboards.addSwitch")
-          : t("admin.keyboards.addFormFactor");
+      : tab === "switches"
+        ? t("admin.keyboards.addSwitch")
+        : t("admin.keyboards.addFormFactor");
 
   return (
     <div className="keyboard-catalog">
@@ -642,7 +575,6 @@ export default function KeyboardCatalogPage() {
       <div className="keyboard-catalog__tabs" role="tablist">
         {[
           ["shapes", "admin.keyboards.geometries"],
-          ["products", "admin.keyboards.products"],
           ["switches", "admin.keyboards.switches"],
           ["factors", "admin.keyboards.formFactorsTab"],
         ].map(([id, key]) => (
@@ -678,25 +610,6 @@ export default function KeyboardCatalogPage() {
         </div>
       ) : null}
 
-      {tab === "products" ? (
-        <div className="keyboard-catalog__grid">
-          {catalog.products.map((row) => (
-            <button
-              key={row.id}
-              type="button"
-              className="keyboard-catalog__card"
-              onClick={() => setEditor({ kind: "products", row })}
-            >
-              <KeyboardThumb geometry={geometryById(row.geometryId)} />
-              <span className="keyboard-catalog__card-title">
-                {row.brand} {row.model}
-              </span>
-              <span className="keyboard-catalog__card-meta">{geometryById(row.geometryId)?.name}</span>
-            </button>
-          ))}
-        </div>
-      ) : null}
-
       {tab === "switches" ? (
         <div className="keyboard-catalog__grid keyboard-catalog__grid--compact">
           {catalog.switches.map((row) => (
@@ -710,6 +623,7 @@ export default function KeyboardCatalogPage() {
                 stem={row.stem}
                 sensing={row.sensing}
                 baseColor={row.baseColor}
+                topColor={row.topColor}
                 stemColor={row.stemColor}
                 baseOpacity={row.baseOpacity}
               />
@@ -798,17 +712,6 @@ export default function KeyboardCatalogPage() {
       {editor?.kind === "factors" ? (
         <FormFactorPopup
           row={editor.row}
-          onClose={() => setEditor(null)}
-          onSaved={() => {
-            setEditor(null);
-            load().catch((err) => toast.error(actionError(err, t("admin.keyboards.loadError"))));
-          }}
-        />
-      ) : null}
-      {editor?.kind === "products" ? (
-        <ProductPopup
-          product={editor.row}
-          geometries={catalog.geometries}
           onClose={() => setEditor(null)}
           onSaved={() => {
             setEditor(null);

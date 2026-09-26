@@ -173,11 +173,6 @@
   gap: 0.65rem;
 }
 
-.bot-mods-page__bot-id {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  word-break: break-all;
-}
-
 .bot-mods-page__item-link a {
   color: var(--color-white);
 }
