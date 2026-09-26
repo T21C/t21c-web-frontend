@@ -22,6 +22,8 @@ const BASE_STORAGE_KEYS = {
     SLIDER_Q_RANGE_DRAG: 'level_slider_q_range_drag',
     SELECTED_SPECIAL_DIFFS: 'level_selected_special_diffs',
     Q_SLIDER_VISIBLE: 'level_q_slider_visible',
+    /** One-shot marker so a changed list default is applied once. */
+    VIEW_DEFAULTS: 'level_view_defaults',
     ONLY_MY_LIKES: 'level_only_my_likes',
     /** @deprecated migrated to LEVEL_FACET_V1 */
     SELECTED_CURATION_TYPES: 'level_selected_curation_types',
@@ -68,6 +70,35 @@ const LEVEL_SORT_TYPES = new Set([
     'BASESCORE', 'BPM', 'TILES', 'TIME', 'RANDOM',
 ]);
 
+const LEVEL_SORT_DEFAULT = 'CLEARS';
+const LEVEL_ORDER_DEFAULT = 'DESC';
+/** Bump when the unset/previous-default list view should be rewritten once. */
+const LEVEL_VIEW_DEFAULT_VERSION = 'clears-q-off';
+
+/**
+ * Apply the current list defaults once. Visitors who still have the previous
+ * auto-saved default (recent, Q slider on) pick up the new one; any other
+ * saved choice is left alone.
+ */
+function applyLevelViewDefaults(storage, keys) {
+    if (storage.getItem(keys.VIEW_DEFAULTS) === LEVEL_VIEW_DEFAULT_VERSION) return;
+    storage.setItem(keys.VIEW_DEFAULTS, LEVEL_VIEW_DEFAULT_VERSION);
+
+    const savedSort = storage.getItem(keys.SORT);
+    const savedOrder = storage.getItem(keys.ORDER);
+    const previousDefaultSort = !savedSort || savedSort === 'RECENT' || savedSort === 'RECENT_DESC';
+    const previousDefaultOrder = !savedOrder || savedOrder === 'DESC' || savedSort === 'RECENT_DESC';
+    if (previousDefaultSort && previousDefaultOrder) {
+        storage.setItem(keys.SORT, LEVEL_SORT_DEFAULT);
+        storage.setItem(keys.ORDER, LEVEL_ORDER_DEFAULT);
+    }
+
+    const savedQ = storage.getItem(keys.Q_SLIDER_VISIBLE);
+    if (savedQ == null || savedQ === 'true') {
+        storage.setItem(keys.Q_SLIDER_VISIBLE, 'false');
+    }
+}
+
 /** Parse sort + order from storage (supports legacy combined values like RECENT_DESC). */
 function loadLevelSort(storage, keys) {
     const savedSort = storage.getItem(keys.SORT);
@@ -108,7 +139,7 @@ function loadLevelSort(storage, keys) {
         return { sort: savedSort, order: 'DESC' };
     }
 
-    return { sort: 'RECENT', order: 'DESC' };
+    return { sort: LEVEL_SORT_DEFAULT, order: LEVEL_ORDER_DEFAULT };
 }
 
 const LevelContextProvider = (props) => {
@@ -142,7 +173,10 @@ const LevelContextProvider = (props) => {
     const [query, setQuery] = useState(() => storage.getItem(STORAGE_KEYS.QUERY) || "");
     const [selectedLowFilterDiff, setSelectedLowFilterDiff] = useState(() => storage.getItem(STORAGE_KEYS.LOW_FILTER_DIFF) || "P1");
     const [selectedHighFilterDiff, setSelectedHighFilterDiff] = useState(() => storage.getItem(STORAGE_KEYS.HIGH_FILTER_DIFF) || "U20");
-    const [sort, setSort] = useState(() => loadLevelSort(storage, STORAGE_KEYS).sort);
+    const [sort, setSort] = useState(() => {
+        applyLevelViewDefaults(storage, STORAGE_KEYS);
+        return loadLevelSort(storage, STORAGE_KEYS).sort;
+    });
     const [order, setOrder] = useState(() => loadLevelSort(storage, STORAGE_KEYS).order);
     const [hasMore, setHasMore] = useState(true);
     const [totalLevels, setTotalLevels] = useState(0);
@@ -167,8 +201,7 @@ const LevelContextProvider = (props) => {
         return saved ? JSON.parse(saved) : [];
     });
     const [qSliderVisible, setQSliderVisible] = useState(() => {
-        const saved = storage.getItem(STORAGE_KEYS.Q_SLIDER_VISIBLE);
-        return saved != null ? saved === 'true' : true;
+        return storage.getItem(STORAGE_KEYS.Q_SLIDER_VISIBLE) === 'true';
     });
     const [onlyMyLikes, setOnlyMyLikes] = useState(() => storage.getItem(STORAGE_KEYS.ONLY_MY_LIKES) === 'true');
     const [levelFacetFilters, setLevelFacetFilters] = useState(() => loadLevelFacetV1(STORAGE_KEYS, storage));

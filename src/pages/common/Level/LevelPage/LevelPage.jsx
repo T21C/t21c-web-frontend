@@ -682,7 +682,7 @@ const LevelPage = ({
   }
 
   function resetAll() {
-    setSort("RECENT");
+    setSort("CLEARS");
     setOrder("DESC");
     randomSeedRef.current = null;
     setSearchInput("");

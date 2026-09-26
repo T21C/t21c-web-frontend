@@ -266,6 +266,12 @@
   flex-wrap: wrap;
 }
 
+.translations-page .translations-page__language-edit {
+  margin-left: auto;
+  flex-shrink: 0;
+  color: var(--color-white);
+}
+
 .translations-page .translations-page__language-name {
   font-size: 1.1rem;
   font-weight: 600;
@@ -359,34 +365,15 @@
 .translations-page .translations-page__contributor-actions {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
   gap: 0.4rem;
 }
 
-.translations-page .translations-page__contributor-actions .translations-page__button {
-  padding: 0.4rem 0.75rem;
-  font-size: 0.8rem;
-}
-
-.translations-page .translations-page__button--neutral {
-  background: var(--btn-neutral);
-}
-
-.translations-page .translations-page__button--neutral:hover:not(:disabled) {
-  background: var(--btn-neutral-dark-hover);
-}
-
-.translations-page .translations-page__button--neutral:disabled {
-  background: var(--btn-disabled-fill);
-}
-
-.translations-page .translations-page__contributor-status {
-  margin: 0;
-  font-size: 0.75rem;
-  color: var(--btn-success);
-}
-
-.translations-page .translations-page__contributor-status.error {
-  color: var(--btn-danger);
+.translations-page .translations-page__contributor-commit {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
 }
 
 @media (max-width: 640px) {
