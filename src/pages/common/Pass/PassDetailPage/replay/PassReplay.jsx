@@ -38,7 +38,7 @@ const PassReplay = ({ pass }) => {
       <div className="replay-heading">
         <div className="replay-title-row"><h2>{t('title')}</h2><PassAutoSubmissionFlag /></div>
         <div className="replay-heading-actions">
-          {ownsPass && <button type="button" onClick={() => setEditingVisuals(true)}>{t('visualSettings.title')}</button>}
+          {ownsPass && <button type="button" className="btn-fill-neutral-dark btn-sm replay-visual-settings-button" onClick={() => setEditingVisuals(true)}>{t('visualSettings.title')}</button>}
           <button ref={expandButtonRef} type="button" className="replay-icon-button" onClick={() => setExpanded(!expanded)} aria-label={t(expanded ? 'collapse' : 'expand')} aria-pressed={expanded} title={t(expanded ? 'collapse' : 'expand')}>
             {expanded ? <FiMinimize2 /> : <FiMaximize2 />}
           </button>
