@@ -8,7 +8,7 @@ import './replay-immersive.css';
 import PassAutoSubmissionFlag from '@/components/cards/PassAutoSubmissionFlag';
 import './pass-replay.css';
 import { useAuth } from '@/contexts/AuthContext';
-import ReplayVisualSettings from './ReplayVisualSettings';
+import ReplayVisualSettings from './ReplayVisualSettingsPanel';
 
 
 const PassReplay = ({ pass }) => {
