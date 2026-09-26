@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState } from "react";
-import { SWITCH_ART } from "./switchArt";
+import { SWITCH_ART, MembraneArt } from "./switchArt";
 import "./switchDiagram.css";
 
 export const SWITCH_STEMS = ["linear", "tactile", "clicky"];
@@ -38,6 +38,8 @@ function stemOutlineColor(hex) {
   );
   return `#${channels.join("")}`;
 }
+
+const COLOR_THROTTLE_MS = 100;
 
 const LASER_PATH =
   "M 45.4403,40.9455L 57.6964,45.8649L 54.6964,51.0611L 44.3148,42.9121C 43.8343,43.529 43.2654,44.0736 42.627,44.5269L 46.6048,50.4303L 44.4397,51.6803L 41.3156,45.2827C 40.6339,45.5936 39.901,45.8115 39.133,45.9204L 41.0104,59.0625L 35.0104,59.0625L 36.8874,45.9233C 36.0949,45.813 35.3394,45.5866 34.6389,45.2618L 31.5112,51.6668L 29.3461,50.4168L 33.3337,44.4989C 32.7168,44.0551 32.1656,43.5257 31.6976,42.928L 21.2383,51.138L 18.2383,45.9419L 30.5772,40.9892C 30.2947,40.2885 30.1086,39.5387 30.0353,38.756L 23.0074,39.2441L 23.0074,36.7441L 30.0364,37.2322C 30.1108,36.4502 30.2979,35.701 30.5811,35.001L 18.3289,30.0831L 21.3289,24.887L 31.72,33.0435C 32.1877,32.4517 32.7373,31.9276 33.3516,31.4883L 29.4056,25.6322L 31.5707,24.3822L 34.668,30.7248C 35.3547,30.4098 36.0938,30.1891 36.8685,30.0794L 35,17L 41,17L 39.1315,30.0794C 39.8972,30.1878 40.6279,30.4046 41.3078,30.7137L 44.4177,24.3454L 46.5827,25.5954L 42.6238,31.4708C 43.2486,31.9141 43.807,32.4447 44.2812,33.045L 54.6905,24.8742L 57.6905,30.0703L 45.4171,34.9967C 45.5486,35.3211 45.6594,35.6561 45.748,36L 72.9438,36L 73,38L 72.9438,40L 45.748,40C 45.6647,40.3235 45.5617,40.6392 45.4403,40.9455 Z";
@@ -80,10 +82,13 @@ export default function SwitchDiagram({
   stemLabel = "Stem color",
   topLabel = "Top color",
   baseLabel = "Base color",
+  opacityLabel = "Top opacity",
   onStemColor,
   onTopColor,
   onBaseColor,
+  onBaseOpacity,
 }) {
+  const membrane = sensing === "membrane";
   const kind = resolveSwitchStem(stem);
   const explicitStem = SWITCH_STEMS.includes(stem);
   const ink = safeHex(stemColor, explicitStem ? defaultStemColor(kind) : "#b0b4ba");
@@ -93,11 +98,72 @@ export default function SwitchDiagram({
   const Art = SWITCH_ART[kind] || SWITCH_ART.linear;
   const gradientId = `switch-spring-${useId().replace(/:/g, "")}`;
   const rootRef = useRef(null);
+  const colorTimerRef = useRef(null);
+  const lastColorAtRef = useRef(0);
+  const pendingColorRef = useRef(null);
+  const colorHandlersRef = useRef({ onStemColor, onTopColor, onBaseColor });
+  colorHandlersRef.current = { onStemColor, onTopColor, onBaseColor };
   const [open, setOpen] = useState(null);
-  const picking = Boolean(colorable && onStemColor && onTopColor && onBaseColor);
-  const classes = ["switch-diagram", picking ? "switch-diagram--colorable" : "", className]
+  const [draftColor, setDraftColor] = useState(null);
+  const picking = Boolean(!membrane && colorable && onStemColor && onTopColor && onBaseColor);
+  const classes = [
+    "switch-diagram",
+    picking ? "switch-diagram--colorable" : "",
+    open ? "switch-diagram--picking" : "",
+    membrane ? "switch-diagram--membrane" : "",
+    className,
+  ]
     .filter(Boolean)
     .join(" ");
+  const committedValue = open === "stem" ? ink : open === "top" ? lid : shell;
+  const pickerValue = draftColor || committedValue;
+  const pickerLabel = open === "stem" ? stemLabel : open === "top" ? topLabel : baseLabel;
+
+  function commitColor(part, value) {
+    pendingColorRef.current = null;
+    lastColorAtRef.current = Date.now();
+    const handlers = colorHandlersRef.current;
+    if (part === "stem") handlers.onStemColor(value);
+    else if (part === "top") handlers.onTopColor(value);
+    else if (part === "base") handlers.onBaseColor(value);
+  }
+
+  function flushColor() {
+    if (colorTimerRef.current) {
+      clearTimeout(colorTimerRef.current);
+      colorTimerRef.current = null;
+    }
+    const pending = pendingColorRef.current;
+    if (pending) commitColor(pending.part, pending.value);
+  }
+
+  function onPickerColor(event) {
+    const value = event.target.value.toLowerCase();
+    const part = open;
+    if (!part) return;
+    setDraftColor(value);
+    pendingColorRef.current = { part, value };
+    const wait = COLOR_THROTTLE_MS - (Date.now() - lastColorAtRef.current);
+    if (wait <= 0) {
+      if (colorTimerRef.current) {
+        clearTimeout(colorTimerRef.current);
+        colorTimerRef.current = null;
+      }
+      commitColor(part, value);
+      return;
+    }
+    if (colorTimerRef.current) return;
+    colorTimerRef.current = setTimeout(() => {
+      colorTimerRef.current = null;
+      const pending = pendingColorRef.current;
+      if (pending) commitColor(pending.part, pending.value);
+    }, wait);
+  }
+
+  useEffect(() => {
+    setDraftColor(null);
+    return () => flushColor();
+  }, [open]);
 
   useEffect(() => {
     if (!picking || !open) return undefined;
@@ -119,63 +185,83 @@ export default function SwitchDiagram({
     setOpen((current) => (current === part ? null : part));
   }
 
-  const pickerValue = open === "stem" ? ink : open === "top" ? lid : shell;
-  const pickerLabel = open === "stem" ? stemLabel : open === "top" ? topLabel : baseLabel;
-
   return (
     <span className={classes} ref={rootRef}>
-      <svg className="switch-diagram__art" viewBox="100 50 330 310" role={title ? "img" : undefined} aria-label={title} aria-hidden={title ? undefined : true}>
-        <Art
-          base={shell}
-          top={lid}
-          stem={ink}
-          stemDark={stemOutlineColor(ink)}
-          opacity={opacity}
-          gradientId={gradientId}
-        />
-      </svg>
-      <SensingBadge sensing={sensing} />
-      {picking && (
-        <>
-          <button
-            type="button"
-            className={`switch-diagram__hit switch-diagram__hit--base${open === "base" ? " is-open" : ""}`}
-            aria-label={baseLabel}
-            aria-expanded={open === "base"}
-            onClick={() => toggleHit("base")}
-          />
-          <button
-            type="button"
-            className={`switch-diagram__hit switch-diagram__hit--top${open === "top" ? " is-open" : ""}`}
-            aria-label={topLabel}
-            aria-expanded={open === "top"}
-            onClick={() => toggleHit("top")}
-          />
-          <button
-            type="button"
-            className={`switch-diagram__hit switch-diagram__hit--stem${open === "stem" ? " is-open" : ""}`}
-            aria-label={stemLabel}
-            aria-expanded={open === "stem"}
-            onClick={() => toggleHit("stem")}
-          />
-          {open && (
-            <div className={`switch-diagram__picker switch-diagram__picker--${open}`} role="dialog">
-              <label className="switch-diagram__picker-field">
-                <span>{pickerLabel}</span>
-                <input
-                  type="color"
-                  value={pickerValue}
-                  onChange={(event) => {
-                    const value = event.target.value.toLowerCase();
-                    if (open === "stem") onStemColor(value);
-                    else if (open === "top") onTopColor(value);
-                    else onBaseColor(value);
-                  }}
-                />
-              </label>
+      <span className="switch-diagram__stage">
+        <svg
+          className={`switch-diagram__art${membrane ? " switch-diagram__art--membrane" : ""}`}
+          viewBox={membrane ? "0 0 512 512" : "100 50 330 310"}
+          role={title ? "img" : undefined}
+          aria-label={title}
+          aria-hidden={title ? undefined : true}
+        >
+          {membrane ? (
+            <MembraneArt />
+          ) : (
+            <Art
+              base={shell}
+              top={lid}
+              stem={ink}
+              stemDark={stemOutlineColor(ink)}
+              opacity={opacity}
+              gradientId={gradientId}
+            />
+          )}
+        </svg>
+        {!membrane && <SensingBadge sensing={sensing} />}
+        {picking && (
+          <>
+            <button
+              type="button"
+              className={`switch-diagram__hit switch-diagram__hit--base${open === "base" ? " is-open" : ""}`}
+              aria-label={baseLabel}
+              aria-expanded={open === "base"}
+              onClick={() => toggleHit("base")}
+            />
+            <button
+              type="button"
+              className={`switch-diagram__hit switch-diagram__hit--top${open === "top" ? " is-open" : ""}`}
+              aria-label={topLabel}
+              aria-expanded={open === "top"}
+              onClick={() => toggleHit("top")}
+            />
+            <button
+              type="button"
+              className={`switch-diagram__hit switch-diagram__hit--stem${open === "stem" ? " is-open" : ""}`}
+              aria-label={stemLabel}
+              aria-expanded={open === "stem"}
+              onClick={() => toggleHit("stem")}
+            />
+          </>
+        )}
+      </span>
+      {picking && open && (
+        <div className={`switch-diagram__picker switch-diagram__picker--${open}`} role="dialog">
+          <div className="switch-diagram__picker-field">
+            <span>{pickerLabel}</span>
+            <input
+              type="color"
+              className="switch-diagram__picker-color"
+              value={pickerValue}
+              aria-label={pickerLabel}
+              onChange={onPickerColor}
+            />
+          </div>
+          {open === "top" && onBaseOpacity && (
+            <div className="switch-diagram__picker-opacity">
+              <span aria-hidden="true">{Math.round(opacity * 100)}%</span>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.05"
+                value={opacity}
+                aria-label={opacityLabel}
+                onChange={(event) => onBaseOpacity(Number(event.target.value))}
+              />
             </div>
           )}
-        </>
+        </div>
       )}
     </span>
   );

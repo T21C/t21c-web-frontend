@@ -85,7 +85,7 @@ function CatalogPopup({ title, onClose, saving, children, onSubmit, onDelete, sh
       panelClassName="keyboard-catalog-popup__panel"
       ariaLabelledBy="keyboard-catalog-popup-title"
     >
-      <form className="keyboard-catalog keyboard-setup keyboard-catalog-popup__form" onSubmit={onSubmit}>
+      <form className="keyboard-setup keyboard-catalog-popup__form" onSubmit={onSubmit}>
         <div className="keyboard-catalog-popup__header">
           <h2 id="keyboard-catalog-popup-title">{title}</h2>
           <div className="keyboard-catalog-popup__header-actions">
@@ -368,85 +368,6 @@ function FormFactorPopup({ row, onClose, onSaved }) {
   );
 }
 
-function ProductPopup({ product, geometries, onClose, onSaved }) {
-  const { t } = useTranslation(["pages", "common"]);
-  const editing = Boolean(product?.id);
-  const [saving, setSaving] = useState(false);
-  const [form, setForm] = useState({
-    geometryId: product?.geometryId ? String(product.geometryId) : geometries[0] ? String(geometries[0].id) : "",
-    brand: product?.brand || "",
-    model: product?.model || "",
-  });
-  const geometryOptions = geometries.map((row) => ({ value: String(row.id), label: row.name }));
-  const geometry = geometries.find((row) => String(row.id) === String(form.geometryId));
-
-  async function save(event) {
-    event.preventDefault();
-    setSaving(true);
-    const body = {
-      geometryId: Number(form.geometryId),
-      brand: form.brand,
-      model: form.model,
-    };
-    await runCatalogAction(t, {
-      onDone: onSaved,
-      run: () =>
-        editing
-          ? api.patch(routes.admin.keyboardProduct(product.id), body)
-          : api.post(routes.admin.keyboardProducts(), body),
-    });
-    setSaving(false);
-  }
-
-  async function remove() {
-    if (!window.confirm(t("admin.keyboards.deleteConfirm"))) return;
-    setSaving(true);
-    await runCatalogAction(t, {
-      deleting: true,
-      onDone: onSaved,
-      run: () => api.delete(routes.admin.keyboardProduct(product.id)),
-    });
-    setSaving(false);
-  }
-
-  return (
-    <CatalogPopup
-      title={editing ? t("admin.keyboards.editProduct") : t("admin.keyboards.addProduct")}
-      onClose={onClose}
-      saving={saving}
-      onSubmit={save}
-      onDelete={editing ? remove : null}
-    >
-      <div className="keyboard-catalog-popup__body">
-        <div className="keyboard-catalog__form">
-          <KeyboardThumb geometry={geometry} />
-          <CustomSelect
-            options={geometryOptions}
-            value={geometryOptions.find((option) => option.value === form.geometryId) || null}
-            onChange={(option) => setForm((prev) => ({ ...prev, geometryId: option.value }))}
-            width="16rem"
-            label={t("admin.keyboards.geometries")}
-          />
-          <label className="keyboard-setup__field">
-            <span>{t("admin.keyboards.brand")}</span>
-            <input
-              value={form.brand}
-              onChange={(event) => setForm((prev) => ({ ...prev, brand: event.target.value }))}
-            />
-          </label>
-          <label className="keyboard-setup__field">
-            <span>{t("admin.keyboards.model")}</span>
-            <input
-              value={form.model}
-              onChange={(event) => setForm((prev) => ({ ...prev, model: event.target.value }))}
-            />
-          </label>
-        </div>
-      </div>
-    </CatalogPopup>
-  );
-}
-
 function SwitchPopup({ row, onClose, onSaved }) {
   const { t } = useTranslation(["pages", "common"]);
   const editing = Boolean(row?.id);
@@ -615,10 +536,6 @@ export default function KeyboardCatalogPage() {
     load().catch((err) => toast.error(actionError(err, t("admin.keyboards.loadError"))));
   }, [load, t]);
 
-  function geometryById(id) {
-    return catalog.geometries.find((row) => row.id === id) || null;
-  }
-
   async function reorderFactors(result) {
     const destination = result.destination;
     if (!destination || destination.index === result.source.index) return;
@@ -643,11 +560,9 @@ export default function KeyboardCatalogPage() {
   const addLabel =
     tab === "shapes"
       ? t("admin.keyboards.addShape")
-      : tab === "products"
-        ? t("admin.keyboards.addProduct")
-        : tab === "switches"
-          ? t("admin.keyboards.addSwitch")
-          : t("admin.keyboards.addFormFactor");
+      : tab === "switches"
+        ? t("admin.keyboards.addSwitch")
+        : t("admin.keyboards.addFormFactor");
 
   return (
     <div className="keyboard-catalog">
@@ -660,7 +575,6 @@ export default function KeyboardCatalogPage() {
       <div className="keyboard-catalog__tabs" role="tablist">
         {[
           ["shapes", "admin.keyboards.geometries"],
-          ["products", "admin.keyboards.products"],
           ["switches", "admin.keyboards.switches"],
           ["factors", "admin.keyboards.formFactorsTab"],
         ].map(([id, key]) => (
@@ -691,25 +605,6 @@ export default function KeyboardCatalogPage() {
               <span className="keyboard-catalog__card-meta">
                 {factorLabel(t, catalog.formFactors, row.formFactor)} · {row.keys?.length || 0}
               </span>
-            </button>
-          ))}
-        </div>
-      ) : null}
-
-      {tab === "products" ? (
-        <div className="keyboard-catalog__grid">
-          {catalog.products.map((row) => (
-            <button
-              key={row.id}
-              type="button"
-              className="keyboard-catalog__card"
-              onClick={() => setEditor({ kind: "products", row })}
-            >
-              <KeyboardThumb geometry={geometryById(row.geometryId)} />
-              <span className="keyboard-catalog__card-title">
-                {row.brand} {row.model}
-              </span>
-              <span className="keyboard-catalog__card-meta">{geometryById(row.geometryId)?.name}</span>
             </button>
           ))}
         </div>
@@ -817,17 +712,6 @@ export default function KeyboardCatalogPage() {
       {editor?.kind === "factors" ? (
         <FormFactorPopup
           row={editor.row}
-          onClose={() => setEditor(null)}
-          onSaved={() => {
-            setEditor(null);
-            load().catch((err) => toast.error(actionError(err, t("admin.keyboards.loadError"))));
-          }}
-        />
-      ) : null}
-      {editor?.kind === "products" ? (
-        <ProductPopup
-          product={editor.row}
-          geometries={catalog.geometries}
           onClose={() => setEditor(null)}
           onSaved={() => {
             setEditor(null);

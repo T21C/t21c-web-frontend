@@ -162,6 +162,7 @@
       "mechanical": "Mécanique",
       "optical": "Optique",
       "hall": "Effet Hall",
+      "membrane": "Membrane",
       "other": "Autre"
     },
     "stems": {

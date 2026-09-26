@@ -156,6 +156,7 @@ function housingEdge(hex, amount) {
 function TopHousing({ color, opacity }) {
   return (
     <g
+      className="switch-diagram__top"
       fill={color}
       fillOpacity={TOP_FILL_OPACITY * opacity}
       stroke={housingEdge(color, 0.3)}
@@ -270,6 +271,27 @@ export function ClickyArt({ base, top, stem, stemDark, opacity, gradientId }) {
         <path fill={stemDark} d="M 231.483 148.922 L 279.235 148.998 L 279.229 154.088 L 231.483 154.224 L 231.483 148.922 Z" />
       </g>
     </SwitchShell>
+  );
+}
+
+export function MembraneArt() {
+  return (
+    <g fill="currentColor" stroke="currentColor">
+      <rect x="38.778" y="344.785" width="440.6" height="45.891" />
+      <rect x="104.463" y="323.993" width="309.23" height="45.891" strokeWidth={5} />
+      <path
+        fill="none"
+        strokeWidth={13}
+        paintOrder="markers stroke"
+        d="M 175.632 255.003 C 155.234 255.342 128.2 325.104 128.2 325.104 L 389.956 325.434 C 389.956 325.434 362.205 255.275 337.281 254.959 C 325.122 254.805 316.098 272.902 258.506 274.969 C 223.712 275.909 194.842 254.978 175.632 255.003 Z"
+      />
+      <path
+        strokeOpacity="0"
+        paintOrder="stroke markers"
+        transform="matrix(0, 1, -1, 0, 527.880497, -344.423587)"
+        d="M 465.112 247.387 H 538.991 L 538.991 216.819 L 611.834 268.803 L 538.991 320.786 L 538.991 290.219 H 465.112 V 247.387 Z"
+      />
+    </g>
   );
 }
 

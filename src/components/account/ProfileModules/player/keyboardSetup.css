@@ -316,6 +316,10 @@
   flex-direction: column;
   gap: 1.25rem;
   padding: 1rem;
+  width: 100%;
+  max-width: 70rem;
+  justify-self: center;
+  margin-bottom: 6rem;
 }
 
 .keyboard-catalog .keyboard-catalog__section {
@@ -634,8 +638,8 @@
   width: 6.5rem;
 }
 
-.keyboard-setup-popup .switch-diagram--editor.switch-diagram--colorable {
-  margin-left: 5rem;
+.keyboard-setup-popup .switch-diagram--editor.switch-diagram--picking {
+  margin-bottom: 4.25rem;
 }
 
 .keyboard-setup-popup .keyboard-setup__paste-row {
