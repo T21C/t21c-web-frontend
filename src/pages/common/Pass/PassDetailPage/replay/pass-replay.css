@@ -40,6 +40,14 @@
   margin: 0;
   font-size: 1rem;
 }
+.pass-replay .replay-visual-settings-button {
+  background: transparent;
+  color: var(--color-white);
+  font-size: .875rem;
+  font-weight: 500;
+  line-height: 1.2;
+  text-shadow: none;
+}
 .replay-title-row .flag {
   background: var(--color-white-t20);
   padding: .25rem .5rem;
