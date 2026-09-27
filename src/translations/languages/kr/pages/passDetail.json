@@ -204,6 +204,7 @@
   "errors": {
     "toggleHidden": "Failed to toggle pass visibility",
     "updateFeelingRating": "체감 난이도 업데이트에 실패했습니다",
-    "feelingRatingRequired": "체감 난이도를 입력해 주세요"
+    "feelingRatingRequired": "체감 난이도를 입력해 주세요",
+    "feelingRatingInvalid": "G5, G5-G6, U1처럼 체감 난이도를 입력해 주세요"
   }
 }

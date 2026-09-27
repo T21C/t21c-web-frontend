@@ -118,6 +118,10 @@ const PassDetailPage = () => {
       setFeelingRatingError(t('passDetail.errors.feelingRatingRequired'));
       return;
     }
+    if (value.length > 60 || !validateFeelingRating(value)) {
+      setFeelingRatingError(t('passDetail.errors.feelingRatingInvalid'));
+      return;
+    }
 
     setIsSavingFeelingRating(true);
     setFeelingRatingError(null);
