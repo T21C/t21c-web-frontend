@@ -101,7 +101,12 @@
     "bodyWithMidspin": "Ce niveau comporte <b>{{rawTilecount}}</b> tuiles (<b>{{midspinCount}}</b> midspin), donc <b>{{tilecount}}</b> jugements sont attendus. Le total de tes jugements est <b>{{hitSum}}</b>. Ces valeurs peuvent être incorrectes.",
     "bodyWithAutoAndMidspin": "Ce niveau comporte <b>{{rawTilecount}}</b> tuiles (<b>{{autoTileCount}}</b> auto, <b>{{midspinCount}}</b> midspin), donc <b>{{tilecount}}</b> jugements sont attendus. Le total de tes jugements est <b>{{hitSum}}</b>. Ces valeurs peuvent être incorrectes.",
     "reviewInputs": "Annuler",
-    "submitAnyway": "Soumettre quand même"
+    "submitAnyway": "Soumettre quand même",
+    "wrongVersion": {
+      "title": "Mauvaise version du jeu",
+      "body": "Le total de tes jugements semble aussi inclure les midspins (<b>{{hitSum}}</b> = <b>{{tilecount}}</b> + <b>{{midspins}}</b>). Ils ne comptent plus depuis la version <b>3.4.0</b> et doivent être soustraits. Changer la version en <pre340></pre340> pour le faire automatiquement ?",
+      "changeVersion": "Passer en <3.4.0"
+    }
   },
   "tagWarnings": {
     "title": "Veuillez confirmer ces exigences du niveau",

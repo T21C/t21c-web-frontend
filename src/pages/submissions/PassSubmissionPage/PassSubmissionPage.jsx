@@ -21,7 +21,9 @@ import { getSubmissionErrorMessage } from '@/utils/submissions/formErrors';
 import { resolveSubmissionVideoUrl } from '@/utils/resolveVideoUrl';
 import {
   getEffectiveTilecount,
+  getPassJudgementHitCountFromForm,
   getTilecountMismatchI18nSuffix,
+  isIncludedMidspinOnLatestVersion,
   isTilecountJudgementMismatch,
 } from '@/utils/passJudgementHitCount';
 import { previewPassFormHitCount } from '@/utils/ParseJudgements';
@@ -33,6 +35,10 @@ import { CalculatorIcon } from '@/components/common/icons';
 import CommunityTagVotePopup from '@/pages/common/Level/LevelDetailPage/CommunityTagVotePopup';
 import { CLIENT_PREF_KEYS } from '@/utils/clientPreferences';
 import { useClientPreference } from '@/hooks/useClientPreference';
+
+function Pre340VersionMark() {
+  return <b>{'<3.4.0'}</b>;
+}
 
 const PassSubmissionPage = () => {
   const { t } = useTranslation(['pages', 'common']);
@@ -71,6 +77,7 @@ const PassSubmissionPage = () => {
   );
   const [showRulesPopup, setShowRulesPopup] = useState(false);
   const [showTilecountMismatchModal, setShowTilecountMismatchModal] = useState(false);
+  const [tilecountMismatchKind, setTilecountMismatchKind] = useState('generic');
   const [showTagWarningsModal, setShowTagWarningsModal] = useState(false);
   const [votePopupLevelId, setVotePopupLevelId] = useState(null);
 
@@ -215,8 +222,24 @@ const PassSubmissionPage = () => {
   };
 
   const proceedAfterTagWarnings = async () => {
+    const rawHitSum = getPassJudgementHitCountFromForm(form);
+    if (
+      isIncludedMidspinOnLatestVersion({
+        adofaiVersion: parseAdofaiVersion(form.adofaiVersion, ADOFAI_VERSION.V3_4_0),
+        levelTilecount: level?.tilecount,
+        autoTileCount: level?.autoTileCount,
+        midspinCount: level?.midspinCount,
+        hitCount: rawHitSum,
+        perfect: form.perfect,
+      })
+    ) {
+      setTilecountMismatchKind('wrongVersion');
+      setShowTilecountMismatchModal(true);
+      return;
+    }
     const hitSum = previewPassFormHitCount(form, level);
     if (isTilecountJudgementMismatch(level?.tilecount, hitSum, level?.autoTileCount, level?.midspinCount)) {
+      setTilecountMismatchKind('generic');
       setShowTilecountMismatchModal(true);
       return;
     }
@@ -447,20 +470,42 @@ const PassSubmissionPage = () => {
           panelClassName="tilecount-mismatch-modal"
           ariaLabelledBy="tilecount-mismatch-title"
         >
-            <h2 id="tilecount-mismatch-title">{t('passSubmission.tilecountMismatch.title')}</h2>
+            <h2 id="tilecount-mismatch-title">
+              {t(
+                tilecountMismatchKind === 'wrongVersion'
+                  ? 'passSubmission.tilecountMismatch.wrongVersion.title'
+                  : 'passSubmission.tilecountMismatch.title',
+              )}
+            </h2>
             <p className="tilecount-mismatch-modal-body">
-              <Trans
-                i18nKey={`passSubmission.tilecountMismatch.body${getTilecountMismatchI18nSuffix(level?.autoTileCount, level?.midspinCount)}`}
-                ns="pages"
-                values={{
-                  tilecount: getEffectiveTilecount(level?.tilecount, level?.autoTileCount, level?.midspinCount),
-                  rawTilecount: level?.tilecount,
-                  autoTileCount: level?.autoTileCount ?? 0,
-                  midspinCount: level?.midspinCount ?? 0,
-                  hitSum: previewPassFormHitCount(form, level),
-                }}
-                components={{ b: <b /> }}
-              />
+              {tilecountMismatchKind === 'wrongVersion' ? (
+                <Trans
+                  i18nKey="passSubmission.tilecountMismatch.wrongVersion.body"
+                  ns="pages"
+                  values={{
+                    hitSum: getPassJudgementHitCountFromForm(form),
+                    tilecount: getEffectiveTilecount(level?.tilecount, level?.autoTileCount, level?.midspinCount),
+                    midspins: Math.floor(Number(level?.midspinCount) || 0),
+                  }}
+                  components={{
+                    b: <b />,
+                    pre340: <Pre340VersionMark />,
+                  }}
+                />
+              ) : (
+                <Trans
+                  i18nKey={`passSubmission.tilecountMismatch.body${getTilecountMismatchI18nSuffix(level?.autoTileCount, level?.midspinCount)}`}
+                  ns="pages"
+                  values={{
+                    tilecount: getEffectiveTilecount(level?.tilecount, level?.autoTileCount, level?.midspinCount),
+                    rawTilecount: level?.tilecount,
+                    autoTileCount: level?.autoTileCount ?? 0,
+                    midspinCount: level?.midspinCount ?? 0,
+                    hitSum: previewPassFormHitCount(form, level),
+                  }}
+                  components={{ b: <b /> }}
+                />
+              )}
             </p>
             <div className="tilecount-mismatch-modal-actions">
               <button
@@ -470,6 +515,18 @@ const PassSubmissionPage = () => {
               >
                 {t('passSubmission.tilecountMismatch.reviewInputs')}
               </button>
+              {tilecountMismatchKind === 'wrongVersion' && (
+                <button
+                  type="button"
+                  className="tilecount-mismatch-change-version-btn btn-fill-primary alt"
+                  onClick={() => {
+                    handleAdofaiVersionChange(ADOFAI_VERSION.PRE_3_4_0);
+                    setShowTilecountMismatchModal(false);
+                  }}
+                >
+                  {t('passSubmission.tilecountMismatch.wrongVersion.changeVersion')}
+                </button>
+              )}
               <button
                 type="button"
                 className="tilecount-mismatch-submit-anyway-btn btn-fill-danger alt"

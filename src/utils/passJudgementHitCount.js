@@ -1,6 +1,8 @@
 // tuf-search: #passJudgementHitCount #judgements #tilecount
 // Mirrors server CalcAcc.tilecount / auditPassJudgements totalHits (excludes earlyDouble, lateDouble).
 
+import { ADOFAI_VERSION } from './adofaiVersion';
+
 function num(v) {
   const n = typeof v === 'number' ? v : parseInt(String(v), 10);
   return Number.isFinite(n) ? n : 0;
@@ -72,4 +74,26 @@ export function isTilecountJudgementMismatch(levelTilecount, hitCount, autoTileC
   if (effective == null || effective <= 0) return false;
   const hits = typeof hitCount === 'number' && Number.isFinite(hitCount) ? Math.floor(hitCount) : 0;
   return hits !== effective;
+}
+
+/**
+ * Alpha (3.4.0+) selected, but the entered hit total is exactly achievable
+ * tiles plus midspins — the pre-3.4.0 count that still includes midspins.
+ */
+export function isIncludedMidspinOnLatestVersion({
+  adofaiVersion,
+  levelTilecount,
+  autoTileCount = 0,
+  midspinCount = 0,
+  hitCount,
+  perfect,
+} = {}) {
+  if (adofaiVersion !== ADOFAI_VERSION.V3_4_0) return false;
+  const midspin = Math.floor(num(midspinCount));
+  if (midspin <= 0) return false;
+  const effective = getEffectiveTilecount(levelTilecount, autoTileCount);
+  if (effective == null || effective <= 0) return false;
+  const hits = typeof hitCount === 'number' && Number.isFinite(hitCount) ? Math.floor(hitCount) : 0;
+  if (hits !== effective + midspin) return false;
+  return Math.floor(num(perfect)) >= midspin;
 }

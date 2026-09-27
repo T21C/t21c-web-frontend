@@ -209,7 +209,7 @@ export function PassCoreForm({
 }) {
   const copy = getPassCoreCopy(mode);
   const { t } = useTranslation([copy.ns, 'common']);
-  const holdVisibility = holdCheckboxVisibility ?? 'visible';
+  const holdVisibility = holdCheckboxVisibility ?? 'inherit';
   const isCalculator = mode === 'calculator';
   const adofaiVersion = parseAdofaiVersion(form.adofaiVersion, ADOFAI_VERSION.V3_4_0);
   const showXPerfectToggle = canUseXPerfectMode(adofaiVersion);
@@ -572,7 +572,7 @@ export function PassCoreForm({
               className="hold-checkbox"
               data-tooltip-id="holdTooltip"
               data-tooltip-content={t(copy.holdTooltip, { ns: copy.ns })}
-              style={{ visibility: holdVisibility }}
+              style={{ display: holdVisibility }}
             >
               <Tooltip id="holdTooltip" place="top-end" effect="solid" />
               <input

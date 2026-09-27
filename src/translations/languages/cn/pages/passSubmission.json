@@ -106,7 +106,12 @@
     "body": "该谱面物量总数为<b>{{tilecount}}</b>，而你的判定总数为 <b>{{hitSum}}</b>。输入的判定数据可能有误。",
     "bodyWithAuto": "该谱面物量总数为<b>{{rawTilecount}}</b>（其中<b>{{autoTileCount}}</b>个为自动砖块），因此应有<b>{{tilecount}}</b>个判定结果。你的判定总数为<b>{{hitSum}}</b>，输入的判定数据可能有误。",
     "reviewInputs": "取消",
-    "submitAnyway": "仍然提交"
+    "submitAnyway": "仍然提交",
+    "wrongVersion": {
+      "title": "游戏版本有误",
+      "body": "你的判定总数似乎把中旋也算进去了（<b>{{hitSum}}</b> = <b>{{tilecount}}</b> + <b>{{midspins}}</b>）。自 <b>3.4.0</b> 起这些不再计入，需要减去。要改成 <pre340></pre340> 版本来自动处理吗？",
+      "changeVersion": "改为 <3.4.0"
+    }
   },
   "tagWarnings": {
     "title": "请确认这些关卡要求",
