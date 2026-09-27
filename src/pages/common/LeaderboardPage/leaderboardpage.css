@@ -248,20 +248,11 @@
   flex-wrap: wrap;
 }
 
-/* State display styles */
-.leaderboard-page .leaderboard-body .state-display-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.leaderboard-page .leaderboard-body .state-display {
-  background: rgba(255, 255, 255, 0.2);
-  cursor: pointer;
-  position: relative;
-  overflow: visible;
-  box-sizing: border-box;
+.leaderboard-page .leaderboard-body .filter-row .state-display-toggle[data-state="only"] {
+  --state-display-track: var(--btn-primary-transparent-hover);
+  --state-display-thumb: var(--btn-primary);
+  --state-display-thumb-hover: var(--btn-primary-light-hover);
+  --state-display-value: var(--btn-primary);
 }
 
 /* Transitions and animations */

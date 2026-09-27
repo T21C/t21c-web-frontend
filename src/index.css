@@ -68,6 +68,7 @@
   /* Explicit hover fills where components do not use .btn-fill-* + filter */
   --btn-primary-hover: color-mix(in srgb, var(--btn-primary) 78%, #000);
   --btn-primary-light-hover: color-mix(in srgb, var(--btn-primary) 72%, #fff);
+  --btn-primary-transparent-hover: color-mix(in srgb, var(--btn-primary) 35%, transparent);
   --btn-secondary-hover: color-mix(in srgb, var(--btn-secondary) 82%, #000);
   --btn-warning: #d97706;
   --btn-warning-tint: color-mix(in srgb, var(--btn-warning) 12%, transparent);

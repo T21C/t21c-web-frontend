@@ -832,7 +832,6 @@ const LeaderboardPage = () => {
                       states={['show', 'hide', 'only']}
                       width={60}
                       height={24}
-                      padding={3}
                     />
                   </div>
                 </div>

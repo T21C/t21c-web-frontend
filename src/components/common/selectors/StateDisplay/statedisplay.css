@@ -5,8 +5,13 @@
   gap: 10px;
   border: transparent;
   padding: 0.5rem 1rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--color-white-t5);
   border-radius: 8px;
+  /* Override these on [data-state="…"] to theme a selected value. */
+  --state-display-track: var(--color-white-t20);
+  --state-display-thumb: var(--color-white);
+  --state-display-thumb-hover: var(--btn-info);
+  --state-display-value: var(--color-white);
 }
 
 .state-display-container {
@@ -17,12 +22,12 @@
 }
 
 .state-display {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--state-display-track);
   cursor: pointer;
   position: relative;
   overflow: visible;
   box-sizing: border-box;
-  transition: background 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background 0.3s var(--ease-out-expo);
 }
 
 .state-display::before {
@@ -30,39 +35,39 @@
   position: absolute;
   width: var(--thumb-size);
   height: var(--thumb-size);
-  background: white;
+  background: var(--state-display-thumb);
   border-radius: 50%;
   top: 50%;
   transform: translateY(-50%);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s var(--ease-out-expo);
   z-index: 2;
   margin-left: calc(var(--thumb-size) / -2);
   left: var(--current-position);
 }
 
 .state-display:hover::before {
-  background: var(--btn-info);
+  background: var(--state-display-thumb-hover);
 }
 
 /* On/off binary track mode (activeStates prop) */
 .state-display--binary-track {
-  background: rgba(0, 0, 0, 0.28);
+  --state-display-track: var(--color-black-t30);
+  --state-display-thumb-hover: var(--color-white);
 }
 
 .state-display--binary-track.state-display--active-track {
-  background: var(--btn-info);
+  --state-display-track: var(--btn-info);
 }
 
 .state-display--binary-track.state-display--active-track:hover {
-  background: var(--btn-info-light-hover);
+  --state-display-track: var(--btn-info-light-hover);
 }
 
 .state-display--binary-track:not(.state-display--active-track):hover {
-  background: var(--btn-info-dark-hover);
+  --state-display-track: var(--btn-info-dark-hover);
 }
 
 .state-display--binary-track::before {
-  background: var(--color-white);
   transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow:
     0 1px 2px rgba(0, 0, 0, 0.28),
@@ -70,7 +75,6 @@
 }
 
 .state-display--binary-track:hover::before {
-  background: var(--color-white);
   box-shadow:
     0 2px 5px rgba(0, 0, 0, 0.35),
     0 0 0 1px rgba(0, 0, 0, 0.14);
@@ -85,7 +89,7 @@
 }
 
 .state-value {
-  color: var(--color-white);
+  color: var(--state-display-value);
   font-size: 0.9rem;
   text-align: center;
   min-width: 40px;
