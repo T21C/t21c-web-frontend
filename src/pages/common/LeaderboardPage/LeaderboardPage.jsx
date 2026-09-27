@@ -29,6 +29,29 @@ const limit = 30;
 const DEFAULT_PLAYER_FLAG_FILTER = { field: 'isBanned', mode: 'hide' };
 const PLAYER_FLAG_FIELDS = ['isBanned', 'isSubmissionsPaused', 'isRatingBanned'];
 
+function parseRankRange(value) {
+  if (!Array.isArray(value) || value.length < 2) return null;
+  const min = Math.floor(Number(value[0]));
+  const max = Math.floor(Number(value[1]));
+  if (!Number.isFinite(min) || !Number.isFinite(max)) return null;
+  const lo = Math.max(1, Math.min(min, max));
+  const hi = Math.max(lo, min, max);
+  return [lo, hi];
+}
+
+function isFullRankRange(range, population) {
+  if (!range) return true;
+  if (population < 1) return false;
+  return range[0] <= 1 && range[1] >= population;
+}
+
+function statFiltersOnly(all) {
+  if (!all || typeof all !== 'object') return {};
+  const rest = { ...all };
+  delete rest.rankedScoreRank;
+  return rest;
+}
+
 const LeaderboardPage = () => {
   const { t } = useTranslation('pages');
   const location = useLocation();
@@ -183,6 +206,13 @@ const LeaderboardPage = () => {
           apiFilters.averageXacc[1] / 100
         ];
       }
+      const pop = Math.max(0, Math.floor(Number(maxFields.rankedPopulation) || 0));
+      const rank = parseRankRange(apiFilters.rankedScoreRank);
+      if (!rank || isFullRankRange(rank, pop)) {
+        delete apiFilters.rankedScoreRank;
+      } else {
+        apiFilters.rankedScoreRank = rank;
+      }
       params.append('filters', JSON.stringify({...apiFilters, country: country}));
     }
 
@@ -277,8 +307,9 @@ const LeaderboardPage = () => {
   }, [historyDate, historyMetric, historySort, historyQuery, historyRequest, user, followingFilter]);
 
   useEffect(() => {
-    if (filters && Object.keys(filters).length > 0) {
-      setActiveFilters(filters);
+    const stats = statFiltersOnly(filters);
+    if (Object.keys(stats).length > 0) {
+      setActiveFilters(stats);
     }
   }, []);
 
@@ -290,7 +321,7 @@ const LeaderboardPage = () => {
         Array.isArray(displayedPlayers) &&
         displayedPlayers.length > 0 &&
         leaderboardListTotal != null;
-      if (hasCached && !(followingFilter === 'only' && !user)) {
+      if (hasCached && !(followingFilter === 'only' && !user) && Number(maxFields.rankedPopulation) > 0) {
         setHasMore(displayedPlayers.length < leaderboardListTotal);
         return;
       }
@@ -474,6 +505,45 @@ const LeaderboardPage = () => {
   const activeQuery = pastMode ? historyQuery : query;
   const activeSortOpen = pastMode ? historySortOpen : sortOpen;
 
+  const rankedPopulation = Math.max(0, Math.floor(Number(maxFields.rankedPopulation) || 0));
+  const rankRange = parseRankRange(filters.rankedScoreRank)
+    ?? (rankedPopulation >= 1 ? [1, rankedPopulation] : [1, 1]);
+
+  useEffect(() => {
+    if (rankedPopulation < 1) return;
+    const current = parseRankRange(filters.rankedScoreRank);
+    if (!current) return;
+    const min = Math.min(Math.max(1, current[0]), rankedPopulation);
+    const max = Math.min(Math.max(min, current[1]), rankedPopulation);
+    if (min === 1 && max >= rankedPopulation) {
+      setFilters((prev) => {
+        if (!prev.rankedScoreRank) return prev;
+        const next = { ...prev };
+        delete next.rankedScoreRank;
+        return next;
+      });
+      return;
+    }
+    if (min !== current[0] || max !== current[1]) {
+      setFilters((prev) => ({ ...prev, rankedScoreRank: [min, max] }));
+    }
+  }, [rankedPopulation, filters.rankedScoreRank, setFilters]);
+
+  const handleRankRangeComplete = (newValues) => {
+    const min = Math.max(1, Math.floor(Number(newValues[0])));
+    const max = Math.max(min, Math.floor(Number(newValues[1])));
+    if (rankedPopulation >= 1 && min === 1 && max >= rankedPopulation) {
+      setFilters((prev) => {
+        if (!prev.rankedScoreRank) return prev;
+        const next = { ...prev };
+        delete next.rankedScoreRank;
+        return next;
+      });
+      return;
+    }
+    setFilters((prev) => ({ ...prev, rankedScoreRank: [min, max] }));
+  };
+
   return (
     <div className={`leaderboard-page${pastMode ? ' leaderboard-page--past' : ''}`}>
       <MetaTags {...pageMeta} />
@@ -613,6 +683,22 @@ const LeaderboardPage = () => {
                 </div>
                 )}
               </div>
+
+              {!pastMode && rankedPopulation >= 2 && (
+                <div className="filter-container rank-filter">
+                  <p className="setting-description">{t('leaderboard.settings.filter.rankedScoreRank')}</p>
+                  <RangeSelector
+                    values={rankRange}
+                    onChangeComplete={handleRankRangeComplete}
+                    min={1}
+                    max={rankedPopulation}
+                    decimals={0}
+                    step={1}
+                    minLabel={t('leaderboard.settings.filter.min')}
+                    maxLabel={t('leaderboard.settings.filter.max')}
+                  />
+                </div>
+              )}
 
               {!pastMode && (
               <>

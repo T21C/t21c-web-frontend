@@ -26,6 +26,29 @@ function loadFollowingFilter() {
   return 'no';
 }
 
+function sanitizeFilters(raw) {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return {};
+  const next = { ...raw };
+  if (!Object.prototype.hasOwnProperty.call(next, 'rankedScoreRank')) {
+    return next;
+  }
+  const range = next.rankedScoreRank;
+  if (!Array.isArray(range) || range.length < 2) {
+    delete next.rankedScoreRank;
+    return next;
+  }
+  const min = Math.floor(Number(range[0]));
+  const max = Math.floor(Number(range[1]));
+  if (!Number.isFinite(min) || !Number.isFinite(max)) {
+    delete next.rankedScoreRank;
+    return next;
+  }
+  const lo = Math.max(1, Math.min(min, max));
+  const hi = Math.max(lo, min, max);
+  next.rankedScoreRank = [lo, hi];
+  return next;
+}
+
 function loadPlayerFlagFilter() {
   try {
     const saved = localStorage.getItem(STORAGE_KEYS.FLAG_FILTER);
@@ -62,7 +85,7 @@ export const PlayerContextProvider = ({ children }) => {
   const [filters, setFilters] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.FILTERS);
-      return saved ? JSON.parse(saved) : {};
+      return saved ? sanitizeFilters(JSON.parse(saved)) : {};
     } catch (e) {
       return {};
     }

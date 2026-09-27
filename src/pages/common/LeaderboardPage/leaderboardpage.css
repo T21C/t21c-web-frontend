@@ -172,6 +172,13 @@
   width: clamp(200px, 100%, 300px);
 }
 
+.leaderboard-page .leaderboard-body .filter-container.rank-filter {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
 .leaderboard-page .leaderboard-body .filter-selector-container {
   width: 100%;
 }

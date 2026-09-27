@@ -16,7 +16,10 @@
   "settings": {
     "filter": {
       "header": "Ustawienia filtrowania",
-      "following": "Obserwowani"
+      "following": "Obserwowani",
+      "rankedScoreRank": "Pozycja (wynik rankingowy)",
+      "min": "Min",
+      "max": "Maks"
     },
     "sort": {
       "header": "Ustawienia sortowania",
