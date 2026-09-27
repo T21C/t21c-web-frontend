@@ -16,7 +16,10 @@
   "settings": {
     "filter": {
       "header": "Paramètres de filtres",
-      "following": "Abonnements"
+      "following": "Abonnements",
+      "rankedScoreRank": "Rang (score classé)",
+      "min": "Min",
+      "max": "Max"
     },
     "sort": {
       "header": "Paramètres de triage",

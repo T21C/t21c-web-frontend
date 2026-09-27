@@ -18,6 +18,7 @@
       "header": "필터 설정",
       "following": "팔로잉",
       "country": "국가 또는 지역",
+      "rankedScoreRank": "랭크드 스코어 순위",
       "addStatFilters": "스탯 필터 추가",
       "selectStatPlaceholder": "필터에 추가할 스탯 선택...",
       "addFilterButton": "필터 추가",

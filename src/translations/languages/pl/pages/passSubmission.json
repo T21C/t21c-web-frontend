@@ -101,7 +101,12 @@
     "bodyWithMidspin": "Ten poziom ma <b>{{rawTilecount}}</b> kafli (<b>{{midspinCount}}</b> midspin), więc oczekiwane jest <b>{{tilecount}}</b> judgmentów. Suma twoich judgmentów to <b>{{hitSum}}</b>. Te wartości mogą być błędne.",
     "bodyWithAutoAndMidspin": "Ten poziom ma <b>{{rawTilecount}}</b> kafli (<b>{{autoTileCount}}</b> auto, <b>{{midspinCount}}</b> midspin), więc oczekiwane jest <b>{{tilecount}}</b> judgmentów. Suma twoich judgmentów to <b>{{hitSum}}</b>. Te wartości mogą być błędne.",
     "reviewInputs": "Anuluj",
-    "submitAnyway": "Wyślij mimo to"
+    "submitAnyway": "Wyślij mimo to",
+    "wrongVersion": {
+      "title": "Zła wersja gry",
+      "body": "Suma twoich judgmentów wygląda na to, że zawiera też midspiny (<b>{{hitSum}}</b> = <b>{{tilecount}}</b> + <b>{{midspins}}</b>). Od wersji <b>3.4.0</b> nie są one liczone i trzeba je odjąć. Zmienić wersję na <pre340></pre340>, żeby zrobić to automatycznie?",
+      "changeVersion": "Zmień na <3.4.0"
+    }
   },
   "tagWarnings": {
     "title": "Potwierdź wymagania tego poziomu",

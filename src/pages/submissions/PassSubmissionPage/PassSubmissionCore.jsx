@@ -163,8 +163,8 @@ export function PassSubmissionCore({
       isFormValid={isFormValid}
       holdCheckboxVisibility={
         mode === 'calculator' || !level?.tags || level?.tags?.some((tag) => tag.name === 'Hold')
-          ? 'visible'
-          : 'hidden'
+          ? 'inherit'
+          : 'none'
       }
       level={level}
       levelLoading={levelLoading}

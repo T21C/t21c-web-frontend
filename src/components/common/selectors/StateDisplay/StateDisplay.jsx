@@ -65,7 +65,7 @@ const StateDisplay = ({
   const isActiveTrack = isBinaryTrack && activeStates.includes(currentState);
 
   return (
-    <div className={`state-display-toggle ${className}`}>
+    <div className={`state-display-toggle ${className}`} data-state={currentState}>
       {showLabel && label && <span className="toggle-label">{label}</span>}
       <div className="state-display-container">
         <div 
