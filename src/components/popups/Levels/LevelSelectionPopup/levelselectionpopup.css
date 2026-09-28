@@ -112,6 +112,18 @@
   background-color: rgba(255, 255, 255, 0.05);
 }
 
+.level-selection-modal .level-selection-modal__level-item--existing {
+  opacity: 0.5;
+}
+
+.level-selection-modal .level-selection-modal__level-item--existing:hover {
+  background-color: transparent;
+}
+
+.level-selection-modal .level-selection-modal__level-item--existing .level-selection-modal__level-card-wrapper {
+  cursor: default;
+}
+
 .level-selection-modal__level-card-wrapper {
   position: relative;
   display: flex;

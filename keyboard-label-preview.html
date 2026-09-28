@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Keyboard label preview</title>
+    <link rel="stylesheet" href="/src/index.css" />
+  </head>
+  <body style="margin: 0; background: #090909;">
+    <div id="root"></div>
+    <script type="module">
+      import { createElement } from "react";
+      import { createRoot } from "react-dom/client";
+      import KeyboardBoard from "./src/components/account/ProfileModules/player/KeyboardBoard.jsx";
+      import "./src/components/account/ProfileModules/player/keyboardSetup.css";
+
+      const keys = [
+        { code: "Enter", label: "Enter", x: 0, y: 0, w: 2.25, h: 1 },
+        { code: "NumpadEnter", label: "Enter", x: 2.5, y: 0, w: 1, h: 2 },
+        { code: "KeyA", label: "A", x: 3.7, y: 0, w: 1, h: 1 },
+        { code: "ArrowUp", label: "↑", x: 4.9, y: 0, w: 1, h: 1 },
+        { code: "NumpadAdd", label: "+", x: 6.1, y: 0, w: 1, h: 2 },
+        { code: "Backspace", label: "Backspace", x: 0, y: 2.2, w: 2, h: 1 },
+      ];
+
+      createRoot(document.getElementById("root")).render(
+        createElement(
+          "div",
+          { className: "keyboard-setup", style: { width: "720px", padding: "24px" } },
+          createElement(KeyboardBoard, { keys, maxUnit: 72 }),
+        ),
+      );
+    </script>
+  </body>
+</html>

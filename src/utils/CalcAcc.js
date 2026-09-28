@@ -90,6 +90,94 @@ export function tilecount(inp) {
   );
 }
 
+/**
+ * Tilecount buckets other than center Perfect. Excludes too-early / too-late.
+ */
+export function nonPerfectHitCount(inp) {
+  const j = unwrapJudgements(inp);
+  return (
+    j.earlySingle +
+    j.ePerfect +
+    j.perfectMinus +
+    j.perfectPlus +
+    j.lPerfect +
+    j.lateSingle
+  );
+}
+
+export function getEffectiveTilecount(levelTilecount, autoTileCount = 0) {
+  if (levelTilecount == null || levelTilecount === '') return null;
+  const tc = typeof levelTilecount === 'number' ? levelTilecount : Number(levelTilecount);
+  if (!Number.isFinite(tc)) return null;
+  const tileInt = Math.floor(tc);
+  const autoRaw = typeof autoTileCount === 'number' ? autoTileCount : Number(autoTileCount);
+  const autoInt = Number.isFinite(autoRaw) ? Math.floor(autoRaw) : 0;
+  return Math.max(tileInt - autoInt, 0);
+}
+
+/** Ancient placeholder judgements (no results screen): 5 / 40 / 5 with other hit buckets 0. */
+export function isAncient5405Pattern(inp) {
+  const j = unwrapJudgements(inp);
+  return (
+    j.ePerfect === 5 &&
+    j.perfect === 40 &&
+    j.lPerfect === 5 &&
+    j.earlySingle === 0 &&
+    j.perfectMinus === 0 &&
+    j.perfectPlus === 0 &&
+    j.lateSingle === 0
+  );
+}
+
+/**
+ * `perfects = achievable - nonPerfects`. Overwrites Perfect when non-perfects exist.
+ */
+export function applyDerivedPerfects({judgements, tilecount: levelTilecount, autoTileCount = 0} = {}) {
+  const next = unwrapJudgements(judgements);
+  if (isAncient5405Pattern(next)) {
+    return {
+      judgements: next,
+      applied: false,
+      skippedReason: 'ancient_5405',
+      perfect: next.perfect,
+    };
+  }
+  const achievable = getEffectiveTilecount(levelTilecount, autoTileCount);
+  if (achievable == null || achievable <= 0) {
+    return {
+      judgements: next,
+      applied: false,
+      skippedReason: 'achievable_missing',
+      perfect: next.perfect,
+    };
+  }
+  const nonPerfects = nonPerfectHitCount(next);
+  if (nonPerfects <= 0) {
+    return {
+      judgements: next,
+      applied: false,
+      skippedReason: 'nonperfects_zero',
+      perfect: next.perfect,
+    };
+  }
+  const derived = achievable - nonPerfects;
+  if (derived < 0) {
+    return {
+      judgements: next,
+      applied: false,
+      skippedReason: 'would_go_negative',
+      perfect: next.perfect,
+    };
+  }
+  next.perfect = derived;
+  return {
+    judgements: next,
+    applied: true,
+    skippedReason: null,
+    perfect: derived,
+  };
+}
+
 /** Every hit is an x-perfect (center perfect). Perfect− / Perfect+ still score 1.0, so accuracy alone is not enough. */
 export function isPureXPerfect(judgements, isXPerfectMode) {
   if (!isXPerfectMode) return false;
