@@ -1,7 +1,8 @@
 // tuf-search: #ParseJudgements #parseJudgements
-import { emptyJudgements, tilecount } from './CalcAcc';
-import { ADOFAI_VERSION, canUseXPerfectMode, parseAdofaiVersion } from './adofaiVersion';
+import { applyDerivedPerfects, emptyJudgements, tilecount } from './CalcAcc';
+import { ADOFAI_VERSION, canUseXPerfectMode, isLegacyAdofaiVersion, parseAdofaiVersion } from './adofaiVersion';
 import { applyMidspinPerfectDecrement } from './midspinPerfectDecrement';
+import { addPassMetaFlag, passMetaFlags } from './passMetaFlags';
 
 function parseField(value) {
   if (value === '' || value == null) return null;
@@ -51,14 +52,24 @@ export function formToScoringJudgements(form) {
 }
 
 /**
- * Preview scoring: subtract midspins locally for eras 1|2. Does not mutate the form.
+ * Preview scoring: derive Perfect from non-perfects, then subtract midspins
+ * locally for eras 1|2. Does not mutate the form.
  */
 export function previewPassFormScoring(form, level) {
   const adofaiVersion = parseAdofaiVersion(form?.adofaiVersion, ADOFAI_VERSION.V3_4_0);
-  return applyMidspinPerfectDecrement({
+  const derived = applyDerivedPerfects({
     judgements: formToScoringJudgements(form),
+    tilecount: level?.tilecount,
+    autoTileCount: level?.autoTileCount,
+  });
+  let flags = form?.passMetaFlags;
+  if (derived.applied && isLegacyAdofaiVersion(adofaiVersion)) {
+    flags = addPassMetaFlag(flags, passMetaFlags.MIDSPIN_PERFECTS_REMOVED);
+  }
+  return applyMidspinPerfectDecrement({
+    judgements: derived.judgements,
     adofaiVersion,
-    passMetaFlags: form?.passMetaFlags,
+    passMetaFlags: flags,
     midspinCount: level?.midspinCount,
   });
 }

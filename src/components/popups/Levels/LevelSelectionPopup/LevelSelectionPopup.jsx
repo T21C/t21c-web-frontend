@@ -14,6 +14,11 @@ import { normalizeLevelSearchQuery } from '@/utils/normalizeEntitySearchQuery';
 
 const LIMIT = 20;
 
+function levelAlreadyHasCuration(level) {
+  if (level?.isCurated === true) return true;
+  return Array.isArray(level?.curations) && level.curations.length > 0;
+}
+
 const LevelSelectionPopup = ({
   isOpen,
   onClose,
@@ -59,7 +64,7 @@ const LevelSelectionPopup = ({
         offset: (currentPage - 1) * LIMIT,
         limit: LIMIT,
         query: searchTerm,
-        curatedTypesFilter,
+        curatedTypesFilter: curatedTypesFilter === 'hide' ? 'show' : curatedTypesFilter,
       });
 
       const response = await api.get(`${routes.database.levels.root()}?${params}`);
@@ -267,41 +272,60 @@ const LevelSelectionPopup = ({
           ) : levels.length === 0 ? (
             <div className="level-selection-modal__empty">{t('levelSelectionPopup.empty')}</div>
           ) : (
-            levels.map((level) => (
-              <div key={level.id} className="level-selection-modal__level-item">
-                <div className="level-selection-modal__level-card-wrapper">
-                  <div className="level-selection-modal__img-wrapper">
-                    <img
-                      src={selectIconSize(difficultyDict[level.diffId]?.icon, ICON_SIZE.MEDIUM) || '/default-difficulty-icon.png'}
-                      alt={difficultyDict[level.diffId]?.name || 'Difficulty icon'}
-                      className="level-selection-modal__difficulty-icon"
-                    />
-                  </div>
-
-                  <div className="level-selection-modal__song-wrapper">
-                    <div className="level-selection-modal__group">
-                      <p className="level-selection-modal__level-exp">
-                        #{level.id} - {level.artist}
-                      </p>
+            levels.map((level) => {
+              const alreadyCurated =
+                curatedTypesFilter === 'hide' && levelAlreadyHasCuration(level);
+              return (
+                <div
+                  key={level.id}
+                  className={`level-selection-modal__level-item${
+                    alreadyCurated ? ' level-selection-modal__level-item--existing' : ''
+                  }`}
+                  title={alreadyCurated ? t('levelSelectionPopup.alreadyCurated') : undefined}
+                >
+                  <div className="level-selection-modal__level-card-wrapper">
+                    <div className="level-selection-modal__img-wrapper">
+                      <img
+                        src={selectIconSize(difficultyDict[level.diffId]?.icon, ICON_SIZE.MEDIUM) || '/default-difficulty-icon.png'}
+                        alt={difficultyDict[level.diffId]?.name || 'Difficulty icon'}
+                        className="level-selection-modal__difficulty-icon"
+                      />
                     </div>
-                    <p className="level-selection-modal__level-desc">{level.song || 'Unknown Song'}</p>
-                  </div>
 
-                  <div className="level-selection-modal__creator-wrapper">
-                    <p className="level-selection-modal__level-exp">{t('levelSelectionPopup.creator')}</p>
-                    <div className="level-selection-modal__level-desc">{formatCreatorDisplay(level)}</div>
-                  </div>
+                    <div className="level-selection-modal__song-wrapper">
+                      <div className="level-selection-modal__group">
+                        <p className="level-selection-modal__level-exp">
+                          #{level.id} - {level.artist}
+                        </p>
+                      </div>
+                      <p className="level-selection-modal__level-desc">{level.song || 'Unknown Song'}</p>
+                    </div>
 
-                  <button
-                    className="level-selection-modal__select-btn"
-                    onClick={() => handleLevelSelect(level)}
-                    title={t(selectTitleKey)}
-                  >
-                    {t(selectLabelKey)}
-                  </button>
+                    <div className="level-selection-modal__creator-wrapper">
+                      <p className="level-selection-modal__level-exp">{t('levelSelectionPopup.creator')}</p>
+                      <div className="level-selection-modal__level-desc">{formatCreatorDisplay(level)}</div>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="level-selection-modal__select-btn"
+                      onClick={() => {
+                        if (alreadyCurated) return;
+                        handleLevelSelect(level);
+                      }}
+                      disabled={alreadyCurated}
+                      title={
+                        alreadyCurated
+                          ? t('levelSelectionPopup.alreadyCurated')
+                          : t(selectTitleKey)
+                      }
+                    >
+                      {t(selectLabelKey)}
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
 

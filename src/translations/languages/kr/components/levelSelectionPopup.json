@@ -12,6 +12,7 @@
   "create": "추가",
   "selectLevel": "이 레벨 선택",
   "createLevel": "이 레벨에 대한 큐레이션 만들기",
+  "alreadyCurated": "이 레벨은 이미 큐레이션이 있습니다",
   "creator": "크리에이터",
   "pick": {
     "title": "레벨 선택",

@@ -21,6 +21,7 @@ import {
   parseAdofaiVersion,
 } from '@/utils/adofaiVersion';
 import { applyMidspinPerfectDecrement, willApplyMidspinDecrement } from '@/utils/midspinPerfectDecrement';
+import { applyDerivedPerfects } from '@/utils/CalcAcc';
 
 function truncateString(str, maxLength) {
   if (str == null || typeof str !== 'string') return '';
@@ -207,6 +208,13 @@ export default function PassSubmissionEditableMeta({
   const activePerfect = editingJudgements
     ? parseInt(draftJudgements.perfect, 10)
     : parseInt(String(submission.judgements?.perfect ?? '0'), 10);
+  const derivedPreview = applyDerivedPerfects({
+    judgements: editingJudgements
+      ? { ...submission.judgements, ...draftJudgements }
+      : submission.judgements,
+    tilecount: submission.level?.tilecount,
+    autoTileCount: submission.level?.autoTileCount,
+  });
   const midspinPreview = applyMidspinPerfectDecrement({
     judgements: { perfect: Number.isInteger(activePerfect) ? activePerfect : 0 },
     adofaiVersion: activeFlags.adofaiVersion,
@@ -220,16 +228,18 @@ export default function PassSubmissionEditableMeta({
     perfect: Number.isInteger(activePerfect) ? activePerfect : undefined,
   });
   let midspinWarningText = null;
-  if (midspinPreview.skippedReason === 'already_applied') {
-    midspinWarningText = t('passSubmissions.midspinWarning.alreadyApplied');
-  } else if (submission.level && midspinPreview.skippedReason === 'midspin_missing') {
-    midspinWarningText = t('passSubmissions.midspinWarning.missing');
-  } else if (Number.isInteger(activePerfect) && midspinPreview.skippedReason === 'perfect_lt_midspin') {
-    midspinWarningText = t('passSubmissions.midspinWarning.perfectLt');
-  } else if (willSubtractMidspin) {
-    midspinWarningText = t('passSubmissions.midspinWarning.willApply', {
-      count: midspinPreview.subtracted || Number(submission.level?.midspinCount) || 0,
-    });
+  if (!derivedPreview.applied) {
+    if (midspinPreview.skippedReason === 'already_applied') {
+      midspinWarningText = t('passSubmissions.midspinWarning.alreadyApplied');
+    } else if (submission.level && midspinPreview.skippedReason === 'midspin_missing') {
+      midspinWarningText = t('passSubmissions.midspinWarning.missing');
+    } else if (Number.isInteger(activePerfect) && midspinPreview.skippedReason === 'perfect_lt_midspin') {
+      midspinWarningText = t('passSubmissions.midspinWarning.perfectLt');
+    } else if (willSubtractMidspin) {
+      midspinWarningText = t('passSubmissions.midspinWarning.willApply', {
+        count: midspinPreview.subtracted || Number(submission.level?.midspinCount) || 0,
+      });
+    }
   }
 
   const displayJudgementKeys = visibleJudgementKeys(viewingFlags, submission.judgements);

@@ -1,5 +1,59 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
+const SHORT_LABELS = {
+  enter: "↵",
+  return: "↵",
+  "pause break": "Break",
+  "caps lock": "Caps",
+  backspace: "Bksp",
+  "print screen": "PrtSc",
+  "scroll lock": "ScrLk",
+  "num lock": "NumLk",
+  insert: "Ins",
+  delete: "Del",
+  "page up": "PgUp",
+  "page down": "PgDn",
+  escape: "Esc",
+};
+
+function shortKeyLines(label) {
+  const raw = String(label || "");
+  const key = raw.trim().toLocaleLowerCase().replace(/[\s\n]+/g, " ");
+  const short = SHORT_LABELS[key];
+  if (short) return [short];
+  return raw.split("\n");
+}
+
+const GLYPH_FONT = "Roboto, sans-serif";
+const glyphRatioCache = new Map();
+
+function glyphHeightOverWidth(text, fontTick) {
+  const cacheKey = `${fontTick}\0${text}`;
+  const cached = glyphRatioCache.get(cacheKey);
+  if (cached) return cached;
+  const ratio = readGlyphHeightOverWidth(text);
+  glyphRatioCache.set(cacheKey, ratio);
+  return ratio;
+}
+
+function readGlyphHeightOverWidth(text) {
+  if (typeof document === "undefined") return 1;
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return 1;
+  ctx.font = `700 100px ${GLYPH_FONT}`;
+  const metrics = ctx.measureText(text);
+  const width = metrics.actualBoundingBoxLeft + metrics.actualBoundingBoxRight;
+  const height = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+  if (!(width > 0) || !(height > 0)) return 1;
+  return height / width;
+}
+
+function labelBasis(boxW, boxH, heightOverWidth) {
+  if (heightOverWidth > 1) return Math.min(boxW, boxH);
+  return boxH;
+}
+
 export default function KeyboardBoard({
   keys = [],
   activeKeys,
@@ -10,6 +64,19 @@ export default function KeyboardBoard({
 }) {
   const frameRef = useRef(null);
   const [width, setWidth] = useState(0);
+  const [fontTick, setFontTick] = useState(0);
+
+  useEffect(() => {
+    const fonts = document.fonts;
+    if (!fonts?.ready) return undefined;
+    let active = true;
+    fonts.ready.then(() => {
+      if (active) setFontTick((tick) => tick + 1);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
     const node = frameRef.current;
@@ -57,11 +124,16 @@ export default function KeyboardBoard({
           const gap = layout.gap;
           const boxW = Math.max(1, (key.w || 1) * layout.unit - gap);
           const boxH = Math.max(1, (key.h || 1) * layout.unit - gap);
-          const labelLines = String(key.label || "").split("\n");
+          const labelLines = shortKeyLines(key.label);
           const longestLine = labelLines.reduce((max, line) => Math.max(max, line.length), 0);
-          const fontScale = labelLines.length > 1
-            ? (longestLine > 5 ? 0.15 : 0.2)
-            : (longestLine > 7 ? 0.2 : 0.28);
+          const symbol = labelLines.length === 1 && labelLines[0] === "↵";
+          const heightOverWidth = labelLines.length === 1 ? glyphHeightOverWidth(labelLines[0], fontTick) : 1;
+          const fontScale = symbol
+            ? 0.5
+            : labelLines.length > 1
+              ? (longestLine > 5 ? 0.15 : 0.2)
+              : (longestLine > 7 ? 0.2 : 0.28);
+          const basis = labelBasis(boxW, boxH, heightOverWidth);
           const style = {
             left: `${((key.x || 0) + (key.offsetX || 0)) * layout.unit + gap / 2}px`,
             top: `${(key.y || 0) * layout.unit + gap / 2}px`,
@@ -72,11 +144,14 @@ export default function KeyboardBoard({
             minHeight: `${boxH}px`,
             maxHeight: `${boxH}px`,
             padding: `${boxH * 0.06}px`,
-            fontSize: `${boxH * fontScale}px`,
+            fontSize: `${basis * fontScale}px`,
             lineHeight: 1,
           };
           const nodeKey = `${key.code}-${key.x}-${key.y}-${index}`;
-          const lines = showLabels && key.label ? labelLines : [];
+          const lines = showLabels && key.label ? labelLines.filter((line) => line.trim()) : [];
+          const shown = lines.join("\n");
+          const accessible = String(key.label || "").trim();
+          const ariaLabel = !showLabels || (accessible && shown !== accessible) ? accessible || undefined : undefined;
           const glyph = (
             <>
               {lines.length > 1 && (
@@ -97,7 +172,7 @@ export default function KeyboardBoard({
                 className={className}
                 style={style}
                 aria-pressed={isActive}
-                aria-label={showLabels ? undefined : key.label}
+                aria-label={ariaLabel}
                 onClick={() => onKeyToggle(key.code)}
               >
                 {glyph}

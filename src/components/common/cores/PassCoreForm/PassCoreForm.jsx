@@ -10,6 +10,8 @@ import {
   parseAdofaiVersion,
 } from '@/utils/adofaiVersion';
 import { applyMidspinPerfectDecrement, willApplyMidspinDecrement } from '@/utils/midspinPerfectDecrement';
+import { applyDerivedPerfects } from '@/utils/CalcAcc';
+import { formToScoringJudgements } from '@/utils/ParseJudgements';
 import './PassCoreForm.css';
 import { JudgementInputs } from './JudgementInputs';
 import { getBilibiliCoverUrl } from '@/utils/bilibiliCover';
@@ -220,6 +222,11 @@ export function PassCoreForm({
     { value: ADOFAI_VERSION.V2, label: t(copy.adofaiVersionV2, { ns: copy.ns }) },
   ];
   const perfectCount = parseInt(form.perfect, 10);
+  const derivedPreview = applyDerivedPerfects({
+    judgements: formToScoringJudgements(form),
+    tilecount: level?.tilecount,
+    autoTileCount: level?.autoTileCount,
+  });
   const midspinPreview = applyMidspinPerfectDecrement({
     judgements: { perfect: Number.isInteger(perfectCount) ? perfectCount : 0 },
     adofaiVersion,
@@ -235,17 +242,19 @@ export function PassCoreForm({
   const midspinWarningKey = mode === 'edit' ? 'passPopups.edit.midspinWarning' : 'passSubmission.midspinWarning';
   const midspinWarningNs = mode === 'edit' ? 'components' : 'pages';
   let midspinWarningText = null;
-  if (midspinPreview.skippedReason === 'already_applied') {
-    midspinWarningText = t(`${midspinWarningKey}.alreadyApplied`, { ns: midspinWarningNs });
-  } else if (level && midspinPreview.skippedReason === 'midspin_missing') {
-    midspinWarningText = t(`${midspinWarningKey}.missing`, { ns: midspinWarningNs });
-  } else if (Number.isInteger(perfectCount) && midspinPreview.skippedReason === 'perfect_lt_midspin') {
-    midspinWarningText = t(`${midspinWarningKey}.perfectLt`, { ns: midspinWarningNs });
-  } else if (willSubtractMidspin) {
-    midspinWarningText = t(`${midspinWarningKey}.willApply`, {
-      ns: midspinWarningNs,
-      count: midspinPreview.subtracted || Number(level?.midspinCount) || 0,
-    });
+  if (!derivedPreview.applied) {
+    if (midspinPreview.skippedReason === 'already_applied') {
+      midspinWarningText = t(`${midspinWarningKey}.alreadyApplied`, { ns: midspinWarningNs });
+    } else if (level && midspinPreview.skippedReason === 'midspin_missing') {
+      midspinWarningText = t(`${midspinWarningKey}.missing`, { ns: midspinWarningNs });
+    } else if (Number.isInteger(perfectCount) && midspinPreview.skippedReason === 'perfect_lt_midspin') {
+      midspinWarningText = t(`${midspinWarningKey}.perfectLt`, { ns: midspinWarningNs });
+    } else if (willSubtractMidspin) {
+      midspinWarningText = t(`${midspinWarningKey}.willApply`, {
+        ns: midspinWarningNs,
+        count: midspinPreview.subtracted || Number(level?.midspinCount) || 0,
+      });
+    }
   }
 
   const renderRatingField = ({
