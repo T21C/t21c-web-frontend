@@ -92,7 +92,7 @@
     "conditional": "有条件使用",
     "ysmod_only": "仅限 YSMod",
     "allowed": "已授权",
-    "tuf_verified": "已经过 TUF 认证"
+    "tuf_verified": "已经 TUF 认证"
   },
   "pass": {
     "updated": "通关记录已更新",

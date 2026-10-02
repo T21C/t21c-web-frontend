@@ -4,11 +4,11 @@
       "score": "分数",
       "accuracy": "精准度",
       "speed": "飙速",
-      "keyboardBind": "{{count}}K 键位"
+      "keyboardBind": "{{count}}键键位"
     },
     "tooltips": {
       "watchVideo": "观看视频",
-      "potentialScore": "潜在排位分，谱面文件缺失故不计入。"
+      "potentialScore": "预计排位分。关卡文件修复后恢复正常。"
     }
   }
 } 
