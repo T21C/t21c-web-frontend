@@ -1,25 +1,9 @@
 /* tuf-search: #FacetItemPicker #facetItemPicker #selectors #tagSelector */
 .facet-item-picker {
-  position: fixed;
-  inset: 0;
-  z-index: var(--z-popup);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   padding: 1rem;
 }
 
-.facet-item-picker__backdrop {
-  position: absolute;
-  inset: 0;
-  border: none;
-  background: rgba(0, 0, 0, 0.55);
-  cursor: pointer;
-}
-
 .facet-item-picker__dialog {
-  position: relative;
-  z-index: 1;
   width: min(28rem, 100%);
   max-height: min(85vh, 560px);
   display: flex;

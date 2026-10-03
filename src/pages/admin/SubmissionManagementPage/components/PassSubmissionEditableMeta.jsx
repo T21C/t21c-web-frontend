@@ -2,7 +2,7 @@ import { routes } from '@/api/routes';
 // tuf-search: #PassSubmissionEditableMeta #passSubmissionEditableMeta #admin #submissionManagement — Submission Management
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Tooltip } from 'react-tooltip';
+import { Tooltip } from '@/components/common/display/Tooltip';
 import { toast } from 'react-hot-toast';
 import api from '@/utils/api';
 import { formatCreatorDisplay, ICON_SIZE, normalizeKeyCount, selectIconSize } from '@/utils/Utility';
@@ -22,6 +22,7 @@ import {
 } from '@/utils/adofaiVersion';
 import { applyMidspinPerfectDecrement, willApplyMidspinDecrement } from '@/utils/midspinPerfectDecrement';
 import { applyDerivedPerfects } from '@/utils/CalcAcc';
+import { AdofaiVersionFlagTooltip } from '@/components/cards/PassFlags/PassAdofaiV2Flag';
 
 function truncateString(str, maxLength) {
   if (str == null || typeof str !== 'string') return '';
@@ -760,9 +761,13 @@ export default function PassSubmissionEditableMeta({
               <div className="flags-details">
                 {keyCountDisplay && <span>{keyCountDisplay}</span>}
                 {flags?.isNoHoldTap && <span>{t('passSubmissions.details.flags.types.nht')}</span>}
-                {eraDisplayKey && (
+                {eraDisplayKey === 'v2' || eraDisplayKey === 'pre340' ? (
+                  <AdofaiVersionFlagTooltip variant={eraDisplayKey}>
+                    {t(`passSubmissions.details.flags.era.${eraDisplayKey}`)}
+                  </AdofaiVersionFlagTooltip>
+                ) : eraDisplayKey ? (
                   <span>{t(`passSubmissions.details.flags.era.${eraDisplayKey}`)}</span>
-                )}
+                ) : null}
                 {flags?.isXPerfectMode && <span>{t('passSubmissions.details.flags.types.xPerfect')}</span>}
               </div>
               <button type="button" className="pass-submission-meta-edit-btn" onClick={beginEditFlags}>

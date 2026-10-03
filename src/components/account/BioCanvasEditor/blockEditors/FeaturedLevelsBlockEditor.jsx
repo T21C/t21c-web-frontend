@@ -7,16 +7,19 @@ const MODE_OPTIONS = FEATURED_MODES.map((value) => ({
   label: value.charAt(0).toUpperCase() + value.slice(1),
 }));
 
-function parseIds(raw) {
+function readIds(raw) {
   return [
     ...new Set(
       String(raw ?? "")
         .split(/[,\s]+/)
         .map((part) => parseInt(part.trim(), 10))
-        .filter((n) => Number.isFinite(n) && n > 0)
-        .slice(0, MAX_FEATURED_LEVELS),
+        .filter((n) => Number.isFinite(n) && n > 0),
     ),
   ];
+}
+
+function parseIds(raw) {
+  return readIds(raw).slice(0, MAX_FEATURED_LEVELS);
 }
 
 export default function FeaturedLevelsBlockEditor({ block, onPatchData }) {
@@ -38,6 +41,8 @@ export default function FeaturedLevelsBlockEditor({ block, onPatchData }) {
   };
 
   const label = mode === "passes" ? "Pass" : "Level";
+  const draftCount = readIds(draft).length;
+  const featuredAtLimit = draftCount >= MAX_FEATURED_LEVELS;
 
   return (
     <div className="bio-canvas-editor__fields">
@@ -53,8 +58,17 @@ export default function FeaturedLevelsBlockEditor({ block, onPatchData }) {
         />
       </div>
       <label className="bio-canvas-editor__field">
-        <span>
-          {label} IDs (comma-separated, max {MAX_FEATURED_LEVELS})
+        <span className="bio-canvas-editor__field-label-row">
+          <span>{label} IDs</span>
+          <span
+            className={
+              featuredAtLimit
+                ? "bio-canvas-editor__limit-count bio-canvas-editor__limit-count--hit"
+                : "bio-canvas-editor__limit-count"
+            }
+          >
+            {draftCount}/{MAX_FEATURED_LEVELS}
+          </span>
         </span>
         <input
           type="text"
@@ -70,6 +84,13 @@ export default function FeaturedLevelsBlockEditor({ block, onPatchData }) {
             }
           }}
         />
+        {featuredAtLimit && (
+          <span className="bio-canvas-editor__limit-note" role="status">
+            {draftCount > MAX_FEATURED_LEVELS
+              ? `Only the first ${MAX_FEATURED_LEVELS} IDs are kept.`
+              : `${label} ID limit reached (${draftCount}/${MAX_FEATURED_LEVELS}).`}
+          </span>
+        )}
       </label>
     </div>
   );

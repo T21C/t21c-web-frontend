@@ -8,7 +8,7 @@ import MarkdownText from '@/components/common/display/MarkdownText/MarkdownText'
 
 import LevelCard from '@/components/cards/LevelCard/LevelCard';
 import './PackItem.css';
-import { Tooltip } from 'react-tooltip';
+import { Tooltip } from '@/components/common/display/Tooltip';
 // Registry for folder droppable elements - used for manual collision detection
 if (typeof window !== 'undefined' && !window.__folderDroppables) {
   window.__folderDroppables = new Map();

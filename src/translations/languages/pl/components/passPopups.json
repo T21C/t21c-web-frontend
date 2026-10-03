@@ -60,6 +60,7 @@
     "adofaiV2Tooltip": "Check this if the clear was recorded on ADOFAI v2",
     "adofaiVersionTooltip": "Game version used for this clear. Alpha is 3.4.0+.",
     "xPerfectTooltip": "Record Perfect− and Perfect+ counts from X-Perfect mode (3.4.0+ only).",
+    "duplicateGuessHint": "Oznaczone na podstawie lepszego wyniku na tej samej nucie. Zmiana tego pola zachowa korektę.",
     "midspinWarning": {
       "willApply": "This chart has {{count}} midspin tiles. They will be subtracted from Perfect when you save.",
       "alreadyApplied": "Midspin Perfects have already been removed from this pass.",
@@ -67,6 +68,21 @@
       "perfectLt": "Perfect is lower than the midspin count, so Perfect will not be adjusted."
     },
     "tooltip": "Wpisz numer 1-10",
+    "keyboard": {
+      "label": "Układ klawiatury",
+      "auto": "Automatycznie",
+      "autoValue": "Automatycznie · {{layout}}",
+      "autoUses": "W dniu wgrania to przejście używa układu {{layout}}.",
+      "autoNone": "Żaden zapisany układ nie pasuje do tej liczby klawiszy w dniu wgrania.",
+      "autoMany": "Do tego przejścia pasuje więcej niż jeden układ. Wybierz jeden.",
+      "autoNoKeyCount": "Podaj liczbę klawiszy, aby dopasować układ do daty wgrania.",
+      "autoNoDate": "To przejście nie ma daty wgrania, więc wybierz układ.",
+      "noLayouts": "Ten gracz nie ma zapisanych układów.",
+      "since": "Od {{date}}",
+      "range": "{{from}} – {{to}}",
+      "matches": "Pasuje do tego przejścia",
+      "mismatch": "Ten układ ma {{layoutCount}}K. To przejście ma {{passCount}}K."
+    },
     "alert": {
       "success": "Pomyślnie zaaktualizowano przejście!",
       "error": "Błąd: ",

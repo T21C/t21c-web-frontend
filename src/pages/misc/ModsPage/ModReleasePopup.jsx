@@ -169,7 +169,6 @@ export default function ModReleasePopup({ isOpen, release, onClose, onSubmit }) 
               width="100%"
               isSearchable={false}
               isDisabled={sourceLocked || submitting}
-              menuPortalTarget={typeof document !== 'undefined' ? document.body : null}
             />
           </div>
           <label className="mod-release-popup__field">

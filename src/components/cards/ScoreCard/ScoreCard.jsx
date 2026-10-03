@@ -7,9 +7,9 @@ import { clampFloat, formatScore, formatPassDate, formatCreatorDisplay, ICON_SIZ
 import { formatNumber } from "@/utils";
 import { formatAccuracyRatio } from "@/utils/statFormatters";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
-import { Tooltip } from "react-tooltip";
+import { Tooltip } from '@/components/common/display/Tooltip';
 import WorldsFirstFlag from "../WorldsFirstFlag/WorldsFirstFlag";
-import PassFlags from "../PassFlags";
+import PassFlags from "../PassFlags/PassFlags";
 import { VideoLinkIcon } from "@/components/common/icons";
 import { getPrimaryVideoLink } from "@/utils/videoLink";
 import { isAutoSubmittedPass } from "@/utils/passSubmissionSource";

@@ -19,7 +19,7 @@ import { RatingItem } from '@/components/cards';
 import { CloseButton, ReferencesButton } from '@/components/common/buttons';
 import { CheckmarkIcon, ChartIcon, EyeIcon, MetronomeIcon, SkipIcon, TimeIcon } from '@/components/common/icons';
 import { WebAdofaiViewerButton } from '@/components/popups/Levels';
-import { Tooltip } from 'react-tooltip';
+import { Tooltip } from '@/components/common/display/Tooltip';
 import { CommentFormatter } from '@/components/misc';
 import api from '@/utils/api';
 import { getLocalVideoPreview } from '@/utils/videoLink';

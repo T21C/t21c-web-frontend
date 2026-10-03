@@ -188,6 +188,40 @@
   justify-content: space-between;
 }
 
+.bio-canvas-editor__block-list-label--limit {
+  color: var(--warning-color);
+}
+
+.bio-canvas-editor__limit-note {
+  margin: 0;
+  color: var(--warning-color);
+  font-size: 0.8125rem;
+}
+
+.bio-canvas-editor__limit-count {
+  color: var(--color-gray-2);
+  font-size: 0.8125rem;
+}
+
+.bio-canvas-editor__limit-count--hit {
+  color: var(--warning-color);
+}
+
+.bio-canvas-editor__add-row,
+.bio-canvas-editor__field-label-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.bio-canvas-editor__field-label-row {
+  justify-content: space-between;
+}
+
+.bio-canvas-editor__add-btn:disabled {
+  opacity: 0.55;
+}
+
 .bio-canvas-editor__blocks {
   display: flex;
   flex-direction: column;

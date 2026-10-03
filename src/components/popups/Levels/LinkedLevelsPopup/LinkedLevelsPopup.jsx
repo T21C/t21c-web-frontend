@@ -2,7 +2,7 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Tooltip } from 'react-tooltip';
+import { Tooltip } from '@/components/common/display/Tooltip';
 import toast from 'react-hot-toast';
 import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
@@ -342,20 +342,18 @@ export default function LinkedLevelsPopup({
               </button>
             </div>
           )}
+        {levels.some((level) => Number(level.id) === Number(currentLevelId)) && (
+          <Tooltip
+            id={CURRENT_LEVEL_TOOLTIP_ID}
+            place="left"
+            hidden={showPicker}
+            className="linked-levels-popup__here-tooltip"
+            opacity={1}
+          >
+            {t('levelPopups.linkedLevels.youAreHere')}
+          </Tooltip>
+        )}
       </PopupShell>
-
-      {levels.some((level) => Number(level.id) === Number(currentLevelId)) && (
-        <Tooltip
-          id={CURRENT_LEVEL_TOOLTIP_ID}
-          place="left"
-          hidden={showPicker}
-          positionStrategy="fixed"
-          className="linked-levels-popup__here-tooltip"
-          opacity={1}
-        >
-          {t('levelPopups.linkedLevels.youAreHere')}
-        </Tooltip>
-      )}
 
       <LevelSelectionPopup
         isOpen={showPicker}

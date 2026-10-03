@@ -20,7 +20,7 @@ import { CreatorAssignmentPopup } from '@/components/popups/Creators';
 import { AdminReasonPrompt } from '@/components/common/AdminReasonPrompt';
 import { toast } from "react-hot-toast";
 import { ServerCloudIcon, WarningIcon, EditIcon, TrashIcon, PlusIcon } from "@/components/common/icons";
-import { Tooltip } from "react-tooltip";
+import { Tooltip } from '@/components/common/display/Tooltip';
 import i18next from "i18next";
 import { CreatorIcon } from "@/components/common/icons/CreatorIcon";
 import {

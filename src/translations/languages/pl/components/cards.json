@@ -31,7 +31,9 @@
       "sixteenKey": "16K",
       "noHoldTap": "No Hold",
       "adofaiV2": "<adofaiicon></adofaiicon> v2",
+      "adofaiV2Tooltip": "Wersje sprzed zmiany silnika <b>(do v2.9.8)</b>. Były mniej stabilne i mniej precyzyjne przez problemy silnika timingu.",
       "adofaiPre340": "<3.4.0",
+      "adofaiPre340Tooltip": "Wersje sprzed trybu X-Perfect <b>(do v3.3.1)</b>.",
       "xPerfect": "X-Perfect",
       "wrongJudgement": "Błędne osądy"
     },

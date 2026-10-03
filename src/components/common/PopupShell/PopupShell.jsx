@@ -1,12 +1,23 @@
 // tuf-search: #PopupShell #popupShell
-import { useEffect, useLayoutEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Portal } from '@/components/common/Portal';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
-import { getPopupStackRoot, getTopPopupShell, registerPopupShell } from '@/utils/portalRoot';
+import {
+  getPopupStackRoot,
+  getTopPopupShell,
+  PopupLayerContext,
+  registerPopupShell,
+} from '@/utils/portalRoot';
 import './popupshell.css';
 
 function classNames(...parts) {
   return parts.filter(Boolean).join(' ');
+}
+
+function assignRef(ref, node) {
+  if (!ref) return;
+  if (typeof ref === 'function') ref(node);
+  else ref.current = node;
 }
 
 function usePopupShellEscape(onClose, enabled, overlayRef) {
@@ -47,13 +58,18 @@ export function PopupShell({
   role = 'dialog',
 }) {
   const overlayRef = useRef(null);
+  const [shellNode, setShellNode] = useState(null);
   const pressedOnOverlayRef = useRef(false);
   const overlayActive = Boolean(when) && !closeDisabled;
   useBodyScrollLock(Boolean(when));
   usePopupShellEscape(onClose, overlayActive && dismissOnEscape, overlayRef);
 
   useLayoutEffect(() => {
-    if (!when) return undefined;
+    if (!when) {
+      setShellNode(null);
+      return undefined;
+    }
+    setShellNode(overlayRef.current);
     return registerPopupShell(overlayRef.current);
   }, [when]);
 
@@ -82,6 +98,12 @@ export function PopupShell({
     overlayProps?.onClick?.(event);
   };
 
+  const setOverlayRef = (node) => {
+    overlayRef.current = node;
+    assignRef(overlayProps?.ref, node);
+  };
+
+  const layerValue = useMemo(() => ({ inPopup: true, shell: shellNode }), [shellNode]);
   const stackRoot = typeof document !== 'undefined' ? getPopupStackRoot() : null;
 
   return (
@@ -89,26 +111,28 @@ export function PopupShell({
       <div
         role="presentation"
         {...overlayProps}
-        ref={overlayRef}
+        ref={setOverlayRef}
         className={classNames('popup-shell', overlayClassName, overlayProps?.className)}
         onPointerDown={handleOverlayPointerDown}
         onPointerUp={handleOverlayPointerUp}
         onPointerCancel={handleOverlayPointerCancel}
         onClick={handleOverlayClick}
       >
-        {overlayChildren ? (
-          <div className="popup-shell__chrome">{overlayChildren}</div>
-        ) : null}
-        <div
-          className={classNames('popup-shell__panel', panelClassName)}
-          role={role}
-          aria-modal="true"
-          aria-labelledby={ariaLabelledBy}
-          aria-label={ariaLabel}
-          {...panelProps}
-        >
-          {children}
-        </div>
+        <PopupLayerContext.Provider value={layerValue}>
+          {overlayChildren ? (
+            <div className="popup-shell__chrome">{overlayChildren}</div>
+          ) : null}
+          <div
+            className={classNames('popup-shell__panel', panelClassName)}
+            role={role}
+            aria-modal="true"
+            aria-labelledby={ariaLabelledBy}
+            aria-label={ariaLabel}
+            {...panelProps}
+          >
+            {children}
+          </div>
+        </PopupLayerContext.Provider>
       </div>
     </Portal>
   );

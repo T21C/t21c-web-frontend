@@ -1,6 +1,6 @@
 import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
 import { ChevronIcon, InfoIcon } from "@/components/common/icons";
-import { Tooltip as ProfileTooltip } from "react-tooltip";
+import { Tooltip as ProfileTooltip } from '@/components/common/display/Tooltip';
 import { useTranslation } from "react-i18next";
 
 export default function PlayerScoreBreakdownModule({

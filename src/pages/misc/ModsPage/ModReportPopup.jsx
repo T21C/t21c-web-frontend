@@ -126,7 +126,6 @@ export default function ModReportPopup({ isOpen, mod, onClose }) {
               width="100%"
               isSearchable={false}
               isDisabled={submitting}
-              menuPortalTarget={typeof document !== 'undefined' ? document.body : null}
             />
           </div>
           {form.reason === 'deprecated' ? (

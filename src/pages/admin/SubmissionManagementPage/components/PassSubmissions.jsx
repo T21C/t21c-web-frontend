@@ -301,6 +301,7 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
   };
 
   const handleAutoAllow = async () => {
+    return; // FUNCTIONALITY DISABLED
     try {
       setIsAutoAllowing(true);
       const response = await api.post(`${routes.admin.submissions.root()}/auto-approve/passes`);

@@ -17,7 +17,7 @@ import { ICON_SIZE, selectIconSize } from "@/utils/Utility";
 import { StateDisplay } from "@/components/common/selectors";
 import { CopyIcon, DownloadIcon, ExternalLinkIcon } from "@/components/common/icons";
 import "./assetsPage.css";
-import { Tooltip } from "react-tooltip";
+import { Tooltip } from '@/components/common/display/Tooltip';
 import { navigateExternal } from "@/utils/externalNavigationGate";
 
 const ASSET_ACTION_ICON_SIZE = 18;

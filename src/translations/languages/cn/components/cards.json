@@ -42,7 +42,9 @@
       "sixteenKey": "16键",
       "noHoldTap": "非默认长按设置",
       "adofaiV2": "<adofaiicon></adofaiicon> v2",
+      "adofaiV2Tooltip": "引擎改版之前的版本<b>（截至 v2.9.8）</b>。由于计时引擎问题，这些版本较不稳定，精度也较低。",
       "adofaiPre340": "3.4.0前",
+      "adofaiPre340Tooltip": "X完美之前的版本<b>（截至 v3.3.1）</b>。",
       "xPerfect": "X完美",
       "wrongJudgement": "判定数据错误"
     },

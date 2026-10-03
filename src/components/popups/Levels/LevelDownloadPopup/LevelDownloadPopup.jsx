@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import './LevelDownloadPopup.css';
 import EnhancedSelect from './EnhancedSelect';
-import { Tooltip } from 'react-tooltip';
+import { Tooltip } from '@/components/common/display/Tooltip';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from 'react-i18next';

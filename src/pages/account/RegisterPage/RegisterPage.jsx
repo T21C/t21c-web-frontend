@@ -5,7 +5,7 @@ import './registerPage.css';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 
-import { Tooltip } from 'react-tooltip';
+import { Tooltip } from '@/components/common/display/Tooltip';
 import { QuestionmarkCircleIcon, WarningIcon, GoogleIcon } from '@/components/common/icons';
 import ReCAPTCHA from '@/components/auth/ReCaptcha/ReCaptcha';
 import { MetaTags } from '@/components/common/display';

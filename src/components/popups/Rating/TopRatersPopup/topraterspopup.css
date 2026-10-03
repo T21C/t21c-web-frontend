@@ -628,7 +628,6 @@
 }
 
 .top-raters-accuracy-tooltip {
-  z-index: var(--z-float) !important;
   max-width: 16rem;
 }
 

@@ -1,6 +1,6 @@
 // tuf-search: #PassCoreForm #passCoreForm #cores
 import { useTranslation } from 'react-i18next';
-import { Tooltip } from 'react-tooltip';
+import { Tooltip } from '@/components/common/display/Tooltip';
 import i18next from 'i18next';
 import { formatDate } from '@/utils/Utility';
 import { CustomSelect } from '@/components/common/selectors';

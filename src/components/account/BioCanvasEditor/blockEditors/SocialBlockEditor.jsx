@@ -1,5 +1,6 @@
 import { CustomSelect } from "@/components/common/selectors";
 import {
+  MAX_SOCIAL_LINKS,
   SOCIAL_PLATFORMS,
   SOCIAL_SHAPES,
   SOCIAL_ALIGNMENTS,
@@ -33,7 +34,10 @@ export default function SocialBlockEditor({ block, onPatchData }) {
     onPatchData({ links: next });
   };
 
+  const socialAtLimit = links.length >= MAX_SOCIAL_LINKS;
+
   const addLink = () => {
+    if (links.length >= MAX_SOCIAL_LINKS) return;
     onPatchData({ links: [...links, { platform: "website", url: "" }] });
   };
 
@@ -98,9 +102,33 @@ export default function SocialBlockEditor({ block, onPatchData }) {
           </div>
         );
       })}
-      <button type="button" className="btn-fill-secondary" onClick={addLink}>
-        Add social link
-      </button>
+      <div className="bio-canvas-editor__add-row">
+        <button
+          type="button"
+          className="btn-fill-secondary bio-canvas-editor__add-btn"
+          disabled={socialAtLimit}
+          title={socialAtLimit ? `Social link limit reached (${links.length}/${MAX_SOCIAL_LINKS}).` : undefined}
+          onClick={addLink}
+        >
+          Add social link
+        </button>
+        <span
+          className={
+            socialAtLimit
+              ? "bio-canvas-editor__limit-count bio-canvas-editor__limit-count--hit"
+              : "bio-canvas-editor__limit-count"
+          }
+        >
+          {links.length}/{MAX_SOCIAL_LINKS}
+        </span>
+      </div>
+      {socialAtLimit && (
+        <p className="bio-canvas-editor__limit-note" role="status">
+          {links.length > MAX_SOCIAL_LINKS
+            ? `Too many social links (${links.length}/${MAX_SOCIAL_LINKS}). Remove extras before saving.`
+            : `Social link limit reached (${links.length}/${MAX_SOCIAL_LINKS}).`}
+        </p>
+      )}
 
       <div className="bio-canvas-editor__layout-controls">
         <label className="bio-canvas-editor__field bio-canvas-editor__field--inline">

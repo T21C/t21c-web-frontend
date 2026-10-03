@@ -1,7 +1,7 @@
 // tuf-search: #EnhancedSelect #enhancedSelect #popups #levels #levelDownload
 import React, { useState, useRef, useEffect } from 'react';
 import { Portal } from '@/components/common/Portal';
-import { getFloatPortalRoot } from '@/utils/portalRoot';
+import { usePopoverRoot } from '@/utils/portalRoot';
 import './EnhancedSelect.css';
 
 const EnhancedSelect = ({ 
@@ -21,6 +21,7 @@ const EnhancedSelect = ({
     const [currentPosition, setCurrentPosition] = useState(position);
     const containerRef = useRef(null);
     const dropdownRef = useRef(null);
+    const popoverRoot = usePopoverRoot();
 
     const hasOptions = options.length > 0;
     const isDisabled = disabled || !hasOptions;
@@ -234,7 +235,7 @@ const EnhancedSelect = ({
             
             <Portal
                 when={isOpen && hasOptions}
-                root={typeof document !== 'undefined' ? getFloatPortalRoot() : null}
+                root={popoverRoot}
             >
                 <div 
                     className="enhanced-select-dropdown" 

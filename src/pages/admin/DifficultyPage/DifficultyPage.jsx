@@ -17,7 +17,7 @@ import api from '@/utils/api';
 import { getCdnErrorMessage } from '@/utils/uploadErrors';
 import { getRateLimitMessage, toastIfRateLimited } from '@/utils/rateLimitError';
 import './difficultypage.css';
-import { Tooltip } from 'react-tooltip';
+import { Tooltip } from '@/components/common/display/Tooltip';
 import { EditIcon, ImageIcon, InfoIcon, RefreshIcon, TrashIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';

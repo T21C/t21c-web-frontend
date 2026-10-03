@@ -7,7 +7,7 @@ import { MetaTags, WeeklyGallery, DifficultyGraph, StartGuideCta } from "@/compo
 import api from "@/utils/api";
 import { Link } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
-import { Tooltip } from "react-tooltip";
+import { Tooltip } from '@/components/common/display/Tooltip';
 import { useLocation } from 'react-router-dom';
 import { buildStaticPageMeta, siteJsonLd } from '@/utils/meta';
 import { ScrollButton } from "@/components/common/buttons";

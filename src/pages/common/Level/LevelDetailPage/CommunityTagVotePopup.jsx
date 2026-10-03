@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
-import { Tooltip } from 'react-tooltip';
+import { Tooltip } from '@/components/common/display/Tooltip';
 import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
 import TagConfidenceBar from '@/components/common/display/TagConfidenceBar/TagConfidenceBar';
@@ -142,7 +142,6 @@ export default function CommunityTagVotePopup({
   };
 
   return (
-    <>
       <PopupShell
         onClose={onClose}
         overlayClassName="community-tag-vote-popup"
@@ -256,8 +255,7 @@ export default function CommunityTagVotePopup({
               ))
             )}
           </div>
+        <Tooltip id={tooltipId} place="bottom" noArrow />
       </PopupShell>
-        <Tooltip id={tooltipId} place="bottom" noArrow style={{ zIndex: 10001 }} />
-    </>
   );
 }

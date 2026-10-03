@@ -237,7 +237,7 @@ const SubmissionManagementPage = () => {
                 )}
               </span>
             </div>
-            {activeTab === 'passes' && (
+            {activeTab === 'passes' && 1 == 0 && ( // DISABLED
               <button 
                 className="auto-allow-button"
                 onClick={() => window.dispatchEvent(new Event('autoAllowPasses'))}

@@ -22,7 +22,7 @@ import { CustomSelect } from "@/components/common/selectors";
 import api from "@/utils/api";
 import { apiUrl } from '@/config/urls';
 import { LeaderboardIcon, SortAscIcon, SortDescIcon } from "@/components/common/icons";
-import { Tooltip } from "react-tooltip";
+import { Tooltip } from '@/components/common/display/Tooltip';
 import { RatingHelpPopup } from "@/components/popups/Rating";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import toast from 'react-hot-toast';

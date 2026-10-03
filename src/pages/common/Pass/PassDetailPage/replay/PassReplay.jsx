@@ -5,7 +5,7 @@ import { FiPlay, FiMaximize2, FiMinimize2, FiX } from 'react-icons/fi';
 import ReplayImmersiveView from './ReplayImmersiveView';
 import usePassReplay from './usePassReplay';
 import './replay-immersive.css';
-import PassAutoSubmissionFlag from '@/components/cards/PassAutoSubmissionFlag';
+import PassAutoSubmissionFlag from '@/components/cards/PassFlags/PassAutoSubmissionFlag';
 import './pass-replay.css';
 import { useAuth } from '@/contexts/AuthContext';
 import ReplayVisualSettings from './ReplayVisualSettingsPanel';

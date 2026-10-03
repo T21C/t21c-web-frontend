@@ -463,7 +463,6 @@ export default function ModAdminEditPopup({
               width="100%"
               isClearable
               isSearchable
-              menuPortalTarget={typeof document !== 'undefined' ? document.body : null}
             />
             <button
               type="button"

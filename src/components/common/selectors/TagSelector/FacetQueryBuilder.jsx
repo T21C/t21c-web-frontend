@@ -3,7 +3,7 @@ import React, { useMemo, useState, useRef, useEffect, useId, useCallback } from 
 import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { Portal } from '@/components/common/Portal';
 import { Trans, useTranslation } from 'react-i18next';
-import { Tooltip } from 'react-tooltip';
+import { Tooltip } from '@/components/common/display/Tooltip';
 import { CustomSelect } from '@/components/common/selectors';
 import FacetItemPicker from './FacetItemPicker';
 import FacetSimpleList from './FacetSimpleList';

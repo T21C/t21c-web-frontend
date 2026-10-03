@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { PopupShell } from "@/components/common/PopupShell";
-import { Tooltip } from "react-tooltip";
+import { Tooltip } from '@/components/common/display/Tooltip';
 import { CloseButton } from "@/components/common/buttons";
 import BioCanvasEditor from "./BioCanvasEditor";
 import { useBioCanvasEditor } from "./useBioCanvasEditor";

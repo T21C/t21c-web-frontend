@@ -5,10 +5,11 @@
 :root {
   /* Stacking (low → high): nav, popups, floats/chrome, toasts.
      PopupShells portal into #tuf-popup-stack on document.body.
-     Nested shells share that stack and layer by DOM order.
+     Nested shells share that stack and layer by DOM order (z-index 0).
      Overlay classNames must not set z-index (they share the .popup-shell node).
+     Dropdowns, select menus, and tooltips mount in a popover slot after the
+     owning shell via getPopoverRoot() / usePopoverRoot().
      Persistent FABs (ReferencesButton) portal into #tuf-float-chrome at --z-float.
-     In-popup menus still mount via getFloatPortalRoot() inside the current shell.
      Toaster renders under #app-notifications, portaled onto document.body above --z-popup. */
   --z-nav: 100;
   --z-popup: 1100;

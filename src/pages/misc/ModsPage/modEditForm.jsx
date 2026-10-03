@@ -259,7 +259,6 @@ export function ModFormFields({ form, onChange, t, icon, isCreate, zipFile, onZi
               }}
               width="100%"
               isSearchable={false}
-              menuPortalTarget={typeof document !== 'undefined' ? document.body : null}
             />
           </div>
           {form.releaseSource === 'zip' ? (

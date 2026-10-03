@@ -62,11 +62,27 @@
     "adofaiV2Tooltip": "如果本次通关使用的是v2版本的ADOFAI，请勾选此项。",
     "adofaiVersionTooltip": "本次通关使用的游戏版本。“Alpha版本”为3.4.0及更新版本",
     "xPerfectTooltip": "开启了X完美时的“-完美！”和“完美！+”判定数量。（仅限3.4.0及更新版本）",
+    "duplicateGuessHint": "根据同一谱面的更高分数通关自动标记。更改此勾选将保留你的修正。",
     "midspinWarning": {
       "willApply": "此关卡有{{count}}个中旋砖块。保存时将从完美数量中减去。",
       "alreadyApplied": "由中旋造成的额外完美判定数已从该通关记录中减去。",
       "missing": "此关卡没有中旋砖块，因此完美数不会被调整。",
       "perfectLt": "完美数比中旋格数少，因此完美数不会被调整。"
+    },
+    "keyboard": {
+      "label": "键盘布局",
+      "auto": "自动",
+      "autoValue": "自动 · {{layout}}",
+      "autoUses": "按上传日期，这条通关使用 {{layout}}。",
+      "autoNone": "上传日期没有与此按键数目匹配的已保存布局。",
+      "autoMany": "有多个布局与这条通关匹配，请选择一个。",
+      "autoNoKeyCount": "填写按键数目后，才能按上传日期匹配布局。",
+      "autoNoDate": "这条通关没有上传日期，请手动选择布局。",
+      "noLayouts": "此玩家没有已保存的布局。",
+      "since": "自 {{date}} 起",
+      "range": "{{from}} – {{to}}",
+      "matches": "与本通关匹配",
+      "mismatch": "该布局为 {{layoutCount}} 键，本通关为 {{passCount}} 键。"
     },
     "alert": {
       "success": "通关记录更新成功！",
