@@ -1,4 +1,6 @@
 // tuf-search: #portalRoot
+import { createContext, useContext, useLayoutEffect, useState } from 'react';
+
 /**
  * Portal mount target: app shell uses `<div class="body">` inside `document.body`.
  * Falls back to `document.body` if the shell is not mounted yet.
@@ -13,6 +15,7 @@ export function getPortalRoot(selector = '.body') {
 export const POPUP_STACK_ID = 'tuf-popup-stack';
 export const FLOAT_CHROME_ID = 'tuf-float-chrome';
 export const APP_NOTIFICATIONS_ID = 'app-notifications';
+export const POPOVER_SLOT_ATTR = 'data-tuf-popover-slot';
 
 /**
  * `#app-notifications` must be a direct child of `document.body`.
@@ -32,8 +35,8 @@ export function ensureAppNotificationsOnBody() {
 
 /**
  * Dedicated stacking root on `document.body`, above nav / `.body`.
- * Nested PopupShells are siblings here so later DOM order (and assigned layers)
- * paints the newest dialog on top.
+ * Nested PopupShells are siblings here so later DOM order paints the newest
+ * dialog on top. Popovers mount in a slot immediately after the owning shell.
  */
 export function getPopupStackRoot() {
   const body = typeof document !== 'undefined' ? document.body : null;
@@ -50,6 +53,8 @@ export function getPopupStackRoot() {
 }
 
 const popupShellStack = [];
+const popoverRootListeners = new Set();
+const slotsByShell = new WeakMap();
 
 function documentOrder(a, b) {
   if (a === b) return 0;
@@ -63,9 +68,90 @@ function orderedPopupShells() {
   return popupShellStack.filter(Boolean).sort(documentOrder);
 }
 
-function syncPopupShellLayers() {
-  orderedPopupShells().forEach((node, index) => {
-    node.style.setProperty('z-index', String(index + 1), 'important');
+function notifyPopoverRoots() {
+  popoverRootListeners.forEach((listener) => listener());
+}
+
+/** Subscribe to popup-stack slot changes. Returns an unsubscribe function. */
+export function subscribePopoverRoot(listener) {
+  popoverRootListeners.add(listener);
+  return () => {
+    popoverRootListeners.delete(listener);
+  };
+}
+
+function isPopoverSlot(node) {
+  return Boolean(node && node.nodeType === 1 && node.hasAttribute(POPOVER_SLOT_ATTR));
+}
+
+function createPopoverSlot() {
+  const slot = document.createElement('div');
+  slot.className = 'tuf-popover-slot';
+  slot.setAttribute(POPOVER_SLOT_ATTR, '');
+  return slot;
+}
+
+/** React portal wrap is the stack child. Insert the slot after that wrap, not inside it. */
+function stackWrapForShell(el) {
+  if (!el) return null;
+  const parent = el.parentElement;
+  if (parent?.hasAttribute('data-tuf-portal')) return parent;
+  return el;
+}
+
+function ensureSlotAfterShell(shellEl) {
+  if (!shellEl) return null;
+  const existing = slotsByShell.get(shellEl);
+  if (existing?.isConnected) return existing;
+  const wrap = stackWrapForShell(shellEl);
+  const host = wrap?.parentNode ?? getPopupStackRoot();
+  if (!host) return null;
+  const after = wrap?.nextElementSibling;
+  if (isPopoverSlot(after)) {
+    slotsByShell.set(shellEl, after);
+    return after;
+  }
+  const slot = createPopoverSlot();
+  if (wrap?.parentNode) {
+    wrap.parentNode.insertBefore(slot, wrap.nextSibling);
+  } else {
+    host.appendChild(slot);
+  }
+  slotsByShell.set(shellEl, slot);
+  return slot;
+}
+
+function removeSlotForShell(shellEl) {
+  const slot = slotsByShell.get(shellEl);
+  slotsByShell.delete(shellEl);
+  if (slot && slot.childElementCount === 0) slot.remove();
+}
+
+function ensureIdlePopoverSlot(stack) {
+  const idle = [...stack.children].find((child) => isPopoverSlot(child));
+  if (idle) return idle;
+  const slot = createPopoverSlot();
+  stack.appendChild(slot);
+  return slot;
+}
+
+function pruneEmptyOrphanSlots(stack) {
+  const keep = new Set();
+  orderedPopupShells().forEach((shell) => {
+    const slot = slotsByShell.get(shell);
+    if (slot) keep.add(slot);
+    const wrap = stackWrapForShell(shell);
+    const after = wrap?.nextElementSibling;
+    if (isPopoverSlot(after)) keep.add(after);
+  });
+  if (!popupShellStack.length) {
+    const idle = [...stack.children].find((child) => isPopoverSlot(child));
+    if (idle) keep.add(idle);
+  }
+  [...stack.querySelectorAll(`[${POPOVER_SLOT_ATTR}]`)].forEach((child) => {
+    if (!keep.has(child) && child.childElementCount === 0) {
+      child.remove();
+    }
   });
 }
 
@@ -75,25 +161,36 @@ export function getTopPopupShell() {
   return ordered[ordered.length - 1] ?? null;
 }
 
+/**
+ * Slot after `shellEl`, or the idle stack slot when no dialog is open.
+ * Paint order is DOM order inside `#tuf-popup-stack`; the slot must not use a
+ * positive z-index or it would cover later shells.
+ */
+export function getPopoverRoot(shellEl) {
+  if (typeof document === 'undefined') return null;
+  const stack = getPopupStackRoot();
+  if (!stack) return null;
+  if (!shellEl) return ensureIdlePopoverSlot(stack);
+  const slot = ensureSlotAfterShell(shellEl) ?? ensureIdlePopoverSlot(stack);
+  pruneEmptyOrphanSlots(stack);
+  return slot;
+}
+
 /** Register an open PopupShell overlay node. Returns an unregister function. */
 export function registerPopupShell(el) {
   if (!el) return () => {};
-  const stack = getPopupStackRoot();
-  const body = typeof document !== 'undefined' ? document.body : null;
-  if (stack && body && body.lastElementChild !== stack) {
-    body.appendChild(stack);
-  }
   popupShellStack.push(el);
-  syncPopupShellLayers();
-  const chrome = document.getElementById(FLOAT_CHROME_ID);
-  if (chrome && body && body.lastElementChild !== chrome) {
-    body.appendChild(chrome);
-  }
+  ensureSlotAfterShell(el);
+  const stack = getPopupStackRoot();
+  if (stack) pruneEmptyOrphanSlots(stack);
+  notifyPopoverRoots();
   return () => {
     const idx = popupShellStack.lastIndexOf(el);
     if (idx !== -1) popupShellStack.splice(idx, 1);
-    el.style.removeProperty('z-index');
-    syncPopupShellLayers();
+    removeSlotForShell(el);
+    const nextStack = getPopupStackRoot();
+    if (nextStack) pruneEmptyOrphanSlots(nextStack);
+    notifyPopoverRoots();
   };
 }
 
@@ -117,10 +214,27 @@ export function getFloatChromeRoot() {
 }
 
 /**
- * Dropdowns / pickers that must paint above the current popup: mount inside that
- * shell (same stacking context). Nested shells are later siblings on the popup
- * stack, so they cover these floats. With no popup open, this is `.body`.
+ * Dropdowns / pickers that must paint above the current popup: mount in the
+ * popover slot after that shell. Nested shells are later siblings, so they
+ * cover these floats. With no popup open, this is the idle slot on the stack.
  */
 export function getFloatPortalRoot() {
-  return getTopPopupShell() ?? getPortalRoot();
+  return getPopoverRoot(getTopPopupShell());
+}
+
+export const PopupLayerContext = createContext(null);
+
+/**
+ * Popover mount node for the nearest PopupShell.
+ * Page-level floats stay in the idle slot so later dialogs cover them.
+ */
+export function usePopoverRoot() {
+  const layer = useContext(PopupLayerContext);
+  const [, setVersion] = useState(0);
+  useLayoutEffect(() => {
+    setVersion((value) => value + 1);
+    return subscribePopoverRoot(() => setVersion((value) => value + 1));
+  }, []);
+  const owner = layer ? layer.shell ?? getTopPopupShell() : null;
+  return getPopoverRoot(owner);
 }

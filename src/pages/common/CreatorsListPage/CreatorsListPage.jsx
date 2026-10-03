@@ -9,7 +9,7 @@ import { CreatorCard } from "@/components/cards";
 import { CustomSelect, FacetQueryBuilder, StateDisplay } from "@/components/common/selectors";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { buildFacetQueryParam, facetDomainHasFilter } from "@/utils/facetQueryCodec";
-import { Tooltip } from "react-tooltip";
+import { Tooltip } from '@/components/common/display/Tooltip';
 import { VirtualList } from "@/components/common/VirtualList";
 import api from '@/utils/api';
 import {

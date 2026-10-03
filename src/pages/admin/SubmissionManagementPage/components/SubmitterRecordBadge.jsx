@@ -1,4 +1,4 @@
-import { Tooltip } from 'react-tooltip';
+import { Tooltip } from '@/components/common/display/Tooltip';
 
 export function incrementSubmitterRecord(submissions, userId, field, submitterKey) {
   if (!userId) return submissions;

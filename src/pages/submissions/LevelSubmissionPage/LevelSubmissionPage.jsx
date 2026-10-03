@@ -31,7 +31,7 @@ import { zipLevelFileKey } from '@/components/popups/Levels/ZipLevelFilesList/Zi
 import { useNavigate } from "react-router-dom";
 import { hasFlag, isUserBanned, permissionFlags } from "@/utils/UserPermissions";
 import { QuestionmarkCircleIcon } from "@/components/common/icons";
-import { Tooltip } from "react-tooltip";
+import { Tooltip } from '@/components/common/display/Tooltip';
 import toast from "react-hot-toast";
 import { CDN_IMAGE_ACCEPT } from '@/config/constants/cdnImageAccept';
 import {

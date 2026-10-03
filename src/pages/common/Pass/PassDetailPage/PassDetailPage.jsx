@@ -7,7 +7,7 @@ import { UserAvatar } from "@/components/layout";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import { formatNumber, isoToEmoji } from "@/utils";
 import { isAutoSubmittedPass } from "@/utils/passSubmissionSource";
-import PassAutoSubmissionFlag from "@/components/cards/PassAutoSubmissionFlag";
+import PassAutoSubmissionFlag from "@/components/cards/PassFlags/PassAutoSubmissionFlag";
 import PassMedia from "./PassMedia";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
@@ -21,9 +21,9 @@ import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { formatDate, ICON_SIZE, normalizeKeyCount, selectIconSize, validateFeelingRating } from "@/utils/Utility";
 import { formatAccuracyRatio } from "@/utils/statFormatters";
 import i18next from "i18next";
-import { EyeIcon, EyeOffIcon, TrashIcon, WarningIcon, AdofaiIcon } from "@/components/common/icons";
-import { Tooltip } from "react-tooltip";
-import PassAdofaiV2Flag from "@/components/cards/PassAdofaiV2Flag";
+import { EyeIcon, EyeOffIcon, TrashIcon, WarningIcon } from "@/components/common/icons";
+import { Tooltip } from '@/components/common/display/Tooltip';
+import PassAdofaiV2Flag, { PassAdofaiPre340Flag } from "@/components/cards/PassFlags/PassAdofaiV2Flag";
 import WorldsFirstFlag from "@/components/cards/WorldsFirstFlag/WorldsFirstFlag";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { isPureXPerfect } from "@/utils/CalcAcc";
@@ -362,14 +362,18 @@ const PassDetailPage = () => {
                           className="flag flag--adofai-v2"
                           i18nKey="passDetail.flags.adofaiV2"
                           ns="pages"
-                          title={t('passDetail.flags.adofaiV2Note')}
+                          tooltipKey="passDetail.flags.adofaiV2Note"
+                          tooltipNs="pages"
                         />
                       )}
                       {era === ADOFAI_VERSION.PRE_3_4_0 && (
-                        <span className="flag flag--adofai-pre340" title={t('passDetail.flags.adofaiPre340Note')}>
-                          <AdofaiIcon size={14} color="currentColor" rotation={-20} aria-hidden />
-                          {t('passDetail.flags.adofaiPre340')}
-                        </span>
+                        <PassAdofaiPre340Flag
+                          className="flag flag--adofai-pre340"
+                          i18nKey="passDetail.flags.adofaiPre340"
+                          ns="pages"
+                          tooltipKey="passDetail.flags.adofaiPre340Note"
+                          tooltipNs="pages"
+                        />
                       )}
                       {pass.isXPerfectMode && (
                         <span className="flag">{t('passDetail.flags.xPerfect')}</span>

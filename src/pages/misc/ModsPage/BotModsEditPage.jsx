@@ -423,7 +423,6 @@ const BotModsEditPage = () => {
               isClearable
               isSearchable
               filterOption={() => true}
-              menuPortalTarget={typeof document !== 'undefined' ? document.body : null}
             />
             <div className="modal-actions">
               <button type="button" className="cancel-button btn-fill-ghost" onClick={closeLink}>

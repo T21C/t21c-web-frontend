@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { Tooltip } from 'react-tooltip';
+import { Tooltip } from '@/components/common/display/Tooltip';
 import { useTranslation } from 'react-i18next';
 
 /**

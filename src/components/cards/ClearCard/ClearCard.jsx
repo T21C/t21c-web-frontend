@@ -11,7 +11,7 @@ import { formatAccuracyRatio } from "@/utils/statFormatters";
 import { getPrimaryVideoLink } from "@/utils/videoLink";
 import { clampFloat, formatPassDate } from "@/utils/Utility";
 import WorldsFirstFlag from "../WorldsFirstFlag/WorldsFirstFlag";
-import PassFlags from "../PassFlags";
+import PassFlags from "../PassFlags/PassFlags";
 import i18next from "i18next";
 
 import { shouldShowXPerfectJudgements } from "@/utils/adofaiVersion";

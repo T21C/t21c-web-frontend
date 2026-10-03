@@ -1,4 +1,6 @@
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import { MAX_BIO_CANVAS_BLOCKS } from "@/utils/bioCanvas";
+import { getBlockDescriptor } from "@/utils/bioCanvas/registry";
 import { BLOCK_TYPE_LABELS } from "./blockEditors/index";
 import { BlockListIcon } from "./blockListIcons";
 
@@ -44,10 +46,29 @@ export default function BioCanvasBlockList({
     onReorderBlocks(source.index, destination.index);
   };
 
+  const typeStatuses = Object.entries(BLOCK_TYPE_LABELS).map(([type, label]) => {
+    const max = getBlockDescriptor(type)?.maxPerCanvas ?? MAX_BIO_CANVAS_BLOCKS;
+    const count = blocks.filter((block) => block.type === type).length;
+    return { type, label, max, count, atLimit: count >= max };
+  });
+  const canvasAtLimit = blocks.length >= MAX_BIO_CANVAS_BLOCKS;
+  const canvasOverLimit = blocks.length > MAX_BIO_CANVAS_BLOCKS;
+  const typeLimitNotes = canvasAtLimit
+    ? []
+    : typeStatuses.filter((status) => status.atLimit);
+
   return (
     <div className="bio-canvas-editor__block-list">
       <div className="bio-canvas-editor__block-list-head">
-        <span className="bio-canvas-editor__block-list-label">Blocks ({blocks.length})</span>
+        <span
+          className={
+            canvasAtLimit
+              ? "bio-canvas-editor__block-list-label bio-canvas-editor__block-list-label--limit"
+              : "bio-canvas-editor__block-list-label"
+          }
+        >
+          Blocks ({blocks.length}/{MAX_BIO_CANVAS_BLOCKS})
+        </span>
       </div>
 
       <DragDropContext onDragEnd={handleDragEnd}>
@@ -98,12 +119,45 @@ export default function BioCanvasBlockList({
       </DragDropContext>
 
       <div className="bio-canvas-editor__add-menu">
-        {Object.entries(BLOCK_TYPE_LABELS).map(([type, label]) => (
-          <button key={type} type="button" className="btn-fill-secondary bio-canvas-editor__add-btn" onClick={() => onAddBlock(type)}>
-            + {label}
-          </button>
-        ))}
+        {typeStatuses.map((status) => {
+          const disabled = canvasAtLimit || status.atLimit;
+          const limitLabel = canvasAtLimit
+            ? canvasOverLimit
+              ? `Too many blocks (${blocks.length}/${MAX_BIO_CANVAS_BLOCKS}). Remove extras before saving.`
+              : `Block limit reached (${blocks.length}/${MAX_BIO_CANVAS_BLOCKS}).`
+            : status.count > status.max
+              ? `Too many ${status.label} blocks (${status.count}/${status.max}). Remove extras before saving.`
+              : `${status.label} limit reached (${status.count}/${status.max}).`;
+
+          return (
+            <button
+              key={status.type}
+              type="button"
+              className="btn-fill-secondary bio-canvas-editor__add-btn"
+              disabled={disabled}
+              title={disabled ? limitLabel : undefined}
+              onClick={() => onAddBlock(status.type)}
+            >
+              + {status.label}
+              {status.count > 0 ? ` (${status.count}/${status.max})` : ""}
+            </button>
+          );
+        })}
       </div>
+      {canvasAtLimit && (
+        <p className="bio-canvas-editor__limit-note" role="status">
+          {canvasOverLimit
+            ? `Too many blocks (${blocks.length}/${MAX_BIO_CANVAS_BLOCKS}). Remove extras before saving.`
+            : `Block limit reached (${blocks.length}/${MAX_BIO_CANVAS_BLOCKS}).`}
+        </p>
+      )}
+      {typeLimitNotes.map((status) => (
+        <p key={status.type} className="bio-canvas-editor__limit-note" role="status">
+          {status.count > status.max
+            ? `Too many ${status.label} blocks (${status.count}/${status.max}). Remove extras before saving.`
+            : `${status.label} limit reached (${status.count}/${status.max}).`}
+        </p>
+      ))}
     </div>
   );
 }

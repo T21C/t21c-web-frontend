@@ -68,7 +68,7 @@
       "user": {
         "myProfile": "个人资料",
         "tufStellar": "TUFStellar",
-        "mySubmissions": "提交记录",
+        "mySubmissions": "已提交项目",
         "notifications": "通知",
         "settings": "设置",
         "admin": "管理员页面",
@@ -86,7 +86,7 @@
         "curations": "精选关卡",
         "songs": "歌曲",
         "artists": "艺术家",
-        "keyboards": "键盘",
+        "keyboards": "键盘信息",
         "resources": "资料"
       }
     },

@@ -10,7 +10,7 @@ import { MetaTags } from "@/components/common/display";
 import { buildStaticPageMeta } from '@/utils/meta';
 import { ScoreCard } from "@/components/cards";
 import { StateDisplay, CustomSelect } from "@/components/common/selectors";
-import { Tooltip } from "react-tooltip";
+import { Tooltip } from '@/components/common/display/Tooltip';
 import { VirtualList } from "@/components/common/VirtualList";
 import axios from "axios";
 import { useTranslation } from "react-i18next";

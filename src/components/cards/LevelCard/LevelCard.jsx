@@ -26,7 +26,7 @@ import {
 } from "@/utils/curationTypeUtils";
 import { selectLevelCardDisplayTags, COMMUNITY_TAG_CARD_CAP, communityTagHoverTitle } from "@/utils/communityTags";
 import TagConfidenceBar from "@/components/common/display/TagConfidenceBar/TagConfidenceBar";
-import { Tooltip } from "react-tooltip";
+import { Tooltip } from '@/components/common/display/Tooltip';
 import MarqueeText from "@/components/common/display/MarqueeText/MarqueeText";
 import {
   checkTufHelperLiteDownloadedIds,

@@ -56,9 +56,9 @@
     "16k": "16K",
     "noHoldTap": "Bez wciśnięcia przy przytrzymaniu (NHT)",
     "adofaiV2": "<adofaiicon></adofaiicon> v2",
-    "adofaiV2Note": "Recorded on ADOFAI v2",
+    "adofaiV2Note": "Wersje sprzed zmiany silnika <b>(do v2.9.8)</b>. Były mniej stabilne i mniej precyzyjne przez problemy silnika timingu.",
     "adofaiPre340": "<3.4.0",
-    "adofaiPre340Note": "Recorded before ADOFAI 3.4.0",
+    "adofaiPre340Note": "Wersje sprzed trybu X-Perfect <b>(do v3.3.1)</b>.",
     "xPerfect": "X-Perfect",
     "wrongJudgement": "Błędne osądy"
   },

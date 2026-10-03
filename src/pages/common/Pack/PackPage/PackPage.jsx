@@ -6,7 +6,7 @@ import { useContext, useEffect, useState, useCallback, useRef, useMemo } from "r
 
 import { PackCard } from "@/components/cards";
 import { CustomSelect } from "@/components/common/selectors";
-import { Tooltip } from "react-tooltip";
+import { Tooltip } from '@/components/common/display/Tooltip';
 import { VirtualList } from "@/components/common/VirtualList";
 import { PackContext } from "@/contexts/PackContext";
 import { useLocation } from "react-router-dom";

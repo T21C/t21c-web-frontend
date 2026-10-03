@@ -42,6 +42,13 @@
         "perfect": "Parfait",
         "perfectPlus": "Parfait+",
         "lPerfect": "Parfait-Tard",
+        "short": {
+          "ePerfect": "EP",
+          "perfectMinus": "P−",
+          "perfect": "P",
+          "perfectPlus": "P+",
+          "lPerfect": "LP"
+        },
         "tooearly": "Trop tôt",
         "early": "Tôt",
         "late": "Tard"
@@ -60,6 +67,7 @@
     "adofaiV2Tooltip": "Check this if the clear was recorded on ADOFAI v2",
     "adofaiVersionTooltip": "Version du jeu utilisée pour cette complétion. Alpha correspond à 3.4.0+.",
     "xPerfectTooltip": "Enregistrer les comptes Perfect− et Perfect+ du mode X-Perfect (3.4.0+ uniquement).",
+    "duplicateGuessHint": "Marqué d'après une complétion plus élevée du même chart. Modifier cette case conserve la correction.",
     "midspinWarning": {
       "willApply": "Ce niveau a {{count}} tuiles midspin. Elles seront soustraites de Perfect à l'enregistrement.",
       "alreadyApplied": "Les Perfect midspin ont déjà été retirés de cette complétion.",
@@ -67,6 +75,21 @@
       "perfectLt": "Perfect est inférieur au nombre de midspin, Perfect ne sera pas ajusté."
     },
     "tooltip": "Entrez un nombre entre 1 et 10",
+    "keyboard": {
+      "label": "Disposition du clavier",
+      "auto": "Automatique",
+      "autoValue": "Automatique · {{layout}}",
+      "autoUses": "À la date de mise en ligne, cette complétion utilise {{layout}}.",
+      "autoNone": "Aucune disposition enregistrée ne correspond à ce nombre de touches à la date de mise en ligne.",
+      "autoMany": "Plusieurs dispositions correspondent à cette complétion. Choisissez-en une.",
+      "autoNoKeyCount": "Indiquez le nombre de touches pour retrouver la disposition à la date de mise en ligne.",
+      "autoNoDate": "Cette complétion n’a pas de date de mise en ligne, choisissez une disposition.",
+      "noLayouts": "Ce joueur n’a aucune disposition enregistrée.",
+      "since": "Depuis {{date}}",
+      "range": "{{from}} – {{to}}",
+      "matches": "Correspond à cette complétion",
+      "mismatch": "Cette disposition est en {{layoutCount}}K. Cette complétion est en {{passCount}}K."
+    },
     "alert": {
       "success": "Complétion mise à jour avec succès !",
       "error": "Erreur : ",

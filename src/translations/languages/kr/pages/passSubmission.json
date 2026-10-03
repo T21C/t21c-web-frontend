@@ -39,6 +39,13 @@
     "perfect": "정확",
     "perfectPlus": "정확+",
     "lPerfect": "느림",
+    "short": {
+      "ePerfect": "EP",
+      "perfectMinus": "P−",
+      "perfect": "P",
+      "perfectPlus": "P+",
+      "lPerfect": "LP"
+    },
     "tooearly": "너무 빠름",
     "early": "빠름!",
     "late": "느림!"

@@ -1,8 +1,7 @@
 // tuf-search: #FacetItemPicker #facetItemPicker #selectors #tagSelector
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
-import { Portal } from '@/components/common/Portal';
-import { getFloatPortalRoot } from '@/utils/portalRoot';
+import { PopupShell } from '@/components/common/PopupShell';
 import { useTranslation } from 'react-i18next';
 import { compareSerializedTagOrder } from '@/utils/communityTags';
 import './facetitempicker.css';
@@ -33,15 +32,6 @@ const FacetItemPicker = ({
   useEffect(() => {
     if (!isOpen) setSearch('');
   }, [isOpen]);
-
-  useEffect(() => {
-    if (!isOpen) return undefined;
-    const onKey = (e) => {
-      if (e.key === 'Escape') onClose();
-    };
-    document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
-  }, [isOpen, onClose]);
 
   const pickedSet = useMemo(() => {
     if (!pickedIds) return new Set();
@@ -78,43 +68,22 @@ const FacetItemPicker = ({
     return Object.entries(itemGroups).sort((a, b) => a[1].groupSortOrder - b[1].groupSortOrder);
   }, [filtered, enableGrouping, t]);
 
-  if (!isOpen) return null;
-
-  const setOverlayNode = (el) => {
-    if (overlayRef) {
-      if (typeof overlayRef === 'function') overlayRef(el);
-      else overlayRef.current = el;
-    }
-  };
-
   return (
-    <Portal root={getFloatPortalRoot()}>
-    <div ref={setOverlayNode} className="facet-item-picker" role="dialog" aria-modal="true">
-      <button
-        type="button"
-        className="facet-item-picker__backdrop"
-        aria-label="Close"
-        onMouseDown={(e) => e.stopPropagation()}
-        onClick={(e) => {
-          e.stopPropagation();
-          onClose();
-        }}
-      />
-      <div
-        className="facet-item-picker__dialog"
-        ref={panelRef}
-        onMouseDown={(e) => e.stopPropagation()}
-      >
+    <PopupShell
+      when={isOpen}
+      onClose={onClose}
+      overlayClassName="facet-item-picker"
+      panelClassName="facet-item-picker__dialog"
+      overlayProps={{ ref: overlayRef }}
+      panelProps={{ ref: panelRef }}
+      ariaLabel={title}
+    >
         <div className="facet-item-picker__header">
           <h3 className="facet-item-picker__title">{title}</h3>
           <button
             type="button"
             className="facet-item-picker__close"
-            onMouseDown={(e) => e.stopPropagation()}
-            onClick={(e) => {
-              e.stopPropagation();
-              onClose();
-            }}
+            onClick={onClose}
           >
             ×
           </button>
@@ -143,11 +112,7 @@ const FacetItemPicker = ({
                       <button
                         type="button"
                         className="facet-item-picker__toggle-group-all"
-                        onMouseDown={(e) => e.stopPropagation()}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onToggleGroupAll(data.items.map((it) => it.id));
-                        }}
+                        onClick={() => onToggleGroupAll(data.items.map((it) => it.id))}
                       >
                         {t('facetQueryBuilder.toggleGroupAll')}
                       </button>
@@ -163,9 +128,7 @@ const FacetItemPicker = ({
                         !closeOnPick && pickedSet.has(item.id) ? ' is-selected' : ''
                       }`}
                       style={{ backgroundColor: `${item.color || '#444'}40` }}
-                      onMouseDown={(e) => e.stopPropagation()}
-                      onClick={(e) => {
-                        e.stopPropagation();
+                      onClick={() => {
                         onPick(item.id);
                         if (closeOnPick) onClose();
                       }}
@@ -181,9 +144,7 @@ const FacetItemPicker = ({
             ))
           )}
         </div>
-      </div>
-    </div>
-    </Portal>
+    </PopupShell>
   );
 };
 

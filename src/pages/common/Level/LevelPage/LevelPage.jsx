@@ -7,7 +7,7 @@ import "@/pages/common/search-section.css";
 import { useContext, useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { LevelCard } from "@/components/cards";
 import { StateDisplay, CustomSelect } from "@/components/common/selectors";
-import { Tooltip } from "react-tooltip";
+import { Tooltip } from '@/components/common/display/Tooltip';
 import { VirtualList } from "@/components/common/VirtualList";
 import axios from "axios";
 import api from '@/utils/api';

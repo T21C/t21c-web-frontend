@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import "./playercard.css";
 import { useTranslation } from "react-i18next";
 import { useCallback, useContext, useLayoutEffect, useRef, useState } from "react";
-import { Tooltip } from "react-tooltip";
+import { Tooltip } from '@/components/common/display/Tooltip';
 import { PlayerContext } from "@/contexts/PlayerContext";
 import { formatNumber } from "@/utils";
 import { formatAccuracyRatio } from "@/utils/statFormatters";

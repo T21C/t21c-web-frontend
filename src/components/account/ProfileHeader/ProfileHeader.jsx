@@ -3,7 +3,7 @@ import "./profileheader.css";
 import { useState, useMemo, useEffect, useRef, useLayoutEffect, useCallback, useId } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Tooltip } from "react-tooltip";
+import { Tooltip } from '@/components/common/display/Tooltip';
 import UserAvatar from "@/components/layout/UserAvatar/UserAvatar";
 import ChevronIcon from "@/components/common/icons/ChevronIcon";
 import { ExternalLinkIcon, HeartIcon, TUFStellarIcon } from "@/components/common/icons";

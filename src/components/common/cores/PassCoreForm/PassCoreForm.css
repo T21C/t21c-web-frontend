@@ -353,6 +353,8 @@
   justify-content: space-between;
   margin: 1rem 0;
   gap: 1rem;
+  position: relative;
+  z-index: 1;
 }
 
 .pass-core-form .checkbox-row .gameplay-checkboxes {

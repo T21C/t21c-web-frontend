@@ -12,8 +12,7 @@ import { CrownIcon } from '@/components/common/icons';
 import { CloseButton } from '@/components/common/buttons';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/common/Collapsible';
 import { CustomSelect } from '@/components/common/selectors';
-import { Portal } from '@/components/common/Portal';
-import { Tooltip } from 'react-tooltip';
+import { Tooltip } from '@/components/common/display/Tooltip';
 import {
   formatAccuracyScore,
   RATING_ACCURACY_PROVISIONAL_N,
@@ -409,12 +408,10 @@ const TopRatersPopup = ({ onClose }) => {
           <button className="close-error" onClick={() => setErrorMessage('')}>×</button>
         </div>
       )}
-      </PopupShell>
-      <Portal mount="documentBody">
         {topRaters.map((rater) => (
           <TopRaterAccuracyTooltip key={rater.userId} rater={rater} />
         ))}
-      </Portal>
+      </PopupShell>
     </>
   );
 };

@@ -57,6 +57,12 @@
   "preferences": {
     "title": "환경설정",
     "subtitle": "이 기기의 계정에 적용되는 사이트 옵션입니다.",
+    "language": {
+      "title": "언어",
+      "label": "선호 언어",
+      "description": "사이트 전체에 사용됩니다. 국가 따르기는 플레이어 프로필의 국가를 사용합니다.",
+      "followCountry": "국가 따르기 ({{language}})"
+    },
     "motion": {
       "title": "모션",
       "submissionMinimalMotion": {

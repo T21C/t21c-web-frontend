@@ -70,6 +70,12 @@
   "preferences": {
     "title": "Préférences",
     "subtitle": "Options du site pour votre compte sur cet appareil.",
+    "language": {
+      "title": "Langue",
+      "label": "Langue préférée",
+      "description": "Utilisée sur tout le site. Suivre le pays utilise le pays de votre profil joueur.",
+      "followCountry": "Suivre le pays ({{language}})"
+    },
     "motion": {
       "title": "Mouvement",
       "submissionMinimalMotion": {

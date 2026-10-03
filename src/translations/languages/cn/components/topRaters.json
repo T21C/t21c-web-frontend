@@ -11,9 +11,9 @@
     "endDate": "截止日期"
   },
   "sort": {
-    "label": "排序",
+    "label": "排序依据",
     "accuracy": "准确度",
-    "count": "数量"
+    "count": "评级数"
   },
   "stats": {
     "totalUsers": "总用户数",
@@ -33,16 +33,16 @@
       "averagePerDay": "平均每天"
     },
     "tooltip": {
-      "raw": "原始 {{score}} · {{n}}",
-      "weighted": "加权 {{score}}（排序）",
-      "special": "特殊 {{score}} · {{n}}",
-      "provisional": "暂定 — 已评分图表少于 {{min}}",
-      "empty": "暂无已评分的 PGU 图表"
+      "raw": "原始 {{score}} · {{n}}个",
+      "weighted": "权重 {{score}} （排行）",
+      "special": "特殊 {{score}} · {{n}}个",
+      "provisional": "临时 — 低于 {{min}} 个已评级关卡",
+      "empty": "无已计分的 PGU 关卡"
     }
   },
   "pagination": {
     "previous": "上一页",
     "next": "下一页",
-    "pageInfo": "第{{current}}页，共{{total}}页"
+    "pageInfo": "第 {{current}} 页，共 {{total}} 页"
   }
 }

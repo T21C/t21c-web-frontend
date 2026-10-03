@@ -17,7 +17,7 @@ import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { hasAnyFlag, hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import toast from 'react-hot-toast';
 import autoratercato from "@/assets/icons/autorater cato.png";
-import { Tooltip } from "react-tooltip";
+import { Tooltip } from '@/components/common/display/Tooltip';
 import { CommentFormatter } from '@/components/misc';
 import { useViewDurationTracker } from '@/utils/viewDurationTracker';
 import {

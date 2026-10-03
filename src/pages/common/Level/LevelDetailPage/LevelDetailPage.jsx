@@ -15,7 +15,7 @@ import TagConfidenceBar from '@/components/common/display/TagConfidenceBar/TagCo
 import { getPrimaryVideoLink, getVideoProvider, getLocalVideoPreview, splitVideoLinks } from "@/utils/videoLink";
 import { getBilibiliCoverUrl } from "@/utils/bilibiliCover";
 
-import { Tooltip } from "react-tooltip";
+import { Tooltip } from '@/components/common/display/Tooltip';
 import { useTranslation } from "react-i18next";
 import { ClearCard } from "@/components/cards";
 import { VirtualList, useScrollParent } from "@/components/common/VirtualList";

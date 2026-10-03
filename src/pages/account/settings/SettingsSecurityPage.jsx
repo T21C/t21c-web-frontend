@@ -5,7 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { DiscordIcon, GoogleIcon, UnlinkIcon, YoutubeIcon } from '@/components/common/icons';
 import { CustomSelect } from '@/components/common/selectors';
 import { youtubeChannelUrl, sortYoutubeChannels, isYoutubeChannelLinkingEnabledForUser } from '@/utils/youtubeChannel';
-import { Tooltip } from 'react-tooltip';
+import { Tooltip } from '@/components/common/display/Tooltip';
 import { toast } from 'react-hot-toast';
 import api from '@/utils/api';
 import { useElevation } from '@/contexts/ElevationContext';

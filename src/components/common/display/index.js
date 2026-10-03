@@ -11,6 +11,7 @@ import { ScoreV2GraphDropdown } from './ScoreV2Graph/ScoreV2GraphDropdown';
 import TagConfidenceBar from './TagConfidenceBar/TagConfidenceBar';
 import StartGuideCta from './StartGuideCta/StartGuideCta';
 import MarkdownText from './MarkdownText/MarkdownText';
+import { Tooltip } from './Tooltip';
 
 export { 
     AccessDenied,
@@ -25,4 +26,6 @@ export {
     TagConfidenceBar,
     StartGuideCta,
     MarkdownText,
+    Tooltip,
 };
+

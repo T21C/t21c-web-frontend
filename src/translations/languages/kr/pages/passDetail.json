@@ -123,9 +123,9 @@
     "16k": "16키",
     "noHoldTap": "기본 외 홀드 타일 동작",
     "adofaiV2": "<adofaiicon></adofaiicon> v2",
-    "adofaiV2Note": "얼불춤v2 기록",
+    "adofaiV2Note": "엔진 변경 이전 버전입니다<b>(v2.9.8까지)</b>. 타이밍 엔진 문제로 안정성과 정밀도가 낮았습니다.",
     "adofaiPre340": "<3.4.0",
-    "adofaiPre340Note": "ADOFAI 3.4.0 이전 기록",
+    "adofaiPre340Note": "X-Perfect 이전 버전입니다<b>(v3.3.1까지)</b>.",
     "xPerfect": "X-Perfect",
     "wrongJudgement": "잘못된 판정"
   },

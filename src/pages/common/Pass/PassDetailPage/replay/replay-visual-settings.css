@@ -1,5 +1,3 @@
-.popup-shell.replay-visual-settings-overlay { z-index: 10001; }
-
 .replay-visual-settings {
   width: min(44rem, calc(100vw - 2.5rem));
   max-height: calc(100dvh - 2.5rem);

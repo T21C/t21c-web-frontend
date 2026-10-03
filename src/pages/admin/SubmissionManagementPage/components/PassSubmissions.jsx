@@ -1,6 +1,6 @@
 import { routes } from '@/api/routes';
 // tuf-search: #PassSubmissions #passSubmissions #admin #submissionManagement — Submission Management
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import placeholder from '@/assets/placeholder/1.png';
@@ -33,9 +33,11 @@ import { sortPendingSubmissions, togglePendingSubmissionLock } from './submissio
 import SubmissionVideoLinkField from './SubmissionVideoLinkField';
 import SubmitterRecordBadge, { incrementSubmitterRecord, preserveSubmitterStats } from './SubmitterRecordBadge';
 import { resolveYoutubeVideoMatch } from '@/utils/youtubeChannel';
+import { filterSubmissionsByMatchedIds } from './submissionSearch';
+import { usePendingSubmissionSearch } from './usePendingSubmissionSearch';
 
 
-const PassSubmissions = ({ setIsAutoAllowing }) => {
+const PassSubmissions = ({ setIsAutoAllowing, searchQuery = '' }) => {
   const { t } = useTranslation(['components', 'pages']);
 
   const [submissions, setSubmissions] = useState([]);
@@ -54,6 +56,12 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
   const [showPlayerPopup, setShowPlayerPopup] = useState(false);
   const [selectedSubmission, setSelectedSubmission] = useState(null);
   const [declinePromptId, setDeclinePromptId] = useState(null);
+  const [searchEpoch, setSearchEpoch] = useState(0);
+  const matchedIds = usePendingSubmissionSearch(
+    searchQuery,
+    routes.admin.submissions.passesPendingSearch(),
+    searchEpoch,
+  );
 
   const { difficultyDict } = useDifficultyContext();
 
@@ -131,6 +139,7 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
       setPlayerSearchValues(initialSearchValues);
       
       setSubmissions(sortPendingSubmissions(data));
+      setSearchEpoch((n) => n + 1);
     } catch (error) {
       console.error('Error fetching submissions:', error);
     } finally {
@@ -301,6 +310,7 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
   };
 
   const handleAutoAllow = async () => {
+    return; // FUNCTIONALITY DISABLED
     try {
       setIsAutoAllowing(true);
       const response = await api.post(`${routes.admin.submissions.root()}/auto-approve/passes`);
@@ -332,6 +342,11 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
     };
   }, []);
 
+  const filteredSubmissions = useMemo(
+    () => filterSubmissionsByMatchedIds(submissions, matchedIds),
+    [submissions, matchedIds],
+  );
+
   if (!hasVisibleSubmissions(submissions, cardPhases) && !isLoading) {
     return <p className="no-submissions">{t('passSubmissions.noSubmissions')}</p>;
   }
@@ -343,9 +358,11 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
           <div className="loader-shell loader-shell--submission">
             <div className="loader loader-relative" />
           </div>
+        ) : !hasVisibleSubmissions(filteredSubmissions, cardPhases) ? (
+          <p className="no-submissions">{t('submissionManagement.search.noMatches', { ns: 'pages' })}</p>
         ) : (
           <VirtualList
-            items={submissions}
+            items={filteredSubmissions}
             renderItem={(submission) => {
               const phase = cardPhases[submission.id];
               if (phase === 'placeholder') {

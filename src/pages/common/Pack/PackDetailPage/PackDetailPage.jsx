@@ -23,7 +23,7 @@ import { routes } from '@/api/routes';
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { UserAvatar } from "@/components/layout";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
-import { Tooltip } from "react-tooltip";
+import { Tooltip } from '@/components/common/display/Tooltip';
 import { getPackExpandedFolders, setPackExpandedFolders } from "@/utils/folderState";
 import toast from 'react-hot-toast';
 import { summarizePackSize, summarizeFolderSize, summarizePackClears, formatEstimatedSize } from '@/utils/packDownloadUtils';

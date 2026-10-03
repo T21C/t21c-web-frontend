@@ -1,7 +1,7 @@
 // tuf-search: #Select #selectors #select
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import ReactSelect, { components } from 'react-select';
-import { getFloatPortalRoot } from '@/utils/portalRoot';
+import { usePopoverRoot } from '@/utils/portalRoot';
 import { computeSelectMenuPlacement, estimateSelectMenuHeight } from './selectMenuPlacement';
 import './select.css';
 
@@ -49,6 +49,8 @@ const CustomSelect = ({
   menuPortalTarget,
   backgroundColor = "rgba(255, 255, 255, 0.2)",
   placeholderColor = "#fff8",
+  /** Let option content wrap onto more than one line. */
+  wrapOptions = false,
   components: userComponents,
   ...props
 }) => {
@@ -59,6 +61,7 @@ const CustomSelect = ({
   const [isClosing, setIsClosing] = useState(false);
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const closeTimeoutRef = useRef(null);
+  const popoverRoot = usePopoverRoot();
 
   const measureAutoPlacement = useCallback(() => {
     const el = containerRef.current;
@@ -111,7 +114,7 @@ const CustomSelect = ({
     }),
     menuPortal: (base) => ({
       ...base,
-      zIndex: 'var(--z-float)',
+      zIndex: 0,
     }),
     container: (provided) => ({
       ...provided,
@@ -157,7 +160,7 @@ const CustomSelect = ({
       border: "1px solid rgba(255, 255, 255, 0.1)",
       boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
       overflow: "hidden",
-      zIndex: 'var(--z-float)',
+      zIndex: 0,
       marginTop: state.placement === 'top' ? 0 : '4px',
       marginBottom: state.placement === 'top' ? '4px' : 0,
       maxHeight: maxHeight
@@ -171,13 +174,15 @@ const CustomSelect = ({
       cursor: "pointer",
       transition: "all 0.15s ease-in-out",
       padding: "8px 12px",
-      whiteSpace: "nowrap",
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-      "&:hover": {
-        backgroundColor: "rgba(85, 85, 85, 0.8)",
-        paddingLeft: "1.5rem"
-      }
+      whiteSpace: wrapOptions ? "normal" : "nowrap",
+      overflow: wrapOptions ? "visible" : "hidden",
+      textOverflow: wrapOptions ? "clip" : "ellipsis",
+      "&:hover": wrapOptions
+        ? { backgroundColor: "rgba(85, 85, 85, 0.8)" }
+        : {
+            backgroundColor: "rgba(85, 85, 85, 0.8)",
+            paddingLeft: "1.5rem",
+          }
     }),
     menuList: (base) => ({
       ...base,
@@ -201,7 +206,7 @@ const CustomSelect = ({
       ...provided,
       color: placeholderColor
     })
-  }), [width, backgroundColor, placeholderColor, maxHeight]);
+  }), [width, backgroundColor, placeholderColor, maxHeight, wrapOptions]);
 
   return (
     <div
@@ -226,7 +231,7 @@ const CustomSelect = ({
           value={value}
           onChange={handleChange}
           options={Array.isArray(options) ? options : EMPTY_OPTIONS}
-          menuPortalTarget={menuPortalTarget ?? getFloatPortalRoot()}
+          menuPortalTarget={menuPortalTarget ?? popoverRoot}
           menuPlacement={menuPlacement}
           menuShouldScrollIntoView={false}
           menuPosition="fixed"
