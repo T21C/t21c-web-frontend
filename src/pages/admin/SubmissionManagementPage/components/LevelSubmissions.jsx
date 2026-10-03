@@ -4,7 +4,7 @@ import placeholder from "@/assets/placeholder/1.png"
 import { getLocalVideoPreview } from "@/utils/videoLink";
 import { getBilibiliCoverUrl } from "@/utils/bilibiliCover";
 import "../adminsubmissionpage.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { VirtualList } from '@/components/common/VirtualList';
 import { useTranslation } from "react-i18next";
@@ -39,6 +39,8 @@ import SubmissionVideoLinkField from './SubmissionVideoLinkField';
 import SubmissionNotesField from './SubmissionNotesField';
 import SubmitterRecordBadge, { incrementSubmitterRecord, preserveSubmitterStats } from './SubmitterRecordBadge';
 import { resolveYoutubeVideoMatch } from '@/utils/youtubeChannel';
+import { filterSubmissionsByMatchedIds } from './submissionSearch';
+import { usePendingSubmissionSearch } from './usePendingSubmissionSearch';
 
 const NESTED_SUBMISSION_KEYS = [
   'songObject',
@@ -75,7 +77,7 @@ function isUploadManageDisabled(phase) {
 }
 
 
-const LevelSubmissions = () => {
+const LevelSubmissions = ({ searchQuery = '' }) => {
   const { t } = useTranslation(['components', 'common', 'pages']);
   
   const [submissions, setSubmissions] = useState([]);
@@ -108,6 +110,12 @@ const LevelSubmissions = () => {
   const [suffixValues, setSuffixValues] = useState({});
   const [showCreatorAssignmentModal, setShowCreatorAssignmentModal] = useState({});
   const [declinePromptId, setDeclinePromptId] = useState(null);
+  const [searchEpoch, setSearchEpoch] = useState(0);
+  const matchedIds = usePendingSubmissionSearch(
+    searchQuery,
+    routes.admin.submissions.levelsPendingSearch(),
+    searchEpoch,
+  );
 
   useEffect(() => {
     fetchPendingSubmissions();
@@ -195,6 +203,7 @@ const LevelSubmissions = () => {
       const data = await response.data;
       
       setSubmissions(sortPendingSubmissions(data));
+      setSearchEpoch((n) => n + 1);
     } catch (error) {
       console.error('Error fetching submissions:', error);
     } finally {
@@ -805,6 +814,11 @@ const LevelSubmissions = () => {
     }
   };
 
+  const filteredSubmissions = useMemo(
+    () => filterSubmissionsByMatchedIds(submissions, matchedIds),
+    [submissions, matchedIds],
+  );
+
   if (!hasVisibleSubmissions(submissions, cardPhases) && !isLoading) {
     return <p className="no-submissions">{t('levelSubmissions.noSubmissions')}</p>;
   }
@@ -821,9 +835,11 @@ const LevelSubmissions = () => {
           <div className="loader-shell loader-shell--submission">
             <div className="loader loader-relative" />
           </div>
+        ) : !hasVisibleSubmissions(filteredSubmissions, cardPhases) ? (
+          <p className="no-submissions">{t('submissionManagement.search.noMatches', { ns: 'pages' })}</p>
         ) : (
           <VirtualList
-            items={submissions}
+            items={filteredSubmissions}
             renderItem={(submission) => {
               const phase = cardPhases[submission.id];
               if (phase === 'placeholder') {

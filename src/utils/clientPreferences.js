@@ -87,7 +87,7 @@ function writeGuestCookie(source) {
   if (typeof document === 'undefined') return;
   const guest = {};
   for (const key of GUEST_COOKIE_KEYS) {
-    if (source[key] !== undefined) guest[key] = source[key];
+    if (source[key] != null) guest[key] = source[key];
   }
   const parts = [
     `${COOKIE_NAME}=${encodeURIComponent(JSON.stringify(guest))}`,
@@ -198,6 +198,10 @@ function mergePrefs(existing, patch) {
       if (value === true) next[key] = true;
       continue;
     }
+    if (key === CLIENT_PREF_KEYS.APP_LANGUAGE && value == null) {
+      delete next[key];
+      continue;
+    }
     next[key] = value;
   }
   for (const key of STICKY_TRUE_KEYS) {
@@ -225,15 +229,16 @@ function notify() {
   tufHelperLiteNeverShowListener?.(neverShow);
 }
 
-function mirrorLanguageCache(lang) {
+function mirrorLanguageCache(lang, { clear = false } = {}) {
   if (typeof lang === 'string' && lang) localSet('appLanguage', lang);
+  else if (clear) localSet('appLanguage', null);
 }
 
-function applyMemory(next, { writeCookie = true } = {}) {
+function applyMemory(next, { writeCookie = true, clearLanguage = false } = {}) {
   memory = next;
   cacheHiddenTags(memory[CLIENT_PREF_KEYS.DISPLAY_HIDDEN_LEVEL_CARD_TAG_IDS]);
   if (writeCookie) writeGuestCookie(memory);
-  mirrorLanguageCache(memory[CLIENT_PREF_KEYS.APP_LANGUAGE]);
+  mirrorLanguageCache(memory[CLIENT_PREF_KEYS.APP_LANGUAGE], { clear: clearLanguage });
   notify();
 }
 
@@ -275,7 +280,9 @@ export function subscribeClientPreferences(onStoreChange) {
 
 export function setClientPreferences(partial) {
   if (!isPlainObject(partial) || !Object.keys(partial).length) return;
-  applyMemory(mergePrefs(memory, partial));
+  const clearLanguage = Object.prototype.hasOwnProperty.call(partial, CLIENT_PREF_KEYS.APP_LANGUAGE)
+    && partial[CLIENT_PREF_KEYS.APP_LANGUAGE] == null;
+  applyMemory(mergePrefs(memory, partial), { clearLanguage });
   enqueuePatch(partial);
 }
 
@@ -287,17 +294,27 @@ export function setTufHelperLiteNeverShowListener(listener) {
   tufHelperLiteNeverShowListener = listener;
 }
 
-/** Cookie (then localStorage) language for i18n boot. Missing key is not `en`. */
+/** Cookie, localStorage, then cached account language for i18n boot. Missing key is not `en`. */
 export function readBootLanguage() {
   const cookie = parseCookieObject();
-  if (typeof cookie[CLIENT_PREF_KEYS.APP_LANGUAGE] === 'string') {
+  if (typeof cookie[CLIENT_PREF_KEYS.APP_LANGUAGE] === 'string' && cookie[CLIENT_PREF_KEYS.APP_LANGUAGE]) {
     return cookie[CLIENT_PREF_KEYS.APP_LANGUAGE];
   }
-  return localGet('appLanguage');
+  const local = localGet('appLanguage');
+  if (local && local !== 'us') return local;
+  if (local === 'us') return 'en';
+  const cached = readCachedUser();
+  const accountLang = cached?.clientPreferences?.[CLIENT_PREF_KEYS.APP_LANGUAGE];
+  if (typeof accountLang === 'string' && accountLang) return accountLang;
+  const suggested = cached?.suggestedAppLanguage;
+  if (typeof suggested === 'string' && suggested) return suggested;
+  return null;
 }
 
 export function persistAppLanguage(lang) {
-  setClientPreferences({ [CLIENT_PREF_KEYS.APP_LANGUAGE]: lang });
+  setClientPreferences({
+    [CLIENT_PREF_KEYS.APP_LANGUAGE]: typeof lang === 'string' && lang ? lang : null,
+  });
 }
 
 export function readBootTufHelperLiteNeverShow() {

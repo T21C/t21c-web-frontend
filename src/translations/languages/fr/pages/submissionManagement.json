@@ -12,6 +12,10 @@
     "passes": "Envois de complétions",
     "autoAllow": "Approuver automatiquement les complétions valides"
   },
+  "search": {
+    "placeholder": "Rechercher par chanson, artiste, créateur, joueur ou soumetteur",
+    "noMatches": "Aucune soumission correspondante"
+  },
   "jobs": {
     "title": "Traitement",
     "hide": "Masquer la file",

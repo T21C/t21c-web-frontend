@@ -199,7 +199,9 @@ export const routes = {
     submissions: {
       root: () => '/v2/admin/submissions',
       levelsPending: () => '/v2/admin/submissions/levels/pending',
+      levelsPendingSearch: () => '/v2/admin/submissions/levels/pending/search',
       passesPending: () => '/v2/admin/submissions/passes/pending',
+      passesPendingSearch: () => '/v2/admin/submissions/passes/pending/search',
       jobs: () => '/v2/admin/submissions/jobs',
       //autoApprovePasses: () => '/v2/admin/submissions/auto-approve/passes', DISABLED
       level: (submissionId) => `/v2/admin/submissions/levels/${enc(submissionId)}`,

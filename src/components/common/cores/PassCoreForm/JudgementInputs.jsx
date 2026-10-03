@@ -40,6 +40,20 @@ const BOTTOM_FIELDS = [
   { name: 'late', color: 'var(--color-late-1, #FF6F4D)' },
 ];
 
+const XPERFECT_COMPACT_FIELDS = new Set([
+  'ePerfect',
+  'perfectMinus',
+  'perfect',
+  'perfectPlus',
+  'lPerfect',
+]);
+
+function compactLabelKey(fullKey) {
+  const dot = fullKey.lastIndexOf('.');
+  if (dot < 0) return null;
+  return `${fullKey.slice(0, dot)}.short.${fullKey.slice(dot + 1)}`;
+}
+
 function isIntegerInputValue(value) {
   return value === '' || /^\d+$/.test(value);
 }
@@ -58,7 +72,7 @@ export function JudgementInputs({
   showXPerfectFields = false,
 }) {
   const copy = copyProp || DEFAULT_COPY;
-  const { t } = useTranslation([copy.ns, 'common']);
+  const { t, i18n } = useTranslation([copy.ns, 'common']);
   const shouldShowScore = showScore ?? score != null;
   const topFields = showXPerfectFields ? XPERFECT_TOP_FIELDS : TOP_FIELDS;
 
@@ -71,9 +85,16 @@ export function JudgementInputs({
 
   const renderField = ({ name, color }) => {
     const valid = !isValidDisplay || isValidDisplay[name];
+    const fullKey = copy[name];
+    const fullLabel = fullKey ? t(fullKey, { ns: copy.ns, defaultValue: name }) : name;
+    const shortKey = showXPerfectFields && XPERFECT_COMPACT_FIELDS.has(name) && fullKey
+      ? compactLabelKey(fullKey)
+      : null;
+    const useShort = !!(shortKey && i18n.exists(shortKey, { ns: copy.ns }));
+    const label = useShort ? t(shortKey, { ns: copy.ns }) : fullLabel;
     return (
       <div className={`judgement-inputs__field judgement-inputs__field--${name}`} key={name}>
-        <p>{t(copy[name], { ns: copy.ns, defaultValue: name })}</p>
+        <p title={useShort ? fullLabel : undefined}>{label}</p>
         <input
           type="text"
           inputMode={integerOnly ? 'numeric' : undefined}

@@ -46,12 +46,14 @@ export const changeAppLanguage = async (lang, { persist = true } = {}) => {
   const normalizedLanguage = await ensureLanguageLoaded(lang);
 
   await i18next.changeLanguage(normalizedLanguage);
-  try {
-    localStorage.setItem('appLanguage', normalizedLanguage);
-  } catch {
-    /* ignore quota / private mode */
+  if (persist) {
+    try {
+      localStorage.setItem('appLanguage', normalizedLanguage);
+    } catch {
+      /* ignore quota / private mode */
+    }
+    persistAppLanguage(normalizedLanguage);
   }
-  if (persist) persistAppLanguage(normalizedLanguage);
 
   return normalizedLanguage;
 };

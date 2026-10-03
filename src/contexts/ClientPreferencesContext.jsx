@@ -24,12 +24,17 @@ export function ClientPreferencesProvider({ children }) {
   }, [user]);
 
   useEffect(() => {
-    const lang = getClientPreference(CLIENT_PREF_KEYS.APP_LANGUAGE, null);
+    const saved = getClientPreference(CLIENT_PREF_KEYS.APP_LANGUAGE, null);
+    const lang = typeof saved === 'string' && saved
+      ? saved
+      : (typeof user?.suggestedAppLanguage === 'string' && user.suggestedAppLanguage
+        ? user.suggestedAppLanguage
+        : null);
     if (typeof lang !== 'string' || !lang) return;
     const current = normalizeLanguage(i18next.resolvedLanguage || i18next.language);
     if (current === normalizeLanguage(lang)) return;
     void changeAppLanguage(lang, { persist: false });
-  }, [user?.id, user?.clientPreferences]);
+  }, [user?.id, user?.clientPreferences, user?.suggestedAppLanguage]);
 
   return children;
 }

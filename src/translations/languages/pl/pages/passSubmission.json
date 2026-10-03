@@ -39,6 +39,13 @@
     "perfect": "Perfekcyjnie",
     "perfectPlus": "Perfekcyjnie+",
     "lPerfect": "PPerfekcyjnie",
+    "short": {
+      "ePerfect": "EP",
+      "perfectMinus": "P−",
+      "perfect": "P",
+      "perfectPlus": "P+",
+      "lPerfect": "LP"
+    },
     "tooearly": "Za wcześnie",
     "early": "Wcześnie",
     "late": "Późno"

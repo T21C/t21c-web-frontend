@@ -21,7 +21,8 @@ import {
   parseAdofaiVersion,
 } from '@/utils/adofaiVersion';
 import { applyMidspinPerfectDecrement, willApplyMidspinDecrement } from '@/utils/midspinPerfectDecrement';
-import { applyDerivedPerfects } from '@/utils/CalcAcc';
+import calcAcc, { applyDerivedPerfects } from '@/utils/CalcAcc';
+import { formatAccuracyRatio } from '@/utils/statFormatters';
 import { AdofaiVersionFlagTooltip } from '@/components/cards/PassFlags/PassAdofaiV2Flag';
 
 function truncateString(str, maxLength) {
@@ -242,6 +243,11 @@ export default function PassSubmissionEditableMeta({
       });
     }
   }
+
+  const judgementAccuracy = useMemo(() => {
+    const source = editingJudgements ? draftJudgements : submission.judgements;
+    return formatAccuracyRatio(calcAcc(source));
+  }, [editingJudgements, draftJudgements, submission.judgements]);
 
   const displayJudgementKeys = visibleJudgementKeys(viewingFlags, submission.judgements);
   const editJudgementKeys = visibleJudgementKeys(
@@ -681,13 +687,16 @@ export default function PassSubmissionEditableMeta({
                   hasTilecountMismatch && levelTilecountForTooltip != null ? tilecountTooltipId : undefined
                 }
               >
-                {displayJudgementKeys.map((k) => (
-                  <span key={k} className={`judgement ${JUDGEMENT_CLASS[k]}`}>
-                    {submission.judgements?.[k] !== null && submission.judgements?.[k] !== undefined
-                      ? submission.judgements[k]
-                      : '0'}
-                  </span>
-                ))}
+                <div className="judgements-details-list">
+                  {displayJudgementKeys.map((k) => (
+                    <span key={k} className={`judgement ${JUDGEMENT_CLASS[k]}`}>
+                      {submission.judgements?.[k] !== null && submission.judgements?.[k] !== undefined
+                        ? submission.judgements[k]
+                        : '0'}
+                    </span>
+                  ))}
+                </div>
+                <span className="pass-submission-judgements-accuracy">{judgementAccuracy}</span>
               </div>
               <button type="button" className="pass-submission-meta-edit-btn" onClick={beginEditJudgements}>
                 {t('passSubmissions.edit.edit')}
@@ -695,12 +704,13 @@ export default function PassSubmissionEditableMeta({
             </>
           ) : (
             <div className="pass-submission-judgements-edit">
-              <div
-                className={`pass-submission-judgements-inputs${showXPerfectJudgementEdit ? ' pass-submission-judgements-inputs--xperfect' : ''}${hasTilecountMismatch ? ' pass-submission-judgements-inputs--tilecount-mismatch pass-submission-judgements-tooltip-anchor' : ''}`}
-                data-tooltip-id={
-                  hasTilecountMismatch && levelTilecountForTooltip != null ? tilecountTooltipId : undefined
-                }
-              >
+              <div className="pass-submission-judgements-stack">
+                <div
+                  className={`pass-submission-judgements-inputs${showXPerfectJudgementEdit ? ' pass-submission-judgements-inputs--xperfect' : ''}${hasTilecountMismatch ? ' pass-submission-judgements-inputs--tilecount-mismatch pass-submission-judgements-tooltip-anchor' : ''}`}
+                  data-tooltip-id={
+                    hasTilecountMismatch && levelTilecountForTooltip != null ? tilecountTooltipId : undefined
+                  }
+                >
                   {editJudgementKeys.map((k) => (
                     <label key={k} className={`pass-submission-judgement-field ${JUDGEMENT_CLASS[k] || ''}`}>
                       <span className="pass-submission-judgement-label">{t(`passSubmissions.details.judgements.fields.${k}`)}</span>
@@ -715,15 +725,17 @@ export default function PassSubmissionEditableMeta({
                     </label>
                   ))}
                 </div>
-                <div className="pass-submission-meta-actions">
-                  <button type="button" className="pass-submission-meta-save" onClick={saveJudgements}>
-                    {t('buttons.save', { ns: 'common' })}
-                  </button>
-                  <button type="button" className="pass-submission-meta-cancel" onClick={cancelEditJudgements}>
-                    {t('buttons.cancel', { ns: 'common' })}
-                  </button>
-                </div>
+                <span className="pass-submission-judgements-accuracy">{judgementAccuracy}</span>
               </div>
+              <div className="pass-submission-meta-actions">
+                <button type="button" className="pass-submission-meta-save" onClick={saveJudgements}>
+                  {t('buttons.save', { ns: 'common' })}
+                </button>
+                <button type="button" className="pass-submission-meta-cancel" onClick={cancelEditJudgements}>
+                  {t('buttons.cancel', { ns: 'common' })}
+                </button>
+              </div>
+            </div>
             )}
         </div>
       </div>

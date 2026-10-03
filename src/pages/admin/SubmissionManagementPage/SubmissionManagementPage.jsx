@@ -74,6 +74,7 @@ const SubmissionManagementPage = () => {
   );
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('levels');
+  const [searchQuery, setSearchQuery] = useState('');
   const [isAutoAllowing, setIsAutoAllowing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [openJobs, setOpenJobs] = useState([]);
@@ -248,10 +249,21 @@ const SubmissionManagementPage = () => {
             )}
           </div>
 
+          <div className="submission-search">
+            <input
+              type="text"
+              className="submission-search-input"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={t('submissionManagement.search.placeholder')}
+              aria-label={t('submissionManagement.search.placeholder')}
+            />
+          </div>
+
           {activeTab === 'levels' ? (
-            <LevelSubmissions />
+            <LevelSubmissions searchQuery={searchQuery} />
           ) : (
-            <PassSubmissions setIsAutoAllowing={setIsAutoAllowing} />
+            <PassSubmissions setIsAutoAllowing={setIsAutoAllowing} searchQuery={searchQuery} />
           )}
         </div>
         <SubmissionJobsDrawer

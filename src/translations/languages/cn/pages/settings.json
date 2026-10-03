@@ -57,6 +57,12 @@
   "preferences": {
     "title": "偏好设置",
     "subtitle": "适用于此设备上帐户的网站页面选项。",
+    "language": {
+      "title": "语言",
+      "label": "首选语言",
+      "description": "应用于整个网站。跟随国家会使用玩家资料中的国家。",
+      "followCountry": "跟随国家（{{language}}）"
+    },
     "motion": {
       "title": "动态效果",
       "submissionMinimalMotion": {

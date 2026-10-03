@@ -7,57 +7,17 @@ import { routes } from "@/api/routes";
 import "./languageSelector.css";
 import { useTranslation } from "react-i18next";
 import { changeAppLanguage, normalizeLanguage } from "@/translations/config";
+import {
+  DEFAULT_SITE_LANGUAGE_OPTIONS,
+  languageCompletionLabel,
+  normalizeSiteLanguageOptions,
+  sortSiteLanguageEntries,
+} from "@/utils/siteLanguageOptions";
 import { useFinePointer } from "@/hooks/useFinePointer";
 import { useSubmissionMinimalMotion } from "@/hooks/useMinimalMotionPreference";
 import { useNavHoverMenu } from "../useNavHoverMenu";
 import { NavDropdownPanel } from "../NavDropdown/NavDropdown";
 import MobileDropdown from "../MobileDropdown/MobileDropdown";
-
-const DEFAULT_LANGUAGES = {
-  en: { display: "English", countryCode: "us", status: 100 },
-  pl: { display: "Polski", countryCode: "pl", status: 0 },
-  kr: { display: "한국어", countryCode: "kr", status: 0 },
-  cn: { display: "中文", countryCode: "cn", status: 0 },
-  id: { display: "Bahasa Indonesia", countryCode: "id", status: 0 },
-  jp: { display: "日本語", countryCode: "jp", status: 0 },
-  ru: { display: "Русский", countryCode: "ru", status: 0 },
-  de: { display: "Deutsch", countryCode: "de", status: 0 },
-  fr: { display: "Français", countryCode: "fr", status: 0 },
-  es: { display: "Español", countryCode: "es", status: 0 },
-};
-
-function normalizeLanguageOptions(value) {
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    return DEFAULT_LANGUAGES;
-  }
-
-  return Object.entries(DEFAULT_LANGUAGES).reduce((options, [code, fallback]) => {
-    const next = value[code];
-    options[code] =
-      next && typeof next === "object"
-        ? {
-            display:
-              typeof next.display === "string" && next.display.trim()
-                ? next.display
-                : fallback.display,
-            countryCode:
-              typeof next.countryCode === "string" && next.countryCode.trim()
-                ? next.countryCode
-                : fallback.countryCode,
-            status: Number.isFinite(Number(next.status))
-              ? Number(next.status)
-              : fallback.status,
-          }
-        : fallback;
-    return options;
-  }, {});
-}
-
-function languageStatusLabel(status, t) {
-  if (status === 0) return t("navigation.languages.comingSoon");
-  if (status < 100) return `${status.toFixed(1)}%`;
-  return "100%";
-}
 
 const LanguageSelector = ({
   variant = "desktop",
@@ -66,7 +26,7 @@ const LanguageSelector = ({
   onItemClick,
 }) => {
   const { t, i18n } = useTranslation("components");
-  const [languages, setLanguages] = useState(DEFAULT_LANGUAGES);
+  const [languages, setLanguages] = useState(DEFAULT_SITE_LANGUAGE_OPTIONS);
   const isFinePointer = useFinePointer();
   const reducedMotion = useSubmissionMinimalMotion();
   const rootRef = useRef(null);
@@ -83,20 +43,17 @@ const LanguageSelector = ({
     const fetchLanguageStatus = async () => {
       try {
         const response = await api.get(routes.utils.languages());
-        setLanguages(normalizeLanguageOptions(response.data));
+        setLanguages(normalizeSiteLanguageOptions(response.data));
       } catch (error) {
         console.error("Error fetching language status:", error);
-        setLanguages(DEFAULT_LANGUAGES);
+        setLanguages(DEFAULT_SITE_LANGUAGE_OPTIONS);
       }
     };
 
     fetchLanguageStatus();
   }, []);
 
-  const sortedLanguages = Object.entries(languages).sort(([, a], [, b]) => {
-    if (a.status !== b.status) return b.status - a.status;
-    return a.display.localeCompare(b.display || "");
-  });
+  const sortedLanguages = sortSiteLanguageEntries(languages);
 
   const getCurrentCountryCode = () => {
     if (language === "en" || language === "us") return "us";
@@ -132,7 +89,7 @@ const LanguageSelector = ({
           <div className="nav-language-select__option-content">
             <span>{display}</span>
             <span className="nav-mobile-lang-status">
-              {languageStatusLabel(status, t)}
+              {languageCompletionLabel(status, t)}
             </span>
           </div>
         </>
@@ -247,7 +204,7 @@ const LanguageSelector = ({
               <div className="nav-language-select__option-content">
                 <span>{display}</span>
                 <span className="nav-mobile-lang-status">
-                  {languageStatusLabel(status, t)}
+                  {languageCompletionLabel(status, t)}
                 </span>
               </div>
             </button>

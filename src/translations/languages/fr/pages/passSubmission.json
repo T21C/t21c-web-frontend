@@ -39,6 +39,13 @@
     "perfect": "Parfait",
     "perfectPlus": "Parfait+",
     "lPerfect": "Parfait tard",
+    "short": {
+      "ePerfect": "EP",
+      "perfectMinus": "P−",
+      "perfect": "P",
+      "perfectPlus": "P+",
+      "lPerfect": "LP"
+    },
     "tooearly": "Trop tôt",
     "early": "Tôt",
     "late": "Tard"

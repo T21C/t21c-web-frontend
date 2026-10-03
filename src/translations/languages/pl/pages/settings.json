@@ -70,6 +70,12 @@
   "preferences": {
     "title": "Preferencje",
     "subtitle": "Opcje witryny dla Twojego konta na tym urządzeniu.",
+    "language": {
+      "title": "Język",
+      "label": "Preferowany język",
+      "description": "Używany w całej witrynie. Opcja według kraju korzysta z kraju na Twoim profilu gracza.",
+      "followCountry": "Według kraju ({{language}})"
+    },
     "motion": {
       "title": "Ruch",
       "submissionMinimalMotion": {

@@ -12,6 +12,10 @@
     "passes": "Zgłoszenia przejść",
     "autoAllow": "Automatycznie akceptuj poprawne przejścia"
   },
+  "search": {
+    "placeholder": "Szukaj po utworze, artyście, twórcy, graczu lub zgłaszającym",
+    "noMatches": "Brak pasujących zgłoszeń"
+  },
   "jobs": {
     "title": "Przetwarzanie",
     "hide": "Ukryj kolejkę",

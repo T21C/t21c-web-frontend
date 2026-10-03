@@ -88,3 +88,21 @@
   line-height: 1.4;
   color: var(--color-gray-2);
 }
+
+.settings-preferences-page .settings-preferences-page__language-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.settings-preferences-page .settings-preferences-page__language-flag {
+  width: 1.25rem;
+  height: 1.25rem;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.settings-preferences-page .settings-preferences-page__language-status {
+  font-size: 0.8rem;
+  color: var(--color-gray-2);
+}
