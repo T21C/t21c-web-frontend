@@ -7,6 +7,17 @@
     "creator": "제작자",
     "clears": "클리어",
     "totalClears": "전체 클리어",
+    "clearStatus": {
+      "cleared": "클리어됨",
+      "purePerfect": "퓨어 퍼펙트",
+      "pureXPerfect": "퓨어 X-퍼펙트",
+      "tooltip": "{{accuracy}}, {{score}}로 클리어",
+      "tooltipPurePerfect": "퓨어 퍼펙트로 클리어, {{score}}",
+      "tooltipPureXPerfect": "X 퓨어 퍼펙트로 클리어, {{score}}"
+    },
+    "tooltips": {
+      "purePerfectScore": "퓨어 퍼펙트: {{score}}"
+    },
     "addToPack": "팩에 추가",
     "buttons": {
       "addToPack": "팩에 추가"

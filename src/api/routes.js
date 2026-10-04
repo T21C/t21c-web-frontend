@@ -401,6 +401,7 @@ export const routes = {
       linkMember: (id, memberId) =>
         `/v2/database/levels/${enc(id)}/links/${enc(memberId)}`,
       isLiked: (id) => `/v2/database/levels/${enc(id)}/isLiked`,
+      clearState: (id) => `/v2/database/levels/${enc(id)}/clearState`,
       cdnData: (id) => `/v2/database/levels/${enc(id)}/cdnData`,
       ratings: (id) => `/v2/database/levels/${enc(id)}/ratings`,
       timeout: (id) => `/v2/database/levels/${enc(id)}/timeout`,

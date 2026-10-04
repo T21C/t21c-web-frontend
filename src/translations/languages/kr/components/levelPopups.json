@@ -13,6 +13,7 @@
         "team": "팀",
         "baseScore": "기본 점수",
         "previousBaseScore": "이전 기본 점수",
+        "ppBaseScore": "PP 기본 점수",
         "videoLink": "영상 링크",
         "dlLink": "다운로드 링크",
         "workshopLink": "창작마당 링크",
@@ -24,6 +25,7 @@
       "placeholders": {
         "baseScore": "기본 점수",
         "previousBaseScore": "이전 기본 점수",
+        "ppBaseScore": "PP 기본 점수",
         "rerateNumber": "재평가 수치",
         "rerateReason": "재평가 사유"
       },

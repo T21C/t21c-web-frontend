@@ -217,6 +217,13 @@
   z-index: 3;
 }
 
+.level-detail .pp-difficulty-icon {
+  top: -7%;
+  right: -7%;
+  width: 1.8rem;
+  height: 1.8rem;
+}
+
 .level-detail .pp-display {
   font-size: var(--font-size-sm);
   font-weight: 600;
@@ -2900,7 +2907,8 @@
     min-width: 16px;
   }
   
-  .level-detail .rating-icon {
+  .level-detail .rating-icon,
+  .level-detail .pp-difficulty-icon {
     min-height: 20px;
     min-width: 20px;
   }

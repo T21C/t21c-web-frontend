@@ -12,6 +12,7 @@
         "vfxer": "VFXer(zy)",
         "team": "Drużyna",
         "baseScore": "Wynik podstawowy",
+        "ppBaseScore": "Bazowy wynik PP",
         "videoLink": "Link do wideo",
         "dlLink": "Link do pobrania",
         "workshopLink": "Link do Warsztatu Steam",
@@ -22,6 +23,7 @@
       },
       "placeholders": {
         "baseScore": "Wynik podstawowy",
+        "ppBaseScore": "Bazowy wynik PP",
         "rerateNumber": "Numer rerate'u",
         "rerateReason": "Powód rerate'u"
       },
