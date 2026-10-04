@@ -13,7 +13,8 @@
   },
   "tooltips": {
     "muteChartClears": "Couper les notifications de clear pour ce chart",
-    "unmuteChartClears": "Activer les notifications de clear pour ce chart"
+    "unmuteChartClears": "Activer les notifications de clear pour ce chart",
+    "purePerfectScore": "Pure Perfect : {{score}}"
   },
   "links": {
     "download": "Télécharger le niveau",

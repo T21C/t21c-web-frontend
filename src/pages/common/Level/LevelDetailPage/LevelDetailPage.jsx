@@ -32,7 +32,7 @@ import { ArtistPopup } from "@/components/popups/Artists";
 import { useAuth } from "@/contexts/AuthContext";
 import api from "@/utils/api";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
-import { MetaTags, ScoreV2GraphDropdown } from "@/components/common/display";
+import { MetaTags, ScoreV2GraphDropdown, PpDifficultyIcon } from "@/components/common/display";
 import { buildLevelMeta } from "@/utils/meta";
 import { StatusBanner } from "@/components/common/display/StatusBanner/StatusBanner";
 import { LinkIcon } from "@/components/common/icons/LinkIcon";
@@ -2691,6 +2691,13 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                         className="difficulty-icon"
                       />
                     </button>
+                    <PpDifficultyIcon
+                      level={res.level}
+                      difficultyDict={difficultyDict}
+                      tooltipId={`pp-diff-${res.level.id}`}
+                      tooltipNs="pages"
+                      tooltipKey="levelDetail.tooltips.purePerfectScore"
+                    />
                     <ScoreV2GraphDropdown
                       show={showScoreGraphDropdown}
                       onClose={handleScoreGraphDropdownClose}
@@ -2713,6 +2720,13 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                       src={selectIconSize(difficulty.icon, ICON_SIZE.MEDIUM)}
                       alt={difficulty.name || 'Difficulty icon'}
                       className="difficulty-icon"
+                    />
+                    <PpDifficultyIcon
+                      level={res.level}
+                      difficultyDict={difficultyDict}
+                      tooltipId={`pp-diff-${res.level.id}`}
+                      tooltipNs="pages"
+                      tooltipKey="levelDetail.tooltips.purePerfectScore"
                     />
                   </div>
                 ) : null}

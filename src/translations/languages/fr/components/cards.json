@@ -7,6 +7,17 @@
     "creator": "Créateur",
     "clears": "Complétions",
     "totalClears": "Total complétions",
+    "clearStatus": {
+      "cleared": "Complété",
+      "purePerfect": "Pure Perfect",
+      "pureXPerfect": "Pure X-Perfect",
+      "tooltip": "Complété avec {{accuracy}}, {{score}}",
+      "tooltipPurePerfect": "Complété avec Pure Perfect, {{score}}",
+      "tooltipPureXPerfect": "Complété avec X Pure Perfect, {{score}}"
+    },
+    "tooltips": {
+      "purePerfectScore": "Pure Perfect : {{score}}"
+    },
     "buttons": {
       "edit": "Modifier"
     },

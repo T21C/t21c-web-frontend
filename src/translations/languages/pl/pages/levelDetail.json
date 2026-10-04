@@ -15,7 +15,8 @@
   },
   "tooltips": {
     "muteChartClears": "Wycisz powiadomienia o przejściach tego chartu",
-    "unmuteChartClears": "Włącz powiadomienia o przejściach tego chartu"
+    "unmuteChartClears": "Włącz powiadomienia o przejściach tego chartu",
+    "purePerfectScore": "Pure Perfect: {{score}}"
   },
   "links": {
     "download": "Pobierz poziom",

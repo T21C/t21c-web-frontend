@@ -74,6 +74,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     diffId: '',
     previousDiffId: null,
     ppBaseScore: '',
+    ppDiffId: '',
     baseScore: '',
     videoLink: '',
     dlLink: '',
@@ -109,15 +110,26 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
         : level?.diffId;
     const difficulty =
       difficulties?.find((d) => d.id === diffId) ?? level?.difficulty;
+    const parsedPpBase =
+      formData.ppBaseScore !== null &&
+      formData.ppBaseScore !== '' &&
+      !Number.isNaN(parseFloat(formData.ppBaseScore))
+        ? parseFloat(formData.ppBaseScore)
+        : null;
     return {
       ...level,
       diffId,
       baseScore:
         parsedBase ??
         (level?.baseScore > 0 ? level.baseScore : difficulty?.baseScore ?? null),
+      ppBaseScore: parsedPpBase ?? level?.ppBaseScore ?? null,
+      ppDiffId:
+        formData.ppDiffId !== '' && formData.ppDiffId != null
+          ? Number(formData.ppDiffId)
+          : level?.ppDiffId ?? null,
       difficulty,
     };
-  }, [level, formData.baseScore, formData.diffId, difficulties]);
+  }, [level, formData.baseScore, formData.ppBaseScore, formData.ppDiffId, formData.diffId, difficulties]);
   const [showAliasManagement, setShowAliasManagement] = useState(false);
   const [showPayloadSwap, setShowPayloadSwap] = useState(false);
   const [showUploadManagement, setShowUploadManagement] = useState(false);
@@ -175,6 +187,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
           src.ppBaseScore != null && src.ppBaseScore !== ''
             ? String(src.ppBaseScore)
             : '',
+        ppDiffId: src.ppDiffId != null ? src.ppDiffId : '',
         videoLink: src.videoLink ?? '',
         dlLink: src.dlLink ?? '',
         workshopLink: src.workshopLink ?? '',
@@ -260,23 +273,25 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
 
   const handleDifficultyChange = (value, field = 'diffId') => {
     const selectedDiff = difficulties.find(d => d.name === value);
-    if (selectedDiff !== null) {
-      const baseScoreDisplay = (() => {
-        if (formData.baseScore === null) return "";
-        const baseScore = parseFloat(formData.baseScore);
-        const matchingDiff = difficulties.find(d => d.baseScore === baseScore);
-        return matchingDiff ? matchingDiff.name : formData.baseScore.toString();
-      })();
+    if (!selectedDiff) return;
 
-      const shouldUpdateBaseScore = baseScoreDisplay === value && field === 'diffId';
-      
-      setFormData(prev => ({
-        ...prev,
-        [field]: selectedDiff.id,
-        baseScore: shouldUpdateBaseScore ? selectedDiff.baseScore : prev.baseScore
-      }));
-      setHasUnsavedChanges(true);
-    }
+    const scoreField = field === 'ppDiffId' ? 'ppBaseScore' : 'baseScore';
+    const shouldUpdateScore = (() => {
+      if (field !== 'diffId' && field !== 'ppDiffId') return false;
+      const raw = formData[scoreField];
+      if (raw === null || raw === undefined || raw === '') return false;
+      const baseScore = parseFloat(raw);
+      const matchingDiff = difficulties.find(d => d.baseScore === baseScore);
+      const display = matchingDiff ? matchingDiff.name : String(raw);
+      return display === value;
+    })();
+
+    setFormData(prev => ({
+      ...prev,
+      [field]: selectedDiff.id,
+      ...(shouldUpdateScore ? { [scoreField]: selectedDiff.baseScore } : {}),
+    }));
+    setHasUnsavedChanges(true);
   };
 
   const handleBaseScoreChange = (value, isFromDropdown) => {
@@ -303,6 +318,34 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
         ...prev,
         baseScore: value === "" ? null : value
       }));
+    }
+  };
+
+  const handlePpBaseScoreChange = (value, isFromDropdown) => {
+    if (isFromDropdown) {
+      const selectedDiff = difficulties.find(d => d.name === value);
+      if (selectedDiff) {
+        setFormData(prev => ({
+          ...prev,
+          ppBaseScore: selectedDiff.baseScore
+        }));
+        setHasUnsavedChanges(true);
+      } else {
+        const numericValue = parseFloat(value);
+        if (!isNaN(numericValue)) {
+          setFormData(prev => ({
+            ...prev,
+            ppBaseScore: numericValue
+          }));
+          setHasUnsavedChanges(true);
+        }
+      }
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        ppBaseScore: value === "" ? null : value
+      }));
+      setHasUnsavedChanges(true);
     }
   };
 
@@ -798,14 +841,40 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
               
               <div className={`form-group ${isSuperAdmin ? 'field-enabled' : ''}`}>
                 <label htmlFor="ppBaseScore">{t('levelPopups.edit.form.labels.ppBaseScore')}</label>
-                <input
-                  type="number"
-                  id="ppBaseScore"
-                  name="ppBaseScore"
-                  value={formData.ppBaseScore ?? ''}
-                  onChange={handleInputChange}
+                <RatingInput
+                  disabled={!isSuperAdmin}
+                  value={(() => {
+                    if (formData.ppBaseScore === null || formData.ppBaseScore === undefined) {
+                      return '';
+                    }
+                    return String(formData.ppBaseScore);
+                  })()}
+                  onChange={handlePpBaseScoreChange}
+                  difficulties={difficulties}
+                  allowCustomInput={true}
+                  placeholder={t('levelPopups.edit.form.placeholders.ppBaseScore')}
+                />
+                {getBaseScoreDisplay('ppBaseScore') !== "" && (
+                  <div className="base-score-display">
+                    Equal to {getBaseScoreDisplay('ppBaseScore')}
+                  </div>
+                )}
+              </div>
+
+              <div className={`form-group ${isSuperAdmin ? 'field-enabled' : ''}`}>
+                <RatingInput
+                  value={getDifficultyName(formData.ppDiffId)}
+                  diffId={parseInt(formData.ppDiffId)}
+                  onChange={(value) => handleDifficultyChange(value, 'ppDiffId')}
+                  difficulties={difficulties}
+                  showDiff={true}
                   disabled={!isSuperAdmin}
                 />
+                {difficulties.find(d => d.id === parseInt(formData.ppDiffId))?.baseScore != null && (
+                  <div className="base-score-display">
+                    {difficulties.find(d => d.id === parseInt(formData.ppDiffId))?.baseScore} PP
+                  </div>
+                )}
               </div>
               <button
                 type="button"

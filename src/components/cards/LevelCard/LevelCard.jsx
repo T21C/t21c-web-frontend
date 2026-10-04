@@ -13,7 +13,8 @@ import { ArtistPopup } from "@/components/popups/Artists";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { EditIcon, SteamIcon, DownloadIcon, VideoLinkIcon, PassIcon, PackIcon, DragHandleIcon, MetronomeIcon, ChartIcon, TimeIcon, TUFHelperLiteOpenIcon } from "@/components/common/icons";
 import { LikeButton } from "@/components/common/buttons";
-import { clampFloat, formatCreatorDisplay, ICON_SIZE, selectIconSize } from "@/utils/Utility";
+import { clampFloat, formatCreatorDisplay, formatScore, ICON_SIZE, selectIconSize } from "@/utils/Utility";
+import { formatAccuracyRatio } from "@/utils/statFormatters";
 import { getPrimaryVideoLink } from "@/utils/videoLink";
 import { ABILITIES, hasBit } from "@/utils/Abilities";
 import { permissionFlags } from "@/utils/UserPermissions";
@@ -27,6 +28,7 @@ import {
 import { selectLevelCardDisplayTags, COMMUNITY_TAG_CARD_CAP, communityTagHoverTitle } from "@/utils/communityTags";
 import TagConfidenceBar from "@/components/common/display/TagConfidenceBar/TagConfidenceBar";
 import { Tooltip } from '@/components/common/display/Tooltip';
+import { PpDifficultyIcon } from '@/components/common/display/PpDifficultyIcon/PpDifficultyIcon';
 import MarqueeText from "@/components/common/display/MarqueeText/MarqueeText";
 import {
   checkTufHelperLiteDownloadedIds,
@@ -258,6 +260,11 @@ const LevelCard = ({
   const renderDifficultyIcon = ({ showRating = showEstimatedDifficulty, showCuration = true, showBaseScore = true } = {}) => (
     <div className="img-wrapper">
       <img src={selectIconSize(difficultyDict[difficultyInfo?.id]?.icon, ICON_SIZE.MEDIUM)} alt={difficultyInfo?.name || 'Difficulty icon'} className="difficulty-icon" />
+      <PpDifficultyIcon
+        level={level}
+        difficultyDict={difficultyDict}
+        tooltipId={`pp-diff-card-${level.id}`}
+      />
       
       {showRating && level.rating?.averageDifficultyId && 
        difficultyDict[level.rating.averageDifficultyId]?.icon &&
@@ -490,25 +497,43 @@ const LevelCard = ({
   };
 
   const renderClearedCheckmark = ({ className = '', noHover = false } = {}) => {
-    if (!packItem?.isCleared) return null;
-    const isPureXPerfectClear = !!packItem.isPureXPerfect;
-    const isPurePerfect = !!packItem.isPurePerfect && !isPureXPerfectClear;
+    const clearSource = packItem ?? level;
+    if (!clearSource?.isCleared) return null;
+    const isPureXPerfectClear = !!clearSource.isPureXPerfect;
+    const isPurePerfect = !!clearSource.isPurePerfect && !isPureXPerfectClear;
     const clearVariant = isPureXPerfectClear ? ' pure-xperfect' : isPurePerfect ? ' pure-perfect' : '';
     const clearFill = isPureXPerfectClear
       ? 'var(--color-platinum)'
       : isPurePerfect
         ? 'rgb(255, 233, 0)'
         : '#4CAF50';
+    const scoreLabel = formatScore(Number(clearSource.clearScore) || 0);
+    const tooltipContent = isPureXPerfectClear
+      ? t('cards.level.clearStatus.tooltipPureXPerfect', { score: scoreLabel })
+      : isPurePerfect
+        ? t('cards.level.clearStatus.tooltipPurePerfect', { score: scoreLabel })
+        : t('cards.level.clearStatus.tooltip', {
+            accuracy: formatAccuracyRatio(clearSource.clearAccuracy),
+            score: scoreLabel,
+          });
+    const tooltipId = `level-clear-tooltip-${packItem?.id ?? level?.id}`;
     return (
-      <svg
-        className={`level-card__cleared${clearVariant}${noHover ? ' no-hover' : ''} ${className}`}
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill={clearFill}
-      >
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-      </svg>
+      <>
+        <svg
+          className={`level-card__cleared${clearVariant}${noHover ? ' no-hover' : ''} ${className}`}
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill={clearFill}
+          role="img"
+          aria-label={tooltipContent}
+          data-tooltip-id={tooltipId}
+          data-tooltip-content={tooltipContent}
+        >
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+        </svg>
+        <Tooltip id={tooltipId} place="right" />
+      </>
     );
   };
 
@@ -675,6 +700,7 @@ const LevelCard = ({
       data-deleted={level.isDeleted}
       data-hidden={level.isHidden && !level.isDeleted}
     >
+      {renderClearedCheckmark()}
       <div className="level-card-wrapper">
         <Link className="level-card__link-wrap" to={levelDetailTo} aria-label={getSongDisplayName(level)}>
           {renderLinkContent({ showStats: false })}

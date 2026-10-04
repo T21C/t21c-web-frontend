@@ -7,6 +7,17 @@
     "creator": "Creator",
     "clears": "Clears",
     "totalClears": "Total clears",
+    "clearStatus": {
+      "cleared": "Cleared",
+      "purePerfect": "Pure Perfect",
+      "pureXPerfect": "Pure X-Perfect",
+      "tooltip": "Cleared with {{accuracy}}, {{score}}",
+      "tooltipPurePerfect": "Cleared with Pure Perfect, {{score}}",
+      "tooltipPureXPerfect": "Cleared with X Pure Perfect, {{score}}"
+    },
+    "tooltips": {
+      "purePerfectScore": "Pure perfect: {{score}}"
+    },
     "addToPack": "Add to Pack",
     "buttons": {
       "addToPack": "Add to Pack"

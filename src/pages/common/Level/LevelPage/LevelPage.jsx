@@ -367,6 +367,7 @@ const LevelPage = ({
         specialDifficulties: uniqueSpecialDiffs.length > 0 ? uniqueSpecialDiffs.join(',') : undefined,
         onlyMyLikes: user && onlyMyLikes ? true : undefined,
         withLikeState: user ? true : undefined,
+        withClearState: user ? true : undefined,
         availableDlFilter: availableDlFilter || 'show',
         ...(sort === 'RANDOM' ? { seed: getOrCreateRandomSeed() } : {}),
         ...(facetQuery ? { facetQuery } : {}),
@@ -417,17 +418,32 @@ const LevelPage = ({
         );
         if (response.data) {
           let level = response.data;
-          // byId is role-cached (not per-user); merge like state with one call for this single row.
+          // byId is role-cached (not per-user); merge like/clear state with uncached follow-ups.
           if (user?.id && level?.id != null) {
             try {
-              const likedRes = await api.get(routes.database.levels.isLiked(level.id));
-              level = {
-                ...level,
-                isLiked: !!likedRes.data?.isLiked,
-                likes: likedRes.data?.likes !== undefined ? likedRes.data.likes : level.likes,
-              };
+              const [likedRes, clearRes] = await Promise.all([
+                api.get(routes.database.levels.isLiked(level.id)).catch(() => null),
+                api.get(routes.database.levels.clearState(level.id)).catch(() => null),
+              ]);
+              if (likedRes?.data) {
+                level = {
+                  ...level,
+                  isLiked: !!likedRes.data.isLiked,
+                  likes: likedRes.data.likes !== undefined ? likedRes.data.likes : level.likes,
+                };
+              }
+              if (clearRes?.data) {
+                level = {
+                  ...level,
+                  isCleared: !!clearRes.data.isCleared,
+                  isPurePerfect: !!clearRes.data.isPurePerfect,
+                  isPureXPerfect: !!clearRes.data.isPureXPerfect,
+                  clearAccuracy: clearRes.data.clearAccuracy ?? null,
+                  clearScore: clearRes.data.clearScore ?? null,
+                };
+              }
             } catch {
-              // Leave unannotated; card treats missing isLiked as false.
+              // Leave unannotated; card treats missing flags as false.
             }
           }
           if (listFetchSignatureRef) listFetchSignatureRef.current = getListSignature();

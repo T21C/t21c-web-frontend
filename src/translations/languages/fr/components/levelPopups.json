@@ -11,6 +11,7 @@
         "vfxer": "Effecteur",
         "team": "Équipe",
         "baseScore": "Score de base",
+        "ppBaseScore": "Score de base PP",
         "videoLink": "Lien vidéo",
         "dlLink": "Lien de téléchargement",
         "workshopLink": "Lien Workshop",
@@ -21,6 +22,7 @@
       },
       "placeholders": {
         "baseScore": "Score de base",
+        "ppBaseScore": "Score de base PP",
         "rerateNumber": "Numéro de reclassement",
         "rerateReason": "Raison de reclassement"
       },

@@ -14,7 +14,7 @@
      ResizeObserver correction loop (scroll jitter on fractional-DPI displays). */
   transition: background-color 0.2s ease-in-out;
   max-width: 100%;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 /* CSS-grid layout (no JS / no flex-wrap → deterministic height for virtuoso).
@@ -36,7 +36,7 @@
   border-color: #aaa6;
   transition: background-color 0.1s ease-in-out, border-color 0.1s ease-in-out;
   max-width: 100%;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 .level-card .level-card__link-wrap {
@@ -128,6 +128,11 @@
      object-fit: contain;
   height: 100%;
   width: 100%;
+}
+
+.level-card .img-wrapper:has(.pp-difficulty-icon) .difficulty-icon,
+.level-card .img-wrapper:has(.pp-difficulty-icon) .rating-icon {
+  pointer-events: none;
 }
 .level-card .creator-wrapper {
   overflow: hidden;
@@ -296,6 +301,22 @@
   height: 1.5rem;
 }
 
+.level-card .pp-difficulty-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  top: -10%;
+  left: -10%;
+  z-index: -1;
+  opacity: 0.5;
+  filter: drop-shadow(0 0 2px rgba(255, 255, 0, 0.85));
+  transition: left 0.5s var(--ease-out-expo), opacity 0.5s var(--ease-out-expo);
+}
+
+.level-card:hover .pp-difficulty-icon {
+  opacity: 1;
+  left: -20%;
+}
+
 .level-card .rating-icon {
   top: -11%;
   left: -11%;
@@ -445,10 +466,9 @@
   min-height: 2.5rem;
 }
 
-.level-card.compact .curation-icon {
-  height: 1.1rem;
+.level-card.compact .pp-difficulty-icon {
   width: 1.1rem;
-  --radius: calc(1.65rem * 0.7);
+  height: 1.1rem;
 }
 
 .level-card.compact .img-wrapper {
@@ -725,6 +745,39 @@
 
 .level-card.pack .level-card__cleared:hover {
   background: var(--color-hover);
+}
+
+/* List / compact: cleared mark sits at the bottom-left of the card */
+.level-card.normal > .level-card__cleared,
+.level-card.compact > .level-card__cleared {
+  position: absolute;
+  left: -1rem;
+  align-self: center;
+  z-index: 1;
+  width: 24px;
+  height: 24px;
+  pointer-events: auto;
+  cursor: pointer;
+  opacity: 0.5;
+  transition: left 0.3s ease, opacity 0.3s ease, filter 0.3s ease;
+  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.3));
+}
+
+.level-card.normal:hover > .level-card__cleared,
+.level-card.compact:hover > .level-card__cleared {
+  left: calc(-1rem - 0.5rem);
+  opacity: 1;
+  z-index: 4;
+}
+
+.level-card.normal > .level-card__cleared.pure-perfect,
+.level-card.compact > .level-card__cleared.pure-perfect {
+  filter: drop-shadow(0 0 6px rgba(255, 255, 0, 0.5));
+}
+
+.level-card.normal > .level-card__cleared.pure-xperfect,
+.level-card.compact > .level-card__cleared.pure-xperfect {
+  filter: drop-shadow(0 0 6px rgba(var(--color-platinum-glow-rgb), 0.55));
 }
 
 .level-card.pack .level-card__delete-btn {
