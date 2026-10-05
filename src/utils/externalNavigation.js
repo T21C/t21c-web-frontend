@@ -5,7 +5,7 @@ import { parseSafeUrl } from '@/utils/bioCanvas/urls';
 /**
  * First-party / intentionally linked partner hosts (no exit warning).
  * Subdomains match (e.g. `checkout.stripe.com` via `stripe.com`).
- * User-generated destinations (YouTube, Steam, Drive, arbitrary sites) stay unapproved.
+ * User-generated destinations (Steam, Drive, arbitrary sites) stay unapproved.
  */
 export const APPROVED_EXTERNAL_HOSTS = Object.freeze([
   'tuforums.com',
@@ -18,6 +18,11 @@ export const APPROVED_EXTERNAL_HOSTS = Object.freeze([
   'chromewebstore.google.com',
   'addons.mozilla.org',
   'accounts.google.com',
+  'youtube.com',
+  'youtu.be',
+  'youtube-nocookie.com',
+  'bilibili.com',
+  'b23.tv',
 ]);
 
 function hostMatches(hostname, allowed) {

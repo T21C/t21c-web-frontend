@@ -5,18 +5,20 @@ import "@/pages/common/search-section.css";
 import "@/pages/common/sort.css";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import axios from "axios";
+import { toast } from "react-hot-toast";
 import { CreatorCard } from "@/components/cards";
 import { CustomSelect, FacetQueryBuilder, StateDisplay } from "@/components/common/selectors";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { buildFacetQueryParam, facetDomainHasFilter } from "@/utils/facetQueryCodec";
 import { Tooltip } from '@/components/common/display/Tooltip';
-import { VirtualList } from "@/components/common/VirtualList";
+import { VirtualList, useScrollParent } from "@/components/common/VirtualList";
 import api from '@/utils/api';
 import {
   CREATOR_LEADERBOARD_DEFAULT_SORT_BY,
   normalizeCreatorLeaderboardSortBy,
 } from '@/utils/creatorLeaderboardSort';
 import { useDebouncedRequest } from '@/hooks/useDebouncedRequest';
+import { useLeaderboardLocate } from '@/hooks/useLeaderboardLocate';
 import { CreatorListContext } from "@/contexts/CreatorListContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
@@ -24,7 +26,7 @@ import { ScrollButton } from "@/components/common/buttons";
 import { MetaTags } from "@/components/common/display";
 import { buildStaticPageMeta } from '@/utils/meta';
 import { useLocation } from 'react-router-dom';
-import { SortDescIcon, SortAscIcon, ResetIcon, SortIcon, FilterIcon } from "@/components/common/icons";
+import { SortDescIcon, SortAscIcon, ResetIcon, SortIcon, FilterIcon, LocateIcon } from "@/components/common/icons";
 import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
 import { CreatorHelpPopup } from "@/components/popups/Creators/CreatorHelpPopup/CreatorHelpPopup";
 import {
@@ -55,8 +57,11 @@ const CreatorsListPage = () => {
   const { curationTypes } = useDifficultyContext();
   const [hasMore, setHasMore] = useState(true);
   const [showHelpPopup, setShowHelpPopup] = useState(false);
+  const [locateMode, setLocateMode] = useState(false);
+  const [locateScrollArmed, setLocateScrollArmed] = useState(false);
   const runRequest = useDebouncedRequest(500);
   const isFirstListEffectRef = useRef(true);
+  const { scrollRef: locateScrollRef, scrollParent: locateScrollParent } = useScrollParent();
 
   const {
     creatorData,
@@ -229,12 +234,94 @@ const CreatorsListPage = () => {
     setForceUpdate(prev => !prev);
   };
 
+  const liveCreatorSearchParams = () => {
+    const params = new URLSearchParams({
+      query,
+      sortBy: normalizeCreatorLeaderboardSortBy(sortBy),
+      order: String(sort ?? 'DESC').toLowerCase(),
+    });
+    if (verificationFilter) {
+      params.set('filters', JSON.stringify({ verificationStatus: verificationFilter }));
+    }
+    const facetQuery = buildFacetQueryParam(creatorFacetFilters);
+    if (facetQuery) {
+      params.set('facetQuery', facetQuery);
+    }
+    if (user && followingFilter === 'only') {
+      params.set('following', 'only');
+    }
+    return params;
+  };
+
+  const locateBlock = !user ? 'signed-out' : !user.creatorId ? 'unlinked' : null;
+  const locateRequestKey = liveCreatorSearchParams().toString();
+  const locate = useLeaderboardLocate({
+    active: locateMode && !locateBlock,
+    requestKey: locateRequestKey,
+    request: ({ direction, cursor, signal } = {}) => {
+      const params = liveCreatorSearchParams();
+      if (direction) {
+        params.set('direction', direction);
+        params.set('cursor', JSON.stringify(cursor));
+        params.set('limit', '30');
+      }
+      return api
+        .get(`${routes.creatorsV3.leaderboardAround()}?${params.toString()}`, { signal })
+        .then((response) => response.data);
+    },
+  });
+
+  useEffect(() => {
+    if (!locateMode) return;
+    window.scrollTo(0, 0);
+  }, [locateMode]);
+
+  useEffect(() => {
+    if (!locateMode || locate.status !== 'ready') {
+      setLocateScrollArmed(false);
+      return undefined;
+    }
+    const timer = setTimeout(() => setLocateScrollArmed(true), 200);
+    return () => clearTimeout(timer);
+  }, [locateMode, locate.status, locateRequestKey]);
+
+  useEffect(() => {
+    if (!locateMode || !locateBlock) return;
+    const messageKey = locateBlock === 'signed-out'
+      ? 'creators.locate.signedOut'
+      : 'creators.locate.unlinked';
+    toast.error(t(messageKey));
+  }, [locateMode, locateBlock, t]);
+
+  useEffect(() => {
+    if (!locateMode || locate.status !== 'missing') return;
+    toast.error(t('creators.locate.missing'));
+  }, [locateMode, locate.status, locateRequestKey, t]);
+
+  const locateItems = locate.windowState?.items ?? [];
+  const locateStartIndex = locate.windowState?.startIndex ?? 0;
+  const locateUserIndex = typeof locate.windowState?.index === 'number'
+    ? locate.windowState.index - locateStartIndex
+    : 0;
+
   return (
-    <div className="creators-list-page">
+    <div className={`creators-list-page${locateMode ? ' creators-list-page--locate' : ''}`}>
       <MetaTags {...pageMeta} />
 
       <div className="creators-list-page__body page-content-70rem">
-        <ScrollButton />
+        {!locateMode && <ScrollButton />}
+
+        <div className="creators-list-page__locate-row">
+          <button
+            type="button"
+            className={`creators-list-page__locate-toggle${locateMode ? ' creators-list-page__locate-toggle--active' : ''}`}
+            onClick={() => setLocateMode((prev) => !prev)}
+            aria-pressed={locateMode}
+          >
+            <LocateIcon color="currentColor" size={18} />
+            <span>{t('creators.locate.button')}</span>
+          </button>
+        </div>
 
         <div className="search-section">
           <div className="search-row">
@@ -412,12 +499,63 @@ const CreatorsListPage = () => {
           </span>
         )}
 
-        <div className="creators-list-page__list" style={{ minHeight: "500px" }}>
-          {creatorData === null ? (
+        <div
+          className="creators-list-page__list"
+          style={locateMode ? undefined : { minHeight: "500px" }}
+          ref={locateMode ? locateScrollRef : undefined}
+        >
+          {locateMode && locateBlock && (
+            <p className="end-message">
+              <b>{t(locateBlock === 'signed-out' ? 'creators.locate.signedOut' : 'creators.locate.unlinked')}</b>
+            </p>
+          )}
+          {locateMode && !locateBlock && locate.status !== 'ready' && locate.status !== 'missing' && (
             <div className="loader-shell loader-shell--tall">
               <div className="loader loader-relative" />
             </div>
-          ) : (displayedCreators?.length ?? 0) > 0 ? (
+          )}
+          {locateMode && !locateBlock && locate.status === 'missing' && (
+            <div className="creators-list-page__empty">
+              <p className="end-message">
+                <b>{t('creators.locate.missing')}</b>
+              </p>
+            </div>
+          )}
+          {locateMode && !locateBlock && locate.status === 'ready' && locateScrollParent && (
+            <VirtualList
+              key={locateRequestKey}
+              customScrollParent={locateScrollParent}
+              style={{ paddingBottom: "4rem", overflow: "visible" }}
+              items={locateItems}
+              firstItemIndex={locateStartIndex}
+              initialTopMostItemIndex={{ index: locateUserIndex, align: 'center' }}
+              startReached={locateScrollArmed ? locate.loadBefore : undefined}
+              loadMore={locateScrollArmed ? locate.loadAfter : undefined}
+              hasMore={locateScrollArmed && Boolean(locate.windowState?.hasAfter)}
+              loadingMore={locate.loadingAfter}
+              header={locate.loadingBefore && <div className="loader loader-relative" />}
+              restoreScroll={false}
+              loader={<div className="loader loader-relative"></div>}
+              endMessage={
+                <p className="end-message">
+                  <b>{t('creators.infiniteScroll.end')}</b>
+                </p>
+              }
+              renderItem={(creator) => (
+                <CreatorCard
+                  creator={creator}
+                  highlighted={Number(creator?.id) === Number(user?.creatorId)}
+                />
+              )}
+              computeItemKey={(index, creator) => creator?.id ?? index}
+            />
+          )}
+          {!locateMode && creatorData === null && (
+            <div className="loader-shell loader-shell--tall">
+              <div className="loader loader-relative" />
+            </div>
+          )}
+          {!locateMode && creatorData !== null && (displayedCreators?.length ?? 0) > 0 && (
             <VirtualList
               style={{ paddingBottom: "4rem", overflow: "visible" }}
               items={displayedCreators}
@@ -434,7 +572,8 @@ const CreatorsListPage = () => {
               )}
               computeItemKey={(index, creator) => creator?.id ?? index}
             />
-          ) : (
+          )}
+          {!locateMode && creatorData !== null && (displayedCreators?.length ?? 0) === 0 && (
             <div className="creators-list-page__empty">
               <p className="end-message">
                 <b>{user && followingFilter === 'only' ? t('creators.list.emptyFollowing') : t('creators.list.empty')}</b>

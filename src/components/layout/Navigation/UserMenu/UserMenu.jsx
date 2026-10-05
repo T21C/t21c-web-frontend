@@ -1,15 +1,20 @@
 // tuf-search: #UserMenu #userMenu #layout #navigation
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { UserAvatar } from "@/components/layout";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
-import { createUserMenuItems } from "../navigationConfig";
+import { createUserMenuItems, getProfileCycleTos, getSectionCycleTos } from "../navigationConfig";
 import { ChevronIcon } from "@/components/common/icons";
 import InboxBell from "../InboxBell";
 import { useFinePointer } from "@/hooks/useFinePointer";
 import { useSubmissionMinimalMotion } from "@/hooks/useMinimalMotionPreference";
+import {
+  NAV_DROPDOWN_CLICK_MODE_CYCLE,
+  useNavDropdownClickModePreference,
+} from "@/hooks/useNavDropdownClickModePreference";
 import { useNavHoverMenu } from "../useNavHoverMenu";
+import { useNavProfileCycle } from "../useNavProfileCycle";
 import { NavDropdownPanel, NavMenuItems } from "../NavDropdown/NavDropdown";
 import "./userMenu.css";
 import { useTranslation } from "react-i18next";
@@ -20,6 +25,7 @@ const UserMenu = ({ isActive }) => {
   const location = useLocation();
   const isFinePointer = useFinePointer();
   const reducedMotion = useSubmissionMinimalMotion();
+  const [clickMode] = useNavDropdownClickModePreference();
   const rootRef = useRef(null);
   const triggerRef = useRef(null);
   const panelRef = useRef(null);
@@ -28,17 +34,6 @@ const UserMenu = ({ isActive }) => {
     enabled: isFinePointer,
     rootRef,
   });
-
-  useEffect(() => {
-    menu.closeNow();
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- close on navigate only
-  }, [location]);
-
-  if (!user) {
-    return null;
-  }
-
-  const hasActiveItem = isActive ? isActive(location.pathname) : false;
   const menuItems = [
     ...(createUserMenuItems(user) || []),
     {
@@ -48,6 +43,64 @@ const UserMenu = ({ isActive }) => {
       },
     },
   ];
+  const menuCycleTos = getSectionCycleTos(menuItems);
+  const profilePairTos = getProfileCycleTos(menuItems);
+  const menuCycle = useNavProfileCycle(menuCycleTos, {
+    pin: menu.pin,
+    dismiss: menu.dismiss,
+    clickMode,
+  });
+  const profilePairCycle = useNavProfileCycle(
+    profilePairTos.length >= 2 ? profilePairTos : [],
+    {
+      pin: menu.pin,
+      dismiss: menu.dismiss,
+      clickMode,
+    },
+  );
+
+  useEffect(() => {
+    if (menuCycle.isTimerArmed() || profilePairCycle.isTimerArmed()) return;
+    menu.closeNow();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- close on navigate only
+  }, [location]);
+
+  const handleTriggerClick = useCallback(
+    (event) => {
+      const canCycle =
+        clickMode === NAV_DROPDOWN_CLICK_MODE_CYCLE && menuCycleTos.length > 0;
+      if (!canCycle) {
+        menu.handleTriggerClick(event);
+        return;
+      }
+      menuCycle.advance(event);
+    },
+    [
+      clickMode,
+      menu.handleTriggerClick,
+      menuCycle.advance,
+      menuCycleTos.length,
+    ],
+  );
+
+  const handleMouseEnter = useCallback(() => {
+    menu.scheduleOpen();
+    menuCycle.notePointerEnter();
+    profilePairCycle.notePointerEnter();
+  }, [menu.scheduleOpen, menuCycle.notePointerEnter, profilePairCycle.notePointerEnter]);
+
+  const handleMouseLeave = useCallback(() => {
+    const menuHeld = menuCycle.shortenOnLeave();
+    const pairHeld = profilePairCycle.shortenOnLeave();
+    if (menuHeld || pairHeld) return;
+    menu.scheduleClose();
+  }, [menu.scheduleClose, menuCycle.shortenOnLeave, profilePairCycle.shortenOnLeave]);
+
+  if (!user) {
+    return null;
+  }
+
+  const hasActiveItem = isActive ? isActive(location.pathname) : false;
 
   const focusFirstItem = () => {
     requestAnimationFrame(() => {
@@ -83,8 +136,8 @@ const UserMenu = ({ isActive }) => {
       <div
         className={`nav-dropdown ${menu.isPinned ? "pinned" : ""}`}
         ref={rootRef}
-        onMouseEnter={menu.scheduleOpen}
-        onMouseLeave={menu.scheduleClose}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
         onBlur={menu.handleRootBlur}
       >
         <button
@@ -94,7 +147,7 @@ const UserMenu = ({ isActive }) => {
           aria-expanded={menu.isOpen}
           aria-haspopup="menu"
           aria-controls={menu.panelId}
-          onClick={menu.handleTriggerClick}
+          onClick={handleTriggerClick}
           onFocus={() => {
             if (isFinePointer) menu.open();
           }}
@@ -125,7 +178,12 @@ const UserMenu = ({ isActive }) => {
             onCloseAnimationEnd={menu.handleCloseAnimationEnd}
             panelRef={panelRef}
           >
-            <NavMenuItems items={menuItems} t={t} onItemClick={menu.closeNow} />
+            <NavMenuItems
+              items={menuItems}
+              t={t}
+              onItemClick={menu.closeNow}
+              onProfileCycle={profilePairCycle.advance}
+            />
           </NavDropdownPanel>
         )}
       </div>

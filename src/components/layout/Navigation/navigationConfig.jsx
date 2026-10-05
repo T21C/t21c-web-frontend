@@ -70,7 +70,18 @@ export function getSectionParentTo(items = []) {
 }
 
 export function getSectionCycleTos(items = []) {
-  return items.filter(isSectionCycleItem).map((item) => item.to);
+  const tos = [];
+  for (const item of items) {
+    if (!item || item.divider || item.disabled || item.onClick || item.suppressActive) continue;
+    if (Array.isArray(item.profileTargets) && item.profileTargets.length > 0) {
+      for (const target of item.profileTargets) {
+        if (isInternalNavPath(target?.to)) tos.push(target.to);
+      }
+      continue;
+    }
+    if (isSectionCycleItem(item)) tos.push(item.to);
+  }
+  return tos;
 }
 
 export function pathMatchesNavTo(pathname, to, { exact = false } = {}) {
@@ -79,14 +90,33 @@ export function pathMatchesNavTo(pathname, to, { exact = false } = {}) {
   return pathname === to || pathname.startsWith(`${to}/`);
 }
 
+function itemMatchesNavPath(item, pathname) {
+  if (!item || item.divider || item.suppressActive) return false;
+  if (Array.isArray(item.profileTargets) && item.profileTargets.length > 0) {
+    return item.profileTargets.some((target) =>
+      pathMatchesNavTo(pathname, target?.to, { exact: true }),
+    );
+  }
+  return pathMatchesNavTo(pathname, item.to, { exact: item.exact });
+}
+
 export function sectionIsActive(items = [], pathname) {
-  return items.some(
-    (item) =>
-      item &&
-      !item.divider &&
-      !item.suppressActive &&
-      pathMatchesNavTo(pathname, item.to, { exact: item.exact }),
-  );
+  return items.some((item) => itemMatchesNavPath(item, pathname));
+}
+
+/** Paths the user-menu profile control cycles through (player, then creator). */
+export function getProfileCycleTos(items = []) {
+  for (const item of items) {
+    if (!Array.isArray(item?.profileTargets) || item.profileTargets.length === 0) continue;
+    return item.profileTargets
+      .map((target) => target.to)
+      .filter((to) => isInternalNavPath(to));
+  }
+  return [];
+}
+
+export function isProfilePairItem(item) {
+  return Array.isArray(item?.profileTargets) && item.profileTargets.length >= 2;
 }
 
 function createSection({ id, label, items, condition, menuAlign, className }) {
@@ -109,15 +139,26 @@ function createSection({ id, label, items, condition, menuAlign, className }) {
  * @param {Object} user - User object
  * @returns {Array|null} Array of user menu items or null if no user
  */
+function profileEntityPath(base, id) {
+  if (id == null || id === "") return null;
+  return `${base}/${id}`;
+}
+
 export const createUserMenuItems = (user) => {
   if (!user) return null;
 
   const isAdmin = hasFlag(user, permissionFlags.SUPER_ADMIN);
+  const playerTo = profileEntityPath("/profile", user.playerId) ?? "/profile";
+  const creatorTo = profileEntityPath("/creator", user.creatorId);
+  const profileTargets = [
+    { key: "player", to: playerTo },
+    ...(creatorTo ? [{ key: "creator", to: creatorTo }] : []),
+  ];
 
   return [
     {
-      to: "/profile",
       translationKey: "navigation.main.dropdowns.user.myProfile",
+      profileTargets,
     },
     ...(user.tufStellarEnabled
       ? [

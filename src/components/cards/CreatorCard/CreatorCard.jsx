@@ -20,7 +20,7 @@ import { TUFStellarIcon } from "@/components/common/icons";
 
 const SECONDARY_KEYS = ["totalChartClears", "totalChartLikes"];
 
-const CreatorCard = ({ creator, displayMode = "normal" }) => {
+const CreatorCard = ({ creator, displayMode = "normal", highlighted = false }) => {
   const { t } = useTranslation('pages');
   const ctx = useContext(CreatorListContext);
   const { curationTypesDict } = useDifficultyContext();
@@ -62,7 +62,7 @@ const CreatorCard = ({ creator, displayMode = "normal" }) => {
 
   return (
     <Link
-      className={`creator-card${displayMode === "showcase" ? " creator-card--showcase" : ""}`}
+      className={`creator-card${displayMode === "showcase" ? " creator-card--showcase" : ""}${highlighted ? " creator-card--self" : ""}`}
       to={`/creator/${creator.id}`}
     >
       <div className="creator-card__avatar">

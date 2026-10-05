@@ -61,15 +61,17 @@ export async function confirmExternalNavigation(rawUrl) {
 
 /**
  * Confirm (if needed) then navigate. Prefer this over raw location.href for user-content URLs.
+ * `skipWarning` is for flows that already disclosed the destination (OAuth provider hops
+ * and the consent redirect). Unsafe schemes are still rejected.
  */
-export async function navigateExternal(rawUrl, { newTab = false } = {}) {
+export async function navigateExternal(rawUrl, { newTab = false, skipWarning = false } = {}) {
   const absolute = resolveNavigationUrl(rawUrl);
   if (!absolute) return false;
 
   const unapproved = getUnapprovedExternalUrl(absolute);
   const target = unapproved || absolute;
 
-  if (unapproved) {
+  if (unapproved && !skipWarning) {
     const ok = await confirmExternalNavigation(unapproved);
     if (!ok) return false;
   } else if (!isApprovedNavigationUrl(absolute) && !parseSafeUrl(absolute)) {

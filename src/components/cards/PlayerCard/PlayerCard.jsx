@@ -19,7 +19,7 @@ import { TUFStellarIcon } from "@/components/common/icons";
 const diffFields = ["topDiff", "top12kDiff"];
 const passes = ["totalPasses", "universalPassCount", "worldsFirstCount", "worldsFirstPPCount"];
 
-const PlayerCard = ({ player, listIndex, onCreatorAssignmentClick, historical = false, displayMode = "normal" }) => {
+const PlayerCard = ({ player, listIndex, onCreatorAssignmentClick, historical = false, displayMode = "normal", highlighted = false }) => {
   const playerCtx = useContext(PlayerContext);
   const sortBy = displayMode === "showcase" ? "rankedScore" : playerCtx?.sortBy || "rankedScore";
   const { t } = useTranslation("components");
@@ -158,7 +158,7 @@ const PlayerCard = ({ player, listIndex, onCreatorAssignmentClick, historical = 
 
   return (
     <div
-      className={`player-card${historical ? ' player-card--historical' : ''}${displayMode === 'showcase' ? ' player-card--showcase' : ''}`}
+      className={`player-card${historical ? ' player-card--historical' : ''}${displayMode === 'showcase' ? ' player-card--showcase' : ''}${highlighted ? ' player-card--self' : ''}`}
       style={{ backgroundColor: player.rankedScoreRank === -1 ? "#ff000099" : "" }}
     >
       <Link className="player-card__link-wrap" to={profileTo} aria-label={player.name}>

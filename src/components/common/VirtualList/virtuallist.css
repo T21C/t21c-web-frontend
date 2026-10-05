@@ -71,6 +71,14 @@
   margin-inline: auto;
 }
 
+.virtual-list__header {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 0.5rem 0;
+  box-sizing: border-box;
+}
+
 /* List mode: footer is a direct row in the flex column */
 .virtual-list__list .virtual-list__footer {
   align-self: stretch;

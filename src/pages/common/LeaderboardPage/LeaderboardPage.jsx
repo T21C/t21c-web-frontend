@@ -5,19 +5,21 @@ import "@/pages/common/search-section.css";
 import { useContext, useEffect, useRef, useState, useMemo, useCallback } from "react";
 import { useLocation } from 'react-router-dom';
 import axios from "axios";
+import { toast } from "react-hot-toast";
 import { PlayerCard } from "@/components/cards";
 import { StateDisplay, CustomSelect, CountrySelect, RangeSelector } from "@/components/common/selectors";
 import { Tooltip } from '@/components/common/display/Tooltip';
-import { VirtualList } from "@/components/common/VirtualList";
+import { VirtualList, useScrollParent } from "@/components/common/VirtualList";
 import api from '@/utils/api';
 import { useDebouncedRequest } from '@/hooks/useDebouncedRequest';
+import { useLeaderboardLocate } from '@/hooks/useLeaderboardLocate';
 import { PlayerContext } from "@/contexts/PlayerContext";
 import { useTranslation } from "react-i18next";
 import { ScrollButton } from "@/components/common/buttons";
 import { MetaTags } from "@/components/common/display";
 import { buildLeaderboardMeta } from '@/utils/meta';
 import { useAuth } from "@/contexts/AuthContext";
-import { SortDescIcon, SortAscIcon, SortIcon, FilterIcon, ResetIcon, RewindIcon } from "@/components/common/icons";
+import { SortDescIcon, SortAscIcon, SortIcon, FilterIcon, ResetIcon, RewindIcon, LocateIcon } from "@/components/common/icons";
 import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
 import { CreatorAssignmentPopup } from "@/components/popups/Creators";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
@@ -65,8 +67,11 @@ const LeaderboardPage = () => {
   const runRequest = useDebouncedRequest(500);
   const historyRequest = useDebouncedRequest(500);
   const isFirstListEffectRef = useRef(true);
+  const { scrollRef: locateScrollRef, scrollParent: locateScrollParent } = useScrollParent();
 
   const [pastMode, setPastMode] = useState(false);
+  const [locateMode, setLocateMode] = useState(false);
+  const [locateScrollArmed, setLocateScrollArmed] = useState(false);
   const [historyDate, setHistoryDate] = useState(null);
   const [historyMetric, setHistoryMetric] = useState('rankedScore');
   const [historySort, setHistorySort] = useState('ASC');
@@ -341,6 +346,7 @@ const LeaderboardPage = () => {
   }, [pastMode, historyDate, historyMetric, historySort, historyQuery, followingFilter, user]);
 
   const enterPastMode = async () => {
+    setLocateMode(false);
     setPastMode(true);
     setHistoryPlayers(null);
     setHistoryTotal(null);
@@ -544,13 +550,102 @@ const LeaderboardPage = () => {
     setFilters((prev) => ({ ...prev, rankedScoreRank: [min, max] }));
   };
 
+  const liveLeaderboardSearchParams = () => {
+    const effectiveFlagFilter = hasFlag(user, permissionFlags.SUPER_ADMIN)
+      ? playerFlagFilter
+      : DEFAULT_PLAYER_FLAG_FILTER;
+
+    const params = new URLSearchParams({
+      query,
+      sortBy,
+      order: sort.toLowerCase(),
+      flagField: effectiveFlagFilter.field,
+      flagMode: effectiveFlagFilter.mode,
+    });
+
+    if ((filters && Object.keys(filters).length > 0) || country) {
+      const apiFilters = { ...filters };
+      if (apiFilters.averageXacc) {
+        apiFilters.averageXacc = [
+          apiFilters.averageXacc[0] / 100,
+          apiFilters.averageXacc[1] / 100,
+        ];
+      }
+      const pop = Math.max(0, Math.floor(Number(maxFields.rankedPopulation) || 0));
+      const rank = parseRankRange(apiFilters.rankedScoreRank);
+      if (!rank || isFullRankRange(rank, pop)) {
+        delete apiFilters.rankedScoreRank;
+      } else {
+        apiFilters.rankedScoreRank = rank;
+      }
+      params.append('filters', JSON.stringify({ ...apiFilters, country }));
+    }
+
+    if (user && followingFilter === 'only') {
+      params.set('following', 'only');
+    }
+
+    return params;
+  };
+
+  const locateBlock = !user ? 'signed-out' : !user.playerId ? 'unlinked' : null;
+  const locateRequestKey = liveLeaderboardSearchParams().toString();
+  const locate = useLeaderboardLocate({
+    active: locateMode && !pastMode && !locateBlock,
+    requestKey: locateRequestKey,
+    request: ({ direction, cursor, signal } = {}) => {
+      const params = liveLeaderboardSearchParams();
+      if (direction) {
+        params.set('direction', direction);
+        params.set('cursor', JSON.stringify(cursor));
+        params.set('limit', '30');
+      }
+      return api
+        .get(`${routes.playersV3.leaderboardAround()}?${params.toString()}`, { signal })
+        .then((response) => response.data);
+    },
+  });
+
+  useEffect(() => {
+    if (!locateMode) return;
+    window.scrollTo(0, 0);
+  }, [locateMode]);
+
+  useEffect(() => {
+    if (!locateMode || locate.status !== 'ready') {
+      setLocateScrollArmed(false);
+      return undefined;
+    }
+    const timer = setTimeout(() => setLocateScrollArmed(true), 200);
+    return () => clearTimeout(timer);
+  }, [locateMode, locate.status, locateRequestKey]);
+
+  useEffect(() => {
+    if (!locateMode || !locateBlock) return;
+    const messageKey = locateBlock === 'signed-out'
+      ? 'leaderboard.locate.signedOut'
+      : 'leaderboard.locate.unlinked';
+    toast.error(t(messageKey));
+  }, [locateMode, locateBlock, t]);
+
+  useEffect(() => {
+    if (!locateMode || locate.status !== 'missing') return;
+    toast.error(t('leaderboard.locate.missing'));
+  }, [locateMode, locate.status, locateRequestKey, t]);
+
+  const locateItems = locate.windowState?.items ?? [];
+  const locateStartIndex = locate.windowState?.startIndex ?? 0;
+  const locateUserIndex = typeof locate.windowState?.index === 'number'
+    ? locate.windowState.index - locateStartIndex
+    : 0;
+
   return (
-    <div className={`leaderboard-page${pastMode ? ' leaderboard-page--past' : ''}`}>
+    <div className={`leaderboard-page${pastMode ? ' leaderboard-page--past' : ''}${locateMode ? ' leaderboard-page--locate' : ''}`}>
       <MetaTags {...pageMeta} />
       
 
       <div className="leaderboard-body page-content-70rem">
-        <ScrollButton />
+        {!locateMode && <ScrollButton />}
 
         <div className="leaderboard-past-toggle-row">
           {pastMode ? (
@@ -570,6 +665,17 @@ const LeaderboardPage = () => {
             >
               <RewindIcon color="#fff" size={18} />
               <span>{t('leaderboard.past.button')}</span>
+            </button>
+          )}
+          {!pastMode && (
+            <button
+              type="button"
+              className={`leaderboard-locate-toggle${locateMode ? ' leaderboard-locate-toggle--active' : ''}`}
+              onClick={() => setLocateMode((prev) => !prev)}
+              aria-pressed={locateMode}
+            >
+              <LocateIcon color="currentColor" size={18} />
+              <span>{t('leaderboard.locate.button')}</span>
             </button>
           )}
         </div>
@@ -915,12 +1021,63 @@ const LeaderboardPage = () => {
           </span>
         )}
 
-        <div className="leaderboard-page__list" style={{ minHeight: "500px" }}>
-          {listPlayers === null ? (
+        <div
+          className="leaderboard-page__list"
+          style={locateMode ? undefined : { minHeight: "500px" }}
+          ref={locateMode ? locateScrollRef : undefined}
+        >
+          {locateMode && locateBlock && (
+            <p className="leaderboard-empty-msg">
+              {t(locateBlock === 'signed-out' ? 'leaderboard.locate.signedOut' : 'leaderboard.locate.unlinked')}
+            </p>
+          )}
+          {locateMode && !locateBlock && locate.status !== 'ready' && locate.status !== 'missing' && (
             <div className="loader-shell loader-shell--tall">
               <div className="loader loader-relative" />
             </div>
-          ) : listDisplayed?.length === 0 ? (
+          )}
+          {locateMode && !locateBlock && locate.status === 'missing' && (
+            <p className="leaderboard-empty-msg">{t('leaderboard.locate.missing')}</p>
+          )}
+          {locateMode && !locateBlock && locate.status === 'ready' && locateScrollParent && (
+            <VirtualList
+              key={locateRequestKey}
+              customScrollParent={locateScrollParent}
+              style={{ paddingBottom: "4rem", overflow: "visible" }}
+              items={locateItems}
+              firstItemIndex={locateStartIndex}
+              initialTopMostItemIndex={{ index: locateUserIndex, align: 'center' }}
+              startReached={locateScrollArmed ? locate.loadBefore : undefined}
+              loadMore={locateScrollArmed ? locate.loadAfter : undefined}
+              hasMore={locateScrollArmed && Boolean(locate.windowState?.hasAfter)}
+              loadingMore={locate.loadingAfter}
+              header={locate.loadingBefore && <div className="loader loader-relative" />}
+              restoreScroll={false}
+              loader={<div className="loader loader-relative" />}
+              endMessage={
+                locateItems.length > 0 && (
+                  <p style={{ textAlign: "center" }}>
+                    <b>{t('leaderboard.infiniteScroll.end')}</b>
+                  </p>
+                )
+              }
+              renderItem={(playerStat, index) => (
+                <PlayerCard
+                  currSort={sortBy}
+                  player={playerStat}
+                  listIndex={index}
+                  highlighted={Number(playerStat?.id) === Number(user?.playerId)}
+                  onCreatorAssignmentClick={handleCreatorAssignmentClick}
+                />
+              )}
+              computeItemKey={(index, playerStat) => playerStat?.id ?? index}
+            />
+          )}
+          {!locateMode && listPlayers === null ? (
+            <div className="loader-shell loader-shell--tall">
+              <div className="loader loader-relative" />
+            </div>
+          ) : !locateMode && listDisplayed?.length === 0 ? (
             <p className="leaderboard-empty-msg">
               {user && followingFilter === 'only'
                 ? t('leaderboard.list.emptyFollowing')
@@ -928,7 +1085,7 @@ const LeaderboardPage = () => {
                   ? t('leaderboard.past.noData')
                   : t('leaderboard.infiniteScroll.end')}
             </p>
-          ) : (
+          ) : !locateMode && (listDisplayed?.length ?? 0) > 0 && (
             <VirtualList
               style={{ paddingBottom: "4rem", overflow: "visible" }}
               items={listDisplayed}

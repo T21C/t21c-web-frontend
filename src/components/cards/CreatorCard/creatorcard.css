@@ -24,6 +24,14 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+.creator-card.creator-card--self {
+  background: rgba(var(--color-purple-1-rgb), 0.35);
+}
+
+.creator-card.creator-card--self:hover {
+  background: rgba(var(--color-purple-1-rgb), 0.5);
+}
+
 .creator-card .creator-card__avatar {
   width: 3.5rem;
   height: 3.5rem;

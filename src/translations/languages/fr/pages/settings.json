@@ -142,5 +142,15 @@
     "searchCreator": "Rechercher des créateurs",
     "searchEntity": "Rechercher pour ajouter",
     "searchNoResults": "Aucun résultat"
+  },
+  "bioCanvas": {
+    "linkConfirm": {
+      "title": "Quitter TUF ?",
+      "lead": "Vous êtes sur le point de visiter un site externe. Ne continuez que si vous faites confiance à cette destination.",
+      "trustDomain": "Faire confiance à {{host}} pour cette session",
+      "trustDomainAlways": "Toujours faire confiance à {{host}}",
+      "cancel": "Annuler",
+      "continue": "Continuer"
+    }
   }
 }

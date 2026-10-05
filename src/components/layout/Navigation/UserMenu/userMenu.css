@@ -8,3 +8,25 @@
   content: none;
   display: none;
 }
+
+.nav-user-menu .nav-profile-pair__label {
+  flex: 1;
+  min-width: 0;
+}
+
+.nav-user-menu .nav-profile-pair__icons {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.nav-user-menu .nav-profile-pair__icon {
+  display: flex;
+  color: var(--btn-neutral-muted);
+  line-height: 0;
+}
+
+.nav-user-menu .nav-profile-pair__icon.is-lit {
+  color: var(--color-purple-1);
+}

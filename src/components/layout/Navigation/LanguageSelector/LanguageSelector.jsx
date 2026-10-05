@@ -64,7 +64,7 @@ const LanguageSelector = ({
     if (!languages[newLanguage] || languages[newLanguage].status === 0) {
       return;
     }
-    await changeAppLanguage(newLanguage);
+    await changeAppLanguage(newLanguage, { persist: false });
     menu.closeNow();
     onItemClick?.();
   };

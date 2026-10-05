@@ -8,7 +8,64 @@
 .leaderboard-page .leaderboard-past-toggle-row {
   display: flex;
   justify-content: flex-start;
+  gap: 0.5rem;
+  flex-wrap: wrap;
   margin-bottom: 0.75rem;
+}
+
+.leaderboard-page .leaderboard-locate-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: auto;
+  padding: 0.35rem 0.75rem;
+  border: none;
+  border-radius: 999px;
+  background-color: var(--color-white-t10);
+  color: var(--color-white);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.leaderboard-page .leaderboard-locate-toggle:hover {
+  background-color: var(--color-white-t20);
+}
+
+.leaderboard-page .leaderboard-locate-toggle--active {
+  background-color: rgba(var(--color-purple-1-rgb), 0.35);
+}
+
+.leaderboard-page .leaderboard-locate-toggle--active:hover {
+  background-color: rgba(var(--color-purple-1-rgb), 0.5);
+}
+
+.leaderboard-page.leaderboard-page--locate {
+  display: flex;
+  flex-direction: column;
+  height: calc(100dvh - var(--navbar-height) - 1.5rem);
+  max-height: calc(100dvh - var(--navbar-height) - 1.5rem);
+  overflow: hidden;
+}
+
+.leaderboard-page.leaderboard-page--locate .leaderboard-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+.leaderboard-page.leaderboard-page--locate .leaderboard-body > *:not(.leaderboard-page__list) {
+  flex-shrink: 0;
+}
+
+.leaderboard-page.leaderboard-page--locate .leaderboard-page__list {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
 }
 
 .leaderboard-page .leaderboard-past-toggle {

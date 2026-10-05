@@ -8,7 +8,8 @@ import {
   NAV_DROPDOWN_CLICK_MODE_CYCLE,
   useNavDropdownClickModePreference,
 } from "@/hooks/useNavDropdownClickModePreference";
-import { getSectionCycleTos, isExternalNavPath } from "../navigationConfig";
+import { getSectionCycleTos, isExternalNavPath, isProfilePairItem } from "../navigationConfig";
+import { ProfilePairMenuRow } from "../ProfilePairMenuRow";
 import {
   NAV_DROP_DURATION_MS,
   useNavHoverMenu,
@@ -28,7 +29,7 @@ function itemLabel(item, t) {
   return item.translationKey ? t(item.translationKey) : item.label;
 }
 
-export function NavMenuItems({ items = [], onItemClick, t }) {
+export function NavMenuItems({ items = [], onItemClick, t, onProfileCycle }) {
   return items.map((item, index) => {
     if (item.divider) {
       return <div key={`divider-${index}`} className="nav-dropdown-divider" />;
@@ -46,6 +47,22 @@ export function NavMenuItems({ items = [], onItemClick, t }) {
           )}
         </div>
       );
+    }
+
+    if (isProfilePairItem(item)) {
+      return (
+        <ProfilePairMenuRow
+          key={item.translationKey || index}
+          item={item}
+          label={itemLabel(item, t)}
+          className="nav-dropdown-item nav-dropdown-item--button nav-profile-pair"
+          onCycle={onProfileCycle}
+        />
+      );
+    }
+
+    if (!item.to && item.profileTargets?.length === 1) {
+      item = { ...item, to: item.profileTargets[0].to };
     }
 
     if (!item.to && item.onClick) {
