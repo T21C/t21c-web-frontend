@@ -17,7 +17,8 @@ import { LikeButton } from '@/components/common/buttons';
 import ModReportPopup from './ModReportPopup';
 import ModAdminEditPopup from './ModAdminEditPopup';
 import { dumpCreatorLabel, hasAssignees, isAssignedToMod, otherAssignees } from './modPeople';
-import { modDownloadHref, modPermalink } from './modUrls';
+import { modPermalink } from './modUrls';
+import ModDownloadLinks from './ModDownloadLinks';
 import './modsPage.css';
 
 function formatUploadedAt(value) {
@@ -236,12 +237,7 @@ const ModDetailPage = () => {
                       <ExternalLinkIcon size={16} color="currentColor" />
                     </ExternalLink>
                   ) : null}
-                  {latest ? (
-                    <a href={modDownloadHref(mod.slug)} className="mods-page__download btn-fill-primary">
-                      <span>{t('mods.download')}</span>
-                      <ExternalLinkIcon size={16} color="currentColor" />
-                    </a>
-                  ) : null}
+                  <ModDownloadLinks slug={mod.slug} release={latest} latest />
                   <button type="button" className="mods-page__download btn-fill-glass" onClick={copyLatest}>
                     {t('mods.copy.latest')}
                   </button>
@@ -280,13 +276,7 @@ const ModDetailPage = () => {
                             <ModsMarkdown className="mods-page__card-description">{release.notes}</ModsMarkdown>
                           ) : null}
                           <div className="mod-detail-page__release-actions">
-                            <a
-                              href={modDownloadHref(mod.slug, release.version)}
-                              className="mods-page__download btn-fill-primary"
-                            >
-                              <span>{t('mods.download')}</span>
-                              <ExternalLinkIcon size={16} color="currentColor" />
-                            </a>
+                            <ModDownloadLinks slug={mod.slug} release={release} />
                             <button
                               type="button"
                               className="mods-page__download btn-fill-glass"

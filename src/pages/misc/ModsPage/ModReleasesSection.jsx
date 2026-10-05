@@ -29,8 +29,8 @@ export default function ModReleasesSection({
     if (data?.mod) onModUpdate?.(data.mod);
   };
 
-  const saveRelease = async ({ version, notes, releasedAt, githubUrl, file }) => {
-    const body = buildModReleaseBody({ version, notes, releasedAt, githubUrl, file });
+  const saveRelease = async (fields) => {
+    const body = buildModReleaseBody(fields);
     try {
       if (popup?.release) {
         const { data } = await api.patch(versionUrl(popup.release.id), body);
@@ -108,6 +108,7 @@ export default function ModReleasesSection({
         release={popup?.release || null}
         onClose={() => setPopup(null)}
         onSubmit={saveRelease}
+        assetsUrl={versionsUrl.replace(/\/versions$/, '/github-release-assets')}
       />
     </div>
   );
