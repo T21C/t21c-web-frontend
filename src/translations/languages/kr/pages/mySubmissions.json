@@ -30,13 +30,19 @@
     "type": "유형"
   },
   "row": {
-    "openLevel": "레벨 열기",
+    "openLevel": "레벨",
+    "openPass": "패스",
     "watchVideo": "영상",
-    "score": "점수 {{value}}",
-    "accuracy": "{{value}}",
-    "speed": "{{value}}×",
-    "charter": "채보어 {{name}}",
-    "requestedDiff": "요청 난이도 {{diff}}"
+    "workshop": "창작마당",
+    "download": "다운로드",
+    "score": "점수",
+    "accuracy": "정확도",
+    "speed": "배속",
+    "speedValue": "{{value}}×",
+    "difficulty": "난이도",
+    "charter": "채보어",
+    "requestedDiff": "요청",
+    "rated": "책정"
   },
   "pagination": {
     "prev": "이전",

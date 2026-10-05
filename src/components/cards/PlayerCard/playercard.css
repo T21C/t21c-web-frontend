@@ -27,6 +27,14 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+.player-card.player-card--self {
+  background: rgba(var(--color-purple-1-rgb), 0.35);
+}
+
+.player-card.player-card--self:hover {
+  background: rgba(var(--color-purple-1-rgb), 0.5);
+}
+
 .player-card .player-exp {
   width: fit-content;
   font-size: 0.75rem;

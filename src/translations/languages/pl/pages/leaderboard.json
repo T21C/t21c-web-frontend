@@ -53,5 +53,11 @@
   },
   "list": {
     "emptyFollowing": "Nie obserwujesz jeszcze nikogo."
+  },
+  "locate": {
+    "button": "Gdzie jestem?",
+    "signedOut": "Zaloguj się, aby zobaczyć swoje miejsce w rankingu.",
+    "unlinked": "Połącz profil gracza, aby zobaczyć swoje miejsce.",
+    "missing": "Nie ma cię w tych wynikach."
   }
 } 

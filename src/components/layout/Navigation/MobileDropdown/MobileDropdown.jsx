@@ -1,5 +1,5 @@
 // tuf-search: #MobileDropdown #mobileDropdown #layout #navigation
-import React from "react";
+import React, { useMemo } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { ChevronIcon } from "@/components/common/icons";
 import {
@@ -7,7 +7,9 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/common/Collapsible";
-import { isExternalNavPath } from "../navigationConfig";
+import { getProfileCycleTos, isExternalNavPath, isProfilePairItem } from "../navigationConfig";
+import { ProfilePairMenuRow } from "../ProfilePairMenuRow";
+import { useNavProfileCycle } from "../useNavProfileCycle";
 import "./mobileDropdown.css";
 import { useTranslation } from "react-i18next";
 
@@ -32,6 +34,8 @@ const MobileDropdown = ({
   const { t } = useTranslation("components");
   const location = useLocation();
   const hasActiveItem = isActive ? isActive(location.pathname) : false;
+  const profileCycleTos = useMemo(() => getProfileCycleTos(items), [items]);
+  const profileCycle = useNavProfileCycle(profileCycleTos);
 
   return (
     <li
@@ -85,6 +89,25 @@ const MobileDropdown = ({
                     )}
                   </div>
                 );
+              }
+
+              if (isProfilePairItem(item)) {
+                return (
+                  <ProfilePairMenuRow
+                    key={item.translationKey || index}
+                    item={item}
+                    label={itemLabel(item, t)}
+                    className="nav-mobile-dropdown-item nav-mobile-dropdown-item--button nav-profile-pair"
+                    onCycle={(event) => {
+                      const moved = profileCycle.advance(event);
+                      if (moved) onItemClick?.();
+                    }}
+                  />
+                );
+              }
+
+              if (!item.to && item.profileTargets?.length === 1) {
+                item = { ...item, to: item.profileTargets[0].to };
               }
 
               if (!item.to && item.onClick) {

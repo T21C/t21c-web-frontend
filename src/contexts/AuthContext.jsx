@@ -383,7 +383,7 @@ export const AuthProvider = ({ children }) => {
         /* ignore */
       }
       const response = await api.get(routes.auth.oauthLogin(provider));
-      await navigateExternal(response.data.url);
+      await navigateExternal(response.data.url, { skipWarning: true });
     } catch (error) {
       console.error('OAuth login error:', error);
       if (error.response) {
@@ -403,7 +403,7 @@ export const AuthProvider = ({ children }) => {
         /* ignore */
       }
       const response = await api.get(routes.auth.oauthLink(provider));
-      await navigateExternal(response.data.url);
+      await navigateExternal(response.data.url, { skipWarning: true });
     } catch (error) {
       console.error('Error linking provider:', error);
       throw error;
@@ -525,7 +525,7 @@ export const AuthProvider = ({ children }) => {
       params: { scope },
     });
     if (response.data?.url) {
-      await navigateExternal(response.data.url);
+      await navigateExternal(response.data.url, { skipWarning: true });
     }
     return response.data;
   };

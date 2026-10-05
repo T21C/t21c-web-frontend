@@ -499,6 +499,7 @@ export const routes = {
     passes: (playerId) => `/v3/players/${enc(playerId)}/passes`,
     rankHistory: (playerId) => `/v3/players/${enc(playerId)}/rank-history`,
     leaderboard: () => '/v3/players/leaderboard',
+    leaderboardAround: () => '/v3/players/leaderboard/around',
     leaderboardHistory: () => '/v3/players/leaderboard-history',
     leaderboardHistoryBounds: () => '/v3/players/leaderboard-history/bounds',
     meBio: () => '/v3/players/me/bio',
@@ -578,6 +579,7 @@ export const routes = {
     follow: (creatorId) => `/v3/creators/${enc(creatorId)}/follow`,
     followers: (creatorId) => `/v3/creators/${enc(creatorId)}/followers`,
     leaderboard: () => '/v3/creators/leaderboard',
+    leaderboardAround: () => '/v3/creators/leaderboard/around',
     managedUpdate: (creatorId) => `/v3/creators/${enc(creatorId)}/managed-update`,
     displayCurationTypes: (creatorId) =>
       `/v3/creators/${enc(creatorId)}/display-curation-types`,

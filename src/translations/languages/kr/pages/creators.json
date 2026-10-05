@@ -51,6 +51,12 @@
     "empty": "제작자 발견되지 않음",
     "emptyFollowing": "아직 팔로우한 사람이 없습니다."
   },
+  "locate": {
+    "button": "나는 어디에 있나요?",
+    "signedOut": "로그인하면 제작자 리더보드에서 내 위치를 볼 수 있습니다.",
+    "unlinked": "제작자 프로필을 연결하면 내 위치를 볼 수 있습니다.",
+    "missing": "현재 결과에 표시되지 않습니다."
+  },
   "card": {
     "verified": "인증됨",
     "chartsTotal": "레벨 {{count}}개",

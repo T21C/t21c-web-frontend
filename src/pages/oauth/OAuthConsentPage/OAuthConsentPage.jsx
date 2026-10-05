@@ -69,7 +69,7 @@ const OAuthConsentPage = () => {
     try {
       const res = await api.post(routes.oauth.consentApprove());
       if (res.data?.redirectTo) {
-        await navigateExternal(res.data.redirectTo);
+        await navigateExternal(res.data.redirectTo, { skipWarning: true });
         return;
       }
       setError(t('oauthConsent.approveError'));
@@ -89,7 +89,7 @@ const OAuthConsentPage = () => {
     try {
       const res = await api.post(routes.oauth.consentDeny());
       if (res.data?.redirectTo) {
-        await navigateExternal(res.data.redirectTo);
+        await navigateExternal(res.data.redirectTo, { skipWarning: true });
         return;
       }
     } catch {

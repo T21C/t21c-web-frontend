@@ -69,6 +69,11 @@ const VirtualList = ({
   gap = 24,
   /** Override pathname+search in the scroll store key (e.g. `/rating` while URL is `/rating/:id`). */
   scrollStorePath = null,
+  /** Absolute index of `items[0]`. Lower it when prepending so the viewport stays put. */
+  firstItemIndex = 0,
+  startReached,
+  header = null,
+  initialTopMostItemIndex,
 }) => {
   const { pathname, search } = useLocation();
   const safeItems = items ?? [];
@@ -155,6 +160,10 @@ const VirtualList = ({
     }
   }, [hasMore, loadMore, loadingMore, safeItems.length]);
 
+  const handleStartReached = useCallback(() => {
+    if (startReached) startReached();
+  }, [startReached]);
+
   const footerComponent = useCallback(
     () => (
       <VirtualListFooter
@@ -165,6 +174,11 @@ const VirtualList = ({
       />
     ),
     [hasMore, loader, endMessage, safeItems.length],
+  );
+
+  const headerComponent = useCallback(
+    () => (header ? <div className="virtual-list__header">{header}</div> : null),
+    [header],
   );
 
   const rows = useMemo(
@@ -216,8 +230,13 @@ const VirtualList = ({
   }, [grid, listItemClass]);
 
   const components = useMemo(
-    () => ({ List: ListComponent, Item: ItemComponent, Footer: footerComponent }),
-    [ListComponent, ItemComponent, footerComponent],
+    () => ({
+      List: ListComponent,
+      Item: ItemComponent,
+      Footer: footerComponent,
+      ...(header ? { Header: headerComponent } : {}),
+    }),
+    [ListComponent, ItemComponent, footerComponent, header, headerComponent],
   );
 
   const rowStyle = useMemo(
@@ -233,13 +252,14 @@ const VirtualList = ({
 
   const itemContent = useCallback(
     (index, item) => {
+      const localIndex = index - firstItemIndex;
       if (grid) {
         const rowItems = item ?? [];
         const rowClass = ['virtual-list__row', listClassName].filter(Boolean).join(' ');
         return (
           <div className={rowClass} style={rowStyle}>
             {rowItems.map((rowItem, columnIndex) => {
-              const realIndex = index * columns + columnIndex;
+              const realIndex = localIndex * columns + columnIndex;
               const cellClass = ['virtual-list__cell', itemClassName].filter(Boolean).join(' ');
               return (
                 <div key={computeItemKey(realIndex, rowItem)} className={cellClass}>
@@ -252,18 +272,20 @@ const VirtualList = ({
       }
       return renderItem(item, index);
     },
-    [grid, columns, listClassName, itemClassName, rowStyle, computeItemKey, renderItem],
+    [grid, columns, listClassName, itemClassName, rowStyle, computeItemKey, renderItem, firstItemIndex],
   );
 
   const itemKey = useCallback(
-    (index) => {
+    (index, item) => {
+      const localIndex = index - firstItemIndex;
       if (grid) {
-        const firstItem = rows?.[index]?.[0];
-        return firstItem ? computeItemKey(index * columns, firstItem) : index;
+        const row = Array.isArray(item) ? item : rows?.[localIndex];
+        const firstItem = row?.[0];
+        return firstItem ? computeItemKey(localIndex * columns, firstItem) : index;
       }
-      return computeItemKey(index, safeItems[index]);
+      return computeItemKey(localIndex, item ?? safeItems[localIndex]);
     },
-    [grid, rows, columns, computeItemKey, safeItems],
+    [grid, rows, columns, computeItemKey, safeItems, firstItemIndex],
   );
 
   const rootClassName = [
@@ -288,6 +310,9 @@ const VirtualList = ({
         {...scrollProps}
         {...restoreProps}
         {...(defaultItemHeight ? { defaultItemHeight } : {})}
+        firstItemIndex={firstItemIndex}
+        {...(initialTopMostItemIndex != null ? { initialTopMostItemIndex } : {})}
+        {...(startReached ? { startReached: handleStartReached } : {})}
         ref={virtuosoRef}
         data={grid ? rows : safeItems}
         endReached={handleEndReached}

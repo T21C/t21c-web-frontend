@@ -69,6 +69,7 @@ import { HeartIcon } from './HeartIcon';
 import { CopyIcon } from './CopyIcon';
 import GraphIcon from './GraphIcon';
 import { RewindIcon } from './RewindIcon';
+import { LocateIcon } from './LocateIcon';
 import { DraftIcon } from './DraftIcon';
 import { CalculatorIcon } from './CalculatorIcon';
 import { ImportIcon } from './ImportIcon';
@@ -149,6 +150,7 @@ export {
     CopyIcon,
     GraphIcon,
     RewindIcon,
+    LocateIcon,
     DraftIcon,
     CalculatorIcon,
     ImportIcon,

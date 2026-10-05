@@ -78,10 +78,10 @@ function LinkConfirmModal({ pending, onConfirm, onCancel }) {
       mount="documentBody"
     >
           <h2 id="link-confirm-title" className="link-confirm__title">
-            {t("bioCanvas.linkConfirm.title", { defaultValue: "Leaving TUF?" })}
+            {t("settings.bioCanvas.linkConfirm.title", { defaultValue: "Leaving TUF?" })}
           </h2>
           <p className="link-confirm__lead">
-            {t("bioCanvas.linkConfirm.lead", {
+            {t("settings.bioCanvas.linkConfirm.lead", {
               defaultValue:
                 "You are about to visit an external site. Only continue if you trust this destination.",
             })}
@@ -98,7 +98,7 @@ function LinkConfirmModal({ pending, onConfirm, onCancel }) {
                 onChange={(ev) => setTrustMode(ev.target.checked ? "session" : "none")}
               />
               <span>
-                {t("bioCanvas.linkConfirm.trustDomain", {
+                {t("settings.bioCanvas.linkConfirm.trustDomain", {
                   host,
                   defaultValue: `Trust ${host} for this session`,
                 })}
@@ -111,7 +111,7 @@ function LinkConfirmModal({ pending, onConfirm, onCancel }) {
                 onChange={(ev) => setTrustMode(ev.target.checked ? "always" : "none")}
               />
               <span>
-                {t("bioCanvas.linkConfirm.trustDomainAlways", {
+                {t("settings.bioCanvas.linkConfirm.trustDomainAlways", {
                   host,
                   defaultValue: `Always trust ${host}`,
                 })}
@@ -120,14 +120,14 @@ function LinkConfirmModal({ pending, onConfirm, onCancel }) {
           </div>
           <div className="link-confirm__actions">
             <button type="button" className="btn-fill-neutral" onClick={onCancel}>
-              {t("bioCanvas.linkConfirm.cancel", { defaultValue: "Cancel" })}
+              {t("settings.bioCanvas.linkConfirm.cancel", { defaultValue: "Cancel" })}
             </button>
             <button
               type="button"
               className="btn-fill-primary"
               onClick={() => onConfirm(trustMode)}
             >
-              {t("bioCanvas.linkConfirm.continue", { defaultValue: "Continue" })}
+              {t("settings.bioCanvas.linkConfirm.continue", { defaultValue: "Continue" })}
             </button>
           </div>
     </PopupShell>
