@@ -30,13 +30,19 @@
     "type": "Type"
   },
   "row": {
-    "openLevel": "Ouvrir le niveau",
+    "openLevel": "Niveau",
+    "openPass": "Pass",
     "watchVideo": "Vidéo",
-    "score": "Score {{value}}",
-    "accuracy": "{{value}}",
-    "speed": "{{value}}×",
-    "charter": "Charter {{name}}",
-    "requestedDiff": "Difficulté demandée {{diff}}"
+    "workshop": "Workshop",
+    "download": "Téléchargement",
+    "score": "Score",
+    "accuracy": "Précision",
+    "speed": "Vitesse",
+    "speedValue": "{{value}}×",
+    "difficulty": "Difficulté",
+    "charter": "Charter",
+    "requestedDiff": "Demandée",
+    "rated": "Notée"
   },
   "pagination": {
     "prev": "Précédent",

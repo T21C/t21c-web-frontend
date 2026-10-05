@@ -319,8 +319,9 @@
 
 .score-card .flags-wrapper {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.25rem;
   min-width: 100px;
+  max-width: 8rem;
   align-items: center;
   flex-wrap: wrap;
 }

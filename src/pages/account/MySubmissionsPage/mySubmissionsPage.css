@@ -60,12 +60,13 @@
 }
 
 .my-submissions-page__row {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.85rem 1rem;
+  display: grid;
+  grid-template-columns: 3rem minmax(12rem, 1.35fr) minmax(10rem, 1fr) minmax(8rem, max-content) auto;
+  grid-template-areas: "icon identity facts links date";
+  align-items: center;
+  column-gap: 1rem;
+  row-gap: 0.65rem;
+  padding: 0.75rem 1rem 0.75rem 0.5rem;
   border-bottom: 1px solid var(--color-white-t10);
 }
 
@@ -73,16 +74,52 @@
   border-bottom: none;
 }
 
-.my-submissions-page__row:hover {
-  background: var(--color-white-t10);
+.my-submissions-page__row.is-status-pending {
+  background: color-mix(in srgb, var(--btn-warning) 18%, transparent);
 }
 
-.my-submissions-page__row-main {
+.my-submissions-page__row.is-status-approved {
+  background: color-mix(in srgb, var(--btn-success) 18%, transparent);
+}
+
+.my-submissions-page__row.is-status-declined {
+  background: color-mix(in srgb, var(--danger-color) 18%, transparent);
+}
+
+.my-submissions-page__row.is-status-pending:hover {
+  background: color-mix(in srgb, var(--btn-warning) 28%, transparent);
+}
+
+.my-submissions-page__row.is-status-approved:hover {
+  background: color-mix(in srgb, var(--btn-success) 28%, transparent);
+}
+
+.my-submissions-page__row.is-status-declined:hover {
+  background: color-mix(in srgb, var(--danger-color) 28%, transparent);
+}
+
+.my-submissions-page__diff {
+  grid-area: icon;
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 0 3px rgba(0, 0, 0, 1));
+}
+
+.my-submissions-page__diff-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.my-submissions-page__identity {
+  grid-area: identity;
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.35rem;
   min-width: 0;
-  flex: 1;
 }
 
 .my-submissions-page__badges {
@@ -136,37 +173,94 @@
 
 .my-submissions-page__row-title {
   margin: 0;
+  overflow: hidden;
   font-size: 0.98rem;
+  font-weight: 600;
+  color: var(--color-white);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.my-submissions-page__title-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.my-submissions-page__title-link:hover {
+  color: var(--color-purple-1);
+}
+
+.my-submissions-page__row-artist {
+  margin: 0;
+  overflow: hidden;
+  font-size: 0.85rem;
+  color: var(--color-gray-2);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.my-submissions-page__facts {
+  grid-area: facts;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 0.65rem 1.5rem;
+  margin: 0;
+  min-width: 0;
+}
+
+.my-submissions-page__facts:empty {
+  display: none;
+}
+
+.my-submissions-page__fact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+  min-width: 4.25rem;
+  max-width: 12rem;
+}
+
+.my-submissions-page__fact-label {
+  margin: 0;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-white-t70);
+}
+
+.my-submissions-page__fact-value {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0;
+  min-width: 0;
+  font-size: 0.92rem;
   font-weight: 600;
   color: var(--color-white);
 }
 
-.my-submissions-page__row-artist,
-.my-submissions-page__row-extra {
-  margin: 0;
-  font-size: 0.85rem;
-  color: var(--color-gray-2);
+.my-submissions-page__fact-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.my-submissions-page__row-actions {
+.my-submissions-page__links {
+  grid-area: links;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  gap: 0.6rem;
-}
-
-.my-submissions-page__row-link {
-  color: var(--color-purple-1);
-  font-size: 0.85rem;
-  text-decoration: none;
-}
-
-.my-submissions-page__row-link:hover {
-  color: var(--color-white);
+  justify-content: flex-end;
+  gap: 0.4rem;
 }
 
 .my-submissions-page__row-date {
-  flex-shrink: 0;
+  grid-area: date;
+  justify-self: end;
   font-size: 0.75rem;
   color: var(--color-white-t70);
   white-space: nowrap;
@@ -213,8 +307,17 @@
   cursor: not-allowed;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 900px) {
   .my-submissions-page__row {
-    flex-direction: column;
+    grid-template-columns: 3rem minmax(0, 1fr) auto;
+    grid-template-areas:
+      "icon identity date"
+      "icon facts facts"
+      "icon links links";
+    align-items: center;
+  }
+
+  .my-submissions-page__links {
+    justify-content: flex-start;
   }
 }
