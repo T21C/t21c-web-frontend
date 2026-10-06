@@ -161,7 +161,7 @@ const isAllowedConsoleCapture = (event) => {
 
 /**
  * Drop AbortErrors from loopback probes outside Vite/API ports — e.g. TUFHelperLite
- * `@adofai-ipc/client` scanning :32145–32155 (see JAVASCRIPT-REACT-1P).
+ * the source-vendored AdofaiIpc WebSocket SDK scanning :32145–32155 (see JAVASCRIPT-REACT-1P).
  */
 const isNonAppLoopbackAbortNoise = (event) => {
   if (!isAbortErrorEvent(event)) return false;
@@ -170,7 +170,7 @@ const isNonAppLoopbackAbortNoise = (event) => {
   if (
     frames.some(
       (frame) =>
-        typeof frame.filename === 'string' && /@adofai-ipc\//i.test(frame.filename),
+        typeof frame.filename === 'string' && /(?:@adofai-ipc\/|vendor\/adofai-ipc\/)/i.test(frame.filename),
     )
   ) {
     return true;

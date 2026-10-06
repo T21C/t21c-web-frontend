@@ -32,8 +32,8 @@ import { normalizeLevelSearchQuery } from '@/utils/normalizeEntitySearchQuery';
 import { getDefaultQSliderRange } from '@/utils/getDefaultQSliderRange';
 import { useHiddenLevelCardTagsPreference } from '@/hooks/useHiddenLevelCardTagsPreference';
 import {
-  getTufHelperLiteStorageMigrationStatus,
-  getTufHelperLiteBatchUpdateCheckStatus,
+  useTufHelperLiteStorage,
+  useTufHelperLiteBatch,
   useTufHelperLiteHealth,
 } from '@/hooks/useTufHelperLiteIpc';
 import { TufHelperLiteDownloadManager } from '@/components/common/TufHelperLiteDownloadManager';
@@ -175,8 +175,8 @@ const LevelPage = ({
   const [hiddenTagIds, setHiddenTagIds] = useHiddenLevelCardTagsPreference();
   const [loadingMore, setLoadingMore] = useState(false);
   const [showDownloadManager, setShowDownloadManager] = useState(false);
-  const [downloadStorage, setDownloadStorage] = useState(null);
-  const [downloadBatch, setDownloadBatch] = useState(null);
+  const downloadStorage = useTufHelperLiteStorage();
+  const downloadBatch = useTufHelperLiteBatch();
   const downloadManagerButtonRef = useRef(null);
   const tufHelperLiteHealth = useTufHelperLiteHealth();
   const downloadStorageState = String(downloadStorage?.State ?? downloadStorage?.state ?? 'idle').toLowerCase();
@@ -196,51 +196,6 @@ const LevelPage = ({
     : downloadBatchTotal > 0
       ? Math.min(1, downloadBatchProcessed / downloadBatchTotal)
       : 0;
-
-  useEffect(() => {
-    if (!tufHelperLiteHealth.isAvailable || !tufHelperLiteHealth.supportsStorageMigration) {
-      setDownloadStorage(null);
-      return undefined;
-    }
-
-    let cancelled = false;
-    const refresh = async () => {
-      try {
-        const next = await getTufHelperLiteStorageMigrationStatus();
-        if (!cancelled) setDownloadStorage(next);
-      } catch {
-        // Health polling owns connection-loss feedback.
-      }
-    };
-    void refresh();
-    const timer = window.setInterval(refresh, downloadStorageActive ? 750 : 5000);
-    return () => {
-      cancelled = true;
-      window.clearInterval(timer);
-    };
-  }, [downloadStorageActive, tufHelperLiteHealth.isAvailable, tufHelperLiteHealth.supportsStorageMigration]);
-
-  useEffect(() => {
-    if (!tufHelperLiteHealth.isAvailable || !tufHelperLiteHealth.supportsBatchUpdateCheck) {
-      setDownloadBatch(null);
-      return undefined;
-    }
-    let cancelled = false;
-    const refresh = async () => {
-      try {
-        const next = await getTufHelperLiteBatchUpdateCheckStatus();
-        if (!cancelled) setDownloadBatch(next);
-      } catch {
-        // Health polling owns connection-loss feedback.
-      }
-    };
-    void refresh();
-    const timer = window.setInterval(refresh, downloadBatchActive ? 500 : 5000);
-    return () => {
-      cancelled = true;
-      window.clearInterval(timer);
-    };
-  }, [downloadBatchActive, tufHelperLiteHealth.isAvailable, tufHelperLiteHealth.supportsBatchUpdateCheck]);
 
   const closeDownloadManager = useCallback(() => {
     setShowDownloadManager(false);
@@ -844,7 +799,6 @@ const LevelPage = ({
           <TufHelperLiteDownloadManager
             onClose={closeDownloadManager}
             health={tufHelperLiteHealth}
-            onStorageChange={setDownloadStorage}
           />
         ) : null}
 

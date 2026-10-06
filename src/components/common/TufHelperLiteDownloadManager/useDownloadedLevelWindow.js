@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   getTufHelperLiteDownloadedLevelPage,
   getTufHelperLiteDownloadedLevelSummary,
+  useTufHelperLiteSummary,
 } from '@/hooks/useTufHelperLiteIpc';
 import {
   mergeDownloadedLevelPage,
@@ -76,6 +77,7 @@ export const useDownloadedLevelWindow = (enabled, positionedPagesEnabled = false
     positioned: false,
   });
   const [summary, setSummary] = useState(null);
+  const observedSummary = useTufHelperLiteSummary();
   const [loading, setLoading] = useState({ initial: false, next: false, previous: false });
   const [errors, setErrors] = useState({ initial: null, next: null, previous: null });
 
@@ -138,11 +140,8 @@ export const useDownloadedLevelWindow = (enabled, positionedPagesEnabled = false
   }, [enabled, loadInitial, loadSummary]);
 
   useEffect(() => {
-    if (!enabled || summary?.state !== 'calculating') return undefined;
-    const generation = generationRef.current;
-    const timer = window.setInterval(() => void loadSummary(generation), 1000);
-    return () => window.clearInterval(timer);
-  }, [enabled, loadSummary, summary?.state]);
+    if (enabled && observedSummary) setSummary(normalizeSummary(observedSummary));
+  }, [enabled, observedSummary]);
 
   const resetForStaleCursor = useCallback(() => {
     generationRef.current += 1;
@@ -216,6 +215,10 @@ export const useDownloadedLevelWindow = (enabled, positionedPagesEnabled = false
     });
     return items;
   }, [windowState.pages, windowState.positioned]);
+  useEffect(() => {
+    if (enabled && summary?.revision && windowState.revision && summary.revision !== windowState.revision) resetForStaleCursor();
+  }, [enabled, resetForStaleCursor, summary?.revision, windowState.revision]);
+
   const loadNext = useCallback(() => loadDirection('next'), [loadDirection]);
   const loadPrevious = useCallback(() => loadDirection('previous'), [loadDirection]);
   const hasNext = Boolean(windowState.pages[windowState.pages.length - 1]?.hasNext);

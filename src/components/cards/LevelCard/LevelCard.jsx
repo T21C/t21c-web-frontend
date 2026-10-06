@@ -1,3 +1,4 @@
+import { toast } from 'react-hot-toast';
 // tuf-search: #LevelCard #levelCard #cards
 import { Link } from "react-router-dom";
 import "./levelcard.css"
@@ -31,11 +32,8 @@ import { Tooltip } from '@/components/common/display/Tooltip';
 import { PpDifficultyIcon } from '@/components/common/display/PpDifficultyIcon/PpDifficultyIcon';
 import MarqueeText from "@/components/common/display/MarqueeText/MarqueeText";
 import {
-  checkTufHelperLiteDownloadedIds,
-  checkTufHelperLiteHealth,
-  checkTufHelperLiteJobs,
   getTufHelperLiteDownloadState,
-  invokeTufHelperLiteIpc,
+  openTufHelperLiteLevelById, openTufHelperLiteLevelByUrl,
   useTufHelperLiteDownloadedIds,
   useTufHelperLiteHealth,
   useTufHelperLiteJobs,
@@ -48,7 +46,7 @@ const TufHelperLiteLevelButton = memo(function TufHelperLiteLevelButton({ level,
   const { t } = useTranslation('components');
   const health = useTufHelperLiteHealth();
   const jobs = useTufHelperLiteJobs();
-  const downloadedIds = useTufHelperLiteDownloadedIds();
+  const downloadedIds = useTufHelperLiteDownloadedIds(level?.id);
   const download = getTufHelperLiteDownloadState(
     health,
     jobs.jobs,
@@ -67,23 +65,12 @@ const TufHelperLiteLevelButton = memo(function TufHelperLiteLevelButton({ level,
 
     try {
       if (level?.id != null) {
-        await invokeTufHelperLiteIpc('level.open-from-id', {
-          id: String(level.id),
-          source: 'tuforums-levels',
-          openAfterDownload: true,
-        });
+        await openTufHelperLiteLevelById(level.id);
       } else {
-        await invokeTufHelperLiteIpc('level.open-from-url', {
-          url: dlLink,
-          source: 'tuforums-levels',
-          openAfterDownload: true,
-        });
+        await openTufHelperLiteLevelByUrl(dlLink);
       }
-
-      void checkTufHelperLiteJobs();
-      void checkTufHelperLiteDownloadedIds();
-    } catch {
-      void checkTufHelperLiteHealth();
+    } catch (error) {
+      toast.error(error?.message || "Open ADOFAI and reconnect to try again.");
     }
   };
 

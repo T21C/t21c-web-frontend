@@ -5,8 +5,7 @@ import { FolderIcon, RefreshIcon, ResetIcon, WarningIcon } from '@/components/co
 import MarqueeText from '@/components/common/display/MarqueeText/MarqueeText';
 import { getPortalRoot } from '@/utils/portalRoot';
 import {
-  getTufHelperLiteFolderPickerStatus,
-  getTufHelperLiteStorageMigrationStatus,
+  useTufHelperLiteStorage, useTufHelperLiteBatch, useTufHelperLiteJobs, waitForTufHelperLiteJob, waitForTufHelperLiteFolderSelection,
   retryTufHelperLiteStorageChange,
   retryTufHelperLiteStorageMigration,
   startTufHelperLiteFolderPicker,
@@ -15,12 +14,9 @@ import {
   cancelTufHelperLiteStorageChange,
   checkTufHelperLiteLevelUpdate,
   startTufHelperLiteLevelUpdate,
-  getTufHelperLiteLevelJobStatus,
   startTufHelperLiteBatchUpdateCheck,
-  getTufHelperLiteBatchUpdateCheckStatus,
   cancelTufHelperLiteBatchUpdateCheck,
   startTufHelperLiteBatchUpdate,
-  getTufHelperLiteBatchUpdateStatus,
   cancelTufHelperLiteBatchUpdate,
 } from '@/hooks/useTufHelperLiteIpc';
 import DownloadedLevelList from './DownloadedLevelList';
@@ -62,6 +58,9 @@ export const TufHelperLiteDownloadManager = ({
   const updatePollsRef = useRef(new Map());
   const retainedLevelIdsRef = useRef(new Set());
   const [storage, setStorage] = useState(null);
+  const observedStorage = useTufHelperLiteStorage();
+  const observedBatch = useTufHelperLiteBatch();
+  const observedJobs = useTufHelperLiteJobs();
   const [selection, setSelection] = useState(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(null);
@@ -109,32 +108,16 @@ export const TufHelperLiteDownloadManager = ({
     });
   }, [t]);
 
-  const refreshStorage = useCallback(async () => {
-    if (!supported) return;
-    try {
-      setStorage(await getTufHelperLiteStorageMigrationStatus());
-      setError(null);
-    } catch (nextError) {
-      setError(toUiError(nextError, t('level.tufHelperLiteDownloadManager.errors.unavailable')));
-    }
-  }, [supported, t]);
-
-  const refreshBatch = useCallback(async () => {
-    if (!batchSupported) return;
-    try {
-      setBatch(await (batchOperationKind === 'update' && batchUpdateSupported
-        ? getTufHelperLiteBatchUpdateStatus()
-        : getTufHelperLiteBatchUpdateCheckStatus()));
-    } catch {
-      // Connection health owns global connection-loss feedback.
-    }
-  }, [batchOperationKind, batchSupported, batchUpdateSupported]);
-
+  useEffect(() => { dialogRef.current?.focus(); }, []);
+  useEffect(() => { setStorage(observedStorage); }, [observedStorage]);
+  useEffect(() => { setBatch(observedBatch); }, [observedBatch]);
   useEffect(() => {
-    dialogRef.current?.focus();
-    void refreshStorage();
-    void refreshBatch();
-  }, [refreshBatch, refreshStorage]);
+    observedJobs.jobs.forEach((job) => {
+      const id = Number(field(job, 'LevelId'));
+      if (!updatePollsRef.current.has(id) || field(job, 'Done')) return;
+      setUpdateStates((current) => ({ ...current, [id]: { state: field(job, 'Kind') === 'level.update' ? 'updating' : 'checking', progress: Number(field(job, 'Progress')), stage: field(job, 'Stage') } }));
+    });
+  }, [observedJobs]);
 
   useEffect(() => {
     const roots = Array.from(new Set([
@@ -167,18 +150,6 @@ export const TufHelperLiteDownloadManager = ({
   useEffect(() => {
     onStorageChange?.(storage);
   }, [onStorageChange, storage]);
-
-  useEffect(() => {
-    if (!supported || !migrationActive) return undefined;
-    const timer = window.setInterval(refreshStorage, 750);
-    return () => window.clearInterval(timer);
-  }, [migrationActive, refreshStorage, supported]);
-
-  useEffect(() => {
-    if (!batchSupported || !batchActive) return undefined;
-    const timer = window.setInterval(refreshBatch, 500);
-    return () => window.clearInterval(timer);
-  }, [batchActive, batchSupported, refreshBatch]);
 
   useEffect(() => {
     if (batchState !== 'completed') return;
@@ -217,8 +188,7 @@ export const TufHelperLiteDownloadManager = ({
   useEffect(() => () => {
     updatePollsRef.current.forEach((poll) => {
       poll.cancelled = true;
-      if (poll.timer) window.clearTimeout(poll.timer);
-      poll.resolve?.();
+      poll.controller.abort();
     });
     updatePollsRef.current.clear();
   }, []);
@@ -241,20 +211,11 @@ export const TufHelperLiteDownloadManager = ({
     });
   }, [library.levels]);
 
-  const waitForPoll = useCallback((poll, delay = 450) => new Promise((resolve) => {
-    poll.resolve = resolve;
-    poll.timer = window.setTimeout(() => {
-      poll.timer = null;
-      poll.resolve = null;
-      resolve();
-    }, delay);
-  }), []);
-
   const checkForUpdate = useCallback(async (level) => {
     if (!updateSupported || batchActive || updatePollsRef.current.has(level.id)) return;
     const currentState = updateStates[level.id]?.state || level.updateState || 'idle';
     const isUpdating = currentState === 'update_available';
-    const poll = { cancelled: false, timer: null, resolve: null };
+    const poll = { cancelled: false, controller: new AbortController() };
     updatePollsRef.current.set(level.id, poll);
     setUpdateStates((current) => ({
       ...current,
@@ -266,18 +227,7 @@ export const TufHelperLiteDownloadManager = ({
         ? await startTufHelperLiteLevelUpdate(level.id)
         : await checkTufHelperLiteLevelUpdate(level.id);
       const jobId = field(snapshot, 'JobId');
-      while (!poll.cancelled && !field(snapshot, 'Done')) {
-        setUpdateStates((current) => ({
-          ...current,
-          [level.id]: {
-            state: isUpdating ? 'updating' : 'checking',
-            progress: Number(field(snapshot, 'Progress')),
-            stage: field(snapshot, 'Stage'),
-          },
-        }));
-        await waitForPoll(poll);
-        if (!poll.cancelled) snapshot = await getTufHelperLiteLevelJobStatus(jobId);
-      }
+      if (!field(snapshot, 'Done')) snapshot = await waitForTufHelperLiteJob(jobId, { signal: poll.controller.signal });
       if (poll.cancelled) return;
       if (String(field(snapshot, 'Status')).toLowerCase() === 'failed') {
         const nextError = new Error(field(snapshot, 'Error') || field(snapshot, 'Message'));
@@ -314,8 +264,7 @@ export const TufHelperLiteDownloadManager = ({
         }));
       }
     } finally {
-      if (poll.timer) window.clearTimeout(poll.timer);
-      poll.resolve?.();
+      poll.controller.abort();
       updatePollsRef.current.delete(level.id);
       if (!retainedLevelIdsRef.current.has(level.id)) {
         setUpdateStates((current) => {
@@ -325,7 +274,7 @@ export const TufHelperLiteDownloadManager = ({
         });
       }
     }
-  }, [batchActive, patchLevel, refreshSummary, updateStates, updateSupported, waitForPoll]);
+  }, [batchActive, patchLevel, refreshSummary, updateStates, updateSupported]);
 
   const startBatchCheck = async () => {
     setBusy(true);
@@ -365,24 +314,13 @@ export const TufHelperLiteDownloadManager = ({
     }
   };
 
-  const pollPicker = useCallback(async (operationId) => {
-    for (;;) {
-      const result = await getTufHelperLiteFolderPickerStatus(operationId);
-      const pickerState = String(field(result, 'State') || '').toLowerCase();
-      if (pickerState === 'selected') {
-        setSelection(result);
-        return;
-      }
-      if (pickerState === 'cancelled') return;
-      if (pickerState === 'failed') {
-        const pickerError = new Error(
-          field(result, 'Message') || t('level.tufHelperLiteDownloadManager.errors.pickFailed'),
-        );
-        pickerError.code = field(result, 'ErrorCode') || 'folder_picker_failed';
-        throw pickerError;
-      }
-      await new Promise((resolve) => window.setTimeout(resolve, 500));
-    }
+  const receiveFolderSelection = useCallback(async (started) => {
+    const result = field(started, 'State') === 'picking'
+      ? await waitForTufHelperLiteFolderSelection(field(started, 'OperationId'))
+      : started;
+    const state = String(field(result, 'State')).toLowerCase();
+    if (state === 'selected') setSelection(result);
+    else if (state === 'failed') throw Object.assign(new Error(field(result, 'Message') || t('level.tufHelperLiteDownloadManager.errors.pickFailed')), { code: field(result, 'ErrorCode') });
   }, [t]);
 
   const chooseFolder = async () => {
@@ -390,7 +328,7 @@ export const TufHelperLiteDownloadManager = ({
     setError(null);
     try {
       const started = await startTufHelperLiteFolderPicker({ allowExisting: reconnectSupported });
-      await pollPicker(field(started, 'OperationId'));
+      await receiveFolderSelection(started);
     } catch (nextError) {
       setError(toUiError(nextError, t('level.tufHelperLiteDownloadManager.errors.pickFailed')));
     } finally {

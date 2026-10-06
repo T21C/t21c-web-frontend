@@ -28,7 +28,7 @@ export const TufHelperLiteConnectBanner = () => {
   const errorCode = integration.errorCode;
   const mismatchDirection = integration.versionMismatch?.direction;
   const requiresClientUpdate = mismatchDirection === 'client_outdated';
-  const requiresIpcUpdate = errorCode === 'namespace_status_unavailable' ||
+  const requiresIpcUpdate = errorCode === 'namespace_status_unavailable' || errorCode === 'INCOMPATIBLE' ||
     mismatchDirection === 'server_outdated' ||
     mismatchDirection === 'legacy_server';
   const namespaceInitializing = errorCode === 'namespace_initializing' || errorCode === 'TIMEOUT';
