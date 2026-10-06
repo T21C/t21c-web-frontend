@@ -78,3 +78,22 @@ test('rejected commands preserve domain errors and do not complete another comma
   peers[0].receive('command.rejected', { code: 'download_library_cursor_stale', message: 'Reload the library.' }, { correlationId: command.id });
   await assert.rejects(pending, (error) => error.code === 'download_library_cursor_stale' && error.message === 'Reload the library.'); session.close();
 });
+test('declared PascalCase mod DTOs hydrate capabilities and settle domain observers', async () => {
+  const { session, peers } = harness(); await session.connect();
+  const health = { Capabilities: ['download-storage-v1', 'download-library-v1'] };
+  peers[0].receive('snapshot', { Health: health, Jobs: [], Storage: { State: 'idle' }, Batch: { State: 'idle' }, Summary: { Revision: 3 } });
+  assert.deepEqual(session.getSnapshot().health.Capabilities, health.Capabilities);
+  assert.equal(session.getSnapshot().storage.State, 'idle');
+  assert.equal(session.getSnapshot().summary.Revision, 3);
+  const started = session.openById('9'); const command = peers[0].sent.at(-1);
+  peers[0].receive('job.started', { JobId: 'wire-job', Done: false, UpdatedAtUnixMs: 1 }, { correlationId: command.id });
+  assert.equal((await started).JobId, 'wire-job');
+  const terminal = session.waitForJob('wire-job');
+  peers[0].receive('jobs.changed', { Jobs: [{ JobId: 'wire-job', Done: true, Status: 'completed', UpdatedAtUnixMs: 2 }] });
+  assert.equal((await terminal).Status, 'completed');
+  peers[0].receive('library.membership', { LevelIds: ['9'] });
+  assert.deepEqual(session.getSnapshot().levelIds, ['9']);
+  peers[0].receive('folder.selection', { OperationId: 'wire-picker', State: 'selected', SelectionToken: 'grant' });
+  assert.equal((await session.waitForFolder('wire-picker')).SelectionToken, 'grant');
+  session.close();
+});
