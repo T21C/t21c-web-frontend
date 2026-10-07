@@ -19,7 +19,8 @@ jobs:
     concurrency:
       group: frontend-ci-${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
       cancel-in-progress: ${{ github.event_name == 'pull_request' }}
-    runs-on: ["ARM64", "self-hosted", "tuf", "ubuntu-latest"]
+    # CI_RUNS_ON is one set: ARM64 tuf runner, any tuf runner, or ubuntu-latest.
+    runs-on: ${{ fromJSON(vars.CI_RUNS_ON || '["self-hosted","linux","ARM64","tuf"]') }}
     steps:
       - uses: actions/checkout@v5
 
@@ -141,7 +142,8 @@ jobs:
     permissions:
       contents: read
       packages: write
-    runs-on: ["ARM64", "self-hosted", "tuf", "ubuntu-latest"]
+    # CI_RUNS_ON is one set: ARM64 tuf runner, any tuf runner, or ubuntu-latest.
+    runs-on: ${{ fromJSON(vars.CI_RUNS_ON || '["self-hosted","linux","ARM64","tuf"]') }}
     steps:
       - uses: actions/checkout@v5
 
