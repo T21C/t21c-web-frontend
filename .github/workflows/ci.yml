@@ -19,7 +19,7 @@ jobs:
     concurrency:
       group: frontend-ci-${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
       cancel-in-progress: ${{ github.event_name == 'pull_request' }}
-    runs-on: ${{ fromJSON(vars.CI_RUNS_ON || '["ubuntu-latest"]') }}
+    runs-on: ["ARM64", "self-hosted", "tuf", "ubuntu-latest"]
     steps:
       - uses: actions/checkout@v5
 
@@ -141,7 +141,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-    runs-on: ${{ fromJSON(vars.CI_RUNS_ON || '["ubuntu-latest"]') }}
+    runs-on: ["ARM64", "self-hosted", "tuf", "ubuntu-latest"]
     steps:
       - uses: actions/checkout@v5
 

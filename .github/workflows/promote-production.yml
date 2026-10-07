@@ -19,7 +19,7 @@ concurrency:
 jobs:
   promote:
     environment: production
-    runs-on: ${{ fromJSON(vars.CI_RUNS_ON || '["ubuntu-latest"]') }}
+    runs-on: ["ARM64", "self-hosted", "tuf", "ubuntu-latest"]
     steps:
       - name: Validate source SHA
         env:
