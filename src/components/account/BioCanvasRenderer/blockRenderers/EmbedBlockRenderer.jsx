@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useExternalLink } from "@/components/common/LinkConfirm";
-import { getLocalVideoPreview } from "@/utils/bioCanvas/blocks/embed";
+import { getLocalVideoPreview, getVideoEmbedModifierClass, getVideoIframeReferrerPolicy, getVideoIframeScrolling } from "@/utils/bioCanvas/blocks/embed";
 
 export default function EmbedBlockRenderer({ block }) {
   const openExternal = useExternalLink();
@@ -15,14 +15,15 @@ export default function EmbedBlockRenderer({ block }) {
   return (
     <div className="bio-canvas-block bio-canvas-block--embed">
       {title?.trim() ? <p className="bio-canvas-block__embed-title">{title}</p> : null}
-      <div className="bio-canvas-block__embed-player">
+      <div className={`bio-canvas-block__embed-player ${getVideoEmbedModifierClass(url)}`.trim()}>
         {embedSrc ? (
           <iframe
             src={embedSrc}
             title={title?.trim() || "Video player"}
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerPolicy="strict-origin-when-cross-origin"
+            referrerPolicy={getVideoIframeReferrerPolicy(url)}
+            scrolling={getVideoIframeScrolling(url)}
             allowFullScreen
           />
         ) : (

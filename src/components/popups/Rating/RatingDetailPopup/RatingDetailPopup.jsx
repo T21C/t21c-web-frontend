@@ -5,7 +5,7 @@ import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import { careerForDetail, compareAccuracyDetails } from '@/utils/ratingAccuracy';
 import { PopupShell } from '@/components/common/PopupShell';
 import { usePopupHistory } from '@/hooks/usePopupHistory';
-import { getLocalVideoPreview } from "@/utils/videoLink";
+import { getLocalVideoPreview, getVideoEmbedModifierClass, getVideoIframeReferrerPolicy, getVideoIframeScrolling } from "@/utils/videoLink";
 import { RatingItem } from '@/components/cards';
 import { RatingInput } from '@/components/common/selectors';
 import api from '@/utils/api';
@@ -638,13 +638,15 @@ export const RatingDetailPopup = ({
           <div className="popup-main-content-container">
             <div className="popup-main-content">
               <div className="video-container">
-                <div className="video-aspect-ratio">
+                <div className={`video-aspect-ratio ${getVideoEmbedModifierClass(videoLink)}`.trim()}>
                   {videoData ? (
                     <iframe 
                       src={videoData.embed}
                       title="Video"
                       className="video-iframe"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      referrerPolicy={getVideoIframeReferrerPolicy(videoLink)}
+                      scrolling={getVideoIframeScrolling(videoLink)}
                       allowFullScreen
                       onLoad={handleVideoLoad}
                     />

@@ -102,7 +102,15 @@
   display: flex;
   gap: 0.85rem;
   align-items: center;
+  justify-content: space-between;
   margin: 0;
+}
+
+.keyboard-setup .keyboard-setup__spec-main {
+  display: flex;
+  gap: 0.85rem;
+  align-items: center;
+  min-width: 0;
 }
 
 .keyboard-setup .switch-diagram.switch-diagram--spec {
@@ -169,6 +177,18 @@
 
 .keyboard-setup .keyboard-setup__board {
   width: 100%;
+}
+
+.keyboard-setup .keyboard-setup__note {
+  margin: 0 0 0 auto;
+  flex: 0 1 22rem;
+  max-width: min(22rem, 100%);
+  color: var(--color-gray-2);
+  font-size: 0.85rem;
+  line-height: 1.35;
+  text-align: right;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .keyboard-setup .keyboard-setup__board-inner {
@@ -289,6 +309,11 @@
 .keyboard-setup .keyboard-setup__paste {
   width: 100%;
   min-height: 3.5rem;
+}
+
+.keyboard-setup .keyboard-setup__note-input {
+  min-height: 4rem;
+  resize: vertical;
 }
 
 .keyboard-setup .keyboard-setup__clears {

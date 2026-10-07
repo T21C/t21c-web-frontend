@@ -1237,6 +1237,7 @@
 }
 
 .level-detail .level-detail-body .youtube {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1247,7 +1248,14 @@
   background: var(--color-black);
 }
 
+.level-detail .level-detail-body .youtube.video-embed--douyin {
+  aspect-ratio: 16 / 10;
+}
+
 .level-detail .level-detail-body .youtube iframe {
+  position: absolute;
+  inset: 0;
+  display: block;
   height: 100%;
   width: 100%;
   object-fit: contain;
@@ -1710,6 +1718,10 @@
   .level-detail .level-detail-body .youtube {
     aspect-ratio: 16/9;
     width: 100%;
+  }
+
+  .level-detail .level-detail-body .youtube.video-embed--douyin {
+    aspect-ratio: 16 / 10;
   }
 }
 

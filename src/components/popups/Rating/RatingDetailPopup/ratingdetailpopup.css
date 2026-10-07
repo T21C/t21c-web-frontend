@@ -250,6 +250,10 @@
     border-radius: 4px;
 }
 
+.rating-popup .video-aspect-ratio.video-embed--douyin {
+    padding-top: 62.5%;
+}
+
 .rating-popup .video-placeholder {
     position: absolute;
     top: 0;

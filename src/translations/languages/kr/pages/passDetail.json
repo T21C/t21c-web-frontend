@@ -173,7 +173,7 @@
   "video": {
     "notAvailable": {
       "text": "영상을 이용할 수 없음",
-      "watchOnYoutube": "YouTube에서 보기"
+      "watchOnYoutube": "YouTube, Bilibili 또는 Douyin에서 보기"
     }
   },
   "buttons": {

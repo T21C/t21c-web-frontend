@@ -8,6 +8,7 @@ import { NavLink } from 'react-router-dom';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { getYouTubeThumbnailUrl } from '@/utils/videoLink';
 import { getBilibiliCoverUrl } from '@/utils/bilibiliCover';
+import { getDouyinCoverUrl } from '@/utils/douyinCover';
 
 const WeeklyGallery = ({ 
   curations = [], 
@@ -265,7 +266,8 @@ const WeeklyGallery = ({
             const thumbCandidate =
               curation.previewLink ??
               getYouTubeThumbnailUrl(levelRow?.videoLink) ??
-              getBilibiliCoverUrl(levelRow?.videoLink);
+              getBilibiliCoverUrl(levelRow?.videoLink) ??
+              getDouyinCoverUrl(levelRow?.videoLink);
             const thumbSrc = brokenThumbs[curation.id] ? null : thumbCandidate;
             return (
               <NavLink

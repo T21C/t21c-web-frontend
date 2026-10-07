@@ -120,6 +120,15 @@ export default function PlayerKeyboardsModule({
   const formFactors = catalog?.formFactors || [];
   const factorName =
     formFactors.find((row) => row.slug === geometry?.formFactor)?.name || null;
+  const boardNote = String(board?.note || "").trim();
+  const hasSwitchSpec = Boolean(
+    board?.sensing === "membrane"
+      || board?.switch?.name
+      || board?.customSwitch
+      || board?.actuationMm != null
+      || board?.rapidTriggerSplit
+      || board?.rapidTriggerActuationMm != null,
+  );
 
   async function createRig() {
     setSaving(true);
@@ -227,47 +236,54 @@ export default function PlayerKeyboardsModule({
                     emptySockets={emptySocketSet(board)}
                   />
                 )}
-                {(board?.sensing === "membrane" || board?.switch?.name || board?.customSwitch || board?.actuationMm != null || board?.rapidTriggerSplit || board?.rapidTriggerActuationMm != null) && (
+                {(hasSwitchSpec || boardNote) && (
                   <div className="keyboard-setup__spec">
-                    {(board?.sensing === "membrane" || board?.switch?.name || board?.customSwitch) && (
-                      <SwitchDiagram
-                        className="switch-diagram--spec"
-                        stem={board.switch?.stem}
-                        sensing={board.switch?.sensing || board.sensing}
-                        baseColor={board.baseColor || board.switch?.baseColor}
-                        topColor={board.topColor || board.switch?.topColor}
-                        stemColor={board.stemColor || board.switch?.stemColor}
-                        baseOpacity={board.baseOpacity == null ? board.switch?.baseOpacity : board.baseOpacity}
-                      />
+                    {hasSwitchSpec && (
+                      <div className="keyboard-setup__spec-main">
+                        {(board?.sensing === "membrane" || board?.switch?.name || board?.customSwitch) && (
+                          <SwitchDiagram
+                            className="switch-diagram--spec"
+                            stem={board.switch?.stem}
+                            sensing={board.switch?.sensing || board.sensing}
+                            baseColor={board.baseColor || board.switch?.baseColor}
+                            topColor={board.topColor || board.switch?.topColor}
+                            stemColor={board.stemColor || board.switch?.stemColor}
+                            baseOpacity={board.baseOpacity == null ? board.switch?.baseOpacity : board.baseOpacity}
+                          />
+                        )}
+                        <div className="keyboard-setup__spec-copy">
+                          {board?.sensing === "membrane" ? (
+                            <p className="keyboard-setup__spec-name">{t("profile.keyboards.sensing.membrane")}</p>
+                          ) : (
+                            <>
+                              {(board?.switch?.name || board?.customSwitch) && (
+                                <p className="keyboard-setup__spec-name">{board.switch?.name || board.customSwitch}</p>
+                              )}
+                              {board?.actuationMm != null && (
+                                <p className="keyboard-setup__spec-line">
+                                  {t("profile.keyboards.actuation", { mm: board.actuationMm })}
+                                </p>
+                              )}
+                              {board?.rapidTriggerSplit ? (
+                                <p className="keyboard-setup__spec-line">
+                                  {t("profile.keyboards.rtSplit", {
+                                    press: board.rapidTriggerPressMm ?? "—",
+                                    release: board.rapidTriggerReleaseMm ?? "—",
+                                  })}
+                                </p>
+                              ) : board?.rapidTriggerActuationMm != null && (
+                                <p className="keyboard-setup__spec-line">
+                                  {t("profile.keyboards.rtActuation", { mm: board.rapidTriggerActuationMm })}
+                                </p>
+                              )}
+                            </>
+                          )}
+                        </div>
+                      </div>
                     )}
-                    <div className="keyboard-setup__spec-copy">
-                      {board?.sensing === "membrane" ? (
-                        <p className="keyboard-setup__spec-name">{t("profile.keyboards.sensing.membrane")}</p>
-                      ) : (
-                        <>
-                          {(board?.switch?.name || board?.customSwitch) && (
-                            <p className="keyboard-setup__spec-name">{board.switch?.name || board.customSwitch}</p>
-                          )}
-                          {board?.actuationMm != null && (
-                            <p className="keyboard-setup__spec-line">
-                              {t("profile.keyboards.actuation", { mm: board.actuationMm })}
-                            </p>
-                          )}
-                          {board?.rapidTriggerSplit ? (
-                            <p className="keyboard-setup__spec-line">
-                              {t("profile.keyboards.rtSplit", {
-                                press: board.rapidTriggerPressMm ?? "—",
-                                release: board.rapidTriggerReleaseMm ?? "—",
-                              })}
-                            </p>
-                          ) : board?.rapidTriggerActuationMm != null && (
-                            <p className="keyboard-setup__spec-line">
-                              {t("profile.keyboards.rtActuation", { mm: board.rapidTriggerActuationMm })}
-                            </p>
-                          )}
-                        </>
-                      )}
-                    </div>
+                    {boardNote && (
+                      <p className="keyboard-setup__note">{board.note}</p>
+                    )}
                   </div>
                 )}
               </div>

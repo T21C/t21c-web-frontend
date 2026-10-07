@@ -56,7 +56,7 @@ function SensingBadge({ sensing }) {
   // Hall-effect badge. License: MIT. Ionicons: https://github.com/ionic-team/ionicons
   if (sensing === "hall") {
     return (
-      <svg transform="matrix(-1, 0, 0, 1, 0, 0)" className="switch-diagram__badge" viewBox="0 0 512 512" aria-hidden="true" fill="none">
+      <svg transform="matrix(-1, 0, 0, 1, 6, 1)" className="switch-diagram__badge" viewBox="0 0 512 512" aria-hidden="true" fill="none">
         <line x1="191.98" y1="463.79" x2="191.98" y2="415.79" stroke={color} strokeLinecap="round" strokeMiterlimit="10" strokeWidth="32" />
         <line x1="90.16" y1="421.61" x2="124.1" y2="387.67" stroke={color} strokeLinecap="round" strokeMiterlimit="10" strokeWidth="32" />
         <line x1="47.98" y1="319.79" x2="95.98" y2="319.79" stroke={color} strokeLinecap="round" strokeMiterlimit="10" strokeWidth="32" />

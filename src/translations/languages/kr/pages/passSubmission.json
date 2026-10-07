@@ -25,13 +25,13 @@
     "notfound": "찾을 수 없음"
   },
   "videoInfo": {
-    "videoLink": "YouTube 또는 bilibili 영상 링크",
+    "videoLink": "YouTube, Bilibili 또는 Douyin 영상 링크",
     "title": "제목",
     "channel": "채널",
     "timestamp": "업로드 시간",
-    "nolink": "유효한 YouTube 또는 bilibili 영상 링크를 입력하세요",
+    "nolink": "유효한 YouTube, Bilibili 또는 Douyin 영상 링크를 입력하세요",
     "resolving": "영상 링크 확인 중…",
-    "linkResolved": "짧은 링크가 bilibili URL로 변환되었습니다"
+    "linkResolved": "짧은 링크가 변환되었습니다"
   },
   "judgements": {
     "ePerfect": "빠름",

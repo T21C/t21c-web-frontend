@@ -23,6 +23,8 @@ export const APPROVED_EXTERNAL_HOSTS = Object.freeze([
   'youtube-nocookie.com',
   'bilibili.com',
   'b23.tv',
+  'douyin.com',
+  'iesdouyin.com',
 ]);
 
 function hostMatches(hostname, allowed) {

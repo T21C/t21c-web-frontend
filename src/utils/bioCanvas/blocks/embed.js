@@ -3,7 +3,11 @@ import { parseSafeUrl, zSafeUrl } from "../urls";
 import {
   extractYouTubeVideoId,
   getBilibiliEmbedUrl,
+  getDouyinEmbedUrl,
   getLocalVideoPreview,
+  getVideoEmbedModifierClass,
+  getVideoIframeReferrerPolicy,
+  getVideoIframeScrolling,
   getVideoProvider,
   getYouTubeEmbedUrl,
   getYouTubeThumbnailUrl,
@@ -17,7 +21,11 @@ const DANGEROUS_TITLE = /url\s*\(|var\s*\(|expression\s*\(|@import|javascript:|\
 export {
   extractYouTubeVideoId,
   getBilibiliEmbedUrl,
+  getDouyinEmbedUrl,
   getLocalVideoPreview,
+  getVideoEmbedModifierClass,
+  getVideoIframeReferrerPolicy,
+  getVideoIframeScrolling,
   getVideoProvider,
   getVideoProvider as getEmbedProvider,
   getYouTubeEmbedUrl,
@@ -25,7 +33,7 @@ export {
 };
 
 const zEmbedUrl = zSafeUrl.refine((url) => getVideoProvider(url) !== null, {
-  message: "Only YouTube and Bilibili video links are supported",
+  message: "Only YouTube, Bilibili, and Douyin video links are supported",
 });
 
 export const embedBlockDataSchema = z.object({

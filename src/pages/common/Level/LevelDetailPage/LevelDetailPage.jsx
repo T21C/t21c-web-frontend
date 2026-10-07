@@ -12,8 +12,9 @@ import { PORTALED_PANEL_CLASS, usePortaledPanelAnchor } from "@/hooks/usePortale
 import { communityTagHoverTitle, formatCommunityTagScore, groupTagsByGroup, sortTagsByGroupThenSortOrder } from '@/utils/communityTags';
 import TagConfidenceBar from '@/components/common/display/TagConfidenceBar/TagConfidenceBar';
 
-import { getPrimaryVideoLink, getVideoProvider, getLocalVideoPreview, splitVideoLinks } from "@/utils/videoLink";
+import { getPrimaryVideoLink, getVideoProvider, getLocalVideoPreview, getVideoEmbedModifierClass, getVideoIframeReferrerPolicy, getVideoIframeScrolling, splitVideoLinks } from "@/utils/videoLink";
 import { getBilibiliCoverUrl } from "@/utils/bilibiliCover";
+import { getDouyinCoverUrl } from "@/utils/douyinCover";
 
 import { Tooltip } from '@/components/common/display/Tooltip';
 import { useTranslation } from "react-i18next";
@@ -1027,8 +1028,8 @@ const LevelDetailPageContent = ({ mockData = null }) => {
   const primaryVideoDetail = videoDetailsByUrl[videoLinks[0]] ?? null;
   const activeVideoDetail = videoDetailsByUrl[videoLinks[activeVideoIndex]] ?? null;
   const activeVideoLink = videoLinks[activeVideoIndex] ?? '';
-  const primaryThumb = primaryVideoDetail?.image || getBilibiliCoverUrl(videoLinks[0]);
-  const activeThumb = activeVideoDetail?.image || getBilibiliCoverUrl(activeVideoLink);
+  const primaryThumb = primaryVideoDetail?.image || getBilibiliCoverUrl(videoLinks[0]) || getDouyinCoverUrl(videoLinks[0]);
+  const activeThumb = activeVideoDetail?.image || getBilibiliCoverUrl(activeVideoLink) || getDouyinCoverUrl(activeVideoLink);
 
   // Custom styling state for curations
   const [curationStyles, setCurationStyles] = useState(null);
@@ -3331,7 +3332,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
             </div>
 
             <div className="video-embed-section">
-              <div className="youtube">
+              <div className={`youtube ${getVideoEmbedModifierClass(activeVideoLink)}`.trim()}>
                 {activeVideoDetail ? 
                   <iframe
                     key={activeVideoLink}
@@ -3339,7 +3340,8 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                     title="Video player"
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    referrerPolicy="strict-origin-when-cross-origin"
+                    referrerPolicy={getVideoIframeReferrerPolicy(activeVideoLink)}
+                    scrolling={getVideoIframeScrolling(activeVideoLink)}
                     allowFullScreen
                   ></iframe>
                 :
@@ -3367,7 +3369,9 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                       ? 'YouTube'
                       : provider === 'bilibili'
                         ? 'Bilibili'
-                        : 'Video';
+                        : provider === 'douyin'
+                          ? 'Douyin'
+                          : 'Video';
 
                     return (
                       <button

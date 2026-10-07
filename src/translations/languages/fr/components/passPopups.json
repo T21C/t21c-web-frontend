@@ -34,7 +34,7 @@
         "timestamp": "Date de publication",
         "nolink": "Pas de lien vidéo fourni",
         "resolving": "Résolution du lien vidéo…",
-        "linkResolved": "Lien court résolu en URL Bilibili"
+        "linkResolved": "Lien court résolu"
       },
       "judgements": {
         "ePerfect": "Parfait-Tôt",

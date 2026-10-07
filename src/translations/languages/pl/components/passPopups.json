@@ -34,7 +34,7 @@
         "timestamp": "Data upublicznienia",
         "nolink": "Nie podano linku do wideo",
         "resolving": "Rozwiązywanie linku do wideo…",
-        "linkResolved": "Skrócony link zamieniono na adres Bilibili"
+        "linkResolved": "Skrócony link został rozwinięty"
       },
       "judgements": {
         "ePerfect": "WPerfekcyjnie",

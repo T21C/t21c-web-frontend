@@ -775,40 +775,35 @@
     flex-direction: column;
     gap: 0.5rem;
     min-width: 0;
-    align-self: stretch;
+    width: 100%;
+    align-self: start;
   }
 
   .submission-admin-page .embed-column .embed-container {
     grid-column: unset;
     position: relative;
-    height: 300px;
-    overflow: hidden;
+    box-sizing: border-box;
+    width: 100%;
     max-width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    height: auto;
+    min-height: 220px;
+    aspect-ratio: 16 / 9;
+    flex: 0 0 auto;
+    overflow: hidden;
   }
 
-  .submission-admin-page .embed-container {
-    position: relative; /* 16:9 aspect ratio */
-    height: 0;
-    overflow: hidden;
-    max-width: 100%;
-    grid-column: 6 / span 6;
-    height: 300px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .submission-admin-page .embed-column .embed-container.video-embed--douyin {
+    aspect-ratio: 16 / 10;
   }
 
   .submission-admin-page .embed-container iframe {
     position: absolute;
-    top: 0;
-    left: 0;
+    inset: 0;
+    display: block;
     width: 100%;
     height: 100%;
     border: none;
-    margin-bottom: 15px;
+    margin: 0;
   }
 
   .submission-admin-page .submission-video-link-field {
@@ -1709,16 +1704,6 @@
 
   .submission-admin-page .pass-submission-card .embed-column {
     grid-column: 7 / span 5;
-  }
-
-  .submission-admin-page .pass-submission-card .embed-column .embed-container {
-    height: 70%;
-    min-height: 220px;
-  }
-
-  .submission-admin-page .pass-submission-card .embed-container {
-    grid-column: 7 / span 5; /* Takes up last 5 columns */
-    height:70%
   }
 
   .submission-admin-page .loader-shell--submission {

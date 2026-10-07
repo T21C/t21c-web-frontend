@@ -15,6 +15,8 @@ import { formToScoringJudgements } from '@/utils/ParseJudgements';
 import './PassCoreForm.css';
 import { JudgementInputs } from './JudgementInputs';
 import { getBilibiliCoverUrl } from '@/utils/bilibiliCover';
+import { getDouyinCoverUrl } from '@/utils/douyinCover';
+import { getVideoEmbedModifierClass, getVideoIframeReferrerPolicy, getVideoIframeScrolling } from '@/utils/videoLink';
 
 export const PASS_CORE_COPY = {
   submit: {
@@ -333,12 +335,12 @@ export function PassCoreForm({
       style={{
         backgroundImage: isCalculator
           ? undefined
-          : `url("${videoDetail?.image || getBilibiliCoverUrl(form?.videoLink) || placeholderImage}")`,
+          : `url("${videoDetail?.image || getBilibiliCoverUrl(form?.videoLink) || getDouyinCoverUrl(form?.videoLink) || placeholderImage}")`,
       }}
     >
       {!isCalculator && (
       <div
-        className="thumbnail-container"
+        className={`thumbnail-container ${getVideoEmbedModifierClass(form?.videoLink)}`.trim()}
         style={{
           filter: videoDetail ? `drop-shadow(0 0 1rem black)` : '',
         }}
@@ -349,7 +351,8 @@ export function PassCoreForm({
             title="Video player"
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerPolicy="strict-origin-when-cross-origin"
+            referrerPolicy={getVideoIframeReferrerPolicy(form?.videoLink)}
+            scrolling={getVideoIframeScrolling(form?.videoLink)}
             allowFullScreen
           ></iframe>
         ) : (

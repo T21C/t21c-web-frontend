@@ -9,11 +9,11 @@ export default function EmbedBlockEditor({ block, onPatchData }) {
           type="url"
           value={url ?? ""}
           maxLength={2048}
-          placeholder="YouTube or Bilibili video link"
+          placeholder="YouTube, Bilibili, or Douyin video link"
           onChange={(ev) => onPatchData({ url: ev.target.value })}
         />
         <small className="bio-canvas-editor__hint">
-          Only YouTube and Bilibili video links are supported.
+          Only YouTube, Bilibili, and Douyin video links are supported.
         </small>
       </label>
       <label className="bio-canvas-editor__field">
