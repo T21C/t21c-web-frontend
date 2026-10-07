@@ -28,6 +28,7 @@ import { formatAutoTilecountTooltip, formatDuration, getSongDisplayName } from '
 import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import toast from 'react-hot-toast';
 import { createViewDurationTracker } from '@/utils/viewDurationTracker';
+import { isAutoraterDetail } from '@/pages/admin/RatingPage/RankReadyTable';
 import { REQUEST_BANDS, requestPguBand } from '@/utils/ratingRequestBand';
 
 const DECK_SIZES = [
@@ -40,6 +41,12 @@ const CUSTOM_DECK_VALUE = 'custom';
 
 function peeksForDeckSize(n) {
   return Math.floor(Math.max(0, Number(n) || 0) / DECK_UNIT);
+}
+
+function isPeekAutorater(detail) {
+  if (isAutoraterDetail(detail)) return true;
+  const username = detail?.user?.username || detail?.username || '';
+  return String(username).toLowerCase() === 'autorater';
 }
 
 function parseDeckSizeInput(raw) {
@@ -76,7 +83,10 @@ const RatingZenPage = () => {
     startSession,
     clearSession,
     resetToSetup,
+    flushSession,
     hasResumableDeck,
+    hasUnfinishedDeck,
+    sessionHydrated,
   } = useZenMode();
 
   const {
@@ -191,8 +201,8 @@ const RatingZenPage = () => {
         phase: 'setup',
       };
     });
-    navigate('/rating');
-  }, [navigate, patchSession, readViewDurationSeconds]);
+    void flushSession();
+  }, [flushSession, patchSession, readViewDurationSeconds]);
 
   const sessionRef = useRef(session);
   sessionRef.current = session;
@@ -235,6 +245,12 @@ const RatingZenPage = () => {
     (currentRequestBand === 'U' && includeU);
   const isAdminRater = Boolean(
     user && hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.RATER])
+  );
+  const alreadyRated = Boolean(
+    cardOutcomes[index] === 'rated' ||
+      cardOutcomes[index] === 'peeked' ||
+      (user?.id &&
+        (current?.details || []).some((detail) => detail.userId === user.id))
   );
 
   const deckSizeOptions = useMemo(
@@ -320,7 +336,7 @@ const RatingZenPage = () => {
     disposeViewTrackers();
     setCustomDeckPicked(false);
     setCustomDeckDraft(String(DEFAULT_DECK_SIZE));
-    clearSession();
+    void clearSession();
   }, [clearSession, disposeViewTrackers]);
 
   const handleDeckSizeOptionChange = useCallback(
@@ -377,7 +393,7 @@ const RatingZenPage = () => {
       const dealt = data?.cards || [];
       const peeks = peeksForDeckSize(dealt.length);
       disposeViewTrackers();
-      startSession({
+      await startSession({
         cards: dealt,
         cardOutcomes: dealt.map(() => null),
         cardAnswers: dealt.map(() => null),
@@ -484,8 +500,9 @@ const RatingZenPage = () => {
           index: target,
         };
       });
+      void flushSession();
     },
-    [canGoto, index, phase, patchSession, readViewDurationSeconds]
+    [canGoto, index, phase, flushSession, patchSession, readViewDurationSeconds]
   );
 
   const applyOutcomeAndAdvance = useCallback(
@@ -562,6 +579,7 @@ const RatingZenPage = () => {
   );
 
   const handleSkip = () => {
+    if (alreadyRated) return;
     const viewDurationSeconds = readViewDurationSeconds(
       current?.id,
       cardAnswers[index]?.viewDurationSeconds
@@ -577,10 +595,13 @@ const RatingZenPage = () => {
       },
       0
     );
+    void flushSession();
   };
 
   const handlePeek = () => {
-    if (cardPeeked || peeksLeft <= 0 || !(current?.details || []).length) return;
+    if (alreadyRated) return;
+    const peekable = (current?.details || []).filter((d) => !isPeekAutorater(d));
+    if (cardPeeked || peeksLeft <= 0 || peekable.length === 0) return;
     const ok = window.confirm(t('rating.zen.confirmPeek'));
     if (!ok) return;
     patchSession((prev) => {
@@ -603,6 +624,7 @@ const RatingZenPage = () => {
         cardAnswers: nextAnswers,
       };
     });
+    void flushSession();
     // Resume timing after flush (peek stays on same card).
     getOrCreateViewTracker(current?.id)?.start();
   };
@@ -630,7 +652,7 @@ const RatingZenPage = () => {
   };
 
   const handleSubmit = async () => {
-    if (!current || !user) return;
+    if (!current || !user || alreadyRated) return;
     if (!pendingRating.trim()) {
       setSaveError(t('rating.zen.errors.ratingRequired'));
       return;
@@ -665,11 +687,15 @@ const RatingZenPage = () => {
         },
         1
       );
+      void flushSession();
     } catch (err) {
+      const status = err.response?.status;
       setSaveError(
-        err.response?.data?.error ||
-          err.message ||
-          t('rating.zen.errors.submitFailed')
+        status === 409
+          ? t('rating.zen.errors.alreadyRated')
+          : err.response?.data?.error ||
+            err.message ||
+            t('rating.zen.errors.submitFailed')
       );
       getOrCreateViewTracker(current.id, viewDurationSeconds)?.start();
     } finally {
@@ -678,7 +704,10 @@ const RatingZenPage = () => {
   };
 
   const canSubmit =
-    Boolean(pendingRating.trim()) && Boolean(pendingComment.trim()) && !isSaving;
+    Boolean(pendingRating.trim()) &&
+    Boolean(pendingComment.trim()) &&
+    !isSaving &&
+    !alreadyRated;
 
   useEffect(() => {
     if (phase !== 'stage') return undefined;
@@ -693,7 +722,7 @@ const RatingZenPage = () => {
     // Intentionally bind to current stage fields each render cycle of deps below
   }, [phase, canSubmit, pendingRating, pendingComment, current?.id]);
 
-  const peerDetails = current?.details || [];
+  const peerDetails = (current?.details || []).filter((d) => !isPeekAutorater(d));
   const adminRatings = peerDetails.filter((d) => !d.isCommunityRating);
   const communityRatings = peerDetails.filter((d) => d.isCommunityRating);
   const visiblePeers = showCommunityPeers ? communityRatings : adminRatings;
@@ -763,7 +792,7 @@ const RatingZenPage = () => {
     </div>
   );
 
-  if (user === undefined) {
+  if (user === undefined || !sessionHydrated) {
     return (
       <div className="rating-zen-page">
         <MetaTags {...pageMeta} />
@@ -918,9 +947,11 @@ const RatingZenPage = () => {
                   ? t('rating.zen.setup.dealing')
                   : t('rating.zen.setup.start')}
               </button>
-              <Link to="/rating" className="btn-fill-neutral-dark">
-                {t('rating.zen.setup.back')}
-              </Link>
+              {!hasUnfinishedDeck && (
+                <Link to="/rating" className="btn-fill-neutral-dark">
+                  {t('rating.zen.setup.back')}
+                </Link>
+              )}
             </div>
           </div>
         </div>
@@ -1022,7 +1053,7 @@ const RatingZenPage = () => {
                       type="button"
                       className="btn-fill-neutral-dark btn-block"
                       onClick={handleSkip}
-                      disabled={isSaving}
+                      disabled={isSaving || alreadyRated}
                       aria-label={t('rating.zen.actions.skip')}
                       title={t('rating.zen.actions.skip')}
                     >
@@ -1038,7 +1069,7 @@ const RatingZenPage = () => {
                         type="button"
                         className="btn-fill-admin btn-block"
                         onClick={handlePeek}
-                        disabled={cardPeeked || peeksLeft <= 0 || isSaving || !hasPeersToPeek}
+                        disabled={alreadyRated || cardPeeked || peeksLeft <= 0 || isSaving || !hasPeersToPeek}
                         aria-label={
                           cardPeeked
                             ? t('rating.zen.actions.peeked')
@@ -1061,7 +1092,7 @@ const RatingZenPage = () => {
                       type="button"
                       className="btn-fill-primary btn-block"
                       onClick={() => void handleSubmit()}
-                      disabled={!canSubmit}
+                      disabled={!canSubmit || alreadyRated}
                       aria-label={
                         isSaving
                           ? t('loading.saving', { ns: 'common' })
@@ -1210,6 +1241,7 @@ const RatingZenPage = () => {
                         showDiff={false}
                         difficulties={difficulties}
                         allowCustomInput={true}
+                        disabled={alreadyRated}
                       />
                     </div>
                   </div>
@@ -1222,10 +1254,18 @@ const RatingZenPage = () => {
                         patchSession({ pendingComment: e.target.value })
                       }
                       rows={4}
+                      disabled={alreadyRated}
                       placeholder={t('components:rating.detailPopup.placeholders.communityComment')}
                     />
                   </label>
-                  {saveError && <p className="rating-zen-page__error">{saveError}</p>}
+                  {alreadyRated && (
+                    <p className="rating-zen-page__error">
+                      {t('rating.zen.errors.alreadyRated')}
+                    </p>
+                  )}
+                  {saveError && !alreadyRated && (
+                    <p className="rating-zen-page__error">{saveError}</p>
+                  )}
                 </div>
               )}
 
@@ -1305,7 +1345,7 @@ const RatingZenPage = () => {
               className="btn-fill-primary"
               onClick={() => {
                 disposeViewTrackers();
-                resetToSetup();
+                void resetToSetup();
               }}
             >
               {t('rating.zen.done.again')}

@@ -110,7 +110,8 @@
   },
   "creditsEdit": {
     "searchPlaceholder": "Rechercher des créateurs…",
-    "noResults": "Aucun créateur correspondant"
+    "noResults": "Aucun créateur correspondant",
+    "keepSelfOwner": "Vous ne pouvez pas retirer votre propre statut de propriétaire"
   },
   "linkedLevels": {
     "title": "Niveaux liés",

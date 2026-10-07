@@ -36,7 +36,7 @@
     "resendCooldown": "새 코드를 요청하기 전에 잠시 기다려 주세요",
     "sendFailed": "로그인 코드 전송에 실패했습니다",
     "expired": "로그인 확인이 만료되었습니다. 다시 로그인해 주세요.",
-    "rememberDevice": "이 기기를 30일 동안 기억",
+    "rememberDevice": "이 기기를 120일 동안 기억",
     "back": "로그인으로 돌아가기",
     "usePasskey": "패스키로 로그인",
     "passkeyFailed": "패스키 확인에 실패했습니다. 다시 시도해 주세요."

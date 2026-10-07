@@ -1,5 +1,5 @@
 // tuf-search: #ratingRequestBand #pgu #rating
-/** Same buckets as server requestPguBand: Q labels, PGU tokens, highest range endpoint. */
+/** Same buckets as server requestPguBand: Q labels, PGU tokens, legacy feeling numbers, highest range endpoint. */
 
 export const REQUEST_BANDS = [
   ['P', 'includeP'],
@@ -8,6 +8,7 @@ export const REQUEST_BANDS = [
 ];
 
 const BAND_RANK = { P: 0, G: 1, U: 2 };
+const LEGACY_G_FLOOR = 20;
 const UNIVERSAL_LEGACY_FLOOR = 21;
 
 function parseQRangeLetter(name) {
@@ -40,7 +41,10 @@ function bandFromRequestToken(token) {
   const pgu = t.match(/^([PGU])([1-9]|1[0-9]|20)$/i);
   if (pgu?.[1]) return pgu[1].toUpperCase();
   if (/^(?:[1-9]|1[0-9]|20(?:\.\d)?|21(?:\.[0-4])?)$/.test(t)) {
-    return Number(t) >= UNIVERSAL_LEGACY_FLOOR ? 'U' : 'P';
+    const value = Number(t);
+    if (value >= UNIVERSAL_LEGACY_FLOOR) return 'U';
+    if (value >= LEGACY_G_FLOOR) return 'G';
+    return 'P';
   }
   return null;
 }

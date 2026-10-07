@@ -273,6 +273,9 @@ const SortableCreatorItem = ({
   dropDisabled,
   onToggleOwner,
   onRemove,
+  toggleLocked = false,
+  removeLocked = false,
+  keepSelfOwnerTooltip,
 }) => {
   const itemId = getSortableId(creator);
   const {
@@ -318,6 +321,8 @@ const SortableCreatorItem = ({
           type="button"
           className={`level-credits-edit-popup__toggle-owner${creator.isOwner ? ' is-owner' : ''}`}
           onClick={() => onToggleOwner(creator.id, role)}
+          disabled={toggleLocked}
+          title={toggleLocked ? keepSelfOwnerTooltip : undefined}
         >
           {creator.isOwner ? 'Remove Owner' : 'Make Owner'}
         </button>
@@ -325,6 +330,8 @@ const SortableCreatorItem = ({
           type="button"
           className="level-credits-edit-popup__remove"
           onClick={() => onRemove(creator.id, role)}
+          disabled={removeLocked}
+          title={removeLocked ? keepSelfOwnerTooltip : undefined}
         >
           Remove
         </button>
@@ -352,6 +359,9 @@ const CreditRoleZone = ({
   onRemove,
   searchPlaceholder,
   noResultsLabel,
+  toggleLockedIds,
+  removeLockedIds,
+  keepSelfOwnerTooltip,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const { active, over } = useDndContext();
@@ -417,9 +427,11 @@ const CreditRoleZone = ({
           <p className="level-credits-edit-popup__zone-empty">{noResultsLabel}</p>
         )}
         <SortableContext items={sortableIds} strategy={verticalListSortingStrategy}>
-          {filteredCredits.map((creator) => (
+          {filteredCredits.map((creator) => {
+            const itemId = getSortableId(creator);
+            return (
             <SortableCreatorItem
-              key={getSortableId(creator)}
+              key={itemId}
               creator={creator}
               role={role}
               zoneId={zoneId}
@@ -427,8 +439,12 @@ const CreditRoleZone = ({
               dropDisabled={isDropDisabled}
               onToggleOwner={onToggleOwner}
               onRemove={onRemove}
+              toggleLocked={toggleLockedIds?.has(itemId)}
+              removeLocked={removeLockedIds?.has(itemId)}
+              keepSelfOwnerTooltip={keepSelfOwnerTooltip}
             />
-          ))}
+            );
+          })}
         </SortableContext>
       </div>
     </div>
@@ -437,7 +453,8 @@ const CreditRoleZone = ({
 
 export const LevelCreditsEditPopup = ({
   level,
-  teamsList = [],
+  teamsList,
+  actingCreatorId = null,
   excludeAliases = false,
   onClose,
   onSaved,
@@ -452,6 +469,7 @@ export const LevelCreditsEditPopup = ({
   const [fetchedCreators, setFetchedCreators] = useState(null);
   const [creatorToAddSearchQuery, setCreatorToAddSearchQuery] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const [fetchedTeams, setFetchedTeams] = useState(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
@@ -508,6 +526,53 @@ export const LevelCreditsEditPopup = ({
     };
   }, [creatorToAddSearchQuery, excludeAliases]);
 
+  useEffect(() => {
+    if (teamsList != null) {
+      return undefined;
+    }
+    let cancelToken = api.CancelToken.source();
+    const loadTeams = async () => {
+      try {
+        const response = await api.get(routes.teamsV3.root(), {
+          cancelToken: cancelToken.token,
+        });
+        const body = response.data;
+        setFetchedTeams(Array.isArray(body) ? body : (body?.results ?? []));
+      } catch (error) {
+        if (!api.isCancel(error)) {
+          console.error('Error fetching teams:', error);
+          setFetchedTeams([]);
+        }
+      }
+    };
+    loadTeams();
+    return () => {
+      cancelToken.cancel('Component unmounted');
+    };
+  }, [teamsList]);
+
+  const resolvedTeams = teamsList ?? fetchedTeams ?? [];
+
+  const keepSelfOwnerTooltip = t('levelPopups.creditsEdit.keepSelfOwner', { ns: 'components' });
+
+  const selfOwnerLocks = useMemo(() => {
+    const toggle = new Set();
+    const remove = new Set();
+    if (!actingCreatorId) {
+      return { toggle, remove };
+    }
+    const selfOwnerCredits = pendingCreators.filter(
+      (c) => Number(c.id) === Number(actingCreatorId) && c.isOwner,
+    );
+    if (selfOwnerCredits.length !== 1) {
+      return { toggle, remove };
+    }
+    const itemId = getSortableId(selfOwnerCredits[0]);
+    toggle.add(itemId);
+    remove.add(itemId);
+    return { toggle, remove };
+  }, [actingCreatorId, pendingCreators]);
+
   const availableCreators = useMemo(() => {
     if (fetchedCreators === null) return null;
     return fetchedCreators.filter(
@@ -524,7 +589,7 @@ export const LevelCreditsEditPopup = ({
       setHasUnsavedChanges(true);
       return;
     }
-    const matchingTeam = teamsList?.find(
+    const matchingTeam = resolvedTeams.find(
       (team) =>
         team.name.toLowerCase() === input?.toLowerCase() ||
         (Array.isArray(team.aliases) &&
@@ -570,11 +635,19 @@ export const LevelCreditsEditPopup = ({
   };
 
   const handleRemoveCreator = (creatorId, role) => {
+    const itemId = `${role}-${creatorId}`;
+    if (selfOwnerLocks.remove.has(itemId)) {
+      return;
+    }
     setPendingCreators((prev) => prev.filter((c) => !(c.id === creatorId && c.role === role)));
     setHasUnsavedChanges(true);
   };
 
   const handleToggleOwner = (creatorId, role) => {
+    const itemId = `${role}-${creatorId}`;
+    if (selfOwnerLocks.toggle.has(itemId)) {
+      return;
+    }
     setPendingCreators((prev) =>
       prev.map((c) =>
         c.id === creatorId && c.role === role ? { ...c, isOwner: !c.isOwner } : c,
@@ -725,7 +798,7 @@ export const LevelCreditsEditPopup = ({
               <div className="level-credits-edit-popup__team-input-group">
                 <CustomSelect
                   width="100%"
-                  options={teamsList.map((team) => ({
+                  options={resolvedTeams.map((team) => ({
                     value: team.name,
                     label: team.name,
                   }))}
@@ -781,6 +854,9 @@ export const LevelCreditsEditPopup = ({
                     onRemove={handleRemoveCreator}
                     searchPlaceholder={t('levelPopups.creditsEdit.searchPlaceholder', { ns: 'components' })}
                     noResultsLabel={t('levelPopups.creditsEdit.noResults', { ns: 'components' })}
+                    toggleLockedIds={selfOwnerLocks.toggle}
+                    removeLockedIds={selfOwnerLocks.remove}
+                    keepSelfOwnerTooltip={keepSelfOwnerTooltip}
                   />
                   <CreditRoleZone
                     zoneId={VFXER_ZONE_ID}
@@ -793,6 +869,9 @@ export const LevelCreditsEditPopup = ({
                     onRemove={handleRemoveCreator}
                     searchPlaceholder={t('levelPopups.creditsEdit.searchPlaceholder', { ns: 'components' })}
                     noResultsLabel={t('levelPopups.creditsEdit.noResults', { ns: 'components' })}
+                    toggleLockedIds={selfOwnerLocks.toggle}
+                    removeLockedIds={selfOwnerLocks.remove}
+                    keepSelfOwnerTooltip={keepSelfOwnerTooltip}
                   />
                   <CreditRoleZone
                     zoneId={SPECIAL_THANKS_ZONE_ID}
@@ -805,6 +884,9 @@ export const LevelCreditsEditPopup = ({
                     onRemove={handleRemoveCreator}
                     searchPlaceholder={t('levelPopups.creditsEdit.searchPlaceholder', { ns: 'components' })}
                     noResultsLabel={t('levelPopups.creditsEdit.noResults', { ns: 'components' })}
+                    toggleLockedIds={selfOwnerLocks.toggle}
+                    removeLockedIds={selfOwnerLocks.remove}
+                    keepSelfOwnerTooltip={keepSelfOwnerTooltip}
                   />
                 </div>
                 <DragOverlay dropAnimation={null}>

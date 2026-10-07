@@ -9,14 +9,14 @@
     "totalClears": "总通关",
     "clearStatus": {
       "cleared": "已通关",
-      "purePerfect": "纯完美",
-      "pureXPerfect": "纯 X-完美",
-      "tooltip": "以 {{accuracy}} 通关，{{score}}",
-      "tooltipPurePerfect": "以纯完美通关，{{score}}",
-      "tooltipPureXPerfect": "以纯 X-完美通关，{{score}}"
+      "purePerfect": "已完美无瑕",
+      "pureXPerfect": "已X完美无瑕",
+      "tooltip": "以 {{accuracy}}准，{{score}}分通关",
+      "tooltipPurePerfect": "以完美无瑕 {{score}} 分通关",
+      "tooltipPureXPerfect": "以X完美无瑕 {{score}} 分通关"
     },
     "tooltips": {
-      "purePerfectScore": "纯完美：{{score}}"
+      "purePerfectScore": "完美无瑕得分：{{score}}"
     },
     "addToPack": "添加至地图包",
     "buttons": {
@@ -53,9 +53,9 @@
       "sixteenKey": "16键",
       "noHoldTap": "非默认长按设置",
       "adofaiV2": "<adofaiicon></adofaiicon> v2",
-      "adofaiV2Tooltip": "引擎改版之前的版本<b>（截至 v2.9.8）</b>。由于计时引擎问题，这些版本较不稳定，精度也较低。",
+      "adofaiV2Tooltip": "游戏引擎升级前的版本。<b>（最高版本为2.9.8）</b>这些版本更不稳定且由于音频引擎问题输入不精确。",
       "adofaiPre340": "3.4.0前",
-      "adofaiPre340Tooltip": "X完美之前的版本<b>（截至 v3.3.1）</b>。",
+      "adofaiPre340Tooltip": "X完美更新前的版本。<b>（最高版本为3.3.1）</b>.",
       "xPerfect": "X完美",
       "wrongJudgement": "判定数据错误"
     },

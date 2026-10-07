@@ -111,7 +111,8 @@
   },
   "creditsEdit": {
     "searchPlaceholder": "Szukaj twórców…",
-    "noResults": "Brak pasujących twórców"
+    "noResults": "Brak pasujących twórców",
+    "keepSelfOwner": "Nie możesz usunąć siebie jako właściciela"
   },
   "linkedLevels": {
     "title": "Powiązane poziomy",

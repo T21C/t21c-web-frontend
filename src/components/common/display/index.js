@@ -12,7 +12,7 @@ import TagConfidenceBar from './TagConfidenceBar/TagConfidenceBar';
 import StartGuideCta from './StartGuideCta/StartGuideCta';
 import MarkdownText from './MarkdownText/MarkdownText';
 import { Tooltip } from './Tooltip';
-import { PpDifficultyIcon } from './PpDifficultyIcon/PpDifficultyIcon';
+import { PpBasescoreEditTooltip } from './PpDifficultyIcon/PpDifficultyIcon';
 
 export { 
     AccessDenied,
@@ -28,6 +28,6 @@ export {
     StartGuideCta,
     MarkdownText,
     Tooltip,
-    PpDifficultyIcon,
+    PpBasescoreEditTooltip,
 };
 
