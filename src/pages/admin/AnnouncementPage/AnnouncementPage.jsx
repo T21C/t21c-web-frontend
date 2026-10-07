@@ -376,7 +376,7 @@ const AnnouncementPage = () => {
     setEditingLevel(level);
   };
 
-  const handleLevelUpdate = async () => {
+  const handleLevelUpdate = async (updatedData) => {
     try {
       const [newLevelsResponse, reratesResponse] = await Promise.all([
         api.get(`${routes.database.levels.root()}/unannounced/new`),
@@ -398,6 +398,12 @@ const AnnouncementPage = () => {
       );
     } catch (err) {
       console.error('Error refreshing data:', err);
+    }
+    if (updatedData?.keepEditOpen) {
+      if (updatedData.level) {
+        setEditingLevel(prev => (prev ? { ...prev, ...updatedData.level } : updatedData.level));
+      }
+      return;
     }
     setEditingLevel(null);
   };

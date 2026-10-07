@@ -79,10 +79,12 @@
     "fullInfo": "Voir plus d'infos"
   },
   "toRatePending": {
-    "header": "En attente de reclassement",
-    "rerateNumber": "Note demandée",
+    "header": "Évaluation en cours...",
+    "rerateNumber": "Réévaluation",
+    "requesterFR": "Evaluation estimée",
     "rerateMessage": "Message",
-    "noDetails": "Aucun détail supplémentaire."
+    "noDetails": "Aucun détail supplémentaire.",
+    "openRating": "Voir l'évaluation"
   },
   "linkedLevels": {
     "header": "Niveaux liés"

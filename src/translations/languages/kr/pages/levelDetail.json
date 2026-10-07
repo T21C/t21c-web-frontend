@@ -157,10 +157,12 @@
     "judgementLate": "느림!"
   },
   "toRatePending": {
-    "header": "재책정 대기",
-    "rerateNumber": "요청 난이도",
+    "header": "평가 진행 중...",
+    "rerateNumber": "재책정 난이도",
+    "requesterFR": "요청 난이도",
     "rerateMessage": "메시지",
-    "noDetails": "추가 정보가 없습니다."
+    "noDetails": "추가 정보가 없습니다.",
+    "openRating": "평가 보기"
   },
   "tags": {
     "header": "레벨 태그",

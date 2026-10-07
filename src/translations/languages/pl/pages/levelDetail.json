@@ -96,10 +96,12 @@
     }
   },
   "toRatePending": {
-    "header": "Oczekuje na ponowną ocenę",
-    "rerateNumber": "Żądany rating",
+    "header": "Ocena w toku...",
+    "rerateNumber": "Numer rerate'u",
+    "requesterFR": "Żądana ocena",
     "rerateMessage": "Wiadomość",
-    "noDetails": "Brak dodatkowych informacji."
+    "noDetails": "Brak dodatkowych informacji.",
+    "openRating": "Zobacz ocenę"
   },
   "linkedLevels": {
     "header": "Powiązane poziomy"

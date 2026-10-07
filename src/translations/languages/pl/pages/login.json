@@ -36,7 +36,7 @@
     "resendCooldown": "Poczekaj przed ponownym żądaniem kodu",
     "sendFailed": "Nie udało się wysłać kodu logowania",
     "expired": "Wyzwanie logowania wygasło. Zaloguj się ponownie.",
-    "rememberDevice": "Zapamiętaj to urządzenie na 30 dni",
+    "rememberDevice": "Zapamiętaj to urządzenie na 120 dni",
     "back": "Wróć do logowania",
     "usePasskey": "Użyj klucza dostępu",
     "passkeyFailed": "Weryfikacja klucza dostępu nie powiodła się. Spróbuj ponownie."

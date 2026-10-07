@@ -1,12 +1,18 @@
-.pp-difficulty-icon {
-  position: absolute;
-  top: -11%;
-  left: -11%;
-  width: 1.75rem;
-  height: 1.75rem;
-  z-index: 4;
-  pointer-events: auto;
-  border-radius: 50%;
+.pp-basescore-tooltip {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.pp-basescore-tooltip .pp-basescore-tooltip-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pp-basescore-tooltip .pp-basescore-tooltip-icon {
+  width: 1.25rem;
+  height: 1.25rem;
   object-fit: contain;
-  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.85));
+  flex-shrink: 0;
 }

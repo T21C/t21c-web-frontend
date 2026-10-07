@@ -28,7 +28,7 @@ import {
 import { selectLevelCardDisplayTags, COMMUNITY_TAG_CARD_CAP, communityTagHoverTitle } from "@/utils/communityTags";
 import TagConfidenceBar from "@/components/common/display/TagConfidenceBar/TagConfidenceBar";
 import { Tooltip } from '@/components/common/display/Tooltip';
-import { PpDifficultyIcon } from '@/components/common/display/PpDifficultyIcon/PpDifficultyIcon';
+import { PpBasescoreEditTooltip } from '@/components/common/display/PpDifficultyIcon/PpDifficultyIcon';
 import MarqueeText from "@/components/common/display/MarqueeText/MarqueeText";
 import {
   checkTufHelperLiteDownloadedIds,
@@ -260,11 +260,6 @@ const LevelCard = ({
   const renderDifficultyIcon = ({ showRating = showEstimatedDifficulty, showCuration = true, showBaseScore = true } = {}) => (
     <div className="img-wrapper">
       <img src={selectIconSize(difficultyDict[difficultyInfo?.id]?.icon, ICON_SIZE.MEDIUM)} alt={difficultyInfo?.name || 'Difficulty icon'} className="difficulty-icon" />
-      <PpDifficultyIcon
-        level={level}
-        difficultyDict={difficultyDict}
-        tooltipId={`pp-diff-card-${level.id}`}
-      />
       
       {showRating && level.rating?.averageDifficultyId && 
        difficultyDict[level.rating.averageDifficultyId]?.icon &&
@@ -429,25 +424,31 @@ const LevelCard = ({
         {hasTags && (
       <div className="level-tags-wrapper">
         {tags.map((tag) => (
-          <div
+          <PpBasescoreEditTooltip
             key={tag.id}
-            className="level-tag-badge"
-            data-letter-only={!tag.icon}
-            style={{
-              '--tag-bg-color': `${tag.color}50`,
-              '--tag-border-color': tag.color,
-              '--tag-text-color': tag.color
-            }}
-            title={communityTagHoverTitle(tag)}
+            tag={tag}
+            level={level}
+            difficultyDict={difficultyDict}
           >
-            <TagConfidenceBar score={tag.score} show={Boolean(tag.isCommunity)}>
-              {tag.icon ? (
-                <img src={selectIconSize(tag.icon, ICON_SIZE.SMALL)} alt={tag.name} />
-              ) : (
-                <span className="level-tag-letter">{tag.name.charAt(0).toUpperCase()}</span>
-              )}
-            </TagConfidenceBar>
-          </div>
+            <div
+              className="level-tag-badge"
+              data-letter-only={!tag.icon}
+              style={{
+                '--tag-bg-color': `${tag.color}50`,
+                '--tag-border-color': tag.color,
+                '--tag-text-color': tag.color
+              }}
+              title={communityTagHoverTitle(tag)}
+            >
+              <TagConfidenceBar score={tag.score} show={Boolean(tag.isCommunity)}>
+                {tag.icon ? (
+                  <img src={selectIconSize(tag.icon, ICON_SIZE.SMALL)} alt={tag.name} />
+                ) : (
+                  <span className="level-tag-letter">{tag.name.charAt(0).toUpperCase()}</span>
+                )}
+              </TagConfidenceBar>
+            </div>
+          </PpBasescoreEditTooltip>
         ))}
         </div>
         )}

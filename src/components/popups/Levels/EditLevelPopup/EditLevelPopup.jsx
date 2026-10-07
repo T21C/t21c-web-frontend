@@ -11,8 +11,8 @@ import AliasManagementPopup from './AliasManagementPopup';
 import LevelUploadManagementPopup from '../LevelUploadManagementPopup/LevelUploadManagementPopup';
 import LevelPayloadSwapPopup from '../LevelPayloadSwapPopup/LevelPayloadSwapPopup';
 import { UploadIcon, RefreshIcon } from '@/components/common/icons';
-import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { LevelCreditsEditPopup } from '@/components/popups/Creators';
 import { TagManagementPopup } from './TagManagementPopup';
 import { ICON_SIZE, isCdnUrl, selectIconSize } from '@/utils/Utility';
 import { useUnsavedClose } from '@/hooks/useUnsavedClose';
@@ -144,7 +144,30 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
   const [isHydratingLevel, setIsHydratingLevel] = useState(
     Boolean(level && (level._packViewMinimal || level._ratingListMinimal || (!level.song && !level.songObject && level.id)))
   );
-  const navigate = useNavigate();
+  const [showCreditsEdit, setShowCreditsEdit] = useState(false);
+  const isLevelOwner = Boolean(
+    user?.creatorId &&
+    Array.isArray(level?.levelCredits) &&
+    level.levelCredits.some(
+      (credit) =>
+        Number(credit.creatorId ?? credit.creator?.id) === Number(user.creatorId) && credit.isOwner
+    )
+  );
+  const canManageCredits = isSuperAdmin || isLevelOwner;
+  const creditsLevel = useMemo(() => {
+    if (!level) return level;
+    const teamFromObject =
+      level.team && typeof level.team === 'object' && level.team.id
+        ? { id: level.team.id, name: level.team.name }
+        : null;
+    const teamFromTeamObject = level.teamObject
+      ? { id: level.teamObject.id, name: level.teamObject.name }
+      : null;
+    return {
+      ...level,
+      team: teamFromObject || teamFromTeamObject,
+    };
+  }, [level]);
   useEffect(() => {
     let cancelled = false;
 
@@ -239,12 +262,26 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     showTagManagement ||
     showAliasManagement ||
     showChartStatsPopup ||
-    showXaccCurvePopup;
+    showXaccCurvePopup ||
+    showCreditsEdit;
 
   const { requestClose } = useUnsavedClose({
     isDirty: hasUnsavedChanges,
     onClose,
   });
+
+  const handleCreditsSaved = useCallback(async () => {
+    try {
+      const response = await api.get(`${routes.database.levels.root()}/${level.id}`);
+      const updatedLevel = response.data?.level;
+      if (updatedLevel && onUpdate) {
+        onUpdate({ level: updatedLevel, keepEditOpen: true });
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error(t('levelPopups.edit.errors.update'));
+    }
+  }, [level?.id, onUpdate, t]);
 
   const handleInputChange = (e) => {
     const { name, type, value, checked } = e.target;
@@ -710,14 +747,16 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                 />
               </div>
 
-              <div className={`form-group ${isSuperAdmin ? 'field-enabled' : ''}`}>
-                <button 
+              {canManageCredits && (
+              <div className="form-group field-enabled">
+                <button
+                type="button"
                 className="manage-creators-btn"
-                disabled={!isSuperAdmin}
-                onClick={() => navigate('/admin/creators?search=' + encodeURIComponent("id:" + level.id))}>
+                onClick={() => setShowCreditsEdit(true)}>
                   Manage Creators
                 </button>
               </div>
+              )}
               {isFromAnnouncementPage &&
               <>
               <div className={`form-group ${isSuperAdmin ? 'field-enabled' : ''}`}>
@@ -1252,6 +1291,15 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
               onUpdate({ level: { id: level.id, ...patch } });
             }
           }}
+        />
+      )}
+
+      {showCreditsEdit && (
+        <LevelCreditsEditPopup
+          level={creditsLevel}
+          actingCreatorId={isSuperAdmin ? null : user?.creatorId != null ? Number(user.creatorId) : null}
+          onClose={() => setShowCreditsEdit(false)}
+          onSaved={handleCreditsSaved}
         />
       )}
 

@@ -52,7 +52,8 @@ const RatingPage = () => {
   );
   const { user } = useAuth();
   const { difficultyDict } = useDifficultyContext();
-  const { hasActiveSession } = useZenMode();
+  const { hasActiveSession, hasUnfinishedDeck, sessionHydrated } = useZenMode();
+  const zenLockToastRef = useRef(false);
   const { 
     sortOrder, 
     myRatedFilter, 
@@ -599,7 +600,16 @@ const RatingPage = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [reloadFromStart, showHelpPopup]);
 
-  if (user === undefined) {
+  useEffect(() => {
+    if (!sessionHydrated || !hasUnfinishedDeck) return;
+    if (!zenLockToastRef.current) {
+      zenLockToastRef.current = true;
+      toast.error(t('rating.zen.errors.normalRatingLocked'));
+    }
+    navigate('/rating/zen', { replace: true });
+  }, [hasUnfinishedDeck, navigate, sessionHydrated, t]);
+
+  if (user === undefined || !sessionHydrated || hasUnfinishedDeck) {
     return (
       <div className="admin-rating-page">
         <MetaTags {...pageMeta} />
@@ -923,6 +933,12 @@ const RatingPage = () => {
                           : prev
                       );
                     }
+                  }
+                  if (updatedData?.keepEditOpen) {
+                    if (updatedData.level) {
+                      setSelectedLevel(prev => (prev ? { ...prev, ...updatedData.level } : updatedData.level));
+                    }
+                    return;
                   }
                   setOpenEditDialog(false);
                   setSelectedLevel(null);

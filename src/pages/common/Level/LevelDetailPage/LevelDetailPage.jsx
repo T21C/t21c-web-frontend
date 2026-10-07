@@ -30,9 +30,10 @@ import { AddToPackPopup } from "@/components/popups/Packs";
 import { SongPopup } from "@/components/popups/Songs";
 import { ArtistPopup } from "@/components/popups/Artists";
 import { useAuth } from "@/contexts/AuthContext";
+import { useZenMode } from "@/contexts/ZenModeContext";
 import api from "@/utils/api";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
-import { MetaTags, ScoreV2GraphDropdown, PpDifficultyIcon } from "@/components/common/display";
+import { MetaTags, ScoreV2GraphDropdown, PpBasescoreEditTooltip } from "@/components/common/display";
 import { buildLevelMeta } from "@/utils/meta";
 import { StatusBanner } from "@/components/common/display/StatusBanner/StatusBanner";
 import { LinkIcon } from "@/components/common/icons/LinkIcon";
@@ -228,7 +229,7 @@ const AliasesDropdown = ({ aliases, show, onClose }) => {
   );
 };
 
-const TagsDropdown = ({ tags, show, onClose, anchorRef, onVoteClick }) => {
+const TagsDropdown = ({ tags, show, onClose, anchorRef, onVoteClick, level, difficultyDict }) => {
   const { t } = useTranslation('pages');
   const panelRef = useRef(null);
 
@@ -301,30 +302,36 @@ const TagsDropdown = ({ tags, show, onClose, anchorRef, onVoteClick }) => {
             {group.name && <div className="tags-group-header">{group.name}</div>}
             <div className="tags-group-items">
               {group.tags.map((tag) => (
-                <div
+                <PpBasescoreEditTooltip
                   key={tag.id}
-                  className="tag-chip"
-                  style={{
-                    "--tag-bg-color": `${tag.color}40`,
-                    "--tag-border-color": tag.color,
-                    "--tag-text-color": tag.color,
-                  }}
-                  title={communityTagHoverTitle(tag)}
+                  tag={tag}
+                  level={level}
+                  difficultyDict={difficultyDict}
                 >
-                  <span className="tag-chip-icon-wrap">
-                    <TagConfidenceBar score={tag.score} show={Boolean(tag.isCommunity)}>
-                      {tag.icon ? (
-                        <img src={selectIconSize(tag.icon, ICON_SIZE.SMALL)} alt={tag.name} className="tag-chip-icon" />
-                      ) : (
-                        <span className="tag-chip-letter">{tag.name.charAt(0).toUpperCase()}</span>
-                      )}
-                    </TagConfidenceBar>
-                  </span>
-                  <span className="tag-chip-name">{tag.name}</span>
-                  {tag.isCommunity && formatCommunityTagScore(tag.score) ? (
-                    <span className="tag-chip-score">{formatCommunityTagScore(tag.score)}</span>
-                  ) : null}
-                </div>
+                  <div
+                    className="tag-chip"
+                    style={{
+                      "--tag-bg-color": `${tag.color}40`,
+                      "--tag-border-color": tag.color,
+                      "--tag-text-color": tag.color,
+                    }}
+                    title={communityTagHoverTitle(tag)}
+                  >
+                    <span className="tag-chip-icon-wrap">
+                      <TagConfidenceBar score={tag.score} show={Boolean(tag.isCommunity)}>
+                        {tag.icon ? (
+                          <img src={selectIconSize(tag.icon, ICON_SIZE.SMALL)} alt={tag.name} className="tag-chip-icon" />
+                        ) : (
+                          <span className="tag-chip-letter">{tag.name.charAt(0).toUpperCase()}</span>
+                        )}
+                      </TagConfidenceBar>
+                    </span>
+                    <span className="tag-chip-name">{tag.name}</span>
+                    {tag.isCommunity && formatCommunityTagScore(tag.score) ? (
+                      <span className="tag-chip-score">{formatCommunityTagScore(tag.score)}</span>
+                    ) : null}
+                  </div>
+                </PpBasescoreEditTooltip>
               ))}
             </div>
           </div>
@@ -530,6 +537,8 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty, onArtistClick 
 
 const ToRatePendingDropdown = ({ show, onClose, level, containerRef }) => {
   const { t } = useTranslation(['pages', 'common']);
+  const navigate = useNavigate();
+  const { hasUnfinishedDeck } = useZenMode();
 
   useEffect(() => {
     if (!show) return;
@@ -555,27 +564,57 @@ const ToRatePendingDropdown = ({ show, onClose, level, containerRef }) => {
   const rerateNumRaw = level.rerateNum;
   const rerateNum =
     rerateNumRaw === undefined || rerateNumRaw === null ? '' : String(rerateNumRaw).trim();
+  const requesterFRRaw = level.requesterFR;
+  const requesterFR =
+    requesterFRRaw === undefined || requesterFRRaw === null ? '' : String(requesterFRRaw).trim();
   const rerateReason = typeof level.rerateReason === 'string' ? level.rerateReason.trim() : '';
 
   return (
     <div className="to-rate-pending-dropdown">
       <div className="to-rate-pending-header">{t('levelDetail.toRatePending.header')}</div>
       <div className="to-rate-pending-body">
-        {rerateNum ? (
+        {rerateNum && (
           <p>
             <b>{t('levelDetail.toRatePending.rerateNumber')}</b>
             <span>{rerateNum}</span>
           </p>
-        ) : null}
-        {rerateReason ? (
+        )}
+        {requesterFR && (
+          <p>
+            <b>{t('levelDetail.toRatePending.requesterFR')}</b>
+            <span>{requesterFR}</span>
+          </p>
+        )}
+        {rerateReason && (
           <p className="to-rate-pending-reason">
             <b>{t('levelDetail.toRatePending.rerateMessage')}</b>
             <CommentFormatter>{rerateReason}</CommentFormatter>
           </p>
-        ) : null}
-        {!rerateNum && !rerateReason ? (
+        )}
+        {!rerateNum && !requesterFR && !rerateReason && (
           <p className="to-rate-pending-empty">{t('levelDetail.toRatePending.noDetails')}</p>
-        ) : null}
+        )}
+        {level.id && (
+          hasUnfinishedDeck ? (
+            <button
+              type="button"
+              className="btn-fill-primary btn-block to-rate-pending-open"
+              onClick={() => {
+                toast.error(t('rating.zen.errors.normalRatingLocked'));
+                navigate('/rating/zen');
+              }}
+            >
+              {t('levelDetail.toRatePending.openRating')}
+            </button>
+          ) : (
+            <Link
+              className="btn-fill-primary btn-block to-rate-pending-open"
+              to={`/rating/${level.id}`}
+            >
+              {t('levelDetail.toRatePending.openRating')}
+            </Link>
+          )
+        )}
       </div>
     </div>
   );
@@ -2691,13 +2730,6 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                         className="difficulty-icon"
                       />
                     </button>
-                    <PpDifficultyIcon
-                      level={res.level}
-                      difficultyDict={difficultyDict}
-                      tooltipId={`pp-diff-${res.level.id}`}
-                      tooltipNs="pages"
-                      tooltipKey="levelDetail.tooltips.purePerfectScore"
-                    />
                     <ScoreV2GraphDropdown
                       show={showScoreGraphDropdown}
                       onClose={handleScoreGraphDropdownClose}
@@ -2720,13 +2752,6 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                       src={selectIconSize(difficulty.icon, ICON_SIZE.MEDIUM)}
                       alt={difficulty.name || 'Difficulty icon'}
                       className="difficulty-icon"
-                    />
-                    <PpDifficultyIcon
-                      level={res.level}
-                      difficultyDict={difficultyDict}
-                      tooltipId={`pp-diff-${res.level.id}`}
-                      tooltipNs="pages"
-                      tooltipKey="levelDetail.tooltips.purePerfectScore"
                     />
                   </div>
                 ) : null}
@@ -2824,29 +2849,35 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                     {tags.length > 0 && (
                     <div className="tags-icons-row">
                       {tags.map((tag, index) => (
-                        <div
+                        <PpBasescoreEditTooltip
                           key={tag.id}
-                          className="tag-icon-preview"
-                          style={{
-                            '--tag-bg-color': `${tag.color}50`,
-                            '--tag-border-color': tag.color,
-                            '--tag-text-color': tag.color,
-                            '--tag-index': index
-                          }}
-                          data-letter-only={!tag.icon}
-                          title={communityTagHoverTitle(tag)}
+                          tag={tag}
+                          level={res.level}
+                          difficultyDict={difficultyDict}
                         >
-                          <TagConfidenceBar score={tag.score} show={Boolean(tag.isCommunity)}>
-                            {tag.icon ? (
-                              <img 
-                                src={selectIconSize(tag.icon, ICON_SIZE.SMALL)} 
-                                alt={tag.name}
-                              />
-                            ) : (
-                              <span className="tag-letter">{tag.name.charAt(0).toUpperCase()}</span>
-                            )}
-                          </TagConfidenceBar>
-                        </div>
+                          <div
+                            className="tag-icon-preview"
+                            style={{
+                              '--tag-bg-color': `${tag.color}50`,
+                              '--tag-border-color': tag.color,
+                              '--tag-text-color': tag.color,
+                              '--tag-index': index
+                            }}
+                            data-letter-only={!tag.icon}
+                            title={communityTagHoverTitle(tag)}
+                          >
+                            <TagConfidenceBar score={tag.score} show={Boolean(tag.isCommunity)}>
+                              {tag.icon ? (
+                                <img 
+                                  src={selectIconSize(tag.icon, ICON_SIZE.SMALL)} 
+                                  alt={tag.name}
+                                />
+                              ) : (
+                                <span className="tag-letter">{tag.name.charAt(0).toUpperCase()}</span>
+                              )}
+                            </TagConfidenceBar>
+                          </div>
+                        </PpBasescoreEditTooltip>
                       ))}
                     </div>
                     )}
@@ -2855,6 +2886,8 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                       show={showTagsDropdown}
                       onClose={handleDropdownClose}
                       anchorRef={tagsAnchorRef}
+                      level={res.level}
+                      difficultyDict={difficultyDict}
                       onVoteClick={
                         hasCommunityCatalog && !mockData && !res?.level?.isDeleted
                           ? handleCommunityTagVoteOpen

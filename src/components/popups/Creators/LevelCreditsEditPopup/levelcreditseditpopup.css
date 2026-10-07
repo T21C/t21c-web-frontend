@@ -342,6 +342,24 @@
   background-color: color-mix(in srgb, var(--btn-danger) 20%, transparent);
 }
 
+.level-credits-edit-popup-container .level-credits-edit-popup__remove:disabled,
+.level-credits-edit-popup-container .level-credits-edit-popup__toggle-owner:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__remove:disabled:hover {
+  background-color: color-mix(in srgb, var(--btn-danger) 10%, transparent);
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__toggle-owner:disabled:hover {
+  background-color: rgba(180, 180, 180, 0.1);
+}
+
+.level-credits-edit-popup-container .level-credits-edit-popup__toggle-owner.is-owner:disabled:hover {
+  background-color: color-mix(in srgb, var(--btn-info) 25%, transparent);
+}
+
 .level-credits-edit-popup-container .level-credits-edit-popup__toggle-owner {
   padding: 8px 16px;
   background-color: rgba(180, 180, 180, 0.1);
