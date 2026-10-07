@@ -19,7 +19,8 @@ concurrency:
 jobs:
   promote:
     environment: production
-    runs-on: ${{ fromJSON(vars.CI_RUNS_ON || '["ubuntu-latest"]') }}
+    # CI_RUNS_ON is one set: ARM64 tuf runner, any tuf runner, or ubuntu-latest.
+    runs-on: ${{ fromJSON(vars.CI_RUNS_ON || '["self-hosted","linux","ARM64","tuf"]') }}
     steps:
       - name: Validate source SHA
         env:
