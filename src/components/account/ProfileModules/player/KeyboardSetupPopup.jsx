@@ -1020,6 +1020,15 @@ export default function KeyboardSetupPopup({
                   />
                 </label>
               </div>
+              <label className="keyboard-setup__field">
+                <span>{t("profile.keyboards.note")}</span>
+                <textarea
+                  className="keyboard-setup__note-input"
+                  value={draft.note}
+                  maxLength={500}
+                  onChange={(event) => setDraft((prev) => ({ ...prev, note: event.target.value }))}
+                />
+              </label>
               <div className="keyboard-setup__paste-row">
                 <label className="keyboard-setup__field">
                   <span>{t("profile.keyboards.paste")}</span>

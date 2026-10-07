@@ -73,7 +73,7 @@ export function usePassCoreForm({
     },
     toastMessage: t(copy.videoLinkResolved, {
       ns: copy.ns,
-      defaultValue: "Short link resolved to Bilibili URL",
+      defaultValue: "Short link resolved",
     }),
   });
 

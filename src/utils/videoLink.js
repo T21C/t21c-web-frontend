@@ -1,9 +1,12 @@
-// tuf-search: #videoLink #getVideoProvider #youtube #bilibili
+// tuf-search: #videoLink #getVideoProvider #youtube #bilibili #douyin
 
 const VIDEO_HOST_PATTERNS = [
   { host: /(^|\.)youtube\.com$|(^|\.)youtube-nocookie\.com$|(^|\.)youtu\.be$/i, label: 'youtube' },
   { host: /(^|\.)bilibili\.com$|(^|\.)b23\.tv$/i, label: 'bilibili' },
+  { host: /(^|\.)douyin\.com$|(^|\.)iesdouyin\.com$/i, label: 'douyin' },
 ];
+
+export const DOUYIN_AWEME_ID_PATTERN = /^\d{15,22}$/;
 
 /** @param {string | null | undefined} raw */
 export function splitVideoLinks(raw) {
@@ -18,7 +21,7 @@ export function getPrimaryVideoLink(raw) {
   return splitVideoLinks(raw)[0] ?? '';
 }
 
-/** @returns {'youtube' | 'bilibili' | null} */
+/** @returns {'youtube' | 'bilibili' | 'douyin' | null} */
 export function getVideoProvider(url) {
   const primary = getPrimaryVideoLink(url);
   if (!primary) return null;
@@ -88,10 +91,63 @@ export function getBilibiliEmbedUrl(url) {
   return `https://player.bilibili.com/player.html?isOutside=true&bvid=${bvid}&p=1&autoplay=0`;
 }
 
+/** @param {string | null | undefined} value */
+function isDouyinAwemeId(value) {
+  return typeof value === 'string' && DOUYIN_AWEME_ID_PATTERN.test(value);
+}
+
+/** Extract a Douyin aweme id from video, share, player, or query-param URLs. */
+export function extractDouyinAwemeId(url) {
+  const primary = getPrimaryVideoLink(url);
+  if (!primary || getVideoProvider(primary) !== 'douyin') return null;
+  try {
+    const parsed = new URL(primary);
+    const fromPath = parsed.pathname.match(/\/(?:share\/(?:video|note)|video)\/(\d{15,22})/)?.[1];
+    if (isDouyinAwemeId(fromPath)) return fromPath;
+    for (const key of ['modal_id', 'vid']) {
+      const value = parsed.searchParams.get(key);
+      if (isDouyinAwemeId(value)) return value;
+    }
+  } catch {
+    return null;
+  }
+  return null;
+}
+
+export function getDouyinCanonicalUrl(url) {
+  const awemeId = extractDouyinAwemeId(url);
+  return awemeId ? `https://www.douyin.com/video/${awemeId}` : null;
+}
+
+/** Build a Douyin iframe embed URL from aweme id only (no metadata API). */
+export function getDouyinEmbedUrl(url) {
+  const awemeId = extractDouyinAwemeId(url);
+  if (!awemeId) return null;
+  return `https://open.douyin.com/player/video?vid=${awemeId}&autoplay=0`;
+}
+
+/** Douyin official player requires unsafe-url; YouTube and Bilibili stay strict. */
+export function getVideoIframeReferrerPolicy(url) {
+  return getVideoProvider(url) === 'douyin' ? 'unsafe-url' : 'strict-origin-when-cross-origin';
+}
+
+/**
+ * Douyin's PC player is 16:9 video plus a bottom control bar, so the wrapper
+ * uses 16:10. YouTube and Bilibili stay on the default 16:9 box.
+ */
+export function getVideoEmbedModifierClass(url) {
+  return getVideoProvider(url) === 'douyin' ? 'video-embed--douyin' : '';
+}
+
+/** Hide Douyin iframe document scrollbars; YouTube and Bilibili omit this. */
+export function getVideoIframeScrolling(url) {
+  return getVideoProvider(url) === 'douyin' ? 'no' : undefined;
+}
+
 /**
  * Quota-free embed preview.
- * YouTube `image` is img.youtube.com. Bilibili `image` stays null here;
- * covers are served by `getBilibiliCoverUrl` and never share this helper.
+ * YouTube `image` is img.youtube.com. Bilibili and Douyin `image` stay null here;
+ * covers are served by the dedicated cover helpers and never share this helper.
  * @returns {{ embed: string, image: string | null } | null}
  */
 export function getLocalVideoPreview(url) {
@@ -102,6 +158,11 @@ export function getLocalVideoPreview(url) {
   }
   if (getVideoProvider(url) === 'bilibili') {
     const embed = getBilibiliEmbedUrl(url);
+    if (!embed) return null;
+    return { embed, image: null };
+  }
+  if (getVideoProvider(url) === 'douyin') {
+    const embed = getDouyinEmbedUrl(url);
     if (!embed) return null;
     return { embed, image: null };
   }
@@ -131,6 +192,9 @@ function cleanSingleVideoUrl(url) {
       return `https://www.youtube.com/watch?v=${match[1]}`;
     }
   }
+
+  const douyinCanonical = getDouyinCanonicalUrl(url);
+  if (douyinCanonical) return douyinCanonical;
 
   return url;
 }

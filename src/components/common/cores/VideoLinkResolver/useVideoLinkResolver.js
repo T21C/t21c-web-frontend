@@ -8,13 +8,13 @@ import { resolveSubmissionVideoUrl } from '@/utils/resolveVideoUrl';
 import { useDebouncedRequest } from '@/hooks/useDebouncedRequest';
 
 /**
- * Shared b23.tv resolve-and-replace logic used by submission and edit forms.
+ * Shared short-link resolve-and-replace logic used by submission and edit forms.
  *
- * Watches `value`; when it contains a b23.tv short link that resolves to a
- * different (Bilibili) URL, it calls `onResolve(resolvedUrl)` so the caller can
- * swap the field value, and shows a success toast. When `onVideoDetail` is
- * provided, it builds a local embed preview and, for Bilibili, loads title,
- * channel, and publish time from the video-details route.
+ * Watches `value`; when it contains a b23.tv or v.douyin.com short link that
+ * resolves to a different URL, it calls `onResolve(resolvedUrl)` so the caller
+ * can swap the field value, and shows a success toast. When `onVideoDetail` is
+ * provided, it builds a local embed preview and, for Bilibili and Douyin, loads
+ * title, channel, and publish time from the video-details route.
  *
  * @param {object} args
  * @param {string} args.value                 Current video link value.

@@ -543,6 +543,7 @@
 }
 
 .pass-detail .youtube {
+  position: relative;
   flex: 1.4;
   aspect-ratio: 16/9;
   background-color: var(--color-white-t10);
@@ -550,7 +551,14 @@
   overflow: hidden;
 }
 
+.pass-detail .youtube.video-embed--douyin {
+  aspect-ratio: 16 / 10;
+}
+
 .pass-detail .youtube iframe {
+  position: absolute;
+  inset: 0;
+  display: block;
   width: 100%;
   height: 100%;
   border: none;

@@ -159,6 +159,7 @@
 }
 
 .bio-canvas-block__embed-player {
+  position: relative;
   flex: 1;
   min-height: 0;
   width: 100%;
@@ -167,7 +168,13 @@
   background: var(--color-black-t40);
 }
 
+.bio-canvas-block__embed-player.video-embed--douyin {
+  aspect-ratio: 16 / 10;
+}
+
 .bio-canvas-block__embed-player iframe {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;

@@ -1,8 +1,9 @@
 import { routes } from '@/api/routes';
 // tuf-search: #LevelSubmissions #levelSubmissions #admin #submissionManagement — Submission Management
 import placeholder from "@/assets/placeholder/1.png"
-import { getLocalVideoPreview } from "@/utils/videoLink";
+import { getLocalVideoPreview, getVideoEmbedModifierClass, getVideoIframeReferrerPolicy, getVideoIframeScrolling } from "@/utils/videoLink";
 import { getBilibiliCoverUrl } from "@/utils/bilibiliCover";
+import { getDouyinCoverUrl } from "@/utils/douyinCover";
 import "../adminsubmissionpage.css";
 import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
@@ -1420,21 +1421,22 @@ const LevelSubmissions = ({ searchQuery = '' }) => {
               </div>
 
                 <div className="embed-column">
-                  <div className="embed-container">
+                  <div className={`embed-container ${getVideoEmbedModifierClass(submission.videoLink)}`.trim()}>
                     {videoEmbeds[submission.id]?.embed ? (
                       <iframe
                         src={videoEmbeds[submission.id].embed}
                         title="Video player"
                         frameBorder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        referrerPolicy="strict-origin-when-cross-origin"
+                        referrerPolicy={getVideoIframeReferrerPolicy(submission.videoLink)}
+                        scrolling={getVideoIframeScrolling(submission.videoLink)}
                         allowFullScreen
                       ></iframe>
                     ) : (
                       <div
                         className="thumbnail-container"
                         style={{
-                          backgroundImage: `url("${videoEmbeds[submission.id]?.image || getBilibiliCoverUrl(submission.videoLink) || placeholder}")`,
+                          backgroundImage: `url("${videoEmbeds[submission.id]?.image || getBilibiliCoverUrl(submission.videoLink) || getDouyinCoverUrl(submission.videoLink) || placeholder}")`,
                         }}
                       />
                     )}

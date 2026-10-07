@@ -465,6 +465,10 @@ html.rating-zen-active .background::after {
   border: 1px solid var(--color-white-t10);
 }
 
+.rating-zen-page__video-aspect.video-embed--douyin {
+  padding-top: 62.5%;
+}
+
 .rating-zen-page__video,
 .rating-zen-page__video-placeholder {
   position: absolute;

@@ -37,6 +37,7 @@ import { ArrowIcon } from './ArrowIcon';
 import { SwitchIcon } from './SwitchIcon';
 import YoutubeIcon from './YoutubeIcon';
 import BilibiliIcon from './BilibiliIcon';
+import DouyinIcon from './DouyinIcon';
 import VideoLinkIcon from './VideoLinkIcon';
 import { DragHandleIcon } from './DragHandleIcon';
 import PackIcon from './PackIcon';
@@ -118,6 +119,7 @@ export {
     SwitchIcon,
     YoutubeIcon,
     BilibiliIcon,
+    DouyinIcon,
     VideoLinkIcon,
     DragHandleIcon,
     PackIcon,

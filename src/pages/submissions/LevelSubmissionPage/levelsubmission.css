@@ -229,6 +229,8 @@
 }
 
 .level-submission-page .thumbnail-container {
+  position: relative;
+  width: 100%;
   gap: 20px; /* Space between thumbnail and form */
   z-index: 10;
   aspect-ratio: 16/9;
@@ -239,13 +241,23 @@
   transition: box-shadow 0.3s ease; /* Smooth transition for shadow */
 }
 
+.level-submission-page .thumbnail-container.video-embed--douyin {
+  height: auto;
+  aspect-ratio: 16 / 10;
+}
+
 .level-submission-page .thumbnail-container.shadow {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8); /* Shadow effect */
 }
 
 @media (max-width: 900px) {
-  .thumbnail-container {
+  .level-submission-page .thumbnail-container {
     height: 300px; /* Fixed height */
+  }
+
+  .level-submission-page .thumbnail-container.video-embed--douyin {
+    height: auto;
+    aspect-ratio: 16 / 10;
   }
 }
 
@@ -256,6 +268,9 @@
 }
 
 .level-submission-page .thumbnail-container iframe {
+  position: absolute;
+  inset: 0;
+  display: block;
   height: 100%; /* Make iframe height match the container */
   width: 100%; /* Ensure iframe fills the container */
 }
@@ -658,6 +673,11 @@
   .level-submission-page .thumbnail-container {
     height: 200px;
     margin-bottom: 1rem;
+  }
+
+  .level-submission-page .thumbnail-container.video-embed--douyin {
+    height: auto;
+    aspect-ratio: 16 / 10;
   }
 
   .level-submission-page .info {

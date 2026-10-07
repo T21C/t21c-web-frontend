@@ -4,6 +4,7 @@ import { getVideoProvider } from '@/utils/videoLink';
 import VideoIcon from './VideoIcon';
 import YoutubeIcon from './YoutubeIcon';
 import BilibiliIcon from './BilibiliIcon';
+import DouyinIcon from './DouyinIcon';
 
 const VideoLinkIcon = ({
   url,
@@ -20,6 +21,9 @@ const VideoLinkIcon = ({
   }
   if (provider === 'bilibili') {
     return <BilibiliIcon {...iconProps} />;
+  }
+  if (provider === 'douyin') {
+    return <DouyinIcon {...iconProps} />;
   }
   return <VideoIcon {...iconProps} />;
 };

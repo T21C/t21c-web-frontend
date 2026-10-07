@@ -1,6 +1,6 @@
 // tuf-search: #PassMedia #passDetail #autoSubmission
 import { useTranslation } from 'react-i18next';
-import { getLocalVideoPreview, getPrimaryVideoLink } from '@/utils/videoLink';
+import { getLocalVideoPreview, getPrimaryVideoLink, getVideoEmbedModifierClass, getVideoIframeReferrerPolicy, getVideoIframeScrolling } from '@/utils/videoLink';
 import { isAutoSubmittedPass } from '@/utils/passSubmissionSource';
 import PassReplay from './replay/PassReplay';
 
@@ -13,14 +13,15 @@ const PassMedia = ({ pass }) => {
   if (autoSubmitted) return <PassReplay key={`${pass.id}:${pass.autoSubmissionRunId}`} pass={pass} />;
 
   return (
-    <div className="youtube">
+    <div className={`youtube ${getVideoEmbedModifierClass(videoLink)}`.trim()}>
       {videoDetail ? (
         <iframe
           src={videoDetail.embed}
           title="Video player"
           frameBorder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerPolicy="strict-origin-when-cross-origin"
+          referrerPolicy={getVideoIframeReferrerPolicy(videoLink)}
+          scrolling={getVideoIframeScrolling(videoLink)}
           allowFullScreen
         />
       ) : (

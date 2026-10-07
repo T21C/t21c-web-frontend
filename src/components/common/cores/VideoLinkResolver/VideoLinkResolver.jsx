@@ -4,10 +4,10 @@ import { useVideoLinkResolver } from './useVideoLinkResolver';
 import './VideoLinkResolver.css';
 
 /**
- * Drop-in element that resolves b23.tv short links in a video-link field and
- * replaces the value with the expanded Bilibili URL. Mount it next to any video
- * link input, feeding it the current value and an onResolve setter. It renders
- * an unobtrusive status line only while a resolve is in flight.
+ * Drop-in element that resolves b23.tv and v.douyin.com short links in a
+ * video-link field and replaces the value with the expanded URL. Mount it next
+ * to any video link input, feeding it the current value and an onResolve setter.
+ * It renders an unobtrusive status line only while a resolve is in flight.
  *
  * @param {object} props
  * @param {string} props.value                     Current video link value.
@@ -26,7 +26,7 @@ export const VideoLinkResolver = ({
   const { t } = useTranslation('common');
   const resolvedToast =
     toastMessage ??
-    t('videoResolver.resolved', { defaultValue: 'Short link resolved to Bilibili URL' });
+    t('videoResolver.resolved', { defaultValue: 'Short link resolved' });
 
   const { resolving } = useVideoLinkResolver({
     value,

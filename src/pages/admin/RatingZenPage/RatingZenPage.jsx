@@ -22,7 +22,7 @@ import { WebAdofaiViewerButton } from '@/components/popups/Levels';
 import { Tooltip } from '@/components/common/display/Tooltip';
 import { CommentFormatter } from '@/components/misc';
 import api from '@/utils/api';
-import { getLocalVideoPreview } from '@/utils/videoLink';
+import { getLocalVideoPreview, getVideoEmbedModifierClass, getVideoIframeReferrerPolicy, getVideoIframeScrolling } from '@/utils/videoLink';
 import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { formatAutoTilecountTooltip, formatDuration, getSongDisplayName } from '@/utils/levelHelpers';
 import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
@@ -1014,13 +1014,15 @@ const RatingZenPage = () => {
                   <line x1="4" y1="22" x2="4" y2="15" />
                 </svg>
               </button>
-              <div className="rating-zen-page__video-aspect">
+              <div className={`rating-zen-page__video-aspect ${getVideoEmbedModifierClass(videoLink)}`.trim()}>
                 {videoData ? (
                   <iframe
                     src={videoData.embed}
                     title="Video"
                     className="rating-zen-page__video"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    referrerPolicy={getVideoIframeReferrerPolicy(videoLink)}
+                    scrolling={getVideoIframeScrolling(videoLink)}
                     allowFullScreen
                   />
                 ) : (

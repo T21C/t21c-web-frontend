@@ -6,7 +6,7 @@ import placeholder from "@/assets/placeholder/3.png";
 import { useEffect, useRef, useState, useMemo } from "react";
 import { useLocation } from 'react-router-dom';
 import { resolveSubmissionVideoUrl } from "@/utils/resolveVideoUrl";
-import { getLocalVideoPreview } from "@/utils/videoLink";
+import { getLocalVideoPreview, getVideoEmbedModifierClass, getVideoIframeReferrerPolicy, getVideoIframeScrolling } from "@/utils/videoLink";
 import { loadSubmissionVideoDetail } from "@/utils/fetchVideoDetail";
 import { useDebouncedRequest } from "@/hooks/useDebouncedRequest";
 import { useAuth } from "@/contexts/AuthContext";
@@ -313,7 +313,7 @@ const LevelSubmissionPage = () => {
         if (resolved && resolvedUrl && resolvedUrl !== videoLink) {
           setForm((prevForm) => ({ ...prevForm, videoLink: resolvedUrl }));
           toast.success(t('levelSubmission.videoInfo.linkResolved', {
-            defaultValue: 'Short link resolved to Bilibili URL',
+            defaultValue: 'Short link resolved',
           }));
         }
         if (resolvedUrl) previewUrl = resolvedUrl;
@@ -1047,14 +1047,15 @@ const LevelSubmissionPage = () => {
         )}
 
         <form className={`main-form form-container ${videoDetail ? 'shadow' : ''}`}>
-          <div className="thumbnail-container">
+          <div className={`thumbnail-container ${getVideoEmbedModifierClass(form.videoLink)}`.trim()}>
             {videoDetail ? (
               <iframe
                 src={videoDetail.embed}
                 title="Video player"
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerPolicy="strict-origin-when-cross-origin"
+                referrerPolicy={getVideoIframeReferrerPolicy(form.videoLink)}
+                scrolling={getVideoIframeScrolling(form.videoLink)}
                 allowFullScreen
                 style={{
                   width: "100%",
