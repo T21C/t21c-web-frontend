@@ -5,6 +5,7 @@
 :root {
   /* Stacking (low → high): nav, popups, floats/chrome, toasts.
      PopupShells portal into #tuf-popup-stack on document.body.
+     belowNav shells portal into .body so the navbar stays above them.
      Nested shells share that stack and layer by DOM order (z-index 0).
      Overlay classNames must not set z-index (they share the .popup-shell node).
      Dropdowns, select menus, and tooltips mount in a popover slot after the

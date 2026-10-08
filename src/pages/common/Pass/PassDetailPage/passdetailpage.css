@@ -553,6 +553,8 @@
 
 .pass-detail .youtube.video-embed--douyin {
   aspect-ratio: 16 / 10;
+  align-self: start;
+  min-width: 0;
 }
 
 .pass-detail .youtube iframe {

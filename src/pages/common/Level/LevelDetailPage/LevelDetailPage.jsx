@@ -184,6 +184,17 @@ const dedupePassesByPlayer = (passes, sortType, sortDirection) => {
   return Array.from(byPlayer.values());
 };
 
+const passMatchesPlayerSearch = (pass, query) => {
+  const needle = query.trim().toLowerCase();
+  if (!needle) return true;
+  const haystacks = [
+    pass?.player?.name,
+    pass?.player?.user?.username,
+    pass?.player?.user?.nickname,
+  ];
+  return haystacks.some((value) => String(value || '').toLowerCase().includes(needle));
+};
+
 const StatClearLink = ({ pass, children }) => {
   if (!pass?.id) {
     return <span className="info-desc">{children}</span>;
@@ -1010,6 +1021,9 @@ const LevelDetailPageContent = ({ mockData = null }) => {
   const [leaderboardSort, setLeaderboardSort] = useState("SCR");
   const [sortDirection, setSortDirection] = useState("desc"); // "desc" or "asc"
   const [leaderboardDedupe, setLeaderboardDedupe] = useState("on");
+  const [leaderboardSearch, setLeaderboardSearch] = useState("");
+  const [leaderboardShowHidden, setLeaderboardShowHidden] = useState("off");
+  const [inclusivePasses, setInclusivePasses] = useState(null);
   const [infoLoading, setInfoLoading] = useState(true);
   const [sortedLeaderboard, setSortedLeaderboard] = useState([]);
   const { scrollRef: rankListScrollRef, scrollParent: rankListScrollParent } = useScrollParent();
@@ -1116,6 +1130,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
   /** Tracks last seen CDN zip identity so we can refetch `/cdnData` after upload/import (`dlLink` / `fileId` change). */
   const cdnZipIdentityRef = useRef(null);
   const fetchGenerationRef = useRef(0);
+  const inclusiveFetchGenerationRef = useRef(0);
 
   const tufHelperLiteHealth = useTufHelperLiteHealth();
   const tufHelperLiteJobs = useTufHelperLiteJobs();
@@ -1136,6 +1151,9 @@ const LevelDetailPageContent = ({ mockData = null }) => {
   );
   const closeToRatePendingDropdown = useCallback(() => setShowToRatePendingDropdown(false), []);
   const isSuperAdmin = hasFlag(user, permissionFlags.SUPER_ADMIN);
+  const inclusiveSource = inclusivePasses && String(inclusivePasses.levelId) === String(effectiveId)
+    ? inclusivePasses.passes
+    : null;
   const showLevelLinksIcon = isSuperAdmin || linkedLevels.length > 0;
 
   const applyLinkedLevelsResponse = useCallback((data) => {
@@ -1821,6 +1839,28 @@ const LevelDetailPageContent = ({ mockData = null }) => {
     }
   }, [effectiveId, mockData]);
 
+  const fetchInclusivePassesForLevel = useCallback(async () => {
+    if (!effectiveId || mockData) {
+      return;
+    }
+
+    const generation = ++inclusiveFetchGenerationRef.current;
+    try {
+      const response = await api.get(`${routes.database.passes.root()}/level/${effectiveId}`, {
+        params: { includeHidden: 1 },
+      });
+      if (generation !== inclusiveFetchGenerationRef.current) {
+        return;
+      }
+      setInclusivePasses({
+        levelId: effectiveId,
+        passes: Array.isArray(response.data) ? response.data : [],
+      });
+    } catch (error) {
+      console.error("Error fetching hidden passes for level:", error);
+    }
+  }, [effectiveId, mockData]);
+
   const fetchRatingData = useCallback(async () => {
     if (!effectiveId || mockData) {
       return;
@@ -1892,6 +1932,9 @@ const LevelDetailPageContent = ({ mockData = null }) => {
       if (isStale()) return;
       await Promise.all([
         fetchPassesForLevel(),
+        leaderboardShowHidden === "on" && isSuperAdmin
+          ? fetchInclusivePassesForLevel()
+          : Promise.resolve(),
         fetchCdnDownloadExtras({ retryIfBothNull: retryCdnExtras }),
         fetchIsLiked(),
         fetchRatingData()
@@ -1910,7 +1953,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
       setInfoLoading(false);
       setIsRefreshingLeaderboard(false);
     }
-  }, [effectiveId, mockData, t, fetchIsLiked, fetchCdnDownloadExtras, fetchPassesForLevel, fetchRatingData]);
+  }, [effectiveId, mockData, t, fetchIsLiked, fetchCdnDownloadExtras, fetchPassesForLevel, fetchInclusivePassesForLevel, fetchRatingData, leaderboardShowHidden, isSuperAdmin]);
 
   useEffect(() => {
     cdnZipIdentityRef.current = null;
@@ -1940,8 +1983,22 @@ const LevelDetailPageContent = ({ mockData = null }) => {
   }, [effectiveId, mockData, res?.level?.id, res?.level?.dlLink, res?.level?.fileId, fetchCdnDownloadExtras]);
 
   useEffect(() => {
+    inclusiveFetchGenerationRef.current += 1;
+    setInclusivePasses(null);
+    setLeaderboardSearch("");
+    setLeaderboardShowHidden("off");
     fetchLevelData();
   }, [effectiveId, mockData]); // Don't include fetchLevelData to avoid infinite loop
+
+  useEffect(() => {
+    if (mockData || !isSuperAdmin || leaderboardShowHidden !== "on" || !effectiveId) {
+      return;
+    }
+    if (inclusiveSource != null) {
+      return;
+    }
+    void fetchInclusivePassesForLevel();
+  }, [mockData, isSuperAdmin, leaderboardShowHidden, effectiveId, inclusiveSource, fetchInclusivePassesForLevel]);
 
   useEffect(() => {
     if (!effectiveId || mockData) {
@@ -2088,8 +2145,11 @@ const LevelDetailPageContent = ({ mockData = null }) => {
   }
 
   const sortLeaderboard = useCallback(() => {
-    if (!res?.level?.passes) return [];
-    const allPasses = [...res.level.passes];
+    const sourcePasses = isSuperAdmin && leaderboardShowHidden === "on" && inclusiveSource != null
+      ? inclusiveSource
+      : res?.level?.passes;
+    if (!sourcePasses) return [];
+    const allPasses = [...sourcePasses];
     const passes = leaderboardDedupe === "on"
       ? dedupePassesByPlayer(allPasses, leaderboardSort, sortDirection)
       : allPasses;
@@ -2127,10 +2187,13 @@ const LevelDetailPageContent = ({ mockData = null }) => {
         break;
     }
     return sortedPasses;
-  }, [res?.level?.passes, leaderboardSort, sortDirection, leaderboardDedupe]);
+  }, [res?.level?.passes, inclusiveSource, isSuperAdmin, leaderboardShowHidden, leaderboardSort, sortDirection, leaderboardDedupe]);
 
   useEffect(() => {
-    if (!res?.level?.passes) {
+    const sourcePasses = isSuperAdmin && leaderboardShowHidden === "on" && inclusiveSource != null
+      ? inclusiveSource
+      : res?.level?.passes;
+    if (!sourcePasses) {
       setSortedLeaderboard([]);
       return;
     }
@@ -2140,12 +2203,15 @@ const LevelDetailPageContent = ({ mockData = null }) => {
       ...pass,
       _sortOrder: index + 1,
     })));
-  }, [res?.level?.passes, leaderboardSort, sortDirection, leaderboardDedupe, sortLeaderboard]);
+  }, [res?.level?.passes, inclusiveSource, isSuperAdmin, leaderboardShowHidden, leaderboardSort, sortDirection, leaderboardDedupe, sortLeaderboard]);
 
-  // Helper function to get sorted leaderboard data
-  const getSortedLeaderboard = () => {
-    return [...sortedLeaderboard].sort((a, b) => (a._sortOrder || 999) - (b._sortOrder || 999));
-  };
+  const displayedLeaderboard = useMemo(() => {
+    const sorted = [...sortedLeaderboard].sort((a, b) => (a._sortOrder || 999) - (b._sortOrder || 999));
+    if (!leaderboardSearch.trim()) {
+      return sorted;
+    }
+    return sorted.filter((pass) => passMatchesPlayerSearch(pass, leaderboardSearch));
+  }, [sortedLeaderboard, leaderboardSearch]);
 
   const highScores = useMemo(
     () => getHighScores(res?.level?.passes),
@@ -3406,7 +3472,37 @@ const LevelDetailPageContent = ({ mockData = null }) => {
               </button>
 
             </div>
-            {sortedLeaderboard.length > 0 ? (
+            {!infoLoading && (
+              <div className="leaderboard-filters">
+                <div className="leaderboard-search">
+                  <input
+                    type="text"
+                    className="leaderboard-search-input"
+                    placeholder={t('levelDetail.leaderboard.search.placeholder')}
+                    name="leaderboard-search"
+                    autoComplete="off"
+                    value={leaderboardSearch}
+                    onChange={(e) => setLeaderboardSearch(e.target.value)}
+                  />
+                </div>
+                {isSuperAdmin && (
+                  <div className="leaderboard-show-hidden">
+                    <StateDisplay
+                      label={t('levelDetail.leaderboard.showHidden.label')}
+                      currentState={leaderboardShowHidden}
+                      onChange={setLeaderboardShowHidden}
+                      states={['off', 'on']}
+                      activeStates={['on']}
+                      showValue={false}
+                      width={56}
+                      height={24}
+                      padding={3}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+            {sortedLeaderboard.length > 0 && (
               <div className="leaderboard-sort">
                 <LevelDetailTooltip id="tm" place="top" noArrow>
                   {t('levelDetail.leaderboard.tooltips.time')}
@@ -3473,13 +3569,13 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                   />
                 </div>
               </div>
-            ) : <></>}
+            )}
             <div className="rank-list" ref={rankListScrollRef}>
               {!infoLoading ? 
-                sortedLeaderboard.length > 0 ? (
+                displayedLeaderboard.length > 0 ? (
                   <VirtualList
                     customScrollParent={rankListScrollParent}
-                    items={getSortedLeaderboard()}
+                    items={displayedLeaderboard}
                     renderItem={(each, index) => (
                       <ClearCard
                         scoreData={each}
@@ -3488,6 +3584,8 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                     )}
                     computeItemKey={(index, each) => each?.id ?? index}
                   />
+                ) : sortedLeaderboard.length > 0 ? (
+                  <h3>{t('levelDetail.leaderboard.search.noMatches')}</h3>
                 ) : (
                   <h3>{t('levelDetail.leaderboard.noClearsYet')}</h3>
                 )
@@ -3529,6 +3627,9 @@ const LevelDetailPageContent = ({ mockData = null }) => {
             }));
             if (updatedLevel.refetchPasses) {
               void fetchPassesForLevel();
+              if (leaderboardShowHidden === "on" && isSuperAdmin) {
+                void fetchInclusivePassesForLevel();
+              }
             }
           }}
         />

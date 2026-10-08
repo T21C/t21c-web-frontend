@@ -106,6 +106,13 @@
     },
     "dedupe": {
       "label": "隐藏重复通关"
+    },
+    "search": {
+      "placeholder": "搜索玩家名称",
+      "noMatches": "没有匹配的玩家"
+    },
+    "showHidden": {
+      "label": "显示隐藏记录"
     }
   },
   "dialog": {

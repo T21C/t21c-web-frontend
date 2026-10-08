@@ -54,12 +54,21 @@ const ClearCard = ({scoreData, index}) => {
     setIsExpanded(!isExpanded);
   };
 
-  const rankColor = index === 0 ? "gold" : index === 1 ? "silver" : index === 2 ? "#f66" : "inherit";
+  const isDeletedPass = Boolean(scoreData.isDeleted);
+  const isHiddenPass = Boolean(scoreData.isHidden) && !isDeletedPass;
+  const rank = scoreData._sortOrder ?? index + 1;
+  const rankColor = rank === 1 ? "gold" : rank === 2 ? "silver" : rank === 3 ? "#f66" : "inherit";
+  const cardClassName = [
+    "clear-card",
+    isExpanded ? "expanded" : "",
+    isDeletedPass ? "deleted-pass" : "",
+    isHiddenPass ? "hidden-pass" : "",
+  ].filter(Boolean).join(" ");
 
   return (
-    <div className={`clear-card ${isExpanded ? "expanded" : ""}`}>
+    <div className={cardClassName}>
       <span className="rank-display" style={{ color: rankColor }}>
-        <b>#{index + 1}</b>
+        <b>#{rank}</b>
       </span>
 
       <div className="clear-card__header">

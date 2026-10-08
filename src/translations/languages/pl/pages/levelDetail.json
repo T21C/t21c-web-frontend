@@ -85,6 +85,13 @@
     },
     "dedupe": {
       "label": "Ukryj powtórne clear'y"
+    },
+    "search": {
+      "placeholder": "Szukaj gracza",
+      "noMatches": "Brak pasujących graczy"
+    },
+    "showHidden": {
+      "label": "Pokaż ukryte"
     }
   },
   "dialog": {

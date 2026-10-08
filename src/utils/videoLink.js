@@ -119,11 +119,15 @@ export function getDouyinCanonicalUrl(url) {
   return awemeId ? `https://www.douyin.com/video/${awemeId}` : null;
 }
 
-/** Build a Douyin iframe embed URL from aweme id only (no metadata API). */
+/**
+ * Build a Douyin iframe embed URL from aweme id only (no metadata API).
+ * `mode=pc` is required: the official player mounts `container-mobile` (324×672)
+ * whenever the iframe viewport is under 730px, even in a landscape box.
+ */
 export function getDouyinEmbedUrl(url) {
   const awemeId = extractDouyinAwemeId(url);
   if (!awemeId) return null;
-  return `https://open.douyin.com/player/video?vid=${awemeId}&autoplay=0`;
+  return `https://open.douyin.com/player/video?vid=${awemeId}&autoplay=0&mode=pc`;
 }
 
 /** Douyin official player requires unsafe-url; YouTube and Bilibili stay strict. */

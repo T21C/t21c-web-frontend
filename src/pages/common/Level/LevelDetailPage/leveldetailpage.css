@@ -1432,12 +1432,51 @@
   flex-wrap: wrap;
 }
 
+.level-detail .rank .leaderboard-filters {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm);
+  padding-left: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.level-detail .rank .leaderboard-search {
+  flex: 1;
+  min-width: 12rem;
+}
+
+.level-detail .rank .leaderboard-search-input {
+  width: 100%;
+  box-sizing: border-box;
+  height: 2rem;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background-color: var(--color-white-t20);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--border-radius);
+  color: var(--color-white);
+}
+
+.level-detail .rank .leaderboard-search-input::placeholder {
+  color: var(--color-white-t50);
+}
+
+.level-detail .rank .leaderboard-search-input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+.level-detail .rank .leaderboard-show-hidden {
+  flex-shrink: 0;
+}
+
 .level-detail .rank .leaderboard-sort .leaderboard-sort-dedupe {
   margin-left: auto;
   flex-shrink: 0;
 }
 
-.level-detail .rank .leaderboard-sort .leaderboard-sort-dedupe .state-display-toggle {
+.level-detail .rank .leaderboard-sort .leaderboard-sort-dedupe .state-display-toggle,
+.level-detail .rank .leaderboard-show-hidden .state-display-toggle {
   padding: var(--spacing-xs) var(--spacing-sm);
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
@@ -1445,7 +1484,8 @@
   gap: var(--spacing-sm);
 }
 
-.level-detail .rank .leaderboard-sort .leaderboard-sort-dedupe .toggle-label {
+.level-detail .rank .leaderboard-sort .leaderboard-sort-dedupe .toggle-label,
+.level-detail .rank .leaderboard-show-hidden .toggle-label {
   font-size: var(--font-size-sm);
   color: var(--color-white);
 }

@@ -58,6 +58,13 @@
     },
     "dedupe": {
       "label": "Masquer les re-clears"
+    },
+    "search": {
+      "placeholder": "Rechercher un joueur",
+      "noMatches": "Aucun joueur correspondant"
+    },
+    "showHidden": {
+      "label": "Afficher les cachés"
     }
   },
   "info": {

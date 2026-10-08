@@ -2093,6 +2093,7 @@ const DifficultyPage = () => {
                 setPendingAction(null);
               }}
               dismissOnOverlay={false}
+              belowNav
               overlayClassName="difficulty-page difficulty-page__modal"
               panelClassName="password-modal-content"
               ariaLabelledBy="difficulty-password-title"
@@ -2134,6 +2135,7 @@ const DifficultyPage = () => {
               onClose={noopClose}
               dismissOnOverlay={false}
               dismissOnEscape={false}
+              belowNav
               overlayClassName="difficulty-page difficulty-page__modal"
               panelClassName="password-modal-content"
               ariaLabelledBy="difficulty-initial-password-title"

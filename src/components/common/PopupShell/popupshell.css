@@ -47,3 +47,10 @@
   min-width: 0;
   max-height: 100%;
 }
+
+/* Mounted in .body (z-index: 2), under .base-nav. The high z-index only
+   beats in-page layers; it cannot paint over the navbar. */
+.popup-shell.popup-shell--below-nav {
+  z-index: 10000;
+  top: var(--navbar-height);
+}

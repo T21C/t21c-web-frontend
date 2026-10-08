@@ -2,7 +2,7 @@ import { routes } from '@/api/routes';
 import { API_BASE } from '@/config/env';
 import { apiUrl, healthUrl } from '@/config/urls';
 // tuf-search: #HealthCheckPage #healthCheckPage #healthCheck
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 
 import {
   CartesianGrid,
@@ -140,11 +140,14 @@ function HealthDashboardBody({ healthData, t, getStatusColor, getStatusIcon }) {
   );
 }
 
-function HealthLatencySection({ t }) {
+function HealthLatencySection({ t, refreshId = 0 }) {
   const [windowKey, setWindowKey] = useState('24h');
   const [payload, setPayload] = useState(null);
   const [loading, setLoading] = useState(false);
   const [latError, setLatError] = useState(null);
+  const [instantRedraw, setInstantRedraw] = useState(false);
+  const chartDrawnRef = useRef(false);
+  const loadedWindowRef = useRef(null);
 
   const windowOptions = useMemo(
     () =>
@@ -164,7 +167,11 @@ function HealthLatencySection({ t }) {
     let cancelled = false;
 
     async function load() {
-      setLoading(true);
+      const sameWindowUpdate =
+        chartDrawnRef.current && loadedWindowRef.current === windowKey;
+      if (!sameWindowUpdate) {
+        setLoading(true);
+      }
       setLatError(null);
       try {
         const url = `${apiUrl(routes.health.latency())}?window=${encodeURIComponent(windowKey)}`;
@@ -173,13 +180,21 @@ function HealthLatencySection({ t }) {
           throw new Error(`HTTP ${response.status}`);
         }
         const json = await response.json();
-        if (!cancelled) {
-          setPayload(json);
+        if (cancelled) return;
+        const hasPoints = Array.isArray(json?.points) && json.points.length > 0;
+        if (sameWindowUpdate) {
+          setInstantRedraw(true);
         }
+        if (hasPoints) {
+          chartDrawnRef.current = true;
+          loadedWindowRef.current = windowKey;
+        }
+        setPayload(json);
       } catch (err) {
         console.error('Latency history fetch failed:', err);
-        if (!cancelled) {
-          setLatError(t('healthCheck.latency.loadError'));
+        if (cancelled) return;
+        setLatError(t('healthCheck.latency.loadError'));
+        if (!sameWindowUpdate) {
           setPayload(null);
         }
       } finally {
@@ -194,7 +209,7 @@ function HealthLatencySection({ t }) {
     return () => {
       cancelled = true;
     };
-  }, [windowKey, t]);
+  }, [windowKey, refreshId, t]);
 
   const chartRows = useMemo(() => {
     const pts = payload?.points;
@@ -207,9 +222,14 @@ function HealthLatencySection({ t }) {
     }));
   }, [payload]);
 
-  if (!API_BASE) {
+  // Dev calls /v2 through the Vite proxy, so API_BASE is empty there. Production needs an absolute origin.
+  if (!import.meta.env.DEV && !API_BASE) {
     return null;
   }
+
+  const lineMotion = instantRedraw
+    ? { isAnimationActive: false, animationDuration: 0 }
+    : { isAnimationActive: true };
 
   return (
     <div className="health-latency-section">
@@ -289,6 +309,7 @@ function HealthLatencySection({ t }) {
                 stroke="var(--btn-success)"
                 strokeWidth={2}
                 dot={false}
+                {...lineMotion}
               />
               <Line
                 type="linear"
@@ -297,6 +318,7 @@ function HealthLatencySection({ t }) {
                 stroke="var(--danger-color)"
                 strokeWidth={2}
                 dot={false}
+                {...lineMotion}
               />
               <Line
                 type="linear"
@@ -305,6 +327,7 @@ function HealthLatencySection({ t }) {
                 stroke="var(--warning-color)"
                 strokeWidth={2}
                 dot={false}
+                {...lineMotion}
               />
             </LineChart>
           </ResponsiveContainer>
@@ -334,8 +357,12 @@ const HealthCheckPage = () => {
   const [error, setError] = useState(null);
   const [lastUpdated, setLastUpdated] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [latencyRefreshId, setLatencyRefreshId] = useState(0);
 
-  const fetchHealthData = async () => {
+  const fetchHealthData = async ({ refreshLatency = false } = {}) => {
+    if (refreshLatency) {
+      setLatencyRefreshId((id) => id + 1);
+    }
     setIsRefreshing(true);
     setError(null);
 
@@ -361,7 +388,9 @@ const HealthCheckPage = () => {
   useEffect(() => {
     fetchHealthData();
 
-    const intervalId = setInterval(fetchHealthData, 30000);
+    const intervalId = setInterval(() => {
+      fetchHealthData({ refreshLatency: true });
+    }, 30000);
 
     return () => clearInterval(intervalId);
   }, []);
@@ -421,12 +450,12 @@ const HealthCheckPage = () => {
           />
         )}
 
-        <HealthLatencySection t={t} />
+        <HealthLatencySection t={t} refreshId={latencyRefreshId} />
       </div>
 
       <button
         className="fixed-refresh-button"
-        onClick={fetchHealthData}
+        onClick={() => fetchHealthData({ refreshLatency: true })}
         disabled={isRefreshing}
         aria-label={t('healthCheck.refresh.ariaLabel')}
       >

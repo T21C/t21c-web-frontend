@@ -39,6 +39,11 @@ function usePopupShellEscape(onClose, enabled, overlayRef) {
   }, [onClose, enabled, overlayRef]);
 }
 
+function getAppBody() {
+  if (typeof document === 'undefined') return null;
+  return document.querySelector('#root .body');
+}
+
 export function PopupShell({
   onClose,
   children,
@@ -46,6 +51,7 @@ export function PopupShell({
   closeDisabled = false,
   dismissOnOverlay = true,
   dismissOnEscape = true,
+  belowNav = false,
   overlayClassName = '',
   panelClassName = '',
   overlayProps,
@@ -59,19 +65,30 @@ export function PopupShell({
 }) {
   const overlayRef = useRef(null);
   const [shellNode, setShellNode] = useState(null);
+  const [belowNavRoot, setBelowNavRoot] = useState(() => (belowNav ? getAppBody() : null));
   const pressedOnOverlayRef = useRef(false);
   const overlayActive = Boolean(when) && !closeDisabled;
   useBodyScrollLock(Boolean(when));
   usePopupShellEscape(onClose, overlayActive && dismissOnEscape, overlayRef);
 
   useLayoutEffect(() => {
-    if (!when) {
+    if (!belowNav) {
+      setBelowNavRoot(null);
+      return undefined;
+    }
+    const node = getAppBody();
+    setBelowNavRoot((current) => (current === node ? current : node));
+    return undefined;
+  }, [belowNav]);
+
+  useLayoutEffect(() => {
+    if (!when || (belowNav && !root && !belowNavRoot)) {
       setShellNode(null);
       return undefined;
     }
     setShellNode(overlayRef.current);
     return registerPopupShell(overlayRef.current);
-  }, [when]);
+  }, [when, belowNav, belowNavRoot, root]);
 
   const handleOverlayPointerDown = (event) => {
     overlayProps?.onPointerDown?.(event);
@@ -104,15 +121,23 @@ export function PopupShell({
   };
 
   const layerValue = useMemo(() => ({ inPopup: true, shell: shellNode }), [shellNode]);
-  const stackRoot = typeof document !== 'undefined' ? getPopupStackRoot() : null;
+  const stackRoot = !belowNav && typeof document !== 'undefined' ? getPopupStackRoot() : null;
+  const portalRoot = root ?? (belowNav ? belowNavRoot : stackRoot);
+
+  if (belowNav && !root && !belowNavRoot) return null;
 
   return (
-    <Portal when={when} root={root ?? stackRoot}>
+    <Portal when={when} root={portalRoot}>
       <div
         role="presentation"
         {...overlayProps}
         ref={setOverlayRef}
-        className={classNames('popup-shell', overlayClassName, overlayProps?.className)}
+        className={classNames(
+          'popup-shell',
+          belowNav && 'popup-shell--below-nav',
+          overlayClassName,
+          overlayProps?.className,
+        )}
         onPointerDown={handleOverlayPointerDown}
         onPointerUp={handleOverlayPointerUp}
         onPointerCancel={handleOverlayPointerCancel}
@@ -125,7 +150,7 @@ export function PopupShell({
           <div
             className={classNames('popup-shell__panel', panelClassName)}
             role={role}
-            aria-modal="true"
+            aria-modal={belowNav ? 'false' : 'true'}
             aria-labelledby={ariaLabelledBy}
             aria-label={ariaLabel}
             {...panelProps}
