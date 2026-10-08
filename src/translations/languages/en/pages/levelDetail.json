@@ -106,6 +106,13 @@
     },
     "dedupe": {
       "label": "Hide Reclears"
+    },
+    "search": {
+      "placeholder": "Search player names",
+      "noMatches": "No matching players"
+    },
+    "showHidden": {
+      "label": "Show Hidden"
     }
   },
   "dialog": {

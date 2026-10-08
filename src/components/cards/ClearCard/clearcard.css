@@ -26,6 +26,22 @@
   background-color: var(--color-white-t20);
 }
 
+.clear-card.hidden-pass {
+  opacity: 0.7;
+}
+
+.clear-card.hidden-pass:hover {
+  background-color: var(--color-white-t20);
+}
+
+.clear-card.deleted-pass {
+  background-color: var(--danger-color-tint-50);
+}
+
+.clear-card.deleted-pass:hover {
+  background-color: var(--danger-color-tint-70);
+}
+
 .clear-card.expanded {
   overflow: visible;
 }

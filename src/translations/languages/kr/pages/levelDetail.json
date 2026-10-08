@@ -106,6 +106,13 @@
     },
     "dedupe": {
       "label": "중복 클리어 숨기기"
+    },
+    "search": {
+      "placeholder": "플레이어 이름 검색",
+      "noMatches": "일치하는 플레이어가 없습니다"
+    },
+    "showHidden": {
+      "label": "숨김 기록 표시"
     }
   },
   "dialog": {
