@@ -5,7 +5,7 @@ export function createWebSocketPort({ createConnection, browser = globalThis.win
     async open(receive, connectionChanged) {
       if (closed) throw new Error('Connection cancelled.');
       connection = createConnection();
-      channel = connection.namespace('tufhelperlite');
+      channel = connection.namespace('tufhelperlite', 1);
       for (const name of EVENTS) cleanup.push(channel.on(name, (payload, message) => { if (!closed) receive(name, payload, message); }));
       const changed = (error) => {
         if (!closed) connectionChanged(connection.state === 'connected' && channel.status === 'ready', error);

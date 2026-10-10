@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../vendor/adofai-ipc/', import.meta.url));
 const metadata = JSON.parse(readFileSync(`${root}source.json`, 'utf8'));
-if (metadata.sourceDirty !== false || metadata.version !== '1.0.0' || metadata.protocolVersion !== 3 || !/^[a-f0-9]{40}$/.test(metadata.sourceRevision)) {
+if (metadata.sourceDirty !== false || metadata.version !== '2.0.0' || metadata.protocolVersion !== 3 || !/^[a-f0-9]{40}$/.test(metadata.sourceRevision)) {
   throw new Error('Invalid ADOFAI-IPC source provenance');
 }
 const files = Object.keys(metadata.files).sort();
