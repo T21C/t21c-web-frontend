@@ -31,10 +31,17 @@ source revision and content hashes. It is synchronized from the canonical
 `adofai-ipc` repository with `scripts/run.sh client-sync <vendor-directory>`.
 No npm registry package or sibling-directory symlink is required.
 
+Discovery remains active when the game is absent or application readiness times
+out. Listeners are installed before discovery, and only the mod's fresh snapshot
+restores application availability. Browser resume checks retained connections;
+the vendored SDK handles heartbeat recovery and Chromium handshake delays.
+All build modes verify the SDK's source revision, file inventory and content
+hashes before bundling; `npm run sdk:check` runs the same check explicitly.
+
 Validation:
 
 - `npm run lint`
-- `node --test tests/tufhelper-session.test.js tests/replay-delivery.test.js`
+- `npm run test:ipc`
 - `npm run build:staging`
 
 The application tests inject a deterministic message port and cover correlated

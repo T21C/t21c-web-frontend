@@ -223,7 +223,9 @@ export const connectTufHelperLiteIntegration = async () => {
     return true;
   } catch (error) {
     if (tufHelperLiteIntegrationSnapshot.state !== 'connecting') return false;
-    helperSession.close();
+    // A readiness timeout must not cancel SDK discovery. Late snapshots restore
+    // availability without a reload; terminal protocol mismatches cannot recover.
+    if (error?.code === 'INCOMPATIBLE') helperSession.close();
     setTufHelperLiteIntegrationSnapshot({ state: 'unavailable', isSessionDismissed: false, errorCode: getTufHelperLiteIpcErrorCode(error), versionMismatch: versionMismatchSnapshot(error) });
     return false;
   }
