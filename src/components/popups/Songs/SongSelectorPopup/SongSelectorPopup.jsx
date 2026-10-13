@@ -11,6 +11,13 @@ import { normalizeSongSearchQuery } from '@/utils/normalizeEntitySearchQuery';
 import { CustomSelect } from '@/components/common/selectors';
 import { songVerificationSelectOptions } from '@/utils/verificationStates';
 
+const getSongArtistLabel = (song) => {
+  const names = (song?.credits || [])
+    .map((credit) => credit?.artist?.name?.trim())
+    .filter(Boolean);
+  return [...new Set(names)].join(' & ');
+};
+
 export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selectedArtist = null, allowCreate = true }) => {
   const { t } = useTranslation(['components', 'common']);
   const verificationOptions = songVerificationSelectOptions(t);
@@ -328,6 +335,8 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
     }
   };
 
+  const currentSongArtists = getSongArtistLabel(songDetails);
+
   return (
     <PopupShell
       onClose={onClose}
@@ -360,6 +369,9 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                     {songDetails ? (
                       <>
                         {songDetails.name}
+                        {currentSongArtists && (
+                          <span className="song-artists">{currentSongArtists}</span>
+                        )}
                         {songDetails.aliases?.length > 0 && (
                           <span className="aliases">
                             [{songDetails.aliases.map(a => a.alias).join(', ')}]
@@ -469,6 +481,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                     return (
                       <div className="search-results">
                         {Array.isArray(searchResults) && searchResults.map((song) => {
+                          const artistLabel = getSongArtistLabel(song);
                           return (
                             <div
                               key={song.id}
@@ -479,8 +492,13 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                                 opacity: 1
                               }}
                             >
-                              <span className="song-name">
-                                {song.name}
+                              <span className="song-result-label">
+                                <span className="song-name">
+                                  {song.name}
+                                </span>
+                                {artistLabel && (
+                                  <span className="song-artists">{artistLabel}</span>
+                                )}
                               </span>
                               {song.aliases?.length > 0 && (
                                 <span className="song-aliases">

@@ -31,6 +31,7 @@
     "holdToCloseAll": "길게 눌러 모두 닫기",
     "openLevel": "레벨 #{{id}}",
     "openPass": "클리어 #{{id}}",
+    "noDeclineReason": "사유가 없습니다",
     "status": {
       "queued": "대기 중",
       "processing": "처리 중",

@@ -31,6 +31,7 @@
     "holdToCloseAll": "Maintenir pour tout fermer",
     "openLevel": "Niveau #{{id}}",
     "openPass": "Complétion #{{id}}",
+    "noDeclineReason": "Aucune raison fournie",
     "status": {
       "queued": "en file",
       "processing": "en cours",

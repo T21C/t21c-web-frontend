@@ -356,6 +356,7 @@ export const routes = {
       root: () => '/v2/database/levels',
       byId: (id) => `/v2/database/levels/${enc(id)}`,
       byIdQuery: (id) => `/v2/database/levels/byId/${enc(id)}`,
+      references: () => '/v2/database/levels/references',
       own: (id) => `/v2/database/levels/own/${enc(id)}`,
       swapPayload: (id) =>
         `/v2/database/levels/${enc(id)}/swap-payload`,

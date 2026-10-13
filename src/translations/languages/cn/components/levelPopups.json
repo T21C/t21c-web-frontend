@@ -140,11 +140,12 @@
       },
       "perfectsDifference": {
         "title": "更新通关记录完美数？",
-        "message": "中旋数已由 {{from}} 改为 {{to}}。每个通关记录的完美数将变动{{delta}}。",
+        "message": "中旋数由 {{from}} 改为 {{to}}。判定合计恰好等于可玩物量（{{tilecount}}）的旧版本通关，其完美数将变动 {{delta}}。",
         "unset": "未设置",
-        "question": "将此变动应用到该关卡的所有通关记录？",
+        "question": "将此变动应用到这些物量完全一致的通关？",
         "toastSavedWithPasses": "谱面数据已保存。{{count}} 个通关记录的完美数已更新。",
-        "toastSavedWithPassesSkipped": "谱面数据已保存。{{count}} 个通关记录的完美数已更新。{{skipped}} 个通关记录由于完美数将低于 0 而已跳过。"
+        "toastSavedWithPassesSkipped": "谱面数据已保存。{{updated}} 个通关记录的完美数已更新。{{skipped}} 个未改动。",
+        "toastSavedNoneUpdated": "谱面数据已保存。没有物量完全一致的通关被更新（{{skipped}} 个未改动）。"
       }
     },
     "tags": {

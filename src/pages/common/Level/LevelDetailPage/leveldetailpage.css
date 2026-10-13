@@ -160,15 +160,30 @@
 
 .level-detail .header .right {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 2.8rem;
   gap: var(--spacing-md);
+  justify-items: center;
+  align-items: center;
+  align-content: start;
   position: relative;
   z-index: var(--z-overlay);
 }
 
-/* When there are 4 or fewer items, force single column */
-.level-detail .header .right:has(:nth-child(5):last-child) {
-  grid-template-columns: 1fr 1fr;
+/* A short rail (1–3 actions) stays one column. At 4 or more, pair them
+   so the stack stays close to the header height instead of towering over it.
+   Child combinator: buttons can contain their own even last child (download count). */
+.level-detail .header .right:has(> :nth-child(4)) {
+  grid-template-columns: repeat(2, 2.8rem);
+}
+
+/* Odd counts leave one action; center it on its own row. */
+.level-detail .header .right:has(> :nth-child(4)):not(:has(> :nth-child(even):last-child)) > :last-child {
+  grid-column: 1 / -1;
+}
+
+.level-detail .header .right > button,
+.level-detail .header .right > div {
+  position: relative;
 }
 
 .level-detail .header .right .access-count {
@@ -178,6 +193,9 @@
   position: absolute;
   transform: translateY(100%);
   bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
 }
 
 

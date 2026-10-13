@@ -92,11 +92,12 @@
       },
       "perfectsDifference": {
         "title": "Zaktualizować Perfecty passów?",
-        "message": "Liczba midspinów zmienia się z {{from}} na {{to}}. Perfecty każdego passa zmienią się o {{delta}}.",
+        "message": "Midspiny zmieniają się z {{from}} na {{to}}. Passy z ery legacy, których suma trafień dokładnie równa się liczbie grywalnych kafelków ({{tilecount}}), dostaną zmianę Perfect o {{delta}}.",
         "unset": "brak",
-        "question": "Zastosować tę różnicę do wszystkich passów tego poziomu?",
+        "question": "Zastosować to do tych dokładnych passów?",
         "toastSavedWithPasses": "Zapisano metadane chartu. Zaktualizowano Perfecty na {{count}} passach.",
-        "toastSavedWithPassesSkipped": "Zapisano metadane chartu. Zaktualizowano Perfecty na {{updated}} passach. Pominięto {{skipped}}, bo Perfect spadłby poniżej 0."
+        "toastSavedWithPassesSkipped": "Zapisano metadane chartu. Zaktualizowano Perfecty na {{updated}} passach. {{skipped}} pozostawiono bez zmian.",
+        "toastSavedNoneUpdated": "Zapisano metadane chartu. Żaden dokładny pass nie został zaktualizowany ({{skipped}} bez zmian)."
       }
     },
     "tags": {

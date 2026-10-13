@@ -9,6 +9,7 @@ import { resolveSubmissionVideoUrl } from "@/utils/resolveVideoUrl";
 import { getLocalVideoPreview, getVideoEmbedModifierClass, getVideoIframeReferrerPolicy, getVideoIframeScrolling } from "@/utils/videoLink";
 import { loadSubmissionVideoDetail } from "@/utils/fetchVideoDetail";
 import { useDebouncedRequest } from "@/hooks/useDebouncedRequest";
+import { collectDomFieldPatch, useDomFieldSync } from "@/hooks/useDomFieldSync";
 import { useAuth } from "@/contexts/AuthContext";
 import { validateFeelingRating, formatDate, truncateString } from "@/utils/Utility";
 import { Trans, useTranslation } from "react-i18next";
@@ -183,6 +184,22 @@ const LevelSubmissionPage = () => {
   const [uploadProgress, setUploadProgress] = useState({ phase: 'idle', percent: 0 });
   const [cdnJobId, setCdnJobId] = useState(null);
   const uploadAbortRef = useRef(null);
+  const formDomRef = useRef(null);
+  const formValueRef = useRef(form);
+  formValueRef.current = form;
+
+  useDomFieldSync(formDomRef, form, (patch) => {
+    setForm((prev) => {
+      let changed = false;
+      const next = { ...prev };
+      Object.entries(patch).forEach(([name, value]) => {
+        if (typeof prev[name] !== 'string' || prev[name] === value) return;
+        next[name] = value;
+        changed = true;
+      });
+      return changed ? next : prev;
+    });
+  }, { scanOnMount: true });
 
   const { job: cdnJob } = useJobProgressStream(cdnJobId, Boolean(submission && cdnJobId));
 
@@ -216,11 +233,11 @@ const LevelSubmissionPage = () => {
     }
   };
 
-  const validateForm = () => {
+  const validateForm = (source = form) => {
     // Use selected song/artist or fallback to form text fields
-    const songValue = selectedSong?.songName || form.song;
+    const songValue = selectedSong?.songName || source.song;
     const hasArtists = artists.some(artist => artist.name && (artist.id !== null || artist.isNewRequest));
-    const artistValue = artists.length > 0 ? artists.map(a => a.name).filter(Boolean).join(', ') : form.artist;
+    const artistValue = artists.length > 0 ? artists.map(a => a.name).filter(Boolean).join(', ') : source.artist;
     
     const validationResult = {};
     const displayValidationRes = {};
@@ -228,8 +245,8 @@ const LevelSubmissionPage = () => {
     // Validate required fields
     validationResult.artist = hasArtists || artistValue?.trim?.() !== '';
     validationResult.song = songValue?.trim?.() !== '';
-    validationResult.diff = form.diff?.trim?.() !== '';
-    validationResult.videoLink = form.videoLink?.trim?.() !== '';
+    validationResult.diff = source.diff?.trim?.() !== '';
+    validationResult.videoLink = source.videoLink?.trim?.() !== '';
 
     // Validate creators
     validationResult.charter = charters.some(charter => 
@@ -237,7 +254,7 @@ const LevelSubmissionPage = () => {
     );
 
     // Validate download links - only required if no zip is uploaded
-    validationResult.directLink = form.levelZip || form.dlLink?.trim?.() !== '' || form.workshopLink?.trim?.() !== '';
+    validationResult.directLink = source.levelZip || source.dlLink?.trim?.() !== '' || source.workshopLink?.trim?.() !== '';
     
     // Check for pending profile creations
     const newPendingProfiles = [];
@@ -285,10 +302,11 @@ const LevelSubmissionPage = () => {
       displayValidationRes[field] = submitAttempt ? validationResult[field] : true;
     }
     
-    const frValid = validateFeelingRating(form.diff || '');
+    const frValid = validateFeelingRating(source.diff || '');
     setIsInvalidFeelingRating(!frValid);
     setIsFormValidDisplay(displayValidationRes);
     setIsFormValid(validationResult);
+    return validationResult;
   };
 
   useEffect(() => {
@@ -347,10 +365,19 @@ const LevelSubmissionPage = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setForm((prev) => ({
+    setForm((prev) => (prev[name] === value ? prev : {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const commitDomFields = () => {
+    const patch = collectDomFieldPatch(formDomRef.current, formValueRef.current);
+    if (!patch) return formValueRef.current;
+    const next = { ...formValueRef.current, ...patch };
+    formValueRef.current = next;
+    setForm(next);
+    return next;
   };
 
   const resetForm = () => {
@@ -395,9 +422,9 @@ const LevelSubmissionPage = () => {
       return;
     }
 
-    const validityEntries =
-      isFormValid && typeof isFormValid === 'object' ? Object.entries(isFormValid) : [];
-    const invalidKeys = validityEntries.filter(([, ok]) => !ok).map(([k]) => k);
+    const submittedForm = commitDomFields();
+    const validationResult = validateForm(submittedForm);
+    const invalidKeys = Object.entries(validationResult).filter(([, ok]) => !ok).map(([k]) => k);
 
     if (invalidKeys.length > 0) {
       setSubmitAttempt(true);
@@ -432,7 +459,7 @@ const LevelSubmissionPage = () => {
     uploadAbortRef.current = abortController;
 
     try {
-      const { url: cleanedVideoUrl } = await resolveSubmissionVideoUrl(form.videoLink);
+      const { url: cleanedVideoUrl } = await resolveSubmissionVideoUrl(submittedForm.videoLink);
 
       const creatorRequests = [
         ...charters
@@ -469,7 +496,7 @@ const LevelSubmissionPage = () => {
 
       const artistDisplayName = artists.length > 0
         ? artists.map(a => a.name).filter(Boolean).join(', ')
-        : form.artist;
+        : submittedForm.artist;
       const firstArtistId = artists.length === 1 && artists[0].id ? artists[0].id : null;
       const hasNewArtistRequest = artists.some(artist => artist.isNewRequest);
 
@@ -484,7 +511,7 @@ const LevelSubmissionPage = () => {
 
       const payload = {
         artist: artistDisplayName,
-        song: selectedSong?.songName || form.song,
+        song: selectedSong?.songName || submittedForm.song,
         songId: selectedSong?.songId || null,
         artistId: firstArtistId,
         isNewSongRequest: selectedSong?.isNewRequest || false,
@@ -492,28 +519,28 @@ const LevelSubmissionPage = () => {
           ? (selectedSong?.verificationState || 'pending')
           : null,
         isNewArtistRequest: hasNewArtistRequest,
-        diff: form.diff,
-        suffix: form.suffix || '',
-        notes: form.notes || '',
+        diff: submittedForm.diff,
+        suffix: submittedForm.suffix || '',
+        notes: submittedForm.notes || '',
         videoLink: cleanedVideoUrl,
-        directDL: form.dlLink,
-        wsLink: form.workshopLink,
+        directDL: submittedForm.dlLink,
+        wsLink: submittedForm.workshopLink,
         creatorRequests,
         teamRequest,
         artistRequests,
-        hasZip: Boolean(form.levelZip),
+        hasZip: Boolean(submittedForm.levelZip),
         evidenceType: evidenceFiles.length > 0 ? evidenceType : null,
-        originalname: form.levelZip
-          ? (typeof form.levelZip.name === 'string' ? form.levelZip.name.normalize('NFC') : form.levelZip.name)
+        originalname: submittedForm.levelZip
+          ? (typeof submittedForm.levelZip.name === 'string' ? submittedForm.levelZip.name.normalize('NFC') : submittedForm.levelZip.name)
           : null,
       };
 
       await validateLevel(payload, { signal: abortController.signal });
 
       let uploadSessionId = null;
-      if (form.levelZip) {
+      if (submittedForm.levelZip) {
         setUploadProgress({ phase: 'uploading', percent: 0 });
-        const session = await uploadLevelZip(form.levelZip, {
+        const session = await uploadLevelZip(submittedForm.levelZip, {
           signal: abortController.signal,
           onProgress: (p) => {
             const percent = typeof p?.percent === 'number' ? p.percent : 0;
@@ -1046,7 +1073,7 @@ const LevelSubmissionPage = () => {
           />
         )}
 
-        <form className={`main-form form-container ${videoDetail ? 'shadow' : ''}`}>
+        <form ref={formDomRef} className={`main-form form-container ${videoDetail ? 'shadow' : ''}`}>
           <div className={`thumbnail-container ${getVideoEmbedModifierClass(form.videoLink)}`.trim()}>
             {videoDetail ? (
               <iframe
