@@ -11,6 +11,7 @@ import { getSongDisplayName } from '@/utils/levelHelpers';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { CommentFormatter } from '@/components/misc';
 import { hasRatingDraft } from '@/utils/ratingDrafts';
+import { isVoteRatingCard } from '@/utils/ratingRequestBand';
 
 const trimString = (str, maxLength = 40) => {
   if (!str || typeof str !== 'string') return '';
@@ -29,7 +30,7 @@ export const RatingCard = ({
     const [isEditing, setIsEditing] = useState(false);
     const [isReasonExpanded, setIsReasonExpanded] = useState(false);
     const [copySuccess, setCopySuccess] = useState(false);
-    const isVote = /^vote/i.test(rating.level.rerateNum);
+    const isVote = isVoteRatingCard(rating);
     const userRating = rating.details?.find(detail => detail.userId === user?.id)?.rating || "";
     const { difficultyDict } = useDifficultyContext();
     const hasDraft = Boolean(user?.id && rating?.id && hasRatingDraft(user.id, rating.id));

@@ -37,6 +37,7 @@ export function PassSubmissionCore({
   difficultyDict,
   searchInput,
   setSearchInput,
+  formDomRef,
   renderBelowJudgements,
   renderSubmitActions,
   renderLevelInfoActions,
@@ -174,6 +175,7 @@ export function PassSubmissionCore({
       score={score}
       onInputChange={handleInputChange}
       onAdofaiVersionChange={handleAdofaiVersionChange}
+      formDomRef={formDomRef}
       levelIdValue={searchInput}
       onLevelIdChange={handleLevelInputChange}
       renderLevelIdInput={() => (

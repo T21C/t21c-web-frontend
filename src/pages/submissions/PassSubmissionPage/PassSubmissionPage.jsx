@@ -3,7 +3,7 @@ import { routes } from '@/api/routes';
 
 import './passsubmission.css';
 import { submitPass } from '@/utils/submissions/passSubmission';
-import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { hasFlag, isUserBanned, permissionFlags } from '@/utils/UserPermissions';
@@ -35,6 +35,8 @@ import { CalculatorIcon } from '@/components/common/icons';
 import CommunityTagVotePopup from '@/pages/common/Level/LevelDetailPage/CommunityTagVotePopup';
 import { CLIENT_PREF_KEYS } from '@/utils/clientPreferences';
 import { useClientPreference } from '@/hooks/useClientPreference';
+import { collectDomFieldPatch } from '@/hooks/useDomFieldSync';
+import { normalizeLevelSearchQuery } from '@/utils/normalizeEntitySearchQuery';
 
 function Pre340VersionMark() {
   return <b>{'<3.4.0'}</b>;
@@ -109,6 +111,7 @@ const PassSubmissionPage = () => {
     score,
     handleInputChange,
     handleAdofaiVersionChange,
+    validateForm,
   } = usePassCoreForm({
     mode: 'submit',
     initialForm: { ...PASS_SUBMISSION_INITIAL_FORM, ...(location.state?.form || {}) },
@@ -127,6 +130,25 @@ const PassSubmissionPage = () => {
     () => getPassSubmissionTagWarnings(level?.tags),
     [level?.tags],
   );
+  const formDomRef = useRef(null);
+  const formValueRef = useRef(form);
+  formValueRef.current = form;
+
+  const commitDomFields = () => {
+    const comparable = { ...formValueRef.current, levelId: searchInput };
+    const patch = collectDomFieldPatch(formDomRef.current, comparable);
+    if (!patch) return formValueRef.current;
+
+    const next = { ...formValueRef.current, ...patch };
+    if (typeof patch.levelId === 'string') {
+      const normalized = normalizeLevelSearchQuery(patch.levelId);
+      next.levelId = normalized;
+      setSearchInput(normalized);
+    }
+    formValueRef.current = next;
+    setForm(next);
+    return next;
+  };
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -168,41 +190,42 @@ const PassSubmissionPage = () => {
   }, [user, setForm]);
 
   const performSubmit = async () => {
+    const current = formValueRef.current;
     setSubmission(true);
 
     try {
-      const { url: cleanedVideoUrl } = await resolveSubmissionVideoUrl(form.videoLink);
+      const { url: cleanedVideoUrl } = await resolveSubmissionVideoUrl(current.videoLink);
 
       const payload = {
-        levelId: form.levelId,
+        levelId: current.levelId,
         videoLink: cleanedVideoUrl,
         title: videoDetail?.title || '',
         rawTime: videoDetail?.timestamp || undefined,
-        passer: form.leaderboardName || '',
-        passerId: form.playerId || null,
+        passer: current.leaderboardName || '',
+        passerId: current.playerId || null,
         passerRequest: false,
-        speed: form.speed,
-        feelingDifficulty: form.feelingRating,
-        expectedDifficulty: form.expectedRating?.trim() || null,
-        keyCount: normalizeKeyCount(form.keyCount),
-        earlyDouble: parseInt(form.tooEarly) || 0,
-        earlySingle: parseInt(form.early) || 0,
-        ePerfect: parseInt(form.ePerfect) || 0,
-        perfectMinus: parseInt(form.perfectMinus) || 0,
-        perfect: parseInt(form.perfect) || 0,
-        perfectPlus: parseInt(form.perfectPlus) || 0,
-        lPerfect: parseInt(form.lPerfect) || 0,
-        lateSingle: parseInt(form.late) || 0,
+        speed: current.speed,
+        feelingDifficulty: current.feelingRating,
+        expectedDifficulty: current.expectedRating?.trim() || null,
+        keyCount: normalizeKeyCount(current.keyCount),
+        earlyDouble: parseInt(current.tooEarly) || 0,
+        earlySingle: parseInt(current.early) || 0,
+        ePerfect: parseInt(current.ePerfect) || 0,
+        perfectMinus: parseInt(current.perfectMinus) || 0,
+        perfect: parseInt(current.perfect) || 0,
+        perfectPlus: parseInt(current.perfectPlus) || 0,
+        lPerfect: parseInt(current.lPerfect) || 0,
+        lateSingle: parseInt(current.late) || 0,
         lateDouble: 0,
-        isNoHoldTap: form.isNoHold,
-        isAdofaiV2: isAdofaiV2FromVersion(parseAdofaiVersion(form.adofaiVersion, ADOFAI_VERSION.V3_4_0)),
-        adofaiVersion: parseAdofaiVersion(form.adofaiVersion, ADOFAI_VERSION.V3_4_0),
+        isNoHoldTap: current.isNoHold,
+        isAdofaiV2: isAdofaiV2FromVersion(parseAdofaiVersion(current.adofaiVersion, ADOFAI_VERSION.V3_4_0)),
+        adofaiVersion: parseAdofaiVersion(current.adofaiVersion, ADOFAI_VERSION.V3_4_0),
         isXPerfectMode:
-          !!form.isXPerfectMode
-          && canUseXPerfectMode(parseAdofaiVersion(form.adofaiVersion, ADOFAI_VERSION.V3_4_0)),
+          !!current.isXPerfectMode
+          && canUseXPerfectMode(parseAdofaiVersion(current.adofaiVersion, ADOFAI_VERSION.V3_4_0)),
       };
 
-      const submittedLevelId = form.levelId;
+      const submittedLevelId = current.levelId;
       await submitPass(payload);
       toast.success(t('passSubmission.alert.success'));
       setFormStateKey((prevKey) => prevKey + 1);
@@ -222,22 +245,23 @@ const PassSubmissionPage = () => {
   };
 
   const proceedAfterTagWarnings = async () => {
-    const rawHitSum = getPassJudgementHitCountFromForm(form);
+    const current = formValueRef.current;
+    const rawHitSum = getPassJudgementHitCountFromForm(current);
     if (
       isIncludedMidspinOnLatestVersion({
-        adofaiVersion: parseAdofaiVersion(form.adofaiVersion, ADOFAI_VERSION.V3_4_0),
+        adofaiVersion: parseAdofaiVersion(current.adofaiVersion, ADOFAI_VERSION.V3_4_0),
         levelTilecount: level?.tilecount,
         autoTileCount: level?.autoTileCount,
         midspinCount: level?.midspinCount,
         hitCount: rawHitSum,
-        perfect: form.perfect,
+        perfect: current.perfect,
       })
     ) {
       setTilecountMismatchKind('wrongVersion');
       setShowTilecountMismatchModal(true);
       return;
     }
-    const hitSum = previewPassFormHitCount(form, level);
+    const hitSum = previewPassFormHitCount(current, level);
     if (isTilecountJudgementMismatch(level?.tilecount, hitSum, level?.autoTileCount, level?.midspinCount)) {
       setTilecountMismatchKind('generic');
       setShowTilecountMismatchModal(true);
@@ -255,14 +279,8 @@ const PassSubmissionPage = () => {
       return;
     }
 
-    const validity =
-      isFormValid && typeof isFormValid === 'object'
-        ? {
-            ...isFormValid,
-            playerId: Boolean(form.playerId),
-            rulesAccepted: hasReadPassRules,
-          }
-        : { playerId: Boolean(form.playerId), rulesAccepted: hasReadPassRules };
+    commitDomFields();
+    const validity = validateForm(formValueRef.current) || {};
     const validityEntries = Object.entries(validity);
     const invalidKeys = validityEntries.filter(([, ok]) => !ok).map(([k]) => k);
 
@@ -359,6 +377,7 @@ const PassSubmissionPage = () => {
           difficultyDict={difficultyDict}
           searchInput={searchInput}
           setSearchInput={setSearchInput}
+          formDomRef={formDomRef}
           renderBelowJudgements={() => (
             <div className="rules-checkbox-container">
               <div className="rules-checkbox">

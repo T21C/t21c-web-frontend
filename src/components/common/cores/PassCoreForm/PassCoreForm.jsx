@@ -1,5 +1,7 @@
 // tuf-search: #PassCoreForm #passCoreForm #cores
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useDomFieldSync } from '@/hooks/useDomFieldSync';
 import { Tooltip } from '@/components/common/display/Tooltip';
 import i18next from 'i18next';
 import { formatDate } from '@/utils/Utility';
@@ -197,6 +199,7 @@ export function PassCoreForm({
   onInputChange,
   onAdofaiVersionChange,
   onLevelIdChange,
+  formDomRef,
   levelIdValue,
   renderLevelIdInput,
   renderLevelInfoLeading,
@@ -213,6 +216,19 @@ export function PassCoreForm({
 }) {
   const copy = getPassCoreCopy(mode);
   const { t } = useTranslation([copy.ns, 'common']);
+  const ownFormRef = useRef(null);
+  const resolvedFormRef = formDomRef ?? ownFormRef;
+  const domSyncValues = levelIdValue != null
+    ? { ...form, levelId: String(levelIdValue) }
+    : form;
+
+  useDomFieldSync(resolvedFormRef, domSyncValues, (patch) => {
+    Object.entries(patch).forEach(([name, value]) => {
+      const event = { target: { name, value, type: 'text' } };
+      if (name === 'levelId' && onLevelIdChange) onLevelIdChange(event);
+      else onInputChange?.(event);
+    });
+  }, { scanOnMount: mode !== 'edit' });
   const holdVisibility = holdCheckboxVisibility ?? 'inherit';
   const isCalculator = mode === 'calculator';
   const adofaiVersion = parseAdofaiVersion(form.adofaiVersion, ADOFAI_VERSION.V3_4_0);
@@ -330,6 +346,7 @@ export function PassCoreForm({
 
   return (
     <form
+      ref={resolvedFormRef}
       className={`form-container pass-core-form ${videoDetail && !isCalculator ? 'shadow' : ''} ${isCalculator ? 'pass-core-form--calculator' : ''}`}
       onSubmit={(e) => e.preventDefault()}
       style={{

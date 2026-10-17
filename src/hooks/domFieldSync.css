@@ -1,0 +1,25 @@
+/* tuf-search: #useDomFieldSync #autofill */
+@keyframes tuf-autofill-start {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.level-submission-page form input:-webkit-autofill,
+.level-submission-page form textarea:-webkit-autofill,
+.pass-core-form input:-webkit-autofill,
+.pass-core-form textarea:-webkit-autofill {
+  animation-name: tuf-autofill-start;
+  animation-duration: 1ms;
+}
+
+.level-submission-page form input:autofill,
+.level-submission-page form textarea:autofill,
+.pass-core-form input:autofill,
+.pass-core-form textarea:autofill {
+  animation-name: tuf-autofill-start;
+  animation-duration: 1ms;
+}

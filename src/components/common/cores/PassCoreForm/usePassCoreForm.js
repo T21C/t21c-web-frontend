@@ -12,6 +12,7 @@ import { ADOFAI_VERSION, parseAdofaiVersion, canUseXPerfectMode, isAdofaiV2FromV
 import { normalizeKeyCount, validateFeelingRating, validateNumber, validateSpeed } from "@/utils/Utility";
 import { useTranslation } from "react-i18next";
 import { getPassCoreCopy } from "./PassCoreForm";
+import { getLocalVideoPreview } from "@/utils/videoLink";
 
 const BASE_REQUIRED_FIELDS = [
   "levelId",
@@ -301,7 +302,10 @@ export function usePassCoreForm({
       }
 
       validationResult.levelId = !(level === null || level === undefined);
-      validationResult.videoLink = Boolean(videoDetail);
+      const trimmedVideoLink = nextForm.videoLink?.trim?.() ?? "";
+      validationResult.videoLink =
+        trimmedVideoLink !== "" &&
+        Boolean(getLocalVideoPreview(trimmedVideoLink) || videoDetail);
       if (keyCountRequired) {
         validationResult.keyCount = keyCountParsed;
         setIsValidKeyCount(keyCountParsed);
@@ -332,6 +336,7 @@ export function usePassCoreForm({
 
     setIsFormValidDisplay(displayValidationRes);
     setIsFormValid(validationResult);
+    return validationResult;
   };
 
   useEffect(() => {
@@ -366,6 +371,7 @@ export function usePassCoreForm({
     const inputValue = type === "checkbox" ? checked : value;
 
     setForm((prev) => {
+      if (prev[name] === inputValue) return prev;
       const next = { ...prev, [name]: inputValue };
       if (name === "isXPerfectMode" && !inputValue) {
         next.perfectMinus = "";
@@ -400,5 +406,6 @@ export function usePassCoreForm({
     isUDiff,
     handleInputChange,
     handleAdofaiVersionChange,
+    validateForm: validate,
   };
 };

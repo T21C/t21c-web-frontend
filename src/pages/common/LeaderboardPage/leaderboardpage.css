@@ -43,18 +43,14 @@
 .leaderboard-page.leaderboard-page--locate {
   display: flex;
   flex-direction: column;
-  height: calc(100dvh - var(--navbar-height) - 1.5rem);
-  max-height: calc(100dvh - var(--navbar-height) - 1.5rem);
-  overflow: hidden;
+  min-height: calc(100dvh - var(--navbar-height) - 1.5rem);
 }
 
 .leaderboard-page.leaderboard-page--locate .leaderboard-body {
   display: flex;
   flex-direction: column;
-  flex: 1;
-  min-height: 0;
+  flex: 1 0 auto;
   width: 100%;
-  overflow: hidden;
 }
 
 .leaderboard-page.leaderboard-page--locate .leaderboard-body > *:not(.leaderboard-page__list) {
@@ -62,10 +58,9 @@
 }
 
 .leaderboard-page.leaderboard-page--locate .leaderboard-page__list {
-  flex: 1;
-  min-height: 0;
+  flex: 1 0 20rem;
+  min-height: 20rem;
   overflow: auto;
-  overscroll-behavior: contain;
 }
 
 .leaderboard-page .leaderboard-past-toggle {
@@ -229,13 +224,6 @@
   width: clamp(200px, 100%, 300px);
 }
 
-.leaderboard-page .leaderboard-body .filter-container.rank-filter {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
 .leaderboard-page .leaderboard-body .filter-selector-container {
   width: 100%;
 }
@@ -249,6 +237,10 @@
   margin-top: 1rem;
   position: relative;
   z-index: 2;
+}
+
+.leaderboard-page .leaderboard-page__list .virtual-list {
+  z-index: 1;
 }
 .leaderboard-page .leaderboard-body .setting-title {
   margin-bottom: 1rem;

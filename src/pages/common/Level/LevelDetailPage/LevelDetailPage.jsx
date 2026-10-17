@@ -76,6 +76,7 @@ import { RouletteWheel, SlotMachine, StateDisplay } from '@/components/common/se
 import { CloseButton, LikeButton } from '@/components/common/buttons';
 import { CommentFormatter } from '@/components/misc';
 import CommunityTagVotePopup from './CommunityTagVotePopup';
+import LevelRequestMenu from '@/components/requests/LevelRequestMenu';
 import { toast } from 'react-hot-toast';
 import { ABILITIES, hasBit } from '@/utils/Abilities';
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
@@ -3294,6 +3295,9 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                     <path d="M7 12L10 15L17 9" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </button>
+              )}
+              {user && (
+                <LevelRequestMenu level={res.level} user={user} />
               )}
             </div>
           </div>

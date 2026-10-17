@@ -26,6 +26,22 @@
   border-radius: 2px;
 }
 
+.select-country-wrapper .select-country-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  height: 14px;
+  padding: 0 3px;
+  border-radius: 2px;
+  background: var(--btn-neutral);
+  color: var(--color-white);
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
 .select-country-dropdown-toggle-icon {
   margin-left: auto;
   transition: transform 0.3s var(--ease-out-expo);

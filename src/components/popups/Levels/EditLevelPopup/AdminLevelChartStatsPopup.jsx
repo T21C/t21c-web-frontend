@@ -38,6 +38,14 @@ function midspinOrZero(value) {
   return Math.max(0, Math.floor(Number(value)));
 }
 
+function playableTilecount(tilecount, autoTileCount) {
+  if (tilecount == null || tilecount === '') return null;
+  const tiles = Math.floor(Number(tilecount));
+  if (!Number.isFinite(tiles)) return null;
+  const auto = Math.floor(Number(autoTileCount) || 0);
+  return Math.max(tiles - (Number.isFinite(auto) ? auto : 0), 0);
+}
+
 function formatSignedDelta(n) {
   if (n > 0) return `+${n}`;
   return String(n);
@@ -138,6 +146,12 @@ export const AdminLevelChartStatsPopup = ({ level, onClose, onSaved }) => {
                 count: updatedCount,
               }),
         );
+      } else if (applyPerfectsDifference) {
+        toast.success(
+          t('levelPopups.edit.chartStats.perfectsDifference.toastSavedNoneUpdated', {
+            skipped: skippedCount,
+          }),
+        );
       } else {
         toast.success(t('levelPopups.edit.chartStats.toastSaved'));
       }
@@ -178,6 +192,7 @@ export const AdminLevelChartStatsPopup = ({ level, onClose, onSaved }) => {
           from: previousMidspin,
           to: nextMidspin,
           delta,
+          tilecount: playableTilecount(level?.tilecount, level?.autoTileCount),
         });
         return;
       }
@@ -224,6 +239,7 @@ export const AdminLevelChartStatsPopup = ({ level, onClose, onSaved }) => {
                 from: displayMidspin(perfectsPrompt.from),
                 to: displayMidspin(perfectsPrompt.to),
                 delta: formatSignedDelta(perfectsPrompt.delta),
+                tilecount: displayMidspin(perfectsPrompt.tilecount),
               })}
             </p>
             <p className="admin-level-chart-stats-popup__hint">

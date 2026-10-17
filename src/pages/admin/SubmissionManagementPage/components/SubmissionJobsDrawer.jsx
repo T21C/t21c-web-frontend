@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { ChartIcon, PassIcon } from '@/components/common/icons';
+import { ChartIcon, PassIcon, QuestionmarkCircleIcon } from '@/components/common/icons';
+import { Tooltip } from '@/components/common/display/Tooltip';
 
 function formatTime(ts) {
   if (!ts) return '';
@@ -57,11 +58,37 @@ function chipStatus(status, action) {
   return status || 'queued';
 }
 
-function StatusChip({ status, action, t }) {
+function declineReasonText(reason, t) {
+  if (typeof reason === 'string' && reason.trim()) return reason.trim();
+  return t('submissionManagement.jobs.noDeclineReason');
+}
+
+function StatusChip({ status, action, reason, tooltipId, t }) {
   const display = chipStatus(status, action);
+  const showReason = display === 'declined' && tooltipId;
+  const reasonText = showReason ? declineReasonText(reason, t) : '';
+
   return (
-    <span className={`submission-status-chip submission-status-chip--${display}`}>
-      {t(`submissionManagement.jobs.status.${display}`)}
+    <span className="submission-job-status">
+      <span className={`submission-status-chip submission-status-chip--${display}`}>
+        {t(`submissionManagement.jobs.status.${display}`)}
+      </span>
+      {showReason && (
+        <>
+          <button
+            type="button"
+            className="submission-job-decline-help"
+            data-tooltip-id={tooltipId}
+            aria-label={reasonText}
+            onClick={event => event.stopPropagation()}
+          >
+            <QuestionmarkCircleIcon size={14} color="currentColor" aria-hidden="true" />
+          </button>
+          <Tooltip id={tooltipId} place="left" className="submission-job-decline-tooltip">
+            {reasonText}
+          </Tooltip>
+        </>
+      )}
     </span>
   );
 }
@@ -102,7 +129,7 @@ function isBatchRequest(request) {
   return request.origin === 'auto' || (request.items?.length || request.itemIds?.length || 0) > 1;
 }
 
-function ItemProgress({ item, t, showLabel = true }) {
+function ItemProgress({ item, t, showLabel = true, tooltipId }) {
   const step = currentStep(item);
   return (
     <div className="submission-job-item">
@@ -111,7 +138,13 @@ function ItemProgress({ item, t, showLabel = true }) {
           <span className="submission-job-item-label" title={item.label}>
             {item.label || `#${item.itemId}`}
           </span>
-          <StatusChip status={item.status} action={item.action} t={t} />
+          <StatusChip
+            status={item.status}
+            action={item.action}
+            reason={item.reason}
+            tooltipId={tooltipId}
+            t={t}
+          />
         </div>
       )}
       <ResultLink item={item} t={t} />
@@ -140,33 +173,42 @@ function RequestTree({ request, t }) {
     ? (request.requestedBy?.username || '—')
     : (primary?.label || `#${primary?.itemId || request.itemIds?.[0] || ''}`);
   const status = batch ? request.status : (primary?.status || request.status);
+  const headerReason = request.reason ?? (!batch ? primary?.reason : null);
 
   return (
     <div className={`submission-job-request${batch ? ' submission-job-request--batch' : ''}`}>
-      <button
-        type="button"
-        className="submission-job-request-header"
-        onClick={() => setExpanded(v => !v)}
-        aria-expanded={expanded}
-      >
-        <span className="submission-job-request-kind">
-          <KindIcon kind={request.kind} />
-        </span>
-        <span className="submission-job-request-meta">
-          <span className="submission-job-request-title" title={title}>
-            {title}
+      <div className="submission-job-request-header">
+        <button
+          type="button"
+          className="submission-job-request-toggle"
+          onClick={() => setExpanded(v => !v)}
+          aria-expanded={expanded}
+        >
+          <span className="submission-job-request-kind">
+            <KindIcon kind={request.kind} />
           </span>
-          <span className="submission-job-request-sub">
-            {batch
-              ? t('submissionManagement.jobs.autoAllowBatch')
-              : t('submissionManagement.jobs.requestedBy', {
-                  name: request.requestedBy?.username || '—',
-                })}
-            <span className="submission-job-request-time">{formatTime(request.createdAt)}</span>
+          <span className="submission-job-request-meta">
+            <span className="submission-job-request-title" title={title}>
+              {title}
+            </span>
+            <span className="submission-job-request-sub">
+              {batch
+                ? t('submissionManagement.jobs.autoAllowBatch')
+                : t('submissionManagement.jobs.requestedBy', {
+                    name: request.requestedBy?.username || '—',
+                  })}
+              <span className="submission-job-request-time">{formatTime(request.createdAt)}</span>
+            </span>
           </span>
-        </span>
-        <StatusChip status={status} action={request.action || primary?.action} t={t} />
-      </button>
+        </button>
+        <StatusChip
+          status={status}
+          action={request.action || primary?.action}
+          reason={headerReason}
+          tooltipId={`submission-decline-${request.requestId}`}
+          t={t}
+        />
+      </div>
 
       {expanded && (
         <div className="submission-job-request-body">
@@ -180,6 +222,7 @@ function RequestTree({ request, t }) {
                 key={`${item.kind}:${item.itemId}`}
                 item={item}
                 t={t}
+                tooltipId={`submission-decline-${request.requestId}-${item.kind}-${item.itemId}`}
               />
             ))
           ) : (

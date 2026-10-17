@@ -47,13 +47,6 @@ function isFullRankRange(range, population) {
   return range[0] <= 1 && range[1] >= population;
 }
 
-function statFiltersOnly(all) {
-  if (!all || typeof all !== 'object') return {};
-  const rest = { ...all };
-  delete rest.rankedScoreRank;
-  return rest;
-}
-
 const LeaderboardPage = () => {
   const { t } = useTranslation('pages');
   const location = useLocation();
@@ -171,7 +164,16 @@ const LeaderboardPage = () => {
     setForceUpdate((prev) => !prev);
   };
 
+  const rankedPopulation = Math.max(0, Math.floor(Number(maxFields.rankedPopulation) || 0));
+
   const filterableFields = [
+    {
+      key: 'rankedScoreRank',
+      label: t('leaderboard.settings.filter.rankedScoreRank'),
+      maxKey: 'rankedPopulation',
+      step: 1,
+      minBound: 1,
+    },
     { key: 'rankedScore', label: t('leaderboard.sortOptions.rankedScore'), maxKey: 'maxRankedScore', step: 1 },
     { key: 'totalScoreV2', label: t('leaderboard.sortOptions.totalScoreV2'), maxKey: 'maxTotalScoreV2', step: 1 },
     { key: 'ppScore', label: t('leaderboard.sortOptions.ppScore'), maxKey: 'maxPpScore', step: 1 },
@@ -312,9 +314,8 @@ const LeaderboardPage = () => {
   }, [historyDate, historyMetric, historySort, historyQuery, historyRequest, user, followingFilter]);
 
   useEffect(() => {
-    const stats = statFiltersOnly(filters);
-    if (Object.keys(stats).length > 0) {
-      setActiveFilters(stats);
+    if (filters && Object.keys(filters).length > 0) {
+      setActiveFilters({ ...filters });
     }
   }, []);
 
@@ -420,13 +421,18 @@ const LeaderboardPage = () => {
 
   const addFilter = () => {
     if (selectedFilterField && !activeFilters[selectedFilterField.key]) {
-      let maxValue = maxFields[selectedFilterField.maxKey] || 1000;
-      
+      if (selectedFilterField.key === 'rankedScoreRank' && rankedPopulation < 2) return;
+
+      const minBound = selectedFilterField.minBound ?? 0;
+      let maxValue = selectedFilterField.key === 'rankedScoreRank'
+        ? rankedPopulation
+        : (maxFields[selectedFilterField.maxKey] || 1000);
+
       if (selectedFilterField.isPercentage) {
         maxValue = maxValue * 100;
       }
-      
-      const newFilterValue = [0, Math.ceil(maxValue)];
+
+      const newFilterValue = [minBound, Math.max(minBound, Math.ceil(maxValue))];
       
       setActiveFilters(prev => ({
         ...prev,
@@ -511,44 +517,21 @@ const LeaderboardPage = () => {
   const activeQuery = pastMode ? historyQuery : query;
   const activeSortOpen = pastMode ? historySortOpen : sortOpen;
 
-  const rankedPopulation = Math.max(0, Math.floor(Number(maxFields.rankedPopulation) || 0));
-  const rankRange = parseRankRange(filters.rankedScoreRank)
-    ?? (rankedPopulation >= 1 ? [1, rankedPopulation] : [1, 1]);
-
   useEffect(() => {
     if (rankedPopulation < 1) return;
     const current = parseRankRange(filters.rankedScoreRank);
     if (!current) return;
     const min = Math.min(Math.max(1, current[0]), rankedPopulation);
     const max = Math.min(Math.max(min, current[1]), rankedPopulation);
-    if (min === 1 && max >= rankedPopulation) {
-      setFilters((prev) => {
-        if (!prev.rankedScoreRank) return prev;
-        const next = { ...prev };
-        delete next.rankedScoreRank;
-        return next;
-      });
-      return;
-    }
-    if (min !== current[0] || max !== current[1]) {
-      setFilters((prev) => ({ ...prev, rankedScoreRank: [min, max] }));
-    }
+    if (min === current[0] && max === current[1]) return;
+    const nextRange = [min, max];
+    setFilters((prev) => ({ ...prev, rankedScoreRank: nextRange }));
+    setActiveFilters((prev) => {
+      if (!prev.rankedScoreRank) return prev;
+      if (prev.rankedScoreRank[0] === min && prev.rankedScoreRank[1] === max) return prev;
+      return { ...prev, rankedScoreRank: nextRange };
+    });
   }, [rankedPopulation, filters.rankedScoreRank, setFilters]);
-
-  const handleRankRangeComplete = (newValues) => {
-    const min = Math.max(1, Math.floor(Number(newValues[0])));
-    const max = Math.max(min, Math.floor(Number(newValues[1])));
-    if (rankedPopulation >= 1 && min === 1 && max >= rankedPopulation) {
-      setFilters((prev) => {
-        if (!prev.rankedScoreRank) return prev;
-        const next = { ...prev };
-        delete next.rankedScoreRank;
-        return next;
-      });
-      return;
-    }
-    setFilters((prev) => ({ ...prev, rankedScoreRank: [min, max] }));
-  };
 
   const liveLeaderboardSearchParams = () => {
     const effectiveFlagFilter = hasFlag(user, permissionFlags.SUPER_ADMIN)
@@ -772,6 +755,7 @@ const LeaderboardPage = () => {
                   <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                     <CountrySelect
                       value={country}
+                      includeContinents
                       onChange={(country) => {
                         setCountry(country);
                       }}
@@ -790,22 +774,6 @@ const LeaderboardPage = () => {
                 )}
               </div>
 
-              {!pastMode && rankedPopulation >= 2 && (
-                <div className="filter-container rank-filter">
-                  <p className="setting-description">{t('leaderboard.settings.filter.rankedScoreRank')}</p>
-                  <RangeSelector
-                    values={rankRange}
-                    onChangeComplete={handleRankRangeComplete}
-                    min={1}
-                    max={rankedPopulation}
-                    decimals={0}
-                    step={1}
-                    minLabel={t('leaderboard.settings.filter.min')}
-                    maxLabel={t('leaderboard.settings.filter.max')}
-                  />
-                </div>
-              )}
-
               {!pastMode && (
               <>
               <div className="filter-builder" >
@@ -816,7 +784,7 @@ const LeaderboardPage = () => {
                       value={selectedFilterField ? { value: selectedFilterField, label: selectedFilterField.label } : null}
                       onChange={(option) => setSelectedFilterField(option?.value || null)}
                       options={filterableFields
-                        .filter(f => !activeFilters[f.key])
+                        .filter(f => !activeFilters[f.key] && (f.key !== 'rankedScoreRank' || rankedPopulation >= 2))
                         .map(f => ({ value: f, label: f.label }))}
                       placeholder={t('leaderboard.settings.filter.selectStatPlaceholder')}
                       width="100%"
@@ -870,13 +838,17 @@ const LeaderboardPage = () => {
                     {(() => {
                       const field = filterableFields.find(f => f.key === selectedFilterKey);
                       if (!field) return null;
-                      
-                      let maxValue = maxFields[field.maxKey] || 1000;
-                      
+
+                      const minBound = field.minBound ?? 0;
+                      let maxValue = field.key === 'rankedScoreRank'
+                        ? rankedPopulation
+                        : (maxFields[field.maxKey] || 1000);
+
                       if (field.isPercentage) {
                         maxValue = maxValue * 100;
                       }
 
+                      const maxBound = Math.max(minBound, Math.ceil(maxValue));
                       const decimals = field.step < 1 ? 2 : 0;
                       const suffix = field.isPercentage ? '%' : '';
                       
@@ -887,23 +859,25 @@ const LeaderboardPage = () => {
                           <p className="setting-description" style={{ marginBottom: '0.5rem' }}>
                             {field.label}
                           </p>
-                          <RangeSelector
-                            values={currentValues}
-                            onChange={(newValues) => {
-                              setActiveFilters(prev => ({ ...prev, [selectedFilterKey]: newValues }));
-                            }}
-                            onChangeComplete={(newValues) => {
-                              setActiveFilters(prev => ({ ...prev, [selectedFilterKey]: newValues }));
-                              setFilters(prev => ({ ...prev, [selectedFilterKey]: newValues }));
-                            }}
-                            min={0}
-                            max={Math.ceil(maxValue)}
-                            decimals={decimals}
-                            suffix={suffix}
-                            step={field.step}
-                            minLabel={t('leaderboard.settings.filter.min') + suffix}
-                            maxLabel={t('leaderboard.settings.filter.max') + suffix}
-                          />
+                          {maxBound > minBound && (
+                            <RangeSelector
+                              values={currentValues}
+                              onChange={(newValues) => {
+                                setActiveFilters(prev => ({ ...prev, [selectedFilterKey]: newValues }));
+                              }}
+                              onChangeComplete={(newValues) => {
+                                setActiveFilters(prev => ({ ...prev, [selectedFilterKey]: newValues }));
+                                setFilters(prev => ({ ...prev, [selectedFilterKey]: newValues }));
+                              }}
+                              min={minBound}
+                              max={maxBound}
+                              decimals={decimals}
+                              suffix={suffix}
+                              step={field.step}
+                              minLabel={t('leaderboard.settings.filter.min') + suffix}
+                              maxLabel={t('leaderboard.settings.filter.max') + suffix}
+                            />
+                          )}
                         </>
                       );
                     })()}

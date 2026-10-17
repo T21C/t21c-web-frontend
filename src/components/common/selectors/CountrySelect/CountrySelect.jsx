@@ -1,16 +1,16 @@
 // tuf-search: #CountrySelect #countrySelect #selectors
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { isoToEmoji } from '@/utils';
 import "./countryselect.css";
 import { COUNTRY_CODES } from "@/utils/countryCodes";
+import { CONTINENTS } from "@/utils/continents";
 import { useTranslation } from 'react-i18next';
 
-export const CountrySelect = ({ value, onChange }) => {
+export const CountrySelect = ({ value, onChange, includeContinents = false }) => {
   const { t } = useTranslation('components');
 
   const [showDropdown, setShowDropdown] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filteredCountries, setFilteredCountries] = useState(COUNTRY_CODES);
 
   const handleSelect = (country, e) => {
     e.stopPropagation();
@@ -24,14 +24,15 @@ export const CountrySelect = ({ value, onChange }) => {
     setShowDropdown(!showDropdown);
   };
 
-  // Filter countries based on search
-  useEffect(() => {
-    const filtered = COUNTRY_CODES.filter(country => 
-      country.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      country.code.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredCountries(filtered);
-  }, [searchTerm]);
+  const filteredCountries = useMemo(() => {
+    const term = searchTerm.toLowerCase();
+    const matches = (item) =>
+      item.name.toLowerCase().includes(term) ||
+      item.code.toLowerCase().includes(term);
+    const countries = COUNTRY_CODES.filter(matches);
+    if (!includeContinents) return countries;
+    return [...countries, ...CONTINENTS.filter(matches)];
+  }, [searchTerm, includeContinents]);
 
   // Handle click outside
   useEffect(() => {
@@ -45,7 +46,22 @@ export const CountrySelect = ({ value, onChange }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const selectedCountry = COUNTRY_CODES.find(c => c.code === value);
+  const selectedCountry = COUNTRY_CODES.find(c => c.code === value)
+    || (includeContinents ? CONTINENTS.find(c => c.code === value) : undefined);
+
+  const renderMark = (item) => {
+    const isContinent = includeContinents && CONTINENTS.some(c => c.code === item.code);
+    if (isContinent) {
+      return <span className="select-country-mark">{item.code}</span>;
+    }
+    return (
+      <img
+        src={isoToEmoji(item.code)}
+        alt={item.name}
+        className="select-country-flag"
+      />
+    );
+  };
 
   return (
     <div className="select-country-wrapper" onClick={(e) => e.stopPropagation()}>
@@ -56,11 +72,7 @@ export const CountrySelect = ({ value, onChange }) => {
         >
           {selectedCountry ? (
             <>
-              <img 
-                src={isoToEmoji(selectedCountry.code)}
-                alt={selectedCountry.name}
-                className="select-country-flag"
-              />
+              {renderMark(selectedCountry)}
               <span>{selectedCountry.name}</span>
             </>
           ) : (
@@ -88,11 +100,7 @@ export const CountrySelect = ({ value, onChange }) => {
                 className="select-country-option"
                 onClick={(e) => handleSelect(country, e)}
               >
-                <img 
-                  src={isoToEmoji(country.code)}
-                  alt={country.name}
-                  className="select-country-flag"
-                />
+                {renderMark(country)}
                 <span className="select-country-name">{country.name}</span>
                 <span className="select-country-code">({country.code})</span>
               </div>

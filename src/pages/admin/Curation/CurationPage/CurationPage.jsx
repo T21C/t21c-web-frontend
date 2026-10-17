@@ -11,12 +11,11 @@ import { ScrollButton } from '@/components/common/buttons';
 import api from '@/utils/api';
 import { toastIfRateLimited } from '@/utils/rateLimitError';
 import './curationpage.css';
-import { EditIcon, TrashIcon } from '@/components/common/icons';
+import { EditIcon, RefreshIcon, TrashIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
 import { LevelSelectionPopup } from '@/components/popups/Levels';
 import { TypeManagementPopup, CurationEditPopup, BulkCreateCurationsPopup, BulkCreateCurationsConfirmPopup } from '@/components/popups/Curations';
 import { UserManagementPopup } from '@/components/popups/Users';
-import { DiscordRolesPopup } from '@/components/popups/DiscordRoles';
 import { toast } from 'react-hot-toast';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
@@ -60,7 +59,6 @@ const CurationPage = () => {
   const [showTypeManagementPopup, setShowTypeManagementPopup] = useState(false);
   const [showCurationEditPopup, setShowCurationEditPopup] = useState(false);
   const [showCuratorManagementPopup, setShowCuratorManagementPopup] = useState(false);
-  const [showDiscordRolesPopup, setShowDiscordRolesPopup] = useState(false);
   const [showBulkCreatePopup, setShowBulkCreatePopup] = useState(false);
   const [bulkCreateSubmitting, setBulkCreateSubmitting] = useState(false);
   const [bulkCreateConfirm, setBulkCreateConfirm] = useState({
@@ -85,7 +83,6 @@ const CurationPage = () => {
     showTypeManagementPopup ||
     showCurationEditPopup ||
     showCuratorManagementPopup ||
-    showDiscordRolesPopup ||
     showBulkCreatePopup ||
     bulkCreateConfirm.open;
 
@@ -128,8 +125,6 @@ const CurationPage = () => {
       const { type } = pendingAction;
       if (type === 'manage') {
         handleOpenTypeManagement();
-      } else if (type === 'discordRoles') {
-        setShowDiscordRolesPopup(true);
       }
       setPendingAction(null);
     }
@@ -667,23 +662,13 @@ const CurationPage = () => {
             📅
             {t('curation.actions.manageSchedule')}
           </NavLink>
-          { hasFlag(user, permissionFlags.SUPER_ADMIN) && (
-            <button
-              className="curation-discord-roles-btn"
-              onClick={() => {
-                if (!verifiedPassword) {
-                  setPendingAction({ type: 'discordRoles' });
-                  setShowPasswordPrompt(true);
-                } else {
-                  setShowDiscordRolesPopup(true);
-                }
-              }}
-              title={t('components:discordRoles.title', { defaultValue: 'Discord Role Sync' })}
-            >
-              💬
-              {t('components:discordRoles.title', { defaultValue: 'Discord Roles' })}
-            </button>
-          )}
+          <NavLink
+            className="curation-discord-roles-btn"
+            to="/admin/requests#curation"
+          >
+            <RefreshIcon color="#ffffff" size="18px" />
+            {t('levelRequests.tabs.requests')}
+          </NavLink>
         </div>
         )}
         </div>
@@ -920,15 +905,6 @@ const CurationPage = () => {
             managementType="curator"
           />
         )}
-
-        {/* Discord Roles Popup */}
-        <DiscordRolesPopup
-          isOpen={showDiscordRolesPopup}
-          onClose={() => setShowDiscordRolesPopup(false)}
-          roleType="CURATION"
-          curationTypes={curationTypes}
-          verifiedPassword={verifiedPassword}
-        />
 
       {/* Notifications */}
       <div className="curation-notifications">

@@ -1,6 +1,6 @@
 // tuf-search: #MySubmissionsPage #mySubmissions #account
 import { useEffect, useMemo, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { routes } from '@/api/routes';
 import api from '@/utils/api';
@@ -9,6 +9,8 @@ import { CustomSelect } from '@/components/common/selectors';
 import { useDebouncedRequest } from '@/hooks/useDebouncedRequest';
 import { buildStaticPageMeta } from '@/utils/meta';
 import MySubmissionRow from './MySubmissionRow';
+import LevelRequestBrowser from '@/components/requests/LevelRequestBrowser';
+import '@/components/requests/levelRequests.css';
 import './mySubmissionsPage.css';
 
 const PAGE_SIZE = 20;
@@ -16,6 +18,9 @@ const PAGE_SIZE = 20;
 const MySubmissionsPage = () => {
   const { t } = useTranslation('pages');
   const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tab = searchParams.get('tab') === 'requests' ? 'requests' : 'submissions';
+  const highlightId = searchParams.get('request');
   const runSearch = useDebouncedRequest(500);
 
   const [searchInput, setSearchInput] = useState('');
@@ -70,6 +75,7 @@ const MySubmissionsPage = () => {
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
   useEffect(() => {
+    if (tab === 'requests') return undefined;
     const controller = new AbortController();
     setLoading(true);
     setError(false);
@@ -102,7 +108,7 @@ const MySubmissionsPage = () => {
       });
 
     return () => controller.abort();
-  }, [page, query, type, status, sort]);
+  }, [page, query, type, status, sort, tab]);
 
   useEffect(() => {
     if (!loading && page > totalPages) setPage(totalPages);
@@ -127,9 +133,32 @@ const MySubmissionsPage = () => {
       <MetaTags {...pageMeta} />
 
       <div className="my-submissions-page__header">
-        <h1 className="my-submissions-page__title">{t('mySubmissions.title')}</h1>
+        <h1 className="my-submissions-page__title">
+          {tab === 'requests' ? t('levelRequests.mine.title') : t('mySubmissions.title')}
+        </h1>
+        <div className="level-requests">
+          <div className="level-requests__tabs">
+            <button
+              type="button"
+              className={`level-requests__tab${tab === 'submissions' ? ' level-requests__tab--active' : ''}`}
+              onClick={() => setSearchParams({})}
+            >
+              {t('levelRequests.tabs.submissions')}
+            </button>
+            <button
+              type="button"
+              className={`level-requests__tab${tab === 'requests' ? ' level-requests__tab--active' : ''}`}
+              onClick={() => setSearchParams({ tab: 'requests' })}
+            >
+              {t('levelRequests.tabs.requests')}
+            </button>
+          </div>
+        </div>
       </div>
 
+      {tab === 'requests' && <LevelRequestBrowser mode="mine" highlightId={highlightId} />}
+      {tab === 'submissions' && (
+        <>
       <div className="my-submissions-page__controls">
         <input
           type="text"
@@ -206,6 +235,8 @@ const MySubmissionsPage = () => {
           </div>
         </div>
       ) : null}
+        </>
+      )}
     </div>
   );
 };

@@ -1,6 +1,6 @@
 // tuf-search: #RatingItem #ratingItem #cards
 import './ratingitem.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tooltip } from '@/components/common/display/Tooltip';
 import { CommentFormatter } from '@/components/misc';
@@ -18,6 +18,7 @@ import {
 } from '@/utils/ratingAccuracy';
 import { RatingAccuracyKernelChart } from '@/components/common/display/RatingAccuracyKernelChart/RatingAccuracyKernelChart';
 import i18next from 'i18next';
+import { collectLevelReferenceIds, getLevelReferences } from '@/utils/levelReferences';
 
 export const RatingItem = ({
   ratingDetail,
@@ -32,6 +33,13 @@ export const RatingItem = ({
     
     const [isExpanded, setIsExpanded] = useState(false);
     const { t } = useTranslation('components');
+
+    useEffect(() => {
+      const ids = collectLevelReferenceIds(comment);
+      if (ids.length === 0) return undefined;
+      getLevelReferences(ids);
+      return undefined;
+    }, [comment]);
     
     // Find user's weekly activity
     const userActivity = weeklyRaterActivity.find(rater => rater.userId === (user?.id || userId));
@@ -184,7 +192,7 @@ export const RatingItem = ({
             <Collapsible open={isExpanded} onOpenChange={setIsExpanded} duration="0.3s" easing="ease">
               <CollapsibleContent>
             <div className="rating-comment">
-              <CommentFormatter>{comment}</CommentFormatter>
+              <CommentFormatter resolveLevelRefs>{comment}</CommentFormatter>
             </div>
               </CollapsibleContent>
             </Collapsible>

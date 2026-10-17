@@ -12,6 +12,8 @@ import api from '@/utils/api';
 import { useTranslation } from 'react-i18next';
 import { CloseButton } from '@/components/common/buttons';
 import { ExternalLinkIcon, DownloadIcon, DraftIcon } from '@/components/common/icons';
+import DiscordVoteNotice from '@/components/popups/Rating/DiscordVoteNotice';
+import { isVoteRatingCard } from '@/utils/ratingRequestBand';
 import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from "@/utils/Utility";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { hasAnyFlag, hasFlag, permissionFlags } from "@/utils/UserPermissions";
@@ -83,6 +85,7 @@ export const RatingDetailPopup = ({
   const [showUnsavedDraftPrompt, setShowUnsavedDraftPrompt] = useState(false);
   const [hasSavedDraft, setHasSavedDraft] = useState(false);
   const [fetchedAccuracyStats, setFetchedAccuracyStats] = useState([]);
+  const [linkedRequest, setLinkedRequest] = useState(null);
 
   const detailsHydratedSeededRef = useRef(false);
   const seededRatingIdRef = useRef(null);
@@ -575,6 +578,28 @@ export const RatingDetailPopup = ({
     return baseClass;
   };
 
+  const isVoteCard = isVoteRatingCard(selectedRating, linkedRequest);
+  const showDiscordSettlement = isVoteCard;
+
+  useEffect(() => {
+    const ratingId = selectedRating?.id;
+    if (!ratingId) {
+      setLinkedRequest(null);
+      return undefined;
+    }
+    let cancelled = false;
+    api.get(routes.database.levelRequests.forRating(ratingId))
+      .then((res) => {
+        if (!cancelled) setLinkedRequest(res.data?.request || null);
+      })
+      .catch(() => {
+        if (!cancelled) setLinkedRequest(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedRating?.id]);
+
   if (!selectedRating) return null;
   return (
     <>
@@ -692,7 +717,9 @@ export const RatingDetailPopup = ({
 
             <div className="rating-section">
               <div className="rating-columns">
-                {hasFlag(user, permissionFlags.RATING_BANNED) ? (
+                {showDiscordSettlement ? (
+                  <DiscordVoteNotice threadUrl={linkedRequest?.discordMessageUrl} />
+                ) : hasFlag(user, permissionFlags.RATING_BANNED) ? (
                   <div className="rating-banned-message">
                     {t('rating.detailPopup.messages.ratingBanned')}
                   </div>
@@ -783,7 +810,7 @@ export const RatingDetailPopup = ({
                   </div>
                 ) : null}
 
-                <div className="rating-field other-ratings">
+                {!showDiscordSettlement && <div className="rating-field other-ratings">
                   <div className="other-ratings-header">
                     <label className="rating-field-label">
                       {showSecondRatings ? t('rating.detailPopup.labels.communityRatings') : t('rating.detailPopup.labels.adminRatings')}
@@ -829,7 +856,7 @@ export const RatingDetailPopup = ({
                       {renderRatingsContent(communityRatings, 'community')}
                     </div>
                   </div>
-                </div>
+                </div>}
               </div>
             </div>
           </div>

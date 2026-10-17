@@ -203,6 +203,25 @@
   font-weight: 500;
 }
 
+.song-selector-popup .song-result-label {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.song-selector-popup .song-artists {
+  color: var(--color-gray-2);
+  font-size: 0.9em;
+  font-weight: 400;
+}
+
+.song-selector-popup .song-artists::before {
+  content: "·";
+  margin-right: 0.35em;
+}
+
 .song-selector-popup .song-result .song-aliases {
   color: #aaa;
   font-size: 0.9em;

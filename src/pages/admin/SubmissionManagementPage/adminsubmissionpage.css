@@ -3015,20 +3015,65 @@
 .submission-admin-page .submission-job-request-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 0.5rem;
   width: 100%;
-  padding: 0;
-  border: none;
-  background: transparent;
   color: var(--color-white);
-  cursor: pointer;
-  text-align: left;
 }
 
 .submission-admin-page .submission-job-request-header:hover {
   background-color: var(--color-white-t10);
   border-radius: 4px;
+}
+
+.submission-admin-page .submission-job-request-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.submission-admin-page .submission-job-status {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex-shrink: 0;
+}
+
+.submission-admin-page .submission-job-decline-help {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-white-t60);
+  line-height: 0;
+}
+
+.submission-admin-page .submission-job-decline-help:hover {
+  color: var(--color-white);
+}
+
+/* Portaled onto the popup stack, so it cannot sit under .submission-admin-page. */
+.submission-job-decline-tooltip {
+  --rt-color-dark: var(--color-black);
+  --rt-color-white: var(--color-white);
+  --rt-opacity: 1;
+  max-width: min(18rem, 70vw);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  text-align: left;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  border: 1px solid var(--color-white-t20);
 }
 
 .submission-admin-page .submission-job-request-kind,

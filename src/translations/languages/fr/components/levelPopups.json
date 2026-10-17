@@ -91,11 +91,12 @@
       },
       "perfectsDifference": {
         "title": "Mettre à jour les Perfect des passes ?",
-        "message": "Le nombre de midspins passe de {{from}} à {{to}}. Les Perfect de chaque passe changeraient de {{delta}}.",
+        "message": "Les midspins passent de {{from}} à {{to}}. Les passes legacy dont le total de jugements est exactement égal au nombre de tuiles jouables ({{tilecount}}) verront leur Perfect changer de {{delta}}.",
         "unset": "non défini",
-        "question": "Appliquer cette différence à toutes les passes de ce niveau ?",
+        "question": "Appliquer cela à ces passes exactes ?",
         "toastSavedWithPasses": "Métadonnées du chart enregistrées. Perfect mis à jour sur {{count}} passes.",
-        "toastSavedWithPassesSkipped": "Métadonnées du chart enregistrées. Perfect mis à jour sur {{updated}} passes. {{skipped}} ignorées car le Perfect serait inférieur à 0."
+        "toastSavedWithPassesSkipped": "Métadonnées du chart enregistrées. Perfect mis à jour sur {{updated}} passes. {{skipped}} laissées inchangées.",
+        "toastSavedNoneUpdated": "Métadonnées du chart enregistrées. Aucune passe exacte mise à jour ({{skipped}} inchangées)."
       }
     },
     "tags": {

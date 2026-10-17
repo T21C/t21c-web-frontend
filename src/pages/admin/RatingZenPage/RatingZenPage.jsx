@@ -29,7 +29,8 @@ import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import toast from 'react-hot-toast';
 import { createViewDurationTracker } from '@/utils/viewDurationTracker';
 import { isAutoraterDetail } from '@/pages/admin/RatingPage/RankReadyTable';
-import { REQUEST_BANDS, requestPguBand } from '@/utils/ratingRequestBand';
+import { REQUEST_BANDS, isVoteRatingCard, requestPguBand } from '@/utils/ratingRequestBand';
+import DiscordVoteNotice from '@/components/popups/Rating/DiscordVoteNotice';
 
 const DECK_SIZES = [
   5, 10, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 125, 150, 175, 200,
@@ -151,6 +152,7 @@ const RatingZenPage = () => {
     () => !DECK_SIZES.includes(session.deckSize)
   );
   const [customDeckDraft, setCustomDeckDraft] = useState(() => String(session.deckSize));
+  const [linkedRequest, setLinkedRequest] = useState(null);
   const viewTrackersRef = useRef(new Map());
 
   const disposeViewTrackers = useCallback(() => {
@@ -236,6 +238,26 @@ const RatingZenPage = () => {
   );
 
   const current = cards[index] || null;
+  const isVoteCard = isVoteRatingCard(current, linkedRequest);
+
+  useEffect(() => {
+    const ratingId = current?.id;
+    if (!ratingId) {
+      setLinkedRequest(null);
+      return undefined;
+    }
+    let cancelled = false;
+    api.get(routes.database.levelRequests.forRating(ratingId))
+      .then((res) => {
+        if (!cancelled) setLinkedRequest(res.data?.request || null);
+      })
+      .catch(() => {
+        if (!cancelled) setLinkedRequest(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [current?.id]);
   const currentRequestBand = requestPguBand(current);
   const videoLink = current?.displayVideoLink || current?.level?.videoLink;
   const videoData = useMemo(() => (videoLink ? getLocalVideoPreview(videoLink) : null), [videoLink]);
@@ -1044,7 +1066,25 @@ const RatingZenPage = () => {
             </div>
 
             <aside className="rating-zen-page__panel">
-              {hasFlag(user, permissionFlags.RATING_BANNED) ? (
+              {isVoteCard ? (
+                <div className="rating-zen-page__actions-block">
+                  <DiscordVoteNotice threadUrl={linkedRequest?.discordMessageUrl} />
+                  <div className="rating-zen-page__actions">
+                    <button
+                      type="button"
+                      className="btn-fill-neutral-dark btn-block"
+                      onClick={handleSkip}
+                      disabled={isSaving}
+                      aria-label={t('rating.zen.actions.skip')}
+                      title={t('rating.zen.actions.skip')}
+                    >
+                      <span aria-hidden="true">
+                        <SkipIcon size={22} color="currentColor" />
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              ) : hasFlag(user, permissionFlags.RATING_BANNED) ? (
                 <p className="rating-zen-page__banned">
                   {t('components:rating.detailPopup.messages.ratingBanned')}
                 </p>
@@ -1232,7 +1272,7 @@ const RatingZenPage = () => {
                 )}
               </div>
 
-              {!hasFlag(user, permissionFlags.RATING_BANNED) && (
+              {!isVoteCard && !hasFlag(user, permissionFlags.RATING_BANNED) && (
                 <div className="rating-zen-page__form">
                   <div className="rating-zen-page__field">
                     <span>{t('components:rating.detailPopup.labels.yourRating')}</span>

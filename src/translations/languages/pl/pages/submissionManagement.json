@@ -31,6 +31,7 @@
     "holdToCloseAll": "Przytrzymaj, aby zamknąć wszystkie",
     "openLevel": "Poziom #{{id}}",
     "openPass": "Przejście #{{id}}",
+    "noDeclineReason": "Nie podano powodu",
     "status": {
       "queued": "w kolejce",
       "processing": "przetwarzanie",

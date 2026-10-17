@@ -341,8 +341,17 @@
     margin-bottom: 0.75rem;
   }
 
+  .admin-rating-page .admin-buttons .requests-button,
   .admin-rating-page .admin-buttons .rank-ready-button {
     margin-left: auto;
+  }
+
+  .admin-rating-page .admin-buttons .requests-button {
+    text-decoration: none;
+  }
+
+  .admin-rating-page .admin-buttons .requests-button + .rank-ready-button {
+    margin-left: 0;
   }
 
   .admin-rating-page .admin-button.rank-ready-button--active {

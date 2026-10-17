@@ -10,7 +10,7 @@ import { PopupShell } from '@/components/common/PopupShell';
 import { normalizeArtistSearchQuery } from '@/utils/normalizeEntitySearchQuery';
 import { artistVerificationSelectOptions } from '@/utils/verificationStates';
 
-export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null }) => {
+export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null, allowCreate = true }) => {
   const { t } = useTranslation(['components', 'common']);
 
   const verificationStateOptions = artistVerificationSelectOptions(t);
@@ -38,14 +38,14 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
   useEffect(() => {
     // Only show create form if we have an explicit new request (name but no id)
     // Otherwise, reset the create form state
-    if (!initialArtist || initialArtist.id || !initialArtist.name) {
+    if (!allowCreate || !initialArtist || initialArtist.id || !initialArtist.name) {
       setShowCreateForm(false);
       setNewName('');
       setVerificationState('unverified');
     } else {
       setVerificationState(initialArtist.verificationState || 'unverified');
     }
-  }, [initialArtist]);
+  }, [allowCreate, initialArtist]);
 
   // Load initial artist details if they exist
   useEffect(() => {
@@ -267,12 +267,14 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
                       onChange={(e) => setSearchQuery(normalizeArtistSearchQuery(e.target.value))}
                       placeholder={t('artistSelector.search.placeholder')}
                     />
-                    <button 
-                      className="create-artist-button"
-                      onClick={handleCreateClick}
-                    >
-                      {t('artistSelector.buttons.createNew')}
-                    </button>
+                    {allowCreate && (
+                      <button
+                        className="create-artist-button"
+                        onClick={handleCreateClick}
+                      >
+                        {t('artistSelector.buttons.createNew')}
+                      </button>
+                    )}
                   </div>
                   {isSearching ? (
                     <div className="search-status">
