@@ -105,6 +105,10 @@
   box-shadow: var(--ipm-shadow, none), 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
+.item-pick-manager__chip--readonly {
+  cursor: default;
+}
+
 .item-pick-manager__chip-icon {
   width: 28px;
   height: 28px;

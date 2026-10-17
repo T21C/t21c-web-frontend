@@ -18,6 +18,7 @@ import { EditLevelPopup } from "@/components/popups/Levels";
 import { RaterManagementPopup, RatingDetailPopup, TopRatersPopup } from "@/components/popups/Rating";
 import { ReferencesPopup } from "@/components/popups/Difficulties";
 import { ScrollButton, ReferencesButton } from "@/components/common/buttons";
+import { RefreshIcon } from '@/components/common/icons';
 import { CustomSelect } from "@/components/common/selectors";
 import api from "@/utils/api";
 import { apiUrl } from '@/config/urls';
@@ -654,6 +655,12 @@ const RatingPage = () => {
             >
               {t('rating.buttons.topRaters')} <LeaderboardIcon />
             </button>
+            {(hasFlag(user, permissionFlags.RATER) || hasFlag(user, permissionFlags.SUPER_ADMIN)) && (
+              <Link className="admin-button requests-button" to="/admin/requests#rerate">
+                <RefreshIcon color="#ffffff" size="18px" />
+                {t('levelRequests.tabs.requests')}
+              </Link>
+            )}
             {isSuperAdmin && (
               <button
                 type="button"

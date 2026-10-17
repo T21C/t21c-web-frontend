@@ -87,6 +87,7 @@ function buildGroupedSelected(selectedIds, itemById, fallbackGroupLabel) {
  * @param {string} [props.colorFallback='#888']
  * @param {string} [props.className='']
  * @param {unknown} [props.resetSearchSignal] - When this value changes, internal search is cleared
+ * @param {boolean} [props.readOnly=false] - Selected chips only; no add pool or remove actions
  */
 const ItemPickManager = ({
   items = [],
@@ -100,6 +101,7 @@ const ItemPickManager = ({
   colorFallback = '#888',
   className = '',
   resetSearchSignal,
+  readOnly = false,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -180,6 +182,21 @@ const ItemPickManager = ({
   );
 
   const renderChip = (item, { addable = false } = {}) => {
+    if (readOnly) {
+      return (
+        <div
+          key={`s-${item.id}`}
+          className="item-pick-manager__chip item-pick-manager__chip--readonly"
+          style={chipStyle(item)}
+          title={item.name}
+        >
+          {item.icon && (
+            <img src={selectIconSize(item.icon, ICON_SIZE.SMALL)} alt="" className="item-pick-manager__chip-icon" />
+          )}
+          <span className="item-pick-manager__chip-name">{item.name}</span>
+        </div>
+      );
+    }
     const actionLabel = addable ? labels.addItem : labels.removeItem;
     return (
     <div
@@ -219,7 +236,9 @@ const ItemPickManager = ({
   return (
     <div className={`item-pick-manager ${className}`.trim()}>
       <div className="item-pick-manager__section">
-        <h3 className="item-pick-manager__heading">{labels.sectionCurrent}</h3>
+        {labels.sectionCurrent && (
+          <h3 className="item-pick-manager__heading">{labels.sectionCurrent}</h3>
+        )}
         {selectedOrdered.length === 0 ? (
           <p className="item-pick-manager__empty">{labels.emptySelected}</p>
         ) : enableGrouping ? (
@@ -238,8 +257,11 @@ const ItemPickManager = ({
         )}
       </div>
 
+      {!readOnly && (
       <div className="item-pick-manager__section">
-        <h3 className="item-pick-manager__heading">{labels.sectionAdd}</h3>
+        {labels.sectionAdd && (
+          <h3 className="item-pick-manager__heading">{labels.sectionAdd}</h3>
+        )}
         <input
           type="search"
           className="item-pick-manager__search"
@@ -269,6 +291,7 @@ const ItemPickManager = ({
           </div>
         )}
       </div>
+      )}
     </div>
   );
 };

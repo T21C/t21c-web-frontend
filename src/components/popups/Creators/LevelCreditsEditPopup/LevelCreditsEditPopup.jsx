@@ -458,6 +458,7 @@ export const LevelCreditsEditPopup = ({
   excludeAliases = false,
   onClose,
   onSaved,
+  onDraftSave = null,
 }) => {
   const { t } = useTranslation(['components', 'common']);
 
@@ -697,6 +698,21 @@ export const LevelCreditsEditPopup = ({
   };
 
   const handleSave = async () => {
+    if (onDraftSave) {
+      const orderedCreators = toEditorCreditOrder(pendingCreators);
+      onDraftSave({
+        team: pendingTeam ? { id: pendingTeam.id ?? null, name: pendingTeam.name || '' } : null,
+        credits: orderedCreators.map((creator, index) => ({
+          creatorId: creator.id,
+          name: creator.name,
+          role: creator.role,
+          isOwner: Boolean(creator.isOwner),
+          sortOrder: index,
+        })),
+      });
+      onClose();
+      return;
+    }
     setIsSaving(true);
     try {
       if (pendingTeam) {

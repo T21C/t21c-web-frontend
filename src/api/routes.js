@@ -435,6 +435,18 @@ export const routes = {
       toggleHidden: (id) => `/v2/database/passes/${enc(id)}/toggle-hidden`,
       restore: (id) => `/v2/database/passes/${enc(id)}/restore`,
     },
+    levelRequests: {
+      root: () => '/v2/database/level-requests',
+      mine: () => '/v2/database/level-requests/mine',
+      byId: (id) => `/v2/database/level-requests/${enc(id)}`,
+      forRating: (ratingId) => `/v2/database/level-requests/for-rating/${enc(ratingId)}`,
+      eligibility: (levelId) => `/v2/database/level-requests/eligibility/${enc(levelId)}`,
+      create: (levelId) => `/v2/database/level-requests/level/${enc(levelId)}`,
+      withdraw: (id) => `/v2/database/level-requests/${enc(id)}/withdraw`,
+      staff: (id) => `/v2/database/level-requests/${enc(id)}/staff`,
+      actions: (id) => `/v2/database/level-requests/${enc(id)}/actions`,
+      discord: (id) => `/v2/database/level-requests/${enc(id)}/discord`,
+    },
     players: {
       root: () => '/v2/database/players',
       create: () => '/v2/database/players/create',
@@ -446,6 +458,8 @@ export const routes = {
       country: (playerId) => `/v2/database/players/${enc(playerId)}/country`,
       aliases: (playerId) => `/v2/database/players/${enc(playerId)}/aliases`,
       ban: (playerId) => `/v2/database/players/${enc(playerId)}/ban`,
+      rerateRequestBan: (playerId) =>
+        `/v2/database/players/${enc(playerId)}/rerate-request-ban`,
       pauseSubmissions: (playerId) =>
         `/v2/database/players/${enc(playerId)}/pause-submissions`,
     },

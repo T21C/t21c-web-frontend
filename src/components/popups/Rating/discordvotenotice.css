@@ -1,0 +1,24 @@
+.discord-vote-notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-color);
+}
+
+.discord-vote-notice .discord-vote-notice__thread {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: var(--btn-sm-pad-y) var(--btn-sm-pad-x);
+  border-radius: var(--btn-radius);
+  background: var(--btn-discord);
+  color: var(--text-color);
+  text-decoration: none;
+  font-size: var(--btn-sm-font-size);
+  font-weight: var(--btn-font-weight);
+}
+
+.discord-vote-notice .discord-vote-notice__thread:hover {
+  background: color-mix(in srgb, var(--btn-discord) 78%, #000);
+}

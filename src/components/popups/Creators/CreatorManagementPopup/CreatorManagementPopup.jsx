@@ -88,6 +88,7 @@ export const CreatorManagementPopup = ({
   onUpdate,
   onCreatorUserLinkedUpdate,
   curationProfileInitial = null,
+  playerTab = null,
 }) => {
   const { t } = useTranslation(['components', 'common']);
   const tt = (key, opts) => t(`creatorManagementPopup.${key}`, opts);
@@ -101,6 +102,8 @@ export const CreatorManagementPopup = ({
         onClose={onClose}
         onUpdate={onUpdate}
         onCreatorUserLinkedUpdate={onCreatorUserLinkedUpdate}
+        initialMode={playerTab || 'update'}
+        onlyMode={playerTab || undefined}
       />
     );
   }

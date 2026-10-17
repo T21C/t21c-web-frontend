@@ -84,12 +84,19 @@ MergePlayerIdentity.propTypes = {
   showOpenProfile: PropTypes.bool,
 };
 
-const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedUpdate }) => {
+const PlayerManagementPanel = ({
+  player,
+  onClose,
+  onUpdate,
+  onCreatorUserLinkedUpdate,
+  initialMode,
+  onlyMode,
+}) => {
   const { t } = useTranslation(['components', 'common']);
   const tt = (key, opts) => t(`creatorManagementPopup.${key}`, opts);
   const { user: authUser } = useAuth();
 
-  const [mode, setMode] = useState('update');
+  const [mode, setMode] = useState(initialMode || 'update');
   const [playerName, setPlayerName] = useState(player?.name || '');
   const [selectedCountry, setSelectedCountry] = useState(player?.country || 'XX');
   const [aliases, setAliases] = useState(() => player?.playerAliases?.map((a) => a.name) ?? []);
@@ -107,14 +114,25 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
   const [isTagVoteBanned, setIsTagVoteBanned] = useState(
     hasFlag(player?.user, permissionFlags.TAG_VOTE_BANNED) || player?.user?.isTagVoteBanned || false,
   );
+  const [isRerateRequestBanned, setIsRerateRequestBanned] = useState(
+    hasFlag(player?.user, permissionFlags.RERATE_REQUEST_BANNED) || player?.user?.isRerateRequestBanned || false,
+  );
+  const [rerateRequestBannedUntil, setRerateRequestBannedUntil] = useState(player?.rerateRequestBannedUntil ?? null);
   const [showBanConfirm, setShowBanConfirm] = useState(false);
   const [showPauseConfirm, setShowPauseConfirm] = useState(false);
   const [showRatingBanConfirm, setShowRatingBanConfirm] = useState(false);
   const [showTagVoteBanConfirm, setShowTagVoteBanConfirm] = useState(false);
+  const [showRerateRequestBanConfirm, setShowRerateRequestBanConfirm] = useState(false);
   const [pendingBanState, setPendingBanState] = useState(false);
   const [pendingPauseState, setPendingPauseState] = useState(false);
   const [pendingRatingBanState, setPendingRatingBanState] = useState(false);
   const [pendingTagVoteBanState, setPendingTagVoteBanState] = useState(false);
+  const [pendingRerateRequestBanState, setPendingRerateRequestBanState] = useState(false);
+  const [rerateBanDuration, setRerateBanDuration] = useState(String(DEFAULT_BAN_DURATION));
+  const [rerateBanUnit, setRerateBanUnit] = useState(DEFAULT_BAN_UNIT);
+  const [rejectRecent, setRejectRecent] = useState(false);
+  const [rejectRecentDuration, setRejectRecentDuration] = useState('1');
+  const [rejectRecentUnit, setRejectRecentUnit] = useState('days');
   const [mergeSearch, setMergeSearch] = useState('');
   const [mergeResults, setMergeResults] = useState([]);
   const [mergeSearchLoading, setMergeSearchLoading] = useState(false);
@@ -130,11 +148,12 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
   const visibleTabs = useMemo(
     () =>
       PLAYER_TABS.filter((tab) => {
+        if (onlyMode && tab.id !== onlyMode) return false;
         if (tab.id === 'link') return showLinkTab;
         if (tab.id === 'merge') return isSuperAdminViewer;
         return true;
       }),
-    [showLinkTab, isSuperAdminViewer],
+    [showLinkTab, isSuperAdminViewer, onlyMode],
   );
 
   const refreshPlayerAliasesFromServer = useCallback(async () => {
@@ -167,7 +186,12 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
     setBannedUntil(player?.bannedUntil ?? null);
     setIsSubmissionsPaused(hasFlag(player?.user, permissionFlags.SUBMISSIONS_PAUSED) || false);
     setIsRatingBanned(hasFlag(player?.user, permissionFlags.RATING_BANNED) || false);
-  }, [player?.id, player?.name, player?.country, player?.user, player?.isBanned, player?.bannedUntil]);
+    setIsTagVoteBanned(hasFlag(player?.user, permissionFlags.TAG_VOTE_BANNED) || player?.user?.isTagVoteBanned || false);
+    setIsRerateRequestBanned(
+      hasFlag(player?.user, permissionFlags.RERATE_REQUEST_BANNED) || player?.user?.isRerateRequestBanned || false,
+    );
+    setRerateRequestBannedUntil(player?.rerateRequestBannedUntil ?? null);
+  }, [player?.id, player?.name, player?.country, player?.user, player?.isBanned, player?.bannedUntil, player?.rerateRequestBannedUntil]);
 
   useEffect(() => {
     if (!visibleTabs.some((tab) => tab.id === mode)) {
@@ -451,6 +475,49 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
     }
   };
 
+  const handleRerateRequestBanUpdate = async (confirmed) => {
+    if (!confirmed) {
+      setShowRerateRequestBanConfirm(false);
+      setPendingRerateRequestBanState(isRerateRequestBanned);
+      setRejectRecent(false);
+      return;
+    }
+    setIsLoading(true);
+    clearMessages();
+    try {
+      const body = { isBanned: pendingRerateRequestBanState };
+      if (pendingRerateRequestBanState) {
+        body.duration = Number(rerateBanDuration);
+        body.unit = rerateBanUnit;
+        if (rejectRecent) {
+          body.rejectRecent = true;
+          body.rejectRecentDuration = Number(rejectRecentDuration);
+          body.rejectRecentUnit = rejectRecentUnit;
+        }
+      }
+      const response = await api.patch(routes.database.players.rerateRequestBan(player.id), body);
+      const banned = Boolean(response.data?.isRerateRequestBanned ?? pendingRerateRequestBanState);
+      const until = response.data?.rerateRequestBannedUntil ?? null;
+      setIsRerateRequestBanned(banned);
+      setRerateRequestBannedUntil(until);
+      onUpdate?.({
+        ...player,
+        isRerateRequestBanned: banned,
+        rerateRequestBannedUntil: until,
+        user: player.user
+          ? setUserPermission(player.user, permissionFlags.RERATE_REQUEST_BANNED, banned)
+          : player.user,
+      });
+      toast.success(tt('player.success.moderation'));
+    } catch (err) {
+      setError(err.response?.data?.error || err.response?.data?.details || tt('player.errors.moderationUpdate'));
+    } finally {
+      setIsLoading(false);
+      setShowRerateRequestBanConfirm(false);
+      setRejectRecent(false);
+    }
+  };
+
   const handleMergePlayer = async () => {
     if (!mergeTarget?.id) return;
     if (mergeTarget.id === player.id) {
@@ -506,8 +573,8 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
           <CloseButton variant="floating" onClick={onClose} aria-label={tt('close')} />
 
           <div className="popup-header">
-            <h2>
-              {player?.name || tt('player.titleFallback')}
+            <h2 className="popup-header__title-block">
+              <span className="popup-header-title">{player?.name || tt('player.titleFallback')}</span>
               <span className="popup-header-meta">
                 {tt('player.idLabel', { id: player?.id })}
                 {headerSubtitle ? ` · ${headerSubtitle}` : ''}
@@ -688,7 +755,7 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
                 </div>
 
                 <div className="moderation-option">
-                  <label className="moderation-option__label moderation-option__label--rating">
+                  <label className="moderation-option__label">
                     <input
                       type="checkbox"
                       checked={showRatingBanConfirm ? pendingRatingBanState : isRatingBanned}
@@ -720,7 +787,7 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
                 </div>
 
                 <div className="moderation-option">
-                  <label className="moderation-option__label moderation-option__label--rating">
+                  <label className="moderation-option__label">
                     <input
                       type="checkbox"
                       checked={showTagVoteBanConfirm ? pendingTagVoteBanState : isTagVoteBanned}
@@ -750,6 +817,110 @@ const PlayerManagementPanel = ({ player, onClose, onUpdate, onCreatorUserLinkedU
                     </div>
                   ) : null}
                 </div>
+
+                {isSuperAdminViewer && (
+                <div className="moderation-option">
+                  <label className="moderation-option__label">
+                    <input
+                      type="checkbox"
+                      checked={showRerateRequestBanConfirm ? pendingRerateRequestBanState : isRerateRequestBanned}
+                      onChange={(e) => {
+                        setPendingRerateRequestBanState(e.target.checked);
+                        setShowRerateRequestBanConfirm(true);
+                      }}
+                      disabled={isLoading || showRerateRequestBanConfirm}
+                    />
+                    <span>{tt('player.moderation.rerateRequestBan')}</span>
+                  </label>
+                  {isRerateRequestBanned && rerateRequestBannedUntil && !showRerateRequestBanConfirm && (
+                    <p className="moderation-option__status">
+                      {tt('player.moderation.bannedUntil', { date: formatBanInstant(rerateRequestBannedUntil) })}
+                    </p>
+                  )}
+                  {showRerateRequestBanConfirm && (
+                    <div className="moderation-confirm">
+                      <p>
+                        {pendingRerateRequestBanState
+                          ? tt('player.moderation.rerateRequestBanConfirm')
+                          : tt('player.moderation.rerateRequestUnbanConfirm')}
+                      </p>
+                      {pendingRerateRequestBanState && (
+                        <>
+                          <div className="moderation-ban-duration">
+                            <span className="moderation-ban-duration__label">{tt('player.moderation.banFor')}</span>
+                            <input
+                              type="number"
+                              min="1"
+                              max="999"
+                              step="1"
+                              className="moderation-ban-duration__value"
+                              value={rerateBanDuration}
+                              onChange={(e) => setRerateBanDuration(e.target.value)}
+                              disabled={isLoading}
+                              aria-label={tt('player.moderation.banDurationAria')}
+                            />
+                            <div className="moderation-ban-duration__unit">
+                              <CustomSelect
+                                options={banUnitOptions}
+                                value={banUnitOptions.find((opt) => opt.value === rerateBanUnit) || banUnitOptions[0]}
+                                onChange={(opt) => setRerateBanUnit(opt?.value || DEFAULT_BAN_UNIT)}
+                                width="8rem"
+                                isDisabled={isLoading}
+                                isSearchable={false}
+                                aria-label={tt('player.moderation.banUnitAria')}
+                              />
+                            </div>
+                          </div>
+                          <label className="moderation-option__label">
+                            <input
+                              type="checkbox"
+                              checked={rejectRecent}
+                              onChange={(e) => setRejectRecent(e.target.checked)}
+                              disabled={isLoading}
+                            />
+                            <span>{tt('player.moderation.rejectRecent')}</span>
+                          </label>
+                          {rejectRecent && (
+                            <div className="moderation-ban-duration">
+                              <span className="moderation-ban-duration__label">{tt('player.moderation.banFor')}</span>
+                              <input
+                                type="number"
+                                min="1"
+                                max="999"
+                                step="1"
+                                className="moderation-ban-duration__value"
+                                value={rejectRecentDuration}
+                                onChange={(e) => setRejectRecentDuration(e.target.value)}
+                                disabled={isLoading}
+                                aria-label={tt('player.moderation.rejectRecentDurationAria')}
+                              />
+                              <div className="moderation-ban-duration__unit">
+                                <CustomSelect
+                                  options={banUnitOptions.filter((opt) => opt.value === 'hours' || opt.value === 'days')}
+                                  value={banUnitOptions.find((opt) => opt.value === rejectRecentUnit) || banUnitOptions[1]}
+                                  onChange={(opt) => setRejectRecentUnit(opt?.value || 'days')}
+                                  width="8rem"
+                                  isDisabled={isLoading}
+                                  isSearchable={false}
+                                  aria-label={tt('player.moderation.rejectRecentUnitAria')}
+                                />
+                              </div>
+                            </div>
+                          )}
+                        </>
+                      )}
+                      <div className="moderation-confirm__actions popup-btn-grid">
+                        <button type="button" className="action-button" onClick={() => handleRerateRequestBanUpdate(true)} disabled={isLoading}>
+                          {t('buttons.confirm', { ns: 'common' })}
+                        </button>
+                        <button type="button" className="mode-btn" onClick={() => handleRerateRequestBanUpdate(false)} disabled={isLoading}>
+                          {t('buttons.cancel', { ns: 'common' })}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                )}
               </div>
             )}
 
@@ -936,6 +1107,8 @@ PlayerManagementPanel.propTypes = {
   onClose: PropTypes.func.isRequired,
   onUpdate: PropTypes.func,
   onCreatorUserLinkedUpdate: PropTypes.func,
+  initialMode: PropTypes.string,
+  onlyMode: PropTypes.string,
 };
 
 export default PlayerManagementPanel;

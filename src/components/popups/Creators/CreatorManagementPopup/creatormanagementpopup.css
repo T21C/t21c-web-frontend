@@ -53,6 +53,21 @@
   flex-wrap: wrap;
 }
 
+.creator-management-popup-container .popup-header h2.popup-header__title-block {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding-right: 2rem;
+}
+
+.creator-management-popup-container .popup-header-title {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  line-height: 1.2;
+  max-height: 1.2em;
+}
+
 /*
  * Equal-width button rows (tabs, confirm pairs, danger actions).
  * auto-fill keeps orphan items in a single column instead of stretching (auto-fit would).
@@ -309,16 +324,10 @@
 .creator-management-popup-container .moderation-option__label input[type="checkbox"] {
   width: 18px;
   height: 18px;
+  margin: 0;
+  flex: 0 0 auto;
   accent-color: var(--danger-color);
   cursor: pointer;
-}
-
-.creator-management-popup-container .moderation-option__label--rating input[type="checkbox"] {
-  accent-color: #9c27b0;
-}
-
-.creator-management-popup-container .moderation-option:nth-child(2) .moderation-option__label input[type="checkbox"] {
-  accent-color: #ff9800;
 }
 
 .creator-management-popup-container .moderation-confirm {

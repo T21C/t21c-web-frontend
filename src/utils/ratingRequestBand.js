@@ -57,6 +57,19 @@ function highestRequestBand(bands) {
   return best ?? 'G';
 }
 
+export function isVoteRerateLabel(value) {
+  const text = Array.isArray(value) ? value.map((part) => String(part ?? '')).join(' ') : String(value ?? '');
+  return /^\s*vote\b/i.test(text);
+}
+
+export function isVoteRatingCard(rating, linkedRequest) {
+  if (rating?.isDiscordVote) return true;
+  if (linkedRequest?.immediateSettle || linkedRequest?.status === 'discord_vote' || linkedRequest?.discordMessageUrl) {
+    return true;
+  }
+  return isVoteRerateLabel(rating?.level?.rerateNum) || isVoteRerateLabel(rating?.requesterFR);
+}
+
 export function requestPguBand(card) {
   const rerateNum = card?.level?.rerateNum;
   const requesterFR = card?.requesterFR;

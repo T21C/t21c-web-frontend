@@ -36,7 +36,9 @@
       "deleteRating": "Czy na pewno chcesz usunąć tą ocenę gracza {{username}}?"
     },
     "messages": {
-      "autorateSuccess": "Ocena zautomatyzowana pomyślnie"
+      "autorateSuccess": "Ocena zautomatyzowana pomyślnie",
+      "voteSettled": "Ocena ustalona w dyskusji głosowania.",
+      "voteThread": "Otwórz wątek Discord"
     },
     "accuracy": {
       "provisional": "wstępna",

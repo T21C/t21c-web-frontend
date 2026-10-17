@@ -182,6 +182,7 @@ function App() {
           <Route path='rating/zen' element={<Pages.RatingZenPage />} />
           {/* Single route so opening /rating/:levelId does not remount and reset Virtuoso scroll */}
           <Route path='rating/:levelId?' element={<Pages.RatingPage />} />
+          <Route path='admin/requests' element={<PrivateRoute><Pages.LevelRequestsAdminPage /></PrivateRoute>} />
           <Route path='admin/announcements' element={<PrivateRoute><Pages.AnnouncementPage /></PrivateRoute>} />
           <Route path='admin/backups' element={<PrivateRoute><Pages.BackupPage /></PrivateRoute>} />
           <Route path='admin/difficulties' element={<PrivateRoute><Pages.DifficultyPage /></PrivateRoute>} />

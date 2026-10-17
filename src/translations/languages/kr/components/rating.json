@@ -48,6 +48,8 @@
     },
     "messages": {
       "ratingBanned": "책정할 권한이 없습니다",
+      "voteSettled": "투표 토론에서 확정된 평가입니다.",
+      "voteThread": "Discord 스레드 열기",
       "autorateSuccess": "자동책정이 완료되었습니다"
     },
     "accuracy": {

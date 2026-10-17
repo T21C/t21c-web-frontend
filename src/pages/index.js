@@ -68,6 +68,7 @@ const ArtistManagementPage = lazy(() => import('./admin/ArtistManagementPage/Art
 const SongManagementPage = lazy(() => import('./admin/SongManagementPage/SongManagementPage'));
 const SubmissionManagementPage = lazy(() => import('./admin/SubmissionManagementPage/SubmissionManagementPage'));
 const RatingPage = lazy(() => import('./admin/RatingPage/RatingPage'));
+const LevelRequestsAdminPage = lazy(() => import('./admin/LevelRequestsAdminPage/LevelRequestsAdminPage'));
 const RatingZenPage = lazy(() => import('./admin/RatingZenPage/RatingZenPage'));
 const AuditLogPage = lazy(() => import('./admin/AuditLogPage/AuditLogPage'));
 const CurationPage = lazy(() => import('./admin/Curation/CurationPage/CurationPage'));
@@ -159,6 +160,7 @@ export {
     SubmissionManagementPage,
     RatingPage,
     RatingZenPage,
+    LevelRequestsAdminPage,
     AuditLogPage,
     CurationPage,
     CurationSchedulePage,
