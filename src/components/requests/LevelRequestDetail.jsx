@@ -181,7 +181,6 @@ const LevelRequestDetail = ({
           {request.comparisons.map((row) => {
             const credits = formatCreatorDisplay({team: row.team, levelCredits: row.credits});
             const showCredits = credits && credits !== 'No credits';
-            const icon = row.currentIcon ? selectIconSize(row.currentIcon, ICON_SIZE.SMALL) : null;
             return (
               <Link
                 className="level-requests__comparison"
@@ -190,7 +189,9 @@ const LevelRequestDetail = ({
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {icon && <img src={icon} alt={row.currentDiffName || ''} />}
+                {row.currentIcon && (
+                  <img src={selectIconSize(row.currentIcon, ICON_SIZE.SMALL)} alt={row.currentDiffName || ''} />
+                )}
                 <span className="level-requests__comparison-main">
                   <span className="level-requests__comparison-song">
                     {row.missing

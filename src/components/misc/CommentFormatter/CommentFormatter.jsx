@@ -62,7 +62,6 @@ export const CommentFormatter = ({ prefix = '#', resolveLevelRefs = false, child
     const level = levelsById[levelId];
     const song = level ? getSongDisplayName(level) : '';
     const diff = level?.diffId != null ? difficultyDict[level.diffId] : null;
-    const icon = diff?.icon ? selectIconSize(diff.icon, ICON_SIZE.SMALL) : null;
 
     return (
       <a
@@ -74,10 +73,10 @@ export const CommentFormatter = ({ prefix = '#', resolveLevelRefs = false, child
         onClick={(e) => e.stopPropagation()}
       >
         <span className="level-ref-id">#{levelId}</span>
-        {icon && (
+        {diff?.icon && (
           <img
             className="level-ref-icon"
-            src={icon}
+            src={selectIconSize(diff.icon, ICON_SIZE.SMALL)}
             alt={diff?.name || ''}
             referrerPolicy="no-referrer"
           />
