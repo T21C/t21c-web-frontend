@@ -80,6 +80,8 @@ import { BellOffIcon } from './BellOffIcon';
 import { SparkleIcon } from './SparkleIcon';
 import { GearIcon } from './GearIcon';
 import { MoreVerticalIcon } from './MoreVerticalIcon';
+import { SubmissionIcon } from './SubmissionIcon';
+import { ShuffleIcon } from './ShuffleIcon';
 export {
     DefaultAvatar,
     DiscordIcon,
@@ -162,4 +164,6 @@ export {
     SparkleIcon,
     GearIcon,
     MoreVerticalIcon,
+    SubmissionIcon,
+    ShuffleIcon,
 }

@@ -765,7 +765,6 @@ const CreatorManagementPage = () => {
       {creditsEditLevel && (
         <LevelCreditsEditPopup
           level={creditsEditLevel}
-          teamsList={teamsList}
           excludeAliases={excludeAliases}
           onClose={() => setCreditsEditLevel(null)}
           onSaved={fetchLevelsAudit}

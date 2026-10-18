@@ -369,6 +369,16 @@
   contain: paint;
 }
 
+.level-requests a.level-requests__requester-profile {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.level-requests a.level-requests__requester-profile:hover {
+  color: var(--color-purple-1);
+}
+
 .level-requests .level-requests__avatar {
   width: 18px;
   height: 18px;
@@ -490,7 +500,7 @@
 }
 
 .level-requests.level-requests__popup--menu {
-  width: min(22rem, calc(100vw - 2rem));
+  width: min(28rem, calc(100vw - 2rem));
 }
 
 .level-requests.level-requests__popup--types {
@@ -511,14 +521,48 @@
 }
 
 .level-requests .level-requests__choice {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.65rem;
+  width: 100%;
   padding: 8px 16px;
   border: none;
   border-radius: 4px;
   background-color: var(--btn-neutral-dark);
-  color: #ffffff;
+  color: var(--color-white);
   cursor: pointer;
   font-weight: 500;
-  text-align: center;
+  text-align: left;
+}
+
+.level-requests .level-requests__choice-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+}
+
+.level-requests .level-requests__choice-icon img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.level-requests .level-requests__choice-label {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.level-requests .level-requests__choice-exists {
+  margin-left: auto;
+  flex: 0 0 auto;
+  color: var(--color-white);
+  opacity: 0.45;
+  font-size: 0.85rem;
+  font-weight: 500;
 }
 
 .level-requests .level-requests__choice:hover:not(:disabled) {
@@ -528,6 +572,19 @@
 .level-requests .level-requests__choice:disabled {
   opacity: 0.6;
   cursor: default;
+}
+
+.level-requests .level-requests__choice--exists {
+  background-color: var(--btn-neutral-disabled-fill);
+  color: var(--color-gray-2);
+}
+
+.level-requests .level-requests__choice--exists:disabled {
+  opacity: 1;
+}
+
+.level-requests .level-requests__choice--exists .level-requests__choice-icon {
+  opacity: 0.45;
 }
 
 .level-requests .level-requests__comparison {

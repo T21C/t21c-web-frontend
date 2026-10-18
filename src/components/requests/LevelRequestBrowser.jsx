@@ -17,12 +17,13 @@ import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import LevelRequestDetail from './LevelRequestDetail';
 import LevelRequestFormPopup from './LevelRequestFormPopup';
 import LevelRequestStatusPopup from './LevelRequestStatusPopup';
-import LevelRequestCurationTypes from './LevelRequestCurationTypes';
+import LevelRequestCurationTypes, { LevelRequestCurationDiff } from './LevelRequestCurationTypes';
 import { LevelRequestTagDiff } from './LevelRequestTags';
 import {
   creditRequestDiff,
   creditsFromLevel,
   requestErrorMessage,
+  curationRequestDiff,
   tagRequestDiff,
   tagRequestTargetIds,
   teamFromLevel,
@@ -149,11 +150,16 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null })
     }))) return;
     if (action === 'discord_vote' && !window.confirm(t('levelRequests.detail.discordConfirm'))) return;
     if (action === 'complete' && !window.confirm(t('levelRequests.detail.completeConfirm'))) return;
+    if (action === 'delete_discord' && !window.confirm(t(selected.type === 'rerate'
+      ? 'levelRequests.detail.closeDiscordConfirm'
+      : 'levelRequests.detail.deleteDiscordConfirm'))) return;
     setBusy(true);
     try {
       const response = await api.post(routes.database.levelRequests.actions(selected.id), { action, ...extra });
       setSelected(response.data?.request || null);
-      toast.success(t(`levelRequests.pipeline.${action}Done`));
+      toast.success(t(action === 'delete_discord' && selected.type === 'rerate'
+        ? 'levelRequests.pipeline.close_discordDone'
+        : `levelRequests.pipeline.${action}Done`));
       load();
     } catch (err) {
       toast.error(requestErrorMessage(t, err));
@@ -210,9 +216,7 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null })
           const currentIcon = request.level?.difficulty?.icon
             ? selectIconSize(request.level.difficulty.icon, ICON_SIZE.SMALL)
             : null;
-          const requestedName = request.type === 'rerate' || request.type === 'curation_rerate'
-            ? request.payload?.requestedRating
-            : null;
+          const requestedName = request.type === 'rerate' ? request.payload?.requestedRating : null;
           const requested = requestedName
             ? difficulties.find((diff) => diff.name?.toLowerCase() === String(requestedName).toLowerCase())
             : null;
@@ -265,7 +269,12 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null })
                       )}
                     />
                   )}
-                  {(request.type === 'curation' || request.type === 'curation_rerate') && (
+                  {request.type === 'curation_rerate' && (
+                    <LevelRequestCurationDiff
+                      {...curationRequestDiff(request.payload, request.level?.curationTypeIds)}
+                    />
+                  )}
+                  {request.type === 'curation' && (
                     <LevelRequestCurationTypes ids={request.payload?.curationTypeIds} variant="icons" />
                   )}
                 </span>

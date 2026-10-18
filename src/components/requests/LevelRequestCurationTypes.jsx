@@ -91,4 +91,26 @@ const LevelRequestCurationTypes = ({ ids = [], onChange, variant = 'picker' }) =
   );
 };
 
+export const LevelRequestCurationDiff = ({ addIds = [], removeIds = [] }) => {
+  const { t } = useTranslation('pages');
+  const rows = [
+    { key: 'add', label: t('levelRequests.form.toAdd'), ids: addIds },
+    { key: 'remove', label: t('levelRequests.form.toRemove'), ids: removeIds },
+  ];
+
+  return (
+    <div className="level-requests__tag-diff">
+      {rows.map((row) => (
+        <div key={row.key} className="level-requests__tag-diff-row">
+          <span className="level-requests__tag-diff-label">{row.label}</span>
+          {row.ids.length > 0 && <LevelRequestCurationTypes ids={row.ids} variant="icons" />}
+          {row.ids.length === 0 && (
+            <span className="level-requests__hint">{t('levelRequests.form.tagsNone')}</span>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+};
+
 export default LevelRequestCurationTypes;

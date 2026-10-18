@@ -175,8 +175,12 @@ function RequestTree({ request, t }) {
   const status = batch ? request.status : (primary?.status || request.status);
   const headerReason = request.reason ?? (!batch ? primary?.reason : null);
 
+  const kindClass = request.kind === 'level' || request.kind === 'pass'
+    ? ` submission-job-request--${request.kind}`
+    : '';
+
   return (
-    <div className={`submission-job-request${batch ? ' submission-job-request--batch' : ''}`}>
+    <div className={`submission-job-request${kindClass}${batch ? ' submission-job-request--batch' : ''}`}>
       <div className="submission-job-request-header">
         <button
           type="button"

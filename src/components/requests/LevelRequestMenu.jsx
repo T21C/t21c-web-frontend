@@ -5,10 +5,20 @@ import { routes } from '@/api/routes';
 import api from '@/utils/api';
 import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
-import { RefreshIcon } from '@/components/common/icons';
-import { REQUEST_TYPES, requestErrorMessage, userCanEditLevel } from './levelRequestShared';
+import { InfoIcon, RefreshIcon, ShuffleIcon, SparkleIcon } from '@/components/common/icons';
+import techIcon from '@/assets/icons/Tech RITKnew.png';
+import { requestErrorMessage, userCanEditLevel } from './levelRequestShared';
 import LevelRequestFormPopup from './LevelRequestFormPopup';
 import './levelRequests.css';
+
+const MENU_REQUEST_TYPES = ['rerate', 'info_change', 'tag', 'curation_rerate'];
+
+const REQUEST_TYPE_ICONS = {
+  rerate: <ShuffleIcon size={20} />,
+  info_change: <InfoIcon size={20} color="currentColor" />,
+  tag: <img src={techIcon} alt="" />,
+  curation_rerate: <SparkleIcon size={20} />,
+};
 
 const LevelRequestMenu = ({ level, user }) => {
   const { t } = useTranslation('pages');
@@ -35,6 +45,7 @@ const LevelRequestMenu = ({ level, user }) => {
 
   const choose = (type) => {
     const gate = eligibility?.[type];
+    if (gate?.code === 'open') return;
     if (gate && !gate.allowed) {
       toast.error(t(`levelRequests.errors.${gate.code}`, { defaultValue: t('levelRequests.errors.generic') }));
       return;
@@ -48,7 +59,10 @@ const LevelRequestMenu = ({ level, user }) => {
       <button
         type="button"
         className="svg-stroke"
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          setEligibility(null);
+          setOpen(true);
+        }}
         title={t('levelRequests.menu')}
         aria-label={t('levelRequests.menu')}
       >
@@ -61,11 +75,26 @@ const LevelRequestMenu = ({ level, user }) => {
             <h2>{t('levelRequests.menu')}</h2>
           </div>
           <div className="level-requests__choices">
-            {REQUEST_TYPES.map((type) => (
-              <button key={type} type="button" className="level-requests__choice" onClick={() => choose(type)} disabled={!eligibility}>
-                {t(`levelRequests.types.${type}`)}
-              </button>
-            ))}
+            {MENU_REQUEST_TYPES.map((type) => {
+              const exists = eligibility?.[type]?.code === 'open';
+              return (
+                <button
+                  key={type}
+                  type="button"
+                  className={`level-requests__choice${exists ? ' level-requests__choice--exists' : ''}`}
+                  onClick={() => choose(type)}
+                  disabled={!eligibility || exists}
+                >
+                  <span className="level-requests__choice-icon" aria-hidden="true">
+                    {REQUEST_TYPE_ICONS[type]}
+                  </span>
+                  <span className="level-requests__choice-label">{t(`levelRequests.types.${type}`)}</span>
+                  {exists && (
+                    <span className="level-requests__choice-exists">{t('levelRequests.alreadyExists')}</span>
+                  )}
+                </button>
+              );
+            })}
           </div>
         </PopupShell>
       )}

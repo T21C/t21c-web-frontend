@@ -3,15 +3,15 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
 import { CommentFormatter } from '@/components/misc';
-import { CheckmarkIcon, CopyIcon, CrossIcon, DiscordIcon, EditIcon, PassIcon, ShieldIcon } from '@/components/common/icons';
+import { CheckmarkIcon, CopyIcon, CrossIcon, DiscordIcon, EditIcon, PassIcon, ShieldIcon, TrashIcon } from '@/components/common/icons';
 import UserAvatar from '@/components/layout/UserAvatar/UserAvatar';
 import { userAvatarUrls } from '@/utils/playerAvatarDisplay';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { formatAccuracyRatio } from '@/utils/statFormatters';
 import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
-import { PIPELINE_ACTIONS, actionButtonClass, canManageRequestType, tagRequestDiff, tagRequestTargetIds } from './levelRequestShared';
-import LevelRequestCurationTypes from './LevelRequestCurationTypes';
+import { PIPELINE_ACTIONS, actionButtonClass, canManageRequestType, curationRequestDiff, tagRequestDiff, tagRequestTargetIds } from './levelRequestShared';
+import LevelRequestCurationTypes, { LevelRequestCurationDiff } from './LevelRequestCurationTypes';
 import { LevelRequestCreditDiff } from './LevelRequestInfoFields';
 import { LevelRequestTagDiff } from './LevelRequestTags';
 
@@ -105,10 +105,22 @@ const LevelRequestDetail = ({
               <span className="level-requests__creators">{creatorLine}</span>
             )}
             <div className="level-requests__requester-row">
-              <div className="level-requests__requester">
-                <UserAvatar className="level-requests__avatar" {...userAvatarUrls(request.requester)} />
-                <span>{request.requester?.nickname || request.requester?.username || request.requester?.id}</span>
-              </div>
+              {request.requester?.playerId ? (
+                <Link
+                  className="level-requests__requester level-requests__requester-profile"
+                  to={`/profile/${request.requester.playerId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <UserAvatar className="level-requests__avatar" {...userAvatarUrls(request.requester)} />
+                  <span>{request.requester?.nickname || request.requester?.username || request.requester?.id}</span>
+                </Link>
+              ) : (
+                <div className="level-requests__requester">
+                  <UserAvatar className="level-requests__avatar" {...userAvatarUrls(request.requester)} />
+                  <span>{request.requester?.nickname || request.requester?.username || request.requester?.id}</span>
+                </div>
+              )}
               {showBan && (
                 <button
                   type="button"
@@ -170,7 +182,14 @@ const LevelRequestDetail = ({
           />
         </section>
       )}
-      {(payload.curationTypeIds || []).length > 0 && (
+      {request.type === 'curation_rerate' && (
+        <section className="level-requests__section">
+          <LevelRequestCurationDiff
+            {...curationRequestDiff(payload, request.level?.curationTypeIds)}
+          />
+        </section>
+      )}
+      {request.type === 'curation' && (payload.curationTypeIds || []).length > 0 && (
         <section className="level-requests__section">
           <LevelRequestCurationTypes ids={payload.curationTypeIds} variant="display" />
         </section>
@@ -279,7 +298,7 @@ const LevelRequestDetail = ({
             rel="noopener noreferrer"
           >
             <DiscordIcon size={16} color="currentColor" />
-            {t('levelRequests.detail.thread')}
+            {t(request.discordThreadClosed ? 'levelRequests.detail.threadClosed' : 'levelRequests.detail.thread')}
           </a>
         )}
         {!rejecting && availableActions.map((action) => (
@@ -302,10 +321,15 @@ const LevelRequestDetail = ({
             {(action === 'discord_vote' || action === 'retry_discord') && (
               <DiscordIcon size={16} color="currentColor" />
             )}
+            {action === 'delete_discord' && request.type !== 'rerate' && (
+              <TrashIcon size={16} color="currentColor" />
+            )}
             {action === 'reject' && (
               <CrossIcon size={16} color="currentColor" />
             )}
-            {t(`levelRequests.pipeline.${action}`)}
+            {t(action === 'delete_discord' && request.type === 'rerate'
+              ? 'levelRequests.pipeline.close_discord'
+              : `levelRequests.pipeline.${action}`)}
           </button>
         ))}
       </div>

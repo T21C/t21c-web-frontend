@@ -20,6 +20,7 @@ export const PIPELINE_ACTIONS = [
   'discord_vote',
   'complete',
   'retry_discord',
+  'delete_discord',
   'reject',
 ];
 
@@ -68,6 +69,44 @@ export function tagRequestDiff(targetIds, appliedIds) {
     addIds: target.filter((id) => !appliedSet.has(id)),
     removeIds: applied.filter((id) => !targetSet.has(id)),
   };
+}
+
+export function curationRequestDiff(payload, currentIds) {
+  if (Array.isArray(payload?.addCurationTypeIds) || Array.isArray(payload?.removeCurationTypeIds)) {
+    return tagRequestDiff(payload?.curationTypeIds, currentIds);
+  }
+  const current = new Set(normalizeTagIds(currentIds));
+  return {
+    addIds: normalizeTagIds(payload?.curationTypeIds).filter((id) => !current.has(id)),
+    removeIds: [],
+  };
+}
+
+export function curationTypeIdsFromLevel(level) {
+  if (!level || typeof level !== 'object') return [];
+  if (Array.isArray(level.curationTypeIds)) return normalizeTagIds(level.curationTypeIds);
+  const rows = Array.isArray(level.curations) && level.curations.length
+    ? level.curations
+    : (level.curation ? [level.curation] : []);
+  const ids = [];
+  rows.forEach((row) => {
+    const types = Array.isArray(row?.types) ? row.types : [];
+    types.forEach((entry) => {
+      const id = Number(entry?.id ?? entry);
+      if (Number.isInteger(id) && id > 0) ids.push(id);
+    });
+    if (!types.length && Array.isArray(row?.typeIds)) {
+      row.typeIds.forEach((entry) => {
+        const id = Number(entry);
+        if (Number.isInteger(id) && id > 0) ids.push(id);
+      });
+    }
+    if (!types.length && !Array.isArray(row?.typeIds)) {
+      const legacyId = Number(row?.type?.id ?? row?.typeId);
+      if (Number.isInteger(legacyId) && legacyId > 0) ids.push(legacyId);
+    }
+  });
+  return normalizeTagIds(ids);
 }
 
 const CREDIT_ROLE_ORDER = ['charter', 'vfxer', 'specialThanks'];
@@ -211,7 +250,7 @@ export function statusesForType(type) {
 }
 
 export function actionButtonClass(action) {
-  if (action === 'reject') return 'level-requests__button--danger';
+  if (action === 'reject' || action === 'delete_discord') return 'level-requests__button--danger';
   if (action === 'accept' || action === 'complete' || action === 'add_to_rating') {
     return 'level-requests__button--primary';
   }

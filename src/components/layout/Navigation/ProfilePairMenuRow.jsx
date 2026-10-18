@@ -3,11 +3,41 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 import { AdofaiIcon } from "@/components/common/icons";
 import { CreatorIcon } from "@/components/common/icons/CreatorIcon";
+import { ShuffleIcon } from "@/components/common/icons/ShuffleIcon";
+import { SubmissionIcon } from "@/components/common/icons/SubmissionIcon";
 
 const PROFILE_PAIR_ICONS = {
   player: AdofaiIcon,
   creator: CreatorIcon,
+  submissions: SubmissionIcon,
+  requests: ShuffleIcon,
 };
+
+function targetPathname(to) {
+  const queryIndex = to.indexOf("?");
+  return queryIndex === -1 ? to : to.slice(0, queryIndex);
+}
+
+function queryTargetMatches(location, to) {
+  const queryIndex = to.indexOf("?");
+  if (queryIndex === -1) return false;
+  if (location.pathname !== to.slice(0, queryIndex)) return false;
+  const expected = new URLSearchParams(to.slice(queryIndex + 1));
+  const actual = new URLSearchParams(location.search);
+  for (const [key, value] of expected.entries()) {
+    if (actual.get(key) !== value) return false;
+  }
+  return true;
+}
+
+function litTargetKey(location, targets) {
+  const queryHit = targets.find((target) => queryTargetMatches(location, target.to));
+  if (queryHit) return queryHit.key;
+  const plain = targets.find(
+    (target) => !String(target.to).includes("?") && location.pathname === target.to,
+  );
+  return plain?.key ?? null;
+}
 
 export function ProfilePairMenuRow({
   item,
@@ -16,8 +46,11 @@ export function ProfilePairMenuRow({
   onCycle,
   role = "menuitem",
 }) {
-  const { pathname } = useLocation();
-  const active = item.profileTargets.some((target) => pathname === target.to);
+  const location = useLocation();
+  const active = item.profileTargets.some(
+    (target) => location.pathname === targetPathname(target.to),
+  );
+  const litKey = litTargetKey(location, item.profileTargets);
 
   return (
     <button
@@ -31,7 +64,7 @@ export function ProfilePairMenuRow({
         {item.profileTargets.map((target) => {
           const Icon = PROFILE_PAIR_ICONS[target.key];
           if (!Icon) return null;
-          const lit = pathname === target.to;
+          const lit = target.key === litKey;
           return (
             <span
               key={target.key}

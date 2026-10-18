@@ -1,5 +1,6 @@
 {
   "menu": "Request",
+  "alreadyExists": "Already exists",
   "types": {
     "rerate": "Rerate",
     "info_change": "Info change",
@@ -50,7 +51,8 @@
     "missing_level": "Level not found",
     "reason": "A reason is required",
     "reason_length": "Reason must be at most 1000 characters",
-    "requested_rating": "Enter a real P, G, or U rating",
+    "requested_rating": "Enter a P, G, or U rating, or a special difficulty name",
+    "rating": "Enter a P, G, or U rating, or a special difficulty name",
     "comparisons": "Mention at least one existing level with #id",
     "tags": "Choose existing tags",
     "unchanged": "This already matches the level",
@@ -64,7 +66,8 @@
     "action": "That action is not available for this request",
     "status": "Use the request actions instead of setting a status",
     "notes": "No notes to save",
-    "discord": "Discord threads are only created for rerate requests"
+    "discord": "Discord threads are only created for rerate requests",
+    "discord_close": "Could not close the Discord thread"
   },
   "form": {
     "title": "{{type}} request",
@@ -125,6 +128,7 @@
     "internalNote": "Internal note",
     "discordError": "Discord post failed",
     "thread": "Discord thread",
+    "threadClosed": "Closed Discord thread",
     "copyReason": "Copy reason",
     "copied": "Reason copied",
     "copyFailed": "Could not copy the reason",
@@ -137,6 +141,8 @@
     "discordPosted": "Posted to Discord",
     "addToRatingConfirm": "Add this chart to the rating page with {{rating}} and the request reason?",
     "completeConfirm": "Mark this request as completed?",
+    "deleteDiscordConfirm": "Delete the Discord post for this request?",
+    "closeDiscordConfirm": "Close the Discord thread for this request? The discussion will stay on Discord.",
     "ban": "Restrict rerate requests",
     "banMissingPlayer": "This requester has no player profile"
   },
@@ -154,7 +160,11 @@
     "discord_vote": "Start Discord vote",
     "discord_voteDone": "Discord vote started",
     "retry_discord": "Retry Discord post",
-    "retry_discordDone": "Posted to Discord"
+    "retry_discordDone": "Posted to Discord",
+    "delete_discord": "Delete Discord post",
+    "delete_discordDone": "Discord post deleted",
+    "close_discord": "Close Discord thread",
+    "close_discordDone": "Discord thread closed"
   },
   "statusPopup": {
     "title": "Notes",

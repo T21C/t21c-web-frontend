@@ -13,6 +13,7 @@ import {
   assignableTagIds,
   buildInfoDraft,
   creditSignature,
+  curationTypeIdsFromLevel,
   currentInfoValue,
   infoChangeMatchesLevel,
   normalizeTagIds,
@@ -21,7 +22,7 @@ import {
   tagRequestTargetIds,
 } from './levelRequestShared';
 import { useUnsavedClose } from '@/hooks/useUnsavedClose';
-import LevelRequestCurationTypes from './LevelRequestCurationTypes';
+import LevelRequestCurationTypes, { LevelRequestCurationDiff } from './LevelRequestCurationTypes';
 import LevelRequestInfoFields from './LevelRequestInfoFields';
 import LevelRequestTags, { LevelRequestTagDiff } from './LevelRequestTags';
 
@@ -61,6 +62,18 @@ const LevelRequestFormPopup = ({
     if (request) return null;
     return seededApplied;
   })();
+  const curationSeedKnown = type === 'curation_rerate' && (
+    Array.isArray(level?.curationTypeIds) || Array.isArray(level?.curations) || Boolean(level?.curation)
+  );
+  const seededCurationIds = curationSeedKnown ? curationTypeIdsFromLevel(level) : null;
+  const legacyCurationTarget = type === 'curation_rerate' && request && !Array.isArray(payload.addCurationTypeIds);
+  const initialCurationTarget = type === 'curation_rerate'
+    ? (request
+      ? normalizeTagIds(legacyCurationTarget
+        ? [...(seededCurationIds || []), ...normalizeTagIds(payload.curationTypeIds)]
+        : payload.curationTypeIds)
+      : (seededCurationIds || []))
+    : normalizeTagIds(payload.curationTypeIds);
   const [reason, setReason] = useState(request?.reason || '');
   const [requestedRating, setRequestedRating] = useState(payload.requestedRating || '');
   const [kind, setKind] = useState(initialKind);
@@ -79,7 +92,7 @@ const LevelRequestFormPopup = ({
     reason: request?.reason || '',
     requestedRating: payload.requestedRating || '',
     kind: payload.kind || 'song',
-    curationTypeIds: normalizeTagIds(payload.curationTypeIds),
+    curationTypeIds: initialCurationTarget,
     targetIds: initialTargetIds,
     songId: initialInfo.songId,
     songName: initialInfo.songName,
@@ -89,9 +102,14 @@ const LevelRequestFormPopup = ({
     creditSignature: creditSignature(initialInfo.credits, initialInfo.team),
   }));
   const [tagsReady, setTagsReady] = useState(type !== 'tag' || hasStoredTarget || seededApplied != null);
-  const [curationTypeIds, setCurationTypeIds] = useState(payload.curationTypeIds || []);
+  const [appliedCurationIds, setAppliedCurationIds] = useState(seededCurationIds);
+  const [curationTypeIds, setCurationTypeIds] = useState(initialCurationTarget);
+  const [curationReady, setCurationReady] = useState(type !== 'curation_rerate' || curationSeedKnown || Boolean(request));
   const [saving, setSaving] = useState(false);
   const userEditedTags = useRef(false);
+  const userEditedCuration = useRef(false);
+  const curationSeededRef = useRef(seededCurationIds != null);
+  curationSeededRef.current = seededCurationIds != null;
   const infoEditedRef = useRef(false);
   const kindRef = useRef(kind);
   kindRef.current = kind;
@@ -115,6 +133,12 @@ const LevelRequestFormPopup = ({
     [targetIds, appliedIds],
   );
   const tagUnchanged = type === 'tag' && tagsReady && appliedIds != null && tagDiff.addIds.length === 0 && tagDiff.removeIds.length === 0;
+  const curationDiff = useMemo(
+    () => tagRequestDiff(curationTypeIds, appliedCurationIds || []),
+    [appliedCurationIds, curationTypeIds],
+  );
+  const curationUnchanged = type === 'curation_rerate' && curationReady && appliedCurationIds != null
+    && curationDiff.addIds.length === 0 && curationDiff.removeIds.length === 0;
   const infoDraft = useMemo(() => ({
     songId,
     songName,
@@ -185,6 +209,40 @@ const LevelRequestFormPopup = ({
   }, [type, levelId, t]);
 
   useEffect(() => {
+    if (type !== 'curation_rerate' || !levelId) return undefined;
+    let cancelled = false;
+    api.get(`${routes.database.levels.root()}/${levelId}`)
+      .then((response) => {
+        if (cancelled) return;
+        const full = response.data?.level ?? response.data;
+        const ids = curationTypeIdsFromLevel(full);
+        setAppliedCurationIds(ids);
+        if (!userEditedCuration.current) {
+          const currentRequest = requestRef.current;
+          const nextTarget = !currentRequest
+            ? ids
+            : (!Array.isArray(currentRequest.payload?.addCurationTypeIds)
+              ? normalizeTagIds([...ids, ...normalizeTagIds(currentRequest.payload?.curationTypeIds)])
+              : null);
+          if (nextTarget) {
+            setCurationTypeIds(nextTarget);
+            setBaseline((current) => ({ ...current, curationTypeIds: nextTarget }));
+          }
+        }
+        setCurationReady(true);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        const canContinue = curationSeededRef.current || Boolean(requestRef.current);
+        if (!canContinue) toast.error(requestErrorMessage(t, err));
+        setCurationReady(canContinue);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [type, levelId, t]);
+
+  useEffect(() => {
     if (type !== 'info_change' || !levelId) return undefined;
     let cancelled = false;
     api.get(`${routes.database.levels.root()}/${levelId}`)
@@ -228,6 +286,10 @@ const LevelRequestFormPopup = ({
     }
     if (type === 'info_change' && (!infoReady || infoUnchanged || infoMissing)) {
       if (infoUnchanged) toast.error(t('levelRequests.errors.unchanged'));
+      return;
+    }
+    if (type === 'curation_rerate' && (!curationReady || appliedCurationIds == null || curationUnchanged)) {
+      if (curationUnchanged) toast.error(t('levelRequests.errors.unchanged'));
       return;
     }
     setSaving(true);
@@ -376,9 +438,31 @@ const LevelRequestFormPopup = ({
             )}
           </div>
         )}
-        {(type === 'curation' || type === 'curation_rerate') && (
+        {type === 'curation' && (
           <div className="level-requests__field">
             <LevelRequestCurationTypes ids={curationTypeIds} onChange={setCurationTypeIds} />
+          </div>
+        )}
+        {type === 'curation_rerate' && (
+          <div className="level-requests__field">
+            {curationReady && (
+              <LevelRequestCurationTypes
+                ids={curationTypeIds}
+                onChange={(ids) => {
+                  userEditedCuration.current = true;
+                  setCurationTypeIds(ids);
+                }}
+              />
+            )}
+            {!curationReady && (
+              <span className="level-requests__hint">{t('loading.generic', { ns: 'common' })}</span>
+            )}
+            {curationReady && appliedCurationIds != null && (
+              <LevelRequestCurationDiff addIds={curationDiff.addIds} removeIds={curationDiff.removeIds} />
+            )}
+            {curationUnchanged && (
+              <span className="level-requests__hint">{t('levelRequests.errors.unchanged')}</span>
+            )}
           </div>
         )}
         <label className="level-requests__field">
@@ -395,7 +479,7 @@ const LevelRequestFormPopup = ({
             type="button"
             className="level-requests__button level-requests__button--primary"
             onClick={submit}
-            disabled={saving || (type === 'tag' && (appliedIds == null || targetIds == null || tagUnchanged)) || (type === 'info_change' && (!infoReady || infoUnchanged || infoMissing))}
+            disabled={saving || (type === 'tag' && (appliedIds == null || targetIds == null || tagUnchanged)) || (type === 'info_change' && (!infoReady || infoUnchanged || infoMissing)) || (type === 'curation_rerate' && (!curationReady || appliedCurationIds == null || curationUnchanged))}
           >
             {saving ? t('levelRequests.form.submitting') : request ? t('levelRequests.form.save') : t('levelRequests.form.submit')}
           </button>

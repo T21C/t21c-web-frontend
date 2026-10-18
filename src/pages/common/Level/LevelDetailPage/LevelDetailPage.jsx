@@ -1126,6 +1126,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
   const toRateHeaderCornerSlotRef = useRef(null);
   const rerateHistoryAnchorRef = useRef(null);
   const wrapperLevelRef = useRef(null);
+  const headerRef = useRef(null);
   const scoreGraphAnchorRef = useRef(null);
   const tagsAnchorRef = useRef(null);
   /** Tracks last seen CDN zip identity so we can refetch `/cdnData` after upload/import (`dlLink` / `fileId` change). */
@@ -1337,6 +1338,62 @@ const LevelDetailPageContent = ({ mockData = null }) => {
   useEffect(() => {
     setIsLongDescription(activeDescription.length > 250);
   }, [activeDescription]);
+
+  // The header is not mounted while the level or difficulties are still loading,
+  // and this effect lives above those early returns. Track that so the rail is
+  // measured on the commit that actually paints the header.
+  const headerReady = res != null && difficulties.length > 0 && !notFound;
+
+  useLayoutEffect(() => {
+    const header = headerRef.current;
+    if (!header || !headerReady) return undefined;
+    const left = header.querySelector(':scope > .left');
+    const right = header.querySelector(':scope > .right');
+    if (!left || !right) return undefined;
+
+    const desktopQuery = window.matchMedia('(min-width: 769px)');
+
+    const applyRailHeight = () => {
+      right.style.removeProperty('position');
+      if (!desktopQuery.matches) {
+        header.style.removeProperty('--level-header-rail');
+        return;
+      }
+
+      // Take the rail out of flow so its column width cannot wrap the title
+      // while the natural header height is measured.
+      right.style.position = 'absolute';
+      const natural = Math.round(left.getBoundingClientRect().height);
+      right.style.removeProperty('position');
+      if (natural <= 0) return;
+
+      header.style.setProperty('--level-header-rail', `${natural}px`);
+      const wrapped = Math.round(left.getBoundingClientRect().height);
+      if (wrapped > natural + 1) {
+        header.style.setProperty('--level-header-rail', `${wrapped}px`);
+      }
+    };
+
+    applyRailHeight();
+
+    const resizeObserver = new ResizeObserver(applyRailHeight);
+    for (const child of left.children) {
+      if (child.classList.contains('curation-description-container')) continue;
+      if (getComputedStyle(child).position === 'absolute') continue;
+      resizeObserver.observe(child);
+    }
+    const mutationObserver = new MutationObserver(applyRailHeight);
+    mutationObserver.observe(right, { childList: true });
+    desktopQuery.addEventListener('change', applyRailHeight);
+
+    return () => {
+      resizeObserver.disconnect();
+      mutationObserver.disconnect();
+      desktopQuery.removeEventListener('change', applyRailHeight);
+      right.style.removeProperty('position');
+      header.style.removeProperty('--level-header-rail');
+    };
+  }, [effectiveId, showDescriptionBox, isDescriptionCollapsed, headerReady]);
 
   const selectDescriptionMode = useCallback((mode) => {
     setDescriptionMode(mode);
@@ -2637,7 +2694,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
           </StatusBanner>
         ) : null}
       
-          <div className="header">
+          <div className="header" ref={headerRef}>
             <div className={`left${showLevelLinksIcon ? ' has-level-links' : ''}`}>
 
               <div className="level-detail-header-mobile-bar">

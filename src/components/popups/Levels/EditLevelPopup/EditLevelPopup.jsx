@@ -12,7 +12,7 @@ import LevelUploadManagementPopup from '../LevelUploadManagementPopup/LevelUploa
 import LevelPayloadSwapPopup from '../LevelPayloadSwapPopup/LevelPayloadSwapPopup';
 import { UploadIcon, RefreshIcon } from '@/components/common/icons';
 import toast from 'react-hot-toast';
-import { LevelCreditsEditPopup } from '@/components/popups/Creators';
+import { LevelCreditsEditPopup, levelNeedsCreditHydration } from '@/components/popups/Creators';
 import { TagManagementPopup } from './TagManagementPopup';
 import { ICON_SIZE, isCdnUrl, selectIconSize } from '@/utils/Utility';
 import { useUnsavedClose } from '@/hooks/useUnsavedClose';
@@ -141,33 +141,37 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
   const [showChartStatsPopup, setShowChartStatsPopup] = useState(false);
   const [showXaccCurvePopup, setShowXaccCurvePopup] = useState(false);
   const [selectedSong, setSelectedSong] = useState(null);
-  const [isHydratingLevel, setIsHydratingLevel] = useState(
-    Boolean(level && (level._packViewMinimal || level._ratingListMinimal || (!level.song && !level.songObject && level.id)))
-  );
+  const needsEditorHydration = (value) =>
+    Boolean(value?.id) && (
+      levelNeedsCreditHydration(value) ||
+      (!value.song && !value.songObject)
+    );
+  const [editorLevel, setEditorLevel] = useState(level);
+  const [isHydratingLevel, setIsHydratingLevel] = useState(() => needsEditorHydration(level));
   const [showCreditsEdit, setShowCreditsEdit] = useState(false);
   const isLevelOwner = Boolean(
     user?.creatorId &&
-    Array.isArray(level?.levelCredits) &&
-    level.levelCredits.some(
+    Array.isArray(editorLevel?.levelCredits) &&
+    editorLevel.levelCredits.some(
       (credit) =>
         Number(credit.creatorId ?? credit.creator?.id) === Number(user.creatorId) && credit.isOwner
     )
   );
   const canManageCredits = isSuperAdmin || isLevelOwner;
   const creditsLevel = useMemo(() => {
-    if (!level) return level;
+    if (!editorLevel) return editorLevel;
     const teamFromObject =
-      level.team && typeof level.team === 'object' && level.team.id
-        ? { id: level.team.id, name: level.team.name }
+      editorLevel.team && typeof editorLevel.team === 'object' && editorLevel.team.id
+        ? { id: editorLevel.team.id, name: editorLevel.team.name }
         : null;
-    const teamFromTeamObject = level.teamObject
-      ? { id: level.teamObject.id, name: level.teamObject.name }
+    const teamFromTeamObject = editorLevel.teamObject
+      ? { id: editorLevel.teamObject.id, name: editorLevel.teamObject.name }
       : null;
     return {
-      ...level,
+      ...editorLevel,
       team: teamFromObject || teamFromTeamObject,
     };
-  }, [level]);
+  }, [editorLevel]);
   useEffect(() => {
     let cancelled = false;
 
@@ -176,10 +180,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
         return;
       }
 
-      const needsFetch =
-        level._packViewMinimal ||
-        level._ratingListMinimal ||
-        (!level.song && !level.songObject && level.id);
+      const needsFetch = needsEditorHydration(level);
 
       let src = level;
       if (needsFetch) {
@@ -199,6 +200,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
         return;
       }
 
+      setEditorLevel(src);
       setFormData((prev) => ({
         ...prev,
         song: src.songObject?.name || src.song || '',
@@ -752,6 +754,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                 <button
                 type="button"
                 className="manage-creators-btn"
+                disabled={isHydratingLevel}
                 onClick={() => setShowCreditsEdit(true)}>
                   Manage Creators
                 </button>
@@ -1294,7 +1297,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
         />
       )}
 
-      {showCreditsEdit && (
+      {showCreditsEdit && !isHydratingLevel && (
         <LevelCreditsEditPopup
           level={creditsLevel}
           actingCreatorId={isSuperAdmin ? null : user?.creatorId != null ? Number(user.creatorId) : null}
