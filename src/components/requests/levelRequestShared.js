@@ -21,6 +21,7 @@ export const PIPELINE_ACTIONS = [
   'complete',
   'retry_discord',
   'delete_discord',
+  'reopen_discord',
   'reject',
 ];
 
@@ -197,12 +198,19 @@ export function currentInfoValue(level, kind) {
   return '';
 }
 
+export function songRequestLabel(songName, suffix) {
+  const name = String(songName || '').trim();
+  const extra = String(suffix || '').trim();
+  return extra ? `${name} ${extra}` : name;
+}
+
 export function buildInfoDraft(payload, level, kind) {
   const hasCredits = Array.isArray(payload?.credits);
   const artist = artistFromLevel(level);
   return {
     songId: payload?.songId ?? level?.songId ?? null,
     songName: payload?.songName || level?.songObject?.name || level?.song || '',
+    suffix: typeof payload?.suffix === 'string' ? payload.suffix : (level?.suffix || ''),
     artistId: payload?.artistId ?? artist.artistId,
     artistName: payload?.artistName || artist.artistName,
     value: typeof payload?.value === 'string' ? payload.value : currentInfoValue(level, kind),
@@ -215,7 +223,11 @@ const sameText = (left, right) => (left || '').trim() === (right || '').trim();
 
 export function infoChangeMatchesLevel(kind, level, draft) {
   if (!level) return true;
-  if (kind === 'song') return Number(draft?.songId) > 0 && Number(draft.songId) === Number(level.songId);
+  if (kind === 'song') {
+    const sameSong = Number(draft?.songId) > 0 && Number(draft.songId) === Number(level.songId);
+    const sameSuffix = (draft?.suffix || '').trim() === (level.suffix || '').trim();
+    return sameSong && sameSuffix;
+  }
   if (kind === 'artist') return sameText(draft?.artistName, level.artist);
   if (kind === 'video') return sameText(draft?.value, level.videoLink);
   if (kind === 'download') return sameText(draft?.value, level.dlLink);

@@ -1,0 +1,35 @@
+.discord-thread-ping {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: min(26rem, calc(100vw - 2rem));
+  padding: 1.25rem;
+  border-radius: var(--btn-radius);
+  background: var(--btn-neutral-dark);
+  color: var(--text-color);
+}
+
+.discord-thread-ping h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.discord-thread-ping__option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.discord-thread-ping__option input {
+  width: 1.1rem;
+  height: 1.1rem;
+  margin: 0;
+  accent-color: var(--color-purple-2);
+}
+
+.discord-thread-ping__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}

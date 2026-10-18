@@ -1,3 +1,68 @@
+.rating-popup .rating-discord-thread,
+.rating-zen-page .rating-discord-thread {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: none;
+  border-radius: 4px;
+  background: var(--btn-neutral-dark);
+  color: var(--color-white);
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.rating-popup .rating-discord-thread-slot,
+.rating-zen-page .rating-discord-thread-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.25rem;
+  width: 100%;
+}
+
+.rating-popup .details-container .rating-discord-thread-slot {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  transform: translateY(calc(-100% - 0.25rem));
+  z-index: 2;
+  font-size: 0.85rem;
+}
+
+.rating-popup .rating-discord-thread-slot .rating-discord-thread-link,
+.rating-zen-page .rating-discord-thread-slot .rating-discord-thread-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 4px;
+  background: var(--btn-discord);
+  color: var(--color-white);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.rating-popup .rating-discord-thread-slot .rating-discord-thread-link:hover,
+.rating-zen-page .rating-discord-thread-slot .rating-discord-thread-link:hover {
+  background: color-mix(in srgb, var(--btn-discord) 78%, #000);
+}
+
+.rating-popup .rating-discord-thread:hover:not(:disabled),
+.rating-zen-page .rating-discord-thread:hover:not(:disabled) {
+  background: var(--btn-neutral-elevated);
+}
+
+.rating-popup .rating-discord-thread:disabled,
+.rating-zen-page .rating-discord-thread:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
 .discord-vote-notice {
   display: flex;
   flex-wrap: wrap;

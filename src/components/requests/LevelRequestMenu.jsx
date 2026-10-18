@@ -6,12 +6,19 @@ import api from '@/utils/api';
 import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
 import { InfoIcon, RefreshIcon, ShuffleIcon, SparkleIcon } from '@/components/common/icons';
-import techIcon from '@/assets/icons/Tech RITKnew.png';
+import techIcon from '@/assets/icons/Pseudo RITKnew.png';
 import { requestErrorMessage, userCanEditLevel } from './levelRequestShared';
 import LevelRequestFormPopup from './LevelRequestFormPopup';
 import './levelRequests.css';
 
 const MENU_REQUEST_TYPES = ['rerate', 'info_change', 'tag', 'curation_rerate'];
+
+function choiceBlockKey(gate) {
+  if (!gate || gate.allowed) return null;
+  if (gate.code === 'open') return 'alreadyRequested';
+  if (gate.code === 'unsettled') return 'onRatingPage';
+  return null;
+}
 
 const REQUEST_TYPE_ICONS = {
   rerate: <ShuffleIcon size={20} />,
@@ -45,7 +52,7 @@ const LevelRequestMenu = ({ level, user }) => {
 
   const choose = (type) => {
     const gate = eligibility?.[type];
-    if (gate?.code === 'open') return;
+    if (choiceBlockKey(gate)) return;
     if (gate && !gate.allowed) {
       toast.error(t(`levelRequests.errors.${gate.code}`, { defaultValue: t('levelRequests.errors.generic') }));
       return;
@@ -76,21 +83,21 @@ const LevelRequestMenu = ({ level, user }) => {
           </div>
           <div className="level-requests__choices">
             {MENU_REQUEST_TYPES.map((type) => {
-              const exists = eligibility?.[type]?.code === 'open';
+              const blockKey = choiceBlockKey(eligibility?.[type]);
               return (
                 <button
                   key={type}
                   type="button"
-                  className={`level-requests__choice${exists ? ' level-requests__choice--exists' : ''}`}
+                  className={`level-requests__choice${blockKey ? ' level-requests__choice--blocked' : ''}`}
                   onClick={() => choose(type)}
-                  disabled={!eligibility || exists}
+                  disabled={!eligibility || Boolean(blockKey)}
                 >
                   <span className="level-requests__choice-icon" aria-hidden="true">
                     {REQUEST_TYPE_ICONS[type]}
                   </span>
                   <span className="level-requests__choice-label">{t(`levelRequests.types.${type}`)}</span>
-                  {exists && (
-                    <span className="level-requests__choice-exists">{t('levelRequests.alreadyExists')}</span>
+                  {blockKey && (
+                    <span className="level-requests__choice-hint">{t(`levelRequests.${blockKey}`)}</span>
                   )}
                 </button>
               );

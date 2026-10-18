@@ -687,8 +687,8 @@
   position: absolute;
   top: calc(100% + 8px);
   left: 0;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
+  background: #090909;
+  border: 1px solid #333333;
   border-radius: var(--border-radius);
   padding: var(--spacing-md);
   min-width: 250px;
@@ -710,7 +710,7 @@
   font-size: 1.1em;
   font-weight: 600;
   margin-bottom: var(--spacing-xs);
-  border-bottom: 1px solid var(--glass-border);
+  border-bottom: 1px solid #333333;
   padding-bottom: 4px;
   text-shadow: 0 0 10px rgba(0, 0, 0, 1);
 }

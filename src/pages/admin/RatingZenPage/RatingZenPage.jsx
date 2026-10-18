@@ -31,6 +31,8 @@ import { createViewDurationTracker } from '@/utils/viewDurationTracker';
 import { isAutoraterDetail } from '@/pages/admin/RatingPage/RankReadyTable';
 import { REQUEST_BANDS, isVoteRatingCard, requestPguBand } from '@/utils/ratingRequestBand';
 import DiscordVoteNotice from '@/components/popups/Rating/DiscordVoteNotice';
+import RatingDiscordThreadButton from '@/components/popups/Rating/RatingDiscordThreadButton';
+import { mergeRatingThreadState } from '@/components/discord/ratingThread';
 
 const DECK_SIZES = [
   5, 10, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 125, 150, 175, 200,
@@ -1068,7 +1070,19 @@ const RatingZenPage = () => {
             <aside className="rating-zen-page__panel">
               {isVoteCard ? (
                 <div className="rating-zen-page__actions-block">
-                  <DiscordVoteNotice threadUrl={linkedRequest?.discordMessageUrl} />
+                  <DiscordVoteNotice threadUrl={linkedRequest?.discordMessageUrl || current?.discordMessageUrl} />
+                  <RatingDiscordThreadButton
+                    rating={current}
+                    linkedRequest={linkedRequest}
+                    allowed={hasFlag(user, permissionFlags.SUPER_ADMIN)}
+                    onUpdated={(next) => {
+                      patchSession((prev) => ({
+                        cards: prev.cards.map((card) => (
+                          card.id === next.id ? mergeRatingThreadState(card, next) : card
+                        )),
+                      }));
+                    }}
+                  />
                   <div className="rating-zen-page__actions">
                     <button
                       type="button"
@@ -1090,6 +1104,18 @@ const RatingZenPage = () => {
                 </p>
               ) : (
                 <div className="rating-zen-page__actions-block">
+                  <RatingDiscordThreadButton
+                    rating={current}
+                    linkedRequest={linkedRequest}
+                    allowed={hasFlag(user, permissionFlags.SUPER_ADMIN)}
+                    onUpdated={(next) => {
+                      patchSession((prev) => ({
+                        cards: prev.cards.map((card) => (
+                          card.id === next.id ? mergeRatingThreadState(card, next) : card
+                        )),
+                      }));
+                    }}
+                  />
                   <div className="rating-zen-page__actions">
                     <button
                       type="button"

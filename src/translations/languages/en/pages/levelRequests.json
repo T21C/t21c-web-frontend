@@ -1,6 +1,8 @@
 {
   "menu": "Request",
   "alreadyExists": "Already exists",
+  "alreadyRequested": "You already requested this",
+  "onRatingPage": "Level already on rating",
   "types": {
     "rerate": "Rerate",
     "info_change": "Info change",
@@ -88,6 +90,7 @@
     "manageCreators": "Manage creators",
     "owner": "Owner",
     "selectSong": "Select a song",
+    "suffix": "Suffix",
     "selectArtist": "Select an artist",
     "creditSummary": "{{add}} to add, {{change}} to change, {{remove}} to remove",
     "tagsNone": "None",
@@ -164,7 +167,9 @@
     "delete_discord": "Delete Discord post",
     "delete_discordDone": "Discord post deleted",
     "close_discord": "Close Discord thread",
-    "close_discordDone": "Discord thread closed"
+    "close_discordDone": "Discord thread closed",
+    "reopen_discord": "Reopen Discord thread",
+    "reopen_discordDone": "Discord thread reopened"
   },
   "statusPopup": {
     "title": "Notes",

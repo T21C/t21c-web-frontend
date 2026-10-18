@@ -13,6 +13,8 @@ import { useTranslation } from 'react-i18next';
 import { CloseButton } from '@/components/common/buttons';
 import { ExternalLinkIcon, DownloadIcon, DraftIcon } from '@/components/common/icons';
 import DiscordVoteNotice from '@/components/popups/Rating/DiscordVoteNotice';
+import RatingDiscordThreadButton from '@/components/popups/Rating/RatingDiscordThreadButton';
+import { mergeRatingThreadState } from '@/components/discord/ratingThread';
 import { isVoteRatingCard } from '@/utils/ratingRequestBand';
 import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from "@/utils/Utility";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
@@ -580,6 +582,15 @@ export const RatingDetailPopup = ({
 
   const isVoteCard = isVoteRatingCard(selectedRating, linkedRequest);
   const showDiscordSettlement = isVoteCard;
+  const applyPostedRating = (next) => {
+    if (!next) return;
+    setSelectedRating((current) => mergeRatingThreadState(current, next));
+    setRatings((prev) => (
+      Array.isArray(prev)
+        ? prev.map((row) => (row.id === next.id ? mergeRatingThreadState(row, next) : row))
+        : prev
+    ));
+  };
 
   useEffect(() => {
     const ratingId = selectedRating?.id;
@@ -695,6 +706,12 @@ export const RatingDetailPopup = ({
               </div>
 
               <div className={`details-container ${isDetailsCollapsed ? 'collapsed' : ''}`}>
+                <RatingDiscordThreadButton
+                  rating={selectedRating}
+                  linkedRequest={linkedRequest}
+                  allowed={isSuperAdmin}
+                  onUpdated={applyPostedRating}
+                />
                 <div className="detail-field rerate-field">
                   <span className="detail-label">{t('rating.detailPopup.labels.rerateNum')}</span>
                   <span className="detail-value">{showingConfirmed ? selectedRating.requesterFR : (selectedRating.level.rerateNum || selectedRating.requesterFR)}</span>
@@ -718,7 +735,7 @@ export const RatingDetailPopup = ({
             <div className="rating-section">
               <div className="rating-columns">
                 {showDiscordSettlement ? (
-                  <DiscordVoteNotice threadUrl={linkedRequest?.discordMessageUrl} />
+                  <DiscordVoteNotice threadUrl={linkedRequest?.discordMessageUrl || selectedRating?.discordMessageUrl} />
                 ) : hasFlag(user, permissionFlags.RATING_BANNED) ? (
                   <div className="rating-banned-message">
                     {t('rating.detailPopup.messages.ratingBanned')}

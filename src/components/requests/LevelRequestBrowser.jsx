@@ -24,6 +24,7 @@ import {
   creditsFromLevel,
   requestErrorMessage,
   curationRequestDiff,
+  songRequestLabel,
   tagRequestDiff,
   tagRequestTargetIds,
   teamFromLevel,
@@ -35,7 +36,7 @@ const PAGE_SIZE = 20;
 
 const infoCardText = (request, t) => {
   const payload = request.payload || {};
-  if (payload.kind === 'song') return payload.songName || '';
+  if (payload.kind === 'song') return songRequestLabel(payload.songName, payload.suffix);
   if (payload.kind === 'artist') return payload.artistName || '';
   if (payload.kind === 'credits' && Array.isArray(payload.credits)) {
     const diff = creditRequestDiff(
@@ -57,7 +58,7 @@ const infoCardText = (request, t) => {
   return value.length > 80 ? `${value.slice(0, 77)}…` : value;
 };
 
-const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null }) => {
+const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, onQueueChange = null }) => {
   const { t } = useTranslation('pages');
   const { user } = useAuth();
   const { difficulties } = useDifficultyContext();
@@ -95,6 +96,7 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null })
       );
       setResults(response.data?.results || []);
       setTotal(Number(response.data?.total) || 0);
+      if (!controller?.signal?.aborted) onQueueChange?.();
     } catch (err) {
       if (api.isCancel?.(err)) return;
       setError(true);
@@ -103,7 +105,7 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null })
     } finally {
       if (!controller?.signal?.aborted) setLoading(false);
     }
-  }, [mode, type, searchQuery, completedFilter, offset]);
+  }, [mode, type, searchQuery, completedFilter, offset, onQueueChange]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -115,14 +117,21 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null })
     setOffset(0);
   }, [type, searchQuery, completedFilter]);
 
-  const openRequest = useCallback(async (id) => {
+  const openRequest = useCallback(async (id, { preferEdit = false } = {}) => {
     try {
       const response = await api.get(routes.database.levelRequests.byId(id));
-      setSelected(response.data?.request || null);
+      const request = response.data?.request || null;
+      setSelected(request);
+      const ownsRequest = Boolean(
+        user?.id && request?.requester?.id != null && String(request.requester.id) === String(user.id),
+      );
+      if (preferEdit && mode === 'mine' && ownsRequest && request.status === 'pending') {
+        setEditing(true);
+      }
     } catch (err) {
       toast.error(requestErrorMessage(t, err));
     }
-  }, [t]);
+  }, [mode, t, user?.id]);
 
   useEffect(() => {
     if (highlightId) openRequest(highlightId);
@@ -148,11 +157,8 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null })
     if (action === 'add_to_rating' && !window.confirm(t('levelRequests.detail.addToRatingConfirm', {
       rating: selected.payload?.requestedRating || '',
     }))) return;
-    if (action === 'discord_vote' && !window.confirm(t('levelRequests.detail.discordConfirm'))) return;
     if (action === 'complete' && !window.confirm(t('levelRequests.detail.completeConfirm'))) return;
-    if (action === 'delete_discord' && !window.confirm(t(selected.type === 'rerate'
-      ? 'levelRequests.detail.closeDiscordConfirm'
-      : 'levelRequests.detail.deleteDiscordConfirm'))) return;
+    if (action === 'delete_discord' && selected.type !== 'rerate' && !window.confirm(t('levelRequests.detail.deleteDiscordConfirm'))) return;
     setBusy(true);
     try {
       const response = await api.post(routes.database.levelRequests.actions(selected.id), { action, ...extra });
@@ -227,7 +233,7 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null })
               key={request.id}
               type="button"
               className={`level-requests__card level-requests__card--${request.status}${selected?.id === request.id ? ' level-requests__card--active' : ''}`}
-              onClick={() => openRequest(request.id)}
+              onClick={() => openRequest(request.id, { preferEdit: true })}
             >
               {currentIcon && (
                 <img className="level-requests__diff" src={currentIcon} alt={request.level.difficulty.name || ''} />

@@ -53,6 +53,7 @@ import {
   CalendarIcon, 
   ScoreIcon,
   RefreshIcon,
+  ShuffleIcon,
   TimeIcon,
   ArrowIcon,
   VideoLinkIcon,
@@ -2823,7 +2824,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                             }
                           }}
                         >
-                          <RefreshIcon color="#fff" size={"20px"} />
+                          <ShuffleIcon color="#fff" size={"20px"} />
                         </div>
                         <ToRatePendingDropdown
                           level={res.level}

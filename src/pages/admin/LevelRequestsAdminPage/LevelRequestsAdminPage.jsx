@@ -1,6 +1,8 @@
-import { useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { routes } from '@/api/routes';
+import api from '@/utils/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { MetaTags } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
@@ -25,6 +27,17 @@ const LevelRequestsAdminPage = () => {
   const type = TYPE_BY_HASH[hash] || 'rerate';
   const visibleTabs = TABS.filter(([value]) => canViewRequestType(user, value));
   const allowed = canViewRequestType(user, type);
+  const [openCounts, setOpenCounts] = useState({});
+  const refreshOpenCounts = useCallback(() => {
+    if (!visibleTabs.length) return;
+    api.get(routes.database.levelRequests.openCounts())
+      .then((response) => setOpenCounts(response.data?.counts || {}))
+      .catch(() => {});
+  }, [visibleTabs.length]);
+
+  useEffect(() => {
+    refreshOpenCounts();
+  }, [refreshOpenCounts]);
   const pageMeta = useMemo(
     () => buildStaticPageMeta({
       title: t('levelRequests.admin.title'),
@@ -41,19 +54,32 @@ const LevelRequestsAdminPage = () => {
       <h1>{t('levelRequests.admin.title')}</h1>
       {visibleTabs.length > 0 && (
         <div className="level-requests__tabs">
-          {visibleTabs.map(([value, tabHash, labelKey]) => (
-            <button
-              key={value}
-              type="button"
-              className={`level-requests__tab${type === value ? ' level-requests__tab--active' : ''}`}
-              onClick={() => navigate(`/admin/requests#${tabHash}`)}
-            >
-              {t(`levelRequests.tabs.${labelKey}`)}
-            </button>
-          ))}
+          {visibleTabs.map(([value, tabHash, labelKey]) => {
+            const label = t(`levelRequests.tabs.${labelKey}`);
+            const count = Number(openCounts[value]) || 0;
+            const shown = count > 99 ? '99+' : String(count);
+            return (
+              <button
+                key={value}
+                type="button"
+                className={`level-requests__tab${type === value ? ' level-requests__tab--active' : ''}`}
+                onClick={() => navigate(`/admin/requests#${tabHash}`)}
+                aria-label={count > 0 ? `${label} (${shown})` : label}
+              >
+                {label}
+                <span
+                  className="level-requests__tab-count"
+                  style={{visibility: count > 0 ? 'visible' : 'hidden'}}
+                  aria-hidden="true"
+                >
+                  {shown}
+                </span>
+              </button>
+            );
+          })}
         </div>
       )}
-      {allowed && <LevelRequestBrowser key={type} mode="admin" type={type} />}
+      {allowed && <LevelRequestBrowser key={type} mode="admin" type={type} onQueueChange={refreshOpenCounts} />}
       {!allowed && <p>{t('levelRequests.admin.denied')}</p>}
     </div>
   );

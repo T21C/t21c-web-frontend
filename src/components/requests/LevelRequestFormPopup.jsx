@@ -80,6 +80,7 @@ const LevelRequestFormPopup = ({
   const [infoLevel, setInfoLevel] = useState(level);
   const [songId, setSongId] = useState(initialInfo.songId);
   const [songName, setSongName] = useState(initialInfo.songName);
+  const [suffix, setSuffix] = useState(initialInfo.suffix);
   const [artistId, setArtistId] = useState(initialInfo.artistId);
   const [artistName, setArtistName] = useState(initialInfo.artistName);
   const [infoValue, setInfoValue] = useState(initialInfo.value);
@@ -96,6 +97,7 @@ const LevelRequestFormPopup = ({
     targetIds: initialTargetIds,
     songId: initialInfo.songId,
     songName: initialInfo.songName,
+    suffix: initialInfo.suffix,
     artistId: initialInfo.artistId,
     artistName: initialInfo.artistName,
     value: initialInfo.value,
@@ -142,12 +144,13 @@ const LevelRequestFormPopup = ({
   const infoDraft = useMemo(() => ({
     songId,
     songName,
+    suffix,
     artistId,
     artistName,
     value: infoValue,
     team: creditTeam,
     credits: creditList,
-  }), [artistId, artistName, creditList, creditTeam, infoValue, songId, songName]);
+  }), [artistId, artistName, creditList, creditTeam, infoValue, songId, songName, suffix]);
   const infoReady = type !== 'info_change' || infoLevel != null;
   const infoUnchanged = type === 'info_change' && infoChangeMatchesLevel(kind, infoLevel, infoDraft);
   const infoMissing = type === 'info_change' && (
@@ -160,7 +163,7 @@ const LevelRequestFormPopup = ({
     if (type === 'rerate' && requestedRating !== baseline.requestedRating) return true;
     if (type === 'info_change') {
       if (kind !== baseline.kind) return true;
-      if (kind === 'song' && (Number(songId) !== Number(baseline.songId) || songName !== baseline.songName)) return true;
+      if (kind === 'song' && (Number(songId) !== Number(baseline.songId) || songName !== baseline.songName || suffix !== baseline.suffix)) return true;
       if (kind === 'artist' && (Number(artistId) !== Number(baseline.artistId) || artistName !== baseline.artistName)) return true;
       if ((kind === 'video' || kind === 'download' || kind === 'description' || kind === 'multiple') && infoValue !== baseline.value) return true;
       if (kind === 'credits' && creditSignature(creditList, creditTeam) !== baseline.creditSignature) return true;
@@ -171,7 +174,7 @@ const LevelRequestFormPopup = ({
       if (!sameIdSet(targetIds, baseline.targetIds)) return true;
     }
     return false;
-  }, [artistId, artistName, baseline, creditList, creditTeam, curationTypeIds, infoValue, kind, reason, requestedRating, songId, songName, targetIds, type]);
+  }, [artistId, artistName, baseline, creditList, creditTeam, curationTypeIds, infoValue, kind, reason, requestedRating, songId, songName, suffix, targetIds, type]);
   const { requestClose } = useUnsavedClose({ isDirty, onClose });
 
   useEffect(() => {
@@ -255,6 +258,7 @@ const LevelRequestFormPopup = ({
           const draft = buildInfoDraft(requestRef.current?.payload || {}, full, kindRef.current);
           setSongId(draft.songId);
           setSongName(draft.songName);
+          setSuffix(draft.suffix);
           setArtistId(draft.artistId);
           setArtistName(draft.artistName);
           setInfoValue(draft.value);
@@ -264,6 +268,7 @@ const LevelRequestFormPopup = ({
             ...current,
             songId: draft.songId,
             songName: draft.songName,
+            suffix: draft.suffix,
             artistId: draft.artistId,
             artistName: draft.artistName,
             value: draft.value,
@@ -300,6 +305,7 @@ const LevelRequestFormPopup = ({
       if (kind === 'song') {
         body.songId = songId;
         body.songName = songName;
+        body.suffix = suffix;
       } else if (kind === 'artist') {
         body.artistId = artistId;
         body.artistName = artistName;
@@ -389,10 +395,15 @@ const LevelRequestFormPopup = ({
             level={infoLevel}
             songId={songId}
             songName={songName}
+            suffix={suffix}
             onSong={(song) => {
               infoEditedRef.current = true;
               setSongId(song.songId);
               setSongName(song.songName);
+            }}
+            onSuffix={(next) => {
+              infoEditedRef.current = true;
+              setSuffix(next);
             }}
             artistId={artistId}
             artistName={artistName}
