@@ -7,9 +7,9 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/common/Collapsible";
-import { getProfileCycleTos, isExternalNavPath, isProfilePairItem } from "../navigationConfig";
+import { getProfilePairCycleGroups, isExternalNavPath, isProfilePairItem } from "../navigationConfig";
 import { ProfilePairMenuRow } from "../ProfilePairMenuRow";
-import { useNavProfileCycle } from "../useNavProfileCycle";
+import { useNavProfileCycles } from "../useNavProfileCycle";
 import "./mobileDropdown.css";
 import { useTranslation } from "react-i18next";
 
@@ -34,8 +34,17 @@ const MobileDropdown = ({
   const { t } = useTranslation("components");
   const location = useLocation();
   const hasActiveItem = isActive ? isActive(location.pathname) : false;
-  const profileCycleTos = useMemo(() => getProfileCycleTos(items), [items]);
-  const profileCycle = useNavProfileCycle(profileCycleTos);
+  const profilePairGroups = useMemo(() => getProfilePairCycleGroups(items), [items]);
+  const profileCycles = useNavProfileCycles(profilePairGroups);
+  const rows = useMemo(() => {
+    let pairIndex = 0;
+    return items.map((item) => {
+      if (!isProfilePairItem(item)) return { item, cycleIndex: -1 };
+      const cycleIndex = pairIndex;
+      pairIndex += 1;
+      return { item, cycleIndex };
+    });
+  }, [items]);
 
   return (
     <li
@@ -63,7 +72,7 @@ const MobileDropdown = ({
         </CollapsibleTrigger>
         <CollapsibleContent className="nav-mobile-dropdown-region">
           <div className="nav-mobile-dropdown-menu">
-            {items.map((item, index) => {
+            {rows.map(({ item, cycleIndex }, index) => {
               if (item.divider) {
                 return (
                   <div
@@ -99,7 +108,7 @@ const MobileDropdown = ({
                     label={itemLabel(item, t)}
                     className="nav-mobile-dropdown-item nav-mobile-dropdown-item--button nav-profile-pair"
                     onCycle={(event) => {
-                      const moved = profileCycle.advance(event);
+                      const moved = profileCycles.advance(cycleIndex, event);
                       if (moved) onItemClick?.();
                     }}
                   />

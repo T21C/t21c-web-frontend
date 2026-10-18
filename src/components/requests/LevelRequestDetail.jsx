@@ -3,17 +3,18 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
 import { CommentFormatter } from '@/components/misc';
-import { CheckmarkIcon, CopyIcon, CrossIcon, DiscordIcon, EditIcon, PassIcon, ShieldIcon } from '@/components/common/icons';
+import { CheckmarkIcon, CopyIcon, CrossIcon, DiscordIcon, EditIcon, PassIcon, ShieldIcon, TrashIcon } from '@/components/common/icons';
 import UserAvatar from '@/components/layout/UserAvatar/UserAvatar';
 import { userAvatarUrls } from '@/utils/playerAvatarDisplay';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { formatAccuracyRatio } from '@/utils/statFormatters';
 import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
-import { PIPELINE_ACTIONS, actionButtonClass, canManageRequestType, tagRequestDiff, tagRequestTargetIds } from './levelRequestShared';
-import LevelRequestCurationTypes from './LevelRequestCurationTypes';
+import { PIPELINE_ACTIONS, actionButtonClass, canManageRequestType, curationRequestDiff, songRequestLabel, tagRequestDiff, tagRequestTargetIds } from './levelRequestShared';
+import LevelRequestCurationTypes, { LevelRequestCurationDiff } from './LevelRequestCurationTypes';
 import { LevelRequestCreditDiff } from './LevelRequestInfoFields';
 import { LevelRequestTagDiff } from './LevelRequestTags';
+import DiscordThreadPingPopup from '@/components/discord/DiscordThreadPingPopup';
 
 const DiffMark = ({ icon, name }) => {
   const src = icon ? selectIconSize(icon, ICON_SIZE.SMALL) : null;
@@ -41,20 +42,25 @@ const LevelRequestDetail = ({
   const { difficulties } = useDifficultyContext();
   const [rejecting, setRejecting] = useState(false);
   const [rejectNote, setRejectNote] = useState(request.publicNote || '');
+  const [threadPrompt, setThreadPrompt] = useState(null);
   const payload = request.payload || {};
   const iconForName = (name) => {
     if (!name) return null;
     return difficulties.find((diff) => diff.name?.toLowerCase() === String(name).toLowerCase())?.icon || null;
   };
   const currentIcon = request.level?.difficulty?.icon || null;
-  const isOwner = user?.id && request.requester?.id === user.id;
+  const ownerView = mode === 'mine';
+  const isOwner = Boolean(user?.id && request.requester?.id != null && String(request.requester.id) === String(user.id));
   const pending = request.status === 'pending';
-  const manageable = canManageRequestType(user, request.type);
-  const availableActions = PIPELINE_ACTIONS.filter((action) => (request.availableActions || []).includes(action));
+  const manageable = !ownerView && canManageRequestType(user, request.type);
+  const availableActions = ownerView
+    ? []
+    : PIPELINE_ACTIONS.filter((action) => (request.availableActions || []).includes(action));
 
   useEffect(() => {
     setRejecting(false);
     setRejectNote(request.publicNote || '');
+    setThreadPrompt(null);
   }, [request.id, request.publicNote]);
 
   const copyReason = async () => {
@@ -66,7 +72,7 @@ const LevelRequestDetail = ({
     }
   };
 
-  const showBan = request.type === 'rerate' && hasFlag(user, permissionFlags.SUPER_ADMIN);
+  const showBan = !ownerView && request.type === 'rerate' && hasFlag(user, permissionFlags.SUPER_ADMIN);
   const levelTitle = request.level?.missing
     ? `${t('levelRequests.detail.levelMissing')} #${request.level?.id}`
     : [request.level?.song || `#${request.level?.id}`, request.type === 'rerate' ? request.level?.artist : null]
@@ -105,10 +111,22 @@ const LevelRequestDetail = ({
               <span className="level-requests__creators">{creatorLine}</span>
             )}
             <div className="level-requests__requester-row">
-              <div className="level-requests__requester">
-                <UserAvatar className="level-requests__avatar" {...userAvatarUrls(request.requester)} />
-                <span>{request.requester?.nickname || request.requester?.username || request.requester?.id}</span>
-              </div>
+              {request.requester?.playerId ? (
+                <Link
+                  className="level-requests__requester level-requests__requester-profile"
+                  to={`/profile/${request.requester.playerId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <UserAvatar className="level-requests__avatar" {...userAvatarUrls(request.requester)} />
+                  <span>{request.requester?.nickname || request.requester?.username || request.requester?.id}</span>
+                </Link>
+              ) : (
+                <div className="level-requests__requester">
+                  <UserAvatar className="level-requests__avatar" {...userAvatarUrls(request.requester)} />
+                  <span>{request.requester?.nickname || request.requester?.username || request.requester?.id}</span>
+                </div>
+              )}
               {showBan && (
                 <button
                   type="button"
@@ -150,11 +168,13 @@ const LevelRequestDetail = ({
               team={payload.team ?? null}
             />
           )}
-          {payload.kind !== 'credits' && (payload.songName || payload.artistName || payload.value) && (
+          {payload.kind !== 'credits' && (payload.songName || payload.suffix || payload.artistName || payload.value) && (
             <div className="level-requests__tag-diff-row">
               <span className="level-requests__tag-diff-label">{t('levelRequests.form.changeTo')}</span>
               <span className="level-requests__change-values">
-                {payload.kind === 'song' ? payload.songName : payload.kind === 'artist' ? payload.artistName : payload.value}
+                {payload.kind === 'song'
+                  ? songRequestLabel(payload.songName, payload.suffix)
+                  : payload.kind === 'artist' ? payload.artistName : payload.value}
               </span>
             </div>
           )}
@@ -170,7 +190,14 @@ const LevelRequestDetail = ({
           />
         </section>
       )}
-      {(payload.curationTypeIds || []).length > 0 && (
+      {request.type === 'curation_rerate' && (
+        <section className="level-requests__section">
+          <LevelRequestCurationDiff
+            {...curationRequestDiff(payload, request.level?.curationTypeIds)}
+          />
+        </section>
+      )}
+      {request.type === 'curation' && (payload.curationTypeIds || []).length > 0 && (
         <section className="level-requests__section">
           <LevelRequestCurationTypes ids={payload.curationTypeIds} variant="display" />
         </section>
@@ -216,7 +243,7 @@ const LevelRequestDetail = ({
           <CommentFormatter resolveLevelRefs>{request.reason}</CommentFormatter>
         </section>
       )}
-      {(request.bestPass || request.publicNote || request.internalNote || request.discordPostError) && (
+      {(request.bestPass || request.publicNote || (!ownerView && (request.internalNote || request.discordPostError))) && (
         <section className="level-requests__section">
           {request.bestPass && (
             <Link className="level-requests__requester" to={`/passes/${request.bestPass.id}`} target="_blank" rel="noopener noreferrer">
@@ -231,13 +258,13 @@ const LevelRequestDetail = ({
               <div className="level-requests__note-content">{request.publicNote}</div>
             </div>
           )}
-          {request.internalNote && (
+          {!ownerView && request.internalNote && (
             <div className="level-requests__note">
               <span className="level-requests__note-label">{t('levelRequests.detail.internalNote')}</span>
               <div className="level-requests__note-content">{request.internalNote}</div>
             </div>
           )}
-          {request.discordPostError && (
+          {!ownerView && request.discordPostError && (
             <div>{t('levelRequests.detail.discordError')}: {request.discordPostError}</div>
           )}
         </section>
@@ -279,7 +306,7 @@ const LevelRequestDetail = ({
             rel="noopener noreferrer"
           >
             <DiscordIcon size={16} color="currentColor" />
-            {t('levelRequests.detail.thread')}
+            {t(request.discordThreadClosed ? 'levelRequests.detail.threadClosed' : 'levelRequests.detail.thread')}
           </a>
         )}
         {!rejecting && availableActions.map((action) => (
@@ -292,6 +319,14 @@ const LevelRequestDetail = ({
                 setRejecting(true);
                 return;
               }
+              const opensThreadPrompt = action === 'discord_vote'
+                || action === 'retry_discord'
+                || action === 'reopen_discord'
+                || (action === 'delete_discord' && request.type === 'rerate');
+              if (opensThreadPrompt) {
+                setThreadPrompt(action);
+                return;
+              }
               onAction?.(action);
             }}
             disabled={busy}
@@ -299,13 +334,18 @@ const LevelRequestDetail = ({
             {(action === 'accept' || action === 'complete' || action === 'add_to_rating') && (
               <CheckmarkIcon size={16} color="currentColor" />
             )}
-            {(action === 'discord_vote' || action === 'retry_discord') && (
+            {(action === 'discord_vote' || action === 'retry_discord' || action === 'reopen_discord' || (action === 'delete_discord' && request.type === 'rerate')) && (
               <DiscordIcon size={16} color="currentColor" />
+            )}
+            {action === 'delete_discord' && request.type !== 'rerate' && (
+              <TrashIcon size={16} color="currentColor" />
             )}
             {action === 'reject' && (
               <CrossIcon size={16} color="currentColor" />
             )}
-            {t(`levelRequests.pipeline.${action}`)}
+            {t(action === 'delete_discord' && request.type === 'rerate'
+              ? 'levelRequests.pipeline.close_discord'
+              : `levelRequests.pipeline.${action}`)}
           </button>
         ))}
       </div>
@@ -334,6 +374,17 @@ const LevelRequestDetail = ({
             </button>
           </div>
         </div>
+      )}
+      {threadPrompt && (
+        <DiscordThreadPingPopup
+          action={threadPrompt === 'reopen_discord' ? 'reopen' : threadPrompt === 'delete_discord' ? 'close' : 'create'}
+          onClose={() => setThreadPrompt(null)}
+          onConfirm={(ping) => {
+            const action = threadPrompt;
+            setThreadPrompt(null);
+            onAction?.(action, {ping});
+          }}
+        />
       )}
     </div>
   );

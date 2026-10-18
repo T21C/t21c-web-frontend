@@ -62,6 +62,7 @@
 }
 
 .my-submissions-page__row {
+  position: relative;
   display: grid;
   grid-template-columns: 3rem minmax(12rem, 1.35fr) minmax(10rem, 1fr) minmax(8rem, max-content) auto;
   grid-template-areas: "icon identity facts links date";
@@ -70,34 +71,61 @@
   row-gap: 0.65rem;
   padding: 0.75rem 1rem 0.75rem 0.5rem;
   border-bottom: 1px solid var(--color-white-t10);
+  overflow: hidden;
+  --submission-row-kind: transparent;
+  --submission-row-status: transparent;
+  --submission-row-strength: 15%;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--submission-row-kind) var(--submission-row-strength), transparent) 0%,
+    color-mix(in srgb, var(--submission-row-kind) var(--submission-row-strength), transparent) 37%,
+    color-mix(in srgb, var(--submission-row-status) var(--submission-row-strength), transparent) 40%
+  );
+}
+
+.my-submissions-page .my-submissions-page__kind-watermark {
+  position: absolute;
+  inset: 0 auto 0 0.15rem;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  color: var(--color-white);
+  opacity: 0.12;
+  pointer-events: none;
+  user-select: none;
+}
+
+.my-submissions-page .my-submissions-page__row > :not(.my-submissions-page__kind-watermark) {
+  position: relative;
+  z-index: 1;
 }
 
 .my-submissions-page__row:last-child {
   border-bottom: none;
 }
 
-.my-submissions-page__row.is-status-pending {
-  background: color-mix(in srgb, var(--btn-warning) 18%, transparent);
+.my-submissions-page .my-submissions-page__row.is-kind-level {
+  --submission-row-kind: color-mix(in srgb, var(--warning-color) 82%, var(--btn-warning));
 }
 
-.my-submissions-page__row.is-status-approved {
-  background: color-mix(in srgb, var(--btn-success) 18%, transparent);
+.my-submissions-page .my-submissions-page__row.is-kind-pass {
+  --submission-row-kind: color-mix(in srgb, var(--btn-info) 72%, var(--btn-success));
 }
 
-.my-submissions-page__row.is-status-declined {
-  background: color-mix(in srgb, var(--danger-color) 18%, transparent);
+.my-submissions-page .my-submissions-page__row.is-status-pending {
+  --submission-row-status: var(--warning-color);
 }
 
-.my-submissions-page__row.is-status-pending:hover {
-  background: color-mix(in srgb, var(--btn-warning) 28%, transparent);
+.my-submissions-page .my-submissions-page__row.is-status-approved {
+  --submission-row-status: var(--btn-success);
 }
 
-.my-submissions-page__row.is-status-approved:hover {
-  background: color-mix(in srgb, var(--btn-success) 28%, transparent);
+.my-submissions-page .my-submissions-page__row.is-status-declined {
+  --submission-row-status: var(--danger-color);
 }
 
-.my-submissions-page__row.is-status-declined:hover {
-  background: color-mix(in srgb, var(--danger-color) 28%, transparent);
+.my-submissions-page .my-submissions-page__row:hover {
+  --submission-row-strength: 28%;
 }
 
 .my-submissions-page__diff {
@@ -114,6 +142,30 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+
+.my-submissions-page .my-submissions-page__diff-stack {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.my-submissions-page .my-submissions-page__diff-stack .my-submissions-page__diff-icon {
+  position: absolute;
+  width: 60%;
+  height: 70%;
+}
+
+.my-submissions-page .my-submissions-page__diff-icon--low {
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.my-submissions-page .my-submissions-page__diff-icon--high {
+  right: 0;
+  bottom: 0;
+  z-index: 2;
 }
 
 .my-submissions-page__identity {
@@ -142,12 +194,12 @@
 }
 
 .my-submissions-page__badge.is-kind-pass {
-  background: color-mix(in srgb, var(--color-purple-1) 28%, transparent);
+  background: color-mix(in srgb, var(--btn-info) 28%, transparent);
   color: var(--color-white);
 }
 
 .my-submissions-page__badge.is-kind-level {
-  background: color-mix(in srgb, var(--btn-info) 28%, transparent);
+  background: color-mix(in srgb, var(--btn-warning) 28%, transparent);
   color: var(--color-white);
 }
 

@@ -2829,6 +2829,8 @@
 
 .submission-admin-page .submission-jobs-drawer {
   --submission-jobs-drawer-width: 20rem;
+  --submission-kind-level: color-mix(in srgb, var(--warning-color) 82%, var(--btn-warning));
+  --submission-kind-pass: color-mix(in srgb, var(--btn-info) 72%, var(--btn-success));
   position: fixed;
   top: var(--navbar-height);
   right: 0;
@@ -3010,6 +3012,29 @@
   padding: 0.5rem;
   background-color: var(--color-white-t10);
   border-radius: 4px;
+}
+
+.submission-admin-page .submission-job-request--level,
+.submission-admin-page .submission-job-request--pass {
+  background-image: linear-gradient(var(--submission-job-tint), var(--submission-job-tint));
+}
+
+.submission-admin-page .submission-job-request--level {
+  --submission-job-tint: color-mix(in srgb, var(--submission-kind-level) 22%, transparent);
+}
+
+.submission-admin-page .submission-job-request--pass {
+  --submission-job-tint: color-mix(in srgb, var(--submission-kind-pass) 18%, transparent);
+}
+
+.submission-admin-page .submission-job-request--level .submission-job-request-kind,
+.submission-admin-page .submission-job-request--level .submission-job-kind-icon {
+  color: color-mix(in srgb, var(--submission-kind-level) 78%, var(--color-white));
+}
+
+.submission-admin-page .submission-job-request--pass .submission-job-request-kind,
+.submission-admin-page .submission-job-request--pass .submission-job-kind-icon {
+  color: color-mix(in srgb, var(--submission-kind-pass) 78%, var(--color-white));
 }
 
 .submission-admin-page .submission-job-request-header {

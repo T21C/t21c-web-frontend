@@ -30,6 +30,7 @@ function itemLabel(item, t) {
 }
 
 export function NavMenuItems({ items = [], onItemClick, t, onProfileCycle }) {
+  let pairIndex = 0;
   return items.map((item, index) => {
     if (item.divider) {
       return <div key={`divider-${index}`} className="nav-dropdown-divider" />;
@@ -50,13 +51,15 @@ export function NavMenuItems({ items = [], onItemClick, t, onProfileCycle }) {
     }
 
     if (isProfilePairItem(item)) {
+      const cycleIndex = pairIndex;
+      pairIndex += 1;
       return (
         <ProfilePairMenuRow
           key={item.translationKey || index}
           item={item}
           label={itemLabel(item, t)}
           className="nav-dropdown-item nav-dropdown-item--button nav-profile-pair"
-          onCycle={onProfileCycle}
+          onCycle={(event) => onProfileCycle?.(cycleIndex, event)}
         />
       );
     }

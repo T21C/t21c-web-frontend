@@ -112,6 +112,7 @@ export const routes = {
     statisticsRatingAccuracy: () => '/v2/admin/statistics/rating-accuracy',
     rating: () => '/v2/admin/rating',
     ratingById: (id) => `/v2/admin/rating/${enc(id)}`,
+    ratingDiscord: (id) => `/v2/admin/rating/${enc(id)}/discord`,
     ratingByLevelId: (levelId) => `/v2/admin/rating/by-level/${enc(levelId)}`,
     ratingZenDeal: () => '/v2/admin/rating/zen/deal',
     ratingZenReport: () => '/v2/admin/rating/zen/report',
@@ -438,6 +439,7 @@ export const routes = {
     levelRequests: {
       root: () => '/v2/database/level-requests',
       mine: () => '/v2/database/level-requests/mine',
+      openCounts: () => '/v2/database/level-requests/open-counts',
       byId: (id) => `/v2/database/level-requests/${enc(id)}`,
       forRating: (ratingId) => `/v2/database/level-requests/for-rating/${enc(ratingId)}`,
       eligibility: (levelId) => `/v2/database/level-requests/eligibility/${enc(levelId)}`,

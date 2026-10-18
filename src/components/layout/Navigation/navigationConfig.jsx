@@ -104,15 +104,22 @@ export function sectionIsActive(items = [], pathname) {
   return items.some((item) => itemMatchesNavPath(item, pathname));
 }
 
-/** Paths the user-menu profile control cycles through (player, then creator). */
-export function getProfileCycleTos(items = []) {
+/** Destinations for every dual-target user-menu row, in menu order. */
+export function getProfilePairCycleGroups(items = []) {
+  const groups = [];
   for (const item of items) {
-    if (!Array.isArray(item?.profileTargets) || item.profileTargets.length === 0) continue;
-    return item.profileTargets
+    if (!Array.isArray(item?.profileTargets) || item.profileTargets.length < 2) continue;
+    const tos = item.profileTargets
       .map((target) => target.to)
       .filter((to) => isInternalNavPath(to));
+    if (tos.length >= 2) groups.push(tos);
   }
-  return [];
+  return groups;
+}
+
+/** Paths the first dual-target user-menu row cycles through. */
+export function getProfileCycleTos(items = []) {
+  return getProfilePairCycleGroups(items)[0] ?? [];
 }
 
 export function isProfilePairItem(item) {
@@ -169,8 +176,11 @@ export const createUserMenuItems = (user) => {
         ]
       : []),
     {
-      to: "/submissions",
       translationKey: "navigation.main.dropdowns.user.mySubmissions",
+      profileTargets: [
+        { key: "submissions", to: "/submissions" },
+        { key: "requests", to: "/submissions?tab=requests" },
+      ],
     },
     { divider: true },
     {

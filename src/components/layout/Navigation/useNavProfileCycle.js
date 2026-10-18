@@ -14,23 +14,24 @@ function isModifiedClick(event) {
 }
 
 /**
- * Round-robin through profile destinations.
+ * Round-robin through each dual-target row on its own.
  * Same timing as section dropdowns: 5s reset, 750ms after the pointer leaves.
+ * `groups` is an array of destination lists, one per menu row.
  */
-export function useNavProfileCycle(cycleTos, { pin, dismiss, clickMode } = {}) {
+export function useNavProfileCycles(groups, { pin, dismiss, clickMode } = {}) {
   const navigate = useNavigate();
-  const cycleIndexRef = useRef(0);
-  const cycleTimerRef = useRef(null);
-  const cycleTosRef = useRef(cycleTos);
+  const indexesRef = useRef([]);
+  const timersRef = useRef([]);
+  const groupsRef = useRef(groups);
   const clickModeRef = useRef(clickMode);
-  cycleTosRef.current = cycleTos;
+  groupsRef.current = groups;
 
   const armCycleTimer = useCallback(
-    (delayMs) => {
-      if (cycleTimerRef.current) clearTimeout(cycleTimerRef.current);
-      cycleTimerRef.current = setTimeout(() => {
-        cycleIndexRef.current = 0;
-        cycleTimerRef.current = null;
+    (groupIndex, delayMs) => {
+      if (timersRef.current[groupIndex]) clearTimeout(timersRef.current[groupIndex]);
+      timersRef.current[groupIndex] = setTimeout(() => {
+        indexesRef.current[groupIndex] = 0;
+        timersRef.current[groupIndex] = null;
         dismiss?.();
       }, delayMs);
     },
@@ -38,16 +39,16 @@ export function useNavProfileCycle(cycleTos, { pin, dismiss, clickMode } = {}) {
   );
 
   const advance = useCallback(
-    (event) => {
+    (groupIndex, event) => {
       if (isModifiedClick(event)) return false;
       event?.preventDefault?.();
-      const tos = cycleTosRef.current;
+      const tos = groupsRef.current[groupIndex] || [];
       const len = tos.length;
       if (!len) return false;
-      const index = ((cycleIndexRef.current % len) + len) % len;
+      const index = (((indexesRef.current[groupIndex] || 0) % len) + len) % len;
       const to = tos[index];
-      cycleIndexRef.current = (index + 1) % len;
-      armCycleTimer(NAV_CYCLE_RESET_MS);
+      indexesRef.current[groupIndex] = (index + 1) % len;
+      armCycleTimer(groupIndex, NAV_CYCLE_RESET_MS);
       pin?.();
       navigate(to);
       return true;
@@ -55,42 +56,46 @@ export function useNavProfileCycle(cycleTos, { pin, dismiss, clickMode } = {}) {
     [armCycleTimer, navigate, pin],
   );
 
-  const isTimerArmed = useCallback(() => Boolean(cycleTimerRef.current), []);
+  const isTimerArmed = useCallback(
+    () => timersRef.current.some((timer) => Boolean(timer)),
+    [],
+  );
 
   const notePointerEnter = useCallback(() => {
-    if (
-      clickMode === NAV_DROPDOWN_CLICK_MODE_CYCLE &&
-      cycleTimerRef.current
-    ) {
-      armCycleTimer(NAV_CYCLE_RESET_MS);
-    }
+    if (clickMode !== NAV_DROPDOWN_CLICK_MODE_CYCLE) return;
+    timersRef.current.forEach((timer, groupIndex) => {
+      if (timer) armCycleTimer(groupIndex, NAV_CYCLE_RESET_MS);
+    });
   }, [armCycleTimer, clickMode]);
 
   const shortenOnLeave = useCallback(() => {
-    if (
-      clickMode !== NAV_DROPDOWN_CLICK_MODE_CYCLE ||
-      !cycleTimerRef.current
-    ) {
-      return false;
-    }
-    armCycleTimer(NAV_CYCLE_HOVER_OFF_MS);
-    return true;
+    if (clickMode !== NAV_DROPDOWN_CLICK_MODE_CYCLE) return false;
+    let held = false;
+    timersRef.current.forEach((timer, groupIndex) => {
+      if (!timer) return;
+      armCycleTimer(groupIndex, NAV_CYCLE_HOVER_OFF_MS);
+      held = true;
+    });
+    return held;
   }, [armCycleTimer, clickMode]);
 
   useEffect(() => {
     if (clickModeRef.current === clickMode) return;
     clickModeRef.current = clickMode;
-    cycleIndexRef.current = 0;
-    if (cycleTimerRef.current) {
-      clearTimeout(cycleTimerRef.current);
-      cycleTimerRef.current = null;
-      dismiss?.();
-    }
+    indexesRef.current = [];
+    const hadTimer = timersRef.current.some(Boolean);
+    timersRef.current.forEach((timer) => {
+      if (timer) clearTimeout(timer);
+    });
+    timersRef.current = [];
+    if (hadTimer) dismiss?.();
   }, [clickMode, dismiss]);
 
   useEffect(() => {
     return () => {
-      if (cycleTimerRef.current) clearTimeout(cycleTimerRef.current);
+      timersRef.current.forEach((timer) => {
+        if (timer) clearTimeout(timer);
+      });
     };
   }, []);
 
@@ -99,5 +104,24 @@ export function useNavProfileCycle(cycleTos, { pin, dismiss, clickMode } = {}) {
     isTimerArmed,
     notePointerEnter,
     shortenOnLeave,
+  };
+}
+
+/**
+ * Round-robin through one destination list.
+ * Same timing as section dropdowns: 5s reset, 750ms after the pointer leaves.
+ */
+export function useNavProfileCycle(cycleTos, options) {
+  const cycles = useNavProfileCycles([cycleTos], options);
+  const advance = useCallback(
+    (event) => cycles.advance(0, event),
+    [cycles.advance],
+  );
+
+  return {
+    advance,
+    isTimerArmed: cycles.isTimerArmed,
+    notePointerEnter: cycles.notePointerEnter,
+    shortenOnLeave: cycles.shortenOnLeave,
   };
 }

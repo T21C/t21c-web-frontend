@@ -366,6 +366,7 @@
 }
 
 .rating-popup .details-container {
+    position: relative;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -375,6 +376,10 @@
     transition: all 0.4s var(--ease-out-expo);
     opacity: 1;
     overflow: hidden;
+}
+
+.rating-popup .details-container:not(.collapsed) {
+    overflow: visible;
 }
 
 .rating-popup .details-container.collapsed {

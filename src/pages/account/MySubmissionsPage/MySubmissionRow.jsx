@@ -1,6 +1,7 @@
 // tuf-search: #MySubmissionRow #mySubmissions
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { ChartIcon, PassIcon } from '@/components/common/icons';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { formatAccuracyRatio, formatFloat } from '@/utils/statFormatters';
 import { ICON_SIZE, formatDate, formatTimeAgo, selectIconSize } from '@/utils/Utility';
@@ -35,6 +36,22 @@ function catalogDifficulty(difficulties, name) {
   return difficulties.find((diff) => diff?.name?.trim().toLowerCase() === target) || null;
 }
 
+const PGU_RANGE = /[PGU](?:20|1[0-9]|[1-9])\s*[-~]\s*[PGU](?:20|1[0-9]|[1-9])/i;
+
+/** First PGU range in the text. Later ranges, including a parenthetical one, are ignored. */
+function firstRequestedRange(raw) {
+  const match = String(raw || '').match(PGU_RANGE);
+  if (!match) return null;
+  const [start, end] = match[0].split(/[-~]/).map((part) => part.trim());
+  if (!start || !end) return null;
+  return [start, end];
+}
+
+function difficultyIcon(difficulty) {
+  if (!difficulty?.icon) return null;
+  return selectIconSize(difficulty.icon, ICON_SIZE.MEDIUM);
+}
+
 /**
  * @param {{ submission: {
  *   kind: 'pass' | 'level',
@@ -56,12 +73,26 @@ const MySubmissionRow = ({ submission }) => {
   const { difficulties } = useDifficultyContext();
   const extra = submission.extra || {};
   const title = submission.title || `#${submission.id}`;
-  const sideDifficulty = submission.kind === 'pass'
-    ? extra.difficulty
-    : (extra.publishedDifficulty || catalogDifficulty(difficulties, extra.requestedDiff));
-  const sideIcon = sideDifficulty?.icon
-    ? selectIconSize(sideDifficulty.icon, ICON_SIZE.MEDIUM)
+  const requestedRange = submission.kind === 'level' ? firstRequestedRange(extra.requestedDiff) : null;
+  const rangeLow = requestedRange ? catalogDifficulty(difficulties, requestedRange[0]) : null;
+  const rangeHigh = requestedRange ? catalogDifficulty(difficulties, requestedRange[1]) : null;
+  const lowIcon = difficultyIcon(rangeLow);
+  const highIcon = difficultyIcon(rangeHigh);
+  const hasRangeIcons = Boolean(lowIcon && highIcon);
+  const sideDifficulty = hasRangeIcons
+    ? null
+    : submission.kind === 'pass'
+      ? extra.difficulty
+      : (extra.publishedDifficulty || catalogDifficulty(difficulties, extra.requestedDiff));
+  const sideIcon = difficultyIcon(sideDifficulty);
+  const qqDifficulty = submission.kind === 'level'
+    && extra.requestedDiff
+    && !hasRangeIcons
+    && !sideIcon
+    && difficulties.length > 0
+    ? catalogDifficulty(difficulties, 'Qq')
     : null;
+  const qqIcon = difficultyIcon(qqDifficulty);
   const facts = [];
 
   if (submission.kind === 'pass') {
@@ -154,14 +185,42 @@ const MySubmissionRow = ({ submission }) => {
     });
   }
 
+  const KindIcon = submission.kind === 'pass' ? PassIcon : ChartIcon;
+
   return (
-    <article className={`my-submissions-page__row is-status-${submission.status}`}>
+    <article className={`my-submissions-page__row is-kind-${submission.kind} is-status-${submission.status}`}>
+      {(submission.kind === 'pass' || submission.kind === 'level') && (
+        <span className="my-submissions-page__kind-watermark" aria-hidden="true">
+          <KindIcon size="5.5rem" color="currentColor" />
+        </span>
+      )}
       <div className="my-submissions-page__diff">
-        {sideIcon && (
+        {hasRangeIcons && (
+          <span className="my-submissions-page__diff-stack" aria-label={`${rangeLow.name}–${rangeHigh.name}`}>
+            <img
+              className="my-submissions-page__diff-icon my-submissions-page__diff-icon--low"
+              src={lowIcon}
+              alt=""
+            />
+            <img
+              className="my-submissions-page__diff-icon my-submissions-page__diff-icon--high"
+              src={highIcon}
+              alt=""
+            />
+          </span>
+        )}
+        {!hasRangeIcons && sideIcon && (
           <img
             className="my-submissions-page__diff-icon"
             src={sideIcon}
             alt={sideDifficulty?.name || ''}
+          />
+        )}
+        {!hasRangeIcons && !sideIcon && qqIcon && (
+          <img
+            className="my-submissions-page__diff-icon"
+            src={qqIcon}
+            alt={qqDifficulty?.name || 'Qq'}
           />
         )}
       </div>

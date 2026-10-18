@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { UserAvatar } from "@/components/layout";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
-import { createUserMenuItems, getProfileCycleTos, getSectionCycleTos } from "../navigationConfig";
+import { createUserMenuItems, getProfilePairCycleGroups, getSectionCycleTos } from "../navigationConfig";
 import { ChevronIcon } from "@/components/common/icons";
 import InboxBell from "../InboxBell";
 import { useFinePointer } from "@/hooks/useFinePointer";
@@ -14,7 +14,7 @@ import {
   useNavDropdownClickModePreference,
 } from "@/hooks/useNavDropdownClickModePreference";
 import { useNavHoverMenu } from "../useNavHoverMenu";
-import { useNavProfileCycle } from "../useNavProfileCycle";
+import { useNavProfileCycle, useNavProfileCycles } from "../useNavProfileCycle";
 import { NavDropdownPanel, NavMenuItems } from "../NavDropdown/NavDropdown";
 import "./userMenu.css";
 import { useTranslation } from "react-i18next";
@@ -44,23 +44,20 @@ const UserMenu = ({ isActive }) => {
     },
   ];
   const menuCycleTos = getSectionCycleTos(menuItems);
-  const profilePairTos = getProfileCycleTos(menuItems);
+  const profilePairGroups = getProfilePairCycleGroups(menuItems);
   const menuCycle = useNavProfileCycle(menuCycleTos, {
     pin: menu.pin,
     dismiss: menu.dismiss,
     clickMode,
   });
-  const profilePairCycle = useNavProfileCycle(
-    profilePairTos.length >= 2 ? profilePairTos : [],
-    {
-      pin: menu.pin,
-      dismiss: menu.dismiss,
-      clickMode,
-    },
-  );
+  const profilePairCycles = useNavProfileCycles(profilePairGroups, {
+    pin: menu.pin,
+    dismiss: menu.dismiss,
+    clickMode,
+  });
 
   useEffect(() => {
-    if (menuCycle.isTimerArmed() || profilePairCycle.isTimerArmed()) return;
+    if (menuCycle.isTimerArmed() || profilePairCycles.isTimerArmed()) return;
     menu.closeNow();
     // eslint-disable-next-line react-hooks/exhaustive-deps -- close on navigate only
   }, [location]);
@@ -86,15 +83,15 @@ const UserMenu = ({ isActive }) => {
   const handleMouseEnter = useCallback(() => {
     menu.scheduleOpen();
     menuCycle.notePointerEnter();
-    profilePairCycle.notePointerEnter();
-  }, [menu.scheduleOpen, menuCycle.notePointerEnter, profilePairCycle.notePointerEnter]);
+    profilePairCycles.notePointerEnter();
+  }, [menu.scheduleOpen, menuCycle.notePointerEnter, profilePairCycles.notePointerEnter]);
 
   const handleMouseLeave = useCallback(() => {
     const menuHeld = menuCycle.shortenOnLeave();
-    const pairHeld = profilePairCycle.shortenOnLeave();
+    const pairHeld = profilePairCycles.shortenOnLeave();
     if (menuHeld || pairHeld) return;
     menu.scheduleClose();
-  }, [menu.scheduleClose, menuCycle.shortenOnLeave, profilePairCycle.shortenOnLeave]);
+  }, [menu.scheduleClose, menuCycle.shortenOnLeave, profilePairCycles.shortenOnLeave]);
 
   if (!user) {
     return null;
@@ -182,7 +179,7 @@ const UserMenu = ({ isActive }) => {
               items={menuItems}
               t={t}
               onItemClick={menu.closeNow}
-              onProfileCycle={profilePairCycle.advance}
+              onProfileCycle={profilePairCycles.advance}
             />
           </NavDropdownPanel>
         )}

@@ -63,7 +63,9 @@ export function isVoteRerateLabel(value) {
 }
 
 export function isVoteRatingCard(rating, linkedRequest) {
-  if (rating?.isDiscordVote) return true;
+  if (linkedRequest?.discordThreadClosed) return false;
+  if (!linkedRequest && rating?.discordThreadClosed) return false;
+  if (typeof rating?.isDiscordVote === 'boolean') return rating.isDiscordVote;
   if (linkedRequest?.immediateSettle || linkedRequest?.status === 'discord_vote' || linkedRequest?.discordMessageUrl) {
     return true;
   }

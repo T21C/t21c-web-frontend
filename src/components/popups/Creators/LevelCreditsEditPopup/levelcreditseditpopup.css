@@ -48,6 +48,12 @@
   gap: 20px;
 }
 
+.level-credits-edit-popup-container .level-credits-edit-popup__loading {
+  display: flex;
+  justify-content: center;
+  padding: 1.5rem 0;
+}
+
 .level-credits-edit-popup-container .level-credits-edit-popup__label {
   display: block;
   margin-bottom: 8px;

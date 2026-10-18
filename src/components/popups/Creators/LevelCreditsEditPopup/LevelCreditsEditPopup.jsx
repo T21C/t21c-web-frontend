@@ -1,5 +1,5 @@
 // tuf-search: #LevelCreditsEditPopup #levelCreditsEditPopup #popups #creators #creditManagement
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   DndContext,
@@ -51,6 +51,8 @@ const CHARTER_ZONE_ID = 'charter-zone';
 const VFXER_ZONE_ID = 'vfxer-zone';
 const SPECIAL_THANKS_ZONE_ID = 'specialThanks-zone';
 const MAX_CREATOR_RESULTS = 100;
+const MAX_TEAM_RESULTS = 30;
+const TEAM_SEARCH_DEBOUNCE_MS = 300;
 
 const roleFromZoneId = (zoneId) => {
   if (zoneId === CHARTER_ZONE_ID) return CreditRole.CHARTER;
@@ -196,8 +198,93 @@ const computeDrop = (prev, event) => {
   return { next: flattenBuckets(buckets), duplicate: false };
 };
 
-const buildPendingTeamFromLevel = (level) =>
-  level.team ? { id: level.team.id, name: level.team.name } : null;
+const creditCreatorId = (credit) => {
+  const raw = credit?.creator?.id ?? credit?.creatorId ?? credit?.id;
+  const id = Number(raw);
+  return Number.isFinite(id) && id > 0 ? id : null;
+};
+
+const creditCreatorName = (credit) => credit?.creator?.name ?? credit?.name ?? '';
+
+export const levelNeedsCreditHydration = (level) => {
+  if (!level?.id) return false;
+  if (level._packViewMinimal || level._ratingListMinimal) return true;
+
+  const current = Array.isArray(level.currentCreators) ? level.currentCreators : null;
+  if (current && current.length > 0) {
+    if (current.some((credit) => !creditCreatorId(credit) || !creditCreatorName(credit))) return true;
+  } else if (!Array.isArray(level.levelCredits)) {
+    return true;
+  } else if (level.levelCredits.some((credit) => {
+    const id = Number(credit?.creator?.id ?? credit?.creatorId);
+    return !Number.isFinite(id) || id <= 0 || !creditCreatorName(credit);
+  })) {
+    return true;
+  }
+
+  if (level.teamId && !(level.teamObject?.id || (level.team && typeof level.team === 'object' && level.team.id))) {
+    return true;
+  }
+  if (typeof level.team === 'string' && level.team && !level.teamObject?.id) {
+    return true;
+  }
+  return false;
+};
+
+const buildPendingTeamFromLevel = (level) => {
+  const team = level?.team;
+  if (team && typeof team === 'object' && (team.id || team.name)) {
+    return { id: team.id ?? null, name: team.name || '' };
+  }
+  const teamObject = level?.teamObject;
+  if (teamObject && (teamObject.id || teamObject.name)) {
+    return { id: teamObject.id ?? null, name: teamObject.name || '' };
+  }
+  return null;
+};
+
+const normalizeTeamKey = (value) => String(value ?? '').trim().toLowerCase();
+
+const teamAliases = (team) => (Array.isArray(team?.aliases) ? team.aliases : []);
+
+const teamMatchesExact = (team, input) => {
+  const key = normalizeTeamKey(input);
+  if (!key || !team) return false;
+  if (normalizeTeamKey(team.name) === key) return true;
+  return teamAliases(team).some((alias) => normalizeTeamKey(alias) === key);
+};
+
+const teamMatchesQuery = (team, query) => {
+  const key = normalizeTeamKey(query);
+  if (!key) return true;
+  if (normalizeTeamKey(team?.name).includes(key)) return true;
+  return teamAliases(team).some((alias) => normalizeTeamKey(alias).includes(key));
+};
+
+const samePendingTeam = (left, right) => {
+  if (left === right) return true;
+  if (!left || !right) return !left && !right;
+  return (left.id ?? null) === (right.id ?? null) && (left.name || '') === (right.name || '');
+};
+
+const resolveTeamFromInput = (input, teams, knownTeam) => {
+  const trimmed = String(input ?? '').trim();
+  if (!trimmed) return null;
+  const match = (teams || []).find((team) => teamMatchesExact(team, trimmed));
+  if (match?.id != null) {
+    return { id: match.id, name: match.name || trimmed };
+  }
+  if (knownTeam?.id != null && teamMatchesExact(knownTeam, trimmed)) {
+    return { id: knownTeam.id, name: knownTeam.name || trimmed };
+  }
+  return { name: trimmed };
+};
+
+const parseTeamSearchResults = (body) => {
+  if (Array.isArray(body)) return body;
+  if (Array.isArray(body?.results)) return body.results;
+  return [];
+};
 
 const buildPendingCreatorsFromLevel = (level) => {
   const fromCurrent = Array.isArray(level.currentCreators) ? level.currentCreators : [];
@@ -453,7 +540,6 @@ const CreditRoleZone = ({
 
 export const LevelCreditsEditPopup = ({
   level,
-  teamsList,
   actingCreatorId = null,
   excludeAliases = false,
   onClose,
@@ -463,14 +549,60 @@ export const LevelCreditsEditPopup = ({
   const { t } = useTranslation(['components', 'common']);
 
   const [pendingTeam, setPendingTeam] = useState(() => buildPendingTeamFromLevel(level));
+  const [teamQuery, setTeamQuery] = useState('');
+  const [teamInputValue, setTeamInputValue] = useState('');
+  const [teamSearchResults, setTeamSearchResults] = useState([]);
+  const [teamsLoading, setTeamsLoading] = useState(true);
   const [pendingCreators, setPendingCreators] = useState(() => buildPendingCreatorsFromLevel(level));
+  const [creditsLoading, setCreditsLoading] = useState(
+    () => !onDraftSave && levelNeedsCreditHydration(level),
+  );
+  const levelRef = useRef(level);
+  levelRef.current = level;
   const [activeId, setActiveId] = useState(null);
   const [draggingInfo, setDraggingInfo] = useState(null);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [fetchedCreators, setFetchedCreators] = useState(null);
   const [creatorToAddSearchQuery, setCreatorToAddSearchQuery] = useState('');
   const [isSaving, setIsSaving] = useState(false);
-  const [fetchedTeams, setFetchedTeams] = useState(null);
+  const assignedTeamRef = useRef(buildPendingTeamFromLevel(level));
+  const teamInputDirtyRef = useRef(false);
+  const pendingTeamQueryRef = useRef('');
+  const appliedTeamQueryRef = useRef('');
+  const teamSearchResultsRef = useRef(teamSearchResults);
+  const teamSearchRequestRef = useRef(0);
+  teamSearchResultsRef.current = teamSearchResults;
+
+  useEffect(() => {
+    const current = levelRef.current;
+    if (onDraftSave || !current?.id || !levelNeedsCreditHydration(current)) {
+      setCreditsLoading(false);
+      return undefined;
+    }
+    let active = true;
+    setCreditsLoading(true);
+    (async () => {
+      try {
+        const response = await api.get(`${routes.database.levels.root()}/${current.id}`);
+        const full = response.data?.level ?? response.data;
+        if (!active || !full) return;
+        if (!teamInputDirtyRef.current) {
+          const nextTeam = buildPendingTeamFromLevel(full);
+          assignedTeamRef.current = nextTeam;
+          setPendingTeam(nextTeam);
+          setHasUnsavedChanges(false);
+        }
+        setPendingCreators(buildPendingCreatorsFromLevel(full));
+      } catch (error) {
+        console.error('Error loading level credits:', error);
+      } finally {
+        if (active) setCreditsLoading(false);
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, [level?.id, onDraftSave]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
@@ -528,31 +660,76 @@ export const LevelCreditsEditPopup = ({
   }, [creatorToAddSearchQuery, excludeAliases]);
 
   useEffect(() => {
-    if (teamsList != null) {
-      return undefined;
-    }
-    let cancelToken = api.CancelToken.source();
-    const loadTeams = async () => {
+    const requestId = ++teamSearchRequestRef.current;
+    const cancelToken = api.CancelToken.source();
+    const searched = teamQuery.trim();
+    setTeamsLoading(true);
+
+    const timer = setTimeout(async () => {
       try {
-        const response = await api.get(routes.teamsV3.root(), {
+        const response = await api.get(routes.teamsV3.search(), {
+          params: { query: searched, limit: MAX_TEAM_RESULTS },
           cancelToken: cancelToken.token,
         });
-        const body = response.data;
-        setFetchedTeams(Array.isArray(body) ? body : (body?.results ?? []));
+        if (requestId !== teamSearchRequestRef.current) return;
+        const results = parseTeamSearchResults(response.data);
+        appliedTeamQueryRef.current = searched;
+        teamSearchResultsRef.current = results;
+        setTeamSearchResults(results);
       } catch (error) {
-        if (!api.isCancel(error)) {
-          console.error('Error fetching teams:', error);
-          setFetchedTeams([]);
+        if (requestId !== teamSearchRequestRef.current || api.isCancel(error)) return;
+        console.error('Error searching teams:', error);
+        appliedTeamQueryRef.current = searched;
+        teamSearchResultsRef.current = [];
+        setTeamSearchResults([]);
+      } finally {
+        if (requestId === teamSearchRequestRef.current) {
+          setTeamsLoading(false);
         }
       }
-    };
-    loadTeams();
-    return () => {
-      cancelToken.cancel('Component unmounted');
-    };
-  }, [teamsList]);
+    }, TEAM_SEARCH_DEBOUNCE_MS);
 
-  const resolvedTeams = teamsList ?? fetchedTeams ?? [];
+    return () => {
+      clearTimeout(timer);
+      cancelToken.cancel('team search changed');
+    };
+  }, [teamQuery]);
+
+  useEffect(() => {
+    if (teamsLoading) return undefined;
+    const typed = pendingTeamQueryRef.current.trim();
+    if (!typed || normalizeTeamKey(typed) !== normalizeTeamKey(appliedTeamQueryRef.current)) {
+      return undefined;
+    }
+    const next = resolveTeamFromInput(typed, teamSearchResults, assignedTeamRef.current);
+    setPendingTeam((current) => (samePendingTeam(current, next) ? current : next));
+    return undefined;
+  }, [teamsLoading, teamSearchResults]);
+
+  const teamSelectOptions = useMemo(() => {
+    const rows = [];
+    const seen = new Set();
+    const add = (team) => {
+      if (!team?.name) return;
+      const key = team.id != null ? `id:${team.id}` : `name:${normalizeTeamKey(team.name)}`;
+      if (seen.has(key)) return;
+      seen.add(key);
+      rows.push(team);
+    };
+
+    [assignedTeamRef.current, pendingTeam].forEach((team) => {
+      if (team?.id != null && teamMatchesQuery(team, teamQuery)) add(team);
+    });
+    if (!teamsLoading) {
+      teamSearchResults.forEach(add);
+    }
+
+    return rows.map((team) => ({
+      value: team.id != null ? `id:${team.id}` : `name:${team.name}`,
+      label: team.name,
+      team,
+    }));
+  }, [pendingTeam, teamQuery, teamSearchResults, teamsLoading]);
 
   const keepSelfOwnerTooltip = t('levelPopups.creditsEdit.keepSelfOwner', { ns: 'components' });
 
@@ -584,24 +761,43 @@ export const LevelCreditsEditPopup = ({
     );
   }, [fetchedCreators, pendingCreators]);
 
-  const handleTeamInputChange = (input) => {
-    if (!input) {
+  const handleTeamInputChange = (input, meta) => {
+    const action = meta?.action;
+    if (action === 'input-change') {
+      const nextInput = input ?? '';
+      teamInputDirtyRef.current = true;
+      pendingTeamQueryRef.current = nextInput;
+      setTeamInputValue(nextInput);
+      setTeamQuery(nextInput);
+      setPendingTeam(
+        resolveTeamFromInput(nextInput, teamSearchResultsRef.current, assignedTeamRef.current),
+      );
+      setHasUnsavedChanges(true);
+      return nextInput;
+    }
+    if (action === 'set-value' || action === 'input-blur' || action === 'menu-close') {
+      setTeamInputValue('');
+      return '';
+    }
+    return input;
+  };
+
+  const handleTeamSelect = (selected) => {
+    teamInputDirtyRef.current = true;
+    pendingTeamQueryRef.current = '';
+    if (!selected) {
+      setTeamQuery('');
       setPendingTeam(null);
       setHasUnsavedChanges(true);
       return;
     }
-    const matchingTeam = resolvedTeams.find(
-      (team) =>
-        team.name.toLowerCase() === input?.toLowerCase() ||
-        (Array.isArray(team.aliases) &&
-          team.aliases.some(
-            (alias) => String(alias).toLowerCase() === input?.toLowerCase(),
-          )),
+    const team = selected.team;
+    const name = team?.name || selected.label || '';
+    setPendingTeam(
+      team?.id != null
+        ? { id: team.id, name }
+        : resolveTeamFromInput(name, teamSearchResultsRef.current, assignedTeamRef.current),
     );
-    const newPendingTeam = matchingTeam
-      ? { id: matchingTeam.id, name: matchingTeam.name }
-      : { name: input };
-    setPendingTeam(newPendingTeam);
     setHasUnsavedChanges(true);
   };
 
@@ -809,32 +1005,42 @@ export const LevelCreditsEditPopup = ({
           </header>
 
           <div className="level-credits-edit-popup__body">
+            {creditsLoading && (
+              <div className="level-credits-edit-popup__loading">
+                <div className="loader loader-relative loader-compact" />
+              </div>
+            )}
+            {!creditsLoading && (
+            <>
             <div className="level-credits-edit-popup__team-section">
               <label className="level-credits-edit-popup__label">Team</label>
               <div className="level-credits-edit-popup__team-input-group">
                 <CustomSelect
                   width="100%"
-                  options={resolvedTeams.map((team) => ({
-                    value: team.name,
-                    label: team.name,
-                  }))}
+                  options={teamSelectOptions}
                   value={
-                    pendingTeam
-                      ? { value: pendingTeam.name, label: pendingTeam.name }
+                    pendingTeam?.name
+                      ? {
+                          value:
+                            pendingTeam.id != null
+                              ? `id:${pendingTeam.id}`
+                              : `name:${pendingTeam.name}`,
+                          label: pendingTeam.name,
+                        }
                       : null
                   }
-                  onChange={(selected) => {
-                    handleTeamInputChange(selected?.value || '');
-                  }}
-                  onInputChange={(input, { action }) => {
-                    if (action === 'input-change') {
-                      handleTeamInputChange(input);
-                    }
-                  }}
+                  onChange={handleTeamSelect}
+                  onInputChange={handleTeamInputChange}
+                  inputValue={teamInputValue}
+                  filterOption={() => true}
+                  isLoading={teamsLoading}
                   isCreatable
                   isClearable
                   placeholder="Enter or select team name..."
                   className="level-credits-edit-popup__team-select"
+                  noOptionsMessage={() =>
+                    teamsLoading ? t('loading.searching', { ns: 'common' }) : 'No teams found'
+                  }
                 />
                 {pendingTeam && (
                   <span
@@ -939,6 +1145,8 @@ export const LevelCreditsEditPopup = ({
                 />
               </div>
             </div>
+            </>
+            )}
           </div>
 
           <footer className="level-credits-edit-popup__footer">
@@ -946,7 +1154,7 @@ export const LevelCreditsEditPopup = ({
               type="button"
               className="btn-fill-primary"
               onClick={handleSave}
-              disabled={!hasUnsavedChanges || isSaving}
+              disabled={!hasUnsavedChanges || isSaving || creditsLoading}
             >
               {isSaving ? 'Saving...' : 'Save Changes'}
             </button>

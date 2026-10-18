@@ -105,8 +105,9 @@
    HEADER SECTION
    ============================================ */
 .level-detail .header {
-  display: flex;
-  flex-wrap: nowrap;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: stretch;
   max-width: var(--content-max-width);
   margin: 0 auto;
   padding: var(--spacing-sm);
@@ -117,21 +118,68 @@
 }
 
 .level-detail .header .left {
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  align-items: center;
+  justify-content: start;
+  justify-items: start;
+  gap: var(--spacing-lg);
+  min-width: 0;
   position: relative;
   padding: var(--spacing-sm);
   padding-left: 1.5em;
   border-radius: var(--border-radius);
   margin-right: var(--spacing-sm);
-  width: 100%;
-  align-items: center;
-  gap: var(--spacing-lg);
   background-image: var(--header-bg-image);
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  display: flex;
   background-color: var(--glass-bg);
   border: 1px solid var(--glass-border);
+}
+
+.level-detail .header .left:has(> .level-detail__curation-panel):not(:has(> .curation-description-container)) {
+  grid-template-columns: auto auto auto minmax(0, 1fr);
+}
+
+.level-detail .header .left:has(> .curation-description-container:not(.description-collapsed)):not(:has(> .level-detail__curation-panel)) {
+  grid-template-columns: auto minmax(0, max-content) minmax(12rem, 1fr) max-content;
+}
+
+.level-detail .header .left:has(> .curation-description-container.description-collapsed):not(:has(> .level-detail__curation-panel)) {
+  grid-template-columns: auto minmax(0, max-content) minmax(0, 1fr) max-content;
+}
+
+.level-detail .header .left:has(> .level-detail__curation-panel):has(> .curation-description-container:not(.description-collapsed)) {
+  grid-template-columns: auto minmax(0, max-content) auto minmax(12rem, 1fr) max-content;
+}
+
+.level-detail .header .left:has(> .level-detail__curation-panel):has(> .curation-description-container.description-collapsed) {
+  grid-template-columns: auto minmax(0, max-content) auto minmax(0, 1fr) max-content;
+}
+
+.level-detail .header .left:has(> .curation-description-container:not(.description-collapsed)) > .title-container {
+  min-width: 0;
+}
+
+/* Fills the row the title sets. height 0 keeps the text from growing it.
+   min-width 0 keeps the panel inside its column, beside the like column. */
+.level-detail .header .left > .curation-description-container:not(.description-collapsed) {
+  align-self: stretch;
+  justify-self: stretch;
+  width: auto;
+  min-width: 0;
+  max-width: 100%;
+  height: 0;
+  min-height: 100%;
+  margin: 0;
+}
+
+.level-detail .header .left:has(> .curation-description-container) > .like-container {
+  justify-self: center;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .level-detail .header .left::before {
@@ -159,31 +207,27 @@
 }
 
 .level-detail .header .right {
-  display: grid;
-  grid-template-columns: 2.8rem;
-  gap: var(--spacing-md);
-  justify-items: center;
+  display: flex;
+  flex-flow: column wrap;
+  align-content: flex-start;
   align-items: center;
-  align-content: start;
+  align-self: start;
+  gap: var(--spacing-md);
+  /* A percentage height is cyclic with this row, so once the stacked
+     buttons exceed the title the rail sizes the header. The page sets
+     --level-header-rail to the left's content height; until then the
+     buttons stay in one column instead of wrapping into a horizontal strip. */
+  height: var(--level-header-rail, max-content);
+  min-height: var(--level-header-rail, 0px);
+  max-height: var(--level-header-rail, none);
   position: relative;
   z-index: var(--z-overlay);
-}
-
-/* A short rail (1–3 actions) stays one column. At 4 or more, pair them
-   so the stack stays close to the header height instead of towering over it.
-   Child combinator: buttons can contain their own even last child (download count). */
-.level-detail .header .right:has(> :nth-child(4)) {
-  grid-template-columns: repeat(2, 2.8rem);
-}
-
-/* Odd counts leave one action; center it on its own row. */
-.level-detail .header .right:has(> :nth-child(4)):not(:has(> :nth-child(even):last-child)) > :last-child {
-  grid-column: 1 / -1;
 }
 
 .level-detail .header .right > button,
 .level-detail .header .right > div {
   position: relative;
+  flex: 0 0 auto;
 }
 
 .level-detail .header .right .access-count {
@@ -643,8 +687,8 @@
   position: absolute;
   top: calc(100% + 8px);
   left: 0;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
+  background: #090909;
+  border: 1px solid #333333;
   border-radius: var(--border-radius);
   padding: var(--spacing-md);
   min-width: 250px;
@@ -666,7 +710,7 @@
   font-size: 1.1em;
   font-weight: 600;
   margin-bottom: var(--spacing-xs);
-  border-bottom: 1px solid var(--glass-border);
+  border-bottom: 1px solid #333333;
   padding-bottom: 4px;
   text-shadow: 0 0 10px rgba(0, 0, 0, 1);
 }
@@ -1795,6 +1839,7 @@
   }
   
   .level-detail .header {
+    display: flex;
     flex-direction: column;
     min-height: unset;
     gap: var(--spacing-md);
@@ -1819,7 +1864,12 @@
   
   .level-detail .header .right {
     flex: none;
-    display: flex;
+    flex-flow: row wrap;
+    align-content: center;
+    align-self: stretch;
+    height: auto;
+    min-height: 0;
+    max-height: none;
     margin-bottom: 0.5rem;
     width: 100%;
     justify-content: center;
@@ -2604,17 +2654,11 @@
    ============================================ */
 .curation-description-container {
   --desc-btn-size: calc(16px + (var(--btn-icon-pad) * 2) + 2px);
-  min-width: 22rem;
-  width: 100%;
-  max-width: 100%;
-  height: 100%;
   position: relative;
   z-index: var(--z-content);
-  flex: 1;
-  align-self: flex-start;
-  margin-left: auto;
   display: flex;
   flex-direction: column;
+  min-width: 0;
   overflow: hidden;
   transition: all 0.4s var(--ease-out-expo);
 }
@@ -3027,25 +3071,27 @@
     width: 100%;
   }
 
-  .curation-description-container {
+  .level-detail .header .left > .curation-description-container:not(.description-collapsed) {
     order: 3;
     flex: none;
     align-self: stretch;
-    margin-left: 0;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
     min-height: 0;
     min-width: 0;
-    width: 100%;
+    margin-left: 0;
   }
 
-  .curation-description-container.expanded {
-    height: auto;
-  }
-
-  .level-detail .curation-description-container.description-collapsed {
+  .level-detail .header .left > .curation-description-container.description-collapsed {
     flex: 0 0 var(--desc-btn-size);
+    align-self: flex-end;
     width: var(--desc-btn-size);
     height: var(--desc-btn-size);
-    align-self: flex-end;
+    min-width: var(--desc-btn-size);
+    max-width: var(--desc-btn-size);
+    min-height: var(--desc-btn-size);
+    max-height: var(--desc-btn-size);
     margin-left: auto;
   }
 

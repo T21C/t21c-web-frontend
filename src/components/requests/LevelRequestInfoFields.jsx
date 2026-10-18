@@ -63,7 +63,9 @@ const LevelRequestInfoFields = ({
   level,
   songId,
   songName,
+  suffix,
   onSong,
+  onSuffix,
   artistId,
   artistName,
   onArtist,
@@ -91,12 +93,22 @@ const LevelRequestInfoFields = ({
         <div className="level-requests__field">
           <span>{t('levelRequests.form.changeTo')}</span>
           {kind === 'song' && (
-            <div className="level-requests__picker-field" onClick={() => setSongOpen(true)}>
+            <div className="level-requests__song-row">
+              <div className="level-requests__picker-field" onClick={() => setSongOpen(true)}>
+                <input
+                  type="text"
+                  readOnly
+                  value={songName}
+                  placeholder={t('levelRequests.form.selectSong')}
+                />
+              </div>
               <input
+                className="level-requests__suffix"
                 type="text"
-                readOnly
-                value={songName}
-                placeholder={t('levelRequests.form.selectSong')}
+                value={suffix || ''}
+                maxLength={255}
+                placeholder={t('levelRequests.form.suffix')}
+                onChange={(event) => onSuffix(event.target.value)}
               />
             </div>
           )}

@@ -20,6 +20,8 @@ export const PIPELINE_ACTIONS = [
   'discord_vote',
   'complete',
   'retry_discord',
+  'delete_discord',
+  'reopen_discord',
   'reject',
 ];
 
@@ -68,6 +70,44 @@ export function tagRequestDiff(targetIds, appliedIds) {
     addIds: target.filter((id) => !appliedSet.has(id)),
     removeIds: applied.filter((id) => !targetSet.has(id)),
   };
+}
+
+export function curationRequestDiff(payload, currentIds) {
+  if (Array.isArray(payload?.addCurationTypeIds) || Array.isArray(payload?.removeCurationTypeIds)) {
+    return tagRequestDiff(payload?.curationTypeIds, currentIds);
+  }
+  const current = new Set(normalizeTagIds(currentIds));
+  return {
+    addIds: normalizeTagIds(payload?.curationTypeIds).filter((id) => !current.has(id)),
+    removeIds: [],
+  };
+}
+
+export function curationTypeIdsFromLevel(level) {
+  if (!level || typeof level !== 'object') return [];
+  if (Array.isArray(level.curationTypeIds)) return normalizeTagIds(level.curationTypeIds);
+  const rows = Array.isArray(level.curations) && level.curations.length
+    ? level.curations
+    : (level.curation ? [level.curation] : []);
+  const ids = [];
+  rows.forEach((row) => {
+    const types = Array.isArray(row?.types) ? row.types : [];
+    types.forEach((entry) => {
+      const id = Number(entry?.id ?? entry);
+      if (Number.isInteger(id) && id > 0) ids.push(id);
+    });
+    if (!types.length && Array.isArray(row?.typeIds)) {
+      row.typeIds.forEach((entry) => {
+        const id = Number(entry);
+        if (Number.isInteger(id) && id > 0) ids.push(id);
+      });
+    }
+    if (!types.length && !Array.isArray(row?.typeIds)) {
+      const legacyId = Number(row?.type?.id ?? row?.typeId);
+      if (Number.isInteger(legacyId) && legacyId > 0) ids.push(legacyId);
+    }
+  });
+  return normalizeTagIds(ids);
 }
 
 const CREDIT_ROLE_ORDER = ['charter', 'vfxer', 'specialThanks'];
@@ -158,12 +198,19 @@ export function currentInfoValue(level, kind) {
   return '';
 }
 
+export function songRequestLabel(songName, suffix) {
+  const name = String(songName || '').trim();
+  const extra = String(suffix || '').trim();
+  return extra ? `${name} ${extra}` : name;
+}
+
 export function buildInfoDraft(payload, level, kind) {
   const hasCredits = Array.isArray(payload?.credits);
   const artist = artistFromLevel(level);
   return {
     songId: payload?.songId ?? level?.songId ?? null,
     songName: payload?.songName || level?.songObject?.name || level?.song || '',
+    suffix: typeof payload?.suffix === 'string' ? payload.suffix : (level?.suffix || ''),
     artistId: payload?.artistId ?? artist.artistId,
     artistName: payload?.artistName || artist.artistName,
     value: typeof payload?.value === 'string' ? payload.value : currentInfoValue(level, kind),
@@ -176,7 +223,11 @@ const sameText = (left, right) => (left || '').trim() === (right || '').trim();
 
 export function infoChangeMatchesLevel(kind, level, draft) {
   if (!level) return true;
-  if (kind === 'song') return Number(draft?.songId) > 0 && Number(draft.songId) === Number(level.songId);
+  if (kind === 'song') {
+    const sameSong = Number(draft?.songId) > 0 && Number(draft.songId) === Number(level.songId);
+    const sameSuffix = (draft?.suffix || '').trim() === (level.suffix || '').trim();
+    return sameSong && sameSuffix;
+  }
   if (kind === 'artist') return sameText(draft?.artistName, level.artist);
   if (kind === 'video') return sameText(draft?.value, level.videoLink);
   if (kind === 'download') return sameText(draft?.value, level.dlLink);
@@ -211,7 +262,7 @@ export function statusesForType(type) {
 }
 
 export function actionButtonClass(action) {
-  if (action === 'reject') return 'level-requests__button--danger';
+  if (action === 'reject' || action === 'delete_discord') return 'level-requests__button--danger';
   if (action === 'accept' || action === 'complete' || action === 'add_to_rating') {
     return 'level-requests__button--primary';
   }
