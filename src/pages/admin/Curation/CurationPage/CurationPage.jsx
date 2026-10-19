@@ -24,11 +24,17 @@ import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from '@/utils/Utility
 import { FacetQueryBuilder } from '@/components/common/selectors';
 import { buildFacetQueryParam } from '@/utils/facetQueryCodec';
 import { normalizeLevelSearchQuery } from '@/utils/normalizeEntitySearchQuery';
+import { formatRequestCount, pendingRequestTotal, usePendingRequestCounts } from '@/components/requests/pendingRequestCounts';
 
 const CurationPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
+  const canReviewCurationRequests = hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.HEAD_CURATOR]);
+  const { counts: pendingRequestCounts } = usePendingRequestCounts(canReviewCurationRequests);
+  const pendingCurationLabel = formatRequestCount(
+    pendingRequestTotal(pendingRequestCounts, ['curation', 'curation_rerate']),
+  );
   const { curationTypes, reloadCurationTypes, difficultyDict, curationTypesDict } = useDifficultyContext();
   const { t } = useTranslation(['pages', 'common']);
   const pageMeta = useMemo(
@@ -665,9 +671,13 @@ const CurationPage = () => {
           <NavLink
             className="curation-discord-roles-btn"
             to="/admin/requests#curation"
+            aria-label={pendingCurationLabel ? `${t('levelRequests.tabs.requests')} (${pendingCurationLabel})` : t('levelRequests.tabs.requests')}
           >
             <RefreshIcon color="#ffffff" size="18px" />
             {t('levelRequests.tabs.requests')}
+            {pendingCurationLabel && (
+              <span className="request-count-badge" aria-hidden="true">{pendingCurationLabel}</span>
+            )}
           </NavLink>
         </div>
         )}

@@ -6,7 +6,7 @@
     "suffix": "后缀（可选）",
     "artist": "曲师",
     "videoLink": "视频链接",
-    "charter": "谱师",
+    "charter": "采音师",
     "diff": "难度",
     "vfxer": "特效师（选填）",
     "team": "团队（选填）",
@@ -25,7 +25,7 @@
   },
   "videoInfo": {
     "title": "视频标题",
-    "channel": "UP主名称",
+    "channel": "上传者名称",
     "timestamp": "上传时间",
     "nolink": "未提供链接",
     "resolving": "正在解析视频链接……",
@@ -91,7 +91,7 @@
     "searchTeam": "搜索团队……",
     "newCreator": "输入新创作者名称",
     "newTeam": "输入新团队名称",
-    "notes": "可选备注（谱面细节、署名等，供管理员查看）"
+    "notes": "可选备注（谱面细节、参与信息等，供管理员查看）"
   },
   "cdnTos": {
     "title": "CDN 上传确认",

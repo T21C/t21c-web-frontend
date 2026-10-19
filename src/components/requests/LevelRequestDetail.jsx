@@ -100,11 +100,18 @@ const LevelRequestDetail = ({
           <div className="level-requests__headline-text">
             {/*{<strong>{t(`levelRequests.types.${request.type}`)}</strong>*/}
             <div className="level-requests__level-line">
-              {request.level?.missing ? (
-                <strong>{levelTitle}</strong>
-              ) : (
-                <Link to={`/levels/${request.level?.id}`} target="_blank" rel="noopener noreferrer"><strong>{levelTitle}</strong></Link>
-              )}
+              <div className="level-requests__level-title">
+                {request.level?.missing ? (
+                  <strong>{levelTitle}</strong>
+                ) : (
+                  <Link to={`/levels/${request.level?.id}`} target="_blank" rel="noopener noreferrer"><strong>{levelTitle}</strong></Link>
+                )}
+                {(request.type === 'curation' || request.type === 'curation_rerate') && (
+                  (request.level?.curationTypeIds || []).length > 0
+                    ? <LevelRequestCurationTypes ids={request.level.curationTypeIds} variant="icons" />
+                    : <span className="level-requests__hint">{t('levelRequests.form.tagsNone')}</span>
+                )}
+              </div>
               {request.type !== 'rerate' && request.level?.artist && <span>{request.level.artist}</span>}
             </div>
             {request.type === 'rerate' && showCreators && (

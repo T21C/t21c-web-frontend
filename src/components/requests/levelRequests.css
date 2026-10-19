@@ -464,6 +464,14 @@
   font-size: 1.05rem;
 }
 
+.level-requests .level-requests__level-title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
 .level-requests .level-requests__creators {
   color: var(--color-gray-2);
   min-width: 0;

@@ -143,6 +143,7 @@
 }
 
 .curation-page .curation-discord-roles-btn {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -156,6 +157,21 @@
   font-weight: 600;
   text-decoration: none;
   white-space: nowrap;
+}
+
+.curation-page .curation-discord-roles-btn .request-count-badge {
+  position: absolute;
+  top: -0.45rem;
+  right: -0.45rem;
+  min-width: 1.15rem;
+  padding: 0 0.4rem;
+  border-radius: 999px;
+  background-color: var(--danger-color);
+  color: var(--color-white);
+  font-size: 0.8rem;
+  line-height: 1.15rem;
+  text-align: center;
+  pointer-events: none;
 }
 
 .curation-page .curation-discord-roles-btn:hover {
