@@ -6,6 +6,9 @@ const COMMANDS = {
   'level.select': ['selectLevel', 'level.selected'],
   'library.watch': ['watchLibrary', 'library.membership'],
   'library.page': ['libraryPage', 'library.page'],
+  'library.delete': ['deleteLevel', 'library.deleted'],
+  'settings.temp-mode.set': ['setTempDownloadMode', 'settings.changed'],
+  'settings.temp.flush': ['flushTemp', 'settings.changed', true],
   'level.update.check': ['checkUpdate', 'job.started'],
   'level.update.start': ['updateLevel', 'job.started'],
   'level.update.check-all.start': ['checkAll', 'batch.changed', true],
@@ -57,6 +60,7 @@ export function createIpcPort({ registerApp, contract, browser = globalThis.wind
         libraryChanged: ({ summary }) => { push('library.changed', { summary }); },
         membershipChanged: ({ levelIds }) => { push('library.membership', { levelIds }); },
         storageChanged: ({ storage }) => { push('storage.changed', storage); },
+        settingsChanged: ({ settings }) => { push('settings.changed', settings); },
         batchChanged: ({ batch }) => { push('batch.changed', batch); },
         folderSelection: ({ selection }) => { push('folder.selection', selection); },
       });

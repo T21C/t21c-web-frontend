@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "sdk:check": "node scripts/verify-ipc-sdk.mjs",
-    "test:ipc": "node --test tests/tufhelper-session.test.js tests/tufhelper-websocket.test.js tests/tufhelper-typed-interop.test.js tests/replay-delivery.test.js",
+    "test:ipc": "node --test tests/tufhelper-session.test.js tests/tufhelper-connection-notice.test.js tests/tufhelper-library-window.test.js tests/tufhelper-websocket.test.js tests/tufhelper-typed-interop.test.js tests/replay-delivery.test.js",
     "prebuild:dev": "npm run sdk:check",
     "prebuild:staging": "npm run sdk:check",
     "prebuild:prod": "npm run sdk:check",

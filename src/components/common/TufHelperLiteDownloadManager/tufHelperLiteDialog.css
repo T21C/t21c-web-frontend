@@ -1,0 +1,19 @@
+.tufhelper-dialog {
+  box-sizing: border-box;
+}
+
+.tufhelper-dialog.is-resizing {
+  overflow: hidden;
+}
+
+.tufhelper-dialog__body {
+  min-width: 0;
+}
+
+/* Reserve the list's height while its first page loads so the expansion does
+   not end with another size jump when the loading placeholder is replaced. */
+.tufhelper-dialog .tufhelper-download-manager__empty {
+  box-sizing: border-box;
+  height: min(417px, 48svh);
+  min-height: min(417px, 48svh);
+}

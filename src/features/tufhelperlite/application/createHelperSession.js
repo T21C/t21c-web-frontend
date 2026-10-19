@@ -1,7 +1,7 @@
 // The application consumes a message-session port; neither React nor the SDK belongs here.
 const value = (object, name) => object != null && Object.prototype.hasOwnProperty.call(object, name)
   ? object[name] : object?.[name.charAt(0).toUpperCase() + name.slice(1)];
-const initial = () => ({ connected: false, connectionError: null, health: null, jobs: [], levelIds: [], storage: null, batch: null, summary: null });
+const initial = () => ({ connected: false, connectionError: null, health: null, jobs: [], levelIds: [], storage: null, settings: null, batch: null, summary: null });
 const failure = (payload) => Object.assign(new Error(value(payload, 'message') || 'The game could not complete this action.'), { code: value(payload, 'code') || value(payload, 'errorCode') });
 
 export function createHelperSession({ createPort, timeoutMs = 30000 }) {
@@ -44,7 +44,7 @@ export function createHelperSession({ createPort, timeoutMs = 30000 }) {
   const receive = (name, payload, message = {}) => {
     if (name === 'snapshot') {
       lastInterest = null;
-      update({ connected: true, connectionError: null, levelIds: [], health: value(payload, 'health'), jobs: value(payload, 'jobs') || [], storage: value(payload, 'storage'), batch: value(payload, 'batch'), summary: value(payload, 'summary') });
+      update({ connected: true, connectionError: null, levelIds: [], health: value(payload, 'health'), jobs: value(payload, 'jobs') || [], storage: value(payload, 'storage'), settings: value(payload, 'settings') ?? null, batch: value(payload, 'batch'), summary: value(payload, 'summary') });
       sendInterests();
     } else if (name === 'jobs.changed') update({ jobs: value(payload, 'jobs') || [] });
     else if (name === 'job.started') {
@@ -54,6 +54,7 @@ export function createHelperSession({ createPort, timeoutMs = 30000 }) {
     } else if (name === 'library.membership') update({ levelIds: value(payload, 'levelIds') || [] });
     else if (name === 'library.changed') update({ summary: value(payload, 'summary') });
     else if (name === 'storage.changed') update({ storage: payload });
+    else if (name === 'settings.changed') update({ settings: payload });
     else if (name === 'batch.changed') update({ batch: payload });
     else if (name === 'folder.selection') {
       folders.set(value(payload, 'operationId'), payload);
@@ -133,6 +134,9 @@ export function createHelperSession({ createPort, timeoutMs = 30000 }) {
     retryChange: () => expect('storage.changed', 'storage.change.retry', {}),
     retryMigration: () => expect('storage.changed', 'storage.migration.retry', {}),
     cancelChange: () => expect('storage.changed', 'storage.change.cancel', {}),
+    setTempDownloadMode: (enabled) => expect('settings.changed', 'settings.temp-mode.set', { enabled }),
+    flushTemp: () => expect('settings.changed', 'settings.temp.flush', {}),
+    deleteLevel: (id) => expect('library.deleted', 'library.delete', { id: String(id) }),
     waitForJob: async (jobId, options) => {
       const snapshot = await observe((next) => next.jobs.some((job) => value(job, 'jobId') === jobId && value(job, 'done')), { ...options, noDeadline: true });
       return snapshot.jobs.find((job) => value(job, 'jobId') === jobId);

@@ -36,7 +36,7 @@ import {
   useTufHelperLiteBatch,
   useTufHelperLiteHealth,
 } from '@/hooks/useTufHelperLiteIpc';
-import { TufHelperLiteDownloadManager } from '@/components/common/TufHelperLiteDownloadManager';
+import { TufHelperLiteDialogs } from '@/components/common/TufHelperLiteDownloadManager/TufHelperLiteDialogs';
 
 const limit = 50;
 
@@ -174,7 +174,7 @@ const LevelPage = ({
   const [searchInput, setSearchInput] = useState(query);
   const [hiddenTagIds, setHiddenTagIds] = useHiddenLevelCardTagsPreference();
   const [loadingMore, setLoadingMore] = useState(false);
-  const [showDownloadManager, setShowDownloadManager] = useState(false);
+  const [tufHelperDialog, setTufHelperDialog] = useState(null);
   const downloadStorage = useTufHelperLiteStorage();
   const downloadBatch = useTufHelperLiteBatch();
   const downloadManagerButtonRef = useRef(null);
@@ -198,9 +198,10 @@ const LevelPage = ({
       : 0;
 
   const closeDownloadManager = useCallback(() => {
-    setShowDownloadManager(false);
+    setTufHelperDialog(null);
     window.requestAnimationFrame(() => downloadManagerButtonRef.current?.focus());
   }, []);
+
 
   const showC0V0CurationIcons = useMemo(() => {
     const includedIds = collectFacetDomainIncludedIds(levelFacetFilters.curationTypes);
@@ -790,17 +791,14 @@ const LevelPage = ({
            <Tooltip id="state-display" place="bottom" noArrow>
              {t('level.toolTip.stateDisplay')}
            </Tooltip>
-           <Tooltip id="tufhelper-download-manager" place="bottom" noArrow>
-             {tc('level.tufHelperLiteDownloadManager.open')}
-           </Tooltip>
         </div>
 
-        {showDownloadManager ? (
-          <TufHelperLiteDownloadManager
-            onClose={closeDownloadManager}
-            health={tufHelperLiteHealth}
-          />
-        ) : null}
+        <TufHelperLiteDialogs
+          active={tufHelperDialog}
+          onChange={setTufHelperDialog}
+          onClose={closeDownloadManager}
+          health={tufHelperLiteHealth}
+        />
 
         <div className="input-setting">
 
@@ -972,9 +970,8 @@ const LevelPage = ({
                     ref={downloadManagerButtonRef}
                     type="button"
                     className={`tufhelper-download-manager-button${downloadManagerActive ? ' is-migrating' : ''}`}
-                    onClick={() => setShowDownloadManager(true)}
-                    aria-label={tc('level.tufHelperLiteDownloadManager.open')}
-                    data-tooltip-id="tufhelper-download-manager"
+                    onClick={() => setTufHelperDialog('settings')}
+                    aria-label={tc('level.tufHelperLiteSettings.title')}
                     style={{ '--tufhelper-storage-progress': `${Math.round(downloadManagerProgress * 100)}%` }}
                   >
                     <TUFHelperLiteIcon
@@ -982,7 +979,7 @@ const LevelPage = ({
                       size={26}
                       aria-hidden="true"
                     />
-                    <span>{tc('level.tufHelperLiteDownloadManager.open')}</span>
+                    <span>{tc('level.tufHelperLiteSettings.title')}</span>
                   </button>
                 )}
               </div>

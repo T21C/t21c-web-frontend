@@ -12,7 +12,7 @@
 
 .tufhelper-download-manager {
   position: relative;
-  width: min(820px, 100%);
+  width: min(880px, 100%);
   max-height: min(1230px, calc(100svh - 2rem));
   overflow-y: auto;
   padding: 1.5rem;
@@ -197,7 +197,7 @@
 .tufhelper-download-manager__level-row {
   display: grid;
   min-height: 76px;
-  grid-template-columns: 48px minmax(170px, 1.5fr) minmax(120px, 0.85fr) 82px minmax(142px, auto);
+  grid-template-columns: 48px minmax(150px, 1.5fr) minmax(100px, 0.85fr) 72px minmax(184px, auto);
   align-items: center;
   gap: 0.9rem;
   padding: 0.65rem 0.45rem;
@@ -465,6 +465,371 @@
   gap: 0.25rem;
 }
 
+.tufhelper-download-manager__level-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.tufhelper-download-manager__delete {
+  flex: 0 0 36px;
+  min-width: 36px;
+  min-height: 36px !important;
+  padding: 0.45rem !important;
+  background: transparent !important;
+}
+
+.tufhelper-download-manager__delete:hover:not(:disabled),
+.tufhelper-download-manager button.is-danger {
+  border-color: #de7878;
+  color: #ffadad;
+}
+
+.tufhelper-download-manager__delete .is-spinning {
+  animation: tufhelper-manager-spin 800ms linear infinite;
+}
+
+.tufhelper-download-manager.tufhelper-settings {
+  width: min(35rem, 100%);
+  padding: 1.25rem;
+}
+
+.tufhelper-settings .tufhelper-download-manager__header {
+  gap: 0.7rem;
+  padding-bottom: 1.1rem;
+  border-bottom: 1px solid var(--color-white-t10);
+}
+
+.tufhelper-settings .tufhelper-download-manager__mark {
+  flex-basis: 34px;
+  width: 34px;
+  height: 34px;
+}
+
+.tufhelper-settings .tufhelper-download-manager__mark svg {
+  width: 21px;
+  height: 21px;
+}
+
+.tufhelper-settings h2 {
+  font-size: 1.1rem;
+  line-height: 1.3;
+  font-weight: 600;
+}
+
+.tufhelper-settings .tufhelper-download-manager__close.tuf-close-button {
+  width: 32px;
+  min-height: 32px;
+  height: 32px;
+  top: 1.25rem;
+  right: 1.25rem;
+  border-color: transparent;
+  background: transparent;
+}
+
+.tufhelper-settings__section {
+  margin-top: 1.15rem;
+}
+
+.tufhelper-settings__toggle strong {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.tufhelper-settings__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  cursor: pointer;
+}
+
+.tufhelper-settings__toggle p,
+.tufhelper-settings__hint {
+  margin-top: 0.35rem !important;
+  color: var(--color-white-t60, #aaa);
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.tufhelper-settings__toggle input {
+  appearance: none;
+  flex: 0 0 auto;
+  width: 38px;
+  height: 22px;
+  margin: 0;
+  padding: 2px;
+  border: 1px solid var(--color-white-t30, #666);
+  border-radius: 99px;
+  background: #555;
+  cursor: pointer;
+}
+
+.tufhelper-settings__toggle input::before {
+  display: block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  content: '';
+  transition: transform 150ms ease;
+}
+
+.tufhelper-settings__toggle input:checked {
+  border-color: var(--btn-primary, #8f4bdb);
+  background: var(--btn-primary, #8f4bdb);
+}
+
+.tufhelper-settings__toggle input:checked::before {
+  transform: translateX(16px);
+}
+
+.tufhelper-settings__toggle input:focus-visible {
+  outline: 2px solid var(--btn-primary-light-hover, #fff);
+  outline-offset: 3px;
+}
+
+.tufhelper-settings__toggle input:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.tufhelper-settings__temp {
+  margin-top: 1rem;
+  padding: 0.8rem;
+  border: 1px solid var(--color-white-t10);
+  border-radius: 6px;
+  background: var(--color-white-t05, rgba(255, 255, 255, 0.03));
+}
+
+.tufhelper-settings .tufhelper-settings__temp code {
+  overflow-wrap: anywhere;
+  font-size: 0.78rem;
+  font-weight: 400;
+}
+
+.tufhelper-settings__flush {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0.8rem;
+}
+
+.tufhelper-settings__info {
+  position: relative;
+  display: inline-flex;
+}
+
+.tufhelper-settings__info-button {
+  min-width: 32px;
+  min-height: 32px !important;
+  padding: 0.3rem !important;
+  border-color: transparent !important;
+  background: transparent !important;
+}
+
+.tufhelper-settings__info [role="tooltip"] {
+  position: absolute;
+  z-index: 2;
+  bottom: calc(100% + 0.5rem);
+  left: -6.5rem;
+  width: min(280px, calc(100vw - 4rem));
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--color-white-t20);
+  border-radius: 6px;
+  background: #292929;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.tufhelper-settings__info:hover [role="tooltip"],
+.tufhelper-settings__info:focus-within [role="tooltip"] {
+  visibility: visible;
+}
+
+.tufhelper-settings__downloads {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-white-t10);
+}
+
+.tufhelper-settings__downloads-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.tufhelper-settings__downloads-label svg {
+  color: var(--color-white-t60, #aaa);
+}
+
+.tufhelper-settings .tufhelper-settings__manage {
+  width: auto;
+  min-height: 34px;
+  padding: 0.35rem 0;
+  border-color: transparent;
+  font-size: 0.8rem;
+  background: transparent;
+}
+
+.tufhelper-settings .tufhelper-settings__manage:hover:not(:disabled) {
+  border-color: transparent;
+  background: transparent;
+  text-decoration: none;
+}
+
+.tufhelper-settings__manage:hover:not(:disabled) .tufhelper-settings__manage-label {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.tufhelper-settings__manage-arrow {
+  margin-left: 0.15rem;
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.tufhelper-settings .tufhelper-settings__storage {
+  margin-top: 1.15rem;
+  padding-top: 1.1rem;
+}
+
+.tufhelper-settings__storage .tufhelper-download-manager__section-heading {
+  align-items: center;
+  margin-bottom: 0.45rem;
+}
+
+.tufhelper-settings__storage .tufhelper-download-manager__section-heading h3 {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.tufhelper-settings__folder-field {
+  display: flex;
+  min-width: 0;
+  border: 1px solid var(--color-white-t20, #555);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.tufhelper-settings__storage-path {
+  position: relative;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 0;
+  padding: 0.75rem;
+  color: var(--color-white-t80, #ddd);
+  border-radius: 7px 0 0 7px;
+}
+
+.tufhelper-settings__storage-path > svg {
+  flex: 0 0 auto;
+  color: var(--color-white-t60, #aaa);
+}
+
+.tufhelper-settings__path-text {
+  display: flex;
+  min-width: 0;
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+.tufhelper-settings__path-parent {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tufhelper-settings__path-name {
+  flex-shrink: 0;
+  max-width: 65%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tufhelper-settings__full-path {
+  display: none;
+  position: absolute;
+  z-index: 2;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--color-white-t20, #555);
+  border-radius: 6px;
+  background: #262626;
+  color: var(--color-white, #fff);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.tufhelper-settings__storage-path:hover .tufhelper-settings__full-path,
+.tufhelper-settings__storage-path:focus .tufhelper-settings__full-path {
+  display: block;
+}
+
+.tufhelper-settings__storage-path:focus-visible {
+  outline: 2px solid var(--btn-primary, #8f4bdb);
+  outline-offset: 2px;
+}
+
+.tufhelper-settings .tufhelper-settings__restore {
+  min-height: 28px;
+  padding: 0.2rem 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-white-t80, #ddd);
+  font-size: 0.78rem;
+  text-decoration: underline;
+  text-decoration-color: var(--color-white-t30);
+  text-underline-offset: 0.2em;
+}
+
+.tufhelper-settings .tufhelper-settings__restore:hover:not(:disabled) {
+  background: transparent;
+  color: var(--color-white);
+  text-decoration-color: currentColor;
+}
+
+.tufhelper-settings .tufhelper-settings__change-folder {
+  flex: 0 0 auto;
+  align-self: stretch;
+  min-height: 44px;
+  padding: 0.6rem 0.85rem;
+  border: 0;
+  border-left: 1px solid var(--color-white-t20, #555);
+  border-radius: 0 7px 7px 0;
+  background: var(--color-white-t10, rgba(255, 255, 255, 0.1));
+  color: var(--color-white);
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.tufhelper-settings .tufhelper-settings__change-folder:hover:not(:disabled) {
+  border-color: var(--color-white-t20, #555);
+  background: var(--color-white-t20, rgba(255, 255, 255, 0.2));
+}
+
+.tufhelper-settings .tufhelper-settings__restore {
+  margin-top: 0.5rem;
+  color: var(--color-white-t60, #aaa);
+}
+
 .tufhelper-download-manager__level-update-error {
   display: flex;
   max-width: 190px;
@@ -679,6 +1044,15 @@
 }
 
 @media (max-width: 700px) {
+  .tufhelper-settings .tufhelper-settings__manage {
+    min-height: 44px;
+  }
+
+  .tufhelper-settings .tufhelper-settings__change-folder,
+  .tufhelper-settings .tufhelper-settings__restore {
+    min-height: 44px;
+  }
+
   .tufhelper-download-manager__overlay {
     align-items: end;
     padding: 0;
@@ -724,6 +1098,11 @@
 
   .tufhelper-download-manager__update {
     width: 100%;
+    min-height: 44px !important;
+  }
+
+  .tufhelper-download-manager__delete {
+    flex-basis: 44px;
     min-height: 44px !important;
   }
 

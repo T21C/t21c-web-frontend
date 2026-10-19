@@ -14,7 +14,7 @@ async function until(predicate, message, milliseconds = 10000) {
   assert.ok(predicate(), message);
 }
 
-test('vendored typed SDK and real TUFHelper services preserve push, targeting, cancellation and reconnect', {
+test('real TUFHelper services preserve settings, deletion, push, targeting, cancellation and reconnect', {
   skip: !process.env.TUFHELPER_IPC_FIXTURE || !globalThis.WebSocket,
 }, async (t) => {
   // eslint-disable-next-line import/extensions
@@ -82,6 +82,47 @@ test('vendored typed SDK and real TUFHelper services preserve push, targeting, c
   const missing = await first.session.cancelJob('missing');
   assert.equal(missing.ok, false); assert.equal(missing.cancelled, false); assert.equal(missing.jobId, 'missing');
 
+  const stats = async () => {
+    const output = await server.control('stats');
+    return JSON.parse(output.match(/IPC_TUFHELPER_STATS=(\{[^\n]+\})/)[1]);
+  };
+  const unwatch = first.session.watchLevel('123');
+  await server.control('library.seed');
+  await until(() => first.session.getSnapshot().summary?.levelCount === 1 && second.session.getSnapshot().summary?.levelCount === 1, 'seeded library summary was not broadcast');
+  await until(() => first.session.getSnapshot().levelIds.includes('123'), 'visible downloaded membership was not refreshed');
+  assert.deepEqual(second.session.getSnapshot().levelIds, [], 'library membership leaked to an uninterested app');
+  assert.equal((await first.session.page({})).items[0].id, 123);
+
+  const enabled = await first.session.setTempDownloadMode(true);
+  assert.equal(enabled.tempDownloadMode, true);
+  assert.match(enabled.tempDirectory.replaceAll('\\', '/'), /\/Downloads\/temp$/);
+  await until(() => second.session.getSnapshot().settings?.tempDownloadMode === true, 'settings change was not pushed to the other app');
+  await until(() => first.session.getSnapshot().levelIds.length === 0, 'persistent membership remained active in temp mode');
+  await assert.rejects(first.session.deleteLevel('123'), (error) => error.code === 'temp_download_mode_enabled');
+  await assert.rejects(first.session.pickFolder(true), (error) => error.code === 'temp_download_mode_enabled');
+  await server.control('temp.seed');
+  assert.equal((await stats()).tempHasFiles, true);
+  await first.session.flushTemp();
+  const flushed = await stats();
+  assert.equal(flushed.tempExists, true); assert.equal(flushed.tempHasFiles, false);
+  assert.equal(flushed.persistent123Exists, true, 'flush deleted the persistent library');
+  const late = createPeer();
+  await late.session.connect();
+  assert.equal(late.session.getSnapshot().settings.tempDownloadMode, true, 'new app snapshot omitted saved settings');
+  late.session.close();
+
+  await first.session.setTempDownloadMode(false);
+  await until(() => second.session.getSnapshot().settings?.tempDownloadMode === false, 'persistent mode was not restored in the other app');
+  await until(() => first.session.getSnapshot().levelIds.includes('123'), 'persistent library interests were not restored');
+  await assert.rejects(first.session.deleteLevel('../123'), (error) => error.code === 'invalid_level_id');
+  assert.deepEqual({ ...await first.session.deleteLevel('123') }, { ok: true, id: '123', deleted: true });
+  await until(() => first.session.getSnapshot().summary?.levelCount === 0 && second.session.getSnapshot().summary?.levelCount === 0, 'deletion summary did not reach all apps');
+  await until(() => first.session.getSnapshot().levelIds.length === 0, 'deleted level stayed in membership');
+  assert.equal((await stats()).persistent123Exists, false, 'delete did not remove the actual managed directory');
+  assert.equal((await first.session.page({})).items.length, 0);
+  assert.equal((await first.session.deleteLevel('123')).deleted, false);
+  unwatch();
+
   const jobsBefore = first.pushes.jobsChanged || 0;
   const progress = await server.control('progress');
   const progressJobId = progress.match(/IPC_TUFHELPER_PROGRESS_JOB_ID=([^\r\n]+)/)[1];
@@ -89,6 +130,8 @@ test('vendored typed SDK and real TUFHelper services preserve push, targeting, c
   await until(() => second.session.getSnapshot().jobs.some((job) => job.jobId === progressJobId), 'progress push did not reach the second app');
   assert.ok(first.pushes.jobsChanged > jobsBefore);
   assert.equal(first.session.getSnapshot().jobs.find((job) => job.jobId === progressJobId).progress, 0.5);
+  await assert.rejects(first.session.setTempDownloadMode(true), (error) => error.code === 'download_jobs_active');
+  await assert.rejects(first.session.flushTemp(), (error) => error.code === 'download_jobs_active');
   const finished = first.session.waitForJob(progressJobId);
   assert.equal((await first.session.cancelJob(progressJobId)).cancelled, true);
   assert.equal((await finished).status, 'cancelled');
@@ -120,8 +163,7 @@ test('vendored typed SDK and real TUFHelper services preserve push, targeting, c
   assert.notEqual(first.channel.sessionId, firstSession);
   assert.equal(first.pushes.snapshot, 2); assert.equal(second.pushes.snapshot, 2);
   assert.deepEqual(first.session.getSnapshot().jobs, []);
-  const stats = await server.control('stats');
-  const totals = JSON.parse(stats.match(/IPC_TUFHELPER_STATS=(\{[^\n]+\})/)[1]);
+  const totals = await stats();
   assert.equal(totals.folderStarts, 0, 'reconnection replayed an unfinished folder action');
 
   const firstJobs = first.pushes.jobsChanged || 0; const secondJobs = second.pushes.jobsChanged || 0;

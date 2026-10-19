@@ -106,3 +106,41 @@ test('explicit nullable summary values remain null in application snapshots', as
   assert.equal(session.getSnapshot().summary, null);
   session.close();
 });
+
+test('temp settings hydrate from snapshots and pushed changes independently of storage', async () => {
+  const { session, peers } = harness(); await session.connect();
+  const settings = { tempDownloadMode: true, tempDirectory: '/Mods/TUFHelperLite/Downloads/temp' };
+  peers[0].receive('snapshot', { health: {}, jobs: [], settings, storage: { state: 'idle' } });
+  assert.deepEqual(session.getSnapshot().settings, settings);
+  peers[0].receive('settings.changed', { ...settings, tempDownloadMode: false });
+  assert.equal(session.getSnapshot().settings.tempDownloadMode, false);
+  assert.equal(session.getSnapshot().storage.state, 'idle');
+  session.close();
+  assert.equal(session.getSnapshot().settings, null);
+});
+
+test('temp mode, flush and delete commands correlate results without replaying mutations', async () => {
+  const { session, peers } = harness(); await session.connect();
+  const mode = session.setTempDownloadMode(true);
+  assert.deepEqual(peers[0].sent.at(-1).payload, { enabled: true });
+  assert.equal(peers[0].sent.at(-1).name, 'settings.temp-mode.set');
+  peers[0].receive('settings.changed', { tempDownloadMode: true, tempDirectory: '/temp' }, { correlationId: peers[0].sent.at(-1).id });
+  assert.equal((await mode).tempDownloadMode, true);
+  const flush = session.flushTemp();
+  assert.equal(peers[0].sent.at(-1).name, 'settings.temp.flush');
+  peers[0].receive('settings.changed', { tempDownloadMode: true, tempDirectory: '/temp' }, { correlationId: peers[0].sent.at(-1).id });
+  await flush;
+  const deletion = session.deleteLevel(42);
+  const command = peers[0].sent.at(-1);
+  assert.equal(command.name, 'library.delete');
+  assert.deepEqual(command.payload, { id: '42' });
+  peers[0].receive('library.deleted', { ok: true, id: '42', deleted: true }, { correlationId: command.id });
+  assert.equal((await deletion).deleted, true);
+  const interrupted = session.deleteLevel(43);
+  const rejection = assert.rejects(interrupted, /interrupted/);
+  peers[0].state(false); await rejection;
+  peers[0].receive('snapshot', { health: {}, jobs: [], settings: { tempDownloadMode: true }, summary: null });
+  assert.equal(peers[0].sent.filter((item) => item.name === 'library.delete').length, 2);
+  assert.equal(session.getSnapshot().settings.tempDownloadMode, true);
+  session.close();
+});

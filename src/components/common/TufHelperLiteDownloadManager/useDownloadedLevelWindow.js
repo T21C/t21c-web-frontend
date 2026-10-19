@@ -7,6 +7,7 @@ import {
 import {
   mergeDownloadedLevelPage,
   mergePositionedDownloadedLevelPage,
+  removeDownloadedLevel,
 } from './downloadLevelWindowState';
 
 const PAGE_SIZE = 20;
@@ -68,6 +69,9 @@ const isStaleCursor = (error) => (
 export const useDownloadedLevelWindow = (enabled, positionedPagesEnabled = false) => {
   const generationRef = useRef(0);
   const requestRef = useRef({ next: false, previous: false });
+  const deletionRef = useRef({ pending: false, revision: 0 });
+  const cursorsDirtyRef = useRef(false);
+  const [deletionVersion, setDeletionVersion] = useState(0);
   const visibleRangeRef = useRef({ startIndex: 0, endIndex: 0 });
   const [windowState, setWindowState] = useState({
     pages: [],
@@ -76,7 +80,9 @@ export const useDownloadedLevelWindow = (enabled, positionedPagesEnabled = false
     totalCount: 0,
     positioned: false,
   });
+  const [retainedWindow, setRetainedWindow] = useState(null);
   const [summary, setSummary] = useState(null);
+  const [reportedSummary, setReportedSummary] = useState(null);
   const observedSummary = useTufHelperLiteSummary();
   const [loading, setLoading] = useState({ initial: false, next: false, previous: false });
   const [errors, setErrors] = useState({ initial: null, next: null, previous: null });
@@ -84,7 +90,7 @@ export const useDownloadedLevelWindow = (enabled, positionedPagesEnabled = false
   const loadSummary = useCallback(async (generation) => {
     try {
       const next = normalizeSummary(await getTufHelperLiteDownloadedLevelSummary());
-      if (generationRef.current === generation) setSummary(next);
+      if (generationRef.current === generation) setReportedSummary(next);
     } catch (error) {
       if (generationRef.current === generation) {
         setSummary({ state: 'failed', errorCode: errorCode(error), message: error?.message });
@@ -103,6 +109,9 @@ export const useDownloadedLevelWindow = (enabled, positionedPagesEnabled = false
       const page = normalizePage(await getTufHelperLiteDownloadedLevelPage({ limit: PAGE_SIZE }), request);
       if (generationRef.current !== generation) return;
       const positioned = positionedPagesEnabled && page.startIndex != null && page.totalCount != null;
+      cursorsDirtyRef.current = false;
+      setSummary((current) => current && current.revision !== page.revision
+        ? { ...current, revision: page.revision } : current);
       setWindowState({
         pages: [page],
         revision: page.revision,
@@ -117,6 +126,7 @@ export const useDownloadedLevelWindow = (enabled, positionedPagesEnabled = false
     } finally {
       if (generationRef.current === generation) {
         requestRef.current.next = false;
+        requestRef.current.refresh = false;
         setLoading((current) => ({ ...current, initial: false }));
       }
     }
@@ -126,11 +136,15 @@ export const useDownloadedLevelWindow = (enabled, positionedPagesEnabled = false
     generationRef.current += 1;
     const generation = generationRef.current;
     requestRef.current = { next: false, previous: false };
+    deletionRef.current = { pending: false, revision: 0 };
+    cursorsDirtyRef.current = false;
     setWindowState({
       pages: [], revision: 0, firstItemIndex: INITIAL_ITEM_INDEX, totalCount: 0, positioned: false,
     });
+    setRetainedWindow(null);
     visibleRangeRef.current = { startIndex: 0, endIndex: 0 };
     setSummary(null);
+    setReportedSummary(null);
     setErrors({ initial: null, next: null, previous: null });
     if (enabled) {
       void loadInitial();
@@ -140,26 +154,42 @@ export const useDownloadedLevelWindow = (enabled, positionedPagesEnabled = false
   }, [enabled, loadInitial, loadSummary]);
 
   useEffect(() => {
-    if (enabled && observedSummary) setSummary(normalizeSummary(observedSummary));
+    if (enabled && observedSummary) setReportedSummary(normalizeSummary(observedSummary));
   }, [enabled, observedSummary]);
 
+  useEffect(() => {
+    if (!enabled || !reportedSummary || deletionRef.current.pending) return;
+    const localRevision = deletionRef.current.revision;
+    // Deletion notifications can precede the RPC response. A calculating
+    // snapshot still contains the old totals; retain our confirmed local edit
+    // until its ready snapshot arrives, without reloading any loaded pages.
+    if (localRevision && reportedSummary.revision < localRevision) return;
+    if (localRevision === reportedSummary.revision && reportedSummary.state === 'calculating') return;
+    setSummary(reportedSummary);
+  }, [deletionVersion, enabled, reportedSummary]);
+
   const resetForStaleCursor = useCallback(() => {
+    if (windowState.positioned) setRetainedWindow((current) => current || windowState);
     generationRef.current += 1;
-    requestRef.current = { next: false, previous: false };
-    setWindowState({
-      pages: [], revision: 0, firstItemIndex: INITIAL_ITEM_INDEX, totalCount: 0, positioned: false,
-    });
-    visibleRangeRef.current = { startIndex: 0, endIndex: 0 };
+    // Retain the current rows while renewing invalid cursors. Clearing them here
+    // unmounts Virtuoso and flashes an empty/loading view after every deletion.
+    requestRef.current = { next: false, previous: false, refresh: true };
+    setLoading({ initial: true, next: false, previous: false });
+    setErrors({ initial: null, next: null, previous: null });
     void loadInitial();
     void loadSummary(generationRef.current);
-  }, [loadInitial, loadSummary]);
+  }, [loadInitial, loadSummary, windowState]);
 
   const loadDirection = useCallback(async (direction) => {
     const pages = windowState.pages;
     const boundaryPage = direction === 'previous' ? pages[0] : pages[pages.length - 1];
     const hasMore = direction === 'previous' ? boundaryPage?.hasPrevious : boundaryPage?.hasNext;
     const cursor = direction === 'previous' ? boundaryPage?.previousCursor : boundaryPage?.nextCursor;
-    if (!enabled || !boundaryPage || !hasMore || !cursor || requestRef.current[direction] || requestRef.current.refresh) return;
+    if (!enabled || deletionRef.current.pending || !boundaryPage || !hasMore || !cursor || requestRef.current[direction] || requestRef.current.refresh) return;
+    if (cursorsDirtyRef.current) {
+      resetForStaleCursor();
+      return;
+    }
 
     const generation = generationRef.current;
     requestRef.current[direction] = true;
@@ -210,13 +240,30 @@ export const useDownloadedLevelWindow = (enabled, positionedPagesEnabled = false
   const itemsByIndex = useMemo(() => {
     const items = new Map();
     if (!windowState.positioned) return items;
+    const freshIds = new Set(windowState.pages.flatMap((page) => page.items.map((item) => item.id)));
+    // Keep only the previous bounded window while fresh cursors walk back to
+    // the visible range; rows do not turn into skeletons during that renewal.
+    retainedWindow?.pages.forEach((page) => {
+      page.items.forEach((item, offset) => {
+        const index = page.startIndex + offset;
+        if (index < windowState.totalCount && !freshIds.has(item.id)) items.set(index, item);
+      });
+    });
     windowState.pages.forEach((page) => {
       page.items.forEach((item, offset) => items.set(page.startIndex + offset, item));
     });
     return items;
-  }, [windowState.pages, windowState.positioned]);
+  }, [retainedWindow, windowState.pages, windowState.positioned, windowState.totalCount]);
   useEffect(() => {
-    if (enabled && summary?.revision && windowState.revision && summary.revision !== windowState.revision) resetForStaleCursor();
+    if (!retainedWindow || requestRef.current.refresh) return;
+    const fresh = new Set(windowState.pages.flatMap((page) => page.items.map((_, offset) => page.startIndex + offset)));
+    const range = visibleRangeRef.current;
+    const end = Math.min(range.endIndex, windowState.totalCount - 1);
+    for (let index = range.startIndex; index <= end; index++) if (!fresh.has(index)) return;
+    setRetainedWindow(null);
+  }, [retainedWindow, windowState.pages, windowState.revision, windowState.totalCount]);
+  useEffect(() => {
+    if (enabled && !deletionRef.current.pending && summary?.revision > windowState.revision && windowState.revision) resetForStaleCursor();
   }, [enabled, resetForStaleCursor, summary?.revision, windowState.revision]);
 
   const loadNext = useCallback(() => loadDirection('next'), [loadDirection]);
@@ -230,12 +277,16 @@ export const useDownloadedLevelWindow = (enabled, positionedPagesEnabled = false
     const loadedStartIndex = firstPage.startIndex;
     const loadedEndIndex = lastPage.startIndex + lastPage.items.length - 1;
 
-    if (hasPrevious && !errors.previous && range.startIndex <= loadedStartIndex + 5) {
+    // After a local deletion the cached rows remain valid, but their opaque
+    // cursors do not. Renew them only when the viewport needs an uncached row.
+    const margin = cursorsDirtyRef.current ? -1 : 5;
+    if (hasPrevious && !errors.previous && range.startIndex <= loadedStartIndex + margin) {
       void loadPrevious();
-    } else if (hasNext && !errors.next && range.endIndex >= loadedEndIndex - 5) {
+    } else if (hasNext && !errors.next && range.endIndex >= loadedEndIndex - margin) {
       void loadNext();
     }
   }, [
+    deletionVersion,
     errors.next,
     errors.previous,
     hasNext,
@@ -279,17 +330,23 @@ export const useDownloadedLevelWindow = (enabled, positionedPagesEnabled = false
         return normalizePage(await getTufHelperLiteDownloadedLevelPage(request), request);
       }));
       if (generationRef.current !== generation) return;
-      if (refreshed.some((page) => page.revision !== windowState.revision)) {
+      if (refreshed.some((page) => page.revision !== refreshed[0].revision)) {
         resetForStaleCursor();
         return;
       }
-      if (windowState.positioned && refreshed.some((page) => page.totalCount !== windowState.totalCount)) {
+      // An initial page can be replaced directly across revisions; subsequent
+      // pages with stale opaque cursors fall back to the non-clearing refresh.
+      if (refreshed[0].revision !== windowState.revision && pages.some((page) => page.requestCursor)) {
         resetForStaleCursor();
         return;
       }
       requestRef.current.refresh = false;
+      setSummary((current) => current && current.revision !== refreshed[0].revision
+        ? { ...current, revision: refreshed[0].revision } : current);
       setWindowState((current) => ({
         ...current,
+        revision: refreshed[0].revision,
+        totalCount: current.positioned ? refreshed[0].totalCount : current.totalCount,
         pages: current.positioned
           ? [...refreshed].sort((left, right) => left.startIndex - right.startIndex)
           : refreshed,
@@ -311,6 +368,31 @@ export const useDownloadedLevelWindow = (enabled, positionedPagesEnabled = false
       })),
     }));
   }, []);
+  const beginDeletion = useCallback(() => {
+    deletionRef.current.pending = true;
+    // Ignore page responses started before the deletion, which could otherwise
+    // restore the deleted row or renew stale cursors as the RPC completes.
+    generationRef.current += 1;
+    requestRef.current = { next: false, previous: false };
+    setLoading({ initial: false, next: false, previous: false });
+  }, []);
+  const finishDeletion = useCallback((level) => {
+    deletionRef.current.pending = false;
+    if (level) {
+      const revision = Math.max(windowState.revision, deletionRef.current.revision) + 1;
+      deletionRef.current.revision = revision;
+      cursorsDirtyRef.current = true;
+      setWindowState((current) => ({ ...removeDownloadedLevel(current, level.id), revision }));
+      setRetainedWindow((current) => current && removeDownloadedLevel(current, level.id));
+      setSummary((current) => current && ({
+        ...current,
+        revision,
+        levelCount: Math.max(0, (windowState.positioned ? windowState.totalCount : current.levelCount) - 1),
+        totalSizeBytes: Math.max(0, current.totalSizeBytes - level.sizeBytes),
+      }));
+    }
+    setDeletionVersion((current) => current + 1);
+  }, [windowState.positioned, windowState.revision, windowState.totalCount]);
 
   return {
     levels,
@@ -329,6 +411,8 @@ export const useDownloadedLevelWindow = (enabled, positionedPagesEnabled = false
     retryInitial: loadInitial,
     reload: refreshLoadedPages,
     patchLevel,
+    beginDeletion,
+    finishDeletion,
     refreshSummary,
   };
 };

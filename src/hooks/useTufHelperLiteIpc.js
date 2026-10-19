@@ -1,6 +1,11 @@
 import { useEffect, useSyncExternalStore } from "react";
 import { helperSession } from "@/features/tufhelperlite/composition";
 import {
+  getConnectionErrorCode,
+  getVersionMismatch,
+  updateConnectionNotice,
+} from '@/features/tufhelperlite/application/connectionNotice';
+import {
   CLIENT_PREF_KEYS,
   getClientPreference,
   readBootTufHelperLiteNeverShow,
@@ -191,12 +196,10 @@ helperSession.subscribe(() => {
   setTufHelperLiteHealthSnapshot({ isAvailable: snapshot.connected, isChecking: false, port: null, capabilities: field(snapshot.health, 'capabilities') || [] });
   setTufHelperLiteJobsSnapshot({ jobs: snapshot.jobs });
   setTufHelperLiteDownloadedIdsSnapshot({ levelIds: snapshot.levelIds, levelIdSet: new Set(snapshot.levelIds.map(String)) });
-  if (!snapshot.connected && tufHelperLiteIntegrationSnapshot.state === 'enabled') setTufHelperLiteIntegrationSnapshot({ state: 'unavailable', isSessionDismissed: false, errorCode: snapshot.connectionError?.code || 'DISCONNECTED' });
-  else if (snapshot.connected && tufHelperLiteIntegrationSnapshot.state === 'unavailable') setTufHelperLiteIntegrationSnapshot({ state: 'enabled', isSessionDismissed: false, errorCode: null });
+  setTufHelperLiteIntegrationSnapshot(updateConnectionNotice(tufHelperLiteIntegrationSnapshot, snapshot));
 });
-const getTufHelperLiteIpcErrorCode = (error) => error?.code || 'CONNECTION_FAILED';
-const versionMismatchSnapshot = (error) => ({ direction: error?.direction || null, clientVersion: error?.clientVersion, serverVersion: error?.serverVersion });
 let isTufHelperLiteIntegrationInitialized = initialIntegrationState === 'hidden' && !storedEnabled;
+let integrationConnectionAttempt = 0;
 export const initializeTufHelperLiteIntegration = async () => {
   if (isTufHelperLiteIntegrationInitialized) return;
   isTufHelperLiteIntegrationInitialized = true;
@@ -204,6 +207,7 @@ export const initializeTufHelperLiteIntegration = async () => {
   setTufHelperLiteIntegrationSnapshot({ state: bootNeverShow ? 'hidden' : 'prompt', isSessionDismissed: initialSessionDismissed, errorCode: null });
 };
 export const showTufHelperLiteIntegrationBanner = () => {
+  ++integrationConnectionAttempt;
   isTufHelperLiteIntegrationInitialized = true;
   setClientPreferences({ [CLIENT_PREF_KEYS.TUFHELPERLITE_NEVER_SHOW]: false });
   writeStorage(window.localStorage, IPC_INTEGRATION_STORAGE_KEY, null);
@@ -213,20 +217,22 @@ export const showTufHelperLiteIntegrationBanner = () => {
 };
 export const connectTufHelperLiteIntegration = async () => {
   if (tufHelperLiteIntegrationSnapshot.state === 'connecting') return false;
-  setTufHelperLiteIntegrationSnapshot({ state: 'connecting', isSessionDismissed: false, errorCode: null });
+  const attempt = ++integrationConnectionAttempt;
+  // Remember the opt-in while the game starts; discovery remains active after its deadline.
+  writeStorage(window.localStorage, IPC_INTEGRATION_STORAGE_KEY, IPC_INTEGRATION_ENABLED);
+  setTufHelperLiteIntegrationSnapshot({ ...tufHelperLiteIntegrationSnapshot, state: 'connecting', errorCode: null });
   setTufHelperLiteHealthSnapshot({ isAvailable: false, isChecking: true, port: null });
   try {
     await helperSession.connect();
-    if (tufHelperLiteIntegrationSnapshot.state !== 'connecting') return false;
-    writeStorage(window.localStorage, IPC_INTEGRATION_STORAGE_KEY, IPC_INTEGRATION_ENABLED);
-    setTufHelperLiteIntegrationSnapshot({ state: 'enabled', isSessionDismissed: false, errorCode: null });
+    if (attempt !== integrationConnectionAttempt) return false;
+    setTufHelperLiteIntegrationSnapshot({ ...tufHelperLiteIntegrationSnapshot, state: 'enabled', errorCode: null });
     return true;
   } catch (error) {
-    if (tufHelperLiteIntegrationSnapshot.state !== 'connecting') return false;
+    if (attempt !== integrationConnectionAttempt) return false;
     // A readiness timeout must not cancel SDK discovery. Late snapshots restore
     // availability without a reload; terminal protocol mismatches cannot recover.
     if (['INCOMPATIBLE', 'protocol_mismatch', 'feature_protocol_mismatch', 'contract_mismatch'].includes(error?.code)) helperSession.close();
-    setTufHelperLiteIntegrationSnapshot({ state: 'unavailable', isSessionDismissed: false, errorCode: getTufHelperLiteIpcErrorCode(error), versionMismatch: versionMismatchSnapshot(error) });
+    setTufHelperLiteIntegrationSnapshot({ ...tufHelperLiteIntegrationSnapshot, state: 'unavailable', errorCode: getConnectionErrorCode(error), versionMismatch: getVersionMismatch(error) });
     return false;
   }
 };
@@ -235,6 +241,7 @@ export const dismissTufHelperLiteBannerForSession = () => {
   setTufHelperLiteIntegrationSnapshot({ ...tufHelperLiteIntegrationSnapshot, isSessionDismissed: true });
 };
 export const hideTufHelperLiteIntegration = () => {
+  ++integrationConnectionAttempt;
   setClientPreferences({ [CLIENT_PREF_KEYS.TUFHELPERLITE_NEVER_SHOW]: true });
   writeStorage(window.localStorage, IPC_INTEGRATION_STORAGE_KEY, IPC_INTEGRATION_HIDDEN);
   helperSession.close();
@@ -249,6 +256,9 @@ export const retryTufHelperLiteStorageMigration = () => helperSession.retryMigra
 export const startTufHelperLiteStorageChange = (request) => helperSession.changeStorage(request);
 export const retryTufHelperLiteStorageChange = () => helperSession.retryChange();
 export const cancelTufHelperLiteStorageChange = () => helperSession.cancelChange();
+export const setTufHelperLiteTempDownloadMode = (enabled) => helperSession.setTempDownloadMode(enabled);
+export const flushTufHelperLiteTemp = () => helperSession.flushTemp();
+export const deleteTufHelperLiteDownloadedLevel = (id) => helperSession.deleteLevel(id);
 export const getTufHelperLiteDownloadedLevelPage = ({ cursor = null, direction = 'next', limit = 20 } = {}) => helperSession.page({ cursor, direction, limit });
 export const getTufHelperLiteDownloadedLevelSummary = async () => helperSession.getSnapshot().summary;
 export const checkTufHelperLiteLevelUpdate = (id) => helperSession.checkUpdate(id);
@@ -259,6 +269,7 @@ export const cancelTufHelperLiteBatchUpdateCheck = () => helperSession.cancelChe
 export const startTufHelperLiteBatchUpdate = () => helperSession.updateAll();
 export const cancelTufHelperLiteBatchUpdate = () => helperSession.cancelUpdateAll();
 export const useTufHelperLiteStorage = () => useSyncExternalStore(helperSession.subscribe, () => helperSession.getSnapshot().storage, () => null);
+export const useTufHelperLiteSettings = () => useSyncExternalStore(helperSession.subscribe, () => helperSession.getSnapshot().settings, () => null);
 export const useTufHelperLiteBatch = () => useSyncExternalStore(helperSession.subscribe, () => helperSession.getSnapshot().batch, () => null);
 export const useTufHelperLiteSummary = () => useSyncExternalStore(helperSession.subscribe, () => helperSession.getSnapshot().summary, () => null);
 const normalizeTufHelperLiteUrl = (url) => (url || '').trim().replace(/\/+$/, '').toLowerCase();

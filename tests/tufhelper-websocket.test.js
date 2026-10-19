@@ -20,6 +20,9 @@ function harness(onUse) {
     cancelUpdateAll() { calls.push(['cancelUpdateAll']); return Promise.resolve({ state: 'cancelled' }); },
     cancelChange() { calls.push(['cancelChange']); return Promise.resolve({ state: 'cancelled' }); },
     libraryPage(request) { calls.push(['libraryPage', request]); return Promise.resolve({ items: [], revision: 1 }); },
+    setTempDownloadMode(request) { calls.push(['setTempDownloadMode', request]); return Promise.resolve({ tempDownloadMode: request.enabled, tempDirectory: '/mod/Downloads/temp' }); },
+    flushTemp() { calls.push(['flushTemp']); return Promise.resolve({ tempDownloadMode: true, tempDirectory: '/mod/Downloads/temp' }); },
+    deleteLevel(request) { calls.push(['deleteLevel', request]); return Promise.resolve({ ok: true, id: request.id, deleted: true }); },
     pickFolder(request) {
       calls.push(['pickFolder', request]);
       handlers.folderSelection({ selection: { operationId: 'picker', state: 'selected', selectionToken: 'grant' } });
@@ -137,5 +140,21 @@ test('generated call errors preserve the domain code', async () => {
   const connected = session.connect(); h.app.ready(); h.app.push('snapshot', { state: snapshot() }); await connected;
   h.channel.libraryPage = () => Promise.reject(Object.assign(new Error('Reload the library.'), { code: 'download_library_cursor_stale' }));
   await assert.rejects(session.page({ cursor: 'stale' }), (error) => error.code === 'download_library_cursor_stale');
+  session.close();
+});
+
+test('settings and deletion use generated methods and unsolicited settings reach the snapshot', async () => {
+  const h = harness(); const session = createHelperSession({ createPort: () => h.port });
+  const connected = session.connect(); h.app.ready(); h.app.push('snapshot', { state: snapshot() }); await connected;
+  const enabled = await session.setTempDownloadMode(true);
+  assert.equal(enabled.tempDownloadMode, true);
+  assert.equal(session.getSnapshot().settings.tempDownloadMode, true);
+  assert.equal((await session.flushTemp()).tempDirectory, '/mod/Downloads/temp');
+  assert.deepEqual(await session.deleteLevel('123'), { ok: true, id: '123', deleted: true });
+  assert.deepEqual(h.calls.filter(([name]) => ['setTempDownloadMode', 'flushTemp', 'deleteLevel'].includes(name)), [
+    ['setTempDownloadMode', { enabled: true }], ['flushTemp'], ['deleteLevel', { id: '123' }],
+  ]);
+  h.app.push('settingsChanged', { settings: { tempDownloadMode: false, tempDirectory: '/mod/Downloads/temp' } });
+  assert.equal(session.getSnapshot().settings.tempDownloadMode, false);
   session.close();
 });

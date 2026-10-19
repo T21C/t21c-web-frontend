@@ -9,7 +9,7 @@ user actions. Its injected message-session port owns `open(receive, state)`,
 application. `src/hooks/useTufHelperLiteIpc.js` projects application snapshots
 through React external-store subscriptions and owns browser UI preferences.
 
-The mod calls `snapshot`, then `jobsChanged`, `storageChanged`,
+The mod calls `snapshot`, then `jobsChanged`, `storageChanged`, `settingsChanged`,
 `batchChanged` and `libraryChanged` when state changes. The adapter translates
 generated method results into the application's existing correlated messages. Job progress
 and completion are observed by job ID; they are never fetched on an interval.
@@ -25,6 +25,18 @@ Folder picker completion is correlated by operation ID and delivered only to
 the selecting app session. Choosing a folder grants a one-time token; the web app
 cannot provide arbitrary local paths. Losing a connection rejects pending
 commands and observations. Closing a dialog aborts its job observers.
+
+**TUFHelperLite Settings** contains temporary download mode and storage location.
+Its **Manage downloads** action replaces Settings with the library dialog, where
+individual saved levels can be deleted. Temporary mode hides the saved-library
+and storage controls. `setTempDownloadMode`, `flushTemp` and `deleteLevel` use the
+generated contract; settings pushes also update other open apps. The mod owns
+filesystem paths and validates deletion and in-use files.
+
+Automatic discovery, game shutdown and reconnection update availability quietly.
+A dismissed connection notice stays dismissed for the browser session. API or
+contract mismatches use a persistent banner; explicit user action failures retain
+their error toast.
 
 The SDK is fixed under `vendor/adofai-ipc`; the generated contract package is
 fixed under `vendor/tufhelper-ipc`. Both are local package dependencies.
@@ -43,6 +55,15 @@ and pending command results cannot update the new session. Browser resume calls
 All build modes verify the SDK's source revision, file inventory and content
 hashes before bundling; `npm run sdk:check` runs the same check explicitly.
 
+The level page opens TUFHelperLite Settings. Storage controls live in that
+dialog; Manage downloads replaces it with the downloaded-level library.
+Settings are supplied by the mod snapshot and `settingsChanged` notifications,
+including changes made by another connected app. Temp mode hides the saved
+library and storage controls. Flush temp and saved-level deletion require
+confirmation, and failures stay beside the action that caused them.
+Deletion refreshes the visible library and its summary. Changing modes,
+clearing files and deleting levels are never replayed after reconnecting.
+
 Validation:
 
 - `npm run lint`
@@ -52,4 +73,7 @@ Validation:
 The application tests inject a deterministic message port and cover correlated
 results, terminal-state ordering, reconnect without command replay, discarded
 old connections, early picker completion, subscription disposal and domain
-rejections.
+rejections. Set `TUFHELPER_IPC_FIXTURE` to the mod's built
+`build/tests/core/TUFHelperLite.Tests.dll` to include the real C# server integration
+test. It checks settings broadcasts, actual temp-file clearing and managed-level
+deletion in addition to reconnect, targeted notifications and cancellation.
