@@ -256,9 +256,56 @@ export const TYPE_BY_HASH = {
   'curation-rerate': 'curation_rerate',
 };
 
+export const REQUEST_LIST_SORTS = ['created_desc', 'created_asc', 'updated_desc', 'updated_asc'];
+export const DEFAULT_REQUEST_LIST_SORT = 'created_desc';
+const COMPLETED_FILTERS = new Set(['hide', 'show', 'only']);
+const REQUEST_FILTER_STORAGE_KEY = 'levelRequests.admin.filters';
+
+export function isRequestListSort(value) {
+  return REQUEST_LIST_SORTS.includes(value);
+}
+
 export function statusesForType(type) {
   if (type === 'rerate') return ALL_STATUSES.filter((status) => status !== 'completed');
   return ALL_STATUSES.filter((status) => !RERATE_ONLY.has(status) && !status.startsWith('completed_'));
+}
+
+function emptyAdminFilters() {
+  return {
+    search: '',
+    completed: 'hide',
+    sort: DEFAULT_REQUEST_LIST_SORT,
+  };
+}
+
+function sanitizeAdminFilters(saved) {
+  const next = emptyAdminFilters();
+  if (!saved || typeof saved !== 'object') return next;
+  next.search = typeof saved.search === 'string' ? saved.search : '';
+  next.sort = isRequestListSort(saved.sort) ? saved.sort : DEFAULT_REQUEST_LIST_SORT;
+  next.completed = COMPLETED_FILTERS.has(saved.completed) ? saved.completed : 'hide';
+  return next;
+}
+
+export function readAdminRequestFilters(type) {
+  try {
+    const parsed = JSON.parse(window.localStorage.getItem(REQUEST_FILTER_STORAGE_KEY) || '{}');
+    return sanitizeAdminFilters(parsed?.[type]);
+  } catch {
+    return emptyAdminFilters();
+  }
+}
+
+export function writeAdminRequestFilters(type, filters) {
+  if (!type) return;
+  try {
+    const parsed = JSON.parse(window.localStorage.getItem(REQUEST_FILTER_STORAGE_KEY) || '{}');
+    const store = parsed && typeof parsed === 'object' ? parsed : {};
+    store[type] = sanitizeAdminFilters(filters);
+    window.localStorage.setItem(REQUEST_FILTER_STORAGE_KEY, JSON.stringify(store));
+  } catch {
+    /* quota / private mode */
+  }
 }
 
 export function actionButtonClass(action) {
