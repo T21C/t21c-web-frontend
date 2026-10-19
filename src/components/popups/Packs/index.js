@@ -8,7 +8,6 @@ import PackItemPlacementPopup from "./PackItemPlacementPopup/PackItemPlacementPo
 import PackAddLevelsConfirmPopup from "./PackAddLevelsConfirmPopup/PackAddLevelsConfirmPopup";
 import AddToPackPopup from "./AddToPackPopup/AddToPackPopup";
 import CreatePackPopup from "./AddToPackPopup/CreatePackPopup";
-import { PackHelpPopup } from "./PackHelpPopup/PackHelpPopup";
 
 export {
   EditPackPopup,
@@ -20,5 +19,4 @@ export {
   PackAddLevelsConfirmPopup,
   AddToPackPopup,
   CreatePackPopup,
-  PackHelpPopup,
 };

@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
 import { CommentFormatter } from '@/components/misc';
-import { CheckmarkIcon, CopyIcon, CrossIcon, DiscordIcon, EditIcon, PassIcon, ShieldIcon, TrashIcon } from '@/components/common/icons';
+import { CheckmarkIcon, CopyIcon, CrossIcon, DiscordIcon, EditIcon, ShieldIcon, TrashIcon } from '@/components/common/icons';
+import { Tooltip } from '@/components/common/display/Tooltip';
 import UserAvatar from '@/components/layout/UserAvatar/UserAvatar';
 import { userAvatarUrls } from '@/utils/playerAvatarDisplay';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
@@ -23,6 +24,56 @@ const DiffMark = ({ icon, name }) => {
       {src && <img src={src} alt="" />}
       <span>{name || '—'}</span>
     </span>
+  );
+};
+
+const RequesterClearMeta = ({ request }) => {
+  const { t } = useTranslation('pages');
+  const { difficulties } = useDifficultyContext();
+  const topDiff = request.requester?.topDiff;
+  const topIcon = topDiff?.icon
+    || (topDiff?.name
+      ? difficulties.find((diff) => diff.name?.toLowerCase() === String(topDiff.name).toLowerCase())?.icon
+      : null)
+    || (topDiff?.id
+      ? difficulties.find((diff) => Number(diff.id) === Number(topDiff.id))?.icon
+      : null);
+  const topSrc = topIcon ? selectIconSize(topIcon, ICON_SIZE.SMALL) : null;
+  const cleared = Boolean(request.bestPass);
+  const tooltipId = `request-clear-${request.id}`;
+  const accuracy = request.bestPass?.accuracy != null ? formatAccuracyRatio(request.bestPass.accuracy) : null;
+  const hint = cleared
+    ? t('levelRequests.detail.clearedHint', { accuracy: accuracy || '—' })
+    : t('levelRequests.detail.neverClearedHint');
+  const statusClass = cleared
+    ? 'level-requests__clear-status level-requests__clear-status--yes'
+    : 'level-requests__clear-status level-requests__clear-status--no';
+  const statusLabel = cleared ? t('levelRequests.detail.cleared') : t('levelRequests.detail.uncleared');
+
+  return (
+    <div className="level-requests__player-clear">
+      <span>{t('levelRequests.detail.topClear')}:</span>
+      {topSrc ? (
+        <img className="level-requests__player-clear-icon" src={topSrc} alt={topDiff?.name || ''} />
+      ) : (
+        <span>—</span>
+      )}
+      <span className="level-requests__player-clear-sep" aria-hidden="true">|</span>
+      {cleared && request.bestPass?.id ? (
+        <Link
+          className={statusClass}
+          to={`/passes/${request.bestPass.id}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-tooltip-id={tooltipId}
+        >
+          {statusLabel}
+        </Link>
+      ) : (
+        <span className={statusClass} data-tooltip-id={tooltipId}>{statusLabel}</span>
+      )}
+      <Tooltip id={tooltipId} place="top" noArrow>{hint}</Tooltip>
+    </div>
   );
 };
 
@@ -90,7 +141,28 @@ const LevelRequestDetail = ({
     <div className="level-requests__detail">
       <span className="level-requests__corner level-requests__corner--id">#{request.id}</span>
       <span className="level-requests__corner level-requests__corner--status">
-        {t(`levelRequests.statuses.${request.status}`)}
+        {request.lastActor && (
+          <>
+            {request.lastActor.playerId ? (
+              <Link
+                className="level-requests__last-actor"
+                to={`/profile/${request.lastActor.playerId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <UserAvatar className="level-requests__avatar" {...userAvatarUrls(request.lastActor)} />
+                <span>{request.lastActor.nickname || request.lastActor.username}</span>
+              </Link>
+            ) : (
+              <span className="level-requests__last-actor">
+                <UserAvatar className="level-requests__avatar" {...userAvatarUrls(request.lastActor)} />
+                <span>{request.lastActor.nickname || request.lastActor.username}</span>
+              </span>
+            )}
+            <span className="level-requests__player-clear-sep" aria-hidden="true">|</span>
+          </>
+        )}
+        <span className="level-requests__status-label">{t(`levelRequests.statuses.${request.status}`)}</span>
       </span>
       <section className="level-requests__section">
         <div className="level-requests__headline">
@@ -108,8 +180,7 @@ const LevelRequestDetail = ({
                 )}
                 {(request.type === 'curation' || request.type === 'curation_rerate') && (
                   (request.level?.curationTypeIds || []).length > 0
-                    ? <LevelRequestCurationTypes ids={request.level.curationTypeIds} variant="icons" />
-                    : <span className="level-requests__hint">{t('levelRequests.form.tagsNone')}</span>
+                    && <LevelRequestCurationTypes ids={request.level.curationTypeIds} variant="icons" />
                 )}
               </div>
               {request.type !== 'rerate' && request.level?.artist && <span>{request.level.artist}</span>}
@@ -146,6 +217,9 @@ const LevelRequestDetail = ({
                 </button>
               )}
             </div>
+            {request.requester?.playerId && (
+              <RequesterClearMeta request={request} />
+            )}
           </div>
         </div>
       </section>
@@ -250,15 +324,8 @@ const LevelRequestDetail = ({
           <CommentFormatter resolveLevelRefs>{request.reason}</CommentFormatter>
         </section>
       )}
-      {(request.bestPass || request.publicNote || (!ownerView && (request.internalNote || request.discordPostError))) && (
+      {(request.publicNote || (!ownerView && (request.internalNote || request.discordPostError))) && (
         <section className="level-requests__section">
-          {request.bestPass && (
-            <Link className="level-requests__requester" to={`/passes/${request.bestPass.id}`} target="_blank" rel="noopener noreferrer">
-              <PassIcon size="16px" color="currentColor" />
-              {t('levelRequests.detail.clear')}: {request.bestPass.scoreV2}
-              {request.bestPass.accuracy != null && ` · ${formatAccuracyRatio(request.bestPass.accuracy)}`}
-            </Link>
-          )}
           {request.publicNote && (
             <div className="level-requests__note">
               <span className="level-requests__note-label">{t('levelRequests.detail.publicNote')}</span>

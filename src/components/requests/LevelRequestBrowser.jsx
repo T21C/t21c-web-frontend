@@ -16,6 +16,7 @@ import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import LevelRequestDetail from './LevelRequestDetail';
 import LevelRequestFormPopup from './LevelRequestFormPopup';
+import { AdvancedSearchBar } from '@/components/common/AdvancedSearch';
 import LevelRequestStatusPopup from './LevelRequestStatusPopup';
 import LevelRequestCurationTypes, { LevelRequestCurationDiff } from './LevelRequestCurationTypes';
 import { LevelRequestTagDiff } from './LevelRequestTags';
@@ -27,13 +28,13 @@ import {
   curationRequestDiff,
   readAdminRequestFilters,
   songRequestLabel,
-  statusesForType,
   tagRequestDiff,
   tagRequestTargetIds,
   teamFromLevel,
   userCanEditLevel,
   writeAdminRequestFilters,
 } from './levelRequestShared';
+import '@/pages/common/search-section.css';
 import './levelRequests.css';
 
 const PAGE_SIZE = 20;
@@ -75,11 +76,6 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
   const [searchInput, setSearchInput] = useState(savedFilters?.search || '');
   const [searchQuery, setSearchQuery] = useState((savedFilters?.search || '').trim());
   const [completedFilter, setCompletedFilter] = useState(savedFilters?.completed || 'hide');
-  const [statusFilter, setStatusFilter] = useState(savedFilters?.status || '');
-  const [levelInput, setLevelInput] = useState(savedFilters?.level || '');
-  const [levelQuery, setLevelQuery] = useState((savedFilters?.level || '').trim());
-  const [requesterInput, setRequesterInput] = useState(savedFilters?.requester || '');
-  const [requesterQuery, setRequesterQuery] = useState((savedFilters?.requester || '').trim());
   const [sort, setSort] = useState(savedFilters?.sort || DEFAULT_REQUEST_LIST_SORT);
   const [selected, setSelected] = useState(null);
   const [editing, setEditing] = useState(false);
@@ -95,16 +91,6 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
   }, [searchInput]);
 
   useEffect(() => {
-    const timer = window.setTimeout(() => setLevelQuery(levelInput.trim()), 400);
-    return () => window.clearTimeout(timer);
-  }, [levelInput]);
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => setRequesterQuery(requesterInput.trim()), 400);
-    return () => window.clearTimeout(timer);
-  }, [requesterInput]);
-
-  useEffect(() => {
     if (mode !== 'admin' || !type) return;
     if (!persistReady.current) {
       persistReady.current = true;
@@ -113,12 +99,9 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
     writeAdminRequestFilters(type, {
       search: searchInput,
       completed: completedFilter,
-      status: statusFilter,
-      level: levelInput,
-      requester: requesterInput,
       sort,
     });
-  }, [completedFilter, levelInput, mode, requesterInput, searchInput, sort, statusFilter, type]);
+  }, [completedFilter, mode, searchInput, sort, type]);
 
   const load = useCallback(async (controller) => {
     setLoading(true);
@@ -128,10 +111,7 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
     if (searchQuery) params.q = searchQuery;
     if (mode === 'admin') {
       params.sort = sort;
-      if (statusFilter) params.status = statusFilter;
-      else if (completedFilter !== 'hide') params.completed = completedFilter;
-      if (levelQuery) params.level = levelQuery;
-      if (requesterQuery) params.requester = requesterQuery;
+      if (completedFilter !== 'hide') params.completed = completedFilter;
     }
     try {
       const response = await api.get(
@@ -149,7 +129,7 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
     } finally {
       if (!controller?.signal?.aborted) setLoading(false);
     }
-  }, [completedFilter, levelQuery, mode, offset, onQueueChange, requesterQuery, searchQuery, sort, statusFilter, type]);
+  }, [completedFilter, mode, offset, onQueueChange, searchQuery, sort, type]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -159,7 +139,7 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
 
   useEffect(() => {
     setOffset(0);
-  }, [completedFilter, levelQuery, requesterQuery, searchQuery, sort, statusFilter, type]);
+  }, [completedFilter, searchQuery, sort, type]);
 
   const openRequest = useCallback(async (id, { preferEdit = false } = {}) => {
     try {
@@ -234,13 +214,6 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
 
   const page = Math.floor(offset / PAGE_SIZE) + 1;
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
-  const statusOptions = useMemo(() => ([
-    { value: '', label: t('levelRequests.list.anyStatus') },
-    ...statusesForType(type).map((status) => ({
-      value: status,
-      label: t(`levelRequests.statuses.${status}`),
-    })),
-  ]), [t, type]);
   const sortOptions = useMemo(() => ([
     { value: 'created_desc', label: t('levelRequests.list.sortCreatedDesc') },
     { value: 'created_asc', label: t('levelRequests.list.sortCreatedAsc') },
@@ -251,36 +224,18 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
   return (
     <div className="level-requests">
       <div className="level-requests__filters">
-        <input
-          className="level-requests__search"
-          value={searchInput}
-          onChange={(event) => setSearchInput(event.target.value)}
-          placeholder={t('levelRequests.list.searchPlaceholder')}
-          aria-label={t('levelRequests.list.searchPlaceholder')}
-        />
+        <div className="search-section">
+          <AdvancedSearchBar
+            profile="request"
+            value={searchInput}
+            onChange={(event) => setSearchInput(event.target.value)}
+            placeholder={t('levelRequests.list.searchPlaceholder')}
+            helpLabel={t('levelRequests.list.searchHelp')}
+            pending={searchInput.trim() !== searchQuery}
+          />
+        </div>
         {mode === 'admin' && (
           <>
-            <input
-              className="level-requests__filter-input"
-              value={levelInput}
-              onChange={(event) => setLevelInput(event.target.value)}
-              placeholder={t('levelRequests.list.levelPlaceholder')}
-              aria-label={t('levelRequests.list.level')}
-            />
-            <input
-              className="level-requests__filter-input"
-              value={requesterInput}
-              onChange={(event) => setRequesterInput(event.target.value)}
-              placeholder={t('levelRequests.list.requesterPlaceholder')}
-              aria-label={t('levelRequests.list.requester')}
-            />
-            <CustomSelect
-              options={statusOptions}
-              value={statusOptions.find((option) => option.value === statusFilter) || statusOptions[0]}
-              onChange={(option) => setStatusFilter(option?.value || '')}
-              label={t('levelRequests.list.status')}
-              width="12rem"
-            />
             <CustomSelect
               options={sortOptions}
               value={sortOptions.find((option) => option.value === sort) || sortOptions[0]}
@@ -315,6 +270,7 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
             : null;
           const requesterName = request.requester?.nickname || request.requester?.username;
           const infoText = request.type === 'info_change' ? infoCardText(request, t) : '';
+          const reasonText = typeof request.reason === 'string' ? request.reason.trim() : '';
           return (
             <button
               key={request.id}
@@ -371,6 +327,9 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
                     <LevelRequestCurationTypes ids={request.payload?.curationTypeIds} variant="icons" />
                   )}
                 </span>
+                {reasonText && (
+                  <span className="level-requests__card-reason">{reasonText}</span>
+                )}
               </span>
             </button>
           );

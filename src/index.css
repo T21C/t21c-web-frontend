@@ -35,7 +35,7 @@
   --color-purple-3-rgb: 100, 61, 255;
   --color-gray-3: #838383;
   --color-gray-2: #cacaca;
-  --color-gray-3: #e9e9ea;
+  --color-gray-1: #e9e9ea;
   --success-color: #28a745;
   --danger-color: #dc3545;
   /* Semantic button fills: one base per variant; hover/active via .btn-fill-* + filter.
