@@ -299,8 +299,13 @@ const LevelRequestFormPopup = ({
       return;
     }
     const trimmedReason = reason.trim();
+    const reasonRequired = type === 'rerate' || type === 'curation_rerate';
+    if (reasonRequired && !trimmedReason) {
+      toast.error(t('levelRequests.errors.reason'));
+      return;
+    }
     const hasReferences = collectLevelReferenceIds(trimmedReason).length > 0;
-    if ((trimmedReason || type === 'curation') && !hasReferences && !window.confirm(t('levelRequests.form.noReferencesConfirm'))) {
+    if (!hasReferences && !window.confirm(t('levelRequests.form.noReferencesConfirm'))) {
       return;
     }
     setSaving(true);

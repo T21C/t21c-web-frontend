@@ -1,5 +1,5 @@
 {
-  "menu": "Request",
+  "menu": "Request change",
   "alreadyExists": "Already exists",
   "alreadyRequested": "You already requested this",
   "onRatingPage": "Level already on rating",
@@ -72,8 +72,8 @@
     "discord_close": "Could not close the Discord thread"
   },
   "form": {
-    "title": "{{type}} request",
-    "editTitle": "Edit {{type}} request",
+    "title": "Request change",
+    "editTitle": "Request change",
     "reason": "Reason",
     "reasonPlaceholder": "Explain the request. Mention levels as #123.",
     "noReferencesConfirm": "Are you sure you want to submit this without any references? Adding a reference level will speed up processing of your request (and make our job a bit easier)",
@@ -191,6 +191,11 @@
     "anyStatus": "Any open status",
     "searchPlaceholder": "Search song, level, requester, or status",
     "completed": "Completed",
+    "sort": "Sort",
+    "sortCreatedDesc": "Newest first",
+    "sortCreatedAsc": "Oldest first",
+    "sortUpdatedDesc": "Recently updated",
+    "sortUpdatedAsc": "Least recently updated",
     "type": "Type",
     "anyType": "Any type",
     "page": "Page {{page}} of {{totalPages}}",

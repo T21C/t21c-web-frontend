@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
 import { routes } from '@/api/routes';
 import api from '@/utils/api';
 import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
-import { StateDisplay } from '@/components/common/selectors';
+import { CustomSelect, StateDisplay } from '@/components/common/selectors';
 import { CreatorManagementPopup } from '@/components/popups/Creators';
 import { EditLevelPopup } from '@/components/popups/Levels';
 import UserAvatar from '@/components/layout/UserAvatar/UserAvatar';
@@ -20,15 +20,19 @@ import LevelRequestStatusPopup from './LevelRequestStatusPopup';
 import LevelRequestCurationTypes, { LevelRequestCurationDiff } from './LevelRequestCurationTypes';
 import { LevelRequestTagDiff } from './LevelRequestTags';
 import {
+  DEFAULT_REQUEST_LIST_SORT,
   creditRequestDiff,
   creditsFromLevel,
   requestErrorMessage,
   curationRequestDiff,
+  readAdminRequestFilters,
   songRequestLabel,
+  statusesForType,
   tagRequestDiff,
   tagRequestTargetIds,
   teamFromLevel,
   userCanEditLevel,
+  writeAdminRequestFilters,
 } from './levelRequestShared';
 import './levelRequests.css';
 
@@ -67,20 +71,54 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
   const [offset, setOffset] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [searchInput, setSearchInput] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [completedFilter, setCompletedFilter] = useState('hide');
+  const savedFilters = mode === 'admin' ? readAdminRequestFilters(type) : null;
+  const [searchInput, setSearchInput] = useState(savedFilters?.search || '');
+  const [searchQuery, setSearchQuery] = useState((savedFilters?.search || '').trim());
+  const [completedFilter, setCompletedFilter] = useState(savedFilters?.completed || 'hide');
+  const [statusFilter, setStatusFilter] = useState(savedFilters?.status || '');
+  const [levelInput, setLevelInput] = useState(savedFilters?.level || '');
+  const [levelQuery, setLevelQuery] = useState((savedFilters?.level || '').trim());
+  const [requesterInput, setRequesterInput] = useState(savedFilters?.requester || '');
+  const [requesterQuery, setRequesterQuery] = useState((savedFilters?.requester || '').trim());
+  const [sort, setSort] = useState(savedFilters?.sort || DEFAULT_REQUEST_LIST_SORT);
   const [selected, setSelected] = useState(null);
   const [editing, setEditing] = useState(false);
   const [editingLevel, setEditingLevel] = useState(false);
   const [statusOpen, setStatusOpen] = useState(false);
   const [player, setPlayer] = useState(null);
   const [busy, setBusy] = useState(false);
+  const persistReady = useRef(false);
 
   useEffect(() => {
     const timer = window.setTimeout(() => setSearchQuery(searchInput.trim()), 400);
     return () => window.clearTimeout(timer);
   }, [searchInput]);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setLevelQuery(levelInput.trim()), 400);
+    return () => window.clearTimeout(timer);
+  }, [levelInput]);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setRequesterQuery(requesterInput.trim()), 400);
+    return () => window.clearTimeout(timer);
+  }, [requesterInput]);
+
+  useEffect(() => {
+    if (mode !== 'admin' || !type) return;
+    if (!persistReady.current) {
+      persistReady.current = true;
+      return;
+    }
+    writeAdminRequestFilters(type, {
+      search: searchInput,
+      completed: completedFilter,
+      status: statusFilter,
+      level: levelInput,
+      requester: requesterInput,
+      sort,
+    });
+  }, [completedFilter, levelInput, mode, requesterInput, searchInput, sort, statusFilter, type]);
 
   const load = useCallback(async (controller) => {
     setLoading(true);
@@ -88,7 +126,13 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
     const params = { limit: PAGE_SIZE, offset };
     if (mode === 'admin') params.type = type;
     if (searchQuery) params.q = searchQuery;
-    if (mode === 'admin' && completedFilter !== 'hide') params.completed = completedFilter;
+    if (mode === 'admin') {
+      params.sort = sort;
+      if (statusFilter) params.status = statusFilter;
+      else if (completedFilter !== 'hide') params.completed = completedFilter;
+      if (levelQuery) params.level = levelQuery;
+      if (requesterQuery) params.requester = requesterQuery;
+    }
     try {
       const response = await api.get(
         mode === 'mine' ? routes.database.levelRequests.mine() : routes.database.levelRequests.root(),
@@ -105,7 +149,7 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
     } finally {
       if (!controller?.signal?.aborted) setLoading(false);
     }
-  }, [mode, type, searchQuery, completedFilter, offset, onQueueChange]);
+  }, [completedFilter, levelQuery, mode, offset, onQueueChange, requesterQuery, searchQuery, sort, statusFilter, type]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -115,7 +159,7 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
 
   useEffect(() => {
     setOffset(0);
-  }, [type, searchQuery, completedFilter]);
+  }, [completedFilter, levelQuery, requesterQuery, searchQuery, sort, statusFilter, type]);
 
   const openRequest = useCallback(async (id, { preferEdit = false } = {}) => {
     try {
@@ -190,6 +234,19 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
 
   const page = Math.floor(offset / PAGE_SIZE) + 1;
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const statusOptions = useMemo(() => ([
+    { value: '', label: t('levelRequests.list.anyStatus') },
+    ...statusesForType(type).map((status) => ({
+      value: status,
+      label: t(`levelRequests.statuses.${status}`),
+    })),
+  ]), [t, type]);
+  const sortOptions = useMemo(() => ([
+    { value: 'created_desc', label: t('levelRequests.list.sortCreatedDesc') },
+    { value: 'created_asc', label: t('levelRequests.list.sortCreatedAsc') },
+    { value: 'updated_desc', label: t('levelRequests.list.sortUpdatedDesc') },
+    { value: 'updated_asc', label: t('levelRequests.list.sortUpdatedAsc') },
+  ]), [t]);
 
   return (
     <div className="level-requests">
@@ -202,14 +259,44 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
           aria-label={t('levelRequests.list.searchPlaceholder')}
         />
         {mode === 'admin' && (
-          <StateDisplay
-            className="level-requests__completed"
-            currentState={completedFilter}
-            states={['hide', 'show', 'only']}
-            onChange={setCompletedFilter}
-            label={t('levelRequests.list.completed')}
-            width={60}
-          />
+          <>
+            <input
+              className="level-requests__filter-input"
+              value={levelInput}
+              onChange={(event) => setLevelInput(event.target.value)}
+              placeholder={t('levelRequests.list.levelPlaceholder')}
+              aria-label={t('levelRequests.list.level')}
+            />
+            <input
+              className="level-requests__filter-input"
+              value={requesterInput}
+              onChange={(event) => setRequesterInput(event.target.value)}
+              placeholder={t('levelRequests.list.requesterPlaceholder')}
+              aria-label={t('levelRequests.list.requester')}
+            />
+            <CustomSelect
+              options={statusOptions}
+              value={statusOptions.find((option) => option.value === statusFilter) || statusOptions[0]}
+              onChange={(option) => setStatusFilter(option?.value || '')}
+              label={t('levelRequests.list.status')}
+              width="12rem"
+            />
+            <CustomSelect
+              options={sortOptions}
+              value={sortOptions.find((option) => option.value === sort) || sortOptions[0]}
+              onChange={(option) => setSort(option?.value || DEFAULT_REQUEST_LIST_SORT)}
+              label={t('levelRequests.list.sort')}
+              width="12rem"
+            />
+            <StateDisplay
+              className="level-requests__completed"
+              currentState={completedFilter}
+              states={['hide', 'show', 'only']}
+              onChange={setCompletedFilter}
+              label={t('levelRequests.list.completed')}
+              width={60}
+            />
+          </>
         )}
       </div>
 
