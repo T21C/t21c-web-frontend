@@ -1,4 +1,5 @@
 import { createHelperSession } from './application/createHelperSession';
-import { createWebSocketPort } from './adapters/createWebSocketPort';
-import { IpcConnection } from '../../../vendor/adofai-ipc/src';
-export const helperSession = createHelperSession({ createPort: () => createWebSocketPort({ createConnection: () => new IpcConnection() }) });
+import { createIpcPort } from './adapters/createIpcPort';
+import { ipc } from 'adofai-ipc';
+import { TufHelperContract } from '@tufhelper/ipc';
+export const helperSession = createHelperSession({ createPort: () => createIpcPort({ registerApp: (options) => ipc.registerApp(options), contract: TufHelperContract }) });

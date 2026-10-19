@@ -1,40 +1,45 @@
-# TUFHelperLite WebSocket integration
+# TUFHelperLite IPC integration
 
 `application/createHelperSession.js` owns the download-library state and named
 user actions. Its injected message-session port owns `open(receive, state)`,
 `send(name, payload)` and `close()`. It imports no React or IPC SDK code.
 
-`adapters/createWebSocketPort.js` translates that port to the canonical
-ADOFAI-IPC 1.0.0 SDK. `composition.js` wires the production adapter to the
+`adapters/createIpcPort.js` translates that port to the generated
+`TufHelperContract` and the ADOFAI-IPC 2.0.0 app API. `composition.js` wires the production adapter to the
 application. `src/hooks/useTufHelperLiteIpc.js` projects application snapshots
 through React external-store subscriptions and owns browser UI preferences.
 
-The game sends an initial `snapshot`, then `jobs.changed`, `storage.changed`,
-`batch.changed` and `library.changed` whenever state changes. Commands receive
-named, correlated events such as `job.started` and `library.page`. Job progress
+The mod calls `snapshot`, then `jobsChanged`, `storageChanged`,
+`batchChanged` and `libraryChanged` when state changes. The adapter translates
+generated method results into the application's existing correlated messages. Job progress
 and completion are observed by job ID; they are never fetched on an interval.
 A command is never replayed after reconnecting. A fresh snapshot replaces state
 and restores bounded subscriptions.
 
 Visible cards register their level IDs with the application. Those interests
-are counted and coalesced into `library.watch` messages with at most 500 IDs.
-The game sends `library.membership` only to that browser. Library pages retain
+are counted and coalesced into `watchLibrary({ ids })` calls with at most 500 IDs.
+The mod calls `membershipChanged` only on the registered app that owns those interests. Library pages retain
 opaque cursors and revisions; revision changes refresh visible pages.
 
 Folder picker completion is correlated by operation ID and delivered only to
-the selecting peer. Choosing a folder grants a one-time token; the web app
+the selecting app session. Choosing a folder grants a one-time token; the web app
 cannot provide arbitrary local paths. Losing a connection rejects pending
 commands and observations. Closing a dialog aborts its job observers.
 
-The SDK is checked in as raw source under `vendor/adofai-ipc`, with its license,
-source revision and content hashes. It is synchronized from the canonical
-`adofai-ipc` repository with `scripts/run.sh client-sync <vendor-directory>`.
-No npm registry package or sibling-directory symlink is required.
+The SDK is fixed under `vendor/adofai-ipc`; the generated contract package is
+fixed under `vendor/tufhelper-ipc`. Both are local package dependencies.
+The contract source is maintained in the mod repository's `ipc/main.tsp`.
+After changing it, generate C# in the mod repository and copy the generated
+TypeScript package to this repository. Its contract hash must match the mod.
+Building this repository does not read a sibling checkout or run TypeSpec.
 
 Discovery remains active when the game is absent or application readiness times
-out. Listeners are installed before discovery, and only the mod's fresh snapshot
-restores application availability. Browser resume checks retained connections;
-the vendored SDK handles heartbeat recovery and Chromium handshake delays.
+out. `registerApp().use()` installs handlers and registers automatically.
+`channel.onStatus` reports registered readiness and clears the snapshot gate
+when availability changes. Only a fresh snapshot restores application availability.
+Reconnection keeps the app ID and creates a new session ID; stale callback replies
+and pending command results cannot update the new session. Browser resume calls
+`app.checkConnection()`; the SDK owns liveness and recovery.
 All build modes verify the SDK's source revision, file inventory and content
 hashes before bundling; `npm run sdk:check` runs the same check explicitly.
 

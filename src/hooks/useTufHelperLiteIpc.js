@@ -195,7 +195,7 @@ helperSession.subscribe(() => {
   else if (snapshot.connected && tufHelperLiteIntegrationSnapshot.state === 'unavailable') setTufHelperLiteIntegrationSnapshot({ state: 'enabled', isSessionDismissed: false, errorCode: null });
 });
 const getTufHelperLiteIpcErrorCode = (error) => error?.code || 'CONNECTION_FAILED';
-const versionMismatchSnapshot = (error) => ({ direction: error?.direction || (error?.code === 'INCOMPATIBLE' ? (error.protocolVersion > 3 ? 'client_outdated' : 'server_outdated') : null), clientVersion: error?.clientVersion, serverVersion: error?.serverVersion, protocolVersion: error?.protocolVersion });
+const versionMismatchSnapshot = (error) => ({ direction: error?.direction || null, clientVersion: error?.clientVersion, serverVersion: error?.serverVersion });
 let isTufHelperLiteIntegrationInitialized = initialIntegrationState === 'hidden' && !storedEnabled;
 export const initializeTufHelperLiteIntegration = async () => {
   if (isTufHelperLiteIntegrationInitialized) return;
@@ -225,7 +225,7 @@ export const connectTufHelperLiteIntegration = async () => {
     if (tufHelperLiteIntegrationSnapshot.state !== 'connecting') return false;
     // A readiness timeout must not cancel SDK discovery. Late snapshots restore
     // availability without a reload; terminal protocol mismatches cannot recover.
-    if (error?.code === 'INCOMPATIBLE') helperSession.close();
+    if (['INCOMPATIBLE', 'protocol_mismatch', 'feature_protocol_mismatch', 'contract_mismatch'].includes(error?.code)) helperSession.close();
     setTufHelperLiteIntegrationSnapshot({ state: 'unavailable', isSessionDismissed: false, errorCode: getTufHelperLiteIpcErrorCode(error), versionMismatch: versionMismatchSnapshot(error) });
     return false;
   }

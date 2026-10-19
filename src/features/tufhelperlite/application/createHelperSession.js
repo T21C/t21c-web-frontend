@@ -1,5 +1,6 @@
 // The application consumes a message-session port; neither React nor the SDK belongs here.
-const value = (object, name) => object?.[name] ?? object?.[name.charAt(0).toUpperCase() + name.slice(1)];
+const value = (object, name) => object != null && Object.prototype.hasOwnProperty.call(object, name)
+  ? object[name] : object?.[name.charAt(0).toUpperCase() + name.slice(1)];
 const initial = () => ({ connected: false, connectionError: null, health: null, jobs: [], levelIds: [], storage: null, batch: null, summary: null });
 const failure = (payload) => Object.assign(new Error(value(payload, 'message') || 'The game could not complete this action.'), { code: value(payload, 'code') || value(payload, 'errorCode') });
 

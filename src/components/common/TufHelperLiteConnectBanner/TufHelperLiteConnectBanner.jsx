@@ -28,10 +28,12 @@ export const TufHelperLiteConnectBanner = () => {
   const errorCode = integration.errorCode;
   const mismatchDirection = integration.versionMismatch?.direction;
   const requiresClientUpdate = mismatchDirection === 'client_outdated';
+  const requiresContractUpdate = errorCode === 'contract_mismatch';
   const requiresIpcUpdate = errorCode === 'namespace_status_unavailable' || errorCode === 'INCOMPATIBLE' ||
+    errorCode === 'protocol_mismatch' || errorCode === 'feature_protocol_mismatch' ||
     mismatchDirection === 'server_outdated' ||
     mismatchDirection === 'legacy_server';
-  const namespaceInitializing = errorCode === 'namespace_initializing' || errorCode === 'TIMEOUT';
+  const namespaceInitializing = errorCode === 'namespace_initializing' || errorCode === 'TIMEOUT' || errorCode === 'timeout';
   const namespaceFailed = errorCode === 'namespace_error';
   const canShow = integration.state === 'prompt' || integration.state === 'unavailable';
   const isVisible =
@@ -59,7 +61,9 @@ export const TufHelperLiteConnectBanner = () => {
 
   if (!isVisible) return null;
 
-  const title = requiresClientUpdate
+  const title = requiresContractUpdate
+    ? t('level.tufHelperLiteBanner.contractUpdateTitle', { defaultValue: 'TUFHelperLite API update required' })
+    : requiresClientUpdate
     ? t('level.tufHelperLiteBanner.clientUpdateTitle')
     : requiresIpcUpdate
     ? t('level.tufHelperLiteBanner.ipcUpdateTitle')
@@ -70,7 +74,9 @@ export const TufHelperLiteConnectBanner = () => {
         : showUnavailable
           ? t('level.tufHelperLiteBanner.unavailableTitle')
           : t('level.tufHelperLiteBanner.title');
-  const description = requiresClientUpdate
+  const description = requiresContractUpdate
+    ? t('level.tufHelperLiteBanner.contractUpdateDescription', { defaultValue: 'Update TUFHelperLite and refresh this page so both use the same API version.' })
+    : requiresClientUpdate
     ? t('level.tufHelperLiteBanner.clientUpdateDescription')
     : requiresIpcUpdate
     ? t('level.tufHelperLiteBanner.ipcUpdateDescription')

@@ -97,3 +97,12 @@ test('declared PascalCase mod DTOs hydrate capabilities and settle domain observ
   assert.equal((await session.waitForFolder('wire-picker')).SelectionToken, 'grant');
   session.close();
 });
+
+test('explicit nullable summary values remain null in application snapshots', async () => {
+  const { session, peers } = harness(); await session.connect();
+  peers[0].receive('library.changed', { summary: null });
+  assert.equal(session.getSnapshot().summary, null);
+  peers[0].receive('snapshot', { health: {}, jobs: [], storage: {}, batch: {}, summary: null });
+  assert.equal(session.getSnapshot().summary, null);
+  session.close();
+});

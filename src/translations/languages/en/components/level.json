@@ -216,6 +216,8 @@
     "unavailableTitle": "TUFHelperLite wasn't found",
     "unavailableDescription": "Make sure AdofaiIpc and TUFHelperLite are installed and ADOFAI is running, then try again.",
     "ipcUpdateTitle": "AdofaiIpc needs to be updated",
+    "contractUpdateTitle": "TUFHelperLite API update required",
+    "contractUpdateDescription": "Update TUFHelperLite and refresh this page so both use the same API version.",
     "ipcUpdateDescription": "Close the game, reinstall the latest AdofaiIpc release, and then restart ADOFAI.",
     "downloadIpc": "Download AdofaiIpc",
     "clientUpdateTitle": "Website update required",

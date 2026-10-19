@@ -141,6 +141,8 @@
     "unavailableTitle": "TUFHelperLite를 찾지 못했습니다",
     "unavailableDescription": "AdofaiIpc와 TUFHelperLite가 설치되어 있고 ADOFAI가 실행 중인지 확인한 뒤 다시 시도하세요.",
     "ipcUpdateTitle": "AdofaiIpc 업데이트가 필요합니다",
+    "contractUpdateTitle": "TUFHelperLite API 버전이 일치하지 않습니다",
+    "contractUpdateDescription": "TUFHelperLite를 업데이트하고 페이지를 새로고침해 모드와 웹의 API 버전을 맞추세요.",
     "ipcUpdateDescription": "게임을 종료하고 최신 AdofaiIpc를 다시 설치한 뒤 ADOFAI를 재시작하세요.",
     "downloadIpc": "AdofaiIpc 다운로드",
     "clientUpdateTitle": "웹사이트 업데이트가 필요합니다",
