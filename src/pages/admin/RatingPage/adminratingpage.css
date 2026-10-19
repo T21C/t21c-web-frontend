@@ -347,7 +347,23 @@
   }
 
   .admin-rating-page .admin-buttons .requests-button {
+    position: relative;
     text-decoration: none;
+  }
+
+  .admin-rating-page .requests-button .request-count-badge {
+    position: absolute;
+    top: -0.45rem;
+    right: -0.45rem;
+    min-width: 1.15rem;
+    padding: 0 0.4rem;
+    border-radius: 999px;
+    background-color: var(--danger-color);
+    color: var(--color-white);
+    font-size: 0.8rem;
+    line-height: 1.15rem;
+    text-align: center;
+    pointer-events: none;
   }
 
   .admin-rating-page .admin-buttons .requests-button + .rank-ready-button {

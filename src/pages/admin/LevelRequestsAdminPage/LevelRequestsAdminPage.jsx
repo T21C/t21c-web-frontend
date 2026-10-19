@@ -1,12 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { routes } from '@/api/routes';
-import api from '@/utils/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { MetaTags } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
 import LevelRequestBrowser from '@/components/requests/LevelRequestBrowser';
+import { formatRequestCount, usePendingRequestCounts } from '@/components/requests/pendingRequestCounts';
 import { TYPE_BY_HASH, canViewRequestType } from '@/components/requests/levelRequestShared';
 import '@/components/requests/levelRequests.css';
 
@@ -27,17 +26,7 @@ const LevelRequestsAdminPage = () => {
   const type = TYPE_BY_HASH[hash] || 'rerate';
   const visibleTabs = TABS.filter(([value]) => canViewRequestType(user, value));
   const allowed = canViewRequestType(user, type);
-  const [openCounts, setOpenCounts] = useState({});
-  const refreshOpenCounts = useCallback(() => {
-    if (!visibleTabs.length) return;
-    api.get(routes.database.levelRequests.openCounts())
-      .then((response) => setOpenCounts(response.data?.counts || {}))
-      .catch(() => {});
-  }, [visibleTabs.length]);
-
-  useEffect(() => {
-    refreshOpenCounts();
-  }, [refreshOpenCounts]);
+  const { counts: openCounts, refresh: refreshOpenCounts } = usePendingRequestCounts(visibleTabs.length > 0);
   const pageMeta = useMemo(
     () => buildStaticPageMeta({
       title: t('levelRequests.admin.title'),
@@ -57,7 +46,7 @@ const LevelRequestsAdminPage = () => {
           {visibleTabs.map(([value, tabHash, labelKey]) => {
             const label = t(`levelRequests.tabs.${labelKey}`);
             const count = Number(openCounts[value]) || 0;
-            const shown = count > 99 ? '99+' : String(count);
+            const shown = formatRequestCount(count);
             return (
               <button
                 key={value}

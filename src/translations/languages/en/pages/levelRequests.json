@@ -76,6 +76,7 @@
     "editTitle": "Edit {{type}} request",
     "reason": "Reason",
     "reasonPlaceholder": "Explain the request. Mention levels as #123.",
+    "noReferencesConfirm": "Are you sure you want to submit this without any references? Adding a reference level will speed up processing of your request (and make our job a bit easier)",
     "requestedRating": "Requested rating",
     "requestedRatingPlaceholder": "G15 or G18~U2",
     "kind": "What should change",

@@ -44,7 +44,7 @@
   "labels": {
     "totalRatings": "{{count}} 个待评级关卡",
     "connectedUsers": "{{count}} 人在线",
-    "connectedManagers": "({{count}} 名管理员)",
+    "connectedManagers": "（{{count}} 名管理员）",
     "disconnected": "未连接"
   },
   "tooltips": {
@@ -84,7 +84,7 @@
       "title": "沉浸模式评级",
       "description": "专注于评级本身"
     },
-    "confirmPeek": "查看其他评级员的评级和理由？这将使用一次查看机会。",
+    "confirmPeek": "是否查看其他评级员的评级和理由？这将使用一次查看机会。",
     "reportPrompt": "报告备注（可选）—— 描述媒体问题：",
     "report": "报告媒体问题",
     "exit": "暂停",
@@ -97,7 +97,7 @@
     "setup": {
       "title": "沉浸模式评级",
       "subtitle": "沉浸评级，一次一个。",
-      "resumeHint": "上次沉浸模式尚未完成。",
+      "resumeHint": "上次沉浸模式评级尚未完成。",
       "continue": "继续",
       "discard": "放弃并重新开始",
       "deckSize": "本次评级关卡数量",
@@ -142,7 +142,7 @@
       "submitted": "已评级：{{n}}",
       "skipped": "已跳过：{{n}}",
       "peeks": "已使用查看次数：{{n}} / {{max}}",
-      "again": "完成",
+      "again": "再来一次",
       "queue": "返回"
     },
     "messages": {
@@ -151,13 +151,15 @@
       "reportSent": "报告已发送"
     },
     "errors": {
-      "loginRequired": "登录以进行沉浸模式",
+      "loginRequired": "请登录以进行沉浸模式评级",
       "dealFailed": "处理失败",
       "invalidDeckSize": "请输入 1 到 200 之间的整数",
       "reportFailed": "报告发送失败",
       "ratingRequired": "输入你的评级",
       "commentRequired": "需要理由",
-      "submitFailed": "提交失败"
+      "submitFailed": "提交失败",
+      "alreadyRated": "此关卡已在沉浸模式中评过",
+      "normalRatingLocked": "查看评级列表前请先结束或取消沉浸模式"
     }
   }
 }

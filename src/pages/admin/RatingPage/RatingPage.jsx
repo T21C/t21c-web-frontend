@@ -18,7 +18,7 @@ import { EditLevelPopup } from "@/components/popups/Levels";
 import { RaterManagementPopup, RatingDetailPopup, TopRatersPopup } from "@/components/popups/Rating";
 import { ReferencesPopup } from "@/components/popups/Difficulties";
 import { ScrollButton, ReferencesButton } from "@/components/common/buttons";
-import { ShuffleIcon } from '@/components/common/icons';
+import { RefreshIcon, ShuffleIcon } from '@/components/common/icons';
 import { CustomSelect } from "@/components/common/selectors";
 import api from "@/utils/api";
 import { apiUrl } from '@/config/urls';
@@ -29,6 +29,7 @@ import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import toast from 'react-hot-toast';
 import { RankReadyTable, isAutoraterDetail, compareRankReadyRows } from './RankReadyTable';
 import { REQUEST_BANDS, requestPguBand } from '@/utils/ratingRequestBand';
+import { formatRequestCount, pendingRequestTotal, usePendingRequestCounts } from '@/components/requests/pendingRequestCounts';
 
 const RATINGS_BATCH = 30;
 const SEARCH_DEBOUNCE_MS = 300;
@@ -110,6 +111,9 @@ const RatingPage = () => {
   const ratingsRef = useRef(ratings);
 
   const isSuperAdmin = hasFlag(user, permissionFlags.SUPER_ADMIN);
+  const canReviewRerates = hasFlag(user, permissionFlags.RATER) || isSuperAdmin;
+  const { counts: pendingRequestCounts } = usePendingRequestCounts(canReviewRerates);
+  const pendingRerateLabel = formatRequestCount(pendingRequestTotal(pendingRequestCounts, ['rerate']));
   const rankReadyActive = Boolean(isSuperAdmin && showRankReadyView);
 
   useEffect(() => {
@@ -655,10 +659,17 @@ const RatingPage = () => {
             >
               {t('rating.buttons.topRaters')} <LeaderboardIcon />
             </button>
-            {(hasFlag(user, permissionFlags.RATER) || hasFlag(user, permissionFlags.SUPER_ADMIN)) && (
-              <Link className="admin-button requests-button" to="/admin/requests#rerate">
-                <ShuffleIcon color="#ffffff" size="18px" />
+            {canReviewRerates && (
+              <Link
+                className="admin-button requests-button"
+                to="/admin/requests#rerate"
+                aria-label={pendingRerateLabel ? `${t('levelRequests.tabs.requests')} (${pendingRerateLabel})` : t('levelRequests.tabs.requests')}
+              >
+                <RefreshIcon color="#ffffff" size="18px" />
                 {t('levelRequests.tabs.requests')}
+                {pendingRerateLabel && (
+                  <span className="request-count-badge" aria-hidden="true">{pendingRerateLabel}</span>
+                )}
               </Link>
             )}
             {isSuperAdmin && (

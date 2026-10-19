@@ -22,6 +22,7 @@ import {
   tagRequestTargetIds,
 } from './levelRequestShared';
 import { useUnsavedClose } from '@/hooks/useUnsavedClose';
+import { collectLevelReferenceIds } from '@/utils/levelReferences';
 import LevelRequestCurationTypes, { LevelRequestCurationDiff } from './LevelRequestCurationTypes';
 import LevelRequestInfoFields from './LevelRequestInfoFields';
 import LevelRequestTags, { LevelRequestTagDiff } from './LevelRequestTags';
@@ -295,6 +296,11 @@ const LevelRequestFormPopup = ({
     }
     if (type === 'curation_rerate' && (!curationReady || appliedCurationIds == null || curationUnchanged)) {
       if (curationUnchanged) toast.error(t('levelRequests.errors.unchanged'));
+      return;
+    }
+    const trimmedReason = reason.trim();
+    const hasReferences = collectLevelReferenceIds(trimmedReason).length > 0;
+    if ((trimmedReason || type === 'curation') && !hasReferences && !window.confirm(t('levelRequests.form.noReferencesConfirm'))) {
       return;
     }
     setSaving(true);
