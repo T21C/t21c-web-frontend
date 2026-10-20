@@ -38,8 +38,9 @@ A dismissed connection notice stays dismissed for the browser session. API or
 contract mismatches use a persistent banner; explicit user action failures retain
 their error toast.
 
-The SDK is fixed under `vendor/adofai-ipc`; the generated contract package is
-fixed under `vendor/tufhelper-ipc`. Both are local package dependencies.
+The `adofai-ipc` SDK is installed from npm with an exact version and tarball
+integrity pinned in `package-lock.json`. The generated contract package remains
+fixed under `vendor/tufhelper-ipc` and depends on the same npm SDK version.
 The contract source is maintained in the mod repository's `ipc/main.tsp`.
 After changing it, generate C# in the mod repository and copy the generated
 TypeScript package to this repository. Its contract hash must match the mod.

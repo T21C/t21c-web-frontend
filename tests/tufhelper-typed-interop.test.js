@@ -17,8 +17,7 @@ async function until(predicate, message, milliseconds = 10000) {
 test('real TUFHelper services preserve settings, deletion, push, targeting, cancellation and reconnect', {
   skip: !process.env.TUFHELPER_IPC_FIXTURE || !globalThis.WebSocket,
 }, async (t) => {
-  // eslint-disable-next-line import/extensions
-  const { createIpc } = await import('../vendor/adofai-ipc/index.js');
+  const { createIpc } = await import('adofai-ipc');
   // eslint-disable-next-line import/extensions
   const { TufHelperContract } = await import('../vendor/tufhelper-ipc/index.js');
   const children = []; const peers = [];

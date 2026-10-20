@@ -1,6 +1,7 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
+import { CLIENT_VERSION, PROTOCOL_VERSION } from 'adofai-ipc/transport';
 
 function verify(name) {
   const root = fileURLToPath(new URL(`../vendor/${name}/`, import.meta.url));
@@ -16,13 +17,24 @@ function verify(name) {
   return metadata;
 }
 
-const sdk = verify('adofai-ipc');
-if (sdk.source !== 'https://github.com/KGH1113/adofai-ipc' || sdk.version !== '2.0.0' || sdk.protocolVersion !== 3
-  || !/^[a-f0-9]{40}$/.test(sdk.sourceRevision) || typeof sdk.sourceDirty !== 'boolean') throw new Error('Invalid ADOFAI IPC provenance');
-if (!readFileSync(new URL('../vendor/adofai-ipc/LICENSE', import.meta.url), 'utf8').includes('MIT License')) throw new Error('ADOFAI IPC license missing');
+const manifest = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+const lock = JSON.parse(readFileSync(new URL('../package-lock.json', import.meta.url), 'utf8'));
+const sdkRoot = new URL('../', import.meta.resolve('adofai-ipc'));
+const sdk = JSON.parse(readFileSync(new URL('package.json', sdkRoot), 'utf8'));
+const pinned = lock.packages['node_modules/adofai-ipc'];
+if (sdk.name !== 'adofai-ipc' || manifest.dependencies['adofai-ipc'] !== sdk.version
+  || CLIENT_VERSION !== sdk.version || PROTOCOL_VERSION !== 3
+  || pinned?.version !== sdk.version || pinned.link
+  || !pinned.resolved?.startsWith('https://registry.npmjs.org/adofai-ipc/-/')
+  || !/^sha512-[A-Za-z0-9+/]+={0,2}$/.test(pinned.integrity || '')) {
+  throw new Error('ADOFAI IPC must use an exact npm version with a registry integrity lock');
+}
+if (!readFileSync(new URL('LICENSE', sdkRoot), 'utf8').includes('MIT License')) throw new Error('ADOFAI IPC license missing');
 const contract = verify('tufhelper-ipc');
+const contractPackage = JSON.parse(readFileSync(new URL('../vendor/tufhelper-ipc/package.json', import.meta.url), 'utf8'));
 const definition = readFileSync(new URL('../vendor/tufhelper-ipc/index.js', import.meta.url), 'utf8');
 if (contract.source !== 'tufhelper2/ipc/main.tsp' || contract.contractId !== 'tufhelperlite'
   || !/^[a-f0-9]{64}$/.test(contract.contractSourceSha256)
-  || !definition.includes(`"hash": "${contract.contractHash}"`)) throw new Error('Invalid TUFHelper contract provenance');
+  || !definition.includes(`"hash": "${contract.contractHash}"`)
+  || contractPackage.dependencies['adofai-ipc'] !== sdk.version) throw new Error('Invalid TUFHelper contract provenance');
 console.log(`Verified ADOFAI IPC ${sdk.version} and TUFHelper contract ${contract.contractHash}`);
