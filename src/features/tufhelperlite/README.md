@@ -5,7 +5,7 @@ user actions. Its injected message-session port owns `open(receive, state)`,
 `send(name, payload)` and `close()`. It imports no React or IPC SDK code.
 
 `adapters/createIpcPort.js` translates that port to the generated
-`TufHelperContract` and the ADOFAI-IPC 2.0.0 app API. `composition.js` wires the production adapter to the
+`TufHelperContract` and the ADOFAI-IPC 2.1.0 app API. `composition.js` wires the production adapter to the
 application. `src/hooks/useTufHelperLiteIpc.js` projects application snapshots
 through React external-store subscriptions and owns browser UI preferences.
 
@@ -53,8 +53,11 @@ when availability changes. Only a fresh snapshot restores application availabili
 Reconnection keeps the app ID and creates a new session ID; stale callback replies
 and pending command results cannot update the new session. Browser resume calls
 `app.checkConnection()`; the SDK owns liveness and recovery.
-All build modes verify the SDK's source revision, file inventory and content
-hashes before bundling; `npm run sdk:check` runs the same check explicitly.
+All build modes verify the SDK's exact npm version and registry integrity, plus
+the generated contract's file inventory and content hashes before bundling;
+`npm run sdk:check` runs the same check explicitly. The helper downloads remote
+chart archives into its game-side library. It currently sends no files to the
+browser, so this integration does not create an IPC file download or upload flow.
 
 The level page opens TUFHelperLite Settings. Storage controls live in that
 dialog; Manage downloads replaces it with the downloaded-level library.
