@@ -34,6 +34,45 @@ export function normalizeTagIds(ids) {
   return [...new Set((ids || []).map((id) => Number(id)).filter((id) => Number.isInteger(id) && id > 0))];
 }
 
+export function sameIdSet(left, right) {
+  const a = normalizeTagIds(left);
+  const b = normalizeTagIds(right);
+  if (a.length !== b.length) return false;
+  const known = new Set(b);
+  return a.every((id) => known.has(id));
+}
+
+export function curationRequestIssue(type, targetIds, currentIds) {
+  const target = normalizeTagIds(targetIds);
+  if (type === 'curation') return target.length === 0 ? 'curation_empty' : null;
+  if (type === 'curation_rerate') {
+    if (!Array.isArray(currentIds)) return null;
+    return sameIdSet(target, currentIds) ? 'unchanged_curation' : null;
+  }
+  return null;
+}
+
+export function tagRequestIssue(targetIds, currentIds) {
+  if (targetIds == null || currentIds == null) return null;
+  return sameIdSet(targetIds, currentIds) ? 'unchanged_tags' : null;
+}
+
+/** Same codes the server throws for a stored payload versus the live level. */
+export function storedRequestIssue(type, payload, level) {
+  if (type === 'rerate' && !String(payload?.requestedRating || '').trim()) return 'rating';
+  if (type === 'tag') {
+    if (!Array.isArray(level?.tagIds)) return null;
+    return tagRequestIssue(tagRequestTargetIds(payload, level.tagIds), level.tagIds);
+  }
+  if (type === 'curation' || type === 'curation_rerate') {
+    const current = Array.isArray(level?.curationTypeIds) ? level.curationTypeIds : null;
+    if (type === 'curation' && Array.isArray(current) && current.length > 0) return 'has_curation';
+    if (type === 'curation_rerate' && Array.isArray(current) && current.length === 0) return 'no_curation';
+    return curationRequestIssue(type, payload?.curationTypeIds, current);
+  }
+  return null;
+}
+
 /** Same selection the admin tag editor starts from: staff tags, plus pinned community tags. */
 export function assignableTagIds(tags) {
   return normalizeTagIds((tags || []).filter((tag) => {
@@ -81,6 +120,22 @@ export function curationRequestDiff(payload, currentIds) {
     addIds: normalizeTagIds(payload?.curationTypeIds).filter((id) => !current.has(id)),
     removeIds: [],
   };
+}
+
+export function levelHasCuration(level) {
+  if (!level || typeof level !== 'object') return false;
+  if (Array.isArray(level.curations) && level.curations.length > 0) return true;
+  return Boolean(level.curation && typeof level.curation === 'object');
+}
+
+export function curationRequestTypeForLevel(level) {
+  return levelHasCuration(level) ? 'curation_rerate' : 'curation';
+}
+
+export function curationMenuType(level, eligibility) {
+  if (eligibility?.curation?.code === 'has_curation') return 'curation_rerate';
+  if (eligibility?.curation_rerate?.code === 'no_curation') return 'curation';
+  return curationRequestTypeForLevel(level);
 }
 
 export function curationTypeIdsFromLevel(level) {
@@ -202,6 +257,27 @@ export function songRequestLabel(songName, suffix) {
   const name = String(songName || '').trim();
   const extra = String(suffix || '').trim();
   return extra ? `${name} ${extra}` : name;
+}
+
+/** `Artist - Song (suffix)` for rerate comparison errors. */
+export function rerateComparisonLabel(artist, song, suffix) {
+  const artistPart = String(artist ?? '').trim() || 'Unknown';
+  const songPart = String(song ?? '').trim() || 'Unknown';
+  const extra = String(suffix ?? '').trim();
+  if (!extra) return `${artistPart} - ${songPart}`;
+  const wrapped = extra.startsWith('(') ? extra : `(${extra})`;
+  return `${artistPart} - ${songPart} ${wrapped}`;
+}
+
+export function reratingComparisonFromRefs(ids, levelsById) {
+  for (const id of ids || []) {
+    const level = levelsById?.[id];
+    if (!level?.toRate) continue;
+    return {
+      label: rerateComparisonLabel(level.artist, level.songObject?.name || level.song, level.suffix),
+    };
+  }
+  return null;
 }
 
 export function buildInfoDraft(payload, level, kind) {
@@ -348,9 +424,11 @@ export function userCanEditLevel(user, level) {
 
 export function requestErrorMessage(t, err) {
   const code = err?.response?.data?.code;
+  const details = err?.response?.data?.details;
   if (code) {
     return t(`levelRequests.errors.${code}`, {
       defaultValue: err.response?.data?.error || t('levelRequests.errors.generic'),
+      ...(details && typeof details === 'object' ? details : {}),
     });
   }
   return err?.response?.data?.error || t('levelRequests.errors.generic');

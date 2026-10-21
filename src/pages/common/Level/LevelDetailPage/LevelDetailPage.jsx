@@ -1127,7 +1127,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
   const toRateHeaderCornerSlotRef = useRef(null);
   const rerateHistoryAnchorRef = useRef(null);
   const wrapperLevelRef = useRef(null);
-  const headerRef = useRef(null);
+  const levelHeaderRef = useRef(null);
   const scoreGraphAnchorRef = useRef(null);
   const tagsAnchorRef = useRef(null);
   /** Tracks last seen CDN zip identity so we can refetch `/cdnData` after upload/import (`dlLink` / `fileId` change). */
@@ -1340,62 +1340,6 @@ const LevelDetailPageContent = ({ mockData = null }) => {
     setIsLongDescription(activeDescription.length > 250);
   }, [activeDescription]);
 
-  // The header is not mounted while the level or difficulties are still loading,
-  // and this effect lives above those early returns. Track that so the rail is
-  // measured on the commit that actually paints the header.
-  const headerReady = res != null && difficulties.length > 0 && !notFound;
-
-  useLayoutEffect(() => {
-    const header = headerRef.current;
-    if (!header || !headerReady) return undefined;
-    const left = header.querySelector(':scope > .left');
-    const right = header.querySelector(':scope > .right');
-    if (!left || !right) return undefined;
-
-    const desktopQuery = window.matchMedia('(min-width: 769px)');
-
-    const applyRailHeight = () => {
-      right.style.removeProperty('position');
-      if (!desktopQuery.matches) {
-        header.style.removeProperty('--level-header-rail');
-        return;
-      }
-
-      // Take the rail out of flow so its column width cannot wrap the title
-      // while the natural header height is measured.
-      right.style.position = 'absolute';
-      const natural = Math.round(left.getBoundingClientRect().height);
-      right.style.removeProperty('position');
-      if (natural <= 0) return;
-
-      header.style.setProperty('--level-header-rail', `${natural}px`);
-      const wrapped = Math.round(left.getBoundingClientRect().height);
-      if (wrapped > natural + 1) {
-        header.style.setProperty('--level-header-rail', `${wrapped}px`);
-      }
-    };
-
-    applyRailHeight();
-
-    const resizeObserver = new ResizeObserver(applyRailHeight);
-    for (const child of left.children) {
-      if (child.classList.contains('curation-description-container')) continue;
-      if (getComputedStyle(child).position === 'absolute') continue;
-      resizeObserver.observe(child);
-    }
-    const mutationObserver = new MutationObserver(applyRailHeight);
-    mutationObserver.observe(right, { childList: true });
-    desktopQuery.addEventListener('change', applyRailHeight);
-
-    return () => {
-      resizeObserver.disconnect();
-      mutationObserver.disconnect();
-      desktopQuery.removeEventListener('change', applyRailHeight);
-      right.style.removeProperty('position');
-      header.style.removeProperty('--level-header-rail');
-    };
-  }, [effectiveId, showDescriptionBox, isDescriptionCollapsed, headerReady]);
-
   const selectDescriptionMode = useCallback((mode) => {
     setDescriptionMode(mode);
     setIsDescriptionExpanded(false);
@@ -1435,6 +1379,69 @@ const LevelDetailPageContent = ({ mockData = null }) => {
     if (activeCurationTooltipId == null) return;
     updateCurationTooltipPosition(activeCurationTooltipId);
   }, [activeCurationTooltipId, updateCurationTooltipPosition]);
+
+  // The rail is a sibling of the card, so a percentage height is cyclic and
+  // stretches the card. Cap it to the card's used height when that extra
+  // column does not make the card itself taller. If it would, leave the
+  // buttons in one column — flipping the cap back and forth oscillates.
+  useLayoutEffect(() => {
+    const header = levelHeaderRef.current;
+    if (!header) return undefined;
+    const left = header.querySelector(':scope > .left');
+    const right = header.querySelector(':scope > .right');
+    if (!left || !right) return undefined;
+
+    let frame = 0;
+    let signature = '';
+    const fitRail = () => {
+      const mark = () => {
+        signature = `${header.clientWidth}|${right.childElementCount}|${Math.round(left.getBoundingClientRect().height)}|${right.style.maxHeight}`;
+      };
+      const key = `${header.clientWidth}|${right.childElementCount}|${Math.round(left.getBoundingClientRect().height)}|${right.style.maxHeight}`;
+      if (key === signature) return;
+
+      if (getComputedStyle(header).flexDirection === 'column') {
+        right.style.maxHeight = '';
+        mark();
+        return;
+      }
+
+      const cap = Number.parseFloat(right.style.maxHeight);
+      const cardNow = left.getBoundingClientRect().height;
+      if (Number.isFinite(cap) && Math.abs(cardNow - cap) <= 1) {
+        mark();
+        return;
+      }
+
+      right.style.maxHeight = 'none';
+      const card = left.getBoundingClientRect().height;
+      const rail = right.getBoundingClientRect().height;
+      if (rail <= card + 1) {
+        right.style.maxHeight = '';
+        mark();
+        return;
+      }
+
+      right.style.maxHeight = `${card}px`;
+      const nextCard = left.getBoundingClientRect().height;
+      if (Math.abs(nextCard - card) > 1) right.style.maxHeight = '';
+      mark();
+    };
+
+    fitRail();
+    const observer = new ResizeObserver(() => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(fitRail);
+    });
+    observer.observe(header);
+    observer.observe(left);
+    observer.observe(right);
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+      right.style.maxHeight = '';
+    };
+  }, [res?.level?.id, user?.id, user?.creatorId, tufHelperLiteHealth.isAvailable]);
 
   useEffect(() => {
     if (activeCurationTooltipId == null) return;
@@ -2684,8 +2691,9 @@ const LevelDetailPageContent = ({ mockData = null }) => {
           </StatusBanner>
         ) : null}
       
-          <div className="header" ref={headerRef}>
+          <div className="header" ref={levelHeaderRef}>
             <div className={`left${showLevelLinksIcon ? ' has-level-links' : ''}`}>
+              <div className="header-body">
 
               <div className="level-detail-header-mobile-bar">
                 <div className="level-id mobile">#{effectiveId}</div>
@@ -3223,6 +3231,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                   </div>
                 </div>
               )}
+              </div>
             </div>
             <div className="right">
               {(() => {
@@ -3331,6 +3340,9 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                   <PackIcon color="#ffffff" size={"34px"} />
                 </button>
               )}
+              {user && (
+                <LevelRequestMenu level={res.level} user={user} />
+              )}
               {res.ratings && (
                 <button 
                   className="rating-button svg-stroke"
@@ -3342,9 +3354,6 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                     <path d="M7 12L10 15L17 9" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </button>
-              )}
-              {user && (
-                <LevelRequestMenu level={res.level} user={user} />
               )}
             </div>
           </div>

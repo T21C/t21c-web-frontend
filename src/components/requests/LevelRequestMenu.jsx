@@ -7,15 +7,15 @@ import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
 import { InfoIcon, RefreshIcon, ShuffleIcon, SparkleIcon } from '@/components/common/icons';
 import techIcon from '@/assets/icons/Pseudo RITKnew.png';
-import { requestErrorMessage, userCanEditLevel } from './levelRequestShared';
+import { curationMenuType, requestErrorMessage, userCanEditLevel } from './levelRequestShared';
 import LevelRequestFormPopup from './LevelRequestFormPopup';
 import './levelRequests.css';
 
-const MENU_REQUEST_TYPES = ['rerate', 'info_change', 'tag', 'curation_rerate'];
+const BASE_MENU_REQUEST_TYPES = ['rerate', 'info_change', 'tag'];
 
 function choiceBlockKey(gate) {
   if (!gate || gate.allowed) return null;
-  if (gate.code === 'open') return 'alreadyRequested';
+  if (gate.code === 'open') return gate.own === true ? 'alreadyRequested' : 'alreadySent';
   if (gate.code === 'unsettled') return 'onRatingPage';
   return null;
 }
@@ -24,6 +24,7 @@ const REQUEST_TYPE_ICONS = {
   rerate: <ShuffleIcon size={20} />,
   info_change: <InfoIcon size={20} color="currentColor" />,
   tag: <img src={techIcon} alt="" />,
+  curation: <SparkleIcon size={20} />,
   curation_rerate: <SparkleIcon size={20} />,
 };
 
@@ -49,6 +50,8 @@ const LevelRequestMenu = ({ level, user }) => {
   }, [open, level?.id, t]);
 
   if (!user || !level?.id) return null;
+
+  const menuTypes = [...BASE_MENU_REQUEST_TYPES, curationMenuType(level, eligibility)];
 
   const choose = (type) => {
     const gate = eligibility?.[type];
@@ -82,7 +85,7 @@ const LevelRequestMenu = ({ level, user }) => {
             <h2>{t('levelRequests.menu')}</h2>
           </div>
           <div className="level-requests__choices">
-            {MENU_REQUEST_TYPES.map((type) => {
+            {menuTypes.map((type) => {
               const blockKey = choiceBlockKey(eligibility?.[type]);
               return (
                 <button

@@ -108,6 +108,8 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: stretch;
+  width: 100%;
+  min-width: 0;
   max-width: var(--content-max-width);
   margin: 0 auto;
   padding: var(--spacing-sm);
@@ -115,16 +117,13 @@
   position: relative;
   z-index: var(--z-content);
   min-height: var(--header-height);
+  box-sizing: border-box;
 }
 
 .level-detail .header .left {
-  display: grid;
-  grid-template-rows: auto;
-  grid-template-columns: auto auto minmax(0, 1fr);
-  align-items: center;
-  justify-content: start;
-  justify-items: start;
-  gap: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  align-self: start;
   min-width: 0;
   position: relative;
   padding: var(--spacing-sm);
@@ -139,47 +138,68 @@
   border: 1px solid var(--glass-border);
 }
 
-.level-detail .header .left:has(> .level-detail__curation-panel):not(:has(> .curation-description-container)) {
-  grid-template-columns: auto auto auto minmax(0, 1fr);
-}
-
-.level-detail .header .left:has(> .curation-description-container:not(.description-collapsed)):not(:has(> .level-detail__curation-panel)) {
-  grid-template-columns: auto minmax(0, max-content) minmax(12rem, 1fr) max-content;
-}
-
-.level-detail .header .left:has(> .curation-description-container.description-collapsed):not(:has(> .level-detail__curation-panel)) {
-  grid-template-columns: auto minmax(0, max-content) minmax(0, 1fr) max-content;
-}
-
-.level-detail .header .left:has(> .level-detail__curation-panel):has(> .curation-description-container:not(.description-collapsed)) {
-  grid-template-columns: auto minmax(0, max-content) auto minmax(12rem, 1fr) max-content;
-}
-
-.level-detail .header .left:has(> .level-detail__curation-panel):has(> .curation-description-container.description-collapsed) {
-  grid-template-columns: auto minmax(0, max-content) auto minmax(0, 1fr) max-content;
-}
-
-.level-detail .header .left:has(> .curation-description-container:not(.description-collapsed)) > .title-container {
+/* Width is definite (the card's content box) before the row wraps, so the
+   card height is the wrapped lines and not every item stacked on its own. */
+.level-detail .header .header-body {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  align-content: flex-start;
+  justify-content: flex-start;
+  gap: var(--spacing-lg);
+  width: 100%;
   min-width: 0;
 }
 
-/* Fills the row the title sets. height 0 keeps the text from growing it.
-   min-width 0 keeps the panel inside its column, beside the like column. */
-.level-detail .header .left > .curation-description-container:not(.description-collapsed) {
-  align-self: stretch;
-  justify-self: stretch;
-  width: auto;
+/* The title is the only piece that gives up width. Its text wraps inside
+   the card instead of holding the row open. */
+.level-detail .header .header-body > .difficulty-curation-row,
+.level-detail .header .header-body > .title-container {
   min-width: 0;
+}
+
+.level-detail .header .header-body > .difficulty-curation-row {
+  flex: 0 0 auto;
+  min-width: max-content;
+}
+
+.level-detail .header .header-body > .title-container {
+  flex: 1 1 0;
+  min-width: min(10rem, 100%);
   max-width: 100%;
-  height: 0;
-  min-height: 100%;
+}
+
+/* Curation icons and the like count keep their content width. When the row
+   cannot hold them there, they wrap onto the next line instead of being
+   squeezed until their content spills out of the card. */
+.level-detail .header .header-body > .level-detail__curation-panel,
+.level-detail .header .header-body > .like-container {
+  flex: 0 0 auto;
+  width: max-content;
+  min-width: min-content;
+  max-width: 100%;
   margin: 0;
 }
 
-.level-detail .header .left:has(> .curation-description-container) > .like-container {
-  justify-self: center;
+.level-detail .header .header-body > .level-detail__curation-panel {
+  margin-top: 0;
+}
+
+/* Fills whatever line it lands on. The text itself is absolutely positioned,
+   so the line height still comes from the title, icons, or this floor. */
+.level-detail .header .header-body > .curation-description-container:not(.description-collapsed) {
+  flex: 1 1 12rem;
+  align-self: stretch;
+  width: auto;
+  min-width: min(12rem, 100%);
+  max-width: 100%;
+  height: auto;
+  min-height: 4.5rem;
+  margin: 0;
+}
+
+.level-detail .header .header-body > .curation-description-container.description-collapsed {
   margin-left: 0;
-  margin-right: 0;
 }
 
 .level-detail .header .left::before {
@@ -213,13 +233,12 @@
   align-items: center;
   align-self: start;
   gap: var(--spacing-md);
-  /* A percentage height is cyclic with this row, so once the stacked
-     buttons exceed the title the rail sizes the header. The page sets
-     --level-header-rail to the left's content height; until then the
-     buttons stay in one column instead of wrapping into a horizontal strip. */
-  height: var(--level-header-rail, max-content);
-  min-height: var(--level-header-rail, 0px);
-  max-height: var(--level-header-rail, none);
+  /* A percentage height here is cyclic with the grid row and resolves taller
+     than the card, which stretches an empty band under the title. Size the
+     rail from the buttons instead, and keep the card on its own content. */
+  height: auto;
+  min-height: 0;
+  max-height: none;
   position: relative;
   z-index: var(--z-overlay);
 }
@@ -333,9 +352,10 @@
 
 .level-detail .title-container .level-artist-list-wrapper {
   display: flex;
-  flex-direction: row;
+  flex-flow: row wrap;
   gap: var(--spacing-xs);
   align-items: center;
+  min-width: 0;
 }
 
 .level-detail .title-container .level-artist-list-wrapper .level-artist-name {
@@ -400,16 +420,19 @@
 
 .level-detail .title-container .level-artist-name-wrapper {
   display: flex;
-  flex-wrap:nowrap;
+  flex-wrap: wrap;
   gap: var(--spacing-xs);
   align-items: center;
+  min-width: 0;
 }
 
 .level-detail .title-container .level-info {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--spacing-xs);
   margin: 0;
+  min-width: 0;
   font-size: 0.6em;
   opacity: 1;
   color: var(--secondary-text);
@@ -1848,14 +1871,37 @@
   
   .level-detail .header .left {
     flex: none;
+    flex-flow: column nowrap;
+    align-self: stretch;
     width: 100%;
     justify-content: center;
     position: relative;
     display: flex;
-    flex-direction: column;
     align-items: center;
     gap: var(--spacing-md);
     padding: var(--spacing-md);
+  }
+
+  .level-detail .header .header-body {
+    flex-flow: column nowrap;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    gap: var(--spacing-md);
+  }
+
+  .level-detail .header .header-body > .title-container,
+  .level-detail .header .header-body > .difficulty-curation-row,
+  .level-detail .header .header-body > .level-detail__curation-panel,
+  .level-detail .header .header-body > .like-container {
+    flex: none;
+    width: auto;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .level-detail .header .header-body > .title-container {
+    width: 100%;
   }
 
   .level-detail .header .left.has-level-links {
@@ -3071,7 +3117,7 @@
     width: 100%;
   }
 
-  .level-detail .header .left > .curation-description-container:not(.description-collapsed) {
+  .level-detail .header .header-body > .curation-description-container:not(.description-collapsed) {
     order: 3;
     flex: none;
     align-self: stretch;
@@ -3083,7 +3129,7 @@
     margin-left: 0;
   }
 
-  .level-detail .header .left > .curation-description-container.description-collapsed {
+  .level-detail .header .header-body > .curation-description-container.description-collapsed {
     flex: 0 0 var(--desc-btn-size);
     align-self: flex-end;
     width: var(--desc-btn-size);

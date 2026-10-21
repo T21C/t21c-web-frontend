@@ -11,7 +11,7 @@ import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { formatAccuracyRatio } from '@/utils/statFormatters';
 import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
-import { PIPELINE_ACTIONS, actionButtonClass, canManageRequestType, curationRequestDiff, songRequestLabel, tagRequestDiff, tagRequestTargetIds } from './levelRequestShared';
+import { PIPELINE_ACTIONS, actionButtonClass, canManageRequestType, curationRequestDiff, songRequestLabel, storedRequestIssue, tagRequestDiff, tagRequestTargetIds } from './levelRequestShared';
 import LevelRequestCurationTypes, { LevelRequestCurationDiff } from './LevelRequestCurationTypes';
 import { LevelRequestCreditDiff } from './LevelRequestInfoFields';
 import { LevelRequestTagDiff } from './LevelRequestTags';
@@ -95,6 +95,9 @@ const LevelRequestDetail = ({
   const [rejectNote, setRejectNote] = useState(request.publicNote || '');
   const [threadPrompt, setThreadPrompt] = useState(null);
   const payload = request.payload || {};
+  const payloadIssue = (request.status === 'pending' || request.status === 'accepted')
+    ? storedRequestIssue(request.type, payload, request.level)
+    : null;
   const iconForName = (name) => {
     if (!name) return null;
     return difficulties.find((diff) => diff.name?.toLowerCase() === String(name).toLowerCase())?.icon || null;
@@ -282,6 +285,9 @@ const LevelRequestDetail = ({
         <section className="level-requests__section">
           <LevelRequestCurationTypes ids={payload.curationTypeIds} variant="display" />
         </section>
+      )}
+      {payloadIssue && (
+        <span className="level-requests__hint level-requests__hint--issue">{t(`levelRequests.errors.${payloadIssue}`)}</span>
       )}
       {(request.comparisons || []).length > 0 && (
         <section className="level-requests__section">
