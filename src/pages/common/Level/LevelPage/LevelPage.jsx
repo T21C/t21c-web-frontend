@@ -32,11 +32,11 @@ import { normalizeLevelSearchQuery } from '@/utils/normalizeEntitySearchQuery';
 import { getDefaultQSliderRange } from '@/utils/getDefaultQSliderRange';
 import { useHiddenLevelCardTagsPreference } from '@/hooks/useHiddenLevelCardTagsPreference';
 import {
-  getTufHelperLiteStorageMigrationStatus,
-  getTufHelperLiteBatchUpdateCheckStatus,
+  useTufHelperLiteStorage,
+  useTufHelperLiteBatch,
   useTufHelperLiteHealth,
 } from '@/hooks/useTufHelperLiteIpc';
-import { TufHelperLiteDownloadManager } from '@/components/common/TufHelperLiteDownloadManager';
+import { TufHelperLiteDialogs } from '@/components/common/TufHelperLiteDownloadManager/TufHelperLiteDialogs';
 
 const limit = 50;
 
@@ -173,9 +173,9 @@ const LevelPage = ({
   const [searchInput, setSearchInput] = useState(query);
   const [hiddenTagIds, setHiddenTagIds] = useHiddenLevelCardTagsPreference();
   const [loadingMore, setLoadingMore] = useState(false);
-  const [showDownloadManager, setShowDownloadManager] = useState(false);
-  const [downloadStorage, setDownloadStorage] = useState(null);
-  const [downloadBatch, setDownloadBatch] = useState(null);
+  const [tufHelperDialog, setTufHelperDialog] = useState(null);
+  const downloadStorage = useTufHelperLiteStorage();
+  const downloadBatch = useTufHelperLiteBatch();
   const downloadManagerButtonRef = useRef(null);
   const tufHelperLiteHealth = useTufHelperLiteHealth();
   const downloadStorageState = String(downloadStorage?.State ?? downloadStorage?.state ?? 'idle').toLowerCase();
@@ -196,55 +196,11 @@ const LevelPage = ({
       ? Math.min(1, downloadBatchProcessed / downloadBatchTotal)
       : 0;
 
-  useEffect(() => {
-    if (!tufHelperLiteHealth.isAvailable || !tufHelperLiteHealth.supportsStorageMigration) {
-      setDownloadStorage(null);
-      return undefined;
-    }
-
-    let cancelled = false;
-    const refresh = async () => {
-      try {
-        const next = await getTufHelperLiteStorageMigrationStatus();
-        if (!cancelled) setDownloadStorage(next);
-      } catch {
-        // Health polling owns connection-loss feedback.
-      }
-    };
-    void refresh();
-    const timer = window.setInterval(refresh, downloadStorageActive ? 750 : 5000);
-    return () => {
-      cancelled = true;
-      window.clearInterval(timer);
-    };
-  }, [downloadStorageActive, tufHelperLiteHealth.isAvailable, tufHelperLiteHealth.supportsStorageMigration]);
-
-  useEffect(() => {
-    if (!tufHelperLiteHealth.isAvailable || !tufHelperLiteHealth.supportsBatchUpdateCheck) {
-      setDownloadBatch(null);
-      return undefined;
-    }
-    let cancelled = false;
-    const refresh = async () => {
-      try {
-        const next = await getTufHelperLiteBatchUpdateCheckStatus();
-        if (!cancelled) setDownloadBatch(next);
-      } catch {
-        // Health polling owns connection-loss feedback.
-      }
-    };
-    void refresh();
-    const timer = window.setInterval(refresh, downloadBatchActive ? 500 : 5000);
-    return () => {
-      cancelled = true;
-      window.clearInterval(timer);
-    };
-  }, [downloadBatchActive, tufHelperLiteHealth.isAvailable, tufHelperLiteHealth.supportsBatchUpdateCheck]);
-
   const closeDownloadManager = useCallback(() => {
-    setShowDownloadManager(false);
+    setTufHelperDialog(null);
     window.requestAnimationFrame(() => downloadManagerButtonRef.current?.focus());
   }, []);
+
 
   const showC0V0CurationIcons = useMemo(() => {
     const includedIds = collectFacetDomainIncludedIds(levelFacetFilters.curationTypes);
@@ -816,18 +772,14 @@ const LevelPage = ({
            <Tooltip id="state-display" place="bottom" noArrow>
              {t('level.toolTip.stateDisplay')}
            </Tooltip>
-           <Tooltip id="tufhelper-download-manager" place="bottom" noArrow>
-             {tc('level.tufHelperLiteDownloadManager.open')}
-           </Tooltip>
         </div>
 
-        {showDownloadManager ? (
-          <TufHelperLiteDownloadManager
-            onClose={closeDownloadManager}
-            health={tufHelperLiteHealth}
-            onStorageChange={setDownloadStorage}
-          />
-        ) : null}
+        <TufHelperLiteDialogs
+          active={tufHelperDialog}
+          onChange={setTufHelperDialog}
+          onClose={closeDownloadManager}
+          health={tufHelperLiteHealth}
+        />
 
         <div className="input-setting">
 
@@ -999,9 +951,8 @@ const LevelPage = ({
                     ref={downloadManagerButtonRef}
                     type="button"
                     className={`tufhelper-download-manager-button${downloadManagerActive ? ' is-migrating' : ''}`}
-                    onClick={() => setShowDownloadManager(true)}
-                    aria-label={tc('level.tufHelperLiteDownloadManager.open')}
-                    data-tooltip-id="tufhelper-download-manager"
+                    onClick={() => setTufHelperDialog('settings')}
+                    aria-label={tc('level.tufHelperLiteSettings.title')}
                     style={{ '--tufhelper-storage-progress': `${Math.round(downloadManagerProgress * 100)}%` }}
                   >
                     <TUFHelperLiteIcon
@@ -1009,7 +960,7 @@ const LevelPage = ({
                       size={26}
                       aria-hidden="true"
                     />
-                    <span>{tc('level.tufHelperLiteDownloadManager.open')}</span>
+                    <span>{tc('level.tufHelperLiteSettings.title')}</span>
                   </button>
                 )}
               </div>

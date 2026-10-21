@@ -26,13 +26,13 @@ module.exports = {
     'import/resolver': {
       node: {
         paths: ['src'],
-        extensions: ['.js', '.jsx', '.json', '.d.ts']
+        extensions: ['.js', '.jsx', '.ts', '.json', '.d.ts']
       },
       alias: {
         map: [
           ['@', './src']
         ],
-        extensions: ['.js', '.jsx', '.json', '.d.ts']
+        extensions: ['.js', '.jsx', '.ts', '.json', '.d.ts']
       }
     },
     react: {

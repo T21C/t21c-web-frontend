@@ -1,27 +1,16 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CloseButton } from '@/components/common/buttons';
-import { FolderIcon, RefreshIcon, ResetIcon, WarningIcon } from '@/components/common/icons';
-import MarqueeText from '@/components/common/display/MarqueeText/MarqueeText';
-import { getPortalRoot } from '@/utils/portalRoot';
+import { FolderIcon, RefreshIcon, WarningIcon } from '@/components/common/icons';
 import {
-  getTufHelperLiteFolderPickerStatus,
-  getTufHelperLiteStorageMigrationStatus,
-  retryTufHelperLiteStorageChange,
-  retryTufHelperLiteStorageMigration,
-  startTufHelperLiteFolderPicker,
-  startTufHelperLiteStorageChange,
-  startTufHelperLiteStorageMigration,
-  cancelTufHelperLiteStorageChange,
+  useTufHelperLiteStorage, useTufHelperLiteBatch, useTufHelperLiteJobs, waitForTufHelperLiteJob,
   checkTufHelperLiteLevelUpdate,
   startTufHelperLiteLevelUpdate,
-  getTufHelperLiteLevelJobStatus,
   startTufHelperLiteBatchUpdateCheck,
-  getTufHelperLiteBatchUpdateCheckStatus,
   cancelTufHelperLiteBatchUpdateCheck,
   startTufHelperLiteBatchUpdate,
-  getTufHelperLiteBatchUpdateStatus,
   cancelTufHelperLiteBatchUpdate,
+  deleteTufHelperLiteDownloadedLevel,
 } from '@/hooks/useTufHelperLiteIpc';
 import DownloadedLevelList from './DownloadedLevelList';
 import useDownloadedLevelWindow from './useDownloadedLevelWindow';
@@ -30,16 +19,11 @@ import './tufHelperLiteDownloadManager.css';
 const ACTIVE_STATES = new Set(['copying', 'verifying', 'switching', 'cleaning']);
 const BATCH_ACTIVE_STATES = new Set(['preparing', 'checking', 'updating', 'cancelling']);
 const field = (value, name) => value?.[name] ?? value?.[name.charAt(0).toLowerCase() + name.slice(1)];
-const FOLDER_ERROR_PREFIXES = ['storage_target_', 'selection_token_', 'folder_picker_'];
 
 const toUiError = (value, fallbackMessage) => ({
   code: field(value, 'ErrorCode') || value?.code || null,
   message: field(value, 'Message') || value?.message || fallbackMessage,
 });
-
-const isFolderError = (value) => (
-  !!value?.code && FOLDER_ERROR_PREFIXES.some((prefix) => value.code.startsWith(prefix))
-);
 
 const formatBytes = (bytes, locale) => {
   const value = Number(bytes) || 0;
@@ -52,32 +36,33 @@ const formatBytes = (bytes, locale) => {
 export const TufHelperLiteDownloadManager = ({
   onClose,
   health,
-  onStorageChange,
+  dialogRef,
 }) => {
   const { t, i18n } = useTranslation('components');
-  const dialogRef = useRef(null);
   const batchPopoverRef = useRef(null);
   const batchTriggerRef = useRef(null);
   const refreshedBatchOperationRef = useRef(null);
   const updatePollsRef = useRef(new Map());
   const retainedLevelIdsRef = useRef(new Set());
-  const [storage, setStorage] = useState(null);
-  const [selection, setSelection] = useState(null);
+  const deletionInFlight = useRef(false);
+  const storage = useTufHelperLiteStorage();
+  const observedBatch = useTufHelperLiteBatch();
+  const observedJobs = useTufHelperLiteJobs();
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState(null);
   const [updateStates, setUpdateStates] = useState({});
   const [batch, setBatch] = useState(null);
   const [batchError, setBatchError] = useState(null);
   const [batchConfirmation, setBatchConfirmation] = useState(null);
-  const supported = health.supportsStorageMigration;
+  const [deleteStates, setDeleteStates] = useState({});
+  const deleteSupported = health.capabilities.includes('downloaded-level-delete-v1');
+  const deleting = Object.values(deleteStates).some((value) => value.state === 'deleting');
   const librarySupported = health.supportsDownloadedLibrary;
   const positionedPagesSupported = health.supportsPositionedDownloadedPages;
   const updateSupported = health.supportsDownloadedLevelUpdate;
   const batchSupported = health.supportsBatchUpdateCheck;
   const batchUpdateSupported = health.supportsBatchUpdate;
-  const reconnectSupported = health.supportsStorageReconnect;
   const library = useDownloadedLevelWindow(librarySupported, positionedPagesSupported);
-  const { patchLevel, refreshSummary, reload: reloadLibrary } = library;
+  const { patchLevel, beginDeletion, finishDeletion, refreshSummary, reload: reloadLibrary } = library;
   const state = String(field(storage, 'State') || 'idle').toLowerCase();
   const migrationActive = ACTIVE_STATES.has(state);
   const batchState = String(field(batch, 'State') || 'idle').toLowerCase();
@@ -88,97 +73,14 @@ export const TufHelperLiteDownloadManager = ({
       ? Number(field(batch, 'LevelsFailed')) || 0
       : Number(field(batch, 'UpdatesAvailable')) || 0
     : 0;
-  const currentDirectory = field(storage, 'CurrentDirectory') || field(storage, 'SourceDirectory');
-  const targetDirectory = field(selection, 'Directory') || field(storage, 'TargetDirectory');
-  const selectionKind = String(field(selection, 'SelectionKind') || 'migration').toLowerCase();
-  const bytesProcessed = Number(field(storage, 'BytesProcessed')) || 0;
-  const bytesTotal = Number(field(storage, 'BytesTotal')) || 0;
-  const progress = bytesTotal > 0 ? Math.min(1, bytesProcessed / bytesTotal) : 0;
-  const storageError = state === 'failed'
-    ? toUiError(storage, t('level.tufHelperLiteDownloadManager.errors.startFailed'))
-    : null;
-  const effectiveError = error || storageError;
-  const folderError = isFolderError(effectiveError) ? effectiveError : null;
-  const migrationError = effectiveError && !folderError ? effectiveError : null;
-
-  const localizedError = useCallback((value) => {
-    if (!value) return null;
-    if (!value.code) return value.message;
-    return t(`level.tufHelperLiteDownloadManager.folderErrors.${value.code}`, {
-      defaultValue: value.message,
+  useEffect(() => { setBatch(observedBatch); }, [observedBatch]);
+  useEffect(() => {
+    observedJobs.jobs.forEach((job) => {
+      const id = Number(field(job, 'LevelId'));
+      if (!updatePollsRef.current.has(id) || field(job, 'Done')) return;
+      setUpdateStates((current) => ({ ...current, [id]: { state: field(job, 'Kind') === 'level.update' ? 'updating' : 'checking', progress: Number(field(job, 'Progress')), stage: field(job, 'Stage') } }));
     });
-  }, [t]);
-
-  const refreshStorage = useCallback(async () => {
-    if (!supported) return;
-    try {
-      setStorage(await getTufHelperLiteStorageMigrationStatus());
-      setError(null);
-    } catch (nextError) {
-      setError(toUiError(nextError, t('level.tufHelperLiteDownloadManager.errors.unavailable')));
-    }
-  }, [supported, t]);
-
-  const refreshBatch = useCallback(async () => {
-    if (!batchSupported) return;
-    try {
-      setBatch(await (batchOperationKind === 'update' && batchUpdateSupported
-        ? getTufHelperLiteBatchUpdateStatus()
-        : getTufHelperLiteBatchUpdateCheckStatus()));
-    } catch {
-      // Connection health owns global connection-loss feedback.
-    }
-  }, [batchOperationKind, batchSupported, batchUpdateSupported]);
-
-  useEffect(() => {
-    dialogRef.current?.focus();
-    void refreshStorage();
-    void refreshBatch();
-  }, [refreshBatch, refreshStorage]);
-
-  useEffect(() => {
-    const roots = Array.from(new Set([
-      getPortalRoot(),
-      document.documentElement,
-      document.body,
-    ].filter(Boolean)));
-    const previous = roots.map((root) => ({
-      root,
-      overflow: root.style.overflow,
-      overscrollBehavior: root.style.overscrollBehavior,
-      scrollbarGutter: root.style.scrollbarGutter,
-    }));
-
-    roots.forEach((root) => {
-      root.style.overflow = 'hidden';
-      root.style.overscrollBehavior = 'none';
-      root.style.scrollbarGutter = 'stable';
-    });
-
-    return () => {
-      previous.forEach(({ root, overflow, overscrollBehavior, scrollbarGutter }) => {
-        root.style.overflow = overflow;
-        root.style.overscrollBehavior = overscrollBehavior;
-        root.style.scrollbarGutter = scrollbarGutter;
-      });
-    };
-  }, []);
-
-  useEffect(() => {
-    onStorageChange?.(storage);
-  }, [onStorageChange, storage]);
-
-  useEffect(() => {
-    if (!supported || !migrationActive) return undefined;
-    const timer = window.setInterval(refreshStorage, 750);
-    return () => window.clearInterval(timer);
-  }, [migrationActive, refreshStorage, supported]);
-
-  useEffect(() => {
-    if (!batchSupported || !batchActive) return undefined;
-    const timer = window.setInterval(refreshBatch, 500);
-    return () => window.clearInterval(timer);
-  }, [batchActive, batchSupported, refreshBatch]);
+  }, [observedJobs]);
 
   useEffect(() => {
     if (batchState !== 'completed') return;
@@ -217,8 +119,7 @@ export const TufHelperLiteDownloadManager = ({
   useEffect(() => () => {
     updatePollsRef.current.forEach((poll) => {
       poll.cancelled = true;
-      if (poll.timer) window.clearTimeout(poll.timer);
-      poll.resolve?.();
+      poll.controller.abort();
     });
     updatePollsRef.current.clear();
   }, []);
@@ -241,20 +142,11 @@ export const TufHelperLiteDownloadManager = ({
     });
   }, [library.levels]);
 
-  const waitForPoll = useCallback((poll, delay = 450) => new Promise((resolve) => {
-    poll.resolve = resolve;
-    poll.timer = window.setTimeout(() => {
-      poll.timer = null;
-      poll.resolve = null;
-      resolve();
-    }, delay);
-  }), []);
-
   const checkForUpdate = useCallback(async (level) => {
-    if (!updateSupported || batchActive || updatePollsRef.current.has(level.id)) return;
+    if (!health.isAvailable || !updateSupported || batchActive || migrationActive || deleting || updatePollsRef.current.has(level.id)) return;
     const currentState = updateStates[level.id]?.state || level.updateState || 'idle';
     const isUpdating = currentState === 'update_available';
-    const poll = { cancelled: false, timer: null, resolve: null };
+    const poll = { cancelled: false, controller: new AbortController() };
     updatePollsRef.current.set(level.id, poll);
     setUpdateStates((current) => ({
       ...current,
@@ -266,18 +158,7 @@ export const TufHelperLiteDownloadManager = ({
         ? await startTufHelperLiteLevelUpdate(level.id)
         : await checkTufHelperLiteLevelUpdate(level.id);
       const jobId = field(snapshot, 'JobId');
-      while (!poll.cancelled && !field(snapshot, 'Done')) {
-        setUpdateStates((current) => ({
-          ...current,
-          [level.id]: {
-            state: isUpdating ? 'updating' : 'checking',
-            progress: Number(field(snapshot, 'Progress')),
-            stage: field(snapshot, 'Stage'),
-          },
-        }));
-        await waitForPoll(poll);
-        if (!poll.cancelled) snapshot = await getTufHelperLiteLevelJobStatus(jobId);
-      }
+      if (!field(snapshot, 'Done')) snapshot = await waitForTufHelperLiteJob(jobId, { signal: poll.controller.signal });
       if (poll.cancelled) return;
       if (String(field(snapshot, 'Status')).toLowerCase() === 'failed') {
         const nextError = new Error(field(snapshot, 'Error') || field(snapshot, 'Message'));
@@ -314,8 +195,7 @@ export const TufHelperLiteDownloadManager = ({
         }));
       }
     } finally {
-      if (poll.timer) window.clearTimeout(poll.timer);
-      poll.resolve?.();
+      poll.controller.abort();
       updatePollsRef.current.delete(level.id);
       if (!retainedLevelIdsRef.current.has(level.id)) {
         setUpdateStates((current) => {
@@ -325,9 +205,46 @@ export const TufHelperLiteDownloadManager = ({
         });
       }
     }
-  }, [batchActive, patchLevel, refreshSummary, updateStates, updateSupported, waitForPoll]);
+  }, [batchActive, deleting, health.isAvailable, migrationActive, patchLevel, refreshSummary, updateStates, updateSupported]);
+
+  const deleteLevel = async (level, beforeRemoval) => {
+    if (!level || !health.isAvailable || deletionInFlight.current || batchActive || migrationActive) return;
+    deletionInFlight.current = true;
+    beginDeletion();
+    setBatchConfirmation(null);
+    setDeleteStates((current) => ({ ...current, [level.id]: { state: 'deleting' } }));
+    dialogRef.current?.focus();
+    try {
+      await deleteTufHelperLiteDownloadedLevel(level.id);
+      await beforeRemoval?.();
+      finishDeletion(level);
+      setUpdateStates((current) => {
+        const next = { ...current };
+        delete next[level.id];
+        return next;
+      });
+      setDeleteStates((current) => {
+        const next = { ...current };
+        delete next[level.id];
+        return next;
+      });
+    } catch (nextError) {
+      finishDeletion();
+      setDeleteStates((current) => ({
+        ...current,
+        [level.id]: {
+          state: 'failed',
+          errorCode: nextError?.code,
+          error: nextError?.message || t('level.tufHelperLiteDownloadManager.deleteFailed'),
+        },
+      }));
+    } finally {
+      deletionInFlight.current = false;
+    }
+  };
 
   const startBatchCheck = async () => {
+    if (!health.isAvailable || deleting || migrationActive) return;
     setBusy(true);
     setBatchError(null);
     try {
@@ -341,7 +258,7 @@ export const TufHelperLiteDownloadManager = ({
   };
 
   const startBatchUpdate = async () => {
-    if (!batchUpdateSupported) return;
+    if (!health.isAvailable || !batchUpdateSupported || deleting || migrationActive) return;
     setBusy(true);
     setBatchError(null);
     try {
@@ -355,6 +272,7 @@ export const TufHelperLiteDownloadManager = ({
   };
 
   const cancelBatchCheck = async () => {
+    if (!health.isAvailable) return;
     try {
       setBatchError(null);
       setBatch(await (batchOperationKind === 'update' && batchUpdateSupported
@@ -365,109 +283,9 @@ export const TufHelperLiteDownloadManager = ({
     }
   };
 
-  const pollPicker = useCallback(async (operationId) => {
-    for (;;) {
-      const result = await getTufHelperLiteFolderPickerStatus(operationId);
-      const pickerState = String(field(result, 'State') || '').toLowerCase();
-      if (pickerState === 'selected') {
-        setSelection(result);
-        return;
-      }
-      if (pickerState === 'cancelled') return;
-      if (pickerState === 'failed') {
-        const pickerError = new Error(
-          field(result, 'Message') || t('level.tufHelperLiteDownloadManager.errors.pickFailed'),
-        );
-        pickerError.code = field(result, 'ErrorCode') || 'folder_picker_failed';
-        throw pickerError;
-      }
-      await new Promise((resolve) => window.setTimeout(resolve, 500));
-    }
-  }, [t]);
-
-  const chooseFolder = async () => {
-    setBusy(true);
-    setError(null);
-    try {
-      const started = await startTufHelperLiteFolderPicker({ allowExisting: reconnectSupported });
-      await pollPicker(field(started, 'OperationId'));
-    } catch (nextError) {
-      setError(toUiError(nextError, t('level.tufHelperLiteDownloadManager.errors.pickFailed')));
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  const startMigration = async ({ useDefault = false } = {}) => {
-    setBusy(true);
-    setError(null);
-    try {
-      const startStorageOperation = reconnectSupported
-        ? startTufHelperLiteStorageChange
-        : startTufHelperLiteStorageMigration;
-      const result = await startStorageOperation({
-        selectionToken: useDefault ? null : field(selection, 'SelectionToken'),
-        useDefault,
-      });
-      if (String(field(result, 'State')).toLowerCase() === 'failed') {
-        setError(toUiError(result, t('level.tufHelperLiteDownloadManager.errors.startFailed')));
-        return;
-      }
-      setStorage(result);
-      setSelection(null);
-    } catch (nextError) {
-      setError(toUiError(nextError, t('level.tufHelperLiteDownloadManager.errors.startFailed')));
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  const retryMigration = async () => {
-    setBusy(true);
-    try {
-      setStorage(await (reconnectSupported
-        ? retryTufHelperLiteStorageChange()
-        : retryTufHelperLiteStorageMigration()));
-      setError(null);
-    } catch (nextError) {
-      setError(toUiError(nextError, t('level.tufHelperLiteDownloadManager.errors.retryFailed')));
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  const cancelStorageChange = async () => {
-    setBusy(true);
-    try {
-      setStorage(await cancelTufHelperLiteStorageChange());
-      setError(null);
-    } catch (nextError) {
-      setError(toUiError(nextError, t('level.tufHelperLiteDownloadManager.errors.cancelFailed')));
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  const statusLabel = useMemo(
-    () => t(`level.tufHelperLiteDownloadManager.states.${state}`, { defaultValue: state }),
-    [state, t],
-  );
 
   return (
-    <div
-      className="tufhelper-download-manager__overlay"
-      onMouseDown={(event) => {
-        if (event.target === event.currentTarget) onClose();
-      }}
-    >
-      <div
-        ref={dialogRef}
-        className="tufhelper-download-manager"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="tufhelper-download-manager-title"
-        tabIndex={-1}
-      >
+    <>
         <CloseButton
           variant="floating"
           size={10}
@@ -514,7 +332,7 @@ export const TufHelperLiteDownloadManager = ({
                         ? batchUpdateSupported ? 'update' : 'upgrade'
                         : 'check');
                     }}
-                    disabled={busy || migrationActive}
+                    disabled={!health.isAvailable || busy || migrationActive || deleting}
                     aria-expanded={Boolean(batchConfirmation)}
                     aria-controls={batchConfirmation ? 'tufhelper-batch-confirmation' : undefined}
                   >
@@ -555,7 +373,7 @@ export const TufHelperLiteDownloadManager = ({
                             type="button"
                             className="is-primary"
                             onClick={() => void (batchConfirmation === 'update' ? startBatchUpdate() : startBatchCheck())}
-                            disabled={busy}
+                            disabled={!health.isAvailable || busy || migrationActive || deleting}
                           >
                             {t(`level.tufHelperLiteDownloadManager.${batchConfirmation === 'update' ? 'startUpdateAll' : 'startCheckAll'}`)}
                           </button>
@@ -585,135 +403,20 @@ export const TufHelperLiteDownloadManager = ({
               updateStates={updateStates}
               onCheckForUpdate={checkForUpdate}
               updateSupported={updateSupported}
-              updateLocked={batchActive}
+              updateLocked={!health.isAvailable || batchActive || migrationActive || deleting}
+              deleteSupported={deleteSupported}
+              deleteLocked={batchActive || migrationActive || deleting || !health.isAvailable}
+              deleteStates={deleteStates}
+              activeJobs={observedJobs.jobs}
+              onDelete={deleteLevel}
               t={t}
               locale={i18n.language}
             />
           )}
         </section>
 
-        <section className="tufhelper-download-manager__storage" aria-labelledby="tufhelper-storage-title">
-          <div className="tufhelper-download-manager__section-heading">
-            <h3 id="tufhelper-storage-title">{t('level.tufHelperLiteDownloadManager.storageTitle')}</h3>
-            {supported && storage ? <span className={`is-${state}`}>{statusLabel}</span> : null}
-          </div>
 
-          {!supported ? (
-            <div className="tufhelper-download-manager__notice is-warning">
-              <WarningIcon size={20} color="currentColor" />
-              <p>{t('level.tufHelperLiteDownloadManager.updateRequired')}</p>
-            </div>
-          ) : (
-            <>
-              <div className="tufhelper-download-manager__path-row">
-                <div className="tufhelper-download-manager__current-path">
-                  <span>{t('level.tufHelperLiteDownloadManager.currentFolder')}</span>
-                  <MarqueeText as="code" title={currentDirectory}>
-                    {currentDirectory || '—'}
-                  </MarqueeText>
-                </div>
-                <div className="tufhelper-download-manager__path-actions">
-                  {storage && !field(storage, 'IsDefault') && !selection && !migrationActive ? (
-                    <button
-                      type="button"
-                      className="tufhelper-download-manager__reset"
-                      onClick={() => void startMigration({ useDefault: true })}
-                      disabled={busy}
-                    >
-                      <ResetIcon size={16} color="currentColor" aria-hidden="true" />
-                      {t('level.tufHelperLiteDownloadManager.restoreDefault')}
-                    </button>
-                  ) : null}
-                  <button
-                    type="button"
-                    className="tufhelper-download-manager__choose"
-                    onClick={chooseFolder}
-                    disabled={busy || migrationActive || batchActive}
-                  >
-                    <FolderIcon size={17} aria-hidden="true" />
-                    {busy
-                      ? t('level.tufHelperLiteDownloadManager.choosing')
-                      : t('level.tufHelperLiteDownloadManager.chooseFolder')}
-                  </button>
-                </div>
-              </div>
-
-              {folderError ? (
-                <div className="tufhelper-download-manager__folder-error" role="alert">
-                  <WarningIcon size={16} color="currentColor" aria-hidden="true" />
-                  <span>{localizedError(folderError)}</span>
-                </div>
-              ) : null}
-
-              {selection ? (
-                <div className="tufhelper-download-manager__confirmation">
-                  <div className="tufhelper-download-manager__target">
-                    <span>{t('level.tufHelperLiteDownloadManager.newFolder')}</span>
-                    <MarqueeText as="code" title={targetDirectory}>{targetDirectory}</MarqueeText>
-                  </div>
-                  <div className="tufhelper-download-manager__notice is-warning">
-                    <WarningIcon size={20} color="currentColor" />
-                    <p>{t(`level.tufHelperLiteDownloadManager.${selectionKind === 'merge_reconnect' ? 'reconnectWarning' : 'warning'}`)}</p>
-                  </div>
-                  <div className="tufhelper-download-manager__actions">
-                    <button
-                      type="button"
-                      className="is-quiet"
-                      onClick={() => {
-                        setSelection(null);
-                        setError(null);
-                      }}
-                      disabled={busy}
-                    >
-                      {t('level.tufHelperLiteDownloadManager.cancel')}
-                    </button>
-                    <button type="button" className="is-primary" onClick={() => void startMigration()} disabled={busy}>
-                      {t(`level.tufHelperLiteDownloadManager.${selectionKind === 'merge_reconnect' ? 'startReconnect' : 'startMigration'}`)}
-                    </button>
-                  </div>
-                </div>
-              ) : null}
-
-              {(migrationActive || state === 'cleanup_pending') ? (
-                <div className="tufhelper-download-manager__progress" aria-live="polite">
-                  <div className="tufhelper-download-manager__progress-copy">
-                    <strong>{statusLabel}</strong>
-                    <span>{field(storage, 'Message')}</span>
-                  </div>
-                  <div className="tufhelper-download-manager__progress-track" aria-hidden="true">
-                    <span style={{ width: `${Math.round(progress * 100)}%` }} />
-                  </div>
-                  <div className="tufhelper-download-manager__progress-meta">
-                    <span>{field(storage, 'FilesProcessed') || 0} / {field(storage, 'FilesTotal') || 0}</span>
-                    <span>{formatBytes(bytesProcessed, i18n.language)} / {formatBytes(bytesTotal, i18n.language)}</span>
-                  </div>
-                  {reconnectSupported && field(storage, 'OperationKind') === 'merge_reconnect' &&
-                  !['switching', 'cleaning'].includes(String(field(storage, 'Phase')).toLowerCase()) ? (
-                    <button type="button" className="is-quiet" onClick={() => void cancelStorageChange()} disabled={busy}>
-                      {t('level.tufHelperLiteDownloadManager.cancel')}
-                    </button>
-                    ) : null}
-                </div>
-              ) : null}
-
-              {(state === 'failed' && !folderError) || state === 'cleanup_pending' ? (
-                <button type="button" className="tufhelper-download-manager__retry" onClick={retryMigration} disabled={busy}>
-                  <RefreshIcon size={16} color="currentColor" />
-                  {t('level.tufHelperLiteDownloadManager.retry')}
-                </button>
-              ) : null}
-
-            </>
-          )}
-
-          {migrationError ? (
-            <p className="tufhelper-download-manager__error" role="alert">
-              {localizedError(migrationError)}
-            </p>
-          ) : null}
-        </section>
-      </div>
-    </div>
+    </>
   );
 };
 

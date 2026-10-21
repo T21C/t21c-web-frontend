@@ -90,7 +90,7 @@ import {
   sortCurationsForDisplay,
 } from "@/utils/curationTypeUtils";
 import i18next from "i18next";
-import { checkTufHelperLiteDownloadedIds, checkTufHelperLiteHealth, checkTufHelperLiteJobs, getTufHelperLiteDownloadState, invokeTufHelperLiteIpc, useTufHelperLiteDownloadedIds, useTufHelperLiteHealth, useTufHelperLiteJobs } from '@/hooks/useTufHelperLiteIpc';
+import { getTufHelperLiteDownloadState, openTufHelperLiteLevelById, openTufHelperLiteLevelByUrl, useTufHelperLiteDownloadedIds, useTufHelperLiteHealth, useTufHelperLiteJobs } from '@/hooks/useTufHelperLiteIpc';
 import { navigateExternal } from '@/utils/externalNavigationGate';
 
 const minus2Reasons = []
@@ -1137,7 +1137,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
 
   const tufHelperLiteHealth = useTufHelperLiteHealth();
   const tufHelperLiteJobs = useTufHelperLiteJobs();
-  const tufHelperLiteDownloadedIds = useTufHelperLiteDownloadedIds();
+  const tufHelperLiteDownloadedIds = useTufHelperLiteDownloadedIds(res?.level?.id);
   const tufHelperLiteDownload = getTufHelperLiteDownloadState(
     tufHelperLiteHealth,
     tufHelperLiteJobs.jobs,
@@ -2555,23 +2555,12 @@ const LevelDetailPageContent = ({ mockData = null }) => {
 
     try {
       if (level?.id != null) {
-        await invokeTufHelperLiteIpc('level.open-from-id', {
-          id: String(level.id),
-          source: 'tuforums-levels',
-          openAfterDownload: true,
-        });
+        await openTufHelperLiteLevelById(level.id);
       } else {
-        await invokeTufHelperLiteIpc('level.open-from-url', {
-          url: dlLink,
-          source: 'tuforums-levels',
-          openAfterDownload: true,
-        });
+        await openTufHelperLiteLevelByUrl(dlLink);
       }
-
-      void checkTufHelperLiteJobs();
-      void checkTufHelperLiteDownloadedIds();
-    } catch {
-      void checkTufHelperLiteHealth();
+    } catch (error) {
+      toast.error(error?.message || "Open ADOFAI and reconnect to try again.");
     }
   };
 
