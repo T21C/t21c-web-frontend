@@ -28,6 +28,7 @@ import {
   curationRequestDiff,
   readAdminRequestFilters,
   songRequestLabel,
+  storedRequestIssue,
   tagRequestDiff,
   tagRequestTargetIds,
   teamFromLevel,
@@ -271,6 +272,9 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
           const requesterName = request.requester?.nickname || request.requester?.username;
           const infoText = request.type === 'info_change' ? infoCardText(request, t) : '';
           const reasonText = typeof request.reason === 'string' ? request.reason.trim() : '';
+          const payloadIssue = (request.status === 'pending' || request.status === 'accepted')
+            ? storedRequestIssue(request.type, request.payload, request.level)
+            : null;
           return (
             <button
               key={request.id}
@@ -325,6 +329,11 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
                   )}
                   {request.type === 'curation' && (
                     <LevelRequestCurationTypes ids={request.payload?.curationTypeIds} variant="icons" />
+                  )}
+                  {payloadIssue && (
+                    <span className="level-requests__hint level-requests__hint--issue">
+                      {t(`levelRequests.errors.${payloadIssue}`)}
+                    </span>
                   )}
                 </span>
                 {reasonText && (

@@ -154,6 +154,14 @@
   color: var(--color-gray-3);
 }
 
+.level-requests .level-requests__hint--issue {
+  color: var(--warning-color);
+}
+
+.level-requests .level-requests__card-meta .level-requests__hint--issue {
+  flex-basis: 100%;
+}
+
 .level-requests .level-requests__list {
   gap: 0.45rem;
 }
@@ -706,11 +714,13 @@
 
 .level-requests .level-requests__choice-hint {
   margin-left: auto;
-  flex: 0 0 auto;
+  flex: 0 1 auto;
+  max-width: 60%;
   color: var(--color-white);
   font-size: 0.75rem;
   font-weight: 500;
-  white-space: nowrap;
+  line-height: 1.2;
+  text-align: right;
 }
 
 .level-requests .level-requests__choice:hover:not(:disabled) {
