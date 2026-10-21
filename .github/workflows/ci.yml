@@ -48,7 +48,7 @@ jobs:
         run: npm run lint
 
       - name: Replay delivery tests
-        run: node --test tests/replay-delivery.test.js
+        run: node --test tests/replay-delivery.test.js tests/tufhelper-session.test.js
 
       - name: Check production build secrets
         if: github.event_name != 'pull_request'

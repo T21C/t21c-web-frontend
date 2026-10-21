@@ -1,5 +1,22 @@
 export const MAX_DOWNLOAD_LEVEL_PAGES = 3;
 
+export const removeDownloadedLevel = (current, id) => {
+  let removed = 0;
+  const pages = current.pages.map((page) => {
+    const startIndex = page.startIndex == null ? page.startIndex : Math.max(0, page.startIndex - removed);
+    const items = page.items.filter((item) => item.id !== Number(id));
+    removed += page.items.length - items.length;
+    return { ...page, startIndex, items };
+  });
+  if (!removed) return current;
+  const totalCount = Math.max(0, current.totalCount - removed);
+  return {
+    ...current,
+    totalCount,
+    pages: pages.map((page) => ({ ...page, totalCount: page.totalCount == null ? page.totalCount : totalCount })),
+  };
+};
+
 export const mergeDownloadedLevelPage = (current, page, direction) => {
   const retainedIds = new Set(current.pages.flatMap((entry) => entry.items.map((item) => item.id)));
   const uniquePage = { ...page, items: page.items.filter((item) => !retainedIds.has(item.id)) };

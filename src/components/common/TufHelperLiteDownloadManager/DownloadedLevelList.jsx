@@ -3,7 +3,8 @@ import { Virtuoso } from 'react-virtuoso';
 import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import MarqueeText from '@/components/common/display/MarqueeText/MarqueeText';
-import { DownloadIcon, RefreshIcon, WarningIcon } from '@/components/common/icons';
+import { DownloadIcon, RefreshIcon, TrashIcon, WarningIcon } from '@/components/common/icons';
+import { useDownloadedLevelRemoval } from './useDownloadedLevelRemoval';
 
 const formatBytes = (bytes, locale) => {
   const value = Number(bytes) || 0;
@@ -111,10 +112,16 @@ export const DownloadedLevelList = ({
   onCheckForUpdate,
   updateSupported,
   updateLocked,
+  deleteSupported,
+  deleteLocked,
+  deleteStates,
+  activeJobs,
+  onDelete,
   t,
   locale,
 }) => {
   const { difficultyDict, loading: difficultiesLoading } = useDifficultyContext();
+  const { listRef, prepareRemoval } = useDownloadedLevelRemoval(levels, itemsByIndex, totalCount);
   const levelRowHeight = useLevelRowHeight();
   const [expiryNow, setExpiryNow] = useState(() => Date.now());
   const nearestExpiry = useMemo(() => levels.reduce((nearest, level) => {
@@ -151,9 +158,20 @@ export const DownloadedLevelList = ({
         defaultValue: updateStatus.error,
       })
       : null;
+    const deleteStatus = deleteStates[level.id];
+    const deleting = deleteStatus?.state === 'deleting';
+    const deleteError = deleteStatus?.state === 'failed'
+      ? t(`level.tufHelperLiteDownloadManager.deleteErrors.${deleteStatus.errorCode}`, {
+        defaultValue: deleteStatus.error,
+      })
+      : null;
+    const levelBusy = activeJobs.some((job) => (
+      Number(job.levelId ?? job.LevelId) === level.id &&
+      ['queued', 'running', 'waiting_selection'].includes(String(job.status ?? job.Status).toLowerCase())
+    )) || updateState === 'checking' || updateState === 'updating';
 
     return (
-      <article className="tufhelper-download-manager__level-row" role="listitem">
+      <article className="tufhelper-download-manager__level-row" role="listitem" data-downloaded-level-id={level.id}>
         <div className="tufhelper-download-manager__difficulty">
           <img
             src={selectIconSize(difficulty.icon, ICON_SIZE.MEDIUM)}
@@ -181,11 +199,12 @@ export const DownloadedLevelList = ({
           <strong>{formatBytes(level.sizeBytes, locale)}</strong>
         </div>
         <div className="tufhelper-download-manager__level-update-cell">
+          <div className="tufhelper-download-manager__level-buttons">
           <button
             type="button"
             className={`tufhelper-download-manager__update is-${updateState}`}
             onClick={() => onCheckForUpdate(level)}
-            disabled={!updateSupported || updateLocked || updateState === 'checking' || updateState === 'updating'}
+            disabled={!updateSupported || updateLocked || deleting || updateState === 'checking' || updateState === 'updating'}
             aria-live="polite"
             aria-describedby={updateError ? `tufhelper-update-error-${level.id}` : undefined}
           >
@@ -194,6 +213,22 @@ export const DownloadedLevelList = ({
               ? `${t(`level.tufHelperLiteDownloadManager.${labelKey}`)}${progressLabel}`
               : t('level.tufHelperLiteDownloadManager.updateRequiredShort')}
           </button>
+          {deleteSupported ? (
+            <button
+              type="button"
+              className="tufhelper-download-manager__delete"
+              onClick={() => void onDelete(level, () => prepareRemoval(level.id))}
+              disabled={deleteLocked || levelBusy || deleting}
+              aria-label={t('level.tufHelperLiteDownloadManager.deleteLevel', { name: level.levelName })}
+              title={t(`level.tufHelperLiteDownloadManager.${deleting ? 'deleting' : 'delete'}`)}
+              aria-describedby={deleteError ? `tufhelper-delete-error-${level.id}` : undefined}
+            >
+              {deleting
+                ? <RefreshIcon size={15} color="currentColor" className="is-spinning" aria-hidden="true" />
+                : <TrashIcon size={15} color="currentColor" aria-hidden="true" />}
+            </button>
+          ) : null}
+          </div>
           {updateError ? (
             <div
               id={`tufhelper-update-error-${level.id}`}
@@ -203,6 +238,17 @@ export const DownloadedLevelList = ({
             >
               <WarningIcon size={13} color="currentColor" aria-hidden="true" />
               <span>{updateError}</span>
+            </div>
+          ) : null}
+          {deleteError ? (
+            <div
+              id={`tufhelper-delete-error-${level.id}`}
+              className="tufhelper-download-manager__level-update-error"
+              role="alert"
+              title={deleteError}
+            >
+              <WarningIcon size={13} color="currentColor" aria-hidden="true" />
+              <span>{deleteError}</span>
             </div>
           ) : null}
         </div>
@@ -229,9 +275,14 @@ export const DownloadedLevelList = ({
         </div>
       ) : (
         <div
+          ref={listRef}
           className={`tufhelper-download-manager__level-list${positioned ? ' is-positioned' : ''}`}
+          aria-busy={loading.initial || loading.next || loading.previous}
           style={positioned ? { '--tufhelper-level-row-height': `${levelRowHeight}px` } : undefined}
         >
+          {errors.initial ? (
+            <LoadError message={t('level.tufHelperLiteDownloadManager.loadLevelsFailed')} onRetry={retryInitial} position="top" t={t} />
+          ) : null}
           {errors.previous ? (
             <LoadError message={t('level.tufHelperLiteDownloadManager.loadMoreFailed')} onRetry={loadPrevious} position="top" t={t} />
           ) : null}

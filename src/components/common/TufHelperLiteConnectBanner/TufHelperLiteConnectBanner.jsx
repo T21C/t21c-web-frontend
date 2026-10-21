@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { toast } from 'react-hot-toast';
 import { CheckmarkIcon, CrossIcon, TUFHelperLiteIcon } from '@/components/common/icons';
+import { shouldShowConnectionNotice } from '@/features/tufhelperlite/application/connectionNotice';
 import {
   connectTufHelperLiteIntegration,
   dismissTufHelperLiteBannerForSession,
@@ -15,7 +15,6 @@ import './tufHelperLiteConnectBanner.css';
 const TUFHELPER_LITE_URL = 'https://github.com/KGH1113/TUFHelperLite/releases/latest';
 const ADOFAI_IPC_URL = 'https://github.com/KGH1113/adofai-ipc/releases/latest';
 const SUPPORTED_PATH = /^\/(levels|packs)(\/|$)/;
-const OUTDATED_TOAST_ID = 'tufhelperlite-outdated';
 
 export const TufHelperLiteConnectBanner = () => {
   const { t } = useTranslation('components');
@@ -28,38 +27,26 @@ export const TufHelperLiteConnectBanner = () => {
   const errorCode = integration.errorCode;
   const mismatchDirection = integration.versionMismatch?.direction;
   const requiresClientUpdate = mismatchDirection === 'client_outdated';
-  const requiresIpcUpdate = errorCode === 'namespace_status_unavailable' ||
+  const requiresContractUpdate = errorCode === 'contract_mismatch' || errorCode === 'TUFHELPERLITE_OUTDATED';
+  const requiresIpcUpdate = errorCode === 'namespace_status_unavailable' || errorCode === 'INCOMPATIBLE' ||
+    errorCode === 'protocol_mismatch' || errorCode === 'feature_protocol_mismatch' ||
     mismatchDirection === 'server_outdated' ||
     mismatchDirection === 'legacy_server';
-  const namespaceInitializing = errorCode === 'namespace_initializing' || errorCode === 'TIMEOUT';
+  const namespaceInitializing = errorCode === 'namespace_initializing' || errorCode === 'TIMEOUT' || errorCode === 'timeout';
   const namespaceFailed = errorCode === 'namespace_error';
-  const canShow = integration.state === 'prompt' || integration.state === 'unavailable';
   const isVisible =
     SUPPORTED_PATH.test(location.pathname) &&
-    canShow &&
-    !integration.isSessionDismissed;
+    shouldShowConnectionNotice(integration);
 
   useEffect(() => {
     void initializeTufHelperLiteIntegration();
   }, []);
 
-  useEffect(() => {
-    if (integration.errorCode !== 'TUFHELPERLITE_OUTDATED') {
-      toast.dismiss(OUTDATED_TOAST_ID);
-      return;
-    }
-
-    toast.error(
-      t('level.tufHelperLiteBanner.outdatedToast', {
-        version: integration.tufHelperLiteVersion ?? t('level.tufHelperLiteBanner.unknownVersion'),
-      }),
-      { id: OUTDATED_TOAST_ID, duration: 8000 },
-    );
-  }, [integration.errorCode, integration.tufHelperLiteVersion, t]);
-
   if (!isVisible) return null;
 
-  const title = requiresClientUpdate
+  const title = requiresContractUpdate
+    ? t('level.tufHelperLiteBanner.contractUpdateTitle', { defaultValue: 'TUFHelperLite API update required' })
+    : requiresClientUpdate
     ? t('level.tufHelperLiteBanner.clientUpdateTitle')
     : requiresIpcUpdate
     ? t('level.tufHelperLiteBanner.ipcUpdateTitle')
@@ -70,7 +57,9 @@ export const TufHelperLiteConnectBanner = () => {
         : showUnavailable
           ? t('level.tufHelperLiteBanner.unavailableTitle')
           : t('level.tufHelperLiteBanner.title');
-  const description = requiresClientUpdate
+  const description = requiresContractUpdate
+    ? t('level.tufHelperLiteBanner.contractUpdateDescription', { defaultValue: 'Update TUFHelperLite and refresh this page so both use the same API version.' })
+    : requiresClientUpdate
     ? t('level.tufHelperLiteBanner.clientUpdateDescription')
     : requiresIpcUpdate
     ? t('level.tufHelperLiteBanner.ipcUpdateDescription')

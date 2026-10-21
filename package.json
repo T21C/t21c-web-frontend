@@ -4,6 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "sdk:check": "node scripts/verify-ipc-sdk.mjs",
+    "test:ipc": "node --test tests/tufhelper-session.test.js tests/tufhelper-connection-notice.test.js tests/tufhelper-library-window.test.js tests/tufhelper-websocket.test.js tests/tufhelper-typed-interop.test.js tests/replay-delivery.test.js",
+    "prebuild:dev": "npm run sdk:check",
+    "prebuild:staging": "npm run sdk:check",
+    "prebuild:prod": "npm run sdk:check",
     "tuf-search-tags": "node scripts/tuf-search-tags.mjs",
     "generate:banners": "node scripts/generateBannerManifest.mjs",
     "predev": "node scripts/generateBannerManifest.mjs",
@@ -18,7 +23,6 @@
     "lint": "eslint . --ext js,jsx --max-warnings 0 --cache --cache-location .eslintcache"
   },
   "dependencies": {
-    "@adofai-ipc/client": "0.4.1",
     "@discordapp/twemoji": "^15.1.0",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
@@ -29,6 +33,8 @@
     "@simplewebauthn/browser": "^13.3.0",
     "@splinetool/react-spline": "^2.2.6",
     "@tanstack/react-query": "^5.80.5",
+    "@tufhelper/ipc": "file:vendor/tufhelper-ipc",
+    "adofai-ipc": "2.1.0",
     "axios": "^1.7.9",
     "base32.js": "^0.1.0",
     "cropperjs": "^1.6.2",
