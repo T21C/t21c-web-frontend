@@ -2,7 +2,7 @@
 
 # Compile on the runner's arch (x86 today). `platforms: linux/arm64` only applies
 # to the nginx stage — otherwise Node/esbuild/Vite run under QEMU.
-FROM --platform=$BUILDPLATFORM node:22-bookworm-slim AS build
+FROM --platform=$BUILDPLATFORM node:22.23.4-bookworm-slim AS build
 
 ENV PUPPETEER_SKIP_DOWNLOAD=true
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
