@@ -6,12 +6,16 @@
 .song-selector-popup {
   background-color: #1e1e1e;
   border-radius: 8px;
-  width: 90%;
-  max-width: 500px;
-  max-height: 90vh;
+  width: min(500px, 100%);
+  max-width: 100%;
+  max-height: 100%;
+  min-width: 0;
+  overflow-x: clip;
   overflow-y: auto;
   position: relative;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  container-type: inline-size;
+  container-name: song-selector;
 }
 
 .song-selector-popup .popup-header {
@@ -19,13 +23,21 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
+  min-width: 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .song-selector-popup .popup-header h2 {
   margin: 0;
+  min-width: 0;
   color: #ffffff;
   font-size: 1.25em;
+  overflow-wrap: anywhere;
+}
+
+.song-selector-popup .popup-header .tuf-close-button {
+  flex-shrink: 0;
 }
 
 .song-selector-popup .close-button {
@@ -39,11 +51,15 @@
 
 .song-selector-popup .popup-content {
   padding: 16px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .song-selector-popup .song-selection {
   margin-top: 20px;
   padding: 16px;
+  min-width: 0;
+  max-width: 100%;
   background-color: rgba(255, 255, 255, 0.05);
   border-radius: 6px;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -51,6 +67,8 @@
 
 .song-selector-popup .current-song {
   margin-bottom: 16px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .song-selector-popup .current-song-header {
@@ -63,6 +81,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .song-selector-popup .song-name-display {
@@ -73,12 +93,17 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 4px;
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 .song-selector-popup .aliases {
   color: #aaa;
   font-size: 0.9em;
-  margin-left: 8px;
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 
@@ -106,11 +131,16 @@
 .song-selector-popup .action-buttons {
   margin-top: 24px;
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .song-selector-popup .action-button {
-  flex: 1;
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
   position: relative;
 }
 
@@ -131,17 +161,32 @@
 .song-selector-popup .song-search-section {
   margin-top: 16px;
   padding-top: 16px;
+  min-width: 0;
+  max-width: 100%;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.song-selector-popup .info-message {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 .song-selector-popup .search-input-wrapper {
   display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
   gap: 10px;
   margin-bottom: 10px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .song-selector-popup .search-input {
-  flex: 1;
+  flex: 1 1 12rem;
+  width: auto;
+  min-width: 0;
+  max-width: 100%;
   padding: 10px;
   background-color: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -156,13 +201,17 @@
 }
 
 .song-selector-popup .create-song-button {
+  flex: 0 1 auto;
+  max-width: 100%;
   padding: 8px 16px;
   background-color: var(--btn-success);
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: center;
 }
 
 .song-selector-popup .create-song-button:hover {
@@ -178,6 +227,9 @@
 
 .song-selector-popup .search-results {
   max-height: 200px;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: clip;
   overflow-y: auto;
   background-color: rgba(0, 0, 0, 0.2);
   border-radius: 4px;
@@ -191,8 +243,11 @@
   color: #fff;
   display: flex;
   align-items: center;
+  align-content: flex-start;
   gap: 8px;
   flex-wrap: wrap;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .song-selector-popup .song-result:hover {
@@ -201,20 +256,28 @@
 
 .song-selector-popup .song-result .song-name {
   font-weight: 500;
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 .song-selector-popup .song-result-label {
-  display: inline-flex;
+  display: flex;
   align-items: baseline;
   flex-wrap: wrap;
   gap: 0.35rem;
+  flex: 1 1 8rem;
   min-width: 0;
+  max-width: 100%;
 }
 
 .song-selector-popup .song-artists {
   color: var(--color-gray-2);
   font-size: 0.9em;
   font-weight: 400;
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 .song-selector-popup .song-artists::before {
@@ -225,6 +288,15 @@
 .song-selector-popup .song-result .song-aliases {
   color: #aaa;
   font-size: 0.9em;
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.song-selector-popup .verification-chip {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 .song-selector-popup .form-description {
@@ -238,6 +310,8 @@
   padding: 20px;
   border-radius: 8px;
   margin-top: 10px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .song-selector-popup .create-song-form h3 {
@@ -248,6 +322,8 @@
 
 .song-selector-popup .form-group {
   margin-bottom: 15px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .song-selector-popup .form-group label {
@@ -265,6 +341,8 @@
 
 .song-selector-popup .form-group input[type="text"] {
   width: 100%;
+  min-width: 0;
+  max-width: 100%;
   padding: 8px;
   background-color: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -278,8 +356,17 @@
 
 .song-selector-popup .form-buttons {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   margin-top: 20px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.song-selector-popup .form-buttons > button {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .song-selector-popup .current-song-loading {
@@ -310,4 +397,26 @@
 
 .song-selector-popup .search-results::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.3);
+}
+
+@container song-selector (max-width: 28rem) {
+  .song-selector-popup .search-input-wrapper,
+  .song-selector-popup .form-buttons,
+  .song-selector-popup .action-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .song-selector-popup .search-input,
+  .song-selector-popup .create-song-button,
+  .song-selector-popup .form-buttons > button,
+  .song-selector-popup .action-button {
+    flex: 1 1 auto;
+    width: 100%;
+    white-space: normal;
+  }
+
+  .song-selector-popup .song-result-label {
+    flex-basis: 100%;
+  }
 }

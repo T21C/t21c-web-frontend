@@ -25,6 +25,15 @@ export const LEVEL_LIST_EXPORT_HEADERS = PACK_EXPORT_HEADERS.filter(
   (header) => header !== 'Folder',
 );
 
+export const REQUEST_EXPORT_HEADERS = [
+  'levelId',
+  'Song',
+  'Artist',
+  'Creator',
+  'Difficulty',
+  'reason',
+];
+
 const sortItemsByOrder = (items = []) =>
   [...items].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
 
@@ -211,6 +220,63 @@ export function buildLevelListExportRows(
   }
 
   return { headers: LEVEL_LIST_EXPORT_HEADERS, rows };
+}
+
+function requestLevelForCreator(level) {
+  const fromTeamName = typeof level?.teamName === 'string' ? level.teamName.trim() : '';
+  const fromTeam = typeof level?.team === 'string'
+    ? level.team.trim()
+    : String(level?.team?.name || '').trim();
+  const team = fromTeamName || fromTeam;
+  return {
+    ...level,
+    team: team || null,
+  };
+}
+
+/**
+ * Spreadsheet rows for level requests.
+ * Columns: levelId, Song, Artist, Creator, Difficulty, reason.
+ */
+export function buildRequestExportRows(
+  requests,
+  { difficultyDict, unavailableLabel = 'Unavailable' } = {},
+) {
+  const rows = [];
+
+  for (const request of requests || []) {
+    if (!request) continue;
+
+    const level = request.level;
+    const levelId = level?.id ?? request.levelId ?? '';
+    const reason = request.reason ?? '';
+
+    if (!level || level.missing) {
+      rows.push({
+        kind: 'level',
+        cells: [levelId, unavailableLabel, '', '', '', reason],
+      });
+      continue;
+    }
+
+    const difficultyName = level.difficulty?.name
+      || difficultyDict?.[level.diffId]?.name
+      || '';
+
+    rows.push({
+      kind: 'level',
+      cells: [
+        levelId,
+        getSongDisplayName(level),
+        getArtistDisplayName(level),
+        formatCreatorDisplay(requestLevelForCreator(level)),
+        difficultyName,
+        reason,
+      ],
+    });
+  }
+
+  return { headers: REQUEST_EXPORT_HEADERS, rows };
 }
 
 function escapeCsvCell(value) {

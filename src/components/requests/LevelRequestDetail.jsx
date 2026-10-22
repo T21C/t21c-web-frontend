@@ -11,11 +11,14 @@ import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { formatAccuracyRatio } from '@/utils/statFormatters';
 import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
-import { PIPELINE_ACTIONS, actionButtonClass, canManageRequestType, curationRequestDiff, songRequestLabel, storedRequestIssue, tagRequestDiff, tagRequestTargetIds } from './levelRequestShared';
+import { PIPELINE_ACTIONS, actionButtonClass, canManageRequestType, curationRequestDiff, requestErrorMessage, songRequestLabel, storedRequestIssue, tagRequestDiff, tagRequestTargetIds } from './levelRequestShared';
 import LevelRequestCurationTypes, { LevelRequestCurationDiff } from './LevelRequestCurationTypes';
 import { LevelRequestCreditDiff } from './LevelRequestInfoFields';
 import { LevelRequestTagDiff } from './LevelRequestTags';
 import DiscordThreadPingPopup from '@/components/discord/DiscordThreadPingPopup';
+import { LevelSelectionPopup } from '@/components/popups/Levels';
+import api from '@/utils/api';
+import { routes } from '@/api/routes';
 
 const DiffMark = ({ icon, name }) => {
   const src = icon ? selectIconSize(icon, ICON_SIZE.SMALL) : null;
@@ -87,14 +90,18 @@ const LevelRequestDetail = ({
   onNotes,
   onAction,
   onBan,
+  onUpdated,
   busy = false,
 }) => {
   const { t } = useTranslation('pages');
   const { difficulties } = useDifficultyContext();
   const [rejecting, setRejecting] = useState(false);
+  const [choosingChart, setChoosingChart] = useState(false);
   const [rejectNote, setRejectNote] = useState(request.publicNote || '');
   const [threadPrompt, setThreadPrompt] = useState(null);
   const payload = request.payload || {};
+  const downloadAttached = payload.kind === 'download' && Boolean(payload.fileId);
+  const downloadNeedsChart = downloadAttached && payload.requiresLevelSelection === true && !payload.targetLevel;
   const payloadIssue = (request.status === 'pending' || request.status === 'accepted')
     ? storedRequestIssue(request.type, payload, request.level)
     : null;
@@ -258,8 +265,39 @@ const LevelRequestDetail = ({
               <span className="level-requests__change-values">
                 {payload.kind === 'song'
                   ? songRequestLabel(payload.songName, payload.suffix)
-                  : payload.kind === 'artist' ? payload.artistName : payload.value}
+                  : payload.kind === 'artist'
+                    ? payload.artistName
+                    : payload.kind === 'download' && payload.fileId
+                      ? (payload.originalName || payload.value)
+                      : payload.value}
               </span>
+            </div>
+          )}
+          {payload.kind === 'download' && payload.fileId && (
+            <div className="level-requests__download-file">
+              <a className="level-requests__download-link" href={payload.value} target="_blank" rel="noopener noreferrer">
+                {t('levelRequests.detail.downloadFile')}
+              </a>
+              {payload.targetLevel && (
+                <span className="level-requests__hint">
+                  {t('levelRequests.detail.selectedChart', { chart: payload.targetLevel })}
+                </span>
+              )}
+              {downloadNeedsChart && (
+                <span className="level-requests__hint level-requests__hint--issue">
+                  {t('levelRequests.detail.chartRequired')}
+                </span>
+              )}
+              {mode === 'mine' && isOwner && pending && downloadNeedsChart && Array.isArray(payload.levelFiles) && (
+                <button
+                  type="button"
+                  className="level-requests__button"
+                  onClick={() => setChoosingChart(true)}
+                  disabled={busy}
+                >
+                  {t('levelRequests.detail.chooseChart')}
+                </button>
+              )}
             </div>
           )}
         </section>
@@ -409,7 +447,7 @@ const LevelRequestDetail = ({
               }
               onAction?.(action);
             }}
-            disabled={busy}
+            disabled={busy || (action === 'accept' && downloadNeedsChart)}
           >
             {(action === 'accept' || action === 'complete' || action === 'add_to_rating') && (
               <CheckmarkIcon size={16} color="currentColor" />
@@ -425,7 +463,11 @@ const LevelRequestDetail = ({
             )}
             {t(action === 'delete_discord' && request.type === 'rerate'
               ? 'levelRequests.pipeline.close_discord'
-              : `levelRequests.pipeline.${action}`)}
+              : action === 'accept' && downloadAttached
+                ? 'levelRequests.pipeline.acceptDownload'
+                : action === 'reject' && downloadAttached
+                  ? 'levelRequests.pipeline.rejectDownload'
+                  : `levelRequests.pipeline.${action}`)}
           </button>
         ))}
       </div>
@@ -447,7 +489,7 @@ const LevelRequestDetail = ({
               disabled={busy}
             >
               <CrossIcon size={16} color="currentColor" />
-              {t('levelRequests.pipeline.rejectConfirm')}
+              {t(downloadAttached ? 'levelRequests.pipeline.rejectDownloadConfirm' : 'levelRequests.pipeline.rejectConfirm')}
             </button>
             <button type="button" className="level-requests__button" onClick={() => setRejecting(false)} disabled={busy}>
               {t('levelRequests.form.cancel')}
@@ -464,6 +506,23 @@ const LevelRequestDetail = ({
             setThreadPrompt(null);
             onAction?.(action, {ping});
           }}
+        />
+      )}
+      {choosingChart && Array.isArray(payload.levelFiles) && (
+        <LevelSelectionPopup
+          isOpen
+          levelFiles={payload.levelFiles}
+          onSelect={async (selectedLevel) => {
+            try {
+              const response = await api.post(routes.database.levelRequests.selectLevel(request.id), { selectedLevel });
+              setChoosingChart(false);
+              toast.success(t('levelRequests.detail.chartChosen'));
+              onUpdated?.(response.data?.request);
+            } catch (err) {
+              toast.error(requestErrorMessage(t, err));
+            }
+          }}
+          onClose={() => setChoosingChart(false)}
         />
       )}
     </div>

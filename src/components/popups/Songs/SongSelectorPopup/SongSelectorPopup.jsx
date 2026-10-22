@@ -546,6 +546,8 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                       value={verificationOptions.find(opt => opt.value === verificationState) || verificationOptions[0]}
                       onChange={(option) => setVerificationState(option?.value || 'pending')}
                       width="100%"
+                      wrapOptions
+                      direction="auto"
                     />
                   </div>
                   <div className="form-buttons">

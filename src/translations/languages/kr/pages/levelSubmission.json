@@ -43,6 +43,7 @@
     "orDragDrop": "또는 여기에 끌어서 놓기",
     "dropHere": "여기에 놓으세요!",
     "uploadEvidence": "증거 사진 업로드",
+    "requestTags": "태그 요청",
     "submit": "제출",
     "submitWait": "..."
   },
@@ -91,6 +92,7 @@
     "searchTeam": "팀 검색...",
     "newCreator": "새 제작자 이름 입력",
     "newTeam": "새 팀 이름 입력",
+    "tags": "요청한 태그 없음",
     "notes": "관리자에게 전달할 선택 메모 (차트 세부 정보, 크레딧 등)"
   },
   "cdnTos": {

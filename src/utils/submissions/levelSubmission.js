@@ -10,7 +10,8 @@ import { throwFromError } from '@/utils/submissions/formErrors';
  *
  *   1. POST /v2/form/level/validate — pure validation, zero side effects.
  *   2. If a zip was attached, run the chunked upload against /v2/upload with
- *      kind `level-zip` and meta `{ forSubmission: true }`.
+ *      kind `level-zip`. Submissions pass meta `{ forSubmission: true }`.
+ *      Download change requests pass meta `{ forLevelRequest: true }`.
  *   3. POST /v2/form/level/submit — multipart: { meta: JSON, evidence[]: File }.
  *
  * Each step is its own method so callers can render per-step UI (validation
@@ -41,12 +42,13 @@ export async function validateLevel(payload, { signal } = {}) {
  * @param {File} file
  * @param {object} [opts]
  * @param {(p: { phase: string, percent: number }) => void} [opts.onProgress]
+ * @param {Record<string, unknown>} [opts.meta] Session purpose. Defaults to `{ forSubmission: true }`.
  * @param {AbortSignal} [opts.signal]
  */
-export async function uploadLevelZip(file, { onProgress, signal } = {}) {
+export async function uploadLevelZip(file, { onProgress, signal, meta } = {}) {
   const client = new ChunkedUploadClient({ kind: 'level-zip' });
   const { session } = await client.upload(file, {
-    meta: { forSubmission: true },
+    meta: meta ?? { forSubmission: true },
     onProgress,
     signal,
   });

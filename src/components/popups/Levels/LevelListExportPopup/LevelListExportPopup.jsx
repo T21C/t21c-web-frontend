@@ -14,6 +14,12 @@ const LevelListExportPopup = ({
   onClose,
   contextName,
   onExport,
+  title,
+  description,
+  progressText,
+  errorMessage,
+  exportingLabel,
+  exportLabel,
 }) => {
   const { t } = useTranslation(['pages', 'components', 'common']);
   const abortRef = useRef(null);
@@ -82,7 +88,7 @@ const LevelListExportPopup = ({
         return;
       }
       console.error('Level list export failed:', err);
-      setError(t('creators.profile.levels.export.errors.exportFailed'));
+      setError(errorMessage || t('creators.profile.levels.export.errors.exportFailed'));
     } finally {
       abortRef.current = null;
       setExporting(false);
@@ -92,10 +98,12 @@ const LevelListExportPopup = ({
 
   const progressLabel =
     exporting && progress
-      ? t('creators.profile.levels.export.progress', {
-          fetched: progress.fetched,
-          total: progress.total ?? '…',
-        })
+      ? (typeof progressText === 'function'
+          ? progressText(progress)
+          : t('creators.profile.levels.export.progress', {
+              fetched: progress.fetched,
+              total: progress.total ?? '…',
+            }))
       : null;
 
   return (
@@ -115,11 +123,11 @@ const LevelListExportPopup = ({
 
         <div className="level-list-export-popup__content">
           <h2 className="level-list-export-popup__title">
-            {t('creators.profile.levels.export.title', { contextName: displayName })}
+            {title || t('creators.profile.levels.export.title', { contextName: displayName })}
           </h2>
 
           <p className="level-list-export-popup__description">
-            {t('creators.profile.levels.export.description', {
+            {description || t('creators.profile.levels.export.description', {
               contextName: displayName,
             })}
           </p>
@@ -181,8 +189,8 @@ const LevelListExportPopup = ({
               disabled={exporting}
             >
               {exporting
-                ? t('creators.profile.levels.export.exporting')
-                : t('creators.profile.levels.export.export')}
+                ? (exportingLabel || t('creators.profile.levels.export.exporting'))
+                : (exportLabel || t('creators.profile.levels.export.export'))}
             </button>
           </div>
         </div>

@@ -221,8 +221,55 @@
 
 .pass-detail .pass-detail-body {
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   margin-bottom: 1rem;
+}
+
+.pass-detail .pass-detail-details {
+  flex: 1 0 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background-color: var(--color-white-t10);
+  border-radius: 5px;
+  padding: 1rem;
+}
+
+.pass-detail .pass-detail-details__label {
+  color: var(--color-white-t60);
+  font-size: 0.8rem;
+}
+
+.pass-detail .pass-detail-details__text {
+  margin: 0;
+  color: var(--color-white);
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+
+.pass-detail .pass-detail-details.expandable:not(.expanded) .pass-detail-details__text {
+  max-height: 7.5rem;
+  overflow: hidden;
+  mask-image: linear-gradient(to bottom, #000 0%, #000 calc(100% - 1.5rem), transparent 100%);
+}
+
+.pass-detail .pass-detail-details__toggle {
+  align-self: center;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: var(--color-purple-1);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.pass-detail .pass-detail-details__toggle:hover {
+  color: var(--color-white);
 }
 
 @media (max-width: 768px) {

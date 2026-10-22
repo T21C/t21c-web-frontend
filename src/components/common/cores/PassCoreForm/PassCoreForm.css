@@ -74,6 +74,40 @@
   color: rgba(255, 255, 255, 0.5);
 }
 
+.pass-core-form .pass-core-form__details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.pass-core-form .pass-core-form__details span {
+  color: var(--color-white-t80);
+  font-size: 0.85rem;
+}
+
+.pass-core-form .pass-core-form__details textarea {
+  width: 100%;
+  min-height: 6rem;
+  resize: vertical;
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 0;
+  border-bottom: 3px solid rgba(255, 255, 255, 0.18);
+  outline: none;
+  padding: 0.5rem;
+  font: inherit;
+  font-size: 1rem;
+  color: var(--color-white);
+}
+
+.pass-core-form .pass-core-form__details textarea::placeholder {
+  color: var(--color-white-t50);
+}
+
+.pass-core-form .pass-core-form__details textarea:focus {
+  border-bottom-color: rgba(255, 255, 255, 0.28);
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
 .pass-core-form .info input:focus {
   border-bottom-color: rgba(255, 255, 255, 0.28);
   background-color: rgba(255, 255, 255, 0.08);

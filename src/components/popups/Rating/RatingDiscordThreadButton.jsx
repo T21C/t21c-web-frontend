@@ -10,14 +10,14 @@ import './discordvotenotice.css';
 
 export { mergeRatingThreadState };
 
-const RatingDiscordThreadButton = ({ rating, linkedRequest, allowed, onUpdated }) => {
+const RatingDiscordThreadButton = ({ rating, allowed, onUpdated }) => {
   const { t } = useTranslation('components');
   const [busy, setBusy] = useState(false);
   const [prompt, setPrompt] = useState(false);
   const url = rating?.discordMessageUrl || '';
   const closed = Boolean(rating?.discordThreadClosed);
   const action = ratingThreadAction({url, closed});
-  if (!allowed || !rating?.id || rating.confirmedAt || linkedRequest) return null;
+  if (!allowed || !rating?.id || rating.confirmedAt) return null;
 
   const labelKey = action === 'close'
     ? 'rating.detailPopup.buttons.discordThreadClose'

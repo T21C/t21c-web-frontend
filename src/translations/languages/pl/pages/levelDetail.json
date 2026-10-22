@@ -16,7 +16,8 @@
   "tooltips": {
     "muteChartClears": "Wycisz powiadomienia o przejściach tego chartu",
     "unmuteChartClears": "Włącz powiadomienia o przejściach tego chartu",
-    "purePerfectScore": "Pure Perfect: {{score}}"
+    "purePerfectScore": "Pure Perfect: {{score}}",
+    "referenceLevel": "To poziom referencyjny dla {{diffName}}"
   },
   "links": {
     "download": "Pobierz poziom",

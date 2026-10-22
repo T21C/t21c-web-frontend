@@ -103,6 +103,11 @@
       }
     }
   },
+  "details": {
+    "label": "Szczegóły",
+    "showMore": "Czytaj więcej",
+    "showLess": "Pokaż mniej"
+  },
   "video": {
     "notAvailable": {
       "text": "Wideo niedostępne",

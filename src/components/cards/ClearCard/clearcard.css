@@ -195,6 +195,18 @@
   font-size: 1rem;
 }
 
+.clear-card .score-accuracy.pure-perfect {
+  color: rgb(255, 255, 0);
+  text-shadow: 0 0 10px rgba(255, 255, 0, 0.7);
+  font-weight: 700;
+}
+
+.clear-card .score-accuracy.pure-xperfect {
+  color: var(--color-platinum);
+  text-shadow: 0 0 10px rgba(var(--color-platinum-rgb), 1);
+  font-weight: 700;
+}
+
 .clear-card .judgements {
   display: flex;
   flex-wrap: wrap;
@@ -226,6 +238,57 @@
 .clear-card .perfect-minus,
 .clear-card .perfect-plus { color: lightgreen; }
 .clear-card .judgements--xperfect .perfect { color: var(--color-xperfect, #ffffff); }
+
+.clear-card .judgements .perfect--burst {
+  position: relative;
+}
+
+.clear-card .judgements .perfect-burst {
+  position: absolute;
+  inset: 0;
+  min-width: 0;
+  font-size: 0;
+  font-weight: 400;
+  text-shadow: none;
+  pointer-events: none;
+}
+
+.clear-card .judgements .perfect-burst__particle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--size);
+  height: var(--size);
+  min-width: 0;
+  font-size: 0;
+  font-weight: 400;
+  text-shadow: none;
+  border-radius: 50%;
+  background: var(--color-xperfect, #ffffff);
+  box-shadow: 0 0 4px var(--color-xperfect, #ffffff);
+  opacity: 0;
+  pointer-events: none;
+  animation: clear-card-xperfect-burst var(--duration) ease-out var(--delay) infinite;
+}
+
+@keyframes clear-card-xperfect-burst {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  20% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform:
+      translate(
+        calc(-50% + cos(var(--angle)) * var(--distance)),
+        calc(-50% + sin(var(--angle)) * var(--distance))
+      )
+      scale(0.4);
+  }
+}
 
 .clear-card .flags-wrapper {
   display: flex;
@@ -391,5 +454,9 @@
   .clear-card .player-info,
   .clear-card .video-link {
     transition: none;
+  }
+
+  .clear-card .judgements .perfect-burst {
+    display: none;
   }
 }

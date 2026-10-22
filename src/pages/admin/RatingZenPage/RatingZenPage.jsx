@@ -1073,7 +1073,6 @@ const RatingZenPage = () => {
                   <DiscordVoteNotice threadUrl={linkedRequest?.discordMessageUrl || current?.discordMessageUrl} />
                   <RatingDiscordThreadButton
                     rating={current}
-                    linkedRequest={linkedRequest}
                     allowed={hasFlag(user, permissionFlags.SUPER_ADMIN)}
                     onUpdated={(next) => {
                       patchSession((prev) => ({
@@ -1106,7 +1105,6 @@ const RatingZenPage = () => {
                 <div className="rating-zen-page__actions-block">
                   <RatingDiscordThreadButton
                     rating={current}
-                    linkedRequest={linkedRequest}
                     allowed={hasFlag(user, permissionFlags.SUPER_ADMIN)}
                     onUpdated={(next) => {
                       patchSession((prev) => ({

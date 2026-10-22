@@ -6,13 +6,15 @@ import api from '@/utils/api';
 import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
 import { CustomSelect, StateDisplay } from '@/components/common/selectors';
+import { ExternalLinkIcon } from '@/components/common/icons';
 import { CreatorManagementPopup } from '@/components/popups/Creators';
-import { EditLevelPopup } from '@/components/popups/Levels';
+import { EditLevelPopup, LevelListExportPopup } from '@/components/popups/Levels';
 import UserAvatar from '@/components/layout/UserAvatar/UserAvatar';
 import { userAvatarUrls } from '@/utils/playerAvatarDisplay';
 import { useAuth } from '@/contexts/AuthContext';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
+import { buildRequestExportRows, downloadPackExport } from '@/utils/packExportUtils';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import LevelRequestDetail from './LevelRequestDetail';
 import LevelRequestFormPopup from './LevelRequestFormPopup';
@@ -20,6 +22,7 @@ import { AdvancedSearchBar } from '@/components/common/AdvancedSearch';
 import LevelRequestStatusPopup from './LevelRequestStatusPopup';
 import LevelRequestCurationTypes, { LevelRequestCurationDiff } from './LevelRequestCurationTypes';
 import { LevelRequestTagDiff } from './LevelRequestTags';
+import { collectRequestsForExport } from './collectRequestExport';
 import {
   DEFAULT_REQUEST_LIST_SORT,
   creditRequestDiff,
@@ -59,6 +62,11 @@ const infoCardText = (request, t) => {
       remove: diff.remove.length,
     });
   }
+  if (payload.kind === 'download' && payload.fileId) {
+    const name = String(payload.originalName || payload.value || '').replace(/\s+/g, ' ').trim();
+    if (!name) return '';
+    return name.length > 80 ? `${name.slice(0, 77)}…` : name;
+  }
   const value = String(payload.value || '').replace(/\s+/g, ' ').trim();
   if (!value) return '';
   return value.length > 80 ? `${value.slice(0, 77)}…` : value;
@@ -67,7 +75,7 @@ const infoCardText = (request, t) => {
 const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, onQueueChange = null }) => {
   const { t } = useTranslation('pages');
   const { user } = useAuth();
-  const { difficulties } = useDifficultyContext();
+  const { difficulties, difficultyDict } = useDifficultyContext();
   const [results, setResults] = useState([]);
   const [total, setTotal] = useState(0);
   const [offset, setOffset] = useState(0);
@@ -84,6 +92,7 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
   const [statusOpen, setStatusOpen] = useState(false);
   const [player, setPlayer] = useState(null);
   const [busy, setBusy] = useState(false);
+  const [showExportPopup, setShowExportPopup] = useState(false);
   const persistReady = useRef(false);
 
   useEffect(() => {
@@ -188,9 +197,15 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
     try {
       const response = await api.post(routes.database.levelRequests.actions(selected.id), { action, ...extra });
       setSelected(response.data?.request || null);
-      toast.success(t(action === 'delete_discord' && selected.type === 'rerate'
+      const fileBacked = selected.payload?.kind === 'download' && selected.payload?.fileId;
+      const doneKey = action === 'delete_discord' && selected.type === 'rerate'
         ? 'levelRequests.pipeline.close_discordDone'
-        : `levelRequests.pipeline.${action}Done`));
+        : action === 'accept' && fileBacked
+          ? 'levelRequests.pipeline.acceptDownloadDone'
+          : action === 'reject' && fileBacked
+            ? 'levelRequests.pipeline.rejectDownloadDone'
+            : `levelRequests.pipeline.${action}Done`;
+      toast.success(t(doneKey));
       load();
     } catch (err) {
       toast.error(requestErrorMessage(t, err));
@@ -215,12 +230,37 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
 
   const page = Math.floor(offset / PAGE_SIZE) + 1;
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const exportContextName = mode === 'admin' && type
+    ? t(`levelRequests.types.${type}`)
+    : t('levelRequests.list.export.defaultContextName');
   const sortOptions = useMemo(() => ([
     { value: 'created_desc', label: t('levelRequests.list.sortCreatedDesc') },
     { value: 'created_asc', label: t('levelRequests.list.sortCreatedAsc') },
     { value: 'updated_desc', label: t('levelRequests.list.sortUpdatedDesc') },
     { value: 'updated_asc', label: t('levelRequests.list.sortUpdatedAsc') },
   ]), [t]);
+
+  const handleRequestExport = useCallback(async (format, { signal, onProgress }) => {
+    const requests = await collectRequestsForExport({
+      mode,
+      type,
+      searchQuery,
+      completedFilter,
+      sort,
+      signal,
+      onProgress,
+    });
+    const { headers, rows } = buildRequestExportRows(requests, {
+      difficultyDict,
+      unavailableLabel: t('levelRequests.list.export.unavailable'),
+    });
+    await downloadPackExport({
+      format,
+      packName: exportContextName,
+      headers,
+      rows,
+    });
+  }, [completedFilter, difficultyDict, exportContextName, mode, searchQuery, sort, t, type]);
 
   return (
     <div className="level-requests">
@@ -254,6 +294,15 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
             />
           </>
         )}
+        <button
+          type="button"
+          className="level-requests__export-btn"
+          onClick={() => setShowExportPopup(true)}
+          disabled={total === 0}
+        >
+          <ExternalLinkIcon color="#ffffff" size="18px" />
+          <span>{t('levelRequests.list.exportAs')}</span>
+        </button>
       </div>
 
       {error && <p>{t('levelRequests.list.error')}</p>}
@@ -371,6 +420,10 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
             onNotes={() => setStatusOpen(true)}
             onAction={runAction}
             onBan={openBan}
+            onUpdated={(next) => {
+              setSelected(next || null);
+              load();
+            }}
           />
         </PopupShell>
       )}
@@ -424,6 +477,21 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
           onUpdate={(next) => setPlayer(next)}
         />
       )}
+      <LevelListExportPopup
+        isOpen={showExportPopup}
+        onClose={() => setShowExportPopup(false)}
+        contextName={exportContextName}
+        onExport={handleRequestExport}
+        title={t('levelRequests.list.export.title', { contextName: exportContextName })}
+        description={t('levelRequests.list.export.description', { contextName: exportContextName })}
+        progressText={(progress) => t('levelRequests.list.export.progress', {
+          fetched: progress.fetched,
+          total: progress.total ?? '…',
+        })}
+        errorMessage={t('levelRequests.list.export.errors.exportFailed')}
+        exportingLabel={t('levelRequests.list.export.exporting')}
+        exportLabel={t('levelRequests.list.export.export')}
+      />
     </div>
   );
 };

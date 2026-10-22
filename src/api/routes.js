@@ -229,6 +229,8 @@ export const routes = {
         `/v2/admin/submissions/levels/${enc(submissionId)}/video-link`,
       levelNotes: (submissionId) =>
         `/v2/admin/submissions/levels/${enc(submissionId)}/notes`,
+      levelTags: (submissionId) =>
+        `/v2/admin/submissions/levels/${enc(submissionId)}/tags`,
       levelCreators: (submissionId) =>
         `/v2/admin/submissions/levels/${enc(submissionId)}/creators`,
       levelUpload: (submissionId) =>
@@ -317,6 +319,7 @@ export const routes = {
   database: {
     statistics: () => '/v2/database/statistics',
     references: () => '/v2/database/references',
+    referencesByLevel: (levelId) => `/v2/database/references/level/${enc(levelId)}`,
     referencesBulk: (diffId) => `/v2/database/references/bulk/${enc(diffId)}`,
     allLevels: () => '/v2/database/levels/all-levels',
     songs: {
@@ -447,6 +450,7 @@ export const routes = {
       withdraw: (id) => `/v2/database/level-requests/${enc(id)}/withdraw`,
       staff: (id) => `/v2/database/level-requests/${enc(id)}/staff`,
       actions: (id) => `/v2/database/level-requests/${enc(id)}/actions`,
+      selectLevel: (id) => `/v2/database/level-requests/${enc(id)}/select-level`,
       discord: (id) => `/v2/database/level-requests/${enc(id)}/discord`,
     },
     players: {

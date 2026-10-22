@@ -7,6 +7,10 @@ import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
 import { CustomSelect, RatingInput } from '@/components/common/selectors';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
+import { LevelSelectionPopup, CDNTosPopup } from '@/components/popups/Levels';
+import { uploadLevelZip } from '@/utils/submissions/levelSubmission';
+import { prepareArchiveForUpload } from '@/utils/zipUtils';
+import { CLIENT_PREF_KEYS, getClientPreference, setClientPreferences } from '@/utils/clientPreferences';
 import {
   CREATOR_EDITABLE_KINDS,
   INFO_KINDS,
@@ -51,6 +55,10 @@ const LevelRequestFormPopup = ({
   const hasStoredTarget = Array.isArray(payload.targetTagIds);
   const initialKind = payload.kind || 'song';
   const initialInfo = buildInfoDraft(payload, level, initialKind);
+  const initialKeptDownload = payload.kind === 'download' && payload.fileId
+    ? { originalName: payload.originalName || '' }
+    : null;
+  const initialInfoValue = initialKeptDownload ? '' : initialInfo.value;
   const initialTargetIds = (() => {
     if (type !== 'tag') return [];
     if (request && (hasStoredTarget || seededApplied != null)) {
@@ -80,7 +88,14 @@ const LevelRequestFormPopup = ({
   const [suffix, setSuffix] = useState(initialInfo.suffix);
   const [artistId, setArtistId] = useState(initialInfo.artistId);
   const [artistName, setArtistName] = useState(initialInfo.artistName);
-  const [infoValue, setInfoValue] = useState(initialInfo.value);
+  const [infoValue, setInfoValue] = useState(initialInfoValue);
+  const [downloadFile, setDownloadFile] = useState(null);
+  const [keptDownload, setKeptDownload] = useState(initialKeptDownload);
+  const [uploadProgress, setUploadProgress] = useState({ phase: 'idle', percent: 0 });
+  const [levelFiles, setLevelFiles] = useState([]);
+  const [chartRequest, setChartRequest] = useState(null);
+  const [showCdnTos, setShowCdnTos] = useState(false);
+  const [pendingZip, setPendingZip] = useState(null);
   const [creditTeam, setCreditTeam] = useState(initialInfo.team);
   const [creditList, setCreditList] = useState(initialInfo.credits);
   const [appliedTags, setAppliedTags] = useState(Array.isArray(levelTags) ? levelTags : []);
@@ -97,7 +112,8 @@ const LevelRequestFormPopup = ({
     suffix: initialInfo.suffix,
     artistId: initialInfo.artistId,
     artistName: initialInfo.artistName,
-    value: initialInfo.value,
+    value: initialInfoValue,
+    keptDownload: Boolean(initialKeptDownload),
     creditSignature: creditSignature(initialInfo.credits, initialInfo.team),
   }));
   const [tagsReady, setTagsReady] = useState(type !== 'tag' || hasStoredTarget || seededApplied != null);
@@ -158,15 +174,17 @@ const LevelRequestFormPopup = ({
     artistId,
     artistName,
     value: infoValue,
+    downloadAttached: Boolean(downloadFile || keptDownload),
     team: creditTeam,
     credits: creditList,
-  }), [artistId, artistName, creditList, creditTeam, infoValue, songId, songName, suffix]);
+  }), [artistId, artistName, creditList, creditTeam, downloadFile, infoValue, keptDownload, songId, songName, suffix]);
   const infoReady = type !== 'info_change' || infoLevel != null;
   const infoUnchanged = type === 'info_change' && infoChangeMatchesLevel(kind, infoLevel, infoDraft);
   const infoMissing = type === 'info_change' && (
     (kind === 'song' && !(Number(songId) > 0))
     || (kind === 'artist' && !(Number(artistId) > 0))
-    || ((kind === 'video' || kind === 'download' || kind === 'description' || kind === 'multiple') && !String(infoValue || '').trim())
+    || (kind === 'download' && !downloadFile && !keptDownload && !String(infoValue || '').trim())
+    || ((kind === 'video' || kind === 'description' || kind === 'multiple') && !String(infoValue || '').trim())
   );
   const reasonRequired = type === 'rerate' || type === 'curation_rerate';
   const ratingMissing = type === 'rerate' && !String(requestedRating).trim();
@@ -194,7 +212,8 @@ const LevelRequestFormPopup = ({
       if (kind !== baseline.kind) return true;
       if (kind === 'song' && (Number(songId) !== Number(baseline.songId) || songName !== baseline.songName || suffix !== baseline.suffix)) return true;
       if (kind === 'artist' && (Number(artistId) !== Number(baseline.artistId) || artistName !== baseline.artistName)) return true;
-      if ((kind === 'video' || kind === 'download' || kind === 'description' || kind === 'multiple') && infoValue !== baseline.value) return true;
+      if (kind === 'download' && (downloadFile || Boolean(keptDownload) !== Boolean(baseline.keptDownload) || infoValue !== baseline.value)) return true;
+      if ((kind === 'video' || kind === 'description' || kind === 'multiple') && infoValue !== baseline.value) return true;
       if (kind === 'credits' && creditSignature(creditList, creditTeam) !== baseline.creditSignature) return true;
     }
     if ((type === 'curation' || type === 'curation_rerate') && !sameIdSet(curationTypeIds, baseline.curationTypeIds)) return true;
@@ -203,7 +222,7 @@ const LevelRequestFormPopup = ({
       if (!sameIdSet(targetIds, baseline.targetIds)) return true;
     }
     return false;
-  }, [artistId, artistName, baseline, creditList, creditTeam, curationTypeIds, infoValue, kind, reason, requestedRating, songId, songName, suffix, targetIds, type]);
+  }, [artistId, artistName, baseline, creditList, creditTeam, curationTypeIds, downloadFile, infoValue, keptDownload, kind, reason, requestedRating, songId, songName, suffix, targetIds, type]);
   const { requestClose } = useUnsavedClose({ isDirty, onClose });
 
   useEffect(() => {
@@ -339,6 +358,80 @@ const LevelRequestFormPopup = ({
     };
   }, [comparisonIds, type]);
 
+  const uploadAbortRef = useRef(null);
+  useEffect(() => () => uploadAbortRef.current?.abort(), []);
+
+  const progressLabel = () => {
+    if (uploadProgress.phase === 'hashing') return t('levelRequests.form.hashing', { percent: uploadProgress.percent });
+    if (uploadProgress.phase === 'uploading') return t('levelRequests.form.uploading', { percent: uploadProgress.percent });
+    if (uploadProgress.phase === 'completing') return t('levelRequests.form.assembling');
+    if (uploadProgress.phase === 'submitting') return t('levelRequests.form.sending');
+    return '';
+  };
+
+  const storeDownloadFile = (file) => {
+    try {
+      const prepared = prepareArchiveForUpload(file);
+      if (!prepared) {
+        toast.error(t('levelRequests.form.invalidArchive'));
+        return;
+      }
+      infoEditedRef.current = true;
+      setDownloadFile(prepared);
+      setKeptDownload(null);
+      setInfoValue('');
+    } catch {
+      toast.error(t('levelRequests.form.invalidArchive'));
+    }
+  };
+
+  const pickDownloadFile = (file) => {
+    if (getClientPreference(CLIENT_PREF_KEYS.SUBMISSIONS_CDN_TOS_AGREED, false) !== true) {
+      setPendingZip(file);
+      setShowCdnTos(true);
+      return;
+    }
+    storeDownloadFile(file);
+  };
+
+  const finishSaved = (savedRequest, responseData) => {
+    if (responseData?.requiresLevelSelection && Array.isArray(responseData.levelFiles)) {
+      setChartRequest(savedRequest);
+      setLevelFiles(responseData.levelFiles);
+      onSaved?.(savedRequest);
+      return;
+    }
+    toast.success(request ? t('levelRequests.form.save') : t('levelRequests.form.submitted'));
+    onSaved?.(savedRequest);
+    onClose();
+  };
+
+  const selectChart = async (selectedLevel) => {
+    if (!chartRequest?.id) return;
+    setSaving(true);
+    try {
+      const response = await api.post(routes.database.levelRequests.selectLevel(chartRequest.id), { selectedLevel });
+      setLevelFiles([]);
+      setChartRequest(null);
+      toast.success(request ? t('levelRequests.form.save') : t('levelRequests.form.submitted'));
+      onSaved?.(response.data?.request || chartRequest);
+      onClose();
+    } catch (err) {
+      toast.error(requestErrorMessage(t, err));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const closeChartPicker = () => {
+    const saved = chartRequest;
+    setLevelFiles([]);
+    setChartRequest(null);
+    toast.success(t('levelRequests.form.chartLater'));
+    onSaved?.(saved);
+    onClose();
+  };
+
   const submit = async () => {
     if (stillLoading) return;
     if (reratingComparison) {
@@ -379,30 +472,50 @@ const LevelRequestFormPopup = ({
       } else if (kind === 'credits') {
         body.team = creditTeam;
         body.credits = creditList;
-      } else {
+      } else if (kind === 'download' && keptDownload && !downloadFile) {
+        body.keepDownloadFile = true;
+      } else if (kind !== 'download' || !downloadFile) {
         body.value = infoValue;
       }
     }
     if (type === 'tag') body.targetTagIds = targetIds;
     if (type === 'curation' || type === 'curation_rerate') body.curationTypeIds = curationTypeIds;
+    const abortController = new AbortController();
+    uploadAbortRef.current = abortController;
     try {
+      if (kind === 'download' && downloadFile) {
+        setUploadProgress({ phase: 'uploading', percent: 0 });
+        const session = await uploadLevelZip(downloadFile.file, {
+          meta: { forLevelRequest: true },
+          signal: abortController.signal,
+          onProgress: (progress) => {
+            const percent = typeof progress?.percent === 'number' ? progress.percent : 0;
+            setUploadProgress({ phase: progress?.phase || 'uploading', percent });
+          },
+        });
+        body.uploadSessionId = session?.id;
+        body.uploadJobId = crypto.randomUUID();
+        setUploadProgress({ phase: 'submitting', percent: 100 });
+      }
       const response = request
         ? await api.patch(routes.database.levelRequests.byId(request.id), body)
         : await api.post(routes.database.levelRequests.create(levelId), body);
-      toast.success(request ? t('levelRequests.form.save') : t('levelRequests.form.submitted'));
-      onSaved?.(response.data?.request);
-      onClose();
+      finishSaved(response.data?.request, response.data);
     } catch (err) {
+      if (err?.name === 'AbortError' || err?.name === 'CanceledError') return;
       toast.error(requestErrorMessage(t, err));
     } finally {
+      uploadAbortRef.current = null;
+      setUploadProgress({ phase: 'idle', percent: 0 });
       setSaving(false);
     }
   };
 
   return (
+    <>
     <PopupShell
       onClose={requestClose}
-      closeDisabled={saving}
+      closeDisabled={saving || levelFiles.length > 0}
       panelClassName={[
         'level-requests',
         'level-requests__popup',
@@ -447,6 +560,8 @@ const LevelRequestFormPopup = ({
                 const next = option?.value || 'song';
                 infoEditedRef.current = true;
                 setKind(next);
+                setDownloadFile(null);
+                setKeptDownload(null);
                 if (next === 'video' || next === 'download' || next === 'description' || next === 'multiple') {
                   setInfoValue(next === 'multiple' ? '' : currentInfoValue(infoLevel, next));
                 }
@@ -487,6 +602,17 @@ const LevelRequestFormPopup = ({
               onValue={(next) => {
                 infoEditedRef.current = true;
                 setInfoValue(next);
+                if (kind === 'download' && next) {
+                  setDownloadFile(null);
+                  setKeptDownload(null);
+                }
+              }}
+              downloadName={downloadFile?.originalName || keptDownload?.originalName || ''}
+              onPickDownload={pickDownloadFile}
+              onClearDownload={() => {
+                infoEditedRef.current = true;
+                setDownloadFile(null);
+                setKeptDownload(null);
               }}
               team={creditTeam}
               credits={creditList}
@@ -582,6 +708,9 @@ const LevelRequestFormPopup = ({
           )}
         </label>
         <div className="level-requests__actions">
+          {uploadProgress.phase !== 'idle' && (
+            <span className="level-requests__hint level-requests__upload-progress">{progressLabel()}</span>
+          )}
           <button
             type="button"
             className="level-requests__button level-requests__button--primary"
@@ -596,6 +725,29 @@ const LevelRequestFormPopup = ({
         </div>
       </div>
     </PopupShell>
+    {levelFiles.length > 0 && (
+      <LevelSelectionPopup
+        isOpen
+        levelFiles={levelFiles}
+        onSelect={selectChart}
+        onClose={closeChartPicker}
+      />
+    )}
+    {showCdnTos && (
+      <CDNTosPopup
+        onAgree={() => {
+          setShowCdnTos(false);
+          setClientPreferences({ [CLIENT_PREF_KEYS.SUBMISSIONS_CDN_TOS_AGREED]: true });
+          if (pendingZip) storeDownloadFile(pendingZip);
+          setPendingZip(null);
+        }}
+        onDecline={() => {
+          setShowCdnTos(false);
+          setPendingZip(null);
+        }}
+      />
+    )}
+    </>
   );
 };
 

@@ -8,6 +8,7 @@ export const PASS_SUBMISSION_INITIAL_FORM = {
   keyCount: '',
   feelingRating: '',
   expectedRating: '',
+  details: '',
   ePerfect: '',
   perfectMinus: '',
   perfect: '',

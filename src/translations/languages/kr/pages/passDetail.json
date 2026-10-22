@@ -170,6 +170,11 @@
       }
     }
   },
+  "details": {
+    "label": "상세 내용",
+    "showMore": "더 보기",
+    "showLess": "접기"
+  },
   "video": {
     "notAvailable": {
       "text": "영상을 이용할 수 없음",

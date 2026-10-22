@@ -15,6 +15,18 @@ import PassFlags from "../PassFlags/PassFlags";
 import i18next from "i18next";
 
 import { shouldShowXPerfectJudgements } from "@/utils/adofaiVersion";
+import { isPureXPerfect } from "@/utils/CalcAcc";
+
+const XPERFECT_BURST = [
+  { angle: 18, distance: 11, delay: 0, size: 5, duration: 1.6 },
+  { angle: 70, distance: 9, delay: 0.2, size: 6, duration: 1.8 },
+  { angle: 120, distance: 12, delay: 0.45, size: 5, duration: 1.5 },
+  { angle: 170, distance: 8, delay: 0.1, size: 6, duration: 1.7 },
+  { angle: 220, distance: 11, delay: 0.35, size: 5, duration: 1.9 },
+  { angle: 270, distance: 10, delay: 0.55, size: 7, duration: 1.6 },
+  { angle: 320, distance: 9, delay: 0.25, size: 5, duration: 1.75 },
+  { angle: 350, distance: 12, delay: 0.6, size: 6, duration: 1.55 },
+];
 
 const BASE_JUDGEMENT_KEYS = [
   ["earlyDouble", "early-double"],
@@ -48,6 +60,13 @@ const ClearCard = ({scoreData, index}) => {
     : BASE_JUDGEMENT_KEYS;
   const feelingRating = scoreData.feelingRating;
   const needsExpansion = Boolean(feelingRating && feelingRating.length > 20);
+  const xPerfectMode = !!(scoreData.isXPerfectMode || scoreData.flags?.isXPerfectMode);
+  const pureXPerfect = isPureXPerfect(judgements, xPerfectMode);
+  const accuracyClass = pureXPerfect
+    ? "pure-xperfect"
+    : scoreData.accuracy == 1
+      ? "pure-perfect"
+      : "";
 
   const toggleExpand = (e) => {
     e.stopPropagation();
@@ -106,14 +125,36 @@ const ClearCard = ({scoreData, index}) => {
       <div className="clear-card__body">
         <div className="score-stats">
           <div className="score-value">{scoreData.scoreV2.toFixed(2)}</div>
-          <div className="score-accuracy">{formatAccuracyRatio(scoreData.accuracy)}</div>
+          <div className={`score-accuracy${accuracyClass ? ` ${accuracyClass}` : ""}`}>{formatAccuracyRatio(scoreData.accuracy)}</div>
           <div className="score-speed">{clampFloat(scoreData.speed, 2)}×</div>
         </div>
 
         {judgements ? (
           <div className={`judgements${judgementKeys === XPERFECT_JUDGEMENT_KEYS ? ' judgements--xperfect' : ''}`}>
             {judgementKeys.map(([key, className]) => (
-              <span key={key} className={className}>{judgements[key] ?? 0}</span>
+              <span
+                key={key}
+                className={`${className}${pureXPerfect && className === "perfect" ? " perfect--burst" : ""}`}
+              >
+                {pureXPerfect && className === "perfect" && (
+                  <span className="perfect-burst" aria-hidden="true">
+                    {XPERFECT_BURST.map((particle) => (
+                      <span
+                        key={particle.angle}
+                        className="perfect-burst__particle"
+                        style={{
+                          "--angle": `${particle.angle}deg`,
+                          "--distance": `${particle.distance}px`,
+                          "--delay": `${particle.delay}s`,
+                          "--size": `${particle.size}px`,
+                          "--duration": `${particle.duration}s`,
+                        }}
+                      />
+                    ))}
+                  </span>
+                )}
+                {judgements[key] ?? 0}
+              </span>
             ))}
           </div>
         ) : null}

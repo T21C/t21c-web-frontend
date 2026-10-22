@@ -82,6 +82,7 @@ import { GearIcon } from './GearIcon';
 import { MoreVerticalIcon } from './MoreVerticalIcon';
 import { SubmissionIcon } from './SubmissionIcon';
 import { ShuffleIcon } from './ShuffleIcon';
+import { ReferenceIcon } from './ReferenceIcon';
 export {
     DefaultAvatar,
     DiscordIcon,
@@ -166,4 +167,5 @@ export {
     MoreVerticalIcon,
     SubmissionIcon,
     ShuffleIcon,
+    ReferenceIcon,
 }

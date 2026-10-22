@@ -306,7 +306,10 @@ export function infoChangeMatchesLevel(kind, level, draft) {
   }
   if (kind === 'artist') return sameText(draft?.artistName, level.artist);
   if (kind === 'video') return sameText(draft?.value, level.videoLink);
-  if (kind === 'download') return sameText(draft?.value, level.dlLink);
+  if (kind === 'download') {
+    if (draft?.downloadAttached) return false;
+    return sameText(draft?.value, level.dlLink);
+  }
   if (kind === 'description') return sameText(draft?.value, level.description);
   if (kind === 'multiple') return !String(draft?.value || '').trim();
   if (kind === 'credits') {

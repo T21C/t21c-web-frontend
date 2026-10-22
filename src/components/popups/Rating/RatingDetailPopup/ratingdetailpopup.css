@@ -1173,8 +1173,8 @@
 }
 
 .rating-popup .rater-avatar-container .avatar-image {
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   object-fit: cover;
   z-index: 2;

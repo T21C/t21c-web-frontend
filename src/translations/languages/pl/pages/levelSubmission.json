@@ -28,7 +28,8 @@
   "submit": "Prześlij",
   "submitWait": "...",
   "buttons": {
-    "addSpecialThanks": "Dodaj specjalne podziękowania"
+    "addSpecialThanks": "Dodaj specjalne podziękowania",
+    "requestTags": "Poproś o tagi"
   },
   "alert": {
     "success": "Pomyślnie przesłano poziom!",
@@ -50,6 +51,7 @@
     "evidence": "Dowód"
   },
   "placeholders": {
+    "tags": "Nie wybrano tagów",
     "notes": "Opcjonalne notatki dla managerów (szczegóły chartu, kredyty itd.)"
   },
   "roles": {
