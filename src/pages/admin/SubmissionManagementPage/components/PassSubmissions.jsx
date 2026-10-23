@@ -407,6 +407,15 @@ const PassSubmissions = ({ setIsAutoAllowing, searchQuery = '' }) => {
                           <span className="detail-label">{t('passSubmissions.details.expectedDiff')}</span>
                           <span className="detail-value">{submission.expectedDifficulty || <span className="detail-value-none">None</span>}</span>
                         </div>
+
+                        <div className="detail-row">
+                          <span className="detail-label">{t('passSubmissions.details.passDetails')}</span>
+                          <span className="detail-value pass-submission-details-text">
+                            {submission.details?.trim()
+                              ? submission.details
+                              : <span className="detail-value-none">None</span>}
+                          </span>
+                        </div>
                       </>
                     }
                     betweenSpeedAndJudgements={

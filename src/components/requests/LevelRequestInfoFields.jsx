@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SongSelectorPopup } from '@/components/popups/Songs';
 import { ArtistSelectorPopup } from '@/components/popups/Artists';
@@ -8,6 +8,7 @@ import {
   creditsFromLevel,
   teamFromLevel,
 } from './levelRequestShared';
+import { ARCHIVE_ACCEPT_ATTR } from '@/utils/zipUtils';
 
 const TEXT_KINDS = new Set(['video', 'download', 'description', 'multiple']);
 
@@ -74,11 +75,15 @@ const LevelRequestInfoFields = ({
   team,
   credits,
   onCredits,
+  downloadName,
+  onPickDownload,
+  onClearDownload,
 }) => {
   const { t } = useTranslation('pages');
   const [songOpen, setSongOpen] = useState(false);
   const [artistOpen, setArtistOpen] = useState(false);
   const [creditsOpen, setCreditsOpen] = useState(false);
+  const downloadInputRef = useRef(null);
   const creditsLevel = level
     ? {
         ...level,
@@ -135,6 +140,39 @@ const LevelRequestInfoFields = ({
             {t('levelRequests.form.manageCreators')}
           </button>
           <LevelRequestCreditDiff level={level} credits={credits} team={team} />
+        </div>
+      )}
+      {kind === 'download' && (
+        <div className="level-requests__download">
+          <div className="level-requests__download-file">
+            <input
+              ref={downloadInputRef}
+              className="level-requests__file-input"
+              type="file"
+              accept={ARCHIVE_ACCEPT_ATTR}
+              onChange={(event) => {
+                const file = event.target.files?.[0];
+                event.target.value = '';
+                if (file) onPickDownload?.(file);
+              }}
+            />
+            <button
+              type="button"
+              className="level-requests__button"
+              onClick={() => downloadInputRef.current?.click()}
+            >
+              {t('levelRequests.form.downloadFile')}
+            </button>
+            {downloadName && (
+              <span className="level-requests__change-values">{downloadName}</span>
+            )}
+            {downloadName && (
+              <button type="button" className="level-requests__button" onClick={onClearDownload}>
+                {t('levelRequests.form.removeFile')}
+              </button>
+            )}
+          </div>
+          <span className="level-requests__hint">{t('levelRequests.form.downloadOr')}</span>
         </div>
       )}
       {TEXT_KINDS.has(kind) && (

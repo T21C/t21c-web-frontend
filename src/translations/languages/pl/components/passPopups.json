@@ -9,6 +9,8 @@
         "videoLink": "Link do wideo",
         "speed": "Prędkość",
         "feelDiff": "Szacowany poziom trudności",
+        "details": "Szczegóły (opcjonalnie)",
+        "detailsPlaceholder": "Zwykły tekst o tym przejściu",
         "nohold": "Bez holder'ów",
         "is12K": "12K",
         "is16K": "16K",

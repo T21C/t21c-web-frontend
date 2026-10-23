@@ -44,6 +44,7 @@ import {
 import { getSubmissionErrorMessage } from '@/utils/submissions/formErrors';
 import { useJobProgressStream } from '@/hooks/useJobProgressStream';
 import { CLIENT_PREF_KEYS, getClientPreference } from '@/utils/clientPreferences';
+import SubmissionTagRequest from '@/components/submissions/SubmissionTagRequest/SubmissionTagRequest';
 
 /** Keep in sync with server/src/server/submissions/submissionEvidenceRules.ts (display-only). */
 const SONG_VERIFICATION_NO_EVIDENCE = new Set(['ysmod_only', 'allowed']);
@@ -119,6 +120,7 @@ const LevelSubmissionPage = () => {
     isNewSongRequest: false,
     isNewArtistRequest: false,
     notes: '',
+    tagIds: [],
   };
 
   const { t } = useTranslation('pages');
@@ -522,6 +524,7 @@ const LevelSubmissionPage = () => {
         diff: submittedForm.diff,
         suffix: submittedForm.suffix || '',
         notes: submittedForm.notes || '',
+        tagIds: submittedForm.tagIds || [],
         videoLink: cleanedVideoUrl,
         directDL: submittedForm.dlLink,
         wsLink: submittedForm.workshopLink,
@@ -1556,6 +1559,13 @@ const LevelSubmissionPage = () => {
                 ➕ {t('levelSubmission.buttons.addSpecialThanks')}
               </button>
             </div>
+
+            <SubmissionTagRequest
+              tagIds={form.tagIds}
+              onChange={(nextIds) => {
+                setForm((prev) => ({ ...prev, tagIds: nextIds }));
+              }}
+            />
 
             <div className="notes-section">
               <h3>{t('levelSubmission.submInfo.notes')}</h3>

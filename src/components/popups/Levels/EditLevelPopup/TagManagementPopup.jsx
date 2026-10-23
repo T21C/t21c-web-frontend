@@ -1,6 +1,6 @@
 import { routes } from '@/api/routes';
 // tuf-search: #TagManagementPopup #tagManagementPopup #popups #levels #editLevel
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import './editlevelpopup.css';
 import api from '@/utils/api';
 import { useTranslation } from 'react-i18next';
@@ -10,7 +10,7 @@ import { ItemPickManager } from '@/components/common/selectors';
 import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { sortTagsByGroupThenSortOrder } from '@/utils/communityTags';
 
-export const TagManagementPopup = ({ levelId, currentTags = [], onClose, onSave }) => {
+export const TagManagementPopup = ({ levelId = null, currentTags = [], onClose, onSave }) => {
   const { t } = useTranslation(['components', 'common']);
 
   const [allTags, setAllTags] = useState([]);
@@ -18,19 +18,20 @@ export const TagManagementPopup = ({ levelId, currentTags = [], onClose, onSave 
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState(null);
+  const seededDraftSelection = useRef(false);
+  const isDraft = levelId == null;
 
   const catalogById = useMemo(() => new Map(allTags.map((tag) => [tag.id, tag])), [allTags]);
 
-  const communityWonTags = useMemo(
-    () =>
-      sortTagsByGroupThenSortOrder(
-        currentTags.filter((tag) => {
-          const catalog = catalogById.get(tag.id) || tag;
-          return Boolean(catalog.isCommunity) && !tag.pinned;
-        }),
-      ),
-    [currentTags, catalogById],
-  );
+  const communityWonTags = useMemo(() => {
+    if (isDraft) return [];
+    return sortTagsByGroupThenSortOrder(
+      currentTags.filter((tag) => {
+        const catalog = catalogById.get(tag.id) || tag;
+        return Boolean(catalog.isCommunity) && !tag.pinned;
+      }),
+    );
+  }, [currentTags, catalogById, isDraft]);
 
   const communityWonIds = useMemo(
     () => new Set(communityWonTags.map((tag) => tag.id)),
@@ -38,6 +39,12 @@ export const TagManagementPopup = ({ levelId, currentTags = [], onClose, onSave 
   );
 
   useEffect(() => {
+    if (isDraft) {
+      if (seededDraftSelection.current) return;
+      seededDraftSelection.current = true;
+      setSelectedIds(currentTags.map((tag) => tag.id));
+      return;
+    }
     setSelectedIds(
       currentTags
         .filter((tag) => {
@@ -47,7 +54,7 @@ export const TagManagementPopup = ({ levelId, currentTags = [], onClose, onSave 
         })
         .map((tag) => tag.id),
     );
-  }, [currentTags, catalogById]);
+  }, [currentTags, catalogById, isDraft]);
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -75,6 +82,19 @@ export const TagManagementPopup = ({ levelId, currentTags = [], onClose, onSave 
     setError(null);
 
     try {
+      if (levelId == null) {
+        const tags = selectedIds
+          .map((id) => {
+            const catalog = catalogById.get(id) || currentTags.find((tag) => tag.id === id);
+            if (!catalog) return null;
+            return catalog.isCommunity ? { ...catalog, pinned: true } : catalog;
+          })
+          .filter(Boolean);
+        await onSave(tags);
+        onClose();
+        return;
+      }
+
       await api.post(`${routes.database.difficulties.root()}/levels/${levelId}/tags`, {
         tagIds: selectedIds,
       });
@@ -140,7 +160,7 @@ export const TagManagementPopup = ({ levelId, currentTags = [], onClose, onSave 
             fallbackGroupLabel={t('facetQueryBuilder.fallbackGroup')}
             labels={pickLabels}
             isLoading={isLoading}
-            resetSearchSignal={levelId}
+            resetSearchSignal={levelId ?? 'draft'}
           />
 
           {communityWonTags.length > 0 && (
@@ -190,7 +210,7 @@ export const TagManagementPopup = ({ levelId, currentTags = [], onClose, onSave 
               type="button"
               className="tag-management-save-btn"
               onClick={handleSave}
-              disabled={isSaving}
+              disabled={isSaving || (isDraft && isLoading)}
             >
               {isSaving ? t('buttons.saving', { ns: 'common' }) : t('buttons.save', { ns: 'common' })}
             </button>

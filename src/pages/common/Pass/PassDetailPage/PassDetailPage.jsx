@@ -54,6 +54,7 @@ const PassDetailPage = () => {
   const [feelingRating, setFeelingRating] = useState('');
   const [isSavingFeelingRating, setIsSavingFeelingRating] = useState(false);
   const [feelingRatingError, setFeelingRatingError] = useState(null);
+  const [detailsExpanded, setDetailsExpanded] = useState(false);
 
   // Function to generate random particle properties
   const generateParticle = (index) => ({
@@ -162,6 +163,10 @@ const PassDetailPage = () => {
   }, [id]);
 
   useEffect(() => {
+    setDetailsExpanded(false);
+  }, [id, res?.pass?.details]);
+
+  useEffect(() => {
     if (res?.pass) {
       const accuracy = res.pass.accuracy;
       if (accuracy === 1) {
@@ -184,6 +189,8 @@ const PassDetailPage = () => {
     );
 
   const { pass } = res;
+  const passDetails = (pass.details || '').trim();
+  const isLongDetails = passDetails.length > 250;
   const accuracy = pass.accuracy;
   const xPerfectShine = isPureXPerfect(pass.judgements, pass.isXPerfectMode);
   const ppShine = accuracy === 1 && !xPerfectShine;
@@ -306,6 +313,23 @@ const PassDetailPage = () => {
           </div>
 
           <div className="pass-detail-body">
+            {passDetails.length > 0 && (
+              <div className={`pass-detail-details${isLongDetails ? ' expandable' : ''}${detailsExpanded ? ' expanded' : ''}`}>
+                <span className="pass-detail-details__label">{t('passDetail.details.label')}</span>
+                <p className="pass-detail-details__text">{passDetails}</p>
+                {isLongDetails && (
+                  <button
+                    type="button"
+                    className="pass-detail-details__toggle"
+                    onClick={() => setDetailsExpanded((open) => !open)}
+                  >
+                    {detailsExpanded
+                      ? t('passDetail.details.showLess')
+                      : t('passDetail.details.showMore')}
+                  </button>
+                )}
+              </div>
+            )}
             {isAutoSubmittedPass(pass) && <PassMedia key={pass.id} pass={pass} />}
             <div className="info">
               <div className="info-items">

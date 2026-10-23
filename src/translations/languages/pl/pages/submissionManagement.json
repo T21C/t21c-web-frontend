@@ -48,6 +48,7 @@
       "createLevel": "Tworzenie poziomu",
       "notify": "Powiadomienie",
       "chartStats": "Statystyki chartu",
+      "requestedTags": "Żądane tagi",
       "autoTags": "Auto tagi",
       "autorate": "Autorate",
       "cleanup": "Czyszczenie",

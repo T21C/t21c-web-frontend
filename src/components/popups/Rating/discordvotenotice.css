@@ -23,14 +23,16 @@
   width: 100%;
 }
 
-.rating-popup .details-container .rating-discord-thread-slot {
-  position: absolute;
-  top: 0;
-  right: 0;
-  margin: 0;
-  transform: translateY(calc(-100% - 0.25rem));
-  z-index: 2;
+.rating-popup .popup-content > .rating-discord-thread-slot {
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 0 0.75rem auto;
   font-size: 0.85rem;
+}
+
+.rating-popup .popup-content > .rating-discord-thread-slot .rating-discord-thread,
+.rating-popup .popup-content > .rating-discord-thread-slot .rating-discord-thread-link {
+  width: auto;
 }
 
 .rating-popup .rating-discord-thread-slot .rating-discord-thread-link,

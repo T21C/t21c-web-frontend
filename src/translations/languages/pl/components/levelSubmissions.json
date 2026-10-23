@@ -30,7 +30,8 @@
     "submitterRecordTooltip": "{{accepted}} zaakceptowanych / {{declined}} odrzuconych",
     "evidence": "Dowody:",
     "notes": "Notatki",
-    "notesPlaceholder": "Opcjonalne notatki dla managerów"
+    "notesPlaceholder": "Opcjonalne notatki dla managerów",
+    "tagsEmpty": "Nie wybrano tagów"
   },
   "buttons": {
     "manageCreator": "Zarządzaj twórcą",
@@ -42,6 +43,7 @@
     "addSongRequest": "Zgłoś jako nowy utwór",
     "addArtistRequest": "Dodaj nowego artystę",
     "removeArtist": "Usuń artystę",
+    "requestTags": "Poproś o tagi",
     "allow": "Akceptuj",
     "decline": "Odrzuć",
     "addCharter": "Dodaj chartera",
@@ -72,7 +74,8 @@
       "approved": "Zgłoszenie zostało zaakceptowane",
       "rejected": "Zgłoszenie zostało odrzucone",
       "suffixUpdated": "Sufiks został zaktualizowany",
-      "notesUpdated": "Notatki zostały zaktualizowane"
+      "notesUpdated": "Notatki zostały zaktualizowane",
+      "tagsUpdated": "Tagi zostały zaktualizowane"
     },
     "error": {
       "generic": "Wystąpił błąd",
@@ -121,6 +124,7 @@
     "artistLockedToSong": "Nie można zmodyfikować artysty: jest przypisany do wybranego utworu",
     "suffixUpdateFailed": "Nie udało się zaktualizować sufiksu",
     "notesUpdateFailed": "Nie udało się zaktualizować notatek",
+    "tagsUpdateFailed": "Nie udało się zaktualizować tagów",
     "updateSongFailed": "Nie udało się zaktualizować utworu",
     "updateArtistFailed": "Nie udało się zaktualizować artysty",
     "addSongRequestFailed": "Nie udało się dodać prośby o utwór",

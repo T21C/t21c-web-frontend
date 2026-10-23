@@ -207,6 +207,7 @@ const PassSubmissionPage = () => {
         speed: current.speed,
         feelingDifficulty: current.feelingRating,
         expectedDifficulty: current.expectedRating?.trim() || null,
+        details: current.details || '',
         keyCount: normalizeKeyCount(current.keyCount),
         earlyDouble: parseInt(current.tooEarly) || 0,
         earlySingle: parseInt(current.early) || 0,

@@ -9,6 +9,7 @@ import { PlayerInput } from '@/components/common/selectors';
 import { PassCoreForm } from '@/components/common/cores/PassCoreForm/PassCoreForm';
 import { formatCreatorDisplay, ICON_SIZE, selectIconSize, truncateString } from '@/utils/Utility';
 import { normalizeLevelSearchQuery } from '@/utils/normalizeEntitySearchQuery';
+import { getSongDisplayName } from '@/utils/levelHelpers';
 
 /**
  * Shared PassCoreForm + level search for submit and calculator pages.
@@ -225,7 +226,7 @@ export function PassSubmissionCore({
                 />
                 <div className="level-content">
                   <div className="level-title">
-                    {result.song} (ID: {result.id})
+                    {getSongDisplayName(result)} (ID: {result.id})
                   </div>
                   <div className="level-details">
                     <span>{result.artist}</span>

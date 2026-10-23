@@ -48,6 +48,7 @@
       "createLevel": "레벨 생성",
       "notify": "알림",
       "chartStats": "차트 통계",
+      "requestedTags": "요청 태그",
       "autoTags": "자동 태그",
       "autorate": "자동 채점",
       "cleanup": "정리",

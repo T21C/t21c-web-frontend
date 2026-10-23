@@ -45,6 +45,8 @@ export const PASS_CORE_COPY = {
     keyCountTooltip: 'passSubmission.keyCountTooltip',
     feelingPlaceholder: 'passSubmission.submInfo.feelDiff',
     feelingTooltip: 'passSubmission.feelingTooltip',
+    detailsLabel: 'passSubmission.submInfo.details',
+    detailsPlaceholder: 'passSubmission.submInfo.detailsPlaceholder',
     expectedPlaceholder: 'passSubmission.submInfo.expectedDiff',
     expectedTooltip: 'passSubmission.expectedTooltip',
     holdLabel: 'passSubmission.submInfo.nohold',
@@ -145,6 +147,8 @@ export const PASS_CORE_COPY = {
     keyCountTooltip: 'passPopups.edit.keyCountTooltip',
     feelingPlaceholder: 'passPopups.edit.form.submInfo.feelDiff',
     feelingTooltip: 'passPopups.edit.feelingTooltip',
+    detailsLabel: 'passPopups.edit.form.submInfo.details',
+    detailsPlaceholder: 'passPopups.edit.form.submInfo.detailsPlaceholder',
     expectedPlaceholder: 'passPopups.edit.form.submInfo.expectedDiff',
     expectedTooltip: 'passPopups.edit.expectedTooltip',
     holdLabel: 'passPopups.edit.form.submInfo.nohold',
@@ -577,6 +581,20 @@ export function PassCoreForm({
             useDarkInvalidHighlight: true,
           })}
         </div>
+
+        {!isCalculator && (
+          <label className="pass-core-form__details">
+            <span>{t(copy.detailsLabel, { ns: copy.ns })}</span>
+            <textarea
+              name="details"
+              rows={4}
+              maxLength={2000}
+              value={form.details || ''}
+              onChange={onInputChange}
+              placeholder={t(copy.detailsPlaceholder, { ns: copy.ns })}
+            />
+          </label>
+        )}
 
         <div className="checkbox-row">
           {renderExtraCheckboxes ? renderExtraCheckboxes() : null}

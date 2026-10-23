@@ -63,6 +63,7 @@ import {
   SparkleIcon,
   EyeIcon,
   EyeOffIcon,
+  ReferenceIcon,
 } from "@/components/common/icons";
 import { CreatorIcon } from "@/components/common/icons/CreatorIcon";
 import { createEventSystem, formatBaseScore, formatCreatorDisplay, formatDate, formatPassDate, ICON_SIZE, isCdnUrl, selectIconSize, sortLevelCredits } from "@/utils/Utility";
@@ -1117,6 +1118,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
   const [publicPackAppearances, setPublicPackAppearances] = useState([]);
   const [publicTournamentAppearances, setPublicTournamentAppearances] = useState([]);
   const [linkedLevels, setLinkedLevels] = useState([]);
+  const [referenceDiffNames, setReferenceDiffNames] = useState([]);
   const [linkedShare, setLinkedShare] = useState({
     groupId: null,
   });
@@ -1158,6 +1160,11 @@ const LevelDetailPageContent = ({ mockData = null }) => {
     ? inclusivePasses.passes
     : null;
   const showLevelLinksIcon = isSuperAdmin || linkedLevels.length > 0;
+  const showReferenceIcon = referenceDiffNames.length > 0;
+  const showHeaderCornerCluster = showLevelLinksIcon || showReferenceIcon;
+  const referenceLevelLabel = showReferenceIcon
+    ? t('levelDetail.tooltips.referenceLevel', { diffName: referenceDiffNames.join(', ') })
+    : '';
 
   const applyLinkedLevelsResponse = useCallback((data) => {
     const levels = Array.isArray(data?.levels) ? data.levels : [];
@@ -2150,6 +2157,42 @@ const LevelDetailPageContent = ({ mockData = null }) => {
   }, [effectiveId, mockData, applyLinkedLevelsResponse]);
 
   useEffect(() => {
+    if (!effectiveId || mockData) {
+      setReferenceDiffNames([]);
+      return undefined;
+    }
+
+    let cancelled = false;
+
+    api
+      .get(routes.database.referencesByLevel(effectiveId))
+      .then((response) => {
+        if (cancelled) return;
+        const rows = Array.isArray(response.data) ? response.data : [];
+        const names = rows
+          .map((row) => ({
+            name: typeof row?.difficultyReference?.name === 'string'
+              ? row.difficultyReference.name.trim()
+              : '',
+            sortOrder: Number.isFinite(row?.difficultyReference?.sortOrder)
+              ? row.difficultyReference.sortOrder
+              : Number.MAX_SAFE_INTEGER,
+          }))
+          .filter((row) => row.name)
+          .sort((a, b) => a.sortOrder - b.sortOrder || a.name.localeCompare(b.name))
+          .map((row) => row.name);
+        setReferenceDiffNames(names);
+      })
+      .catch(() => {
+        if (!cancelled) setReferenceDiffNames([]);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [effectiveId, mockData]);
+
+  useEffect(() => {
     setActiveVideoIndex(0);
   }, [effectiveId, res?.level?.videoLink]);
 
@@ -2692,7 +2735,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
         ) : null}
       
           <div className="header" ref={levelHeaderRef}>
-            <div className={`left${showLevelLinksIcon ? ' has-level-links' : ''}`}>
+            <div className={`left${showHeaderCornerCluster ? ' has-level-links' : ''}`}>
               <div className="header-body">
 
               <div className="level-detail-header-mobile-bar">
@@ -3207,28 +3250,43 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                   onChange={handleLikeChange}
                 />
               </div>
-              {showLevelLinksIcon && (
+              {showHeaderCornerCluster && (
                 <div className="level-detail-header-link-slot">
-                  <div
-                    className="header-corner-icon"
-                    role="button"
-                    tabIndex={0}
-                    aria-haspopup="dialog"
-                    aria-label={t('levelDetail.linkedLevels.header')}
-                    title={t('levelDetail.linkedLevels.header')}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setShowLinkedLevelsPopup(true);
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
+                  {showReferenceIcon && (
+                    <div
+                      className="header-corner-icon level-detail-header-reference-icon"
+                      data-tooltip-id="level-reference-tooltip"
+                      data-tooltip-content={referenceLevelLabel}
+                      aria-label={referenceLevelLabel}
+                    >
+                      <ReferenceIcon size={20} color="#fff" />
+                    </div>
+                  )}
+                  {showLevelLinksIcon && (
+                    <div
+                      className="header-corner-icon"
+                      role="button"
+                      tabIndex={0}
+                      aria-haspopup="dialog"
+                      aria-label={t('levelDetail.linkedLevels.header')}
+                      title={t('levelDetail.linkedLevels.header')}
+                      onClick={(e) => {
+                        e.stopPropagation();
                         setShowLinkedLevelsPopup(true);
-                      }
-                    }}
-                  >
-                    <LinkIcon size={20} color="#fff" />
-                  </div>
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          setShowLinkedLevelsPopup(true);
+                        }
+                      }}
+                    >
+                      <LinkIcon size={20} color="#fff" />
+                    </div>
+                  )}
+                  {showReferenceIcon && (
+                    <LevelDetailTooltip id="level-reference-tooltip" place="bottom" noArrow />
+                  )}
                 </div>
               )}
               </div>

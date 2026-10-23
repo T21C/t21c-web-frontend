@@ -397,6 +397,10 @@
   justify-content: center;
 }
 
+.level-submission-page form .info .submission-tag-request {
+  padding: 0 2rem;
+}
+
 .level-submission-page form .info .notes-section {
   display: flex;
   flex-direction: column;
@@ -713,6 +717,7 @@
     margin: 1.5rem 0;
   }
 
+  .level-submission-page form .info .submission-tag-request,
   .level-submission-page form .info .notes-section {
     padding: 0 0.5rem;
   }

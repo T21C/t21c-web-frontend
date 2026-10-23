@@ -48,6 +48,7 @@
       "createLevel": "创建关卡",
       "notify": "通知",
       "chartStats": "谱面统计",
+      "requestedTags": "申请标签",
       "autoTags": "自动标签",
       "autorate": "自动评级",
       "cleanup": "清理",

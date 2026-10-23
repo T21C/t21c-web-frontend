@@ -1,0 +1,55 @@
+.level-submission-page .submission-tag-request,
+.submission-admin-page .submission-tag-request {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.submission-admin-page .submission-tag-request {
+  align-items: flex-end;
+  width: 100%;
+}
+
+.level-submission-page .submission-tag-request__icons,
+.submission-admin-page .submission-tag-request__icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.submission-admin-page .submission-tag-request__icons {
+  justify-content: flex-end;
+}
+
+.level-submission-page .submission-tag-request__item,
+.submission-admin-page .submission-tag-request__item {
+  display: flex;
+  align-items: center;
+}
+
+.level-submission-page .submission-tag-request__icon,
+.submission-admin-page .submission-tag-request__icon {
+  width: 1.75rem;
+  height: 1.75rem;
+  object-fit: contain;
+}
+
+.level-submission-page .submission-tag-request__name,
+.submission-admin-page .submission-tag-request__name {
+  color: var(--color-white);
+  font-size: 0.85rem;
+  line-height: 1.2;
+}
+
+.level-submission-page .submission-tag-request__hint,
+.submission-admin-page .submission-tag-request__hint {
+  color: var(--color-white-t70);
+  font-size: 0.85rem;
+}
+
+.submission-admin-page .submission-tag-request__hint {
+  text-align: end;
+}

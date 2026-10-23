@@ -30,7 +30,8 @@
     "submitterRecordTooltip": "{{accepted}} acceptées / {{declined}} refusées",
     "evidence": "Preuves :",
     "notes": "Notes",
-    "notesPlaceholder": "Notes optionnelles pour les managers"
+    "notesPlaceholder": "Notes optionnelles pour les managers",
+    "tagsEmpty": "Aucun tag demandé"
   },
   "buttons": {
     "manageCreator": "Gérer le créateur",
@@ -42,6 +43,7 @@
     "addSongRequest": "Demander comme nouvelle musique",
     "addArtistRequest": "Ajouter un nouvel artiste",
     "removeArtist": "Retirer l'artiste",
+    "requestTags": "Demander des tags",
     "allow": "Autoriser",
     "decline": "Refuser",
     "addCharter": "Ajouter un charteur",
@@ -72,7 +74,8 @@
       "approved": "Soumission approuvée avec succès",
       "rejected": "Soumission rejetée avec succès",
       "suffixUpdated": "Suffixe mis à jour avec succès",
-      "notesUpdated": "Notes mises à jour avec succès"
+      "notesUpdated": "Notes mises à jour avec succès",
+      "tagsUpdated": "Tags mis à jour"
     },
     "error": {
       "generic": "Une erreur s'est produite",
@@ -121,6 +124,7 @@
     "artistLockedToSong": "Impossible de modifier l'artiste : il est fixé à la musique sélectionnée",
     "suffixUpdateFailed": "Échec de la mise à jour du suffixe",
     "notesUpdateFailed": "Échec de la mise à jour des notes",
+    "tagsUpdateFailed": "Échec de la mise à jour des tags",
     "updateSongFailed": "Échec de la mise à jour de la musique",
     "updateArtistFailed": "Échec de la mise à jour de l'artiste",
     "addSongRequestFailed": "Échec de l'ajout de la demande de musique",

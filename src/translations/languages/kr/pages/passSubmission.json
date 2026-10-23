@@ -8,6 +8,8 @@
     "speed": "배속 (선택, 1.0 이상)",
     "keyCount": "키 개수 (선택)",
     "feelDiff": "체감 난이도",
+    "details": "상세 내용 (선택)",
+    "detailsPlaceholder": "이 클리어에 대한 일반 텍스트",
     "expectedDiff": "예상 난이도 (선택)",
     "isAdofaiV2": "ADOFAI v2",
     "adofaiVersion": "ADOFAI 버전",

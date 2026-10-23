@@ -663,6 +663,11 @@ export const RatingDetailPopup = ({
               </div>
             </div>
           )}
+          <RatingDiscordThreadButton
+            rating={selectedRating}
+            allowed={isSuperAdmin}
+            onUpdated={applyPostedRating}
+          />
           {selectedRating.level.notes && (
             <div className="detail-field comment-field open">
               <span className="detail-label">{t('rating.detailPopup.labels.notes')}</span>
@@ -706,12 +711,6 @@ export const RatingDetailPopup = ({
               </div>
 
               <div className={`details-container ${isDetailsCollapsed ? 'collapsed' : ''}`}>
-                <RatingDiscordThreadButton
-                  rating={selectedRating}
-                  linkedRequest={linkedRequest}
-                  allowed={isSuperAdmin}
-                  onUpdated={applyPostedRating}
-                />
                 <div className="detail-field rerate-field">
                   <span className="detail-label">{t('rating.detailPopup.labels.rerateNum')}</span>
                   <span className="detail-value">{showingConfirmed ? selectedRating.requesterFR : (selectedRating.level.rerateNum || selectedRating.requesterFR)}</span>

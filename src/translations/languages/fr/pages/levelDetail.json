@@ -14,7 +14,8 @@
   "tooltips": {
     "muteChartClears": "Couper les notifications de clear pour ce chart",
     "unmuteChartClears": "Activer les notifications de clear pour ce chart",
-    "purePerfectScore": "Pure Perfect : {{score}}"
+    "purePerfectScore": "Pure Perfect : {{score}}",
+    "referenceLevel": "Ceci est un niveau de référence pour {{diffName}}"
   },
   "links": {
     "download": "Télécharger le niveau",

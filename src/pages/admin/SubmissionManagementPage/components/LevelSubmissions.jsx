@@ -38,9 +38,11 @@ import SubmissionLockButton from './SubmissionLockButton';
 import { sortPendingSubmissions, togglePendingSubmissionLock } from './submissionLock';
 import SubmissionVideoLinkField from './SubmissionVideoLinkField';
 import SubmissionNotesField from './SubmissionNotesField';
+import SubmissionTagRequest from '@/components/submissions/SubmissionTagRequest/SubmissionTagRequest';
 import SubmitterRecordBadge, { incrementSubmitterRecord, preserveSubmitterStats } from './SubmitterRecordBadge';
 import { resolveYoutubeVideoMatch } from '@/utils/youtubeChannel';
 import { filterSubmissionsByMatchedIds } from './submissionSearch';
+import { getSongDisplayName } from '@/utils/levelHelpers';
 import { usePendingSubmissionSearch } from './usePendingSubmissionSearch';
 
 const NESTED_SUBMISSION_KEYS = [
@@ -855,7 +857,7 @@ const LevelSubmissions = ({ searchQuery = '' }) => {
             <div className={`${getSubmissionCardClassName('submission-card', phase)}${submission.isLocked ? ' is-locked' : ''}`}>
               <div className="submission-header">
                 <h3>
-                  {submission.songObject?.name || submission.song} {submission.suffix && ` ${submission.suffix}`}
+                  {getSongDisplayName(submission)}
                   {submission.songRequest?.isNewRequest && (
                     <span className="request-badge">{t('levelSubmissions.badges.newRequest')}</span>
                   )}
@@ -1461,6 +1463,31 @@ const LevelSubmissions = ({ searchQuery = '' }) => {
                         delete next[submission.id];
                         return next;
                       });
+                    }}
+                  />
+                  <SubmissionTagRequest
+                    variant="review"
+                    tagIds={submission.requestedTagIds}
+                    disabled={submission.isLocked}
+                    onChange={async (nextIds) => {
+                      try {
+                        const response = await api.put(
+                          routes.admin.submissions.levelTags(submission.id),
+                          { tagIds: nextIds },
+                        );
+                        const saved = response.data?.requestedTagIds ?? nextIds;
+                        setSubmissions((prev) =>
+                          prev.map((s) => (s.id === submission.id ? { ...s, requestedTagIds: saved } : s)),
+                        );
+                        toast.success(t('levelSubmissions.messages.success.tagsUpdated'));
+                      } catch (error) {
+                        console.error('Error updating tags:', error);
+                        toast.error(
+                          error?.response?.data?.error
+                            || t('levelSubmissions.errors.tagsUpdateFailed'),
+                        );
+                        throw error;
+                      }
                     }}
                   />
                   <SubmissionNotesField

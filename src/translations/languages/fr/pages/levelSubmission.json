@@ -36,6 +36,7 @@
     "uploadZip": "Télécharger Zip",
     "orDragDrop": "ou glisser-déposer ici",
     "dropHere": "Déposez le fichier ici!",
+    "requestTags": "Demander des tags",
     "submit": "Soumettre",
     "submitWait": "..."
   },
@@ -61,6 +62,7 @@
     "evidence": "Preuve"
   },
   "placeholders": {
+    "tags": "Aucun tag demandé",
     "notes": "Notes optionnelles pour les managers (détails du chart, crédits, etc.)"
   },
   "roles": {

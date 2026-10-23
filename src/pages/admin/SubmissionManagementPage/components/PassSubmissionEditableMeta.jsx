@@ -24,6 +24,7 @@ import { applyMidspinPerfectDecrement, willApplyMidspinDecrement } from '@/utils
 import calcAcc, { applyDerivedPerfects } from '@/utils/CalcAcc';
 import { formatAccuracyRatio } from '@/utils/statFormatters';
 import { AdofaiVersionFlagTooltip } from '@/components/cards/PassFlags/PassAdofaiV2Flag';
+import { getSongDisplayName } from '@/utils/levelHelpers';
 
 function truncateString(str, maxLength) {
   if (str == null || typeof str !== 'string') return '';
@@ -544,10 +545,10 @@ export default function PassSubmissionEditableMeta({
               >
                 <img
                   src={selectIconSize(difficultyDict[diffIconKey]?.icon, ICON_SIZE.MEDIUM)}
-                  alt={level?.song}
+                  alt={getSongDisplayName(level)}
                   className="diff-icon"
                 />
-                <span className="detail-value">{level?.song || 'Null'}</span>
+                <span className="detail-value">{getSongDisplayName(level) || 'Null'}</span>
               </div>
               <button type="button" className="pass-submission-meta-edit-btn" onClick={beginEditLevel}>
                 {t('passSubmissions.edit.edit')}
@@ -591,7 +592,7 @@ export default function PassSubmissionEditableMeta({
                       />
                       <div className="level-content">
                         <div className="level-title">
-                          {result.song} (ID: {result.id})
+                          {getSongDisplayName(result)} (ID: {result.id})
                         </div>
                         <div className="level-details">
                           <span>{result.artist}</span>
@@ -610,7 +611,7 @@ export default function PassSubmissionEditableMeta({
                         className="level-icon"
                       />
                       <div className="level-info">
-                        <h2 className="level-info-sub">{truncateString(levelPreview.song, 30)}</h2>
+                        <h2 className="level-info-sub">{truncateString(getSongDisplayName(levelPreview), 30)}</h2>
                         <div className="level-info-sub">
                           <span>{truncateString(levelPreview.artist, 15)}</span>
                           {" | "}
