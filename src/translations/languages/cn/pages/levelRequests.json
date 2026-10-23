@@ -1,5 +1,6 @@
 {
   "menu": "请求列表",
+  "referenceLevel": "无法对参考关卡进行重评级",
   "types": {
     "rerate": "重评级",
     "info_change": "信息更改",
@@ -47,6 +48,7 @@
     "deleted": "已删除关卡无法进行请求",
     "hidden": "已隐藏关卡无法进行请求",
     "unsettled": "此关卡正在评级中",
+    "reference": "无法对参考关卡进行重评级",
     "missing_level": "未找到关卡",
     "reason": "需要原因",
     "reason_length": "原因最多 1000 个字符",
@@ -204,23 +206,49 @@
     "status": "状态",
     "anyStatus": "所有状态",
     "searchPlaceholder": "按歌曲，关卡，请求者或状态搜索",
+    "searchHelp": "搜索帮助",
     "completed": "已完成",
+    "statusIgnoresCompleted": "选择了具体状态，或搜索中使用了 status: 时，将忽略“已完成”筛选。",
+    "filterTitle": "筛选条件",
+    "sortTitle": "排序",
+    "sortBy": "排序依据",
+    "sortCreated": "创建时间",
+    "sortUpdated": "更新时间",
+    "sortOrder": "排序顺序",
+    "tooltips": {
+      "search": "了解如何使用高级搜索",
+      "filter": "筛选结果",
+      "sort": "排序结果",
+      "reset": "重置筛选条件",
+      "orderAsc": "升序",
+      "orderDesc": "降序"
+    },
     "type": "类型",
     "anyType": "所有",
     "page": "第 {{page}} 页，共 {{totalPages}} 页",
     "previous": "下一页",
     "next": "上一页",
     "exportAs": "导出为",
+    "acceptAll": "全部接受",
+    "completeAll": "全部完成",
+    "acceptAllConfirm": "接受全部待处理的{{type}}请求？之后请求者将无法再编辑。",
+    "completeAllConfirm": "将全部已接受的{{type}}请求标记为完成？",
+    "acceptAllDone": "已接受 {{count}} 条请求",
+    "completeAllDone": "已完成 {{count}} 条请求",
+    "bulkNone": "没有可更新的请求",
+    "bulkPartial": "已更新 {{updated}} 条，失败 {{failed}} 条",
     "export": {
       "title": "导出 {{contextName}}",
       "defaultContextName": "请求",
-      "description": "下载一份包含所有符合 {{contextName}} 当前筛选条件的请求电子表格。",
+      "description": "默认导出 {{contextName}} 中尚未完成的队列。使用筛选则导出当前页面搜索和筛选条件下的全部请求。",
+      "scope": "范围",
       "export": "导出",
       "exporting": "导出中……",
       "unavailable": "不可用",
       "progress": "已收集 {{total}} 个中的 {{fetched}} 个……",
       "errors": {
-        "exportFailed": "导出请求失败，请重试。"
+        "exportFailed": "导出请求失败，请重试。",
+        "empty": "没有可导出的请求"
       }
     }
   },

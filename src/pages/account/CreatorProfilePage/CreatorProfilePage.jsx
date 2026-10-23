@@ -248,6 +248,20 @@ const CreatorProfilePage = () => {
           showFollowerCount={profile?.showFollowerCount !== false}
           followersUrl={creatorId ? routes.creatorsV3.followers(creatorId) : null}
           youtubeChannels={creatorDoc?.youtubeChannels ?? profile?.youtubeChannels}
+          profileNote={
+            user
+              ? {
+                  targetType: "creator",
+                  targetId: Number(creatorDoc?.id ?? creatorId),
+                  text: profile?.viewerNote ?? null,
+                  onSaved: (next) => {
+                    setProfile((p) =>
+                      p && typeof p === "object" ? { ...p, viewerNote: next } : p,
+                    );
+                  },
+                }
+              : null
+          }
           expandStatsAriaLabel={t("creators.profile.funFacts.expandAria")}
           collapseStatsAriaLabel={t("creators.profile.funFacts.collapseAria")}
           statGroups={statGroups}

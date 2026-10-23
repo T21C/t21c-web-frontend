@@ -17,7 +17,9 @@
     "on": "Wł.",
     "off": "Wył.",
     "single": "Jeden punkt",
-    "split": "Rozdziel"
+    "split": "Rozdziel",
+    "requestExportDefault": "Domyślne",
+    "requestExportFilters": "Użyj filtrów"
   },
   "accessDenied": {
     "title": "Brak dostępu",

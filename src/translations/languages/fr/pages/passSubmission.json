@@ -8,7 +8,7 @@
     "speed": "Vitesse (opt., >=1.0)",
     "feelDiff": "Difficulté ressentie",
     "details": "Détails (facultatif)",
-    "detailsPlaceholder": "Texte libre sur cette complétion",
+    "detailsPlaceholder": "Toute information supplémentaire sur cette complétion",
     "is12K": "12K",
     "is16K": "16K",
     "isAdofaiV2": "ADOFAI v2",

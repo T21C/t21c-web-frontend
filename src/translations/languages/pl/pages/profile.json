@@ -59,7 +59,13 @@
     "highestRankAt": "dnia {{date}}",
     "highestRankNow": "Obecnie na najwyższej randze!",
     "youtubeChannel": "YouTube: {{name}}",
-    "youtubeMore": "Więcej kanałów YouTube"
+    "youtubeMore": "Więcej kanałów YouTube",
+    "note": {
+      "open": "Notatki",
+      "empty": "Brak notatki.",
+      "saved": "Notatka zapisana",
+      "error": "Nie udało się zapisać notatki"
+    }
   },
   "sections": {
     "scores": {

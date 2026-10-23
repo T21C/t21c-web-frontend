@@ -83,18 +83,40 @@
   mask-size: 100% 100%;
 }
 
-.profile-header .profile-header__youtube {
+.profile-header .profile-header__banner-controls {
   position: absolute;
   top: 0.75rem;
+  left: 0.75rem;
   right: 0.75rem;
   z-index: 6;
   display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.35rem;
+  pointer-events: none;
+}
+
+.profile-header .profile-header__banner-controls > * {
+  pointer-events: auto;
+}
+
+.profile-header .profile-header__youtube {
+  position: relative;
+  display: flex;
   align-items: center;
   gap: 0.25rem;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.profile-header .profile-header__note {
+  position: relative;
+  flex-shrink: 0;
 }
 
 .profile-header .profile-header__youtube-button,
-.profile-header .profile-header__youtube-more {
+.profile-header .profile-header__youtube-more,
+.profile-header .profile-header__note-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -105,12 +127,81 @@
   border-radius: 8px;
   background: color-mix(in srgb, var(--color-black) 55%, transparent);
   color: var(--color-white);
+  cursor: pointer;
 }
 
 .profile-header .profile-header__youtube-button:hover,
-.profile-header .profile-header__youtube-more:hover {
+.profile-header .profile-header__youtube-more:hover,
+.profile-header .profile-header__note-button:hover {
   background: color-mix(in srgb, var(--danger-color) 45%, var(--color-black) 55%);
   border-color: var(--color-white-t30);
+}
+
+.profile-header .profile-header__note-box {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: min(16rem, calc(100cqw - 1.5rem));
+  max-width: min(22rem, calc(100cqw - 1.5rem));
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-white-t15);
+  background: var(--color-black-t95);
+}
+
+/* Wide PC with enough left gutter: open the panel beside the header, not over it. */
+.profile-header .profile-header__note--outside .profile-header__note-box {
+  top: 0;
+  left: auto;
+  right: 100%;
+  margin-right: 0.75rem;
+  width: min(22rem, var(--profile-header-note-outside-max, 22rem));
+  min-width: min(12rem, var(--profile-header-note-outside-max, 22rem));
+  max-width: var(--profile-header-note-outside-max, 22rem);
+}
+
+.profile-header .profile-header__note-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.profile-header .profile-header__note-body {
+  max-height: 12rem;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--color-white);
+}
+
+.profile-header .profile-header__note-empty {
+  color: var(--color-white-t60);
+}
+
+.profile-header .profile-header__note-input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 7rem;
+  margin: 0;
+  padding: 0.45rem 0.55rem;
+  border-radius: 6px;
+  border: 1px solid var(--color-white-t15);
+  background: var(--color-black-t50);
+  color: var(--color-white);
+  font: inherit;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  resize: vertical;
+}
+
+.profile-header .profile-header__note-input:focus-visible {
+  outline: 2px solid var(--color-white-t30);
+  outline-offset: 1px;
 }
 
 .profile-header .profile-header__youtube-more {
@@ -797,6 +888,14 @@
   }
   .profile-header-shell .profile-header__actions {
     transform: translateX(0%);
+  }
+  .profile-header .profile-header__banner-controls {
+    right: auto;
+    width: auto;
+    justify-content: flex-start;
+  }
+  .profile-header .profile-header__youtube {
+    margin-left: 0;
   }  
   .profile-header__name-overlay {
     z-index: 3;

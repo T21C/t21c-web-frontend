@@ -5,6 +5,8 @@ import {
   getCurationTypesResolved,
   sortCurationsForDisplay,
 } from '@/utils/curationTypeUtils';
+import { parseCurationFamilyTier } from '@/utils/curationTypeFamilies';
+import { normalizeTagIds, tagRequestDiff } from '@/components/requests/levelRequestShared';
 
 export const PACK_EXPORT_HEADERS = [
   'Folder',
@@ -234,13 +236,64 @@ function requestLevelForCreator(level) {
   };
 }
 
+function curationTypeName(id, curationTypesDict) {
+  const dict = curationTypesDict || {};
+  const type = dict[id] ?? dict[String(id)];
+  return type?.name ? String(type.name) : `#${id}`;
+}
+
+function curationRerateAddRemoveIds(request) {
+  const payload = request?.payload || {};
+  if (Array.isArray(payload.addCurationTypeIds) || Array.isArray(payload.removeCurationTypeIds)) {
+    return {
+      addIds: normalizeTagIds(payload.addCurationTypeIds),
+      removeIds: normalizeTagIds(payload.removeCurationTypeIds),
+    };
+  }
+  return tagRequestDiff(payload?.curationTypeIds, request?.level?.curationTypeIds);
+}
+
+function curationRerateChangeLines(request, curationTypesDict) {
+  if (request?.type !== 'curation_rerate') return [];
+
+  const { addIds, removeIds } = curationRerateAddRemoveIds(request);
+  const addByFamily = new Map();
+  for (const id of addIds) {
+    const name = curationTypeName(id, curationTypesDict);
+    const parsed = parseCurationFamilyTier(name);
+    if (!parsed) continue;
+    const queue = addByFamily.get(parsed.letter);
+    if (queue) queue.push(name);
+    else addByFamily.set(parsed.letter, [name]);
+  }
+
+  const lines = [];
+  for (const id of removeIds) {
+    const name = curationTypeName(id, curationTypesDict);
+    const parsed = parseCurationFamilyTier(name);
+    if (!parsed) continue;
+    const queue = addByFamily.get(parsed.letter);
+    if (!queue?.length) continue;
+    lines.push(`${name} > ${queue.shift()}`);
+  }
+  return lines;
+}
+
+function formatRequestExportReason(request, curationTypesDict) {
+  const reason = request?.reason == null ? '' : String(request.reason);
+  const lines = curationRerateChangeLines(request, curationTypesDict);
+  if (lines.length === 0) return reason;
+  if (!reason.trim()) return lines.join('\n');
+  return `${lines.join('\n')}\n${reason}`;
+}
+
 /**
  * Spreadsheet rows for level requests.
  * Columns: levelId, Song, Artist, Creator, Difficulty, reason.
  */
 export function buildRequestExportRows(
   requests,
-  { difficultyDict, unavailableLabel = 'Unavailable' } = {},
+  { difficultyDict, curationTypesDict, unavailableLabel = 'Unavailable' } = {},
 ) {
   const rows = [];
 
@@ -249,7 +302,7 @@ export function buildRequestExportRows(
 
     const level = request.level;
     const levelId = level?.id ?? request.levelId ?? '';
-    const reason = request.reason ?? '';
+    const reason = formatRequestExportReason(request, curationTypesDict);
 
     if (!level || level.missing) {
       rows.push({

@@ -66,7 +66,13 @@
     "highestRankAt": "{{date}}",
     "highestRankNow": "지금 최고 순위입니다!",
     "youtubeChannel": "YouTube: {{name}}",
-    "youtubeMore": "다른 YouTube 채널"
+    "youtubeMore": "다른 YouTube 채널",
+    "note": {
+      "open": "메모",
+      "empty": "아직 메모가 없습니다.",
+      "saved": "메모가 저장되었습니다",
+      "error": "메모를 저장하지 못했습니다"
+    }
   },
   "bio": {
     "header": "내 소개",

@@ -11,7 +11,7 @@
         "keyCount": "Key Count (opt.)",
         "feelDiff": "Feeling Rating",
         "details": "Details (optional)",
-        "detailsPlaceholder": "Plain text about this clear",
+        "detailsPlaceholder": "Any additional info about this clear",
         "expectedDiff": "Expected Rating (opt.)",
         "nohold": "No Hold",
         "isAdofaiV2": "ADOFAI v2",

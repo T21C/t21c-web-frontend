@@ -24,6 +24,7 @@ import { groupCurationTypesForPanel } from "@/utils/curationTypeUtils";
 import ProfileHeaderIconPanelPortal from "./ProfileHeaderIconPanelPortal";
 import ProfileHeaderNameAliasesTooltip from "./ProfileHeaderNameAliasesTooltip";
 import ProfileHeaderYoutubeLink from "./ProfileHeaderYoutubeLink";
+import ProfileHeaderNote from "./ProfileHeaderNote";
 import { FollowersPopup } from "@/components/popups/Account";
 import { useSvgTextDimensions } from "@/hooks/useSvgTextDimensions";
 
@@ -147,6 +148,8 @@ const ProfileHeader = ({
   /** When set, the follower count toggles a dropdown list from this URL. */
   followersUrl = null,
   youtubeChannels = null,
+  /** Signed-in viewer note: `{ targetType, targetId, text, onSaved }`. Omit for guests / settings previews. */
+  profileNote = null,
 }) => {
   const { t, i18n } = useTranslation("pages");
   const internalNameTooltipId = useId().replace(/:/g, "");
@@ -545,7 +548,17 @@ const ProfileHeader = ({
             style={bannerMaskStyle}
           />
         </div>
-        <ProfileHeaderYoutubeLink youtubeChannels={youtubeChannels} />
+        <div className="profile-header__banner-controls">
+          {profileNote && (
+            <ProfileHeaderNote
+              targetType={profileNote.targetType}
+              targetId={profileNote.targetId}
+              text={profileNote.text}
+              onSaved={profileNote.onSaved}
+            />
+          )}
+          <ProfileHeaderYoutubeLink youtubeChannels={youtubeChannels} />
+        </div>
         <div className="profile-header__name-mask-defs" aria-hidden="true">
           <div className="profile-header__name-wrap name-mask">
             <svg className="profile-header__name-svg" dominantBaseline="hanging">

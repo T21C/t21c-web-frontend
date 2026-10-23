@@ -8,7 +8,6 @@
 .level-requests .level-requests__row,
 .level-requests .level-requests__actions,
 .level-requests .level-requests__tabs,
-.level-requests .level-requests__filters,
 .level-requests .level-requests__meta,
 .level-requests .level-requests__form {
   display: flex;
@@ -17,13 +16,13 @@
   gap: 0.5rem;
 }
 
-.level-requests .level-requests__filters {
-  align-items: flex-end;
+.level-requests .buttons-row {
+  flex-wrap: wrap;
 }
 
 .level-requests .level-requests__export-btn {
-  margin-left: auto;
-  padding: 0.4rem 0.75rem;
+  height: 2rem;
+  padding: 0 0.75rem;
   border: 1px solid var(--color-white-t20);
   border-radius: 0.4rem;
   background: var(--color-white-t10);
@@ -132,31 +131,71 @@
   flex: 0 0 auto;
 }
 
-.level-requests .level-requests__filters .search-section {
-  flex: 1 1 16rem;
-  min-width: 12rem;
+.level-requests .search-section {
   margin-bottom: 0;
 }
 
-.level-requests .level-requests__filters .search-row {
+.level-requests .search-section .search-row {
   width: 100%;
 }
 
-.level-requests .level-requests__filters .search-section .help-button {
+.level-requests .search-section .help-button {
   background: var(--color-white-t20);
   color: var(--color-white);
 }
 
-.level-requests .level-requests__filters .search-section .help-button:hover {
+.level-requests .search-section .help-button:hover {
   background: var(--color-white-t30);
 }
 
-.level-requests .level-requests__filters .search-section input {
+.level-requests .search-section input {
   color: var(--color-white);
+}
+
+.level-requests .search-section .buttons-row {
+  flex-wrap: wrap;
+}
+
+.level-requests .search-section .action-button {
+  width: 2rem;
+  flex: 0 0 2rem;
+}
+
+.level-requests .input-setting {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.level-requests .filter-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.level-requests .filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
 }
 
 .level-requests .level-requests__completed {
   flex: 0 0 auto;
+}
+
+.level-requests .level-requests__completed--idle {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.level-requests .sort .sort-option .wrapper svg:hover {
+  background-color: var(--color-white-t30);
+}
+
+.level-requests .sort .sort-option .wrapper svg.is-active,
+.level-requests .sort .sort-option .wrapper svg.is-active:hover {
+  background-color: var(--color-white-t70);
 }
 
 .level-requests .level-requests__field > input[type="text"],

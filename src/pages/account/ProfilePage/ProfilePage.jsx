@@ -808,6 +808,20 @@ const ProfilePage = () => {
                         : null
                     }
                     youtubeChannels={playerData?.youtubeChannels}
+                    profileNote={
+                      user
+                        ? {
+                            targetType: "player",
+                            targetId: Number(playerData?.id ?? playerId),
+                            text: playerData?.viewerNote ?? null,
+                            onSaved: (next) => {
+                              setPlayerData((p) =>
+                                p && typeof p === "object" ? { ...p, viewerNote: next } : p,
+                              );
+                            },
+                          }
+                        : null
+                    }
                     expandStatsAriaLabel={t("profile.funFacts.expandAria")}
                     collapseStatsAriaLabel={t("profile.funFacts.collapseAria")}
                     statGroups={statGroups}
