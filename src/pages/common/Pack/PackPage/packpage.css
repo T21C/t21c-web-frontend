@@ -180,16 +180,6 @@
   gap: 20px;
 }
 
-.pack-page__loading {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 20px;
-  gap: 16px;
-}
-
-
 .pack-page__end-message {
   text-align: center;
   padding: 40px 20px;
@@ -330,10 +320,6 @@
     gap: 16px;
   }
   
-  .pack-page__loading {
-    padding: 30px 16px;
-  }
-  
   .pack-page__end-message {
     padding: 30px 16px;
     font-size: 15px;
@@ -419,10 +405,6 @@
   
   .pack-page__grid {
     gap: 12px;
-  }
-  
-  .pack-page__loading {
-    padding: 20px 12px;
   }
   
   .pack-page__end-message {

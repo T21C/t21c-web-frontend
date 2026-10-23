@@ -40,7 +40,7 @@ const PackContextProvider = (props) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
 
-    const [hasMore, setHasMore] = useState(true);
+    const [hasMore, setHasMore] = useState(false);
     const [pageNumber, setPageNumber] = useState(0);
     const [totalPacks, setTotalPacks] = useState(null);
 
@@ -65,8 +65,9 @@ const PackContextProvider = (props) => {
         });
     }, [filters]);
 
-    // Force update state for triggering re-fetches
-    const [forceUpdate, setForceUpdate] = useState(false);
+    // Monotonic so two refreshes in one turn still notify listeners.
+    // A boolean toggle cancels itself out and leaves the cleared list loading.
+    const [forceUpdate, setForceUpdate] = useState(0);
 
     const applyPresetQuery = useCallback((query, { force = false } = {}) => {
         const trimmed = typeof query === 'string' ? query.trim() : '';
@@ -79,8 +80,9 @@ const PackContextProvider = (props) => {
         setPageNumber(0);
         setPacks([]);
         setTotalPacks(null);
+        setHasMore(false);
         setError(false);
-        setForceUpdate((f) => !f);
+        setForceUpdate((n) => n + 1);
     }, []);
 
     // Preset searches from router state, window context, or URL (?levelId=).
@@ -119,8 +121,12 @@ const PackContextProvider = (props) => {
     // bypasses the debounce via `runRequest.flush`.
     const runRequest = useDebouncedRequest(500);
 
+    const listRequestSeq = useRef(0);
+
     // Pack browsing function (page-exclusive)
     const fetchPacks = useCallback(async ({ immediate = false } = {}) => {
+        const seq = ++listRequestSeq.current;
+        const stillCurrent = () => seq === listRequestSeq.current;
         setLoading(true);
         setError(false);
 
@@ -134,6 +140,7 @@ const PackContextProvider = (props) => {
                 const response = await runner(({ signal }) =>
                     api.get(routes.database.levels.packs.byId(packLookupId), { signal })
                 );
+                if (!stillCurrent()) return;
                 const pack = response.data;
                 setPacks(pack ? [pack] : []);
                 setTotalPacks(pack ? 1 : 0);
@@ -141,7 +148,11 @@ const PackContextProvider = (props) => {
                 setLoading(false);
                 return;
             } catch (error) {
-                if (axios.isCancel(error)) return;
+                if (!stillCurrent()) return;
+                if (axios.isCancel(error)) {
+                    setLoading(false);
+                    return;
+                }
                 setPacks([]);
                 setTotalPacks(0);
                 setHasMore(false);
@@ -169,6 +180,7 @@ const PackContextProvider = (props) => {
             const response = await runner(({ signal }) =>
                 api.get(routes.database.levels.packs.root(), { params, signal })
             );
+            if (!stillCurrent()) return;
             const newPacks = response.data.packs || [];
             const total = response.data.total ?? 0;
 
@@ -186,7 +198,11 @@ const PackContextProvider = (props) => {
             setHasMore((pageNumber + 1) * 30 < total);
             setLoading(false);
         } catch (error) {
-            if (axios.isCancel(error)) return; // superseded by a newer request
+            if (!stillCurrent()) return;
+            if (axios.isCancel(error)) {
+                setLoading(false);
+                return;
+            }
             console.error('Error fetching packs:', error);
             setError(true);
             setLoading(false);
@@ -198,18 +214,19 @@ const PackContextProvider = (props) => {
         setPageNumber(0);
         setPacks([]);
         setTotalPacks(null);
+        setHasMore(false);
         setError(false);
         if (filtersRef.current.viewMode === 'favorites') {
             setFavorites([]);
         }
-        setForceUpdate(f => !f);
+        setForceUpdate(n => n + 1);
     }, []);
 
     // Retry function for infinite scroll errors
     const retryLoadMore = useCallback(() => {
         if (error) {
             setError(false);
-            setForceUpdate(f => !f);
+            setForceUpdate(n => n + 1);
         }
     }, [error]);
 
@@ -222,7 +239,7 @@ const PackContextProvider = (props) => {
         if (hasMore && !loading && !error) {
             setPageNumber(prev => prev + 1);
         }
-    }, [hasMore, error]);
+    }, [hasMore, loading, error]);
 
 
     // Favorites operations
@@ -264,8 +281,8 @@ const PackContextProvider = (props) => {
     const createPack = async (packData) => {
         try {
             const response = await api.post(routes.database.levels.packs.root(), packData);
-            // Refresh page pack list
-            triggerRefresh();
+            // Caller refreshes once the create flow finishes (icon upload included).
+            // Refreshing here as well clears the list twice in one turn.
             return response.data;
         } catch (error) {
             console.error('Error creating pack:', error);
