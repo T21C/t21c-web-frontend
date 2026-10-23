@@ -33,9 +33,7 @@ const PassFlags = ({ pass, className = 'flags-wrapper' }) => {
   const showXPerfect = !!(pass?.isXPerfectMode || pass?.flags?.isXPerfectMode);
   const showWrongJudgement =
     hasFlag(user, permissionFlags.SUPER_ADMIN) && !!pass?.isWrongJudgement;
-  if (!keyCountLabel && !pass?.isNoHoldTap && !showV2 && !showPre340 && !showXPerfect && !isAutoSubmittedPass(pass) && !showWrongJudgement) {
-    return null;
-  }
+
 
   return (
     <div className={className}>

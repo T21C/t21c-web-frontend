@@ -339,6 +339,7 @@ export const REQUEST_LIST_SORTS = ['created_desc', 'created_asc', 'updated_desc'
 export const DEFAULT_REQUEST_LIST_SORT = 'created_desc';
 const COMPLETED_FILTERS = new Set(['hide', 'show', 'only']);
 const REQUEST_FILTER_STORAGE_KEY = 'levelRequests.admin.filters';
+const REQUEST_PANEL_STORAGE_KEY = 'levelRequests.admin.panels';
 
 export function isRequestListSort(value) {
   return REQUEST_LIST_SORTS.includes(value);
@@ -349,29 +350,70 @@ export function statusesForType(type) {
   return ALL_STATUSES.filter((status) => !RERATE_ONLY.has(status) && !status.startsWith('completed_'));
 }
 
+export function requestSortField(sort) {
+  return sort === 'updated_asc' || sort === 'updated_desc' ? 'updated' : 'created';
+}
+
+export function requestSortOrder(sort) {
+  return sort === 'created_asc' || sort === 'updated_asc' ? 'ASC' : 'DESC';
+}
+
+export function requestSortValue(field, order) {
+  const next = `${field === 'updated' ? 'updated' : 'created'}_${order === 'ASC' ? 'asc' : 'desc'}`;
+  return isRequestListSort(next) ? next : DEFAULT_REQUEST_LIST_SORT;
+}
+
 function emptyAdminFilters() {
   return {
     search: '',
     completed: 'hide',
+    status: '',
     sort: DEFAULT_REQUEST_LIST_SORT,
   };
 }
 
-function sanitizeAdminFilters(saved) {
+function sanitizeAdminFilters(saved, type) {
   const next = emptyAdminFilters();
   if (!saved || typeof saved !== 'object') return next;
   next.search = typeof saved.search === 'string' ? saved.search : '';
   next.sort = isRequestListSort(saved.sort) ? saved.sort : DEFAULT_REQUEST_LIST_SORT;
   next.completed = COMPLETED_FILTERS.has(saved.completed) ? saved.completed : 'hide';
+  const allowed = new Set(statusesForType(type));
+  next.status = typeof saved.status === 'string' && allowed.has(saved.status) ? saved.status : '';
   return next;
 }
 
 export function readAdminRequestFilters(type) {
   try {
     const parsed = JSON.parse(window.localStorage.getItem(REQUEST_FILTER_STORAGE_KEY) || '{}');
-    return sanitizeAdminFilters(parsed?.[type]);
+    return sanitizeAdminFilters(parsed?.[type], type);
   } catch {
     return emptyAdminFilters();
+  }
+}
+
+export function readRequestListPanels() {
+  const open = { filterOpen: true, sortOpen: true };
+  try {
+    const parsed = JSON.parse(window.localStorage.getItem(REQUEST_PANEL_STORAGE_KEY) || '{}');
+    if (!parsed || typeof parsed !== 'object') return open;
+    return {
+      filterOpen: parsed.filterOpen !== false,
+      sortOpen: parsed.sortOpen !== false,
+    };
+  } catch {
+    return open;
+  }
+}
+
+export function writeRequestListPanels(panels) {
+  try {
+    window.localStorage.setItem(REQUEST_PANEL_STORAGE_KEY, JSON.stringify({
+      filterOpen: panels?.filterOpen !== false,
+      sortOpen: panels?.sortOpen !== false,
+    }));
+  } catch {
+    /* quota / private mode */
   }
 }
 
@@ -380,7 +422,7 @@ export function writeAdminRequestFilters(type, filters) {
   try {
     const parsed = JSON.parse(window.localStorage.getItem(REQUEST_FILTER_STORAGE_KEY) || '{}');
     const store = parsed && typeof parsed === 'object' ? parsed : {};
-    store[type] = sanitizeAdminFilters(filters);
+    store[type] = sanitizeAdminFilters(filters, type);
     window.localStorage.setItem(REQUEST_FILTER_STORAGE_KEY, JSON.stringify(store));
   } catch {
     /* quota / private mode */

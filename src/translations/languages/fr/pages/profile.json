@@ -37,7 +37,13 @@
     "highestRankAt": "le {{date}}",
     "highestRankNow": "Actuellement à son meilleur rang !",
     "youtubeChannel": "YouTube : {{name}}",
-    "youtubeMore": "Autres chaînes YouTube"
+    "youtubeMore": "Autres chaînes YouTube",
+    "note": {
+      "open": "Notes",
+      "empty": "Aucune note pour l’instant.",
+      "saved": "Note enregistrée",
+      "error": "Impossible d’enregistrer la note"
+    }
   },
   "valueLabels": {
     "rankedScore": "Score Classement",

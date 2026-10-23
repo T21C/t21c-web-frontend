@@ -15,7 +15,9 @@
     "on": "Activé",
     "off": "Désactivé",
     "single": "Point unique",
-    "split": "Séparé"
+    "split": "Séparé",
+    "requestExportDefault": "Par défaut",
+    "requestExportFilters": "Utiliser les filtres"
   },
   "accessDenied": {
     "title": "Accès refusé",

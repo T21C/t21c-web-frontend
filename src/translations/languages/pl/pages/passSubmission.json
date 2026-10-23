@@ -8,7 +8,7 @@
     "speed": "Prędkość (opcj., >=1.0)",
     "feelDiff": "Szacowany poziom trudności",
     "details": "Szczegóły (opcjonalnie)",
-    "detailsPlaceholder": "Zwykły tekst o tym przejściu",
+    "detailsPlaceholder": "Dodatkowe informacje o tym przejściu",
     "is12K": "12K",
     "is16K": "16K",
     "isAdofaiV2": "ADOFAI v2",

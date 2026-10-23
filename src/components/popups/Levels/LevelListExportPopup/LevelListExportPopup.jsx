@@ -3,17 +3,22 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
+import { StateDisplay } from '@/components/common/selectors';
 import './LevelListExportPopup.css';
+
+const EXPORT_SCOPE_STATES = ['requestExportDefault', 'requestExportFilters'];
 
 /**
  * Format-only export popup for a flat level list.
- * Caller performs collection + download via onExport(format, { signal, onProgress }).
+ * Caller performs collection + download via onExport(format, { signal, onProgress, scope }).
  */
 const LevelListExportPopup = ({
   isOpen,
   onClose,
   contextName,
   onExport,
+  showScope = false,
+  scopeLabel,
   title,
   description,
   progressText,
@@ -24,12 +29,14 @@ const LevelListExportPopup = ({
   const { t } = useTranslation(['pages', 'components', 'common']);
   const abortRef = useRef(null);
   const [format, setFormat] = useState('xlsx');
+  const [exportScope, setExportScope] = useState('requestExportDefault');
   const [exporting, setExporting] = useState(false);
   const [progress, setProgress] = useState(null);
   const [error, setError] = useState(null);
 
   const resetState = useCallback(() => {
     setFormat('xlsx');
+    setExportScope('requestExportDefault');
     setExporting(false);
     setProgress(null);
     setError(null);
@@ -80,10 +87,11 @@ const LevelListExportPopup = ({
       await onExport(format, {
         signal: controller.signal,
         onProgress: setProgress,
+        scope: showScope && exportScope === 'requestExportFilters' ? 'filters' : 'default',
       });
       onClose();
     } catch (err) {
-      if (err?.name === 'AbortError' || err?.code === 'ERR_CANCELED') {
+      if (err?.name === 'AbortError' || err?.code === 'ERR_CANCELED' || err?.name === 'EmptyExportError') {
         setError(null);
         return;
       }
@@ -131,6 +139,19 @@ const LevelListExportPopup = ({
               contextName: displayName,
             })}
           </p>
+
+          {showScope && (
+            <div className="level-list-export-popup__scope">
+              <StateDisplay
+                currentState={exportScope}
+                states={EXPORT_SCOPE_STATES}
+                activeStates={['requestExportFilters']}
+                onChange={setExportScope}
+                label={scopeLabel || t('levelRequests.list.export.scope')}
+                width={72}
+              />
+            </div>
+          )}
 
           <fieldset className="level-list-export-popup__fieldset">
             <legend className="level-list-export-popup__legend">

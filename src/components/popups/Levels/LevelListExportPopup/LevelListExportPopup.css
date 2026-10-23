@@ -62,6 +62,12 @@
   line-height: 1.4;
 }
 
+.level-list-export-popup .level-list-export-popup__scope {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
 .level-list-export-popup__fieldset {
   display: flex;
   flex-direction: column;

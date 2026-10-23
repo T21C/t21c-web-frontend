@@ -10,7 +10,7 @@
         "speed": "Vitesse",
         "feelDiff": "Difficulté Ressentie",
         "details": "Détails (facultatif)",
-        "detailsPlaceholder": "Texte libre sur cette complétion",
+        "detailsPlaceholder": "Toute information supplémentaire sur cette complétion",
         "nohold": "Pas de maintien",
         "is12K": "12K",
         "is16K": "16K",

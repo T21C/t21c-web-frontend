@@ -6,7 +6,9 @@ import api from '@/utils/api';
 import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
 import { CustomSelect, StateDisplay } from '@/components/common/selectors';
-import { ExternalLinkIcon } from '@/components/common/icons';
+import { Tooltip } from '@/components/common/display/Tooltip';
+import { ExternalLinkIcon, FilterIcon, ResetIcon, SortAscIcon, SortDescIcon, SortIcon } from '@/components/common/icons';
+import { Collapsible, CollapsibleContent } from '@/components/common/Collapsible';
 import { CreatorManagementPopup } from '@/components/popups/Creators';
 import { EditLevelPopup, LevelListExportPopup } from '@/components/popups/Levels';
 import UserAvatar from '@/components/layout/UserAvatar/UserAvatar';
@@ -22,24 +24,36 @@ import { AdvancedSearchBar } from '@/components/common/AdvancedSearch';
 import LevelRequestStatusPopup from './LevelRequestStatusPopup';
 import LevelRequestCurationTypes, { LevelRequestCurationDiff } from './LevelRequestCurationTypes';
 import { LevelRequestTagDiff } from './LevelRequestTags';
-import { collectRequestsForExport } from './collectRequestExport';
+import { applyAdminRequestListParams, collectRequestsForExport } from './collectRequestExport';
 import {
   DEFAULT_REQUEST_LIST_SORT,
   creditRequestDiff,
   creditsFromLevel,
   requestErrorMessage,
+  requestSortField,
+  requestSortOrder,
+  requestSortValue,
   curationRequestDiff,
   readAdminRequestFilters,
+  readRequestListPanels,
   songRequestLabel,
+  statusesForType,
   storedRequestIssue,
   tagRequestDiff,
   tagRequestTargetIds,
   teamFromLevel,
   userCanEditLevel,
+  canManageRequestType,
   writeAdminRequestFilters,
+  writeRequestListPanels,
 } from './levelRequestShared';
 import '@/pages/common/search-section.css';
+import '@/pages/common/sort.css';
 import './levelRequests.css';
+
+function requestQuerySetsStatus(query) {
+  return /(?:^|[\s,|])!?status\s*[:=]/i.test(query || '');
+}
 
 const PAGE_SIZE = 20;
 
@@ -75,7 +89,7 @@ const infoCardText = (request, t) => {
 const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, onQueueChange = null }) => {
   const { t } = useTranslation('pages');
   const { user } = useAuth();
-  const { difficulties, difficultyDict } = useDifficultyContext();
+  const { difficulties, difficultyDict, curationTypesDict } = useDifficultyContext();
   const [results, setResults] = useState([]);
   const [total, setTotal] = useState(0);
   const [offset, setOffset] = useState(0);
@@ -85,7 +99,10 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
   const [searchInput, setSearchInput] = useState(savedFilters?.search || '');
   const [searchQuery, setSearchQuery] = useState((savedFilters?.search || '').trim());
   const [completedFilter, setCompletedFilter] = useState(savedFilters?.completed || 'hide');
+  const [statusFilter, setStatusFilter] = useState(savedFilters?.status || '');
   const [sort, setSort] = useState(savedFilters?.sort || DEFAULT_REQUEST_LIST_SORT);
+  const [filterOpen, setFilterOpen] = useState(() => readRequestListPanels().filterOpen);
+  const [sortOpen, setSortOpen] = useState(() => readRequestListPanels().sortOpen);
   const [selected, setSelected] = useState(null);
   const [editing, setEditing] = useState(false);
   const [editingLevel, setEditingLevel] = useState(false);
@@ -109,9 +126,15 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
     writeAdminRequestFilters(type, {
       search: searchInput,
       completed: completedFilter,
+      status: statusFilter,
       sort,
     });
-  }, [completedFilter, mode, searchInput, sort, type]);
+  }, [completedFilter, mode, searchInput, sort, statusFilter, type]);
+
+  useEffect(() => {
+    if (mode !== 'admin') return;
+    writeRequestListPanels({ filterOpen, sortOpen });
+  }, [filterOpen, mode, sortOpen]);
 
   const load = useCallback(async (controller) => {
     setLoading(true);
@@ -120,8 +143,11 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
     if (mode === 'admin') params.type = type;
     if (searchQuery) params.q = searchQuery;
     if (mode === 'admin') {
-      params.sort = sort;
-      if (completedFilter !== 'hide') params.completed = completedFilter;
+      applyAdminRequestListParams(params, {
+        sort,
+        status: statusFilter,
+        completedFilter,
+      });
     }
     try {
       const response = await api.get(
@@ -139,7 +165,7 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
     } finally {
       if (!controller?.signal?.aborted) setLoading(false);
     }
-  }, [completedFilter, mode, offset, onQueueChange, searchQuery, sort, type]);
+  }, [completedFilter, mode, offset, onQueueChange, searchQuery, sort, statusFilter, type]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -149,7 +175,7 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
 
   useEffect(() => {
     setOffset(0);
-  }, [completedFilter, searchQuery, sort, type]);
+  }, [completedFilter, searchQuery, sort, statusFilter, type]);
 
   const openRequest = useCallback(async (id, { preferEdit = false } = {}) => {
     try {
@@ -233,25 +259,51 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
   const exportContextName = mode === 'admin' && type
     ? t(`levelRequests.types.${type}`)
     : t('levelRequests.list.export.defaultContextName');
-  const sortOptions = useMemo(() => ([
-    { value: 'created_desc', label: t('levelRequests.list.sortCreatedDesc') },
-    { value: 'created_asc', label: t('levelRequests.list.sortCreatedAsc') },
-    { value: 'updated_desc', label: t('levelRequests.list.sortUpdatedDesc') },
-    { value: 'updated_asc', label: t('levelRequests.list.sortUpdatedAsc') },
+  const sortField = requestSortField(sort);
+  const sortOrder = requestSortOrder(sort);
+  const sortFieldOptions = useMemo(() => ([
+    { value: 'created', label: t('levelRequests.list.sortCreated') },
+    { value: 'updated', label: t('levelRequests.list.sortUpdated') },
   ]), [t]);
+  const statusOptions = useMemo(() => ([
+    { value: '', label: t('levelRequests.list.anyStatus') },
+    ...statusesForType(type).map((status) => ({
+      value: status,
+      label: t(`levelRequests.statuses.${status}`),
+    })),
+  ]), [t, type]);
+  const completedIdle = Boolean(statusFilter) || requestQuerySetsStatus(searchQuery);
 
-  const handleRequestExport = useCallback(async (format, { signal, onProgress }) => {
+  const resetFilters = () => {
+    setSearchInput('');
+    setSearchQuery('');
+    setCompletedFilter('hide');
+    setStatusFilter('');
+    setSort(DEFAULT_REQUEST_LIST_SORT);
+    setOffset(0);
+  };
+
+  const handleRequestExport = useCallback(async (format, { signal, onProgress, scope } = {}) => {
+    const useFilters = scope === 'filters';
     const requests = await collectRequestsForExport({
       mode,
       type,
-      searchQuery,
-      completedFilter,
+      searchQuery: useFilters ? searchQuery : '',
+      completedFilter: useFilters ? completedFilter : 'hide',
+      status: useFilters ? statusFilter : '',
       sort,
       signal,
       onProgress,
     });
+    if (requests.length === 0) {
+      toast.error(t('levelRequests.list.export.errors.empty'));
+      const emptyError = new Error('empty');
+      emptyError.name = 'EmptyExportError';
+      throw emptyError;
+    }
     const { headers, rows } = buildRequestExportRows(requests, {
       difficultyDict,
+      curationTypesDict,
       unavailableLabel: t('levelRequests.list.export.unavailable'),
     });
     await downloadPackExport({
@@ -260,50 +312,215 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
       headers,
       rows,
     });
-  }, [completedFilter, difficultyDict, exportContextName, mode, searchQuery, sort, t, type]);
+  }, [completedFilter, curationTypesDict, difficultyDict, exportContextName, mode, searchQuery, sort, statusFilter, t, type]);
+
+  const showCurationBulk = mode === 'admin'
+    && (type === 'curation' || type === 'curation_rerate')
+    && canManageRequestType(user, type);
+
+  const runBulkAction = async (action) => {
+    if (!showCurationBulk) return;
+    const typeLabel = t(`levelRequests.types.${type}`);
+    const confirmKey = action === 'accept'
+      ? 'levelRequests.list.acceptAllConfirm'
+      : 'levelRequests.list.completeAllConfirm';
+    if (!window.confirm(t(confirmKey, { type: typeLabel }))) return;
+    setBusy(true);
+    try {
+      const response = await api.post(routes.database.levelRequests.bulkActions(), { type, action });
+      const updated = Number(response.data?.updated) || 0;
+      const failed = Number(response.data?.failed) || 0;
+      if (failed > 0) {
+        toast.error(t('levelRequests.list.bulkPartial', { updated, failed }));
+      } else if (updated === 0) {
+        toast.error(t('levelRequests.list.bulkNone'));
+      } else {
+        const doneKey = action === 'accept'
+          ? 'levelRequests.list.acceptAllDone'
+          : 'levelRequests.list.completeAllDone';
+        toast.success(t(doneKey, { count: updated }));
+      }
+      if (selected) {
+        try {
+          const next = await api.get(routes.database.levelRequests.byId(selected.id));
+          setSelected(next.data?.request || null);
+        } catch {
+          setSelected(null);
+        }
+      }
+      load();
+    } catch (err) {
+      toast.error(requestErrorMessage(t, err));
+    } finally {
+      setBusy(false);
+    }
+  };
 
   return (
     <div className="level-requests">
-      <div className="level-requests__filters">
-        <div className="search-section">
-          <AdvancedSearchBar
-            profile="request"
-            value={searchInput}
-            onChange={(event) => setSearchInput(event.target.value)}
-            placeholder={t('levelRequests.list.searchPlaceholder')}
-            helpLabel={t('levelRequests.list.searchHelp')}
-            pending={searchInput.trim() !== searchQuery}
-          />
+      <div className="search-section">
+        <AdvancedSearchBar
+          profile="request"
+          value={searchInput}
+          onChange={(event) => setSearchInput(event.target.value)}
+          placeholder={t('levelRequests.list.searchPlaceholder')}
+          helpLabel={t('levelRequests.list.searchHelp')}
+          pending={searchInput.trim() !== searchQuery}
+          tooltipId="request-search"
+        />
+        <div className="buttons-row">
+          {mode === 'admin' && (
+            <>
+              <FilterIcon
+                color="#ffffff"
+                onClick={() => setFilterOpen((open) => !open)}
+                data-tooltip-id="request-filter"
+                className={`action-button${filterOpen ? ' active' : ''}`}
+              />
+              <SortIcon
+                color="#ffffff"
+                onClick={() => setSortOpen((open) => !open)}
+                data-tooltip-id="request-sort"
+                className={`action-button${sortOpen ? ' active' : ''}`}
+              />
+              <ResetIcon
+                color="#ffffff"
+                onClick={resetFilters}
+                data-tooltip-id="request-reset"
+                className="action-button"
+              />
+            </>
+          )}
+          {showCurationBulk && (
+            <>
+              <button
+                type="button"
+                className="level-requests__export-btn"
+                onClick={() => runBulkAction('accept')}
+                disabled={busy}
+              >
+                <span>{t('levelRequests.list.acceptAll')}</span>
+              </button>
+              <button
+                type="button"
+                className="level-requests__export-btn"
+                onClick={() => runBulkAction('complete')}
+                disabled={busy}
+              >
+                <span>{t('levelRequests.list.completeAll')}</span>
+              </button>
+            </>
+          )}
+          <button
+            type="button"
+            className="level-requests__export-btn"
+            onClick={() => setShowExportPopup(true)}
+          >
+            <ExternalLinkIcon color="#ffffff" size="18px" />
+            <span>{t('levelRequests.list.exportAs')}</span>
+          </button>
         </div>
+        <Tooltip id="request-search" place="bottom" noArrow>
+          {t('levelRequests.list.tooltips.search')}
+        </Tooltip>
         {mode === 'admin' && (
           <>
-            <CustomSelect
-              options={sortOptions}
-              value={sortOptions.find((option) => option.value === sort) || sortOptions[0]}
-              onChange={(option) => setSort(option?.value || DEFAULT_REQUEST_LIST_SORT)}
-              label={t('levelRequests.list.sort')}
-              width="12rem"
-            />
-            <StateDisplay
-              className="level-requests__completed"
-              currentState={completedFilter}
-              states={['hide', 'show', 'only']}
-              onChange={setCompletedFilter}
-              label={t('levelRequests.list.completed')}
-              width={60}
-            />
+            <Tooltip id="request-filter" place="bottom" noArrow>
+              {t('levelRequests.list.tooltips.filter')}
+            </Tooltip>
+            <Tooltip id="request-sort" place="bottom" noArrow>
+              {t('levelRequests.list.tooltips.sort')}
+            </Tooltip>
+            <Tooltip id="request-reset" place="bottom" noArrow>
+              {t('levelRequests.list.tooltips.reset')}
+            </Tooltip>
           </>
         )}
-        <button
-          type="button"
-          className="level-requests__export-btn"
-          onClick={() => setShowExportPopup(true)}
-          disabled={total === 0}
-        >
-          <ExternalLinkIcon color="#ffffff" size="18px" />
-          <span>{t('levelRequests.list.exportAs')}</span>
-        </button>
       </div>
+
+      {mode === 'admin' && (
+        <div className="input-setting">
+          <Collapsible
+            open={filterOpen}
+            onOpenChange={setFilterOpen}
+            revealOverflow
+            duration="0.5s"
+            easing="cubic-bezier(0.4, 0, 0.2, 1)"
+          >
+            <CollapsibleContent>
+              <div className="filter settings-class">
+                <h2 className="setting-title">{t('levelRequests.list.filterTitle')}</h2>
+                <div className="filter-section">
+                  <div className="filter-row">
+                    <CustomSelect
+                      options={statusOptions}
+                      value={statusOptions.find((option) => option.value === statusFilter) || statusOptions[0]}
+                      onChange={(option) => setStatusFilter(option?.value || '')}
+                      label={t('levelRequests.list.status')}
+                      width="18rem"
+                      wrapOptions
+                    />
+                    <StateDisplay
+                      className={`level-requests__completed${completedIdle ? ' level-requests__completed--idle' : ''}`}
+                      currentState={completedFilter}
+                      states={['hide', 'show', 'only']}
+                      onChange={setCompletedFilter}
+                      label={t('levelRequests.list.completed')}
+                      width={60}
+                    />
+                  </div>
+                  {completedIdle && (
+                    <p className="level-requests__hint">{t('levelRequests.list.statusIgnoresCompleted')}</p>
+                  )}
+                </div>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
+
+          <Collapsible
+            open={sortOpen}
+            onOpenChange={setSortOpen}
+            revealOverflow
+            duration="0.5s"
+            easing="cubic-bezier(0.4, 0, 0.2, 1)"
+          >
+            <CollapsibleContent>
+              <div className="sort sort-class">
+                <h2 className="setting-title">{t('levelRequests.list.sortTitle')}</h2>
+                <div className="sort-option">
+                  <CustomSelect
+                    options={sortFieldOptions}
+                    value={sortFieldOptions.find((option) => option.value === sortField) || sortFieldOptions[0]}
+                    onChange={(option) => setSort(requestSortValue(option?.value, sortOrder))}
+                    label={t('levelRequests.list.sortBy')}
+                  />
+                  <div className="order">
+                    <p>{t('levelRequests.list.sortOrder')}</p>
+                    <Tooltip id="request-order-asc" place="bottom" noArrow>
+                      {t('levelRequests.list.tooltips.orderAsc')}
+                    </Tooltip>
+                    <Tooltip id="request-order-desc" place="bottom" noArrow>
+                      {t('levelRequests.list.tooltips.orderDesc')}
+                    </Tooltip>
+                    <div className="wrapper">
+                      <SortAscIcon
+                        className={`svg-fill${sortOrder === 'ASC' ? ' is-active' : ''}`}
+                        onClick={() => setSort(requestSortValue(sortField, 'ASC'))}
+                        data-tooltip-id="request-order-asc"
+                      />
+                      <SortDescIcon
+                        className={`svg-fill${sortOrder === 'DESC' ? ' is-active' : ''}`}
+                        onClick={() => setSort(requestSortValue(sortField, 'DESC'))}
+                        data-tooltip-id="request-order-desc"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
+        </div>
+      )}
 
       {error && <p>{t('levelRequests.list.error')}</p>}
       {loading && !results.length && <p>{t('levelRequests.list.loading')}</p>}
@@ -482,8 +699,10 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
         onClose={() => setShowExportPopup(false)}
         contextName={exportContextName}
         onExport={handleRequestExport}
+        showScope
         title={t('levelRequests.list.export.title', { contextName: exportContextName })}
         description={t('levelRequests.list.export.description', { contextName: exportContextName })}
+        scopeLabel={t('levelRequests.list.export.scope')}
         progressText={(progress) => t('levelRequests.list.export.progress', {
           fetched: progress.fetched,
           total: progress.total ?? '…',

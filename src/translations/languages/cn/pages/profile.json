@@ -66,7 +66,13 @@
     "highestRankAt": "于 {{date}}",
     "highestRankNow": "当前为最高排名！",
     "youtubeChannel": "YouTube频道名：{{name}}",
-    "youtubeMore": "更多YouTube频道"
+    "youtubeMore": "更多YouTube频道",
+    "note": {
+      "open": "备注",
+      "empty": "暂无备注。",
+      "saved": "备注已保存",
+      "error": "无法保存备注"
+    }
   },
   "bio": {
     "header": "个人简介",

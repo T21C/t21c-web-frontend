@@ -22,7 +22,9 @@
     "on": "켜기",
     "off": "끄기",
     "single": "단일 지점",
-    "split": "분리"
+    "split": "분리",
+    "requestExportDefault": "기본",
+    "requestExportFilters": "필터 사용"
   },
   "accessDenied": {
     "title": "접근 거부",

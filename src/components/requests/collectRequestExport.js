@@ -12,15 +12,24 @@ export const REQUEST_EXPORT_PAGE_SIZE = 50;
  * @param {string | null} [options.type]
  * @param {string} [options.searchQuery]
  * @param {string} [options.completedFilter]
+ * @param {string} [options.status]
  * @param {string} [options.sort]
  * @param {AbortSignal} [options.signal]
  * @param {(progress: { fetched: number, total: number | null }) => void} [options.onProgress]
  */
+export function applyAdminRequestListParams(params, { sort, status, completedFilter } = {}) {
+  if (sort) params.sort = sort;
+  if (status) params.status = status;
+  else if (completedFilter && completedFilter !== 'hide') params.completed = completedFilter;
+  return params;
+}
+
 export async function collectRequestsForExport({
   mode = 'mine',
   type = null,
   searchQuery = '',
   completedFilter = 'hide',
+  status = '',
   sort,
   signal,
   onProgress,
@@ -44,8 +53,7 @@ export async function collectRequestsForExport({
     if (mode === 'admin') params.type = type;
     if (searchQuery) params.q = searchQuery;
     if (mode === 'admin') {
-      params.sort = sort;
-      if (completedFilter !== 'hide') params.completed = completedFilter;
+      applyAdminRequestListParams(params, { sort, status, completedFilter });
     }
 
     const response = await api.get(
