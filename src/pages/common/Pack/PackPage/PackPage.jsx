@@ -43,6 +43,7 @@ const PackPageContent = () => {
   const {
     packs,
     filters,
+    loading,
     error,
     hasMore,
     totalPacks,
@@ -392,24 +393,24 @@ const PackPageContent = () => {
                 {t('pack.error.retry')}
               </button>
             </div>
+          ) : totalPacks == null ? (
+            <div className="loader-shell loader-shell--tall">
+              <div className="loader loader-relative" />
+            </div>
           ) : (
             <>
             <VirtualList
               style={{ paddingBottom: "7rem", minHeight: "50vh" }}
               items={packs ?? []}
               loadMore={loadMore}
-              hasMore={hasMore}
+              hasMore={hasMore && packs.length > 0}
+              loadingMore={loading}
               overscan={800}
               grid={displayMode === 'grid'}
               minColumnWidth={300}
               gap={20}
               listClassName={`pack-page__grid pack-page__grid--${displayMode}`}
-              loader={
-                <div className="pack-page__loading">
-                  <div className="spinner spinner-large"></div>
-                  <p>{t('pack.loading.more')}</p>
-                </div>
-              }
+              loader={<div className="loader loader-relative" />}
               endMessage={
                 <div className="pack-page__end-message">
                   <p>{t('pack.endMessage')}</p>
