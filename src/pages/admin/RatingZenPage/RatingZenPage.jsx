@@ -1363,6 +1363,7 @@ const RatingZenPage = () => {
                         <RatingItem
                           key={detail.id || detail.userId}
                           ratingDetail={detail}
+                          levelId={current?.level?.id || current?.levelId}
                           isSuperAdmin={false}
                           weeklyRaterActivity={[]}
                         />
