@@ -600,6 +600,13 @@ html.rating-zen-active .background::after {
   font-size: 0.9rem;
 }
 
+.rating-zen-page .rating-zen-page__score-targets {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+}
+
 .rating-zen-page__form {
   display: flex;
   flex-direction: column;

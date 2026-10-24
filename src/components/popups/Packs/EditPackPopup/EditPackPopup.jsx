@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Portal } from '@/components/common/Portal';
 import { PopupShell } from '@/components/common/PopupShell';
+import { PORTALED_PANEL_CLASS, usePortaledPanelAnchor } from '@/hooks/usePortaledPanelAnchor';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { CrossIcon, ImageIcon, TrashIcon } from '@/components/common/icons';
@@ -15,6 +16,122 @@ import api from '@/utils/api';
 import { routes } from '@/api/routes';
 import { getCdnErrorMessage } from '@/utils/uploadErrors';
 import { LevelPackViewModes } from '@/utils/constants';
+
+function PackTransferOwnerPicker({
+  search,
+  users,
+  loading,
+  selectedOwner,
+  transferring,
+  canEdit,
+  onSearchChange,
+  onDismissSearch,
+  onSelectOwner,
+  onTransfer,
+}) {
+  const { t } = useTranslation('components');
+  const searchRef = useRef(null);
+  const dropdownRef = useRef(null);
+  const open = search.length >= 1;
+
+  const { panelStyle, portalRoot } = usePortaledPanelAnchor({
+    open,
+    anchorRef: searchRef,
+    panelRef: dropdownRef,
+    reanchorDeps: [loading, users.length, search],
+    maxHeightCap: 200,
+    minHeight: 40,
+  });
+
+  useEffect(() => {
+    if (!open) return undefined;
+
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current?.contains(event.target)) return;
+      if (searchRef.current?.contains(event.target)) return;
+      setTimeout(() => {
+        if (!selectedOwner) onDismissSearch();
+      }, 100);
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [open, selectedOwner, onDismissSearch]);
+
+  return (
+    <div className="edit-pack-popup__transfer-ownership">
+      <div className="edit-pack-popup__transfer-search" ref={searchRef}>
+        <input
+          type="text"
+          className="edit-pack-popup__input"
+          placeholder={t('packPopups.editPack.transferOwnership.placeholder')}
+          value={search}
+          onChange={(e) => onSearchChange(e.target.value)}
+          disabled={transferring}
+        />
+      </div>
+      {open && portalRoot && (
+        <Portal when={open} root={portalRoot}>
+          <div
+            className={`edit-pack-popup__transfer-dropdown ${PORTALED_PANEL_CLASS} portaled-panel--z-popover`}
+            ref={dropdownRef}
+            style={{
+              ...panelStyle,
+              width: searchRef.current?.getBoundingClientRect().width,
+            }}
+          >
+            {loading ? (
+              <div className="edit-pack-popup__transfer-loading">
+                {t('loading.searching', { ns: 'common' })}
+              </div>
+            ) : users.length === 0 ? (
+              <div className="edit-pack-popup__transfer-no-results">
+                {t('packPopups.editPack.transferOwnership.noResults')}
+              </div>
+            ) : (
+              users.map((userOption) => (
+                <div
+                  key={userOption.id}
+                  className={`edit-pack-popup__transfer-option ${selectedOwner?.id === userOption.id ? 'selected' : ''}`}
+                  onClick={() => onSelectOwner(userOption)}
+                >
+                  <span className="edit-pack-popup__transfer-option-name">
+                    {userOption.nickname || userOption.username}
+                  </span>
+                  {userOption.username !== userOption.nickname && (
+                    <span className="edit-pack-popup__transfer-option-username">
+                      @{userOption.username}
+                    </span>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+        </Portal>
+      )}
+      {selectedOwner && (
+        <div className="edit-pack-popup__transfer-selected">
+          <span className="edit-pack-popup__transfer-selected-label">
+            {t('packPopups.editPack.transferOwnership.selected')}:
+          </span>
+          <span className="edit-pack-popup__transfer-selected-name">
+            {selectedOwner.nickname || selectedOwner.username}
+          </span>
+          <button
+            type="button"
+            className="edit-pack-popup__transfer-btn"
+            onClick={onTransfer}
+            disabled={transferring || !canEdit}
+          >
+            {transferring
+              ? t('packPopups.editPack.transferOwnership.transferring')
+              : t('packPopups.editPack.transferOwnership.transfer')}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
 
 const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
   const { t } = useTranslation('components');
@@ -38,8 +155,6 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
   const [transferOwnershipLoading, setTransferOwnershipLoading] = useState(false);
   const [transferringOwnership, setTransferringOwnership] = useState(false);
   const [selectedNewOwner, setSelectedNewOwner] = useState(null);
-  const transferSearchRef = useRef(null);
-  const transferDropdownRef = useRef(null);
 
   // View mode options
   const viewModeOptions = [
@@ -203,58 +318,6 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
       setTransferringOwnership(false);
     }
   };
-
-  // Position dropdown portal and handle clicks outside
-  useEffect(() => {
-    if (transferOwnershipSearch.length >= 1 && transferSearchRef.current && transferDropdownRef.current) {
-      const updatePosition = () => {
-        if (!transferSearchRef.current || !transferDropdownRef.current) return;
-        
-        const containerRect = transferSearchRef.current.getBoundingClientRect();
-        const dropdown = transferDropdownRef.current;
-        
-        // Position dropdown below the input
-        dropdown.style.position = 'fixed';
-        dropdown.style.top = `${containerRect.bottom + window.scrollY}px`;
-        dropdown.style.left = `${containerRect.left + window.scrollX}px`;
-        dropdown.style.width = `${containerRect.width}px`;
-        dropdown.style.zIndex = '10000';
-      };
-
-      updatePosition();
-
-      const handleResize = () => updatePosition();
-      const handleScroll = () => updatePosition();
-
-      window.addEventListener('resize', handleResize);
-      window.addEventListener('scroll', handleScroll, true);
-
-      const handleClickOutside = (event) => {
-        if (
-          transferDropdownRef.current &&
-          !transferDropdownRef.current.contains(event.target) &&
-          transferSearchRef.current &&
-          !transferSearchRef.current.contains(event.target)
-        ) {
-          // Small delay to allow option clicks to register
-          setTimeout(() => {
-            if (!selectedNewOwner) {
-              setTransferOwnershipSearch('');
-              setTransferOwnershipUsers([]);
-            }
-          }, 100);
-        }
-      };
-
-      document.addEventListener('mousedown', handleClickOutside);
-
-      return () => {
-        window.removeEventListener('resize', handleResize);
-        window.removeEventListener('scroll', handleScroll, true);
-        document.removeEventListener('mousedown', handleClickOutside);
-      };
-    }
-  }, [transferOwnershipSearch, selectedNewOwner]);
 
   const canEdit = user && (
     pack.ownerId === user.id || 
@@ -440,73 +503,28 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
                     </span>
                   </div>
                 )}
-                <div className="edit-pack-popup__transfer-ownership">
-                  <div className="edit-pack-popup__transfer-search" ref={transferSearchRef}>
-                    <input
-                      type="text"
-                      className="edit-pack-popup__input"
-                      placeholder={t('packPopups.editPack.transferOwnership.placeholder')}
-                      value={transferOwnershipSearch}
-                      onChange={(e) => {
-                        setTransferOwnershipSearch(e.target.value);
-                        setSelectedNewOwner(null);
-                      }}
-                      disabled={transferringOwnership}
-                    />
-                  </div>
-                  <Portal when={transferOwnershipSearch.length >= 1}>
-                    <div className="edit-pack-popup__transfer-dropdown" ref={transferDropdownRef}>
-                      {transferOwnershipLoading ? (
-                        <div className="edit-pack-popup__transfer-loading">
-                          {t('loading.searching', { ns: 'common' })}
-                        </div>
-                      ) : transferOwnershipUsers.length === 0 ? (
-                        <div className="edit-pack-popup__transfer-no-results">
-                          {t('packPopups.editPack.transferOwnership.noResults')}
-                        </div>
-                      ) : (
-                        transferOwnershipUsers.map((userOption) => (
-                          <div
-                            key={userOption.id}
-                            className={`edit-pack-popup__transfer-option ${selectedNewOwner?.id === userOption.id ? 'selected' : ''}`}
-                            onClick={() => {
-                              setSelectedNewOwner(userOption);
-                              setTransferOwnershipSearch('');
-                              setTransferOwnershipUsers([]);
-                            }}
-                          >
-                            <span className="edit-pack-popup__transfer-option-name">
-                              {userOption.nickname || userOption.username}
-                            </span>
-                            {userOption.username !== userOption.nickname && (
-                              <span className="edit-pack-popup__transfer-option-username">
-                                @{userOption.username}
-                              </span>
-                            )}
-                          </div>
-                        ))
-                      )}
-                    </div>
-                  </Portal>
-                  {selectedNewOwner && (
-                    <div className="edit-pack-popup__transfer-selected">
-                      <span className="edit-pack-popup__transfer-selected-label">
-                        {t('packPopups.editPack.transferOwnership.selected')}:
-                      </span>
-                      <span className="edit-pack-popup__transfer-selected-name">
-                        {selectedNewOwner.nickname || selectedNewOwner.username}
-                      </span>
-                      <button
-                        type="button"
-                        className="edit-pack-popup__transfer-btn"
-                        onClick={handleTransferOwnership}
-                        disabled={transferringOwnership || !canEdit}
-                      >
-                        {transferringOwnership ? t('packPopups.editPack.transferOwnership.transferring') : t('packPopups.editPack.transferOwnership.transfer')}
-                      </button>
-                    </div>
-                  )}
-                </div>
+                <PackTransferOwnerPicker
+                  search={transferOwnershipSearch}
+                  users={transferOwnershipUsers}
+                  loading={transferOwnershipLoading}
+                  selectedOwner={selectedNewOwner}
+                  transferring={transferringOwnership}
+                  canEdit={canEdit}
+                  onSearchChange={(value) => {
+                    setTransferOwnershipSearch(value);
+                    setSelectedNewOwner(null);
+                  }}
+                  onDismissSearch={() => {
+                    setTransferOwnershipSearch('');
+                    setTransferOwnershipUsers([]);
+                  }}
+                  onSelectOwner={(userOption) => {
+                    setSelectedNewOwner(userOption);
+                    setTransferOwnershipSearch('');
+                    setTransferOwnershipUsers([]);
+                  }}
+                  onTransfer={handleTransferOwnership}
+                />
                 <p className="edit-pack-popup__help">
                   {t('packPopups.editPack.transferOwnership.help')}
                 </p>

@@ -58,11 +58,14 @@ export function tagRequestIssue(targetIds, currentIds) {
 }
 
 /** Same codes the server throws for a stored payload versus the live level. */
-export function storedRequestIssue(type, payload, level) {
+export function storedRequestIssue(type, payload, level, catalog) {
   if (type === 'rerate' && !String(payload?.requestedRating || '').trim()) return 'rating';
   if (type === 'tag') {
     if (!Array.isArray(level?.tagIds)) return null;
-    return tagRequestIssue(tagRequestTargetIds(payload, level.tagIds), level.tagIds);
+    return tagRequestIssue(
+      withoutCommunityTagIds(tagRequestTargetIds(payload, level.tagIds), catalog),
+      withoutCommunityTagIds(level.tagIds, catalog),
+    );
   }
   if (type === 'curation' || type === 'curation_rerate') {
     const current = Array.isArray(level?.curationTypeIds) ? level.curationTypeIds : null;
@@ -73,13 +76,21 @@ export function storedRequestIssue(type, payload, level) {
   return null;
 }
 
-/** Same selection the admin tag editor starts from: staff tags, plus pinned community tags. */
+/** Staff tags on the level. Community tags are voted on, not requested. */
 export function assignableTagIds(tags) {
-  return normalizeTagIds((tags || []).filter((tag) => {
-    if (!tag) return false;
-    if (!tag.isCommunity) return true;
-    return Boolean(tag.pinned);
-  }).map((tag) => tag.id));
+  return normalizeTagIds((tags || []).filter((tag) => tag && !tag.isCommunity).map((tag) => tag.id));
+}
+
+export function withoutCommunityTagIds(ids, catalog) {
+  const community = new Set(
+    (catalog || [])
+      .filter((tag) => tag && tag.isCommunity)
+      .map((tag) => Number(tag.id))
+      .filter((id) => Number.isInteger(id) && id > 0),
+  );
+  const normalized = normalizeTagIds(ids);
+  if (community.size === 0) return normalized;
+  return normalized.filter((id) => !community.has(id));
 }
 
 /** Desired tags. Older requests stored an add/remove action plus one id list. */
@@ -467,6 +478,17 @@ export function userCanEditLevel(user, level) {
   return isCharter && charters.length <= 2;
 }
 
+export function userOwnsPendingRequest(user, request) {
+  if (!user?.id || !request) return false;
+  if (request.status !== 'pending') return false;
+  const requesterId = request.requester?.id ?? request.requesterUserId;
+  return requesterId != null && String(requesterId) === String(user.id);
+}
+
+export function userCanOpenAdminLevelEditor(user) {
+  return hasFlag(user, permissionFlags.SUPER_ADMIN);
+}
+
 export function requestErrorMessage(t, err) {
   const code = err?.response?.data?.code;
   const details = err?.response?.data?.details;
@@ -477,4 +499,82 @@ export function requestErrorMessage(t, err) {
     });
   }
   return err?.response?.data?.error || t('levelRequests.errors.generic');
+}
+
+export function optionalScoreDraft(value) {
+  if (value == null || value === '') return '';
+  const n = Number(value);
+  return Number.isFinite(n) ? String(n) : String(value);
+}
+
+export function optionalScoreBodyValue(draft) {
+  const trimmed = String(draft ?? '').trim();
+  if (!trimmed) return null;
+  const n = Number(trimmed);
+  return Number.isFinite(n) ? n : trimmed;
+}
+
+export function optionalScoresEqual(left, right) {
+  const a = optionalScoreBodyValue(left);
+  const b = optionalScoreBodyValue(right);
+  if (a == null && b == null) return true;
+  return a === b;
+}
+
+export function curveMetaEqual(left, right) {
+  if (!left && !right) return true;
+  if (!left || !right) return false;
+  try {
+    return JSON.stringify(left) === JSON.stringify(right);
+  } catch {
+    return left === right;
+  }
+}
+
+export function payloadHasRequestedCurve(payload) {
+  return Boolean(payload?.xaccCurveMeta && typeof payload.xaccCurveMeta === 'object');
+}
+
+export function payloadHasRerateScoreTargets(payload) {
+  return payload?.baseScore != null
+    || payload?.ppBaseScore != null
+    || payloadHasRequestedCurve(payload);
+}
+
+export function formatRequestedScore(value) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return '';
+  return String(Math.round(n * 1e6) / 1e6);
+}
+
+export function applyOptionalScoreInput(value, isFromDropdown, difficulties) {
+  if (isFromDropdown) {
+    const selectedDiff = (difficulties || []).find((diff) => diff.name === value);
+    if (selectedDiff && selectedDiff.baseScore != null) return String(selectedDiff.baseScore);
+    const numericValue = parseFloat(value);
+    if (!Number.isNaN(numericValue)) return String(numericValue);
+    return String(value || '');
+  }
+  return value === '' || value == null ? '' : String(value);
+}
+
+export function curveEditorLevelFromRequest(level, payload = {}, scoreDrafts = {}) {
+  if (!level) return null;
+  const next = { ...level };
+  const baseSource = Object.prototype.hasOwnProperty.call(scoreDrafts, 'baseScore')
+    ? scoreDrafts.baseScore
+    : payload.baseScore;
+  const ppSource = Object.prototype.hasOwnProperty.call(scoreDrafts, 'ppBaseScore')
+    ? scoreDrafts.ppBaseScore
+    : payload.ppBaseScore;
+  const baseScore = optionalScoreBodyValue(baseSource);
+  const ppBaseScore = optionalScoreBodyValue(ppSource);
+  if (typeof baseScore === 'number') next.baseScore = baseScore;
+  if (typeof ppBaseScore === 'number') next.ppBaseScore = ppBaseScore;
+  if (Object.prototype.hasOwnProperty.call(scoreDrafts, 'xaccCurveMeta')) {
+    if (scoreDrafts.xaccCurveMeta) next.xaccCurveMeta = scoreDrafts.xaccCurveMeta;
+  } else if (payloadHasRequestedCurve(payload)) {
+    next.xaccCurveMeta = payload.xaccCurveMeta;
+  }
+  return next;
 }

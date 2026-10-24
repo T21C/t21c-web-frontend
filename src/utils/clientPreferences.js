@@ -14,8 +14,12 @@ export const CLIENT_PREF_KEYS = {
   NAV_DROPDOWN_CLICK_MODE: 'navigation.dropdownClickMode',
   SUBMISSION_MINIMAL_MOTION: 'submission.minimalMotion',
   SUBMISSION_DISABLE_MASCOTS: 'submission.disableMascots',
+  PERFORMANCE_DISABLE_OPTIONAL_ANIMATIONS: 'performance.disableOptionalAnimations',
   DISPLAY_HIDDEN_LEVEL_CARD_TAG_IDS: 'display.hiddenLevelCardTagIds',
 };
+
+/** Mirrors Preferences → Performance on <html> so CSS can drop looping motion. */
+export const REDUCE_OPTIONAL_ANIMATIONS_CLASS = 'tuf-reduce-optional-animations';
 
 export const GUEST_COOKIE_KEYS = [
   CLIENT_PREF_KEYS.HOME_RESOURCES_CTA_DISMISSED,
@@ -40,6 +44,7 @@ const EMPTY_TAGS = [];
 const ALLOWED_KEYS = new Set(Object.values(CLIENT_PREF_KEYS));
 
 const NAV_CLICK_MODES = new Set(['cycle', 'pin']);
+const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
 
 let memory = {};
 let hiddenTagsCache = EMPTY_TAGS;
@@ -234,9 +239,29 @@ function mirrorLanguageCache(lang, { clear = false } = {}) {
   else if (clear) localSet('appLanguage', null);
 }
 
+function prefersReducedMotion() {
+  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false;
+  return window.matchMedia(REDUCED_MOTION_QUERY).matches;
+}
+
+function syncReduceOptionalAnimationsClass() {
+  if (typeof document === 'undefined') return;
+  document.documentElement.classList.toggle(
+    REDUCE_OPTIONAL_ANIMATIONS_CLASS,
+    memory[CLIENT_PREF_KEYS.PERFORMANCE_DISABLE_OPTIONAL_ANIMATIONS] === true
+      || prefersReducedMotion(),
+  );
+}
+
+function watchReducedMotion() {
+  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
+  window.matchMedia(REDUCED_MOTION_QUERY).addEventListener('change', syncReduceOptionalAnimationsClass);
+}
+
 function applyMemory(next, { writeCookie = true, clearLanguage = false } = {}) {
   memory = next;
   cacheHiddenTags(memory[CLIENT_PREF_KEYS.DISPLAY_HIDDEN_LEVEL_CARD_TAG_IDS]);
+  syncReduceOptionalAnimationsClass();
   if (writeCookie) writeGuestCookie(memory);
   mirrorLanguageCache(memory[CLIENT_PREF_KEYS.APP_LANGUAGE], { clear: clearLanguage });
   notify();
@@ -383,3 +408,4 @@ function initMemory() {
 }
 
 initMemory();
+watchReducedMotion();

@@ -70,6 +70,13 @@
         "description": "关闭提交页面上的装饰动画。鼠标悬停时发光效果保留，以辨别选中的提交项目。当系统要求减少动画效果时此设置自动开启。"
       }
     },
+    "performance": {
+      "title": "性能",
+      "disableOptionalAnimations": {
+        "label": "关闭可选动画",
+        "description": "关闭装饰性的循环动画。短暂过渡和悬停反馈会保留。当系统要求减少动画效果时也会自动生效。"
+      }
+    },
     "display": {
       "title": "显示设置",
       "disableMascots": {

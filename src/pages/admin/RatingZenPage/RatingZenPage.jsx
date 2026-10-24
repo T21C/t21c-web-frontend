@@ -31,6 +31,7 @@ import { createViewDurationTracker } from '@/utils/viewDurationTracker';
 import { isAutoraterDetail } from '@/pages/admin/RatingPage/RankReadyTable';
 import { REQUEST_BANDS, isVoteRatingCard, requestPguBand } from '@/utils/ratingRequestBand';
 import DiscordVoteNotice from '@/components/popups/Rating/DiscordVoteNotice';
+import LevelRequestScoreTargets from '@/components/requests/LevelRequestScoreTargets';
 import RatingDiscordThreadButton from '@/components/popups/Rating/RatingDiscordThreadButton';
 import { mergeRatingThreadState } from '@/components/discord/ratingThread';
 
@@ -1292,6 +1293,14 @@ const RatingZenPage = () => {
                 {showRequestedRating && current.level?.rerateReason && (
                   <div className="rating-zen-page__reason">
                     <CommentFormatter>{current.level.rerateReason}</CommentFormatter>
+                  </div>
+                )}
+                {showRequestedRating && (
+                  <div className="rating-zen-page__score-targets">
+                    <LevelRequestScoreTargets
+                      payload={linkedRequest?.payload}
+                      level={current.level}
+                    />
                   </div>
                 )}
               </div>

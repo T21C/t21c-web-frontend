@@ -23,6 +23,7 @@ import toast from 'react-hot-toast';
 import autoratercato from "@/assets/icons/autorater-v2.png";
 import { Tooltip } from '@/components/common/display/Tooltip';
 import { CommentFormatter } from '@/components/misc';
+import LevelRequestScoreTargets from '@/components/requests/LevelRequestScoreTargets';
 import { useViewDurationTracker } from '@/utils/viewDurationTracker';
 import {
   getRatingDraft,
@@ -664,6 +665,12 @@ export const RatingDetailPopup = ({
               </div>
             </div>
           )}
+          <div className="rating-popup__score-targets">
+            <LevelRequestScoreTargets
+              payload={linkedRequest?.payload}
+              level={selectedRating.level}
+            />
+          </div>
           <RatingDiscordThreadButton
             rating={selectedRating}
             allowed={isSuperAdmin}

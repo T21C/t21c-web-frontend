@@ -395,6 +395,12 @@
     gap: 0.5rem;
 }
 
+.rating-popup .rating-popup__score-targets {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
 .rating-popup .rating-section {
     width: 100%;
     display: flex;

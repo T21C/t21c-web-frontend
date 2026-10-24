@@ -10,6 +10,8 @@ import { toast } from 'react-hot-toast';
 import api from '@/utils/api';
 import { useElevation } from '@/contexts/ElevationContext';
 import { useTranslation } from 'react-i18next';
+import PasswordStrength from '@/components/auth/PasswordStrength/PasswordStrength';
+import { evaluatePassword, passwordValidationError } from '@/utils/passwordPolicy';
 import './settingsSubPage.css';
 import './settingsSecurityPage.css';
 
@@ -75,6 +77,12 @@ const SettingsSecurityPage = () => {
 
     if (formData.newPassword !== formData.confirmPassword) {
       setError(t('editProfile.error.newPasswordsDoNotMatch'));
+      return;
+    }
+
+    const passwordEvaluation = evaluatePassword(formData.newPassword);
+    if (!passwordEvaluation.acceptable) {
+      setError(passwordValidationError(passwordEvaluation, t));
       return;
     }
 
@@ -328,6 +336,11 @@ const SettingsSecurityPage = () => {
     }
   };
 
+  const passwordEvaluation = useMemo(
+    () => evaluatePassword(formData.newPassword),
+    [formData.newPassword],
+  );
+
   const addPasswordUnchanged = useMemo(
     () => !formData.newPassword.trim() && !formData.confirmPassword.trim(),
     [formData.newPassword, formData.confirmPassword],
@@ -340,6 +353,9 @@ const SettingsSecurityPage = () => {
       !formData.confirmPassword.trim(),
     [formData.currentPassword, formData.newPassword, formData.confirmPassword],
   );
+
+  const passwordSubmitBlocked =
+    !passwordEvaluation.acceptable || formData.newPassword !== formData.confirmPassword;
 
   return (
     <div className="settings-sub-page settings-security-page page-content-600">
@@ -359,7 +375,7 @@ const SettingsSecurityPage = () => {
             <div className="form-group">
               <label htmlFor="security-newPassword">{t('editProfile.password.newPassword')}</label>
               <input
-                className="input-field"
+                className={`input-field${formData.newPassword && !passwordEvaluation.acceptable ? ' input-error' : ''}`}
                 type="password"
                 id="security-newPassword"
                 name="newPassword"
@@ -367,6 +383,7 @@ const SettingsSecurityPage = () => {
                 onChange={handleInputChange}
                 required
               />
+              <PasswordStrength evaluation={passwordEvaluation} />
             </div>
 
             <div className="form-group">
@@ -387,7 +404,7 @@ const SettingsSecurityPage = () => {
             <button
               type="submit"
               className="save-button btn-fill-primary btn-block"
-              disabled={addPasswordUnchanged}
+              disabled={addPasswordUnchanged || passwordSubmitBlocked}
             >
               {t('editProfile.password.createPassword')}
             </button>
@@ -422,7 +439,7 @@ const SettingsSecurityPage = () => {
                 {t('editProfile.password.newPassword')}
               </label>
               <input
-                className="input-field"
+                className={`input-field${formData.newPassword && !passwordEvaluation.acceptable ? ' input-error' : ''}`}
                 type="password"
                 id="security-newPassword-change"
                 name="newPassword"
@@ -430,6 +447,7 @@ const SettingsSecurityPage = () => {
                 onChange={handleInputChange}
                 required
               />
+              <PasswordStrength evaluation={passwordEvaluation} />
             </div>
 
             <div className="form-group">
@@ -450,7 +468,7 @@ const SettingsSecurityPage = () => {
             <button
               type="submit"
               className="save-button btn-fill-primary btn-block"
-              disabled={changePasswordUnchanged}
+              disabled={changePasswordUnchanged || passwordSubmitBlocked}
             >
               {t('editProfile.password.updatePassword')}
             </button>

@@ -6,7 +6,24 @@
     "email": "유효한 이메일 주소여야 합니다",
     "password": {
       "match": "비밀번호가 일치해야 합니다",
-      "requirements": "비밀번호는 최소 8자 이상이어야 합니다"
+      "requirements": "비밀번호는 최소 8자 이상이어야 합니다",
+      "missingLength": "8자 이상",
+      "missingLower": "영문 소문자",
+      "missingUpper": "영문 대문자",
+      "missingDigit": "숫자",
+      "missingSymbol": "특수문자",
+      "common": "흔히 쓰이는 비밀번호가 아니어야 합니다",
+      "commonIdle": "다른 조건을 충족하면 확인합니다",
+      "rating": {
+        "weak": "약함",
+        "fair": "보통",
+        "strong": "강함",
+        "common": "너무 흔함"
+      },
+      "error": {
+        "requirements": "비밀번호에 다음이 없습니다: {{list}}",
+        "common": "너무 흔히 사용되는 비밀번호입니다"
+      }
     }
   },
   "errors": {

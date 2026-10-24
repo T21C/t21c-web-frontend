@@ -438,22 +438,6 @@
   overflow-wrap: anywhere;
 }
 
-.level-requests .level-requests__community-tags {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  padding: 0.75rem;
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  background-color: var(--color-black-t30);
-}
-
-.level-requests .level-requests__community-tags-hint {
-  margin: 0;
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.65);
-}
-
 .level-requests .level-requests__curation-icon .item-pick-manager__chip-name {
   font-size: 0.75rem;
 }
@@ -883,4 +867,61 @@
 
 .level-requests .level-requests__download-link {
   color: var(--text-color);
+}
+
+.level-requests .level-requests__score-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.level-requests .level-requests__score-row > .level-requests__field {
+  flex: 1 1 10rem;
+  min-width: 8rem;
+  width: auto;
+}
+
+.level-requests .level-requests__score-curve-actions {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.level-requests .level-requests__score-targets,
+.level-requests__score-targets {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.level-requests .level-requests__score-targets > div,
+.level-requests__score-targets > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.level-requests__score-targets .level-requests__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  width: fit-content;
+  border: 1px solid transparent;
+  border-radius: 0.4rem;
+  background: var(--color-black-t40);
+  color: var(--text-color);
+  padding: 0.4rem 0.75rem;
+  cursor: pointer;
+}
+
+.level-requests__score-targets .level-requests__button:hover {
+  background: var(--color-purple-2);
+}
+
+.level-requests__score-targets .level-requests__button:disabled {
+  opacity: 0.6;
+  cursor: default;
 }
