@@ -488,6 +488,29 @@
   transform: translateX(-50%);
 }
 
+/* Keep the AutoRater pane content-sized even after its iframe is unmounted. */
+.rating-popup .rating-field.other-ratings:has(.other-ratings-slider:not(.show-second) .autorater-rating) {
+  height: auto;
+  min-height: 0;
+  max-height: none;
+}
+
+.rating-popup .other-ratings-container:has(.other-ratings-slider:not(.show-second) .autorater-rating) {
+  min-height: 0;
+}
+
+.rating-popup .other-ratings-slider:not(.show-second):has(.autorater-rating) {
+  align-items: start;
+}
+
+.rating-popup .other-ratings-slider:not(.show-second) .other-ratings-section:has(.autorater-rating),
+.rating-popup .other-ratings-slider:not(.show-second) .other-ratings-content:has(.autorater-rating) {
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  overflow-y: visible;
+}
+
 .rating-popup .other-ratings-section {
   width: 100%;
   overflow-y: auto;

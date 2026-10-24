@@ -138,6 +138,20 @@
     overflow-y: auto;
   }
 
+  .autorater-analysis {
+    margin-top: 0.75rem;
+    width: 100%;
+    cursor: auto;
+  }
+
+  .autorater-embed {
+    display: block;
+    width: 100%;
+    border: 0;
+    border-radius: 4px;
+    background: #171819;
+  }
+
   .other-rating-item.expanded {
     background-color: rgba(255, 255, 255, 0.05);
   }

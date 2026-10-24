@@ -19,9 +19,13 @@ import {
 import { RatingAccuracyKernelChart } from '@/components/common/display/RatingAccuracyKernelChart/RatingAccuracyKernelChart';
 import i18next from 'i18next';
 import { collectLevelReferenceIds, getLevelReferences } from '@/utils/levelReferences';
+import { isAutoraterDetail } from '@/utils/autorater';
+import autoraterAvatar from '@/assets/icons/autorater-v2.png';
+import AutoraterEmbed from './AutoraterEmbed';
 
 export const RatingItem = ({
   ratingDetail,
+  levelId,
   isSuperAdmin,
   onDelete,
   weeklyRaterActivity = [],
@@ -30,16 +34,21 @@ export const RatingItem = ({
 }) => {
     // Accept full rating detail object and extract fields from it
     const { rating, comment, createdAt, user, userId, isCommunityRating, ratedInZen, viewDurationSeconds } = ratingDetail || {};
+    const isAutorater = isAutoraterDetail(ratingDetail);
+    const hasAutoraterEmbed = isAutorater && Number.isSafeInteger(Number(levelId)) && Number(levelId) > 0;
     
     const [isExpanded, setIsExpanded] = useState(false);
     const { t } = useTranslation('components');
 
     useEffect(() => {
+      if (isAutorater) return undefined;
       const ids = collectLevelReferenceIds(comment);
       if (ids.length === 0) return undefined;
       getLevelReferences(ids);
       return undefined;
-    }, [comment]);
+    }, [comment, isAutorater]);
+
+    useEffect(() => setIsExpanded(false), [levelId, ratingDetail?.id]);
     
     // Find user's weekly activity
     const userActivity = weeklyRaterActivity.find(rater => rater.userId === (user?.id || userId));
@@ -74,20 +83,20 @@ export const RatingItem = ({
     const sample = ratingDetail?.accuracySample || null;
     const pguN = career?.pguN ?? 0;
     const isProvisional = pguN < RATING_ACCURACY_PROVISIONAL_N;
-    const canExpand = Boolean(comment) || (showingConfirmed && sample);
+    const canExpand = hasAutoraterEmbed || (!isAutorater && Boolean(comment)) || (showingConfirmed && sample);
 
     return (
       <div className="rating-item-container">
         <div 
-          className={`other-rating-item ${isExpanded ? 'expanded' : ''}`}
+          className={`other-rating-item ${hasAutoraterEmbed ? 'autorater-rating' : ''} ${isExpanded ? 'expanded' : ''}`}
           onClick={() => canExpand && setIsExpanded(!isExpanded)}
         >
           <div className="rating-item-header">
             <div className="rater-avatar-container">
-              <UserAvatar
+              {isAutorater ? <img src={autoraterAvatar} alt="Auto Rater Cat V2" className="rater-avatar" /> : <UserAvatar
                 {...userAvatarUrls(user)}
                 className="rater-avatar"
-              />
+              />}
               {hasCircleOrnament && (
                 <div className="circle-ornament"></div>
               )}
@@ -142,7 +151,7 @@ export const RatingItem = ({
               </div>
             )}
             <div className="rating-item-icons">
-              {(comment || (showingConfirmed && sample)) && (
+              {canExpand && (
                 <div className="comment-icon">
                   <svg 
                     width="16" 
@@ -188,7 +197,15 @@ export const RatingItem = ({
               )}
             </div>
           </div>
-          {comment && (
+          {hasAutoraterEmbed ? (
+            <Collapsible open={isExpanded} onOpenChange={setIsExpanded} duration="0.3s" easing="ease">
+              <CollapsibleContent>
+                <div className="autorater-analysis" onClick={(event) => event.stopPropagation()}>
+                  <AutoraterEmbed key={levelId} levelId={levelId} />
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
+          ) : !isAutorater && comment && (
             <Collapsible open={isExpanded} onOpenChange={setIsExpanded} duration="0.3s" easing="ease">
               <CollapsibleContent>
             <div className="rating-comment">
