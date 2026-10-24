@@ -83,6 +83,13 @@
         "description": "Désactive les animations décoratives sur la page de soumission. La lueur au survol des personnages reste pour indiquer le côté actif."
       }
     },
+    "performance": {
+      "title": "Performances",
+      "disableOptionalAnimations": {
+        "label": "Désactiver les animations optionnelles",
+        "description": "Désactive les animations décoratives en boucle. Les transitions courtes et le retour au survol restent. Appliqué aussi automatiquement lorsque le système demande de réduire les animations."
+      }
+    },
     "display": {
       "title": "Affichage",
       "disableMascots": {

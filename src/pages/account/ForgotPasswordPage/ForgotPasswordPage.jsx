@@ -6,8 +6,10 @@ import { useAuth } from '@/contexts/AuthContext';
 import { MetaTags } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
 import ReCAPTCHA from '@/components/auth/ReCaptcha/ReCaptcha';
+import PasswordStrength from '@/components/auth/PasswordStrength/PasswordStrength';
 import CodeInput from '@/components/account/CodeInput/CodeInput';
 import { useTranslation } from 'react-i18next';
+import { evaluatePassword, passwordValidationError } from '@/utils/passwordPolicy';
 import './forgotPasswordPage.css';
 
 const ForgotPasswordPage = () => {
@@ -38,6 +40,11 @@ const ForgotPasswordPage = () => {
         noindex: true,
       }),
     [t, location.pathname],
+  );
+
+  const passwordEvaluation = useMemo(
+    () => evaluatePassword(password),
+    [password],
   );
 
   // Handle countdown timer for rate limiting
@@ -162,27 +169,25 @@ const ForgotPasswordPage = () => {
   const handleResetPassword = async (e) => {
     e.preventDefault();
     setError('');
+
+    if (password !== confirmPassword) {
+      setError(t('forgotPassword.errors.passwordsMismatch'));
+      return;
+    }
+
+    if (!passwordEvaluation.acceptable) {
+      setError(passwordValidationError(passwordEvaluation, t));
+      return;
+    }
+
+    if (!code.trim()) {
+      setError('Enter the reset code from your email');
+      return;
+    }
+
     setLoading(true);
 
     try {
-      if (password !== confirmPassword) {
-        setError(t('forgotPassword.errors.passwordsMismatch'));
-        setLoading(false);
-        return;
-      }
-
-      if (password.length < 8) {
-        setError(t('forgotPassword.errors.passwordTooShort'));
-        setLoading(false);
-        return;
-      }
-
-      if (!code.trim()) {
-        setError('Enter the reset code from your email');
-        setLoading(false);
-        return;
-      }
-
       await resetPassword(email, code.trim(), password);
       setStatus('success');
     } catch (err) {
@@ -339,10 +344,10 @@ const ForgotPasswordPage = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   disabled={loading}
-                  className="reset-input"
+                  className={`reset-input${password && !passwordEvaluation.acceptable ? ' input-error' : ''}`}
                   placeholder={t('forgotPassword.reset.form.placeholders.password')}
-                  minLength={8}
                 />
+                <PasswordStrength evaluation={passwordEvaluation} />
               </div>
 
               <div className="form-group">
@@ -357,14 +362,13 @@ const ForgotPasswordPage = () => {
                   disabled={loading}
                   className="reset-input"
                   placeholder={t('forgotPassword.reset.form.placeholders.confirmPassword')}
-                  minLength={8}
                 />
               </div>
 
               <button 
                 type="submit" 
                 className="action-button btn-fill-primary btn-block"
-                disabled={loading}
+                disabled={loading || !passwordEvaluation.acceptable}
               >
                 {loading ? t('forgotPassword.reset.form.buttons.resetting') : t('forgotPassword.reset.form.buttons.reset')}
               </button>

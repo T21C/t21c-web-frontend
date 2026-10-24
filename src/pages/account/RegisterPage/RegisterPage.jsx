@@ -8,9 +8,11 @@ import { useTranslation } from 'react-i18next';
 import { Tooltip } from '@/components/common/display/Tooltip';
 import { QuestionmarkCircleIcon, WarningIcon, GoogleIcon } from '@/components/common/icons';
 import ReCAPTCHA from '@/components/auth/ReCaptcha/ReCaptcha';
+import PasswordStrength from '@/components/auth/PasswordStrength/PasswordStrength';
 import { MetaTags } from '@/components/common/display';
 import { buildStaticPageMeta } from '@/utils/meta';
 import { sanitizeUsernameInput, USERNAME_MAX_LEN, validateUsername } from '@/utils/usernameValidation';
+import { evaluatePassword, passwordValidationError } from '@/utils/passwordPolicy';
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -77,12 +79,10 @@ const RegisterPage = () => {
     return result;
   };
 
-  const validatePassword = (password) => {
-    if (password.length < 8) {
-      return t('register.form.password.error.length');
-    }
-    return '';
-  };
+  const passwordEvaluation = useMemo(
+    () => evaluatePassword(formData.password),
+    [formData.password],
+  );
 
   const validateForm = () => {
     const errors = {
@@ -113,12 +113,9 @@ const RegisterPage = () => {
       }
     }
     
-    if (formData.password) {
-      const passwordError = validatePassword(formData.password);
-      if (passwordError) {
-        errors.password = passwordError;
-        isValid = false;
-      }
+    if (!passwordEvaluation.acceptable) {
+      errors.password = passwordValidationError(passwordEvaluation, t);
+      isValid = false;
     }
     
     if (formData.password && formData.confirmPassword && formData.password !== formData.confirmPassword) {
@@ -171,7 +168,7 @@ const RegisterPage = () => {
     } else if (name === 'password' && value) {
       setValidationErrors(prev => ({
         ...prev,
-        password: validatePassword(value),
+        password: passwordValidationError(evaluatePassword(value), t),
       }));
     } else if (name === 'confirmPassword' && value && formData.password) {
       setValidationErrors(prev => ({
@@ -427,6 +424,7 @@ const RegisterPage = () => {
                 required
                 className={validationErrors.password ? 'input-error' : ''}
               />
+              <PasswordStrength evaluation={passwordEvaluation} />
               {validationErrors.password && <div className="validation-error">{validationErrors.password}</div>}
             </div>
 
@@ -467,8 +465,8 @@ const RegisterPage = () => {
 
             <button 
               type="submit" 
-              className={`register-button btn-fill-primary btn-block ${!agreedToTerms || isSubmitting || !captchaToken ? 'disabled' : ''}`}
-              disabled={!agreedToTerms || isSubmitting || !captchaToken}
+              className={`register-button btn-fill-primary btn-block ${!agreedToTerms || isSubmitting || !captchaToken || !passwordEvaluation.acceptable ? 'disabled' : ''}`}
+              disabled={!agreedToTerms || isSubmitting || !captchaToken || !passwordEvaluation.acceptable}
             >
               {isSubmitting ? t('loading.submitting', { ns: 'common' }) : t('register.form.submit.default')}
             </button>

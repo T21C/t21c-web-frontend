@@ -6,7 +6,24 @@
     "email": "必须是有效的电子邮箱地址",
     "password": {
       "match": "密码必须匹配",
-      "requirements": "密码必须包含至少8个字符"
+      "requirements": "密码必须包含至少8个字符",
+      "missingLength": "至少 8 个字符",
+      "missingLower": "一个小写字母",
+      "missingUpper": "一个大写字母",
+      "missingDigit": "一个数字",
+      "missingSymbol": "一个符号",
+      "common": "不能是常见密码",
+      "commonIdle": "满足其他要求后检查",
+      "rating": {
+        "weak": "弱",
+        "fair": "一般",
+        "strong": "强",
+        "common": "过于常见"
+      },
+      "error": {
+        "requirements": "密码缺少：{{list}}",
+        "common": "此密码过于常见"
+      }
     }
   },
   "errors": {

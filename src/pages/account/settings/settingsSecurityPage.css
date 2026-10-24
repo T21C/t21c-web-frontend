@@ -72,6 +72,10 @@
   border-color: var(--color-purple-1, #9d4edd);
 }
 
+.settings-security-page .form-group .input-field.input-error {
+  border-color: var(--danger-color);
+}
+
 .settings-security-page .save-button,
 .settings-security-page .change-password-button,
 .settings-security-page .link-button {

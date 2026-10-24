@@ -6,8 +6,10 @@ import api from '@/utils/api';
 import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
 import { CustomSelect, RatingInput } from '@/components/common/selectors';
+import { GraphIcon, TrashIcon } from '@/components/common/icons';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { LevelSelectionPopup, CDNTosPopup } from '@/components/popups/Levels';
+import { AdminLevelXaccCurvePopup } from '@/components/popups/Levels/EditLevelPopup/AdminLevelXaccCurvePopup';
 import { uploadLevelZip } from '@/utils/submissions/levelSubmission';
 import { prepareArchiveForUpload } from '@/utils/zipUtils';
 import { CLIENT_PREF_KEYS, getClientPreference, setClientPreferences } from '@/utils/clientPreferences';
@@ -22,6 +24,13 @@ import {
   currentInfoValue,
   infoChangeMatchesLevel,
   normalizeTagIds,
+  applyOptionalScoreInput,
+  curveEditorLevelFromRequest,
+  curveMetaEqual,
+  optionalScoreBodyValue,
+  optionalScoreDraft,
+  optionalScoresEqual,
+  payloadHasRequestedCurve,
   requestErrorMessage,
   reratingComparisonFromRefs,
   sameIdSet,
@@ -81,6 +90,13 @@ const LevelRequestFormPopup = ({
     : normalizeTagIds(payload.curationTypeIds);
   const [reason, setReason] = useState(request?.reason || '');
   const [requestedRating, setRequestedRating] = useState(payload.requestedRating || '');
+  const [requestedBaseScore, setRequestedBaseScore] = useState(optionalScoreDraft(payload.baseScore));
+  const [requestedPpBaseScore, setRequestedPpBaseScore] = useState(optionalScoreDraft(payload.ppBaseScore));
+  const [requestedCurveMeta, setRequestedCurveMeta] = useState(
+    payloadHasRequestedCurve(payload) ? payload.xaccCurveMeta : null,
+  );
+  const [showCurveEditor, setShowCurveEditor] = useState(false);
+  const [chartLevel, setChartLevel] = useState(level);
   const [kind, setKind] = useState(initialKind);
   const [infoLevel, setInfoLevel] = useState(level);
   const [songId, setSongId] = useState(initialInfo.songId);
@@ -104,6 +120,9 @@ const LevelRequestFormPopup = ({
   const [baseline, setBaseline] = useState(() => ({
     reason: request?.reason || '',
     requestedRating: payload.requestedRating || '',
+    requestedBaseScore: optionalScoreDraft(payload.baseScore),
+    requestedPpBaseScore: optionalScoreDraft(payload.ppBaseScore),
+    requestedCurveMeta: payloadHasRequestedCurve(payload) ? payload.xaccCurveMeta : null,
     kind: payload.kind || 'song',
     curationTypeIds: initialCurationTarget,
     targetIds: initialTargetIds,
@@ -193,6 +212,16 @@ const LevelRequestFormPopup = ({
     () => (type === 'rerate' ? collectLevelReferenceIds(reason) : []),
     [reason, type],
   );
+  const curveEditorLevel = useMemo(
+    () => (type === 'rerate'
+      ? curveEditorLevelFromRequest(chartLevel || level, payload, {
+          baseScore: requestedBaseScore,
+          ppBaseScore: requestedPpBaseScore,
+          xaccCurveMeta: requestedCurveMeta,
+        })
+      : null),
+    [chartLevel, level, payload, requestedBaseScore, requestedCurveMeta, requestedPpBaseScore, type],
+  );
   const infoIssue = type === 'info_change' && infoReady
     ? (infoMissing
       ? (kind === 'song' ? 'song' : kind === 'artist' ? 'artist' : kind === 'credits' ? 'credits' : 'value')
@@ -207,7 +236,12 @@ const LevelRequestFormPopup = ({
     || Boolean(tagIssue || infoIssue || curationSlotIssue || curationIssue || reratingComparison);
   const isDirty = useMemo(() => {
     if (reason !== baseline.reason) return true;
-    if (type === 'rerate' && requestedRating !== baseline.requestedRating) return true;
+    if (type === 'rerate') {
+      if (requestedRating !== baseline.requestedRating) return true;
+      if (!optionalScoresEqual(requestedBaseScore, baseline.requestedBaseScore)) return true;
+      if (!optionalScoresEqual(requestedPpBaseScore, baseline.requestedPpBaseScore)) return true;
+      if (!curveMetaEqual(requestedCurveMeta, baseline.requestedCurveMeta)) return true;
+    }
     if (type === 'info_change') {
       if (kind !== baseline.kind) return true;
       if (kind === 'song' && (Number(songId) !== Number(baseline.songId) || songName !== baseline.songName || suffix !== baseline.suffix)) return true;
@@ -222,7 +256,7 @@ const LevelRequestFormPopup = ({
       if (!sameIdSet(targetIds, baseline.targetIds)) return true;
     }
     return false;
-  }, [artistId, artistName, baseline, creditList, creditTeam, curationTypeIds, downloadFile, infoValue, keptDownload, kind, reason, requestedRating, songId, songName, suffix, targetIds, type]);
+  }, [artistId, artistName, baseline, creditList, creditTeam, curationTypeIds, downloadFile, infoValue, keptDownload, kind, reason, requestedBaseScore, requestedCurveMeta, requestedPpBaseScore, requestedRating, songId, songName, suffix, targetIds, type]);
   const { requestClose } = useUnsavedClose({ isDirty, onClose });
 
   useEffect(() => {
@@ -331,6 +365,21 @@ const LevelRequestFormPopup = ({
       cancelled = true;
     };
   }, [type, levelId, t]);
+
+  useEffect(() => {
+    if (type !== 'rerate' || !levelId) return undefined;
+    let cancelled = false;
+    api.get(`${routes.database.levels.root()}/${levelId}`)
+      .then((response) => {
+        if (cancelled) return;
+        const full = response.data?.level ?? response.data;
+        if (full) setChartLevel(full);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [type, levelId]);
 
   useEffect(() => {
     if (type !== 'rerate') {
@@ -459,7 +508,12 @@ const LevelRequestFormPopup = ({
     }
     setSaving(true);
     const body = { type, reason };
-    if (type === 'rerate') body.requestedRating = requestedRating;
+    if (type === 'rerate') {
+      body.requestedRating = requestedRating;
+      body.baseScore = optionalScoreBodyValue(requestedBaseScore);
+      body.ppBaseScore = optionalScoreBodyValue(requestedPpBaseScore);
+      body.xaccCurveMeta = requestedCurveMeta || null;
+    }
     if (type === 'info_change') {
       body.kind = kind;
       if (kind === 'song') {
@@ -548,6 +602,68 @@ const LevelRequestFormPopup = ({
             {ratingMissing && (
               <span className="level-requests__hint level-requests__hint--issue">{t('levelRequests.errors.rating')}</span>
             )}
+          </div>
+        )}
+        {type === 'rerate' && (
+          <div className="level-requests__score-row">
+            <div className="level-requests__field">
+              <span>{t('levelRequests.form.baseScore')}</span>
+              <div className="rating-input-container">
+                <RatingInput
+                  value={requestedBaseScore}
+                  onChange={(value, isFromDropdown) => {
+                    setRequestedBaseScore(applyOptionalScoreInput(value, isFromDropdown, difficulties));
+                  }}
+                  showDiff={false}
+                  difficulties={difficulties}
+                  allowCustomInput
+                  placeholder={t('levelRequests.form.baseScorePlaceholder')}
+                />
+              </div>
+            </div>
+            <div className="level-requests__field">
+              <span>{t('levelRequests.form.ppBaseScore')}</span>
+              <div className="rating-input-container">
+                <RatingInput
+                  value={requestedPpBaseScore}
+                  onChange={(value, isFromDropdown) => {
+                    setRequestedPpBaseScore(applyOptionalScoreInput(value, isFromDropdown, difficulties));
+                  }}
+                  showDiff={false}
+                  difficulties={difficulties}
+                  allowCustomInput
+                  placeholder={t('levelRequests.form.ppBaseScorePlaceholder')}
+                />
+              </div>
+            </div>
+            <div className="level-requests__field">
+              <span>{t('levelRequests.form.scoreCurve')}</span>
+              <div className="level-requests__score-curve-actions">
+                <button
+                  type="button"
+                  className="level-requests__button"
+                  onClick={() => setShowCurveEditor(true)}
+                  disabled={!curveEditorLevel}
+                >
+                  <GraphIcon size="16px" />
+                  {t('levelRequests.form.scoreCurveOpen')}
+                </button>
+                {requestedCurveMeta && (
+                  <button
+                    type="button"
+                    className="level-requests__button level-requests__button--icon"
+                    onClick={() => setRequestedCurveMeta(null)}
+                    aria-label={t('levelRequests.form.scoreCurveClear')}
+                    title={t('levelRequests.form.scoreCurveClear')}
+                  >
+                    <TrashIcon size={16} color="currentColor" />
+                  </button>
+                )}
+              </div>
+              {requestedCurveMeta && (
+                <span className="level-requests__hint">{t('levelRequests.form.scoreCurveSet')}</span>
+              )}
+            </div>
           </div>
         )}
         {type === 'info_change' && (
@@ -731,6 +847,16 @@ const LevelRequestFormPopup = ({
         levelFiles={levelFiles}
         onSelect={selectChart}
         onClose={closeChartPicker}
+      />
+    )}
+    {showCurveEditor && curveEditorLevel && (
+      <AdminLevelXaccCurvePopup
+        level={curveEditorLevel}
+        sandbox
+        title={t('levelRequests.form.scoreCurveTitle')}
+        hint={t('levelRequests.form.scoreCurveHint')}
+        onApply={(meta) => setRequestedCurveMeta(meta || null)}
+        onClose={() => setShowCurveEditor(false)}
       />
     )}
     {showCdnTos && (

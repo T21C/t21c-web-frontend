@@ -566,23 +566,13 @@
 }
 
 .edit-pack-popup__transfer-loading {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
   padding: 12px;
-  background: var(--btn-neutral-dark);
-  border: 1px solid #333333;
-  border-top: none;
-  border-radius: 0 0 8px 8px;
   text-align: center;
   color: #888888;
   font-size: 14px;
-  z-index: 10;
 }
 
 .edit-pack-popup__transfer-dropdown {
-  max-height: 200px;
   overflow-y: auto;
   background: var(--btn-neutral-dark);
   border: 1px solid #333333;

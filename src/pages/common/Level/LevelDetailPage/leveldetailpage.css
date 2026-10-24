@@ -1798,7 +1798,6 @@
     var(--curation-primary)
   );
   background-size: 400% 400%;
-  animation: curatedGlow 3s ease-in-out infinite;
   z-index: -2;
   border-radius: inherit;
   opacity: 0.8;

@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { CustomSelect } from '@/components/common/selectors';
 import { useMinimalMotionPreference } from '@/hooks/useMinimalMotionPreference';
 import { useDisableMascotsPreference } from '@/hooks/useDisableMascotsPreference';
+import { useDisableOptionalAnimationsPreference } from '@/hooks/useDisableOptionalAnimationsPreference';
 import {
   NAV_DROPDOWN_CLICK_MODES,
   useNavDropdownClickModePreference,
@@ -35,6 +36,7 @@ const SettingsPreferencesPage = () => {
   const { t } = useTranslation(['pages', 'components']);
   const { user, setUser } = useAuth();
   const [minimalMotion, setMinimalMotion] = useMinimalMotionPreference();
+  const [disableOptionalAnimations, setDisableOptionalAnimations] = useDisableOptionalAnimationsPreference();
   const [disableMascots, setDisableMascots] = useDisableMascotsPreference();
   const [dropdownClickMode, setDropdownClickMode] = useNavDropdownClickModePreference();
   const [savedLanguage, setSavedLanguage] = useClientPreference(CLIENT_PREF_KEYS.APP_LANGUAGE, null);
@@ -207,6 +209,31 @@ const SettingsPreferencesPage = () => {
             </span>
             <span className="settings-preferences-page__toggle-desc">
               {t('settings.preferences.motion.submissionMinimalMotion.description')}
+            </span>
+          </span>
+        </label>
+      </section>
+
+      <section
+        className="settings-preferences-page__section"
+        aria-labelledby="settings-prefs-performance-heading"
+      >
+        <h2 id="settings-prefs-performance-heading" className="settings-preferences-page__section-title">
+          {t('settings.preferences.performance.title')}
+        </h2>
+
+        <label className="settings-preferences-page__toggle">
+          <input
+            type="checkbox"
+            checked={disableOptionalAnimations}
+            onChange={(e) => setDisableOptionalAnimations(e.target.checked)}
+          />
+          <span className="settings-preferences-page__toggle-copy">
+            <span className="settings-preferences-page__toggle-label">
+              {t('settings.preferences.performance.disableOptionalAnimations.label')}
+            </span>
+            <span className="settings-preferences-page__toggle-desc">
+              {t('settings.preferences.performance.disableOptionalAnimations.description')}
             </span>
           </span>
         </label>

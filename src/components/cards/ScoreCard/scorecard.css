@@ -100,7 +100,7 @@
   justify-items: center;
   opacity: 0;
   transition: all 0.4s ease;
-  background-color: #0005;
+  background-color: var(--color-black-t70);
   padding: 0.15rem 0.25rem;
   border-radius: 8px;
   z-index: 1;

@@ -38,11 +38,14 @@ import {
   readRequestListPanels,
   songRequestLabel,
   statusesForType,
+  payloadHasRequestedCurve,
   storedRequestIssue,
   tagRequestDiff,
   tagRequestTargetIds,
   teamFromLevel,
   userCanEditLevel,
+  userCanOpenAdminLevelEditor,
+  userOwnsPendingRequest,
   canManageRequestType,
   writeAdminRequestFilters,
   writeRequestListPanels,
@@ -182,16 +185,16 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
       const response = await api.get(routes.database.levelRequests.byId(id));
       const request = response.data?.request || null;
       setSelected(request);
-      const ownsRequest = Boolean(
-        user?.id && request?.requester?.id != null && String(request.requester.id) === String(user.id),
-      );
-      if (preferEdit && mode === 'mine' && ownsRequest && request.status === 'pending') {
+      setEditingLevel(false);
+      if (preferEdit && userOwnsPendingRequest(user, request)) {
         setEditing(true);
+      } else {
+        setEditing(false);
       }
     } catch (err) {
       toast.error(requestErrorMessage(t, err));
     }
-  }, [mode, t, user?.id]);
+  }, [t, user]);
 
   useEffect(() => {
     if (highlightId) openRequest(highlightId);
@@ -574,6 +577,9 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
                       <span>{requestedName}</span>
                     </span>
                   )}
+                  {payloadHasRequestedCurve(request.payload) && (
+                    <span>{t('levelRequests.detail.scoreCurve')}</span>
+                  )}
                   {request.type === 'info_change' && request.payload?.kind && (
                     <span>
                       {t(`levelRequests.kinds.${request.payload.kind}`)}
@@ -632,7 +638,9 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
             mode={mode}
             busy={busy}
             onEdit={() => setEditing(true)}
-            onEditLevel={() => setEditingLevel(true)}
+            onEditLevel={() => {
+              if (userCanOpenAdminLevelEditor(user)) setEditingLevel(true);
+            }}
             onWithdraw={withdraw}
             onNotes={() => setStatusOpen(true)}
             onAction={runAction}
@@ -644,7 +652,7 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
           />
         </PopupShell>
       )}
-      {editing && selected && mode === 'mine' && (
+      {editing && selected && userOwnsPendingRequest(user, selected) && (
         <LevelRequestFormPopup
           levelId={selected.levelId}
           type={selected.type}
@@ -659,7 +667,7 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
           }}
         />
       )}
-      {editingLevel && selected?.level?.id && !selected.level.missing && (
+      {editingLevel && selected?.level?.id && !selected.level.missing && userCanOpenAdminLevelEditor(user) && (
         <EditLevelPopup
           level={{ id: selected.level.id, _ratingListMinimal: true }}
           onClose={() => setEditingLevel(false)}

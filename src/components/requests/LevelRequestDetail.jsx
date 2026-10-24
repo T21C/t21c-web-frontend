@@ -11,8 +11,9 @@ import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { formatAccuracyRatio } from '@/utils/statFormatters';
 import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
-import { PIPELINE_ACTIONS, actionButtonClass, canManageRequestType, curationRequestDiff, requestErrorMessage, songRequestLabel, storedRequestIssue, tagRequestDiff, tagRequestTargetIds } from './levelRequestShared';
+import { PIPELINE_ACTIONS, actionButtonClass, canManageRequestType, curationRequestDiff, requestErrorMessage, songRequestLabel, storedRequestIssue, tagRequestDiff, tagRequestTargetIds, userCanOpenAdminLevelEditor, userOwnsPendingRequest } from './levelRequestShared';
 import LevelRequestCurationTypes, { LevelRequestCurationDiff } from './LevelRequestCurationTypes';
+import LevelRequestScoreTargets from './LevelRequestScoreTargets';
 import { LevelRequestCreditDiff } from './LevelRequestInfoFields';
 import { LevelRequestTagDiff } from './LevelRequestTags';
 import DiscordThreadPingPopup from '@/components/discord/DiscordThreadPingPopup';
@@ -113,6 +114,12 @@ const LevelRequestDetail = ({
   const ownerView = mode === 'mine';
   const isOwner = Boolean(user?.id && request.requester?.id != null && String(request.requester.id) === String(user.id));
   const pending = request.status === 'pending';
+  const canEditRequest = Boolean(onEdit) && userOwnsPendingRequest(user, request);
+  const canEditLevel = Boolean(onEditLevel)
+    && !ownerView
+    && Boolean(request.level?.id)
+    && !request.level?.missing
+    && userCanOpenAdminLevelEditor(user);
   const manageable = !ownerView && canManageRequestType(user, request.type);
   const availableActions = ownerView
     ? []
@@ -248,6 +255,9 @@ const LevelRequestDetail = ({
             <DiffMark icon={currentIcon} name={request.level?.difficulty?.name} />
           </div>
         </section>
+      )}
+      {request.type === 'rerate' && (
+        <LevelRequestScoreTargets payload={payload} level={request.level} />
       )}
       {request.type === 'info_change' && payload.kind && (
         <section className="level-requests__section">
@@ -394,19 +404,19 @@ const LevelRequestDetail = ({
             {t('levelRequests.detail.copyReason')}
           </button>
         )}
-        {mode === 'mine' && isOwner && pending && (
+        {canEditRequest && (
           <button type="button" className="level-requests__button" onClick={onEdit} disabled={busy}>
             <EditIcon size="16px" color="currentColor" />
             {t('levelRequests.detail.edit')}
           </button>
         )}
-        {mode === 'admin' && request.level?.id && !request.level?.missing && (
+        {canEditLevel && (
           <button type="button" className="level-requests__button" onClick={onEditLevel} disabled={busy}>
             <EditIcon size="16px" color="currentColor" />
-            {t('levelRequests.detail.edit')}
+            {t('levelRequests.detail.editLevel')}
           </button>
         )}
-        {mode === 'mine' && isOwner && pending && (
+        {canEditRequest && Boolean(onWithdraw) && (
           <button type="button" className="level-requests__button" onClick={onWithdraw} disabled={busy}>
             {t('levelRequests.detail.withdraw')}
           </button>

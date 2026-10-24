@@ -6,7 +6,24 @@
     "email": "Must be a valid email address",
     "password": {
       "match": "Passwords must match",
-      "requirements": "Password must contain at least 8 characters"
+      "requirements": "Password must contain at least 8 characters",
+      "missingLength": "At least 8 characters",
+      "missingLower": "A lowercase letter",
+      "missingUpper": "An uppercase letter",
+      "missingDigit": "A number",
+      "missingSymbol": "A symbol",
+      "common": "Must not be a commonly used password",
+      "commonIdle": "Checked once the other requirements are met",
+      "rating": {
+        "weak": "Weak",
+        "fair": "Fair",
+        "strong": "Strong",
+        "common": "Too common"
+      },
+      "error": {
+        "requirements": "Password is missing: {{list}}",
+        "common": "This password is too common"
+      }
     }
   },
   "errors": {

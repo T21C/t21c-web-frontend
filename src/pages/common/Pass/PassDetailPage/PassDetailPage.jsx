@@ -18,7 +18,7 @@ import { MetaTags } from "@/components/common/display";
 import { buildPassMeta } from "@/utils/meta";
 import { StatusBanner } from "@/components/common/display/StatusBanner/StatusBanner";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
-import { formatDate, ICON_SIZE, normalizeKeyCount, selectIconSize, validateFeelingRating } from "@/utils/Utility";
+import { formatDate, ICON_SIZE, normalizeKeyCount, selectIconSize } from "@/utils/Utility";
 import { formatAccuracyRatio } from "@/utils/statFormatters";
 import i18next from "i18next";
 import { EyeIcon, EyeOffIcon, TrashIcon, WarningIcon } from "@/components/common/icons";
@@ -567,6 +567,7 @@ const PassDetailPage = () => {
               <input
                 type="text"
                 value={feelingRating}
+                maxLength={2000}
                 onChange={(e) => {
                   setFeelingRating(e.target.value);
                   if (feelingRatingError) setFeelingRatingError(null);

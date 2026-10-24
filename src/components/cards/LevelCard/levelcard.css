@@ -833,6 +833,38 @@
   backface-visibility: hidden;
 }
 
+/* Preferences → Performance, also applied when the browser requests reduced motion.
+   Class is toggled on <html>. Stops every infinite animation declared in this file.
+   Static rarity color stays; hover opacity still changes. */
+html.tuf-reduce-optional-animations .level-card.basic-glow::before,
+html.tuf-reduce-optional-animations .level-card.basic-glow:hover::before,
+html.tuf-reduce-optional-animations .level-card.basic-glow::after,
+html.tuf-reduce-optional-animations .level-card.basic-glow:hover::after,
+html.tuf-reduce-optional-animations .level-card.legendary::before,
+html.tuf-reduce-optional-animations .level-card.legendary:hover::before,
+html.tuf-reduce-optional-animations .level-card.legendary::after,
+html.tuf-reduce-optional-animations .level-card.legendary:hover::after,
+html.tuf-reduce-optional-animations .level-card.legendary .img-wrapper::after,
+html.tuf-reduce-optional-animations .level-card:hover .marquee-text--overflows .marquee-text__inner {
+  animation: none;
+}
+
+html.tuf-reduce-optional-animations .level-card.basic-glow::before {
+  background: linear-gradient(45deg, rgba(0, 150, 255, 0.4), rgba(100, 200, 255, 0.4));
+}
+
+html.tuf-reduce-optional-animations .level-card.basic-glow::after {
+  background: rgba(0, 150, 255, 0.1);
+}
+
+html.tuf-reduce-optional-animations .level-card.legendary::before {
+  background: linear-gradient(45deg, #00ffff, #8b00ff);
+}
+
+html.tuf-reduce-optional-animations .level-card.legendary::after {
+  background: rgba(0, 255, 255, 0.1);
+}
+
 /* Reduce motion for users who prefer it */
 @media (prefers-reduced-motion: reduce) {
   .level-card.basic-glow::before,

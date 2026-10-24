@@ -8,7 +8,9 @@ import api from '@/utils/api';
 import { CloseButton } from '@/components/common/buttons';
 import { useUnsavedClose } from '@/hooks/useUnsavedClose';
 import toast from 'react-hot-toast';
+import { useAuth } from '@/contexts/AuthContext';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
+import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { ScoreV2Graph } from '@/components/common/display/ScoreV2Graph/ScoreV2Graph';
 import { formatScore } from '@/utils/Utility';
 import {
@@ -94,6 +96,9 @@ function pinInputDraftsFromPins(pins) {
  * @param {(patch: object) => void} [props.onSaved] Admin save callback
  * @param {boolean} [props.sandbox] When true, Apply returns meta via onApply — no API write
  * @param {(meta: object | null) => void} [props.onApply] Sandbox apply callback
+ * @param {boolean} [props.preview] View a stored curve without Apply/reset saving it
+ * @param {string} [props.title]
+ * @param {string} [props.hint]
  */
 export const AdminLevelXaccCurvePopup = ({
   level,
@@ -101,9 +106,14 @@ export const AdminLevelXaccCurvePopup = ({
   onSaved,
   sandbox = false,
   onApply,
+  preview = false,
+  title,
+  hint,
 }) => {
   const { t } = useTranslation(['components', 'pages']);
+  const { user } = useAuth();
   const { difficultyDict } = useDifficultyContext();
+  const canWriteLevelCurve = !sandbox && !preview && hasFlag(user, permissionFlags.SUPER_ADMIN);
   const baseScore = useMemo(
     () => resolvePinBaseScore(level, difficultyDict),
     [level?.baseScore, level?.diffId, difficultyDict],
@@ -341,7 +351,7 @@ export const AdminLevelXaccCurvePopup = ({
   );
 
   const { requestClose } = useUnsavedClose({
-    isDirty: hasChanges,
+    isDirty: preview ? false : hasChanges,
     onClose,
   });
 
@@ -994,6 +1004,7 @@ export const AdminLevelXaccCurvePopup = ({
 
   const handleSave = async (e) => {
     e.preventDefault();
+    if (preview) return;
     pinInputFocusRef.current.clear();
 
     const committed = resolveCommittedPinsForSave();
@@ -1082,6 +1093,10 @@ export const AdminLevelXaccCurvePopup = ({
         onApply?.(buildCurveMetaPayload(committed, saveFit));
       }
       onClose();
+      return;
+    }
+
+    if (!canWriteLevelCurve) {
       return;
     }
 
@@ -1193,11 +1208,12 @@ export const AdminLevelXaccCurvePopup = ({
     >
         <div className="admin-level-xacc-curve-popup__header">
           <h2 id="admin-xacc-curve-title">
-            {sandbox
-              ? t('levelPopups.edit.xaccCurve.sandboxTitle', {
-                  defaultValue: 'Score curve (calculator)',
-                })
-              : t('levelPopups.edit.xaccCurve.title')}
+            {title
+              || (sandbox
+                ? t('levelPopups.edit.xaccCurve.sandboxTitle', {
+                    defaultValue: 'Score curve (calculator)',
+                  })
+                : t('levelPopups.edit.xaccCurve.title'))}
           </h2>
           <CloseButton
             variant="inline"
@@ -1209,12 +1225,13 @@ export const AdminLevelXaccCurvePopup = ({
           />
         </div>
         <p className="admin-level-xacc-curve-popup__hint">
-          {sandbox
-            ? t('levelPopups.edit.xaccCurve.sandboxHint', {
-                defaultValue:
-                  'Adjust pin accuracy and scores; the graph updates live. Apply uses this curve only in the calculator — the level is not saved.',
-              })
-            : t('levelPopups.edit.xaccCurve.hint')}
+          {hint
+            || (sandbox
+              ? t('levelPopups.edit.xaccCurve.sandboxHint', {
+                  defaultValue:
+                    'Adjust pin accuracy and scores; the graph updates live. Apply uses this curve only in the calculator — the level is not saved.',
+                })
+              : t('levelPopups.edit.xaccCurve.hint'))}
         </p>
         <p className="admin-level-xacc-curve-popup__hint admin-level-xacc-curve-popup__hint--constraint">
           {t('levelPopups.edit.xaccCurve.constraintHint', {
@@ -1445,6 +1462,7 @@ export const AdminLevelXaccCurvePopup = ({
               })}
             </div>
           ) : null}
+          {!preview && (sandbox || canWriteLevelCurve) && (
           <button
             type="button"
             className="admin-level-xacc-curve-popup__btn admin-level-xacc-curve-popup__btn--secondary btn-fill-neutral-muted"
@@ -1453,6 +1471,7 @@ export const AdminLevelXaccCurvePopup = ({
           >
             {t('levelPopups.edit.xaccCurve.resetDefaults')}
           </button>
+          )}
           <div className="admin-level-xacc-curve-popup__graph">
             <div className="admin-level-xacc-curve-popup__graph-toolbar">
               {pinMissSliceOverlays.length > 0 ? (
@@ -1493,6 +1512,7 @@ export const AdminLevelXaccCurvePopup = ({
           {error ? (
             <div className="admin-level-xacc-curve-popup__error">{error}</div>
           ) : null}
+          {!preview && (sandbox || canWriteLevelCurve) && (
           <div className="admin-level-xacc-curve-popup__actions">
             <button
               type="button"
@@ -1516,6 +1536,7 @@ export const AdminLevelXaccCurvePopup = ({
                   : t('buttons.save', { ns: 'common' })}
             </button>
           </div>
+          )}
         </form>
     </PopupShell>
   );

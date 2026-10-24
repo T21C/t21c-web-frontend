@@ -83,6 +83,13 @@
         "description": "Wyłącza dekoracyjne animacje na stronie zgłoszeń. Podświetlenie postaci przy najechaniu pozostaje, aby widać było aktywną stronę."
       }
     },
+    "performance": {
+      "title": "Wydajność",
+      "disableOptionalAnimations": {
+        "label": "Wyłącz opcjonalne animacje",
+        "description": "Wyłącza dekoracyjne animacje w pętli. Krótkie przejścia i reakcja na najechanie zostają. Stosowane też automatycznie, gdy system prosi o ograniczony ruch."
+      }
+    },
     "display": {
       "title": "Wyświetlanie",
       "disableMascots": {

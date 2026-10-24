@@ -70,6 +70,13 @@
         "description": "제출 랜딩 페이지의 장식용 애니메이션을 끕니다. 어느 쪽이 활성화됐는지 알 수 있도록 캐릭터 호버 글로우는 유지됩니다."
       }
     },
+    "performance": {
+      "title": "성능",
+      "disableOptionalAnimations": {
+        "label": "선택적 애니메이션 끄기",
+        "description": "장식용 반복 애니메이션을 끕니다. 짧은 전환과 호버 피드백은 유지됩니다. 시스템에서 모션 줄이기를 요청하면 자동으로 적용됩니다."
+      }
+    },
     "display": {
       "title": "표시",
       "disableMascots": {
