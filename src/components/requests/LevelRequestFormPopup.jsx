@@ -37,6 +37,7 @@ import {
   tagRequestDiff,
   tagRequestIssue,
   tagRequestTargetIds,
+  withoutCommunityTagIds,
 } from './levelRequestShared';
 import { useUnsavedClose } from '@/hooks/useUnsavedClose';
 import { collectLevelReferenceIds, getLevelReferences, peekLevelReferences } from '@/utils/levelReferences';
@@ -56,7 +57,7 @@ const LevelRequestFormPopup = ({
   onSaved,
 }) => {
   const { t } = useTranslation(['pages', 'common']);
-  const { difficulties } = useDifficultyContext();
+  const { difficulties, tags: catalogTags, tagsLoading } = useDifficultyContext();
   const payload = request?.payload || {};
   const seededApplied = Array.isArray(levelTagIds)
     ? normalizeTagIds(levelTagIds)
@@ -114,7 +115,6 @@ const LevelRequestFormPopup = ({
   const [pendingZip, setPendingZip] = useState(null);
   const [creditTeam, setCreditTeam] = useState(initialInfo.team);
   const [creditList, setCreditList] = useState(initialInfo.credits);
-  const [appliedTags, setAppliedTags] = useState(Array.isArray(levelTags) ? levelTags : []);
   const [appliedIds, setAppliedIds] = useState(seededApplied);
   const [targetIds, setTargetIds] = useState(initialTargetIds);
   const [baseline, setBaseline] = useState(() => ({
@@ -154,8 +154,10 @@ const LevelRequestFormPopup = ({
   targetIdsRef.current = targetIds;
   const requestRef = useRef(request);
   const seededAppliedRef = useRef(seededApplied);
+  const catalogTagsRef = useRef(catalogTags);
   requestRef.current = request;
   seededAppliedRef.current = seededApplied;
+  catalogTagsRef.current = catalogTags;
 
   const kindOptions = useMemo(
     () => INFO_KINDS.map((value) => ({ value, label: t(`levelRequests.kinds.${value}`) })),
@@ -165,11 +167,23 @@ const LevelRequestFormPopup = ({
   const requestedRatingIcon = difficulties.find(
     (diff) => diff.name?.toLowerCase() === String(requestedRating).trim().toLowerCase(),
   )?.icon;
-  const tagDiff = useMemo(
-    () => tagRequestDiff(targetIds || [], appliedIds || []),
-    [targetIds, appliedIds],
+  const communityTagSources = useMemo(
+    () => [...(catalogTags || []), ...(Array.isArray(levelTags) ? levelTags : [])],
+    [catalogTags, levelTags],
   );
-  const tagIssue = type === 'tag' && tagsReady ? tagRequestIssue(targetIds, appliedIds) : null;
+  const requestableTargetIds = useMemo(
+    () => (targetIds == null ? null : withoutCommunityTagIds(targetIds, communityTagSources)),
+    [communityTagSources, targetIds],
+  );
+  const requestableAppliedIds = useMemo(
+    () => (appliedIds == null ? null : withoutCommunityTagIds(appliedIds, communityTagSources)),
+    [appliedIds, communityTagSources],
+  );
+  const tagDiff = useMemo(
+    () => tagRequestDiff(requestableTargetIds || [], requestableAppliedIds || []),
+    [requestableAppliedIds, requestableTargetIds],
+  );
+  const tagIssue = type === 'tag' && tagsReady ? tagRequestIssue(requestableTargetIds, requestableAppliedIds) : null;
   const curationDiff = useMemo(
     () => tagRequestDiff(curationTypeIds, appliedCurationIds || []),
     [appliedCurationIds, curationTypeIds],
@@ -227,7 +241,7 @@ const LevelRequestFormPopup = ({
       ? (kind === 'song' ? 'song' : kind === 'artist' ? 'artist' : kind === 'credits' ? 'credits' : 'value')
       : (infoUnchanged ? 'unchanged' : null))
     : null;
-  const stillLoading = (type === 'tag' && (!tagsReady || targetIds == null || appliedIds == null))
+  const stillLoading = (type === 'tag' && (tagsLoading || !tagsReady || targetIds == null || appliedIds == null))
     || (type === 'info_change' && !infoReady)
     || (type === 'curation_rerate' && (!curationReady || appliedCurationIds == null));
   const formBlocked = stillLoading
@@ -252,11 +266,11 @@ const LevelRequestFormPopup = ({
     }
     if ((type === 'curation' || type === 'curation_rerate') && !sameIdSet(curationTypeIds, baseline.curationTypeIds)) return true;
     if (type === 'tag') {
-      if (targetIds == null || baseline.targetIds == null) return false;
-      if (!sameIdSet(targetIds, baseline.targetIds)) return true;
+      if (requestableTargetIds == null || baseline.targetIds == null) return false;
+      if (!sameIdSet(requestableTargetIds, withoutCommunityTagIds(baseline.targetIds, communityTagSources))) return true;
     }
     return false;
-  }, [artistId, artistName, baseline, creditList, creditTeam, curationTypeIds, downloadFile, infoValue, keptDownload, kind, reason, requestedBaseScore, requestedCurveMeta, requestedPpBaseScore, requestedRating, songId, songName, suffix, targetIds, type]);
+  }, [artistId, artistName, baseline, communityTagSources, creditList, creditTeam, curationTypeIds, downloadFile, infoValue, keptDownload, kind, reason, requestableTargetIds, requestedBaseScore, requestedCurveMeta, requestedPpBaseScore, requestedRating, songId, songName, suffix, type]);
   const { requestClose } = useUnsavedClose({ isDirty, onClose });
 
   useEffect(() => {
@@ -274,7 +288,9 @@ const LevelRequestFormPopup = ({
         } else if (!userEditedTags.current || nextTarget == null) {
           nextTarget = ids;
         }
-        setAppliedTags(rows);
+        nextTarget = nextTarget == null
+          ? null
+          : withoutCommunityTagIds(nextTarget, [...(catalogTagsRef.current || []), ...rows]);
         setAppliedIds(ids);
         setTargetIds(nextTarget);
         if (!userEditedTags.current) {
@@ -532,7 +548,7 @@ const LevelRequestFormPopup = ({
         body.value = infoValue;
       }
     }
-    if (type === 'tag') body.targetTagIds = targetIds;
+    if (type === 'tag') body.targetTagIds = withoutCommunityTagIds(targetIds, communityTagSources);
     if (type === 'curation' || type === 'curation_rerate') body.curationTypeIds = curationTypeIds;
     const abortController = new AbortController();
     uploadAbortRef.current = abortController;
@@ -747,18 +763,20 @@ const LevelRequestFormPopup = ({
           <div className="level-requests__field">
             {tagsReady && targetIds != null && (
               <LevelRequestTags
-                ids={targetIds}
-                assignedTags={appliedTags}
+                ids={requestableTargetIds}
                 onChange={(ids) => {
                   userEditedTags.current = true;
-                  setTargetIds(ids);
+                  setTargetIds(withoutCommunityTagIds(ids, communityTagSources));
                 }}
               />
             )}
-            {(!tagsReady || targetIds == null) && (
+            {tagsReady && targetIds != null && (
+              <span className="level-requests__hint">{t('levelRequests.form.communityTagsHint')}</span>
+            )}
+            {(!tagsReady || requestableTargetIds == null) && (
               <span className="level-requests__hint">{t('loading.generic', { ns: 'common' })}</span>
             )}
-            {tagsReady && targetIds != null && appliedIds != null && (
+            {tagsReady && requestableTargetIds != null && requestableAppliedIds != null && (
               <LevelRequestTagDiff addIds={tagDiff.addIds} removeIds={tagDiff.removeIds} />
             )}
             {tagIssue && (

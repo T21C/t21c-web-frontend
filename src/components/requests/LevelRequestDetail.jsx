@@ -95,7 +95,7 @@ const LevelRequestDetail = ({
   busy = false,
 }) => {
   const { t } = useTranslation('pages');
-  const { difficulties } = useDifficultyContext();
+  const { difficulties, tags: catalogTags } = useDifficultyContext();
   const [rejecting, setRejecting] = useState(false);
   const [choosingChart, setChoosingChart] = useState(false);
   const [rejectNote, setRejectNote] = useState(request.publicNote || '');
@@ -104,7 +104,7 @@ const LevelRequestDetail = ({
   const downloadAttached = payload.kind === 'download' && Boolean(payload.fileId);
   const downloadNeedsChart = downloadAttached && payload.requiresLevelSelection === true && !payload.targetLevel;
   const payloadIssue = (request.status === 'pending' || request.status === 'accepted')
-    ? storedRequestIssue(request.type, payload, request.level)
+    ? storedRequestIssue(request.type, payload, request.level, catalogTags)
     : null;
   const iconForName = (name) => {
     if (!name) return null;

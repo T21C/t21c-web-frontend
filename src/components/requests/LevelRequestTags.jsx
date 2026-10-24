@@ -3,36 +3,18 @@ import { useTranslation } from 'react-i18next';
 import { ItemPickManager } from '@/components/common/selectors';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
-import { sortTagsByGroupThenSortOrder } from '@/utils/communityTags';
+import { withoutCommunityTagIds } from './levelRequestShared';
 
 const normalizeIds = (ids) =>
   [...new Set((ids || []).map((id) => Number(id)).filter((id) => Number.isInteger(id) && id > 0))];
 
-const LevelRequestTags = ({ ids = [], onChange, variant = 'picker', assignedTags = [] }) => {
+const LevelRequestTags = ({ ids = [], onChange, variant = 'picker' }) => {
   const { t } = useTranslation(['pages', 'components', 'common']);
   const { tags, tagsLoading } = useDifficultyContext();
-  const selectedIds = useMemo(() => normalizeIds(ids), [ids]);
-  const catalogById = useMemo(() => new Map((tags || []).map((tag) => [tag.id, tag])), [tags]);
-  const items = useMemo(() => {
-    const catalog = tags || [];
-    const known = new Set(catalog.map((tag) => tag.id));
-    const extras = selectedIds
-      .filter((id) => !known.has(id))
-      .map((id) => catalogById.get(id) || { id, name: `#${id}` });
-    return extras.length ? [...catalog, ...extras] : catalog;
-  }, [tags, selectedIds, catalogById]);
-  const communityWonTags = useMemo(
-    () => sortTagsByGroupThenSortOrder(
-      (assignedTags || []).filter((tag) => {
-        const catalog = catalogById.get(tag.id) || tag;
-        return Boolean(catalog.isCommunity) && !tag.pinned;
-      }),
-    ),
-    [assignedTags, catalogById],
-  );
-  const communityWonIds = useMemo(
-    () => new Set(communityWonTags.map((tag) => Number(tag.id))),
-    [communityWonTags],
+  const selectedIds = useMemo(() => withoutCommunityTagIds(normalizeIds(ids), tags), [ids, tags]);
+  const items = useMemo(
+    () => (tags || []).filter((tag) => tag && !tag.isCommunity),
+    [tags],
   );
 
   const pickLabels = useMemo(
@@ -54,50 +36,16 @@ const LevelRequestTags = ({ ids = [], onChange, variant = 'picker', assignedTags
 
   if (variant === 'picker') {
     return (
-      <>
       <ItemPickManager
         className="level-requests__item-pick"
         items={items}
         selectedIds={selectedIds}
         onSelectedIdsChange={onChange}
-        poolFilter={(item) => !communityWonIds.has(Number(item.id))}
         enableGrouping
         fallbackGroupLabel={fallbackGroupLabel}
         labels={pickLabels}
         isLoading={tagsLoading}
       />
-      {communityWonTags.length > 0 && (
-        <div className="level-requests__community-tags">
-          <h3 className="item-pick-manager__heading">{t('levelPopups.edit.tags.communityTags', { ns: 'components' })}</h3>
-          <p className="level-requests__community-tags-hint">
-            {t('levelPopups.edit.tags.communityTagsHint', { ns: 'components' })}
-          </p>
-          <div className="item-pick-manager__chip-row">
-            {communityWonTags.map((tag) => {
-              const catalog = catalogById.get(tag.id) || tag;
-              const color = catalog.color || '#888';
-              return (
-                <div
-                  key={tag.id}
-                  className="item-pick-manager__chip item-pick-manager__chip--readonly"
-                  style={{
-                    '--ipm-bg': `${color}50`,
-                    '--ipm-border': color,
-                    '--ipm-text': color,
-                  }}
-                  title={catalog.name}
-                >
-                  {catalog.icon && (
-                    <img src={selectIconSize(catalog.icon, ICON_SIZE.SMALL)} alt="" className="item-pick-manager__chip-icon" />
-                  )}
-                  <span className="item-pick-manager__chip-name">{catalog.name}</span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-    </>
     );
   }
 
@@ -147,9 +95,10 @@ const LevelRequestTags = ({ ids = [], onChange, variant = 'picker', assignedTags
 
 export const LevelRequestTagDiff = ({ addIds = [], removeIds = [] }) => {
   const { t } = useTranslation('pages');
+  const { tags } = useDifficultyContext();
   const rows = [
-    { key: 'add', label: t('levelRequests.form.toAdd'), ids: addIds },
-    { key: 'remove', label: t('levelRequests.form.toRemove'), ids: removeIds },
+    { key: 'add', label: t('levelRequests.form.toAdd'), ids: withoutCommunityTagIds(addIds, tags) },
+    { key: 'remove', label: t('levelRequests.form.toRemove'), ids: withoutCommunityTagIds(removeIds, tags) },
   ];
 
   return (

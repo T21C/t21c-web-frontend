@@ -92,7 +92,7 @@ const infoCardText = (request, t) => {
 const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, onQueueChange = null }) => {
   const { t } = useTranslation('pages');
   const { user } = useAuth();
-  const { difficulties, difficultyDict, curationTypesDict } = useDifficultyContext();
+  const { difficulties, difficultyDict, curationTypesDict, tags: catalogTags } = useDifficultyContext();
   const [results, setResults] = useState([]);
   const [total, setTotal] = useState(0);
   const [offset, setOffset] = useState(0);
@@ -542,7 +542,7 @@ const LevelRequestBrowser = ({ mode = 'mine', type = null, highlightId = null, o
           const infoText = request.type === 'info_change' ? infoCardText(request, t) : '';
           const reasonText = typeof request.reason === 'string' ? request.reason.trim() : '';
           const payloadIssue = (request.status === 'pending' || request.status === 'accepted')
-            ? storedRequestIssue(request.type, request.payload, request.level)
+            ? storedRequestIssue(request.type, request.payload, request.level, catalogTags)
             : null;
           return (
             <button

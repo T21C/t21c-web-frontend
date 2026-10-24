@@ -58,11 +58,14 @@ export function tagRequestIssue(targetIds, currentIds) {
 }
 
 /** Same codes the server throws for a stored payload versus the live level. */
-export function storedRequestIssue(type, payload, level) {
+export function storedRequestIssue(type, payload, level, catalog) {
   if (type === 'rerate' && !String(payload?.requestedRating || '').trim()) return 'rating';
   if (type === 'tag') {
     if (!Array.isArray(level?.tagIds)) return null;
-    return tagRequestIssue(tagRequestTargetIds(payload, level.tagIds), level.tagIds);
+    return tagRequestIssue(
+      withoutCommunityTagIds(tagRequestTargetIds(payload, level.tagIds), catalog),
+      withoutCommunityTagIds(level.tagIds, catalog),
+    );
   }
   if (type === 'curation' || type === 'curation_rerate') {
     const current = Array.isArray(level?.curationTypeIds) ? level.curationTypeIds : null;
@@ -73,13 +76,21 @@ export function storedRequestIssue(type, payload, level) {
   return null;
 }
 
-/** Same selection the admin tag editor starts from: staff tags, plus pinned community tags. */
+/** Staff tags on the level. Community tags are voted on, not requested. */
 export function assignableTagIds(tags) {
-  return normalizeTagIds((tags || []).filter((tag) => {
-    if (!tag) return false;
-    if (!tag.isCommunity) return true;
-    return Boolean(tag.pinned);
-  }).map((tag) => tag.id));
+  return normalizeTagIds((tags || []).filter((tag) => tag && !tag.isCommunity).map((tag) => tag.id));
+}
+
+export function withoutCommunityTagIds(ids, catalog) {
+  const community = new Set(
+    (catalog || [])
+      .filter((tag) => tag && tag.isCommunity)
+      .map((tag) => Number(tag.id))
+      .filter((id) => Number.isInteger(id) && id > 0),
+  );
+  const normalized = normalizeTagIds(ids);
+  if (community.size === 0) return normalized;
+  return normalized.filter((id) => !community.has(id));
 }
 
 /** Desired tags. Older requests stored an add/remove action plus one id list. */
