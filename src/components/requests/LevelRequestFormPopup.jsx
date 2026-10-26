@@ -37,7 +37,7 @@ import {
   tagRequestDiff,
   tagRequestIssue,
   tagRequestTargetIds,
-  withoutCommunityTagIds,
+  withoutUnrequestableTagIds,
 } from './levelRequestShared';
 import { useUnsavedClose } from '@/hooks/useUnsavedClose';
 import { collectLevelReferenceIds, getLevelReferences, peekLevelReferences } from '@/utils/levelReferences';
@@ -172,11 +172,11 @@ const LevelRequestFormPopup = ({
     [catalogTags, levelTags],
   );
   const requestableTargetIds = useMemo(
-    () => (targetIds == null ? null : withoutCommunityTagIds(targetIds, communityTagSources)),
+    () => (targetIds == null ? null : withoutUnrequestableTagIds(targetIds, communityTagSources)),
     [communityTagSources, targetIds],
   );
   const requestableAppliedIds = useMemo(
-    () => (appliedIds == null ? null : withoutCommunityTagIds(appliedIds, communityTagSources)),
+    () => (appliedIds == null ? null : withoutUnrequestableTagIds(appliedIds, communityTagSources)),
     [appliedIds, communityTagSources],
   );
   const tagDiff = useMemo(
@@ -267,7 +267,7 @@ const LevelRequestFormPopup = ({
     if ((type === 'curation' || type === 'curation_rerate') && !sameIdSet(curationTypeIds, baseline.curationTypeIds)) return true;
     if (type === 'tag') {
       if (requestableTargetIds == null || baseline.targetIds == null) return false;
-      if (!sameIdSet(requestableTargetIds, withoutCommunityTagIds(baseline.targetIds, communityTagSources))) return true;
+      if (!sameIdSet(requestableTargetIds, withoutUnrequestableTagIds(baseline.targetIds, communityTagSources))) return true;
     }
     return false;
   }, [artistId, artistName, baseline, communityTagSources, creditList, creditTeam, curationTypeIds, downloadFile, infoValue, keptDownload, kind, reason, requestableTargetIds, requestedBaseScore, requestedCurveMeta, requestedPpBaseScore, requestedRating, songId, songName, suffix, type]);
@@ -290,7 +290,7 @@ const LevelRequestFormPopup = ({
         }
         nextTarget = nextTarget == null
           ? null
-          : withoutCommunityTagIds(nextTarget, [...(catalogTagsRef.current || []), ...rows]);
+          : withoutUnrequestableTagIds(nextTarget, [...(catalogTagsRef.current || []), ...rows]);
         setAppliedIds(ids);
         setTargetIds(nextTarget);
         if (!userEditedTags.current) {
@@ -548,7 +548,7 @@ const LevelRequestFormPopup = ({
         body.value = infoValue;
       }
     }
-    if (type === 'tag') body.targetTagIds = withoutCommunityTagIds(targetIds, communityTagSources);
+    if (type === 'tag') body.targetTagIds = withoutUnrequestableTagIds(targetIds, communityTagSources);
     if (type === 'curation' || type === 'curation_rerate') body.curationTypeIds = curationTypeIds;
     const abortController = new AbortController();
     uploadAbortRef.current = abortController;
@@ -766,12 +766,15 @@ const LevelRequestFormPopup = ({
                 ids={requestableTargetIds}
                 onChange={(ids) => {
                   userEditedTags.current = true;
-                  setTargetIds(withoutCommunityTagIds(ids, communityTagSources));
+                  setTargetIds(withoutUnrequestableTagIds(ids, communityTagSources));
                 }}
               />
             )}
             {tagsReady && targetIds != null && (
               <span className="level-requests__hint">{t('levelRequests.form.communityTagsHint')}</span>
+            )}
+            {tagsReady && targetIds != null && (
+              <span className="level-requests__hint">{t('levelRequests.form.automaticTagsHint')}</span>
             )}
             {(!tagsReady || requestableTargetIds == null) && (
               <span className="level-requests__hint">{t('loading.generic', { ns: 'common' })}</span>

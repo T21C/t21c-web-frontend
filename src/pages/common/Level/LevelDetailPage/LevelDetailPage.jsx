@@ -2701,7 +2701,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
   return (
     <div>
       {levelMeta ? <MetaTags {...levelMeta} /> : null}
-      {res.level.fileId && !res.level.isDeleted && !res.level.isHidden && (
+      {res.level.fileId && !res.level.isDeleted && !res.level.isHidden && !showRatingPopup && (
         <WebAdofaiViewerButton levelId={effectiveId} />
       )}
       <div 

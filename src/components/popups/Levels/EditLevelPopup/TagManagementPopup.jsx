@@ -42,7 +42,7 @@ export const TagManagementPopup = ({ levelId = null, currentTags = [], onClose, 
     if (isDraft) {
       if (seededDraftSelection.current) return;
       seededDraftSelection.current = true;
-      setSelectedIds(currentTags.map((tag) => tag.id));
+      setSelectedIds(currentTags.filter((tag) => !tag.isAutomatic).map((tag) => tag.id));
       return;
     }
     setSelectedIds(
@@ -73,6 +73,16 @@ export const TagManagementPopup = ({ levelId = null, currentTags = [], onClose, 
     fetchTags();
   }, [t]);
 
+  useEffect(() => {
+    if (!isDraft) return;
+    const automaticIds = new Set(allTags.filter((tag) => tag.isAutomatic).map((tag) => tag.id));
+    if (automaticIds.size === 0) return;
+    setSelectedIds((prev) => {
+      const next = prev.filter((id) => !automaticIds.has(id));
+      return next.length === prev.length ? prev : next;
+    });
+  }, [allTags, isDraft]);
+
   const handleSave = async (e) => {
     if (e) {
       e.preventDefault();
@@ -86,7 +96,7 @@ export const TagManagementPopup = ({ levelId = null, currentTags = [], onClose, 
         const tags = selectedIds
           .map((id) => {
             const catalog = catalogById.get(id) || currentTags.find((tag) => tag.id === id);
-            if (!catalog) return null;
+            if (!catalog || catalog.isAutomatic) return null;
             return catalog.isCommunity ? { ...catalog, pinned: true } : catalog;
           })
           .filter(Boolean);
@@ -149,13 +159,17 @@ export const TagManagementPopup = ({ levelId = null, currentTags = [], onClose, 
         <div className="popup-content">
           <h2>{t('levelPopups.edit.tags.title')}</h2>
 
+          {isDraft && (
+            <p className="tag-management-automatic-hint">{t('levelPopups.edit.tags.automaticTagsHint')}</p>
+          )}
+
           {error && <div className="error-message">{error}</div>}
 
           <ItemPickManager
             items={allTags}
             selectedIds={selectedIds}
             onSelectedIdsChange={setSelectedIds}
-            poolFilter={(item) => !communityWonIds.has(item.id)}
+            poolFilter={(item) => !communityWonIds.has(item.id) && !(isDraft && item.isAutomatic)}
             enableGrouping
             fallbackGroupLabel={t('facetQueryBuilder.fallbackGroup')}
             labels={pickLabels}

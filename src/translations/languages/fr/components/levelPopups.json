@@ -101,7 +101,8 @@
     },
     "tags": {
       "communityTags": "Tags communautaires",
-      "communityTagsHint": "Ces tags ont été ajoutés par des votes communautaires. Les enregistrer ne les épinglera pas sauf si vous les ajoutez ci-dessus."
+      "communityTagsHint": "Ces tags ont été ajoutés par des votes communautaires. Les enregistrer ne les épinglera pas sauf si vous les ajoutez ci-dessus.",
+      "automaticTagsHint": "La durée, les effets, le DLC et les autres tags lus dans le fichier du niveau sont définis par l’analyseur et ne peuvent pas être demandés."
     }
   },
   "download": {

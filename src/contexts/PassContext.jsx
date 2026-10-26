@@ -15,7 +15,24 @@ const STORAGE_KEYS = {
   WF_FILTER: 'pass_wf_filter',
   ADOFAI_VERSION_FILTER: 'pass_adofai_version_filter',
   WRONG_JUDGEMENT_FILTER: 'pass_wrong_judgement_filter',
+  FACET_V1: 'pass_facet_v1',
 };
+
+function loadPassFacetV1() {
+  try {
+    const r = localStorage.getItem(STORAGE_KEYS.FACET_V1);
+    if (r) {
+      const p = JSON.parse(r);
+      if (p && typeof p === 'object') {
+        return {
+          tags: p.tags ?? null,
+          combine: 'and',
+        };
+      }
+    }
+  } catch { /* ignore */ }
+  return { tags: null, combine: 'and' };
+}
 
 export const PassContext = createContext();
 
@@ -46,6 +63,7 @@ export const PassContextProvider = ({ children }) => {
   const [wrongJudgementFilter, setWrongJudgementFilter] = useState(
     () => localStorage.getItem(STORAGE_KEYS.WRONG_JUDGEMENT_FILTER) || 'all',
   );
+  const [passFacetFilters, setPassFacetFilters] = useState(() => loadPassFacetV1());
 
   useEffect(() => {
     if (difficulties.length > 0) {
@@ -107,6 +125,10 @@ export const PassContextProvider = ({ children }) => {
     localStorage.setItem(STORAGE_KEYS.WRONG_JUDGEMENT_FILTER, wrongJudgementFilter);
   }, [wrongJudgementFilter]);
 
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.FACET_V1, JSON.stringify(passFacetFilters));
+  }, [passFacetFilters]);
+
   return (
     <PassContext.Provider
       value={{
@@ -144,6 +166,8 @@ export const PassContextProvider = ({ children }) => {
         setAdofaiVersionFilter,
         wrongJudgementFilter,
         setWrongJudgementFilter,
+        passFacetFilters,
+        setPassFacetFilters,
       }}
     >
       {children}

@@ -4,6 +4,7 @@ import "./ratingdetailpopup.css";
 import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import { careerForDetail, compareAccuracyDetails } from '@/utils/ratingAccuracy';
 import { PopupShell } from '@/components/common/PopupShell';
+import { WebAdofaiViewerButton } from '@/components/popups/Levels';
 import { usePopupHistory } from '@/hooks/usePopupHistory';
 import { getLocalVideoPreview, getVideoEmbedModifierClass, getVideoIframeReferrerPolicy, getVideoIframeScrolling } from "@/utils/videoLink";
 import { RatingItem } from '@/components/cards';
@@ -24,6 +25,7 @@ import autoratercato from "@/assets/icons/autorater cato.png";
 import { Tooltip } from '@/components/common/display/Tooltip';
 import { CommentFormatter } from '@/components/misc';
 import LevelRequestScoreTargets from '@/components/requests/LevelRequestScoreTargets';
+import { RatingHeaderMeta } from './RatingHeaderMeta';
 import { useViewDurationTracker } from '@/utils/viewDurationTracker';
 import {
   getRatingDraft,
@@ -620,6 +622,11 @@ export const RatingDetailPopup = ({
       closeDisabled={isAnimating}
       overlayClassName={`rating-popup-overlay${isExiting ? ' exiting' : ''}`}
       panelClassName={`rating-popup${isExiting ? ' exiting' : ''}`}
+      overlayChildren={
+        selectedRating.level?.id && selectedRating.level?.fileId ? (
+          <WebAdofaiViewerButton levelId={selectedRating.level.id} portaled={false} />
+        ) : null
+      }
     >
         <CloseButton
           className="rating-popup-close"
@@ -643,12 +650,13 @@ export const RatingDetailPopup = ({
               </a>
             )}
             </div>
+            <RatingHeaderMeta level={selectedRating.level} />
 
             <p className="artist">{selectedRating.level.artist}</p>
             <span className="creator">{formatCreatorDisplay(selectedRating.level)}</span>
             <div className="level-id-cleared-count-container">
             <span className="level-id">#{selectedRating.level.id}</span>
-            <span className="cleared-count">
+            <span className={`cleared-count${Number(selectedRating.level.clears) > 0 ? ' has-clears' : ''}`}>
               {t('rating.detailPopup.labels.clearedCount', { count: selectedRating.level.clears || 0 })}
             </span>
             </div>

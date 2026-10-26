@@ -132,7 +132,17 @@ const DifficultyContextProvider = (props) => {
             setTagsError(null);
 
             let tagsArray = [];
-            if (update) {
+            let refresh = update;
+            if (!refresh) {
+                const cached = localStorage.getItem('tagsCache');
+                const parsed = cached ? JSON.parse(cached) : [];
+                const knowsAutomatic = Array.isArray(parsed)
+                    && parsed.length > 0
+                    && Object.prototype.hasOwnProperty.call(parsed[0], 'isAutomatic');
+                if (knowsAutomatic) tagsArray = parsed;
+                else refresh = true;
+            }
+            if (refresh) {
                 // Fetch fresh data from server with no-cache to ensure latest data
                 const response = await api.get(`${routes.database.difficulties.root()}/tags`, {
                     headers: {
@@ -145,15 +155,11 @@ const DifficultyContextProvider = (props) => {
                     throw new Error('Invalid server response format for tags');
                 }
             }
-            else {
-                const cached = localStorage.getItem('tagsCache');
-                tagsArray = cached ? JSON.parse(cached) : [];
-            }
             const normalizedTags = tagsArray.map((tag) => ({
                 ...tag,
                 icon: selectIconSize(tag.icon, ICON_SIZE.SMALL),
             }));
-            if (update && normalizedTags.length) {
+            if (refresh && normalizedTags.length) {
                 try {
                     localStorage.setItem('tagsCache', JSON.stringify(normalizedTags));
                 } catch (storageError) {

@@ -102,7 +102,8 @@
     },
     "tags": {
       "communityTags": "Tagi społeczności",
-      "communityTagsHint": "Te tagi pochodzą z głosów społeczności. Zapis nie przypnie ich, chyba że dodasz je powyżej."
+      "communityTagsHint": "Te tagi pochodzą z głosów społeczności. Zapis nie przypnie ich, chyba że dodasz je powyżej.",
+      "automaticTagsHint": "Długość, VFX, DLC i inne tagi odczytane z pliku poziomu ustawia parser i nie można o nie prosić."
     }
   },
   "download": {

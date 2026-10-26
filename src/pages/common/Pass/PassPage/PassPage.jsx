@@ -9,7 +9,7 @@ import { useLocation } from 'react-router-dom';
 import { MetaTags } from "@/components/common/display";
 import { buildStaticPageMeta } from '@/utils/meta';
 import { ScoreCard } from "@/components/cards";
-import { StateDisplay, CustomSelect } from "@/components/common/selectors";
+import { StateDisplay, CustomSelect, FacetQueryBuilder } from "@/components/common/selectors";
 import { Tooltip } from '@/components/common/display/Tooltip';
 import { VirtualList } from "@/components/common/VirtualList";
 import axios from "axios";
@@ -21,6 +21,7 @@ import { ScrollButton } from "@/components/common/buttons";
 import { useAuth } from "@/contexts/AuthContext";
 import { DifficultyContext } from "@/contexts/DifficultyContext";
 import { DifficultySlider, TagSelector } from "@/components/common/selectors";
+import { buildFacetQueryParam } from "@/utils/facetQueryCodec";
 import { AdvancedSearchBar } from "@/components/common/AdvancedSearch";
 import { ResetIcon, SortIcon, FilterIcon, SortAscIcon, SortDescIcon, SwitchIcon } from "@/components/common/icons";
 import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
@@ -45,7 +46,7 @@ const PassPage = () => {
 
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
-  const { difficulties } = useContext(DifficultyContext);
+  const { difficulties, tags } = useContext(DifficultyContext);
   const [selectedSpecialDiffs, setSelectedSpecialDiffs] = useState([]);
   const [stateDisplayOpen, setStateDisplayOpen] = useState(false);
   const runRequest = useDebouncedRequest(500);
@@ -104,6 +105,8 @@ const PassPage = () => {
     setAdofaiVersionFilter,
     wrongJudgementFilter,
     setWrongJudgementFilter,
+    passFacetFilters,
+    setPassFacetFilters,
   } = useContext(PassContext);
 
   const sortOptions = [
@@ -148,6 +151,7 @@ const PassPage = () => {
           }
         }
 
+        const facetQuery = buildFacetQueryParam(passFacetFilters);
         const requestBody = {
           limit,
           offset: pageNumber * limit,
@@ -161,6 +165,7 @@ const PassPage = () => {
           minDiff: selectedLowFilterDiff !== 0 ? selectedLowFilterDiff : undefined,
           maxDiff: selectedHighFilterDiff !== 0 ? selectedHighFilterDiff : undefined,
           specialDifficulties: selectedSpecialDiffs,
+          ...(facetQuery ? { facetQuery } : {}),
           ...(sort.startsWith('RANDOM') ? { seed: getOrCreateRandomSeed() } : {}),
         };
 
@@ -191,7 +196,7 @@ const PassPage = () => {
     };
 
     fetchPasses();
-  }, [query, pageNumber, forceUpdate, deletedFilter, hide12k, selectedSpecialDiffs, keyFlag, wfFilter, adofaiVersionFilter, wrongJudgementFilter, sort]);
+  }, [query, pageNumber, forceUpdate, deletedFilter, hide12k, selectedSpecialDiffs, keyFlag, wfFilter, adofaiVersionFilter, wrongJudgementFilter, sort, passFacetFilters]);
 
   function resetAll() {
     setSort("SCORE_DESC");
@@ -206,6 +211,7 @@ const PassPage = () => {
     setAdofaiVersionFilter("all");
     setDeletedFilter("hide");
     setWrongJudgementFilter("all");
+    setPassFacetFilters({ tags: null, combine: 'and' });
 
     // Clear and reload data
     setLoading(true);
@@ -442,6 +448,17 @@ const PassPage = () => {
                   selectedItems={selectedSpecialDiffs}
                   onToggle={toggleSpecialDifficulty}
                 />
+                <div className="tags-wrapper">
+                  <FacetQueryBuilder
+                    items={tags}
+                    value={passFacetFilters.tags}
+                    onChange={(v) => {
+                      setPassFacetFilters((prev) => ({ ...prev, tags: v }));
+                      triggerRefresh();
+                    }}
+                    title={t('level.settingExp.tags')}
+                  />
+                </div>
                                   <StateDisplay
                     label={t('pass.settings.filter.options.wfFilter')}
                     currentState={wfFilter}
