@@ -186,7 +186,7 @@ const ScoreCard = ({ scoreData, topScores = [], potentialTopScores = [], mode = 
       {accuracyBlock}
       {speedBlock}
       <PassFlags pass={scoreData} />
-      {scoreData.keyboardSetup?.keyCount ? (
+      {scoreData.keyboardSetup?.keyCount && 1 == 0 ? (// disable
         <p className="score-card__keyboard-bind">
           {t("score.card.labels.keyboardBind", { count: scoreData.keyboardSetup.keyCount })}
         </p>
