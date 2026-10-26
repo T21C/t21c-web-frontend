@@ -19,6 +19,7 @@ import { JudgementInputs } from './JudgementInputs';
 import { getBilibiliCoverUrl } from '@/utils/bilibiliCover';
 import { getDouyinCoverUrl } from '@/utils/douyinCover';
 import { getVideoEmbedModifierClass, getVideoIframeReferrerPolicy, getVideoIframeScrolling } from '@/utils/videoLink';
+import { YoutubeVideoPicker } from '@/components/common/cores/YoutubeVideoPicker/YoutubeVideoPicker';
 
 export const PASS_CORE_COPY = {
   submit: {
@@ -348,6 +349,66 @@ export function PassCoreForm({
     );
   };
 
+  const videoLinkStatus = videoDetail && (videoDetail.title || videoDetail.channelName || videoDetail.timestamp || mode === 'edit') ? (
+    <div className="youtube-info">
+      {videoDetail.title ? (
+        <div className="yt-info">
+          <h4>{t(copy.videoTitleLabel, { ns: copy.ns })}</h4>
+          <p style={{ maxWidth: '%' }}>{videoDetail.title}</p>
+        </div>
+      ) : null}
+      {videoDetail.channelName ? (
+        <div className="yt-info">
+          <h4>{t(copy.videoChannelLabel, { ns: copy.ns })}</h4>
+          <p>{videoDetail.channelName}</p>
+        </div>
+      ) : null}
+      {mode === 'edit' || videoDetail.timestamp ? (
+        <div className="yt-info">
+          <h4>{t(copy.videoTimestampLabel, { ns: copy.ns })}</h4>
+          {mode === 'edit' ? (
+            <input
+              type="text"
+              autoComplete="off"
+              placeholder="YYYY-MM-DDTHH:MM:SS"
+              name="vidUploadTime"
+              value={form.vidUploadTime}
+              onChange={onInputChange}
+              style={{ borderColor: isFormValidDisplay.vidUploadTime ? '' : 'red' }}
+            />
+          ) : (
+            <p>{formatDate(videoDetail.timestamp, i18next?.language)}</p>
+          )}
+        </div>
+      ) : null}
+    </div>
+  ) : mode === 'edit' ? (
+    <div className="youtube-info">
+      <div className="yt-info">
+        <p style={{ color: '#aaa' }}>{t(copy.videoNoLink, { ns: copy.ns })}</p>
+      </div>
+      <div className="yt-info">
+        <h4>{t(copy.videoTimestampLabel, { ns: copy.ns })}</h4>
+        <input
+          type="text"
+          autoComplete="off"
+          placeholder="YYYY-MM-DDTHH:MM:SS"
+          name="vidUploadTime"
+          value={form.vidUploadTime}
+          onChange={onInputChange}
+        />
+      </div>
+    </div>
+  ) : !videoDetail ? (
+    <div className="yt-info">
+      <p style={{ color: '#aaa' }}>
+        {videoLinkResolving
+          ? t(copy.videoLinkResolving, { ns: copy.ns, defaultValue: 'Resolving video link…' })
+          : t(copy.videoNoLink, { ns: copy.ns })}
+      </p>
+    </div>
+  ) : null;
+
   return (
     <form
       ref={resolvedFormRef}
@@ -448,66 +509,13 @@ export function PassCoreForm({
             onChange={onInputChange}
             style={{ borderColor: isFormValidDisplay.videoLink ? '' : 'red' }}
           />
-          {videoDetail && (videoDetail.title || videoDetail.channelName || videoDetail.timestamp || mode === 'edit') ? (
-            <div className="youtube-info">
-              {videoDetail.title ? (
-                <div className="yt-info">
-                  <h4>{t(copy.videoTitleLabel, { ns: copy.ns })}</h4>
-                  <p style={{ maxWidth: '%' }}>{videoDetail.title}</p>
-                </div>
-              ) : null}
-              {videoDetail.channelName ? (
-                <div className="yt-info">
-                  <h4>{t(copy.videoChannelLabel, { ns: copy.ns })}</h4>
-                  <p>{videoDetail.channelName}</p>
-                </div>
-              ) : null}
-              {mode === 'edit' || videoDetail.timestamp ? (
-                <div className="yt-info">
-                  <h4>{t(copy.videoTimestampLabel, { ns: copy.ns })}</h4>
-                  {mode === 'edit' ? (
-                    <input
-                      type="text"
-                      autoComplete="off"
-                      placeholder="YYYY-MM-DDTHH:MM:SS"
-                      name="vidUploadTime"
-                      value={form.vidUploadTime}
-                      onChange={onInputChange}
-                      style={{ borderColor: isFormValidDisplay.vidUploadTime ? '' : 'red' }}
-                    />
-                  ) : (
-                    <p>{formatDate(videoDetail.timestamp, i18next?.language)}</p>
-                  )}
-                </div>
-              ) : null}
-            </div>
-          ) : mode === 'edit' ? (
-            <div className="youtube-info">
-              <div className="yt-info">
-                <p style={{ color: '#aaa' }}>{t(copy.videoNoLink, { ns: copy.ns })}</p>
-              </div>
-              <div className="yt-info">
-                <h4>{t(copy.videoTimestampLabel, { ns: copy.ns })}</h4>
-                <input
-                  type="text"
-                  autoComplete="off"
-                  placeholder="YYYY-MM-DDTHH:MM:SS"
-                  name="vidUploadTime"
-                  value={form.vidUploadTime}
-                  onChange={onInputChange}
-                />
-              </div>
-            </div>
-          ) : !videoDetail ? (
-            <div className="yt-info">
-              <p style={{ color: '#aaa' }}>
-                {videoLinkResolving
-                  ? t(copy.videoLinkResolving, { ns: copy.ns, defaultValue: 'Resolving video link…' })
-                  : t(copy.videoNoLink, { ns: copy.ns })}
-              </p>
-              <br />
-            </div>
-          ) : null}
+          {mode === 'submit' ? (
+            <YoutubeVideoPicker
+              onSelectUrl={(url) => onInputChange?.({ target: { name: 'videoLink', value: url } })}
+            >
+              {videoLinkStatus}
+            </YoutubeVideoPicker>
+          ) : videoLinkStatus}
         </div>
         )}
 

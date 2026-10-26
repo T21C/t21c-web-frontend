@@ -20,6 +20,7 @@ import { ProfileSelector } from "@/components/common/selectors";
 import { LevelSelectionPopup, CDNTosPopup, ChartClearNotifyOptInPopup } from "@/components/popups/Levels";
 import { SongSelectorPopup } from "@/components/popups/Songs";
 import { ArtistSelectorPopup } from "@/components/popups/Artists";
+import { YoutubeVideoPicker } from "@/components/common/cores/YoutubeVideoPicker/YoutubeVideoPicker";
 
 import api from "@/utils/api";
 import {
@@ -176,7 +177,6 @@ const LevelSubmissionPage = () => {
   const [showLevelSelection, setShowLevelSelection] = useState(false);
   const [levelFiles, setLevelFiles] = useState([]);
   const [selectedFileId, setSelectedFileId] = useState(null);
-  const [showCancelWarning, setShowCancelWarning] = useState(false);
 
   const [showCdnTos, setShowCdnTos] = useState(false);
   const [showChartClearNotifyOptIn, setShowChartClearNotifyOptIn] = useState(false);
@@ -624,25 +624,23 @@ const LevelSubmissionPage = () => {
       toast.error(error.message || 'Failed to select level');
     } finally {
       setShowLevelSelection(false);
-      setShowCancelWarning(false);
       setLevelFiles([]);
       setSelectedFileId(null);
       setSubmission(false);
     }
   };
 
-  const handleLevelSelectionClose = () => {
-    setShowCancelWarning(true);
-  };
+  const handleLevelSelectionClose = async () => {
+    if (submission) return;
+    const leaveDefault = window.confirm(t('levelSubmission.levelSelection.leaveDefault'));
+    if (!leaveDefault) return;
 
-  const handleCancelConfirm = async () => {
     try {
       setSubmission(true);
-      // Find the largest .adofai file
-      const largestFile = levelFiles.reduce((largest, current) => 
+      const largestFile = levelFiles.reduce((largest, current) =>
         current.size > largest.size ? current : largest
       );
-      
+
       const response = await selectLevelChart({
         submissionId: finalSubmissionId,
         selectedLevel: zipLevelFileKey(largestFile) || largestFile.name,
@@ -660,15 +658,10 @@ const LevelSubmissionPage = () => {
       toast.error(error.message || 'Failed to select level');
     } finally {
       setShowLevelSelection(false);
-      setShowCancelWarning(false);
       setLevelFiles([]);
       setSelectedFileId(null);
       setSubmission(false);
     }
-  };
-
-  const handleCancelReject = () => {
-    setShowCancelWarning(false);
   };
 
   const addCharter = () => {
@@ -929,24 +922,8 @@ const LevelSubmissionPage = () => {
             levelFiles={levelFiles}
             onSelect={handleLevelSelect}
             onClose={handleLevelSelectionClose}
+            closeDisabled={submission}
           />
-        )}
-
-        {showCancelWarning && (
-          <div className="warning-popup">
-            <div className="warning-content">
-              <h3>Warning: Level Selection Required</h3>
-              <p>If you close this window, the system will automatically select the largest .adofai file from your zip and proceed with the submission. Are you sure you want to continue?</p>
-              <div className="warning-buttons">
-                <button onClick={handleCancelConfirm} className="confirm-btn btn-fill-danger">
-                  Proceed with Largest File
-                </button>
-                <button onClick={handleCancelReject} className="cancel-btn btn-fill-neutral-muted">
-                  Return to Selection
-                </button>
-              </div>
-            </div>
-          </div>
         )}
 
         {/* CDN ToS Agreement Prompt */}
@@ -1225,6 +1202,9 @@ const LevelSubmissionPage = () => {
                 onChange={handleInputChange}
                 style={{ borderColor: isFormValidDisplay.videoLink ? "" : "red" }}
               />
+              <YoutubeVideoPicker
+                onSelectUrl={(url) => handleInputChange({ target: { name: 'videoLink', value: url } })}
+              >
               {videoDetail?.title || videoDetail?.channelName || videoDetail?.timestamp ? 
               (<div className="youtube-info">
                 {videoDetail.title ? (
@@ -1252,8 +1232,8 @@ const LevelSubmissionPage = () => {
                     ? t('levelSubmission.videoInfo.resolving', { defaultValue: 'Resolving video link…' })
                     : t('levelSubmission.videoInfo.nolink')}
                 </p>
-                <br />
               </div>) : null}
+              </YoutubeVideoPicker>
             </div>
 
             <div className="zip-upload-section">

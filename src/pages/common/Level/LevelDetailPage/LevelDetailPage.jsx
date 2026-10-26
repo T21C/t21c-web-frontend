@@ -980,6 +980,112 @@ const RerateHistoryDropdown = ({ show, onClose, rerateHistory, difficultyDict, c
   );
 };
 
+function CurationHistoryTypeIcons({ typeIds, curationTypesDict }) {
+  const { t } = useTranslation(['pages']);
+  const types = getCurationTypesResolved({ typeIds }, curationTypesDict);
+  if (!types.length) {
+    return (
+      <span
+        className="curation-history-empty"
+        title={t('levelDetail.curationHistory.empty', { defaultValue: 'None' })}
+      >
+        —
+      </span>
+    );
+  }
+  return (
+    <div className="curation-history-icons">
+      {types.map((type) => (
+        <div className="curation-history-icon" key={type.id ?? type.name} title={type.name || String(type.id)}>
+          {type.icon ? (
+            <img src={selectIconSize(type.icon, ICON_SIZE.SMALL)} alt={type.name || ''} />
+          ) : (
+            <span>{type.name || type.id}</span>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+const CurationHistoryList = ({ curationHistory, curationTypesDict }) => {
+  const { t } = useTranslation(['pages', 'common']);
+  if (!curationHistory?.length) return null;
+  return (
+    <div className="curation-history">
+      <div className="curation-history-header">
+        {t('levelDetail.curationHistory.header', { defaultValue: 'Curation History' })}
+      </div>
+      <div className="curation-history-sequence">
+        {curationHistory.slice().reverse().map((entry, idx) => (
+          <div className="curation-history-row" key={entry.id || idx}>
+            <div className="curation-history-step">
+              <CurationHistoryTypeIcons typeIds={entry.previousTypeIds} curationTypesDict={curationTypesDict} />
+              <span className="curation-history-arrow">➔</span>
+              <CurationHistoryTypeIcons typeIds={entry.newTypeIds} curationTypesDict={curationTypesDict} />
+              <div className="curation-history-meta">
+                <span>{formatDate(entry.createdAt, i18next?.language)}</span>
+                {entry.user && (
+                  <span className="curation-history-user">{entry.user.username || entry.changedBy}</span>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const CurationHistoryDropdown = ({ show, onClose, curationHistory, curationTypesDict, containerRef, boundaryRef }) => {
+  const panelRef = useRef(null);
+
+  const { panelStyle, placement, portalRoot } = usePortaledPanelAnchor({
+    open: show,
+    anchorRef: containerRef,
+    panelRef,
+    boundaryRef,
+    horizontalAlign: 'end',
+    reanchorDeps: [curationHistory?.length],
+    maxHeightCap: typeof window !== 'undefined' ? window.innerHeight * 0.7 : 640,
+  });
+
+  useEffect(() => {
+    if (!show) return;
+    const handlePointerDownCapture = (event) => {
+      if (containerRef?.current?.contains(event.target)) return;
+      if (panelRef?.current?.contains(event.target)) return;
+      onClose();
+    };
+    document.addEventListener('mousedown', handlePointerDownCapture, true);
+    return () => document.removeEventListener('mousedown', handlePointerDownCapture, true);
+  }, [show, onClose, containerRef]);
+
+  useEffect(() => {
+    if (!show) return;
+    const onKey = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [show, onClose]);
+
+  if (!show || !curationHistory?.length || !portalRoot) return null;
+
+  return (
+    <Portal root={portalRoot}>
+      <div
+        ref={panelRef}
+        className={`curation-history-dropdown ${PORTALED_PANEL_CLASS} portaled-panel--z-dropdown`}
+        data-placement={placement}
+        style={panelStyle}
+      >
+        <CurationHistoryList curationHistory={curationHistory} curationTypesDict={curationTypesDict} />
+      </div>
+    </Portal>
+  );
+};
+
 const LevelBannerWarningIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden>
     <path
@@ -1107,6 +1213,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
   const [showGimmickReason, setShowGimmickReason] = useState(false);
   const [showDownloadPopup, setShowDownloadPopup] = useState(false);
   const [showRerateDropdown, setShowRerateDropdown] = useState(false);
+  const [showCurationHistoryDropdown, setShowCurationHistoryDropdown] = useState(false);
   const [rerateArrowEnabled, setRerateArrowEnabled] = useState(true);
   const [showScoreGraphDropdown, setShowScoreGraphDropdown] = useState(false);
   const [scoreGraphIconEnabled, setScoreGraphIconEnabled] = useState(true);
@@ -1128,6 +1235,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
   const tournamentHeaderCornerSlotRef = useRef(null);
   const toRateHeaderCornerSlotRef = useRef(null);
   const rerateHistoryAnchorRef = useRef(null);
+  const curationHistoryAnchorRef = useRef(null);
   const wrapperLevelRef = useRef(null);
   const levelHeaderRef = useRef(null);
   const scoreGraphAnchorRef = useRef(null);
@@ -3114,6 +3222,35 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                   </div>
                 </div>
               )}
+              {curationsSorted.length === 0 && res?.curationHistory?.length > 0 && (
+                <div className="level-detail__curation-panel">
+                  <div ref={curationHistoryAnchorRef} className="curation-history-fallback">
+                    <button
+                      type="button"
+                      className={`curation-history-fallback-trigger ${showCurationHistoryDropdown ? 'open' : ''}`}
+                      onClick={() => setShowCurationHistoryDropdown((open) => !open)}
+                      aria-expanded={showCurationHistoryDropdown}
+                      aria-label={
+                        showCurationHistoryDropdown
+                          ? t('levelDetail.curationHistory.close', { defaultValue: 'Close curation history' })
+                          : t('levelDetail.curationHistory.open', { defaultValue: 'Show curation history' })
+                      }
+                      title={t('levelDetail.curationHistory.header', { defaultValue: 'Curation History' })}
+                    >
+                      <HistoryListIcon className="curation-history-fallback-icon" size="16px" />
+                      <span className="curation-history-fallback-chevron" aria-hidden>&#9660;</span>
+                    </button>
+                    <CurationHistoryDropdown
+                      show={showCurationHistoryDropdown}
+                      onClose={() => setShowCurationHistoryDropdown(false)}
+                      curationHistory={res.curationHistory}
+                      curationTypesDict={curationTypesDict}
+                      containerRef={curationHistoryAnchorRef}
+                      boundaryRef={wrapperLevelRef}
+                    />
+                  </div>
+                </div>
+              )}
 
               {/* Expandable Curation / Creator Description */}
               {showDescriptionBox && (
@@ -3917,6 +4054,10 @@ const LevelDetailPageContent = ({ mockData = null }) => {
               <div className="curation-tooltip-time">
                 Updated on {formatDate(activeCurationForTooltip.updatedAt, i18next?.language)}
               </div>
+              <CurationHistoryList
+                curationHistory={res?.curationHistory}
+                curationTypesDict={curationTypesDict}
+              />
             </div>
           </Portal>
         );

@@ -132,6 +132,12 @@
     "liked": "좋아요!",
     "unliked": "좋아요 취소"
   },
+  "curationHistory": {
+    "header": "큐레이션 기록",
+    "open": "큐레이션 기록 보기",
+    "close": "큐레이션 기록 닫기",
+    "empty": "없음"
+  },
   "rerateHistory": {
     "header": "재책정 역사",
     "open": "재책정 역사 보기",

@@ -2,7 +2,7 @@ import { useLayoutEffect, useRef, useState } from 'react';
 import './marqueetext.css';
 
 const MARQUEE_FORWARD_SPEED_PX_PER_SECOND = 50;
-const MARQUEE_RETURN_SPEED_PX_PER_SECOND = 400;
+const MARQUEE_RETURN_SPEED_PX_PER_SECOND = 100;
 const FADE_WIDTH = '1.5rem';
 const EDGE_THRESHOLD = 1;
 

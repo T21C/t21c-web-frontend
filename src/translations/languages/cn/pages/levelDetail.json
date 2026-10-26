@@ -132,6 +132,12 @@
     "liked": "已收藏！",
     "unliked": "已取消收藏"
   },
+  "curationHistory": {
+    "header": "精选历史",
+    "open": "显示精选历史",
+    "close": "关闭精选历史",
+    "empty": "无"
+  },
   "rerateHistory": {
     "header": "重评历史",
     "open": "显示重评历史",

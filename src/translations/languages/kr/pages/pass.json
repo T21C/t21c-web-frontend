@@ -44,6 +44,7 @@
         "difficulty": "난이도",
         "speed": "속도",
         "keyCount": "키 개수",
+        "likes": "좋아요 수",
         "random": "무작위"
       }
     },

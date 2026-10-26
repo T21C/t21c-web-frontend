@@ -140,5 +140,11 @@
       "band": "Ten tag nie jest dostępny dla tej trudności",
       "deleted": "Nie można głosować na usunięty poziom"
     }
+  },
+  "curationHistory": {
+    "header": "Historia kuracji",
+    "open": "Pokaż historię kuracji",
+    "close": "Zamknij historię kuracji",
+    "empty": "Brak"
   }
 } 

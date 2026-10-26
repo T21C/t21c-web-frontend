@@ -1,4 +1,5 @@
 // tuf-search: #ScoreCard #scoreCard #cards
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./scorecard.css"
 import "@/index.css"
@@ -7,15 +8,19 @@ import { clampFloat, formatScore, formatPassDate, formatCreatorDisplay, ICON_SIZ
 import { formatNumber } from "@/utils";
 import { formatAccuracyRatio } from "@/utils/statFormatters";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { Tooltip } from '@/components/common/display/Tooltip';
 import WorldsFirstFlag from "../WorldsFirstFlag/WorldsFirstFlag";
 import PassFlags from "../PassFlags/PassFlags";
 import { VideoLinkIcon } from "@/components/common/icons";
+import { LikeButton } from "@/components/common/buttons";
 import { getPrimaryVideoLink } from "@/utils/videoLink";
 import { isAutoSubmittedPass } from "@/utils/passSubmissionSource";
 import { UserAvatar } from "@/components/layout";
 import { userAvatarUrls } from "@/utils/playerAvatarDisplay";
 import MarqueeText from "@/components/common/display/MarqueeText/MarqueeText";
+import api from "@/utils/api";
+import { routes } from "@/api/routes";
 import i18next from "i18next";
 import { shouldShowXPerfectJudgements } from "@/utils/adofaiVersion";
 import { isPureXPerfect } from "@/utils/CalcAcc";
@@ -42,14 +47,37 @@ const Judgements = ({judgements, showXPerfect}) => {
 // eslint-disable-next-line react/prop-types
 const ScoreCard = ({ scoreData, topScores = [], potentialTopScores = [], mode = 'profile' }) => {
   const {t} = useTranslation('components');
+  const { user } = useAuth();
   const isFeaturedMode = mode === 'featured';
   const isPassCardMode = mode === 'passcard' || isFeaturedMode;
+  const showPassLike = mode === 'passcard';
   const isHiddenLevel = scoreData.level?.isHidden || false;
   const isHiddenPass = scoreData.isHidden || false;
   const showVideo = Boolean(scoreData.videoLink) && !isHiddenLevel && !isAutoSubmittedPass(scoreData);
   const { difficultyDict } = useDifficultyContext();
   const formattedDate = formatPassDate(scoreData.vidUploadTime, i18next?.language);
   const passDetailTo = `/passes/${scoreData.id}`;
+  const [likeState, setLikeState] = useState({
+    isLiked: Boolean(scoreData.isLiked),
+    likes: scoreData.likes ?? 0,
+  });
+
+  useEffect(() => {
+    setLikeState({
+      isLiked: Boolean(scoreData.isLiked),
+      likes: scoreData.likes ?? 0,
+    });
+  }, [scoreData.id, scoreData.isLiked, scoreData.likes]);
+
+  const handleLikeRequest = async (action) => {
+    const { data } = await api.put(routes.database.passes.like(scoreData.id), { action });
+    if (!data?.success) throw new Error('like failed');
+    return { likes: data.likes };
+  };
+
+  const handleLikeChange = ({ liked: nextLiked, count: nextCount }) => {
+    setLikeState({ isLiked: nextLiked, likes: nextCount });
+  };
   const xPerfectMode = !!(scoreData.isXPerfectMode || scoreData.flags?.isXPerfectMode);
   const accuracyClass = isPureXPerfect(scoreData.judgements, xPerfectMode)
     ? 'pure-xperfect'
@@ -186,12 +214,12 @@ const ScoreCard = ({ scoreData, topScores = [], potentialTopScores = [], mode = 
       {accuracyBlock}
       {speedBlock}
       <PassFlags pass={scoreData} />
-      {scoreData.keyboardSetup?.keyCount ? (
+      {scoreData.keyboardSetup?.keyCount && 1 == 0 ? (// disable
         <p className="score-card__keyboard-bind">
           {t("score.card.labels.keyboardBind", { count: scoreData.keyboardSetup.keyCount })}
         </p>
       ) : null}
-      {!isFeaturedMode && (formattedDate || showVideo) && (
+      {!isFeaturedMode && (showPassLike || formattedDate || showVideo) && (
         <div className="score-card__trailing">
           {formattedDate && (
             <time className="score-card__date" dateTime={scoreData.vidUploadTime}>
@@ -199,13 +227,28 @@ const ScoreCard = ({ scoreData, topScores = [], potentialTopScores = [], mode = 
             </time>
           )}
 
-          <div className="vid-logo-wrapper">
-            {showVideo && (
-              <a className="svg-fill" href={getPrimaryVideoLink(scoreData.videoLink)} target="_blank" rel="noreferrer" title={t('score.card.tooltips.watchVideo')}>
-                <VideoLinkIcon size="32px" url={scoreData.videoLink} />
-              </a>
-            )}
-          </div>
+          {showPassLike && (
+            <LikeButton
+              className="score-card__like"
+              liked={likeState.isLiked}
+              count={likeState.likes}
+              onRequest={handleLikeRequest}
+              onChange={handleLikeChange}
+              stopPropagation
+              invisibleWhenEmpty={!user}
+              disabled={scoreData?.id == null}
+            />
+          )}
+
+          {(showVideo || !showPassLike) && (
+            <div className="vid-logo-wrapper">
+              {showVideo && (
+                <a className="svg-fill" href={getPrimaryVideoLink(scoreData.videoLink)} target="_blank" rel="noreferrer" title={t('score.card.tooltips.watchVideo')}>
+                  <VideoLinkIcon size="32px" url={scoreData.videoLink} />
+                </a>
+              )}
+            </div>
+          )}
         </div>
       )}
     </>

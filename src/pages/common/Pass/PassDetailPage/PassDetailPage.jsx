@@ -22,6 +22,7 @@ import { formatDate, ICON_SIZE, normalizeKeyCount, selectIconSize } from "@/util
 import { formatAccuracyRatio } from "@/utils/statFormatters";
 import i18next from "i18next";
 import { EyeIcon, EyeOffIcon, TrashIcon, WarningIcon } from "@/components/common/icons";
+import { LikeButton } from "@/components/common/buttons";
 import { Tooltip } from '@/components/common/display/Tooltip';
 import PassAdofaiV2Flag, { PassAdofaiPre340Flag } from "@/components/cards/PassFlags/PassAdofaiV2Flag";
 import WorldsFirstFlag from "@/components/cards/WorldsFirstFlag/WorldsFirstFlag";
@@ -163,6 +164,36 @@ const PassDetailPage = () => {
   }, [id]);
 
   useEffect(() => {
+    if (!user?.id || !id) return undefined;
+    let active = true;
+    (async () => {
+      try {
+        const response = await api.get(routes.database.passes.isLiked(id));
+        if (!active) return;
+        setRes((prevRes) => {
+          if (!prevRes?.pass || Number(prevRes.pass.id) !== Number(id)) return prevRes;
+          return {
+            ...prevRes,
+            isLiked: Boolean(response.data.isLiked),
+            pass: {
+              ...prevRes.pass,
+              likes: response.data.likes !== undefined ? response.data.likes : prevRes.pass.likes,
+            },
+          };
+        });
+      } catch (error) {
+        console.error("Error fetching like status:", error);
+        if (!active) return;
+        setRes((prevRes) => {
+          if (!prevRes) return prevRes;
+          return { ...prevRes, isLiked: false };
+        });
+      }
+    })();
+    return () => { active = false; };
+  }, [id, user?.id, res?.pass?.id]);
+
+  useEffect(() => {
     setDetailsExpanded(false);
   }, [id, res?.pass?.details]);
 
@@ -201,6 +232,26 @@ const PassDetailPage = () => {
   const levelDiff = difficultyDict[pass.level?.diffId];
   const baseScore = pass.level?.baseScore || levelDiff?.baseScore;
   const isOwnPass = user && user.playerId === pass.player?.id;
+
+  const handleLikeRequest = async (action) => {
+    const { data } = await api.put(routes.database.passes.like(id), { action });
+    if (!data?.success) throw new Error('like failed');
+    return { likes: data.likes };
+  };
+
+  const handleLikeChange = ({ liked: nextLiked, count: nextCount }) => {
+    setRes((prevRes) => {
+      if (!prevRes?.pass) return prevRes;
+      return {
+        ...prevRes,
+        isLiked: nextLiked,
+        pass: {
+          ...prevRes.pass,
+          likes: nextCount,
+        },
+      };
+    });
+  };
 
   return (
     <>
@@ -332,6 +383,15 @@ const PassDetailPage = () => {
             )}
             {isAutoSubmittedPass(pass) && <PassMedia key={pass.id} pass={pass} />}
             <div className="info">
+              <div className="pass-detail__like-bar">
+                <LikeButton
+                  liked={Boolean(res.isLiked)}
+                  count={pass.likes ?? 0}
+                  onRequest={handleLikeRequest}
+                  onChange={handleLikeChange}
+                  disabled={pass?.id == null}
+                />
+              </div>
               <div className="info-items">
                 <div className="info-item">
                   <p>{t('passDetail.stats.score.label')}</p>

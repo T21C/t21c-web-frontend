@@ -124,5 +124,17 @@
   },
   "imageSelector": {
     "rotationHintTooltip": "<p><strong>Mouse wheel</strong><br />Hold <kbd>Shift</kbd> and scroll <em>anywhere</em> on this dialog to rotate (the crop area is optional). Hold <kbd>Shift</kbd> + <kbd>Ctrl</kbd> for <em>finer</em> wheel steps.</p><p><strong>Arrow keys</strong><br /><kbd>←</kbd> / <kbd>➔</kbd>: 1° per tap; with <kbd>Shift</kbd>: 10°; with <kbd>Shift</kbd> + <kbd>Ctrl</kbd>: 1°.</p>"
+  },
+  "youtubePicker": {
+    "linkChannel": "Link a YouTube channel to pick from your videos",
+    "yourVideos": "Your videos",
+    "hideVideos": "Hide videos",
+    "searchPlaceholder": "Search your videos",
+    "empty": "No matching videos",
+    "loadOlder": "Load older videos",
+    "unlisted": "Unlisted",
+    "unlistedNote": "Unlisted videos stay hidden.",
+    "allowAccess": "Allow channel access",
+    "loadFailed": "Couldn't load your YouTube videos"
   }
 } 

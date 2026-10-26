@@ -1,0 +1,14 @@
+{
+  "youtubePicker": {
+    "linkChannel": "Liez une chaîne YouTube pour choisir parmi vos vidéos",
+    "yourVideos": "Vos vidéos",
+    "hideVideos": "Masquer les vidéos",
+    "searchPlaceholder": "Rechercher dans vos vidéos",
+    "empty": "Aucune vidéo correspondante",
+    "loadOlder": "Charger des vidéos plus anciennes",
+    "unlisted": "Non répertoriée",
+    "unlistedNote": "Les vidéos non répertoriées restent masquées.",
+    "allowAccess": "Autoriser l'accès à la chaîne",
+    "loadFailed": "Impossible de charger vos vidéos YouTube"
+  }
+}

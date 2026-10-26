@@ -68,6 +68,9 @@
   "roles": {
     "specialThanks": "Remerciements"
   },
+  "levelSelection": {
+    "leaveDefault": "Laisser la sélection par défaut ? Le chart le plus volumineux sera utilisé, et ce pourrait être le mauvais."
+  },
   "chartClearNotify": {
     "title": "Notifications de clear",
     "body": "Souhaitez-vous être notifié quand quelqu’un clear vos charts ?",
