@@ -209,7 +209,7 @@ export const RatingItem = ({
             <Collapsible open={isExpanded} onOpenChange={setIsExpanded} duration="0.3s" easing="ease">
               <CollapsibleContent>
             <div className="rating-comment">
-              <CommentFormatter resolveLevelRefs>{comment}</CommentFormatter>
+              <CommentFormatter>{comment}</CommentFormatter>
             </div>
               </CollapsibleContent>
             </Collapsible>

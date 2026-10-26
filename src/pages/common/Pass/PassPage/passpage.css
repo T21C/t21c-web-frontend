@@ -31,6 +31,11 @@
   flex-wrap: wrap;
 }
 
+.pass-page .pass-body .filter-row .tags-wrapper {
+  flex: 1;
+  min-width: 12rem;
+}
+
 .pass-page .pass-body .filter-row .state-switches-item {
   display: flex;
   justify-content: center;

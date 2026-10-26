@@ -29,7 +29,8 @@ export function useBillingData(options = {}) {
   const [checkoutTermIndex, setCheckoutTermIndex] = useState(2);
   const [purchaseAsGift, setPurchaseAsGift] = useState(false);
   const [giftRecipient, setGiftRecipient] = useState(null);
-  const [checkoutCurrency, setCheckoutCurrency] = useState("auto");
+  /** Null until the buyer picks a currency. Default follows pricingDisplay (language, then country). */
+  const [manualCheckoutCurrency, setManualCheckoutCurrency] = useState(null);
 
   const fetchAll = useCallback(async (opts = {}) => {
     const forceRefresh = Boolean(opts.forceRefresh);
@@ -130,6 +131,15 @@ export function useBillingData(options = {}) {
 
   const selectedCheckoutTerm = TUF_STELLAR_TERM_OPTIONS[checkoutTermIndex] ?? TUF_STELLAR_TERM_OPTIONS[0];
 
+  const preferredCheckoutCurrency = useMemo(() => {
+    const cur = String(billingState?.pricingDisplay?.currency ?? "")
+      .trim()
+      .toUpperCase();
+    return TUF_STELLAR_CHECKOUT_CURRENCIES.includes(cur) ? cur : "USD";
+  }, [billingState?.pricingDisplay?.currency]);
+
+  const checkoutCurrency = manualCheckoutCurrency ?? preferredCheckoutCurrency;
+
   const effectiveCheckoutCurrency = useMemo(() => {
     if (checkoutCurrency === "auto") {
       return billingState?.pricingDisplay?.currency ?? "USD";
@@ -177,7 +187,8 @@ export function useBillingData(options = {}) {
     const term = selectedCheckoutTerm;
     const currency = effectiveCheckoutCurrency;
     const amounts =
-      checkoutCurrency === "auto" && billingState?.pricingDisplay?.amountsByMonths
+      (checkoutCurrency === "auto" || checkoutCurrency === billingState?.pricingDisplay?.currency) &&
+      billingState?.pricingDisplay?.amountsByMonths
         ? billingState.pricingDisplay.amountsByMonths
         : getCheckoutAmountsForCurrency(currency);
     const key = String(term.months);
@@ -229,8 +240,12 @@ export function useBillingData(options = {}) {
     setGiftRecipient(null);
   }, []);
 
+  const setCheckoutCurrency = useCallback((next) => {
+    setManualCheckoutCurrency(next);
+  }, []);
+
   const handleCheckoutCurrencyChange = useCallback((opt) => {
-    setCheckoutCurrency(opt?.value ?? "auto");
+    setManualCheckoutCurrency(opt?.value ?? "auto");
   }, []);
 
   const handleCheckout = useCallback(async () => {

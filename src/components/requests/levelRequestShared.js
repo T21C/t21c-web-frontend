@@ -63,8 +63,8 @@ export function storedRequestIssue(type, payload, level, catalog) {
   if (type === 'tag') {
     if (!Array.isArray(level?.tagIds)) return null;
     return tagRequestIssue(
-      withoutCommunityTagIds(tagRequestTargetIds(payload, level.tagIds), catalog),
-      withoutCommunityTagIds(level.tagIds, catalog),
+      withoutUnrequestableTagIds(tagRequestTargetIds(payload, level.tagIds), catalog),
+      withoutUnrequestableTagIds(level.tagIds, catalog),
     );
   }
   if (type === 'curation' || type === 'curation_rerate') {
@@ -76,21 +76,25 @@ export function storedRequestIssue(type, payload, level, catalog) {
   return null;
 }
 
-/** Staff tags on the level. Community tags are voted on, not requested. */
-export function assignableTagIds(tags) {
-  return normalizeTagIds((tags || []).filter((tag) => tag && !tag.isCommunity).map((tag) => tag.id));
+function isUnrequestableTag(tag) {
+  return Boolean(tag && (tag.isCommunity || tag.isAutomatic));
 }
 
-export function withoutCommunityTagIds(ids, catalog) {
-  const community = new Set(
+/** Staff tags someone can ask to change. Community votes and parser tags are not included. */
+export function assignableTagIds(tags) {
+  return normalizeTagIds((tags || []).filter((tag) => tag && !isUnrequestableTag(tag)).map((tag) => tag.id));
+}
+
+export function withoutUnrequestableTagIds(ids, catalog) {
+  const blocked = new Set(
     (catalog || [])
-      .filter((tag) => tag && tag.isCommunity)
+      .filter(isUnrequestableTag)
       .map((tag) => Number(tag.id))
       .filter((id) => Number.isInteger(id) && id > 0),
   );
   const normalized = normalizeTagIds(ids);
-  if (community.size === 0) return normalized;
-  return normalized.filter((id) => !community.has(id));
+  if (blocked.size === 0) return normalized;
+  return normalized.filter((id) => !blocked.has(id));
 }
 
 /** Desired tags. Older requests stored an add/remove action plus one id list. */

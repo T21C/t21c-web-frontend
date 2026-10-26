@@ -375,7 +375,7 @@ const LevelRequestDetail = ({
       )}
       {request.reason && (
         <section className="level-requests__section">
-          <CommentFormatter resolveLevelRefs>{request.reason}</CommentFormatter>
+          <CommentFormatter>{request.reason}</CommentFormatter>
         </section>
       )}
       {(request.publicNote || (!ownerView && (request.internalNote || request.discordPostError))) && (

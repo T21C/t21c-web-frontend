@@ -104,7 +104,8 @@
     },
     "tags": {
       "communityTags": "커뮤니티 태그",
-      "communityTagsHint": "이 태그는 커뮤니티 투표로 추가되었습니다. 위에 추가하지 않으면 저장 시 고정되지 않습니다."
+      "communityTagsHint": "이 태그는 커뮤니티 투표로 추가되었습니다. 위에 추가하지 않으면 저장 시 고정되지 않습니다.",
+      "automaticTagsHint": "길이, VFX, DLC처럼 레벨 파일에서 읽히는 태그는 파서가 정하므로 요청할 수 없습니다."
     }
   },
   "download": {

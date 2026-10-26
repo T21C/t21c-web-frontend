@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ItemPickManager } from '@/components/common/selectors';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
-import { withoutCommunityTagIds } from './levelRequestShared';
+import { withoutUnrequestableTagIds } from './levelRequestShared';
 
 const normalizeIds = (ids) =>
   [...new Set((ids || []).map((id) => Number(id)).filter((id) => Number.isInteger(id) && id > 0))];
@@ -11,9 +11,9 @@ const normalizeIds = (ids) =>
 const LevelRequestTags = ({ ids = [], onChange, variant = 'picker' }) => {
   const { t } = useTranslation(['pages', 'components', 'common']);
   const { tags, tagsLoading } = useDifficultyContext();
-  const selectedIds = useMemo(() => withoutCommunityTagIds(normalizeIds(ids), tags), [ids, tags]);
+  const selectedIds = useMemo(() => withoutUnrequestableTagIds(normalizeIds(ids), tags), [ids, tags]);
   const items = useMemo(
-    () => (tags || []).filter((tag) => tag && !tag.isCommunity),
+    () => (tags || []).filter((tag) => tag && !tag.isCommunity && !tag.isAutomatic),
     [tags],
   );
 
@@ -97,8 +97,8 @@ export const LevelRequestTagDiff = ({ addIds = [], removeIds = [] }) => {
   const { t } = useTranslation('pages');
   const { tags } = useDifficultyContext();
   const rows = [
-    { key: 'add', label: t('levelRequests.form.toAdd'), ids: withoutCommunityTagIds(addIds, tags) },
-    { key: 'remove', label: t('levelRequests.form.toRemove'), ids: withoutCommunityTagIds(removeIds, tags) },
+    { key: 'add', label: t('levelRequests.form.toAdd'), ids: withoutUnrequestableTagIds(addIds, tags) },
+    { key: 'remove', label: t('levelRequests.form.toRemove'), ids: withoutUnrequestableTagIds(removeIds, tags) },
   ];
 
   return (

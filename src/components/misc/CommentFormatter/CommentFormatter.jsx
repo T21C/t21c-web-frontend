@@ -12,23 +12,18 @@ import './commentFormatter.css';
 
 const EMPTY_IDS = [];
 
-export const CommentFormatter = ({ prefix = '#', resolveLevelRefs = false, children }) => {
+export const CommentFormatter = ({ prefix = '#', children }) => {
   const textContent = React.Children.toArray(children).join('');
   const { difficultyDict } = useDifficultyContext();
   const { parts, ids: levelIds } = useMemo(() => {
     const split = splitCommentLevelRefs(textContent, prefix);
-    if (!resolveLevelRefs) {
-      return { parts: split.parts, ids: EMPTY_IDS };
-    }
     return split.ids.length ? split : { parts: split.parts, ids: EMPTY_IDS };
-  }, [textContent, prefix, resolveLevelRefs]);
+  }, [textContent, prefix]);
 
-  const [levelsById, setLevelsById] = useState(() =>
-    resolveLevelRefs ? peekLevelReferences(levelIds) || {} : {}
-  );
+  const [levelsById, setLevelsById] = useState(() => peekLevelReferences(levelIds) || {});
 
   useEffect(() => {
-    if (!resolveLevelRefs || levelIds.length === 0) return undefined;
+    if (levelIds.length === 0) return undefined;
     const cached = peekLevelReferences(levelIds);
     if (cached) {
       setLevelsById(cached);
@@ -41,24 +36,9 @@ export const CommentFormatter = ({ prefix = '#', resolveLevelRefs = false, child
     return () => {
       cancelled = true;
     };
-  }, [resolveLevelRefs, levelIds]);
+  }, [levelIds]);
 
   const renderLevelLink = (levelId, key) => {
-    if (!resolveLevelRefs) {
-      return (
-        <a
-          key={key}
-          href={`${import.meta.env.VITE_OWN_URL}/levels/${levelId}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="level-link"
-          onClick={(e) => e.stopPropagation()}
-        >
-          Level {levelId}
-        </a>
-      );
-    }
-
     const level = levelsById[levelId];
     const song = level ? getSongDisplayName(level) : '';
     const diff = level?.diffId != null ? difficultyDict[level.diffId] : null;

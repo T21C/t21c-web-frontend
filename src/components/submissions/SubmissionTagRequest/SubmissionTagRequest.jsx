@@ -54,7 +54,9 @@ export default function SubmissionTagRequest({
   }, []);
 
   const items = useMemo(
-    () => ids.map((id) => catalogById.get(id) || { id, name: `#${id}` }),
+    () => ids
+      .map((id) => catalogById.get(id) || { id, name: `#${id}` })
+      .filter((tag) => !tag.isAutomatic),
     [ids, catalogById],
   );
 
@@ -62,6 +64,12 @@ export default function SubmissionTagRequest({
     () => items.map((tag) => (tag.isCommunity ? { ...tag, pinned: true } : tag)),
     [items],
   );
+
+  useEffect(() => {
+    if (variant !== 'form' || catalogLoading) return;
+    const next = ids.filter((id) => !catalogById.get(id)?.isAutomatic);
+    if (next.length !== ids.length) onChange(next);
+  }, [variant, catalogLoading, ids, catalogById, onChange]);
 
   const buttonLabel = variant === 'form'
     ? t('levelSubmission.buttons.requestTags')
@@ -85,10 +93,10 @@ export default function SubmissionTagRequest({
       >
         {buttonLabel}
       </button>
-      {!catalogLoading && ids.length === 0 && (
+      {!catalogLoading && items.length === 0 && (
         <span className="submission-tag-request__hint">{emptyHint}</span>
       )}
-      {!catalogLoading && ids.length > 0 && (
+      {!catalogLoading && items.length > 0 && (
         <div className="submission-tag-request__icons">
           {items.map((item) => (
             <span key={item.id} className="submission-tag-request__item" title={item.name}>

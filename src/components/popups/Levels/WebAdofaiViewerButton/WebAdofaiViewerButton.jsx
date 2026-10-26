@@ -8,7 +8,7 @@ const WEB_ADOFAI_LEVEL_URL = "https://web-adofai.impl1113.dev/levels";
 const WEB_ADOFAI_ORIGIN = new URL(WEB_ADOFAI_LEVEL_URL).origin;
 const WEB_ADOFAI_CLOSE_REQUEST_TYPE = "web-adofai:close-request";
 
-const WebAdofaiViewerButton = ({ levelId }) => {
+const WebAdofaiViewerButton = ({ levelId, portaled = true }) => {
   const [isOpen, setIsOpen] = useState(false);
   const iframeRef = useRef(null);
   const iframeSrc = useMemo(() => {
@@ -39,18 +39,20 @@ const WebAdofaiViewerButton = ({ levelId }) => {
 
   if (!iframeSrc) return null;
 
+  const button = (
+    <button
+      type="button"
+      className="web-adofai-viewer-button"
+      aria-label="Open in Web ADOFAI"
+      onClick={() => setIsOpen(true)}
+    >
+      Web ADOFAI
+    </button>
+  );
+
   return (
     <>
-      <Portal>
-      <button
-        type="button"
-        className="web-adofai-viewer-button"
-        aria-label="Open in Web ADOFAI"
-        onClick={() => setIsOpen(true)}
-      >
-        Web ADOFAI
-      </button>
-      </Portal>
+      {portaled ? <Portal>{button}</Portal> : button}
       {isOpen ? (
         <PopupShell
           onClose={() => setIsOpen(false)}
