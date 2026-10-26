@@ -57,6 +57,9 @@
   "roles": {
     "specialThanks": "Specjalne podziękowania"
   },
+  "levelSelection": {
+    "leaveDefault": "Zostawić domyślny wybór? Zostanie użyty największy chart według rozmiaru pliku i może to być niewłaściwy."
+  },
   "chartClearNotify": {
     "title": "Powiadomienia o przejściach",
     "body": "Czy chcesz dostawać powiadomienia, gdy ktoś przejdzie twoje charty?",

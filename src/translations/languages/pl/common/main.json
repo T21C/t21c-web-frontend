@@ -1,0 +1,14 @@
+{
+  "youtubePicker": {
+    "linkChannel": "Połącz kanał YouTube, aby wybrać film spośród swoich wideo",
+    "yourVideos": "Twoje filmy",
+    "hideVideos": "Ukryj filmy",
+    "searchPlaceholder": "Szukaj w swoich filmach",
+    "empty": "Brak pasujących filmów",
+    "loadOlder": "Pokaż starsze filmy",
+    "unlisted": "Niepubliczny",
+    "unlistedNote": "Filmy niepubliczne pozostają ukryte.",
+    "allowAccess": "Zezwól na dostęp do kanału",
+    "loadFailed": "Nie udało się wczytać filmów z YouTube"
+  }
+}

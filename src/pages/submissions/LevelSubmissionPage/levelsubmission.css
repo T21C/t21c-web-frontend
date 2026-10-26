@@ -612,51 +612,6 @@
   transform: scale(1.05);
 }
 
-.level-submission-page .warning-popup {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.level-submission-page .warning-popup .warning-content {
-  background-color: #fff;
-  padding: 2rem;
-  border-radius: 10px;
-  max-width: 500px;
-  width: 90%;
-  text-align: center;
-}
-
-.level-submission-page .warning-popup .warning-content h3 {
-  color: var(--btn-danger);
-  margin-bottom: 1rem;
-}
-
-.level-submission-page .warning-popup .warning-content p {
-  margin-bottom: 2rem;
-  color: #333;
-}
-
-.level-submission-page .warning-popup .warning-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-}
-
-.level-submission-page .warning-popup .warning-buttons button {
-  padding: 0.5rem 1.5rem;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
 @media (max-width: 768px) {
   .level-submission-page .form-container form {
     margin: 0;
@@ -791,22 +746,6 @@
     padding: 1rem;
   }
 
-  .level-submission-page .warning-popup .warning-content {
-    margin: 1rem;
-    padding: 1.5rem;
-    max-width: calc(100vw - 2rem);
-  }
-
-  .level-submission-page .warning-popup .warning-buttons {
-    flex-direction: column;
-    gap: 0.8rem;
-  }
-
-  .level-submission-page .warning-popup .warning-buttons button {
-    width: 100%;
-    padding: 0.8rem 1.5rem;
-  }
-
   .level-submission-page .dl-links-or {
     position: relative;
     transform: none;
@@ -855,11 +794,5 @@
     left: 0.5rem;
     right: 0.5rem;
     padding: 0.8rem;
-  }
-
-  .level-submission-page .warning-popup .warning-content {
-    margin: 0.5rem;
-    padding: 1rem;
-    max-width: calc(100vw - 1rem);
   }
 }

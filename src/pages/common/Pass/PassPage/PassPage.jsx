@@ -116,6 +116,7 @@ const PassPage = () => {
     { value: 'DIFF', label: t('pass.settings.sort.options.difficulty') },
     { value: 'SPEED', label: t('pass.settings.sort.options.speed') },
     { value: 'KEYCOUNT', label: t('pass.settings.sort.options.keyCount') },
+    { value: 'LIKES', label: t('pass.settings.sort.options.likes') },
     { value: 'RANDOM', label: t('pass.settings.sort.options.random') }
   ];
 
@@ -167,6 +168,7 @@ const PassPage = () => {
           specialDifficulties: selectedSpecialDiffs,
           ...(facetQuery ? { facetQuery } : {}),
           ...(sort.startsWith('RANDOM') ? { seed: getOrCreateRandomSeed() } : {}),
+          withLikeState: true,
         };
 
         const response = await runner(({ signal }) =>

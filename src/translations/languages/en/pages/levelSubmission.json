@@ -108,6 +108,9 @@
     "agree": "I Confirm",
     "decline": "Cancel"
   },
+  "levelSelection": {
+    "leaveDefault": "Leave the default selection? The largest chart by file size will be used, and it could be the wrong one."
+  },
   "chartClearNotify": {
     "title": "Chart clear notifications",
     "body": "Would you like to be notified when someone clears your charts?",

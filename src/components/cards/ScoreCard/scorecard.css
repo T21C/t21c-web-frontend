@@ -246,6 +246,10 @@
   gap: 0.5rem;
 }
 
+.score-card .score-card__like {
+  flex: 0 0 auto;
+}
+
 .score-card .score-card__date {
   position: absolute;
   bottom: 0.2rem;

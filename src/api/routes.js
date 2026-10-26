@@ -47,6 +47,13 @@ export const routes = {
     youtubeChannels: {
       setPrimary: (channelId) => `/v2/auth/youtube-channels/${enc(channelId)}/primary`,
       unlink: (channelId) => `/v2/auth/youtube-channels/${enc(channelId)}`,
+      videos: (channelId, { q, pageToken } = {}) => {
+        const params = new URLSearchParams();
+        if (q) params.set('q', q);
+        if (pageToken) params.set('pageToken', pageToken);
+        const qs = params.toString();
+        return `/v2/auth/youtube-channels/${enc(channelId)}/videos${qs ? `?${qs}` : ''}`;
+      },
     },
     sessions: {
       list: () => '/v2/auth/sessions',
@@ -438,6 +445,8 @@ export const routes = {
       replayVisualVisibility: (id, presetId) => `/v2/database/passes/${enc(id)}/replay-visuals/${enc(presetId)}/visibility`,
       toggleHidden: (id) => `/v2/database/passes/${enc(id)}/toggle-hidden`,
       restore: (id) => `/v2/database/passes/${enc(id)}/restore`,
+      isLiked: (id) => `/v2/database/passes/${enc(id)}/isLiked`,
+      like: (id) => `/v2/database/passes/${enc(id)}/like`,
     },
     levelRequests: {
       root: () => '/v2/database/level-requests',

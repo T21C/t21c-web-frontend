@@ -28,6 +28,7 @@ const LevelSelectionPopup = ({
   curationTypes: _curationTypes,
   variant = 'curation',
   curatedTypesFilter = variant === 'pick' ? 'show' : 'hide',
+  closeDisabled = false,
 }) => {
   const { t } = useTranslation(['components', 'common']);
   const { difficultyDict } = useDifficultyContext();
@@ -188,7 +189,7 @@ const LevelSelectionPopup = ({
     return (
       <PopupShell
         onClose={onClose}
-        closeDisabled={isConfirmingZip}
+        closeDisabled={closeDisabled || isConfirmingZip}
         overlayClassName="level-selection-modal"
         panelClassName="level-selection-modal__content submission-zip-level-modal"
       >
@@ -197,7 +198,7 @@ const LevelSelectionPopup = ({
             className="level-selection-modal__close-button"
             onClick={onClose}
             type="button"
-            disabled={isConfirmingZip}
+            disabled={closeDisabled || isConfirmingZip}
             aria-label={t('buttons.close', { ns: 'common' })}
           />
 

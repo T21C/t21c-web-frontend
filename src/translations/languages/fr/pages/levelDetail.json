@@ -123,5 +123,11 @@
       "band": "Ce tag n'est pas disponible pour cette difficulté",
       "deleted": "Impossible de voter sur un niveau supprimé"
     }
+  },
+  "curationHistory": {
+    "header": "Historique de curation",
+    "open": "Afficher l'historique de curation",
+    "close": "Fermer l'historique de curation",
+    "empty": "Aucun"
   }
 } 
