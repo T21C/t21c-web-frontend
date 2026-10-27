@@ -189,6 +189,7 @@
 
 .scorev2-graph-dropdown__header {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: var(--spacing-sm);
@@ -200,9 +201,44 @@
   padding-bottom: 4px;
 }
 
-.scorev2-graph-dropdown__title {
+.scorev2-graph-dropdown__heading {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
   flex: 1;
   min-width: 0;
+}
+
+.scorev2-graph-dropdown__autorater {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border: 1px solid var(--glass-border);
+  border-radius: 6px;
+  background: var(--btn-neutral-dark);
+  color: var(--primary-text);
+  font: inherit;
+  font-size: 0.7em;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.scorev2-graph-dropdown__autorater:hover {
+  border-color: var(--btn-primary);
+  background: color-mix(in srgb, var(--btn-primary) 15%, var(--btn-neutral-dark));
+}
+
+.scorev2-graph-dropdown__autorater:focus-visible {
+  outline: 2px solid var(--btn-primary);
+  outline-offset: 2px;
+}
+
+.scorev2-graph-dropdown__autorater img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
 }
 
 .scorev2-graph-dropdown__pp-toggle {

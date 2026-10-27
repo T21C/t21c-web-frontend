@@ -5,6 +5,8 @@ import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
 import { PORTALED_PANEL_CLASS, usePortaledPanelAnchor } from "@/hooks/usePortaledPanelAnchor";
 import { ScoreV2Graph } from "./ScoreV2Graph";
+import autoraterIcon from "@/assets/icons/autorater-v2.png";
+import { AutoraterLevelPopup } from "@/components/popups/Levels/AutoraterLevelPopup/AutoraterLevelPopup";
 import "./ScoreV2Graph.css";
 
 export const ScoreV2GraphDropdown = ({
@@ -19,7 +21,15 @@ export const ScoreV2GraphDropdown = ({
 }) => {
   const { t } = useTranslation("pages");
   const [disablePP, setDisablePP] = useState(false);
+  const [autoraterLevelId, setAutoraterLevelId] = useState(null);
+  const levelId = Number(levelData.id);
+  const hasLevelId = Number.isSafeInteger(levelId) && levelId > 0 && levelId <= 2147483647;
+  const showAutorater = hasLevelId && autoraterLevelId === levelId;
   const panelRef = useRef(null);
+
+  useEffect(() => {
+    setAutoraterLevelId(null);
+  }, [show, levelId]);
 
   const { panelStyle, placement, portalRoot } = usePortaledPanelAnchor({
     open: show,
@@ -29,7 +39,7 @@ export const ScoreV2GraphDropdown = ({
   });
 
   useEffect(() => {
-    if (!show) return;
+    if (!show || showAutorater) return;
     const handlePointerDownCapture = (event) => {
       if (anchorRef?.current?.contains(event.target)) return;
       if (panelRef?.current?.contains(event.target)) return;
@@ -37,20 +47,21 @@ export const ScoreV2GraphDropdown = ({
     };
     document.addEventListener("mousedown", handlePointerDownCapture, true);
     return () => document.removeEventListener("mousedown", handlePointerDownCapture, true);
-  }, [show, onClose, anchorRef]);
+  }, [show, showAutorater, onClose, anchorRef]);
 
   useEffect(() => {
-    if (!show) return;
+    if (!show || showAutorater) return;
     const onKey = (e) => {
       if (e.key === "Escape") onClose();
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [show, onClose]);
+  }, [show, showAutorater, onClose]);
 
   if (!show || !portalRoot) return null;
 
   return (
+    <>
     <Portal when={show} root={portalRoot}>
     <div
       ref={panelRef}
@@ -61,9 +72,23 @@ export const ScoreV2GraphDropdown = ({
       style={panelStyle}
     >
       <div className="scorev2-graph-dropdown__header">
-        <span className="scorev2-graph-dropdown__title">
-          {t("levelDetail.scoreGraph.header", { defaultValue: "Score vs accuracy" })}
-        </span>
+        <div className="scorev2-graph-dropdown__heading">
+          <span className="scorev2-graph-dropdown__title">
+            {t("levelDetail.scoreGraph.header", { defaultValue: "Score vs accuracy" })}
+          </span>
+          {hasLevelId && (
+            <button
+              type="button"
+              className="scorev2-graph-dropdown__autorater"
+              aria-haspopup="dialog"
+              aria-expanded={showAutorater}
+              onClick={() => setAutoraterLevelId(levelId)}
+            >
+              <img src={autoraterIcon} alt="" aria-hidden="true" />
+              <span>Auto Rater Cat v2</span>
+            </button>
+          )}
+        </div>
         <label className="scorev2-graph-dropdown__pp-toggle">
           <input
             type="checkbox"
@@ -83,6 +108,10 @@ export const ScoreV2GraphDropdown = ({
       />
     </div>
     </Portal>
+    {showAutorater && (
+      <AutoraterLevelPopup levelId={levelId} onClose={() => setAutoraterLevelId(null)} />
+    )}
+    </>
   );
 };
 

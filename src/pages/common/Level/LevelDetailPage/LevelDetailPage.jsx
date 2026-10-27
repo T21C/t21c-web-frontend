@@ -3010,6 +3010,7 @@ const LevelDetailPageContent = ({ mockData = null }) => {
                       containerRef={scoreGraphAnchorRef}
                       tilecount={res.level.tilecount}
                       levelData={{
+                        id: res.level.id,
                         baseScore: res.level.baseScore,
                         ppBaseScore: res.level.ppBaseScore,
                         diffId: res.level.diffId,

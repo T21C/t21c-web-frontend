@@ -1,0 +1,65 @@
+.autorater-level-popup__panel {
+  display: flex;
+  flex-direction: column;
+  width: min(1100px, 100%);
+  max-height: min(960px, 90dvh);
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  background: var(--color-black);
+  color: var(--primary-text);
+  box-shadow: var(--shadow-lg);
+}
+
+.autorater-level-popup__header {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.autorater-level-popup__header > img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+
+.autorater-level-popup__heading {
+  flex: 1;
+  min-width: 0;
+}
+
+.autorater-level-popup__heading h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.autorater-level-popup__heading span {
+  font-size: 0.8rem;
+  color: var(--secondary-text);
+}
+
+.autorater-level-popup__body {
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.autorater-level-popup .autorater-embed {
+  display: block;
+  width: 100%;
+  border: 0;
+  background: #171819;
+}
+
+@media (max-width: 600px) {
+  .autorater-level-popup {
+    padding: 8px;
+  }
+
+  .autorater-level-popup__panel {
+    max-height: calc(100dvh - 16px);
+  }
+}
