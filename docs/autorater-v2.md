@@ -15,6 +15,15 @@ origin, frame window, message type and selected level, with height bounded to
 The AutoRater pane stays content-sized when collapsed, including on mobile;
 its layout marker remains present after the iframe is unmounted.
 
+On a level detail page, clicking the difficulty icon opens the score graph.
+The **Auto Rater Cat v2** button beside **Score vs accuracy** opens the same
+fixed-level widget in a scrollable popup, using the level's ID and the V2 icon.
+The iframe mounts only while the popup is open. Closing it returns focus to
+the button and leaves the graph's Misses and Disable PP settings intact.
+The close button, backdrop, and Escape from the parent page dismiss the popup;
+changing levels clears the selected analysis. This entry point is public and
+does not require a saved AutoRater rating or changes to the TUF backend.
+
 `VITE_AUTORATER_WIDGET_URL` optionally overrides the widget origin for development.
 That widget server must explicitly allow the host origin in its frame policy.
 The public widget already permits `https://tuforums.com` and `https://www.tuforums.com`.
@@ -28,4 +37,6 @@ Old summaries remain until rerated; this frontend does not perform a batch backf
 
 Validation: `node --test tests/autorater.test.js`, lint changed files, and build
 the frontend. Check expanded/collapsed cards, level switching, mobile width,
-and the super-admin rerate action with the V2 backend.
+and the super-admin rerate action with the V2 backend. For the level-page entry
+point, test `/levels/1` and another level, open Difficulty → Auto Rater Cat v2,
+check the iframe URL, close/reopen, and verify the header and popup at mobile width.
