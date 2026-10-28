@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 import { PopupShell } from "@/components/common/PopupShell";
@@ -10,6 +10,24 @@ import api from "@/utils/api";
 import { routes } from "@/api/routes";
 import KeyboardBoard from "./KeyboardBoard";
 import SwitchDiagram from "./SwitchDiagram";
+import SwitchTopPlaceholder from "./SwitchTopPlaceholder";
+import { ActuationSlider } from "./ActuationSlider";
+import { depthPaints } from "./keyboardPaint";
+import {
+  ABSENT_SWITCH,
+  draftSliceFromSource,
+  emptySwitchRow,
+  keyOverridesFromDraft,
+  layoutSetupFromBoard,
+  layoutSetupFromDraft,
+  layoutSource,
+  resolvedStemColor,
+  switchTopPaint,
+  sameLayoutSetup,
+  storedOpacity,
+  switchClientKey,
+  switchPayload,
+} from "./keyboardSetupDraft";
 import {
   canonicalizeKeys,
   currentPeriod,
@@ -22,13 +40,6 @@ import {
 
 function utcToday() {
   return new Date().toISOString().slice(0, 10);
-}
-
-function rtModeFromBoard(board) {
-  if (!board || board.sensing !== "hall") return "off";
-  if (board.rapidTriggerSplit) return "split";
-  if (board.rapidTriggerActuationMm != null) return "single";
-  return "off";
 }
 
 function isMembraneSensing(sensing) {
@@ -48,11 +59,15 @@ function membraneClearedDraft() {
     rapidTriggerActuationMm: "",
     rapidTriggerPressMm: "",
     rapidTriggerReleaseMm: "",
+    switches: [],
+    keyMeta: {},
   };
 }
 
 const COUNT_LAYOUT_NAME = /^[0-9]+K$/;
 const MAX_LAYOUTS = 12;
+const MAX_BOARD_SWITCHES = 64;
+const EDITOR_MODES = ["layout", "switches", "actuation", "rapidTrigger"];
 const ADD_LAYOUT = "__add__";
 const SNAPSHOT_KIND = "tuf.keyboard-rig";
 
@@ -76,6 +91,31 @@ function withCurrentLane(prev, patch) {
     laneClientKey(row) === prev.laneKey ? { ...row, ...patch } : row,
   );
   return { ...prev, ...patch, lanes };
+}
+
+function commitCurrentSetup(prev) {
+  const setup = layoutSetupFromDraft(prev);
+  return {
+    ...prev,
+    lanes: (prev.lanes || []).map((row) =>
+      laneClientKey(row) === prev.laneKey ? { ...row, setup } : row,
+    ),
+  };
+}
+
+function laneView(prev, row) {
+  const keys = canonicalizeKeys(row.keys || []);
+  return {
+    laneKey: laneClientKey(row),
+    name: row.name,
+    keyCount: row.keyCount,
+    keys,
+    periodId: row.periodId ?? null,
+    sinceDate: row.sinceDate || null,
+    untilDate: row.untilDate || "",
+    untilAuto: row.untilAuto !== false,
+    ...draftSliceFromSource(layoutSource({ sensing: prev.sensing }, row.setup || null)),
+  };
 }
 
 function rangeFrom(period) {
@@ -122,12 +162,6 @@ function visibleBrandModel(board) {
   };
 }
 
-function storedOpacity(value) {
-  if (value == null || value === "") return "";
-  const n = Number(value);
-  return Number.isFinite(n) ? String(n) : "";
-}
-
 function clampTopOpacity(draft, selectedSwitch) {
   const n = Number(draft.baseOpacity === "" ? selectedSwitch?.baseOpacity ?? 1 : draft.baseOpacity);
   if (!Number.isFinite(n)) return 1;
@@ -154,6 +188,7 @@ function draftFromRig(rig, geometries, sinceDate, laneId) {
       sinceDate: period?.sinceDate ?? (selectedLane ? sinceDate || null : null),
       untilDate: range.untilDate,
       untilAuto: range.untilAuto,
+      setup: period?.setup || layoutSetupFromBoard(board),
     };
   });
   if (!lanes.length) {
@@ -167,11 +202,13 @@ function draftFromRig(rig, geometries, sinceDate, laneId) {
       sinceDate: sinceDate || utcToday(),
       untilDate: "",
       untilAuto: true,
+      setup: layoutSetupFromBoard(board),
     });
   }
   const selected = lanes.find((row) => laneId && row.id === laneId) || lanes[lanes.length - 1];
   const boardRange = rangeFrom(board);
   const names = visibleBrandModel(board);
+  const sensing = board?.sensing || "mechanical";
   return {
     sinceDate: selected.sinceDate ?? sinceDate ?? utcToday(),
     untilDate: selected.untilDate || "",
@@ -180,20 +217,10 @@ function draftFromRig(rig, geometries, sinceDate, laneId) {
     productId: "",
     customBrand: names.brand,
     customModel: names.model,
-    sensing: board?.sensing || "mechanical",
-    switchId: isMembraneSensing(board?.sensing) ? "" : board?.switchId ? String(board.switchId) : "",
-    customSwitch: isMembraneSensing(board?.sensing) ? "" : board?.customSwitch || "",
-    actuationMm: isMembraneSensing(board?.sensing) ? "" : board?.actuationMm ?? "",
-    rtMode: rtModeFromBoard(board),
-    rapidTriggerActuationMm: board?.rapidTriggerActuationMm ?? "",
-    rapidTriggerPressMm: board?.rapidTriggerPressMm ?? "",
-    rapidTriggerReleaseMm: board?.rapidTriggerReleaseMm ?? "",
+    sensing,
+    ...draftSliceFromSource(layoutSource(board ? { ...board, sensing } : { sensing }, selected.setup)),
     colorway: board?.colorway || "",
     note: board?.note || "",
-    stemColor: isMembraneSensing(board?.sensing) ? "" : board?.stemColor || "",
-    baseColor: isMembraneSensing(board?.sensing) ? "" : board?.baseColor || "",
-    topColor: isMembraneSensing(board?.sensing) ? "" : board?.topColor || "",
-    baseOpacity: isMembraneSensing(board?.sensing) ? "" : storedOpacity(board?.baseOpacity),
     boardPeriodId: board?.id ?? null,
     boardSinceDate: board?.sinceDate || "",
     boardUntilDate: boardRange.untilDate || "",
@@ -207,7 +234,7 @@ function draftFromRig(rig, geometries, sinceDate, laneId) {
   };
 }
 
-function laneMatchesSaved(row, rig) {
+function laneMatchesSaved(row, rig, board) {
   const keys = canonicalizeKeys(row?.keys || []);
   if (!row?.id) return keys.length === 0;
   const saved = (rig?.lanes || []).find((lane) => lane.id === row.id);
@@ -223,12 +250,10 @@ function laneMatchesSaved(row, rig) {
   const savedRange = rangeFrom(period);
   const rowAuto = row.untilAuto !== false;
   if (savedRange.untilAuto !== rowAuto) return false;
-  return sameDate(savedRange.untilDate || null, rowAuto ? null : row.untilDate || null);
-}
-
-function sensingOf(draft, switches) {
-  const selected = (switches || []).find((row) => String(row.id) === String(draft.switchId));
-  return selected?.sensing || draft.sensing || "mechanical";
+  if (!sameDate(savedRange.untilDate || null, rowAuto ? null : row.untilDate || null)) return false;
+  if (!board) return true;
+  const savedSource = period.setup ? layoutSource(board, period.setup) : board;
+  return sameLayoutSetup(row.setup, savedSource, board.sensing);
 }
 
 function sameDate(left, right) {
@@ -260,11 +285,27 @@ function boardFields(period) {
     baseColor: period?.baseColor || null,
     topColor: period?.topColor || null,
     baseOpacity: period?.baseOpacity == null ? null : Number(period.baseOpacity),
+    switches: (period?.switches || []).map((row) => ({
+      id: row.id ?? null,
+      switchId: row.switchId ?? null,
+      customSwitch: row.customSwitch || null,
+      stemColor: row.stemColor || null,
+      baseColor: row.baseColor || null,
+      topColor: row.topColor || null,
+      baseOpacity: row.baseOpacity == null ? null : Number(row.baseOpacity),
+    })),
     keyOverrides: (period?.keyOverrides || []).map((row) => ({
       code: row.code,
       socketEmpty: Boolean(row.socketEmpty),
       switchId: row.switchId ?? null,
       customSwitch: row.customSwitch || null,
+      periodSwitchId: row.periodSwitchId ?? null,
+      periodSwitchIndex: row.periodSwitchIndex ?? null,
+      actuationMm: row.actuationMm ?? null,
+      rapidTriggerSplit: row.rapidTriggerSplit ?? null,
+      rapidTriggerActuationMm: row.rapidTriggerActuationMm ?? null,
+      rapidTriggerPressMm: row.rapidTriggerPressMm ?? null,
+      rapidTriggerReleaseMm: row.rapidTriggerReleaseMm ?? null,
     })),
   };
 }
@@ -304,7 +345,8 @@ function draftBoardFields(draft, sensing, previous) {
     baseColor: membrane ? null : draft.baseColor || null,
     topColor: membrane ? null : draft.topColor || null,
     baseOpacity: membrane || draft.baseOpacity === "" ? null : Number(draft.baseOpacity),
-    keyOverrides: membrane ? [] : previous?.keyOverrides || [],
+    switches: membrane ? [] : (draft.switches || []).map(switchPayload),
+    keyOverrides: keyOverridesFromDraft(draft, membrane),
   };
 }
 
@@ -321,6 +363,7 @@ function persistedSnapshot(rig) {
         untilDate: period.untilAuto === false ? period.untilDate ?? null : null,
         untilAuto: period.untilAuto !== false,
         keys: period.isGap || period.keys == null ? null : canonicalizeKeys(period.keys),
+        setup: period.isGap || period.keys == null ? null : (period.setup ?? null),
       })),
     })),
   };
@@ -360,7 +403,8 @@ function buildSnapshot(rig, draft, sensing, includeDraft) {
     );
     snapshot.boardPeriods.push({ ...draftBoardFields(draft, sensing, previous), sinceDate: since });
   }
-  snapshot.lanes = (draft.lanes || []).flatMap((row) => {
+  const committed = commitCurrentSetup(draft);
+  snapshot.lanes = (committed.lanes || []).flatMap((row) => {
     const keys = canonicalizeKeys(row.keys || []);
     const since = row.sinceDate || null;
     const saved = row.id ? (rig?.lanes || []).find((lane) => lane.id === row.id) : null;
@@ -371,6 +415,7 @@ function buildSnapshot(rig, draft, sensing, includeDraft) {
         untilDate: period.untilAuto === false ? period.untilDate ?? null : null,
         untilAuto: period.untilAuto !== false,
         keys: period.isGap || period.keys == null ? null : canonicalizeKeys(period.keys),
+        setup: period.isGap || period.keys == null ? null : (period.setup ?? null),
       }));
     if (keys.length) {
       periods.push({
@@ -378,6 +423,7 @@ function buildSnapshot(rig, draft, sensing, includeDraft) {
         untilDate: row.untilAuto !== false ? null : row.untilDate || null,
         untilAuto: row.untilAuto !== false,
         keys,
+        setup: row.setup ?? null,
       });
     }
     if (!periods.some((period) => period.keys && period.keys.length)) return [];
@@ -395,19 +441,8 @@ function boardSpecChanged(draft, board, sensing) {
     same(draft.customBrand, names.brand) &&
     same(draft.customModel, names.model) &&
     same(sensing, board.sensing) &&
-    same(draft.switchId, board.switchId) &&
-    same(draft.customSwitch, board.customSwitch) &&
-    same(draft.actuationMm, board.actuationMm) &&
-    same(draft.rtMode, rtModeFromBoard(board)) &&
-    same(draft.rapidTriggerActuationMm, board.rapidTriggerActuationMm) &&
-    same(draft.rapidTriggerPressMm, board.rapidTriggerPressMm) &&
-    same(draft.rapidTriggerReleaseMm, board.rapidTriggerReleaseMm) &&
     same(draft.colorway, board.colorway) &&
     same(draft.note, board.note) &&
-    same(draft.stemColor, board.stemColor) &&
-    same(draft.baseColor, board.baseColor) &&
-    same(draft.topColor, board.topColor) &&
-    same(storedOpacity(draft.baseOpacity), storedOpacity(board.baseOpacity)) &&
     same(draft.boardUntilAuto !== false, board.untilAuto !== false) &&
     same(draft.boardUntilAuto !== false ? null : draft.boardUntilDate, board.untilDate)
   );
@@ -459,6 +494,9 @@ export default function KeyboardSetupPopup({
   const [renaming, setRenaming] = useState(false);
   const [nameDraft, setNameDraft] = useState("");
   const [deletingLayout, setDeletingLayout] = useState(false);
+  const [editorMode, setEditorMode] = useState("layout");
+  const [paintSelection, setPaintSelection] = useState(() => new Set());
+  const [openSwitchKey, setOpenSwitchKey] = useState(null);
   const [draft, setDraft] = useState(() =>
     draftFromRig(rig, geometries, initialSince ?? null, initialLaneId),
   );
@@ -471,11 +509,10 @@ export default function KeyboardSetupPopup({
     label: `${row.name} (${formFactors.find((factor) => factor.slug === row.formFactor)?.name || row.formFactor})`,
   }));
   const switchOptions = [
+    { value: "none", label: t("profile.keyboards.noSwitch") },
     { value: "", label: t("profile.keyboards.customSwitch") },
     ...switches.map((row) => ({ value: String(row.id), label: row.name })),
   ];
-  const selectedSwitch = switches.find((row) => String(row.id) === String(draft.switchId)) || null;
-  const topOpacity = clampTopOpacity(draft, selectedSwitch);
   const sensingOptions = [
     { value: "mechanical", label: t("profile.keyboards.sensing.mechanical") },
     { value: "optical", label: t("profile.keyboards.sensing.optical") },
@@ -495,24 +532,44 @@ export default function KeyboardSetupPopup({
     },
   ];
   const draftGeometry = geometries.find((row) => String(row.id) === String(draft.geometryId));
-  const effectiveSensing = selectedSwitch?.sensing || draft.sensing || "mechanical";
+  const effectiveSensing = draft.sensing || "mechanical";
   const isMembrane = isMembraneSensing(effectiveSensing);
   const showRapid = effectiveSensing === "hall";
+  const bindableKeys = useMemo(
+    () => (draftGeometry?.keys || []).filter((key) => key.bindable !== false),
+    [draftGeometry],
+  );
+  const selectedCodeSet = editorMode === "layout" ? new Set(draft.keys) : paintSelection;
+  const anyKeysSelected = bindableKeys.some((key) => selectedCodeSet.has(key.code));
+  const allKeysSelected = bindableKeys.length > 0 && bindableKeys.every((key) => selectedCodeSet.has(key.code));
+  const maxSwitches = Math.min(MAX_BOARD_SWITCHES, Math.max(bindableKeys.length, 1));
+  const openSwitch = (draft.switches || []).find((row) => switchClientKey(row) === openSwitchKey) || null;
+  const openCatalogSwitch = switches.find((row) => String(row.id) === String(openSwitch?.switchId)) || null;
+  const openTopOpacity = clampTopOpacity(openSwitch || {}, openCatalogSwitch);
   const savedBoard = (rig?.boardPeriods || []).find((period) => period.id === draft.boardPeriodId && !period.isGap)
     || currentPeriod((rig?.boardPeriods || []).filter((period) => !period.isGap));
   const nameDirty = String(draft.rigName || "").trim() !== String(rig?.name || "").trim();
   const bodyDirty = useMemo(() => {
     if (!sameDate(draft.boardSinceDate, savedBoard?.sinceDate ?? null)) return true;
-    if (savedBoard && boardSpecChanged(draft, savedBoard, sensingOf(draft, switches))) return true;
-    if ((draft.lanes || []).some((row) => !laneMatchesSaved(row, rig))) return true;
+    if (savedBoard && boardSpecChanged(draft, savedBoard, effectiveSensing)) return true;
+    if ((draft.lanes || []).some((row) => {
+      const live = laneClientKey(row) === draft.laneKey;
+      const probe = live ? { ...row, setup: layoutSetupFromDraft(draft) } : row;
+      return !laneMatchesSaved(probe, rig, savedBoard);
+    })) return true;
     if (paste !== formatKeybind(draft.keys)) return true;
     if (!renaming) return false;
     const keyCount = canonicalizeKeys(draft.keys).length;
     return savedLayoutName(nameDraft, keyCount) !== savedLayoutName(draft.name, keyCount);
-  }, [draft, savedBoard, rig, switches, paste, renaming, nameDraft]);
+  }, [draft, savedBoard, rig, paste, renaming, nameDraft, effectiveSensing]);
   const isDirty = bodyDirty || nameDirty;
   const busy = saving || deletingRig || importing || deletingLayout;
   const { requestClose } = useUnsavedClose({ isDirty, onClose });
+
+  useEffect(() => {
+    if (isMembrane && editorMode !== "layout") setEditorMode("layout");
+    else if (!showRapid && editorMode === "rapidTrigger") setEditorMode("layout");
+  }, [isMembrane, showRapid, editorMode]);
 
   function selectLane(nextKey) {
     if (nextKey === ADD_LAYOUT) {
@@ -523,17 +580,13 @@ export default function KeyboardSetupPopup({
     const row = (draft.lanes || []).find((item) => laneClientKey(item) === nextKey);
     if (!row) return;
     const keys = canonicalizeKeys(row.keys || []);
-    setDraft((prev) => ({
-      ...prev,
-      laneKey: nextKey,
-      name: row.name,
-      keyCount: row.keyCount,
-      keys,
-      periodId: row.periodId ?? null,
-      sinceDate: row.sinceDate || null,
-      untilDate: row.untilDate || "",
-      untilAuto: row.untilAuto !== false,
-    }));
+    setPaintSelection(new Set());
+    setDraft((prev) => {
+      const committed = commitCurrentSetup(prev);
+      const next = (committed.lanes || []).find((item) => laneClientKey(item) === nextKey);
+      if (!next) return committed;
+      return { ...committed, ...laneView(committed, next) };
+    });
     setPaste(formatKeybind(keys));
   }
 
@@ -550,20 +603,26 @@ export default function KeyboardSetupPopup({
   function addLayout() {
     if ((draft.lanes || []).length >= MAX_LAYOUTS) return;
     const tmpId = `new-${Date.now()}`;
-    const row = { id: null, tmpId, periodId: null, keyCount: 0, name: "0K", keys: [], sinceDate: utcToday(), untilDate: "", untilAuto: true };
-    const laneKey = laneClientKey(row);
     setRenaming(false);
-    setDraft((prev) => ({
-      ...prev,
-      lanes: [...(prev.lanes || []), row],
-      laneKey,
-      name: row.name,
-      keyCount: 0,
-      keys: [],
-      sinceDate: row.sinceDate,
-      untilDate: "",
-      untilAuto: true,
-    }));
+    setPaintSelection(new Set());
+    setDraft((prev) => {
+      const committed = commitCurrentSetup(prev);
+      const row = {
+        id: null,
+        tmpId,
+        periodId: null,
+        keyCount: 0,
+        name: "0K",
+        keys: [],
+        sinceDate: utcToday(),
+        untilDate: "",
+        untilAuto: true,
+        setup: layoutSetupFromDraft(prev),
+      };
+      const lanes = [...(committed.lanes || []), row];
+      const next = { ...committed, lanes };
+      return { ...next, ...laneView(next, row) };
+    });
     setPaste("");
   }
 
@@ -584,18 +643,28 @@ export default function KeyboardSetupPopup({
     const lanes = (draft.lanes || []).filter((row) => laneClientKey(row) !== laneKey);
     const fallback = lanes[lanes.length - 1] || null;
     const keys = canonicalizeKeys(fallback?.keys || []);
-    setDraft((prev) => ({
-      ...prev,
-      lanes: (prev.lanes || []).filter((row) => laneClientKey(row) !== laneKey),
-      laneKey: fallback ? laneClientKey(fallback) : null,
-      name: fallback?.name || "",
-      keyCount: fallback?.keyCount || 0,
-      keys,
-      periodId: fallback?.periodId ?? null,
-      sinceDate: fallback?.sinceDate || null,
-      untilDate: fallback?.untilDate || "",
-      untilAuto: fallback?.untilAuto !== false,
-    }));
+    setPaintSelection(new Set());
+    setDraft((prev) => {
+      const nextLanes = (prev.lanes || []).filter((row) => laneClientKey(row) !== laneKey);
+      const nextFallback = nextLanes[nextLanes.length - 1] || null;
+      if (!nextFallback) {
+        return {
+          ...prev,
+          lanes: nextLanes,
+          laneKey: null,
+          name: "",
+          keyCount: 0,
+          keys: [],
+          periodId: null,
+          sinceDate: null,
+          untilDate: "",
+          untilAuto: true,
+          ...draftSliceFromSource({ sensing: prev.sensing }),
+        };
+      }
+      const next = { ...prev, lanes: nextLanes };
+      return { ...next, ...laneView(next, nextFallback) };
+    });
     setPaste(formatKeybind(keys));
     setRenaming(false);
   }
@@ -623,11 +692,235 @@ export default function KeyboardSetupPopup({
     }
   }
 
-  function toggleDraftKey(code) {
-    const has = draft.keys.includes(code);
-    const keys = has ? draft.keys.filter((item) => item !== code) : [...draft.keys, code];
-    applyKeySelection(keys);
+  function handleBoardPaint(codes, turnedOn, kind) {
+    const applyCode = (next, code) => {
+      if (kind === "toggle") {
+        if (next.has(code)) next.delete(code);
+        else next.add(code);
+        return;
+      }
+      if (turnedOn) next.add(code);
+      else next.delete(code);
+    };
+    if (editorMode === "layout") {
+      const next = new Set(draft.keys);
+      for (const code of codes) applyCode(next, code);
+      applyKeySelection([...next]);
+      return;
+    }
+    setPaintSelection((prev) => {
+      const next = new Set(prev);
+      for (const code of codes) applyCode(next, code);
+      return next;
+    });
   }
+
+  function selectAllKeys() {
+    const codes = bindableKeys.map((key) => key.code);
+    if (editorMode === "layout") {
+      applyKeySelection(codes);
+      return;
+    }
+    setPaintSelection(new Set(codes));
+  }
+
+  function deselectAllKeys() {
+    if (editorMode === "layout") {
+      applyKeySelection([]);
+      return;
+    }
+    setPaintSelection(new Set());
+  }
+
+  function assignSwitchToSelection(switchKey) {
+    if (!paintSelection.size) return;
+    setDraft((prev) => {
+      const keyMeta = {...(prev.keyMeta || {})};
+      for (const code of paintSelection) {
+        keyMeta[code] = {...keyMeta[code], switchKey};
+      }
+      return {...prev, keyMeta};
+    });
+  }
+
+  function patchOpenSwitch(patch) {
+    if (!openSwitchKey) return;
+    setDraft((prev) => ({
+      ...prev,
+      switches: (prev.switches || []).map((row) =>
+        switchClientKey(row) === openSwitchKey ? {...row, ...patch} : row,
+      ),
+    }));
+  }
+
+  function addSwitch() {
+    if ((draft.switches || []).length >= maxSwitches) return;
+    const row = emptySwitchRow();
+    const key = switchClientKey(row);
+    setDraft((prev) => ({...prev, switches: [...(prev.switches || []), row]}));
+    setOpenSwitchKey(key);
+  }
+
+  function applyGeometryId(geometryId) {
+    const nextGeo = geometries.find((row) => String(row.id) === String(geometryId));
+    const allowed = new Set(
+      (nextGeo?.keys || []).filter((key) => key.bindable !== false).map((key) => key.code),
+    );
+    const cap = Math.min(MAX_BOARD_SWITCHES, Math.max(allowed.size, 1));
+    setDraft((prev) => {
+      let switches = prev.switches || [];
+      const dropped = new Set();
+      if (switches.length > cap) {
+        switches.slice(cap).forEach((row) => dropped.add(switchClientKey(row)));
+        switches = switches.slice(0, cap);
+      }
+      const fallback = switches[0] ? switchClientKey(switches[0]) : null;
+      const keyMeta = {};
+      for (const [code, meta] of Object.entries(prev.keyMeta || {})) {
+        if (!allowed.has(code)) continue;
+        if (meta?.switchKey && dropped.has(meta.switchKey)) {
+          keyMeta[code] = {...meta, switchKey: fallback};
+        } else {
+          keyMeta[code] = meta;
+        }
+      }
+      return {...prev, geometryId, switches, keyMeta};
+    });
+    setPaintSelection((prev) => new Set([...prev].filter((code) => allowed.has(code))));
+    setOpenSwitchKey((current) => {
+      if (!current) return current;
+      const nextList = (draft.switches || []).slice(0, cap);
+      if (nextList.some((row) => switchClientKey(row) === current)) return current;
+      return nextList[0] ? switchClientKey(nextList[0]) : null;
+    });
+  }
+
+  function removeSwitch(switchKey) {
+    if ((draft.switches || []).length <= 1) return;
+    const remaining = (draft.switches || []).filter((row) => switchClientKey(row) !== switchKey);
+    const fallback = switchClientKey(remaining[0]);
+    setDraft((prev) => {
+      const keyMeta = {...(prev.keyMeta || {})};
+      for (const code of Object.keys(keyMeta)) {
+        if (keyMeta[code]?.switchKey === switchKey) {
+          keyMeta[code] = {...keyMeta[code], switchKey: fallback};
+        }
+      }
+      return {...prev, switches: remaining, keyMeta};
+    });
+    setOpenSwitchKey((current) => (current === switchKey ? fallback : current));
+  }
+
+  function writeSelectionMeta(patch, clearKeys = []) {
+    if (!paintSelection.size) return;
+    setDraft((prev) => {
+      const keyMeta = {...(prev.keyMeta || {})};
+      for (const code of paintSelection) {
+        const next = {...keyMeta[code], ...patch};
+        for (const key of clearKeys) delete next[key];
+        keyMeta[code] = next;
+      }
+      return {...prev, keyMeta};
+    });
+  }
+
+  const selectionCodes = [...paintSelection];
+  const selectionEnabled = selectionCodes.length > 0 && editorMode !== "layout";
+  const selectionAbsent = selectionCodes.length > 0 && selectionCodes.every(
+    (code) => draft.keyMeta?.[code]?.switchKey === ABSENT_SWITCH,
+  );
+
+  function selectionMetaValues(field, fallback = "") {
+    if (!selectionCodes.length) return {value: "", mixed: false};
+    const values = selectionCodes.map((code) => {
+      const raw = draft.keyMeta?.[code]?.[field];
+      if (raw === "" || raw == null) return fallback;
+      return String(raw);
+    });
+    const first = values[0];
+    const mixed = values.some((value) => value !== first);
+    return {value: mixed ? "" : first, mixed};
+  }
+
+  const selectionActuation = selectionMetaValues(
+    "actuationMm",
+    draft.actuationMm === "" || draft.actuationMm == null ? "" : String(draft.actuationMm),
+  );
+  const selectionRtMode = (() => {
+    if (!selectionCodes.length) return {value: "off", mixed: false};
+    const values = selectionCodes.map((code) => draft.keyMeta?.[code]?.rtMode || "default");
+    const first = values[0];
+    const mixed = values.some((value) => value !== first);
+    if (mixed) return {value: "off", mixed: true};
+    return {value: first === "default" ? (draft.rtMode || "off") : first, mixed: false};
+  })();
+  const selectionRtActuation = selectionMetaValues(
+    "rapidTriggerActuationMm",
+    draft.rtMode === "single" && draft.rapidTriggerActuationMm !== ""
+      ? String(draft.rapidTriggerActuationMm)
+      : "",
+  );
+  const selectionRtPress = selectionMetaValues(
+    "rapidTriggerPressMm",
+    draft.rtMode === "split" && draft.rapidTriggerPressMm !== ""
+      ? String(draft.rapidTriggerPressMm)
+      : "",
+  );
+  const selectionRtRelease = selectionMetaValues(
+    "rapidTriggerReleaseMm",
+    draft.rtMode === "split" && draft.rapidTriggerReleaseMm !== ""
+      ? String(draft.rapidTriggerReleaseMm)
+      : "",
+  );
+
+  const paintByCode = useMemo(() => {
+    if (editorMode === "layout" || isMembrane) return undefined;
+    const keyByCode = new Map(
+      Object.entries(draft.keyMeta || {}).map(([code, meta]) => [
+        code,
+        {
+          switchKey: meta.switchKey,
+          actuationMm: meta.actuationMm === "" ? null : meta.actuationMm,
+          rapidTriggerSplit: meta.rtMode === "split" ? true : meta.rtMode === "off" || meta.rtMode === "single" ? false : null,
+          rapidTriggerActuationMm: meta.rtMode === "single" ? meta.rapidTriggerActuationMm : null,
+          rapidTriggerPressMm: meta.rtMode === "split" ? meta.rapidTriggerPressMm : null,
+          rapidTriggerReleaseMm: meta.rtMode === "split" ? meta.rapidTriggerReleaseMm : null,
+        },
+      ]),
+    );
+    const board = {
+      sensing: effectiveSensing,
+      actuationMm: draft.actuationMm,
+      rapidTriggerSplit: draft.rtMode === "split",
+      rapidTriggerActuationMm: draft.rtMode === "single" ? draft.rapidTriggerActuationMm : null,
+      rapidTriggerPressMm: draft.rtMode === "split" ? draft.rapidTriggerPressMm : null,
+      rapidTriggerReleaseMm: draft.rtMode === "split" ? draft.rapidTriggerReleaseMm : null,
+      stemColor: draft.stemColor,
+      switchId: draft.switchId,
+    };
+    if (editorMode === "actuation" || editorMode === "rapidTrigger") {
+      return depthPaints(editorMode, bindableKeys.map((key) => key.code), {board, keyByCode});
+    }
+    const paint = {};
+    for (const key of bindableKeys) {
+      const row = keyByCode.get(key.code);
+      if (row?.switchKey === ABSENT_SWITCH) {
+        paint[key.code] = {switchTop: {absent: true}};
+        continue;
+      }
+      const sw = row?.switchKey
+        ? (draft.switches || []).find((item) => switchClientKey(item) === row.switchKey)
+        : {
+          stemColor: draft.stemColor,
+          baseColor: draft.baseColor,
+          topColor: draft.topColor,
+          baseOpacity: draft.baseOpacity,
+          switchId: draft.switchId,
+        };
+      paint[key.code] = {switchTop: switchTopPaint(sw, switches)};
+    }
+    return paint;
+  }, [bindableKeys, draft, editorMode, effectiveSensing, isMembrane, switches]);
 
   function applyPaste() {
     const parsed = parseKeybindText(paste);
@@ -649,22 +942,32 @@ export default function KeyboardSetupPopup({
     const exact = keyedPeriods(saved?.periods).find((period) => sameDate(period.sinceDate, nextDate));
     if (exact) {
       const keys = canonicalizeKeys(exact.keys || []);
-      const currentKeys = canonicalizeKeys(current.keys || []);
-      if (keys.join("\u001f") !== currentKeys.join("\u001f") && !laneMatchesSaved(current, rig)) {
+      const probe = { ...current, setup: layoutSetupFromDraft(draft) };
+      if (!laneMatchesSaved(probe, rig, savedBoard)) {
         if (!window.confirm(t("confirmations.unsavedChanges", { ns: "common" }))) return;
       }
       const keyCount = keys.length;
       const name = nameTracksCount(current.name) ? `${keyCount}K` : current.name;
       const range = rangeFrom(exact);
-      setDraft((prev) => withCurrentLane(prev, {
-        periodId: exact.id,
-        sinceDate: nextDate,
-        untilDate: range.untilDate,
-        untilAuto: range.untilAuto,
-        keys,
-        keyCount,
-        name,
-      }));
+      const host = savedBoard ? { ...savedBoard, sensing: draft.sensing } : { sensing: draft.sensing };
+      setDraft((prev) => {
+        const slice = draftSliceFromSource(layoutSource(host, exact.setup || null));
+        const setup = layoutSetupFromDraft({ ...slice, sensing: prev.sensing });
+        const patch = {
+          periodId: exact.id,
+          sinceDate: nextDate,
+          untilDate: range.untilDate,
+          untilAuto: range.untilAuto,
+          keys,
+          keyCount,
+          name,
+          setup,
+        };
+        const lanes = (prev.lanes || []).map((row) =>
+          laneClientKey(row) === prev.laneKey ? { ...row, ...patch } : row,
+        );
+        return { ...prev, ...patch, ...slice, lanes };
+      });
       setPaste(formatKeybind(keys));
       return;
     }
@@ -689,7 +992,8 @@ export default function KeyboardSetupPopup({
       const skipBoard = Boolean(currentBoard) && !boardSpecChanged(draft, currentBoard, effectiveSensing) && !boardDateMoved;
       const hall = effectiveSensing === "hall";
       const membrane = isMembrane;
-      const lanePayload = (draft.lanes || []).flatMap((row) => {
+      const committed = commitCurrentSetup(draft);
+      const lanePayload = (committed.lanes || []).flatMap((row) => {
         const keys = canonicalizeKeys(row.keys || []);
         if (!keys.length) return [];
         const untilAuto = row.untilAuto !== false;
@@ -702,6 +1006,7 @@ export default function KeyboardSetupPopup({
           sinceDate: row.sinceDate || null,
           untilDate: untilAuto ? null : row.untilDate || null,
           untilAuto,
+          setup: row.setup,
         }];
       });
       const boardUntilAuto = draft.boardUntilAuto !== false;
@@ -719,6 +1024,8 @@ export default function KeyboardSetupPopup({
         sensing: effectiveSensing,
         switchId: membrane ? null : draft.switchId ? Number(draft.switchId) : null,
         customSwitch: membrane || draft.switchId ? null : draft.customSwitch || null,
+        switches: membrane ? [] : (draft.switches || []).map(switchPayload),
+        keyOverrides: keyOverridesFromDraft(draft, membrane),
         actuationMm: membrane || draft.actuationMm === "" ? null : Number(draft.actuationMm),
         rapidTriggerSplit: !membrane && hall && draft.rtMode === "split",
         rapidTriggerActuationMm:
@@ -973,22 +1280,79 @@ export default function KeyboardSetupPopup({
               {draftGeometry ? (
                 <KeyboardBoard
                   keys={draftGeometry.keys}
-                  activeKeys={new Set(draft.keys)}
-                  onKeyToggle={toggleDraftKey}
+                  activeKeys={editorMode === "layout" ? new Set(draft.keys) : undefined}
+                  selectedKeys={editorMode === "layout" ? undefined : paintSelection}
+                  selectMode={editorMode !== "layout"}
+                  paintByCode={paintByCode}
+                  keepFillOnHover={editorMode !== "layout"}
+                  onPaintKeys={handleBoardPaint}
                   showLabels
                   maxUnit={34}
                 />
               ) : (
                 <p className="keyboard-setup__intro">{t("profile.keyboards.noLayouts")}</p>
               )}
-              <p className="keyboard-setup__intro">{t("profile.keyboards.clickLayout")}</p>
+              <div className="keyboard-setup__select-actions">
+                <button
+                  type="button"
+                  className="btn-fill-secondary btn-sm"
+                  onClick={selectAllKeys}
+                  disabled={!draftGeometry || allKeysSelected}
+                >
+                  {t("profile.keyboards.selectAll")}
+                </button>
+                <button
+                  type="button"
+                  className="btn-fill-secondary btn-sm"
+                  onClick={deselectAllKeys}
+                  disabled={!anyKeysSelected}
+                >
+                  {t("profile.keyboards.deselectAll")}
+                </button>
+              </div>
+              <p className="keyboard-setup__intro">
+                {editorMode === "layout" ? t("profile.keyboards.clickLayout") : t("profile.keyboards.clickSelect")}
+              </p>
               <div className="keyboard-setup__board-grid">
                 <CustomSelect
                   options={geometryOptions}
                   value={geometryOptions.find((option) => option.value === String(draft.geometryId)) || null}
-                  onChange={(option) => setDraft((prev) => ({ ...prev, geometryId: option.value }))}
+                  onChange={(option) => applyGeometryId(option.value)}
                   width="100%"
                   label={t("profile.keyboards.geometry")}
+                />
+                <CustomSelect
+                  options={sensingOptions}
+                  value={sensingOptions.find((option) => option.value === draft.sensing) || sensingOptions[0]}
+                  onChange={(option) => {
+                    const nextSensing = option.value;
+                    if (isMembraneSensing(nextSensing)) {
+                      setOpenSwitchKey(null);
+                      setPaintSelection(new Set());
+                      setEditorMode("layout");
+                    }
+                    setDraft((prev) => {
+                      const next = {
+                        ...prev,
+                        sensing: nextSensing,
+                        rtMode: nextSensing === "hall" ? prev.rtMode : "off",
+                      };
+                      if (isMembraneSensing(nextSensing)) {
+                        const cleared = { ...next, ...membraneClearedDraft() };
+                        const setup = layoutSetupFromDraft(cleared);
+                        return {
+                          ...cleared,
+                          lanes: (cleared.lanes || []).map((row) => ({ ...row, setup })),
+                        };
+                      }
+                      if (!(next.switches || []).length) {
+                        return {...next, switches: [emptySwitchRow()]};
+                      }
+                      return next;
+                    });
+                  }}
+                  width="100%"
+                  label={t("profile.keyboards.sensingLabel")}
                 />
                 <SinceRangeField
                   label={t("profile.keyboards.usingKeyboardSince")}
@@ -1045,144 +1409,249 @@ export default function KeyboardSetupPopup({
             </section>
 
             <section className="keyboard-setup__editor-switch">
-              <h3 className="keyboard-setup__section-title">{t("profile.keyboards.switch")}</h3>
-              <div className="keyboard-setup__switch-edit">
-                <SwitchDiagram
-                  className="switch-diagram--editor"
-                  stem={selectedSwitch?.stem}
-                  sensing={selectedSwitch?.sensing || draft.sensing}
-                  baseColor={draft.baseColor || selectedSwitch?.baseColor}
-                  topColor={draft.topColor || selectedSwitch?.topColor}
-                  stemColor={draft.stemColor || selectedSwitch?.stemColor}
-                  baseOpacity={topOpacity}
-                  title={isMembrane ? t("profile.keyboards.sensing.membrane") : selectedSwitch?.name || draft.customSwitch || t("profile.keyboards.customSwitch")}
-                  colorable={!isMembrane}
-                  stemLabel={t("admin.keyboards.stemColor")}
-                  topLabel={t("admin.keyboards.topColor")}
-                  baseLabel={t("admin.keyboards.baseColor")}
-                  opacityLabel={t("admin.keyboards.baseOpacity", { percent: Math.round(topOpacity * 100) })}
-                  onStemColor={(stemColor) => setDraft((prev) => ({ ...prev, stemColor }))}
-                  onTopColor={(topColor) => setDraft((prev) => ({ ...prev, topColor }))}
-                  onBaseColor={(baseColor) => setDraft((prev) => ({ ...prev, baseColor }))}
-                  onBaseOpacity={(baseOpacity) => setDraft((prev) => ({ ...prev, baseOpacity: String(baseOpacity) }))}
-                />
-                <div className="keyboard-setup__switch-fields">
-                  {!isMembrane && (
-                    <CustomSelect
-                      options={switchOptions}
-                      value={switchOptions.find((option) => option.value === String(draft.switchId || "")) || switchOptions[0]}
-                      onChange={(option) =>
-                        setDraft((prev) => ({
-                          ...prev,
-                          switchId: option.value,
-                          stemColor: "",
-                          baseColor: "",
-                          topColor: "",
-                          baseOpacity: "",
-                        }))
+              <div className="keyboard-setup__modes" role="tablist" aria-label={t("profile.keyboards.modes.label")}>
+                {EDITOR_MODES.filter((mode) => {
+                  if (mode === "layout") return true;
+                  if (isMembrane) return false;
+                  if (mode === "rapidTrigger") return showRapid;
+                  return true;
+                }).map((mode) => (
+                  <button
+                    key={mode}
+                    type="button"
+                    role="tab"
+                    aria-selected={editorMode === mode}
+                    className={`keyboard-setup__mode${editorMode === mode ? " is-active" : ""}`}
+                    onClick={() => {
+                      setEditorMode(mode);
+                      if (mode === "switches" && !openSwitchKey && draft.switches?.[0]) {
+                        setOpenSwitchKey(switchClientKey(draft.switches[0]));
                       }
-                      width="100%"
-                      label={t("profile.keyboards.switch")}
-                    />
-                  )}
-                  {(isMembrane || !draft.switchId) && (
-                    <CustomSelect
-                      options={sensingOptions}
-                      value={sensingOptions.find((option) => option.value === draft.sensing) || sensingOptions[0]}
-                      onChange={(option) =>
-                        setDraft((prev) => ({
-                          ...prev,
-                          sensing: option.value,
-                          rtMode: option.value === "hall" ? prev.rtMode : "off",
-                          ...(isMembraneSensing(option.value) ? membraneClearedDraft() : {}),
-                        }))
-                      }
-                      width="100%"
-                      label={t("profile.keyboards.sensingLabel")}
-                    />
-                  )}
-                  {!isMembrane && !draft.switchId && (
-                    <label className="keyboard-setup__field">
-                      <span>{t("profile.keyboards.customSwitch")}</span>
-                      <input
-                        value={draft.customSwitch}
-                        onChange={(event) => setDraft((prev) => ({ ...prev, customSwitch: event.target.value }))}
-                      />
-                    </label>
-                  )}
-                  {!isMembrane && (
-                    <label className="keyboard-setup__field">
-                      <span>{t("profile.keyboards.actuationLabel")}</span>
-                      <input
-                        type="number"
-                        min="0"
-                        max="8"
-                        step="0.01"
-                        value={draft.actuationMm}
-                        onChange={(event) => setDraft((prev) => ({ ...prev, actuationMm: event.target.value }))}
-                      />
-                    </label>
+                    }}
+                  >
+                    {t(`profile.keyboards.modes.${mode}`)}
+                  </button>
+                ))}
+              </div>
+
+              {editorMode === "layout" && (
+                <p className="keyboard-setup__intro">{t("profile.keyboards.layoutHint")}</p>
+              )}
+
+              {editorMode === "switches" && !isMembrane ? (
+                <div className="keyboard-setup__switch-list">
+                  <div className={`keyboard-setup__switch-row${selectionAbsent ? " is-open" : ""}`}>
+                    <div className="keyboard-setup__switch-row-head">
+                      <button
+                        type="button"
+                        className="keyboard-setup__switch-row-open"
+                        onClick={() => {
+                          setOpenSwitchKey(null);
+                          assignSwitchToSelection(ABSENT_SWITCH);
+                        }}
+                      >
+                        <SwitchTopPlaceholder absent size="0.85rem" />
+                        <span>{t("profile.keyboards.noSwitch")}</span>
+                      </button>
+                    </div>
+                  </div>
+                  {(draft.switches || []).map((row, index) => {
+                    const key = switchClientKey(row);
+                    const catalogSwitch = switches.find((item) => String(item.id) === String(row.switchId));
+                    const open = key === openSwitchKey;
+                    return (
+                      <div key={key} className={`keyboard-setup__switch-row${open ? " is-open" : ""}`}>
+                        <div className="keyboard-setup__switch-row-head">
+                          <button
+                            type="button"
+                            className="keyboard-setup__switch-row-open"
+                            onClick={() => {
+                              setOpenSwitchKey(key);
+                              assignSwitchToSelection(key);
+                            }}
+                          >
+                            {row.absent ? (
+                              <SwitchTopPlaceholder absent size="0.85rem" />
+                            ) : (
+                              <span
+                                className="keyboard-setup__switch-swatch"
+                                style={{background: resolvedStemColor(row, switches) || "var(--color-white-t20)"}}
+                              />
+                            )}
+                            <span>
+                              {row.absent
+                                ? t("profile.keyboards.noSwitch")
+                                : catalogSwitch?.name || row.customSwitch || t("profile.keyboards.switchN", {n: index + 1})}
+                            </span>
+                          </button>
+                          <button
+                            type="button"
+                            className="keyboard-setup__switch-row-remove"
+                            onClick={() => removeSwitch(key)}
+                            disabled={(draft.switches || []).length <= 1}
+                            aria-label={t("profile.keyboards.removeSwitch")}
+                          >
+                            <TrashIcon size={14} color="currentColor" />
+                          </button>
+                        </div>
+                        {open ? (
+                          <div className="keyboard-setup__switch-row-body">
+                            <div className="keyboard-setup__switch-edit">
+                              {!row.absent && (
+                                <SwitchDiagram
+                                  className="switch-diagram--editor"
+                                  stem={catalogSwitch?.stem}
+                                  sensing={catalogSwitch?.sensing || draft.sensing}
+                                  baseColor={row.baseColor || catalogSwitch?.baseColor}
+                                  topColor={row.topColor || catalogSwitch?.topColor}
+                                  stemColor={row.stemColor || catalogSwitch?.stemColor}
+                                  baseOpacity={openTopOpacity}
+                                  title={catalogSwitch?.name || row.customSwitch || t("profile.keyboards.customSwitch")}
+                                  colorable
+                                  stemLabel={t("admin.keyboards.stemColor")}
+                                  topLabel={t("admin.keyboards.topColor")}
+                                  baseLabel={t("admin.keyboards.baseColor")}
+                                  opacityLabel={t("admin.keyboards.baseOpacity", {percent: Math.round(openTopOpacity * 100)})}
+                                  onStemColor={(stemColor) => patchOpenSwitch({stemColor})}
+                                  onTopColor={(topColor) => patchOpenSwitch({topColor})}
+                                  onBaseColor={(baseColor) => patchOpenSwitch({baseColor})}
+                                  onBaseOpacity={(baseOpacity) => patchOpenSwitch({baseOpacity: String(baseOpacity)})}
+                                />
+                              )}
+                              <div className="keyboard-setup__switch-fields">
+                                <CustomSelect
+                                  options={switchOptions}
+                                  value={
+                                    row.absent
+                                      ? switchOptions.find((option) => option.value === "none")
+                                      : switchOptions.find((option) => option.value === String(row.switchId || ""))
+                                        || switchOptions.find((option) => option.value === "")
+                                  }
+                                  onChange={(option) => {
+                                    if (!option) return;
+                                    if (option.value === "none") {
+                                      patchOpenSwitch({
+                                        absent: true,
+                                        switchId: "",
+                                        customSwitch: "",
+                                        stemColor: "",
+                                        baseColor: "",
+                                        topColor: "",
+                                        baseOpacity: "",
+                                      });
+                                      return;
+                                    }
+                                    patchOpenSwitch({
+                                      absent: false,
+                                      switchId: option.value,
+                                      stemColor: "",
+                                      baseColor: "",
+                                      topColor: "",
+                                      baseOpacity: "",
+                                    });
+                                  }}
+                                  width="100%"
+                                  label={t("profile.keyboards.switch")}
+                                />
+                                {!row.absent && !row.switchId && (
+                                  <label className="keyboard-setup__field">
+                                    <span>{t("profile.keyboards.customSwitch")}</span>
+                                    <input
+                                      value={row.customSwitch}
+                                      onChange={(event) => patchOpenSwitch({customSwitch: event.target.value})}
+                                    />
+                                  </label>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        ) : null}
+                      </div>
+                    );
+                  })}
+                  <button
+                    type="button"
+                    className="btn-fill-secondary"
+                    onClick={addSwitch}
+                    disabled={(draft.switches || []).length >= maxSwitches}
+                  >
+                    {t("profile.keyboards.addSwitch")}
+                  </button>
+                  {!selectionEnabled && (
+                    <p className="keyboard-setup__intro">{t("profile.keyboards.selectKeys")}</p>
                   )}
                 </div>
-              </div>
-              {showRapid && (
-                <div className="keyboard-setup__rt">
+              ) : null}
+
+              {editorMode === "actuation" && !isMembrane && (
+                <>
+                  <ActuationSlider
+                    label={t("profile.keyboards.actuationLabel")}
+                    value={selectionActuation.value}
+                    mixed={selectionActuation.mixed}
+                    disabled={!selectionEnabled}
+                    onChange={(actuationMm) => writeSelectionMeta({actuationMm})}
+                  />
+                  {!selectionEnabled && (
+                    <p className="keyboard-setup__intro">{t("profile.keyboards.selectKeys")}</p>
+                  )}
+                </>
+              )}
+
+              {editorMode === "rapidTrigger" && showRapid ? (
+                <div className={`keyboard-setup__rt${selectionRtMode.mixed ? " is-mixed" : ""}${selectionEnabled ? "" : " is-disabled"}`}>
                   <StateDisplay
                     className="keyboard-setup__rt-toggle"
-                    currentState={draft.rtMode}
+                    currentState={selectionRtMode.value}
                     states={["off", "single", "split"]}
                     activeStates={["single", "split"]}
-                    onChange={(rtMode) => setDraft((prev) => ({ ...prev, rtMode }))}
+                    onChange={(rtMode) => {
+                      if (selectionEnabled) writeSelectionMeta({rtMode});
+                    }}
                     label={t("profile.keyboards.rapidTrigger")}
                     width={48}
                   />
-                  {draft.rtMode === "single" ? (
-                    <label className="keyboard-setup__field">
-                      <span>{t("profile.keyboards.actuationLabel")}</span>
-                      <input
-                        type="number"
-                        min="0"
-                        max="8"
-                        step="0.01"
-                        value={draft.rapidTriggerActuationMm}
-                        onChange={(event) =>
-                          setDraft((prev) => ({ ...prev, rapidTriggerActuationMm: event.target.value }))
-                        }
-                      />
-                    </label>
-                  ) : null}
-                  {draft.rtMode === "split" ? (
+                  {selectionRtMode.value === "single" && !selectionRtMode.mixed && (
+                    <ActuationSlider
+                      label={t("profile.keyboards.actuationLabel")}
+                      value={selectionRtActuation.value}
+                      mixed={selectionRtActuation.mixed}
+                      disabled={!selectionEnabled}
+                      onChange={(rapidTriggerActuationMm) => writeSelectionMeta({
+                        rtMode: "single",
+                        rapidTriggerActuationMm,
+                      })}
+                    />
+                  )}
+                  {selectionRtMode.value === "split" && !selectionRtMode.mixed && (
                     <div className="keyboard-setup__rt-points">
-                      <label className="keyboard-setup__field">
-                        <span>{t("profile.keyboards.rtPressLabel")}</span>
-                        <input
-                          type="number"
-                          min="0"
-                          max="8"
-                          step="0.01"
-                          value={draft.rapidTriggerPressMm}
-                          onChange={(event) =>
-                            setDraft((prev) => ({ ...prev, rapidTriggerPressMm: event.target.value }))
-                          }
-                        />
-                      </label>
-                      <label className="keyboard-setup__field">
-                        <span>{t("profile.keyboards.rtReleaseLabel")}</span>
-                        <input
-                          type="number"
-                          min="0"
-                          max="8"
-                          step="0.01"
-                          value={draft.rapidTriggerReleaseMm}
-                          onChange={(event) =>
-                            setDraft((prev) => ({ ...prev, rapidTriggerReleaseMm: event.target.value }))
-                          }
-                        />
-                      </label>
+                      <ActuationSlider
+                        label={t("profile.keyboards.rtPressLabel")}
+                        value={selectionRtPress.value}
+                        mixed={selectionRtPress.mixed}
+                        disabled={!selectionEnabled}
+                        onChange={(rapidTriggerPressMm) => writeSelectionMeta({
+                          rtMode: "split",
+                          rapidTriggerPressMm,
+                        })}
+                      />
+                      <ActuationSlider
+                        label={t("profile.keyboards.rtReleaseLabel")}
+                        value={selectionRtRelease.value}
+                        mixed={selectionRtRelease.mixed}
+                        disabled={!selectionEnabled}
+                        onChange={(rapidTriggerReleaseMm) => writeSelectionMeta({
+                          rtMode: "split",
+                          rapidTriggerReleaseMm,
+                        })}
+                      />
                     </div>
-                  ) : null}
+                  )}
+                  {!selectionEnabled && (
+                    <p className="keyboard-setup__intro">{t("profile.keyboards.selectKeys")}</p>
+                  )}
                 </div>
-              )}
+              ) : null}
             </section>
           </div>
         </div>

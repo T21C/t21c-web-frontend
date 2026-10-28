@@ -191,7 +191,8 @@
         "hours": "小时",
         "days": "天",
         "weeks": "周",
-        "months": "月"
+        "months": "月",
+        "forever": "永久"
       },
       "pauseConfirm": "确定暂停该玩家的提交申请？",
       "resumeConfirm": "确定恢复该玩家的提交申请？",

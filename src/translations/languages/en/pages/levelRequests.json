@@ -152,6 +152,7 @@
     "addType": "Add type",
     "creatorEditable": "You can already edit this field on the chart",
     "downloadFile": "Attach zip",
+    "downloadPaste": "Or paste a copied zip",
     "downloadOr": "Or paste an external link",
     "removeFile": "Remove file",
     "hashing": "Checking zip… {{percent}}%",

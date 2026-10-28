@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 import { Collapsible, CollapsibleContent } from "@/components/common/Collapsible";
@@ -9,7 +9,10 @@ import { routes } from "@/api/routes";
 import { formatDateShort } from "@/utils/Utility";
 import KeyboardBoard from "./KeyboardBoard";
 import SwitchDiagram from "./SwitchDiagram";
+import SwitchTopPlaceholder from "./SwitchTopPlaceholder";
 import KeyboardSetupPopup from "./KeyboardSetupPopup";
+import {depthPaints} from "./keyboardPaint";
+import {layoutSource, switchTopPaint} from "./keyboardSetupDraft";
 import {
   boardProductLabel,
   currentPeriod,
@@ -55,6 +58,130 @@ function emptySocketSet(board) {
   );
 }
 
+function presentLayout(board, setup, catalogSwitches) {
+  const source = layoutSource(board, setup);
+  if (!source) return null;
+  if (!setup || source.sensing === "membrane") return source;
+  const named = (row) => (
+    (catalogSwitches || []).find((item) => String(item.id) === String(row?.switchId)) || null
+  );
+  const switches = (source.switches || []).map((row) => ({
+    ...row,
+    switch: named(row),
+  }));
+  return { ...source, switches, switch: named(source) };
+}
+
+function switchFills(codes, source, catalogSwitches) {
+  const paint = {};
+  if (!source || source.sensing === "membrane") return paint;
+  const list = source.switches || [];
+  const byCode = new Map((source.keyOverrides || []).map((row) => [row.code, row]));
+  const fallback = {
+    switchId: source.switchId,
+    stemColor: source.stemColor,
+    baseColor: source.baseColor,
+    topColor: source.topColor,
+    baseOpacity: source.baseOpacity,
+    stem: source.switch?.stem,
+    switch: source.switch,
+  };
+  for (const code of codes) {
+    const override = byCode.get(code);
+    if (override?.switchAbsent) {
+      paint[code] = { switchTop: { absent: true } };
+      continue;
+    }
+    const indexed = override?.periodSwitchIndex != null ? list[override.periodSwitchIndex] : null;
+    paint[code] = { switchTop: switchTopPaint(indexed || fallback, catalogSwitches) };
+  }
+  return paint;
+}
+
+function switchLegend(row, board) {
+  if (row?.absent) return { absent: true, name: "" };
+  const catalog = row?.switch || null;
+  return {
+    name: String(catalog?.name || row?.customSwitch || "").trim(),
+    stem: catalog?.stem || null,
+    sensing: catalog?.sensing || board?.sensing || null,
+    baseColor: row?.baseColor || catalog?.baseColor || null,
+    topColor: row?.topColor || catalog?.topColor || null,
+    stemColor: row?.stemColor || catalog?.stemColor || null,
+    baseOpacity: row?.baseOpacity == null ? (catalog?.baseOpacity ?? null) : row.baseOpacity,
+  };
+}
+
+function boardLegend(board) {
+  return {
+    name: String(board?.switch?.name || board?.customSwitch || "").trim(),
+    stem: board?.switch?.stem || null,
+    sensing: board?.switch?.sensing || board?.sensing || null,
+    baseColor: board?.baseColor || board?.switch?.baseColor || null,
+    topColor: board?.topColor || board?.switch?.topColor || null,
+    stemColor: board?.stemColor || board?.switch?.stemColor || null,
+    baseOpacity: board?.baseOpacity == null ? (board?.switch?.baseOpacity ?? null) : board.baseOpacity,
+  };
+}
+
+function usedSwitchLegends(board, codes) {
+  const list = board?.switches || [];
+  const byCode = new Map((board?.keyOverrides || []).map((row) => [row.code, row]));
+  const used = new Set();
+  let bareDefault = !codes.length && !list.length;
+  if (!codes.length) {
+    list.forEach((row, index) => {
+      if (!row.absent) used.add(index);
+    });
+  } else {
+    for (const code of codes) {
+      const override = byCode.get(code);
+      if (override?.switchAbsent) continue;
+      const idx = override?.periodSwitchIndex;
+      if (idx != null && list[idx] && !list[idx].absent) used.add(idx);
+      else if (idx == null || !list[idx]) bareDefault = true;
+    }
+  }
+  if (bareDefault && board?.switchId != null) {
+    const match = list.findIndex((row) => String(row.switchId) === String(board.switchId));
+    if (match >= 0) {
+      used.add(match);
+      bareDefault = false;
+    }
+  }
+  const legends = [];
+  const seen = new Set();
+  const push = (legend, key) => {
+    if (!legend.name || legend.absent || seen.has(key)) return;
+    seen.add(key);
+    legends.push({ ...legend, key });
+  };
+  if (bareDefault) {
+    const legend = boardLegend(board);
+    push(legend, board?.switchId ? `board:${board.switchId}` : `board:${legend.name}`);
+  }
+  [...used].sort((left, right) => left - right).forEach((index) => {
+    const row = list[index];
+    if (row.absent) return;
+    const key = row.switchId != null ? `id:${row.switchId}` : `idx:${index}:${row.customSwitch || ""}`;
+    push(switchLegend(row, board), key);
+  });
+  return legends;
+}
+
+function boardCardSpec(board, geometry) {
+  if (!board) return { membrane: false, switches: [] };
+  if (board.sensing === "membrane") return { membrane: true, switches: [] };
+  const empty = emptySocketSet(board);
+  const codes = (geometry?.keys || [])
+    .filter((key) => key.bindable !== false && !empty.has(key.code))
+    .map((key) => key.code);
+  return {
+    membrane: false,
+    switches: usedSwitchLegends(board, codes),
+  };
+}
+
 function mergeRig(rigs, next) {
   const list = Array.isArray(rigs) ? [...rigs] : [];
   const index = list.findIndex((row) => row.id === next.id);
@@ -76,6 +203,7 @@ export default function PlayerKeyboardsModule({
   const [saving, setSaving] = useState(false);
   const [selectedRigId, setSelectedRigId] = useState(null);
   const [selectedLaneId, setSelectedLaneId] = useState(null);
+  const [viewMode, setViewMode] = useState("layout");
   const [editorOpen, setEditorOpen] = useState(false);
 
   const rigs = setup?.rigs || [];
@@ -104,6 +232,10 @@ export default function PlayerKeyboardsModule({
     }
   }, [lanes, selectedLaneId]);
 
+  useEffect(() => {
+    setViewMode("layout");
+  }, [selectedRigId]);
+
   const lane = lanes.find((row) => row.id === selectedLaneId) || lanes[0] || null;
   const today = utcToday();
   const boards = (rig?.boardPeriods || []).filter((period) => !period.isGap);
@@ -120,15 +252,37 @@ export default function PlayerKeyboardsModule({
   const formFactors = catalog?.formFactors || [];
   const factorName =
     formFactors.find((row) => row.slug === geometry?.formFactor)?.name || null;
+  const viewBoard = presentLayout(board, lanePeriod?.setup, catalog?.switches) || board;
+  const viewOptions = useMemo(() => {
+    const options = [{ value: "layout", label: t("profile.keyboards.layout") }];
+    if (viewBoard?.sensing && viewBoard.sensing !== "membrane") {
+      options.push(
+        { value: "switches", label: t("profile.keyboards.modes.switches") },
+        { value: "actuation", label: t("profile.keyboards.modes.actuation") },
+      );
+      if (viewBoard.sensing === "hall") {
+        options.push({ value: "rapidTrigger", label: t("profile.keyboards.modes.rapidTrigger") });
+      }
+    }
+    return options;
+  }, [t, viewBoard?.sensing]);
+  useEffect(() => {
+    if (!viewOptions.some((option) => option.value === viewMode)) setViewMode("layout");
+  }, [viewMode, viewOptions]);
+  const paintCodes = (geometry?.keys || [])
+    .filter((key) => key.bindable !== false && !emptySocketSet(viewBoard).has(key.code))
+    .map((key) => key.code);
+  const paintByCode = viewMode === "layout" || viewBoard?.sensing === "membrane"
+    ? undefined
+    : viewMode === "switches"
+      ? switchFills(paintCodes, viewBoard, catalog?.switches)
+      : depthPaints(viewMode, paintCodes, {
+        board: viewBoard,
+        keyByCode: new Map((viewBoard?.keyOverrides || []).map((row) => [row.code, row])),
+      });
   const boardNote = String(board?.note || "").trim();
-  const hasSwitchSpec = Boolean(
-    board?.sensing === "membrane"
-      || board?.switch?.name
-      || board?.customSwitch
-      || board?.actuationMm != null
-      || board?.rapidTriggerSplit
-      || board?.rapidTriggerActuationMm != null,
-  );
+  const spec = boardCardSpec(viewBoard, geometry);
+  const hasSwitchSpec = Boolean(spec.membrane || spec.switches.length);
 
   async function createRig() {
     setSaving(true);
@@ -213,72 +367,78 @@ export default function PlayerKeyboardsModule({
                       </p>
                     )}
                   </div>
-                  {laneOptions.length ? (
+                  {(board || laneOptions.length > 0) && (
                     <div className="keyboard-setup__lane-col">
-                      <CustomSelect
-                        options={laneOptions}
-                        value={laneOptions.find((option) => option.value === String(selectedLaneId)) || null}
-                        onChange={(option) => setSelectedLaneId(Number(option.value))}
-                        width="10rem"
-                      />
+                      <div className="keyboard-setup__lane-tools">
+                        {board && (
+                          <CustomSelect
+                            options={viewOptions}
+                            value={viewOptions.find((option) => option.value === viewMode) || viewOptions[0]}
+                            onChange={(option) => option && setViewMode(option.value)}
+                            width="12rem"
+                          />
+                        )}
+                        {laneOptions.length > 0 && (
+                          <CustomSelect
+                            options={laneOptions}
+                            value={laneOptions.find((option) => option.value === String(selectedLaneId)) || null}
+                            onChange={(option) => setSelectedLaneId(Number(option.value))}
+                            width="10rem"
+                          />
+                        )}
+                      </div>
                       {lanePeriod?.sinceDate && (
                         <p className="keyboard-setup__since">
                           {rangeText(t, lanePeriod.sinceDate, effectiveUntil(lanePeriod, layoutGroup), i18n.language)}
                         </p>
                       )}
                     </div>
-                  ) : null}
+                  )}
                 </div>
                 {geometry && (
                   <KeyboardBoard
                     keys={geometry.keys}
-                    activeKeys={activeKeys}
-                    emptySockets={emptySocketSet(board)}
+                    activeKeys={viewMode === "layout" ? activeKeys : undefined}
+                    emptySockets={emptySocketSet(viewBoard)}
+                    paintByCode={paintByCode}
+                    keepFillOnHover
                   />
                 )}
                 {(hasSwitchSpec || boardNote) && (
                   <div className="keyboard-setup__spec">
                     {hasSwitchSpec && (
                       <div className="keyboard-setup__spec-main">
-                        {(board?.sensing === "membrane" || board?.switch?.name || board?.customSwitch) && (
-                          <SwitchDiagram
-                            className="switch-diagram--spec"
-                            stem={board.switch?.stem}
-                            sensing={board.switch?.sensing || board.sensing}
-                            baseColor={board.baseColor || board.switch?.baseColor}
-                            topColor={board.topColor || board.switch?.topColor}
-                            stemColor={board.stemColor || board.switch?.stemColor}
-                            baseOpacity={board.baseOpacity == null ? board.switch?.baseOpacity : board.baseOpacity}
-                          />
+                        {spec.membrane ? (
+                          <div className="keyboard-setup__spec-switches">
+                            <div className="keyboard-setup__spec-switch">
+                              <SwitchDiagram className="switch-diagram--spec" sensing="membrane" />
+                              <p className="keyboard-setup__spec-name">{t("profile.keyboards.sensing.membrane")}</p>
+                            </div>
+                          </div>
+                        ) : spec.switches.length > 0 && (
+                          <div className="keyboard-setup__spec-switches">
+                            {spec.switches.map((sw) => (
+                              <div key={sw.key} className="keyboard-setup__spec-switch">
+                                {sw.absent ? (
+                                  <SwitchTopPlaceholder absent size="3.5rem" />
+                                ) : (
+                                  <SwitchDiagram
+                                    className="switch-diagram--spec"
+                                    stem={sw.stem}
+                                    sensing={sw.sensing}
+                                    baseColor={sw.baseColor}
+                                    topColor={sw.topColor}
+                                    stemColor={sw.stemColor}
+                                    baseOpacity={sw.baseOpacity}
+                                  />
+                                )}
+                                <p className="keyboard-setup__spec-name">
+                                  {sw.absent ? t("profile.keyboards.noSwitch") : sw.name}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
                         )}
-                        <div className="keyboard-setup__spec-copy">
-                          {board?.sensing === "membrane" ? (
-                            <p className="keyboard-setup__spec-name">{t("profile.keyboards.sensing.membrane")}</p>
-                          ) : (
-                            <>
-                              {(board?.switch?.name || board?.customSwitch) && (
-                                <p className="keyboard-setup__spec-name">{board.switch?.name || board.customSwitch}</p>
-                              )}
-                              {board?.actuationMm != null && (
-                                <p className="keyboard-setup__spec-line">
-                                  {t("profile.keyboards.actuation", { mm: board.actuationMm })}
-                                </p>
-                              )}
-                              {board?.rapidTriggerSplit ? (
-                                <p className="keyboard-setup__spec-line">
-                                  {t("profile.keyboards.rtSplit", {
-                                    press: board.rapidTriggerPressMm ?? "—",
-                                    release: board.rapidTriggerReleaseMm ?? "—",
-                                  })}
-                                </p>
-                              ) : board?.rapidTriggerActuationMm != null && (
-                                <p className="keyboard-setup__spec-line">
-                                  {t("profile.keyboards.rtActuation", { mm: board.rapidTriggerActuationMm })}
-                                </p>
-                              )}
-                            </>
-                          )}
-                        </div>
                       </div>
                     )}
                     {boardNote && (

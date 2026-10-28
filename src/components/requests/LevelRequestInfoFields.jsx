@@ -171,6 +171,7 @@ const LevelRequestInfoFields = ({
                 {t('levelRequests.form.removeFile')}
               </button>
             )}
+            <span className="level-requests__hint">{t('levelRequests.form.downloadPaste')}</span>
           </div>
           <span className="level-requests__hint">{t('levelRequests.form.downloadOr')}</span>
         </div>

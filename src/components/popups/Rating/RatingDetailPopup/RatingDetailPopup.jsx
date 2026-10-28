@@ -12,7 +12,7 @@ import { RatingInput } from '@/components/common/selectors';
 import api from '@/utils/api';
 import { useTranslation } from 'react-i18next';
 import { CloseButton } from '@/components/common/buttons';
-import { ExternalLinkIcon, DownloadIcon, DraftIcon } from '@/components/common/icons';
+import { ExternalLinkIcon, DownloadIcon, DraftIcon, EditIcon } from '@/components/common/icons';
 import DiscordVoteNotice from '@/components/popups/Rating/DiscordVoteNotice';
 import RatingDiscordThreadButton from '@/components/popups/Rating/RatingDiscordThreadButton';
 import { mergeRatingThreadState } from '@/components/discord/ratingThread';
@@ -63,6 +63,7 @@ export const RatingDetailPopup = ({
   showingConfirmed=false,
   weeklyRaterActivity = [],
   ratingAccuracyStats: ratingAccuracyStatsProp,
+  onEditLevel = null,
 }) => {
   const currentUser = user;
   const { t } = useTranslation(['components', 'common']);
@@ -615,25 +616,40 @@ export const RatingDetailPopup = ({
   }, [selectedRating?.id]);
 
   if (!selectedRating) return null;
+  const showEditLevel = typeof onEditLevel === 'function' && selectedRating.level?.id != null;
   return (
     <>
     <PopupShell
       onClose={handleClose}
       closeDisabled={isAnimating}
       overlayClassName={`rating-popup-overlay${isExiting ? ' exiting' : ''}`}
-      panelClassName={`rating-popup${isExiting ? ' exiting' : ''}`}
+      panelClassName={`rating-popup${isExiting ? ' exiting' : ''}${showEditLevel ? ' rating-popup--can-edit' : ''}`}
       overlayChildren={
         selectedRating.level?.id && selectedRating.level?.fileId ? (
           <WebAdofaiViewerButton levelId={selectedRating.level.id} portaled={false} />
         ) : null
       }
     >
-        <CloseButton
-          className="rating-popup-close"
-          variant="floating"
-          onClick={handleClose}
-          aria-label={t('rating.detailPopup.closeButton')}
-        />
+        <div className="rating-popup-header-actions">
+          {showEditLevel && (
+            <button
+              type="button"
+              className="rating-popup-edit"
+              onClick={() => onEditLevel(selectedRating.level.id)}
+              disabled={isAnimating}
+              aria-label={t('rating.ratingCard.buttons.editLevel')}
+              title={t('rating.ratingCard.buttons.editLevel')}
+            >
+              <EditIcon color="currentColor" size="20px" />
+            </button>
+          )}
+          <CloseButton
+            className="rating-popup-close"
+            variant="floating"
+            onClick={handleClose}
+            aria-label={t('rating.detailPopup.closeButton')}
+          />
+        </div>
         <div className="popup-content">
           <div className="popup-header">
             <div className="top-header-content">

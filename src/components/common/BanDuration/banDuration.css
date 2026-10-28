@@ -1,0 +1,30 @@
+.ban-duration-fields {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ban-duration-fields .ban-duration-fields__label {
+  color: var(--color-white-t80);
+  font-size: 0.9rem;
+}
+
+.ban-duration-fields .ban-duration-fields__value {
+  padding: 8px 10px;
+  border: 1px solid var(--btn-neutral-disabled-fill);
+  border-radius: 4px;
+  background-color: var(--btn-neutral-dark);
+  color: var(--color-white);
+  box-sizing: border-box;
+  width: 5.5rem;
+}
+
+.ban-duration-fields .ban-duration-fields__value:hover {
+  border-color: var(--color-white-t40);
+}
+
+.ban-duration-fields .ban-duration-fields__unit {
+  min-width: 8rem;
+  flex: 0 0 auto;
+}

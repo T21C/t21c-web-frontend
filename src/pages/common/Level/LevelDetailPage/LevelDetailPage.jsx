@@ -79,6 +79,7 @@ import { CloseButton, LikeButton } from '@/components/common/buttons';
 import { CommentFormatter } from '@/components/misc';
 import CommunityTagVotePopup from './CommunityTagVotePopup';
 import LevelRequestMenu from '@/components/requests/LevelRequestMenu';
+import { userCanEditLevel } from '@/components/requests/levelRequestShared';
 import { toast } from 'react-hot-toast';
 import { ABILITIES, hasBit } from '@/utils/Abilities';
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
@@ -3900,6 +3901,11 @@ const LevelDetailPageContent = ({ mockData = null }) => {
             showingConfirmed={true}
             setSelectedRating={() => setShowRatingPopup(false)}
             enableReferences={false}
+            onEditLevel={
+              userCanEditLevel(user, res.level)
+                ? () => setOpenEditDialog(true)
+                : undefined
+            }
           />
         </Portal>
       )}

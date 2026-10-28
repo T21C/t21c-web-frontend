@@ -65,6 +65,48 @@ export const isAcceptedArchiveFile = (file) => {
 };
 
 /**
+ * First supported archive on a paste event, if the browser exposed one.
+ * File-manager copies show up as real `File`s. A pasted path or `file://` URI
+ * is only text — the page cannot read that local file.
+ *
+ * @param {DataTransfer | null | undefined} clipboardData
+ * @returns {File | null}
+ */
+export const archiveFileFromClipboard = (clipboardData) => {
+  if (!clipboardData) return null;
+  const listed = clipboardData.files;
+  if (listed) {
+    for (let i = 0; i < listed.length; i += 1) {
+      if (isAcceptedArchiveFile(listed[i])) return listed[i];
+    }
+  }
+  const items = clipboardData.items;
+  if (!items) return null;
+  for (let i = 0; i < items.length; i += 1) {
+    const item = items[i];
+    if (item.kind !== 'file') continue;
+    const file = item.getAsFile();
+    if (isAcceptedArchiveFile(file)) return file;
+  }
+  return null;
+};
+
+/**
+ * True when pasted plain text is a copied archive name or path.
+ * Used so a zip copied from a file manager still wins over its path string,
+ * while a normal URL paste into a text field is left alone.
+ *
+ * @param {string} text
+ */
+export const clipboardTextLooksLikeArchive = (text) => {
+  if (typeof text !== 'string') return false;
+  const trimmed = text.trim();
+  if (!trimmed) return false;
+  const leaf = trimmed.split(/[/\\?#]/).pop() || trimmed;
+  return hasAcceptedArchiveExtension(leaf);
+};
+
+/**
  * Prepares an archive file for upload. Validates type/extension and returns the file
  * plus its NFC-normalised original name.
  *

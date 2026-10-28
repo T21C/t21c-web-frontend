@@ -9,6 +9,7 @@ import { resolveSubmissionVideoUrl } from "@/utils/resolveVideoUrl";
 import { getLocalVideoPreview, getVideoEmbedModifierClass, getVideoIframeReferrerPolicy, getVideoIframeScrolling } from "@/utils/videoLink";
 import { loadSubmissionVideoDetail } from "@/utils/fetchVideoDetail";
 import { useDebouncedRequest } from "@/hooks/useDebouncedRequest";
+import { useArchiveFilePaste } from "@/hooks/useArchiveFilePaste";
 import { collectDomFieldPatch, useDomFieldSync } from "@/hooks/useDomFieldSync";
 import { useAuth } from "@/contexts/AuthContext";
 import { validateFeelingRating, formatDate, truncateString } from "@/utils/Utility";
@@ -26,7 +27,7 @@ import api from "@/utils/api";
 import {
   prepareZipForUpload,
   validateZipSize,
-  hasAcceptedArchiveExtension,
+  isAcceptedArchiveFile,
   ARCHIVE_ACCEPT_ATTR,
 } from '@/utils/zipUtils';
 import { zipLevelFileKey } from '@/components/popups/Levels/ZipLevelFilesList/ZipLevelFilesList';
@@ -844,19 +845,25 @@ const LevelSubmissionPage = () => {
     }
   };
 
-  const handleZipUpload = async (event) => {
-    const file = event.target.files?.[0];
+  const acceptZipFile = (file) => {
     if (!file) return;
-
+    if (!isAcceptedArchiveFile(file)) {
+      toast.error(t('levelSubmission.alert.invalidZip'));
+      return;
+    }
     if (!hasAgreedToCdnTos()) {
       setPendingZipFile(file);
       setShowCdnTos(true);
       return;
     }
-
     processZipUpload(file);
-    // Reset input so selecting the same file works again
+  };
+
+  const handleZipUpload = async (event) => {
+    const file = event.target.files?.[0];
     event.target.value = '';
+    if (!file) return;
+    acceptZipFile(file);
   };
 
   const handleRemoveZip = () => {
@@ -894,21 +901,19 @@ const LevelSubmissionPage = () => {
 
     const file = e.dataTransfer?.files?.[0];
     if (!file) return;
-
-    // Accept any supported archive format (.zip, .rar, .7z, .tar, .tar.gz, .tgz).
-    if (!hasAcceptedArchiveExtension(file.name)) {
-      toast.error(t('levelSubmission.alert.invalidZip'));
-      return;
-    }
-
-    if (!hasAgreedToCdnTos()) {
-      setPendingZipFile(file);
-      setShowCdnTos(true);
-      return;
-    }
-
-    processZipUpload(file);
+    acceptZipFile(file);
   };
+
+  useArchiveFilePaste(
+    acceptZipFile,
+    !levelZipInfo &&
+      !submission &&
+      !showCdnTos &&
+      !showLevelSelection &&
+      !showSongSelector &&
+      !showArtistSelector.show &&
+      !showChartClearNotifyOptIn,
+  );
 
   return (
     <div className="level-submission-page">

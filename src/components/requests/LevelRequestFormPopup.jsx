@@ -40,6 +40,7 @@ import {
   withoutUnrequestableTagIds,
 } from './levelRequestShared';
 import { useUnsavedClose } from '@/hooks/useUnsavedClose';
+import { useArchiveFilePaste } from '@/hooks/useArchiveFilePaste';
 import { collectLevelReferenceIds, getLevelReferences, peekLevelReferences } from '@/utils/levelReferences';
 import LevelRequestCurationTypes, { LevelRequestCurationDiff } from './LevelRequestCurationTypes';
 import LevelRequestInfoFields from './LevelRequestInfoFields';
@@ -458,6 +459,11 @@ const LevelRequestFormPopup = ({
     }
     storeDownloadFile(file);
   };
+
+  useArchiveFilePaste(
+    pickDownloadFile,
+    kind === 'download' && !saving && !showCdnTos && levelFiles.length === 0,
+  );
 
   const finishSaved = (savedRequest, responseData) => {
     if (responseData?.requiresLevelSelection && Array.isArray(responseData.levelFiles)) {

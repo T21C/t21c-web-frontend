@@ -116,7 +116,49 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - name: Check whether deploy host is already reachable
+        id: tailscale_reachability
+        env:
+          DEPLOY_HOST: ${{ vars.TUF_DEPLOY_HOST }}
+        run: |
+          set -euo pipefail
+          [[ -n "$DEPLOY_HOST" ]] || {
+            echo "::error::Repository variable TUF_DEPLOY_HOST is required" >&2
+            exit 64
+          }
+
+          reachable=false
+
+          # --until-direct defaults to true and treats a DERP path as failure.
+          # SSH works over a relay, so one pong by either path is enough.
+          tailscale_ping() {
+            local -a prefix=("$@")
+            local -a args=(ping -c 1 "$DEPLOY_HOST")
+            local help
+            help=$("${prefix[@]}" tailscale ping --help 2>&1 || true)
+            if grep -q -- '--until-direct' <<<"$help"; then
+              args=(ping -c 1 --timeout 5s --until-direct=false "$DEPLOY_HOST")
+            fi
+            timeout 20 "${prefix[@]}" tailscale "${args[@]}"
+          }
+
+          if command -v tailscale >/dev/null 2>&1; then
+            if tailscale_ping; then
+              reachable=true
+            elif command -v sudo >/dev/null 2>&1 && sudo -n true >/dev/null 2>&1 && tailscale_ping sudo -n; then
+              reachable=true
+            fi
+          fi
+
+          if [[ "$reachable" == true ]]; then
+            echo "Tailscale can already reach ${DEPLOY_HOST}; keeping the current login"
+          else
+            echo "Tailscale cannot reach ${DEPLOY_HOST}; logging in"
+          fi
+          printf 'reachable=%s\n' "$reachable" >> "$GITHUB_OUTPUT"
+
       - name: Connect to Tailscale
+        if: ${{ steps.tailscale_reachability.outputs.reachable != 'true' }}
         uses: tailscale/github-action@v4
         with:
           oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}

@@ -13,6 +13,7 @@ import { CrossIcon } from '@/components/common/icons';
 import { CloseButton } from '@/components/common/buttons';
 import { PopupShell } from '@/components/common/PopupShell';
 import { useJobProgressStream } from '@/hooks/useJobProgressStream';
+import { useArchiveFilePaste } from '@/hooks/useArchiveFilePaste';
 import ZipLevelFilesList from '@/components/popups/Levels/ZipLevelFilesList/ZipLevelFilesList';
 import { ARCHIVE_ACCEPT_ATTR, isAcceptedArchiveFile } from '@/utils/zipUtils';
 
@@ -345,11 +346,7 @@ const LevelUploadManagementPopup = ({
 
     const file = e.dataTransfer?.files?.[0];
     if (!file) return;
-    if (!isAcceptedArchiveFile(file)) {
-      notifyError(t('levelUploadManagement.errors.invalidZip'));
-      return;
-    }
-    void processZipUpload(file);
+    acceptZipFile(file);
   };
 
   const processZipUpload = async (file) => {
@@ -466,13 +463,24 @@ const LevelUploadManagementPopup = ({
     }
   };
 
+  const acceptZipFile = (file) => {
+    if (!file || isUploading) return;
+    if (!isAcceptedArchiveFile(file)) {
+      notifyError(t('levelUploadManagement.errors.invalidZip'));
+      return;
+    }
+    void processZipUpload(file);
+  };
+
+  useArchiveFilePaste(acceptZipFile, !isUploading);
+
   const handleZipUpload = async (event) => {
     const file = event.target.files?.[0];
-    if (!file) return;
-    await processZipUpload(file);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
+    if (!file) return;
+    acceptZipFile(file);
   };
 
   const handleUploadFromUrl = async () => {
@@ -863,6 +871,7 @@ const LevelUploadManagementPopup = ({
                 </button>
               )}
             </div>
+            <p className="upload-paste-hint">{t('levelUploadManagement.pasteHint')}</p>
             {allowDelete && isCdnUrl(zipTarget.dlLink) && (
               <button
                 type="button"

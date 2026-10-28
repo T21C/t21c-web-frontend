@@ -850,6 +850,10 @@
   gap: 0.5rem;
 }
 
+.level-requests .level-requests__download-file .level-requests__hint {
+  flex-basis: 100%;
+}
+
 .level-requests .level-requests__file-input {
   position: absolute;
   width: 1px;

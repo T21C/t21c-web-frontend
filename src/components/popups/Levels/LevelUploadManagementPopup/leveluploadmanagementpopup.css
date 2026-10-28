@@ -332,6 +332,14 @@
   margin-top: 4px;
 }
 
+.level-upload-management-popup .upload-paste-hint {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--color-white);
+  opacity: 0.6;
+}
+
 .level-upload-management-popup .upload-button,
 .level-upload-management-popup .upload-import-button,
 .level-upload-management-popup .delete-button,
