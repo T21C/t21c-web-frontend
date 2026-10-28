@@ -904,6 +904,7 @@ const RatingPage = () => {
                 isSuperAdmin={hasFlag(user, permissionFlags.SUPER_ADMIN)}
                 weeklyRaterActivity={weeklyRaterActivity}
                 ratingAccuracyStats={ratingAccuracyStats}
+                onEditLevel={isSuperAdmin ? handleEditLevel : undefined}
               />
             )}
 
@@ -927,6 +928,13 @@ const RatingPage = () => {
                       return;
                     }
                     const updatedLevel = updatedData.level || updatedData;
+                    if (updatedLevel?.id != null) {
+                      setSelectedRating((sel) => (
+                        sel?.level?.id === updatedLevel.id
+                          ? { ...sel, level: { ...sel.level, ...updatedLevel } }
+                          : sel
+                      ));
+                    }
                     const shouldRemove = updatedLevel.toRate === false;
                     if (shouldRemove) {
                       if (rankReadyActive) {

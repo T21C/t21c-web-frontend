@@ -131,6 +131,7 @@
     "addType": "添加类型",
     "creatorEditable": "你有修改权，可直接修改",
     "downloadFile": "附加压缩包",
+    "downloadPaste": "或粘贴已复制的压缩包",
     "downloadOr": "或粘贴外部链接",
     "removeFile": "移除文件",
     "hashing": "正在检查压缩包……{{percent}}%",

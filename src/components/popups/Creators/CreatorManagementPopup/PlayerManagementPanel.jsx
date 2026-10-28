@@ -5,7 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
 import { PopupShell } from '@/components/common/PopupShell';
 import { CloseButton } from '@/components/common/buttons';
-import { CountrySelect, CustomSelect } from '@/components/common/selectors';
+import { CountrySelect } from '@/components/common/selectors';
+import { BanDurationFields, BanExpiryStatus, useBanDuration } from '@/components/common/BanDuration';
 import { useAuth } from '@/contexts/AuthContext';
 import { hasFlag, isBanExpired, permissionFlags, setUserPermission } from '@/utils/UserPermissions';
 import api from '@/utils/api';
@@ -21,20 +22,7 @@ const PLAYER_TABS = [
   { id: 'merge', i18nKey: 'player.modes.merge' },
 ];
 
-const BAN_DURATION_UNITS = ['hours', 'days', 'weeks', 'months'];
-const DEFAULT_BAN_DURATION = 1;
-const DEFAULT_BAN_UNIT = 'days';
-
-const formatBanInstant = (value) => {
-  if (!value) return '';
-  const d = value instanceof Date ? value : new Date(value);
-  return Number.isNaN(d.getTime()) ? '' : d.toLocaleString();
-};
-
-const isBanDurationValid = (value) => {
-  const n = Number(value);
-  return Number.isInteger(n) && n >= 1 && n <= 999;
-};
+const REJECT_RECENT_UNITS = ['hours', 'days'];
 
 const playerBanIsActive = (playerRecord) => {
   const flagged =
@@ -103,8 +91,7 @@ const PlayerManagementPanel = ({
   const [newAlias, setNewAlias] = useState('');
   const [isBanned, setIsBanned] = useState(() => playerBanIsActive(player));
   const [bannedUntil, setBannedUntil] = useState(player?.bannedUntil ?? null);
-  const [banDuration, setBanDuration] = useState(String(DEFAULT_BAN_DURATION));
-  const [banUnit, setBanUnit] = useState(DEFAULT_BAN_UNIT);
+  const playerBan = useBanDuration();
   const [isSubmissionsPaused, setIsSubmissionsPaused] = useState(
     hasFlag(player?.user, permissionFlags.SUBMISSIONS_PAUSED) || player?.isSubmissionsPaused || false,
   );
@@ -128,11 +115,9 @@ const PlayerManagementPanel = ({
   const [pendingRatingBanState, setPendingRatingBanState] = useState(false);
   const [pendingTagVoteBanState, setPendingTagVoteBanState] = useState(false);
   const [pendingRerateRequestBanState, setPendingRerateRequestBanState] = useState(false);
-  const [rerateBanDuration, setRerateBanDuration] = useState(String(DEFAULT_BAN_DURATION));
-  const [rerateBanUnit, setRerateBanUnit] = useState(DEFAULT_BAN_UNIT);
+  const rerateBan = useBanDuration();
   const [rejectRecent, setRejectRecent] = useState(false);
-  const [rejectRecentDuration, setRejectRecentDuration] = useState('1');
-  const [rejectRecentUnit, setRejectRecentUnit] = useState('days');
+  const rejectRecentWindow = useBanDuration();
   const [mergeSearch, setMergeSearch] = useState('');
   const [mergeResults, setMergeResults] = useState([]);
   const [mergeSearchLoading, setMergeSearchLoading] = useState(false);
@@ -253,17 +238,7 @@ const PlayerManagementPanel = ({
     return nameChanged || countryChanged || aliasesChanged;
   }, [playerName, selectedCountry, aliases, player, originalAliases]);
 
-  const banUnitOptions = useMemo(
-    () =>
-      BAN_DURATION_UNITS.map((unit) => ({
-        value: unit,
-        label: tt(`player.moderation.units.${unit}`),
-      })),
-    [t],
-  );
-
-  const selectedBanUnitOption =
-    banUnitOptions.find((opt) => opt.value === banUnit) || banUnitOptions[0];
+  const banUnitLabel = useCallback((unit) => tt(`player.moderation.units.${unit}`), [t]);
 
   const clearMessages = () => {
     setError('');
@@ -334,19 +309,14 @@ const PlayerManagementPanel = ({
     }
   };
 
-  const resetBanDurationFields = () => {
-    setBanDuration(String(DEFAULT_BAN_DURATION));
-    setBanUnit(DEFAULT_BAN_UNIT);
-  };
-
   const handleBanUpdate = async (confirmed) => {
     if (!confirmed) {
       setShowBanConfirm(false);
       setPendingBanState(isBanned);
-      resetBanDurationFields();
+      playerBan.reset();
       return;
     }
-    if (pendingBanState && !isBanDurationValid(banDuration)) {
+    if (pendingBanState && !playerBan.isReady) {
       setError(tt('player.errors.banDuration'));
       return;
     }
@@ -354,7 +324,7 @@ const PlayerManagementPanel = ({
     clearMessages();
     try {
       const body = pendingBanState
-        ? { isBanned: true, duration: Number(banDuration), unit: banUnit }
+        ? { isBanned: true, ...playerBan.requestFields() }
         : { isBanned: false };
       const response = await api.patch(`${routes.database.players.root()}/${player.id}/ban`, body);
       const updatedPlayer = response.data?.player;
@@ -372,7 +342,7 @@ const PlayerManagementPanel = ({
           : player.user,
       });
       toast.success(tt('player.success.moderation'));
-      resetBanDurationFields();
+      playerBan.reset();
     } catch (err) {
       setError(err.response?.data?.error || err.response?.data?.details || tt('player.errors.banUpdate'));
     } finally {
@@ -482,22 +452,27 @@ const PlayerManagementPanel = ({
       setRejectRecent(false);
       return;
     }
+    if (pendingRerateRequestBanState && !rerateBan.isReady) {
+      setError(tt('player.errors.banDuration'));
+      return;
+    }
     setIsLoading(true);
     clearMessages();
     try {
       const body = { isBanned: pendingRerateRequestBanState };
       if (pendingRerateRequestBanState) {
-        body.duration = Number(rerateBanDuration);
-        body.unit = rerateBanUnit;
+        Object.assign(body, rerateBan.requestFields());
         if (rejectRecent) {
+          const windowFields = rejectRecentWindow.requestFields();
           body.rejectRecent = true;
-          body.rejectRecentDuration = Number(rejectRecentDuration);
-          body.rejectRecentUnit = rejectRecentUnit;
+          body.rejectRecentDuration = windowFields.duration;
+          body.rejectRecentUnit = windowFields.unit;
         }
       }
       const response = await api.patch(routes.database.players.rerateRequestBan(player.id), body);
-      const banned = Boolean(response.data?.isRerateRequestBanned ?? pendingRerateRequestBanState);
-      const until = response.data?.rerateRequestBannedUntil ?? null;
+      const updatedPlayer = response.data?.player;
+      const banned = Boolean(updatedPlayer?.isRerateRequestBanned ?? pendingRerateRequestBanState);
+      const until = banned ? (updatedPlayer?.rerateRequestBannedUntil ?? null) : null;
       setIsRerateRequestBanned(banned);
       setRerateRequestBannedUntil(until);
       onUpdate?.({
@@ -663,58 +638,43 @@ const PlayerManagementPanel = ({
                         setPendingBanState(e.target.checked);
                         setShowBanConfirm(true);
                         if (e.target.checked) {
-                          resetBanDurationFields();
+                          playerBan.reset();
                         }
                       }}
                       disabled={isLoading || showBanConfirm}
                     />
                     <span>{tt('player.moderation.ban')}</span>
                   </label>
-                  {isBanned && !showBanConfirm ? (
-                    <p className="moderation-option__status">
-                      {bannedUntil
-                        ? tt('player.moderation.bannedUntil', { date: formatBanInstant(bannedUntil) })
-                        : tt('player.moderation.bannedPermanently')}
-                    </p>
-                  ) : null}
-                  {showBanConfirm ? (
+                  {isBanned && !showBanConfirm && (
+                    <BanExpiryStatus
+                      until={bannedUntil}
+                      className="moderation-option__status"
+                      untilText={(date) => tt('player.moderation.bannedUntil', { date })}
+                      permanentText={tt('player.moderation.bannedPermanently')}
+                    />
+                  )}
+                  {showBanConfirm && (
                     <div className="moderation-confirm">
                       <p>{pendingBanState ? tt('player.moderation.banConfirm') : tt('player.moderation.unbanConfirm')}</p>
-                      {pendingBanState ? (
-                        <div className="moderation-ban-duration">
-                          <span className="moderation-ban-duration__label">{tt('player.moderation.banFor')}</span>
-                          <input
-                            type="number"
-                            min="1"
-                            max="999"
-                            step="1"
-                            className="moderation-ban-duration__value"
-                            value={banDuration}
-                            onChange={(e) => setBanDuration(e.target.value)}
-                            disabled={isLoading}
-                            aria-label={tt('player.moderation.banDurationAria')}
-                          />
-                          <div className="moderation-ban-duration__unit">
-                            <CustomSelect
-                              options={banUnitOptions}
-                              value={selectedBanUnitOption}
-                              onChange={(selected) => {
-                                if (selected?.value) setBanUnit(selected.value);
-                              }}
-                              width="8rem"
-                              isDisabled={isLoading}
-                              isSearchable={false}
-                              aria-label={tt('player.moderation.banUnitAria')}
-                            />
-                          </div>
-                        </div>
-                      ) : null}
+                      {pendingBanState && (
+                        <BanDurationFields
+                          duration={playerBan.duration}
+                          unit={playerBan.unit}
+                          onDurationChange={playerBan.setDuration}
+                          onUnitChange={playerBan.setUnit}
+                          disabled={isLoading}
+                          label={tt('player.moderation.banFor')}
+                          durationAria={tt('player.moderation.banDurationAria')}
+                          unitAria={tt('player.moderation.banUnitAria')}
+                          unitLabel={banUnitLabel}
+                        />
+                      )}
                       <div className="moderation-confirm__actions popup-btn-grid">
                         <button
                           type="button"
                           className="action-button"
                           onClick={() => handleBanUpdate(true)}
-                          disabled={isLoading || (pendingBanState && !isBanDurationValid(banDuration))}
+                          disabled={isLoading || (pendingBanState && !playerBan.isReady)}
                         >
                           {t('buttons.confirm', { ns: 'common' })}
                         </button>
@@ -723,7 +683,7 @@ const PlayerManagementPanel = ({
                         </button>
                       </div>
                     </div>
-                  ) : null}
+                  )}
                 </div>
 
                 <div className="moderation-option">
@@ -832,10 +792,13 @@ const PlayerManagementPanel = ({
                     />
                     <span>{tt('player.moderation.rerateRequestBan')}</span>
                   </label>
-                  {isRerateRequestBanned && rerateRequestBannedUntil && !showRerateRequestBanConfirm && (
-                    <p className="moderation-option__status">
-                      {tt('player.moderation.bannedUntil', { date: formatBanInstant(rerateRequestBannedUntil) })}
-                    </p>
+                  {isRerateRequestBanned && !showRerateRequestBanConfirm && (
+                    <BanExpiryStatus
+                      until={rerateRequestBannedUntil}
+                      className="moderation-option__status"
+                      untilText={(date) => tt('player.moderation.bannedUntil', { date })}
+                      permanentText={tt('player.moderation.bannedPermanently')}
+                    />
                   )}
                   {showRerateRequestBanConfirm && (
                     <div className="moderation-confirm">
@@ -846,31 +809,17 @@ const PlayerManagementPanel = ({
                       </p>
                       {pendingRerateRequestBanState && (
                         <>
-                          <div className="moderation-ban-duration">
-                            <span className="moderation-ban-duration__label">{tt('player.moderation.banFor')}</span>
-                            <input
-                              type="number"
-                              min="1"
-                              max="999"
-                              step="1"
-                              className="moderation-ban-duration__value"
-                              value={rerateBanDuration}
-                              onChange={(e) => setRerateBanDuration(e.target.value)}
-                              disabled={isLoading}
-                              aria-label={tt('player.moderation.banDurationAria')}
-                            />
-                            <div className="moderation-ban-duration__unit">
-                              <CustomSelect
-                                options={banUnitOptions}
-                                value={banUnitOptions.find((opt) => opt.value === rerateBanUnit) || banUnitOptions[0]}
-                                onChange={(opt) => setRerateBanUnit(opt?.value || DEFAULT_BAN_UNIT)}
-                                width="8rem"
-                                isDisabled={isLoading}
-                                isSearchable={false}
-                                aria-label={tt('player.moderation.banUnitAria')}
-                              />
-                            </div>
-                          </div>
+                          <BanDurationFields
+                            duration={rerateBan.duration}
+                            unit={rerateBan.unit}
+                            onDurationChange={rerateBan.setDuration}
+                            onUnitChange={rerateBan.setUnit}
+                            disabled={isLoading}
+                            label={tt('player.moderation.banFor')}
+                            durationAria={tt('player.moderation.banDurationAria')}
+                            unitAria={tt('player.moderation.banUnitAria')}
+                            unitLabel={banUnitLabel}
+                          />
                           <label className="moderation-option__label">
                             <input
                               type="checkbox"
@@ -881,36 +830,29 @@ const PlayerManagementPanel = ({
                             <span>{tt('player.moderation.rejectRecent')}</span>
                           </label>
                           {rejectRecent && (
-                            <div className="moderation-ban-duration">
-                              <span className="moderation-ban-duration__label">{tt('player.moderation.banFor')}</span>
-                              <input
-                                type="number"
-                                min="1"
-                                max="999"
-                                step="1"
-                                className="moderation-ban-duration__value"
-                                value={rejectRecentDuration}
-                                onChange={(e) => setRejectRecentDuration(e.target.value)}
-                                disabled={isLoading}
-                                aria-label={tt('player.moderation.rejectRecentDurationAria')}
-                              />
-                              <div className="moderation-ban-duration__unit">
-                                <CustomSelect
-                                  options={banUnitOptions.filter((opt) => opt.value === 'hours' || opt.value === 'days')}
-                                  value={banUnitOptions.find((opt) => opt.value === rejectRecentUnit) || banUnitOptions[1]}
-                                  onChange={(opt) => setRejectRecentUnit(opt?.value || 'days')}
-                                  width="8rem"
-                                  isDisabled={isLoading}
-                                  isSearchable={false}
-                                  aria-label={tt('player.moderation.rejectRecentUnitAria')}
-                                />
-                              </div>
-                            </div>
+                            <BanDurationFields
+                              duration={rejectRecentWindow.duration}
+                              unit={rejectRecentWindow.unit}
+                              onDurationChange={rejectRecentWindow.setDuration}
+                              onUnitChange={rejectRecentWindow.setUnit}
+                              disabled={isLoading}
+                              allowForever={false}
+                              units={REJECT_RECENT_UNITS}
+                              label={tt('player.moderation.banFor')}
+                              durationAria={tt('player.moderation.rejectRecentDurationAria')}
+                              unitAria={tt('player.moderation.rejectRecentUnitAria')}
+                              unitLabel={banUnitLabel}
+                            />
                           )}
                         </>
                       )}
                       <div className="moderation-confirm__actions popup-btn-grid">
-                        <button type="button" className="action-button" onClick={() => handleRerateRequestBanUpdate(true)} disabled={isLoading}>
+                        <button
+                          type="button"
+                          className="action-button"
+                          onClick={() => handleRerateRequestBanUpdate(true)}
+                          disabled={isLoading || (pendingRerateRequestBanState && !rerateBan.isReady)}
+                        >
                           {t('buttons.confirm', { ns: 'common' })}
                         </button>
                         <button type="button" className="mode-btn" onClick={() => handleRerateRequestBanUpdate(false)} disabled={isLoading}>

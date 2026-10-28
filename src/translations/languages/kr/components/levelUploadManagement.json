@@ -1,6 +1,7 @@
 {
   "title": "Manage Level Upload",
   "dropToUpload": "Drop to upload",
+  "pasteHint": "복사한 압축 파일을 붙여넣어 업로드",
   "errors": {
     "invalidZip": "Invalid zip file",
     "invalidZipSize": "Zip file size is too large (max {{maxSize}} MB)",

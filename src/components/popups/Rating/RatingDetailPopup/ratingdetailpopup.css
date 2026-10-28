@@ -279,6 +279,63 @@
     color: #aaa;
 }
 
+.rating-popup .rating-popup-header-actions {
+    position: absolute;
+    z-index: 99;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.rating-popup .rating-popup-header-actions .rating-popup-close.tuf-close-button--floating {
+    position: static;
+    top: auto;
+    right: auto;
+    z-index: auto;
+}
+
+.rating-popup .rating-popup-edit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    min-height: 36px;
+    padding: 8px;
+    margin: 0;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--color-white);
+    cursor: pointer;
+    line-height: 0;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.rating-popup .rating-popup-edit:hover:not(:disabled) {
+    background-color: var(--color-white-t10);
+    color: var(--color-white);
+}
+
+.rating-popup .rating-popup-edit:active:not(:disabled) {
+    background-color: var(--color-white-t15);
+}
+
+.rating-popup .rating-popup-edit:focus-visible {
+    outline: 2px solid var(--color-white-t45);
+    outline-offset: 2px;
+}
+
+.rating-popup .rating-popup-edit:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.rating-popup.rating-popup--can-edit .top-header-content {
+    padding-right: 2.75rem;
+}
+
 .rating-popup .popup-header {
     margin-bottom: 0.75rem;
     display: grid;
@@ -952,9 +1009,18 @@
     flex-direction: column;
   }
 
-  .rating-popup .rating-popup-close.tuf-close-button--floating {
+  .rating-popup .rating-popup-header-actions {
     top: 6rem;
+  }
+
+  .rating-popup .rating-popup-header-actions .rating-popup-edit,
+  .rating-popup .rating-popup-header-actions .rating-popup-close.tuf-close-button--floating {
     background: var(--color-white-t20);
+  }
+
+  .rating-popup .rating-popup-header-actions .rating-popup-edit:hover:not(:disabled),
+  .rating-popup .rating-popup-header-actions .rating-popup-close.tuf-close-button--floating:hover:not(:disabled) {
+    background-color: var(--color-white-t30);
   }
 
   .rating-popup .popup-content {
@@ -1031,7 +1097,7 @@
 
 /* Small phone adjustments */
 @media (max-width: 480px) {
-  .rating-popup .rating-popup-close.tuf-close-button--floating {
+  .rating-popup .rating-popup-header-actions {
     top: 5rem;
     right: 1.5rem;
   }
