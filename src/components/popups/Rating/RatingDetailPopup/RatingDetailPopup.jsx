@@ -22,6 +22,7 @@ import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { hasAnyFlag, hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import toast from 'react-hot-toast';
 import autoratercato from "@/assets/icons/autorater cato.png";
+import { RatingFlowActions, RatingFlowMarks } from '@/components/cards/RatingCard/RatingFlowActions';
 import { Tooltip } from '@/components/common/display/Tooltip';
 import { CommentFormatter } from '@/components/misc';
 import LevelRequestScoreTargets from '@/components/requests/LevelRequestScoreTargets';
@@ -342,6 +343,17 @@ export const RatingDetailPopup = ({
                       ...r,
                       averageDifficultyId: data.averageDifficultyId,
                       communityDifficultyId: data.communityDifficultyId,
+                      cardBand: data.cardBand ?? null,
+                      flow: data.flow,
+                      rankState: data.rankState,
+                      settleActor: data.settleActor,
+                      suggestedDiffName: data.suggestedDiffName,
+                      showRankable: data.showRankable,
+                      showRatingOff: data.showRatingOff,
+                      autoRankDisabled: data.autoRankDisabled,
+                      indicators: data.indicators,
+                      autoRankBlock: data.autoRankBlock ?? null,
+                      autoraterCombined: data.autoraterCombined ?? null,
                       details: (data.details || []).map((d) => ({
                         id: d.id,
                         userId: d.userId,
@@ -694,11 +706,19 @@ export const RatingDetailPopup = ({
               level={selectedRating.level}
             />
           </div>
-          <RatingDiscordThreadButton
-            rating={selectedRating}
-            allowed={isSuperAdmin}
-            onUpdated={applyPostedRating}
-          />
+          <div className="rating-popup__thread-actions">
+            <RatingFlowActions
+              only="block"
+              rating={selectedRating}
+              user={currentUser}
+              onChange={(complete) => setSelectedRating(complete)}
+            />
+            <RatingDiscordThreadButton
+              rating={selectedRating}
+              allowed={isSuperAdmin}
+              onUpdated={applyPostedRating}
+            />
+          </div>
           {selectedRating.level.notes && (
             <div className="detail-field comment-field open">
               <span className="detail-label">{t('rating.detailPopup.labels.notes')}</span>
@@ -825,6 +845,13 @@ export const RatingDetailPopup = ({
                       />
                     </div>
                     {!isRatingLocked && (
+                    <>
+                    <RatingFlowMarks rating={selectedRating} />
+                    <RatingFlowActions
+                      rating={selectedRating}
+                      user={currentUser}
+                      onChange={(complete) => setSelectedRating(complete)}
+                    />
                     <div className="save-button-container">
                       <button 
                         className={getSaveButtonClass()}
@@ -848,6 +875,7 @@ export const RatingDetailPopup = ({
                         {getSaveButtonText()}
                       </button>
                     </div>
+                    </>
                     )}
                     {saveError && (
                       <div className="save-error-message">

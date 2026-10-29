@@ -32,6 +32,11 @@
       "label": "Rank-ready"
     }
   },
+  "flows": {
+    "flow1": "Flow 1",
+    "flow2": "Flow 2",
+    "flow3": "Flow 3"
+  },
   "sort": {
     "byId": "Level ID",
     "byRatings": "Rating Count",
@@ -73,7 +78,7 @@
     },
     "empty": {
       "title": "No rank-ready levels",
-      "subtitle": "Nothing with 2+ manager votes and 0 clears."
+      "subtitle": "Nothing here needs a super admin to settle by hand."
     }
   },
   "infiniteScroll": {

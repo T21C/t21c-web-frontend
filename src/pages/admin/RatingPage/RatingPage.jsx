@@ -27,7 +27,7 @@ import { Tooltip } from '@/components/common/display/Tooltip';
 import { RatingHelpPopup } from "@/components/popups/Rating";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import toast from 'react-hot-toast';
-import { RankReadyTable, isAutoraterDetail, compareRankReadyRows } from './RankReadyTable';
+import { RankReadyTable, compareRankReadyRows } from './RankReadyTable';
 import { REQUEST_BANDS, requestPguBand } from '@/utils/ratingRequestBand';
 import { formatRequestCount, pendingRequestTotal, usePendingRequestCounts } from '@/components/requests/pendingRequestCounts';
 
@@ -75,6 +75,8 @@ const RatingPage = () => {
     setShowDetailedView,
     showRankReadyView,
     setShowRankReadyView,
+    ratingFlow,
+    setRatingFlow,
     showReferences,
     setShowReferences,
     showRaterManagement,
@@ -114,7 +116,7 @@ const RatingPage = () => {
   const canReviewRerates = hasFlag(user, permissionFlags.RATER) || isSuperAdmin;
   const { counts: pendingRequestCounts } = usePendingRequestCounts(canReviewRerates);
   const pendingRerateLabel = formatRequestCount(pendingRequestTotal(pendingRequestCounts, ['rerate']));
-  const rankReadyActive = Boolean(isSuperAdmin && showRankReadyView);
+  const rankReadyActive = Boolean(isSuperAdmin && showRankReadyView && ratingFlow !== 3);
 
   useEffect(() => {
     selectedRatingIdRef.current = selectedRating?.id ?? null;
@@ -167,16 +169,16 @@ const RatingPage = () => {
       includeU: includeU ? 'true' : 'false',
       fourVote: rankReadyActive ? 'show' : fourVoteFilter,
       myRated: rankReadyActive ? 'show' : myRatedFilter,
+      flow: String(ratingFlow),
     };
     if (rankReadyActive) {
-      params.zeroClears = 'true';
       params.rankReady = 'true';
     }
     if (debouncedQuery) {
       params.query = debouncedQuery;
     }
     return params;
-  }, [sortType, sortOrder, includeP, includeG, includeU, fourVoteFilter, myRatedFilter, debouncedQuery, rankReadyActive]);
+  }, [sortType, sortOrder, includeP, includeG, includeU, fourVoteFilter, myRatedFilter, debouncedQuery, rankReadyActive, ratingFlow]);
 
   const normalizePageResults = (data) => {
     // New API: { results, total, hasMore }. Guard against accidental bare/non-array bodies.
@@ -281,11 +283,9 @@ const RatingPage = () => {
     if (band === 'G' && !includeG) return false;
     if (band === 'U' && !includeU) return false;
     const details = Array.isArray(listRow.details) ? listRow.details : [];
+    if (listRow.flow != null && listRow.flow !== ratingFlow) return false;
     if (rankReadyActive) {
-      const managerCount = details.filter((d) => !d.isCommunityRating && !isAutoraterDetail(d)).length;
-      if (managerCount < 2) return false;
-      if (Number(listRow.level?.clears ?? 0) !== 0) return false;
-      return true;
+      return listRow.settleActor === 'admin';
     }
     const detailCount = details.length;
     if (fourVoteFilter === 'only' && detailCount < 4) return false;
@@ -296,7 +296,7 @@ const RatingPage = () => {
       if (myRatedFilter === 'only' && !hasMyRating) return false;
     }
     return true;
-  }, [debouncedQuery, includeP, includeG, includeU, fourVoteFilter, myRatedFilter, user?.id, rankReadyActive]);
+  }, [debouncedQuery, includeP, includeG, includeU, fourVoteFilter, myRatedFilter, user?.id, rankReadyActive, ratingFlow]);
 
   const upsertRatingRow = useCallback((listRow) => {
     if (!listRow?.id) return;
@@ -443,7 +443,8 @@ const RatingPage = () => {
                 if (
                   showRankReadyViewRef.current &&
                   !settledLevelIdsRef.current.has(payload.levelId) &&
-                  Number(merged.level?.clears ?? 0) !== 0
+                  merged.settleActor != null &&
+                  merged.settleActor !== 'admin'
                 ) {
                   return [];
                 }
@@ -672,7 +673,7 @@ const RatingPage = () => {
                 )}
               </Link>
             )}
-            {isSuperAdmin && (
+            {isSuperAdmin && ratingFlow !== 3 && (
               <button
                 type="button"
                 className={`admin-button rank-ready-button${showRankReadyView ? ' rank-ready-button--active' : ''}`}
@@ -683,6 +684,20 @@ const RatingPage = () => {
               </button>
             )}
           </div>
+        <div className="rating-flow-tabs" role="tablist">
+          {[1, 2, 3].map((flow) => (
+            <button
+              key={flow}
+              type="button"
+              role="tab"
+              aria-selected={ratingFlow === flow}
+              className={`admin-button rating-flow-tab${ratingFlow === flow ? ' rating-flow-tab--active' : ''}`}
+              onClick={() => setRatingFlow(flow)}
+            >
+              {t(`rating.flows.flow${flow}`)}
+            </button>
+          ))}
+        </div>
         <div className="view-controls">
           
           <div className="sort-controls">
@@ -867,6 +882,13 @@ const RatingPage = () => {
                   isSuperAdmin={isSuperAdmin}
                   showDetailedView={showDetailedView}
                   onEditLevel={() => handleEditLevel(rating.level.id)}
+                  onFlowChange={(complete) => {
+                    if (complete?.confirmedAt || complete?.level?.toRate === false) {
+                      removeRatingById(complete.id);
+                      return;
+                    }
+                    upsertRatingRow(complete);
+                  }}
                 />
               )}
               computeItemKey={(index, rating) => rating?.id ?? index}

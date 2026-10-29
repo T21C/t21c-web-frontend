@@ -56,7 +56,7 @@ export default function SubmissionTagRequest({
   const items = useMemo(
     () => ids
       .map((id) => catalogById.get(id) || { id, name: `#${id}` })
-      .filter((tag) => !tag.isAutomatic),
+      .filter((tag) => tag.charterManagable && !tag.isAutomatic),
     [ids, catalogById],
   );
 
@@ -67,7 +67,10 @@ export default function SubmissionTagRequest({
 
   useEffect(() => {
     if (variant !== 'form' || catalogLoading) return;
-    const next = ids.filter((id) => !catalogById.get(id)?.isAutomatic);
+    const next = ids.filter((id) => {
+      const tag = catalogById.get(id);
+      return tag?.charterManagable && !tag.isAutomatic;
+    });
     if (next.length !== ids.length) onChange(next);
   }, [variant, catalogLoading, ids, catalogById, onChange]);
 
@@ -119,6 +122,7 @@ export default function SubmissionTagRequest({
           currentTags={currentTags}
           onClose={() => setOpen(false)}
           onSave={handleSave}
+          charterOnly
         />
       )}
     </div>

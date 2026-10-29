@@ -12,6 +12,14 @@ import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { CommentFormatter } from '@/components/misc';
 import { hasRatingDraft } from '@/utils/ratingDrafts';
 import { isVoteRatingCard } from '@/utils/ratingRequestBand';
+import { RatingFlowActions, RatingFlowMarks } from './RatingFlowActions';
+
+const BAND_CLASS = {
+  P: 'band-p',
+  G: 'band-g',
+  U: 'band-u',
+  Impossible: 'band-impossible',
+};
 
 const trimString = (str, maxLength = 40) => {
   if (!str || typeof str !== 'string') return '';
@@ -24,7 +32,8 @@ export const RatingCard = ({
   setSelectedRating, 
   user, 
   showDetailedView,
-  onEditLevel 
+  onEditLevel,
+  onFlowChange,
 }) => {
     const { t } = useTranslation('components');
     const [isEditing, setIsEditing] = useState(false);
@@ -84,10 +93,7 @@ export const RatingCard = ({
 
     return (
       <div
-        className={`rating-card ${
-          (rating.details || []).filter(detail => !detail.isCommunityRating).length >= 4 || isVote ? 'four-rated' : 
-          difficultyDict[rating.level.diffId]?.name.includes('GQ') && rating.level.clears >= 1 ? 'gq-cleared' :
-          rating.lowDiff ? 'low-diff' : ''}`}
+        className={`rating-card ${BAND_CLASS[rating.cardBand] || ''}`}
       >
         {isVote && (
           <div className="vote-tag">
@@ -95,6 +101,7 @@ export const RatingCard = ({
           </div>
         )}
         <div className="rating-card-content">
+          <RatingFlowMarks rating={rating} />
           <div className="rating-card-header">
             <div className="header-content">
               <h3 title={fullTitle}>
@@ -179,6 +186,7 @@ export const RatingCard = ({
             )}
           </div>
 
+          <RatingFlowActions rating={rating} user={user} onChange={onFlowChange} />
           <div className="rating-card-actions">
             <button 
               onClick={() => setSelectedRating(rating)} 
@@ -208,14 +216,17 @@ export const RatingCard = ({
                 )}
               </button>
             )}
-            <button
-              onClick={handleCopyLink}
-              className={`copy-link-btn ${copySuccess ? 'success' : ''}`}
-              title={t('rating.ratingCard.tooltips.copyLink')}
-            >
-              {copySuccess ? t('rating.ratingCard.buttons.copied') : t('rating.ratingCard.buttons.copyLink')}
-              <LinkIcon size={20} color={copySuccess ? "#4CAF50" : "#ccc"} />
-            </button>
+            <div className="rating-card-actions__end">
+              <RatingFlowActions only="block" rating={rating} user={user} onChange={onFlowChange} />
+              <button
+                onClick={handleCopyLink}
+                className={`copy-link-btn ${copySuccess ? 'success' : ''}`}
+                title={t('rating.ratingCard.tooltips.copyLink')}
+              >
+                {copySuccess ? t('rating.ratingCard.buttons.copied') : t('rating.ratingCard.buttons.copyLink')}
+                <LinkIcon size={20} color={copySuccess ? "#4CAF50" : "#ccc"} />
+              </button>
+            </div>
           </div>
         </div>
       </div>

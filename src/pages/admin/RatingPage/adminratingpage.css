@@ -375,9 +375,25 @@
     border-color: var(--btn-primary);
   }
 
+  .admin-rating-page .rating-flow-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .admin-rating-page .rating-flow-tab--active {
+    background-color: var(--btn-primary);
+    border-color: var(--btn-primary);
+  }
+
+  .admin-rating-page .rating-flow-tab:hover {
+    background-color: var(--btn-primary-hover);
+  }
+
   .admin-rating-page .admin-button.rank-ready-button--active:hover {
-    background-color: #007bff;
-    border-color: #007bff;
+    background-color: var(--btn-primary-hover);
+    border-color: var(--btn-primary-hover);
   }
 
   .admin-rating-page .admin-button {
@@ -399,6 +415,12 @@
   .admin-rating-page .admin-button:hover {
     background-color: rgba(255, 255, 255, 0.2);
     border-color: rgba(255, 255, 255, 0.5);
+  }
+
+  .admin-rating-page .admin-button.rating-flow-tab--active,
+  .admin-rating-page .admin-button.rating-flow-tab--active:hover {
+    background-color: var(--btn-primary);
+    border-color: var(--btn-primary);
   }
 
 .admin-rating-page .admin-rating-body .pgu-band-filter {

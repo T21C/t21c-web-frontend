@@ -34,6 +34,9 @@ export const hasFlag = (user, permission) => {
   return (toPermissionFlags(user) & BigInt(permission)) === BigInt(permission);
 };
 
+/** Flow 1 exact-match settle. Swap the body when a rating-manager flag exists. */
+export const canApplyAutoRank = (user) => hasFlag(user, permissionFlags.RATER);
+
 export const hasAnyFlag = (user, permissions) => {
   if (!user) return false;
   return permissions.some(permission => hasFlag(user, permission));

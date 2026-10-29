@@ -117,6 +117,9 @@
   "buttons": {
     "edit": "Gérer les détails de la complétion"
   },
+  "ownEdit": {
+    "title": "Modifier votre complétion"
+  },
   "feelingRating": {
     "title": "Modifier la difficulté ressentie",
     "placeholder": "ex. U15, G18~G20"
