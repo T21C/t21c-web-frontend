@@ -5,11 +5,10 @@ import { VirtualList } from '@/components/common/VirtualList';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { useTranslation } from 'react-i18next';
 import { getSongDisplayName } from '@/utils/levelHelpers';
+import { AUTORATER_USER_ID, isAutoraterDetail } from '@/utils/autorater';
 
 
-const AUTORATER_USER_ID = 'b19522b7-c12b-42d8-9fcd-08b0cdbf8b7e';
-
-export const isAutoraterDetail = (detail) => detail?.userId === AUTORATER_USER_ID;
+export { isAutoraterDetail };
 
 export const countDetails = (details = []) => {
   let manager = 0;

@@ -21,8 +21,8 @@ import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from "@/utils/Utility
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { hasAnyFlag, hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import toast from 'react-hot-toast';
-import autoratercato from "@/assets/icons/autorater cato.png";
 import { RatingFlowActions, RatingFlowMarks } from '@/components/cards/RatingCard/RatingFlowActions';
+import autoratercato from "@/assets/icons/autorater-v2.png";
 import { Tooltip } from '@/components/common/display/Tooltip';
 import { CommentFormatter } from '@/components/misc';
 import LevelRequestScoreTargets from '@/components/requests/LevelRequestScoreTargets';
@@ -567,6 +567,7 @@ export const RatingDetailPopup = ({
             <RatingItem
               key={ratingDetail.id || ratingDetail.userId || ratingDetail.user?.id}
               ratingDetail={ratingDetail}
+              levelId={selectedRating?.level?.id || selectedRating?.levelId}
               isSuperAdmin={isSuperAdmin}
               onDelete={handleDeleteRating}
               weeklyRaterActivity={weeklyRaterActivity}
@@ -901,7 +902,7 @@ export const RatingDetailPopup = ({
                       >
                         <img 
                         src={autoratercato} 
-                          alt="AutoRater" 
+                          alt="Auto Rater Cat V2"
                           className="autorater-icon"
                           data-tooltip-id="autorate-tooltip"
                         />
