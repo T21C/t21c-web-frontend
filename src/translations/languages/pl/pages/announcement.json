@@ -6,6 +6,7 @@
   "header": {
     "title": "Ogłaszanie"
   },
+  "listCount": "Razem: {{count}}",
   "tabs": {
     "newLevels": "Nowe poziomy",
     "rerates": "Rerate'y",

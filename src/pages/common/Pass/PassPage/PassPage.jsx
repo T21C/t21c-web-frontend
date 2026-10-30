@@ -587,7 +587,7 @@ const PassPage = () => {
                 <span className="state-switches-label">{t('pass.settings.filter.options.adofaiVersion')}</span>
                 <StateDisplay
                   currentState={adofaiVersionFilter}
-                  states={['all', 'latest', 'pre340', 'v2']}
+                  states={['all', 'latest', 'v2']}
                   onChange={(newState) => {
                     setAdofaiVersionFilter(newState);
                     triggerRefresh();

@@ -146,8 +146,8 @@
         "myRatedDesc": "이미 평가한 레벨을 표시, 숨김 또는 해당 항목만 표시",
         "requestBands": "오토레이터 PGU",
         "requestBandsDesc": "AutoRater 평균이 행성(P), 은하(G), 우주(U)인 카드를 숨깁니다",
-        "fourVote": "4표 이상 평가됨",
-        "fourVoteDesc": "4표 이상 받은 레벨 필터링"
+        "fourVote": "평가 수",
+        "fourVoteDesc": "이 수 이상의 평가가 있는 카드를 숨기거나 표시하거나 해당 카드만 표시"
       },
       "requirements": {
         "title": "요구 사항",

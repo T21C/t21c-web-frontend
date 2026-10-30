@@ -465,6 +465,17 @@ const AnnouncementPage = () => {
     );
   }
 
+  const visibleEntries = activeTab === 'passes'
+    ? passes
+    : activeTab === 'newLevels'
+      ? newLevelEntries
+      : rerateEntries;
+  const listCount = visibleEntries.length;
+  const selectedCount = activeTab === 'passes'
+    ? selectedPasses.length
+    : selectedQueueRowIds.length;
+  const allSelected = listCount > 0 && selectedCount === listCount;
+
   return (
     <>
       <MetaTags {...pageMeta} />
@@ -535,29 +546,6 @@ const AnnouncementPage = () => {
 
           <div className="announcement-layout">
             <div className="announcement-main">
-              <button
-                className="select-all-button"
-                onClick={handleSelectAll}
-                disabled={
-                  isLoading ||
-                  (activeTab === 'passes'
-                    ? passes.length === 0
-                    : activeTab === 'newLevels'
-                      ? newLevelEntries.length === 0
-                      : rerateEntries.length === 0)
-                }
-              >
-                {activeTab === 'passes'
-                  ? selectedPasses.length === passes.length
-                    ? t('announcement.buttons.deselectAll')
-                    : t('announcement.buttons.selectAll')
-                  : selectedQueueRowIds.length ===
-                      (activeTab === 'newLevels'
-                        ? newLevelEntries
-                        : rerateEntries).length
-                    ? t('announcement.buttons.deselectAll')
-                    : t('announcement.buttons.selectAll')}
-              </button>
               {error && <div className="error-message">{error}</div>}
 
               <div className="announcement-actions">
@@ -577,6 +565,21 @@ const AnnouncementPage = () => {
                     ? t('announcement.buttons.announcing')
                     : t('announcement.buttons.announce')}
                 </button>
+              </div>
+
+              <div className="announcement-list-bar">
+                <button
+                  className="select-all-button"
+                  onClick={handleSelectAll}
+                  disabled={isLoading || listCount === 0}
+                >
+                  {allSelected
+                    ? t('announcement.buttons.deselectAll')
+                    : t('announcement.buttons.selectAll')}
+                </button>
+                <span className="announcement-list-count">
+                  {t('announcement.listCount', { count: listCount })}
+                </span>
               </div>
 
               {activeTab === 'newLevels' && (

@@ -13,7 +13,6 @@ import { useZenMode } from "@/contexts/ZenModeContext";
 import { useRatingFilter } from "@/contexts/RatingFilterContext";
 import { useTranslation } from "react-i18next";
 import { RatingCard } from "@/components/cards";
-import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { EditLevelPopup } from "@/components/popups/Levels";
 import { RaterManagementPopup, RatingDetailPopup, TopRatersPopup } from "@/components/popups/Rating";
 import { ReferencesPopup } from "@/components/popups/Difficulties";
@@ -27,7 +26,6 @@ import { Tooltip } from '@/components/common/display/Tooltip';
 import { RatingHelpPopup } from "@/components/popups/Rating";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import toast from 'react-hot-toast';
-import { RankReadyTable, compareRankReadyRows } from './RankReadyTable';
 import { REQUEST_BANDS, autoraterHideBand } from '@/utils/ratingRequestBand';
 import { formatRequestCount, pendingRequestTotal, usePendingRequestCounts } from '@/components/requests/pendingRequestCounts';
 
@@ -53,7 +51,6 @@ const RatingPage = () => {
     [t, location.pathname, levelIdParam],
   );
   const { user } = useAuth();
-  const { difficultyDict } = useDifficultyContext();
   const { hasActiveSession, hasUnfinishedDeck, sessionHydrated } = useZenMode();
   const zenLockToastRef = useRef(false);
   const { 
@@ -62,10 +59,12 @@ const RatingPage = () => {
     includeP,
     includeG,
     includeU,
-    fourVoteFilter, 
+    fourVoteFilter,
+    fourVoteMin,
     setMyRatedFilter, 
     setIncludeBands,
     setFourVoteFilter,
+    setFourVoteMin,
     sortType,
     setSortType,
     setSortOrder,
@@ -73,8 +72,6 @@ const RatingPage = () => {
     setSearchQuery,
     showDetailedView,
     setShowDetailedView,
-    showRankReadyView,
-    setShowRankReadyView,
     ratingFlow,
     setRatingFlow,
     showReferences,
@@ -101,48 +98,19 @@ const RatingPage = () => {
   const [showTopRaters, setShowTopRaters] = useState(false);
   const [weeklyRaterActivity, setWeeklyRaterActivity] = useState([]);
   const [ratingAccuracyStats, setRatingAccuracyStats] = useState([]);
+  const [ratingCountDraft, setRatingCountDraft] = useState(() => String(fourVoteMin));
   const fetchGenRef = useRef(0);
   const deepLinkHandledRef = useRef(false);
   const selectedRatingIdRef = useRef(null);
   const sseHandlersRef = useRef({});
-  const [settledLevelIds, setSettledLevelIds] = useState(() => new Set());
-  const [isRemotelySettled, setIsRemotelySettled] = useState(false);
-  const editingLevelIdRef = useRef(null);
-  const settledLevelIdsRef = useRef(settledLevelIds);
-  const showRankReadyViewRef = useRef(false);
-  const ratingsRef = useRef(ratings);
-
   const isSuperAdmin = hasFlag(user, permissionFlags.SUPER_ADMIN);
   const canReviewRerates = hasFlag(user, permissionFlags.RATER) || isSuperAdmin;
   const { counts: pendingRequestCounts } = usePendingRequestCounts(canReviewRerates);
   const pendingRerateLabel = formatRequestCount(pendingRequestTotal(pendingRequestCounts, ['rerate']));
-  const rankReadyActive = Boolean(isSuperAdmin && showRankReadyView && ratingFlow !== 3);
 
   useEffect(() => {
     selectedRatingIdRef.current = selectedRating?.id ?? null;
   }, [selectedRating?.id]);
-
-  useEffect(() => {
-    editingLevelIdRef.current = openEditDialog ? selectedLevel?.id ?? null : null;
-  }, [openEditDialog, selectedLevel?.id]);
-
-  useEffect(() => {
-    settledLevelIdsRef.current = settledLevelIds;
-  }, [settledLevelIds]);
-
-  useEffect(() => {
-    showRankReadyViewRef.current = rankReadyActive;
-  }, [rankReadyActive]);
-
-  useEffect(() => {
-    ratingsRef.current = ratings;
-  }, [ratings]);
-
-  useEffect(() => {
-    setSettledLevelIds(new Set());
-    settledLevelIdsRef.current = new Set();
-    setIsRemotelySettled(false);
-  }, [rankReadyActive]);
 
   useEffect(() => {
     // Clear immediately on keystroke; debounce only delays the request (LevelPage clears on query change too).
@@ -167,18 +135,16 @@ const RatingPage = () => {
       includeP: includeP ? 'true' : 'false',
       includeG: includeG ? 'true' : 'false',
       includeU: includeU ? 'true' : 'false',
-      fourVote: rankReadyActive ? 'show' : fourVoteFilter,
-      myRated: rankReadyActive ? 'show' : myRatedFilter,
+      fourVote: fourVoteFilter,
+      fourVoteMin: String(fourVoteMin),
+      myRated: myRatedFilter,
       flow: String(ratingFlow),
     };
-    if (rankReadyActive) {
-      params.rankReady = 'true';
-    }
     if (debouncedQuery) {
       params.query = debouncedQuery;
     }
     return params;
-  }, [sortType, sortOrder, includeP, includeG, includeU, fourVoteFilter, myRatedFilter, debouncedQuery, rankReadyActive, ratingFlow]);
+  }, [sortType, sortOrder, includeP, includeG, includeU, fourVoteFilter, fourVoteMin, myRatedFilter, debouncedQuery, ratingFlow]);
 
   const normalizePageResults = (data) => {
     // New API: { results, total, hasMore }. Guard against accidental bare/non-array bodies.
@@ -284,19 +250,16 @@ const RatingPage = () => {
     if (band === 'U' && !includeU) return false;
     const details = Array.isArray(listRow.details) ? listRow.details : [];
     if (listRow.flow != null && listRow.flow !== ratingFlow) return false;
-    if (rankReadyActive) {
-      return listRow.settleActor === 'admin';
-    }
-    const detailCount = details.length;
-    if (fourVoteFilter === 'only' && detailCount < 4) return false;
-    if (fourVoteFilter === 'hide' && detailCount >= 4) return false;
+    const detailCount = details.filter((detail) => !detail.isCommunityRating).length;
+    if (fourVoteFilter === 'only' && detailCount < fourVoteMin) return false;
+    if (fourVoteFilter === 'hide' && detailCount >= fourVoteMin) return false;
     if (user?.id && myRatedFilter !== 'show') {
       const hasMyRating = details.some((d) => d.userId === user.id);
       if (myRatedFilter === 'hide' && hasMyRating) return false;
       if (myRatedFilter === 'only' && !hasMyRating) return false;
     }
     return true;
-  }, [debouncedQuery, includeP, includeG, includeU, fourVoteFilter, myRatedFilter, user?.id, rankReadyActive, ratingFlow]);
+  }, [debouncedQuery, includeP, includeG, includeU, fourVoteFilter, fourVoteMin, myRatedFilter, user?.id, ratingFlow]);
 
   const upsertRatingRow = useCallback((listRow) => {
     if (!listRow?.id) return;
@@ -306,24 +269,15 @@ const RatingPage = () => {
       const idx = prev.findIndex((r) => r.id === listRow.id);
       if (idx !== -1) {
         const merged = { ...prev[idx], ...listRow, level: listRow.level || prev[idx].level };
-        const settled = settledLevelIdsRef.current.has(merged.level?.id);
-        if (rankReadyActive && !settled && !listRowMatchesFilters(merged)) {
+        if (!listRowMatchesFilters(merged)) {
           return prev.filter((_, i) => i !== idx);
         }
         const next = [...prev];
         next[idx] = merged;
-        if (rankReadyActive) {
-          next.sort((a, b) => compareRankReadyRows(a, b, difficultyDict, sortType, sortOrder));
-        }
         return next;
       }
       if (!listRowMatchesFilters(listRow)) return prev;
       didInsert = true;
-      if (rankReadyActive) {
-        return [...prev, listRow].sort((a, b) =>
-          compareRankReadyRows(a, b, difficultyDict, sortType, sortOrder)
-        );
-      }
       const isDesc = String(sortOrder).toUpperCase() !== 'ASC';
       const prepend = (sortType === 'id' || sortType === 'updatedAt') && isDesc;
       return prepend ? [listRow, ...prev] : [...prev, listRow];
@@ -345,7 +299,7 @@ const RatingPage = () => {
       }
       return next;
     });
-  }, [listRowMatchesFilters, sortOrder, sortType, rankReadyActive, difficultyDict]);
+  }, [listRowMatchesFilters, sortOrder, sortType]);
 
   const removeRatingById = useCallback((ratingId) => {
     setRatings((prev) => (Array.isArray(prev) ? prev.filter((r) => r.id !== ratingId) : prev));
@@ -357,22 +311,6 @@ const RatingPage = () => {
     setRatings((prev) => (Array.isArray(prev) ? prev.filter((r) => r.level?.id !== levelId) : prev));
     setSelectedRating((sel) => (sel?.level?.id === levelId ? null : sel));
   }, []);
-
-  const settleRatingByLevelId = useCallback((levelId, { announce = true } = {}) => {
-    if (levelId == null) return;
-    if (settledLevelIdsRef.current.has(levelId)) return;
-    setSettledLevelIds((prev) => {
-      if (prev.has(levelId)) return prev;
-      const next = new Set(prev);
-      next.add(levelId);
-      settledLevelIdsRef.current = next;
-      return next;
-    });
-    if (announce && editingLevelIdRef.current === levelId) {
-      setIsRemotelySettled(true);
-      toast(t('rating.rankReady.settledWhileEditing'), { duration: 10000 });
-    }
-  }, [t]);
 
   const logUserCountChange = useCallback((total, managers) => {
     console.debug('SSE Client: User count update:', { total, managers });
@@ -386,7 +324,6 @@ const RatingPage = () => {
     upsertRatingRow,
     removeRatingById,
     removeRatingByLevelId,
-    settleRatingByLevelId,
     reloadFromStart,
   };
 
@@ -407,12 +344,7 @@ const RatingPage = () => {
           case 'ratingUpdate': {
             const payload = data.data || {};
             if (payload.action === 'remove') {
-              if (showRankReadyViewRef.current) {
-                const levelId = payload.levelId
-                  ?? ratingsRef.current?.find((r) => r.id === payload.ratingId)?.level?.id;
-                if (levelId != null) h.settleRatingByLevelId(levelId);
-                else if (payload.ratingId) h.removeRatingById(payload.ratingId);
-              } else if (payload.ratingId) h.removeRatingById(payload.ratingId);
+              if (payload.ratingId) h.removeRatingById(payload.ratingId);
               else if (payload.levelId) h.removeRatingByLevelId(payload.levelId);
               break;
             }
@@ -428,28 +360,16 @@ const RatingPage = () => {
             const payload = data.data || {};
             if (!payload.levelId) break;
             if (payload.level == null || payload.level.toRate === false) {
-              if (showRankReadyViewRef.current) {
-                h.settleRatingByLevelId(payload.levelId);
-              } else {
-                h.removeRatingByLevelId(payload.levelId);
-              }
+              h.removeRatingByLevelId(payload.levelId);
               break;
             }
             setRatings((prev) => {
               if (!Array.isArray(prev)) return prev;
-              return prev.flatMap((r) => {
-                if (r.level?.id !== payload.levelId) return [r];
-                const merged = { ...r, level: { ...r.level, ...payload.level } };
-                if (
-                  showRankReadyViewRef.current &&
-                  !settledLevelIdsRef.current.has(payload.levelId) &&
-                  merged.settleActor != null &&
-                  merged.settleActor !== 'admin'
-                ) {
-                  return [];
-                }
-                return [merged];
-              });
+              return prev.map((r) => (
+                r.level?.id === payload.levelId
+                  ? { ...r, level: { ...r.level, ...payload.level } }
+                  : r
+              ));
             });
             setSelectedRating((sel) =>
               sel?.level?.id === payload.levelId
@@ -673,16 +593,6 @@ const RatingPage = () => {
                 )}
               </Link>
             )}
-            {isSuperAdmin && ratingFlow !== 3 && (
-              <button
-                type="button"
-                className={`admin-button rank-ready-button${showRankReadyView ? ' rank-ready-button--active' : ''}`}
-                aria-pressed={showRankReadyView}
-                onClick={() => setShowRankReadyView(!showRankReadyView)}
-              >
-                {t('rating.toggles.rankReady.label')}
-              </button>
-            )}
           </div>
         <div className="rating-flow-tabs" role="tablist">
           {[1, 2, 3].map((flow) => (
@@ -734,7 +644,7 @@ const RatingPage = () => {
               />
             </div>
           </div>
-          {isSuperAdmin && !rankReadyActive && (
+          {isSuperAdmin && (
             <div className="view-mode-toggle">
               <span className="toggle-label">{t('rating.toggles.detailedView.label')}</span>
               <label className="switch">
@@ -747,15 +657,13 @@ const RatingPage = () => {
               </label>
             </div>
           )}
-          {!rankReadyActive && (
-            <StateDisplay
-              currentState={myRatedFilter}
-              states={['show', 'hide', 'only']}
-              onChange={setMyRatedFilter}
-              label={t('rating.toggles.myRated.label')}
-              width={60}
-            />
-          )}
+          <StateDisplay
+            currentState={myRatedFilter}
+            states={['show', 'hide', 'only']}
+            onChange={setMyRatedFilter}
+            label={t('rating.toggles.myRated.label')}
+            width={60}
+          />
             <div
               className="pgu-band-filter"
               title={t('rating.toggles.requestBands.hint')}
@@ -787,15 +695,38 @@ const RatingPage = () => {
                 })}
               </div>
             </div>
-            {!rankReadyActive && (
-            <StateDisplay
-              currentState={fourVoteFilter}
-              states={['hide', 'show', 'only']}
-              onChange={setFourVoteFilter}
-              label={t('rating.toggles.fourVote.label')}
-              width={60}
-            />
-            )}
+            <div className="rating-count-filter">
+              <label className="rating-count-filter__field">
+                <input
+                  className="rating-count-filter__input"
+                  type="text"
+                  inputMode="numeric"
+                  aria-label={t('rating.toggles.fourVote.input')}
+                  value={ratingCountDraft}
+                  onChange={(e) => setRatingCountDraft(e.target.value)}
+                  onBlur={(e) => {
+                    const trimmed = e.currentTarget.value.trim();
+                    const parsed = Number(trimmed);
+                    const normalized = trimmed !== '' && Number.isFinite(parsed)
+                      ? Math.min(99, Math.max(1, Math.floor(parsed)))
+                      : fourVoteMin;
+                    setFourVoteMin(normalized);
+                    setRatingCountDraft(String(normalized));
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') e.currentTarget.blur();
+                  }}
+                />
+                <span className="toggle-label">{t('rating.toggles.fourVote.suffix')}</span>
+              </label>
+              <StateDisplay
+                currentState={fourVoteFilter}
+                states={['hide', 'show', 'only']}
+                onChange={setFourVoteFilter}
+                showLabel={false}
+                width={60}
+              />
+            </div>
         </div>
 
 
@@ -845,17 +776,6 @@ const RatingPage = () => {
             </div>
           {Array.isArray(ratings) && ratings.length > 0 ? (
           <>
-            {rankReadyActive ? (
-              <RankReadyTable
-                ratings={ratings}
-                settledLevelIds={settledLevelIds}
-                onViewRating={openRatingDetails}
-                onEditLevel={handleEditLevel}
-                loadMore={loadMoreRatings}
-                hasMore={hasMore && ratings.length > 0}
-                loadingMore={isLoadingMore}
-              />
-            ) : (
             <VirtualList
               style={{ paddingBottom: "4rem", overflow: "visible" }}
               items={ratings}
@@ -893,13 +813,12 @@ const RatingPage = () => {
               )}
               computeItemKey={(index, rating) => rating?.id ?? index}
             />
-            )}
           </>
         ) : 
         Array.isArray(ratings) && ratings.length === 0 && !isLoading ? (
           <div className="all-rated-message">
-            <h2>{t(rankReadyActive ? 'rating.rankReady.empty.title' : 'rating.messages.noRatings.title')}</h2>
-            <p>{t(rankReadyActive ? 'rating.rankReady.empty.subtitle' : 'rating.messages.noRatings.subtitle')}</p>
+            <h2>{t('rating.messages.noRatings.title')}</h2>
+            <p>{t('rating.messages.noRatings.subtitle')}</p>
           </div>
         ) : (
           <div className="loader loader-offset"/>
@@ -933,11 +852,9 @@ const RatingPage = () => {
             {openEditDialog && selectedLevel && isSuperAdmin && (
               <EditLevelPopup
                 level={selectedLevel}
-                isRemotelySettled={isRemotelySettled}
                 onClose={() => {
                   setOpenEditDialog(false);
                   setSelectedLevel(null);
-                  setIsRemotelySettled(false);
                 }}
                 onUpdate={(updatedData) => {
                   if (updatedData) {
@@ -946,7 +863,6 @@ const RatingPage = () => {
                       removeRatingByLevelId(rid);
                       setOpenEditDialog(false);
                       setSelectedLevel(null);
-                      setIsRemotelySettled(false);
                       return;
                     }
                     const updatedLevel = updatedData.level || updatedData;
@@ -959,11 +875,7 @@ const RatingPage = () => {
                     }
                     const shouldRemove = updatedLevel.toRate === false;
                     if (shouldRemove) {
-                      if (rankReadyActive) {
-                        settleRatingByLevelId(updatedLevel.id, { announce: false });
-                      } else {
-                        removeRatingByLevelId(updatedLevel.id);
-                      }
+                      removeRatingByLevelId(updatedLevel.id);
                     } else {
                       setRatings(prev =>
                         Array.isArray(prev)

@@ -18,7 +18,8 @@ import {
   ADOFAI_VERSION,
   adofaiVersionFromPass,
   canUseXPerfectMode,
-  parseAdofaiVersion,
+  keepStoredAdofaiVersion,
+  visualAdofaiVersion,
 } from '@/utils/adofaiVersion';
 import { applyMidspinPerfectDecrement, willApplyMidspinDecrement } from '@/utils/midspinPerfectDecrement';
 import calcAcc, { applyDerivedPerfects } from '@/utils/CalcAcc';
@@ -200,7 +201,6 @@ export default function PassSubmissionEditableMeta({
   const eraOptions = useMemo(
     () => [
       { value: ADOFAI_VERSION.V3_4_0, label: t('passSubmissions.details.flags.era.latest') },
-      { value: ADOFAI_VERSION.PRE_3_4_0, label: t('passSubmissions.details.flags.era.pre340') },
       { value: ADOFAI_VERSION.V2, label: t('passSubmissions.details.flags.era.v2') },
     ],
     [t],
@@ -262,8 +262,7 @@ export default function PassSubmissionEditableMeta({
     viewingFlags.adofaiVersion === ADOFAI_VERSION.V2
       ? 'v2'
       : viewingFlags.adofaiVersion === ADOFAI_VERSION.PRE_3_4_0
-        ? 'pre340'
-        : viewingFlags.adofaiVersion === ADOFAI_VERSION.V3_4_0
+        || viewingFlags.adofaiVersion === ADOFAI_VERSION.V3_4_0
           ? 'latest'
           : null;
 
@@ -774,9 +773,9 @@ export default function PassSubmissionEditableMeta({
               <div className="flags-details">
                 {keyCountDisplay && <span>{keyCountDisplay}</span>}
                 {flags?.isNoHoldTap && <span>{t('passSubmissions.details.flags.types.nht')}</span>}
-                {eraDisplayKey === 'v2' || eraDisplayKey === 'pre340' ? (
-                  <AdofaiVersionFlagTooltip variant={eraDisplayKey}>
-                    {t(`passSubmissions.details.flags.era.${eraDisplayKey}`)}
+                {eraDisplayKey === 'v2' ? (
+                  <AdofaiVersionFlagTooltip variant="v2">
+                    {t('passSubmissions.details.flags.era.v2')}
                   </AdofaiVersionFlagTooltip>
                 ) : eraDisplayKey ? (
                   <span>{t(`passSubmissions.details.flags.era.${eraDisplayKey}`)}</span>
@@ -817,9 +816,9 @@ export default function PassSubmissionEditableMeta({
                 <div className="pass-submission-era-select">
                   <CustomSelect
                     options={eraOptions}
-                    value={eraOptions.find((o) => o.value === draftFlags.adofaiVersion) ?? eraOptions[0]}
+                    value={eraOptions.find((o) => o.value === visualAdofaiVersion(draftFlags.adofaiVersion)) ?? eraOptions[0]}
                     onChange={(opt) => {
-                      const version = parseAdofaiVersion(opt?.value, ADOFAI_VERSION.PRE_3_4_0);
+                      const version = keepStoredAdofaiVersion(opt?.value, draftFlags.adofaiVersion);
                       setDraftFlags((f) => ({
                         ...f,
                         adofaiVersion: version,

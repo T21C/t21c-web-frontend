@@ -57,9 +57,11 @@ export const PassContextProvider = ({ children }) => {
   });
   const [keyFlag, setKeyFlag] = useState(() => localStorage.getItem(STORAGE_KEYS.KEY_FLAG) || 'all');
   const [wfFilter, setWfFilter] = useState(() => localStorage.getItem(STORAGE_KEYS.WF_FILTER) || 'none');
-  const [adofaiVersionFilter, setAdofaiVersionFilter] = useState(
-    () => localStorage.getItem(STORAGE_KEYS.ADOFAI_VERSION_FILTER) || 'all',
-  );
+  const [adofaiVersionFilter, setAdofaiVersionFilter] = useState(() => {
+    const stored = localStorage.getItem(STORAGE_KEYS.ADOFAI_VERSION_FILTER);
+    if (stored === 'pre340') return 'latest';
+    return stored || 'all';
+  });
   const [wrongJudgementFilter, setWrongJudgementFilter] = useState(
     () => localStorage.getItem(STORAGE_KEYS.WRONG_JUDGEMENT_FILTER) || 'all',
   );

@@ -38,10 +38,6 @@ import { useClientPreference } from '@/hooks/useClientPreference';
 import { collectDomFieldPatch } from '@/hooks/useDomFieldSync';
 import { normalizeLevelSearchQuery } from '@/utils/normalizeEntitySearchQuery';
 
-function Pre340VersionMark() {
-  return <b>{'<3.4.0'}</b>;
-}
-
 const PassSubmissionPage = () => {
   const { t } = useTranslation(['pages', 'common']);
   const location = useLocation();
@@ -509,7 +505,6 @@ const PassSubmissionPage = () => {
                   }}
                   components={{
                     b: <b />,
-                    pre340: <Pre340VersionMark />,
                   }}
                 />
               ) : (
@@ -535,18 +530,6 @@ const PassSubmissionPage = () => {
               >
                 {t('passSubmission.tilecountMismatch.reviewInputs')}
               </button>
-              {tilecountMismatchKind === 'wrongVersion' && (
-                <button
-                  type="button"
-                  className="tilecount-mismatch-change-version-btn btn-fill-primary alt"
-                  onClick={() => {
-                    handleAdofaiVersionChange(ADOFAI_VERSION.PRE_3_4_0);
-                    setShowTilecountMismatchModal(false);
-                  }}
-                >
-                  {t('passSubmission.tilecountMismatch.wrongVersion.changeVersion')}
-                </button>
-              )}
               <button
                 type="button"
                 className="tilecount-mismatch-submit-anyway-btn btn-fill-danger alt"

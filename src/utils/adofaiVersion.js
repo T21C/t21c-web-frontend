@@ -10,7 +10,6 @@ export const ADOFAI_V3_4_0_RELEASE_UTC = Date.UTC(2026, 8, 11, 8, 0, 0);
 
 export const ADOFAI_VERSION_SELECT_VALUES = [
   ADOFAI_VERSION.V3_4_0,
-  ADOFAI_VERSION.PRE_3_4_0,
   ADOFAI_VERSION.V2,
 ];
 
@@ -22,9 +21,24 @@ export function isAdofaiVersion(value) {
   );
 }
 
-export function parseAdofaiVersion(raw, fallback = ADOFAI_VERSION.PRE_3_4_0) {
+export function parseAdofaiVersion(raw, fallback = ADOFAI_VERSION.V3_4_0) {
   const n = typeof raw === 'number' ? raw : Number(raw);
   return isAdofaiVersion(n) ? n : fallback;
+}
+
+/** Stored <3.4.0 (id 2) is shown as 3.4.0. v2 stays v2. */
+export function visualAdofaiVersion(version) {
+  return version === ADOFAI_VERSION.PRE_3_4_0 ? ADOFAI_VERSION.V3_4_0 : version;
+}
+
+/** Keep stored id 2 when the picker still shows 3.4.0. */
+export function keepStoredAdofaiVersion(selected, stored) {
+  const next = parseAdofaiVersion(selected, ADOFAI_VERSION.V3_4_0);
+  const current = parseAdofaiVersion(stored, next);
+  if (visualAdofaiVersion(next) === visualAdofaiVersion(current)) {
+    return current;
+  }
+  return next;
 }
 
 export function isLegacyAdofaiVersion(version) {
@@ -32,7 +46,7 @@ export function isLegacyAdofaiVersion(version) {
 }
 
 export function canUseXPerfectMode(version) {
-  return version === ADOFAI_VERSION.V3_4_0;
+  return visualAdofaiVersion(version) === ADOFAI_VERSION.V3_4_0;
 }
 
 export function isAdofaiV2FromVersion(version) {
@@ -50,9 +64,6 @@ export function resolveAdofaiVersionFromTimestamp(timestamp) {
   if (ms < ADOFAI_V3_RELEASE_UTC) {
     return ADOFAI_VERSION.V2;
   }
-  if (ms < ADOFAI_V3_4_0_RELEASE_UTC) {
-    return ADOFAI_VERSION.PRE_3_4_0;
-  }
   return ADOFAI_VERSION.V3_4_0;
 }
 
@@ -61,20 +72,24 @@ export function adofaiVersionFromLegacyFlag(isAdofaiV2) {
 }
 
 export function filterValueToAdofaiVersion(filter) {
+  const versions = filterValueToAdofaiVersions(filter);
+  return versions?.[0] ?? null;
+}
+
+export function filterValueToAdofaiVersions(filter) {
   switch (filter) {
     case 'v2':
-      return ADOFAI_VERSION.V2;
+      return [ADOFAI_VERSION.V2];
     case 'pre340':
-      return ADOFAI_VERSION.PRE_3_4_0;
     case 'latest':
-      return ADOFAI_VERSION.V3_4_0;
+      return [ADOFAI_VERSION.PRE_3_4_0, ADOFAI_VERSION.V3_4_0];
     default:
       return null;
   }
 }
 
 export function adofaiVersionFromPass(pass) {
-  if (pass == null) return ADOFAI_VERSION.PRE_3_4_0;
+  if (pass == null) return ADOFAI_VERSION.V3_4_0;
   if (pass.adofaiVersion != null && pass.adofaiVersion !== '') {
     return parseAdofaiVersion(pass.adofaiVersion);
   }

@@ -26,7 +26,8 @@
       "hint": "勾选以从列表中隐藏该 AutoRater 等级段"
     },
     "fourVote": {
-      "label": "4+ 评级"
+      "suffix": "+ 评级",
+      "input": "最低评级数量"
     },
     "rankReady": {
       "label": "可定级"

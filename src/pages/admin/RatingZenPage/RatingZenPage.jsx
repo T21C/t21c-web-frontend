@@ -28,7 +28,7 @@ import { formatAutoTilecountTooltip, formatDuration, getSongDisplayName } from '
 import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import toast from 'react-hot-toast';
 import { createViewDurationTracker } from '@/utils/viewDurationTracker';
-import { isAutoraterDetail } from '@/pages/admin/RatingPage/RankReadyTable';
+import { isAutoraterDetail } from '@/utils/autorater';
 import { REQUEST_BANDS, autoraterHideBand, isVoteRatingCard } from '@/utils/ratingRequestBand';
 import DiscordVoteNotice from '@/components/popups/Rating/DiscordVoteNotice';
 import LevelRequestScoreTargets from '@/components/requests/LevelRequestScoreTargets';

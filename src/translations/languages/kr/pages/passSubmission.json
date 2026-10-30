@@ -59,10 +59,10 @@
   "feelingTooltip": "개인적으로 얼마나 어려웠는지 작성해주세요. 예: G1-G5, 17~18+, U1 등",
   "expectedTooltip": "이 레벨이 어떤 난이도여야 하는지 작성해주세요. (선택, 체감 난이도와 같은 형식)",
   "adofaiV2Tooltip": "ADOFAI v2에서 기록된 클리어인 경우 선택해주세요.",
-  "adofaiVersionTooltip": "이 클리어에 사용한 게임 버전입니다. Alpha는 3.4.0+입니다. 영상 날짜로 자동 채워지며 직접 바꿀 수 있습니다.",
+  "adofaiVersionTooltip": "이 클리어에 사용한 게임 버전입니다. 3.4.0은 모든 v3 클리어의 현재 안정 버전입니다. 영상 날짜로 자동 채워지며 직접 바꿀 수 있습니다.",
   "xPerfectTooltip": "X-Perfect 모드의 Perfect− / Perfect+ 개수를 기록합니다. (3.4.0+만)",
   "adofaiVersion": {
-    "latest": "Alpha",
+    "latest": "3.4.0",
     "pre340": "<3.4.0",
     "v2": "v2"
   },
@@ -120,7 +120,7 @@
     "submitAnyway": "그래도 제출",
     "wrongVersion": {
       "title": "잘못된 게임 버전",
-      "body": "판정 합계에 미드스핀이 포함된 것 같습니다(<b>{{hitSum}}</b> = <b>{{tilecount}}</b> + <b>{{midspins}}</b>). <b>3.4.0</b>부터는 미드스핀이 집계되지 않으므로 빼야 합니다. 버전을 <pre340></pre340>(으)로 바꿔 자동으로 처리할까요?",
+      "body": "판정 합계에 미드스핀이 포함된 것 같습니다(<b>{{hitSum}}</b> = <b>{{tilecount}}</b> + <b>{{midspins}}</b>). <b>3.4.0</b>부터는 미드스핀이 집계되지 않으므로 빼야 합니다.",
       "changeVersion": "<3.4.0으로 변경"
     }
   },

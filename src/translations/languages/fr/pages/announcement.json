@@ -6,6 +6,7 @@
   "header": {
     "title": "Annonces"
   },
+  "listCount": "Total : {{count}}",
   "tabs": {
     "newLevels": "Nouveaux niveaux",
     "rerates": "Réévaluations",

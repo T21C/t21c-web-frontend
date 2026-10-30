@@ -8,7 +8,7 @@ import { formatAccuracyRatio } from "@/utils/statFormatters";
 import { computePassScoreV2 } from "@/utils/scoreService";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { parseJudgements, judgementsAreComplete, previewPassFormScoring } from "@/utils/ParseJudgements";
-import { ADOFAI_VERSION, parseAdofaiVersion, canUseXPerfectMode, isAdofaiV2FromVersion } from "@/utils/adofaiVersion";
+import { ADOFAI_VERSION, parseAdofaiVersion, canUseXPerfectMode, isAdofaiV2FromVersion, keepStoredAdofaiVersion } from "@/utils/adofaiVersion";
 import { normalizeKeyCount, validateFeelingRating, validateNumber, validateSpeed } from "@/utils/Utility";
 import { useTranslation } from "react-i18next";
 import { getPassCoreCopy } from "./PassCoreForm";
@@ -353,7 +353,7 @@ export function usePassCoreForm({
   };
 
   const handleAdofaiVersionChange = (version) => {
-    const adofaiVersion = parseAdofaiVersion(version, ADOFAI_VERSION.V3_4_0);
+    const adofaiVersion = keepStoredAdofaiVersion(version, form.adofaiVersion);
     const patch = {
       adofaiVersion,
       isAdofaiV2: isAdofaiV2FromVersion(adofaiVersion),

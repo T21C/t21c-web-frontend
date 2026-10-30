@@ -9,6 +9,7 @@ import { CustomSelect } from '@/components/common/selectors';
 import {
   ADOFAI_VERSION,
   canUseXPerfectMode,
+  visualAdofaiVersion,
   parseAdofaiVersion,
 } from '@/utils/adofaiVersion';
 import { applyMidspinPerfectDecrement, willApplyMidspinDecrement } from '@/utils/midspinPerfectDecrement';
@@ -241,7 +242,6 @@ export function PassCoreForm({
   const showXPerfectFields = showXPerfectToggle && !!form.isXPerfectMode;
   const eraOptions = [
     { value: ADOFAI_VERSION.V3_4_0, label: t(copy.adofaiVersionLatest, { ns: copy.ns }) },
-    { value: ADOFAI_VERSION.PRE_3_4_0, label: t(copy.adofaiVersionPre340, { ns: copy.ns }) },
     { value: ADOFAI_VERSION.V2, label: t(copy.adofaiVersionV2, { ns: copy.ns }) },
   ];
   const perfectCount = parseInt(form.perfect, 10);
@@ -615,7 +615,7 @@ export function PassCoreForm({
             >
               <CustomSelect
                 options={eraOptions}
-                value={eraOptions.find((o) => o.value === adofaiVersion) ?? eraOptions[0]}
+                value={eraOptions.find((o) => o.value === visualAdofaiVersion(adofaiVersion)) ?? eraOptions[0]}
                 onChange={(opt) => onAdofaiVersionChange?.(opt?.value)}
                 placeholder={t(copy.adofaiVersionLabel, { ns: copy.ns })}
                 width="11rem"

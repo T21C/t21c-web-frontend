@@ -7,19 +7,20 @@ import { canApplyAutoRank, hasFlag, permissionFlags } from '@/utils/UserPermissi
 
 export function RatingFlowMarks({ rating }) {
   const { t } = useTranslation('components');
+  const manualFlow = rating?.flow === 2 || rating?.flow === 3;
   const indicators = rating?.indicators || {};
-  const block = rating?.autoRankBlock;
+  const block = manualFlow ? null : rating?.autoRankBlock;
   const marks = [];
-  if (rating?.showRankable) {
+  if (!manualFlow && rating?.showRankable) {
     marks.push({ key: 'rankable', label: t('rating.ratingCard.marks.rankable') });
   }
-  if (rating?.showRatingOff) {
+  if (!manualFlow && rating?.showRatingOff) {
     marks.push({ key: 'rating-off', label: t('rating.ratingCard.marks.ratingOff') });
   }
-  if (indicators.judgementLimit) {
+  if (!manualFlow && indicators.judgementLimit) {
     marks.push({ key: 'judgement', label: t('rating.ratingCard.marks.judgementLimit') });
   }
-  if (indicators.keyLimit) {
+  if (!manualFlow && indicators.keyLimit) {
     marks.push({ key: 'key', label: t('rating.ratingCard.marks.keyLimit') });
   }
 
@@ -54,6 +55,7 @@ export function RatingFlowActions({ rating, user, onChange, only = null }) {
   const { t } = useTranslation('components');
   const [busy, setBusy] = useState('');
   if (!rating?.id || rating.confirmedAt) return null;
+  if (rating.flow === 2 || rating.flow === 3) return null;
 
   const canSettle = Boolean(
     canApplyAutoRank(user) && rating.settleActor === 'rater' && rating.suggestedDiffName,

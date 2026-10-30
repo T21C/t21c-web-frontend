@@ -158,8 +158,8 @@
         "myRatedDesc": "显示，隐藏，或仅显示你评过的关卡",
         "requestBands": "AutoRater 等级",
         "requestBandsDesc": "按 AutoRater 平均分隐藏行星(P)、银河(G)或宇宙(U)卡片",
-        "fourVote": "4+ 评级",
-        "fourVoteDesc": "筛选拥有超过4个评级的关卡"
+        "fourVote": "评级数量",
+        "fourVoteDesc": "隐藏、显示或仅显示达到该评级数量的卡片"
       },
       "requirements": {
         "title": "需求",

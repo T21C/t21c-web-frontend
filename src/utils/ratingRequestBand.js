@@ -1,5 +1,5 @@
 // tuf-search: #ratingRequestBand #pgu #rating
-import { isAutoraterDetail } from '@/pages/admin/RatingPage/RankReadyTable';
+import { isAutoraterDetail } from '@/utils/autorater';
 
 /** Same buckets as server requestPguBand: Q labels, PGU tokens, legacy feeling numbers, highest range endpoint. */
 

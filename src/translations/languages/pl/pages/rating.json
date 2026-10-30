@@ -23,7 +23,8 @@
       "hint": "Zaznacz, aby ukryć ten przedział AutoRatera na liście"
     },
     "fourVote": {
-      "label": "4+ ocen"
+      "suffix": "+ ocen",
+      "input": "Minimalna liczba ocen"
     },
     "rankReady": {
       "label": "Gotowe do rangi"
