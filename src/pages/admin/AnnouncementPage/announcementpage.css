@@ -322,10 +322,24 @@
   gap: 1rem;
 }
 
+.announcement-page .announcement-list-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.announcement-page .announcement-list-count {
+  margin-left: auto;
+  color: var(--color-white-t70);
+  font-weight: 600;
+  align-self: flex-end;
+  white-space: nowrap;
+}
+
 .announcement-page .select-all-button {
   padding: 0.5rem 1rem;
-  position: absolute;
-  transform: translate(0, -120%);
   font-size: 1rem;
   color: var(--color-white);
   background-color: var(--color-white-t20);

@@ -18,6 +18,7 @@ import { CloseButton } from '@/components/common/buttons';
 import { PopupShell } from '@/components/common/PopupShell';
 import { AdminReasonPrompt } from '@/components/common/AdminReasonPrompt';
 import { useUnsavedClose } from '@/hooks/useUnsavedClose';
+import { canUseXPerfectMode } from '@/utils/adofaiVersion';
 
 export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
   const { t } = useTranslation(['components', 'pages', 'common']);
@@ -146,7 +147,7 @@ const handleSubmit = async (e) => {
       isDuplicate: form.isDuplicate,
       isAdofaiV2: form.adofaiVersion === 1,
       adofaiVersion: form.adofaiVersion,
-      isXPerfectMode: !!form.isXPerfectMode && form.adofaiVersion === 3,
+      isXPerfectMode: !!form.isXPerfectMode && canUseXPerfectMode(form.adofaiVersion),
 
       judgements: {
         earlyDouble: parseInt(form.tooEarly) || 0,

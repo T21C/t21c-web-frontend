@@ -24,7 +24,7 @@ import i18next from "i18next";
 import { EyeIcon, EyeOffIcon, TrashIcon, WarningIcon } from "@/components/common/icons";
 import { LikeButton } from "@/components/common/buttons";
 import { Tooltip } from '@/components/common/display/Tooltip';
-import PassAdofaiV2Flag, { PassAdofaiPre340Flag } from "@/components/cards/PassFlags/PassAdofaiV2Flag";
+import PassAdofaiV2Flag from "@/components/cards/PassFlags/PassAdofaiV2Flag";
 import WorldsFirstFlag from "@/components/cards/WorldsFirstFlag/WorldsFirstFlag";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { isPureXPerfect } from "@/utils/CalcAcc";
@@ -381,7 +381,7 @@ const PassDetailPage = () => {
                   </span>
                 </div>
               </div>
-              {(showWrongJudgement || isAutoSubmittedPass(pass) || pass.isWorldsFirst || pass.isWorldsFirstPP || normalizeKeyCount(pass.keyCount) != null || pass.is12K || pass.is16K || pass.isNoHoldTap || era === ADOFAI_VERSION.V2 || era === ADOFAI_VERSION.PRE_3_4_0 || pass.isXPerfectMode) && (
+              {(showWrongJudgement || isAutoSubmittedPass(pass) || pass.isWorldsFirst || pass.isWorldsFirstPP || normalizeKeyCount(pass.keyCount) != null || pass.is12K || pass.is16K || pass.isNoHoldTap || era === ADOFAI_VERSION.V2 || pass.isXPerfectMode) && (
                 <div className="flags-container">
                   {pass.isWorldsFirst && (
                     <WorldsFirstFlag variant="clear" tooltipIndex={`${pass.id}-detail-clear`} className="worlds-first" />
@@ -389,7 +389,7 @@ const PassDetailPage = () => {
                   {pass.isWorldsFirstPP && (
                     <WorldsFirstFlag variant="pp" tooltipIndex={`${pass.id}-detail-pp`} className="worlds-first" />
                   )}
-                  {(showWrongJudgement || isAutoSubmittedPass(pass) || normalizeKeyCount(pass.keyCount) != null || pass.is12K || pass.is16K || pass.isNoHoldTap || era === ADOFAI_VERSION.V2 || era === ADOFAI_VERSION.PRE_3_4_0 || pass.isXPerfectMode) && (
+                  {(showWrongJudgement || isAutoSubmittedPass(pass) || normalizeKeyCount(pass.keyCount) != null || pass.is12K || pass.is16K || pass.isNoHoldTap || era === ADOFAI_VERSION.V2 || pass.isXPerfectMode) && (
                     <div className="flags">
                       {showWrongJudgement && <span className="flag">{t('passDetail.flags.wrongJudgement')}</span>}
                       {isAutoSubmittedPass(pass) && <PassAutoSubmissionFlag />}
@@ -408,15 +408,6 @@ const PassDetailPage = () => {
                           i18nKey="passDetail.flags.adofaiV2"
                           ns="pages"
                           tooltipKey="passDetail.flags.adofaiV2Note"
-                          tooltipNs="pages"
-                        />
-                      )}
-                      {era === ADOFAI_VERSION.PRE_3_4_0 && (
-                        <PassAdofaiPre340Flag
-                          className="flag flag--adofai-pre340"
-                          i18nKey="passDetail.flags.adofaiPre340"
-                          ns="pages"
-                          tooltipKey="passDetail.flags.adofaiPre340Note"
                           tooltipNs="pages"
                         />
                       )}

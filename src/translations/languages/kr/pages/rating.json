@@ -23,7 +23,8 @@
       "hint": "해당 AutoRater 구간을 목록에서 숨기려면 체크하세요"
     },
     "fourVote": {
-      "label": "4명 이상 평가됨"
+      "suffix": "+ 평가됨",
+      "input": "최소 평가 수"
     },
     "rankReady": {
       "label": "랭크 준비"

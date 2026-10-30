@@ -18,10 +18,10 @@ const STORAGE_KEYS = {
   LOW_DIFF_FILTER: 'rating_low_diff_filter',
   INCLUDE_BANDS: 'rating_include_bands',
   FOUR_VOTE_FILTER: 'rating_four_vote_filter',
+  FOUR_VOTE_MIN: 'rating_four_vote_min',
   SORT_TYPE: 'rating_sort_type',
   SEARCH_QUERY: 'rating_search_query',
   DETAILED_VIEW: 'rating_detailed_view',
-  RANK_READY_VIEW: 'rating_rank_ready_view',
   RATING_FLOW: 'rating_flow',
   SHOW_REFERENCES: 'rating_show_references',
   SHOW_RATER_MANAGEMENT: 'rating_show_rater_management',
@@ -54,6 +54,14 @@ function readIncludeBands() {
 
 const MY_RATED_STATES = ['show', 'hide', 'only'];
 
+function readFourVoteMin() {
+  const raw = localStorage.getItem(STORAGE_KEYS.FOUR_VOTE_MIN);
+  if (raw == null || raw === '') return 4;
+  const stored = Number(raw);
+  if (!Number.isFinite(stored)) return 4;
+  return Math.min(99, Math.max(1, Math.floor(stored)));
+}
+
 function readMyRatedFilter() {
   const stored = localStorage.getItem(STORAGE_KEYS.MY_RATED);
   if (MY_RATED_STATES.includes(stored)) return stored;
@@ -66,10 +74,10 @@ export const RatingFilterProvider = ({ children }) => {
   const [myRatedFilter, setMyRatedFilter] = useState(readMyRatedFilter);
   const [includeBands, setIncludeBands] = useState(readIncludeBands);
   const [fourVoteFilter, setFourVoteFilter] = useState(() => localStorage.getItem(STORAGE_KEYS.FOUR_VOTE_FILTER) || 'show');
+  const [fourVoteMin, setFourVoteMin] = useState(readFourVoteMin);
   const [sortType, setSortType] = useState(() => localStorage.getItem(STORAGE_KEYS.SORT_TYPE) || 'ratings');
   const [searchQuery, setSearchQuery] = useState(() => localStorage.getItem(STORAGE_KEYS.SEARCH_QUERY) || '');
   const [showDetailedView, setShowDetailedView] = useState(() => localStorage.getItem(STORAGE_KEYS.DETAILED_VIEW) === 'true');
-  const [showRankReadyView, setShowRankReadyView] = useState(() => localStorage.getItem(STORAGE_KEYS.RANK_READY_VIEW) === 'true');
   const [ratingFlow, setRatingFlow] = useState(() => {
     const stored = Number(localStorage.getItem(STORAGE_KEYS.RATING_FLOW));
     return stored === 2 || stored === 3 ? stored : 1;
@@ -95,6 +103,10 @@ export const RatingFilterProvider = ({ children }) => {
   }, [fourVoteFilter]);
 
   useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.FOUR_VOTE_MIN, String(fourVoteMin));
+  }, [fourVoteMin]);
+
+  useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.SORT_TYPE, sortType);
   }, [sortType]);
 
@@ -105,10 +117,6 @@ export const RatingFilterProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.DETAILED_VIEW, showDetailedView);
   }, [showDetailedView]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.RANK_READY_VIEW, showRankReadyView);
-  }, [showRankReadyView]);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.RATING_FLOW, String(ratingFlow));
@@ -133,10 +141,10 @@ export const RatingFilterProvider = ({ children }) => {
     includeG: includeBands.includeG,
     includeU: includeBands.includeU,
     fourVoteFilter,
+    fourVoteMin,
     sortType,
     searchQuery,
     showDetailedView,
-    showRankReadyView,
     ratingFlow,
     showReferences,
     showRaterManagement,
@@ -145,10 +153,10 @@ export const RatingFilterProvider = ({ children }) => {
     setMyRatedFilter,
     setIncludeBands,
     setFourVoteFilter,
+    setFourVoteMin,
     setSortType,
     setSearchQuery,
     setShowDetailedView,
-    setShowRankReadyView,
     setRatingFlow,
     setShowReferences,
     setShowRaterManagement,

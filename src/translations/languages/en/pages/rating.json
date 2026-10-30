@@ -26,7 +26,8 @@
       "hint": "Check to hide that AutoRater band from the list"
     },
     "fourVote": {
-      "label": "4+ Rated"
+      "suffix": "+ Rated",
+      "input": "Minimum number of ratings"
     },
     "rankReady": {
       "label": "Rank-ready"

@@ -77,7 +77,7 @@ export function isTilecountJudgementMismatch(levelTilecount, hitCount, autoTileC
 }
 
 /**
- * Alpha (3.4.0+) selected, but the entered hit total is exactly achievable
+ * 3.4.0 selected, but the entered hit total is exactly achievable
  * tiles plus midspins — the pre-3.4.0 count that still includes midspins.
  */
 export function isIncludedMidspinOnLatestVersion({

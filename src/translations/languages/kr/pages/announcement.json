@@ -6,6 +6,7 @@
   "header": {
     "title": "공지사항"
   },
+  "listCount": "총 {{count}}개",
   "tabs": {
     "newLevels": "새 레벨",
     "rerates": "난이도 재책정 ",

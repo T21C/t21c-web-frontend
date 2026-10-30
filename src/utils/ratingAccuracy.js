@@ -1,5 +1,5 @@
 // tuf-search: #ratingAccuracy
-import { isAutoraterDetail } from '@/pages/admin/RatingPage/RankReadyTable';
+import { isAutoraterDetail } from '@/utils/autorater';
 
 export const RATING_ACCURACY_PROVISIONAL_N = 10;
 

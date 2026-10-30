@@ -18,6 +18,10 @@
       "label": "Masquer AutoRater",
       "hint": "Cochez pour masquer cette bande AutoRater dans la liste"
     },
+    "fourVote": {
+      "suffix": "+ évalués",
+      "input": "Nombre minimum d'évaluations"
+    },
     "rankReady": {
       "label": "Prêt à classer"
     }
