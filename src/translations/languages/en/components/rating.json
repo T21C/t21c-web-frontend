@@ -109,7 +109,28 @@
       "viewDetails": "View Details",
       "editLevel": "Edit Level",
       "copied": "Copied!",
-      "copyLink": "Copy link"
+      "copyLink": "Copy link",
+      "settle": "Settle {{difficulty}}",
+      "block": "Block auto rank",
+      "unblock": "Unblock"
+    },
+    "marks": {
+      "rankable": "Rankable",
+      "ratingOff": "Rating Off",
+      "judgementLimit": "Judgement Limit",
+      "keyLimit": "Key Limit",
+      "blockedBy": "Blocked by"
+    },
+    "prompts": {
+      "blockReason": "Why block auto rank? Leave blank to skip a reason."
+    },
+    "messages": {
+      "settleSuccess": "Rank settled",
+      "settleFailed": "Could not settle this rank",
+      "blockSuccess": "Auto rank blocked",
+      "blockFailed": "Could not block auto rank",
+      "unblockSuccess": "Auto rank unblocked",
+      "unblockFailed": "Could not unblock auto rank"
     }
   },
   "helpPopup": {

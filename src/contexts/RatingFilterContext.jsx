@@ -22,6 +22,7 @@ const STORAGE_KEYS = {
   SEARCH_QUERY: 'rating_search_query',
   DETAILED_VIEW: 'rating_detailed_view',
   RANK_READY_VIEW: 'rating_rank_ready_view',
+  RATING_FLOW: 'rating_flow',
   SHOW_REFERENCES: 'rating_show_references',
   SHOW_RATER_MANAGEMENT: 'rating_show_rater_management',
   SHOW_HELP: 'rating_show_help'
@@ -69,6 +70,10 @@ export const RatingFilterProvider = ({ children }) => {
   const [searchQuery, setSearchQuery] = useState(() => localStorage.getItem(STORAGE_KEYS.SEARCH_QUERY) || '');
   const [showDetailedView, setShowDetailedView] = useState(() => localStorage.getItem(STORAGE_KEYS.DETAILED_VIEW) === 'true');
   const [showRankReadyView, setShowRankReadyView] = useState(() => localStorage.getItem(STORAGE_KEYS.RANK_READY_VIEW) === 'true');
+  const [ratingFlow, setRatingFlow] = useState(() => {
+    const stored = Number(localStorage.getItem(STORAGE_KEYS.RATING_FLOW));
+    return stored === 2 || stored === 3 ? stored : 1;
+  });
   const [showReferences, setShowReferences] = useState(() => localStorage.getItem(STORAGE_KEYS.SHOW_REFERENCES) === 'true');
   const [showRaterManagement, setShowRaterManagement] = useState(() => localStorage.getItem(STORAGE_KEYS.SHOW_RATER_MANAGEMENT) === 'true');
   const [showHelpPopup, setShowHelpPopup] = useState(() => localStorage.getItem(STORAGE_KEYS.SHOW_HELP) === 'true');
@@ -106,6 +111,10 @@ export const RatingFilterProvider = ({ children }) => {
   }, [showRankReadyView]);
 
   useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.RATING_FLOW, String(ratingFlow));
+  }, [ratingFlow]);
+
+  useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.SHOW_REFERENCES, showReferences);
   }, [showReferences]);
 
@@ -128,6 +137,7 @@ export const RatingFilterProvider = ({ children }) => {
     searchQuery,
     showDetailedView,
     showRankReadyView,
+    ratingFlow,
     showReferences,
     showRaterManagement,
     showHelpPopup,
@@ -139,6 +149,7 @@ export const RatingFilterProvider = ({ children }) => {
     setSearchQuery,
     setShowDetailedView,
     setShowRankReadyView,
+    setRatingFlow,
     setShowReferences,
     setShowRaterManagement,
     setShowHelpPopup

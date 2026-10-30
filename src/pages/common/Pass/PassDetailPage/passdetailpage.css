@@ -186,6 +186,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  justify-content: center;
 }
 
 .pass-detail .score-value {
@@ -718,29 +719,6 @@
   line-height: 1.5;
 }
 
-.hide-confirm-overlay .hide-confirm-dialog input {
-  width: 100%;
-  margin: 0 0 1rem 0;
-  padding: 0.75rem;
-  border: 1px solid var(--color-white-t20);
-  border-radius: 4px;
-  background-color: var(--color-black-t50);
-  color: var(--color-white);
-  font-size: 1rem;
-  box-sizing: border-box;
-}
-
-.hide-confirm-overlay .hide-confirm-dialog input:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.hide-confirm-overlay .hide-confirm-dialog .feeling-rating-error {
-  margin: -0.5rem 0 1rem 0;
-  color: var(--color-danger, #ff6b6b);
-  font-size: 0.875rem;
-}
-
 .hide-confirm-overlay .hide-confirm-actions {
   display: flex;
   gap: 0.75rem;
@@ -756,12 +734,16 @@
     grid-template-columns: 1fr;
   }
 
-  .pass-detail .body {
+  .pass-detail .pass-detail-body {
     flex-direction: column;
   }
 
-  .pass-detail .youtube {
+  .pass-detail .youtube,
+  .pass-detail .youtube.video-embed--douyin {
     order: -1;
+    flex: none;
+    width: 100%;
+    aspect-ratio: 16 / 9;
   }
 }
 

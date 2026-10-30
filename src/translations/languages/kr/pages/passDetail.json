@@ -202,6 +202,9 @@
       "processing": "표시하는 중..."
     }
   },
+  "ownEdit": {
+    "title": "내 클리어 수정"
+  },
   "feelingRating": {
     "title": "체감 난이도 수정",
     "placeholder": "예: U15, G18~G20"

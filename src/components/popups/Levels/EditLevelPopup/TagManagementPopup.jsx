@@ -10,7 +10,7 @@ import { ItemPickManager } from '@/components/common/selectors';
 import { ICON_SIZE, selectIconSize } from '@/utils/Utility';
 import { sortTagsByGroupThenSortOrder } from '@/utils/communityTags';
 
-export const TagManagementPopup = ({ levelId = null, currentTags = [], onClose, onSave }) => {
+export const TagManagementPopup = ({ levelId = null, currentTags = [], onClose, onSave, charterOnly = false }) => {
   const { t } = useTranslation(['components', 'common']);
 
   const [allTags, setAllTags] = useState([]);
@@ -42,19 +42,24 @@ export const TagManagementPopup = ({ levelId = null, currentTags = [], onClose, 
     if (isDraft) {
       if (seededDraftSelection.current) return;
       seededDraftSelection.current = true;
-      setSelectedIds(currentTags.filter((tag) => !tag.isAutomatic).map((tag) => tag.id));
+      setSelectedIds(
+        currentTags
+          .filter((tag) => !tag.isAutomatic && (!charterOnly || tag.charterManagable))
+          .map((tag) => tag.id),
+      );
       return;
     }
     setSelectedIds(
       currentTags
         .filter((tag) => {
           const catalog = catalogById.get(tag.id) || tag;
+          if (charterOnly && !catalog.charterManagable) return false;
           if (!catalog.isCommunity) return true;
           return Boolean(tag.pinned);
         })
         .map((tag) => tag.id),
     );
-  }, [currentTags, catalogById, isDraft]);
+  }, [currentTags, catalogById, isDraft, charterOnly]);
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -75,13 +80,17 @@ export const TagManagementPopup = ({ levelId = null, currentTags = [], onClose, 
 
   useEffect(() => {
     if (!isDraft) return;
-    const automaticIds = new Set(allTags.filter((tag) => tag.isAutomatic).map((tag) => tag.id));
-    if (automaticIds.size === 0) return;
+    const blockedIds = new Set(
+      allTags
+        .filter((tag) => tag.isAutomatic || (charterOnly && !tag.charterManagable))
+        .map((tag) => tag.id),
+    );
+    if (blockedIds.size === 0) return;
     setSelectedIds((prev) => {
-      const next = prev.filter((id) => !automaticIds.has(id));
+      const next = prev.filter((id) => !blockedIds.has(id));
       return next.length === prev.length ? prev : next;
     });
-  }, [allTags, isDraft]);
+  }, [allTags, isDraft, charterOnly]);
 
   const handleSave = async (e) => {
     if (e) {
@@ -97,6 +106,7 @@ export const TagManagementPopup = ({ levelId = null, currentTags = [], onClose, 
           .map((id) => {
             const catalog = catalogById.get(id) || currentTags.find((tag) => tag.id === id);
             if (!catalog || catalog.isAutomatic) return null;
+            if (charterOnly && !catalog.charterManagable) return null;
             return catalog.isCommunity ? { ...catalog, pinned: true } : catalog;
           })
           .filter(Boolean);
@@ -105,9 +115,13 @@ export const TagManagementPopup = ({ levelId = null, currentTags = [], onClose, 
         return;
       }
 
-      await api.post(`${routes.database.difficulties.root()}/levels/${levelId}/tags`, {
-        tagIds: selectedIds,
-      });
+      const saveIds = charterOnly
+        ? selectedIds.filter((id) => catalogById.get(id)?.charterManagable)
+        : selectedIds;
+      await api.post(
+        `${routes.database.difficulties.root()}/levels/${levelId}/${charterOnly ? 'charter-tags' : 'tags'}`,
+        { tagIds: saveIds },
+      );
 
       const updatedTagsResponse = await api.get(
         `${routes.database.difficulties.root()}/levels/${levelId}/tags`
@@ -169,7 +183,11 @@ export const TagManagementPopup = ({ levelId = null, currentTags = [], onClose, 
             items={allTags}
             selectedIds={selectedIds}
             onSelectedIdsChange={setSelectedIds}
-            poolFilter={(item) => !communityWonIds.has(item.id) && !(isDraft && item.isAutomatic)}
+            poolFilter={(item) =>
+              !communityWonIds.has(item.id)
+              && !(isDraft && item.isAutomatic)
+              && !(charterOnly && (!item.charterManagable || item.isAutomatic))
+            }
             enableGrouping
             fallbackGroupLabel={t('facetQueryBuilder.fallbackGroup')}
             labels={pickLabels}

@@ -158,6 +158,16 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     )
   );
   const canManageCredits = isSuperAdmin || isLevelOwner;
+  const canManageCharterTags = (() => {
+    if (isSuperAdmin) return true;
+    const creatorId = user?.creatorId;
+    const credits = Array.isArray(editorLevel?.levelCredits) ? editorLevel.levelCredits : [];
+    if (!creatorId || credits.length === 0) return false;
+    const sameCreator = (credit) => Number(credit.creatorId ?? credit.creator?.id) === Number(creatorId);
+    if (credits.some((credit) => sameCreator(credit) && credit.isOwner)) return true;
+    const charters = credits.filter((credit) => String(credit.role || '').toLowerCase() === 'charter');
+    return charters.some(sameCreator) && charters.length <= 2;
+  })();
   const creditsLevel = useMemo(() => {
     if (!editorLevel) return editorLevel;
     const teamFromObject =
@@ -933,14 +943,14 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
               </button>
             </div>
 
-            <div className={`form-group ${isSuperAdmin ? 'field-enabled' : ''}`}>
+            <div className={`form-group ${canManageCharterTags ? 'field-enabled' : ''}`}>
               <label>{t('levelPopups.edit.form.labels.tags')}</label>
               <div className="edit-level-popup__tag-preview-container">
               <button
                   type="button"
                   className="edit-level-popup__manage-tags-button"
                   onClick={handleOpenTagManagement}
-                  disabled={!isSuperAdmin}
+                  disabled={!canManageCharterTags}
                 >
                   {t('levelPopups.edit.form.buttons.manageTags')}
                 </button>
@@ -1272,6 +1282,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
           currentTags={levelTags}
           onClose={() => setShowTagManagement(false)}
           onSave={handleTagSave}
+          charterOnly={!isSuperAdmin}
         />
       )}
 

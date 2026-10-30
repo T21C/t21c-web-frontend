@@ -8,19 +8,121 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 }
-.rating-card.low-diff {
-  background: #182318;
-  box-shadow: 0 0 10px rgba(0, 255, 0, 0.1);
+.rating-card.band-p {
+  background: color-mix(in srgb, var(--success-color) 24%, #222);
 }
 
-.rating-card.gq-cleared {
-  background: #2e2206;
-  box-shadow: 0 0 10px rgba(255, 215, 0, 0.1);
+.rating-card.band-g {
+  background: color-mix(in srgb, var(--warning-color) 22%, #222);
 }
 
-.rating-card.four-rated {
-  background: #281515;
-  box-shadow: 0 0 10px rgba(255, 0, 0, 0.1);
+.rating-card.band-u {
+  background: color-mix(in srgb, var(--color-purple) 32%, #222);
+}
+
+.rating-card.band-impossible {
+  background: color-mix(in srgb, var(--danger-color) 42%, var(--color-purple-1));
+}
+
+.rating-card .rating-flow-marks,
+.rating-popup .rating-flow-marks {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.rating-card .rating-flow-mark,
+.rating-popup .rating-flow-mark {
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  background: color-mix(in srgb, var(--color-white) 12%, transparent);
+}
+
+.rating-card .rating-flow-mark--rankable,
+.rating-popup .rating-flow-mark--rankable {
+  background: color-mix(in srgb, var(--success-color) 35%, transparent);
+}
+
+.rating-card .rating-flow-mark--rating-off,
+.rating-popup .rating-flow-mark--rating-off {
+  background: color-mix(in srgb, var(--danger-color) 35%, transparent);
+}
+
+.rating-card .rating-flow-block,
+.rating-popup .rating-flow-block {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+}
+
+.rating-card .rating-flow-block__who,
+.rating-popup .rating-flow-block__who {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.rating-card .rating-flow-block__avatar,
+.rating-popup .rating-flow-block__avatar {
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.rating-card .rating-flow-actions,
+.rating-popup .rating-flow-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.rating-card .rating-flow-btn,
+.rating-popup .rating-flow-btn {
+  border: none;
+  border-radius: 4px;
+  padding: 0.45rem 0.8rem;
+  color: var(--color-white);
+  cursor: pointer;
+}
+
+.rating-card .rating-flow-btn:disabled,
+.rating-popup .rating-flow-btn:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+
+.rating-card .rating-flow-btn--settle,
+.rating-popup .rating-flow-btn--settle {
+  background: var(--success-color);
+}
+
+.rating-card .rating-flow-btn--settle:hover,
+.rating-popup .rating-flow-btn--settle:hover {
+  background: color-mix(in srgb, var(--success-color) 82%, #000);
+}
+
+.rating-card .rating-flow-btn--block,
+.rating-popup .rating-flow-btn--block {
+  background: var(--danger-color);
+}
+
+.rating-card .rating-flow-btn--block:hover,
+.rating-popup .rating-flow-btn--block:hover {
+  background: var(--danger-color-hover);
+}
+
+.rating-card .rating-flow-btn--unblock,
+.rating-popup .rating-flow-btn--unblock {
+  background: var(--btn-primary);
+}
+
+.rating-card .rating-flow-btn--unblock:hover,
+.rating-popup .rating-flow-btn--unblock:hover {
+  background: var(--btn-primary-hover);
 }
 
 .rating-card.beyond-capability {
@@ -181,6 +283,13 @@
 .rating-card .rating-card-actions {
   display: flex;
   gap: 1rem;
+}
+
+.rating-card .rating-card-actions__end {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-left: auto;
 }
 
 .view-details-btn,

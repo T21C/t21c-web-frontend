@@ -23,6 +23,31 @@
   width: 100%;
 }
 
+.rating-popup .rating-popup__thread-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 0 0.75rem auto;
+}
+
+.rating-popup .rating-popup__thread-actions .rating-flow-actions {
+  width: auto;
+}
+
+.rating-popup .rating-popup__thread-actions .rating-discord-thread-slot {
+  width: fit-content;
+  margin: 0;
+}
+
+.rating-popup .rating-popup__thread-actions .rating-discord-thread,
+.rating-popup .rating-popup__thread-actions .rating-discord-thread-link {
+  width: auto;
+}
+
 .rating-popup .popup-content > .rating-discord-thread-slot {
   width: fit-content;
   max-width: 100%;
