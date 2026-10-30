@@ -19,8 +19,8 @@
       "label": "Niski poziom trudności"
     },
     "requestBands": {
-      "label": "Ukryj żądane",
-      "hint": "Zaznacz, aby ukryć ten typ zgłoszenia na liście"
+      "label": "Ukryj AutoRater",
+      "hint": "Zaznacz, aby ukryć ten przedział AutoRatera na liście"
     },
     "fourVote": {
       "label": "4+ ocen"

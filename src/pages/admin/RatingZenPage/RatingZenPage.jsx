@@ -29,7 +29,7 @@ import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import toast from 'react-hot-toast';
 import { createViewDurationTracker } from '@/utils/viewDurationTracker';
 import { isAutoraterDetail } from '@/pages/admin/RatingPage/RankReadyTable';
-import { REQUEST_BANDS, isVoteRatingCard, requestPguBand } from '@/utils/ratingRequestBand';
+import { REQUEST_BANDS, autoraterHideBand, isVoteRatingCard } from '@/utils/ratingRequestBand';
 import DiscordVoteNotice from '@/components/popups/Rating/DiscordVoteNotice';
 import LevelRequestScoreTargets from '@/components/requests/LevelRequestScoreTargets';
 import RatingDiscordThreadButton from '@/components/popups/Rating/RatingDiscordThreadButton';
@@ -261,13 +261,13 @@ const RatingZenPage = () => {
       cancelled = true;
     };
   }, [current?.id]);
-  const currentRequestBand = requestPguBand(current);
+  const currentRequestBand = autoraterHideBand(current);
   const videoLink = current?.displayVideoLink || current?.level?.videoLink;
   const videoData = useMemo(() => (videoLink ? getLocalVideoPreview(videoLink) : null), [videoLink]);
-  const showRequestedRating =
-    (currentRequestBand === 'P' && includeP) ||
-    (currentRequestBand === 'G' && includeG) ||
-    (currentRequestBand === 'U' && includeU);
+  const showRequestedRating = !currentRequestBand
+    || (currentRequestBand === 'P' && includeP)
+    || (currentRequestBand === 'G' && includeG)
+    || (currentRequestBand === 'U' && includeU);
   const isAdminRater = Boolean(
     user && hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.RATER])
   );

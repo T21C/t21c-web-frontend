@@ -15,8 +15,8 @@
       "label": "Mes évalués"
     },
     "requestBands": {
-      "label": "Masquer demandés",
-      "hint": "Cochez pour masquer ce type de demande dans la liste"
+      "label": "Masquer AutoRater",
+      "hint": "Cochez pour masquer cette bande AutoRater dans la liste"
     },
     "rankReady": {
       "label": "Prêt à classer"

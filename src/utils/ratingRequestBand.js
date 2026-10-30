@@ -1,4 +1,6 @@
 // tuf-search: #ratingRequestBand #pgu #rating
+import { isAutoraterDetail } from '@/pages/admin/RatingPage/RankReadyTable';
+
 /** Same buckets as server requestPguBand: Q labels, PGU tokens, legacy feeling numbers, highest range endpoint. */
 
 export const REQUEST_BANDS = [
@@ -70,6 +72,27 @@ export function isVoteRatingCard(rating, linkedRequest) {
     return true;
   }
   return isVoteRerateLabel(rating?.level?.rerateNum) || isVoteRerateLabel(rating?.requesterFR);
+}
+
+/** P/G/U of the AutoRater average. A missing vote is not a hide band. */
+export function pguBandFromAutoraterRating(rating) {
+  const text = String(rating || '').trim();
+  if (!text) return null;
+  const display = text.match(/^(Impossible|Censored|[PGU](?:[1-9]|1[0-9]|20))(?: (?:low|mid|high))? \(/i);
+  const token = (display?.[1] || text.replace(/ (low|mid|high)$/i, '')).trim();
+  if (/^(impossible|censored)$/i.test(token)) return null;
+  const letter = token.match(/^([PGU])(?:[1-9]|1[0-9]|20)$/i);
+  if (letter) return letter[1].toUpperCase();
+  if (/^GQ/i.test(token)) return 'G';
+  if (/^(?:UQ|Q)/i.test(token)) return 'U';
+  return null;
+}
+
+export function autoraterHideBand(card) {
+  const detail = (card?.details || []).find(
+    (item) => isAutoraterDetail(item) && !item.isCommunityRating,
+  );
+  return pguBandFromAutoraterRating(detail?.rating);
 }
 
 export function requestPguBand(card) {
