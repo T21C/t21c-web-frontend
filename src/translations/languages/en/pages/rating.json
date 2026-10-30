@@ -22,8 +22,8 @@
       "label": "Low Difficulty"
     },
     "requestBands": {
-      "label": "Hide requested",
-      "hint": "Check to hide that request type from the list"
+      "label": "Hide AutoRater",
+      "hint": "Check to hide that AutoRater band from the list"
     },
     "fourVote": {
       "label": "4+ Rated"
@@ -108,8 +108,8 @@
       "deckSize": "Deck size",
       "deckSizeCustom": "Custom",
       "peekHint": "{{peeks}} peeks (1 per 5 cards)",
-      "requestBands": "Hide requested",
-      "requestBandsHint": "Check to leave that request type out of the deck",
+      "requestBands": "Hide AutoRater",
+      "requestBandsHint": "Check to leave that AutoRater band out of the deck",
       "sort": "Priority",
       "sortLeast": "Least rated first",
       "sortMost": "Most rated first",

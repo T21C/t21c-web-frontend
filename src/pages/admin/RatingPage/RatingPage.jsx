@@ -28,7 +28,7 @@ import { RatingHelpPopup } from "@/components/popups/Rating";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import toast from 'react-hot-toast';
 import { RankReadyTable, compareRankReadyRows } from './RankReadyTable';
-import { REQUEST_BANDS, requestPguBand } from '@/utils/ratingRequestBand';
+import { REQUEST_BANDS, autoraterHideBand } from '@/utils/ratingRequestBand';
 import { formatRequestCount, pendingRequestTotal, usePendingRequestCounts } from '@/components/requests/pendingRequestCounts';
 
 const RATINGS_BATCH = 30;
@@ -278,7 +278,7 @@ const RatingPage = () => {
   const listRowMatchesFilters = useCallback((listRow) => {
     if (!listRow?.id) return false;
     if (debouncedQuery) return false;
-    const band = requestPguBand(listRow);
+    const band = autoraterHideBand(listRow);
     if (band === 'P' && !includeP) return false;
     if (band === 'G' && !includeG) return false;
     if (band === 'U' && !includeU) return false;

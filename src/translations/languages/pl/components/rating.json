@@ -111,8 +111,8 @@
         "title": "Dostępne filtry",
         "myRated": "Moje ocenione",
         "myRatedDesc": "Pokaż, ukryj lub pokaż tylko poziomy, które już oceniłeś",
-        "requestBands": "Żądanie PGU",
-        "requestBandsDesc": "Ukryj żądane oceny planetarne (P), galaktyczne (G) lub uniwersalne (U)",
+        "requestBands": "AutoRater PGU",
+        "requestBandsDesc": "Ukryj karty, których średnia AutoRatera to planetarna (P), galaktyczna (G) lub uniwersalna (U)",
         "fourVote": "4+ ocen",
         "fourVoteDesc": "Filtruje poziomy, które mają 4 lub więcej ocen"
       },
