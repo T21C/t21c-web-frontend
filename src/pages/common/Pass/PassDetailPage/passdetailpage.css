@@ -186,7 +186,13 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  justify-content: center;
+  justify-content: flex-start;
+}
+
+@media (max-width: 768px) {
+  .pass-detail .current-score {
+    justify-content: center;
+  }
 }
 
 .pass-detail .score-value {
