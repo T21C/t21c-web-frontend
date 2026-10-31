@@ -102,6 +102,7 @@ const RatingPage = () => {
   const fetchGenRef = useRef(0);
   const deepLinkHandledRef = useRef(false);
   const selectedRatingIdRef = useRef(null);
+  const selectedLevelIdRef = useRef(null);
   const sseHandlersRef = useRef({});
   const isSuperAdmin = hasFlag(user, permissionFlags.SUPER_ADMIN);
   const canReviewRerates = hasFlag(user, permissionFlags.RATER) || isSuperAdmin;
@@ -110,7 +111,8 @@ const RatingPage = () => {
 
   useEffect(() => {
     selectedRatingIdRef.current = selectedRating?.id ?? null;
-  }, [selectedRating?.id]);
+    selectedLevelIdRef.current = selectedRating?.level?.id ?? null;
+  }, [selectedRating?.id, selectedRating?.level?.id]);
 
   useEffect(() => {
     // Clear immediately on keystroke; debounce only delays the request (LevelPage clears on query change too).
@@ -301,16 +303,27 @@ const RatingPage = () => {
     });
   }, [listRowMatchesFilters, sortOrder, sortType]);
 
+  const leaveDeepLinkIfRatingDone = useCallback((levelId) => {
+    const id = Number(levelId);
+    if (!Number.isFinite(id) || id <= 0) return;
+    if (levelIdParam && /^\d+$/.test(levelIdParam) && Number(levelIdParam) === id) {
+      navigate(`/levels/${id}`, { replace: true });
+    }
+  }, [levelIdParam, navigate]);
+
   const removeRatingById = useCallback((ratingId) => {
+    const levelId = selectedRatingIdRef.current === ratingId ? selectedLevelIdRef.current : null;
     setRatings((prev) => (Array.isArray(prev) ? prev.filter((r) => r.id !== ratingId) : prev));
     setSelectedRating((sel) => (sel?.id === ratingId ? null : sel));
     setTotalCount((c) => Math.max(0, c - 1));
-  }, []);
+    leaveDeepLinkIfRatingDone(levelId);
+  }, [leaveDeepLinkIfRatingDone]);
 
   const removeRatingByLevelId = useCallback((levelId) => {
     setRatings((prev) => (Array.isArray(prev) ? prev.filter((r) => r.level?.id !== levelId) : prev));
     setSelectedRating((sel) => (sel?.level?.id === levelId ? null : sel));
-  }, []);
+    leaveDeepLinkIfRatingDone(levelId);
+  }, [leaveDeepLinkIfRatingDone]);
 
   const logUserCountChange = useCallback((total, managers) => {
     console.debug('SSE Client: User count update:', { total, managers });
@@ -449,8 +462,16 @@ const RatingPage = () => {
           const { data } = await api.get(routes.admin.ratingByLevelId(levelId), {
             params: { completeObject: true },
           });
-          if (data) setSelectedRating(data);
+          if (data && !data.confirmedAt) {
+            setSelectedRating(data);
+            return;
+          }
+          navigate(`/levels/${levelId}`, { replace: true });
         } catch (err) {
+          if (err.response?.status === 404) {
+            navigate(`/levels/${levelId}`, { replace: true });
+            return;
+          }
           console.error('Error opening rating deep link:', err);
         }
       })();
