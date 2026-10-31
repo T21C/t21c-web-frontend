@@ -467,7 +467,6 @@ const RatingPage = () => {
   };
 
   const handleEditLevel = (levelId) => {
-    setIsRemotelySettled(false);
     setSelectedLevel({ id: levelId, _ratingListMinimal: true });
     setOpenEditDialog(true);
   };
@@ -902,7 +901,6 @@ const RatingPage = () => {
                   }
                   setOpenEditDialog(false);
                   setSelectedLevel(null);
-                  setIsRemotelySettled(false);
                 }}
               />
             )}
