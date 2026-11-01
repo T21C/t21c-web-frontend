@@ -182,6 +182,9 @@ const CurationSchedulePage = () => {
     if (hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.HEAD_CURATOR])) {
       return true;
     }
+    if (!hasAnyFlag(user, [permissionFlags.CURATOR])) {
+      return false;
+    }
 
     const types = curation.types || (curation.type ? [curation.type] : []);
     return types.some(

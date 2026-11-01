@@ -85,8 +85,8 @@ const CurationEditPopup = ({
   const canManageThisCuration = useMemo(() => {
     if (!user) return false;
     if (isElevatedCurationUser) return true;
-    // Empty-type curations: only curator/rater (matches server requireCurationPermission).
-    if (!hasAnyFlag(user, [permissionFlags.CURATOR, permissionFlags.RATER])) {
+    // Empty-type curations: only curator (matches server requireCurationPermission).
+    if (!hasAnyFlag(user, [permissionFlags.CURATOR])) {
       return false;
     }
     if (selectedTypes.length === 0) return true;
