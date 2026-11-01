@@ -38,6 +38,9 @@ const CurationCssPreviewPage = () => {
     if (hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.HEAD_CURATOR])) {
       return true;
     }
+    if (!hasAnyFlag(user, [permissionFlags.CURATOR])) {
+      return false;
+    }
 
     const types = getCurationTypesResolved(curation, curationTypesDict);
     return types.some(

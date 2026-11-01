@@ -107,19 +107,10 @@ export const canAssignCurationType = (userFlags, curationAbilities) => {
     return true;
   }
 
-  // Check assignment abilities using OR logic - if either condition matches, allow assignment
   const hasCuratorAssignable = hasAbility(curationAbilitiesBigInt, ABILITIES.CURATOR_ASSIGNABLE);
-  const hasRaterAssignable = hasAbility(curationAbilitiesBigInt, ABILITIES.RATER_ASSIGNABLE);
   const isCurator = (userFlagsBigInt & permissionFlags.CURATOR) !== 0n;
-  const isRater = (userFlagsBigInt & permissionFlags.RATER) !== 0n;
 
-  // Allow if user has curator permission and curation is curator-assignable
   if (hasCuratorAssignable && isCurator) {
-    return true;
-  }
-
-  // Allow if user has rater permission and curation is rater-assignable
-  if (hasRaterAssignable && isRater) {
     return true;
   }
   

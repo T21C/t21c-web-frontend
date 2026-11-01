@@ -279,8 +279,8 @@ const CurationPage = () => {
     if (hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.HEAD_CURATOR])) {
       return true;
     }
-    // Empty-type curations: only curator/rater (matches server requireCurationPermission).
-    if (!hasAnyFlag(user, [permissionFlags.CURATOR, permissionFlags.RATER])) {
+    // Empty-type curations: only curator (matches server requireCurationPermission).
+    if (!hasAnyFlag(user, [permissionFlags.CURATOR])) {
       return false;
     }
     const types = curation.types || (curation.type ? [curation.type] : []);
@@ -616,7 +616,7 @@ const CurationPage = () => {
             />
             </div>
           </div>
-          { hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.HEAD_CURATOR, permissionFlags.RATER, permissionFlags.CURATOR]) && (
+          { hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.HEAD_CURATOR, permissionFlags.CURATOR]) && (
           <div className="curation-add-buttons__group">
             <button
               type="button"
