@@ -891,7 +891,7 @@ export const RatingDetailPopup = ({
                     <label className="rating-field-label">
                       {showSecondRatings ? t('rating.detailPopup.labels.communityRatings') : t('rating.detailPopup.labels.adminRatings')}
                     </label>
-                    {isSuperAdmin && !isRatingLocked && (
+                    {isAdminRater() && !isRatingLocked && (
                       <button
                         type="button"
                         className={`autorater-icon-btn ${isAutorating ? 'autorater-icon--loading' : ''}`}
