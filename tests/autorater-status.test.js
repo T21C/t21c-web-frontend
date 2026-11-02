@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+// eslint-disable-next-line import/extensions
 import { fetchAutoraterStatus, validateAutoraterStatus } from '../src/utils/autoraterStatus.js';
 
 const result = { level_id: 17646, status: 'current', outdated: false, warning_count: 0,
