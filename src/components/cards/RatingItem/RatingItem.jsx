@@ -22,6 +22,7 @@ import { collectLevelReferenceIds, getLevelReferences } from '@/utils/levelRefer
 import { isAutoraterDetail } from '@/utils/autorater';
 import autoraterAvatar from '@/assets/icons/autorater-v2.png';
 import AutoraterEmbed from './AutoraterEmbed';
+import AutoraterStatus from './AutoraterStatus';
 
 export const RatingItem = ({
   ratingDetail,
@@ -118,6 +119,7 @@ export const RatingItem = ({
                   </span>
                 )}
               </div>
+              {hasAutoraterEmbed && <AutoraterStatus levelId={levelId} rating={rating} />}
               {career && (
                 <div className="rater-accuracy">
                   <span className={`rater-accuracy-career ${isProvisional ? 'is-provisional' : ''}`}>

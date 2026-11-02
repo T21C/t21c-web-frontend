@@ -48,7 +48,7 @@ jobs:
         run: npm run lint
 
       - name: Frontend regression tests
-        run: node --test tests/replay-delivery.test.js tests/tufhelper-session.test.js tests/autorater.test.js
+        run: node --test tests/replay-delivery.test.js tests/tufhelper-session.test.js tests/autorater.test.js tests/autorater-status.test.js
 
       - name: Check production build secrets
         if: github.event_name != 'pull_request'

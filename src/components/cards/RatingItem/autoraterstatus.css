@@ -1,0 +1,65 @@
+.autorater-rating .rater-identity {
+  flex: 1 1 12rem;
+  max-width: 100%;
+}
+
+.autorater-rating .rater-rating {
+  overflow-wrap: anywhere;
+}
+
+.rating-item-container .autorater-rating .rater-avatar-container {
+  align-self: flex-start;
+}
+
+.rating-item-container .autorater-rating .rating-item-header {
+  align-items: flex-start;
+}
+
+.autorater-status {
+  min-width: 0;
+  max-width: 100%;
+  margin-top: 0;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: #c6c9ce;
+  overflow-wrap: anywhere;
+  cursor: auto;
+}
+
+.autorater-status-rating[data-outdated="false"] { color: #8fd6a6; }
+.autorater-status-rating[data-outdated="true"] { color: #ffd08a; }
+.autorater-status[data-has-warnings="true"] .autorater-status-warning,
+.autorater-status[data-has-warnings="true"] .autorater-status-preview,
+.autorater-status[data-has-warnings="true"] .autorater-status-reasons { color: #ffd08a; }
+.autorater-status summary { cursor: pointer; }
+.autorater-status summary:focus-visible,
+.autorater-status button:focus-visible,
+.autorater-status-reasons:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+.autorater-status-preview {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  color: inherit;
+}
+.autorater-status details[open] .autorater-status-preview { display: none; }
+.autorater-status-reasons {
+  max-height: 12rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  margin: 0.4rem 0 0;
+  padding-left: 1.2rem;
+  padding-right: 0.35rem;
+  color: inherit;
+}
+.autorater-status-reasons li + li { margin-top: 0.35rem; }
+.autorater-status-note { margin-top: 0.25rem; color: #b4b8c0; }
+.autorater-status button {
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  background: none;
+  border: 0;
+  padding: 0.1rem 0.25rem;
+  cursor: pointer;
+}
