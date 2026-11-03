@@ -47,6 +47,7 @@ import { getSubmissionErrorMessage } from '@/utils/submissions/formErrors';
 import { useJobProgressStream } from '@/hooks/useJobProgressStream';
 import { CLIENT_PREF_KEYS, getClientPreference } from '@/utils/clientPreferences';
 import SubmissionTagRequest from '@/components/submissions/SubmissionTagRequest/SubmissionTagRequest';
+import { LevelMentionField } from '@/components/misc';
 
 /** Keep in sync with server/src/server/submissions/submissionEvidenceRules.ts (display-only). */
 const SONG_VERIFICATION_NO_EVIDENCE = new Set(['ysmod_only', 'allowed']);
@@ -1554,7 +1555,7 @@ const LevelSubmissionPage = () => {
 
             <div className="notes-section">
               <h3>{t('levelSubmission.submInfo.notes')}</h3>
-              <textarea
+              <LevelMentionField
                 className="notes-textarea"
                 name="notes"
                 value={form.notes}

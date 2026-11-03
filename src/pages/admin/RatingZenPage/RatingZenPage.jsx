@@ -20,7 +20,7 @@ import { CloseButton, ReferencesButton } from '@/components/common/buttons';
 import { CheckmarkIcon, ChartIcon, EyeIcon, MetronomeIcon, SkipIcon, TimeIcon } from '@/components/common/icons';
 import { WebAdofaiViewerButton } from '@/components/popups/Levels';
 import { Tooltip } from '@/components/common/display/Tooltip';
-import { CommentFormatter } from '@/components/misc';
+import { CommentFormatter, LevelMentionField } from '@/components/misc';
 import api from '@/utils/api';
 import { getLocalVideoPreview, getVideoEmbedModifierClass, getVideoIframeReferrerPolicy, getVideoIframeScrolling } from '@/utils/videoLink';
 import { formatCreatorDisplay, ICON_SIZE, selectIconSize } from '@/utils/Utility';
@@ -1322,7 +1322,7 @@ const RatingZenPage = () => {
                   </div>
                   <label className="rating-zen-page__field">
                     <span>{t('components:rating.detailPopup.labels.yourComment')}</span>
-                    <textarea
+                    <LevelMentionField
                       name="rating-zen-page__comment"
                       value={pendingComment}
                       onChange={(e) =>

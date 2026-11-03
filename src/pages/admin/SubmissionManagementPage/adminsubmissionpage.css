@@ -1046,12 +1046,14 @@
     border-color: var(--color-white-t40);
   }
 
-  .submission-admin-page .submission-notes__textarea::placeholder {
+  .submission-admin-page .submission-notes__textarea::placeholder,
+  .submission-admin-page .submission-notes__textarea.is-empty::before {
     color: var(--color-white);
     opacity: 0.5;
   }
 
-  .submission-admin-page .submission-notes__textarea:disabled {
+  .submission-admin-page .submission-notes__textarea:disabled,
+  .submission-admin-page .submission-notes__textarea[contenteditable="false"] {
     opacity: 0.7;
   }
 

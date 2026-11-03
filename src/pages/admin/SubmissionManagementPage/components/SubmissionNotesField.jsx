@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { EditIcon } from '@/components/common/icons';
+import { LevelMentionField } from '@/components/misc';
 
 /**
  * Read-only notes box with an explicit edit control, matching SubmissionVideoLinkField.
@@ -58,7 +59,7 @@ export default function SubmissionNotesField({ notes = '', onSave }) {
       <span className="submission-notes__label">{t('levelSubmissions.details.notes')}</span>
       {editing ? (
         <div className="submission-notes__edit">
-          <textarea
+          <LevelMentionField
             className="submission-notes__textarea"
             value={draft}
             onChange={(e) => setDraft(e.target.value)}

@@ -24,7 +24,7 @@ import toast from 'react-hot-toast';
 import { RatingFlowActions, RatingFlowMarks } from '@/components/cards/RatingCard/RatingFlowActions';
 import autoratercato from "@/assets/icons/autorater-v2.png";
 import { Tooltip } from '@/components/common/display/Tooltip';
-import { CommentFormatter } from '@/components/misc';
+import { CommentFormatter, LevelMentionField } from '@/components/misc';
 import LevelRequestScoreTargets from '@/components/requests/LevelRequestScoreTargets';
 import { RatingHeaderMeta } from './RatingHeaderMeta';
 import { useViewDurationTracker } from '@/utils/viewDurationTracker';
@@ -860,7 +860,7 @@ export const RatingDetailPopup = ({
                           />
                         )}
                       </label>
-                      <textarea
+                      <LevelMentionField
                         value={pendingComment}
                         onChange={(e) => setPendingComment(e.target.value)}
                         disabled={isRatingLocked}

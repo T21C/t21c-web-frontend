@@ -42,6 +42,7 @@ import {
 import { useUnsavedClose } from '@/hooks/useUnsavedClose';
 import { useArchiveFilePaste } from '@/hooks/useArchiveFilePaste';
 import { collectLevelReferenceIds, getLevelReferences, peekLevelReferences } from '@/utils/levelReferences';
+import { LevelMentionField } from '@/components/misc';
 import LevelRequestCurationTypes, { LevelRequestCurationDiff } from './LevelRequestCurationTypes';
 import LevelRequestInfoFields from './LevelRequestInfoFields';
 import LevelRequestTags, { LevelRequestTagDiff } from './LevelRequestTags';
@@ -835,7 +836,7 @@ const LevelRequestFormPopup = ({
         )}
         <label className="level-requests__field">
           <span>{reasonRequired ? t('levelRequests.form.reason') : t('levelRequests.form.reasonOptional')}</span>
-          <textarea
+          <LevelMentionField
             value={reason}
             maxLength={1000}
             onChange={(event) => setReason(event.target.value)}

@@ -331,7 +331,8 @@
   gap: 0.5rem;
 }
 
-.feeling-explanation-modal-overlay .feeling-explanation-modal-field textarea {
+.feeling-explanation-modal-overlay .feeling-explanation-modal-field textarea,
+.feeling-explanation-modal-overlay .feeling-explanation-modal-field .level-mention-field {
   width: 100%;
   min-height: 8rem;
   box-sizing: border-box;
@@ -343,11 +344,13 @@
   padding: 0.45rem 0.6rem;
 }
 
-.feeling-explanation-modal-overlay .feeling-explanation-modal-field textarea:hover {
+.feeling-explanation-modal-overlay .feeling-explanation-modal-field textarea:hover,
+.feeling-explanation-modal-overlay .feeling-explanation-modal-field .level-mention-field:hover {
   border-color: var(--btn-primary);
 }
 
-.feeling-explanation-modal-overlay .feeling-explanation-modal-field textarea:focus {
+.feeling-explanation-modal-overlay .feeling-explanation-modal-field textarea:focus,
+.feeling-explanation-modal-overlay .feeling-explanation-modal-field .level-mention-field:focus {
   outline: none;
   border-color: var(--btn-primary);
 }

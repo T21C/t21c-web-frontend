@@ -125,6 +125,10 @@
   "imageSelector": {
     "rotationHintTooltip": "<p><strong>マウスホイール</strong><br />このダイアログ内のどこでも、<kbd>Shift</kbd>を押しながらスクロールすると回転します（切り抜き領域外でも操作できます）。<kbd>Shift</kbd> + <kbd>Ctrl</kbd>を押すと、より細かく回転できます。</p><p><strong>矢印キー</strong><br /><kbd>←</kbd> / <kbd>➔</kbd>：1回押すごとに1°。<kbd>Shift</kbd>併用で10°、<kbd>Shift</kbd> + <kbd>Ctrl</kbd>併用で1°。</p>"
   },
+  "levelMention": {
+    "searchPlaceholder": "レベルを検索",
+    "empty": "一致するレベルがありません"
+  },
   "youtubePicker": {
     "linkChannel": "YouTubeチャンネルを連携して、動画から選択",
     "yourVideos": "自分の動画",

@@ -200,6 +200,7 @@
 
 .level-requests .level-requests__field > input[type="text"],
 .level-requests .level-requests__field > textarea,
+.level-requests .level-requests__field > .level-mention-field,
 .level-requests .level-requests__picker-field input[type="text"] {
   width: 100%;
   box-sizing: border-box;
@@ -210,7 +211,8 @@
   padding: 0.45rem 0.6rem;
 }
 
-.level-requests .level-requests__field textarea {
+.level-requests .level-requests__field textarea,
+.level-requests .level-requests__field > .level-mention-field {
   min-height: 8rem;
   resize: vertical;
 }

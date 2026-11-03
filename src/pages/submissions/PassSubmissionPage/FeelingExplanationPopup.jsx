@@ -5,6 +5,7 @@ import { toast } from 'react-hot-toast';
 import { PopupShell } from '@/components/common/PopupShell';
 import { reratingComparisonFromRefs } from '@/components/requests/levelRequestShared';
 import { collectLevelReferenceIds, getLevelReferences, peekLevelReferences } from '@/utils/levelReferences';
+import { LevelMentionField } from '@/components/misc';
 
 const FEELING_EXPLANATION_MAX = 1000;
 
@@ -119,7 +120,7 @@ export function FeelingExplanationPopup({
             {t('passSubmission.feelingExplanation.body')}
           </p>
           <label className="feeling-explanation-modal-field">
-            <textarea
+            <LevelMentionField
               value={explanation}
               maxLength={FEELING_EXPLANATION_MAX}
               onChange={(event) => setExplanation(event.target.value)}
