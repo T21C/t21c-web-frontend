@@ -1,0 +1,119 @@
+{
+  "featured": {
+    "by": "{{creator}}によるレベル",
+    "button": "レベルを確認"
+  },
+  "level": {
+    "creator": "クリエイター",
+    "clears": "クリア",
+    "totalClears": "合計クリア数",
+    "clearStatus": {
+      "cleared": "クリア済み",
+      "purePerfect": "Pure Perfect",
+      "pureXPerfect": "Pure X-Perfect",
+      "tooltip": "{{accuracy}}、{{score}}でクリア",
+      "tooltipPurePerfect": "Pure Perfectでクリア、{{score}}",
+      "tooltipPureXPerfect": "X Pure Perfectでクリア、{{score}}"
+    },
+    "tooltips": {
+      "purePerfectScore": "Pure Perfect：{{score}}"
+    },
+    "addToPack": "パックに追加",
+    "buttons": {
+      "addToPack": "パックに追加"
+    },
+    "like": {
+      "like": "いいね",
+      "unlike": "いいね解除",
+      "liked": "いいねされたレベル",
+      "unliked": "いいねなし",
+      "failed": "いいねの更新に失敗しました",
+      "loginRequired": "レベルにいいねをつけるには、ログインする必要があります"
+    },
+    "links": {
+      "workshop": "ワークショップのリンク",
+      "download": "ダウンロードリンク",
+      "unavailable": "リンクはありません"
+    }
+  },
+  "pass": {
+    "stats": {
+      "xAccuracy": "X精度",
+      "score": "スコア",
+      "speed": "速度"
+    },
+    "flags": {
+      "autoSubmitted": "自動提出",
+      "worldsFirst": "WF",
+      "worldsFirstPP": "WF PP",
+      "worldsFirstClearTooltip": "世界初クリア！",
+      "worldsFirstPurePerfectTooltip": "世界初Pure Perfect！",
+      "keyCount": "{{count}}K",
+      "twelveKey": "12K",
+      "sixteenKey": "16K",
+      "noHoldTap": "ホールドなし",
+      "adofaiV2": "<adofaiicon></adofaiicon> v2",
+      "adofaiV2Tooltip": "エンジン変更前のバージョン <b>(v2.9.8まで)</b>。これらのバージョンは、タイミングエンジンの問題により、安定性が低く、精度も劣っていました。",
+      "adofaiPre340": "<3.4.0",
+      "adofaiPre340Tooltip": "XPerfect <b> 以前のバージョン（v3.3.1 まで）</b>。",
+      "xPerfect": "X-Perfect",
+      "wrongJudgement": "誤った判定"
+    },
+    "links": {
+      "video": "動画を見る"
+    }
+  },
+  "player": {
+    "title": "プレイヤー",
+    "listPosition": "リストの順位 {{position}}",
+    "stats": {
+      "rankedScore": "ランクスコア",
+      "totalScoreV2": "トータルスコア",
+      "generalScore": "ジェネラルスコア",
+      "ppScore": "PPスコア",
+      "wfScore": "WFスコア",
+      "wfPPScore": "WF PPスコア",
+      "score12K": "12k スコア",
+      "averageXacc": "平均 X精度",
+      "totalPasses": "トータルクリア",
+      "universalPassCount": "Universalクリア",
+      "worldsFirstCount": "WFクリア",
+      "worldsFirstPPCount": "WF PPクリア",
+      "topDiff": "最高難易度",
+      "top12kDiff": "トップ12k難易度"
+    }
+  },
+  "clear": {
+    "score": {
+      "ranked": "ランクスコア",
+      "general": "ジェネラルスコア",
+      "pp": "PPスコア",
+      "wf": "WFスコア",
+      "12k": "12kスコア"
+    },
+    "stats": {
+      "averageXacc": "平均X精度",
+      "totalPasses": "トータルクリア",
+      "universalPassCount": "Universalクリア",
+      "worldsFirstCount": "WFクリア",
+      "topDiff": "最高難易度",
+      "top12kDiff": "トップ12k難易度"
+    }
+  },
+  "pack": {
+    "more": "もっと見る",
+    "clickToView": "クリックして表示",
+    "addToFavorites": "お気に入りに追加",
+    "removeFromFavorites": "お気に入りから削除",
+    "edit": "編集",
+    "viewMode": {
+      "public": "公開",
+      "linkonly": "リンクのみ",
+      "private": "非公開",
+      "forcedPrivate": "非公開（ロック済み）"
+    },
+    "stats": {
+      "levels": "レベル"
+    }
+  }
+}

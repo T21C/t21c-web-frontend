@@ -1,0 +1,140 @@
+{
+  "title": "レベルの提出",
+  "noSubmissions": "保留中の提出物はありません",
+  "loading": "提出を読み込んでいます...",
+  "error": "提出データの読み込みに失敗しました",
+  "details": {
+    "song": "曲:",
+    "suffix": "接尾辞:",
+    "suffixPlaceholder": "オプションの接尾辞（例：「Nerfed」）",
+    "videoLink": "動画のリンク：",
+    "videoLinkPlaceholder": "YouTubeまたはBilibiliのURL",
+    "videoFromOwnChannel": "ユーザー自身のチャンネルからの動画",
+    "artist": "アーティスト：",
+    "charter": "チャーター：",
+    "difficulty": "難易度：",
+    "download": {
+      "label": "ダウンロード：",
+      "directLink": "直接リンク",
+      "notAvailable": "利用不可",
+      "cdnLink": "ローカルCDNリンク",
+      "manage": "アップロードの管理",
+      "manageMissing": "アップロードを追加"
+    },
+    "workshop": {
+      "label": "ワークショップ",
+      "link": "ワークショップのリンク"
+    },
+    "team": "チーム：",
+    "vfxer": "VFXアーティスト：",
+    "specialThanks": "スペシャルサンクス：",
+    "submitter": "提出者：",
+    "submitterRecordTooltip": "{{accepted}} 承認済み / {{declined}} 却下済み",
+    "evidence": "証拠：",
+    "notes": "注記",
+    "notesPlaceholder": "管理者のための任意の注意事項",
+    "tagsEmpty": "提出されたタグはありません"
+  },
+  "buttons": {
+    "manageCreator": "クリエイターの管理",
+    "manageTeam": "チームの管理",
+    "manageSong": "曲の管理",
+    "manageArtist": "アーティストの管理",
+    "changeSong": "曲を変更する",
+    "changeArtist": "アーティストを変更",
+    "addSongRequest": "新曲としてリクエストする",
+    "addArtistRequest": "新しいアーティストを追加",
+    "removeArtist": "アーティストを削除",
+    "requestTags": "タグをリクエスト",
+    "allow": "許可",
+    "decline": "減少",
+    "addCharter": "チャーターを追加",
+    "addVfxer": "VFX担当者を追加",
+    "addSpecialThanks": "Special Thanksを追加する",
+    "remove": "削除",
+    "searchCreator": "検索",
+    "createCreator": "新規作成",
+    "assignCreator": "既存の割り当て",
+    "addTeam": "チームを追加",
+    "addCreator": "クリエイターを追加"
+  },
+  "declinePrompt": {
+    "title": "このチャートを非表示にしますか？",
+    "message": "提出者には通知されます。必要に応じて、その理由を説明することもできます。"
+  },
+  "labels": {
+    "levelName": "レベル",
+    "creatorName": "クリエイター",
+    "submittedOn": "提出済み"
+  },
+  "badges": {
+    "newRequest": "新着",
+    "unassigned": "未割り当て"
+  },
+  "messages": {
+    "success": {
+      "approved": "提出が正常に承認されました",
+      "rejected": "提出の却下が正常に完了しました",
+      "suffixUpdated": "接尾辞の更新に成功しました",
+      "videoLinkUpdated": "動画のリンクが正常に更新されました",
+      "notesUpdated": "メモの更新に成功しました",
+      "tagsUpdated": "タグを更新しました"
+    },
+    "error": {
+      "generic": "エラーが発生しました",
+      "approve": "提出の承認に失敗しました",
+      "reject": "提出の却下に失敗しました"
+    },
+    "artistLockedToSong": "アーティストは選択した曲に固定されており、変更することはできません",
+    "songUpdated": "曲が正常に更新されました",
+    "artistUpdated": "アーティストの更新に成功しました",
+    "songRequestAdded": "曲のリクエストが正常に追加されました",
+    "artistRequestAdded": "アーティストのリクエストが正常に追加されました",
+    "artistRequestRemoved": "アーティストのリクエストが正常に削除されました"
+  },
+  "warnings": {
+    "pendingProfiles": "以下のプロフィールの作成がリクエストされます：",
+    "creatorExists": "この名前のクリエイターはすでに存在します",
+    "invalidCreator": "クリエイター名が不正です",
+    "duplicateCreator": "このクリエイターはすでに追加されています"
+  },
+  "creators": {
+    "search": {
+      "placeholder": "既存のクリエイターを検索...",
+      "noResults": "該当するクリエイターが見つかりませんでした",
+      "loading": "検索中..."
+    },
+    "create": {
+      "title": "新しいクリエイターを作成する",
+      "namePlaceholder": "クリエイターの名前を入力してください",
+      "success": "クリエイターが正常に作成されました",
+      "error": "クリエイターの作成に失敗しました"
+    },
+    "assign": {
+      "title": "クリエイターを割り当てる",
+      "success": "クリエイターの割り当てに成功しました",
+      "error": "クリエイターの割り当てに失敗しました"
+    }
+  },
+  "errors": {
+    "profileUpdate": "プロファイルを使用して提出を更新できませんでした",
+    "addCreatorFailed": "クリエイターの追加に失敗しました",
+    "removeCreatorFailed": "クリエイターの削除に失敗しました",
+    "cannotRemoveLastCharter": "最後のチャーターを削除できません",
+    "needProfiles": "すべてのクリエイタープロフィールは、承認前に割り当てられていなければなりません",
+    "needSongAndArtist": "承認を行うには、楽曲とアーティストの両方を設定しておく必要があります",
+    "needArtistForSong": "曲を管理する前に、アーティストを設定する必要があります",
+    "artistLockedToSong": "アーティストを変更できません：選択した曲に固定されています",
+    "suffixUpdateFailed": "接尾辞の更新に失敗しました",
+    "videoLinkUpdateFailed": "動画リンクの更新に失敗しました",
+    "notesUpdateFailed": "メモの更新に失敗しました",
+    "tagsUpdateFailed": "タグの更新に失敗しました",
+    "videoLinkRequired": "動画のリンクは空欄にできません",
+    "updateSongFailed": "曲の更新に失敗しました",
+    "updateArtistFailed": "アーティストの更新に失敗しました",
+    "addSongRequestFailed": "曲のリクエストの追加に失敗しました",
+    "addArtistRequestFailed": "アーティストのリクエストの追加に失敗しました",
+    "removeArtistRequestFailed": "アーティストのリクエストを削除できませんでした",
+    "processing": "提出の処理中にエラーが発生しました"
+  }
+}

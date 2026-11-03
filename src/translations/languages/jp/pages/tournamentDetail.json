@@ -1,0 +1,39 @@
+{
+  "title": "トーナメント",
+  "meta": {
+    "title": "{{name}}",
+    "fallbackTitle": "トーナメント",
+    "description": "The Universal Forumsで{{name}}の順位、メモ、報酬を確認できます。"
+  },
+  "backToList": "トーナメント一覧に戻る",
+  "sections": {
+    "organizers": "主催者",
+    "notes": "メモ",
+    "rewards": "報酬",
+    "standings": "順位表"
+  },
+  "links": {
+    "pack": "パックを開く",
+    "youtube": "YouTube",
+    "external": "外部リンク"
+  },
+  "statuses": {
+    "ongoing": "開催中",
+    "completed": "完了",
+    "cancelled": "キャンセル済み",
+    "draft": "下書き"
+  },
+  "badges": {
+    "pending": "保留中",
+    "withdrew": "棄権",
+    "disqualified": "失格",
+    "unlisted": "限定公開"
+  },
+  "unofficialBanner": "結果はまだ確定していません。",
+  "emptyStandings": "順位表はまだありません。",
+  "untiered": "その他",
+  "errors": {
+    "notFound": "トーナメントが見つかりません",
+    "loadFailed": "トーナメントの読み込みに失敗しました"
+  }
+}

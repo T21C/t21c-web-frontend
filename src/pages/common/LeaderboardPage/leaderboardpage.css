@@ -326,7 +326,7 @@
 
 .leaderboard-page .add-filter-button {
   padding: 0.5rem 1rem;
-  height: -webkit-fill-available;
+  height: fit-content;
   color: white;
   border: none;
   border-radius: 4px;

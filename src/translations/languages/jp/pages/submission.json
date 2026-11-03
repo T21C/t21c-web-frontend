@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "title": "コンテンツを提出",
+    "description": "新しいレベルやクリアをコミュニティに提出します",
+    "type": "website"
+  },
+  "header": {
+    "headerPass": "クリアを提出",
+    "headerLevel": "レベルを提出"
+  },
+  "button": {
+    "buttonPass": "クリアを提出",
+    "buttonLevel": "レベルを提出"
+  },
+  "label": {
+    "submit": "提出",
+    "pass": "クリア",
+    "level": "レベル"
+  },
+  "banner": {
+    "submissionSuspended": "現在、提出が一時停止されています",
+    "banned": "あなたのアカウントはBANされています",
+    "emailVerification": "提出するにはメールアドレスの確認が必要です。下のボタンから確認ページに移動してください。",
+    "addEmail": "提出するにはメールアドレスの登録が必要です。下のボタンからアカウント設定を開き、メールアドレスを追加してください。",
+    "contact": "これが誤りだと思われる場合は、Discordでお問い合わせください。",
+    "verifyEmail": "メールアドレスを確認",
+    "addEmailButton": "メールアドレスを追加"
+  }
+}

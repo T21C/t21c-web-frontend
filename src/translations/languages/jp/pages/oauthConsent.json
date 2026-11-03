@@ -1,0 +1,31 @@
+{
+  "meta": {
+    "title": "アプリケーションの承認 — TUF",
+    "description": "サードパーティ製アプリがあなたのTUFプロフィールにアクセスできるようにする"
+  },
+  "title": "アプリケーションを承認する",
+  "needLogin": "このアプリの承認を続行するには、ログインしてください。",
+  "loginLink": "ログイン",
+  "loadError": "保留中の承認リクエストはありません。",
+  "approveError": "認証を完了できませんでした。",
+  "verified": "認証済みアプリ",
+  "publisher": "公開者",
+  "wantsAccess": "TUFアカウントにアクセスしたい",
+  "signedInAs": "ログイン中：",
+  "notYou": "あなたではありませんか？",
+  "allowDeveloper": "これにより、{{name}}は以下のことが可能になります：",
+  "redirectOutside": "承認すると、TUFの外部へリダイレクトされ、以下のページに移動します：",
+  "privacyWithLink": "本アプリのプライバシーポリシーおよび利用規約が適用されます",
+  "privacyLink": "プライバシーポリシーを見る",
+  "privacyNoAppPolicy": "このアプリにはプライバシーポリシーが掲載されていませんでした。詳細については、",
+  "tufPrivacyPrefix": "また、以下を確認することもできます",
+  "tufPrivacyLink": "TUFのプライバシーポリシー",
+  "activeSince": "{{date}}より活動中",
+  "scopeLimit": "このアプリケーションがアクセスできるのは、上記に挙げた情報のみです。",
+  "created": "登録済み",
+  "redirect": "次のページへリダイレクトされます",
+  "homepage": "ホームページ",
+  "scopesTitle": "このアプリでは、以下のことが可能になります。",
+  "approve": "承認する",
+  "deny": "キャンセル"
+}

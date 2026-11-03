@@ -1,0 +1,25 @@
+{
+  "title": "曲",
+  "meta": {
+    "title": "曲",
+    "description": "すべての曲を閲覧"
+  },
+  "search": {
+    "placeholder": "曲を検索..."
+  },
+  "filter": {
+    "verificationState": "認証状態",
+    "tufVerified": "TUF認証済み"
+  },
+  "sort": {
+    "label": "並び替え：",
+    "nameAsc": "名前（A-Z）",
+    "nameDesc": "名前（Z-A）",
+    "idAsc": "ID（小さい順）",
+    "idDesc": "ID（大きい順）"
+  },
+  "infScroll": {
+    "end": "最後まで到達しました！"
+  },
+  "noSongs": "曲が見つかりません"
+}

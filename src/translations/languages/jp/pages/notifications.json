@@ -1,0 +1,198 @@
+{
+  "meta": {
+    "title": "通知",
+    "description": "TUFの受信箱"
+  },
+  "title": "通知",
+  "subtitle": "提出およびアカウントに関する最新情報。",
+  "empty": "まだ通知はありません。",
+  "nudgeBody": "TUFが別のタブで開いているときでも通知を受け取れます。",
+  "nudgeEnable": "有効にする",
+  "nudgeDismiss": "今はいい",
+  "loading": "通知を読み込み中…",
+  "markAllRead": "すべてを既読にする",
+  "seeAll": "すべての通知を表示する",
+  "loadMore": "さらに表示",
+  "unread_one": "{{count}}件の未読",
+  "unread_other": "{{count}}件の未読",
+  "bellAria": "Notifications, {{count}}件の未読",
+  "settingsAria": "通知設定",
+  "menuAria": "通知アクション",
+  "hide": "この通知を非表示にする",
+  "disableType": "\"{{title}}\"の通知をオフにする",
+  "untitledLevel": "レベル#{{levelId}}",
+  "unknownArtist": "作者不詳",
+  "unknown": {
+    "title": "新しい通知",
+    "body": ""
+  },
+  "visibility": {
+    "public": "公開",
+    "hidden": "非表示"
+  },
+  "reason": "理由: {{reason}}",
+  "types": {
+    "pass": {
+      "submission": {
+        "submitted": {
+          "title": "提出が完了しました",
+          "body": "{{artist}} — {{song}} のクリアが提出されました。"
+        },
+        "approved": {
+          "title": "クリアが承認されました",
+          "body": "{{artist}} — {{song}} が承認されました。"
+        },
+        "declined": {
+          "title": "クリアが却下されました",
+          "body": "{{artist}} — {{song}} は却下されました。"
+        }
+      },
+      "modified": {
+        "title": "クリアが更新されました",
+        "body": "{{artist}} ー {{song}} の再生履歴が更新されました。"
+      },
+      "deleted": {
+        "title": "クリアが削除されました",
+        "body": "{{song}} ー {{artist}} のクリアが削除されました。"
+      },
+      "restored": {
+        "title": "クリアが復元されました",
+        "body": "{{artist}}の{{song}}のクリアが復元されました。"
+      }
+    },
+    "chart": {
+      "submission": {
+        "submitted": {
+          "title": "チャートを提出しました",
+          "body": "{{artist}} ー {{song}} が提出されました。"
+        },
+        "approved": {
+          "title": "チャートの提出が受理されました",
+          "body": "{{artist}} ー {{song}} が承認されました。"
+        },
+        "declined": {
+          "title": "チャートが却下されました",
+          "body": "{{artist}} ー {{song}} は却下されました。"
+        }
+      },
+      "deleted": {
+        "title": "チャートは削除されました",
+        "body": "{{artist}} ー {{song}} が削除されました。"
+      },
+      "restored": {
+        "title": "チャートが復元されました",
+        "body": "{{artist}} ー {{song}} が復元されました。"
+      },
+      "visibility": {
+        "changed": {
+          "title": "チャートの表示状態が変更されました",
+          "body": "{{artist}} ー {{song}} 、現在{{visibility}}となっています。"
+        }
+      },
+      "modified": {
+        "title": "チャートを更新しました",
+        "body": "{{artist}} ー {{song}}が更新されました。"
+      },
+      "swapped": {
+        "title": "チャートデータを入れ替えました",
+        "body": "{{artist}}の{{song}}は現在レベル#{{levelId}}となり、{{swappedWithArtist}}の{{swappedWithSong}}（レベル#{{swappedWithLevelId}}）と入れ替わりました。"
+      },
+      "rated": {
+        "title": "チャートがレートされました",
+        "body": "{{artist}}の{{song}}は、{{difficultyName}}とレートされました"
+      },
+      "curated": {
+        "title": "チャートがキュレーションされました",
+        "body": "{{artist}} による {{song}} はキュレーションされました。"
+      },
+      "curation": {
+        "removed": {
+          "title": "キュレーションが削除されました",
+          "body": "{{artist}} ー {{song}}は、現在キュレーション対象外となっています。"
+        }
+      },
+      "weekly": {
+        "selected": {
+          "title": "Weekly Levelsに選出されました",
+          "body": "{{artist}} ー {{song}}は Weekly Levels に選出されました。"
+        }
+      },
+      "cleared": {
+        "title": "チャートがクリアされました",
+        "body": "{{playerName}} が {{artist}} ー {{song}}をクリアしました。"
+      }
+    },
+    "request": {
+      "updated": {
+        "title": "リクエストの更新",
+        "body": "{{artist}}の「{{song}}」に関する{{requestTypeLabel}}リクエストのステータスが「{{statusLabel}}」になりました。",
+        "accepted": {
+          "title": "リクエストが承認されました",
+          "body": "{{artist}}の「{{song}}」に関する{{requestTypeLabel}}リクエストが承認されました。"
+        },
+        "rejected": {
+          "title": "リクエストが却下されました",
+          "body": "{{artist}}の「{{song}}」に関する{{requestTypeLabel}}リクエストが却下されました。"
+        },
+        "rejectedWithNote": {
+          "title": "リクエストが却下されました",
+          "body": "{{artist}}の「{{song}}」に関する{{requestTypeLabel}}リクエストが却下されました：「{{publicNote}}」"
+        },
+        "rejectedWithActor": {
+          "title": "リクエストが却下されました",
+          "body": "{{artist}}の「{{song}}」に関する{{requestTypeLabel}}リクエストが却下されました — {{actorName}}"
+        },
+        "rejectedWithNoteAndActor": {
+          "title": "リクエストが却下されました",
+          "body": "{{artist}}の「{{song}}」に関する{{requestTypeLabel}}リクエストが却下されました：「{{publicNote}}」 — {{actorName}}"
+        },
+        "completed": {
+          "title": "リクエストが完了しました",
+          "body": "{{artist}}の「{{song}}」に関する{{requestTypeLabel}}リクエストが完了しました。"
+        },
+        "completed_changed": {
+          "title": "リクエストが完了しました",
+          "body": "{{artist}}の「{{song}}」に関する{{requestTypeLabel}}リクエストが完了しました — 難易度は{{previousDifficulty}}から{{settledDifficulty}}に変更されました。"
+        },
+        "completed_unchanged": {
+          "title": "リクエストが完了しました",
+          "body": "{{artist}}の「{{song}}」に関する{{requestTypeLabel}}リクエストが完了しました — 難易度は{{settledDifficulty}}のままです。"
+        },
+        "added_to_rating_page": {
+          "title": "レーティングページに追加されました",
+          "body": "{{artist}}の「{{song}}」に関する再レートリクエストがレーティングページに追加されました。"
+        },
+        "added_to_rating_pageWithRating": {
+          "title": "レーティングページに追加されました",
+          "body": "{{artist}}の「{{song}}」に関する再レートリクエストが、希望レーティング{{requestedRating}}としてレーティングページに追加されました。"
+        },
+        "discord_vote": {
+          "title": "Discord投票が開始されました",
+          "body": "{{artist}}の「{{song}}」に関する再レートリクエストは、Discord投票で確定されます。"
+        },
+        "note": {
+          "title": "リクエストへの注記",
+          "body": "{{artist}}の「{{song}}」に関するあなたの{{requestTypeLabel}}リクエストに注記が追加されました：「{{publicNote}}」"
+        },
+        "noteWithActor": {
+          "title": "リクエストへの注記",
+          "body": "{{actorName}}が、{{artist}}の「{{song}}」に関するあなたの{{requestTypeLabel}}リクエストに注記を追加しました：「{{publicNote}}」"
+        }
+      }
+    },
+    "following": {
+      "player": {
+        "pass": {
+          "title": "新規クリア",
+          "body": "{{playerName}} が {{artist}} ー {{song}}をクリアしました。"
+        }
+      },
+      "creator": {
+        "level": {
+          "title": "新しいチャート",
+          "body": "{{creatorName}} が {{artist}} ー {{song}} を公開しました。"
+        }
+      }
+    }
+  }
+}

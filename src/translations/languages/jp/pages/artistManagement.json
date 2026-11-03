@@ -1,0 +1,57 @@
+{
+  "title": "アーティストの管理",
+  "meta": {
+    "title": "アーティストの管理",
+    "description": "アーティストとその情報を管理する"
+  },
+  "search": {
+    "placeholder": "アーティストを検索..."
+  },
+  "filter": {
+    "verification": "検証",
+    "all": "すべて",
+    "tufVerified": "TUF認証済み"
+  },
+  "sort": {
+    "label": "並べ替え:",
+    "nameAsc": "名前 (A-Z)",
+    "nameDesc": "名前 (Z-A)",
+    "idAsc": "ID (低い順)",
+    "idDesc": "ID (高い順)"
+  },
+  "aliases": "別名",
+  "buttons": {
+    "add": "アーティストを追加",
+    "loadMore": "さらに表示",
+    "create": "作成"
+  },
+  "form": {
+    "title": "アーティストを新規作成",
+    "name": "名前",
+    "namePlaceholder": "アーティスト名を入力してください",
+    "avatarUrl": "アバター",
+    "avatarUrlPlaceholder": "アバターのURLを入力してください",
+    "selectAvatarFile": "アバターファイルを選択してください",
+    "removeAvatar": "削除",
+    "verificationState": "検証状態",
+    "tufVerified": "TUF認証済み",
+    "aliases": "別名",
+    "aliasPlaceholder": "別名を入力してください",
+    "addAlias": "別名を追加"
+  },
+  "messages": {
+    "created": "アーティストの作成に成功しました",
+    "deleted": "アーティストの削除に成功しました"
+  },
+  "errors": {
+    "fetchFailed": "アーティストの取得に失敗しました",
+    "nameRequired": "名前の入力は必須です",
+    "createFailed": "アーティストの作成に失敗しました",
+    "deleteFailed": "アーティストの削除に失敗しました"
+  },
+  "infScroll": {
+    "end": "これで最後まで読み終えました！"
+  },
+  "confirmDelete": "このアーティストを削除してもよろしいですか？",
+  "noArtists": "該当するアーティストが見つかりませんでした"
+}

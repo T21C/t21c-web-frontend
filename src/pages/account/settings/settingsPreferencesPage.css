@@ -89,20 +89,25 @@
   color: var(--color-gray-2);
 }
 
-.settings-preferences-page .settings-preferences-page__language-option {
+/* Menu is portaled outside this page, so size rules must also match the portal. */
+.settings-preferences-page .settings-preferences-page__language-option,
+.custom-select__menu-portal .settings-preferences-page__language-option {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.settings-preferences-page .settings-preferences-page__language-flag {
+.settings-preferences-page .settings-preferences-page__language-flag,
+.custom-select__menu-portal .settings-preferences-page__language-flag {
   width: 1.25rem;
   height: 1.25rem;
   object-fit: contain;
   flex-shrink: 0;
+  display: block;
 }
 
-.settings-preferences-page .settings-preferences-page__language-status {
+.settings-preferences-page .settings-preferences-page__language-status,
+.custom-select__menu-portal .settings-preferences-page__language-status {
   font-size: 0.8rem;
   color: var(--color-gray-2);
 }

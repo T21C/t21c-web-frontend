@@ -1,0 +1,19 @@
+{
+  "noPasses": "アナウンスすべきクリアはありません",
+  "errors": {
+    "removePass": "{{playerName}}のクリアを削除できませんでした。もう一度お試しください。",
+    "invalidPass": "無効なクリアデータ："
+  },
+  "card": {
+    "title": "{{playerName}}が「{{songName}}」をクリアしました",
+    "stats": {
+      "score": "スコア: {{score}}",
+      "scoreNA": "スコア: N/A",
+      "accuracy": "精度: {{accuracy}}%",
+      "difficulty": " • {{difficultyName}}"
+    }
+  },
+  "buttons": {
+    "remove": "クリアを削除"
+  }
+}

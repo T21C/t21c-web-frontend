@@ -1,0 +1,35 @@
+{
+  "title": "キュレーションにレベルを追加する",
+  "titleAdd": "追加するレベルを選択してください",
+  "description": "キュレーションリストに追加するレベルを選択してください",
+  "descriptionAdd": "デフォルト設定でキュレーションに追加するレベルを選択してください",
+  "filters": {
+    "search": "レベルを検索",
+    "searchPlaceholder": "曲名、アーティスト名、またはクリエイター名で検索..."
+  },
+  "loading": "レベルを読み込み中...",
+  "empty": "該当するレベルが見つかりませんでした",
+  "create": "作成",
+  "selectLevel": "このレベルを選択してください",
+  "createLevel": "このレベルのキュレーションを作成する",
+  "alreadyCurated": "このレベルにはすでにキュレーションがあります",
+  "creator": "クリエイター",
+  "pick": {
+    "title": "レベルを選択してください",
+    "description": "この配置に適したレベルを検索して選択してください。",
+    "select": "選択",
+    "selectTitle": "このレベルを選択してください"
+  },
+  "pagination": {
+    "previous": "前へ",
+    "next": "前へ",
+    "page": "次へ",
+    "of": "{{total}}中"
+  },
+  "zipPicker": {
+    "title": "この提出物に対応するチャートを選択してください",
+    "description": "ZIPファイルには複数の.adofai形式のグラフが含まれています。今回の提出物に対応するチャートを選択してください。",
+    "confirm": "選択したチャートを使用する",
+    "confirmLoading": "適用中…"
+  }
+}

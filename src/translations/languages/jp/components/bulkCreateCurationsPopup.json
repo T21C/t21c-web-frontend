@@ -1,0 +1,17 @@
+{
+  "title": "キュレーションを一括作成",
+  "levelIds": "レベルID",
+  "levelIdsPlaceholder": "例：1234、5678、または1行につき1つ",
+  "levelIdsParsed": "{{count}} 個の固有のレベル ID を解析しました",
+  "types": "キュレーションタイプ",
+  "typesCurrent": "選択されたタイプ",
+  "typesAdd": "タイプの追加",
+  "typesSearchPlaceholder": "タイプを検索…",
+  "typesNoneSelected": "まだタイプが選択されていません。",
+  "typesNoResults": "検索条件に一致するタイプはありません。",
+  "typesNoneAvailable": "これ以上割り当て可能なタイプはありません。",
+  "removeType": "タイプを削除",
+  "addType": "タイプを追加",
+  "submit": "{{count}} レベル分を作成する",
+  "submitting": "作成中…"
+}

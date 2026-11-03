@@ -1,0 +1,68 @@
+{
+  "meta": {
+    "title": "資産",
+    "description": "The Universal Forums 内の components/common/icons および src/assets にある、すべてのアセット（タグ、難易度、キュレーションタイプ）、SVG アイコン、および静的ファイルのカタログ表示。"
+  },
+  "header": {
+    "title": "資産",
+    "lede": "すべてのアセット（タグ、難易度、キュレーションタイプ）に加え、<code>components/common/icons</code> および <code>src/assets</code> にあるすべての SVG アイコンと静的ファイルのカタログ表示。"
+  },
+  "sections": {
+    "tags": {
+      "title": "レベルタグ",
+      "hint": "「difficulties」サービスの `/tags` エンドポイントから読み込まれました（サイトの他の部分と同じデータです）。"
+    },
+    "difficulties": {
+      "title": "難易度アイコン",
+      "hint": "コンテキスト内のすべての難易度行を、`sortOrder` の順に並べ替えたものです。アイコンは `original` CDN サイズを使用しています。スイッチを切り替えて、`type` が `LEGACY` の行を表示または非表示にできます。."
+    },
+    "curationTypes": {
+      "title": "キュレーションタイプ",
+      "hint": "レベルページやクリエイタープロフィールで使用されるキュレーション型カタログ。"
+    },
+    "jsxIcons": {
+      "title": "JSX アイコン",
+      "hint": "<code>src/components/common/icons</code> ディレクトリにあるすべての <code>*.jsx</code> アイコンファイル。"
+    },
+    "staticAssets": {
+      "title": "静的アセット (`src/assets`)",
+      "hint": "Vite globによって検出された画像およびフォントファイル。解決済みのURLは、コードやドキュメントにコピーするのに適しています。フォントファイルにはプレースホルダーのタイルが表示されます。"
+    }
+  },
+  "filter": {
+    "label": "フィルター",
+    "labelDifficultyName": "難易度名",
+    "placeholderJsx": "パスまたはファイル名で絞り込む…",
+    "placeholderStatic": "パスで絞り込む…",
+    "placeholderTags": "グループ名またはタグ名で検索…",
+    "placeholderDifficultyName": "難易度名で絞り込む…",
+    "noMatches": "現在の条件に一致するアイテムはありません。"
+  },
+  "status": {
+    "loading": "読み込み中…",
+    "empty": "返された項目はありません。"
+  },
+  "jsx": {
+    "noComponent": "コンポーネントのエクスポートが見つかりませんでした"
+  },
+  "static": {
+    "copyUrl": "URLをコピー"
+  },
+  "actions": {
+    "open": "開く",
+    "download": "ダウンロード",
+    "downloadAll": "すべてダウンロード",
+    "downloadAllBusy": "梱包中…",
+    "downloadAllEmpty": "ダウンロードできる画像はありません",
+    "downloadAllSuccess": "{{count}}枚の画像をダウンロードしました",
+    "downloadAllPartial": "{{ok}} 枚の画像をダウンロードしました（{{failed}} 枚はダウンロードに失敗しました）",
+    "downloadAllFailed": "画像をダウンロードできませんでした",
+    "groupAria": "アセットファイルの操作",
+    "copyColorHex": "{{color}}の色をコピー",
+    "colorCopied": "{{color}}をコピーしました",
+    "colorCopyFailed": "クリップボードにコピーできませんでした"
+  },
+  "difficultiesFilter": {
+    "legacyToggleLabel": "レガシー難易度"
+  }
+}

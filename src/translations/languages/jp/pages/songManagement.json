@@ -1,0 +1,54 @@
+{
+  "title": "曲の管理",
+  "meta": {
+    "title": "曲の管理",
+    "description": "曲とその情報を管理します"
+  },
+  "search": {
+    "placeholder": "曲を検索..."
+  },
+  "filter": {
+    "verification": "認証状況",
+    "all": "すべて",
+    "tufVerified": "TUF認証済み"
+  },
+  "sort": {
+    "label": "並び替え：",
+    "nameAsc": "名前（A→Z）",
+    "nameDesc": "名前（Z→A）",
+    "idAsc": "ID（昇順）",
+    "idDesc": "ID（降順）"
+  },
+  "aliases": "別名",
+  "artists": "アーティスト",
+  "buttons": {
+    "add": "曲を追加",
+    "loadMore": "さらに読み込む",
+    "create": "作成"
+  },
+  "form": {
+    "title": "新しい曲を作成",
+    "name": "名前",
+    "namePlaceholder": "曲名を入力",
+    "verificationState": "認証状態",
+    "tufVerified": "TUF認証済み",
+    "aliases": "別名",
+    "aliasPlaceholder": "別名を入力",
+    "addAlias": "別名を追加"
+  },
+  "messages": {
+    "created": "曲を作成しました",
+    "deleted": "曲を削除しました"
+  },
+  "errors": {
+    "fetchFailed": "曲の取得に失敗しました",
+    "nameRequired": "名前を入力してください",
+    "createFailed": "曲の作成に失敗しました",
+    "deleteFailed": "曲の削除に失敗しました"
+  },
+  "infScroll": {
+    "end": "これ以上ありません！"
+  },
+  "confirmDelete": "本当にこの曲を削除しますか？",
+  "noSongs": "曲が見つかりません"
+}

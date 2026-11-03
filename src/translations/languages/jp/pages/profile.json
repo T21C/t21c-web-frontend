@@ -1,0 +1,433 @@
+{
+  "meta": {
+    "title": "{{name}}",
+    "description": "{{name}}さんのプロフィール、クリア記録、実績をThe Universal Forumsで確認できます",
+    "defaultTitle": "プロフィール"
+  },
+  "notFound": "プレイヤーが見つかりません",
+  "notLoggedIn": "ログインしていません",
+  "emailVerification": "すべての機能を利用するには、メールアドレスを認証してください",
+  "emailMissing": "すべての機能を利用するには、メールアドレスを登録してください",
+  "banned": "アカウントはBANされています",
+  "bannedUntil": "アカウントは{{date}}までBANされています",
+  "accountScheduledDeletion": "アカウントは{{date}}に削除される予定です。それまでの間はプロフィール編集から削除を取り消せます。",
+  "accountScheduledDeletionWithCreator": "クリエイタープロフィールを含むアカウントは{{date}}に削除される予定です（クレジットは削除され、ソロ譜面は論理削除されます）。それまでの間はプロフィール編集から削除を取り消せます。",
+  "submissionSuspended": "提出機能が停止されています",
+  "searchForOther": "プロフィールを表示できません。他のプレイヤーを検索してください",
+  "valueLabels": {
+    "rankedScore": "ランクスコア",
+    "generalScore": "総合スコア",
+    "ppScore": "PPスコア",
+    "wfScore": "WFスコア",
+    "wfPPScore": "WF PPスコア",
+    "score12K": "12Kスコア",
+    "averageXacc": "平均X精度",
+    "totalPasses": "総クリア数",
+    "universalPassCount": "Universalクリア数",
+    "worldsFirstCount": "世界初クリア数",
+    "worldsFirstPPCount": "世界初PPクリア数",
+    "topDiff": "最高難易度",
+    "top12kDiff": "最高12K難易度",
+    "totalScoreV2": "合計スコア",
+    "totalUniquePasses": "ユニーククリア数",
+    "topAccClearNum": "上位精度クリア数",
+    "tilesPressed": "タイル押下数"
+  },
+  "editProfile": "プロフィールを編集",
+  "adminEdit": "管理者編集",
+  "viewUserPacks": "ユーザーのパックを見る",
+  "linkToCreator": "クリエイタープロフィールを見る",
+  "follow": "フォロー",
+  "following": "フォロー中",
+  "followLogin": "フォローするにはログインしてください",
+  "followError": "フォロー状態を更新できませんでした",
+  "followNotifyAll": "すべて通知",
+  "followNotifyNone": "通知しない",
+  "unfollow": "フォロー解除",
+  "followMenuAria": "フォロー設定",
+  "followerCount_one": "{{formatted}}人のフォロワー",
+  "followerCount_other": "{{formatted}}人のフォロワー",
+  "followersPopup": {
+    "title": "フォロワー",
+    "loading": "フォロワーを読み込み中…",
+    "empty": "公開されているフォロワーはいません",
+    "error": "フォロワーを読み込めませんでした",
+    "unknown": "不明なユーザー",
+    "previous": "前へ",
+    "next": "次へ",
+    "pageInfo": "{{total}}ページ中{{current}}ページ"
+  },
+  "hiddenFollowers_one": "非公開フォロワー：{{formatted}}人",
+  "hiddenFollowers_other": "非公開フォロワー：{{formatted}}人",
+  "stellarSubscriberIconTooltip": "TUFStellar購読者",
+  "header": {
+    "aka": "別名",
+    "highestRank": "最高順位：#{{rank}}",
+    "highestRankAt": "{{date}}時点",
+    "highestRankNow": "現在、最高順位です！",
+    "youtubeChannel": "YouTube: {{name}}",
+    "youtubeMore": "その他のYouTubeチャンネル",
+    "note": {
+      "open": "メモ",
+      "empty": "メモはまだありません。",
+      "saved": "メモを保存しました",
+      "error": "メモを保存できませんでした"
+    }
+  },
+  "bio": {
+    "header": "自己紹介",
+    "placeholder": "このプレイヤーはまだ自己紹介を登録していません。",
+    "expand": "自己紹介を展開",
+    "collapse": "自己紹介を折りたたむ"
+  },
+  "sections": {
+    "scores": {
+      "title": "スコア",
+      "expand": "スコアを展開",
+      "collapse": "スコアを折りたたむ",
+      "hideReclears": "再クリアを非表示",
+      "lowestImpactScore": "ランクスコアを獲得するには、少なくとも<pp>{{score}}</pp>が必要です"
+    },
+    "tournaments": {
+      "title": "トーナメント",
+      "expand": "トーナメントを展開",
+      "collapse": "トーナメントを折りたたむ",
+      "withdrew": "辞退",
+      "disqualified": "失格",
+      "unseriesed": "その他のトーナメント",
+      "unknownTournament": "不明なトーナメント",
+      "openPack": "パックを開く",
+      "othersCount": "ほか{{count}}件"
+    },
+    "scoreBreakdown": {
+      "title": "スコア内訳",
+      "expand": "スコア内訳を展開",
+      "collapse": "スコア内訳を折りたたむ",
+      "tooltips": {
+        "rankedScore": {
+          "aria": "ランクスコアの説明",
+          "description": "再クリアを除く、上位20件のクリアスコアの減衰合計"
+        },
+        "totalScoreV2": {
+          "aria": "合計スコアの説明",
+          "description": "再クリアを除く、すべてのクリアスコアの合計"
+        },
+        "generalScore": {
+          "aria": "総合スコアの説明",
+          "description": "再クリアを含む、すべてのクリアスコアの合計"
+        },
+        "ppScore": {
+          "aria": "PPスコアの説明",
+          "description": "ランクスコア。ただし、すべてのクリアがPure Perfectである必要があります"
+        },
+        "wfScore": {
+          "aria": "WFスコアの説明",
+          "description": "世界初クリアのすべてのレベルの基本スコアの合計"
+        },
+        "wfPPScore": {
+          "aria": "WF PPスコアの説明",
+          "description": "世界初Pure Perfectクリアのすべてのレベルの基本スコアの合計"
+        },
+        "score12K": {
+          "aria": "12Kスコアの説明",
+          "description": "ランクスコア。ただし、すべてのクリアが12Kである必要があります"
+        },
+        "averageXacc": {
+          "aria": "平均X精度の説明",
+          "description": "上位20件のクリア記録の平均精度"
+        }
+      }
+    },
+    "difficultyBreakdown": {
+      "title": "難易度別クリア数",
+      "includeDupes": "重複を含める",
+      "expand": "難易度別内訳を展開",
+      "collapse": "難易度別内訳を折りたたむ"
+    },
+    "rankHistory": {
+      "title": "順位の推移",
+      "expand": "順位履歴を展開",
+      "collapse": "順位履歴を折りたたむ",
+      "metricLabel": "順位の種類",
+      "rangeLabel": "期間",
+      "loading": "順位履歴を読み込み中…",
+      "empty": "順位履歴はまだ保存されていません。",
+      "error": "順位履歴を読み込めませんでした。",
+      "range30": "過去30日間",
+      "range90": "過去90日間",
+      "range365": "過去1年間",
+      "rangeAll": "全期間",
+      "metricRanked": "ランクスコア順位",
+      "metricGeneral": "総合スコア順位",
+      "yAxisRank": "順位",
+      "tooltipToday": "今日",
+      "tooltipOneDayAgo": "1日前",
+      "tooltipDaysAgo": "{{count}}日前"
+    }
+  },
+  "sort": {
+    "byScore": "スコア順",
+    "byImpact": "影響度順",
+    "byDate": "日付順",
+    "byXacc": "X精度順",
+    "byDifficulty": "難易度順",
+    "bySpeed": "速度順"
+  },
+  "search": {
+    "placeholder": "クリア記録を検索…"
+  },
+  "labels": {
+    "totalPasses": "{{count}}件のクリア"
+  },
+  "showHiddenPasses": "非公開のクリア記録を表示",
+  "hideHiddenPasses": "非公開のクリア記録を隠す",
+  "infiniteScroll": {
+    "end": "最後まで到達しました！"
+  },
+  "funFacts": {
+    "expandAria": "すべての統計を表示",
+    "collapseAria": "詳細な統計を隠す",
+    "difficultyHeaderGridCellTooltip": "{{name}} · クリア数：{{count}}",
+    "clearsByTypeTooltip": "{{count}}個のユニークなレベルをクリア",
+    "clearsByTypeTooltipWithReclears": "{{unique}}個のユニークなレベルをクリア（クリア合計：{{total}}回）",
+    "groups": {
+      "scores": "スコア",
+      "counts": "クリア数",
+      "judgements": "判定",
+      "levelsCleared": "クリアしたレベル",
+      "extremes": "記録",
+      "activity": "アクティビティ",
+      "breakdownByType": "難易度タイプ別クリア数"
+    },
+    "counts": {
+      "totalPasses": "総クリア数",
+      "uniqueLevelsCleared": "クリアしたユニークなレベル数",
+      "worldsFirstCount": "世界初クリア数",
+      "worldsFirstPPCount": "世界初PPクリア数",
+      "clears12K": "12Kクリア数",
+      "clears16K": "16Kクリア数",
+      "clearsNoHoldTap": "No Hold Tapクリア数",
+      "totalPurePerfectClears": "Pure Perfectクリア数",
+      "duplicatePasses": "再クリア数",
+      "hiddenPasses": "非公開のクリア記録（自分には表示されます）"
+    },
+    "judgements": {
+      "totalTilesHit": "ヒットしたタイルの合計",
+      "earlyDouble": "Too Early",
+      "earlySingle": "Early",
+      "ePerfect": "EPerfect",
+      "perfect": "Perfect",
+      "lPerfect": "LPerfect",
+      "lateSingle": "Late",
+      "totalXacc": "総合精度",
+      "earlyVsLateBias": "Early・Lateの偏り"
+    },
+    "levelsCleared": {
+      "totalTilecountCleared": "クリアしたタイル数の合計",
+      "totalPlaytimeMs": "推定プレイ時間",
+      "averageBpm": "平均BPM（クリアしたレベル）",
+      "totalRawScoreV2": "全クリアスコアの単純合計"
+    },
+    "scores": {
+      "rankedScore": "ランクスコア",
+      "generalScore": "総合スコア",
+      "totalScoreV2": "合計スコア",
+      "ppScore": "PPスコア",
+      "wfScore": "WFスコア",
+      "wfPPScore": "WF PPスコア",
+      "score12K": "12Kスコア",
+      "averageXacc": "平均X精度",
+      "worldsFirstCount": "世界初クリア数",
+      "worldsFirstPPCount": "世界初PPクリア数"
+    },
+    "extremes": {
+      "firstPassAt": "初クリア日時",
+      "latestPassAt": "最終クリア日時",
+      "bestAccuracy": "最高精度",
+      "worstAccuracy": "最低精度",
+      "topSpeed": "最高速度",
+      "highestTilecountCleared": "クリアした最多タイル数",
+      "longestLevelMs": "最長レベル",
+      "highestBpmCleared": "クリアした最高BPM",
+      "viewPass": "クリア記録を見る"
+    },
+    "activity": {
+      "accountAgeDays": "アカウント作成からの日数",
+      "passesLast30Days": "過去30日間のクリア数",
+      "uniqueLevelsLiked": "いいねしたレベル数",
+      "packsOwned": "所有パック数",
+      "packsFavorited": "お気に入りパック数"
+    },
+    "difficultyType": {
+      "PLANETARY": "Planetary",
+      "GALACTIC": "Galactic",
+      "UNIVERSAL": "Universal",
+      "SPECIAL": "Special"
+    }
+  },
+  "modules": {
+    "missing": "表示できる情報はまだありません。",
+    "types": {
+      "bio": "自己紹介",
+      "tournaments": "トーナメント",
+      "scoreBreakdown": "スコア内訳",
+      "difficulty": "難易度",
+      "rankHistory": "順位履歴",
+      "scores": "スコア",
+      "charts": "レベル",
+      "favorite": "お気に入り",
+      "keyboards": "キーボード",
+      "player": {
+        "difficulty": "難易度別クリア数"
+      },
+      "creator": {
+        "difficulty": "難易度別レベル数",
+        "charts": "レベル"
+      }
+    },
+    "favoriteKinds": {
+      "pass": "クリア",
+      "level": "チャート",
+      "pack": "パック",
+      "player": "プレイヤー",
+      "creator": "クリエイター"
+    },
+    "expandFavorite": "お気に入りを展開",
+    "collapseFavorite": "お気に入りを折りたたむ"
+  },
+  "keyboards": {
+    "header": "キーボード設定",
+    "empty": "キーボード構成はまだありません。",
+    "addRig": "構成を追加",
+    "edit": "設定を編集",
+    "editTitle": "キーボード設定を編集",
+    "tabs": {
+      "board": "キーボード",
+      "binds": "キー割り当て",
+      "history": "履歴"
+    },
+    "rig": "構成",
+    "defaultRigName": "デフォルト構成",
+    "sinceUnknown": "開始日不明",
+    "since": "{{date}}から",
+    "fromDate": "{{date}}から",
+    "fromTo": "{{from}}から{{to}}まで",
+    "currentSetup": "現在の設定",
+    "sinceDate": "使用開始日（UTC）",
+    "usingLayoutSince": "配列の使用開始日",
+    "usingKeyboardSince": "キーボードの使用開始日",
+    "rangeFrom": "開始",
+    "rangeTo": "終了",
+    "rangeAuto": "自動",
+    "keysN": "{{count}}K",
+    "layout": "配列",
+    "layoutName": "配列名",
+    "addLayout": "配列を追加",
+    "addNew": "新規追加",
+    "renameLayout": "配列名を変更",
+    "deleteLayout": "この配列を削除しますか？",
+    "layoutDeleted": "配列を削除しました",
+    "gap": "この範囲にはキー割り当てがありません。",
+    "actuation": "作動点 {{mm}} mm",
+    "rtActuation": "ラピッドトリガー {{mm}} mm",
+    "customProduct": "カスタムキーボード",
+    "customSwitch": "カスタムスイッチ",
+    "noSwitch": "なし",
+    "geometry": "キーボード形状",
+    "product": "キーボード",
+    "brand": "ブランド",
+    "model": "モデル",
+    "sensingLabel": "検知方式",
+    "sensing": {
+      "mechanical": "メカニカル",
+      "optical": "オプティカル",
+      "hall": "ホールエフェクト",
+      "membrane": "メンブレン",
+      "other": "その他"
+    },
+    "stems": {
+      "linear": "リニア",
+      "tactile": "タクタイル",
+      "clicky": "クリッキー",
+      "optical": "オプティカル",
+      "magnetic": "磁気式"
+    },
+    "switch": "スイッチ",
+    "actuationLabel": "アクチュエーション",
+    "rapidTrigger": "ラピッドトリガー",
+    "rtMode": {
+      "off": "オフ",
+      "single": "単一ポイント方式",
+      "split": "分割"
+    },
+    "rtPressLabel": "押下",
+    "rtReleaseLabel": "リリース",
+    "rtSplit": "ラピッドトリガー {{press}} / {{release}} mm",
+    "emptyHistory": "この構成には過去の使用日がありません。",
+    "colorway": "配色",
+    "note": "メモ",
+    "paste": "キー割り当てを貼り付け",
+    "applyPaste": "貼り付けを適用",
+    "clears": "キー割り当てをクリア",
+    "autoBind": "自動割り当て",
+    "bindField": "キーボード配列",
+    "clickLayout": "キーをクリックすると選択状態を切り替えられます。Shiftを押しながらドラッグすると、範囲内のすべてのキーを切り替えられます。",
+    "clickSelect": "キーをクリックすると選択状態を切り替えられます。Shiftを押しながらドラッグすると、範囲内のすべてのキーを切り替えられます。",
+    "selectAll": "すべて選択",
+    "deselectAll": "すべて選択解除",
+    "selectKeys": "編集するキーを選択してください。",
+    "layoutHint": "この配列のキーを割り当ててください。他のタブでは選択したキーを編集できます。",
+    "addSwitch": "スイッチを追加",
+    "removeSwitch": "スイッチを削除",
+    "switchN": "スイッチ{{n}}",
+    "actuationVaries": "作動点はキーごとに異なります",
+    "rapidTriggerVaries": "ラピッドトリガーはキーごとに異なります",
+    "modes": {
+      "label": "編集モード",
+      "layout": "ゲーム内配列",
+      "switches": "スイッチ",
+      "actuation": "作動点",
+      "rapidTrigger": "ラピッドトリガー"
+    },
+    "replaceLayout": "{{count}}キーの配列はすでに保存されています。選択したキーで置き換えますか？",
+    "layoutCollision": "これらのキーは保存済みの{{count}}キー配列と一致しています。置き換える場合は、その配列に切り替えてください。",
+    "noLayouts": "このプレイヤーには保存済みの配列がありません。",
+    "unknownKeys": "不明なキー：{{keys}}",
+    "saveError": "キーボード設定を保存できませんでした",
+    "saved": "キーボード設定を保存しました",
+    "created": "キーボード構成を追加しました",
+    "rigName": "名前",
+    "rigNamePlaceholder": "構成名を入力",
+    "unnamed": "名前なし",
+    "unsaved": "未保存",
+    "savedState": "保存済み",
+    "deleteRig": "この構成を削除しますか？配列と履歴も削除されます。",
+    "deleted": "構成を削除しました",
+    "import": "インポート",
+    "export": "コピー",
+    "exported": "スナップショットをコピーしました",
+    "importPrompt": "キーボード構成のスナップショットを貼り付けてください",
+    "importInvalid": "このテキストはキーボード構成のスナップショットではありません",
+    "importReady": "{{name}}をインポートする準備ができました",
+    "importCopy": "新しい構成として追加",
+    "importReplace": "この構成を置き換える",
+    "importReplaceConfirm": "スナップショットでこの構成を置き換えますか？現在の配列と履歴は削除されます。",
+    "importedCopy": "スナップショットを新しい構成として追加しました",
+    "importedReplace": "スナップショットから構成を復元しました"
+  },
+  "discordRoleSync": {
+    "buttonTitle": {
+      "own": "自分のDiscordロールを更新",
+      "other": "このユーザーのDiscordロールを更新"
+    },
+    "success": {
+      "own": "Discordロールを更新しました",
+      "other": "Discordロールを更新しました"
+    },
+    "errors": {
+      "noUser": "ユーザーIDを特定できません",
+      "generic": "Discordロールの更新に失敗しました",
+      "tooManyRequests": "リクエストが多すぎます。しばらくしてからもう一度お試しください。（{{retryAfter}}）"
+    }
+  }
+}

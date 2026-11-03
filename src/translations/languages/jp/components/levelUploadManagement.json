@@ -1,0 +1,64 @@
+{
+  "title": "レベルアップロードの管理",
+  "dropToUpload": "ドラッグ＆ドロップでアップロード",
+  "pasteHint": "コピーしたアーカイブを貼り付けてアップロード",
+  "errors": {
+    "invalidZip": "無効なzipファイル",
+    "invalidZipSize": "Zipファイルのサイズが大きすぎます（最大 {{maxSize}} MB）",
+    "fetchFailed": "レベルファイルの取得に失敗しました",
+    "uploadFailed": "レベルファイルのアップロードに失敗しました",
+    "selectFailed": "レベルファイルの選択に失敗しました",
+    "reparseFailed": "チャートの再解析に失敗しました",
+    "deleteFailed": "レベルファイルの削除に失敗しました",
+    "missingUrl": "URLを入力してください",
+    "cdnNotAllowed": "そのURLはサイトのCDNを指しています。代わりに直接ダウンロードリンクをご利用ください。",
+    "invalidUrl": "無効なURL",
+    "importFailed": "URL から ZIP ファイルのインポートに失敗しました"
+  },
+  "sections": {
+    "levelSelection": {
+      "title": "レベルファイルを選択",
+      "originalZip": {
+        "title": "元のZIPファイル：{{name}}",
+        "size": "サイズ：{{size}} MB"
+      },
+      "songFiles": {
+        "title": "曲ファイル",
+        "size": "({{size}} MB)"
+      },
+      "currentTarget": "現在のターゲット：{{name}}"
+    }
+  },
+  "buttons": {
+    "select": "レベルを選択してください",
+    "reparse": "再解析",
+    "currentlySelected": "新しいレベルをアップロード",
+    "uploadNew": "新しいステージをアップロード",
+    "import": "インポート",
+    "deleteCurrent": "現在のレベルを削除",
+    "close": "✖",
+    "cancel": "アップロードをキャンセル"
+  },
+  "upload": {
+    "progress": "アップロード中... {{progress}}%",
+    "success": "レベルファイルのアップロードに成功しました",
+    "importSuccess": "レベルファイルのインポートに成功しました",
+    "importFromUrl": "URLからインポート中…",
+    "urlStageDownload": "ダウンロード",
+    "urlStageCdn": "CDN"
+  },
+  "uploadFromUrl": {
+    "title": "URLからアップロード",
+    "placeholder": "https://… または Steam ワークショップのリンク",
+    "submit": "インポート",
+    "closePanelAria": "閉じてアップロードオプションに戻る"
+  },
+  "confirmDelete": "このレベルファイルを削除してもよろしいですか？この操作は元に戻せません。",
+  "confirmCloseDuringUpload": "アップロード中です。本当にキャンセルしますか？",
+  "select": {
+    "success": "レベルファイルが選択されました"
+  },
+  "reparse": {
+    "success": "チャートの再解析"
+  }
+}

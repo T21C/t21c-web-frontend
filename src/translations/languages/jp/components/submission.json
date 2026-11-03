@@ -1,0 +1,106 @@
+{
+  "header": {
+    "headerPass": "クリアを提出したい",
+    "headerLevel": "自分のレベルをレートしてもらいたい"
+  },
+  "button": {
+    "buttonPass": "クリアを提出する",
+    "buttonLevel": "レベルを提出する"
+  },
+  "RulesAGuide": "ルールとガイドラインを確認する",
+  "level": {
+    "alert": {
+      "login": "ログインする必要があります",
+      "form": "フォームの入力内容に不備があります",
+      "success": "フォームの提出に成功しました！",
+      "error": "エラー: ",
+      "loading": "提出中..."
+    },
+    "thumbnailInfo": "動画が見つかりません",
+    "title": "レベルを提出する",
+    "videoInfo": {
+      "title": "動画のタイトル",
+      "channel": "チャンネル名",
+      "timestamp": "タイムスタンプ",
+      "nolink": "リンクが記載されていません"
+    },
+    "tooltip": "難易度は不明ですが、提出します。ただし、マネージャーが読み取れるようにしてください。正しい難易度の例：G13; P7～P13; 21.1+; 19～20.0+",
+    "submInfo": {
+      "song": "曲",
+      "artist": "アーティスト",
+      "videoLink": "動画リンク",
+      "charter": "チャーター",
+      "diff": "難易度",
+      "vfxer": "VFX担当者（任意）",
+      "team": "チーム名（任意）",
+      "dlLink": "ダウンロードリンク",
+      "workshop": "ワークショップのリンク",
+      "dlLinksOr": "または"
+    },
+    "submit": "提出",
+    "submitWait": " しばらくお待ちください..."
+  },
+  "pass": {
+    "alert": {
+      "login": "ログインする必要があります",
+      "form": "フォームの入力に不備があります",
+      "success": "フォームの提出に成功しました！",
+      "error": "エラー: ",
+      "loading": "提出中..."
+    },
+    "score": {
+      "needId": "レベルIDの入力が必要です",
+      "needJudg": "すべての判定が入力されていません",
+      "needInfo": "クリア情報が不十分です",
+      "noInfo": "スコアを算出するにはデータが不十分です"
+    },
+    "thumbnailInfo": "動画が見つかりません",
+    "title": "クリアの提出",
+    "videoInfo": {
+      "videoLink": "動画のリンク",
+      "title": "動画のリンク",
+      "channel": "チャンネル名",
+      "timestamp": "タイムスタンプ",
+      "nolink": "リンクが記載されていません"
+    },
+    "levelInfo": {
+      "song": "曲名",
+      "charter": "チャーター",
+      "artist": "アーティスト"
+    },
+    "holdTooltip": "「通常ホールド」以外のホールドオプションを使用したことがある場合は、ここにチェックを入れてください。（スコアの0.9倍）",
+    "12kTooltip": "12k以下でそのステージをクリアした場合は、ここにチェックを入れてください",
+    "16kTooltip": "16k以上を使ってそのステージをクリアした場合は、ここにチェックを入れてください",
+    "tooltip": "難易度は不明ですが、提出します。ただし、マネージャーが読み取れるようにしてください。正しい難易度の例：G13; P7～P13; 21.1+; 19～20.0+",
+    "levelFetching": {
+      "input": "レベルIDを入力",
+      "fetching": "フェッチ",
+      "goto": "レベルへ移動",
+      "notfound": "レベルが見つかりませ"
+    },
+    "submInfo": {
+      "levelId": "レベルID",
+      "altname": "代替リーダーボード名",
+      "nohold": "別のホールドを使用した",
+      "speed": "速度（オプション；例：1.2）",
+      "feelDiff": "体感レーティング（例：G12）",
+      "team": "チーム名（任意）",
+      "dlLink": "ダウンロードリンク",
+      "workshop": "ワークショップのリンク",
+      "is16K": "16K以上 クリア",
+      "is12K": "12K クリア"
+    },
+    "judgements": {
+      "tooearly": "Too Early",
+      "early": "Early",
+      "ePerfect": "EPerfect",
+      "perfect": "Perfect",
+      "lPerfect": "LPerfect",
+      "late": "Late"
+    },
+    "acc": "精度: ",
+    "scoreCalc": "スコア: ",
+    "submit": "提出",
+    "submitWait": " しばらくお待ちください..."
+  }
+}

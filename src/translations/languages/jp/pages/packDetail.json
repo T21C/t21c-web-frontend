@@ -1,0 +1,116 @@
+{
+  "meta": {
+    "title": "{{name}} - パック",
+    "description": "{{owner}} によるレベルパック {{name}} — The Universal Forums に {{count}} レベル収録"
+  },
+  "loading": "パックの詳細を読み込み中...",
+  "by": "作成者：",
+  "description": {
+    "label": "説明",
+    "readMore": "続きを読む",
+    "showLess": "表示を縮小"
+  },
+  "backToPacks": "パックに戻る",
+  "viewMode": {
+    "public": "公開",
+    "linkonly": "リンクのみ",
+    "private": "非公開",
+    "forcedPrivate": "強制非公開"
+  },
+  "stats": {
+    "levels": "レベル",
+    "items": "項目",
+    "created": "作成日",
+    "curationPanelDialog": "このパックに含まれるキュレーションタイプ"
+  },
+  "items": {
+    "title": "項目",
+    "dragHint": "項目をドラッグして順序を変更したり、フォルダに移動したりできます",
+    "empty": "このパックにはまだアイテムが入っていません。",
+    "dragToReorder": "ドラッグして順序を変更"
+  },
+  "actions": {
+    "edit": "パックを編集",
+    "addFolder": "フォルダを追加",
+    "addLevel": "レベルを追加",
+    "addNote": "メモを追加",
+    "collapseAll": "すべて折りたたむ",
+    "expandAll": "すべて展開",
+    "addToFavorites": "お気に入りに追加",
+    "removeFromFavorites": "お気に入りから削除",
+    "downloadPack": "パックをダウンロード",
+    "downloadFolder": "フォルダーをダウンロード",
+    "exportAs": "次としてエクスポート",
+    "addToFolder": "既存のフォルダに追加…",
+    "moveItem": "クリックして移動するか、ドラッグしてください",
+    "editFolder": "フォルダーを編集",
+    "editNote": "メモを編集",
+    "deleteNote": "メモを削除する"
+  },
+  "download": {
+    "estimatedLong": "（推定：{{count}}件のメタデータが欠落しています）",
+    "estimatedShort": "（推定、{{count}}件が欠落）"
+  },
+  "folderProgress": {
+    "label": "{{percent}}% ({{cleared}}/{{total}})",
+    "aria": "{{percent}}％をクリアしました。{{total}}レベルのうち{{cleared}}レベルをクリアしました。"
+  },
+  "createFolder": {
+    "prompt": "新しいフォルダの名前を入力してください",
+    "success": "フォルダが正常に作成されました",
+    "error": "フォルダの作成に失敗しました"
+  },
+  "createNote": {
+    "success": "メモが正常に追加されました",
+    "error": "メモの追加に失敗しました"
+  },
+  "addLevel": {
+    "prompt": "追加するレベルIDを入力してください",
+    "success": "レベルが正常に追加されました",
+    "partialSuccess": "{{added}} レベルを追加しました（{{skipped}} レベルはスキップしました）",
+    "error": "レベルの追加に失敗しました"
+  },
+  "renameFolder": {
+    "prompt": "フォルダの新しい名前を入力してください",
+    "success": "フォルダの名前変更に成功しました",
+    "error": "フォルダの名前の変更に失敗しました"
+  },
+  "editFolder": {
+    "success": "フォルダが正常に更新されました",
+    "error": "フォルダの更新に失敗しました"
+  },
+  "editNote": {
+    "success": "メモの更新に成功しました",
+    "error": "メモの更新に失敗しました"
+  },
+  "deleteItem": {
+    "success": "項目が正常に削除されました！",
+    "error": "項目の削除に失敗しました"
+  },
+  "deleteFolder": {
+    "confirm": "フォルダ「{{name}}」を削除してもよろしいですか？これにより、そのフォルダ内のすべての項目も削除されます."
+  },
+  "deleteNote": {
+    "confirm": "「{{name}}」というメモを削除してもよろしいですか？"
+  },
+  "deleteLevel": {
+    "confirm": "このレベルをパックから削除してもよろしいですか？"
+  },
+  "move": {
+    "cannotMoveIntoSelf": "フォルダをそのフォルダの中に移動することはできません",
+    "success": "アイテムの移動に成功しました",
+    "error": "項目の移動に失敗しました"
+  },
+  "edit": {
+    "success": "パックの更新に成功しました",
+    "error": "パックの更新に失敗しました"
+  },
+  "error": {
+    "title": "何か問題が発生しました",
+    "message": "このパックを読み込めませんでした。もう一度お試しください。",
+    "retry": "再試行",
+    "notFound": "パックが見つかりません",
+    "accessDenied": "このパックにはアクセスできません",
+    "loadFailed": "パックの読み込みに失敗しました"
+  }
+}

@@ -1,0 +1,267 @@
+{
+  "title": "クリアを提出",
+  "thumbnailInfo": "動画情報がここに表示されます",
+  "submInfo": {
+    "levelId": "レベルを検索するか、IDを入力",
+    "altname": "ランキング上の名前",
+    "nohold": "代替ホールド設定",
+    "speed": "速度（任意、1.0以上）",
+    "keyCount": "キー数（任意）",
+    "feelDiff": "体感レーティング",
+    "details": "詳細（任意）",
+    "detailsPlaceholder": "このクリアに関する補足情報",
+    "expectedDiff": "予想レーティング（任意）",
+    "isAdofaiV2": "ADOFAI v2",
+    "adofaiVersion": "ADOFAIのバージョン",
+    "isXPerfectMode": "X-Perfect"
+  },
+  "levelInfo": {
+    "song": "曲名",
+    "artist": "アーティスト",
+    "charter": "譜面制作者"
+  },
+  "levelFetching": {
+    "input": "IDを入力",
+    "fetching": "取得中...",
+    "goto": "レベルへ移動",
+    "notfound": "見つかりません"
+  },
+  "videoInfo": {
+    "videoLink": "YouTube、Bilibili、またはDouyinの動画リンク",
+    "title": "タイトル",
+    "channel": "チャンネル",
+    "timestamp": "アップロード日時",
+    "nolink": "有効なYouTube、Bilibili、またはDouyinの動画リンクを入力してください",
+    "resolving": "動画リンクを解決中…",
+    "linkResolved": "短縮リンクを解決しました"
+  },
+  "judgements": {
+    "ePerfect": "EPerfect",
+    "perfectMinus": "Perfect−",
+    "perfect": "Perfect",
+    "perfectPlus": "Perfect+",
+    "lPerfect": "LPerfect",
+    "short": {
+      "ePerfect": "EP",
+      "perfectMinus": "P−",
+      "perfect": "P",
+      "perfectPlus": "P+",
+      "lPerfect": "LP"
+    },
+    "tooearly": "Too Early",
+    "early": "Early",
+    "late": "Late"
+  },
+  "acc": "精度：",
+  "scoreCalc": "スコア：",
+  "holdTooltip": "ホールドタイルの動作が通常と異なる場合（ホールド不要など）にチェックしてください",
+  "keyCountTooltip": "このクリアで使用したキーの数です。UおよびUQでは必須です。",
+  "feelingTooltip": "あなた自身が感じた難易度です。有効な入力例：G1～G5、17～18+、U1など。",
+  "expectedTooltip": "このレベルに付けるべきと考えるレーティング（任意）です。体感レーティングと同じ形式で入力してください。",
+  "adofaiV2Tooltip": "ADOFAI v2で記録されたクリアの場合にチェックしてください",
+  "adofaiVersionTooltip": "このクリアで使用したゲームのバージョンです。v3のクリアでは3.4.0が現在の安定版です。動画の日付から自動入力されますが、変更できます。",
+  "xPerfectTooltip": "X-PerfectモードでのPerfect−とPerfect+の回数を記録します（3.4.0以降のみ）。",
+  "adofaiVersion": {
+    "latest": "3.4.0",
+    "pre340": "<3.4.0",
+    "v2": "v2"
+  },
+  "midspinWarning": {
+    "willApply": "この譜面にはミッドスピンのタイルが{{count}}個あります。提出時にPerfectの数から差し引かれます。",
+    "alreadyApplied": "このクリアではミッドスピン分のPerfectがすでに差し引かれています。",
+    "missing": "このレベルにはミッドスピン数が登録されていないため、Perfectの数は調整されません。",
+    "perfectLt": "Perfectの数がミッドスピン数より少ないため、Perfectの数は調整されません。"
+  },
+  "alert": {
+    "success": "クリアを提出しました！",
+    "error": "エラー：",
+    "login": "クリアを提出するにはログインしてください",
+    "form": "必須項目をすべて正しく入力してください",
+    "more": "+{{count}}件"
+  },
+  "fieldShort": {
+    "levelId": "レベルID",
+    "videoLink": "動画リンク",
+    "player": "プレイヤー",
+    "speed": "速度",
+    "feelingRating": "体感レーティング",
+    "expectedRating": "予想難易度",
+    "keyCount": "キー数",
+    "ePerfect": "EPerfect",
+    "perfectMinus": "Perfect−",
+    "perfect": "Perfect",
+    "perfectPlus": "Perfect+",
+    "lPerfect": "LPerfect",
+    "tooEarly": "Too Early",
+    "early": "Early",
+    "late": "Late",
+    "rulesAccepted": "ルールに同意済み"
+  },
+  "score": {
+    "needId": "レベルIDを入力してください",
+    "needJudg": "判定数を入力してください",
+    "needInfo": "必要な情報をすべて入力してください",
+    "noInfo": "情報がありません"
+  },
+  "warnings": {
+    "pendingProfiles": "次のプロフィールの作成がリクエストされます："
+  },
+  "rules": {
+    "checkbox": "以下を読み、遵守したことを確認しました：",
+    "rulesLink": "ルールとガイドライン"
+  },
+  "tilecountMismatch": {
+    "title": "判定数の合計が実際のタイル数と一致しません",
+    "body": "このレベルの譜面には、判定可能なタイルが<b>{{tilecount}}</b>個あります。入力された判定数の合計は<b>{{hitSum}}</b>です。入力内容に誤りがある可能性があります。",
+    "bodyWithAuto": "このレベルの譜面には<b>{{rawTilecount}}</b>個のタイル（うち<b>{{autoTileCount}}</b>個はオート）があるため、判定数は<b>{{tilecount}}</b>個になるはずです。入力された判定数の合計は<b>{{hitSum}}</b>です。入力内容に誤りがある可能性があります。",
+    "bodyWithMidspin": "このレベルの譜面には<b>{{rawTilecount}}</b>個のタイル（うち<b>{{midspinCount}}</b>個はミッドスピン）があるため、判定数は<b>{{tilecount}}</b>個になるはずです。入力された判定数の合計は<b>{{hitSum}}</b>です。入力内容に誤りがある可能性があります。",
+    "bodyWithAutoAndMidspin": "このレベルの譜面には<b>{{rawTilecount}}</b>個のタイル（オート<b>{{autoTileCount}}</b>個、ミッドスピン<b>{{midspinCount}}</b>個）があるため、判定数は<b>{{tilecount}}</b>個になるはずです。入力された判定数の合計は<b>{{hitSum}}</b>です。入力内容に誤りがある可能性があります。",
+    "reviewInputs": "キャンセル",
+    "submitAnyway": "このまま提出",
+    "wrongVersion": {
+      "title": "ゲームのバージョンが違います",
+      "body": "入力された判定数の合計にはミッドスピンも含まれているようです（<b>{{hitSum}}</b> = <b>{{tilecount}}</b> + <b>{{midspins}}</b>）。バージョン<b>3.4.0</b>以降ではミッドスピンはカウントされないため、差し引く必要があります。",
+      "changeVersion": "3.4.0未満に変更"
+    }
+  },
+  "tagWarnings": {
+    "title": "以下のレベル要件を確認してください",
+    "continue": "続行",
+    "keyLimit": "このレベルは{{count}}キー以下でクリアする必要があります。",
+    "overlapAllowed": "このレベルではキーの重なりが許可されています。許可された範囲内で重ねたことを確認してください。",
+    "twoHandPseudos": "このレベルでは2ハンド疑似が制限されています。許可されたキーの使用方法に従ったことを確認してください。",
+    "onhandOffhandLimit": "このレベルにはオンハンド／オフハンドの制限があります。許可されたキーの使用方法に従ったことを確認してください。",
+    "variableKeyLimit": "このレベルには区間ごとに異なるキー数制限があります。各区間で制限を守ったことを確認してください。",
+    "noLargeKeys": "このレベルでは大きなキーの使用が禁止されています。",
+    "feetOnly": "このレベルは足だけでクリアする必要があります。",
+    "fourKeyBaseLimit": "このレベルには基本4キーの制限があります。許可されたキーの使用方法に従ったことを確認してください。",
+    "twoKeyBaseLimit": "このレベルには基本2キーの制限があります。許可されたキーの使用方法に従ったことを確認してください。",
+    "freeRoam": "このレベルにはフリーロームが含まれています。意図された方法でクリアしてください。",
+    "multiTrack": "このレベルにはマルチトラックのギミックがあります。指定されたトラックをプレイしてください。",
+    "math": "このレベルには数学のギミックがあります。意図された方法でクリアしてください。",
+    "rpg": "このレベルにはRPGのギミックがあります。意図された方法でプレイしてください。",
+    "memorization": "このレベルには暗記ギミックがあります。VFXをすべて有効にしてクリアする必要があります。",
+    "unorthodoxReading": "このレベルには特殊な譜面の読み取り方があります。指定されたビジュアルでプレイしてください。",
+    "arrowKey": "このレベルは矢印キーでプレイすることを想定しています。",
+    "cameraRequired": "このレベルではカメラが必須です。指定されたカメラ／VFX設定でクリアする必要があります。",
+    "autoTile": "このレベルにはオートタイルが含まれています。提出前に判定数をよく確認してください。",
+    "judgementLimit": "このレベルには判定制限があります。必要な判定設定とリプレイの設定が一致していることを確認してください。",
+    "hpBar": "このレベルではHPバーを使用します。指定されたHPバー設定でプレイしたことを確認してください。",
+    "detailedJudgement": "このレベルでは詳細判定が必要です。判定表示が要件と一致していることを確認してください。",
+    "timingWindowScale": "このレベルではタイミングウィンドウが拡大・縮小されています。指定されたタイミングウィンドウでプレイしたことを確認してください。"
+  },
+  "calculator": {
+    "title": "クリアスコア計算機",
+    "thumbnailInfo": "計算機モード — 動画は不要です",
+    "meta": {
+      "title": "クリアスコア計算機",
+      "description": "スコア設定を任意に上書きして、クリアのScoreV2をシミュレーションします"
+    },
+    "modeSubmit": "提出",
+    "modeCalculator": "計算機",
+    "openCalculator": "スコア計算機を開く",
+    "backToSubmit": "提出画面に戻る",
+    "calculate": "計算",
+    "calculating": "計算中…",
+    "copyLink": "リンクをコピー",
+    "linkCopied": "計算機のリンクをコピーしました",
+    "hubLink": "スコア計算機",
+    "overrides": {
+      "title": "スコア設定の上書き",
+      "baseScore": "基本スコア",
+      "ppBaseScore": "PP基本スコア",
+      "equalTo": "{{name}}と同じ",
+      "curve": "スコア曲線",
+      "curveLevel": "レベルの曲線（またはサイトのデフォルト設定）を使用します。",
+      "curveCustom": "この計算機でのみカスタム曲線を適用します。",
+      "editCurve": "曲線を編集",
+      "clearCurve": "曲線の上書きを解除",
+      "curvePreviewHint": "レベルを選択するか基本スコアを設定すると、曲線をプレビューできます。",
+      "reset": "レベルの設定に戻す",
+      "hint": "上書き設定はこの計算機内でのみ適用されます。順位を計算するには、レベルのスコア設定を変更しないでください。"
+    },
+    "loadPass": {
+      "title": "クリアを読み込む",
+      "placeholder": "クリアを検索するか、IDを入力",
+      "import": "インポート",
+      "loaded": "クリアをフォームに読み込みました",
+      "failed": "クリアを読み込めませんでした",
+      "fetching": "取得中…",
+      "notFound": "クリアが見つかりません",
+      "previewEmpty": "クリアのプレビューがここに表示されます",
+      "unknownLevel": "不明なレベル",
+      "unknownPlayer": "不明なプレイヤー"
+    },
+    "targetScore": "目標スコア（逆算）",
+    "compareInputs": {
+      "title": "判定数を比較",
+      "hint": "下に比較対象の判定数を入力してから「計算」を押してください。",
+      "copyJudgements": "判定数をコピー",
+      "copyJudgementsTooltip": "メインの計算機に入力した判定数をここにコピーします"
+    },
+    "score": {
+      "needLevelOrSandbox": "レベルIDまたはサンドボックスの基本スコアを入力してください"
+    },
+    "panels": {
+      "primary": "メインスコア",
+      "missBudget": "ミス許容量",
+      "inverse": "逆算（目標スコア）",
+      "speedGrid": "速度 × 精度",
+      "compare": "比較",
+      "reclear": "再クリア判定",
+      "placement": "レベル内順位",
+      "ranked": "レーティング順位への影響"
+    },
+    "labels": {
+      "score": "スコア",
+      "accuracy": "精度",
+      "base": "基本",
+      "xaccMtp": "X精度 ×",
+      "speedMtp": "速度 ×",
+      "missMtp": "ミス ×",
+      "noHold": "ノーホールド",
+      "misses": "ミス数",
+      "speed": "速度"
+    },
+    "speedGrid": {
+      "hint": "各速度でミスなしの場合のスコアです。精度が正確に100%の場合のみ緑色のPPスケールを使用し、それ以外の行はPP以外の最高スコアを基準にした青色のスケールを使用します。",
+      "legendNonPp": "PP以外",
+      "legendPp": "ピュアパーフェクト"
+    },
+    "inverse": {
+      "hint": "サイドパネルで目標スコアを設定してから「計算」を押してください。",
+      "unreachable": "この設定での最大スコアを目標値が上回っている可能性があります。"
+    },
+    "compare": {
+      "hint": "サイドパネルに2つ目の判定数を入力してから「計算」を押してください。",
+      "primary": "メイン",
+      "secondary": "比較",
+      "delta": "差分"
+    },
+    "reclear": {
+      "needPlayer": "プレイヤーを選択して「計算」を押すと、このレベルでのベスト記録と比較できます。",
+      "noPrior": "このプレイヤーには、このレベルの過去のクリア記録がありません。",
+      "best": "現在のベスト",
+      "status": "ステータス",
+      "beats": "ベストを更新",
+      "equal": "ベストと同じ",
+      "worse": "ベストを更新できず"
+    },
+    "placement": {
+      "needLevel": "実在するレベルを選択し（スコア設定の上書きは使用せずに）、「計算」を押してください。",
+      "customScoring": "カスタムスコア設定の上書き中は順位を表示できません。",
+      "rankOf": "{{total}}人中{{rank}}位",
+      "tied": "このスコアで{{count}}人が同率"
+    },
+    "ranked": {
+      "needPlayer": "プレイヤーを選択して「計算」を押すと、レーティング順位／総合順位／PPへの影響を確認できます。",
+      "before": "計算前のレーティング順位",
+      "after": "計算後のレーティング順位",
+      "delta": "レーティング順位の変化",
+      "generalDelta": "総合順位の変化",
+      "ppDelta": "PPの変化",
+      "slot": "トップ20枠",
+      "missingCdn": "このレベルにはCDN上のファイルがないため、シミュレーションしたクリアはレーティングスコアに加算されません。"
+    }
+  }
+}

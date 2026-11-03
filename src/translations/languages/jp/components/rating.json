@@ -1,0 +1,212 @@
+{
+  "detailPopup": {
+    "closeButton": "ポップアップを閉じる",
+    "labels": {
+      "creator": "クリエイター:",
+      "currentDifficulty": "現在の難易度:",
+      "averageRating": "マネージャーレーティング:",
+      "communityRating": "コミュニティレーティング:",
+      "clearedCount": "クリア: {{count}}",
+      "rerateNum": "希望のレーティング:",
+      "rerateReason": "再レートの理由:",
+      "notes": "注記:",
+      "yourRating": "あなたのレーティング:",
+      "yourComment": "コメント:",
+      "savedDraft": "保存済み下書き",
+      "otherRatings": "その他のレーティング:",
+      "noRatings": "まだレーティングはありません",
+      "adminRatings": "マネージャーレーティング",
+      "communityRatings": "コミュニティレーティング",
+      "noAdminRatings": "まだマネージャーのレーティングはありません",
+      "noCommunityRatings": "まだコミュニティレーティングはありません"
+    },
+    "zenModeChip": "禅モード",
+    "viewedFor": "{{duration}}の間、閲覧されました",
+    "viewedForSeconds_one": "{{count}}秒間閲覧されました",
+    "viewedForSeconds_other": "{{count}}秒間閲覧されました",
+    "buttons": {
+      "saveChanges": "変更を保存",
+      "removeRating": "レーティングを削除する",
+      "viewAdminRatings": "マネージャーのレーティングを見る",
+      "viewCommunityRatings": "コミュニティのレーティングを見る",
+      "discordThread": "Discordスレッドを作成",
+      "discordThreadClose": "Discordスレッドを閉じる",
+      "discordThreadReopen": "Discordスレッドを再開",
+      "discordThreadClosed": "Discordスレッドは閉じられています"
+    },
+    "errors": {
+      "commentLength": "コメントは1000文字未満にしてください",
+      "commentRequired": "-2のレーティングにはコメントが必要です",
+      "saveFailed": "変更の保存に失敗しました",
+      "updateFailed": "レーティングの更新に失敗しました",
+      "unsavedChanges": "保存されていない変更があります。本当に閉じてよろしいですか？",
+      "deleteFailed": "レーティングの削除に失敗しました",
+      "autorateFailed": "レーティングの自動付けに失敗しました",
+      "discordThread": "Discordスレッドを更新できませんでした"
+    },
+    "tooltips": {
+      "lastUpdated": "最終更新日時",
+      "requiredComment": "-2のレーティングをつける場合は、コメントの入力が必要です。"
+    },
+    "placeholders": {
+      "requiredComment": "なぜこのレーティングを-2にしたのか説明してください…",
+      "difficultyInput": "難易度を入力してください...",
+      "communityComment": "レーティングの理由をご記入ください…"
+    },
+    "accuracy": {
+      "provisional": "暫定",
+      "specialCareer": "スペシャル {{score}} · {{n}}",
+      "thisChart": "この譜面{{score}}",
+      "modeQ": "{{settled}}",
+      "modeSpecial": "{{settled}}スペシャル",
+      "modeRank": "{{center}}スペシャル",
+      "scoredAs": "スコア：{{value}}"
+    },
+    "confirmations": {
+      "deleteRating": "{{username}}からのこのレーティングを削除してもよろしいですか？",
+      "discordThread": "このレーティングについてDiscord投票スレッドを作成しますか？チャートは投票カードとしてレーティングページに残ります。",
+      "unsavedDraft": {
+        "title": "未保存のレーティング",
+        "body": "下書きとして保存して後で続きを行う、変更内容を破棄する、またはそのまま編集を続けることができます。",
+        "save": "下書きを保存",
+        "discard": "破棄"
+      }
+    },
+    "messages": {
+      "ratingBanned": "レーティングすることはできません",
+      "voteSettled": "投票ディスカッションでレーティングが確定しました。",
+      "voteThread": "Discordスレッドを開く",
+      "discordThreadStarted": "Discordスレッドを作成しました",
+      "discordThreadClosed": "Discordスレッドを閉じました",
+      "discordThreadReopened": "Discordスレッドを再開しました",
+      "autorateSuccess": "レーティングの自動付与に成功しました"
+    }
+  },
+  "ratingCard": {
+    "labels": {
+      "yourRating": "あなたのレーティング",
+      "managerAverage": "マネージャーの平均",
+      "clearedCount": "クリア: {{count}}",
+      "managerRatings": "マネージャーのレーティング",
+      "communityAverage": "コミュニティの平均",
+      "communityRatings": "コミュニティのレーティング",
+      "allRatings": "すべてのレーティング",
+      "average": "平均",
+      "rerateNumber": "再レート番号",
+      "requestedRating": "希望のレーティング",
+      "rerateMessage": "再レートメッセージ",
+      "lastUpdated": "最終更新日",
+      "updatedAt": "更新済み: "
+    },
+    "tooltips": {
+      "expandReason": "クリックして展開",
+      "deleteRating": "レーティングを削除する",
+      "lastUpdated": "このレーティングが最後に変更された日時",
+      "copyLink": "リンクをコピー",
+      "savedDraft": "保存済み下書き"
+    },
+    "buttons": {
+      "viewDetails": "詳細を見る",
+      "editLevel": "レベルを編集",
+      "copied": "コピーされました!",
+      "copyLink": "リンクをコピー",
+      "settle": "{{difficulty}}で確定",
+      "block": "自動ランク付けをブロック",
+      "unblock": "ブロックを解除"
+    },
+    "marks": {
+      "rankable": "ランク付け可能",
+      "ratingOff": "レーティング無効",
+      "judgementLimit": "判定数制限",
+      "keyLimit": "キー数制限",
+      "blockedBy": "ブロック元："
+    },
+    "prompts": {
+      "blockReason": "自動ランク付けをブロックする理由を入力してください。理由を入力しない場合は空欄のままにしてください。"
+    },
+    "messages": {
+      "settleSuccess": "ランクが確定しました",
+      "settleFailed": "このランクを確定できませんでした",
+      "blockSuccess": "自動ランク付けをブロックしました",
+      "blockFailed": "自動ランク付けをブロックできませんでした",
+      "unblockSuccess": "自動ランク付けのブロックを解除しました",
+      "unblockFailed": "自動ランク付けのブロックを解除できませんでした"
+    }
+  },
+  "helpPopup": {
+    "title": "レーティング形式",
+    "closeButton": "ガイドを閉じる",
+    "sections": {
+      "rating": {
+        "title": "レーティング形式",
+        "description": "レーティングは、単一のレーティング、レーティング範囲、特殊なケースなど、さまざまな形式で入力できます。",
+        "examples": {
+          "title": "例",
+          "simple": "シンプルレーティング",
+          "range": "完全な表記を含む範囲",
+          "shortRange": "同じ（どちらにも「P」の接頭辞が付くことが暗黙の了解となっている）",
+          "special": "特殊ケースを含むレーティング",
+          "negative": "負の特殊ケースを含むレーティング"
+        }
+      },
+      "extras": {
+        "title": "追加のレーティング機能",
+        "features": [
+          {
+            "title": "コメント内のIDリンク",
+            "description": "コメント欄には、レベルへのID指定（例：「#1527」）を含めることができます。これにより、自動的に idPrefixDontChange:1527 に変換されます。"
+          },
+          {
+            "title": "投票のレーティングを非表示にする",
+            "description": "検索クエリの末尾に「「-vote」」を追加すると、投票中のレベルを非表示にすることができます。"
+          }
+        ]
+      },
+      "averaging": {
+        "title": "レーティングの平均化",
+        "description": "このシステムでは、いくつかの要素を考慮に入れた加重平均の計算を採用しています:",
+        "points": {
+          "special": "スペシャルレーティング（検閲済み、不可能など）は、4票以上集まった場合、平均レーティングよりも優先されます。",
+          "ranges": "範囲（U12～U14など）は、最終レーティングに反映される前に平均化されます。",
+          "order": "PGUのレーティングは、数値そのものではなく、難易度の順序に基づいて平均化されています。"
+        }
+      },
+      "accuracy": {
+        "title": "レーティングの精度",
+        "description": "レベルが確定すると、各レーティングは固定され、確定した難易度に基づいてスコア化されます。",
+        "points": {
+          "q": "確定された名称がQ範囲（GQ/UQ）である場合、スコアはその範囲全体で横ばいとなり、その後、近隣のランクに向かって緩やかに低下します（τ = 3）。",
+          "rank": "確定された名称が正確なPGUランクである場合、スコア計算にはそのランクを中心とするラプラスカーネル（τ = 2）が使用されます",
+          "ranges": "G5～G8のような範囲は、指定されたランクの平均値にあたるため、正確に当てた場合よりも、範囲が広い推測ほどスコアが低くなります。",
+          "freeze": "レーティングは確認時点で固定されます。その後の編集はロックされるため、結果が判明した後は精度を変更することはできません。",
+          "sort": "このリストは、キャリア平均値を縮小して並べ替えられているため、採点したチャート数が少ないレーティング者が過大にランク付けされることはありません。各行の数値は、生データに基づくパーセンテージ×サンプル数です。"
+        }
+      },
+      "filters": {
+        "title": "利用可能なフィルター",
+        "myRated": "私のレート",
+        "myRatedDesc": "レート済みのレベルのみを表示、非表示、または表示する",
+        "requestBands": "PGUのリクエスト",
+        "requestBandsDesc": "Planetary (P), Galactic (G), or Universal (U) のリクエストされたレーティングを非表示にする",
+        "fourVote": "レート4以上",
+        "fourVoteDesc": "レーティングが4つ以上あるレベルをフィルタリングする"
+      },
+      "requirements": {
+        "title": "要件",
+        "points": {
+          "comment": "レベルを-2とレーティングする際は、コメントの入力が必要です。",
+          "format": "レーティングは、PGU形式（P1～P20、G1～G20、U1～U20）に従うか、有効なスペシャルレーティングでなければなりません。",
+          "special": "スペシャルレーティング項目はあらかじめ定義されており、カスタマイズすることはできません"
+        }
+      },
+      "shortcuts": {
+        "title": "ショートカット",
+        "points": {
+          "submit": "レーティングを保存する",
+          "reset": "レーティングの強制更新",
+          "close": "現在開いているポップアップを閉じる"
+        }
+      }
+    }
+  }
+}

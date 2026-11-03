@@ -474,6 +474,7 @@
 .nav-language-select__option-content {
   display: flex;
   gap: 1rem;
+  align-items: center;
   flex: 1;
 }
 

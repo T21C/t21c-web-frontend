@@ -1,0 +1,67 @@
+{
+  "meta": {
+    "title": "キュレーションの管理",
+    "description": "レベル別のキュレーションと品質階層の管理"
+  },
+  "title": "キュレーション管理",
+  "description": "レベルに品質ランクを割り当て、キュレーションのスケジュールを管理する",
+  "filters": {
+    "type": "キュレーションタイプ",
+    "types": "キュレーションタイプ",
+    "typesHint": "選択したタイプのキュレーションが1つ以上あるレベルを表示します。空欄のままにすると、すべてのレベルが表示されます。",
+    "selectedTypes": "タイプで絞り込む",
+    "addTypes": "フィルタにタイプを追加する",
+    "noTypesSelected": "選択なし — すべてのタイプを含める",
+    "searchTypesPlaceholder": "タイプを検索…",
+    "noTypeResults": "一致するタイプはありません",
+    "noAvailableTypes": "すべてのタイプがすでに選択されています",
+    "removeType": "フィルターから除外する",
+    "addType": "フィルタに追加",
+    "allTypes": "すべてのタイプ",
+    "search": "検索",
+    "searchPlaceholder": "曲名、アーティスト名、クリエイター名、または別名（レベルIDの場合は#123）で検索..."
+  },
+  "loading": "キュレーションを読み込み中...",
+  "empty": "該当するキュレーションが見つかりませんでした",
+  "password": {
+    "title": "スーパー管理者のパスワードが必要です",
+    "description": "続行するには、スーパー管理者パスワードを入力してください",
+    "placeholder": "パスワードを入力してください",
+    "submit": "提出"
+  },
+  "initialPassword": {
+    "title": "スーパー管理者権限が必要です",
+    "description": "このページを表示するには、スーパー管理者権限が必要です。続行するには、パスワードを入力してください。",
+    "placeholder": "スーパー管理者パスワードを入力してください",
+    "continue": "続きを読む"
+  },
+  "notifications": {
+    "created": "キュレーションが正常に作成されました",
+    "updated": "キュレーションの更新に成功しました",
+    "deleted": "キュレーションが正常に削除されました",
+    "typeCreated": "キュレーションタイプが正常に作成されました",
+    "typeUpdated": "キュレーションタイプが正常に更新されました",
+    "levelAdded": "レベルにキュレーションが正常に追加されました",
+    "levelUpdated": "キュレーションの更新に成功しました",
+    "bulkSuccess": "一括キュレーションが完了しました：{{created}} が作成され、{{updated}} が更新されました",
+    "bulkPartialSuccess": "{{affected}} レベルのバルクキュレーションが完了しました。{{skipped}} はスキップされました。",
+    "bulkFailed": "キュレーションの一括作成に失敗しました"
+  },
+  "actions": {
+    "addLevel": "レベルを追加",
+    "bulkCreate": "キュレーションの一括作成",
+    "manageTypes": "タイプの管理",
+    "manageCurators": "キュレーターの管理",
+    "manageSchedule": "スケジュールの管理",
+    "editLevel": "このレベルのキュレーションを編集する",
+    "editCuration": "編集・キュレーション",
+    "deleteCuration": "キュレーションを削除"
+  },
+  "confirmations": {
+    "deleteCuration": "このキュレーションを削除してもよろしいですか？"
+  },
+  "pagination": {
+    "pageLabel": "ページ ",
+    "pageOf": " {{total}}中"
+  }
+}

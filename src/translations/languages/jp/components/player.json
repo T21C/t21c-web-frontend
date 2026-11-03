@@ -1,0 +1,28 @@
+{
+  "countrySelect": {
+    "placeholder": "国または地域を選択してください",
+    "search": {
+      "placeholder": "国や地域を検索..."
+    }
+  },
+  "playerInput": {
+    "placeholder": "プレイヤーを検索...",
+    "loading": "読み込み中...",
+    "minChars": "検索するには、1文字以上入力してください",
+    "noResults": "該当するプレイヤーが見つかりませんでした",
+    "creation": {
+      "button": "新しいプレイヤーを作成する\"{{name}}\"",
+      "error": "プレイヤーの作成に失敗しました"
+    }
+  },
+  "errors": {
+    "loading": "プレイヤーデータの読み込みに失敗しました",
+    "saving": "プレイヤーデータの保存に失敗しました",
+    "notFound": "そのプレイヤーが見つかりません",
+    "duplicate": "そのプレイヤーはすでに存在します",
+    "invalid": "プレイヤーデータが無効です"
+  },
+  "buttons": {
+    "create": "新しいプレイヤーを作成する\"{{name}}\""
+  }
+}

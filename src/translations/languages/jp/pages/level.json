@@ -1,0 +1,62 @@
+{
+  "meta": {
+    "title": "レベル",
+    "description": "TUFの各レベルを閲覧・検索する"
+  },
+  "buttons": {
+    "searchHelp": "検索のヘルプ"
+  },
+  "input": {
+    "placeholder": "レベルを検索..."
+  },
+  "toolTip": {
+    "search": "詳細検索の使い方を学ぶ",
+    "filter": "レベルを絞り込む",
+    "sort": "レベルを並べ替える",
+    "reset": "すべてのフィルターをリセット",
+    "normalView": "通常表示",
+    "compactView": "「コンパクト表示」",
+    "toggleQSlider": "Q難易度スライダーの切り替え",
+    "orderAsc": "昇順",
+    "orderDesc": "降順",
+    "stateDisplay": "表示オプション",
+    "hideCardTags": "カード上で非表示にするタグを選択"
+  },
+  "settings": {
+    "sort": {
+      "header": "並べ替え基準...",
+      "recent": "ID",
+      "difficulty": "難易度",
+      "clears": "クリア",
+      "totalClears": "トータルクリア",
+      "likes": "いいね数",
+      "baseScore": "ベーススコア",
+      "bpm": "BPM",
+      "tiles": "タイル",
+      "time": "時間",
+      "random": "ランダム"
+    }
+  },
+  "settingExp": {
+    "headerFilter": "フィルター設定",
+    "headerSort": "並べ替え設定",
+    "filterDiffs": "難易度順",
+    "sortOrder": "並び順",
+    "viewMode": "表示モード",
+    "clearedLevels": "クリア済みレベル",
+    "deletedLevels": "削除済みレベル",
+    "myHiddenLevels": "自分が非表示にしたレベル",
+    "availableDl": "ダウンロード可能",
+    "specialDifficulties": "スペシャル難易度",
+    "curationTypes": "キュレーションタイプ",
+    "tags": "タグ",
+    "myLikes": "自分のいいね"
+  },
+  "totalResults": "全{{count}}件",
+  "infScroll": {
+    "end": "読み込めるレベルはもうありません"
+  },
+  "loading": {
+    "difficulties": "読み込みに問題が発生しています..."
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "title": "レベルのキュレーションを編集",
+  "description": "このレベルのキュレーション設定をカスタマイズします",
+  "descriptionLevel": "キュレーションタイプ（タグ）を選択し、このレベルの説明、CSS、色を編集します。各レベルにつき1つのキュレーションレコードに、共有コンテンツがまとめて保存されます。",
+  "emptyHint": "キュレーションはまだありません。下に行を追加するか、今すぐ保存してこのレベルのキュレーションをすべて削除してください。",
+  "rowTitle": "キュレーション {{n}}",
+  "form": {
+    "types": "キュレーションタイプ",
+    "typesCurrent": "選択中のタイプ",
+    "typesAdd": "タイプを追加",
+    "typesSearchPlaceholder": "タイプを検索…",
+    "typesNoneSelected": "タイプがまだ選択されていません。",
+    "typesNoResults": "検索条件に一致するタイプはありません。",
+    "typesNoneAvailable": "割り当て可能なタイプはこれ以上ありません。",
+    "removeType": "タイプを削除",
+    "addType": "タイプを追加",
+    "type": "キュレーションタイプ",
+    "selectType": "キュレーションタイプを選択",
+    "shortDescription": "短い説明",
+    "shortDescriptionPlaceholder": "簡単な説明（最大255文字）...",
+    "shortDescriptionHelp": "ギャラリー表示やプレビューに表示される簡単な説明です",
+    "description": "説明",
+    "descriptionPlaceholder": "このキュレーションの説明を入力してください...",
+    "descriptionRequired": "このキュレーションタイプには説明が必要です",
+    "descriptionRequiredType": "タイプ「{{name}}」には説明が必要です",
+    "descriptionRequiredPlaceholder": "説明を入力してください...",
+    "customColor": "カスタムカラー",
+    "customCSS": "カスタムCSS",
+    "previewCSS": "CSSをプレビュー",
+    "customCSSPlaceholder": "/* このレベルの詳細ページ用カスタムCSSを入力してください */\n.curation-custom {\n  /* ここにカスタムスタイルを記述してください */\n}",
+    "customCSSHelp": "このCSSはレベルの詳細ページに適用されます。外観やレイアウトのカスタマイズに使用してください。",
+    "thumbnail": "レベルのサムネイル",
+    "isDuplicate": "重複として扱う",
+    "isDuplicateHelp": "このキュレーションをクリエイターの獲得タイプ集計とDiscord RoleSyncの対象から除外します。レベル上には引き続き表示されます。"
+  },
+  "actions": {
+    "save": "変更を保存",
+    "addCuration": "キュレーションを追加",
+    "removeCuration": "このキュレーションを削除",
+    "saveAll": "すべて保存"
+  },
+  "warnings": {
+    "cssUnsupported": "選択したタイプはカスタムCSSに対応していません。"
+  },
+  "notifications": {
+    "updated": "キュレーションを保存しました",
+    "thumbnailUpdated": "サムネイルを更新しました",
+    "thumbnailRemoved": "サムネイルを削除しました"
+  },
+  "errors": {
+    "cannotManageCuration": "現在のタイプ設定では、あなたのロールでこのキュレーションを編集できません。",
+    "loadFailed": "このレベルのキュレーションの読み込みに失敗しました",
+    "typeRequired": "各キュレーション行のタイプを選択するか、空の行を削除してください",
+    "updateFailed": "キュレーションの保存に失敗しました",
+    "thumbnailUpdateFailed": "サムネイルの更新に失敗しました",
+    "thumbnailRemoveFailed": "サムネイルの削除に失敗しました"
+  }
+}

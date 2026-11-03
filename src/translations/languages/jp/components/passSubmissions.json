@@ -1,0 +1,126 @@
+{
+  "noSubmissions": "未処理の提出はありません",
+  "details": {
+    "level": "レベル",
+    "player": "プレイヤー",
+    "feelingDiff": "体感難易度",
+    "expectedDiff": "予想レーティング",
+    "passDetails": "クリアの詳細",
+    "speed": "速度",
+    "judgements": {
+      "label": "判定",
+      "tilecountMismatchTooltip": "判定の合計 <b>{{hitSum}}</b> が、達成可能なタイル数 <b>{{tilecount}}</b> と一致しません。",
+      "tilecountMismatchTooltipWithAuto": "判定の合計 <b>{{hitSum}}</b> が、達成可能なタイル数 <b>{{tilecount}}</b> （{{rawTilecount}} 合計、{{autoTileCount}} 自動）と一致しません。",
+      "tilecountMismatchTooltipWithMidspin": "判定の合計 <b>{{hitSum}}</b> が、達成可能なタイル数 <b>{{tilecount}}</b> （{{rawTilecount}} 合計、{{midspinCount}} スピン途中）と一致しません。",
+      "tilecountMismatchTooltipWithAutoAndMidspin": "判定の合計 <b>{{hitSum}}</b> が、達成可能なタイル数 <b>{{tilecount}}</b> と一致しません（合計 <b>{{rawTilecount}}</b>、オート <b>{{autoTileCount}}</b>、ミッドスピン <b>{{midspinCount}}</b>）。",
+      "fields": {
+        "earlyDouble": "ED",
+        "earlySingle": "ES",
+        "ePerfect": "EP",
+        "perfectMinus": "P−",
+        "perfect": "P",
+        "perfectPlus": "P+",
+        "lPerfect": "LP",
+        "lateSingle": "LS",
+        "lateDouble": "LD"
+      }
+    },
+    "flags": {
+      "label": "フラッグ",
+      "keyCount": "{{count}}K",
+      "keyCountLabel": "キー数",
+      "keyCountPlaceholder": "任意",
+      "types": {
+        "12k": "12K",
+        "nht": "NHT",
+        "16k": "16K",
+        "adofaiV2": "ADOFAI v2",
+        "adofaiVersion": "ADOFAIのバージョン",
+        "xPerfect": "X-Perfect"
+      },
+      "era": {
+        "latest": "3.4.0",
+        "pre340": "<3.4.0",
+        "v2": "v2"
+      }
+    },
+    "submitter": "提出者:",
+    "submitterRecordTooltip": "{{accepted}} 承認済み / {{declined}} 却下済み",
+    "uploadTime": "アップロード時間",
+    "videoLink": "動画のリンク:",
+    "videoLinkPlaceholder": "YouTubeまたはBilibiliのURL",
+    "videoFromOwnChannel": "ユーザー自身のチャンネルからの動画",
+    "videoFromPasserChannel": "クリア者のチャンネル"
+  },
+  "midspinWarning": {
+    "willApply": "このチャートには{{count}}個のミッドスピンタイルがあります。保存すると、これらはPerfectのスコアから差し引かれます。",
+    "alreadyApplied": "このクリアからは、すでにミッドスピンPerfectが除外されています。",
+    "missing": "このレベルにはまだミッドスピンのカウントがないため、Perfectのレーティングは調整されません。",
+    "perfectLt": "Perfectはミッドスピンカウントを下回っているため、Perfectの値は調整されません。"
+  },
+  "playerAssignment": {
+    "title": "プレイヤーの割り当て",
+    "current": "現在登録されているプレイヤー",
+    "discord": {
+      "assignButton": "Discordを割り当てる"
+    },
+    "newProfile": "新しいプロフィールのリクエスト",
+    "manageProfile": "プレイヤーの管理"
+  },
+  "buttons": {
+    "allow": "許可",
+    "decline": "拒否",
+    "reset": "リセット",
+    "clear": "クリア",
+    "selectAll": "すべて選択",
+    "autoAllow": "自動許可",
+    "autoReject": "自動拒否"
+  },
+  "declinePrompt": {
+    "title": "このクリアを拒否しますか？",
+    "message": "提出者には通知されます。必要に応じて、その理由を説明することもできます。"
+  },
+  "errors": {
+    "noPlayer": "承認する前に、プレイヤーを割り当ててください",
+    "playerAssignment": "プレイヤーの割り当てに失敗しました",
+    "processing": "提出の処理中にエラーが発生しました",
+    "autoAllow": "提出の自動承認に関するエラー",
+    "profileUpdate": "プロフィールを使用して提出を更新できませんでした",
+    "needProfileCreation": "承認を受けるには、まずプロフィールを作成する必要があります",
+    "patch": "提出の更新に失敗しました",
+    "invalidKeyCount": "キーの数は正の整数でなければなりません",
+    "videoLinkUpdateFailed": "動画リンクの更新に失敗しました",
+    "videoLinkRequired": "動画のリンクは空欄にできません"
+  },
+  "success": {
+    "playerAssigned": "{{playerName}}への割り当てに成功しました",
+    "autoAllow": "{{count}}件の提出が自動的に承認されました",
+    "autoAllowQueued": "{{count}}回のクリアがキューに入れられ、順次処理されます",
+    "playerCreated": "{{playerName}} の作成と割り当てに成功しました",
+    "patch": "提出を更新しました",
+    "videoLinkUpdated": "動画のリンクを更新しました"
+  },
+  "edit": {
+    "edit": "編集",
+    "levelPlaceholder": "検索するか、レベルIDを入力してください",
+    "fetchingLevel": "レベルを読み込み中…",
+    "songPlaceholder": "曲"
+  },
+  "loading": "提出を読み込んでいます...",
+  "noItems": "提出が見つかりませんでした",
+  "search": {
+    "placeholder": "提出を検索..."
+  },
+  "stats": {
+    "selected": "選択済み",
+    "total": "合計"
+  },
+  "modal": {
+    "title": "操作を確認",
+    "confirmMessage": "@{{username}} を {{playerName}} に割り当てます。続行しますか？",
+    "tooltip": "{{discordUsername}} ➔ {{playerName}}"
+  },
+  "notifications": {
+    "autoAllow": "自動的に承認された {{count}} 件の提出"
+  }
+}

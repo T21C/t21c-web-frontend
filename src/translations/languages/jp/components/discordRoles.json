@@ -1,0 +1,82 @@
+{
+  "title": "Discordのロール同期",
+  "loading": "読み込み中...",
+  "errors": {
+    "loadGuilds": "Discordのギルドを読み込めませんでした",
+    "createGuild": "ギルドの作成に失敗しました",
+    "updateGuild": "ギルドの更新に失敗しました",
+    "deleteGuild": "ギルドの更新に失敗しました",
+    "createRole": "ロールの作成に失敗しました",
+    "updateRole": "ロールの更新に失敗しました",
+    "deleteRole": "ロールの削除に失敗しました",
+    "reorderRoles": "ロールの並べ替えに失敗しました"
+  },
+  "success": {
+    "guildCreated": "ギルドの作成に成功しました",
+    "guildUpdated": "ギルドの更新に成功しました",
+    "guildDeleted": "ギルドの削除に成功しました",
+    "roleCreated": "役割の作成に成功しました",
+    "roleUpdated": "役割の更新に成功しました",
+    "roleDeleted": "ロールが正常に削除されました",
+    "rolesReordered": "ロールの並べ替えが正常に完了しました"
+  },
+  "empty": {
+    "noGuilds": "Discordのギルドはまだ設定されていません。",
+    "noGuildsHint": "ギルドを追加して、ロールの同期設定を開始してください。",
+    "noRoles": "この {{type}} には、設定されたロールがありません。"
+  },
+  "guild": {
+    "add": "ギルドを追加",
+    "edit": "ギルドを編集",
+    "rolesFor": "{{type}}のロール",
+    "roleCount": "{{count}}のロール",
+    "roleCountPlural": "{{count}}つのロール",
+    "status": {
+      "active": "アクティブ",
+      "inactive": "非アクティブ"
+    },
+    "confirmDelete": "このギルドとそのすべてのロールを削除してもよろしいですか？",
+    "form": {
+      "guildId": "ギルドID（DiscordサーバーID）",
+      "guildIdPlaceholder": "例：1234567890123456789",
+      "displayName": "表示名",
+      "displayNamePlaceholder": "例：TUForums公式",
+      "botToken": "ボットトークン",
+      "botTokenPlaceholder": "Discordボットトークン",
+      "botTokenPlaceholderEdit": "変更せずにそのままにするか、新しいトークンを入力してください",
+      "botTokenHint": "そのボットは、このギルドに所属しており、「ロールの管理」権限を持っている必要があります。",
+      "active": "アクティブ"
+    }
+  },
+  "role": {
+    "add": "ロールを追加",
+    "edit": "ロールの編集",
+    "group": "グループ: {{group}}",
+    "confirmDelete": "このロールを削除してもよろしいですか？",
+    "form": {
+      "roleId": "DiscordロールID",
+      "roleIdPlaceholder": "例：1234567890123456789",
+      "label": "ラベル",
+      "labelPlaceholder": "例：U10+ クリア",
+      "minimumDifficulty": "最低難易度",
+      "selectDifficulty": "難易度を選択してください...",
+      "difficultyHint": "この難易度以上でクリアを達成したユーザーには、このロールが付与されます。",
+      "curationType": "キュレーションタイプ",
+      "selectCurationType": "キュレーションタイプを選択してください...",
+      "curationTypeHint": "このキュレーションタイプで各レベルにクレジットされたクリエイターには、このロールが付与されます。",
+      "conflictGroup": "コンフリクトグループ(optional)",
+      "conflictGroupPlaceholder": "例：難易度レベル",
+      "conflictGroupHint": "同じコンフリクトグループ内のロールは互いに置き換えられます（最も優先順位の高いもののみが適用されます）。",
+      "active": "アクティブ"
+    }
+  },
+  "types": {
+    "difficulty": "難易度",
+    "curation": "キュレーション"
+  },
+  "confirmClose": {
+    "title": "保存されていない変更",
+    "message": "保存されていない変更があります。本当に閉じてよろしいですか？",
+    "discard": "変更を破棄する"
+  }
+}

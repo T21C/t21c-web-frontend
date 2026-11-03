@@ -1,0 +1,41 @@
+{
+  "sections": {
+    "common": "基本情報",
+    "levelDetails": "レベルの詳細",
+    "passDetails": "クリアの詳細",
+    "judgements": "判定"
+  },
+  "fields": {
+    "videoLink": "動画リンク",
+    "song": "曲名",
+    "artist": "アーティスト",
+    "charter": "チャーター",
+    "vfxer": "VFXアーティスト",
+    "team": "チーム",
+    "diff": "難易度",
+    "dlLink": "ダウンロードリンク",
+    "workshopLink": "ワークショップのリンク",
+    "levelId": "レベルID",
+    "speed": "速度",
+    "feelingRating": "体感レーティング",
+    "ePerfect": "EPerfect",
+    "perfect": "Perfect",
+    "lPerfect": "LPerfect",
+    "tooEarly": "Too Early",
+    "early": "Early",
+    "late": "Late",
+    "isNoHold": "ホールドなし",
+    "is12K": "12K",
+    "is16K": "16K"
+  },
+  "errors": {
+    "required": "この欄は必須です",
+    "requiredEither": "「ダウンロードリンク」または「ワークショップリンク」のいずれかが必要です",
+    "pendingProfiles": "プロフィールの作成が完了するまでお待ちください",
+    "submitFailed": "提出に失敗しました"
+  },
+  "submit": "提出",
+  "warnings": {
+    "pendingProfiles": "このプロフィールの作成がリクエストされます:"
+  }
+}

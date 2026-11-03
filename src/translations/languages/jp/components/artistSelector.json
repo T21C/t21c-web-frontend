@@ -1,0 +1,50 @@
+{
+  "title": "アーティストを選択",
+  "currentArtist": {
+    "label": "注目のアーティスト",
+    "none": "アーティストが選択されていません"
+  },
+  "search": {
+    "placeholder": "アーティストを検索...",
+    "noResults": "該当するアーティストが見つかりませんでした"
+  },
+  "buttons": {
+    "createNew": "新規リクエスト",
+    "assign": "アーティストを割り当てる",
+    "create": "リクエスト",
+    "creating": "リクエスト中..."
+  },
+  "createForm": {
+    "title": "新アーティストのリクエスト",
+    "name": "アーティスト",
+    "namePlaceholder": "アーティスト名を入力してください",
+    "verificationState": "検証状態"
+  },
+  "stats": {
+    "title": "アーティストの統計",
+    "levels": "レベル",
+    "songs": "曲"
+  },
+  "status": {
+    "unverified": "未確認",
+    "pending": "保留中",
+    "declined": "却下",
+    "mostlyDeclined": "ほとんど却下",
+    "mostlyAllowed": "ほとんど許可",
+    "allowed": "許可済み",
+    "ysmodOnly": "YSModのみ"
+  },
+  "messages": {
+    "success": {
+      "artistAssigned": "アーティストの割り当てに成功しました",
+      "artistCreated": "アーティストのリクエストが正常に追加されました"
+    },
+    "error": {
+      "searchFailed": "アーティストの検索に失敗しました",
+      "loadDetailsFailed": "アーティストの詳細を読み込めませんでした",
+      "artistNotFound": "アーティストが見つかりません",
+      "assignFailed": "アーティストの割り当てに失敗しました",
+      "createFailed": "アーティストの取得に失敗しました"
+    }
+  }
+}

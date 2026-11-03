@@ -1,0 +1,21 @@
+{
+  "title": "アーティスト詳細",
+  "meta": {
+    "title": "{{name}}",
+    "description": "「The Universal Forums」で{{name}}のアーティスト情報とレベルを確認する"
+  },
+  "sections": {
+    "aliases": "別名",
+    "links": "リンク",
+    "songs": "曲",
+    "extraInfo": "追加情報",
+    "evidence": "証拠",
+    "levels": "レベル",
+    "relations": "関係"
+  },
+  "backToList": "アーティスト一覧に戻る",
+  "errors": {
+    "notFound": "アーティストが見つかりません",
+    "loadFailed": "アーティストの読み込みに失敗しました"
+  }
+}

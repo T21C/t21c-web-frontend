@@ -1,0 +1,84 @@
+{
+  "meta": {
+    "title": "ホーム",
+    "description": "The Universal Forums（TUF）へようこそ - ADOFAIのカスタムレベルを中心とした、コミュニティ主導のコミュニティです。"
+  },
+  "title": {
+    "revamped": "リニューアル"
+  },
+  "buttons": {
+    "browseLevels": "レベル一覧",
+    "browsePasses": "クリアを閲覧する",
+    "browsePacks": "パックを閲覧する",
+    "leaderboard": "ランキング"
+  },
+  "tooltips": {
+    "tufStellarOut": "TUFStellarがリリースされました！"
+  },
+  "resourcesCta": {
+    "title": "フォーラムは初めてですか？",
+    "subtitle": "まずはここから始めましょう！",
+    "dontShowAgain": "今後表示しない",
+    "iconAlt": "TUFのスタートアイコン"
+  },
+  "stats": {
+    "overview": {
+      "title": "概要",
+      "totalLevels": "総レベル数",
+      "totalPasses": "総クリア数",
+      "totalPlayers": "総プレイヤー数",
+      "passesLast30Days": "クリア（30日間）"
+    },
+    "difficulties": {
+      "title": "難易度統計",
+      "graphModes": {
+        "passes": "クリア",
+        "levels": "レベル"
+      }
+    },
+    "discord": {
+      "title": "ぜひDiscordに参加してください！"
+    },
+    "comingSoon": "もっと楽しいコンテンツが近日公開予定…",
+    "donate": "Ko-fiで私を応援してください！"
+  },
+  "weeklies": {
+    "title": "週間レベル",
+    "description": "今週のおすすめセレクション",
+    "primary": "レジェンダリー",
+    "secondary": "人気",
+    "error": "ウィークリーの読み込みに失敗しました",
+    "empty": "今週はレベル分けの予定はありません"
+  },
+  "footer": {
+    "about": {
+      "title": "TUF",
+      "description": "The Universal Forumsは、ゲーム「ADOFAI」のカスタムレベルの難易度を収集し、レーティングすることを目的としたコミュニティ主導の組織です。"
+    },
+    "quickLinks": {
+      "title": "クイックリンク",
+      "browseLevels": "レベル一覧",
+      "browsePasses": "クリアの閲覧",
+      "browsePacks": "パックの閲覧",
+      "leaderboard": "ランキング",
+      "scoreCalculator": "スコア計算機",
+      "aboutUs": "私たちについて",
+      "levels": "レベル",
+      "resources": "リソース",
+      "mods": "MOD",
+      "privacyPolicy": "プライバシーポリシー",
+      "termsOfService": "利用規約",
+      "apiDocs": "APIドキュメント",
+      "developers": "開発者ポータル"
+    },
+    "community": {
+      "title": "コミュニティ",
+      "discord": "Discord",
+      "github": "GitHub"
+    },
+    "copyright": {
+      "main": "© {{year}} TUF. 7th Beat Gamesとは一切関係ありません。",
+      "credit": "❤️を込めて、V0W4Nが制作"
+    }
+  }
+}

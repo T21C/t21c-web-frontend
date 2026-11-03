@@ -1,0 +1,108 @@
+{
+  "title": "クリエイター／チームの管理",
+  "loading": "読み込み中...",
+  "modes": {
+    "assign": "既存の割り当て",
+    "create": "新規作成"
+  },
+  "role": {
+    "label": "ロール"
+  },
+  "currentCreator": {
+    "label": "現在選択されているクリエイター",
+    "none": "クリエイターが選択されていません"
+  },
+  "currentTeam": {
+    "label": "現在選択されているチーム",
+    "none": "選択されたチームはありません"
+  },
+  "search": {
+    "placeholder": "クリエイターを検索...",
+    "noResults": "該当するクリエイターが見つかりませんでした",
+    "teamPlaceholder": "チームを検索...",
+    "noTeamsFound": "該当するチームが見つかりませんでした"
+  },
+  "createForm": {
+    "title": "新しいクリエイターを作成する",
+    "name": "クリエイター名",
+    "namePlaceholder": "クリエイターの名前を入力してください",
+    "aliases": "別名（任意）",
+    "aliasesPlaceholder": "別名をカンマで区切って入力してください",
+    "aliasesHelp": "複数の別名をコンマで区切って追加します（例：alias1, alias2）"
+  },
+  "teamForm": {
+    "title": "新しいチームを作成する",
+    "name": "チーム名",
+    "namePlaceholder": "チーム名を入力してください",
+    "aliases": "チームの別名（任意）",
+    "aliasesPlaceholder": "チームの別名をカンマで区切って入力してください",
+    "aliasesHelp": "複数の別名をカンマで区切って追加します（例：alias1, alias2）"
+  },
+  "form": {
+    "name": "クリエイター名",
+    "namePlaceholder": "クリエイターの名前を入力してください",
+    "aliases": "別名",
+    "aliasPlaceholder": "別名を入力してください"
+  },
+  "stats": {
+    "title": "クリエイター統計",
+    "totalLevels": "レベル数",
+    "charterCount": "チャーター数",
+    "vfxerCount": "VFX担当者の人数",
+    "selectedRole": "選択されたロールの数"
+  },
+  "teamStats": {
+    "title": "チーム統計",
+    "totalLevels": "レベル合計",
+    "memberCount": "メンバー数",
+    "members": "メンバー"
+  },
+  "status": {
+    "verified": "✓ 認証済みクリエイター"
+  },
+  "badges": {
+    "newRequest": "新規リクエスト"
+  },
+  "buttons": {
+    "assign": "クリエイターを割り当てる",
+    "assignTeam": "チームを割り当てる",
+    "confirm": "割り当ての確認",
+    "create": "クリエイターを作成",
+    "createTeam": "チームを作成する",
+    "createNew": "新規作成",
+    "addAlias": "別名を追加",
+    "change": "変更",
+    "select": "クリエイターを選択",
+    "selectTeam": "チームを選択",
+    "manageTeam": "チームの管理",
+    "manageCreator": "クリエイターの管理"
+  },
+  "messages": {
+    "success": {
+      "creatorCreated": "クリエイターが正常に作成されました",
+      "creatorAssigned": "クリエイターの割り当てに成功しました",
+      "creatorCreatedAndAssigned": "クリエイターが作成および割り当てを正常に完了しました",
+      "teamCreated": "チームが正常に作成されました",
+      "teamAssigned": "チームの割り当てが完了しました",
+      "teamCreatedAndAssigned": "チームの作成と割り当てが正常に完了しました",
+      "teamUpdated": "チームの更新に成功しました"
+    },
+    "error": {
+      "createFailed": "クリエイターの作成に失敗しました",
+      "assignFailed": "クリエイターの割り当てに失敗しました",
+      "loadFailed": "クリエイターの読み込みに失敗しました",
+      "loadDetailsFailed": "クリエイターの詳細を読み込めませんでした",
+      "searchFailed": "クリエイターの検索に失敗しました",
+      "noCreditRequest": "このロールのクレジット提出は見つかりません",
+      "creatorNotFound": "クリエイターが見つかりません",
+      "teamCreateFailed": "チームの作成に失敗しました",
+      "teamAssignFailed": "チームの割り当てに失敗しました",
+      "teamLoadFailed": "チームの読み込みに失敗しました",
+      "teamNotFound": "該当するチームが見つかりません",
+      "invalidTeamData": "提供されたチームデータが無効です",
+      "creditRequestIdMissing": "クレジットリクエストIDが欠落しています",
+      "nameExists": "この名前のクリエイターはすでに存在します。検索機能を使って、そのクリエイターを割り当ててください。",
+      "teamNameExists": "この名前のチームはすでに存在します。検索機能を使って、そちらを割り当ててください。"
+    }
+  }
+}

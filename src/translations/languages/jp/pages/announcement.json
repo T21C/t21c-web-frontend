@@ -1,0 +1,70 @@
+{
+  "meta": {
+    "title": "アナウンス",
+    "description": "「The Universal Forums（TUF）」の新しいレベル、再レート、およびクリア者の管理とアナウンス"
+  },
+  "header": {
+    "title": "アナウンス"
+  },
+  "listCount": "合計{{count}}件",
+  "tabs": {
+    "newLevels": "新たなレベル",
+    "rerates": "再レート",
+    "passes": "クリア"
+  },
+  "buttons": {
+    "retry": "再試行",
+    "refresh": "更新",
+    "selectAll": "すべて選択",
+    "deselectAll": "すべて選択解除",
+    "announce": "選択した項目をアナウンス",
+    "announcing": "アナウンス中..."
+  },
+  "success": {
+    "queued": "お知らせがキューに入れられました。サイドパネルで進捗状況を確認してください。"
+  },
+  "errors": {
+    "fetchFailed": "項目の取得に失敗しました。もう一度お試しください。",
+    "announceFailed": "アイテムの告知に失敗しました。もう一度お試しください。",
+    "invalidIds": "一部の項目のIDが無効です",
+    "discordBlocked": "Discordのウェブフックは一時的にブロックされています。{{time}}後に再度お試しください。",
+    "discardFailed": "アナウンスの破棄に失敗しました。"
+  },
+  "gate": {
+    "banner": "Discordへの配信がブロックされています。{{time}}後に再試行してください。"
+  },
+  "panel": {
+    "title": "配信状況",
+    "inProgress": "進行中",
+    "recent": "最近の",
+    "emptyInProgress": "現在、掲載中のアナウンスはありません",
+    "emptyRecent": "最近のお知らせはありません",
+    "noAnnouncements": "お知らせはありません",
+    "loading": "配信状況の読み込み中…",
+    "mergedNote": "進行中の項目も含まれます",
+    "stale": "{{time}}以降、更新されていません",
+    "attempt": "{{count}}回目の試行",
+    "discard": "破棄",
+    "discardConfirm": "このアナウンスを停止して、項目を再送できるようにしますか？",
+    "discarded": "アナウンスは破棄されました",
+    "status": {
+      "queued": "キューに追加済み",
+      "sending": "提出中",
+      "blocked": "ブロックされています",
+      "completed": "完了",
+      "failed": "失敗",
+      "pending": "保留中",
+      "delivered": "配送済み",
+      "skipped": "スキップした",
+      "sent": "提出済み"
+    },
+    "phase": {
+      "queued": "キューに入れられた",
+      "preparing": "準備中",
+      "resolving": "提出先を解決中",
+      "waiting_gate": "Discordで待機中",
+      "sending_webhook": "{{label}} に提出中",
+      "recording": "記録中"
+    }
+  }
+}

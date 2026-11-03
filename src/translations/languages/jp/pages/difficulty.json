@@ -1,0 +1,232 @@
+{
+  "meta": {
+    "title": "難易度を管理する",
+    "description": "The Universal Forums（TUF）の難易度設定を管理する"
+  },
+  "header": {
+    "title": "難易度を管理する",
+    "refresh": "難易度を更新する"
+  },
+  "access": {
+    "denied": {
+      "title": "アクセス拒否",
+      "message": "このページにアクセスするには、スーパー管理者権限が必要です。"
+    }
+  },
+  "buttons": {
+    "create": "新しい難易度を作成する",
+    "understand": "そのリスクは理解しています",
+    "discordRoles": "Discord ロールの同期"
+  },
+  "loading": {
+    "difficulties": "難易度を読み込み中…",
+    "deleting": "削除中...",
+    "savingDifficulty": "難易度の保存中...",
+    "reorderingDifficulties": "難易度の並び順を更新中…",
+    "savingTag": "タグを作成中...",
+    "updatingTag": "タグを更新中...",
+    "deletingTag": "タグを削除中...",
+    "reorderingTags": "タグの順序を更新中...",
+    "reorderingGroups": "グループの並び順を更新中…",
+    "fetchingTags": "タグを読み込み中...",
+    "savingGroup": "グループを作成中...",
+    "updatingGroup": "グループを更新中...",
+    "deletingGroup": "グループを削除しています..."
+  },
+  "noItems": {
+    "message": "問題は見つかりませんでした。"
+  },
+  "difficultyTypes": {
+    "PGU": "PGU",
+    "SPECIAL": "SPECIAL"
+  },
+  "form": {
+    "labels": {
+      "id": "ID：",
+      "name": "名前：",
+      "type": "タイプ：",
+      "icon": "アイコンのURL：",
+      "legacyIcon": "レガシーアイコンのURL",
+      "emoji": "絵文字:",
+      "legacyEmoji": "レガシー絵文字：",
+      "color": "色：",
+      "baseScore": "ベーススコア：",
+      "sortOrder": "並べ替え順：",
+      "legacy": "レガシー:",
+      "fallbackId": "フォールバック難易度IDを入力してください:",
+      "fallbackDiff": "フォールバック難易度:"
+    },
+    "placeholders": {
+      "fallbackId": "代替難易度のIDを入力してください",
+      "fallbackDiff": "交換の難易度を選択してください"
+    },
+    "helpText": {
+      "fallbackId": "{{name}} を使用しているすべてのレベルは、代わりにこの難易度を使用するように更新されます。",
+      "fallbackDiff": "{{name}} を使用しているすべてのレベルは、代わりにこの難易度を使用するように更新されます。"
+    }
+  },
+  "modal": {
+    "create": {
+      "title": "新しい難易度を作成する"
+    },
+    "edit": {
+      "title": "難易度の編集"
+    },
+    "delete": {
+      "title": "難易度を削除",
+      "warning": {
+        "title": "⚠️ 警告：破壊的な行為 ⚠️",
+        "message": "{{name}}という難易度を削除しようとしています。",
+        "description": "このアクション：",
+        "points": [
+          "元に戻すことはできません",
+          "この難易度設定を使用しているすべてのレベルに影響します",
+          "続行する前にバックアップが必要です"
+        ],
+        "highlight": "続行する前に、必ずバックアップを作成してください！"
+      }
+    }
+  },
+  "passwordModal": {
+    "initialTitle": "スーパー管理者のパスワードが必要です",
+    "initialMessage": "このページにアクセスするには、スーパー管理者パスワードを入力してください。",
+    "title": "スーパー管理者のパスワードが必要です",
+    "message": "難易度を{{action}}するには、スーパー管理者パスワードを入力してください。",
+    "placeholder": "パスワードを入力してください",
+    "errors": {
+      "invalid": "パスワードが間違っています",
+      "generic": "操作の実行中にエラーが発生しました"
+    }
+  },
+  "notifications": {
+    "created": "難易度の作成に成功しました",
+    "updated": "難易度の更新に成功しました",
+    "deleted": "難易度が正常に削除されました",
+    "reordered": "順序の変更に成功しました",
+    "reorderFailed": "難易度の並べ替えに失敗しました"
+  },
+  "tabs": {
+    "difficulties": "難易度",
+    "tags": "タグ",
+    "groups": "グループ"
+  },
+  "tags": {
+    "createButton": "タグを作成する",
+    "noTags": "タグが見つかりませんでした。最初のタグを作成しましょう！",
+    "ungrouped": "未分類",
+    "tagCount": "{{count}} タグ{{plural}}",
+    "fields": {
+      "description": "説明",
+      "assignmentSection": "タグの割り当て",
+      "inherit": "継承",
+      "scoringMode": "スコアリングモード",
+      "modeWilson": "Wilson（トッププレイ＋1）",
+      "modeSkillset": "スキルセット（クリアーのみ）",
+      "requireTopPlay": "トッププレイの要件",
+      "requireTopPlayHint": "「継承」はグループの設定を使用します。「必須」または「必須ではない」の設定がこれに優先します。「必須」の場合、投票者は、少なくともこのチャートの難易度（トッププレイ＋1）に相当するトップクリアを記録している必要があります。",
+      "requireTopPlayGroupHint": "このグループ内のタグで「継承」に設定されているものに適用されます。必要な場合、投票者は、少なくともこのチャートの難易度（トッププレイ + 1）をクリアしている必要があります。",
+      "requireTopPlayOn": "必須",
+      "requireTopPlayOff": "不要",
+      "wilsonZ": "Wilson Z",
+      "wilsonZHint": "懐疑的スコアリングは、投票数が少ない場合にどれほど慎重になるか。Z値が高いほど、同じ閾値に達するには、より多くの賛成票が必要となる。",
+      "wilsonZWeightHint": "クリアー以外の投票は、クリアーの投票数の0.1倍としてカウントされる",
+      "wilsonZInfoAria": "クリアできなかった者に対する投票のウェイト",
+      "scoreOn": "しきい値を割り当てる",
+      "scoreOff": "しきい値を削除する",
+      "reqVotes": "必要な票数：{{count}}",
+      "allowedBands": "適用対象",
+      "allowedBandsHint": "バンドを非表示にすると、その範囲のチャート上でこのタグが非表示になります。コミュニティがすでにこのタグを割り当てていた場合でも同様です。投票結果は保持されます。すべてを非表示のままにすると、設定が継承されます（グループ、そしてすべてのバンド）。",
+      "bandP": "Planetary",
+      "bandG": "Galactic",
+      "bandU": "Universal",
+      "bandSpec": "Special"
+    },
+    "create": {
+      "title": "タグを作成する",
+      "name": "名前",
+      "color": "色",
+      "group": {
+        "label": "グループ（任意）",
+        "placeholder": "グループ名を入力してください"
+      },
+      "icon": {
+        "label": "アイコン（任意）",
+        "preview": "プレビュー",
+        "remove": "アイコンを削除"
+      },
+      "createButton": "作成",
+      "cancelButton": "キャンセル",
+      "isCommunity": "コミュニティタグ（プレイヤーはこのタグを各ステージに投票できます）",
+      "passWarningEnabled": "このタグが存在する場合、提出時に警告を表示する",
+      "charterManagable": "チャーターがこのタグを設定できます"
+    },
+    "edit": {
+      "title": "タグを編集",
+      "name": "名前",
+      "color": "色",
+      "group": {
+        "label": "グループ（任意）",
+        "placeholder": "グループ名を入力してください"
+      },
+      "icon": {
+        "label": "アイコン（任意）",
+        "preview": "プレビュー",
+        "remove": "アイコンを削除"
+      },
+      "updateButton": "更新",
+      "cancelButton": "キャンセル",
+      "unsavedChanges": "保存されていない変更があります。本当に閉じてよろしいですか？",
+      "isCommunity": "コミュニティタグ（プレイヤーはこのタグを各ステージに投票できます）",
+      "passWarningEnabled": "このタグが存在する場合、提出時に警告を表示する",
+      "charterManagable": "チャーターがこのタグを設定できます"
+    },
+    "delete": {
+      "title": "タグを削除",
+      "message": "保存されていない変更があります。本当に閉じてよろしいですか？",
+      "description": "この操作は元に戻せません。タグはすべてのレベルから削除されます。",
+      "deleteButton": "削除",
+      "cancelButton": "キャンセル"
+    },
+    "notifications": {
+      "fetchFailed": "タグの取得に失敗しました",
+      "created": "が正常に作成されました",
+      "createFailed": "タグの作成に失敗しました",
+      "updated": "タグの更新に成功しました",
+      "updateFailed": "タグの更新に失敗しました",
+      "deleted": "タグが正常に削除されました",
+      "deleteFailed": "タグの削除に失敗しました",
+      "reordered": "タグの並べ替えが正常に完了しました",
+      "reorderFailed": "タグの並べ替えに失敗しました"
+    }
+  },
+  "groups": {
+    "createButton": "グループを作成する",
+    "noGroups": "グループが見つかりませんでした。グループを作成するか、タグを作成する際にグループ名を指定してください。",
+    "create": {
+      "title": "グループを作成する",
+      "name": "名前",
+      "createButton": "作成"
+    },
+    "edit": {
+      "title": "グループを編集",
+      "name": "名前",
+      "updateButton": "更新"
+    },
+    "delete": {
+      "title": "グループを削除",
+      "message": "グループ \"{{name}}\"を削除してもよろしいですか?",
+      "description": "このグループ内のタグはグループから外されます。この操作は元に戻せません。",
+      "deleteButton": "削除"
+    },
+    "notifications": {
+      "reordered": "グループの並べ替えが正常に完了しました",
+      "reorderFailed": "グループの並べ替えに失敗しました",
+      "created": "グループの作成に成功しました",
+      "createFailed": "グループの作成に失敗しました",
+      "updated": "グループの更新に成功しました",
+      "updateFailed": "グループの更新に失敗しました",
+      "deleted": "グループの削除に成功しました",
+      "deleteFailed": "グループの削除に失敗しました"
+    }
+  }
+}

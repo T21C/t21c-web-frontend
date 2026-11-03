@@ -1,0 +1,59 @@
+{
+  "meta": {
+    "title": "クリア一覧",
+    "description": "プレイヤーの実績を閲覧・発見する"
+  },
+  "loading": {
+    "difficulties": "読み込みに問題が発生しています..."
+  },
+  "input": {
+    "placeholder": "アーティスト名、曲名、またはアーティスト名で検索..."
+  },
+  "toolTip": {
+    "filter": "検索結果を絞り込む",
+    "sort": "結果を並べ替える",
+    "reset": "すべてのフィルターをリセットする",
+    "search": "詳細検索の使い方を学ぶ",
+    "orderAsc": "昇順",
+    "orderDesc": "降順",
+    "stateDisplay": "表示オプション"
+  },
+  "buttons": {
+    "searchHelp": "検索のヘルプ"
+  },
+  "settings": {
+    "filter": {
+      "title": "フィルター設定",
+      "options": {
+        "only12k": "12Kのみ",
+        "deletedPasses": "削除されたクリア",
+        "keyFlags": "キーカウント",
+        "wfFilter": "WFフィルター",
+        "adofaiVersion": "ADOFAIのバージョン",
+        "wrongJudgement": "誤った判定"
+      }
+    },
+    "sort": {
+      "title": "並べ替え設定",
+      "header": "クリアを次の基準で並べ替える...",
+      "order": "並べ替え順",
+      "options": {
+        "date": "日時",
+        "score": "スコア",
+        "accuracy": "精度",
+        "difficulty": "難易度",
+        "speed": "速度",
+        "keyCount": "キーカウント",
+        "likes": "いいね",
+        "random": "ランダム"
+      }
+    },
+    "stateDisplay": {
+      "title": "表示オプション"
+    }
+  },
+  "totalResults": "{{count}} 件の検索結果",
+  "infScroll": {
+    "end": "リストは以上です"
+  }
+}

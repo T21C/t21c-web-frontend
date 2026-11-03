@@ -1,0 +1,57 @@
+{
+  "meta": {
+    "title": "私の提出",
+    "description": "クリアおよびチャートの提出内容を確認してください"
+  },
+  "title": "私の提出",
+  "search": {
+    "placeholder": "曲名、アーティスト名、チャーター、パッサー、または動画リンクで検索"
+  },
+  "filters": {
+    "type": "タイプ",
+    "status": "ステータス",
+    "sort": "並べ替え"
+  },
+  "types": {
+    "all": "すべてのタイプ",
+    "pass": "クリア",
+    "level": "チャート"
+  },
+  "status": {
+    "all": "すべてのステータス",
+    "pending": "保留中",
+    "approved": "承認済み",
+    "declined": "却下"
+  },
+  "sort": {
+    "dateDesc": "新しい順",
+    "dateAsc": "古い順",
+    "status": "ステータス",
+    "type": "タイプ"
+  },
+  "row": {
+    "openLevel": "レベル",
+    "openPass": "クリア",
+    "watchVideo": "動画",
+    "workshop": "ワークショップ",
+    "download": "ダウンロード",
+    "score": "スコア",
+    "accuracy": "精度",
+    "speed": "速度",
+    "speedValue": "{{value}}×",
+    "difficulty": "難易度",
+    "charter": "チャーター",
+    "requestedDiff": "リクエスト済み",
+    "rated": "レート済み"
+  },
+  "pagination": {
+    "prev": "前へ",
+    "next": "次へ",
+    "page": "{{totalPages}}ページ中の{{page}}ページ",
+    "total_one": "{{count}} 件の提出",
+    "total_other": "{{count}} 件の提出"
+  },
+  "empty": "提出が見つかりませんでした。",
+  "loading": "提出を読み込んでいます…",
+  "error": "提出データを読み込めませんでした。もう一度お試しください。"
+}

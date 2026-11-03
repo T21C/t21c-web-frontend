@@ -199,14 +199,36 @@ const passMatchesPlayerSearch = (pass, query) => {
   return haystacks.some((value) => String(value || '').toLowerCase().includes(needle));
 };
 
-const StatClearLink = ({ pass, children }) => {
+const StatClearLink = ({ pass, children, title }) => {
   if (!pass?.id) {
-    return <span className="info-desc">{children}</span>;
+    return (
+      <span className="info-desc" title={title}>
+        {children}
+      </span>
+    );
   }
   return (
-    <Link className="info-desc info-desc-link" to={`/passes/${pass.id}`}>
+    <Link className="info-desc info-desc-link" to={`/passes/${pass.id}`} title={title}>
       {children}
     </Link>
+  );
+};
+
+const StatPlayerValue = ({ pass, player, text }) => {
+  const name = player || '';
+  const valueText = name && text.startsWith(name) ? text.slice(name.length) : '';
+
+  return (
+    <StatClearLink pass={pass} title={text}>
+      {name && valueText ? (
+        <>
+          <span className="info-desc-name">{name}</span>
+          <span className="info-desc-value">{valueText}</span>
+        </>
+      ) : (
+        text
+      )}
+    </StatClearLink>
   );
 };
 
@@ -3562,12 +3584,14 @@ const LevelDetailPageContent = ({ mockData = null }) => {
               <div className="info-item">
                 <p>{t('levelDetail.stats.firstClear.label')}</p>
                 {!infoLoading && totalPassCount > 0 && highScores ? (
-                  <StatClearLink pass={highScores.firstClear}>
-                    {t('levelDetail.stats.firstClear.value', {
+                  <StatPlayerValue
+                    pass={highScores.firstClear}
+                    player={highScores.firstClear.player.name}
+                    text={t('levelDetail.stats.firstClear.value', {
                       player: highScores.firstClear.player.name,
                       date: formatPassDate(highScores.firstClear.vidUploadTime, i18next?.language),
                     })}
-                  </StatClearLink>
+                  />
                 ) : (
                   <span className="info-desc">
                     {!infoLoading && totalPassCount > 0 ? '-' : t('levelDetail.stats.waiting')}
@@ -3578,12 +3602,14 @@ const LevelDetailPageContent = ({ mockData = null }) => {
               <div className="info-item">
                 <p>{t('levelDetail.stats.highestScore.label')}</p>
                 {!infoLoading && totalPassCount > 0 && highScores ? (
-                  <StatClearLink pass={highScores.highestScore}>
-                    {t('levelDetail.stats.highestScore.value', {
+                  <StatPlayerValue
+                    pass={highScores.highestScore}
+                    player={highScores.highestScore.player.name}
+                    text={t('levelDetail.stats.highestScore.value', {
                       player: highScores.highestScore.player.name,
                       score: highScores.highestScore.scoreV2.toFixed(2),
                     })}
-                  </StatClearLink>
+                  />
                 ) : (
                   <span className="info-desc">
                     {!infoLoading && totalPassCount > 0 ? '-' : t('levelDetail.stats.waiting')}
@@ -3594,12 +3620,14 @@ const LevelDetailPageContent = ({ mockData = null }) => {
               <div className="info-item">
                 <p>{t('levelDetail.stats.highestSpeed.label')}</p>
                 {!infoLoading && totalPassCount > 0 && highScores?.highestSpeed ? (
-                  <StatClearLink pass={highScores.highestSpeed}>
-                    {t('levelDetail.stats.highestSpeed.value', {
+                  <StatPlayerValue
+                    pass={highScores.highestSpeed}
+                    player={highScores.highestSpeed.player.name}
+                    text={t('levelDetail.stats.highestSpeed.value', {
                       player: highScores.highestSpeed.player.name,
                       speed: highScores.highestSpeed.speed || 1,
                     })}
-                  </StatClearLink>
+                  />
                 ) : (
                   <span className="info-desc">
                     {!infoLoading && totalPassCount > 0 ? '-' : t('levelDetail.stats.waiting')}
@@ -3610,12 +3638,14 @@ const LevelDetailPageContent = ({ mockData = null }) => {
               <div className="info-item">
                 <p>{t('levelDetail.stats.highestAccuracy.label')}</p>
                 {!infoLoading && totalPassCount > 0 && highScores ? (
-                  <StatClearLink pass={highScores.highestAcc}>
-                    {t('levelDetail.stats.highestAccuracy.value', {
+                  <StatPlayerValue
+                    pass={highScores.highestAcc}
+                    player={highScores.highestAcc.player.name}
+                    text={t('levelDetail.stats.highestAccuracy.value', {
                       player: highScores.highestAcc.player.name,
                       accuracy: formatAccuracyRatio(highScores.highestAcc.accuracy, { withPercent: false }),
                     })}
-                  </StatClearLink>
+                  />
                 ) : (
                   <span className="info-desc">
                     {!infoLoading && totalPassCount > 0 ? '-' : t('levelDetail.stats.waiting')}

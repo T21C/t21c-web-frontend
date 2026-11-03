@@ -1,0 +1,426 @@
+{
+  "menu": "変更をリクエスト",
+  "alreadyExists": "既に存在します",
+  "alreadyRequested": "既にリクエスト済みです",
+  "alreadySent": "このリクエストは既に送信されています",
+  "onRatingPage": "このレベルは既にレーティング対象です",
+  "referenceLevel": "参照レベルは再レートできません",
+  "types": {
+    "rerate": "再レート",
+    "info_change": "情報変更",
+    "tag": "タグ",
+    "curation": "キュレーション",
+    "curation_rerate": "キュレーションの再レート"
+  },
+  "statuses": {
+    "pending": "保留中",
+    "accepted": "承認済み",
+    "added_to_rating_page": "レーティングページに追加済み",
+    "discord_vote": "Discord投票",
+    "rejected": "却下",
+    "withdrawn": "取り下げ済み",
+    "completed": "完了",
+    "completed_changed": "完了（難易度変更あり）",
+    "completed_unchanged": "完了（難易度変更なし）"
+  },
+  "creditRoles": {
+    "charter": "譜面制作者",
+    "vfxer": "VFX担当",
+    "specialThanks": "Special thanks"
+  },
+  "kinds": {
+    "song": "曲",
+    "artist": "アーティスト",
+    "credits": "クレジット",
+    "video": "動画",
+    "download": "ダウンロード",
+    "description": "説明",
+    "multiple": "複数"
+  },
+  "actions": {
+    "add": "追加",
+    "remove": "削除",
+    "multiple": "追加・削除"
+  },
+  "errors": {
+    "generic": "エラーが発生しました",
+    "email": "リクエストを送信する前にメールアドレスを確認してください",
+    "account_ban": "このアカウントではリクエストを送信できません",
+    "rerate_ban": "このアカウントでは再レートリクエストが制限されています",
+    "cooldown": "このレベルは再レートのクールダウン中です",
+    "open": "このタイプのリクエストは既に進行中です",
+    "deleted": "削除済みのレベルはリクエストできません",
+    "hidden": "非表示のレベルはリクエストできません",
+    "unsettled": "このチャートはまだレーティングページに掲載されています",
+    "reference": "参照レベルは再レートできません",
+    "missing_level": "レベルが見つかりません",
+    "reason": "理由を入力してください",
+    "reason_length": "理由は1000文字以内で入力してください",
+    "requested_rating": "P、G、Uのいずれかのレーティング、または特殊な難易度名を入力してください",
+    "rating": "P、G、Uのいずれかのレーティング、または特殊な難易度名を入力してください",
+    "base_score": "ベーススコアは0以上の数値である必要があります",
+    "pp_base_score": "PPベーススコアは0以上の数値である必要があります",
+    "score_curve": "スコアカーブが無効です",
+    "comparisons": "既存のレベルを少なくとも1つ、#id形式で指定してください",
+    "comparison_rerating": "{{label}}は現在再レート中のため、比較対象として使用できません",
+    "tags": "既存のタグを選択してください",
+    "community_tags": "コミュニティタグはリクエストするものではなく、投票で決定されます",
+    "automatic_tags": "レベルファイルから読み取られるタグはパーサーが設定するため、リクエストできません",
+    "kind": "変更する項目を選択してください",
+    "type": "タイプのリクエストを選択してください",
+    "curation_types": "存在しないキュレーションタイプが1つ以上あります",
+    "curation_empty": "キュレーションタイプを少なくとも1つ選択してください",
+    "unchanged": "既にこのレベルと一致しています",
+    "unchanged_tags": "選択したタグは既にこのレベルと一致しています",
+    "unchanged_curation": "選択したタイプは既にこのレベルと一致しています",
+    "has_curation": "このレベルには既にキュレーションがあります。キュレーションの再レートをリクエストしてください",
+    "no_curation": "このレベルにはまだキュレーションがありません。新しいキュレーションをリクエストしてください",
+    "song": "既存の曲を選択してください",
+    "artist": "既存のアーティストを選択してください",
+    "value": "新しい値を入力してください",
+    "value_length": "値は4000文字以内で入力してください",
+    "download_both": "ZIPを添付するかリンクを貼り付けてください。両方は指定できません",
+    "cdn_link": "外部リンクを貼り付けてください。CDNファイルを使用する場合はZIPをアップロードしてください",
+    "chart_required": "承認する前に、このZIPからチャートを選択してください",
+    "chart": "このZIPからチャートを選択してください",
+    "upload": "ZIPをアップロードできませんでした",
+    "file_missing": "アップロードされたファイルは既に利用できません",
+    "credits": "有効なクリエイター一覧を選択してください",
+    "forbidden": "この操作は実行できません",
+    "locked": "このリクエストは既に変更できません",
+    "action": "このリクエストでは、その操作を利用できません",
+    "status": "ステータスを直接設定せず、リクエストのアクションを使用してください",
+    "notes": "保存するメモがありません",
+    "discord": "Discordスレッドを作成できるのは再レートのリクエストのみです",
+    "discord_close": "Discordスレッドを閉じられませんでした",
+    "discord_reopen": "Discordスレッドを再開できませんでした",
+    "missing": "リクエストが見つかりません",
+    "level": "レベルIDが無効です"
+  },
+  "form": {
+    "title": "変更をリクエスト",
+    "editTitle": "変更のリクエストを編集",
+    "reason": "理由",
+    "reasonOptional": "理由（任意）",
+    "reasonPlaceholder": "リクエストの理由を説明してください。レベルは #123 の形式で指定してください。",
+    "reasonPlaceholderOptional": "リクエストの理由を説明してください（任意）。",
+    "noReferencesConfirm": "参照先を指定せずにリクエストしますか？参照レベルを追加すると、リクエストの処理が早くなり、こちらの作業も少し楽になります。",
+    "requestedRating": "希望するレーティング",
+    "requestedRatingPlaceholder": "G15 or G18~U2",
+    "baseScore": "ベーススコア（任意）",
+    "baseScorePlaceholder": "12.5",
+    "ppBaseScore": "PPベーススコア（任意）",
+    "ppBaseScorePlaceholder": "8",
+    "scoreCurve": "スコアカーブ（任意）",
+    "scoreCurveOpen": "スコアカーブを編集",
+    "scoreCurveClear": "スコアカーブをクリア",
+    "scoreCurveSet": "スコアカーブを設定しました",
+    "scoreCurveTitle": "希望するスコアカーブ",
+    "scoreCurveHint": "精度または2つのクリア記録からピンを設定します。「適用」を押すと、このカーブがリクエストに保存されます。レベル自体は変更されません。",
+    "kind": "変更する内容",
+    "action": "タグの変更",
+    "tags": "タグ",
+    "tagsCurrent": "リクエストするタグ",
+    "communityTagsHint": "コミュニティタグはレベルへの投票によって決定されるため、ここからリクエストすることはできません。",
+    "automaticTagsHint": "長さ、VFX、DLCなど、レベルファイルから読み取られるタグはパーサーが設定するため、リクエストできません。",
+    "tagsAdd": "選択可能なタグ",
+    "toAdd": "追加するタグ：",
+    "toChange": "変更するタグ：",
+    "toRemove": "削除するタグ：",
+    "changeTo": "変更後：",
+    "manageCreators": "クリエイターを管理",
+    "owner": "オーナー",
+    "selectSong": "曲を選択",
+    "suffix": "サフィックス",
+    "selectArtist": "アーティストを選択",
+    "creditSummary": "追加：{{add}}、変更：{{change}}、削除：{{remove}}",
+    "tagsNone": "なし",
+    "tagsSearchPlaceholder": "タグを検索…",
+    "tagsNoneSelected": "タグはまだ選択されていません。",
+    "tagsNoneAvailable": "選択できるタグはこれ以上ありません。",
+    "tagsNoResults": "検索に一致するタグはありません。",
+    "removeTag": "タグを削除",
+    "addTag": "タグを追加",
+    "curationTypes": "キュレーションタイプ",
+    "typesCurrent": "選択中のタイプ",
+    "typesAdd": "タイプを追加",
+    "typesSearchPlaceholder": "タイプを検索…",
+    "typesNoneSelected": "タイプはまだ選択されていません。",
+    "typesNoneAvailable": "選択できるタイプはこれ以上ありません。",
+    "typesNoResults": "検索に一致するタイプはありません。",
+    "removeType": "タイプを削除",
+    "addType": "タイプを追加",
+    "creatorEditable": "この項目はチャート上ですでに編集できます",
+    "downloadFile": "ZIPを添付",
+    "downloadPaste": "またはコピーしたZIPを貼り付け",
+    "downloadOr": "または外部リンクを貼り付け",
+    "removeFile": "ファイルを削除",
+    "hashing": "ZIPを確認中… {{percent}}%",
+    "uploading": "ZIPをアップロード中… {{percent}}%",
+    "assembling": "アップロードを構成中…",
+    "sending": "ZIPをCDNに送信中…",
+    "chartLater": "リクエストを保存しました。承認する前にチャートを選択してください",
+    "invalidArchive": "ZIP、RAR、7z、またはTAR形式のアーカイブを選択してください",
+    "submit": "送信",
+    "submitted": "リクエストを送信しました",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "submitting": "保存中…"
+  },
+  "detail": {
+    "levelMissing": "レベルが見つかりません",
+    "requester": "リクエスト者",
+    "requested": "リクエスト内容",
+    "baseScore": "希望するベーススコア",
+    "ppBaseScore": "希望するPPベーススコア",
+    "scoreCurve": "スコアカーブ",
+    "scoreCurveOpen": "スコアカーブを表示",
+    "scoreCurveTitle": "希望するスコアカーブ",
+    "scoreCurveHint": "リクエスト時のピン、判定、クリア記録です。閉じても、このカーブがレベルに保存されることはありません。",
+    "difficultyAtSubmit": "リクエスト時の難易度",
+    "current": "現在の難易度",
+    "team": "チーム",
+    "comparisons": "比較対象",
+    "frozenVsCurrent": "{{frozen}}（現在は{{current}}）",
+    "clear": "ベストクリア",
+    "noClear": "表示できるクリア記録がありません",
+    "topClear": "最高クリア",
+    "cleared": "クリア済み",
+    "uncleared": "未クリア",
+    "clearedHint": "このプレイヤーは精度{{accuracy}}でこのレベルをクリアしています",
+    "neverClearedHint": "このプレイヤーはこのレベルを一度もクリアしていません",
+    "publicNote": "公開メモ",
+    "internalNote": "内部メモ",
+    "discordError": "Discordへの投稿に失敗しました",
+    "thread": "Discordスレッド",
+    "threadClosed": "閉じられたDiscordスレッド",
+    "copyReason": "理由をコピー",
+    "copied": "理由をコピーしました",
+    "copyFailed": "理由をコピーできませんでした",
+    "edit": "リクエストを編集",
+    "editLevel": "レベルを編集",
+    "withdraw": "取り下げる",
+    "withdrawn": "リクエストを取り下げました",
+    "notes": "メモ",
+    "discord": "Discordにリクエスト",
+    "discordConfirm": "このリクエストのDiscord投票スレッドを作成しますか？チャートは投票カードとしてレーティングページに追加されます。",
+    "discordPosted": "Discordに投稿しました",
+    "addToRatingConfirm": "このチャートをレーティング{{rating}}とリクエスト理由とともにレーティングページに追加しますか？",
+    "completeConfirm": "このリクエストを完了にしますか？",
+    "deleteDiscordConfirm": "このリクエストのDiscord投稿を削除しますか？",
+    "closeDiscordConfirm": "このリクエストのDiscordスレッドを閉じますか？議論はDiscord上に残ります。",
+    "ban": "再レートリクエストを制限",
+    "banMissingPlayer": "このリクエスト者にはプレイヤープロフィールがありません",
+    "downloadFile": "ファイルをダウンロード",
+    "chartRequired": "承認する前にチャートを選択する必要があります",
+    "chooseChart": "チャートを選択",
+    "chartChosen": "チャートを選択しました",
+    "selectedChart": "チャート：{{chart}}"
+  },
+  "pipeline": {
+    "accept": "承認",
+    "acceptDone": "リクエストを承認しました",
+    "acceptDownload": "承認してダウンロードを置き換える",
+    "acceptDownloadDone": "ダウンロードを置き換えました",
+    "reject": "却下",
+    "rejectConfirm": "リクエストを却下",
+    "rejectDownload": "却下してファイルを削除",
+    "rejectDownloadConfirm": "却下してファイルを削除",
+    "rejectDownloadDone": "リクエストを却下し、ファイルを削除しました",
+    "rejectNote": "公開メモ（任意）",
+    "rejectDone": "リクエストを却下しました",
+    "complete": "完了にする",
+    "completeDone": "リクエストを完了しました",
+    "add_to_rating": "レーティングページに追加",
+    "add_to_ratingDone": "レーティングページに追加しました",
+    "discord_vote": "Discord投票を開始",
+    "discord_voteDone": "Discord投票を開始しました",
+    "retry_discord": "Discordへの投稿を再試行",
+    "retry_discordDone": "Discordに投稿しました",
+    "delete_discord": "Discord投稿を削除",
+    "delete_discordDone": "Discord投稿を削除しました",
+    "close_discord": "Discordスレッドを閉じる",
+    "close_discordDone": "Discordスレッドを閉じました",
+    "reopen_discord": "Discordスレッドを再開",
+    "reopen_discordDone": "Discordスレッドを再開しました"
+  },
+  "statusPopup": {
+    "title": "メモ",
+    "publicNote": "公開メモ",
+    "internalNote": "内部メモ",
+    "save": "保存",
+    "saved": "メモを保存しました"
+  },
+  "helpPopup": {
+    "title": "検索ヘルプ",
+    "closeButton": "閉じる",
+    "v2": {
+      "subtitle": "高度な検索では、小さなクエリ言語を使用します。フィールド指定と演算子を使って、リクエストを絞り込めます。",
+      "examplesTitle": "例",
+      "groups": {
+        "basics": {
+          "title": "基本（クエリの解析方法）",
+          "intro": "条件は field:value または field=value の形式で記述します。グループ内のANDにはカンマを使い、ORグループを作るには | を使います。",
+          "examples": {
+            "and": "<b><code>song:hello, requester:v0w4n</code></b><br/>両方の条件に一致する必要があります（AND）。",
+            "or": "<b><code>status=pending | status=accepted</code></b><br/>どちらかのグループに一致すれば対象になります（OR）。",
+            "not": "<b><code>song:onus, \\!status:rejected</code></b><br/>一致する項目を除外します（NOT）。"
+          }
+        },
+        "fields": {
+          "title": "リクエストフィールド",
+          "intro": "これらのフィールドはリクエストデータに一致します。部分一致には :、完全一致には = を使用します。IDは常に完全一致です。",
+          "examples": {
+            "level": "<b><code>#123</code></b> または <b><code>level=123</code></b> で、そのレベルのリクエストを検索します。<b><code>id=45</code></b> では特定のリクエストを検索します。",
+            "requesterStatus": "<b><code>requester:v0w4n, status:pending</code></b><br/>ユーザー名またはニックネームとステータスで絞り込みます。",
+            "typeReason": "<b><code>type:info, reason:offset</code></b><br/>すべてのタイプがまとめて表示される「自分のリクエスト」で、タイプ指定が特に便利です。"
+          }
+        },
+        "tips": {
+          "title": "ヒント",
+          "intro": "検索時に意外な結果にならないよう、いくつか補足します。",
+          "bullets": {
+            "plainText": "フィールドを指定しない語句でも、曲、アーティスト、レベルID、リクエストID、リクエスト者、ステータス、理由を検索します。「自分のリクエスト」ではタイプも検索対象です。",
+            "statusToggle": "フィルターでステータスを選択するか、クエリで status: を使用すると、「完了」の切り替え設定は無視されます。",
+            "caseInsensitive": "検索では大文字と小文字は区別されません。「SONG」と「song」は同じように扱われます。",
+            "spacesAllowed": "値にはスペースを使用できます。例：song:Example Song",
+            "groupingMentalModel": "（A AND B）OR（C AND D）のように考えてください。カンマでANDグループを作り、| でORグループを分けます。"
+          }
+        }
+      },
+      "fields": {
+        "operatorColon": {
+          "title": "部分一致",
+          "desc": ": を使うと、テキストの一部に一致します（例：song:go）。"
+        },
+        "operatorEquals": {
+          "title": "完全一致",
+          "desc": "= を使うと、完全に一致します（例：song=goTe）。"
+        },
+        "operatorComma": {
+          "title": "グループ内のAND",
+          "desc": "カンマで語句を区切ると、グループ内のすべての条件が必須になります。"
+        },
+        "operatorPipe": {
+          "title": "グループ間のOR",
+          "desc": "| を使ってクエリをORグループに分割します。いずれかのグループに一致すると、リクエストが検索結果に含まれます。"
+        },
+        "operatorNot": {
+          "title": "NOT（除外）",
+          "desc": "語句の先頭に \\! を付けると、その語句を含む一致項目を除外します。"
+        },
+        "id": {
+          "title": "リクエストID",
+          "desc": "リクエストIDの完全一致（例：id=45）。"
+        },
+        "hashtag": {
+          "title": "レベルIDの短縮表記",
+          "desc": "#123 は level=123 と同じ意味です。"
+        },
+        "level": {
+          "title": "レベルID",
+          "desc": "レベルIDの完全一致。levelId は別名です（例：level:123）。"
+        },
+        "song": {
+          "title": "曲",
+          "desc": "レベルの曲名に一致します。"
+        },
+        "artist": {
+          "title": "アーティスト",
+          "desc": "レベルのアーティスト名に一致します。"
+        },
+        "requester": {
+          "title": "リクエスト者",
+          "desc": "ユーザー名またはニックネームに一致します。user と username は別名です。"
+        },
+        "status": {
+          "title": "ステータス",
+          "desc": "pending、accepted、added_to_rating_page（別名：rating、rating_page）、discord_vote（別名：discord、vote）、rejected、withdrawn、completed、completed_changed、completed_unchanged。"
+        },
+        "type": {
+          "title": "タイプのリクエスト",
+          "desc": "rerate、info_change（別名：info）、tag、curation、curation_rerate。「自分のリクエスト」で使うと特に便利です。"
+        },
+        "reason": {
+          "title": "理由",
+          "desc": "リクエスト理由のテキストに一致します。"
+        }
+      }
+    }
+  },
+  "list": {
+    "empty": "リクエストはありません",
+    "loading": "リクエストを読み込み中…",
+    "error": "リクエストを読み込めませんでした",
+    "level": "レベル",
+    "levelPlaceholder": "曲名またはレベルID",
+    "requester": "リクエスト者",
+    "requesterPlaceholder": "ユーザー名",
+    "status": "ステータス",
+    "anyStatus": "すべて",
+    "searchPlaceholder": "リクエストを検索（field:value）",
+    "searchHelp": "検索ヘルプ",
+    "completed": "完了",
+    "statusIgnoresCompleted": "ステータスが選択されている場合、または検索で status: を使用している場合、「完了」は無視されます。",
+    "filterTitle": "フィルター",
+    "sortTitle": "並べ替え",
+    "sortBy": "並べ替え方法",
+    "sortCreated": "作成日時",
+    "sortUpdated": "更新日時",
+    "sortOrder": "順序",
+    "tooltips": {
+      "search": "高度な検索の使い方",
+      "filter": "結果を絞り込む",
+      "sort": "結果を並べ替える",
+      "reset": "フィルターをリセット",
+      "orderAsc": "昇順",
+      "orderDesc": "降順"
+    },
+    "type": "タイプ",
+    "anyType": "すべてのタイプ",
+    "page": "{{totalPages}}ページ中{{page}}ページ",
+    "previous": "前へ",
+    "next": "次へ",
+    "exportAs": "形式を指定してエクスポート",
+    "acceptAll": "すべて承認",
+    "completeAll": "すべて完了にする",
+    "acceptAllConfirm": "保留中の{{type}}リクエストをすべて承認しますか？リクエスト者はそれらを編集できなくなります。",
+    "completeAllConfirm": "承認済みの{{type}}リクエストをすべて完了にしますか？",
+    "acceptAllDone": "{{count}}件のリクエストを承認しました",
+    "completeAllDone": "{{count}}件のリクエストを完了にしました",
+    "bulkNone": "更新対象の一致するリクエストがありません",
+    "bulkPartial": "{{updated}}件を更新、{{failed}}件に失敗",
+    "export": {
+      "title": "{{contextName}}をエクスポート",
+      "defaultContextName": "リクエスト",
+      "description": "「{{contextName}}」の未処理キューを既定でエクスポートします。このページの検索とフィルターに一致するすべてのリクエストをエクスポートするには、フィルターを使用してください。",
+      "scope": "行",
+      "export": "エクスポート",
+      "exporting": "エクスポート中…",
+      "unavailable": "利用不可",
+      "progress": "{{total}}件中{{fetched}}件を取得しました…",
+      "errors": {
+        "exportFailed": "リクエストをエクスポートできませんでした。もう一度お試しください。",
+        "empty": "エクスポートするリクエストがありません"
+      }
+    }
+  },
+  "tabs": {
+    "submissions": "提出",
+    "requests": "リクエスト",
+    "rerate": "再レート",
+    "info": "情報",
+    "tag": "タグ",
+    "curation": "キュレーション",
+    "curationRerate": "キュレーションの再レート"
+  },
+  "admin": {
+    "title": "レベルリクエスト",
+    "ratingLink": "再レートリクエスト",
+    "curationLink": "キュレーションリクエスト",
+    "denied": "これらのリクエストを確認する権限がありません"
+  },
+  "mine": {
+    "title": "自分のリクエスト"
+  }
+}
