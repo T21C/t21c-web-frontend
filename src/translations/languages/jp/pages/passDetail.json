@@ -180,6 +180,9 @@
       }
     }
   },
+  "feelingExplanation": {
+    "label": "体感の説明"
+  },
   "details": {
     "label": "詳細",
     "showMore": "続きを読む",

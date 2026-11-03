@@ -29,6 +29,7 @@
       "removeRating": "レーティングを削除する",
       "viewAdminRatings": "マネージャーのレーティングを見る",
       "viewCommunityRatings": "コミュニティのレーティングを見る",
+      "copyNotes": "注記をコピー",
       "discordThread": "Discordスレッドを作成",
       "discordThreadClose": "Discordスレッドを閉じる",
       "discordThreadReopen": "Discordスレッドを再開",
@@ -42,7 +43,8 @@
       "unsavedChanges": "保存されていない変更があります。本当に閉じてよろしいですか？",
       "deleteFailed": "レーティングの削除に失敗しました",
       "autorateFailed": "レーティングの自動付けに失敗しました",
-      "discordThread": "Discordスレッドを更新できませんでした"
+      "discordThread": "Discordスレッドを更新できませんでした",
+      "notesCopyFailed": "注記をコピーできませんでした"
     },
     "tooltips": {
       "lastUpdated": "最終更新日時",
@@ -79,7 +81,8 @@
       "discordThreadStarted": "Discordスレッドを作成しました",
       "discordThreadClosed": "Discordスレッドを閉じました",
       "discordThreadReopened": "Discordスレッドを再開しました",
-      "autorateSuccess": "レーティングの自動付与に成功しました"
+      "autorateSuccess": "レーティングの自動付与に成功しました",
+      "notesCopied": "注記をコピーしました"
     }
   },
   "ratingCard": {

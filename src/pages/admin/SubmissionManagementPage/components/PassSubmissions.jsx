@@ -37,6 +37,7 @@ import { resolveYoutubeVideoMatch } from '@/utils/youtubeChannel';
 import { filterSubmissionsByMatchedIds } from './submissionSearch';
 import { usePendingSubmissionSearch } from './usePendingSubmissionSearch';
 import { passDifficultySubtype } from './passDifficultySubtype';
+import { CommentFormatter } from '@/components/misc';
 
 
 const PassSubmissions = ({ setIsAutoAllowing, searchQuery = '', hiddenSubtypes = [] }) => {
@@ -408,6 +409,15 @@ const PassSubmissions = ({ setIsAutoAllowing, searchQuery = '', hiddenSubtypes =
                         <div className="detail-row">
                           <span className="detail-label">{t('passSubmissions.details.feelingDiff')}</span>
                           <span className="detail-value">{submission.feelingDifficulty || <span className="detail-value-none">None</span>}</span>
+                        </div>
+
+                        <div className="detail-row">
+                          <span className="detail-label">{t('passSubmissions.details.feelingExplanation')}</span>
+                          <div className="detail-value pass-submission-details-text">
+                            {submission.feelingExplanation?.trim()
+                              ? <CommentFormatter>{submission.feelingExplanation}</CommentFormatter>
+                              : <span className="detail-value-none">None</span>}
+                          </div>
                         </div>
 
                         <div className="detail-row">

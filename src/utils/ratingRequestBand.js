@@ -23,6 +23,12 @@ function parseQRangeLetter(name) {
   return null;
 }
 
+/** GQ0–GQ4 or UQ0–UQ4, including labels like `UQ2 (U9~U12)`. Bare Q and Qq are not. */
+export function isGqOrUqDifficulty(name) {
+  const n = String(name || '').trim().toUpperCase();
+  return /^GQ[0-4](?:\s|\(|$)/.test(n) || /^UQ[0-4](?:\s|\(|$)/.test(n);
+}
+
 function parseRatingRange(rating) {
   const match = rating.match(/([^-~\s]+|^-\d+)([-~\s])(.+)/);
   if (!match) return [rating.trim()];

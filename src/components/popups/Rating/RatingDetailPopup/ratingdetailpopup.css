@@ -113,6 +113,35 @@
     flex-shrink: 0;
 }
 
+.rating-popup .detail-field.comment-field.notes-field {
+    cursor: default;
+}
+
+.rating-popup .notes-field__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 0.5rem;
+}
+
+.rating-popup .notes-field__copy {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.1rem;
+    border: none;
+    background: none;
+    color: var(--color-gray-2);
+    cursor: pointer;
+    flex-shrink: 0;
+    line-height: 0;
+}
+
+.rating-popup .notes-field__copy:hover {
+    color: var(--btn-primary-light-hover);
+}
+
 .rating-popup .detail-field.comment-field .detail-value {
     font-size: 0.95rem;
     color: var(--text-color);

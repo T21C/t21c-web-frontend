@@ -103,6 +103,9 @@
       }
     }
   },
+  "feelingExplanation": {
+    "label": "Explication"
+  },
   "details": {
     "label": "Détails",
     "showMore": "Lire la suite",

@@ -12,7 +12,7 @@ import { RatingInput } from '@/components/common/selectors';
 import api from '@/utils/api';
 import { useTranslation } from 'react-i18next';
 import { CloseButton } from '@/components/common/buttons';
-import { ExternalLinkIcon, DownloadIcon, DraftIcon, EditIcon } from '@/components/common/icons';
+import { ExternalLinkIcon, DownloadIcon, DraftIcon, EditIcon, CopyIcon } from '@/components/common/icons';
 import DiscordVoteNotice from '@/components/popups/Rating/DiscordVoteNotice';
 import RatingDiscordThreadButton from '@/components/popups/Rating/RatingDiscordThreadButton';
 import { mergeRatingThreadState } from '@/components/discord/ratingThread';
@@ -629,6 +629,19 @@ export const RatingDetailPopup = ({
   }, [selectedRating?.id]);
 
   if (!selectedRating) return null;
+
+  const copyNotes = async (event) => {
+    event.stopPropagation();
+    const text = selectedRating.level?.notes || '';
+    if (!text) return;
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success(t('rating.detailPopup.messages.notesCopied'));
+    } catch {
+      toast.error(t('rating.detailPopup.errors.notesCopyFailed'));
+    }
+  };
+
   const showEditLevel = typeof onEditLevel === 'function' && selectedRating.level?.id != null;
   return (
     <>
@@ -721,8 +734,21 @@ export const RatingDetailPopup = ({
             />
           </div>
           {selectedRating.level.notes && (
-            <div className="detail-field comment-field open">
-              <span className="detail-label">{t('rating.detailPopup.labels.notes')}</span>
+            <div className="detail-field comment-field notes-field open">
+              <div className="notes-field__header">
+                <span className="detail-label">{t('rating.detailPopup.labels.notes')}</span>
+                <button
+                  type="button"
+                  className="notes-field__copy"
+                  onClick={copyNotes}
+                  aria-label={t('rating.detailPopup.buttons.copyNotes')}
+                  data-tooltip-id="notes-copy-tooltip"
+                  data-tooltip-content={t('rating.detailPopup.buttons.copyNotes')}
+                >
+                  <CopyIcon size={16} color="currentColor" />
+                </button>
+                <Tooltip id="notes-copy-tooltip" place="left" noArrow />
+              </div>
               <div className="detail-value">
                 <CommentFormatter>{selectedRating.level.notes}</CommentFormatter>
               </div>

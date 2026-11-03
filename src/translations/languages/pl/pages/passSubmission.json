@@ -142,5 +142,17 @@
     "hpBar": "Ten poziom używa paska HP. Potwierdź, że grałeś z wymaganym ustawieniem paska HP.",
     "detailedJudgement": "Ten poziom wymaga szczegółowych judgmentów. Potwierdź, że wyświetlanie judgmentów zgadza się z wymaganiem.",
     "timingWindowScale": "Ten poziom używa skalowanego okna timingowego. Potwierdź, że grałeś z wymaganym oknem timingowym."
+  },
+  "feelingExplanation": {
+    "title": "Wyjaśnij odczuwaną trudność",
+    "body": "Możesz opcjonalnie wyjaśnić, dlaczego to przejście wydało się na podaną ocenę.",
+    "placeholder": "Wyjaśnij ocenę. Wspomnij poziomy jako #123.",
+    "submitExplanation": "Wyślij wyjaśnienie",
+    "skip": "Pomiń",
+    "skipConfirm": "Wysłać bez wyjaśnienia? Dodatkowe informacje od ciebie jako osoby, która przeszła poziom, pomogą ocenić go dokładniej.",
+    "suggestTitle": "Dodaj poziom odniesienia",
+    "suggestBody": "Dodanie poziomu o zbliżonej trudności (na przykład #123) pomaga oceniającym. Możesz też wysłać bez odniesienia.",
+    "addReference": "Dodaj odniesienie",
+    "submitAnyway": "Wyślij mimo to"
   }
 } 

@@ -4,6 +4,7 @@
     "level": "レベル",
     "player": "プレイヤー",
     "feelingDiff": "体感難易度",
+    "feelingExplanation": "体感の説明",
     "expectedDiff": "予想レーティング",
     "passDetails": "クリアの詳細",
     "speed": "速度",

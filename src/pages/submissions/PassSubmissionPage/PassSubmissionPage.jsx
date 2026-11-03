@@ -31,7 +31,9 @@ import { ADOFAI_VERSION, canUseXPerfectMode, isAdofaiV2FromVersion, parseAdofaiV
 import { PASS_SUBMISSION_INITIAL_FORM } from './passSubmissionInitialForm';
 import { getPassSubmissionTagWarnings } from './passSubmissionTagWarnings';
 import { PassSubmissionCore } from './PassSubmissionCore';
+import { FeelingExplanationPopup } from './FeelingExplanationPopup';
 import { CalculatorIcon } from '@/components/common/icons';
+import { isGqOrUqDifficulty } from '@/utils/ratingRequestBand';
 import CommunityTagVotePopup from '@/pages/common/Level/LevelDetailPage/CommunityTagVotePopup';
 import { CLIENT_PREF_KEYS } from '@/utils/clientPreferences';
 import { useClientPreference } from '@/hooks/useClientPreference';
@@ -77,6 +79,7 @@ const PassSubmissionPage = () => {
   const [showTilecountMismatchModal, setShowTilecountMismatchModal] = useState(false);
   const [tilecountMismatchKind, setTilecountMismatchKind] = useState('generic');
   const [showTagWarningsModal, setShowTagWarningsModal] = useState(false);
+  const [showFeelingExplanationModal, setShowFeelingExplanationModal] = useState(false);
   const [votePopupLevelId, setVotePopupLevelId] = useState(null);
 
   const extraValidation = useCallback(
@@ -125,6 +128,10 @@ const PassSubmissionPage = () => {
   const tagWarnings = useMemo(
     () => getPassSubmissionTagWarnings(level?.tags),
     [level?.tags],
+  );
+  const isGqUqClear = useMemo(
+    () => isGqOrUqDifficulty(difficultyDict[level?.diffId]?.name || level?.difficulty?.name),
+    [difficultyDict, level],
   );
   const formDomRef = useRef(null);
   const formValueRef = useRef(form);
@@ -185,7 +192,7 @@ const PassSubmissionPage = () => {
     fetchProfile();
   }, [user, setForm]);
 
-  const performSubmit = async () => {
+  const performSubmit = async (feelingExplanation = null) => {
     const current = formValueRef.current;
     setSubmission(true);
 
@@ -203,6 +210,7 @@ const PassSubmissionPage = () => {
         speed: current.speed,
         feelingDifficulty: current.feelingRating,
         expectedDifficulty: current.expectedRating?.trim() || null,
+        feelingExplanation: feelingExplanation || null,
         details: current.details || '',
         keyCount: normalizeKeyCount(current.keyCount),
         earlyDouble: parseInt(current.tooEarly) || 0,
@@ -225,6 +233,7 @@ const PassSubmissionPage = () => {
       const submittedLevelId = current.levelId;
       await submitPass(payload);
       toast.success(t('passSubmission.alert.success'));
+      setShowFeelingExplanationModal(false);
       setFormStateKey((prevKey) => prevKey + 1);
       setForm(PASS_SUBMISSION_INITIAL_FORM);
       setSearchInput('');
@@ -264,7 +273,15 @@ const PassSubmissionPage = () => {
       setShowTilecountMismatchModal(true);
       return;
     }
-    await performSubmit();
+    await continueAfterMismatches();
+  };
+
+  const continueAfterMismatches = async () => {
+    if (isGqUqClear) {
+      setShowFeelingExplanationModal(true);
+      return;
+    }
+    await performSubmit(null);
   };
 
   const handleSubmit = async (e) => {
@@ -479,6 +496,15 @@ const PassSubmissionPage = () => {
         </PopupShell>
       )}
 
+      {showFeelingExplanationModal && (
+        <FeelingExplanationPopup
+          levelId={form.levelId}
+          submitting={submission}
+          onClose={() => setShowFeelingExplanationModal(false)}
+          onSubmit={performSubmit}
+        />
+      )}
+
       {showTilecountMismatchModal && (
         <PopupShell
           onClose={() => setShowTilecountMismatchModal(false)}
@@ -535,7 +561,7 @@ const PassSubmissionPage = () => {
                 className="tilecount-mismatch-submit-anyway-btn btn-fill-danger alt"
                 onClick={async () => {
                   setShowTilecountMismatchModal(false);
-                  await performSubmit();
+                  await continueAfterMismatches();
                 }}
                 disabled={submission}
               >

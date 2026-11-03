@@ -142,5 +142,17 @@
     "hpBar": "Ce niveau utilise une barre de PV. Confirme que tu as joué avec le réglage de barre de PV requis.",
     "detailedJudgement": "Ce niveau nécessite le jugement détaillé. Confirme que l'affichage des jugements correspond à l'exigence.",
     "timingWindowScale": "Ce niveau utilise une fenêtre de timing mise à l'échelle. Confirme que tu as joué avec la fenêtre de timing requise."
+  },
+  "feelingExplanation": {
+    "title": "Expliquer la difficulté ressentie",
+    "body": "Tu peux expliquer pourquoi ce clear t'a semblé à la difficulté indiquée.",
+    "placeholder": "Explique la note. Mentionne des niveaux avec #123.",
+    "submitExplanation": "Envoyer l'explication",
+    "skip": "Passer",
+    "skipConfirm": "Envoyer sans explication ? Des informations supplémentaires de ta part en tant que clearer aideraient à noter ce niveau plus précisément.",
+    "suggestTitle": "Ajouter un niveau de référence",
+    "suggestBody": "Ajouter un niveau de difficulté comparable (par exemple #123) aide les évaluateurs. Tu peux quand même envoyer sans référence.",
+    "addReference": "Ajouter une référence",
+    "submitAnyway": "Envoyer quand même"
   }
 } 
