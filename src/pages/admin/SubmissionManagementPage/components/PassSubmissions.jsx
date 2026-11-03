@@ -36,9 +36,10 @@ import SubmitterRecordBadge, { incrementSubmitterRecord, preserveSubmitterStats 
 import { resolveYoutubeVideoMatch } from '@/utils/youtubeChannel';
 import { filterSubmissionsByMatchedIds } from './submissionSearch';
 import { usePendingSubmissionSearch } from './usePendingSubmissionSearch';
+import { passDifficultySubtype } from './passDifficultySubtype';
 
 
-const PassSubmissions = ({ setIsAutoAllowing, searchQuery = '' }) => {
+const PassSubmissions = ({ setIsAutoAllowing, searchQuery = '', hiddenSubtypes = [] }) => {
   const { t } = useTranslation(['components', 'pages']);
 
   const [submissions, setSubmissions] = useState([]);
@@ -343,10 +344,16 @@ const PassSubmissions = ({ setIsAutoAllowing, searchQuery = '' }) => {
     };
   }, []);
 
-  const filteredSubmissions = useMemo(
-    () => filterSubmissionsByMatchedIds(submissions, matchedIds),
-    [submissions, matchedIds],
-  );
+  const filteredSubmissions = useMemo(() => {
+    const matched = filterSubmissionsByMatchedIds(submissions, matchedIds);
+    if (!hiddenSubtypes.length) return matched;
+    const hidden = new Set(hiddenSubtypes);
+    return matched.filter((submission) => {
+      const diffId = submission.level?.diffId;
+      const name = difficultyDict?.[diffId]?.name ?? submission.level?.difficulty?.name;
+      return !hidden.has(passDifficultySubtype(name));
+    });
+  }, [submissions, matchedIds, hiddenSubtypes, difficultyDict]);
 
   if (!hasVisibleSubmissions(submissions, cardPhases) && !isLoading) {
     return <p className="no-submissions">{t('passSubmissions.noSubmissions')}</p>;

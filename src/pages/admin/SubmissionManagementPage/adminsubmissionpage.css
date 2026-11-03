@@ -1181,19 +1181,82 @@
 
   .submission-admin-page .submission-search {
     display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
     margin-bottom: 1.5rem;
     position: relative;
     z-index: 10;
   }
 
   .submission-admin-page .submission-search-input {
-    width: 100%;
+    flex: 1 1 16rem;
+    min-width: 12rem;
+    width: auto;
     padding: 0.75rem 1rem;
     background-color: var(--color-white-t10);
     border: 1px solid var(--color-white-t20);
     border-radius: 4px;
     color: var(--color-white);
     font-size: 1rem;
+  }
+
+  .submission-admin-page .pass-diff-hide {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 10px;
+    padding: 0.5rem 1rem;
+    background: var(--color-white-t10);
+    border-radius: 8px;
+  }
+
+  .submission-admin-page .pass-diff-hide__label {
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--color-gray-1);
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 500;
+    line-height: inherit;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .submission-admin-page .pass-diff-hide__label:hover {
+    color: var(--color-white);
+  }
+
+  .submission-admin-page .pass-diff-hide__items {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    gap: 0.3rem;
+  }
+
+  .submission-admin-page .pass-diff-hide__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+    cursor: pointer;
+    color: var(--color-gray-2);
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1;
+    min-width: 1.75rem;
+  }
+
+  .submission-admin-page .pass-diff-hide__item:hover {
+    color: var(--color-white);
+  }
+
+  .submission-admin-page .pass-diff-hide__item input {
+    margin: 0;
+    cursor: pointer;
   }
 
   .submission-admin-page .submission-search-input:focus {

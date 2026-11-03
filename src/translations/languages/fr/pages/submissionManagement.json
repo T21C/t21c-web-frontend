@@ -16,6 +16,10 @@
     "placeholder": "Rechercher par chanson, artiste, créateur, joueur ou soumetteur",
     "noMatches": "Aucune soumission correspondante"
   },
+  "hideDifficulty": {
+    "label": "Masquer la difficulté",
+    "hint": "Cochez un sous-type pour masquer ces complétions. Cliquez sur le libellé pour tout sélectionner ou tout effacer."
+  },
   "jobs": {
     "title": "Traitement",
     "hide": "Masquer la file",

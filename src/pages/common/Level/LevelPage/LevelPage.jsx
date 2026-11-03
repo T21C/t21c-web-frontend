@@ -45,6 +45,7 @@ function buildLevelsListSignature({
   sort,
   order,
   deletedFilter,
+  toRateFilter,
   clearedFilter,
   availableDlFilter,
   selectedLowFilterDiff,
@@ -62,6 +63,7 @@ function buildLevelsListSignature({
     sort,
     order,
     deletedFilter: deletedFilter || 'hide',
+    toRateFilter: toRateFilter || 'show',
     clearedFilter: clearedFilter || 'show',
     availableDlFilter: availableDlFilter || 'show',
     selectedLowFilterDiff,
@@ -86,6 +88,7 @@ function buildLevelsListSignature({
  *        - 'myLikes': hides the "only my likes" toggle.
  *        - 'help': hides the search-help button.
  *        - 'deletedFilter': hides the deleted/hidden levels switch.
+ *        - 'toRateFilter': hides the admin-only in-rating switch.
  * @param {HTMLElement|null} [props.customScrollParent] - Scroll container for Virtuoso
  *        when the list is not window-scrolled (e.g. embedded creator profile levels panel).
  * @param {object} [props.hiddenFilters] - Extra filters that are silently merged
@@ -147,6 +150,8 @@ const LevelPage = ({
     setPageNumber,
     deletedFilter,
     setDeletedFilter,
+    toRateFilter,
+    setToRateFilter,
     availableDlFilter,
     setAvailableDlFilter,
     clearedFilter,
@@ -233,6 +238,8 @@ const LevelPage = ({
     return randomSeedRef.current;
   }
 
+  const canFilterToRate = hasFlag(user, permissionFlags.SUPER_ADMIN);
+
   const getListSignature = useCallback(
     () =>
       buildLevelsListSignature({
@@ -240,6 +247,7 @@ const LevelPage = ({
         sort,
         order,
         deletedFilter,
+        toRateFilter: canFilterToRate ? toRateFilter : 'show',
         clearedFilter,
         availableDlFilter,
         selectedLowFilterDiff,
@@ -257,6 +265,8 @@ const LevelPage = ({
       sort,
       order,
       deletedFilter,
+      toRateFilter,
+      canFilterToRate,
       clearedFilter,
       availableDlFilter,
       selectedLowFilterDiff,
@@ -317,6 +327,7 @@ const LevelPage = ({
         query: query || '',
         sort: sort + "_" + order,
         deletedFilter: deletedFilter || 'hide',
+        ...(canFilterToRate ? { toRateFilter: toRateFilter || 'show' } : {}),
         clearedFilter: clearedFilter || 'show',
         pguRange: `${selectedLowFilterDiff},${selectedHighFilterDiff}`,
         specialDifficulties: uniqueSpecialDiffs.length > 0 ? uniqueSpecialDiffs.join(',') : undefined,
@@ -435,6 +446,8 @@ const LevelPage = ({
     order,
     pageNumber,
     deletedFilter,
+    toRateFilter,
+    canFilterToRate,
     clearedFilter,
     availableDlFilter,
     selectedLowFilterDiff,
@@ -577,6 +590,8 @@ const LevelPage = ({
     sort,
     order,
     deletedFilter,
+    toRateFilter,
+    canFilterToRate,
     clearedFilter,
     availableDlFilter,
     selectedLowFilterDiff,
@@ -674,6 +689,7 @@ const LevelPage = ({
     setSelectedSpecialDiffs([]);
     // Reset filters
     setDeletedFilter("hide");
+    setToRateFilter("show");
     setClearedFilter("show");
     setAvailableDlFilter("show");
     setLevelFacetFilters({ tags: null, curationTypes: null, combine: 'and' });
@@ -1009,6 +1025,18 @@ const LevelPage = ({
                     currentState={deletedFilter}
                     onChange={(newState) => {
                       setDeletedFilter(newState);
+                    }}
+                    states={['show', 'hide', 'only']}
+                  />
+                </div>
+              )}
+              {canFilterToRate && !disabled('toRateFilter') && (
+                <div className="state-switches-item">
+                  <span className="state-switches-label">{t('level.settingExp.inRating')}</span>
+                  <StateDisplay
+                    currentState={toRateFilter}
+                    onChange={(newState) => {
+                      setToRateFilter(newState);
                     }}
                     states={['show', 'hide', 'only']}
                   />
